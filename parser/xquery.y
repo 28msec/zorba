@@ -63,12 +63,14 @@ typedef struct {
 %token <sval> PRAGMA_LITERAL
 %token <sval> PREFIX_WILDCARD
 %token <sval> QNAME
+%token <sval> QNAME_LPAR
 %token <sval> QUOTE_ATTR_CONTENT
 %token <sval> STRING_LITERAL
 %token <sval> URI_LITERAL
 %token <sval> VARNAME
 %token <sval> VALIDATE_MODE
 %token <sval> XML_COMMENT_LITERAL
+
 
 /* simple tokens */
 /* ------------- */
@@ -130,7 +132,8 @@ typedef struct {
 %token EMPTY_GREATEST
 %token EMPTY_LEAST
 %token ENCODING
-%token EQ
+%token END_TAG
+%token EQUALS
 %token ESCAPE_APOS
 %token ESCAPE_QUOTE
 %token EVERY_DOLLAR
@@ -140,15 +143,8 @@ typedef struct {
 %token FOLLOWING_SIBLING_AXIS
 %token FOLLOWS
 %token FOR_DOLLAR
-%token F_EQ
-%token F_GE
-%token F_GT
-%token F_LE
-%token F_LT
-%token F_NE
-%token GE
+%token GENERALCOMP
 %token GETS
-%token GT
 %token HOOK
 %token IDIV
 %token IF_LPAR
@@ -163,18 +159,17 @@ typedef struct {
 %token ITEM_TEST
 %token LBRACE
 %token LBRACK
-%token LE
 %token LEADING_LONE_SLASH
 %token LET_DOLLAR
 %token LPAR
-%token LT
 %token LTS
 %token MINUS
 %token MOD
 %token MODULE_NAMESPACE
-%token NAN
 %token NAMESPACE
+%token NAN
 %token NE
+%token NODECOMP
 %token NODE_LPAR
 %token NOT_OPERATOR_KEYWORD
 %token NO_INHERIT
@@ -227,6 +222,7 @@ typedef struct {
 %token UNORDERED_LBRACE
 %token UNRECOGNIZED
 %token VALIDATE_LBRACE
+%token VALUECOMP
 %token VBAR
 %token VOID_TEST
 %token WHERE
@@ -237,22 +233,76 @@ typedef struct {
 
 /* update-related */
 /* -------------- */
-%token DECLARE_REVALIDATION_MODE
-%token DO_INSERT
-%token DO_DELETE
-%token DO_REPLACE
-%token DO_RENAME
-%token INTO
-%token FIRST_INTO
-%token LAST_INTO
 %token AFTER
 %token BEFORE
+%token COMMA_DOLLAR 
+%token DECLARE_REVALIDATION_MODE
+%token DO_DELETE
+%token DO_INSERT
+%token DO_RENAME
+%token DO_REPLACE
+%token FIRST_INTO
+%token INTO
+%token LAST_INTO
+%token MODIFY 
+%token TRANSFORM_COPY_DOLLAR 
 %token VALUE_OF
 %token WITH
-%token TRANSFORM_COPY_DOLLAR 
-%token MODIFY 
-%token COMMA_DOLLAR 
 
+
+/* full-text-related */
+/* ----------------- */
+%token ALL
+%token ALL_WORDS
+%token ANY
+%token ANY_WORD
+%token AT_END
+%token AT_LEAST
+%token AT_MOST
+%token AT_START
+%token CASE_INSENSITIVE
+%token CASE_SENSITIVE
+%token DECLARE_FTOPTION
+%token DIACRITICS_INSENSITIVE
+%token DIACRITICS_SENSITIVE
+%token DIFFERENT
+%token DISTANCE
+%token ENTIRE_CONTENT
+%token EXACTLY
+%token FROM
+%token FTAND
+%token FTCONTAINS 
+%token FTNOT
+%token FTOR
+%token LANGUAGE 
+%token LEVELS
+%token LOWERCASE
+%token NOT_IN
+%token OCCURS
+%token PARAGRAPH
+%token PHRASE
+%token RELATIONSHIP
+%token SAME
+%token SCORE
+%token SENTENCE
+%token SENTENCES
+%token TIMES
+%token UPPERCASE
+%token WEIGHT
+%token WINDOW
+%token WITHOUT_CONTENT
+%token WITHOUT_DIACRITICS
+%token WITHOUT_STEMMING
+%token WITHOUT_STOP_WORDS
+%token WITHOUT_THESAURUS
+%token WITHOUT_WILDCARDS
+%token WITH_DEFAULT_STOP_WORDS 
+%token WITH_DIACRITICS
+%token WITH_STEMMING
+%token WITH_STOP_WORDS 
+%token WITH_THESAURUS
+%token WITH_WILDCARDS
+%token WORDS
 
 /* left-hand sides */
 /* --------------- */
@@ -317,7 +367,6 @@ typedef struct {
 %type <node> ForwardStep
 %type <node> FunctionCall
 %type <node> FunctionDecl
-%type <node> GeneralCompExpr
 %type <node> IfExpr
 %type <node> Import
 %type <node> InheritMode
@@ -335,7 +384,6 @@ typedef struct {
 %type <node> MultiplicativeExpr
 %type <node> NameTest
 %type <node> NamespaceDecl
-%type <node> NodeCompExpr
 %type <node> NodeTest
 %type <node> NumericLiteral
 %type <node> OccurrenceIndicator
@@ -390,7 +438,6 @@ typedef struct {
 %type <node> UnionExpr
 %type <node> UnorderedExpr
 %type <node> ValidateExpr
-%type <node> ValueCompExpr
 %type <node> ValueExpr
 %type <node> VarDecl
 %type <node> VarGetsDecl
@@ -403,20 +450,138 @@ typedef struct {
 %type <node> WhereClause
 %type <node> Wildcard
 
+
 /* update-related */
 /* -------------- */
-%type <node> RevalidationDecl
-%type <node> InsertExpr
 %type <node> DeleteExpr
-%type <node> ReplaceExpr
+%type <node> InsertExpr
 %type <node> RenameExpr
+%type <node> ReplaceExpr
+%type <node> RevalidationDecl
 %type <node> TransformExpr
 %type <node> VarNameList
 
 
-/* Precedence */
-%nonassoc BASE
-%left OR
+/* full-text-related */
+/* ----------------- */
+%type <node> FTAnd
+%type <node> FTAnyallOption
+%type <node> FTBigUnit
+%type <node> FTCaseOption
+%type <node> FTContainsExpr
+%type <node> FTContent
+%type <node> FTDiacriticsOption
+%type <node> FTDistance
+%type <node> FTIgnoreOption
+%type <node> FTInclExclStringLiteral
+%type <node> FTInclExclStringLiteralList
+%type <node> FTLanguageOption
+%type <node> FTMatchOption
+%type <node> FTMatchOptionProximityList
+%type <node> FTMildnot
+%type <node> FTOptionDecl
+%type <node> FTOr
+%type <node> FTOrderedIndicator
+%type <node> FTProximity
+%type <node> FTRange
+%type <node> FTRefOrList
+%type <node> FTScope
+%type <node> FTScoreVar
+%type <node> FTSelection
+%type <node> FTStemOption
+%type <node> FTStringLiteralList
+%type <node> FTThesaurusID
+%type <node> FTThesaurusList
+%type <node> FTThesaurusOption
+%type <node> FTTimes
+%type <node> FTUnaryNot
+%type <node> FTUnit
+%type <node> FTWildCardOption
+%type <node> FTWindow
+%type <node> FTWords
+%type <node> FTWordsSelection
+%type <node> FTWordsValue
+
+
+/*_____________________________________________________________________
+ *
+ *  Precedence
+ *_____________________________________________________________________*/
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [48a] FTContainsExpr ::= RangeExpr ( "ftcontains" FTSelection FTIgnoreOption? )?
+ *_____________________________________________________________________*/
+%nonassoc FTCONTAINS_REDUCE
+%left FTCONTAINS 
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [49] RangeExpr ::= AdditiveExpr ( "to" AdditiveExpr )?
+ *_____________________________________________________________________*/
+%nonassoc RANGE_REDUCE
+%nonassoc TO
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [50] AdditiveExpr ::= MultiplicativeExpr ( ("+" | "-") MultiplicativeExpr )*
+ *_____________________________________________________________________*/
+%nonassoc ADDITIVE_REDUCE
+%left PLUS MINUS
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [51] MultiplicativeExpr ::= UnionExpr ( ("*" | "div" | "idiv" | "mod") UnionExpr )*
+ *_____________________________________________________________________*/
+%nonassoc MULTIPLICATIVE_REDUCE
+%left STAR DIV IDIV MOD
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [52] UnionExpr ::= IntersectExceptExpr ( ("union" | "|") IntersectExceptExpr )*
+ *_____________________________________________________________________*/
+%nonassoc UNION_REDUCE
+%left UNION VBAR
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [53] IntersectExceptExpr ::= InstanceofExpr ( ("intersect" | "except") InstanceofExpr )*
+ *_____________________________________________________________________*/
+%nonassoc INTERSECT_EXCEPT_REDUCE
+%left INTERSECT EXCEPT
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [42a] QVarInDeclList ::= QVarInDecl ( "," "$" QVarInDeclList )*
+ *_____________________________________________________________________*/
+%nonassoc QVARINDECLLIST_REDUCE
+%left COMMA_DOLLAR 
+
+%nonassoc  UNARY_PREC
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [119] SequenceType ::= ItemType | ItemType OccurrenceIndicator
+ *_____________________________________________________________________*/
+%nonassoc SEQUENCE_TYPE_REDUCE
+%nonassoc  HOOK 
+
+/*_____________________________________________________________________
+ *
+ * resolve shift-reduce conflict for
+ * [69] RelativePathExpr ::= StepExpr (("/" | "//") StepExpr)*
+ *_____________________________________________________________________*/
+%nonassoc STEP_REDUCE
+%left SLASH SLASH_SLASH
+
 
 
 %start Module
@@ -494,7 +659,7 @@ LibraryModule :
 // [5] ModuleDecl
 // --------------
 ModuleDecl :
-		MODULE_NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
+		MODULE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
 		}
 	;
@@ -556,6 +721,9 @@ VFO_Decl :
 		VarDecl								{ $$ = $1; }
 	| FunctionDecl					{ $$ = $1; }
 	| OptionDecl						{ $$ = $1; }
+	
+	/* full-text extension */
+	| FTOptionDecl					{ $$ = $1; }
 	;
 
 
@@ -585,13 +753,13 @@ Import :
 
 // [9] Separator
 // -------------
-// (Lexical rule)
+// (= SEMI)
 
 
 // [10] NamespaceDecl
 // ------------------
 NamespaceDecl :
-		DECLARE_NAMESPACE  NCNAME  EQ  URI_LITERAL
+		DECLARE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 		}
 	;
@@ -625,6 +793,16 @@ DefaultNamespaceDecl :
 // ---------------
 OptionDecl :
 		DECLARE_OPTION  QNAME  STRING_LITERAL
+		{
+		}
+	;
+
+
+/* full-text extension */
+// [13a] OptionDecl
+// ---------------
+FTOptionDecl :
+		DECLARE_FTOPTION  QNAME  FTMatchOption
 		{
 		}
 	;
@@ -740,7 +918,7 @@ URI_LITERALList :
 // [22] SchemaPrefix
 // -----------------
 SchemaPrefix :
-		NAMESPACE  NCNAME  EQ
+		NAMESPACE  NCNAME  EQUALS
 		{
 		}
 	|	DEFAULT_ELEMENT  NAMESPACE
@@ -755,13 +933,13 @@ ModuleImport :
 		IMPORT_MODULE  URI_LITERAL 
 		{
 		}
-	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL
+	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 		}
 	|	IMPORT_MODULE  URI_LITERAL  AT  URI_LITERALList
 		{
 		}
-	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL  AT  URI_LITERALList
+	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URI_LITERALList
 		{
 		}
 	;
@@ -999,6 +1177,19 @@ VarInDecl :
 	|	VARNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
 		{
 		}
+	/* full-text extensions */
+	| VARNAME  FTScoreVar  IN  ExprSingle
+		{
+		}
+	| VARNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
+		{
+		}
+	| VARNAME  PositionalVar  FTScoreVar  IN  ExprSingle
+		{
+		}
+	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
+		{
+		}
 	;
 
 
@@ -1006,6 +1197,16 @@ VarInDecl :
 // ------------------
 PositionalVar :
 		AT  DOLLAR  VARNAME
+		{
+		}
+	;
+
+
+/* full-text extension */
+// [35a] FTScoreVar
+// ----------------
+FTScoreVar :
+		SCORE  DOLLAR  VARNAME
 		{
 		}
 	;
@@ -1026,7 +1227,7 @@ VarGetsDeclList :
 		VarGetsDecl
 		{
 		}
-	|	VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
+	|	VarGetsDeclList  COMMA_DOLLAR  VarGetsDecl
 		{
 		}
 	;
@@ -1045,6 +1246,19 @@ VarGetsDecl :
 		{
 		}
 	|	VARNAME  TypeDeclaration  PositionalVar  GETS  ExprSingle
+		{
+		}
+	/* full-text extensions */
+	| VARNAME  FTScoreVar  GETS  ExprSingle
+		{
+		}
+	| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
+		{
+		}
+	| VARNAME  PositionalVar  FTScoreVar  GETS  ExprSingle
+		{
+		}
+	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  GETS  ExprSingle
 		{
 		}
 	;
@@ -1170,10 +1384,10 @@ QuantifiedExpr :
 // [42a] QVarInDeclList
 // --------------------
 QVarInDeclList :
-		QVarInDecl
+		QVarInDecl  %prec QVARINDECLLIST_REDUCE
 		{
 		}
-	|	QVarInDeclList  COMMA  DOLLAR  QVarInDecl
+	|	QVarInDecl  COMMA_DOLLAR  QVarInDeclList
 		{
 		}
 	;
@@ -1262,91 +1476,49 @@ AndExpr :
 
 // [48] ComparisonExpr
 // -------------------
+/* replaced by full-text extension productions */
+//ComparisonExpr : RangeExpr | ValueCompExpr | GeneralCompExpr | NodeCompExpr
+
+
+
+/* full-text extension */
+//[48] ComparisonExpr
+//-------------------
 ComparisonExpr :
-		RangeExpr
+		FTContainsExpr
 		{
 		}
-	| ValueCompExpr
+	| FTContainsExpr  VALUECOMP  FTContainsExpr
 		{
 		}
-	| GeneralCompExpr
+	| FTContainsExpr  GENERALCOMP  FTContainsExpr
 		{
 		}
-	| NodeCompExpr
-		{
-		}
-	;
-
-
-// [48a] ValueCompExpr
-// -------------------
-ValueCompExpr :
-		ComparisonExpr  F_EQ  RangeExpr
-		{
-		}
-	|	ComparisonExpr  F_NE  RangeExpr
-		{
-		}
-	|	ComparisonExpr  F_LT  RangeExpr
-		{
-		}
-	|	ComparisonExpr  F_LE  RangeExpr
-		{
-		}
-	|	ComparisonExpr  F_GT  RangeExpr
-		{
-		}
-	|	ComparisonExpr  F_GE  RangeExpr
+	| FTContainsExpr  NODECOMP  FTContainsExpr
 		{
 		}
 	;
 
 
-// [48b] GeneralCompExpr
-// ---------------------
-GeneralCompExpr :
-		ComparisonExpr  EQ  RangeExpr
+//[48a] FTContainsExpr
+//-------------------
+FTContainsExpr :
+		RangeExpr  %prec FTCONTAINS_REDUCE
 		{
 		}
-	|	ComparisonExpr  NE  RangeExpr
+	|	RangeExpr  FTCONTAINS  FTSelection 
 		{
 		}
-	|	ComparisonExpr  LT  RangeExpr
-		{
-		}
-	|	ComparisonExpr  LE  RangeExpr
-		{
-		}
-	|	ComparisonExpr  GT  RangeExpr
-		{
-		}
-	|	ComparisonExpr  GE  RangeExpr
+	|	RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
 		{
 		}
 	;
-
-
-// [48c] NodeComp
-// --------------
-NodeCompExpr :
-		ComparisonExpr  IS  RangeExpr
-		{
-		}
-	|	ComparisonExpr  PRECEDES  RangeExpr
-		{
-		}
-	| ComparisonExpr  FOLLOWS  RangeExpr
-		{
-		}
-	;
-
-
 
 
 // [49] RangeExpr
 // --------------
 RangeExpr :
-		AdditiveExpr
+		AdditiveExpr  %prec RANGE_REDUCE
 		{
 		}
 	|	AdditiveExpr  TO  AdditiveExpr
@@ -1358,7 +1530,7 @@ RangeExpr :
 // [50] AdditiveExpr
 // -----------------
 AdditiveExpr :
-		MultiplicativeExpr
+		MultiplicativeExpr  %prec ADDITIVE_REDUCE
 		{
 		}
 	|	AdditiveExpr  PLUS  MultiplicativeExpr
@@ -1373,7 +1545,7 @@ AdditiveExpr :
 // [51] MultiplicativeExpr
 // -----------------------
 MultiplicativeExpr :
-		UnionExpr
+		UnionExpr  %prec MULTIPLICATIVE_REDUCE
 		{
 		}
 	|	MultiplicativeExpr  STAR  UnionExpr
@@ -1394,7 +1566,7 @@ MultiplicativeExpr :
 // [52] UnionExpr
 // --------------
 UnionExpr :
-		IntersectExceptExpr
+		IntersectExceptExpr  %prec UNION_REDUCE
 		{
 		}
 	|	UnionExpr  UNION  IntersectExceptExpr
@@ -1409,7 +1581,7 @@ UnionExpr :
 // [53] IntersectExceptExpr
 // ------------------------
 IntersectExceptExpr :
-		InstanceofExpr
+		InstanceofExpr  %prec INTERSECT_EXCEPT_REDUCE
 		{
 		}
 	|	IntersectExceptExpr  INTERSECT  InstanceofExpr
@@ -1517,15 +1689,15 @@ ValueExpr :
 
 // [60] GeneralComp
 // ----------------
-/* folded into [48b] */
+/* lexical rule */
 
 // [61] ValueComp
 // --------------
-/* folded into [48a] */
+/* lexical rule */
 
 // [62] NodeComp
 // -------------
-/* folded into [48c] */
+/* lexical rule */
 
 
 
@@ -1621,13 +1793,13 @@ PathExpr :
 // [68] RelativePathExpr
 // ---------------------
 RelativePathExpr :
-		StepExpr
+		StepExpr  %prec STEP_REDUCE
 		{
 		}
-	|	RelativePathExpr SLASH  StepExpr
+	|	StepExpr  SLASH  RelativePathExpr 
 		{
 		}
-	|	RelativePathExpr SLASH_SLASH  StepExpr
+	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
 		}
 	;
@@ -1648,7 +1820,13 @@ StepExpr :
 // [70] AxisStep
 // -------------
 AxisStep :
-		ForwardStep  PredicateList
+		ForwardStep 
+		{
+		}
+	|	ForwardStep  PredicateList
+		{
+		}
+	|	ReverseStep
 		{
 		}
 	|	ReverseStep  PredicateList
@@ -1924,7 +2102,7 @@ UnorderedExpr :
 // [91] FunctionCall
 // -----------------
 FunctionCall :
-		QNAME  LPAR  ArgList  RPAR 	/* gn: parensXQ */
+		QNAME_LPAR  ArgList  RPAR 	/* gn: parensXQ */
 		{
 		}
 				/* gn: reserved-function-namesXQ */
@@ -1976,7 +2154,7 @@ DirElemConstructor :
 		START_TAG  QNAME  DirAttributeList SGT /* ws: explicitXQ */
 		{
 		}
-	|	START_TAG  QNAME  DirAttributeList GT  DirElemContentList  LTS  QNAME  GT
+	|	START_TAG  QNAME  DirAttributeList END_TAG  DirElemContentList  LTS  QNAME  END_TAG 
 		{
 		}
 			/* ws: explicitXQ */
@@ -2011,7 +2189,7 @@ DirAttributeList :
 // [95a] DirAttr
 // -------------
 DirAttr :
-		QNAME  EQ  DirAttributeValue 	/* ws: explicitXQ */
+		QNAME  EQUALS  DirAttributeValue 	/* ws: explicitXQ */
 		{
 		}
 	;
@@ -2311,7 +2489,7 @@ TypeDeclaration :
 // [117] SequenceType
 // ------------------
 SequenceType :
-		ItemType
+		ItemType  %prec SEQUENCE_TYPE_REDUCE
 		{
 		}
 	|	ItemType OccurrenceIndicator
@@ -2601,7 +2779,7 @@ TypeName :
 
 /*_______________________________________________________________________
  *                                                                       *
- *  Update grammar                                                       *
+ *  Update productions                                                   *
  *  [http://www.w3.org/TR/xqupdate/]                                     *
  *                                                                       *
  *_______________________________________________________________________*/
@@ -2701,6 +2879,519 @@ VarNameList :
 		{
 		}
 	;
+
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  Full-text productions                                                *
+ *  [http://www.w3.org/TR/xqupdate/]                                     *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+
+//[344] FTSelection
+//-----------------
+FTSelection :
+		FTOr
+		{
+		}
+	|	FTOr  FTMatchOptionProximityList
+		{
+		}
+	|	FTOr  WEIGHT  RangeExpr
+		{
+		}
+	|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
+		{
+		}
+	;
+
+
+//[344a] FTMatchOptionProximityList
+//---------------------------------
+FTMatchOptionProximityList :
+		FTMatchOption
+		{
+		}
+	| FTProximity
+		{
+		}
+	| FTMatchOptionProximityList  FTMatchOption
+		{
+		}
+	| FTMatchOptionProximityList  FTProximity
+		{
+		}
+	;
+
+
+//[345]	FTOr
+//----------
+FTOr :
+		FTAnd
+		{
+		}
+	|	FTOr  FTOR  FTAnd
+		{
+		}
+	;
+
+
+//[346]	FTAnd
+//-----------
+FTAnd :
+		FTMildnot
+		{
+		}
+	|	FTAnd  FTAND  FTMildnot
+		{
+		}
+	;
+
+
+//[347]	FTMildnot
+//---------------
+FTMildnot :
+		FTUnaryNot
+		{
+		}
+	|	FTMildnot  NOT_IN  FTUnaryNot
+		{
+		}
+	;
+
+
+//[348]	FTUnaryNot
+//----------------
+FTUnaryNot :
+		FTWordsSelection
+		{
+		}
+	|	FTNOT  FTWordsSelection
+		{
+		}
+	;
+
+
+//[349]	FTWordsSelection
+//----------------------
+FTWordsSelection :
+		FTWords
+		{
+		}
+	|	FTWords FTTimes
+		{
+		}
+	| LPAR  FTSelection  RPAR
+		{
+		}
+	;
+
+
+//[350]	FTWords
+//-------------
+FTWords :
+		FTWordsValue 
+		{
+		}
+	|	FTWordsValue  FTAnyallOption
+		{
+		}
+	;
+
+
+//[351]	FTWordsValue
+//------------------
+FTWordsValue :
+		Literal
+		{
+		}
+	| LBRACE  Expr  RBRACE
+		{
+		}
+	;
+
+
+//[352]	FTProximity
+//-----------------
+FTProximity :
+		FTOrderedIndicator
+		{
+		}
+	| FTWindow
+		{
+		}
+	| FTDistance
+		{
+		}
+	| FTScope
+		{
+		}
+	| FTContent
+		{
+		}
+	;
+
+
+//[353]	FTOrderedIndicator
+//------------------------
+FTOrderedIndicator :
+		ORDERED
+		{
+		}
+	;
+
+
+//[354] FTMatchOption 	
+//-------------------
+FTMatchOption :
+		FTCaseOption
+		{
+		}
+	| FTDiacriticsOption
+		{
+		}
+	| FTStemOption
+		{
+		}
+	| FTThesaurusOption
+		{
+		}
+	| FTStopwordOption
+		{
+		}
+	| FTLanguageOption
+		{
+		}
+	| FTWildCardOption
+		{
+		}
+	;
+
+
+//[355] FTCaseOption
+//------------------
+FTCaseOption :
+		LOWERCASE
+		{
+		}
+	| UPPERCASE
+		{
+		}
+	| CASE_SENSITIVE
+		{
+		}
+	| CASE_INSENSITIVE
+		{
+		}
+	;
+
+
+//[356] FTDiacriticsOption
+//------------------------
+FTDiacriticsOption :
+		WITH_DIACRITICS
+		{
+		}
+	| WITHOUT_DIACRITICS
+		{
+		}
+	| DIACRITICS_SENSITIVE
+		{
+		}
+	| DIACRITICS_INSENSITIVE
+		{
+		}
+	;
+
+
+//[357] FTStemOption
+//------------------
+FTStemOption :
+		WITH_STEMMING
+		{
+		}
+	| WITHOUT_STEMMING
+		{
+		}
+	;
+
+
+//[358] FTThesaurusOption
+//-----------------------
+FTThesaurusOption :
+		WITH_THESAURUS  FTThesaurusID
+		{
+		}
+	|	WITH_THESAURUS  DEFAULT
+		{
+		}
+	| WITH_THESAURUS  LPAR  FTThesaurusID  RPAR
+		{
+		}
+	| WITH_THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
+		{
+		}
+	| WITH_THESAURUS  LPAR  DEFAULT  RPAR
+		{
+		}
+	| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
+		{
+		}
+	| WITHOUT_THESAURUS
+		{
+		}
+	;
+
+
+//[358a] FTThesaurusIDList
+//------------------------
+FTThesaurusList :
+		FTThesaurusID
+		{
+		}
+	| FTThesaurusList  COMMA  FTThesaurusID
+		{
+		}
+	;
+
+
+//[359] FTThesaurusID
+//-------------------
+FTThesaurusID :
+		AT  STRING_LITERAL
+		{
+		}
+	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
+		{
+		}
+	|	AT  STRING_LITERAL  FTRange  LEVELS
+		{
+		}
+	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
+		{
+		}
+	;
+
+
+//[360] FTStopwordOption
+//----------------------
+FTStopwordOption :
+		WITH_STOP_WORDS  FTRefOrList
+		{
+		}
+		WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
+		{
+		}
+	| WITH_DEFAULT_STOP_WORDS 
+		{
+		}
+	| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
+		{
+		}
+	| WITHOUT_STOP_WORDS
+		{
+		}
+	;
+
+
+//[360a] FTInclExclStringLiteralList
+//----------------------------------
+FTInclExclStringLiteralList :
+		FTInclExclStringLiteral
+		{
+		}
+	| FTInclExclStringLiteralList  FTInclExclStringLiteral
+		{
+		}
+	;
+
+
+//[361] FTRefOrList
+//-----------------
+FTRefOrList :
+		AT  STRING_LITERAL
+		{
+		}
+	| LPAR  FTStringLiteralList  RPAR 
+		{
+		}
+	;
+
+
+//[361a] FTStringLiteralList
+//--------------------------
+FTStringLiteralList :
+		STRING_LITERAL
+		{
+		}
+	|	FTStringLiteralList  STRING_LITERAL
+		{
+		}
+	;
+
+
+//[362] FTInclExclStringLiteral
+//-----------------------------
+FTInclExclStringLiteral :
+		UNION  FTRefOrList
+		{
+		}
+	|	EXCEPT  FTRefOrList
+		{
+		}
+	;
+
+
+//[363] FTLanguageOption
+//----------------------
+FTLanguageOption :
+		LANGUAGE  STRING_LITERAL
+		{
+		}
+	;
+
+
+//[364] FTWildCardOption
+//----------------------
+FTWildCardOption :
+		WITH_WILDCARDS
+		{
+		}
+	| WITHOUT_WILDCARDS
+		{
+		}
+	;
+
+
+//[365]	FTContent
+//---------------
+FTContent :
+		AT_START
+		{
+		}
+	| AT_END
+		{
+		}
+	| ENTIRE_CONTENT
+		{
+		}
+	;
+
+
+//[366]	FTAnyallOption
+//--------------------
+FTAnyallOption :
+		ANY
+		{
+		}
+	|	ANY_WORD
+		{
+		}
+	| ALL
+		{
+		}
+	| ALL_WORDS
+		{
+		}
+	| PHRASE
+		{
+		}
+	;
+
+
+//[367]	FTRange
+//-------------
+FTRange :
+		EXACTLY  UnionExpr
+		{
+		}
+	| AT_LEAST  UnionExpr
+		{
+		}
+	| AT_MOST  UnionExpr
+		{
+		}
+	| FROM  UnionExpr  TO  UnionExpr
+		{
+		}
+	;
+
+
+//[368]	FTDistance
+//----------------
+FTDistance :
+		DISTANCE  FTRange  FTUnit
+		{
+		}
+	;
+
+
+//[369]	FTWindow
+//--------------
+FTWindow :
+		WINDOW  UnionExpr  FTUnit
+		{
+		}
+	;
+
+
+//[370]	FTTimes
+//-------------
+FTTimes :
+		OCCURS  FTRange  TIMES
+		{
+		}
+	;
+
+
+//[371]	FTScope
+//-------------
+FTScope :
+		SAME  FTBigUnit
+		{
+		}
+	|	DIFFERENT  FTBigUnit
+		{
+		}
+	;
+
+
+//[372]	FTUnit
+//------------
+FTUnit :
+		WORDS
+		{
+		}
+	| SENTENCES
+		{
+		}
+	| PARAGRAPH
+		{
+		}
+	;
+
+
+//[373]	FTBigUnit
+//---------------
+FTBigUnit :
+		SENTENCE
+		{
+		}
+	| PARAGRAPH
+		{
+		}
+	;
+
+
+//[374]	FTIgnoreOption
+//--------------------
+FTIgnoreOption :
+		WITHOUT_CONTENT  UnionExpr
+		{
+		}
+	;
+
 
 
 
