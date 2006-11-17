@@ -33,8 +33,9 @@ int main(int argc, char* argv[])
 
 	tokenbuf::token_iterator it = tokbuf.begin();
 	for (; it!=tokbuf.end(); ++it) {
-  	string term  = *it;
-  	string delim = it.get_delim();
+  	string const& term  = *it;
+		cout << "term = " << term << endl;
+  	string const& delim = it.get_delim();
 
   	vector<string>::const_iterator it = termv.begin();
 		bool hit = false;

@@ -33,30 +33,36 @@ tokenbuf::~tokenbuf()
 
 tokenbuf::token_iterator tokenbuf::begin()
 {
-	return tokenbuf::token_iterator(this);
+	return tokenbuf::token_iterator(this,0);
 }
 
 
 tokenbuf::token_iterator tokenbuf::end()
 {
-	return tokenbuf::token_iterator(this);
+	return tokenbuf::token_iterator(this,txtlen);
 }
 
 
 tokenbuf::token_iterator::token_iterator(
-	tokenbuf const* _buf_p)
+	tokenbuf const* _buf_p,
+	uint32_t offset)
 :
 	buf_p(_buf_p),
+	next_token(""),
+	next_delim(""),
 	return_val_p(NULL),
-	cursor(0),
-	token_index(0),
-	delim_index(0),
+	cursor(offset),
+	token_index(offset),
+	delim_index(offset),
 	token_length(0),
 	delim_length(0),
 	token_parity(false)
 {
-	// if not returning delimiters, scan past leading delims
-	if (!buf_p->return_delims) cursor += strspn(buf_p->txt,buf_p->delimset);
+	if (!buf_p->return_delims) {
+		// scan past leading delims
+		cursor += strspn(buf_p->txt+offset,buf_p->delimset);
+	}
+	++(*this);
 }
 
 
@@ -84,6 +90,7 @@ void tokenbuf::token_iterator::operator++()
 	token_index = cursor;
   for (; cursor<buf_p->txtlen; ++cursor) {
 		c = buf_p->txt[cursor];
+		cout << "c = " << c << endl;	//XXX DEBUG
     if (buf_p->lowercase && 'A'<=c && c<='Z') c |= 0x20;
 		match = false;
     for (uint32_t i=0; i<buf_p->delimsetlen; ++i) {
@@ -94,6 +101,7 @@ void tokenbuf::token_iterator::operator++()
     next_token += c;
   }
 	token_length = cursor - token_index - 1;
+	cout << "token_length = " << token_length << endl;	//XXX DEBUG
 
 	// find the next delim
 	next_delim.clear();
@@ -101,6 +109,7 @@ void tokenbuf::token_iterator::operator++()
 	delim_index = cursor-1;
   for (; cursor<buf_p->txtlen; ++cursor) {
     c = buf_p->txt[cursor];
+		cout << "c = " << c << endl;	//XXX DEBUG
     match = false;
     for (uint32_t i=0; i<buf_p->delimsetlen; ++i) {
 			// { Exists(d in D) : d==c }
@@ -110,6 +119,7 @@ void tokenbuf::token_iterator::operator++()
 		next_delim += c;
   }
 	delim_length = cursor - delim_index;
+	cout << "delim_length = " << delim_length << endl;	//XXX DEBUG
   return_val_p = &next_token;
 }
 

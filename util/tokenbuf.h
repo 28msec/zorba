@@ -57,7 +57,7 @@ public:	// iterators
 		bool token_parity;			// 0 => delim, 1 => token
 	
 	public:	// ctor,dtor
-		token_iterator(tokenbuf const* buf_p);
+		token_iterator(tokenbuf const* buf_p, uint32_t offset);
 		~token_iterator();
 	
 	public:	// iterator interface
