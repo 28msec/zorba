@@ -114,6 +114,15 @@ void tokenbuf::token_iterator::operator++()
 }
 
 
+bool operator!=(
+	tokenbuf::token_iterator const& x,
+	tokenbuf::token_iterator const& y)
+{
+	if (x.buf_p != y.buf_p) return true;
+	if (x.cursor != y.cursor) return true;
+	return false;
+}
+
 
 }	/* namespace xqp */
 

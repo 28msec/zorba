@@ -70,6 +70,8 @@ public:	// iterators
 		inline uint32_t get_delim_pos() const { return delim_index; }
 		inline uint32_t get_delim_len() const { return delim_length; }
 		std::string& get_delim() { return next_delim; }	// return delim defining token
+
+		friend bool operator!=(token_iterator const& x, token_iterator const& y);
 	};
 
 public:
@@ -77,6 +79,7 @@ public:
 	token_iterator end();
 
 };
+
 
 
 }	/* namespace xqp */
