@@ -16,6 +16,11 @@
 using namespace std;
 using namespace xqp;
 
+
+/*______________________________________________________________________
+		This unit test simulates the highlighting of a block of text
+		for a list of 1,2,3, or 4 input keywords.
+	______________________________________________________________________*/
 int main(int argc, char* argv[])
 {
 	ostringstream oss;
@@ -32,7 +37,8 @@ int main(int argc, char* argv[])
 	tokbuf.set_return_delims(false);
 
 	tokenbuf::token_iterator it = tokbuf.begin();
-	for (; it!=tokbuf.end(); ++it) {
+	tokenbuf::token_iterator end = tokbuf.end();
+	for (; it!=end; ++it) {
   	string const& term  = *it;
 		cout << "term = " << term << endl;
   	string const& delim = it.get_delim();
@@ -53,63 +59,3 @@ int main(int argc, char* argv[])
  	cout << oss.str() << endl;
 }
 
-
-/*
-int main(int argc, char* argv[])
-{
-	const char* s1 = " this is  a   sentence.--,all  about children, and other,fuzzy - creatures.";
-	const char* s2 = "this sentence is all about           children";
-	const char* s3 = "a   sentence all about children.";
-	const char* s4 = "children are all   over   this  sentence";
-
-	cout << "          1         2         3         4         5         6         7         \n";
-	cout << "01234567890123456789012345678901234567890123456789012345678901234567890123456789\n" ;
-	cout << s1 << "\n\n";
-
-	km::tokenizer t(s1," ,-.",true);
-	while (t.hasMoreTokens()) {
-		string& s = t.nextToken();
-		if (s.length()==0) continue;
-		cout	<< s << "[("
-					<< t.getTokenPos() << ","
-					<< t.getTokenLen() << "), ("
-					<< t.getDelimPos() << ","
-					<< t.getDelimLen() << ")]"
-					<< endl;
-	}
-
-	cout << "-----------------\n";
-	km::tokenizer t0(s1," ,-.",false);
-	while (t0.hasMoreTokens()) {
-		cout << t0.nextToken()
-				 << " : "
-				 << t0.getNextDelim() << endl;
-	}
-
-	cout << "-----------------\n";
-	t.init(s2," ");
-	while (t.hasMoreTokens()) {
-		cout << t.nextToken() << " : " << t.getNextDelim() << endl;
-	}
-
-	cout << "-----------------\n";
-	t.init(s3, " .");
-	while (t.hasMoreTokens()) {
-		cout << t.nextToken() << " : " << t.getNextDelim() << endl;
-	}
-
-	cout << "-----------------\n";
-	t.init(s4, " ");
-	while (t.hasMoreTokens()) {
-		cout << t.nextToken() << " : " << t.getNextDelim() << endl;
-	}
-
-	cout << "=====================================================\n";
-	string arg = "training";
-	km::tokenizer ttok(arg.c_str(), "+", false);
-	while (ttok.hasMoreTokens()) {
-		cout << "ttok.nextToken() = " << ttok.nextToken() << endl;
-	}
-	
-}
-*/

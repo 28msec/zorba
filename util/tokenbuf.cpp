@@ -8,7 +8,6 @@
 
 #include "tokenbuf.h"
 
-
 using namespace std;
 namespace xqp {
 
@@ -17,11 +16,12 @@ tokenbuf::tokenbuf(
 	char const* _txt,
 	char const* _delimset)
 :
-	txt(_txt),
-	txtlen(strlen(txt)),
-	delimset(_delimset),
-	delimsetlen(strlen(delimset)),
-	lowercase(false)
+	txt(_txt),											// target text
+	txtlen(strlen(txt)),						// length of target text array
+	delimset(_delimset),						// list of character delimiters
+	delimsetlen(strlen(delimset)),	// length of delimset
+	lowercase(false),								// true => return lower-case tokens
+	return_delims(false)						// true => return: token,delim,token,delim,...
 {
 }
 
@@ -47,20 +47,20 @@ tokenbuf::token_iterator::token_iterator(
 	tokenbuf const* _buf_p,
 	uint32_t offset)
 :
-	buf_p(_buf_p),
-	next_token(""),
-	next_delim(""),
-	return_val_p(NULL),
-	cursor(offset),
-	token_index(offset),
-	delim_index(offset),
-	token_length(0),
-	delim_length(0),
-	token_parity(false)
+	buf_p(_buf_p),					// parent tokenbuf
+	next_token(""),					// returned token
+	next_delim(""),					// returned delimiter
+	return_val_p(NULL),			// either &next_token or &next_delim
+	cursor(offset),					// cursor into buf_p->txt
+	token_index(offset),		// position of current token
+	delim_index(offset),		// position of current delimiter
+	token_length(0),				// length of current token
+	delim_length(0),				// length of current delimiter
+	token_parity(false)			// 0 => delim, 1 => token
 {
 	if (!buf_p->return_delims) {
-		// scan past leading delims
 		cursor += strspn(buf_p->txt+offset,buf_p->delimset);
+		// (i.e.) scan past leading delims
 	}
 	++(*this);
 }
@@ -94,10 +94,10 @@ void tokenbuf::token_iterator::operator++()
     if (buf_p->lowercase && 'A'<=c && c<='Z') c |= 0x20;
 		match = false;
     for (uint32_t i=0; i<buf_p->delimsetlen; ++i) {
-			// { Exist(d in D) : d==c }
+			// check:  Exist(d in D) ( d==c )
       if (c==buf_p->delimset[i]) { match = true; break; }
     }
-		if (match) { ++cursor;  break; } 	// must! maintain invariant on 'cursor'
+		if (match) { ++cursor;  break; } 	// must maintain invariant on 'cursor'
     next_token += c;
   }
 	token_length = cursor - token_index - 1;
@@ -112,7 +112,7 @@ void tokenbuf::token_iterator::operator++()
 		cout << "c = " << c << endl;	//XXX DEBUG
     match = false;
     for (uint32_t i=0; i<buf_p->delimsetlen; ++i) {
-			// { Exists(d in D) : d==c }
+			// check:  Exists(d in D) ( d==c )
      	if (c==buf_p->delimset[i]) { match = true; break; }
    	}
     if (!match) break;
@@ -130,6 +130,8 @@ bool operator!=(
 {
 	if (x.buf_p != y.buf_p) return true;
 	if (x.cursor != y.cursor) return true;
+	if (x.token_index != y.token_index) return true;
+	if (x.delim_index != y.delim_index) return true;
 	return false;
 }
 

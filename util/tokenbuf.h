@@ -6,16 +6,18 @@
  *
  */
 
-#include <iostream>
-
 #ifndef XQP_TOKENBUF_H
 #define XQP_TOKENBUF_H
 
-#include <string>
 #include <iostream>
+#include <string>
 
 namespace xqp {
 
+/*______________________________________________________________________
+		
+		Tokenized string buffer datamodel interface.
+	______________________________________________________________________*/
 
 class tokenbuf
 {
