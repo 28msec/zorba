@@ -90,7 +90,6 @@ void tokenbuf::token_iterator::operator++()
 	token_index = cursor;
   for (; cursor<buf_p->txtlen; ++cursor) {
 		c = buf_p->txt[cursor];
-		cout << "c = " << c << endl;	//XXX DEBUG
     if (buf_p->lowercase && 'A'<=c && c<='Z') c |= 0x20;
 		match = false;
     for (uint32_t i=0; i<buf_p->delimsetlen; ++i) {
@@ -101,7 +100,6 @@ void tokenbuf::token_iterator::operator++()
     next_token += c;
   }
 	token_length = cursor - token_index - 1;
-	cout << "token_length = " << token_length << endl;	//XXX DEBUG
 
 	// find the next delim
 	next_delim.clear();
@@ -109,7 +107,6 @@ void tokenbuf::token_iterator::operator++()
 	delim_index = cursor-1;
   for (; cursor<buf_p->txtlen; ++cursor) {
     c = buf_p->txt[cursor];
-		cout << "c = " << c << endl;	//XXX DEBUG
     match = false;
     for (uint32_t i=0; i<buf_p->delimsetlen; ++i) {
 			// check:  Exists(d in D) ( d==c )
@@ -119,7 +116,6 @@ void tokenbuf::token_iterator::operator++()
 		next_delim += c;
   }
 	delim_length = cursor - delim_index;
-	cout << "delim_length = " << delim_length << endl;	//XXX DEBUG
   return_val_p = &next_token;
 }
 
