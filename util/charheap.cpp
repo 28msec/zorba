@@ -25,9 +25,71 @@ namespace xqp {
 	cerr << __FUNCTION__ << oerr.str(); \
 	throw xqpexception(__FUNCTION__, oerr.str());
 
+// iterator implementations
 
-charheap::charheap(uint32_t initial_size)
-: data(new char[initial_size]),
+charheap::charheap_iterator::charheap_iterator(
+	charheap * ch,
+	uint32_t initial_offset) 
+:
+	_begin(ch->data + initial_offset),
+	_end(ch->data + ch->size()),
+	current((char*)_begin),
+	parent(ch)
+{
+}
+
+
+charheap::charheap_iterator::~charheap_iterator()
+{
+}
+
+
+char const* charheap::charheap_iterator::operator++()
+{
+	uint32_t len = strlen(current);
+	char const* result = current;
+	current += (len+1);
+	return result;
+}
+
+
+char const* charheap::charheap_iterator::operator*() const
+{
+	return current;
+}
+
+
+bool operator!=(charheap::charheap_iterator const& x,
+                charheap::charheap_iterator const& y)
+{
+	if (x.parent!=y.parent) return true;
+	if (x.current!=y.current) return true;
+	return false;
+}
+
+
+
+// charheap implementations
+
+/*______________________________________________________________________
+
+	The first sizeoff(off_t) bytes contain an offset to the first
+	unused byte of the memory-mapped array.  The eofoff points to
+	the end of the allocated array.  No need to store the eofoff
+	since it can be computed from the backing file size.
+
+        eofoff __________________________________________
+                                                         |
+        offset ______________________                    |
+                                     v                   v
+  heap: [s1,0,s2,0,...          sk,0| ..unused..        ]
+         
+	______________________________________________________________________*/
+
+charheap::charheap(
+	uint32_t initial_size)
+:
+	data(new char[initial_size]),
 	eofoff(initial_size),
 	offset(0)
 {
@@ -40,8 +102,36 @@ charheap::~charheap()
 }
 
 
-off_t charheap::put(
-// return the target offset
+/*
+**
+**  end _______________________________ 
+**  begin __                           |
+**          v                          v
+**  heap: [s1,0,s2,0,...          sk,0| ..unused..        ]
+**
+*/
+charheap::charheap_iterator charheap::begin()
+{
+	return charheap_iterator(this,0);
+}
+
+
+/*
+**
+**  end _______________________________ 
+**  begin _____________________________|
+**                                     v
+**  heap: [s1,0,s2,0,...          sk,0| ..unused..        ]
+**
+*/
+charheap::charheap_iterator charheap::end()
+{
+	return charheap_iterator(this,offset);
+}
+
+
+
+off_t charheap::put(			// return the target offset
   const char* buf,      	// buffer containing segment to put
   uint32_t seg_offset,  	// starting offset of segment in buffer
   uint32_t seg_len)      	// length of segment 

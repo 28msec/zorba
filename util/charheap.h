@@ -20,67 +20,50 @@ namespace xqp {
 
 class charheap
 {
-public:  // iterator types
-	/**
-	 *	charheap iterator interface	
-	 */
-  typedef class heap_iterator
+
+public:  // iterator 
+
+  typedef class charheap_iterator
   {
-    const char* _begin;
-    const char* _end;
-    char* current;
-    charheap* parent;
+    char const* _begin;
+    char const* _end;
+    char * current;
+    charheap const* parent;
 
-  public:
-    heap_iterator(charheap* p) 
-    : _begin(&p->data[8]),
-      _end(&p->data[p->size()]),
-      current((char*)_begin),
-      parent(p)
-    {
-    }
-    ~heap_iterator() { }
+  public:	// ctor,dtor
+    charheap_iterator(charheap * ch, uint32_t initial_offset);
+    ~charheap_iterator();
 
-    const char* operator++() {
-      uint32_t len = strlen(current);
-      const char* result = current;
-      current += (len+1);
-      return result;
-    }
-    const char* operator*() const {
-      return current;
-    }
-    bool done() const {
-      return current>=_end;
-    }
+	public:	// iterator interface
+    char const* operator++();
+    char const* operator*() const;
+
+		friend bool operator!=(charheap_iterator const&, charheap_iterator const&);
+
   } const_iterator;
 
-public:  // state
-	char* data;
+	const_iterator begin();
+	const_iterator end();
+
+
+public:	// state
+	char * data;
   off_t eofoff;        // offset to eof = data array sentinel
   off_t offset;        // offset to first free byte
 
-public:	
-	/**
-	 *	Create a new charheap of a given capacity.
-	 */
+public:	// ctor,dtor
   charheap(uint32_t initial_size);
-
-	/**
-	 *	Deallocate array and destroy the charheap.
-	 */
   ~charheap();
 
 public:  // heap interface
-
 	/**
 	 *	Get a block of bytes, placing into given output array.
 	 */
   void get(
-    off_t id,               // byte id
-    char* seg_buf,          // buffer into which to place block
-    uint32_t seg_offset,    // offset for segment into buffer
-    uint32_t seg_maxlen)    // maximum output size, truncate if larger
+    off_t id,								// byte id
+    char * seg_buf,					// buffer into which to place block
+    uint32_t seg_offset,		// offset for segment into buffer
+    uint32_t seg_maxlen)		// maximum output size, truncate if larger
   const
 	throw (xqp::xqpexception);
 
@@ -91,9 +74,9 @@ public:  // heap interface
    *	@note occasionally expensive, doubling the heap if needed.
 	 */
   off_t put(
-    const char* buf,        // buffer containing segment to put
-    uint32_t seg_offset,    // starting offset of segment in buffer
-    uint32_t seg_len) 	     // length of segment
+    char const* buf,				// buffer containing segment to put
+    uint32_t seg_offset,		// starting offset of segment in buffer
+    uint32_t seg_len)				// length of segment
 	throw (xqp::xqpexception);
 
 	/**
@@ -101,7 +84,7 @@ public:  // heap interface
 	 */
   void replace(
 		off_t id,								// offset to heap (replace location)
-    const char* buf,        // buffer containing segment to put
+    char const* buf,        // buffer containing segment to put
     uint32_t seg_offset,    // starting offset of segment in buffer
     uint32_t seg_len)       // length of segment
 	throw (xqp::xqpexception);
@@ -138,16 +121,6 @@ public:
    *	@return current heap size in bytes
 	 */
   uint64_t size() const { return offset; }
-
-	/**
-   *	Return the heap iterator.
-	 *
-	 *	@return heap_iterator for this heap
-	 */
-  const_iterator iterator()
-	{
-		return heap_iterator(this);
-	}
 
 };
 

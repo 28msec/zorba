@@ -64,8 +64,9 @@ int main(int argc, char* argv[])
       }
       else if (cmd=="(iter") {
         unsigned k = 0;
-        charheap::heap_iterator it = heap.iterator();
-        for (; !it.done(); ++it) {
+        charheap::charheap_iterator it = heap.begin();
+        charheap::charheap_iterator end = heap.end();
+        for (; it!=end; ++it) {
           cout << "["<<(k++)<<"] = " << *it << endl;
         }
       }
