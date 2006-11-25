@@ -1,12 +1,12 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: mmutil_test.cpp,v 1.1 2006/10/09 07:07:58 Paul Pedersen Exp $
+ *  $Id: mmfile_test.cpp,v 1.1 2006/10/09 07:07:58 Paul Pedersen Exp $
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
  */
 
-#include "mmutil.h"
+#include "mmfile.h"
 
 #include <iostream>
 
@@ -19,7 +19,7 @@ using namespace xqp;
 int main(int argc, char* argv[])
 {
   try {
-    mmutil v(argv[1], 10);
+    mmfile v(argv[1], 10);
 		string cmdline, cmd, arg1, arg2;
 
     // command loop

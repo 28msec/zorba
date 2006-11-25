@@ -1,12 +1,12 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: mmutil.cpp,v 1.2 2006/10/22 01:32:22 Paul Pedersen Exp $
+ *  $Id: mmfile.cpp,v 1.2 2006/10/22 01:32:22 Paul Pedersen Exp $
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
  */
 
-#include "mmutil.h"
+#include "mmfile.h"
 
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -27,7 +27,7 @@ namespace xqp {
 	throw xqpexception(__FUNCTION__, oerr.str());
 
 
-mmutil::mmutil(
+mmfile::mmfile(
 	const string& _path,
 	uint32_t _depth)
 :
@@ -38,14 +38,14 @@ mmutil::mmutil(
 }
 
 
-mmutil::~mmutil()
+mmfile::~mmfile()
 {
 	unmap();
 	close(fd);
 }
 
 
-void mmutil::reopen()
+void mmfile::reopen()
 {
   // open the backing file
   fd = open(path.c_str(), O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
@@ -81,7 +81,7 @@ void mmutil::reopen()
 }
 
 
-void mmutil::initialize(uint32_t depth)
+void mmfile::initialize(uint32_t depth)
 {
 	// position to eof
   if (lseek(fd, 4095, SEEK_END)==-1) { // 4096 - 1
@@ -107,19 +107,19 @@ void mmutil::initialize(uint32_t depth)
 }
 
 
-void mmutil::fill(char initval)
+void mmfile::fill(char initval)
 {
 #ifdef DEBUG
-  cout << "mmutil::fill(eofoff=" << eofoff <<" )\n";
+  cout << "mmfile::fill(eofoff=" << eofoff <<" )\n";
 #endif
   memset(data, initval, eofoff);
 }
 
 
-void mmutil::double_array(bool init)
+void mmfile::double_array(bool init)
 {
 #ifdef DEBUG
-  cout << "mmutil::double_array\n";
+  cout << "mmfile::double_array\n";
   cout << "eofoff = " << eofoff << endl;
 #endif
 
@@ -158,7 +158,7 @@ cout << "  eof => " << statbuf.st_size << endl;
 }
 
 
-void mmutil::unmap()
+void mmfile::unmap()
 {
   if (msync(data, eofoff, 0)==-1) {
 		IOERROR("msync failed");
@@ -169,7 +169,7 @@ void mmutil::unmap()
 }
 
 
-void mmutil::renam(const string& new_path)
+void mmfile::renam(const string& new_path)
 {
   int res = rename(path.c_str(), new_path.c_str());
   if (res==-1) {

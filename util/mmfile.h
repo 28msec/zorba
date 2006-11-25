@@ -1,13 +1,13 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: mmutil.h,v 1.2 2006/10/22 01:32:22 Paul Pedersen Exp $
+ *  $Id: mmfile.h,v 1.2 2006/10/22 01:32:22 Paul Pedersen Exp $
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
  */
 
-#ifndef XQP_MMUTIL_H
-#define XQP_MMUTIL_H
+#ifndef XQP_MMFILE_H
+#define XQP_MMFILE_H
 
 #include <string>
 #include "xqpexception.h"
@@ -19,7 +19,7 @@ namespace xqp {
 |  Memory-mapping utilities
 |______________________________________________________________*/
 
-class mmutil
+class mmfile
 {
 public:  // state
   std::string path;			// backing file path name
@@ -29,8 +29,8 @@ public:  // state
 	uint32_t depth;				// doublings = size base 4096
 
 public:	//ctor,dtor
-	mmutil(std::string const& path, uint32_t depth);
-	~mmutil();
+	mmfile(std::string const& path, uint32_t depth);
+	~mmfile();
 
 public:
   void initialize(uint32_t _depth);
@@ -47,4 +47,4 @@ public:
 
 
 }  /* namespace xqp */
-#endif  /* XQP_MMUTIL_H */
+#endif  /* XQP_MMFILE_H */
