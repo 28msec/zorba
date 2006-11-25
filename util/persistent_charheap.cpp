@@ -30,7 +30,7 @@ persistent_charheap::persistent_charheap_iterator::persistent_charheap_iterator(
 :
 	_begin(initial_offset ? (pch->data+initial_offset) : (pch->data + sizeof(off_t))),
 	_end(pch->data + sizeof(off_t) + pch->size()),
-	current((char*)_begin),
+	current((char *)_begin),
 	parent(pch)
 {
 }
