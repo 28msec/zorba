@@ -102,7 +102,7 @@ public: 	// array interface
 	 ** Return the size of this array.
 	 ** @return array size
 	 */
-  uint32_t long size() const { return (eofoff / sizeof(T)); }
+  uint32_t size() const { return (eofoff / sizeof(T)); }
 
 	/**
 	 ** Double the array (and its file).
@@ -152,6 +152,20 @@ public:		// memory-mapped only, nops in the non-mm case
 	 ** Rename the backing file.
 	 */
   void rename_backing_file(string const& new_path) throw (xqpexception);
+
+	/**
+	 ** Return data array pointer.
+	 **
+	 ** @return data array pointer
+	 */
+	char * get_data() const { return src; }
+
+	/**
+	 ** Return the data array sentinel.
+	 **
+	 ** @return data array sentinel
+	 */
+	uint32_t get_eofoff() const { return eofoff; }
 
 };
 
@@ -248,5 +262,6 @@ throw (xqpexception)
 }
 
 
-}  /* namespace km */
-#endif  /* _KM_MMARRAY_H_ */
+}  /* namespace xqp */
+#endif  /* XQP_FXARRAY_H */
+
