@@ -86,6 +86,7 @@ public:	// map interface
 	bool put(string const& key, V val);						// add (key,val) entry to map, true on match
 	bool put(char const* key, V val);							// add (key,val) entry to map, true on match
 	bool put(char const* key, uint32_t, V val);		// add (key,len,val) entry to map, true on match
+	uint64_t put0(char const* key, V val);				// add (key,val) entry to map, return key heap offset
 
 public: // the hash functions
 	uint32_t h(string const& key) const;
@@ -458,6 +459,27 @@ inline bool hashmap<V>::put(const char* key, uint32_t len, V val)
 		return false;
 	}
 }
+
+
+//  Store a new (key.val) pair in the map.
+//  Return key heap offset.
+template<class V>
+inline uint64_t hashmap<V>::put0(const char* key, V val) 
+{
+	if (sz>tsz*ld) resize();
+
+	uint32_t h0;
+	if (find(key,h0)) {
+		entry* e = &v[tab[h0]]; 
+		e->val = val;
+		return e->key;
+	} else {
+		v.push_back(entry(key,val));
+		tab[h0] = sz++;
+		return false;
+	}
+}
+
 
 
 //  The hash functions.
