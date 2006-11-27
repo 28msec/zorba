@@ -39,10 +39,11 @@ rwlock::~rwlock()
 }
 
 
+
 /*_____________________________________________________________
-|                                                              |
+|
 |  Destroy a read/write lock.
-|______________________________________________________________|*/
+|______________________________________________________________*/
 
 int rwlock::destroy()
 {
@@ -75,12 +76,13 @@ int rwlock::destroy()
 	
 }
 
+
 /*_____________________________________________________________
-|                                                              |
+|
 |  Handle cleanup when the read lock condition variable
 |  wait is cancelled.  Record that the thread is no longer
 |  waiting and unlock the mutex.
-|______________________________________________________________|*/
+|______________________________________________________________*/
 
 void rwlock::read_cleanup(void* arg)
 {
@@ -91,11 +93,11 @@ void rwlock::read_cleanup(void* arg)
 
 
 /*_____________________________________________________________
-|                                                              |
+|
 |  Handle cleanup when the write lock condition variable
 |  wait is cancelled.  Record that the thread is no longer
 |  waiting and unlock the mutex.
-|______________________________________________________________|*/
+|______________________________________________________________*/
 
 void rwlock::write_cleanup(void* arg)
 {
@@ -106,12 +108,12 @@ void rwlock::write_cleanup(void* arg)
 
 
 /*_____________________________________________________________
-|                                                              |
+|
 |  Lock a read/write lock for read access.
 |
 |  "Read preference" expressed by waiting only for active
 |  writers, as opposed to waiting writers.
-|______________________________________________________________|*/
+|______________________________________________________________*/
 
 int rwlock::readlock()
 {
@@ -140,10 +142,10 @@ int rwlock::readlock()
 
 
 /*_____________________________________________________________
-|                                                              |
+|
 |  Attempt to lock a read/write lock for read access, but
 |  don't block if unavailable.
-|______________________________________________________________|*/
+|______________________________________________________________*/
 int rwlock::readtrylock()
 {
 	int status, status2;
@@ -162,13 +164,13 @@ int rwlock::readtrylock()
 
 
 /*_____________________________________________________________
-|                                                              |
+|
 |  Unlock a read/write lock from read access.
 |
 |  If no more active readers, and at least one waiting
 |  writer, signal the write condition variable.  Race for
 |  access may may select readlock or readtrylock.
-|______________________________________________________________|*/
+|______________________________________________________________*/
 int rwlock::readunlock()
 {
 	int status, status2;
@@ -186,9 +188,9 @@ int rwlock::readunlock()
 
 
 /*_____________________________________________________________
-|                                                              |
+|
 |  Lock a read/write lock for write access.
-|______________________________________________________________|*/
+|______________________________________________________________*/
 int rwlock::writelock()
 {
 	int status;

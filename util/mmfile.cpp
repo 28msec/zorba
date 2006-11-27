@@ -48,27 +48,26 @@ mmfile::mmfile(
 	}
 
   if (eofoff==0) {	// new, empty file
+		off_t m = (initial_size >> 12) << 12;	// multiple of 4096
+		if (m<initial_size) m += (1<<12);			// round up
 
-	  if (lseek(fd, 4095, SEEK_END)==-1) { // 4096 - 1
-			IOEXCEPTION("lseek(2*EOF) failed on: '"+path+"'");
+	  if (lseek(fd, m-1, SEEK_END)==-1) {
+			IOEXCEPTION("lseek m-1 past EOF failed on: '"+path+"'");
 	  }
 	
-	  // create a 'hole' of size 4095
+	  // create a 'hole' of size m-1
 	  char buf[1] = { '\0' };
-	  if (write(fd, buf, 1) == -1) {       // 4095 + 1
-			IOEXCEPTION("write to EOF failed on: '"+path+"'");
+	  if (write(fd, buf, 1) == -1) { 
+			IOEXCEPTION("write to m-1 past EOF failed on: '"+path+"'");
 	  }
 	
-	  if ((data = (char*)mmap(0, 4096, PROT_READ|PROT_WRITE,
+	  if ((data = (char*)mmap(0, m, PROT_READ|PROT_WRITE,
 	                           MAP_FILE|MAP_SHARED, fd, 0))==MAP_FAILED) {
 			IOEXCEPTION("mmap failed on: '"+path+"'");
 	  }
 	
 	  // initialize state
-	 	memset(data, 0, 4096);
-	 	for (eofoff = 4096; eofoff < initial_size; eofoff<<=1) {
-	 		expand(true);
-		}
+	 	memset(data, 0, m);
   }
 	else {	// map an existing file
     if ((data = (char*)mmap(0, eofoff, PROT_READ|PROT_WRITE,

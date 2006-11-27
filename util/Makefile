@@ -15,50 +15,6 @@ charheap_test : charheap.h charheap.cpp charheap_test.cpp
 		charheap_test.cpp
 
 
-tokenbuf : tokenbuf.h tokenbuf.cpp
-	g++ ${OPT} -c -g -o tokenbuf.do tokenbuf.cpp
-	g++ ${OPT} -c -O2 -o tokenbuf.o tokenbuf.cpp
-tokenbuf_test : tokenbuf.h tokenbuf.cpp tokenbuf_test.cpp
-	g++ ${OPT} -o tokenbuf_test tokenbuf.o tokenbuf_test.cpp
-
-
-hashfun_test :	hashfun_test.cpp hashfun.h 
-	g++ $(LARGEFILEFLAGS) -Wall -g -o hashfun_test \
-		Exception.o \
-		hashfun_test.cpp
-
-
-hashmap :	hashmap.h 
-	g++ $(LARGEFILEFLAGS) -Wall -c -g -o hashmap.do hashmap.cpp
-	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o hashmap.o hashmap.cpp
-hashmap_test :	hashmap_test.cpp hashmap.h 
-	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -lpthread -o hashmap_test \
-		Exception.o \
-		rwlock.do \
-		tokenizer.do \
-		hashmap_test.cpp
-
-
-list :	list.cpp list.h 
-	g++ $(LARGEFILEFLAGS) -Wall -c -g -o list.do list.cpp
-	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o list.o list.cpp
-list_test :	list.cpp list.h 
-	g++ $(LARGEFILEFLAGS) -Wall -g -o list_test \
-		Exception.o \
-		tokenizer.do \
-		list.cpp
-
-
-logger : logger.h logger.cpp
-	g++ $(LARGEFILEFLAGS) -Wall -c -g -o logger.do logger.cpp
-	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o logger.o logger.cpp
-logger_test : logger.h logger.cpp logger_test.cpp
-	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -o logger_test \
-		Exception.o \
-		logger.do \
-		logger_test.cpp
-
-
 persistent_charheap :	persistent_charheap.cpp persistent_charheap.h 
 	g++ $(LARGEFILEFLAGS) -Wall -c -g -o persistent_charheap.do persistent_charheap.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o persistent_charheap.o persistent_charheap.cpp
@@ -70,6 +26,52 @@ persistent_charheap_test : 	persistent_charheap_test.cpp persistent_charheap.cpp
 		persistent_charheap_test.cpp
 
 
+persistent_vector_test : 	persistent_vector_test.cpp persistent_vector.h 
+	g++ $(LARGEFILEFLAGS) -Wall -g -o persistent_vector_test \
+		xqpexception.o \
+		tokenbuf.do \
+		persistent_vector_test.cpp
+
+
+tokenbuf : tokenbuf.h tokenbuf.cpp
+	g++ ${OPT} -c -g -o tokenbuf.do tokenbuf.cpp
+	g++ ${OPT} -c -O2 -o tokenbuf.o tokenbuf.cpp
+tokenbuf_test : tokenbuf.h tokenbuf.cpp tokenbuf_test.cpp
+	g++ ${OPT} -o tokenbuf_test tokenbuf.o tokenbuf_test.cpp
+
+
+hashfun_test :	hashfun_test.cpp hashfun.h 
+	g++ $(LARGEFILEFLAGS) -Wall -g -o hashfun_test \
+		xqpexception.o \
+		hashfun_test.cpp
+
+
+hashmap :	hashmap.h 
+	g++ $(LARGEFILEFLAGS) -Wall -c -g -o hashmap.do hashmap.cpp
+	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o hashmap.o hashmap.cpp
+hashmap_test :	hashmap_test.cpp hashmap.h 
+	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -lpthread -o hashmap_test \
+		xqpexception.o \
+		rwlock.do \
+		tokenbuf.do \
+		hashmap_test.cpp
+
+
+list_test :	list_test.cpp list.h 
+	g++ $(LARGEFILEFLAGS) -Wall -g -o list_test \
+		list_test.cpp
+
+
+logger : logger.h logger.cpp
+	g++ $(LARGEFILEFLAGS) -Wall -c -g -o logger.do logger.cpp
+	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o logger.o logger.cpp
+logger_test : logger.h logger.cpp logger_test.cpp
+	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -o logger_test \
+		xqpexception.o \
+		logger.do \
+		logger_test.cpp
+
+
 rchandle_test :	rchandle.h rchandle_test.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -g -o rchandle_test \
 		rchandle_test.cpp
@@ -78,10 +80,15 @@ rchandle_test :	rchandle.h rchandle_test.cpp
 rwlock :	rwlock.cpp rwlock.h 
 	g++ $(LARGEFILEFLAGS) -Wall -c -g -o rwlock.do rwlock.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o rwlock.o rwlock.cpp
-rwlock_test :	rwlock.cpp rwlock.h 
+rwlock_test :	rwlock_test.cpp rwlock.cpp rwlock.h 
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -lpthread -o rwlock_test \
 		rwlock.do \
 		rwlock_test.cpp; \
+
+
+sorter_test :	sorter_test.cpp sorter.h 
+	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -o sorter_test \
+		sorter_test.cpp; \
 
 
 URI : URI.h URI.cpp
@@ -101,15 +108,58 @@ utf8_encoder_test :	utf8_encoder_test.cpp utf8_encoder.cpp	utf8_encoder.h
 		utf8_encoder.do \
 		utf8_encoder_test.cpp
 
+mmfile :	mmfile.cpp mmfile.h 
+	g++ $(LARGEFILEFLAGS) -Wall -c -g -o mmfile.do mmfile.cpp
+	g++ $(LARGEFILEFLAGS) -Wall -c -O2 -o mmfile.o mmfile.cpp
+mmfile_test :	mmfile_test.cpp mmfile.cpp mmfile.h 
+	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -o mmfile_test \
+		xqpexception.o \
+		tokenbuf.do \
+		mmfile.do \
+		mmfile_test.cpp; \
 
-all	:	charheap \
-	peristent_charheap \
-	hashmap_test \
+
+fxarray_test :	fxarray_test.cpp fxarray.h 
+	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG -g -o fxarray_test \
+		xqpexception.o \
+		tokenbuf.do \
+		mmfile.do \
+		fxarray_test.cpp; \
+
+
+fxcharheap : fxcharheap.h fxcharheap.cpp
+	g++ ${OPT} -c -O2 -o fxcharheap.o fxcharheap.cpp
+	g++ ${OPT} -c -g -o fxcharheap.do fxcharheap.cpp
+fxcharheap_test : fxcharheap.h fxcharheap.cpp fxcharheap_test.cpp
+	g++ ${OPT} -o fxcharheap_test \
+		xqpexception.o \
+		tokenbuf.do \
+		mmfile.do \
+		fxcharheap.do \
+		fxcharheap_test.cpp
+
+
+
+all	: \
+	charheap \
+	perisistent_charheap \
  	logger \
-	sorterTest \
+	rwlock \
 	tokenbuf \
-	utf8_encoder 
+	utf8_encoder \
+	URI \
 
+
+test : \
+	charheap_test \
+	persistent_charheap_test \
+	hashfun_test \
+	hashmap_test \
+	rchandle_test \
+	rwlock_test \
+	sorter_test \
+	tokenbuf_test \
+	utf8_encoder_test 
 
 clean:
 	$(CleanRule) *.do *.po *.ro *_test ${Executables}
