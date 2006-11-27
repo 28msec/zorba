@@ -80,14 +80,14 @@ int main(int argc, char* argv[])
              << "uniq n     - set elements i in [0,n) <- i" << endl;
       }
       else if (cmd=="init") {
-        int n = strtoul(arg1.c_str(), NULL, 10);
-        int m = strtoul(arg2.c_str(), NULL, 10);
+        uint32_t n = strtoul(arg1.c_str(), NULL, 10);
+        uint32_t m = strtoul(arg2.c_str(), NULL, 10);
         int t = strtol(arg3.c_str(), NULL, 10);
         if (n<0 || m > fxary.size()) {
           cout << "range out of bounds\n";
           continue;
         }
-        for (int i=n; i<m; ++i) {
+        for (uint32_t i=n; i<m; ++i) {
           fxary[i] = t;
           cout << "fxary[" << i << "] <- " << t << endl;
         }
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
       }
       else if (cmd=="uniq") {
 				cout << "fxary.size() = " << fxary.size() << endl;
-        for (int i=0; i<fxary.size(); ++i) {
+        for (uint32_t i=0; i<fxary.size(); ++i) {
           cout << "fxary[" << i << "] = " << i << endl;
 					fxary[i] = i;
         }
