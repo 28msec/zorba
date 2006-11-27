@@ -22,9 +22,9 @@ class hashfun
 public:
 
 #define FNV_32_PRIME		((uint32_t)0x01000193)
-#define FVN_32_INIT			((uint32_t)0x811c9dc5)
+#define FNV_32_INIT			((uint32_t)0x811c9dc5)
 #define FNV_64_PRIME		((uint64_t)0x100000001b3ULL)
-#define FVN_64_INIT			((uint64_t)0x84222325cbf29ce4LL)
+#define FNV_64_INIT			((uint64_t)0x84222325cbf29ce4LL)
 
 	/**
 	 * 32 bit Fowler/Noll/Vo FNV-1a hash on binary (untyped) buffer
@@ -130,7 +130,7 @@ public:
 	static inline uint32_t h32(
 		std::string const& str)
 	{
-		return h32(str.c_str(), FVN_32_INIT);
+		return h32(str.c_str(), FNV_32_INIT);
 	}
 	
 	
@@ -238,7 +238,7 @@ public:
 	static inline uint64_t h64(
 		std::string const& str)
 	{
-		return h64(str.c_str(), FVN_64_INIT);
+		return h64(str.c_str(), FNV_64_INIT);
 	}
 	
 	
