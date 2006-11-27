@@ -19,7 +19,7 @@ using namespace xqp;
 int main(int argc, char* argv[])
 {
   try {
-    mmfile v(argv[1], 10);
+    mmfile mmf(argv[1], 10);
 		string cmdline, cmd, arg1, arg2;
 
     // command loop
@@ -47,28 +47,24 @@ int main(int argc, char* argv[])
         break;
       }
       if (cmd=="double") {
-        v.double_array();
+        mmf.expand();
       }
       else if (cmd=="fill") {
         uint32_t n = strtol(arg1.c_str(), 0, 10);
-        v.fill(n);
+        mmf.fill(n);
       }
       else if (cmd=="help") {
         cout << "double				- double the mem-mapped array\n";
         cout << "fill VAL			- fill mem-mapped array with byte VAL\n";
         cout << "help					- this help function\n";
         cout << "rename FNAME	- rename the backing file to FNAME\n";
-				cout << "reopen				- reopen the backing file\n";
 				cout << "size					- return size of the backing file\n";
       }
       else if (cmd=="rename") {
-        v.renam(arg1);
+        mmf.rename_backing_file(arg1);
       }
       else if (cmd=="size") {
-        cout << "size = " << v.get_eofoff() << endl;
-      }
-      else if (cmd=="reopen") {
-        v.reopen();
+        cout << "size = " << mmf.get_eofoff() << endl;
       }
       else {
         cout << "Unrecognized command\n";
