@@ -15,6 +15,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "file.h"
 #include "xqpexception.h"
 
 using namespace std;
@@ -52,7 +53,8 @@ fxcharheap::fxcharheap(
 :
 	fxary_p(new fxarray<char>(path, initial_size+sizeof(off_t)))
 {
-	init();
+	bool init_offset = file(path).get_size()>0;
+	init(init_offset);
 }
 
 

@@ -106,18 +106,18 @@ public:	// directory methods
 	class dir_iterator : public rcobject
 	{
 	public:
-  	dir_iterator(const std::string& path, bool end_iterator = false);
-  	~dir_iterator();
-	public:
-		void operator++();
-		const char* operator*() { return dirent->d_name; }
-	public:
-		const char* get_name() const { return dirent?dirent->d_name:0; } 
-	public:
   	std::string dirpath;
   	std::string path;
   	DIR *dir;
   	struct dirent *dirent;
+	public:
+  	dir_iterator(const std::string& path, bool end_iterator = false);
+  	~dir_iterator();
+	public:	// iterator interface
+		void operator++();
+		const char* operator*() { return dirent->d_name; }
+	public:	
+		const char* get_name() const { return dirent?dirent->d_name:0; } 
 	};
 
 	void mkdir();
