@@ -2,20 +2,34 @@
  *
  *  $Id: xquery.y,v 1.2 2006/11/14 05:24:43 Paul Pedersen Exp $
  *
+ *	Copyright 2006-2007 FLWOR Foundation.
  */
 
-%{
+%skeleton "lalr1.cc"  /*  -*- C++ -*- */
+%require "2.1a"
+%defines
+%define "parser_class_name" "xquery_parser"
 
+/*
+	Because the parser uses the xquery_driver and reciprocally, both 
+	cannot include the header of the other. Because the driver's header 
+	needs detailed knowledge about the parser class (in particular its 
+	inner types), it is the parser's header which will use a forward
+	declaration of the driver. 
+*/
+
+%{
 #ifdef _WIN32
 #pragma warning(disable: 4786)
 #endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
+
+class xquery_driver;
 
 static const unsigned debug = 0;
-
 
 #if defined(NEW_BISON_VERSION)
 typedef struct {
@@ -29,280 +43,327 @@ typedef struct {
 
 #define YYERROR_VERBOSE
 #define lineno lexer.lineno
-#define YYSTYPE xqpYYSTYPE
 #define yyparse xqp
 
 %}
 
+/*
+	The driver is passed by reference to the parser and to the scanner. 
+	This provides a simple but effective pure interface, not relying on 
+	global variables. 
+*/
+%parse-param { xquery_driver& driver }
+%lex-param   { xquery_driver& driver }
 
-%pure_parser
 
-%union {
+/*
+	Then we request the location tracking feature, and initialize the 
+	first location's file name. Afterwards new locations are computed 
+	relatively to the previous locations: the file name will be 
+	automatically propagated. 
+*/
+%locations
+%initial-action
+{
+  @$.begin.filename = @$.end.filename = &driver.file;
+};
+
+
+/*
+	Use the two following directives to enable parser tracing and verbose 
+	error messages. 
+*/
+%debug
+%error-verbose
+
+
+/*
+	Semantic values cannot use real objects, but only pointers to them.
+*/
+%union
+{
   node* node;
-  expr_node* expr;
-  value* val;
-  char* sval;
+  off_t sval;
 }
 
 
+/*
+	The code between `%{' and `%}' after the introduction of the `%union' 
+	is output in the *.cc file; it needs detailed knowledge about the 
+	driver. 
+*/
+
+%{
+# include "xquery_driver.h"
+%}
+
+
+/*
+	The token numbered as 0 corresponds to end of file; the following line 
+	allows for nicer error messages referring to end of file instead of 
+	$end. Similarly user friendly names are provided for each symbol.
+*/
+
+%token	END	0 "end of file"
+
 /* tokens that contain embedded string literals */
 /* -------------------------------------------- */
-%token <sval> APOS_ATTR_CONTENT
-%token <sval> ATTRIBUTE_QNAME_LBRACE
-%token <sval> AT_URI_LITERAL
-%token <sval> CHAR_LITERAL
-%token <sval> CHAR_REF_LITERAL
-%token <sval> ELEMENT_CONTENT
-%token <sval> ELEMENT_QNAME_LBRACE
-%token <sval> ELEM_WILDCARD
-%token <sval> ENTITY_REF
-%token <sval> EXPR_COMMENT_LITERAL
-%token <sval> NCNAME
-%token <sval> PI_NCNAME_LBRACE
-%token <sval> PI_TARGET_LITERAL
-%token <sval> PRAGMA_LITERAL
-%token <sval> PREFIX_WILDCARD
-%token <sval> QNAME
-%token <sval> QNAME_LPAR
-%token <sval> QUOTE_ATTR_CONTENT
-%token <sval> STRING_LITERAL
-%token <sval> URI_LITERAL
-%token <sval> VARNAME
-%token <sval> VALIDATE_MODE
-%token <sval> XML_COMMENT_LITERAL
+%token <sval> APOS_ATTR_CONTENT	"apos attribute content"
+%token <sval> ATTRIBUTE_QNAME_LBRACE	"<attribute QName {>"
+%token <sval> AT_URI_LITERAL	"<at URI>"
+%token <sval> CHAR_LITERAL	"char literal"
+%token <sval> CHAR_REF_LITERAL	"#charref;"
+%token <sval> ELEMENT_CONTENT	"element content"
+%token <sval> ELEMENT_QNAME_LBRACE	"<QName {>"
+%token <sval> ELEM_WILDCARD	"pref:*"
+%token <sval> ENTITY_REF	"&entity;"
+%token <sval> EXPR_COMMENT_LITERAL	"comment literal"
+%token <sval> NCNAME	"NCName"
+%token <sval> PI_NCNAME_LBRACE	"pi <NCName {>"
+%token <sval> PI_TARGET_LITERAL	"pi target"
+%token <sval> PRAGMA_LITERAL	"pragma literal"
+%token <sval> PREFIX_WILDCARD	"*:QName"
+%token <sval> QNAME	"QName"
+%token <sval> QNAME_LPAR	"<QName (>"
+%token <sval> QUOTE_ATTR_CONTENT	"quote attribute content"
+%token <sval> STRING_LITERAL	"STRING"
+%token <sval> URI_LITERAL	"URI"
+%token <sval> VARNAME	"variable name"
+%token <sval> VALIDATE_MODE	"validate mode"
+%token <sval> XML_COMMENT_LITERAL	"XML comment"
 
 
 /* simple tokens */
 /* ------------- */
-%token ANCESTOR_AXIS
-%token ANCESTOR_OR_SELF_AXIS
-%token AND
-%token APOS
-%token AS
-%token ASCENDING
-%token AT
-%token ATTRIBUTE
-%token ATTRIBUTE_AXIS
-%token ATTRIBUTE_LBRACE
-%token ATTRIBUTE_LPAR
-%token AT_SIGN
-%token CASE
-%token CASTABLE_AS
-%token CAST_AS
-%token CDATA_BEGIN
-%token CDATA_END
-%token CHILD_AXIS
-%token COLLATION
-%token COMMA
-%token COMMENT_BEGIN
-%token COMMENT_END
-%token COMMENT_LBRACE
-%token COMMENT_LPAR
-%token DECIMAL_LITERAL
-%token DECLARE_BASE_URI
-%token DECLARE_BOUNDARY_SPACE
-%token DECLARE_CONSTRUCTION
-%token DECLARE_COPY_NAMESPACES
-%token DECLARE_DEFAULT_COLLATION
-%token DECLARE_DEFAULT_ELEMENT
-%token DECLARE_DEFAULT_FUNCTION
-%token DECLARE_DEFAULT_ORDER
-%token DECLARE_FUNCTION
-%token DECLARE_NAMESPACE
-%token DECLARE_OPTION
-%token DECLARE_ORDERING
-%token DECLARE_VARIABLE_DOLLAR
-%token DEFAULT
-%token DEFAULT_ELEMENT
-%token DESCENDANT_AXIS
-%token DESCENDANT_OR_SELF_AXIS
-%token DESCENDING
-%token DIV
-%token DOCUMENT_LBRACE
-%token DOCUMENT_NODE_LPAR
-%token DOLLAR
-%token DOT
-%token DOT_DOT
-%token DOUBLE_LBRACE
-%token DOUBLE_LITERAL
-%token DOUBLE_RBRACE
-%token ELEMENT_LBRACE
-%token ELEMENT_LPAR
-%token ELSE
-%token EMPTY_GREATEST
-%token EMPTY_LEAST
-%token ENCODING
-%token EQUALS
-%token ESCAPE_APOS
-%token ESCAPE_QUOTE
-%token EVERY_DOLLAR
-%token EXCEPT
-%token EXTERNAL
-%token FOLLOWING_AXIS
-%token FOLLOWING_SIBLING_AXIS
-%token FOLLOWS
-%token FOR_DOLLAR
-%token GENERALCOMP
-%token GETS
-%token HOOK
-%token IDIV
-%token IF_LPAR
-%token IMPORT_MODULE
-%token IMPORT_SCHEMA
-%token IN
-%token INHERIT
-%token INSTANCE_OF
-%token INTEGER_LITERAL
-%token INTERSECT
-%token IS
-%token ITEM_TEST
-%token LBRACE
-%token LBRACK
-%token LEADING_LONE_SLASH
-%token LET_DOLLAR
-%token LPAR
-%token MINUS
-%token MOD
-%token MODULE_NAMESPACE
-%token NAMESPACE
-%token NAN
-%token NE
-%token NODECOMP
-%token NODE_LPAR
-%token NOT_OPERATOR_KEYWORD
-%token NO_INHERIT
-%token NO_PRESERVE
-%token OR
-%token ORDERED
-%token ORDERED_LBRACE
-%token ORDER_BY
-%token PARENT_AXIS
-%token PI_BEGIN
-%token PI_END
-%token PI_LBRACE
-%token PI_LPAR
-%token PI_TARGET
-%token PLUS
-%token PRAGMA_BEGIN
-%token PRAGMA_END
-%token PRECEDES
-%token PRECEDING_AXIS
-%token PRECEDING_SIBLING_AXIS
-%token PRESERVE
-%token PROCESSING_INSTRUCTION
-%token QUOTE
-%token RBRACE
-%token RBRACK
-%token RETURN
-%token RPAR
-%token RPAR_AS
-%token SATISFIES
-%token SCHEMA_ATTRIBUTE_LPAR
-%token SCHEMA_ELEMENT_LPAR
-%token SELF_AXIS
-%token SEMI
-%token SGT
-%token SLASH
-%token SLASH_SLASH
-%token SOME_DOLLAR
-%token STABLE_ORDER_BY
-%token STAR
-%token START_TAG_END
-%token START_TAG
-%token STRIP
-%token TAG_END
-%token TEXT_LBRACE
-%token TEXT_LPAR
-%token THEN
-%token TO
-%token TREAT_AS
-%token TYPESWITCH_LPAR
-%token UNION
-%token UNORDERED
-%token UNORDERED_LBRACE
-%token UNRECOGNIZED
-%token VALIDATE_LBRACE
-%token VALUECOMP
-%token VBAR
-%token VOID_TEST
-%token WHERE
-%token XML_COMMENT_BEGIN
-%token XML_COMMENT_END
-%token XQUERY_VERSION
+%token ANCESTOR_AXIS							"ancestor::"
+%token ANCESTOR_OR_SELF_AXIS			"ancestor-or-self::"
+%token AND												"and"
+%token APOS												"'"
+%token AS													"as"
+%token ASCENDING									"ascending"
+%token AT													"at"
+%token ATTRIBUTE									"attribute"
+%token ATTRIBUTE_AXIS							"attribute::"
+%token ATTRIBUTE_LBRACE						"<attribute {>"
+%token ATTRIBUTE_LPAR							"<attribute (>"
+%token AT_SIGN										"@"
+%token CASE												"case"
+%token CASTABLE_AS								"<castable as>"
+%token CAST_AS										"<cast as>"
+%token CDATA_BEGIN								"CDATA[["
+%token CDATA_END									"]]"
+%token CHILD_AXIS									"child::"
+%token COLLATION									"collation"
+%token COMMA											","
+%token COMMENT_BEGIN							"(:"
+%token COMMENT_END								":)"
+%token COMMENT_LBRACE							"<comment {>"
+%token COMMENT_LPAR								"<comment (>"
+%token DECIMAL_LITERAL						"DECIMAL"
+%token DECLARE_BASE_URI						"<declare base URI>"
+%token DECLARE_BOUNDARY_SPACE			"<declare boundary space>"
+%token DECLARE_CONSTRUCTION				"<declare construction>"
+%token DECLARE_COPY_NAMESPACES		"<declare copy namespaces>"
+%token DECLARE_DEFAULT_COLLATION	"<declare default collation>"
+%token DECLARE_DEFAULT_ELEMENT		"<declare default element>"
+%token DECLARE_DEFAULT_FUNCTION		"<declare default function>"
+%token DECLARE_DEFAULT_ORDER			"<declare default order>"
+%token DECLARE_FUNCTION						"<declare function>"
+%token DECLARE_NAMESPACE					"<declare namespace>"
+%token DECLARE_OPTION							"<declare option>"
+%token DECLARE_ORDERING						"<declare ordering>"
+%token DECLARE_VARIABLE_DOLLAR		"<declare var $>"
+%token DEFAULT										"default"
+%token DEFAULT_ELEMENT						"<default element>"
+%token DESCENDANT_AXIS						"descendant::"
+%token DESCENDANT_OR_SELF_AXIS		"descendant-or-self::"
+%token DESCENDING									"descending"
+%token DIV												"div"
+%token DOCUMENT_LBRACE						"<document {>"
+%token DOCUMENT_NODE_LPAR					"<document node (>"
+%token DOLLAR											"$"
+%token DOT												"."
+%token DOT_DOT										".."
+%token DOUBLE_LBRACE							"{{"
+%token DOUBLE_LITERAL							"DOUBLE"
+%token DOUBLE_RBRACE							"<double {>"
+%token ELEMENT_LBRACE							"<element {>"
+%token ELEMENT_LPAR								"<element (>"
+%token ELSE												"else"
+%token EMPTY_GREATEST							"<empty greatest>"
+%token EMPTY_LEAST								"<empty least>"
+%token ENCODING										"encoding"
+%token EQUALS											"="
+%token ESCAPE_APOS								"''"
+%token ESCAPE_QUOTE								"\"\""
+%token EVERY_DOLLAR								"<every $>"
+%token EXCEPT											"except"
+%token EXTERNAL										"external"
+%token FOLLOWING_AXIS							"following::"
+%token FOLLOWING_SIBLING_AXIS			"following-sibling::"
+%token FOLLOWS										"follows"
+%token FOR_DOLLAR									"<for $>"
+%token GENERALCOMP								"general comp"
+%token GETS												":="
+%token HOOK												"?"
+%token IDIV												"idiv"
+%token IF_LPAR										"<if (>"
+%token IMPORT_MODULE							"<import module>"	
+%token IMPORT_SCHEMA							"<import schema>"
+%token IN													"in"
+%token INHERIT										"inherit"
+%token INSTANCE_OF								"<instance of>"
+%token INTEGER_LITERAL						"INTEGER"
+%token INTERSECT									"intersect"
+%token IS													"is"
+%token ITEM_TEST									"item()"
+%token LBRACE											"{"
+%token LBRACK											"["
+%token LEADING_LONE_SLASH					"[ / ]"
+%token LET_DOLLAR									"<let $>"
+%token LPAR												"("
+%token MINUS											"-"
+%token MOD												"mod"
+%token MODULE_NAMESPACE						"<module namespace>"
+%token NAMESPACE									"namespace"
+%token NAN												"nan"
+%token NE													"ne"
+%token NODECOMP										"nodecomp"
+%token NODE_LPAR									"<node (>"
+%token NOT_OPERATOR_KEYWORD				"??"
+%token NO_INHERIT									"<no inherit>"
+%token NO_PRESERVE								"<no preserve>"
+%token OR													"or"
+%token ORDERED										"ordered"
+%token ORDERED_LBRACE							"ordered {"
+%token ORDER_BY										"<order by>"
+%token PARENT_AXIS								"parent::"
+%token PI_BEGIN										"<?"
+%token PI_END											"?>"
+%token PI_LBRACE									"<pi {>"
+%token PI_LPAR										"<pi (>"
+%token PI_TARGET									"PI TARGET"
+%token PLUS												"+"
+%token PRAGMA_BEGIN								"PRAGMA BEGIN"
+%token PRAGMA_END									"PRAGMA END"
+%token PRECEDES										"<<"
+%token PRECEDING_AXIS							"preceding::"
+%token PRECEDING_SIBLING_AXIS			"preceding-sibling::"
+%token PRESERVE										"preserve"
+%token PROCESSING_INSTRUCTION			"<processing instruction>"
+%token QUOTE											"\""
+%token RBRACE											"}"
+%token RBRACK											"]"
+%token RETURN											"return"
+%token RPAR												")"
+%token RPAR_AS										"<) as>"
+%token SATISFIES									"satisfies"
+%token SCHEMA_ATTRIBUTE_LPAR			"<schema attribute ("
+%token SCHEMA_ELEMENT_LPAR				"<schema element (>"
+%token SELF_AXIS									"self::"
+%token SEMI												";"
+%token SGT												"/>"
+%token SLASH											"/"
+%token SLASH_SLASH								"//"
+%token SOME_DOLLAR								"some $"
+%token STABLE_ORDER_BY						"stable order by"
+%token STAR												"*"
+%token START_TAG_END							">"
+%token START_TAG									"<"
+%token STRIP											"strip"
+%token TAG_END										"</"
+%token TEXT_LBRACE								"<text {>"
+%token TEXT_LPAR									"<text (>"
+%token THEN												"then"
+%token TO													"to"
+%token TREAT_AS										"<treat as>"
+%token TYPESWITCH_LPAR						"<typeswitch (>"
+%token UNION											"union"
+%token UNORDERED									"unordered"
+%token UNORDERED_LBRACE						"<unordered (>"
+%token UNRECOGNIZED								"unrecognized"
+%token VALIDATE_LBRACE						"<validate {>"
+%token VALUECOMP									"VALUECOMP"
+%token VBAR												"|"
+%token VOID_TEST									"void()"
+%token WHERE											"where"
+%token XML_COMMENT_BEGIN					"<!"
+%token XML_COMMENT_END						"-->"
+%token XQUERY_VERSION							"<XQuery Version>"
 
 
 /* update-related */
 /* -------------- */
-%token AFTER
-%token BEFORE
-%token COMMA_DOLLAR 
-%token DECLARE_REVALIDATION_MODE
-%token DO_DELETE
-%token DO_INSERT
-%token DO_RENAME
-%token DO_REPLACE
-%token FIRST_INTO
-%token INTO
-%token LAST_INTO
-%token MODIFY 
-%token TRANSFORM_COPY_DOLLAR 
-%token VALUE_OF
-%token WITH
+%token AFTER											"after"
+%token BEFORE											"before"
+%token COMMA_DOLLAR 							"<, $>"
+%token DECLARE_REVALIDATION_MODE	"<declare revalidation mode>"
+%token DO_DELETE									"<do delete>"
+%token DO_INSERT									"<do insert>"
+%token DO_RENAME									"<do rename>"
+%token DO_REPLACE									"<do replace>"
+%token FIRST_INTO									"<first into>"
+%token INTO												"into"
+%token LAST_INTO									"<lastinto>"
+%token MODIFY 										"modify"
+%token TRANSFORM_COPY_DOLLAR 			"<transform copy $>"
+%token VALUE_OF										"<value of>"
+%token WITH												"with"
 
 
 /* full-text-related */
 /* ----------------- */
-%token ALL
-%token ALL_WORDS
-%token ANY
-%token ANY_WORD
-%token AT_END
-%token AT_LEAST
-%token AT_MOST
-%token AT_START
-%token CASE_INSENSITIVE
-%token CASE_SENSITIVE
-%token DECLARE_FTOPTION
-%token DIACRITICS_INSENSITIVE
-%token DIACRITICS_SENSITIVE
-%token DIFFERENT
-%token DISTANCE
-%token ENTIRE_CONTENT
-%token EXACTLY
-%token FROM
- %token FTAND
- %token FTCONTAINS 
- %token FTNOT
- %token FTOR
-%token LANGUAGE 
-%token LEVELS
-%token LOWERCASE
- %token NOT_IN
-%token OCCURS
-%token PARAGRAPH
-%token PHRASE
-%token RELATIONSHIP
-%token SAME
-%token SCORE
-%token SENTENCE
-%token SENTENCES
-%token TIMES
-%token UPPERCASE
-%token WEIGHT
-%token WINDOW
-%token WITHOUT_CONTENT
-%token WITHOUT_DIACRITICS
-%token WITHOUT_STEMMING
-%token WITHOUT_STOP_WORDS
-%token WITHOUT_THESAURUS
-%token WITHOUT_WILDCARDS
-%token WITH_DEFAULT_STOP_WORDS 
-%token WITH_DIACRITICS
-%token WITH_STEMMING
-%token WITH_STOP_WORDS 
-%token WITH_THESAURUS
-%token WITH_WILDCARDS
-%token WORDS
+%token ALL												"all"
+%token ALL_WORDS									"<all words>"
+%token ANY												"any"
+%token ANY_WORD										"<any words>"
+%token AT_END											"<at end>"
+%token AT_LEAST										"<at least>"
+%token AT_MOST										"<at most>"
+%token AT_START										"<at start>"
+%token CASE_INSENSITIVE						"<case insensitive>"
+%token CASE_SENSITIVE							"<casesensitive>"
+%token DECLARE_FTOPTION						"<declare ftoption>"
+%token DIACRITICS_INSENSITIVE			"<diacritics insensitive>"
+%token DIACRITICS_SENSITIVE				"<diacritics sensitive>"
+%token DIFFERENT									"different"
+%token DISTANCE										"distance"
+%token ENTIRE_CONTENT							"<entire content>"
+%token EXACTLY										"exactly"
+%token FROM												"from"
+%token FTAND											"&&"
+%token FTCONTAINS 								"ftcontains"
+%token FTNOT											"ftnot"
+%token FTOR												"||"
+%token LANGUAGE 									"language"
+%token LEVELS											"levels"
+%token LOWERCASE									"lowercase"
+%token NOT_IN											"<not in>"
+%token OCCURS											"occurs"
+%token PARAGRAPH									"paragraph"
+%token PHRASE											"phrase"
+%token RELATIONSHIP								"relationship"
+%token SAME												"same"
+%token SCORE											"score"
+%token SENTENCE										"sentence"
+%token SENTENCES									"sentences"
+%token TIMES											"times"
+%token UPPERCASE									"uppercase"
+%token WEIGHT											"weight"
+%token WINDOW											"window"
+%token WITHOUT_CONTENT						"<without content>"
+%token WITHOUT_DIACRITICS					"<without diacritics>"
+%token WITHOUT_STEMMING						"<without stemming>"
+%token WITHOUT_STOP_WORDS					"<without stop words>"
+%token WITHOUT_THESAURUS					"<without thesaurus>"
+%token WITHOUT_WILDCARDS					"<without wildcards>"
+%token WITH_DEFAULT_STOP_WORDS 		"<with default stop words>"
+%token WITH_DIACRITICS						"<with diacritics>"
+%token WITH_STEMMING							"<with stemming>"
+%token WITH_STOP_WORDS 						"<with stop words>"
+%token WITH_THESAURUS							"<with thesaurus>"
+%token WITH_WILDCARDS							"<with wildcards>"
+%token WORDS											"words"
 
 /* left-hand sides */
 /* --------------- */
@@ -450,6 +511,11 @@ typedef struct {
 %type <node> WhereClause
 %type <node> Wildcard
 
+%type <node> ExprSingle
+%type <node> FLWORExpr
+%type <node> QuantifiedExpr
+%type <node> ForClause
+
 
 /* update-related */
 /* -------------- */
@@ -489,6 +555,7 @@ typedef struct {
 %type <node> FTScoreVar
 %type <node> FTSelection
 %type <node> FTStemOption
+%type <node> FTStopwordOption
 %type <node> FTStringLiteralList
 %type <node> FTThesaurusID
 %type <node> FTThesaurusList
@@ -583,11 +650,23 @@ typedef struct {
 %left SLASH SLASH_SLASH
 
 
+/*
+	To enable memory deallocation during error recovery, use %destructor.
+*/
+%printer    { debug_stream() << *$$; } "identifier"
+%destructor { delete $$; } "identifier"
+%printer    { debug_stream () << $$; } "number" "expression"
 
+%pure_parser
 %start Module
 
-%%
 
+
+/*
+	The grammar
+*/
+
+%%
 
 /*______________________________________________________________________
 
@@ -642,7 +721,7 @@ VersionDecl :
 MainModule : 
     Prolog  QueryBody
 		{
-			$$ = new MainModule(
+			$$ = new MainModule();
 		}
   ;
 
@@ -1066,35 +1145,45 @@ Expr :
 ExprSingle :
 		FLWORExpr
 		{
+			$$ = $1;
 		}
 	|	QuantifiedExpr
 		{
+			$$ = $1;
 		}
 	|	TypeswitchExpr
 		{
+			$$ = $1;
 		}
 	|	IfExpr
 		{
+			$$ = $1;
 		}
 	|	OrExpr
 		{
+			$$ = $1;
 		}
 
 		/* update extensions */
 	| InsertExpr
 		{
+			$$ = $1;
 		}
 	| DeleteExpr
 		{
+			$$ = $1;
 		}
 	| RenameExpr
 		{
+			$$ = $1;
 		}
 	| ReplaceExpr
 		{
+			$$ = $1;
 		}
 	| TransformExpr
 		{
+			$$ = $1;
 		}
 	;
 
@@ -1134,9 +1223,11 @@ ForLetClauseList :
 ForLetClause :
 		ForClause
 		{
+			$$ = $1;
 		}
 	|	LetClause
 		{
+			$$ = $1;
 		}
 	;
 
@@ -1999,27 +2090,35 @@ Predicate :
 PrimaryExpr :
 		Literal
 		{
+			$$ = $1;
 		}
 	|	VarRef
 		{
+			$$ = $1;
 		}
 	|	ParenthesizedExpr
 		{
+			$$ = $1;
 		}
 	|	ContextItemExpr
 		{
+			$$ = $1;
 		}
 	|	FunctionCall
 		{
+			$$ = $1;
 		}
 	|	Constructor
 		{
+			$$ = $1;
 		}
 	|	OrderedExpr
 		{
+			$$ = $1;
 		}
 	|	UnorderedExpr
 		{
+			$$ = $1;
 		}
 	;
 
@@ -2356,21 +2455,27 @@ CDataSection :
 ComputedConstructor :
 		CompDocConstructor
 		{
+			$$ = $1;
 		}
 	|	CompElemConstructor
 		{
+			$$ = $1;
 		}
 	|	CompAttrConstructor
 		{
+			$$ = $1;
 		}
 	|	CompTextConstructor
 		{
+			$$ = $1;
 		}
 	|	CompCommentConstructor
 		{
+			$$ = $1;
 		}
 	|	CompPIConstructor
 		{
+			$$ = $1;
 		}
 	;
 
@@ -2545,30 +2650,39 @@ AtomicType :
 KindTest :
 		DocumentTest
 		{
+			$$ = $1;
 		}
 	| ElementTest
 		{
+			$$ = $1;
 		}
 	| AttributeTest
 		{
+			$$ = $1;
 		}
 	| SchemaElementTest
 		{
+			$$ = $1;
 		}
 	| SchemaAttributeTest
 		{
+			$$ = $1;
 		}
 	| PITest
 		{
+			$$ = $1;
 		}
 	| CommentTest
 		{
+			$$ = $1;
 		}
 	| TextTest
 		{
+			$$ = $1;
 		}
 	| AnyKindTest
 		{
+			$$ = $1;
 		}
 	;
 
@@ -3047,24 +3161,31 @@ FTOrderedIndicator :
 FTMatchOption :
 		FTCaseOption
 		{
+			$$ = $1;
 		}
 	| FTDiacriticsOption
 		{
+			$$ = $1;
 		}
 	| FTStemOption
 		{
+			$$ = $1;
 		}
 	| FTThesaurusOption
 		{
+			$$ = $1;
 		}
 	| FTStopwordOption
 		{
+			$$ = $1;
 		}
 	| FTLanguageOption
 		{
+			$$ = $1;
 		}
 	| FTWildCardOption
 		{
+			$$ = $1;
 		}
 	;
 
@@ -3394,5 +3515,19 @@ FTIgnoreOption :
 
 
 
-
 %%
+
+
+
+/*
+	The error member function registers the errors to the driver.
+*/
+
+void yy::xquery_parser::error(
+	yy::xquery_parser::location_type const& l,
+	std::string const& m)
+{
+  driver.error(l, m);
+}
+
+
