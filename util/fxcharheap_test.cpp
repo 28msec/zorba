@@ -84,7 +84,8 @@ int main(int argc, char* argv[])
         string buf;
         while (!in.eof()) {
 					getline(in,buf);
-					cout << buf << endl;
+					if (buf.length()==0) continue;
+					cout << "load(" << buf << ")\n"; 
           h_p->put(buf.c_str(), 0, buf.length());
         }
         cout << "_____________Load finished______________\n";

@@ -225,9 +225,9 @@ throw (xqpexception)
 		eofoff = mmf_p->get_eofoff();
 	}
 	else {
-		eofoff <<= 1;
-		char * src0 = new char[eofoff];
+		char * src0 = new char[eofoff<<1];
 		memcpy(src0, src, eofoff);
+		eofoff <<= 1;
 		delete[] src;
 		src = src0;
 	}

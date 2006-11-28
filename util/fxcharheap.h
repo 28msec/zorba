@@ -26,7 +26,7 @@ public:  //iterator
     fxcharheap const* parent;
 
   public:	//ctor,dtor
-    fxcharheap_iterator(fxcharheap * ch, uint32_t initial_offset);
+    fxcharheap_iterator(fxcharheap * ch, bool end = false);
     ~fxcharheap_iterator();
 
 	public:	//iterator interface
@@ -123,7 +123,7 @@ protected:	//internals
 	/**
 	 ** common initialization
 	 */
-	void init();
+	void init(bool init_offset = false);
 
 	/**
    **	double the heap
@@ -134,6 +134,8 @@ protected:	//internals
    **	parametrized io exception
 	 */
 	void ioexception(std::string const& location, std::string const& msg) const; 
+
+	void dump_heap() const;
 
 };
 

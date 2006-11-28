@@ -34,11 +34,11 @@ void fxcharheap::ioexception(
 
   The initial sizeoff(off_t) bytes contain an offset to the first
   unused byte of the memory-mapped array.  Eofoff indexes to
-  the end of the allocated array. 
+  the end+1 of the allocated array. 
 
         eofoff__________________________________________________
-        data____                                                |
-                v                                               v
+   data__                                                       |
+         v                                                      v
   heap: [offset|s1,0,s2,0,...          sk,0| ..unused..        ]
            |                                ^
            |________________________________|
@@ -62,16 +62,16 @@ fxcharheap::fxcharheap(
 :
 	fxary_p(new fxarray<char>(initial_size+sizeof(off_t)))
 {
-	init();
+	init(true);
 }
 
 
 // common initialization
-void fxcharheap::init()
+void fxcharheap::init(bool init_offset)
 {
 	data = fxary_p->get_data();
 	offset_p = reinterpret_cast<off_t*>(data);
-	data += sizeof(off_t);
+	if (init_offset) *offset_p = sizeof(off_t);
 }
 
 
@@ -79,6 +79,9 @@ fxcharheap::~fxcharheap()
 {
 	delete fxary_p;
 }
+
+
+#define END true
 
 
 /*
@@ -92,7 +95,7 @@ fxcharheap::~fxcharheap()
 */
 fxcharheap::fxcharheap_iterator fxcharheap::begin()
 {
-	return fxcharheap_iterator(this,0);
+	return fxcharheap_iterator(this);
 }
 
 
@@ -107,8 +110,22 @@ fxcharheap::fxcharheap_iterator fxcharheap::begin()
 */
 fxcharheap::fxcharheap_iterator fxcharheap::end()
 {
-	return fxcharheap_iterator(this,*offset_p);
+	return fxcharheap_iterator(this,END);
 }
+
+
+void fxcharheap::dump_heap() const
+{
+	char * tmp = new char[size()];
+	memcpy(tmp, &data[sizeof(off_t)], size());
+	for (uint32_t i=0; i<size(); ++i) {
+		if (tmp[i]==0) tmp[i] = '#';
+	}
+	tmp[size()] = 0;
+	cout << "heap[" << size() <<"] = \n" << tmp << endl;
+}
+
+
 
 
 off_t fxcharheap::put(		// return the target offset
@@ -117,14 +134,16 @@ off_t fxcharheap::put(		// return the target offset
   uint32_t len)						// input: length 
 throw (xqp::xqpexception)
 {
+  off_t id  = *offset_p;
+
   try {
-  	while (*offset_p+len+1 > fxary_p->get_eofoff()) expand();
-    memcpy(&data[*offset_p], &buf[start_offset], len);
-    offset_p[len] = 0;
+  	while (id+len+1 > fxary_p->get_eofoff()) expand();
+    memcpy(&data[id], &buf[start_offset], len);
+    data[id+len] = 0;
   } catch (...) {
     ioexception(__FUNCTION__,"exception in expanding before put()");
   }
-  off_t id = *offset_p;
+
   *offset_p += (len+1);
   return id;
 }
@@ -143,7 +162,7 @@ throw (xqp::xqpexception)
 	}
   try {
     memcpy(&data[id], &buf[start_offset], len);
-    data[id+start_offset] = 0;
+    data[id+len] = 0;
   } catch (...) {
 		ioexception(__FUNCTION__,"exception in memcpy");
   }
@@ -185,13 +204,13 @@ void fxcharheap::expand()
 
 fxcharheap::fxcharheap_iterator::fxcharheap_iterator(
 	fxcharheap * ch_p,
-	uint32_t initial_offset) 
+	bool end) 
 :
-	_begin(initial_offset ? ch_p->data + initial_offset - sizeof(off_t) : ch_p->data),
-	_end(ch_p->data + ch_p->size()),
-	current((char*)_begin),
+	_begin(end ? &ch_p->data[sizeof(off_t)] + ch_p->size() : &ch_p->data[sizeof(off_t)]),
+	_end(&ch_p->data[sizeof(off_t)] + ch_p->size()),
 	parent(ch_p)
 {
+	current = (char*)_begin;
 }
 
 
