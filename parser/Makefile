@@ -20,6 +20,7 @@ parsenodes : parsenodes.h parsenodes.cpp
 
 test : xquery_test.cpp
 	g++ ${OPT} -o xquery_test \
+		parsenodes.do \
 		xquery_scanner.do \
 		xquery_parser.do \
 		../util/xqpexception.o \
