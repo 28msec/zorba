@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: xquery.y,v 1.2 2006/11/14 05:24:43 Paul Pedersen Exp $
+ *  $Id: xquery_parser.y,v 1.2 2006/11/14 05:24:43 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  */
@@ -22,27 +22,24 @@
 #ifdef _WIN32
 #pragma warning(disable: 4786)
 #endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <string>
 
+#include "parsenodes.h"
+
+using namespace std;
+using namespace xqp;
+
+namespace xqp {
 class xquery_driver;
+}
 
 static const unsigned debug = 0;
 
-#if defined(NEW_BISON_VERSION)
-typedef struct {
-  Handle<ParseNode> node;
-  Handle<Expr> expr;
-  Handle<Value> xval;
-  unsigned sval;
-} xqueryYYSTYPE;
-#endif
-
-
 #define YYERROR_VERBOSE
-#define lineno lexer.lineno
 #define yyparse xqp
 
 %}
@@ -57,7 +54,7 @@ typedef struct {
 
 
 /*
-	Then we request the location tracking feature, and initialize the 
+	Request the location tracking feature, and initialize the 
 	first location's file name. Afterwards new locations are computed 
 	relatively to the previous locations: the file name will be 
 	automatically propagated. 
@@ -82,7 +79,7 @@ typedef struct {
 */
 %union
 {
-  node* node;
+  xqp::parsenode* node;
   off_t sval;
 }
 
@@ -92,9 +89,8 @@ typedef struct {
 	is output in the *.cc file; it needs detailed knowledge about the 
 	driver. 
 */
-
 %{
-# include "xquery_driver.h"
+#include "xquery_driver.h"
 %}
 
 
@@ -108,29 +104,29 @@ typedef struct {
 
 /* tokens that contain embedded string literals */
 /* -------------------------------------------- */
-%token <sval> APOS_ATTR_CONTENT	"apos attribute content"
+%token <sval> APOS_ATTR_CONTENT				"apos attribute content"
 %token <sval> ATTRIBUTE_QNAME_LBRACE	"<attribute QName {>"
-%token <sval> AT_URI_LITERAL	"<at URI>"
-%token <sval> CHAR_LITERAL	"char literal"
-%token <sval> CHAR_REF_LITERAL	"#charref;"
-%token <sval> ELEMENT_CONTENT	"element content"
-%token <sval> ELEMENT_QNAME_LBRACE	"<QName {>"
-%token <sval> ELEM_WILDCARD	"pref:*"
-%token <sval> ENTITY_REF	"&entity;"
-%token <sval> EXPR_COMMENT_LITERAL	"comment literal"
-%token <sval> NCNAME	"NCName"
-%token <sval> PI_NCNAME_LBRACE	"pi <NCName {>"
-%token <sval> PI_TARGET_LITERAL	"pi target"
-%token <sval> PRAGMA_LITERAL	"pragma literal"
-%token <sval> PREFIX_WILDCARD	"*:QName"
-%token <sval> QNAME	"QName"
-%token <sval> QNAME_LPAR	"<QName (>"
-%token <sval> QUOTE_ATTR_CONTENT	"quote attribute content"
-%token <sval> STRING_LITERAL	"STRING"
-%token <sval> URI_LITERAL	"URI"
-%token <sval> VARNAME	"variable name"
-%token <sval> VALIDATE_MODE	"validate mode"
-%token <sval> XML_COMMENT_LITERAL	"XML comment"
+%token <sval> AT_URI_LITERAL					"<at URI>"
+%token <sval> CHAR_LITERAL						"char literal"
+%token <sval> CHAR_REF_LITERAL				"#charref;"
+%token <sval> ELEMENT_CONTENT					"element content"
+%token <sval> ELEMENT_QNAME_LBRACE		"<QName {>"
+%token <sval> ELEM_WILDCARD						"pref:*"
+%token <sval> ENTITY_REF							"&entity;"
+%token <sval> EXPR_COMMENT_LITERAL		"comment literal"
+%token <sval> NCNAME									"NCName"
+%token <sval> PI_NCNAME_LBRACE				"pi <NCName {>"
+%token <sval> PI_TARGET_LITERAL				"pi target"
+%token <sval> PRAGMA_LITERAL					"pragma literal"
+%token <sval> PREFIX_WILDCARD					"*:QName"
+%token <sval> QNAME										"QName"
+%token <sval> QNAME_LPAR							"<QName (>"
+%token <sval> QUOTE_ATTR_CONTENT			"quote attribute content"
+%token <sval> STRING_LITERAL					"STRING"
+%token <sval> URI_LITERAL							"URI"
+%token <sval> VARNAME									"variable name"
+%token <sval> VALIDATE_MODE						"validate mode"
+%token <sval> XML_COMMENT_LITERAL			"XML comment"
 
 
 /* simple tokens */
@@ -653,9 +649,9 @@ typedef struct {
 /*
 	To enable memory deallocation during error recovery, use %destructor.
 */
-%printer    { debug_stream() << *$$; } "identifier"
-%destructor { delete $$; } "identifier"
-%printer    { debug_stream () << $$; } "number" "expression"
+/*%printer    { debug_stream() << *$$; }	*/
+/*%printer    { debug_stream () << $$; }	*/
+/*%destructor { delete $$; }              */
 
 %pure_parser
 %start Module
@@ -675,9 +671,9 @@ typedef struct {
 	NonTerminal1  TOKEN  NonTerminal2
 		{
 			NonTerminal* nt1_p = dynamic_cast<NonTerminal1*>(&$1);
-				// &$1 returns the pointer within rchandle<exprnode> $1
+				// &$1 returns the pointer within rchandle<exprparsenode> $1
 			nt1_p->push_back(dynamic_cast<NonTerminal2*>(&$2));
-				// &$2 returns the pointer within rchandle<exprnode> $2
+				// &$2 returns the pointer within rchandle<exprparsenode> $2
 				// push_back() arg gets coerced to rchandle<NonTerminal2>
 			$$ = nt1_p;
 				// operator=() arg gets coerced to rchandle<NonTerminal1>
@@ -758,12 +754,12 @@ Prolog :
 SIND_DeclList :
 		SIND_Decl
 		{
-			$$ = new SIND_DeclList(lineno, dynamic_cast<SIND_Decl*>(&$1));
+			$$ = new SIND_DeclList(dynamic_cast<SIND_Decl*>($1));
 		}
 	| SIND_DeclList  SEMI  SIND_Decl
 		{
-			SIND_DeclList* sindList_p = dynamic_cast<SIND_DeclList*>(&$1);
-			sindList_p->push_back(dynamic_cast<SIND_Decl*>(&$3);
+			SIND_DeclList* sindList_p = dynamic_cast<SIND_DeclList*>($1);
+			sindList_p->push_back(dynamic_cast<SIND_Decl*>($3));
 			$$ = sindList_p;
 		}
 	;
@@ -774,12 +770,12 @@ SIND_DeclList :
 VFO_DeclList :
 		VFO_Decl
 		{
-			$$ = new VFO_DeclList(lineno(), dynamic_cast<VFO_Decl*>(&$1));
+			$$ = new VFO_DeclList(dynamic_cast<VFO_Decl*>($1));
 		}
 	| VFO_DeclList  SEMI  VFO_Decl
 		{
-			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>(&$1);
-			vfoList_p->push_back(dynamic_cast<VFO_Decl*>(&$3);
+			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>($1);
+			vfoList_p->push_back(dynamic_cast<VFO_Decl*>($3));
 			$$ = vfoList_p;
 		}
 	;
@@ -3523,11 +3519,11 @@ FTIgnoreOption :
 	The error member function registers the errors to the driver.
 */
 
-void yy::xquery_parser::error(
-	yy::xquery_parser::location_type const& l,
-	std::string const& m)
+void xquery_parser::error(
+	xquery_parser::location_type const& loc,
+	std::string const& msg)
 {
-  driver.error(l, m);
+  driver.error(loc, msg);
 }
 
 
