@@ -5,8 +5,15 @@
  *	Copyright 2006-2007 FLWOR Foundation.
  */
 
+/*
+	The parser definition file starts by asking for the C++ LALR(1) 
+	skeleton, the creation of the parser header file, and specifies the 
+	name of the parser class.  Because the C++ skeleton changes, it is
+	safer to require the version. 
+*/
+
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
-%require "2.1a"
+%require "2.3"
 %defines
 %define "parser_class_name" "xquery_parser"
 
@@ -27,21 +34,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
-
 #include "parsenodes.h"
 
-using namespace std;
-using namespace xqp;
-
-namespace xqp {
 class xquery_driver;
-}
-
-static const unsigned debug = 0;
-
-#define YYERROR_VERBOSE
-#define yyparse xqp
-
 %}
 
 /*
@@ -81,6 +76,8 @@ static const unsigned debug = 0;
 {
   xqp::parsenode* node;
   off_t sval;
+	int ival;
+	double dval;
 }
 
 
@@ -91,6 +88,11 @@ static const unsigned debug = 0;
 */
 %{
 #include "xquery_driver.h"
+#include "symbol_table.h"
+
+#define INITIAL_HEAPSIZE	1024
+
+xqp::symbol_table symtab(INITIAL_HEAPSIZE);
 %}
 
 
@@ -195,12 +197,20 @@ static const unsigned debug = 0;
 %token EVERY_DOLLAR								"<every $>"
 %token EXCEPT											"except"
 %token EXTERNAL										"external"
+%token F_EQ												"eq"
+%token F_GE												"ge"
+%token F_GT												"gt"
+%token F_LE												"le"
+%token F_LT												"lt"
+%token F_NE												"ne"
 %token FOLLOWING_AXIS							"following::"
 %token FOLLOWING_SIBLING_AXIS			"following-sibling::"
 %token FOLLOWS										"follows"
 %token FOR_DOLLAR									"<for $>"
 %token GENERALCOMP								"general comp"
+%token GE													">="
 %token GETS												":="
+%token GT													">"
 %token HOOK												"?"
 %token IDIV												"idiv"
 %token IF_LPAR										"<if (>"
@@ -215,15 +225,17 @@ static const unsigned debug = 0;
 %token ITEM_TEST									"item()"
 %token LBRACE											"{"
 %token LBRACK											"["
+%token LE													"<="
 %token LEADING_LONE_SLASH					"[ / ]"
 %token LET_DOLLAR									"<let $>"
 %token LPAR												"("
+%token LT													"<"
 %token MINUS											"-"
 %token MOD												"mod"
 %token MODULE_NAMESPACE						"<module namespace>"
 %token NAMESPACE									"namespace"
 %token NAN												"nan"
-%token NE													"ne"
+%token NE													"!="
 %token NODECOMP										"nodecomp"
 %token NODE_LPAR									"<node (>"
 %token NOT_OPERATOR_KEYWORD				"??"
@@ -261,11 +273,11 @@ static const unsigned debug = 0;
 %token SGT												"/>"
 %token SLASH											"/"
 %token SLASH_SLASH								"//"
-%token SOME_DOLLAR								"some $"
-%token STABLE_ORDER_BY						"stable order by"
+%token SOME_DOLLAR								"<some $>"
+%token STABLE_ORDER_BY						"<stable order by>"
 %token STAR												"*"
-%token START_TAG_END							">"
-%token START_TAG									"<"
+%token START_TAG_END							"start tag end >"
+%token START_TAG									"start tag <"
 %token STRIP											"strip"
 %token TAG_END										"</"
 %token TEXT_LBRACE								"<text {>"
@@ -653,16 +665,18 @@ static const unsigned debug = 0;
 /*%printer    { debug_stream () << $$; }	*/
 /*%destructor { delete $$; }              */
 
-%pure_parser
-%start Module
-
-
 
 /*
 	The grammar
 */
 
+%{
+using namespace xqp;
+%}
+
 %%
+%start Module;
+
 
 /*______________________________________________________________________
 
@@ -717,7 +731,6 @@ VersionDecl :
 MainModule : 
     Prolog  QueryBody
 		{
-			$$ = new MainModule();
 		}
   ;
 
@@ -3519,11 +3532,10 @@ FTIgnoreOption :
 	The error member function registers the errors to the driver.
 */
 
-void xquery_parser::error(
-	xquery_parser::location_type const& loc,
+void yy::xquery_parser::error(
+	yy::xquery_parser::location_type const& loc,
 	std::string const& msg)
 {
   driver.error(loc, msg);
 }
-
 

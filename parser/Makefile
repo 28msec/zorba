@@ -3,11 +3,14 @@ scanner : xquery_scanner.l
 	g++ -c -o xquery_scanner.o xquery_scanner.yy.cpp
 
 parser : xquery_parser.y
-	bison -v -p xqp -d xquery_parser.y
+	bison -v -d xquery_parser.y
 	g++ -c -o xquery_parser.o xquery_parser.tab.c
 
 driver : xquery_driver.h xquery_driver.cpp
 	g++ -c -o xquery_driver.o xquery_driver.cpp
+
+symtab : symbol_table.h symbol_table.cpp
+	g++ -c -o symbol_table.o symbol_table.cpp
 
 test : xquery_test.cpp
 	g++ -o xquery xquery_scanner.o xquery_parser.o xquery_driver.o xquery_test.cpp
