@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <string>
+
 #include "parsenodes.h"
 
 class xquery_driver;
