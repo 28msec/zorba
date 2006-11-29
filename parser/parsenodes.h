@@ -424,8 +424,8 @@ class Setter : public SIND_Decl
 |_______________________________________________________________________*/
 {
 public:
-	Setter() {}
-	~Setter() {}
+	Setter();
+	~Setter();
 };
 
 
@@ -439,8 +439,8 @@ class Import : public SIND_Decl
 |_______________________________________________________________________*/
 {
 public:
-	Import() {}
-	~Import() {}
+	Import();
+	~Import();
 };
 
 
@@ -477,11 +477,9 @@ protected:
 	std::string uri;
 
 public:
-	NamespaceDecl()
-		: prefix(""), uri("") {}
-	NamespaceDecl(std::string const& _prefix, std::string const& _uri)
-		: prefix(_prefix), uri(_uri) {}
-	~NamespaceDecl() {}
+	NamespaceDecl();
+	NamespaceDecl(std::string const& _prefix, std::string const& _uri);
+	~NamespaceDecl();
 
 public:
 	std::string get_prefix() const { return prefix; }
@@ -517,9 +515,9 @@ protected:
 	boundaryspace_mode mode;
 
 public:
-	BoundarySpaceDecl() {}
-	BoundarySpaceDecl(boundaryspace_mode _mode) : mode(_mode) {}
-	~BoundarySpaceDecl() {}
+	BoundarySpaceDecl();
+	BoundarySpaceDecl(boundaryspace_mode _mode);
+	~BoundarySpaceDecl();
 
 public:
 	boundaryspace_mode get_boundaryspace_mode() const { return mode; }
@@ -583,28 +581,20 @@ class DefaultNamespaceDecl : public SIND_Decl
 |_______________________________________________________________________*/
 {
 protected:
-	std::string* default_element_namespace_p;
-	std::string* default_function_namespace_p;
+	std::string const* default_element_namespace_p;
+	std::string const* default_function_namespace_p;
 
 public:
-	DefaultNamespaceDecl()
-		:
-		default_element_namespace_p(NULL),
-		default_function_namespace_p(NULL)
-	{}
+	DefaultNamespaceDecl();
 	DefaultNamespaceDecl(
-		std::string* _default_element_namespace_p,
-		std::string* _default_function_namespace_p)
-		:
-		default_element_namespace_p(_default_element_namespace_p),
-		default_function_namespace_p(_default_function_namespace_p)
-	{}
-	~DefaultNamespaceDecl() {}
+		std::string const* _default_element_namespace_p,
+		std::string const* _default_function_namespace_p);
+	~DefaultNamespaceDecl();
 
 public:
-	std::string* get_default_element_namespace() const
+	std::string const* get_default_element_namespace() const
 		{ return default_element_namespace_p; }
-	std::string* get_default_function_namespace() const
+	std::string const* get_default_function_namespace() const
 		{ return default_function_namespace_p; }
 };
 
@@ -625,7 +615,7 @@ class OptionDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	QName* name_p;
+	QName const* name_p;
 	std::string val;
 
 public:
@@ -634,7 +624,7 @@ public:
 	~OptionDecl();
 
 public:
-	QName* get_name() const { return name_p; }
+	QName const* get_name() const { return name_p; }
 	std::string get_val() const { return val; }
 };
 
