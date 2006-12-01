@@ -63,11 +63,18 @@ class xquery_driver;
 
 
 /*
-	Use the two following directives to enable parser tracing and verbose 
+	The two following directives to enable parser tracing and verbose 
 	error messages. 
 */
 %debug
 %error-verbose
+
+/*
+%{
+static void print_token_value(FILE *, int, YYSTYPE);
+#define YYPRINT(file, type, value) print_token_value(file, type, value)
+%}
+*/
 
 
 /*
@@ -89,11 +96,6 @@ class xquery_driver;
 */
 %{
 #include "xquery_driver.h"
-#include "symbol_table.h"
-
-#define INITIAL_HEAPSIZE	1024
-
-xqp::symbol_table symtab(INITIAL_HEAPSIZE);
 %}
 
 
@@ -107,272 +109,277 @@ xqp::symbol_table symtab(INITIAL_HEAPSIZE);
 
 /* tokens that contain embedded string literals */
 /* -------------------------------------------- */
-%token <sval> APOS_ATTR_CONTENT				"apos attribute content"
-%token <sval> ATTRIBUTE_QNAME_LBRACE	"<attribute QName {>"
-%token <sval> AT_URI_LITERAL					"<at URI>"
-%token <sval> CHAR_LITERAL						"char literal"
-%token <sval> CHAR_REF_LITERAL				"#charref;"
-%token <sval> ELEMENT_CONTENT					"element content"
-%token <sval> ELEMENT_QNAME_LBRACE		"<QName {>"
-%token <sval> ELEM_WILDCARD						"pref:*"
-%token <sval> ENTITY_REF							"&entity;"
-%token <sval> EXPR_COMMENT_LITERAL		"comment literal"
-%token <sval> NCNAME									"NCName"
-%token <sval> PI_NCNAME_LBRACE				"pi <NCName {>"
-%token <sval> PI_TARGET_LITERAL				"pi target"
-%token <sval> PRAGMA_LITERAL					"pragma literal"
-%token <sval> PREFIX_WILDCARD					"*:QName"
-%token <sval> QNAME										"QName"
-%token <sval> QNAME_LPAR							"<QName (>"
-%token <sval> QUOTE_ATTR_CONTENT			"quote attribute content"
-%token <sval> STRING_LITERAL					"STRING"
-%token <sval> URI_LITERAL							"URI"
-%token <sval> VARNAME									"variable name"
-%token <sval> VALIDATE_MODE						"validate mode"
-%token <sval> XML_COMMENT_LITERAL			"XML comment"
+%token <sval> APOS_ATTR_CONTENT				"'apos attribute content'"
+%token <sval> ATTRIBUTE_QNAME_LBRACE	"'<attribute QName {>'"
+%token <sval> AT_URI_LITERAL					"'<at URI>'"
+%token <sval> CHAR_LITERAL						"'char literal'"
+%token <sval> CHAR_REF_LITERAL				"'#charref;'"
+%token <sval> ELEMENT_CONTENT					"'element content'"
+%token <sval> ELEMENT_QNAME_LBRACE		"'<QName {>'"
+%token <sval> ELEM_WILDCARD						"'pref:*'"
+%token <sval> ENTITY_REF							"'&entity;'"
+%token <sval> EXPR_COMMENT_LITERAL		"'comment literal'"
+%token <sval> NCNAME									"'NCName'"
+%token <sval> PI_NCNAME_LBRACE				"'pi <NCName {>'"
+%token <sval> PI_TARGET_LITERAL				"'pi target'"
+%token <sval> PRAGMA_LITERAL					"'pragma literal'"
+%token <sval> PREFIX_WILDCARD					"'*:QName'"
+%token <sval> QNAME										"'QName'"
+%token <sval> QNAME_LPAR							"'<QName (>'"
+%token <sval> QUOTE_ATTR_CONTENT			"'quote attribute content'"
+%token <sval> STRING_LITERAL					"'STRING'"
+%token <sval> URI_LITERAL							"'URI'"
+%token <sval> VARNAME									"'variable name'"
+%token <sval> VALIDATE_MODE						"'validate mode'"
+%token <sval> XML_COMMENT_LITERAL			"'XML comment'"
 
 
 /* simple tokens */
 /* ------------- */
-%token ANCESTOR_AXIS							"ancestor::"
-%token ANCESTOR_OR_SELF_AXIS			"ancestor-or-self::"
-%token AND												"and"
-%token APOS												"'"
-%token AS													"as"
-%token ASCENDING									"ascending"
-%token AT													"at"
-%token ATTRIBUTE									"attribute"
-%token ATTRIBUTE_AXIS							"attribute::"
-%token ATTRIBUTE_LBRACE						"<attribute {>"
-%token ATTRIBUTE_LPAR							"<attribute (>"
-%token AT_SIGN										"@"
-%token CASE												"case"
-%token CASTABLE_AS								"<castable as>"
-%token CAST_AS										"<cast as>"
-%token CDATA_BEGIN								"CDATA[["
-%token CDATA_END									"]]"
-%token CHILD_AXIS									"child::"
-%token COLLATION									"collation"
-%token COMMA											","
-%token COMMENT_BEGIN							"(:"
-%token COMMENT_END								":)"
-%token COMMENT_LBRACE							"<comment {>"
-%token COMMENT_LPAR								"<comment (>"
-%token DECIMAL_LITERAL						"DECIMAL"
-%token DECLARE_BASE_URI						"<declare base URI>"
-%token DECLARE_BOUNDARY_SPACE			"<declare boundary space>"
-%token DECLARE_CONSTRUCTION				"<declare construction>"
-%token DECLARE_COPY_NAMESPACES		"<declare copy namespaces>"
-%token DECLARE_DEFAULT_COLLATION	"<declare default collation>"
-%token DECLARE_DEFAULT_ELEMENT		"<declare default element>"
-%token DECLARE_DEFAULT_FUNCTION		"<declare default function>"
-%token DECLARE_DEFAULT_ORDER			"<declare default order>"
-%token DECLARE_FUNCTION						"<declare function>"
-%token DECLARE_NAMESPACE					"<declare namespace>"
-%token DECLARE_OPTION							"<declare option>"
-%token DECLARE_ORDERING						"<declare ordering>"
-%token DECLARE_VARIABLE_DOLLAR		"<declare var $>"
-%token DEFAULT										"default"
-%token DEFAULT_ELEMENT						"<default element>"
-%token DESCENDANT_AXIS						"descendant::"
-%token DESCENDANT_OR_SELF_AXIS		"descendant-or-self::"
-%token DESCENDING									"descending"
-%token DIV												"div"
-%token DOCUMENT_LBRACE						"<document {>"
-%token DOCUMENT_NODE_LPAR					"<document node (>"
-%token DOLLAR											"$"
-%token DOT												"."
-%token DOT_DOT										".."
-%token DOUBLE_LBRACE							"{{"
-%token DOUBLE_LITERAL							"DOUBLE"
-%token DOUBLE_RBRACE							"<double {>"
-%token ELEMENT_LBRACE							"<element {>"
-%token ELEMENT_LPAR								"<element (>"
-%token ELSE												"else"
-%token EMPTY_GREATEST							"<empty greatest>"
-%token EMPTY_LEAST								"<empty least>"
-%token ENCODING										"encoding"
-%token EQUALS											"="
-%token ESCAPE_APOS								"''"
-%token ESCAPE_QUOTE								"\"\""
-%token EVERY_DOLLAR								"<every $>"
-%token EXCEPT											"except"
-%token EXTERNAL										"external"
-%token F_EQ												"eq"
-%token F_GE												"ge"
-%token F_GT												"gt"
-%token F_LE												"le"
-%token F_LT												"lt"
-%token F_NE												"ne"
-%token FOLLOWING_AXIS							"following::"
-%token FOLLOWING_SIBLING_AXIS			"following-sibling::"
-%token FOLLOWS										"follows"
-%token FOR_DOLLAR									"<for $>"
-%token GENERALCOMP								"general comp"
-%token GE													">="
-%token GETS												":="
-%token GT													">"
-%token HOOK												"?"
-%token IDIV												"idiv"
-%token IF_LPAR										"<if (>"
-%token IMPORT_MODULE							"<import module>"	
-%token IMPORT_SCHEMA							"<import schema>"
-%token IN													"in"
-%token INHERIT										"inherit"
-%token INSTANCE_OF								"<instance of>"
-%token INTEGER_LITERAL						"INTEGER"
-%token INTERSECT									"intersect"
-%token IS													"is"
-%token ITEM_TEST									"item()"
-%token LBRACE											"{"
-%token LBRACK											"["
-%token LE													"<="
-%token LEADING_LONE_SLASH					"[ / ]"
-%token LET_DOLLAR									"<let $>"
-%token LPAR												"("
-%token LT													"<"
-%token MINUS											"-"
-%token MOD												"mod"
-%token MODULE_NAMESPACE						"<module namespace>"
-%token NAMESPACE									"namespace"
-%token NAN												"nan"
-%token NE													"!="
-%token NODECOMP										"nodecomp"
-%token NODE_LPAR									"<node (>"
-%token NOT_OPERATOR_KEYWORD				"??"
-%token NO_INHERIT									"<no inherit>"
-%token NO_PRESERVE								"<no preserve>"
-%token OR													"or"
-%token ORDERED										"ordered"
-%token ORDERED_LBRACE							"ordered {"
-%token ORDER_BY										"<order by>"
-%token PARENT_AXIS								"parent::"
-%token PI_BEGIN										"<?"
-%token PI_END											"?>"
-%token PI_LBRACE									"<pi {>"
-%token PI_LPAR										"<pi (>"
-%token PI_TARGET									"PI TARGET"
-%token PLUS												"+"
-%token PRAGMA_BEGIN								"PRAGMA BEGIN"
-%token PRAGMA_END									"PRAGMA END"
-%token PRECEDES										"<<"
-%token PRECEDING_AXIS							"preceding::"
-%token PRECEDING_SIBLING_AXIS			"preceding-sibling::"
-%token PRESERVE										"preserve"
-%token PROCESSING_INSTRUCTION			"<processing instruction>"
-%token QUOTE											"\""
-%token RBRACE											"}"
-%token RBRACK											"]"
-%token RETURN											"return"
-%token RPAR												")"
-%token RPAR_AS										"<) as>"
-%token SATISFIES									"satisfies"
-%token SCHEMA_ATTRIBUTE_LPAR			"<schema attribute ("
-%token SCHEMA_ELEMENT_LPAR				"<schema element (>"
-%token SELF_AXIS									"self::"
-%token SEMI												";"
-%token SGT												"/>"
-%token SLASH											"/"
-%token SLASH_SLASH								"//"
-%token SOME_DOLLAR								"<some $>"
-%token STABLE_ORDER_BY						"<stable order by>"
-%token STAR												"*"
-%token START_TAG_END							"start tag end >"
-%token START_TAG									"start tag <"
-%token STRIP											"strip"
-%token TAG_END										"</"
-%token TEXT_LBRACE								"<text {>"
-%token TEXT_LPAR									"<text (>"
-%token THEN												"then"
-%token TO													"to"
-%token TREAT_AS										"<treat as>"
-%token TYPESWITCH_LPAR						"<typeswitch (>"
-%token UNION											"union"
-%token UNORDERED									"unordered"
-%token UNORDERED_LBRACE						"<unordered (>"
-%token UNRECOGNIZED								"unrecognized"
-%token VALIDATE_LBRACE						"<validate {>"
-%token VALUECOMP									"VALUECOMP"
-%token VBAR												"|"
-%token VOID_TEST									"void()"
-%token WHERE											"where"
-%token XML_COMMENT_BEGIN					"<!"
-%token XML_COMMENT_END						"-->"
-%token XQUERY_VERSION							"<XQuery Version>"
+%token ANCESTOR_AXIS							"'ancestor::'"
+%token ANCESTOR_OR_SELF_AXIS			"'ancestor-or-self::'"
+%token AND												"'and'"
+%token APOS												"'''"
+%token AS													"'as'"
+%token ASCENDING									"'ascending'"
+%token AT													"'at'"
+%token ATTRIBUTE									"'attribute'"
+%token ATTRIBUTE_AXIS							"'attribute::'"
+%token ATTRIBUTE_LBRACE						"'<attribute {>'"
+%token ATTRIBUTE_LPAR							"'<attribute (>'"
+%token AT_SIGN										"'@'"
+%token CASE												"'case'"
+%token CASTABLE_AS								"'<castable as>'"
+%token CAST_AS										"'<cast as>'"
+%token CDATA_BEGIN								"'CDATA[['"
+%token CDATA_END									"']]'"
+%token CHILD_AXIS									"'child::'"
+%token COLLATION									"'collation'"
+%token COMMA											"','"
+%token COMMENT_BEGIN							"'(:'"
+%token COMMENT_END								"':)'"
+%token COMMENT_LBRACE							"'<comment {>'"
+%token COMMENT_LPAR								"'<comment (>'"
+%token DECIMAL_LITERAL						"'DECIMAL'"
+%token DECLARE_BASE_URI						"'<declare base URI>'"
+%token DECLARE_BOUNDARY_SPACE			"'<declare boundary space>'"
+%token DECLARE_CONSTRUCTION				"'<declare construction>'"
+%token DECLARE_COPY_NAMESPACES		"'<declare copy namespaces>'"
+%token DECLARE_DEFAULT_COLLATION	"'<declare default collation>'"
+%token DECLARE_DEFAULT_ELEMENT		"'<declare default element>'"
+%token DECLARE_DEFAULT_FUNCTION		"'<declare default function>'"
+%token DECLARE_DEFAULT_ORDER			"'<declare default order>'"
+%token DECLARE_FUNCTION						"'<declare function>'"
+%token DECLARE_NAMESPACE					"'<declare namespace>'"
+%token DECLARE_OPTION							"'<declare option>'"
+%token DECLARE_ORDERING						"'<declare ordering>'"
+%token DECLARE_UPDATING_FUNCTION	"'<declare updating function>'"
+%token DECLARE_VARIABLE_DOLLAR		"'<declare var $>'"
+%token DEFAULT										"'default'"
+%token DEFAULT_ELEMENT						"'<default element>'"
+%token DESCENDANT_AXIS						"'descendant::'"
+%token DESCENDANT_OR_SELF_AXIS		"'descendant-or-self::'"
+%token DESCENDING									"'descending'"
+%token DIV												"'div'"
+%token DOCUMENT_LBRACE						"'<document {>'"
+%token DOCUMENT_NODE_LPAR					"'<document node (>'"
+%token DOLLAR											"'$'"
+%token DOT												"'.'"
+%token DOT_DOT										"'..'"
+%token DOUBLE_LBRACE							"'{{'"
+%token DOUBLE_LITERAL							"'DOUBLE'"
+%token DOUBLE_RBRACE							"'<double {>'"
+%token ELEMENT_LBRACE							"'<element {>'"
+%token ELEMENT_LPAR								"'<element (>'"
+%token ELSE												"'else'"
+%token EMPTY_GREATEST							"'<empty greatest>'"
+%token EMPTY_LEAST								"'<empty least>'"
+%token EMPTY_TAG_END							"'/>'"
+%token ENCODING										"'encoding'"
+%token EQUALS											"'='"
+%token ESCAPE_APOS								"''''"
+%token ESCAPE_QUOTE								"'\"\"'"
+%token EVERY_DOLLAR								"'<every $>'"
+%token EXCEPT											"'except'"
+%token EXTERNAL										"'external'"
+%token F_EQ												"'eq'"
+%token F_GE												"'ge'"
+%token F_GT												"'gt'"
+%token F_LE												"'le'"
+%token F_LT												"'lt'"
+%token F_NE												"'ne'"
+%token FOLLOWING_AXIS							"'following::'"
+%token FOLLOWING_SIBLING_AXIS			"'following-sibling::'"
+%token FOLLOWS										"'follows'"
+%token FOR_DOLLAR									"'<for $>'"
+%token GENERALCOMP								"'general comp'"
+%token GE													"'>='"
+%token GETS												"':='"
+%token GT													"'>'"
+%token HOOK												"'?'"
+%token IDIV												"'idiv'"
+%token IF_LPAR										"'<if (>'"
+%token IMPORT_MODULE							"'<import module>"	
+%token IMPORT_SCHEMA							"'<import schema>'"
+%token IN													"'in'"
+%token INHERIT										"'inherit'"
+%token INSTANCE_OF								"'<instance of>'"
+%token INTEGER_LITERAL						"'INTEGER'"
+%token INTERSECT									"'intersect'"
+%token IS													"'is'"
+%token ITEM_TEST									"'item()'"
+%token LBRACE											"'{'"
+%token LBRACK											"'['"
+%token LE													"'<='"
+%token LEADING_LONE_SLASH					"'[ / ]'"
+%token LET_DOLLAR									"'<let $>'"
+%token LET_SCORE_DOLLAR	  				"'<let score $>'"
+%token LPAR												"'('"
+%token LT													"'<'"
+%token MINUS											"'-'"
+%token MOD												"'mod'"
+%token MODULE_NAMESPACE						"'<module namespace>'"
+%token NAMESPACE									"'namespace'"
+%token NAN												"'nan'"
+%token NE													"'!='"
+%token NODECOMP										"'nodecomp'"
+%token NODE_LPAR									"'<node (>'"
+%token NOT_OPERATOR_KEYWORD				"'??'"
+%token NO_INHERIT									"'<no inherit>'"
+%token NO_PRESERVE								"'<no preserve>'"
+%token OCCURS_HOOK								"'occurs ?'"
+%token OCCURS_PLUS								"'occurs +'"
+%token OCCURS_STAR								"'occurs *'"
+%token OR													"'or'"
+%token ORDERED										"'ordered'"
+%token ORDERED_LBRACE							"'ordered {'"
+%token ORDER_BY										"'<order by>'"
+%token PARENT_AXIS								"'parent::'"
+%token PI_BEGIN										"'<?'"
+%token PI_END											"'?>'"
+%token PI_LBRACE									"'<pi {>'"
+%token PI_LPAR										"'<pi (>'"
+%token PI_TARGET									"'PI TARGET'"
+%token PLUS												"'+'"
+%token PRAGMA_BEGIN								"'PRAGMA BEGIN'"
+%token PRAGMA_END									"'PRAGMA END'"
+%token PRECEDES										"'<<'"
+%token PRECEDING_AXIS							"'preceding::'"
+%token PRECEDING_SIBLING_AXIS			"'preceding-sibling::'"
+%token PRESERVE										"'preserve'"
+%token PROCESSING_INSTRUCTION			"'<processing instruction>'"
+%token QUOTE											"'\"'"
+%token RBRACE											"'}'"
+%token RBRACK											"']'"
+%token RETURN											"'return'"
+%token RPAR												"')'"
+%token RPAR_AS										"'<) as>'"
+%token SATISFIES									"'satisfies'"
+%token SCHEMA_ATTRIBUTE_LPAR			"'<schema attribute ('"
+%token SCHEMA_ELEMENT_LPAR				"'<schema element (>'"
+%token SELF_AXIS									"'self::'"
+%token SEMI												"';'"
+%token SLASH											"'/'"
+%token SLASH_SLASH								"'//'"
+%token SOME_DOLLAR								"'<some $>'"
+%token STABLE_ORDER_BY						"'<stable order by>'"
+%token STAR												"'*'"
+%token START_TAG_END							"'start tag end >'"
+%token START_TAG									"'start tag <'"
+%token STRIP											"'strip'"
+%token TAG_END										"'</'"
+%token TEXT_LBRACE								"'<text {>'"
+%token TEXT_LPAR									"'<text (>'"
+%token THEN												"'then'"
+%token TO													"'to'"
+%token TREAT_AS										"'<treat as>'"
+%token TYPESWITCH_LPAR						"'<typeswitch (>'"
+%token UNION											"'union'"
+%token UNORDERED									"'unordered'"
+%token UNORDERED_LBRACE						"'<unordered (>'"
+%token UNRECOGNIZED								"'unrecognized'"
+%token VALIDATE_LBRACE						"'<validate {>'"
+%token VALUECOMP									"'VALUECOMP'"
+%token VBAR												"'|'"
+%token VOID_TEST									"'void()'"
+%token WHERE											"'where'"
+%token XML_COMMENT_BEGIN					"'<!'"
+%token XML_COMMENT_END						"'-->'"
+%token XQUERY_VERSION							"'<XQuery Version>'"
 
 
 /* update-related */
 /* -------------- */
-%token AFTER											"after"
-%token BEFORE											"before"
-%token COMMA_DOLLAR 							"<, $>"
-%token DECLARE_REVALIDATION_MODE	"<declare revalidation mode>"
-%token DO_DELETE									"<do delete>"
-%token DO_INSERT									"<do insert>"
-%token DO_RENAME									"<do rename>"
-%token DO_REPLACE									"<do replace>"
-%token FIRST_INTO									"<first into>"
-%token INTO												"into"
-%token LAST_INTO									"<lastinto>"
-%token MODIFY 										"modify"
-%token TRANSFORM_COPY_DOLLAR 			"<transform copy $>"
-%token VALUE_OF										"<value of>"
-%token WITH												"with"
+%token AFTER											"'after'"
+%token BEFORE											"'before'"
+%token COMMA_DOLLAR 							"'<, $>'"
+%token DECLARE_REVALIDATION_MODE	"'<declare revalidation mode>'"
+%token DO_DELETE									"'<do delete>'"
+%token DO_INSERT									"'<do insert>'"
+%token DO_RENAME									"'<do rename>'"
+%token DO_REPLACE									"'<do replace>'"
+%token FIRST_INTO									"'<first into>'"
+%token INTO												"'into'"
+%token LAST_INTO									"'<lastinto>'"
+%token MODIFY 										"'modify'"
+%token TRANSFORM_COPY_DOLLAR 			"'<transform copy $>'"
+%token VALUE_OF										"'<value of>'"
+%token WITH												"'with'"
 
 
 /* full-text-related */
 /* ----------------- */
-%token ALL												"all"
-%token ALL_WORDS									"<all words>"
-%token ANY												"any"
-%token ANY_WORD										"<any words>"
-%token AT_END											"<at end>"
-%token AT_LEAST										"<at least>"
-%token AT_MOST										"<at most>"
-%token AT_START										"<at start>"
-%token CASE_INSENSITIVE						"<case insensitive>"
-%token CASE_SENSITIVE							"<casesensitive>"
-%token DECLARE_FTOPTION						"<declare ftoption>"
-%token DIACRITICS_INSENSITIVE			"<diacritics insensitive>"
-%token DIACRITICS_SENSITIVE				"<diacritics sensitive>"
-%token DIFFERENT									"different"
-%token DISTANCE										"distance"
-%token ENTIRE_CONTENT							"<entire content>"
-%token EXACTLY										"exactly"
-%token FROM												"from"
-%token FTAND											"&&"
-%token FTCONTAINS 								"ftcontains"
-%token FTNOT											"ftnot"
-%token FTOR												"||"
-%token LANGUAGE 									"language"
-%token LEVELS											"levels"
-%token LOWERCASE									"lowercase"
-%token NOT_IN											"<not in>"
-%token OCCURS											"occurs"
-%token PARAGRAPH									"paragraph"
-%token PHRASE											"phrase"
-%token RELATIONSHIP								"relationship"
-%token SAME												"same"
-%token SCORE											"score"
-%token SENTENCE										"sentence"
-%token SENTENCES									"sentences"
-%token TIMES											"times"
-%token UPPERCASE									"uppercase"
-%token WEIGHT											"weight"
-%token WINDOW											"window"
-%token WITHOUT_CONTENT						"<without content>"
-%token WITHOUT_DIACRITICS					"<without diacritics>"
-%token WITHOUT_STEMMING						"<without stemming>"
-%token WITHOUT_STOP_WORDS					"<without stop words>"
-%token WITHOUT_THESAURUS					"<without thesaurus>"
-%token WITHOUT_WILDCARDS					"<without wildcards>"
-%token WITH_DEFAULT_STOP_WORDS 		"<with default stop words>"
-%token WITH_DIACRITICS						"<with diacritics>"
-%token WITH_STEMMING							"<with stemming>"
-%token WITH_STOP_WORDS 						"<with stop words>"
-%token WITH_THESAURUS							"<with thesaurus>"
-%token WITH_WILDCARDS							"<with wildcards>"
-%token WORDS											"words"
+%token ALL												"'all'"
+%token ALL_WORDS									"'<all words>'"
+%token ANY												"'any'"
+%token ANY_WORD										"'<any words>'"
+%token AT_END											"'<at end>'"
+%token AT_LEAST										"'<at least>'"
+%token AT_MOST										"'<at most>'"
+%token AT_START										"'<at start>'"
+%token CASE_INSENSITIVE						"'<case insensitive>'"
+%token CASE_SENSITIVE							"'<casesensitive>'"
+%token DECLARE_FTOPTION						"'<declare ftoption>'"
+%token DIACRITICS_INSENSITIVE			"'<diacritics insensitive>'"
+%token DIACRITICS_SENSITIVE				"'<diacritics sensitive>'"
+%token DIFFERENT									"'different'"
+%token DISTANCE										"'distance'"
+%token ENTIRE_CONTENT							"'<entire content>'"
+%token EXACTLY										"'exactly'"
+%token FROM												"'from'"
+%token FTAND											"'&&'"
+%token FTCONTAINS 								"'ftcontains'"
+%token FTNOT											"'ftnot'"
+%token FTOR												"'||'"
+%token LANGUAGE 									"'language'"
+%token LEVELS											"'levels'"
+%token LOWERCASE									"'lowercase'"
+%token FTNOT_IN										"'<not in>'"
+%token OCCURS											"'occurs'"
+%token PARAGRAPH									"'paragraph'"
+%token PHRASE											"'phrase'"
+%token RELATIONSHIP								"'relationship'"
+%token SAME												"'same'"
+%token SCORE											"'score'"
+%token SENTENCE										"'sentence'"
+%token SENTENCES									"'sentences'"
+%token TIMES											"'times'"
+%token UPPERCASE									"'uppercase'"
+%token WEIGHT											"'weight'"
+%token WINDOW											"'window'"
+%token WITHOUT_CONTENT						"'<without content>'"
+%token WITHOUT_DIACRITICS					"'<without diacritics>'"
+%token WITHOUT_STEMMING						"'<without stemming>'"
+%token WITHOUT_STOP_WORDS					"'<without stop words>'"
+%token WITHOUT_THESAURUS					"'<without thesaurus>'"
+%token WITHOUT_WILDCARDS					"'<without wildcards>'"
+%token WITH_DEFAULT_STOP_WORDS 		"'<with default stop words>'"
+%token WITH_DIACRITICS						"'<with diacritics>'"
+%token WITH_STEMMING							"'<with stemming>'"
+%token WITH_STOP_WORDS 						"'<with stop words>'"
+%token WITH_THESAURUS							"'<with thesaurus>'"
+%token WITH_WILDCARDS							"'<with wildcards>'"
+%token WORDS											"'words'"
 
 /* left-hand sides */
 /* --------------- */
@@ -408,7 +415,7 @@ xqp::symbol_table symtab(INITIAL_HEAPSIZE);
 %type <node> ComputedConstructor
 %type <node> ConstructionDecl
 %type <node> Constructor
-%type <node> ContentExpr
+//%type <node> ContentExpr
 %type <node> ContextItemExpr
 %type <node> CopyNamespacesDecl
 %type <node> DefaultCollationDecl
@@ -437,6 +444,7 @@ xqp::symbol_table symtab(INITIAL_HEAPSIZE);
 %type <node> ForwardStep
 %type <node> FunctionCall
 %type <node> FunctionDecl
+%type <node> GeneralComp
 %type <node> IfExpr
 %type <node> Import
 %type <node> InheritMode
@@ -454,6 +462,7 @@ xqp::symbol_table symtab(INITIAL_HEAPSIZE);
 %type <node> MultiplicativeExpr
 %type <node> NameTest
 %type <node> NamespaceDecl
+%type <node> NodeComp
 %type <node> NodeTest
 %type <node> NumericLiteral
 %type <node> OccurrenceIndicator
@@ -508,6 +517,7 @@ xqp::symbol_table symtab(INITIAL_HEAPSIZE);
 %type <node> UnionExpr
 %type <node> UnorderedExpr
 %type <node> ValidateExpr
+%type <node> ValueComp
 %type <node> ValueExpr
 %type <node> VarDecl
 %type <node> VarGetsDecl
@@ -639,8 +649,7 @@ xqp::symbol_table symtab(INITIAL_HEAPSIZE);
  *_____________________________________________________________________*/
 %nonassoc QVARINDECLLIST_REDUCE
 %left COMMA_DOLLAR 
-
-%nonassoc  UNARY_PREC
+%nonassoc UNARY_PREC
 
 /*_____________________________________________________________________
  *
@@ -648,7 +657,7 @@ xqp::symbol_table symtab(INITIAL_HEAPSIZE);
  * [119] SequenceType ::= ItemType | ItemType OccurrenceIndicator
  *_____________________________________________________________________*/
 %nonassoc SEQUENCE_TYPE_REDUCE
-%nonassoc  HOOK 
+%nonassoc OCCURS_HOOK OCCURS_PLUS OCCURS_STAR
 
 /*_____________________________________________________________________
  *
@@ -679,38 +688,26 @@ using namespace xqp;
 %start Module;
 
 
-/*______________________________________________________________________
-
-	Code pattern:
-
-	NonTerminal1  TOKEN  NonTerminal2
-		{
-			NonTerminal* nt1_p = dynamic_cast<NonTerminal1*>(&$1);
-				// &$1 returns the pointer within rchandle<exprparsenode> $1
-			nt1_p->push_back(dynamic_cast<NonTerminal2*>(&$2));
-				// &$2 returns the pointer within rchandle<exprparsenode> $2
-				// push_back() arg gets coerced to rchandle<NonTerminal2>
-			$$ = nt1_p;
-				// operator=() arg gets coerced to rchandle<NonTerminal1>
-		}
-  ______________________________________________________________________*/
-
 
 // [1] Module
 // ----------
 Module :
     MainModule
 		{
+			cout << "Module [main]\n";
 			$$ = $1;
 		}
   | VersionDecl MainModule
 		{
+			cout << "Module [version.main]\n";
 		}
   | LibraryModule 
 		{
+			cout << "Module [library]\n";
 		}
   | VersionDecl LibraryModule 
 		{
+			cout << "Module [version.library]\n";
 		}
   ;
 
@@ -720,9 +717,11 @@ Module :
 VersionDecl :
 		XQUERY_VERSION  STRING_LITERAL  SEMI
 		{
+			cout << "VersionDecl [version]\n";
 		}
 	|	XQUERY_VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
 		{
+			cout << "VersionDecl [version.encoding]\n";
 		}
 	;
 
@@ -732,6 +731,12 @@ VersionDecl :
 MainModule : 
     Prolog  QueryBody
 		{
+			cout << "MainModule [prolog.querybody]\n";
+		}
+	|
+    QueryBody
+		{
+			cout << "MainModule [querybody]\n";
 		}
   ;
 
@@ -741,6 +746,7 @@ MainModule :
 LibraryModule :
 		ModuleDecl  Prolog
 		{
+			cout << "LibraryModule [ ]\n";
 		}
 	;
 
@@ -750,6 +756,7 @@ LibraryModule :
 ModuleDecl :
 		MODULE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
+			cout << "ModuleDecl [ ]\n";
 		}
 	;
 
@@ -757,8 +764,17 @@ ModuleDecl :
 // [6] Prolog
 // ----------
 Prolog :
-		SIND_DeclList  VFO_DeclList
+		SIND_DeclList  SEMI
 		{
+			cout << "Prolog [sind]\n";
+		}
+	|	VFO_DeclList  SEMI
+		{
+			cout << "Prolog [vfo]\n";
+		}
+	|	SIND_DeclList  SEMI  VFO_DeclList  SEMI
+		{
+			cout << "Prolog [sind.vfo]\n";
 		}
 	;
 
@@ -768,12 +784,16 @@ Prolog :
 SIND_DeclList :
 		SIND_Decl
 		{
-			$$ = new SIND_DeclList(dynamic_cast<SIND_Decl*>($1));
+			cout << "SIND_DeclList [single]\n";
+			$$ = new SIND_DeclList(); //dynamic_cast<SIND_Decl*>($1));
 		}
 	| SIND_DeclList  SEMI  SIND_Decl
 		{
+			cout << "SIND_DeclList [list]\n";
 			SIND_DeclList* sindList_p = dynamic_cast<SIND_DeclList*>($1);
-			sindList_p->push_back(dynamic_cast<SIND_Decl*>($3));
+			if (sindList_p) {
+				sindList_p->push_back(dynamic_cast<SIND_Decl*>($3));
+			}
 			$$ = sindList_p;
 		}
 	;
@@ -784,12 +804,16 @@ SIND_DeclList :
 VFO_DeclList :
 		VFO_Decl
 		{
-			$$ = new VFO_DeclList(dynamic_cast<VFO_Decl*>($1));
+			cout << "VFO_DeclList [single]\n";
+			$$ = new VFO_DeclList(); // dynamic_cast<VFO_Decl*>($1));
 		}
 	| VFO_DeclList  SEMI  VFO_Decl
 		{
+			cout << "VFO_DeclList [list]\n";
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>($1);
-			vfoList_p->push_back(dynamic_cast<VFO_Decl*>($3));
+			if (vfoList_p) {
+				vfoList_p->push_back(dynamic_cast<VFO_Decl*>($3));
+			}
 			$$ = vfoList_p;
 		}
 	;
@@ -798,45 +822,117 @@ VFO_DeclList :
 // [6c] SIND_Decl
 // --------------
 SIND_Decl :
-		Setter								{ $$ = $1; }
-	| Import								{ $$ = $1; }
-	| NamespaceDecl					{ $$ = $1; }
-	| DefaultNamespaceDecl	{ $$ = $1; }
+		Setter
+		{
+			cout << "SIND_Decl [setter]\n";
+			$$ = $1;
+		}
+	| Import
+		{
+			cout << "SIND_Decl [import]\n";
+			$$ = $1;
+		}
+	| NamespaceDecl
+		{
+			cout << "SIND_Decl [namespace]\n";
+			$$ = $1;
+		}
+	| DefaultNamespaceDecl
+		{
+			cout << "SIND_Decl [default namespace]\n";
+			$$ = $1;
+		}
 	;
 
 
 // [6d] VFO_Decl
 VFO_Decl :
-		VarDecl								{ $$ = $1; }
-	| FunctionDecl					{ $$ = $1; }
-	| OptionDecl						{ $$ = $1; }
+		VarDecl
+		{
+			cout << "VFO_Decl [var]\n";
+			$$ = $1;
+		}
+	| FunctionDecl
+		{
+			cout << "VFO_Decl [function]\n";
+			$$ = $1;
+		}
+	| OptionDecl
+		{
+			cout << "VFO_Decl [option]\n";
+			$$ = $1;
+		}
 	
 	/* full-text extension */
-	| FTOptionDecl					{ $$ = $1; }
+	| FTOptionDecl
+		{
+			cout << "VFO_Decl [ftoption]\n";
+			$$ = $1;
+		}
 	;
 
 
 // [7] Setter
 // ----------
 Setter :
-		BoundarySpaceDecl			{ $$ = $1; }
-	| DefaultCollationDecl	{ $$ = $1; }
-	| BaseURIDecl						{ $$ = $1; }
-	| ConstructionDecl			{ $$ = $1; }
-	| OrderingModeDecl			{ $$ = $1; }
-	| EmptyOrderDecl				{ $$ = $1; }
-	| CopyNamespacesDecl		{ $$ = $1; }
+		BoundarySpaceDecl
+		{
+			cout << "Setter [boundary space]\n";
+			$$ = $1;
+		}
+	| DefaultCollationDecl
+		{
+			cout << "Setter [default collation]\n";
+			$$ = $1;
+		}
+	| BaseURIDecl
+		{
+			cout << "Setter [base uri]\n";
+			$$ = $1;
+		}
+	| ConstructionDecl
+		{
+			cout << "Setter [construction]\n";
+			$$ = $1;
+		}
+	| OrderingModeDecl
+		{
+			cout << "Setter [ordering mode]\n";
+			$$ = $1;
+		}
+	| EmptyOrderDecl
+		{
+			cout << "Setter [empty order]\n";
+			$$ = $1;
+		}
+	| CopyNamespacesDecl
+		{
+			cout << "Setter [copy namespaces]\n";
+			$$ = $1;
+		}
 
 	/* update extension */
-	| RevalidationDecl			{ $$ = $1; }
+	| RevalidationDecl
+		{
+			cout << "Setter [revalidation]\n";
+			$$ = $1;
+		}
 	;
 
 
 // [8] Import
 // ----------
 Import :
-		SchemaImport					{ $$ = $1; }
-	| ModuleImport					{ $$ = $1; }
+		SchemaImport
+		{
+			cout << "Import [schema]\n";
+			$$ = $1;
+		}
+	| ModuleImport
+		{
+			cout << "Import [module]\n";
+			$$ = $1;
+		}
 	;
 
 
@@ -850,6 +946,7 @@ Import :
 NamespaceDecl :
 		DECLARE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
+			cout << "NamespaceDecl [ ]\n";
 		}
 	;
 
@@ -859,9 +956,11 @@ NamespaceDecl :
 BoundarySpaceDecl :
 		DECLARE_BOUNDARY_SPACE  PRESERVE
 		{
+			cout << "BoundarySpaceDecl [preserve]\n";
 		}
 	|	DECLARE_BOUNDARY_SPACE  STRIP
 		{
+			cout << "BoundarySpaceDecl [strip]\n";
 		}
 	;
 
@@ -871,9 +970,11 @@ BoundarySpaceDecl :
 DefaultNamespaceDecl :
 		DECLARE_DEFAULT_ELEMENT  NAMESPACE  URI_LITERAL
 		{
+			cout << "DefaultNamespaceDecl [element]\n";
 		}
 	| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
 		{
+			cout << "DefaultNamespaceDecl [function]\n";
 		}
 	;
 
@@ -883,6 +984,7 @@ DefaultNamespaceDecl :
 OptionDecl :
 		DECLARE_OPTION  QNAME  STRING_LITERAL
 		{
+			cout << "OptionDecl [ ]\n";
 		}
 	;
 
@@ -893,6 +995,7 @@ OptionDecl :
 FTOptionDecl :
 		DECLARE_FTOPTION  QNAME  FTMatchOption
 		{
+			cout << "FTOptionDecl [ ]\n";
 		}
 	;
 
@@ -902,9 +1005,11 @@ FTOptionDecl :
 OrderingModeDecl :
 		DECLARE_ORDERING  ORDERED
 		{
+			cout << "OrderingDecl [ordered]\n";
 		}
 	| DECLARE_ORDERING  UNORDERED
 		{
+			cout << "OrderingDecl [unordered]\n";
 		}
 	;
 
@@ -915,9 +1020,11 @@ OrderingModeDecl :
 EmptyOrderDecl :
 		DECLARE_DEFAULT_ORDER  EMPTY_GREATEST
 		{
+			cout << "EmptyOrderDecl [empty greatest]\n";
 		}
 	|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
 		{
+			cout << "EmptyOrderDecl [empty least]\n";
 		}
 	;
 
@@ -927,6 +1034,7 @@ EmptyOrderDecl :
 CopyNamespacesDecl :
 		DECLARE_COPY_NAMESPACES  PreserveMode  COMMA  InheritMode
 		{
+			cout << "CopyNamespacesDecl [ ]\n";
 		}
 	;
 
@@ -936,9 +1044,11 @@ CopyNamespacesDecl :
 PreserveMode :
 		PRESERVE
 		{
+			cout << "PreserveMode [preserve]\n";
 		}
 	| NO_PRESERVE
 		{
+			cout << "PreserveMode [no preserve]\n";
 		}
 	;
 
@@ -948,9 +1058,11 @@ PreserveMode :
 InheritMode :
 		INHERIT
 		{
+			cout << "InheritMode [inherit]\n";
 		}
 	| NO_INHERIT
 		{
+			cout << "InheritMode [no inherit]\n";
 		}
 	;
 
@@ -960,6 +1072,7 @@ InheritMode :
 DefaultCollationDecl :
 		DECLARE_DEFAULT_COLLATION  URI_LITERAL
 		{
+			cout << "DefaultCollationMode [ ]\n";
 		}
 	;
 
@@ -969,6 +1082,7 @@ DefaultCollationDecl :
 BaseURIDecl :
 		DECLARE_BASE_URI  URI_LITERAL
 		{
+			cout << "BaseURIDecl [ ]\n";
 		}
 	;
 
@@ -978,15 +1092,27 @@ BaseURIDecl :
 SchemaImport :
 		IMPORT_SCHEMA  URI_LITERAL
 		{
+			cout << "SchemaImport [uri]\n";
 		}
 	| IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL
 		{
+			cout << "SchemaImport [prefix.uri]\n";
 		}
-	|	IMPORT_SCHEMA  URI_LITERAL  AT  URI_LITERALList
+	|	IMPORT_SCHEMA  URI_LITERAL  AT_URI_LITERAL
 		{
+			cout << "SchemaImport [uri.aturi]\n";
 		}
-	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URI_LITERALList
+	|	IMPORT_SCHEMA  URI_LITERAL  AT_URI_LITERAL  COMMA  URI_LITERALList
 		{
+			cout << "SchemaImport [uri.aturi.urilist]\n";
+		}
+	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT_URI_LITERAL
+		{
+			cout << "SchemaImport [prefix.uri.aturi]\n";
+		}
+	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT_URI_LITERAL  COMMA  URI_LITERALList
+		{
+			cout << "SchemaImport [prefix.uri.aturi.urilist]\n";
 		}
 	;
 
@@ -996,9 +1122,11 @@ SchemaImport :
 URI_LITERALList :
 		URI_LITERAL
 		{
+			cout << "URI_LITERALList [single]\n";
 		}
 	| URI_LITERALList  COMMA  URI_LITERAL
 		{
+			cout << "URI_LITERALList [list]\n";
 		}
 	;
 
@@ -1009,9 +1137,11 @@ URI_LITERALList :
 SchemaPrefix :
 		NAMESPACE  NCNAME  EQUALS
 		{
+			cout << "SchemaPrefix [namespace]\n";
 		}
 	|	DEFAULT_ELEMENT  NAMESPACE
 		{
+			cout << "SchemaPrefix [default element]\n";
 		}
 	;
 
@@ -1021,15 +1151,19 @@ SchemaPrefix :
 ModuleImport :
 		IMPORT_MODULE  URI_LITERAL 
 		{
+			cout << "ModuleImport [uri]\n";
 		}
 	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
+			cout << "ModuleImport [namespace.uri]\n";
 		}
 	|	IMPORT_MODULE  URI_LITERAL  AT  URI_LITERALList
 		{
+			cout << "ModuleImport [uri.at]\n";
 		}
 	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URI_LITERALList
 		{
+			cout << "ModuleImport [namespace.uri.at]\n";
 		}
 	;
 
@@ -1040,15 +1174,19 @@ ModuleImport :
 VarDecl :
 		DECLARE_VARIABLE_DOLLAR  VARNAME  GETS  ExprSingle
 		{
+			cout << "VarDecl [expr]\n";
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  EXTERNAL
 		{
+			cout << "VarDecl [external]\n";
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  GETS  ExprSingle
 		{
+			cout << "VarDecl [type.expr]\n";
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
 		{
+			cout << "VarDecl [type.external]\n";
 		}
 	;
 
@@ -1058,9 +1196,11 @@ VarDecl :
 ConstructionDecl :
 		DECLARE_CONSTRUCTION  PRESERVE
 		{
+			cout << "ConstructionDecl [preserve]\n";
 		}
 	|	DECLARE_CONSTRUCTION  STRIP
 		{
+			cout << "ConstructionDecl [strip]\n";
 		}
 	;
 
@@ -1068,29 +1208,69 @@ ConstructionDecl :
 // [26] FunctionDecl
 // -----------------
 FunctionDecl :
-		DECLARE_FUNCTION  QNAME  LPAR  RPAR  EXTERNAL
+		DECLARE_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
 		{
+			cout << "FunctionDecl [external]\n";
 		}
-	|	DECLARE_FUNCTION  QNAME  LPAR  RPAR  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
 		{
+			cout << "FunctionDecl [expr]\n";
 		}
-	|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  EXTERNAL
+	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
 		{
+			cout << "FunctionDecl [paramlist.external]\n";
 		}
-	|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
 		{
+			cout << "FunctionDecl [paramlist.expr]\n";
 		}
-	|	DECLARE_FUNCTION  QNAME  LPAR  RPAR  AS  SequenceType  EXTERNAL
+	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
+			cout << "FunctionDecl [as_type.external]\n";
 		}
-	|	DECLARE_FUNCTION  QNAME  LPAR  RPAR  AS  SequenceType  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
+			cout << "FunctionDecl [as_type.expr]\n";
 		}
-	|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  AS  SequenceType  EXTERNAL
+	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
+			cout << "FunctionDecl [paramlist.as_type.external]\n";
 		}
-	|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  AS  SequenceType  EnclosedExpr
+	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
+			cout << "FunctionDecl [paramlist.as_type.expr]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
+		{
+			cout << "FunctionDecl [(update) external]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
+		{
+			cout << "FunctionDecl [(update) expr]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
+		{
+			cout << "FunctionDecl [(update) paramlist.external]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
+		{
+			cout << "FunctionDecl [(update) paramlist.expr]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
+		{
+			cout << "FunctionDecl [(update) as_type.external]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
+		{
+			cout << "FunctionDecl [(update) as_type.expr]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
+		{
+			cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
+		}
+	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
+		{
+			cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
 		}
 	;
 
@@ -1101,9 +1281,11 @@ FunctionDecl :
 ParamList :
 		Param
 		{
+			cout << "ParamList [single]\n";
 		}
 	|	ParamList  COMMA  Param
 		{
+			cout << "ParamList [list]\n";
 		}
 	;
 
@@ -1113,9 +1295,11 @@ ParamList :
 Param :
 		DOLLAR  VARNAME
 		{
+			cout << "Param [varname]\n";
 		}
 	|	DOLLAR  VARNAME  TypeDeclaration
 		{
+			cout << "Param [varname.type]\n";
 		}
 	;
 
@@ -1125,6 +1309,7 @@ Param :
 EnclosedExpr :
 		LBRACE  Expr  RBRACE
 		{
+			cout << "EnclosedExpr [ ]\n";
 		}
 	;
 
@@ -1134,6 +1319,7 @@ EnclosedExpr :
 QueryBody :
 		Expr
 		{
+			cout << "QueryBody [expr]\n";
 		}
 	;
 
@@ -1143,9 +1329,11 @@ QueryBody :
 Expr :
 		ExprSingle 
 		{
+			cout << "Expr [single]\n";
 		}
 	|	Expr  COMMA  ExprSingle
 		{
+			cout << "Expr [expr.single]\n";
 		}
 	;
 
@@ -1155,44 +1343,54 @@ Expr :
 ExprSingle :
 		FLWORExpr
 		{
+			cout << "ExprSingle [FLWORExpr]\n";
 			$$ = $1;
 		}
 	|	QuantifiedExpr
 		{
+			cout << "ExprSingle [QuantifiedExpr]\n";
 			$$ = $1;
 		}
 	|	TypeswitchExpr
 		{
+			cout << "ExprSingle [TypeswitchExpr]\n";
 			$$ = $1;
 		}
 	|	IfExpr
 		{
+			cout << "ExprSingle [IfExpr]\n";
 			$$ = $1;
 		}
 	|	OrExpr
 		{
+			cout << "ExprSingle [OrExpr]\n";
 			$$ = $1;
 		}
 
 		/* update extensions */
 	| InsertExpr
 		{
+			cout << "ExprSingle [InsertExpr]\n";
 			$$ = $1;
 		}
 	| DeleteExpr
 		{
+			cout << "ExprSingle [DeleteExpr]\n";
 			$$ = $1;
 		}
 	| RenameExpr
 		{
+			cout << "ExprSingle [RenameExpr]\n";
 			$$ = $1;
 		}
 	| ReplaceExpr
 		{
+			cout << "ExprSingle [ReplaceExpr]\n";
 			$$ = $1;
 		}
 	| TransformExpr
 		{
+			cout << "ExprSingle [TransformExpr]\n";
 			$$ = $1;
 		}
 	;
@@ -1203,15 +1401,19 @@ ExprSingle :
 FLWORExpr :
 	  ForLetClauseList  RETURN  ExprSingle
 		{
+			cout << "FLWORExpr [return]\n";
 		}
 	|	ForLetClauseList  WhereClause  RETURN  ExprSingle
 		{
+			cout << "FLWORExpr [where.return]\n";
 		}
 	|	ForLetClauseList  OrderByClause  RETURN  ExprSingle
 		{
+			cout << "FLWORExpr [orderby.return]\n";
 		}
 	|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 		{
+			cout << "FLWORExpr [where.orderby.return]\n";
 		}
 	;
 
@@ -1221,9 +1423,11 @@ FLWORExpr :
 ForLetClauseList :
 		ForLetClause
 		{
+			cout << "ForLetClauseList [single]\n";
 		}
 	|	ForLetClause  ForLetClauseList
 		{
+			cout << "ForLetClauseList [list]\n";
 		}
 	;
 
@@ -1233,10 +1437,12 @@ ForLetClauseList :
 ForLetClause :
 		ForClause
 		{
+			cout << "ForLetClause [for]\n";
 			$$ = $1;
 		}
 	|	LetClause
 		{
+			cout << "ForLetClause [let]\n";
 			$$ = $1;
 		}
 	;
@@ -1247,6 +1453,7 @@ ForLetClause :
 ForClause :
 		FOR_DOLLAR  VarInDeclList
 		{
+			cout << "ForClause [ ]\n";
 		}
 	;
 
@@ -1256,9 +1463,11 @@ ForClause :
 VarInDeclList :
 		VarInDecl
 		{
+			cout << "VarInDeclList [single]\n";
 		}
 	|	VarInDeclList  COMMA  DOLLAR  VarInDecl
 		{
+			cout << "VarInDeclList [list]\n";
 		}
 	;
 
@@ -1268,28 +1477,36 @@ VarInDeclList :
 VarInDecl :
 		VARNAME  IN  ExprSingle
 		{
+			cout << "VarInDecl [in]\n";
 		}
 	|	VARNAME  TypeDeclaration  IN  ExprSingle
 		{
+			cout << "VarInDecl [type.in]\n";
 		}
 	|	VARNAME  PositionalVar  IN  ExprSingle
 		{
+			cout << "VarInDecl [posvar.in]\n";
 		}
 	|	VARNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
 		{
+			cout << "VarInDecl [type.posvar.in]\n";
 		}
 	/* full-text extensions */
 	| VARNAME  FTScoreVar  IN  ExprSingle
 		{
+			cout << "VarInDecl [scorevar.in]\n";
 		}
 	| VARNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
 		{
+			cout << "VarInDecl [type.scorevar.in]\n";
 		}
 	| VARNAME  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
+			cout << "VarInDecl [posvar.scorevar.in]\n";
 		}
 	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
+			cout << "VarInDecl [type.posvar.scorevar.in]\n";
 		}
 	;
 
@@ -1299,6 +1516,7 @@ VarInDecl :
 PositionalVar :
 		AT  DOLLAR  VARNAME
 		{
+			cout << "PositionalVar [ ]\n";
 		}
 	;
 
@@ -1309,6 +1527,7 @@ PositionalVar :
 FTScoreVar :
 		SCORE  DOLLAR  VARNAME
 		{
+			cout << "FTScoreVar [ ]\n";
 		}
 	;
 
@@ -1318,6 +1537,11 @@ FTScoreVar :
 LetClause :
 		LET_DOLLAR VarGetsDeclList
 		{
+			cout << "LetClause [ ]\n";
+		}
+	| LET_SCORE_DOLLAR VarGetsDeclList
+		{
+			cout << "LetClause [score]\n";
 		}
 	;
 
@@ -1327,9 +1551,11 @@ LetClause :
 VarGetsDeclList :
 		VarGetsDecl
 		{
+			cout << "VarGetsDeclList [single]\n";
 		}
-	|	VarGetsDeclList  COMMA_DOLLAR  VarGetsDecl
+	|	VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
 		{
+			cout << "VarGetsDeclList [list]\n";
 		}
 	;
 
@@ -1339,28 +1565,36 @@ VarGetsDeclList :
 VarGetsDecl :
 		VARNAME  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [gets]\n";
 		}
 	|	VARNAME  TypeDeclaration  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [type.gets]\n";
 		}
 	|	VARNAME  PositionalVar  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [posvar.gets]\n";
 		}
 	|	VARNAME  TypeDeclaration  PositionalVar  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [type.posvar.gets]\n";
 		}
 	/* full-text extensions */
 	| VARNAME  FTScoreVar  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [scorevar.gets]\n";
 		}
 	| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [type.scorevar.gets]\n";
 		}
 	| VARNAME  PositionalVar  FTScoreVar  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [posvar.scorevar.gets]\n";
 		}
 	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  GETS  ExprSingle
 		{
+			cout << "VarGetsDecl [type.posvar.scorevar.gets]\n";
 		}
 	;
 
@@ -1370,6 +1604,7 @@ VarGetsDecl :
 WhereClause :
 		WHERE  ExprSingle
 		{
+			cout << "WhereClause [ ]\n";
 		}
 	;
 
@@ -1379,9 +1614,11 @@ WhereClause :
 OrderByClause :
 		ORDER_BY  OrderSpecList
 		{
+			cout << "OrderByClause [ ]\n";
 		}
 	|	STABLE_ORDER_BY  OrderSpecList
 		{
+			cout << "OrderByClause [stable]\n";
 		}
 	;
 
@@ -1391,9 +1628,11 @@ OrderByClause :
 OrderSpecList :
 		OrderSpec 
 		{
+			cout << "OrderSpecList [single]\n";
 		}
 	|	OrderSpecList  COMMA  OrderSpec
 		{
+			cout << "OrderSpecList [list]\n";
 		}
 	;
 
@@ -1403,9 +1642,11 @@ OrderSpecList :
 OrderSpec :
 		ExprSingle
 		{
+			cout << "OrderSpec [single]\n";
 		}
 	|	ExprSingle OrderModifier
 		{
+			cout << "OrderSpec [single.modifier]\n";
 		}
 	;
 
@@ -1415,24 +1656,31 @@ OrderSpec :
 OrderModifier :
 		OrderDirSpec
 		{
+			cout << "OrderModifier [dir]\n";
 		}
 	|	OrderEmptySpec
 		{
+			cout << "OrderModifier [empty]\n";
 		}
 	|	OrderCollationSpec
 		{
+			cout << "OrderModifier [collation]\n";
 		}
 	|	OrderDirSpec  OrderEmptySpec
 		{
+			cout << "OrderModifier [dir.empty]\n";
 		}
 	|	OrderDirSpec  OrderCollationSpec
 		{
+			cout << "OrderModifier [dir.collation]\n";
 		}
 	|	OrderEmptySpec  OrderCollationSpec
 		{
+			cout << "OrderModifier [empty.collation]\n";
 		}
 	|	OrderDirSpec  OrderEmptySpec  OrderCollationSpec
 		{
+			cout << "OrderModifier [dir.empty.collation]\n";
 		}
 	;
 
@@ -1442,9 +1690,11 @@ OrderModifier :
 OrderDirSpec :
 		ASCENDING
 		{
+			cout << "OrderDirSpec [ascending]\n";
 		}
 	|	DESCENDING
 		{
+			cout << "OrderDirSpec [descending]\n";
 		}
 	;
 
@@ -1454,9 +1704,11 @@ OrderDirSpec :
 OrderEmptySpec:
 		EMPTY_GREATEST
 		{
+			cout << "OrderEmptySpec [greatest]\n";
 		}
 	|	EMPTY_LEAST
 		{
+			cout << "OrderEmptySpec [least]\n";
 		}
 	;
 
@@ -1466,6 +1718,7 @@ OrderEmptySpec:
 OrderCollationSpec :
 		COLLATION  URI_LITERAL
 		{
+			cout << "OrderCollationSpec [ ]\n";
 		}
 	;
 
@@ -1473,11 +1726,13 @@ OrderCollationSpec :
 // [42] QuantifiedExpr 	   
 // -------------------
 QuantifiedExpr :
-		SOME_DOLLAR  QVarInDeclList
+		SOME_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
+			cout << "QuantifiedExpr [some]\n";
 		}
-	|	EVERY_DOLLAR  QVarInDeclList
+	|	EVERY_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
+			cout << "QuantifiedExpr [every]\n";
 		}
 	;
 
@@ -1487,9 +1742,11 @@ QuantifiedExpr :
 QVarInDeclList :
 		QVarInDecl  %prec QVARINDECLLIST_REDUCE
 		{
+			cout << "QVarInDeclList [single]\n";
 		}
 	|	QVarInDecl  COMMA_DOLLAR  QVarInDeclList
 		{
+			cout << "QVarInDeclList [list]\n";
 		}
 	;
 
@@ -1499,9 +1756,11 @@ QVarInDeclList :
 QVarInDecl :
 		VARNAME  IN  ExprSingle 
 		{
+			cout << "QVarInDecl [in]\n";
 		}
 	|	VARNAME  TypeDeclaration  IN  ExprSingle 
 		{
+			cout << "QVarInDecl [type.in]\n";
 		}
 	;
 
@@ -1511,9 +1770,11 @@ QVarInDecl :
 TypeswitchExpr :
 		TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
 		{
+			cout << "TypeswitchExpr [cases.default.return]\n";
 		}
 	|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  VARNAME  RETURN  ExprSingle
 		{
+			cout << "TypeswitchExpr [cases.default.varname.return]\n";
 		}
 	;
 
@@ -1523,9 +1784,11 @@ TypeswitchExpr :
 CaseClauseList :
 		CaseClause
 		{
+			cout << "CaseClauseList [single]\n";
 		}
 	|	CaseClauseList  CaseClause
 		{
+			cout << "CaseClauseList [list]\n";
 		}
 	;
 
@@ -1535,9 +1798,11 @@ CaseClauseList :
 CaseClause :
 		CASE  SequenceType  RETURN  ExprSingle
 		{
+			cout << "CaseClause [case.return]\n";
 		}
-		CASE  DOLLAR  VARNAME  AS  SequenceType  RETURN  ExprSingle
+	|	CASE  DOLLAR  VARNAME  AS  SequenceType  RETURN  ExprSingle
 		{
+			cout << "CaseClause [case.as.return]\n";
 		}
 	;
 
@@ -1547,6 +1812,7 @@ CaseClause :
 IfExpr :
 		IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
 		{
+			cout << "IfExpr [ ]\n";
 		}
 	;
 
@@ -1556,9 +1822,11 @@ IfExpr :
 OrExpr :
 		AndExpr
 		{
+			cout << "OrExpr [and]\n";
 		}
 	|	OrExpr  OR  AndExpr
 		{
+			cout << "OrExpr [or.and]\n";
 		}
 	;
 
@@ -1568,9 +1836,11 @@ OrExpr :
 AndExpr :
 		ComparisonExpr
 		{
+			cout << "AndExpr [comp]\n";
 		}
 	|	AndExpr  AND  ComparisonExpr
 		{
+			cout << "AndExpr [and.comp]\n";
 		}
 	;
 
@@ -1588,15 +1858,22 @@ AndExpr :
 ComparisonExpr :
 		FTContainsExpr
 		{
+			cout << "ComparisonExpr [ftcontains]\n";
 		}
-	| FTContainsExpr  VALUECOMP  FTContainsExpr
+	| FTContainsExpr  ValueComp  FTContainsExpr
 		{
+			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
+			cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
 		}
-	| FTContainsExpr  GENERALCOMP  FTContainsExpr
+	| FTContainsExpr  GeneralComp  FTContainsExpr
 		{
+			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
+			cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
 		}
-	| FTContainsExpr  NODECOMP  FTContainsExpr
+	| FTContainsExpr  NodeComp  FTContainsExpr
 		{
+			/*  ::=  "is" | "<<" | ">>" */
+			cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
 		}
 	;
 
@@ -1606,12 +1883,15 @@ ComparisonExpr :
 FTContainsExpr :
 		RangeExpr  %prec FTCONTAINS_REDUCE
 		{
+			cout << "FTContainsExpr [range]\n";
 		}
 	|	RangeExpr  FTCONTAINS  FTSelection 
 		{
+			cout << "FTContainsExpr [range.ftselect]\n";
 		}
 	|	RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
 		{
+			cout << "FTContainsExpr [range.ftselect.ftignore]\n";
 		}
 	;
 
@@ -1621,9 +1901,11 @@ FTContainsExpr :
 RangeExpr :
 		AdditiveExpr  %prec RANGE_REDUCE
 		{
+			cout << "RangeExpr [add]\n";
 		}
 	|	AdditiveExpr  TO  AdditiveExpr
 		{
+			cout << "RangeExpr [add.to.add]\n";
 		}
 	;
 
@@ -1633,12 +1915,15 @@ RangeExpr :
 AdditiveExpr :
 		MultiplicativeExpr  %prec ADDITIVE_REDUCE
 		{
+			cout << "AdditiveExpr [mult]\n";
 		}
 	|	AdditiveExpr  PLUS  MultiplicativeExpr
 		{
+			cout << "AdditiveExpr [mult+mult]\n";
 		}
 	|	AdditiveExpr  MINUS  MultiplicativeExpr
 		{
+			cout << "AdditiveExpr [mult-mult]\n";
 		}
 	;
 
@@ -1648,18 +1933,23 @@ AdditiveExpr :
 MultiplicativeExpr :
 		UnionExpr  %prec MULTIPLICATIVE_REDUCE
 		{
+			cout << "MultiplicativeExpr [union]\n";
 		}
 	|	MultiplicativeExpr  STAR  UnionExpr
 		{
+			cout << "MultiplicativeExpr [mult*union]\n";
 		}
 	|	MultiplicativeExpr  DIV  UnionExpr
 		{
+			cout << "MultiplicativeExpr [mult.div.union]\n";
 		}
 	|	MultiplicativeExpr  IDIV  UnionExpr
 		{
+			cout << "MultiplicativeExpr [mult.idiv.union]\n";
 		}
 	|	MultiplicativeExpr  MOD  UnionExpr
 		{
+			cout << "MultiplicativeExpr [mult.mod.union]\n";
 		}
 	;
 
@@ -1669,12 +1959,15 @@ MultiplicativeExpr :
 UnionExpr :
 		IntersectExceptExpr  %prec UNION_REDUCE
 		{
+			cout << "UnionExpr [interexcept]\n";
 		}
 	|	UnionExpr  UNION  IntersectExceptExpr
 		{
+			cout << "UnionExpr [union.union.interexcept]\n";
 		}
 	|	UnionExpr  VBAR  IntersectExceptExpr
 		{
+			cout << "UnionExpr [union|interexcept]\n";
 		}
 	;
 
@@ -1684,12 +1977,15 @@ UnionExpr :
 IntersectExceptExpr :
 		InstanceofExpr  %prec INTERSECT_EXCEPT_REDUCE
 		{
+			cout << "IntersectExceptExpr [instanceof]\n";
 		}
 	|	IntersectExceptExpr  INTERSECT  InstanceofExpr
 		{
+			cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
 		}
 	|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 		{
+			cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
 		}
 	;
 
@@ -1699,9 +1995,11 @@ IntersectExceptExpr :
 InstanceofExpr :
 		TreatExpr
 		{
+			cout << "InstanceofExpr [treat]\n";
 		}
 	|	TreatExpr  INSTANCE_OF  SequenceType
 		{
+			cout << "InstanceofExpr [treat.seqtype]\n";
 		}
 	;
 
@@ -1711,9 +2009,11 @@ InstanceofExpr :
 TreatExpr :
 		CastableExpr
 		{
+			cout << "TreatExpr [castable]\n";
 		}
 	|	CastableExpr  TREAT_AS  SequenceType
 		{
+			cout << "TreatExpr [castable.seqtype]\n";
 		}
 	;
 
@@ -1723,9 +2023,11 @@ TreatExpr :
 CastableExpr :
 		CastExpr
 		{
+			cout << "CastableExpr [cast]\n";
 		}
 	|	CastExpr  CASTABLE_AS  SingleType
 		{
+			cout << "CastableExpr [cast.singletype]\n";
 		}
 	;
 
@@ -1735,9 +2037,11 @@ CastableExpr :
 CastExpr :
 		UnaryExpr
 		{
+			cout << "CastExpr [unary]\n";
 		}
 	|	UnaryExpr  CAST_AS  SingleType
 		{
+			cout << "CastExpr [unary.singletype]\n";
 		}
 	;
 
@@ -1747,9 +2051,11 @@ CastExpr :
 UnaryExpr :
 		ValueExpr
 		{
+			cout << "UnaryExpr [value]\n";
 		}
 	|	SignList  ValueExpr
 		{
+			cout << "UnaryExpr [signlist.value]\n";
 		}
 	;
 
@@ -1759,15 +2065,19 @@ UnaryExpr :
 SignList :
 		PLUS
 		{
+			cout << "SignList [+]\n";
 		}
 	|	MINUS
 		{
+			cout << "SignList [-]\n";
 		}
 	|	SignList  PLUS
 		{
+			cout << "SignList [signlist.+]\n";
 		}
 	|	SignList  MINUS
 		{
+			cout << "SignList [signlist.-]\n";
 		}
 	;
 
@@ -1777,12 +2087,15 @@ SignList :
 ValueExpr :
 		ValidateExpr
 		{
+			cout << "ValueExpr [validate]\n";
 		}
 	|	PathExpr
 		{
+			cout << "ValueExpr [path]\n";
 		}
 	|	ExtensionExpr
 		{
+			cout << "ValueExpr [extension]\n";
 		}
 	;
 
@@ -1790,15 +2103,80 @@ ValueExpr :
 
 // [60] GeneralComp
 // ----------------
-/* lexical rule */
+GeneralComp :
+		EQUALS
+		{
+			cout << "GeneralComp [=]\n";
+		}
+	| NE
+		{
+			cout << "GeneralComp [!=]\n";
+		}
+	| LT
+		{
+			cout << "GeneralComp [<]\n";
+		}
+	| LE
+		{
+			cout << "GeneralComp [<=]\n";
+		}
+	| GT
+		{
+			cout << "GeneralComp [>]\n";
+		}
+	| GE
+		{
+			cout << "GeneralComp [>=]\n";
+		}
+	;
+
 
 // [61] ValueComp
 // --------------
-/* lexical rule */
+ValueComp :
+		F_EQ
+		{
+			cout << "ValueComp [eq]\n";
+		}
+	| F_NE
+		{
+			cout << "ValueComp [ne]\n";
+		}
+	| F_LT
+		{
+			cout << "ValueComp [lt]\n";
+		}
+	| F_LE
+		{
+			cout << "ValueComp [le]\n";
+		}
+	| F_GT
+		{
+			cout << "ValueComp [gt]\n";
+		}
+	| F_GE
+		{
+			cout << "ValueComp [ge]\n";
+		}
+	;
+
 
 // [62] NodeComp
 // -------------
-/* lexical rule */
+NodeComp :
+		IS
+		{
+			cout << "NodeComp [is]\n";
+		}
+	| PRECEDES
+		{
+			cout << "NodeComp [<<]\n";
+		}
+	| FOLLOWS
+		{
+			cout << "NodeComp [>>]\n";
+		}
+	;
 
 
 
@@ -1807,9 +2185,11 @@ ValueExpr :
 ValidateExpr :
 		VALIDATE_LBRACE  Expr  RBRACE
 		{
+			cout << "ValidateExpr [expr]\n";
 		}
 	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 		{
+			cout << "ValidateExpr [mode.expr]\n";
 		}
 	;
 
@@ -1819,9 +2199,11 @@ ValidateExpr :
 ExtensionExpr :
 		PragmaList  LBRACE  RBRACE
 		{
+			cout << "ExtensionExpr [pragmalist]\n";
 		}
 	|	PragmaList  LBRACE  Expr  RBRACE
 		{
+			cout << "ExtensionExpr [pragmalist.expr]\n";
 		}
 	;
 
@@ -1831,9 +2213,11 @@ ExtensionExpr :
 PragmaList :
 		Pragma
 		{
+			cout << "PragmaList [single]\n";
 		}
 	|	PragmaList  Pragma
 		{
+			cout << "PragmaList [list]\n";
 		}
 	;
 
@@ -1843,6 +2227,7 @@ PragmaList :
 Pragma :
 		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL  PRAGMA_END
 		{
+			cout << "Pragma [ ]\n";
 		}
 	;	/* ws: explicit */
 
@@ -1878,15 +2263,19 @@ Pragma :
 PathExpr :
 		LEADING_LONE_SLASH
 		{
+			cout << "PathExpr [/]\n";
 		}
 	|	SLASH  RelativePathExpr
 		{
+			cout << "PathExpr [/relative]\n";
 		}
 	|	SLASH_SLASH  RelativePathExpr
 		{
+			cout << "PathExpr [//relative]\n";
 		}
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
+			cout << "PathExpr [relative]\n";
 		}
 	;
 
@@ -1896,12 +2285,15 @@ PathExpr :
 RelativePathExpr :
 		StepExpr  %prec STEP_REDUCE
 		{
+			cout << "RelativePathExpr [step]\n";
 		}
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
+			cout << "RelativePathExpr [step/relative]\n";
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
+			cout << "RelativePathExpr [step//relative]\n";
 		}
 	;
 
@@ -1911,9 +2303,11 @@ RelativePathExpr :
 StepExpr :
 		AxisStep
 		{
+			cout << "StepExpr [axis]\n";
 		}
 	|	FilterExpr
 		{
+			cout << "StepExpr [filter]\n";
 		}
 	;
 
@@ -1923,15 +2317,19 @@ StepExpr :
 AxisStep :
 		ForwardStep 
 		{
+			cout << "AxisStep [forward]\n";
 		}
 	|	ForwardStep  PredicateList
 		{
+			cout << "AxisStep [forward.predlist]\n";
 		}
 	|	ReverseStep
 		{
+			cout << "AxisStep [reverse]\n";
 		}
 	|	ReverseStep  PredicateList
 		{
+			cout << "AxisStep [reverse.predlist]\n";
 		}
 	;
 
@@ -1941,9 +2339,11 @@ AxisStep :
 ForwardStep :
 		ForwardAxis  NodeTest
 		{
+			cout << "ForwardStep [nodetest]\n";
 		}
 	|	AbbrevForwardStep
 		{
+			cout << "ForwardStep [abbrev]\n";
 		}
 	;
 
@@ -1953,24 +2353,31 @@ ForwardStep :
 ForwardAxis :
 		CHILD_AXIS
 		{
+			cout << "ForwardAxis [child]\n";
 		}
 	| DESCENDANT_AXIS
 		{
+			cout << "ForwardAxis [descendant]\n";
 		}
 	| ATTRIBUTE_AXIS
 		{
+			cout << "ForwardAxis [attribute]\n";
 		}
 	| SELF_AXIS
 		{
+			cout << "ForwardAxis [self]\n";
 		}
 	| DESCENDANT_OR_SELF_AXIS
 		{
+			cout << "ForwardAxis [descendant_or_self]\n";
 		}
 	| FOLLOWING_SIBLING_AXIS
 		{
+			cout << "ForwardAxis [following_sibling]\n";
 		}
 	| FOLLOWING_AXIS
 		{
+			cout << "ForwardAxis [following]\n";
 		}
 	;
 
@@ -1980,9 +2387,11 @@ ForwardAxis :
 AbbrevForwardStep :
 		NodeTest
 		{
+			cout << "AbbrevForwardStep [nodetest]\n";
 		}
 	|	AT_SIGN  NodeTest
 		{
+			cout << "AbbrevForwardStep [@ nodetest]\n";
 		}
 	;
 
@@ -1992,9 +2401,11 @@ AbbrevForwardStep :
 ReverseStep :
 		ReverseAxis  NodeTest
 		{
+			cout << "ReverseStep [nodetest]\n";
 		}
 	|	DOT_DOT
 		{
+			cout << "ReverseStep [..]\n";
 		}
 	;
 
@@ -2004,18 +2415,23 @@ ReverseStep :
 ReverseAxis :
 		PARENT_AXIS
 		{
+			cout << "ReverseAxis [parent]\n";
 		}
 	| ANCESTOR_AXIS
 		{
+			cout << "ReverseAxis [ancestor]\n";
 		}
 	| PRECEDING_SIBLING_AXIS
 		{
+			cout << "ReverseAxis [preceding_sibling]\n";
 		}
 	| PRECEDING_AXIS
 		{
+			cout << "ReverseAxis [preceding]\n";
 		}
 	| ANCESTOR_OR_SELF_AXIS
 		{
+			cout << "ReverseAxis [ancestor_or_self]\n";
 		}
 	;
 
@@ -2030,9 +2446,11 @@ ReverseAxis :
 NodeTest :
 		KindTest
 		{
+			cout << "NodeTest [kindtest]\n";
 		}
 	|	NameTest
 		{
+			cout << "NodeTest [nametest]\n";
 		}
 	;
  
@@ -2042,9 +2460,11 @@ NodeTest :
 NameTest :
 		QNAME
 		{
+			cout << "NameTest [qname]\n";
 		}
 	|	Wildcard
 		{
+			cout << "NameTest [wildcard]\n";
 		}
 	;
 
@@ -2054,12 +2474,15 @@ NameTest :
 Wildcard :
 		STAR
 		{
+			cout << "Wildcard [*]\n";
 		}
 	|	ELEM_WILDCARD
 		{
+			cout << "Wildcard [pref:*]\n";
 		}
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
 		{
+			cout << "Wildcard [*:qname]\n";
 		}
 	;
 
@@ -2067,8 +2490,13 @@ Wildcard :
 // [80] FilterExpr
 // ---------------
 FilterExpr :
-		PrimaryExpr  PredicateList
+		PrimaryExpr 
 		{
+			cout << "FilterExpr [primary]\n";
+		}
+	|	PrimaryExpr  PredicateList
+		{
+			cout << "FilterExpr [primary.predlist]\n";
 		}
 	;
 
@@ -2078,9 +2506,11 @@ FilterExpr :
 PredicateList :
 		Predicate
 		{
+			cout << "PredicateList [single]\n";
 		}
 	|	PredicateList  Predicate
 		{
+			cout << "PredicateList [list]\n";
 		}
 	;
 
@@ -2090,6 +2520,7 @@ PredicateList :
 Predicate :
 		LBRACK  Expr  RBRACK
 		{
+			cout << "Predicate [ ]\n";
 		}
 	;
 
@@ -2100,34 +2531,42 @@ Predicate :
 PrimaryExpr :
 		Literal
 		{
+			cout << "PrimaryExpr [literal]\n";
 			$$ = $1;
 		}
 	|	VarRef
 		{
+			cout << "PrimaryExpr [varref]\n";
 			$$ = $1;
 		}
 	|	ParenthesizedExpr
 		{
+			cout << "PrimaryExpr [paren]\n";
 			$$ = $1;
 		}
 	|	ContextItemExpr
 		{
+			cout << "PrimaryExpr [context_item]\n";
 			$$ = $1;
 		}
 	|	FunctionCall
 		{
+			cout << "PrimaryExpr [funcall]\n";
 			$$ = $1;
 		}
 	|	Constructor
 		{
+			cout << "PrimaryExpr [cons]\n";
 			$$ = $1;
 		}
 	|	OrderedExpr
 		{
+			cout << "PrimaryExpr [ordered]\n";
 			$$ = $1;
 		}
 	|	UnorderedExpr
 		{
+			cout << "PrimaryExpr [unordered]\n";
 			$$ = $1;
 		}
 	;
@@ -2150,12 +2589,15 @@ Literal :
 NumericLiteral :
 		INTEGER_LITERAL
 		{
+			cout << "NumericLiteral [int]\n";
 		}
 	|	DECIMAL_LITERAL
 		{
+			cout << "NumericLiteral [decimal]\n";
 		}
 	|	DOUBLE_LITERAL
 		{
+			cout << "NumericLiteral [double]\n";
 		}
 	;
 
@@ -2165,6 +2607,7 @@ NumericLiteral :
 VarRef :
 		DOLLAR  VARNAME
 		{
+			cout << "VarRef [ ]\n";
 		}
 	;
 
@@ -2174,9 +2617,11 @@ VarRef :
 ParenthesizedExpr :
 		LPAR  RPAR
 		{
+			cout << "ParenthesizedExpr [ ]\n";
 		}
 	|	LPAR  Expr  RPAR
 		{
+			cout << "ParenthesizedExpr [expr]\n";
 		}
 	;	
 
@@ -2186,6 +2631,7 @@ ParenthesizedExpr :
 ContextItemExpr :
 		DOT
 		{
+			cout << "ContextItemExpr [.]\n";
 		}
 	;	
 
@@ -2195,6 +2641,7 @@ ContextItemExpr :
 OrderedExpr :
 		ORDERED_LBRACE  Expr  RBRACE
 		{
+			cout << "OrderedExpr [expr]\n";
 		}
 	;
 
@@ -2204,6 +2651,7 @@ OrderedExpr :
 UnorderedExpr :
 		UNORDERED_LBRACE  Expr  RBRACE
 		{
+			cout << "UnorderedExpr [expr]\n";
 		}
 	;
 
@@ -2211,8 +2659,13 @@ UnorderedExpr :
 // [91] FunctionCall
 // -----------------
 FunctionCall :
-		QNAME_LPAR  ArgList  RPAR 	/* gn: parensXQ */
+		QNAME_LPAR  RPAR
 		{
+			cout << "FunctionCall [ ]\n";
+		}
+	|	QNAME_LPAR  ArgList  RPAR 	/* gn: parensXQ */
+		{
+			cout << "FunctionCall [arglist]\n";
 		}
 				/* gn: reserved-function-namesXQ */
 	;
@@ -2223,9 +2676,11 @@ FunctionCall :
 ArgList :
 		ExprSingle
 		{
+			cout << "ArgList [single]\n";
 		}
 	|	ArgList  COMMA  ExprSingle
 		{
+			cout << "ArgList [list]\n";
 		}
 	;
 
@@ -2235,9 +2690,11 @@ ArgList :
 Constructor :
 		DirectConstructor
 		{
+			cout << "Constructor [direct]\n";
 		}
 	|	ComputedConstructor
 		{
+			cout << "Constructor [computed]\n";
 		}
 	;
 
@@ -2247,12 +2704,15 @@ Constructor :
 DirectConstructor :
 		DirElemConstructor
 		{
+			cout << "DirectConstructor [element]\n";
 		}
 	|	DirCommentConstructor
 		{
+			cout << "DirectConstructor [comment]\n";
 		}
 	|	DirPIConstructor
 		{
+			cout << "DirectConstructor [pi]\n";
 		}
 	;
 
@@ -2260,11 +2720,21 @@ DirectConstructor :
 // [94] DirElemConstructor
 // -----------------------
 DirElemConstructor :
-		START_TAG  QNAME  DirAttributeList SGT /* ws: explicitXQ */
+		START_TAG  QNAME  EMPTY_TAG_END /* ws: explicitXQ */
 		{
+			cout << "DirElemConstructor [<qname/> ]\n";
+		}
+	| START_TAG  QNAME  DirAttributeList EMPTY_TAG_END /* ws: explicitXQ */
+		{
+			cout << "DirElemConstructor [<qname attrlist/> ]\n";
 		}
 	|	START_TAG  QNAME  DirAttributeList TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
 		{
+			cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
+		}
+	|	START_TAG  QNAME  TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
+		{
+			cout << "DirElemConstructor [<qname>content</qname>]\n";
 		}
 			/* ws: explicitXQ */
 			/* gn: ltXQ */
@@ -2276,9 +2746,11 @@ DirElemConstructor :
 DirElemContentList :
 		DirElemContent
 		{
+			cout << "DirElemContentList [single]\n";
 		}
 	|	DirElemContentList  DirElemContent
 		{
+			cout << "DirElemContentList [list]\n";
 		}
 	;
 
@@ -2288,9 +2760,11 @@ DirElemContentList :
 DirAttributeList :
 		DirAttr
 		{
+			cout << "DirAttributeList [single]\n";
 		}
 	|	DirAttributeList  DirAttr
 		{
+			cout << "DirAttributeList [list]\n";
 		}
 	;
 
@@ -2300,6 +2774,7 @@ DirAttributeList :
 DirAttr :
 		QNAME  EQUALS  DirAttributeValue 	/* ws: explicitXQ */
 		{
+			cout << "DirAttr [ ]\n";
 		}
 	;
 
@@ -2309,9 +2784,11 @@ DirAttr :
 DirAttributeValue :
 		QUOTE  QuoteAttrContentList  QUOTE
 		{
+			cout << "DirAttributeValue [quote]\n";
 		}
 	|	APOS  AposAttrContentList  APOS 	/* ws: explicitXQ */
 		{
+			cout << "DirAttributeValue [apos]\n";
 		}
 	;
 
@@ -2321,15 +2798,19 @@ DirAttributeValue :
 QuoteAttrContentList :
 		ESCAPE_QUOTE
 		{
+			cout << "QuoteAttrContentList [""]\n";
 		}
 	|	QuoteAttrValueContent
 		{
+			cout << "QuoteAttrContentList [single]\n";
 		}
 	|	QuoteAttrContentList  ESCAPE_QUOTE
 		{
+			cout << "QuoteAttrContentList [list ""]\n";
 		}
 	|	QuoteAttrContentList  QuoteAttrValueContent
 		{
+			cout << "QuoteAttrContentList [list]\n";
 		}
 	;
 
@@ -2339,15 +2820,19 @@ QuoteAttrContentList :
 AposAttrContentList :
 		ESCAPE_APOS
 		{
+			cout << "AposAttrContentList ['']\n";
 		}
 	|	AposAttrValueContent
 		{
+			cout << "AposAttrContentList [single]\n";
 		}
 	|	AposAttrContentList  ESCAPE_APOS
 		{
+			cout << "AposAttrContentList [list '']\n";
 		}
 	|	AposAttrContentList  AposAttrValueContent
 		{
+			cout << "AposAttrContentList [list]\n";
 		}
 	;
 
@@ -2357,9 +2842,11 @@ AposAttrContentList :
 QuoteAttrValueContent :
 		QUOTE_ATTR_CONTENT
 		{
+			cout << "QuoteAttrValueContent [quote_attr_content]\n";
 		}
 	|	CommonContent
 		{
+			cout << "QuoteAttrValueContent [common_content]\n";
 		}
 	;
 
@@ -2369,9 +2856,11 @@ QuoteAttrValueContent :
 AposAttrValueContent :
 		APOS_ATTR_CONTENT
 		{
+			cout << "AposAttrValueContent [apos_attr_content]\n";
 		}
 	|	CommonContent
 		{
+			cout << "AposAttrValueContent [common_content]\n";
 		}
 	;
 
@@ -2381,15 +2870,19 @@ AposAttrValueContent :
 DirElemContent :
 		DirectConstructor
 		{
+			cout << "DirElemContent [cons]\n";
 		}
 	|	ELEMENT_CONTENT
 		{
+			cout << "DirElemContent [elem_content]\n";
 		}
 	|	CDataSection
 		{
+			cout << "DirElemContent [cdata]\n";
 		}
 	|	CommonContent
 		{
+			cout << "DirElemContent [common_content]\n";
 		}
 	;
 
@@ -2399,18 +2892,23 @@ DirElemContent :
 CommonContent :
 		ENTITY_REF
 		{
+			cout << "CommonContent [entity_ref]\n";
 		}
 	|	CHAR_REF_LITERAL
 		{
+			cout << "CommonContent [char_ref]\n";
 		}
 	|	DOUBLE_LBRACE
 		{
+			cout << "CommonContent [{{]\n";
 		}
 	|	DOUBLE_RBRACE
 		{
+			cout << "CommonContent [}}]\n";
 		}
 	|	EnclosedExpr
 		{
+			cout << "CommonContent [expr]\n";
 		}
 	;
 
@@ -2418,8 +2916,9 @@ CommonContent :
 // [101] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor :
-		COMMENT_BEGIN  EXPR_COMMENT_LITERAL  COMMENT_END 	/* ws: explicitXQ */
+		XML_COMMENT_BEGIN  EXPR_COMMENT_LITERAL  XML_COMMENT_END 	/* ws: explicitXQ */
 		{
+			cout << "DirCommentConstructor [ ]\n";
 		}
 	;
 
@@ -2434,9 +2933,11 @@ DirCommentConstructor :
 DirPIConstructor :
 		PI_BEGIN  PI_TARGET  PI_END 	/* ws: explicitXQ */
 		{
+			cout << "DirPIConstructor [target]\n"
 		}
 	|	PI_BEGIN  PI_TARGET  CHAR_LITERAL  PI_END 	/* ws: explicitXQ */
 		{
+			cout << "DirPIConstructor [target.charlit]\n"
 		}
 	;
 
@@ -2451,6 +2952,7 @@ DirPIConstructor :
 CDataSection :
 		CDATA_BEGIN  CHAR_LITERAL  CDATA_END 	/* ws: explicitXQ */
 		{
+			cout << "CDataSection [ ]\n"
 		}
 	;
 
@@ -2465,26 +2967,32 @@ CDataSection :
 ComputedConstructor :
 		CompDocConstructor
 		{
+			cout << "ComputedConstructor [doc]\n";
 			$$ = $1;
 		}
 	|	CompElemConstructor
 		{
+			cout << "ComputedConstructor [elem]\n";
 			$$ = $1;
 		}
 	|	CompAttrConstructor
 		{
+			cout << "ComputedConstructor [attr]\n";
 			$$ = $1;
 		}
 	|	CompTextConstructor
 		{
+			cout << "ComputedConstructor [text]\n";
 			$$ = $1;
 		}
 	|	CompCommentConstructor
 		{
+			cout << "ComputedConstructor [comment]\n";
 			$$ = $1;
 		}
 	|	CompPIConstructor
 		{
+			cout << "ComputedConstructor [pi]\n";
 			$$ = $1;
 		}
 	;
@@ -2495,6 +3003,7 @@ ComputedConstructor :
 CompDocConstructor :
 		DOCUMENT_LBRACE  Expr  RBRACE
 		{
+			cout << "CompDocConstructor [ ]\n";
 		}
 	;
 
@@ -2504,42 +3013,53 @@ CompDocConstructor :
 CompElemConstructor :
 		ELEMENT_QNAME_LBRACE  RBRACE
 		{
+			cout << "CompElemConstructor [ ]\n";
 		}
-	|	ELEMENT_QNAME_LBRACE  ContentExpr  RBRACE
+	|	ELEMENT_QNAME_LBRACE  Expr  RBRACE
 		{
+			cout << "CompElemConstructor [content]\n";
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
+			cout << "CompElemConstructor [name]\n";
 		}
-	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  ContentExpr  RBRACE
+	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
+			cout << "CompElemConstructor [name.content]\n";
 		}
 	;
 
 
 // [110] ContentExpr
 // -----------------
+/*
 ContentExpr :
 		Expr
 		{
+			cout << "ContentExpr [ ]\n";
 		}
 	;
+*/
 
 
 // [111] CompAttrConstructor
 // -------------------------
 CompAttrConstructor :
-		ATTRIBUTE  QNAME  LBRACE  RBRACE
+		ATTRIBUTE_QNAME_LBRACE  RBRACE
 		{
+			cout << "CompAttrConstructor [ ]\n";
 		}
-	|	ATTRIBUTE  QNAME  LBRACE  Expr  RBRACE
+	|	ATTRIBUTE_QNAME_LBRACE  Expr  RBRACE
 		{
+			cout << "CompAttrConstructor [val]\n";
 		}
-	|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  RBRACE
+	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
+			cout << "CompAttrConstructor [name]\n";
 		}
-	|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
+	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
+			cout << "CompAttrConstructor [name.val]\n";
 		}
 	;
 
@@ -2549,6 +3069,7 @@ CompAttrConstructor :
 CompTextConstructor :
 		TEXT_LBRACE  Expr  RBRACE
 		{
+			cout << "CompTextConstructor [content]\n";
 		}
 	;
 
@@ -2558,6 +3079,7 @@ CompTextConstructor :
 CompCommentConstructor :
 		COMMENT_LBRACE  Expr  RBRACE
 		{
+			cout << "CompCommentConstructor [content]\n";
 		}
 	;
 
@@ -2567,15 +3089,19 @@ CompCommentConstructor :
 CompPIConstructor :
 		PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
 		{
+			cout << "CompPIConstructor [ ]\n";
 		}
 	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
 		{
+			cout << "CompPIConstructor [content]\n";
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
+			cout << "CompPIConstructor [target]\n";
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
+			cout << "CompPIConstructor [target.content]\n";
 		}
 	;
 
@@ -2585,9 +3111,11 @@ CompPIConstructor :
 SingleType :
 		AtomicType
 		{
+			cout << "SingleType [atomic]\n";
 		}
 	|	AtomicType  HOOK
 		{
+			cout << "SingleType [atomic ?]\n";
 		}
 	;
 
@@ -2597,6 +3125,7 @@ SingleType :
 TypeDeclaration :
 		AS  SequenceType
 		{
+			cout << "TypeDeclaration [as seqtype]\n";
 		}
 	;
 
@@ -2606,12 +3135,15 @@ TypeDeclaration :
 SequenceType :
 		ItemType  %prec SEQUENCE_TYPE_REDUCE
 		{
+			cout << "ItemType [type]\n";
 		}
-	|	ItemType OccurrenceIndicator
+	|	ItemType  OccurrenceIndicator
 		{
+			cout << "ItemType [type.occurs]\n";
 		}
 	|	VOID_TEST
 		{
+			cout << "ItemType [void]\n";
 		}
 	;
 
@@ -2619,14 +3151,17 @@ SequenceType :
 // [118] OccurrenceIndicator
 // -------------------------
 OccurrenceIndicator :
-		HOOK
+		OCCURS_HOOK
 		{
+			cout << "OccurrenceIndicator [?]\n";
 		}
-	|	STAR
+	|	OCCURS_STAR
 		{
+			cout << "OccurrenceIndicator [*]\n";
 		}
-	|	PLUS 	/* gn: occurrence-indicatorsXQ */
+	|	OCCURS_PLUS 	/* gn: occurrence-indicatorsXQ */
 		{
+			cout << "OccurrenceIndicator [+]\n";
 		}
 	;
 
@@ -2636,12 +3171,15 @@ OccurrenceIndicator :
 ItemType :
 		AtomicType
 		{
+			cout << "ItemType [atomic]\n";
 		}
 	|	KindTest
 		{
+			cout << "ItemType [kind]\n";
 		}
 	|	ITEM_TEST
 		{
+			cout << "ItemType [item]\n";
 		}
 	;
 
@@ -2651,6 +3189,7 @@ ItemType :
 AtomicType :
 		QNAME
 		{
+			cout << "AtomicType [qname]\n";
 		}
 	;
 
@@ -2660,38 +3199,47 @@ AtomicType :
 KindTest :
 		DocumentTest
 		{
+			cout << "KindTest [doc]\n";
 			$$ = $1;
 		}
 	| ElementTest
 		{
+			cout << "KindTest [elem]\n";
 			$$ = $1;
 		}
 	| AttributeTest
 		{
+			cout << "KindTest [attr]\n";
 			$$ = $1;
 		}
 	| SchemaElementTest
 		{
+			cout << "KindTest [schema_elem]\n";
 			$$ = $1;
 		}
 	| SchemaAttributeTest
 		{
+			cout << "KindTest [schema_attr]\n";
 			$$ = $1;
 		}
 	| PITest
 		{
+			cout << "KindTest [pi]\n";
 			$$ = $1;
 		}
 	| CommentTest
 		{
+			cout << "KindTest [comment]\n";
 			$$ = $1;
 		}
 	| TextTest
 		{
+			cout << "KindTest [text]\n";
 			$$ = $1;
 		}
 	| AnyKindTest
 		{
+			cout << "KindTest [any]\n";
 			$$ = $1;
 		}
 	;
@@ -2702,6 +3250,7 @@ KindTest :
 AnyKindTest :
 		NODE_LPAR  RPAR
 		{
+			cout << "AnyKindTest [ ]\n";
 		}
 	;
  
@@ -2711,12 +3260,15 @@ AnyKindTest :
 DocumentTest :
 		DOCUMENT_NODE_LPAR  RPAR
 		{
+			cout << "DocumentTest [ ]\n";
 		}
 	|	DOCUMENT_NODE_LPAR  ElementTest  RPAR
 		{
+			cout << "DocumentTest [elem]\n";
 		}
 	|	DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
 		{
+			cout << "DocumentTest [schema_elem]\n";
 		}
 	;
 
@@ -2726,6 +3278,7 @@ DocumentTest :
 TextTest :
 		TEXT_LPAR  RPAR 
 		{
+			cout << "TextTest [ ]\n";
 		}
 	;
 
@@ -2735,6 +3288,7 @@ TextTest :
 CommentTest :
 		COMMENT_LPAR  RPAR 
 		{
+			cout << "CommentTest [ ]\n";
 		}
 	;
  
@@ -2744,12 +3298,15 @@ CommentTest :
 PITest :
 		PI_LPAR  RPAR
 		{
+			cout << "PITest [ ]\n";
 		}
 	|	PI_LPAR  NCNAME  RPAR
 		{
+			cout << "PITest [ncname]\n";
 		}
 	|	PI_LPAR  STRING_LITERAL  RPAR
 		{
+			cout << "PITest [stringlit]\n";
 		}
 	;
 
@@ -2759,12 +3316,15 @@ PITest :
 AttributeTest :
 		ATTRIBUTE_LPAR  RPAR
 		{
+			cout << "AttributeTest [ ]\n";
 		}
 	|	ATTRIBUTE_LPAR  AttribNameOrWildcard  RPAR
 		{
+			cout << "AttributeTest [name_or_wild]\n";
 		}
 	|	ATTRIBUTE_LPAR  AttribNameOrWildcard  COMMA  TypeName  RPAR
 		{
+			cout << "AttributeTest [name_or_wild.type]\n";
 		}
 	;
 
@@ -2774,9 +3334,11 @@ AttributeTest :
 AttribNameOrWildcard :
 		AttributeName
 		{
+			cout << "AttribNameOrWildcard [attr]\n";
 		}
 	|	STAR
 		{
+			cout << "AttribNameOrWildcard [*]\n";
 		}
 	;
 
@@ -2786,6 +3348,7 @@ AttribNameOrWildcard :
 SchemaAttributeTest :
 		SCHEMA_ATTRIBUTE_LPAR  AttributeDeclaration  RPAR
 		{
+			cout << "SchemaAttributeTest [ ]\n";
 		}
 	;
 
@@ -2795,6 +3358,7 @@ SchemaAttributeTest :
 AttributeDeclaration :
 		AttributeName
 		{
+			cout << "AttributeDeclaration [ ]\n";
 		}
 	;
 
@@ -2804,15 +3368,19 @@ AttributeDeclaration :
 ElementTest :
 		ELEMENT_LPAR  RPAR
 		{
+			cout << "ElementTest [ ]\n";
 		}
 	|	ELEMENT_LPAR  ElementNameOrWildcard  RPAR
 		{
+			cout << "ElementTest [name_or_wild]\n";
 		}
 	|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR
 		{
+			cout << "ElementTest [name_or_wild.type]\n";
 		}
 	|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
 		{
+			cout << "ElementTest [name_or_wild.type ?]\n";
 		}
 	;
 
@@ -2822,9 +3390,11 @@ ElementTest :
 ElementNameOrWildcard :
 		ElementName
 		{
+			cout << "ElementNameOrWildcard [elem]\n";
 		}
 	|	STAR
 		{
+			cout << "ElementNameOrWildcard [*]\n";
 		}
 	;
 
@@ -2834,6 +3404,7 @@ ElementNameOrWildcard :
 SchemaElementTest :
 		SCHEMA_ELEMENT_LPAR  ElementDeclaration  RPAR
 		{
+			cout << "SchemaElementTest [ ]\n";
 		}
 	;
 
@@ -2843,6 +3414,7 @@ SchemaElementTest :
 ElementDeclaration :
 		ElementName
 		{
+			cout << "ElementDeclaration [ ]\n";
 		}
 	;
 
@@ -2852,6 +3424,7 @@ ElementDeclaration :
 AttributeName :
 		QNAME
 		{
+			cout << "AttributeName [ ]\n";
 		}
 	;
 
@@ -2861,6 +3434,7 @@ AttributeName :
 ElementName :
 		QNAME
 		{
+			cout << "ElementName [ ]\n";
 		}
 	;
 
@@ -2870,6 +3444,7 @@ ElementName :
 TypeName :
 		QNAME
 		{
+			cout << "TypeName [ ]\n";
 		}
 	;
 
@@ -2914,6 +3489,7 @@ TypeName :
 RevalidationDecl :
 		DECLARE_REVALIDATION_MODE
 		{
+			cout << "RevalidationDecl [ ]\n";
 		}
 	;
 
@@ -2923,18 +3499,23 @@ RevalidationDecl :
 InsertExpr :
 		DO_INSERT  ExprSingle  INTO  ExprSingle
 		{
+			cout << "InsertExpr [expr]\n";
 		}
 	|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
 		{
+			cout << "InsertExpr [expr.as_first]\n";
 		}
 	|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
 		{
+			cout << "InsertExpr [expr.as_last]\n";
 		}
 	| DO_INSERT  ExprSingle  AFTER  ExprSingle
 		{
+			cout << "InsertExpr [expr.after]\n";
 		}
 	| DO_INSERT  ExprSingle  BEFORE  ExprSingle
 		{
+			cout << "InsertExpr [expr.before]\n";
 		}
 	;
 
@@ -2944,6 +3525,7 @@ InsertExpr :
 DeleteExpr:
 		DO_DELETE  ExprSingle
 		{
+			cout << "DeleteExpr [expr]\n";
 		}
 	;
 
@@ -2953,9 +3535,11 @@ DeleteExpr:
 ReplaceExpr :
 		DO_REPLACE  ExprSingle  WITH  ExprSingle
 		{
+			cout << "ReplaceExpr [expr.expr]\n";
 		}
 	|	DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
 		{
+			cout << "ReplaceExpr [value.expr]\n";
 		}
 	;
 
@@ -2965,6 +3549,7 @@ ReplaceExpr :
 RenameExpr :
 		DO_RENAME  ExprSingle  AS  ExprSingle
 		{
+			cout << "RenameExpr [expr.expr]\n";
 		}
 	;
 
@@ -2989,6 +3574,7 @@ RenameExpr :
 TransformExpr :
 		TRANSFORM_COPY_DOLLAR  VarNameList  MODIFY  ExprSingle  RETURN  ExprSingle
 		{
+			cout << "TransformExpr [ ]\n";
 		}
 	;
 
@@ -2998,9 +3584,11 @@ TransformExpr :
 VarNameList :
 		VARNAME	 GETS  ExprSingle
 		{
+			cout << "VarNameList [single]\n";
 		}
 	|	VarNameList  COMMA_DOLLAR  VARNAME  GETS  ExprSingle
 		{
+			cout << "VarNameList [list]\n";
 		}
 	;
 
@@ -3018,15 +3606,19 @@ VarNameList :
 FTSelection :
 		FTOr
 		{
+			cout << "FTSelection [or]\n";
 		}
 	|	FTOr  FTMatchOptionProximityList
 		{
+			cout << "FTSelection [or.match_proximity]\n";
 		}
 	|	FTOr  WEIGHT  RangeExpr
 		{
+			cout << "FTSelection [or.weight_range]\n";
 		}
 	|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
 		{
+			cout << "FTSelection [or.match_proximity.weight_range]\n";
 		}
 	;
 
@@ -3036,15 +3628,19 @@ FTSelection :
 FTMatchOptionProximityList :
 		FTMatchOption
 		{
+			cout << "FTMatchOptionProximityList [option_single]\n";
 		}
 	| FTProximity
 		{
+			cout << "FTMatchOptionProximityList [proximity_single]\n";
 		}
 	| FTMatchOptionProximityList  FTMatchOption
 		{
+			cout << "FTMatchOptionProximityList [option_list]\n";
 		}
 	| FTMatchOptionProximityList  FTProximity
 		{
+			cout << "FTMatchOptionProximityList [proximity_list]\n";
 		}
 	;
 
@@ -3054,9 +3650,11 @@ FTMatchOptionProximityList :
 FTOr :
 		FTAnd
 		{
+			cout << "FTOr [and]\n";
 		}
 	|	FTOr  FTOR  FTAnd
 		{
+			cout << "FTOr [or.and]\n";
 		}
 	;
 
@@ -3066,9 +3664,11 @@ FTOr :
 FTAnd :
 		FTMildnot
 		{
+			cout << "FTAnd [mild_not]\n";
 		}
 	|	FTAnd  FTAND  FTMildnot
 		{
+			cout << "FTAnd [and.mild_not]\n";
 		}
 	;
 
@@ -3078,9 +3678,11 @@ FTAnd :
 FTMildnot :
 		FTUnaryNot
 		{
+			cout << "FTMildNot [unary_not]\n";
 		}
-	|	FTMildnot  NOT_IN  FTUnaryNot
+	|	FTMildnot  FTNOT_IN  FTUnaryNot
 		{
+			cout << "FTMildNot [mild_not.unary_not]\n";
 		}
 	;
 
@@ -3090,9 +3692,11 @@ FTMildnot :
 FTUnaryNot :
 		FTWordsSelection
 		{
+			cout << "FTUnaryNot [words]\n";
 		}
 	|	FTNOT  FTWordsSelection
 		{
+			cout << "FTUnaryNot [not.words]\n";
 		}
 	;
 
@@ -3102,12 +3706,15 @@ FTUnaryNot :
 FTWordsSelection :
 		FTWords
 		{
+			cout << "FTWordsSelection [words]\n";
 		}
 	|	FTWords FTTimes
 		{
+			cout << "FTWordsSelection [words.times]\n";
 		}
 	| LPAR  FTSelection  RPAR
 		{
+			cout << "FTWordsSelection [selection]\n";
 		}
 	;
 
@@ -3117,9 +3724,11 @@ FTWordsSelection :
 FTWords :
 		FTWordsValue 
 		{
+			cout << "FTWords [value]\n";
 		}
 	|	FTWordsValue  FTAnyallOption
 		{
+			cout << "FTWords [value.any_all_option]\n";
 		}
 	;
 
@@ -3129,9 +3738,11 @@ FTWords :
 FTWordsValue :
 		Literal
 		{
+			cout << "FTWordsValue [literal]\n";
 		}
 	| LBRACE  Expr  RBRACE
 		{
+			cout << "FTWordsValue [expr]\n";
 		}
 	;
 
@@ -3141,18 +3752,23 @@ FTWordsValue :
 FTProximity :
 		FTOrderedIndicator
 		{
+			cout << "FTProximity [order]\n";
 		}
 	| FTWindow
 		{
+			cout << "FTProximity [window]\n";
 		}
 	| FTDistance
 		{
+			cout << "FTProximity [distance]\n";
 		}
 	| FTScope
 		{
+			cout << "FTProximity [scope]\n";
 		}
 	| FTContent
 		{
+			cout << "FTProximity [content]\n";
 		}
 	;
 
@@ -3162,6 +3778,7 @@ FTProximity :
 FTOrderedIndicator :
 		ORDERED
 		{
+			cout << "FTOrderedIndicator [ ]\n";
 		}
 	;
 
@@ -3171,30 +3788,37 @@ FTOrderedIndicator :
 FTMatchOption :
 		FTCaseOption
 		{
+			cout << "FTMatchOption [case]\n";
 			$$ = $1;
 		}
 	| FTDiacriticsOption
 		{
+			cout << "FTMatchOption [diacritics]\n";
 			$$ = $1;
 		}
 	| FTStemOption
 		{
+			cout << "FTMatchOption [stem]\n";
 			$$ = $1;
 		}
 	| FTThesaurusOption
 		{
+			cout << "FTMatchOption [thesaurus]\n";
 			$$ = $1;
 		}
 	| FTStopwordOption
 		{
+			cout << "FTMatchOption [stopword]\n";
 			$$ = $1;
 		}
 	| FTLanguageOption
 		{
+			cout << "FTMatchOption [language]\n";
 			$$ = $1;
 		}
 	| FTWildCardOption
 		{
+			cout << "FTMatchOption [wildcard]\n";
 			$$ = $1;
 		}
 	;
@@ -3205,15 +3829,19 @@ FTMatchOption :
 FTCaseOption :
 		LOWERCASE
 		{
+			cout << "FTCaseOption [lower]\n";
 		}
 	| UPPERCASE
 		{
+			cout << "FTCaseOption [upper]\n";
 		}
 	| CASE_SENSITIVE
 		{
+			cout << "FTCaseOption [sensitive]\n";
 		}
 	| CASE_INSENSITIVE
 		{
+			cout << "FTCaseOption [insensitive]\n";
 		}
 	;
 
@@ -3223,15 +3851,19 @@ FTCaseOption :
 FTDiacriticsOption :
 		WITH_DIACRITICS
 		{
+			cout << "FTDiacriticsOption [with]\n";
 		}
 	| WITHOUT_DIACRITICS
 		{
+			cout << "FTDiacriticsOption [without]\n";
 		}
 	| DIACRITICS_SENSITIVE
 		{
+			cout << "FTDiacriticsOption [sensitive]\n";
 		}
 	| DIACRITICS_INSENSITIVE
 		{
+			cout << "FTDiacriticsOption [insensitive]\n";
 		}
 	;
 
@@ -3241,9 +3873,11 @@ FTDiacriticsOption :
 FTStemOption :
 		WITH_STEMMING
 		{
+			cout << "FTStemOption [with]\n";
 		}
 	| WITHOUT_STEMMING
 		{
+			cout << "FTStemOption [without]\n";
 		}
 	;
 
@@ -3253,24 +3887,31 @@ FTStemOption :
 FTThesaurusOption :
 		WITH_THESAURUS  FTThesaurusID
 		{
+			cout << "FTThesaurusOption [id]\n";
 		}
 	|	WITH_THESAURUS  DEFAULT
 		{
+			cout << "FTThesaurusOption [default]\n";
 		}
 	| WITH_THESAURUS  LPAR  FTThesaurusID  RPAR
 		{
+			cout << "FTThesaurusOption [(id)]\n";
 		}
 	| WITH_THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
 		{
+			cout << "FTThesaurusOption [(id,id,..)]\n";
 		}
 	| WITH_THESAURUS  LPAR  DEFAULT  RPAR
 		{
+			cout << "FTThesaurusOption [(default)]\n";
 		}
 	| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
 		{
+			cout << "FTThesaurusOption [(default,id,id,..)]\n";
 		}
 	| WITHOUT_THESAURUS
 		{
+			cout << "FTThesaurusOption [without]\n";
 		}
 	;
 
@@ -3280,9 +3921,11 @@ FTThesaurusOption :
 FTThesaurusList :
 		FTThesaurusID
 		{
+			cout << "FTThesaurusList [single]\n";
 		}
 	| FTThesaurusList  COMMA  FTThesaurusID
 		{
+			cout << "FTThesaurusList [list]\n";
 		}
 	;
 
@@ -3292,15 +3935,19 @@ FTThesaurusList :
 FTThesaurusID :
 		AT  STRING_LITERAL
 		{
+			cout << "FTThesaurusID [name]\n";
 		}
 	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
 		{
+			cout << "FTThesaurusID [name.rel]\n";
 		}
 	|	AT  STRING_LITERAL  FTRange  LEVELS
 		{
+			cout << "FTThesaurusID [name.range]\n";
 		}
 	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
 		{
+			cout << "FTThesaurusID [name.rel.range]\n";
 		}
 	;
 
@@ -3310,18 +3957,23 @@ FTThesaurusID :
 FTStopwordOption :
 		WITH_STOP_WORDS  FTRefOrList
 		{
+			cout << "FTStopwordOption [list]\n";
 		}
-		WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
+	|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
 		{
+			cout << "FTStopwordOption [list.incl_excl]\n";
 		}
 	| WITH_DEFAULT_STOP_WORDS 
 		{
+			cout << "FTStopwordOption [default]\n";
 		}
 	| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
 		{
+			cout << "FTStopwordOption [default.incl_excl]\n";
 		}
 	| WITHOUT_STOP_WORDS
 		{
+			cout << "FTStopwordOption [without]\n";
 		}
 	;
 
@@ -3331,9 +3983,11 @@ FTStopwordOption :
 FTInclExclStringLiteralList :
 		FTInclExclStringLiteral
 		{
+			cout << "FTInclExclStringLiteralList [.]\n";
 		}
 	| FTInclExclStringLiteralList  FTInclExclStringLiteral
 		{
+			cout << "FTInclExclStringLiteralList [*]\n";
 		}
 	;
 
@@ -3343,9 +3997,11 @@ FTInclExclStringLiteralList :
 FTRefOrList :
 		AT  STRING_LITERAL
 		{
+			cout << "FTRefOrList [.]\n";
 		}
 	| LPAR  FTStringLiteralList  RPAR 
 		{
+			cout << "FTRefOrList [(*)]\n";
 		}
 	;
 
@@ -3355,9 +4011,11 @@ FTRefOrList :
 FTStringLiteralList :
 		STRING_LITERAL
 		{
+			cout << "FTStringLiteralList [.]\n";
 		}
 	|	FTStringLiteralList  STRING_LITERAL
 		{
+			cout << "FTStringLiteralList [*]\n";
 		}
 	;
 
@@ -3367,9 +4025,11 @@ FTStringLiteralList :
 FTInclExclStringLiteral :
 		UNION  FTRefOrList
 		{
+			cout << "FTInclExclStringLiteral [union]\n";
 		}
 	|	EXCEPT  FTRefOrList
 		{
+			cout << "FTInclExclStringLiteral [except]\n";
 		}
 	;
 
@@ -3379,6 +4039,7 @@ FTInclExclStringLiteral :
 FTLanguageOption :
 		LANGUAGE  STRING_LITERAL
 		{
+			cout << "FTLanguageOption [ ]\n";
 		}
 	;
 
@@ -3388,9 +4049,11 @@ FTLanguageOption :
 FTWildCardOption :
 		WITH_WILDCARDS
 		{
+			cout << "FTWildCardOption [with]\n";
 		}
 	| WITHOUT_WILDCARDS
 		{
+			cout << "FTWildCardOption [without]\n";
 		}
 	;
 
@@ -3400,12 +4063,15 @@ FTWildCardOption :
 FTContent :
 		AT_START
 		{
+			cout << "FTContent [start]\n";
 		}
 	| AT_END
 		{
+			cout << "FTContent [end]\n";
 		}
 	| ENTIRE_CONTENT
 		{
+			cout << "FTContent [entire]\n";
 		}
 	;
 
@@ -3415,18 +4081,23 @@ FTContent :
 FTAnyallOption :
 		ANY
 		{
+			cout << "FTAnyallOption [any]\n";
 		}
 	|	ANY_WORD
 		{
+			cout << "FTAnyallOption [any_word]\n";
 		}
 	| ALL
 		{
+			cout << "FTAnyallOption [all]\n";
 		}
 	| ALL_WORDS
 		{
+			cout << "FTAnyallOption [all_words]\n";
 		}
 	| PHRASE
 		{
+			cout << "FTAnyallOption [phrase]\n";
 		}
 	;
 
@@ -3436,15 +4107,19 @@ FTAnyallOption :
 FTRange :
 		EXACTLY  UnionExpr
 		{
+			cout << "FTRange [exactly]\n";
 		}
 	| AT_LEAST  UnionExpr
 		{
+			cout << "FTRange [at_least]\n";
 		}
 	| AT_MOST  UnionExpr
 		{
+			cout << "FTRange [at_most]\n";
 		}
 	| FROM  UnionExpr  TO  UnionExpr
 		{
+			cout << "FTRange [range]\n";
 		}
 	;
 
@@ -3454,6 +4129,7 @@ FTRange :
 FTDistance :
 		DISTANCE  FTRange  FTUnit
 		{
+			cout << "FTDistance [ ]\n";
 		}
 	;
 
@@ -3463,6 +4139,7 @@ FTDistance :
 FTWindow :
 		WINDOW  UnionExpr  FTUnit
 		{
+			cout << "FTWindow [ ]\n";
 		}
 	;
 
@@ -3472,6 +4149,7 @@ FTWindow :
 FTTimes :
 		OCCURS  FTRange  TIMES
 		{
+			cout << "FTTimes [ ]\n";
 		}
 	;
 
@@ -3481,9 +4159,11 @@ FTTimes :
 FTScope :
 		SAME  FTBigUnit
 		{
+			cout << "FTTimes [same]\n";
 		}
 	|	DIFFERENT  FTBigUnit
 		{
+			cout << "FTTimes [different]\n";
 		}
 	;
 
@@ -3493,12 +4173,15 @@ FTScope :
 FTUnit :
 		WORDS
 		{
+			cout << "FTUnit [words]\n";
 		}
 	| SENTENCES
 		{
+			cout << "FTUnit [sentences]\n";
 		}
 	| PARAGRAPH
 		{
+			cout << "FTUnit [paragraph]\n";
 		}
 	;
 
@@ -3508,9 +4191,11 @@ FTUnit :
 FTBigUnit :
 		SENTENCE
 		{
+			cout << "FTBigUnit [sentence]\n";
 		}
 	| PARAGRAPH
 		{
+			cout << "FTBigUnit [paragraph]\n";
 		}
 	;
 
@@ -3520,6 +4205,7 @@ FTBigUnit :
 FTIgnoreOption :
 		WITHOUT_CONTENT  UnionExpr
 		{
+			cout << "FTIgnoreOption [ ]\n";
 		}
 	;
 
@@ -3539,4 +4225,21 @@ void yy::xquery_parser::error(
 {
   driver.error(loc, msg);
 }
+
+
+
+/*
+static void print_token_value(FILE *file, int type, YYSTYPE value)
+{
+	if (type==VAR) {
+		fprintf (file, "%s", value.tptr->name);
+	}
+	else if (type==NUM) {
+		fprintf (file, "%d", value.val);
+	}
+}
+*/
+
+
+
 

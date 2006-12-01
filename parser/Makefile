@@ -6,7 +6,7 @@ scanner : xquery_scanner.l
 	g++ -c ${OPT} -o xquery_scanner.${SUFX} xquery_scanner.yy.cpp
 
 parser : xquery_parser.y
-	bison -v -d xquery_parser.y
+	bison -v -t -d xquery_parser.y
 	g++ -c ${OPT} -o xquery_parser.${SUFX} xquery_parser.tab.c
 
 driver : xquery_driver.h xquery_driver.cpp

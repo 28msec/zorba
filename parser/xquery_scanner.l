@@ -148,9 +148,13 @@ URILiteral						{StringLiteral}
 Char									[\x09\x0A\x0D\x20-\xFD]
 NonHyphenChar					[\x09\x0D\x0A\x20-\x2C\x2E-\xFD]
 XMLCommentChar				({NonHyphenChar}*)|(-{NonHyphenChar}*)
+NonRParChar						[\x09\x0D\x0A\x20-\x28\x2A-\xFD]
+NonColonChar					[\x09\x0D\x0A\x20-\x39\x3B-\xFD]
+CommentContent				({NonColonChar}*)|(:{NonRParChar}{NonColonChar}*)
 ElementContentChar		[\x09\x0A\x0D\x20-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 QuotAttrContentChar 	[\x09\x0A\x0D\x20-\x21\x23-\x25\x27-\x3B\x3D-\x7A\x7C\x7E-\xFD]
 AposAttrContentChar 	[\x09\x0A\x0D\x20-\x25\x28-\x3B\x3D-\x7A\x7C\x7E-\xFD]
+
 NonXChar	[\x09\x0A\x0D\x20A-WY-Za-wy-z\x7B-\xFD]
 NonMChar	[\x09\x0A\x0D\x20A-LN-Za-ln-z\x7B-\xFD]
 NonLChar	[\x09\x0A\x0D\x20A-KM-Za-km-z\x7B-\xFD]
@@ -208,9 +212,44 @@ ValidationMode				("strict"|"lax"|"skip")
 */
 
 %{
+std::string start_state()
+{
+	switch (YY_START) {
+	case INITIAL: return "INITIAL";
+	case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
+	case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
+	case MODE_CLOSE_KINDTEST: return "MODE_CLOSE_KINDTEST";
+	case MODE_DECLAREORDERING: return "MODE_DECLAREORDERING";
+	case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
+	case MODE_END_TAG: return "MODE_END_TAG";
+	case MODE_EXPR_COMMENT: return "MODE_EXPR_COMMENT";
+	case MODE_ITEMTYPE: return "MODE_ITEMTYPE";
+	case MODE_KINDTEST: return "MODE_KINDTEST";
+	case MODE_KINDTESTFORPI: return "MODE_KINDTESTFORPI";
+	case MODE_NAMESPACEDECL: return "MODE_NAMESPACEDECL";
+	case MODE_NAMESPACEKEYWORD: return "MODE_NAMESPACEKEYWORD";
+	case MODE_OCCURRENCE_INDICATOR: return "MODE_OCCURRENCE_INDICATOR";
+	case MODE_OPERATOR: return "MODE_OPERATOR";
+	case MODE_OPTION: return "MODE_OPTION";
+	case MODE_PRAGMA: return "MODE_PRAGMA";
+	case MODE_PRAGMACONTENTS: return "MODE_PRAGMACONTENTS";
+	case MODE_PROCESSING_INSTRUCTION: return "MODE_PROCESSING_INSTRUCTION";
+	case MODE_PROCESSING_INSTRUCTION_CONTENT: return "MODE_PROCESSING_INSTRUCTION_CONTENT";
+	case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
+	case MODE_SINGLETYPE: return "MODE_SINGLETYPE";
+	case MODE_START_TAG: return "MODE_START_TAG";
+	case MODE_URITOOPERATOR: return "MODE_URITOOPERATOR";
+	case MODE_VARNAME: return "MODE_VARNAME";
+	case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
+	case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
+	case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
+	default: cout << "Something's drastically wrong here, unrecognized start state!\n";
+	}
+}
+
 #define YY_USER_ACTION \
 	{ \
-		std::cout<<"[["<<yytext<<"]]"<<std::endl; \
+		std::cout<<'<'<<start_state()<<"> [["<<yytext<<"]]"<<std::endl; \
 		yylloc->columns(yyleng); \
 	}
 
@@ -226,7 +265,6 @@ ValidationMode				("strict"|"lax"|"skip")
 
 %{
 typedef yy::xquery_parser::token token;
-#define tok yy::xquery_parser
 %}
 
 
@@ -238,6 +276,183 @@ typedef yy::xquery_parser::token token;
 	 |  This state is for patterns that occur at the beginning	of an
 	 |  expression or subexpression.
 	 |______________________________________________________________________*/
+
+	/* maintain INITIAL */
+	/* ---------------- */
+"validate"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::VALIDATE_LBRACE;
+}
+
+"validate"{SP}{ValidationMode} {
+	yylval->sval = driver.symtab.put(yytext+9, yyleng-9);
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::VALIDATE_MODE;
+}
+
+"typeswitch"{S}"(" {
+	return token::TYPESWITCH_LPAR;
+}
+
+"element"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::ELEMENT_LBRACE;
+}
+
+"attribute"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::ATTRIBUTE_LBRACE;
+}
+
+"attribute"{SP}{QName}{S}"{" {
+	yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-10);
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::ATTRIBUTE_QNAME_LBRACE;
+}
+
+"element"{SP}{QName}{S}"{" {
+	yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-8);
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::ELEMENT_QNAME_LBRACE;
+}
+
+"document"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::DOCUMENT_LBRACE;
+}
+
+"text"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::TEXT_LBRACE;
+}
+
+"processing-instruction"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::PI_LBRACE;
+}
+
+"processing-instruction"{SP}NCName{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::PI_NCNAME_LBRACE;
+}
+
+"comment"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::COMMENT_LBRACE;
+}
+
+"declare"{SP}"function" {
+	return token::DECLARE_FUNCTION;
+}
+
+"declare"{SP}"updating"{SP}"function" {
+	return token::DECLARE_UPDATING_FUNCTION;
+}
+
+"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::LBRACE;
+}
+
+"ordered"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::ORDERED_LBRACE;
+}
+
+"unordered"{S}"{" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ INITIAL);
+	return token::UNORDERED_LBRACE;
+}
+
+";" {
+	return token::SEMI;
+}
+"," {
+	return token::COMMA;
+}
+"(" {
+	return token::LPAR;
+}
+"if"{S}"(" {
+	return token::IF_LPAR;
+}
+
+	/* order dependence: this must follow the rule: if{S}"(" */
+{QName}{S}"(" {
+	yylval->sval = driver.symtab.put_qname(yytext, yyleng-1);
+	return token::QNAME_LPAR;
+}
+
+
+"-" {
+	return token::MINUS;
+}
+"+" {
+	return token::PLUS;
+}
+"/" {
+	return token::SLASH;
+}
+"/ " {
+	return token::LEADING_LONE_SLASH;
+}
+"//" {
+	return token::SLASH_SLASH;
+}
+"ancestor-or-self::" {
+	return token::ANCESTOR_OR_SELF_AXIS;
+}
+"ancestor::" {
+	return token::ANCESTOR_AXIS;
+}
+"attribute::" {
+	return token::ATTRIBUTE_AXIS;
+}
+"child::" {
+	return token::CHILD_AXIS;
+}
+"descendant-or-self::" {
+	return token::DESCENDANT_OR_SELF_AXIS;
+}
+"descendant::" {
+	return token::DESCENDANT_AXIS;
+}
+"following-sibling::" {
+	return token::FOLLOWING_SIBLING_AXIS;
+}
+"following::" {
+	return token::FOLLOWING_AXIS;
+}
+"parent::" {
+	return token::PARENT_AXIS;
+}
+"preceding-sibling::" {
+	return token::PRECEDING_SIBLING_AXIS;
+}
+"preceding::" {
+	return token::PRECEDING_AXIS;
+}
+"self::" {
+	return token::SELF_AXIS;
+}
+"@" {
+	return token::AT_SIGN;
+}
+
 
 	/* transition to OPERATOR */
 	/* ---------------------- */
@@ -524,7 +739,6 @@ typedef yy::xquery_parser::token token;
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 
@@ -577,253 +791,51 @@ typedef yy::xquery_parser::token token;
 }
 
 
-	/* maintain INITIAL */
-	/* ---------------- */
-"validate"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::VALIDATE_LBRACE;
-}
-
-"validate"{SP}{ValidationMode} {
-	yylval->sval = driver.symtab.put(yytext+9, yyleng-9);
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::VALIDATE_MODE;
-}
-
-"typeswitch"{S}"(" {
-	return token::TYPESWITCH_LPAR;
-}
-
-"element"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::ELEMENT_LBRACE;
-}
-
-"attribute"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::ATTRIBUTE_LBRACE;
-}
-
-"attribute"{SP}{QName}{S}"{" {
-	yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-10);
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::ATTRIBUTE_QNAME_LBRACE;
-}
-
-"element"{SP}{QName}{S}"{" {
-	yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-8);
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::ELEMENT_QNAME_LBRACE;
-}
-
-"document"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::DOCUMENT_LBRACE;
-}
-
-"text"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::TEXT_LBRACE;
-}
-
-"processing-instruction"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::PI_LBRACE;
-}
-
-"processing-instruction"{SP}NCName{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::PI_NCNAME_LBRACE;
-}
-
-"comment"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::COMMENT_LBRACE;
-}
-
-"declare"{SP}"function" {
-	return token::DECLARE_FUNCTION;
-}
-
-"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::LBRACE;
-}
-
-"ordered"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::ORDERED_LBRACE;
-}
-
-"unordered"{S}"{" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
-	return token::UNORDERED_LBRACE;
-}
-
-";" {
-	return token::SEMI;
-}
-
-"," {
-	return token::COMMA;
-}
-
-"(" {
-	return token::LPAR;
-}
-
-QName{S}"(" {
-	return token::QNAME_LPAR;
-}
-
-"if"{S}"(" {
-	return token::IF_LPAR;
-}
-
-"-" {
-	return token::MINUS;
-}
-
-"+" {
-	return token::PLUS;
-}
-
-"/" {
-	return token::SLASH;
-}
-
-"/ " {
-	return token::LEADING_LONE_SLASH;
-}
-
-"//" {
-	return token::SLASH_SLASH;
-}
-
-"ancestor-or-self::" {
-	return token::ANCESTOR_OR_SELF_AXIS;
-}
-
-"ancestor::" {
-	return token::ANCESTOR_AXIS;
-}
-
-"attribute::" {
-	return token::ATTRIBUTE_AXIS;
-}
-
-"child::" {
-	return token::CHILD_AXIS;
-}
-
-"descendant-or-self::" {
-	return token::DESCENDANT_OR_SELF_AXIS;
-}
-
-"descendant::" {
-	return token::DESCENDANT_AXIS;
-}
-
-"following-sibling::" {
-	return token::FOLLOWING_SIBLING_AXIS;
-}
-
-"following::" {
-	return token::FOLLOWING_AXIS;
-}
-
-"parent::" {
-	return token::PARENT_AXIS;
-}
-
-"preceding-sibling::" {
-	return token::PRECEDING_SIBLING_AXIS;
-}
-
-"preceding::" {
-	return token::PRECEDING_AXIS;
-}
-
-"self::" {
-	return token::SELF_AXIS;
-}
-
-"@" {
-	return token::AT_SIGN;
-}
-
-
 	/*______________________________________________________________________  
 	 |
-	 | Update rules
+	 | Update rules <INITIAL>
 	 |______________________________________________________________________*/
 
 "declare"{S}"revalidation"{ValidationMode} {
 	return token::DECLARE_REVALIDATION_MODE;
 }
-
 "do"{SP}"insert" {
 	return token::DO_INSERT;
 }
-
 "do"{SP}"delete"  {
 	return token::DO_DELETE;
 }
-
 "do"{SP}"replace" {
 	return token::DO_REPLACE;
 }
-
 "do"{SP}"rename" {
+	driver.set_rename(true);
 	return token::DO_RENAME;
 }
-
 "into" {
 	return token::INTO;
 }
-
 "first"{SP}"into" {
 	return token::FIRST_INTO;
 }
-
 "last"{SP}"into" {
 	return token::LAST_INTO;
 }
-
 "after" {
 	return token::AFTER;
 }
-
 "before" {
 	return token::BEFORE;
 }
-
 "value"{SP}"of" {
 	return token::VALUE_OF;
 }
-
 "with"  {
 	return token::WITH;
 }
-
 "as" {
 	return token::AS;
 }
-
 "modify" {
 	return token::MODIFY;
 }
@@ -831,189 +843,156 @@ QName{S}"(" {
 
 	/*______________________________________________________________________  
 	 |
-	 | FT rules
+	 | FT rules <INITIAL>
 	 |______________________________________________________________________*/
 
+"&&" {
+	return token::FTAND;
+}
+"!" {
+	return token::FTNOT;
+}
+"||" {
+	return token::FTOR;
+}
+"not"<SP>"in" {
+	return token::FTNOT_IN;
+}
 "all" {
 	return token::ALL;
 }
-
 "all"{SP}"words" {
 	return token::ALL_WORDS;
 }
-
 "any" {
 	return token::ANY;
 }
-
 "any"{SP}"word" {
 	return token::ANY_WORD;
 }
-
 "at"{SP}"end" {
 	return token::AT_END;
 }
-
 "at"{SP}"least" {
 	return token::AT_LEAST;
 }
-
 "at"{SP}"most" {
 	return token::AT_MOST;
 }
-
 "at"{SP}"start" {
 	return token::AT_START;
 }
-
 "case"{SP}"insensitive" {
 	return token::CASE_INSENSITIVE;
 }
-
 "case"{SP}"sensitive" {
 	return token::CASE_SENSITIVE;
 }
-
 "declare"{SP}"ftoption" {
 	return token::DECLARE_FTOPTION;
 }
-
 "diacritics"{SP}"insensitive" {
 	return token::DIACRITICS_INSENSITIVE;
 }
-
 "diacritic"{SP}"sensitive" {
 	return token::DIACRITICS_SENSITIVE;
 }
-
 "different" {
 	return token::DIFFERENT;
 }
-
 "distance" {
 	return token::DISTANCE;
 }
-
 "entire"{SP}"content" {
 	return token::ENTIRE_CONTENT;
 }
-
 "exactly" {
 	return token::EXACTLY;
 }
-
 "from" {
 	return token::FROM;
 }
-
 "language" {
 	return token::LANGUAGE;
 }
-
 "levels" {
 	return token::LEVELS;
 }
-
 "lowercase" {
 	return token::LOWERCASE;
 }
-
 "occurs" {
 	return token::OCCURS;
 }
-
 "paragraph" {
 	return token::PARAGRAPH;
 }
-
 "phrase" {
 	return token::PHRASE;
 }
-
 "relationship" {
 	return token::RELATIONSHIP;
 }
-	
 "same" {
 	return token::SAME;
 }
-
 "score" {
 	return token::SCORE;
 }
-
 "sentence" {
 	return token::SENTENCE;
 }
-
 "sentences" {
 	return token::SENTENCES;
 }
-
 "times" {
 	return token::TIMES;
 }
-
 "uppercase" {
 	return token::UPPERCASE;
 }
-
 "weight" {
 	return token::WEIGHT;
 }
-
 "window" {
 	return token::WINDOW;
 }
-
 "without"{SP}"content" {
 	return token::WITHOUT_CONTENT;
 }
-
 "without"{SP}"diacritics" {
 	return token::WITHOUT_DIACRITICS;
 }
-
 "without"{SP}"stemming" {
 	return token::WITHOUT_STEMMING;
 }
-
 "without"{SP}"stop"{SP}"words" {
 	return token::WITHOUT_STOP_WORDS;
 }
-
 "without"{SP}"thesaurus" {
 	return token::WITHOUT_THESAURUS;
 }
-
 "without"{SP}"wildcards" {
 	return token::WITHOUT_WILDCARDS;
 }
-
 "with"{SP}"default"{SP}"stop"{SP}"words" {
 	return token::WITH_DEFAULT_STOP_WORDS;
 }
-
 "with"{SP}"diacritics" {
 	return token::WITH_DIACRITICS;
 }
-
 "with"{SP}"stemming" {
 	return token::WITH_STEMMING;
 }
-
 "with"{SP}"stop"{SP}"words" {
 	return token::WITH_STOP_WORDS;
 }
-
 "with"{SP}"thesaurus" {
 	return token::WITH_THESAURUS;
 }
-
 "with"{SP}"wildcards" {
 	return token::WITH_WILDCARDS;
 }
-
 "words" {
 	return token::WORDS;
 }
@@ -1069,36 +1048,33 @@ QName{S}"(" {
 	yy_push_state( /*and goto*/ INITIAL);
 	return token::LBRACE;
 }
-
 ";" {
 	BEGIN INITIAL;
 	return token::SEMI;
 }
-
 "then" {
 	BEGIN INITIAL;
 	return token::THEN;
 }
-
 "else" {
 	BEGIN INITIAL;
 	return token::ELSE;
 }
-
 "external" {
 	BEGIN INITIAL;
 	return token::EXTERNAL;
 }
-
 "and" {
 	BEGIN INITIAL;
 	return token::AND;
 }
-
 "at" {
-	BEGIN INITIAL;
+	if (!driver.ftcontains()) {
+		BEGIN INITIAL;
+	}
 	return token::AT;
 }
+
 
 	/* full-text rule */
 "score" {
@@ -1111,228 +1087,225 @@ QName{S}"(" {
 	BEGIN INITIAL;
 	return token::GETS;
 }
-
 "," {
 	BEGIN INITIAL;
 	return token::COMMA;
 }
-
 "div" {
 	BEGIN INITIAL;
 	return token::DIV;
 }
-
 "=" {
 	BEGIN INITIAL;
 	return token::EQUALS;
 }
-
 "except" {
 	BEGIN INITIAL;
 	return token::EXCEPT;
 }
-
 "eq" {
 	BEGIN INITIAL;
 	return token::F_EQ;
 }
-
 "ge" {
 	BEGIN INITIAL;
 	return token::F_GE;
 }
-
 "gt" {
 	BEGIN INITIAL;
 	return token::F_GT;
 }
-
 "le" {
 	BEGIN INITIAL;
 	return token::F_LE;
 }
-
 "lt" {
 	BEGIN INITIAL;
 	return token::F_LT;
 }
-
 "ne" {
 	BEGIN INITIAL;
 	return token::F_NE;
 }
-
 ">=" {
 	BEGIN INITIAL;
 	return token::GE;
 }
-
 ">>" {
 	BEGIN INITIAL;
 	return token::FOLLOWS;
 }
-
 ">" {
 	BEGIN INITIAL;
 	return token::GT;
 }
-
 "idiv" {
 	BEGIN INITIAL;
 	return token::IDIV;
 }
-
 "intersect" {
 	BEGIN INITIAL;
 	return token::INTERSECT;
 }
 
+
+
+	/* Update rules */
+"into" {
+	BEGIN INITIAL;
+	return token::INTO;
+}
+"with" {
+	BEGIN INITIAL;
+	return token::WITH;
+}
+"do"{SP}"insert" {
+	BEGIN INITIAL;
+	return token::DO_INSERT;
+}
+"do"{SP}"delete"  {
+	BEGIN INITIAL;
+	return token::DO_DELETE;
+}
+"do"{SP}"replace" {
+	BEGIN INITIAL;
+	return token::DO_REPLACE;
+}
+"do"{SP}"rename" {
+	BEGIN INITIAL;
+	driver.set_rename(true);
+	return token::DO_RENAME;
+}
+"into" {
+	BEGIN INITIAL;
+	return token::INTO;
+}
+"first"{SP}"into" {
+	BEGIN INITIAL;
+	return token::FIRST_INTO;
+}
+"last"{SP}"into" {
+	BEGIN INITIAL;
+	return token::LAST_INTO;
+}
+"after" {
+	BEGIN INITIAL;
+	return token::AFTER;
+}
+"before" {
+	BEGIN INITIAL;
+	return token::BEFORE;
+}
+"value"{SP}"of" {
+	BEGIN INITIAL;
+	return token::VALUE_OF;
+}
+"modify" {
+	BEGIN INITIAL;
+	return token::MODIFY;
+}
 "in" {
 	BEGIN INITIAL;
 	return token::IN;
 }
-
 "is" {
 	BEGIN INITIAL;
 	return token::IS;
 }
-
 "[" {
 	BEGIN INITIAL;
 	return token::LBRACK;
 }
-
 "<=" {
 	BEGIN INITIAL;
 	return token::LE;
 }
-
 "<<" {
 	BEGIN INITIAL;
 	return token::PRECEDES;
 }
-
 "<" {
 	BEGIN INITIAL;
 	return token::LT;
 }
-
 "-" {
 	BEGIN INITIAL;
 	return token::MINUS;
 }
-
 "mod" {
 	BEGIN INITIAL;
 	return token::MOD;
 }
-
 "*" {
 	BEGIN INITIAL;
 	return token::STAR;
 }
-
 "!=" {
 	BEGIN INITIAL;
 	return token::NE;
 }
-
 "order"{SP}"by" {
 	BEGIN INITIAL;
 	return token::ORDER_BY;
 }
-
 "stable"{SP}"order"{SP}"by" {
 	BEGIN INITIAL;
 	return token::STABLE_ORDER_BY;
 }
-
 "or" {
 	BEGIN INITIAL;
 	return token::OR;
 }
-
 "+" {
 	BEGIN INITIAL;
 	return token::PLUS;
 }
-
 "return" {
 	BEGIN INITIAL;
 	return token::RETURN;
 }
-
 "satisfies" {
 	BEGIN INITIAL;
 	return token::SATISFIES;
 }
-
 "/" {
 	BEGIN INITIAL;
 	return token::SLASH;
 }
-
 "/ " {
 	BEGIN INITIAL;
 	return token::LEADING_LONE_SLASH;
 }
-
 "//" {
 	BEGIN INITIAL;
 	return token::SLASH_SLASH;
 }
-
 "to" {
 	BEGIN INITIAL;
 	return token::TO;
 }
-
 "union" {
 	BEGIN INITIAL;
 	return token::UNION;
 }
-
 "|" {
 	BEGIN INITIAL;
 	return token::VBAR;
 }
-
 "where" {
 	BEGIN INITIAL;
 	return token::WHERE;
 }
-
 "preserve" {
 	BEGIN INITIAL;
 	return token::PRESERVE;
 }
-
 "strip" {
 	BEGIN INITIAL;
 	return token::STRIP;
 }
 
-	/* full-text rules */
-"ftcontains" {
-	BEGIN INITIAL;
-	return token::FTCONTAINS;
-}
-"&&" {
-	BEGIN INITIAL;
-	return token::FTAND;
-}
-"!" {
-	BEGIN INITIAL;
-	return token::FTNOT;
-}
-"||" {
-	BEGIN INITIAL;
-	return token::FTOR;
-}
-"not"<SP>"in" {
-	BEGIN INITIAL;
-	return token::NOT_IN;
-}
+
 
 
 	/* transition to SINGLETYPE */
@@ -1341,7 +1314,6 @@ QName{S}"(" {
 	BEGIN MODE_SINGLETYPE;
 	return token::CASTABLE_AS;
 }
-
 "cast"{SP}"as" {
 	BEGIN MODE_SINGLETYPE;
 	return token::CAST_AS;
@@ -1354,22 +1326,27 @@ QName{S}"(" {
 	BEGIN MODE_ITEMTYPE;
 	return token::INSTANCE_OF;
 }
-
 "treat"{SP}"as" {
 	BEGIN MODE_ITEMTYPE;
 	return token::TREAT_AS;
 }
-
 "case" {
 	BEGIN MODE_ITEMTYPE;
 	return token::CASE;
 }
-
 "as" {
-	BEGIN MODE_ITEMTYPE;
+	if (driver.rename()) {
+		driver.set_rename(false);
+		BEGIN INITIAL;
+	}
+	else if (driver.ftcontains()) {
+		driver.set_ftcontains(false);
+	}
+	else {
+		BEGIN MODE_ITEMTYPE;
+	}
 	return token::AS;
 }
-
 ")"{S}"as" {
 	BEGIN MODE_ITEMTYPE;
 	return token::RPAR_AS;
@@ -1382,15 +1359,17 @@ QName{S}"(" {
 	BEGIN MODE_VARNAME;
 	return token::DOLLAR;
 }
-
 "for"{SP}"$" {
 	BEGIN MODE_VARNAME;
 	return token::FOR_DOLLAR;
 }
-
 "let"{SP}"$" {
 	BEGIN MODE_VARNAME;
 	return token::LET_DOLLAR;
+}
+"let"{SP}"score"{SP}"$" {
+	BEGIN MODE_VARNAME;
+	return token::LET_SCORE_DOLLAR;
 }
 
 
@@ -1398,7 +1377,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 
@@ -1423,43 +1401,218 @@ QName{S}"(" {
 ")" {
 	return token::RPAR;
 }
-
 "?" {
 	return token::HOOK;
 }
-
 "empty"{SP}"greatest" {
 	return token::EMPTY_GREATEST;
 }
-
 "empty"{SP}"least" {
 	return token::EMPTY_LEAST;
 }
-
 "ascending" {
 	return token::ASCENDING;
 }
-
 "descending" {
 	return token::DESCENDING;
 }
-
 "default" {
 	return token::DEFAULT;
 }
-
 "]" {
 	return token::RBRACK;
 }
-
 {StringLiteral} {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::STRING_LITERAL;
 }
 
+
+	/*______________________________________________________________________  
+	 |
+	 | FT rules <OPERATOR>
+	 |______________________________________________________________________*/
+
+	/* transition to INITIAL state */
+  /* --------------------------- */
+	
+"ftcontains" {
+	BEGIN INITIAL;
+	driver.set_ftcontains(true);
+	return token::FTCONTAINS;
+}
+"&&" {
+	BEGIN INITIAL;
+	return token::FTAND;
+}
+"!" {
+	BEGIN INITIAL;
+	return token::FTNOT;
+}
+"||" {
+	BEGIN INITIAL;
+	return token::FTOR;
+}
+"not"<SP>"in" {
+	BEGIN INITIAL;
+	return token::FTNOT_IN;
+}
+"at"{SP}"least" {
+  BEGIN INITIAL;
+	return token::AT_LEAST;
+}
+"at"{SP}"most" {
+  BEGIN INITIAL;
+	return token::AT_MOST;
+}
+"distance" {
+  BEGIN INITIAL;
+	return token::DISTANCE;
+}
+"exactly" {
+  BEGIN INITIAL;
+	return token::EXACTLY;
+}
+"from" {
+  BEGIN INITIAL;
+	return token::FROM;
+}
+"occurs" {
+  BEGIN INITIAL;
+	return token::OCCURS;
+}
+"window" {
+  BEGIN INITIAL;
+	return token::WINDOW;
+}
+
+
+  /* maintain OPERATOR state */
+  /* ----------------------- */
+"all" {
+	return token::ALL;
+}
+"all"{SP}"words" {
+	return token::ALL_WORDS;
+}
+"any" {
+	return token::ANY;
+}
+"any"{SP}"word" {
+	return token::ANY_WORD;
+}
+"at"{SP}"end" {
+	return token::AT_END;
+}
+"at"{SP}"start" {
+	return token::AT_START;
+}
+"case"{SP}"insensitive" {
+	return token::CASE_INSENSITIVE;
+}
+"case"{SP}"sensitive" {
+	return token::CASE_SENSITIVE;
+}
+"declare"{SP}"ftoption" {
+	return token::DECLARE_FTOPTION;
+}
+"diacritics"{SP}"insensitive" {
+	return token::DIACRITICS_INSENSITIVE;
+}
+"diacritics"{SP}"sensitive" {
+	return token::DIACRITICS_SENSITIVE;
+}
+"different" {
+	return token::DIFFERENT;
+}
+"entire"{SP}"content" {
+	return token::ENTIRE_CONTENT;
+}
+"language" {
+	return token::LANGUAGE;
+}
+"levels" {
+	return token::LEVELS;
+}
+"lowercase" {
+	return token::LOWERCASE;
+}
+"paragraph" {
+	return token::PARAGRAPH;
+}
+"phrase" {
+	return token::PHRASE;
+}
+"relationship" {
+	return token::RELATIONSHIP;
+}
+"same" {
+	return token::SAME;
+}
+"score" {
+	return token::SCORE;
+}
+"sentence" {
+	return token::SENTENCE;
+}
+"sentences" {
+	return token::SENTENCES;
+}
+"times" {
+	return token::TIMES;
+}
+"uppercase" {
+	return token::UPPERCASE;
+}
+"weight" {
+	return token::WEIGHT;
+}
+"without"{SP}"content" {
+	return token::WITHOUT_CONTENT;
+}
+"without"{SP}"diacritics" {
+	return token::WITHOUT_DIACRITICS;
+}
+"without"{SP}"stemming" {
+	return token::WITHOUT_STEMMING;
+}
+"without"{SP}"stop"{SP}"words" {
+	return token::WITHOUT_STOP_WORDS;
+}
+"without"{SP}"thesaurus" {
+	return token::WITHOUT_THESAURUS;
+}
+"without"{SP}"wildcards" {
+	return token::WITHOUT_WILDCARDS;
+}
+"with"{SP}"default"{SP}"stop"{SP}"words" {
+	return token::WITH_DEFAULT_STOP_WORDS;
+}
+"with"{SP}"diacritics" {
+	return token::WITH_DIACRITICS;
+}
+"with"{SP}"stemming" {
+	return token::WITH_STEMMING;
+}
+"with"{SP}"stop"{SP}"words" {
+	return token::WITH_STOP_WORDS;
+}
+"with"{SP}"thesaurus" {
+	return token::WITH_THESAURUS;
+}
+"with"{SP}"wildcards" {
+	return token::WITH_WILDCARDS;
+}
+"words" {
+	return token::WORDS;
+}
+
+
+
 {CatchAll} {
   /*	maintain state */
 }
+
 
 }	/* <MODE_OPERATOR> */
 
@@ -1512,7 +1665,6 @@ QName{S}"(" {
 
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 ";" {
@@ -1612,7 +1764,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 
@@ -1670,7 +1821,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 {CatchAll} {
@@ -1704,7 +1854,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 {CatchAll} {
@@ -1750,7 +1899,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 	/* transition to KINDTEST */
@@ -2124,7 +2272,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 	/* pop previous state on close paren */
@@ -2180,7 +2327,6 @@ QName{S}"(" {
 
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 	/* maintain KINDTESTFORPI */
@@ -2239,7 +2385,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 	/* maintain CLOSE_KINDTEST */
@@ -2259,7 +2404,7 @@ QName{S}"(" {
 
 	/*______________________________________________________________________  
 	 |
-	 | OCCURRENCEINDICATOR State
+	 | OCCURRENCE_INDICATOR State
 	 |
 	 | This special state is needed to distinguish occurrence indicators
 	 | that appear in the SequenceType production. For instance, compare
@@ -2278,24 +2423,23 @@ QName{S}"(" {
 	/* ---------------------- */
 "?" {
 	BEGIN MODE_OPERATOR;
-	return token::HOOK;
+	return token::OCCURS_HOOK;
 }
 
 "*" {
 	BEGIN MODE_OPERATOR;
-	return token::STAR;
+	return token::OCCURS_STAR;
 }
 
 "+" {
 	BEGIN MODE_OPERATOR;
-	return token::PLUS;
+	return token::OCCURS_PLUS;
 }
 
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 	/* anything else: push back, goto OPERATOR */
@@ -2426,7 +2570,6 @@ QName{S}"(" {
 	/* -------------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
 {CatchAll} {
@@ -2455,7 +2598,7 @@ QName{S}"(" {
 	/* ----------------------------- */
 ">" {
 	BEGIN MODE_ELEMENT_CONTENT;
-	return token::GT;
+	return token::TAG_END;
 }
 
 	/* transition to QUOT_ATTRIBUTE_CONTENT */
@@ -2483,7 +2626,7 @@ QName{S}"(" {
 	/* -------------------------- */
 "/>" {
 	yy_pop_state();
-	return token::SGT;
+	return token::EMPTY_TAG_END;
 }
 
 	/* maintain START_TAG */
@@ -2683,19 +2826,16 @@ QName{S}"(" {
 	/* ------------------ */
 ":)" {
 	yy_pop_state();
-	return token::COMMENT_END;
 }
 
 	/* maintain EXPR_COMMENT */
 	/* --------------------- */
 "(:" {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
-	return token::COMMENT_BEGIN;
 }
 
-{Char}+ {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
-	return token::EXPR_COMMENT_LITERAL;
+{CommentContent} {
+	/* do nothing */
 }
 
 }	/* <MODE_EXPR_COMMENT> */

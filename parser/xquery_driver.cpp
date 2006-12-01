@@ -13,7 +13,9 @@ xquery_driver::xquery_driver(uint32_t initial_heapsize)
 :
 	trace_scanning(false),
 	trace_parsing(false),
-	symtab(initial_heapsize)
+	symtab(initial_heapsize),
+	rename_bit(false),
+	ftcontains_bit(false)
 {
 }
      

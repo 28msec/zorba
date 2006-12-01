@@ -42,6 +42,9 @@ public:	// state
   std::string file;
 	xqp::symbol_table symtab;
 
+	bool rename_bit;
+	bool ftcontains_bit;
+
 public:	
   xquery_driver(uint32_t initial_heapsize = 1024);
   virtual ~xquery_driver();
@@ -67,6 +70,18 @@ public:
 	*/
 	void error(yy::location const& l, std::string const& m);
 	void error(std::string const& m);
+
+	/**
+	**	Deal with "as" operator overloading for update
+	*/
+	void set_rename(bool b) { rename_bit = b; }
+	bool rename() const { return rename_bit; }
+
+	/**
+	**	Deal with operator overloading for ft
+	*/
+	void set_ftcontains(bool b) { ftcontains_bit = b; }
+	bool ftcontains() const { return ftcontains_bit; }
 
 };
 

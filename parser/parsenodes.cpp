@@ -107,6 +107,12 @@ SIND_DeclList::SIND_DeclList()
 {
 }
 
+SIND_DeclList::SIND_DeclList(
+	SIND_Decl* sind_p)
+{
+	sind_p_vec.push_back(sind_p);
+}
+
 SIND_DeclList::~SIND_DeclList()
 {
 }
@@ -118,6 +124,12 @@ SIND_DeclList::~SIND_DeclList()
 // -----------------
 VFO_DeclList::VFO_DeclList()
 {
+}
+
+VFO_DeclList::VFO_DeclList(
+	VFO_Decl* vfo_p)
+{
+	vfo_p_vec.push_back(vfo_p);
 }
 
 VFO_DeclList::~VFO_DeclList()
