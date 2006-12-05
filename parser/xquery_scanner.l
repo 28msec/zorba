@@ -1105,27 +1105,27 @@ typedef yy::xquery_parser::token token;
 }
 "eq" {
 	BEGIN INITIAL;
-	return token::F_EQ;
+	return token::VAL_EQ;
 }
 "ge" {
 	BEGIN INITIAL;
-	return token::F_GE;
+	return token::VAL_GE;
 }
 "gt" {
 	BEGIN INITIAL;
-	return token::F_GT;
+	return token::VAL_GT;
 }
 "le" {
 	BEGIN INITIAL;
-	return token::F_LE;
+	return token::VAL_LE;
 }
 "lt" {
 	BEGIN INITIAL;
-	return token::F_LT;
+	return token::VAL_LT;
 }
 "ne" {
 	BEGIN INITIAL;
-	return token::F_NE;
+	return token::VAL_NE;
 }
 ">=" {
 	BEGIN INITIAL;
@@ -1891,7 +1891,8 @@ typedef yy::xquery_parser::token token;
 
 {QName} {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
-	BEGIN MODE_OPERATOR;
+	/* BEGIN MODE_OPERATOR; */
+	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	return token::QNAME;
 }
 
@@ -2047,32 +2048,32 @@ typedef yy::xquery_parser::token token;
 
 "eq" {
 	BEGIN INITIAL;
-	return token::F_EQ;
+	return token::VAL_EQ;
 }
 
 "ge" {
 	BEGIN INITIAL;
-	return token::F_GE;
+	return token::VAL_GE;
 }
 
 "gt" {
 	BEGIN INITIAL;
-	return token::F_GT;
+	return token::VAL_GT;
 }
 
 "le" {
 	BEGIN INITIAL;
-	return token::F_LE;
+	return token::VAL_LE;
 }
 
 "lt" {
 	BEGIN INITIAL;
-	return token::F_LT;
+	return token::VAL_LT;
 }
 
 "ne" {
 	BEGIN INITIAL;
-	return token::F_NE;
+	return token::VAL_NE;
 }
 
 ">=" {

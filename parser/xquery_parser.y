@@ -202,12 +202,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token EVERY_DOLLAR								"'<every $>'"
 %token EXCEPT											"'except'"
 %token EXTERNAL										"'external'"
-%token F_EQ												"'eq'"
-%token F_GE												"'ge'"
-%token F_GT												"'gt'"
-%token F_LE												"'le'"
-%token F_LT												"'lt'"
-%token F_NE												"'ne'"
 %token FOLLOWING_AXIS							"'following::'"
 %token FOLLOWING_SIBLING_AXIS			"'following-sibling::'"
 %token FOLLOWS										"'follows'"
@@ -298,6 +292,12 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token UNORDERED									"'unordered'"
 %token UNORDERED_LBRACE						"'<unordered (>'"
 %token UNRECOGNIZED								"'unrecognized'"
+%token VAL_EQ											"'eq'"
+%token VAL_GE											"'ge'"
+%token VAL_GT											"'gt'"
+%token VAL_LE											"'le'"
+%token VAL_LT											"'lt'"
+%token VAL_NE											"'ne'"
 %token VALIDATE_LBRACE						"'<validate {>'"
 %token VALUECOMP									"'VALUECOMP'"
 %token VBAR												"'|'"
@@ -516,6 +516,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> UnaryExpr
 %type <node> UnionExpr
 %type <node> UnorderedExpr
+%type <node> URILiteralList
 %type <node> ValidateExpr
 %type <node> ValueComp
 %type <node> ValueExpr
@@ -1102,7 +1103,7 @@ SchemaImport :
 		{
 			cout << "SchemaImport [uri.aturi]\n";
 		}
-	|	IMPORT_SCHEMA  URI_LITERAL  AT_URI_LITERAL  COMMA  URI_LITERALList
+	|	IMPORT_SCHEMA  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
 		{
 			cout << "SchemaImport [uri.aturi.urilist]\n";
 		}
@@ -1110,7 +1111,7 @@ SchemaImport :
 		{
 			cout << "SchemaImport [prefix.uri.aturi]\n";
 		}
-	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT_URI_LITERAL  COMMA  URI_LITERALList
+	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
 		{
 			cout << "SchemaImport [prefix.uri.aturi.urilist]\n";
 		}
@@ -1119,14 +1120,14 @@ SchemaImport :
 
 // [21a] URLLiteralList
 // --------------------
-URI_LITERALList :
+URILiteralList :
 		URI_LITERAL
 		{
-			cout << "URI_LITERALList [single]\n";
+			cout << "URILiteralList [single]\n";
 		}
-	| URI_LITERALList  COMMA  URI_LITERAL
+	| URILiteralList  COMMA  URI_LITERAL
 		{
-			cout << "URI_LITERALList [list]\n";
+			cout << "URILiteralList [list]\n";
 		}
 	;
 
@@ -1157,13 +1158,21 @@ ModuleImport :
 		{
 			cout << "ModuleImport [namespace.uri]\n";
 		}
-	|	IMPORT_MODULE  URI_LITERAL  AT  URI_LITERALList
+	|	IMPORT_MODULE  URI_LITERAL  AT_URI_LITERAL 
 		{
-			cout << "ModuleImport [uri.at]\n";
+			cout << "ModuleImport [uri.at_uri]\n";
 		}
-	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URI_LITERALList
+	|	IMPORT_MODULE  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
 		{
-			cout << "ModuleImport [namespace.uri.at]\n";
+			cout << "ModuleImport [uri.at_uri.list]\n";
+		}
+	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT_URI_LITERAL
+		{
+			cout << "ModuleImport [namespace.uri.at_uri]\n";
+		}
+	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
+		{
+			cout << "ModuleImport [namespace.uri.at_uri.list]\n";
 		}
 	;
 
@@ -1571,14 +1580,6 @@ VarGetsDecl :
 		{
 			cout << "VarGetsDecl [type.gets]\n";
 		}
-	|	VARNAME  PositionalVar  GETS  ExprSingle
-		{
-			cout << "VarGetsDecl [posvar.gets]\n";
-		}
-	|	VARNAME  TypeDeclaration  PositionalVar  GETS  ExprSingle
-		{
-			cout << "VarGetsDecl [type.posvar.gets]\n";
-		}
 	/* full-text extensions */
 	| VARNAME  FTScoreVar  GETS  ExprSingle
 		{
@@ -1587,14 +1588,6 @@ VarGetsDecl :
 	| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
 			cout << "VarGetsDecl [type.scorevar.gets]\n";
-		}
-	| VARNAME  PositionalVar  FTScoreVar  GETS  ExprSingle
-		{
-			cout << "VarGetsDecl [posvar.scorevar.gets]\n";
-		}
-	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  GETS  ExprSingle
-		{
-			cout << "VarGetsDecl [type.posvar.scorevar.gets]\n";
 		}
 	;
 
@@ -2134,27 +2127,27 @@ GeneralComp :
 // [61] ValueComp
 // --------------
 ValueComp :
-		F_EQ
+		VAL_EQ
 		{
 			cout << "ValueComp [eq]\n";
 		}
-	| F_NE
+	| VAL_NE
 		{
 			cout << "ValueComp [ne]\n";
 		}
-	| F_LT
+	| VAL_LT
 		{
 			cout << "ValueComp [lt]\n";
 		}
-	| F_LE
+	| VAL_LE
 		{
 			cout << "ValueComp [le]\n";
 		}
-	| F_GT
+	| VAL_GT
 		{
 			cout << "ValueComp [gt]\n";
 		}
-	| F_GE
+	| VAL_GE
 		{
 			cout << "ValueComp [ge]\n";
 		}
