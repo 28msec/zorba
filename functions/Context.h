@@ -1,0 +1,11 @@
+16.1 fn:position
+16.2 fn:last
+16.3 fn:current-dateTime
+16.3.1 Examples
+16.4 fn:current-date
+16.4.1 Examples
+16.5 fn:current-time
+16.5.1 Examples
+16.6 fn:implicit-timezone
+16.7 fn:default-collation
+16.8 fn:static-base-uri
