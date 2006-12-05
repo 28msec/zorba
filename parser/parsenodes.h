@@ -46,7 +46,7 @@ not3(enum Bool b)
 
 
 /*
-**  base class
+**  base class: syntax-only nodes
 */
 class parsenode : public rcobject
 {
@@ -62,6 +62,26 @@ public:
   inline uint32_t get_lineno() const { return lineno; }
 
 };
+
+
+/*
+**  base class:  nodes with values.
+*/
+class exprnode : public rcobject
+{
+protected:
+  uint32_t lineno;
+
+public:
+	exprnode(uint32_t _lineno) : lineno(_lineno) {}
+	exprnode() {}
+  ~exprnode() {}
+
+public:
+  inline uint32_t get_lineno() const { return lineno; }
+
+};
+
 
 
 class AbbrevForwardStep;
@@ -182,9 +202,19 @@ class Module : public parsenode
 |			| VersionDecl LibraryModule 
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<static_context> static_context_h;
+	rchandle<dynamic_context> dynamic_context_h;
+
 public:
-	Module();
+	Module(rchandle<static_context> static_context_h);
 	~Module();
+
+public:	//manipulators
+	rchandle<static_context> get_static_context() const
+		{	return static_context_h; }
+	rchandle<dynamic_context> get_dynamic_context() const
+		{	return dynamic_context_h; }
 
 };
 
@@ -221,10 +251,17 @@ class MainModule : public parsenode
 |	::= Prolog  QueryBody
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Prolog> prolog_h;
+	rchandle<QueryBody> query_body_h;
+
 public:
 	MainModule();
 	~MainModule();
 
+public:
+	rchandle<Prolog> get_prolog() const { return prolog_h; }
+	rchandle<QueryBody> get_query_body() const { return query_body_h; }
 };
 
 
@@ -236,6 +273,10 @@ class LibraryModule : parsenode
 |	::= ModuleDecl  Prolog
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<
+	rchandle<
+
 public:
 	LibraryModule();
 	~LibraryModule();
@@ -317,16 +358,14 @@ class Prolog : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	SIND_DeclList* sindList_p;
-	VFO_DeclList* vfoList_p;
+	rchandle<SIND_DeclList> sind_list_h;
+	rchandle<VFO_DeclList> vfo_list_h;
 
 public:
 	Prolog();
 	~Prolog();
 
 public:
-	SIND_DeclList* get_sindList() const { return sindList_p; }
-	VFO_DeclList* get_vfoList() const { return vfoList_p; }
 
 };
 
@@ -345,7 +384,7 @@ class SIND_DeclList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<SIND_Decl*> sind_p_vec;
+	std::vector<rchandle<SIND_Decl> > sind_hv;
 
 public:
 	SIND_DeclList();
@@ -353,8 +392,8 @@ public:
 	~SIND_DeclList();
 
 public:
-	SIND_Decl* operator[] (uint32_t k) const { return sind_p_vec[k]; }
-	void push_back(SIND_Decl* sind_p) { sind_p_vec.push_back(sind_p); }
+	rchandle<SIND_Decl> operator[] (uint32_t k) const { return sind_hv[k]; }
+	void push_back(SIND_Decl* sind_p) { sind_hv.push_back(sind_p); }
 
 };
 
@@ -369,7 +408,7 @@ class VFO_DeclList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<VFO_Decl*> vfo_p_vec;
+	std::vector<rchandle<VFO_Decl> > vfo_hv;
 
 public:
 	VFO_DeclList();
@@ -377,8 +416,9 @@ public:
 	~VFO_DeclList();
 
 public:
-	VFO_Decl* operator[] (uint32_t k) const { return vfo_p_vec[k]; }
-	void push_back(VFO_Decl* vfo_p) { vfo_p_vec.push_back(vfo_p); }
+	VFO_Decl* operator[] (uint32_t k) const { return vfo_hv[k]; }
+	void push_back(VFO_Decl* vfo_p) { vfo_hv.push_back(vfo_p); }
+
 };
 
 
@@ -394,6 +434,7 @@ class SIND_Decl : public parsenode
 public:
 	SIND_Decl();
 	~SIND_Decl();
+
 };
 
 
@@ -409,6 +450,7 @@ class VFO_Decl : public parsenode
 public:
 	VFO_Decl();
 	~VFO_Decl();
+
 };
 
 
@@ -426,6 +468,7 @@ class Setter : public SIND_Decl
 public:
 	Setter();
 	~Setter();
+
 };
 
 
@@ -441,6 +484,7 @@ class Import : public SIND_Decl
 public:
 	Import();
 	~Import();
+
 };
 
 
@@ -482,8 +526,11 @@ public:
 	~NamespaceDecl();
 
 public:
-	std::string get_prefix() const { return prefix; }
-	std::string get_uri() const { return uri; }
+	std::string get_prefix() const
+		{ return prefix; }
+	std::string get_uri() const
+		{ return uri; }
+
 };
 
 
@@ -505,22 +552,18 @@ class BoundarySpaceDecl : public SIND_Decl
 |	::= DECLARE_BOUNDARY_SPACE  ( PRESERVE | STRIP )
 |_______________________________________________________________________*/
 {
-public:
-	enum boundaryspace_mode {
-		preserve,
-		strip
-	};
-
 protected:
-	boundaryspace_mode mode;
+	static_context::boundaryspace_mode mode;
 
 public:
 	BoundarySpaceDecl();
-	BoundarySpaceDecl(boundaryspace_mode _mode);
+	BoundarySpaceDecl(static_context::boundaryspace_mode _mode);
 	~BoundarySpaceDecl();
 
 public:
-	boundaryspace_mode get_boundaryspace_mode() const { return mode; }
+	static_context::boundaryspace_mode get_boundaryspace_mode() const
+		{ return mode; }
+
 };
 
 
@@ -581,21 +624,22 @@ class DefaultNamespaceDecl : public SIND_Decl
 |_______________________________________________________________________*/
 {
 protected:
-	std::string const* default_element_namespace_p;
-	std::string const* default_function_namespace_p;
+	std::string default_element_namespace;
+	std::string default_function_namespace;
 
 public:
 	DefaultNamespaceDecl();
 	DefaultNamespaceDecl(
-		std::string const* _default_element_namespace_p,
-		std::string const* _default_function_namespace_p);
+		std::string const& _default_element_namespace,
+		std::string const& _default_function_namespace);
 	~DefaultNamespaceDecl();
 
 public:
-	std::string const* get_default_element_namespace() const
-		{ return default_element_namespace_p; }
-	std::string const* get_default_function_namespace() const
-		{ return default_function_namespace_p; }
+	std::string get_default_element_namespace() const
+		{ return default_element_namespace; }
+	std::string get_default_function_namespace() const
+		{ return default_function_namespace; }
+
 };
 
 
@@ -615,16 +659,16 @@ class OptionDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	QName const* name_p;
+	rchandle<QName> qname_h;
 	std::string val;
 
 public:
 	OptionDecl();
-	OptionDecl(QName const* _name_p, std::string const& _val);
+	OptionDecl(handle<QName> _name_h, std::string const& _val);
 	~OptionDecl();
 
 public:
-	QName const* get_name() const { return name_p; }
+	rchandle<QName> get_qname() const { return name_p; }
 	std::string get_val() const { return val; }
 };
 
@@ -657,22 +701,18 @@ class OrderingModeDecl : public parsenode
 |	::= DECLARE_ORDERING  ( ORDERED | UNORDERED )
 |_______________________________________________________________________*/
 {
-public:
-	enum ordering_mode {
-		ordered,
-		unordered
-	};
-
 protected:
-	ordering_mode mode;
+	static_context::ordering_mode mode;
 		
 public:
 	OrderingModeDecl();
-	OrderingModeDecl(ordering_mode _mode);
+	OrderingModeDecl(static_context::ordering_mode _mode);
 	~OrderingModeDecl();
 	
 public:
-	ordering_mode get_ordering_mode() const { return mode; }
+	static_context::ordering_mode get_ordering_mode() const
+		{ return mode; }
+
 };
 
 
@@ -698,22 +738,17 @@ class EmptyOrderDecl : public parsenode
 |			|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
 |_______________________________________________________________________*/
 {
-public:
-	enum emptyorder_mode {
-		empty_greatest,
-		empty_least
-	};
-
 protected:
-	emptyorder_mode mode;
+	static_context::empty_order_mode mode;
 
 public:
 	EmptyOrderDecl();
-	EmptyOrderDecl(emptyorder_mode _mode);
+	EmptyOrderDecl(static_context::empty_order_mode _mode);
 	~EmptyOrderDecl();
 	
 public:
-	emptyorder_mode get_mode() const { return mode; }
+	static_context::empty_order_mode get_mode() const
+		{ return mode; }
 
 };
 
@@ -739,11 +774,15 @@ class CopyNamespacesDecl : public parsenode
 |	::= DECLARE_COPY_NAMESPACES  PreserveMode  COMMA  InheritMode
 |_______________________________________________________________________*/
 {
+protected:
+	static_context::copy_ns_mode mode;
+
 public:
 	CopyNamespacesDecl();
 	~CopyNamespacesDecl();
 
 };
+
 
 
 // [17] PreserveMode
@@ -754,11 +793,15 @@ class PreserveMode : public parsenode
 |	::=	PRESERVE | NO_PRESERVE
 |_______________________________________________________________________*/
 {
+protected:
+	static_context::preserve_mode mode;
+
 public:
 	PreserveMode();
 	~PreserveMode();
 
 };
+
 
 
 // [18] InheritMode
@@ -770,10 +813,14 @@ class InheritMode : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	static_context::inherit_mode mode;
+	
+public:
 	InheritMode();
 	~InheritMode();
 
 };
+
 
 
 // [19] DefaultCollationDecl
@@ -784,11 +831,15 @@ class DefaultCollationDecl : public parsenode
 |	::=	DECLARE_DEFAULT_COLLATION  URI_LITERAL
 |_______________________________________________________________________*/
 {
+protected:
+	std::string collation;
+
 public:
 	DefaultCollationDecl();
 	~DefaultCollationDecl();
 
 };
+
 
 
 // [20] BaseURIDecl
@@ -799,11 +850,15 @@ class BaseURIDecl : public parsenode
 |	::= DECLARE_BASE_URI  URI_LITERAL
 |_______________________________________________________________________*/
 {
+protected:
+	std::string base_uri;
+
 public:
 	BaseURIDecl();
 	~BaseURIDecl();
 
 };
+
 
 
 // [21] SchemaImport
@@ -817,11 +872,17 @@ class SchemaImport : public parsenode
 |			|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URI_LITERALList
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<SchemaPrefix> prefix_h;
+	std::string schema_uri;
+	rchandle<URI_LITERALList> uri_list_h;
+
 public:
 	SchemaImport();
 	~SchemaImport();
 
 };
+
 
 
 // [21a] URLLiteralList
@@ -833,6 +894,9 @@ class URI_LITERALList : public parsenode
 |			| URI_LITERALList  COMMA  URI_LITERAL
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<std::string> uri_v;
+
 public:
 	URI_LITERALList();
 	~URI_LITERALList();
@@ -850,11 +914,16 @@ class SchemaPrefix : public parsenode
 |			|	DEFAULT_ELEMENT  NAMESPACE
 |_______________________________________________________________________*/
 {
+protected:
+	std::string prefix;
+	bool default_b;
+
 public:
 	SchemaPrefix();
 	~SchemaPrefix();
 
 };
+
 
 
 // [23] ModuleImport
@@ -868,6 +937,11 @@ class ModuleImport : public parsenode
 |			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL  AT  URI_LITERALList
 |_______________________________________________________________________*/
 {
+protected:
+	std::string prefix;
+	std::string uri;
+	rchandle<URI_LITERALList> uri_list_h;
+
 public:
 	ModuleImport();
 	~ModuleImport();
@@ -887,11 +961,18 @@ class VarDecl : public parsenode
 |			|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
 |_______________________________________________________________________*/
 {
+protected:
+	std::string varname;
+	rchandle<TypeDeclaration> typedecl_h;
+	rchandle<ExprSingle> initval_h;
+	bool extern_b;
+
 public:
 	VarDecl();
 	~VarDecl();
 
 };
+
 
 
 // [25] ConstructionDecl
@@ -910,6 +991,7 @@ public:
 };
 
 
+
 // [26] FunctionDecl
 // -----------------
 class FunctionDecl : public parsenode
@@ -925,6 +1007,13 @@ class FunctionDecl : public parsenode
 |			|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  AS  SequenceType  EnclosedExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> name_h;
+	rchandle<ParamList> paramlist_h;
+	rchandle<ExclosedExpr> body_h;
+	rchandle<SequenceType> return_type_h;
+	bool extern_b;
+
 public:
 	FunctionDecl();
 	~FunctionDecl();
@@ -942,11 +1031,15 @@ class ParamList : public parsenode
 |			|	ParamList  COMMA  Param
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<Param> > param_hv;
+
 public:
 	ParamList();
 	~ParamList();
 
 };
+
 
 
 // [28] Param
@@ -958,6 +1051,10 @@ class Param : public parsenode
 |			|	DOLLAR  VARNAME  TypeDeclaration
 |_______________________________________________________________________*/
 {
+protected:
+	std::string name;
+	rchandle<TypeDeclaration> typedecl_h;
+
 public:
 	Param();
 	~Param();
@@ -965,14 +1062,18 @@ public:
 };
 
 
+
 // [29] EnclosedExpr
 // -----------------
-class EnclosedExpr : public parsenode
+class EnclosedExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+
 public:
 	EnclosedExpr();
 	~EnclosedExpr();
@@ -980,14 +1081,18 @@ public:
 };
 
 
+
 // [30] QueryBody
 // --------------
-class QueryBody : public parsenode
+class QueryBody : public exprnode
 /*______________________________________________________________________
 |
 |	::= Expr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+
 public:
 	QueryBody();
 	~QueryBody();
@@ -995,15 +1100,19 @@ public:
 };
 
 
+
 // [31] Expr
 // ---------
-class Expr : public parsenode
+class Expr : public exprnode
 /*______________________________________________________________________
 |
 |	::= ExprSingle 
 |			|	Expr  COMMA  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<ExprSingle> > expr_single_hv;
+
 public:
 	Expr();
 	~Expr();
@@ -1011,9 +1120,10 @@ public:
 };
 
 
+
 // [32] ExprSingle
 // ---------------
-class ExprSingle : public parsenode
+class ExprSingle : public exprnode
 /*______________________________________________________________________
 |
 |	::= FLWORExpr
@@ -1030,9 +1140,10 @@ public:
 };
 
 
+
 // [33] FLWORExpr
 // --------------
-class FLWORExpr : public parsenode
+class FLWORExpr : public ExprSingle
 /*______________________________________________________________________
 |
 |	::= ForLetClauseList  RETURN  ExprSingle
@@ -1041,11 +1152,17 @@ class FLWORExpr : public parsenode
 |			|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 |_______________________________________________________________________*/
 {
+	rchandle<ForLetClauseList> forlet_list_h;
+	rchandle<WhereClause> where_h;
+	rchandle<OrderByClause> orderby_h;
+	rchandle<ExprSingle> return_val_h;
+
 public:
 	FLWORExpr();
 	~FLWORExpr();
 
 };
+
 
 
 // [33a] ForLetClauseList
@@ -1057,11 +1174,15 @@ class ForLetClauseList : public parsenode
 |			|	ForLetClause  ForLetClauseList
 |_______________________________________________________________________*/
 {
+protected:
+	std:vector<rchandle<ForLetClause> > forlet_hv;
+
 public:
 	ForLetClauseList();
 	~ForLetClauseList();
 
 };
+
 
 
 // [33b] ForLetClause
@@ -1079,19 +1200,24 @@ public:
 };
 
 
+
 // [34] ForClause
 // --------------
-class ForClause : public parsenode
+class ForClause : public ForLetClause
 /*______________________________________________________________________
 |
 |	::= FOR_DOLLAR  VarInDeclList
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<VarInDeclList> vardecl_list_h;
+
 public:
 	ForClause();
 	~ForClause();
 
 };
+
 
 
 // [34a] VarInDeclList
@@ -1103,11 +1229,15 @@ class VarInDeclList : public parsenode
 |			|	VarInDeclList  COMMA  DOLLAR  VarInDecl
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<VarInDecl> vardecl_hv;
+
 public:
 	VarInDeclList();
 	~VarInDeclList();
 
 };
+
 
 
 // [34b] VarInDecl
@@ -1119,13 +1249,26 @@ class VarInDecl : public parsenode
 |			|	VARNAME  TypeDeclaration  IN  ExprSingle
 |			|	VARNAME  PositionalVar  IN  ExprSingle
 |			|	VARNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
+|	(ft extensions)
+|			| VARNAME  FTScoreVar  IN  ExprSingle
+|			| VARNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
+|			| VARNAME  PositionalVar  FTScoreVar  IN  ExprSingle
+|			| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	std::string varname;
+	rchandle<TypeDeclaration> typedecl_h;
+	rchandle<PositionalVar> posvar_h;
+	rchandle<FTScoreVar> ftscorevar_h;
+	rchandle<ExprSingle> val_h;
+	
 public:
 	VarInDecl();
 	~VarInDecl();
 
 };
+
 
 
 // [35] PositionalVar
@@ -1136,11 +1279,15 @@ class PositionalVar : public parsenode
 |	::= AT  DOLLAR  VARNAME
 |_______________________________________________________________________*/
 {
+protected:
+	std::string varname;
+
 public:
 	PositionalVar();
 	~PositionalVar();
 
 };
+
 
 
 // [36] LetClause
@@ -1151,11 +1298,15 @@ class LetClause : public parsenode
 |	::= LET_DOLLAR VarGetsDeclList
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<VarGetsDeclList> vardecl_list_h;
+
 public:
 	LetClause();
 	~LetClause();
 
 };
+
 
 
 // [36a] VarGetsDeclList
@@ -1167,11 +1318,15 @@ class VarGetsDeclList : public parsenode
 |			|	VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<VarGetsDecl> > vardecl_hv;
+
 public:
 	VarGetsDeclList();
 	~VarGetsDeclList();
 
 };
+
 
 
 // [36b] VarGetsDecl
@@ -1181,15 +1336,23 @@ class VarGetsDecl : public parsenode
 |
 |	::= VARNAME  GETS  ExprSingle
 |			|	VARNAME  TypeDeclaration  GETS  ExprSingle
-|			|	VARNAME  PositionalVar  GETS  ExprSingle
-|			|	VARNAME  TypeDeclaration  PositionalVar  GETS  ExprSingle
+|	(ft extensions)
+|			| VARNAME  FTScoreVar  GETS  ExprSingle
+|			| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	std::string varname;
+	rchandle<TypeDeclaration> typedecl_h;
+	rchandle<FTScoreVar> scorevar_h;
+	rchandle<ExprSingle> val_h;
+
 public:
 	VarGetsDecl();
 	~VarGetsDecl();
 
 };
+
 
 
 // [37] WhereClause
@@ -1200,11 +1363,15 @@ class WhereClause : public parsenode
 |	::= WHERE  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ExprSingle> predicate_h;
+
 public:
 	WhereClause();
 	~WhereClause();
 
 };
+
 
 
 // [38] OrderByClause
@@ -1216,11 +1383,16 @@ class OrderByClause : public parsenode
 |			|	STABLE_ORDER_BY  OrderSpecList
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<OrderSpecList> spec_list_h;
+	bool stable_b;
+		
 public:
 	OrderByClause();
 	~OrderByClause();
 
 };
+
 
 
 // [39] OrderSpecList
@@ -1232,11 +1404,15 @@ class OrderSpecList : public parsenode
 |			|	OrderSpecList  COMMA  OrderSpec
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<OrderSpec> > spec_hv;
+
 public:
 	OrderSpecList();
 	~OrderSpecList();
 
 };
+
 
 
 // [40] OrderSpec
@@ -1248,11 +1424,16 @@ class OrderSpec : public parsenode
 |			|	ExprSingle OrderModifier
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ExprSingle> spec_h;
+	rchandle<OrderModifier> modifier_h;
+
 public:
 	OrderSpec();
 	~OrderSpec();
 
 };
+
 
 
 // [41] OrderModifier
@@ -1269,6 +1450,11 @@ class OrderModifier : public parsenode
 |			|	OrderDirSpec  OrderEmptySpec  OrderCollationSpec
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<OrderDirSpec> dir_spec_h;
+	rchandle<OrderEmptySpec> empty_spec_h;
+	rchandle<OrderCollationSpec> collation_spec_h;
+
 public:
 	OrderModifier();
 	~OrderModifier();
@@ -1276,9 +1462,10 @@ public:
 };
 
 
+
 // [41a] OrderDirSpec
 // ------------------
-class OrderDirSpec : public parsenode
+class OrderDirSpec : public OrderModifier
 /*______________________________________________________________________
 |
 |	::= ASCENDING
@@ -1286,21 +1473,34 @@ class OrderDirSpec : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum dir_spec_t {
+		ascending,
+		descending
+	};
+
+protected:
+	enum dir_spec_t dir_spec;
+
+public:
 	OrderDirSpec();
 	~OrderDirSpec();
 	
 };
 
 
+
 // [41b] OrderEmptySpec
 // --------------------
-class OrderEmptySpec : public parsenode
+class OrderEmptySpec : public OrderModifier
 /*______________________________________________________________________
 |
 |	::= EMPTY_GREATEST
 |			|	EMPTY_LEAST
 |_______________________________________________________________________*/
 {
+protected:
+	static_context::empty_order_mode empty_order_spec;
+
 public:
 	OrderEmptySpec();
 	~OrderEmptySpec();
@@ -1308,14 +1508,18 @@ public:
 };
 
 
+
 // [41c] OrderCollationSpec
 // ------------------------
-class OrderCollationSpec : public parsenode
+class OrderCollationSpec : public OrderModifier
 /*______________________________________________________________________
 |
 |	::= COLLATION  URI_LITERAL
 |_______________________________________________________________________*/
 {
+protected:
+	std::string uri;
+
 public:
 	OrderCollationSpec();
 	~OrderCollationSpec();
@@ -1325,13 +1529,23 @@ public:
 
 // [42] QuantifiedExpr 	   
 // -------------------
-class QuantifiedExpr : public parsenode
+class QuantifiedExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= SOME_DOLLAR  QVarInDeclList
 |			|	EVERY_DOLLAR  QVarInDeclList
 |_______________________________________________________________________*/
 {
+public:
+	enum quantification_mode_t {
+		some,
+		every
+	};
+
+protected:
+	quantification_mode_t qmode;
+	rchandle<QVarInDeclList> qvar_decl_list_h;
+
 public:
 	QuantifiedExpr();
 	~QuantifiedExpr();
@@ -1348,6 +1562,9 @@ class QVarInDeclList : public parsenode
 |			|	QVarInDeclList  COMMA  DOLLAR  QVarInDecl
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<QVarInDecl> > qvar_decl_hv;
+
 public:
 	QVarInDeclList();
 	~QVarInDeclList();
@@ -1364,15 +1581,21 @@ class QVarInDecl : public parsenode
 |			|	VARNAME  TypeDeclaration  IN  ExprSingle 
 |_______________________________________________________________________*/
 {
+protected:
+	std::string name;
+	rchandle<TypeDeclaration> typedecl_h;
+	rchandle<ExprSingle> val_h;
+
 public:
 	QVarInDecl();
 	~QVarInDecl();
+
 };
 
 
 // [43] TypeswitchExpr
 // -------------------
-class TypeswitchExpr : public parsenode
+class TypeswitchExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
@@ -1380,6 +1603,12 @@ class TypeswitchExpr : public parsenode
 |					DOLLAR  VARNAME  RETURN  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> switch_expr_h;
+	rchandle<CaseClauseList> clause_list_h;
+	std::string default_varname;
+	rchandle<ExprSingle> default_clause_h;
+
 public:
 	TypeswitchExpr();
 	~TypeswitchExpr();
@@ -1396,6 +1625,9 @@ class CaseClauseList : public parsenode
 |			|	CaseClauseList  CaseClause
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<CaseClause> > clause_hv;
+
 public:
 	CaseClauseList();
 	~CaseClauseList();
@@ -1412,6 +1644,11 @@ class CaseClause : public parsenode
 |			| CASE  DOLLAR  VARNAME  AS  SequenceType  RETURN  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	std::string varname;
+	rchandle<SequenceType> type_h;
+	rchandle<ExprSingle> val_h;
+
 public:
 	CaseClause();
 	~CaseClause();
@@ -1421,12 +1658,17 @@ public:
 
 // [45] IfExpr
 // -----------
-class IfExpr : public parsenode
+class IfExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> cond_expr_h;
+	rchandle<ExprSingle> then_expr_h;
+	rchandle<ExprSingle> else_expr_h;
+
 public:
 	IfExpr();
 	~IfExpr();
@@ -1436,13 +1678,17 @@ public:
 
 // [46] OrExpr
 // -----------
-class OrExpr : public parsenode
+class OrExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= AndExpr
 |			|	OrExpr  OR  AndExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<AndExpr> and_expr_h;
+	rchandle<OrExpr> or_expr_h;
+
 public:
 	OrExpr();
 	~OrExpr();
@@ -1451,13 +1697,17 @@ public:
 
 // [47] AndExpr
 // ------------
-class AndExpr : public parsenode
+class AndExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= ComparisonExpr
 |			|	AndExpr  AND  ComparisonExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ComparisonExpr> comp_expr_h;
+	rchandle<AndExpr> and_expr_h;
+
 public:
 	AndExpr();
 	~AndExpr();
@@ -1467,15 +1717,22 @@ public:
 
 // [48] ComparisonExpr
 // -------------------
-class ComparisonExpr : public parsenode
+class ComparisonExpr : public exprnode
 /*______________________________________________________________________
 |
-|	::= RangeExpr
-|			| ValueCompExpr
-|			| GeneralCompExpr
-|			| NodeCompExpr
+|		::= FTContainsExpr
+|			| FTContainsExpr ValueComp FTContainsExpr
+|			| FTContainsExpr GeneralComp FTContainsExpr
+|			| FTContainsExpr NodeComp FTContainsExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTContainsExpr> left_h;
+	rchandle<FTContainsExpr> right_h;
+	rchandle<ValueComp> valcomp_h;
+	rchandle<ValueComp> gencomp_h;
+	rchandle<ValueComp> nodecomp_h;
+
 public:
 	ComparisonExpr();
 	~ComparisonExpr();
@@ -1483,19 +1740,21 @@ public:
 };
 
 
-// [48a] ValueCompExpr
-// -------------------
-class ValueCompExpr : public parsenode
+// [48a] FTContainsExpr
+// --------------------
+class FTContainsExpr : public exprnode
 /*______________________________________________________________________
 |
-|	::= ComparisonExpr  F_EQ  RangeExpr
-|			|	ComparisonExpr  F_NE  RangeExpr
-|			|	ComparisonExpr  F_LT  RangeExpr
-|			|	ComparisonExpr  F_LE  RangeExpr
-|			|	ComparisonExpr  F_GT  RangeExpr
-|			|	ComparisonExpr  F_GE  RangeExpr
+|	::= RangeExpr
+|			| RangeExpr  FTCONTAINS  FTSelection
+|			| RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<RangeExpr> range_expr_h;
+	rchandle<FTSelection> ftselect_h;
+	rchandle<FTIgnoreOption> ftignore_h;
+
 public:
 	ValueCompExpr();
 	~ValueCompExpr();
@@ -1503,52 +1762,20 @@ public:
 };
 
 
-// [48b] GeneralCompExpr
-// ---------------------
-class GeneralCompExpr : public parsenode
-/*______________________________________________________________________
-|
-|	::= ComparisonExpr  EQ  RangeExpr
-|			|	ComparisonExpr  NE  RangeExpr
-|			|	ComparisonExpr  LT  RangeExpr
-|			|	ComparisonExpr  LE  RangeExpr
-|			|	ComparisonExpr  GT  RangeExpr
-|			|	ComparisonExpr  GE  RangeExpr
-|_______________________________________________________________________*/
-{
-public:
-	GeneralCompExpr();
-	~GeneralCompExpr();
-
-};
-
-
-// [48c] NodeComp
-// --------------
-class NodeCompExpr : public parsenode
-/*______________________________________________________________________
-|
-|	::= ComparisonExpr  IS  RangeExpr
-|			|	ComparisonExpr  PRECEDES  RangeExpr
-|			| ComparisonExpr  FOLLOWS  RangeExpr
-|_______________________________________________________________________*/
-{
-public:
-	NodeCompExpr();
-	~NodeCompExpr();
-
-};
-
 
 // [49] RangeExpr
 // --------------
-class RangeExpr : public parsenode
+class RangeExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= AdditiveExpr
 |			|	AdditiveExpr  TO  AdditiveExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<AdditiveExpr> from_expr_h;
+	rchandle<AdditiveExpr> to_expr_h;
+
 public:
 	RangeExpr();
 	~RangeExpr();
@@ -1558,7 +1785,7 @@ public:
 
 // [50] AdditiveExpr
 // -----------------
-class AdditiveExpr : public parsenode
+class AdditiveExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= MultiplicativeExpr
@@ -1566,6 +1793,10 @@ class AdditiveExpr : public parsenode
 |			|	AdditiveExpr  MINUS  MultiplicativeExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<MultiplicativeExpr> mult_expr_h;
+	rchandle<AdditiveExpr> add_expr_h;
+
 public:
 	AdditiveExpr();
 	~AdditiveExpr();
@@ -1575,7 +1806,7 @@ public:
 
 // [51] MultiplicativeExpr
 // -----------------------
-class MultiplicativeExpr : public parsenode
+class MultiplicativeExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= UnionExpr
@@ -1585,6 +1816,19 @@ class MultiplicativeExpr : public parsenode
 |			|	MultiplicativeExpr  MOD  UnionExpr
 |_______________________________________________________________________*/
 {
+public:
+	enum mult_op_t {
+		times,
+		div,
+		idiv,
+		mod
+	};
+
+protected:
+	rchandle<MultiplicativeExpr> union_expr_h;
+	rchandle<AdditiveExpr> mult_expr_h;
+	enum mult_op_t op;
+
 public:
 	MultiplicativeExpr();
 	~MultiplicativeExpr();
@@ -1602,6 +1846,10 @@ class UnionExpr : public parsenode
 |			|	UnionExpr  VBAR  IntersectExceptExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<IntersectExceptExpr> intex_expr_h;
+	rchandle<AdditiveExpr> union_expr_h;
+
 public:
 	UnionExpr();
 	~UnionExpr();
@@ -1619,6 +1867,16 @@ class IntersectExceptExpr : public parsenode
 |			|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 |_______________________________________________________________________*/
 {
+	enum intex_op_t {
+		intersect,
+		except	
+	};
+
+protected:
+	rchandle<InstanceofExpr> instof_expr_h;
+	rchandle<IntersectExceptExpr> intex_expr_h;
+	enum mult_op_t op;
+
 public:
 	IntersectExceptExpr();
 	~IntersectExceptExpr();
@@ -1628,13 +1886,17 @@ public:
 
 // [54] InstanceofExpr
 // -------------------
-class InstanceofExpr : public parsenode
+class InstanceofExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= TreatExpr
 |			|	TreatExpr  INSTANCE_OF  SequenceType
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<TreatExpr> treat_expr_h;
+	rchandle<SequenceType> seqtype_h;
+
 public:
 	InstanceofExpr();
 	~InstanceofExpr();
@@ -1644,13 +1906,17 @@ public:
 
 // [55] TreatExpr
 // --------------
-class TreatExpr : public parsenode
+class TreatExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= CastableExpr
 |			|	CastableExpr  TREAT_AS  SequenceType
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<CastableExpr> treat_expr_h;
+	rchandle<SequenceType> seqtype_h;
+
 public:
 	TreatExpr();
 	~TreatExpr();
@@ -1660,13 +1926,17 @@ public:
 
 // [56] CastableExpr
 // -----------------
-class CastableExpr : public parsenode
+class CastableExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= CastExpr
 |			|	CastExpr  CASTABLE_AS  SingleType
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<CastExpr> cast_expr_h;
+	rchandle<SingleType> singletype_h;
+
 public:
 	CastableExpr();
 	~CastableExpr();
@@ -1676,13 +1946,17 @@ public:
 
 // [57] CastExpr 	   
 // -------------
-class CastExpr : public parsenode
+class CastExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= UnaryExpr
 |			|	UnaryExpr  CAST_AS  SingleType
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<UnaryExpr> unary_expr_h;
+	rchandle<SingleType> singletype_h;
+
 public:
 	CastExpr();
 	~CastExpr();
@@ -1692,13 +1966,17 @@ public:
 
 // [58] UnaryExpr
 // --------------
-class UnaryExpr : public parsenode
+class UnaryExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= ValueExpr
 |			|	SignList  ValueExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ValueExpr> value_expr_h;
+	rchandle<SignList> signlist_h;
+
 public:
 	UnaryExpr();
 	~UnaryExpr();
@@ -1717,6 +1995,9 @@ class SignList : public parsenode
 |			|	SignList  MINUS
 |_______________________________________________________________________*/
 {
+protected:
+	vector<bool> signv;
+
 public:
 	SignList();
 	~SignList();
@@ -1726,7 +2007,7 @@ public:
 
 // [59] ValueExpr
 // --------------
-class ValueExpr : public parsenode
+class ValueExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= ValidateExpr
@@ -1744,27 +2025,101 @@ public:
 
 // [60] GeneralComp
 // ----------------
-/* folded into [48b] */
+class GeneralComp : public parsenode
+/*______________________________________________________________________
+|
+|	::= EQUALS | NE | LT | LE | GT | GE
+|_______________________________________________________________________*/
+{
+public:
+	enum gencomp_t {
+		eq,
+		ne,
+		lt,
+		le,
+		gt,
+		ge
+	};
+
+protected:
+	enum gencomp_t type;
+
+public:
+	GeneralComp();
+	~GeneralComp();
+
+};
+
+
 
 // [61] ValueComp
 // --------------
-/* folded into [48a] */
+class ValueComp : public parsenode
+/*______________________________________________________________________
+|
+|	::= VAL_EQ | VAL_NE | VAL_LT | VAL_LE | VAL_GT | VAL_GE
+|_______________________________________________________________________*/
+{
+public:
+	enum valcomp_t {
+		val_eq,
+		val_ne,
+		val_lt,
+		val_le,
+		val_gt,
+		val_ge
+	};
+
+protected:
+	enum valcomp_t type;
+
+public:
+	ValueComp();
+	~ValueComp();
+
+};
+
+
 
 // [62] NodeComp
 // -------------
-/* folded into [48c] */
+class NodeComp : public parsenode
+/*______________________________________________________________________
+|
+|	::= IS | PRECEDES | FOLLOWS
+|_______________________________________________________________________*/
+{
+public:
+	enum nodecomp_t {
+		is,
+		precedes,
+		follows	
+	};
+
+protected:
+	enum nodecomp_t type;
+
+public:
+	NodeComp();
+	~NodeComp();
+
+};
 
 
 
 // [63] ValidateExpr
 // -----------------
-class ValidateExpr : public parsenode
+class ValidateExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= VALIDATE_LBRACE  Expr  RBRACE
 |			|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+	validatemode_t valmode;
+
 public:
 	ValidateExpr();
 	~ValidateExpr();
@@ -1774,13 +2129,17 @@ public:
 
 // [64] ExtensionExpr
 // ------------------
-class ExtensionExpr : public parsenode
+class ExtensionExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= PragmaList  LBRACE  RBRACE
 |			|	PragmaList  LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<PragmaList> pragma_list_h;
+	rchandle<Expr> expr_h;
+
 public:
 	ExtensionExpr();
 	~ExtensionExpr();
@@ -1796,6 +2155,9 @@ class PragmaList : public parsenode
 |	::= Pragma | PragmaList  Pragma
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<Pragma> > pragma_hv;
+
 public:
 	PragmaList();
 	~PragmaList();
@@ -1811,6 +2173,10 @@ class Pragma : public parsenode
 |	::= PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL  PRAGMA_END   ws:explicit
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> name;
+	std::string pragma_lit;
+
 public:
 	Pragma();
 	~Pragma();
@@ -1846,7 +2212,7 @@ public:
 
 // [67] PathExpr
 // -------------
-class PathExpr : public parsenode
+class PathExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= LEADING_LONE_SLASH
@@ -1856,6 +2222,18 @@ class PathExpr : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum pathtype_t {
+		leading_lone,
+		leading_slash,
+		leading_slashslash,
+		relative
+	};
+
+protected:
+	enum pathtype_t type;
+	rchandle<RelatvePathExpr> relpath_expr_h;
+
+public:
 	PathExpr();
 	~PathExpr();
 
@@ -1864,7 +2242,7 @@ public:
 
 // [68] RelativePathExpr
 // ---------------------
-class RelativePathExpr : public parsenode
+class RelativePathExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= StepExpr
@@ -1873,15 +2251,26 @@ class RelativePathExpr : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum steptype_t {
+		child,
+		descendant
+	};
+
+protected:
+	rchandle<RelativePathExpr> relpath_expr_h;
+	rchandle<StepExpr> step_expr_h;
+
+public:
 	RelativePathExpr();
 	~RelativePathExpr();
 
 };
 
 
+
 // [69] StepExpr
 // -------------
-class StepExpr : public parsenode
+class StepExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= AxisStep
@@ -1895,20 +2284,27 @@ public:
 };
 
 
+
 // [70] AxisStep
 // -------------
-class AxisStep : public parsenode
+class AxisStep : public exprnode
 /*______________________________________________________________________
 |
 |	::= ForwardStep  PredicateList
 |			|	ReverseStep  PredicateList
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ForwardStep> forward_step_h;
+	rchandle<ReverseStep> reverse_step_h;
+	rchandle<PredicateList> predicate_list_h;
+
 public:
 	AxisStep();
 	~AxisStep();
 
 };
+
 
 
 // [71] ForwardStep
@@ -1920,11 +2316,17 @@ class ForwardStep : public parsenode
 |			|	AbbrevForwardStep
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ForwardAxis> forward_axis_h;
+	rchandle<NodeTest> node_test_h;
+	rchandle<AbbreviatedForwardStep> abbrev_step_h;
+
 public:
 	ForwardStep();
 	~ForwardStep();
 
 };
+
 
 
 // [72] ForwardAxis
@@ -1942,10 +2344,25 @@ class ForwardAxis : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum forward_axis_t {
+		child,
+		descendant,
+		attribute,
+		self,
+		descendant_or_self,
+		following_sibling,
+		folowing
+	};
+
+protected:
+	enum forward_axis_t axis;
+
+public:
 	ForwardAxis();
 	~ForwardAxis();
 
 };
+
 
 
 // [73] AbbrevForwardStep
@@ -1957,11 +2374,16 @@ class AbbrevForwardStep : public parsenode
 |			|	AT_SIGN  NodeTest
 |_______________________________________________________________________*/
 {
+proteced:
+	rchandle<NodeTest> node_test_h;
+	bool attr_b;
+	
 public:
 	AbbrevForwardStep();
 	~AbbrevForwardStep();
 
 };
+
 
 
 // [74] ReverseStep
@@ -1973,11 +2395,16 @@ class ReverseStep : public parsenode
 |			|	DOT_DOT
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ReverseAxis> axis_h;
+	rchandle<NodeTest> node_test_h;
+
 public:
 	ReverseStep();
 	~ReverseStep();
 
 };
+
 
 
 // [75] ReverseAxis
@@ -1993,15 +2420,29 @@ class ReverseAxis : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum reverse_axis_t {
+		parent,
+		ancestor,
+		preceding_sibling,
+		preceding,
+		ancestor_or_self
+	};
+
+protected:
+	enum reverse_axis_t axis;
+
+public:
 	ReverseAxis();
 	~ReverseAxis();
 
 };
 
 
+
 // [76] AbbrevReverseStep
 // ----------------------
 /* folded into [74] */
+
 
 
 // [77] NodeTest
@@ -2019,6 +2460,7 @@ public:
 };
  
 
+
 // [78] NameTest
 // -------------
 class NameTest : public parsenode
@@ -2027,11 +2469,16 @@ class NameTest : public parsenode
 |	::= QNAME | Wildcard
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> qname_h;
+	rchandle<WildCard> wild_h;
+
 public:
 	NameTest();
 	~NameTest();
 
 };
+
 
 
 // [79] Wildcard
@@ -2045,25 +2492,43 @@ class Wildcard : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum wildcard_t {
+		all,
+		elem,
+		prefix
+	};
+
+protected:
+	enum wildcard_t type;
+	std::string prefix;
+	rchandle<QName> qname_h;
+	
+public:
 	Wildcard();
 	~Wildcard();
 
 };
 
 
+
 // [80] FilterExpr
 // ---------------
-class FilterExpr : public parsenode
+class FilterExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= PrimaryExpr  PredicateList
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<PrimaryExpr> primary_h;
+	rchandle<PredicateList> pred_list_h;
+
 public:
 	FilterExpr();
 	~FilterExpr();
 
 };
+
 
 
 // [81] PredicateList
@@ -2075,6 +2540,9 @@ class PredicateList : public parsenode
 |			|	PredicateList  Predicate
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<Predicate> > pred_hv;
+
 public:
 	PredicateList();
 	~PredicateList();
@@ -2082,14 +2550,18 @@ public:
 };
 
 
+
 // [82] Predicate
 // --------------
-class Predicate : public parsenode
+class Predicate : public exprnode
 /*______________________________________________________________________
 |
 |	::= LBRACK  Expr  RBRACK
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> pred_h;
+
 public:
 	Predicate();
 	~Predicate();
@@ -2100,7 +2572,7 @@ public:
 
 // [83] PrimaryExpr
 // ----------------
-class PrimaryExpr : public parsenode
+class PrimaryExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= Literal
@@ -2120,9 +2592,10 @@ public:
 };
 
 
+
 // [84] Literal
 // ------------
-class Literal : public parsenode
+class Literal : public exprnode
 /*______________________________________________________________________
 |
 |	::= NumericLiteral | StringLiteral
@@ -2135,9 +2608,10 @@ public:
 };
 
 
+
 // [85] NumericLiteral
 // -------------------
-class NumericLiteral : public parsenode
+class NumericLiteral : public exprnode
 /*______________________________________________________________________
 |
 |	::= INTEGER_LITERAL
@@ -2146,10 +2620,23 @@ class NumericLiteral : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum numeric_t {
+		integer,
+		decimal,
+		double
+	};
+
+protected:
+	enum numeric_t type;
+	int ival;
+	double dval;
+
+public:
 	NumericLiteral();
 	~NumericLiteral();
 
 };
+
 
 
 // [86] VarRef
@@ -2160,11 +2647,15 @@ class VarRef : public parsenode
 |	::= DOLLAR  VARNAME
 |_______________________________________________________________________*/
 {
+protected:
+	std::string varname;
+
 public:
 	VarRef();
 	~VarRef();
 
 };
+
 
 
 // [87] ParenthesizedExpr
@@ -2176,6 +2667,9 @@ class ParenthesizedExpr : public parsenode
 |			|	LPAR  Expr  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+
 public:
 	ParenthesizedExpr();
 	~ParenthesizedExpr();
@@ -2183,9 +2677,10 @@ public:
 };	
 
 
+
 // [88] ContextItemExpr
 // --------------------
-class ContextItemExpr : public parsenode
+class ContextItemExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= DOT
@@ -2198,14 +2693,18 @@ public:
 };	
 
 
+
 // [89] OrderedExpr
 // ----------------
-class OrderedExpr : public parsenode
+class OrderedExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= ORDERED_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+
 public:
 	OrderedExpr();
 	~OrderedExpr();
@@ -2213,14 +2712,18 @@ public:
 };
 
 
+
 // [90] UnorderedExpr
 // ------------------
-class UnorderedExpr : public parsenode
+class UnorderedExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= UNORDERED_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+
 public:
 	UnorderedExpr();
 	~UnorderedExpr();
@@ -2228,20 +2731,27 @@ public:
 };
 
 
+
 // [91] FunctionCall
 // -----------------
-class FunctionCall : public parsenode
+class FunctionCall : public exprnode
 /*______________________________________________________________________
 |
-|	::= QNAME  LPAR  ArgList  RPAR 	 gn:parensXQ
-|			 gn:reserved-function-namesXQ 
+|	::= QNAME  LPAR  ArgList  RPAR 	
+|																	gn:parensXQ
+|			 														gn:reserved-function-namesXQ 
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> fname_h;
+	rchandle<ArgList> arg_list_h;
+
 public:
 	FunctionCall();
 	~FunctionCall();
 
 };
+
 
 
 // [91a] ArgList
@@ -2252,6 +2762,9 @@ class ArgList : public parsenode
 |	::= ExprSingle | ArgList  COMMA  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<ExprSingle> arg_hv;
+
 public:
 	ArgList();
 	~ArgList();
@@ -2259,9 +2772,10 @@ public:
 };
 
 
+
 // [92] Constructor
 // ----------------
-class Constructor : public parsenode
+class Constructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= DirectConstructor |	ComputedConstructor
@@ -2274,9 +2788,10 @@ public:
 };
 
 
+
 // [93] DirectConstructor
 // ----------------------
-class DirectConstructor : public parsenode
+class DirectConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= DirElemConstructor
@@ -2291,6 +2806,7 @@ public:
 };
 
  
+
 // [94] DirElemConstructor
 // -----------------------
 class DirElemConstructor : public parsenode
@@ -2302,11 +2818,17 @@ class DirElemConstructor : public parsenode
 |					 ws:explicitXQ,  gn:ltXQ
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> elem_name_h;
+	rchandle<DirAttributeList> attr_list_h;
+	rchandle<DirElemContentList> dir_content_list_h;
+
 public:
 	DirElemConstructor();
 	~DirElemConstructor();
 
 };
+
 
 
 // [94a] DirElemContentList
@@ -2318,11 +2840,15 @@ class DirElemContentList : public parsenode
 |			|	DirElemContentList  DirElemContent
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<DirElemeContent> > dir_content_hv;
+
 public:
 	DirElemContentList();
 	~DirElemContentList();
 
 };
+
 
 
 // [95] DirAttributeList
@@ -2334,6 +2860,9 @@ class DirAttributeList : public parsenode
 |			|	DirAttributeList  DirAttr
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<DirAttr> > dir_attr_hv;
+
 public:
 	DirAttributeList();
 	~DirAttributeList();
@@ -2341,19 +2870,25 @@ public:
 };
 
 
+
 // [95a] DirAttr
 // -------------
 class DirAttr : public parsenode
 /*______________________________________________________________________
 |
-|	::= QNAME  EQ  DirAttributeValue 	 ws:explicitXQ
+|	::= QNAME  EQUALS  DirAttributeValue 	 ws:explicitXQ
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> atname_h;
+	rchandle<DirAttributeValue> dir_atval_h;
+	
 public:
 	DirAttr();
 	~DirAttr();
 
 };
+
 
 
 // [96] DirAttributeValue
@@ -2365,11 +2900,16 @@ class DirAttributeValue : public parsenode
 |			|	APOS  AposAttrContentList  APOS 	 ws:explicitXQ
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QuoteAttrContentList> quot_attr_content_h;
+	rchandle<AposContentList> apos_attr_content_h;
+
 public:
 	DirAttributeValue();
 	~DirAttributeValue();
 
 };
+
 
 
 // [96a] QuoteAttrContentList
@@ -2383,11 +2923,15 @@ class QuoteAttrContentList : public parsenode
 |			|	QuoteAttrContentList  QuoteAttrValueContent
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<QuoteAttrValueContent> quot_atval_content_hv;
+	
 public:
 	QuoteAttrContentList();
 	~QuoteAttrContentList();
 
 };
+
 
 
 // [96b] AposAttrContentList
@@ -2401,11 +2945,15 @@ class AposAttrContentList : public parsenode
 |			|	AposAttrContentList  AposAttrValueContent
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<AposAttrValueContent> apos_atval_content_hv;
+	
 public:
 	AposAttrContentList();
 	~AposAttrContentList();
 
 };
+
 
 
 // [97] QuotAttrValueContent
@@ -2417,11 +2965,16 @@ class QuoteAttrValueContent : public parsenode
 |			|	CommonContent
 |_______________________________________________________________________*/
 {
+protected:
+	std:string quot_atcontent_h;
+	rchandle<CommonContent> common_content_h;
+
 public:
 	QuoteAttrValueContent();
 	~QuoteAttrValueContent();
 
 };
+
 
 
 // [98] AposAttrValueContent
@@ -2433,6 +2986,10 @@ class AposAttrValueContent : public parsenode
 |			|	CommonContent
 |_______________________________________________________________________*/
 {
+protected:
+	std:string apos_atcontent_h;
+	rchandle<CommonContent> common_content_h;
+
 public:
 	AposAttrValueContent();
 	~AposAttrValueContent();
@@ -2440,9 +2997,10 @@ public:
 };
 
 
+
 // [99] DirElemContent
 // -------------------
-class DirElemContent : public parsenode
+class DirElemContent : public exprnode
 /*______________________________________________________________________
 |
 |	::= DirectConstructor
@@ -2451,6 +3009,9 @@ class DirElemContent : public parsenode
 |			|	CommonContent
 |_______________________________________________________________________*/
 {
+protected:
+	std::string elem_content;
+
 public:
 	DirElemContent();
 	~DirElemContent();
@@ -2458,9 +3019,10 @@ public:
 };
 
 
+
 // [100] CommonContent
 // -------------------
-class CommonContent : public parsenode
+class CommonContent : public exprnode
 /*______________________________________________________________________
 |
 |	::= ENTITY_REF
@@ -2471,20 +3033,39 @@ class CommonContent : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum common_content_t {
+		entity,
+		charref,
+		escape_lbrace,
+		escape_rbrace,
+		expr
+	};
+
+protected:
+	enum common_content_t type;
+	std::string entity_ref;
+	std::string char_ref;
+	rchandle<EnclosedExpr> expr_h;
+
+public:
 	CommonContent();
 	~CommonContent();
 
 };
 
 
+
 // [101] DirCommentConstructor
 // ---------------------------
-class DirCommentConstructor : public parsenode
+class DirCommentConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= COMMENT_BEGIN  EXPR_COMMENT_LITERAL  COMMENT_END 	 ws:explicitXQ
 |_______________________________________________________________________*/
 {
+protected:
+	std::string comment;
+
 public:
 	DirCommentConstructor();
 	~DirCommentConstructor();
@@ -2492,20 +3073,26 @@ public:
 };
 
 
+
 // [102] DirCommentContents
 // ------------------------
 /* lexical rule */
 
 
+
 // [103] DirPIConstructor
 // ----------------------
-class DirPIConstructor : public parsenode
+class DirPIConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= PI_BEGIN  PI_TARGET  PI_END    ws:explicitXQ
 |			|	PI_BEGIN  PI_TARGET  CHAR_LITERAL  PI_END	   ws:explicitXQ
 |_______________________________________________________________________*/
 {
+protected:
+	std::string pi_target;
+	std::string pi_content;
+
 public:
 	DirPIConstructor();
 	~DirPIConstructor();
@@ -2513,19 +3100,24 @@ public:
 };
 
 
+
 // [104] DirPIContents
 // -------------------
 /* lexical rule */
 
 
+
 // [105] CDataSection
 // ------------------
-class CDataSection : public parsenode
+class CDataSection : public exprnode
 /*______________________________________________________________________
 |
 |	::= CDATA_BEGIN  CHAR_LITERAL  CDATA_END 	 ws:explicitXQ
 |_______________________________________________________________________*/
 {
+protected:
+	std::string cdata_content;
+
 public:
 	CDataSection();
 	~CDataSection();
@@ -2533,14 +3125,16 @@ public:
 };
 
 
+
 // [106] CDataSectionContents
 // --------------------------
 /* lexical rule */
 
 
+
 // [107] ComputedConstructor
 // -------------------------
-class ComputedConstructor : public parsenode
+class ComputedConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= CompDocConstructor
@@ -2558,14 +3152,18 @@ public:
 };
 
 
+
 // [108] CompDocConstructor
 // ------------------------
-class CompDocConstructor : public parsenode
+class CompDocConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= DOCUMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+
 public:
 	CompDocConstructor();
 	~CompDocConstructor();
@@ -2573,9 +3171,10 @@ public:
 };
 
 
+
 // [109] CompElemConstructor
 // -------------------------
-class CompElemConstructor : public parsenode
+class CompElemConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= ELEMENT_QNAME_LBRACE  RBRACE
@@ -2584,6 +3183,11 @@ class CompElemConstructor : public parsenode
 |			|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  ContentExpr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> qname_h;
+	rchandle<Expr> qname_expr_h;
+	rchandle<ContentExpr> content_expr_h;
+
 public:
 	CompElemConstructor();
 	~CompElemConstructor();
@@ -2591,14 +3195,18 @@ public:
 };
 
 
+
 // [110] ContentExpr
 // -----------------
-class ContentExpr : public parsenode
+class ContentExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= Expr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> expr_h;
+
 public:
 	ContentExpr();
 	~ContentExpr();
@@ -2606,9 +3214,10 @@ public:
 };
 
 
+
 // [111] CompAttrConstructor
 // -------------------------
-class CompAttrConstructor : public parsenode
+class CompAttrConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= ATTRIBUTE  QNAME  LBRACE  RBRACE
@@ -2617,6 +3226,11 @@ class CompAttrConstructor : public parsenode
 |			|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> qname_h;
+	rchandle<Expr> qname_expr_h;
+	rchandle<Expr> val_expr_h;
+
 public:
 	CompAttrConstructor();
 	~CompAttrConstructor();
@@ -2624,14 +3238,18 @@ public:
 };
 
 
+
 // [112] CompTextConstructor
 // -------------------------
-class CompTextConstructor : public parsenode
+class CompTextConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= TEXT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> text_expr_h;
+
 public:
 	CompTextConstructor();
 	~CompTextConstructor();
@@ -2639,14 +3257,18 @@ public:
 };
 
 
+
 // [113] CompCommentConstructor
 // ----------------------------
-class CompCommentConstructor : public parsenode
+class CompCommentConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= COMMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Expr> comment_expr_h;
+
 public:
 	CompCommentConstructor();
 	~CompCommentConstructor();
@@ -2654,9 +3276,10 @@ public:
 };
 
 
+
 // [114] CompPIConstructor
 // -----------------------
-class CompPIConstructor : public parsenode
+class CompPIConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
@@ -2665,6 +3288,11 @@ class CompPIConstructor : public parsenode
 |			|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	std::string target;
+	rchandle<Expr> target_expr_h;
+	rchandle<Expr> content_expr_h;
+
 public:
 	CompPIConstructor();
 	~CompPIConstructor();
@@ -2680,6 +3308,10 @@ class SingleType : public parsenode
 |	::= AtomicType | AtomicType  HOOK
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<AtomicType> atomic_type_h;
+	bool hook_b;
+
 public:
 	SingleType();
 	~SingleType();
@@ -2695,6 +3327,9 @@ class TypeDeclaration : public parsenode
 |	::= AS  SequenceType
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<SequenceType> seqtype_h;
+
 public:
 	TypeDeclaration();
 	~TypeDeclaration();
@@ -2712,6 +3347,11 @@ class SequenceType
 |			|	VOID_TEST
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ItemType> itemtype_h;
+	rchandle<OccurrenceIndicator> occur_h;
+	bool void_b;
+
 public:
 	SequenceType();
 	~SequenceType();
@@ -2728,6 +3368,16 @@ class OccurrenceIndicator : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum occurrence_t {
+		hook,
+		star,
+		plus
+	};
+
+protected:
+	enum occurrence_t type;
+
+public:
 	OccurrenceIndicator();
 	~OccurrenceIndicator();
 
@@ -2742,6 +3392,9 @@ class ItemType : public parsenode
 |	::= AtomicType | KindTest | ITEM_TEST
 |_______________________________________________________________________*/
 {
+protected:
+	std::string item_test;
+
 public:
 	ItemType();
 	~ItemType();
@@ -2751,12 +3404,15 @@ public:
 
 // [120] AtomicType
 // ----------------
-class AtomicType : public parsenode
+class AtomicType : public ItemType
 /*______________________________________________________________________
 |
 |	::= QNAME
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> qname_h;
+
 public:
 	AtomicType();
 	~AtomicType();
@@ -2766,7 +3422,7 @@ public:
 
 // [121] KindTest
 // --------------
-class KindTest : public parsenode
+class KindTest : public ItemType
 /*______________________________________________________________________
 |
 |	::= DocumentTest
@@ -2789,7 +3445,7 @@ public:
 
 // [122] AnyKindTest
 // -----------------
-class AnyKindTest : public parsenode
+class AnyKindTest : public KindTest
 /*______________________________________________________________________
 |
 |	::= NODE_LPAR  RPAR
@@ -2804,7 +3460,7 @@ public:
 
 // [123] DocumentTest
 // ------------------
-class DocumentTest : public parsenode
+class DocumentTest : public KindTest
 /*______________________________________________________________________
 |
 |	::= DOCUMENT_NODE_LPAR  RPAR
@@ -2812,6 +3468,10 @@ class DocumentTest : public parsenode
 |			|	DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ElementTest> elem_test_h;
+	rchandle<SchemaElementTest> schema_elem_test_h;
+
 public:
 	DocumentTest();
 	~DocumentTest();
@@ -2821,7 +3481,7 @@ public:
 
 // [124] TextTest
 // --------------
-class TextTest : public parsenode
+class TextTest : public KindTest
 /*______________________________________________________________________
 |
 |	::= TEXT_LPAR  RPAR 
@@ -2836,7 +3496,7 @@ public:
 
 // [125] CommentTest
 // -----------------
-class CommentTest : public parsenode
+class CommentTest : public KindTest
 /*______________________________________________________________________
 |
 |	::= COMMENT_LPAR  RPAR 
@@ -2851,7 +3511,7 @@ public:
 
 // [126] PITest
 // ------------
-class PITest : public parsenode
+class PITest : public KindTest
 /*______________________________________________________________________
 |
 |	::= PI_LPAR  RPAR
@@ -2859,6 +3519,10 @@ class PITest : public parsenode
 |			|	PI_LPAR  STRING_LITERAL  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	std::string target;
+	std::string content;
+
 public:
 	PITest();
 	~PITest();
@@ -2868,7 +3532,7 @@ public:
 
 // [127] AttributeTest
 // -------------------
-class AttributeTest : public parsenode
+class AttributeTest : public KindTest
 /*______________________________________________________________________
 |
 |	::= ATTRIBUTE_LPAR  RPAR
@@ -2876,6 +3540,10 @@ class AttributeTest : public parsenode
 |			|	ATTRIBUTE_LPAR  AttribNameOrWildcard  COMMA  TypeName  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<AttributeNameOrWildcard> attr_name_or_wildcard_h;
+	rchandle<TypeName> type_name_h;
+
 public:
 	AttributeTest();
 	~AttributeTest();
@@ -2891,6 +3559,10 @@ class AttribNameOrWildcard : public parsenode
 |	::= AttributeName | STAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<AttributeName> attr_name_h;
+	bool star_b;
+
 public:
 	AttribNameOrWildcard();
 	~AttribNameOrWildcard();
@@ -2906,6 +3578,9 @@ class SchemaAttributeTest : public parsenode
 |	::= SCHEMA_ATTRIBUTE_LPAR  AttributeDeclaration  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<AttributeDeclaration> attr_decl_h;
+
 public:
 	SchemaAttributeTest();
 	~SchemaAttributeTest();
@@ -2921,6 +3596,9 @@ class AttributeDeclaration : public parsenode
 |	::= AttributeName
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<AttributeName> attr_name_h;
+
 public:
 	AttributeDeclaration();
 	~AttributeDeclaration();
@@ -2939,6 +3617,10 @@ class ElementTest : public parsenode
 |			|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ElementNameOrWildcard> elem_name_or_wildcard_h;
+	rchandle<TypeName> type_name_h;
+
 public:
 	ElementTest();
 	~ElementTest();
@@ -2954,6 +3636,10 @@ class ElementNameOrWildcard : public parsenode
 |	::= ElementName | STAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ElementName> elem_name_h;
+	bool star_b;
+
 public:
 	ElementNameOrWildcard();
 	~ElementNameOrWildcard();
@@ -2969,6 +3655,9 @@ class SchemaElementTest : public parsenode
 |	::= SCHEMA_ELEMENT_LPAR  ElementDeclaration  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ElementDeclaration> elem_decl_h;
+
 public:
 	SchemaElementTest();
 	~SchemaElementTest();
@@ -2984,6 +3673,9 @@ class ElementDeclaration : public parsenode
 |	::= ElementName
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ElementName> elem_name_h;
+
 public:
 	ElementDeclaration();
 	~ElementDeclaration();
@@ -2999,6 +3691,9 @@ class AttributeName : public parsenode
 |	::= QNAME
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> attr_qname_h;
+
 public:
 	AttributeName();
 	~AttributeName();
@@ -3014,6 +3709,9 @@ class ElementName : public parsenode
 |	::= QNAME
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> elem_qname_h;
+
 public:
 	ElementName();
 	~ElementName();
@@ -3029,6 +3727,9 @@ class TypeName : public parsenode
 |	::= QNAME
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> type_qname_h;
+
 public:
 	TypeName();
 	~TypeName();
@@ -3072,6 +3773,704 @@ public:
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
+
+
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  Update productions                                                   *
+ *  [http://www.w3.org/TR/xqupdate/]                                     *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+
+// [241]	RevalidationDecl
+// -----------------------
+class RevalidationDecl : public parsenode
+/*______________________________________________________________________
+|
+|	::= QNAME DECLARE_REVALIDATION_MODE
+|_______________________________________________________________________*/
+{
+public:
+	RevalidationDecl();
+	~RevalidationDecl();
+
+};
+
+
+
+// [242]	InsertExpr
+// ----------------
+class InsertExpr : public exprnode
+/*______________________________________________________________________
+|
+|	::= DO_INSERT  ExprSingle  INTO  ExprSingle
+|			|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
+|			|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
+|			| DO_INSERT  ExprSingle  AFTER  ExprSingle
+|			| DO_INSERT  ExprSingle  BEFORE  ExprSingle
+|_______________________________________________________________________*/
+{
+public:
+	InsertExpr();
+	~InsertExpr();
+};
+
+
+
+// [243] DeleteExpr
+// ----------------
+class DeleteExpr : public exprnode
+/*______________________________________________________________________
+|
+|	::= DO_DELETE  ExprSingle
+|_______________________________________________________________________*/
+{
+public:
+	DeleteExpr();
+	~DeleteExpr();
+};
+
+
+
+// [244] ReplaceExpr
+// -----------------
+class ReplaceExpr : public exprnode
+/*______________________________________________________________________
+|
+|	::= DO_REPLACE  ExprSingle  WITH  ExprSingle
+|			| DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
+|_______________________________________________________________________*/
+{
+public:
+	ReplaceExpr();
+	~ReplaceExpr();
+};
+
+
+
+// [245] RenameExpr
+// ----------------
+class RenameExpr : public exprnode
+/*______________________________________________________________________
+|
+|	::= DO_RENAME  ExprSingle  AS  ExprSingle
+|_______________________________________________________________________*/
+{
+public:
+	RenameExpr();
+	~RenameExpr();
+};
+
+
+
+// [246] SourceExpr
+// ----------------
+// folded
+
+
+
+// [247] TargetExpr
+// ----------------
+// folded
+
+
+
+// [248] NewNameExpr
+// -----------------
+// folded into [245] RenameExpr
+
+
+
+// [249] TransformExpr
+// -------------------
+class TransformExpr : public exprnode
+/*______________________________________________________________________
+|
+|	::= TRANSFORM_COPY_DOLLAR  VarNameList
+|				MODIFY  ExprSingle  RETURN  ExprSingle
+|_______________________________________________________________________*/
+{
+public:
+	TransformExpr();
+	~TransformExpr();
+};
+
+
+// [249a] VarNameList
+// ------------------
+class VarNameList : public parsenode
+/*______________________________________________________________________
+|
+|	::= VARNAME	 GETS  ExprSingle
+|			|	VarNameList  COMMA_DOLLAR  VARNAME  GETS  ExprSingle
+/*______________________________________________________________________
+{
+public:
+	VarNameList();
+	~VarNameList();
+};
+
+
+
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  Full-text productions                                                *
+ *  [http://www.w3.org/TR/xqupdate/]                                     *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+
+//[344] FTSelection
+//-----------------
+class FTSelection : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTOr
+|			|	FTOr  FTMatchOptionProximityList
+|			|	FTOr  WEIGHT  RangeExpr
+|			|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[344a] FTMatchOptionProximityList
+//---------------------------------
+class FTMatchOptionProximityList : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTMatchOption
+|			| FTProximity
+|			| FTMatchOptionProximityList  FTMatchOption
+|			| FTMatchOptionProximityList  FTProximity
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[345]	FTOr
+//----------
+class FTOr : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTAnd
+|			|	FTOr  FTOR  FTAnd
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[346]	FTAnd
+//-----------
+class FTAnd : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTMildnot
+|			|	FTAnd  FTAND  FTMildnot
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[347]	FTMildnot
+//---------------
+class FTMildnot : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTUnaryNot
+|			|	FTMildnot  FTNOT_IN  FTUnaryNot
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[348]	FTUnaryNot
+//----------------
+class FTUnaryNot : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTWordsSelection
+|			|	FTNOT  FTWordsSelection
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[349]	FTWordsSelection
+//----------------------
+class FTWordsSelection : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTWords
+|			|	FTWords FTTimes
+|			| LPAR  FTSelection  RPAR
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[350]	FTWords
+//-------------
+class FTWords : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTWordsValue 
+|			|	FTWordsValue  FTAnyallOption
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[351]	FTWordsValue
+//------------------
+class FTWordsValue : public parsenode
+/*______________________________________________________________________
+|
+|	::=	Literal
+|			| LBRACE  Expr  RBRACE
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[352]	FTProximity
+//-----------------
+class FTProximity : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTOrderedIndicator
+|			| FTWindow
+|			| FTDistance
+|			| FTScope
+|			| FTContent
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[353]	FTOrderedIndicator
+//------------------------
+class FTOrderedIndicator : public parsenode
+/*______________________________________________________________________
+|
+|	::=	ORDERED
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[354] FTMatchOption 	
+//-------------------
+class FTMatchOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTCaseOption
+|			| FTDiacriticsOption
+|			| FTStemOption
+|			| FTThesaurusOption
+|			| FTStopwordOption
+|			| FTLanguageOption
+|			| FTWildCardOption
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[355] FTCaseOption
+//------------------
+class FTCaseOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	LOWERCASE
+|			| UPPERCASE
+|			| CASE_SENSITIVE
+|			| CASE_INSENSITIVE
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[356] FTDiacriticsOption
+//------------------------
+class FTDiacriticsOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WITH_DIACRITICS
+|			| WITHOUT_DIACRITICS
+|			| DIACRITICS_SENSITIVE
+|			| DIACRITICS_INSENSITIVE
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[357] FTStemOption
+//------------------
+class FTStemOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WITH_STEMMING
+|			| WITHOUT_STEMMING
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[358] FTThesaurusOption
+//-----------------------
+class FTThesaurusOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WITH_THESAURUS  FTThesaurusID
+|			|	WITH_THESAURUS  DEFAULT
+|			| WITH_THESAURUS  LPAR  FTThesaurusID  RPAR
+|			| WITH_THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
+|			| WITH_THESAURUS  LPAR  DEFAULT  RPAR
+|			| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
+|			| WITHOUT_THESAURUS
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[358a] FTThesaurusIDList
+//------------------------
+class FTThesaurusList : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTThesaurusID
+|			| FTThesaurusList  COMMA  FTThesaurusID
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[359] FTThesaurusID
+//-------------------
+class FTThesaurusID : public parsenode
+/*______________________________________________________________________
+|
+|	::=	AT  STRING_LITERAL
+|			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
+|			|	AT  STRING_LITERAL  FTRange  LEVELS
+|			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[360] FTStopwordOption
+//----------------------
+class FTStopwordOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WITH_STOP_WORDS  FTRefOrList
+|			|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
+|			| WITH_DEFAULT_STOP_WORDS 
+|			| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
+|			| WITHOUT_STOP_WORDS
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[360a] FTInclExclStringLiteralList
+//----------------------------------
+class FTInclExclStringLiteralList : public parsenode
+/*______________________________________________________________________
+|
+|	::=	FTInclExclStringLiteral
+|			| FTInclExclStringLiteralList  FTInclExclStringLiteral
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[361] FTRefOrList
+//-----------------
+class FTRefOrList : public parsenode
+/*______________________________________________________________________
+|
+|	::=	AT  STRING_LITERAL
+|			| LPAR  FTStringLiteralList  RPAR 
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[361a] FTStringLiteralList
+//--------------------------
+class FTStringLiteralList : public parsenode
+/*______________________________________________________________________
+|
+|	::=	STRING_LITERAL
+|			|	FTStringLiteralList  STRING_LITERAL
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[362] FTInclExclStringLiteral
+//-----------------------------
+class FTInclExclStringLiteral : public parsenode
+/*______________________________________________________________________
+|
+|	::=	UNION  FTRefOrList
+|			|	EXCEPT  FTRefOrList
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[363] FTLanguageOption
+//----------------------
+class FTLanguageOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	LANGUAGE  STRING_LITERAL
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[364] FTWildCardOption
+//----------------------
+class FTWildCardOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WITH_WILDCARDS
+|			| WITHOUT_WILDCARDS
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[365]	FTContent
+//---------------
+class FTContent : public parsenode
+/*______________________________________________________________________
+|
+|	::=	AT_START
+|			| AT_END
+|			| ENTIRE_CONTENT
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[366]	FTAnyallOption
+//--------------------
+class FTAnyallOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	ANY
+|			|	ANY_WORD
+|			| ALL
+|			| ALL_WORDS
+|			| PHRASE
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[367]	FTRange
+//-------------
+class FTRange : public parsenode
+/*______________________________________________________________________
+|
+|	::=	EXACTLY  UnionExpr
+|			| AT_LEAST  UnionExpr
+|			| AT_MOST  UnionExpr
+|			| FROM  UnionExpr  TO  UnionExpr
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[368]	FTDistance
+//----------------
+class FTDistance : public parsenode
+/*______________________________________________________________________
+|
+|	::=	DISTANCE  FTRange  FTUnit
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[369]	FTWindow
+//--------------
+class FTWindow : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WINDOW  UnionExpr  FTUnit
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[370]	FTTimes
+//-------------
+class FTTimes : public parsenode
+/*______________________________________________________________________
+|
+|	::=	OCCURS  FTRange  TIMES
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[371]	FTScope
+//-------------
+class FTScope : public parsenode
+/*______________________________________________________________________
+|
+|	::=	SAME  FTBigUnit
+|			|	DIFFERENT  FTBigUnit
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[372]	FTUnit
+//------------
+class FTUnit : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WORDS | SENTENCES | PARAGRAPH
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[373]	FTBigUnit
+//---------------
+class FTBigUnit : public parsenode
+/*______________________________________________________________________
+|
+|	::=	SENTENCE | PARAGRAPH
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+//[374]	FTIgnoreOption
+//--------------------
+class FTIgnoreOption : public parsenode
+/*______________________________________________________________________
+|
+|	::=	WITHOUT_CONTENT  UnionExpr
+|_______________________________________________________________________*/
+{
+public:
+};
+
+
+
+
+%%
+
+
+
+/*
+	The error member function registers the errors to the driver.
+*/
+
+void yy::xquery_parser::error(
+	yy::xquery_parser::location_type const& loc,
+	std::string const& msg)
+{
+  driver.error(loc, msg);
+}
+
+
+
+/*
+static void print_token_value(FILE *file, int type, YYSTYPE value)
+{
+	if (type==VAR) {
+		fprintf (file, "%s", value.tptr->name);
+	}
+	else if (type==NUM) {
+		fprintf (file, "%d", value.val);
+	}
+}
+*/
+
+
+
+
 
 
 }	/* namespace xqp */
