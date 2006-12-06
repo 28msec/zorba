@@ -219,6 +219,7 @@ public:	//manipulators
 };
 
 
+
 // [2] VersionDecl
 // ---------------
 class VersionDecl : public parsenode
@@ -233,6 +234,9 @@ protected:
 	std::string encoding;
 
 public:
+	VersionDecl(
+		std::string const& version,
+		std::string const& encoding);
 	VersionDecl();
 	~VersionDecl();
 
@@ -241,6 +245,7 @@ public:
 	std::string get_encoding() const { return encoding; }
 
 };
+
 
 
 // [3] MainModule
@@ -256,13 +261,18 @@ protected:
 	rchandle<QueryBody> query_body_h;
 
 public:
+	MainModule(
+		rchandle<Prolog>,
+		rchandle<QueryBody>);
 	MainModule();
 	~MainModule();
 
 public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
 	rchandle<QueryBody> get_query_body() const { return query_body_h; }
+
 };
+
 
 
 // [4] LibraryModule
@@ -274,36 +284,26 @@ class LibraryModule : parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<
-	rchandle<
+	rchandle<ModuleDecl> decl_h;
+	rchandle<Prolog> prolog_h;
 
 public:
+	LibraryModule(
+		rchandle<ModuleDecl>, 
+		rchandle<Prolog>);
 	LibraryModule();
 	~LibraryModule();
+
+public:
+	rchandle<ModuleDecl> get_decl() const { return decl_h; }
+	rchandle<Prolog> get_prolog() const { return prolog_h; }
 
 };
 
 
+
 // [5] ModuleDecl
 // --------------
-/*______________________________________________________________________
-|
-| Module declaration serves to identify a module as a library module.
-| 	
-| A module declaration begins with the keyword module and contains a 
-| namespace prefix and a URILiteral.  The URILiteral must be of nonzero 
-| length [err:XQST0088]. The URILiteral identifies the target namespace 
-| of the library module, which is the namespace for all variables and 
-| functions exported by the library module. The name of every variable 
-| and function declared in a library module must have a namespace URI 
-| that is the same as the target namespace of the module; otherwise a 
-| static error is raised [err:XQST0048]. In the statically known 
-| namespaces of the library module, the namespace prefix specified in 
-| the module declaration is bound to the module's target namespace. The 
-| namespace prefix specified in a module declaration must not be xml or 
-| xmlns [err:XQST0070]. 
-| 
-|_______________________________________________________________________*/
 class ModuleDecl : public parsenode
 /*______________________________________________________________________
 |
@@ -315,6 +315,9 @@ protected:
 	std::string target_namespace;
 
 public:
+	ModuleDecl(
+		std::string const& prefix,
+		std::string const& target_namespace);
 	ModuleDecl();
 	~ModuleDecl();
 
@@ -327,30 +330,6 @@ public:
 
 // [6] Prolog
 // ----------
-/*
-**	A Prolog is a series of declarations and imports that define the 
-**	processing environment for the module that contains the Prolog.
-**	
-**	Each declaration or import is followed by a semicolon. A Prolog is 
-**	organized into two parts.
-**	
-**	The first part of the Prolog (SIND_DeclList) consists of Setters, 
-**	Imports, Namespace declarations, and Default namespace declarations.  
-**	Setters are declarations that set the value of some property that 
-**	affects query processing, such as construction mode, ordering mode, 
-**	or default collation.  Namespace declarations and default namespace 
-**	declarations affect the interpretation of QNames within the query.  
-**	Imports are used to import definitions from schemas and modules.  
-**	Each imported schema or module is identified by its target namespace, 
-**	which is the namespace of the objects (such as elements or functions)
-**	that are defined by the schema or module.
-**	
-**	The second part of the Prolog (VFO_DeclList) consists of declarations 
-**	of Variables, Functions, and Options. These declarations appear at 
-**	the end of the Prolog because they may be affected by declarations 
-**	and imports in the first part of the Prolog.
-*/
-
 class Prolog : public parsenode
 /*______________________________________________________________________
 |
@@ -362,10 +341,15 @@ protected:
 	rchandle<VFO_DeclList> vfo_list_h;
 
 public:
+	Prolog(
+		rchandle<SIND_DeclList>,
+		rchandle<VFO_DeclList>);
 	Prolog();
 	~Prolog();
 
 public:
+	rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
+	rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
 
 };
 
@@ -373,10 +357,6 @@ public:
 
 // [6a] SIDN_DeclList
 // ------------------
-/*
-**	The first part of the Prolog: Setters, Imports, Namespace declarations,
-**	and Default namespace declarations.  
-*/
 class SIND_DeclList : public parsenode
 /*______________________________________________________________________
 |
@@ -388,12 +368,11 @@ protected:
 
 public:
 	SIND_DeclList();
-	SIND_DeclList(SIND_Decl*);
 	~SIND_DeclList();
 
 public:
 	rchandle<SIND_Decl> operator[] (uint32_t k) const { return sind_hv[k]; }
-	void push_back(SIND_Decl* sind_p) { sind_hv.push_back(sind_p); }
+	void push_back(rchandle<SIND_Decl> sind_p) { sind_hv.push_back(sind_p); }
 
 };
 
@@ -412,12 +391,11 @@ protected:
 
 public:
 	VFO_DeclList();
-	VFO_DeclList(VFO_Decl*);
 	~VFO_DeclList();
 
 public:
 	VFO_Decl* operator[] (uint32_t k) const { return vfo_hv[k]; }
-	void push_back(VFO_Decl* vfo_p) { vfo_hv.push_back(vfo_p); }
+	void push_back(rchandle<VFO_Decl>, vfo_p) { vfo_hv.push_back(vfo_p); }
 
 };
 
@@ -432,8 +410,8 @@ class SIND_Decl : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	SIND_Decl();
-	~SIND_Decl();
+	SIND_Decl() {}
+	~SIND_Decl() {}
 
 };
 
@@ -448,8 +426,8 @@ class VFO_Decl : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	VFO_Decl();
-	~VFO_Decl();
+	VFO_Decl() {}
+	~VFO_Decl() {}
 
 };
 
@@ -460,14 +438,18 @@ public:
 class Setter : public SIND_Decl
 /*______________________________________________________________________
 |
-|	::= BoundarySpaceDecl | DefaultCollationDecl | BaseURIDecl
-|			| ConstructionDecl | OrderingModeDecl | EmptyOrderDecl
+|	::= BoundarySpaceDecl
+|			| DefaultCollationDecl
+|			| BaseURIDecl
+|			| ConstructionDecl
+|			| OrderingModeDecl
+|			| EmptyOrderDecl
 |			| CopyNamespacesDecl
 |_______________________________________________________________________*/
 {
 public:
-	Setter();
-	~Setter();
+	Setter() {}
+	~Setter() {}
 
 };
 
@@ -482,8 +464,8 @@ class Import : public SIND_Decl
 |_______________________________________________________________________*/
 {
 public:
-	Import();
-	~Import();
+	Import() {}
+	~Import() {}
 
 };
 
@@ -497,19 +479,6 @@ public:
 
 // [10] NamespaceDecl
 // ------------------
-/*
-**	[Definition: A namespace declaration declares a namespace prefix and 
-**	associates it with a namespace URI, adding the (prefix, URI) pair to 
-**	the set of statically known namespaces.] The namespace declaration is 
-**	in scope throughout the query in which it is declared, unless it is 
-**	overridden by a namespace declaration attribute in a direct element 
-**	constructor.
-**	
-**	If the URILiteral part of a namespace declaration is a zero-length 
-**	string, any existing namespace binding for the given prefix is removed 
-**	from the statically known namespaces. This feature provides a way to 
-**	remove predeclared namespace prefixes such as local.
-*/
 class NamespaceDecl : public SIND_Decl
 /*______________________________________________________________________
 |
@@ -521,15 +490,15 @@ protected:
 	std::string uri;
 
 public:
+	NamespaceDecl(
+		std::string const& prefix,
+		std::string const& uri);
 	NamespaceDecl();
-	NamespaceDecl(std::string const& _prefix, std::string const& _uri);
 	~NamespaceDecl();
 
 public:
-	std::string get_prefix() const
-		{ return prefix; }
-	std::string get_uri() const
-		{ return uri; }
+	std::string get_prefix() const { return prefix; }
+	std::string get_uri() const { return uri; }
 
 };
 
@@ -537,15 +506,6 @@ public:
 
 // [11] BoundarySpaceDecl
 // ----------------------
-/*
-**	[Definition: A boundary-space declaration sets the boundary-space 
-**	policy in the static context, overriding any implementation-defined 
-**	default. Boundary-space policy controls whether boundary whitespace is 
-**	preserved by element constructors during processing of the query.] If 
-**	boundary-space policy is preserve, boundary whitespace is preserved. 
-**	If boundary-space policy is strip, boundary whitespace is stripped 
-**	(deleted). 
-*/
 class BoundarySpaceDecl : public SIND_Decl
 /*______________________________________________________________________
 |
@@ -553,69 +513,22 @@ class BoundarySpaceDecl : public SIND_Decl
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::boundaryspace_mode mode;
+	static_context::boundary_space_mode_t mode;
 
 public:
+	BoundarySpaceDecl(static_context::boundary_space_mode_t);
 	BoundarySpaceDecl();
-	BoundarySpaceDecl(static_context::boundaryspace_mode _mode);
 	~BoundarySpaceDecl();
 
 public:
-	static_context::boundaryspace_mode get_boundaryspace_mode() const
-		{ return mode; }
+	static_context::boundary_space_mode 
+		get_boundary_space_mode() const { return mode; }
 
 };
 
 
 // [12] DefaultNamespaceDecl
 // -------------------------
-/*
-**	A default element/type namespace declaration declares a namespace URI 
-**	that is associated with unprefixed names of elements and types. This 
-**	declaration is recorded as the default element/type namespace in the 
-**	static context. A Prolog may contain at most one default element/type 
-**	namespace declaration [err:XQST0066]. If the URILiteral in a default 
-**	element/type namespace declaration is a zero-length string, the 
-**	default element/type namespace is undeclared (set to "none"), and 
-**	unprefixed names of elements and types are considered to be in no 
-**	namespace.
-**	
-**	A default element/type namespace declaration may be overridden by a 
-**	namespace declaration attribute in a direct element constructor.
-**	
-**	If no default element/type namespace declaration is present, 
-**	unprefixed element and type names are in no namespace (however, an 
-**	implementation may define a different default as specified in C.1 
-**	Static Context Components.)
-**	
-**	A default function namespace declaration declares a namespace URI that 
-**	is associated with unprefixed function names in function calls and 
-**	function declarations. This declaration is recorded as the default 
-**	function namespace in the static context. A Prolog may contain at most 
-**	one default function namespace declaration [err:XQST0066]. If the 
-**	StringLiteral in a default function namespace declaration is a 
-**	zero-length string, the default function namespace is undeclared (set 
-**	to "none"). In that case, any functions that are associated with a 
-**	namespace can be called only by using an explicit namespace prefix.
-**	
-**	If no default function namespace declaration is present, the default 
-**	function namespace is the namespace of XPath/XQuery functions, 
-**	http://www.w3.org/2005/xpath-functions (however, an implementation may 
-**	define a different default as specified in C.1 Static Context 
-**	Components.)
-**
-**	The effect of declaring a default function namespace is that all 
-**	functions in the default function namespace, including 
-**	implicitly-declared constructor functions, can be invoked without 
-**	specifying a namespace prefix. When a function call uses a function 
-**	name with no prefix, the local name of the function must match a 
-**	function (including implicitly-declared constructor functions) in the 
-**	default function namespace [err:XPST0017].
-**
-**	Note: Only constructor functions can be in no namespace.
-**
-**	Unprefixed attribute names and variable names are in no namespace.
-*/
 class DefaultNamespaceDecl : public SIND_Decl
 /*______________________________________________________________________
 |
@@ -628,10 +541,10 @@ protected:
 	std::string default_function_namespace;
 
 public:
-	DefaultNamespaceDecl();
 	DefaultNamespaceDecl(
-		std::string const& _default_element_namespace,
-		std::string const& _default_function_namespace);
+		std::string const& default_element_namespace,
+		std::string const& default_function_namespace);
+	DefaultNamespaceDecl();
 	~DefaultNamespaceDecl();
 
 public:
@@ -646,11 +559,6 @@ public:
 
 // [13] OptionDecl
 // ---------------
-/*
-**	[Definition: An option declaration declares an option that affects the 
-**	behavior of a particular implementation. Each option consists of an 
-**	identifying QName and a StringLiteral.]
-*/
 class OptionDecl : public parsenode
 /*______________________________________________________________________
 |
@@ -663,38 +571,20 @@ protected:
 	std::string val;
 
 public:
+	OptionDecl(rchandle<QName> qname_h, std::string const& val);
 	OptionDecl();
-	OptionDecl(handle<QName> _name_h, std::string const& _val);
 	~OptionDecl();
 
 public:
-	rchandle<QName> get_qname() const { return name_p; }
+	rchandle<QName> get_qname() const { return qname_p; }
 	std::string get_val() const { return val; }
+
 };
 
 
 
 // [14] OrderingModeDecl
 // ---------------------
-/*
-**	[Definition: An ordering mode declaration sets the ordering mode in 
-**	the static context, overriding any implementation-defined default.] 
-**	This ordering mode applies to all expressions in a module (including 
-**	both the Prolog and the Query Body, if any), unless overridden by an 
-**	ordered or unordered expression.
-**	
-**	Ordering mode affects the behavior of path expressions that include a 
-**	"/" or "//" operator or an axis step; union, intersect, and except 
-**	expressions; and FLWOR expressions that have no order by clause.  If 
-**	ordering mode is ordered, node sequences returned by path, union, 
-**	intersect, and except expressions are in document order; otherwise the 
-**	order of these return sequences is implementation-dependent.  The 
-**	effect of ordering mode on FLWOR expressions is described in #3.8 FLWOR 
-**	Expressions.
-**
-**	If a Prolog contains more than one ordering mode declaration, a static 
-**	error is raised [err:XQST0065].
-*/
 class OrderingModeDecl : public parsenode
 /*______________________________________________________________________
 |
@@ -702,16 +592,16 @@ class OrderingModeDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::ordering_mode mode;
+	static_context::ordering_mode_t mode;
 		
 public:
+	OrderingModeDecl(static_context::ordering_mode);
 	OrderingModeDecl();
-	OrderingModeDecl(static_context::ordering_mode _mode);
 	~OrderingModeDecl();
 	
 public:
-	static_context::ordering_mode get_ordering_mode() const
-		{ return mode; }
+	static_context::ordering_mode
+		get_ordering_mode() const { return mode; }
 
 };
 
@@ -719,18 +609,6 @@ public:
 
 // [15] EmptyOrderDecl
 // -------------------
-/*
-**	[Definition: An empty order declaration sets the default order for 
-**	empty sequences in the static context, overriding any 
-**	implementation-defined default.  This declaration controls the 
-**	processing of empty sequences and NaN values as ordering keys in an 
-**	order by clause in a FLWOR expression.]  An individual order by clause 
-**	may override the default order for empty sequences by specifying empty 
-**	greatest or empty least.
-**
-**	If a Prolog contains more than one empty order declaration, a static 
-**	error is raised [err:XQST0069].
-*/
 class EmptyOrderDecl : public parsenode
 /*______________________________________________________________________
 |
@@ -739,16 +617,16 @@ class EmptyOrderDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::empty_order_mode mode;
+	static_context::empty_order_mode_t mode;
 
 public:
+	EmptyOrderDecl(static_context::empty_order_mode_t);
 	EmptyOrderDecl();
-	EmptyOrderDecl(static_context::empty_order_mode _mode);
 	~EmptyOrderDecl();
 	
 public:
-	static_context::empty_order_mode get_mode() const
-		{ return mode; }
+	static_context::empty_order_mode_t
+		get_mode() const { return mode; }
 
 };
 
@@ -756,18 +634,6 @@ public:
 
 // [16] CopyNamespacesDecl
 // -----------------------
-/*
-**	[Definition: A copy-namespaces declaration sets the value of 
-**	copy-namespaces mode in the static context, overriding any 
-**	implementation-defined default. Copy-namespaces mode controls the 
-**	namespace bindings that are assigned when an existing element node is 
-**	copied by an element constructor.] Handling of namespace bindings by 
-**	element constructors is described in 3.7.1 Direct Element 
-**	Constructors.
-**
-**	If a Prolog contains more than one copy-namespaces declaration, a 
-**	static error is raised [err:XQST0055].
-*/
 class CopyNamespacesDecl : public parsenode
 /*______________________________________________________________________
 |
@@ -775,11 +641,16 @@ class CopyNamespacesDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::copy_ns_mode mode;
+	static_context::copy_ns_mode_t copy_ns_mode;
 
 public:
+	CopyNamespacesDecl(static_context::copy_ns_mode_t);
 	CopyNamespacesDecl();
 	~CopyNamespacesDecl();
+
+public:
+	static_context::copy_ns_mode_t
+		get_copy_ns_mode() const { return copy_ns_mode; }
 
 };
 
@@ -794,11 +665,16 @@ class PreserveMode : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::preserve_mode mode;
+	static_context::preserve_mode_t preserve_mode;
 
 public:
+	PreserveMode(static_context::preserve_mode_t);
 	PreserveMode();
 	~PreserveMode();
+
+public:
+	static_context::preserve_mode_t
+		get_preserve_mode() const { return preserve_mode; }
 
 };
 
@@ -813,11 +689,16 @@ class InheritMode : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	static_context::inherit_mode mode;
+	static_context::inherit_mode_t inherit_mode;
 	
 public:
+	InheritMode(static_context::inherit_mode mode_t);
 	InheritMode();
 	~InheritMode();
+
+public:
+	static_context::inherit_mode_t
+		get_inherit_mode() const { return inherit_mode; }
 
 };
 
@@ -835,8 +716,12 @@ protected:
 	std::string collation;
 
 public:
+	DefaultCollationDecl(std::string const&  collation);
 	DefaultCollationDecl();
 	~DefaultCollationDecl();
+
+public:
+	std::string get_collation() const { return collation; }
 
 };
 
@@ -854,8 +739,12 @@ protected:
 	std::string base_uri;
 
 public:
+	BaseURIDecl(std::string const& base_uri);
 	BaseURIDecl();
 	~BaseURIDecl();
+
+public:
+	std::string get_base_uri() const { return base_uri; }
 
 };
 
@@ -874,13 +763,21 @@ class SchemaImport : public parsenode
 {
 protected:
 	rchandle<SchemaPrefix> prefix_h;
-	std::string schema_uri;
-	rchandle<URI_LITERALList> uri_list_h;
+	std::string uri;
+	rchandle<URI_LITERALList> at_list_h;
 
 public:
 	SchemaImport();
+		rchandle<SchemaPrefix>,
+		std::string const& uri,
+		rchandle<URI_LITERALList>);
+	SchemaImport();
 	~SchemaImport();
 
+public:
+	rchandle<SchemaPrefix> get_prefix() const { return prefix_h; }
+	std::string get_uri() const { return uri; }
+	rchandle<URI_LITERALList> get_at_list() const { return at_list_h; }
 };
 
 
@@ -901,6 +798,10 @@ public:
 	URI_LITERALList();
 	~URI_LITERALList();
 
+public:
+	push_back(std::string const& uri) { uri_v.push_back(uri); }
+	std::string operator[](int i) { return uri_v[i]; }
+
 };
 
 
@@ -919,8 +820,15 @@ protected:
 	bool default_b;
 
 public:
+	SchemaPrefix(
+		std::string const& prefix;
+		bool default_b);
 	SchemaPrefix();
 	~SchemaPrefix();
+
+public:
+	std::string get_prefix() const { return prefix; }
+	bool get_default_bit() const { return default_b; }
 
 };
 
@@ -943,8 +851,17 @@ protected:
 	rchandle<URI_LITERALList> uri_list_h;
 
 public:
+	ModuleImport(
+		std::string const& prefix;
+		std::string const& uri;
+		rchandle<URI_LITERALList>);
 	ModuleImport();
 	~ModuleImport();
+
+public:
+	std::string get_prefix() const { return prefix; }
+	std::string get_uri() const { return uri; }
+	rchandle<URI_LITERALList> get_uri_list() const { return uri_list_h; }
 
 };
 
@@ -968,8 +885,19 @@ protected:
 	bool extern_b;
 
 public:
+	VarDecl(
+		std::string varname,
+		rchandle<TypeDeclaration>,
+		rchandle<ExprSingle>,
+		bool extern_b);
 	VarDecl();
 	~VarDecl();
+
+public:
+	std::string get_varname() const { return varname; }
+	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
+	rchandle<ExprSingle> get_initval() const { return initval_h; }
+	bool get_extern_bit() const { return extern_b; }
 
 };
 
@@ -1015,8 +943,21 @@ protected:
 	bool extern_b;
 
 public:
+	FunctionDecl(
+		rchandle<QName>,
+		rchandle<ParamList>,
+		rchandle<ExclosedExpr>,
+		rchandle<SequenceType>,
+		bool extern_b);
 	FunctionDecl();
 	~FunctionDecl();
+
+public:
+	rchandle<QName> get_name() const { return name_h; }
+	rchandle<ParamList> get_paramlist() const { return paramlist_h; }
+	rchandle<ExclosedExpr> get_body() const { return body_h; }
+	rchandle<SequenceType> get_return_type() const { return return_type_h; }
+	bool get_extern_bit() const { return extern_b; }
 
 };
 
@@ -1038,6 +979,10 @@ public:
 	ParamList();
 	~ParamList();
 
+public:
+	void push_back(rchandle<Param> param) { param_hv.push_back(param); }
+	rchandle<Param> operator[](int i) { return param_hv[i]; }
+
 };
 
 
@@ -1056,8 +1001,15 @@ protected:
 	rchandle<TypeDeclaration> typedecl_h;
 
 public:
+	Param(
+		std::string name,
+		rchandle<TypeDeclaration>);
 	Param();
 	~Param();
+
+public:
+	std::string get_name() const { get_name; }
+	rchandle<TypeDeclaration> get_typedecl() const { get_typedecl_h; }
 
 };
 
@@ -1075,9 +1027,13 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
+	EnclosedExpr(rchandle<Expr>);
 	EnclosedExpr();
 	~EnclosedExpr();
 
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
+	
 };
 
 
@@ -1094,9 +1050,13 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
+	QueryBody(rchandle<Expr>);
 	QueryBody();
 	~QueryBody();
 
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
+	
 };
 
 
@@ -1111,11 +1071,14 @@ class Expr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<ExprSingle> > expr_single_hv;
+	std::vector<rchandle<ExprSingle> > expr_hv;
 
 public:
 	Expr();
 	~Expr();
+
+public:
+	void push_back(rchandle<ExprSingle> expr) { expr_hv.push_back(expr); }
 
 };
 
@@ -3792,6 +3755,9 @@ class RevalidationDecl : public parsenode
 |	::= QNAME DECLARE_REVALIDATION_MODE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<QName> qname_h;
+
 public:
 	RevalidationDecl();
 	~RevalidationDecl();
@@ -3812,9 +3778,14 @@ class InsertExpr : public exprnode
 |			| DO_INSERT  ExprSingle  BEFORE  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ExprSingle> source_expr_h;
+	rchandle<ExprSingle> target_expr_h;
+
 public:
 	InsertExpr();
 	~InsertExpr();
+
 };
 
 
@@ -3827,6 +3798,9 @@ class DeleteExpr : public exprnode
 |	::= DO_DELETE  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ExprSingle> target_expr_h;
+
 public:
 	DeleteExpr();
 	~DeleteExpr();
@@ -3843,6 +3817,10 @@ class ReplaceExpr : public exprnode
 |			| DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ExprSingle> source_expr_h;
+	rchandle<ExprSingle> target_expr_h;
+
 public:
 	ReplaceExpr();
 	~ReplaceExpr();
@@ -3858,6 +3836,10 @@ class RenameExpr : public exprnode
 |	::= DO_RENAME  ExprSingle  AS  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<ExprSingle> source_expr_h;
+	rchandle<ExprSingle> target_expr_h;
+
 public:
 	RenameExpr();
 	~RenameExpr();
@@ -3892,10 +3874,17 @@ class TransformExpr : public exprnode
 |				MODIFY  ExprSingle  RETURN  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<VarNameList> varname_list_h;
+	rchandle<ExprSingle> source_expr_h;
+	rchandle<ExprSingle> target_expr_h;
+
 public:
 	TransformExpr();
 	~TransformExpr();
+
 };
+
 
 
 // [249a] VarNameList
@@ -3903,15 +3892,37 @@ public:
 class VarNameList : public parsenode
 /*______________________________________________________________________
 |
-|	::= VARNAME	 GETS  ExprSingle
-|			|	VarNameList  COMMA_DOLLAR  VARNAME  GETS  ExprSingle
+|	::= VarBinding |	VarNameList  COMMA_DOLLAR  VarBinding
 /*______________________________________________________________________
 {
+protected:
+	std::vector<rchandle<VarBinding> > varbinding_hv;
+	
 public:
 	VarNameList();
 	~VarNameList();
+
 };
 
+
+
+// [249b] VarBinding
+// -----------------
+class VarBinding : public parsenode
+/*______________________________________________________________________
+|
+|	::= VARNAME	 GETS  ExprSingle
+/*______________________________________________________________________
+{
+protected:
+	std::string varname;
+	rchandle<ExprSingle> val_h;
+
+public:
+	VarNameList();
+	~VarNameList();
+
+};
 
 
 
@@ -3934,7 +3945,15 @@ class FTSelection : public parsenode
 |			|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTOr> ftor_h;
+	rchandle<FTMatchOptionProximityList> option_list_h;
+	rchandle<RangeExpr> weight_expr_h;
+
 public:
+	FTSelection();
+	~FTSelection();
+
 };
 
 
@@ -3950,7 +3969,12 @@ class FTMatchOptionProximityList : public parsenode
 |			| FTMatchOptionProximityList  FTProximity
 |_______________________________________________________________________*/
 {
+protected:
+
 public:
+	FTMatchOptionProximityList();
+	~FTMatchOptionProximityList();
+
 };
 
 
@@ -3964,7 +3988,13 @@ class FTOr : public parsenode
 |			|	FTOr  FTOR  FTAnd
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTOr> ftor_h;
+	rchandle<FTAnd> ftand_h;
+
 public:
+	FTOr();
+	~FTOr();
 };
 
 
@@ -3978,7 +4008,14 @@ class FTAnd : public parsenode
 |			|	FTAnd  FTAND  FTMildnot
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTAnd> ftand_h;
+	rchandle<FTMildNot> ftmild_not_h;
+
 public:
+	FTAnd();
+	~FTAnd();
+
 };
 
 
@@ -3992,7 +4029,14 @@ class FTMildnot : public parsenode
 |			|	FTMildnot  FTNOT_IN  FTUnaryNot
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTMildNot> ftmild_not_h;
+	rchandle<FTUnaryNot> ftunary_not_h;
+
 public:
+	FTMildNot();
+	~FTMildNot();
+
 };
 
 
@@ -4006,7 +4050,13 @@ class FTUnaryNot : public parsenode
 |			|	FTNOT  FTWordsSelection
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTWordsSelection> words_selection_h;
+	bool not_b;
+
 public:
+	FTUnaryNot();
+	~FTUnaryNot();
 };
 
 
@@ -4021,7 +4071,15 @@ class FTWordsSelection : public parsenode
 |			| LPAR  FTSelection  RPAR
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTWords> words_h;
+	rchandle<FTTimes> times_h;
+	rchandle<FTSelection> selection_h;
+
 public:
+	FTWordsSelection();
+	~FTWordsSelection();
+
 };
 
 
@@ -4035,7 +4093,14 @@ class FTWords : public parsenode
 |			|	FTWordsValue  FTAnyallOption
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTWordsValue> words_val_h;
+	rchandle<FTAnyallOption> any_all_option_h;
+
 public:
+	FTWords();
+	~FTWords();
+
 };
 
 
@@ -4049,7 +4114,14 @@ class FTWordsValue : public parsenode
 |			| LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<Literal> lit_h;
+	rchandle<Expr> expr_h;
+
 public:
+	FTWordsValue();
+	~FTWordsValue();
+
 };
 
 
@@ -4067,19 +4139,25 @@ class FTProximity : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	FTProximity();
+	~FTProximity();
+
 };
 
 
 
 //[353]	FTOrderedIndicator
 //------------------------
-class FTOrderedIndicator : public parsenode
+class FTOrderedIndicator : public FTProximity
 /*______________________________________________________________________
 |
 |	::=	ORDERED
 |_______________________________________________________________________*/
 {
 public:
+	FTOrderedIndicator();
+	~FTOrderedIndicator();
+
 };
 
 
@@ -4099,13 +4177,16 @@ class FTMatchOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	FTMatchOption();
+	~FTMatchOption();
+
 };
 
 
 
 //[355] FTCaseOption
 //------------------
-class FTCaseOption : public parsenode
+class FTCaseOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	LOWERCASE
@@ -4115,13 +4196,27 @@ class FTCaseOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_diacritics_mode_t {
+		lowercase,
+		uppercase,
+		senstive,
+		insensitive
+	};
+
+protected:
+	ft_case_mode_t mode;
+
+public:
+	FTCaseOption();
+	~FTCaseOption();
+
 };
 
 
 
 //[356] FTDiacriticsOption
 //------------------------
-class FTDiacriticsOption : public parsenode
+class FTDiacriticsOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	WITH_DIACRITICS
@@ -4131,13 +4226,27 @@ class FTDiacriticsOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_diacritics_mode_t {
+		with,
+		without,
+		senstive,
+		insensitive
+	};
+
+protected:
+	ft_diacritics_mode_t mode;
+
+public:
+	FTDiacriticsOption();
+	~FTDiacriticsOption();
+
 };
 
 
 
 //[357] FTStemOption
 //------------------
-class FTStemOption : public parsenode
+class FTStemOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	WITH_STEMMING
@@ -4145,31 +4254,51 @@ class FTStemOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_stem_mode_t {
+		with,
+		without
+	};
+
+protected:
+	ft_stem_mode_t mode;
+
+public:
+	FTStemOption();
+	~FTStemOption();
+
 };
 
 
 
 //[358] FTThesaurusOption
 //-----------------------
-class FTThesaurusOption : public parsenode
+class FTThesaurusOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	WITH_THESAURUS  FTThesaurusID
 |			|	WITH_THESAURUS  DEFAULT
-|			| WITH_THESAURUS  LPAR  FTThesaurusID  RPAR
-|			| WITH_THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
+|			| WITH_THESAURUS  LPAR  FTThesaurusList  RPAR
 |			| WITH_THESAURUS  LPAR  DEFAULT  RPAR
 |			| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
 |			| WITHOUT_THESAURUS
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTThesaurusID> thesaurusid_h;
+	rchandle<FTThesaurusList> thesaurus_list_h;
+	bool default_b;
+	bool without_b;
+
 public:
+	FTThesaurusOption();
+	~FTThesaurusOption();
+
 };
 
 
 
-//[358a] FTThesaurusIDList
-//------------------------
+//[358a] FTThesaurusList
+//----------------------
 class FTThesaurusList : public parsenode
 /*______________________________________________________________________
 |
@@ -4177,7 +4306,13 @@ class FTThesaurusList : public parsenode
 |			| FTThesaurusList  COMMA  FTThesaurusID
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
+
 public:
+	FTThesaurusIDList();
+	~FTThesaurusIDList();
+
 };
 
 
@@ -4193,14 +4328,22 @@ class FTThesaurusID : public parsenode
 |			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
 |_______________________________________________________________________*/
 {
+protected:
+	std::string thesaurus_name;
+	std::string relationship_name;
+	rchandle<FTRange> levels_h;
+
 public:
+	FTThesaurusID();
+	~FTThesaurusID();
+
 };
 
 
 
 //[360] FTStopwordOption
 //----------------------
-class FTStopwordOption : public parsenode
+class FTStopwordOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	WITH_STOP_WORDS  FTRefOrList
@@ -4211,6 +4354,21 @@ class FTStopwordOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum stop_words_mode_t {
+		with,
+		with_default,
+		without
+	};
+
+protected:
+	rchandle<FTRefOrList> refor_list_h;
+	rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
+	stop_words_mode_t mode;
+
+public:
+	FTStopwordOption();
+	~FTStopwordOption();
+
 };
 
 
@@ -4224,7 +4382,12 @@ class FTInclExclStringLiteralList : public parsenode
 |			| FTInclExclStringLiteralList  FTInclExclStringLiteral
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_list_hv;
+
 public:
+	FTInclExclStringLiteralList();
+	~FTInclExclStringLiteralList();
 };
 
 
@@ -4238,7 +4401,14 @@ class FTRefOrList : public parsenode
 |			| LPAR  FTStringLiteralList  RPAR 
 |_______________________________________________________________________*/
 {
+protected:
+	std::string at_str;
+	rchandle<FTStringLiteralList> stringlit_list_h;
+
 public:
+	FTRefOrList();
+	~FTRefOrList();
+
 };
 
 
@@ -4252,7 +4422,13 @@ class FTStringLiteralList : public parsenode
 |			|	FTStringLiteralList  STRING_LITERAL
 |_______________________________________________________________________*/
 {
+protected:
+	std::vector<std::string> stringlit_hv;
+
 public:
+	FTStringLiteralList();
+	~FTStringLiteralList();
+
 };
 
 
@@ -4267,40 +4443,64 @@ class FTInclExclStringLiteral : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum incl_excl_mode_t {
+		union,
+		except
+	};
+
+protected:
+	rchandle<FTRefOrList> ref_or_list_h;
+	incl_excl_mode_t mode;
+
+public:
+	FTInclExclStringLiteral();
+	~FTInclExclStringLiteral();
 };
 
 
 
 //[363] FTLanguageOption
 //----------------------
-class FTLanguageOption : public parsenode
+class FTLanguageOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	LANGUAGE  STRING_LITERAL
 |_______________________________________________________________________*/
 {
+protected:
+	std::string lang;
+
 public:
+	FTLanguageOption();
+	~FTLanguageOption();
+
 };
 
 
 
 //[364] FTWildCardOption
 //----------------------
-class FTWildCardOption : public parsenode
+class FTWildCardOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	WITH_WILDCARDS
 |			| WITHOUT_WILDCARDS
 |_______________________________________________________________________*/
 {
+protected
+	bool with_b;
+
 public:
+	FTWildCardOption();
+	~FTWildCardOption();
+
 };
 
 
 
 //[365]	FTContent
 //---------------
-class FTContent : public parsenode
+class FTContent : public FTProximity
 /*______________________________________________________________________
 |
 |	::=	AT_START
@@ -4309,6 +4509,19 @@ class FTContent : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_content_mode_t {
+		at_start,
+		at_end,
+		entire_content
+	};
+
+protected:
+	ft_content_mode_t mode;
+
+public:
+	FTContent();
+	~FTContent();
+
 };
 
 
@@ -4326,6 +4539,21 @@ class FTAnyallOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_any_all_option_t {
+		any,
+		any_word,
+		all,
+		all_words,
+		phrase
+	};
+
+protected:
+	ft_anyall_option_t option;
+
+public:
+	FTAnyallOption();
+	~FTAnyallOption();
+
 };
 
 
@@ -4342,32 +4570,61 @@ class FTRange : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_range_mode_t {
+		exactly,
+		at_least,
+		at_most,
+		from_to
+	};
+
+protected:
+	rchandle<UnionExpr> src_expr_h;
+	rchandle<UnionExpr> dst_expr_h;
+
+public:
+	FTRange();
+	~FTRange();
+
 };
 
 
 
 //[368]	FTDistance
 //----------------
-class FTDistance : public parsenode
+class FTDistance : public FTProximity
 /*______________________________________________________________________
 |
 |	::=	DISTANCE  FTRange  FTUnit
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTRange> dist_h;
+	rchandle<FTUnit> unit_h;
+
 public:
+	FTDistance();
+	~FTDistance();
+
 };
 
 
 
 //[369]	FTWindow
 //--------------
-class FTWindow : public parsenode
+class FTWindow : public FTProximity
 /*______________________________________________________________________
 |
 |	::=	WINDOW  UnionExpr  FTUnit
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<UnionExpr> window_h;
+	rchandle<FTUnit> unit_h;
+
 public:
+	FTWindow();
+	~FTWindow();
+
 };
 
 
@@ -4380,14 +4637,20 @@ class FTTimes : public parsenode
 |	::=	OCCURS  FTRange  TIMES
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<FTRange> range_h;
+
 public:
+	FTTimes();
+	~FTTimes();
+
 };
 
 
 
 //[371]	FTScope
 //-------------
-class FTScope : public parsenode
+class FTScope : public FTProximity
 /*______________________________________________________________________
 |
 |	::=	SAME  FTBigUnit
@@ -4395,6 +4658,18 @@ class FTScope : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_scope_t {
+		same,
+		different
+	};
+
+protected:
+	ft_scope_t scope;
+
+public:
+	FTScope();
+	~FTScope();
+
 };
 
 
@@ -4408,6 +4683,19 @@ class FTUnit : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_unit_t {
+		words,
+		sentences,
+		paragraph
+	};
+
+protected:
+	ft_unit_t unit;
+
+public:
+	FTUnit();
+	~FTUnit();
+
 };
 
 
@@ -4421,6 +4709,18 @@ class FTBigUnit : public parsenode
 |_______________________________________________________________________*/
 {
 public:
+	enum ft_big_unit_t {
+		sentence,
+		paragraph
+	};
+
+protected:
+	enum ft_big_unit_t unit;
+
+public:
+	FTBigUnit();
+	~FTBigUnit();
+
 };
 
 
@@ -4433,7 +4733,13 @@ class FTIgnoreOption : public parsenode
 |	::=	WITHOUT_CONTENT  UnionExpr
 |_______________________________________________________________________*/
 {
+protected:
+	rchandle<UnionExpr> union_h;
+
 public:
+	FTIgnoreOption();
+	~FTIgnoreOption();
+
 };
 
 
