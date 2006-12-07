@@ -371,8 +371,8 @@ public:
 	~SIND_DeclList();
 
 public:
-	rchandle<SIND_Decl> operator[] (uint32_t k) const { return sind_hv[k]; }
-	void push_back(rchandle<SIND_Decl> sind_p) { sind_hv.push_back(sind_p); }
+	void push_back(rchandle<SIND_Decl> sind_h) { sind_hv.push_back(sind_h); }
+	rchandle<SIND_Decl> operator[](int k) const { return sind_hv[k]; }
 
 };
 
@@ -394,8 +394,8 @@ public:
 	~VFO_DeclList();
 
 public:
-	VFO_Decl* operator[] (uint32_t k) const { return vfo_hv[k]; }
-	void push_back(rchandle<VFO_Decl>, vfo_p) { vfo_hv.push_back(vfo_p); }
+	void push_back(rchandle<VFO_Decl> vfo_h) { vfo_hv.push_back(vfo_h); }
+	rchandle<VFO_Decl> operator[](int k) const { return vfo_hv[k]; }
 
 };
 
@@ -800,7 +800,7 @@ public:
 
 public:
 	push_back(std::string const& uri) { uri_v.push_back(uri); }
-	std::string operator[](int i) { return uri_v[i]; }
+	std::string operator[](int i) const { return uri_v[i]; }
 
 };
 
@@ -980,8 +980,8 @@ public:
 	~ParamList();
 
 public:
-	void push_back(rchandle<Param> param) { param_hv.push_back(param); }
-	rchandle<Param> operator[](int i) { return param_hv[i]; }
+	void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
+	rchandle<Param> operator[](int i) const { return param_hv[i]; }
 
 };
 
@@ -1078,7 +1078,8 @@ public:
 	~Expr();
 
 public:
-	void push_back(rchandle<ExprSingle> expr) { expr_hv.push_back(expr); }
+	void push_back(rchandle<ExprSingle> expr_h) { expr_hv.push_back(expr_h); }
+	rchandle<ExprSingle> operator[](int i) const { return expr_hv[i]; }
 
 };
 
@@ -1121,8 +1122,19 @@ class FLWORExpr : public ExprSingle
 	rchandle<ExprSingle> return_val_h;
 
 public:
+	FLWORExpr(
+		rchandle<ForLetClauseList>,
+		rchandle<WhereClause>,
+		rchandle<OrderByClause>,
+		rchandle<ExprSingle>);
 	FLWORExpr();
 	~FLWORExpr();
+
+public:
+	rchandle<ForLetClauseList> get_forlet_list() const { return forlet_list_h; }
+	rchandle<WhereClause> get_where() const { return where_h; }
+	rchandle<OrderByClause> get_orderby() const { return orderby_h; }
+	rchandle<ExprSingle> get_return_val() const { return return_val_h; }
 
 };
 
@@ -1143,6 +1155,10 @@ protected:
 public:
 	ForLetClauseList();
 	~ForLetClauseList();
+
+public:
+	void push_back(rchandle<ForLetClause> forlet_h) { forlet_hv.push_back(forlet_h); }
+	rchandle<ForLetClause> operator[](int i) const { return forlet_hv[i]; }
 
 };
 
@@ -1176,8 +1192,13 @@ protected:
 	rchandle<VarInDeclList> vardecl_list_h;
 
 public:
+	ForClause(
+		rchandle<VarInDeclList>);
 	ForClause();
 	~ForClause();
+
+public:
+	rchandle<VarInDeclList> get_vardecl_list() const { return vardecl_list_h; }
 
 };
 
@@ -1198,6 +1219,10 @@ protected:
 public:
 	VarInDeclList();
 	~VarInDeclList();
+
+public:
+	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
+	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
 
 };
 
@@ -1224,11 +1249,24 @@ protected:
 	rchandle<TypeDeclaration> typedecl_h;
 	rchandle<PositionalVar> posvar_h;
 	rchandle<FTScoreVar> ftscorevar_h;
-	rchandle<ExprSingle> val_h;
+	rchandle<ExprSingle> valexpr_h;
 	
 public:
+	VarInDecl(
+		std::string varname,
+		rchandle<TypeDeclaration>
+		rchandle<PositionalVar>
+		rchandle<FTScoreVar>
+		rchandle<ExprSingle>);
 	VarInDecl();
 	~VarInDecl();
+
+public:
+	std::string get_varname() const { return get_varname; }
+	rchandle<TypeDeclaration> get_typedecl() const { return get_typedecl_h; }
+	rchandle<PositionalVar> get_posvar() const { return get_posvar_h; }
+	rchandle<FTScoreVar> get_ftscorevar() const { return get_ftscorevar_h; }
+	rchandle<ExprSingle> get_valexpr() const { return get_valexpr_h; }
 
 };
 
@@ -1246,9 +1284,12 @@ protected:
 	std::string varname;
 
 public:
+	PositionalVar(std::string const& varname);
 	PositionalVar();
 	~PositionalVar();
 
+public:
+	std::string get_varname() const { return varname; }
 };
 
 
@@ -1265,8 +1306,12 @@ protected:
 	rchandle<VarGetsDeclList> vardecl_list_h;
 
 public:
+	LetClause(rchandle<VarGetsDeclList>);
 	LetClause();
 	~LetClause();
+
+public:
+	rchandle<VarGetsDeclList> get_vardecl_list() const { return vardecl_list_h; }
 
 };
 
@@ -1288,6 +1333,10 @@ public:
 	VarGetsDeclList();
 	~VarGetsDeclList();
 
+public:
+	void push_back(rchandle<VarGetsDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
+	rchandle<VarGetsDecl> operator[](int i) const { return vardecl_hv[i]; }
+
 };
 
 
@@ -1308,12 +1357,22 @@ protected:
 	std::string varname;
 	rchandle<TypeDeclaration> typedecl_h;
 	rchandle<FTScoreVar> scorevar_h;
-	rchandle<ExprSingle> val_h;
+	rchandle<ExprSingle> valexpr_h;
 
 public:
+	VarGetsDecl(
+		std::string varname,
+		rchandle<TypeDeclaration>
+		rchandle<FTScoreVar>
+		rchandle<ExprSingle>);
 	VarGetsDecl();
 	~VarGetsDecl();
 
+public:
+	std::string get_varname() const { return varname; }
+	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
+	rchandle<FTScoreVar> get_scorevar() const { return scorevar_h; }
+	rchandle<ExprSingle> get_valexpr() const { return valexpr_h; }
 };
 
 
@@ -1330,9 +1389,12 @@ protected:
 	rchandle<ExprSingle> predicate_h;
 
 public:
+	WhereClause(rchandle<ExprSingle>);
 	WhereClause();
 	~WhereClause();
 
+public:
+	rchandle<ExprSingle> get_predicate() const { return predicate_h; }
 };
 
 
@@ -1351,9 +1413,14 @@ protected:
 	bool stable_b;
 		
 public:
+	OrderByClause(rchandle<OrderSpecList>, bool stable_b);
+	OrderByClause(rchandle<OrderSpecList>);
 	OrderByClause();
 	~OrderByClause();
 
+public:
+	rchandle<OrderSpecList> get_spec_list() const { return spec_list_h; }
+	bool get_stable_bit() const { return stable_b; }
 };
 
 
@@ -1374,6 +1441,10 @@ public:
 	OrderSpecList();
 	~OrderSpecList();
 
+public:
+	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
+	rchandle<OrderSpec> operator[](int i) const { return spec_hv[i]; }
+
 };
 
 
@@ -1393,7 +1464,14 @@ protected:
 
 public:
 	OrderSpec();
+		rchandle<ExprSingle>,
+		rchandle<OrderModifier>);
+	OrderSpec();
 	~OrderSpec();
+
+public:
+	rchandle<ExprSingle> get_spec() const { return spec_h; }
+	rchandle<OrderModifier> get_modifier() const { return modifier_h; }
 
 };
 
@@ -1420,7 +1498,19 @@ protected:
 
 public:
 	OrderModifier();
+		rchandle<OrderDirSpec>,
+		rchandle<OrderEmptySpec>,
+		rchandle<OrderCollationSpec>);
+	OrderModifier();
 	~OrderModifier();
+
+public:
+	rchandle<OrderDirSpec> get_dir_spec() const
+		{ return dir_spec_h; }
+	rchandle<OrderEmptySpec> get_empty_spec() const
+		{ return empty_spec_h; }
+	rchandle<OrderCollationSpec> get_collation_spec() const
+		{ return collation_spec_h; }
 
 };
 
@@ -1445,9 +1535,13 @@ protected:
 	enum dir_spec_t dir_spec;
 
 public:
+	OrderDirSpec(enum dir_spec_t dir_spec);
 	OrderDirSpec();
 	~OrderDirSpec();
 	
+public:
+	enum dir_spec_t get_dir_spec() const { return dir_spec; }
+
 };
 
 
@@ -1465,9 +1559,14 @@ protected:
 	static_context::empty_order_mode empty_order_spec;
 
 public:
+	OrderEmptySpec(
+		static_context::empty_order_mode empty_order_spec);
 	OrderEmptySpec();
 	~OrderEmptySpec();
 
+public:
+	static_context::empty_order_mode get_empty_order_spec() const
+		{ return empty_order_spec; }
 };
 
 
@@ -1484,8 +1583,12 @@ protected:
 	std::string uri;
 
 public:
+	OrderCollationSpec(std::string const& uri);
 	OrderCollationSpec();
 	~OrderCollationSpec();
+
+public:
+	std::string get_uri() const { return uri; }
 
 };
 
@@ -1510,8 +1613,16 @@ protected:
 	rchandle<QVarInDeclList> qvar_decl_list_h;
 
 public:
+	QuantifiedExpr(
+		quantification_mode_t qmode,
+		rchandle<QVarInDeclList>);
 	QuantifiedExpr();
 	~QuantifiedExpr();
+
+public:
+	quantification_mode_t get_qmode() const { return qmode; }
+	rchandle<QVarInDeclList> get_qvar_decl_list() const
+		{ return qvar_decl_list_h; }
 
 };
 
@@ -1532,6 +1643,10 @@ public:
 	QVarInDeclList();
 	~QVarInDeclList();
 
+public:
+	void push_back(rchandle<QVarInDecl> decl_h) { decl_hv.push_back(decl_h); }
+	rchandle<QVarInDecl> operator[](int i) const { return decl_hv[i]; }
+
 };
 
 
@@ -1550,8 +1665,17 @@ protected:
 	rchandle<ExprSingle> val_h;
 
 public:
+	QVarInDecl(
+		std::string name,
+		rchandle<TypeDeclaration>,
+		rchandle<ExprSingle>);
 	QVarInDecl();
 	~QVarInDecl();
+
+public:
+	std::string get_name() const { name;
+	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
+	rchandle<ExprSingle> get_val() const { return val_h; }
 
 };
 
@@ -1573,8 +1697,19 @@ protected:
 	rchandle<ExprSingle> default_clause_h;
 
 public:
+	TypeswitchExpr(
+		rchandle<Expr>,
+		rchandle<CaseClauseList>,
+		std::string default_varname;
+		rchandle<ExprSingle>);
 	TypeswitchExpr();
 	~TypeswitchExpr();
+
+public:
+	rchandle<Expr> get_switch_expr() const { return switch_expr_h; }
+	rchandle<CaseClauseList> get_clause_list() const { return clause_list_h; }
+	std::string get_default_varname() const { return default_varname; }
+	rchandle<ExprSingle> get_default_clause() const { return default_clause_h; }
 
 };
 
@@ -1595,6 +1730,10 @@ public:
 	CaseClauseList();
 	~CaseClauseList();
 
+public:
+	void push_back(rchandle<CaseClause> clause_h) { clause_hv.push_back(clause_h); }
+	rchandle<CaseClause> operator[](int i) const { return clause_hv[i]; }
+
 };
 
 
@@ -1613,8 +1752,17 @@ protected:
 	rchandle<ExprSingle> val_h;
 
 public:
+	CaseClause(
+		std::string varname,
+		rchandle<SequenceType>,
+		rchandle<ExprSingle>);
 	CaseClause();
 	~CaseClause();
+
+public:
+	std::string get_varname() const { return varname; }
+	rchandle<SequenceType> get_type() const { return type_h; }
+	rchandle<ExprSingle> get_val() const { return val_h; }
 
 };
 
@@ -1633,8 +1781,17 @@ protected:
 	rchandle<ExprSingle> else_expr_h;
 
 public:
+	IfExpr(
+		rchandle<Expr>,
+		rchandle<ExprSingle>,
+		rchandle<ExprSingle>);
 	IfExpr();
 	~IfExpr();
+
+public:
+	rchandle<Expr> get_cond_expr() const { return cond_expr_h; }
+	rchandle<ExprSingle> get_then_expr() const { return then_expr_h; }
+	rchandle<ExprSingle> get_else_expr() const { return else_expr_h; }
 
 };
 
@@ -1649,12 +1806,20 @@ class OrExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<AndExpr> and_expr_h;
 	rchandle<OrExpr> or_expr_h;
+	rchandle<AndExpr> and_expr_h;
 
 public:
+	OrExpr(
+		rchandle<OrExpr>,
+		rchandle<AndExpr>);
 	OrExpr();
 	~OrExpr();
+
+public:
+	rchandle<OrExpr> get_or_expr() const { return or_expr_h; }
+	rchandle<AndExpr> get_and_expr() const { return and_expr_h; }
+
 };
 
 
@@ -1672,8 +1837,15 @@ protected:
 	rchandle<AndExpr> and_expr_h;
 
 public:
+	AndExpr(
+		rchandle<ComparisonExpr>,
+		rchandle<AndExpr>);
 	AndExpr();
 	~AndExpr();
+
+public:
+	rchandle<ComparisonExpr> get_comp_expr() const { return comp_expr_h; }
+	rchandle<AndExpr> get_and_expr() const { return and_expr_h; }
 
 };
 
@@ -1693,12 +1865,31 @@ protected:
 	rchandle<FTContainsExpr> left_h;
 	rchandle<FTContainsExpr> right_h;
 	rchandle<ValueComp> valcomp_h;
-	rchandle<ValueComp> gencomp_h;
-	rchandle<ValueComp> nodecomp_h;
+	rchandle<GeneraleComp> gencomp_h;
+	rchandle<NodeComp> nodecomp_h;
 
 public:
+	ComparisonExpr(
+		rchandle<FTContainsExpr>,
+		rchandle<FTContainsExpr>,
+		rchandle<ValueComp>);
+	ComparisonExpr(
+		rchandle<FTContainsExpr>,
+		rchandle<FTContainsExpr>,
+		rchandle<GeneraleComp>);
+	ComparisonExpr(
+		rchandle<FTContainsExpr>,
+		rchandle<FTContainsExpr>,
+		rchandle<NodeComp>);
 	ComparisonExpr();
 	~ComparisonExpr();
+
+public:
+	rchandle<FTContainsExpr> get_left() const { return left_h; }
+	rchandle<FTContainsExpr> get_right() const { return right_h; }
+	rchandle<ValueComp> get_valcomp() const { return valcomp_h; }
+	rchandle<GeneraleComp> get_gencomp() const { return gencomp_h; }
+	rchandle<NodeComp> get_nodecomp() const { return nodecomp_h; }
 
 };
 
@@ -1719,8 +1910,17 @@ protected:
 	rchandle<FTIgnoreOption> ftignore_h;
 
 public:
+	ValueCompExpr(
+		rchandle<RangeExpr>,
+		rchandle<FTSelection>,
+		rchandle<FTIgnoreOption>);
 	ValueCompExpr();
 	~ValueCompExpr();
+
+public:
+	rchandle<RangeExpr> get_range_expr() const { return range_expr_h; }
+	rchandle<FTSelection> get_ftselect() const { return ftselect_h; }
+	rchandle<FTIgnoreOption> get_ftignore() const { return ftignore_h; }
 
 };
 
@@ -1740,10 +1940,18 @@ protected:
 	rchandle<AdditiveExpr> to_expr_h;
 
 public:
+	RangeExpr(
+		rchandle<AdditiveExpr>,
+		rchandle<AdditiveExpr>);
 	RangeExpr();
 	~RangeExpr();
 
+public:
+	rchandle<AdditiveExpr> get_from_expr() const { return from_expr_h; }
+	rchandle<AdditiveExpr> get_to_expr() const { return to_expr_h; }
+
 };
+
 
 
 // [50] AdditiveExpr
@@ -1756,15 +1964,32 @@ class AdditiveExpr : public exprnode
 |			|	AdditiveExpr  MINUS  MultiplicativeExpr
 |_______________________________________________________________________*/
 {
+public:
+	enum add_op_t {
+		plus,
+		minus
+	};
+
 protected:
-	rchandle<MultiplicativeExpr> mult_expr_h;
+	enum add_op_t add_od;
 	rchandle<AdditiveExpr> add_expr_h;
+	rchandle<MultiplicativeExpr> mult_expr_h;
 
 public:
+	AdditiveExpr(
+		enum add_op_t add_op,
+		rchandle<AdditiveExpr>,
+		rchandle<MultiplicativeExpr>);
 	AdditiveExpr();
 	~AdditiveExpr();
 
+public:
+	enum add_op_t get_add_op() const { return add_op; }
+	rchandle<AdditiveExpr> get_add_expr() const { return add_expr_h; }
+	rchandle<MultiplicativeExpr> get_mult_expr() const { return mult_expr_h; }
+
 };
+
 
 
 // [51] MultiplicativeExpr
@@ -1788,15 +2013,25 @@ public:
 	};
 
 protected:
-	rchandle<MultiplicativeExpr> union_expr_h;
-	rchandle<AdditiveExpr> mult_expr_h;
+	rchandle<MultiplicativeExpr> mult_expr_h;
+	rchandle<UnionExpr> union_expr_h;
 	enum mult_op_t op;
 
 public:
+	MultiplicativeExpr(
+		rchandle<MultiplicativeExpr>,
+		rchandle<UnionExpr>,
+		enum mult_op_t);
 	MultiplicativeExpr();
 	~MultiplicativeExpr();
 
+public:
+	rchandle<MultiplicativeExpr> get_mult_expr() const { return mult_expr_h; }
+	rchandle<UnionExpr> get_union_expr() const { return union_expr_h; }
+	enum mult_op get_op() const { return op; }
+
 };
+
 
 
 // [52] UnionExpr
@@ -1810,14 +2045,22 @@ class UnionExpr : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
+	rchandle<UnionExpr> union_expr_h;
 	rchandle<IntersectExceptExpr> intex_expr_h;
-	rchandle<AdditiveExpr> union_expr_h;
 
 public:
+	UnionExpr(
+		rchandle<UnionExpr>,
+		rchandle<IntersectExceptExpr>);
 	UnionExpr();
 	~UnionExpr();
 
+public:
+	rchandle<UnionExpr> union_expr() const { return union_expr_h; }
+	rchandle<IntersectExceptExpr> intex_expr() const { return intex_expr_h; }
+
 };
+
 
 
 // [53] IntersectExceptExpr
@@ -1836,15 +2079,25 @@ class IntersectExceptExpr : public parsenode
 	};
 
 protected:
-	rchandle<InstanceofExpr> instof_expr_h;
 	rchandle<IntersectExceptExpr> intex_expr_h;
+	rchandle<InstanceofExpr> instof_expr_h;
 	enum mult_op_t op;
 
 public:
+	IntersectExceptExpr(
+		rchandle<IntersectExceptExpr>,
+		rchandle<InstanceofExpr>,
+		enum intex_op_t op);
 	IntersectExceptExpr();
 	~IntersectExceptExpr();
 
+public:
+	rchandle<IntersectExceptExpr> get_intex_expr() const { return intex_expr_h; }
+	rchandle<InstanceofExpr> get_instof_expr() const { return instof_expr_h; }
+	enum mult_op_t get_op() const { return op; }
+
 };
+
 
 
 // [54] InstanceofExpr
@@ -1861,10 +2114,18 @@ protected:
 	rchandle<SequenceType> seqtype_h;
 
 public:
+	InstanceofExpr(
+		rchandle<TreatExpr>,
+		rchandle<SequenceType>);
 	InstanceofExpr();
 	~InstanceofExpr();
 
+public:
+	rchandle<TreatExpr> get_treat_expr() const { return treat_expr_h; }
+	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
+
 };
+
 
 
 // [55] TreatExpr
@@ -1881,10 +2142,18 @@ protected:
 	rchandle<SequenceType> seqtype_h;
 
 public:
+	TreatExpr(
+		rchandle<CastableExpr>,
+		rchandle<SequenceType>);
 	TreatExpr();
 	~TreatExpr();
 
+public:
+	rchandle<CastableExpr> get_treat_expr() const { return treat_expr_h; }
+	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
+
 };
+
 
 
 // [56] CastableExpr
@@ -1901,10 +2170,18 @@ protected:
 	rchandle<SingleType> singletype_h;
 
 public:
+	CastableExpr(
+		rchandle<CastExpr>,
+		rchandle<SingleType>);
 	CastableExpr();
 	~CastableExpr();
 
+public:
+	rchandle<CastExpr> cast_expr() const { return cast_expr_h; }
+	rchandle<SingleType> singletype() const { return singletype_h; }
+
 };
+
 
 
 // [57] CastExpr 	   
@@ -1921,10 +2198,18 @@ protected:
 	rchandle<SingleType> singletype_h;
 
 public:
+	CastExpr(
+		rchandle<UnaryExpr>
+		rchandle<SingleType>);
 	CastExpr();
 	~CastExpr();
 
+public:
+	rchandle<UnaryExpr> get_unary_expr() const { return unary_expr_h; }
+	rchandle<SingleType> get_singletype() const { return singletype_h; }
+
 };
+
 
 
 // [58] UnaryExpr
@@ -1941,10 +2226,18 @@ protected:
 	rchandle<SignList> signlist_h;
 
 public:
+	UnaryExpr(
+		rchandle<ValueExpr>,
+		rchandle<SignList>);
 	UnaryExpr();
 	~UnaryExpr();
 
+public:
+	rchandle<ValueExpr> get_value_expr() const { return value_expr_h; }
+	rchandle<SignList> get_signlist() const { return signlist_h; }
+
 };
+
 
 
 // [58a] SignList
@@ -1964,6 +2257,11 @@ protected:
 public:
 	SignList();
 	~SignList();
+
+public:
+	void push_back(bool sign) { signv.push_back(sign); }
+	bool operator[](int i) const { return signv[i]; }
+	bool sign() const;
 
 };
 
@@ -2008,9 +2306,13 @@ protected:
 	enum gencomp_t type;
 
 public:
+	GeneralComp(enum gencomp_t);
 	GeneralComp();
 	~GeneralComp();
 
+public:
+	enum gencomp_t get_type() const { return type; }
+	
 };
 
 
@@ -2034,12 +2336,15 @@ public:
 	};
 
 protected:
-	enum valcomp_t type;
-
+	enum valcomp_t type; 
 public:
+	ValueComp(enum valcomp_t);
 	ValueComp();
 	~ValueComp();
 
+public:
+	enum valcomp_t get_type() const { return type; }
+	
 };
 
 
@@ -2063,9 +2368,13 @@ protected:
 	enum nodecomp_t type;
 
 public:
+	NodeComp(enum nodecomp_t);
 	NodeComp();
 	~NodeComp();
 
+public:
+	enum nodecomp_t get_type() const { return type; }
+	
 };
 
 
@@ -2084,10 +2393,18 @@ protected:
 	validatemode_t valmode;
 
 public:
+	ValidateExpr(
+		rchandle<Expr>,
+		validatemode_t valmode);
 	ValidateExpr();
 	~ValidateExpr();
 
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
+	validatemode_t get_valmode() const { return valmode; }
+
 };
+
 
 
 // [64] ExtensionExpr
@@ -2104,10 +2421,18 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
+	ExtensionExpr(
+		rchandle<PragmaList>,
+		rchandle<Expr>);
 	ExtensionExpr();
 	~ExtensionExpr();
 
+public:
+	rchandle<PragmaList> get_pragma_list() const { return pragma_list_h; }
+	rchandle<Expr> get_expr() const { return expr_h; }
+
 };
+
 
 
 // [64a] PragmaList
@@ -2125,7 +2450,12 @@ public:
 	PragmaList();
 	~PragmaList();
 
+public:
+	void push_back(rchandle<Pragma> pragma_h) { pragma_hv.push_back(pragma_h); }
+	rchandle<Pragma> operator[](int i) const { return pragma_hv[i]; }
+
 };
+
 
 
 // [65] Pragma
@@ -2142,9 +2472,17 @@ protected:
 
 public:
 	Pragma();
+		rchandle<QName>,
+		std::string pragma_lit);
+	Pragma();
 	~Pragma();
 
+public:
+	rchandle<QName> get_name() cost { return name; }
+	std::string get_pragma_lit() const { return pragma_lit; }
+
 };
+
 
 
 // [66] PragmaContents
@@ -2201,6 +2539,7 @@ public:
 	~PathExpr();
 
 };
+
 
 
 // [68] RelativePathExpr
@@ -2510,6 +2849,10 @@ public:
 	PredicateList();
 	~PredicateList();
 
+public:
+	void push_back(rchandle<Predicate> pred_h) { pred_hv.push_back(pred_h); }
+	rchandle<Predicate> operator[](int i) { return pred_hv[i]; }
+
 };
 
 
@@ -2732,6 +3075,10 @@ public:
 	ArgList();
 	~ArgList();
 
+public:
+	void push_back(rchandle<ExprSingle> arg_h) { arg_hv.push_back(arg_h); }
+	rchandle<ExprSingle> operator[](int i) const { return arg_hv[i]; }
+
 };
 
 
@@ -2804,11 +3151,17 @@ class DirElemContentList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<DirElemeContent> > dir_content_hv;
+	std::vector<rchandle<DirElemContent> > dir_content_hv;
 
 public:
 	DirElemContentList();
 	~DirElemContentList();
+
+public:
+	void push_back(rchandle<DirElemContent> dir_content_h)
+		{ dir_content_hv.push_back(dir_content_h); }
+	rchandle<DirElemContent> operator[](int i) const
+		{ return dir_content_hv[i]; }
 
 };
 
@@ -2829,6 +3182,12 @@ protected:
 public:
 	DirAttributeList();
 	~DirAttributeList();
+
+public:
+	void push_back(rchandle<DirAttr> dir_attr_h)
+		{ dir_attr_hv.push_back(dir_attr_h); }
+	rchandle<DirAttr> operator[](int i)
+		{ return dir_attr_hv[i]; }
 
 };
 
@@ -2893,6 +3252,12 @@ public:
 	QuoteAttrContentList();
 	~QuoteAttrContentList();
 
+public:
+	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
+		{ quot_atval_content_hv.push_back(quot_atval_content_h); }
+	rchandle<QuoteAttrValueContent> operator[](int i) const
+		{ return quot_atval_content_hv[i]; }
+
 };
 
 
@@ -2914,6 +3279,12 @@ protected:
 public:
 	AposAttrContentList();
 	~AposAttrContentList();
+
+public:
+	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
+		{ apos_atval_content_hv.push_back(apos_atval_content_h); }
+	rchandle<AposAttrValueContent> operator[](int i) const
+		{ return apos_atval_content_hv[i]; }
 
 };
 
@@ -3902,6 +4273,12 @@ public:
 	VarNameList();
 	~VarNameList();
 
+public:
+	void push_back(rchandle<VarBinding> varbinding_h)
+		{ varbinding_hv.push_back(varbinding_h); }
+	rchandle<VarBinding> operator[](int i) const
+		{ return varbinding_hv[i]; }
+
 };
 
 
@@ -4313,6 +4690,12 @@ public:
 	FTThesaurusIDList();
 	~FTThesaurusIDList();
 
+public:
+	void push_back(rchandle<FTThesaurusID> thesaurus_h)
+		{ thesaurus_hv.push_back(thesaurus_h); }
+	rchandle<FTThesaurusID> operator[](int i) const
+		{ return thesaurus_hv[i]; }
+
 };
 
 
@@ -4383,11 +4766,18 @@ class FTInclExclStringLiteralList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_list_hv;
+	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
 
 public:
 	FTInclExclStringLiteralList();
 	~FTInclExclStringLiteralList();
+
+public:
+	void push_back(rchandle<FTInclExclStringLiteral> incl_excl_lit_h)
+		{ incl_excl_lit_hv.push_back(incl_excl_lit_h); }
+	rchandle<FTInclExclStringLiteral> operator[](int i) const
+		{ return incl_excl_lit_hv[i]; }
+
 };
 
 
@@ -4423,11 +4813,15 @@ class FTStringLiteralList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<std::string> stringlit_hv;
+	std::vector<std::string> strlit_v;
 
 public:
 	FTStringLiteralList();
 	~FTStringLiteralList();
+
+public:
+	void push_back(std::string strlit) { strlit_v.push_back(strlit); }
+	std::string operator[](int i) const { return strlit_v[i]; }
 
 };
 
