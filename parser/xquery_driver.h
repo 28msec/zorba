@@ -15,9 +15,9 @@
 #include "xquery_parser.tab.h"
 
 /*
-	Flex expects the signature of yylex to be defined in the macro
-	YY_DECL, and the C++ parser expects it to be declared. We can
-	do both as follows. 
+**	Flex expects the signature of yylex to be defined in the macro
+**	YY_DECL, and the C++ parser expects it to be declared. We can
+**	do both as follows. 
 */
 
 // Announce to Flex the prototype we want for lexing function, ...

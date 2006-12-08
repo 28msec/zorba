@@ -5,11 +5,12 @@
  *	Copyright 2006-2007 FLWOR Foundation.
  */
 
+
 /*
-	The parser definition file starts by asking for the C++ LALR(1) 
-	skeleton, the creation of the parser header file, and specifies the 
-	name of the parser class.  Because the C++ skeleton changes, it is
-	safer to require the version. 
+**	The parser definition file starts by asking for the C++ LALR(1) 
+**	skeleton, the creation of the parser header file, and specifies the 
+**	name of the parser class.  Because the C++ skeleton changes, it is
+**	safer to require the version. 
 */
 
 %skeleton "lalr1.cc"  /*  -*- C++ -*- */
@@ -18,11 +19,11 @@
 %define "parser_class_name" "xquery_parser"
 
 /*
-	Because the parser uses the xquery_driver and reciprocally, both 
-	cannot include the header of the other. Because the driver's header 
-	needs detailed knowledge about the parser class (in particular its 
-	inner types), it is the parser's header which will use a forward
-	declaration of the driver. 
+**	Because the parser uses the xquery_driver and reciprocally, both 
+**	cannot include the header of the other. Because the driver's header 
+**	needs detailed knowledge about the parser class (in particular its 
+**	inner types), it is the parser's header which will use a forward
+**	declaration of the driver. 
 */
 
 %{
@@ -35,25 +36,26 @@
 #include <string.h>
 #include <string>
 
+#include "../context/static_context.h"
 #include "parsenodes.h"
 
 class xquery_driver;
 %}
 
 /*
-	The driver is passed by reference to the parser and to the scanner. 
-	This provides a simple but effective pure interface, not relying on 
-	global variables. 
+**	The driver is passed by reference to the parser and to the scanner. 
+**	This provides a simple but effective pure interface, not relying on 
+**	global variables. 
 */
 %parse-param { xquery_driver& driver }
 %lex-param   { xquery_driver& driver }
 
 
 /*
-	Request the location tracking feature, and initialize the 
-	first location's file name. Afterwards new locations are computed 
-	relatively to the previous locations: the file name will be 
-	automatically propagated. 
+**	Request the location tracking feature, and initialize the 
+**	first location's file name. Afterwards new locations are computed 
+**	relatively to the previous locations: the file name will be 
+**	automatically propagated. 
 */
 %locations
 %initial-action
@@ -63,8 +65,8 @@ class xquery_driver;
 
 
 /*
-	The two following directives to enable parser tracing and verbose 
-	error messages. 
+**	The two following directives to enable parser tracing and verbose 
+**	error messages. 
 */
 %debug
 %error-verbose
@@ -78,7 +80,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-	Semantic values cannot use real objects, but only pointers to them.
+**	Semantic values cannot use real objects, but only pointers to them.
 */
 %union
 {
@@ -90,9 +92,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-	The code between `%{' and `%}' after the introduction of the `%union' 
-	is output in the *.cc file; it needs detailed knowledge about the 
-	driver. 
+**	The code between `%{' and `%}' after the introduction of the `%union' 
+**	is output in the *.cc file; it needs detailed knowledge about the 
+**	driver. 
 */
 %{
 #include "xquery_driver.h"
@@ -100,9 +102,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 
 /*
-	The token numbered as 0 corresponds to end of file; the following line 
-	allows for nicer error messages referring to end of file instead of 
-	$end. Similarly user friendly names are provided for each symbol.
+**	The token numbered as 0 corresponds to end of file; the following line 
+**	allows for nicer error messages referring to end of file instead of 
+**	$end. Similarly user friendly names are provided for each symbol.
 */
 
 %token	END	0 "end of file"
@@ -695,20 +697,20 @@ using namespace xqp;
 Module :
     MainModule
 		{
-			cout << "Module [main]\n";
+			if (debug) cout << "Module [main]\n";
 			$$ = $1;
 		}
   | VersionDecl MainModule
 		{
-			cout << "Module [version.main]\n";
+			if (debug) cout << "Module [version.main]\n";
 		}
   | LibraryModule 
 		{
-			cout << "Module [library]\n";
+			if (debug) cout << "Module [library]\n";
 		}
   | VersionDecl LibraryModule 
 		{
-			cout << "Module [version.library]\n";
+			if (debug) cout << "Module [version.library]\n";
 		}
   ;
 
@@ -718,11 +720,11 @@ Module :
 VersionDecl :
 		XQUERY_VERSION  STRING_LITERAL  SEMI
 		{
-			cout << "VersionDecl [version]\n";
+			if (debug) cout << "VersionDecl [version]\n";
 		}
 	|	XQUERY_VERSION  STRING_LITERAL  ENCODING  STRING_LITERAL  SEMI
 		{
-			cout << "VersionDecl [version.encoding]\n";
+			if (debug) cout << "VersionDecl [version.encoding]\n";
 		}
 	;
 
@@ -732,12 +734,17 @@ VersionDecl :
 MainModule : 
     Prolog  QueryBody
 		{
-			cout << "MainModule [prolog.querybody]\n";
+			if (debug) cout << "MainModule [prolog.querybody]\n";
+			$$ = new MainModule(
+								dynamic_cast<Prolog*>($1),
+								dynamic_cast<QueryBody*>($2));
 		}
 	|
     QueryBody
 		{
-			cout << "MainModule [querybody]\n";
+			if (debug) cout << "MainModule [querybody]\n";
+			$$ = new MainModule(
+								dynamic_cast<QueryBody*>($1));
 		}
   ;
 
@@ -747,7 +754,10 @@ MainModule :
 LibraryModule :
 		ModuleDecl  Prolog
 		{
-			cout << "LibraryModule [ ]\n";
+			if (debug) cout << "LibraryModule [ ]\n";
+			$$ = new LibraryModule(
+								dynamic_cast<ModuleDecl*>($1),
+								dynamic_cast<Prolog*>($2));
 		}
 	;
 
@@ -757,7 +767,10 @@ LibraryModule :
 ModuleDecl :
 		MODULE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL  SEMI
 		{
-			cout << "ModuleDecl [ ]\n";
+			if (debug) cout << "ModuleDecl [ ]\n";
+			$$ = new ModuleDecl(
+								driver.symtab.get($2), 
+								driver.symtab.get($4));
 		}
 	;
 
@@ -767,15 +780,24 @@ ModuleDecl :
 Prolog :
 		SIND_DeclList  SEMI
 		{
-			cout << "Prolog [sind]\n";
+			if (debug) cout << "Prolog [sind]\n";
+			$$ = new Prolog(
+								dynamic_cast<SIND_DeclList*>($1),
+								NULL);
 		}
 	|	VFO_DeclList  SEMI
 		{
-			cout << "Prolog [vfo]\n";
+			if (debug) cout << "Prolog [vfo]\n";
+			$$ = new Prolog(
+								NULL,
+								dynamic_cast<VFO_DeclList*>($1));
 		}
 	|	SIND_DeclList  SEMI  VFO_DeclList  SEMI
 		{
-			cout << "Prolog [sind.vfo]\n";
+			if (debug) cout << "Prolog [sind.vfo]\n";
+			$$ = new Prolog(
+								dynamic_cast<SIND_DeclList*>($1),
+								dynamic_cast<VFO_DeclList*>($2));
 		}
 	;
 
@@ -785,12 +807,13 @@ Prolog :
 SIND_DeclList :
 		SIND_Decl
 		{
-			cout << "SIND_DeclList [single]\n";
-			$$ = new SIND_DeclList(); //dynamic_cast<SIND_Decl*>($1));
+			if (debug) cout << "SIND_DeclList [single]\n";
+			$$ = new SIND_DeclList(
+								dynamic_cast<SIND_Decl*>($1));
 		}
 	| SIND_DeclList  SEMI  SIND_Decl
 		{
-			cout << "SIND_DeclList [list]\n";
+			if (debug) cout << "SIND_DeclList [list]\n";
 			SIND_DeclList* sindList_p = dynamic_cast<SIND_DeclList*>($1);
 			if (sindList_p) {
 				sindList_p->push_back(dynamic_cast<SIND_Decl*>($3));
@@ -805,12 +828,13 @@ SIND_DeclList :
 VFO_DeclList :
 		VFO_Decl
 		{
-			cout << "VFO_DeclList [single]\n";
-			$$ = new VFO_DeclList(); // dynamic_cast<VFO_Decl*>($1));
+			if (debug) cout << "VFO_DeclList [single]\n";
+			$$ = new VFO_DeclList(
+								dynamic_cast<VFO_Decl*>($1));
 		}
 	| VFO_DeclList  SEMI  VFO_Decl
 		{
-			cout << "VFO_DeclList [list]\n";
+			if (debug) cout << "VFO_DeclList [list]\n";
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>($1);
 			if (vfoList_p) {
 				vfoList_p->push_back(dynamic_cast<VFO_Decl*>($3));
@@ -825,22 +849,22 @@ VFO_DeclList :
 SIND_Decl :
 		Setter
 		{
-			cout << "SIND_Decl [setter]\n";
+			if (debug) cout << "SIND_Decl [setter]\n";
 			$$ = $1;
 		}
 	| Import
 		{
-			cout << "SIND_Decl [import]\n";
+			if (debug) cout << "SIND_Decl [import]\n";
 			$$ = $1;
 		}
 	| NamespaceDecl
 		{
-			cout << "SIND_Decl [namespace]\n";
+			if (debug) cout << "SIND_Decl [namespace]\n";
 			$$ = $1;
 		}
 	| DefaultNamespaceDecl
 		{
-			cout << "SIND_Decl [default namespace]\n";
+			if (debug) cout << "SIND_Decl [default namespace]\n";
 			$$ = $1;
 		}
 	;
@@ -850,24 +874,24 @@ SIND_Decl :
 VFO_Decl :
 		VarDecl
 		{
-			cout << "VFO_Decl [var]\n";
+			if (debug) cout << "VFO_Decl [var]\n";
 			$$ = $1;
 		}
 	| FunctionDecl
 		{
-			cout << "VFO_Decl [function]\n";
+			if (debug) cout << "VFO_Decl [function]\n";
 			$$ = $1;
 		}
 	| OptionDecl
 		{
-			cout << "VFO_Decl [option]\n";
+			if (debug) cout << "VFO_Decl [option]\n";
 			$$ = $1;
 		}
 	
 	/* full-text extension */
 	| FTOptionDecl
 		{
-			cout << "VFO_Decl [ftoption]\n";
+			if (debug) cout << "VFO_Decl [ftoption]\n";
 			$$ = $1;
 		}
 	;
@@ -878,44 +902,44 @@ VFO_Decl :
 Setter :
 		BoundarySpaceDecl
 		{
-			cout << "Setter [boundary space]\n";
+			if (debug) cout << "Setter [boundary space]\n";
 			$$ = $1;
 		}
 	| DefaultCollationDecl
 		{
-			cout << "Setter [default collation]\n";
+			if (debug) cout << "Setter [default collation]\n";
 			$$ = $1;
 		}
 	| BaseURIDecl
 		{
-			cout << "Setter [base uri]\n";
+			if (debug) cout << "Setter [base uri]\n";
 			$$ = $1;
 		}
 	| ConstructionDecl
 		{
-			cout << "Setter [construction]\n";
+			if (debug) cout << "Setter [construction]\n";
 			$$ = $1;
 		}
 	| OrderingModeDecl
 		{
-			cout << "Setter [ordering mode]\n";
+			if (debug) cout << "Setter [ordering mode]\n";
 			$$ = $1;
 		}
 	| EmptyOrderDecl
 		{
-			cout << "Setter [empty order]\n";
+			if (debug) cout << "Setter [empty order]\n";
 			$$ = $1;
 		}
 	| CopyNamespacesDecl
 		{
-			cout << "Setter [copy namespaces]\n";
+			if (debug) cout << "Setter [copy namespaces]\n";
 			$$ = $1;
 		}
 
 	/* update extension */
 	| RevalidationDecl
 		{
-			cout << "Setter [revalidation]\n";
+			if (debug) cout << "Setter [revalidation]\n";
 			$$ = $1;
 		}
 	;
@@ -926,12 +950,12 @@ Setter :
 Import :
 		SchemaImport
 		{
-			cout << "Import [schema]\n";
+			if (debug) cout << "Import [schema]\n";
 			$$ = $1;
 		}
 	| ModuleImport
 		{
-			cout << "Import [module]\n";
+			if (debug) cout << "Import [module]\n";
 			$$ = $1;
 		}
 	;
@@ -947,7 +971,10 @@ Import :
 NamespaceDecl :
 		DECLARE_NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
-			cout << "NamespaceDecl [ ]\n";
+			if (debug) cout << "NamespaceDecl [ ]\n";
+			$$ = new NamespaceDecl(
+								driver.symtab.get($2),
+								driver.symtab.get($4));
 		}
 	;
 
@@ -957,11 +984,15 @@ NamespaceDecl :
 BoundarySpaceDecl :
 		DECLARE_BOUNDARY_SPACE  PRESERVE
 		{
-			cout << "BoundarySpaceDecl [preserve]\n";
+			if (debug) cout << "BoundarySpaceDecl [preserve]\n";
+			$$ = new BoundarySpaceDecl(
+								static_context::preserve);
 		}
 	|	DECLARE_BOUNDARY_SPACE  STRIP
 		{
-			cout << "BoundarySpaceDecl [strip]\n";
+			if (debug) cout << "BoundarySpaceDecl [strip]\n";
+			$$ = new BoundarySpaceDecl(
+								static_context::strip);
 		}
 	;
 
@@ -971,11 +1002,17 @@ BoundarySpaceDecl :
 DefaultNamespaceDecl :
 		DECLARE_DEFAULT_ELEMENT  NAMESPACE  URI_LITERAL
 		{
-			cout << "DefaultNamespaceDecl [element]\n";
+			if (debug) cout << "DefaultNamespaceDecl [element]\n";
+			$$ = new DefaultNamespaceDecl(
+								DefaultNamespaceDecl::element,
+								driver.symtab.get($3));
 		}
 	| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
 		{
-			cout << "DefaultNamespaceDecl [function]\n";
+			if (debug) cout << "DefaultNamespaceDecl [function]\n";
+			$$ = new DefaultNamespaceDecl(
+								DefaultNamespaceDecl::function,
+								driver.symtab.get($3));
 		}
 	;
 
@@ -985,7 +1022,10 @@ DefaultNamespaceDecl :
 OptionDecl :
 		DECLARE_OPTION  QNAME  STRING_LITERAL
 		{
-			cout << "OptionDecl [ ]\n";
+			if (debug) cout << "OptionDecl [ ]\n";
+			$$ = new OptionDecl(
+								new QName(driver.symtab.get($2)),
+								driver.symtab.get($3));
 		}
 	;
 
@@ -996,7 +1036,10 @@ OptionDecl :
 FTOptionDecl :
 		DECLARE_FTOPTION  QNAME  FTMatchOption
 		{
-			cout << "FTOptionDecl [ ]\n";
+			if (debug) cout << "FTOptionDecl [ ]\n";
+			$$ = new FTOptionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<FTMatchOption*>($3));
 		}
 	;
 
@@ -1006,11 +1049,15 @@ FTOptionDecl :
 OrderingModeDecl :
 		DECLARE_ORDERING  ORDERED
 		{
-			cout << "OrderingDecl [ordered]\n";
+			if (debug) cout << "OrderingDecl [ordered]\n";
+			$$ = new OrderingModeDecl(
+								static_context::ordered);
 		}
 	| DECLARE_ORDERING  UNORDERED
 		{
-			cout << "OrderingDecl [unordered]\n";
+			if (debug) cout << "OrderingDecl [unordered]\n";
+			$$ = new OrderingModeDecl(
+								static_context::unordered);
 		}
 	;
 
@@ -1021,11 +1068,15 @@ OrderingModeDecl :
 EmptyOrderDecl :
 		DECLARE_DEFAULT_ORDER  EMPTY_GREATEST
 		{
-			cout << "EmptyOrderDecl [empty greatest]\n";
+			if (debug) cout << "EmptyOrderDecl [empty greatest]\n";
+			$$ = new EmptyOrderDecl(
+								static_context::greatest);
 		}
 	|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
 		{
-			cout << "EmptyOrderDecl [empty least]\n";
+			if (debug) cout << "EmptyOrderDecl [empty least]\n";
+			$$ = new EmptyOrderDecl(
+								static_context::least);
 		}
 	;
 
@@ -1035,7 +1086,10 @@ EmptyOrderDecl :
 CopyNamespacesDecl :
 		DECLARE_COPY_NAMESPACES  PreserveMode  COMMA  InheritMode
 		{
-			cout << "CopyNamespacesDecl [ ]\n";
+			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+			$$ = new CopyNamespacesDecl(
+								dynamic_cast<PreserveMode*>($2),
+								dynamic_cast<InheritMode*>($4));
 		}
 	;
 
@@ -1045,11 +1099,15 @@ CopyNamespacesDecl :
 PreserveMode :
 		PRESERVE
 		{
-			cout << "PreserveMode [preserve]\n";
+			if (debug) cout << "PreserveMode [preserve]\n";
+			$$ = new PreserveMode(
+								static_context::preserve);
 		}
 	| NO_PRESERVE
 		{
-			cout << "PreserveMode [no preserve]\n";
+			if (debug) cout << "PreserveMode [no preserve]\n";
+			$$ = new PreserveMode(
+								static_context::no_preserve);
 		}
 	;
 
@@ -1059,11 +1117,15 @@ PreserveMode :
 InheritMode :
 		INHERIT
 		{
-			cout << "InheritMode [inherit]\n";
+			if (debug) cout << "InheritMode [inherit]\n";
+			$$ = new InheritMode(
+								static_context::inherit);
 		}
 	| NO_INHERIT
 		{
-			cout << "InheritMode [no inherit]\n";
+			if (debug) cout << "InheritMode [no inherit]\n";
+			$$ = new InheritMode(
+								static_context::no_inherit);
 		}
 	;
 
@@ -1073,7 +1135,9 @@ InheritMode :
 DefaultCollationDecl :
 		DECLARE_DEFAULT_COLLATION  URI_LITERAL
 		{
-			cout << "DefaultCollationMode [ ]\n";
+			if (debug) cout << "DefaultCollationMode [ ]\n";
+			$$ = new DefaultCollationDecl(
+								driver.symtab.get($2));
 		}
 	;
 
@@ -1083,7 +1147,9 @@ DefaultCollationDecl :
 BaseURIDecl :
 		DECLARE_BASE_URI  URI_LITERAL
 		{
-			cout << "BaseURIDecl [ ]\n";
+			if (debug) cout << "BaseURIDecl [ ]\n";
+			$$ = new BaseURIDecl(
+								driver.symtab.get($2));
 		}
 	;
 
@@ -1093,27 +1159,31 @@ BaseURIDecl :
 SchemaImport :
 		IMPORT_SCHEMA  URI_LITERAL
 		{
-			cout << "SchemaImport [uri]\n";
+			if (debug) cout << "SchemaImport [uri]\n";
+			$$ = new SchemaImport(
+								driver.symtab.get($2));
 		}
 	| IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL
 		{
-			cout << "SchemaImport [prefix.uri]\n";
+			if (debug) cout << "SchemaImport [prefix.uri]\n";
+			$$ = new SchemaImport(
+								dynamic_cast<SchemaPrefix>($2),
+								driver.symtab.get($2));
 		}
-	|	IMPORT_SCHEMA  URI_LITERAL  AT_URI_LITERAL
+	|	IMPORT_SCHEMA  URI_LITERAL  AT  URILiteralList
 		{
-			cout << "SchemaImport [uri.aturi]\n";
+			if (debug) cout << "SchemaImport [uri.urilist]\n";
+			$$ = new SchemaImport(
+								driver.symtab.get($2),
+								dynamic_cast<URILIteralList*>($4),
 		}
-	|	IMPORT_SCHEMA  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
+	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
 		{
-			cout << "SchemaImport [uri.aturi.urilist]\n";
-		}
-	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT_URI_LITERAL
-		{
-			cout << "SchemaImport [prefix.uri.aturi]\n";
-		}
-	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
-		{
-			cout << "SchemaImport [prefix.uri.aturi.urilist]\n";
+			if (debug) cout << "SchemaImport [prefix.uri.aturi]\n";
+			$$ = new SchemaImport(
+								dynamic_cast<SchemaPrefix>($2),
+								driver.symtab.get($3),
+								dynamic_cast<URILIteralList*>($5),
 		}
 	;
 
@@ -1123,11 +1193,19 @@ SchemaImport :
 URILiteralList :
 		URI_LITERAL
 		{
-			cout << "URILiteralList [single]\n";
+			if (debug) cout << "URILiteralList [single]\n";
+			URLLiteralList* uri_list_p = new URILiteralList();
+			uri_list_p->push_back(driver.symtab.get($1));
+			return uri_list_p;
 		}
 	| URILiteralList  COMMA  URI_LITERAL
 		{
-			cout << "URILiteralList [list]\n";
+			if (debug) cout << "URILiteralList [list]\n";
+			URLLiteralList* uri_list_p = dynamic_cast<URILiteralList*>($1);
+			if (uri_list_p) {
+				uri_list_p->push_back(driver.symtab.get($3));
+			}
+			return $1;
 		}
 	;
 
@@ -1138,11 +1216,16 @@ URILiteralList :
 SchemaPrefix :
 		NAMESPACE  NCNAME  EQUALS
 		{
-			cout << "SchemaPrefix [namespace]\n";
+			if (debug) cout << "SchemaPrefix [namespace]\n";
+			$$ = new SchemaPrefix(
+								driver.symtab.get($2));
 		}
 	|	DEFAULT_ELEMENT  NAMESPACE
 		{
-			cout << "SchemaPrefix [default element]\n";
+			if (debug) cout << "SchemaPrefix [default element]\n";
+			$$ = new SchemaPrefix(
+								driver.symtab.get($2),
+								true);
 		}
 	;
 
@@ -1152,27 +1235,31 @@ SchemaPrefix :
 ModuleImport :
 		IMPORT_MODULE  URI_LITERAL 
 		{
-			cout << "ModuleImport [uri]\n";
+			if (debug) cout << "ModuleImport [uri]\n";
+			$$ = new ModuleImport(
+								driver.symtab.get($2));
 		}
 	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
-			cout << "ModuleImport [namespace.uri]\n";
+			if (debug) cout << "ModuleImport [namespace.uri]\n";
+			$$ = new ModuleImport(
+								driver.symtab.get($3),
+								driver.symtab.get($5));
 		}
-	|	IMPORT_MODULE  URI_LITERAL  AT_URI_LITERAL 
+	|	IMPORT_MODULE  URI_LITERAL  AT  URILiteralList
 		{
-			cout << "ModuleImport [uri.at_uri]\n";
+			if (debug) cout << "ModuleImport [uri.at_uri.list]\n";
+			$$ = new ModuleImport(
+								driver.symtab.get($2),
+								dynamic_cast<URILiteralList*>($4));
 		}
-	|	IMPORT_MODULE  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
+	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
 		{
-			cout << "ModuleImport [uri.at_uri.list]\n";
-		}
-	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT_URI_LITERAL
-		{
-			cout << "ModuleImport [namespace.uri.at_uri]\n";
-		}
-	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT_URI_LITERAL  COMMA  URILiteralList
-		{
-			cout << "ModuleImport [namespace.uri.at_uri.list]\n";
+			if (debug) cout << "ModuleImport [namespace.uri.at_uri.list]\n";
+			$$ = new ModuleImport(
+								driver.symtab.get($3),
+								driver.symtab.get($5),
+								dynamic_cast<URILiteralList*>($7));
 		}
 	;
 
@@ -1183,19 +1270,33 @@ ModuleImport :
 VarDecl :
 		DECLARE_VARIABLE_DOLLAR  VARNAME  GETS  ExprSingle
 		{
-			cout << "VarDecl [expr]\n";
+			if (debug) cout << "VarDecl [expr]\n";
+			$$ = new VarDecl(
+								driver.symtab.get($2),
+								dynamic_cast<ExprSingle*>($4));
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  EXTERNAL
 		{
-			cout << "VarDecl [external]\n";
+			if (debug) cout << "VarDecl [external]\n";
+			$$ = new VarDecl(
+								driver.symtab.get($2),
+								true);
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  GETS  ExprSingle
 		{
-			cout << "VarDecl [type.expr]\n";
+			if (debug) cout << "VarDecl [type.expr]\n";
+			$$ = new VarDecl(
+								driver.symtab.get($2),
+								dynamic_cast<TypeDeclaration*>($3),
+								dynamic_cast<ExprSingle*>($5));
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
 		{
-			cout << "VarDecl [type.external]\n";
+			if (debug) cout << "VarDecl [type.external]\n";
+			$$ = new VarDecl(
+								driver.symtab.get($2),
+								dynamic_cast<TypeDeclaration*>($3),
+								true);
 		}
 	;
 
@@ -1205,11 +1306,15 @@ VarDecl :
 ConstructionDecl :
 		DECLARE_CONSTRUCTION  PRESERVE
 		{
-			cout << "ConstructionDecl [preserve]\n";
+			if (debug) cout << "ConstructionDecl [preserve]\n";
+			$$ = new ContructionDecl(
+								static_context::preserve);
 		}
 	|	DECLARE_CONSTRUCTION  STRIP
 		{
-			cout << "ConstructionDecl [strip]\n";
+			if (debug) cout << "ConstructionDecl [strip]\n";
+			$$ = new ContructionDecl(
+								static_context::strip);
 		}
 	;
 
@@ -1219,70 +1324,142 @@ ConstructionDecl :
 FunctionDecl :
 		DECLARE_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
 		{
-			cout << "FunctionDecl [external]\n";
+			if (debug) cout << "FunctionDecl [external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								FunctionDecl::extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
 		{
-			cout << "FunctionDecl [expr]\n";
+			if (debug) cout << "FunctionDecl [expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<EnclosedExpr*>($4),
+								FunctionDecl::read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
 		{
-			cout << "FunctionDecl [paramlist.external]\n";
+			if (debug) cout << "FunctionDecl [paramlist.external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								FunctionDecl::extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
 		{
-			cout << "FunctionDecl [paramlist.expr]\n";
+			if (debug) cout << "FunctionDecl [paramlist.expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								dynamic_cast<EnclosedExpr*>($5),
+								FunctionDecl::read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
-			cout << "FunctionDecl [as_type.external]\n";
+			if (debug) cout << "FunctionDecl [as_type.external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<SequenceType*>($4),
+								FunctionDecl::extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
-			cout << "FunctionDecl [as_type.expr]\n";
+			if (debug) cout << "FunctionDecl [as_type.expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<SequenceType*>($4),
+								dynamic_cast<EnclosedExpr*>($5),
+								FunctionDecl::read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
-			cout << "FunctionDecl [paramlist.as_type.external]\n";
+			if (debug) cout << "FunctionDecl [paramlist.as_type.external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								dynamic_cast<SequenceType*>($5),
+								FunctionDecl::extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
-			cout << "FunctionDecl [paramlist.as_type.expr]\n";
+			if (debug) cout << "FunctionDecl [paramlist.as_type.expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								dynamic_cast<SequenceType*>($5),
+								dynamic_cast<EnclosedExpr*>($6),
+								FunctionDecl::read);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
 		{
-			cout << "FunctionDecl [(update) external]\n";
+			if (debug) cout << "FunctionDecl [(update) external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								FunctionDecl::extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
 		{
-			cout << "FunctionDecl [(update) expr]\n";
+			if (debug) cout << "FunctionDecl [(update) expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<EnclosedExpr*>($4),
+								FunctionDecl::update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
 		{
-			cout << "FunctionDecl [(update) paramlist.external]\n";
+			if (debug) cout << "FunctionDecl [(update) paramlist.external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								FunctionDecl::extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
 		{
-			cout << "FunctionDecl [(update) paramlist.expr]\n";
+			if (debug) cout << "FunctionDecl [(update) paramlist.expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								dynamic_cast<EnclosedExpr*>($5),
+								FunctionDecl::update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
-			cout << "FunctionDecl [(update) as_type.external]\n";
+			if (debug) cout << "FunctionDecl [(update) as_type.external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<SequenceType*>($4),
+								FunctionDecl::extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
-			cout << "FunctionDecl [(update) as_type.expr]\n";
+			if (debug) cout << "FunctionDecl [(update) as_type.expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								dynamic_cast<SequenceType*>($5),
+								dynamic_cast<EnclosedExpr*>($6),
+								FunctionDecl::update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
-			cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
+			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								dynamic_cast<SequenceType*>($5),
+								FunctionDecl::extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
-			cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
+			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
+			$$ = new FunctionDecl(
+								new QName(driver.symtab.get($2)),
+								dynamic_cast<ParamList*>($3),
+								dynamic_cast<SequenceType*>($5),
+								dynamic_cast<EnclosedExpr*>($6),
+								FunctionDecl::update);
 		}
 	;
-
 
 
 // [27] ParamList
@@ -1290,11 +1467,21 @@ FunctionDecl :
 ParamList :
 		Param
 		{
-			cout << "ParamList [single]\n";
+			if (debug) cout << "ParamList [single]\n";
+			ParamList* plist_p = new ParamList();
+			if (plist_p) {
+				plist_p->push_back(dynamic_cast<Param*>($1));
+			}
+			return plist_p;
 		}
 	|	ParamList  COMMA  Param
 		{
-			cout << "ParamList [list]\n";
+			if (debug) cout << "ParamList [list]\n";
+			ParamList* plist_p = dynamic_cast<ParamList*>($1);
+			if (plist_p) {
+				plist_p->push_back(dynamic_cast<Param*>($3));
+			}
+			return $1;
 		}
 	;
 
@@ -1304,11 +1491,16 @@ ParamList :
 Param :
 		DOLLAR  VARNAME
 		{
-			cout << "Param [varname]\n";
+			if (debug) cout << "Param [varname]\n";
+			$$ = new Param(
+								driver.symtab.get($2));
 		}
 	|	DOLLAR  VARNAME  TypeDeclaration
 		{
-			cout << "Param [varname.type]\n";
+			if (debug) cout << "Param [varname.type]\n";
+			$$ = new Param(
+								driver.symtab.get($2),
+								dynamic_cast<TypeDeclaration*>($3));
 		}
 	;
 
@@ -1318,7 +1510,9 @@ Param :
 EnclosedExpr :
 		LBRACE  Expr  RBRACE
 		{
-			cout << "EnclosedExpr [ ]\n";
+			if (debug) cout << "EnclosedExpr [ ]\n";
+			$$ = new EnclosedExpr(
+								dynamic_cast<Expr*>($2));
 		}
 	;
 
@@ -1328,7 +1522,9 @@ EnclosedExpr :
 QueryBody :
 		Expr
 		{
-			cout << "QueryBody [expr]\n";
+			if (debug) cout << "QueryBody [expr]\n";
+			$$ = new QueryBody(
+								dynamic_cast<Expr*>($1));
 		}
 	;
 
@@ -1338,11 +1534,19 @@ QueryBody :
 Expr :
 		ExprSingle 
 		{
-			cout << "Expr [single]\n";
+			if (debug) cout << "Expr [single]\n";
+			Expr* expr_p = new Expr();
+			expr_p->push_back(dynamic_cast<ExprSingle*>($1));
+			return expr_p;
 		}
 	|	Expr  COMMA  ExprSingle
 		{
-			cout << "Expr [expr.single]\n";
+			if (debug) cout << "Expr [expr.single]\n";
+			Expr* expr_p = dynamic_cast<Expr*>($1);
+			if (expr_p) 
+				expr_p->push_back(dynamic_cast<ExprSingle*>($3));
+			}
+			return $1;
 		}
 	;
 
@@ -1352,54 +1556,54 @@ Expr :
 ExprSingle :
 		FLWORExpr
 		{
-			cout << "ExprSingle [FLWORExpr]\n";
+			if (debug) cout << "ExprSingle [FLWORExpr]\n";
 			$$ = $1;
 		}
 	|	QuantifiedExpr
 		{
-			cout << "ExprSingle [QuantifiedExpr]\n";
+			if (debug) cout << "ExprSingle [QuantifiedExpr]\n";
 			$$ = $1;
 		}
 	|	TypeswitchExpr
 		{
-			cout << "ExprSingle [TypeswitchExpr]\n";
+			if (debug) cout << "ExprSingle [TypeswitchExpr]\n";
 			$$ = $1;
 		}
 	|	IfExpr
 		{
-			cout << "ExprSingle [IfExpr]\n";
+			if (debug) cout << "ExprSingle [IfExpr]\n";
 			$$ = $1;
 		}
 	|	OrExpr
 		{
-			cout << "ExprSingle [OrExpr]\n";
+			if (debug) cout << "ExprSingle [OrExpr]\n";
 			$$ = $1;
 		}
 
 		/* update extensions */
 	| InsertExpr
 		{
-			cout << "ExprSingle [InsertExpr]\n";
+			if (debug) cout << "ExprSingle [InsertExpr]\n";
 			$$ = $1;
 		}
 	| DeleteExpr
 		{
-			cout << "ExprSingle [DeleteExpr]\n";
+			if (debug) cout << "ExprSingle [DeleteExpr]\n";
 			$$ = $1;
 		}
 	| RenameExpr
 		{
-			cout << "ExprSingle [RenameExpr]\n";
+			if (debug) cout << "ExprSingle [RenameExpr]\n";
 			$$ = $1;
 		}
 	| ReplaceExpr
 		{
-			cout << "ExprSingle [ReplaceExpr]\n";
+			if (debug) cout << "ExprSingle [ReplaceExpr]\n";
 			$$ = $1;
 		}
 	| TransformExpr
 		{
-			cout << "ExprSingle [TransformExpr]\n";
+			if (debug) cout << "ExprSingle [TransformExpr]\n";
 			$$ = $1;
 		}
 	;
@@ -1410,19 +1614,35 @@ ExprSingle :
 FLWORExpr :
 	  ForLetClauseList  RETURN  ExprSingle
 		{
-			cout << "FLWORExpr [return]\n";
+			if (debug) cout << "FLWORExpr [return]\n";
+			$$ = new FLWORExpr(
+								dynamic_cast<ForLetClauseList*>($1),
+								dynamic_cast<ExprSingle*>($3));
 		}
 	|	ForLetClauseList  WhereClause  RETURN  ExprSingle
 		{
-			cout << "FLWORExpr [where.return]\n";
+			if (debug) cout << "FLWORExpr [where.return]\n";
+			$$ = new FLWORExpr(
+								dynamic_cast<ForLetClauseList*>($1),
+								dynamic_cast<WhereClause*>($2),
+								dynamic_cast<ExprSingle*>($4));
 		}
 	|	ForLetClauseList  OrderByClause  RETURN  ExprSingle
 		{
-			cout << "FLWORExpr [orderby.return]\n";
+			if (debug) cout << "FLWORExpr [orderby.return]\n";
+			$$ = new FLWORExpr(
+								dynamic_cast<ForLetClauseList*>($1),
+								dynamic_cast<OrderByClause*>($2),
+								dynamic_cast<ExprSingle*>($4));
 		}
 	|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 		{
-			cout << "FLWORExpr [where.orderby.return]\n";
+			if (debug) cout << "FLWORExpr [where.orderby.return]\n";
+			$$ = new FLWORExpr(
+								dynamic_cast<ForLetClauseList*>($1),
+								dynamic_cast<WhereClause*>($2),
+								dynamic_cast<OrderByClause*>($3),
+								dynamic_cast<ExprSingle*>($5));
 		}
 	;
 
@@ -1432,11 +1652,19 @@ FLWORExpr :
 ForLetClauseList :
 		ForLetClause
 		{
-			cout << "ForLetClauseList [single]\n";
+			if (debug) cout << "ForLetClauseList [single]\n";
+			ForLetClauseList* flc_list_p = new ForLetClauseList();
+			flc_list_p->push_back(dynamic_cast<ForLetClause*>($1);
+			return flc_list_p;
 		}
-	|	ForLetClause  ForLetClauseList
+	|	ForLetClauseList  ForLetClause
 		{
-			cout << "ForLetClauseList [list]\n";
+			if (debug) cout << "ForLetClauseList [list]\n";
+			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>($1);
+			if (flc_list_p) {
+				flc_list_p->push_back(dynamic_cast<ForLetClause*>($2);
+			}
+			return $1;
 		}
 	;
 
@@ -1446,12 +1674,12 @@ ForLetClauseList :
 ForLetClause :
 		ForClause
 		{
-			cout << "ForLetClause [for]\n";
+			if (debug) cout << "ForLetClause [for]\n";
 			$$ = $1;
 		}
 	|	LetClause
 		{
-			cout << "ForLetClause [let]\n";
+			if (debug) cout << "ForLetClause [let]\n";
 			$$ = $1;
 		}
 	;
@@ -1462,7 +1690,9 @@ ForLetClause :
 ForClause :
 		FOR_DOLLAR  VarInDeclList
 		{
-			cout << "ForClause [ ]\n";
+			if (debug) cout << "ForClause [ ]\n";
+			$$ = new ForClause(
+								dynamic_cast<VarInDeclList*>($2));
 		}
 	;
 
@@ -1472,11 +1702,11 @@ ForClause :
 VarInDeclList :
 		VarInDecl
 		{
-			cout << "VarInDeclList [single]\n";
+			if (debug) cout << "VarInDeclList [single]\n";
 		}
 	|	VarInDeclList  COMMA  DOLLAR  VarInDecl
 		{
-			cout << "VarInDeclList [list]\n";
+			if (debug) cout << "VarInDeclList [list]\n";
 		}
 	;
 
@@ -1486,36 +1716,72 @@ VarInDeclList :
 VarInDecl :
 		VARNAME  IN  ExprSingle
 		{
-			cout << "VarInDecl [in]\n";
+			if (debug) cout << "VarInDecl [in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<ExprSingle*>($3));
 		}
 	|	VARNAME  TypeDeclaration  IN  ExprSingle
 		{
-			cout << "VarInDecl [type.in]\n";
+			if (debug) cout << "VarInDecl [type.in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<ExprSingle*>($4));
 		}
 	|	VARNAME  PositionalVar  IN  ExprSingle
 		{
-			cout << "VarInDecl [posvar.in]\n";
+			if (debug) cout << "VarInDecl [posvar.in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<PositionalVar*>($2),
+								dynamic_cast<ExprSingle*>($4));
 		}
 	|	VARNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
 		{
-			cout << "VarInDecl [type.posvar.in]\n";
+			if (debug) cout << "VarInDecl [type.posvar.in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<PositionalVar*>($3),
+								dynamic_cast<ExprSingle*>($5));
 		}
 	/* full-text extensions */
 	| VARNAME  FTScoreVar  IN  ExprSingle
 		{
-			cout << "VarInDecl [scorevar.in]\n";
+			if (debug) cout << "VarInDecl [scorevar.in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<FTScoreVar*>($2),
+								dynamic_cast<ExprSingle*>($4));
 		}
 	| VARNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
 		{
-			cout << "VarInDecl [type.scorevar.in]\n";
+			if (debug) cout << "VarInDecl [type.scorevar.in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<FTScoreVar*>($3),
+								dynamic_cast<ExprSingle*>($5));
 		}
 	| VARNAME  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
-			cout << "VarInDecl [posvar.scorevar.in]\n";
+			if (debug) cout << "VarInDecl [posvar.scorevar.in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<PositionalVar*>($2),
+								dynamic_cast<FTScoreVar*>($3),
+								dynamic_cast<ExprSingle*>($5));
 		}
 	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
-			cout << "VarInDecl [type.posvar.scorevar.in]\n";
+			if (debug) cout << "VarInDecl [type.posvar.scorevar.in]\n";
+			$$ = new VarInDecl(
+								driver.symtab.get($1),
+								dynamic_cast<TypeDeclaration*>($2),
+								dynamic_cast<PositionalVar*>($3),
+								dynamic_cast<FTScoreVar*>($4),
+								dynamic_cast<ExprSingle*>($6));
 		}
 	;
 
@@ -1525,7 +1791,9 @@ VarInDecl :
 PositionalVar :
 		AT  DOLLAR  VARNAME
 		{
-			cout << "PositionalVar [ ]\n";
+			if (debug) cout << "PositionalVar [ ]\n";
+			$$ = new PositionalVar(
+								driver.symtab.get($3));
 		}
 	;
 
@@ -1536,7 +1804,9 @@ PositionalVar :
 FTScoreVar :
 		SCORE  DOLLAR  VARNAME
 		{
-			cout << "FTScoreVar [ ]\n";
+			if (debug) cout << "FTScoreVar [ ]\n";
+			$$ = new FTScoreVar(
+								driver.symtab.get($3));
 		}
 	;
 
@@ -1546,11 +1816,11 @@ FTScoreVar :
 LetClause :
 		LET_DOLLAR VarGetsDeclList
 		{
-			cout << "LetClause [ ]\n";
+			if (debug) cout << "LetClause [ ]\n";
 		}
 	| LET_SCORE_DOLLAR VarGetsDeclList
 		{
-			cout << "LetClause [score]\n";
+			if (debug) cout << "LetClause [score]\n";
 		}
 	;
 
@@ -1560,11 +1830,11 @@ LetClause :
 VarGetsDeclList :
 		VarGetsDecl
 		{
-			cout << "VarGetsDeclList [single]\n";
+			if (debug) cout << "VarGetsDeclList [single]\n";
 		}
 	|	VarGetsDeclList  COMMA  DOLLAR  VarGetsDecl
 		{
-			cout << "VarGetsDeclList [list]\n";
+			if (debug) cout << "VarGetsDeclList [list]\n";
 		}
 	;
 
@@ -1574,20 +1844,20 @@ VarGetsDeclList :
 VarGetsDecl :
 		VARNAME  GETS  ExprSingle
 		{
-			cout << "VarGetsDecl [gets]\n";
+			if (debug) cout << "VarGetsDecl [gets]\n";
 		}
 	|	VARNAME  TypeDeclaration  GETS  ExprSingle
 		{
-			cout << "VarGetsDecl [type.gets]\n";
+			if (debug) cout << "VarGetsDecl [type.gets]\n";
 		}
 	/* full-text extensions */
 	| VARNAME  FTScoreVar  GETS  ExprSingle
 		{
-			cout << "VarGetsDecl [scorevar.gets]\n";
+			if (debug) cout << "VarGetsDecl [scorevar.gets]\n";
 		}
 	| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
-			cout << "VarGetsDecl [type.scorevar.gets]\n";
+			if (debug) cout << "VarGetsDecl [type.scorevar.gets]\n";
 		}
 	;
 
@@ -1597,7 +1867,7 @@ VarGetsDecl :
 WhereClause :
 		WHERE  ExprSingle
 		{
-			cout << "WhereClause [ ]\n";
+			if (debug) cout << "WhereClause [ ]\n";
 		}
 	;
 
@@ -1607,11 +1877,11 @@ WhereClause :
 OrderByClause :
 		ORDER_BY  OrderSpecList
 		{
-			cout << "OrderByClause [ ]\n";
+			if (debug) cout << "OrderByClause [ ]\n";
 		}
 	|	STABLE_ORDER_BY  OrderSpecList
 		{
-			cout << "OrderByClause [stable]\n";
+			if (debug) cout << "OrderByClause [stable]\n";
 		}
 	;
 
@@ -1621,11 +1891,11 @@ OrderByClause :
 OrderSpecList :
 		OrderSpec 
 		{
-			cout << "OrderSpecList [single]\n";
+			if (debug) cout << "OrderSpecList [single]\n";
 		}
 	|	OrderSpecList  COMMA  OrderSpec
 		{
-			cout << "OrderSpecList [list]\n";
+			if (debug) cout << "OrderSpecList [list]\n";
 		}
 	;
 
@@ -1635,11 +1905,11 @@ OrderSpecList :
 OrderSpec :
 		ExprSingle
 		{
-			cout << "OrderSpec [single]\n";
+			if (debug) cout << "OrderSpec [single]\n";
 		}
 	|	ExprSingle OrderModifier
 		{
-			cout << "OrderSpec [single.modifier]\n";
+			if (debug) cout << "OrderSpec [single.modifier]\n";
 		}
 	;
 
@@ -1649,31 +1919,31 @@ OrderSpec :
 OrderModifier :
 		OrderDirSpec
 		{
-			cout << "OrderModifier [dir]\n";
+			if (debug) cout << "OrderModifier [dir]\n";
 		}
 	|	OrderEmptySpec
 		{
-			cout << "OrderModifier [empty]\n";
+			if (debug) cout << "OrderModifier [empty]\n";
 		}
 	|	OrderCollationSpec
 		{
-			cout << "OrderModifier [collation]\n";
+			if (debug) cout << "OrderModifier [collation]\n";
 		}
 	|	OrderDirSpec  OrderEmptySpec
 		{
-			cout << "OrderModifier [dir.empty]\n";
+			if (debug) cout << "OrderModifier [dir.empty]\n";
 		}
 	|	OrderDirSpec  OrderCollationSpec
 		{
-			cout << "OrderModifier [dir.collation]\n";
+			if (debug) cout << "OrderModifier [dir.collation]\n";
 		}
 	|	OrderEmptySpec  OrderCollationSpec
 		{
-			cout << "OrderModifier [empty.collation]\n";
+			if (debug) cout << "OrderModifier [empty.collation]\n";
 		}
 	|	OrderDirSpec  OrderEmptySpec  OrderCollationSpec
 		{
-			cout << "OrderModifier [dir.empty.collation]\n";
+			if (debug) cout << "OrderModifier [dir.empty.collation]\n";
 		}
 	;
 
@@ -1683,11 +1953,11 @@ OrderModifier :
 OrderDirSpec :
 		ASCENDING
 		{
-			cout << "OrderDirSpec [ascending]\n";
+			if (debug) cout << "OrderDirSpec [ascending]\n";
 		}
 	|	DESCENDING
 		{
-			cout << "OrderDirSpec [descending]\n";
+			if (debug) cout << "OrderDirSpec [descending]\n";
 		}
 	;
 
@@ -1697,11 +1967,11 @@ OrderDirSpec :
 OrderEmptySpec:
 		EMPTY_GREATEST
 		{
-			cout << "OrderEmptySpec [greatest]\n";
+			if (debug) cout << "OrderEmptySpec [greatest]\n";
 		}
 	|	EMPTY_LEAST
 		{
-			cout << "OrderEmptySpec [least]\n";
+			if (debug) cout << "OrderEmptySpec [least]\n";
 		}
 	;
 
@@ -1711,7 +1981,7 @@ OrderEmptySpec:
 OrderCollationSpec :
 		COLLATION  URI_LITERAL
 		{
-			cout << "OrderCollationSpec [ ]\n";
+			if (debug) cout << "OrderCollationSpec [ ]\n";
 		}
 	;
 
@@ -1721,11 +1991,11 @@ OrderCollationSpec :
 QuantifiedExpr :
 		SOME_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
-			cout << "QuantifiedExpr [some]\n";
+			if (debug) cout << "QuantifiedExpr [some]\n";
 		}
 	|	EVERY_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
-			cout << "QuantifiedExpr [every]\n";
+			if (debug) cout << "QuantifiedExpr [every]\n";
 		}
 	;
 
@@ -1735,11 +2005,11 @@ QuantifiedExpr :
 QVarInDeclList :
 		QVarInDecl  %prec QVARINDECLLIST_REDUCE
 		{
-			cout << "QVarInDeclList [single]\n";
+			if (debug) cout << "QVarInDeclList [single]\n";
 		}
 	|	QVarInDecl  COMMA_DOLLAR  QVarInDeclList
 		{
-			cout << "QVarInDeclList [list]\n";
+			if (debug) cout << "QVarInDeclList [list]\n";
 		}
 	;
 
@@ -1749,11 +2019,11 @@ QVarInDeclList :
 QVarInDecl :
 		VARNAME  IN  ExprSingle 
 		{
-			cout << "QVarInDecl [in]\n";
+			if (debug) cout << "QVarInDecl [in]\n";
 		}
 	|	VARNAME  TypeDeclaration  IN  ExprSingle 
 		{
-			cout << "QVarInDecl [type.in]\n";
+			if (debug) cout << "QVarInDecl [type.in]\n";
 		}
 	;
 
@@ -1763,11 +2033,11 @@ QVarInDecl :
 TypeswitchExpr :
 		TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
 		{
-			cout << "TypeswitchExpr [cases.default.return]\n";
+			if (debug) cout << "TypeswitchExpr [cases.default.return]\n";
 		}
 	|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  VARNAME  RETURN  ExprSingle
 		{
-			cout << "TypeswitchExpr [cases.default.varname.return]\n";
+			if (debug) cout << "TypeswitchExpr [cases.default.varname.return]\n";
 		}
 	;
 
@@ -1777,11 +2047,11 @@ TypeswitchExpr :
 CaseClauseList :
 		CaseClause
 		{
-			cout << "CaseClauseList [single]\n";
+			if (debug) cout << "CaseClauseList [single]\n";
 		}
 	|	CaseClauseList  CaseClause
 		{
-			cout << "CaseClauseList [list]\n";
+			if (debug) cout << "CaseClauseList [list]\n";
 		}
 	;
 
@@ -1791,11 +2061,11 @@ CaseClauseList :
 CaseClause :
 		CASE  SequenceType  RETURN  ExprSingle
 		{
-			cout << "CaseClause [case.return]\n";
+			if (debug) cout << "CaseClause [case.return]\n";
 		}
 	|	CASE  DOLLAR  VARNAME  AS  SequenceType  RETURN  ExprSingle
 		{
-			cout << "CaseClause [case.as.return]\n";
+			if (debug) cout << "CaseClause [case.as.return]\n";
 		}
 	;
 
@@ -1805,7 +2075,7 @@ CaseClause :
 IfExpr :
 		IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
 		{
-			cout << "IfExpr [ ]\n";
+			if (debug) cout << "IfExpr [ ]\n";
 		}
 	;
 
@@ -1815,11 +2085,11 @@ IfExpr :
 OrExpr :
 		AndExpr
 		{
-			cout << "OrExpr [and]\n";
+			if (debug) cout << "OrExpr [and]\n";
 		}
 	|	OrExpr  OR  AndExpr
 		{
-			cout << "OrExpr [or.and]\n";
+			if (debug) cout << "OrExpr [or.and]\n";
 		}
 	;
 
@@ -1829,11 +2099,11 @@ OrExpr :
 AndExpr :
 		ComparisonExpr
 		{
-			cout << "AndExpr [comp]\n";
+			if (debug) cout << "AndExpr [comp]\n";
 		}
 	|	AndExpr  AND  ComparisonExpr
 		{
-			cout << "AndExpr [and.comp]\n";
+			if (debug) cout << "AndExpr [and.comp]\n";
 		}
 	;
 
@@ -1851,22 +2121,22 @@ AndExpr :
 ComparisonExpr :
 		FTContainsExpr
 		{
-			cout << "ComparisonExpr [ftcontains]\n";
+			if (debug) cout << "ComparisonExpr [ftcontains]\n";
 		}
 	| FTContainsExpr  ValueComp  FTContainsExpr
 		{
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
-			cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
+			if (debug) cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
 		}
 	| FTContainsExpr  GeneralComp  FTContainsExpr
 		{
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
-			cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
+			if (debug) cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
 		}
 	| FTContainsExpr  NodeComp  FTContainsExpr
 		{
 			/*  ::=  "is" | "<<" | ">>" */
-			cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
+			if (debug) cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
 		}
 	;
 
@@ -1876,15 +2146,15 @@ ComparisonExpr :
 FTContainsExpr :
 		RangeExpr  %prec FTCONTAINS_REDUCE
 		{
-			cout << "FTContainsExpr [range]\n";
+			if (debug) cout << "FTContainsExpr [range]\n";
 		}
 	|	RangeExpr  FTCONTAINS  FTSelection 
 		{
-			cout << "FTContainsExpr [range.ftselect]\n";
+			if (debug) cout << "FTContainsExpr [range.ftselect]\n";
 		}
 	|	RangeExpr  FTCONTAINS  FTSelection  FTIgnoreOption
 		{
-			cout << "FTContainsExpr [range.ftselect.ftignore]\n";
+			if (debug) cout << "FTContainsExpr [range.ftselect.ftignore]\n";
 		}
 	;
 
@@ -1894,11 +2164,11 @@ FTContainsExpr :
 RangeExpr :
 		AdditiveExpr  %prec RANGE_REDUCE
 		{
-			cout << "RangeExpr [add]\n";
+			if (debug) cout << "RangeExpr [add]\n";
 		}
 	|	AdditiveExpr  TO  AdditiveExpr
 		{
-			cout << "RangeExpr [add.to.add]\n";
+			if (debug) cout << "RangeExpr [add.to.add]\n";
 		}
 	;
 
@@ -1908,15 +2178,15 @@ RangeExpr :
 AdditiveExpr :
 		MultiplicativeExpr  %prec ADDITIVE_REDUCE
 		{
-			cout << "AdditiveExpr [mult]\n";
+			if (debug) cout << "AdditiveExpr [mult]\n";
 		}
 	|	AdditiveExpr  PLUS  MultiplicativeExpr
 		{
-			cout << "AdditiveExpr [mult+mult]\n";
+			if (debug) cout << "AdditiveExpr [mult+mult]\n";
 		}
 	|	AdditiveExpr  MINUS  MultiplicativeExpr
 		{
-			cout << "AdditiveExpr [mult-mult]\n";
+			if (debug) cout << "AdditiveExpr [mult-mult]\n";
 		}
 	;
 
@@ -1926,23 +2196,23 @@ AdditiveExpr :
 MultiplicativeExpr :
 		UnionExpr  %prec MULTIPLICATIVE_REDUCE
 		{
-			cout << "MultiplicativeExpr [union]\n";
+			if (debug) cout << "MultiplicativeExpr [union]\n";
 		}
 	|	MultiplicativeExpr  STAR  UnionExpr
 		{
-			cout << "MultiplicativeExpr [mult*union]\n";
+			if (debug) cout << "MultiplicativeExpr [mult*union]\n";
 		}
 	|	MultiplicativeExpr  DIV  UnionExpr
 		{
-			cout << "MultiplicativeExpr [mult.div.union]\n";
+			if (debug) cout << "MultiplicativeExpr [mult.div.union]\n";
 		}
 	|	MultiplicativeExpr  IDIV  UnionExpr
 		{
-			cout << "MultiplicativeExpr [mult.idiv.union]\n";
+			if (debug) cout << "MultiplicativeExpr [mult.idiv.union]\n";
 		}
 	|	MultiplicativeExpr  MOD  UnionExpr
 		{
-			cout << "MultiplicativeExpr [mult.mod.union]\n";
+			if (debug) cout << "MultiplicativeExpr [mult.mod.union]\n";
 		}
 	;
 
@@ -1952,15 +2222,15 @@ MultiplicativeExpr :
 UnionExpr :
 		IntersectExceptExpr  %prec UNION_REDUCE
 		{
-			cout << "UnionExpr [interexcept]\n";
+			if (debug) cout << "UnionExpr [interexcept]\n";
 		}
 	|	UnionExpr  UNION  IntersectExceptExpr
 		{
-			cout << "UnionExpr [union.union.interexcept]\n";
+			if (debug) cout << "UnionExpr [union.union.interexcept]\n";
 		}
 	|	UnionExpr  VBAR  IntersectExceptExpr
 		{
-			cout << "UnionExpr [union|interexcept]\n";
+			if (debug) cout << "UnionExpr [union|interexcept]\n";
 		}
 	;
 
@@ -1970,15 +2240,15 @@ UnionExpr :
 IntersectExceptExpr :
 		InstanceofExpr  %prec INTERSECT_EXCEPT_REDUCE
 		{
-			cout << "IntersectExceptExpr [instanceof]\n";
+			if (debug) cout << "IntersectExceptExpr [instanceof]\n";
 		}
 	|	IntersectExceptExpr  INTERSECT  InstanceofExpr
 		{
-			cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
+			if (debug) cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
 		}
 	|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 		{
-			cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
+			if (debug) cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
 		}
 	;
 
@@ -1988,11 +2258,11 @@ IntersectExceptExpr :
 InstanceofExpr :
 		TreatExpr
 		{
-			cout << "InstanceofExpr [treat]\n";
+			if (debug) cout << "InstanceofExpr [treat]\n";
 		}
 	|	TreatExpr  INSTANCE_OF  SequenceType
 		{
-			cout << "InstanceofExpr [treat.seqtype]\n";
+			if (debug) cout << "InstanceofExpr [treat.seqtype]\n";
 		}
 	;
 
@@ -2002,11 +2272,11 @@ InstanceofExpr :
 TreatExpr :
 		CastableExpr
 		{
-			cout << "TreatExpr [castable]\n";
+			if (debug) cout << "TreatExpr [castable]\n";
 		}
 	|	CastableExpr  TREAT_AS  SequenceType
 		{
-			cout << "TreatExpr [castable.seqtype]\n";
+			if (debug) cout << "TreatExpr [castable.seqtype]\n";
 		}
 	;
 
@@ -2016,11 +2286,11 @@ TreatExpr :
 CastableExpr :
 		CastExpr
 		{
-			cout << "CastableExpr [cast]\n";
+			if (debug) cout << "CastableExpr [cast]\n";
 		}
 	|	CastExpr  CASTABLE_AS  SingleType
 		{
-			cout << "CastableExpr [cast.singletype]\n";
+			if (debug) cout << "CastableExpr [cast.singletype]\n";
 		}
 	;
 
@@ -2030,11 +2300,11 @@ CastableExpr :
 CastExpr :
 		UnaryExpr
 		{
-			cout << "CastExpr [unary]\n";
+			if (debug) cout << "CastExpr [unary]\n";
 		}
 	|	UnaryExpr  CAST_AS  SingleType
 		{
-			cout << "CastExpr [unary.singletype]\n";
+			if (debug) cout << "CastExpr [unary.singletype]\n";
 		}
 	;
 
@@ -2044,11 +2314,11 @@ CastExpr :
 UnaryExpr :
 		ValueExpr
 		{
-			cout << "UnaryExpr [value]\n";
+			if (debug) cout << "UnaryExpr [value]\n";
 		}
 	|	SignList  ValueExpr
 		{
-			cout << "UnaryExpr [signlist.value]\n";
+			if (debug) cout << "UnaryExpr [signlist.value]\n";
 		}
 	;
 
@@ -2058,19 +2328,19 @@ UnaryExpr :
 SignList :
 		PLUS
 		{
-			cout << "SignList [+]\n";
+			if (debug) cout << "SignList [+]\n";
 		}
 	|	MINUS
 		{
-			cout << "SignList [-]\n";
+			if (debug) cout << "SignList [-]\n";
 		}
 	|	SignList  PLUS
 		{
-			cout << "SignList [signlist.+]\n";
+			if (debug) cout << "SignList [signlist.+]\n";
 		}
 	|	SignList  MINUS
 		{
-			cout << "SignList [signlist.-]\n";
+			if (debug) cout << "SignList [signlist.-]\n";
 		}
 	;
 
@@ -2080,15 +2350,15 @@ SignList :
 ValueExpr :
 		ValidateExpr
 		{
-			cout << "ValueExpr [validate]\n";
+			if (debug) cout << "ValueExpr [validate]\n";
 		}
 	|	PathExpr
 		{
-			cout << "ValueExpr [path]\n";
+			if (debug) cout << "ValueExpr [path]\n";
 		}
 	|	ExtensionExpr
 		{
-			cout << "ValueExpr [extension]\n";
+			if (debug) cout << "ValueExpr [extension]\n";
 		}
 	;
 
@@ -2099,27 +2369,27 @@ ValueExpr :
 GeneralComp :
 		EQUALS
 		{
-			cout << "GeneralComp [=]\n";
+			if (debug) cout << "GeneralComp [=]\n";
 		}
 	| NE
 		{
-			cout << "GeneralComp [!=]\n";
+			if (debug) cout << "GeneralComp [!=]\n";
 		}
 	| LT
 		{
-			cout << "GeneralComp [<]\n";
+			if (debug) cout << "GeneralComp [<]\n";
 		}
 	| LE
 		{
-			cout << "GeneralComp [<=]\n";
+			if (debug) cout << "GeneralComp [<=]\n";
 		}
 	| GT
 		{
-			cout << "GeneralComp [>]\n";
+			if (debug) cout << "GeneralComp [>]\n";
 		}
 	| GE
 		{
-			cout << "GeneralComp [>=]\n";
+			if (debug) cout << "GeneralComp [>=]\n";
 		}
 	;
 
@@ -2129,27 +2399,27 @@ GeneralComp :
 ValueComp :
 		VAL_EQ
 		{
-			cout << "ValueComp [eq]\n";
+			if (debug) cout << "ValueComp [eq]\n";
 		}
 	| VAL_NE
 		{
-			cout << "ValueComp [ne]\n";
+			if (debug) cout << "ValueComp [ne]\n";
 		}
 	| VAL_LT
 		{
-			cout << "ValueComp [lt]\n";
+			if (debug) cout << "ValueComp [lt]\n";
 		}
 	| VAL_LE
 		{
-			cout << "ValueComp [le]\n";
+			if (debug) cout << "ValueComp [le]\n";
 		}
 	| VAL_GT
 		{
-			cout << "ValueComp [gt]\n";
+			if (debug) cout << "ValueComp [gt]\n";
 		}
 	| VAL_GE
 		{
-			cout << "ValueComp [ge]\n";
+			if (debug) cout << "ValueComp [ge]\n";
 		}
 	;
 
@@ -2159,15 +2429,15 @@ ValueComp :
 NodeComp :
 		IS
 		{
-			cout << "NodeComp [is]\n";
+			if (debug) cout << "NodeComp [is]\n";
 		}
 	| PRECEDES
 		{
-			cout << "NodeComp [<<]\n";
+			if (debug) cout << "NodeComp [<<]\n";
 		}
 	| FOLLOWS
 		{
-			cout << "NodeComp [>>]\n";
+			if (debug) cout << "NodeComp [>>]\n";
 		}
 	;
 
@@ -2178,11 +2448,11 @@ NodeComp :
 ValidateExpr :
 		VALIDATE_LBRACE  Expr  RBRACE
 		{
-			cout << "ValidateExpr [expr]\n";
+			if (debug) cout << "ValidateExpr [expr]\n";
 		}
 	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 		{
-			cout << "ValidateExpr [mode.expr]\n";
+			if (debug) cout << "ValidateExpr [mode.expr]\n";
 		}
 	;
 
@@ -2192,11 +2462,11 @@ ValidateExpr :
 ExtensionExpr :
 		PragmaList  LBRACE  RBRACE
 		{
-			cout << "ExtensionExpr [pragmalist]\n";
+			if (debug) cout << "ExtensionExpr [pragmalist]\n";
 		}
 	|	PragmaList  LBRACE  Expr  RBRACE
 		{
-			cout << "ExtensionExpr [pragmalist.expr]\n";
+			if (debug) cout << "ExtensionExpr [pragmalist.expr]\n";
 		}
 	;
 
@@ -2206,11 +2476,11 @@ ExtensionExpr :
 PragmaList :
 		Pragma
 		{
-			cout << "PragmaList [single]\n";
+			if (debug) cout << "PragmaList [single]\n";
 		}
 	|	PragmaList  Pragma
 		{
-			cout << "PragmaList [list]\n";
+			if (debug) cout << "PragmaList [list]\n";
 		}
 	;
 
@@ -2220,7 +2490,7 @@ PragmaList :
 Pragma :
 		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL  PRAGMA_END
 		{
-			cout << "Pragma [ ]\n";
+			if (debug) cout << "Pragma [ ]\n";
 		}
 	;	/* ws: explicit */
 
@@ -2256,19 +2526,19 @@ Pragma :
 PathExpr :
 		LEADING_LONE_SLASH
 		{
-			cout << "PathExpr [/]\n";
+			if (debug) cout << "PathExpr [/]\n";
 		}
 	|	SLASH  RelativePathExpr
 		{
-			cout << "PathExpr [/relative]\n";
+			if (debug) cout << "PathExpr [/relative]\n";
 		}
 	|	SLASH_SLASH  RelativePathExpr
 		{
-			cout << "PathExpr [//relative]\n";
+			if (debug) cout << "PathExpr [//relative]\n";
 		}
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
-			cout << "PathExpr [relative]\n";
+			if (debug) cout << "PathExpr [relative]\n";
 		}
 	;
 
@@ -2278,15 +2548,15 @@ PathExpr :
 RelativePathExpr :
 		StepExpr  %prec STEP_REDUCE
 		{
-			cout << "RelativePathExpr [step]\n";
+			if (debug) cout << "RelativePathExpr [step]\n";
 		}
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
-			cout << "RelativePathExpr [step/relative]\n";
+			if (debug) cout << "RelativePathExpr [step/relative]\n";
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
-			cout << "RelativePathExpr [step//relative]\n";
+			if (debug) cout << "RelativePathExpr [step//relative]\n";
 		}
 	;
 
@@ -2296,11 +2566,11 @@ RelativePathExpr :
 StepExpr :
 		AxisStep
 		{
-			cout << "StepExpr [axis]\n";
+			if (debug) cout << "StepExpr [axis]\n";
 		}
 	|	FilterExpr
 		{
-			cout << "StepExpr [filter]\n";
+			if (debug) cout << "StepExpr [filter]\n";
 		}
 	;
 
@@ -2310,19 +2580,19 @@ StepExpr :
 AxisStep :
 		ForwardStep 
 		{
-			cout << "AxisStep [forward]\n";
+			if (debug) cout << "AxisStep [forward]\n";
 		}
 	|	ForwardStep  PredicateList
 		{
-			cout << "AxisStep [forward.predlist]\n";
+			if (debug) cout << "AxisStep [forward.predlist]\n";
 		}
 	|	ReverseStep
 		{
-			cout << "AxisStep [reverse]\n";
+			if (debug) cout << "AxisStep [reverse]\n";
 		}
 	|	ReverseStep  PredicateList
 		{
-			cout << "AxisStep [reverse.predlist]\n";
+			if (debug) cout << "AxisStep [reverse.predlist]\n";
 		}
 	;
 
@@ -2332,11 +2602,11 @@ AxisStep :
 ForwardStep :
 		ForwardAxis  NodeTest
 		{
-			cout << "ForwardStep [nodetest]\n";
+			if (debug) cout << "ForwardStep [nodetest]\n";
 		}
 	|	AbbrevForwardStep
 		{
-			cout << "ForwardStep [abbrev]\n";
+			if (debug) cout << "ForwardStep [abbrev]\n";
 		}
 	;
 
@@ -2346,31 +2616,31 @@ ForwardStep :
 ForwardAxis :
 		CHILD_AXIS
 		{
-			cout << "ForwardAxis [child]\n";
+			if (debug) cout << "ForwardAxis [child]\n";
 		}
 	| DESCENDANT_AXIS
 		{
-			cout << "ForwardAxis [descendant]\n";
+			if (debug) cout << "ForwardAxis [descendant]\n";
 		}
 	| ATTRIBUTE_AXIS
 		{
-			cout << "ForwardAxis [attribute]\n";
+			if (debug) cout << "ForwardAxis [attribute]\n";
 		}
 	| SELF_AXIS
 		{
-			cout << "ForwardAxis [self]\n";
+			if (debug) cout << "ForwardAxis [self]\n";
 		}
 	| DESCENDANT_OR_SELF_AXIS
 		{
-			cout << "ForwardAxis [descendant_or_self]\n";
+			if (debug) cout << "ForwardAxis [descendant_or_self]\n";
 		}
 	| FOLLOWING_SIBLING_AXIS
 		{
-			cout << "ForwardAxis [following_sibling]\n";
+			if (debug) cout << "ForwardAxis [following_sibling]\n";
 		}
 	| FOLLOWING_AXIS
 		{
-			cout << "ForwardAxis [following]\n";
+			if (debug) cout << "ForwardAxis [following]\n";
 		}
 	;
 
@@ -2380,11 +2650,11 @@ ForwardAxis :
 AbbrevForwardStep :
 		NodeTest
 		{
-			cout << "AbbrevForwardStep [nodetest]\n";
+			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
 		}
 	|	AT_SIGN  NodeTest
 		{
-			cout << "AbbrevForwardStep [@ nodetest]\n";
+			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
 		}
 	;
 
@@ -2394,11 +2664,11 @@ AbbrevForwardStep :
 ReverseStep :
 		ReverseAxis  NodeTest
 		{
-			cout << "ReverseStep [nodetest]\n";
+			if (debug) cout << "ReverseStep [nodetest]\n";
 		}
 	|	DOT_DOT
 		{
-			cout << "ReverseStep [..]\n";
+			if (debug) cout << "ReverseStep [..]\n";
 		}
 	;
 
@@ -2408,23 +2678,23 @@ ReverseStep :
 ReverseAxis :
 		PARENT_AXIS
 		{
-			cout << "ReverseAxis [parent]\n";
+			if (debug) cout << "ReverseAxis [parent]\n";
 		}
 	| ANCESTOR_AXIS
 		{
-			cout << "ReverseAxis [ancestor]\n";
+			if (debug) cout << "ReverseAxis [ancestor]\n";
 		}
 	| PRECEDING_SIBLING_AXIS
 		{
-			cout << "ReverseAxis [preceding_sibling]\n";
+			if (debug) cout << "ReverseAxis [preceding_sibling]\n";
 		}
 	| PRECEDING_AXIS
 		{
-			cout << "ReverseAxis [preceding]\n";
+			if (debug) cout << "ReverseAxis [preceding]\n";
 		}
 	| ANCESTOR_OR_SELF_AXIS
 		{
-			cout << "ReverseAxis [ancestor_or_self]\n";
+			if (debug) cout << "ReverseAxis [ancestor_or_self]\n";
 		}
 	;
 
@@ -2439,11 +2709,11 @@ ReverseAxis :
 NodeTest :
 		KindTest
 		{
-			cout << "NodeTest [kindtest]\n";
+			if (debug) cout << "NodeTest [kindtest]\n";
 		}
 	|	NameTest
 		{
-			cout << "NodeTest [nametest]\n";
+			if (debug) cout << "NodeTest [nametest]\n";
 		}
 	;
  
@@ -2453,11 +2723,11 @@ NodeTest :
 NameTest :
 		QNAME
 		{
-			cout << "NameTest [qname]\n";
+			if (debug) cout << "NameTest [qname]\n";
 		}
 	|	Wildcard
 		{
-			cout << "NameTest [wildcard]\n";
+			if (debug) cout << "NameTest [wildcard]\n";
 		}
 	;
 
@@ -2467,15 +2737,15 @@ NameTest :
 Wildcard :
 		STAR
 		{
-			cout << "Wildcard [*]\n";
+			if (debug) cout << "Wildcard [*]\n";
 		}
 	|	ELEM_WILDCARD
 		{
-			cout << "Wildcard [pref:*]\n";
+			if (debug) cout << "Wildcard [pref:*]\n";
 		}
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
 		{
-			cout << "Wildcard [*:qname]\n";
+			if (debug) cout << "Wildcard [*:qname]\n";
 		}
 	;
 
@@ -2485,11 +2755,11 @@ Wildcard :
 FilterExpr :
 		PrimaryExpr 
 		{
-			cout << "FilterExpr [primary]\n";
+			if (debug) cout << "FilterExpr [primary]\n";
 		}
 	|	PrimaryExpr  PredicateList
 		{
-			cout << "FilterExpr [primary.predlist]\n";
+			if (debug) cout << "FilterExpr [primary.predlist]\n";
 		}
 	;
 
@@ -2499,11 +2769,11 @@ FilterExpr :
 PredicateList :
 		Predicate
 		{
-			cout << "PredicateList [single]\n";
+			if (debug) cout << "PredicateList [single]\n";
 		}
 	|	PredicateList  Predicate
 		{
-			cout << "PredicateList [list]\n";
+			if (debug) cout << "PredicateList [list]\n";
 		}
 	;
 
@@ -2513,7 +2783,7 @@ PredicateList :
 Predicate :
 		LBRACK  Expr  RBRACK
 		{
-			cout << "Predicate [ ]\n";
+			if (debug) cout << "Predicate [ ]\n";
 		}
 	;
 
@@ -2524,42 +2794,42 @@ Predicate :
 PrimaryExpr :
 		Literal
 		{
-			cout << "PrimaryExpr [literal]\n";
+			if (debug) cout << "PrimaryExpr [literal]\n";
 			$$ = $1;
 		}
 	|	VarRef
 		{
-			cout << "PrimaryExpr [varref]\n";
+			if (debug) cout << "PrimaryExpr [varref]\n";
 			$$ = $1;
 		}
 	|	ParenthesizedExpr
 		{
-			cout << "PrimaryExpr [paren]\n";
+			if (debug) cout << "PrimaryExpr [paren]\n";
 			$$ = $1;
 		}
 	|	ContextItemExpr
 		{
-			cout << "PrimaryExpr [context_item]\n";
+			if (debug) cout << "PrimaryExpr [context_item]\n";
 			$$ = $1;
 		}
 	|	FunctionCall
 		{
-			cout << "PrimaryExpr [funcall]\n";
+			if (debug) cout << "PrimaryExpr [funcall]\n";
 			$$ = $1;
 		}
 	|	Constructor
 		{
-			cout << "PrimaryExpr [cons]\n";
+			if (debug) cout << "PrimaryExpr [cons]\n";
 			$$ = $1;
 		}
 	|	OrderedExpr
 		{
-			cout << "PrimaryExpr [ordered]\n";
+			if (debug) cout << "PrimaryExpr [ordered]\n";
 			$$ = $1;
 		}
 	|	UnorderedExpr
 		{
-			cout << "PrimaryExpr [unordered]\n";
+			if (debug) cout << "PrimaryExpr [unordered]\n";
 			$$ = $1;
 		}
 	;
@@ -2582,15 +2852,15 @@ Literal :
 NumericLiteral :
 		INTEGER_LITERAL
 		{
-			cout << "NumericLiteral [int]\n";
+			if (debug) cout << "NumericLiteral [int]\n";
 		}
 	|	DECIMAL_LITERAL
 		{
-			cout << "NumericLiteral [decimal]\n";
+			if (debug) cout << "NumericLiteral [decimal]\n";
 		}
 	|	DOUBLE_LITERAL
 		{
-			cout << "NumericLiteral [double]\n";
+			if (debug) cout << "NumericLiteral [double]\n";
 		}
 	;
 
@@ -2600,7 +2870,7 @@ NumericLiteral :
 VarRef :
 		DOLLAR  VARNAME
 		{
-			cout << "VarRef [ ]\n";
+			if (debug) cout << "VarRef [ ]\n";
 		}
 	;
 
@@ -2610,11 +2880,11 @@ VarRef :
 ParenthesizedExpr :
 		LPAR  RPAR
 		{
-			cout << "ParenthesizedExpr [ ]\n";
+			if (debug) cout << "ParenthesizedExpr [ ]\n";
 		}
 	|	LPAR  Expr  RPAR
 		{
-			cout << "ParenthesizedExpr [expr]\n";
+			if (debug) cout << "ParenthesizedExpr [expr]\n";
 		}
 	;	
 
@@ -2624,7 +2894,7 @@ ParenthesizedExpr :
 ContextItemExpr :
 		DOT
 		{
-			cout << "ContextItemExpr [.]\n";
+			if (debug) cout << "ContextItemExpr [.]\n";
 		}
 	;	
 
@@ -2634,7 +2904,7 @@ ContextItemExpr :
 OrderedExpr :
 		ORDERED_LBRACE  Expr  RBRACE
 		{
-			cout << "OrderedExpr [expr]\n";
+			if (debug) cout << "OrderedExpr [expr]\n";
 		}
 	;
 
@@ -2644,7 +2914,7 @@ OrderedExpr :
 UnorderedExpr :
 		UNORDERED_LBRACE  Expr  RBRACE
 		{
-			cout << "UnorderedExpr [expr]\n";
+			if (debug) cout << "UnorderedExpr [expr]\n";
 		}
 	;
 
@@ -2654,11 +2924,11 @@ UnorderedExpr :
 FunctionCall :
 		QNAME_LPAR  RPAR
 		{
-			cout << "FunctionCall [ ]\n";
+			if (debug) cout << "FunctionCall [ ]\n";
 		}
 	|	QNAME_LPAR  ArgList  RPAR 	/* gn: parensXQ */
 		{
-			cout << "FunctionCall [arglist]\n";
+			if (debug) cout << "FunctionCall [arglist]\n";
 		}
 				/* gn: reserved-function-namesXQ */
 	;
@@ -2669,11 +2939,11 @@ FunctionCall :
 ArgList :
 		ExprSingle
 		{
-			cout << "ArgList [single]\n";
+			if (debug) cout << "ArgList [single]\n";
 		}
 	|	ArgList  COMMA  ExprSingle
 		{
-			cout << "ArgList [list]\n";
+			if (debug) cout << "ArgList [list]\n";
 		}
 	;
 
@@ -2683,11 +2953,11 @@ ArgList :
 Constructor :
 		DirectConstructor
 		{
-			cout << "Constructor [direct]\n";
+			if (debug) cout << "Constructor [direct]\n";
 		}
 	|	ComputedConstructor
 		{
-			cout << "Constructor [computed]\n";
+			if (debug) cout << "Constructor [computed]\n";
 		}
 	;
 
@@ -2697,15 +2967,15 @@ Constructor :
 DirectConstructor :
 		DirElemConstructor
 		{
-			cout << "DirectConstructor [element]\n";
+			if (debug) cout << "DirectConstructor [element]\n";
 		}
 	|	DirCommentConstructor
 		{
-			cout << "DirectConstructor [comment]\n";
+			if (debug) cout << "DirectConstructor [comment]\n";
 		}
 	|	DirPIConstructor
 		{
-			cout << "DirectConstructor [pi]\n";
+			if (debug) cout << "DirectConstructor [pi]\n";
 		}
 	;
 
@@ -2715,19 +2985,19 @@ DirectConstructor :
 DirElemConstructor :
 		START_TAG  QNAME  EMPTY_TAG_END /* ws: explicitXQ */
 		{
-			cout << "DirElemConstructor [<qname/> ]\n";
+			if (debug) cout << "DirElemConstructor [<qname/> ]\n";
 		}
 	| START_TAG  QNAME  DirAttributeList EMPTY_TAG_END /* ws: explicitXQ */
 		{
-			cout << "DirElemConstructor [<qname attrlist/> ]\n";
+			if (debug) cout << "DirElemConstructor [<qname attrlist/> ]\n";
 		}
 	|	START_TAG  QNAME  DirAttributeList TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
 		{
-			cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
+			if (debug) cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
 		}
 	|	START_TAG  QNAME  TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
 		{
-			cout << "DirElemConstructor [<qname>content</qname>]\n";
+			if (debug) cout << "DirElemConstructor [<qname>content</qname>]\n";
 		}
 			/* ws: explicitXQ */
 			/* gn: ltXQ */
@@ -2739,11 +3009,11 @@ DirElemConstructor :
 DirElemContentList :
 		DirElemContent
 		{
-			cout << "DirElemContentList [single]\n";
+			if (debug) cout << "DirElemContentList [single]\n";
 		}
 	|	DirElemContentList  DirElemContent
 		{
-			cout << "DirElemContentList [list]\n";
+			if (debug) cout << "DirElemContentList [list]\n";
 		}
 	;
 
@@ -2753,11 +3023,11 @@ DirElemContentList :
 DirAttributeList :
 		DirAttr
 		{
-			cout << "DirAttributeList [single]\n";
+			if (debug) cout << "DirAttributeList [single]\n";
 		}
 	|	DirAttributeList  DirAttr
 		{
-			cout << "DirAttributeList [list]\n";
+			if (debug) cout << "DirAttributeList [list]\n";
 		}
 	;
 
@@ -2767,7 +3037,7 @@ DirAttributeList :
 DirAttr :
 		QNAME  EQUALS  DirAttributeValue 	/* ws: explicitXQ */
 		{
-			cout << "DirAttr [ ]\n";
+			if (debug) cout << "DirAttr [ ]\n";
 		}
 	;
 
@@ -2777,11 +3047,11 @@ DirAttr :
 DirAttributeValue :
 		QUOTE  QuoteAttrContentList  QUOTE
 		{
-			cout << "DirAttributeValue [quote]\n";
+			if (debug) cout << "DirAttributeValue [quote]\n";
 		}
 	|	APOS  AposAttrContentList  APOS 	/* ws: explicitXQ */
 		{
-			cout << "DirAttributeValue [apos]\n";
+			if (debug) cout << "DirAttributeValue [apos]\n";
 		}
 	;
 
@@ -2791,19 +3061,19 @@ DirAttributeValue :
 QuoteAttrContentList :
 		ESCAPE_QUOTE
 		{
-			cout << "QuoteAttrContentList [""]\n";
+			if (debug) cout << "QuoteAttrContentList [""]\n";
 		}
 	|	QuoteAttrValueContent
 		{
-			cout << "QuoteAttrContentList [single]\n";
+			if (debug) cout << "QuoteAttrContentList [single]\n";
 		}
 	|	QuoteAttrContentList  ESCAPE_QUOTE
 		{
-			cout << "QuoteAttrContentList [list ""]\n";
+			if (debug) cout << "QuoteAttrContentList [list ""]\n";
 		}
 	|	QuoteAttrContentList  QuoteAttrValueContent
 		{
-			cout << "QuoteAttrContentList [list]\n";
+			if (debug) cout << "QuoteAttrContentList [list]\n";
 		}
 	;
 
@@ -2813,19 +3083,19 @@ QuoteAttrContentList :
 AposAttrContentList :
 		ESCAPE_APOS
 		{
-			cout << "AposAttrContentList ['']\n";
+			if (debug) cout << "AposAttrContentList ['']\n";
 		}
 	|	AposAttrValueContent
 		{
-			cout << "AposAttrContentList [single]\n";
+			if (debug) cout << "AposAttrContentList [single]\n";
 		}
 	|	AposAttrContentList  ESCAPE_APOS
 		{
-			cout << "AposAttrContentList [list '']\n";
+			if (debug) cout << "AposAttrContentList [list '']\n";
 		}
 	|	AposAttrContentList  AposAttrValueContent
 		{
-			cout << "AposAttrContentList [list]\n";
+			if (debug) cout << "AposAttrContentList [list]\n";
 		}
 	;
 
@@ -2835,11 +3105,11 @@ AposAttrContentList :
 QuoteAttrValueContent :
 		QUOTE_ATTR_CONTENT
 		{
-			cout << "QuoteAttrValueContent [quote_attr_content]\n";
+			if (debug) cout << "QuoteAttrValueContent [quote_attr_content]\n";
 		}
 	|	CommonContent
 		{
-			cout << "QuoteAttrValueContent [common_content]\n";
+			if (debug) cout << "QuoteAttrValueContent [common_content]\n";
 		}
 	;
 
@@ -2849,11 +3119,11 @@ QuoteAttrValueContent :
 AposAttrValueContent :
 		APOS_ATTR_CONTENT
 		{
-			cout << "AposAttrValueContent [apos_attr_content]\n";
+			if (debug) cout << "AposAttrValueContent [apos_attr_content]\n";
 		}
 	|	CommonContent
 		{
-			cout << "AposAttrValueContent [common_content]\n";
+			if (debug) cout << "AposAttrValueContent [common_content]\n";
 		}
 	;
 
@@ -2863,19 +3133,19 @@ AposAttrValueContent :
 DirElemContent :
 		DirectConstructor
 		{
-			cout << "DirElemContent [cons]\n";
+			if (debug) cout << "DirElemContent [cons]\n";
 		}
 	|	ELEMENT_CONTENT
 		{
-			cout << "DirElemContent [elem_content]\n";
+			if (debug) cout << "DirElemContent [elem_content]\n";
 		}
 	|	CDataSection
 		{
-			cout << "DirElemContent [cdata]\n";
+			if (debug) cout << "DirElemContent [cdata]\n";
 		}
 	|	CommonContent
 		{
-			cout << "DirElemContent [common_content]\n";
+			if (debug) cout << "DirElemContent [common_content]\n";
 		}
 	;
 
@@ -2885,23 +3155,23 @@ DirElemContent :
 CommonContent :
 		ENTITY_REF
 		{
-			cout << "CommonContent [entity_ref]\n";
+			if (debug) cout << "CommonContent [entity_ref]\n";
 		}
 	|	CHAR_REF_LITERAL
 		{
-			cout << "CommonContent [char_ref]\n";
+			if (debug) cout << "CommonContent [char_ref]\n";
 		}
 	|	DOUBLE_LBRACE
 		{
-			cout << "CommonContent [{{]\n";
+			if (debug) cout << "CommonContent [{{]\n";
 		}
 	|	DOUBLE_RBRACE
 		{
-			cout << "CommonContent [}}]\n";
+			if (debug) cout << "CommonContent [}}]\n";
 		}
 	|	EnclosedExpr
 		{
-			cout << "CommonContent [expr]\n";
+			if (debug) cout << "CommonContent [expr]\n";
 		}
 	;
 
@@ -2911,7 +3181,7 @@ CommonContent :
 DirCommentConstructor :
 		XML_COMMENT_BEGIN  EXPR_COMMENT_LITERAL  XML_COMMENT_END 	/* ws: explicitXQ */
 		{
-			cout << "DirCommentConstructor [ ]\n";
+			if (debug) cout << "DirCommentConstructor [ ]\n";
 		}
 	;
 
@@ -2926,11 +3196,11 @@ DirCommentConstructor :
 DirPIConstructor :
 		PI_BEGIN  PI_TARGET  PI_END 	/* ws: explicitXQ */
 		{
-			cout << "DirPIConstructor [target]\n"
+			if (debug) cout << "DirPIConstructor [target]\n"
 		}
 	|	PI_BEGIN  PI_TARGET  CHAR_LITERAL  PI_END 	/* ws: explicitXQ */
 		{
-			cout << "DirPIConstructor [target.charlit]\n"
+			if (debug) cout << "DirPIConstructor [target.charlit]\n"
 		}
 	;
 
@@ -2945,7 +3215,7 @@ DirPIConstructor :
 CDataSection :
 		CDATA_BEGIN  CHAR_LITERAL  CDATA_END 	/* ws: explicitXQ */
 		{
-			cout << "CDataSection [ ]\n"
+			if (debug) cout << "CDataSection [ ]\n"
 		}
 	;
 
@@ -2960,32 +3230,32 @@ CDataSection :
 ComputedConstructor :
 		CompDocConstructor
 		{
-			cout << "ComputedConstructor [doc]\n";
+			if (debug) cout << "ComputedConstructor [doc]\n";
 			$$ = $1;
 		}
 	|	CompElemConstructor
 		{
-			cout << "ComputedConstructor [elem]\n";
+			if (debug) cout << "ComputedConstructor [elem]\n";
 			$$ = $1;
 		}
 	|	CompAttrConstructor
 		{
-			cout << "ComputedConstructor [attr]\n";
+			if (debug) cout << "ComputedConstructor [attr]\n";
 			$$ = $1;
 		}
 	|	CompTextConstructor
 		{
-			cout << "ComputedConstructor [text]\n";
+			if (debug) cout << "ComputedConstructor [text]\n";
 			$$ = $1;
 		}
 	|	CompCommentConstructor
 		{
-			cout << "ComputedConstructor [comment]\n";
+			if (debug) cout << "ComputedConstructor [comment]\n";
 			$$ = $1;
 		}
 	|	CompPIConstructor
 		{
-			cout << "ComputedConstructor [pi]\n";
+			if (debug) cout << "ComputedConstructor [pi]\n";
 			$$ = $1;
 		}
 	;
@@ -2996,7 +3266,7 @@ ComputedConstructor :
 CompDocConstructor :
 		DOCUMENT_LBRACE  Expr  RBRACE
 		{
-			cout << "CompDocConstructor [ ]\n";
+			if (debug) cout << "CompDocConstructor [ ]\n";
 		}
 	;
 
@@ -3006,19 +3276,19 @@ CompDocConstructor :
 CompElemConstructor :
 		ELEMENT_QNAME_LBRACE  RBRACE
 		{
-			cout << "CompElemConstructor [ ]\n";
+			if (debug) cout << "CompElemConstructor [ ]\n";
 		}
 	|	ELEMENT_QNAME_LBRACE  Expr  RBRACE
 		{
-			cout << "CompElemConstructor [content]\n";
+			if (debug) cout << "CompElemConstructor [content]\n";
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
-			cout << "CompElemConstructor [name]\n";
+			if (debug) cout << "CompElemConstructor [name]\n";
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
-			cout << "CompElemConstructor [name.content]\n";
+			if (debug) cout << "CompElemConstructor [name.content]\n";
 		}
 	;
 
@@ -3029,7 +3299,7 @@ CompElemConstructor :
 ContentExpr :
 		Expr
 		{
-			cout << "ContentExpr [ ]\n";
+			if (debug) cout << "ContentExpr [ ]\n";
 		}
 	;
 */
@@ -3040,19 +3310,19 @@ ContentExpr :
 CompAttrConstructor :
 		ATTRIBUTE_QNAME_LBRACE  RBRACE
 		{
-			cout << "CompAttrConstructor [ ]\n";
+			if (debug) cout << "CompAttrConstructor [ ]\n";
 		}
 	|	ATTRIBUTE_QNAME_LBRACE  Expr  RBRACE
 		{
-			cout << "CompAttrConstructor [val]\n";
+			if (debug) cout << "CompAttrConstructor [val]\n";
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
-			cout << "CompAttrConstructor [name]\n";
+			if (debug) cout << "CompAttrConstructor [name]\n";
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
-			cout << "CompAttrConstructor [name.val]\n";
+			if (debug) cout << "CompAttrConstructor [name.val]\n";
 		}
 	;
 
@@ -3062,7 +3332,7 @@ CompAttrConstructor :
 CompTextConstructor :
 		TEXT_LBRACE  Expr  RBRACE
 		{
-			cout << "CompTextConstructor [content]\n";
+			if (debug) cout << "CompTextConstructor [content]\n";
 		}
 	;
 
@@ -3072,7 +3342,7 @@ CompTextConstructor :
 CompCommentConstructor :
 		COMMENT_LBRACE  Expr  RBRACE
 		{
-			cout << "CompCommentConstructor [content]\n";
+			if (debug) cout << "CompCommentConstructor [content]\n";
 		}
 	;
 
@@ -3082,19 +3352,19 @@ CompCommentConstructor :
 CompPIConstructor :
 		PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
 		{
-			cout << "CompPIConstructor [ ]\n";
+			if (debug) cout << "CompPIConstructor [ ]\n";
 		}
 	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
 		{
-			cout << "CompPIConstructor [content]\n";
+			if (debug) cout << "CompPIConstructor [content]\n";
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
-			cout << "CompPIConstructor [target]\n";
+			if (debug) cout << "CompPIConstructor [target]\n";
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
-			cout << "CompPIConstructor [target.content]\n";
+			if (debug) cout << "CompPIConstructor [target.content]\n";
 		}
 	;
 
@@ -3104,11 +3374,11 @@ CompPIConstructor :
 SingleType :
 		AtomicType
 		{
-			cout << "SingleType [atomic]\n";
+			if (debug) cout << "SingleType [atomic]\n";
 		}
 	|	AtomicType  HOOK
 		{
-			cout << "SingleType [atomic ?]\n";
+			if (debug) cout << "SingleType [atomic ?]\n";
 		}
 	;
 
@@ -3118,7 +3388,7 @@ SingleType :
 TypeDeclaration :
 		AS  SequenceType
 		{
-			cout << "TypeDeclaration [as seqtype]\n";
+			if (debug) cout << "TypeDeclaration [as seqtype]\n";
 		}
 	;
 
@@ -3128,15 +3398,15 @@ TypeDeclaration :
 SequenceType :
 		ItemType  %prec SEQUENCE_TYPE_REDUCE
 		{
-			cout << "ItemType [type]\n";
+			if (debug) cout << "ItemType [type]\n";
 		}
 	|	ItemType  OccurrenceIndicator
 		{
-			cout << "ItemType [type.occurs]\n";
+			if (debug) cout << "ItemType [type.occurs]\n";
 		}
 	|	VOID_TEST
 		{
-			cout << "ItemType [void]\n";
+			if (debug) cout << "ItemType [void]\n";
 		}
 	;
 
@@ -3146,15 +3416,15 @@ SequenceType :
 OccurrenceIndicator :
 		OCCURS_HOOK
 		{
-			cout << "OccurrenceIndicator [?]\n";
+			if (debug) cout << "OccurrenceIndicator [?]\n";
 		}
 	|	OCCURS_STAR
 		{
-			cout << "OccurrenceIndicator [*]\n";
+			if (debug) cout << "OccurrenceIndicator [*]\n";
 		}
 	|	OCCURS_PLUS 	/* gn: occurrence-indicatorsXQ */
 		{
-			cout << "OccurrenceIndicator [+]\n";
+			if (debug) cout << "OccurrenceIndicator [+]\n";
 		}
 	;
 
@@ -3164,15 +3434,15 @@ OccurrenceIndicator :
 ItemType :
 		AtomicType
 		{
-			cout << "ItemType [atomic]\n";
+			if (debug) cout << "ItemType [atomic]\n";
 		}
 	|	KindTest
 		{
-			cout << "ItemType [kind]\n";
+			if (debug) cout << "ItemType [kind]\n";
 		}
 	|	ITEM_TEST
 		{
-			cout << "ItemType [item]\n";
+			if (debug) cout << "ItemType [item]\n";
 		}
 	;
 
@@ -3182,7 +3452,7 @@ ItemType :
 AtomicType :
 		QNAME
 		{
-			cout << "AtomicType [qname]\n";
+			if (debug) cout << "AtomicType [qname]\n";
 		}
 	;
 
@@ -3192,47 +3462,47 @@ AtomicType :
 KindTest :
 		DocumentTest
 		{
-			cout << "KindTest [doc]\n";
+			if (debug) cout << "KindTest [doc]\n";
 			$$ = $1;
 		}
 	| ElementTest
 		{
-			cout << "KindTest [elem]\n";
+			if (debug) cout << "KindTest [elem]\n";
 			$$ = $1;
 		}
 	| AttributeTest
 		{
-			cout << "KindTest [attr]\n";
+			if (debug) cout << "KindTest [attr]\n";
 			$$ = $1;
 		}
 	| SchemaElementTest
 		{
-			cout << "KindTest [schema_elem]\n";
+			if (debug) cout << "KindTest [schema_elem]\n";
 			$$ = $1;
 		}
 	| SchemaAttributeTest
 		{
-			cout << "KindTest [schema_attr]\n";
+			if (debug) cout << "KindTest [schema_attr]\n";
 			$$ = $1;
 		}
 	| PITest
 		{
-			cout << "KindTest [pi]\n";
+			if (debug) cout << "KindTest [pi]\n";
 			$$ = $1;
 		}
 	| CommentTest
 		{
-			cout << "KindTest [comment]\n";
+			if (debug) cout << "KindTest [comment]\n";
 			$$ = $1;
 		}
 	| TextTest
 		{
-			cout << "KindTest [text]\n";
+			if (debug) cout << "KindTest [text]\n";
 			$$ = $1;
 		}
 	| AnyKindTest
 		{
-			cout << "KindTest [any]\n";
+			if (debug) cout << "KindTest [any]\n";
 			$$ = $1;
 		}
 	;
@@ -3243,7 +3513,7 @@ KindTest :
 AnyKindTest :
 		NODE_LPAR  RPAR
 		{
-			cout << "AnyKindTest [ ]\n";
+			if (debug) cout << "AnyKindTest [ ]\n";
 		}
 	;
  
@@ -3253,15 +3523,15 @@ AnyKindTest :
 DocumentTest :
 		DOCUMENT_NODE_LPAR  RPAR
 		{
-			cout << "DocumentTest [ ]\n";
+			if (debug) cout << "DocumentTest [ ]\n";
 		}
 	|	DOCUMENT_NODE_LPAR  ElementTest  RPAR
 		{
-			cout << "DocumentTest [elem]\n";
+			if (debug) cout << "DocumentTest [elem]\n";
 		}
 	|	DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
 		{
-			cout << "DocumentTest [schema_elem]\n";
+			if (debug) cout << "DocumentTest [schema_elem]\n";
 		}
 	;
 
@@ -3271,7 +3541,7 @@ DocumentTest :
 TextTest :
 		TEXT_LPAR  RPAR 
 		{
-			cout << "TextTest [ ]\n";
+			if (debug) cout << "TextTest [ ]\n";
 		}
 	;
 
@@ -3281,7 +3551,7 @@ TextTest :
 CommentTest :
 		COMMENT_LPAR  RPAR 
 		{
-			cout << "CommentTest [ ]\n";
+			if (debug) cout << "CommentTest [ ]\n";
 		}
 	;
  
@@ -3291,15 +3561,15 @@ CommentTest :
 PITest :
 		PI_LPAR  RPAR
 		{
-			cout << "PITest [ ]\n";
+			if (debug) cout << "PITest [ ]\n";
 		}
 	|	PI_LPAR  NCNAME  RPAR
 		{
-			cout << "PITest [ncname]\n";
+			if (debug) cout << "PITest [ncname]\n";
 		}
 	|	PI_LPAR  STRING_LITERAL  RPAR
 		{
-			cout << "PITest [stringlit]\n";
+			if (debug) cout << "PITest [stringlit]\n";
 		}
 	;
 
@@ -3309,15 +3579,15 @@ PITest :
 AttributeTest :
 		ATTRIBUTE_LPAR  RPAR
 		{
-			cout << "AttributeTest [ ]\n";
+			if (debug) cout << "AttributeTest [ ]\n";
 		}
 	|	ATTRIBUTE_LPAR  AttribNameOrWildcard  RPAR
 		{
-			cout << "AttributeTest [name_or_wild]\n";
+			if (debug) cout << "AttributeTest [name_or_wild]\n";
 		}
 	|	ATTRIBUTE_LPAR  AttribNameOrWildcard  COMMA  TypeName  RPAR
 		{
-			cout << "AttributeTest [name_or_wild.type]\n";
+			if (debug) cout << "AttributeTest [name_or_wild.type]\n";
 		}
 	;
 
@@ -3327,11 +3597,11 @@ AttributeTest :
 AttribNameOrWildcard :
 		AttributeName
 		{
-			cout << "AttribNameOrWildcard [attr]\n";
+			if (debug) cout << "AttribNameOrWildcard [attr]\n";
 		}
 	|	STAR
 		{
-			cout << "AttribNameOrWildcard [*]\n";
+			if (debug) cout << "AttribNameOrWildcard [*]\n";
 		}
 	;
 
@@ -3341,7 +3611,7 @@ AttribNameOrWildcard :
 SchemaAttributeTest :
 		SCHEMA_ATTRIBUTE_LPAR  AttributeDeclaration  RPAR
 		{
-			cout << "SchemaAttributeTest [ ]\n";
+			if (debug) cout << "SchemaAttributeTest [ ]\n";
 		}
 	;
 
@@ -3351,7 +3621,7 @@ SchemaAttributeTest :
 AttributeDeclaration :
 		AttributeName
 		{
-			cout << "AttributeDeclaration [ ]\n";
+			if (debug) cout << "AttributeDeclaration [ ]\n";
 		}
 	;
 
@@ -3361,19 +3631,19 @@ AttributeDeclaration :
 ElementTest :
 		ELEMENT_LPAR  RPAR
 		{
-			cout << "ElementTest [ ]\n";
+			if (debug) cout << "ElementTest [ ]\n";
 		}
 	|	ELEMENT_LPAR  ElementNameOrWildcard  RPAR
 		{
-			cout << "ElementTest [name_or_wild]\n";
+			if (debug) cout << "ElementTest [name_or_wild]\n";
 		}
 	|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR
 		{
-			cout << "ElementTest [name_or_wild.type]\n";
+			if (debug) cout << "ElementTest [name_or_wild.type]\n";
 		}
 	|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
 		{
-			cout << "ElementTest [name_or_wild.type ?]\n";
+			if (debug) cout << "ElementTest [name_or_wild.type ?]\n";
 		}
 	;
 
@@ -3383,11 +3653,11 @@ ElementTest :
 ElementNameOrWildcard :
 		ElementName
 		{
-			cout << "ElementNameOrWildcard [elem]\n";
+			if (debug) cout << "ElementNameOrWildcard [elem]\n";
 		}
 	|	STAR
 		{
-			cout << "ElementNameOrWildcard [*]\n";
+			if (debug) cout << "ElementNameOrWildcard [*]\n";
 		}
 	;
 
@@ -3397,7 +3667,7 @@ ElementNameOrWildcard :
 SchemaElementTest :
 		SCHEMA_ELEMENT_LPAR  ElementDeclaration  RPAR
 		{
-			cout << "SchemaElementTest [ ]\n";
+			if (debug) cout << "SchemaElementTest [ ]\n";
 		}
 	;
 
@@ -3407,7 +3677,7 @@ SchemaElementTest :
 ElementDeclaration :
 		ElementName
 		{
-			cout << "ElementDeclaration [ ]\n";
+			if (debug) cout << "ElementDeclaration [ ]\n";
 		}
 	;
 
@@ -3417,7 +3687,7 @@ ElementDeclaration :
 AttributeName :
 		QNAME
 		{
-			cout << "AttributeName [ ]\n";
+			if (debug) cout << "AttributeName [ ]\n";
 		}
 	;
 
@@ -3427,7 +3697,7 @@ AttributeName :
 ElementName :
 		QNAME
 		{
-			cout << "ElementName [ ]\n";
+			if (debug) cout << "ElementName [ ]\n";
 		}
 	;
 
@@ -3437,7 +3707,7 @@ ElementName :
 TypeName :
 		QNAME
 		{
-			cout << "TypeName [ ]\n";
+			if (debug) cout << "TypeName [ ]\n";
 		}
 	;
 
@@ -3482,7 +3752,7 @@ TypeName :
 RevalidationDecl :
 		DECLARE_REVALIDATION_MODE
 		{
-			cout << "RevalidationDecl [ ]\n";
+			if (debug) cout << "RevalidationDecl [ ]\n";
 		}
 	;
 
@@ -3492,23 +3762,23 @@ RevalidationDecl :
 InsertExpr :
 		DO_INSERT  ExprSingle  INTO  ExprSingle
 		{
-			cout << "InsertExpr [expr]\n";
+			if (debug) cout << "InsertExpr [expr]\n";
 		}
 	|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
 		{
-			cout << "InsertExpr [expr.as_first]\n";
+			if (debug) cout << "InsertExpr [expr.as_first]\n";
 		}
 	|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
 		{
-			cout << "InsertExpr [expr.as_last]\n";
+			if (debug) cout << "InsertExpr [expr.as_last]\n";
 		}
 	| DO_INSERT  ExprSingle  AFTER  ExprSingle
 		{
-			cout << "InsertExpr [expr.after]\n";
+			if (debug) cout << "InsertExpr [expr.after]\n";
 		}
 	| DO_INSERT  ExprSingle  BEFORE  ExprSingle
 		{
-			cout << "InsertExpr [expr.before]\n";
+			if (debug) cout << "InsertExpr [expr.before]\n";
 		}
 	;
 
@@ -3518,7 +3788,7 @@ InsertExpr :
 DeleteExpr:
 		DO_DELETE  ExprSingle
 		{
-			cout << "DeleteExpr [expr]\n";
+			if (debug) cout << "DeleteExpr [expr]\n";
 		}
 	;
 
@@ -3528,11 +3798,11 @@ DeleteExpr:
 ReplaceExpr :
 		DO_REPLACE  ExprSingle  WITH  ExprSingle
 		{
-			cout << "ReplaceExpr [expr.expr]\n";
+			if (debug) cout << "ReplaceExpr [expr.expr]\n";
 		}
 	|	DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
 		{
-			cout << "ReplaceExpr [value.expr]\n";
+			if (debug) cout << "ReplaceExpr [value.expr]\n";
 		}
 	;
 
@@ -3542,7 +3812,7 @@ ReplaceExpr :
 RenameExpr :
 		DO_RENAME  ExprSingle  AS  ExprSingle
 		{
-			cout << "RenameExpr [expr.expr]\n";
+			if (debug) cout << "RenameExpr [expr.expr]\n";
 		}
 	;
 
@@ -3567,7 +3837,7 @@ RenameExpr :
 TransformExpr :
 		TRANSFORM_COPY_DOLLAR  VarNameList  MODIFY  ExprSingle  RETURN  ExprSingle
 		{
-			cout << "TransformExpr [ ]\n";
+			if (debug) cout << "TransformExpr [ ]\n";
 		}
 	;
 
@@ -3577,11 +3847,11 @@ TransformExpr :
 VarNameList :
 		VARNAME	 GETS  ExprSingle
 		{
-			cout << "VarNameList [single]\n";
+			if (debug) cout << "VarNameList [single]\n";
 		}
 	|	VarNameList  COMMA_DOLLAR  VARNAME  GETS  ExprSingle
 		{
-			cout << "VarNameList [list]\n";
+			if (debug) cout << "VarNameList [list]\n";
 		}
 	;
 
@@ -3599,19 +3869,19 @@ VarNameList :
 FTSelection :
 		FTOr
 		{
-			cout << "FTSelection [or]\n";
+			if (debug) cout << "FTSelection [or]\n";
 		}
 	|	FTOr  FTMatchOptionProximityList
 		{
-			cout << "FTSelection [or.match_proximity]\n";
+			if (debug) cout << "FTSelection [or.match_proximity]\n";
 		}
 	|	FTOr  WEIGHT  RangeExpr
 		{
-			cout << "FTSelection [or.weight_range]\n";
+			if (debug) cout << "FTSelection [or.weight_range]\n";
 		}
 	|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
 		{
-			cout << "FTSelection [or.match_proximity.weight_range]\n";
+			if (debug) cout << "FTSelection [or.match_proximity.weight_range]\n";
 		}
 	;
 
@@ -3621,19 +3891,19 @@ FTSelection :
 FTMatchOptionProximityList :
 		FTMatchOption
 		{
-			cout << "FTMatchOptionProximityList [option_single]\n";
+			if (debug) cout << "FTMatchOptionProximityList [option_single]\n";
 		}
 	| FTProximity
 		{
-			cout << "FTMatchOptionProximityList [proximity_single]\n";
+			if (debug) cout << "FTMatchOptionProximityList [proximity_single]\n";
 		}
 	| FTMatchOptionProximityList  FTMatchOption
 		{
-			cout << "FTMatchOptionProximityList [option_list]\n";
+			if (debug) cout << "FTMatchOptionProximityList [option_list]\n";
 		}
 	| FTMatchOptionProximityList  FTProximity
 		{
-			cout << "FTMatchOptionProximityList [proximity_list]\n";
+			if (debug) cout << "FTMatchOptionProximityList [proximity_list]\n";
 		}
 	;
 
@@ -3643,11 +3913,11 @@ FTMatchOptionProximityList :
 FTOr :
 		FTAnd
 		{
-			cout << "FTOr [and]\n";
+			if (debug) cout << "FTOr [and]\n";
 		}
 	|	FTOr  FTOR  FTAnd
 		{
-			cout << "FTOr [or.and]\n";
+			if (debug) cout << "FTOr [or.and]\n";
 		}
 	;
 
@@ -3657,11 +3927,11 @@ FTOr :
 FTAnd :
 		FTMildnot
 		{
-			cout << "FTAnd [mild_not]\n";
+			if (debug) cout << "FTAnd [mild_not]\n";
 		}
 	|	FTAnd  FTAND  FTMildnot
 		{
-			cout << "FTAnd [and.mild_not]\n";
+			if (debug) cout << "FTAnd [and.mild_not]\n";
 		}
 	;
 
@@ -3671,11 +3941,11 @@ FTAnd :
 FTMildnot :
 		FTUnaryNot
 		{
-			cout << "FTMildNot [unary_not]\n";
+			if (debug) cout << "FTMildNot [unary_not]\n";
 		}
 	|	FTMildnot  FTNOT_IN  FTUnaryNot
 		{
-			cout << "FTMildNot [mild_not.unary_not]\n";
+			if (debug) cout << "FTMildNot [mild_not.unary_not]\n";
 		}
 	;
 
@@ -3685,11 +3955,11 @@ FTMildnot :
 FTUnaryNot :
 		FTWordsSelection
 		{
-			cout << "FTUnaryNot [words]\n";
+			if (debug) cout << "FTUnaryNot [words]\n";
 		}
 	|	FTNOT  FTWordsSelection
 		{
-			cout << "FTUnaryNot [not.words]\n";
+			if (debug) cout << "FTUnaryNot [not.words]\n";
 		}
 	;
 
@@ -3699,15 +3969,15 @@ FTUnaryNot :
 FTWordsSelection :
 		FTWords
 		{
-			cout << "FTWordsSelection [words]\n";
+			if (debug) cout << "FTWordsSelection [words]\n";
 		}
 	|	FTWords FTTimes
 		{
-			cout << "FTWordsSelection [words.times]\n";
+			if (debug) cout << "FTWordsSelection [words.times]\n";
 		}
 	| LPAR  FTSelection  RPAR
 		{
-			cout << "FTWordsSelection [selection]\n";
+			if (debug) cout << "FTWordsSelection [selection]\n";
 		}
 	;
 
@@ -3717,11 +3987,11 @@ FTWordsSelection :
 FTWords :
 		FTWordsValue 
 		{
-			cout << "FTWords [value]\n";
+			if (debug) cout << "FTWords [value]\n";
 		}
 	|	FTWordsValue  FTAnyallOption
 		{
-			cout << "FTWords [value.any_all_option]\n";
+			if (debug) cout << "FTWords [value.any_all_option]\n";
 		}
 	;
 
@@ -3731,11 +4001,11 @@ FTWords :
 FTWordsValue :
 		Literal
 		{
-			cout << "FTWordsValue [literal]\n";
+			if (debug) cout << "FTWordsValue [literal]\n";
 		}
 	| LBRACE  Expr  RBRACE
 		{
-			cout << "FTWordsValue [expr]\n";
+			if (debug) cout << "FTWordsValue [expr]\n";
 		}
 	;
 
@@ -3745,23 +4015,23 @@ FTWordsValue :
 FTProximity :
 		FTOrderedIndicator
 		{
-			cout << "FTProximity [order]\n";
+			if (debug) cout << "FTProximity [order]\n";
 		}
 	| FTWindow
 		{
-			cout << "FTProximity [window]\n";
+			if (debug) cout << "FTProximity [window]\n";
 		}
 	| FTDistance
 		{
-			cout << "FTProximity [distance]\n";
+			if (debug) cout << "FTProximity [distance]\n";
 		}
 	| FTScope
 		{
-			cout << "FTProximity [scope]\n";
+			if (debug) cout << "FTProximity [scope]\n";
 		}
 	| FTContent
 		{
-			cout << "FTProximity [content]\n";
+			if (debug) cout << "FTProximity [content]\n";
 		}
 	;
 
@@ -3771,7 +4041,7 @@ FTProximity :
 FTOrderedIndicator :
 		ORDERED
 		{
-			cout << "FTOrderedIndicator [ ]\n";
+			if (debug) cout << "FTOrderedIndicator [ ]\n";
 		}
 	;
 
@@ -3781,37 +4051,37 @@ FTOrderedIndicator :
 FTMatchOption :
 		FTCaseOption
 		{
-			cout << "FTMatchOption [case]\n";
+			if (debug) cout << "FTMatchOption [case]\n";
 			$$ = $1;
 		}
 	| FTDiacriticsOption
 		{
-			cout << "FTMatchOption [diacritics]\n";
+			if (debug) cout << "FTMatchOption [diacritics]\n";
 			$$ = $1;
 		}
 	| FTStemOption
 		{
-			cout << "FTMatchOption [stem]\n";
+			if (debug) cout << "FTMatchOption [stem]\n";
 			$$ = $1;
 		}
 	| FTThesaurusOption
 		{
-			cout << "FTMatchOption [thesaurus]\n";
+			if (debug) cout << "FTMatchOption [thesaurus]\n";
 			$$ = $1;
 		}
 	| FTStopwordOption
 		{
-			cout << "FTMatchOption [stopword]\n";
+			if (debug) cout << "FTMatchOption [stopword]\n";
 			$$ = $1;
 		}
 	| FTLanguageOption
 		{
-			cout << "FTMatchOption [language]\n";
+			if (debug) cout << "FTMatchOption [language]\n";
 			$$ = $1;
 		}
 	| FTWildCardOption
 		{
-			cout << "FTMatchOption [wildcard]\n";
+			if (debug) cout << "FTMatchOption [wildcard]\n";
 			$$ = $1;
 		}
 	;
@@ -3822,19 +4092,19 @@ FTMatchOption :
 FTCaseOption :
 		LOWERCASE
 		{
-			cout << "FTCaseOption [lower]\n";
+			if (debug) cout << "FTCaseOption [lower]\n";
 		}
 	| UPPERCASE
 		{
-			cout << "FTCaseOption [upper]\n";
+			if (debug) cout << "FTCaseOption [upper]\n";
 		}
 	| CASE_SENSITIVE
 		{
-			cout << "FTCaseOption [sensitive]\n";
+			if (debug) cout << "FTCaseOption [sensitive]\n";
 		}
 	| CASE_INSENSITIVE
 		{
-			cout << "FTCaseOption [insensitive]\n";
+			if (debug) cout << "FTCaseOption [insensitive]\n";
 		}
 	;
 
@@ -3844,19 +4114,19 @@ FTCaseOption :
 FTDiacriticsOption :
 		WITH_DIACRITICS
 		{
-			cout << "FTDiacriticsOption [with]\n";
+			if (debug) cout << "FTDiacriticsOption [with]\n";
 		}
 	| WITHOUT_DIACRITICS
 		{
-			cout << "FTDiacriticsOption [without]\n";
+			if (debug) cout << "FTDiacriticsOption [without]\n";
 		}
 	| DIACRITICS_SENSITIVE
 		{
-			cout << "FTDiacriticsOption [sensitive]\n";
+			if (debug) cout << "FTDiacriticsOption [sensitive]\n";
 		}
 	| DIACRITICS_INSENSITIVE
 		{
-			cout << "FTDiacriticsOption [insensitive]\n";
+			if (debug) cout << "FTDiacriticsOption [insensitive]\n";
 		}
 	;
 
@@ -3866,11 +4136,11 @@ FTDiacriticsOption :
 FTStemOption :
 		WITH_STEMMING
 		{
-			cout << "FTStemOption [with]\n";
+			if (debug) cout << "FTStemOption [with]\n";
 		}
 	| WITHOUT_STEMMING
 		{
-			cout << "FTStemOption [without]\n";
+			if (debug) cout << "FTStemOption [without]\n";
 		}
 	;
 
@@ -3880,31 +4150,31 @@ FTStemOption :
 FTThesaurusOption :
 		WITH_THESAURUS  FTThesaurusID
 		{
-			cout << "FTThesaurusOption [id]\n";
+			if (debug) cout << "FTThesaurusOption [id]\n";
 		}
 	|	WITH_THESAURUS  DEFAULT
 		{
-			cout << "FTThesaurusOption [default]\n";
+			if (debug) cout << "FTThesaurusOption [default]\n";
 		}
 	| WITH_THESAURUS  LPAR  FTThesaurusID  RPAR
 		{
-			cout << "FTThesaurusOption [(id)]\n";
+			if (debug) cout << "FTThesaurusOption [(id)]\n";
 		}
 	| WITH_THESAURUS  LPAR  FTThesaurusID COMMA  FTThesaurusList  RPAR
 		{
-			cout << "FTThesaurusOption [(id,id,..)]\n";
+			if (debug) cout << "FTThesaurusOption [(id,id,..)]\n";
 		}
 	| WITH_THESAURUS  LPAR  DEFAULT  RPAR
 		{
-			cout << "FTThesaurusOption [(default)]\n";
+			if (debug) cout << "FTThesaurusOption [(default)]\n";
 		}
 	| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
 		{
-			cout << "FTThesaurusOption [(default,id,id,..)]\n";
+			if (debug) cout << "FTThesaurusOption [(default,id,id,..)]\n";
 		}
 	| WITHOUT_THESAURUS
 		{
-			cout << "FTThesaurusOption [without]\n";
+			if (debug) cout << "FTThesaurusOption [without]\n";
 		}
 	;
 
@@ -3914,11 +4184,11 @@ FTThesaurusOption :
 FTThesaurusList :
 		FTThesaurusID
 		{
-			cout << "FTThesaurusList [single]\n";
+			if (debug) cout << "FTThesaurusList [single]\n";
 		}
 	| FTThesaurusList  COMMA  FTThesaurusID
 		{
-			cout << "FTThesaurusList [list]\n";
+			if (debug) cout << "FTThesaurusList [list]\n";
 		}
 	;
 
@@ -3928,19 +4198,19 @@ FTThesaurusList :
 FTThesaurusID :
 		AT  STRING_LITERAL
 		{
-			cout << "FTThesaurusID [name]\n";
+			if (debug) cout << "FTThesaurusID [name]\n";
 		}
 	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
 		{
-			cout << "FTThesaurusID [name.rel]\n";
+			if (debug) cout << "FTThesaurusID [name.rel]\n";
 		}
 	|	AT  STRING_LITERAL  FTRange  LEVELS
 		{
-			cout << "FTThesaurusID [name.range]\n";
+			if (debug) cout << "FTThesaurusID [name.range]\n";
 		}
 	|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
 		{
-			cout << "FTThesaurusID [name.rel.range]\n";
+			if (debug) cout << "FTThesaurusID [name.rel.range]\n";
 		}
 	;
 
@@ -3950,23 +4220,23 @@ FTThesaurusID :
 FTStopwordOption :
 		WITH_STOP_WORDS  FTRefOrList
 		{
-			cout << "FTStopwordOption [list]\n";
+			if (debug) cout << "FTStopwordOption [list]\n";
 		}
 	|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
 		{
-			cout << "FTStopwordOption [list.incl_excl]\n";
+			if (debug) cout << "FTStopwordOption [list.incl_excl]\n";
 		}
 	| WITH_DEFAULT_STOP_WORDS 
 		{
-			cout << "FTStopwordOption [default]\n";
+			if (debug) cout << "FTStopwordOption [default]\n";
 		}
 	| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
 		{
-			cout << "FTStopwordOption [default.incl_excl]\n";
+			if (debug) cout << "FTStopwordOption [default.incl_excl]\n";
 		}
 	| WITHOUT_STOP_WORDS
 		{
-			cout << "FTStopwordOption [without]\n";
+			if (debug) cout << "FTStopwordOption [without]\n";
 		}
 	;
 
@@ -3976,11 +4246,11 @@ FTStopwordOption :
 FTInclExclStringLiteralList :
 		FTInclExclStringLiteral
 		{
-			cout << "FTInclExclStringLiteralList [.]\n";
+			if (debug) cout << "FTInclExclStringLiteralList [.]\n";
 		}
 	| FTInclExclStringLiteralList  FTInclExclStringLiteral
 		{
-			cout << "FTInclExclStringLiteralList [*]\n";
+			if (debug) cout << "FTInclExclStringLiteralList [*]\n";
 		}
 	;
 
@@ -3990,11 +4260,11 @@ FTInclExclStringLiteralList :
 FTRefOrList :
 		AT  STRING_LITERAL
 		{
-			cout << "FTRefOrList [.]\n";
+			if (debug) cout << "FTRefOrList [.]\n";
 		}
 	| LPAR  FTStringLiteralList  RPAR 
 		{
-			cout << "FTRefOrList [(*)]\n";
+			if (debug) cout << "FTRefOrList [(*)]\n";
 		}
 	;
 
@@ -4004,11 +4274,11 @@ FTRefOrList :
 FTStringLiteralList :
 		STRING_LITERAL
 		{
-			cout << "FTStringLiteralList [.]\n";
+			if (debug) cout << "FTStringLiteralList [.]\n";
 		}
 	|	FTStringLiteralList  STRING_LITERAL
 		{
-			cout << "FTStringLiteralList [*]\n";
+			if (debug) cout << "FTStringLiteralList [*]\n";
 		}
 	;
 
@@ -4018,11 +4288,11 @@ FTStringLiteralList :
 FTInclExclStringLiteral :
 		UNION  FTRefOrList
 		{
-			cout << "FTInclExclStringLiteral [union]\n";
+			if (debug) cout << "FTInclExclStringLiteral [union]\n";
 		}
 	|	EXCEPT  FTRefOrList
 		{
-			cout << "FTInclExclStringLiteral [except]\n";
+			if (debug) cout << "FTInclExclStringLiteral [except]\n";
 		}
 	;
 
@@ -4032,7 +4302,7 @@ FTInclExclStringLiteral :
 FTLanguageOption :
 		LANGUAGE  STRING_LITERAL
 		{
-			cout << "FTLanguageOption [ ]\n";
+			if (debug) cout << "FTLanguageOption [ ]\n";
 		}
 	;
 
@@ -4042,11 +4312,11 @@ FTLanguageOption :
 FTWildCardOption :
 		WITH_WILDCARDS
 		{
-			cout << "FTWildCardOption [with]\n";
+			if (debug) cout << "FTWildCardOption [with]\n";
 		}
 	| WITHOUT_WILDCARDS
 		{
-			cout << "FTWildCardOption [without]\n";
+			if (debug) cout << "FTWildCardOption [without]\n";
 		}
 	;
 
@@ -4056,15 +4326,15 @@ FTWildCardOption :
 FTContent :
 		AT_START
 		{
-			cout << "FTContent [start]\n";
+			if (debug) cout << "FTContent [start]\n";
 		}
 	| AT_END
 		{
-			cout << "FTContent [end]\n";
+			if (debug) cout << "FTContent [end]\n";
 		}
 	| ENTIRE_CONTENT
 		{
-			cout << "FTContent [entire]\n";
+			if (debug) cout << "FTContent [entire]\n";
 		}
 	;
 
@@ -4074,23 +4344,23 @@ FTContent :
 FTAnyallOption :
 		ANY
 		{
-			cout << "FTAnyallOption [any]\n";
+			if (debug) cout << "FTAnyallOption [any]\n";
 		}
 	|	ANY_WORD
 		{
-			cout << "FTAnyallOption [any_word]\n";
+			if (debug) cout << "FTAnyallOption [any_word]\n";
 		}
 	| ALL
 		{
-			cout << "FTAnyallOption [all]\n";
+			if (debug) cout << "FTAnyallOption [all]\n";
 		}
 	| ALL_WORDS
 		{
-			cout << "FTAnyallOption [all_words]\n";
+			if (debug) cout << "FTAnyallOption [all_words]\n";
 		}
 	| PHRASE
 		{
-			cout << "FTAnyallOption [phrase]\n";
+			if (debug) cout << "FTAnyallOption [phrase]\n";
 		}
 	;
 
@@ -4100,19 +4370,19 @@ FTAnyallOption :
 FTRange :
 		EXACTLY  UnionExpr
 		{
-			cout << "FTRange [exactly]\n";
+			if (debug) cout << "FTRange [exactly]\n";
 		}
 	| AT_LEAST  UnionExpr
 		{
-			cout << "FTRange [at_least]\n";
+			if (debug) cout << "FTRange [at_least]\n";
 		}
 	| AT_MOST  UnionExpr
 		{
-			cout << "FTRange [at_most]\n";
+			if (debug) cout << "FTRange [at_most]\n";
 		}
 	| FROM  UnionExpr  TO  UnionExpr
 		{
-			cout << "FTRange [range]\n";
+			if (debug) cout << "FTRange [range]\n";
 		}
 	;
 
@@ -4122,7 +4392,7 @@ FTRange :
 FTDistance :
 		DISTANCE  FTRange  FTUnit
 		{
-			cout << "FTDistance [ ]\n";
+			if (debug) cout << "FTDistance [ ]\n";
 		}
 	;
 
@@ -4132,7 +4402,7 @@ FTDistance :
 FTWindow :
 		WINDOW  UnionExpr  FTUnit
 		{
-			cout << "FTWindow [ ]\n";
+			if (debug) cout << "FTWindow [ ]\n";
 		}
 	;
 
@@ -4142,7 +4412,7 @@ FTWindow :
 FTTimes :
 		OCCURS  FTRange  TIMES
 		{
-			cout << "FTTimes [ ]\n";
+			if (debug) cout << "FTTimes [ ]\n";
 		}
 	;
 
@@ -4152,11 +4422,11 @@ FTTimes :
 FTScope :
 		SAME  FTBigUnit
 		{
-			cout << "FTTimes [same]\n";
+			if (debug) cout << "FTTimes [same]\n";
 		}
 	|	DIFFERENT  FTBigUnit
 		{
-			cout << "FTTimes [different]\n";
+			if (debug) cout << "FTTimes [different]\n";
 		}
 	;
 
@@ -4166,15 +4436,15 @@ FTScope :
 FTUnit :
 		WORDS
 		{
-			cout << "FTUnit [words]\n";
+			if (debug) cout << "FTUnit [words]\n";
 		}
 	| SENTENCES
 		{
-			cout << "FTUnit [sentences]\n";
+			if (debug) cout << "FTUnit [sentences]\n";
 		}
 	| PARAGRAPH
 		{
-			cout << "FTUnit [paragraph]\n";
+			if (debug) cout << "FTUnit [paragraph]\n";
 		}
 	;
 
@@ -4184,11 +4454,11 @@ FTUnit :
 FTBigUnit :
 		SENTENCE
 		{
-			cout << "FTBigUnit [sentence]\n";
+			if (debug) cout << "FTBigUnit [sentence]\n";
 		}
 	| PARAGRAPH
 		{
-			cout << "FTBigUnit [paragraph]\n";
+			if (debug) cout << "FTBigUnit [paragraph]\n";
 		}
 	;
 
@@ -4198,7 +4468,7 @@ FTBigUnit :
 FTIgnoreOption :
 		WITHOUT_CONTENT  UnionExpr
 		{
-			cout << "FTIgnoreOption [ ]\n";
+			if (debug) cout << "FTIgnoreOption [ ]\n";
 		}
 	;
 

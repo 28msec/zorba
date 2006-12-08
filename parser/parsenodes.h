@@ -253,7 +253,7 @@ public:
 class MainModule : public parsenode
 /*______________________________________________________________________
 |
-|	::= Prolog  QueryBody
+|	::= Prolog  QueryBody | QueryBody
 |_______________________________________________________________________*/
 {
 protected:
@@ -263,6 +263,8 @@ protected:
 public:
 	MainModule(
 		rchandle<Prolog>,
+		rchandle<QueryBody>);
+	MainModule(
 		rchandle<QueryBody>);
 	MainModule();
 	~MainModule();
@@ -536,18 +538,26 @@ class DefaultNamespaceDecl : public SIND_Decl
 |			| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
 |_______________________________________________________________________*/
 {
+public:
+	enum default_namespace_mode_t {
+		element,
+		function
+	};
+
 protected:
+	enum default_namespace_mode_t mode;
 	std::string default_element_namespace;
 	std::string default_function_namespace;
 
 public:
 	DefaultNamespaceDecl(
-		std::string const& default_element_namespace,
-		std::string const& default_function_namespace);
+		enum default_namespace_mode_t mode,
+		std::string const& default_namespace);
 	DefaultNamespaceDecl();
 	~DefaultNamespaceDecl();
 
 public:
+	enum default_namespace_mode_t get_mode() const { return mode; }
 	std::string get_default_element_namespace() const
 		{ return default_element_namespace; }
 	std::string get_default_function_namespace() const
@@ -563,7 +573,6 @@ class OptionDecl : public parsenode
 /*______________________________________________________________________
 |
 |	::= DECLARE_OPTION  QNAME  STRING_LITERAL
-|
 |_______________________________________________________________________*/
 {
 protected:
@@ -641,16 +650,19 @@ class CopyNamespacesDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::copy_ns_mode_t copy_ns_mode;
+	rchandle<PreserveMode> preserve_h;
+	rchandle<InheritMode> inherit_h;
 
 public:
-	CopyNamespacesDecl(static_context::copy_ns_mode_t);
+	CopyNamespacesDecl(
+		rchandle<PreserveMode>,
+		rchandle<InheritMode>);
 	CopyNamespacesDecl();
 	~CopyNamespacesDecl();
 
-public:
-	static_context::copy_ns_mode_t
-		get_copy_ns_mode() const { return copy_ns_mode; }
+public: 
+	rchandle<PreserveMode> get_preserve() const { return preserve_h; }
+	rchandle<InheritMode> get_inherit() const { return inherit_h; }
 
 };
 
@@ -767,7 +779,15 @@ protected:
 	rchandle<URI_LITERALList> at_list_h;
 
 public:
-	SchemaImport();
+	SchemaImport(
+		std::string const& uri);
+	SchemaImport(
+		rchandle<SchemaPrefix>,
+		std::string const& uri);
+	SchemaImport(
+		std::string const& uri,
+		rchandle<URI_LITERALList>);
+	SchemaImport(
 		rchandle<SchemaPrefix>,
 		std::string const& uri,
 		rchandle<URI_LITERALList>);
@@ -823,6 +843,8 @@ public:
 	SchemaPrefix(
 		std::string const& prefix;
 		bool default_b);
+	SchemaPrefix(
+		std::string const& prefix);
 	SchemaPrefix();
 	~SchemaPrefix();
 
@@ -852,8 +874,16 @@ protected:
 
 public:
 	ModuleImport(
-		std::string const& prefix;
-		std::string const& uri;
+		std::string const& uri);
+	ModuleImport(
+		std::string const& prefix,
+		std::string const& uri);
+	ModuleImport(
+		std::string const& uri,
+		rchandle<URI_LITERALList>);
+	ModuleImport(
+		std::string const& prefix,
+		std::string const& uri,
 		rchandle<URI_LITERALList>);
 	ModuleImport();
 	~ModuleImport();
@@ -887,8 +917,17 @@ protected:
 public:
 	VarDecl(
 		std::string varname,
+		rchandle<ExprSingle>);
+	VarDecl(
+		std::string varname,
+		bool extern_b);
+	VarDecl(
+		std::string varname,
 		rchandle<TypeDeclaration>,
-		rchandle<ExprSingle>,
+		rchandle<ExprSingle>);
+	VarDecl(
+		std::string varname,
+		rchandle<TypeDeclaration>,
 		bool extern_b);
 	VarDecl();
 	~VarDecl();
@@ -912,9 +951,17 @@ class ConstructionDecl : public parsenode
 |			|	DECLARE_CONSTRUCTION  STRIP
 |_______________________________________________________________________*/
 {
+protected:
+	enum static_context::boundary_space_t mode;
+
 public:
+	ConstructionDecl(
+		enum static_context::boundary_space_t mode);
 	ConstructionDecl();
 	~ConstructionDecl();
+
+public:
+	enum static_context::boundary_space_t get_mode() const { mode; }
 
 };
 
@@ -933,9 +980,19 @@ class FunctionDecl : public parsenode
 |			|	DECLARE_FUNCTION  QNAME  LPAR  RPAR  AS  SequenceType  EnclosedExpr
 |			|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  AS  SequenceType  EXTERNAL
 |			|	DECLARE_FUNCTION  QNAME  LPAR  ParamList  RPAR  AS  SequenceType  EnclosedExpr
+|
 |_______________________________________________________________________*/
 {
+public:
+	enum function_type_t {
+		extern,
+		read,
+		update,
+		extern_update,
+	};
+
 protected:
+	enum function_type_t type;
 	rchandle<QName> name_h;
 	rchandle<ParamList> paramlist_h;
 	rchandle<ExclosedExpr> body_h;
@@ -945,10 +1002,41 @@ protected:
 public:
 	FunctionDecl(
 		rchandle<QName>,
+		enum function_type_t type);
+	FunctionDecl(
+		rchandle<QName>,
+		rchandle<ExclosedExpr>,
+		enum function_type_t type);
+	FunctionDecl(
+		rchandle<QName>,
+		rchandle<ParamList>,
+		enum function_type_t type);
+	FunctionDecl(
+		rchandle<QName>,
 		rchandle<ParamList>,
 		rchandle<ExclosedExpr>,
+		enum function_type_t type);
+	FunctionDecl(
+		rchandle<QName>,
 		rchandle<SequenceType>,
-		bool extern_b);
+		enum function_type_t type);
+	FunctionDecl(
+		rchandle<QName>,
+		rchandle<ParamList>,
+		rchandle<ExclosedExpr>,
+		enum function_type_t type);
+	FunctionDecl(
+		rchandle<QName>,
+		rchandle<ParamList>,
+		rchandle<SequenceType>,
+		enum function_type_t type);
+	FunctionDecl(
+		rchandle<QName>,
+		rchandle<ParamList>,
+		rchandle<SequenceType>,
+		rchandle<ExclosedExpr>,
+		enum function_type_t type);
+
 	FunctionDecl();
 	~FunctionDecl();
 
@@ -957,7 +1045,7 @@ public:
 	rchandle<ParamList> get_paramlist() const { return paramlist_h; }
 	rchandle<ExclosedExpr> get_body() const { return body_h; }
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
-	bool get_extern_bit() const { return extern_b; }
+	enum function_type_t get_type() const { return type; }
 
 };
 
@@ -1124,6 +1212,17 @@ class FLWORExpr : public ExprSingle
 public:
 	FLWORExpr(
 		rchandle<ForLetClauseList>,
+		rchandle<ExprSingle>);
+	FLWORExpr(
+		rchandle<ForLetClauseList>,
+		rchandle<WhereClause>,
+		rchandle<ExprSingle>);
+	FLWORExpr(
+		rchandle<ForLetClauseList>,
+		rchandle<OrderByClause>,
+		rchandle<ExprSingle>);
+	FLWORExpr(
+		rchandle<ForLetClauseList>,
 		rchandle<WhereClause>,
 		rchandle<OrderByClause>,
 		rchandle<ExprSingle>);
@@ -1254,10 +1353,41 @@ protected:
 public:
 	VarInDecl(
 		std::string varname,
+		rchandle<ExprSingle>);
+	VarInDecl(
+		std::string varname,
+		rchandle<TypeDeclaration>
+		rchandle<ExprSingle>);
+	VarInDecl(
+		std::string varname,
+		rchandle<PositionalVar>
+		rchandle<ExprSingle>);
+	VarInDecl(
+		std::string varname,
+		rchandle<TypeDeclaration>
+		rchandle<PositionalVar>
+		rchandle<ExprSingle>);
+	VarInDecl(
+		std::string varname,
+		rchandle<FTScoreVar>
+		rchandle<ExprSingle>);
+	VarInDecl(
+		std::string varname,
+		rchandle<TypeDeclaration>
+		rchandle<FTScoreVar>
+		rchandle<ExprSingle>);
+	VarInDecl(
+		std::string varname,
+		rchandle<PositionalVar>
+		rchandle<FTScoreVar>
+		rchandle<ExprSingle>);
+	VarInDecl(
+		std::string varname,
 		rchandle<TypeDeclaration>
 		rchandle<PositionalVar>
 		rchandle<FTScoreVar>
 		rchandle<ExprSingle>);
+
 	VarInDecl();
 	~VarInDecl();
 
@@ -2535,8 +2665,15 @@ protected:
 	rchandle<RelatvePathExpr> relpath_expr_h;
 
 public:
+	PathExpr(
+		enum pathtype_t type,
+		rchandle<RelatvePathExpr>);
 	PathExpr();
 	~PathExpr();
+
+public:
+	enum pathtype_t get_type() const { return type; }
+	rchandle<RelatvePathExpr> get_relpath_expr() const { return relpath_expr_h; }
 
 };
 
@@ -2563,8 +2700,15 @@ protected:
 	rchandle<StepExpr> step_expr_h;
 
 public:
+	RelativePathExpr(
+		rchandle<RelativePathExpr>,
+		rchandle<StepExpr>);
 	RelativePathExpr();
 	~RelativePathExpr();
+
+public:
+	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
+	rchandle<StepExpr> get_step_expr() const { return step_expr_h; }
 
 };
 
@@ -2602,8 +2746,19 @@ protected:
 	rchandle<PredicateList> predicate_list_h;
 
 public:
+	AxisStep(
+		rchandle<ForwardStep>,
+		rchandle<PredicateList>);
+	AxisStep(
+		rchandle<ReverseStep>,
+		rchandle<PredicateList>);
 	AxisStep();
 	~AxisStep();
+
+public:
+	rchandle<ForwardStep> get_forward_step() const { return forward_step_h; }
+	rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
+	rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
 
 };
 
@@ -2624,8 +2779,18 @@ protected:
 	rchandle<AbbreviatedForwardStep> abbrev_step_h;
 
 public:
+	ForwardStep(
+		rchandle<ForwardAxis>,
+		rchandle<NodeTest>);
+	ForwardStep(
+		rchandle<AbbreviatedForwardStep>);
 	ForwardStep();
 	~ForwardStep();
+
+public:
+	rchandle<ForwardAxis> get_forward_axis() const { return forward_axis_h; }
+	rchandle<NodeTest> get_node_test() const { return node_test_h; }
+	rchandle<AbbreviatedForwardStep> get_abbrev_step() const { return abbrev_step_h; }
 
 };
 
@@ -2660,8 +2825,12 @@ protected:
 	enum forward_axis_t axis;
 
 public:
+	ForwardAxis(enum forward_axis_t);
 	ForwardAxis();
 	~ForwardAxis();
+
+public:
+	enum forward_axis_t get_axis() const { return axis; }
 
 };
 
@@ -2681,8 +2850,14 @@ proteced:
 	bool attr_b;
 	
 public:
+	AbbrevForwardStep( rchandle<NodeTest>, bool attr_b );
+	AbbrevForwardStep( rchandle<NodeTest> );
 	AbbrevForwardStep();
 	~AbbrevForwardStep();
+
+public:
+	rchandle<NodeTest> get_node_test() const { return node_test_h; }
+	bool get_attr_bit() const { return attr_b; }
 
 };
 
@@ -2702,8 +2877,15 @@ protected:
 	rchandle<NodeTest> node_test_h;
 
 public:
+	ReverseStep(
+		rchandle<ReverseAxis>,
+		rchandle<NodeTest>);
 	ReverseStep();
 	~ReverseStep();
+
+public:
+	rchandle<ReverseAxis> get_axis() const { return axis_h; }
+	rchandle<NodeTest> get_node_test() const { return node_test_h; }
 
 };
 
