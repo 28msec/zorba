@@ -154,24 +154,27 @@ public:	// types
 		strip
 	};
 
-	enum ordering_mode_t ordering_mode {
+	enum ordering_mode_t ordering_mode_t {
 		ordered,
 		unordered
 	};
 
-	enum order_empty_t order_empty_mode {
+	enum order_empty_t order_empty_mode_t {
 		greatest,
 		least
 	};
 
-	enum boundary_space_t boundary_space_mode {
+	enum boundary_space_t boundary_space_mode_t {
 		preserve,
 		strip
 	};
 
-	enum copy_ns_t copy_ns_mode {
+	enum copy_ns_t inherit_mode_t {
 		inherit,
-		no_inherit,
+		no_inherit
+	};
+
+	enum preserve_mode_t {
 		preserve,
 		no_preserve
 	};
