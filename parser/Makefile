@@ -5,9 +5,15 @@ scanner : xquery_scanner.l
 	flex -i -t xquery_scanner.l >xquery_scanner.yy.cpp
 	g++ -c ${OPT} -o xquery_scanner.${SUFX} xquery_scanner.yy.cpp
 
+scanner0 : xquery_scanner.l
+	flex -i -t xquery_scanner.l >xquery_scanner.yy.cpp
+
 parser : xquery_parser.y
 	bison -v -t -d xquery_parser.y
 	g++ -c ${OPT} -o xquery_parser.${SUFX} xquery_parser.tab.c
+
+parser0 : xquery_parser.y
+	bison -v -t -d xquery_parser.y
 
 driver : xquery_driver.h xquery_driver.cpp
 	g++ -c ${OPT} -o xquery_driver.${SUFX} xquery_driver.cpp
