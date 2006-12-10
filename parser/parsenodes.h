@@ -2394,7 +2394,9 @@ protected:
 	enum gencomp_t type;
 
 public:
-	GeneralComp(enum gencomp_t);
+	GeneralComp(
+		yy::xquery_parser::location_type const&,
+		enum gencomp_t);
 	GeneralComp();
 	~GeneralComp();
 
@@ -2425,8 +2427,11 @@ public:
 
 protected:
 	enum valcomp_t type; 
+
 public:
-	ValueComp(enum valcomp_t);
+	ValueComp(
+		yy::xquery_parser::location_type const&,
+		enum valcomp_t);
 	ValueComp();
 	~ValueComp();
 
@@ -2456,7 +2461,9 @@ protected:
 	enum nodecomp_t type;
 
 public:
-	NodeComp(enum nodecomp_t);
+	NodeComp(
+		yy::xquery_parser::location_type const&,
+		enum nodecomp_t);
 	NodeComp();
 	~NodeComp();
 
@@ -2476,20 +2483,26 @@ class ValidateExpr : public exprnode
 |			|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+public:
+	enum validation_mode_t {
+		strict,
+		lax
+	};
+
 protected:
+	enum validation_mode_t valmode;
 	rchandle<Expr> expr_h;
-	validatemode_t valmode;
 
 public:
 	ValidateExpr(
-		rchandle<Expr>,
-		validatemode_t valmode);
-	ValidateExpr();
+		yy::xquery_parser::location_type const&,
+		std::string const& valmode,
+		rchandle<Expr>);
 	~ValidateExpr();
 
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
-	validatemode_t get_valmode() const { return valmode; }
+	validation_mode_t get_valmode() const { return valmode; }
 
 };
 
@@ -2510,9 +2523,9 @@ protected:
 
 public:
 	ExtensionExpr(
+		yy::xquery_parser::location_type const&,
 		rchandle<PragmaList>,
 		rchandle<Expr>);
-	ExtensionExpr();
 	~ExtensionExpr();
 
 public:
@@ -2535,7 +2548,8 @@ protected:
 	std::vector<rchandle<Pragma> > pragma_hv;
 
 public:
-	PragmaList();
+	PragmaList(
+		yy::xquery_parser::location_type const&);
 	~PragmaList();
 
 public:
@@ -2559,14 +2573,14 @@ protected:
 	std::string pragma_lit;
 
 public:
-	Pragma();
+	Pragma(
+		yy::xquery_parser::location_type const&,
 		rchandle<QName>,
 		std::string pragma_lit);
-	Pragma();
 	~Pragma();
 
 public:
-	rchandle<QName> get_name() cost { return name; }
+	rchandle<QName> get_name() const { return name; }
 	std::string get_pragma_lit() const { return pragma_lit; }
 
 };
@@ -2607,14 +2621,14 @@ class PathExpr : public exprnode
 |	::= LEADING_LONE_SLASH
 |			|	SLASH  RelativePathExpr
 |			|	SLASH_SLASH  RelativePathExpr
-|			|	RelativePathExpr	 	 gn:leading-lone-slashXQ
+|			|	RelativePathExpr	 								 gn:leading-lone-slashXQ
 |_______________________________________________________________________*/
 {
 public:
 	enum pathtype_t {
-		leading_lone,
+		leading_lone_slash,
 		leading_slash,
-		leading_slashslash,
+		leading_slash_slash,
 		relative
 	};
 
@@ -2624,9 +2638,9 @@ protected:
 
 public:
 	PathExpr(
+		yy::xquery_parser::location_type const&,
 		enum pathtype_t type,
 		rchandle<RelatvePathExpr>);
-	PathExpr();
 	~PathExpr();
 
 public:
@@ -2643,30 +2657,34 @@ class RelativePathExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= StepExpr
-|			|	RelativePathExpr SLASH  StepExpr
-|			|	RelativePathExpr SLASH_SLASH  StepExpr
+|			| StepExpr  SLASH  RelativePathExpr
+|			| StepExpr  SLASH_SLASH  RelativePathExpr 
 |_______________________________________________________________________*/
 {
 public:
 	enum steptype_t {
-		child,
-		descendant
+		step,
+		slash,
+		slash_slash	
 	};
 
 protected:
-	rchandle<RelativePathExpr> relpath_expr_h;
+	enum steptype_t step_type;
 	rchandle<StepExpr> step_expr_h;
+	rchandle<RelativePathExpr> relpath_expr_h;
 
 public:
 	RelativePathExpr(
-		rchandle<RelativePathExpr>,
-		rchandle<StepExpr>);
-	RelativePathExpr();
+		yy::xquery_parser::location_type const&,
+		enum steptype_t,
+		rchandle<StepExpr>.
+		rchandle<RelativePathExpr>);
 	~RelativePathExpr();
 
 public:
-	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
+	enum steptype_t get_step_type() const { return step_type; }
 	rchandle<StepExpr> get_step_expr() const { return step_expr_h; }
+	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
 
 };
 
@@ -2682,7 +2700,8 @@ class StepExpr : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	StepExpr();
+	StepExpr(
+		yy::xquery_parser::location_type const&);
 	~StepExpr();
 
 };
@@ -2691,10 +2710,12 @@ public:
 
 // [70] AxisStep
 // -------------
-class AxisStep : public exprnode
+class AxisStep : public StepExpr
 /*______________________________________________________________________
 |
-|	::= ForwardStep  PredicateList
+|	::= ForwardStep
+|			| ForwardStep  PredicateList
+|			|	ReverseStep
 |			|	ReverseStep  PredicateList
 |_______________________________________________________________________*/
 {
@@ -2705,12 +2726,13 @@ protected:
 
 public:
 	AxisStep(
+		yy::xquery_parser::location_type const&,
 		rchandle<ForwardStep>,
 		rchandle<PredicateList>);
 	AxisStep(
+		yy::xquery_parser::location_type const&,
 		rchandle<ReverseStep>,
 		rchandle<PredicateList>);
-	AxisStep();
 	~AxisStep();
 
 public:
@@ -2738,11 +2760,12 @@ protected:
 
 public:
 	ForwardStep(
+		yy::xquery_parser::location_type const&,
 		rchandle<ForwardAxis>,
 		rchandle<NodeTest>);
 	ForwardStep(
+		yy::xquery_parser::location_type const&,
 		rchandle<AbbreviatedForwardStep>);
-	ForwardStep();
 	~ForwardStep();
 
 public:
@@ -2783,8 +2806,9 @@ protected:
 	enum forward_axis_t axis;
 
 public:
-	ForwardAxis(enum forward_axis_t);
-	ForwardAxis();
+	ForwardAxis(
+		yy::xquery_parser::location_type const&,
+		enum forward_axis_t);
 	~ForwardAxis();
 
 public:
@@ -2808,9 +2832,13 @@ proteced:
 	bool attr_b;
 	
 public:
-	AbbrevForwardStep( rchandle<NodeTest>, bool attr_b );
-	AbbrevForwardStep( rchandle<NodeTest> );
-	AbbrevForwardStep();
+	AbbrevForwardStep(
+		yy::xquery_parser::location_type const&,
+		rchandle<NodeTest>,
+		bool attr_b);
+	AbbrevForwardStep(
+		yy::xquery_parser::location_type const&,
+		rchandle<NodeTest>);
 	~AbbrevForwardStep();
 
 public:
@@ -2836,9 +2864,9 @@ protected:
 
 public:
 	ReverseStep(
+		yy::xquery_parser::location_type const&,
 		rchandle<ReverseAxis>,
 		rchandle<NodeTest>);
-	ReverseStep();
 	~ReverseStep();
 
 public:
@@ -2874,8 +2902,13 @@ protected:
 	enum reverse_axis_t axis;
 
 public:
-	ReverseAxis();
+	ReverseAxis(
+		yy::xquery_parser::location_type const&,
+		enum reverse_axis_t);
 	~ReverseAxis();
+
+public:
+	enum reverse_axis_t get_axis() const { return axis; }
 
 };
 
@@ -2896,7 +2929,8 @@ class NodeTest : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	NodeTest();
+	NodeTest(
+		yy::xquery_parser::location_type const&);
 	~NodeTest();
 
 };
@@ -2916,8 +2950,17 @@ protected:
 	rchandle<WildCard> wild_h;
 
 public:
-	NameTest();
+	NameTest(
+		yy::xquery_parser::location_type const&);
+		rchandle<QName>);
+	NameTest(
+		yy::xquery_parser::location_type const&);
+		rchandle<WildCard>);
 	~NameTest();
+
+public:
+	rchandle<QName> get_qname() const { return qname_h; }
+	rchandle<WildCard> get_wild() const { return wild_h; }
 
 };
 
@@ -2946,8 +2989,21 @@ protected:
 	rchandle<QName> qname_h;
 	
 public:
-	Wildcard();
+	Wildcard(
+		yy::xquery_parser::location_type const&,
+		enum wildcard_t);
+	Wildcard(
+		yy::xquery_parser::location_type const&,
+		std::string const&);
+	Wildcard(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>);
 	~Wildcard();
+
+public:
+	enum wildcard_t get_type() const { return type; }
+	std::string get_prefix() const { return prefix; }
+	rchandle<QName> get_qname() const { return qname_h; }
 
 };
 
@@ -2955,10 +3011,11 @@ public:
 
 // [80] FilterExpr
 // ---------------
-class FilterExpr : public exprnode
+class FilterExpr : public StepExpr
 /*______________________________________________________________________
 |
 |	::= PrimaryExpr  PredicateList
+|			| PrimaryExpr
 |_______________________________________________________________________*/
 {
 protected:
@@ -2966,8 +3023,15 @@ protected:
 	rchandle<PredicateList> pred_list_h;
 
 public:
-	FilterExpr();
+	FilterExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<PrimaryExpr>,
+		rchandle<PredicateList>);
 	~FilterExpr();
+
+public:
+	rchandle<PrimaryExpr> get_primary() const { return primary_h; }
+	rchandle<PredicateList> get_pred_list() const { return pred_list_h; }
 
 };
 
@@ -2986,7 +3050,8 @@ protected:
 	std::vector<rchandle<Predicate> > pred_hv;
 
 public:
-	PredicateList();
+	PredicateList(
+		yy::xquery_parser::location_type const&);
 	~PredicateList();
 
 public:
@@ -3009,8 +3074,13 @@ protected:
 	rchandle<Expr> pred_h;
 
 public:
-	Predicate();
+	Predicate(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr>);
 	~Predicate();
+
+public:
+	rchandle<Expr> get_perd() const { return perd_h; }
 
 };
 
@@ -3032,7 +3102,8 @@ class PrimaryExpr : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	PrimaryExpr();
+	PrimaryExpr(
+		yy::xquery_parser::location_type const&);
 	~PrimaryExpr();
 
 };
@@ -3041,14 +3112,15 @@ public:
 
 // [84] Literal
 // ------------
-class Literal : public exprnode
+class Literal : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= NumericLiteral | StringLiteral
 |_______________________________________________________________________*/
 {
 public:
-	Literal();
+	Literal(
+		yy::xquery_parser::location_type const&);
 	~Literal();
 
 };
@@ -3057,7 +3129,7 @@ public:
 
 // [85] NumericLiteral
 // -------------------
-class NumericLiteral : public exprnode
+class NumericLiteral : public Literal
 /*______________________________________________________________________
 |
 |	::= INTEGER_LITERAL
@@ -3066,20 +3138,37 @@ class NumericLiteral : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	enum numeric_t {
+	enum numeric_type_t {
 		integer,
 		decimal,
 		double
 	};
+	typedef double decimal;
 
 protected:
-	enum numeric_t type;
-	int ival;
-	double dval;
+	enum numeric_type_t type;
+	union {
+		int ival;
+		decimal decval;
+		double dval;
+	};
 
 public:
-	NumericLiteral();
+	NumericLiteral(
+		yy::xquery_parser::location_type const&,
+		enum numeric_type_t,
+		int);
+	NumericLiteral(
+		yy::xquery_parser::location_type const&,
+		enum numeric_type_t,
+		double);
 	~NumericLiteral();
+
+public:
+	enum numeric_type_t get_type() const { return type; }
+	int get_int() const { return ival; }
+	int get_decimal() const { return dval; }
+	int get_double() const { return dval; }
 
 };
 
@@ -3087,7 +3176,7 @@ public:
 
 // [86] VarRef
 // -----------
-class VarRef : public parsenode
+class VarRef : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= DOLLAR  VARNAME
@@ -3097,8 +3186,13 @@ protected:
 	std::string varname;
 
 public:
-	VarRef();
+	VarRef(
+		yy::xquery_parser::location_type const&,
+		std::string varname);
 	~VarRef();
+
+public:
+	std::string get_varname() const { return varname; }
 
 };
 
@@ -3106,7 +3200,7 @@ public:
 
 // [87] ParenthesizedExpr
 // ----------------------
-class ParenthesizedExpr : public parsenode
+class ParenthesizedExpr : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= LPAR  RPAR
@@ -3117,8 +3211,13 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
-	ParenthesizedExpr();
+	ParenthesizedExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr>);
 	~ParenthesizedExpr();
+
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
 
 };	
 
@@ -3126,14 +3225,15 @@ public:
 
 // [88] ContextItemExpr
 // --------------------
-class ContextItemExpr : public exprnode
+class ContextItemExpr : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= DOT
 |_______________________________________________________________________*/
 {
 public:
-	ContextItemExpr();
+	ContextItemExpr(
+		yy::xquery_parser::location_type const&);
 	~ContextItemExpr();
 
 };	
@@ -3142,7 +3242,7 @@ public:
 
 // [89] OrderedExpr
 // ----------------
-class OrderedExpr : public exprnode
+class OrderedExpr : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= ORDERED_LBRACE  Expr  RBRACE
@@ -3152,8 +3252,13 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
-	OrderedExpr();
+	OrderedExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr>);
 	~OrderedExpr();
+
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
 
 };
 
@@ -3161,7 +3266,7 @@ public:
 
 // [90] UnorderedExpr
 // ------------------
-class UnorderedExpr : public exprnode
+class UnorderedExpr : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= UNORDERED_LBRACE  Expr  RBRACE
@@ -3171,8 +3276,13 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
-	UnorderedExpr();
+	UnorderedExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr>);
 	~UnorderedExpr();
+
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
 
 };
 
@@ -3180,7 +3290,7 @@ public:
 
 // [91] FunctionCall
 // -----------------
-class FunctionCall : public exprnode
+class FunctionCall : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= QNAME  LPAR  ArgList  RPAR 	
@@ -3193,8 +3303,15 @@ protected:
 	rchandle<ArgList> arg_list_h;
 
 public:
-	FunctionCall();
+	FunctionCall(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>,
+		rchandle<ArgList>);
 	~FunctionCall();
+
+public:
+	rchandle<QName> get_fname() const { return fname_h; }
+	rchandle<ArgList> get_arg_list() const { return arg_list_h; }
 
 };
 
@@ -3212,7 +3329,8 @@ protected:
 	std::vector<ExprSingle> arg_hv;
 
 public:
-	ArgList();
+	ArgList(
+		yy::xquery_parser::location_type const&);
 	~ArgList();
 
 public:
@@ -3225,14 +3343,15 @@ public:
 
 // [92] Constructor
 // ----------------
-class Constructor : public exprnode
+class Constructor : public PrimaryExpr
 /*______________________________________________________________________
 |
 |	::= DirectConstructor |	ComputedConstructor
 |_______________________________________________________________________*/
 {
 public:
-	Constructor();
+	Constructor(
+		yy::xquery_parser::location_type const&);
 	~Constructor();
 
 };
@@ -3241,7 +3360,7 @@ public:
 
 // [93] DirectConstructor
 // ----------------------
-class DirectConstructor : public exprnode
+class DirectConstructor : public Constructor
 /*______________________________________________________________________
 |
 |	::= DirElemConstructor
@@ -3250,7 +3369,8 @@ class DirectConstructor : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	DirectConstructor();
+	DirectConstructor(
+		yy::xquery_parser::location_type const&);
 	~DirectConstructor();
 
 };
@@ -3259,7 +3379,7 @@ public:
 
 // [94] DirElemConstructor
 // -----------------------
-class DirElemConstructor : public parsenode
+class DirElemConstructor : public DirectConstructor
 /*______________________________________________________________________
 |
 |	::= LT  QNAME  DirAttributeList SGT
@@ -3274,8 +3394,17 @@ protected:
 	rchandle<DirElemContentList> dir_content_list_h;
 
 public:
-	DirElemConstructor();
+	DirElemConstructor(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>,
+		rchandle<DirAttributeList>,
+		rchandle<DirElemContentList>);
 	~DirElemConstructor();
+
+public:
+	rchandle<QName> get_elem_name() const { return elem_name_h; }
+	rchandle<DirAttributeList> get_attr_list() const { return attr_list_h; }
+	rchandle<DirElemContentList> get_dir_content_list() const { return dir_content_list_h; }
 
 };
 
@@ -3294,7 +3423,8 @@ protected:
 	std::vector<rchandle<DirElemContent> > dir_content_hv;
 
 public:
-	DirElemContentList();
+	DirElemContentList(
+		yy::xquery_parser::location_type const&);
 	~DirElemContentList();
 
 public:
@@ -3320,7 +3450,8 @@ protected:
 	std::vector<rchandle<DirAttr> > dir_attr_hv;
 
 public:
-	DirAttributeList();
+	DirAttributeList(
+		yy::xquery_parser::location_type const&);
 	~DirAttributeList();
 
 public:
@@ -3346,8 +3477,15 @@ protected:
 	rchandle<DirAttributeValue> dir_atval_h;
 	
 public:
-	DirAttr();
+	DirAttr(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>,
+		rchandle<DirAttributeValue>);
 	~DirAttr();
+
+public:
+	rchandle<QName> get_atname() const { return atname_h; }
+	rchandle<DirAttributeValue> get_dir_atval() const { return dir_atval_h; }
 
 };
 
@@ -3367,8 +3505,17 @@ protected:
 	rchandle<AposContentList> apos_attr_content_h;
 
 public:
-	DirAttributeValue();
+	DirAttributeValue(
+		yy::xquery_parser::location_type const&,
+		rchandle<QuoteAttrContentList>,
+		rchandle<AposContentList>);
 	~DirAttributeValue();
+
+public:
+	rchandle<QuoteAttrContentList> get_quot_attr_content() const
+		{ return quot_attr_content_h; }
+	rchandle<AposContentList> get_apos_attr_content() const
+		{ return apos_attr_content_h; }
 
 };
 
@@ -3389,7 +3536,8 @@ protected:
 	std::vector<QuoteAttrValueContent> quot_atval_content_hv;
 	
 public:
-	QuoteAttrContentList();
+	QuoteAttrContentList(
+		yy::xquery_parser::location_type const&);
 	~QuoteAttrContentList();
 
 public:
@@ -3417,7 +3565,8 @@ protected:
 	std::vector<AposAttrValueContent> apos_atval_content_hv;
 	
 public:
-	AposAttrContentList();
+	AposAttrContentList(
+		yy::xquery_parser::location_type const&);
 	~AposAttrContentList();
 
 public:
@@ -3444,8 +3593,15 @@ protected:
 	rchandle<CommonContent> common_content_h;
 
 public:
-	QuoteAttrValueContent();
+	QuoteAttrValueContent(
+		yy::xquery_parser::location_type const&,
+		std:string quot_atcontent_h,
+		rchandle<CommonContent>);
 	~QuoteAttrValueContent();
+
+public:
+	std:string get_quot_atcontent() const { return quot_atcontent_h; }
+	rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
 };
 
@@ -3465,8 +3621,15 @@ protected:
 	rchandle<CommonContent> common_content_h;
 
 public:
-	AposAttrValueContent();
+	AposAttrValueContent(
+		yy::xquery_parser::location_type const&,
+		std:string apos_atcontent_h,
+		rchandle<CommonContent>);
 	~AposAttrValueContent();
+
+public:
+	std:string get_apos_atcontent() const { return apos_atcontent_h; }
+	rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
 };
 
@@ -3488,7 +3651,12 @@ protected:
 
 public:
 	DirElemContent();
+		yy::xquery_parser::location_type const&,
+		std::string elem_content);
 	~DirElemContent();
+
+public:
+	std::string get_elem_content() const { return elem_content; }
 
 };
 
@@ -3517,13 +3685,27 @@ public:
 
 protected:
 	enum common_content_t type;
-	std::string entity_ref;
-	std::string char_ref;
+	std::string ref;
 	rchandle<EnclosedExpr> expr_h;
 
 public:
-	CommonContent();
+	CommonContent(
+		yy::xquery_parser::location_type const&,
+		enum common_content_t,
+		std::string ref);
+	CommonContent(
+		yy::xquery_parser::location_type const&,
+		rchandle<EnclosedExpr> expr_h);
+	CommonContent(
+		yy::xquery_parser::location_type const&,
+		enum common_content_t);
 	~CommonContent();
+
+public:
+	enum common_content_t get_type() const { return type; }
+	std::string get_entity_ref() const { return entity_ref; }
+	std::string get_char_ref() const { return char_ref; }
+	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
 };
 
@@ -3531,7 +3713,7 @@ public:
 
 // [101] DirCommentConstructor
 // ---------------------------
-class DirCommentConstructor : public exprnode
+class DirCommentConstructor : public DirectConstructor
 /*______________________________________________________________________
 |
 |	::= COMMENT_BEGIN  EXPR_COMMENT_LITERAL  COMMENT_END 	 ws:explicitXQ
@@ -3556,7 +3738,7 @@ public:
 
 // [103] DirPIConstructor
 // ----------------------
-class DirPIConstructor : public exprnode
+class DirPIConstructor : public DirectConstructor
 /*______________________________________________________________________
 |
 |	::= PI_BEGIN  PI_TARGET  PI_END    ws:explicitXQ
@@ -3608,7 +3790,7 @@ public:
 
 // [107] ComputedConstructor
 // -------------------------
-class ComputedConstructor : public exprnode
+class ComputedConstructor : public Constructor
 /*______________________________________________________________________
 |
 |	::= CompDocConstructor
@@ -4247,6 +4429,13 @@ public:
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
+
+
+
+
+
+
+
 
 
 

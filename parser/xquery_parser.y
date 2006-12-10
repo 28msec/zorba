@@ -383,11 +383,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WITH_WILDCARDS							"'<with wildcards>'"
 %token WORDS											"'words'"
 
-/* left-hand sides */
-/* --------------- */
+
+/* left-hand sides: syntax only */
+/* ---------------------------- */
 %type <node> AbbrevForwardStep
-%type <node> AdditiveExpr
-%type <node> AndExpr
 %type <node> AnyKindTest
 %type <node> AposAttrContentList
 %type <node> AposAttrValueContent
@@ -403,8 +402,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> CDataSection
 %type <node> CaseClause
 %type <node> CaseClauseList
-%type <node> CastExpr
-%type <node> CastableExpr
 %type <node> CommentTest
 %type <node> CommonContent
 %type <node> CompAttrConstructor
@@ -413,12 +410,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> CompElemConstructor
 %type <node> CompPIConstructor
 %type <node> CompTextConstructor
-%type <node> ComparisonExpr
 %type <node> ComputedConstructor
 %type <node> ConstructionDecl
 %type <node> Constructor
-//%type <node> ContentExpr
-%type <node> ContextItemExpr
 %type <node> CopyNamespacesDecl
 %type <node> DefaultCollationDecl
 %type <node> DefaultNamespaceDecl
@@ -437,9 +431,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> ElementNameOrWildcard
 %type <node> ElementTest
 %type <node> EmptyOrderDecl
-%type <node> EnclosedExpr
-%type <node> ExtensionExpr
-%type <node> FilterExpr
 %type <node> ForLetClause
 %type <node> ForLetClauseList
 %type <node> ForwardAxis
@@ -447,29 +438,22 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FunctionCall
 %type <node> FunctionDecl
 %type <node> GeneralComp
-%type <node> IfExpr
 %type <node> Import
 %type <node> InheritMode
-%type <node> InstanceofExpr
-%type <node> IntersectExceptExpr
 %type <node> ItemType
 %type <node> KindTest
 %type <node> LetClause
 %type <node> LibraryModule
-%type <node> Literal
 %type <node> MainModule 
 %type <node> Module
 %type <node> ModuleDecl
 %type <node> ModuleImport
-%type <node> MultiplicativeExpr
 %type <node> NameTest
 %type <node> NamespaceDecl
 %type <node> NodeComp
 %type <node> NodeTest
-%type <node> NumericLiteral
 %type <node> OccurrenceIndicator
 %type <node> OptionDecl
-%type <node> OrExpr
 %type <node> OrderByClause
 %type <node> OrderCollationSpec
 %type <node> OrderDirSpec
@@ -477,27 +461,22 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> OrderModifier
 %type <node> OrderSpec
 %type <node> OrderSpecList
-%type <node> OrderedExpr
 %type <node> OrderingModeDecl
 %type <node> PITest
 %type <node> Param
 %type <node> ParamList
-%type <node> ParenthesizedExpr
-%type <node> PathExpr
 %type <node> PositionalVar
 %type <node> Pragma
 %type <node> PragmaList
 %type <node> Predicate
 %type <node> PredicateList
 %type <node> PreserveMode
-%type <node> PrimaryExpr
 %type <node> Prolog
 %type <node> QVarInDecl
 %type <node> QVarInDeclList
 %type <node> QueryBody
 %type <node> QuoteAttrValueContent
 %type <node> QuoteAttrContentList
-%type <node> RelativePathExpr
 %type <node> ReverseAxis
 %type <node> ReverseStep
 %type <node> SIND_Decl
@@ -510,19 +489,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> Setter
 %type <node> SignList
 %type <node> SingleType
-%type <node> StepExpr
 %type <node> TextTest
-%type <node> TreatExpr
 %type <node> TypeDeclaration
 %type <node> TypeName
-%type <node> TypeswitchExpr
-%type <node> UnaryExpr
-%type <node> UnionExpr
-%type <node> UnorderedExpr
 %type <node> URILiteralList
-%type <node> ValidateExpr
 %type <node> ValueComp
-%type <node> ValueExpr
 %type <node> VarDecl
 %type <node> VarGetsDecl
 %type <node> VarGetsDeclList
@@ -535,11 +506,45 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> WhereClause
 %type <node> Wildcard
 
+
+/* left-hand sides: expressions */
+/* ---------------------------- */
+%type <node> AdditiveExpr
+%type <node> AndExpr
+%type <node> CastExpr
+%type <node> CastableExpr
+%type <node> ComparisonExpr
+//%type <node> ContentExpr
+%type <node> ContextItemExpr
+%type <node> EnclosedExpr
 %type <node> Expr
 %type <node> ExprSingle
+%type <node> ExtensionExpr
 %type <node> FLWORExpr
-%type <node> QuantifiedExpr
+%type <node> FilterExpr
 %type <node> ForClause
+%type <node> IfExpr
+%type <node> InstanceofExpr
+%type <node> IntersectExceptExpr
+%type <node> Literal
+%type <node> MultiplicativeExpr
+%type <node> NumericLiteral
+%type <node> OrExpr
+%type <node> OrderedExpr
+%type <node> ParenthesizedExpr
+%type <node> PathExpr
+%type <node> PrimaryExpr
+%type <node> QuantifiedExpr
+%type <node> RangeExpr
+%type <node> RelativePathExpr
+%type <node> StepExpr
+%type <node> TreatExpr
+%type <node> TypeswitchExpr
+%type <node> UnaryExpr
+%type <node> UnionExpr
+%type <node> UnorderedExpr
+%type <node> ValidateExpr
+%type <node> ValueExpr
 
 
 /* update-related */
@@ -2515,6 +2520,9 @@ TreatExpr :
 	|	CastableExpr  TREAT_AS  SequenceType
 		{
 			if (debug) cout << "TreatExpr [castable.seqtype]\n";
+			$$ = new TreatExpr(@$,
+								dynamic_cast<CastableExpr*>($1),
+								dynamic_cast<SequenceType*>($3));
 		}
 	;
 
@@ -2530,6 +2538,9 @@ CastableExpr :
 	|	CastExpr  CASTABLE_AS  SingleType
 		{
 			if (debug) cout << "CastableExpr [cast.singletype]\n";
+			$$ = new CastableExpr(@$,
+								dynamic_cast<CastExpr*>($1),
+								dynamic_cast<SingleType*>($3));
 		}
 	;
 
@@ -2545,6 +2556,9 @@ CastExpr :
 	|	UnaryExpr  CAST_AS  SingleType
 		{
 			if (debug) cout << "CastExpr [unary.singletype]\n";
+			$$ = new CastExpr(@$,
+								dynamic_cast<UnaryExpr*>($1),
+								dynamic_cast<SingleType*>($3));
 		}
 	;
 
@@ -2560,6 +2574,9 @@ UnaryExpr :
 	|	SignList  ValueExpr
 		{
 			if (debug) cout << "UnaryExpr [signlist.value]\n";
+			$$ = new UnaryExpr(@$,
+								dynamic_cast<SignList*>($1),
+								dynamic_cast<ValueExpr*>($2));
 		}
 	;
 
@@ -2622,26 +2639,38 @@ GeneralComp :
 		EQUALS
 		{
 			if (debug) cout << "GeneralComp [=]\n";
+			$$ = new GeneralComp(@$,
+								GeneralComp::eq);
 		}
 	| NE
 		{
 			if (debug) cout << "GeneralComp [!=]\n";
+			$$ = new GeneralComp(@$,
+								GeneralComp::ne);
 		}
 	| LT
 		{
 			if (debug) cout << "GeneralComp [<]\n";
+			$$ = new GeneralComp(@$,
+								GeneralComp::lt);
 		}
 	| LE
 		{
 			if (debug) cout << "GeneralComp [<=]\n";
+			$$ = new GeneralComp(@$,
+								GeneralComp::le);
 		}
 	| GT
 		{
 			if (debug) cout << "GeneralComp [>]\n";
+			$$ = new GeneralComp(@$,
+								GeneralComp::gt);
 		}
 	| GE
 		{
 			if (debug) cout << "GeneralComp [>=]\n";
+			$$ = new GeneralComp(@$,
+								GeneralComp::ge);
 		}
 	;
 
@@ -2652,26 +2681,38 @@ ValueComp :
 		VAL_EQ
 		{
 			if (debug) cout << "ValueComp [eq]\n";
+			$$ = new GeneralComp(@$,
+								ValueComp::val_eq);
 		}
 	| VAL_NE
 		{
 			if (debug) cout << "ValueComp [ne]\n";
+			$$ = new GeneralComp(@$,
+								ValueComp::val_ne);
 		}
 	| VAL_LT
 		{
 			if (debug) cout << "ValueComp [lt]\n";
+			$$ = new GeneralComp(@$,
+								ValueComp::val_lt);
 		}
 	| VAL_LE
 		{
 			if (debug) cout << "ValueComp [le]\n";
+			$$ = new GeneralComp(@$,
+								ValueComp::val_le);
 		}
 	| VAL_GT
 		{
 			if (debug) cout << "ValueComp [gt]\n";
+			$$ = new GeneralComp(@$,
+								ValueComp::val_gt);
 		}
 	| VAL_GE
 		{
 			if (debug) cout << "ValueComp [ge]\n";
+			$$ = new GeneralComp(@$,
+								ValueComp::val_ge);
 		}
 	;
 
@@ -2682,14 +2723,20 @@ NodeComp :
 		IS
 		{
 			if (debug) cout << "NodeComp [is]\n";
+			$$ = new NodeComp(@$,
+								NodeComp::is);
 		}
 	| PRECEDES
 		{
 			if (debug) cout << "NodeComp [<<]\n";
+			$$ = new NodeComp(@$,
+								NodeComp::precedes);
 		}
 	| FOLLOWS
 		{
 			if (debug) cout << "NodeComp [>>]\n";
+			$$ = new NodeComp(@$,
+								NodeComp::follows);
 		}
 	;
 
@@ -2701,10 +2748,16 @@ ValidateExpr :
 		VALIDATE_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "ValidateExpr [expr]\n";
+			$$ = new ValidateExpr(@$,
+								"strict",
+								dynamic_cast<Expr*>($2));
 		}
 	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "ValidateExpr [mode.expr]\n";
+			$$ = new ValidateExpr(@$,
+								driver.symtab.get($1),
+								dynamic_cast<Expr*>($3));
 		}
 	;
 
@@ -2715,10 +2768,16 @@ ExtensionExpr :
 		PragmaList  LBRACE  RBRACE
 		{
 			if (debug) cout << "ExtensionExpr [pragmalist]\n";
+			$$ = new ExtensionExpr(@$,
+								dynamic_cast<PragmaList*>($1),
+								NULL);
 		}
 	|	PragmaList  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "ExtensionExpr [pragmalist.expr]\n";
+			$$ = new ExtensionExpr(@$,
+								dynamic_cast<PragmaList*>($1),
+								dynamic_cast<Expr*>($3));
 		}
 	;
 
@@ -2729,10 +2788,18 @@ PragmaList :
 		Pragma
 		{
 			if (debug) cout << "PragmaList [single]\n";
+			PragmaList* pragma_list_p = new PragmaList(@$);
+			pragma_list_p->push_back(dynamic_cast<Pragma*>($1));
+			$$ = pragma_list_p;
 		}
 	|	PragmaList  Pragma
 		{
 			if (debug) cout << "PragmaList [list]\n";
+			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>($1);
+			if (pragma_list_p) {
+				pragma_list_p->push_back(dynamic_cast<Pragma*>($1));
+			}
+			$$ = $1;
 		}
 	;
 
@@ -2743,6 +2810,10 @@ Pragma :
 		PRAGMA_BEGIN  QNAME  PRAGMA_LITERAL  PRAGMA_END
 		{
 			if (debug) cout << "Pragma [ ]\n";
+			$$ = new Pragma(@$,
+								new QName(driver.symtab.get($2)),
+								driver.symtab.get($3));
+
 		}
 	;	/* ws: explicit */
 
@@ -2779,18 +2850,30 @@ PathExpr :
 		LEADING_LONE_SLASH
 		{
 			if (debug) cout << "PathExpr [/]\n";
+			$$ = new PathExpr(@$,
+								PathExpr::leading_lone_slash,
+								NULL);
 		}
 	|	SLASH  RelativePathExpr
 		{
 			if (debug) cout << "PathExpr [/relative]\n";
+			$$ = new PathExpr(@$,
+								PathExpr::leading_slash,
+								dynamic_cast<RelativePathExpr*>($2));
 		}
 	|	SLASH_SLASH  RelativePathExpr
 		{
 			if (debug) cout << "PathExpr [//relative]\n";
+			$$ = new PathExpr(@$,
+								PathExpr::leading_slash_slash,
+								dynamic_cast<RelativePathExpr*>($2));
 		}
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
 			if (debug) cout << "PathExpr [relative]\n";
+			$$ = new PathExpr(@$,
+								PathExpr::relative,
+								dynamic_cast<RelativePathExpr*>($1));
 		}
 	;
 
@@ -2801,14 +2884,26 @@ RelativePathExpr :
 		StepExpr  %prec STEP_REDUCE
 		{
 			if (debug) cout << "RelativePathExpr [step]\n";
+			$$ = new RelativePathExpr(@$,
+								RelativePathExpr::step,
+								dynamic_cast<StepExpr*>($1),
+								NULL);
 		}
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
 			if (debug) cout << "RelativePathExpr [step/relative]\n";
+			$$ = new RelativePathExpr(@$,
+								RelativePathExpr::slash,
+								dynamic_cast<StepExpr*>($1),
+								dynamic_cast<RelativePathExpr*>($3));
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
 			if (debug) cout << "RelativePathExpr [step//relative]\n";
+			$$ = new RelativePathExpr(@$,
+								RelativePathExpr::slash_slash,
+								dynamic_cast<StepExpr*>($1),
+								dynamic_cast<RelativePathExpr*>($3));
 		}
 	;
 
@@ -2819,10 +2914,12 @@ StepExpr :
 		AxisStep
 		{
 			if (debug) cout << "StepExpr [axis]\n";
+			$$ = $1;
 		}
 	|	FilterExpr
 		{
 			if (debug) cout << "StepExpr [filter]\n";
+			$$ = $1;
 		}
 	;
 
@@ -2833,18 +2930,28 @@ AxisStep :
 		ForwardStep 
 		{
 			if (debug) cout << "AxisStep [forward]\n";
+			$$ = new AxisStep(@$,
+								dynamic_cast<ForwardStep*>($1));
 		}
 	|	ForwardStep  PredicateList
 		{
 			if (debug) cout << "AxisStep [forward.predlist]\n";
+			$$ = new AxisStep(@$,
+								dynamic_cast<ForwardStep*>($1),
+								dynamic_cast<PredicateList*>($2));
 		}
 	|	ReverseStep
 		{
 			if (debug) cout << "AxisStep [reverse]\n";
+			$$ = new AxisStep(@$,
+								dynamic_cast<ReverseStep*>($1));
 		}
 	|	ReverseStep  PredicateList
 		{
 			if (debug) cout << "AxisStep [reverse.predlist]\n";
+			$$ = new AxisStep(@$,
+								dynamic_cast<ReverseStep*>($1),
+								dynamic_cast<PredicateList*>($2));
 		}
 	;
 
@@ -2855,10 +2962,15 @@ ForwardStep :
 		ForwardAxis  NodeTest
 		{
 			if (debug) cout << "ForwardStep [nodetest]\n";
+			$$ = new ForwardStep(@$,
+								dynamic_cast<ForwardAxis*>($1),
+								dynamic_cast<NodeTest*>($2));
 		}
 	|	AbbrevForwardStep
 		{
 			if (debug) cout << "ForwardStep [abbrev]\n";
+			$$ = new ForwardStep(@$,
+								dynamic_cast<AbbreviatedForwardStep*>($1),
 		}
 	;
 
@@ -2869,30 +2981,44 @@ ForwardAxis :
 		CHILD_AXIS
 		{
 			if (debug) cout << "ForwardAxis [child]\n";
+			$$ = new ForwardAxis(@$,
+								ForwardAxis::child);
 		}
 	| DESCENDANT_AXIS
 		{
 			if (debug) cout << "ForwardAxis [descendant]\n";
+			$$ = new ForwardAxis(@$,
+								ForwardAxis::descendant);
 		}
 	| ATTRIBUTE_AXIS
 		{
 			if (debug) cout << "ForwardAxis [attribute]\n";
+			$$ = new ForwardAxis(@$,
+								ForwardAxis::attribute);
 		}
 	| SELF_AXIS
 		{
 			if (debug) cout << "ForwardAxis [self]\n";
+			$$ = new ForwardAxis(@$,
+								ForwardAxis::self);
 		}
 	| DESCENDANT_OR_SELF_AXIS
 		{
 			if (debug) cout << "ForwardAxis [descendant_or_self]\n";
+			$$ = new ForwardAxis(@$,
+								ForwardAxis::descendant_or_self);
 		}
 	| FOLLOWING_SIBLING_AXIS
 		{
 			if (debug) cout << "ForwardAxis [following_sibling]\n";
+			$$ = new ForwardAxis(@$,
+								ForwardAxis::following_sibling);
 		}
 	| FOLLOWING_AXIS
 		{
 			if (debug) cout << "ForwardAxis [following]\n";
+			$$ = new ForwardAxis(@$,
+								ForwardAxis::following);
 		}
 	;
 
@@ -2903,10 +3029,15 @@ AbbrevForwardStep :
 		NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
+			$$ = new AbbrevForwardStep(@$,
+								dynmic_cast<NodeTest*>($1));
 		}
 	|	AT_SIGN  NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
+			$$ = new AbbrevForwardStep(@$,
+								dynmic_cast<NodeTest*>($2),
+								true);
 		}
 	;
 
@@ -2917,10 +3048,15 @@ ReverseStep :
 		ReverseAxis  NodeTest
 		{
 			if (debug) cout << "ReverseStep [nodetest]\n";
+			$$ = new ReverseStep(@$,
+								dynamic_cast<ReverseAxis*>($1),
+								dynamic_cast<NodeTest*>($2));
 		}
 	|	DOT_DOT
 		{
 			if (debug) cout << "ReverseStep [..]\n";
+			$$ = new ReverseAxis(@$,
+								ReverseAxis::parent);
 		}
 	;
 
@@ -2931,22 +3067,32 @@ ReverseAxis :
 		PARENT_AXIS
 		{
 			if (debug) cout << "ReverseAxis [parent]\n";
+			$$ = new ReverseAxis(@$,
+								ReverseAxis::parent);
 		}
 	| ANCESTOR_AXIS
 		{
 			if (debug) cout << "ReverseAxis [ancestor]\n";
+			$$ = new ReverseAxis(@$,
+								ReverseAxis::ancestor);
 		}
 	| PRECEDING_SIBLING_AXIS
 		{
 			if (debug) cout << "ReverseAxis [preceding_sibling]\n";
+			$$ = new ReverseAxis(@$,
+								ReverseAxis::preceding_sibling);
 		}
 	| PRECEDING_AXIS
 		{
 			if (debug) cout << "ReverseAxis [preceding]\n";
+			$$ = new ReverseAxis(@$,
+								ReverseAxis::preceding);
 		}
 	| ANCESTOR_OR_SELF_AXIS
 		{
 			if (debug) cout << "ReverseAxis [ancestor_or_self]\n";
+			$$ = new ReverseAxis(@$,
+								ReverseAxis::ancestor_or_self);
 		}
 	;
 
@@ -2962,10 +3108,12 @@ NodeTest :
 		KindTest
 		{
 			if (debug) cout << "NodeTest [kindtest]\n";
+			$$ = $1;
 		}
 	|	NameTest
 		{
 			if (debug) cout << "NodeTest [nametest]\n";
+			$$ = $1;
 		}
 	;
  
@@ -2976,10 +3124,14 @@ NameTest :
 		QNAME
 		{
 			if (debug) cout << "NameTest [qname]\n";
+			$$ = new NameTest(@$,
+								new QName(driver.symtab.get($1)));
 		}
 	|	Wildcard
 		{
 			if (debug) cout << "NameTest [wildcard]\n";
+			$$ = new NameTest(@$,
+								dynamic_cast<WIldcard*>($1));
 		}
 	;
 
@@ -2990,14 +3142,20 @@ Wildcard :
 		STAR
 		{
 			if (debug) cout << "Wildcard [*]\n";
+			$$ = new Wildcard(@$,
+								Wildcard::all);
 		}
 	|	ELEM_WILDCARD
 		{
 			if (debug) cout << "Wildcard [pref:*]\n";
+			$$ = new Wildcard(@$,
+								new QName(driver.symtab.get($1)));
 		}
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
 		{
 			if (debug) cout << "Wildcard [*:qname]\n";
+			$$ = new Wildcard(@$,
+								driver.symtab.get($1));
 		}
 	;
 
@@ -3008,10 +3166,16 @@ FilterExpr :
 		PrimaryExpr 
 		{
 			if (debug) cout << "FilterExpr [primary]\n";
+			$$ = new FilterExpr(@$,
+								dynamic_cast<PrimaryExpr*>($1),
+								NULL);
 		}
 	|	PrimaryExpr  PredicateList
 		{
 			if (debug) cout << "FilterExpr [primary.predlist]\n";
+			$$ = new FilterExpr(@$,
+								dynamic_cast<PrimaryExpr*>($1),
+								dynamic_cast<PredicateList*>($2));
 		}
 	;
 
@@ -3022,10 +3186,18 @@ PredicateList :
 		Predicate
 		{
 			if (debug) cout << "PredicateList [single]\n";
+			PredicateList* pred_list_p = new PredicateList(@$);
+			pred_list_p->push_back(dynamic_cast<Predicate*>($1));
+			$$ = pred_list_p;
 		}
 	|	PredicateList  Predicate
 		{
 			if (debug) cout << "PredicateList [list]\n";
+			PredicateList* pred_list_p = dynamic_cast<PredicateList*>($1);
+			if (pred_list_p) {
+				pred_list_p->push_back(dynamic_cast<Predicate*>($1));
+			}
+			$$ = $1;
 		}
 	;
 
@@ -3036,6 +3208,8 @@ Predicate :
 		LBRACK  Expr  RBRACK
 		{
 			if (debug) cout << "Predicate [ ]\n";
+			$$ = new Predicate(@$,
+								dynamic_cast<Expr*>($2));
 		}
 	;
 
@@ -3092,9 +3266,11 @@ PrimaryExpr :
 Literal :
 		NumericLiteral
 		{
+			if (debug) cout << "Literal [numeric]\n";
 		}
 	|	STRING_LITERAL
 		{
+			if (debug) cout << "Literal [string]\n";
 		}
 	;
 
@@ -3132,11 +3308,11 @@ VarRef :
 ParenthesizedExpr :
 		LPAR  RPAR
 		{
-			if (debug) cout << "ParenthesizedExpr [ ]\n";
+			if (debug) cout << "ParenthesizedExpr [()]\n";
 		}
 	|	LPAR  Expr  RPAR
 		{
-			if (debug) cout << "ParenthesizedExpr [expr]\n";
+			if (debug) cout << "ParenthesizedExpr [(expr)]\n";
 		}
 	;	
 
