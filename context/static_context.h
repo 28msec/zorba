@@ -12,10 +12,13 @@
 #include <map>
 #include <vector>
 
-#include "../util/namespace.h"
-#include "../util/qname.h"
-#include "../util/URI.h"
+#include "../types/qname.h"
+#include "../types/collation.h"
 #include "../types/builtin_types.h"
+
+#include "../util/namespace_.h"
+#include "../util/rchandle.h"
+#include "../util/URI.h"
 
 
 /*
@@ -127,57 +130,63 @@
 
 */
 
+namespace xqp {
+
 class var_binding
 {
 protected:
-	qname_t qname;
+	rchandle<QName> qname_h;
 	static_type_t type;
 
 public:
 	var_binding();
-	var_binding(qname_t qname, static_type_t type);
+	var_binding(
+		rchandle<QName>,
+		static_type_t);
 	~var_binding();
 
 public:
-	qname get_qname() const { return qname; }
+	rchandle<QName> get_qname() const { return qname_h; }
 	static_type_t get_type() const { return type; }
 
-}
+};
 
 
 
-class static_context
+class static_context : public rcobject
 {
 public:	// types
 	enum construction_mode_t {
-		preserve,
-		strip
+		cons_preserve,
+		cons_strip
 	};
 
-	enum ordering_mode_t ordering_mode_t {
+	enum ordering_mode_t {
 		ordered,
 		unordered
 	};
 
-	enum order_empty_t order_empty_mode_t {
-		greatest,
-		least
+	enum order_empty_mode_t {
+		empty_greatest,
+		empty_least
 	};
 
-	enum boundary_space_t boundary_space_mode_t {
-		preserve,
-		strip
+	enum boundary_space_mode_t {
+		preserve_space,
+		strip_space
 	};
 
-	enum copy_ns_t inherit_mode_t {
-		inherit,
-		no_inherit
+	enum copy_ns_mode_t {
+		inherit_ns,
+		no_inherit_ns,
+		preserve_ns,
+		no_preserve_ns
 	};
 
-	enum preserve_mode_t {
-		preserve,
-		no_preserve
-	};
+	typedef rchandle<QName> qname_t;
+	typedef rchandle<collation> collation_t;
+	typedef std::vector<static_type_t> signature_t;
+	typedef static_type_t return_type_t;
 
 protected:	// state
 	rchandle<static_context> parent;
@@ -196,7 +205,7 @@ protected:	// state
 	**	and by namespace declaration attributes in direct element 
 	**	constructors. 
 	*/
-  vector<namespace> namespaces;
+  std::vector<namespace_> namespaces;
 
 	/*
 	**	[Definition: Default element/type namespace. This is a namespace URI 
@@ -205,7 +214,7 @@ protected:	// state
 	**	expected.] The URI value is whitespace normalized according to the 
 	**	rules for the xs:anyURI type in [XML Schema]. 
 	*/
-	namespace default_elem_or_type_ns;
+	namespace_ default_elem_or_type_ns;
 
 	/*
 	**	[Definition: Default function namespace.  This is a namespace URI or 
@@ -214,7 +223,7 @@ protected:	// state
 	**	URI value is whitespace normalized according to the rules for the 
 	**	xs:anyURI type in [XML Schema]. 
 	*/
-	namespace default_function_ns;
+	namespace_ default_function_ns;
 
 	/*
 	**	[Definition: In-scope schema types. Each schema type definition is 
@@ -225,7 +234,7 @@ protected:	// state
 	**	supported, in-scope schema types also include all type definitions 
 	**	found in imported schemas. ] 
 	*/
-	vector<qname_t> in_scope_schema_types;
+	std::vector<qname_t> in_scope_schema_types;
 
 	/*
 	**	[Definition: In-scope element declarations. Each element declaration 
@@ -237,7 +246,7 @@ protected:	// state
 	**	includes information about the element's substitution group 
 	**	affiliation. 
 	*/
-	vector<qname_t> in_scope_elem_decls;
+	std::vector<qname_t> in_scope_elem_decls;
 
 	/*
 	**	[Definition: In-scope attribute declarations. Each attribute 
@@ -247,7 +256,7 @@ protected:	// state
 	**	Feature is supported, in-scope attribute declarations include all 
 	**	attribute declarations found in imported schemas.] 
 	*/
-	vector<qname_t> in_scope_attr_decls;
+	std::vector<qname_t> in_scope_attr_decls;
 
 	/*
 	**	[Definition: In-scope variables. This is a set of (expanded QName, 
@@ -267,14 +276,14 @@ protected:	// state
 	**	inference rules as described in [XQuery 1.0 and XPath 2.0 Formal 
 	**	Semantics]. 
 	*/
-	vector<var_binding> in_scope_vars;
+	std::vector<var_binding> in_scope_vars;
 
 	/*
 	**	[Definition: Context item static type. This component defines the 
 	**	static type of the context item within the scope of a given 
 	**	expression.] 
 	*/
-	static_type context_item_type;
+	static_type_t context_item_type;
 
 	/*
 	**	[Definition: Statically known collations. This is an 
@@ -285,7 +294,7 @@ protected:	// state
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	vector<collation_t> collations;
+	std::vector<collation_t> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -325,7 +334,7 @@ protected:	// state
 	**	3.8.3 Order By and Return Clauses.] Its value may be greatest or 
 	**	least. 
 	*/
-	enum order_empty_t order_empty_mode;
+	enum order_empty_mode_t order_empty_mode;
 
 	/*
 	**	[Definition: Boundary-space policy. This component controls the 
@@ -333,7 +342,7 @@ protected:	// state
 	**	described in 3.7.1.4 Boundary Whitespace.] Its value may be preserve 
 	**	or strip. 
 	*/
-	enum boundary_space_t boundary_space_mode;
+	enum boundary_space_mode_t boundary_space_mode;
 
 	/*
 	**	[Definition: Copy-namespaces mode. This component controls the 
@@ -342,7 +351,7 @@ protected:	// state
 	**	Constructors. Its value consists of two parts: preserve or 
 	**	no-preserve, and inherit or no-inherit.] 
 	*/
-	enum copy_ns_t copy_ns_mode;
+	enum copy_ns_mode_t copy_ns_mode;
 
 	/*
 	**	[Definition: Base URI. This is an absolute URI, used when necessary in 
@@ -363,7 +372,7 @@ protected:	// state
 	**	The function signatures include the signatures of constructor 
 	**	functions, which are discussed in 3.12.5 Constructor Functions. 
 	*/
-	map<signature_t,function_t> funmap;
+	std::map<signature_t,return_type_t> funmap;
 
 	/*
 	**	[Definition: Statically known documents. This is a mapping from 
@@ -379,7 +388,7 @@ protected:	// state
 	**	available. A URI need not be found in the statically known documents 
 	**	to be accessed using fn:doc. 
 	*/
-	map<URI,static_type> known_documents;
+	std::map<URI,static_type_t> known_documents;
 
 	/*
 	**	[Definition: Statically known collections. This is a mapping from 
@@ -396,7 +405,7 @@ protected:	// state
 	**	available. A URI need not be found in the statically known collections 
 	**	to be accessed using fn:collection. 
 	*/
-	map<URI,static_type> known_collections;
+	std::map<URI,static_type_t> known_collections;
 
 	/*
 	**	[Definition: Statically known default collection type. This is the 
@@ -405,33 +414,33 @@ protected:	// state
 	**	other value by an implementation, the value of statically known 
 	**	default collection type is node()*. 
 	*/
-	map<URI,static_type> known_collection_types;
-
+	std::map<URI,static_type_t> known_collection_types;
 
 
 public:	// manipulators
-  vector<namespace> get_namespaces() const					{ return namespaces; }
-	namespace get_default_elem_or_type_ns() const			{ return default_elem_or_type_ns; }
-	namespace get_default_function_ns()const					{ return default_function_ns; }
-	vector<qname_t>get_in_scope_schema_types() const	{ return in_scope_schema_types; }
-	vector<qname_t> get_in_scope_elem_decls() const		{ return in_scope_elem_decls; }
-	vector<qname_t> get_in_scope_attr_decls() const		{ return in_scope_attr_decls; }
-	vector<var_binding> get_in_scope_vars() const			{ return in_scope_vars; }
-	static_type get_context_item_type() const					{ return context_item_type; }
-	vector<collation_t> get_collations() const				{ return collations; }
-	collation_t get_default_collation() const					{ return default_collation; }
-	enum construction_mode_t get_construction_mode() const	{ return construction_mode; }
-	enum ordering_mode_t get_ordering_mode() const		{ return ordering_mode; }
-	enum order_empty_t get_order_empty_mode() const		{ return order_empty_mode; }
-	enum boundary_space_t get_boundary_space_mode() const		{ return boundary_space_mode; }
-	enum copy_ns_t get_copy_ns_mode() const						{ return copy_ns_mode; }
-	URI get_base_uri() const													{ return base_uri; }
+  std::vector<namespace_> get_namespaces() const { return namespaces; }
+	namespace_ get_default_elem_or_type_ns() const { return default_elem_or_type_ns; }
+	namespace_ get_default_function_ns() const { return default_function_ns; }
+	std::vector<qname_t>get_in_scope_schema_types() const { return in_scope_schema_types; }
+	std::vector<qname_t> get_in_scope_elem_decls() const { return in_scope_elem_decls; }
+	std::vector<qname_t> get_in_scope_attr_decls() const { return in_scope_attr_decls; }
+	std::vector<var_binding> get_in_scope_vars() const { return in_scope_vars; }
+	static_type_t get_context_item_type() const { return context_item_type; }
+	std::vector<collation_t> get_collations() const { return collations; }
+	collation_t get_default_collation() const { return default_collation; }
+	enum construction_mode_t get_construction_mode() const { return construction_mode; }
+	enum ordering_mode_t get_ordering_mode() const { return ordering_mode; }
+	enum order_empty_mode_t get_order_empty_mode() const { return order_empty_mode; }
+	enum boundary_space_mode_t get_boundary_space_mode() const { return boundary_space_mode; }
+	enum copy_ns_mode_t get_copy_ns_mode() const { return copy_ns_mode; }
+	URI get_base_uri() const { return base_uri; }
 
-	function_t get_fun(signature_t) const;
-	static_type get_document_type(URI doc_uri) const;
-	static_type get_collection_type(URI collect_uri) const;
-
-public:
+	return_type_t get_fun(signature_t) const;
+	static_type_t get_document_type(URI doc_uri) const;
+	static_type_t get_collection_type(URI collect_uri) const;
 
 };
 
+
+}	/* namespace xqp */
+#endif	/* XQP_STATIC_CONTEXT_H */
