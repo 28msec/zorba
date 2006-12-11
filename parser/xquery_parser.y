@@ -40,6 +40,14 @@
 #include "parsenodes.h"
 
 class xquery_driver;
+
+using namespace std;
+using namespace xqp;
+
+namespace xqp {
+	class parsenode;
+}
+
 %}
 
 /*
@@ -84,11 +92,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 */
 %union
 {
-  xqp::parsenode* node;
+  xqp::parsenode * node;
   off_t sval;
 	int ival;
 	double dval;
-}
+};
 
 
 /*
@@ -687,13 +695,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /*%destructor { delete $$; }              */
 
 
+
 /*
 	The grammar
 */
-
-%{
-using namespace xqp;
-%}
 
 %%
 %start Module;
@@ -1344,7 +1349,7 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(driver.symtab.get($2)),
 								NULL,NULL,NULL,
-								FunctionDecl::extern);
+								FunctionDecl::fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
 		{
@@ -1353,7 +1358,7 @@ FunctionDecl :
 								new QName(driver.symtab.get($2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
-								FunctionDecl::read);
+								FunctionDecl::fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
 		{
@@ -1362,7 +1367,7 @@ FunctionDecl :
 								new QName(driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
-								FunctionDecl::extern);
+								FunctionDecl::fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
 		{
@@ -1372,7 +1377,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::read);
+								FunctionDecl::fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1382,7 +1387,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
-								FunctionDecl::extern);
+								FunctionDecl::fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1392,7 +1397,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::read);
+								FunctionDecl::fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1402,7 +1407,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
-								FunctionDecl::extern);
+								FunctionDecl::fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1412,7 +1417,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
-								FunctionDecl::read);
+								FunctionDecl::fn_read);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
 		{
@@ -1420,7 +1425,7 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(driver.symtab.get($2)),
 								NULL,NULL,NULL,
-								FunctionDecl::extern_update);
+								FunctionDecl::fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
 		{
@@ -1429,7 +1434,7 @@ FunctionDecl :
 								new QName(driver.symtab.get($2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
-								FunctionDecl::update);
+								FunctionDecl::fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
 		{
@@ -1438,7 +1443,7 @@ FunctionDecl :
 								new QName(driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
-								FunctionDecl::extern_update);
+								FunctionDecl::fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
 		{
@@ -1448,7 +1453,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::update);
+								FunctionDecl::fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1458,7 +1463,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
-								FunctionDecl::extern_update);
+								FunctionDecl::fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1468,7 +1473,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::update);
+								FunctionDecl::fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1478,7 +1483,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
-								FunctionDecl::extern_update);
+								FunctionDecl::fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1488,7 +1493,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
-								FunctionDecl::update);
+								FunctionDecl::fn_update);
 		}
 	;
 
@@ -1925,6 +1930,7 @@ VarGetsDecl :
 								dynamic_cast<ExprSingle*>($5));
 		}
 	;
+
 
 
 // [37] WhereClause
@@ -3143,7 +3149,7 @@ Wildcard :
 		{
 			if (debug) cout << "Wildcard [*]\n";
 			$$ = new Wildcard(@$,
-								Wildcard::all);
+								Wildcard::wild_all);
 		}
 	|	ELEM_WILDCARD
 		{

@@ -21,29 +21,13 @@
 #include <vector>
 #include <assert.h>
 
+#include "../context/static_context.h"
+#include "../types/qname.h"
 #include "../util/rchandle.h"
-#include "xquery_parser_tab.h"
+
+#include "xquery_parser.tab.h"
 
 namespace xqp {
-
-
-// three-valued boolean
-enum Bool {
-  falseBool,
-  trueBool,
-  indeterminateBool
-};
-
-
-static inline enum Bool 
-not3(enum Bool b)
-{
-  switch (b) {
-  case falseBool: return trueBool;
-  case trueBool: return falseBool;
-  default: return indeterminateBool;
-  }
-}
 
 
 /*
@@ -52,15 +36,15 @@ not3(enum Bool b)
 class parsenode : public rcobject
 {
 protected:
-	yy::xquery_parser::location_type const& loc;
+	yy::xquery_parser::location_type loc;
 
 public:
-	parsenode(yy:location _loc) : loc(_loc) {}
+	parsenode(yy::xquery_parser::location_type const& _loc) : loc(_loc) {}
 	parsenode() {}
   ~parsenode() {}
 
 public:
-  yy:::location get_location() const { return loc; }
+	yy::xquery_parser::location_type get_location() const { return loc; }
 
 };
 
@@ -71,21 +55,22 @@ public:
 class exprnode : public rcobject
 {
 protected:
-	yy::xquery_parser::location_type const& loc;
+	yy::xquery_parser::location_type loc;
 
 public:
-	exprnode(yy:location _loc) : loc(_loc) {}
+	exprnode(yy::xquery_parser::location_type const& _loc) : loc(_loc) {}
 	exprnode() {}
   ~exprnode() {}
 
 public:
-  yy:::location get_location() const { return loc; }
+	yy::xquery_parser::location_type get_location() const { return loc; }
 
 };
 
 
-
 class AbbrevForwardStep;
+class AdditiveExpr;
+class AndExpr;
 class AnyKindTest;
 class AposAttrContentList;
 class AposAttrValueContent;
@@ -101,32 +86,98 @@ class BoundarySpaceDecl;
 class CDataSection;
 class CaseClause;
 class CaseClauseList;
+class CastExpr;
+class CastableExpr;
 class CommentTest;
 class CommonContent;
+class CompAttrConstructor;
+class CompCommentConstructor;
+class CompDocConstructor;
+class CompElemConstructor;
+class CompPIConstructor;
+class CompTextConstructor;
+class ComparisonExpr;
+class ComputedConstructor;
 class ConstructionDecl;
 class Constructor;
+class ContentExpr;
+class ContextItemExpr;
 class CopyNamespacesDecl;
 class DefaultCollationDecl;
 class DefaultNamespaceDecl;
+class DeleteExpr;
 class DirAttr;
 class DirAttributeList;
 class DirAttributeValue;
+class DirCommentConstructor;
+class DirElemConstructor;
 class DirElemContent;
 class DirElemContentList;
+class DirPIConstructor;
+class DirectConstructor;
 class DocumentTest;
 class ElementDeclaration;
 class ElementName;
 class ElementNameOrWildcard;
 class ElementTest;
 class EmptyOrderDecl;
+class EnclosedExpr;
+class Expr;
+class ExprSingle;
+class ExtensionExpr;
+class FLWORExpr;
+class FTAnd;
+class FTAnyallOption;
+class FTBigUnit;
+class FTCaseOption;
+class FTContainsExpr;
+class FTContent;
+class FTDiacriticsOption;
+class FTDistance;
+class FTIgnoreOption;
+class FTInclExclStringLiteral;
+class FTInclExclStringLiteralList;
+class FTLanguageOption;
+class FTMatchOption;
+class FTMatchOptionProximityList;
+class FTMildnot;
+class FTOr;
+class FTOrderedIndicator;
+class FTProximity;
+class FTRange;
+class FTRefOrList;
+class FTScope;
+class FTScoreVar;
+class FTSelection;
+class FTStemOption;
+class FTStopwordOption;
+class FTStringLiteralList;
+class FTThesaurusID;
+class FTThesaurusList;
+class FTThesaurusOption;
+class FTTimes;
+class FTUnaryNot;
+class FTUnit;
+class FTWildcardOption;
+class FTWindow;
+class FTWords;
+class FTWordsSelection;
+class FTWordsValue;
+class FilterExpr;
+class ForClause;
 class ForLetClause;
 class ForLetClauseList;
 class ForwardAxis;
 class ForwardStep;
 class FunctionCall;
 class FunctionDecl;
+class GeneralComp;
+class IfExpr;
 class Import;
 class InheritMode;
+class InsertExpr;
+class InstanceofExpr;
+class IntersectExceptExpr;
 class ItemType;
 class KindTest;
 class LetClause;
@@ -135,38 +186,54 @@ class Literal;
 class MainModule;
 class Module;
 class ModuleDecl;
+class ModuleImport;
+class MultiplicativeExpr;
 class NameTest;
 class NamespaceDecl;
+class NodeComp;
 class NodeTest;
+class NumericLiteral;
 class OccurrenceIndicator;
 class OptionDecl;
+class OrExpr;
 class OrderByClause;
 class OrderCollationSpec;
 class OrderDirSpec;
+class OrderEmptySpec;
 class OrderModifier;
 class OrderSpec;
 class OrderSpecList;
+class OrderedExpr;
 class OrderingModeDecl;
 class PITest;
 class Param;
 class ParamList;
+class ParenthesizedExpr;
+class PathExpr;
 class PositionalVar;
 class Pragma;
 class PragmaList;
 class Predicate;
 class PredicateList;
 class PreserveMode;
+class PrimaryExpr;
 class Prolog;
-class QName;
+//class QName;
 class QVarInDecl;
 class QVarInDeclList;
+class QuantifiedExpr;
 class QueryBody;
-class QuoteAttrValueContent;
 class QuoteAttrContentList;
+class QuoteAttrValueContent;
+class RangeExpr;
+class RelativePathExpr;
+class RenameExpr;
+class ReplaceExpr;
+class RevalidationDecl;
 class ReverseAxis;
 class ReverseStep;
-class SIND_DeclList;
 class SIND_Decl;
+class SIND_DeclList;
 class SchemaAttributeTest;
 class SchemaElementTest;
 class SchemaImport;
@@ -175,20 +242,33 @@ class SequenceType;
 class Setter;
 class SignList;
 class SingleType;
+class StepExpr;
 class TextTest;
+class TransformExpr;
+class TreatExpr;
 class TypeDeclaration;
 class TypeName;
-class VarDecl;
-class VarGetsDecl;
-class VarInDecl;
-class VarInDeclList;
-class VarRef;
-class VersionDecl;
+class TypeswitchExpr;
+class URILiteralList;
+class UnaryExpr;
+class UnionExpr;
+class UnorderedExpr;
 class VFO_Decl;
 class VFO_DeclList;
+class ValidateExpr;
+class ValueComp;
+class ValueExpr;
+class VarBinding;
+class VarDecl;
+class VarGetsDecl;
+class VarGetsDeclList;
+class VarInDecl;
+class VarInDeclList;
+class VarNameList;
+class VarRef;
+class VersionDecl;
 class WhereClause;
 class Wildcard;
-
 
 
 
@@ -205,19 +285,18 @@ class Module : public parsenode
 {
 protected:
 	rchandle<static_context> static_context_h;
-	rchandle<dynamic_context> dynamic_context_h;
+	//rchandle<dynamic_context> dynamic_context_h;
 
 public:
 	Module(
-		yy::xquery_parser::location_type const& loc,
-		rchandle<static_context> static_context_h);
+		rchandle<static_context>);
 	~Module();
 
 public:	//manipulators
 	rchandle<static_context> get_static_context() const
 		{	return static_context_h; }
-	rchandle<dynamic_context> get_dynamic_context() const
-		{	return dynamic_context_h; }
+	//rchandle<dynamic_context> get_dynamic_context() const
+	//	{	return dynamic_context_h; }
 
 };
 
@@ -535,7 +614,7 @@ public:
 	~BoundarySpaceDecl();
 
 public:
-	static_context::boundary_space_mode 
+	static_context::boundary_space_mode_t
 		get_boundary_space_mode() const { return mode; }
 
 };
@@ -595,7 +674,7 @@ public:
 	~OptionDecl();
 
 public:
-	rchandle<QName> get_qname() const { return qname_p; }
+	rchandle<QName> get_qname() const { return qname_h; }
 	std::string get_val() const { return val; }
 
 };
@@ -616,12 +695,11 @@ protected:
 public:
 	OrderingModeDecl(
 		yy::xquery_parser::location_type const&,
-		static_context::ordering_mode);
+		static_context::ordering_mode_t);
 	~OrderingModeDecl();
 	
 public:
-	static_context::ordering_mode
-		get_ordering_mode() const { return mode; }
+	static_context::ordering_mode_t get_mode() const { return mode; }
 
 };
 
@@ -637,17 +715,16 @@ class EmptyOrderDecl : public Setter
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::empty_order_mode_t mode;
+	static_context::order_empty_mode_t mode;
 
 public:
 	EmptyOrderDecl(
 		yy::xquery_parser::location_type const&,
-		static_context::empty_order_mode_t);
+		static_context::order_empty_mode_t);
 	~EmptyOrderDecl();
 	
 public:
-	static_context::empty_order_mode_t
-		get_mode() const { return mode; }
+	static_context::order_empty_mode_t get_mode() const { return mode; }
 
 };
 
@@ -689,16 +766,16 @@ class PreserveMode : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::preserve_mode_t preserve_mode;
+	static_context::copy_ns_mode_t preserve_mode;
 
 public:
 	PreserveMode(
 		yy::xquery_parser::location_type const&,
-		static_context::preserve_mode_t);
+		static_context::copy_ns_mode_t);
 	~PreserveMode();
 
 public:
-	static_context::preserve_mode_t
+	static_context::copy_ns_mode_t
 		get_preserve_mode() const { return preserve_mode; }
 
 };
@@ -714,16 +791,16 @@ class InheritMode : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	static_context::inherit_mode_t inherit_mode;
+	static_context::copy_ns_mode_t inherit_mode;
 	
 public:
 	InheritMode(
 		yy::xquery_parser::location_type const&,
-		static_context::inherit_mode mode_t);
+		static_context::copy_ns_mode_t);
 	~InheritMode();
 
 public:
-	static_context::inherit_mode_t
+	static_context::copy_ns_mode_t
 		get_inherit_mode() const { return inherit_mode; }
 
 };
@@ -785,50 +862,50 @@ class SchemaImport : public Import
 |
 |	::= IMPORT_SCHEMA  URI_LITERAL
 |			| IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL
-|			|	IMPORT_SCHEMA  URI_LITERAL  AT  URI_LITERALList
-|			|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URI_LITERALList
+|			|	IMPORT_SCHEMA  URI_LITERAL  AT  URILiteralList
+|			|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
 |_______________________________________________________________________*/
 {
 protected:
 	rchandle<SchemaPrefix> prefix_h;
 	std::string uri;
-	rchandle<URI_LITERALList> at_list_h;
+	rchandle<URILiteralList> at_list_h;
 
 public:
 	SchemaImport(
 		yy::xquery_parser::location_type const&,
 		rchandle<SchemaPrefix>,
 		std::string const& uri,
-		rchandle<URI_LITERALList>);
+		rchandle<URILiteralList>);
 	~SchemaImport();
 
 public:
 	rchandle<SchemaPrefix> get_prefix() const { return prefix_h; }
 	std::string get_uri() const { return uri; }
-	rchandle<URI_LITERALList> get_at_list() const { return at_list_h; }
+	rchandle<URILiteralList> get_at_list() const { return at_list_h; }
 };
 
 
 
 // [21a] URLLiteralList
 // --------------------
-class URI_LITERALList : public parsenode
+class URILiteralList : public parsenode
 /*______________________________________________________________________
 |
 |	::= URI_LITERAL
-|			| URI_LITERALList  COMMA  URI_LITERAL
+|			| URILiteralList  COMMA  URI_LITERAL
 |_______________________________________________________________________*/
 {
 protected:
 	std::vector<std::string> uri_v;
 
 public:
-	URI_LITERALList(
+	URILiteralList(
 		yy::xquery_parser::location_type const&);
-	~URI_LITERALList();
+	~URILiteralList();
 
 public:
-	push_back(std::string const& uri) { uri_v.push_back(uri); }
+	void push_back(std::string const& uri) { uri_v.push_back(uri); }
 	std::string operator[](int i) const { return uri_v[i]; }
 
 };
@@ -872,31 +949,31 @@ class ModuleImport : public Import
 |
 |	::= IMPORT_MODULE  URI_LITERAL 
 |			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL
-|			|	IMPORT_MODULE  URI_LITERAL  AT  URI_LITERALList
-|			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL  AT  URI_LITERALList
+|			|	IMPORT_MODULE  URI_LITERAL  AT  URILiteralList
+|			|	IMPORT_MODULE  NAMESPACE  NCNAME  EQ  URI_LITERAL  AT  URILiteralList
 |_______________________________________________________________________*/
 {
 protected:
 	std::string prefix;
 	std::string uri;
-	rchandle<URI_LITERALList> uri_list_h;
+	rchandle<URILiteralList> uri_list_h;
 
 public:
 	ModuleImport(
 		yy::xquery_parser::location_type const&,
 		std::string const& uri,
-		rchandle<URI_LITERALList>);
+		rchandle<URILiteralList>);
 	ModuleImport(
 		yy::xquery_parser::location_type const&,
 		std::string const& prefix,
 		std::string const& uri,
-		rchandle<URI_LITERALList>);
+		rchandle<URILiteralList>);
 	~ModuleImport();
 
 public:
 	std::string get_prefix() const { return prefix; }
 	std::string get_uri() const { return uri; }
-	rchandle<URI_LITERALList> get_uri_list() const { return uri_list_h; }
+	rchandle<URILiteralList> get_uri_list() const { return uri_list_h; }
 
 };
 
@@ -946,16 +1023,16 @@ class ConstructionDecl : public Setter
 |_______________________________________________________________________*/
 {
 protected:
-	enum static_context::boundary_space_t mode;
+	enum static_context::boundary_space_mode_t mode;
 
 public:
 	ConstructionDecl(
 		yy::xquery_parser::location_type const&,
-		enum static_context::boundary_space_t);
+		enum static_context::boundary_space_mode_t);
 	~ConstructionDecl();
 
 public:
-	enum static_context::boundary_space_t get_mode() const { mode; }
+	enum static_context::boundary_space_mode_t get_mode() const { mode; }
 
 };
 
@@ -979,17 +1056,17 @@ class FunctionDecl : public parsenode
 {
 public:
 	enum function_type_t {
-		extern,
-		read,
-		update,
-		extern_update,
+		fn_extern,
+		fn_read,
+		fn_update,
+		fn_extern_update,
 	};
 
 protected:
 	enum function_type_t type;
 	rchandle<QName> name_h;
 	rchandle<ParamList> paramlist_h;
-	rchandle<ExclosedExpr> body_h;
+	rchandle<EnclosedExpr> body_h;
 	rchandle<SequenceType> return_type_h;
 	bool extern_b;
 
@@ -999,14 +1076,14 @@ public:
 		rchandle<QName>,
 		rchandle<ParamList>,
 		rchandle<SequenceType>,
-		rchandle<ExclosedExpr>,
+		rchandle<EnclosedExpr>,
 		enum function_type_t type);
 	~FunctionDecl();
 
 public:
 	rchandle<QName> get_name() const { return name_h; }
 	rchandle<ParamList> get_paramlist() const { return paramlist_h; }
-	rchandle<ExclosedExpr> get_body() const { return body_h; }
+	rchandle<EnclosedExpr> get_body() const { return body_h; }
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
 	enum function_type_t get_type() const { return type; }
 
@@ -1027,7 +1104,7 @@ protected:
 	std::vector<rchandle<Param> > param_hv;
 
 public:
-	ParamList();
+	ParamList(
 		yy::xquery_parser::location_type const&);
 	~ParamList();
 
@@ -1060,8 +1137,8 @@ public:
 	~Param();
 
 public:
-	std::string get_name() const { get_name; }
-	rchandle<TypeDeclaration> get_typedecl() const { get_typedecl_h; }
+	std::string get_name() const { return name; }
+	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 
 };
 
@@ -1207,11 +1284,11 @@ class ForLetClauseList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std:vector<rchandle<ForLetClause> > forlet_hv;
+	std::vector<rchandle<ForLetClause> > forlet_hv;
 
 public:
 	ForLetClauseList(
-		yy::xquery_parser::location_type const&)
+		yy::xquery_parser::location_type const&);
 	~ForLetClauseList();
 
 public:
@@ -1273,7 +1350,7 @@ class VarInDeclList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<VarInDecl> vardecl_hv;
+	std::vector<rchandle<VarInDecl> > vardecl_hv;
 
 public:
 	VarInDeclList(
@@ -1315,18 +1392,18 @@ public:
 	VarInDecl(
 		yy::xquery_parser::location_type const&,
 		std::string varname,
-		rchandle<TypeDeclaration>
-		rchandle<PositionalVar>
-		rchandle<FTScoreVar>
+		rchandle<TypeDeclaration>,
+		rchandle<PositionalVar>,
+		rchandle<FTScoreVar>,
 		rchandle<ExprSingle>);
 	~VarInDecl();
 
 public:
-	std::string get_varname() const { return get_varname; }
-	rchandle<TypeDeclaration> get_typedecl() const { return get_typedecl_h; }
-	rchandle<PositionalVar> get_posvar() const { return get_posvar_h; }
-	rchandle<FTScoreVar> get_ftscorevar() const { return get_ftscorevar_h; }
-	rchandle<ExprSingle> get_valexpr() const { return get_valexpr_h; }
+	std::string get_varname() const { return varname; }
+	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
+	rchandle<PositionalVar> get_posvar() const { return posvar_h; }
+	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
+	rchandle<ExprSingle> get_valexpr() const { return valexpr_h; }
 
 };
 
@@ -1357,7 +1434,7 @@ public:
 
 // [36] LetClause
 // --------------
-class LetClause : public parsenode
+class LetClause : public ForLetClause
 /*______________________________________________________________________
 |
 |	::= LET_DOLLAR VarGetsDeclList
@@ -1427,8 +1504,8 @@ public:
 	VarGetsDecl(
 		yy::xquery_parser::location_type const&,
 		std::string varname,
-		rchandle<TypeDeclaration>
-		rchandle<FTScoreVar>
+		rchandle<TypeDeclaration>,
+		rchandle<FTScoreVar>,
 		rchandle<ExprSingle>);
 	~VarGetsDecl();
 
@@ -1437,6 +1514,30 @@ public:
 	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
 	rchandle<ExprSingle> get_valexpr() const { return valexpr_h; }
+};
+
+
+
+// [36c] FTScoreVar
+// ----------------
+/*______________________________________________________________________
+|
+|	::= SCORE  DOLLAR  VarName
+|______________________________________________________________________*/
+class FTScoreVar : public parsenode
+{
+protected:
+	std::string varname;
+
+public:
+	FTScoreVar(
+		yy::xquery_parser::location_type const&,
+		std::string varname);
+	~FTScoreVar();
+
+public:
+	std::string get_varname() const { return varname; }
+
 };
 
 
@@ -1588,7 +1689,7 @@ public:
 
 // [41a] OrderDirSpec
 // ------------------
-class OrderDirSpec : public OrderModifier
+class OrderDirSpec : public parsenode
 /*______________________________________________________________________
 |
 |	::= ASCENDING
@@ -1619,7 +1720,7 @@ public:
 
 // [41b] OrderEmptySpec
 // --------------------
-class OrderEmptySpec : public OrderModifier
+class OrderEmptySpec : public parsenode
 /*______________________________________________________________________
 |
 |	::= EMPTY_GREATEST
@@ -1627,16 +1728,16 @@ class OrderEmptySpec : public OrderModifier
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::empty_order_mode empty_order_spec;
+	static_context::order_empty_mode_t empty_order_spec;
 
 public:
 	OrderEmptySpec(
 		yy::xquery_parser::location_type const&,
-		static_context::empty_order_mode empty_order_spec);
+		static_context::order_empty_mode_t empty_order_spec);
 	~OrderEmptySpec();
 
 public:
-	static_context::empty_order_mode get_empty_order_spec() const
+	static_context::order_empty_mode_t get_empty_order_spec() const
 		{ return empty_order_spec; }
 };
 
@@ -1644,7 +1745,7 @@ public:
 
 // [41c] OrderCollationSpec
 // ------------------------
-class OrderCollationSpec : public OrderModifier
+class OrderCollationSpec : public parsenode
 /*______________________________________________________________________
 |
 |	::= COLLATION  URI_LITERAL
@@ -1719,8 +1820,8 @@ public:
 	~QVarInDeclList();
 
 public:
-	void push_back(rchandle<QVarInDecl> decl_h) { decl_hv.push_back(decl_h); }
-	rchandle<QVarInDecl> operator[](int i) const { return decl_hv[i]; }
+	void push_back(rchandle<QVarInDecl> decl_h) { qvar_decl_hv.push_back(decl_h); }
+	rchandle<QVarInDecl> operator[](int i) const { return qvar_decl_hv[i]; }
 
 };
 
@@ -1752,7 +1853,7 @@ public:
 	~QVarInDecl();
 
 public:
-	std::string get_name() const { name;
+	std::string get_name() const { return name; }
 	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 	rchandle<ExprSingle> get_val() const { return val_h; }
 
@@ -1997,12 +2098,12 @@ protected:
 	rchandle<FTIgnoreOption> ftignore_h;
 
 public:
-	ValueCompExpr(
+	FTContainsExpr(
 		yy::xquery_parser::location_type const&,
 		rchandle<RangeExpr>,
 		rchandle<FTSelection>,
 		rchandle<FTIgnoreOption>);
-	~ValueCompExpr();
+	~FTContainsExpr();
 
 public:
 	rchandle<RangeExpr> get_range_expr() const { return range_expr_h; }
@@ -2058,20 +2159,20 @@ public:
 	};
 
 protected:
-	enum add_op_t add_od;
 	rchandle<AdditiveExpr> add_expr_h;
+	enum add_op_t add_op;
 	rchandle<MultiplicativeExpr> mult_expr_h;
 
 public:
 	AdditiveExpr(
 		yy::xquery_parser::location_type const&,
-		enum add_op_t add_op,
 		rchandle<AdditiveExpr>,
+		enum add_op_t add_op,
 		rchandle<MultiplicativeExpr>);
 	~AdditiveExpr();
 
 public:
-	enum add_op_t get_add_op() const { return add_op; }
+	add_op_t get_add_op() const { return add_op; }
 	rchandle<AdditiveExpr> get_add_expr() const { return add_expr_h; }
 	rchandle<MultiplicativeExpr> get_mult_expr() const { return mult_expr_h; }
 
@@ -2101,21 +2202,21 @@ public:
 
 protected:
 	rchandle<MultiplicativeExpr> mult_expr_h;
+	enum mult_op_t mult_op;
 	rchandle<UnionExpr> union_expr_h;
-	enum mult_op_t op;
 
 public:
 	MultiplicativeExpr(
 		yy::xquery_parser::location_type const&,
 		rchandle<MultiplicativeExpr>,
-		rchandle<UnionExpr>,
-		enum mult_op_t);
+		enum mult_op_t,
+		rchandle<UnionExpr>);
 	~MultiplicativeExpr();
 
 public:
 	rchandle<MultiplicativeExpr> get_mult_expr() const { return mult_expr_h; }
 	rchandle<UnionExpr> get_union_expr() const { return union_expr_h; }
-	enum mult_op get_op() const { return op; }
+	enum mult_op_t get_mult_op() const { return mult_op; }
 
 };
 
@@ -2123,7 +2224,7 @@ public:
 
 // [52] UnionExpr
 // --------------
-class UnionExpr : public parsenode
+class UnionExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= IntersectExceptExpr
@@ -2152,7 +2253,7 @@ public:
 
 // [53] IntersectExceptExpr
 // ------------------------
-class IntersectExceptExpr : public parsenode
+class IntersectExceptExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= InstanceofExpr
@@ -2167,21 +2268,21 @@ class IntersectExceptExpr : public parsenode
 
 protected:
 	rchandle<IntersectExceptExpr> intex_expr_h;
+	enum intex_op_t intex_op;
 	rchandle<InstanceofExpr> instof_expr_h;
-	enum mult_op_t op;
 
 public:
 	IntersectExceptExpr(
 		yy::xquery_parser::location_type const&,
 		rchandle<IntersectExceptExpr>,
-		enum intex_op_t op,
+		enum intex_op_t,
 		rchandle<InstanceofExpr>);
 	~IntersectExceptExpr();
 
 public:
 	rchandle<IntersectExceptExpr> get_intex_expr() const { return intex_expr_h; }
+	enum intex_op_t get_intex_op() const { return intex_op; }
 	rchandle<InstanceofExpr> get_instof_expr() const { return instof_expr_h; }
-	enum mult_op_t get_op() const { return op; }
 
 };
 
@@ -2287,7 +2388,7 @@ protected:
 public:
 	CastExpr(
 		yy::xquery_parser::location_type const&,
-		rchandle<UnaryExpr>
+		rchandle<UnaryExpr>,
 		rchandle<SingleType>);
 	~CastExpr();
 
@@ -2365,7 +2466,8 @@ class ValueExpr : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	ValueExpr();
+	ValueExpr(
+		yy::xquery_parser::location_type const&);
 	~ValueExpr();
 
 };
@@ -2634,18 +2736,18 @@ public:
 
 protected:
 	enum pathtype_t type;
-	rchandle<RelatvePathExpr> relpath_expr_h;
+	rchandle<RelativePathExpr> relpath_expr_h;
 
 public:
 	PathExpr(
 		yy::xquery_parser::location_type const&,
 		enum pathtype_t type,
-		rchandle<RelatvePathExpr>);
+		rchandle<RelativePathExpr>);
 	~PathExpr();
 
 public:
 	enum pathtype_t get_type() const { return type; }
-	rchandle<RelatvePathExpr> get_relpath_expr() const { return relpath_expr_h; }
+	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
 
 };
 
@@ -2677,7 +2779,7 @@ public:
 	RelativePathExpr(
 		yy::xquery_parser::location_type const&,
 		enum steptype_t,
-		rchandle<StepExpr>.
+		rchandle<StepExpr>,
 		rchandle<RelativePathExpr>);
 	~RelativePathExpr();
 
@@ -2756,7 +2858,7 @@ class ForwardStep : public parsenode
 protected:
 	rchandle<ForwardAxis> forward_axis_h;
 	rchandle<NodeTest> node_test_h;
-	rchandle<AbbreviatedForwardStep> abbrev_step_h;
+	rchandle<AbbrevForwardStep> abbrev_step_h;
 
 public:
 	ForwardStep(
@@ -2765,13 +2867,13 @@ public:
 		rchandle<NodeTest>);
 	ForwardStep(
 		yy::xquery_parser::location_type const&,
-		rchandle<AbbreviatedForwardStep>);
+		rchandle<AbbrevForwardStep>);
 	~ForwardStep();
 
 public:
 	rchandle<ForwardAxis> get_forward_axis() const { return forward_axis_h; }
 	rchandle<NodeTest> get_node_test() const { return node_test_h; }
-	rchandle<AbbreviatedForwardStep> get_abbrev_step() const { return abbrev_step_h; }
+	rchandle<AbbrevForwardStep> get_abbrev_step() const { return abbrev_step_h; }
 
 };
 
@@ -2827,7 +2929,7 @@ class AbbrevForwardStep : public parsenode
 |			|	AT_SIGN  NodeTest
 |_______________________________________________________________________*/
 {
-proteced:
+protected:
 	rchandle<NodeTest> node_test_h;
 	bool attr_b;
 	
@@ -2947,20 +3049,20 @@ class NameTest : public parsenode
 {
 protected:
 	rchandle<QName> qname_h;
-	rchandle<WildCard> wild_h;
+	rchandle<Wildcard> wild_h;
 
 public:
 	NameTest(
-		yy::xquery_parser::location_type const&);
+		yy::xquery_parser::location_type const&,
 		rchandle<QName>);
 	NameTest(
-		yy::xquery_parser::location_type const&);
-		rchandle<WildCard>);
+		yy::xquery_parser::location_type const&,
+		rchandle<Wildcard>);
 	~NameTest();
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
-	rchandle<WildCard> get_wild() const { return wild_h; }
+	rchandle<Wildcard> get_wild() const { return wild_h; }
 
 };
 
@@ -2978,9 +3080,9 @@ class Wildcard : public parsenode
 {
 public:
 	enum wildcard_t {
-		all,
-		elem,
-		prefix
+		wild_all,
+		wild_elem,
+		wild_prefix
 	};
 
 protected:
@@ -3080,7 +3182,7 @@ public:
 	~Predicate();
 
 public:
-	rchandle<Expr> get_perd() const { return perd_h; }
+	rchandle<Expr> get_pred() const { return pred_h; }
 
 };
 
@@ -3139,11 +3241,11 @@ class NumericLiteral : public Literal
 {
 public:
 	enum numeric_type_t {
-		integer,
-		decimal,
-		double
+		num_integer,
+		num_decimal,
+		num_double
 	};
-	typedef double decimal;
+	typedef float decimal;
 
 protected:
 	enum numeric_type_t type;
@@ -3156,19 +3258,20 @@ protected:
 public:
 	NumericLiteral(
 		yy::xquery_parser::location_type const&,
-		enum numeric_type_t,
 		int);
 	NumericLiteral(
 		yy::xquery_parser::location_type const&,
-		enum numeric_type_t,
+		decimal);
+	NumericLiteral(
+		yy::xquery_parser::location_type const&,
 		double);
 	~NumericLiteral();
 
 public:
 	enum numeric_type_t get_type() const { return type; }
 	int get_int() const { return ival; }
-	int get_decimal() const { return dval; }
-	int get_double() const { return dval; }
+	decimal get_decimal() const { return decval; }
+	double get_double() const { return dval; }
 
 };
 
@@ -3326,7 +3429,7 @@ class ArgList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<ExprSingle> arg_hv;
+	std::vector<rchandle<ExprSingle> > arg_hv;
 
 public:
 	ArgList(
@@ -3502,19 +3605,19 @@ class DirAttributeValue : public parsenode
 {
 protected:
 	rchandle<QuoteAttrContentList> quot_attr_content_h;
-	rchandle<AposContentList> apos_attr_content_h;
+	rchandle<AposAttrContentList> apos_attr_content_h;
 
 public:
 	DirAttributeValue(
 		yy::xquery_parser::location_type const&,
 		rchandle<QuoteAttrContentList>,
-		rchandle<AposContentList>);
+		rchandle<AposAttrContentList>);
 	~DirAttributeValue();
 
 public:
 	rchandle<QuoteAttrContentList> get_quot_attr_content() const
 		{ return quot_attr_content_h; }
-	rchandle<AposContentList> get_apos_attr_content() const
+	rchandle<AposAttrContentList> get_apos_attr_content() const
 		{ return apos_attr_content_h; }
 
 };
@@ -3533,7 +3636,7 @@ class QuoteAttrContentList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<QuoteAttrValueContent> quot_atval_content_hv;
+	std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
 	
 public:
 	QuoteAttrContentList(
@@ -3562,7 +3665,7 @@ class AposAttrContentList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<AposAttrValueContent> apos_atval_content_hv;
+	std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
 	
 public:
 	AposAttrContentList(
@@ -3589,18 +3692,18 @@ class QuoteAttrValueContent : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std:string quot_atcontent_h;
+	std::string quot_atcontent;
 	rchandle<CommonContent> common_content_h;
 
 public:
 	QuoteAttrValueContent(
 		yy::xquery_parser::location_type const&,
-		std:string quot_atcontent_h,
+		std::string quot_atcontent,
 		rchandle<CommonContent>);
 	~QuoteAttrValueContent();
 
 public:
-	std:string get_quot_atcontent() const { return quot_atcontent_h; }
+	std::string get_quot_atcontent() const { return quot_atcontent; }
 	rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
 };
@@ -3617,18 +3720,18 @@ class AposAttrValueContent : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std:string apos_atcontent_h;
+	std::string apos_atcontent;
 	rchandle<CommonContent> common_content_h;
 
 public:
 	AposAttrValueContent(
 		yy::xquery_parser::location_type const&,
-		std:string apos_atcontent_h,
+		std::string apos_atcontent,
 		rchandle<CommonContent>);
 	~AposAttrValueContent();
 
 public:
-	std:string get_apos_atcontent() const { return apos_atcontent_h; }
+	std::string get_apos_atcontent() const { return apos_atcontent; }
 	rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
 };
@@ -3650,7 +3753,7 @@ protected:
 	std::string elem_content;
 
 public:
-	DirElemContent();
+	DirElemContent(
 		yy::xquery_parser::location_type const&,
 		std::string elem_content);
 	~DirElemContent();
@@ -3703,8 +3806,7 @@ public:
 
 public:
 	enum common_content_t get_type() const { return type; }
-	std::string get_entity_ref() const { return entity_ref; }
-	std::string get_char_ref() const { return char_ref; }
+	std::string get_ref() const { return ref; }
 	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
 };
@@ -3723,8 +3825,13 @@ protected:
 	std::string comment;
 
 public:
-	DirCommentConstructor();
+	DirCommentConstructor(
+		yy::xquery_parser::location_type const&,
+		std::string const& comment);
 	~DirCommentConstructor();
+
+public:
+	std::string get_comment() const { return comment; }
 
 };
 
@@ -3750,8 +3857,15 @@ protected:
 	std::string pi_content;
 
 public:
-	DirPIConstructor();
+	DirPIConstructor(
+		yy::xquery_parser::location_type const&,
+		std::string const& pi_target,
+		std::string const& pi_content);
 	~DirPIConstructor();
+
+public:
+	std::string get_pi_target() const { return pi_target; }
+	std::string get_pi_content() const { return pi_content; }
 
 };
 
@@ -3775,8 +3889,13 @@ protected:
 	std::string cdata_content;
 
 public:
-	CDataSection();
+	CDataSection(
+		yy::xquery_parser::location_type const&,
+		std::string cdata_content);
 	~CDataSection();
+
+public:
+	std::string get_cdata_content() const { return cdata_content; }
 
 };
 
@@ -3802,7 +3921,8 @@ class ComputedConstructor : public Constructor
 |_______________________________________________________________________*/
 {
 public:
-	ComputedConstructor();
+	ComputedConstructor(
+		yy::xquery_parser::location_type const&);
 	~ComputedConstructor();
 
 };
@@ -3821,8 +3941,13 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
-	CompDocConstructor();
+	CompDocConstructor(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr>);
 	~CompDocConstructor();
+
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
 
 };
 
@@ -3845,8 +3970,17 @@ protected:
 	rchandle<ContentExpr> content_expr_h;
 
 public:
-	CompElemConstructor();
+	CompElemConstructor(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>,
+		rchandle<Expr>,
+		rchandle<ContentExpr>);
 	~CompElemConstructor();
+
+public:
+	rchandle<QName> get_qname() const { return qname_h; }
+	rchandle<Expr> get_qname_expr() const { return qname_expr_h; }
+	rchandle<ContentExpr> get_content_expr() const { return content_expr_h; }
 
 };
 
@@ -3864,8 +3998,13 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
-	ContentExpr();
+	ContentExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr>);
 	~ContentExpr();
+
+public:
+	rchandle<Expr> get_expr() const { return expr_h; }
 
 };
 
@@ -3888,8 +4027,17 @@ protected:
 	rchandle<Expr> val_expr_h;
 
 public:
-	CompAttrConstructor();
+	CompAttrConstructor(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>,
+		rchandle<Expr>,
+		rchandle<Expr>);
 	~CompAttrConstructor();
+
+public:
+	rchandle<QName> get_qname() const { return qname_h; }
+	rchandle<Expr> get_qname_expr() const { return qname_expr_h; }
+	rchandle<Expr> get_val_expr() const { return val_expr_h; }
 
 };
 
@@ -3907,8 +4055,13 @@ protected:
 	rchandle<Expr> text_expr_h;
 
 public:
-	CompTextConstructor();
+	CompTextConstructor(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr> text_expr_h);
 	~CompTextConstructor();
+
+public:
+	rchandle<Expr> get_text_expr() const { return text_expr_h; }
 
 };
 
@@ -3926,8 +4079,13 @@ protected:
 	rchandle<Expr> comment_expr_h;
 
 public:
-	CompCommentConstructor();
+	CompCommentConstructor(
+		yy::xquery_parser::location_type const&,
+		rchandle<Expr>);
 	~CompCommentConstructor();
+
+public:
+	rchandle<Expr> get_comment_expr() const { return comment_expr_h; }
 
 };
 
@@ -3950,8 +4108,17 @@ protected:
 	rchandle<Expr> content_expr_h;
 
 public:
-	CompPIConstructor();
+	CompPIConstructor(
+		yy::xquery_parser::location_type const&,
+		std::string target,
+		rchandle<Expr>,
+		rchandle<Expr>);
 	~CompPIConstructor();
+
+public:
+	std::string get_target() const { return target; }
+	rchandle<Expr> get_target_expr() const { return target_expr_h; }
+	rchandle<Expr> get_content_expr() const { return content_expr_h; }
 
 };
 
@@ -3969,8 +4136,15 @@ protected:
 	bool hook_b;
 
 public:
-	SingleType();
+	SingleType(
+		yy::xquery_parser::location_type const&,
+		rchandle<AtomicType>,
+		bool hook_b);
 	~SingleType();
+
+public:
+	rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
+	bool get_hook_bit() const { return hook_b; }
 
 };
 
@@ -3987,15 +4161,20 @@ protected:
 	rchandle<SequenceType> seqtype_h;
 
 public:
-	TypeDeclaration();
+	TypeDeclaration(
+		yy::xquery_parser::location_type const&,
+		rchandle<SequenceType>);
 	~TypeDeclaration();
+
+public:
+	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
 };
 
 
-// [117] SequenceType : public parsenode
+// [117] SequenceType
 // ------------------
-class SequenceType
+class SequenceType : public parsenode
 /*______________________________________________________________________
 |
 |	::= ItemType
@@ -4009,8 +4188,17 @@ protected:
 	bool void_b;
 
 public:
-	SequenceType();
+	SequenceType(
+		yy::xquery_parser::location_type const&,
+		rchandle<ItemType>,
+		rchandle<OccurrenceIndicator>,
+		bool void_b);
 	~SequenceType();
+
+public:
+	rchandle<ItemType> get_itemtype() const { return itemtype_h; }
+	rchandle<OccurrenceIndicator> get_occur() const { return occur_h; }
+	bool get_void_bit() const { return void_b; }
 
 };
 
@@ -4034,8 +4222,13 @@ protected:
 	enum occurrence_t type;
 
 public:
-	OccurrenceIndicator();
+	OccurrenceIndicator(
+		yy::xquery_parser::location_type const&,
+		enum occurrence_t);
 	~OccurrenceIndicator();
+
+public:
+	enum occurrence_t get_type() const { return type; }
 
 };
 
@@ -4052,8 +4245,15 @@ protected:
 	std::string item_test;
 
 public:
-	ItemType();
+	ItemType(
+		yy::xquery_parser::location_type const&,
+		std::string item_test);
+	ItemType(
+		yy::xquery_parser::location_type const&);
 	~ItemType();
+
+public:
+	std::string get_item_test() const { return item_test; }
 
 };
 
@@ -4070,8 +4270,13 @@ protected:
 	rchandle<QName> qname_h;
 
 public:
-	AtomicType();
+	AtomicType(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>);
 	~AtomicType();
+
+public:
+	rchandle<QName> get_qname() const { return qname_h; }
 
 };
 
@@ -4093,7 +4298,8 @@ class KindTest : public ItemType
 |_______________________________________________________________________*/
 {
 public:
-	KindTest();
+	KindTest(
+		yy::xquery_parser::location_type const&);
 	~KindTest();
 
 };
@@ -4108,7 +4314,8 @@ class AnyKindTest : public KindTest
 |_______________________________________________________________________*/
 {
 public:
-	AnyKindTest();
+	AnyKindTest(
+		yy::xquery_parser::location_type const&);
 	~AnyKindTest();
 
 };
@@ -4129,8 +4336,17 @@ protected:
 	rchandle<SchemaElementTest> schema_elem_test_h;
 
 public:
-	DocumentTest();
+	DocumentTest(
+		yy::xquery_parser::location_type const&,
+		rchandle<ElementTest>,
+		rchandle<SchemaElementTest>);
 	~DocumentTest();
+
+public:
+	rchandle<ElementTest> get_elem_test() const
+		{ return elem_test_h; }
+	rchandle<SchemaElementTest> get_schema_elem_test() const
+		{ return schema_elem_test_h; }
 
 };
 
@@ -4144,7 +4360,8 @@ class TextTest : public KindTest
 |_______________________________________________________________________*/
 {
 public:
-	TextTest();
+	TextTest(
+		yy::xquery_parser::location_type const&);
 	~TextTest();
 
 };
@@ -4159,7 +4376,8 @@ class CommentTest : public KindTest
 |_______________________________________________________________________*/
 {
 public:
-	CommentTest();
+	CommentTest(
+		yy::xquery_parser::location_type const&);
 	~CommentTest();
 
 };
@@ -4180,8 +4398,15 @@ protected:
 	std::string content;
 
 public:
-	PITest();
+	PITest(
+		yy::xquery_parser::location_type const&,
+		std::string target,
+		std::string content);
 	~PITest();
+
+public:
+	std::string get_target() const { return target; }
+	std::string get_content() const { return content; }
 
 };
 
@@ -4197,12 +4422,21 @@ class AttributeTest : public KindTest
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<AttributeNameOrWildcard> attr_name_or_wildcard_h;
+	rchandle<AttribNameOrWildcard> attr_name_or_wildcard_h;
 	rchandle<TypeName> type_name_h;
 
 public:
-	AttributeTest();
+	AttributeTest(
+		yy::xquery_parser::location_type const&,
+		rchandle<AttribNameOrWildcard>,
+		rchandle<TypeName>);
 	~AttributeTest();
+
+public:
+	rchandle<AttribNameOrWildcard> get_attr_name_or_wildcard() const
+		{ return attr_name_or_wildcard_h; }
+	rchandle<TypeName> get_type_name() const
+		{ return type_name_h; }
 
 };
 
@@ -4220,8 +4454,15 @@ protected:
 	bool star_b;
 
 public:
-	AttribNameOrWildcard();
+	AttribNameOrWildcard(
+		yy::xquery_parser::location_type const&,
+		rchandle<AttributeName>,
+		bool star_b);
 	~AttribNameOrWildcard();
+
+public:
+	rchandle<AttributeName> get_attr_name() const { return attr_name_h; }
+	bool get_star_bit() const { return star_b; }
 
 };
 
@@ -4238,8 +4479,13 @@ protected:
 	rchandle<AttributeDeclaration> attr_decl_h;
 
 public:
-	SchemaAttributeTest();
+	SchemaAttributeTest(
+		yy::xquery_parser::location_type const&,
+		rchandle<AttributeDeclaration>);
 	~SchemaAttributeTest();
+
+public:
+	rchandle<AttributeDeclaration> get_attr_decl() const { return attr_decl_h; }
 
 };
 
@@ -4256,8 +4502,13 @@ protected:
 	rchandle<AttributeName> attr_name_h;
 
 public:
-	AttributeDeclaration();
+	AttributeDeclaration(
+		yy::xquery_parser::location_type const&,
+		rchandle<AttributeName>);
 	~AttributeDeclaration();
+
+public:
+	rchandle<AttributeName> get_attr_name() const { return attr_name_h; }
 
 };
 
@@ -4278,8 +4529,17 @@ protected:
 	rchandle<TypeName> type_name_h;
 
 public:
-	ElementTest();
+	ElementTest(
+		yy::xquery_parser::location_type const&,
+		rchandle<ElementNameOrWildcard>,
+		rchandle<TypeName>);
 	~ElementTest();
+
+public:
+	rchandle<ElementNameOrWildcard> get_elem_name_or_wildcard() const
+		{ return elem_name_or_wildcard_h; }
+	rchandle<TypeName> get_type_name() const
+		{ return type_name_h; }
 
 };
 
@@ -4297,8 +4557,15 @@ protected:
 	bool star_b;
 
 public:
-	ElementNameOrWildcard();
+	ElementNameOrWildcard(
+		yy::xquery_parser::location_type const&,
+		rchandle<ElementName>,
+		bool star_b);
 	~ElementNameOrWildcard();
+
+public:
+	rchandle<ElementName> get_elem_name() const { return elem_name_h; }
+	bool get_star_bit() const { return star_b; }
 
 };
 
@@ -4315,8 +4582,13 @@ protected:
 	rchandle<ElementDeclaration> elem_decl_h;
 
 public:
-	SchemaElementTest();
+	SchemaElementTest(
+		yy::xquery_parser::location_type const&,
+		rchandle<ElementDeclaration>);
 	~SchemaElementTest();
+
+public:
+	rchandle<ElementDeclaration> get_elem_decl() const { return elem_decl_h; }
 
 };
 
@@ -4333,9 +4605,13 @@ protected:
 	rchandle<ElementName> elem_name_h;
 
 public:
-	ElementDeclaration();
+	ElementDeclaration(
+		yy::xquery_parser::location_type const&,
+		rchandle<ElementName>);
 	~ElementDeclaration();
 
+public:
+	rchandle<ElementName> get_elem_name() const { return elem_name_h; }
 };
 
 
@@ -4351,8 +4627,13 @@ protected:
 	rchandle<QName> attr_qname_h;
 
 public:
-	AttributeName();
+	AttributeName(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>);
 	~AttributeName();
+
+public:
+	rchandle<QName> get_attr_qname() const { return attr_qname_h; }
 
 };
 
@@ -4369,8 +4650,13 @@ protected:
 	rchandle<QName> elem_qname_h;
 
 public:
-	ElementName();
+	ElementName(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>);
 	~ElementName();
+
+public:
+	rchandle<QName> get_elem_qname() const { return elem_qname_h; }
 
 };
 
@@ -4387,8 +4673,13 @@ protected:
 	rchandle<QName> type_qname_h;
 
 public:
-	TypeName();
+	TypeName(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>);
 	~TypeName();
+
+public:
+	rchandle<QName> get_type_qname() const { return type_qname_h; }
 
 };
 
@@ -4417,13 +4708,16 @@ public:
 
 // [156] QName
 // -----------
+/*
 class QName : public parsenode
 {
 public:
-	QName();
+	QName(
+		yy::xquery_parser::location_type const&);
 	~QName();
-
 };
+*/
+#include "../types/qname.h"
 
 
 // [157] NCName
@@ -4459,8 +4753,13 @@ protected:
 	rchandle<QName> qname_h;
 
 public:
-	RevalidationDecl();
+	RevalidationDecl(
+		yy::xquery_parser::location_type const&,
+		rchandle<QName>);
 	~RevalidationDecl();
+
+public:
+	rchandle<QName> get_qname() const { return qname_h; }
 
 };
 
@@ -4483,8 +4782,15 @@ protected:
 	rchandle<ExprSingle> target_expr_h;
 
 public:
-	InsertExpr();
+	InsertExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<ExprSingle>,
+		rchandle<ExprSingle>);
 	~InsertExpr();
+
+public:
+	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
+	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
 
 };
 
@@ -4502,8 +4808,14 @@ protected:
 	rchandle<ExprSingle> target_expr_h;
 
 public:
-	DeleteExpr();
+	DeleteExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<ExprSingle>);
 	~DeleteExpr();
+
+public:
+	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+
 };
 
 
@@ -4522,8 +4834,16 @@ protected:
 	rchandle<ExprSingle> target_expr_h;
 
 public:
-	ReplaceExpr();
+	ReplaceExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<ExprSingle> source_expr_h,
+		rchandle<ExprSingle> target_expr_h);
 	~ReplaceExpr();
+
+public:
+	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
+	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+
 };
 
 
@@ -4541,8 +4861,16 @@ protected:
 	rchandle<ExprSingle> target_expr_h;
 
 public:
-	RenameExpr();
+	RenameExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<ExprSingle> source_expr_h,
+		rchandle<ExprSingle> target_expr_h);
 	~RenameExpr();
+
+public:
+	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
+	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+
 };
 
 
@@ -4580,8 +4908,17 @@ protected:
 	rchandle<ExprSingle> target_expr_h;
 
 public:
-	TransformExpr();
+	TransformExpr(
+		yy::xquery_parser::location_type const&,
+		rchandle<VarNameList>,
+		rchandle<ExprSingle> source_expr_h,
+		rchandle<ExprSingle> target_expr_h);
 	~TransformExpr();
+
+public:
+	rchandle<VarNameList> get_varname_list() const { return varname_list_h; }
+	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
+	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
 
 };
 
@@ -4593,13 +4930,14 @@ class VarNameList : public parsenode
 /*______________________________________________________________________
 |
 |	::= VarBinding |	VarNameList  COMMA_DOLLAR  VarBinding
-/*______________________________________________________________________
+|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<VarBinding> > varbinding_hv;
 	
 public:
-	VarNameList();
+	VarNameList(
+		yy::xquery_parser::location_type const&);
 	~VarNameList();
 
 public:
@@ -4618,17 +4956,30 @@ class VarBinding : public parsenode
 /*______________________________________________________________________
 |
 |	::= VARNAME	 GETS  ExprSingle
-/*______________________________________________________________________
+|_______________________________________________________________________*/
 {
 protected:
 	std::string varname;
 	rchandle<ExprSingle> val_h;
 
 public:
-	VarNameList();
-	~VarNameList();
+	VarBinding(
+		yy::xquery_parser::location_type const&,
+		std::string varname,
+		rchandle<ExprSingle>);
+	~VarBinding();
+
+public:
+	std::string get_varname() const { return varname; }
+	rchandle<ExprSingle> get_val() const { return val_h; }
 
 };
+
+
+
+
+
+
 
 
 
@@ -4657,8 +5008,20 @@ protected:
 	rchandle<RangeExpr> weight_expr_h;
 
 public:
-	FTSelection();
+	FTSelection(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTOr>,
+		rchandle<FTMatchOptionProximityList>,
+		rchandle<RangeExpr>);
 	~FTSelection();
+
+public:
+	rchandle<FTOr> get_ftor() const
+		{ return ftor_h; }
+	rchandle<FTMatchOptionProximityList> get_option_list() const
+		{ return option_list_h; }
+	rchandle<RangeExpr> get_weight_expr() const
+		{ return weight_expr_h; }
 
 };
 
@@ -4678,7 +5041,8 @@ class FTMatchOptionProximityList : public parsenode
 protected:
 
 public:
-	FTMatchOptionProximityList();
+	FTMatchOptionProximityList(
+		yy::xquery_parser::location_type const&);
 	~FTMatchOptionProximityList();
 
 };
@@ -4699,8 +5063,16 @@ protected:
 	rchandle<FTAnd> ftand_h;
 
 public:
-	FTOr();
+	FTOr(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTOr>,
+		rchandle<FTAnd>);
 	~FTOr();
+
+public:
+	rchandle<FTOr> get_ftor() const { return ftor_h; }
+	rchandle<FTAnd> get_ftand() const { return ftand_h; }
+
 };
 
 
@@ -4716,11 +5088,18 @@ class FTAnd : public parsenode
 {
 protected:
 	rchandle<FTAnd> ftand_h;
-	rchandle<FTMildNot> ftmild_not_h;
+	rchandle<FTMildnot> ftmild_not_h;
 
 public:
-	FTAnd();
+	FTAnd(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTAnd>,
+		rchandle<FTMildnot>);
 	~FTAnd();
+
+public:
+	rchandle<FTAnd> get_ftand() const { return ftand_h; }
+	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
 
 };
 
@@ -4736,12 +5115,19 @@ class FTMildnot : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTMildNot> ftmild_not_h;
+	rchandle<FTMildnot> ftmild_not_h;
 	rchandle<FTUnaryNot> ftunary_not_h;
 
 public:
-	FTMildNot();
-	~FTMildNot();
+	FTMildnot(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTMildnot>,
+		rchandle<FTUnaryNot>);
+	~FTMildnot();
+
+public:
+	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
+	rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
 
 };
 
@@ -4761,8 +5147,18 @@ protected:
 	bool not_b;
 
 public:
-	FTUnaryNot();
+	FTUnaryNot(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTWordsSelection>,
+		bool not_b);
 	~FTUnaryNot();
+
+public:
+	rchandle<FTWordsSelection> get_words_selection() const
+		{ return words_selection_h; }
+	bool get_not_bit() const
+		{ return not_b; }
+
 };
 
 
@@ -4783,8 +5179,17 @@ protected:
 	rchandle<FTSelection> selection_h;
 
 public:
-	FTWordsSelection();
+	FTWordsSelection(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTWords>,
+		rchandle<FTTimes>,
+		rchandle<FTSelection>);
 	~FTWordsSelection();
+
+public:
+	rchandle<FTWords> get_words() const { return words_h; }
+	rchandle<FTTimes> get_times() const { return times_h; }
+	rchandle<FTSelection> get_selection() const { return selection_h; }
 
 };
 
@@ -4804,8 +5209,17 @@ protected:
 	rchandle<FTAnyallOption> any_all_option_h;
 
 public:
-	FTWords();
+	FTWords(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTWordsValue>,
+		rchandle<FTAnyallOption>);
 	~FTWords();
+
+public:
+	rchandle<FTWordsValue> get_words_val() const
+		{ return words_val_h; }
+	rchandle<FTAnyallOption> get_any_all_option() const
+		{ return any_all_option_h; }
 
 };
 
@@ -4825,8 +5239,15 @@ protected:
 	rchandle<Expr> expr_h;
 
 public:
-	FTWordsValue();
+	FTWordsValue(
+		yy::xquery_parser::location_type const&,
+		rchandle<Literal>,
+		rchandle<Expr>);
 	~FTWordsValue();
+
+public:
+	rchandle<Literal> get_lit() const { return lit_h; }
+	rchandle<Expr> get_expr() const { return expr_h; }
 
 };
 
@@ -4845,7 +5266,8 @@ class FTProximity : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	FTProximity();
+	FTProximity(
+		yy::xquery_parser::location_type const&);
 	~FTProximity();
 
 };
@@ -4861,7 +5283,8 @@ class FTOrderedIndicator : public FTProximity
 |_______________________________________________________________________*/
 {
 public:
-	FTOrderedIndicator();
+	FTOrderedIndicator(
+		yy::xquery_parser::location_type const&);
 	~FTOrderedIndicator();
 
 };
@@ -4879,11 +5302,12 @@ class FTMatchOption : public parsenode
 |			| FTThesaurusOption
 |			| FTStopwordOption
 |			| FTLanguageOption
-|			| FTWildCardOption
+|			| FTWildcardOption
 |_______________________________________________________________________*/
 {
 public:
-	FTMatchOption();
+	FTMatchOption(
+		yy::xquery_parser::location_type const&);
 	~FTMatchOption();
 
 };
@@ -4902,7 +5326,7 @@ class FTCaseOption : public FTMatchOption
 |_______________________________________________________________________*/
 {
 public:
-	enum ft_diacritics_mode_t {
+	enum ft_case_mode_t {
 		lowercase,
 		uppercase,
 		senstive,
@@ -4913,8 +5337,13 @@ protected:
 	ft_case_mode_t mode;
 
 public:
-	FTCaseOption();
+	FTCaseOption(
+		yy::xquery_parser::location_type const&,
+		enum ft_case_mode_t);
 	~FTCaseOption();
+
+public:
+	enum ft_case_mode_t get_mode() const { return mode; }
 
 };
 
@@ -4943,8 +5372,13 @@ protected:
 	ft_diacritics_mode_t mode;
 
 public:
-	FTDiacriticsOption();
+	FTDiacriticsOption(
+		yy::xquery_parser::location_type const&,
+		ft_diacritics_mode_t);
 	~FTDiacriticsOption();
+
+public:
+	enum ft_diacritics_mode_t get_mode() const { return mode; }
 
 };
 
@@ -4969,8 +5403,13 @@ protected:
 	ft_stem_mode_t mode;
 
 public:
-	FTStemOption();
+	FTStemOption(
+		yy::xquery_parser::location_type const&,
+		ft_stem_mode_t);
 	~FTStemOption();
+
+public:
+	enum ft_stem_mode_t get_mode() const { return mode; }
 
 };
 
@@ -4996,8 +5435,22 @@ protected:
 	bool without_b;
 
 public:
-	FTThesaurusOption();
+	FTThesaurusOption(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTThesaurusID>,
+		rchandle<FTThesaurusList>,
+		bool default_b,
+		bool without_b);
 	~FTThesaurusOption();
+
+public:
+	rchandle<FTThesaurusID> get_thesaurusid() const
+		{ return thesaurusid_h; }
+	rchandle<FTThesaurusList> get_thesaurus_list() const
+		{ return thesaurus_list_h; }
+
+	bool get_default_bit() const { return default_b; }
+	bool get_without_bit() const { return without_b; }
 
 };
 
@@ -5016,8 +5469,9 @@ protected:
 	std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
 
 public:
-	FTThesaurusIDList();
-	~FTThesaurusIDList();
+	FTThesaurusList(
+		yy::xquery_parser::location_type const&);
+	~FTThesaurusList();
 
 public:
 	void push_back(rchandle<FTThesaurusID> thesaurus_h)
@@ -5046,8 +5500,17 @@ protected:
 	rchandle<FTRange> levels_h;
 
 public:
-	FTThesaurusID();
+	FTThesaurusID(
+		yy::xquery_parser::location_type const&,
+		std::string thesaurus_name,
+		std::string relationship_name,
+		rchandle<FTRange> levels_h);
 	~FTThesaurusID();
+
+public:
+	std::string get_thesaurus_name() const { return thesaurus_name; }
+	std::string get_relationship_name() const { return relationship_name; }
+	rchandle<FTRange> get_levels() const { return levels_h; }
 
 };
 
@@ -5078,8 +5541,20 @@ protected:
 	stop_words_mode_t mode;
 
 public:
-	FTStopwordOption();
+	FTStopwordOption(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTRefOrList>,
+		rchandle<FTInclExclStringLiteralList>,
+		stop_words_mode_t);
 	~FTStopwordOption();
+
+public:
+	rchandle<FTRefOrList> get_refor_list() const
+		{ return refor_list_h; }
+	rchandle<FTInclExclStringLiteralList> get_incl_excl_list() const
+		{ return incl_excl_list_h; }
+	stop_words_mode_t get_mode() const
+		{ return mode; }
 
 };
 
@@ -5098,7 +5573,8 @@ protected:
 	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
 
 public:
-	FTInclExclStringLiteralList();
+	FTInclExclStringLiteralList(
+		yy::xquery_parser::location_type const&);
 	~FTInclExclStringLiteralList();
 
 public:
@@ -5125,8 +5601,16 @@ protected:
 	rchandle<FTStringLiteralList> stringlit_list_h;
 
 public:
-	FTRefOrList();
+	FTRefOrList(
+		yy::xquery_parser::location_type const&,
+		std::string at_str,
+		rchandle<FTStringLiteralList>);
 	~FTRefOrList();
+
+	std::string get_at_str() const
+		{ return at_str; }
+	rchandle<FTStringLiteralList> get_stringlit_list() const
+		{ return stringlit_list_h; }
 
 };
 
@@ -5145,7 +5629,8 @@ protected:
 	std::vector<std::string> strlit_v;
 
 public:
-	FTStringLiteralList();
+	FTStringLiteralList(
+		yy::xquery_parser::location_type const&);
 	~FTStringLiteralList();
 
 public:
@@ -5167,8 +5652,8 @@ class FTInclExclStringLiteral : public parsenode
 {
 public:
 	enum incl_excl_mode_t {
-		union,
-		except
+		inex_union,
+		inex_except
 	};
 
 protected:
@@ -5176,8 +5661,18 @@ protected:
 	incl_excl_mode_t mode;
 
 public:
-	FTInclExclStringLiteral();
+	FTInclExclStringLiteral(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTRefOrList>,
+		incl_excl_mode_t);
 	~FTInclExclStringLiteral();
+
+public:
+	rchandle<FTRefOrList> get_ref_or_list() const
+		{ return ref_or_list_h; }
+	incl_excl_mode_t get_mode() const
+		{ return mode; }
+
 };
 
 
@@ -5194,28 +5689,38 @@ protected:
 	std::string lang;
 
 public:
-	FTLanguageOption();
+	FTLanguageOption(
+		yy::xquery_parser::location_type const&,
+		std::string lang);
 	~FTLanguageOption();
+
+public:
+	std::string get_lang() const { return lang; }
 
 };
 
 
 
-//[364] FTWildCardOption
+//[364] FTWildcardOption
 //----------------------
-class FTWildCardOption : public FTMatchOption
+class FTWildcardOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |	::=	WITH_WILDCARDS
 |			| WITHOUT_WILDCARDS
 |_______________________________________________________________________*/
 {
-protected
+protected:
 	bool with_b;
 
 public:
-	FTWildCardOption();
-	~FTWildCardOption();
+	FTWildcardOption(
+		yy::xquery_parser::location_type const&,
+		bool with_b);
+	~FTWildcardOption();
+
+public:
+	bool get_with_bit() const { return with_b; }
 
 };
 
@@ -5242,8 +5747,13 @@ protected:
 	ft_content_mode_t mode;
 
 public:
-	FTContent();
+	FTContent(
+		yy::xquery_parser::location_type const&,
+		enum ft_content_mode_t);
 	~FTContent();
+
+public:
+	enum ft_content_mode_t get_mode() const { return mode; }
 
 };
 
@@ -5262,7 +5772,7 @@ class FTAnyallOption : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	enum ft_any_all_option_t {
+	enum ft_anyall_option_t {
 		any,
 		any_word,
 		all,
@@ -5271,11 +5781,16 @@ public:
 	};
 
 protected:
-	ft_anyall_option_t option;
+	enum ft_anyall_option_t option;
 
 public:
-	FTAnyallOption();
+	FTAnyallOption(
+		yy::xquery_parser::location_type const&,
+		enum ft_anyall_option_t);
 	~FTAnyallOption();
+
+public:
+	enum ft_anyall_option_t get_option() const { return option; }
 
 };
 
@@ -5305,8 +5820,15 @@ protected:
 	rchandle<UnionExpr> dst_expr_h;
 
 public:
-	FTRange();
+	FTRange(
+		yy::xquery_parser::location_type const&,
+		rchandle<UnionExpr> src_expr_h,
+		rchandle<UnionExpr> dst_expr_h);
 	~FTRange();
+
+public:
+	rchandle<UnionExpr> get_src_expr() const { return src_expr_h; }
+	rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h; }
 
 };
 
@@ -5325,8 +5847,15 @@ protected:
 	rchandle<FTUnit> unit_h;
 
 public:
-	FTDistance();
+	FTDistance(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTRange>,
+		rchandle<FTUnit>);
 	~FTDistance();
+
+public:
+	rchandle<FTRange> get_dist() const { return dist_h; }
+	rchandle<FTUnit> get_unit() const { return unit_h; }
 
 };
 
@@ -5345,8 +5874,15 @@ protected:
 	rchandle<FTUnit> unit_h;
 
 public:
-	FTWindow();
+	FTWindow(
+		yy::xquery_parser::location_type const&,
+		rchandle<UnionExpr> window_h,
+		rchandle<FTUnit> unit_h);
 	~FTWindow();
+
+public:
+	rchandle<UnionExpr> get_window() const { return window_h; }
+	rchandle<FTUnit> get_unit() const { return unit_h; }
 
 };
 
@@ -5364,8 +5900,13 @@ protected:
 	rchandle<FTRange> range_h;
 
 public:
-	FTTimes();
+	FTTimes(
+		yy::xquery_parser::location_type const&,
+		rchandle<FTRange>);
 	~FTTimes();
+
+public:
+	rchandle<FTRange> get_range() const { return range_h; }
 
 };
 
@@ -5390,8 +5931,13 @@ protected:
 	ft_scope_t scope;
 
 public:
-	FTScope();
+	FTScope(
+		yy::xquery_parser::location_type const&,
+		ft_scope_t);
 	~FTScope();
+
+public:
+	enum ft_scope_t get_scope() const { return scope; }
 
 };
 
@@ -5416,8 +5962,13 @@ protected:
 	ft_unit_t unit;
 
 public:
-	FTUnit();
+	FTUnit(
+		yy::xquery_parser::location_type const&,
+		ft_unit_t);
 	~FTUnit();
+
+public:
+	enum ft_unit_t get_unit() const { return unit; }
 
 };
 
@@ -5441,8 +5992,13 @@ protected:
 	enum ft_big_unit_t unit;
 
 public:
-	FTBigUnit();
+	FTBigUnit(
+		yy::xquery_parser::location_type const&,
+		enum ft_big_unit_t);
 	~FTBigUnit();
+
+public:
+	enum ft_big_unit_t get_unit() const { return unit; }
 
 };
 
@@ -5460,46 +6016,34 @@ protected:
 	rchandle<UnionExpr> union_h;
 
 public:
-	FTIgnoreOption();
+	FTIgnoreOption(
+		yy::xquery_parser::location_type const&,
+		rchandle<UnionExpr>);
 	~FTIgnoreOption();
+
+public:
+	rchandle<UnionExpr> get_union() const { return union_h; }
 
 };
 
 
+// three-valued boolean
+enum Bool {
+  falseBool,
+  trueBool,
+  indeterminateBool
+};
 
 
-%%
-
-
-
-/*
-	The error member function registers the errors to the driver.
-*/
-
-void yy::xquery_parser::error(
-	yy::xquery_parser::location_type const& loc,
-	std::string const& msg)
+static inline enum Bool 
+not3(enum Bool b)
 {
-  driver.error(loc, msg);
+  switch (b) {
+  case falseBool: return trueBool;
+  case trueBool: return falseBool;
+  default: return indeterminateBool;
+  }
 }
-
-
-
-/*
-static void print_token_value(FILE *file, int type, YYSTYPE value)
-{
-	if (type==VAR) {
-		fprintf (file, "%s", value.tptr->name);
-	}
-	else if (type==NUM) {
-		fprintf (file, "%d", value.val);
-	}
-}
-*/
-
-
-
-
 
 
 }	/* namespace xqp */

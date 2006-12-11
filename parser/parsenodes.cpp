@@ -1,4 +1,4 @@
-/* -*- mode:: c++; indent-tabs-mode: nil -*-
+/* -*- mode:: c++ indent-tabs-mode: nil -*-
  *
  *  $Id:: parsenodes.cpp,v 1.1.1.1 2006/11/06 08:42:18 Paul Pedersen Exp $
  *
@@ -17,7 +17,7 @@
 #include <assert.h>
 
 #include "../util/rchandle.h"
-#include "xquery_parser_tab.h"
+#include "xquery_parser.tab.h"
 
 using namespace std;
 namespace xqp {
@@ -28,10 +28,8 @@ namespace xqp {
 // [1] Module
 // ----------
 Module::Module(
-	yy::location const& l,
 	rchandle<static_context> _static_context_h)
 :
-	location(l),
 	static_context_h(_static_context_h)
 {
 }
@@ -75,7 +73,7 @@ MainModule::MainModule(
 
 MainModule::MainModule(
 	yy::xquery_parser::location_type const& _loc,
-	rchandle<QueryBody>)
+	rchandle<QueryBody> _query_body_h)
 :
 	parsenode(_loc),
 	prolog_h(NULL),
@@ -94,7 +92,7 @@ MainModule::~MainModule()
 LibraryModule::LibraryModule(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<ModuleDecl> _decl_h, 
-	rchandle<Prolog> prolog_h)
+	rchandle<Prolog> _prolog_h)
 :
 	parsenode(_loc),
 	decl_h(_decl_h),
@@ -122,7 +120,7 @@ ModuleDecl::ModuleDecl(
 {
 }
 
-ModulkeDecl::~ModuleDecl()
+ModuleDecl::~ModuleDecl()
 {
 }
 
@@ -211,7 +209,7 @@ VFO_Decl::~VFO_Decl()
 Setter::Setter(
 	yy::xquery_parser::location_type const& _loc)
 :
-	parsenode(_loc)
+	SIND_Decl(_loc)
 {
 }
 
@@ -226,7 +224,7 @@ Setter::~Setter()
 Import::Import(
 	yy::xquery_parser::location_type const& _loc)
 :
-	parsenode(_loc)
+	SIND_Decl(_loc)
 {
 }
 	
@@ -249,7 +247,7 @@ NamespaceDecl::NamespaceDecl(
 	std::string const& _prefix,
 	std::string const& _uri)
 :
-	parsenode(_loc)
+	SIND_Decl(_loc),
 	prefix(_prefix),
 	uri(_uri)
 {
@@ -267,7 +265,7 @@ BoundarySpaceDecl::BoundarySpaceDecl(
 	yy::xquery_parser::location_type const& _loc,
 	static_context::boundary_space_mode_t _mode)
 :
-	parsenode(_loc),
+	Setter(_loc),
 	mode(_mode)
 {
 }
@@ -285,7 +283,7 @@ DefaultNamespaceDecl::DefaultNamespaceDecl(
 	enum default_namespace_mode_t _mode,
 	std::string const& _default_namespace)
 :
-	parsenode(_loc),
+	SIND_Decl(_loc),
 	mode(_mode),
 	default_namespace(_default_namespace)
 {
@@ -321,9 +319,9 @@ OptionDecl::~OptionDecl()
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
 	yy::xquery_parser::location_type const& _loc,
-	static_context::ordering_mode _mode)
+	static_context::ordering_mode_t _mode)
 :
-	parsenode(_loc),
+	Setter(_loc),
 	mode(_mode)
 {
 }
@@ -338,9 +336,9 @@ OrderingModeDecl::~OrderingModeDecl()
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
 	yy::xquery_parser::location_type const& _loc,
-	static_context::empty_order_mode_t _mode)
+	static_context::order_empty_mode_t _mode)
 :
-	parsenode(_loc),
+	Setter(_loc),
 	mode(_mode)
 {
 }
@@ -356,9 +354,9 @@ EmptyOrderDecl::~EmptyOrderDecl()
 CopyNamespacesDecl::CopyNamespacesDecl(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<PreserveMode> _preserve_h,
-	rchandle<InheritMode> _inherit_)
+	rchandle<InheritMode> _inherit_h)
 :
-	parsenode(_loc),
+	Setter(_loc),
 	preserve_h(_preserve_h),
 	inherit_h(_inherit_h)
 {
@@ -374,7 +372,7 @@ CopyNamespacesDecl::~CopyNamespacesDecl()
 // -----------------
 PreserveMode::PreserveMode(
 	yy::xquery_parser::location_type const& _loc,
-	static_context::preserve_mode_t _preserve_mode)
+	static_context::copy_ns_mode_t _preserve_mode)
 :
 	parsenode(_loc),
 	preserve_mode(_preserve_mode)
@@ -391,7 +389,7 @@ PreserveMode::~PreserveMode()
 // ----------------
 InheritMode::InheritMode(
 	yy::xquery_parser::location_type const& _loc,
-	static_context::inherit_mode_t _inherit_mode)
+	static_context::copy_ns_mode_t _inherit_mode)
 :
 	parsenode(_loc),
 	inherit_mode(_inherit_mode)
@@ -410,7 +408,7 @@ DefaultCollationDecl::DefaultCollationDecl(
 	yy::xquery_parser::location_type const& _loc,
 	std::string const&  _collation)
 :
-	parsenode(_loc),
+	Setter(_loc),
 	collation(_collation)
 {
 }
@@ -427,7 +425,7 @@ BaseURIDecl::BaseURIDecl(
 	yy::xquery_parser::location_type const& _loc,
 	std::string const& _base_uri)
 :
-	parsenode(_loc),
+	Setter(_loc),
 	base_uri(_base_uri)
 {
 }
@@ -444,11 +442,11 @@ SchemaImport::SchemaImport(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<SchemaPrefix> _prefix_h,
 	std::string const& _uri,
-	rchandle<URI_LITERALList> _at_list_h)
+	rchandle<URILiteralList> _at_list_h)
 :
-	parsenode(_loc),
+	Import(_loc),
 	prefix_h(_prefix_h),
-	uri(_uri_),
+	uri(_uri),
 	at_list_h(_at_list_h)
 {
 }
@@ -461,14 +459,14 @@ SchemaImport::~SchemaImport()
 
 // [21a] URLLiteralList
 // --------------------
-URI_LITERALList::URI_LITERALList(
+URILiteralList::URILiteralList(
 	yy::xquery_parser::location_type const& _loc)
 :
 	parsenode(_loc)
 {
 }
 
-URI_LITERALList::~URI_LITERALList()
+URILiteralList::~URILiteralList()
 {
 }
 
@@ -488,7 +486,7 @@ SchemaPrefix::SchemaPrefix(
 
 SchemaPrefix::SchemaPrefix(
 	yy::xquery_parser::location_type const& _loc,
-	std::string const& prefix); 
+	std::string const& _prefix) 
 :
 	parsenode(_loc),
 	prefix(_prefix),
@@ -507,9 +505,9 @@ SchemaPrefix::~SchemaPrefix()
 ModuleImport::ModuleImport(
 	yy::xquery_parser::location_type const& _loc,
 	std::string const& uri,
-	rchandle<URI_LITERALList> _uri_list_h)
+	rchandle<URILiteralList> _uri_list_h)
 :
-	parsenode(_loc),
+	Import(_loc),
 	uri_list_h(_uri_list_h)
 {
 }
@@ -518,9 +516,9 @@ ModuleImport::ModuleImport(
 	yy::xquery_parser::location_type const& _loc,
 	std::string const& _prefix,
 	std::string const& _uri,
-	rchandle<URI_LITERALList> _uri_list_h)
+	rchandle<URILiteralList> _uri_list_h)
 :
-	parsenode(_loc),
+	Import(_loc),
 	prefix(_prefix),
 	uri(_uri),
 	uri_list_h(_uri_list_h)
@@ -544,7 +542,7 @@ VarDecl::VarDecl(
 	parsenode(_loc),
 	varname(_varname),
 	typedecl_h(_typedecl_h),
-	intexpr_h(_initexpr_h)
+	initexpr_h(_initexpr_h)
 {
 }
 
@@ -558,9 +556,9 @@ VarDecl::~VarDecl()
 // ---------------------
 ConstructionDecl::ConstructionDecl(
 	yy::xquery_parser::location_type const& _loc,
-	enum static_context::boundary_space_t _mode)
+	enum static_context::boundary_space_mode_t _mode)
 :
-	parsenode(_loc),
+	Setter(_loc),
 	mode(_mode)
 {
 }
@@ -578,7 +576,7 @@ FunctionDecl::FunctionDecl(
 	rchandle<QName> _name_h,
 	rchandle<ParamList> _paramlist_h,
 	rchandle<SequenceType> _return_type_h,
-	rchandle<ExclosedExpr> _body_h,
+	rchandle<EnclosedExpr> _body_h,
 	enum function_type_t _type)
 :
 	parsenode(_loc),
@@ -703,7 +701,7 @@ FLWORExpr::FLWORExpr(
 	rchandle<OrderByClause> _orderby_h,
 	rchandle<ExprSingle> _return_val_h)
 :
-	exprnode(_loc),
+	ExprSingle(_loc),
 	forlet_list_h(_forlet_list_h),
 	where_h(_where_h),
 	orderby_h(_orderby_h),
@@ -753,7 +751,7 @@ ForClause::ForClause(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<VarInDeclList> _vardecl_list_h)
 :
-	parsenode(_loc),
+	ForLetClause(_loc),
 	vardecl_list_h(_vardecl_list_h)
 {
 }
@@ -827,7 +825,7 @@ LetClause::LetClause(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<VarGetsDeclList> _vardecl_list_h)
 :
-	parsenode(_loc),
+	ForLetClause(_loc),
 	vardecl_list_h(_vardecl_list_h)
 {
 }
@@ -871,6 +869,22 @@ VarGetsDecl::VarGetsDecl(
 }
 
 VarGetsDecl::~VarGetsDecl()
+{
+}
+
+
+// [36c] FTScoreVar
+// ----------------
+FTScoreVar::FTScoreVar(
+	yy::xquery_parser::location_type const& _loc,
+	std::string _varname)
+:
+	parsenode(_loc),
+	varname(_varname)
+{
+}
+
+FTScoreVar::~FTScoreVar()
 {
 }
 
@@ -945,7 +959,7 @@ OrderSpec::OrderSpec(
 	rchandle<OrderModifier> _modifier_h)
 :
 	parsenode(_loc),
-	spec(_spec_h),
+	spec_h(_spec_h),
 	modifier_h(_modifier_h)
 {
 }
@@ -998,7 +1012,7 @@ OrderDirSpec::~OrderDirSpec()
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
 	yy::xquery_parser::location_type const& _loc,
-	static_context::empty_order_mode _empty_order_spec)
+	static_context::order_empty_mode_t _empty_order_spec)
 :
 	parsenode(_loc),
 	empty_order_spec(_empty_order_spec)
@@ -1269,8 +1283,7 @@ ComparisonExpr::~ComparisonExpr()
 
 // [48a] FTContainsExpr
 // --------------------
-FTContainsExpr::
-ValueCompExpr(
+FTContainsExpr::FTContainsExpr(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<RangeExpr> _range_expr_h,
 	rchandle<FTSelection> _ftselect_h,
@@ -1283,7 +1296,7 @@ ValueCompExpr(
 {
 }
 
-~ValueCompExpr()
+FTContainsExpr::~FTContainsExpr()
 {
 }
 
@@ -1312,13 +1325,13 @@ RangeExpr::~RangeExpr()
 // -----------------
 AdditiveExpr::AdditiveExpr(
 	yy::xquery_parser::location_type const& _loc,
-	enum add_op_t _add_op,
 	rchandle<AdditiveExpr> _add_expr_h,
+	enum add_op_t _add_op,
 	rchandle<MultiplicativeExpr> _mult_expr_h)
 :
 	exprnode(_loc),
-	add_op(_add_op),
 	add_expr_h(_add_expr_h),
+	add_op(_add_op),
 	mult_expr_h(_mult_expr_h)
 {
 }
@@ -1334,13 +1347,13 @@ AdditiveExpr::~AdditiveExpr()
 MultiplicativeExpr::MultiplicativeExpr(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<MultiplicativeExpr> _mult_expr_h,
-	rchandle<UnionExpr> _union_expr_h,
-	enum mult_op_t _op)
+	enum mult_op_t _mult_op,
+	rchandle<UnionExpr> _union_expr_h)
 :
 	exprnode(_loc),
 	mult_expr_h(_mult_expr_h),
-	union_expr_h(_union_expr_h),
-	op(_op)
+	mult_op(_mult_op),
+	union_expr_h(_union_expr_h)
 {
 }
 
@@ -1374,13 +1387,13 @@ UnionExpr::~UnionExpr()
 IntersectExceptExpr::IntersectExceptExpr(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<IntersectExceptExpr> _intex_expr_h,
-	enum intex_op_t _op,
+	enum intex_op_t _intex_op,
 	rchandle<InstanceofExpr> _instof_expr_h)
 :
 	exprnode(_loc),
 	intex_expr_h(_intex_expr_h),
 	instof_expr_h(_instof_expr_h),
-	op(_op)
+	intex_op(_intex_op)
 {
 }
 
@@ -1451,7 +1464,7 @@ CastableExpr::~CastableExpr()
 // -------------
 CastExpr::CastExpr(
 	yy::xquery_parser::location_type const& _loc,
-	rchandle<UnaryExpr> _unary_expr_h
+	rchandle<UnaryExpr> _unary_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
 	exprnode(_loc),
@@ -1487,7 +1500,7 @@ UnaryExpr::~UnaryExpr()
 
 // [58a] SignList
 // --------------
-SignList::SignList();
+SignList::SignList(
 	yy::xquery_parser::location_type const& _loc,
 	bool _sign)
 :
@@ -1507,7 +1520,7 @@ SignList::~SignList()
 ValueExpr::ValueExpr(
 	yy::xquery_parser::location_type const& _loc)
 :
-	parsenode(_loc)
+	exprnode(_loc)
 {
 }
 
@@ -1521,10 +1534,10 @@ ValueExpr::~ValueExpr()
 // ----------------
 GeneralComp::GeneralComp(
 	yy::xquery_parser::location_type const& _loc,
-	enum gencomp_t _op);
+	enum gencomp_t _type)
 :
 	parsenode(_loc),
-	op(_op)
+	type(_type)
 {
 }
 
@@ -1538,10 +1551,10 @@ GeneralComp::~GeneralComp()
 // --------------
 ValueComp::ValueComp(
 	yy::xquery_parser::location_type const& _loc,
-	enum valcomp_t _op);
+	enum valcomp_t _type)
 :
 	parsenode(_loc),
-	op(_op)
+	type(_type)
 {
 }
 
@@ -1555,10 +1568,10 @@ ValueComp::~ValueComp()
 // -------------
 NodeComp::NodeComp(
 	yy::xquery_parser::location_type const& _loc,
-	enum nodecomp_t _op)
+	enum nodecomp_t _type)
 :
 	parsenode(_loc),
-	op(_op),
+	type(_type)
 {
 }
 
@@ -1569,23 +1582,11 @@ NodeComp::~NodeComp()
 
 
 
-//***************************************************************************
-//***************************************************************************
-//***************************************************************************
-//***************************************************************************
-//***************************************************************************
-//***************************************************************************
-//***************************************************************************
-
-
-
-
-
 // [63] ValidateExpr
 // -----------------
 ValidateExpr::ValidateExpr(
 	yy::xquery_parser::location_type const& _loc,
-	string const& valmode,
+	string const& _valmode,
 	rchandle<Expr> _expr_h)
 :
 	exprnode(_loc),
@@ -1622,13 +1623,13 @@ ExtensionExpr::~ExtensionExpr()
 // [64a] PragmaList
 // ----------------
 PragmaList::PragmaList(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	parsenode(_loc)
 {
 }
 
-PragmaList::~PragmaList();
+PragmaList::~PragmaList()
 {
 }
 
@@ -1647,7 +1648,7 @@ Pragma::Pragma(
 {
 }
 
-Pragma::~Pragma();
+Pragma::~Pragma()
 {
 }
 
@@ -1664,7 +1665,7 @@ Pragma::~Pragma();
 PathExpr::PathExpr(
 	yy::xquery_parser::location_type const& _loc,
 	enum pathtype_t _type,
-	rchandle<RelatvePathExpr> _relpath_expr_h)
+	rchandle<RelativePathExpr> _relpath_expr_h)
 :
 	exprnode(_loc),
 	type(_type),
@@ -1672,7 +1673,7 @@ PathExpr::PathExpr(
 {
 }
 
-PathExpr::~PathExpr();
+PathExpr::~PathExpr()
 {
 }
 
@@ -1693,7 +1694,7 @@ RelativePathExpr::RelativePathExpr(
 {
 }
 
-RelativePathExpr::~RelativePathExpr();
+RelativePathExpr::~RelativePathExpr()
 {
 }
 
@@ -1702,9 +1703,9 @@ RelativePathExpr::~RelativePathExpr();
 // [69] StepExpr
 // -------------
 StepExpr::StepExpr(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
-	exprnode(_loc),
+	exprnode(_loc)
 {
 }
 
@@ -1721,7 +1722,7 @@ AxisStep::AxisStep(
 	rchandle<ForwardStep> _forward_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
-	exprnode(_loc),
+	StepExpr(_loc),
 	forward_step_h(_forward_step_h),
 	reverse_step_h(NULL),
 	predicate_list_h(_predicate_list_h)
@@ -1733,7 +1734,7 @@ AxisStep::AxisStep(
 	rchandle<ReverseStep> _reverse_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
-	exprnode(_loc),
+	StepExpr(_loc),
 	forward_step_h(NULL),
 	reverse_step_h(_reverse_step_h),
 	predicate_list_h(_predicate_list_h)
@@ -1762,7 +1763,7 @@ ForwardStep::ForwardStep(
 
 ForwardStep::ForwardStep(
 	yy::xquery_parser::location_type const& _loc,
-	rchandle<AbbreviatedForwardStep> _abbrev_step_h)
+	rchandle<AbbrevForwardStep> _abbrev_step_h)
 :
 	parsenode(_loc),
 	forward_axis_h(NULL),
@@ -1771,7 +1772,7 @@ ForwardStep::ForwardStep(
 {
 }
 
-ForwardStep::~ForwardStep();
+ForwardStep::~ForwardStep()
 {
 }
 
@@ -1781,14 +1782,14 @@ ForwardStep::~ForwardStep();
 // ----------------
 ForwardAxis::ForwardAxis(
 	yy::xquery_parser::location_type const& _loc,
-	enum forward_axis_t _axis);
+	enum forward_axis_t _axis)
 :
 	parsenode(_loc),
 	axis(_axis)
 {
 }
 
-ForwardAxis::~ForwardAxis();
+ForwardAxis::~ForwardAxis()
 {
 }
 
@@ -1799,7 +1800,7 @@ ForwardAxis::~ForwardAxis();
 AbbrevForwardStep::AbbrevForwardStep(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<NodeTest> _node_test_h,
-	bool _attr_b);
+	bool _attr_b)
 :
 	parsenode(_loc),
 	node_test_h(node_test_h),
@@ -1817,7 +1818,7 @@ AbbrevForwardStep::AbbrevForwardStep(
 {
 }
 
-AbbrevForwardStep::~AbbrevForwardStep();
+AbbrevForwardStep::~AbbrevForwardStep()
 {
 }
 
@@ -1828,7 +1829,7 @@ AbbrevForwardStep::~AbbrevForwardStep();
 ReverseStep::ReverseStep(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<ReverseAxis> _axis_h,
-	rchandle<NodeTest> _node_test_h);
+	rchandle<NodeTest> _node_test_h)
 :
 	parsenode(_loc),
 	axis_h(_axis_h),
@@ -1836,7 +1837,7 @@ ReverseStep::ReverseStep(
 {
 }
 
-ReverseStep::~ReverseStep();
+ReverseStep::~ReverseStep()
 {
 }
 
@@ -1853,7 +1854,7 @@ ReverseAxis::ReverseAxis(
 {
 }
 
-ReverseAxis::~ReverseAxis();
+ReverseAxis::~ReverseAxis()
 {
 }
 
@@ -1868,13 +1869,13 @@ ReverseAxis::~ReverseAxis();
 // [77] NodeTest
 // -------------
 NodeTest::NodeTest(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
-	parsenode(_loc),
+	parsenode(_loc)
 {
 }
 
-NodeTest::~NodeTest();
+NodeTest::~NodeTest()
 {
 }
 
@@ -1884,16 +1885,25 @@ NodeTest::~NodeTest();
 // -------------
 NameTest::NameTest(
 	yy::xquery_parser::location_type const& _loc,
-	rchandle<QName> _qname_h,
-	rchandle<WildCard> _wild_h)
+	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
 	qname_h(_qname_h),
+	wild_h(NULL)
+{
+}
+
+NameTest::NameTest(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<Wildcard> _wild_h)
+:
+	parsenode(_loc),
+	qname_h(NULL),
 	wild_h(_wild_h)
 {
 }
 
-NameTest::~NameTest();
+NameTest::~NameTest()
 {
 }
 
@@ -1917,20 +1927,24 @@ Wildcard::Wildcard(
 	std::string const& _prefix)
 :
 	parsenode(_loc),
-	type(Wildcard::prefix),
+	type(Wildcard::wild_prefix),
 	prefix(_prefix),
 	qname_h(NULL)
+{
+}
 
 Wildcard::Wildcard(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
-	type(Wildcard::elem),
+	type(Wildcard::wild_elem),
 	prefix(""),
 	qname_h(_qname_h)
+{
+}
 	
-Wildcard::~Wildcard();
+Wildcard::~Wildcard()
 {
 }
 
@@ -1940,7 +1954,7 @@ Wildcard::~Wildcard();
 // ---------------
 FilterExpr::FilterExpr(
 	yy::xquery_parser::location_type const& _loc,
-	rchandle<PrimaryExpr> _primary_h;
+	rchandle<PrimaryExpr> _primary_h,
 	rchandle<PredicateList> _pred_list_h)
 :
 	StepExpr(_loc),
@@ -1949,7 +1963,7 @@ FilterExpr::FilterExpr(
 {
 }
 
-FilterExpr::~FilterExpr();
+FilterExpr::~FilterExpr()
 {
 }
 
@@ -1958,13 +1972,13 @@ FilterExpr::~FilterExpr();
 // [81] PredicateList
 // ------------------
 PredicateList::PredicateList(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
-	parsenode(_loc),
+	parsenode(_loc)
 {
 }
 
-PredicateList::~PredicateList();
+PredicateList::~PredicateList()
 {
 }
 
@@ -1981,7 +1995,7 @@ Predicate::Predicate(
 {
 }
 
-Predicate::~Predicate();
+Predicate::~Predicate()
 {
 }
 
@@ -1990,13 +2004,13 @@ Predicate::~Predicate();
 // [83] PrimaryExpr
 // ----------------
 PrimaryExpr::PrimaryExpr(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	exprnode(_loc)
 {
 }
 
-PrimaryExpr::~PrimaryExpr();
+PrimaryExpr::~PrimaryExpr()
 {
 }
 
@@ -2005,13 +2019,13 @@ PrimaryExpr::~PrimaryExpr();
 // [84] Literal
 // ------------
 Literal::Literal(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	PrimaryExpr(_loc)
 {
 }
 
-Literal::~Literal();
+Literal::~Literal()
 {
 }
 
@@ -2025,7 +2039,7 @@ NumericLiteral::NumericLiteral(
 	int _ival)
 :
 	Literal(_loc),
-	type(NumericLiteral::integer),
+	type(NumericLiteral::num_integer),
 	ival(_ival)
 {
 }
@@ -2035,22 +2049,22 @@ NumericLiteral::NumericLiteral(
 	double _dval)
 :
 	Literal(_loc),
-	type(NumericLiteral::double),
+	type(NumericLiteral::num_double),
 	dval(_dval)
 {
 }
 
 NumericLiteral::NumericLiteral(
 	yy::xquery_parser::location_type const& _loc,
-	decimal _deval)
+	decimal _decval)
 :
 	Literal(_loc),
-	type(NumericLiteral::decimal),
-	deval(_deval)
+	type(NumericLiteral::num_decimal),
+	decval(_decval)
 {
 }
 
-NumericLiteral::~NumericLiteral();
+NumericLiteral::~NumericLiteral()
 {
 }
 
@@ -2068,7 +2082,7 @@ VarRef::VarRef(
 {
 }
 
-VarRef::~VarRef();
+VarRef::~VarRef()
 {
 }
 
@@ -2086,7 +2100,7 @@ ParenthesizedExpr::ParenthesizedExpr(
 {
 }
 
-ParenthesizedExpr::~ParenthesizedExpr();
+ParenthesizedExpr::~ParenthesizedExpr()
 {
 }
 
@@ -2096,13 +2110,13 @@ ParenthesizedExpr::~ParenthesizedExpr();
 // [88] ContextItemExpr
 // --------------------
 ContextItemExpr::ContextItemExpr(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	PrimaryExpr(_loc)
 {
 }
 
-ContextItemExpr::~ContextItemExpr();
+ContextItemExpr::~ContextItemExpr()
 {
 }
 
@@ -2120,7 +2134,7 @@ OrderedExpr::OrderedExpr(
 {
 }
 
-OrderedExpr::~OrderedExpr();
+OrderedExpr::~OrderedExpr()
 {
 }
 
@@ -2129,7 +2143,7 @@ OrderedExpr::~OrderedExpr();
 
 // [90] UnorderedExpr
 // ------------------
-UnorderedExpr::UnorderedExpr();
+UnorderedExpr::UnorderedExpr(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<Expr> _expr_h)
 :
@@ -2138,7 +2152,7 @@ UnorderedExpr::UnorderedExpr();
 {
 }
 
-UnorderedExpr::~UnorderedExpr();
+UnorderedExpr::~UnorderedExpr()
 {
 }
 
@@ -2148,7 +2162,7 @@ UnorderedExpr::~UnorderedExpr();
 // [91] FunctionCall
 // -----------------
 
-FunctionCall::FunctionCall();
+FunctionCall::FunctionCall(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<QName> _fname_h,
 	rchandle<ArgList> _arg_list_h)
@@ -2159,7 +2173,7 @@ FunctionCall::FunctionCall();
 {
 }
 
-FunctionCall::~FunctionCall();
+FunctionCall::~FunctionCall()
 {
 }
 
@@ -2169,13 +2183,13 @@ FunctionCall::~FunctionCall();
 // [91a] ArgList
 // -------------
 ArgList::ArgList(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	parsenode(_loc)
 {
 }
 
-ArgList::~ArgList();
+ArgList::~ArgList()
 {
 }
 
@@ -2185,13 +2199,13 @@ ArgList::~ArgList();
 // [92] Constructor
 // ----------------
 Constructor::Constructor(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	PrimaryExpr(_loc)
 {
 }
 
-Constructor::~Constructor();
+Constructor::~Constructor()
 {
 }
 
@@ -2201,13 +2215,13 @@ Constructor::~Constructor();
 // [93] DirectConstructor
 // ----------------------
 DirectConstructor::DirectConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	Constructor(_loc)
 {
 }
 
-DirectConstructor::~DirectConstructor();
+DirectConstructor::~DirectConstructor()
 {
 }
 
@@ -2223,14 +2237,14 @@ DirElemConstructor::DirElemConstructor(
 	rchandle<DirAttributeList> _attr_list_h,
 	rchandle<DirElemContentList> _dir_content_list_h)
 :
-	DirectConstructor(_loc)
+	DirectConstructor(_loc),
 	elem_name_h(_elem_name_h),
 	attr_list_h(_attr_list_h),
 	dir_content_list_h(_dir_content_list_h)
 {
 }
 
-DirElemConstructor::~DirElemConstructor();
+DirElemConstructor::~DirElemConstructor()
 {
 }
 
@@ -2240,13 +2254,13 @@ DirElemConstructor::~DirElemConstructor();
 // [94a] DirElemContentList
 // ------------------------
 DirElemContentList::DirElemContentList(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	parsenode(_loc)
 {
 }
 
-DirElemContentList::~DirElemContentList();
+DirElemContentList::~DirElemContentList()
 {
 }
 
@@ -2256,13 +2270,13 @@ DirElemContentList::~DirElemContentList();
 // [95] DirAttributeList
 // ---------------------
 DirAttributeList::DirAttributeList(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	parsenode(_loc)
 {
 }
 
-DirAttributeList::~DirAttributeList();
+DirAttributeList::~DirAttributeList()
 {
 }
 
@@ -2272,7 +2286,7 @@ DirAttributeList::~DirAttributeList();
 // [95a] DirAttr
 // -------------
 	
-DirAttr::DirAttr();
+DirAttr::DirAttr(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<QName> _atname_h,
 	rchandle<DirAttributeValue> _dir_atval_h)
@@ -2283,7 +2297,7 @@ DirAttr::DirAttr();
 {
 }
 
-DirAttr::~DirAttr();
+DirAttr::~DirAttr()
 {
 }
 
@@ -2295,7 +2309,7 @@ DirAttr::~DirAttr();
 DirAttributeValue::DirAttributeValue(
 	yy::xquery_parser::location_type const& _loc,
 	rchandle<QuoteAttrContentList> _quot_attr_content_h,
-	rchandle<AposContentList> _apos_attr_content_h)
+	rchandle<AposAttrContentList> _apos_attr_content_h)
 :
 	parsenode(_loc),
 	quot_attr_content_h(_quot_attr_content_h),
@@ -2303,7 +2317,7 @@ DirAttributeValue::DirAttributeValue(
 {
 }
 
-DirAttributeValue::~DirAttributeValue();
+DirAttributeValue::~DirAttributeValue()
 {
 }
 
@@ -2313,13 +2327,13 @@ DirAttributeValue::~DirAttributeValue();
 // [96a] QuoteAttrContentList
 // --------------------------
 QuoteAttrContentList::QuoteAttrContentList(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	parsenode(_loc)
 {
 }
 
-QuoteAttrContentList::~QuoteAttrContentList();
+QuoteAttrContentList::~QuoteAttrContentList()
 {
 }
 
@@ -2329,13 +2343,13 @@ QuoteAttrContentList::~QuoteAttrContentList();
 // [96b] AposAttrContentList
 // -------------------------
 AposAttrContentList::AposAttrContentList(
-	yy::xquery_parser::location_type const& _loc,
+	yy::xquery_parser::location_type const& _loc)
 :
 	parsenode(_loc)
 {
 }
 
-AposAttrContentList::~AposAttrContentList();
+AposAttrContentList::~AposAttrContentList()
 {
 }
 
@@ -2346,16 +2360,16 @@ AposAttrContentList::~AposAttrContentList();
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
 	yy::xquery_parser::location_type const& _loc,
-	std::string _quot_atcontent_h,
+	std::string _quot_atcontent,
 	rchandle<CommonContent> _common_content_h)
 :
 	parsenode(_loc),
-	quot_atcontent_h(_quot_atcontent_h),
+	quot_atcontent(_quot_atcontent),
 	common_content_h(_common_content_h)
 {
 }
 
-QuoteAttrValueContent::~QuoteAttrValueContent();
+QuoteAttrValueContent::~QuoteAttrValueContent()
 {
 }
 
@@ -2366,16 +2380,16 @@ QuoteAttrValueContent::~QuoteAttrValueContent();
 // -------------------------
 AposAttrValueContent::AposAttrValueContent(
 	yy::xquery_parser::location_type const& _loc,
-	std::string _apos_atcontent_h,
+	std::string _apos_atcontent,
 	rchandle<CommonContent> _common_content_h)
 :
 	parsenode(_loc),
-	apos_atcontent_h(_apos_atcontent_h),
+	apos_atcontent(_apos_atcontent),
 	common_content_h(_common_content_h)
 {
 }
 
-AposAttrValueContent::~AposAttrValueContent();
+AposAttrValueContent::~AposAttrValueContent()
 {
 }
 
@@ -2393,7 +2407,7 @@ DirElemContent::DirElemContent(
 {
 }
 
-DirElemContent::~DirElemContent();
+DirElemContent::~DirElemContent()
 {
 }
 
@@ -2415,7 +2429,7 @@ CommonContent::CommonContent(
 }
 
 CommonContent::CommonContent(
-	enum common_content_t _type,
+	yy::xquery_parser::location_type const& _loc,
 	rchandle<EnclosedExpr> _expr_h)
 :
 	exprnode(_loc),
@@ -2426,6 +2440,7 @@ CommonContent::CommonContent(
 }
 
 CommonContent::CommonContent(
+	yy::xquery_parser::location_type const& _loc,
 	enum common_content_t _type)
 :
 	exprnode(_loc),
@@ -2435,7 +2450,7 @@ CommonContent::CommonContent(
 {
 }
 
-CommonContent::~CommonContent();
+CommonContent::~CommonContent()
 {
 }
 
@@ -2445,12 +2460,15 @@ CommonContent::~CommonContent();
 // [101] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor::DirCommentConstructor(
-	std::string const& comment)
+	yy::xquery_parser::location_type const& _loc,
+	std::string const& _comment)
 :
+	DirectConstructor(_loc),
+	comment(_comment)
 {
 }
 
-DirCommentConstructor::~DirCommentConstructor();
+DirCommentConstructor::~DirCommentConstructor()
 {
 }
 
@@ -2467,15 +2485,17 @@ DirCommentConstructor::~DirCommentConstructor();
 // ----------------------
 
 DirPIConstructor::DirPIConstructor(
+	yy::xquery_parser::location_type const& _loc,
 	std::string const& _pi_target,
 	std::string const& _pi_content)
 :
+	DirectConstructor(_loc),
 	pi_target(_pi_target),
 	pi_content(_pi_content)
 {
 }
 
-DirPIConstructor::~DirPIConstructor();
+DirPIConstructor::~DirPIConstructor()
 {
 }
 
@@ -2490,14 +2510,16 @@ DirPIConstructor::~DirPIConstructor();
 
 // [105] CDataSection
 // ------------------
-CDataSection::CDataSection();
-	std::string cdata_content;
+CDataSection::CDataSection(
+	yy::xquery_parser::location_type const& _loc,
+	std::string _cdata_content)
 :
-	std::string cdata_content;
+	exprnode(_loc),
+	cdata_content(_cdata_content)
 {
 }
 
-CDataSection::~CDataSection();
+CDataSection::~CDataSection()
 {
 }
 
@@ -2512,12 +2534,14 @@ CDataSection::~CDataSection();
 
 // [107] ComputedConstructor
 // -------------------------
-ComputedConstructor::ComputedConstructor();
+ComputedConstructor::ComputedConstructor(
+	yy::xquery_parser::location_type const& _loc)
 :
+	Constructor(_loc)
 {
 }
 
-ComputedConstructor::~ComputedConstructor();
+ComputedConstructor::~ComputedConstructor()
 {
 }
 
@@ -2526,14 +2550,16 @@ ComputedConstructor::~ComputedConstructor();
 
 // [108] CompDocConstructor
 // ------------------------
-CompDocConstructor::CompDocConstructor();
-	rchandle<Expr> expr_h;
+CompDocConstructor::CompDocConstructor(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<Expr> _expr_h)
 :
-	rchandle<Expr> expr_h;
+	exprnode(_loc),
+	expr_h(_expr_h)
 {
 }
 
-CompDocConstructor::~CompDocConstructor();
+CompDocConstructor::~CompDocConstructor()
 {
 }
 
@@ -2542,18 +2568,20 @@ CompDocConstructor::~CompDocConstructor();
 
 // [109] CompElemConstructor
 // -------------------------
-CompElemConstructor::CompElemConstructor();
-	rchandle<QName> qname_h;
-	rchandle<Expr> qname_expr_h;
-	rchandle<ContentExpr> content_expr_h;
+CompElemConstructor::CompElemConstructor(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<QName> _qname_h,
+	rchandle<Expr> _qname_expr_h,
+	rchandle<ContentExpr> _content_expr_h)
 :
-	rchandle<QName> qname_h;
-	rchandle<Expr> qname_expr_h;
-	rchandle<ContentExpr> content_expr_h;
+	exprnode(_loc),
+	qname_h(_qname_h),
+	qname_expr_h(_qname_expr_h),
+	content_expr_h(_content_expr_h)
 {
 }
 
-CompElemConstructor::~CompElemConstructor();
+CompElemConstructor::~CompElemConstructor()
 {
 }
 
@@ -2562,14 +2590,16 @@ CompElemConstructor::~CompElemConstructor();
 
 // [110] ContentExpr
 // -----------------
-ContentExpr::ContentExpr();
-	rchandle<Expr> expr_h;
+ContentExpr::ContentExpr(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<Expr> _expr_h)
 :
-	rchandle<Expr> expr_h;
+	exprnode(_loc),
+	expr_h(_expr_h)
 {
 }
 
-ContentExpr::~ContentExpr();
+ContentExpr::~ContentExpr()
 {
 }
 
@@ -2579,13 +2609,15 @@ ContentExpr::~ContentExpr();
 // [111] CompAttrConstructor
 // -------------------------
 CompAttrConstructor::CompAttrConstructor(
-	rchandle<QName> qname_h;
-	rchandle<Expr> qname_expr_h;
-	rchandle<Expr> val_expr_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<QName> _qname_h,
+	rchandle<Expr> _qname_expr_h,
+	rchandle<Expr> _val_expr_h)
 :
-	rchandle<QName> qname_h;
-	rchandle<Expr> qname_expr_h;
-	rchandle<Expr> val_expr_h;
+	exprnode(_loc),
+	qname_h(_qname_h),
+	qname_expr_h(_qname_expr_h),
+	val_expr_h(_val_expr_h)
 {
 }
 
@@ -2599,9 +2631,11 @@ CompAttrConstructor::~CompAttrConstructor()
 // [112] CompTextConstructor
 // -------------------------
 CompTextConstructor::CompTextConstructor(
-	rchandle<Expr> text_expr_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<Expr> _text_expr_h)
 :
-	rchandle<Expr> text_expr_h;
+	exprnode(_loc),
+	text_expr_h(_text_expr_h)
 {
 }
 
@@ -2615,9 +2649,11 @@ CompTextConstructor::~CompTextConstructor()
 // [113] CompCommentConstructor
 // ----------------------------
 CompCommentConstructor::CompCommentConstructor(
-	rchandle<Expr> comment_expr_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<Expr> _comment_expr_h)
 :
-	rchandle<Expr> comment_expr_h;
+	exprnode(_loc),
+	comment_expr_h(_comment_expr_h)
 {
 }
 
@@ -2631,13 +2667,15 @@ CompCommentConstructor::~CompCommentConstructor()
 // [114] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
-	std::string target;
-	rchandle<Expr> target_expr_h;
-	rchandle<Expr> content_expr_h;
+	yy::xquery_parser::location_type const& _loc,
+	std::string _target,
+	rchandle<Expr> _target_expr_h,
+	rchandle<Expr> _content_expr_h)
 :
-	std::string target;
-	rchandle<Expr> target_expr_h;
-	rchandle<Expr> content_expr_h;
+	exprnode(_loc),
+	target(_target),
+	target_expr_h(_target_expr_h),
+	content_expr_h(_content_expr_h)
 {
 }
 
@@ -2650,11 +2688,13 @@ CompPIConstructor::~CompPIConstructor()
 // [115] SingleType
 // ----------------
 SingleType::SingleType(
-	rchandle<AtomicType> atomic_type_h;
-	bool hook_b;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<AtomicType> _atomic_type_h,
+	bool _hook_b)
 :
-	rchandle<AtomicType> atomic_type_h;
-	bool hook_b;
+	parsenode(_loc),
+	atomic_type_h(_atomic_type_h),
+	hook_b(_hook_b)
 {
 }
 
@@ -2667,9 +2707,11 @@ SingleType::~SingleType()
 // [116] TypeDeclaration
 // ---------------------
 TypeDeclaration::TypeDeclaration(
-	rchandle<SequenceType> seqtype_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<SequenceType> _seqtype_h)
 :
-	rchandle<SequenceType> seqtype_h;
+	parsenode(_loc),
+	seqtype_h(_seqtype_h)
 {
 }
 
@@ -2679,16 +2721,18 @@ TypeDeclaration::~TypeDeclaration()
 
 
 
-// [117] SequenceType::
+// [117] SequenceType
 // ------------------
 SequenceType::SequenceType(
-	rchandle<ItemType> itemtype_h;
-	rchandle<OccurrenceIndicator> occur_h;
-	bool void_b;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ItemType> _itemtype_h,
+	rchandle<OccurrenceIndicator> _occur_h,
+	bool _void_b)
 :
-	rchandle<ItemType> itemtype_h;
-	rchandle<OccurrenceIndicator> occur_h;
-	bool void_b;
+	parsenode(_loc),
+	itemtype_h(_itemtype_h),
+	occur_h(_occur_h),
+	void_b(_void_b)
 {
 }
 
@@ -2701,9 +2745,11 @@ SequenceType::~SequenceType()
 // [118] OccurrenceIndicator
 // -------------------------
 OccurrenceIndicator::OccurrenceIndicator(
-	enum occurrence_t type;
+	yy::xquery_parser::location_type const& _loc,
+	enum occurrence_t _type)
 :
-	enum occurrence_t type;
+	parsenode(_loc),
+	type(_type)
 {
 }
 
@@ -2716,9 +2762,11 @@ OccurrenceIndicator::~OccurrenceIndicator()
 // [119] ItemType
 // --------------
 ItemType::ItemType(
-	std::string item_test;
+	yy::xquery_parser::location_type const& _loc,
+	std::string _item_test)
 :
-	std::string item_test;
+	parsenode(_loc),
+	item_test(_item_test)
 {
 }
 
@@ -2731,9 +2779,11 @@ ItemType::~ItemType()
 // [120] AtomicType
 // ----------------
 AtomicType::AtomicType(
-	rchandle<QName> qname_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<QName> _qname_h)
 :
-	rchandle<QName> qname_h;
+	ItemType(_loc),
+	qname_h(_qname_h)
 {
 }
 
@@ -2746,7 +2796,9 @@ AtomicType::~AtomicType()
 // [121] KindTest
 // --------------
 KindTest::KindTest(
+	yy::xquery_parser::location_type const& _loc)
 :
+	ItemType(_loc)
 {
 }
 
@@ -2759,7 +2811,9 @@ KindTest::~KindTest()
 // [122] AnyKindTest
 // -----------------
 AnyKindTest::AnyKindTest(
+	yy::xquery_parser::location_type const& _loc)
 :
+	KindTest(_loc)
 {
 }
 
@@ -2772,11 +2826,13 @@ AnyKindTest::~AnyKindTest()
 // [123] DocumentTest
 // ------------------
 DocumentTest::DocumentTest(
-	rchandle<ElementTest> elem_test_h;
-	rchandle<SchemaElementTest> schema_elem_test_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ElementTest> _elem_test_h,
+	rchandle<SchemaElementTest> _schema_elem_test_h)
 :
-	rchandle<ElementTest> elem_test_h;
-	rchandle<SchemaElementTest> schema_elem_test_h;
+	KindTest(_loc),
+	elem_test_h(_elem_test_h),
+	schema_elem_test_h(_schema_elem_test_h)
 {
 }
 
@@ -2789,7 +2845,9 @@ DocumentTest::~DocumentTest()
 // [124] TextTest
 // --------------
 TextTest::TextTest(
+	yy::xquery_parser::location_type const& _loc)
 :
+	KindTest(_loc)
 {
 }
 
@@ -2802,7 +2860,9 @@ TextTest::~TextTest()
 // [125] CommentTest
 // -----------------
 CommentTest::CommentTest(
+	yy::xquery_parser::location_type const& _loc)
 :
+	KindTest(_loc)
 {
 }
 
@@ -2814,12 +2874,14 @@ CommentTest::~CommentTest()
 
 // [126] PITest
 // ------------
-PITest::PITest()
-	std::string target;
-	std::string content;
+PITest::PITest(
+	yy::xquery_parser::location_type const& _loc,
+	std::string _target,
+	std::string _content)
 :
-	std::string target;
-	std::string content;
+	KindTest(_loc),
+	target(_target),
+	content(_content)
 {
 }
 
@@ -2832,11 +2894,13 @@ PITest::~PITest()
 // [127] AttributeTest
 // -------------------
 AttributeTest::AttributeTest(
-	rchandle<AttributeNameOrWildcard> attr_name_or_wildcard_h;
-	rchandle<TypeName> type_name_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<AttribNameOrWildcard> _attr_name_or_wildcard_h,
+	rchandle<TypeName> _type_name_h)
 :
-	rchandle<AttributeNameOrWildcard> attr_name_or_wildcard_h;
-	rchandle<TypeName> type_name_h;
+	KindTest(_loc),
+	attr_name_or_wildcard_h(_attr_name_or_wildcard_h),
+	type_name_h(_type_name_h)
 {
 }
 
@@ -2849,11 +2913,13 @@ AttributeTest::~AttributeTest()
 // [128] AttribNameOrWildcard
 // --------------------------
 AttribNameOrWildcard::AttribNameOrWildcard(
-	rchandle<AttributeName> attr_name_h;
-	bool star_b;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<AttributeName> _attr_name_h,
+	bool _star_b)
 :
-	rchandle<AttributeName> attr_name_h;
-	bool star_b;
+	parsenode(_loc),
+	attr_name_h(_attr_name_h),
+	star_b(_star_b)
 {
 }
 
@@ -2865,10 +2931,12 @@ AttribNameOrWildcard::~AttribNameOrWildcard()
 
 // [129] SchemaAttributeTest
 // -------------------------
-SchemaAttributeTest::SchemaAttributeTest()
-	rchandle<AttributeDeclaration> attr_decl_h;
+SchemaAttributeTest::SchemaAttributeTest(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<AttributeDeclaration> _attr_decl_h)
 :
-	rchandle<AttributeDeclaration> attr_decl_h;
+	parsenode(_loc),
+	attr_decl_h(_attr_decl_h)
 {
 }
 
@@ -2881,9 +2949,11 @@ SchemaAttributeTest::~SchemaAttributeTest()
 // [130] AttributeDeclaration
 // --------------------------
 AttributeDeclaration::AttributeDeclaration(
-	rchandle<AttributeName> attr_name_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<AttributeName> _attr_name_h)
 :
-	rchandle<AttributeName> attr_name_h;
+	parsenode(_loc),
+	attr_name_h(_attr_name_h)
 {
 }
 
@@ -2896,11 +2966,13 @@ AttributeDeclaration::~AttributeDeclaration()
 // [131] ElementTest
 // -----------------
 ElementTest::ElementTest(
-	rchandle<ElementNameOrWildcard> elem_name_or_wildcard_h;
-	rchandle<TypeName> type_name_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ElementNameOrWildcard> _elem_name_or_wildcard_h,
+	rchandle<TypeName> _type_name_h)
 :
-	rchandle<ElementNameOrWildcard> elem_name_or_wildcard_h;
-	rchandle<TypeName> type_name_h;
+	parsenode(_loc),
+	elem_name_or_wildcard_h(_elem_name_or_wildcard_h),
+	type_name_h(_type_name_h)
 {
 }
 
@@ -2913,11 +2985,13 @@ ElementTest::~ElementTest()
 // [132] ElementNameOrWildcard
 // ---------------------------
 ElementNameOrWildcard::ElementNameOrWildcard(
-	rchandle<ElementName> elem_name_h;
-	bool star_b;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ElementName> _elem_name_h,
+	bool _star_b)
 :
-	rchandle<ElementName> elem_name_h;
-	bool star_b;
+	parsenode(_loc),
+	elem_name_h(_elem_name_h),
+	star_b(_star_b)
 {
 }
 
@@ -2930,9 +3004,11 @@ ElementNameOrWildcard::~ElementNameOrWildcard()
 // [133] SchemaElementTest
 // -----------------------
 SchemaElementTest::SchemaElementTest(
-	rchandle<ElementDeclaration> elem_decl_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ElementDeclaration> _elem_decl_h)
 :
-	rchandle<ElementDeclaration> elem_decl_h;
+	parsenode(_loc),
+	elem_decl_h(_elem_decl_h)
 {
 }
 
@@ -2944,10 +3020,12 @@ SchemaElementTest::~SchemaElementTest()
 
 // [134] ElementDeclaration
 // ------------------------
-ElementDeclaration::ElementDeclaration()
-	rchandle<ElementName> elem_name_h;
+ElementDeclaration::ElementDeclaration(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ElementName> _elem_name_h)
 :
-	rchandle<ElementName> elem_name_h;
+	parsenode(_loc),
+	elem_name_h(_elem_name_h)
 {
 }
 
@@ -2960,9 +3038,11 @@ ElementDeclaration::~ElementDeclaration()
 // [135] AttributeName
 // -------------------
 AttributeName::AttributeName(
-	rchandle<QName> attr_qname_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<QName> _attr_qname_h)
 :
-	rchandle<QName> attr_qname_h;
+	parsenode(_loc),
+	attr_qname_h(_attr_qname_h)
 {
 }
 
@@ -2975,9 +3055,11 @@ AttributeName::~AttributeName()
 // [136] ElementName
 // -----------------
 ElementName::ElementName(
-	rchandle<QName> elem_qname_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<QName> _elem_qname_h)
 :
-	rchandle<QName> elem_qname_h;
+	parsenode(_loc),
+	elem_qname_h(_elem_qname_h)
 {
 }
 
@@ -2990,9 +3072,11 @@ ElementName::~ElementName()
 // [137] TypeName
 // --------------
 TypeName::TypeName(
-	rchandle<QName> type_qname_h;
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<QName> _type_qname_h)
 :
-	rchandle<QName> type_qname_h;
+	parsenode(_loc),
+	type_qname_h(_type_qname_h)
 {
 }
 
@@ -3027,15 +3111,18 @@ TypeName::~TypeName()
 
 // [156] QName
 // -----------
+/*
 QName::QName(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc),
 {
 }
 
-QName::~QName();
+QName::~QName()
 {
 }
-
+*/
 
 
 // [157] NCName
@@ -3058,14 +3145,16 @@ QName::~QName();
 
 // [241]	RevalidationDecl
 // -----------------------
-	rchandle<QName> qname_h;
-
-RevalidationDecl::RevalidationDecl();
+RevalidationDecl::RevalidationDecl(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<QName> _qname_h)
 :
+	parsenode(_loc),
+	qname_h(_qname_h)
 {
 }
 
-RevalidationDecl::~RevalidationDecl();
+RevalidationDecl::~RevalidationDecl()
 {
 }
 
@@ -3074,15 +3163,18 @@ RevalidationDecl::~RevalidationDecl();
 
 // [242]	InsertExpr
 // ----------------
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
-
-InsertExpr::InsertExpr();
+InsertExpr::InsertExpr(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ExprSingle> _source_expr_h,
+	rchandle<ExprSingle> _target_expr_h)
 :
+	exprnode(_loc),
+	source_expr_h(_source_expr_h),
+	target_expr_h(_target_expr_h)
 {
 }
 
-InsertExpr::~InsertExpr();
+InsertExpr::~InsertExpr()
 {
 }
 
@@ -3091,14 +3183,16 @@ InsertExpr::~InsertExpr();
 
 // [243] DeleteExpr
 // ----------------
-	rchandle<ExprSingle> target_expr_h;
-
-DeleteExpr::DeleteExpr();
+DeleteExpr::DeleteExpr(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ExprSingle> _target_expr_h)
 :
+	exprnode(_loc),
+	target_expr_h(_target_expr_h)
 {
 }
 
-DeleteExpr::~DeleteExpr();
+DeleteExpr::~DeleteExpr()
 {
 }
 
@@ -3106,15 +3200,18 @@ DeleteExpr::~DeleteExpr();
 
 // [244] ReplaceExpr
 // -----------------
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
-
-ReplaceExpr::ReplaceExpr();
+ReplaceExpr::ReplaceExpr(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ExprSingle> _source_expr_h,
+	rchandle<ExprSingle> _target_expr_h)
 :
+	exprnode(_loc),
+	source_expr_h(_source_expr_h),
+	target_expr_h(_target_expr_h)
 {
 }
 
-ReplaceExpr::~ReplaceExpr();
+ReplaceExpr::~ReplaceExpr()
 {
 }
 
@@ -3122,15 +3219,18 @@ ReplaceExpr::~ReplaceExpr();
 
 // [245] RenameExpr
 // ----------------
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
-
-RenameExpr::RenameExpr();
+RenameExpr::RenameExpr(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<ExprSingle> _source_expr_h,
+	rchandle<ExprSingle> _target_expr_h)
 :
+	exprnode(_loc),
+	source_expr_h(_source_expr_h),
+	target_expr_h(_target_expr_h)
 {
 }
 
-RenameExpr::~RenameExpr();
+RenameExpr::~RenameExpr()
 {
 }
 
@@ -3152,16 +3252,20 @@ RenameExpr::~RenameExpr();
 
 // [249] TransformExpr
 // -------------------
-	rchandle<VarNameList> varname_list_h;
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
-
-TransformExpr::TransformExpr();
+TransformExpr::TransformExpr(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<VarNameList> _varname_list_h,
+	rchandle<ExprSingle> _source_expr_h,
+	rchandle<ExprSingle> _target_expr_h)
 :
+	exprnode(_loc),
+	varname_list_h(_varname_list_h),
+	source_expr_h(_source_expr_h),
+	target_expr_h(_target_expr_h)
 {
 }
 
-TransformExpr::~TransformExpr();
+TransformExpr::~TransformExpr()
 {
 }
 
@@ -3170,15 +3274,14 @@ TransformExpr::~TransformExpr();
 
 // [249a] VarNameList
 // ------------------
-protected::
-	std::vector<rchandle<VarBinding> > varbinding_hv;
-	
-VarNameList::VarNameList();
+VarNameList::VarNameList(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc)
 {
 }
 
-VarNameList::~VarNameList();
+VarNameList::~VarNameList()
 {
 }
 
@@ -3187,17 +3290,24 @@ VarNameList::~VarNameList();
 
 // [249b] VarBinding
 // -----------------
-	std::string varname;
-	rchandle<ExprSingle> val_h;
-
-VarBinding::VarNameList();
+VarBinding::VarBinding(
+	yy::xquery_parser::location_type const& _loc,
+	std::string _varname,
+	rchandle<ExprSingle> _val_h)
 :
+	parsenode(_loc),
+	varname(_varname),
+	val_h(_val_h)
 {
 }
 
-VarBinding::~VarNameList();
+VarBinding::~VarBinding()
 {
 }
+
+
+
+
 
 
 
@@ -3211,16 +3321,20 @@ VarBinding::~VarNameList();
 
 //[344] FTSelection
 //-----------------
-	rchandle<FTOr> ftor_h;
-	rchandle<FTMatchOptionProximityList> option_list_h;
-	rchandle<RangeExpr> weight_expr_h;
-
-FTSelection::FTSelection();
+FTSelection::FTSelection(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTOr> _ftor_h,
+	rchandle<FTMatchOptionProximityList> _option_list_h,
+	rchandle<RangeExpr> _weight_expr_h)
 :
+	parsenode(_loc),
+	ftor_h(_ftor_h),
+	option_list_h(_option_list_h),
+	weight_expr_h(_weight_expr_h)
 {
 }
 
-FTSelection::~FTSelection();
+FTSelection::~FTSelection()
 {
 }
 
@@ -3229,13 +3343,14 @@ FTSelection::~FTSelection();
 
 //[344a] FTMatchOptionProximityList
 //---------------------------------
-
-FTMatchOptionProximityList::FTMatchOptionProximityList();
+FTMatchOptionProximityList::FTMatchOptionProximityList(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc)
 {
 }
 
-FTMatchOptionProximityList::~FTMatchOptionProximityList();
+FTMatchOptionProximityList::~FTMatchOptionProximityList()
 {
 }
 
@@ -3244,15 +3359,18 @@ FTMatchOptionProximityList::~FTMatchOptionProximityList();
 
 //[345]	FTOr
 //----------
-	rchandle<FTOr> ftor_h;
-	rchandle<FTAnd> ftand_h;
-
-FTOr::FTOr();
+FTOr::FTOr(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTOr> _ftor_h,
+	rchandle<FTAnd> _ftand_h)
 :
+	parsenode(_loc),
+	ftor_h(_ftor_h),
+	ftand_h(_ftand_h)
 {
 }
 
-FTOr::~FTOr();
+FTOr::~FTOr()
 {
 }
 
@@ -3260,15 +3378,18 @@ FTOr::~FTOr();
 
 //[346]	FTAnd
 //-----------
-	rchandle<FTAnd> ftand_h;
-	rchandle<FTMildNot> ftmild_not_h;
-
-FTAnd::FTAnd();
+FTAnd::FTAnd(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTAnd> _ftand_h,
+	rchandle<FTMildnot> _ftmild_not_h)
 :
+	parsenode(_loc),
+	ftand_h(_ftand_h),
+	ftmild_not_h(_ftmild_not_h)
 {
 }
 
-FTAnd::~FTAnd();
+FTAnd::~FTAnd()
 {
 }
 
@@ -3277,15 +3398,18 @@ FTAnd::~FTAnd();
 
 //[347]	FTMildnot
 //---------------
-	rchandle<FTMildNot> ftmild_not_h;
-	rchandle<FTUnaryNot> ftunary_not_h;
-
-FTMildnot::FTMildNot();
+FTMildnot::FTMildnot(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTMildnot> _ftmild_not_h,
+	rchandle<FTUnaryNot> _ftunary_not_h)
 :
+	parsenode(_loc),
+	ftmild_not_h(_ftmild_not_h),
+	ftunary_not_h(_ftunary_not_h)
 {
 }
 
-FTMildnot::~FTMildNot();
+FTMildnot::~FTMildnot()
 {
 }
 
@@ -3294,15 +3418,18 @@ FTMildnot::~FTMildNot();
 
 //[348]	FTUnaryNot
 //----------------
-	rchandle<FTWordsSelection> words_selection_h;
-	bool not_b;
-
-FTUnaryNot::FTUnaryNot();
+FTUnaryNot::FTUnaryNot(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTWordsSelection> _words_selection_h,
+	bool _not_b)
 :
+	parsenode(_loc),
+	words_selection_h(_words_selection_h),
+	not_b(_not_b)
 {
 }
 
-FTUnaryNot::~FTUnaryNot();
+FTUnaryNot::~FTUnaryNot()
 {
 }
 
@@ -3310,16 +3437,20 @@ FTUnaryNot::~FTUnaryNot();
 
 //[349]	FTWordsSelection
 //----------------------
-	rchandle<FTWords> words_h;
-	rchandle<FTTimes> times_h;
-	rchandle<FTSelection> selection_h;
-
-FTWordsSelection::FTWordsSelection();
+FTWordsSelection::FTWordsSelection(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTWords> _words_h,
+	rchandle<FTTimes> _times_h,
+	rchandle<FTSelection> _selection_h)
 :
+	parsenode(_loc),
+	words_h(_words_h),
+	times_h(_times_h),
+	selection_h(_selection_h)
 {
 }
 
-FTWordsSelection::~FTWordsSelection();
+FTWordsSelection::~FTWordsSelection()
 {
 }
 
@@ -3328,15 +3459,18 @@ FTWordsSelection::~FTWordsSelection();
 
 //[350]	FTWords
 //-------------
-	rchandle<FTWordsValue> words_val_h;
-	rchandle<FTAnyallOption> any_all_option_h;
-
-FTWords::FTWords();
+FTWords::FTWords(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTWordsValue> _words_val_h,
+	rchandle<FTAnyallOption> _any_all_option_h)
 :
+	parsenode(_loc),
+	words_val_h(_words_val_h),
+	any_all_option_h(_any_all_option_h)
 {
 }
 
-FTWords::~FTWords();
+FTWords::~FTWords()
 {
 }
 
@@ -3345,15 +3479,18 @@ FTWords::~FTWords();
 
 //[351]	FTWordsValue
 //------------------
-	rchandle<Literal> lit_h;
-	rchandle<Expr> expr_h;
-
-FTWordsValue::FTWordsValue();
+FTWordsValue::FTWordsValue(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<Literal> _lit_h,
+	rchandle<Expr> _expr_h)
 :
+	parsenode(_loc),
+	lit_h(_lit_h),
+	expr_h(_expr_h)
 {
 }
 
-FTWordsValue::~FTWordsValue();
+FTWordsValue::~FTWordsValue()
 {
 }
 
@@ -3362,12 +3499,14 @@ FTWordsValue::~FTWordsValue();
 
 //[352]	FTProximity
 //-----------------
-FTProximity::FTProximity();
+FTProximity::FTProximity(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc)
 {
 }
 
-FTProximity::~FTProximity();
+FTProximity::~FTProximity()
 {
 }
 
@@ -3376,12 +3515,14 @@ FTProximity::~FTProximity();
 
 //[353]	FTOrderedIndicator
 //------------------------
-FTOrderedIndicator::FTOrderedIndicator();
+FTOrderedIndicator::FTOrderedIndicator(
+	yy::xquery_parser::location_type const& _loc)
 :
+	FTProximity(_loc)
 {
 }
 
-FTOrderedIndicator::~FTOrderedIndicator();
+FTOrderedIndicator::~FTOrderedIndicator()
 {
 }
 
@@ -3390,12 +3531,14 @@ FTOrderedIndicator::~FTOrderedIndicator();
 
 //[354] FTMatchOption 	
 //-------------------
-FTMatchOption::FTMatchOption();
+FTMatchOption::FTMatchOption(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc)
 {
 }
 
-FTMatchOption::~FTMatchOption();
+FTMatchOption::~FTMatchOption()
 {
 }
 
@@ -3404,14 +3547,16 @@ FTMatchOption::~FTMatchOption();
 
 //[355] FTCaseOption
 //------------------
-	ft_case_mode_t mode;
-
-FTCaseOption::FTCaseOption();
+FTCaseOption::FTCaseOption(
+	yy::xquery_parser::location_type const& _loc,
+	ft_case_mode_t _mode)
 :
+	FTMatchOption(_loc),
+	mode(_mode)
 {
 }
 
-FTCaseOption::~FTCaseOption();
+FTCaseOption::~FTCaseOption()
 {
 }
 
@@ -3420,14 +3565,16 @@ FTCaseOption::~FTCaseOption();
 
 //[356] FTDiacriticsOption
 //------------------------
-	ft_diacritics_mode_t mode;
-
-FTDiacriticsOption::FTDiacriticsOption();
+FTDiacriticsOption::FTDiacriticsOption(
+	yy::xquery_parser::location_type const& _loc,
+	ft_diacritics_mode_t _mode)
 :
+	FTMatchOption(_loc),
+	mode(_mode)
 {
 }
 
-FTDiacriticsOption::~FTDiacriticsOption();
+FTDiacriticsOption::~FTDiacriticsOption()
 {
 }
 
@@ -3436,14 +3583,16 @@ FTDiacriticsOption::~FTDiacriticsOption();
 
 //[357] FTStemOption
 //------------------
-	ft_stem_mode_t mode;
-
-FTStemOption::FTStemOption();
+FTStemOption::FTStemOption(
+	yy::xquery_parser::location_type const& _loc,
+	ft_stem_mode_t _mode)
 :
+	FTMatchOption(_loc),
+	mode(_mode)
 {
 }
 
-FTStemOption::~FTStemOption();
+FTStemOption::~FTStemOption()
 {
 }
 
@@ -3452,12 +3601,23 @@ FTStemOption::~FTStemOption();
 
 //[358] FTThesaurusOption
 //-----------------------
-FTThesaurusOption::FTThesaurusOption();
+FTThesaurusOption::FTThesaurusOption(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTThesaurusID> _thesaurusid_h,
+	rchandle<FTThesaurusList> _thesaurus_list_h,
+	bool _default_b,
+	bool _without_b)
 :
+	FTMatchOption(_loc),
+	thesaurusid_h(_thesaurusid_h),
+	thesaurus_list_h(_thesaurus_list_h),
+	default_b(_default_b),
+	without_b(_without_b)
 {
 }
 
-FTThesaurusOption::~FTThesaurusOption();
+
+FTThesaurusOption::~FTThesaurusOption()
 {
 }
 
@@ -3466,14 +3626,14 @@ FTThesaurusOption::~FTThesaurusOption();
 
 //[358a] FTThesaurusList
 //----------------------
-	std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
-
-FTThesaurusList::FTThesaurusIDList();
+FTThesaurusList::FTThesaurusList(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc)
 {
 }
 
-FTThesaurusList::~FTThesaurusIDList();
+FTThesaurusList::~FTThesaurusList()
 {
 }
 
@@ -3481,16 +3641,20 @@ FTThesaurusList::~FTThesaurusIDList();
 
 //[359] FTThesaurusID
 //-------------------
-	std::string thesaurus_name;
-	std::string relationship_name;
-	rchandle<FTRange> levels_h;
-
-FTThesaurusID::FTThesaurusID();
+FTThesaurusID::FTThesaurusID(
+	yy::xquery_parser::location_type const& _loc,
+	std::string _thesaurus_name,
+	std::string _relationship_name,
+	rchandle<FTRange> _levels_h)
 :
+	parsenode(_loc),
+	thesaurus_name(_thesaurus_name),
+	relationship_name(_relationship_name),
+	levels_h(_levels_h)
 {
 }
 
-FTThesaurusID::~FTThesaurusID();
+FTThesaurusID::~FTThesaurusID()
 {
 }
 
@@ -3499,16 +3663,20 @@ FTThesaurusID::~FTThesaurusID();
 
 //[360] FTStopwordOption
 //----------------------
-	rchandle<FTRefOrList> refor_list_h;
-	rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
-	stop_words_mode_t mode;
-
-FTStopwordOption::FTStopwordOption();
+FTStopwordOption::FTStopwordOption(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTRefOrList> _refor_list_h,
+	rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
+	stop_words_mode_t _mode)
 :
+	FTMatchOption(_loc),
+	refor_list_h(_refor_list_h),
+	incl_excl_list_h(_incl_excl_list_h),
+	mode(_mode)
 {
 }
 
-FTStopwordOption::~FTStopwordOption();
+FTStopwordOption::~FTStopwordOption()
 {
 }
 
@@ -3517,14 +3685,14 @@ FTStopwordOption::~FTStopwordOption();
 
 //[360a] FTInclExclStringLiteralList
 //----------------------------------
-	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
-
-FTInclExclStringLiteralList::FTInclExclStringLiteralList();
+FTInclExclStringLiteralList::FTInclExclStringLiteralList(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc)
 {
 }
 
-FTInclExclStringLiteralList::~FTInclExclStringLiteralList();
+FTInclExclStringLiteralList::~FTInclExclStringLiteralList()
 {
 }
 
@@ -3533,15 +3701,18 @@ FTInclExclStringLiteralList::~FTInclExclStringLiteralList();
 
 //[361] FTRefOrList
 //-----------------
-	std::string at_str;
-	rchandle<FTStringLiteralList> stringlit_list_h;
-
-FTRefOrList::FTRefOrList();
+FTRefOrList::FTRefOrList(
+	yy::xquery_parser::location_type const& _loc,
+	std::string _at_str,
+	rchandle<FTStringLiteralList> _stringlit_list_h)
 :
+	parsenode(_loc),
+	at_str(_at_str),
+	stringlit_list_h(_stringlit_list_h)
 {
 }
 
-FTRefOrList::~FTRefOrList();
+FTRefOrList::~FTRefOrList()
 {
 }
 
@@ -3550,14 +3721,14 @@ FTRefOrList::~FTRefOrList();
 
 //[361a] FTStringLiteralList
 //--------------------------
-	std::vector<std::string> strlit_v;
-
-FTStringLiteralList::FTStringLiteralList();
+FTStringLiteralList::FTStringLiteralList(
+	yy::xquery_parser::location_type const& _loc)
 :
+	parsenode(_loc)
 {
 }
 
-FTStringLiteralList::~FTStringLiteralList();
+FTStringLiteralList::~FTStringLiteralList()
 {
 }
 
@@ -3566,15 +3737,18 @@ FTStringLiteralList::~FTStringLiteralList();
 
 //[362] FTInclExclStringLiteral
 //-----------------------------
-	rchandle<FTRefOrList> ref_or_list_h;
-	incl_excl_mode_t mode;
-
-FTInclExclStringLiteral::FTInclExclStringLiteral();
+FTInclExclStringLiteral::FTInclExclStringLiteral(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTRefOrList> _ref_or_list_h,
+	incl_excl_mode_t _mode)
 :
+	parsenode(_loc),
+	ref_or_list_h(_ref_or_list_h),
+	mode(_mode)
 {
 }
 
-FTInclExclStringLiteral::~FTInclExclStringLiteral();
+FTInclExclStringLiteral::~FTInclExclStringLiteral()
 {
 }
 
@@ -3582,30 +3756,34 @@ FTInclExclStringLiteral::~FTInclExclStringLiteral();
 
 //[363] FTLanguageOption
 //----------------------
-	std::string lang;
-
-FTLanguageOption::FTLanguageOption();
+FTLanguageOption::FTLanguageOption(
+	yy::xquery_parser::location_type const& _loc,
+	std::string _lang)
 :
+	FTMatchOption(_loc),
+	lang(_lang)
 {
 }
 
-FTLanguageOption::~FTLanguageOption();
+FTLanguageOption::~FTLanguageOption()
 {
 }
 
 
 
 
-//[364] FTWildCardOption
+//[364] FTWildcardOption
 //----------------------
-	bool with_b;
-
-FTWildCardOption::FTWildCardOption();
+FTWildcardOption::FTWildcardOption(
+	yy::xquery_parser::location_type const& _loc,
+	bool _with_b)
 :
+	FTMatchOption(_loc),
+	with_b(_with_b)
 {
 }
 
-FTWildCardOption::~FTWildCardOption();
+FTWildcardOption::~FTWildcardOption()
 {
 }
 
@@ -3614,14 +3792,16 @@ FTWildCardOption::~FTWildCardOption();
 
 //[365]	FTContent
 //---------------
-	ft_content_mode_t mode;
-
-FTContent::FTContent();
+FTContent::FTContent(
+	yy::xquery_parser::location_type const& _loc,
+	ft_content_mode_t _mode)
 :
+	FTProximity(_loc),
+	mode(_mode)
 {
 }
 
-FTContent::~FTContent();
+FTContent::~FTContent()
 {
 }
 
@@ -3630,14 +3810,16 @@ FTContent::~FTContent();
 
 //[366]	FTAnyallOption
 //--------------------
-	ft_anyall_option_t option;
-
-FTAnyallOption::FTAnyallOption();
+FTAnyallOption::FTAnyallOption(
+	yy::xquery_parser::location_type const& _loc,
+	ft_anyall_option_t _option)
 :
+	parsenode(_loc),
+	option(_option)
 {
 }
 
-FTAnyallOption::~FTAnyallOption();
+FTAnyallOption::~FTAnyallOption()
 {
 }
 
@@ -3646,15 +3828,18 @@ FTAnyallOption::~FTAnyallOption();
 
 //[367]	FTRange
 //-------------
-	rchandle<UnionExpr> src_expr_h;
-	rchandle<UnionExpr> dst_expr_h;
-
-FTRange::FTRange();
+FTRange::FTRange(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<UnionExpr> _src_expr_h,
+	rchandle<UnionExpr> _dst_expr_h)
 :
+	parsenode(_loc),
+	src_expr_h(_src_expr_h),
+	dst_expr_h(_dst_expr_h)
 {
 }
 
-FTRange::~FTRange();
+FTRange::~FTRange()
 {
 }
 
@@ -3663,15 +3848,18 @@ FTRange::~FTRange();
 
 //[368]	FTDistance
 //----------------
-	rchandle<FTRange> dist_h;
-	rchandle<FTUnit> unit_h;
-
-FTDistance::FTDistance();
+FTDistance::FTDistance(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTRange> _dist_h,
+	rchandle<FTUnit> _unit_h)
 :
+	FTProximity(_loc),
+	dist_h(_dist_h),
+	unit_h(_unit_h)
 {
 }
 
-FTDistance::~FTDistance();
+FTDistance::~FTDistance()
 {
 }
 
@@ -3680,15 +3868,18 @@ FTDistance::~FTDistance();
 
 //[369]	FTWindow
 //--------------
-	rchandle<UnionExpr> window_h;
-	rchandle<FTUnit> unit_h;
-
-FTWindow::FTWindow();
+FTWindow::FTWindow(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<UnionExpr> _window_h,
+	rchandle<FTUnit> _unit_h)
 :
+	FTProximity(_loc),
+	window_h(_window_h),
+	unit_h(_unit_h)
 {
 }
 
-FTWindow::~FTWindow();
+FTWindow::~FTWindow()
 {
 }
 
@@ -3697,14 +3888,16 @@ FTWindow::~FTWindow();
 
 //[370]	FTTimes
 //-------------
-	rchandle<FTRange> range_h;
-
-FTTimes::FTTimes();
+FTTimes::FTTimes(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<FTRange> _range_h)
 :
+	parsenode(_loc),
+	range_h(_range_h)
 {
 }
 
-FTTimes::~FTTimes();
+FTTimes::~FTTimes()
 {
 }
 
@@ -3713,15 +3906,16 @@ FTTimes::~FTTimes();
 
 //[371]	FTScope
 //-------------
-FTScope::
-	ft_scope_t scope;
-
-FTScope::FTScope();
+FTScope::FTScope(
+	yy::xquery_parser::location_type const& _loc,
+	ft_scope_t _scope)
 :
+	FTProximity(_loc),
+	scope(_scope)
 {
 }
 
-FTScope::~FTScope();
+FTScope::~FTScope()
 {
 }
 
@@ -3730,14 +3924,16 @@ FTScope::~FTScope();
 
 //[372]	FTUnit
 //------------
-	ft_unit_t unit;
-
-FTUnit::FTUnit();
+FTUnit::FTUnit(
+	yy::xquery_parser::location_type const& _loc,
+	ft_unit_t _unit)
 :
+	parsenode(_loc),
+	unit(_unit)
 {
 }
 
-FTUnit::~FTUnit();
+FTUnit::~FTUnit()
 {
 }
 
@@ -3746,14 +3942,16 @@ FTUnit::~FTUnit();
 
 //[373]	FTBigUnit
 //---------------
-	enum ft_big_unit_t unit;
-
-FTBigUnit::FTBigUnit();
+FTBigUnit::FTBigUnit(
+	yy::xquery_parser::location_type const& _loc,
+	enum ft_big_unit_t _unit)
 :
+	parsenode(_loc),
+	unit(_unit)
 {
 }
 
-FTBigUnit::~FTBigUnit();
+FTBigUnit::~FTBigUnit()
 {
 }
 
@@ -3762,14 +3960,16 @@ FTBigUnit::~FTBigUnit();
 
 //[374]	FTIgnoreOption
 //--------------------
-	rchandle<UnionExpr> union_h;
-
-FTIgnoreOption::FTIgnoreOption();
+FTIgnoreOption::FTIgnoreOption(
+	yy::xquery_parser::location_type const& _loc,
+	rchandle<UnionExpr> _union_h)
 :
+	parsenode(_loc),
+	union_h(_union_h)
 {
 }
 
-FTIgnoreOption::~FTIgnoreOption();
+FTIgnoreOption::~FTIgnoreOption()
 {
 }
 
