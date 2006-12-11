@@ -25,10 +25,9 @@
 #include "../types/qname.h"
 #include "../util/rchandle.h"
 
-#include "xquery_parser.tab.h"
+#include "location.hh"
 
 namespace xqp {
-
 
 /*
 **  base class: syntax-only nodes
@@ -36,15 +35,15 @@ namespace xqp {
 class parsenode : public rcobject
 {
 protected:
-	yy::xquery_parser::location_type loc;
+	yy::location loc;
 
 public:
-	parsenode(yy::xquery_parser::location_type const& _loc) : loc(_loc) {}
+	parsenode(yy::location const& _loc) : loc(_loc) {}
 	parsenode() {}
   ~parsenode() {}
 
 public:
-	yy::xquery_parser::location_type get_location() const { return loc; }
+	yy::location get_location() const { return loc; }
 
 };
 
@@ -55,15 +54,15 @@ public:
 class exprnode : public rcobject
 {
 protected:
-	yy::xquery_parser::location_type loc;
+	yy::location loc;
 
 public:
-	exprnode(yy::xquery_parser::location_type const& _loc) : loc(_loc) {}
+	exprnode(yy::location const& _loc) : loc(_loc) {}
 	exprnode() {}
   ~exprnode() {}
 
 public:
-	yy::xquery_parser::location_type get_location() const { return loc; }
+	yy::location get_location() const { return loc; }
 
 };
 
@@ -100,7 +99,7 @@ class ComparisonExpr;
 class ComputedConstructor;
 class ConstructionDecl;
 class Constructor;
-class ContentExpr;
+//class ContentExpr;
 class ContextItemExpr;
 class CopyNamespacesDecl;
 class DefaultCollationDecl;
@@ -317,7 +316,7 @@ protected:
 
 public:
 	VersionDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& version,
 		std::string const& encoding);
 	~VersionDecl();
@@ -344,11 +343,11 @@ protected:
 
 public:
 	MainModule(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Prolog>,
 		rchandle<QueryBody>);
 	MainModule(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QueryBody>);
 	~MainModule();
 
@@ -362,7 +361,7 @@ public:
 
 // [4] LibraryModule
 // -----------------
-class LibraryModule : parsenode
+class LibraryModule : public parsenode
 /*______________________________________________________________________
 |
 |	::= ModuleDecl  Prolog
@@ -374,7 +373,7 @@ protected:
 
 public:
 	LibraryModule(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ModuleDecl>, 
 		rchandle<Prolog>);
 	~LibraryModule();
@@ -401,7 +400,7 @@ protected:
 
 public:
 	ModuleDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& prefix,
 		std::string const& target_namespace);
 	~ModuleDecl();
@@ -427,7 +426,7 @@ protected:
 
 public:
 	Prolog(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<SIND_DeclList>,
 		rchandle<VFO_DeclList>);
 	Prolog();
@@ -454,7 +453,7 @@ protected:
 
 public:
 	SIND_DeclList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~SIND_DeclList();
 
 public:
@@ -478,7 +477,7 @@ protected:
 
 public:
 	VFO_DeclList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~VFO_DeclList();
 
 public:
@@ -499,7 +498,7 @@ class SIND_Decl : public parsenode
 {
 public:
 	SIND_Decl(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~SIND_Decl();
 
 };
@@ -516,7 +515,7 @@ class VFO_Decl : public parsenode
 {
 public:
 	VFO_Decl(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~VFO_Decl();
 
 };
@@ -539,7 +538,7 @@ class Setter : public SIND_Decl
 {
 public:
 	Setter(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~Setter();
 
 };
@@ -556,7 +555,7 @@ class Import : public SIND_Decl
 {
 public:
 	Import(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~Import();
 
 };
@@ -583,7 +582,7 @@ protected:
 
 public:
 	NamespaceDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& prefix,
 		std::string const& uri);
 	~NamespaceDecl();
@@ -609,7 +608,7 @@ protected:
 
 public:
 	BoundarySpaceDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		static_context::boundary_space_mode_t);
 	~BoundarySpaceDecl();
 
@@ -641,7 +640,7 @@ protected:
 
 public:
 	DefaultNamespaceDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum default_namespace_mode_t mode,
 		std::string const& default_namespace);
 	~DefaultNamespaceDecl();
@@ -668,7 +667,7 @@ protected:
 
 public:
 	OptionDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName> qname_h,
 		std::string const& val);
 	~OptionDecl();
@@ -676,6 +675,34 @@ public:
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
 	std::string get_val() const { return val; }
+
+};
+
+
+
+/* full-text extension */
+// [13a] FTOptionDecl
+// ------------------
+class FTOptionDecl : public parsenode
+/*______________________________________________________________________
+|
+|	::= DECLARE_FTOPTION  QNAME  FTMatchOption
+|_______________________________________________________________________*/
+{
+protected:
+	rchandle<QName> qname_h;
+	rchandle<FTMatchOption> match_option_h;
+
+public:
+	FTOptionDecl(
+		yy::location const&,
+		rchandle<QName>,
+		rchandle<FTMatchOption>);
+	~FTOptionDecl();
+
+public:
+	rchandle<QName> get_qname() const { return qname_h; }
+	rchandle<FTMatchOption> get_match_option() const { return match_option_h; }
 
 };
 
@@ -694,7 +721,7 @@ protected:
 		
 public:
 	OrderingModeDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		static_context::ordering_mode_t);
 	~OrderingModeDecl();
 	
@@ -719,7 +746,7 @@ protected:
 
 public:
 	EmptyOrderDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		static_context::order_empty_mode_t);
 	~EmptyOrderDecl();
 	
@@ -744,7 +771,7 @@ protected:
 
 public:
 	CopyNamespacesDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<PreserveMode>,
 		rchandle<InheritMode>);
 	~CopyNamespacesDecl();
@@ -770,7 +797,7 @@ protected:
 
 public:
 	PreserveMode(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		static_context::copy_ns_mode_t);
 	~PreserveMode();
 
@@ -795,7 +822,7 @@ public:
 	
 public:
 	InheritMode(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		static_context::copy_ns_mode_t);
 	~InheritMode();
 
@@ -820,7 +847,7 @@ protected:
 
 public:
 	DefaultCollationDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const&  collation);
 	~DefaultCollationDecl();
 
@@ -844,7 +871,7 @@ protected:
 
 public:
 	BaseURIDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& base_uri);
 	~BaseURIDecl();
 
@@ -873,7 +900,7 @@ protected:
 
 public:
 	SchemaImport(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<SchemaPrefix>,
 		std::string const& uri,
 		rchandle<URILiteralList>);
@@ -901,7 +928,7 @@ protected:
 
 public:
 	URILiteralList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~URILiteralList();
 
 public:
@@ -927,10 +954,10 @@ protected:
 
 public:
 	SchemaPrefix(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		bool default_b);
 	SchemaPrefix(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& prefix);
 	~SchemaPrefix();
 
@@ -960,11 +987,11 @@ protected:
 
 public:
 	ModuleImport(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& uri,
 		rchandle<URILiteralList>);
 	ModuleImport(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& prefix,
 		std::string const& uri,
 		rchandle<URILiteralList>);
@@ -997,7 +1024,7 @@ protected:
 
 public:
 	VarDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<ExprSingle>);
@@ -1023,16 +1050,16 @@ class ConstructionDecl : public Setter
 |_______________________________________________________________________*/
 {
 protected:
-	enum static_context::boundary_space_mode_t mode;
+	enum static_context::construction_mode_t mode;
 
 public:
 	ConstructionDecl(
-		yy::xquery_parser::location_type const&,
-		enum static_context::boundary_space_mode_t);
+		yy::location const&,
+		enum static_context::construction_mode_t);
 	~ConstructionDecl();
 
 public:
-	enum static_context::boundary_space_mode_t get_mode() const { mode; }
+	enum static_context::construction_mode_t get_mode() const { mode; }
 
 };
 
@@ -1072,7 +1099,7 @@ protected:
 
 public:
 	FunctionDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>,
 		rchandle<ParamList>,
 		rchandle<SequenceType>,
@@ -1105,7 +1132,7 @@ protected:
 
 public:
 	ParamList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ParamList();
 
 public:
@@ -1131,7 +1158,7 @@ protected:
 
 public:
 	Param(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string name,
 		rchandle<TypeDeclaration>);
 	~Param();
@@ -1157,7 +1184,7 @@ protected:
 
 public:
 	EnclosedExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~EnclosedExpr();
 
@@ -1181,7 +1208,7 @@ protected:
 
 public:
 	QueryBody(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	QueryBody();
 	~QueryBody();
@@ -1207,7 +1234,7 @@ protected:
 
 public:
 	Expr(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~Expr();
 
 public:
@@ -1232,7 +1259,7 @@ class ExprSingle : public exprnode
 {
 public:
 	ExprSingle(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ExprSingle();
 
 };
@@ -1257,7 +1284,7 @@ class FLWORExpr : public ExprSingle
 
 public:
 	FLWORExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ForLetClauseList>,
 		rchandle<WhereClause>,
 		rchandle<OrderByClause>,
@@ -1288,7 +1315,7 @@ protected:
 
 public:
 	ForLetClauseList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ForLetClauseList();
 
 public:
@@ -1309,7 +1336,7 @@ class ForLetClause : public parsenode
 {
 public:
 	ForLetClause(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ForLetClause();
 
 };
@@ -1329,7 +1356,7 @@ protected:
 
 public:
 	ForClause(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<VarInDeclList>);
 	~ForClause();
 
@@ -1354,7 +1381,7 @@ protected:
 
 public:
 	VarInDeclList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~VarInDeclList();
 
 public:
@@ -1390,7 +1417,7 @@ protected:
 	
 public:
 	VarInDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<PositionalVar>,
@@ -1422,7 +1449,7 @@ protected:
 
 public:
 	PositionalVar(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& varname);
 	~PositionalVar();
 
@@ -1446,7 +1473,7 @@ protected:
 
 public:
 	LetClause(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<VarGetsDeclList>);
 	~LetClause();
 
@@ -1471,7 +1498,7 @@ protected:
 
 public:
 	VarGetsDeclList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~VarGetsDeclList();
 
 public:
@@ -1502,7 +1529,7 @@ protected:
 
 public:
 	VarGetsDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<FTScoreVar>,
@@ -1531,7 +1558,7 @@ protected:
 
 public:
 	FTScoreVar(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string varname);
 	~FTScoreVar();
 
@@ -1555,7 +1582,7 @@ protected:
 
 public:
 	WhereClause(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ExprSingle>);
 	~WhereClause();
 
@@ -1580,11 +1607,11 @@ protected:
 		
 public:
 	OrderByClause(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<OrderSpecList>,
 		bool stable_b);
 	OrderByClause(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<OrderSpecList>);
 	~OrderByClause();
 
@@ -1609,7 +1636,7 @@ protected:
 
 public:
 	OrderSpecList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~OrderSpecList();
 
 public:
@@ -1635,7 +1662,7 @@ protected:
 
 public:
 	OrderSpec(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ExprSingle>,
 		rchandle<OrderModifier>);
 	~OrderSpec();
@@ -1669,7 +1696,7 @@ protected:
 
 public:
 	OrderModifier(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<OrderDirSpec>,
 		rchandle<OrderEmptySpec>,
 		rchandle<OrderCollationSpec>);
@@ -1707,7 +1734,7 @@ protected:
 
 public:
 	OrderDirSpec(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum dir_spec_t dir_spec);
 	~OrderDirSpec();
 	
@@ -1732,7 +1759,7 @@ protected:
 
 public:
 	OrderEmptySpec(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		static_context::order_empty_mode_t empty_order_spec);
 	~OrderEmptySpec();
 
@@ -1756,7 +1783,7 @@ protected:
 
 public:
 	OrderCollationSpec(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& uri);
 	~OrderCollationSpec();
 
@@ -1788,7 +1815,7 @@ protected:
 
 public:
 	QuantifiedExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		quantification_mode_t qmode,
 		rchandle<QVarInDeclList>,
 		rchandle<ExprSingle>);
@@ -1816,7 +1843,7 @@ protected:
 
 public:
 	QVarInDeclList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~QVarInDeclList();
 
 public:
@@ -1842,11 +1869,11 @@ protected:
 
 public:
 	QVarInDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string name,
 		rchandle<ExprSingle>);
 	QVarInDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string name,
 		rchandle<TypeDeclaration>,
 		rchandle<ExprSingle>);
@@ -1878,12 +1905,12 @@ protected:
 
 public:
 	TypeswitchExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>,
 		rchandle<CaseClauseList>,
 		rchandle<ExprSingle>);
 	TypeswitchExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>,
 		rchandle<CaseClauseList>,
 		std::string default_varname,
@@ -1913,7 +1940,7 @@ protected:
 
 public:
 	CaseClauseList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~CaseClauseList();
 
 public:
@@ -1939,8 +1966,12 @@ protected:
 
 public:
 	CaseClause(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string varname,
+		rchandle<SequenceType>,
+		rchandle<ExprSingle>);
+	CaseClause(
+		yy::location const&,
 		rchandle<SequenceType>,
 		rchandle<ExprSingle>);
 	~CaseClause();
@@ -1968,7 +1999,7 @@ protected:
 
 public:
 	IfExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>,
 		rchandle<ExprSingle>,
 		rchandle<ExprSingle>);
@@ -1997,7 +2028,7 @@ protected:
 
 public:
 	OrExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<OrExpr>,
 		rchandle<AndExpr>);
 	~OrExpr();
@@ -2024,7 +2055,7 @@ protected:
 
 public:
 	AndExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AndExpr>,
 		rchandle<ComparisonExpr>);
 	~AndExpr();
@@ -2056,17 +2087,17 @@ protected:
 
 public:
 	ComparisonExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTContainsExpr>,
 		rchandle<ValueComp>,
 		rchandle<FTContainsExpr>);
 	ComparisonExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTContainsExpr>,
 		rchandle<GeneralComp>,
 		rchandle<FTContainsExpr>);
 	ComparisonExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTContainsExpr>,
 		rchandle<NodeComp>,
 		rchandle<FTContainsExpr>);
@@ -2099,7 +2130,7 @@ protected:
 
 public:
 	FTContainsExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<RangeExpr>,
 		rchandle<FTSelection>,
 		rchandle<FTIgnoreOption>);
@@ -2129,7 +2160,7 @@ protected:
 
 public:
 	RangeExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AdditiveExpr>,
 		rchandle<AdditiveExpr>);
 	~RangeExpr();
@@ -2165,7 +2196,7 @@ protected:
 
 public:
 	AdditiveExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AdditiveExpr>,
 		enum add_op_t add_op,
 		rchandle<MultiplicativeExpr>);
@@ -2207,7 +2238,7 @@ protected:
 
 public:
 	MultiplicativeExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<MultiplicativeExpr>,
 		enum mult_op_t,
 		rchandle<UnionExpr>);
@@ -2238,7 +2269,7 @@ protected:
 
 public:
 	UnionExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<UnionExpr>,
 		rchandle<IntersectExceptExpr>);
 	~UnionExpr();
@@ -2261,6 +2292,7 @@ class IntersectExceptExpr : public exprnode
 |			|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 |_______________________________________________________________________*/
 {
+public:
 	enum intex_op_t {
 		intersect,
 		except	
@@ -2273,7 +2305,7 @@ protected:
 
 public:
 	IntersectExceptExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<IntersectExceptExpr>,
 		enum intex_op_t,
 		rchandle<InstanceofExpr>);
@@ -2303,7 +2335,7 @@ protected:
 
 public:
 	InstanceofExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<TreatExpr>,
 		rchandle<SequenceType>);
 	~InstanceofExpr();
@@ -2331,7 +2363,7 @@ protected:
 
 public:
 	TreatExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<CastableExpr>,
 		rchandle<SequenceType>);
 	~TreatExpr();
@@ -2359,7 +2391,7 @@ protected:
 
 public:
 	CastableExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<CastExpr>,
 		rchandle<SingleType>);
 	~CastableExpr();
@@ -2387,7 +2419,7 @@ protected:
 
 public:
 	CastExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<UnaryExpr>,
 		rchandle<SingleType>);
 	~CastExpr();
@@ -2415,9 +2447,9 @@ protected:
 
 public:
 	UnaryExpr(
-		yy::xquery_parser::location_type const&,
-		rchandle<ValueExpr>,
-		rchandle<SignList>);
+		yy::location const&,
+		rchandle<SignList>,
+		rchandle<ValueExpr>);
 	~UnaryExpr();
 
 public:
@@ -2444,7 +2476,7 @@ protected:
 
 public:
 	SignList(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		bool _sign);
 	~SignList();
 
@@ -2467,7 +2499,7 @@ class ValueExpr : public exprnode
 {
 public:
 	ValueExpr(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ValueExpr();
 
 };
@@ -2497,7 +2529,7 @@ protected:
 
 public:
 	GeneralComp(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum gencomp_t);
 	GeneralComp();
 	~GeneralComp();
@@ -2532,7 +2564,7 @@ protected:
 
 public:
 	ValueComp(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum valcomp_t);
 	ValueComp();
 	~ValueComp();
@@ -2564,7 +2596,7 @@ protected:
 
 public:
 	NodeComp(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum nodecomp_t);
 	NodeComp();
 	~NodeComp();
@@ -2597,7 +2629,7 @@ protected:
 
 public:
 	ValidateExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& valmode,
 		rchandle<Expr>);
 	~ValidateExpr();
@@ -2625,7 +2657,7 @@ protected:
 
 public:
 	ExtensionExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<PragmaList>,
 		rchandle<Expr>);
 	~ExtensionExpr();
@@ -2651,7 +2683,7 @@ protected:
 
 public:
 	PragmaList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~PragmaList();
 
 public:
@@ -2676,7 +2708,7 @@ protected:
 
 public:
 	Pragma(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>,
 		std::string pragma_lit);
 	~Pragma();
@@ -2740,7 +2772,7 @@ protected:
 
 public:
 	PathExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum pathtype_t type,
 		rchandle<RelativePathExpr>);
 	~PathExpr();
@@ -2777,7 +2809,7 @@ protected:
 
 public:
 	RelativePathExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum steptype_t,
 		rchandle<StepExpr>,
 		rchandle<RelativePathExpr>);
@@ -2803,7 +2835,7 @@ class StepExpr : public exprnode
 {
 public:
 	StepExpr(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~StepExpr();
 
 };
@@ -2828,11 +2860,11 @@ protected:
 
 public:
 	AxisStep(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ForwardStep>,
 		rchandle<PredicateList>);
 	AxisStep(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ReverseStep>,
 		rchandle<PredicateList>);
 	~AxisStep();
@@ -2862,11 +2894,11 @@ protected:
 
 public:
 	ForwardStep(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ForwardAxis>,
 		rchandle<NodeTest>);
 	ForwardStep(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AbbrevForwardStep>);
 	~ForwardStep();
 
@@ -2901,7 +2933,7 @@ public:
 		self,
 		descendant_or_self,
 		following_sibling,
-		folowing
+		following
 	};
 
 protected:
@@ -2909,7 +2941,7 @@ protected:
 
 public:
 	ForwardAxis(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum forward_axis_t);
 	~ForwardAxis();
 
@@ -2935,11 +2967,11 @@ protected:
 	
 public:
 	AbbrevForwardStep(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<NodeTest>,
 		bool attr_b);
 	AbbrevForwardStep(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<NodeTest>);
 	~AbbrevForwardStep();
 
@@ -2966,7 +2998,7 @@ protected:
 
 public:
 	ReverseStep(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ReverseAxis>,
 		rchandle<NodeTest>);
 	~ReverseStep();
@@ -3005,7 +3037,7 @@ protected:
 
 public:
 	ReverseAxis(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum reverse_axis_t);
 	~ReverseAxis();
 
@@ -3032,7 +3064,7 @@ class NodeTest : public parsenode
 {
 public:
 	NodeTest(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~NodeTest();
 
 };
@@ -3053,10 +3085,10 @@ protected:
 
 public:
 	NameTest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>);
 	NameTest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Wildcard>);
 	~NameTest();
 
@@ -3092,13 +3124,13 @@ protected:
 	
 public:
 	Wildcard(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum wildcard_t);
 	Wildcard(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const&);
 	Wildcard(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>);
 	~Wildcard();
 
@@ -3126,7 +3158,7 @@ protected:
 
 public:
 	FilterExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<PrimaryExpr>,
 		rchandle<PredicateList>);
 	~FilterExpr();
@@ -3153,7 +3185,7 @@ protected:
 
 public:
 	PredicateList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~PredicateList();
 
 public:
@@ -3177,7 +3209,7 @@ protected:
 
 public:
 	Predicate(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~Predicate();
 
@@ -3205,7 +3237,7 @@ class PrimaryExpr : public exprnode
 {
 public:
 	PrimaryExpr(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~PrimaryExpr();
 
 };
@@ -3222,7 +3254,7 @@ class Literal : public PrimaryExpr
 {
 public:
 	Literal(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~Literal();
 
 };
@@ -3257,13 +3289,13 @@ protected:
 
 public:
 	NumericLiteral(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		int);
 	NumericLiteral(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		decimal);
 	NumericLiteral(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		double);
 	~NumericLiteral();
 
@@ -3290,7 +3322,7 @@ protected:
 
 public:
 	VarRef(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string varname);
 	~VarRef();
 
@@ -3315,7 +3347,7 @@ protected:
 
 public:
 	ParenthesizedExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~ParenthesizedExpr();
 
@@ -3336,7 +3368,7 @@ class ContextItemExpr : public PrimaryExpr
 {
 public:
 	ContextItemExpr(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ContextItemExpr();
 
 };	
@@ -3356,7 +3388,7 @@ protected:
 
 public:
 	OrderedExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~OrderedExpr();
 
@@ -3380,7 +3412,7 @@ protected:
 
 public:
 	UnorderedExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~UnorderedExpr();
 
@@ -3407,7 +3439,7 @@ protected:
 
 public:
 	FunctionCall(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>,
 		rchandle<ArgList>);
 	~FunctionCall();
@@ -3433,7 +3465,7 @@ protected:
 
 public:
 	ArgList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ArgList();
 
 public:
@@ -3454,7 +3486,7 @@ class Constructor : public PrimaryExpr
 {
 public:
 	Constructor(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~Constructor();
 
 };
@@ -3473,7 +3505,7 @@ class DirectConstructor : public Constructor
 {
 public:
 	DirectConstructor(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~DirectConstructor();
 
 };
@@ -3498,7 +3530,7 @@ protected:
 
 public:
 	DirElemConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>,
 		rchandle<DirAttributeList>,
 		rchandle<DirElemContentList>);
@@ -3527,7 +3559,7 @@ protected:
 
 public:
 	DirElemContentList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~DirElemContentList();
 
 public:
@@ -3554,7 +3586,7 @@ protected:
 
 public:
 	DirAttributeList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~DirAttributeList();
 
 public:
@@ -3581,7 +3613,7 @@ protected:
 	
 public:
 	DirAttr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>,
 		rchandle<DirAttributeValue>);
 	~DirAttr();
@@ -3609,7 +3641,7 @@ protected:
 
 public:
 	DirAttributeValue(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QuoteAttrContentList>,
 		rchandle<AposAttrContentList>);
 	~DirAttributeValue();
@@ -3640,7 +3672,7 @@ protected:
 	
 public:
 	QuoteAttrContentList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~QuoteAttrContentList();
 
 public:
@@ -3669,7 +3701,7 @@ protected:
 	
 public:
 	AposAttrContentList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~AposAttrContentList();
 
 public:
@@ -3697,7 +3729,7 @@ protected:
 
 public:
 	QuoteAttrValueContent(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string quot_atcontent,
 		rchandle<CommonContent>);
 	~QuoteAttrValueContent();
@@ -3725,7 +3757,7 @@ protected:
 
 public:
 	AposAttrValueContent(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string apos_atcontent,
 		rchandle<CommonContent>);
 	~AposAttrValueContent();
@@ -3754,7 +3786,7 @@ protected:
 
 public:
 	DirElemContent(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string elem_content);
 	~DirElemContent();
 
@@ -3793,14 +3825,14 @@ protected:
 
 public:
 	CommonContent(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum common_content_t,
 		std::string ref);
 	CommonContent(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<EnclosedExpr> expr_h);
 	CommonContent(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum common_content_t);
 	~CommonContent();
 
@@ -3826,7 +3858,7 @@ protected:
 
 public:
 	DirCommentConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& comment);
 	~DirCommentConstructor();
 
@@ -3858,7 +3890,7 @@ protected:
 
 public:
 	DirPIConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string const& pi_target,
 		std::string const& pi_content);
 	~DirPIConstructor();
@@ -3890,7 +3922,7 @@ protected:
 
 public:
 	CDataSection(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string cdata_content);
 	~CDataSection();
 
@@ -3922,7 +3954,7 @@ class ComputedConstructor : public Constructor
 {
 public:
 	ComputedConstructor(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ComputedConstructor();
 
 };
@@ -3942,7 +3974,7 @@ protected:
 
 public:
 	CompDocConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~CompDocConstructor();
 
@@ -3967,20 +3999,20 @@ class CompElemConstructor : public exprnode
 protected:
 	rchandle<QName> qname_h;
 	rchandle<Expr> qname_expr_h;
-	rchandle<ContentExpr> content_expr_h;
+	rchandle<Expr> content_expr_h;
 
 public:
 	CompElemConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>,
 		rchandle<Expr>,
-		rchandle<ContentExpr>);
+		rchandle<Expr>);
 	~CompElemConstructor();
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
 	rchandle<Expr> get_qname_expr() const { return qname_expr_h; }
-	rchandle<ContentExpr> get_content_expr() const { return content_expr_h; }
+	rchandle<Expr> get_content_expr() const { return content_expr_h; }
 
 };
 
@@ -3988,18 +4020,19 @@ public:
 
 // [110] ContentExpr
 // -----------------
-class ContentExpr : public exprnode
+//class ContentExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= Expr
 |_______________________________________________________________________*/
+/*
 {
 protected:
 	rchandle<Expr> expr_h;
 
 public:
 	ContentExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~ContentExpr();
 
@@ -4007,6 +4040,7 @@ public:
 	rchandle<Expr> get_expr() const { return expr_h; }
 
 };
+*/
 
 
 
@@ -4028,7 +4062,7 @@ protected:
 
 public:
 	CompAttrConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>,
 		rchandle<Expr>,
 		rchandle<Expr>);
@@ -4056,7 +4090,7 @@ protected:
 
 public:
 	CompTextConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr> text_expr_h);
 	~CompTextConstructor();
 
@@ -4080,7 +4114,7 @@ protected:
 
 public:
 	CompCommentConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Expr>);
 	~CompCommentConstructor();
 
@@ -4109,7 +4143,7 @@ protected:
 
 public:
 	CompPIConstructor(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string target,
 		rchandle<Expr>,
 		rchandle<Expr>);
@@ -4137,7 +4171,7 @@ protected:
 
 public:
 	SingleType(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AtomicType>,
 		bool hook_b);
 	~SingleType();
@@ -4162,7 +4196,7 @@ protected:
 
 public:
 	TypeDeclaration(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<SequenceType>);
 	~TypeDeclaration();
 
@@ -4189,7 +4223,7 @@ protected:
 
 public:
 	SequenceType(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ItemType>,
 		rchandle<OccurrenceIndicator>,
 		bool void_b);
@@ -4223,7 +4257,7 @@ protected:
 
 public:
 	OccurrenceIndicator(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum occurrence_t);
 	~OccurrenceIndicator();
 
@@ -4246,10 +4280,10 @@ protected:
 
 public:
 	ItemType(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string item_test);
 	ItemType(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~ItemType();
 
 public:
@@ -4271,7 +4305,7 @@ protected:
 
 public:
 	AtomicType(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>);
 	~AtomicType();
 
@@ -4299,7 +4333,7 @@ class KindTest : public ItemType
 {
 public:
 	KindTest(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~KindTest();
 
 };
@@ -4315,7 +4349,7 @@ class AnyKindTest : public KindTest
 {
 public:
 	AnyKindTest(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~AnyKindTest();
 
 };
@@ -4337,7 +4371,7 @@ protected:
 
 public:
 	DocumentTest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ElementTest>,
 		rchandle<SchemaElementTest>);
 	~DocumentTest();
@@ -4361,7 +4395,7 @@ class TextTest : public KindTest
 {
 public:
 	TextTest(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~TextTest();
 
 };
@@ -4377,7 +4411,7 @@ class CommentTest : public KindTest
 {
 public:
 	CommentTest(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~CommentTest();
 
 };
@@ -4399,7 +4433,7 @@ protected:
 
 public:
 	PITest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string target,
 		std::string content);
 	~PITest();
@@ -4427,7 +4461,7 @@ protected:
 
 public:
 	AttributeTest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AttribNameOrWildcard>,
 		rchandle<TypeName>);
 	~AttributeTest();
@@ -4455,7 +4489,7 @@ protected:
 
 public:
 	AttribNameOrWildcard(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AttributeName>,
 		bool star_b);
 	~AttribNameOrWildcard();
@@ -4480,7 +4514,7 @@ protected:
 
 public:
 	SchemaAttributeTest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AttributeDeclaration>);
 	~SchemaAttributeTest();
 
@@ -4503,7 +4537,7 @@ protected:
 
 public:
 	AttributeDeclaration(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<AttributeName>);
 	~AttributeDeclaration();
 
@@ -4530,7 +4564,7 @@ protected:
 
 public:
 	ElementTest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ElementNameOrWildcard>,
 		rchandle<TypeName>);
 	~ElementTest();
@@ -4558,7 +4592,7 @@ protected:
 
 public:
 	ElementNameOrWildcard(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ElementName>,
 		bool star_b);
 	~ElementNameOrWildcard();
@@ -4583,7 +4617,7 @@ protected:
 
 public:
 	SchemaElementTest(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ElementDeclaration>);
 	~SchemaElementTest();
 
@@ -4606,7 +4640,7 @@ protected:
 
 public:
 	ElementDeclaration(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ElementName>);
 	~ElementDeclaration();
 
@@ -4628,7 +4662,7 @@ protected:
 
 public:
 	AttributeName(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>);
 	~AttributeName();
 
@@ -4651,7 +4685,7 @@ protected:
 
 public:
 	ElementName(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>);
 	~ElementName();
 
@@ -4674,7 +4708,7 @@ protected:
 
 public:
 	TypeName(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>);
 	~TypeName();
 
@@ -4713,7 +4747,7 @@ class QName : public parsenode
 {
 public:
 	QName(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~QName();
 };
 */
@@ -4754,7 +4788,7 @@ protected:
 
 public:
 	RevalidationDecl(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<QName>);
 	~RevalidationDecl();
 
@@ -4783,7 +4817,7 @@ protected:
 
 public:
 	InsertExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ExprSingle>,
 		rchandle<ExprSingle>);
 	~InsertExpr();
@@ -4809,7 +4843,7 @@ protected:
 
 public:
 	DeleteExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ExprSingle>);
 	~DeleteExpr();
 
@@ -4835,7 +4869,7 @@ protected:
 
 public:
 	ReplaceExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ExprSingle> source_expr_h,
 		rchandle<ExprSingle> target_expr_h);
 	~ReplaceExpr();
@@ -4862,7 +4896,7 @@ protected:
 
 public:
 	RenameExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<ExprSingle> source_expr_h,
 		rchandle<ExprSingle> target_expr_h);
 	~RenameExpr();
@@ -4909,7 +4943,7 @@ protected:
 
 public:
 	TransformExpr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<VarNameList>,
 		rchandle<ExprSingle> source_expr_h,
 		rchandle<ExprSingle> target_expr_h);
@@ -4937,7 +4971,7 @@ protected:
 	
 public:
 	VarNameList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~VarNameList();
 
 public:
@@ -4964,7 +4998,7 @@ protected:
 
 public:
 	VarBinding(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string varname,
 		rchandle<ExprSingle>);
 	~VarBinding();
@@ -5009,7 +5043,7 @@ protected:
 
 public:
 	FTSelection(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTOr>,
 		rchandle<FTMatchOptionProximityList>,
 		rchandle<RangeExpr>);
@@ -5042,7 +5076,7 @@ protected:
 
 public:
 	FTMatchOptionProximityList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~FTMatchOptionProximityList();
 
 };
@@ -5064,7 +5098,7 @@ protected:
 
 public:
 	FTOr(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTOr>,
 		rchandle<FTAnd>);
 	~FTOr();
@@ -5092,7 +5126,7 @@ protected:
 
 public:
 	FTAnd(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTAnd>,
 		rchandle<FTMildnot>);
 	~FTAnd();
@@ -5120,7 +5154,7 @@ protected:
 
 public:
 	FTMildnot(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTMildnot>,
 		rchandle<FTUnaryNot>);
 	~FTMildnot();
@@ -5148,7 +5182,7 @@ protected:
 
 public:
 	FTUnaryNot(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTWordsSelection>,
 		bool not_b);
 	~FTUnaryNot();
@@ -5180,7 +5214,7 @@ protected:
 
 public:
 	FTWordsSelection(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTWords>,
 		rchandle<FTTimes>,
 		rchandle<FTSelection>);
@@ -5210,7 +5244,7 @@ protected:
 
 public:
 	FTWords(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTWordsValue>,
 		rchandle<FTAnyallOption>);
 	~FTWords();
@@ -5240,7 +5274,7 @@ protected:
 
 public:
 	FTWordsValue(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<Literal>,
 		rchandle<Expr>);
 	~FTWordsValue();
@@ -5267,7 +5301,7 @@ class FTProximity : public parsenode
 {
 public:
 	FTProximity(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~FTProximity();
 
 };
@@ -5284,7 +5318,7 @@ class FTOrderedIndicator : public FTProximity
 {
 public:
 	FTOrderedIndicator(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~FTOrderedIndicator();
 
 };
@@ -5307,7 +5341,7 @@ class FTMatchOption : public parsenode
 {
 public:
 	FTMatchOption(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~FTMatchOption();
 
 };
@@ -5338,7 +5372,7 @@ protected:
 
 public:
 	FTCaseOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum ft_case_mode_t);
 	~FTCaseOption();
 
@@ -5373,7 +5407,7 @@ protected:
 
 public:
 	FTDiacriticsOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		ft_diacritics_mode_t);
 	~FTDiacriticsOption();
 
@@ -5404,7 +5438,7 @@ protected:
 
 public:
 	FTStemOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		ft_stem_mode_t);
 	~FTStemOption();
 
@@ -5436,7 +5470,7 @@ protected:
 
 public:
 	FTThesaurusOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTThesaurusID>,
 		rchandle<FTThesaurusList>,
 		bool default_b,
@@ -5470,7 +5504,7 @@ protected:
 
 public:
 	FTThesaurusList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~FTThesaurusList();
 
 public:
@@ -5501,7 +5535,7 @@ protected:
 
 public:
 	FTThesaurusID(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string thesaurus_name,
 		std::string relationship_name,
 		rchandle<FTRange> levels_h);
@@ -5542,7 +5576,7 @@ protected:
 
 public:
 	FTStopwordOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTRefOrList>,
 		rchandle<FTInclExclStringLiteralList>,
 		stop_words_mode_t);
@@ -5574,7 +5608,7 @@ protected:
 
 public:
 	FTInclExclStringLiteralList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~FTInclExclStringLiteralList();
 
 public:
@@ -5602,7 +5636,7 @@ protected:
 
 public:
 	FTRefOrList(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string at_str,
 		rchandle<FTStringLiteralList>);
 	~FTRefOrList();
@@ -5630,7 +5664,7 @@ protected:
 
 public:
 	FTStringLiteralList(
-		yy::xquery_parser::location_type const&);
+		yy::location const&);
 	~FTStringLiteralList();
 
 public:
@@ -5662,7 +5696,7 @@ protected:
 
 public:
 	FTInclExclStringLiteral(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTRefOrList>,
 		incl_excl_mode_t);
 	~FTInclExclStringLiteral();
@@ -5690,7 +5724,7 @@ protected:
 
 public:
 	FTLanguageOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		std::string lang);
 	~FTLanguageOption();
 
@@ -5715,7 +5749,7 @@ protected:
 
 public:
 	FTWildcardOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		bool with_b);
 	~FTWildcardOption();
 
@@ -5748,7 +5782,7 @@ protected:
 
 public:
 	FTContent(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum ft_content_mode_t);
 	~FTContent();
 
@@ -5785,7 +5819,7 @@ protected:
 
 public:
 	FTAnyallOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum ft_anyall_option_t);
 	~FTAnyallOption();
 
@@ -5821,7 +5855,7 @@ protected:
 
 public:
 	FTRange(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<UnionExpr> src_expr_h,
 		rchandle<UnionExpr> dst_expr_h);
 	~FTRange();
@@ -5848,7 +5882,7 @@ protected:
 
 public:
 	FTDistance(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTRange>,
 		rchandle<FTUnit>);
 	~FTDistance();
@@ -5875,7 +5909,7 @@ protected:
 
 public:
 	FTWindow(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<UnionExpr> window_h,
 		rchandle<FTUnit> unit_h);
 	~FTWindow();
@@ -5901,7 +5935,7 @@ protected:
 
 public:
 	FTTimes(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<FTRange>);
 	~FTTimes();
 
@@ -5932,7 +5966,7 @@ protected:
 
 public:
 	FTScope(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		ft_scope_t);
 	~FTScope();
 
@@ -5963,7 +5997,7 @@ protected:
 
 public:
 	FTUnit(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		ft_unit_t);
 	~FTUnit();
 
@@ -5993,7 +6027,7 @@ protected:
 
 public:
 	FTBigUnit(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		enum ft_big_unit_t);
 	~FTBigUnit();
 
@@ -6017,7 +6051,7 @@ protected:
 
 public:
 	FTIgnoreOption(
-		yy::xquery_parser::location_type const&,
+		yy::location const&,
 		rchandle<UnionExpr>);
 	~FTIgnoreOption();
 

@@ -20,8 +20,8 @@
 #include "xquery_parser.tab.h"
 
 using namespace std;
+using namespace yy;
 namespace xqp {
-
 
 
 
@@ -42,7 +42,7 @@ Module::~Module()
 // [2] VersionDecl
 // ---------------
 VersionDecl::VersionDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _version,
 	std::string const& _encoding)
 :
@@ -61,7 +61,7 @@ VersionDecl::~VersionDecl()
 // [3] MainModule
 // --------------
 MainModule::MainModule(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Prolog> _prolog_h,
 	rchandle<QueryBody> _query_body_h)
 :
@@ -72,7 +72,7 @@ MainModule::MainModule(
 }
 
 MainModule::MainModule(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QueryBody> _query_body_h)
 :
 	parsenode(_loc),
@@ -90,7 +90,7 @@ MainModule::~MainModule()
 // [4] LibraryModule
 // -----------------
 LibraryModule::LibraryModule(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ModuleDecl> _decl_h, 
 	rchandle<Prolog> _prolog_h)
 :
@@ -110,7 +110,7 @@ LibraryModule::~LibraryModule()
 // [5] ModuleDecl
 // --------------
 ModuleDecl::ModuleDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _prefix,
 	std::string const& _target_namespace)
 :
@@ -129,7 +129,7 @@ ModuleDecl::~ModuleDecl()
 // [6] Prolog
 // ----------
 Prolog::Prolog(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<SIND_DeclList> _sind_list_h,
 	rchandle<VFO_DeclList> _vfo_list_h)
 :
@@ -148,7 +148,7 @@ Prolog::~Prolog()
 // [6a] SIDN_DeclList
 // ------------------
 SIND_DeclList::SIND_DeclList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -163,7 +163,7 @@ SIND_DeclList::~SIND_DeclList()
 // [6b] VFO_DeclList
 // -----------------
 VFO_DeclList::VFO_DeclList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -178,7 +178,7 @@ VFO_DeclList::~VFO_DeclList()
 // [6c] SIND_Decl
 // --------------
 SIND_Decl::SIND_Decl(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -193,7 +193,7 @@ SIND_Decl::~SIND_Decl()
 // [6d] VFO_Decl
 // -------------
 VFO_Decl::VFO_Decl(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -207,7 +207,7 @@ VFO_Decl::~VFO_Decl()
 // [7] Setter
 // ----------
 Setter::Setter(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	SIND_Decl(_loc)
 {
@@ -222,7 +222,7 @@ Setter::~Setter()
 // [8] Import
 // ----------
 Import::Import(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	SIND_Decl(_loc)
 {
@@ -243,7 +243,7 @@ Import::~Import()
 // [10] NamespaceDecl
 // ------------------
 NamespaceDecl::NamespaceDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _prefix,
 	std::string const& _uri)
 :
@@ -262,7 +262,7 @@ NamespaceDecl::~NamespaceDecl()
 // [11] BoundarySpaceDecl
 // ----------------------
 BoundarySpaceDecl::BoundarySpaceDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	static_context::boundary_space_mode_t _mode)
 :
 	Setter(_loc),
@@ -279,7 +279,7 @@ BoundarySpaceDecl::~BoundarySpaceDecl()
 // [12] DefaultNamespaceDecl
 // -------------------------
 DefaultNamespaceDecl::DefaultNamespaceDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum default_namespace_mode_t _mode,
 	std::string const& _default_namespace)
 :
@@ -299,7 +299,7 @@ DefaultNamespaceDecl::~DefaultNamespaceDecl()
 // [13] OptionDecl
 // ---------------
 OptionDecl::OptionDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _qname_h,
 	std::string const& _val)
 :
@@ -315,10 +315,29 @@ OptionDecl::~OptionDecl()
 
 
 
+// [13a] FTOptionDecl
+// ------------------
+FTOptionDecl::FTOptionDecl(
+  yy::location const& _loc,
+  rchandle<QName> _qname_h,
+  rchandle<FTMatchOption> _match_option_h)
+:
+  parsenode(_loc),
+  qname_h(_qname_h),
+ 	match_option_h(_match_option_h)
+{
+}
+
+FTOptionDecl::~FTOptionDecl()
+{
+}
+
+
+
 // [14] OrderingModeDecl
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	static_context::ordering_mode_t _mode)
 :
 	Setter(_loc),
@@ -335,7 +354,7 @@ OrderingModeDecl::~OrderingModeDecl()
 // [15] EmptyOrderDecl
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	static_context::order_empty_mode_t _mode)
 :
 	Setter(_loc),
@@ -352,7 +371,7 @@ EmptyOrderDecl::~EmptyOrderDecl()
 // [16] CopyNamespacesDecl
 // -----------------------
 CopyNamespacesDecl::CopyNamespacesDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<PreserveMode> _preserve_h,
 	rchandle<InheritMode> _inherit_h)
 :
@@ -371,7 +390,7 @@ CopyNamespacesDecl::~CopyNamespacesDecl()
 // [17] PreserveMode
 // -----------------
 PreserveMode::PreserveMode(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	static_context::copy_ns_mode_t _preserve_mode)
 :
 	parsenode(_loc),
@@ -388,7 +407,7 @@ PreserveMode::~PreserveMode()
 // [18] InheritMode
 // ----------------
 InheritMode::InheritMode(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	static_context::copy_ns_mode_t _inherit_mode)
 :
 	parsenode(_loc),
@@ -405,7 +424,7 @@ InheritMode::~InheritMode()
 // [19] DefaultCollationDecl
 // -------------------------
 DefaultCollationDecl::DefaultCollationDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const&  _collation)
 :
 	Setter(_loc),
@@ -422,7 +441,7 @@ DefaultCollationDecl::~DefaultCollationDecl()
 // [20] BaseURIDecl
 // ----------------
 BaseURIDecl::BaseURIDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _base_uri)
 :
 	Setter(_loc),
@@ -439,7 +458,7 @@ BaseURIDecl::~BaseURIDecl()
 // [21] SchemaImport
 // -----------------
 SchemaImport::SchemaImport(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<SchemaPrefix> _prefix_h,
 	std::string const& _uri,
 	rchandle<URILiteralList> _at_list_h)
@@ -460,7 +479,7 @@ SchemaImport::~SchemaImport()
 // [21a] URLLiteralList
 // --------------------
 URILiteralList::URILiteralList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -475,7 +494,7 @@ URILiteralList::~URILiteralList()
 // [22] SchemaPrefix
 // -----------------
 SchemaPrefix::SchemaPrefix(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	bool _default_b)
 :
 	parsenode(_loc),
@@ -485,7 +504,7 @@ SchemaPrefix::SchemaPrefix(
 }
 
 SchemaPrefix::SchemaPrefix(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _prefix) 
 :
 	parsenode(_loc),
@@ -503,7 +522,7 @@ SchemaPrefix::~SchemaPrefix()
 // [23] ModuleImport
 // -----------------
 ModuleImport::ModuleImport(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& uri,
 	rchandle<URILiteralList> _uri_list_h)
 :
@@ -513,7 +532,7 @@ ModuleImport::ModuleImport(
 }
 
 ModuleImport::ModuleImport(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _prefix,
 	std::string const& _uri,
 	rchandle<URILiteralList> _uri_list_h)
@@ -534,7 +553,7 @@ ModuleImport::~ModuleImport()
 // [24] VarDecl
 // ------------
 VarDecl::VarDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<ExprSingle> _initexpr_h)
@@ -555,8 +574,8 @@ VarDecl::~VarDecl()
 // [25] ConstructionDecl
 // ---------------------
 ConstructionDecl::ConstructionDecl(
-	yy::xquery_parser::location_type const& _loc,
-	enum static_context::boundary_space_mode_t _mode)
+	location const& _loc,
+	enum static_context::construction_mode_t _mode)
 :
 	Setter(_loc),
 	mode(_mode)
@@ -572,7 +591,7 @@ ConstructionDecl::~ConstructionDecl()
 // [26] FunctionDecl
 // -----------------
 FunctionDecl::FunctionDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _name_h,
 	rchandle<ParamList> _paramlist_h,
 	rchandle<SequenceType> _return_type_h,
@@ -597,7 +616,7 @@ FunctionDecl::~FunctionDecl()
 // [27] ParamList
 // --------------
 ParamList::ParamList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -612,7 +631,7 @@ ParamList::~ParamList()
 // [28] Param
 // ----------
 Param::Param(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _name,
 	rchandle<TypeDeclaration> _typedecl_h)
 :
@@ -631,7 +650,7 @@ Param::~Param()
 // [29] EnclosedExpr
 // -----------------
 EnclosedExpr::EnclosedExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
 	exprnode(_loc),
@@ -648,7 +667,7 @@ EnclosedExpr::~EnclosedExpr()
 // [30] QueryBody
 // --------------
 QueryBody::QueryBody(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
 	exprnode(_loc),
@@ -665,7 +684,7 @@ QueryBody::~QueryBody()
 // [31] Expr
 // ---------
 Expr::Expr(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	exprnode(_loc)
 {
@@ -680,7 +699,7 @@ Expr::~Expr()
 // [32] ExprSingle
 // ---------------
 ExprSingle::ExprSingle(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	exprnode(_loc)
 {
@@ -695,7 +714,7 @@ ExprSingle::~ExprSingle()
 // [33] FLWORExpr
 // --------------
 FLWORExpr::FLWORExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ForLetClauseList> _forlet_list_h,
 	rchandle<WhereClause> _where_h,
 	rchandle<OrderByClause> _orderby_h,
@@ -718,7 +737,7 @@ FLWORExpr::~FLWORExpr()
 // [33a] ForLetClauseList
 // ----------------------
 ForLetClauseList::ForLetClauseList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -733,7 +752,7 @@ ForLetClauseList::~ForLetClauseList()
 // [33b] ForLetClause
 // ------------------
 ForLetClause::ForLetClause(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -748,7 +767,7 @@ ForLetClause::~ForLetClause()
 // [34] ForClause
 // --------------
 ForClause::ForClause(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<VarInDeclList> _vardecl_list_h)
 :
 	ForLetClause(_loc),
@@ -765,7 +784,7 @@ ForClause::~ForClause()
 // [34a] VarInDeclList
 // -------------------
 VarInDeclList::VarInDeclList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -780,7 +799,7 @@ VarInDeclList::~VarInDeclList()
 // [34b] VarInDecl
 // ---------------
 VarInDecl::VarInDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<PositionalVar> _posvar_h,
@@ -805,7 +824,7 @@ VarInDecl::~VarInDecl()
 // [35] PositionalVar
 // ------------------
 PositionalVar::PositionalVar(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _varname)
 :
 	parsenode(_loc),
@@ -822,7 +841,7 @@ PositionalVar::~PositionalVar()
 // [36] LetClause
 // --------------
 LetClause::LetClause(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<VarGetsDeclList> _vardecl_list_h)
 :
 	ForLetClause(_loc),
@@ -839,7 +858,7 @@ LetClause::~LetClause()
 // [36a] VarGetsDeclList
 // ---------------------
 VarGetsDeclList::VarGetsDeclList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -854,7 +873,7 @@ VarGetsDeclList::~VarGetsDeclList()
 // [36b] VarGetsDecl
 // ------------------
 VarGetsDecl::VarGetsDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<FTScoreVar> _ftscorevar_h,
@@ -876,7 +895,7 @@ VarGetsDecl::~VarGetsDecl()
 // [36c] FTScoreVar
 // ----------------
 FTScoreVar::FTScoreVar(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _varname)
 :
 	parsenode(_loc),
@@ -893,7 +912,7 @@ FTScoreVar::~FTScoreVar()
 // [37] WhereClause
 // ----------------
 WhereClause::WhereClause(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ExprSingle> _predicate_h)
 :
 	parsenode(_loc),
@@ -910,7 +929,7 @@ WhereClause::~WhereClause()
 // [38] OrderByClause
 // ------------------
 OrderByClause::OrderByClause(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<OrderSpecList> _spec_list_h,
 	bool _stable_b)
 :
@@ -922,7 +941,7 @@ OrderByClause::OrderByClause(
 
 
 OrderByClause::OrderByClause(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<OrderSpecList> _spec_list_h)
 :
 	parsenode(_loc),
@@ -939,7 +958,7 @@ OrderByClause::~OrderByClause()
 // [39] OrderSpecList
 // ------------------
 OrderSpecList::OrderSpecList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -954,7 +973,7 @@ OrderSpecList::~OrderSpecList()
 // [40] OrderSpec
 // --------------
 OrderSpec::OrderSpec(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ExprSingle> _spec_h,
 	rchandle<OrderModifier> _modifier_h)
 :
@@ -973,7 +992,7 @@ OrderSpec::~OrderSpec()
 // [41] OrderModifier
 // ------------------
 OrderModifier::OrderModifier(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<OrderDirSpec> _dir_spec_h,
 	rchandle<OrderEmptySpec> _empty_spec_h,
 	rchandle<OrderCollationSpec> _collation_spec_h)
@@ -994,7 +1013,7 @@ OrderModifier::~OrderModifier()
 // [41a] OrderDirSpec
 // ------------------
 OrderDirSpec::OrderDirSpec(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum dir_spec_t _dir_spec)
 :
 	parsenode(_loc),
@@ -1011,7 +1030,7 @@ OrderDirSpec::~OrderDirSpec()
 // [41b] OrderEmptySpec
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	static_context::order_empty_mode_t _empty_order_spec)
 :
 	parsenode(_loc),
@@ -1028,7 +1047,7 @@ OrderEmptySpec::~OrderEmptySpec()
 // [41c] OrderCollationSpec
 // ------------------------
 OrderCollationSpec::OrderCollationSpec(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _uri)
 :
 	parsenode(_loc),
@@ -1045,7 +1064,7 @@ OrderCollationSpec::~OrderCollationSpec()
 // [42] QuantifiedExpr 	   
 // -------------------
 QuantifiedExpr::QuantifiedExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	quantification_mode_t _qmode,
 	rchandle<QVarInDeclList> _decl_list_h,
 	rchandle<ExprSingle> _expr_h)
@@ -1065,7 +1084,7 @@ QuantifiedExpr::~QuantifiedExpr()
 // [42a] QVarInDeclList
 // --------------------
 QVarInDeclList::QVarInDeclList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -1080,7 +1099,7 @@ QVarInDeclList::~QVarInDeclList()
 // [42b] QVarInDecl
 // ----------------
 QVarInDecl::QVarInDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _name,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<ExprSingle> _val_h)
@@ -1100,7 +1119,7 @@ QVarInDecl::~QVarInDecl()
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr::TypeswitchExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _switch_expr_h,
 	rchandle<CaseClauseList> _clause_list_h,
 	rchandle<ExprSingle> _default_clause_h)
@@ -1114,7 +1133,7 @@ TypeswitchExpr::TypeswitchExpr(
 
 
 TypeswitchExpr::TypeswitchExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _switch_expr_h,
 	rchandle<CaseClauseList> _clause_list_h,
 	std::string _default_varname,
@@ -1137,7 +1156,7 @@ TypeswitchExpr::~TypeswitchExpr()
 // [43a] CaseClauseList
 // --------------------
 CaseClauseList::CaseClauseList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -1152,13 +1171,25 @@ CaseClauseList::~CaseClauseList()
 // [44] CaseClause
 // ---------------
 CaseClause::CaseClause(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _varname,
 	rchandle<SequenceType> _type_h,
 	rchandle<ExprSingle> _val_h)
 :
 	parsenode(_loc),
 	varname(_varname),
+	type_h(_type_h),
+	val_h(_val_h)
+{
+}
+
+CaseClause::CaseClause(
+	location const& _loc,
+	rchandle<SequenceType> _type_h,
+	rchandle<ExprSingle> _val_h)
+:
+	parsenode(_loc),
+	varname(""),
 	type_h(_type_h),
 	val_h(_val_h)
 {
@@ -1173,7 +1204,7 @@ CaseClause::~CaseClause()
 // [45] IfExpr
 // -----------
 IfExpr::IfExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _cond_expr_h,
 	rchandle<ExprSingle> _then_expr_h,
 	rchandle<ExprSingle> _else_expr_h)
@@ -1194,7 +1225,7 @@ IfExpr::~IfExpr()
 // [46] OrExpr
 // -----------
 OrExpr::OrExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<OrExpr> _or_expr_h,
 	rchandle<AndExpr> _and_expr_h)
 :
@@ -1213,7 +1244,7 @@ OrExpr::~OrExpr()
 // [47] AndExpr
 // ------------
 AndExpr::AndExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AndExpr> _and_expr_h,
 	rchandle<ComparisonExpr> _comp_expr_h)
 :
@@ -1231,7 +1262,7 @@ AndExpr::~AndExpr()
 // [48] ComparisonExpr
 // -------------------
 ComparisonExpr::ComparisonExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTContainsExpr> _left_h,
 	rchandle<ValueComp> _valcomp_h,
 	rchandle<FTContainsExpr> _right_h)
@@ -1246,7 +1277,7 @@ ComparisonExpr::ComparisonExpr(
 }
 
 ComparisonExpr::ComparisonExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTContainsExpr> _left_h,
 	rchandle<GeneralComp> _gencomp_h,
 	rchandle<FTContainsExpr> _right_h)
@@ -1261,7 +1292,7 @@ ComparisonExpr::ComparisonExpr(
 }
 
 ComparisonExpr::ComparisonExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTContainsExpr> _left_h,
 	rchandle<NodeComp> _nodecomp_h,
 	rchandle<FTContainsExpr> _right_h)
@@ -1284,7 +1315,7 @@ ComparisonExpr::~ComparisonExpr()
 // [48a] FTContainsExpr
 // --------------------
 FTContainsExpr::FTContainsExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<RangeExpr> _range_expr_h,
 	rchandle<FTSelection> _ftselect_h,
 	rchandle<FTIgnoreOption> _ftignore_h)
@@ -1305,7 +1336,7 @@ FTContainsExpr::~FTContainsExpr()
 // [49] RangeExpr
 // --------------
 RangeExpr::RangeExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AdditiveExpr> _from_expr_h,
 	rchandle<AdditiveExpr> _to_expr_h)
 :
@@ -1324,7 +1355,7 @@ RangeExpr::~RangeExpr()
 // [50] AdditiveExpr
 // -----------------
 AdditiveExpr::AdditiveExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AdditiveExpr> _add_expr_h,
 	enum add_op_t _add_op,
 	rchandle<MultiplicativeExpr> _mult_expr_h)
@@ -1345,7 +1376,7 @@ AdditiveExpr::~AdditiveExpr()
 // [51] MultiplicativeExpr
 // -----------------------
 MultiplicativeExpr::MultiplicativeExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<MultiplicativeExpr> _mult_expr_h,
 	enum mult_op_t _mult_op,
 	rchandle<UnionExpr> _union_expr_h)
@@ -1366,7 +1397,7 @@ MultiplicativeExpr::~MultiplicativeExpr()
 // [52] UnionExpr
 // --------------
 UnionExpr::UnionExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<UnionExpr> _union_expr_h,
 	rchandle<IntersectExceptExpr> _intex_expr_h)
 :
@@ -1385,7 +1416,7 @@ UnionExpr::~UnionExpr()
 // [53] IntersectExceptExpr
 // ------------------------
 IntersectExceptExpr::IntersectExceptExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<IntersectExceptExpr> _intex_expr_h,
 	enum intex_op_t _intex_op,
 	rchandle<InstanceofExpr> _instof_expr_h)
@@ -1406,7 +1437,7 @@ IntersectExceptExpr::~IntersectExceptExpr()
 // [54] InstanceofExpr
 // -------------------
 InstanceofExpr::InstanceofExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<TreatExpr> _treat_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
@@ -1425,7 +1456,7 @@ InstanceofExpr::~InstanceofExpr()
 // [55] TreatExpr
 // --------------
 TreatExpr::TreatExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<CastableExpr> _castable_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
@@ -1444,7 +1475,7 @@ TreatExpr::~TreatExpr()
 // [56] CastableExpr
 // -----------------
 CastableExpr::CastableExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<CastExpr> _cast_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
@@ -1463,7 +1494,7 @@ CastableExpr::~CastableExpr()
 // [57] CastExpr 	   
 // -------------
 CastExpr::CastExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<UnaryExpr> _unary_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
@@ -1482,13 +1513,13 @@ CastExpr::~CastExpr()
 // [58] UnaryExpr
 // --------------
 UnaryExpr::UnaryExpr(
-	yy::xquery_parser::location_type const& _loc,
-	rchandle<ValueExpr> _value_expr_h,
-	rchandle<SignList> _signlist_h)
+	location const& _loc,
+	rchandle<SignList> _signlist_h,
+	rchandle<ValueExpr> _value_expr_h)
 :
 	exprnode(_loc),
-	value_expr_h(_value_expr_h),
-	signlist_h(_signlist_h)
+	signlist_h(_signlist_h),
+	value_expr_h(_value_expr_h)
 {
 }
 
@@ -1501,7 +1532,7 @@ UnaryExpr::~UnaryExpr()
 // [58a] SignList
 // --------------
 SignList::SignList(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	bool _sign)
 :
 	parsenode(_loc),
@@ -1518,7 +1549,7 @@ SignList::~SignList()
 // [59] ValueExpr
 // --------------
 ValueExpr::ValueExpr(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	exprnode(_loc)
 {
@@ -1533,7 +1564,7 @@ ValueExpr::~ValueExpr()
 // [60] GeneralComp
 // ----------------
 GeneralComp::GeneralComp(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum gencomp_t _type)
 :
 	parsenode(_loc),
@@ -1550,7 +1581,7 @@ GeneralComp::~GeneralComp()
 // [61] ValueComp
 // --------------
 ValueComp::ValueComp(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum valcomp_t _type)
 :
 	parsenode(_loc),
@@ -1567,7 +1598,7 @@ ValueComp::~ValueComp()
 // [62] NodeComp
 // -------------
 NodeComp::NodeComp(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum nodecomp_t _type)
 :
 	parsenode(_loc),
@@ -1585,7 +1616,7 @@ NodeComp::~NodeComp()
 // [63] ValidateExpr
 // -----------------
 ValidateExpr::ValidateExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	string const& _valmode,
 	rchandle<Expr> _expr_h)
 :
@@ -1604,7 +1635,7 @@ ValidateExpr::~ValidateExpr()
 // [64] ExtensionExpr
 // ------------------
 ExtensionExpr::ExtensionExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<PragmaList> _pragma_list_h,
 	rchandle<Expr> _expr_h)
 :
@@ -1623,7 +1654,7 @@ ExtensionExpr::~ExtensionExpr()
 // [64a] PragmaList
 // ----------------
 PragmaList::PragmaList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -1638,7 +1669,7 @@ PragmaList::~PragmaList()
 // [65] Pragma
 // -----------
 Pragma::Pragma(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _name,
 	std::string _pragma_lit)
 :
@@ -1663,7 +1694,7 @@ Pragma::~Pragma()
 // [67] PathExpr
 // -------------
 PathExpr::PathExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum pathtype_t _type,
 	rchandle<RelativePathExpr> _relpath_expr_h)
 :
@@ -1682,7 +1713,7 @@ PathExpr::~PathExpr()
 // [68] RelativePathExpr
 // ---------------------
 RelativePathExpr::RelativePathExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum steptype_t _step_type,
 	rchandle<StepExpr> _step_expr_h,
 	rchandle<RelativePathExpr> _relpath_expr_h)
@@ -1703,7 +1734,7 @@ RelativePathExpr::~RelativePathExpr()
 // [69] StepExpr
 // -------------
 StepExpr::StepExpr(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	exprnode(_loc)
 {
@@ -1718,7 +1749,7 @@ StepExpr::~StepExpr()
 // [70] AxisStep
 // -------------
 AxisStep::AxisStep(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ForwardStep> _forward_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
@@ -1730,7 +1761,7 @@ AxisStep::AxisStep(
 }
 
 AxisStep::AxisStep(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ReverseStep> _reverse_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
@@ -1750,7 +1781,7 @@ AxisStep::~AxisStep()
 // [71] ForwardStep
 // ----------------
 ForwardStep::ForwardStep(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ForwardAxis> _forward_axis_h,
 	rchandle<NodeTest> _node_test_h)
 :
@@ -1762,7 +1793,7 @@ ForwardStep::ForwardStep(
 }
 
 ForwardStep::ForwardStep(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AbbrevForwardStep> _abbrev_step_h)
 :
 	parsenode(_loc),
@@ -1781,7 +1812,7 @@ ForwardStep::~ForwardStep()
 // [72] ForwardAxis
 // ----------------
 ForwardAxis::ForwardAxis(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum forward_axis_t _axis)
 :
 	parsenode(_loc),
@@ -1798,7 +1829,7 @@ ForwardAxis::~ForwardAxis()
 // [73] AbbrevForwardStep
 // ----------------------
 AbbrevForwardStep::AbbrevForwardStep(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<NodeTest> _node_test_h,
 	bool _attr_b)
 :
@@ -1809,7 +1840,7 @@ AbbrevForwardStep::AbbrevForwardStep(
 }
 
 AbbrevForwardStep::AbbrevForwardStep(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<NodeTest> _node_test_h)
 :
 	parsenode(_loc),
@@ -1827,7 +1858,7 @@ AbbrevForwardStep::~AbbrevForwardStep()
 // [74] ReverseStep
 // ----------------
 ReverseStep::ReverseStep(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ReverseAxis> _axis_h,
 	rchandle<NodeTest> _node_test_h)
 :
@@ -1846,7 +1877,7 @@ ReverseStep::~ReverseStep()
 // [75] ReverseAxis
 // ----------------
 ReverseAxis::ReverseAxis(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum reverse_axis_t _axis)
 :
 	parsenode(_loc),
@@ -1869,7 +1900,7 @@ ReverseAxis::~ReverseAxis()
 // [77] NodeTest
 // -------------
 NodeTest::NodeTest(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -1884,7 +1915,7 @@ NodeTest::~NodeTest()
 // [78] NameTest
 // -------------
 NameTest::NameTest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
@@ -1894,7 +1925,7 @@ NameTest::NameTest(
 }
 
 NameTest::NameTest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Wildcard> _wild_h)
 :
 	parsenode(_loc),
@@ -1912,7 +1943,7 @@ NameTest::~NameTest()
 // [79] Wildcard
 // -------------
 Wildcard::Wildcard(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum wildcard_t _type)
 :
 	parsenode(_loc),
@@ -1923,7 +1954,7 @@ Wildcard::Wildcard(
 }
 
 Wildcard::Wildcard(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _prefix)
 :
 	parsenode(_loc),
@@ -1934,7 +1965,7 @@ Wildcard::Wildcard(
 }
 
 Wildcard::Wildcard(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
@@ -1953,7 +1984,7 @@ Wildcard::~Wildcard()
 // [80] FilterExpr
 // ---------------
 FilterExpr::FilterExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<PrimaryExpr> _primary_h,
 	rchandle<PredicateList> _pred_list_h)
 :
@@ -1972,7 +2003,7 @@ FilterExpr::~FilterExpr()
 // [81] PredicateList
 // ------------------
 PredicateList::PredicateList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -1987,7 +2018,7 @@ PredicateList::~PredicateList()
 // [82] Predicate
 // --------------
 Predicate::Predicate(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _pred_h)
 :
 	exprnode(_loc),
@@ -2004,7 +2035,7 @@ Predicate::~Predicate()
 // [83] PrimaryExpr
 // ----------------
 PrimaryExpr::PrimaryExpr(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	exprnode(_loc)
 {
@@ -2019,7 +2050,7 @@ PrimaryExpr::~PrimaryExpr()
 // [84] Literal
 // ------------
 Literal::Literal(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	PrimaryExpr(_loc)
 {
@@ -2035,7 +2066,7 @@ Literal::~Literal()
 // [85] NumericLiteral
 // -------------------
 NumericLiteral::NumericLiteral(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	int _ival)
 :
 	Literal(_loc),
@@ -2045,7 +2076,7 @@ NumericLiteral::NumericLiteral(
 }
 
 NumericLiteral::NumericLiteral(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	double _dval)
 :
 	Literal(_loc),
@@ -2055,7 +2086,7 @@ NumericLiteral::NumericLiteral(
 }
 
 NumericLiteral::NumericLiteral(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	decimal _decval)
 :
 	Literal(_loc),
@@ -2074,7 +2105,7 @@ NumericLiteral::~NumericLiteral()
 // [86] VarRef
 // -----------
 VarRef::VarRef(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _varname)
 :
 	PrimaryExpr(_loc),
@@ -2092,7 +2123,7 @@ VarRef::~VarRef()
 // [87] ParenthesizedExpr
 // ----------------------
 ParenthesizedExpr::ParenthesizedExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
 	PrimaryExpr(_loc),
@@ -2110,7 +2141,7 @@ ParenthesizedExpr::~ParenthesizedExpr()
 // [88] ContextItemExpr
 // --------------------
 ContextItemExpr::ContextItemExpr(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	PrimaryExpr(_loc)
 {
@@ -2126,7 +2157,7 @@ ContextItemExpr::~ContextItemExpr()
 // ----------------
 
 OrderedExpr::OrderedExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
 	PrimaryExpr(_loc),
@@ -2144,7 +2175,7 @@ OrderedExpr::~OrderedExpr()
 // [90] UnorderedExpr
 // ------------------
 UnorderedExpr::UnorderedExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
 	PrimaryExpr(_loc),
@@ -2163,7 +2194,7 @@ UnorderedExpr::~UnorderedExpr()
 // -----------------
 
 FunctionCall::FunctionCall(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _fname_h,
 	rchandle<ArgList> _arg_list_h)
 :
@@ -2183,7 +2214,7 @@ FunctionCall::~FunctionCall()
 // [91a] ArgList
 // -------------
 ArgList::ArgList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -2199,7 +2230,7 @@ ArgList::~ArgList()
 // [92] Constructor
 // ----------------
 Constructor::Constructor(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	PrimaryExpr(_loc)
 {
@@ -2215,7 +2246,7 @@ Constructor::~Constructor()
 // [93] DirectConstructor
 // ----------------------
 DirectConstructor::DirectConstructor(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	Constructor(_loc)
 {
@@ -2232,7 +2263,7 @@ DirectConstructor::~DirectConstructor()
 // -----------------------
 
 DirElemConstructor::DirElemConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _elem_name_h,
 	rchandle<DirAttributeList> _attr_list_h,
 	rchandle<DirElemContentList> _dir_content_list_h)
@@ -2254,7 +2285,7 @@ DirElemConstructor::~DirElemConstructor()
 // [94a] DirElemContentList
 // ------------------------
 DirElemContentList::DirElemContentList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -2270,7 +2301,7 @@ DirElemContentList::~DirElemContentList()
 // [95] DirAttributeList
 // ---------------------
 DirAttributeList::DirAttributeList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -2287,7 +2318,7 @@ DirAttributeList::~DirAttributeList()
 // -------------
 	
 DirAttr::DirAttr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _atname_h,
 	rchandle<DirAttributeValue> _dir_atval_h)
 :
@@ -2307,7 +2338,7 @@ DirAttr::~DirAttr()
 // [96] DirAttributeValue
 // ----------------------
 DirAttributeValue::DirAttributeValue(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QuoteAttrContentList> _quot_attr_content_h,
 	rchandle<AposAttrContentList> _apos_attr_content_h)
 :
@@ -2327,7 +2358,7 @@ DirAttributeValue::~DirAttributeValue()
 // [96a] QuoteAttrContentList
 // --------------------------
 QuoteAttrContentList::QuoteAttrContentList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -2343,7 +2374,7 @@ QuoteAttrContentList::~QuoteAttrContentList()
 // [96b] AposAttrContentList
 // -------------------------
 AposAttrContentList::AposAttrContentList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -2359,7 +2390,7 @@ AposAttrContentList::~AposAttrContentList()
 // [97] QuotAttrValueContent
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _quot_atcontent,
 	rchandle<CommonContent> _common_content_h)
 :
@@ -2379,7 +2410,7 @@ QuoteAttrValueContent::~QuoteAttrValueContent()
 // [98] AposAttrValueContent
 // -------------------------
 AposAttrValueContent::AposAttrValueContent(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _apos_atcontent,
 	rchandle<CommonContent> _common_content_h)
 :
@@ -2399,7 +2430,7 @@ AposAttrValueContent::~AposAttrValueContent()
 // [99] DirElemContent
 // -------------------
 DirElemContent::DirElemContent(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _elem_content)
 :
 	exprnode(_loc),
@@ -2417,7 +2448,7 @@ DirElemContent::~DirElemContent()
 // [100] CommonContent
 // -------------------
 CommonContent::CommonContent(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum common_content_t _type,
 	std::string _ref)
 :
@@ -2429,7 +2460,7 @@ CommonContent::CommonContent(
 }
 
 CommonContent::CommonContent(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<EnclosedExpr> _expr_h)
 :
 	exprnode(_loc),
@@ -2440,7 +2471,7 @@ CommonContent::CommonContent(
 }
 
 CommonContent::CommonContent(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum common_content_t _type)
 :
 	exprnode(_loc),
@@ -2460,7 +2491,7 @@ CommonContent::~CommonContent()
 // [101] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor::DirCommentConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _comment)
 :
 	DirectConstructor(_loc),
@@ -2485,7 +2516,7 @@ DirCommentConstructor::~DirCommentConstructor()
 // ----------------------
 
 DirPIConstructor::DirPIConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string const& _pi_target,
 	std::string const& _pi_content)
 :
@@ -2511,7 +2542,7 @@ DirPIConstructor::~DirPIConstructor()
 // [105] CDataSection
 // ------------------
 CDataSection::CDataSection(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _cdata_content)
 :
 	exprnode(_loc),
@@ -2535,7 +2566,7 @@ CDataSection::~CDataSection()
 // [107] ComputedConstructor
 // -------------------------
 ComputedConstructor::ComputedConstructor(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	Constructor(_loc)
 {
@@ -2551,7 +2582,7 @@ ComputedConstructor::~ComputedConstructor()
 // [108] CompDocConstructor
 // ------------------------
 CompDocConstructor::CompDocConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
 	exprnode(_loc),
@@ -2569,10 +2600,10 @@ CompDocConstructor::~CompDocConstructor()
 // [109] CompElemConstructor
 // -------------------------
 CompElemConstructor::CompElemConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _qname_h,
 	rchandle<Expr> _qname_expr_h,
-	rchandle<ContentExpr> _content_expr_h)
+	rchandle<Expr> _content_expr_h)
 :
 	exprnode(_loc),
 	qname_h(_qname_h),
@@ -2590,8 +2621,9 @@ CompElemConstructor::~CompElemConstructor()
 
 // [110] ContentExpr
 // -----------------
+/*
 ContentExpr::ContentExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
 	exprnode(_loc),
@@ -2602,14 +2634,14 @@ ContentExpr::ContentExpr(
 ContentExpr::~ContentExpr()
 {
 }
-
+*/
 
 
 
 // [111] CompAttrConstructor
 // -------------------------
 CompAttrConstructor::CompAttrConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _qname_h,
 	rchandle<Expr> _qname_expr_h,
 	rchandle<Expr> _val_expr_h)
@@ -2631,7 +2663,7 @@ CompAttrConstructor::~CompAttrConstructor()
 // [112] CompTextConstructor
 // -------------------------
 CompTextConstructor::CompTextConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _text_expr_h)
 :
 	exprnode(_loc),
@@ -2649,7 +2681,7 @@ CompTextConstructor::~CompTextConstructor()
 // [113] CompCommentConstructor
 // ----------------------------
 CompCommentConstructor::CompCommentConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Expr> _comment_expr_h)
 :
 	exprnode(_loc),
@@ -2667,7 +2699,7 @@ CompCommentConstructor::~CompCommentConstructor()
 // [114] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _target,
 	rchandle<Expr> _target_expr_h,
 	rchandle<Expr> _content_expr_h)
@@ -2688,7 +2720,7 @@ CompPIConstructor::~CompPIConstructor()
 // [115] SingleType
 // ----------------
 SingleType::SingleType(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AtomicType> _atomic_type_h,
 	bool _hook_b)
 :
@@ -2707,7 +2739,7 @@ SingleType::~SingleType()
 // [116] TypeDeclaration
 // ---------------------
 TypeDeclaration::TypeDeclaration(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<SequenceType> _seqtype_h)
 :
 	parsenode(_loc),
@@ -2724,7 +2756,7 @@ TypeDeclaration::~TypeDeclaration()
 // [117] SequenceType
 // ------------------
 SequenceType::SequenceType(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ItemType> _itemtype_h,
 	rchandle<OccurrenceIndicator> _occur_h,
 	bool _void_b)
@@ -2745,7 +2777,7 @@ SequenceType::~SequenceType()
 // [118] OccurrenceIndicator
 // -------------------------
 OccurrenceIndicator::OccurrenceIndicator(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum occurrence_t _type)
 :
 	parsenode(_loc),
@@ -2762,7 +2794,7 @@ OccurrenceIndicator::~OccurrenceIndicator()
 // [119] ItemType
 // --------------
 ItemType::ItemType(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _item_test)
 :
 	parsenode(_loc),
@@ -2779,7 +2811,7 @@ ItemType::~ItemType()
 // [120] AtomicType
 // ----------------
 AtomicType::AtomicType(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _qname_h)
 :
 	ItemType(_loc),
@@ -2796,7 +2828,7 @@ AtomicType::~AtomicType()
 // [121] KindTest
 // --------------
 KindTest::KindTest(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	ItemType(_loc)
 {
@@ -2811,7 +2843,7 @@ KindTest::~KindTest()
 // [122] AnyKindTest
 // -----------------
 AnyKindTest::AnyKindTest(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	KindTest(_loc)
 {
@@ -2826,7 +2858,7 @@ AnyKindTest::~AnyKindTest()
 // [123] DocumentTest
 // ------------------
 DocumentTest::DocumentTest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ElementTest> _elem_test_h,
 	rchandle<SchemaElementTest> _schema_elem_test_h)
 :
@@ -2845,7 +2877,7 @@ DocumentTest::~DocumentTest()
 // [124] TextTest
 // --------------
 TextTest::TextTest(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	KindTest(_loc)
 {
@@ -2860,7 +2892,7 @@ TextTest::~TextTest()
 // [125] CommentTest
 // -----------------
 CommentTest::CommentTest(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	KindTest(_loc)
 {
@@ -2875,7 +2907,7 @@ CommentTest::~CommentTest()
 // [126] PITest
 // ------------
 PITest::PITest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _target,
 	std::string _content)
 :
@@ -2894,7 +2926,7 @@ PITest::~PITest()
 // [127] AttributeTest
 // -------------------
 AttributeTest::AttributeTest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AttribNameOrWildcard> _attr_name_or_wildcard_h,
 	rchandle<TypeName> _type_name_h)
 :
@@ -2913,7 +2945,7 @@ AttributeTest::~AttributeTest()
 // [128] AttribNameOrWildcard
 // --------------------------
 AttribNameOrWildcard::AttribNameOrWildcard(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AttributeName> _attr_name_h,
 	bool _star_b)
 :
@@ -2932,7 +2964,7 @@ AttribNameOrWildcard::~AttribNameOrWildcard()
 // [129] SchemaAttributeTest
 // -------------------------
 SchemaAttributeTest::SchemaAttributeTest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AttributeDeclaration> _attr_decl_h)
 :
 	parsenode(_loc),
@@ -2949,7 +2981,7 @@ SchemaAttributeTest::~SchemaAttributeTest()
 // [130] AttributeDeclaration
 // --------------------------
 AttributeDeclaration::AttributeDeclaration(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<AttributeName> _attr_name_h)
 :
 	parsenode(_loc),
@@ -2966,7 +2998,7 @@ AttributeDeclaration::~AttributeDeclaration()
 // [131] ElementTest
 // -----------------
 ElementTest::ElementTest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ElementNameOrWildcard> _elem_name_or_wildcard_h,
 	rchandle<TypeName> _type_name_h)
 :
@@ -2985,7 +3017,7 @@ ElementTest::~ElementTest()
 // [132] ElementNameOrWildcard
 // ---------------------------
 ElementNameOrWildcard::ElementNameOrWildcard(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ElementName> _elem_name_h,
 	bool _star_b)
 :
@@ -3004,7 +3036,7 @@ ElementNameOrWildcard::~ElementNameOrWildcard()
 // [133] SchemaElementTest
 // -----------------------
 SchemaElementTest::SchemaElementTest(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ElementDeclaration> _elem_decl_h)
 :
 	parsenode(_loc),
@@ -3021,7 +3053,7 @@ SchemaElementTest::~SchemaElementTest()
 // [134] ElementDeclaration
 // ------------------------
 ElementDeclaration::ElementDeclaration(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ElementName> _elem_name_h)
 :
 	parsenode(_loc),
@@ -3038,7 +3070,7 @@ ElementDeclaration::~ElementDeclaration()
 // [135] AttributeName
 // -------------------
 AttributeName::AttributeName(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _attr_qname_h)
 :
 	parsenode(_loc),
@@ -3055,7 +3087,7 @@ AttributeName::~AttributeName()
 // [136] ElementName
 // -----------------
 ElementName::ElementName(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _elem_qname_h)
 :
 	parsenode(_loc),
@@ -3072,7 +3104,7 @@ ElementName::~ElementName()
 // [137] TypeName
 // --------------
 TypeName::TypeName(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _type_qname_h)
 :
 	parsenode(_loc),
@@ -3113,7 +3145,7 @@ TypeName::~TypeName()
 // -----------
 /*
 QName::QName(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc),
 {
@@ -3146,7 +3178,7 @@ QName::~QName()
 // [241]	RevalidationDecl
 // -----------------------
 RevalidationDecl::RevalidationDecl(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
@@ -3164,7 +3196,7 @@ RevalidationDecl::~RevalidationDecl()
 // [242]	InsertExpr
 // ----------------
 InsertExpr::InsertExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
 :
@@ -3184,7 +3216,7 @@ InsertExpr::~InsertExpr()
 // [243] DeleteExpr
 // ----------------
 DeleteExpr::DeleteExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ExprSingle> _target_expr_h)
 :
 	exprnode(_loc),
@@ -3201,7 +3233,7 @@ DeleteExpr::~DeleteExpr()
 // [244] ReplaceExpr
 // -----------------
 ReplaceExpr::ReplaceExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
 :
@@ -3220,7 +3252,7 @@ ReplaceExpr::~ReplaceExpr()
 // [245] RenameExpr
 // ----------------
 RenameExpr::RenameExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
 :
@@ -3253,7 +3285,7 @@ RenameExpr::~RenameExpr()
 // [249] TransformExpr
 // -------------------
 TransformExpr::TransformExpr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<VarNameList> _varname_list_h,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
@@ -3275,7 +3307,7 @@ TransformExpr::~TransformExpr()
 // [249a] VarNameList
 // ------------------
 VarNameList::VarNameList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -3291,7 +3323,7 @@ VarNameList::~VarNameList()
 // [249b] VarBinding
 // -----------------
 VarBinding::VarBinding(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _varname,
 	rchandle<ExprSingle> _val_h)
 :
@@ -3322,7 +3354,7 @@ VarBinding::~VarBinding()
 //[344] FTSelection
 //-----------------
 FTSelection::FTSelection(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTOr> _ftor_h,
 	rchandle<FTMatchOptionProximityList> _option_list_h,
 	rchandle<RangeExpr> _weight_expr_h)
@@ -3344,7 +3376,7 @@ FTSelection::~FTSelection()
 //[344a] FTMatchOptionProximityList
 //---------------------------------
 FTMatchOptionProximityList::FTMatchOptionProximityList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -3360,7 +3392,7 @@ FTMatchOptionProximityList::~FTMatchOptionProximityList()
 //[345]	FTOr
 //----------
 FTOr::FTOr(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTOr> _ftor_h,
 	rchandle<FTAnd> _ftand_h)
 :
@@ -3379,7 +3411,7 @@ FTOr::~FTOr()
 //[346]	FTAnd
 //-----------
 FTAnd::FTAnd(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTAnd> _ftand_h,
 	rchandle<FTMildnot> _ftmild_not_h)
 :
@@ -3399,7 +3431,7 @@ FTAnd::~FTAnd()
 //[347]	FTMildnot
 //---------------
 FTMildnot::FTMildnot(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTMildnot> _ftmild_not_h,
 	rchandle<FTUnaryNot> _ftunary_not_h)
 :
@@ -3419,7 +3451,7 @@ FTMildnot::~FTMildnot()
 //[348]	FTUnaryNot
 //----------------
 FTUnaryNot::FTUnaryNot(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTWordsSelection> _words_selection_h,
 	bool _not_b)
 :
@@ -3438,7 +3470,7 @@ FTUnaryNot::~FTUnaryNot()
 //[349]	FTWordsSelection
 //----------------------
 FTWordsSelection::FTWordsSelection(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTWords> _words_h,
 	rchandle<FTTimes> _times_h,
 	rchandle<FTSelection> _selection_h)
@@ -3460,7 +3492,7 @@ FTWordsSelection::~FTWordsSelection()
 //[350]	FTWords
 //-------------
 FTWords::FTWords(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTWordsValue> _words_val_h,
 	rchandle<FTAnyallOption> _any_all_option_h)
 :
@@ -3480,7 +3512,7 @@ FTWords::~FTWords()
 //[351]	FTWordsValue
 //------------------
 FTWordsValue::FTWordsValue(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<Literal> _lit_h,
 	rchandle<Expr> _expr_h)
 :
@@ -3500,7 +3532,7 @@ FTWordsValue::~FTWordsValue()
 //[352]	FTProximity
 //-----------------
 FTProximity::FTProximity(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -3516,7 +3548,7 @@ FTProximity::~FTProximity()
 //[353]	FTOrderedIndicator
 //------------------------
 FTOrderedIndicator::FTOrderedIndicator(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	FTProximity(_loc)
 {
@@ -3532,7 +3564,7 @@ FTOrderedIndicator::~FTOrderedIndicator()
 //[354] FTMatchOption 	
 //-------------------
 FTMatchOption::FTMatchOption(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -3548,7 +3580,7 @@ FTMatchOption::~FTMatchOption()
 //[355] FTCaseOption
 //------------------
 FTCaseOption::FTCaseOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	ft_case_mode_t _mode)
 :
 	FTMatchOption(_loc),
@@ -3566,7 +3598,7 @@ FTCaseOption::~FTCaseOption()
 //[356] FTDiacriticsOption
 //------------------------
 FTDiacriticsOption::FTDiacriticsOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	ft_diacritics_mode_t _mode)
 :
 	FTMatchOption(_loc),
@@ -3584,7 +3616,7 @@ FTDiacriticsOption::~FTDiacriticsOption()
 //[357] FTStemOption
 //------------------
 FTStemOption::FTStemOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	ft_stem_mode_t _mode)
 :
 	FTMatchOption(_loc),
@@ -3602,7 +3634,7 @@ FTStemOption::~FTStemOption()
 //[358] FTThesaurusOption
 //-----------------------
 FTThesaurusOption::FTThesaurusOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTThesaurusID> _thesaurusid_h,
 	rchandle<FTThesaurusList> _thesaurus_list_h,
 	bool _default_b,
@@ -3627,7 +3659,7 @@ FTThesaurusOption::~FTThesaurusOption()
 //[358a] FTThesaurusList
 //----------------------
 FTThesaurusList::FTThesaurusList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -3642,7 +3674,7 @@ FTThesaurusList::~FTThesaurusList()
 //[359] FTThesaurusID
 //-------------------
 FTThesaurusID::FTThesaurusID(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _thesaurus_name,
 	std::string _relationship_name,
 	rchandle<FTRange> _levels_h)
@@ -3664,7 +3696,7 @@ FTThesaurusID::~FTThesaurusID()
 //[360] FTStopwordOption
 //----------------------
 FTStopwordOption::FTStopwordOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTRefOrList> _refor_list_h,
 	rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
 	stop_words_mode_t _mode)
@@ -3686,7 +3718,7 @@ FTStopwordOption::~FTStopwordOption()
 //[360a] FTInclExclStringLiteralList
 //----------------------------------
 FTInclExclStringLiteralList::FTInclExclStringLiteralList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -3702,7 +3734,7 @@ FTInclExclStringLiteralList::~FTInclExclStringLiteralList()
 //[361] FTRefOrList
 //-----------------
 FTRefOrList::FTRefOrList(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _at_str,
 	rchandle<FTStringLiteralList> _stringlit_list_h)
 :
@@ -3722,7 +3754,7 @@ FTRefOrList::~FTRefOrList()
 //[361a] FTStringLiteralList
 //--------------------------
 FTStringLiteralList::FTStringLiteralList(
-	yy::xquery_parser::location_type const& _loc)
+	location const& _loc)
 :
 	parsenode(_loc)
 {
@@ -3738,7 +3770,7 @@ FTStringLiteralList::~FTStringLiteralList()
 //[362] FTInclExclStringLiteral
 //-----------------------------
 FTInclExclStringLiteral::FTInclExclStringLiteral(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTRefOrList> _ref_or_list_h,
 	incl_excl_mode_t _mode)
 :
@@ -3757,7 +3789,7 @@ FTInclExclStringLiteral::~FTInclExclStringLiteral()
 //[363] FTLanguageOption
 //----------------------
 FTLanguageOption::FTLanguageOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	std::string _lang)
 :
 	FTMatchOption(_loc),
@@ -3775,7 +3807,7 @@ FTLanguageOption::~FTLanguageOption()
 //[364] FTWildcardOption
 //----------------------
 FTWildcardOption::FTWildcardOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	bool _with_b)
 :
 	FTMatchOption(_loc),
@@ -3793,7 +3825,7 @@ FTWildcardOption::~FTWildcardOption()
 //[365]	FTContent
 //---------------
 FTContent::FTContent(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	ft_content_mode_t _mode)
 :
 	FTProximity(_loc),
@@ -3811,7 +3843,7 @@ FTContent::~FTContent()
 //[366]	FTAnyallOption
 //--------------------
 FTAnyallOption::FTAnyallOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	ft_anyall_option_t _option)
 :
 	parsenode(_loc),
@@ -3829,7 +3861,7 @@ FTAnyallOption::~FTAnyallOption()
 //[367]	FTRange
 //-------------
 FTRange::FTRange(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<UnionExpr> _src_expr_h,
 	rchandle<UnionExpr> _dst_expr_h)
 :
@@ -3849,7 +3881,7 @@ FTRange::~FTRange()
 //[368]	FTDistance
 //----------------
 FTDistance::FTDistance(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTRange> _dist_h,
 	rchandle<FTUnit> _unit_h)
 :
@@ -3869,7 +3901,7 @@ FTDistance::~FTDistance()
 //[369]	FTWindow
 //--------------
 FTWindow::FTWindow(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<UnionExpr> _window_h,
 	rchandle<FTUnit> _unit_h)
 :
@@ -3889,7 +3921,7 @@ FTWindow::~FTWindow()
 //[370]	FTTimes
 //-------------
 FTTimes::FTTimes(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<FTRange> _range_h)
 :
 	parsenode(_loc),
@@ -3907,7 +3939,7 @@ FTTimes::~FTTimes()
 //[371]	FTScope
 //-------------
 FTScope::FTScope(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	ft_scope_t _scope)
 :
 	FTProximity(_loc),
@@ -3925,7 +3957,7 @@ FTScope::~FTScope()
 //[372]	FTUnit
 //------------
 FTUnit::FTUnit(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	ft_unit_t _unit)
 :
 	parsenode(_loc),
@@ -3943,7 +3975,7 @@ FTUnit::~FTUnit()
 //[373]	FTBigUnit
 //---------------
 FTBigUnit::FTBigUnit(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	enum ft_big_unit_t _unit)
 :
 	parsenode(_loc),
@@ -3961,7 +3993,7 @@ FTBigUnit::~FTBigUnit()
 //[374]	FTIgnoreOption
 //--------------------
 FTIgnoreOption::FTIgnoreOption(
-	yy::xquery_parser::location_type const& _loc,
+	location const& _loc,
 	rchandle<UnionExpr> _union_h)
 :
 	parsenode(_loc),
