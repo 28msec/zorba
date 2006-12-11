@@ -752,22 +752,19 @@ public:
 class FTOptionDecl : public parsenode
 /*______________________________________________________________________
 |
-|	::= DECLARE_FTOPTION  QNAME  FTMatchOption
+|	::= DECLARE_FTOPTION  FTMatchOption
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> qname_h;
 	rchandle<FTMatchOption> match_option_h;
 
 public:
 	FTOptionDecl(
 		yy::location const&,
-		rchandle<QName>,
 		rchandle<FTMatchOption>);
 	~FTOptionDecl();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
 	rchandle<FTMatchOption> get_match_option() const { return match_option_h; }
 
 public:
@@ -3894,7 +3891,8 @@ protected:
 public:
 	DirElemConstructor(
 		yy::location const&,
-		rchandle<QName>,
+		rchandle<QName> start_name_h,
+		rchandle<QName> end_name_h,
 		rchandle<DirAttributeList>,
 		rchandle<DirElemContentList>);
 	~DirElemConstructor();
@@ -4017,7 +4015,9 @@ protected:
 public:
 	DirAttributeValue(
 		yy::location const&,
-		rchandle<QuoteAttrContentList>,
+		rchandle<QuoteAttrContentList>);
+	DirAttributeValue(
+		yy::location const&,
 		rchandle<AposAttrContentList>);
 	~DirAttributeValue();
 
@@ -4114,7 +4114,9 @@ protected:
 public:
 	QuoteAttrValueContent(
 		yy::location const&,
-		std::string quot_atcontent,
+		std::string quot_atcontent);
+	QuoteAttrValueContent(
+		yy::location const&,
 		rchandle<CommonContent>);
 	~QuoteAttrValueContent();
 
@@ -4145,7 +4147,9 @@ protected:
 public:
 	AposAttrValueContent(
 		yy::location const&,
-		std::string apos_atcontent,
+		std::string apos_atcontent);
+	AposAttrValueContent(
+		yy::location const&,
 		rchandle<CommonContent>);
 	~AposAttrValueContent();
 
@@ -4172,16 +4176,35 @@ class DirElemContent : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
+	rchandle<DirectConstructor> direct_cons_h;
 	std::string elem_content;
+	rchandle<CDataSection> cdata_h;
+	rchandle<CommonContent> common_content_h;
 
 public:
 	DirElemContent(
 		yy::location const&,
+		rchandle<DirectConstructor>);
+	DirElemContent(
+		yy::location const&,
 		std::string elem_content);
+	DirElemContent(
+		yy::location const&,
+		rchandle<CDataSection>);
+	DirElemContent(
+		yy::location const&,
+		rchandle<CommonContent>); 
 	~DirElemContent();
 
 public:
-	std::string get_elem_content() const { return elem_content; }
+	rchandle<DirectConstructor> get_direct_cons() const
+		{ return direct_cons_h; }
+	std::string get_elem_content() const
+		{ return elem_content; }
+	rchandle<CDataSection> get_cdata() const
+		{ return cdata_h; }
+	rchandle<CommonContent> get_common_content() const
+		{ return common_content_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -4290,6 +4313,9 @@ protected:
 public:
 	DirPIConstructor(
 		yy::location const&,
+		std::string const& pi_target);
+	DirPIConstructor(
+		yy::location const&,
 		std::string const& pi_target,
 		std::string const& pi_content);
 	~DirPIConstructor();
@@ -4371,7 +4397,7 @@ public:
 
 // [108] CompDocConstructor
 // ------------------------
-class CompDocConstructor : public exprnode
+class CompDocConstructor : public ComputedConstructor
 /*______________________________________________________________________
 |
 |	::= DOCUMENT_LBRACE  Expr  RBRACE
@@ -4398,7 +4424,7 @@ public:
 
 // [109] CompElemConstructor
 // -------------------------
-class CompElemConstructor : public exprnode
+class CompElemConstructor : public ComputedConstructor
 /*______________________________________________________________________
 |
 |	::= ELEMENT_QNAME_LBRACE  RBRACE
@@ -4416,6 +4442,9 @@ public:
 	CompElemConstructor(
 		yy::location const&,
 		rchandle<QName>,
+		rchandle<Expr>);
+	CompElemConstructor(
+		yy::location const&,
 		rchandle<Expr>,
 		rchandle<Expr>);
 	~CompElemConstructor();
@@ -4463,7 +4492,7 @@ public:
 
 // [111] CompAttrConstructor
 // -------------------------
-class CompAttrConstructor : public exprnode
+class CompAttrConstructor : public ComputedConstructor
 /*______________________________________________________________________
 |
 |	::= ATTRIBUTE  QNAME  LBRACE  RBRACE
@@ -4481,6 +4510,9 @@ public:
 	CompAttrConstructor(
 		yy::location const&,
 		rchandle<QName>,
+		rchandle<Expr>);
+	CompAttrConstructor(
+		yy::location const&,
 		rchandle<Expr>,
 		rchandle<Expr>);
 	~CompAttrConstructor();
@@ -4499,7 +4531,7 @@ public:
 
 // [112] CompTextConstructor
 // -------------------------
-class CompTextConstructor : public exprnode
+class CompTextConstructor : public ComputedConstructor
 /*______________________________________________________________________
 |
 |	::= TEXT_LBRACE  Expr  RBRACE
@@ -4526,7 +4558,7 @@ public:
 
 // [113] CompCommentConstructor
 // ----------------------------
-class CompCommentConstructor : public exprnode
+class CompCommentConstructor : public ComputedConstructor
 /*______________________________________________________________________
 |
 |	::= COMMENT_LBRACE  Expr  RBRACE
@@ -4553,7 +4585,7 @@ public:
 
 // [114] CompPIConstructor
 // -----------------------
-class CompPIConstructor : public exprnode
+class CompPIConstructor : public ComputedConstructor
 /*______________________________________________________________________
 |
 |	::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
@@ -4571,6 +4603,9 @@ public:
 	CompPIConstructor(
 		yy::location const&,
 		std::string target,
+		rchandle<Expr>);
+	CompPIConstructor(
+		yy::location const&,
 		rchandle<Expr>,
 		rchandle<Expr>);
 	~CompPIConstructor();
@@ -4654,20 +4689,18 @@ class SequenceType : public parsenode
 protected:
 	rchandle<ItemType> itemtype_h;
 	rchandle<OccurrenceIndicator> occur_h;
-	bool void_b;
 
 public:
 	SequenceType(
 		yy::location const&,
 		rchandle<ItemType>,
-		rchandle<OccurrenceIndicator>,
-		bool void_b);
+		rchandle<OccurrenceIndicator>);
 	~SequenceType();
 
 public:
 	rchandle<ItemType> get_itemtype() const { return itemtype_h; }
 	rchandle<OccurrenceIndicator> get_occur() const { return occur_h; }
-	bool get_void_bit() const { return void_b; }
+	bool get_void_bit() const { return itemtype_h==NULL; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -4717,18 +4750,18 @@ class ItemType : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::string item_test;
+	bool item_test_b;
 
 public:
 	ItemType(
 		yy::location const&,
-		std::string item_test);
+		bool item_test_b);
 	ItemType(
 		yy::location const&);
 	~ItemType();
 
 public:
-	std::string get_item_test() const { return item_test; }
+	bool get_item_test_bit() const { return item_test_b; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -4824,8 +4857,12 @@ protected:
 
 public:
 	DocumentTest(
+		yy::location const&);
+	DocumentTest(
 		yy::location const&,
-		rchandle<ElementTest>,
+		rchandle<ElementTest>);
+	DocumentTest(
+		yy::location const&,
 		rchandle<SchemaElementTest>);
 	~DocumentTest();
 
@@ -4958,8 +4995,7 @@ protected:
 public:
 	AttribNameOrWildcard(
 		yy::location const&,
-		rchandle<AttributeName>,
-		bool star_b);
+		rchandle<AttributeName>);
 	~AttribNameOrWildcard();
 
 public:
@@ -5038,12 +5074,18 @@ class ElementTest : public parsenode
 protected:
 	rchandle<ElementNameOrWildcard> elem_name_or_wildcard_h;
 	rchandle<TypeName> type_name_h;
+	bool optional_b;
 
 public:
 	ElementTest(
 		yy::location const&,
 		rchandle<ElementNameOrWildcard>,
 		rchandle<TypeName>);
+	ElementTest(
+		yy::location const&,
+		rchandle<ElementNameOrWildcard>,
+		rchandle<TypeName>,
+		bool optional_b);
 	~ElementTest();
 
 public:
@@ -5051,6 +5093,8 @@ public:
 		{ return elem_name_or_wildcard_h; }
 	rchandle<TypeName> get_type_name() const
 		{ return type_name_h; }
+	bool get_optional_bit() const
+		{ return optional_b; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5073,8 +5117,7 @@ protected:
 public:
 	ElementNameOrWildcard(
 		yy::location const&,
-		rchandle<ElementName>,
-		bool star_b);
+		rchandle<ElementName>);
 	~ElementNameOrWildcard();
 
 public:
@@ -5219,12 +5262,43 @@ public:
 
 /* lexical rules, see xquery.l */
 /* --------------------------- */
-
 // [138] IntegerLiteral
 // [139] DecimalLiteral
 // [140] DoubleLiteral
 // [141] URILiteral 
+
+
+
+
 // [142] StringLiteral
+// -------------------
+class StringLiteral : public Literal
+/*______________________________________________________________________
+|
+|	::= STRING_LITERAL
+|_______________________________________________________________________*/
+{
+protected:
+	std::string strval;
+
+public:
+	StringLiteral(
+		yy::location const&,
+		std::string const&);
+	~StringLiteral();
+
+public:
+	std::string get_strval() const { return strval; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
+};
+
+
+
+/* lexical rules, see xquery.l */
+/* --------------------------- */
 // [143] PITarget
 // [144] VarName
 // [145] ValidationMode

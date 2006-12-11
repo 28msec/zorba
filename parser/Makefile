@@ -24,7 +24,7 @@ symtab : symbol_table.h symbol_table.cpp
 parsenodes : parsenodes.h parsenodes.cpp
 	g++ -c ${OPT} -o parsenodes.${SUFX} parsenodes.cpp
 
-test : xquery_test.cpp
+test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
 	g++ ${OPT} -o xquery_test \
 		parsenodes.do \
 		xquery_scanner.do \
@@ -33,6 +33,7 @@ test : xquery_test.cpp
 		../util/file.do \
 		../util/mmfile.do \
 		../util/fxcharheap.do \
+		../util/URI.do \
 		symbol_table.do \
 		xquery_driver.do \
 		xquery_test.cpp

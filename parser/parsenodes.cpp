@@ -448,11 +448,9 @@ ostream& OptionDecl::put(ostream& s) const
 // ------------------
 FTOptionDecl::FTOptionDecl(
   yy::location const& _loc,
-  rchandle<QName> _qname_h,
   rchandle<FTMatchOption> _match_option_h)
 :
   parsenode(_loc),
-  qname_h(_qname_h),
  	match_option_h(_match_option_h)
 {
 }
@@ -1568,10 +1566,23 @@ ostream& QVarInDeclList::put(ostream& s) const
 QVarInDecl::QVarInDecl(
 	location const& _loc,
 	std::string _name,
+	rchandle<ExprSingle> _val_h)
+:
+	parsenode(_loc),
+	name(_name),
+	typedecl_h(NULL),
+	val_h(_val_h)
+{
+}
+
+QVarInDecl::QVarInDecl(
+	location const& _loc,
+	std::string _name,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<ExprSingle> _val_h)
 :
 	parsenode(_loc),
+	name(_name),
 	typedecl_h(_typedecl_h),
 	val_h(_val_h)
 {
@@ -2574,8 +2585,8 @@ AbbrevForwardStep::AbbrevForwardStep(
 	bool _attr_b)
 :
 	parsenode(_loc),
-	node_test_h(node_test_h),
-	attr_b(attr_b)
+	node_test_h(_node_test_h),
+	attr_b(_attr_b)
 {
 }
 
@@ -2584,7 +2595,7 @@ AbbrevForwardStep::AbbrevForwardStep(
 	rchandle<NodeTest> _node_test_h)
 :
 	parsenode(_loc),
-	node_test_h(node_test_h),
+	node_test_h(_node_test_h),
 	attr_b(false)
 {
 }
@@ -3165,15 +3176,17 @@ ostream& DirectConstructor::put(ostream& s) const
 
 DirElemConstructor::DirElemConstructor(
 	location const& _loc,
-	rchandle<QName> _elem_name_h,
+	rchandle<QName> _open_name_h,
+	rchandle<QName> _close_name_h,
 	rchandle<DirAttributeList> _attr_list_h,
 	rchandle<DirElemContentList> _dir_content_list_h)
 :
 	DirectConstructor(_loc),
-	elem_name_h(_elem_name_h),
+	elem_name_h(_open_name_h),
 	attr_list_h(_attr_list_h),
 	dir_content_list_h(_dir_content_list_h)
 {
+	// assert: open_name == close_name
 }
 
 DirElemConstructor::~DirElemConstructor()
@@ -3270,11 +3283,20 @@ ostream& DirAttr::put(ostream& s) const
 // ----------------------
 DirAttributeValue::DirAttributeValue(
 	location const& _loc,
-	rchandle<QuoteAttrContentList> _quot_attr_content_h,
-	rchandle<AposAttrContentList> _apos_attr_content_h)
+	rchandle<QuoteAttrContentList> _quot_attr_content_h)
 :
 	parsenode(_loc),
 	quot_attr_content_h(_quot_attr_content_h),
+	apos_attr_content_h(NULL)
+{
+}
+
+DirAttributeValue::DirAttributeValue(
+	location const& _loc,
+	rchandle<AposAttrContentList> _apos_attr_content_h)
+:
+	parsenode(_loc),
+	quot_attr_content_h(NULL),
 	apos_attr_content_h(_apos_attr_content_h)
 {
 }
@@ -3346,11 +3368,20 @@ ostream& AposAttrContentList::put(ostream& s) const
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
 	location const& _loc,
-	std::string _quot_atcontent,
-	rchandle<CommonContent> _common_content_h)
+	std::string _quot_atcontent)
 :
 	parsenode(_loc),
 	quot_atcontent(_quot_atcontent),
+	common_content_h(NULL)
+{
+}
+
+QuoteAttrValueContent::QuoteAttrValueContent(
+	location const& _loc,
+	rchandle<CommonContent> _common_content_h)
+:
+	parsenode(_loc),
+	quot_atcontent(""),
 	common_content_h(_common_content_h)
 {
 }
@@ -3374,11 +3405,20 @@ ostream& QuoteAttrValueContent::put(ostream& s) const
 // -------------------------
 AposAttrValueContent::AposAttrValueContent(
 	location const& _loc,
-	std::string _apos_atcontent,
-	rchandle<CommonContent> _common_content_h)
+	std::string _apos_atcontent)
 :
 	parsenode(_loc),
 	apos_atcontent(_apos_atcontent),
+	common_content_h(NULL)
+{
+}
+
+AposAttrValueContent::AposAttrValueContent(
+	location const& _loc,
+	rchandle<CommonContent> _common_content_h)
+:
+	parsenode(_loc),
+	apos_atcontent(""),
 	common_content_h(_common_content_h)
 {
 }
@@ -3402,10 +3442,37 @@ ostream& AposAttrValueContent::put(ostream& s) const
 // -------------------
 DirElemContent::DirElemContent(
 	location const& _loc,
+	rchandle<DirectConstructor> _direct_cons_h)
+:
+	exprnode(_loc),
+	direct_cons_h(_direct_cons_h)
+{
+}
+
+DirElemContent::DirElemContent(
+	location const& _loc,
 	std::string _elem_content)
 :
 	exprnode(_loc),
 	elem_content(_elem_content)
+{
+}
+
+DirElemContent::DirElemContent(
+	location const& _loc,
+	rchandle<CDataSection> _cdata_h)
+:
+	exprnode(_loc),
+	cdata_h(_cdata_h)
+{
+}
+
+DirElemContent::DirElemContent(
+	location const& _loc,
+	rchandle<CommonContent> _common_content_h)
+:
+	exprnode(_loc),
+	common_content_h(_common_content_h)
 {
 }
 
@@ -3509,6 +3576,15 @@ ostream& DirCommentConstructor::put(ostream& s) const
 
 // [103] DirPIConstructor
 // ----------------------
+DirPIConstructor::DirPIConstructor(
+	location const& _loc,
+	std::string const& _pi_target)
+:
+	DirectConstructor(_loc),
+	pi_target(_pi_target),
+	pi_content("")
+{
+}
 
 DirPIConstructor::DirPIConstructor(
 	location const& _loc,
@@ -3604,7 +3680,7 @@ CompDocConstructor::CompDocConstructor(
 	location const& _loc,
 	rchandle<Expr> _expr_h)
 :
-	exprnode(_loc),
+	ComputedConstructor(_loc),
 	expr_h(_expr_h)
 {
 }
@@ -3629,11 +3705,22 @@ ostream& CompDocConstructor::put(ostream& s) const
 CompElemConstructor::CompElemConstructor(
 	location const& _loc,
 	rchandle<QName> _qname_h,
+	rchandle<Expr> _content_expr_h)
+:
+	ComputedConstructor(_loc),
+	qname_h(_qname_h),
+	qname_expr_h(NULL),
+	content_expr_h(_content_expr_h)
+{
+}
+
+CompElemConstructor::CompElemConstructor(
+	location const& _loc,
 	rchandle<Expr> _qname_expr_h,
 	rchandle<Expr> _content_expr_h)
 :
-	exprnode(_loc),
-	qname_h(_qname_h),
+	ComputedConstructor(_loc),
+	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	content_expr_h(_content_expr_h)
 {
@@ -3687,11 +3774,22 @@ ostream& ContentExpr::put(ostream& s) const
 CompAttrConstructor::CompAttrConstructor(
 	location const& _loc,
 	rchandle<QName> _qname_h,
+	rchandle<Expr> _val_expr_h)
+:
+	ComputedConstructor(_loc),
+	qname_h(_qname_h),
+	qname_expr_h(NULL),
+	val_expr_h(_val_expr_h)
+{
+}
+
+CompAttrConstructor::CompAttrConstructor(
+	location const& _loc,
 	rchandle<Expr> _qname_expr_h,
 	rchandle<Expr> _val_expr_h)
 :
-	exprnode(_loc),
-	qname_h(_qname_h),
+	ComputedConstructor(_loc),
+	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	val_expr_h(_val_expr_h)
 {
@@ -3718,7 +3816,7 @@ CompTextConstructor::CompTextConstructor(
 	location const& _loc,
 	rchandle<Expr> _text_expr_h)
 :
-	exprnode(_loc),
+	ComputedConstructor(_loc),
 	text_expr_h(_text_expr_h)
 {
 }
@@ -3744,7 +3842,7 @@ CompCommentConstructor::CompCommentConstructor(
 	location const& _loc,
 	rchandle<Expr> _comment_expr_h)
 :
-	exprnode(_loc),
+	ComputedConstructor(_loc),
 	comment_expr_h(_comment_expr_h)
 {
 }
@@ -3769,11 +3867,22 @@ ostream& CompCommentConstructor::put(ostream& s) const
 CompPIConstructor::CompPIConstructor(
 	location const& _loc,
 	std::string _target,
+	rchandle<Expr> _content_expr_h)
+:
+	ComputedConstructor(_loc),
+	target(_target),
+	target_expr_h(NULL),
+	content_expr_h(_content_expr_h)
+{
+}
+
+CompPIConstructor::CompPIConstructor(
+	location const& _loc,
 	rchandle<Expr> _target_expr_h,
 	rchandle<Expr> _content_expr_h)
 :
-	exprnode(_loc),
-	target(_target),
+	ComputedConstructor(_loc),
+	target(""),
 	target_expr_h(_target_expr_h),
 	content_expr_h(_content_expr_h)
 {
@@ -3850,13 +3959,11 @@ ostream& TypeDeclaration::put(ostream& s) const
 SequenceType::SequenceType(
 	location const& _loc,
 	rchandle<ItemType> _itemtype_h,
-	rchandle<OccurrenceIndicator> _occur_h,
-	bool _void_b)
+	rchandle<OccurrenceIndicator> _occur_h)
 :
 	parsenode(_loc),
 	itemtype_h(_itemtype_h),
-	occur_h(_occur_h),
-	void_b(_void_b)
+	occur_h(_occur_h)
 {
 }
 
@@ -3903,10 +4010,18 @@ ostream& OccurrenceIndicator::put(ostream& s) const
 // --------------
 ItemType::ItemType(
 	location const& _loc,
-	std::string _item_test)
+	bool _item_test_b)
 :
 	parsenode(_loc),
-	item_test(_item_test)
+	item_test_b(_item_test_b)
+{
+}
+
+ItemType::ItemType(
+	location const& _loc)
+:
+	parsenode(_loc),
+	item_test_b(false)
 {
 }
 
@@ -3998,12 +4113,30 @@ ostream& AnyKindTest::put(ostream& s) const
 // [123] DocumentTest
 // ------------------
 DocumentTest::DocumentTest(
+	location const& _loc)
+:
+	KindTest(_loc),
+	elem_test_h(NULL),
+	schema_elem_test_h(NULL)
+{
+}
+
+DocumentTest::DocumentTest(
 	location const& _loc,
-	rchandle<ElementTest> _elem_test_h,
-	rchandle<SchemaElementTest> _schema_elem_test_h)
+	rchandle<ElementTest> _elem_test_h)
 :
 	KindTest(_loc),
 	elem_test_h(_elem_test_h),
+	schema_elem_test_h(NULL)
+{
+}
+
+DocumentTest::DocumentTest(
+	location const& _loc,
+	rchandle<SchemaElementTest> _schema_elem_test_h)
+:
+	KindTest(_loc),
+	elem_test_h(NULL),
 	schema_elem_test_h(_schema_elem_test_h)
 {
 }
@@ -4126,12 +4259,11 @@ ostream& AttributeTest::put(ostream& s) const
 // --------------------------
 AttribNameOrWildcard::AttribNameOrWildcard(
 	location const& _loc,
-	rchandle<AttributeName> _attr_name_h,
-	bool _star_b)
+	rchandle<AttributeName> _attr_name_h)
 :
 	parsenode(_loc),
 	attr_name_h(_attr_name_h),
-	star_b(_star_b)
+	star_b(_attr_name_h==NULL)
 {
 }
 
@@ -4208,7 +4340,21 @@ ElementTest::ElementTest(
 :
 	parsenode(_loc),
 	elem_name_or_wildcard_h(_elem_name_or_wildcard_h),
-	type_name_h(_type_name_h)
+	type_name_h(_type_name_h),
+	optional_b(false)
+{
+}
+
+ElementTest::ElementTest(
+	location const& _loc,
+	rchandle<ElementNameOrWildcard> _elem_name_or_wildcard_h,
+	rchandle<TypeName> _type_name_h,
+	bool _optional_b)
+:
+	parsenode(_loc),
+	elem_name_or_wildcard_h(_elem_name_or_wildcard_h),
+	type_name_h(_type_name_h),
+	optional_b(_optional_b)
 {
 }
 
@@ -4230,12 +4376,11 @@ ostream& ElementTest::put(ostream& s) const
 // ---------------------------
 ElementNameOrWildcard::ElementNameOrWildcard(
 	location const& _loc,
-	rchandle<ElementName> _elem_name_h,
-	bool _star_b)
+	rchandle<ElementName> _elem_name_h)
 :
 	parsenode(_loc),
 	elem_name_h(_elem_name_h),
-	star_b(_star_b)
+	star_b(_elem_name_h==NULL)
 {
 }
 
@@ -4380,12 +4525,41 @@ ostream& TypeName::put(ostream& s) const
 
 /* lexical rules, see xquery.l */
 /* --------------------------- */
-
 // [138] IntegerLiteral
 // [139] DecimalLiteral
 // [140] DoubleLiteral
 // [141] URILiteral 
+
+
+
+
+
 // [142] StringLiteral
+// -------------------
+StringLiteral::StringLiteral(
+	yy::location const& _loc,
+	string const& _strval)
+:
+	Literal(_loc),
+	strval(_strval)
+{
+}
+
+StringLiteral::~StringLiteral()
+{
+}
+
+ostream& StringLiteral::put(ostream& s) const
+{
+}
+
+//-StringLiteral::
+
+
+
+
+/* lexical rules, see xquery.l */
+/* --------------------------- */
 // [143] PITarget
 // [144] VarName
 // [145] ValidationMode

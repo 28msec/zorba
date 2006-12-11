@@ -1672,7 +1672,6 @@ typedef yy::xquery_parser::token token;
 	return token::SEMI;
 }
 
-
 	/* maintain NAMESPACEDECL */
 	/* ---------------------- */
 {URILiteral} {
@@ -1684,9 +1683,8 @@ typedef yy::xquery_parser::token token;
 	return token::COMMA;
 }
 
-"at"{SP}{URILiteral} {
-	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3);
-	return token::AT_URI_LITERAL;
+"at" {
+	return token::AT;
 }
 
 "=" {
