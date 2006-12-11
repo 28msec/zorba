@@ -143,7 +143,7 @@ public:
 	var_binding(
 		rchandle<QName>,
 		static_type_t);
-	~var_binding();
+	~var_binding() {}
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
