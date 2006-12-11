@@ -44,8 +44,19 @@ public:
 
 public:
 	yy::location get_location() const { return loc; }
+	virtual std::ostream& put(std::ostream&) const = 0;
 
 };
+
+/*
+**	See Section 21.2.3.1 in
+**	"The C++ Programming Language", by B. Stroustrup (1997) AT&T
+**
+*/
+std::ostream& operator<<(std::ostream& s, parsenode const& r)
+{
+	return r.put(s);
+}
 
 
 /*
@@ -63,8 +74,15 @@ public:
 
 public:
 	yy::location get_location() const { return loc; }
+	virtual std::ostream& put(std::ostream&) const = 0;
 
 };
+
+std::ostream& operator<<(std::ostream& s, exprnode const& r)
+{
+	return r.put(s);
+}
+
 
 
 class AbbrevForwardStep;
@@ -297,6 +315,9 @@ public:	//manipulators
 	//rchandle<dynamic_context> get_dynamic_context() const
 	//	{	return dynamic_context_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -324,6 +345,9 @@ public:
 public:
 	std::string get_version() const { return version; }
 	std::string get_encoding() const { return encoding; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -355,6 +379,9 @@ public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
 	rchandle<QueryBody> get_query_body() const { return query_body_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -381,6 +408,9 @@ public:
 public:
 	rchandle<ModuleDecl> get_decl() const { return decl_h; }
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -409,6 +439,9 @@ public:
 	std::string get_prefix() const { return prefix; }
 	std::string get_target_namespace() const { return target_namespace; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -436,6 +469,9 @@ public:
 	rchandle<SIND_DeclList> get_sind_list() const { return sind_list_h; }
 	rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -459,6 +495,9 @@ public:
 public:
 	void push_back(rchandle<SIND_Decl> sind_h) { sind_hv.push_back(sind_h); }
 	rchandle<SIND_Decl> operator[](int k) const { return sind_hv[k]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -484,6 +523,9 @@ public:
 	void push_back(rchandle<VFO_Decl> vfo_h) { vfo_hv.push_back(vfo_h); }
 	rchandle<VFO_Decl> operator[](int k) const { return vfo_hv[k]; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -501,6 +543,9 @@ public:
 		yy::location const&);
 	~SIND_Decl();
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -517,6 +562,9 @@ public:
 	VFO_Decl(
 		yy::location const&);
 	~VFO_Decl();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -541,6 +589,9 @@ public:
 		yy::location const&);
 	~Setter();
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -557,6 +608,9 @@ public:
 	Import(
 		yy::location const&);
 	~Import();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -591,6 +645,9 @@ public:
 	std::string get_prefix() const { return prefix; }
 	std::string get_uri() const { return uri; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -615,6 +672,9 @@ public:
 public:
 	static_context::boundary_space_mode_t
 		get_boundary_space_mode() const { return mode; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -649,6 +709,9 @@ public:
 	enum default_namespace_mode_t get_mode() const { return mode; }
 	std::string get_default_namespace() const { return default_namespace; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -675,6 +738,9 @@ public:
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
 	std::string get_val() const { return val; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -704,6 +770,9 @@ public:
 	rchandle<QName> get_qname() const { return qname_h; }
 	rchandle<FTMatchOption> get_match_option() const { return match_option_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -727,6 +796,9 @@ public:
 	
 public:
 	static_context::ordering_mode_t get_mode() const { return mode; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -752,6 +824,9 @@ public:
 	
 public:
 	static_context::order_empty_mode_t get_mode() const { return mode; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -780,6 +855,9 @@ public:
 	rchandle<PreserveMode> get_preserve() const { return preserve_h; }
 	rchandle<InheritMode> get_inherit() const { return inherit_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -804,6 +882,9 @@ public:
 public:
 	static_context::copy_ns_mode_t
 		get_preserve_mode() const { return preserve_mode; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -830,6 +911,9 @@ public:
 	static_context::copy_ns_mode_t
 		get_inherit_mode() const { return inherit_mode; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -854,6 +938,9 @@ public:
 public:
 	std::string get_collation() const { return collation; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -877,6 +964,9 @@ public:
 
 public:
 	std::string get_base_uri() const { return base_uri; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -910,6 +1000,10 @@ public:
 	rchandle<SchemaPrefix> get_prefix() const { return prefix_h; }
 	std::string get_uri() const { return uri; }
 	rchandle<URILiteralList> get_at_list() const { return at_list_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -934,6 +1028,9 @@ public:
 public:
 	void push_back(std::string const& uri) { uri_v.push_back(uri); }
 	std::string operator[](int i) const { return uri_v[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -964,6 +1061,9 @@ public:
 public:
 	std::string get_prefix() const { return prefix; }
 	bool get_default_bit() const { return default_b; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1002,6 +1102,9 @@ public:
 	std::string get_uri() const { return uri; }
 	rchandle<URILiteralList> get_uri_list() const { return uri_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1036,6 +1139,9 @@ public:
 	rchandle<ExprSingle> get_initexpr() const { return initexpr_h; }
 	bool is_extern() const { return initexpr_h==NULL; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1060,6 +1166,9 @@ public:
 
 public:
 	enum static_context::construction_mode_t get_mode() const { mode; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1114,6 +1223,9 @@ public:
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
 	enum function_type_t get_type() const { return type; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1138,6 +1250,9 @@ public:
 public:
 	void push_back(rchandle<Param> param_h) { param_hv.push_back(param_h); }
 	rchandle<Param> operator[](int i) const { return param_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1167,6 +1282,9 @@ public:
 	std::string get_name() const { return name; }
 	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1191,6 +1309,9 @@ public:
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
 	
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1216,6 +1337,9 @@ public:
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
 	
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1241,6 +1365,9 @@ public:
 	void push_back(rchandle<ExprSingle> expr_h) { expr_hv.push_back(expr_h); }
 	rchandle<ExprSingle> operator[](int i) const { return expr_hv[i]; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1261,6 +1388,9 @@ public:
 	ExprSingle(
 		yy::location const&);
 	~ExprSingle();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1297,6 +1427,9 @@ public:
 	rchandle<OrderByClause> get_orderby() const { return orderby_h; }
 	rchandle<ExprSingle> get_return_val() const { return return_val_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1322,6 +1455,9 @@ public:
 	void push_back(rchandle<ForLetClause> forlet_h) { forlet_hv.push_back(forlet_h); }
 	rchandle<ForLetClause> operator[](int i) const { return forlet_hv[i]; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1338,6 +1474,9 @@ public:
 	ForLetClause(
 		yy::location const&);
 	~ForLetClause();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1363,6 +1502,9 @@ public:
 public:
 	rchandle<VarInDeclList> get_vardecl_list() const { return vardecl_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1387,6 +1529,9 @@ public:
 public:
 	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
 	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1432,6 +1577,9 @@ public:
 	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
 	rchandle<ExprSingle> get_valexpr() const { return valexpr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1455,6 +1603,10 @@ public:
 
 public:
 	std::string get_varname() const { return varname; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1480,6 +1632,9 @@ public:
 public:
 	rchandle<VarGetsDeclList> get_vardecl_list() const { return vardecl_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1504,6 +1659,9 @@ public:
 public:
 	void push_back(rchandle<VarGetsDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
 	rchandle<VarGetsDecl> operator[](int i) const { return vardecl_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1541,6 +1699,10 @@ public:
 	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 	rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
 	rchandle<ExprSingle> get_valexpr() const { return valexpr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1565,6 +1727,9 @@ public:
 public:
 	std::string get_varname() const { return varname; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1588,6 +1753,10 @@ public:
 
 public:
 	rchandle<ExprSingle> get_predicate() const { return predicate_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1618,6 +1787,10 @@ public:
 public:
 	rchandle<OrderSpecList> get_spec_list() const { return spec_list_h; }
 	bool get_stable_bit() const { return stable_b; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1642,6 +1815,9 @@ public:
 public:
 	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
 	rchandle<OrderSpec> operator[](int i) const { return spec_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1670,6 +1846,9 @@ public:
 public:
 	rchandle<ExprSingle> get_spec() const { return spec_h; }
 	rchandle<OrderModifier> get_modifier() const { return modifier_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1710,6 +1889,9 @@ public:
 	rchandle<OrderCollationSpec> get_collation_spec() const
 		{ return collation_spec_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1741,6 +1923,9 @@ public:
 public:
 	enum dir_spec_t get_dir_spec() const { return dir_spec; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1766,6 +1951,10 @@ public:
 public:
 	static_context::order_empty_mode_t get_empty_order_spec() const
 		{ return empty_order_spec; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1789,6 +1978,9 @@ public:
 
 public:
 	std::string get_uri() const { return uri; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1826,6 +2018,9 @@ public:
 	rchandle<QVarInDeclList> get_decl_list() const { return decl_list_h; }
 	rchandle<ExprSingle> get_expr() const { return expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1849,6 +2044,9 @@ public:
 public:
 	void push_back(rchandle<QVarInDecl> decl_h) { qvar_decl_hv.push_back(decl_h); }
 	rchandle<QVarInDecl> operator[](int i) const { return qvar_decl_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1883,6 +2081,9 @@ public:
 	std::string get_name() const { return name; }
 	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 	rchandle<ExprSingle> get_val() const { return val_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1923,6 +2124,9 @@ public:
 	std::string get_default_varname() const { return default_varname; }
 	rchandle<ExprSingle> get_default_clause() const { return default_clause_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -1946,6 +2150,9 @@ public:
 public:
 	void push_back(rchandle<CaseClause> clause_h) { clause_hv.push_back(clause_h); }
 	rchandle<CaseClause> operator[](int i) const { return clause_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1981,6 +2188,9 @@ public:
 	rchandle<SequenceType> get_type() const { return type_h; }
 	rchandle<ExprSingle> get_val() const { return val_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2010,6 +2220,9 @@ public:
 	rchandle<ExprSingle> get_then_expr() const { return then_expr_h; }
 	rchandle<ExprSingle> get_else_expr() const { return else_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2037,6 +2250,9 @@ public:
 	rchandle<OrExpr> get_or_expr() const { return or_expr_h; }
 	rchandle<AndExpr> get_and_expr() const { return and_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2063,6 +2279,9 @@ public:
 public:
 	rchandle<AndExpr> get_and_expr() const { return and_expr_h; }
 	rchandle<ComparisonExpr> get_comp_expr() const { return comp_expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2110,6 +2329,9 @@ public:
 	rchandle<GeneralComp> get_gencomp() const { return gencomp_h; }
 	rchandle<NodeComp> get_nodecomp() const { return nodecomp_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2141,6 +2363,9 @@ public:
 	rchandle<FTSelection> get_ftselect() const { return ftselect_h; }
 	rchandle<FTIgnoreOption> get_ftignore() const { return ftignore_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2168,6 +2393,9 @@ public:
 public:
 	rchandle<AdditiveExpr> get_from_expr() const { return from_expr_h; }
 	rchandle<AdditiveExpr> get_to_expr() const { return to_expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2206,6 +2434,9 @@ public:
 	add_op_t get_add_op() const { return add_op; }
 	rchandle<AdditiveExpr> get_add_expr() const { return add_expr_h; }
 	rchandle<MultiplicativeExpr> get_mult_expr() const { return mult_expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2249,6 +2480,9 @@ public:
 	rchandle<UnionExpr> get_union_expr() const { return union_expr_h; }
 	enum mult_op_t get_mult_op() const { return mult_op; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2277,6 +2511,9 @@ public:
 public:
 	rchandle<UnionExpr> union_expr() const { return union_expr_h; }
 	rchandle<IntersectExceptExpr> intex_expr() const { return intex_expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2316,6 +2553,9 @@ public:
 	enum intex_op_t get_intex_op() const { return intex_op; }
 	rchandle<InstanceofExpr> get_instof_expr() const { return instof_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2343,6 +2583,9 @@ public:
 public:
 	rchandle<TreatExpr> get_treat_expr() const { return treat_expr_h; }
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2372,6 +2615,9 @@ public:
 	rchandle<CastableExpr> get_castable_expr() const { return castable_expr_h; }
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2399,6 +2645,9 @@ public:
 public:
 	rchandle<CastExpr> cast_expr() const { return cast_expr_h; }
 	rchandle<SingleType> singletype() const { return singletype_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2428,6 +2677,9 @@ public:
 	rchandle<UnaryExpr> get_unary_expr() const { return unary_expr_h; }
 	rchandle<SingleType> get_singletype() const { return singletype_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2455,6 +2707,9 @@ public:
 public:
 	rchandle<ValueExpr> get_value_expr() const { return value_expr_h; }
 	rchandle<SignList> get_signlist() const { return signlist_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2484,6 +2739,9 @@ public:
 	bool get_sign() const { return sign; }
 	void negate() { sign = !sign; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2501,6 +2759,9 @@ public:
 	ValueExpr(
 		yy::location const&);
 	~ValueExpr();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2537,6 +2798,9 @@ public:
 public:
 	enum gencomp_t get_type() const { return type; }
 	
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2572,6 +2836,9 @@ public:
 public:
 	enum valcomp_t get_type() const { return type; }
 	
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2604,6 +2871,9 @@ public:
 public:
 	enum nodecomp_t get_type() const { return type; }
 	
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2638,6 +2908,9 @@ public:
 	rchandle<Expr> get_expr() const { return expr_h; }
 	validation_mode_t get_valmode() const { return valmode; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2666,6 +2939,9 @@ public:
 	rchandle<PragmaList> get_pragma_list() const { return pragma_list_h; }
 	rchandle<Expr> get_expr() const { return expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2689,6 +2965,9 @@ public:
 public:
 	void push_back(rchandle<Pragma> pragma_h) { pragma_hv.push_back(pragma_h); }
 	rchandle<Pragma> operator[](int i) const { return pragma_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2716,6 +2995,9 @@ public:
 public:
 	rchandle<QName> get_name() const { return name; }
 	std::string get_pragma_lit() const { return pragma_lit; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2781,6 +3063,9 @@ public:
 	enum pathtype_t get_type() const { return type; }
 	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2820,6 +3105,9 @@ public:
 	rchandle<StepExpr> get_step_expr() const { return step_expr_h; }
 	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2837,6 +3125,9 @@ public:
 	StepExpr(
 		yy::location const&);
 	~StepExpr();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2874,6 +3165,9 @@ public:
 	rchandle<ReverseStep> get_reverse_step() const { return reverse_step_h; }
 	rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2906,6 +3200,9 @@ public:
 	rchandle<ForwardAxis> get_forward_axis() const { return forward_axis_h; }
 	rchandle<NodeTest> get_node_test() const { return node_test_h; }
 	rchandle<AbbrevForwardStep> get_abbrev_step() const { return abbrev_step_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -2948,6 +3245,9 @@ public:
 public:
 	enum forward_axis_t get_axis() const { return axis; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -2979,6 +3279,9 @@ public:
 	rchandle<NodeTest> get_node_test() const { return node_test_h; }
 	bool get_attr_bit() const { return attr_b; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3006,6 +3309,9 @@ public:
 public:
 	rchandle<ReverseAxis> get_axis() const { return axis_h; }
 	rchandle<NodeTest> get_node_test() const { return node_test_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3044,6 +3350,9 @@ public:
 public:
 	enum reverse_axis_t get_axis() const { return axis; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3066,6 +3375,9 @@ public:
 	NodeTest(
 		yy::location const&);
 	~NodeTest();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
  
@@ -3095,6 +3407,9 @@ public:
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
 	rchandle<Wildcard> get_wild() const { return wild_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3139,6 +3454,9 @@ public:
 	std::string get_prefix() const { return prefix; }
 	rchandle<QName> get_qname() const { return qname_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3167,6 +3485,9 @@ public:
 	rchandle<PrimaryExpr> get_primary() const { return primary_h; }
 	rchandle<PredicateList> get_pred_list() const { return pred_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3192,6 +3513,9 @@ public:
 	void push_back(rchandle<Predicate> pred_h) { pred_hv.push_back(pred_h); }
 	rchandle<Predicate> operator[](int i) { return pred_hv[i]; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3215,6 +3539,9 @@ public:
 
 public:
 	rchandle<Expr> get_pred() const { return pred_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3240,6 +3567,9 @@ public:
 		yy::location const&);
 	~PrimaryExpr();
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3256,6 +3586,9 @@ public:
 	Literal(
 		yy::location const&);
 	~Literal();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3305,6 +3638,9 @@ public:
 	decimal get_decimal() const { return decval; }
 	double get_double() const { return dval; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3328,6 +3664,9 @@ public:
 
 public:
 	std::string get_varname() const { return varname; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3354,6 +3693,9 @@ public:
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };	
 
 
@@ -3370,6 +3712,9 @@ public:
 	ContextItemExpr(
 		yy::location const&);
 	~ContextItemExpr();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };	
 
@@ -3395,6 +3740,9 @@ public:
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3418,6 +3766,9 @@ public:
 
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3448,6 +3799,9 @@ public:
 	rchandle<QName> get_fname() const { return fname_h; }
 	rchandle<ArgList> get_arg_list() const { return arg_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3472,6 +3826,9 @@ public:
 	void push_back(rchandle<ExprSingle> arg_h) { arg_hv.push_back(arg_h); }
 	rchandle<ExprSingle> operator[](int i) const { return arg_hv[i]; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3488,6 +3845,9 @@ public:
 	Constructor(
 		yy::location const&);
 	~Constructor();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3507,6 +3867,9 @@ public:
 	DirectConstructor(
 		yy::location const&);
 	~DirectConstructor();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3541,6 +3904,9 @@ public:
 	rchandle<DirAttributeList> get_attr_list() const { return attr_list_h; }
 	rchandle<DirElemContentList> get_dir_content_list() const { return dir_content_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3567,6 +3933,9 @@ public:
 		{ dir_content_hv.push_back(dir_content_h); }
 	rchandle<DirElemContent> operator[](int i) const
 		{ return dir_content_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3595,6 +3964,9 @@ public:
 	rchandle<DirAttr> operator[](int i)
 		{ return dir_attr_hv[i]; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3621,6 +3993,9 @@ public:
 public:
 	rchandle<QName> get_atname() const { return atname_h; }
 	rchandle<DirAttributeValue> get_dir_atval() const { return dir_atval_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3652,6 +4027,9 @@ public:
 	rchandle<AposAttrContentList> get_apos_attr_content() const
 		{ return apos_attr_content_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3680,6 +4058,9 @@ public:
 		{ quot_atval_content_hv.push_back(quot_atval_content_h); }
 	rchandle<QuoteAttrValueContent> operator[](int i) const
 		{ return quot_atval_content_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3710,6 +4091,9 @@ public:
 	rchandle<AposAttrValueContent> operator[](int i) const
 		{ return apos_atval_content_hv[i]; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3737,6 +4121,9 @@ public:
 public:
 	std::string get_quot_atcontent() const { return quot_atcontent; }
 	rchandle<CommonContent> get_common_content() const { return common_content_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3766,6 +4153,9 @@ public:
 	std::string get_apos_atcontent() const { return apos_atcontent; }
 	rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3792,6 +4182,9 @@ public:
 
 public:
 	std::string get_elem_content() const { return elem_content; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3841,6 +4234,9 @@ public:
 	std::string get_ref() const { return ref; }
 	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3864,6 +4260,9 @@ public:
 
 public:
 	std::string get_comment() const { return comment; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -3899,6 +4298,9 @@ public:
 	std::string get_pi_target() const { return pi_target; }
 	std::string get_pi_content() const { return pi_content; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3929,6 +4331,9 @@ public:
 public:
 	std::string get_cdata_content() const { return cdata_content; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3957,6 +4362,9 @@ public:
 		yy::location const&);
 	~ComputedConstructor();
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -3980,6 +4388,9 @@ public:
 
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4014,6 +4425,9 @@ public:
 	rchandle<Expr> get_qname_expr() const { return qname_expr_h; }
 	rchandle<Expr> get_content_expr() const { return content_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4038,6 +4452,9 @@ public:
 
 public:
 	rchandle<Expr> get_expr() const { return expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 */
@@ -4073,6 +4490,9 @@ public:
 	rchandle<Expr> get_qname_expr() const { return qname_expr_h; }
 	rchandle<Expr> get_val_expr() const { return val_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4097,6 +4517,9 @@ public:
 public:
 	rchandle<Expr> get_text_expr() const { return text_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4120,6 +4543,9 @@ public:
 
 public:
 	rchandle<Expr> get_comment_expr() const { return comment_expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4154,6 +4580,9 @@ public:
 	rchandle<Expr> get_target_expr() const { return target_expr_h; }
 	rchandle<Expr> get_content_expr() const { return content_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4180,6 +4609,9 @@ public:
 	rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
 	bool get_hook_bit() const { return hook_b; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4202,6 +4634,9 @@ public:
 
 public:
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4234,6 +4669,9 @@ public:
 	rchandle<OccurrenceIndicator> get_occur() const { return occur_h; }
 	bool get_void_bit() const { return void_b; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4264,6 +4702,9 @@ public:
 public:
 	enum occurrence_t get_type() const { return type; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4289,6 +4730,9 @@ public:
 public:
 	std::string get_item_test() const { return item_test; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4311,6 +4755,9 @@ public:
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4336,6 +4783,9 @@ public:
 		yy::location const&);
 	~KindTest();
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4351,6 +4801,9 @@ public:
 	AnyKindTest(
 		yy::location const&);
 	~AnyKindTest();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
  
@@ -4382,6 +4835,9 @@ public:
 	rchandle<SchemaElementTest> get_schema_elem_test() const
 		{ return schema_elem_test_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4398,6 +4854,9 @@ public:
 		yy::location const&);
 	~TextTest();
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4413,6 +4872,9 @@ public:
 	CommentTest(
 		yy::location const&);
 	~CommentTest();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
  
@@ -4441,6 +4903,9 @@ public:
 public:
 	std::string get_target() const { return target; }
 	std::string get_content() const { return content; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4472,6 +4937,9 @@ public:
 	rchandle<TypeName> get_type_name() const
 		{ return type_name_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4498,6 +4966,9 @@ public:
 	rchandle<AttributeName> get_attr_name() const { return attr_name_h; }
 	bool get_star_bit() const { return star_b; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4521,6 +4992,9 @@ public:
 public:
 	rchandle<AttributeDeclaration> get_attr_decl() const { return attr_decl_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4543,6 +5017,9 @@ public:
 
 public:
 	rchandle<AttributeName> get_attr_name() const { return attr_name_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4575,6 +5052,9 @@ public:
 	rchandle<TypeName> get_type_name() const
 		{ return type_name_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4601,6 +5081,9 @@ public:
 	rchandle<ElementName> get_elem_name() const { return elem_name_h; }
 	bool get_star_bit() const { return star_b; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4624,6 +5107,9 @@ public:
 public:
 	rchandle<ElementDeclaration> get_elem_decl() const { return elem_decl_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4646,6 +5132,10 @@ public:
 
 public:
 	rchandle<ElementName> get_elem_name() const { return elem_name_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4668,6 +5158,9 @@ public:
 
 public:
 	rchandle<QName> get_attr_qname() const { return attr_qname_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4692,6 +5185,9 @@ public:
 public:
 	rchandle<QName> get_elem_qname() const { return elem_qname_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4714,6 +5210,9 @@ public:
 
 public:
 	rchandle<QName> get_type_qname() const { return type_qname_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4749,6 +5248,10 @@ public:
 	QName(
 		yy::location const&);
 	~QName();
+
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 */
 #include "../types/qname.h"
@@ -4795,6 +5298,9 @@ public:
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4826,6 +5332,9 @@ public:
 	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
 	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4849,6 +5358,9 @@ public:
 
 public:
 	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -4878,6 +5390,9 @@ public:
 	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
 	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4905,6 +5420,9 @@ public:
 	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
 	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4913,13 +5431,9 @@ public:
 // ----------------
 // folded
 
-
-
 // [247] TargetExpr
 // ----------------
 // folded
-
-
 
 // [248] NewNameExpr
 // -----------------
@@ -4954,6 +5468,9 @@ public:
 	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
 	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -4979,6 +5496,9 @@ public:
 		{ varbinding_hv.push_back(varbinding_h); }
 	rchandle<VarBinding> operator[](int i) const
 		{ return varbinding_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5006,6 +5526,9 @@ public:
 public:
 	std::string get_varname() const { return varname; }
 	rchandle<ExprSingle> get_val() const { return val_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5057,6 +5580,9 @@ public:
 	rchandle<RangeExpr> get_weight_expr() const
 		{ return weight_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5078,6 +5604,9 @@ public:
 	FTMatchOptionProximityList(
 		yy::location const&);
 	~FTMatchOptionProximityList();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5107,6 +5636,9 @@ public:
 	rchandle<FTOr> get_ftor() const { return ftor_h; }
 	rchandle<FTAnd> get_ftand() const { return ftand_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5135,6 +5667,9 @@ public:
 	rchandle<FTAnd> get_ftand() const { return ftand_h; }
 	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5162,6 +5697,9 @@ public:
 public:
 	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
 	rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5192,6 +5730,9 @@ public:
 		{ return words_selection_h; }
 	bool get_not_bit() const
 		{ return not_b; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5225,6 +5766,9 @@ public:
 	rchandle<FTTimes> get_times() const { return times_h; }
 	rchandle<FTSelection> get_selection() const { return selection_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5255,6 +5799,9 @@ public:
 	rchandle<FTAnyallOption> get_any_all_option() const
 		{ return any_all_option_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5283,6 +5830,9 @@ public:
 	rchandle<Literal> get_lit() const { return lit_h; }
 	rchandle<Expr> get_expr() const { return expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5304,6 +5854,9 @@ public:
 		yy::location const&);
 	~FTProximity();
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5320,6 +5873,9 @@ public:
 	FTOrderedIndicator(
 		yy::location const&);
 	~FTOrderedIndicator();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5343,6 +5899,9 @@ public:
 	FTMatchOption(
 		yy::location const&);
 	~FTMatchOption();
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5379,6 +5938,9 @@ public:
 public:
 	enum ft_case_mode_t get_mode() const { return mode; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5414,6 +5976,9 @@ public:
 public:
 	enum ft_diacritics_mode_t get_mode() const { return mode; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5444,6 +6009,9 @@ public:
 
 public:
 	enum ft_stem_mode_t get_mode() const { return mode; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5486,6 +6054,9 @@ public:
 	bool get_default_bit() const { return default_b; }
 	bool get_without_bit() const { return without_b; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5512,6 +6083,9 @@ public:
 		{ thesaurus_hv.push_back(thesaurus_h); }
 	rchandle<FTThesaurusID> operator[](int i) const
 		{ return thesaurus_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5545,6 +6119,9 @@ public:
 	std::string get_thesaurus_name() const { return thesaurus_name; }
 	std::string get_relationship_name() const { return relationship_name; }
 	rchandle<FTRange> get_levels() const { return levels_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5590,6 +6167,9 @@ public:
 	stop_words_mode_t get_mode() const
 		{ return mode; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5616,6 +6196,9 @@ public:
 		{ incl_excl_lit_hv.push_back(incl_excl_lit_h); }
 	rchandle<FTInclExclStringLiteral> operator[](int i) const
 		{ return incl_excl_lit_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5646,6 +6229,9 @@ public:
 	rchandle<FTStringLiteralList> get_stringlit_list() const
 		{ return stringlit_list_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5670,6 +6256,9 @@ public:
 public:
 	void push_back(std::string strlit) { strlit_v.push_back(strlit); }
 	std::string operator[](int i) const { return strlit_v[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5707,6 +6296,9 @@ public:
 	incl_excl_mode_t get_mode() const
 		{ return mode; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5730,6 +6322,9 @@ public:
 
 public:
 	std::string get_lang() const { return lang; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5755,6 +6350,9 @@ public:
 
 public:
 	bool get_with_bit() const { return with_b; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5788,6 +6386,9 @@ public:
 
 public:
 	enum ft_content_mode_t get_mode() const { return mode; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5825,6 +6426,9 @@ public:
 
 public:
 	enum ft_anyall_option_t get_option() const { return option; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5864,6 +6468,9 @@ public:
 	rchandle<UnionExpr> get_src_expr() const { return src_expr_h; }
 	rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5890,6 +6497,9 @@ public:
 public:
 	rchandle<FTRange> get_dist() const { return dist_h; }
 	rchandle<FTUnit> get_unit() const { return unit_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5918,6 +6528,9 @@ public:
 	rchandle<UnionExpr> get_window() const { return window_h; }
 	rchandle<FTUnit> get_unit() const { return unit_h; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -5941,6 +6554,9 @@ public:
 
 public:
 	rchandle<FTRange> get_range() const { return range_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -5973,6 +6589,9 @@ public:
 public:
 	enum ft_scope_t get_scope() const { return scope; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -6004,6 +6623,9 @@ public:
 public:
 	enum ft_unit_t get_unit() const { return unit; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -6034,6 +6656,9 @@ public:
 public:
 	enum ft_big_unit_t get_unit() const { return unit; }
 
+public:
+	std::ostream& put(std::ostream&) const;
+
 };
 
 
@@ -6057,6 +6682,9 @@ public:
 
 public:
 	rchandle<UnionExpr> get_union() const { return union_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
 
 };
 

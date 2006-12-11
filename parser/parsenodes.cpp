@@ -38,6 +38,14 @@ Module::~Module()
 {
 }
 
+ostream& Module::put(ostream& s) const
+{
+}
+
+//-Module::
+
+
+
 
 // [2] VersionDecl
 // ---------------
@@ -55,6 +63,14 @@ VersionDecl::VersionDecl(
 VersionDecl::~VersionDecl()
 {
 }
+
+ostream& VersionDecl::put(ostream& s) const
+{
+}
+
+//-VersionDecl::
+
+
 
 
 
@@ -85,6 +101,14 @@ MainModule::~MainModule()
 {
 }
 
+ostream& MainModule::put(ostream& s) const
+{
+}
+
+//-MainModule::
+
+
+
 
 
 // [4] LibraryModule
@@ -105,6 +129,14 @@ LibraryModule::~LibraryModule()
 {
 }
 
+ostream& LibraryModule::put(ostream& s) const
+{
+}
+
+//-LibraryModule::
+
+
+
 
 
 // [5] ModuleDecl
@@ -123,6 +155,14 @@ ModuleDecl::ModuleDecl(
 ModuleDecl::~ModuleDecl()
 {
 }
+
+ostream& ModuleDecl::put(ostream& s) const
+{
+}
+
+//-ModuleDecl::
+
+
 
 
 
@@ -143,6 +183,14 @@ Prolog::~Prolog()
 {
 }
 
+ostream& Prolog::put(ostream& s) const
+{
+}
+
+//-Prolog::
+
+
+
 
 
 // [6a] SIDN_DeclList
@@ -157,6 +205,14 @@ SIND_DeclList::SIND_DeclList(
 SIND_DeclList::~SIND_DeclList()
 {
 }
+
+ostream& SIND_DeclList::put(ostream& s) const
+{
+}
+
+//-SIND_DeclList::
+
+
 
 
 
@@ -173,6 +229,14 @@ VFO_DeclList::~VFO_DeclList()
 {
 }
 
+ostream& VFO_DeclList::put(ostream& s) const
+{
+}
+
+//-VFO_DeclList::
+
+
+
 
 
 // [6c] SIND_Decl
@@ -187,6 +251,14 @@ SIND_Decl::SIND_Decl(
 SIND_Decl::~SIND_Decl()
 {
 }
+
+ostream& SIND_Decl::put(ostream& s) const
+{
+}
+
+//-SIND_Decl::
+
+
 
 
 
@@ -203,6 +275,15 @@ VFO_Decl::~VFO_Decl()
 {
 }
 
+ostream& VFO_Decl::put(ostream& s) const
+{
+}
+
+//-VFO_Decl::
+
+
+
+
 
 // [7] Setter
 // ----------
@@ -216,6 +297,14 @@ Setter::Setter(
 Setter::~Setter()
 {
 }
+
+ostream& Setter::put(ostream& s) const
+{
+}
+
+//-Setter::
+
+
 
 
 
@@ -231,6 +320,14 @@ Import::Import(
 Import::~Import()
 {
 }
+
+ostream& Import::put(ostream& s) const
+{
+}
+
+//-Import::
+
+
 
 
 
@@ -257,6 +354,14 @@ NamespaceDecl::~NamespaceDecl()
 {
 }
 
+ostream& NamespaceDecl::put(ostream& s) const
+{
+}
+
+//-NamespaceDecl::
+
+
+
 
 
 // [11] BoundarySpaceDecl
@@ -273,6 +378,14 @@ BoundarySpaceDecl::BoundarySpaceDecl(
 BoundarySpaceDecl::~BoundarySpaceDecl()
 {
 }
+
+ostream& BoundarySpaceDecl::put(ostream& s) const
+{
+}
+
+//-BoundarySpaceDecl::
+
+
 
 
 
@@ -294,6 +407,14 @@ DefaultNamespaceDecl::~DefaultNamespaceDecl()
 {
 }
 
+ostream& DefaultNamespaceDecl::put(ostream& s) const
+{
+}
+
+//-DefaultNamespaceDecl::
+
+
+
 
 
 // [13] OptionDecl
@@ -312,6 +433,14 @@ OptionDecl::OptionDecl(
 OptionDecl::~OptionDecl()
 {
 }
+
+ostream& OptionDecl::put(ostream& s) const
+{
+}
+
+//-OptionDecl::
+
+
 
 
 
@@ -332,6 +461,14 @@ FTOptionDecl::~FTOptionDecl()
 {
 }
 
+ostream& FTOptionDecl::put(ostream& s) const
+{
+}
+
+//-FTOptionDecl::
+
+
+
 
 
 // [14] OrderingModeDecl
@@ -349,6 +486,14 @@ OrderingModeDecl::~OrderingModeDecl()
 {
 }
 
+ostream& OrderingModeDecl::put(ostream& s) const
+{
+}
+
+//-OrderingModeDecl::
+
+
+
 
 
 // [15] EmptyOrderDecl
@@ -365,6 +510,14 @@ EmptyOrderDecl::EmptyOrderDecl(
 EmptyOrderDecl::~EmptyOrderDecl()
 {
 }
+
+ostream& EmptyOrderDecl::put(ostream& s) const
+{
+}
+
+//-EmptyOrderDecl::
+
+
 
 
 
@@ -385,6 +538,14 @@ CopyNamespacesDecl::~CopyNamespacesDecl()
 {
 }
 
+ostream& CopyNamespacesDecl::put(ostream& s) const
+{
+}
+
+//-CopyNamespacesDecl::
+
+
+
 
 
 // [17] PreserveMode
@@ -401,6 +562,14 @@ PreserveMode::PreserveMode(
 PreserveMode::~PreserveMode()
 {
 }
+
+ostream& PreserveMode::put(ostream& s) const
+{
+}
+
+//-PreserveMode::
+
+
 
 
 
@@ -419,6 +588,14 @@ InheritMode::~InheritMode()
 {
 }
 
+ostream& InheritMode::put(ostream& s) const
+{
+}
+
+//-InheritMode::
+
+
+
 
 
 // [19] DefaultCollationDecl
@@ -436,6 +613,14 @@ DefaultCollationDecl::~DefaultCollationDecl()
 {
 }
 
+ostream& DefaultCollationDecl::put(ostream& s) const
+{
+}
+
+//-DefaultCollationDecl::
+
+
+
 
 
 // [20] BaseURIDecl
@@ -452,6 +637,14 @@ BaseURIDecl::BaseURIDecl(
 BaseURIDecl::~BaseURIDecl()
 {
 }
+
+ostream& BaseURIDecl::put(ostream& s) const
+{
+}
+
+//-BaseURIDecl::
+
+
 
 
 
@@ -474,6 +667,14 @@ SchemaImport::~SchemaImport()
 {
 }
 
+ostream& SchemaImport::put(ostream& s) const
+{
+}
+
+//-SchemaImport::
+
+
+
 
 
 // [21a] URLLiteralList
@@ -488,6 +689,14 @@ URILiteralList::URILiteralList(
 URILiteralList::~URILiteralList()
 {
 }
+
+ostream& URILiteralList::put(ostream& s) const
+{
+}
+
+//-URILiteralList::
+
+
 
 
 
@@ -516,6 +725,14 @@ SchemaPrefix::SchemaPrefix(
 SchemaPrefix::~SchemaPrefix()
 {
 }
+
+ostream& SchemaPrefix::put(ostream& s) const
+{
+}
+
+//-SchemaPrefix::
+
+
 
 
 
@@ -548,6 +765,14 @@ ModuleImport::~ModuleImport()
 {
 }
 
+ostream& ModuleImport::put(ostream& s) const
+{
+}
+
+//-ModuleImport::
+
+
+
 
 
 // [24] VarDecl
@@ -569,6 +794,14 @@ VarDecl::~VarDecl()
 {
 }
 
+ostream& VarDecl::put(ostream& s) const
+{
+}
+
+//-VarDecl::
+
+
+
 
 
 // [25] ConstructionDecl
@@ -585,6 +818,14 @@ ConstructionDecl::ConstructionDecl(
 ConstructionDecl::~ConstructionDecl()
 {
 }
+
+ostream& ConstructionDecl::put(ostream& s) const
+{
+}
+
+//-ConstructionDecl::
+
+
 
 
 
@@ -611,6 +852,14 @@ FunctionDecl::~FunctionDecl()
 {
 }
 
+ostream& FunctionDecl::put(ostream& s) const
+{
+}
+
+//-FunctionDecl::
+
+
+
 
 
 // [27] ParamList
@@ -625,6 +874,14 @@ ParamList::ParamList(
 ParamList::~ParamList()
 {
 }
+
+ostream& ParamList::put(ostream& s) const
+{
+}
+
+//-ParamList::
+
+
 
 
 
@@ -645,6 +902,14 @@ Param::~Param()
 {
 }
 
+ostream& Param::put(ostream& s) const
+{
+}
+
+//-Param::
+
+
+
 
 
 // [29] EnclosedExpr
@@ -661,6 +926,14 @@ EnclosedExpr::EnclosedExpr(
 EnclosedExpr::~EnclosedExpr()
 {
 }
+
+ostream& EnclosedExpr::put(ostream& s) const
+{
+}
+
+//-EnclosedExpr::
+
+
 
 
 
@@ -679,6 +952,14 @@ QueryBody::~QueryBody()
 {
 }
 
+ostream& QueryBody::put(ostream& s) const
+{
+}
+
+//-QueryBody::
+
+
+
 
 
 // [31] Expr
@@ -694,6 +975,14 @@ Expr::~Expr()
 {
 }
 
+ostream& Expr::put(ostream& s) const
+{
+}
+
+//-Expr::
+
+
+
 
 
 // [32] ExprSingle
@@ -708,6 +997,14 @@ ExprSingle::ExprSingle(
 ExprSingle::~ExprSingle()
 {
 }
+
+ostream& ExprSingle::put(ostream& s) const
+{
+}
+
+//-ExprSingle::
+
+
 
 
 
@@ -732,6 +1029,14 @@ FLWORExpr::~FLWORExpr()
 {
 }
 
+ostream& FLWORExpr::put(ostream& s) const
+{
+}
+
+//-FLWORExpr::
+
+
+
 
 
 // [33a] ForLetClauseList
@@ -747,6 +1052,14 @@ ForLetClauseList::~ForLetClauseList()
 {
 }
 
+ostream& ForLetClauseList::put(ostream& s) const
+{
+}
+
+//-ForLetClauseList::
+
+
+
 
 
 // [33b] ForLetClause
@@ -761,6 +1074,14 @@ ForLetClause::ForLetClause(
 ForLetClause::~ForLetClause()
 {
 }
+
+ostream& ForLetClause::put(ostream& s) const
+{
+}
+
+//-ForLetClause::
+
+
 
 
 
@@ -779,6 +1100,14 @@ ForClause::~ForClause()
 {
 }
 
+ostream& ForClause::put(ostream& s) const
+{
+}
+
+//-ForClause::
+
+
+
 
 
 // [34a] VarInDeclList
@@ -793,6 +1122,14 @@ VarInDeclList::VarInDeclList(
 VarInDeclList::~VarInDeclList()
 {
 }
+
+ostream& VarInDeclList::put(ostream& s) const
+{
+}
+
+//-VarInDeclList::
+
+
 
 
 
@@ -819,6 +1156,14 @@ VarInDecl::~VarInDecl()
 {
 }
 
+ostream& VarInDecl::put(ostream& s) const
+{
+}
+
+//-VarInDecl::
+
+
+
 
 
 // [35] PositionalVar
@@ -835,6 +1180,14 @@ PositionalVar::PositionalVar(
 PositionalVar::~PositionalVar()
 {
 }
+
+ostream& PositionalVar::put(ostream& s) const
+{
+}
+
+//-PositionalVar::
+
+
 
 
 
@@ -853,6 +1206,14 @@ LetClause::~LetClause()
 {
 }
 
+ostream& LetClause::put(ostream& s) const
+{
+}
+
+//-LetClause::
+
+
+
 
 
 // [36a] VarGetsDeclList
@@ -867,6 +1228,14 @@ VarGetsDeclList::VarGetsDeclList(
 VarGetsDeclList::~VarGetsDeclList()
 {
 }
+
+ostream& VarGetsDeclList::put(ostream& s) const
+{
+}
+
+//-VarGetsDeclList::
+
+
 
 
 
@@ -891,6 +1260,15 @@ VarGetsDecl::~VarGetsDecl()
 {
 }
 
+ostream& VarGetsDecl::put(ostream& s) const
+{
+}
+
+//-VarGetsDecl::
+
+
+
+
 
 // [36c] FTScoreVar
 // ----------------
@@ -906,6 +1284,14 @@ FTScoreVar::FTScoreVar(
 FTScoreVar::~FTScoreVar()
 {
 }
+
+ostream& FTScoreVar::put(ostream& s) const
+{
+}
+
+//-FTScoreVar::
+
+
 
 
 
@@ -923,6 +1309,14 @@ WhereClause::WhereClause(
 WhereClause::~WhereClause()
 {
 }
+
+ostream& WhereClause::put(ostream& s) const
+{
+}
+
+//-WhereClause::
+
+
 
 
 
@@ -953,6 +1347,14 @@ OrderByClause::~OrderByClause()
 {
 }
 
+ostream& OrderByClause::put(ostream& s) const
+{
+}
+
+//-OrderByClause::
+
+
+
 
 
 // [39] OrderSpecList
@@ -967,6 +1369,14 @@ OrderSpecList::OrderSpecList(
 OrderSpecList::~OrderSpecList()
 {
 }
+
+ostream& OrderSpecList::put(ostream& s) const
+{
+}
+
+//-OrderSpecList::
+
+
 
 
 
@@ -986,6 +1396,14 @@ OrderSpec::OrderSpec(
 OrderSpec::~OrderSpec()
 {
 }
+
+ostream& OrderSpec::put(ostream& s) const
+{
+}
+
+//-OrderSpec::
+
+
 
 
 
@@ -1008,6 +1426,14 @@ OrderModifier::~OrderModifier()
 {
 }
 
+ostream& OrderModifier::put(ostream& s) const
+{
+}
+
+//-OrderModifier::
+
+
+
 
 
 // [41a] OrderDirSpec
@@ -1025,6 +1451,14 @@ OrderDirSpec::~OrderDirSpec()
 {
 }
 	
+ostream& OrderDirSpec::put(ostream& s) const
+{
+}
+
+//-OrderDirSpec::
+
+
+
 
 
 // [41b] OrderEmptySpec
@@ -1042,6 +1476,14 @@ OrderEmptySpec::~OrderEmptySpec()
 {
 }
 
+ostream& OrderEmptySpec::put(ostream& s) const
+{
+}
+
+//-OrderEmptySpec::
+
+
+
 
 
 // [41c] OrderCollationSpec
@@ -1058,6 +1500,14 @@ OrderCollationSpec::OrderCollationSpec(
 OrderCollationSpec::~OrderCollationSpec()
 {
 }
+
+ostream& OrderCollationSpec::put(ostream& s) const
+{
+}
+
+//-OrderCollationSpec::
+
+
 
 
 
@@ -1080,6 +1530,15 @@ QuantifiedExpr::~QuantifiedExpr()
 {
 }
 
+ostream& QuantifiedExpr::put(ostream& s) const
+{
+}
+
+//-QuantifiedExpr::
+
+
+
+
 
 // [42a] QVarInDeclList
 // --------------------
@@ -1093,6 +1552,14 @@ QVarInDeclList::QVarInDeclList(
 QVarInDeclList::~QVarInDeclList()
 {
 }
+
+ostream& QVarInDeclList::put(ostream& s) const
+{
+}
+
+//-QVarInDeclList::
+
+
 
 
 
@@ -1113,6 +1580,14 @@ QVarInDecl::QVarInDecl(
 QVarInDecl::~QVarInDecl()
 {
 }
+
+ostream& QVarInDecl::put(ostream& s) const
+{
+}
+
+//-QVarInDecl::
+
+
 
 
 
@@ -1151,6 +1626,14 @@ TypeswitchExpr::~TypeswitchExpr()
 {
 }
 
+ostream& TypeswitchExpr::put(ostream& s) const
+{
+}
+
+//-TypeswitchExpr::
+
+
+
 
 
 // [43a] CaseClauseList
@@ -1165,6 +1648,14 @@ CaseClauseList::CaseClauseList(
 CaseClauseList::~CaseClauseList()
 {
 }
+
+ostream& CaseClauseList::put(ostream& s) const
+{
+}
+
+//-CaseClauseList::
+
+
 
 
 
@@ -1199,6 +1690,14 @@ CaseClause::~CaseClause()
 {
 }
 
+ostream& CaseClause::put(ostream& s) const
+{
+}
+
+//-CaseClause::
+
+
+
 
 
 // [45] IfExpr
@@ -1220,6 +1719,14 @@ IfExpr::~IfExpr()
 {
 }
 
+ostream& IfExpr::put(ostream& s) const
+{
+}
+
+//-IfExpr::
+
+
+
 
 
 // [46] OrExpr
@@ -1239,6 +1746,14 @@ OrExpr::~OrExpr()
 {
 }
 
+ostream& OrExpr::put(ostream& s) const
+{
+}
+
+//-OrExpr::
+
+
+
 
 
 // [47] AndExpr
@@ -1257,6 +1772,15 @@ AndExpr::AndExpr(
 AndExpr::~AndExpr()
 {
 }
+
+ostream& AndExpr::put(ostream& s) const
+{
+}
+
+//-AndExpr::
+
+
+
 
 
 // [48] ComparisonExpr
@@ -1310,6 +1834,14 @@ ComparisonExpr::~ComparisonExpr()
 {
 }
 
+ostream& ComparisonExpr::put(ostream& s) const
+{
+}
+
+//-ComparisonExpr::
+
+
+
 
 
 // [48a] FTContainsExpr
@@ -1331,6 +1863,14 @@ FTContainsExpr::~FTContainsExpr()
 {
 }
 
+ostream& FTContainsExpr::put(ostream& s) const
+{
+}
+
+//-FTContainsExpr::
+
+
+
 
 
 // [49] RangeExpr
@@ -1349,6 +1889,14 @@ RangeExpr::RangeExpr(
 RangeExpr::~RangeExpr()
 {
 }
+
+ostream& RangeExpr::put(ostream& s) const
+{
+}
+
+//-RangeExpr::
+
+
 
 
 
@@ -1371,6 +1919,14 @@ AdditiveExpr::~AdditiveExpr()
 {
 }
 
+ostream& AdditiveExpr::put(ostream& s) const
+{
+}
+
+//-AdditiveExpr::
+
+
+
 
 
 // [51] MultiplicativeExpr
@@ -1392,6 +1948,14 @@ MultiplicativeExpr::~MultiplicativeExpr()
 {
 }
 
+ostream& MultiplicativeExpr::put(ostream& s) const
+{
+}
+
+//-MultiplicativeExpr::
+
+
+
 
 
 // [52] UnionExpr
@@ -1410,6 +1974,14 @@ UnionExpr::UnionExpr(
 UnionExpr::~UnionExpr()
 {
 }
+
+ostream& UnionExpr::put(ostream& s) const
+{
+}
+
+//-UnionExpr::
+
+
 
 
 
@@ -1432,6 +2004,14 @@ IntersectExceptExpr::~IntersectExceptExpr()
 {
 }
 
+ostream& IntersectExceptExpr::put(ostream& s) const
+{
+}
+
+//-IntersectExceptExpr::
+
+
+
 
 
 // [54] InstanceofExpr
@@ -1450,6 +2030,14 @@ InstanceofExpr::InstanceofExpr(
 InstanceofExpr::~InstanceofExpr()
 {
 }
+
+ostream& InstanceofExpr::put(ostream& s) const
+{
+}
+
+//-InstanceofExpr::
+
+
 
 
 
@@ -1470,6 +2058,14 @@ TreatExpr::~TreatExpr()
 {
 }
 
+ostream& TreatExpr::put(ostream& s) const
+{
+}
+
+//-TreatExpr::
+
+
+
 
 
 // [56] CastableExpr
@@ -1488,6 +2084,14 @@ CastableExpr::CastableExpr(
 CastableExpr::~CastableExpr()
 {
 }
+
+ostream& CastableExpr::put(ostream& s) const
+{
+}
+
+//-CastableExpr::
+
+
 
 
 
@@ -1508,6 +2112,14 @@ CastExpr::~CastExpr()
 {
 }
 
+ostream& CastExpr::put(ostream& s) const
+{
+}
+
+//-CastExpr::
+
+
+
 
 
 // [58] UnaryExpr
@@ -1527,6 +2139,14 @@ UnaryExpr::~UnaryExpr()
 {
 }
 
+ostream& UnaryExpr::put(ostream& s) const
+{
+}
+
+//-UnaryExpr::
+
+
+
 
 
 // [58a] SignList
@@ -1544,6 +2164,14 @@ SignList::~SignList()
 {
 }
 
+ostream& SignList::put(ostream& s) const
+{
+}
+
+//-SignList::
+
+
+
 
 
 // [59] ValueExpr
@@ -1558,6 +2186,14 @@ ValueExpr::ValueExpr(
 ValueExpr::~ValueExpr()
 {
 }
+
+ostream& ValueExpr::put(ostream& s) const
+{
+}
+
+//-ValueExpr::
+
+
 
 
 
@@ -1576,6 +2212,14 @@ GeneralComp::~GeneralComp()
 {
 }
 
+ostream& GeneralComp::put(ostream& s) const
+{
+}
+
+//-GeneralComp::
+
+
+
 
 
 // [61] ValueComp
@@ -1593,6 +2237,14 @@ ValueComp::~ValueComp()
 {
 }
 
+ostream& ValueComp::put(ostream& s) const
+{
+}
+
+//-ValueComp::
+
+
+
 
 
 // [62] NodeComp
@@ -1609,6 +2261,14 @@ NodeComp::NodeComp(
 NodeComp::~NodeComp()
 {
 }
+
+ostream& NodeComp::put(ostream& s) const
+{
+}
+
+//-NodeComp::
+
+
 
 
 
@@ -1630,6 +2290,14 @@ ValidateExpr::~ValidateExpr()
 {
 }
 
+ostream& ValidateExpr::put(ostream& s) const
+{
+}
+
+//-ValidateExpr::
+
+
+
 
 
 // [64] ExtensionExpr
@@ -1649,6 +2317,14 @@ ExtensionExpr::~ExtensionExpr()
 {
 }
 
+ostream& ExtensionExpr::put(ostream& s) const
+{
+}
+
+//-ExtensionExpr::
+
+
+
 
 
 // [64a] PragmaList
@@ -1663,6 +2339,14 @@ PragmaList::PragmaList(
 PragmaList::~PragmaList()
 {
 }
+
+ostream& PragmaList::put(ostream& s) const
+{
+}
+
+//-PragmaList::
+
+
 
 
 
@@ -1682,6 +2366,14 @@ Pragma::Pragma(
 Pragma::~Pragma()
 {
 }
+
+ostream& Pragma::put(ostream& s) const
+{
+}
+
+//-Pragma::
+
+
 
 
 
@@ -1708,6 +2400,14 @@ PathExpr::~PathExpr()
 {
 }
 
+ostream& PathExpr::put(ostream& s) const
+{
+}
+
+//-PathExpr::
+
+
+
 
 
 // [68] RelativePathExpr
@@ -1729,6 +2429,14 @@ RelativePathExpr::~RelativePathExpr()
 {
 }
 
+ostream& RelativePathExpr::put(ostream& s) const
+{
+}
+
+//-RelativePathExpr::
+
+
+
 
 
 // [69] StepExpr
@@ -1743,6 +2451,14 @@ StepExpr::StepExpr(
 StepExpr::~StepExpr()
 {
 }
+
+ostream& StepExpr::put(ostream& s) const
+{
+}
+
+//-StepExpr::
+
+
 
 
 
@@ -1776,6 +2492,14 @@ AxisStep::~AxisStep()
 {
 }
 
+ostream& AxisStep::put(ostream& s) const
+{
+}
+
+//-AxisStep::
+
+
+
 
 
 // [71] ForwardStep
@@ -1807,6 +2531,14 @@ ForwardStep::~ForwardStep()
 {
 }
 
+ostream& ForwardStep::put(ostream& s) const
+{
+}
+
+//-ForwardStep::
+
+
+
 
 
 // [72] ForwardAxis
@@ -1823,6 +2555,14 @@ ForwardAxis::ForwardAxis(
 ForwardAxis::~ForwardAxis()
 {
 }
+
+ostream& ForwardAxis::put(ostream& s) const
+{
+}
+
+//-ForwardAxis::
+
+
 
 
 
@@ -1853,6 +2593,14 @@ AbbrevForwardStep::~AbbrevForwardStep()
 {
 }
 
+ostream& AbbrevForwardStep::put(ostream& s) const
+{
+}
+
+//-AbbrevForwardStep::
+
+
+
 
 
 // [74] ReverseStep
@@ -1872,6 +2620,14 @@ ReverseStep::~ReverseStep()
 {
 }
 
+ostream& ReverseStep::put(ostream& s) const
+{
+}
+
+//-ReverseStep::
+
+
+
 
 
 // [75] ReverseAxis
@@ -1888,6 +2644,14 @@ ReverseAxis::ReverseAxis(
 ReverseAxis::~ReverseAxis()
 {
 }
+
+ostream& ReverseAxis::put(ostream& s) const
+{
+}
+
+//-ReverseAxis::
+
+
 
 
 
@@ -1909,6 +2673,14 @@ NodeTest::NodeTest(
 NodeTest::~NodeTest()
 {
 }
+
+ostream& NodeTest::put(ostream& s) const
+{
+}
+
+//-NodeTest::
+
+
 
 
 
@@ -1937,6 +2709,14 @@ NameTest::NameTest(
 NameTest::~NameTest()
 {
 }
+
+ostream& NameTest::put(ostream& s) const
+{
+}
+
+//-NameTest::
+
+
 
 
 
@@ -1979,6 +2759,14 @@ Wildcard::~Wildcard()
 {
 }
 
+ostream& Wildcard::put(ostream& s) const
+{
+}
+
+//-Wildcard::
+
+
+
 
 
 // [80] FilterExpr
@@ -1998,6 +2786,14 @@ FilterExpr::~FilterExpr()
 {
 }
 
+ostream& FilterExpr::put(ostream& s) const
+{
+}
+
+//-FilterExpr::
+
+
+
 
 
 // [81] PredicateList
@@ -2012,6 +2808,14 @@ PredicateList::PredicateList(
 PredicateList::~PredicateList()
 {
 }
+
+ostream& PredicateList::put(ostream& s) const
+{
+}
+
+//-PredicateList::
+
+
 
 
 
@@ -2030,6 +2834,14 @@ Predicate::~Predicate()
 {
 }
 
+ostream& Predicate::put(ostream& s) const
+{
+}
+
+//-Predicate::
+
+
+
 
 
 // [83] PrimaryExpr
@@ -2045,6 +2857,14 @@ PrimaryExpr::~PrimaryExpr()
 {
 }
 
+ostream& PrimaryExpr::put(ostream& s) const
+{
+}
+
+//-PrimaryExpr::
+
+
+
 
 
 // [84] Literal
@@ -2059,6 +2879,13 @@ Literal::Literal(
 Literal::~Literal()
 {
 }
+
+ostream& Literal::put(ostream& s) const
+{
+}
+
+//-Literal::
+
 
 
 
@@ -2099,6 +2926,13 @@ NumericLiteral::~NumericLiteral()
 {
 }
 
+ostream& NumericLiteral::put(ostream& s) const
+{
+}
+
+//-NumericLiteral::
+
+
 
 
 
@@ -2116,6 +2950,13 @@ VarRef::VarRef(
 VarRef::~VarRef()
 {
 }
+
+ostream& VarRef::put(ostream& s) const
+{
+}
+
+//-VarRef::
+
 
 
 
@@ -2135,6 +2976,13 @@ ParenthesizedExpr::~ParenthesizedExpr()
 {
 }
 
+ostream& ParenthesizedExpr::put(ostream& s) const
+{
+}
+
+//-ParenthesizedExpr::
+
+
 
 
 
@@ -2150,6 +2998,14 @@ ContextItemExpr::ContextItemExpr(
 ContextItemExpr::~ContextItemExpr()
 {
 }
+
+ostream& ContextItemExpr::put(ostream& s) const
+{
+}
+
+//-ContextItemExpr::
+
+
 
 
 
@@ -2169,6 +3025,13 @@ OrderedExpr::~OrderedExpr()
 {
 }
 
+ostream& OrderedExpr::put(ostream& s) const
+{
+}
+
+//-OrderedExpr::
+
+
 
 
 
@@ -2186,6 +3049,14 @@ UnorderedExpr::UnorderedExpr(
 UnorderedExpr::~UnorderedExpr()
 {
 }
+
+ostream& UnorderedExpr::put(ostream& s) const
+{
+}
+
+//-UnorderedExpr::
+
+
 
 
 
@@ -2208,6 +3079,14 @@ FunctionCall::~FunctionCall()
 {
 }
 
+ostream& FunctionCall::put(ostream& s) const
+{
+}
+
+//-FunctionCall::
+
+
+
 
 
 
@@ -2223,6 +3102,14 @@ ArgList::ArgList(
 ArgList::~ArgList()
 {
 }
+
+ostream& ArgList::put(ostream& s) const
+{
+}
+
+//-ArgList::
+
+
 
 
 
@@ -2240,6 +3127,13 @@ Constructor::~Constructor()
 {
 }
 
+ostream& Constructor::put(ostream& s) const
+{
+}
+
+//-Constructor::
+
+
 
 
 
@@ -2255,6 +3149,13 @@ DirectConstructor::DirectConstructor(
 DirectConstructor::~DirectConstructor()
 {
 }
+
+ostream& DirectConstructor::put(ostream& s) const
+{
+}
+
+//-DirectConstructor::
+
 
 
  
@@ -2279,6 +3180,13 @@ DirElemConstructor::~DirElemConstructor()
 {
 }
 
+ostream& DirElemConstructor::put(ostream& s) const
+{
+}
+
+//-DirElemConstructor::
+
+
 
 
 
@@ -2295,6 +3203,13 @@ DirElemContentList::~DirElemContentList()
 {
 }
 
+ostream& DirElemContentList::put(ostream& s) const
+{
+}
+
+//-DirElemContentList::
+
+
 
 
 
@@ -2310,6 +3225,14 @@ DirAttributeList::DirAttributeList(
 DirAttributeList::~DirAttributeList()
 {
 }
+
+ostream& DirAttributeList::put(ostream& s) const
+{
+}
+
+//-DirAttributeList::
+
+
 
 
 
@@ -2332,6 +3255,14 @@ DirAttr::~DirAttr()
 {
 }
 
+ostream& DirAttr::put(ostream& s) const
+{
+}
+
+//-DirAttr::
+
+
+
 
 
 
@@ -2352,6 +3283,14 @@ DirAttributeValue::~DirAttributeValue()
 {
 }
 
+ostream& DirAttributeValue::put(ostream& s) const
+{
+}
+
+//-DirAttributeValue::
+
+
+
 
 
 
@@ -2368,6 +3307,14 @@ QuoteAttrContentList::~QuoteAttrContentList()
 {
 }
 
+ostream& QuoteAttrContentList::put(ostream& s) const
+{
+}
+
+//-QuoteAttrContentList::
+
+
+
 
 
 
@@ -2383,6 +3330,14 @@ AposAttrContentList::AposAttrContentList(
 AposAttrContentList::~AposAttrContentList()
 {
 }
+
+ostream& AposAttrContentList::put(ostream& s) const
+{
+}
+
+//-AposAttrContentList::
+
+
 
 
 
@@ -2404,6 +3359,14 @@ QuoteAttrValueContent::~QuoteAttrValueContent()
 {
 }
 
+ostream& QuoteAttrValueContent::put(ostream& s) const
+{
+}
+
+//-QuoteAttrValueContent::
+
+
+
 
 
 
@@ -2424,6 +3387,14 @@ AposAttrValueContent::~AposAttrValueContent()
 {
 }
 
+ostream& AposAttrValueContent::put(ostream& s) const
+{
+}
+
+//-AposAttrValueContent::
+
+
+
 
 
 
@@ -2441,6 +3412,14 @@ DirElemContent::DirElemContent(
 DirElemContent::~DirElemContent()
 {
 }
+
+ostream& DirElemContent::put(ostream& s) const
+{
+}
+
+//-DirElemContent::
+
+
 
 
 
@@ -2485,6 +3464,14 @@ CommonContent::~CommonContent()
 {
 }
 
+ostream& CommonContent::put(ostream& s) const
+{
+}
+
+//-CommonContent::
+
+
+
 
 
 
@@ -2502,6 +3489,14 @@ DirCommentConstructor::DirCommentConstructor(
 DirCommentConstructor::~DirCommentConstructor()
 {
 }
+
+ostream& DirCommentConstructor::put(ostream& s) const
+{
+}
+
+//-DirCommentConstructor::
+
+
 
 
 
@@ -2530,6 +3525,14 @@ DirPIConstructor::~DirPIConstructor()
 {
 }
 
+ostream& DirPIConstructor::put(ostream& s) const
+{
+}
+
+//-DirPIConstructor::
+
+
+
 
 
 
@@ -2554,6 +3557,14 @@ CDataSection::~CDataSection()
 {
 }
 
+ostream& CDataSection::put(ostream& s) const
+{
+}
+
+//-CDataSection::
+
+
+
 
 
 
@@ -2576,6 +3587,14 @@ ComputedConstructor::~ComputedConstructor()
 {
 }
 
+ostream& ComputedConstructor::put(ostream& s) const
+{
+}
+
+//-ComputedConstructor::
+
+
+
 
 
 
@@ -2593,6 +3612,14 @@ CompDocConstructor::CompDocConstructor(
 CompDocConstructor::~CompDocConstructor()
 {
 }
+
+ostream& CompDocConstructor::put(ostream& s) const
+{
+}
+
+//-CompDocConstructor::
+
+
 
 
 
@@ -2616,6 +3643,14 @@ CompElemConstructor::~CompElemConstructor()
 {
 }
 
+ostream& CompElemConstructor::put(ostream& s) const
+{
+}
+
+//-CompElemConstructor::
+
+
+
 
 
 
@@ -2634,6 +3669,15 @@ ContentExpr::ContentExpr(
 ContentExpr::~ContentExpr()
 {
 }
+
+ostream& ContentExpr::put(ostream& s) const
+{
+}
+
+//-ContentExpr::
+
+
+
 */
 
 
@@ -2657,6 +3701,14 @@ CompAttrConstructor::~CompAttrConstructor()
 {
 }
 
+ostream& CompAttrConstructor::put(ostream& s) const
+{
+}
+
+//-CompAttrConstructor::
+
+
+
 
 
 
@@ -2675,6 +3727,14 @@ CompTextConstructor::~CompTextConstructor()
 {
 }
 
+ostream& CompTextConstructor::put(ostream& s) const
+{
+}
+
+//-CompTextConstructor::
+
+
+
 
 
 
@@ -2692,6 +3752,14 @@ CompCommentConstructor::CompCommentConstructor(
 CompCommentConstructor::~CompCommentConstructor()
 {
 }
+
+ostream& CompCommentConstructor::put(ostream& s) const
+{
+}
+
+//-CompCommentConstructor::
+
+
 
 
 
@@ -2715,6 +3783,14 @@ CompPIConstructor::~CompPIConstructor()
 {
 }
 
+ostream& CompPIConstructor::put(ostream& s) const
+{
+}
+
+//-CompPIConstructor::
+
+
+
 
 
 // [115] SingleType
@@ -2734,6 +3810,14 @@ SingleType::~SingleType()
 {
 }
 
+ostream& SingleType::put(ostream& s) const
+{
+}
+
+//-SingleType::
+
+
+
 
 
 // [116] TypeDeclaration
@@ -2750,6 +3834,14 @@ TypeDeclaration::TypeDeclaration(
 TypeDeclaration::~TypeDeclaration()
 {
 }
+
+ostream& TypeDeclaration::put(ostream& s) const
+{
+}
+
+//-TypeDeclaration::
+
+
 
 
 
@@ -2772,6 +3864,14 @@ SequenceType::~SequenceType()
 {
 }
 
+ostream& SequenceType::put(ostream& s) const
+{
+}
+
+//-SequenceType::
+
+
+
 
 
 // [118] OccurrenceIndicator
@@ -2788,6 +3888,14 @@ OccurrenceIndicator::OccurrenceIndicator(
 OccurrenceIndicator::~OccurrenceIndicator()
 {
 }
+
+ostream& OccurrenceIndicator::put(ostream& s) const
+{
+}
+
+//-OccurrenceIndicator::
+
+
 
 
 
@@ -2806,6 +3914,14 @@ ItemType::~ItemType()
 {
 }
 
+ostream& ItemType::put(ostream& s) const
+{
+}
+
+//-ItemType::
+
+
+
 
 
 // [120] AtomicType
@@ -2823,6 +3939,14 @@ AtomicType::~AtomicType()
 {
 }
 
+ostream& AtomicType::put(ostream& s) const
+{
+}
+
+//-AtomicType::
+
+
+
 
 
 // [121] KindTest
@@ -2838,6 +3962,14 @@ KindTest::~KindTest()
 {
 }
 
+ostream& KindTest::put(ostream& s) const
+{
+}
+
+//-KindTest::
+
+
+
 
 
 // [122] AnyKindTest
@@ -2852,6 +3984,14 @@ AnyKindTest::AnyKindTest(
 AnyKindTest::~AnyKindTest()
 {
 }
+
+ostream& AnyKindTest::put(ostream& s) const
+{
+}
+
+//-AnyKindTest::
+
+
 
  
 
@@ -2872,6 +4012,14 @@ DocumentTest::~DocumentTest()
 {
 }
 
+ostream& DocumentTest::put(ostream& s) const
+{
+}
+
+//-DocumentTest::
+
+
+
 
 
 // [124] TextTest
@@ -2887,6 +4035,14 @@ TextTest::~TextTest()
 {
 }
 
+ostream& TextTest::put(ostream& s) const
+{
+}
+
+//-TextTest::
+
+
+
 
 
 // [125] CommentTest
@@ -2901,6 +4057,14 @@ CommentTest::CommentTest(
 CommentTest::~CommentTest()
 {
 }
+
+ostream& CommentTest::put(ostream& s) const
+{
+}
+
+//-CommentTest::
+
+
 
  
 
@@ -2921,6 +4085,14 @@ PITest::~PITest()
 {
 }
 
+ostream& PITest::put(ostream& s) const
+{
+}
+
+//-PITest::
+
+
+
 
 
 // [127] AttributeTest
@@ -2939,6 +4111,14 @@ AttributeTest::AttributeTest(
 AttributeTest::~AttributeTest()
 {
 }
+
+ostream& AttributeTest::put(ostream& s) const
+{
+}
+
+//-AttributeTest::
+
+
 
 
 
@@ -2959,6 +4139,14 @@ AttribNameOrWildcard::~AttribNameOrWildcard()
 {
 }
 
+ostream& AttribNameOrWildcard::put(ostream& s) const
+{
+}
+
+//-AttribNameOrWildcard::
+
+
+
 
 
 // [129] SchemaAttributeTest
@@ -2976,6 +4164,14 @@ SchemaAttributeTest::~SchemaAttributeTest()
 {
 }
 
+ostream& SchemaAttributeTest::put(ostream& s) const
+{
+}
+
+//-SchemaAttributeTest::
+
+
+
 
 
 // [130] AttributeDeclaration
@@ -2992,6 +4188,14 @@ AttributeDeclaration::AttributeDeclaration(
 AttributeDeclaration::~AttributeDeclaration()
 {
 }
+
+ostream& AttributeDeclaration::put(ostream& s) const
+{
+}
+
+//-AttributeDeclaration::
+
+
 
 
 
@@ -3012,6 +4216,14 @@ ElementTest::~ElementTest()
 {
 }
 
+ostream& ElementTest::put(ostream& s) const
+{
+}
+
+//-ElementTest::
+
+
+
 
 
 // [132] ElementNameOrWildcard
@@ -3031,6 +4243,14 @@ ElementNameOrWildcard::~ElementNameOrWildcard()
 {
 }
 
+ostream& ElementNameOrWildcard::put(ostream& s) const
+{
+}
+
+//-ElementNameOrWildcard::
+
+
+
 
 
 // [133] SchemaElementTest
@@ -3047,6 +4267,14 @@ SchemaElementTest::SchemaElementTest(
 SchemaElementTest::~SchemaElementTest()
 {
 }
+
+ostream& SchemaElementTest::put(ostream& s) const
+{
+}
+
+//-SchemaElementTest::
+
+
 
 
 
@@ -3065,6 +4293,14 @@ ElementDeclaration::~ElementDeclaration()
 {
 }
 
+ostream& ElementDeclaration::put(ostream& s) const
+{
+}
+
+//-ElementDeclaration::
+
+
+
 
 
 // [135] AttributeName
@@ -3081,6 +4317,14 @@ AttributeName::AttributeName(
 AttributeName::~AttributeName()
 {
 }
+
+ostream& AttributeName::put(ostream& s) const
+{
+}
+
+//-AttributeName::
+
+
 
 
 
@@ -3099,6 +4343,14 @@ ElementName::~ElementName()
 {
 }
 
+ostream& ElementName::put(ostream& s) const
+{
+}
+
+//-ElementName::
+
+
+
 
 
 // [137] TypeName
@@ -3115,6 +4367,14 @@ TypeName::TypeName(
 TypeName::~TypeName()
 {
 }
+
+ostream& TypeName::put(ostream& s) const
+{
+}
+
+//-TypeName::
+
+
 
 
 
@@ -3154,6 +4414,15 @@ QName::QName(
 QName::~QName()
 {
 }
+
+ostream& QName::put(ostream& s) const
+{
+}
+
+//-QName::
+
+
+
 */
 
 
@@ -3190,6 +4459,14 @@ RevalidationDecl::~RevalidationDecl()
 {
 }
 
+ostream& RevalidationDecl::put(ostream& s) const
+{
+}
+
+//-RevalidationDecl::
+
+
+
 
 
 
@@ -3210,6 +4487,14 @@ InsertExpr::~InsertExpr()
 {
 }
 
+ostream& InsertExpr::put(ostream& s) const
+{
+}
+
+//-InsertExpr::
+
+
+
 
 
 
@@ -3227,6 +4512,14 @@ DeleteExpr::DeleteExpr(
 DeleteExpr::~DeleteExpr()
 {
 }
+
+ostream& DeleteExpr::put(ostream& s) const
+{
+}
+
+//-DeleteExpr::
+
+
 
 
 
@@ -3247,6 +4540,14 @@ ReplaceExpr::~ReplaceExpr()
 {
 }
 
+ostream& ReplaceExpr::put(ostream& s) const
+{
+}
+
+//-ReplaceExpr::
+
+
+
 
 
 // [245] RenameExpr
@@ -3265,6 +4566,14 @@ RenameExpr::RenameExpr(
 RenameExpr::~RenameExpr()
 {
 }
+
+ostream& RenameExpr::put(ostream& s) const
+{
+}
+
+//-RenameExpr::
+
+
 
 
 
@@ -3301,6 +4610,14 @@ TransformExpr::~TransformExpr()
 {
 }
 
+ostream& TransformExpr::put(ostream& s) const
+{
+}
+
+//-TransformExpr::
+
+
+
 
 
 
@@ -3316,6 +4633,14 @@ VarNameList::VarNameList(
 VarNameList::~VarNameList()
 {
 }
+
+ostream& VarNameList::put(ostream& s) const
+{
+}
+
+//-VarNameList::
+
+
 
 
 
@@ -3337,6 +4662,14 @@ VarBinding::~VarBinding()
 {
 }
 
+ostream& VarBinding::put(ostream& s) const
+{
+}
+
+//-VarBinding::
+
+
+
 
 
 
@@ -3351,8 +4684,8 @@ VarBinding::~VarBinding()
  */
 
 
-//[344] FTSelection
-//-----------------
+// [344] FTSelection
+// -----------------
 FTSelection::FTSelection(
 	location const& _loc,
 	rchandle<FTOr> _ftor_h,
@@ -3370,11 +4703,19 @@ FTSelection::~FTSelection()
 {
 }
 
+ostream& FTSelection::put(ostream& s) const
+{
+}
+
+//-FTSelection::
 
 
 
-//[344a] FTMatchOptionProximityList
-//---------------------------------
+
+
+
+// [344a] FTMatchOptionProximityList
+// ---------------------------------
 FTMatchOptionProximityList::FTMatchOptionProximityList(
 	location const& _loc)
 :
@@ -3386,11 +4727,19 @@ FTMatchOptionProximityList::~FTMatchOptionProximityList()
 {
 }
 
+ostream& FTMatchOptionProximityList::put(ostream& s) const
+{
+}
+
+//-FTMatchOptionProximityList::
 
 
 
-//[345]	FTOr
-//----------
+
+
+
+// [345] FTOr
+// ----------
 FTOr::FTOr(
 	location const& _loc,
 	rchandle<FTOr> _ftor_h,
@@ -3406,10 +4755,18 @@ FTOr::~FTOr()
 {
 }
 
+ostream& FTOr::put(ostream& s) const
+{
+}
+
+//-FTOr::
 
 
-//[346]	FTAnd
-//-----------
+
+
+
+// [346] FTAnd
+// -----------
 FTAnd::FTAnd(
 	location const& _loc,
 	rchandle<FTAnd> _ftand_h,
@@ -3425,11 +4782,19 @@ FTAnd::~FTAnd()
 {
 }
 
+ostream& FTAnd::put(ostream& s) const
+{
+}
+
+//-FTAnd::
 
 
 
-//[347]	FTMildnot
-//---------------
+
+
+
+// [347] FTMildnot
+// ---------------
 FTMildnot::FTMildnot(
 	location const& _loc,
 	rchandle<FTMildnot> _ftmild_not_h,
@@ -3445,11 +4810,19 @@ FTMildnot::~FTMildnot()
 {
 }
 
+ostream& FTMildnot::put(ostream& s) const
+{
+}
+
+//-FTMildnot::
 
 
 
-//[348]	FTUnaryNot
-//----------------
+
+
+
+// [348] FTUnaryNot
+// ----------------
 FTUnaryNot::FTUnaryNot(
 	location const& _loc,
 	rchandle<FTWordsSelection> _words_selection_h,
@@ -3465,10 +4838,18 @@ FTUnaryNot::~FTUnaryNot()
 {
 }
 
+ostream& FTUnaryNot::put(ostream& s) const
+{
+}
+
+//-FTUnaryNot::
 
 
-//[349]	FTWordsSelection
-//----------------------
+
+
+
+// [349] FTWordsSelection
+// ----------------------
 FTWordsSelection::FTWordsSelection(
 	location const& _loc,
 	rchandle<FTWords> _words_h,
@@ -3486,11 +4867,19 @@ FTWordsSelection::~FTWordsSelection()
 {
 }
 
+ostream& FTWordsSelection::put(ostream& s) const
+{
+}
+
+//-FTWordsSelection::
 
 
 
-//[350]	FTWords
-//-------------
+
+
+
+// [350] FTWords
+// -------------
 FTWords::FTWords(
 	location const& _loc,
 	rchandle<FTWordsValue> _words_val_h,
@@ -3506,11 +4895,19 @@ FTWords::~FTWords()
 {
 }
 
+ostream& FTWords::put(ostream& s) const
+{
+}
+
+//-FTWords::
 
 
 
-//[351]	FTWordsValue
-//------------------
+
+
+
+// [351] FTWordsValue
+// ------------------
 FTWordsValue::FTWordsValue(
 	location const& _loc,
 	rchandle<Literal> _lit_h,
@@ -3526,11 +4923,19 @@ FTWordsValue::~FTWordsValue()
 {
 }
 
+ostream& FTWordsValue::put(ostream& s) const
+{
+}
+
+//-FTWordsValue::
 
 
 
-//[352]	FTProximity
-//-----------------
+
+
+
+// [352] FTProximity
+// -----------------
 FTProximity::FTProximity(
 	location const& _loc)
 :
@@ -3542,11 +4947,19 @@ FTProximity::~FTProximity()
 {
 }
 
+ostream& FTProximity::put(ostream& s) const
+{
+}
+
+//-FTProximity::
 
 
 
-//[353]	FTOrderedIndicator
-//------------------------
+
+
+
+// [353] FTOrderedIndicator
+// ------------------------
 FTOrderedIndicator::FTOrderedIndicator(
 	location const& _loc)
 :
@@ -3558,11 +4971,19 @@ FTOrderedIndicator::~FTOrderedIndicator()
 {
 }
 
+ostream& FTOrderedIndicator::put(ostream& s) const
+{
+}
+
+//-FTOrderedIndicator::
 
 
 
-//[354] FTMatchOption 	
-//-------------------
+
+
+
+// [354] FTMatchOption 	
+// -------------------
 FTMatchOption::FTMatchOption(
 	location const& _loc)
 :
@@ -3574,11 +4995,19 @@ FTMatchOption::~FTMatchOption()
 {
 }
 
+ostream& FTMatchOption::put(ostream& s) const
+{
+}
+
+//-FTMatchOption::
 
 
 
-//[355] FTCaseOption
-//------------------
+
+
+
+// [355] FTCaseOption
+// ------------------
 FTCaseOption::FTCaseOption(
 	location const& _loc,
 	ft_case_mode_t _mode)
@@ -3592,11 +5021,19 @@ FTCaseOption::~FTCaseOption()
 {
 }
 
+ostream& FTCaseOption::put(ostream& s) const
+{
+}
+
+//-FTCaseOption::
 
 
 
-//[356] FTDiacriticsOption
-//------------------------
+
+
+
+// [356] FTDiacriticsOption
+// ------------------------
 FTDiacriticsOption::FTDiacriticsOption(
 	location const& _loc,
 	ft_diacritics_mode_t _mode)
@@ -3610,11 +5047,19 @@ FTDiacriticsOption::~FTDiacriticsOption()
 {
 }
 
+ostream& FTDiacriticsOption::put(ostream& s) const
+{
+}
+
+//-FTDiacriticsOption::
 
 
 
-//[357] FTStemOption
-//------------------
+
+
+
+// [357] FTStemOption
+// ------------------
 FTStemOption::FTStemOption(
 	location const& _loc,
 	ft_stem_mode_t _mode)
@@ -3628,11 +5073,19 @@ FTStemOption::~FTStemOption()
 {
 }
 
+ostream& FTStemOption::put(ostream& s) const
+{
+}
+
+//-FTStemOption::
 
 
 
-//[358] FTThesaurusOption
-//-----------------------
+
+
+
+// [358] FTThesaurusOption
+// -----------------------
 FTThesaurusOption::FTThesaurusOption(
 	location const& _loc,
 	rchandle<FTThesaurusID> _thesaurusid_h,
@@ -3653,11 +5106,19 @@ FTThesaurusOption::~FTThesaurusOption()
 {
 }
 
+ostream& FTThesaurusOption::put(ostream& s) const
+{
+}
+
+//-FTThesaurusOption::
 
 
 
-//[358a] FTThesaurusList
-//----------------------
+
+
+
+// [358a] FTThesaurusList
+// ----------------------
 FTThesaurusList::FTThesaurusList(
 	location const& _loc)
 :
@@ -3669,10 +5130,18 @@ FTThesaurusList::~FTThesaurusList()
 {
 }
 
+ostream& FTThesaurusList::put(ostream& s) const
+{
+}
+
+//-FTThesaurusList::
 
 
-//[359] FTThesaurusID
-//-------------------
+
+
+
+// [359] FTThesaurusID
+// -------------------
 FTThesaurusID::FTThesaurusID(
 	location const& _loc,
 	std::string _thesaurus_name,
@@ -3690,11 +5159,19 @@ FTThesaurusID::~FTThesaurusID()
 {
 }
 
+ostream& FTThesaurusID::put(ostream& s) const
+{
+}
+
+//-FTThesaurusID::
 
 
 
-//[360] FTStopwordOption
-//----------------------
+
+
+
+// [360] FTStopwordOption
+// ----------------------
 FTStopwordOption::FTStopwordOption(
 	location const& _loc,
 	rchandle<FTRefOrList> _refor_list_h,
@@ -3712,11 +5189,19 @@ FTStopwordOption::~FTStopwordOption()
 {
 }
 
+ostream& FTStopwordOption::put(ostream& s) const
+{
+}
+
+//-FTStopwordOption::
 
 
 
-//[360a] FTInclExclStringLiteralList
-//----------------------------------
+
+
+
+// [360a] FTInclExclStringLiteralList
+// ----------------------------------
 FTInclExclStringLiteralList::FTInclExclStringLiteralList(
 	location const& _loc)
 :
@@ -3728,11 +5213,19 @@ FTInclExclStringLiteralList::~FTInclExclStringLiteralList()
 {
 }
 
+ostream& FTInclExclStringLiteralList::put(ostream& s) const
+{
+}
+
+//-FTInclExclStringLiteralList::
 
 
 
-//[361] FTRefOrList
-//-----------------
+
+
+
+// [361] FTRefOrList
+// -----------------
 FTRefOrList::FTRefOrList(
 	location const& _loc,
 	std::string _at_str,
@@ -3748,11 +5241,19 @@ FTRefOrList::~FTRefOrList()
 {
 }
 
+ostream& FTRefOrList::put(ostream& s) const
+{
+}
+
+//-FTRefOrList::
 
 
 
-//[361a] FTStringLiteralList
-//--------------------------
+
+
+
+// [361a] FTStringLiteralList
+// --------------------------
 FTStringLiteralList::FTStringLiteralList(
 	location const& _loc)
 :
@@ -3764,11 +5265,19 @@ FTStringLiteralList::~FTStringLiteralList()
 {
 }
 
+ostream& FTStringLiteralList::put(ostream& s) const
+{
+}
+
+//-FTStringLiteralList::
 
 
 
-//[362] FTInclExclStringLiteral
-//-----------------------------
+
+
+
+// [362] FTInclExclStringLiteral
+// -----------------------------
 FTInclExclStringLiteral::FTInclExclStringLiteral(
 	location const& _loc,
 	rchandle<FTRefOrList> _ref_or_list_h,
@@ -3784,10 +5293,18 @@ FTInclExclStringLiteral::~FTInclExclStringLiteral()
 {
 }
 
+ostream& FTInclExclStringLiteral::put(ostream& s) const
+{
+}
+
+//-FTInclExclStringLiteral::
 
 
-//[363] FTLanguageOption
-//----------------------
+
+
+
+// [363] FTLanguageOption
+// ----------------------
 FTLanguageOption::FTLanguageOption(
 	location const& _loc,
 	std::string _lang)
@@ -3801,11 +5318,19 @@ FTLanguageOption::~FTLanguageOption()
 {
 }
 
+ostream& FTLanguageOption::put(ostream& s) const
+{
+}
+
+//-FTLanguageOption::
 
 
 
-//[364] FTWildcardOption
-//----------------------
+
+
+
+// [364] FTWildcardOption
+// ----------------------
 FTWildcardOption::FTWildcardOption(
 	location const& _loc,
 	bool _with_b)
@@ -3819,11 +5344,19 @@ FTWildcardOption::~FTWildcardOption()
 {
 }
 
+ostream& FTWildcardOption::put(ostream& s) const
+{
+}
+
+//-FTWildcardOption::
 
 
 
-//[365]	FTContent
-//---------------
+
+
+
+// [365]	FTContent
+// ---------------
 FTContent::FTContent(
 	location const& _loc,
 	ft_content_mode_t _mode)
@@ -3837,11 +5370,19 @@ FTContent::~FTContent()
 {
 }
 
+ostream& FTContent::put(ostream& s) const
+{
+}
+
+//-FTContent::
 
 
 
-//[366]	FTAnyallOption
-//--------------------
+
+
+
+// [366]	FTAnyallOption
+// --------------------
 FTAnyallOption::FTAnyallOption(
 	location const& _loc,
 	ft_anyall_option_t _option)
@@ -3855,11 +5396,19 @@ FTAnyallOption::~FTAnyallOption()
 {
 }
 
+ostream& FTAnyallOption::put(ostream& s) const
+{
+}
+
+//-FTAnyallOption::
 
 
 
-//[367]	FTRange
-//-------------
+
+
+
+// [367] FTRange
+// -------------
 FTRange::FTRange(
 	location const& _loc,
 	rchandle<UnionExpr> _src_expr_h,
@@ -3875,11 +5424,19 @@ FTRange::~FTRange()
 {
 }
 
+ostream& FTRange::put(ostream& s) const
+{
+}
+
+//-FTRange::
 
 
 
-//[368]	FTDistance
-//----------------
+
+
+
+// [368] FTDistance
+// ----------------
 FTDistance::FTDistance(
 	location const& _loc,
 	rchandle<FTRange> _dist_h,
@@ -3895,11 +5452,19 @@ FTDistance::~FTDistance()
 {
 }
 
+ostream& FTDistance::put(ostream& s) const
+{
+}
+
+//-FTDistance::
 
 
 
-//[369]	FTWindow
-//--------------
+
+
+
+// [369] FTWindow
+// --------------
 FTWindow::FTWindow(
 	location const& _loc,
 	rchandle<UnionExpr> _window_h,
@@ -3915,11 +5480,19 @@ FTWindow::~FTWindow()
 {
 }
 
+ostream& FTWindow::put(ostream& s) const
+{
+}
+
+//-FTWindow::
 
 
 
-//[370]	FTTimes
-//-------------
+
+
+
+// [370] FTTimes
+// -------------
 FTTimes::FTTimes(
 	location const& _loc,
 	rchandle<FTRange> _range_h)
@@ -3933,11 +5506,19 @@ FTTimes::~FTTimes()
 {
 }
 
+ostream& FTTimes::put(ostream& s) const
+{
+}
+
+//-FTTimes::
 
 
 
-//[371]	FTScope
-//-------------
+
+
+
+// [371] FTScope
+// -------------
 FTScope::FTScope(
 	location const& _loc,
 	ft_scope_t _scope)
@@ -3951,11 +5532,19 @@ FTScope::~FTScope()
 {
 }
 
+ostream& FTScope::put(ostream& s) const
+{
+}
+
+//-FTScope::
 
 
 
-//[372]	FTUnit
-//------------
+
+
+
+// [372] FTUnit
+// ------------
 FTUnit::FTUnit(
 	location const& _loc,
 	ft_unit_t _unit)
@@ -3969,11 +5558,19 @@ FTUnit::~FTUnit()
 {
 }
 
+ostream& FTUnit::put(ostream& s) const
+{
+}
+
+//-FTUnit::
 
 
 
-//[373]	FTBigUnit
-//---------------
+
+
+
+// [373] FTBigUnit
+// ---------------
 FTBigUnit::FTBigUnit(
 	location const& _loc,
 	enum ft_big_unit_t _unit)
@@ -3987,11 +5584,19 @@ FTBigUnit::~FTBigUnit()
 {
 }
 
+ostream& FTBigUnit::put(ostream& s) const
+{
+}
+
+//-FTBigUnit::
 
 
 
-//[374]	FTIgnoreOption
-//--------------------
+
+
+
+// [374] FTIgnoreOption
+// --------------------
 FTIgnoreOption::FTIgnoreOption(
 	location const& _loc,
 	rchandle<UnionExpr> _union_h)
@@ -4005,9 +5610,18 @@ FTIgnoreOption::~FTIgnoreOption()
 {
 }
 
+ostream& FTIgnoreOption::put(ostream& s) const
+{
+}
+
+//-FTIgnoreOption::
+
+
+
 
 
 
 
 
 }	/* namespace xqp */
+
