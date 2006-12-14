@@ -2,18 +2,18 @@
  *
  *  $Id: unicode_decomposer.h,v 1.1.1.1 2006/10/09 06:58:37 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  */
 
-#ifndef _PV_UNICODE_DECOMPOSER_H_
-#define _PV_UNICODE_DECOMPOSER_H_
+#ifndef XQP_UNICODE_DECOMPOSER_H
+#define XQP_UNICODE_DECOMPOSER_H
 
 #include <vector>
 
-#include "../core/hashmap.h"
+#include "../util/hashmap.h"
 
-namespace pv {
+namespace xqp {
 
 static struct {
   unsigned codepoint;
@@ -1455,7 +1455,7 @@ static struct {
 class unicode_decomposer
 {
 protected:
-  hash32map< std::vector<unsigned short> > decompositionMap;
+  hashmap<std::vector<unsigned short> > decompositionMap;
 	static int codetab[];
 	static bool codetab_init;
   
@@ -1473,6 +1473,7 @@ public:
 };
 
 
-}	/* namespace pv */
-#endif	/* _PV_UNICODE_DECOMPOSER_H_ */
+}	/* namespace xqp */
+#endif	/* XQP_UNICODE_DECOMPOSER_H */
+
 

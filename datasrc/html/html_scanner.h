@@ -2,24 +2,27 @@
  *
  *  $Id: html_scanner.h,v 1.1.1.1 2006/10/09 06:58:31 Paul Pedersen Exp $
  *
- *  Copyright 2005-2006 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  */
-#ifndef _PV_HTML_SCANNER_H_
-#define _PV_HTML_SCANNER_H_
+#ifndef XQP_HTML_SCANNER_H
+#define XQP_HTML_SCANNER_H
 
-/*___________________________________________________________
-|                                                            |
-|  Scan HTML source, reporting lexical events.
-|  Used in conjunction with a scan_handler callback
-|  implementation.
-|____________________________________________________________|*/
+/*______________________________________________________________________
+|                                                            
+|	Scan HTML source, reporting lexical events.
+|	Used in conjunction with a scan_handler callback
+|	implementation.
+|
+|	Derived from the 'tagsoup' Java scanner.
+|	Licensed under the Academic Free License (AFL) 3.0.
+|	Original author: John Cowan (cowan@ccil.org).
+|________________________________________________________________________*/
 
-#include "../core/logger.h"
 #include "scan_handler.h"
 #include "unicode_decomposer.h"
 
-namespace pv {
+namespace xqp {
 
 class html_scanner
 {
@@ -28,7 +31,6 @@ protected:
 	int theNextState;							// next state
 	char* theOutputBuffer;				// output buffer
 	int theSize;									// current buffer size in use
-	logger* logr;									// server logging
   unicode_decomposer ud;
 
 public:
@@ -36,33 +38,27 @@ public:
 	~html_scanner();
 
 public:
- /*____________________________________________________________
-	|                                                            |
-	|  Scan HTML source, reporting lexical events.               |
-	|  @param r    buffer that provides characters               |
-	|  @param len  length of buffer                              |
-	|  @param h    scan_handler that accepts lexical events.     |
-	|____________________________________________________________|*/
+	/*______________________________________________________________________
+	|
+	|  Scan HTML source, reporting lexical events. 
+	|  @param r    buffer that provides characters 
+	|  @param len  length of buffer
+	|  @param h    scan_handler that accepts lexical events. 
+	|________________________________________________________________________*/
 	void scan(const char* r, unsigned len, scan_handler* h);
 
- /*____________________________________________________________
-	|                                                            |
-	|  A callback for the scan_handler that allows it to force   |
-	|  the lexer state to CDATA content (no markup is            |
-	|  recognized except the end of element.                     |
-	|____________________________________________________________|*/
+	/*______________________________________________________________________
+	|
+	|  A callback for the scan_handler that allows it to force 
+	|  the lexer state to CDATA content (no markup is
+	|  recognized except the end of element.) 
+	|________________________________________________________________________*/
 	void startCDATA();
-
- /*____________________________________________________________
-	|                                                            |
-	|  Set server logging                                        |
-	|____________________________________________________________|*/
-	void setLogger(logger*);
-
 
 private:
 	void save(int ch, scan_handler* h);
 	void flush(scan_handler* h);
+
 };
 
 
@@ -87,11 +83,5 @@ inline void html_scanner::flush(scan_handler* h)
 	else return;
 }
 
-inline void html_scanner::setLogger(logger* _logr)
-{
-	logr = _logr;
-}
-
-
-}	/* namespace pv */
-#endif /* _PV_HTML_SCANNER_H_ */
+}	/* namespace xqp */
+#endif /* XQP_HTML_SCANNER_H */

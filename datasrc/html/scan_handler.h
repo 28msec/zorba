@@ -2,19 +2,25 @@
  *
  *  $Id: scan_handler.h,v 1.1.1.1 2006/10/09 06:58:35 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  */
 
-#ifndef _PV_SCAN_HANDLER_H_
-#define _PV_SCAN_HANDLER_H_
+/*_______________________________________________________________________
+|
+|	Derived from the 'tagsoup' Java scanner.
+|	Licensed under the Academic Free License (AFL) 3.0.
+|	Original author: John Cowan (cowan@ccil.org).
+|________________________________________________________________________*/
+
+#ifndef XQP_SCAN_HANDLER_H
+#define XQP_SCAN_HANDLER_H
 
 #include <string>
 
-#include "../core/hashmap.h"
-//#include "tag_scanner.h"
+#include "../util/hashmap.h"
 
-namespace pv {
+namespace xqp {
 
 //tokens
 #define EOF_								 0		// 	eof
@@ -109,12 +115,12 @@ namespace pv {
 #define A_UNGET							28
 #define A_UNSAVE_PCDATA			29
 
-/*_____________________________________________________________________
-|                                                                      |
+/*_______________________________________________________________________
+|
 |  An interface that Scanners use to report events
 |  in the input stream.
 |  Per-method documentation appears in scan_handler.cpp.
-|______________________________________________________________________|*/
+|________________________________________________________________________*/
 
 static struct {
   unsigned short codepoint;
@@ -1122,97 +1128,54 @@ class scan_handler
 protected:	// state
 	unsigned short ent;
 	static hashmap<unsigned short> entityMap;
-	static hash32map<char> breaktagTable;
 	static bool static_init;
 
 public:	// ctor, dtor
 	scan_handler();
 	virtual ~scan_handler() {};
-	static void init_breaktags();
 
 public:	// callback methods
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report an attribute name, a value will not follow               |
-	//	|__________________________________________________________________|
+	// Report an attribute name, a value will not follow
 	virtual void adup(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report an attribute name, a value will follow                   |
-	//	|__________________________________________________________________|
+	// Report an attribute name, a value will follow
 	virtual void aname(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report an attribute value                                       |
-	//	|__________________________________________________________________|
+	// Report an attribute value
 	virtual void aval(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report an entity reference or character reference               |
-	//	|__________________________________________________________________|
+	// Report an entity reference or character reference
 	virtual void entity(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report EOF                                                      |
-	//	|__________________________________________________________________|
+	// Report EOF
 	virtual void eof(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report end tag                                                  |
-	//	|__________________________________________________________________|
+	// Report end tag
 	virtual void etag(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report general identifier (element type name) of a              |
-	//	|  start tag                                                       |
-	//	|__________________________________________________________________|
+	// Report general identifier (element type name) of a start tag 
 	virtual void gi(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report character data                                           |
-	//	|__________________________________________________________________|
+	// Report character data
 	virtual void pcdata(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report the data part of a processing instruction                |
-	//	|__________________________________________________________________|
+	// Report the data part of a processing instruction
 	virtual void pi(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report the target part of a processing instruction              |
-	//	|__________________________________________________________________|
+	// Report the target part of a processing instruction
 	virtual void pitarget(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report the close of a start tag                                 |
-	//	|__________________________________________________________________|
+	// Report the close of a start tag
 	virtual void stagc(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Report a comment                                                |
-	//	|__________________________________________________________________|
+	// Report a comment
 	virtual void cmnt(const char* buf, int offset, int length);
 
-	//	 __________________________________________________________________
-	//	|                                                                  |
-	//	|  Return the value of the last entity or character reference      |
-	//	|  reported.                                                       |
-	//	|__________________________________________________________________|
+	// Return the value of the last entity or character reference reported. 
 	unsigned short getEntity();
 
 };
 
 
-}	/* namespace pv */
-#endif	/* _PV_SCANHANDLER_H_ */
+}	/* namespace xqp */
+#endif	/* XQP_SCANHANDLER_H */
