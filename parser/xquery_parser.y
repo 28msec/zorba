@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//#include <typeinfo.h>
 #include <string>
 
 #include "../context/static_context.h"
@@ -717,6 +718,7 @@ Module :
 		{
 			if (debug) cout << "Module [main]\n";
 			$$ = $1;
+			$$->put(cout);
 		}
   | VersionDecl MainModule
 		{
@@ -1058,8 +1060,7 @@ FTOptionDecl :
 		DECLARE_FTOPTION  FTMatchOption
 		{
 			if (debug) cout << "FTOptionDecl [ ]\n";
-			$$ = new FTOptionDecl(@$,
-								dynamic_cast<FTMatchOption*>($2));
+			$$ = new FTOptionDecl(@$, $2);
 		}
 	;
 
@@ -1299,7 +1300,7 @@ VarDecl :
 			$$ = new VarDecl(@$,
 								driver.symtab.get($2),
 								NULL,
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  EXTERNAL
 		{
@@ -1315,7 +1316,7 @@ VarDecl :
 			$$ = new VarDecl(@$,
 								driver.symtab.get($2),
 								dynamic_cast<TypeDeclaration*>($3),
-								dynamic_cast<ExprSingle*>($5));
+								$5);
 		}
 	|	DECLARE_VARIABLE_DOLLAR  VARNAME  TypeDeclaration  EXTERNAL
 		{
@@ -1555,7 +1556,7 @@ EnclosedExpr :
 		{
 			if (debug) cout << "EnclosedExpr [ ]\n";
 			$$ = new EnclosedExpr(@$,
-								dynamic_cast<Expr*>($2));
+								$2);
 		}
 	;
 
@@ -1567,7 +1568,7 @@ QueryBody :
 		{
 			if (debug) cout << "QueryBody [expr]\n";
 			$$ = new QueryBody(@$,
-								dynamic_cast<Expr*>($1));
+								$1);
 		}
 	;
 
@@ -1579,16 +1580,14 @@ Expr :
 		{
 			if (debug) cout << "Expr [single]\n";
 			Expr* expr_p = new Expr(@$);
-			expr_p->push_back(dynamic_cast<ExprSingle*>($1));
+			expr_p->push_back($1);
 			$$ = expr_p;
 		}
 	|	Expr  COMMA  ExprSingle
 		{
 			if (debug) cout << "Expr [expr.single]\n";
 			Expr* expr_p = dynamic_cast<Expr*>($1);
-			if (expr_p) { 
-				expr_p->push_back(dynamic_cast<ExprSingle*>($3));
-			}
+			if (expr_p) expr_p->push_back($3);
 			$$ = $1;
 		}
 	;
@@ -1661,16 +1660,17 @@ FLWORExpr :
 			$$ = new FLWORExpr(@$,
 								dynamic_cast<ForLetClauseList*>($1),
 								NULL,NULL,
-								dynamic_cast<ExprSingle*>($3));
+								$3);
 		}
 	|	ForLetClauseList  WhereClause  RETURN  ExprSingle
 		{
 			if (debug) cout << "FLWORExpr [where.return]\n";
+			cout << "ExprSingle typeid = " << typeid(*$4).name() << endl;
 			$$ = new FLWORExpr(@$,
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
 								NULL,
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	|	ForLetClauseList  OrderByClause  RETURN  ExprSingle
 		{
@@ -1679,7 +1679,7 @@ FLWORExpr :
 								dynamic_cast<ForLetClauseList*>($1),
 								NULL,
 								dynamic_cast<OrderByClause*>($2),
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 		{
@@ -1688,7 +1688,7 @@ FLWORExpr :
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
 								dynamic_cast<OrderByClause*>($3),
-								dynamic_cast<ExprSingle*>($5));
+								$5);
 		}
 	;
 
@@ -1700,16 +1700,14 @@ ForLetClauseList :
 		{
 			if (debug) cout << "ForLetClauseList [single]\n";
 			ForLetClauseList* flc_list_p = new ForLetClauseList(@$);
-			flc_list_p->push_back(dynamic_cast<ForLetClause*>($1));
+			flc_list_p->push_back($1);
 			$$ = flc_list_p;
 		}
 	|	ForLetClauseList  ForLetClause
 		{
 			if (debug) cout << "ForLetClauseList [list]\n";
 			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>($1);
-			if (flc_list_p) {
-				flc_list_p->push_back(dynamic_cast<ForLetClause*>($2));
-			}
+			if (flc_list_p) flc_list_p->push_back($2);
 			$$ = $1;
 		}
 	;
@@ -1749,10 +1747,18 @@ VarInDeclList :
 		VarInDecl
 		{
 			if (debug) cout << "VarInDeclList [single]\n";
+			VarInDeclList* vardecl_list_p = new VarInDeclList(@$);
+			vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($1));
+			$$ = vardecl_list_p;
 		}
 	|	VarInDeclList  COMMA  DOLLAR  VarInDecl
 		{
 			if (debug) cout << "VarInDeclList [list]\n";
+			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>($1);
+			if (vardecl_list_p) {
+				vardecl_list_p->push_back(dynamic_cast<VarInDecl*>($4));
+			}
+			$$ = $1;
 		}
 	;
 
@@ -1766,7 +1772,7 @@ VarInDecl :
 			$$ = new VarInDecl(@$,
 								driver.symtab.get($1),
 								NULL,NULL,NULL,
-								dynamic_cast<ExprSingle*>($3));
+								$3);
 		}
 	|	VARNAME  TypeDeclaration  IN  ExprSingle
 		{
@@ -1775,7 +1781,7 @@ VarInDecl :
 								driver.symtab.get($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,NULL,
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	|	VARNAME  PositionalVar  IN  ExprSingle
 		{
@@ -1785,7 +1791,7 @@ VarInDecl :
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								NULL,
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	|	VARNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
 		{
@@ -1795,7 +1801,7 @@ VarInDecl :
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
 								NULL,
-								dynamic_cast<ExprSingle*>($5));
+								$5);
 		}
 	/* full-text extensions */
 	| VARNAME  FTScoreVar  IN  ExprSingle
@@ -1805,7 +1811,7 @@ VarInDecl :
 								driver.symtab.get($1),
 								NULL,NULL,
 								dynamic_cast<FTScoreVar*>($2),
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	| VARNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
 		{
@@ -1815,7 +1821,7 @@ VarInDecl :
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
 								dynamic_cast<FTScoreVar*>($3),
-								dynamic_cast<ExprSingle*>($5));
+								$5);
 		}
 	| VARNAME  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
@@ -1825,7 +1831,7 @@ VarInDecl :
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								dynamic_cast<FTScoreVar*>($3),
-								dynamic_cast<ExprSingle*>($5));
+								$5);
 		}
 	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
 		{
@@ -1835,7 +1841,7 @@ VarInDecl :
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
 								dynamic_cast<FTScoreVar*>($4),
-								dynamic_cast<ExprSingle*>($6));
+								$6);
 		}
 	;
 
@@ -1910,7 +1916,7 @@ VarGetsDecl :
 								driver.symtab.get($1),
 								NULL,
 								NULL,
-								dynamic_cast<ExprSingle*>($3));
+								$3);
 		}
 	|	VARNAME  TypeDeclaration  GETS  ExprSingle
 		{
@@ -1919,7 +1925,7 @@ VarGetsDecl :
 								driver.symtab.get($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	/* full-text extensions */
 	| VARNAME  FTScoreVar  GETS  ExprSingle
@@ -1929,7 +1935,7 @@ VarGetsDecl :
 								driver.symtab.get($1),
 								NULL,
 								dynamic_cast<FTScoreVar*>($2),
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	| VARNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
 		{
@@ -1938,7 +1944,7 @@ VarGetsDecl :
 								driver.symtab.get($1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<FTScoreVar*>($3),
-								dynamic_cast<ExprSingle*>($5));
+								$5);
 		}
 	;
 
@@ -1950,8 +1956,7 @@ WhereClause :
 		WHERE  ExprSingle
 		{
 			if (debug) cout << "WhereClause [ ]\n";
-			$$ = new WhereClause(@$,
-								dynamic_cast<ExprSingle*>($2));
+			$$ = new WhereClause(@$, $2);
 		}
 	;
 
@@ -2004,14 +2009,14 @@ OrderSpec :
 		{
 			if (debug) cout << "OrderSpec [single]\n";
 			$$ = new OrderSpec(@$,
-								dynamic_cast<ExprSingle*>($1),
+								$1,
 								NULL);
 		}
 	|	ExprSingle OrderModifier
 		{
 			if (debug) cout << "OrderSpec [single.modifier]\n";
 			$$ = new OrderSpec(@$,
-								dynamic_cast<ExprSingle*>($1),
+								$1,
 								dynamic_cast<OrderModifier*>($2));
 		}
 	;
@@ -2136,7 +2141,7 @@ QuantifiedExpr :
 			$$ = new QuantifiedExpr(@$,
 								QuantifiedExpr::some,
 								dynamic_cast<QVarInDeclList*>($2),
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	|	EVERY_DOLLAR  QVarInDeclList  SATISFIES  ExprSingle
 		{
@@ -2144,7 +2149,7 @@ QuantifiedExpr :
 			$$ = new QuantifiedExpr(@$,
 								QuantifiedExpr::every,
 								dynamic_cast<QVarInDeclList*>($2),
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	;
 
@@ -2180,7 +2185,7 @@ QVarInDecl :
 			if (debug) cout << "QVarInDecl [in]\n";
 			$$ = new QVarInDecl(@$,
 								driver.symtab.get($1),
-								dynamic_cast<ExprSingle*>($3));
+								$3);
 		}
 	|	VARNAME  TypeDeclaration  IN  ExprSingle 
 		{
@@ -2188,7 +2193,7 @@ QVarInDecl :
 			$$ = new QVarInDecl(@$,
 								driver.symtab.get($1),
 								dynamic_cast<TypeDeclaration*>($2),
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	;
 
@@ -2200,18 +2205,18 @@ TypeswitchExpr :
 		{
 			if (debug) cout << "TypeswitchExpr [cases.default.return]\n";
 			$$ = new TypeswitchExpr(@$,
-								dynamic_cast<Expr*>($2),
+								$2,
 								dynamic_cast<CaseClauseList*>($4),
-								dynamic_cast<ExprSingle*>($7));
+								$7);
 		}
 	|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  DOLLAR  VARNAME  RETURN  ExprSingle
 		{
 			if (debug) cout << "TypeswitchExpr [cases.default.varname.return]\n";
 			$$ = new TypeswitchExpr(@$,
-								dynamic_cast<Expr*>($2),
+								$2,
 								dynamic_cast<CaseClauseList*>($4),
 								driver.symtab.get($7),
-								dynamic_cast<ExprSingle*>($9));
+								$9);
 		}
 	;
 
@@ -2244,7 +2249,7 @@ CaseClause :
 			if (debug) cout << "CaseClause [case.return]\n";
 			$$ = new CaseClause(@$,
 								dynamic_cast<SequenceType*>($2),
-								dynamic_cast<ExprSingle*>($4));
+								$4);
 		}
 	|	CASE  DOLLAR  VARNAME  AS  SequenceType  RETURN  ExprSingle
 		{
@@ -2252,7 +2257,7 @@ CaseClause :
 			$$ = new CaseClause(@$,
 								driver.symtab.get($3),
 								dynamic_cast<SequenceType*>($5),
-								dynamic_cast<ExprSingle*>($7));
+								$7);
 		}
 	;
 
@@ -2264,9 +2269,9 @@ IfExpr :
 		{
 			if (debug) cout << "IfExpr [ ]\n";
 			$$ = new IfExpr(@$,
-								dynamic_cast<Expr*>($2),
-								dynamic_cast<ExprSingle*>($5),
-								dynamic_cast<ExprSingle*>($7));
+								$2,
+								$5,
+								$7);
 		}
 	;
 
@@ -2328,27 +2333,27 @@ ComparisonExpr :
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			if (debug) cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
 			$$ = new ComparisonExpr(@$,
-								dynamic_cast<FTContainsExpr*>($1),
+								$1,
 								dynamic_cast<ValueComp*>($2),
-								dynamic_cast<FTContainsExpr*>($3));
+								$3);
 		}
 	| FTContainsExpr  GeneralComp  FTContainsExpr
 		{
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			if (debug) cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
 			$$ = new ComparisonExpr(@$,
-								dynamic_cast<FTContainsExpr*>($1),
+								$1,
 								dynamic_cast<GeneralComp*>($2),
-								dynamic_cast<FTContainsExpr*>($3));
+								$3);
 		}
 	| FTContainsExpr  NodeComp  FTContainsExpr
 		{
 			/*  ::=  "is" | "<<" | ">>" */
 			if (debug) cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
 			$$ = new ComparisonExpr(@$,
-								dynamic_cast<FTContainsExpr*>($1),
+								$1,
 								dynamic_cast<NodeComp*>($2),
-								dynamic_cast<FTContainsExpr*>($3));
+								$3);
 		}
 	;
 
@@ -2761,14 +2766,14 @@ ValidateExpr :
 			if (debug) cout << "ValidateExpr [expr]\n";
 			$$ = new ValidateExpr(@$,
 								"strict",
-								dynamic_cast<Expr*>($2));
+								$2);
 		}
 	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "ValidateExpr [mode.expr]\n";
 			$$ = new ValidateExpr(@$,
 								driver.symtab.get($1),
-								dynamic_cast<Expr*>($3));
+								$3);
 		}
 	;
 
@@ -2788,7 +2793,7 @@ ExtensionExpr :
 			if (debug) cout << "ExtensionExpr [pragmalist.expr]\n";
 			$$ = new ExtensionExpr(@$,
 								dynamic_cast<PragmaList*>($1),
-								dynamic_cast<Expr*>($3));
+								$3);
 		}
 	;
 
@@ -2833,27 +2838,31 @@ Pragma :
 // -------------------
 /* folded into [65] */
 
+/*______________________________________________________________________
+|
+| Constraint: leading-lone-slash
+|	
+|	A single slash may appear either as a complete path expression or as 
+|	the first part of a path expression in which it is followed by a 
+|	RelativePathExpr, which can take the form of a NameTest ("*" or a 
+|	QName). In contexts where operators like "*", "union", etc., can 
+|	occur, parsers may have difficulty distinguishing operators from 
+|	NameTests. For example, without lookahead the first part of the 
+|	expression "/ * 5", for example is easily taken to be a complete 
+|	expression, "/ *", which has a very different interpretation (the 
+|	child nodes of "/"). 
+|	
+|	To reduce the need for lookahead, therefore, if the token immediately 
+|	following a slash is "*" or a keyword, then the slash must be the 
+|	beginning, but not the entirety, of a PathExpr (and the following 
+|	token must be a NameTest, not an operator). 
+|	
+|	A single slash may be used as the left-hand argument of an operator by 
+|	parenthesizing it: (/) * 5. The expression 5 * /, on the other hand, 
+|	is legal without parentheses. 
+|	
+|_______________________________________________________________________*/
 
-/*
-* Constraint: leading-lone-slash
-*
-* A single slash may appear either as a complete path expression or as the first
-* part of a path expression in which it is followed by a RelativePathExpr, which
-* can take the form of a NameTest ("*" or a QName). In contexts where operators
-* like "*", "union", etc., can occur, parsers may have difficulty distinguishing
-* operators from NameTests. For example, without lookahead the first part of the
-* expression "/ * 5", for example is easily taken to be a complete expression,
-* "/ *", which has a very different interpretation (the child nodes of "/").
-* 
-* To reduce the need for lookahead, therefore, if the token immediately following
-* a slash is "*" or a keyword, then the slash must be the beginning, but not the
-* entirety, of a PathExpr (and the following token must be a NameTest, not an
-* operator).
-* 
-* A single slash may be used as the left-hand argument of an operator by
-* parenthesizing it: (/) * 5. The expression 5 * /, on the other hand, is legal
-* without parentheses.
-*/
 
 // [67] PathExpr
 // -------------
@@ -2882,9 +2891,12 @@ PathExpr :
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
 			if (debug) cout << "PathExpr [relative]\n";
+			/*
 			$$ = new PathExpr(@$,
 								PathExpr::relative,
 								dynamic_cast<RelativePathExpr*>($1));
+								*/
+			$$ = $1;
 		}
 	;
 
@@ -2895,17 +2907,20 @@ RelativePathExpr :
 		StepExpr  %prec STEP_REDUCE
 		{
 			if (debug) cout << "RelativePathExpr [step]\n";
+			/*
 			$$ = new RelativePathExpr(@$,
 								RelativePathExpr::step,
-								dynamic_cast<StepExpr*>($1),
+								$1,
 								NULL);
+								*/
+			$$ = $1;						
 		}
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
 			if (debug) cout << "RelativePathExpr [step/relative]\n";
 			$$ = new RelativePathExpr(@$,
 								RelativePathExpr::slash,
-								dynamic_cast<StepExpr*>($1),
+								$1,
 								dynamic_cast<RelativePathExpr*>($3));
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
@@ -2913,7 +2928,7 @@ RelativePathExpr :
 			if (debug) cout << "RelativePathExpr [step//relative]\n";
 			$$ = new RelativePathExpr(@$,
 								RelativePathExpr::slash_slash,
-								dynamic_cast<StepExpr*>($1),
+								$1,
 								dynamic_cast<RelativePathExpr*>($3));
 		}
 	;
@@ -2925,6 +2940,7 @@ StepExpr :
 		AxisStep
 		{
 			if (debug) cout << "StepExpr [axis]\n";
+			cout << ">>>>>typeid([69].AxisStep) = " << typeid(*$1).name() << endl;
 			$$ = $1;
 		}
 	|	FilterExpr
@@ -2941,6 +2957,7 @@ AxisStep :
 		ForwardStep 
 		{
 			if (debug) cout << "AxisStep [forward]\n";
+			cout << ">>>>>typeid([70].ForwardStep) = " << typeid(*$1).name() << endl;
 			$$ = new AxisStep(@$,
 								dynamic_cast<ForwardStep*>($1),
 								NULL);
@@ -2977,11 +2994,12 @@ ForwardStep :
 			if (debug) cout << "ForwardStep [nodetest]\n";
 			$$ = new ForwardStep(@$,
 								dynamic_cast<ForwardAxis*>($1),
-								dynamic_cast<NodeTest*>($2));
+								$2);
 		}
 	|	AbbrevForwardStep
 		{
 			if (debug) cout << "ForwardStep [abbrev]\n";
+			cout << ">>>>>typeid([71].AbbrevForwardStep) = " << typeid(*$1).name() << endl;
 			$$ = new ForwardStep(@$,
 								dynamic_cast<AbbrevForwardStep*>($1));
 		}
@@ -3035,14 +3053,15 @@ AbbrevForwardStep :
 		NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
+			cout << ">>>>>typeid([73].NodeTest) = " << typeid(*$1).name() << endl;
 			$$ = new AbbrevForwardStep(@$,
-								dynamic_cast<NodeTest*>($1));
+								$1);
 		}
 	|	AT_SIGN  NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
 			$$ = new AbbrevForwardStep(@$,
-								dynamic_cast<NodeTest*>($2),
+								$2,
 								true);
 		}
 	;
@@ -3056,7 +3075,7 @@ ReverseStep :
 			if (debug) cout << "ReverseStep [nodetest]\n";
 			$$ = new ReverseStep(@$,
 								dynamic_cast<ReverseAxis*>($1),
-								dynamic_cast<NodeTest*>($2));
+								$2);
 		}
 	|	DOT_DOT
 		{
@@ -3168,14 +3187,14 @@ FilterExpr :
 		{
 			if (debug) cout << "FilterExpr [primary]\n";
 			$$ = new FilterExpr(@$,
-								dynamic_cast<PrimaryExpr*>($1),
+								$1,
 								NULL);
 		}
 	|	PrimaryExpr  PredicateList
 		{
 			if (debug) cout << "FilterExpr [primary.predlist]\n";
 			$$ = new FilterExpr(@$,
-								dynamic_cast<PrimaryExpr*>($1),
+								$1,
 								dynamic_cast<PredicateList*>($2));
 		}
 	;
@@ -3209,7 +3228,8 @@ Predicate :
 		LBRACK  Expr  RBRACK
 		{
 			if (debug) cout << "Predicate [ ]\n";
-			$$ = new Predicate(@$, dynamic_cast<Expr*>($2));
+			$$ = new Predicate(@$,
+								$2);
 		}
 	;
 
@@ -3320,7 +3340,8 @@ ParenthesizedExpr :
 	|	LPAR  Expr  RPAR
 		{
 			if (debug) cout << "ParenthesizedExpr [(expr)]\n";
-			$$ = new ParenthesizedExpr(@$, dynamic_cast<Expr*>($2));
+			$$ = new ParenthesizedExpr(@$,
+								$2);
 		}
 	;	
 
@@ -3342,7 +3363,8 @@ OrderedExpr :
 		ORDERED_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "OrderedExpr [expr]\n";
-			$$ = new OrderedExpr(@$, dynamic_cast<Expr*>($2));
+			$$ = new OrderedExpr(@$,
+								$2);
 		}
 	;
 
@@ -3353,6 +3375,8 @@ UnorderedExpr :
 		UNORDERED_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "UnorderedExpr [expr]\n";
+			$$ = new UnorderedExpr(@$,
+								$2);
 		}
 	;
 
@@ -3429,16 +3453,14 @@ ArgList :
 		{
 			if (debug) cout << "ArgList [single]\n";
 			ArgList* a_list_p = new ArgList(@$); 
-			a_list_p->push_back(dynamic_cast<ExprSingle*>($1));
+			a_list_p->push_back($1);
 			$$ = a_list_p;
 		}
 	|	ArgList  COMMA  ExprSingle
 		{
 			if (debug) cout << "ArgList [list]\n";
 			ArgList* a_list_p = dynamic_cast<ArgList*>($1);
-			if (a_list_p) {
-				a_list_p->push_back(dynamic_cast<ExprSingle*>($3));
-			}
+			if (a_list_p) a_list_p->push_back($3);
 			$$ = $1;
 		}
 	;
@@ -3531,16 +3553,14 @@ DirElemContentList :
 		{
 			if (debug) cout << "DirElemContentList [single]\n";
 			DirElemContentList* elem_content_list_p = new DirElemContentList(@$);
-			elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($1));
+			elem_content_list_p->push_back($1);
 			$$ = elem_content_list_p;
 		}
 	|	DirElemContentList  DirElemContent
 		{
 			if (debug) cout << "DirElemContentList [list]\n";
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>($1);
-			if (elem_content_list_p) {
-				elem_content_list_p->push_back(dynamic_cast<DirElemContent*>($2));
-			}
+			if (elem_content_list_p) elem_content_list_p->push_back($2);
 			$$ = $1;
 		}
 	;
@@ -3878,7 +3898,7 @@ CompDocConstructor :
 		{
 			if (debug) cout << "CompDocConstructor [ ]\n";
 			$$ = new CompDocConstructor(@$,
-								dynamic_cast<Expr*>($2));
+								$2);
 		}
 	;
 
@@ -3898,21 +3918,21 @@ CompElemConstructor :
 			if (debug) cout << "CompElemConstructor [content]\n";
 			$$ = new CompElemConstructor(@$,
 								new QName(QName::qn_elem,driver.symtab.get($1)),
-								dynamic_cast<Expr*>($2));
+								$2);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [name]\n";
 			$$ = new CompElemConstructor(@$,
-								dynamic_cast<Expr*>($2),
+								$2,
 								NULL);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [name.content]\n";
 			$$ = new CompElemConstructor(@$,
-								dynamic_cast<Expr*>($2),
-								dynamic_cast<Expr*>($5));
+								$2,
+								$5);
 		}
 	;
 
@@ -3944,21 +3964,21 @@ CompAttrConstructor :
 			if (debug) cout << "CompAttrConstructor [val]\n";
 			$$ = new CompAttrConstructor(@$,
 								new QName(QName::qn_attr,driver.symtab.get($1)),
-								dynamic_cast<Expr*>($2));
+								$2);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [name]\n";
 			$$ = new CompAttrConstructor(@$,
-								dynamic_cast<Expr*>($2),
+								$2,
 								NULL);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [name.val]\n";
 			$$ = new CompAttrConstructor(@$,
-								dynamic_cast<Expr*>($2),
-								dynamic_cast<Expr*>($5));
+								$2,
+								$5);
 		}
 	;
 
@@ -4002,21 +4022,21 @@ CompPIConstructor :
 			if (debug) cout << "CompPIConstructor [content]\n";
 			$$ = new CompPIConstructor(@$,
 								driver.symtab.get($2),
-								dynamic_cast<Expr*>($4));
+								$4);
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
 			if (debug) cout << "CompPIConstructor [target]\n";
 			$$ = new CompPIConstructor(@$,
-								dynamic_cast<Expr*>($3),
+								$3,
 								NULL);
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompPIConstructor [target.content]\n";
 			$$ = new CompPIConstructor(@$,
-								dynamic_cast<Expr*>($3),
-								dynamic_cast<Expr*>($6));
+								$3,
+								$6);
 		}
 	;
 
