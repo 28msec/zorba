@@ -9,6 +9,7 @@
 #ifndef XQP_QNAME_H
 #define XQP_QNAME_H
 
+#include <ostream>
 #include <string>
 #include "../util/rchandle.h"
 
@@ -34,36 +35,24 @@ public:
 	QName(
 		enum qname_type_t _type,
 		std::string const& _prefix,
-		std::string const& _name)
-	:
-		type(_type),
-		prefix(_prefix),
-		name(_name)
-	{ }
+		std::string const& _name);
 
 	QName(
 		enum qname_type_t _type,
-		std::string const& _name)
-	:
-		type(_type),
-		prefix(""),
-		name(_name)
-	{ }
+		std::string const& _name);
 
 	QName(
-		enum qname_type_t _type)
-	:
-		type(_type),
-		prefix(""),
-		name("")
-	{ }
+		enum qname_type_t _type);
 
-	~QName() {}
+	~QName();
 
 public:
 	enum qname_type_t type;
 	std::string get_prefix() const { return prefix; }
 	std::string get_name() const { return name; }
+
+public:
+	std::ostream& put(std::ostream& s) const;
 
 };
 

@@ -9,6 +9,10 @@
 #ifndef XQP_BUILTIN_TYPES_H
 #define XQP_BUILTIN_TYPES_H
 
+/*
+Pick up the Apache axis module.
+*/
+
 namespace xqp {
 
 enum static_type_t {
