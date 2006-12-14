@@ -2,7 +2,7 @@
  *
  *  $Id: tag_scanner_unittest.cpp 1 2006-08-31 07:31:37Z paul $
  *
- *  Copyright 2006-2007 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  */
 
@@ -11,7 +11,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace pv;
+using namespace xqp;
 
 int main(int argc, char* argv[])
 {
