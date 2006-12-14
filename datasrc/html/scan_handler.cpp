@@ -2,7 +2,7 @@
  *
  *  $Id: scan_handler.cpp,v 1.1.1.1 2006/10/09 06:58:35 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  */
 
@@ -19,7 +19,6 @@
 #include <iostream>
 #include <string>
 #include "../util/hashmap.h"
-#include "tag_scanner.h"
 
 using namespace std;
 namespace xqp {
@@ -38,7 +37,6 @@ scan_handler::scan_handler()
 	}
 }
 
-
 void scan_handler::adup(
 	const char* buf,
 	int offset,
@@ -47,7 +45,6 @@ void scan_handler::adup(
 	string s(buf,offset,length);;
 	cout << "adup: " << (length>0?s:"") << endl;
 }
-
 
 void scan_handler::aname(
 	const char* buf,
@@ -58,7 +55,6 @@ void scan_handler::aname(
 	cout << "aname: " << (length>0?s:"") << endl;
 }
 
-
 void scan_handler::aval(
 	const char* buf,
 	int offset,
@@ -67,7 +63,6 @@ void scan_handler::aval(
 	string s(buf,offset,length);
 	cout << "aval: " << (length>0?s:"") << endl;
 }
-
 
 void scan_handler::entity(
 	const char* buf,
@@ -81,7 +76,6 @@ void scan_handler::entity(
 	ent = (char)code;
 }
 
-
 void scan_handler::eof(
 	const char* buf,
 	int offset,
@@ -90,7 +84,6 @@ void scan_handler::eof(
 	string s(buf,offset,length);
 	cout << "eof" << endl;
 }
-
 
 void scan_handler::etag(
 	const char* buf,
@@ -101,7 +94,6 @@ void scan_handler::etag(
 	cout << "etag: " << (length>0?s:"") << endl;
 }
 
-
 void scan_handler::gi(
 	const char* buf,
 	int offset,
@@ -110,7 +102,6 @@ void scan_handler::gi(
 	string s(buf,offset,length);
 	cout << "gi: " << (length>0?s:"") << endl;
 }
-
 
 void scan_handler::pcdata(
 	const char* buf,
@@ -121,7 +112,6 @@ void scan_handler::pcdata(
 	cout << "pcdata: " << (length>0?s:"") << endl;
 }
 
-
 void scan_handler::pi(
 	const char* buf,
 	int offset,
@@ -130,7 +120,6 @@ void scan_handler::pi(
 	string s(buf,offset,length);
 	cout << "pi: " << (length>0?s:"") << endl;
 }
-
 
 void scan_handler::pitarget(
 	const char* buf,
@@ -141,7 +130,6 @@ void scan_handler::pitarget(
 	cout << "pitarget: " << (length>0?s:"") << endl;
 }
 
-
 void scan_handler::stagc(
 	const char* buf,
 	int offset,
@@ -150,7 +138,6 @@ void scan_handler::stagc(
 	string s(buf,offset,length);
 	cout << "stagc: " << (length>0?s:"") << endl;
 }
-
 
 void scan_handler::cmnt(
 	const char* buf,
@@ -161,12 +148,10 @@ void scan_handler::cmnt(
 	cout << "cmnt: " << (length>0?s:"") << endl;
 }
 
-
 unsigned short scan_handler::getEntity()
 {
 	return ent;
 }
-
 
 }	/* namespace xqp */
 
