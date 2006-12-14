@@ -2,122 +2,19 @@
  *
  *  $Id: tag_scanner.cpp,v 1.2 2006/10/13 06:54:00 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  */
 
 #include "tag_scanner.h"
 
-// C++
-#include <iostream>
 #include <string>
 
 using namespace std;
-namespace pv {
+namespace xqp {
 
-uint32_t tag_scanner::tag_map(tag_scanner::htmltag tag)
-{
-	switch(tag) {
-	case h_a: return 10;
-	case h_abbr: return 10;
-	case h_acronym: return 10;
-	case h_address: return 10;
-	case h_applet: return 10;
-	case h_area: return 10;
-	case h_b: return 20;
-	case h_base: return 10;
-	case h_basefont: return 10;
-	case h_bdo: return 10;
-	case h_big: return 20;
-	case h_blockquote: return 10;
-	case h_body: return 10;
-	case h_br: return 10;
-	case h_button: return 10;
-	case h_caption: return 10;
-	case h_center: return 10;
-	case h_cite: return 10;
-	case h_code: return 10;
-	case h_col: return 10;
-	case h_colgroup: return 10;
-	case h_dd: return 10;
-	case h_del: return 10;
-	case h_dfn: return 10;
-	case h_dir: return 10;
-	case h_div: return 10;
-	case h_dl: return 10;
-	case h_dt: return 10;
-	case h_em: return 20;
-	case h_fieldset: return 10;
-	case h_font: return 10;
-	case h_form: return 10;
-	case h_frame: return 10;
-	case h_frameset: return 10;
-	case h_h1: return 50;
-	case h_h2: return 40;
-	case h_h3: return 30;
-	case h_h4: return 20;
-	case h_h5: return 10;
-	case h_h6: return 10;
-	case h_head: return 10;
-	case h_hr: return 10;
-	case h_html: return 10;
-	case h_i: return 20;
-	case h_iframe: return 10;
-	case h_img: return 10;
-	case h_input: return 10;
-	case h_ins: return 10;
-	case h_isindex: return 10;
-	case h_kbd: return 10;
-	case h_label: return 10;
-	case h_legend: return 10;
-	case h_li: return 10;
-	case h_link: return 10;
-	case h_map: return 10;
-	case h_menu: return 10;
-	case h_meta: return 10;
-	case h_noframes: return 10;
-	case h_noscript: return 10;
-	case h_object: return 10;
-	case h_ol: return 10;
-	case h_optgroup: return 10;
-	case h_option: return 10;
-	case h_p: return 10;
-	case h_param: return 10;
-	case h_pre: return 10;
-	case h_q: return 10;
-	case h_s: return 10;
-	case h_samp: return 10;
-	case h_script: return 10;
-	case h_select: return 10;
-	case h_small: return 10;
-	case h_span: return 10;
-	case h_strike: return 10;
-	case h_strong: return 30;
-	case h_style: return 10;
-	case h_sub: return 10;
-	case h_sup: return 10;
-	case h_table: return 10;
-	case h_tbody: return 10;
-	case h_td: return 10;
-	case h_textarea: return 10;
-	case h_tfoot : return 10;
-	case h_th : return 10;
-	case h_thead: return 10;
-	case h_title: return 50;
-	case h_tr: return 10;
-	case h_tt: return 10;
-	case h_u: return 20;
-	case h_ul: return 10;
-	case h_var: return 10;
-	case h_url: return 50;
-	case h_vertical: return 10;
-	case bogon: return 10;
-	default: return 10;
-	}
-	return 10;
-}
-
-string tag_scanner::decode_htmltag(tag_scanner::htmltag tag) 
+string tag_scanner::decode_htmltag(
+	tag_scanner::htmltag tag) 
 {
 	switch(tag) {
 	case h_a: return "a";
@@ -220,7 +117,8 @@ string tag_scanner::decode_htmltag(tag_scanner::htmltag tag)
 }
 
 
-string tag_scanner::decode_htmlattr(tag_scanner::htmlattr attr) 
+string tag_scanner::decode_htmlattr(
+	tag_scanner::htmlattr attr) 
 {
 	switch (attr) {
   case a_action: return "action";
@@ -299,8 +197,8 @@ string tag_scanner::decode_htmlattr(tag_scanner::htmlattr attr)
 }
 
 
-
-string tag_scanner::decode_adtag(tag_scanner::adtag adtag) 
+string tag_scanner::decode_adtag(
+	tag_scanner::adtag adtag) 
 {
 	switch (adtag) {
 	case d_ad: return "ad";
@@ -335,4 +233,4 @@ string tag_scanner::decode_metafield(tag_scanner::metafield field)
 }
 
 
-}	/* namespace pv */
+}	/* namespace xqp */
