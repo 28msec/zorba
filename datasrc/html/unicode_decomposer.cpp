@@ -2,23 +2,25 @@
  *
  *  $Id: unicode_decomposer.cpp,v 1.1.1.1 2006/10/09 06:58:37 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR FOundation.
  *
  */
 
 #include "unicode_decomposer.h"
 
 using namespace std;
-namespace pv {
+namespace xqp {
 
 bool unicode_decomposer::codetab_init = false;
 int unicode_decomposer::codetab[16384];
 
-unicode_decomposer::~unicode_decomposer() {}
+unicode_decomposer::~unicode_decomposer()
+{
+}
 
 unicode_decomposer::unicode_decomposer()
 :
-decompositionMap(hash32map<vector<unsigned short> >(4096, .6))
+decompositionMap(hashmap<vector<unsigned short> >(4096, .6))
 {
 	if (!codetab_init) populate_codetab(); 
 }
@@ -53,4 +55,4 @@ bool unicode_decomposer::decompose(
 	return true;
 }
 
-}	/* namespace pv */
+}	/* namespace xqp */

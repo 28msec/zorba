@@ -2,9 +2,17 @@
  *
  *  $Id: html_scanner.cpp,v 1.1.1.1 2006/10/09 06:58:31 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 Paul Pedersen.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  */
+
+/*_______________________________________________________________________
+|
+|	Derived from the 'tagsoup' Java scanner.
+|	Licensed under the Academic Free License (AFL) 3.0.
+|	Original author: John Cowan (cowan@ccil.org).
+|________________________________________________________________________*/
+
 
 #include "html_scanner.h"
 
@@ -14,32 +22,11 @@
 #include <iostream>
 #include <sstream>
 
-#include "../core/hashmap.h"
-#include "../core/logger.h"
+#include "../util/hashmap.h"
 
 using namespace std;
 
- /*__________________________________________________________________
-	|                                                                  |
-	|                   Implementation notes                           |
-	|                                                                  |
-	|  This is a simple, fast, table-driven HTML scanner.              |
-	|  All the work occurs here:                                       |
-	|                                                                  |
-  |    int action = 0;                                               |
-	|    theNextState = stateTable[theState][tok];                     |
-	|    action       = actionTable[theState][tok];                    |
-	|                                                                  |
-	|  We make the transition from the current state to a new          |
-	|  (state,action) pair based on the current character token        |
-	|  read by looking up the answer in a pair of tables.              |
-	|                                                                  |
-	|  We then make callbacks based on the current state.              |
-	|__________________________________________________________________|*/
-
-
-
-namespace pv {
+namespace xqp {
 /*
 static int theWinMap[] = {     // Windows chars map
     0x20AC, 0xFFFD, 0x201A, 0x0192, 0x201E, 0x2026, 0x2020, 0x2021,
@@ -496,4 +483,4 @@ void html_scanner::startCDATA()
 }
 
 
-}	/* namespace pv */
+}	/* namespace xqp */
