@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: tag_scanner_unittest.cpp 1 2006-08-31 07:31:37Z paul $
+ *  $Id: tag_scanner_test.cpp 1 2006-08-31 07:31:37Z paul $
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
