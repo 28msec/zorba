@@ -49,12 +49,12 @@ public:
 	|  the lexer state to CDATA content (no markup is            
 	|  recognized except the end of element.                     
 	|____________________________________________________________*/
-	void startCDATA();
-
+	void startCDATA() { theNextState = S_CDATA; }
 
 private:
 	void save(int ch, scan_handler* h);
 	void flush(scan_handler* h);
+
 };
 
 

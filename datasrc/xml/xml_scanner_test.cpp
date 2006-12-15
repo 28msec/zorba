@@ -9,8 +9,8 @@
 #include <errno.h>
 #include <stdio.h>
 
-#include "../util/file.h"
-#include "../util/hashmap.h"
+#include "../../util/file.h"
+#include "../../util/xqpexception.h"
 #include "scan_handler.h"
 #include "xml_scanner.h"
 
@@ -25,7 +25,8 @@ int main(int argc, char* argv[])
       return -1;
     }
     string path(argv[1],0,strlen(argv[1]));
-    if (!file(path).exists()) {
+		file f(path);
+    if (!f.exists()) {
       cout << "file '" << path << "' does not exist\n";
       return -1;
     }
@@ -34,9 +35,9 @@ int main(int argc, char* argv[])
       cout << "open failed on '" << path << "' with error: " << strerror(errno);
       return -1;
     }
-    unsigned sz = f.getSize();
-    size_t n = (sz > (1<<20) ? (1<<20) : (size_t)(sz));
-    char ibuf[n];
+    unsigned sz = f.get_size();
+    size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
+    char* ibuf = new char[n];
     ssize_t m;
     if ((m = read(fd, ibuf, n))==-1) {
       cout << "read failed on '" << path << "' with error: " << strerror(errno) << endl;
@@ -47,8 +48,9 @@ int main(int argc, char* argv[])
     xmls.scan(ibuf, m, s);
     close(fd);
     delete s;
-  } catch (Exception& e1) {
-    cout << "Application exception: " << e1.what() << '\t' << e1.getMsg() << endl;
+		delete[] ibuf;
+  } catch (xqpexception& e1) {
+    cout << "Application exception: " << e1.what() << '\t' << e1.get_msg() << endl;
   } catch (exception& e2) {
     cout << "System exception: " << e2.what() << endl;
   } catch (...) {

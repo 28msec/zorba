@@ -23,8 +23,6 @@
 #include <iostream>
 #include <sstream>
 
-#include "../util/hashmap.h"
-
 using namespace std;
 namespace xqp {
 
@@ -441,21 +439,14 @@ void xml_scanner::scan(const char* r, unsigned len, scan_handler* h)
 			theSize = 0;
 			break;
 		default: {
-			ostringstream oss;
-			oss << "Can't process state " + action;
-			logr->log(logger::LOG_ERROR,"xml_scanner",oss.str()); }
+			cerr << "xml_scanner: Can't process state " << action << endl;
+		}
 		}
 		theState = theNextState;
 
 	}	/* end while */
 
 	h->eof(theOutputBuffer, 0, 0);
-}
-
-
-void xml_scanner::startCDATA()
-{
-	theNextState = S_CDATA;
 }
 
 

@@ -18,7 +18,7 @@
 
 #include <iostream>
 #include <string>
-#include "../util/hashmap.h"
+#include "../../util/hashmap.h"
 
 using namespace std;
 namespace xqp {
@@ -31,7 +31,7 @@ scan_handler::scan_handler()
 {
 	if (!static_init) {
 		static_init = true;
-		for (unsigned i=0; i<994; ++i) {
+		for (unsigned i=0; i<947; ++i) {
 			entityMap.put(entities[i].name, entities[i].codepoint);
 		}
 	}
