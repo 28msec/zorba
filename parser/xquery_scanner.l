@@ -486,6 +486,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {QName} {
+	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::QNAME;
 }

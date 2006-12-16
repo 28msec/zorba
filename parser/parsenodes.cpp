@@ -25,9 +25,30 @@ using namespace yy;
 namespace xqp {
 
 // printing
-char* indent[] = {"","\t","\t\t","\t\t\t","\t\t\t\t","\t\t\t\t\t",
-									"\t\t\t\t\t\t","\t\t\t\t\t\t\t","\t\t\t\t\t\t\t\t",
-									"\t\t\t\t\t\t\t\t\t","\t\t\t\t\t\t\t\t\t\t" };
+char* indent[] = {
+	"",
+	"\t",
+	"\t\t",
+	"\t\t\t",
+	"\t\t\t\t",
+	"\t\t\t\t\t",
+	"\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
+									};
+
 int printdepth = 0;
 #define INDENT	indent[++printdepth % 20]
 #define OUTDENT	indent[printdepth-- % 20]
@@ -2871,11 +2892,11 @@ ostream& RelativePathExpr::put(ostream& s) const
 	default: s << "???\n";
 	}
 	if (step_expr_h!=NULL) {
-		cout << ">>>>>RelativePathExpr::typeid(step_expr) = "<<typeid(*step_expr_h).name()<<endl;
+		//cout << ">>>>>RelativePathExpr::typeid(step_expr) = "<<typeid(*step_expr_h).name()<<endl;
 		step_expr_h->put(s);
 	}
 	if (relpath_expr_h!=NULL) {
-		cout << ">>>>>RelativePathExpr::typeid(relpath_expr) = "<<typeid(*relpath_expr_h).name()<<endl;
+		//cout << ">>>>>RelativePathExpr::typeid(relpath_expr) = "<<typeid(*relpath_expr_h).name()<<endl;
 		relpath_expr_h->put(s);
 	}
 	return s << OUTDENT << "]\n";
@@ -2988,11 +3009,7 @@ ostream& ForwardStep::put(ostream& s) const
 	s << INDENT << "ForwardStep[\n";
 	if (forward_axis_h!=NULL) forward_axis_h->put(s);
 	if (node_test_h!=NULL) node_test_h->put(s);
-	if (abbrev_step_h!=NULL) {
-		cout << ">>>>>ForwardStep::typeid(abbrev_step_h) = "
-				 << typeid(*abbrev_step_h).name() << endl;
-		abbrev_step_h->put(s);
-	}
+	if (abbrev_step_h!=NULL) abbrev_step_h->put(s);
 	return s << OUTDENT << "]\n";
 }
 
@@ -3291,7 +3308,7 @@ ostream& FilterExpr::put(ostream& s) const
 {
 	s << INDENT << "FilterExpr[\n";
 	if (primary_h!=NULL) {
-		cout << ">>>>>FilterExpr::typid(primary) = " << typeid(*primary_h).name() << endl;
+		//cout << ">>>>>FilterExpr::typid(primary) = " << typeid(*primary_h).name() << endl;
 		primary_h->put(s);
 	}
 	if (pred_list_h!=NULL) pred_list_h->put(s);
@@ -3713,7 +3730,6 @@ DirElemConstructor::DirElemConstructor(
 	dir_content_list_h(_dir_content_list_h)
 {
 	// assert: open_name == close_name
-	cout << ">>>>>DirElemConstructor<<<<<\n";
 	if (dir_content_list_h!=NULL) dir_content_list_h->put(cout);
 	else cout << "content list empty!\n";
 }
@@ -3726,6 +3742,7 @@ ostream& DirElemConstructor::put(ostream& s) const
 {
 	s << INDENT << "DirElemConstructor[";
 	if (elem_name_h!=NULL) elem_name_h->put(s);
+	s << endl;
 	if (attr_list_h!=NULL) attr_list_h->put(s);
 	if (dir_content_list_h!=NULL) dir_content_list_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -3777,7 +3794,7 @@ DirAttributeList::~DirAttributeList()
 
 ostream& DirAttributeList::put(ostream& s) const
 {
-	s << INDENT << "DirAttributeList[" << endl;
+	s << INDENT << "DirAttributeList[\n";
 	std::vector<rchandle<DirAttr> >::const_iterator it = dir_attr_hv.begin();
 	for (; it!=dir_attr_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
 	return s << OUTDENT << "]\n";
@@ -3810,6 +3827,7 @@ ostream& DirAttr::put(ostream& s) const
 {
 	s << INDENT << "DirAttr[";
 	if (atname_h!=NULL) atname_h->put(s);
+	s << endl;
 	if (dir_atval_h!=NULL) dir_atval_h->put(s);
 	return s << OUTDENT << "]\n";
 }
@@ -3847,7 +3865,7 @@ DirAttributeValue::~DirAttributeValue()
 
 ostream& DirAttributeValue::put(ostream& s) const
 {
-	s << INDENT << "DirAttributeValue[";
+	s << INDENT << "DirAttributeValue\n";
 	if (quot_attr_content_h!=NULL) quot_attr_content_h->put(s);
 	if (apos_attr_content_h!=NULL) apos_attr_content_h->put(s);
 	return s << OUTDENT << "]\n";
