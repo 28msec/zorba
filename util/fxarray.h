@@ -79,13 +79,11 @@ public:		// ctor,dtor
    */
   ~fxarray();
 
-
 	/**
    ** Destroy all the elements.
-	 **	In the mm case, unmap and close backing file.
+	 **	In the mmfile case, unmap and close backing file.
    */
 	void destroy() throw (xqpexception);
-
 
 public: 	// array interface
 	/**
@@ -118,6 +116,11 @@ public: 	// array interface
 	 */
   void fill(char initval);
 
+	/**
+	 **	Return mmfile
+   */
+	mmfile * get_mmfile() const { return mmf_p; }
+
 
 public:		// iterator interface
 	/**
@@ -146,7 +149,7 @@ public:		// memory-mapped only, nops in the non-mm case
 	 **
 	 ** @return path of backing file
 	 */
-	string get_path() const { return mmf_p->get_path(); }
+	string get_path() const { return mmf_p ? mmf_p->get_path() : ""; }
 
 	/**
 	 ** Rename the backing file.

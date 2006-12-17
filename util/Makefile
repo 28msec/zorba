@@ -108,6 +108,12 @@ fxarray_test :	fxarray_test.cpp fxarray.h
 		mmfile.do \
 		fxarray_test.cpp; \
 
+fxvector_test :	fxvector_test.cpp fxvector.h 
+	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o fxvector_test \
+		xqpexception.o \
+		tokenbuf.do \
+		mmfile.do \
+		fxvector_test.cpp; \
 
 fxcharheap : fxcharheap.h fxcharheap.cpp
 	g++ ${OPT} -c ${OPT} -o fxcharheap.do fxcharheap.cpp
