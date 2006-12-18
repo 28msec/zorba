@@ -48,6 +48,7 @@ mmfile::mmfile(
 	}
 
   if (eofoff==0) {	// new, empty file
+		cout << "mmfile::ctor: new, empty file\n";
 		off_t m = (initial_size >> 12) << 12;	// multiple of 4096
 		if (m<initial_size) m += (1<<12);			// round up
 
@@ -55,7 +56,7 @@ mmfile::mmfile(
 			IOEXCEPTION("lseek m-1 past EOF failed on: '"+path+"'");
 	  }
 	
-	  // create a 'hole' of size m-1
+	  // create a 'hole' of size m
 	  char buf[1] = { '\0' };
 	  if (write(fd, buf, 1) == -1) { 
 			IOEXCEPTION("write to m-1 past EOF failed on: '"+path+"'");
@@ -67,9 +68,11 @@ mmfile::mmfile(
 	  }
 	
 	  // initialize state
-	 	memset(data, 0, m);
+		eofoff = m;
+	 	memset(data, 0, eofoff);
   }
 	else {	// map an existing file
+		cout << "mmfile::ctor: map existing file\n";
     if ((data = (char*)mmap(0, eofoff, PROT_READ|PROT_WRITE,
                             MAP_FILE|MAP_SHARED, fd, 0))==MAP_FAILED) {
       IOEXCEPTION("mmap failed on: '"+path+"'");
@@ -115,14 +118,14 @@ throw (xqpexception)
   unmap();
 
   // double past the end
-  if (lseek(fd, eofoff-1, SEEK_END)==-1) {  // Note the -1
+  if (lseek(fd, eofoff-1, SEEK_END)==-1) {
 		IOEXCEPTION("lseek to 2*EOF failed on: '"+path+"'");
   }
 
   // write one byte: creates hole equal
   // in size to the original file
   char buf[1] = { '\0' };
-  if (write(fd, buf, 1) == -1) {            // Get back +1
+  if (write(fd, buf, 1) == -1) {
 		IOEXCEPTION("write to 2*EOF failed on: '"+path+"'");
   }
 

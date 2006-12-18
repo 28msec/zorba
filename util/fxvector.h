@@ -302,9 +302,13 @@ public:
 	 */
 	void push_back(const value_type& x)
 	{
-		if (finish+sizeof(value_type) > end_of_storage) { expand(); }
+		if (finish >= end_of_storage) expand();
 		std::_Construct(finish, x);
 		++finish;
+		if (mmf_p) {	// update offset_p
+			off_t* offset_p = reinterpret_cast<off_t*>(src);
+			*offset_p += sizeof(value_type);
+		}
 		//msync(src, mmf_p->get_eofoff(), MS_SYNC);
 	}
 
@@ -348,11 +352,21 @@ fxvector<T>::fxvector(
 	mmf_p(new mmfile(_path))
 {
 	src = mmf_p->get_data();
+
 	// the first sizeof(off_t) bytes stores offset to free storage
 	off_t* offset_p = reinterpret_cast<off_t*>(src);
-	start  = reinterpret_cast<T*>(&src[sizeof(off_t)]);
+	if (*offset_p == 0) {
+		*offset_p = sizeof(off_t);
+	}
+	cout << "fxvector::ctor: offset = " << *offset_p << endl; 
+
+	start  = reinterpret_cast<T*>(src + sizeof(off_t));
 	finish = reinterpret_cast<T*>(&src[*offset_p]);
-	end_of_storage = reinterpret_cast<T*>(&src[mmf_p->get_eofoff()]);
+	end_of_storage = reinterpret_cast<T*>(src + mmf_p->get_eofoff());
+
+	cout << "fxvector::ctor: start="<<(uint32_t)(start)
+			 <<", finish="<<(uint32_t)(finish)
+			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
 }
 
 
@@ -365,6 +379,9 @@ fxvector<T>::fxvector()
 	finish(reinterpret_cast<T*>(src)),
 	end_of_storage(reinterpret_cast<T*>(src+DEFAULT_SIZE))
 {
+	cout << "fxvector::ctor: start="<<(uint32_t)(start)
+			 <<", finish="<<(uint32_t)(finish)
+			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
 }
 
 
@@ -424,23 +441,37 @@ void fxvector<T>::expand()
 	uint32_t n = size() * sizeof(value_type);
 	uint32_t m = capacity() * sizeof(value_type);
 
+	cout << "fxvector::expand: n="<<n<<", m="<<m<<endl;
+	cout << "fxvector::expand: start="<<(uint32_t)(start)
+			 <<", finish="<<(uint32_t)(finish)
+			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
+
 	if (mmf_p) {
 		mmf_p->expand();
 		src = mmf_p->get_data();
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
-		start = reinterpret_cast<T*>(&src[sizeof(off_t)]);
+		cout << "fxvector::expand: offset = " << *offset_p << endl;
+
+		// update vector state
+		start = reinterpret_cast<T*>(src + sizeof(off_t));
 		finish = reinterpret_cast<T*>(&src[*offset_p]);
-		end_of_storage = reinterpret_cast<T*>(&src[mmf_p->get_eofoff()]);
+		end_of_storage = reinterpret_cast<T*>(src + mmf_p->get_eofoff());
 	}
 	else {
 		char* src0 = new char[m<<1];
 		memcpy(src0,src,n);
 		delete[] src;
 		src = src0;
+
+		// update vector state
 		start = reinterpret_cast<T*>(src);
 		finish = reinterpret_cast<T*>(&src[n]);
 		end_of_storage = reinterpret_cast<T*>(&src[m<<1]);
 	}
+
+	cout << "fxvector::expand: start="<<(uint32_t)(start)
+			 <<", finish="<<(uint32_t)(finish)
+			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
 
 }
 

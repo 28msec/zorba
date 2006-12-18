@@ -30,7 +30,7 @@ protected:	// state
   std::string path;			// backing file path name
   int fd;								// backing file id
   off_t eofoff;					// offset to eof = size of array in bytes
-  char * data;					// raw bytes
+  char* data;						// raw bytes
 
 public:			// ctor,dtor
 	mmfile(std::string const& path, uint32_t initial_size=4096);

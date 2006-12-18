@@ -101,14 +101,14 @@ mmfile_test :	mmfile_test.cpp mmfile.cpp mmfile.h
 		mmfile_test.cpp; \
 
 
-fxarray_test :	fxarray_test.cpp fxarray.h 
+fxarray_test :	fxarray_test.cpp fxarray.h mmfile.h mmfile.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o fxarray_test \
 		xqpexception.o \
 		tokenbuf.do \
 		mmfile.do \
 		fxarray_test.cpp; \
 
-fxvector_test :	fxvector_test.cpp fxvector.h 
+fxvector_test :	fxvector_test.cpp fxvector.h mmfile.h mmfile.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o fxvector_test \
 		xqpexception.o \
 		tokenbuf.do \
