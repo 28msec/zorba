@@ -1893,10 +1893,7 @@ ostream& QVarInDecl::put(ostream& s) const
 	s << INDENT << "QVarInDecl[";
 	s << "name=" << name << endl;
 	if (typedecl_h!=NULL) typedecl_h->put(s);
-	if (val_h!=NULL) {
-		val_h->put(s);
-		cout << "typeid(val_h) = " << typeid(*val_h).name() << endl; 
-	}
+	if (val_h!=NULL) val_h->put(s);
 	return s << OUTDENT << "]\n";
 }
 
