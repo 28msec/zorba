@@ -46,12 +46,21 @@ char* indent[] = {
 	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
 	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
 	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
+	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
 									};
-
 int printdepth = 0;
-#define INDENT	indent[++printdepth % 20]
-#define OUTDENT	indent[printdepth-- % 20]
+#define INDENT	indent[++printdepth % 30]
+#define OUTDENT	indent[printdepth-- % 30]
 #define UNDENT	printdepth--
 
 
@@ -2055,8 +2064,8 @@ ostream& IfExpr::put(ostream& s) const
 // -----------
 OrExpr::OrExpr(
 	location const& _loc,
-	rchandle<OrExpr> _or_expr_h,
-	rchandle<AndExpr> _and_expr_h)
+	rchandle<exprnode> _or_expr_h,
+	rchandle<exprnode> _and_expr_h)
 :
 	exprnode(_loc),
 	or_expr_h(_or_expr_h),
@@ -2085,8 +2094,8 @@ ostream& OrExpr::put(ostream& s) const
 // ------------
 AndExpr::AndExpr(
 	location const& _loc,
-	rchandle<AndExpr> _and_expr_h,
-	rchandle<ComparisonExpr> _comp_expr_h)
+	rchandle<exprnode> _and_expr_h,
+	rchandle<exprnode> _comp_expr_h)
 :
 	exprnode(_loc),
 	and_expr_h(_and_expr_h),
@@ -2115,8 +2124,8 @@ ostream& AndExpr::put(ostream& s) const
 // -------------------
 ComparisonExpr::ComparisonExpr(
 	location const& _loc,
-	rchandle<exprnode> _left_h,
 	rchandle<ValueComp> _valcomp_h,
+	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
 :
 	exprnode(_loc),
@@ -2130,8 +2139,8 @@ ComparisonExpr::ComparisonExpr(
 
 ComparisonExpr::ComparisonExpr(
 	location const& _loc,
-	rchandle<exprnode> _left_h,
 	rchandle<GeneralComp> _gencomp_h,
+	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
 :
 	exprnode(_loc),
@@ -2145,8 +2154,8 @@ ComparisonExpr::ComparisonExpr(
 
 ComparisonExpr::ComparisonExpr(
 	location const& _loc,
-	rchandle<exprnode> _left_h,
 	rchandle<NodeComp> _nodecomp_h,
+	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
 :
 	exprnode(_loc),
@@ -2182,7 +2191,7 @@ ostream& ComparisonExpr::put(ostream& s) const
 // --------------------
 FTContainsExpr::FTContainsExpr(
 	location const& _loc,
-	rchandle<RangeExpr> _range_expr_h,
+	rchandle<exprnode> _range_expr_h,
 	rchandle<FTSelection> _ftselect_h,
 	rchandle<FTIgnoreOption> _ftignore_h)
 :
@@ -2215,8 +2224,8 @@ ostream& FTContainsExpr::put(ostream& s) const
 // --------------
 RangeExpr::RangeExpr(
 	location const& _loc,
-	rchandle<AdditiveExpr> _from_expr_h,
-	rchandle<AdditiveExpr> _to_expr_h)
+	rchandle<exprnode> _from_expr_h,
+	rchandle<exprnode> _to_expr_h)
 :
 	exprnode(_loc),
 	from_expr_h(_from_expr_h),
@@ -2247,13 +2256,13 @@ ostream& RangeExpr::put(ostream& s) const
 // -----------------
 AdditiveExpr::AdditiveExpr(
 	location const& _loc,
-	rchandle<AdditiveExpr> _add_expr_h,
 	enum add_op_t _add_op,
-	rchandle<MultiplicativeExpr> _mult_expr_h)
+	rchandle<exprnode> _add_expr_h,
+	rchandle<exprnode> _mult_expr_h)
 :
 	exprnode(_loc),
-	add_expr_h(_add_expr_h),
 	add_op(_add_op),
+	add_expr_h(_add_expr_h),
 	mult_expr_h(_mult_expr_h)
 {
 }
@@ -2287,13 +2296,13 @@ ostream& AdditiveExpr::put(ostream& s) const
 // -----------------------
 MultiplicativeExpr::MultiplicativeExpr(
 	location const& _loc,
-	rchandle<MultiplicativeExpr> _mult_expr_h,
 	enum mult_op_t _mult_op,
-	rchandle<UnionExpr> _union_expr_h)
+	rchandle<exprnode> _mult_expr_h,
+	rchandle<exprnode> _union_expr_h)
 :
 	exprnode(_loc),
-	mult_expr_h(_mult_expr_h),
 	mult_op(_mult_op),
+	mult_expr_h(_mult_expr_h),
 	union_expr_h(_union_expr_h)
 {
 }
@@ -2327,8 +2336,8 @@ ostream& MultiplicativeExpr::put(ostream& s) const
 // --------------
 UnionExpr::UnionExpr(
 	location const& _loc,
-	rchandle<UnionExpr> _union_expr_h,
-	rchandle<IntersectExceptExpr> _intex_expr_h)
+	rchandle<exprnode> _union_expr_h,
+	rchandle<exprnode> _intex_expr_h)
 :
 	exprnode(_loc),
 	union_expr_h(_union_expr_h),
@@ -2358,14 +2367,14 @@ ostream& UnionExpr::put(ostream& s) const
 // ------------------------
 IntersectExceptExpr::IntersectExceptExpr(
 	location const& _loc,
-	rchandle<IntersectExceptExpr> _intex_expr_h,
 	enum intex_op_t _intex_op,
-	rchandle<InstanceofExpr> _instof_expr_h)
+	rchandle<exprnode> _intex_expr_h,
+	rchandle<exprnode> _instof_expr_h)
 :
 	exprnode(_loc),
+	intex_op(_intex_op),
 	intex_expr_h(_intex_expr_h),
-	instof_expr_h(_instof_expr_h),
-	intex_op(_intex_op)
+	instof_expr_h(_instof_expr_h)
 {
 }
 
@@ -2396,7 +2405,7 @@ ostream& IntersectExceptExpr::put(ostream& s) const
 // -------------------
 InstanceofExpr::InstanceofExpr(
 	location const& _loc,
-	rchandle<TreatExpr> _treat_expr_h,
+	rchandle<exprnode> _treat_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
 	exprnode(_loc),
@@ -2427,7 +2436,7 @@ ostream& InstanceofExpr::put(ostream& s) const
 // --------------
 TreatExpr::TreatExpr(
 	location const& _loc,
-	rchandle<CastableExpr> _castable_expr_h,
+	rchandle<exprnode> _castable_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
 	exprnode(_loc),
@@ -2457,7 +2466,7 @@ ostream& TreatExpr::put(ostream& s) const
 // -----------------
 CastableExpr::CastableExpr(
 	location const& _loc,
-	rchandle<CastExpr> _cast_expr_h,
+	rchandle<exprnode> _cast_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
 	exprnode(_loc),
@@ -2487,7 +2496,7 @@ ostream& CastableExpr::put(ostream& s) const
 // -------------
 CastExpr::CastExpr(
 	location const& _loc,
-	rchandle<UnaryExpr> _unary_expr_h,
+	rchandle<exprnode> _unary_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
 	exprnode(_loc),
@@ -2519,7 +2528,7 @@ ostream& CastExpr::put(ostream& s) const
 UnaryExpr::UnaryExpr(
 	location const& _loc,
 	rchandle<SignList> _signlist_h,
-	rchandle<ValueExpr> _value_expr_h)
+	rchandle<exprnode> _value_expr_h)
 :
 	exprnode(_loc),
 	signlist_h(_signlist_h),
@@ -2625,7 +2634,9 @@ ostream& GeneralComp::put(ostream& s) const
 	case ge: s << "ge"; break;
 	default: s << "???";
 	}
-	return s << OUTDENT << "]\n";
+	s << "]\n";
+	UNDENT;
+	return s;
 }
 
 //-GeneralComp::
@@ -2660,7 +2671,9 @@ ostream& ValueComp::put(ostream& s) const
 	case val_ge: s << "val_ge"; break;
 	default: s << "???";
 	}
-	return s << OUTDENT << "]\n";
+	s << "]\n";
+	UNDENT;
+	return s;
 }
 
 //-ValueComp::
@@ -2692,7 +2705,9 @@ ostream& NodeComp::put(ostream& s) const
 	case follows: s << "follows"; break;
 	default: s << "???";
 	}
-	return s << OUTDENT << "]\n";
+	s << "]\n";
+	UNDENT;
+	return s;
 }
 
 //-NodeComp::
@@ -2832,7 +2847,7 @@ ostream& Pragma::put(ostream& s) const
 PathExpr::PathExpr(
 	location const& _loc,
 	enum pathtype_t _type,
-	rchandle<RelativePathExpr> _relpath_expr_h)
+	rchandle<exprnode> _relpath_expr_h)
 :
 	exprnode(_loc),
 	type(_type),
@@ -2869,7 +2884,7 @@ RelativePathExpr::RelativePathExpr(
 	location const& _loc,
 	enum steptype_t _step_type,
 	rchandle<exprnode> _step_expr_h,
-	rchandle<RelativePathExpr> _relpath_expr_h)
+	rchandle<exprnode> _relpath_expr_h)
 :
 	exprnode(_loc),
 	step_type(_step_type),
@@ -2884,19 +2899,16 @@ RelativePathExpr::~RelativePathExpr()
 
 ostream& RelativePathExpr::put(ostream& s) const
 {
-	s << INDENT << "RelativePathExpr[";
-	switch(step_type) {
-	case step: s << "step\n"; break;
-	case slash: s << "slash\n"; break;
-	case slash_slash: s << "slash_slash\n"; break;
-	default: s << "???\n";
-	}
+	s << INDENT << "RelativePathExpr[\n";
 	if (step_expr_h!=NULL) {
-		//cout << ">>>>>RelativePathExpr::typeid(step_expr) = "<<typeid(*step_expr_h).name()<<endl;
 		step_expr_h->put(s);
 	}
 	if (relpath_expr_h!=NULL) {
-		//cout << ">>>>>RelativePathExpr::typeid(relpath_expr) = "<<typeid(*relpath_expr_h).name()<<endl;
+		switch(step_type) {
+		case slash: s << INDENT << "SLASH\n"; UNDENT; break;
+		case slash_slash: s << INDENT << "SLASHSLASH\n"; UNDENT;  break;
+		default: s << "\n";
+		}
 		relpath_expr_h->put(s);
 	}
 	return s << OUTDENT << "]\n";
@@ -3083,9 +3095,9 @@ AbbrevForwardStep::~AbbrevForwardStep()
 
 ostream& AbbrevForwardStep::put(ostream& s) const
 {
-	s << INDENT << "AbbrevForwardStep[\n";
+	s << INDENT << "AbbrevForwardStep[";
+	s << (attr_b ? "@\n" : "\n");
 	if (node_test_h!=NULL) node_test_h->put(s);
-	if (attr_b) s << "attr_b=" << attr_b << endl;
 	return s << OUTDENT << "]\n";
 }
 
@@ -3216,10 +3228,12 @@ NameTest::~NameTest()
 
 ostream& NameTest::put(ostream& s) const
 {
-	s << INDENT << "NameTest[\n";
+	s << INDENT << "NameTest[";
 	if (qname_h!=NULL) qname_h->put(s);
 	if (wild_h!=NULL) wild_h->put(s);
-	return s << OUTDENT << "]\n";
+	s << "]\n";
+	UNDENT;
+	return s;
 }
 
 //-NameTest::
@@ -3307,10 +3321,7 @@ FilterExpr::~FilterExpr()
 ostream& FilterExpr::put(ostream& s) const
 {
 	s << INDENT << "FilterExpr[\n";
-	if (primary_h!=NULL) {
-		//cout << ">>>>>FilterExpr::typid(primary) = " << typeid(*primary_h).name() << endl;
-		primary_h->put(s);
-	}
+	if (primary_h!=NULL) primary_h->put(s);
 	if (pred_list_h!=NULL) pred_list_h->put(s);
 	return s << OUTDENT << "]\n";
 }
@@ -3629,8 +3640,9 @@ FunctionCall::~FunctionCall()
 
 ostream& FunctionCall::put(ostream& s) const
 {
-	s << INDENT << "FunctionCall[\n";
+	s << INDENT << "FunctionCall[";
 	if (fname_h!=NULL) fname_h->put(s);
+	s << endl;
 	if (arg_list_h!=NULL) arg_list_h->put(s);
 	return s << OUTDENT << "]\n";
 }

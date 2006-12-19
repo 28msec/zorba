@@ -2177,19 +2177,19 @@ class OrExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<OrExpr> or_expr_h;
-	rchandle<AndExpr> and_expr_h;
+	rchandle<exprnode> or_expr_h;
+	rchandle<exprnode> and_expr_h;
 
 public:
 	OrExpr(
 		yy::location const&,
-		rchandle<OrExpr>,
-		rchandle<AndExpr>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 	~OrExpr();
 
 public:
-	rchandle<OrExpr> get_or_expr() const { return or_expr_h; }
-	rchandle<AndExpr> get_and_expr() const { return and_expr_h; }
+	rchandle<exprnode> get_or_expr() const { return or_expr_h; }
+	rchandle<exprnode> get_and_expr() const { return and_expr_h; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -2207,19 +2207,19 @@ class AndExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<AndExpr> and_expr_h;
-	rchandle<ComparisonExpr> comp_expr_h;
+	rchandle<exprnode> and_expr_h;
+	rchandle<exprnode> comp_expr_h;
 
 public:
 	AndExpr(
 		yy::location const&,
-		rchandle<AndExpr>,
-		rchandle<ComparisonExpr>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 	~AndExpr();
 
 public:
-	rchandle<AndExpr> get_and_expr() const { return and_expr_h; }
-	rchandle<ComparisonExpr> get_comp_expr() const { return comp_expr_h; }
+	rchandle<exprnode> get_and_expr() const { return and_expr_h; }
+	rchandle<exprnode> get_comp_expr() const { return comp_expr_h; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -2248,18 +2248,18 @@ protected:
 public:
 	ComparisonExpr(
 		yy::location const&,
-		rchandle<exprnode>,
 		rchandle<ValueComp>,
+		rchandle<exprnode>,
 		rchandle<exprnode>);
 	ComparisonExpr(
 		yy::location const&,
-		rchandle<exprnode>,
 		rchandle<GeneralComp>,
+		rchandle<exprnode>,
 		rchandle<exprnode>);
 	ComparisonExpr(
 		yy::location const&,
-		rchandle<exprnode>,
 		rchandle<NodeComp>,
+		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~ComparisonExpr();
 
@@ -2287,20 +2287,20 @@ class FTContainsExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<RangeExpr> range_expr_h;
+	rchandle<exprnode> range_expr_h;
 	rchandle<FTSelection> ftselect_h;
 	rchandle<FTIgnoreOption> ftignore_h;
 
 public:
 	FTContainsExpr(
 		yy::location const&,
-		rchandle<RangeExpr>,
+		rchandle<exprnode>,
 		rchandle<FTSelection>,
 		rchandle<FTIgnoreOption>);
 	~FTContainsExpr();
 
 public:
-	rchandle<RangeExpr> get_range_expr() const { return range_expr_h; }
+	rchandle<exprnode> get_range_expr() const { return range_expr_h; }
 	rchandle<FTSelection> get_ftselect() const { return ftselect_h; }
 	rchandle<FTIgnoreOption> get_ftignore() const { return ftignore_h; }
 
@@ -2321,19 +2321,19 @@ class RangeExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<AdditiveExpr> from_expr_h;
-	rchandle<AdditiveExpr> to_expr_h;
+	rchandle<exprnode> from_expr_h;
+	rchandle<exprnode> to_expr_h;
 
 public:
 	RangeExpr(
 		yy::location const&,
-		rchandle<AdditiveExpr>,
-		rchandle<AdditiveExpr>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 	~RangeExpr();
 
 public:
-	rchandle<AdditiveExpr> get_from_expr() const { return from_expr_h; }
-	rchandle<AdditiveExpr> get_to_expr() const { return to_expr_h; }
+	rchandle<exprnode> get_from_expr() const { return from_expr_h; }
+	rchandle<exprnode> get_to_expr() const { return to_expr_h; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -2359,22 +2359,22 @@ public:
 	};
 
 protected:
-	rchandle<AdditiveExpr> add_expr_h;
 	enum add_op_t add_op;
-	rchandle<MultiplicativeExpr> mult_expr_h;
+	rchandle<exprnode> add_expr_h;
+	rchandle<exprnode> mult_expr_h;
 
 public:
 	AdditiveExpr(
 		yy::location const&,
-		rchandle<AdditiveExpr>,
 		enum add_op_t add_op,
-		rchandle<MultiplicativeExpr>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 	~AdditiveExpr();
 
 public:
 	add_op_t get_add_op() const { return add_op; }
-	rchandle<AdditiveExpr> get_add_expr() const { return add_expr_h; }
-	rchandle<MultiplicativeExpr> get_mult_expr() const { return mult_expr_h; }
+	rchandle<exprnode> get_add_expr() const { return add_expr_h; }
+	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -2404,21 +2404,21 @@ public:
 	};
 
 protected:
-	rchandle<MultiplicativeExpr> mult_expr_h;
 	enum mult_op_t mult_op;
-	rchandle<UnionExpr> union_expr_h;
+	rchandle<exprnode> mult_expr_h;
+	rchandle<exprnode> union_expr_h;
 
 public:
 	MultiplicativeExpr(
 		yy::location const&,
-		rchandle<MultiplicativeExpr>,
 		enum mult_op_t,
-		rchandle<UnionExpr>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 	~MultiplicativeExpr();
 
 public:
-	rchandle<MultiplicativeExpr> get_mult_expr() const { return mult_expr_h; }
-	rchandle<UnionExpr> get_union_expr() const { return union_expr_h; }
+	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
+	rchandle<exprnode> get_union_expr() const { return union_expr_h; }
 	enum mult_op_t get_mult_op() const { return mult_op; }
 
 public:
@@ -2439,19 +2439,19 @@ class UnionExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<UnionExpr> union_expr_h;
-	rchandle<IntersectExceptExpr> intex_expr_h;
+	rchandle<exprnode> union_expr_h;
+	rchandle<exprnode> intex_expr_h;
 
 public:
 	UnionExpr(
 		yy::location const&,
-		rchandle<UnionExpr>,
-		rchandle<IntersectExceptExpr>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 	~UnionExpr();
 
 public:
-	rchandle<UnionExpr> union_expr() const { return union_expr_h; }
-	rchandle<IntersectExceptExpr> intex_expr() const { return intex_expr_h; }
+	rchandle<exprnode> union_expr() const { return union_expr_h; }
+	rchandle<exprnode> intex_expr() const { return intex_expr_h; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -2477,22 +2477,22 @@ public:
 	};
 
 protected:
-	rchandle<IntersectExceptExpr> intex_expr_h;
 	enum intex_op_t intex_op;
-	rchandle<InstanceofExpr> instof_expr_h;
+	rchandle<exprnode> intex_expr_h;
+	rchandle<exprnode> instof_expr_h;
 
 public:
 	IntersectExceptExpr(
 		yy::location const&,
-		rchandle<IntersectExceptExpr>,
 		enum intex_op_t,
-		rchandle<InstanceofExpr>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 	~IntersectExceptExpr();
 
 public:
-	rchandle<IntersectExceptExpr> get_intex_expr() const { return intex_expr_h; }
+	rchandle<exprnode> get_intex_expr() const { return intex_expr_h; }
 	enum intex_op_t get_intex_op() const { return intex_op; }
-	rchandle<InstanceofExpr> get_instof_expr() const { return instof_expr_h; }
+	rchandle<exprnode> get_instof_expr() const { return instof_expr_h; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -2511,18 +2511,18 @@ class InstanceofExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<TreatExpr> treat_expr_h;
+	rchandle<exprnode> treat_expr_h;
 	rchandle<SequenceType> seqtype_h;
 
 public:
 	InstanceofExpr(
 		yy::location const&,
-		rchandle<TreatExpr>,
+		rchandle<exprnode>,
 		rchandle<SequenceType>);
 	~InstanceofExpr();
 
 public:
-	rchandle<TreatExpr> get_treat_expr() const { return treat_expr_h; }
+	rchandle<exprnode> get_treat_expr() const { return treat_expr_h; }
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
 public:
@@ -2542,18 +2542,18 @@ class TreatExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<CastableExpr> castable_expr_h;
+	rchandle<exprnode> castable_expr_h;
 	rchandle<SequenceType> seqtype_h;
 
 public:
 	TreatExpr(
 		yy::location const&,
-		rchandle<CastableExpr>,
+		rchandle<exprnode>,
 		rchandle<SequenceType>);
 	~TreatExpr();
 
 public:
-	rchandle<CastableExpr> get_castable_expr() const { return castable_expr_h; }
+	rchandle<exprnode> get_castable_expr() const { return castable_expr_h; }
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
 public:
@@ -2573,18 +2573,18 @@ class CastableExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<CastExpr> cast_expr_h;
+	rchandle<exprnode> cast_expr_h;
 	rchandle<SingleType> singletype_h;
 
 public:
 	CastableExpr(
 		yy::location const&,
-		rchandle<CastExpr>,
+		rchandle<exprnode>,
 		rchandle<SingleType>);
 	~CastableExpr();
 
 public:
-	rchandle<CastExpr> cast_expr() const { return cast_expr_h; }
+	rchandle<exprnode> cast_expr() const { return cast_expr_h; }
 	rchandle<SingleType> singletype() const { return singletype_h; }
 
 public:
@@ -2604,18 +2604,18 @@ class CastExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<UnaryExpr> unary_expr_h;
+	rchandle<exprnode> unary_expr_h;
 	rchandle<SingleType> singletype_h;
 
 public:
 	CastExpr(
 		yy::location const&,
-		rchandle<UnaryExpr>,
+		rchandle<exprnode>,
 		rchandle<SingleType>);
 	~CastExpr();
 
 public:
-	rchandle<UnaryExpr> get_unary_expr() const { return unary_expr_h; }
+	rchandle<exprnode> get_unary_expr() const { return unary_expr_h; }
 	rchandle<SingleType> get_singletype() const { return singletype_h; }
 
 public:
@@ -2635,18 +2635,18 @@ class UnaryExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ValueExpr> value_expr_h;
+	rchandle<exprnode> value_expr_h;
 	rchandle<SignList> signlist_h;
 
 public:
 	UnaryExpr(
 		yy::location const&,
 		rchandle<SignList>,
-		rchandle<ValueExpr>);
+		rchandle<exprnode>);
 	~UnaryExpr();
 
 public:
-	rchandle<ValueExpr> get_value_expr() const { return value_expr_h; }
+	rchandle<exprnode> get_value_expr() const { return value_expr_h; }
 	rchandle<SignList> get_signlist() const { return signlist_h; }
 
 public:
@@ -2991,18 +2991,18 @@ public:
 
 protected:
 	enum pathtype_t type;
-	rchandle<RelativePathExpr> relpath_expr_h;
+	rchandle<exprnode> relpath_expr_h;
 
 public:
 	PathExpr(
 		yy::location const&,
 		enum pathtype_t type,
-		rchandle<RelativePathExpr>);
+		rchandle<exprnode>);
 	~PathExpr();
 
 public:
 	enum pathtype_t get_type() const { return type; }
-	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
+	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -3031,20 +3031,20 @@ public:
 protected:
 	enum steptype_t step_type;
 	rchandle<exprnode> step_expr_h;
-	rchandle<RelativePathExpr> relpath_expr_h;
+	rchandle<exprnode> relpath_expr_h;
 
 public:
 	RelativePathExpr(
 		yy::location const&,
 		enum steptype_t,
 		rchandle<exprnode>,
-		rchandle<RelativePathExpr>);
+		rchandle<exprnode>);
 	~RelativePathExpr();
 
 public:
 	enum steptype_t get_step_type() const { return step_type; }
 	rchandle<exprnode> get_step_expr() const { return step_expr_h; }
-	rchandle<RelativePathExpr> get_relpath_expr() const { return relpath_expr_h; }
+	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;

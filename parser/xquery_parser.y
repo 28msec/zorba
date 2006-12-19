@@ -1956,7 +1956,8 @@ WhereClause :
 		WHERE  ExprSingle
 		{
 			if (debug) cout << "WhereClause [ ]\n";
-			$$ = new WhereClause(@$, $2);
+			$$ = new WhereClause(@$,
+								$2);
 		}
 	;
 
@@ -2288,8 +2289,8 @@ OrExpr :
 		{
 			if (debug) cout << "OrExpr [or.and]\n";
 			$$ = new OrExpr(@$,
-								dynamic_cast<OrExpr*>($1),
-								dynamic_cast<AndExpr*>($3));
+								$1,
+								$3);
 		}
 	;
 
@@ -2306,8 +2307,8 @@ AndExpr :
 		{
 			if (debug) cout << "AndExpr [and.comp]\n";
 			$$ = new AndExpr(@$,
-								dynamic_cast<AndExpr*>($1),
-								dynamic_cast<ComparisonExpr*>($3));
+								$1,
+								$3);
 		}
 	;
 
@@ -2333,8 +2334,8 @@ ComparisonExpr :
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			if (debug) cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
 			$$ = new ComparisonExpr(@$,
-								$1,
 								dynamic_cast<ValueComp*>($2),
+								$1,
 								$3);
 		}
 	| FTContainsExpr  GeneralComp  FTContainsExpr
@@ -2342,8 +2343,8 @@ ComparisonExpr :
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			if (debug) cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
 			$$ = new ComparisonExpr(@$,
-								$1,
 								dynamic_cast<GeneralComp*>($2),
+								$1,
 								$3);
 		}
 	| FTContainsExpr  NodeComp  FTContainsExpr
@@ -2351,8 +2352,8 @@ ComparisonExpr :
 			/*  ::=  "is" | "<<" | ">>" */
 			if (debug) cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
 			$$ = new ComparisonExpr(@$,
-								$1,
 								dynamic_cast<NodeComp*>($2),
+								$1,
 								$3);
 		}
 	;
@@ -2370,7 +2371,7 @@ FTContainsExpr :
 		{
 			if (debug) cout << "FTContainsExpr [range.ftselect]\n";
 			$$ = new FTContainsExpr(@$,
-								dynamic_cast<RangeExpr*>($1),
+								$1,
 								dynamic_cast<FTSelection*>($3),
 								NULL);
 		}
@@ -2378,7 +2379,7 @@ FTContainsExpr :
 		{
 			if (debug) cout << "FTContainsExpr [range.ftselect.ftignore]\n";
 			$$ = new FTContainsExpr(@$,
-								dynamic_cast<RangeExpr*>($1),
+								$1,
 								dynamic_cast<FTSelection*>($3),
 								dynamic_cast<FTIgnoreOption*>($4));
 		}
@@ -2397,8 +2398,8 @@ RangeExpr :
 		{
 			if (debug) cout << "RangeExpr [add.to.add]\n";
 			$$ = new RangeExpr(@$,
-								dynamic_cast<AdditiveExpr*>($1),
-								dynamic_cast<AdditiveExpr*>($3));
+								$1,
+								$3);
 		}
 	;
 
@@ -2415,17 +2416,17 @@ AdditiveExpr :
 		{
 			if (debug) cout << "AdditiveExpr [mult+mult]\n";
 			$$ = new AdditiveExpr(@$,
-								dynamic_cast<AdditiveExpr*>($1),
 								AdditiveExpr::plus,
-								dynamic_cast<MultiplicativeExpr*>($3));
+								$1,
+								$3);
 		}
 	|	AdditiveExpr  MINUS  MultiplicativeExpr
 		{
 			if (debug) cout << "AdditiveExpr [mult-mult]\n";
 			$$ = new AdditiveExpr(@$,
-								dynamic_cast<AdditiveExpr*>($1),
 								AdditiveExpr::minus,
-								dynamic_cast<MultiplicativeExpr*>($3));
+								$1,
+								$3);
 		}
 	;
 
@@ -2441,33 +2442,33 @@ MultiplicativeExpr :
 		{
 			if (debug) cout << "MultiplicativeExpr [mult*union]\n";
 			$$ = new MultiplicativeExpr(@$,
-								dynamic_cast<MultiplicativeExpr*>($1),
 								MultiplicativeExpr::times,
-								dynamic_cast<UnionExpr*>($3));
+								$1,
+								$3);
 		}
 	|	MultiplicativeExpr  DIV  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult.div.union]\n";
 			$$ = new MultiplicativeExpr(@$,
-								dynamic_cast<MultiplicativeExpr*>($1),
 								MultiplicativeExpr::div,
-								dynamic_cast<UnionExpr*>($3));
+								$1,
+								$3);
 		}
 	|	MultiplicativeExpr  IDIV  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult.idiv.union]\n";
 			$$ = new MultiplicativeExpr(@$,
-								dynamic_cast<MultiplicativeExpr*>($1),
 								MultiplicativeExpr::idiv,
-								dynamic_cast<UnionExpr*>($3));
+								$1,
+								$3);
 		}
 	|	MultiplicativeExpr  MOD  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult.mod.union]\n";
 			$$ = new MultiplicativeExpr(@$,
-								dynamic_cast<MultiplicativeExpr*>($1),
 								MultiplicativeExpr::mod,
-								dynamic_cast<UnionExpr*>($3));
+								$1,
+								$3);
 		}
 	;
 
@@ -2484,15 +2485,15 @@ UnionExpr :
 		{
 			if (debug) cout << "UnionExpr [union.union.interexcept]\n";
 			$$ = new UnionExpr(@$,
-								dynamic_cast<UnionExpr*>($1),
-								dynamic_cast<IntersectExceptExpr*>($3));
+								$1,
+								$3);
 		}
 	|	UnionExpr  VBAR  IntersectExceptExpr
 		{
 			if (debug) cout << "UnionExpr [union|interexcept]\n";
 			$$ = new UnionExpr(@$,
-								dynamic_cast<UnionExpr*>($1),
-								dynamic_cast<IntersectExceptExpr*>($3));
+								$1,
+								$3);
 		}
 	;
 
@@ -2509,17 +2510,17 @@ IntersectExceptExpr :
 		{
 			if (debug) cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
 			$$ = new IntersectExceptExpr(@$,
-								dynamic_cast<IntersectExceptExpr*>($1),
 								IntersectExceptExpr::intersect,
-								dynamic_cast<InstanceofExpr*>($3));
+								$1,
+								$3);
 		}
 	|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 		{
 			if (debug) cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
 			$$ = new IntersectExceptExpr(@$,
-								dynamic_cast<IntersectExceptExpr*>($1),
 								IntersectExceptExpr::except,
-								dynamic_cast<InstanceofExpr*>($3));
+								$1,
+								$3);
 		}
 	;
 
@@ -2536,7 +2537,7 @@ InstanceofExpr :
 		{
 			if (debug) cout << "InstanceofExpr [treat.seqtype]\n";
 			$$ = new InstanceofExpr(@$,
-								dynamic_cast<TreatExpr*>($1),
+								$1,
 								dynamic_cast<SequenceType*>($3));
 		}
 	;
@@ -2554,7 +2555,7 @@ TreatExpr :
 		{
 			if (debug) cout << "TreatExpr [castable.seqtype]\n";
 			$$ = new TreatExpr(@$,
-								dynamic_cast<CastableExpr*>($1),
+								$1,
 								dynamic_cast<SequenceType*>($3));
 		}
 	;
@@ -2572,7 +2573,7 @@ CastableExpr :
 		{
 			if (debug) cout << "CastableExpr [cast.singletype]\n";
 			$$ = new CastableExpr(@$,
-								dynamic_cast<CastExpr*>($1),
+								$1,
 								dynamic_cast<SingleType*>($3));
 		}
 	;
@@ -2590,7 +2591,7 @@ CastExpr :
 		{
 			if (debug) cout << "CastExpr [unary.singletype]\n";
 			$$ = new CastExpr(@$,
-								dynamic_cast<UnaryExpr*>($1),
+								$1,
 								dynamic_cast<SingleType*>($3));
 		}
 	;
@@ -2609,7 +2610,7 @@ UnaryExpr :
 			if (debug) cout << "UnaryExpr [signlist.value]\n";
 			$$ = new UnaryExpr(@$,
 								dynamic_cast<SignList*>($1),
-								dynamic_cast<ValueExpr*>($2));
+								$2);
 		}
 	;
 
@@ -2879,23 +2880,18 @@ PathExpr :
 			if (debug) cout << "PathExpr [/relative]\n";
 			$$ = new PathExpr(@$,
 								PathExpr::leading_slash,
-								dynamic_cast<RelativePathExpr*>($2));
+								$2);
 		}
 	|	SLASH_SLASH  RelativePathExpr
 		{
 			if (debug) cout << "PathExpr [//relative]\n";
 			$$ = new PathExpr(@$,
 								PathExpr::leading_slash_slash,
-								dynamic_cast<RelativePathExpr*>($2));
+								$2);
 		}
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
 			if (debug) cout << "PathExpr [relative]\n";
-			/*
-			$$ = new PathExpr(@$,
-								PathExpr::relative,
-								dynamic_cast<RelativePathExpr*>($1));
-								*/
 			$$ = $1;
 		}
 	;
@@ -2907,12 +2903,6 @@ RelativePathExpr :
 		StepExpr  %prec STEP_REDUCE
 		{
 			if (debug) cout << "RelativePathExpr [step]\n";
-			/*
-			$$ = new RelativePathExpr(@$,
-								RelativePathExpr::step,
-								$1,
-								NULL);
-								*/
 			$$ = $1;						
 		}
 	|	StepExpr  SLASH  RelativePathExpr 
@@ -2921,7 +2911,7 @@ RelativePathExpr :
 			$$ = new RelativePathExpr(@$,
 								RelativePathExpr::slash,
 								$1,
-								dynamic_cast<RelativePathExpr*>($3));
+								$3);
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
@@ -2929,7 +2919,7 @@ RelativePathExpr :
 			$$ = new RelativePathExpr(@$,
 								RelativePathExpr::slash_slash,
 								$1,
-								dynamic_cast<RelativePathExpr*>($3));
+								$3);
 		}
 	;
 
