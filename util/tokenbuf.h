@@ -31,6 +31,7 @@ public:
 
 public:
 	tokenbuf(char const* buf, char const* delimset);
+	tokenbuf(char const* buf, uint32_t offset, uint32_t length, char const* delimset);
 	~tokenbuf();
 
 public:	// manipulators

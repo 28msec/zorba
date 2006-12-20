@@ -480,7 +480,6 @@ template<typename T>
 void fxvector<T>::unmap()
 {
 	if (mmf_p) {
-		uint32_t n = size() * sizeof(value_type);
 		uint32_t m = capacity() * sizeof(value_type);
 
 	/*if (msync(src, eofoff,0)==-1) {

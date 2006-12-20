@@ -26,6 +26,22 @@ tokenbuf::tokenbuf(
 }
 
 
+tokenbuf::tokenbuf(
+	char const* _txt,
+	uint32_t		_offset,
+	uint32_t		_length,
+	char const* _delimset)
+:
+	txt(_txt+_offset),							// target text
+	delimset(_delimset),						// list of character delimiters
+	delimsetlen(strlen(delimset)),	// length of delimset
+	lowercase(false),								// true => return lower-case tokens
+	return_delims(false)						// true => return: token,delim,token,delim,...
+{
+	txtlen = strlen(txt) < _length ? strlen(txt) : _length;
+}
+
+
 tokenbuf::~tokenbuf()
 {
 }
