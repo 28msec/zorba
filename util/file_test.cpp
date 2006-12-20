@@ -9,6 +9,7 @@
 #include "file.h"
 
 #include <iostream>
+#include <sstream>
 #include "xqpexception.h"
 
 using namespace std;
@@ -56,6 +57,15 @@ int main(int argc, char* argv[])
 		file::dir_iterator end = d.end();
 		for (; it!=end; ++it) {
 			cout << *it << endl;
+		}
+
+		char* buf = new char[f.get_size()+1];
+		int n = f.readfile(buf,f.get_size());
+		istringstream iss(string(buf,0,n),ios::in);
+		string line;
+		while (!iss.eof()) {
+			getline(iss,line);
+			cout << line << endl;
 		}
 	} catch (xqpexception& e) {
 		cout << "Exception: " << e.get_msg() << endl;

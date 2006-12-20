@@ -41,7 +41,9 @@ static const char *FS_NAMES[] = {
 
 
 file::file(const std::string& _path)
-: path(_path),
+throw (xqpexception)
+:
+	path(_path),
   type(type_non_existent)
 {
 	struct stat st;
@@ -61,7 +63,7 @@ file::file(const std::string& _path)
 
 file::file(
 	std::string const& base,
-	std::string const& name)
+	std::string const& name) throw (xqpexception)
 :
 	path(base+"/"+name),
   type(type_non_existent)
@@ -87,6 +89,7 @@ file::~file()
 
 
 enum file::filetype file::get_filetype( )
+throw (xqpexception)
 {
   if (type!=type_non_existent) return type;
 
@@ -111,6 +114,7 @@ enum file::filetype file::get_filetype( )
 volatile void file::error(
 	string const& location,
 	string const& msg)
+throw (xqpexception)
 {
   std::string err = strerror(errno);
   errno = 0;
@@ -119,6 +123,7 @@ volatile void file::error(
 
 
 void file::create()
+throw (xqpexception)
 {
   int fd = ::creat(path.c_str(),0666);
   if (fd < 0) error(__FUNCTION__, "failed to create file "+path);
@@ -128,6 +133,7 @@ void file::create()
 
 
 void file::mkdir()
+throw (xqpexception)
 {
 	if (::mkdir(path.c_str(),0777)) {
 		ostringstream oss;
@@ -140,6 +146,7 @@ void file::mkdir()
 
 
 void file::remove(bool ignore)
+throw (xqpexception)
 {
   if (::remove(path.c_str()) && !ignore) {
     error(__FUNCTION__, "failed to remove "+path);
@@ -149,6 +156,7 @@ void file::remove(bool ignore)
 
 
 void file::rmdir(bool ignore)
+throw (xqpexception)
 {
 	if (::rmdir(path.c_str()) && !ignore) {
     error(__FUNCTION__, "rmdir failed on "+path);
@@ -158,6 +166,7 @@ void file::rmdir(bool ignore)
 
 
 void file::chdir()
+throw (xqpexception)
 {
   if (!is_directory()) return;
   if (::chdir(path.c_str())) {
@@ -168,6 +177,7 @@ void file::chdir()
 
 void file::rename(
 	std::string const& newpath)
+throw (xqpexception)
 {
   if (::rename(path.c_str(), newpath.c_str())) {
     ostringstream oss;
@@ -179,6 +189,7 @@ void file::rename(
 
 
 void file::touch()
+throw (xqpexception)
 {
   int fd = open(path.c_str(),O_CREAT|O_WRONLY,0666);
   if (fd<0) error(__FUNCTION__, "failed to open "+path);
@@ -194,6 +205,7 @@ void file::touch()
 
 void file::do_statfs(
 	std::string const& path)
+throw (xqpexception)
 {
   struct statfs buf;
   if (statfs(path.c_str(),&buf))
@@ -222,6 +234,28 @@ void file::do_statfs(
 }
 
 
+// read a file into a buffer
+int file::readfile(
+	char* docbuf,
+	uint32_t maxlen)
+throw (xqpexception)
+{
+  int fd = open(path.c_str(), O_RDONLY);
+  if (fd < 0) {
+		error(__FUNCTION__, "open("+path+") failed ["+strerror(errno)+"]");
+	}
+  ssize_t n = read(fd, docbuf, size);
+  if (n<0) {
+		error(__FUNCTION__, "read("+path+") failed ["+strerror(errno)+"]");
+  }
+	if (close(fd)==-1) {
+		error(__FUNCTION__, "close("+path+") failed ["+strerror(errno)+"]");
+  }
+	return n;
+}
+
+
+
 // dir_iterator
 
 #define END true
@@ -239,6 +273,7 @@ file::dir_iterator file::end()
 file::dir_iterator::dir_iterator(
 	string const& path,
 	bool end_iterator)
+throw (xqpexception)
 :
 	dirpath(path),
 	dir(opendir(path.c_str())),

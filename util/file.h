@@ -16,6 +16,7 @@
 #include <dirent.h>
 #include <string>
 
+#include "xqpexception.h"
 #include "rchandle.h"
 
 namespace xqp {
@@ -67,15 +68,15 @@ private:	// volume attributes
   bool truncnames;        // truncates long filenames
 
 public:
-  file(std::string const& pathname);
-  file(std::string const& rootpath, std::string const& name);
+  file(std::string const& pathname) throw (xqpexception);
+  file(std::string const& rootpath, std::string const& name) throw (xqpexception);
   ~file();
 
 public:	// common methods
   void set_path(std::string const& _path ) { path = _path; }
   void set_filetype(enum filetype _type ) { type = _type ; }
   std::string const& get_path() const { return path; }
-  enum filetype get_filetype();
+  enum filetype get_filetype() throw (xqpexception);
 
   bool is_directory() const { return (type==type_directory); }  
   bool is_file() const { return (type==type_file); }  
@@ -84,15 +85,15 @@ public:	// common methods
 
   bool is_invalid() const { return (type==type_invalid); }  
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
-  static volatile void error(std::string const& location, std::string const& msg);
+  static volatile void error(std::string const& location, std::string const& msg) throw (xqpexception);
   static void sync() { ::sync(); }
 
 
 public:	// file methods
-  void create();
-  void remove(bool ignore);
-  void rename(std::string const& newpath);
-  void touch();
+  void create() throw (xqpexception);
+  void remove(bool ignore) throw (xqpexception);
+  void rename(std::string const& newpath) throw (xqpexception);
+  void touch() throw (xqpexception);
 
   int64_t get_size() const				{ return size; }
   time_t  get_acctime() const			{ return atime; }
@@ -101,6 +102,9 @@ public:	// file methods
   uint32_t get_groupid() const		{ return group; }
   uint32_t get_permissions() const	{ return perms; }
 
+	int readfile(
+		char* docbuf,
+		uint32_t maxlen) throw (xqpexception);
 
 public:	// directory methods
 	class dir_iterator : public rcobject
@@ -111,7 +115,7 @@ public:	// directory methods
   	DIR *dir;
   	struct dirent *dirent;
 	public:
-  	dir_iterator(const std::string& path, bool end_iterator = false);
+  	dir_iterator(const std::string& path, bool end_iterator = false) throw (xqpexception);
   	~dir_iterator();
 	public:	// iterator interface
 		void operator++();
@@ -120,9 +124,9 @@ public:	// directory methods
 		const char* get_name() const { return dirent?dirent->d_name:0; } 
 	};
 
-	void mkdir();
-	void rmdir(bool ignore);
-  void chdir();
+	void mkdir() throw (xqpexception);
+	void rmdir(bool ignore) throw (xqpexception);
+  void chdir() throw (xqpexception);
 
   dir_iterator begin();
   dir_iterator end();
@@ -142,7 +146,7 @@ public:	// volume methods
   bool has_truncated_names() const { return truncnames; }
   bool is_empty() const { return (size == (int64_t)0); }
 
-  void do_statfs(std::string const& path);
+  void do_statfs(std::string const& path) throw (xqpexception);
 };
 
 
