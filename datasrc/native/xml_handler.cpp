@@ -83,6 +83,9 @@ void xml_handler::aname(const char* buf, int offset, int length)
 // attribute value callback
 void xml_handler::aval(const char* buf, int offset, int length)
 {
+#ifdef DEBUG
+	cout << "@" << the_attribute << "=" << string(buf,offset,length) << endl;
+#endif
 	if (length==0) return;
 	const char* p = &buf[offset];
 
@@ -106,6 +109,9 @@ void xml_handler::aval(const char* buf, int offset, int length)
 // &ent; entity callback
 void xml_handler::entity(const char* buf, int offset, int length)
 {
+#ifdef DEBUG
+	cout << '&' << string(buf,offset,length) << ';' << endl;
+#endif
 	string s(buf,offset,length);
 	unsigned short code;
   entityMap.get(s, code);
@@ -175,6 +181,9 @@ void xml_handler::gi(const char* buf, int offset, int length)
 // parsed content (tag body) callback
 void xml_handler::pcdata(const char* buf, int offset, int length)
 {
+#ifdef DEBUG
+	cout << "pcdata = " << string(buf,offset,length) << endl;
+#endif
 	if (length==0) return;
 	bool allWhite = true;
 	for (int i=0; i<length; ++i) {
@@ -223,6 +232,11 @@ void xml_handler::add_term(
 
 void xml_handler::handle_pcdata(const char* buf, int offset, int length)
 {
+#ifdef DEBUG
+	cout << "handle_pcata = |" << string(buf,offset,length)
+			 << "| [" << length << "]\n";
+#endif
+
 	tokenbuf tokbuf(buf,offset,length,DELIMSET);
 	tokbuf.set_lowercase(true);
 	string last("");
@@ -230,8 +244,17 @@ void xml_handler::handle_pcdata(const char* buf, int offset, int length)
 	tokenbuf::token_iterator it = tokbuf.begin();
 	tokenbuf::token_iterator end = tokbuf.end();
 
+#ifdef DEBUG
+	cout << "it.get_token_pos() = " << it.get_token_pos() << endl;
+	cout << "end.get_token_pos() = " << end.get_token_pos() << endl;
+#endif
+
 	for (;it!=end; ++it) {
 		string const& term = *it;
+#ifdef DEBUG
+		cout << "handle_pcdata::term = " << term << endl;
+		cout << "it.get_token_pos() = " << it.get_token_pos() << endl;
+#endif
 		if (term.length()==0) continue;
 
 		add_term(term, uri, term_pos);

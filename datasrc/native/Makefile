@@ -57,9 +57,9 @@ html_scanner_test :	html_scanner_test.cpp html_scanner.cpp html_scanner.h
     html_scanner_test.cpp
 
 xml_handler :	xml_handler.cpp xml_handler.h
-	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o xml_handler.${SUFX} xml_handler.cpp 
-xml_handler_test :	xml_handler_test.cpp xml_handler.cpp xml_handler.h
-	g++ $(LARGEFILEFLAGS) -Wall ${OPT} -o xml_handler_test \
+	g++ $(LARGEFILEFLAGS) -D DEBUG -Wall -c ${OPT} -o xml_handler.${SUFX} xml_handler.cpp 
+xml_handler_test :	xml_handler_test.cpp xml_handler.cpp xml_handler.h xml_handler.${SUFX}
+	g++ $(LARGEFILEFLAGS) -D DEBUG -Wall ${OPT} -o xml_handler_test \
     ../../util/xqpexception.o \
     ../../util/file.${SUFX} \
     ../../util/tokenbuf.${SUFX} \

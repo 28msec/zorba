@@ -28,18 +28,26 @@ int main(int argc, char* argv[])
       cout << "file '" << path << "' does not exist\n";
       return -1;
     }
+		cout << "read file..\n";
     unsigned sz = f.get_size();
     size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
     char* ibuf = new char[n+1];
 		f.readfile(ibuf,n);
+
+		cout << "allocating scan/handlers..\n";
     xml_scanner xscanner;
 		uint64_t uri = 0;
 		vector<xml_term> xterm_v;
 		xml_ostream xostream;
     xml_handler* xhandler = new xml_handler(uri, xterm_v, xostream);
+
+		cout << "scanning..\n";
     xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler));
+
+		cout << "cleaning up..\n";
     delete xhandler;
 		delete[] ibuf;
+
   } catch (xqpexception& e1) {
     cout << "Application exception: " << e1.what() << '\t' << e1.get_msg() << endl;
   } catch (exception& e2) {
