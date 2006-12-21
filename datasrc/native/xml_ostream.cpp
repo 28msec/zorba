@@ -10,26 +10,12 @@
 
 #include <ostream>
 #include "../../types/qname.h"
+
 #include "xml_store.h"
 #include "text_store.h"
 
 using namespace xqp;
 namespace xqp {
-
-
-
-#define     bool_code		0x00
-#define    int16_code		0x10
-#define   uint16_code		0x20
-#define    int32_code		0x30
-#define   uint32_code		0x40
-#define    int64_code		0x50
-#define   uint64_code		0x60
-#define  float32_code		0x70
-#define double64_code		0x80
-#define   qname0_code		0x90
-#define   qname1_code		0xa0
-#define   pcdata_code		0xc0
 
 
 xml_ostream::xml_ostream()
@@ -380,7 +366,7 @@ xml_ostream& xml_ostream::operator<<(double val)
 	return *this;
 }
 
-xml_ostream& xml_ostream::operator<<(QName& q)
+xml_ostream& xml_ostream::operator<<(QName const& q)
 {
 	string prefix = q.get_prefix();
 	string   name = q.get_name();
@@ -430,7 +416,7 @@ xml_ostream& xml_ostream::flush()
 	storage_manager.put(cbuf);
 	cbuf_id = storage_manager.get(cbuf);
 */
-	cout << cbuf << endl;
+	cout.write((const char*)cbuf,offset);
 	memset(cbuf,0,BLOCK_SIZE);
 	offset = 0;
 	return *this;

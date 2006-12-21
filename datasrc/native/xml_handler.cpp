@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 
+#include "../../types/qname.h"
 #include "../../util/xqpexception.h"
 #include "../../util/tokenbuf.h"
 
@@ -62,7 +63,19 @@ inline void xml_handler::add_term(
 // attribute without value callback
 void xml_handler::adup(const char* buf, int offset, int length)
 {
-	string s(buf,offset,length);
+	if (length==0) return;
+	the_attribute = string(buf,offset,length);
+	string prefix("");
+	string name("");
+	string::size_type loc = the_attribute.find(':', 0);
+	if (loc!=string::npos) {
+		prefix = the_attribute.substr(0,loc);
+		name = the_attribute.substr(loc+1);
+	}
+	else {
+		name = the_attribute;
+	}
+	xmlss << QName(QName::qn_attr,prefix,name);
 #ifdef DEBUG
 	cout << "@" << s << endl;
 #endif

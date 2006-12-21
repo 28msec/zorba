@@ -11,12 +11,15 @@
 
 #include <ostream>
 #include "../../types/qname.h"
+#include "xml_typecodes.h"
+
 //#include "xml_storage_manager.h"
 //#include "text_storage_manager.h"
 
 namespace xqp {
 
 #define BLOCK_SIZE 4096
+
 
 class xml_ostream : public std::ostream
 {
@@ -45,7 +48,7 @@ public:	// ostream interface
 	xml_ostream& operator<<(double val);
 	/*xml_ostream& operator<<(void* val); */
 	/*xml_ostream& operator<<(xml_ostream& (*pf)(xml_istream&)); */
-	xml_ostream& operator<<(QName& elem);
+	xml_ostream& operator<<(QName const&);
 
 	friend xml_ostream& operator<<(xml_ostream& os, char ch);
 	friend xml_ostream& operator<<(xml_ostream& os, signed char ch);
