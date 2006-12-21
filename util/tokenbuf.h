@@ -15,9 +15,9 @@
 namespace xqp {
 
 /*______________________________________________________________________
-		
-		Tokenized string buffer datamodel interface.
-	______________________________________________________________________*/
+|		
+|		Tokenized string buffer datamodel interface.
+|_______________________________________________________________________*/
 
 class tokenbuf
 {
@@ -30,8 +30,16 @@ public:
 	bool return_delims;		// true => token,delim,token,delim,...
 
 public:
-	tokenbuf(char const* buf, char const* delimset);
-	tokenbuf(char const* buf, uint32_t offset, uint32_t length, char const* delimset);
+	tokenbuf(
+		char const* buf,
+		char const* delimset);
+
+	tokenbuf(
+		char const* buf,
+		uint32_t offset,
+		uint32_t length,
+		char const* delimset);
+
 	~tokenbuf();
 
 public:	// manipulators
@@ -39,6 +47,7 @@ public:	// manipulators
 	bool get_lowercase() { return lowercase; }
 	void set_return_delims(bool b=true) { return_delims = b; }
 	bool get_return_delims() { return return_delims; }
+	uint32_t get_txtlen() const { return txtlen; }
 
 private:
 	tokenbuf(tokenbuf const& x) { }

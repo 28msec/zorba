@@ -74,9 +74,9 @@ tokenbuf::token_iterator::token_iterator(
 	delim_length(0),				// length of current delimiter
 	token_parity(false)			// 0 => delim, 1 => token
 {
-	if (!buf_p->return_delims) {
+	if (!buf_p->return_delims && offset < buf_p->get_txtlen()) {
 		cursor += strspn(buf_p->txt+offset,buf_p->delimset);
-		// (i.e.) scan past leading delims
+		// (i.e.) scan past leading delims for 'begin()' iterator, not 'end()'
 	}
 	++(*this);
 }
@@ -135,15 +135,20 @@ void tokenbuf::token_iterator::operator++()
   return_val_p = &next_token;
 }
 
+/*
+#define iter_state \
+	cout << "x.("<<x.cursor<<','<<x.token_index<<','<<x.delim_index<<")\n"; \
+	cout << "y.("<<y.cursor<<','<<y.token_index<<','<<y.delim_index<<")\n"; 
+*/
 
 bool operator!=(
 	tokenbuf::token_iterator const& x,
 	tokenbuf::token_iterator const& y)
 {
-	if (x.buf_p != y.buf_p) return true;
-	if (x.cursor != y.cursor) return true;
-	if (x.token_index != y.token_index) return true;
-	if (x.delim_index != y.delim_index) return true;
+	if (x.buf_p != y.buf_p)   { return true; }
+	if (x.cursor != y.cursor) { return true; }
+	if (x.token_index != y.token_index) { return true; }
+	if (x.delim_index != y.delim_index) { return true; }
 	return false;
 }
 
