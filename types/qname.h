@@ -30,19 +30,26 @@ public:
 protected:
 	std::string prefix;
 	std::string name;
+	uint64_t namespace_hash;
 
 public:
 	QName(
-		enum qname_type_t _type,
-		std::string const& _prefix,
-		std::string const& _name);
+		enum qname_type_t type,
+		std::string const& prefix,
+		std::string const& name,
+		uint64_t namespace_hash);
 
 	QName(
-		enum qname_type_t _type,
-		std::string const& _name);
+		enum qname_type_t type,
+		std::string const& prefix,
+		std::string const& name);
 
 	QName(
-		enum qname_type_t _type);
+		enum qname_type_t type,
+		std::string const& name);
+
+	QName(
+		enum qname_type_t type);
 
 	~QName();
 
@@ -50,6 +57,7 @@ public:
 	enum qname_type_t type;
 	std::string get_prefix() const { return prefix; }
 	std::string get_name() const { return name; }
+	uint64_t get_namespace_hash() const { return namespace_hash; }
 
 public:
 	std::ostream& put(std::ostream& s) const;
