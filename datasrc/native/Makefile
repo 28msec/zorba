@@ -72,6 +72,12 @@ xml_handler_test :	xml_handler_test.cpp xml_handler.cpp xml_handler.h xml_handle
 
 xml_ostream :	xml_ostream.cpp xml_ostream.h 
 	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o xml_ostream.${SUFX} xml_ostream.cpp
+xml_ostream_test :	xml_ostream_test.cpp xml_ostream.cpp xml_ostream.h
+	g++ $(LARGEFILEFLAGS) -D DEBUG -Wall ${OPT} -o xml_ostream_test \
+    ../../util/xqpexception.o \
+    ../../types/QName.${SUFX} \
+    xml_ostream.${SUFX} \
+    xml_ostream_test.cpp
 
 blockstore :	blockstore.cpp blockstore.h 
 	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o blockstore.${SUFX} blockstore.cpp
