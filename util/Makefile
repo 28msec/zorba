@@ -15,12 +15,15 @@ persistent_vector_test : 	persistent_vector_test.cpp persistent_vector.h
 tokenbuf : tokenbuf.h tokenbuf.cpp
 	g++ -c ${OPT} -o tokenbuf.${SUFX} tokenbuf.cpp
 tokenbuf_test : tokenbuf.h tokenbuf.cpp tokenbuf_test.cpp
-	g++ ${OPT} -o tokenbuf_test tokenbuf.${SUFX} tokenbuf_test.cpp
+	g++ ${OPT} -o tokenbuf_test tokenbuf.${SUFX} \
+		xqpexception.o \
+		file.${SUFX} \
+		tokenbuf_test.cpp
 
 
 hashfun_test :	hashfun_test.cpp hashfun.h 
 	g++ $(LARGEFILEFLAGS) -Wall ${OPT} -o hashfun_test \
-		xqpexception.${SUFX} \
+		xqpexception.o \
 		hashfun_test.cpp
 
 
