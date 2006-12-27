@@ -37,6 +37,8 @@
 #include "apr_strings.h"
 
 #include <stdio.h>
+#include <dlfcn.h>
+#include "content_handler.h"
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -98,57 +100,48 @@ extern void handle_request(
 static int mod_xqp_method_handler(request_rec *r)
 {
     
-    // Get the module configuration
-    //cfg *s_cfg = ap_get_module_config(r->server->module_config, &example_module);
+  // Get the module configuration
+  cfg *s_cfg = ap_get_module_config(r->server->module_config, &xqp_module);
 
-    // Send a message to the log file.
-    //fprintf(stderr,"%s",s_cfg->string);
+  // Send a message to the log file.
+  fprintf(stderr,"%s",s_cfg->string);
     
+  // check for '/xqp'
+  if (strcmp(r->handler, "xqp-handler")) return DECLINED;
+     
+  //--need to start a timer to defend against broken connections
     
+  // set content type here: may want 'application/xquery'
+  ap_set_content_type(r, "text/html");
     
-    if (strcmp(r->handler, "xqp-handler")) {
-        return DECLINED;
-    }
+  // check for head requests
+  if (r->header_only) return OK;
 
-    /*
-     * We're about to start sending content, so we need to force the HTTP
-     * headers to be sent at this point.  
-     */
-     
-    /*
-     * --We also need to start a timer so the server can know if the connection
-     * is broken.
-     */
-     
-    ap_set_content_type(r, "text/html");
-    
-    /*
-     * If we're only supposed to send header information (HEAD request), we're
-     * already there.
-     */
-    if (r->header_only) {
-        return OK;
-    }
-
-    /*
-     * Now send our actual output.  Since we tagged this as being
-     * "text/html", we need to embed any HTML.
-     */
-    
-    char buf[65536];
-    handle_request(ap_get_server_version(),ap_get_server_built(),buf,65536);
-    ap_rputs(buf, r);
-    
-    
-    /*
-     * --We're all done, so cancel the timeout.
-     */
-     
-    /*
-     * We did what we wanted to do, so tell the rest of the server we
-     * succeeded.
-     */
+  // stub C++ interface: handle_request in a separately-compiled C++ module
+  void *lib_handle;
+  void (*fn)(const char*,const char*,char*,int);
+  int x;
+  char* error;
+  
+  lib_handle = dlopen("/lib/apache2/libtest.so", RTLD_LAZY);
+  if (!lib_handle) {
+    ap_rputs("<h2>Dynamic link error: failed to load '/lib/apache2/libtest.so</h2>\n", r);
+  }
+  
+  fn = dlsym(lib_handle,"handle_request");
+  if ((error = dlerror()) !=NULL) {
+    ap_rputs("<h2>Dynamic link error: failed to find function 'handle_request'</h2>\n", r);
     return OK;
+  }
+  
+  char buf[65536];
+  (*fn)(ap_get_server_version(),ap_get_server_built(),buf,65536);
+  ap_rputs(buf, r);
+  
+  dlclose(lib_handle);
+    
+  // --cancel the timer.
+  return OK;
 }
 
 

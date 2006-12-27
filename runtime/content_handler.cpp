@@ -3,6 +3,9 @@
 #include "http_request.h"
 #include "stdio.h"
 
+#include <vector>
+#include <string>
+
 
 void msg(
   const char* version,
@@ -10,6 +13,9 @@ void msg(
   char* buf,
   int max)
 {
+  std::vector<std::string> svec;
+  svec.push_back("test string");
+  
   sprintf(buf,
       "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">"
       "<HTML>\n"
@@ -33,7 +39,7 @@ void msg(
 
 extern "C" {
    
-char* handle_request(
+void handle_request(
   const char* version, 
   const char* built,
   char* buf,
