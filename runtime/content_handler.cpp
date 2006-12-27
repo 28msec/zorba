@@ -3,9 +3,10 @@
 #include "http_request.h"
 #include "stdio.h"
 
-#include <vector>
+#include <sstream>
 #include <string>
 
+using namespace std;
 
 void msg(
   const char* version,
@@ -13,26 +14,29 @@ void msg(
   char* buf,
   int max)
 {
-  std::vector<std::string> svec;
-  svec.push_back("test string");
+  ostringstream oss;
   
-  sprintf(buf,
+  oss <<
       "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">"
       "<HTML>\n"
       " <HEAD>\n"
-      "  <TITLE>mod_xqp Content-Handler Output\n"
-      "  </TITLE>\n"
+      "  <TITLE>mod_xqp Content-Handler Output</TITLE>\n"
       " </HEAD>\n"
       " <BODY>\n"
       "  <H1><SAMP>mod_xqp</SAMP> Module Content-Handler</H1>\n"
       "  <H2>Mark IV</H2>\n"
       "  <P>\n"
-      "  Apache HTTP Server version: \"%s\"\n"
-      "  <BR>\n"
-      "  Server built: \"%s\"\n"
-      "  </P>\n"
-      " </BODY>\n"
-      "</HTML>\n", version, built);
+      "  Apache HTTP Server version: \""
+      <<version<<
+      "\"<BR>\n"
+      "  Server built: \""
+      <<built<<
+      "\"</P>\n</BODY></HTML>";
+      
+  string s = oss.str();
+  int n = s.length();
+  int m = (n>max ? max : n);
+  strncpy(buf,s.c_str(),m);
 }
 
 

@@ -99,7 +99,6 @@ extern void handle_request(
  
 static int mod_xqp_method_handler(request_rec *r)
 {
-    
   // Get the module configuration
   cfg *s_cfg = ap_get_module_config(r->server->module_config, &xqp_module);
 
