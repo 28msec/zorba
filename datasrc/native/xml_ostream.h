@@ -9,7 +9,6 @@
 #ifndef XQP_XML_OSTREAM_H
 #define XQP_XML_OSTREAM_H
 
-#include <ostream>
 #include "../../types/qname.h"
 #include "xml_typecodes.h"
 
@@ -20,13 +19,13 @@ namespace xqp {
 
 #define BLOCK_SIZE 4096
 
-
-class xml_ostream : public std::ostream
+class xml_ostream
 {
 protected:
 	unsigned char cbuf[BLOCK_SIZE];
 	uint32_t offset;
 	uint64_t id;
+
 	//xml_storage_manager* xml_store_p;
 	//text_storage_manager* text_store_p;
 
@@ -37,17 +36,18 @@ public:
 public:	// ostream interface
 
 	// Perform formatted output operations (insertion)
-	xml_ostream& operator<<(bool val);
-	xml_ostream& operator<<(int16_t val);
-	xml_ostream& operator<<(uint16_t val);
+
 	xml_ostream& operator<<(int32_t val);
 	xml_ostream& operator<<(uint32_t val);
 	xml_ostream& operator<<(int64_t val);
 	xml_ostream& operator<<(uint64_t val);
+
 	xml_ostream& operator<<(float val);
 	xml_ostream& operator<<(double val);
+
 	/*xml_ostream& operator<<(void* val); */
 	/*xml_ostream& operator<<(xml_ostream& (*pf)(xml_istream&)); */
+
 	xml_ostream& operator<<(QName const&);
 
 	friend xml_ostream& operator<<(xml_ostream& os, char ch);
