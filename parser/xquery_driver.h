@@ -10,6 +10,7 @@
 #define XQP_XQUERY_DRIVER_H
 
 #include <string>
+#include <ostream>
 
 #include "symbol_table.h"
 #include "xquery_parser.tab.h"
@@ -41,13 +42,23 @@ public:	// state
   bool trace_parsing;
   std::string file;
 	xqp::symbol_table symtab;
+	std::ostream& os;
 
 	bool rename_bit;
 	bool ftcontains_bit;
 
 public:	
-  xquery_driver(uint32_t initial_heapsize = 1024);
+  xquery_driver(std::ostream&, uint32_t initial_heapsize = 1024);
   virtual ~xquery_driver();
+  
+public: // manipulators
+  void set_trace_scanning() { trace_scanning = true; }
+  void set_trace_parsing() { trace_parsing = true; }
+  bool get_trace_scanning() const { return trace_scanning; }
+  bool get_trace_parsing() const { return trace_parsing; }
+  
+  std::string get_file() const { return file; }
+  std::ostream& get_os() { return os; }
 
 public:
 	/**

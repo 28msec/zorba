@@ -1134,7 +1134,7 @@ public:
 	~ConstructionDecl();
 
 public:
-	enum static_context::construction_mode_t get_mode() const { mode; }
+	enum static_context::construction_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;

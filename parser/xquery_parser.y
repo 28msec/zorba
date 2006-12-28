@@ -718,7 +718,7 @@ Module :
 		{
 			if (debug) cout << "Module [main]\n";
 			$$ = $1;
-			$$->put(cout);
+			$$->put(driver.get_os());
 		}
   | VersionDecl MainModule
 		{

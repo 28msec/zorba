@@ -11,7 +11,7 @@
      
 int main (int argc, char *argv[])
 {
-	xquery_driver driver;
+	xquery_driver driver(cout);
 	for (++argv; argv[0]; ++argv) {
 		if (*argv == std::string("-p")) {
 			driver.trace_parsing = true;

@@ -4,27 +4,32 @@
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
+ *  Author: Paul Pedersen
+ *
  */
 
 #include "xquery_driver.h"
 #include "xquery_parser.tab.h"
 
-xquery_driver::xquery_driver(uint32_t initial_heapsize)
+using namespace std;
+
+xquery_driver::xquery_driver(
+  ostream& _os,
+  uint32_t initial_heapsize)
 :
 	trace_scanning(false),
 	trace_parsing(false),
 	symtab(initial_heapsize),
+  os(_os),
 	rename_bit(false),
 	ftcontains_bit(false)
 {
 }
      
-
 xquery_driver::~xquery_driver()
 {
 }
      
-
 void xquery_driver::parse(
 	string const& fname)
 {
@@ -36,7 +41,6 @@ void xquery_driver::parse(
 	scan_end();
 }
      
-
 void xquery_driver::error(
 	yy::location const& l,
 	string const& m)
@@ -44,10 +48,11 @@ void xquery_driver::error(
 	cerr << l << ": " << m << endl;
 }
      
-
 void xquery_driver::error(
 	string const& m)
 {
 	cerr << m << endl;
 }
+
+
 

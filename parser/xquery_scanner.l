@@ -247,11 +247,14 @@ std::string start_state()
 	}
 }
 
+/*
 #define YY_USER_ACTION \
 	{ \
 		std::cout<<'<'<<start_state()<<"> [["<<yytext<<"]]"<<std::endl; \
 		yylloc->columns(yyleng); \
 	}
+*/
+
 
 %}
 %%
@@ -3069,8 +3072,9 @@ namespace xqp {
 void xquery_driver::scan_begin()
 {
   yy_flex_debug = trace_scanning;
-  if (!(yyin = fopen(file.c_str (), "r")))
+  if (!(yyin = fopen(file.c_str (), "r"))) {
     error (std::string("cannot open ") + file);
+  }
 }
 
 void xquery_driver::scan_end()
