@@ -88,14 +88,13 @@ module AP_MODULE_DECLARE_DATA xqp_module;
  *  HTTP_mumble ("an error status should be reported")
  */
 
-
+ 
+// stub to C++
 extern void handle_request(
-  const char* version, 
-  const char* built,
+  request_rec* r,
   char* buf,
   int max);
   
- 
  
 static int mod_xqp_method_handler(request_rec *r)
 {
@@ -118,8 +117,7 @@ static int mod_xqp_method_handler(request_rec *r)
 
   // stub C++ interface: handle_request in a separately-compiled C++ module
   void *lib_handle;
-  void (*fn)(const char*,const char*,char*,int);
-  int x;
+  void (*fn)(request_rec*,char*,int);
   char* error;
   
   lib_handle = dlopen("/lib/apache2/libtest.so", RTLD_LAZY);
@@ -133,9 +131,10 @@ static int mod_xqp_method_handler(request_rec *r)
     return OK;
   }
   
-  char buf[65536];
-  (*fn)(ap_get_server_version(),ap_get_server_built(),buf,65536);
+  char* buf = malloc(1<<20);
+  (*fn)(r,buf,1<<20);
   ap_rputs(buf, r);
+  free(buf);
   
   dlclose(lib_handle);
     

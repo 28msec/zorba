@@ -6,33 +6,57 @@
 #include <sstream>
 #include <string>
 
-using namespace std;
+#include "../util/hashmap.h"
+#include "../util/tokenbuf.h"
+#include "../parser/xquery_driver.h"
 
-void msg(
-  const char* version,
-  const char* built,
-  char* buf,
-  int max)
+using namespace std;
+using namespace xqp;
+
+void msg(request_rec* r,char* buf,int max)
 {
   ostringstream oss;
-  
-  oss <<
-      "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">"
-      "<HTML>\n"
-      " <HEAD>\n"
-      "  <TITLE>mod_xqp Content-Handler Output</TITLE>\n"
-      " </HEAD>\n"
-      " <BODY>\n"
-      "  <H1><SAMP>mod_xqp</SAMP> Module Content-Handler</H1>\n"
-      "  <H2>Mark IV</H2>\n"
-      "  <P>\n"
-      "  Apache HTTP Server version: \""
-      <<version<<
-      "\"<BR>\n"
-      "  Server built: \""
-      <<built<<
-      "\"</P>\n</BODY></HTML>";
+  oss <<  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">"
+          "<HTML><HEAD><TITLE>mod_xqp Content-Handler Output</TITLE></HEAD><BODY>\n"
+          "<H1><SAMP>mod_xqp</SAMP> Module Content-Handler</H1>\n"
+          "<H2>Mark IV</H2>\n"
+      <<  "path: \"" << r->path_info << "\"<br/>\n"
+      <<  "args: \"" << r->args << "\"<br/>\n";
       
+  // parse the query args
+  hashmap<string> param_map;
+  tokenbuf tokbuf(r->args,0,strlen(r->args),"&=");
+	tokbuf.set_return_delims(false);
+	tokenbuf::token_iterator it = tokbuf.begin();
+	tokenbuf::token_iterator end = tokbuf.end();
+	string key, value;
+	for (; it!=end; ++it) {
+  	string const& value  = *it;
+  	string const& delim = it.get_delim();
+  	if (delim.find('=')!=string::npos) {
+    	key = value;
+  	}
+  	else {
+    	param_map.put(key,value);
+  	}
+	}
+  
+	string qfile;
+	if (param_map.get("q",qfile)) {
+  	xquery_driver driver(oss);
+  	if (param_map.get("p",value)) {
+  	  driver.set_trace_parsing();
+	  }
+	  if (param_map.get("s",value)) {
+  	  driver.set_trace_scanning();
+	  }	
+    driver.parse(qfile.c_str());
+  } 
+  else {
+    oss << "<br/>Param error<br/>";
+  }
+     		
+  oss << "\n</BODY></HTML>";
   string s = oss.str();
   int n = s.length();
   int m = (n>max ? max : n);
@@ -43,13 +67,9 @@ void msg(
 
 extern "C" {
    
-void handle_request(
-  const char* version, 
-  const char* built,
-  char* buf,
-  int max)
+void handle_request(request_rec* r,char* buf,int max)
 {
-  msg(version,built,buf,max);
+  msg(r,buf,max);
 }
 }
 

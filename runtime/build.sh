@@ -8,7 +8,21 @@ rm -f /lib/apache2/libtest.so /lib/apache2/mod_xqp.{so,la,dll.a}
 
 echo -e "\nCompile content_handler.cpp, create libtest"
 g++ -Wall -I/usr/include/apache2 -c content_handler.cpp
-g++ -shared -Wl,-soname,libtest.so -o libtest.so content_handler.o
+g++ -shared -Wl,-soname,libtest.so -o libtest.so \
+  ../types/qname.do \
+  ../util/xqpexception.o \
+  ../util/tokenbuf.do \
+  ../util/file.do \
+  ../util/mmfile.do \
+  ../util/fxcharheap.do \
+  ../util/URI.do \
+  ../parser/parsenodes.do \
+  ../parser/xquery_scanner.do \
+  ../parser/xquery_parser.do \
+  ../parser/symbol_table.do \
+  ../parser/xquery_driver.do \
+  content_handler.o
+  
 cp -f libtest.so /lib/apache2
 
 echo -e "\nCompile and install mod_xqp.c"
