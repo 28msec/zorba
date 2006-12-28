@@ -1,6 +1,21 @@
+/* -*- mode: c++; indent-tabs-mode: nil -*-
+ *
+ *  $Id: [module].h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *
+ *	Revision rolls up the set of xsd classes for use with
+ *	the zorba XQP package.
+ *
+ *	@author Paul Pedersen (pcp071098@yahoo.com)
+ */
+
+
+// Code derived from Apache Axis:
+
 /*
  *   Copyright 2003-2004 The Apache Software Foundation.
-// (c) Copyright IBM Corp. 2004, 2005 All Rights Reserved
+ *	(c) Copyright IBM Corp. 2004, 2005 All Rights Reserved
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -15,13 +30,8 @@
  *   limitations under the License.
  *
  *	@author Adrian Dick (adrian.dick@uk.ibm.com)
- *
- *	Revision rolls up the set of xsd classes for use with
- *	the zorba XQueryP package.
- *
- *	@author Paul Pedersen (pcp071098@yahoo.com)
- *
  */
+
 
 #ifndef XQP_XSD_H
 #define XQP_XSD_H
@@ -39,6 +49,7 @@
 #include "../apr_base64.h"
 #include "../HexCoder.h"
 #include "../../platforms/PlatformAutoSense.hpp"
+
 
 
 
