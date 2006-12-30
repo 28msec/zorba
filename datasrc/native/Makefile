@@ -63,6 +63,7 @@ xml_handler_test :	xml_handler_test.cpp xml_handler.cpp xml_handler.h xml_handle
     ../../util/xqpexception.o \
     ../../util/file.${SUFX} \
     ../../util/tokenbuf.${SUFX} \
+    ../../types/QName.${SUFX} \
     scan_handler.${SUFX} \
     xml_term.${SUFX} \
     xml_scanner.${SUFX} \
@@ -79,11 +80,8 @@ xml_ostream_test :	xml_ostream_test.cpp xml_ostream.cpp xml_ostream.h
     xml_ostream.${SUFX} \
     xml_ostream_test.cpp
 
-blockstore :	blockstore.cpp blockstore.h 
-	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o blockstore.${SUFX} blockstore.cpp
-
-xml_store :	xml_store.cpp xml_store.h 
-	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o xml_store.${SUFX} xml_store.cpp
+spectrum :	spectrum.cpp spectrum.h 
+	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o spectrum.${SUFX} spectrum.cpp
 
 storage_manager :	storage_manager.cpp storage_manager.h 
 	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o storage_manager.${SUFX} storage_manager.cpp
@@ -95,6 +93,9 @@ storage_manager_test :	storage_manager_test.cpp storage_manager.cpp storage_mana
 	xml_scanner.${SUFX} \
 	storage_manager.${SUFX} \
 	storage_manager_test.cpp
+
+xml_store :	xml_store.cpp xml_store.h 
+	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o xml_store.${SUFX} xml_store.cpp
 
 
 

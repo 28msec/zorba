@@ -8,15 +8,16 @@
 
 #include "xml_ostream.h"
 
+#include <iostream>
 #include <ostream>
+#include <string>
+
 #include "../../types/qname.h"
+//#include "xml_store.h"
+//#include "text_store.h"
 
-#include "xml_store.h"
-#include "text_store.h"
-
-using namespace xqp;
+using namespace std;
 namespace xqp {
-
 
 xml_ostream::xml_ostream()
 :
@@ -29,55 +30,6 @@ xml_ostream::~xml_ostream()
 {
 }
 
-
-xml_ostream& xml_ostream::operator<<(bool val)
-{
-	if (overflow(2)) flush();
-	cbuf[offset++] = bool_code | 0x01;
-	cbuf[offset++] = (val ? 1 : 0);
-
-	return *this;
-}
-
-xml_ostream& xml_ostream::operator<<(int16_t val)
-{
-	unsigned char a = (unsigned char)((val & 0xff00) >> 8);
-	unsigned char b = (unsigned char)((val & 0x00ff));
-
-	if (a!=0) {
-		if (overflow(3)) flush();
-		cbuf[offset++] = int16_code | 2;
-		cbuf[offset++] = a;
-		cbuf[offset++] = b;
-	}
-	else {
-		if (overflow(2)) flush();
-		cbuf[offset++] = int16_code | 1;
-		cbuf[offset++] = b;
-	}
-
-	return *this;
-}
-
-xml_ostream& xml_ostream::operator<<(uint16_t val)
-{
-	unsigned char a = (unsigned char)((val & 0xff00) >> 8);
-	unsigned char b = (unsigned char)((val & 0x00ff));
-
-	if (a!=0) {
-		if (overflow(3)) flush();
-		cbuf[offset++] = uint16_code | 2;
-		cbuf[offset++] = a;
-		cbuf[offset++] = b;
-	}
-	else {
-		if (overflow(2)) flush();
-		cbuf[offset++] = uint16_code | 1;
-		cbuf[offset++] = b;
-	}
-
-	return *this;
-}
 
 xml_ostream& xml_ostream::operator<<(int32_t val)
 {
@@ -372,9 +324,9 @@ xml_ostream& xml_ostream::operator<<(QName const& q)
 	string   name = q.get_name();
 	uint64_t  uri = q.get_namespace_hash();
 
-	uint16_t prefix_len = prefix.length();
-	uint16_t name_len = name.length();
-	uint16_t len = 0;
+	uint32_t prefix_len = prefix.length();
+	uint32_t name_len = name.length();
+	uint32_t len = 0;
 
 	if (prefix_len>0) len = (prefix_len + 1);
 	len += name_len;
@@ -404,6 +356,11 @@ xml_ostream& xml_ostream::operator<<(QName const& q)
 	return *this;
 }
 
+xml_ostream& xml_ostream::operator<<(string const& s)
+{
+	write(s.c_str(), s.length());
+	return *this;
+}
 
 bool xml_ostream::overflow(uint32_t len) const
 {
@@ -436,7 +393,9 @@ xml_ostream& xml_ostream::seekp(std::streampos pos)
 	return *this;
 }
 
-xml_ostream& xml_ostream::seekp(std::streamoff off, std::ios_base::seekdir dir)
+xml_ostream& xml_ostream::seekp(
+	std::streamoff off,
+	std::ios_base::seekdir dir)
 {
 	return *this;
 }
@@ -446,7 +405,9 @@ std::streampos xml_ostream::tellp()
 	return 0; 
 }
 
-xml_ostream& xml_ostream::write(const char* str, std::streamsize n)
+xml_ostream& xml_ostream::write(
+	const char* str,
+	std::streamsize n)
 {
 	if (n<16) {
 		if (overflow(n+1)) flush();
@@ -464,6 +425,8 @@ xml_ostream& xml_ostream::write(const char* str, std::streamsize n)
 	return *this;
 }
 
+
+// friends
 
 xml_ostream& operator<<(xml_ostream& os, char ch)
 {

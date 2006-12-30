@@ -4,7 +4,7 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
- *	Author Paul Pedersen
+ *	Author: Paul Pedersen
  *
  */
 
@@ -21,13 +21,12 @@
 using namespace std;
 namespace xqp {
 
-vector<xml_term> empty_term_list;
 #define DELIMSET " \n,.;:?!\r\t+-_!@#$%&*()[]{}=/|\\<>'\""
 
 xml_handler::xml_handler(
 	uint64_t _uri,
-	vector<xml_term>& _term_list,
-	xml_ostream& _xmlss)
+	vector<xml_term>& _term_v,
+	xml_ostream& _xos)
 :
 	scan_handler(),
 	top(0),
@@ -39,9 +38,9 @@ xml_handler::xml_handler(
 	term_pos(0),
 	last_pos(0),
 	uri(_uri),
-	elem_counter(0),
-	term_list(_term_list),
-	xmlss(_xmlss)
+	term_v(_term_v),
+	attr_v(8),
+	xos(_xos)
 {
 }
 
@@ -56,7 +55,7 @@ throw (xqpexception)
 inline void xml_handler::add_term(
 	xml_term const& term)
 {
-	term_list.push_back(term);
+	term_v.push_back(term);
 }
 
 
@@ -75,9 +74,9 @@ void xml_handler::adup(const char* buf, int offset, int length)
 	else {
 		name = the_attribute;
 	}
-	xmlss << QName(QName::qn_attr,prefix,name);
+	xos << QName(QName::qn_attr,prefix,name);
 #ifdef DEBUG
-	cout << "@" << s << endl;
+	cout << "@" << the_attribute << endl;
 #endif
 }
 
@@ -116,6 +115,8 @@ void xml_handler::aval(const char* buf, int offset, int length)
 		string elem_attr_term = the_element+"/@"+the_attribute+"/word::"+term;
 		add_term(xml_term(elem_attr_term,uri,term_pos++));
 	}
+	
+	attr_v.push_back(attrpair_t(the_attribute,string(buf,offset,length)));
 }
 
 
@@ -142,6 +143,9 @@ void xml_handler::eof(const char* buf, int offset, int length)
 }
 
 
+#define NAME  first
+#define VALUE second
+
 // end tag callback
 void xml_handler::etag(const char* buf, int offset, int length)
 {
@@ -163,14 +167,15 @@ void xml_handler::etag(const char* buf, int offset, int length)
 	}
 	if (k==0) return;
 	top = k;
-}
-
-
-string xml_handler::elem_counter_string()
-{
-	ostringstream oss;
-	oss << ' '<<uri<<' '<<(elem_counter++);
-	return oss.str();
+	
+	// serialize
+	xos << QName(QName::qn_elem,the_element);
+	attrpair_it_t it = attr_v.begin();
+	for (; it!=attr_v.end(); ++it) {
+  	attrpair_t p = *it;
+  	xos << QName(QName::qn_attr,p.NAME);
+  	xos << p.VALUE;
+	}
 }
 
 
@@ -281,6 +286,8 @@ void xml_handler::handle_pcdata(const char* buf, int offset, int length)
 		last = term;
 		++term_pos;
 	}
+	
+	xos << string(buf,offset,length);
 }
 
 
@@ -325,6 +332,4 @@ void xml_handler::cmnt(const char* buf, int offset, int length)
 }
 
 
-
-}	/* namespace pv */
-
+}	/* namespace xqp */

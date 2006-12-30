@@ -12,8 +12,8 @@
 #include "../../types/qname.h"
 #include "xml_typecodes.h"
 
-//#include "xml_storage_manager.h"
-//#include "text_storage_manager.h"
+//#include "xml_store.h"
+//#include "text_store.h"
 
 namespace xqp {
 
@@ -36,19 +36,21 @@ public:
 public:	// ostream interface
 
 	// Perform formatted output operations (insertion)
-
 	xml_ostream& operator<<(int32_t val);
 	xml_ostream& operator<<(uint32_t val);
 	xml_ostream& operator<<(int64_t val);
 	xml_ostream& operator<<(uint64_t val);
-
 	xml_ostream& operator<<(float val);
 	xml_ostream& operator<<(double val);
 
 	/*xml_ostream& operator<<(void* val); */
 	/*xml_ostream& operator<<(xml_ostream& (*pf)(xml_istream&)); */
 
+	// encode element/attribute name
 	xml_ostream& operator<<(QName const&);
+	
+	// encode text node
+	xml_ostream& operator<<(std::string const&);
 
 	friend xml_ostream& operator<<(xml_ostream& os, char ch);
 	friend xml_ostream& operator<<(xml_ostream& os, signed char ch);
@@ -56,7 +58,6 @@ public:	// ostream interface
 	friend xml_ostream& operator<<(xml_ostream& os, const char* str);
 	friend xml_ostream& operator<<(xml_ostream& os, const signed char* str);
 	friend xml_ostream& operator<<(xml_ostream& os, const unsigned char* str);
-	
 
 	// Flush buffer
 	xml_ostream& flush();

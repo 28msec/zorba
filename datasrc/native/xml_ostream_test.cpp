@@ -18,27 +18,18 @@ using namespace xqp;
 int main(int argc, char* argv[]) 
 {
 	try {
-		xml_ostream xmlss;
+		xml_ostream xos;
 
-		xmlss << (bool) 1;
-		xmlss << (int16_t) 2;
-		xmlss << (uint16_t) 3;
-		xmlss << (int32_t) 4;
-		xmlss << (uint32_t) 5;
-		xmlss << (int64_t) 6;
-		xmlss << (uint64_t) 7;
-		xmlss << (float) 8;
-		xmlss << (double) 9;
-		xmlss << QName(QName::qn_attr,"xqp","test");
-		xmlss.flush();
-/*
-	friend xml_ostream& operator<<(xml_ostream& os, char ch);
-	friend xml_ostream& operator<<(xml_ostream& os, signed char ch);
-	friend xml_ostream& operator<<(xml_ostream& os, unsigned char ch);
-	friend xml_ostream& operator<<(xml_ostream& os, const char* str);
-	friend xml_ostream& operator<<(xml_ostream& os, const signed char* str);
-	friend xml_ostream& operator<<(xml_ostream& os, const unsigned char* str);
-*/
+		xos << QName(QName::qn_elem,"test");
+		xos << QName(QName::qn_attr,"attr-1");
+		xos << "value-1";
+		xos << QName(QName::qn_attr,"attr-2");
+		xos << "value-2";
+		xos << "Here is text node-1";
+		xos << "Here is text node-2";
+		xos << "Here is text node-3";
+
+		xos.flush();
 
 	} catch (xqpexception& e) {
 		cout << "Application exception: " << e.get_msg() << endl;

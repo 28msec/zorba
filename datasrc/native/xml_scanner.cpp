@@ -260,6 +260,15 @@ void xml_scanner::scan(const char* r, unsigned len, scan_handler* h)
 		if (ch < 0x9 || (0xd < ch && ch < 0x20)) continue;
 		int tok = (ch < 0x80) ? lexTable[ch] : DEF;
 		if (tok == -1) continue;
+
+		if (theState<0 || theState>34) {
+			cout << "Error: bad state: " << theState << endl;
+			break;
+		}
+		if (tok<0 || tok>22) {
+			cout << "Error: bad tok: " << tok << endl;
+			break;
+		}
 		
 		int action = 0;
 		theNextState = stateTable[theState][tok];
@@ -271,10 +280,10 @@ void xml_scanner::scan(const char* r, unsigned len, scan_handler* h)
 			continue;
 		}
 
-/*
+
 		cerr<< decodeState1(theState) << '(' << (char)ch << ")[ " << decodeTok1(tok) << " ] -> "
 				<< decodeAction1(action) << ", " << decodeState1(theNextState) << endl;
-*/
+
   
 		switch (action) {
 		case A_ADUP:							// attr(=)

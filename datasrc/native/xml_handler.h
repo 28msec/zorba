@@ -22,6 +22,7 @@
 #include <string>
 #include <stack>
 #include <ostream>
+#include <utility>
 
 #include "../../util/rchandle.h"
 #include "../../util/URI.h"
@@ -34,7 +35,12 @@ namespace xqp {
 
 class xml_handler : public scan_handler
 {
-protected:
+  
+public:    // types
+  typedef pair<std::string,std::string> attrpair_t;
+  typedef std::vector<attrpair_t>::const_iterator attrpair_it_t;
+
+protected:  // state
 	static const uint32_t STACK_CAPACITY = 65536;
 	std::string the_stack[STACK_CAPACITY];
 
@@ -48,9 +54,10 @@ protected:
 	uint32_t term_pos;							// current term position
 	uint32_t last_pos;							// last term position, for delta-coding
 	uint64_t uri;										// current URI hash
-	uint32_t elem_counter;					// element counter
-	std::vector<xml_term>& term_list;
+	std::vector<xml_term>& term_v;	// index terms accumulator
+	std::vector<attrpair_t> attr_v;	// attr @a=v accumulator
 
+	// indexing switches
 	bool term_indexing;							// index terms
 	bool bigram_indexing;						// index term bigrams
 	bool e_indexing;								// index elements
@@ -58,7 +65,7 @@ protected:
 	bool gp_indexing;								// index   b/c/word::t
 	bool ggp_indexing;							// index a/b/c/word::t
 
-	xml_ostream& xmlss;
+	xml_ostream& xos;
 
 public:	// ctor, dtor
 	xml_handler(
@@ -77,7 +84,6 @@ public:
 	void add_term(std::string const& term, uint64_t uri, uint32_t pos);
 
 	uint32_t get_term_position() const { return term_pos; }
-	std::string elem_counter_string();
 	uint32_t short get_entity() { return the_entity; }
 
 public:	// callback methods
