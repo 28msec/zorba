@@ -31,5 +31,5 @@ public:
 };
 
 
-};	/* namespace xqp */
+}	/* namespace xqp */
 #endif	/* XQP_NAMESPACE_H */

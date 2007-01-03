@@ -8,26 +8,21 @@
  *
  */
 
-#ifndef XQP_CONTEXT_H
-#define XQP_CONTEXT_H
+#include "context.h"
 
 #include <sstream>
 #include <string>
 #include <vector>
 
-#include "namespace.h"
-
 #include "../functions/function_impl.h"
-
 #include "../types/qname.h"
 #include "../types/collation.h"
 #include "../types/builtin_types.h"
-
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/URI.h"
-#include "../util/xqpexception.h"
-
+#include "../util/xqp_exception.h"
+#include "namespace.h"
 
 using namespace std;
 namespace xqp {
@@ -54,81 +49,84 @@ var_binding::var_binding(
 }
 
 
+
 ///////////////////////////////
 //  context
 ///////////////////////////////
 
 
-rchandle<signature> get_function_signature(
-  QName const& fname, 
+rchandle<signature> context::get_function_type(
+  QName const& fqname, 
   uint32_t arity) const 
-throw (xqpexception)
+throw (xqp_exception)
 {
   ostringstream oss;
-  fname.put(oss) << '[' << arity << ']';
+  fqname.put(oss) << '[' << arity << ']';
   rchandle<signature> sig_h;
   if (!signature_map.get(oss.str(),sig_h)) {
-    throw xqpexception(__FUNCTION__,
-      "no signature for: "+fname.prefix+':'+fname.name);
+    throw xqp_exception(__FUNCTION__,
+      "no signature for: "+fqname.get_prefix()+':'+fqname.get_name());
   }
   return sig_h;
 }
 	
-static_type_t get_document_type(string const& doc_uri) const
-throw (xqpexception)
+static_type_t context::get_document_type(
+	string const& doc_uri) const
+throw (xqp_exception)
 {
   static_type_t t;
-  if (!statically_know_documents.get(doc_uri,sig_h)) {
-    throw xqpexception(__FUNCTION__,
+  if (!statically_known_documents.get(doc_uri,t)) {
+    throw xqp_exception(__FUNCTION__,
       "no static document type for: "+doc_uri);
   }
   return t;
 }
 	
-static_type_t get_collection_type(string const& col_uri) const
-throw (xqpexception)
+static_type_t context::get_collection_type(
+	string const& col_uri) const
+throw (xqp_exception)
 {
   static_type_t t;
-  if (!statically_know_documents.get(col_uri,sig_h)) {
-    throw xqpexception(__FUNCTION__,
-      "no static collection type for: "+doc_uri);
+  if (!statically_known_collections.get(col_uri,t)) {
+    throw xqp_exception(__FUNCTION__,
+      "no static collection type for: "+col_uri);
   }
   return t;
 }
 	
-rchandle<item_iterator> get_var_value(QName const& qname) const
-throw (xqpexception)
+rchandle<item_iterator> context::get_var_value(
+	QName const& qname) const
+throw (xqp_exception)
 {
   return NULL;
 }
 
-rchandle<function_impl> get_function(signature const& sig) const
-throw (xqpexception)
+rchandle<function_impl> context::get_function(
+	signature const& sig) const
+throw (xqp_exception)
 {
   return NULL;
 }
 
-rchandle<item_iterator> get_document(string const& doc_uri) const
-throw (xqpexception)
+rchandle<item_iterator> context::get_document(
+	string const& doc_uri) const
+throw (xqp_exception)
 {
   return NULL;
 }
 
-rchandle<item_iterator> get_collection(string const& col_uri) const
-throw (xqpexception)
+rchandle<item_iterator> context::get_collection(
+	string const& col_uri) const
+throw (xqp_exception)
 {
   return NULL;
 }
 
-rchandle<item_iterator> get_default_collection() const
-throw (xqpexception)
+rchandle<item_iterator> context::get_default_collection() const
+throw (xqp_exception)
 {
   return NULL;
 }
-
-
-};
 
 
 }	/* namespace xqp */
-#endif	/* XQP_CONTEXT_H */

@@ -13,127 +13,16 @@
 
 #include <vector>
 
-#include "namespace.h"
-
+#include "../datamodel/data_interface.h"
 #include "../functions/function_impl.h"
-
 #include "../types/qname.h"
 #include "../types/collation.h"
 #include "../types/builtin_types.h"
-
-#include "../util/xqpexception.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
+#include "../util/xqp_exception.h"
+#include "namespace.h"
 
-/*
-	From the spec ("XQuery 1.0: An XML Query Language",
-	Appendix: C Context Components,
-	[http://www.w3.org/TR/xquery/#id-xq-context-components]):
-
-  #==============#==============#==============#==============#==============#==============#
-  |              |              |              |              |              |              |
-  | Component    | Default      | (overwrite,  | (overwrite,  | Scope        | Consistency  |
-  |              | init value   |    augment)  |    augment)  |              | rules        |
-  |              |              | by impl      | by query     |              |              |
-	|==============#==============#==============#==============#==============#==============|
-  | XPath 1.0    | 'false'      | (no,no)      | (no,no)      | global       | must be      |
-  | compatibility|              |              |              |              | 'false'      |
-  | mode         |              |              |              |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Statically   | fn,xml,xs    | (yes,yes)    | (yes,yes)    | lexical      | only one ns  |
-  | known ns     | xsi,local    | except for   | by prolog    |              | per prefix   |
-  |              |              | 'xml'        | or elem cons |              | per lexical  |
-  |              |              |              |              |              | scope        |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Default      |'no namespace'| (yes,no)     | (yes,no)     | lexical      | only one     |
-  | element/type |              |              | by prolog    |              | default ns   |
-  | ns           |              |              | or elem cons |              | per lexical  |
-  |              |              |              |              |              | scope        |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Default      | fn           | (yes,no)     | (yes,no)     | module       | none         |
-  | function ns  |              | note: dis-   | by prolog    |              |              |
-  |              |              | recommended  |              |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | In-scope     | built-in     | (no,yes)     | (no,yes)     | module       | one def per  |
-  | schema types | types in xs  |              | by schema    |              | global or    |
-  |              |              |              | import in    |              | local type   |
-  |              |              |              | prolog       |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | In-scope     | none         | (no,yes)     | (no,yes)     | module       | one def per  |
-  | elem decls   |              |              | by schema    |              | global or    |
-  |              |              |              | import in    |              | local elem   |
-  |              |              |              | prolog       |              | name         |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | In-scope     | none         | (no,yes)     | (no,yes)     | module       | one def per  |
-  | attr decls   |              |              | by schema    |              | global or    |
-  |              |              |              | import in    |              | local attr   |
-  |              |              |              | prolog       |              | name         |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | In-scope     | none         | (no,yes)     | (yes,yes)    | lexical      | one def per  |
-  | variable     |              |              | by prolog    |              | variable     |
-  |              |              |              | and var-     |              | per lexical  |
-  |              |              |              | binding expr |              | scope        |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Context item | none         | (yes,no)     | (no,no)      | lexical      | none         |
-  | static type  | (raises      |              | but can be   |              |              |
-  |              | error on     |              | 'influenced' |              |              |
-  |              | access)      |              | by exprs.    |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Function     | functions    | (no,yes)     | (no,yes)     | module       | unique per   |
-  | signatures   | in 'fn' ns;  |              | by module    |              | expanded     |
-  |              | constructors |              | import and   |              | QName + arg  |
-  |              | built-in     |              | fun decl in  |              | count        |
-  |              | atomic types |              | prolog       |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Statically   | default      | (no,yes)     | (no,no)      | module       | unique per   |
-  | known        | collation    |              |              |              | collation    |
-  | collations   |              |              |              |              | URI          |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Default      | Unicode      | (yes,no)     | (yes,no)     | module       | none         |
-  | collation    | codepoint    |              | by prolog    |              |              |
-  |              | collation    |              |              |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Construction | 'preserve'   | (yes,no)     | (yes,no)     | module       | 'preserve'   |
-  | mode         |              |              | by prolog    |              | or           |
-  |              |              |              |              |              | 'strip'      |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Ordering     | 'ordered'    | (yes,no)     | (yes,no)     | lexical      | 'ordered'    |
-  | mode         |              |              | by prolog    |              | or           |
-  |              |              |              | or expr      |              | 'unordered'  |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Default      | impl-        | (yes,no)     | (yes,no)     | module       | 'greatest'   |
-  | order for    |  defined     |              | by prolog    |              | or           |
-  | empty seq.   |              |              |              |              | 'least'      |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Boundary     | 'strip'      | (yes,no)     | (yes,no)     | module       | 'preserve'   |
-  | space        |              |              | by prolog    |              | or           |
-  | policy       |              |              |              |              | 'strip'      |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Copy-ns      | 'inherit',   | (yes,no)     | (yes,no)     | module       | (no-)        |
-  | mode         | 'preserve'   |              | by prolog    |              | 'inherit'    |
-  |              |              |              |              |              | or           |
-  |              |              |              |              |              | 'preserve'   |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Base URI     | none         | (yes,no)     | (yes,no)     | module       | valid        |
-  |              |              |              | by prolog    |              | lexical      |
-  |              |              |              |              |              | rep. of      |
-  |              |              |              |              |              | xs:anyURI    |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Statically   | none         | (no,yes)     | (no,no)      | module       | none         |
-  | known        |              |              |              |              |              |
-  | documents    |              |              |              |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Statically   | none         | (no,yes)     | (no,no)      | module       | none         |
-  | known        |              |              |              |              |              |
-  | collections  |              |              |              |              |              |
-  |--------------+--------------+--------------+--------------+--------------+--------------|
-  | Statically   | 'node()*'    | (no,yes)     | (no,no)      | module       | none         |
-  | known        |              |              |              |              |              |
-  | collection   |              |              |              |              |              |
-  | types        |              |              |              |              |              |
-  #--------------+--------------+--------------+--------------+--------------+--------------#
-
-*/
 
 namespace xqp {
 
@@ -156,6 +45,13 @@ public:
 
 };
 
+
+
+/*______________________________________________________________________
+|  
+|	XQuery 1.0 static context
+|	[http://www.w3.org/TR/xquery/#id-xq-context-components]
+|_______________________________________________________________________*/
 
 
 class context : public rcobject
@@ -190,14 +86,6 @@ public:	// types
 
 	typedef rchandle<QName> qname_h;
 	typedef rchandle<collation> collation_h;
-	
-	struct signature {
-  	QName fname;
-  	std::vector<static_type_t> arg_v;
-  	static_type_t ret_type;
-  	signature(QName const& q) : fname(q) {}
-  };
-
 	
 protected:	// XQuery 1.0 static context
 	rchandle<context> parent;
@@ -425,29 +313,45 @@ protected:	// XQuery 1.0 static context
 
 
 public:	// manipulators
-  std::vector<name_space> get_namespaces() const { return namespaces; }
-	name_space get_default_elem_or_type_ns() const { return default_elem_or_type_ns; }
-	name_space get_default_function_ns() const { return default_function_ns; }
-	std::vector<qname_h>get_in_scope_schema_types() const { return in_scope_schema_types; }
-	std::vector<qname_h> get_in_scope_elem_decls() const { return in_scope_elem_decls; }
-	std::vector<qname_h> get_in_scope_attr_decls() const { return in_scope_attr_decls; }
-	std::vector<var_binding> get_in_scope_vars() const { return in_scope_vars; }
-	static_type_t get_context_item_type() const { return context_item_type; }
-	std::vector<collation_h> get_collations() const { return collations; }
-	collation_h get_default_collation() const { return default_collation; }
-	enum construction_mode_t get_construction_mode() const { return construction_mode; }
-	enum ordering_mode_t get_ordering_mode() const { return ordering_mode; }
-	enum order_empty_mode_t get_order_empty_mode() const { return order_empty_mode; }
-	enum boundary_space_mode_t get_boundary_space_mode() const { return boundary_space_mode; }
-	enum copy_ns_mode_t get_copy_ns_mode() const { return copy_ns_mode; }
-	std::string get_base_uri() const { return base_uri; }
+  std::vector<name_space> get_namespaces() const
+		{ return namespaces; }
+	name_space get_default_elem_or_type_ns() const
+		{ return default_elem_or_type_ns; }
+	name_space get_default_function_ns() const
+		{ return default_function_ns; }
+	std::vector<qname_h>get_in_scope_schema_types() const
+		{ return in_scope_schema_types; }
+	std::vector<qname_h> get_in_scope_elem_decls() const
+		{ return in_scope_elem_decls; }
+	std::vector<qname_h> get_in_scope_attr_decls() const
+		{ return in_scope_attr_decls; }
+	std::vector<var_binding> get_in_scope_vars() const
+		{ return in_scope_vars; }
+	static_type_t get_context_item_type() const
+		{ return context_item_type; }
+	std::vector<collation_h> get_collations() const
+		{ return collations; }
+	collation_h get_default_collation() const
+		{ return default_collation; }
+	enum construction_mode_t get_construction_mode() const
+		{ return construction_mode; }
+	enum ordering_mode_t get_ordering_mode() const
+		{ return ordering_mode; }
+	enum order_empty_mode_t get_order_empty_mode() const
+		{ return order_empty_mode; }
+	enum boundary_space_mode_t get_boundary_space_mode() const
+		{ return boundary_space_mode; }
+	enum copy_ns_mode_t get_copy_ns_mode() const
+		{ return copy_ns_mode; }
+	std::string get_base_uri() const
+		{ return base_uri; }
 	
 	rchandle<signature> get_function_type(QName const&, uint32_t arity) 
-	  const throw (xqpexception);
+	  const throw (xqp_exception);
 	static_type_t get_document_type(std::string const&) 
-	  const throw (xqpexception);
+	  const throw (xqp_exception);
 	static_type_t get_collection_type(std::string const&) 
-	  const throw (xqpexception);
+	  const throw (xqp_exception);
 	
 	
 protected:  // XQuery 1.0 dynamic context
@@ -560,11 +464,11 @@ public:
 	time_t get_currtime() const { return currtime; }
 	int get_timezone() const { return timezone; }
 		
-	rchandle<item_iterator> get_var_value(QName const&) const throw (xqpexception);
-	rchandle<function_impl> get_function(signature const&) const throw (xqpexception);
-	rchandle<item_iterator> get_document(std::string const&) const throw (xqpexception);
-	rchandle<item_iterator> get_collection(std::string const&) const throw (xqpexception);
-	rchandle<item_iterator> get_default_collection() const throw (xqpexception);
+	rchandle<item_iterator> get_var_value(QName const&) const throw (xqp_exception);
+	rchandle<function_impl> get_function(signature const&) const throw (xqp_exception);
+	rchandle<item_iterator> get_document(std::string const&) const throw (xqp_exception);
+	rchandle<item_iterator> get_collection(std::string const&) const throw (xqp_exception);
+	rchandle<item_iterator> get_default_collection() const throw (xqp_exception);
 	
 	
 public:     // diagnostic flags
@@ -580,10 +484,121 @@ protected:  // diagnostic context
   uint32_t charpos;
   //rchandle<expr> source_expr;
   uint32_t diagnostics;
-
-
 };
 
 
 }	/* namespace xqp */
-#endif	/* XQP_CONTEXT_H */
+#endif /*	XQP_CONTEXT_H */
+
+
+
+/*
+	Appendix: C Context Components,
+	From the spec ("XQuery 1.0: An XML Query Language",
+	[http://www.w3.org/TR/xquery/#id-xq-context-components]):
+
+  #=========================================================================================#
+  |              |              |              |              |              |              |
+  | Component    | Default      | (overwrite,  | (overwrite,  | Scope        | Consistency  |
+  |              | init value   |    augment)  |    augment)  |              | rules        |
+  |              |              | by impl      | by query     |              |              |
+	|==============#==============#==============#==============#==============#==============|
+  | XPath 1.0    | 'false'      | (no,no)      | (no,no)      | global       | must be      |
+  | compatibility|              |              |              |              | 'false'      |
+  | mode         |              |              |              |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Statically   | fn,xml,xs    | (yes,yes)    | (yes,yes)    | lexical      | only one ns  |
+  | known ns     | xsi,local    | except for   | by prolog    |              | per prefix   |
+  |              |              | 'xml'        | or elem cons |              | per lexical  |
+  |              |              |              |              |              | scope        |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Default      |'no namespace'| (yes,no)     | (yes,no)     | lexical      | only one     |
+  | element/type |              |              | by prolog    |              | default ns   |
+  | ns           |              |              | or elem cons |              | per lexical  |
+  |              |              |              |              |              | scope        |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Default      | fn           | (yes,no)     | (yes,no)     | module       | none         |
+  | function ns  |              | note: dis-   | by prolog    |              |              |
+  |              |              | recommended  |              |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | In-scope     | built-in     | (no,yes)     | (no,yes)     | module       | one def per  |
+  | schema types | types in xs  |              | by schema    |              | global or    |
+  |              |              |              | import in    |              | local type   |
+  |              |              |              | prolog       |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | In-scope     | none         | (no,yes)     | (no,yes)     | module       | one def per  |
+  | elem decls   |              |              | by schema    |              | global or    |
+  |              |              |              | import in    |              | local elem   |
+  |              |              |              | prolog       |              | name         |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | In-scope     | none         | (no,yes)     | (no,yes)     | module       | one def per  |
+  | attr decls   |              |              | by schema    |              | global or    |
+  |              |              |              | import in    |              | local attr   |
+  |              |              |              | prolog       |              | name         |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | In-scope     | none         | (no,yes)     | (yes,yes)    | lexical      | one def per  |
+  | variable     |              |              | by prolog    |              | variable     |
+  |              |              |              | and var-     |              | per lexical  |
+  |              |              |              | binding expr |              | scope        |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Context item | none         | (yes,no)     | (no,no)      | lexical      | none         |
+  | static type  | (raises      |              | but can be   |              |              |
+  |              | error on     |              | 'influenced' |              |              |
+  |              | access)      |              | by exprs.    |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Function     | functions    | (no,yes)     | (no,yes)     | module       | unique per   |
+  | signatures   | in 'fn' ns;  |              | by module    |              | expanded     |
+  |              | constructors |              | import and   |              | QName + arg  |
+  |              | built-in     |              | fun decl in  |              | count        |
+  |              | atomic types |              | prolog       |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Statically   | default      | (no,yes)     | (no,no)      | module       | unique per   |
+  | known        | collation    |              |              |              | collation    |
+  | collations   |              |              |              |              | URI          |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Default      | Unicode      | (yes,no)     | (yes,no)     | module       | none         |
+  | collation    | codepoint    |              | by prolog    |              |              |
+  |              | collation    |              |              |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Construction | 'preserve'   | (yes,no)     | (yes,no)     | module       | 'preserve'   |
+  | mode         |              |              | by prolog    |              | or           |
+  |              |              |              |              |              | 'strip'      |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Ordering     | 'ordered'    | (yes,no)     | (yes,no)     | lexical      | 'ordered'    |
+  | mode         |              |              | by prolog    |              | or           |
+  |              |              |              | or expr      |              | 'unordered'  |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Default      | impl-        | (yes,no)     | (yes,no)     | module       | 'greatest'   |
+  | order for    |  defined     |              | by prolog    |              | or           |
+  | empty seq.   |              |              |              |              | 'least'      |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Boundary     | 'strip'      | (yes,no)     | (yes,no)     | module       | 'preserve'   |
+  | space        |              |              | by prolog    |              | or           |
+  | policy       |              |              |              |              | 'strip'      |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Copy-ns      | 'inherit',   | (yes,no)     | (yes,no)     | module       | (no-)        |
+  | mode         | 'preserve'   |              | by prolog    |              | 'inherit'    |
+  |              |              |              |              |              | or           |
+  |              |              |              |              |              | 'preserve'   |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Base URI     | none         | (yes,no)     | (yes,no)     | module       | valid        |
+  |              |              |              | by prolog    |              | lexical      |
+  |              |              |              |              |              | rep. of      |
+  |              |              |              |              |              | xs:anyURI    |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Statically   | none         | (no,yes)     | (no,no)      | module       | none         |
+  | known        |              |              |              |              |              |
+  | documents    |              |              |              |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Statically   | none         | (no,yes)     | (no,no)      | module       | none         |
+  | known        |              |              |              |              |              |
+  | collections  |              |              |              |              |              |
+  |--------------+--------------+--------------+--------------+--------------+--------------|
+  | Statically   | 'node()*'    | (no,yes)     | (no,no)      | module       | none         |
+  | known        |              |              |              |              |              |
+  | collection   |              |              |              |              |              |
+  | types        |              |              |              |              |              |
+  #-----------------------------------------------------------------------------------------#
+
+*/
+
