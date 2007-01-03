@@ -19,45 +19,13 @@
 #include "../types/qname.h"
 #include "../util/rchandle.h"
 #include "xquery_parser.tab.h"
+#include "indent.h"
 
 using namespace std;
 using namespace yy;
+
 namespace xqp {
 
-// printing
-char* indent[] = {
-	"",
-	"\t",
-	"\t\t",
-	"\t\t\t",
-	"\t\t\t\t",
-	"\t\t\t\t\t",
-	"\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t",
-	"\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t"
-									};
 int printdepth = 0;
 #define INDENT	indent[++printdepth % 30]
 #define OUTDENT	indent[printdepth-- % 30]

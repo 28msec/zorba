@@ -75,6 +75,7 @@ public:
 public:
 	yy::location get_location() const { return loc; }
 	virtual std::ostream& put(std::ostream& s) const;
+	virtual rchandle<item_iterator> eval(context *const);
 
 };
 
@@ -1368,6 +1369,7 @@ class FLWORExpr : public exprnode
 |			|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 |_______________________________________________________________________*/
 {
+protected:
 	rchandle<ForLetClauseList> forlet_list_h;
 	rchandle<WhereClause> where_h;
 	rchandle<OrderByClause> orderby_h;
