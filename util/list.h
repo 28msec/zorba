@@ -4,12 +4,14 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #ifndef XQP_LIST_H
 #define XQP_LIST_H
 
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 namespace xqp {
 
@@ -131,7 +133,7 @@ template<class T>
 T list<T>::pop_front()
 {
 	if (sz==0) {
-		throw xqpexception("list::pop_front", "list empty");
+		throw xqp_exception("list::pop_front", "list empty");
 	}
 	list_node<T>* front_node = head->next;
 	T result = front_node->data;

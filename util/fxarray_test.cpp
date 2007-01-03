@@ -4,13 +4,15 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation. 
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #include "fxarray.h"
 
 #include <iostream>
 
-#include "xqpexception.h"
+#include "xqp_exception.h"
 #include "tokenbuf.h"
 
 using namespace std;
@@ -123,7 +125,7 @@ int main(int argc, char* argv[])
         cout << "Unrecognized command\n";
       }
     }
-  } catch (xqpexception& e) {
+  } catch (xqp_exception& e) {
     cout << "Application exception: " << e.what() << '\t' << e.get_msg() << endl;
   }
   return 0;

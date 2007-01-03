@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #ifndef XQP_FILE_H
@@ -16,7 +18,7 @@
 #include <dirent.h>
 #include <string>
 
-#include "xqpexception.h"
+#include "xqp_exception.h"
 #include "rchandle.h"
 
 namespace xqp {
@@ -68,15 +70,15 @@ private:	// volume attributes
   bool truncnames;        // truncates long filenames
 
 public:
-  file(std::string const& pathname) throw (xqpexception);
-  file(std::string const& rootpath, std::string const& name) throw (xqpexception);
+  file(std::string const& pathname) throw (xqp_exception);
+  file(std::string const& rootpath, std::string const& name) throw (xqp_exception);
   ~file();
 
 public:	// common methods
   void set_path(std::string const& _path ) { path = _path; }
   void set_filetype(enum filetype _type ) { type = _type ; }
   std::string const& get_path() const { return path; }
-  enum filetype get_filetype() throw (xqpexception);
+  enum filetype get_filetype() throw (xqp_exception);
 
   bool is_directory() const { return (type==type_directory); }  
   bool is_file() const { return (type==type_file); }  
@@ -85,15 +87,15 @@ public:	// common methods
 
   bool is_invalid() const { return (type==type_invalid); }  
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
-  static volatile void error(std::string const& location, std::string const& msg) throw (xqpexception);
+  static volatile void error(std::string const& location, std::string const& msg) throw (xqp_exception);
   static void sync() { ::sync(); }
 
 
 public:	// file methods
-  void create() throw (xqpexception);
-  void remove(bool ignore) throw (xqpexception);
-  void rename(std::string const& newpath) throw (xqpexception);
-  void touch() throw (xqpexception);
+  void create() throw (xqp_exception);
+  void remove(bool ignore) throw (xqp_exception);
+  void rename(std::string const& newpath) throw (xqp_exception);
+  void touch() throw (xqp_exception);
 
   int64_t get_size() const				{ return size; }
   time_t  get_acctime() const			{ return atime; }
@@ -104,7 +106,7 @@ public:	// file methods
 
 	int readfile(
 		char* docbuf,
-		uint32_t maxlen) throw (xqpexception);
+		uint32_t maxlen) throw (xqp_exception);
 
 public:	// directory methods
 	class dir_iterator : public rcobject
@@ -115,7 +117,7 @@ public:	// directory methods
   	DIR *dir;
   	struct dirent *dirent;
 	public:
-  	dir_iterator(const std::string& path, bool end_iterator = false) throw (xqpexception);
+  	dir_iterator(const std::string& path, bool end_iterator = false) throw (xqp_exception);
   	~dir_iterator();
 	public:	// iterator interface
 		void operator++();
@@ -124,9 +126,9 @@ public:	// directory methods
 		const char* get_name() const { return dirent?dirent->d_name:0; } 
 	};
 
-	void mkdir() throw (xqpexception);
-	void rmdir(bool ignore) throw (xqpexception);
-  void chdir() throw (xqpexception);
+	void mkdir() throw (xqp_exception);
+	void rmdir(bool ignore) throw (xqp_exception);
+  void chdir() throw (xqp_exception);
 
   dir_iterator begin();
   dir_iterator end();
@@ -146,7 +148,7 @@ public:	// volume methods
   bool has_truncated_names() const { return truncnames; }
   bool is_empty() const { return (size == (int64_t)0); }
 
-  void do_statfs(std::string const& path) throw (xqpexception);
+  void do_statfs(std::string const& path) throw (xqp_exception);
 };
 
 

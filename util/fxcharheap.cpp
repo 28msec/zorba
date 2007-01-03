@@ -1,7 +1,10 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: charheap.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: fxcharheap.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *
+ *  Author: Paul Pedersen
  *
  */
 
@@ -16,7 +19,7 @@
 #include <iostream>
 
 #include "file.h"
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 using namespace std;
 namespace xqp {
@@ -27,7 +30,7 @@ void fxcharheap::ioexception(
 {
 	ostringstream oss;
 	oss << msg << " [" << strerror(errno) << ']';
-	throw xqpexception(location, oss.str());
+	throw xqp_exception(location, oss.str());
 }
 
 
@@ -134,7 +137,7 @@ off_t fxcharheap::put(		// return the target offset
   const char* buf,				// input: string
   uint32_t start_offset,	// input: starting offset
   uint32_t len)						// input: length 
-throw (xqp::xqpexception)
+throw (xqp::xqp_exception)
 {
   off_t id  = *offset_p;
 
@@ -156,7 +159,7 @@ void fxcharheap::replace(
   const char* buf,				// input: string
   uint32_t start_offset,	// input: starting offset
   uint32_t len)						// input: length
-throw (xqp::xqpexception)
+throw (xqp::xqp_exception)
 {
   // check if we have enough room
 	if (strlen(&data[id]) < len) {
@@ -176,7 +179,7 @@ void fxcharheap::get(
   char* buf,		        	// output: buffer
   uint32_t output_offset, // input: output buffer offset
   uint32_t maxlen) const	// input: maximum output size, truncate 
-throw (xqp::xqpexception)
+throw (xqp::xqp_exception)
 {
   try {
     uint32_t len = strlen(&data[id]);

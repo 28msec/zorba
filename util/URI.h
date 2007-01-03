@@ -82,9 +82,9 @@ protected:	// state
 	bool dns_resolved;
 
 public:	// ctor, dtor
-	// parse URI string
-	URI(const std::string& uri);
-	URI(const char* uri);
+	URI(URI const& uri);
+	URI(std::string const& uri);
+	URI(char const* uri);
 	~URI();
 
 	// common initializer

@@ -1,7 +1,10 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: charheap.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: fxcharheap.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *
+ *  Author: Paul Pedersen
  *
  */
 
@@ -9,13 +12,12 @@
 #define XQP_FXCHARHEAP_H
 
 #include "fxarray.h"
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 namespace xqp {
 
 class fxcharheap
 {
-
 public:  //iterator 
 
   typedef class fxcharheap_iterator
@@ -73,7 +75,7 @@ public:  //heap interface
     char * buf,							// output: output buffer
     uint32_t offset,				// input: buffer starting offset
     uint32_t maxlen) const	// input: maximum output size, truncate
-	throw (xqp::xqpexception);
+	throw (xqp::xqp_exception);
 
 	/**
    ** Insert a new block of characters.
@@ -85,7 +87,7 @@ public:  //heap interface
     char const* buf,				// input: string
     uint32_t offset,				// input: starting offset
     uint32_t len)						// input: string length
-	throw (xqp::xqpexception);
+	throw (xqp::xqp_exception);
 
 	/**
    **	Replace a block of characters in place.
@@ -95,7 +97,7 @@ public:  //heap interface
     char const* buf,        // input: string
     uint32_t offset,				// input: starting offset
     uint32_t len)						// input: string length
-	throw (xqp::xqpexception);
+	throw (xqp::xqp_exception);
 
 	/**
    **	Return the length of the string at offset 'id'.

@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #ifndef XQP_FXVECTOR_H
@@ -23,7 +25,7 @@
 #include <iostream>
 
 #include "mmfile.h"
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 using namespace std;
 namespace xqp {
@@ -236,7 +238,7 @@ protected:
 	void range_check(size_type n) const
 	{
 		if (n >= size())
-			throw xqpexception(__FUNCTION__, "fxvector::range_check");
+			throw xqp_exception(__FUNCTION__, "fxvector::range_check");
 	}
 
 
@@ -484,11 +486,11 @@ void fxvector<T>::unmap()
 		uint32_t m = capacity() * sizeof(value_type);
 
 	/*if (msync(src, eofoff,0)==-1) {
-			throw xqpexception("msync failed");
+			throw xqp_exception("msync failed");
 		}
 	*/
 		if (munmap(src, m)==-1) {
-			throw xqpexception("munmap failed");
+			throw xqp_exception("munmap failed");
 		}
 	}
 }

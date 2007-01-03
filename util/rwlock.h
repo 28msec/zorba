@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #ifndef XQP_RWLOCK_H

@@ -4,13 +4,15 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #include "file.h"
 
 #include <iostream>
 #include <sstream>
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 using namespace std;
 using namespace xqp;
@@ -67,7 +69,7 @@ int main(int argc, char* argv[])
 			getline(iss,line);
 			cout << line << endl;
 		}
-	} catch (xqpexception& e) {
+	} catch (xqp_exception& e) {
 		cout << "Exception: " << e.get_msg() << endl;
 	}
 }

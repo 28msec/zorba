@@ -100,7 +100,27 @@ static int uri_port_of_scheme(const char *schemeStr)
 URI::~URI() {}
 
 URI::URI(
-	const string& uriStr )
+	URI const& uri)
+:
+	scheme(uri.scheme),
+	hostinfo(uri.hostinfo),
+	user(uri.user),
+	password(uri.password),
+	hostname(uri.hostname),
+	port_str(uri.port_str),
+	hostandport(uri.hostandport),
+	path(uri.path),
+	query(uri.query),
+	fragment(uri.fragment),
+	port(uri.port),
+	errnum(uri.errnum),
+	dns_looked_up(uri.dns_looked_up),
+	dns_resolved(uri.dns_resolved)
+{
+}
+
+URI::URI(
+	string const& uriStr )
 :
 	port_str("80"),
 	port(HTTP_DEFAULT_PORT),
@@ -116,7 +136,7 @@ URI::URI(
 }
 
 URI::URI(
-	const char* uri)
+	char const* uri)
 :
 	port_str("80"),
 	port(HTTP_DEFAULT_PORT),
@@ -128,7 +148,7 @@ URI::URI(
 }
 
 void URI::init_uri(
-	const char* uri)
+	char const* uri)
 {
 	const char *s;
 	const char *s1;

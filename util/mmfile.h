@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #ifndef XQP_MMFILE_H
@@ -11,7 +13,7 @@
 
 #include <string>
 
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 namespace xqp {
 
@@ -38,10 +40,10 @@ public:			// ctor,dtor
 
 public:			// mm array interface
   void fill(char initval);
-  void expand(bool init = false) throw (xqpexception);
-  void unmap() throw (xqpexception);
-  void rename_backing_file(std::string const& new_path) throw (xqpexception);
-	void destroy() throw (xqpexception);
+  void expand(bool init = false) throw (xqp_exception);
+  void unmap() throw (xqp_exception);
+  void rename_backing_file(std::string const& new_path) throw (xqp_exception);
+	void destroy() throw (xqp_exception);
 
 public:			// manipulators
 	std::string get_path() const { return path; }

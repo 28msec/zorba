@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #ifndef XQP_FXARRAY_H
@@ -18,7 +20,7 @@
 #include <iostream>
 
 #include "mmfile.h"
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 using namespace std;
 namespace xqp {
@@ -83,7 +85,7 @@ public:		// ctor,dtor
    ** Destroy all the elements.
 	 **	In the mmfile case, unmap and close backing file.
    */
-	void destroy() throw (xqpexception);
+	void destroy() throw (xqp_exception);
 
 public: 	// array interface
 	/**
@@ -107,7 +109,7 @@ public: 	// array interface
 	 **
 	 ** @param init - if true then initialize the new entries to 0
 	 */
-  void expand(bool init = false) throw (xqpexception);
+  void expand(bool init = false) throw (xqp_exception);
 
 	/**
 	 ** Fill array with an initial byte value.
@@ -142,7 +144,7 @@ public:		// memory-mapped only, nops in the non-mm case
 	/**
 	 ** Unmap the backing file.
 	 */
-	void unmap() throw (xqpexception);
+	void unmap() throw (xqp_exception);
 
 	/**
 	 ** Return the path of the backing file.
@@ -154,7 +156,7 @@ public:		// memory-mapped only, nops in the non-mm case
 	/**
 	 ** Rename the backing file.
 	 */
-  void rename_backing_file(string const& new_path) throw (xqpexception);
+  void rename_backing_file(string const& new_path) throw (xqp_exception);
 
 	/**
 	 ** Return data array pointer.
@@ -220,7 +222,7 @@ void fxarray<T>::fill(char initval)
 
 template<typename T>
 void fxarray<T>::expand(bool init)
-throw (xqpexception)
+throw (xqp_exception)
 {
 	if (mmf_p) {
 		mmf_p->expand(init);
@@ -243,7 +245,7 @@ throw (xqpexception)
 
 template<typename T>
 void fxarray<T>::unmap()
-throw (xqpexception)
+throw (xqp_exception)
 {
 	if (mmf_p) mmf_p->unmap();
 }
@@ -251,7 +253,7 @@ throw (xqpexception)
 
 template<typename T>
 void fxarray<T>::rename_backing_file(const string& new_path)
-throw (xqpexception)
+throw (xqp_exception)
 {
 	if (mmf_p) mmf_p->rename_backing_file(new_path);
 }
@@ -259,7 +261,7 @@ throw (xqpexception)
 
 template<typename T>
 void fxarray<T>::destroy()
-throw (xqpexception)
+throw (xqp_exception)
 {
 	if (mmf_p) mmf_p->destroy();
 }

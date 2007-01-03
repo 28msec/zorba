@@ -20,7 +20,7 @@
 #include "hashfun.h"
 #include "rchandle.h"
 #include "rwlock.h"
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 
 using namespace std;
@@ -579,7 +579,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.readlock()!=0) {
-		throw xqpexception(__FUNCTION__,"read lock failed");
+		throw xqp_exception(__FUNCTION__,"read lock failed");
 	}
 	uint32_t z = v.size();
 	rwl.readunlock();
@@ -649,7 +649,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.readlock()!=0) {
-		throw xqpexception(__FUNCTION__,"read lock failed");
+		throw xqp_exception(__FUNCTION__,"read lock failed");
 	}
 	bool b = find_unsync(key, index);
 	rwl.readunlock();
@@ -682,7 +682,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.readlock()!=0) {
-		throw xqpexception(__FUNCTION__,"read lock failed");
+		throw xqp_exception(__FUNCTION__,"read lock failed");
 	}
 	bool b = get_unsync(key, result);
 	rwl.readunlock();
@@ -720,7 +720,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.writelock()!=0) {
-		throw xqpexception(__FUNCTION__,"write lock failed");
+		throw xqp_exception(__FUNCTION__,"write lock failed");
 	}
 	bool b = put_unsync(key, val);
 	rwl.writeunlock();
@@ -826,7 +826,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.readlock()!=0) {
-		throw xqpexception(__FUNCTION__,"read lock failed");
+		throw xqp_exception(__FUNCTION__,"read lock failed");
 	}
 	uint32_t z = v.size();
 	rwl.readunlock();
@@ -897,7 +897,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.readlock()!=0) {
-		throw xqpexception(__FUNCTION__,"read lock failed");
+		throw xqp_exception(__FUNCTION__,"read lock failed");
 	}
 	bool b = find_unsync(key, index);
 	rwl.readunlock();
@@ -952,7 +952,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.readlock()!=0) {
-		throw xqpexception(__FUNCTION__,"read lock failed");
+		throw xqp_exception(__FUNCTION__,"read lock failed");
 	}
 	bool b = get_unsync(key, result);
 	rwl.readunlock();
@@ -991,7 +991,7 @@ std::cout << __FUNCTION__ << std::endl;
 #endif
 
 	if (rwl.writelock()!=0) {
-		throw xqpexception(__FUNCTION__,"write lock failed");
+		throw xqp_exception(__FUNCTION__,"write lock failed");
 	}
 	bool b = put_unsync(key, val);
 	rwl.writeunlock();

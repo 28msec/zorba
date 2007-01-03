@@ -4,6 +4,8 @@
  *
  *  Copyright 2005-2006 FLWOR Foundation.  All Rights Reserved.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #ifndef XQP_RCHANDLE_H
@@ -14,23 +16,24 @@
 
 namespace xqp {
 
-/*__________________________________________________________________________  
-|                                                                           |  
-|  Base class for reference counted objects                                 |
-|                                                                           |  
-|  Any class wishing to take advantage of automatic reference counting      |
-|  must inherit from this class.                                            |
-|                                                                           |  
-|  rcobject encapsulates the reference count, as well as functions          |
-|  for incrementing and decrementing the count. It also contains code       |
-|  for destroying a value when it is no longer in use, i.e., when its       |
-|  reference count becomes 0.  Finally, it contains a field that keeps      |
-|  track of whether this value is shareable, and it provides functions      |
-|  to query this value and set it to false.  There is no need for a         |
-|  function to set the shareability field to true, because all values       |
-|  are shareable by default.  Once an object has been tagged unshareable,   |
-|  there is no way to make it shareable again.                              |
-|___________________________________________________________________________|*/
+/*______________________________________________________________________
+|  
+|  Base class for reference counted objects
+|
+|  Any class wishing to take advantage of automatic reference counting
+|  must inherit from this class.
+|
+|  rcobject encapsulates the reference count, as well as functions
+|  for incrementing and decrementing the count. It also contains code
+|  for destroying a value when it is no longer in use, i.e., when its
+|  reference count becomes 0.  Finally, it contains a field that keeps
+|  track of whether this value is shareable, and it provides functions
+|  to query this value and set it to false.  There is no need for a
+|  function to set the shareability field to true, because all values
+|  are shareable by default.  Once an object has been tagged unshareable,
+|  there is no way to make it shareable again.
+|_______________________________________________________________________*/
+
 
 class rcobject
 {

@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #include "file.h"
@@ -18,7 +20,7 @@
 #include <sstream>
 #include <string>
 
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 
 using namespace std;
@@ -41,7 +43,7 @@ static const char *FS_NAMES[] = {
 
 
 file::file(const std::string& _path)
-throw (xqpexception)
+throw (xqp_exception)
 :
 	path(_path),
   type(type_non_existent)
@@ -63,7 +65,7 @@ throw (xqpexception)
 
 file::file(
 	std::string const& base,
-	std::string const& name) throw (xqpexception)
+	std::string const& name) throw (xqp_exception)
 :
 	path(base+"/"+name),
   type(type_non_existent)
@@ -89,7 +91,7 @@ file::~file()
 
 
 enum file::filetype file::get_filetype( )
-throw (xqpexception)
+throw (xqp_exception)
 {
   if (type!=type_non_existent) return type;
 
@@ -114,16 +116,16 @@ throw (xqpexception)
 volatile void file::error(
 	string const& location,
 	string const& msg)
-throw (xqpexception)
+throw (xqp_exception)
 {
   std::string err = strerror(errno);
   errno = 0;
-  throw xqpexception(location, msg + " ["+err+']');
+  throw xqp_exception(location, msg + " ["+err+']');
 }
 
 
 void file::create()
-throw (xqpexception)
+throw (xqp_exception)
 {
   int fd = ::creat(path.c_str(),0666);
   if (fd < 0) error(__FUNCTION__, "failed to create file "+path);
@@ -133,7 +135,7 @@ throw (xqpexception)
 
 
 void file::mkdir()
-throw (xqpexception)
+throw (xqp_exception)
 {
 	if (::mkdir(path.c_str(),0777)) {
 		ostringstream oss;
@@ -146,7 +148,7 @@ throw (xqpexception)
 
 
 void file::remove(bool ignore)
-throw (xqpexception)
+throw (xqp_exception)
 {
   if (::remove(path.c_str()) && !ignore) {
     error(__FUNCTION__, "failed to remove "+path);
@@ -156,7 +158,7 @@ throw (xqpexception)
 
 
 void file::rmdir(bool ignore)
-throw (xqpexception)
+throw (xqp_exception)
 {
 	if (::rmdir(path.c_str()) && !ignore) {
     error(__FUNCTION__, "rmdir failed on "+path);
@@ -166,7 +168,7 @@ throw (xqpexception)
 
 
 void file::chdir()
-throw (xqpexception)
+throw (xqp_exception)
 {
   if (!is_directory()) return;
   if (::chdir(path.c_str())) {
@@ -177,7 +179,7 @@ throw (xqpexception)
 
 void file::rename(
 	std::string const& newpath)
-throw (xqpexception)
+throw (xqp_exception)
 {
   if (::rename(path.c_str(), newpath.c_str())) {
     ostringstream oss;
@@ -189,13 +191,13 @@ throw (xqpexception)
 
 
 void file::touch()
-throw (xqpexception)
+throw (xqp_exception)
 {
   int fd = open(path.c_str(),O_CREAT|O_WRONLY,0666);
   if (fd<0) error(__FUNCTION__, "failed to open "+path);
   try {
     if (fsync(fd)) error(__FUNCTION__, "failed to fsync "+path);
-  } catch (xqpexception &e) {
+  } catch (xqp_exception &e) {
     close(fd);
     throw;
   }
@@ -205,7 +207,7 @@ throw (xqpexception)
 
 void file::do_statfs(
 	std::string const& path)
-throw (xqpexception)
+throw (xqp_exception)
 {
   struct statfs buf;
   if (statfs(path.c_str(),&buf))
@@ -238,7 +240,7 @@ throw (xqpexception)
 int file::readfile(
 	char* docbuf,
 	uint32_t maxlen)
-throw (xqpexception)
+throw (xqp_exception)
 {
   int fd = open(path.c_str(), O_RDONLY);
   if (fd < 0) {
@@ -273,7 +275,7 @@ file::dir_iterator file::end()
 file::dir_iterator::dir_iterator(
 	string const& path,
 	bool end_iterator)
-throw (xqpexception)
+throw (xqp_exception)
 :
 	dirpath(path),
 	dir(opendir(path.c_str())),

@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #include "list.h"

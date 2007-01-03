@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #include "hashmap.h"
@@ -13,7 +15,7 @@
 #include <iostream>
 #include <string>
 
-#include "xqpexception.h"
+#include "xqp_exception.h"
 #include "tokenbuf.h"
 
 using namespace std;
@@ -136,9 +138,10 @@ int main(int argc, char* argv[])
 			if (cmdline.length()==0) continue;
 			handle_cmd(m,cmdline);
 		}
-	} catch (xqpexception& e) {
+	} catch (xqp_exception& e) {
 		cout << "Application exception: " << e.what() << '\t' << e.get_msg() << endl;
 	}
 
 	return 0;
 }
+

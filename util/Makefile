@@ -1,13 +1,14 @@
 OPT=-g
 SUFX=do
 
-xqpexception : xqpexception.h xqpexception.cpp
-	g++ ${OPT} -c -o xqpexception.o xqpexception.cpp
 
+xqp_exception : xqp_exception.h xqp_exception.cpp
+	g++ ${OPT} -c -o xqp_exception.o xqp_exception.cpp
+	g++ ${OPT} -c -o xqp_exception.do xqp_exception.cpp
 
 persistent_vector_test : 	persistent_vector_test.cpp persistent_vector.h 
 	g++ $(LARGEFILEFLAGS) -Wall ${OPT} -o persistent_vector_test \
-		xqpexception.o \
+		xqp_exception.o \
 		tokenbuf.${SUFX} \
 		persistent_vector_test.cpp
 
@@ -16,14 +17,14 @@ tokenbuf : tokenbuf.h tokenbuf.cpp
 	g++ -c ${OPT} -o tokenbuf.${SUFX} tokenbuf.cpp
 tokenbuf_test : tokenbuf.h tokenbuf.cpp tokenbuf_test.cpp
 	g++ ${OPT} -o tokenbuf_test tokenbuf.${SUFX} \
-		xqpexception.o \
+		xqp_exception.o \
 		file.${SUFX} \
 		tokenbuf_test.cpp
 
 
 hashfun_test :	hashfun_test.cpp hashfun.h 
 	g++ $(LARGEFILEFLAGS) -Wall ${OPT} -o hashfun_test \
-		xqpexception.o \
+		xqp_exception.o \
 		hashfun_test.cpp
 
 
@@ -31,7 +32,7 @@ hashmap :	hashmap.h
 	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o hashmap.${SUFX} hashmap.cpp
 hashmap_test :	hashmap_test.cpp hashmap.h 
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -lpthread -o hashmap_test \
-		xqpexception.o \
+		xqp_exception.o \
 		rwlock.${SUFX} \
 		tokenbuf.${SUFX} \
 		hashmap_test.cpp
@@ -46,7 +47,7 @@ logger : logger.h logger.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o logger.${SUFX} logger.cpp
 logger_test : logger.h logger.cpp logger_test.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o logger_test \
-		xqpexception.o \
+		xqp_exception.o \
 		logger.${SUFX} \
 		logger_test.cpp
 
@@ -89,7 +90,7 @@ file :	file.cpp file.h
 	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o file.${SUFX} file.cpp
 file_test :	file_test.cpp file.cpp file.h 
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o file_test \
-		xqpexception.o \
+		xqp_exception.o \
 		tokenbuf.${SUFX} \
 		file.${SUFX} \
 		file_test.cpp; \
@@ -99,7 +100,7 @@ mmfile :	mmfile.cpp mmfile.h
 	g++ $(LARGEFILEFLAGS) -Wall -c ${OPT} -o mmfile.${SUFX} mmfile.cpp
 mmfile_test :	mmfile_test.cpp mmfile.cpp mmfile.h 
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o mmfile_test \
-		xqpexception.o \
+		xqp_exception.o \
 		tokenbuf.${SUFX} \
 		mmfile.${SUFX} \
 		mmfile_test.cpp; \
@@ -107,14 +108,14 @@ mmfile_test :	mmfile_test.cpp mmfile.cpp mmfile.h
 
 fxarray_test :	fxarray_test.cpp fxarray.h mmfile.h mmfile.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o fxarray_test \
-		xqpexception.o \
+		xqp_exception.o \
 		tokenbuf.${SUFX} \
 		mmfile.${SUFX} \
 		fxarray_test.cpp; \
 
 fxvector_test :	fxvector_test.cpp fxvector.h mmfile.h mmfile.cpp
 	g++ $(LARGEFILEFLAGS) -Wall -D DEBUG ${OPT} -o fxvector_test \
-		xqpexception.o \
+		xqp_exception.o \
 		tokenbuf.${SUFX} \
 		mmfile.${SUFX} \
 		fxvector_test.cpp; \
@@ -123,7 +124,7 @@ fxcharheap : fxcharheap.h fxcharheap.cpp
 	g++ ${OPT} -c ${OPT} -o fxcharheap.${SUFX} fxcharheap.cpp
 fxcharheap_test : fxcharheap.h fxcharheap.cpp fxcharheap_test.cpp
 	g++ ${OPT} -o fxcharheap_test \
-		xqpexception.o \
+		xqp_exception.o \
 		tokenbuf.${SUFX} \
 		mmfile.${SUFX} \
 		file.${SUFX} \

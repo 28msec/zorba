@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #include "tokenbuf.h"
@@ -13,6 +15,7 @@
 #include <sstream>
 #include <vector>
 
+#include "xqp_exception.h"
 #include "file.h"
 
 using namespace std;
@@ -87,7 +90,7 @@ int main(int argc, char* argv[])
 	char* buf = new char[n];
 	try {
 		f.readfile(buf,n);
-	} catch (xqpexception& e) {
+	} catch (xqp_exception& e) {
 		cout << "i/o error on '"<<path<<"'\n";
 		return -1;
 	}

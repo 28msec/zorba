@@ -4,6 +4,8 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
 #include "mmfile.h"
@@ -16,7 +18,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "xqpexception.h"
+#include "xqp_exception.h"
 
 using namespace std;
 namespace xqp {
@@ -26,7 +28,7 @@ namespace xqp {
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << strerror(errno) << ']'; \
-		throw xqpexception(__FUNCTION__, oerr.str()); \
+		throw xqp_exception(__FUNCTION__, oerr.str()); \
 	}
 
 
@@ -89,13 +91,13 @@ mmfile::~mmfile()
 
 
 void mmfile::destroy()
-throw (xqpexception)
+throw (xqp_exception)
 {
 	try {
     unmap();
     close(fd);
     remove(path.c_str());
-	} catch (xqpexception& e) {
+	} catch (xqp_exception& e) {
 		IOEXCEPTION("remove on: '"+path+"' application exception: "+e.what()+", "+e.get_msg());
   } catch (exception& e) {
 		IOEXCEPTION("remove on: '"+path+"' system exception: "+e.what());
@@ -112,7 +114,7 @@ void mmfile::fill(char initval)
 
 
 void mmfile::expand(bool init)
-throw (xqpexception)
+throw (xqp_exception)
 {
 	// release current map
   unmap();
@@ -139,7 +141,7 @@ throw (xqpexception)
 
 
 void mmfile::unmap()
-throw (xqpexception)
+throw (xqp_exception)
 {
   if (msync(data, eofoff, 0)==-1) {
 		IOEXCEPTION("msync failed on: '"+path+"'");
@@ -151,7 +153,7 @@ throw (xqpexception)
 
 
 void mmfile::rename_backing_file(const string& new_path)
-throw (xqpexception)
+throw (xqp_exception)
 {
   int res = rename(path.c_str(), new_path.c_str());
   if (res==-1) {
