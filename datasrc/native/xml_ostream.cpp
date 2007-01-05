@@ -26,47 +26,11 @@ xml_ostream::xml_ostream()
 {
 }
 
+
 xml_ostream::~xml_ostream()
 {
 }
 
-
-xml_ostream& xml_ostream::operator<<(int32_t val)
-{
-	unsigned char a = (unsigned char)((val & 0xff000000) >> 24);
-  unsigned char b = (unsigned char)((val & 0x00ff0000) >> 16);
-  unsigned char c = (unsigned char)((val & 0x0000ff00) >>  8);
-  unsigned char d = (unsigned char)((val & 0x000000ff));     
-
-  if (a!=0) {
-		if (overflow(5)) flush();
-		cbuf[offset++] = int32_code | 4;
-		cbuf[offset++] = a;
-		cbuf[offset++] = b;
-		cbuf[offset++] = c;
-		cbuf[offset++] = d;
-	}
-  else if (b!=0) {
-		if (overflow(5)) flush();
-		cbuf[offset++] = int32_code | 3;
-		cbuf[offset++] = b;
-		cbuf[offset++] = c;
-		cbuf[offset++] = d;
-	}
-  else if (c!=0) {
-		if (overflow(4)) flush();
-		cbuf[offset++] = int32_code | 2;
-		cbuf[offset++] = c;
-		cbuf[offset++] = d;
-	}
-	else {
-		if (overflow(2)) flush();
-		cbuf[offset++] = int32_code | 1;
-		cbuf[offset++] = d;
-	}
-
-	return *this;
-}
 
 xml_ostream& xml_ostream::operator<<(uint32_t val)
 {
@@ -77,7 +41,6 @@ xml_ostream& xml_ostream::operator<<(uint32_t val)
 
   if (a!=0) {
 		if (overflow(5)) flush();
-		cbuf[offset++] = uint32_code | 4;
 		cbuf[offset++] = a;
 		cbuf[offset++] = b;
 		cbuf[offset++] = c;
@@ -85,106 +48,19 @@ xml_ostream& xml_ostream::operator<<(uint32_t val)
 	}
   else if (b!=0) {
 		if (overflow(5)) flush();
-		cbuf[offset++] = uint32_code | 3;
 		cbuf[offset++] = b;
 		cbuf[offset++] = c;
 		cbuf[offset++] = d;
 	}
   else if (c!=0) {
 		if (overflow(4)) flush();
-		cbuf[offset++] = uint32_code | 2;
 		cbuf[offset++] = c;
 		cbuf[offset++] = d;
 	}
 	else {
 		if (overflow(2)) flush();
-		cbuf[offset++] = uint32_code | 1;
 		cbuf[offset++] = d;
 	}
-
-	return *this;
-}
-
-xml_ostream& xml_ostream::operator<<(int64_t val)
-{
-	unsigned char a = (unsigned char)((val & 0xff00000000000000LL) >> 56);
-  unsigned char b = (unsigned char)((val & 0x00ff000000000000LL) >> 48);
-  unsigned char c = (unsigned char)((val & 0x0000ff0000000000LL) >> 40);
-  unsigned char d = (unsigned char)((val & 0x000000ff00000000LL) >> 32);     
-	unsigned char e = (unsigned char)((val & 0x00000000ff000000LL) >> 24);
-  unsigned char f = (unsigned char)((val & 0x0000000000ff0000LL) >> 16);
-  unsigned char g = (unsigned char)((val & 0x000000000000ff00LL) >>  8);
-  unsigned char h = (unsigned char)((val & 0x00000000000000ffLL));     
-
-  if (a!=0) {
-		if (overflow(9)) flush();
-		cbuf[offset++] = int64_code | 8;
-		cbuf[offset++] = a;
-		cbuf[offset++] = b;
-		cbuf[offset++] = c;
-		cbuf[offset++] = d;
-		cbuf[offset++] = e;
-		cbuf[offset++] = f;
-		cbuf[offset++] = g;
-		cbuf[offset++] = h;
-	}
-  else if (b!=0) {
-		if (overflow(8)) flush();
-		cbuf[offset++] = int64_code | 7;
-		cbuf[offset++] = b;
-		cbuf[offset++] = c;
-		cbuf[offset++] = d;
-		cbuf[offset++] = e;
-		cbuf[offset++] = f;
-		cbuf[offset++] = g;
-		cbuf[offset++] = h;
-	}
-  else if (c!=0) {
-		if (overflow(7)) flush();
-		cbuf[offset++] = int64_code | 6;
-		cbuf[offset++] = c;
-		cbuf[offset++] = d;
-		cbuf[offset++] = e;
-		cbuf[offset++] = f;
-		cbuf[offset++] = g;
-		cbuf[offset++] = h;
-	}
-	else if (d!=0) {
-		if (overflow(6)) flush();
-		cbuf[offset++] = int64_code | 5;
-		cbuf[offset++] = d;
-		cbuf[offset++] = e;
-		cbuf[offset++] = f;
-		cbuf[offset++] = g;
-		cbuf[offset++] = h;
-	}
-  else if (e!=0) {
-		if (overflow(5)) flush();
-		cbuf[offset++] = int64_code | 4;
-		cbuf[offset++] = e;
-		cbuf[offset++] = f;
-		cbuf[offset++] = g;
-		cbuf[offset++] = h;
-	}
-  else if (f!=0) {
-		if (overflow(5)) flush();
-		cbuf[offset++] = int64_code | 3;
-		cbuf[offset++] = f;
-		cbuf[offset++] = g;
-		cbuf[offset++] = h;
-	}
-  else if (g!=0) {
-		if (overflow(4)) flush();
-		cbuf[offset++] = int64_code | 2;
-		cbuf[offset++] = g;
-		cbuf[offset++] = h;
-	}
-	else {
-		if (overflow(2)) flush();
-		cbuf[offset++] = int64_code | 1;
-		cbuf[offset++] = h;
-	}
-
 	return *this;
 }
 
@@ -202,7 +78,6 @@ xml_ostream& xml_ostream::operator<<(uint64_t val)
 
   if (a!=0) {
 		if (overflow(9)) flush();
-		cbuf[offset++] = uint64_code | 8;
 		cbuf[offset++] = a;
 		cbuf[offset++] = b;
 		cbuf[offset++] = c;
@@ -214,7 +89,6 @@ xml_ostream& xml_ostream::operator<<(uint64_t val)
 	}
   else if (b!=0) {
 		if (overflow(8)) flush();
-		cbuf[offset++] = uint64_code | 7;
 		cbuf[offset++] = b;
 		cbuf[offset++] = c;
 		cbuf[offset++] = d;
@@ -225,7 +99,6 @@ xml_ostream& xml_ostream::operator<<(uint64_t val)
 	}
   else if (c!=0) {
 		if (overflow(7)) flush();
-		cbuf[offset++] = uint64_code | 6;
 		cbuf[offset++] = c;
 		cbuf[offset++] = d;
 		cbuf[offset++] = e;
@@ -235,7 +108,6 @@ xml_ostream& xml_ostream::operator<<(uint64_t val)
 	}
 	else if (d!=0) {
 		if (overflow(6)) flush();
-		cbuf[offset++] = uint64_code | 5;
 		cbuf[offset++] = d;
 		cbuf[offset++] = e;
 		cbuf[offset++] = f;
@@ -244,7 +116,6 @@ xml_ostream& xml_ostream::operator<<(uint64_t val)
 	}
   else if (e!=0) {
 		if (overflow(5)) flush();
-		cbuf[offset++] = uint64_code | 4;
 		cbuf[offset++] = e;
 		cbuf[offset++] = f;
 		cbuf[offset++] = g;
@@ -252,68 +123,19 @@ xml_ostream& xml_ostream::operator<<(uint64_t val)
 	}
   else if (f!=0) {
 		if (overflow(5)) flush();
-		cbuf[offset++] = uint64_code | 3;
 		cbuf[offset++] = f;
 		cbuf[offset++] = g;
 		cbuf[offset++] = h;
 	}
   else if (g!=0) {
 		if (overflow(4)) flush();
-		cbuf[offset++] = uint64_code | 2;
 		cbuf[offset++] = g;
 		cbuf[offset++] = h;
 	}
 	else {
 		if (overflow(2)) flush();
-		cbuf[offset++] = uint64_code | 1;
 		cbuf[offset++] = h;
 	}
-
-	return *this;
-}
-
-xml_ostream& xml_ostream::operator<<(float val)
-{
-	uint32_t fval = (uint32_t)(val);
-
-	unsigned char a = (unsigned char)((fval & 0xff000000) >> 24);
-  unsigned char b = (unsigned char)((fval & 0x00ff0000) >> 16);
-  unsigned char c = (unsigned char)((fval & 0x0000ff00) >>  8);
-  unsigned char d = (unsigned char)((fval & 0x000000ff));     
-
-	if (overflow(5)) flush();
-	cbuf[offset++] = float32_code | 4;
-	cbuf[offset++] = a;
-	cbuf[offset++] = b;
-	cbuf[offset++] = c;
-	cbuf[offset++] = d;
-
-	return *this;
-}
-
-xml_ostream& xml_ostream::operator<<(double val)
-{
-	uint64_t dval = (uint64_t)(val);
-
-	unsigned char a = (unsigned char)((dval & 0xff00000000000000LL) >> 56);
-  unsigned char b = (unsigned char)((dval & 0x00ff000000000000LL) >> 48);
-  unsigned char c = (unsigned char)((dval & 0x0000ff0000000000LL) >> 40);
-  unsigned char d = (unsigned char)((dval & 0x000000ff00000000LL) >> 32);     
-	unsigned char e = (unsigned char)((dval & 0x00000000ff000000LL) >> 24);
-  unsigned char f = (unsigned char)((dval & 0x0000000000ff0000LL) >> 16);
-  unsigned char g = (unsigned char)((dval & 0x000000000000ff00LL) >>  8);
-  unsigned char h = (unsigned char)((dval & 0x00000000000000ffLL));     
-
-	if (overflow(9)) flush();
-	cbuf[offset++] = double64_code | 8;
-	cbuf[offset++] = a;
-	cbuf[offset++] = b;
-	cbuf[offset++] = c;
-	cbuf[offset++] = d;
-	cbuf[offset++] = e;
-	cbuf[offset++] = f;
-	cbuf[offset++] = g;
-	cbuf[offset++] = h;
 
 	return *this;
 }
