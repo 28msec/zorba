@@ -1,6 +1,6 @@
 OPT=-g
 SUFX=do
-BUILD=build
+BUILD=Build
 
 qname : qname.h qname.cpp
 	g++ -c ${OPT} -o ${BUILD}/qname.${SUFX} qname.cpp
@@ -16,8 +16,8 @@ xsd :	xsd.h xsd.cpp
 sequence_type : sequence_type.h sequence_type.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/sequence_type.${SUFX} sequence_type.cpp
 
-xdm :	xdm.h xdm.cpp
-	g++ -Wall ${OPT} -c -o ${BUILD}/xdm.${SUFX} xdm.cpp
+node_types :	node_types.h node_types.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/node_types.${SUFX} node_types.cpp
 
 
 	

@@ -24,6 +24,8 @@ public:
 		qn_type,	// type name
 		qn_func,	// function name
 		qn_optn,	// prolog option name
+		qn_ns,		// ns prefix 
+		qn_pi,		// pi target
 		qn_prag		// pragma label
 	};
 

@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: xdm.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: node_types.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -10,19 +10,15 @@
 
 /*______________________________________________________________________
 |
-| X(uery) D(ata) M(odel) module.
-|
 | Includes classes supporting each of the 7 node types defined in:
-|
-|   XQuery 1.0 and XPath 2.0 Data Model (XDM)
+|   XQuery 1.0 and XPath 2.0 Data Model (NODE_TYPES)
 |   [http://www.w3.org/TR/xpath-datamodel/]
 |_______________________________________________________________________*/
  
-#ifndef XQP_XDM_H
-#define XQP_XDM_H
+#ifndef XQP_NODE_TYPES_H
+#define XQP_NODE_TYPES_H
 
 #include "data_interface.h"
-#include "item.h"
 #include "../runtime/context.h"
 #include "../util/rchandle.h"
 
@@ -56,13 +52,13 @@ class node : public item
 public:	// 7 nodes types
 
 	enum node_kind_t {
-		attr_kind,
-		comment_kind,
 		doc_kind,
 		elem_kind,
+		attr_kind,
 		ns_kind,
 		pi_kind,
-		text_kind
+		text_kind,
+		comment_kind
 	};
 
 protected:	// node locator
@@ -800,4 +796,4 @@ public:	// infoset map
 
 
 }	/** namespace xqp */
-#endif /* XQP_XDM_H */
+#endif /* XQP_NODE_TYPES_H */

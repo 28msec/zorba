@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: xdm.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: node_types.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -8,15 +8,13 @@
  *
  */
 
-#include "xdm.h"
+#include "node_types.h"
 #include "data_interface.h"
 
 using namespace std;
 namespace xqp {
 
 /*______________________________________________________________________
-|
-| X(uery) D(ata) M(odel) 
 |
 |	Implementation of the specification in
 |		"XQuery 1.0 and XPath 2.0 Data Model (XDM)"
