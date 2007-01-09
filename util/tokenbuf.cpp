@@ -20,7 +20,7 @@ tokenbuf::tokenbuf(
 	txtlen(strlen(txt)),						// length of target text array
 	delimset(_delimset),						// list of character delimiters
 	delimsetlen(strlen(delimset)),	// length of delimset
-	lowercase(false),								// true => return lower-case tokens
+	lower_case(false),							// true => return lower-case tokens
 	return_delims(false)						// true => return: token,delim,token,delim,...
 {
 }
@@ -35,7 +35,7 @@ tokenbuf::tokenbuf(
 	txt(_txt+_offset),							// target text
 	delimset(_delimset),						// list of character delimiters
 	delimsetlen(strlen(delimset)),	// length of delimset
-	lowercase(false),								// true => return lower-case tokens
+	lower_case(false),							// true => return lower-case tokens
 	return_delims(false)						// true => return: token,delim,token,delim,...
 {
 	txtlen = strlen(txt) < _length ? strlen(txt) : _length;
@@ -106,7 +106,7 @@ void tokenbuf::token_iterator::operator++()
 	token_index = cursor;
   for (; cursor<buf_p->txtlen; ++cursor) {
 		c = buf_p->txt[cursor];
-    if (buf_p->lowercase && 'A'<=c && c<='Z') c |= 0x20;
+    if (buf_p->lower_case && 'A'<=c && c<='Z') c |= 0x20;
 		match = false;
     for (uint32_t i=0; i<buf_p->delimsetlen; ++i) {
 			// check:  Exist(d in D) ( d==c )

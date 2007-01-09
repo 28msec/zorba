@@ -26,7 +26,7 @@ public:
 	uint32_t txtlen;			// length of target text array
 	char const* delimset;	// list of character deimiters
 	uint32_t delimsetlen;	// length of delimset
-	bool lowercase;				// true => lower-case all tokens
+	bool lower_case;			// true => lower-case all tokens
 	bool return_delims;		// true => token,delim,token,delim,...
 
 public:
@@ -43,8 +43,8 @@ public:
 	~tokenbuf();
 
 public:	// manipulators
-	void set_lowercase(bool b=true) { lowercase = b; }
-	bool get_lowercase() { return lowercase; }
+	void set_lowercase(bool b=true) { lower_case = b; }
+	bool get_lowercase() { return lower_case; }
 	void set_return_delims(bool b=true) { return_delims = b; }
 	bool get_return_delims() { return return_delims; }
 	uint32_t get_txtlen() const { return txtlen; }
