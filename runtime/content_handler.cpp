@@ -40,6 +40,8 @@ void msg(request_rec* r,char* buf,int max)
     	param_map.put(key,value);
   	}
 	}
+	
+	oss << "<PRE>\n";
   
 	string qfile;
 	if (param_map.get("q",qfile)) {
@@ -56,7 +58,7 @@ void msg(request_rec* r,char* buf,int max)
     oss << "<br/>Param error<br/>";
   }
      		
-  oss << "\n</BODY></HTML>";
+  oss << "\n</PRE></BODY></HTML>";
   string s = oss.str();
   int n = s.length();
   int m = (n>max ? max : n);

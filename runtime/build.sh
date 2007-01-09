@@ -10,7 +10,7 @@ echo -e "\nCompile content_handler.cpp, create libtest"
 g++ -Wall -I/usr/include/apache2 -c content_handler.cpp
 g++ -shared -Wl,-soname,libtest.so -o libtest.so \
   ../types/qname.do \
-  ../util/xqpexception.o \
+  ../util/xqp_exception.o \
   ../util/tokenbuf.do \
   ../util/file.do \
   ../util/mmfile.do \
