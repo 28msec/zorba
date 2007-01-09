@@ -79,7 +79,8 @@ public:	// 8 nodes types
 		pi_kind,
 		text_kind,
 		comment_kind,
-		binary_kind
+		binary_kind,
+		col_kind
 	};
 
 public:	// accessors
@@ -211,7 +212,7 @@ public:	// accessors
 	 *	or if the entity is not an external unparsed entity, the empty 
 	 *	sequence is returned. 
 	 */
-	rchandle<item_iterator> unparsed_entity_system_id(
+	virtual item_iterator unparsed_entity_system_id(
 	  context const&,
 	  std::string const& entity_name) const;
 
@@ -283,6 +284,23 @@ public:	//ctor,dtor
 	document_node(nodeid id) : node(id) {}
 	document_node() {}
 	~document_node() {}
+
+};
+
+
+class collection_node : public node
+{
+public:
+	nodeid get_nodeid() const;
+	node_kind_t node_kind() const { return col_kind; }
+	item_iterator base_uri(context const&) const;
+	item_iterator collection_uri(context const&) const;
+	item_iterator children(context const&) const;
+
+public:	//ctor,dtor
+	collection_node(nodeid id) : node(id) {}
+	collection_node() {}
+	~collection_node() {}
 
 };
 
