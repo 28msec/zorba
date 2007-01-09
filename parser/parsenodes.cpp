@@ -16,6 +16,7 @@
 #include <vector>
 #include <assert.h>
 
+#include "../runtime/context.h"
 #include "../types/qname.h"
 #include "../util/rchandle.h"
 #include "xquery_parser.tab.h"
@@ -47,13 +48,12 @@ ostream& exprnode::put(ostream& s) const
 
 
 
-
 // [1] Module
 // ----------
 Module::Module(
-	rchandle<static_context> _static_context_h)
+	rchandle<context> _context_h)
 :
-	static_context_h(_static_context_h)
+	context_h(_context_h)
 {
 }
 
@@ -66,7 +66,6 @@ ostream& Module::put(ostream& s) const
 }
 
 //-Module::
-
 
 
 
@@ -412,7 +411,7 @@ ostream& NamespaceDecl::put(ostream& s) const
 // ----------------------
 BoundarySpaceDecl::BoundarySpaceDecl(
 	location const& _loc,
-	static_context::boundary_space_mode_t _mode)
+	context::boundary_space_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -427,8 +426,8 @@ ostream& BoundarySpaceDecl::put(ostream& s) const
 {
 	s << INDENT << "BoundarySpaceDecl[";
 	switch (mode) {
-	case static_context::preserve_space: s << "preserve"; break;
-	case static_context::strip_space:	s << "strip"; break;
+	case context::preserve_space: s << "preserve"; break;
+	case context::strip_space:	s << "strip"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -534,7 +533,7 @@ ostream& FTOptionDecl::put(ostream& s) const
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
 	location const& _loc,
-	static_context::ordering_mode_t _mode)
+	context::ordering_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -549,8 +548,8 @@ ostream& OrderingModeDecl::put(ostream& s) const
 {
 	s << INDENT << "OrderingModeDecl[";
 	switch (mode) {
-	case static_context::ordered: s << "ordered"; break;
-	case static_context::unordered: s << "unordered"; break;
+	case context::ordered: s << "ordered"; break;
+	case context::unordered: s << "unordered"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -565,7 +564,7 @@ ostream& OrderingModeDecl::put(ostream& s) const
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
 	location const& _loc,
-	static_context::order_empty_mode_t _mode)
+	context::order_empty_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -580,8 +579,8 @@ ostream& EmptyOrderDecl::put(ostream& s) const
 {
 	s << INDENT << "EmptyOrderDecl[";
 	switch (mode) {
-	case static_context::empty_greatest: s << "greatest"; break;
-	case static_context::empty_least: s << "least"; break;
+	case context::empty_greatest: s << "greatest"; break;
+	case context::empty_least: s << "least"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -626,7 +625,7 @@ ostream& CopyNamespacesDecl::put(ostream& s) const
 // -----------------
 PreserveMode::PreserveMode(
 	location const& _loc,
-	static_context::copy_ns_mode_t _preserve_mode)
+	context::copy_ns_mode_t _preserve_mode)
 :
 	parsenode(_loc),
 	preserve_mode(_preserve_mode)
@@ -641,8 +640,8 @@ ostream& PreserveMode::put(ostream& s) const
 {
 	s << INDENT << "PreserveMode[";
 	switch (preserve_mode) {
-	case static_context::inherit_ns: s << "inherit"; break;
-	case static_context::no_inherit_ns: s << "no-inherit"; break;
+	case context::inherit_ns: s << "inherit"; break;
+	case context::no_inherit_ns: s << "no-inherit"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -657,7 +656,7 @@ ostream& PreserveMode::put(ostream& s) const
 // ----------------
 InheritMode::InheritMode(
 	location const& _loc,
-	static_context::copy_ns_mode_t _inherit_mode)
+	context::copy_ns_mode_t _inherit_mode)
 :
 	parsenode(_loc),
 	inherit_mode(_inherit_mode)
@@ -672,8 +671,8 @@ ostream& InheritMode::put(ostream& s) const
 {
 	s << INDENT << "InheritMode[";
 	switch (inherit_mode) {
-	case static_context::preserve_ns: s << "preserve"; break;
-	case static_context::no_preserve_ns: s << "no-preserve"; break;
+	case context::preserve_ns: s << "preserve"; break;
+	case context::no_preserve_ns: s << "no-preserve"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -925,7 +924,7 @@ ostream& VarDecl::put(ostream& s) const
 // ---------------------
 ConstructionDecl::ConstructionDecl(
 	location const& _loc,
-	enum static_context::construction_mode_t _mode)
+	enum context::construction_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -940,8 +939,8 @@ ostream& ConstructionDecl::put(ostream& s) const
 {
 	s << INDENT << "ConstructionDecl[";
 	switch (mode) {
-	case static_context::cons_preserve: "preserve"; break;
-	case static_context::cons_strip: "strip"; break;
+	case context::cons_preserve: "preserve"; break;
+	case context::cons_strip: "strip"; break;
 	default: "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -1704,7 +1703,7 @@ ostream& OrderDirSpec::put(ostream& s) const
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
 	location const& _loc,
-	static_context::order_empty_mode_t _empty_order_spec)
+	context::order_empty_mode_t _empty_order_spec)
 :
 	parsenode(_loc),
 	empty_order_spec(_empty_order_spec)
@@ -1719,8 +1718,8 @@ ostream& OrderEmptySpec::put(ostream& s) const
 {
 	s << INDENT << "OrderEmptySpec[";
 	switch (empty_order_spec) {
-	case static_context::empty_greatest: s << "empty_greatest"; break;
-	case static_context::empty_least: s << "empty_least"; break;
+	case context::empty_greatest: s << "empty_greatest"; break;
+	case context::empty_least: s << "empty_least"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";

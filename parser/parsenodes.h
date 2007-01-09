@@ -21,7 +21,7 @@
 #include <vector>
 #include <assert.h>
 
-#include "../context/static_context.h"
+#include "../context/context.h"
 #include "../types/qname.h"
 #include "../util/rchandle.h"
 
@@ -302,19 +302,14 @@ class Module : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<static_context> static_context_h;
-	//rchandle<dynamic_context> dynamic_context_h;
+	rchandle<context> context_h;
 
 public:
-	Module(
-		rchandle<static_context>);
+	Module(rchandle<context>);
 	~Module();
 
 public:	//manipulators
-	rchandle<static_context> get_static_context() const
-		{	return static_context_h; }
-	//rchandle<dynamic_context> get_dynamic_context() const
-	//	{	return dynamic_context_h; }
+	rchandle<context> get_context() const {	return context_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -649,16 +644,16 @@ class BoundarySpaceDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::boundary_space_mode_t mode;
+	context::boundary_space_mode_t mode;
 
 public:
 	BoundarySpaceDecl(
 		yy::location const&,
-		static_context::boundary_space_mode_t);
+		context::boundary_space_mode_t);
 	~BoundarySpaceDecl();
 
 public:
-	static_context::boundary_space_mode_t
+	context::boundary_space_mode_t
 		get_boundary_space_mode() const { return mode; }
 
 public:
@@ -768,16 +763,16 @@ class OrderingModeDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::ordering_mode_t mode;
+	context::ordering_mode_t mode;
 		
 public:
 	OrderingModeDecl(
 		yy::location const&,
-		static_context::ordering_mode_t);
+		context::ordering_mode_t);
 	~OrderingModeDecl();
 	
 public:
-	static_context::ordering_mode_t get_mode() const { return mode; }
+	context::ordering_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -795,16 +790,16 @@ class EmptyOrderDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::order_empty_mode_t mode;
+	context::order_empty_mode_t mode;
 
 public:
 	EmptyOrderDecl(
 		yy::location const&,
-		static_context::order_empty_mode_t);
+		context::order_empty_mode_t);
 	~EmptyOrderDecl();
 	
 public:
-	static_context::order_empty_mode_t get_mode() const { return mode; }
+	context::order_empty_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -850,16 +845,16 @@ class PreserveMode : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::copy_ns_mode_t preserve_mode;
+	context::copy_ns_mode_t preserve_mode;
 
 public:
 	PreserveMode(
 		yy::location const&,
-		static_context::copy_ns_mode_t);
+		context::copy_ns_mode_t);
 	~PreserveMode();
 
 public:
-	static_context::copy_ns_mode_t
+	context::copy_ns_mode_t
 		get_preserve_mode() const { return preserve_mode; }
 
 public:
@@ -877,16 +872,16 @@ class InheritMode : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-	static_context::copy_ns_mode_t inherit_mode;
+	context::copy_ns_mode_t inherit_mode;
 	
 public:
 	InheritMode(
 		yy::location const&,
-		static_context::copy_ns_mode_t);
+		context::copy_ns_mode_t);
 	~InheritMode();
 
 public:
-	static_context::copy_ns_mode_t
+	context::copy_ns_mode_t
 		get_inherit_mode() const { return inherit_mode; }
 
 public:
@@ -1126,16 +1121,16 @@ class ConstructionDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum static_context::construction_mode_t mode;
+	enum context::construction_mode_t mode;
 
 public:
 	ConstructionDecl(
 		yy::location const&,
-		enum static_context::construction_mode_t);
+		enum context::construction_mode_t);
 	~ConstructionDecl();
 
 public:
-	enum static_context::construction_mode_t get_mode() const { return mode; }
+	enum context::construction_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1884,16 +1879,16 @@ class OrderEmptySpec : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::order_empty_mode_t empty_order_spec;
+	context::order_empty_mode_t empty_order_spec;
 
 public:
 	OrderEmptySpec(
 		yy::location const&,
-		static_context::order_empty_mode_t empty_order_spec);
+		context::order_empty_mode_t empty_order_spec);
 	~OrderEmptySpec();
 
 public:
-	static_context::order_empty_mode_t get_empty_order_spec() const
+	context::order_empty_mode_t get_empty_order_spec() const
 		{ return empty_order_spec; }
 
 public:
