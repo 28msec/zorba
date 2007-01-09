@@ -19,8 +19,9 @@ sequence_type : sequence_type.h sequence_type.cpp
 node_types :	node_types.h node_types.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/node_types.${SUFX} node_types.cpp
 
+types :	types.h types.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/types.${SUFX} types.cpp
 
-	
 xdm_test :	xdm.h xdm.cpp xdm_test.cpp
 	g++ $(LARGEFILEFLAGS) -Wall ${OPT} -o ${BUILD}/xdm_test \
     ../types/qname.${SUFX} \
