@@ -26,7 +26,7 @@ class numeric_val : public atomic_value
 {
 public:
   numeric() {}
-  numeric(const simple_type& t): atomic_value(t) {}
+  numeric(const simple_type& ): atomic_value(t) {}
   numeric(const numeric& value): atomic_value(value) {}
   ~numeric() {}
 
