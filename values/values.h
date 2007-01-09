@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: value.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: values.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -8,28 +8,33 @@
  *
  */
 
-#ifndef XQP_VALUE_H
-#define XQP_VALUE_H
+#ifndef XQP_VALUES_H
+#define XQP_VALUES_H
+
+#include "../datamodel/qname.h"
+#include "../datamodel/types.h"
+#include "../util/rchandle.h"
+//#include ../functions/function_impl.h"
 
 #include <string>
 #include <vector>
-#include <../functions/function_impl.h"
 
 namespace xqp {
+
+class context;
 
 /*______________________________________________________________________
 |  
 |	Base class for the value hierarchy
 |_______________________________________________________________________*/
 
-class object	: public rchandle
+class object : public rcobject
 {
 public:
 	object() {}
 	~object() {}
 
 };
-
 
 
 /*______________________________________________________________________
@@ -52,11 +57,11 @@ public:
 |	'exception' encapsulates an xquery exception.
 |_______________________________________________________________________*/
 
-class xqp_exception : public object
+class xquery_exception : public object
 {
 public:
-	xqp_exception() {}
-	~xqp_exception() {}
+	xquery_exception() {}
+	~xquery_exception() {}
 
 };
 
@@ -178,7 +183,7 @@ public:
 |  
 |	'function' encapsulates an xquery function object
 |_______________________________________________________________________*/
-
+/*
 class function : public object
 {
 protected:
@@ -193,11 +198,13 @@ public:
 	function_impl const* get_func() const { return func_p; }
 
 };
-
+*/
 
 /*______________________________________________________________________
 |  
-|	'value' encapsulates an xquery 'item()' value
+|	'value' - top of the XQuery value hierarchy
+|
+|	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
 class value	: public object
@@ -207,25 +214,116 @@ public:
 	~value() {}
 
 public:
-	
+  virtual void put(std::ostream&, context const&) const;
+  virtual void describe(std::ostream&,  context const&) const;
+
+	virtual bool is_sequence() const;
+	virtual bool is_empty() const;
 
 };
 
 
 /*______________________________________________________________________
 |  
-|	'atomic_value' encapsulates an xquery 'xs_anyAtomicType' value
+|	'item' - union of node types and atomic types
+|	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class atomic_value : public value;
+class item : public value
 {
 public:
-	atomic_value() {}
-	~atomic_value() {}
+	item() {}
+	~item() {}
+
+public:
+  virtual void put(std::ostream&, context const&) const;
+  virtual void describe(std::ostream&,  context const&) const;
+
+	virtual bool is_node() const;
+	virtual bool is_atomic() const;
 
 };
 
 
+/*______________________________________________________________________
+|  
+|	'item_iterator' - coin of the realm in XQuery: all
+|	expressions return some form of item_iterator, often
+|	a singleton iterator, sometimes an empty sequence.
+|
+|	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
+|_______________________________________________________________________*/
+
+class item_iterator : public value
+{
+protected:
+  context const* ctx_p;
+  
+public:
+	// aquire resources
+	virtual void open();
+
+	// release resources
+	virtual void close();
+
+	// return handle to next value (or NULL)
+	virtual rchandle<item> next();
+
+	// return true <=> iterator has no more items
+	virtual bool done();
+
+	// rewind the iterator, equivalent to {close();open()}
+	virtual void rewind();
+
+};
+
+
+class empty_sequence : public item_iterator
+{
+public:
+	empty_sequence() {}
+	~empty_sequence() {}
+	
+public:
+	void open() {}
+	rchandle<item> next() { return NULL; }
+	bool done() { return true; }
+	void close() {}
+	
+};
+
+
+/*______________________________________________________________________
+|  
+|	'atomic_value' encapsulates value of primitive or derived types
+|_______________________________________________________________________*/
+
+class atomic_value : public item
+{
+protected:
+	// declared or annonymous type
+	qnameid type_annotation;
+
+public:
+	atomic_value() {}
+	~atomic_value() {}
+
+public:
+  virtual void put(std::ostream&, context const&) const;
+  virtual void describe(std::ostream&,  context const&) const;
+
+	virtual enum type::typecode get_typecode() const;
+
+};
+
+
+/*______________________________________________________________________
+|  
+|	'node' values (defined in 'nodes.h')
+|_______________________________________________________________________*/
+
+
+
 } /* namespace xqp */
-#endif /* XQP_VALUE_H */
+#endif /* XQP_VALUES_H */
 
