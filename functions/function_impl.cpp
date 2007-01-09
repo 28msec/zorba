@@ -14,85 +14,85 @@
 #include <string>
 #include <vector>
 
-#include "../types/builtin_types.h"
+#include "../types/type.h"
 #include "../types/qname.h"
 #include "../util/rchandle.h"
 #include "../util/tokenbuf.h"
+#include "../values/values.h"
 
 using namespace std;
 namespace xqp {
 
 
-string function_impl::decode_type(static_type_t t)
+string function_impl::decode_type(type::typecode t)
 {
   switch (t) {
-  case xs_string:             return "st";
-  case xs_boolean:            return "bo";
-  case xs_decimal:            return "de";
-  case xs_float:              return "fl";
-  case xs_double:             return "do";
-  case xs_duration:           return "du";
-  case xs_dateTime:           return "dt";
-  case xs_time:               return "ti";
-  case xs_date:               return "da";
-  case xs_gYearMonth:         return "ym";
-  case xs_gYear:              return "gy";
-  case xs_gMonthDay:          return "md";
-  case xs_gDay:               return "gd";
-  case xs_gMonth:             return "gm";
-  case xs_hexBinary:          return "hx";
-  case xs_base64Binary:       return "64";
-  case xs_anyURI:             return "au";
-  case xs_QName:              return "qn";
-  case xs_NOTATION:           return "no";
-  case xs_untyped:            return "un";
-  case xs_untypedAtomic:      return "ua";
-  case xs_anyAtomicType:      return "aa";
-  case xs_dayTimeDuration:    return "dd";
-  case xs_yearMonthDuration:  return "yd";
+  case XS_STRING:             return "st";
+  case XS_BOOLEAN:            return "bo";
+  case XS_DECIMAL:            return "de";
+  case XS_FLOAT:              return "fl";
+  case XS_DOUBLE:             return "do";
+  case XS_DURATION:           return "du";
+  case XS_DATETIME:           return "dt";
+  case XS_TIME:               return "ti";
+  case XS_DATE:               return "da";
+  case XS_GYEARMONTH:         return "ym";
+  case Xs_GYEAR:              return "gy";
+  case Xs_GMONTHDAY:          return "md";
+  case XS_GDAY:               return "gd";
+  case XS_GMONTH:             return "gm";
+  case XS_HEXBINARY:          return "hx";
+  case XS_BASE64BINARY:       return "64";
+  case XS_ANYURI:             return "au";
+  case XS_QNAME:              return "qn";
+  case XS_NOTATION:           return "no";
+  case XS_UNTYPED:            return "un";
+  case XS_UNTYPEDATOMIC:      return "ua";
+  case XS_ANYATOMICTYPE:      return "aa";
+  case XS_DAYTIME_DURATION:   return "dd";
+  case XS_YEARMONTH_DURATION: return "yd";
   default:                    return "??";
   }
 }
 
-static_type_t function_impl::encode_type(string const& s)
+type::typecode function_impl::encode_type(string const& s)
 {
-  if (s=="st") return xs_string;
-  if (s=="bo") return xs_boolean;
-  if (s=="de") return xs_decimal;
-  if (s=="fl") return xs_float;
-  if (s=="do") return xs_double;
-  if (s=="du") return xs_duration;
-  if (s=="dt") return xs_dateTime;
-  if (s=="ti") return xs_time;
-  if (s=="da") return xs_date;
-  if (s=="ym") return xs_gYearMonth;
-  if (s=="gy") return xs_gYear;
-  if (s=="md") return xs_gMonthDay;
-  if (s=="gd") return xs_gDay;
-  if (s=="gm") return xs_gMonth;
-  if (s=="hx") return xs_hexBinary;
-  if (s=="64") return xs_base64Binary;
-  if (s=="au") return xs_anyURI;
-  if (s=="qn") return xs_QName;
-  if (s=="no") return xs_NOTATION;
-  if (s=="un") return xs_untyped;
-  if (s=="ua") return xs_untypedAtomic;
-  if (s=="aa") return xs_anyAtomicType;
-  if (s=="dd") return xs_dayTimeDuration;
-  if (s=="yd") return xs_yearMonthDuration;
-  return xs_string;
+  if (s=="st") return XS_STRING;
+  if (s=="bo") return XS_BOOLEAN;
+  if (s=="de") return XS_DECIMAL;
+  if (s=="fl") return XS_FLOAT;
+  if (s=="do") return XS_DOUBLE;
+  if (s=="du") return XS_DURATION;
+  if (s=="dt") return XS_DATETIME;
+  if (s=="ti") return XS_TIME;
+  if (s=="da") return XS_DATE;
+  if (s=="ym") return XS_GYEARMONTH;
+  if (s=="gy") return XS_GYEAR;
+  if (s=="md") return XS_GMONTHDAY;
+  if (s=="gd") return XS_GDAY;
+  if (s=="gm") return XS_GMONTH;
+  if (s=="hx") return XS_HEXBINARY;
+  if (s=="64") return XS_BASE64BINARY;
+  if (s=="au") return XS_ANYURI;
+  if (s=="qn") return XS_QNAME;
+  if (s=="no") return XS_NOTATION;
+  if (s=="un") return XS_UNTYPED;
+  if (s=="ua") return XS_UNTYPEDATOMIC;
+  if (s=="aa") return XS_ANYATOMICTYPE;
+  if (s=="dd") return XS_DAYTIME_DURATION;
+  if (s=="yd") return XS_YEARMONTH_DURATION;
+  return XS_STRING;
 }
 
 string function_impl::mangle(signature const& sig)
 {
   ostringstream oss;
   sig.fname.put(oss) << '(';
-  std::vector<static_type_t>::const_iterator it = sig.arg_v.begin();
+  std::vector<type::typecode>::const_iterator it = sig.arg_v.begin();
   for (; it!=sig.arg_v.end(); ++it) {
     if (it!=sig.arg_v.begin()) oss << ',';
     oss << decode_type(*it);
-  }
-  oss << ')' << decode_type(sig.ret_type);
+  } oss << ')' << decode_type(sig.ret_type);
   return oss.str();
 }
 

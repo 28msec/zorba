@@ -18,8 +18,9 @@ namespace xqp {
 class funtab_entry
 {
 public:
-	const char* fname;
+	rchandle<QName> fname;
 	const function_impl* impl;
+	const typecheck_impl* checker;
 
 	uint32_t minArgs;
 	uint32_t maxArgs;

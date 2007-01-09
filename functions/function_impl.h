@@ -14,8 +14,8 @@
 #include <vector>
 #include <string>
 
-#include "../types/builtin_types.h"
-#include "../types/qname.h"
+#include "../datamodel/types.h"
+#include "../datamodel/qname.h"
 #include "../util/rchandle.h"
  
 namespace xqp {
@@ -23,17 +23,20 @@ namespace xqp {
 struct signature : public rcobject
 {
 	QName fname;
-	std::vector<static_type_t> arg_v;
-	static_type_t ret_type;
+	std::vector<item_type> arg_v;
+	item_type ret_type;
 	signature(QName const& q) : fname(q) {}
 };
 
 
 class function_impl : public rcobject
 {
+protected:
+  rchandle<item_iterator> val; 
+
 public:
-  static std::string decode_type(static_type_t t);
-  static static_type_t encode_type(std::string const& s);
+	static string decode_type(type::typecode)
+	static type::typecode function_impl::encode_type(string const& s)
   static std::string mangle(signature const& sig);
   static rchandle<signature> demangle(std::string const& sig);
 };
@@ -41,3 +44,4 @@ public:
 
 } /* namespace xqp */
 #endif  /* XQP_FUNCTION_IMPL_H */
+
