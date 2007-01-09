@@ -11,14 +11,15 @@
 #ifndef XQP_TYPES_H
 #define XQP_TYPES_H
 
-#include "data_interface.h"
+#include "../util/rchandle.h"
+#include "../util/xqp_exception.h"
 
 namespace xqp {
 
 /*______________________________________________________________________
 |  
-|	 XQuery "sequence type" (class) hierarchy
-|  ---------------------------------------
+|	 XQuery "sequence type" hierarchy
+|  --------------------------------
 |    item_type
 |      xs_anyAtomicType
 |      node
@@ -34,18 +35,18 @@ namespace xqp {
 |        text_node
 |    
 |
-|  Schema type (class) hierarchy
-|  -----------------------------
+|  Schema type hierarchy
+|  ---------------------
 |    xs_anyType
 |      schema_type [user-defined]
-|      xs_xs_untyped
+|      xs_untyped
 |      xs_anySimpleType
 |        list_type [user-defined]
 |        xs_IDREFS
 |        xs_NMTOKENS
 |        xs_ENTITIES
-|        xs_anyAtomicType                 C++ type              type code
-|          xs_xs_untypedAtomic               --------              ---------
+|        xs_anyAtomicType                 C++ type              type name
+|          xs_xs_untypedAtomic            --------              ---------
 |
 |          xs_dateTime                    struct tm             XSD_DATETIME
 |          xs_date                        struct tm             XSD_DATE
@@ -57,8 +58,8 @@ namespace xqp {
 |          xs_gMonth                      struct tm             XSD_GMONTH
 |
 |          xs_duration                    long                  XSD_DURATION
-|            xs_yearMonthDuration         **                    **
-|            xs_dayTimeDuration           **                    **
+|            xs_yearMonthDuration         long                  XSD_YEARMONTH_DURATION
+|            xs_dayTimeDuration           long                  XSD_DAYTIME_DURATION
 |
 |          xs_float                       float                 XSD_FLOAT
 |          xs_double                      double                XSD_DOUBLE
@@ -97,22 +98,28 @@ namespace xqp {
 |
 |
 |  The two type hierarchies intersect at 'anyAtomicType'.
-|  The two hierarchies overlap at (Schema):
-|    'user-defined complex types',
-|  versus (XQuery):
-|    'user-defined attribute types'
-|    'user-defined element types'.
 |
+|  The two hierarchies overlap at
+|    (Schema): user-defined complex types,
+|    (XQuery): user-defined {attribute,element} types.
 |  XQuery SequenceType syntax distinguishes these cases with:
-|    element(elem-name,type-name)
-|    attribute(attr-name,type-name)
+|    element(elem-name,type-name),
+|    attribute(attr-name,type-name),
 |  versus
-|    schema-element(elem-name)
+|    schema-element(elem-name),
 |    schema-attribute(attr-name).
 |		
 |_______________________________________________________________________*/
 
 
+
+// forward references
+class item;
+class item_type;
+class schema_type;
+class context;
+class xs_anyAtomicType;
+class atomic_type;
 
 
 /*______________________________________________________________________
@@ -120,290 +127,100 @@ namespace xqp {
 | This class contains static information about types.
 |_______________________________________________________________________*/
 
-class type
+class type : public rcobject
 {
-private :
+protected:
 	type() {}
+	~type() {}
 
 public:
-	static bool is_node_type(item_type&);
-
 	enum typecode {
-		ANY_ATOMIC,
-		YEAR_MONTH_DURATION,
-		DAY_TIME_DURATION,
-		BINARY,
-
-		ANYTYPE,
-		UNTYPED,
-		ANY_SIMPLE_TYPE,
-		ANY_ATOMIC_TYPE,
-		UNTYPED_ATOMIC,
-
-		BOOLEAN,
-		HEX_BINARY,
-		BASE64_BINARY,
-
-		DATE_TIME,
-		TIME,
-		DATE,
-
-		G_YEAR_MONTH,
-		G_YEAR,
-		G_MONTH_DAY,
-		G_DAY,
-		G_MONTH,
-
-		DURATION,
-		YEAR_MONTH_DURATION,
-		DAY_TIME_DURATION
-
-		NUMERIC,
-		INTEGER,
-		DECIMAL,
-		FLOAT,
-		DOUBLE,
-		NON_POSITIVE_INTEGER,
-		NEGATIVE_INTEGER,
-		LONG,
-		INT,
-		SHORT,
-		BYTE,
-		NON_NEGATIVE_INTEGER,
-		POSITIVE_INTEGER,
-		UNSIGNED_LONG,
-		UNSIGNED_INT,
-		UNSIGNED_SHORT,
-		UNSIGNED_BYTE,
-
-		STRING,
-		ANY_URI,
-		QNAME,
-		NOTATION,
-		NORMALIZED_STRING,
-		TOKEN,
-		LANGUAGE,
-		NMTOKEN,
-		NMTOKENS,
-		NAME,
-		NCNAME,
-		ID,
-		IDREF,
-		IDREFS,
-		ENTITY,
-		ENTITIES
+		ITEM_TYPE, NODE_TYPE, DOC_NODE_TYPE, ELEM_NODE_TYPE, ATTR_NODE_TYPE, 
+		TEXT_NODE_TYPE, COMMENT_NODE_TYPE, PI_NODE_TYPE, NS_NODE_TYPE, 
+		ANY_ATOMIC, BINARY, ANYTYPE, UNTYPED, ANY_SIMPLE_TYPE, ANY_ATOMIC_TYPE, 
+		UNTYPED_ATOMIC, BOOLEAN, HEX_BINARY, BASE64_BINARY, DATE_TIME, TIME, 
+		DATE, G_YEAR_MONTH, G_YEAR, G_MONTH_DAY, G_DAY, G_MONTH, DURATION, 
+		YEAR_MONTH_DURATION, DAY_TIME_DURATION, NUMERIC, INTEGER, DECIMAL, FLOAT, 
+		DOUBLE, NON_POSITIVE_INTEGER, NEGATIVE_INTEGER, LONG, INT, SHORT, BYTE, 
+		NON_NEGATIVE_INTEGER, POSITIVE_INTEGER, UNSIGNED_LONG, UNSIGNED_INT, 
+		UNSIGNED_SHORT, UNSIGNED_BYTE, STRING, ANY_URI, QNAME, NOTATION, 
+		NORMALIZED_STRING, TOKEN, LANGUAGE, NMTOKEN, NMTOKENS, NAME, NCNAME, ID, 
+		IDREF, IDREFS, ENTITY, ENTITIES 
 	};
 
+	enum type_relation {	
+		SAME_TYPE,		// A = B, A is the same type as B
+		SUBTYPE, 			// A < B, all A are B
+		SUPERTYPE,  	// A > B, all B are A
+		OVERLAPS,			// A overlaps B, some A are B
+		DISJOINT			// A is disjoint from B, no A are B
+	};
 
-	static BuiltInAtomicType UNTYPED_ATOMIC_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XDT_UNTYPED_ATOMIC);
+	// singleton instances
+	/*
+	static xs_anyAtomicType UNTYPED_ATOMIC_TYPE;
+	static xs_anyAtomicType ANY_ATOMIC_TYPE;
+	static xs_anyAtomicType YEAR_MONTH_DURATION_TYPE;
+	static xs_anyAtomicType DAY_TIME_DURATION_TYPE;
+	static xs_anyAtomicType STRING_TYPE;
+	static xs_anyAtomicType BOOLEAN_TYPE;
+	static xs_anyAtomicType DECIMAL_TYPE;
+	static xs_anyAtomicType FLOAT_TYPE;
+	static xs_anyAtomicType DOUBLE_TYPE;
+	static xs_anyAtomicType DURATION_TYPE;
+	static xs_anyAtomicType DATE_TIME_TYPE;
+	static xs_anyAtomicType TIME_TYPE;
+	static xs_anyAtomicType DATE_TYPE;
+	static xs_anyAtomicType G_YEAR_MONTH_TYPE;
+	static xs_anyAtomicType G_YEAR_TYPE;
+	static xs_anyAtomicType G_MONTH_DAY_TYPE;
+	static xs_anyAtomicType G_DAY_TYPE;
+	static xs_anyAtomicType G_MONTH_TYPE;
+	static xs_anyAtomicType HEX_BINARY_TYPE;
+	static xs_anyAtomicType BASE64_BINARY_TYPE;
+	static xs_anyAtomicType ANY_URI_TYPE;
+	static xs_anyAtomicType QNAME_TYPE;
+	static xs_anyAtomicType NOTATION_TYPE;
+	static xs_anyAtomicType INTEGER_TYPE;
+	static xs_anyAtomicType ID_TYPE;
+	static xs_anyAtomicType IDREF_TYPE;
+	static xs_anyAtomicType NCNAME_TYPE;
+	static xs_anyAtomicType NUMBER_TYPE;
+	static bool types_initialized;
+	*/
 
-	static BuiltInAtomicType ANY_ATOMIC_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XDT_ANY_ATOMIC_TYPE);
+	// Get the item type of an item.
+	static item_type& get_item_type(item const*);
 
-	static BuiltInAtomicType YEAR_MONTH_DURATION_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XDT_YEAR_MONTH_DURATION);
+	// Get the typecode if an item.
+	static typecode get_typecode(item const*);
 
-	static BuiltInAtomicType DAY_TIME_DURATION_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XDT_DAY_TIME_DURATION);
+	// Output a string describing the type of an item.
+	static std::string describe(item const*);
 
-
-	static BuiltInAtomicType STRING_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_STRING);
-
-	static BuiltInAtomicType BOOLEAN_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_BOOLEAN);
-
-	static BuiltInAtomicType DECIMAL_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_DECIMAL);
-
-	static BuiltInAtomicType FLOAT_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_FLOAT);
-
-	static BuiltInAtomicType DOUBLE_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_DOUBLE);
-
-	static BuiltInAtomicType DURATION_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_DURATION);
-
-	static BuiltInAtomicType DATE_TIME_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_DATE_TIME);
-
-	static BuiltInAtomicType TIME_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_TIME);
-
-	static BuiltInAtomicType DATE_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_DATE);
-
-	static BuiltInAtomicType G_YEAR_MONTH_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_G_YEAR_MONTH);
-
-	static BuiltInAtomicType G_YEAR_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_G_YEAR);
-
-	static BuiltInAtomicType G_MONTH_DAY_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_G_MONTH_DAY);
-
-	static BuiltInAtomicType G_DAY_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_G_DAY);
-
-	static BuiltInAtomicType G_MONTH_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_G_MONTH);
-
-	static BuiltInAtomicType HEX_BINARY_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_HEX_BINARY);
-
-	static BuiltInAtomicType BASE64_BINARY_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_BASE64_BINARY);
-
-	static BuiltInAtomicType ANY_URI_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_ANY_URI);
-
-	static BuiltInAtomicType QNAME_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_QNAME);
-
-	static BuiltInAtomicType NOTATION_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_NOTATION);
-
-	static BuiltInAtomicType INTEGER_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_INTEGER);
-
-	static BuiltInAtomicType ID_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_ID);
-
-	static BuiltInAtomicType IDREF_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_IDREF);
-
-	static BuiltInAtomicType NCNAME_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XS_NCNAME);
-
-	static BuiltInAtomicType NUMBER_TYPE =
-	    BuiltInSchemaFactory.getSchemaType(XDT_NUMERIC);
-
-
-
-	/**
-	 * Get the item_type of an item
-	 */
-	static item_type get_item_type(item const&);
-
-	/**
-	 * Output (for diagnostics) a representation of the type of an item. This
-	 * does not have to be the most specific type
-	 */
-	static std::string display_typename(item const&);
-
-	/**
-	 * Get the relationship of two schema types to each other
-	 */
-	static int schema_type_relationship(
+	// Get the relationship of two schema types.
+	static type_relation schema_type_relation(
 		schema_type const& s1,
 		schema_type const& s2);
 
-	/**
-	 * Get a type that is a common supertype of two given types
-	 * @param t1 the first item type
-	 * @param t2 the second item type
-	 * @return the item type that is a supertype of both item types
-	 */
-	static ItemType getCommonSuperType(
+	// Get the relationship of two item types.
+	static type_relation type_relation(
 		item_type const& t1,
 		item_type const& t2);
 
-	/**
-	 * Determine whether this type is a primitive type. The primitive
-	 * types are:
-	 *   19 primitive types of XML Schema,
-	 *   xs:integer, 
-	 *   xdt:dayTimeDuration,
-	 *   xdt:yearMonthDuration,
-	 *   xdt:xs_untypedAtomic,
-	 *   the 7 node kindas,
-	 *   all supertypes of these (item(), node(), xdt:anyAtomicType, xdt:number, ...) 
-	 *
-	 * @param code the item type code to be tested
-	 * @return true if the type is considered primitive under the above rules
-	 */
-	static bool is_primitive(enum typecode);
+	// Return true if an item type is one of the node types.
+	static bool is_node(item_type&);
 
-	/**
-	 * Determine whether two primitive atomic types are comparable
-	 * @param t1 - the first type to compared.  This must be a primitive
-	 *    atomic type as defined by ItemType::getPrimitiveType
-	 * @param t2 - the second type to compared.  This must be a primitive
-	 *    atomic type as defined by ItemType::getPrimitiveType
-	 * @param ordered - true, if testing for an ordering comparison (lt, gt, le, ge)
-	 *                  false, if testing for an equality comparison (eq, ne)
-	 * @return true - if the types are comparable, as defined by the rules of
-	 *    the "eq" operator
-	 */
-	static bool is_comparable(
-		enum typecode t1,
-		enum typecode t2,
-		bool ordered);
+	// Determine whether an item type is primitive.
+	static bool is_primitive(item_type const&);
 
-	/**
-	 * Determine whether a primitive type is ordered. Note that the rules for
-	 * this differ between XPath and XML Schema: these are the XPath rules.
-	 * @param type - the primitive item type being tested
-	 * @return - true, if the types are potentially comparable. For abstract
-	 *    types (type=ATOMIC) we give the benefit of the doubt and return true.
-	 */
-	static bool is_ordered(enum typecode);
+	// Determine whether a primitive type is ordered.
+	static bool is_ordered(typecode);
 
-	/**
-	 * Test whether the supplied type, which must be a primitive type, is one of
-	 * the numeric primitive types
-	 * @param t - the type being tested
-	 * @return - true, if the type is integer, double, float, decimal, or
-	 *    the abstract type "numeric"
-	 */
-	static bool is_numeric_primitive(item_type const& t);
-
-
-	enum type_relation {
-		SAME_TYPE,		// A is the same type as B
-		SUBSUMES,			// A subsumes B         (all B are A)
-		SUBSUMED_BY,	// A is subsumed by B   (all A are B)
-		OVERLAPS,			// A overlaps B         (some A are B)
-		DISJOINT			// A is disjoint from B (no A are B)
-	};
-
-	/**
-	 * Determine whether type A is type B or one of its subtypes.
-	 * @param subtype identifies the first type
-	 * @param supertype identifies the second type
-	 * @return - true, if t1 = t2, or t1 is a direct or indirect subtype of t2
-	 */
-	static bool is_subtype(
-		item_type const& t1,
-		item_type const& t2);
-
-	/**
-	 * Determine the relationship of one item type to another.
-	 * @param t1 the first item type
-	 * @param t2 the second item type
-	 * @return type_relation
-	 */
-	static enum type_relation relationship(
-		item_type const& t1,
-		item_type const& t2);
-
-	/**
-	 * Test whether a type annotation code represents the type xs:ID or
-	 * one of its subtypes
- 	 */
-	static bool is_ID(enum typecode);
-
-	/**
-	 * Test whether a type annotation code represents the type 
-	 * xs:IDREF, xs:IDREFS or one of their subtypes 
-	 */
-	static bool is_IDREFS(enum typecode);
+	// Test whether a primitive type is a numeric types
+	static bool is_numeric(typecode);
 
 };
-
-
 
 
 
@@ -421,66 +238,36 @@ public:
 |	also instances of simpleType in the Schema type heirarchy.
 |_______________________________________________________________________*/
 
-class item_type
+class item_type : public type
 {
-	/**
-	 * Determine whether this item type is atomic.
-	 * @return - true, if this is ANY_ATOMIC_TYPE or a subtype
-	 */
-	bool is_atomic_type() const;
+protected:
+	type::typecode code;
 
-	/**
-	 * Test whether a given item conforms to this type
-	 * @param item - The item to be tested
-	 * @param allowURIPromotion -
-	 * @param config -
-	 * @return - true, if the item is an instance of this types
-	 *					 false, otherwise
-	*/
-	bool matches_item(
-		item const& item,
-		bool allow_URI_promotion,
-		config& config) const;
+public:
+	item_type() {}
+	virtual ~item_type() {}
 
-	/**
-	 * Get the type from which this item type is derived by restriction.
-	 * This is the supertype in the XQuery type heirarchy.
-	 * The concept of "supertype" is not really well-defined, because 
-	 * the types form a lattice rather than a hierarchy. The only real 
-	 * requirement on this function is that it returns a type that strictly 
-	 * subsumes this type, ideally as narrowly as possible. 
-	 *
-	 * @return -- the supertype, or NULL if this type is item()
-	 */
-	rchandle<item_type> get_supertype() const;
+public:
+	// Determine whether this item type is atomic.
+	virtual bool is_atomic_type() const;
 
-	/**
-	 * Get the primitive item type corresponding to this item type.
-	 */
-	rchandle<item_type> get_primitive_type() const;
+	// Test whether a given item conforms to this type
+	virtual bool matches(item const*, context const*) const;
 
-	/**
-	 * Get the primitive type corresponding to this item type.
-	 *	item() 							- Type.ITEM
-	 *	node()							- Type.NODE
-	 *	specific node kinds - the value representing the node kind,
-	 *	anyAtomicValue			- Type.ATOMIC_VALUE,
-	 *	numeric							- Type.NUMBER,
-	 *	other atomic types	-  the primitive Schema type 
-	 */
-	int get_primitive_typecode() const;
+	// Get the type from which this item type is derived by restriction.
+	virtual item_type const* get_supertype() const;
 
-	/**
-	 * Produce a representation of this type name for use in error messages.
-	 * Where this is a QName, it will use conventional prefixes
-	 */
-	std::string describe() const;
+	// Get the primitive item type corresponding to this item type.
+	virtual item_type const* get_primitive_type() const;
 
-	/**
-	 * Get the item type of the atomic values that will be produced when 
-	 * an item of this type is atomized
-	 */
-	rchandle<xs_anyAtomicType> get_atomized_type() const;
+	// Get the typecode corresponding to this item type.
+	virtual type::typecode get_typecode() const;
+
+	// Get the atomic type produced when an item of this type is atomized.
+	virtual xs_anyAtomicType const* get_atomized_type() const;
+
+	// Output a string describing this type.
+	virtual std::string describe() const;
 
 };
 
@@ -497,27 +284,23 @@ class any_item_type : public item_type
 protected:
 	static any_item_type the_instance;
 
-private:
+protected:
 	any_item_type() {}
 	~any_item_type() {}
 
 public:
-	static rchandle<any_item_type> get_instance();
-	bool is_atomic_type() const { return false; }
+	static any_item_type const& get_instance();
 
-	bool matches_item(
-		item const& item,
-		bool allow_URI_promotion,
-		config const& config)
-	{
-	    return true;
-	}
+	bool is_atomic_type() const;
+	bool matches(item const*, context const*) const;
 
-	rchandle<item_type> get_supertype() { return NULL; }
-	rchandle<item_type> get_primitive_type() const;
-	int get_primitive_typecode() const;
-	rchandle<xs_anyAtomicType> get_atomized_type() const;
-	std::string describe();
+	item_type const* get_supertype() const;
+	item_type const*get_primitive_type() const;
+	xs_anyAtomicType const* get_atomized_type() const;
+
+	type::typecode get_primitive_typecode() const;
+
+	std::string describe() const;
 
 };
 
@@ -542,12 +325,6 @@ public:
 		INVALID,				// validation failed with fatal errors
 		INCOMPLETE,			// validation stopped with unresolved components
 	};
-
-	/**
-	 * Get the validation status of this component.
-	 * @return - validation status
-	 */
-	enum validation_status get_validation_status() const;
 
 };
 
@@ -574,6 +351,7 @@ public:
 
 class schema_type : public schema_component
 {
+public:
 	enum derivation_method {
 	/**
 	 * If the document's schema is an XML Schema this constant represents the 
@@ -635,99 +413,35 @@ class schema_type : public schema_component
 	};
 
 
+	// Get the type code of this type.
+	virtual type::typecode get_typecode() const;
 
-	/**
-	 * Get the type code of this type.
-	 */
-	enum type::typecode get_type() const;
+	// Test this schema_type for equality.
+	virtual bool operator==(schema_type const& other);
 
-	/**
-	 * Test this schema_type for equality
-	 */
-	bool operator==(schema_type const& other);
+	// Test if this schema_type is complex.
+	virtual bool is_complex() const;
 
-	/**
-	 * Test if this schema_type is complex 
-	 * @return - true, if this schema_type is a complex type
-	 */
-	bool is_complex() const;
+	// Test if this schema_type simple.
+	virtual bool is_simple() const;
 
-	/**
-	 * Test fi this schema_type simple
-	 * @return - true, if this schema_type is a simple type
-	 */
-	bool is_simple() const;
+	// Test if schema_type is atomic.
+	virtual bool is_atomic() const;
 
-	/**
-	 * Test if schema_type is atomic 
-	 * @return - true, if this schema_type is an atomic type
-	 */
-	bool is_atomic() const;
+	// Test if this schema_type is anonymous.
+	virtual bool is_anonymous() const;
 
-	/**
-	 * Test if this schema_type is anonymous
-	 * @return true if this schema_type is an anonymous type
-	 */
-	bool is_anonymous() const;
+	// Return the base type that this type inherits from, or NULL for primitive.
+	virtual schema_type const* get_base_type() const throw (xqp_exception);
 
-	/**
-	 * Return the base type that this type inherits from;
-	 * return NULL for xs_ primitive types. 
-	 * @return - base type
-	 * @throws - xqp_exception, if this type is not valid
-	*/
-	rchandle<schema_type> get_base_type() const
-	throws xqp_exception;
+	// Get the derivation method used to derive this type.
+	virtual derivation_method get_derivation_method() const;
 
-	/**
-	 * Get the integer code of the derivation method used to derive this type.
-	 * @return - derivation method
-	 */
-	enum derivation_method get_derivation_method() const;
+	// Determine whether a specific derivation from this type is allowed.
+	virtual bool allows_derivation(derivation_method derivation) const;
 
-	/**
-	 * Determine whether a specific derivation from this type is allowed.
-	 * @param derivation - the kind of derivation
-	 * @return - true, if this kind of derivation is allowed
-	 */
-	bool allows_derivation(
-		enum derivation_method derivation) const;
-
-	/**
-	 * Analyze an expression to see if it can deliver a value of this type. 
-	 * @param expr - expression that delivers the content
-	 * @param kind - node kind whose content is being delivered
-	 * @param ctx  - evaluation context for the query
-	 * @throw xqp_exception - if the expression will never deliver a value of 
-	 *            the correct type 
-	 */
-	void analyze_expression(
-		rchandle<expr> expr,
-		int kind,
-		context const& ctx) const
-	throw (xqp_exception);
-
-	/**
-	 * Get the typed value of a node annotated with this schema type. 
-	 * @param node - node whose typed value is required
-	 * @return - item_iterator over atomic values
-	 */
-	rchandle<item_iterator> get_typed_value(node const&) const
-	throw (xqp_exception);
-
-	/**
-	 * Get the typed value of a node annotated with this schema type. 
-	 * @param node - node whose typed value is required
-	 * @return - iterator for typed value. 
-	 */
-	rchandle<item_iterator> atomize(node const&) const
-	throw (xqp_xception);
-
-	/**
-	 * Get a description of this type.
-	 * @return - text identifing the type
-	 */
-	std::string describe() const;
+	// Output a string describing this type.
+	virtual std::string describe() const;
 
 };
 
@@ -742,77 +456,24 @@ class schema_type : public schema_component
 
 class simple_type : public schema_type
 {
-	/**
-	 * Test whether this simple_type is an atomic type
-	 * @return - true, if this is an atomic type
-	 */
-	bool is_atomic() const;
+public:
+	// Test whether this simple_type is an atomic type.
+	virtual bool is_atomic() const;
 
-	/**
-	 * Test whether this simple_type is a list type
-	 * @return - true, if this is a list type
-	 */
-	bool is_list() const;
+	// Test whether this simple_type is a list type.
+	virtual bool is_list() const;
 
-	/**
-	 * Test whether this simple_type is a union type
-	 * @return - true, if this is a union type
-	 */
-	bool is_union() const;
+	// Test whether this simple_type is a union type.
+	virtual bool is_union() const;
 
-	/**
-	 * Get the most specific atomic type for the items in this simple_type
-	 * @return - lowest common supertype of all member types
-	 */
-	rchandle<atomic_type> get_common_atomic_type() const;
+	// Get the most specific atomic type for the items in this simple_type.
+	virtual atomic_type const* get_common_atomic_type() const;
 
-	/**
-	 * Get the built-in type from which this type is derived by restriction
-	 * @return - built-in type from which this type is derived by restriction
-	 */
-	rchandle<schema_type> get_builtin_base_type() const;
+	// Get the built-in type from which this type is derived by restriction.
+	virtual schema_type const* get_builtin_base_type() const;
 
-	/**
-	 * Get the typed value corresponding to a given string value, assuming it is
-	 * valid against this type.
-	 * @param value - string value
-	 * @param resolver - namespace resolver used to resolve any namespace
-	 *    prefixes appearing in the content of values. Can supply NULL, in
-	 *    which case any namespace-sensitive content will be rejected.
-	 * @return - iterator over the atomic sequence comprising the typed value.
-	 *    The objects returned by this iterator will all be of type atomic_value
-	 * @throws xqp_exception - if the supplied value is not in the lexical space
-	 *    of the data type
-	 */
-	rchandle<item_iterator> get_typed_value(
-		char const* value,
-		rchandle<NamespaceResolver>)
-	throw (xqp_exception);
-
-	/**
-	 * Check whether a given input string is valid according for this simple_type
-	 * @param value - input string to be checked
-	 * @param resolver - namespace resolver used to resolve namespace prefixes
-	 *    if the type is namespace sensitive. The value supplied may be NULL;
-	 *    in this case any namespace-sensitive content will throw an exception.
-	 * @return - NULL, if validation succeeds,
-	 *           ValidationError, if validation fails
-	 * @throw xqp_exception - if the type is namespace-sensitive
-	 *    and no namespace resolver is supplied
-	 */
-	rchandle<validation_error> validate_content(
-		char const* value,
-		rchandle<namespace_resolver>)
-	throw (xqp_exception);
-
-	/**
-	 * Test whether this type is namespace sensitive, that is, if a namespace
-	 * context is needed to translate between the lexical space and the value
-	 * space. This is true for types derived from, or containing, QNames and
-	 * NOTATIONs.
-	 * @return true if the type is namespace-sensitive
-	 */
-	bool is_namespace_sensitive() const;
+	// Check whether a given input string is valid according for this simple_type.
+	virtual int validate_content(char const* src) throw (xqp_exception);
 
 };
 
@@ -827,139 +488,36 @@ class simple_type : public schema_type
 
 class complex_type : public schema_type
 {
-	/**
-	 * Test if this complex type has been marked abstract.
-	 * @return true if this complex type is abstract.
-	 */
-	bool is_abstract() const;
-
-	/**
-	 * Test whether this complex type has complex content
-	 * @return - true, if this complex type has a complex content model,
-	 *           false, if it has a simple content model 
-	 */
-	bool is_complex_content() const;
-
-	/**
-	 * Test whether this complex type has simple content
-	 * @return true if this complex type has a simple content model,
-	 *         false if it has a complex content model
-	 */
-	bool is_simple_content() const;
-
-	/**
-	 * Test whether this complex type has "all" content, that is,
-	 * a content model using an xs:all compositor
-	 */
-	bool is_all_content() const;
-
-	/**
-	 * Get the simple content type
-	 * @return For complex type with simple content, return the content 
-	 * simple type, otherwise, return NULL. 
-	 */
-	rchandle<simple_type> get_simple_content_type() const;
-
-	/**
-	 * Test whether this complex type is derived by restriction
-	 * @return true if this complex type is derived by restriction
-	 */
-	bool is_restricted() const;
-
-	/**
-	 * Test whether the content model of this complex type is empty
-	 * @return true if the content model is defined as empty
-	 */
-	bool is_empty_content() const;
-
-	/**
-	 * Test whether the content model of this complex type allows empty 
-	 * content 
-	 * @return true if empty content is valid
-	 */
-	bool allows_empty() const;
-
-	/**
-	 * Test whether this complex type allows mixed content
-	 * @return true if mixed content is allowed
-	 */
-	bool allows_mixed_content() const;
-
-	/**
-	 * Test whether this complex type subsumes another complex type.
-	 * @param sub - the other type (the type that is derived by restriction, 
-	 *         validly or otherwise) 
-	 * @return - true, if this type does subsume the other
-	 *           false, if not
-	 */
-	bool subsumes(rchandle<complex_type>);
-
-};
-
-
-
-/*______________________________________________________________________
-|  
-|	This class has a singleton instance which represents the XML Schema
-|	built-in type xs:anySimpleType
-|_______________________________________________________________________*/
-
-class xs_anySimpleType : public simple_type, xs_anyType
-{
-protected:
-	static xs_anySimpleType the_instance;
-
-private:
-	xs_anySimpleType() {}
-	~xs_anySimpleType() {}
-
 public:
-	static rchandle<xs_anySimpleType> get_instance();
+	// Test if this complex type has been marked abstract.
+	virtual bool is_abstract() const;
 
-	bool is_external() const;
-	bool is_complex() const;
-	bool is_xs_anySimpleType() const;
+	// Test whether this complex type has complex content.
+	virtual bool complex_content() const;
 
-	bool is_same_type(schema_type const& other) const;
+	// Test whether this complex type has simple content.
+	virtual bool simple_content() const;
 
-	bool is_atomic() const;
-	bool is_anonymous() const;
-	bool is_list() const;
-	bool is_namespace_sensitive() const;
+	// Test whether this complex type has "all" content.
+	virtual bool all_content() const;
 
-	int get_namecode() const;
-	enum validation_status get_validation_status() const;
-	enum derivation_method get_derivation_method() const;
-	enum whitespace_action get_whitespace_action() const;
+	// Get the simple content type.
+	virtual simple_type const* get_simple_content_type() const;
 
-	rchandle<schema_type> get_base_type() const;
-	rchandle<schema_type> get_known_base_type() const;
-	rchandle<schema_type> get_builtin_base_type() const;
-	rchandle<atomic_type> get_common_atomic_type() const;
+	// Test whether this complex type is derived by restriction
+	virtual bool is_restricted() const;
 
-	std::string describe() const;
+	// Test whether the content model of this complex type is empty.
+	virtual bool is_empty_content() const;
 
-	rchandle<item_iterator> get_typed_value(node&);
-	rchandle<item_iterator> atomize(node&);
+	// Test whether the content model allows empty content.
+	virtual bool allows_empty() const;
 
-	bool allows_derivation(
-		enum derivation_method) const;
+	// Test whether this complex type allows mixed content.
+	virtual bool allows_mixed_content() const;
 
-	void check_type_derivation(
-		schema_type const& type,
-		enum derivation_method)
-	throw (xqp_exception);
-
-	rchandle<item_iterator> get_typed_value(
-		char const* value,
-		rchandle<namespace_resolver>);
-
-	rchandle<validation_error> validate_content(
-		char const* value,
-		rchandle<namespace_resolver>);
-
-	void analyze_content_expression(
-		rchandle<expr>, int kind, context const&);
+	// Test whether this complex type subsumes another complex type.
+	virtual bool subsumes(complex_type const&);
 
 };
 
@@ -974,30 +532,30 @@ public:
 class xs_anyType : public complex_type
 {
 private:
-	static xs_anyType theInstance = new xs_anyType();
+	static xs_anyType theInstance;
+
+protected:
 	xs_anyType() {}
+	virtual ~xs_anyType() {}
 
 public:
-	static rchandle<xs_anyType> get_instance() const;
+	static xs_anyType const& get_instance();
 
-	int get_namecode() const;
+	type::typecode get_typecode() const;
 
-	rchandle<schema_type> get_base_type() const;
-	rchandle<schema_type> get_known_base_type() const;
-	rchandle<xs_anySimpleType> get_simple_content_type() const;
+	schema_type const* get_base_type() const throw (xqp_exception);
+	schema_type const* get_known_base_type() const;
 
 	bool is_abstract() const;
 	bool is_complex() const;
 	bool is_anonymous() const;
 	bool is_xs_anySimpleType() const;
 	bool is_atomic() const;
-	bool is_complex() const;
 	bool is_simple_content() const;
 	bool is_all_content() const;
 	bool is_restricted() const;
 	bool is_empty_content() const;
-
-	bool allows_derivation(enum type::derivation_method) const;
+	bool allows_derivation(schema_type::derivation_method) const;
 	bool allows_empty() const;
 	bool allows_mixed_content() const;
 
@@ -1005,21 +563,63 @@ public:
 
 	std::string describe() const;
 	std::string subsumes(complex_type const&) const;
-	rchandle<item_iterator> get_typed_value(node&) const;
-	rchandle<item_iterator> atomize(node&) const;
-
-	void analyze_content_expression(
-		rchandle<expr>, int kind, context&) const;
 
 	void check_type_derivation(
 		schema_type const&,
-		enum derivation_method)
+		derivation_method)
 	throw (xqp_exception);
 
-	enum derivation_method get_derivation_method() const;
+	schema_type::derivation_method get_derivation_method() const;
 
 };
 
+
+
+/*______________________________________________________________________
+|  
+|	This class has a singleton instance which represents the XML Schema
+|	built-in type xs:anySimpleType
+|_______________________________________________________________________*/
+
+class xs_anySimpleType : public simple_type, public xs_anyType
+{
+protected:
+	static xs_anySimpleType the_instance;
+
+protected:
+	xs_anySimpleType() {}
+	virtual ~xs_anySimpleType() {}
+
+public:
+	static xs_anySimpleType const& get_instance();
+
+	bool is_complex() const;
+	bool is_xs_anySimpleType() const;
+	bool matches(schema_type const& other) const;
+	bool is_atomic() const;
+	bool is_anonymous() const;
+	bool is_list() const;
+
+	type::typecode get_typecode() const;
+	schema_type::derivation_method get_derivation_method() const;
+
+	schema_type const* get_base_type() const throw (xqp_exception);
+	schema_type const* get_known_base_type() const;
+	schema_type const* get_builtin_base_type() const;
+	atomic_type const* get_common_atomic_type() const;
+
+	std::string describe() const;
+
+	bool allows_derivation(schema_type::derivation_method) const;
+
+	void check_type_derivation(
+		schema_type const& type,
+		schema_type::derivation_method)
+	throw (xqp_exception);
+
+	int validate_content(char const* src) throw (xqp_exception);
+
+};
 
 
 
@@ -1033,18 +633,20 @@ class xs_untyped : public xs_anyType
 {
 private:
 	static xs_untyped the_instance;
+
+protected:
 	xs_untyped() {}
+	virtual ~xs_untyped() {}
 
 public:
-	static xs_untyped get_instance() const;
+	static xs_untyped const& get_instance();
 
-	enum type::validation_status get_validation_status() const;
-	enum type::derivation_method get_derivation_method() const;
-	enum type::typecode get_type() const;
+	schema_type::derivation_method get_derivation_method() const;
+	type::typecode get_typecode() const;
 
-	rchandle<simple_type> get_simple_content_type() const;
-	rchandle<schema_type> get_known_base_type() const;
-	rchandle<schema_type> get_base_type() const;
+	simple_type const* get_simple_content_type() const;
+	schema_type const* get_known_base_type() const;
+	schema_type const* get_base_type() const throw (xqp_exception);
 
 	bool is_complex() const;
 	bool is_anonymous() const;
@@ -1057,20 +659,12 @@ public:
 	bool is_all_content() const;
 	bool is_empty_content() const;
 
-	bool allows_derivation(enum type::derivation_method) const;
+	bool allows_derivation(schema_type::derivation_method) const;
 	bool allows_empty() const;
 	bool allows_mixedContent() const;
+	bool subsumes(complex_type const&);
 
 	std::string describe() const;
-	std::string subsumes(complex_type const&);
-
-	void analyze_expression(
-		rchandle<expr> expr,
-		int kind,
-		context &);
-
-	rchandle<item_iterator> get_typed_value(node&);
-	rchandle<item_iteraor> atomize(node &);
 
 };
 
@@ -1086,29 +680,11 @@ public:
 
 class atomic_type : public xs_anySimpleType, item_type
 {
-	/**
-	 * Factory method to create values of a derived atomic type. This method
-	 * is not used to create values of a built-in type, even one that is not
-	 * primitive.
-	 * @param primValue the value in the value space of the primitive type
-	 * @param lexicalValue the value in the lexical space. If NULL, the
-	 *    string value of primValue is used. This value is checked against
-	 *    the pattern facet (if any)
-	 * @param validate - true, if the value is to be validated against the
-	 *                     facets of the derived type;
-	 *                   false, if the caller knows that the value is already valid.
-	 *
-	 * @return - derived atomic value if validation succeeds, or an ErrorValue
-	 *    otherwise. The ErrorValue encapsulates the exception that occurred;
-	 *    it is the caller's responsibility to check for this.
-	 */
-	rchandle<atomic_value> make_derived_value(
-		atomic_value& primValue,
-		char const* lexicalValue,
-		bool validate);
+public:
+	atomic_type() {}
+	virtual ~atomic_type() {}
 
 };
-
 
 
 
@@ -1121,14 +697,17 @@ class atomic_type : public xs_anySimpleType, item_type
 
 class xs_anyAtomicType : public atomic_type
 {
-public:
+private:
+	static xs_anyAtomicType the_instance;
+
+protected:
 	xs_anyAtomicType();
+	~xs_anyAtomicType();
 
 public:
-	enum type::typecode get_type() const;
-	enum type::typecode get_primitive_type() const;
-	enum type::validation_status get_validation_status() const;
-	enum type::derivation_method get_derivation_method() const;
+	enum typecode get_typecode() const;
+	class item_type const* get_primitive_type() const;
+	schema_type::derivation_method get_derivation_method() const;
 
 	bool operator==(schema_type const&) const;
 
@@ -1138,43 +717,19 @@ public:
 	bool is_atomic() const;
 	bool is_list() const;
 	bool is_union() const;
-	bool is_namespace_sensitive() const;
 
-	rchandle<item_type> get_super_type() const;
-	rchandle<item_type> get_primitive_item_type() const;
-	rchandle<atomic_type> get_common_atomic_type() const;
-	rchandle<atomic_type> get_atomized_item_type() const;
-	rchandle<schema_type> get_known_base_type() const;
-	rchandle<schema_type> get_base_type() const;
+	class item_type const* get_super_type() const;
+	class item_type const* get_primitive_item_type() const;
+	atomic_type const* get_common_atomic_type() const;
+	atomic_type const* get_atomized_item_type() const;
+	schema_type const* get_known_base_type() const;
+	schema_type const* get_base_type() const throw (xqp_exception);
 
 	std::string describe() const;
 
 	void check_type_derivation(
 		schema_type const& type,
-		enum derivation_method)
-	throw (xqp_exception);
-
-	rchandle<item_iterator> get_typed_value(node&)
-	throw (xqp_exception);
-
-	rchandle<item_iterator> get_typed_value(
-		char const* value,
-		rchandle<namespace_resolver> resolver)
-	throw (xqp_exception);
-
-	rchandle<item_iterator> atomize(node&)
-	throw (xqp_exception);
-
-	rchandle<atomic_value> make_derived_value(
-		atomic_value const&,
-		char const* lexicalValue,
-		bool validate)
-	throw (xqp_exception);
-
-	void analyze_content_expression(
-		rchandle<expr>,
-		int kind,
-		context&)
+		schema_type::derivation_method)
 	throw (xqp_exception);
 
 };
@@ -1194,7 +749,7 @@ class list_type : public simple_type
 	 * @return - xs_anySimpleType of the items in this list-type.
 	 * @throw - xqp_exception, if the item type has not been fully resolved
 	*/
-	rchandle<xs_simple_type> get_item_type();
+	class item_type const* get_item_type();
 
 };
 
@@ -1210,13 +765,12 @@ class list_type : public simple_type
 class builtin_list_type : public list_type
 {
 protected:
-	private BuiltInAtomicType itemType = null;
+	static builtin_list_type the_instance;
 
 public:
-	enum type::typecode get_type() const;
-	enum type::typecode get_primitive_type() const;
-	enum type::validation_status get_validation_status() const;
-	enum type::derivation_method get_derivation_method() const;
+	type::typecode get_type() const;
+	item_type const* get_primitive_type() const;
+	schema_type::derivation_method get_derivation_method() const;
 
 	bool operator==(schema_type const&) const;
 
@@ -1226,46 +780,20 @@ public:
 	bool is_atomic() const;
 	bool is_list() const;
 	bool is_union() const;
-	bool is_namespace_sensitive() const;
 
-	rchandle<item_type> get_super_type() const;
-	rchandle<item_type> get_primitive_item_type() const;
-	rchandle<atomic_type> get_common_atomic_type() const;
-	rchandle<atomic_type> get_atomized_item_type() const;
-	rchandle<schema_type> get_known_base_type() const;
-	rchandle<schema_type> get_base_type() const;
+	item_type const* get_super_type() const;
+	item_type const* get_primitive_item_type() const;
+	atomic_type const* get_common_atomic_type() const;
+	atomic_type const* get_atomized_item_type() const;
+	schema_type const* get_known_base_type() const;
+	schema_type const* get_base_type() const throw (xqp_exception);
 
 	std::string describe() const;
 
 	void check_type_derivation(
 		schema_type const& type,
-		enum derivation_method)
+		schema_type::derivation_method)
 	throw (xqp_exception);
-
-	rchandle<item_iterator> get_typed_value(node&)
-	throw (xqp_exception);
-
-	rchandle<item_iterator> get_typed_value(
-		char const* value,
-		rchandle<namespace_resolver> resolver)
-	throw (xqp_exception);
-
-	rchandle<item_iterator> atomize(node&)
-	throw (xqp_exception);
-
-	rchandle<atomic_value> make_derived_value(
-		atomic_value const&,
-		char const* lexicalValue,
-		bool validate)
-	throw (xqp_exception);
-
-	void analyze_content_expression(
-		rchandle<expr>,
-		int kind,
-		context&)
-	throw (xqp_exception);
-
-	std::string get_localname() const;
 
 };
 

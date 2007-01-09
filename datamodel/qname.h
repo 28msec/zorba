@@ -15,6 +15,7 @@
 
 namespace xqp {
 
+
 class QName : public rcobject
 {
 public:
@@ -65,6 +66,24 @@ public:
 	std::ostream& put(std::ostream& s) const;
 
 };
+
+
+/*______________________________________________________________________
+|  
+|	opaque implementation-defined QName id
+|
+|	qnameid's index into a QName pool which manages QName
+|	namespace URIs and localnames.
+|_______________________________________________________________________*/
+
+class qnameid
+{
+public:
+	bool operator==(qnameid const&) const;
+	static rchandle<QName> get_qname(qnameid const&);
+
+};
+
 
 }	/* namespace xqp*/
 #endif	/* XQP_QNAME_H */
