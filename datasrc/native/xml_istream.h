@@ -113,3 +113,62 @@ private:
 
 }	/* namespace xqp */
 #endif	/* XQP_XML_ISTREAM_H */
+
+
+
+
+
+
+
+/*
+class xml_istream : public std::istream
+{
+public:
+
+	xml_istream();
+	~xml_istream();
+
+public:	// istream interface
+
+	// Perform formatted output operations (insertion)
+	xml_istream& operator>>(bool& val);
+	xml_istream& operator>>(uint32_t& val);
+	xml_istream& operator>>(uint64_t& val);
+	xml_istream& operator>>(float& val);
+	xml_istream& operator>>(double& val);
+	xml_istream& operator>>(QName const&);
+	
+	// input manipulator
+	xml_istream& operator>>(xml_istream& (*pf)(xml_istream&));
+
+	friend xml_istream& operator>>(xml_istream& os, char& ch);
+	friend xml_istream& operator>>(xml_istream& os, unsigned char& ch);
+	friend xml_istream& operator>>(xml_istream& os, const char* str);
+	friend xml_istream& operator>>(xml_istream& os, const unsigned char* str);
+	
+	//	Extract and discard characters
+	istream&  ignore(streamsize n = 1, int delim = EOF);
+	
+	//	Peek next character
+	int peek();
+	
+	//	Put a character back to stream
+	istream&  putback(char c);
+	
+	//	Make last character got from stream available again
+	istream& unget();
+	
+	//	Read a block of text
+	istream&  read(char* s, streamsize n); 
+	
+	//	Read a block of data
+	streamsize  readsome(char* s, streamsize n);
+	
+	//	Synchronize stream's buffer with source
+	int sync();
+
+private:
+	bool underflow(uint32_t) const;
+
+};
+*/
