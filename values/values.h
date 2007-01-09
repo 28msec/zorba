@@ -14,11 +14,10 @@
 #include "../datamodel/qname.h"
 #include "../datamodel/types.h"
 #include "../util/rchandle.h"
-//#include ../functions/function_impl.h"
 
 #include <string>
 #include <vector>
-
+ 
 namespace xqp {
 
 class context;
@@ -181,27 +180,6 @@ public:
 
 /*______________________________________________________________________
 |  
-|	'function' encapsulates an xquery function object
-|_______________________________________________________________________*/
-/*
-class function : public object
-{
-protected:
-	function_impl const* func_p;
-
-public:
-	function(function_impl const* _func_p) : func_p(_func_p) {}
-	function() {}
-	~function() {}
-
-public:
-	function_impl const* get_func() const { return func_p; }
-
-};
-*/
-
-/*______________________________________________________________________
-|  
 |	'value' - top of the XQuery value hierarchy
 |
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
@@ -310,8 +288,7 @@ public:
 
 public:
   virtual void put(std::ostream&, context const&) const;
-  virtual void describe(std::ostream&,  context const&) const;
-
+  virtual void describe(std::ostream&, context const&) const;
 	virtual enum type::typecode get_typecode() const;
 
 };
@@ -322,6 +299,43 @@ public:
 |	'node' values (defined in 'nodes.h')
 |_______________________________________________________________________*/
 
+
+/*______________________________________________________________________
+|  
+|	'function' encapsulates an xquery function object
+|_______________________________________________________________________*/
+
+struct signature : public rcobject
+{
+	QName fname;
+	std::vector<item_type> arg_v;
+	item_type ret_type;
+	signature(QName const& q) : fname(q) {}
+};
+
+
+class function_impl : public rcobject
+{
+protected:
+  rchandle<item_iterator> val; 
+
+};
+
+
+class function : public object
+{
+protected:
+	function_impl const* func_p;
+
+public:
+	function(function_impl const* _func_p) : func_p(_func_p) {}
+	function() {}
+	~function() {}
+
+public:
+	function_impl const* get_func() const { return func_p; }
+
+};
 
 
 } /* namespace xqp */

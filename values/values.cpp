@@ -9,20 +9,27 @@
  */
 
 #include "values.h"
+
+#include "../datamodel/types.h"
+#include "../datamodel/qname.h"
 #include "../util/rchandle.h"
+#include "../util/tokenbuf.h"
 
 #include <string>
 #include <vector>
+#include <iostream>
 
-
+using namespace std;
 namespace xqp {
 
 class context;
 
 /*______________________________________________________________________
 |  
-|	Base class for the value hierarchy
+|	'value' - base class for the value hierarchy
 |_______________________________________________________________________*/
+
+// no methods currently
 
 
 /*______________________________________________________________________
@@ -32,11 +39,15 @@ class context;
 |	[http://http://www.w3.org/TR/xqupdate/]
 |_______________________________________________________________________*/
 
+// no methods currently
+
 
 /*______________________________________________________________________
 |  
-|	'exception' encapsulates an xquery exception.
+|	'xquery_exception' encapsulates an xquery exception.
 |_______________________________________________________________________*/
+
+// no methods currently
 
 
 /*______________________________________________________________________
@@ -46,11 +57,7 @@ class context;
 |	[http://www.w3.org/TR/xquery-full-text/]
 |_______________________________________________________________________*/
 
-
-/*______________________________________________________________________
-|  
-|	'function' encapsulates an xquery function object
-|_______________________________________________________________________*/
+// no methods currently
 
 
 /*______________________________________________________________________
@@ -85,6 +92,8 @@ bool value::is_empty() const
 |	'item_iterator' - coin of the realm in XQuery: all
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
+
+// no methods currently
 
 
 /*______________________________________________________________________
@@ -126,14 +135,21 @@ void atomic_value::put(std::ostream& os, context const& ctx) const
 
 void atomic_value::describe(std::ostream& os, context const& ctx) const
 {
-	os << "":
+	os << "";
 }
 
-enum type::typename atomic_value::get_typename() const
+enum type::typecode atomic_value::get_typecode() const
 {
-	return ITEM_TYPE;
+	return type::ITEM_TYPE;
 }
 
+
+/*______________________________________________________________________
+|  
+|	'function_impl' encapsulates functional values
+|_______________________________________________________________________*/
+
+// no methods currently
 
 } /* namespace xqp */
 
