@@ -272,20 +272,20 @@ E <a href="#id-revisions-log">Revision Log</a><br />
 <h2><a id="introduction" name="introduction"></a>1 Introduction</h2>
 
 <p>This document defines the syntax and semantics of XQueryP, an extension to
-<a href="#xquery">[XQuery 1.0]</a>. This language extension provides
+<a href="#xquery">XQuery 1.0</a>. This language extension provides
 procedural programming facilities intended to make XQueryP into a simple and
 powerful Web application programming environment.</p>
 
 <p>[<a title="XQuery" id="dt-xquery" name="dt-xquery">Definition</a>: Within
 this document, the term <b>XQuery</b> refers to the language specified by <a
-href="#xquery">[XQuery 1.0]</a>, <a href="#xqupdate">[XQuery 1.0 Update
-Facility]</a>, and <a href="#xqfulltext">[XQuery 1.0 and XPath 2.0
-Full-Text]</a>.]</p>
+href="#xquery">XQuery 1.0</a>, <a href="#xqupdate">XQuery 1.0 Update
+Facility</a>, and <a href="#xqfulltext">XQuery 1.0 and XPath 2.0
+Full-Text</a>.]</p>
 
 <p>[<a title="data model" id="dt-data-model"
 name="dt-data-model">Definition</a>: The term <b>data model</b> refers to the
-data model specified by <a href="#datamodel">[XQuery/XPath Data Model
-(XDM)]</a>.]</p>
+data model specified by <a href="#datamodel">XQuery 1.0 and XPath 2.0 
+Data Model (XDM)</a>.]</p>
 
 <p>[<a title="XDM instance" id="dt-xdm-instance"
 name="dt-xdm-instance">Definition</a>: The term <b>XDM instance</b> denotes
@@ -316,18 +316,22 @@ model (tokenized text), which can be used for full-text and text-structural
 searches over collections of XML documents.</p>
 
 <p>The goal of the XQueryP proposal is to define the smallest extension to
-XQuery that makes development of simple applications reasonably feasible.</p>
+XQuery that makes development of XML applications reasonably feasible.</p>
 
 <p>The extensions to XQuery 1.0 provided by XQueryP may be characterized as
 follow:</p>
 <ol>
-  <li>sequential execution mode: an ordering of sub-expression in the XQuery
-    expression tree that determines the ordering of side-effects,</li>
-  <li>blocks: an expression with explicit sequential ordering,</li>
-  <li>assignments: dynamic binding of variables to values,</li>
-  <li>while expressions: the standard procedural control-flow primitive,
+  <li><a href="#id-sequential">sequential execution mode</a>: an ordering of 
+    sub-expression in the XQuery expression tree that determines the ordering 
+    of side-effects,</li>
+  <li><a href="#id-block">blocks</a>: an expression with explicit sequential
+    ordering,</li>
+  <li><a href="#id-assignment">assignments</a>: dynamic binding of variables
+    to values,</li>
+  <li><a href="#id-while">while expressions</a>: the standard procedural
+    control-flow primitive,
   and</li>
-  <li>try-catch expressions: exception handling.</li>
+  <li><a href="#id-try-catch">try-catch expressions</a>: exception handling.</li>
 </ol>
 
 <div class="div2">
@@ -688,8 +692,8 @@ an empty sequence.</p>
 <table summary="Scrap" class="scrap">
   <tbody>
     <tr valign="baseline">
-      <td><a id="doc-xqueryp-While"
-      name="doc-xqueryp-While"></a>[404]   </td>
+      <td><a id="doc-xqueryp-WhileExpr"
+      name="doc-xqueryp-WhileEXpr"></a>[404]   </td>
       <td><code><a href="#prod-xqueryp-While">WhileExpr</a></code></td>
       <td>   ::=   </td>
       <td><code>"while" "(" <a href="#doc-xqueryp-TestExpr">TestExpr</a> ")"
@@ -748,6 +752,62 @@ accomplished by introducing a new iterator called a while expression.</p>
     an updating expression; otherwise it is a non-updating expression.</li>
 </ol>
 </div>
+
+<p></p>
+
+<div class="div3">
+<h4><a id="id-trycatch" name="id-trycatch"></a>2.3.4 Try-catch Expression</h4>
+
+<table summary="Scrap" class="scrap">
+  <tbody>
+    <tr valign="baseline">
+      <td><a id="doc-xqueryp-TryCatchExpr"
+      name="doc-xqueryp-TryCatchEXpr"></a>[407]   </td>
+      <td><code><a href="#prod-xqueryp-TryCatchExpr">TryCatchExpr</a></code></td>
+      <td>   ::=   </td>
+      <td><code>"try" "(" <a href="#doc-xqueryp-TryExpr">TryExpr</a> ")"
+        "catch" <a href="#doc-xqueryp-BodyExpr">CatchExpr</a></code></td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr valign="baseline">
+      <td><a id="doc-xqueryp-TryExpr"
+        name="doc-xqueryp-TryExpr"></a>[408]   </td>
+      <td><code><a href="#prod-xqueryp-TryExpr">TryExpr</a></code></td>
+      <td>   ::=   </td>
+      <td><code><a href="#doc-xqueryp-ExprSingle">ExprSingle</a></code></td>
+    </tr>
+  </tbody>
+  <tbody>
+    <tr valign="baseline">
+      <td><a id="doc-xqueryp-CatchExpr"
+        name="doc-xqueryp-CatchExpr"></a>[409]   </td>
+      <td><code><a href="#prod-xqueryp-CatchExpr">CatchExpr</a></code></td>
+      <td>   ::=   </td>
+      <td><code><a href="#doc-xqueryp-ExprSingle">...</a></code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>.</p>
+
+<p>Example:</p>
+<ul>
+  <li>The following example ...
+
+    <div class="exampleInner">
+    <pre>try ( ... ) catch ...</pre>
+    </div>
+  </li>
+</ul>
+
+<p>The semantics of a try-catch expression are as follows:</p>
+<ol>
+  <li>.</li>
+  <li>.</li>
+</ol>
+</div>
+
 
 <div class="div2">
 <h3><a id="id-extensions-to-existing"
@@ -963,7 +1023,7 @@ processing to continue following an error in storing a resource.</p>
 </div>
 
 <div class="div1">
-<h2><a id="id-update-operations" name="id-update-operations"></a>3 Sequential
+<h2><a id="id-sequential" name="id-sequential"></a>3 Sequential
 Execution Mode</h2>
 
 <p>This section describes sequential execution mode.</p>
