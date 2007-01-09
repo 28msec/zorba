@@ -81,6 +81,7 @@ class qnameid
 public:
 	bool operator==(qnameid const&) const;
 	static rchandle<QName> get_qname(qnameid const&);
+	static qnameid put_qname(rchandle<QName>);
 
 };
 
