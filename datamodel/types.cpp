@@ -9,7 +9,6 @@
  */
 
 #include "types.h"
-#include "data_interface.h"
 
 using namespace std;
 namespace xqp {
@@ -19,109 +18,98 @@ namespace xqp {
 //	type (static)
 ////////////////////////////////
 
-bool types_initialized = false;
+/*
+xs_anyAtomicType UNTYPED_ATOMIC_TYPE = SchemaFactory.make_type(_UNTYPED_ATOMIC);
+xs_anyAtomicType ANY_ATOMIC_TYPE = SchemaFactory.make_type(_ANY_ATOMIC_TYPE);
+xs_anyAtomicType YEAR_MONTH_DURATION_TYPE = SchemaFactory.make_type(_YEARMONTH_DURATION);
+xs_anyAtomicType DAY_TIME_DURATION_TYPE = SchemaFactory.make_type(_DAYTIME_DURATION);
+xs_anyAtomicType STRING_TYPE = SchemaFactory.make_type(_STRING);
+xs_anyAtomicType BOOLEAN_TYPE = SchemaFactory.make_type(_BOOLEAN);
+xs_anyAtomicType DECIMAL_TYPE = SchemaFactory.make_type(_DECIMAL);
+xs_anyAtomicType FLOAT_TYPE = SchemaFactory.make_type(_FLOAT);
+xs_anyAtomicType DOUBLE_TYPE = SchemaFactory.make_type(_DOUBLE);
+xs_anyAtomicType DURATION_TYPE = SchemaFactory.make_type(_DURATION);
+xs_anyAtomicType DATE_TIME_TYPE = SchemaFactory.make_type(_DATETIME);
+xs_anyAtomicType TIME_TYPE = SchemaFactory.make_type(_TIME);
+xs_anyAtomicType DATE_TYPE = SchemaFactory.make_type(_DATE);
+xs_anyAtomicType G_YEAR_MONTH_TYPE = SchemaFactory.make_type(_GYEARMONTH);
+xs_anyAtomicType G_YEAR_TYPE = SchemaFactory.make_type(_GYEAR);
+xs_anyAtomicType G_MONTH_DAY_TYPE = SchemaFactory.make_type(_GMONTHDAY);
+xs_anyAtomicType G_DAY_TYPE = SchemaFactory.make_type(_GDAY);
+xs_anyAtomicType G_MONTH_TYPE = SchemaFactory.make_type(_GMONTH);
+xs_anyAtomicType HEX_BINARY_TYPE = SchemaFactory.make_type(_HEXBINARY);
+xs_anyAtomicType BASE64_BINARY_TYPE = SchemaFactory.make_type(_BASE64BINARY);
+xs_anyAtomicType ANY_URI_TYPE = SchemaFactory.make_type(_ANYURI);
+xs_anyAtomicType QNAME_TYPE = SchemaFactory.make_type(_QNAME);
+xs_anyAtomicType NOTATION_TYPE = SchemaFactory.make_type(_NOTATION);
+xs_anyAtomicType INTEGER_TYPE = SchemaFactory.make_type(_INTEGER);
+xs_anyAtomicType ID_TYPE = SchemaFactory.make_type(_ID);
+xs_anyAtomicType IDREF_TYPE = SchemaFactory.make_type(_IDREF);
+xs_anyAtomicType NCNAME_TYPE = SchemaFactory.make_type(_NCNAME);
+xs_anyAtomicType NUMBER_TYPE = SchemaFactory.make_type(_NUMERIC);
+*/
 
-void type::init_types()
+
+item_type const* type::get_item_type(
+	item const* m)
 {
-	xs_anyAtomicType UNTYPED_ATOMIC_TYPE = SchemaFactory.make_type(_UNTYPEDATOMIC);
-	xs_anyAtomicType ANY_ATOMIC_TYPE = SchemaFactory.make_type(_ANYATOMICTYPE);
-	xs_anyAtomicType YEAR_MONTH_DURATION_TYPE = SchemaFactory.make_type(_YEARMONTHDURATION);
-	xs_anyAtomicType DAY_TIME_DURATION_TYPE = SchemaFactory.make_type(_DAYTIMEDURATION);
-	xs_anyAtomicType STRING_TYPE = SchemaFactory.make_type(_STRING);
-	xs_anyAtomicType BOOLEAN_TYPE = SchemaFactory.make_type(_BOOLEAN);
-	xs_anyAtomicType DECIMAL_TYPE = SchemaFactory.make_type(_DECIMAL);
-	xs_anyAtomicType FLOAT_TYPE = SchemaFactory.make_type(_FLOAT);
-	xs_anyAtomicType DOUBLE_TYPE = SchemaFactory.make_type(_DOUBLE);
-	xs_anyAtomicType DURATION_TYPE = SchemaFactory.make_type(_DURATION);
-	xs_anyAtomicType DATE_TIME_TYPE = SchemaFactory.make_type(_DATETIME);
-	xs_anyAtomicType TIME_TYPE = SchemaFactory.make_type(_TIME);
-	xs_anyAtomicType DATE_TYPE = SchemaFactory.make_type(_DATE);
-	xs_anyAtomicType G_YEAR_MONTH_TYPE = SchemaFactory.make_type(_GYEARMONTH);
-	xs_anyAtomicType G_YEAR_TYPE = SchemaFactory.make_type(_GYEAR);
-	xs_anyAtomicType G_MONTH_DAY_TYPE = SchemaFactory.make_type(_GMONTHDAY);
-	xs_anyAtomicType G_DAY_TYPE = SchemaFactory.make_type(_GDAY);
-	xs_anyAtomicType G_MONTH_TYPE = SchemaFactory.make_type(_GMONTH);
-	xs_anyAtomicType HEX_BINARY_TYPE = SchemaFactory.make_type(_HEXBINARY);
-	xs_anyAtomicType BASE64_BINARY_TYPE = SchemaFactory.make_type(_BASE64BINARY);
-	xs_anyAtomicType ANY_URI_TYPE = SchemaFactory.make_type(_ANYURI);
-	xs_anyAtomicType QNAME_TYPE = SchemaFactory.make_type(_QNAME);
-	xs_anyAtomicType NOTATION_TYPE = SchemaFactory.make_type(_NOTATION);
-	xs_anyAtomicType INTEGER_TYPE = SchemaFactory.make_type(_INTEGER);
-	xs_anyAtomicType ID_TYPE = SchemaFactory.make_type(_ID);
-	xs_anyAtomicType IDREF_TYPE = SchemaFactory.make_type(_IDREF);
-	xs_anyAtomicType NCNAME_TYPE = SchemaFactory.make_type(_NCNAME);
-	xs_anyAtomicType NUMBER_TYPE = SchemaFactory.make_type(_NUMERIC);
+	return NULL; 
 }
 
-bool is_node_type(
-	item_type& t)
+type::typecode type::get_typecode(
+	item const* m)
 {
+	return ITEM_TYPE;
 }
 
-item_type type::get_item_type(
-	item const& m)
+string type::describe(item const* i_p)
 {
+	return "type";
 }
 
-std::string type::display_typename(
-	item const& m)
+enum type::type_relation type::schema_type_relation(
+	schema_type const& s1,
+	schema_type const& s2)
 {
+	return DISJOINT;
 }
 
-int type::schema_type_relationship(
-	schema_type const& stype1,
-	schema_type const& stype2)
+enum type::type_relation type::type_relation(
+	item_type const& t1,
+	item_type const& t2)
 {
+	return DISJOINT;
 }
 
-ItemType type::getCommonSuperType(
-	item_type const& itype1,
-	item_type const& itype2)
+bool is_node(
+	item_type const& t)
 {
+	return false;
 }
 
 bool type::is_primitive(
-	enum typecode t)
+	item_type const& t)
 {
-}
-
-bool type::is_comparable(
-	enum typecode t1,
-	enum typecode t2,
-	bool ordered_b)
-{
+	return true;
 }
 
 bool type::is_ordered(
 	enum typecode t)
 {
+	return true;
 }
 
-bool type::is_numeric_primitive(
-	item_type const& itype)
+bool type::is_numeric(
+	typecode t)
 {
+	return false;
 }
 
 bool type::is_subtype(
 	item_type const& itype1,
 	item_type const& itype2)
 {
-}
-
-enum type_relation type::relationship(
-	item_type const& itype1,
-	item_type const& itype2)
-{
-}
-
-bool type::is_ID(
-	enum typecode t)
-{
-}
-
-bool type::is_IDREFS(
-	enum typecode t)
-{
+	return false;
 }
 
 
@@ -132,35 +120,40 @@ bool type::is_IDREFS(
 
 bool item_type::is_atomic_type() const
 {
+	return true;
 }
 
-bool item_type::matches_item(
-	item const& item,
-	bool allow_URI_promotion,
-	config& config) const
+bool item_type::matches(
+	item const* item,
+	context const* ctx) const
 {
+	return false;
 }
 
-rchandle<item_type> item_type::get_supertype() const
+item_type const* item_type::get_supertype() const
 {
+	return NULL;
 }
 
-rchandle<item_type> item_type::get_primitive_type() const
+item_type const* item_type::get_primitive_type() const
 {
+	return NULL;
 }
 
-type::typecode item_type::get_primitive_typecode() const
+enum type::typecode item_type::get_typecode() const
 {
+	return ITEM_TYPE;
 }
 
 std::string item_type::describe() const
 {
+	return "item_type";
 }
 
-rchandle<xs_anyAtomicType> item_type::get_atomized_type() const
+xs_anyAtomicType const* item_type::get_atomized_type() const
 {
+	return NULL;
 }
-
 
 
 
@@ -168,34 +161,46 @@ rchandle<xs_anyAtomicType> item_type::get_atomized_type() const
 //	any_item_type
 ////////////////////////////////
 
-static any_item_typerchandle<any_item_type> get_instance()
+any_item_type const& any_item_type::get_instance()
 {
+	return the_instance;
 }
 
-bool any_item_typeis_atomic_type() const 
+bool any_item_type::is_atomic_type() const 
 {
 	return false;
 }
 
-rchandle<item_type> any_item_typeget_supertype() 
+bool any_item_type::matches(
+	item const* t1,
+	context const* ctx) const
+{
+	return false;
+}
+
+item_type const* any_item_type::get_supertype() const
 {
 	return NULL;
 }
 
-rchandle<item_type> any_item_typeget_primitive_type() const
+item_type const* any_item_type::get_primitive_type() const
 {
+	return NULL;
 }
 
-int any_item_typeget_primitive_typecode() const
+enum type::typecode any_item_type::get_primitive_typecode() const
 {
+	return ITEM_TYPE;
 }
 	
-rchandle<xs_anyAtomicType> any_item_typeget_atomized_type() const
+xs_anyAtomicType const* any_item_type::get_atomized_type() const
 {
+	return NULL;
 }
 
-std::string any_item_typedescribe()
+std::string any_item_type::describe() const
 {
+	return "any_item_type";
 }
 
 
@@ -204,10 +209,6 @@ std::string any_item_typedescribe()
 //	schema_component
 ////////////////////////////////
 
-type::validation_status schema_componenet::get_validation_status() const
-{
-}
-
 
 
 
@@ -215,66 +216,56 @@ type::validation_status schema_componenet::get_validation_status() const
 //	schema_type
 ////////////////////////////////
 
-type::typecode schema_type::get_type() const
+type::typecode schema_type::get_typecode() const
 {
+	return type::ITEM_TYPE;
 }
 
 bool schema_type::operator==(schema_type const& other)
 {
+	return false;
 }
 
 bool schema_type::is_complex() const
 {
+	return false;
 }
 
 bool schema_type::is_simple() const
 {
+	return true;
 }
 
 bool schema_type::is_atomic() const
 {
+	return true;
 }
 
 bool schema_type::is_anonymous() const
 {
+	return false;
 }
 
-rchandle<schema_type> schema_type::get_base_type() const
-throws schema_type::xqp_exception
+schema_type const* schema_type::get_base_type() const
 {
+	return NULL;
 }
 
-type::derivation_method schema_type::get_derivation_method() const
+enum schema_type::derivation_method schema_type::get_derivation_method() const
 {
+	return schema_type::DERIV_ALL;
 }
 
 bool schema_type::allows_derivation(
 	enum schema_type::derivation_method derivation) const
 {
-}
-
-void schema_type::analyze_expression(
-	rchandle<expr> expr_h,
-	int kind,
-	context const& ctx) const
-throw (xqp_exception)
-{
-}
-
-rchandle<item_iterator> schema_type::get_typed_value(node const&) const
-throw (xqp_exception)
-{
-}
-
-rchandle<item_iterator> schema_type::atomize(node const&) const
-throw (xqp_xception)
-{
+	return true;
 }
 
 std::string schema_type::describe() const
 {
+	return "schema_type";
 }
-
 
 
 
@@ -282,45 +273,37 @@ std::string schema_type::describe() const
 //	simple_type
 ////////////////////////////////
 
-boolsimple_type::is_atomic() const
+bool simple_type::is_atomic() const
 {
+	return true;
 }
 
-boolsimple_type::is_list() const
+bool simple_type::is_list() const
 {
+	return false;
 }
 
-boolsimple_type::is_union() const
+bool simple_type::is_union() const
 {
+	return false;
 }
 
-rchandle<atomic_type>simple_type::get_common_atomic_type() const
+atomic_type const* simple_type::get_common_atomic_type() const
 {
+	return NULL;
 }
 
-rchandle<schema_type>simple_type::get_builtin_base_type() const
+schema_type const* simple_type::get_builtin_base_type() const
 {
+	return NULL;
 }
 
-rchandle<item_iterator>simple_type::get_typed_value(
-	char const* value,
-	rchandle<NamespaceResolver>)
+int simple_type::validate_content(
+	char const* src)
 throw (xqp_exception)
 {
+	return 0;
 }
-
-rchandle<validation_error>simple_type::validate_content(
-	char const* value,
-	rchandle<namespace_resolver>)
-throw (xqp_exception)
-{
-}
-
-boolsimple_type::is_namespace_sensitive() const
-{
-}
-
-
 
 
 
@@ -330,43 +313,169 @@ boolsimple_type::is_namespace_sensitive() const
 
 bool complex_type::is_abstract() const
 {
+	return false;
 }
 
-bool complex_type::is_complex_content() const
+bool complex_type::complex_content() const
 {
+	return false;
 }
 
-bool complex_type::is_simple_content() const
+bool complex_type::simple_content() const
 {
+	return true;
 }
 
-bool complex_type::is_all_content() const
+bool complex_type::all_content() const
 {
+	return true;
 }
 
-rchandle<simple_type> complex_type::get_simple_content_type() const
+simple_type const* complex_type::get_simple_content_type() const
 {
+	return NULL;
 }
 
 bool complex_type::is_restricted() const
 {
+	return false;
 }
 
 bool complex_type::is_empty_content() const
 {
+	return false;
 }
 
 bool complex_type::allows_empty() const
 {
+	return true;
 }
 
 bool complex_type::allows_mixed_content() const
 {
+	return true;
 }
 
 bool complex_type::subsumes(
-	rchandle<complex_type>)
+	complex_type const& c)
 {
+	return false;
+}
+
+
+
+////////////////////////////////
+//	xs_anyType
+////////////////////////////////
+
+xs_anyType const& xs_anyType::get_instance()
+{
+	return the_instance;
+}
+
+enum type::typecode xs_anyType::get_typecode() const
+{
+	return type::XS_ANYTYPE;
+}
+
+schema_type const* xs_anyType::get_base_type() const
+{
+	return NULL;
+}
+
+schema_type const* xs_anyType::get_known_base_type() const
+{
+	return NULL;
+}
+
+bool xs_anyType::is_abstract() const
+{
+	return false;
+}
+
+bool xs_anyType::is_complex() const
+{
+	return true;
+}
+
+bool xs_anyType::is_anonymous() const
+{
+	return false;
+}
+
+bool xs_anyType::is_xs_anySimpleType() const
+{
+	return true;
+}
+
+bool xs_anyType::is_atomic() const
+{
+	return true;
+}
+
+bool xs_anyType::is_simple_content() const
+{
+	return true;
+}
+
+bool xs_anyType::is_all_content() const
+{
+	return true;
+}
+
+bool xs_anyType::is_restricted() const
+{
+	return false;
+}
+
+bool xs_anyType::is_empty_content() const
+{
+	return false;
+}
+
+bool xs_anyType::allows_derivation(
+	enum schema_type::derivation_method) const
+{
+	return true;
+}
+
+bool xs_anyType::allows_empty() const
+{
+	return true;
+}
+
+bool xs_anyType::allows_mixed_content() const
+{
+	return true;
+}
+
+bool xs_anyType::operator==(schema_type const&) const
+{
+	return false;
+}
+
+std::string xs_anyType::describe() const
+{
+	return "xs_anyType";
+}
+
+std::string xs_anyType::subsumes(
+	complex_type const&) const
+{
+	return false;
+}
+
+void xs_anyType::check_type_derivation(
+	schema_type const&,
+	enum schema_type::derivation_method)
+throw (xqp_exception)
+{
+}
+
+enum schema_type::derivation_method
+xs_anyType::get_derivation_method() const
+{
+	return schema_type::DERIV_ALL;
 }
 
 
@@ -375,87 +484,75 @@ bool complex_type::subsumes(
 //	xs_anySimpleType
 ////////////////////////////////
 
-rchandle<xs_anySimpleType> xs_anySimpeType::get_instance()
+xs_anySimpleType const& xs_anySimpleType::get_instance()
 {
+	return the_instance;
 }
 
-bool xs_anySimpeType::is_external() const
+bool xs_anySimpleType::matches(schema_type const& other) const
 {
+	return false;
 }
 
-bool xs_anySimpeType::is_complex() const
+bool xs_anySimpleType::is_complex() const
 {
+	return true;
 }
 
-bool xs_anySimpeType::is_xs_anySimpleType() const
+bool xs_anySimpleType::is_atomic() const
 {
+	return true;
 }
 
-bool xs_anySimpeType::is_same_type(schema_type const& other) const
+bool xs_anySimpleType::is_anonymous() const
 {
+	return false;
 }
 
-bool xs_anySimpeType::is_atomic() const
+bool xs_anySimpleType::is_list() const
 {
+	return false;
 }
 
-bool xs_anySimpeType::is_anonymous() const
+enum type::typecode xs_anySimpleType::get_typecode() const
 {
+	return type::XS_ANYSIMPLETYPE;
 }
 
-bool xs_anySimpeType::is_list() const
+schema_type::derivation_method xs_anySimpleType::get_derivation_method() const
 {
+	return schema_type::DERIV_ALL;
 }
 
-bool xs_anySimpeType::is_namespace_sensitive() const
+schema_type const* xs_anySimpleType::get_base_type() const
 {
+	return NULL;
 }
 
-int xs_anySimpeType::get_namecode() const
+schema_type const* xs_anySimpleType::get_known_base_type() const
 {
+	return NULL;
 }
 
-type::validation_status xs_anySimpeType::get_validation_status() const
+schema_type const* xs_anySimpleType::get_builtin_base_type() const
 {
+	return NULL;
 }
 
-type::derivation_method xs_anySimpeType::get_derivation_method() const
+atomic_type const* xs_anySimpleType::get_common_atomic_type() const
 {
+	return NULL;
 }
 
-rchandle<schema_type> xs_anySimpeType::get_base_type() const
+std::string xs_anySimpleType::describe() const
 {
+	return "xs_anySimpleType";
 }
 
-rchandle<schema_type> xs_anySimpeType::get_known_base_type() const
+bool xs_anySimpleType::allows_derivation(
+	enum schema_type::derivation_method m) const
 {
-}
-
-rchandle<schema_type> xs_anySimpeType::get_builtin_base_type() const
-{
-}
-
-rchandle<atomic_type> xs_anySimpeType::get_common_atomic_type() const
-{
-}
-
-std::string xs_anySimpeType::describe() const
-{
-}
-
-rchandle<item_iterator> xs_anySimpeType::get_typed_value(
-	node&)
-{
-}
-
-rchandle<item_iterator> xs_anySimpeType::atomize(
-	node&)
-{
-}
-
-bool xs_anySimpeType::allows_derivation(
-	enum derivation_method) const
-{
+	return true;
 }
 
 void xs_anySimpleType::check_type_derivation(
@@ -465,147 +562,11 @@ throw (xqp_exception)
 {
 }
 
-rchandle<item_iterator> xs_anySimpleType::get_typed_value(
-	char const* value,
-	rchandle<namespace_resolver>)
-{
-}
-
-rchandle<validation_error> xs_anySimpleType::validate_content(
-	char const* value,
-	rchandle<namespace_resolver>)
-{
-}
-
-void xs_anySimpleType::analyze_content_expression(
-	rchandle<expr>, 
-	int kind,
-	context const&)
-{
-}
-
-
-
-
-////////////////////////////////
-//	xs_anyType
-////////////////////////////////
-
-xs_anyType theInstance = new xs_anyType()
-
-
-rchandle<xs_anyType> xs_anyType::get_instance() const
-{
-}
-
-int xs_anyType::get_namecode() const
-{
-}
-
-rchandle<schema_type> xs_anyType::get_base_type() const
-{
-}
-
-rchandle<schema_type> xs_anyType::get_known_base_type() const
-{
-}
-
-rchandle<xs_anySimpleType> xs_anyType::get_simple_content_type() const
-{
-}
-
-bool xs_anyType::is_abstract() const
-{
-}
-
-bool xs_anyType::is_complex() const
-{
-}
-
-bool xs_anyType::is_anonymous() const
-{
-}
-
-bool xs_anyType::is_xs_anySimpleType() const
-{
-}
-
-bool xs_anyType::is_atomic() const
-{
-}
-
-bool xs_anyType::is_complex() const
-{
-}
-
-bool xs_anyType::is_simple_content() const
-{
-}
-
-bool xs_anyType::is_all_content() const
-{
-}
-
-bool xs_anyType::is_restricted() const
-{
-}
-
-bool xs_anyType::is_empty_content() const
-{
-}
-
-bool xs_anyType::allows_derivation(
-	enum type::derivation_method) const
-{
-}
-
-bool xs_anyType::allows_empty() const
-{
-}
-
-bool xs_anyType::allows_mixed_content() const
-{
-}
-
-bool xs_anyType::operator==(schema_type const&) const
-{
-}
-
-std::string xs_anyType::describe() const
-{
-}
-
-std::string xs_anyType::subsumes(
-	complex_type const&) const
-{
-}
-
-rchandle<item_iterator> xs_anyType::get_typed_value(
-	node&) const
-{
-}
-
-rchandle<item_iterator> xs_anyType::atomize(
-	node&) const
-{
-}
-
-void xs_anyType::analyze_content_expression(
-	rchandle<expr>,
-	int kind,
-	context&) const
-{
-}
-
-void check_type_derivation(
-	schema_type const&,
-	enum derivation_method)
+int xs_anySimpleType::validate_content(
+	char const* value)
 throw (xqp_exception)
 {
-}
-
-enum derivation_method get_derivation_method() const
-{
+	return 0;
 }
 
 
@@ -614,116 +575,112 @@ enum derivation_method get_derivation_method() const
 //	xs_untyped
 ////////////////////////////////
 
-xs_untyped the_instance
-
-
-xs_untyped xs_untyped::get_instance() const
+xs_untyped const& xs_untyped::get_instance()
 {
+	return the_instance;
 }
 
-type::validation_status xs_untyped::get_validation_status() const
+schema_type::derivation_method xs_untyped::get_derivation_method() const
 {
+	return schema_type::DERIV_ALL;
 }
 
-type::derivation_method xs_untyped::get_derivation_method() const
+type::typecode xs_untyped::get_typecode() const
 {
+	return type::XS_UNTYPED;
 }
 
-type::typecode xs_untyped::get_type() const
+simple_type const* xs_untyped::get_simple_content_type() const
 {
+	return NULL;
 }
 
-rchandle<simple_type> xs_untyped::get_simple_content_type() const
+schema_type const* xs_untyped::get_known_base_type() const
 {
+	return NULL;
 }
 
-rchandle<schema_type> xs_untyped::get_known_base_type() const
+schema_type const* xs_untyped::get_base_type() const
 {
-}
-
-rchandle<schema_type> xs_untyped::get_base_type() const
-{
+	return NULL;
 }
 
 bool xs_untyped::is_complex() const
 {
+	return true;
 }
 
 bool xs_untyped::is_anonymous() const
 {
+	return false;
 }
 
 bool xs_untyped::is_abstract() const
 {
+	return false;
 }
 
 bool xs_untyped::is_simple() const
 {
+	return true;
 }
 
 bool xs_untyped::is_atomic() const
 {
+	return true;
 }
 
 bool xs_untyped::is_restricted() const
 {
+	return false;
 }
 
 bool xs_untyped::is_complex_content() const
 {
+	return true;
 }
 
 bool xs_untyped::is_simple_content() const
 {
+	return true;
 }
 
 bool xs_untyped::is_all_content() const
 {
+	return true;
 }
 
 bool xs_untyped::is_empty_content() const
 {
+	return false;
 }
 
 bool xs_untyped::allows_derivation(
-	enum type::derivation_method) const
+	enum schema_type::derivation_method) const
 {
+	return true;
 }
 
 bool xs_untyped::allows_empty() const
 {
+	return true;
 }
 
 bool xs_untyped::allows_mixedContent() const
 {
+	return true;
 }
 
 std::string xs_untyped::describe() const
 {
+	return "xs_untyped";
 }
 
-std::string xs_untyped::subsumes(
+bool xs_untyped::subsumes(
 	complex_type const&)
 {
+	return false;
 }
-
-void xs_untyped::analyze_expression(
-	rchandle<expr> expr,
-	int kind,
-	context &)
-{
-}
-
-rchandle<item_iterator> xs_untyped::get_typed_value(
-	node&)
-{
-}
-
-rchandle<item_iteraor> xs_untyped::atomize(
-	node &)
-{
-}
-
 
 
 
@@ -731,134 +688,105 @@ rchandle<item_iteraor> xs_untyped::atomize(
 //	atomic_type
 ////////////////////////////////
 
-rchandle<atomic_value> atomic_type::make_derived_value(
-	atomic_value& primValue,
-	char const* lexicalValue,
-	bool validate)
-{
-}
 
 
 ////////////////////////////////
 //	xs_anyAtomicType
 ////////////////////////////////
 
- xs_anyAtoicType::xs_anyAtomicType()
+xs_anyAtomicType const& xs_anyAtomicType::get_instance()
 {
+	return the_instance;
 }
 
-type::typecode xs_anyAtoicType::get_type() const
+type::typecode xs_anyAtomicType::get_typecode() const
 {
+	return type::XS_ANYATOMICTYPE;
 }
 
-type::typecode xs_anyAtoicType::get_primitive_type() const
+item_type const* xs_anyAtomicType::get_primitive_type() const
 {
+	return NULL;
 }
 
-type::validation_status xs_anyAtoicType::get_validation_status() const
+schema_type::derivation_method xs_anyAtomicType::get_derivation_method() const
 {
+	return schema_type::DERIV_ALL;
 }
 
-type::derivation_method xs_anyAtoicType::get_derivation_method() const
+bool xs_anyAtomicType::operator==(schema_type const&) const
 {
+	return false;
 }
 
-bool xs_anyAtoicType::operator==(schema_type const&) const
+bool xs_anyAtomicType::is_complex() const
 {
+	return true;
 }
 
-bool xs_anyAtoicType::is_complex() const
+bool xs_anyAtomicType::is_anonymous() const
 {
+	return false;
 }
 
-bool xs_anyAtoicType::is_anonymous() const
+bool xs_anyAtomicType::is_simple() const
 {
+	return true;
 }
 
-bool xs_anyAtoicType::is_simple() const
+bool xs_anyAtomicType::is_atomic() const
 {
+	return true;
 }
 
-bool xs_anyAtoicType::is_atomic() const
+bool xs_anyAtomicType::is_list() const
 {
+	return false;
 }
 
-bool xs_anyAtoicType::is_list() const
+bool xs_anyAtomicType::is_union() const
 {
+	return true;
 }
 
-bool xs_anyAtoicType::is_union() const
+item_type const* xs_anyAtomicType::get_super_type() const
 {
+	return NULL;
 }
 
-bool xs_anyAtoicType::is_namespace_sensitive() const
+item_type const* xs_anyAtomicType::get_primitive_item_type() const
 {
+	return NULL;
 }
 
-rchandle<item_type> xs_anyAtoicType::get_super_type() const
+atomic_type const* xs_anyAtomicType::get_common_atomic_type() const
 {
+	return NULL;
 }
 
-rchandle<item_type> xs_anyAtoicType::get_primitive_item_type() const
+atomic_type const* xs_anyAtomicType::get_atomized_item_type() const
 {
+	return NULL;
 }
 
-rchandle<atomic_type> xs_anyAtoicType::get_common_atomic_type() const
+schema_type const* xs_anyAtomicType::get_known_base_type() const
 {
+	return NULL;
 }
 
-rchandle<atomic_type> xs_anyAtoicType::get_atomized_item_type() const
+schema_type const* xs_anyAtomicType::get_base_type() const
 {
+	return NULL;
 }
 
-rchandle<schema_type> xs_anyAtoicType::get_known_base_type() const
+std::string xs_anyAtomicType::describe() const
 {
-}
-
-rchandle<schema_type> xs_anyAtoicType::get_base_type() const
-{
-}
-
-std::string xs_anyAtoicType::describe() const
-{
+	return "xs_anyAtomicType";
 }
 
 void xs_anyAtomicType::check_type_derivation(
 	schema_type const& type,
 	enum derivation_method)
-throw (xqp_exception)
-{
-}
-
-rchandle<item_iterator> xs_anyAtomicType::get_typed_value(node&)
-throw (xqp_exception)
-{
-}
-
-rchandle<item_iterator> xs_anyAtomicType::get_typed_value(
-	char const* value,
-	rchandle<namespace_resolver> xs_anyAtomicType::resolver)
-throw (xqp_exception)
-{
-}
-
-rchandle<item_iterator> xs_anyAtomicType::atomize(node&)
-throw (xqp_exception)
-{
-}
-
-rchandle<atomic_value> xs_anyAtomicType::make_derived_value(
-	atomic_value const&,
-	char const* lexicalValue,
-	bool validate)
-throw (xqp_exception)
-{
-}
-
-void xs_anyAtomicType::analyze_content_expression(
-	rchandle<expr>,
-	int kind,
-	context&)
 throw (xqp_exception)
 {
 }
@@ -869,8 +797,9 @@ throw (xqp_exception)
 //	list_type
 ////////////////////////////////
 
-rchandle<xs_simple_type> list_type::get_item_type() const
+xs_anySimpleType const* list_type::get_item_type() const
 {
+	return NULL;
 }
 
 
@@ -879,81 +808,89 @@ rchandle<xs_simple_type> list_type::get_item_type() const
 //	builtin_list_type
 ////////////////////////////////
 
-enum type::typecode builtin_list_type::get_type() const
+type::typecode builtin_list_type::get_typecode() const
 {
+	return type::BUILTIN_LIST;
 }
 
-enum type::typecode builtin_list_type::get_primitive_type() const
+item_type const* builtin_list_type::get_primitive_type() const
 {
+	return NULL;
 }
 
-enum type::validation_status builtin_list_type::get_validation_status() const
+schema_type::derivation_method builtin_list_type::get_derivation_method() const
 {
-}
-
-enum type::derivation_method builtin_list_type::get_derivation_method() const
-{
+	return schema_type::DERIV_ALL;
 }
 
 bool builtin_list_type::operator==(schema_type const&) const
 {
+	return false;
 }
 
 bool builtin_list_type::is_complex() const
 {
+	return true;
 }
 
 bool builtin_list_type::is_anonymous() const
 {
+	return false;
 }
 
 bool builtin_list_type::is_simple() const
 {
+	return true;
 }
 
 bool builtin_list_type::is_atomic() const
 {
+	return true;
 }
 
 bool builtin_list_type::is_list() const
 {
+	return false;
 }
 
 bool builtin_list_type::is_union() const
 {
+	return true;
 }
 
-bool builtin_list_type::is_namespace_sensitive() const
+item_type const* builtin_list_type::get_super_type() const
 {
+	return NULL;
 }
 
-
-rchandle<item_type> builtin_list_type::get_super_type() const
+item_type const* builtin_list_type::get_primitive_item_type() const
 {
+	return NULL;
 }
 
-rchandle<item_type> builtin_list_type::get_primitive_item_type() const
+atomic_type const* builtin_list_type::get_common_atomic_type() const
 {
+	return NULL;
 }
 
-rchandle<atomic_type> builtin_list_type::get_common_atomic_type() const
+atomic_type const* builtin_list_type::get_atomized_item_type() const
 {
+	return NULL;
 }
 
-rchandle<atomic_type> builtin_list_type::get_atomized_item_type() const
+schema_type const* builtin_list_type::get_known_base_type() const
 {
+	return NULL;
 }
 
-rchandle<schema_type> builtin_list_type::get_known_base_type() const
+schema_type const* builtin_list_type::get_base_type() const
 {
-}
-
-rchandle<schema_type> builtin_list_type::get_base_type() const
-{
+	return NULL;
 }
 
 std::string builtin_list_type::describe() const
 {
+	return "builtin_list_type";
 }
 
 void builtin_list_type::check_type_derivation(
@@ -962,44 +899,6 @@ void builtin_list_type::check_type_derivation(
 throw (xqp_exception)
 {
 }
-
-rchandle<item_iterator> builtin_list_type::get_typed_value(node&)
-throw (xqp_exception)
-{
-}
-
-rchandle<item_iterator> builtin_list_type::get_typed_value(
-	char const* value,
-	rchandle<namespace_resolver> resolver)
-throw (xqp_exception)
-{
-}
-
-rchandle<item_iterator> builtin_list_type::atomize(node&)
-throw (xqp_exception)
-{
-}
-
-rchandle<atomic_value> builtin_list_type::make_derived_value(
-	atomic_value const&,
-	char const* lexicalValue,
-	bool validate)
-throw (xqp_exception)
-{
-}
-
-void builtin_list_type::analyze_content_expression(
-	rchandle<expr>,
-	int kind,
-	context&)
-throw (xqp_exception)
-{
-}
-
-std::string builtin_list_type::get_localname() const
-{
-}
-
 
 
 } /* namespace xqp */

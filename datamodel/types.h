@@ -46,7 +46,7 @@ namespace xqp {
 |        xs_NMTOKENS
 |        xs_ENTITIES
 |        xs_anyAtomicType                 C++ type              type name
-|          xs_xs_untypedAtomic            --------              ---------
+|          xs_untypedAtomic               --------              ---------
 |
 |          xs_dateTime                    struct tm             XSD_DATETIME
 |          xs_date                        struct tm             XSD_DATE
@@ -135,17 +135,18 @@ protected:
 
 public:
 	enum typecode {
-		ITEM_TYPE, NODE_TYPE, DOC_NODE_TYPE, ELEM_NODE_TYPE, ATTR_NODE_TYPE, 
-		TEXT_NODE_TYPE, COMMENT_NODE_TYPE, PI_NODE_TYPE, NS_NODE_TYPE, 
-		ANY_ATOMIC, BINARY, ANYTYPE, UNTYPED, ANY_SIMPLE_TYPE, ANY_ATOMIC_TYPE, 
-		UNTYPED_ATOMIC, BOOLEAN, HEX_BINARY, BASE64_BINARY, DATE_TIME, TIME, 
-		DATE, G_YEAR_MONTH, G_YEAR, G_MONTH_DAY, G_DAY, G_MONTH, DURATION, 
-		YEAR_MONTH_DURATION, DAY_TIME_DURATION, NUMERIC, INTEGER, DECIMAL, FLOAT, 
-		DOUBLE, NON_POSITIVE_INTEGER, NEGATIVE_INTEGER, LONG, INT, SHORT, BYTE, 
-		NON_NEGATIVE_INTEGER, POSITIVE_INTEGER, UNSIGNED_LONG, UNSIGNED_INT, 
-		UNSIGNED_SHORT, UNSIGNED_BYTE, STRING, ANY_URI, QNAME, NOTATION, 
-		NORMALIZED_STRING, TOKEN, LANGUAGE, NMTOKEN, NMTOKENS, NAME, NCNAME, ID, 
-		IDREF, IDREFS, ENTITY, ENTITIES 
+		ITEM_TYPE, NODE_TYPE, BINARY, XS_ANY_ATOMIC, XS_ANYTYPE, XS_UNTYPED, 
+		XS_ANYSIMPLETYPE, XS_ANYATOMICTYPE, XS_UNTYPED_ATOMIC, XS_BOOLEAN, 
+		XS_HEX_BINARY, XS_BASE64_BINARY, XS_DATETIME, XS_TIME, XS_DATE, 
+		XS_GYEARMONTH, XS_GYEAR, XS_GMONTHDAY, XS_GDAY, XS_GMONTH, 
+		XS_DURATION, XS_YEARMONTH_DURATION, XS_DAYTIME_DURATION, NUMERIC, 
+		XS_INTEGER, XS_DECIMAL, XS_FLOAT, XS_DOUBLE, XS_NON_POSITIVE_INTEGER, 
+		XS_NEGATIVE_INTEGER, XS_LONG, XS_INT, XS_SHORT, XS_BYTE, 
+		XS_NON_NEGATIVE_INTEGER, XS_POSITIVE_INTEGER, XS_UNSIGNED_LONG, 
+		XS_UNSIGNED_INT, XS_UNSIGNED_SHORT, XS_UNSIGNED_BYTE, XS_STRING, 
+		XS_ANY_URI, XS_QNAME, XS_NOTATION, XS_NORMALIZED_STRING, XS_TOKEN, 
+		XS_LANGUAGE, XS_NMTOKEN, XS_NMTOKENS, XS_NAME, XS_NCNAME, XS_ID, 
+		XS_IDREF, XS_IDREFS, XS_ENTITY, XS_ENTITIES, BUILTIN_LIST 
 	};
 
 	enum type_relation {	
@@ -190,7 +191,7 @@ public:
 	*/
 
 	// Get the item type of an item.
-	static item_type& get_item_type(item const*);
+	static item_type const* get_item_type(item const*);
 
 	// Get the typecode if an item.
 	static typecode get_typecode(item const*);
@@ -208,8 +209,13 @@ public:
 		item_type const& t1,
 		item_type const& t2);
 
+	// Return true if t1 < t2 in the type hierarchy
+	static bool is_subtype(
+  	item_type const& t1,
+	  item_type const& t2);
+
 	// Return true if an item type is one of the node types.
-	static bool is_node(item_type&);
+	static bool is_node(item_type const&);
 
 	// Determine whether an item type is primitive.
 	static bool is_primitive(item_type const&);
@@ -295,7 +301,7 @@ public:
 	bool matches(item const*, context const*) const;
 
 	item_type const* get_supertype() const;
-	item_type const*get_primitive_type() const;
+	item_type const* get_primitive_type() const;
 	xs_anyAtomicType const* get_atomized_type() const;
 
 	type::typecode get_primitive_typecode() const;
@@ -364,7 +370,7 @@ public:
 	 *      definition property from T2, and all the derivation
 	 *      methods involved are restriction. 
 	 */
-		DERIVATION_RESTRICTION			= 0x01,
+		DERIV_RESTRICTION				= 0x01,
 
 	/**
 	 * If the document's schema is an XML Schema this constant represents
@@ -376,7 +382,7 @@ public:
 	 *      definition property from T2, and at least one derivation
 	 *      methods involved is extension. 
 	 */
-		DERIVATION_EXTENSION				= 0x02,
+		DERIV_EXTENSION					= 0x02,
 
 	/**
 	 * If the document's schema is an XML Schema this constant represents
@@ -389,7 +395,7 @@ public:
 	 *   T1' has variety union, and one of the member type definitions is T2.
 	 * Note that T1' could be the same as T1, and T2' could be the same as T2.
 	 */
-		DERIVATION_UNION						= 0x04,
+		DERIV_UNION							= 0x04,
 
 	/**
 	 * If the document's schema is an XML Schema this constant represents
@@ -402,14 +408,21 @@ public:
 	 *   T1' has variety list, and T2' is the item type definition.
 	 * Note that T1' could be the same as T1, and T2' could be the same as T2.
 	 */
-		DERIVATION_LIST							= 0x08,
+		DERIV_LIST							= 0x08,
 
 	/**
 	 * Derivation by substitution.
 	 * This constant, unlike the others, is NOT defined in the DOM level 3 
 	 * TypeInfo interface. 
 	 */
-		DERIVE_BY_SUBSTITUTION			= 0x10
+		DERIV_SUBSTITUTION			= 0x10,
+
+
+	/**
+	 * Union of all of the above
+	 */
+		DERIV_ALL								= 0x1f
+
 	};
 
 
@@ -432,7 +445,7 @@ public:
 	virtual bool is_anonymous() const;
 
 	// Return the base type that this type inherits from, or NULL for primitive.
-	virtual schema_type const* get_base_type() const throw (xqp_exception);
+	virtual schema_type const* get_base_type() const;
 
 	// Get the derivation method used to derive this type.
 	virtual derivation_method get_derivation_method() const;
@@ -532,7 +545,7 @@ public:
 class xs_anyType : public complex_type
 {
 private:
-	static xs_anyType theInstance;
+	static xs_anyType the_instance;
 
 protected:
 	xs_anyType() {}
@@ -543,7 +556,7 @@ public:
 
 	type::typecode get_typecode() const;
 
-	schema_type const* get_base_type() const throw (xqp_exception);
+	schema_type const* get_base_type() const; 
 	schema_type const* get_known_base_type() const;
 
 	bool is_abstract() const;
@@ -566,7 +579,7 @@ public:
 
 	void check_type_derivation(
 		schema_type const&,
-		derivation_method)
+		enum schema_type::derivation_method)
 	throw (xqp_exception);
 
 	schema_type::derivation_method get_derivation_method() const;
@@ -593,9 +606,8 @@ protected:
 public:
 	static xs_anySimpleType const& get_instance();
 
-	bool is_complex() const;
-	bool is_xs_anySimpleType() const;
 	bool matches(schema_type const& other) const;
+	bool is_complex() const;
 	bool is_atomic() const;
 	bool is_anonymous() const;
 	bool is_list() const;
@@ -603,7 +615,7 @@ public:
 	type::typecode get_typecode() const;
 	schema_type::derivation_method get_derivation_method() const;
 
-	schema_type const* get_base_type() const throw (xqp_exception);
+	schema_type const* get_base_type() const;
 	schema_type const* get_known_base_type() const;
 	schema_type const* get_builtin_base_type() const;
 	atomic_type const* get_common_atomic_type() const;
@@ -617,7 +629,8 @@ public:
 		schema_type::derivation_method)
 	throw (xqp_exception);
 
-	int validate_content(char const* src) throw (xqp_exception);
+	int validate_content(char const* src)
+	throw (xqp_exception);
 
 };
 
@@ -646,7 +659,7 @@ public:
 
 	simple_type const* get_simple_content_type() const;
 	schema_type const* get_known_base_type() const;
-	schema_type const* get_base_type() const throw (xqp_exception);
+	schema_type const* get_base_type() const;
 
 	bool is_complex() const;
 	bool is_anonymous() const;
@@ -678,7 +691,7 @@ public:
 |   schema_type (a possible type for validating and annotating nodes). 
 |_______________________________________________________________________*/
 
-class atomic_type : public xs_anySimpleType, item_type
+class atomic_type : public xs_anySimpleType, public item_type
 {
 public:
 	atomic_type() {}
@@ -705,7 +718,9 @@ protected:
 	~xs_anyAtomicType();
 
 public:
-	enum typecode get_typecode() const;
+	static xs_anyAtomicType const& get_instance();
+
+	enum type::typecode get_typecode() const;
 	class item_type const* get_primitive_type() const;
 	schema_type::derivation_method get_derivation_method() const;
 
@@ -723,7 +738,7 @@ public:
 	atomic_type const* get_common_atomic_type() const;
 	atomic_type const* get_atomized_item_type() const;
 	schema_type const* get_known_base_type() const;
-	schema_type const* get_base_type() const throw (xqp_exception);
+	schema_type const* get_base_type() const;
 
 	std::string describe() const;
 
@@ -747,9 +762,8 @@ class list_type : public simple_type
 	 * Return the xs_anySimpleType of the items in this list_type.
 	 * This method assumes that the item type has been fully resolved.
 	 * @return - xs_anySimpleType of the items in this list-type.
-	 * @throw - xqp_exception, if the item type has not been fully resolved
 	*/
-	class item_type const* get_item_type();
+	xs_anySimpleType const* get_item_type() const;
 
 };
 
@@ -768,7 +782,7 @@ protected:
 	static builtin_list_type the_instance;
 
 public:
-	type::typecode get_type() const;
+	type::typecode get_typecode() const;
 	item_type const* get_primitive_type() const;
 	schema_type::derivation_method get_derivation_method() const;
 
@@ -786,7 +800,7 @@ public:
 	atomic_type const* get_common_atomic_type() const;
 	atomic_type const* get_atomized_item_type() const;
 	schema_type const* get_known_base_type() const;
-	schema_type const* get_base_type() const throw (xqp_exception);
+	schema_type const* get_base_type() const;
 
 	std::string describe() const;
 
