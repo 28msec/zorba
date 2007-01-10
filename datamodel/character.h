@@ -11,6 +11,8 @@
 #ifndef XQP_CHARACTER_H
 #define XQP_CHARACTER_H
 
+#include <string>
+
 namespace xqp {
 
 #define DEPENDS_ON_CURRENT_ITEM				1
