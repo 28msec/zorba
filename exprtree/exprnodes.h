@@ -48,7 +48,6 @@ public:
 public:
 	yy::location get_location() const { return loc; }
 	virtual std::ostream& put(std::ostream& s) const;
-	virtual rchandle<item_iterator> eval(context *const);
 
 };
 
@@ -59,10 +58,17 @@ std::ostream& operator<<(std::ostream& s, expr_node const& r)
 
 
 
+
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//  XQuery 1.0 productions                                             //
+//  [http://www.w3.org/TR/xquery/]                                     //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
+
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
 class expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= ExprSingle | Expr  COMMA  ExprSingle
 |_______________________________________________________________________*/
 {
@@ -87,7 +93,6 @@ public:
 // [32] [http://www.w3.org/TR/xquery/#prod-xquery-ExprSingle]
 class expr_single : public expr_node
 /*______________________________________________________________________
-|
 |	::= FLWORExpr | QuantifiedExpr | TypeswitchExpr | IfExpr | OrExpr
 |_______________________________________________________________________*/
 {
@@ -105,7 +110,6 @@ public:
 // [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
 class flwor_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= ForLetClauseList  RETURN  ExprSingle
 |			|	ForLetClauseList  WhereClause  RETURN  ExprSingle
 |			|	ForLetClauseList  OrderByClause  RETURN  ExprSingle
@@ -143,7 +147,6 @@ public:
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 class quantified_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= SOME_DOLLAR  QVarInDeclList | EVERY_DOLLAR  QVarInDeclList
 |_______________________________________________________________________*/
 {
@@ -175,7 +178,6 @@ public:
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 class typeswitch_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
 |			|	TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT 
 |					DOLLAR  VARNAME  RETURN  ExprSingle
@@ -217,7 +219,6 @@ public:
 // [45] [http://www.w3.org/TR/xquery/#prod-xquery-IfExpr]
 class if_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= <"if" "("> Expr ")" "then" ExprSingle "else" ExprSingle
 |_______________________________________________________________________*/
 {
@@ -249,7 +250,6 @@ public:
 // [46] [http://www.w3.org/TR/xquery/#prod-xquery-OrExpr]
 class or_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= AndExpr ("or" AndExpr)*
 |_______________________________________________________________________*/
 {
@@ -278,7 +278,6 @@ public:
 // [47] [http://www.w3.org/TR/xquery/#prod-xquery-AndExpr]
 class and_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= ComparisonExpr ("and" ComparisonExpr)*
 |_______________________________________________________________________*/
 {
@@ -305,12 +304,10 @@ public:
 
 
 // [48] [http://www.w3.org/TR/xquery/#prod-xquery-ComparisonExpr]
+class valcomp_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= FTContainsExpr ((ValueComp | GeneralComp | NodeComp) FTContainsExpr)?
 |_______________________________________________________________________*/
-
-class valcomp_expr : public expr_node
 {
 protected:
 	ValueComp::valcomp_t comp;
@@ -389,7 +386,6 @@ public:
 // [48a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContainsExpr]
 class ftcontains_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= RangeExpr ("ftcontains" FTSelection FTIgnoreOption?)?
 |_______________________________________________________________________*/
 {
@@ -423,7 +419,6 @@ public:
 // [49] [http://www.w3.org/TR/xquery/#prod-xquery-RangeExpr]
 class range_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= AdditiveExpr ("to" AdditiveExpr)?
 |_______________________________________________________________________*/
 {
@@ -452,7 +447,6 @@ public:
 // [50] [http://www.w3.org/TR/xquery/#prod-xquery-AdditiveExpr]
 class additive_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= MultiplicativeExpr (("+"|"-") MultiplicativeExpr)*
 |_______________________________________________________________________*/
 {
@@ -486,7 +480,6 @@ public:
 // [51] [http://www.w3.org/TR/xquery/#prod-xquery-MultiplicativeExpr]
 class mult_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= UnionExpr (("*"|"div"|"idiv"|"mod") UnionExpr)?
 |_______________________________________________________________________*/
 {
@@ -511,7 +504,6 @@ public:
 // [52] [http://www.w3.org/TR/xquery/#prod-xquery-UnionExpr]
 class union_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= IntersectExceptExpr (("union" | "|") IntersectExceptExpr)*
 |_______________________________________________________________________*/
 {
@@ -532,7 +524,6 @@ public:
 // [53] [http://www.w3.org/TR/xquery/#prod-xquery-IntersectExceptExpr]
 class intersect_except_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= InstanceofExpr (("intersect" | "except") InstanceofExpr)*
 |_______________________________________________________________________*/
 {
@@ -557,7 +548,6 @@ public:
 // [54] [http://www.w3.org/TR/xquery/#prod-xquery-InstanceofExpr]
 class instanceof_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= TreatExpr ("instance" "of" SequenceType)?
 |_______________________________________________________________________*/
 {
@@ -580,7 +570,6 @@ public:
 // [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
 class treat_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= CastableExpr ("treat" "as" SequenceType)?
 |_______________________________________________________________________*/
 {
@@ -603,7 +592,6 @@ public:
 // [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
 class castable_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= CastExpr ("castable" "as" SingleType)?
 |_______________________________________________________________________*/
 {
@@ -626,7 +614,6 @@ public:
 // [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
 class cast_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= UnaryExpr ("cast" "as" SingleType)?
 |_______________________________________________________________________*/
 {
@@ -650,7 +637,6 @@ public:
 // --------------
 class unary_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= ("+"|"-")* ValueExpr
 |_______________________________________________________________________*/
 {
@@ -675,7 +661,6 @@ public:
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 class validate_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= "validate" ValidationMode? "{" Expr "}"
 |_______________________________________________________________________*/
 {
@@ -698,11 +683,9 @@ public:
 
 
 
-// [64] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
-// ------------------
+// [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 class extension_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= PragmaList "{" Expr? "}"
 |_______________________________________________________________________*/
 {
@@ -731,7 +714,6 @@ public:
 // [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
 class relpath_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 |
 |	Formal Semantics [http://www.w3.org/TR/xquery-semantics]:
@@ -743,7 +725,7 @@ class relpath_expr : public expr_node
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<expr_node> > expr_hv;
+	std::vector<rchandle<step_expr> > step_hv;
 
 public:
 	relpath_expr(yy::location const&);
@@ -759,7 +741,6 @@ public:
 // [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
 class step_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= AxisStep  |  FilterExpr
 |_______________________________________________________________________*/
 {
@@ -777,7 +758,6 @@ public:
 // [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
 class axis_step_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= Axis NodeTest Predicate*
 |_______________________________________________________________________*/
 {
@@ -840,10 +820,9 @@ public:
 
 
 
-// [83] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
+// [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 class primary_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= Literal
 |			|	VarRef
 |			|	ParenthesizedExpr
@@ -866,18 +845,48 @@ public:
 
 
 
-// [84] Literal
-// ------------
-class Literal : public expr_node
+// [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
+class literal_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= NumericLiteral | StringLiteral
 |_______________________________________________________________________*/
 {
 public:
-	Literal(
+	enum literal_type_t {
+		lit_string,
+		lit_integer,
+		lit_decimal,
+		lit_double
+	};
+	typedef long long decimal;
+
+protected:
+	enum literal_type_t type;
+	union {
+		uint32_t string_ref;
+		int integer_val;
+		decimal decimal_val;
+		double double_val;
+	};
+
+public:
+	literal_expr(
+		uint32_t string_ref,
 		yy::location const&);
-	~Literal();
+
+	literal_expr(
+		int,
+		yy::location const&);
+
+	literal_expr(
+		decimal,
+		yy::location const&);
+
+	literal_expr(
+		double,
+		yy::location const&);
+
+	~literal_expr();
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -886,62 +895,9 @@ public:
 
 
 
-// [85] NumericLiteral
-// -------------------
-class NumericLiteral : public expr_node
+// [87] [http://www.w3.org/TR/xquery/#prod-xquery-VarRef]
+class varref_expr : public expr_node
 /*______________________________________________________________________
-|
-|	::= INTEGER_LITERAL
-|			|	DECIMAL_LITERAL
-|			|	DOUBLE_LITERAL
-|_______________________________________________________________________*/
-{
-public:
-	enum numeric_type_t {
-		num_integer,
-		num_decimal,
-		num_double
-	};
-	typedef float decimal;
-
-protected:
-	enum numeric_type_t type;
-	union {
-		int ival;
-		decimal decval;
-		double dval;
-	};
-
-public:
-	NumericLiteral(
-		yy::location const&,
-		int);
-	NumericLiteral(
-		yy::location const&,
-		decimal);
-	NumericLiteral(
-		yy::location const&,
-		double);
-	~NumericLiteral();
-
-public:
-	enum numeric_type_t get_type() const { return type; }
-	int get_int() const { return ival; }
-	decimal get_decimal() const { return decval; }
-	double get_double() const { return dval; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [86] VarRef
-// -----------
-class VarRef : public expr_node
-/*______________________________________________________________________
-|
 |	::= DOLLAR  VARNAME
 |_______________________________________________________________________*/
 {
@@ -949,10 +905,10 @@ protected:
 	std::string varname;
 
 public:
-	VarRef(
+	varref_expr(
 		yy::location const&,
 		std::string varname);
-	~VarRef();
+	~varref_expr();
 
 public:
 	std::string get_varname() const { return varname; }
@@ -964,59 +920,9 @@ public:
 
 
 
-// [87] ParenthesizedExpr
-// ----------------------
-class ParenthesizedExpr : public expr_node
+// [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
+class ordered_expr : public expr_node
 /*______________________________________________________________________
-|
-|	::= LPAR  RPAR
-|			|	LPAR  Expr  RPAR
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<expr_node> expr_h;
-
-public:
-	ParenthesizedExpr(
-		yy::location const&,
-		rchandle<expr_node>);
-	~ParenthesizedExpr();
-
-public:
-	rchandle<expr_node> get_expr() const { return expr_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};	
-
-
-
-// [88] ContextItemExpr
-// --------------------
-class ContextItemExpr : public expr_node
-/*______________________________________________________________________
-|
-|	::= DOT
-|_______________________________________________________________________*/
-{
-public:
-	ContextItemExpr(
-		yy::location const&);
-	~ContextItemExpr();
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};	
-
-
-
-// [89] OrderedExpr
-// ----------------
-class OrderedExpr : public expr_node
-/*______________________________________________________________________
-|
 |	::= ORDERED_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
@@ -1024,10 +930,10 @@ protected:
 	rchandle<expr_node> expr_h;
 
 public:
-	OrderedExpr(
+	ordered_expr(
 		yy::location const&,
 		rchandle<expr_node>);
-	~OrderedExpr();
+	~ordered_expr();
 
 public:
 	rchandle<expr_node> get_expr() const { return expr_h; }
@@ -1039,11 +945,9 @@ public:
 
 
 
-// [90] UnorderedExpr
-// ------------------
-class UnorderedExpr : public expr_node
+// [92] [http://www.w3.org/TR/xquery/#prod-xquery-UnorderedExpr]
+class unordered_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= UNORDERED_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
@@ -1051,10 +955,10 @@ protected:
 	rchandle<expr_node> expr_h;
 
 public:
-	UnorderedExpr(
+	unordered_expr(
 		yy::location const&,
 		rchandle<expr_node>);
-	~UnorderedExpr();
+	~unordered_expr();
 
 public:
 	rchandle<expr_node> get_expr() const { return expr_h; }
@@ -1066,11 +970,9 @@ public:
 
 
 
-// [91] FunctionCall
-// -----------------
-class FunctionCall : public expr_node
+// [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
+class funcall_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= QNAME  LPAR  ArgList  RPAR 	
 |																	gn:parensXQ
 |			 														gn:reserved-function-namesXQ 
@@ -1078,18 +980,24 @@ class FunctionCall : public expr_node
 {
 protected:
 	rchandle<QName> fname_h;
-	rchandle<ArgList> arg_list_h;
+	std::vector<rchandle<expr_node> > arg_hv;
 
 public:
-	FunctionCall(
+	funcall(
 		yy::location const&,
 		rchandle<QName>,
-		rchandle<ArgList>);
-	~FunctionCall();
+		std::vector<rchandle<expr_node> > arg_hv);
+	~funcall();
 
 public:
 	rchandle<QName> get_fname() const { return fname_h; }
-	rchandle<ArgList> get_arg_list() const { return arg_list_h; }
+	rchandle<expr_node> get_arg(uint32_t n) const { return arg_hv[n]; }
+	uint32_t arg_count() const { return arg_hv.size(); }
+
+	std::vector<rchandle<expr_node> >:: const_iterator arg_begin() const
+		{ return arg_hv.begin(); }
+	std::vector<rchandle<expr_node> >:: const_iterator arg_end() const
+		{ return arg_hv.end(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1098,551 +1006,9 @@ public:
 
 
 
-// [92] Constructor
-// ----------------
-class Constructor : public expr_node
+// [109] [http://www.w3.org/TR/xquery/#prod-xquery-ComputedConstructor]
+class cons_expr : public expr_node
 /*______________________________________________________________________
-|
-|	::= DirectConstructor |	ComputedConstructor
-|_______________________________________________________________________*/
-{
-public:
-	Constructor(
-		yy::location const&);
-	~Constructor();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [93] DirectConstructor
-// ----------------------
-class DirectConstructor : public expr_node
-/*______________________________________________________________________
-|
-|	::= DirElemConstructor
-|			|	DirCommentConstructor
-|			|	DirPIConstructor
-|_______________________________________________________________________*/
-{
-public:
-	DirectConstructor(
-		yy::location const&);
-	~DirectConstructor();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-
-};
-
- 
-
-// [94] DirElemConstructor
-// -----------------------
-class DirElemConstructor : public expr_node
-/*______________________________________________________________________
-|
-|	::= LT  QNAME  DirAttributeList SGT
-|					 ws:explicitXQ
-|			|	LT  QNAME  DirAttributeList GT  DirElemContentList  LTS  QNAME  GT
-|					 ws:explicitXQ,  gn:ltXQ
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> elem_name_h;
-	rchandle<DirAttributeList> attr_list_h;
-	rchandle<DirElemContentList> dir_content_list_h;
-
-public:
-	DirElemConstructor(
-		yy::location const&,
-		rchandle<QName> start_name_h,
-		rchandle<QName> end_name_h,
-		rchandle<DirAttributeList>,
-		rchandle<DirElemContentList>);
-	~DirElemConstructor();
-
-public:
-	rchandle<QName> get_elem_name() const { return elem_name_h; }
-	rchandle<DirAttributeList> get_attr_list() const { return attr_list_h; }
-	rchandle<DirElemContentList> get_dir_content_list() const { return dir_content_list_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [94a] DirElemContentList
-// ------------------------
-class DirElemContentList : public parsenode
-/*______________________________________________________________________
-|
-|	::= DirElemContent
-|			|	DirElemContentList  DirElemContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<expr_node> > dir_content_hv;
-
-public:
-	DirElemContentList(
-		yy::location const&);
-	~DirElemContentList();
-
-public:
-	void push_back(rchandle<expr_node> dir_content_h)
-		{ dir_content_hv.push_back(dir_content_h); }
-	rchandle<expr_node> operator[](int i) const
-		{ return dir_content_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [95] DirAttributeList
-// ---------------------
-class DirAttributeList : public parsenode
-/*______________________________________________________________________
-|
-|	::= DirAttr
-|			|	DirAttributeList  DirAttr
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<DirAttr> > dir_attr_hv;
-
-public:
-	DirAttributeList(
-		yy::location const&);
-	~DirAttributeList();
-
-public:
-	void push_back(rchandle<DirAttr> dir_attr_h)
-		{ dir_attr_hv.push_back(dir_attr_h); }
-	rchandle<DirAttr> operator[](int i)
-		{ return dir_attr_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [95a] DirAttr
-// -------------
-class DirAttr : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME  EQUALS  DirAttributeValue 	 ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> atname_h;
-	rchandle<DirAttributeValue> dir_atval_h;
-	
-public:
-	DirAttr(
-		yy::location const&,
-		rchandle<QName>,
-		rchandle<DirAttributeValue>);
-	~DirAttr();
-
-public:
-	rchandle<QName> get_atname() const { return atname_h; }
-	rchandle<DirAttributeValue> get_dir_atval() const { return dir_atval_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [96] DirAttributeValue
-// ----------------------
-class DirAttributeValue : public parsenode
-/*______________________________________________________________________
-|
-|	::= QUOTE  QuoteAttrContentList  QUOTE
-|			|	APOS  AposAttrContentList  APOS 	 ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QuoteAttrContentList> quot_attr_content_h;
-	rchandle<AposAttrContentList> apos_attr_content_h;
-
-public:
-	DirAttributeValue(
-		yy::location const&,
-		rchandle<QuoteAttrContentList>);
-	DirAttributeValue(
-		yy::location const&,
-		rchandle<AposAttrContentList>);
-	~DirAttributeValue();
-
-public:
-	rchandle<QuoteAttrContentList> get_quot_attr_content() const
-		{ return quot_attr_content_h; }
-	rchandle<AposAttrContentList> get_apos_attr_content() const
-		{ return apos_attr_content_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [96a] QuoteAttrContentList
-// --------------------------
-class QuoteAttrContentList : public parsenode
-/*______________________________________________________________________
-|
-|	::= ESCAPE_QUOTE
-|			|	QuoteAttrValueContent
-|			|	QuoteAttrContentList  ESCAPE_QUOTE
-|			|	QuoteAttrContentList  QuoteAttrValueContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
-	
-public:
-	QuoteAttrContentList(
-		yy::location const&);
-	~QuoteAttrContentList();
-
-public:
-	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
-		{ quot_atval_content_hv.push_back(quot_atval_content_h); }
-	rchandle<QuoteAttrValueContent> operator[](int i) const
-		{ return quot_atval_content_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [96b] AposAttrContentList
-// -------------------------
-class AposAttrContentList : public parsenode
-/*______________________________________________________________________
-|
-|	::= ESCAPE_APOS
-|			|	AposAttrValueContent
-|			|	AposAttrContentList  ESCAPE_APOS
-|			|	AposAttrContentList  AposAttrValueContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
-	
-public:
-	AposAttrContentList(
-		yy::location const&);
-	~AposAttrContentList();
-
-public:
-	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
-		{ apos_atval_content_hv.push_back(apos_atval_content_h); }
-	rchandle<AposAttrValueContent> operator[](int i) const
-		{ return apos_atval_content_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [97] QuotAttrValueContent
-// -------------------------
-class QuoteAttrValueContent : public parsenode
-/*______________________________________________________________________
-|
-|	::= QUOTE_ATTR_CONTENT
-|			|	CommonContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::string quot_atcontent;
-	rchandle<CommonContent> common_content_h;
-
-public:
-	QuoteAttrValueContent(
-		yy::location const&,
-		std::string quot_atcontent);
-	QuoteAttrValueContent(
-		yy::location const&,
-		rchandle<CommonContent>);
-	~QuoteAttrValueContent();
-
-public:
-	std::string get_quot_atcontent() const { return quot_atcontent; }
-	rchandle<CommonContent> get_common_content() const { return common_content_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [98] AposAttrValueContent
-// -------------------------
-class AposAttrValueContent : public parsenode
-/*______________________________________________________________________
-|
-|	::= APOS_ATTR_CONTENT
-|			|	CommonContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::string apos_atcontent;
-	rchandle<CommonContent> common_content_h;
-
-public:
-	AposAttrValueContent(
-		yy::location const&,
-		std::string apos_atcontent);
-	AposAttrValueContent(
-		yy::location const&,
-		rchandle<CommonContent>);
-	~AposAttrValueContent();
-
-public:
-	std::string get_apos_atcontent() const { return apos_atcontent; }
-	rchandle<CommonContent> get_common_content() const { return common_content_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [99] DirElemContent
-// -------------------
-class DirElemContent : public expr_node
-/*______________________________________________________________________
-|
-|	::= DirectConstructor
-|			|	ELEMENT_CONTENT
-|			|	CDataSection
-|			|	CommonContent
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<DirectConstructor> direct_cons_h;
-	std::string elem_content;
-	rchandle<CDataSection> cdata_h;
-	rchandle<CommonContent> common_content_h;
-
-public:
-	DirElemContent(
-		yy::location const&,
-		rchandle<DirectConstructor>);
-	DirElemContent(
-		yy::location const&,
-		std::string elem_content);
-	DirElemContent(
-		yy::location const&,
-		rchandle<CDataSection>);
-	DirElemContent(
-		yy::location const&,
-		rchandle<CommonContent>); 
-	~DirElemContent();
-
-public:
-	rchandle<DirectConstructor> get_direct_cons() const
-		{ return direct_cons_h; }
-	std::string get_elem_content() const
-		{ return elem_content; }
-	rchandle<CDataSection> get_cdata() const
-		{ return cdata_h; }
-	rchandle<CommonContent> get_common_content() const
-		{ return common_content_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [100] CommonContent
-// -------------------
-class CommonContent : public expr_node
-/*______________________________________________________________________
-|
-|	::= ENTITY_REF
-|			|	CHAR_REF_LITERAL
-|			|	DOUBLE_LBRACE
-|			|	DOUBLE_RBRACE
-|			|	EnclosedExpr
-|_______________________________________________________________________*/
-{
-public:
-	enum common_content_t {
-		entity,
-		charref,
-		escape_lbrace,
-		escape_rbrace,
-		expr
-	};
-
-protected:
-	enum common_content_t type;
-	std::string ref;
-	rchandle<EnclosedExpr> expr_h;
-
-public:
-	CommonContent(
-		yy::location const&,
-		enum common_content_t,
-		std::string ref);
-	CommonContent(
-		yy::location const&,
-		rchandle<EnclosedExpr> expr_h);
-	CommonContent(
-		yy::location const&,
-		enum common_content_t);
-	~CommonContent();
-
-public:
-	enum common_content_t get_type() const { return type; }
-	std::string get_ref() const { return ref; }
-	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [101] DirCommentConstructor
-// ---------------------------
-class DirCommentConstructor : public expr_node
-/*______________________________________________________________________
-|
-|	::= COMMENT_BEGIN  EXPR_COMMENT_LITERAL  COMMENT_END 	 ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	std::string comment;
-
-public:
-	DirCommentConstructor(
-		yy::location const&,
-		std::string const& comment);
-	~DirCommentConstructor();
-
-public:
-	std::string get_comment() const { return comment; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [102] DirCommentContents
-// ------------------------
-/* lexical rule */
-
-
-
-// [103] DirPIConstructor
-// ----------------------
-class DirPIConstructor : public expr_node
-/*______________________________________________________________________
-|
-|	::= PI_BEGIN  PI_TARGET  PI_END    ws:explicitXQ
-|			|	PI_BEGIN  PI_TARGET  CHAR_LITERAL  PI_END	   ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	std::string pi_target;
-	std::string pi_content;
-
-public:
-	DirPIConstructor(
-		yy::location const&,
-		std::string const& pi_target);
-	DirPIConstructor(
-		yy::location const&,
-		std::string const& pi_target,
-		std::string const& pi_content);
-	~DirPIConstructor();
-
-public:
-	std::string get_pi_target() const { return pi_target; }
-	std::string get_pi_content() const { return pi_content; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [104] DirPIContents
-// -------------------
-/* lexical rule */
-
-
-
-// [105] CDataSection
-// ------------------
-class CDataSection : public expr_node
-/*______________________________________________________________________
-|
-|	::= CDATA_BEGIN  CHAR_LITERAL  CDATA_END 	 ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	std::string cdata_content;
-
-public:
-	CDataSection(
-		yy::location const&,
-		std::string cdata_content);
-	~CDataSection();
-
-public:
-	std::string get_cdata_content() const { return cdata_content; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [106] CDataSectionContents
-// --------------------------
-/* lexical rule */
-
-
-
-// [107] ComputedConstructor
-// -------------------------
-class ComputedConstructor : public expr_node
-/*______________________________________________________________________
-|
 |	::= CompDocConstructor
 |			|	CompElemConstructor
 |			|	CompAttrConstructor
@@ -1663,11 +1029,9 @@ public:
 
 
 
-// [108] CompDocConstructor
-// ------------------------
-class CompDocConstructor : public expr_node
+// [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
+class doc_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= DOCUMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
@@ -1675,7 +1039,7 @@ protected:
 	rchandle<expr_node> expr_h;
 
 public:
-	CompDocConstructor(
+	doc_expr(
 		yy::location const&,
 		rchandle<expr_node>);
 	~CompDocConstructor();
@@ -1690,79 +1054,59 @@ public:
 
 
 
-// [109] CompElemConstructor
-// -------------------------
-class CompElemConstructor : public expr_node
+// [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
+class elem_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= ELEMENT_QNAME_LBRACE  RBRACE
 |			|	ELEMENT_QNAME_LBRACE  ContentExpr  RBRACE
 |			|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 |			|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  ContentExpr  RBRACE
 |_______________________________________________________________________*/
 {
+public:
+	typedef std::pair<std::string,std::string> nsbinding;
+#define ncname	FIRST
+#define nsuri		SECOND
+
 protected:
 	rchandle<QName> qname_h;
-	rchandle<expr_node> qname_expr_h;
+	rchandle<expr_node> name_expr_h;
 	rchandle<expr_node> content_expr_h;
+	std::vector<rchandle<nsbinding> > nsb_hv;
 
 public:
-	CompElemConstructor(
+	elem_expr(
 		yy::location const&,
 		rchandle<QName>,
 		rchandle<expr_node>);
-	CompElemConstructor(
+	elem_expr(
 		yy::location const&,
 		rchandle<expr_node>,
 		rchandle<expr_node>);
-	~CompElemConstructor();
+	~elem_expr();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
-	rchandle<expr_node> get_qname_expr() const { return qname_expr_h; }
+	rchandle<QName> get_name() const { return name_h; }
+	rchandle<expr_node> get_name_expr() const { return name_expr_h; }
 	rchandle<expr_node> get_content_expr() const { return content_expr_h; }
 
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [110] ContentExpr
-// -----------------
-//class ContentExpr : public expr_node
-/*______________________________________________________________________
-|
-|	::= Expr
-|_______________________________________________________________________*/
-/*
-{
-protected:
-	rchandle<expr_node> expr_h;
-
-public:
-	ContentExpr(
-		yy::location const&,
-		rchandle<expr_node>);
-	~ContentExpr();
-
-public:
-	rchandle<expr_node> get_expr() const { return expr_h; }
+	void add(rchandle<nsbinding> nsb_h) { nsb_hv.push_back(nsb_h); }
+	uint32_t nsbinding_count() const { return ns_hv.size(); }
+	std::vector<rchandle<nsbinding> >::const_iterator ns_begin() const
+		{ return ns_hv.begin(); }
+	std::vector<rchandle<nsbinding> >::const_iterator ns_end() const
+		{ return ns_hv.end(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
 
 };
-*/
 
 
 
-// [111] CompAttrConstructor
-// -------------------------
-class CompAttrConstructor : public expr_node
+// [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
+class attr_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= ATTRIBUTE  QNAME  LBRACE  RBRACE
 |			|	ATTRIBUTE  QNAME  LBRACE  Expr  RBRACE
 |			|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -1770,24 +1114,24 @@ class CompAttrConstructor : public expr_node
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> qname_h;
-	rchandle<expr_node> qname_expr_h;
+	rchandle<QName> name_h;
+	rchandle<expr_node> name_expr_h;
 	rchandle<expr_node> val_expr_h;
 
 public:
-	CompAttrConstructor(
+	attr_expr(
 		yy::location const&,
 		rchandle<QName>,
 		rchandle<expr_node>);
-	CompAttrConstructor(
+	attr_expr(
 		yy::location const&,
 		rchandle<expr_node>,
 		rchandle<expr_node>);
-	~CompAttrConstructor();
+	~attr_expr();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
-	rchandle<expr_node> get_qname_expr() const { return qname_expr_h; }
+	rchandle<QName> get_name() const { return qname_h; }
+	rchandle<expr_node> get_name_expr() const { return qname_expr_h; }
 	rchandle<expr_node> get_val_expr() const { return val_expr_h; }
 
 public:
@@ -1797,11 +1141,9 @@ public:
 
 
 
-// [112] CompTextConstructor
-// -------------------------
-class CompTextConstructor : public expr_node
+// [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
+class text_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= TEXT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
@@ -1809,10 +1151,10 @@ protected:
 	rchandle<expr_node> text_expr_h;
 
 public:
-	CompTextConstructor(
+	text_expr(
 		yy::location const&,
 		rchandle<expr_node> text_expr_h);
-	~CompTextConstructor();
+	~text_expr();
 
 public:
 	rchandle<expr_node> get_text_expr() const { return text_expr_h; }
@@ -1824,11 +1166,9 @@ public:
 
 
 
-// [113] CompCommentConstructor
-// ----------------------------
-class CompCommentConstructor : public expr_node
+// [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
+class comment_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= COMMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
@@ -1836,10 +1176,10 @@ protected:
 	rchandle<expr_node> comment_expr_h;
 
 public:
-	CompCommentConstructor(
+	comment_expr(
 		yy::location const&,
 		rchandle<expr_node>);
-	~CompCommentConstructor();
+	~comment_expr();
 
 public:
 	rchandle<expr_node> get_comment_expr() const { return comment_expr_h; }
@@ -1851,11 +1191,9 @@ public:
 
 
 
-// [114] CompPIConstructor
-// -----------------------
-class CompPIConstructor : public expr_node
+// [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
+class pi_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
 |			|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
 |			|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
@@ -1868,15 +1206,15 @@ protected:
 	rchandle<expr_node> content_expr_h;
 
 public:
-	CompPIConstructor(
+	pi_expr(
 		yy::location const&,
 		std::string target,
 		rchandle<expr_node>);
-	CompPIConstructor(
+	pi_expr(
 		yy::location const&,
 		rchandle<expr_node>,
 		rchandle<expr_node>);
-	~CompPIConstructor();
+	~pi_expr();
 
 public:
 	std::string get_target() const { return target; }
@@ -1889,224 +1227,18 @@ public:
 };
 
 
-// [115] SingleType
-// ----------------
-class SingleType : public parsenode
-/*______________________________________________________________________
-|
-|	::= AtomicType | AtomicType  HOOK
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<AtomicType> atomic_type_h;
-	bool hook_b;
-
-public:
-	SingleType(
-		yy::location const&,
-		rchandle<AtomicType>,
-		bool hook_b);
-	~SingleType();
-
-public:
-	rchandle<AtomicType> get_atomic_type() const { return atomic_type_h; }
-	bool get_hook_bit() const { return hook_b; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
 
 
-// [116] TypeDeclaration
-// ---------------------
-class TypeDeclaration : public parsenode
-/*______________________________________________________________________
-|
-|	::= AS  SequenceType
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<SequenceType> seqtype_h;
-
-public:
-	TypeDeclaration(
-		yy::location const&,
-		rchandle<SequenceType>);
-	~TypeDeclaration();
-
-public:
-	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-// [117] SequenceType
-// ------------------
-class SequenceType : public parsenode
-/*______________________________________________________________________
-|
-|	::= ItemType
-|			|	ItemType OccurrenceIndicator
-|			|	VOID_TEST
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<ItemType> itemtype_h;
-	rchandle<OccurrenceIndicator> occur_h;
-
-public:
-	SequenceType(
-		yy::location const&,
-		rchandle<ItemType>,
-		rchandle<OccurrenceIndicator>);
-	~SequenceType();
-
-public:
-	rchandle<ItemType> get_itemtype() const { return itemtype_h; }
-	rchandle<OccurrenceIndicator> get_occur() const { return occur_h; }
-	bool get_void_bit() const { return itemtype_h==NULL; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-// [118] OccurrenceIndicator
-// -------------------------
-class OccurrenceIndicator : public parsenode
-/*______________________________________________________________________
-|
-|	::= HOOK | STAR | PLUS   gn:occurrence-indicatorsXQ
-|_______________________________________________________________________*/
-{
-public:
-	enum occurrence_t {
-		hook,
-		star,
-		plus
-	};
-
-protected:
-	enum occurrence_t type;
-
-public:
-	OccurrenceIndicator(
-		yy::location const&,
-		enum occurrence_t);
-	~OccurrenceIndicator();
-
-public:
-	enum occurrence_t get_type() const { return type; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-// [119] ItemType
-// --------------
-class ItemType : public parsenode
-/*______________________________________________________________________
-|
-|	::= AtomicType | KindTest | ITEM_TEST
-|_______________________________________________________________________*/
-{
-protected:
-	bool item_test_b;
-
-public:
-	ItemType(
-		yy::location const&,
-		bool item_test_b);
-	ItemType(
-		yy::location const&);
-	~ItemType();
-
-public:
-	bool get_item_test_bit() const { return item_test_b; }
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-
-};
-
-
-// [120] AtomicType
-// ----------------
-class AtomicType : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> qname_h;
-
-public:
-	AtomicType(
-		yy::location const&,
-		rchandle<QName>);
-	~AtomicType();
-
-public:
-	rchandle<QName> get_qname() const { return qname_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [142] StringLiteral
-// -------------------
-class StringLiteral : public expr_node
-/*______________________________________________________________________
-|
-|	::= STRING_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	std::string strval;
-
-public:
-	StringLiteral(
-		yy::location const&,
-		std::string const&);
-	~StringLiteral();
-
-public:
-	std::string get_strval() const { return strval; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-
-
-
-
-/*_______________________________________________________________________
- *                                                                       *
- *  Update productions                                                   *
- *  [http://www.w3.org/TR/xqupdate/]                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//	Update productions                                                 //
+//  [http://www.w3.org/TR/xqupdate/]                                   //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
 
 // [242] [http://www.w3.org/TR/xqupdate/#prod-xquery-InsertExpr]
 class insert_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= DO_INSERT  ExprSingle  INTO  ExprSingle
 |			|	DO_INSERT  ExprSingle  AS  FIRST_INTO  ExprSingle
 |			|	DO_INSERT  ExprSingle  AS  LAST_INTO  ExprSingle
@@ -2115,19 +1247,19 @@ class insert_expr : public expr_node
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<expr_node> source_expr_h;
+	rchandle<expr_node> target_expr_h;
 
 public:
 	insert_expr(
 		yy::location const&,
-		rchandle<ExprSingle>,
-		rchandle<ExprSingle>);
+		rchandle<expr_node>,
+		rchandle<expr_node>);
 	~insert_expr();
 
 public:
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<expr_node> get_source_expr() const { return source_expr_h; }
+	rchandle<expr_node> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -2139,21 +1271,20 @@ public:
 // [243] [http://www.w3.org/TR/xqupdate/#prod-xquery-DeleteExpr]
 class delete_expr : public expr_node
 /*______________________________________________________________________
-|
-|	::= DO_DELETE  ExprSingle
+|	::= DO_DELETE  expr_node
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<expr_node> target_expr_h;
 
 public:
 	delete_expr(
 		yy::location const&,
-		rchandle<ExprSingle>);
+		rchandle<expr_node>);
 	~delete_expr();
 
 public:
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<expr_node> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -2165,25 +1296,24 @@ public:
 // [244] [http://www.w3.org/TR/xqupdate/#prod-xquery-ReplaceExpr]
 class replace_expr : public expr_node
 /*______________________________________________________________________
-|
-|	::= DO_REPLACE  ExprSingle  WITH  ExprSingle
-|			| DO_REPLACE  VALUE_OF  ExprSingle  WITH  ExprSingle
+|	::= DO_REPLACE  expr_node  WITH  expr_node
+|			| DO_REPLACE  VALUE_OF  expr_node  WITH  expr_node
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<expr_node> source_expr_h;
+	rchandle<expr_node> target_expr_h;
 
 public:
 	replace_expr(
 		yy::location const&,
-		rchandle<ExprSingle> source_expr_h,
-		rchandle<ExprSingle> target_expr_h);
+		rchandle<expr_node> source_expr_h,
+		rchandle<expr_node> target_expr_h);
 	~replace_expr();
 
 public:
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<expr_node> get_source_expr() const { return source_expr_h; }
+	rchandle<expr_node> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -2195,24 +1325,23 @@ public:
 // [245] [http://www.w3.org/TR/xqupdate/#prod-xquery-RenameExpr]
 class rename_expr : public expr_node
 /*______________________________________________________________________
-|
-|	::= DO_RENAME  ExprSingle  AS  ExprSingle
+|	::= DO_RENAME  expr_node  AS  expr_node
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<expr_node> source_expr_h;
+	rchandle<expr_node> target_expr_h;
 
 public:
 	rename_expr(
 		yy::location const&,
-		rchandle<ExprSingle> source_expr_h,
-		rchandle<ExprSingle> target_expr_h);
+		rchandle<expr_node> source_expr_h,
+		rchandle<expr_node> target_expr_h);
 	~rename_expr();
 
 public:
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<expr_node> get_source_expr() const { return source_expr_h; }
+	rchandle<expr_node> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -2224,28 +1353,27 @@ public:
 // [249] [http://www.w3.org/TR/xqupdate/#prod-xquery-TransformExpr]
 class transform_expr : public expr_node
 /*______________________________________________________________________
-|
 |	::= TRANSFORM_COPY_DOLLAR  VarNameList
-|				MODIFY  ExprSingle  RETURN  ExprSingle
+|				MODIFY  expr_node  RETURN  expr_node
 |_______________________________________________________________________*/
 {
 protected:
 	rchandle<VarNameList> varname_list_h;
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<expr_node> source_expr_h;
+	rchandle<expr_node> target_expr_h;
 
 public:
 	transform_expr(
 		yy::location const&,
 		rchandle<VarNameList>,
-		rchandle<ExprSingle> source_expr_h,
-		rchandle<ExprSingle> target_expr_h);
+		rchandle<expr_node> source_expr_h,
+		rchandle<expr_node> target_expr_h);
 	~transform_expr();
 
 public:
 	rchandle<VarNameList> get_varname_list() const { return varname_list_h; }
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<expr_node> get_source_expr() const { return source_expr_h; }
+	rchandle<expr_node> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -2256,21 +1384,16 @@ public:
 
 
 
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//  Full-text productions                                              //
+//  [http://www.w3.org/TR/xquery-full-text/]                           //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
 
-
-/*_______________________________________________________________________
- *                                                                       *
- *  Full-text productions                                                *
- *  [http://www.w3.org/TR/xqupdate/]                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
-
-//[344] FTSelection
-//-----------------
-class FTSelection : public parsenode
+//[344] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTSelection]
+class ftselection : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTOr
 |			|	FTOr  FTMatchOptionProximityList
 |			|	FTOr  WEIGHT  RangeExpr
@@ -2305,11 +1428,9 @@ public:
 
 
 
-//[344a] FTMatchOptionProximityList
-//---------------------------------
-class FTMatchOptionProximityList : public parsenode
+//[344a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMatchOptionProximityList]
+class FTMatchOptionProximityList : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTMatchOptionProximity
 |			| FTMatchOptionProximityList  FTMatchOptionProximity
 |_______________________________________________________________________*/
@@ -2335,11 +1456,9 @@ public:
 
 
 
-//[344b] FTMatchOptionProximity
-//-----------------------------
-class FTMatchOptionProximity : public parsenode
+//[344b] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMatchOptionProximity]
+class FTMatchOptionProximity : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTMatchOption | FTProximity
 |_______________________________________________________________________*/
 {
@@ -2365,11 +1484,9 @@ public:
 
 
 
-//[345]	FTOr
-//----------
-class FTOr : public parsenode
+//[345] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTOr]
+class FTOr : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTAnd
 |			|	FTOr  FTOR  FTAnd
 |_______________________________________________________________________*/
@@ -2396,11 +1513,9 @@ public:
 
 
 
-//[346]	FTAnd
-//-----------
-class FTAnd : public parsenode
+//[346] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTAnd]
+class FTAnd : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTMildnot
 |			|	FTAnd  FTAND  FTMildnot
 |_______________________________________________________________________*/
@@ -2427,11 +1542,9 @@ public:
 
 
 
-//[347]	FTMildnot
-//---------------
-class FTMildnot : public parsenode
+//[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildnot]
+class FTMildnot : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTUnaryNot
 |			|	FTMildnot  FTNOT_IN  FTUnaryNot
 |_______________________________________________________________________*/
@@ -2458,11 +1571,9 @@ public:
 
 
 
-//[348]	FTUnaryNot
-//----------------
-class FTUnaryNot : public parsenode
+//[348] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTUnaryNot]
+class FTUnaryNot : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTWordsSelection
 |			|	FTNOT  FTWordsSelection
 |_______________________________________________________________________*/
@@ -2491,11 +1602,9 @@ public:
 
 
 
-//[349]	FTWordsSelection
-//----------------------
-class FTWordsSelection : public parsenode
+//[349] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWordsSelection]
+class FTWordsSelection : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTWords
 |			|	FTWords FTTimes
 |			| LPAR  FTSelection  RPAR
@@ -2526,11 +1635,9 @@ public:
 
 
 
-//[350]	FTWords
-//-------------
-class FTWords : public parsenode
+//[350] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWords]
+class FTWords : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTWordsValue 
 |			|	FTWordsValue  FTAnyallOption
 |_______________________________________________________________________*/
@@ -2559,11 +1666,9 @@ public:
 
 
 
-//[351]	FTWordsValue
-//------------------
-class FTWordsValue : public parsenode
+//[351] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWordsValue]
+class FTWordsValue : public expr_node
 /*______________________________________________________________________
-|
 |	::=	Literal
 |			| LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
@@ -2590,11 +1695,9 @@ public:
 
 
 
-//[352]	FTProximity
-//-----------------
-class FTProximity : public parsenode
+//[352] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTProximity]
+class FTProximity : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTOrderedIndicator
 |			| FTWindow
 |			| FTDistance
@@ -2614,11 +1717,9 @@ public:
 
 
 
-//[353]	FTOrderedIndicator
-//------------------------
+//[353] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTOrderedIndicator]
 class FTOrderedIndicator : public FTProximity
 /*______________________________________________________________________
-|
 |	::=	ORDERED
 |_______________________________________________________________________*/
 {
@@ -2634,11 +1735,9 @@ public:
 
 
 
-//[354] FTMatchOption 	
-//-------------------
-class FTMatchOption : public parsenode
+//[354] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMatchOption] 	
+class FTMatchOption : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTCaseOption
 |			| FTDiacriticsOption
 |			| FTStemOption
@@ -2660,11 +1759,9 @@ public:
 
 
 
-//[355] FTCaseOption
-//------------------
+//[355] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTCaseOption]
 class FTCaseOption : public FTMatchOption
 /*______________________________________________________________________
-|
 |	::=	LOWERCASE
 |			| UPPERCASE
 |			| CASE_SENSITIVE
@@ -2698,11 +1795,9 @@ public:
 
 
 
-//[356] FTDiacriticsOption
-//------------------------
+//[356] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTDiacriticsOption]
 class FTDiacriticsOption : public FTMatchOption
 /*______________________________________________________________________
-|
 |	::=	WITH_DIACRITICS
 |			| WITHOUT_DIACRITICS
 |			| DIACRITICS_SENSITIVE
@@ -2736,11 +1831,9 @@ public:
 
 
 
-//[357] FTStemOption
-//------------------
+//[357] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTStemOption]
 class FTStemOption : public FTMatchOption
 /*______________________________________________________________________
-|
 |	::=	WITH_STEMMING
 |			| WITHOUT_STEMMING
 |_______________________________________________________________________*/
@@ -2770,11 +1863,9 @@ public:
 
 
 
-//[358] FTThesaurusOption
-//-----------------------
+//[358] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTThesaurusOption]
 class FTThesaurusOption : public FTMatchOption
 /*______________________________________________________________________
-|
 |	::=	WITH_THESAURUS  FTThesaurusID
 |			|	WITH_THESAURUS  DEFAULT
 |			| WITH_THESAURUS  LPAR  FTThesaurusList  RPAR
@@ -2814,11 +1905,9 @@ public:
 
 
 
-//[358a] FTThesaurusList
-//----------------------
-class FTThesaurusList : public parsenode
+//[358a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTThesaurusList]
+class FTThesaurusList : public expr_node
 /*______________________________________________________________________
-|
 |	::=	FTThesaurusID
 |			| FTThesaurusList  COMMA  FTThesaurusID
 |_______________________________________________________________________*/
@@ -2844,11 +1933,9 @@ public:
 
 
 
-//[359] FTThesaurusID
-//-------------------
-class FTThesaurusID : public parsenode
+//[359] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTThesaurusID]
+class FTThesaurusID : public expr_node
 /*______________________________________________________________________
-|
 |	::=	AT  STRING_LITERAL
 |			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
 |			|	AT  STRING_LITERAL  FTRange  LEVELS
@@ -2880,11 +1967,10 @@ public:
 
 
 
-//[360] FTStopwordOption
+//[360] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTStopwordOption]
 //----------------------
 class FTStopwordOption : public FTMatchOption
 /*______________________________________________________________________
-|
 |	::=	WITH_STOP_WORDS  FTRefOrList
 |			|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
 |			| WITH_DEFAULT_STOP_WORDS 
@@ -2927,9 +2013,9 @@ public:
 
 
 
-//[360a] FTInclExclStringLiteralList
+//[360a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTInclExclStringLiteralList]
 //----------------------------------
-class FTInclExclStringLiteralList : public parsenode
+class FTInclExclStringLiteralList : public expr_node
 /*______________________________________________________________________
 |
 |	::=	FTInclExclStringLiteral
@@ -2957,11 +2043,9 @@ public:
 
 
 
-//[361] FTRefOrList
-//-----------------
-class FTRefOrList : public parsenode
+//[361] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTRefOrList]
+class FTRefOrList : public expr_node
 /*______________________________________________________________________
-|
 |	::=	AT  STRING_LITERAL
 |			| LPAR  FTStringLiteralList  RPAR 
 |_______________________________________________________________________*/
@@ -2989,11 +2073,9 @@ public:
 
 
 
-//[361a] FTStringLiteralList
-//--------------------------
-class FTStringLiteralList : public parsenode
+//[361a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTStringLiteralList]
+class FTStringLiteralList : public expr_node
 /*______________________________________________________________________
-|
 |	::=	STRING_LITERAL
 |			|	FTStringLiteralList  STRING_LITERAL
 |_______________________________________________________________________*/
@@ -3017,11 +2099,9 @@ public:
 
 
 
-//[362] FTInclExclStringLiteral
-//-----------------------------
-class FTInclExclStringLiteral : public parsenode
+//[362] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTInclExclStringLiteral]
+class FTInclExclStringLiteral : public expr_node
 /*______________________________________________________________________
-|
 |	::=	UNION  FTRefOrList
 |			|	EXCEPT  FTRefOrList
 |_______________________________________________________________________*/
@@ -3056,11 +2136,9 @@ public:
 
 
 
-//[363] FTLanguageOption
-//----------------------
+//[363] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTLanguageOption]
 class FTLanguageOption : public FTMatchOption
 /*______________________________________________________________________
-|
 |	::=	LANGUAGE  STRING_LITERAL
 |_______________________________________________________________________*/
 {
@@ -3083,13 +2161,10 @@ public:
 
 
 
-//[364] FTWildcardOption
-//----------------------
+//[364] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWildcardOption]
 class FTWildcardOption : public FTMatchOption
 /*______________________________________________________________________
-|
-|	::=	WITH_WILDCARDS
-|			| WITHOUT_WILDCARDS
+|	::=	WITH_WILDCARDS | WITHOUT_WILDCARDS
 |_______________________________________________________________________*/
 {
 protected:
@@ -3111,14 +2186,10 @@ public:
 
 
 
-//[365]	FTContent
-//---------------
+//[365] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContent]
 class FTContent : public FTProximity
 /*______________________________________________________________________
-|
-|	::=	AT_START
-|			| AT_END
-|			| ENTIRE_CONTENT
+|	::=	AT_START | AT_END | ENTIRE_CONTENT
 |_______________________________________________________________________*/
 {
 public:
@@ -3147,16 +2218,10 @@ public:
 
 
 
-//[366]	FTAnyallOption
-//--------------------
-class FTAnyallOption : public parsenode
+//[366] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTAnyallOption]
+class FTAnyallOption : public expr_node
 /*______________________________________________________________________
-|
-|	::=	ANY
-|			|	ANY_WORD
-|			| ALL
-|			| ALL_WORDS
-|			| PHRASE
+|	::=	ANY | ANY_WORD | ALL | ALL_WORDS | PHRASE
 |_______________________________________________________________________*/
 {
 public:
@@ -3187,11 +2252,9 @@ public:
 
 
 
-//[367]	FTRange
-//-------------
-class FTRange : public parsenode
+//[367] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTRange]
+class FTRange : public expr_node
 /*______________________________________________________________________
-|
 |	::=	EXACTLY  UnionExpr
 |			| AT_LEAST  UnionExpr
 |			| AT_MOST  UnionExpr
@@ -3228,11 +2291,9 @@ public:
 
 
 
-//[368]	FTDistance
-//----------------
+//[368] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTDistance]
 class FTDistance : public FTProximity
 /*______________________________________________________________________
-|
 |	::=	DISTANCE  FTRange  FTUnit
 |_______________________________________________________________________*/
 {
@@ -3258,11 +2319,9 @@ public:
 
 
 
-//[369]	FTWindow
-//--------------
+//[369] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWindow]
 class FTWindow : public FTProximity
 /*______________________________________________________________________
-|
 |	::=	WINDOW  UnionExpr  FTUnit
 |_______________________________________________________________________*/
 {
