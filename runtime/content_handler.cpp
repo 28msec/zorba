@@ -17,11 +17,9 @@ void msg(request_rec* r,char* buf,int max)
 {
   ostringstream oss;
   oss <<  "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 3.2 Final//EN\">"
-          "<HTML><HEAD><TITLE>mod_xqp Content-Handler Output</TITLE></HEAD><BODY>\n"
-          "<H1><SAMP>mod_xqp</SAMP> Module Content-Handler</H1>\n"
-          "<H2>Mark IV</H2>\n"
-      <<  "path: \"" << r->path_info << "\"<br/>\n"
-      <<  "args: \"" << r->args << "\"<br/>\n";
+          "<HTML><HEAD><TITLE>mod_xqp content_handler</TITLE></HEAD><BODY>\n"
+          "<H1><SAMP>mod_xqp content_handler</SAMP></H1>\n"
+          "<H2>Parse mode</H2>\n";
       
   // parse the query args
   hashmap<string> param_map;

@@ -1,3 +1,4 @@
+BUILD=Build
 
 echo -e "\nShutdown Apache server"
 /usr/sbin/apachectl2 stop
@@ -9,18 +10,18 @@ rm -f /lib/apache2/libtest.so /lib/apache2/mod_xqp.{so,la,dll.a}
 echo -e "\nCompile content_handler.cpp, create libtest"
 g++ -Wall -I/usr/include/apache2 -c content_handler.cpp
 g++ -shared -Wl,-soname,libtest.so -o libtest.so \
-  ../types/qname.do \
-  ../util/xqp_exception.o \
-  ../util/tokenbuf.do \
-  ../util/file.do \
-  ../util/mmfile.do \
-  ../util/fxcharheap.do \
-  ../util/URI.do \
-  ../parser/parsenodes.do \
-  ../parser/xquery_scanner.do \
-  ../parser/xquery_parser.do \
-  ../parser/symbol_table.do \
-  ../parser/xquery_driver.do \
+  ../datamodel/${BUILD}/qname.do \
+  ../util/${BUILD}/xqp_exception.o \
+  ../util/${BUILD}/tokenbuf.do \
+  ../util/${BUILD}/file.do \
+  ../util/${BUILD}/mmfile.do \
+  ../util/${BUILD}/fxcharheap.do \
+  ../util/${BUILD}/URI.do \
+  ../parser/${BUILD}/parsenodes.do \
+  ../parser/${BUILD}/xquery_scanner.do \
+  ../parser/${BUILD}/xquery_parser.do \
+  ../parser/${BUILD}/symbol_table.do \
+  ../parser/${BUILD}/xquery_driver.do \
   content_handler.o
   
 cp -f libtest.so /lib/apache2
