@@ -693,9 +693,15 @@ public:
 
 class atomic_type : public xs_anySimpleType, public item_type
 {
+private:
+	static atomic_type the_instance;
+
 public:
 	atomic_type() {}
 	virtual ~atomic_type() {}
+
+public:
+	static atomic_type const& get_instance() { return the_instance; }
 
 };
 

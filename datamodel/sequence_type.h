@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* *- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id: sequence_type.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
@@ -30,23 +30,23 @@ protected:
 
 public:
 	// static initialization
-	static initialized;				// default initialized to 0
+	static bool initialized;				// default initialized to 0
 	static void initializer();
 
 public:
-  static SequenceType ANY_SEQUENCE;			// any sequence of items
-  static SequenceType SINGLE_ITEM;			// exactly one item, of any kind
-  static SequenceType SINGLE_ATOMIC;		// exactly one atomic value
-  static SequenceType OPTIONAL_ATOMIC;	// zero or one atomic values
-  static SequenceType ATOMIC_SEQUENCE;	// zero or more atomic values
-	static SequenceType SINGLE_STRING;		// single string
-	static SequenceType SINGLE_INTEGER;		// single integer
-	static SequenceType OPTIONAL_INTEGER;	// single integer
-	static SequenceType OPTIONAL_NODE;		// zero or one nodes
-  static SequenceType SINGLE_NODE;			// single node
-	static SequenceType NODE_SEQUENCE;		// sequence of zero or more nodes
-	static SequenceType NUMERIC_SEQUENCE;	// sequence of zero or more numeric values
-	static SequenceType EMPTY_SEQUENCE;		// the empty sequence
+  static sequence_type ANY_SEQUENCE;			// any sequence of items
+  static sequence_type SINGLE_ITEM;				// exactly one item, of any kind
+  static sequence_type SINGLE_ATOMIC;			// exactly one atomic value
+  static sequence_type OPTIONAL_ATOMIC;		// zero or one atomic values
+  static sequence_type ATOMIC_SEQUENCE;		// zero or more atomic values
+	static sequence_type SINGLE_STRING;			// single string
+	static sequence_type SINGLE_INTEGER;		// single integer
+	static sequence_type OPTIONAL_INTEGER;	// single integer
+	static sequence_type OPTIONAL_NODE;			// zero or one nodes
+  static sequence_type SINGLE_NODE;				// single node
+	static sequence_type NODE_SEQUENCE;			// sequence of zero or more nodes
+	static sequence_type NUMERIC_SEQUENCE;	// sequence of zero or more numeric values
+	static sequence_type EMPTY_SEQUENCE;		// the empty sequence
 
 	/**
 	 *	This is a private constructor: all external	clients use the

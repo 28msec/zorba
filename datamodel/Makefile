@@ -19,6 +19,9 @@ node_types :	node_types.h node_types.cpp
 types :	types.h types.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/types.${SUFX} types.cpp
 
+character :	character.h character.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/character.${SUFX} character.cpp
+
 all :	\
   qname \
   xsd \

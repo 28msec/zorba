@@ -9,6 +9,7 @@
  */
 
 #include "sequence_type.h"
+#include "character.h"
 
 namespace xqp {
 
@@ -16,43 +17,43 @@ namespace xqp {
 void sequence_type::initialize()
 {
 	ANY_SEQUENCE =
-		make_sequence_type(Anyitem_type.getInstance(), StaticProperty.ALLOWS_ZERO_OR_MORE);
+		make_sequence_type(any_item_type::get_instance(), ALLOWS_ZERO_OR_MORE);
 
 	SINGLE_ITEM =
-    make_sequence_type(Anyitem_type.getInstance(), StaticProperty.EXACTLY_ONE);
+    make_sequence_type(any_item_type::getInstance(), EXACTLY_ONE);
 
 	SINGLE_ATOMIC =
-    make_sequence_type(Type.ANY_ATOMIC_TYPE, StaticProperty.EXACTLY_ONE);
+    make_sequence_type(atomic_type::get_instance(), EXACTLY_ONE);
 
 	OPTIONAL_ATOMIC =
-    make_sequence_type(Type.ANY_ATOMIC_TYPE, StaticProperty.ALLOWS_ZERO_OR_ONE);
+    make_sequence_type(atomic_type::get_instance(), ALLOWS_ZERO_OR_ONE);
 
 	ATOMIC_SEQUENCE =
-    make_sequence_type(Type.ANY_ATOMIC_TYPE, StaticProperty.ALLOWS_ZERO_OR_MORE);
+    make_sequence_type(atomic_type::get_instance(), ALLOWS_ZERO_OR_MORE);
 
 	SINGLE_STRING =
-    make_sequence_type(Type.STRING_TYPE, StaticProperty.EXACTLY_ONE);
+    make_sequence_type(string_type::get_instance(), EXACTLY_ONE);
 
 	SINGLE_INTEGER =
-    make_sequence_type(Type.INTEGER_TYPE, StaticProperty.EXACTLY_ONE);
+    make_sequence_type(integer_type::get_instance(), EXACTLY_ONE);
 
 	OPTIONAL_INTEGER =
-    make_sequence_type(Type.INTEGER_TYPE, StaticProperty.ALLOWS_ZERO_OR_ONE);
+    make_sequence_type(integer_type::get_instance(), ALLOWS_ZERO_OR_ONE);
 
 	OPTIONAL_NODE =
-    make_sequence_type(AnyNodeTest.getInstance(), StaticProperty.ALLOWS_ZERO_OR_ONE);
+    make_sequence_type(any_node_test::get_instance(), ALLOWS_ZERO_OR_ONE);
 
 	SINGLE_NODE =
-    make_sequence_type(AnyNodeTest.getInstance(), StaticProperty.EXACTLY_ONE);
+    make_sequence_type(any_node_test::get_instance(), EXACTLY_ONE);
 
 	NODE_SEQUENCE =
-    make_sequence_type(AnyNodeTest.getInstance(), StaticProperty.ALLOWS_ZERO_OR_MORE);
+    make_sequence_type(any_node_test::get_instance(), ALLOWS_ZERO_OR_MORE);
 
 	NUMERIC_SEQUENCE =
-    make_sequence_type(Type.NUMBER_TYPE, StaticProperty.ALLOWS_ZERO_OR_MORE);
+    make_sequence_type(number_type::get_instance(), ALLOWS_ZERO_OR_MORE);
 
 	EMPTY_SEQUENCE =
-    make_sequence_type(NoNodeTest.getInstance(), StaticProperty.EMPTY);
+    make_sequence_type(empty_sequence::get_instance(), EMPTY);
 }
 
 
@@ -69,7 +70,7 @@ sequence_type::sequence_type(
 }
 
 
-sequence_type makesequence_type(item_type primaryType, uint32_t cardinality)
+sequence_type make_sequence_type(item_type primaryType, uint32_t cardinality)
 {
 	if (!(primaryType instanceof BuiltInAtomicType)) {
 		return new sequence_type(primaryType, cardinality);
