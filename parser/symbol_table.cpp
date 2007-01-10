@@ -7,6 +7,7 @@
 
 #include "symbol_table.h"
 
+#include <stdlib.h>
 #include <string>
 
 using namespace std;
@@ -67,19 +68,19 @@ uint32_t symbol_table::put_stringlit(char const* text, uint32_t length)
 	return heap.put(text, 1, length-2);
 }
 
-double symbol_table::decimalval(char const* text, uint32_t length)
+long long symbol_table::decimalval(char const* text, uint32_t length)
 {
-	return heap.put(text, 0, length);
+	return strtoll(text, NULL, 10);
 }
 
 double symbol_table::doubleval(char const* text, uint32_t length)
 {
-	return heap.put(text, 0, length);
+	return strtod(text, NULL);
 }
 
 int symbol_table::intval(char const* text, uint32_t length)
 {
-	return heap.put(text, 0, length);
+	return strtol(text, NULL, 10);
 }
 
 std::string symbol_table::get(uint32_t id)

@@ -34,7 +34,7 @@ public:			// table interface
 	std::string get(uint32_t id);
 	uint32_t size() const;
 
-	double decimalval(char const* text, uint32_t length);
+	long long decimalval(char const* text, uint32_t length);
 	double doubleval(char const* text, uint32_t length);
 	int intval(char const* text, uint32_t length);
 

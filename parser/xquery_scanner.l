@@ -460,7 +460,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to OPERATOR */
 	/* ---------------------- */
 {DecimalLiteral}	{
-	yylval->dval = driver.symtab.decimalval(yytext, yyleng);
+	yylval->decval = driver.symtab.decimalval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::DECIMAL_LITERAL;
 }

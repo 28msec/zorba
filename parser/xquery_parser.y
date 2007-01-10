@@ -101,6 +101,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
   off_t sval;
 	int ival;
 	double dval;
+	long long decval;
 };
 
 
@@ -3290,15 +3291,15 @@ Literal :
 // [85] NumericLiteral
 // -------------------
 NumericLiteral :
-		INTEGER_LITERAL
+		DECIMAL_LITERAL
+		{
+			if (debug) cout << "NumericLiteral [decimal]\n";
+			$$ = new NumericLiteral(@$, yylval.decval);
+		}
+	| INTEGER_LITERAL
 		{
 			if (debug) cout << "NumericLiteral [int]\n";
 			$$ = new NumericLiteral(@$, yylval.ival);
-		}
-	|	DECIMAL_LITERAL
-		{
-			if (debug) cout << "NumericLiteral [decimal]\n";
-			$$ = new NumericLiteral(@$, yylval.dval);
 		}
 	|	DOUBLE_LITERAL
 		{

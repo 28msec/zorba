@@ -3547,7 +3547,7 @@ public:
 		num_decimal,
 		num_double
 	};
-	typedef float decimal;
+	typedef long long decimal;
 
 protected:
 	enum numeric_type_t type;
