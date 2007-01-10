@@ -37,7 +37,7 @@
 //#include <typeinfo.h>
 #include <string>
 
-#include "../context/static_context.h"
+#include "../context/context.h"
 #include "parsenodes.h"
 
 class xquery_driver;
@@ -1009,13 +1009,13 @@ BoundarySpaceDecl :
 		{
 			if (debug) cout << "BoundarySpaceDecl [preserve]\n";
 			$$ = new BoundarySpaceDecl(@$,
-								static_context::preserve_space);
+								context::preserve_space);
 		}
 	|	DECLARE_BOUNDARY_SPACE  STRIP
 		{
 			if (debug) cout << "BoundarySpaceDecl [strip]\n";
 			$$ = new BoundarySpaceDecl(@$,
-								static_context::strip_space);
+								context::strip_space);
 		}
 	;
 
@@ -1072,13 +1072,13 @@ OrderingModeDecl :
 		{
 			if (debug) cout << "OrderingDecl [ordered]\n";
 			$$ = new OrderingModeDecl(@$,
-								static_context::ordered);
+								context::ordered);
 		}
 	| DECLARE_ORDERING  UNORDERED
 		{
 			if (debug) cout << "OrderingDecl [unordered]\n";
 			$$ = new OrderingModeDecl(@$,
-								static_context::unordered);
+								context::unordered);
 		}
 	;
 
@@ -1091,13 +1091,13 @@ EmptyOrderDecl :
 		{
 			if (debug) cout << "EmptyOrderDecl [empty greatest]\n";
 			$$ = new EmptyOrderDecl(@$,
-								static_context::empty_greatest);
+								context::empty_greatest);
 		}
 	|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
 		{
 			if (debug) cout << "EmptyOrderDecl [empty least]\n";
 			$$ = new EmptyOrderDecl(@$,
-								static_context::empty_least);
+								context::empty_least);
 		}
 	;
 
@@ -1122,13 +1122,13 @@ PreserveMode :
 		{
 			if (debug) cout << "PreserveMode [preserve]\n";
 			$$ = new PreserveMode(@$,
-								static_context::preserve_ns);
+								context::preserve_ns);
 		}
 	| NO_PRESERVE
 		{
 			if (debug) cout << "PreserveMode [no preserve]\n";
 			$$ = new PreserveMode(@$,
-								static_context::no_preserve_ns);
+								context::no_preserve_ns);
 		}
 	;
 
@@ -1140,13 +1140,13 @@ InheritMode :
 		{
 			if (debug) cout << "InheritMode [inherit]\n";
 			$$ = new InheritMode(@$,
-								static_context::inherit_ns);
+								context::inherit_ns);
 		}
 	| NO_INHERIT
 		{
 			if (debug) cout << "InheritMode [no inherit]\n";
 			$$ = new InheritMode(@$,
-								static_context::no_inherit_ns);
+								context::no_inherit_ns);
 		}
 	;
 
@@ -1336,13 +1336,13 @@ ConstructionDecl :
 		{
 			if (debug) cout << "ConstructionDecl [preserve]\n";
 			$$ = new ConstructionDecl(@$,
-								static_context::cons_preserve);
+								context::cons_preserve);
 		}
 	|	DECLARE_CONSTRUCTION  STRIP
 		{
 			if (debug) cout << "ConstructionDecl [strip]\n";
 			$$ = new ConstructionDecl(@$,
-								static_context::cons_strip);
+								context::cons_strip);
 		}
 	;
 
@@ -2110,13 +2110,13 @@ OrderEmptySpec:
 		{
 			if (debug) cout << "OrderEmptySpec [greatest]\n";
 			$$ = new OrderEmptySpec(@$,
-								static_context::empty_greatest);
+								context::empty_greatest);
 		}
 	|	EMPTY_LEAST
 		{
 			if (debug) cout << "OrderEmptySpec [least]\n";
 			$$ = new OrderEmptySpec(@$,
-								static_context::empty_least);
+								context::empty_least);
 		}
 	;
 

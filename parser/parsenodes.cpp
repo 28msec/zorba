@@ -51,9 +51,9 @@ ostream& exprnode::put(ostream& s) const
 // [1] Module
 // ----------
 Module::Module(
-	rchandle<context> _context_h)
+	context const* _context_p)
 :
-	context_h(_context_h)
+	context_p(_context_p)
 {
 }
 

@@ -48,6 +48,7 @@ public:
 
 };
 
+
 /*
 **	See Section 21.2.3.1 in
 **	"The C++ Programming Language", by B. Stroustrup (1997) AT&T
@@ -75,7 +76,6 @@ public:
 public:
 	yy::location get_location() const { return loc; }
 	virtual std::ostream& put(std::ostream& s) const;
-	virtual rchandle<item_iterator> eval(context *const);
 
 };
 
@@ -302,14 +302,14 @@ class Module : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<context> context_h;
+	context const* context_p;
 
 public:
-	Module(rchandle<context>);
+	Module(context const*);
 	~Module();
 
 public:	//manipulators
-	rchandle<context> get_context() const {	return context_h; }
+	context const* get_context() const {	return context_p; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5955,10 +5955,10 @@ class FTCaseOption : public FTMatchOption
 {
 public:
 	enum ft_case_mode_t {
-		lowercase,
-		uppercase,
-		senstive,
-		insensitive
+		ft_lowercase,
+		ft_uppercase,
+		ft_sensitive,
+		ft_insensitive
 	};
 
 protected:
