@@ -14,12 +14,12 @@
 using namespace std;
 namespace xqp {
 
-ostream& ft_option_value::operator<<(ostream& os)
+ostream& operator<<(ostream& os,ft_option_value)
 {
 	return os << "ft_option_value[]";
 }
 
-ostream& ft_or_value::operator<<(ostream& os)
+ostream& operator<<(ostream& os,ft_or_value)
 {
 	return os << "ft_or_value[]";
 }

@@ -17,32 +17,32 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
-	rchandle<ft_phrase_value> p1_h = new ft_phrase_value();
+	rchandle<ft_qphrase_value> p1_h = new ft_phrase_value();
 	pv.add("to");
 	pv.add("be");
 	pv.set_opt(ft_qphrase_value::ft_all);
 
-	rchandle<ft_phrase_value> p2_h = new ft_phrase_value();
+	rchandle<ft_qphrase_value> p2_h = new ft_phrase_value();
 	pv.add("or");
 	pv.set_opt(ft_qphrase_value::ft_all);
 
-	rchandle<ft_phrase_value> p3_h = new ft_phrase_value();
+	rchandle<ft_qphrase_value> p3_h = new ft_phrase_value();
 	pv.add("not");
 	pv.add("to");
 	pv.add("be");
 	pv.set_opt(ft_qphrase_value::ft_all);
 
 	rchandle<ft_unarynot_value> unot_h =
-		new ft_unarynot_value(p3_h);
+		new ft_unarynot_value(&*p3_h);
 
 	rchandle<ft_mildnot_value> mnot_h =
-		new ft_mildnot_value(p1_h, p2_h);
+		new ft_mildnot_value(&*p1_h, &*p2_h);
 
 	rchandle<ft_and_value> and_h =
-		new ft_and_value(mnot_h, unot_h);
+		new ft_and_value(&*mnot_h, &*unot_h);
 
 	rchandle<ft_or_value> or_h =
-		new ft_or_value(mnot_h, unot_h);
+		new ft_or_value(&*mnot_h, &*unot_h);
 
 	ft_option_value opt;
 

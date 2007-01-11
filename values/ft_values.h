@@ -117,7 +117,7 @@ public:
 		{ stopword_exclusion_v.push_back(v); }
 
 public:
-	std::ostream& operator<<(std::ostream& os);
+	friend std::ostream& operator<<(std::ostream& os, ft_option_value const&);
 
 };
 
@@ -140,7 +140,7 @@ public:
 		{ return and_hv.end(); }
 
 public:
-	std::ostream& operator<<(std::ostream& os);
+	friend std::ostream& operator<<(std::ostream& os, ft_or_value const&);
 
 };
 
@@ -163,7 +163,7 @@ public:
 		{ return mildnot_hv.end(); }
 
 public:
-	std::ostream& operator<<(std::ostream& os);
+	friend std::ostream& operator<<(std::ostream& os, ft_and_value const&);
 
 };
 
@@ -190,7 +190,7 @@ public:
 		{ return negval_hv.end(); }
 
 public:
-	std::ostream& operator<<(std::ostream& os);
+	friend std::ostream& operator<<(std::ostream& os, ft_mildnot_value const&);
 
 };
 
@@ -209,7 +209,7 @@ public:
 	rchandle<ft_value> get_qphrase() const { return qphrase_h; };
 	
 public:
-	std::ostream& operator<<(std::ostream& os);
+	friend std::ostream& operator<<(std::ostream& os, ft_unarynot_value const&);
 
 };
 
@@ -244,7 +244,7 @@ public:
 		{ return word_v.end(); }
 
 public:
-	std::ostream& operator<<(std::ostream& os);
+	friend std::ostream& operator<<(std::ostream& os, ft_qphrase_value const&);
 
 };
 
