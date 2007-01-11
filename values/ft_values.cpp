@@ -14,32 +14,27 @@
 using namespace std;
 namespace xqp {
 
-ostream& operator<<(ostream& os,ft_option_value)
-{
-	return os << "ft_option_value[]";
-}
-
-ostream& operator<<(ostream& os,ft_or_value)
+ostream& operator<<(ostream& os,ft_or_value const& v)
 {
 	return os << "ft_or_value[]";
 }
 
-ostream& ft_and_value::operator<<(ostream& os)
+ostream& operator<<(ostream& os,ft_and_value const& v)
 {
 	return os << "ft_and_value[]";
 }
 
-ostream& ft_mildnot_value::operator<<(ostream& os)
+ostream& operator<<(ostream& os,ft_mildnot_value const& v)
 {
 	return os << "ft_mildnot_value[]";
 }
 
-ostream& ft_unarynot_value::operator<<(ostream& os)
+ostream& operator<<(ostream& os, ft_unarynot_value const&)
 {
 	return os << "ft_unarynot_value[]";
 }
 
-ostream& ft_qphrase_value::operator<<(ostream& os)
+ostream& operator<<(ostream& os, ft_qphrase_value const&)
 {
 	return os << "ft_qphrase_value[]";
 }
