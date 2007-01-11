@@ -7,6 +7,17 @@
  *  Author: Paul Pedersen
  *
  */
+ 
+ /*
+ *  This code module is derived from the Saxon project.
+ *  Michael Kay is the original author of the Saxon code base.
+ *  [http://saxon.sourceforge.net/]
+ *  
+ *  The Saxon Java code has been completely
+ *  reworked for the C++ framework, but the
+ *  design is clearly inherited from Saxon.
+ *
+ */
 
 #include "types.h"
 
