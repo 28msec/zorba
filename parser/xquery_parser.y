@@ -39,6 +39,7 @@
 
 #include "../context/context.h"
 #include "parsenodes.h"
+#include "parse_constants.h"
 
 class xquery_driver;
 
@@ -1028,14 +1029,14 @@ DefaultNamespaceDecl :
 		{
 			if (debug) cout << "DefaultNamespaceDecl [element]\n";
 			$$ = new DefaultNamespaceDecl(@$,
-								DefaultNamespaceDecl::element,
+								ns_element_default,
 								driver.symtab.get($3));
 		}
 	| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
 		{
 			if (debug) cout << "DefaultNamespaceDecl [function]\n";
 			$$ = new DefaultNamespaceDecl(@$,
-								DefaultNamespaceDecl::function,
+								ns_function_default,
 								driver.symtab.get($3));
 		}
 	;
@@ -1357,7 +1358,7 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(QName::qn_func,driver.symtab.get($2)),
 								NULL,NULL,NULL,
-								FunctionDecl::fn_extern);
+								fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
 		{
@@ -1366,7 +1367,7 @@ FunctionDecl :
 								new QName(QName::qn_func,driver.symtab.get($2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
-								FunctionDecl::fn_read);
+								fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
 		{
@@ -1375,7 +1376,7 @@ FunctionDecl :
 								new QName(QName::qn_func,driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
-								FunctionDecl::fn_extern);
+								fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
 		{
@@ -1385,7 +1386,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::fn_read);
+								fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1395,7 +1396,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
-								FunctionDecl::fn_extern);
+								fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1405,7 +1406,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::fn_read);
+								fn_read);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1415,7 +1416,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
-								FunctionDecl::fn_extern);
+								fn_extern);
 		}
 	|	DECLARE_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1425,7 +1426,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
-								FunctionDecl::fn_read);
+								fn_read);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EXTERNAL
 		{
@@ -1433,7 +1434,7 @@ FunctionDecl :
 			$$ = new FunctionDecl(@$,
 								new QName(QName::qn_func,driver.symtab.get($2)),
 								NULL,NULL,NULL,
-								FunctionDecl::fn_extern_update);
+								fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR  EnclosedExpr
 		{
@@ -1442,7 +1443,7 @@ FunctionDecl :
 								new QName(QName::qn_func,driver.symtab.get($2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
-								FunctionDecl::fn_update);
+								fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EXTERNAL
 		{
@@ -1451,7 +1452,7 @@ FunctionDecl :
 								new QName(QName::qn_func,driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
-								FunctionDecl::fn_extern_update);
+								fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR  EnclosedExpr
 		{
@@ -1461,7 +1462,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::fn_update);
+								fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1471,7 +1472,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
-								FunctionDecl::fn_extern_update);
+								fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1481,7 +1482,7 @@ FunctionDecl :
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
-								FunctionDecl::fn_update);
+								fn_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EXTERNAL
 		{
@@ -1491,7 +1492,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
-								FunctionDecl::fn_extern_update);
+								fn_extern_update);
 		}
 	|	DECLARE_UPDATING_FUNCTION  QNAME_LPAR  ParamList  RPAR_AS  SequenceType  EnclosedExpr
 		{
@@ -1501,7 +1502,7 @@ FunctionDecl :
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
-								FunctionDecl::fn_update);
+								fn_update);
 		}
 	;
 
@@ -1556,8 +1557,7 @@ EnclosedExpr :
 		LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "EnclosedExpr [ ]\n";
-			$$ = new EnclosedExpr(@$,
-								$2);
+			$$ = new EnclosedExpr(@$, $2);
 		}
 	;
 
@@ -1568,8 +1568,7 @@ QueryBody :
 		Expr
 		{
 			if (debug) cout << "QueryBody [expr]\n";
-			$$ = new QueryBody(@$,
-								$1);
+			$$ = new QueryBody(@$, $1);
 		}
 	;
 
@@ -1957,8 +1956,7 @@ WhereClause :
 		WHERE  ExprSingle
 		{
 			if (debug) cout << "WhereClause [ ]\n";
-			$$ = new WhereClause(@$,
-								$2);
+			$$ = new WhereClause(@$, $2);
 		}
 	;
 
@@ -2092,14 +2090,12 @@ OrderDirSpec :
 		ASCENDING
 		{
 			if (debug) cout << "OrderDirSpec [ascending]\n";
-			$$ = new OrderDirSpec(@$,
-								OrderDirSpec::ascending);
+			$$ = new OrderDirSpec(@$, dir_ascending);
 		}
 	|	DESCENDING
 		{
 			if (debug) cout << "OrderDirSpec [descending]\n";
-			$$ = new OrderDirSpec(@$,
-								OrderDirSpec::descending);
+			$$ = new OrderDirSpec(@$, dir_descending);
 		}
 	;
 
@@ -2141,7 +2137,7 @@ QuantifiedExpr :
 		{
 			if (debug) cout << "QuantifiedExpr [some]\n";
 			$$ = new QuantifiedExpr(@$,
-								QuantifiedExpr::some,
+								quant_some,
 								dynamic_cast<QVarInDeclList*>($2),
 								$4);
 		}
@@ -2149,7 +2145,7 @@ QuantifiedExpr :
 		{
 			if (debug) cout << "QuantifiedExpr [every]\n";
 			$$ = new QuantifiedExpr(@$,
-								QuantifiedExpr::every,
+								quant_every,
 								dynamic_cast<QVarInDeclList*>($2),
 								$4);
 		}
@@ -2270,10 +2266,7 @@ IfExpr :
 		IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
 		{
 			if (debug) cout << "IfExpr [ ]\n";
-			$$ = new IfExpr(@$,
-								$2,
-								$5,
-								$7);
+			$$ = new IfExpr(@$, $2, $5, $7);
 		}
 	;
 
@@ -2289,9 +2282,7 @@ OrExpr :
 	|	OrExpr  OR  AndExpr
 		{
 			if (debug) cout << "OrExpr [or.and]\n";
-			$$ = new OrExpr(@$,
-								$1,
-								$3);
+			$$ = new OrExpr(@$, $1, $3);
 		}
 	;
 
@@ -2307,9 +2298,7 @@ AndExpr :
 	|	AndExpr  AND  ComparisonExpr
 		{
 			if (debug) cout << "AndExpr [and.comp]\n";
-			$$ = new AndExpr(@$,
-								$1,
-								$3);
+			$$ = new AndExpr(@$, $1, $3);
 		}
 	;
 
@@ -2398,9 +2387,7 @@ RangeExpr :
 	|	AdditiveExpr  TO  AdditiveExpr
 		{
 			if (debug) cout << "RangeExpr [add.to.add]\n";
-			$$ = new RangeExpr(@$,
-								$1,
-								$3);
+			$$ = new RangeExpr(@$, $1, $3);
 		}
 	;
 
@@ -2416,18 +2403,12 @@ AdditiveExpr :
 	|	AdditiveExpr  PLUS  MultiplicativeExpr
 		{
 			if (debug) cout << "AdditiveExpr [mult+mult]\n";
-			$$ = new AdditiveExpr(@$,
-								AdditiveExpr::plus,
-								$1,
-								$3);
+			$$ = new AdditiveExpr(@$, op_plus, $1, $3);
 		}
 	|	AdditiveExpr  MINUS  MultiplicativeExpr
 		{
 			if (debug) cout << "AdditiveExpr [mult-mult]\n";
-			$$ = new AdditiveExpr(@$,
-								AdditiveExpr::minus,
-								$1,
-								$3);
+			$$ = new AdditiveExpr(@$, op_minus, $1, $3);
 		}
 	;
 
@@ -2442,34 +2423,22 @@ MultiplicativeExpr :
 	|	MultiplicativeExpr  STAR  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult*union]\n";
-			$$ = new MultiplicativeExpr(@$,
-								MultiplicativeExpr::times,
-								$1,
-								$3);
+			$$ = new MultiplicativeExpr(@$, op_times, $1, $3);
 		}
 	|	MultiplicativeExpr  DIV  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult.div.union]\n";
-			$$ = new MultiplicativeExpr(@$,
-								MultiplicativeExpr::div,
-								$1,
-								$3);
+			$$ = new MultiplicativeExpr(@$, op_div, $1, $3);
 		}
 	|	MultiplicativeExpr  IDIV  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult.idiv.union]\n";
-			$$ = new MultiplicativeExpr(@$,
-								MultiplicativeExpr::idiv,
-								$1,
-								$3);
+			$$ = new MultiplicativeExpr(@$, op_idiv, $1, $3);
 		}
 	|	MultiplicativeExpr  MOD  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult.mod.union]\n";
-			$$ = new MultiplicativeExpr(@$,
-								MultiplicativeExpr::mod,
-								$1,
-								$3);
+			$$ = new MultiplicativeExpr(@$, op_mod, $1, $3);
 		}
 	;
 
@@ -2485,16 +2454,12 @@ UnionExpr :
 	|	UnionExpr  UNION  IntersectExceptExpr
 		{
 			if (debug) cout << "UnionExpr [union.union.interexcept]\n";
-			$$ = new UnionExpr(@$,
-								$1,
-								$3);
+			$$ = new UnionExpr(@$, $1, $3);
 		}
 	|	UnionExpr  VBAR  IntersectExceptExpr
 		{
 			if (debug) cout << "UnionExpr [union|interexcept]\n";
-			$$ = new UnionExpr(@$,
-								$1,
-								$3);
+			$$ = new UnionExpr(@$, $1, $3);
 		}
 	;
 
@@ -2510,18 +2475,12 @@ IntersectExceptExpr :
 	|	IntersectExceptExpr  INTERSECT  InstanceofExpr
 		{
 			if (debug) cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
-			$$ = new IntersectExceptExpr(@$,
-								IntersectExceptExpr::intersect,
-								$1,
-								$3);
+			$$ = new IntersectExceptExpr(@$, op_intersect, $1, $3);
 		}
 	|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 		{
 			if (debug) cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
-			$$ = new IntersectExceptExpr(@$,
-								IntersectExceptExpr::except,
-								$1,
-								$3);
+			$$ = new IntersectExceptExpr(@$, op_except, $1, $3);
 		}
 	;
 
@@ -2672,32 +2631,32 @@ GeneralComp :
 		EQUALS
 		{
 			if (debug) cout << "GeneralComp [=]\n";
-			$$ = new GeneralComp(@$, GeneralComp::eq);
+			$$ = new GeneralComp(@$, op_eq);
 		}
 	| NE
 		{
 			if (debug) cout << "GeneralComp [!=]\n";
-			$$ = new GeneralComp(@$, GeneralComp::ne);
+			$$ = new GeneralComp(@$, op_ne);
 		}
 	| LT
 		{
 			if (debug) cout << "GeneralComp [<]\n";
-			$$ = new GeneralComp(@$, GeneralComp::lt);
+			$$ = new GeneralComp(@$, op_lt);
 		}
 	| LE
 		{
 			if (debug) cout << "GeneralComp [<=]\n";
-			$$ = new GeneralComp(@$, GeneralComp::le);
+			$$ = new GeneralComp(@$, op_le);
 		}
 	| GT
 		{
 			if (debug) cout << "GeneralComp [>]\n";
-			$$ = new GeneralComp(@$, GeneralComp::gt);
+			$$ = new GeneralComp(@$, op_gt);
 		}
 	| GE
 		{
 			if (debug) cout << "GeneralComp [>=]\n";
-			$$ = new GeneralComp(@$, GeneralComp::ge);
+			$$ = new GeneralComp(@$, op_ge);
 		}
 	;
 
@@ -2708,32 +2667,32 @@ ValueComp :
 		VAL_EQ
 		{
 			if (debug) cout << "ValueComp [eq]\n";
-			$$ = new ValueComp(@$, ValueComp::val_eq);
+			$$ = new ValueComp(@$, op_val_eq);
 		}
 	| VAL_NE
 		{
 			if (debug) cout << "ValueComp [ne]\n";
-			$$ = new ValueComp(@$, ValueComp::val_ne);
+			$$ = new ValueComp(@$, op_val_ne);
 		}
 	| VAL_LT
 		{
 			if (debug) cout << "ValueComp [lt]\n";
-			$$ = new ValueComp(@$, ValueComp::val_lt);
+			$$ = new ValueComp(@$, op_val_lt);
 		}
 	| VAL_LE
 		{
 			if (debug) cout << "ValueComp [le]\n";
-			$$ = new ValueComp(@$, ValueComp::val_le);
+			$$ = new ValueComp(@$, op_val_le);
 		}
 	| VAL_GT
 		{
 			if (debug) cout << "ValueComp [gt]\n";
-			$$ = new ValueComp(@$, ValueComp::val_gt);
+			$$ = new ValueComp(@$, op_val_gt);
 		}
 	| VAL_GE
 		{
 			if (debug) cout << "ValueComp [ge]\n";
-			$$ = new ValueComp(@$, ValueComp::val_ge);
+			$$ = new ValueComp(@$, op_val_ge);
 		}
 	;
 
@@ -2744,17 +2703,17 @@ NodeComp :
 		IS
 		{
 			if (debug) cout << "NodeComp [is]\n";
-			$$ = new NodeComp(@$, NodeComp::is);
+			$$ = new NodeComp(@$, op_is);
 		}
 	| PRECEDES
 		{
 			if (debug) cout << "NodeComp [<<]\n";
-			$$ = new NodeComp(@$, NodeComp::precedes);
+			$$ = new NodeComp(@$, op_precedes);
 		}
 	| FOLLOWS
 		{
 			if (debug) cout << "NodeComp [>>]\n";
-			$$ = new NodeComp(@$, NodeComp::follows);
+			$$ = new NodeComp(@$, op_follows);
 		}
 	;
 
@@ -2766,9 +2725,7 @@ ValidateExpr :
 		VALIDATE_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "ValidateExpr [expr]\n";
-			$$ = new ValidateExpr(@$,
-								"strict",
-								$2);
+			$$ = new ValidateExpr(@$, "strict", $2);
 		}
 	|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 		{
@@ -2872,23 +2829,17 @@ PathExpr :
 		LEADING_LONE_SLASH
 		{
 			if (debug) cout << "PathExpr [/]\n";
-			$$ = new PathExpr(@$,
-								PathExpr::leading_lone_slash,
-								NULL);
+			$$ = new PathExpr(@$, path_leading_lone_slash, NULL);
 		}
 	|	SLASH  RelativePathExpr
 		{
 			if (debug) cout << "PathExpr [/relative]\n";
-			$$ = new PathExpr(@$,
-								PathExpr::leading_slash,
-								$2);
+			$$ = new PathExpr(@$, path_leading_slash, $2);
 		}
 	|	SLASH_SLASH  RelativePathExpr
 		{
 			if (debug) cout << "PathExpr [//relative]\n";
-			$$ = new PathExpr(@$,
-								PathExpr::leading_slash_slash,
-								$2);
+			$$ = new PathExpr(@$, path_leading_slashslash, $2);
 		}
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
@@ -2909,18 +2860,12 @@ RelativePathExpr :
 	|	StepExpr  SLASH  RelativePathExpr 
 		{
 			if (debug) cout << "RelativePathExpr [step/relative]\n";
-			$$ = new RelativePathExpr(@$,
-								RelativePathExpr::slash,
-								$1,
-								$3);
+			$$ = new RelativePathExpr(@$, st_slash, $1, $3);
 		}
 	|	StepExpr  SLASH_SLASH  RelativePathExpr
 		{
 			if (debug) cout << "RelativePathExpr [step//relative]\n";
-			$$ = new RelativePathExpr(@$,
-								RelativePathExpr::slash_slash,
-								$1,
-								$3);
+			$$ = new RelativePathExpr(@$, st_slashslash, $1, $3);
 		}
 	;
 
@@ -2931,7 +2876,6 @@ StepExpr :
 		AxisStep
 		{
 			if (debug) cout << "StepExpr [axis]\n";
-			cout << ">>>>>typeid([69].AxisStep) = " << typeid(*$1).name() << endl;
 			$$ = $1;
 		}
 	|	FilterExpr
@@ -2948,7 +2892,6 @@ AxisStep :
 		ForwardStep 
 		{
 			if (debug) cout << "AxisStep [forward]\n";
-			cout << ">>>>>typeid([70].ForwardStep) = " << typeid(*$1).name() << endl;
 			$$ = new AxisStep(@$,
 								dynamic_cast<ForwardStep*>($1),
 								NULL);
@@ -2990,7 +2933,6 @@ ForwardStep :
 	|	AbbrevForwardStep
 		{
 			if (debug) cout << "ForwardStep [abbrev]\n";
-			cout << ">>>>>typeid([71].AbbrevForwardStep) = " << typeid(*$1).name() << endl;
 			$$ = new ForwardStep(@$,
 								dynamic_cast<AbbrevForwardStep*>($1));
 		}
@@ -3003,37 +2945,37 @@ ForwardAxis :
 		CHILD_AXIS
 		{
 			if (debug) cout << "ForwardAxis [child]\n";
-			$$ = new ForwardAxis(@$, ForwardAxis::child);
+			$$ = new ForwardAxis(@$, axis_child);
 		}
 	| DESCENDANT_AXIS
 		{
 			if (debug) cout << "ForwardAxis [descendant]\n";
-			$$ = new ForwardAxis(@$, ForwardAxis::descendant);
+			$$ = new ForwardAxis(@$, axis_descendant);
 		}
 	| ATTRIBUTE_AXIS
 		{
 			if (debug) cout << "ForwardAxis [attribute]\n";
-			$$ = new ForwardAxis(@$, ForwardAxis::attribute);
+			$$ = new ForwardAxis(@$, axis_attribute);
 		}
 	| SELF_AXIS
 		{
 			if (debug) cout << "ForwardAxis [self]\n";
-			$$ = new ForwardAxis(@$, ForwardAxis::self);
+			$$ = new ForwardAxis(@$, axis_self);
 		}
 	| DESCENDANT_OR_SELF_AXIS
 		{
 			if (debug) cout << "ForwardAxis [descendant_or_self]\n";
-			$$ = new ForwardAxis(@$, ForwardAxis::descendant_or_self);
+			$$ = new ForwardAxis(@$, axis_descendant_or_self);
 		}
 	| FOLLOWING_SIBLING_AXIS
 		{
 			if (debug) cout << "ForwardAxis [following_sibling]\n";
-			$$ = new ForwardAxis(@$, ForwardAxis::following_sibling);
+			$$ = new ForwardAxis(@$, axis_following_sibling);
 		}
 	| FOLLOWING_AXIS
 		{
 			if (debug) cout << "ForwardAxis [following]\n";
-			$$ = new ForwardAxis(@$, ForwardAxis::following);
+			$$ = new ForwardAxis(@$, axis_following);
 		}
 	;
 
@@ -3044,16 +2986,12 @@ AbbrevForwardStep :
 		NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
-			cout << ">>>>>typeid([73].NodeTest) = " << typeid(*$1).name() << endl;
-			$$ = new AbbrevForwardStep(@$,
-								$1);
+			$$ = new AbbrevForwardStep(@$, $1);
 		}
 	|	AT_SIGN  NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
-			$$ = new AbbrevForwardStep(@$,
-								$2,
-								true);
+			$$ = new AbbrevForwardStep(@$, $2, true);
 		}
 	;
 
@@ -3071,8 +3009,7 @@ ReverseStep :
 	|	DOT_DOT
 		{
 			if (debug) cout << "ReverseStep [..]\n";
-			$$ = new ReverseAxis(@$,
-								ReverseAxis::parent);
+			$$ = new ReverseAxis(@$, axis_parent);
 		}
 	;
 
@@ -3083,27 +3020,27 @@ ReverseAxis :
 		PARENT_AXIS
 		{
 			if (debug) cout << "ReverseAxis [parent]\n";
-			$$ = new ReverseAxis(@$, ReverseAxis::parent);
+			$$ = new ReverseAxis(@$, axis_parent);
 		}
 	| ANCESTOR_AXIS
 		{
 			if (debug) cout << "ReverseAxis [ancestor]\n";
-			$$ = new ReverseAxis(@$, ReverseAxis::ancestor);
+			$$ = new ReverseAxis(@$, axis_ancestor);
 		}
 	| PRECEDING_SIBLING_AXIS
 		{
 			if (debug) cout << "ReverseAxis [preceding_sibling]\n";
-			$$ = new ReverseAxis(@$, ReverseAxis::preceding_sibling);
+			$$ = new ReverseAxis(@$, axis_preceding_sibling);
 		}
 	| PRECEDING_AXIS
 		{
 			if (debug) cout << "ReverseAxis [preceding]\n";
-			$$ = new ReverseAxis(@$, ReverseAxis::preceding);
+			$$ = new ReverseAxis(@$, axis_preceding);
 		}
 	| ANCESTOR_OR_SELF_AXIS
 		{
 			if (debug) cout << "ReverseAxis [ancestor_or_self]\n";
-			$$ = new ReverseAxis(@$, ReverseAxis::ancestor_or_self);
+			$$ = new ReverseAxis(@$, axis_ancestor_or_self);
 		}
 	;
 
@@ -3153,8 +3090,7 @@ Wildcard :
 		STAR
 		{
 			if (debug) cout << "Wildcard [*]\n";
-			$$ = new Wildcard(@$,
-								Wildcard::wild_all);
+			$$ = new Wildcard(@$, wild_all);
 		}
 	|	ELEM_WILDCARD
 		{
@@ -3331,8 +3267,7 @@ ParenthesizedExpr :
 	|	LPAR  Expr  RPAR
 		{
 			if (debug) cout << "ParenthesizedExpr [(expr)]\n";
-			$$ = new ParenthesizedExpr(@$,
-								$2);
+			$$ = new ParenthesizedExpr(@$, $2);
 		}
 	;	
 
@@ -3354,8 +3289,7 @@ OrderedExpr :
 		ORDERED_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "OrderedExpr [expr]\n";
-			$$ = new OrderedExpr(@$,
-								$2);
+			$$ = new OrderedExpr(@$, $2);
 		}
 	;
 
@@ -3366,8 +3300,7 @@ UnorderedExpr :
 		UNORDERED_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "UnorderedExpr [expr]\n";
-			$$ = new UnorderedExpr(@$,
-								$2);
+			$$ = new UnorderedExpr(@$, $2);
 		}
 	;
 
@@ -3758,27 +3691,27 @@ CommonContent :
 		{
 			if (debug) cout << "CommonContent [entity_ref]\n";
 			$$ = new CommonContent(@$,
-								CommonContent::entity,
+								cont_entity,
 								driver.symtab.get($1));
 		}
 	|	CHAR_REF_LITERAL
 		{
 			if (debug) cout << "CommonContent [char_ref]\n";
 			$$ = new CommonContent(@$,
-								CommonContent::charref,
+								cont_charref,
 								driver.symtab.get($1));
 		}
 	|	DOUBLE_LBRACE
 		{
 			if (debug) cout << "CommonContent [{{]\n";
 			$$ = new CommonContent(@$,
-								CommonContent::escape_lbrace);
+								cont_escape_lbrace);
 		}
 	|	DOUBLE_RBRACE
 		{
 			if (debug) cout << "CommonContent [}}]\n";
 			$$ = new CommonContent(@$,
-								CommonContent::escape_rbrace);
+								cont_escape_rbrace);
 		}
 	|	EnclosedExpr
 		{
@@ -3888,8 +3821,7 @@ CompDocConstructor :
 		DOCUMENT_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompDocConstructor [ ]\n";
-			$$ = new CompDocConstructor(@$,
-								$2);
+			$$ = new CompDocConstructor(@$, $2);
 		}
 	;
 
@@ -3914,16 +3846,12 @@ CompElemConstructor :
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [name]\n";
-			$$ = new CompElemConstructor(@$,
-								$2,
-								NULL);
+			$$ = new CompElemConstructor(@$, $2, NULL);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [name.content]\n";
-			$$ = new CompElemConstructor(@$,
-								$2,
-								$5);
+			$$ = new CompElemConstructor(@$, $2, $5);
 		}
 	;
 
@@ -3960,16 +3888,12 @@ CompAttrConstructor :
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [name]\n";
-			$$ = new CompAttrConstructor(@$,
-								$2,
-								NULL);
+			$$ = new CompAttrConstructor(@$, $2, NULL);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [name.val]\n";
-			$$ = new CompAttrConstructor(@$,
-								$2,
-								$5);
+			$$ = new CompAttrConstructor(@$, $2, $5);
 		}
 	;
 
@@ -4018,16 +3942,12 @@ CompPIConstructor :
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
 			if (debug) cout << "CompPIConstructor [target]\n";
-			$$ = new CompPIConstructor(@$,
-								$3,
-								NULL);
+			$$ = new CompPIConstructor(@$, $3, NULL);
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompPIConstructor [target.content]\n";
-			$$ = new CompPIConstructor(@$,
-								$3,
-								$6);
+			$$ = new CompPIConstructor(@$, $3, $6);
 		}
 	;
 
@@ -4123,19 +4043,19 @@ OccurrenceIndicator :
 		{
 			if (debug) cout << "OccurrenceIndicator [?]\n";
 			$$ = new OccurrenceIndicator(@$,
-								OccurrenceIndicator::hook);
+								occurs_optionally);
 		}
 	|	OCCURS_STAR
 		{
 			if (debug) cout << "OccurrenceIndicator [*]\n";
 			$$ = new OccurrenceIndicator(@$,
-								OccurrenceIndicator::star);
+								occurs_zero_or_more);
 		}
 	|	OCCURS_PLUS 	/* gn: occurrence-indicatorsXQ */
 		{
 			if (debug) cout << "OccurrenceIndicator [+]\n";
 			$$ = new OccurrenceIndicator(@$,
-								OccurrenceIndicator::plus);
+								occurs_one_or_more);
 		}
 	;
 

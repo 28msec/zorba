@@ -7,6 +7,7 @@
  */
 
 #include "parsenodes.h"
+#include "parse_constants.h"
 
 #include <iostream>
 #include <sstream>
@@ -459,8 +460,8 @@ ostream& DefaultNamespaceDecl::put(ostream& s) const
 {
 	s << INDENT << "DefaultNamespaceDecl[";
 	switch (mode) {
-	case DefaultNamespaceDecl::element: s << "element: "; break;
-	case DefaultNamespaceDecl::function: s << "function: "; break;
+	case ns_element_default: s << "element: "; break;
+	case ns_function_default: s << "function: "; break;
 	default: s << "???";
 	}
 	return s << default_namespace << "]\n";
@@ -1686,8 +1687,8 @@ ostream& OrderDirSpec::put(ostream& s) const
 {
 	s << INDENT << "OrderDirSpec[";
 	switch (dir_spec) {
-	case ascending: s << "ascending"; break;
-	case descending: s << "descending"; break;
+	case dir_ascending: s << "ascending"; break;
+	case dir_descending: s << "descending"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -1782,8 +1783,8 @@ ostream& QuantifiedExpr::put(ostream& s) const
 {
 	s << INDENT << "QuantifiedExpr[";
 	switch(qmode) {
-	case some: s << "some\n"; break;
-	case every: s << "every\n"; break;
+	case quant_some: s << "some\n"; break;
+	case quant_every: s << "every\n"; break;
 	default: s << "???\n";
 	}
 	if (decl_list_h!=NULL) decl_list_h->put(s);
@@ -2241,8 +2242,8 @@ ostream& AdditiveExpr::put(ostream& s) const
 	if (add_expr_h!=NULL) {
 		add_expr_h->put(s);
 		switch(add_op) {
-		case plus: s << "plus"; break;
-		case minus: s << "minus"; break;
+		case op_plus: s << "plus"; break;
+		case op_minus: s << "minus"; break;
 		default: s << "???";
 		}
 	}
@@ -2280,10 +2281,10 @@ ostream& MultiplicativeExpr::put(ostream& s) const
 	s << INDENT << "MultiplicativeExpr[\n";
 	if (mult_expr_h!=NULL) mult_expr_h->put(s);
 	switch(mult_op) {
-	case times: s << "times"; break;
-	case div: s << "div"; break;
-	case idiv: s << "idiv"; break;
-	case mod: s << "mod"; break;
+	case op_times: s << "times"; break;
+	case op_div: s << "div"; break;
+	case op_idiv: s << "idiv"; break;
+	case op_mod: s << "mod"; break;
 	default: s << "???";
 	}
 	if (union_expr_h!=NULL) union_expr_h->put(s);
@@ -2351,8 +2352,8 @@ ostream& IntersectExceptExpr::put(ostream& s) const
 	s << INDENT << "IntersectExceptExpr[\n";
 	if (intex_expr_h!=NULL) intex_expr_h->put(s);
 	switch(intex_op) {
-	case intersect: s << "intersect"; break;
-	case except: s << "except"; break;
+	case op_intersect: s << "intersect"; break;
+	case op_except: s << "except"; break;
 	default: s << "???";
 	}
 	if (instof_expr_h!=NULL) instof_expr_h->put(s);
@@ -2590,12 +2591,12 @@ ostream& GeneralComp::put(ostream& s) const
 {
 	s << INDENT << "GeneralComp[";
 	switch(type) {
-	case eq: s << "eq"; break;
-	case ne: s << "ne"; break;
-	case lt: s << "lt"; break;
-	case le: s << "le"; break;
-	case gt: s << "gt"; break;
-	case ge: s << "ge"; break;
+	case op_eq: s << "eq"; break;
+	case op_ne: s << "ne"; break;
+	case op_lt: s << "lt"; break;
+	case op_le: s << "le"; break;
+	case op_gt: s << "gt"; break;
+	case op_ge: s << "ge"; break;
 	default: s << "???";
 	}
 	s << "]\n";
@@ -2627,12 +2628,12 @@ ostream& ValueComp::put(ostream& s) const
 {
 	s << INDENT << "ValueComp[";
 	switch(type) {
-	case val_eq: s << "val_eq"; break;
-	case val_ne: s << "val_ne"; break;
-	case val_lt: s << "val_lt"; break;
-	case val_le: s << "val_le"; break;
-	case val_gt: s << "val_gt"; break;
-	case val_ge: s << "val_ge"; break;
+	case op_val_eq: s << "val_eq"; break;
+	case op_val_ne: s << "val_ne"; break;
+	case op_val_lt: s << "val_lt"; break;
+	case op_val_le: s << "val_le"; break;
+	case op_val_gt: s << "val_gt"; break;
+	case op_val_ge: s << "val_ge"; break;
 	default: s << "???";
 	}
 	s << "]\n";
@@ -2664,9 +2665,9 @@ ostream& NodeComp::put(ostream& s) const
 {
 	s << INDENT << "NodeComp[";
 	switch(type) {
-	case is: s << "is"; break;
-	case precedes: s << "precedes"; break;
-	case follows: s << "follows"; break;
+	case op_is: s << "is"; break;
+	case op_precedes: s << "precedes"; break;
+	case op_follows: s << "follows"; break;
 	default: s << "???";
 	}
 	s << "]\n";
@@ -2687,7 +2688,7 @@ ValidateExpr::ValidateExpr(
 	rchandle<exprnode> _expr_h)
 :
 	exprnode(_loc),
-	valmode(_valmode=="lax" ? lax : strict),
+	valmode(_valmode=="lax" ? val_lax : val_strict),
 	expr_h(_expr_h)
 {
 }
@@ -2700,8 +2701,8 @@ ostream& ValidateExpr::put(ostream& s) const
 {
 	s << INDENT << "ValidateExpr[";
 	switch(valmode) {
-	case strict: s << "strict\n"; break;
-	case lax: s << "lax\n"; break;
+	case val_strict: s << "strict\n"; break;
+	case val_lax: s << "lax\n"; break;
 	default: s << "???\n";
 	}
 	if (expr_h!=NULL) expr_h->put(s);
@@ -2827,10 +2828,10 @@ ostream& PathExpr::put(ostream& s) const
 {
 	s << INDENT << "PathExpr[";
 	switch(type) {
-	case leading_lone_slash: s << "leading_lone_slash\n"; break;
-	case leading_slash: s << "leading_slash\n"; break;
-	case leading_slash_slash: s << "leading_slash_slash\n"; break;
-	case relative: s << "relative\n"; break;
+	case path_leading_lone_slash: s << "leading_lone_slash\n"; break;
+	case path_leading_slash: s << "leading_slash\n"; break;
+	case path_leading_slashslash: s << "leading_slashslash\n"; break;
+	case path_relative: s << "relative\n"; break;
 	default: s << "???\n";
 	}
 	if (relpath_expr_h!=NULL) relpath_expr_h->put(s);
@@ -2869,8 +2870,8 @@ ostream& RelativePathExpr::put(ostream& s) const
 	}
 	if (relpath_expr_h!=NULL) {
 		switch(step_type) {
-		case slash: s << INDENT << "SLASH\n"; UNDENT; break;
-		case slash_slash: s << INDENT << "SLASHSLASH\n"; UNDENT;  break;
+		case st_slash: s << INDENT << "SLASH\n"; UNDENT; break;
+		case st_slashslash: s << INDENT << "SLASHSLASH\n"; UNDENT;  break;
 		default: s << "\n";
 		}
 		relpath_expr_h->put(s);
@@ -3013,13 +3014,13 @@ ostream& ForwardAxis::put(ostream& s) const
 {
 	s << INDENT << "ForwardAxis[\n";
 	switch(axis) {
-	case child: s << "child,"; break;
-	case descendant: s << "descendant"; break;
-	case attribute: s << "attribute"; break;
-	case self: s << "self"; break;
-	case descendant_or_self: s << "descendant_or_self"; break;
-	case following_sibling: s << "following_sibling"; break;
-	case following: s << "following"; break;
+	case axis_child: s << "child,"; break;
+	case axis_descendant: s << "descendant"; break;
+	case axis_attribute: s << "attribute"; break;
+	case axis_self: s << "self"; break;
+	case axis_descendant_or_self: s << "descendant_or_self"; break;
+	case axis_following_sibling: s << "following_sibling"; break;
+	case axis_following: s << "following"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -3119,11 +3120,11 @@ ostream& ReverseAxis::put(ostream& s) const
 {
 	s << INDENT << "ReverseAxis[\n";
 	switch(axis) {
-	case parent: s << "parent"; break;
-	case ancestor: s << "ancestor"; break;
-	case preceding_sibling: s << "preceding_sibling"; break;
-	case preceding: s << "preceding"; break;
-	case ancestor_or_self: s << "ancestor_or_self"; break;
+	case axis_parent: s << "parent"; break;
+	case axis_ancestor: s << "ancestor"; break;
+	case axis_preceding_sibling: s << "preceding_sibling"; break;
+	case axis_preceding: s << "preceding"; break;
+	case axis_ancestor_or_self: s << "ancestor_or_self"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -3223,7 +3224,7 @@ Wildcard::Wildcard(
 	std::string const& _prefix)
 :
 	parsenode(_loc),
-	type(Wildcard::wild_prefix),
+	type(wild_prefix),
 	prefix(_prefix),
 	qname_h(NULL)
 {
@@ -3234,7 +3235,7 @@ Wildcard::Wildcard(
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
-	type(Wildcard::wild_elem),
+	type(wild_elem),
 	prefix(""),
 	qname_h(_qname_h)
 {
@@ -3404,7 +3405,7 @@ NumericLiteral::NumericLiteral(
 	int _ival)
 :
 	exprnode(_loc),
-	type(NumericLiteral::num_integer),
+	type(num_integer),
 	ival(_ival)
 {
 }
@@ -3414,7 +3415,7 @@ NumericLiteral::NumericLiteral(
 	double _dval)
 :
 	exprnode(_loc),
-	type(NumericLiteral::num_double),
+	type(num_double),
 	dval(_dval)
 {
 }
@@ -3424,7 +3425,7 @@ NumericLiteral::NumericLiteral(
 	decimal _decval)
 :
 	exprnode(_loc),
-	type(NumericLiteral::num_decimal),
+	type(num_decimal),
 	decval(_decval)
 {
 }
@@ -4058,7 +4059,7 @@ CommonContent::CommonContent(
 	rchandle<EnclosedExpr> _expr_h)
 :
 	exprnode(_loc),
-	type(CommonContent::expr),
+	type(cont_expr),
 	ref(""),
 	expr_h(_expr_h)
 {
@@ -4069,7 +4070,7 @@ CommonContent::CommonContent(
 	enum common_content_t _type)
 :
 	exprnode(_loc),
-	type(CommonContent::expr),
+	type(cont_expr),
 	ref(""),
 	expr_h(NULL)
 {
@@ -4083,14 +4084,14 @@ ostream& CommonContent::put(ostream& s) const
 {
 	s << INDENT << "CommonContent[";
 	switch(type) {
-	case entity: s << "entity"; break;
-	case charref: s << "charref"; break;
-	case escape_lbrace: s << "escape_lbrace"; break;
-	case escape_rbrace: s << "escape_rbrace"; break;
-	case expr: s << "expr\n"; break;
+	case cont_entity: s << "entity"; break;
+	case cont_charref: s << "charref"; break;
+	case cont_escape_lbrace: s << "escape_lbrace"; break;
+	case cont_escape_rbrace: s << "escape_rbrace"; break;
+	case cont_expr: s << "expr\n"; break;
 	default: s << "???";
 	}
-	if (type!=expr)
+	if (type!=cont_expr)
 		s << ", ref=" << ref << endl;
 	else
 		if (expr_h!=NULL) expr_h->put(s);
@@ -4588,9 +4589,9 @@ ostream& OccurrenceIndicator::put(ostream& s) const
 {
 	s << INDENT << "OccurrenceIndicator[";
 	switch(type) {
-	case hook: s << "hook"; break;
-	case star: s << "star"; break;
-	case plus: s << "plus"; break;
+	case occurs_optionally: s << "(?)"; break;
+	case occurs_zero_or_more: s << "(*)"; break;
+	case occurs_one_or_more: s << "(+)"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -5785,9 +5786,6 @@ ostream& FTWords::put(ostream& s) const
 
 
 
-
-
-
 // [351] FTWordsValue
 // ------------------
 FTWordsValue::FTWordsValue(
@@ -5807,14 +5805,11 @@ FTWordsValue::~FTWordsValue()
 
 ostream& FTWordsValue::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTWordsValue[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTWordsValue::
-
-
-
 
 
 
@@ -5833,14 +5828,11 @@ FTProximity::~FTProximity()
 
 ostream& FTProximity::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTProximity[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTProximity::
-
-
-
 
 
 
@@ -5859,14 +5851,11 @@ FTOrderedIndicator::~FTOrderedIndicator()
 
 ostream& FTOrderedIndicator::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTOrderedIndicator[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTOrderedIndicator::
-
-
-
 
 
 
@@ -5885,14 +5874,11 @@ FTMatchOption::~FTMatchOption()
 
 ostream& FTMatchOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTMatchOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTMatchOption::
-
-
-
 
 
 
@@ -5913,14 +5899,11 @@ FTCaseOption::~FTCaseOption()
 
 ostream& FTCaseOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTCaseOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTCaseOption::
-
-
-
 
 
 
@@ -5941,14 +5924,11 @@ FTDiacriticsOption::~FTDiacriticsOption()
 
 ostream& FTDiacriticsOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTDiacriticsOptino[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTDiacriticsOption::
-
-
-
 
 
 
@@ -5969,14 +5949,11 @@ FTStemOption::~FTStemOption()
 
 ostream& FTStemOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTStemOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTStemOption::
-
-
-
 
 
 
@@ -6004,14 +5981,11 @@ FTThesaurusOption::~FTThesaurusOption()
 
 ostream& FTThesaurusOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTThesaurusOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTThesaurusOption::
-
-
-
 
 
 
@@ -6041,8 +6015,6 @@ ostream& FTThesaurusList::put(ostream& s) const
 
 
 
-
-
 // [359] FTThesaurusID
 // -------------------
 FTThesaurusID::FTThesaurusID(
@@ -6064,14 +6036,11 @@ FTThesaurusID::~FTThesaurusID()
 
 ostream& FTThesaurusID::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTThesaurusID[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTThesaurusID::
-
-
-
 
 
 
@@ -6096,14 +6065,11 @@ FTStopwordOption::~FTStopwordOption()
 
 ostream& FTStopwordOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTStopwordOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTStopwordOption::
-
-
-
 
 
 
@@ -6124,15 +6090,13 @@ ostream& FTInclExclStringLiteralList::put(ostream& s) const
 {
 	s << INDENT << "FTInclExclStringLiteralList[" << endl;
 	++printdepth;
-	std::vector<rchandle<FTInclExclStringLiteral> >::const_iterator it = incl_excl_lit_hv.begin();
+	std::vector<rchandle<FTInclExclStringLiteral> >::const_iterator it =
+		incl_excl_lit_hv.begin();
 	for (; it!=incl_excl_lit_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
 	return s << OUTDENT << "]\n";
 }
 
 //-FTInclExclStringLiteralList::
-
-
-
 
 
 
@@ -6155,14 +6119,11 @@ FTRefOrList::~FTRefOrList()
 
 ostream& FTRefOrList::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTRefOrList[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTRefOrList::
-
-
-
 
 
 
@@ -6192,15 +6153,12 @@ ostream& FTStringLiteralList::put(ostream& s) const
 
 
 
-
-
-
 // [362] FTInclExclStringLiteral
 // -----------------------------
 FTInclExclStringLiteral::FTInclExclStringLiteral(
 	location const& _loc,
 	rchandle<FTRefOrList> _ref_or_list_h,
-	incl_excl_mode_t _mode)
+	intex_op_t _mode)
 :
 	parsenode(_loc),
 	ref_or_list_h(_ref_or_list_h),
@@ -6214,13 +6172,11 @@ FTInclExclStringLiteral::~FTInclExclStringLiteral()
 
 ostream& FTInclExclStringLiteral::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTInclExclStringLiteral[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTInclExclStringLiteral::
-
-
 
 
 
@@ -6241,14 +6197,11 @@ FTLanguageOption::~FTLanguageOption()
 
 ostream& FTLanguageOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTLanguageOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTLanguageOption::
-
-
-
 
 
 
@@ -6269,14 +6222,11 @@ FTWildcardOption::~FTWildcardOption()
 
 ostream& FTWildcardOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTWildcardOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTWildcardOption::
-
-
-
 
 
 
@@ -6297,14 +6247,11 @@ FTContent::~FTContent()
 
 ostream& FTContent::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTContent[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTContent::
-
-
-
 
 
 
@@ -6325,14 +6272,11 @@ FTAnyallOption::~FTAnyallOption()
 
 ostream& FTAnyallOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTAnyallOption[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTAnyallOption::
-
-
-
 
 
 
@@ -6355,14 +6299,11 @@ FTRange::~FTRange()
 
 ostream& FTRange::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTRange[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTRange::
-
-
-
 
 
 
@@ -6385,14 +6326,11 @@ FTDistance::~FTDistance()
 
 ostream& FTDistance::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTDistance[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTDistance::
-
-
-
 
 
 
@@ -6415,14 +6353,11 @@ FTWindow::~FTWindow()
 
 ostream& FTWindow::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTWindow[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTWindow::
-
-
-
 
 
 
@@ -6443,14 +6378,11 @@ FTTimes::~FTTimes()
 
 ostream& FTTimes::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTTimes[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTTimes::
-
-
-
 
 
 
@@ -6471,14 +6403,11 @@ FTScope::~FTScope()
 
 ostream& FTScope::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTScope[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTScope::
-
-
-
 
 
 
@@ -6499,14 +6428,11 @@ FTUnit::~FTUnit()
 
 ostream& FTUnit::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTUnit[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTUnit::
-
-
-
 
 
 
@@ -6527,14 +6453,11 @@ FTBigUnit::~FTBigUnit()
 
 ostream& FTBigUnit::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTBigUnit[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTBigUnit::
-
-
-
 
 
 
@@ -6555,15 +6478,11 @@ FTIgnoreOption::~FTIgnoreOption()
 
 ostream& FTIgnoreOption::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
+	s << INDENT << "FTBigUnit[";
 	return s << OUTDENT << "]\n";
 }
 
 //-FTIgnoreOption::
-
-
-
-
 
 
 

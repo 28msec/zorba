@@ -21,6 +21,7 @@
 #include <vector>
 #include <assert.h>
 
+#include "parse_constants.h"
 #include "../context/context.h"
 #include "../types/qname.h"
 #include "../util/rchandle.h"
@@ -119,7 +120,6 @@ class ComparisonExpr;
 class ComputedConstructor;
 class ConstructionDecl;
 class Constructor;
-//class ContentExpr;
 class ContextItemExpr;
 class CopyNamespacesDecl;
 class DefaultCollationDecl;
@@ -671,12 +671,6 @@ class DefaultNamespaceDecl : public parsenode
 |			| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
 |_______________________________________________________________________*/
 {
-public:
-	enum default_namespace_mode_t {
-		element,
-		function
-	};
-
 protected:
 	enum default_namespace_mode_t mode;
 	std::string default_namespace;
@@ -1121,16 +1115,16 @@ class ConstructionDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	enum context::construction_mode_t mode;
+	context::construction_mode_t mode;
 
 public:
 	ConstructionDecl(
 		yy::location const&,
-		enum context::construction_mode_t);
+		context::construction_mode_t);
 	~ConstructionDecl();
 
 public:
-	enum context::construction_mode_t get_mode() const { return mode; }
+	context::construction_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1154,16 +1148,8 @@ class FunctionDecl : public parsenode
 |
 |_______________________________________________________________________*/
 {
-public:
-	enum function_type_t {
-		fn_extern,
-		fn_read,
-		fn_update,
-		fn_extern_update,
-	};
-
 protected:
-	enum function_type_t type;
+	function_type_t type;
 	rchandle<QName> name_h;
 	rchandle<ParamList> paramlist_h;
 	rchandle<EnclosedExpr> body_h;
@@ -1177,7 +1163,7 @@ public:
 		rchandle<ParamList>,
 		rchandle<SequenceType>,
 		rchandle<EnclosedExpr>,
-		enum function_type_t type);
+		function_type_t type);
 	~FunctionDecl();
 
 public:
@@ -1185,7 +1171,7 @@ public:
 	rchandle<ParamList> get_paramlist() const { return paramlist_h; }
 	rchandle<EnclosedExpr> get_body() const { return body_h; }
 	rchandle<SequenceType> get_return_type() const { return return_type_h; }
-	enum function_type_t get_type() const { return type; }
+	function_type_t get_type() const { return type; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1846,23 +1832,17 @@ class OrderDirSpec : public parsenode
 |	::= ASCENDING  |  DESCENDING
 |_______________________________________________________________________*/
 {
-public:
-	enum dir_spec_t {
-		ascending,
-		descending
-	};
-
 protected:
-	enum dir_spec_t dir_spec;
+	dir_spec_t dir_spec;
 
 public:
 	OrderDirSpec(
 		yy::location const&,
-		enum dir_spec_t dir_spec);
+		dir_spec_t dir_spec);
 	~OrderDirSpec();
 	
 public:
-	enum dir_spec_t get_dir_spec() const { return dir_spec; }
+	dir_spec_t get_dir_spec() const { return dir_spec; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1932,12 +1912,6 @@ class QuantifiedExpr : public exprnode
 |			|	EVERY_DOLLAR  QVarInDeclList
 |_______________________________________________________________________*/
 {
-public:
-	enum quantification_mode_t {
-		some,
-		every
-	};
-
 protected:
 	quantification_mode_t qmode;
 	rchandle<QVarInDeclList> decl_list_h;
@@ -2349,21 +2323,15 @@ class AdditiveExpr : public exprnode
 |			|	AdditiveExpr  MINUS  MultiplicativeExpr
 |_______________________________________________________________________*/
 {
-public:
-	enum add_op_t {
-		plus,
-		minus
-	};
-
 protected:
-	enum add_op_t add_op;
+	add_op_t add_op;
 	rchandle<exprnode> add_expr_h;
 	rchandle<exprnode> mult_expr_h;
 
 public:
 	AdditiveExpr(
 		yy::location const&,
-		enum add_op_t add_op,
+		add_op_t add_op,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~AdditiveExpr();
@@ -2392,23 +2360,15 @@ class MultiplicativeExpr : public exprnode
 |			|	MultiplicativeExpr  MOD  UnionExpr
 |_______________________________________________________________________*/
 {
-public:
-	enum mult_op_t {
-		times,
-		div,
-		idiv,
-		mod
-	};
-
 protected:
-	enum mult_op_t mult_op;
+	mult_op_t mult_op;
 	rchandle<exprnode> mult_expr_h;
 	rchandle<exprnode> union_expr_h;
 
 public:
 	MultiplicativeExpr(
 		yy::location const&,
-		enum mult_op_t,
+		mult_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~MultiplicativeExpr();
@@ -2416,7 +2376,7 @@ public:
 public:
 	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
 	rchandle<exprnode> get_union_expr() const { return union_expr_h; }
-	enum mult_op_t get_mult_op() const { return mult_op; }
+	mult_op_t get_mult_op() const { return mult_op; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -2467,12 +2427,6 @@ class IntersectExceptExpr : public exprnode
 |			|	IntersectExceptExpr  EXCEPT  InstanceofExpr
 |_______________________________________________________________________*/
 {
-public:
-	enum intex_op_t {
-		intersect,
-		except	
-	};
-
 protected:
 	enum intex_op_t intex_op;
 	rchandle<exprnode> intex_expr_h;
@@ -2713,16 +2667,6 @@ class GeneralComp : public parsenode
 |	::= EQUALS | NE | LT | LE | GT | GE
 |_______________________________________________________________________*/
 {
-public:
-	enum gencomp_t {
-		eq,
-		ne,
-		lt,
-		le,
-		gt,
-		ge
-	};
-
 protected:
 	enum gencomp_t type;
 
@@ -2751,16 +2695,6 @@ class ValueComp : public parsenode
 |	::= VAL_EQ | VAL_NE | VAL_LT | VAL_LE | VAL_GT | VAL_GE
 |_______________________________________________________________________*/
 {
-public:
-	enum valcomp_t {
-		val_eq,
-		val_ne,
-		val_lt,
-		val_le,
-		val_gt,
-		val_ge
-	};
-
 protected:
 	enum valcomp_t type; 
 
@@ -2789,13 +2723,6 @@ class NodeComp : public parsenode
 |	::= IS | PRECEDES | FOLLOWS
 |_______________________________________________________________________*/
 {
-public:
-	enum nodecomp_t {
-		is,
-		precedes,
-		follows	
-	};
-
 protected:
 	enum nodecomp_t type;
 
@@ -2825,12 +2752,6 @@ class ValidateExpr : public exprnode
 |			|	VALIDATE_MODE  LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
-public:
-	enum validation_mode_t {
-		strict,
-		lax
-	};
-
 protected:
 	enum validation_mode_t valmode;
 	rchandle<exprnode> expr_h;
@@ -2844,7 +2765,7 @@ public:
 
 public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
-	validation_mode_t get_valmode() const { return valmode; }
+	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -2978,14 +2899,6 @@ class PathExpr : public exprnode
 |			|	RelativePathExpr	 								 gn:leading-lone-slashXQ
 |_______________________________________________________________________*/
 {
-public:
-	enum pathtype_t {
-		leading_lone_slash,
-		leading_slash,
-		leading_slash_slash,
-		relative
-	};
-
 protected:
 	enum pathtype_t type;
 	rchandle<exprnode> relpath_expr_h;
@@ -3018,13 +2931,6 @@ class RelativePathExpr : public exprnode
 |			| StepExpr  SLASH_SLASH  RelativePathExpr 
 |_______________________________________________________________________*/
 {
-public:
-	enum steptype_t {
-		step,
-		slash,
-		slash_slash	
-	};
-
 protected:
 	enum steptype_t step_type;
 	rchandle<exprnode> step_expr_h;
@@ -3159,17 +3065,6 @@ class ForwardAxis : public parsenode
 |			| FOLLOWING_AXIS
 |_______________________________________________________________________*/
 {
-public:
-	enum forward_axis_t {
-		child,
-		descendant,
-		attribute,
-		self,
-		descendant_or_self,
-		following_sibling,
-		following
-	};
-
 protected:
 	enum forward_axis_t axis;
 
@@ -3266,15 +3161,6 @@ class ReverseAxis : public parsenode
 |			| ANCESTOR_OR_SELF_AXIS
 |_______________________________________________________________________*/
 {
-public:
-	enum reverse_axis_t {
-		parent,
-		ancestor,
-		preceding_sibling,
-		preceding,
-		ancestor_or_self
-	};
-
 protected:
 	enum reverse_axis_t axis;
 
@@ -3362,13 +3248,6 @@ class Wildcard : public parsenode
 |			|	PREFIX_WILDCARD    ws:explicitXQ
 |_______________________________________________________________________*/
 {
-public:
-	enum wildcard_t {
-		wild_all,
-		wild_elem,
-		wild_prefix
-	};
-
 protected:
 	enum wildcard_t type;
 	std::string prefix;
@@ -3542,11 +3421,6 @@ class NumericLiteral : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	enum numeric_type_t {
-		num_integer,
-		num_decimal,
-		num_double
-	};
 	typedef long long decimal;
 
 protected:
@@ -4165,15 +4039,6 @@ class CommonContent : public exprnode
 |			|	EnclosedExpr
 |_______________________________________________________________________*/
 {
-public:
-	enum common_content_t {
-		entity,
-		charref,
-		escape_lbrace,
-		escape_rbrace,
-		expr
-	};
-
 protected:
 	enum common_content_t type;
 	std::string ref;
@@ -4656,13 +4521,6 @@ class OccurrenceIndicator : public parsenode
 |	::= HOOK | STAR | PLUS   gn:occurrence-indicatorsXQ
 |_______________________________________________________________________*/
 {
-public:
-	enum occurrence_t {
-		hook,
-		star,
-		plus
-	};
-
 protected:
 	enum occurrence_t type;
 
@@ -5953,14 +5811,6 @@ class FTCaseOption : public FTMatchOption
 |			| CASE_INSENSITIVE
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_case_mode_t {
-		ft_lowercase,
-		ft_uppercase,
-		ft_sensitive,
-		ft_insensitive
-	};
-
 protected:
 	ft_case_mode_t mode;
 
@@ -5991,14 +5841,6 @@ class FTDiacriticsOption : public FTMatchOption
 |			| DIACRITICS_INSENSITIVE
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_diacritics_mode_t {
-		with,
-		without,
-		senstive,
-		insensitive
-	};
-
 protected:
 	ft_diacritics_mode_t mode;
 
@@ -6174,13 +6016,6 @@ class FTStopwordOption : public FTMatchOption
 |			| WITHOUT_STOP_WORDS
 |_______________________________________________________________________*/
 {
-public:
-	enum stop_words_mode_t {
-		with,
-		with_default,
-		without
-	};
-
 protected:
 	rchandle<FTRefOrList> refor_list_h;
 	rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
@@ -6308,27 +6143,21 @@ class FTInclExclStringLiteral : public parsenode
 |			|	EXCEPT  FTRefOrList
 |_______________________________________________________________________*/
 {
-public:
-	enum incl_excl_mode_t {
-		inex_union,
-		inex_except
-	};
-
 protected:
 	rchandle<FTRefOrList> ref_or_list_h;
-	incl_excl_mode_t mode;
+	intex_op_t mode;
 
 public:
 	FTInclExclStringLiteral(
 		yy::location const&,
 		rchandle<FTRefOrList>,
-		incl_excl_mode_t);
+		intex_op_t);
 	~FTInclExclStringLiteral();
 
 public:
 	rchandle<FTRefOrList> get_ref_or_list() const
 		{ return ref_or_list_h; }
-	incl_excl_mode_t get_mode() const
+	intex_op_t get_mode() const
 		{ return mode; }
 
 public:
@@ -6403,13 +6232,6 @@ class FTContent : public FTProximity
 |			| ENTIRE_CONTENT
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_content_mode_t {
-		at_start,
-		at_end,
-		entire_content
-	};
-
 protected:
 	ft_content_mode_t mode;
 
@@ -6441,15 +6263,6 @@ class FTAnyallOption : public parsenode
 |			| PHRASE
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_anyall_option_t {
-		any,
-		any_word,
-		all,
-		all_words,
-		phrase
-	};
-
 protected:
 	enum ft_anyall_option_t option;
 
@@ -6606,12 +6419,6 @@ class FTScope : public FTProximity
 |			|	DIFFERENT  FTBigUnit
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_scope_t {
-		same,
-		different
-	};
-
 protected:
 	ft_scope_t scope;
 
@@ -6639,13 +6446,6 @@ class FTUnit : public parsenode
 |	::=	WORDS | SENTENCES | PARAGRAPH
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_unit_t {
-		words,
-		sentences,
-		paragraph
-	};
-
 protected:
 	ft_unit_t unit;
 
@@ -6673,12 +6473,6 @@ class FTBigUnit : public parsenode
 |	::=	SENTENCE | PARAGRAPH
 |_______________________________________________________________________*/
 {
-public:
-	enum ft_big_unit_t {
-		sentence,
-		paragraph
-	};
-
 protected:
 	enum ft_big_unit_t unit;
 
