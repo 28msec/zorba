@@ -12,6 +12,7 @@
 #define XQP_SEQUENCE_TYPE_H
 
 #include "types.h"
+#include "../parser/parse_constants.h"
 #include <string>
 
 namespace xqp {
@@ -26,12 +27,11 @@ class sequence_type
 {
 protected:
 	item_type primary;				// e.g. "element", "comment", or "integer"
-	int cardinality;					// the required cardinality
+	enum occurrence_t occurs;	// e.g. "?", "*", "+"
 
 public:
-	// static initialization
-	static bool initialized;				// default initialized to 0
-	static void initializer();
+	//static bool initialized;				// default initialized to 0
+	//static void initializer();
 
 public:
   static sequence_type ANY_SEQUENCE;			// any sequence of items
@@ -54,7 +54,7 @@ public:
    *	@param primary			The item type
    *	@param cardinality	The required cardinality
    */
-	sequence_type(item_type primary, uint32_t cardinality);
+	sequence_type(item_type, enum occurrence_t);
 
 	/**
 	 *	Construct an instance of sequence_type. This is a factory method:
@@ -63,7 +63,7 @@ public:
 	 *	@param primary			The item type
 	 *	@param cardinality	The required cardinality
 	 */
-	static sequence_type make_sequence_type(item_type primary, uint32_t cardinality);
+	static sequence_type make_sequence_type(item_type, occurrence_t);
 
 	/**
 	 *	Get the "primary" part of this required type.
@@ -78,7 +78,7 @@ public:
 	 *	 Cardinality.ONE_OR_MORE, etc
 	 *	 @return the required cardinality
 	 */
-	uint32_t get_cardinality() { return cardinality; }
+	enum occurrence_t get_occurs() { return occurs; }
 
 	/**
 	 * Return a string representation of this SequenceType

@@ -10,17 +10,20 @@
 
 #include "sequence_type.h"
 #include "character.h"
+#include "../parser/parse_constants.h"
+#include <string>
 
+using namespace std;
 namespace xqp {
 
-
-void sequence_type::initialize()
+/*
+void sequence_type::initializer()
 {
 	ANY_SEQUENCE =
 		make_sequence_type(any_item_type::get_instance(), ALLOWS_ZERO_OR_MORE);
 
 	SINGLE_ITEM =
-    make_sequence_type(any_item_type::getInstance(), EXACTLY_ONE);
+    make_sequence_type(any_item_type::get_instance(), EXACTLY_ONE);
 
 	SINGLE_ATOMIC =
     make_sequence_type(atomic_type::get_instance(), EXACTLY_ONE);
@@ -55,60 +58,41 @@ void sequence_type::initialize()
 	EMPTY_SEQUENCE =
     make_sequence_type(empty_sequence::get_instance(), EMPTY);
 }
+*/
 
 
 sequence_type::sequence_type(
-	item_type primary,
-	uint32_t cardinality)
+	item_type _primary,
+	enum occurrence_t _occurs)
+:
+	primary(_primary),
+	occurs(_occurs)
 {
-	this.primaryType = primaryType;
-	if (primaryType instanceof NoNodeTest) {
-		this.cardinality = StaticProperty.EMPTY;
-	} else {
-		this.cardinality = cardinality;
-	}
 }
 
 
-sequence_type make_sequence_type(item_type primaryType, uint32_t cardinality)
+sequence_type make_sequence_type(
+	item_type primary, 
+	enum occurrence_t occurs)
 {
-	if (!(primaryType instanceof BuiltInAtomicType)) {
-		return new sequence_type(primaryType, cardinality);
-	}
-
-	// For each item_type, there is an array of 8 sequence_types,
-	// one for each possible cardinality (including impossible cardinalities,
-	// such as "0 or many"). The pool is a static HashMap that obtains this array,
-	// given an item_type. The array contains null entries for cardinalities that
-	// have not been requested.
-
-	sequence_type* array = (sequence_type*)pool.get(primary);
-	if (array==NULL) {
-		array = new sequence_type[8];
-		pool.put(primary, array);
-	}
-	uint32_t code = StaticProperty.getCardinalityCode(cardinality);
-	if (array[code] == null) {
-		sequence_type s = new sequence_type(primaryType, cardinality);
-		array[code] = s;
-		return s;
-	} else {
-		return array[code];
-	}
+	return sequence_type(primary, occurs);
 }
 
 
-string sequnce_type::describe()
+string sequence_type::describe()
 {
-	string s = primary.describe();
-	if (cardinality == StaticProperty.ALLOWS_ONE_OR_MORE) {
-		s = s + '+';
-	} else if (cardinality == StaticProperty.ALLOWS_ZERO_OR_MORE) {
-		s = s + '*';
-	} else if (cardinality == StaticProperty.ALLOWS_ZERO_OR_ONE) {
-		s = s + '?';
+	if (occurs==occurs_never) {
+		return "void()";
 	}
-	return s;
+	ostringstream oss;
+	oss << primary.describe();
+	switch (occurs) {
+	case occurs_optionally: oss << "?"; break;
+	case occurs_zero_or_more: oss << "*"; break;
+	case occurs_one_or_more: oss << "+"; break;
+	default: oss << "??";
+	}
+	return oss.str();
 }
 
 
