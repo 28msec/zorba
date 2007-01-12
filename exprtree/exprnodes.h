@@ -10,10 +10,6 @@
 
 #ifndef XQP_EXPR_NODE_H
 #define XQP_EXPR_NODE_H
-#ifdef __GNUC__
-#pragma interface
-#endif
-
 
 #include <iostream>
 #include <sstream>
@@ -23,18 +19,18 @@
 #include <vector>
 #include <assert.h>
 
-
 #include "../context/context.h"
-#include "../types/qname.h"
-#include "../types/type.h"
+#include "../parser/parse_constants.h"
+#include "../datamodel/qname.h"
+#include "../datamodel/sequence_type.h"
+#include "../datamodel/type.h"
 #include "../util/rchandle.h"
+#include "../values/ft_options.h"
 
 #include "location.hh"
 
 
-
 namespace xqp {
-
 
 /*______________________________________________________________________
 |  
@@ -64,7 +60,6 @@ std::ostream& operator<<(std::ostream& s, expr const& r)
 
 
 
-
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //  XQuery 1.0 productions                                             //
@@ -75,7 +70,7 @@ std::ostream& operator<<(std::ostream& s, expr const& r)
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
 class expr_list : public expr
 /*______________________________________________________________________
-|	::= ExprSingle | Expr  COMMA  ExprSingle
+|	::= ExprSingle  ( ","  ExprSingle )*
 |_______________________________________________________________________*/
 {
 protected:
@@ -86,8 +81,15 @@ public:
 	~expr_list();
 
 public:
-	void push_back(rchandle<expr> expr_h) { expr_hv.push_back(expr_h); }
-	rchandle<expr> operator[](int i) const { return expr_hv[i]; }
+	void add(rchandle<expr> expr_h) { expr_hv.push_back(expr_h); }
+	rchandle<expr> & operator[](int i) { return expr_hv[i]; }
+	rchandle<expr> const& operator[](int i) const { return expr_hv[i]; }
+
+	std::vector<rchandle<expr> >::const_iterator begin()
+		{ return expr_hv.begin(); }
+	std::vector<rchandle<expr> >::const_iterator end()
+		{ return expr_hv.end(); }
+	uint32_t size() const { return expr_hv.size(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -95,19 +97,45 @@ public:
 };
 
 
-
-// [32] [http://www.w3.org/TR/xquery/#prod-xquery-ExprSingle]
-class expr_single : public expr
+// [33a] var_binding
+struct var_binding : public rcobject
 /*______________________________________________________________________
-|	::= FLWORExpr | QuantifiedExpr | TypeswitchExpr | IfExpr | OrExpr
+| ::= VARNAME  ("in"|":=")  ExprSingle
+|     | VARNAME  TypeDeclaration  ("in"|":=")  ExprSingle
+|     | VARNAME  PositionalVar  "in"  ExprSingle
+|     | VARNAME  TypeDeclaration  PositionalVar  ("in"|":=")  ExprSingle
+| 
+|     | VARNAME  FTScoreVar  ("in"|":=")  ExprSingle
+|     | VARNAME  TypeDeclaration  FTScoreVar  ("in"|":=")  ExprSingle
+|     | VARNAME  PositionalVar  FTScoreVar  "in"  ExprSingle
+|     | VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  "in"  ExprSingle
 |_______________________________________________________________________*/
 {
-public:
-	expr_single(yy::location const&);
-	~expr_single();
+  rchandle<QName> varname_h;
+  sequence_type   type;
+  rchandle<QName> posvar_h;
+  rchandle<QName> ft_scorevar_h;
+  rchandle<expr>  valexpr_h;
 
-public:
-	virtual std::ostream& put(std::ostream&) const;
+  var_binding() {}
+  ~var_binding() {}
+
+  rchandle<QName> get_varname() const { return varname_h; }
+  void set_varname(rchandle<QName> q_h) { varname_h = q_h; }
+
+  sequence_type get_type() const { return type; }
+  void set_type(sequence_type t) { type = t; }
+
+  rchandle<QName> get_posvar() const { return posvar_h; }
+  void set_posvar(rchandle<QName> q_h) { posvar_h = q_h; }
+
+  rchandle<QName> get_ft_scorevar() const { return ftscorevar_h; }
+  void get_ft_scorevar(rchandle<QName> q_h) { ftscorevar_h = q_h; }
+
+  rchandle<expr> get_valexpr() const { return valexpr_h; }
+  void get_valexpr(rchandle<expr> e_h ) { valexpr_h = e_h; }
+
+  std::ostream& put(std::ostream&) const;
 
 };
 
@@ -123,25 +151,37 @@ class flwor_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<var_binding> > bind_hv;
-	rchandle<expr_expr>  where_h;
-	rchandle<order_expr> orderby_h;
-	rchandle<expr>  retval_h;
+	std::vector<var_binding> bind_v;
+	rchandle<expr> where_h;
+	rchandle<expr> orderby_h;
+	rchandle<expr> retval_h;
 
 public:
-	flwor_expr(
-		yy::location const&,
-		std::vector<rchandle<var_binding> > bind_hv;
-		rchandle<expr_expr>  where_h;
-		rchandle<order_expr> orderby_h;
-		rchandle<expr>  retval_h);
+	flwor_expr(yy::location const&);
 	~flwor_expr();
 
 public:
-	rchandle<var_binding> opertor[](int i);
-	rchandle<expr_expr> get_where() const { return where_h; }
-	rchandle<order_expr> get_orderby() const { return orderby_h; }
+	var_binding & opertor[](int i)
+		{ return bind_v[i]; }
+	var_binding const& opertor[](int i) const
+		{ return bind_v[i]; }
+	void add(var_binding const& bind_h)
+		{ bind_v.push_back(bind_h); } 
+
+	std::vector<var_binding>::const_iterator begin() const
+		{ return bind_v.begin(); }
+	std::vector<var_binding>::const_iterator end() const
+		{ return bind_v.end(); }
+	uint32_t bind_count() const { return bind_v.size(); }
+
+	rchandle<expr> get_where() const { return where_h; }
+	void set_where(rchandle<expr> e_h) { where_h = e_h; }
+
+	rchandle<expr> get_orderby() const { return orderby_h; }
+	void set_orderby(rchandle<expr> e_h) { orderby_h = e_h; }
+
 	rchandle<expr> get_retval() const { return retval_h; }
+	void set_retval(rchandle<expr> e_h) { retval_h = e_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -153,26 +193,39 @@ public:
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 class quantified_expr : public expr
 /*______________________________________________________________________
-|	::= SOME_DOLLAR  QVarInDeclList | EVERY_DOLLAR  QVarInDeclList
+|	::= (<"some" "$">|<"every" "$">) QVarInDeclList "satisfies" ExprSingle
 |_______________________________________________________________________*/
 {
 protected:
-	QuantifiedExpr::quantification_mode_t qmode;
-	rchandle<QVarInDeclList> decl_list_h;
-	rchandle<expr> expr_h;
+	enum quantification_mode_t qmode;
+	std::vector<var_binding> bind_v;
+	rchandle<expr> sat_expr_h;
 
 public:
-	QuantifiedExpr(
+	quantified_expr(
 		yy::location const&,
-		quantification_mode_t qmode,
-		rchandle<QVarInDeclList>,
-		rchandle<expr>);
-	~QuantifiedExpr();
+		enum quantification_mode_t);
+	~quantified_expr();
 
 public:
-	quantification_mode_t get_qmode() const { return qmode; }
-	rchandle<QVarInDeclList> get_decl_list() const { return decl_list_h; }
-	rchandle<expr> get_expr() const { return expr_h; }
+	var_binding & operator[](int i)
+		{ return bind_v[i]; }
+	var_binding const& operator[](int i) const
+		{ return bind_v[i]; }
+	void add(var_binding const& bind_h)
+		{ bind_v.push_back(bind_h); } 
+
+	std::vector<var_binding>::const_iterator begin() const
+		{ return bind_v.begin(); }
+	std::vector<var_binding>::const_iterator end() const
+		{ return bind_v.end(); }
+	uint32_t bind_count() const { return bind_v.size(); }
+
+	enum quantification_mode_t get_qmode() const { return qmode; }
+	void set_qmode(enum quantification_mode_t _qmode) { qmode = _qmode; }
+
+	rchandle<expr> get_sat_expr() const { return sat_expr_h; }
+	void set_sat_expr(rchandle<expr> e_h) { sat_expr_h = e_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -182,6 +235,15 @@ public:
 
 
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
+
+typedef struct case_clause
+{
+	rchandle<varref_expr> varref_h;
+	sequence_type seqtype;
+	rchandle<expr> case_expr_h;
+} case_clause_t;
+
+
 class typeswitch_expr : public expr
 /*______________________________________________________________________
 |	::= TYPESWITCH_LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
@@ -191,29 +253,37 @@ class typeswitch_expr : public expr
 {
 protected:
 	rchandle<expr> switch_expr_h;
-	rchandle<CaseClauseList> clause_list_h;
-	std::string default_varname;
+	std::vector<case_clause_t> case_clause_hv;
+	rchandle<varref_expr> default_varname_h;
 	rchandle<expr> default_clause_h;
 
 public:
-	typeswitch_expr(
-		yy::location const&,
-		rchandle<expr>,
-		rchandle<CaseClauseList>,
-		rchandle<expr>);
-	typeswitch_expr(
-		yy::location const&,
-		rchandle<expr>,
-		rchandle<CaseClauseList>,
-		std::string default_varname,
-		rchandle<expr>);
+	typeswitch_expr(yy::location const&);
 	~typeswitch_expr();
 
 public:
 	rchandle<expr> get_switch_expr() const { return switch_expr_h; }
-	rchandle<CaseClauseList> get_clause_list() const { return clause_list_h; }
-	std::string get_default_varname() const { return default_varname; }
+	void set_switch_expr(rchandle<expr> e_h) { switch_expr_h = e_h; }
+
+	rchandle<varref_expr> get_default_varname() const
+		{ return default_varname; }
+	void set_default_varname(rchandle<varref_expr> const& var) const
+		{ default_varname = var; }
+
 	rchandle<expr> get_default_clause() const { return default_clause_h; }
+	void set_default_clause(rchandle<expr> const& e_h) { default_clause_h = e_h; }
+
+	void add_clause(case_clause_t cc)
+		{ case_clause_hv.push_back(cc); }
+
+	std::vector<case_clause_t>::const_iterator begin() const
+		{ return case_clause_hv.begin(); }
+	std::vector<case_clause_t>::const_iterator end() const
+		{ return case_clause_hv.end(); }
+	uint32_t clause_count() const { return case_clause_hv.size(); }
+
+	case_clause_t & operator[](int i) { return case_clause_hv[i]; }
+	case_clause_t const& operator[](int i) const { return case_clause_hv[i]; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -239,12 +309,21 @@ public:
 		rchandle<expr>,
 		rchandle<expr>,
 		rchandle<expr>);
+
+	if_expr(
+		yy::location const&);
+
 	~if_expr();
 
 public:
 	rchandle<expr> get_cond_expr() const { return cond_expr_h; }
+	void set_cond_expr(rchandle<expr> e_h) { cond_expr_h = e_h; }
+
 	rchandle<expr> get_then_expr() const { return then_expr_h; }
+	void set_then_expr(rchandle<expr> e_h) { then_expr_h = e_h; }
+
 	rchandle<expr> get_else_expr() const { return else_expr_h; }
+	void set_else_expr(rchandle<expr> e_h) { else_expr_h = e_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -260,19 +339,25 @@ class or_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<expr> or_expr_h;
-	rchandle<expr> and_expr_h;
+	std::vector<rchandle<expr> > and_expr_hv;
 
 public:
-	or_expr(
-		yy::location const&,
-		rchandle<expr>,
-		rchandle<expr>);
+	or_expr(yy::location const&);
 	~or_expr();
 
 public:
-	rchandle<expr> get_or_expr() const { return or_expr_h; }
-	rchandle<expr> get_and_expr() const { return and_expr_h; }
+	void add(rchandle<expr> e_h) { and_expr_hv.push_back(e_h); }
+
+	rchandle<expr> & operator[](int i)
+		{ return and_expr_hv[i]; }
+	rchandle<expr> const& operator[](int i) const
+		{ return and_expr_hv[i]; }
+
+	std::vector<rchandle<expr> >::const_iterator begin()
+		{ return and_expr_hv.begin(); }
+	std::vector<rchandle<expr> >::const_iterator end()
+		{ return and_expr_hv.end(); }
+	uint32_t size() const { return and_expr_hv.size(); }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -288,19 +373,21 @@ class and_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<expr> and_expr_h;
-	rchandle<expr> comp_expr_h;
+	std::vector<rchandle<expr> > comp_expr_hv;
 
 public:
-	and_expr(
-		yy::location const&,
-		rchandle<expr>,
-		rchandle<expr>);
+	and_expr(yy::location const&);
 	~and_expr();
 
 public:
-	rchandle<expr> get_and_expr() const { return and_expr_h; }
-	rchandle<expr> get_comp_expr() const { return comp_expr_h; }
+	void add(rchandle<expr> expr_h) { comp_expr_hv.push_back(expr_h); }
+	rchandle<expr> operator[](int i) const { return comp_expr_hv[i]; }
+
+	std::vector<rchandle<expr> >::const_iterator begin()
+		{ return comp_expr_hv.begin(); }
+	std::vector<rchandle<expr> >::const_iterator end()
+		{ return comp_expr_hv.end(); }
+	uint32_t size() const { return comp_expr_hv.size(); }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -316,13 +403,14 @@ class valcomp_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	ValueComp::valcomp_t comp;
+	enum valcomp_t comp;
 	rchandle<expr> lhs_h;
 	rchandle<expr> rhs_h;
 
 public:
 	valcomp_expr(
 		yy::location const&,
+		enum valcomp_t comp,
 		rchandle<expr>,
 		rchandle<expr>);
 	~valcomp_expr();
@@ -341,13 +429,14 @@ public:
 class gencomp_expr : public expr
 {
 protected:
-	GeneralComp::gencomp_t comp;
+	enum gencomp_t comp;
 	rchandle<expr> lhs_h;
 	rchandle<expr> rhs_h;
 
 public:
 	gencomp_expr(
 		yy::location const&,
+		enum gencomp_t,
 		rchandle<expr>,
 		rchandle<expr>);
 	~gencomp_expr();
@@ -366,13 +455,14 @@ public:
 class nodecomp_expr : public expr
 {
 protected:
-	NodeComp::nodecomp_t comp;
+	nodecomp_t comp;
 	rchandle<expr> lhs_h;
 	rchandle<expr> rhs_h;
 
 public:
 	valcomp_expr(
 		yy::location const&,
+		nodecomp_t comp,
 		rchandle<expr>,
 		rchandle<expr>);
 	~valcomp_expr();
@@ -455,29 +545,28 @@ class add_expr : public expr
 |_______________________________________________________________________*/
 {
 public:
-	typedef AdditivetiveExpr::add_op_t addop;
-	typedef std::pair<rchandle<expr>,addop> addop_pair;
+	typedef std::pair<add_op_t,rchandle<expr> > addop_pair;
 
 protected:
-	std::vector<addop_pair> aopp_hv;
+	std::vector<addop_pair> addopp_hv;
 
 public:
 	add_expr(yy::location const&);
 	~add_expr();
 
 public:
-	void add(addop_pair aopp) { aopp_hv.push_back(aopp); }
+	void add(addop_pair const& addopp) { addopp_hv.push_back(addopp); }
 
 	std::vector<addop_pair>::const_iterator begin() const
-		{ return aopp_hv.begin(); }
+		{ return addopp_hv.begin(); }
 	std::vector<addop_pair>::const_iterator end() const
-		{ return aopp_hv.end(); }
-	uint32_t size() const { return aopp_hv.size(); }
+		{ return addopp_hv.end(); }
+	uint32_t size() const { return addopp_hv.size(); }
 
 	rchandle<expr> expr_at(uint32_t n) const
-		{ return aopp_hv[n].first; }
-	rchandle<expr> op_at(uint32_t n) const
-		{ return aopp_hv[n].second; }
+		{ return addopp_hv[n].second; }
+	enum add_op_t op_at(uint32_t n) const
+		{ return addopp_hv[n].first; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -493,29 +582,26 @@ class mult_expr : public expr
 |_______________________________________________________________________*/
 {
 public:
-	typedef MultiplicativeExpr::mult_op_t mulop;
-	typedef std::pair<rchandle<expr>,mulop> mulop_pair;
+	typedef std::pair<mul_op_t,rchandle<expr> > mulop_pair;
 
 protected:
-	std::vector<mulop_pair> mopp_hv;
+	std::vector<mulop_pair> mulopp_hv;
 
 public:
 	mult_expr(yy::location const&)
 	~mult_expr();
 
 public:
-	void add(mulop_pair mopp) { mopp_hv.push_back(mopp); }
+	void add(mulop_pair mulopp) { mulopp_hv.push_back(mulopp); }
 
 	std::vector<mulop_pair>::const_iterator begin() const
-		{ return mopp_hv.begin(); }
+		{ return mulopp_hv.begin(); }
 	std::vector<mulop_pair>::const_iterator end() const
-		{ return mopp_hv.end(); }
-	uint32_t size() const { return mopp_hv.size(); }
+		{ return mulopp_hv.end(); }
+	uint32_t size() const { return mulopp_hv.size(); }
 
-	rchandle<expr> expr_at(uint32_t n) const
-		{ return mopp_hv[n].first; }
-	rchandle<expr> op_at(uint32_t n) const
-		{ return mopp_hv[n].second; }
+	rchandle<expr> expr_at(uint32_t n) const { return mulopp_hv[n].second; }
+	enum mul_op_t op_at(uint32_t n) const { return mulopp_hv[n].first; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -531,21 +617,22 @@ class union_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<expr> > expr_hv;
+	std::vector<rchandle<expr> > intex_expr_hv;
 
 public:
 	union_expr(yy::location const&);
 	~union_expr();
 
 public:
-	void add(rchandle<expr> e) { expr_hv.push_back(e); }
+	void add(rchandle<expr> e) { intex_expr_hv.push_back(e); }
 
 	std::vector<rchandle<expr> >::const_iterator begin() const
-		{ return expr_hv.begin(); }
+		{ return intex_expr_hv.begin(); }
 	std::vector<rchandle<expr> >::const_iterator end() const
-		{ return expr_hv.end(); }
-	uint32_t size() const { return expr_hv.size(); }
-	rchandle<expr> expr_at(uint32_t n) const { return expr_hv[n]; }
+		{ return intex_expr_hv.end(); }
+	uint32_t size() const { return intex_expr_hv.size(); }
+
+	rchandle<expr> expr_at(uint32_t n) const { return intex_expr_hv[n]; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -561,49 +648,31 @@ class intersect_except_expr : public expr
 |_______________________________________________________________________*/
 {
 public:
-	typedef IntersectExceptExpr::intex_op_t intexop;
-	typedef std::pair<expr,intexop> intexop_pair;
+	typedef std::pair<expr,intex_op_t> intexop_pair;
 
 protected:
-	std::vector<intexop_pair> ixopp_hv;
+	std::vector<intexop_pair> intexopp_hv;
 
 public:
 	intersect_except_expr(yy::location const&);
 	~intersect_except_expr();
 
 public:
-	void add(intexop_pair ixopp) { ixopp_hv.push_back(ixopp); }
+	void add(intexop_pair intexopp) { intexopp_hv.push_back(intexopp); }
 
 	std::vector<intexop_pair>::const_iterator begin() const
-		{ return ixopp_hv.begin(); }
+		{ return intexopp_hv.begin(); }
 	std::vector<intexop_pair>::const_iterator end() const
-		{ return ixopp_hv.end(); }
-	uint32_t size() const { return ixopp_hv.size(); }
+		{ return intexopp_hv.end(); }
+	uint32_t size() const { return intexopp_hv.size(); }
 
-	rchandle<expr> expr_at(uint32_t n) const
-		{ return ixopp_hv[n].first; }
-	rchandle<expr> op_at(uint32_t n) const
-		{ return ixopp_hv[n].second; }
+	rchandle<expr> expr_at(uint32_t n) const { return intexopp_hv[n].first; }
+	enum intex_op_t op_at(uint32_t n) const { return intexopp_hv[n].second; }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
 };
-
-
-/*______________________________________________________________________
-|  
-|	SequenceType ::= item_type ["?" | "*" | "+" ]  |  empty-sequence()
-|_______________________________________________________________________*/
-
-enum cardinality {
-	empty,
-	optional,
-	zero_or_more,
-	one_or_more
-};
-
-typedef std::pair<item_type,cardinality> seqtype_t;
 
 
 
@@ -617,18 +686,19 @@ public:
 
 protected:
 	rchandle<expr> expr_h;
-	seqtype_t seqtype;
+	sequence_type seqtype;
 
 public:
 	instanceof_expr(
 		yy::location const&,
 		rchandle<expr>,
-		seqtype_t);
+		sequence_type const&);
+
 	~instanceof_expr();
 
 public:
 	rchandle<expr> get_expr() const { return expr_h; }
-	seqtype_t get_seqtype() const { return seqtype; }
+	sequence_type get_seqtype() const { return seqtype; }
 	virtual std::ostream& put(std::ostream&) const;
 
 };
@@ -643,18 +713,19 @@ class treat_expr : public expr
 {
 protected:
 	rchandle<expr> expr_h;
-	seqtype_t seqtype;
+	sequence_type seqtype;
 
 public:
 	treat_expr(
 		yy::location const&,
 		rchandle<expr>,
-		seqtype_t);
+		sequence_type const&);
+
 	~treat_expr();
 
 public:
 	rchandle<expr> get_expr() const { return expr_h; }
-	seqtype_t get_seqtype() const { return seqtype; }
+	sequence_type get_seqtype() const { return seqtype; }
 	virtual std::ostream& put(std::ostream&) const;
 
 };
@@ -732,16 +803,18 @@ class unary_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
+	bool neg_b;
 	rchandle<expr> expr_h;
 
 public:
 	unary_expr(
 		yy::location const&,
-		rchandle<SignList>,
+		bool neg_b,
 		rchandle<expr>);
 	~unary_expr();
 
 public:
+	bool is_negative() const { return neg_b; }
 	rchandle<expr> get_expr() const { return expr_h; }
 	virtual std::ostream& put(std::ostream&) const;
 
@@ -756,16 +829,19 @@ class validate_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	ValidateExpr::validation_mode_t valmode;
+	enum validation_mode_t valmode;
 	rchandle<expr> expr_h;
 
 public:
-	validate_expr(yy::location const&);
+	validate_expr(
+		yy::location const&,
+		enum validation_mode_t,
+		rchandle<expr>);
 	~validate_expr();
 
 public:
 	rchandle<expr> get_expr() const { return expr_h; }
-	ValidateExpr::validation_mode_t get_valmode() const { return valmode; }
+	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -775,24 +851,42 @@ public:
 
 
 // [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
+
+struct pragma
+{
+	rchandle<QName> name_h;
+	std::string content;
+};
+
+
 class extension_expr : public expr
 /*______________________________________________________________________
 |	::= PragmaList "{" Expr? "}"
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<PragmaList> pragma_list_h;
+	std::vector<rchandle<pragma_name> > pragma_hv;
 	rchandle<expr> expr_h;
 
 public:
-	extension_expr(
-		yy::location const&,
-		rchandle<PragmaList>,
-		rchandle<expr>);
+	extension_expr(yy::location const&);
 	~extension_expr();
 
 public:
-	rchandle<PragmaList> get_pragma_list() const { return pragma_list_h; }
+	void add(rchandle<pragma> pragma_h)
+		{ pragma_hv.push_back(pragma_h); }
+	rchandle<pragma> & operator[](int i)
+		{ return pragma_hv[i]; }
+	rchandle<pragma> const& operator[](int i) const
+		{ return pragma_hv[i]; }
+
+	std::vector<rchandle<pragma> >::const_iterator begin()
+		{ return pragma_hv.begin(); }
+	std::vector<rchandle<pragma> >::const_iterator end()
+		{ return pragma_hv.end(); }
+	uint32_t size() const { return pragma_hv.size(); }
+
+public:
 	rchandle<expr> get_expr() const { return expr_h; }
 
 public:
@@ -821,6 +915,18 @@ protected:
 public:
 	relpath_expr(yy::location const&);
 	~relpath_expr();
+
+public:
+	void add(rchandle<step_expr> step_h) { step_hv.push_back(step_h); }
+
+	std::vector<rchandle<step_expr>>::const_iterator begin() const
+		{ return step_hv.begin(); }
+	std::vector<rchandle<step_expr>>::const_iterator end() const
+		{ return step_hv.end(); }
+	uint32_t size() const { return step_h_hv.size(); }
+
+	rchandle<expr>& operator[](int n) { return step_hv[n]; }
+	rchandle<expr> const& operator[](int n) const { return step_hv[n]; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -855,6 +961,7 @@ class axis_step_expr : public expr
 public:
 	enum axis_t {
 		self,
+		child,
 		parent,
 		descendant,
 		descendant-or-self,
@@ -891,18 +998,41 @@ public:
 protected:
 	axis_t axis;
 	test_t test;
-	test_t subtest;
+	test_t docnode_test;
 	wild_t wild;
-	rchandle<QName> name;
-	rchandle<QName> type;
+	rchandle<QName> name_h;
+	rchandle<QName> typename_h;
 	std::vector<rchandle<expr> > pred_hv;
 
 public:
-	axis_step_expr(
-		yy::location const&,
-		axis_t, test_t, test_t,
-		rchandle<node_test>);
+	axis_step_expr( yy::location const&);
 	~axis_step_expr();
+
+public:
+	axis_t get_axis() const { return axis; }
+	test_t get_test() const { return test; }
+	test_t get_docnode_test() const { return docnode_test; }
+	wild_t get_wild() const { return wild; }
+	rchandle<QName> get_name() const { return name_h; }
+	rchandle<QName> get_typename() const { return typename_h; }
+
+	void set_axis(axis_t v) const { axis = v; }
+	void set_test(test_t v) const { test = v; }
+	void set_docnode_test(test_t v) const { docnode_test = v; }
+	void set_wild(wild_t v) const { wild = v; }
+	void set_name(rchandle<QName> v_h) const { name_h = v_h; }
+	void set_typename(rchandle<QName> v_h) const { typename_h = v_h; }
+
+public:
+	void add(rchandle<expr> e_h) { pred_hv.push_back(e_h); }
+	rchandle<expr> & operator[](int i) { return pred_hv[i]; }
+	rchandle<expr> const& operator[](int i) const { return pred_hv[i]; }
+
+	std::vector<rchandle<expr> >::const_iterator begin()
+		{ return pred_hv.begin(); }
+	std::vector<rchandle<expr> >::const_iterator end()
+		{ return pred_hv.end(); }
+	uint32_t size() const { return pred_hv.size(); }
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
@@ -954,29 +1084,17 @@ public:
 protected:
 	enum literal_type_t type;
 	union {
-		uint32_t string_ref;
-		int integer_val;
-		decimal decimal_val;
-		double double_val;
+		uint32_t sref;
+		int ival;
+		decimal decval;
+		double dval;
 	};
 
 public:
-	literal_expr(
-		uint32_t string_ref,
-		yy::location const&);
-
-	literal_expr(
-		int,
-		yy::location const&);
-
-	literal_expr(
-		decimal,
-		yy::location const&);
-
-	literal_expr(
-		double,
-		yy::location const&);
-
+	literal_expr(yy::location const&, uint32_t sref);
+	literal_expr(yy::location const&, int);
+	literal_expr(yy::location const&, decimal);
+	literal_expr(yy::location const&, double);
 	~literal_expr();
 
 public:
@@ -1012,46 +1130,31 @@ public:
 
 
 // [91] [http://www.w3.org/TR/xquery/#prod-xquery-OrderedExpr]
-class ordered_expr : public expr
+class order_expr : public expr
 /*______________________________________________________________________
 |	::= ORDERED_LBRACE  Expr  RBRACE
+|			| UNORDERED_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+public:
+	enum order_type_t {
+		ordered,
+		unordered
+	};
+
 protected:
+	order_type_t type;
 	rchandle<expr> expr_h;
 
 public:
 	ordered_expr(
 		yy::location const&,
+		order_type_t,
 		rchandle<expr>);
 	~ordered_expr();
 
 public:
-	rchandle<expr> get_expr() const { return expr_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [92] [http://www.w3.org/TR/xquery/#prod-xquery-UnorderedExpr]
-class unordered_expr : public expr
-/*______________________________________________________________________
-|	::= UNORDERED_LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<expr> expr_h;
-
-public:
-	unordered_expr(
-		yy::location const&,
-		rchandle<expr>);
-	~unordered_expr();
-
-public:
+	order_type_t get_type() const { return type; }
 	rchandle<expr> get_expr() const { return expr_h; }
 
 public:
@@ -1076,19 +1179,27 @@ protected:
 public:
 	funcall(
 		yy::location const&,
-		rchandle<QName>,
-		std::vector<rchandle<expr> > arg_hv);
+		rchandle<QName>);
+
 	~funcall();
 
 public:
 	rchandle<QName> get_fname() const { return fname_h; }
-	rchandle<expr> get_arg(uint32_t n) const { return arg_hv[n]; }
-	uint32_t arg_count() const { return arg_hv.size(); }
 
-	std::vector<rchandle<expr> >:: const_iterator arg_begin() const
+	void add(rchandle<QName> const& arg_h)
+		{ arg_hv.push_back(arg_h); }
+	uint32_t arg_count() const
+		{ return arg_hv.size(); }
+
+	std::vector<rchandle<expr> >:: const_iterator begin() const
 		{ return arg_hv.begin(); }
-	std::vector<rchandle<expr> >:: const_iterator arg_end() const
+	std::vector<rchandle<expr> >:: const_iterator end() const
 		{ return arg_hv.end(); }
+
+	rchandle<QName> & operator(int i)
+		{ return arg_hv[i]; }
+	rchandle<QName> const& operator(int i) const
+		{ return arg_hv[i]; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1127,7 +1238,7 @@ class doc_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<expr> expr_h;
+	rchandle<expr> docuri_h;
 
 public:
 	doc_expr(
@@ -1136,7 +1247,7 @@ public:
 	~CompDocConstructor();
 
 public:
-	rchandle<expr> get_expr() const { return expr_h; }
+	rchandle<expr> get_docuri() const { return docuri_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1156,14 +1267,12 @@ class elem_expr : public expr
 {
 public:
 	typedef std::pair<std::string,std::string> nsbinding;
-#define ncname	FIRST
-#define nsuri		SECOND
 
 protected:
 	rchandle<QName> qname_h;
 	rchandle<expr> name_expr_h;
 	rchandle<expr> content_expr_h;
-	std::vector<rchandle<nsbinding> > nsb_hv;
+	std::vector<nsbinding> nsb_v;
 
 public:
 	elem_expr(
@@ -1181,12 +1290,13 @@ public:
 	rchandle<expr> get_name_expr() const { return name_expr_h; }
 	rchandle<expr> get_content_expr() const { return content_expr_h; }
 
-	void add(rchandle<nsbinding> nsb_h) { nsb_hv.push_back(nsb_h); }
-	uint32_t nsbinding_count() const { return ns_hv.size(); }
-	std::vector<rchandle<nsbinding> >::const_iterator ns_begin() const
-		{ return ns_hv.begin(); }
-	std::vector<rchandle<nsbinding> >::const_iterator ns_end() const
-		{ return ns_hv.end(); }
+	void add(nsbinding const& nsb) { nsb_v.push_back(nsb); }
+	uint32_t nsbinding_count() const { return nsb_v.size(); }
+
+	std::vector<nsbinding>::const_iterator begin() const
+		{ return nsb_v.begin(); }
+	std::vector<nsbinding>::const_iterator end() const
+		{ return nsb_v.end(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1244,7 +1354,7 @@ protected:
 public:
 	text_expr(
 		yy::location const&,
-		rchandle<expr> text_expr_h);
+		rchandle<expr>);
 	~text_expr();
 
 public:
@@ -1316,7 +1426,6 @@ public:
 	std::ostream& put(std::ostream&) const;
 
 };
-
 
 
 
@@ -1474,7 +1583,6 @@ public:
 
 
 
-
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //  Full-text productions                                              //
@@ -1483,90 +1591,26 @@ public:
 /////////////////////////////////////////////////////////////////////////
 
 //[344] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTSelection]
-class ftselection_expr : public expr
+class ft_expr : public expr
 /*______________________________________________________________________
-|	::=	FTOr
-|			|	FTOr  FTMatchOptionProximityList
-|			|	FTOr  WEIGHT  RangeExpr
-|			|	FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
+|	::=	 FTOr  FTMatchOptionProximityList?  ("weight"  FTRangeExpr)?
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTOr> ftor_h;
-	rchandle<FTMatchOptionProximityList> option_list_h;
-	rchandle<RangeExpr> weight_expr_h;
+	rchandle<ft_expr> ft_or_h;
+	rchandle<ft_options> ft_opt_h;
 
 public:
 	ftselection_expr(
 		yy::location const&,
-		rchandle<FTOr>,
-		rchandle<FTMatchOptionProximityList>,
-		rchandle<RangeExpr>);
+		rchandle<ft_or_expr>,
+		rchandle<ft_options>);
+
 	~ftselection_expr();
 
 public:
-	rchandle<FTOr> get_ftor() const
-		{ return ftor_h; }
-	rchandle<FTMatchOptionProximityList> get_option_list() const
-		{ return option_list_h; }
-	rchandle<RangeExpr> get_weight_expr() const
-		{ return weight_expr_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[344a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMatchOptionProximityList]
-class FTMatchOptionProximityList : public expr
-/*______________________________________________________________________
-|	::=	FTMatchOptionProximity
-|			| FTMatchOptionProximityList  FTMatchOptionProximity
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<FTMatchOptionProximity> > opt_prox_hv;
-
-public:
-	FTMatchOptionProximityList(
-		yy::location const&);
-	~FTMatchOptionProximityList();
-
-public:
-	void push_back(rchandle<FTMatchOptionProximity> opt_prox_h)
-		{ opt_prox_hv.push_back(opt_prox_h); }
-	rchandle<FTMatchOptionProximity> operator[](int i)
-		{ return opt_prox_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[344b] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMatchOptionProximity]
-class FTMatchOptionProximity : public expr
-/*______________________________________________________________________
-|	::=	FTMatchOption | FTProximity
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<FTMatchOption> opt_h;
-	rchandle<FTProximity> prox_h;
-
-public:
-	FTMatchOptionProximity(
-		rchandle<FTMatchOption>,
-		yy::location const&);
-	FTMatchOptionProximity(
-		rchandle<FTProximity>,
-		yy::location const&);
-	FTMatchOptionProximity(
-		yy::location const&);
-	~FTMatchOptionProximity();
+	rchandle<ft_expr> get_ft_or() const { return ft_or_h; }
+	rchandle<ft_options> get_ft_options() const { return ft_opt_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1576,26 +1620,31 @@ public:
 
 
 //[345] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTOr]
-class FTOr : public expr
+class ft_or_expr : public ft_expr
 /*______________________________________________________________________
-|	::=	FTAnd
-|			|	FTOr  FTOR  FTAnd
+|	::=	FTAnd ( "||" FTAnd )*
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTOr> ftor_h;
-	rchandle<FTAnd> ftand_h;
+	std::vector<rchandle<ft_expr> > ft_and_expr_hv;
 
 public:
-	FTOr(
-		yy::location const&,
-		rchandle<FTOr>,
-		rchandle<FTAnd>);
-	~FTOr();
+	ft_or_expr(yy::location const&);
+	~ft_or_expr();
 
 public:
-	rchandle<FTOr> get_ftor() const { return ftor_h; }
-	rchandle<FTAnd> get_ftand() const { return ftand_h; }
+	uint32_t size() const { return ft_and_expr_hv.size(); }
+	void add(rchandle<ft_expr> ft_h) { ft_and_expr_hv.push_back(ft_h); }
+
+	rchandle<ft_expr> & operator[](int i)
+		{ return ft_and_expr_hv[i]; }
+	rchandle<ft_expr> const& operator[](int i) const
+		{ return ft_and_expr_hv[i]; }
+
+	std::vector<rchandle<ft_expr> >::const_iterator begin()
+		{ return ft_and_expr_hv.begin(); }
+	std::vector<rchandle<ft_expr> >::const_iterator end()
+		{ return ft_and_expr_hv.end(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1605,26 +1654,31 @@ public:
 
 
 //[346] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTAnd]
-class FTAnd : public expr
+class ft_and_expr : public ft_expr
 /*______________________________________________________________________
-|	::=	FTMildnot
-|			|	FTAnd  FTAND  FTMildnot
+|	::=	FTMildnot ( '&&' FTMildNot )*
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTAnd> ftand_h;
-	rchandle<FTMildnot> ftmild_not_h;
+	std::vector<rchandle<ft_expr> > ft_mildnot_expr_hv;
 
 public:
-	FTAnd(
-		yy::location const&,
-		rchandle<FTAnd>,
-		rchandle<FTMildnot>);
-	~FTAnd();
+	ft_and_expr(yy::location const&);
+	~ft_and_expr();
 
 public:
-	rchandle<FTAnd> get_ftand() const { return ftand_h; }
-	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
+	void add(rchandle<ft_expr> ft_h) { ft_mildnot_expr_hv.push_back(ft_h); }
+
+	rchandle<ft_expr> & operator[](int i)
+		{ return ft_mildnot_expr_hv[i]; }
+	rchandle<ft_expr> const& operator[](int i) const
+		{ return ft_mildnot_expr_hv[i]; }
+
+	std::vector<rchandle<ft_expr> >::const_iterator begin()
+		{ return ft_mildnot_expr_hv.begin(); }
+	std::vector<rchandle<ft_expr> >::const_iterator end()
+		{ return ft_mildnot_expr_hv.end(); }
+	uint32_t size() const { return ft_mildnot_expr_hv.size(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1634,26 +1688,31 @@ public:
 
 
 //[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildnot]
-class FTMildnot : public expr
+class ft_mildnot_expr : public ft_expr
 /*______________________________________________________________________
-|	::=	FTUnaryNot
-|			|	FTMildnot  FTNOT_IN  FTUnaryNot
+|	::=	FTUnaryNot ( "not" "in" FTUnaryNot )*
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTMildnot> ftmild_not_h;
-	rchandle<FTUnaryNot> ftunary_not_h;
+	std::vector<rchandle<ft_expr> > ft_unary_expr_hv;
 
 public:
-	FTMildnot(
-		yy::location const&,
-		rchandle<FTMildnot>,
-		rchandle<FTUnaryNot>);
-	~FTMildnot();
+	ft_mildnot_expr(yy::location const&);
+	~ft_mildnot_expr();
 
 public:
-	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
-	rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
+	void add(rchandle<ft_expr> ft_h) { ft_unary_expr_hv.push_back(ft_h); }
+
+	rchandle<ft_expr> & operator[](int i)
+		{ return ft_unary_expr_hv[i]; }
+	rchandle<ft_expr> const& operator[](int i) const
+		{ return ft_unary_expr_hv[i]; }
+
+	std::vector<rchandle<ft_expr> >::const_iterator begin()
+		{ return ft_unary_expr_hv.begin(); }
+	std::vector<rchandle<ft_expr> >::const_iterator end()
+		{ return ft_unary_expr_hv.end(); }
+	uint32_t size() const { return ft_unary_expr_hv.size(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1663,10 +1722,9 @@ public:
 
 
 //[348] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTUnaryNot]
-class FTUnaryNot : public expr
+class ft_unarynot_expr : public ft_expr
 /*______________________________________________________________________
-|	::=	FTWordsSelection
-|			|	FTNOT  FTWordsSelection
+|	::=	("!")? FTWordsSelection
 |_______________________________________________________________________*/
 {
 protected:
@@ -1674,11 +1732,12 @@ protected:
 	bool not_b;
 
 public:
-	FTUnaryNot(
+	ft_unarynot_expr(
 		yy::location const&,
 		rchandle<FTWordsSelection>,
 		bool not_b);
-	~FTUnaryNot();
+
+	~ft_unarynot_expr();
 
 public:
 	rchandle<FTWordsSelection> get_words_selection() const
@@ -1694,10 +1753,9 @@ public:
 
 
 //[349] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWordsSelection]
-class FTWordsSelection : public expr
+class ft_words_selection_expr : public ft_expr
 /*______________________________________________________________________
-|	::=	FTWords
-|			|	FTWords FTTimes
+|	::=	FTWords	 FTTimes?
 |			| LPAR  FTSelection  RPAR
 |_______________________________________________________________________*/
 {
@@ -1707,12 +1765,13 @@ protected:
 	rchandle<FTSelection> selection_h;
 
 public:
-	FTWordsSelection(
+	ft_words_selection_expr(
 		yy::location const&,
 		rchandle<FTWords>,
 		rchandle<FTTimes>,
 		rchandle<FTSelection>);
-	~FTWordsSelection();
+	
+	~ft_words_selection();
 
 public:
 	rchandle<FTWords> get_words() const { return words_h; }
@@ -1727,715 +1786,33 @@ public:
 
 
 //[350] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWords]
-class FTWords : public expr
+class ft_words_exor : public expr
 /*______________________________________________________________________
-|	::=	FTWordsValue 
-|			|	FTWordsValue  FTAnyallOption
+|	::=	FTWordsValue  FTAnyallOption?
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<FTWordsValue> words_val_h;
-	rchandle<FTAnyallOption> any_all_option_h;
+	rchandle<expr> words_expr_h;
+	ft_anyall_option_t anyall_opt;
 
 public:
-	FTWords(
+	ft_words_expr(
 		yy::location const&,
-		rchandle<FTWordsValue>,
-		rchandle<FTAnyallOption>);
-	~FTWords();
+		rchandle<expr>,
+		ft_anyall_option);
+
+	~ft_words_expr();
 
 public:
-	rchandle<FTWordsValue> get_words_val() const
-		{ return words_val_h; }
-	rchandle<FTAnyallOption> get_any_all_option() const
-		{ return any_all_option_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[351] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWordsValue]
-class FTWordsValue : public expr
-/*______________________________________________________________________
-|	::=	Literal
-|			| LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<Literal> lit_h;
-	rchandle<Expr> expr_h;
-
-public:
-	FTWordsValue(
-		yy::location const&,
-		rchandle<Literal>,
-		rchandle<Expr>);
-	~FTWordsValue();
-
-public:
-	rchandle<Literal> get_lit() const { return lit_h; }
-	rchandle<Expr> get_expr() const { return expr_h; }
+	rchandle<expr> get_words_expr() const
+		{ return words_expr_h; }
+	ft_anyall_option_t get_anyall_option() const
+		{ return anyall_opt; }
 
 public:
 	std::ostream& put(std::ostream&) const;
 
 };
-
-
-
-//[352] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTProximity]
-class FTProximity : public expr
-/*______________________________________________________________________
-|	::=	FTOrderedIndicator
-|			| FTWindow
-|			| FTDistance
-|			| FTScope
-|			| FTContent
-|_______________________________________________________________________*/
-{
-public:
-	FTProximity(
-		yy::location const&);
-	~FTProximity();
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[353] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTOrderedIndicator]
-class FTOrderedIndicator : public FTProximity
-/*______________________________________________________________________
-|	::=	ORDERED
-|_______________________________________________________________________*/
-{
-public:
-	FTOrderedIndicator(
-		yy::location const&);
-	~FTOrderedIndicator();
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[354] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMatchOption] 	
-class FTMatchOption : public expr
-/*______________________________________________________________________
-|	::=	FTCaseOption
-|			| FTDiacriticsOption
-|			| FTStemOption
-|			| FTThesaurusOption
-|			| FTStopwordOption
-|			| FTLanguageOption
-|			| FTWildcardOption
-|_______________________________________________________________________*/
-{
-public:
-	FTMatchOption(
-		yy::location const&);
-	~FTMatchOption();
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[355] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTCaseOption]
-class FTCaseOption : public FTMatchOption
-/*______________________________________________________________________
-|	::=	LOWERCASE
-|			| UPPERCASE
-|			| CASE_SENSITIVE
-|			| CASE_INSENSITIVE
-|_______________________________________________________________________*/
-{
-public:
-	enum ft_case_mode_t {
-		lowercase,
-		uppercase,
-		senstive,
-		insensitive
-	};
-
-protected:
-	ft_case_mode_t mode;
-
-public:
-	FTCaseOption(
-		yy::location const&,
-		enum ft_case_mode_t);
-	~FTCaseOption();
-
-public:
-	enum ft_case_mode_t get_mode() const { return mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[356] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTDiacriticsOption]
-class FTDiacriticsOption : public FTMatchOption
-/*______________________________________________________________________
-|	::=	WITH_DIACRITICS
-|			| WITHOUT_DIACRITICS
-|			| DIACRITICS_SENSITIVE
-|			| DIACRITICS_INSENSITIVE
-|_______________________________________________________________________*/
-{
-public:
-	enum ft_diacritics_mode_t {
-		with,
-		without,
-		senstive,
-		insensitive
-	};
-
-protected:
-	ft_diacritics_mode_t mode;
-
-public:
-	FTDiacriticsOption(
-		yy::location const&,
-		ft_diacritics_mode_t);
-	~FTDiacriticsOption();
-
-public:
-	enum ft_diacritics_mode_t get_mode() const { return mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[357] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTStemOption]
-class FTStemOption : public FTMatchOption
-/*______________________________________________________________________
-|	::=	WITH_STEMMING
-|			| WITHOUT_STEMMING
-|_______________________________________________________________________*/
-{
-public:
-	enum ft_stem_mode_t {
-		with,
-		without
-	};
-
-protected:
-	ft_stem_mode_t mode;
-
-public:
-	FTStemOption(
-		yy::location const&,
-		ft_stem_mode_t);
-	~FTStemOption();
-
-public:
-	enum ft_stem_mode_t get_mode() const { return mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[358] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTThesaurusOption]
-class FTThesaurusOption : public FTMatchOption
-/*______________________________________________________________________
-|	::=	WITH_THESAURUS  FTThesaurusID
-|			|	WITH_THESAURUS  DEFAULT
-|			| WITH_THESAURUS  LPAR  FTThesaurusList  RPAR
-|			| WITH_THESAURUS  LPAR  DEFAULT  RPAR
-|			| WITH_THESAURUS  LPAR  DEFAULT  COMMA  FTThesaurusList  RPAR
-|			| WITHOUT_THESAURUS
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<FTThesaurusID> thesaurusid_h;
-	rchandle<FTThesaurusList> thesaurus_list_h;
-	bool default_b;
-	bool without_b;
-
-public:
-	FTThesaurusOption(
-		yy::location const&,
-		rchandle<FTThesaurusID>,
-		rchandle<FTThesaurusList>,
-		bool default_b,
-		bool without_b);
-	~FTThesaurusOption();
-
-public:
-	rchandle<FTThesaurusID> get_thesaurusid() const
-		{ return thesaurusid_h; }
-	rchandle<FTThesaurusList> get_thesaurus_list() const
-		{ return thesaurus_list_h; }
-
-	bool get_default_bit() const { return default_b; }
-	bool get_without_bit() const { return without_b; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[358a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTThesaurusList]
-class FTThesaurusList : public expr
-/*______________________________________________________________________
-|	::=	FTThesaurusID
-|			| FTThesaurusList  COMMA  FTThesaurusID
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
-
-public:
-	FTThesaurusList(
-		yy::location const&);
-	~FTThesaurusList();
-
-public:
-	void push_back(rchandle<FTThesaurusID> thesaurus_h)
-		{ thesaurus_hv.push_back(thesaurus_h); }
-	rchandle<FTThesaurusID> operator[](int i) const
-		{ return thesaurus_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[359] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTThesaurusID]
-class FTThesaurusID : public expr
-/*______________________________________________________________________
-|	::=	AT  STRING_LITERAL
-|			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL
-|			|	AT  STRING_LITERAL  FTRange  LEVELS
-|			|	AT  STRING_LITERAL  RELATIONSHIP  STRING_LITERAL  FTRange  LEVELS
-|_______________________________________________________________________*/
-{
-protected:
-	std::string thesaurus_name;
-	std::string relationship_name;
-	rchandle<FTRange> levels_h;
-
-public:
-	FTThesaurusID(
-		yy::location const&,
-		std::string thesaurus_name,
-		std::string relationship_name,
-		rchandle<FTRange> levels_h);
-	~FTThesaurusID();
-
-public:
-	std::string get_thesaurus_name() const { return thesaurus_name; }
-	std::string get_relationship_name() const { return relationship_name; }
-	rchandle<FTRange> get_levels() const { return levels_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[360] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTStopwordOption]
-//----------------------
-class FTStopwordOption : public FTMatchOption
-/*______________________________________________________________________
-|	::=	WITH_STOP_WORDS  FTRefOrList
-|			|	WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
-|			| WITH_DEFAULT_STOP_WORDS 
-|			| WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
-|			| WITHOUT_STOP_WORDS
-|_______________________________________________________________________*/
-{
-public:
-	enum stop_words_mode_t {
-		with,
-		with_default,
-		without
-	};
-
-protected:
-	rchandle<FTRefOrList> refor_list_h;
-	rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
-	stop_words_mode_t mode;
-
-public:
-	FTStopwordOption(
-		yy::location const&,
-		rchandle<FTRefOrList>,
-		rchandle<FTInclExclStringLiteralList>,
-		stop_words_mode_t);
-	~FTStopwordOption();
-
-public:
-	rchandle<FTRefOrList> get_refor_list() const
-		{ return refor_list_h; }
-	rchandle<FTInclExclStringLiteralList> get_incl_excl_list() const
-		{ return incl_excl_list_h; }
-	stop_words_mode_t get_mode() const
-		{ return mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[360a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTInclExclStringLiteralList]
-//----------------------------------
-class FTInclExclStringLiteralList : public expr
-/*______________________________________________________________________
-|
-|	::=	FTInclExclStringLiteral
-|			| FTInclExclStringLiteralList  FTInclExclStringLiteral
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
-
-public:
-	FTInclExclStringLiteralList(
-		yy::location const&);
-	~FTInclExclStringLiteralList();
-
-public:
-	void push_back(rchandle<FTInclExclStringLiteral> incl_excl_lit_h)
-		{ incl_excl_lit_hv.push_back(incl_excl_lit_h); }
-	rchandle<FTInclExclStringLiteral> operator[](int i) const
-		{ return incl_excl_lit_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[361] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTRefOrList]
-class FTRefOrList : public expr
-/*______________________________________________________________________
-|	::=	AT  STRING_LITERAL
-|			| LPAR  FTStringLiteralList  RPAR 
-|_______________________________________________________________________*/
-{
-protected:
-	std::string at_str;
-	rchandle<FTStringLiteralList> stringlit_list_h;
-
-public:
-	FTRefOrList(
-		yy::location const&,
-		std::string at_str,
-		rchandle<FTStringLiteralList>);
-	~FTRefOrList();
-
-	std::string get_at_str() const
-		{ return at_str; }
-	rchandle<FTStringLiteralList> get_stringlit_list() const
-		{ return stringlit_list_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[361a] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTStringLiteralList]
-class FTStringLiteralList : public expr
-/*______________________________________________________________________
-|	::=	STRING_LITERAL
-|			|	FTStringLiteralList  STRING_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<std::string> strlit_v;
-
-public:
-	FTStringLiteralList(
-		yy::location const&);
-	~FTStringLiteralList();
-
-public:
-	void push_back(std::string strlit) { strlit_v.push_back(strlit); }
-	std::string operator[](int i) const { return strlit_v[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[362] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTInclExclStringLiteral]
-class FTInclExclStringLiteral : public expr
-/*______________________________________________________________________
-|	::=	UNION  FTRefOrList
-|			|	EXCEPT  FTRefOrList
-|_______________________________________________________________________*/
-{
-public:
-	enum incl_excl_mode_t {
-		inex_union,
-		inex_except
-	};
-
-protected:
-	rchandle<FTRefOrList> ref_or_list_h;
-	incl_excl_mode_t mode;
-
-public:
-	FTInclExclStringLiteral(
-		yy::location const&,
-		rchandle<FTRefOrList>,
-		incl_excl_mode_t);
-	~FTInclExclStringLiteral();
-
-public:
-	rchandle<FTRefOrList> get_ref_or_list() const
-		{ return ref_or_list_h; }
-	incl_excl_mode_t get_mode() const
-		{ return mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[363] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTLanguageOption]
-class FTLanguageOption : public FTMatchOption
-/*______________________________________________________________________
-|	::=	LANGUAGE  STRING_LITERAL
-|_______________________________________________________________________*/
-{
-protected:
-	std::string lang;
-
-public:
-	FTLanguageOption(
-		yy::location const&,
-		std::string lang);
-	~FTLanguageOption();
-
-public:
-	std::string get_lang() const { return lang; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[364] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWildcardOption]
-class FTWildcardOption : public FTMatchOption
-/*______________________________________________________________________
-|	::=	WITH_WILDCARDS | WITHOUT_WILDCARDS
-|_______________________________________________________________________*/
-{
-protected:
-	bool with_b;
-
-public:
-	FTWildcardOption(
-		yy::location const&,
-		bool with_b);
-	~FTWildcardOption();
-
-public:
-	bool get_with_bit() const { return with_b; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[365] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTContent]
-class FTContent : public FTProximity
-/*______________________________________________________________________
-|	::=	AT_START | AT_END | ENTIRE_CONTENT
-|_______________________________________________________________________*/
-{
-public:
-	enum ft_content_mode_t {
-		at_start,
-		at_end,
-		entire_content
-	};
-
-protected:
-	ft_content_mode_t mode;
-
-public:
-	FTContent(
-		yy::location const&,
-		enum ft_content_mode_t);
-	~FTContent();
-
-public:
-	enum ft_content_mode_t get_mode() const { return mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[366] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTAnyallOption]
-class FTAnyallOption : public expr
-/*______________________________________________________________________
-|	::=	ANY | ANY_WORD | ALL | ALL_WORDS | PHRASE
-|_______________________________________________________________________*/
-{
-public:
-	enum ft_anyall_option_t {
-		any,
-		any_word,
-		all,
-		all_words,
-		phrase
-	};
-
-protected:
-	enum ft_anyall_option_t option;
-
-public:
-	FTAnyallOption(
-		yy::location const&,
-		enum ft_anyall_option_t);
-	~FTAnyallOption();
-
-public:
-	enum ft_anyall_option_t get_option() const { return option; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[367] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTRange]
-class FTRange : public expr
-/*______________________________________________________________________
-|	::=	EXACTLY  UnionExpr
-|			| AT_LEAST  UnionExpr
-|			| AT_MOST  UnionExpr
-|			| FROM  UnionExpr  TO  UnionExpr
-|_______________________________________________________________________*/
-{
-public:
-	enum ft_range_mode_t {
-		exactly,
-		at_least,
-		at_most,
-		from_to
-	};
-
-protected:
-	rchandle<UnionExpr> src_expr_h;
-	rchandle<UnionExpr> dst_expr_h;
-
-public:
-	FTRange(
-		yy::location const&,
-		rchandle<UnionExpr> src_expr_h,
-		rchandle<UnionExpr> dst_expr_h);
-	~FTRange();
-
-public:
-	rchandle<UnionExpr> get_src_expr() const { return src_expr_h; }
-	rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[368] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTDistance]
-class FTDistance : public FTProximity
-/*______________________________________________________________________
-|	::=	DISTANCE  FTRange  FTUnit
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<FTRange> dist_h;
-	rchandle<FTUnit> unit_h;
-
-public:
-	FTDistance(
-		yy::location const&,
-		rchandle<FTRange>,
-		rchandle<FTUnit>);
-	~FTDistance();
-
-public:
-	rchandle<FTRange> get_dist() const { return dist_h; }
-	rchandle<FTUnit> get_unit() const { return unit_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-//[369] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTWindow]
-class FTWindow : public FTProximity
-/*______________________________________________________________________
-|	::=	WINDOW  UnionExpr  FTUnit
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<UnionExpr> window_h;
-	rchandle<FTUnit> unit_h;
-
-public:
-	FTWindow(
-		yy::location const&,
-		rchandle<UnionExpr> window_h,
-		rchandle<FTUnit> unit_h);
-	~FTWindow();
-
-public:
-	rchandle<UnionExpr> get_window() const { return window_h; }
-	rchandle<FTUnit> get_unit() const { return unit_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-};
-
 
 
 
