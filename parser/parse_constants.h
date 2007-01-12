@@ -136,6 +136,7 @@ enum common_content_t {
 };
 
 enum occurrence_t {
+	occurs_never,
 	occurs_optionally,
 	occurs_zero_or_more,
 	occurs_one_or_more
