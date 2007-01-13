@@ -21,21 +21,22 @@ namespace xqp {
 |		[http://www.w3.org/TR/xpath-datamodel/]
 |_______________________________________________________________________*/
 
+#define EMPTY_SEQUENCE item_iterator()
 
 //////////////////////////////////////////////
 //	Nodes
 //////////////////////////////////////////////
 
-item_iterator node::attributes(context const& p) const { return empty_sequence(); }
-item_iterator node::base_uri(context const& p) const { return empty_sequence(); }
-item_iterator node::children(context const& p) const { return empty_sequence(); }
-item_iterator node::document_uri(context const& p) const { return empty_sequence(); }
-item_iterator node::namespace_bindings(context const& p) const { return empty_sequence(); }
-item_iterator node::namespace_nodes(context const& p) const { return empty_sequence(); }
-item_iterator node::node_name(context const& p) const { return empty_sequence(); }
-item_iterator node::parent(context const& p) const { return empty_sequence(); }
-item_iterator node::type_name(context const& p) const { return empty_sequence(); }
-item_iterator node::typed_value(context const& p) const { return empty_sequence(); }
+item_iterator node::attributes(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::base_uri(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::children(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::document_uri(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::namespace_bindings(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::namespace_nodes(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::node_name(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::parent(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::type_name(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::typed_value(context const& p) const { return EMPTY_SEQUENCE; }
 
 bool node::is_id(context const& p) const { return false; }
 bool node::is_idrefs(context const& p) const { return false; }
@@ -45,14 +46,14 @@ item_iterator node::unparsed_entity_public_id(
   context const& p,
   string const& entity) const
 { 
-  return empty_sequence(); 
+  return EMPTY_SEQUENCE; 
 }
   
 item_iterator node::unparsed_entity_system_id(
   context const& p,
   string const& entity) const
 { 
-  return empty_sequence(); 
+  return EMPTY_SEQUENCE; 
 }
 
 
@@ -64,19 +65,19 @@ item_iterator node::unparsed_entity_system_id(
 item_iterator document_node::base_uri(
   context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator document_node::children(
   context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator document_node::document_uri(
   context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 std::string document_node::string_value(
@@ -88,21 +89,21 @@ std::string document_node::string_value(
 item_iterator document_node::typed_value(
   context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator document_node::unparsed_entity_public_id(
 	context const& p,
 	string const& entityname) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator document_node::unparsed_entity_system_id(
 	context const& p,
 	string const& entityname) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 
@@ -114,19 +115,19 @@ item_iterator document_node::unparsed_entity_system_id(
 item_iterator collection_node::base_uri(
   context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator collection_node::children(
   context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator collection_node::collection_uri(
   context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 
@@ -399,17 +400,17 @@ std::string element_node::string_value(context const& p) const
 
 item_iterator element_node::attributes(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::base_uri(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::children(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 bool element_node::is_id(context const& p) const
@@ -424,12 +425,12 @@ bool element_node::is_idrefs(context const& p) const
 
 item_iterator element_node::namespace_bindings(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::namespace_nodes(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 bool element_node::nilled(context const& p) const
@@ -439,36 +440,36 @@ bool element_node::nilled(context const& p) const
 
 item_iterator element_node::node_name(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::parent(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::type_name(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::typed_value(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::unparsed_entity_public_id(
   context const& p,
   std::string const& entity) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator element_node::unparsed_entity_system_id(
   context const& p,
   std::string const& entity) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 
@@ -577,7 +578,7 @@ std::string attribute_node::string_value(context const& p) const
 
 item_iterator attribute_node::base_uri(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 bool attribute_node::is_id(context const& p) const
@@ -592,22 +593,22 @@ bool attribute_node::is_idrefs(context const& p) const
 
 item_iterator attribute_node::node_name(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator attribute_node::parent(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator attribute_node::type_name(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator attribute_node::typed_value(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 
@@ -650,17 +651,17 @@ std::string ns_node::string_value(context const& p) const
 
 item_iterator ns_node::node_name(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator ns_node::parent(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator ns_node::typed_value(context const& p) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 
@@ -677,22 +678,22 @@ std::string pi_node::string_value(context const&) const
 
 item_iterator pi_node::base_uri(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator pi_node::node_name(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator pi_node::parent(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator pi_node::typed_value(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 
@@ -708,22 +709,22 @@ std::string text_node::string_value(context const&) const
 
 item_iterator text_node::base_uri(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator text_node::parent(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator text_node::type_name(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator text_node::typed_value(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 
@@ -739,22 +740,22 @@ std::string binary_node::string_value(context const&) const
 
 item_iterator binary_node::base_uri(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator binary_node::parent(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator binary_node::type_name(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator binary_node::typed_value(context const&) const
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 		
 

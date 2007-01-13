@@ -129,54 +129,6 @@ public:
 
 /*______________________________________________________________________
 |  
-|	'item_iterator' - coin of the realm in XQuery: all
-|	expressions return some form of item_iterator, often
-|	a singleton iterator, sometimes an empty sequence.
-|
-|	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
-|_______________________________________________________________________*/
-
-class item_iterator : public value
-{
-protected:
-  context const* ctx_p;
-  
-public:
-	// aquire resources
-	virtual void open();
-
-	// release resources
-	virtual void close();
-
-	// return handle to next value (or NULL)
-	virtual rchandle<item> next();
-
-	// return true <=> iterator has no more items
-	virtual bool done();
-
-	// rewind the iterator, equivalent to {close();open()}
-	virtual void rewind();
-
-};
-
-
-class empty_sequence : public item_iterator
-{
-public:
-	empty_sequence() {}
-	~empty_sequence() {}
-	
-public:
-	void open() {}
-	rchandle<item> next() { return NULL; }
-	bool done() { return true; }
-	void close() {}
-	
-};
-
-
-/*______________________________________________________________________
-|  
 |	'atomic_value' encapsulates value of primitive or derived types
 |_______________________________________________________________________*/
 
@@ -200,47 +152,9 @@ public:
 
 /*______________________________________________________________________
 |  
-|	'node' values (defined in 'nodes.h')
+|	'node' values defined in 'nodes.h'
+|	'function' values defined in 'funcval.h'
 |_______________________________________________________________________*/
-
-
-/*______________________________________________________________________
-|  
-|	'function' encapsulates an xquery function object
-|_______________________________________________________________________*/
-
-struct signature : public rcobject
-{
-	QName fname;
-	std::vector<item_type> arg_v;
-	item_type ret_type;
-	signature(QName const& q) : fname(q) {}
-};
-
-
-class function_impl : public rcobject
-{
-protected:
-  rchandle<item_iterator> val; 
-
-};
-
-
-class function : public object
-{
-protected:
-	function_impl const* func_p;
-
-public:
-	function(function_impl const* _func_p) : func_p(_func_p) {}
-	function() {}
-	~function() {}
-
-public:
-	function_impl const* get_func() const { return func_p; }
-
-};
-
 
 } /* namespace xqp */
 #endif /* XQP_VALUES_H */
