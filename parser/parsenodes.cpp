@@ -17,7 +17,7 @@
 #include <vector>
 #include <assert.h>
 
-#include "../runtime/context.h"
+#include "../context/context.h"
 #include "../types/qname.h"
 #include "../util/rchandle.h"
 #include "xquery_parser.tab.h"
