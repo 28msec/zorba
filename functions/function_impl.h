@@ -39,8 +39,13 @@ public:
 
 class function_impl : public rcobject
 {
-protected:
+public:
+	signature sig;
   rchandle<item_iterator> val; 
+
+public:
+	function_impl(signature const& _sig) : sig(_sig) {}
+	~function_impl() {}
 
 public:
   static std::string mangle(signature const& sig);
