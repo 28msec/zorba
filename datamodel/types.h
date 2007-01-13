@@ -713,6 +713,7 @@ public:
 
 public:
 	static atomic_type const& get_instance() { return the_instance; }
+	virtual std::string describe() const { return "atomic_type"; }
 
 };
 

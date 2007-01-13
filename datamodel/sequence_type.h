@@ -48,6 +48,11 @@ public:
 	static sequence_type NUMERIC_SEQUENCE;	// sequence of zero or more numeric values
 	static sequence_type EMPTY_SEQUENCE;		// the empty sequence
 
+public:
+	sequence_type();
+	~sequence_type();
+
+public:
 	/**
 	 *	This is a private constructor: all external	clients use the
 	 *	factory method make_sequence_type(), to allow object pooling.
@@ -70,7 +75,7 @@ public:
 	 *	E.g. for type element(*, xs:date) the "primary type" is element()
 	 *	@return The item type code of the primary type
  	 */
-	item_type get_primary() { return primary; }
+	item_type get_primary() const { return primary; }
 
 	/**
 	 *	 Get the cardinality component of this sequence_type.
@@ -78,13 +83,13 @@ public:
 	 *	 Cardinality.ONE_OR_MORE, etc
 	 *	 @return the required cardinality
 	 */
-	enum occurrence_t get_occurs() { return occurs; }
+	enum occurrence_t get_occurs() const { return occurs; }
 
 	/**
 	 * Return a string representation of this SequenceType
 	 * @return the string representation of this sequence_type
 	 */
-	std::string describe();
+	std::string describe() const;
 
 };
 

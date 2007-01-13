@@ -61,6 +61,19 @@ void sequence_type::initializer()
 */
 
 
+sequence_type::sequence_type()
+:
+	primary(item_type()),
+	occurs(occurs_zero_or_more)
+{
+}
+
+
+sequence_type::~sequence_type()
+{
+}
+
+
 sequence_type::sequence_type(
 	item_type _primary,
 	enum occurrence_t _occurs)
@@ -79,7 +92,7 @@ sequence_type make_sequence_type(
 }
 
 
-string sequence_type::describe()
+string sequence_type::describe() const
 {
 	if (occurs==occurs_never) {
 		return "void()";
