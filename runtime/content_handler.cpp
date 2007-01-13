@@ -1,4 +1,12 @@
-
+/* -*- mode: c++; indent-tabs-mode: nil -*-
+ *
+ *  $Id: content_handler.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *
+ *  Author: Paul Pedersen
+ *
+ */
 
 #include "http_request.h"
 #include "stdio.h"
@@ -71,5 +79,6 @@ void handle_request(request_rec* r,char* buf,int max)
 {
   msg(r,buf,max);
 }
+
 }
 
