@@ -144,8 +144,11 @@ class transform_expr : public expr
 |				MODIFY  expr  RETURN  expr
 |_______________________________________________________________________*/
 {
+public:
+	typedef rchandle<var_expr> varref_t;
+
 protected:
-	std::vector<varref_T> vref_hv;
+	std::vector<varref_t> vref_hv;
 	exprref_t source_expr_h;
 	exprref_t target_expr_h;
 
@@ -161,7 +164,7 @@ public:
 	exprref_t get_target_expr() const { return target_expr_h; }
 
 public:
-	void add(varref_T vref_h)
+	void add(varref_t vref_h)
 		{ vref_hv.push_back(vref_h); }
 
 	varref_t & operator[](int i)

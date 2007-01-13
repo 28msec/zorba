@@ -11,7 +11,7 @@
 #ifndef XQP_FTEXPR_H
 #define XQP_FTEXPR_H
 
-#include "exprnodes.h"
+#include "expr.h"
 
 namespace xqp {
 

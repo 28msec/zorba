@@ -25,8 +25,6 @@
 #include "../util/triple.h"
 #include "../values/ft_options.h"
 
-
-
 namespace xqp {
 
 /*______________________________________________________________________

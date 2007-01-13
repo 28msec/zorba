@@ -108,9 +108,13 @@ ostream& ft_mildnot_expr::put(ostream& os) const
 //[348] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTUnaryNot]
 
 ft_unarynot_expr::ft_unarynot_expr(
-	yy::location const& loc)
+	yy::location const& loc,
+	rchandle<ft_words_selection_expr> _words_selection_h,
+	bool _not_b)
 :
-	expr(loc)
+	expr(loc),
+	words_selection_h(_words_selection_h),
+	not_b(_not_b)
 {
 }
 
@@ -138,7 +142,7 @@ ft_words_selection_expr::ft_words_selection_expr(
 	words_h(_words_h),
 	src_h(_src_h),
 	dst_h(_dst_h),
-	range_mode(_range_mode),
+	range_mode(_range_mode)
 {
 }
 
@@ -166,11 +170,11 @@ ostream& ft_words_selection_expr::put(ostream& os) const
 
 ft_words_expr::ft_words_expr(
 	yy::location const& loc,
-	rchandle<expr> _ords_expr_h,
+	rchandle<expr> _words_expr_h,
 	ft_anyall_option_t _anyall_opt)
 :
 	expr(loc),
-	ords_expr_h(_ords_expr_h),
+	words_expr_h(_words_expr_h),
 	anyall_opt(_anyall_opt)
 {
 }
