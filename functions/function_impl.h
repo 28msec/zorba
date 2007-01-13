@@ -14,18 +14,26 @@
 #include <vector>
 #include <string>
 
-#include "../datamodel/types.h"
+#include "../datamodel/sequence_type.h"
 #include "../datamodel/qname.h"
+#include "../runtime/item_iterator.h"
+#include "../util/hashmap.h"
 #include "../util/rchandle.h"
  
 namespace xqp {
 
-struct signature : public rcobject
+class signature : public rcobject
 {
+public:
 	QName fname;
-	std::vector<item_type> arg_v;
-	item_type ret_type;
-	signature(QName const& q) : fname(q) {}
+	std::vector<sequence_type> arg_v;
+	sequence_type ret_type;
+	static hashmap<signature const*> sigmap;
+
+public:
+	signature(QName const& _fname) : fname(_fname) {}
+	~signature() {}
+
 };
 
 
@@ -35,10 +43,9 @@ protected:
   rchandle<item_iterator> val; 
 
 public:
-	static string decode_type(type::typecode)
-	static type::typecode function_impl::encode_type(string const& s)
   static std::string mangle(signature const& sig);
-  static rchandle<signature> demangle(std::string const& sig);
+  static signature const* demangle(std::string const& sig);
+
 };
 
 
