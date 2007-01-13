@@ -11,6 +11,7 @@
 #ifndef XQP_FTOPTIONS_H
 #define XQP_FTOPTIONS_H
 
+#include "../util/rchandle.h"
 #include <string>
 #include <vector>
 
@@ -55,7 +56,7 @@ struct ft_thesaurus_id
 
 };
 
-class ft_options
+class ft_options : public rcobject
 {
 protected:
 	uint16_t matchopt;
