@@ -15,8 +15,10 @@
 #include <vector>
 
 #include "namespace.h"
+
 #include "../datamodel/qname.h"
 #include "../datamodel/collation.h"
+#include "../runtime/item_iterator.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/URI.h"
@@ -26,6 +28,7 @@
 using namespace std;
 namespace xqp {
 
+#define EMPTY_SEQUENCE item_iterator()
   
 ///////////////////////////////
 //  var_binding
@@ -53,14 +56,14 @@ var_binding::var_binding(
 //  context
 ///////////////////////////////
 
-rchandle<signature> context::get_function_type(
+string context::get_function_type(
   QName const& fqname, 
   uint32_t arity) const 
 throw (xqp_exception)
 {
   ostringstream oss;
   fqname.put(oss) << '[' << arity << ']';
-  rchandle<signature> sig_h;
+  string sig_h;
   if (!signature_map.get(oss.str(),sig_h)) {
     throw xqp_exception(__FUNCTION__,
       "no signature for: "+fqname.get_prefix()+':'+fqname.get_name());
@@ -96,7 +99,7 @@ item_iterator context::get_var_value(
 	QName const& qname) const
 throw (xqp_exception)
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 function_impl const* context::get_function(
@@ -110,20 +113,20 @@ item_iterator context::get_document(
 	string const& doc_uri) const
 throw (xqp_exception)
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator context::get_collection(
 	string const& col_uri) const
 throw (xqp_exception)
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 item_iterator context::get_default_collection() const
 throw (xqp_exception)
 {
-  return empty_sequence();
+  return EMPTY_SEQUENCE;
 }
 
 

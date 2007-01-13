@@ -15,6 +15,7 @@
 #include "../datamodel/types.h"
 #include "../datamodel/collation.h"
 #include "../datamodel/qname.h"
+#include "../functions/function_impl.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
@@ -268,7 +269,7 @@ protected:	// XQuery 1.0 static context
 	**	The function signatures include the signatures of constructor 
 	**	functions, which are discussed in 3.12.5 Constructor Functions. 
 	*/
-	hashmap<rchandle<signature> > signature_map;
+	hashmap<std::string> signature_map;
 
 	/*
 	**	[Definition: Statically known documents. This is a mapping from 
@@ -343,7 +344,7 @@ public:	// manipulators
 	std::string get_base_uri() const
 		{ return base_uri; }
 	
-	rchandle<signature> get_function_type(QName const&, uint32_t arity) 
+	std::string get_function_type(QName const&, uint32_t arity) 
 	 const throw (xqp_exception);
 	item_type get_document_type(std::string const&) 
 	  const throw (xqp_exception);
