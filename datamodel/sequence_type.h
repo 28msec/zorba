@@ -13,6 +13,8 @@
 
 #include "types.h"
 #include "../parser/parse_constants.h"
+#include "../util/rchandle.h"
+
 #include <string>
 
 namespace xqp {
@@ -23,7 +25,7 @@ namespace xqp {
 |	[http://www.w3.org/TR/xquery/#id-sequencetype-syntax]
 |_______________________________________________________________________*/
 
-class sequence_type
+class sequence_type : public rcobject
 {
 protected:
 	item_type primary;				// e.g. "element", "comment", or "integer"

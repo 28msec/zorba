@@ -18,7 +18,7 @@
 #ifndef XQP_NODE_TYPES_H
 #define XQP_NODE_TYPES_H
 
-#include "data_interface.h"
+#include "../runtime/data_interface.h"
 #include "../runtime/context.h"
 #include "../util/rchandle.h"
 
