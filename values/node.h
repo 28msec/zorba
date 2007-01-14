@@ -37,7 +37,7 @@ public:
 	~nodeid() {}
 
 public:
-	bool operator==(nodeid& id1) const;
+	bool operator==(nodeid const& id1) const;
 
 };
 
