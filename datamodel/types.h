@@ -10,12 +10,11 @@
  
 /*
  *  This code module is derived from the Saxon project.
- *  Michael Kay is the original author of the Saxon code base.
+ *  The Saxon Java code has been reworked for the C++
+ *  framework, but the design is inherited from Saxon.
+ *
+ *  Michael Kay is the original author.
  *  [http://saxon.sourceforge.net/]
- *  
- *  The Saxon Java code has been completely
- *  reworked for the C++ framework, but the
- *  design is clearly inherited from Saxon.
  *
  */
 
@@ -56,56 +55,57 @@ namespace xqp {
 |        xs_IDREFS
 |        xs_NMTOKENS
 |        xs_ENTITIES
-|        xs_anyAtomicType                 C++ type              type name
-|          xs_untypedAtomic               --------              ---------
+|        xs_anyAtomicType                C++ type             type name
+|          xs_untypedAtomic              --------             ---------
 |
-|          xs_dateTime                    struct tm             XSD_DATETIME
-|          xs_date                        struct tm             XSD_DATE
-|          xs_time                        struct tm             XSD_TIME
-|          xs_gYearMonth                  struct tm             XSD_GYEARMONTH
-|          xs_gYear                       struct tm             XSD_GYEAR
-|          xs_gMonthDay                   struct tm             XSD_GMONTHDAY
-|          xs_gDay                        struct tm             XSD_GDAY
-|          xs_gMonth                      struct tm             XSD_GMONTH
+|          xs_dateTime                   struct tm            XSD_DATETIME
+|          xs_date                       struct tm            XSD_DATE
+|          xs_time                       struct tm            XSD_TIME
+|          xs_gYearMonth                 struct tm            XSD_GYEARMONTH
+|          xs_gYear                      struct tm            XSD_GYEAR
+|          xs_gMonthDay                  struct tm            XSD_GMONTHDAY
+|          xs_gDay                       struct tm            XSD_GDAY
+|          xs_gMonth                     struct tm            XSD_GMONTH
 |
-|          xs_duration                    long                  XSD_DURATION
-|            xs_yearMonthDuration         long                  XSD_YEARMONTH_DURATION
-|            xs_dayTimeDuration           long                  XSD_DAYTIME_DURATION
+|          xs_duration                   long                 XSD_DURATION
+|            xs_yearMonthDuration        long                 XSD_YEARMONTH_DURATION
+|            xs_dayTimeDuration          long                 XSD_DAYTIME_DURATION
 |
-|          xs_float                       float                 XSD_FLOAT
-|          xs_double                      double                XSD_DOUBLE
-|          xs_decimal                     double                XSD_DECIMAL
-|            xs_integer                   long long             XSD_INTEGER
-|              xs_nonPositiveInteger      long long             XSD_NONPOSITIVEINTEGER
-|                xs_negativeInteger       long long             XSD_NEGATIVEINTEGER
-|              xs_long                    long long             XSD_LONG
-|                xs_int                   int                   XSD_INT
-|                  xs_short               short                 XSD_SHORT
-|                    xs_byte              signed char           XSD_BYTE
-|              xs_nonNegativeInteger      unsigned long long    XSD_NONNEGATIVEINTEGER
-|                xs_unsignedLong          unsigned long long    XSD_UNSIGNEDLONG
-|                  xs_unsignedInt         unsigned int          XSD_UNSIGNEDINT
-|                    xs_unsignedShort     unsigned short        XSD_UNSIGNEDSHORT
-|                      xs_unsignedByte    unsigned char         XSD_UNSIGNEDBYTE
-|                xs_positiveInteger       unsigned long long    XSD_POSITIVEINTEGER
+|          xs_float                      float                XSD_FLOAT
+|          xs_double                     double               XSD_DOUBLE
+|          xs_decimal                    double               XSD_DECIMAL
+|            xs_integer                  long long            XSD_INTEGER
+|              xs_nonPositiveInteger     long long            XSD_NONPOSITIVEINTEGER
+|                xs_negativeInteger      long long            XSD_NEGATIVEINTEGER
+|              xs_long                   long long            XSD_LONG
+|                xs_int                  int                  XSD_INT
+|                  xs_short              short                XSD_SHORT
+|                    xs_byte             signed char          XSD_BYTE
+|              xs_nonNegativeInteger     unsigned long long   XSD_NONNEGATIVEINTEGER
+|                xs_unsignedLong         unsigned long long   XSD_UNSIGNEDLONG
+|                  xs_unsignedInt        unsigned int         XSD_UNSIGNEDINT
+|                    xs_unsignedShort    unsigned short       XSD_UNSIGNEDSHORT
+|                      xs_unsignedByte   unsigned char        XSD_UNSIGNEDBYTE
+|                xs_positiveInteger      unsigned long long   XSD_POSITIVEINTEGER
 |
-|          xs_string                      std::string           XSD_STRING
-|            xs_normalizedString          std::string           XSD_NORMALIZEDSTRING
-|              xs_token                   std::string           XSD_TOKEN
-|                xs_language              std::string           XSD_LANGUAGE
-|                xs_NMTOKEN               std::string           XSD_NMTOKEN
-|                xs_Name                  std::string           XSD_NAME
-|                  xs_NCName              std::string           XSD_NCNAME
-|                    xs_ID                std::string           XSD_ID
-|                    xs_IDREF             std::string           XSD_IDREF
-|                    xs_ENTITY            std::string           XSD_ENTITY
+|          xs_string                     std::string          XSD_STRING
+|            xs_normalizedString         std::string          XSD_NORMALIZEDSTRING
+|              xs_token                  std::string          XSD_TOKEN
+|                xs_language             std::string          XSD_LANGUAGE
+|                xs_NMTOKEN              std::string          XSD_NMTOKEN
+|                xs_Name                 std::string          XSD_NAME
+|                  xs_NCName             std::string          XSD_NCNAME
+|                    xs_ID               std::string          XSD_ID
+|                    xs_IDREF            std::string          XSD_IDREF
+|                    xs_ENTITY           std::string          XSD_ENTITY
 |
-|          xs_boolean                     bool                  XSD_BOOLEAN
-|          xs_base64Binary                struct xsd_base64Binary XSD_BASE64BINARY
-|          xs_hexBinary                   struct xsd_hexBinary  XSD_HEXBINARY
-|          xs_anyURI                      std::string           XSD_ANYURI
-|          xs_QName                       std::string           XSD_QNAME
-|          xs_NOTATION                    std::string           XSD_NOTATION
+|          xs_boolean                    bool                 XSD_BOOLEAN
+|          xs_anyURI                     std::string          XSD_ANYURI
+|          xs_QName                      std::string          XSD_QNAME
+|          xs_NOTATION                   std::string          XSD_NOTATION
+|
+|          xs_base64Binary               struct xsd_base64Binary  XSD_BASE64BINARY
+|          xs_hexBinary                  struct xsd_hexBinary     XSD_HEXBINARY
 |
 |
 |  The two type hierarchies intersect at 'anyAtomicType'.
@@ -121,7 +121,6 @@ namespace xqp {
 |    schema-attribute(attr-name).
 |		
 |_______________________________________________________________________*/
-
 
 
 // forward references
@@ -168,38 +167,6 @@ public:
 		DISJOINT			// A is disjoint from B, no A are B
 	};
 
-	// singleton instances
-	/*
-	static xs_anyAtomicType UNTYPED_ATOMIC_TYPE;
-	static xs_anyAtomicType ANY_ATOMIC_TYPE;
-	static xs_anyAtomicType YEAR_MONTH_DURATION_TYPE;
-	static xs_anyAtomicType DAY_TIME_DURATION_TYPE;
-	static xs_anyAtomicType STRING_TYPE;
-	static xs_anyAtomicType BOOLEAN_TYPE;
-	static xs_anyAtomicType DECIMAL_TYPE;
-	static xs_anyAtomicType FLOAT_TYPE;
-	static xs_anyAtomicType DOUBLE_TYPE;
-	static xs_anyAtomicType DURATION_TYPE;
-	static xs_anyAtomicType DATE_TIME_TYPE;
-	static xs_anyAtomicType TIME_TYPE;
-	static xs_anyAtomicType DATE_TYPE;
-	static xs_anyAtomicType G_YEAR_MONTH_TYPE;
-	static xs_anyAtomicType G_YEAR_TYPE;
-	static xs_anyAtomicType G_MONTH_DAY_TYPE;
-	static xs_anyAtomicType G_DAY_TYPE;
-	static xs_anyAtomicType G_MONTH_TYPE;
-	static xs_anyAtomicType HEX_BINARY_TYPE;
-	static xs_anyAtomicType BASE64_BINARY_TYPE;
-	static xs_anyAtomicType ANY_URI_TYPE;
-	static xs_anyAtomicType QNAME_TYPE;
-	static xs_anyAtomicType NOTATION_TYPE;
-	static xs_anyAtomicType INTEGER_TYPE;
-	static xs_anyAtomicType ID_TYPE;
-	static xs_anyAtomicType IDREF_TYPE;
-	static xs_anyAtomicType NCNAME_TYPE;
-	static xs_anyAtomicType NUMBER_TYPE;
-	static bool types_initialized;
-	*/
 
 	// Get the item type of an item.
 	static item_type const* get_item_type(item const*);
@@ -257,9 +224,6 @@ public:
 
 class item_type : public type
 {
-protected:
-	type::typecode code;
-
 public:
 	item_type() {}
 	virtual ~item_type() {}
@@ -366,7 +330,7 @@ public:
 | other side, user-defined types defined in a schema.
 |_______________________________________________________________________*/
 
-class schema_type : public schema_component
+class schema_type : public schema_component, public type
 {
 public:
 	enum derivation_method {
@@ -733,36 +697,49 @@ private:
 
 protected:
 	xs_anyAtomicType();
-	~xs_anyAtomicType();
+	virtual ~xs_anyAtomicType();
 
 public:
+	// return const reference to the singleton instance
 	static xs_anyAtomicType const& get_instance();
 
-	enum type::typecode get_typecode() const;
-	class item_type const* get_primitive_type() const;
+	// return a name for this atomic type
+	virtual enum type::typecode get_typecode() const;
+
+	// check type identity
+	virtual bool operator==(schema_type const&) const;
+
+	// check subtype
+	virtual bool operator<(schema_type const&) const;
+
+	// return parent type
+	virtual item_type const* get_super_type() const;
+
+	// return a string representing the type
+	std::string describe() const;
+
+
+	// stub methods
+	item_type const* get_primitive_type() const;
 	schema_type::derivation_method get_derivation_method() const;
-
-	bool operator==(schema_type const&) const;
-
+	
 	bool is_complex() const;
 	bool is_anonymous() const;
 	bool is_simple() const;
 	bool is_atomic() const;
 	bool is_list() const;
 	bool is_union() const;
-
-	class item_type const* get_super_type() const;
-	class item_type const* get_primitive_item_type() const;
+	
+	item_type   const* get_primitive_item_type() const;
 	atomic_type const* get_common_atomic_type() const;
 	atomic_type const* get_atomized_item_type() const;
 	schema_type const* get_known_base_type() const;
 	schema_type const* get_base_type() const;
 
-	std::string describe() const;
 
 	void check_type_derivation(
 		schema_type const& type,
-		schema_type::derivation_method)
+		enum derivation_method)
 	throw (xqp_exception);
 
 };

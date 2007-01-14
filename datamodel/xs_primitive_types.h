@@ -10,12 +10,16 @@
 #ifndef XQP_XS_PRIMITIVE_TYPES_H
 #define XQP_XS_PRIMITIVE_TYPES_H
 
+#include "types.h"
+
 #include <time.h>
 #include <ctime>
 #include <string>
 #include <vector>
 
+#include "../runtime/item_iterator.h"
 #include "../util/xqp_exception.h"
+#include "../values/node.h"
 
 
 namespace xqp {
@@ -90,7 +94,7 @@ typedef struct
 {
 	// an array of xml encoded strings.
 	std::vector<std::string> _array;
-} xs_anyType;
+} xqp_anyType;
 
 
 
@@ -103,22 +107,10 @@ typedef struct
 class xs_anyURI : public xs_anyAtomicType
 {
 protected:
-	xqp_anyURI value;
+	xs_anyURI();
+	~xs_anyURI();
 
 public:
-	xs_anyURI::xs_anyURI(xqp_anyURI const& _value);
-	xs_anyURI::xs_anyURI();
-	xs_anyURI::~xs_anyURI();
-
-public:
-	void xs_anyURI::encode(xml_ostream* xos)
-	throw (xqp_exception)
-    
-	void xs_anyURI::decode(xml_istream& xis)
-	throw (xqp_exception);
-
-public:
-	uint32_t get_fingerprint() const;
 	std::string get_displayname() const;
 	std::string describe() const;
 
@@ -128,526 +120,77 @@ public:
 	bool is_simple() const;
 	bool is_atomic() const;
 	bool is_anonymous() const;
-	bool is_atomic() const;
 	bool is_list() const;
 	bool is_union() const;
 	bool is_external() const;
 	bool is_namespace_sensitive() const;
-	bool allows_derivation(enum derivation_method derivation) const;
 
-	enum type::type_name get_type() const;
-	enum type::whitespace_action get_whitespace_action() const;
-	enum type::derivation_method get_derivation_method() const;
-	enum type::validation_status get_validation_status() const;
+	enum type::typecode get_typecode() const;
 
-	rchandle<schema_type> get_base_type() const throws xqp_exception;
-	rchandle<atomic_type> get_common_atomic_type() const;
-	rchandle<schema_type> get_builtin_base_type() const;
+	schema_type const* get_base_type() const throw (xqp_exception);
+	atomic_type const* get_common_atomic_type() const;
+	schema_type const* get_builtin_base_type() const;
 
-	void analyze_expression(
-		rchandle<expr>,
-		int kind,
-		context const&) const
+	static item_iterator atomize(node const&)
 	throw (xqp_exception);
 
-	rchandle<item_iterator> atomize(node const&) const
-	throw (xqp_xception);
-
-	rchandle<item_iterator> get_typed_value(node const&)
-	const throw (xqp_exception);
-
-	rchandle<item_iterator> get_typed_value(
-		char const*,
-		rchandle<namespace_resolver>)
+	static item_iterator get_typed_value(node const&)
 	throw (xqp_exception);
 
-	rchandle<validation_error> validate_content(
-		char const* value,
-		rchandle<namespace_resolver>)
+	static item_iterator get_typed_value(char const*)
 	throw (xqp_exception);
 
 };
 
 
 
-class xs_base64Binary : public xs_anySimpleType
+class xs_QName : public xs_anyAtomicType
 {
 protected:
-	xqp_base64Binary value;
+	xs_QName();
+	~xs_QName();
 
 public:
-	xs_base64Binary(xqp_base64Binary const& _value);
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_base64Binary : public xs_anyAtomicType
+{
+protected:
 	xs_base64Binary();
 	~xs_base64Binary();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
 
 
-class xs_boolean : public xs_anySimpleType
+class xs_boolean : public xs_anyAtomicType
 {
 protected:
-	xqp_boolean value;
-	
-public:
-	xs_boolean(xqp_boolean const& _value);
 	xs_boolean();
 	~xs_boolean();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-    
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
 
 
-lass xs_byte : public xs_short
+class xs_decimal : public xs_anyAtomicType
 {
 protected:
-	xqp_byte value;
-
-public:
-	xs_byte(xqp_byte const& _value);
-	xs_byte();
-	~xs_byte();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_date : public xs_anySimpleType
-{
-protected:
-	xqp_date value;
-
-public:
-	xs_date(xqp_date const& _value);
-	xs_date();
-	~xs_date();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_dateTime : public xs_anySimpleType
-{
-protected:
-	xqp_dateTime value;
-
-public:
-	xs_dateTime(xqp_dateTime const& _value);
-	xs_dateTime();
-	~xs_dateTime();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_decimal : public xs_anySimpleType
-{
-protected:
-	xqp_decimal value;
-
-public:
-	xs_decimal(xqp_decimal const& _value);
 	xs_decimal();
 	~xs_decimal();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_double : public xs_anySimpleType
-{
-protected:
-	xqp_double value;
-
-public:
-	xs_double(xqp_double const& _value);
-	xs_double();
-	~xs_double();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_duration : public xs_anySimpleType
-{
-protected:
-	xqp_duration value;
-
-public:
-	xs_duration(xqp_duration const& _value);
-	xs_duration();
-	~xs_duration();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_ENTITIES : public xs_anySimpleType
-{
-protected:
-	xqp_ENTITIES value;
-
-public:
-	xs_ENTITIES(xqp_ENTITIES const& _value);
-	xs_ENTITIES();
-	~xs_ENTITIES();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_ENTITY : public xs_NCName
-{
-protected:
-	xqp_ENTITY value;
-
-public:
-	xs_ENTITY(xqp_ENTITY const& _value);
-	xs_ENTITY();
-	~xs_ENTITY();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_float : public xs_anyAtomicType
-{
-protected:
-	xqp_float value;
-
-public:
-	xs_float(xqp_float const& _value);
-	xs_float();
-	~xs_float();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_gDay : public xs_anyAtomicType
-{
-protected:
-	xqp_gDay value;
-
-public:
-	xs_gDay(xqp_gDay const& _value);
-	xs_gDay();
-	~xs_gDay();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_gMonth : public xs_anyAtomicType
-{
-protected:
-	xqp_gMonth value;
-
-public:
-	xs_gMonth(xqp_gMonth const& _value);
-	xs_gMonth();
-	~xs_gMonth();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_gMonthDay : public xs_anyAtomicType
-{
-protected:
-	xqp_gMonthDay value;
-
-public:
-	xs_gMonthDay(xqp_gMonthDay const& _value);
-	xs_gMonthDay();
-	~xs_gMonthDay();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_gYear : public xs_anyAtomicType
-{
-protected:
-	xqp_gYear value;
-
-public:
-	xs_gYear(xqp_gYear const& _value);
-	xs_gYear();
-	~xs_gYear();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_gYearMonth : public xs_anyAtomicType
-{
-protected:
-	xqp_gYearMonth value;
-
-public:
-	xs_gYearMonth(xqp_gYearMonth const& _value);
-	xs_gYearMonth();
-	~xs_gYearMonth();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_hexBinary : public xs_anyAtomicType
-{
-protected:
-	xqp_hexBinary value;
-
-public:
-	xs_hexBinary(xqp_hexBinary const& _value);
-	xs_hexBinary();
-	~xs_hexBinary();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_ID : public xs_NCName
-{
-protected:
-	xqp_id value;
-
-public:
-	xs_ID(xqp_id const& _value);
-	xs_ID();
-	~xs_ID();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_IDREF : public xs_NCName
-{
-protected:
-	xqp_IDREF value;
-
-public:
-	xs_IDREF(xqp_IDREF const& _value);
-	xs_IDREF();
-	~xs_IDREF();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_IDREFS : public xs_anySimpleType
-{
-protected:
-	xqp_IDREFS value;
-
-public:
-	xs_IDREFS(xqp_IDREFS const& _value);
-	xs_IDREFS();
-	~xs_IDREFS();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_int : public xs_long
-{
-protected:
-	xqp_int value;
-
-public:
-	xs_int(xqp_int const& _value);
-	xs_int();
-	~xs_int();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
@@ -656,44 +199,11 @@ public:
 class xs_integer : public xs_decimal
 {
 protected:
-	xqp_integer value;
-
-public:
-	xs_integer(xqp_integer const& _value);
 	xs_integer();
 	~xs_integer();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_language : public xs_token
-{
-protected:
-	xqp_language value;
-
-public:
-	xs_language(xqp_language const& _value);
-	xs_language();
-	~xs_language();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
@@ -702,251 +212,24 @@ public:
 class xs_long : public xs_integer
 {
 protected:
-	xqp_long value;
-
-public:
-	xs_long(xqp_long const& _value);
 	xs_long();
 	~xs_long();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
 
 
-class xs_NCName : public xs_Name
+class xs_int : public xs_long
 {
 protected:
-	xqp_NCName value;
+	xs_int();
+	~xs_int();
 
 public:
-	xs_NCName(xqp_NCName const& _value);
-	xs_NCName();
-	~xs_NCName();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_NMTOKEN : public xs_token
-{
-protected:
-	xqp_NMTOKEN value;
-
-public:
-	xs_NMTOKEN(xqp_NMTOKEN const& _value);
-	xs_NMTOKEN();
-	~xs_NMTOKEN();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_NMTOKENS : public xs_anySimpleType
-{
-protected:
-	xqp_NMTOKENS value;
-
-public:
-	xs_NMTOKENS(xqp_NMTOKENS const& _value);
-	xs_NMTOKENS();
-	~xs_NMTOKENS();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_NOTATION : public xs_anyAtomicType
-{
-protected:
-	xqp_NOTATION value;
-
-public:
-	xs_NOTATION(xqp_NOTATION const& _value);
-	xs_NOTATION();
-	~xs_NOTATION();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_Name : public xs_token
-{
-protected:
-	xqp_Name value;
-
-public:
-	xs_Name(xqp_name const& _value);
-	xs_Name();
-	~xs_Name();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_negativeInteger : public xs_nonPositiveInteger
-{
-protected:
-	xqp_negativeInteger value;
-
-public:
-	xs_negativeInteger(xqp_negativeInteger const& _value);
-	xs_negativeInteger();
-	~xs_negativeInteger();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class non_negativeInteger : public xs_integer
-{
-protected:
-	xqp_nonNegativeInteger value;
-
-public:
-	xs_nonNegativeInteger(xqp_nonNegativeInteger const& _value);
-	xs_nonNegativeInteger();
-	~xs_nonNegativeInteger();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_nonPositiveInteger : public xs_integer
-{
-protected:
-	xqp_nonPositiveInteger value;
-
-public:
-	xs_nonPositiveInteger(xqp_nonPositiveInteger const& _value);
-	xs_nonPositiveInteger();
-	~xs_nonPositiveInteger();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_normalizedString : public xs_string
-{
-protected:
-	xqp_normalizedString value;
-
-public:
-	xs_normalizedString(xqp_normalizedString const& _value);
-	xs_normalizedString();
-	~xs_normalizedString();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
-
-};
-
-
-
-class xs_positiveInteger : public xs_nonNegativeInteger
-{
-protected:
-	xqp_positiveInteger value;
-
-public:
-	xs_positiveInteger(xqp_positiveInteger const& _value);
-	xs_positiveInteger();
-	~xs_positiveInteger();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
@@ -955,21 +238,89 @@ public:
 class xs_short : public xs_int
 {
 protected:
-	xqp_short value;
-
-public:
-	xs_short(xqp_short const& _value);
 	xs_short();
 	~xs_short();
 
 public:
-	type::typename_t get_type();
+	type::typecode get_typecode() const;
 
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
+};
 
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+
+
+class xs_byte : public xs_short
+{
+protected:
+	xs_byte();
+	~xs_byte();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_date : public xs_anyAtomicType
+{
+protected:
+	xs_date();
+	~xs_date();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_dateTime : public xs_anyAtomicType
+{
+protected:
+	xs_dateTime();
+	~xs_dateTime();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_double : public xs_anyAtomicType
+{
+protected:
+	xs_double();
+	~xs_double();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_duration : public xs_anyAtomicType
+{
+protected:
+	xs_duration();
+	~xs_duration();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_ENTITIES : public xs_anySimpleType
+{
+protected:
+	xs_ENTITIES();
+	~xs_ENTITIES();
+
+public:
+	type::typecode get_typecode() const;
 
 };
 
@@ -978,44 +329,24 @@ public:
 class xs_string : public xs_anyAtomicType
 {
 protected:
-	xqp_string value;
-
-public:
-	xs_string(xqp_string const& _value);
 	xs_string();
 	~xs_string();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
 
 
-class xs_time : public xs_anyAtomicType
+class xs_normalizedString : public xs_string
 {
 protected:
-	xqp_time value;
+	xs_normalizedString();
+	~xs_normalizedString();
 
 public:
-	xs_time(xqp_time const& _value);
-	xs_time();
-	~xs_time();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
@@ -1024,67 +355,298 @@ public:
 class xs_token : public xs_normalizedString
 {
 protected:
-	xqp_token value;
-
-public:
-	xs_token(xqp_token const& _value);
 	xs_token();
 	~xs_token();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
 
 
-class xs_unsignedByte : public xs_unsignedShort
+class xs_Name : public xs_token
 {
 protected:
-	xqp_unsignedByte value;
+	xs_Name();
+	~xs_Name();
 
 public:
-	xs_unsignedByte(xqp_unsignedByte const& _value);
-	xs_unsignedByte();
-	~xs_unsignedByte();
-
-public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
 
 
 
-class xs_unsignedInt : public xs_unsignedLong
+class xs_NCName : public xs_Name
 {
 protected:
-	xqp_unsignedInt value;
+	xs_NCName();
+	~xs_NCName();
 
 public:
-	xs_unsignedInt(xqp_unsignedInt const& _value);
-	xs_unsignedInt();
-	~xs_unsignedInt();
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_ENTITY : public xs_NCName
+{
+protected:
+	xs_ENTITY();
+	~xs_ENTITY();
 
 public:
-	type::typename_t get_type();
+	type::typecode get_typecode() const;
 
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
+};
 
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+
+
+class xs_float : public xs_anyAtomicType
+{
+protected:
+	xs_float();
+	~xs_float();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_gDay : public xs_anyAtomicType
+{
+protected:
+	xs_gDay();
+	~xs_gDay();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_gMonth : public xs_anyAtomicType
+{
+protected:
+	xs_gMonth();
+	~xs_gMonth();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_gMonthDay : public xs_anyAtomicType
+{
+protected:
+	xs_gMonthDay();
+	~xs_gMonthDay();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_gYear : public xs_anyAtomicType
+{
+
+public:
+	xs_gYear();
+	~xs_gYear();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_gYearMonth : public xs_anyAtomicType
+{
+protected:
+	xs_gYearMonth();
+	~xs_gYearMonth();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_hexBinary : public xs_anyAtomicType
+{
+protected:
+	xs_hexBinary();
+	~xs_hexBinary();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_ID : public xs_NCName
+{
+protected:
+	xs_ID();
+	~xs_ID();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_IDREF : public xs_NCName
+{
+protected:
+	xs_IDREF();
+	~xs_IDREF();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_IDREFS : public xs_anySimpleType
+{
+protected:
+	xs_IDREFS();
+	~xs_IDREFS();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_language : public xs_token
+{
+protected:
+	xs_language();
+	~xs_language();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_NMTOKEN : public xs_token
+{
+protected:
+	xs_NMTOKEN();
+	~xs_NMTOKEN();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_NMTOKENS : public xs_anySimpleType
+{
+protected:
+	xs_NMTOKENS();
+	~xs_NMTOKENS();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_NOTATION : public xs_anyAtomicType
+{
+protected:
+	xs_NOTATION();
+	~xs_NOTATION();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_nonPositiveInteger : public xs_integer
+{
+protected:
+	xs_nonPositiveInteger();
+	~xs_nonPositiveInteger();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_negativeInteger : public xs_nonPositiveInteger
+{
+protected:
+	xs_negativeInteger();
+	~xs_negativeInteger();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_nonNegativeInteger : public xs_integer
+{
+protected:
+	xs_nonNegativeInteger();
+	~xs_nonNegativeInteger();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_positiveInteger : public xs_nonNegativeInteger
+{
+protected:
+	xs_positiveInteger();
+	~xs_positiveInteger();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
+
+
+class xs_time : public xs_anyAtomicType
+{
+protected:
+	xs_time();
+	~xs_time();
+
+public:
+	type::typecode get_typecode() const;
 
 };
 
@@ -1093,21 +655,24 @@ public:
 class xs_unsignedLong : public xs_nonNegativeInteger
 {
 protected:
-	xqp_unsignedLong value;
-
-public:
-	xs_unsignedLong(xqp_unsignedLong const& _value);
 	xs_unsignedLong();
 	~xs_unsignedLong();
 
 public:
-	type::typename_t get_type();
+	type::typecode get_typecode() const;
 
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
+};
 
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+
+
+class xs_unsignedInt : public xs_unsignedLong
+{
+protected:
+	xs_unsignedInt();
+	~xs_unsignedInt();
+
+public:
+	type::typecode get_typecode() const;
 
 };
 
@@ -1116,23 +681,26 @@ public:
 class xs_unsignedShort : public xs_unsignedInt
 {
 protected:
-	xqp_unsignedShort value;
-
-public:
-	xs_unsignedShort(xqp_unsignedShort const& _value);
 	xs_unsignedShort();
 	~xs_unsignedShort();
 
 public:
-	type::typename_t get_type();
-
-	void encode(xml_ostream* xos)
-	throw (xqp_exception);
-
-	void decode(xml_istream& xis)
-	throw (xqp_exception);
+	type::typecode get_typecode() const;
 
 };
+
+
+class xs_unsignedByte : public xs_unsignedShort
+{
+protected:
+	xs_unsignedByte();
+	~xs_unsignedByte();
+
+public:
+	type::typecode get_typecode() const;
+
+};
+
 
 
 }	/* namespace xqp */

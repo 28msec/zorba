@@ -19,6 +19,9 @@ node_types :	node_types.h node_types.cpp
 types :	types.h types.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/types.${SUFX} types.cpp
 
+xs_primitive_types :	xs_primitive_types.h xs_primitive_types.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/xs_primitive_types.${SUFX} xs_primitive_types.cpp
+
 character :	character.h character.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/character.${SUFX} character.cpp
 
