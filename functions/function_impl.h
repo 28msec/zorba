@@ -14,8 +14,8 @@
 #include <vector>
 #include <string>
 
-#include "../datamodel/sequence_type.h"
-#include "../datamodel/qname.h"
+#include "../types/sequence_type.h"
+#include "../types/qname.h"
 #include "../runtime/item_iterator.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"

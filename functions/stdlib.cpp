@@ -9,7 +9,7 @@
  */
 
 #include "function_library.h"
-#include "../datamodel/sequence_type.h"
+#include "../types/sequence_type.h"
 
 using namespace std;
 namespace xqp {

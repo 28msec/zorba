@@ -9,8 +9,8 @@
 #ifndef XQP_XML_OSTREAM_H
 #define XQP_XML_OSTREAM_H
 
-#include "../datamodel/qname.h"
-#include "../datamodel/types.h"
+#include "../types/qname.h"
+#include "../types/types.h"
 
 //#include "xml_store.h"
 //#include "text_store.h"

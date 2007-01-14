@@ -11,8 +11,8 @@
 #ifndef XQP_VALUES_H
 #define XQP_VALUES_H
 
-#include "../datamodel/qname.h"
-#include "../datamodel/types.h"
+#include "../types/qname.h"
+#include "../types/types.h"
 #include "../util/rchandle.h"
 
 #include <string>

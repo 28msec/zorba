@@ -12,9 +12,9 @@
 #define XQP_CONTEXT_H
 
 #include "namespace.h"
-#include "../datamodel/types.h"
-#include "../datamodel/collation.h"
-#include "../datamodel/qname.h"
+#include "../types/types.h"
+#include "../types/collation.h"
+#include "../types/qname.h"
 #include "../functions/function_impl.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"

@@ -16,8 +16,8 @@
 
 #include "namespace.h"
 
-#include "../datamodel/qname.h"
-#include "../datamodel/collation.h"
+#include "../types/qname.h"
+#include "../types/collation.h"
 #include "../runtime/item_iterator.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"

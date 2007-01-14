@@ -10,8 +10,8 @@
 #define XQP_XML_ISTREAM_H
 
 #include <istream>
-#include "../datamodel/qname.h"
-#include "../datamodel/types.h"
+#include "../types/qname.h"
+#include "../types/types.h"
 
 //#include "xml_storage_manager.h"
 //#include "text_storage_manager.h"

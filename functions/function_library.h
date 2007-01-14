@@ -11,7 +11,7 @@
 #ifndef XQP_FUNCTION_LIBRARY_H
 #define XQP_FUNCTION_LIBRARY_H
 
-#include "../datamodel/sequence_type.h"
+#include "../types/sequence_type.h"
 
 namespace xqp {
 

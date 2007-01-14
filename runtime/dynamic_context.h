@@ -11,11 +11,11 @@
 #ifndef XQP_DYNAMIC_CONTEXT_H
 #define XQP_DYNAMIC_CONTEXT_H
 
-#include "../datamodel/data_interface.h"
+#include "../runtime/item_iterator.h"
 #include "../functions/function_impl.h"
 #include "../types/qname.h"
 #include "../types/collation.h"
-#include "../types/builtin_types.h"
+#include "../types/types.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
