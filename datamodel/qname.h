@@ -58,9 +58,15 @@ public:
 
 public:
 	enum qname_type_t type;
+
 	std::string get_prefix() const { return prefix; }
+	void set_prefix(std::string const& p) { prefix = p; }
+
 	std::string get_name() const { return name; }
+	void set_name(std::string const& n) { name = n; }
+
 	uint64_t get_namespace_hash() const { return namespace_hash; }
+	void set_namespace_hash(uint64_t h) { namespace_hash = h; }
 
 public:
 	std::ostream& put(std::ostream& s) const;
