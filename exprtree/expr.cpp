@@ -936,7 +936,6 @@ ostream& elem_expr::put(ostream& os) const
 	Assert<null_pointer>(content_expr_h!=NULL);
 	content_expr_h->put(os) << endl;
 
-	nsb_v;
 	vector<nsbinding>::const_iterator it = begin();
 	vector<nsbinding>::const_iterator en = end();
 	for (; it!=en; ++it) {
