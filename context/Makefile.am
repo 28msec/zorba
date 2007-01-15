@@ -1,5 +1,4 @@
 # compiler flags
-CFLAGS = -Wall -c -g 
 AM_CXXFLAGS = -Wall -c -g 
 AM_LDFLAGS =
 
