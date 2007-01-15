@@ -33,7 +33,7 @@ class module_resolver
 		std::string const& base_uri,
 		std::string const& module_uri,
 		std::vector<std::string> const& location_v,
-		std::vector<source>& source_v);
+		std::vector<source> & source_v);
 
 };
 

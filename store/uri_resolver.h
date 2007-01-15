@@ -11,13 +11,11 @@
 #ifndef XQP_URI_RESOLVER_H
 #define XQP_URI_RESOLVER_H
 
-#include <string>
-#include <sstream>
-#include <vector>
-
+#include "source.h"
 #include "../util/rchandle.h"
 #include "../util/URI.h"
-#include "../datasrc/source.h"
+
+#include <string>
 
 namespace xqp {
 

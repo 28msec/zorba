@@ -11,10 +11,9 @@
 #ifndef XQP_SCHEMA_RESOLVER_H
 #define XQP_SCHEMA_RESOLVER_H
 
+#include "source.h"
 #include <string>
-#include "../datasrc/source.h"
-#include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
+#include <vector>
 
 namespace xqp {
 
@@ -23,17 +22,17 @@ class schema_resolver
 	 /**
 	 * Resolve a query module from the target namespace URI
 	 * and set of associated location hints. 
-	 * @param base_uri - base URI of the importing module
-	 * @param target_uri - schema target namespace URI
-	 * @param location_v - "at" location hints
-	 * @return a list of 'source' schema documents
-	 * @throws xqp_exception - if the schema cannot be located
+	 * @param base_uri  -  input: base URI of the importing module
+	 * @param target_uri - input: schema target namespace URI
+	 * @param location_v - input: "at" location hints
+	 * @param source_v -  output: list of schema 'source's
+	 * @return - true <=> schema is found, false otherwise
 	 */
-	rchandle<source_list> resolve(
+	bool resolve(
 		std::string const& base_uri,
 		std::string const& module_uri,
-		std::vector<std::string> const& location_v)
-	throw (xqp_exception);
+		std::vector<std::string> const& location_v,
+		std::vector<source> & source_v);
 
 };
 

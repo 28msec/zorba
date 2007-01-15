@@ -9,24 +9,17 @@
  */
 
 #include "schema_resolver.h"
-#include "../datasrc/source.h"
-#include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
-
-#include <string>
-#include <vector>
 
 using namespace std;
 namespace xqp {
 
-rchandle<source_list> schema_resolver::resolve(
+bool schema_resolver::resolve(
 	string const& base_uri,
 	string const& schema_target_uri,
-	vector<string> const& location_v)
-throw (xqp_exception)
+	vector<string> const& location_v,
+	vector<source> & source_v)
 {
-	rchandle<source_list> v_h = new source_list();
-	return v_h;
+	return false;
 }
 
 
