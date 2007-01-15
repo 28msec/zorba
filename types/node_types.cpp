@@ -9,7 +9,6 @@
  */
 
 #include "node_types.h"
-#include "data_interface.h"
 
 using namespace std;
 namespace xqp {

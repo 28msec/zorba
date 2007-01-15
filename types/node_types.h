@@ -18,8 +18,8 @@
 #ifndef XQP_NODE_TYPES_H
 #define XQP_NODE_TYPES_H
 
-#include "../runtime/data_interface.h"
-#include "../runtime/context.h"
+#include "../runtime/item_iterator.h"
+#include "../context/context.h"
 #include "../util/rchandle.h"
 
 namespace xqp {

@@ -31,33 +31,33 @@ public:
 	};
 
 protected:
+	enum qname_type_t type;
 	std::string prefix;
 	std::string name;
 	uint64_t namespace_hash;
 
 public:
 	QName(
-		enum qname_type_t type,
+		enum qname_type_t,
 		std::string const& prefix,
 		std::string const& name,
 		uint64_t namespace_hash);
 
 	QName(
-		enum qname_type_t type,
+		enum qname_type_t,
 		std::string const& prefix,
 		std::string const& name);
 
 	QName(
-		enum qname_type_t type,
+		enum qname_type_t,
 		std::string const& name);
 
 	QName(
-		enum qname_type_t type);
+		enum qname_type_t);
 
 	~QName();
 
 public:
-	enum qname_type_t type;
 
 	std::string get_prefix() const { return prefix; }
 	void set_prefix(std::string const& p) { prefix = p; }
