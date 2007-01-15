@@ -21,9 +21,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "../../util/Assert.h"
-#include "../../util/coder.h"
-#include "../../util/xqpexception.h"
+#include "../util/Assert.h"
+#include "../util/xqp_exception.h"
 
 using namespace std;
 namespace xqp {
@@ -36,7 +35,7 @@ namespace xqp {
 #define PAGE_LGSZ				12
 
 
-#define BAD_BLOCK throw xqpexception(__FUNCTION__, "Bad block");
+#define BAD_BLOCK throw xqp_exception(__FUNCTION__, "Bad block");
 
 
 // return: ceil(log_2(len)), (i.e.) lg(2)=1, lg(3)=2, etc.
@@ -96,7 +95,7 @@ static inline uint32_t lg0(uint32_t len)
 
 // create a new block at end of file
 // ---------------------------------
-block::block(int fd, uint32_t sz, bool init) throw (xqpexception)
+block::block(int fd, uint32_t sz, bool init) throw (xqp_exception)
 :
 	id(xqp::lg(sz),0)
 {
@@ -107,7 +106,7 @@ block::block(int fd, uint32_t sz, bool init) throw (xqpexception)
 	if ((eofoff = lseek(fd, 0, SEEK_END)) == -1) {
 		ostringstream oss;
 		oss << "lseek to EOF ["<<fd<<"] failed with error: " << strerror(errno);
-		throw xqpexception("block::ctor[01]", oss.str());
+		throw xqp_exception("block::ctor[01]", oss.str());
 	}
 
 	uint32_t sz0 = (sz < PAGE_SZ) ? PAGE_SZ : sz;
@@ -115,13 +114,13 @@ block::block(int fd, uint32_t sz, bool init) throw (xqpexception)
 		ostringstream oss;
 		oss << "lseek to EOF+" << sz0
 				<< " failed with error: " << strerror(errno);
-		throw xqpexception("block::ctor[01]", oss.str());
+		throw xqp_exception("block::ctor[01]", oss.str());
 	}
 	if (write(fd, buf, 1) == -1) {					// +1 here
 		ostringstream oss;
 		oss << "write to EOF+" << sz0
 				<< " failed with error: " << strerror(errno);
-		throw xqpexception("block::ctor[01]", oss.str());
+		throw xqp_exception("block::ctor[01]", oss.str());
 	}
 	
 	int prot = PROT_READ|PROT_WRITE;
@@ -130,7 +129,7 @@ block::block(int fd, uint32_t sz, bool init) throw (xqpexception)
 	{
 		ostringstream oss;
 		oss << "mmap failed with error: " << strerror(errno);
-		throw xqpexception("block::ctor[01]", oss.str());
+		throw xqp_exception("block::ctor[01]", oss.str());
 	}
 	if (init) { memset(data, 0, sz0); } 
 	id.offset = eofoff;
@@ -139,7 +138,7 @@ block::block(int fd, uint32_t sz, bool init) throw (xqpexception)
 
 // map a block at a given file offset
 // ----------------------------------
-block::block(int fd, off_t offset, uint32_t sz) throw (xqpexception)
+block::block(int fd, off_t offset, uint32_t sz) throw (xqp_exception)
 :
 	id(xqp::lg0(sz),offset)
 {
@@ -157,7 +156,7 @@ block::block(int fd, off_t offset, uint32_t sz) throw (xqpexception)
 	if ((data = (char*)mmap(0,sz,prot,flags,fd,off0))==MAP_FAILED) {
 		ostringstream oss;
 		oss << "mmap failed with error: " << strerror(errno);
-		throw xqpexception("block:ctor[02]", oss.str());
+		throw xqp_exception("block:ctor[02]", oss.str());
 	}
 
 	data += delta;
@@ -166,7 +165,7 @@ block::block(int fd, off_t offset, uint32_t sz) throw (xqpexception)
 
 // map a block at a given file offset
 // ----------------------------------
-block::block(char* data0, off_t offset, uint32_t sz) throw (xqpexception)
+block::block(char* data0, off_t offset, uint32_t sz) throw (xqp_exception)
 :
 	id(xqp::lg0(sz),offset)
 {
@@ -199,13 +198,13 @@ void block::unmap(uint32_t sz)
 	if (msync(data0, sz0, MS_SYNC)==-1) {
 		ostringstream oss;
 		oss << "msync failed with error: " << strerror(errno);
-		throw xqpexception("block:unmap", oss.str());
+		throw xqp_exception("block:unmap", oss.str());
 	}
 */
 	if (munmap(data0, sz0)==-1) {
 		ostringstream oss;
 		oss << "munmap failed with error: " << strerror(errno);
-		throw xqpexception("block:unmap", oss.str());
+		throw xqp_exception("block:unmap", oss.str());
 	}
 }
 
@@ -301,14 +300,14 @@ file_mapped_bucket::file_mapped_bucket(
   if (fd < 0 ) {
     ostringstream oerr;
     oerr<<"open failed on '"<<path<<"' with error: "<<strerror(errno);
-    throw xqpexception("file_mapped_bucket::ctor", oerr.str());
+    throw xqp_exception("file_mapped_bucket::ctor", oerr.str());
   }
 
   // allocate the entire file
   if ((eofoff = lseek(fd, 0, SEEK_END))==-1) {
     ostringstream oerr;
     oerr<<"lseek to EOF failed on '"<<path<<"' with error: "<<strerror(errno);
-    throw xqpexception("file_mapped_bucket::ctor", oerr.str());
+    throw xqp_exception("file_mapped_bucket::ctor", oerr.str());
   }
 
   if (eofoff==0) {
@@ -316,7 +315,7 @@ file_mapped_bucket::file_mapped_bucket(
 	  if (lseek(fd, sz-1, SEEK_END)==-1) { // Note: sz-1
 	    ostringstream oerr;
 	    oerr << "lseek to "<<(sz-1)<< " failed with error: " << strerror(errno);
-	    throw xqpexception("file_mapped_bucket::ctor", oerr.str());
+	    throw xqp_exception("file_mapped_bucket::ctor", oerr.str());
 	  }
 	
 	  // write one byte to create the new allocation
@@ -324,7 +323,7 @@ file_mapped_bucket::file_mapped_bucket(
 	  if (write(fd, buf, 1) == -1) {       // Get back the -1
 	    ostringstream oerr;
 	    oerr << "write to "<<(sz-1)<<" failed with error: " << strerror(errno);
-	    throw xqpexception("file_mapped_bucket::ctor", oerr.str());
+	    throw xqp_exception("file_mapped_bucket::ctor", oerr.str());
 	  }
 		eofoff = sz;
 		end = 0;
@@ -337,7 +336,7 @@ file_mapped_bucket::file_mapped_bucket(
 	if ((data = (char*)mmap(0,eofoff,prot,flags,fd,0))==MAP_FAILED) {
 		ostringstream oerr;
 		oerr<<"mmap failed on '"<<path<<"' with error: "<<strerror(errno);
-		throw xqpexception("file_mapped_bucket::ctor", oerr.str());
+		throw xqp_exception("file_mapped_bucket::ctor", oerr.str());
 	}
 
 	if (freelist.size()==0) freelist.push_back(1);
@@ -419,7 +418,7 @@ void file_mapped_bucket::expand(bool init)
   if (lseek(fd, eofoff-1, SEEK_END)==-1) {  // Note the -1
     ostringstream oerr;
     oerr << "lseek to 2*EOF failed with error: " << strerror(errno);
-    throw xqpexception("file_mapped_bucket::expand", oerr.str());
+    throw xqp_exception("file_mapped_bucket::expand", oerr.str());
   }
 
   // write one byte: creates hole equal in size to original file
@@ -427,7 +426,7 @@ void file_mapped_bucket::expand(bool init)
   if (write(fd, buf, 1) == -1) {            // Get back +1
     ostringstream oerr;
     oerr << "write to 2*EOF failed with error: " << strerror(errno);
-    throw xqpexception("file_mapped_bucket::expand", oerr.str());
+    throw xqp_exception("file_mapped_bucket::expand", oerr.str());
   }
 
   // remap the file
@@ -437,7 +436,7 @@ void file_mapped_bucket::expand(bool init)
   if ((data = (char*)mmap(0,eofoff,prot,flags,fd,0))==MAP_FAILED) {
     ostringstream oerr;
     oerr << "mmap failed with error: " << strerror(errno);
-    throw xqpexception("file_mapped_bucket::expand", oerr.str());
+    throw xqp_exception("file_mapped_bucket::expand", oerr.str());
   }
 
 	// 'end' is a zero-based offset and doesn't change.
@@ -450,12 +449,12 @@ void file_mapped_bucket::unmap()
   if (msync(data, eofoff, MS_ASYNC)==-1) {
     ostringstream oerr;
     oerr << "msync failed with error: " << strerror(errno) << endl;
-    throw xqpexception("file_mapped_bucket::unmap", oerr.str());
+    throw xqp_exception("file_mapped_bucket::unmap", oerr.str());
   }
   if (munmap(data, eofoff)==-1) {
     ostringstream oerr;
     oerr << "munmap failed with error: " << strerror(errno) << endl;
-    throw xqpexception("file_mapped_bucket::unmap", oerr.str());
+    throw xqp_exception("file_mapped_bucket::unmap", oerr.str());
   }
 }
 
@@ -481,7 +480,7 @@ block_mapped_bucket::block_mapped_bucket(
 		ostringstream oss;
 		oss <<"open("<<_path<<") failed: "<<strerror(errno)
 				<<" >>check security,create directory";
-		throw xqpexception(__FUNCTION__, oss.str());
+		throw xqp_exception(__FUNCTION__, oss.str());
 	} 
 	if (freelist.size()==0) freelist.push_back(1);
 }

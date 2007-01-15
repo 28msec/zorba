@@ -17,7 +17,7 @@
 #define XQP_SCAN_HANDLER_H
 
 #include <string>
-#include "../../util/hashmap.h"
+#include "../util/hashmap.h"
 
 namespace xqp {
 

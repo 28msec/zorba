@@ -15,9 +15,9 @@
 #include <utility>
 #include <vector>
 
-#include "../../util/hashmap.h"
-#include "../../util/fxarray.h"
-#include "../../util/fxvector.h"
+#include "../util/hashmap.h"
+#include "../util/fxarray.h"
+#include "../util/fxvector.h"
 
 
 namespace xqp {
@@ -46,13 +46,13 @@ struct block
 	block();
 
 	// new block at file eofoff
-	block(int fd, uint32_t sz, bool initp) throw (xqpexception);
+	block(int fd, uint32_t sz, bool initp) throw (xqp_exception);
 
 	// new block at offset in file
-	block(int fd, off_t offset, uint32_t sz) throw (xqpexception);
+	block(int fd, off_t offset, uint32_t sz) throw (xqp_exception);
 
 	// new block at offset in (mapped) array
-	block(char* data, off_t offset, uint32_t sz) throw (xqpexception);
+	block(char* data, off_t offset, uint32_t sz) throw (xqp_exception);
 
 	~block();
 

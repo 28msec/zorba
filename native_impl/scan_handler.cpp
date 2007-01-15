@@ -18,7 +18,7 @@
 
 #include <iostream>
 #include <string>
-#include "../../util/hashmap.h"
+#include "../util/hashmap.h"
 
 using namespace std;
 namespace xqp {

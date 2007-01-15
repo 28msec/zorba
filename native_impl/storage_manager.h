@@ -10,7 +10,7 @@
 #define XQP_STORAGE_MANAGER_H_
 
 #include <string>
-#include "blockstore.h"
+#include "spectrum.h"
 
 
 namespace xqp {
