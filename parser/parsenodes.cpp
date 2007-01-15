@@ -20,7 +20,7 @@
 #include "../context/context.h"
 #include "../types/qname.h"
 #include "../util/rchandle.h"
-#include "xquery_parser.tab.h"
+//#include "xquery_parser.tab.h"
 #include "indent.h"
 
 using namespace std;

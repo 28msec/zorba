@@ -24,3 +24,7 @@ Known bugs
 
 There remain bugs in the autoconf setup.
 Use the generated Makefiles directly for the time being.
+In fact, the build is only partial at this point.
+
+  - in 'parser', you need to stick to the Makefile.local, as in 
+      > make all -f Makefile.local
