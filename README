@@ -9,6 +9,14 @@ rebuild_autoconf:
   interprets them and, for each Makefile.am produces a Makefile.in. 
   Lastlyly, autoconf builds the configure script.
   
+  
+setup.sh:
+
+  Creates symbolic links to the scripts:
+    install-sh, depcomp, missing
+  needed by 'configure'.
+  
+  
 configure:
 
-  The configure Makefile generator
+  The configure Makefile generator.
