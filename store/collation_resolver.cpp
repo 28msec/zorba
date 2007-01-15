@@ -9,18 +9,15 @@
  */
 
 
-#include <string>
-#include "comparator.h"
-#include "../util/rchandle.h"
+#include "collation_resolver.h"
 
 using namespace std;
 namespace xqp {
 
-rchandle<comparator> resolve(
-	string const& uri)
+void test()
 {
-	// stub
-	return NULL;
+	collation_resolver<string> coll;
+	rchandle<comparator<string> > comp = coll.resolve("foo");
 }
 
 } /* namespace xqp */

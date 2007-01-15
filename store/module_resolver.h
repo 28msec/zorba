@@ -11,11 +11,9 @@
 #ifndef XQP_MODULE_RESOLVER_H
 #define XQP_MODULE_RESOLVER_H
 
+#include "source.h"
 #include <string>
 #include <vector>
-#include "../datasrc/source.h"
-#include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
 
 namespace xqp {
 
@@ -23,18 +21,19 @@ class module_resolver
 {
 	 /**
 	 * Resolve a query module from the target namespace URI
-	 * and set of associated location hints. 
-	 * @param base_uri - base URI of the importing module
-	 * @param module_uri - module target namespace URI
-	 * @param location_v - "at" location hints
-	 * @return a vector of 'source' objects 
-	 * @throws xqp_exception - if the module cannot be located
+	 * and a set of associated location hints. 
+	 *
+	 * @param base_uri   - input: base URI of the importing module
+	 * @param module_uri - input: module target namespace URI
+	 * @param location_v - input: "at" location hints
+	 * @param source_v   - output: vector of source objects
+	 * @return - false <=> module not found
 	 */
-	rchandle<source_list> resolve(
+	bool resolve(
 		std::string const& base_uri,
 		std::string const& module_uri,
-		std::vector<std::string> const& location_v)
-	throw (xqp_exception);
+		std::vector<std::string> const& location_v,
+		std::vector<source>& source_v);
 
 };
 

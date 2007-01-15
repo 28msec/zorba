@@ -17,20 +17,25 @@
 
 namespace xqp {
 
+template <class T>
 class collation_resolver
 {
+public:
 	/**
 	 * Resolve a collation URI (expressed as a string) and return 
 	 * the corresponding collation. 
 	 *
 	 * @param uri - the collation URI
-	 *
 	 * @return - a comparator representing the collation to be used.
 	 *   If the collation URI cannot be resolved, return NULL.
    */
-	rchandle<comparator> resolve(
-		std::string const& uri);
-}
+	rchandle<comparator<T> > resolve(std::string const& uri)
+	{
+		// stub
+		return NULL;
+	}
+
+};
 
 } /* namespace xqp */
 #endif /* XQP_COLLATION_RESOLVER_H */

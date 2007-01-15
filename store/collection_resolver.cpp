@@ -13,12 +13,13 @@
 #include <string>
 
 #include "../context/context.h"
-#include "../util/rchandle.h"
+#include "../runtime/item_iterator.h"
 #include "../util/xqp_exception.h"
-#include "../values/values.h"
 
 using namespace std;
 namespace xqp {
+
+#define EMPTY_SEQUENCE item_iterator()
 
 item_iterator collection_resolver::resolve(
 	string const& base,
@@ -26,7 +27,7 @@ item_iterator collection_resolver::resolve(
 	context& context)
 throw (xqp_exception)
 {
-	return empty_sequence();
+	return EMPTY_SEQUENCE;
 }
 
 

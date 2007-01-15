@@ -9,23 +9,17 @@
  */
 
 #include "module_resolver.h"
-#include "../datasrc/source.h"
-#include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
-
-#include <string>
 
 using namespace std;
 namespace xqp {
 
-rchandle<source_list> module_resolver::resolve(
+bool module_resolver::resolve(
 	string const& base_uri,
 	string const& module_uri,
-	vector<string> const& location_v)
-throw (xqp_exception)
+	vector<string> const& location_v,
+	vector<string> & source_v)
 {
-	rchandle<source_list> v_h = new source_list();
-	return v_h;
+	return false;
 }
 
 
