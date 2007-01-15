@@ -1,6 +1,6 @@
 # compiler flags
 CFLAGS = -Wall -c -g 
-CXXFLAGS = -Wall -c -g 
+AM_CXXFLAGS = -Wall -c -g 
 AM_LDFLAGS =
 
 # lists of binaries to produce
