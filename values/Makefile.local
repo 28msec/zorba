@@ -1,0 +1,29 @@
+OPT=-g
+SUFX=do
+BUILD=Build
+
+values :	values.h values.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/values.${SUFX} values.cpp
+    
+xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/xs_primitive_values.${SUFX} xs_primitive_values.cpp
+    
+node :	node.h node.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/node.${SUFX} node.cpp
+    
+ft_values :	ft_values.h ft_values.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/ft_values.${SUFX} ft_values.cpp
+ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp
+	g++ -Wall ${OPT} -o ${BUILD}/ft_values_test \
+		ft_values.${SUFX} \
+		ft_values_test.cpp
+
+update_values :	update_values.h update_values.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/update_values.${SUFX} update_values.cpp
+
+all :	\
+ 	values node ft_values update_values
+
+clean:
+	$(CleanRule) *.do *.po *.o *_test ${Executables} ${TestExecutables}
+
