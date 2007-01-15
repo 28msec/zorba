@@ -271,15 +271,15 @@ include ./$(DEPDIR)/types.Po
 include ./$(DEPDIR)/xs_primitive_types.Po
 
 .cpp.o:
-	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
+#	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 	source='$<' object='$@' libtool=no \
 	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 	$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
-	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
+#	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
+#	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 	source='$<' object='$@' libtool=no \
 	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`

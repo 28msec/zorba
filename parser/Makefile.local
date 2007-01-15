@@ -1,5 +1,5 @@
 OPT=-g
-SUFX=do
+SUFX=o
 
 scanner : xquery_scanner.l
 	flex -i -t xquery_scanner.l >xquery_scanner.yy.cpp
@@ -26,17 +26,17 @@ parsenodes : parsenodes.h parsenodes.cpp
 
 test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
 	g++ ${OPT} -o xquery_test \
-		../datamodel/qname.do \
-		../util/xqp_exception.o \
-		../util/file.do \
-		../util/mmfile.do \
-		../util/fxcharheap.do \
-		../util/URI.do \
-		parsenodes.do \
-		xquery_scanner.do \
-		xquery_parser.do \
-		symbol_table.do \
-		xquery_driver.do \
+		../types/qname.${SUFX} \
+		../util/xqp_exception.${SUFX} \
+		../util/file.${SUFX} \
+		../util/mmfile.${SUFX} \
+		../util/fxcharheap.${SUFX} \
+		../util/URI.${SUFX} \
+		parsenodes.${SUFX} \
+		xquery_scanner.${SUFX} \
+		xquery_parser.${SUFX} \
+		symbol_table.${SUFX} \
+		xquery_driver.${SUFX} \
 		xquery_test.cpp
 
 all : \

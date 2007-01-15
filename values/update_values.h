@@ -11,9 +11,8 @@
 #ifndef XQP_UPDATE_VALUES_H
 #define XQP_UPDATE_VALUES_H
 
+#include "node.h"
 #include "values.h"
-#include "nodes.h"
-#include "../types/qname.h"
 
 
 /*______________________________________________________________________
@@ -32,6 +31,29 @@ namespace xqp {
 
 /*______________________________________________________________________
 |  
+|	'primitive_update' encapsulates an xquery update action.
+|	Refer to "XQuery Update Facility'
+|	[http://http://www.w3.org/TR/xqupdate/]
+|_______________________________________________________________________*/
+
+class update_value : public object
+{
+protected:
+	context& ctx;
+	rchandle<node> target_h;
+
+public:
+	update_value(
+		context& _ctx, rchandle<node> _target_h)
+		:
+		ctx(_ctx), target_h(_target_h)
+	{}
+	~update_value() {}
+
+};
+
+/*______________________________________________________________________
+|  
 |	upd:insertBefore
 |
 |	'target' must be an element, text, processing instruction, 
@@ -43,14 +65,13 @@ namespace xqp {
 class upd_insert_before : public update_value
 {
 protected:
-	node target;
-	std::vector<node> content;
+	std::vector<rchandle<node> >& content_hv;
 
 public:
 	upd_insert_before(
 		context& ctx,
-		node& target,
-		vector<node> const& content);
+		rchandle<node> target_h,
+		vector<rchandle<node> > & content_hv);
 
 	~upd_insert_before();
 
@@ -69,14 +90,13 @@ public:
 class upd_insert_after : public update_value
 {
 protected:
-	node target;
-	std::vector<node> content;
+	std::vector<rchandle<node> > & content_hv;
 
 public:
 	upd_insert_after(
 		context& ctx,
-		node& target,
-		std::vector<node> const& content);
+		rchandle<node> target_h,
+		std::vector<rchandle<node> > & content_hv);
 
 	~upd_insert_after();
 
@@ -94,14 +114,13 @@ public:
 class upd_insert_into : public update_value
 {
 protected:
-	node target;
-	std::vector<node> content;
+	std::vector<rchandle<node> > & content_hv;
 
 public:
 	upd_insert_into(
 		context& ctx,
-		node& target,
-		std::vector<node> const& content);
+		rchandle<node> target_h,
+		std::vector<rchandle<node> > & content_hv);
 
 	~upd_insert_into();
 
@@ -119,14 +138,13 @@ public:
 class upd_insert_into_as_first : public update_value
 {
 protected:
-	node target;
-	std::vector<node> content;
+	std::vector<rchandle<node> > & content_hv;
 
 public:
 	upd_insert_into_as_first(
 		context& ctx,
-		node& target,
-		std::vector<node> const& content);
+		rchandle<node> target_h,
+		std::vector<rchandle<node> > & content_hv);
 
 	~upd_insert_into_as_first();
 
@@ -144,14 +162,13 @@ public:
 class upd_insert_into_as_last : public update_value
 {
 protected:
-	node target;
-	std::vector<node> content;
+	std::vector<rchandle<node> > & content_hv;
 
 public:
 	upd_insert_into_as_last(
 		context& ctx,
-		node& target,
-		std::vector<node> const& content);
+		rchandle<node> target_h,
+		std::vector<rchandle<node> > & content_hv);
 
 	~upd_insert_into_as_last();
 
@@ -164,14 +181,13 @@ public:
 class upd_insert_attributes : public update_value
 {
 protected:
-	element_node target;
-	std::vector<attribute_node> content;
+	std::vector<rchandle<attribute_node> > & content_hv;
 
 public:
 	upd_insert_attributes(
 		context& ctx,
-		element_node& target,
-		std::vector<attribute_node> const& content);
+		rchandle<node> target_h,
+		std::vector<rchandle<attribute_node> > & content_hv);
 
 	~upd_insert_attributes();
 
@@ -183,13 +199,10 @@ public:
 |_______________________________________________________________________*/
 class upd_delete : public update_value
 {
-protected:
-	node target;
-
 public:
 	upd_delete(
 		context& ctx,
-		node& target);
+		rchandle<node> target_h);
 
 	~upd_delete();
 
@@ -209,14 +222,13 @@ public:
 class upd_replace_node : public update_value
 {
 protected:
-	node target;
-	std::vector<node> content;
+	std::vector<rchandle<node> > & content_hv;
 
 public:
 	upd_replace_node(
 		context& ctx,
-		node& target,
-		std::vector<node> const& content);
+		rchandle<node> target_h,
+		std::vector<rchandle<node> > & content_hv);
 
 	~upd_replace_node();
 
@@ -232,13 +244,12 @@ public:
 class upd_replace_value : public update_value
 {
 protected:
-	node target;
 	std::string content;
 
 public:
 	upd_replace_value(
 		context& ctx,
-		node& target,
+		rchandle<node> target_h,
 		std::string const& content);
 
 	~upd_replace_value();
@@ -252,14 +263,13 @@ public:
 class upd_replace_element_content : public update_value
 {
 protected:
-	node target;
-	text_node content;
+	rchandle<text_node> content_h;
 	
 public:
 	upd_replace_element_content(
 		context& ctx,
-		node& target,
-		text_node const& content);
+		rchandle<node> target_h,
+		rchandle<text_node> content_h);
 
 	~upd_replace_element_content();
 
@@ -271,11 +281,14 @@ public:
 |_______________________________________________________________________*/
 class upd_rename : public update_value
 {
+protected:
+	rchandle<QName> new_name_h;
+
 public:
 	upd_rename(
 		context& ctx,
-		node& target,
-		QName& new_name);
+		rchandle<node> target_h,
+		rchandle<QName> new_name_h);
 
 	~upd_rename();
 

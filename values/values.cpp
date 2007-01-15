@@ -10,9 +10,9 @@
 
 #include "values.h"
 
-#include "../datamodel/types.h"
-#include "../datamodel/qname.h"
-#include "../util/rchandle.h"
+#include "../types/types.h"
+#include "../types/qname.h"
+#include "../utilrchandle.h"
 #include "../util/tokenbuf.h"
 
 #include <string>

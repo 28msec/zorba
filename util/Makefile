@@ -31,7 +31,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = URI$(EXEEXT) file$(EXEEXT) fxcharheap$(EXEEXT) \
-	mmfile$(EXEEXT) rwlock$(EXEEXT) tokenbuf$(EXEEXT)
+	mmfile$(EXEEXT) rwlock$(EXEEXT) tokenbuf$(EXEEXT) \
+	xqp_exception$(EXEEXT)
 subdir = util
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -61,6 +62,9 @@ rwlock_LDADD = $(LDADD)
 am_tokenbuf_OBJECTS = tokenbuf.$(OBJEXT)
 tokenbuf_OBJECTS = $(am_tokenbuf_OBJECTS)
 tokenbuf_LDADD = $(LDADD)
+am_xqp_exception_OBJECTS = xqp_exception.$(OBJEXT)
+xqp_exception_OBJECTS = $(am_xqp_exception_OBJECTS)
+xqp_exception_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -74,9 +78,11 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(URI_SOURCES) $(file_SOURCES) $(fxcharheap_SOURCES) \
-	$(mmfile_SOURCES) $(rwlock_SOURCES) $(tokenbuf_SOURCES)
+	$(mmfile_SOURCES) $(rwlock_SOURCES) $(tokenbuf_SOURCES) \
+	$(xqp_exception_SOURCES)
 DIST_SOURCES = $(URI_SOURCES) $(file_SOURCES) $(fxcharheap_SOURCES) \
-	$(mmfile_SOURCES) $(rwlock_SOURCES) $(tokenbuf_SOURCES)
+	$(mmfile_SOURCES) $(rwlock_SOURCES) $(tokenbuf_SOURCES) \
+	$(xqp_exception_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -179,6 +185,7 @@ fxcharheap_SOURCES = fxcharheap.h fxcharheap.cpp
 mmfile_SOURCES = mmfile.h mmfile.cpp
 rwlock_SOURCES = rwlock.h rwlock.cpp
 tokenbuf_SOURCES = tokenbuf.h tokenbuf.cpp
+xqp_exception_SOURCES = xqp_exception.h xqp_exception.cpp
 all: all-am
 
 .SUFFIXES:
@@ -253,6 +260,9 @@ rwlock$(EXEEXT): $(rwlock_OBJECTS) $(rwlock_DEPENDENCIES)
 tokenbuf$(EXEEXT): $(tokenbuf_OBJECTS) $(tokenbuf_DEPENDENCIES) 
 	@rm -f tokenbuf$(EXEEXT)
 	$(CXXLINK) $(tokenbuf_OBJECTS) $(tokenbuf_LDADD) $(LIBS)
+xqp_exception$(EXEEXT): $(xqp_exception_OBJECTS) $(xqp_exception_DEPENDENCIES) 
+	@rm -f xqp_exception$(EXEEXT)
+	$(CXXLINK) $(xqp_exception_OBJECTS) $(xqp_exception_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -266,20 +276,21 @@ include ./$(DEPDIR)/fxcharheap.Po
 include ./$(DEPDIR)/mmfile.Po
 include ./$(DEPDIR)/rwlock.Po
 include ./$(DEPDIR)/tokenbuf.Po
+include ./$(DEPDIR)/xqp_exception.Po
 
 .cpp.o:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
 	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXXCOMPILE) -c -o $@ $<
+	source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+	$(CXXCOMPILE) -c -o $@ $<
 
 .cpp.obj:
 	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
 	mv -f $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-#	source='$<' object='$@' libtool=no \
-#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
-#	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+	source='$<' object='$@' libtool=no \
+	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \

@@ -4,7 +4,7 @@ AM_CXXFLAGS = -Wall -c -g
 AM_LDFLAGS =
 
 # lists f binaries to produce
-bin_PROGRAMS = URI file fxcharheap mmfile rwlock tokenbuf
+bin_PROGRAMS = URI file fxcharheap mmfile rwlock tokenbuf xqp_exception
 
 URI_SOURCES = URI.h URI.cpp
 file_SOURCES = file.h file.cpp
@@ -12,4 +12,5 @@ fxcharheap_SOURCES = fxcharheap.h fxcharheap.cpp
 mmfile_SOURCES = mmfile.h mmfile.cpp
 rwlock_SOURCES = rwlock.h rwlock.cpp
 tokenbuf_SOURCES = tokenbuf.h tokenbuf.cpp
+xqp_exception_SOURCES = xqp_exception.h xqp_exception.cpp
 

@@ -56,6 +56,11 @@ item_iterator node::unparsed_entity_system_id(
   return EMPTY_SEQUENCE; 
 }
 
+enum node::node_kind_t node::node_kind() const
+{
+	return uninitialized_kind;
+}
+
 
 
 //////////////////////////////////////////////

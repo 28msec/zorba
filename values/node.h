@@ -81,7 +81,8 @@ public:	// 8 nodes types
 		text_kind,
 		comment_kind,
 		binary_kind,
-		col_kind
+		collection_kind,
+		uninitialized_kind
 	};
 
 public:	// accessors
@@ -96,7 +97,7 @@ public:	// accessors
 	 *	"attribute", "comment", "document", "element", "namespace" 
 	 *	"processing-instruction", or "text". 
 	 */
-	virtual enum node_kind_t node_kind() const = 0;
+	virtual enum node_kind_t node_kind() const;
 	
 	/**
 	 *	The dm:string-value accessor returns the string value of a node.
@@ -175,7 +176,7 @@ public:	// accessors
 	 *	of zero or one xs:QNames. Note that the QName value includes an 
 	 *	optional prefix as described in 3.3.3 QNames and NOTATIONS. 
 	 */
-	virtual item_iterator node_name(context const&) const = 0;
+	virtual item_iterator node_name(context const&) const;
 	
 	/**
 	 *	The dm:parent accessor returns the parent of a node as a sequence 
@@ -293,7 +294,7 @@ class collection_node : public node
 {
 public:
 	nodeid get_nodeid() const;
-	node_kind_t node_kind() const { return col_kind; }
+	node_kind_t node_kind() const { return collection_kind; }
 	item_iterator base_uri(context const&) const;
 	item_iterator collection_uri(context const&) const;
 	item_iterator children(context const&) const;

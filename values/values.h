@@ -11,6 +11,7 @@
 #ifndef XQP_VALUES_H
 #define XQP_VALUES_H
 
+#include "../context/context.h"
 #include "../types/qname.h"
 #include "../types/types.h"
 #include "../util/rchandle.h"
@@ -35,21 +36,6 @@ public:
 
 };
 
-
-/*______________________________________________________________________
-|  
-|	'primitive_update' encapsulates an xquery update action.
-|	Refer to "XQuery Update Facility'
-|	[http://http://www.w3.org/TR/xqupdate/]
-|_______________________________________________________________________*/
-
-class update_value : public object
-{
-public:
-	update_value() {}
-	~update_value() {}
-
-};
 
 
 /*______________________________________________________________________
