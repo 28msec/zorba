@@ -9,7 +9,6 @@
 #ifndef XQP_TOKENBUF_H
 #define XQP_TOKENBUF_H
 
-#include <iostream>
 #include <string>
 
 namespace xqp {
