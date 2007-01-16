@@ -12,7 +12,7 @@
 
 #include "../types/types.h"
 #include "../types/qname.h"
-#include "../utilrchandle.h"
+#include "../util/rchandle.h"
 #include "../util/tokenbuf.h"
 
 #include <string>
