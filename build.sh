@@ -1,5 +1,10 @@
 #!/bin/bash -f
-cd context
+cd util
+if (!(test -d Build)); then
+	mkdir Build;
+fi;
+make all -f Makefile.local
+cd ../context
 if (!(test -d Build)); then
 	mkdir Build;
 fi;
@@ -40,11 +45,6 @@ if (!(test -d Build)); then
 fi;
 make all -f Makefile.local
 cd ../types
-if (!(test -d Build)); then
-	mkdir Build;
-fi;
-make all -f Makefile.local
-cd ../util
 if (!(test -d Build)); then
 	mkdir Build;
 fi;
