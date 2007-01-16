@@ -262,7 +262,7 @@ void html_scanner::scan(const char* r, unsigned len, scan_handler* h)
 	int savedSize  = 0;
 	char* p = const_cast<char *>(r);	// begin pointer
 	char* e = (p+len);								// end pointer
-	unicode_decomposer ud;
+	unicode_decompositions ud;
 
 	while (theState!=S_DONE && p<e) {
 		int ch = *p++;
@@ -466,7 +466,7 @@ void html_scanner::scan(const char* r, unsigned len, scan_handler* h)
 		default: {
 			ostringstream oss;
 			oss << "Can't process state " + action;
-			logr->log(logger::LOG_ERROR,"html_scanner",oss.str()); }
+			cerr << "html_scanner: " << oss.str() << endl; }
 		}
 		theState = theNextState;
 

@@ -12,6 +12,7 @@
 #define XQP_XML_STORE_H
 
 #include "storage_manager.h"
+#include "../parser/location.hh"
 
 namespace xqp {
   

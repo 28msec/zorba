@@ -13,9 +13,10 @@
 #include <iostream>
 #include <string>
 
-#include "../../types/qname.h"
-#include "../../util/xqpexception.h"
-#include "../../util/tokenbuf.h"
+#include "../types/qname.h"
+#include "../util/xqp_exception.h"
+#include "../util/tokenbuf.h"
+#include "../util/URI.h"
 
 
 using namespace std;
@@ -45,10 +46,32 @@ xml_handler::xml_handler(
 }
 
 
-void xml_handler::error(string const& msg) const
-throw (xqpexception)
+xml_handler::xml_handler(
+	string const&  _uri,
+	vector<xml_term>& _term_v,
+	xml_ostream& _xos)
+:
+	scan_handler(),
+	top(0),
+	the_attribute(""),
+	the_element(""),
+	the_PCDATA(""),
+	the_PITarget(""),
+	the_entity(0),
+	term_pos(0),
+	last_pos(0),
+	uri(URI(_uri).hashkey()),
+	term_v(_term_v),
+	attr_v(8),
+	xos(_xos)
 {
-	throw xqpexception("XML_HANDLER", msg);
+}
+
+
+void xml_handler::error(string const& msg) const
+throw (xqp_exception)
+{
+	throw xqp_exception("XML_HANDLER", msg);
 }
 
 

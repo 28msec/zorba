@@ -11,33 +11,36 @@
 #include <string>
 #include <vector>
 
-#include "../../util/xqpexception.h"
+#include "../util/file.h"
+#include "../util/xqp_exception.h"
+#include "xml_handler.h"
 #include "xml_scanner.h"
+#include "xml_term.h"
 
 
 using namespace std;
 namespace xqp {
 
-void xml_loader::error(std::string const& msg) 
-throw (xqpexception)
+void xml_loader::error(string const& msg) 
+throw (xqp_exception)
 {
 	cout << "xml_loader::error: " << msg << endl;
-	throw xqpexception("XML_LOADER", msg);
+	throw xqp_exception("XML_LOADER", msg);
 }
 
 void xml_loader::load_xml_file(
-	std::string const& path,
-	std::string const& uri,
+	string const& path,
+	string const& uri,
 	xml_ostream& xos)
-throw (xqpexception)
+throw (xqp_exception)
 {
 	file f(path);
 	if (!f.exists()) error("file '"+path+"' not found");
-	uint32_t n = (uint32_t)g.get_size();
+	uint32_t n = (uint32_t)f.get_size();
 	if (n>>26) error("file '"+path+"' exceeds 64MB");
-	char* buf = new buf[n+1];
+	char* buf = new char[n+1];
 	f.readfile(buf,n);
-	vector<string>
+	vector<xml_term> termv;
 	xml_scanner xmls = xml_scanner();
 	xml_handler* s = new xml_handler(uri,termv,xos);
 	xmls.scan(buf, n, dynamic_cast<scan_handler*>(s));
@@ -45,8 +48,5 @@ throw (xqpexception)
 }
 
 
-
-
-
-
 }	/* namespace xqp */
+

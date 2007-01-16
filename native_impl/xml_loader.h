@@ -11,15 +11,15 @@
 #ifndef XQP_XML_LOADER_H
 #define XQP_XML_LOADER_H
  
-#include "../../util/xqpexception.h"
-#include "xml_ostream.h"
+#include "../util/xqp_exception.h"
+#include "../store/xml_ostream.h"
 
 namespace xqp {
 
 class xml_loader
 {
-  void xml_error(std::string const&) 
-  throw (xqpexception);
+  void error(std::string const&) 
+  throw (xqp_exception);
 
   /**
    *  Load an XML file.
@@ -32,7 +32,7 @@ class xml_loader
     std::string const& path,
     std::string const& uri,
     xml_ostream& xos)
-  throw (xqpexception);
+  throw (xqp_exception);
   
 };
 

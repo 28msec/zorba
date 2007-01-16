@@ -20,7 +20,7 @@
 |________________________________________________________________________*/
 
 #include "scan_handler.h"
-#include "unicode_decomposer.h"
+#include "unicode_decompositions.h"
 
 namespace xqp {
 
@@ -31,7 +31,7 @@ protected:
 	int theNextState;							// next state
 	char* theOutputBuffer;				// output buffer
 	int theSize;									// current buffer size in use
-  unicode_decomposer ud;
+  unicode_decompositions ud;
 
 public:
 	html_scanner();

@@ -11,7 +11,7 @@
 
 #include <vector>
 
-#include "../../util/hashmap.h"
+#include "../util/hashmap.h"
 
 namespace xqp {
 

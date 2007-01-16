@@ -24,11 +24,11 @@
 #include <ostream>
 #include <utility>
 
-#include "../../util/rchandle.h"
-#include "../../util/URI.h"
+#include "../util/rchandle.h"
+#include "../util/URI.h"
 
 #include "scan_handler.h"
-#include "xml_ostream.h"
+#include "../store/xml_ostream.h"
 #include "xml_term.h"
 
 namespace xqp {
@@ -73,10 +73,15 @@ public:	// ctor, dtor
 	  std::vector<xml_term>&,				// accumulate terms here
 	  xml_ostream&);								// accumulate document here
 
+	xml_handler(
+		std::string const& uri,
+	  std::vector<xml_term>&,				// accumulate terms here
+	  xml_ostream&);								// accumulate document here
+
 	~xml_handler() {}
 
 protected:
-	void error(std::string const& msg) const throw (xqpexception);
+	void error(std::string const& msg) const throw (xqp_exception);
 
 public:	
 

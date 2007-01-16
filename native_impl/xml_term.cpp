@@ -17,7 +17,7 @@ namespace xqp {
 string xml_term::to_string() const
 {
   ostringstream oss;
-  oss <<'['<<term<<","<<src_id<<','<<pos<<','<<tag<<']';
+  oss <<'['<<term<<"("<<uri<<"):"<<pos<<']';
   return oss.str();
 }
 

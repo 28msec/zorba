@@ -24,6 +24,8 @@
 |		 
 |_______________________________________________________________________*/
 
+#include "hashfun.h"
+
 #include <string>
 #include <vector>
 
@@ -119,6 +121,7 @@ public:	// manipulators
 	void update();
 
 	std::string toString() const;
+	uint64_t hashkey() const { return hashfun::h64(toString()); }
 
 };
 
