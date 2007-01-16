@@ -12,7 +12,8 @@
 #define XQP_XML_STORE_H
 
 #include "storage_manager.h"
-#include "../parser/location.hh"
+#include "../values/values.h"
+#include "../values/node.h"
 
 namespace xqp {
   
@@ -21,7 +22,7 @@ class child_iterator
 {
 protected:
   storage_manager& store;
-  loc curr;
+	nodeid id;
 
 public:
   item& operator*() const;
@@ -45,6 +46,7 @@ class attr_iterator
 {
 protected:
   storage_manager& store;
+	nodeid id;
 
 public:
   item& operator*() const;
@@ -68,6 +70,7 @@ class text_iterator
 {
 protected:
   storage_manager& store;
+	nodeid id;
 
 public:
   item& operator*() const;
@@ -82,7 +85,7 @@ public:
   
 public:
   text_iterator(storage_manager&,nodeid);
-  ~attr_iterator();
+  ~text_iterator();
   
 };
 
@@ -91,6 +94,7 @@ class ns_iterator
 {
 protected:
   storage_manager& store;
+	nodeid id;
 
 public:
   item& operator*() const;
@@ -105,7 +109,7 @@ public:
   
 public:
   ns_iterator(storage_manager&,nodeid);
-  ~attr_iterator();
+  ~ns_iterator();
   
 };
 
