@@ -1,4 +1,3 @@
-
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id: xs_primitive_types.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
@@ -17,34 +16,44 @@ namespace xqp {
 ///////////////////////////////
 //  anyURI
 ///////////////////////////////
+string xs_anyURI_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_anyURI[" << val << ']'; 
+	return oss.str();
+}
 
-xs_anyURI::xs_anyURI()
+ostream& xs_anyURI_value::operator<<(ostream& os)
+{
+	return os << "xs_anyURI[" << val << ']'; 
+}
+
+xs_anyURI_value::xs_anyURI_value()
 {
 }
  
-xs_anyURI::~xs_anyURI()
+xs_anyURI_value::~xs_anyURI_value()
 {
 }
 
-xs_anyURI::xs_anyURI(
-	xqp_anyURI const& _value)
+xs_anyURI_value::xs_anyURI_value(
+	xqp_anyURI const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_anyURI::get_type()
+type::typecode xs_anyURI::get_typecode() const
 {
 	return XS_ANYURI;
 }
 
-void xs_anyURI::encode(xml_ostream* xos)
+void xs_anyURI_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_anyURI::decode(xml_istream& xis)
+void xs_anyURI_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -55,36 +64,44 @@ throw (xqp_exception)
 //  Base64Binary
 ///////////////////////////////
 
-xs_base64Binary::xs_base64Binary()
+string xs_base64Binary_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_base64Binary[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_base64Binary_value::operator<<(ostream& os)
+{
+	return os << "xs_base64Binary[" << val << ']'; 
+}
+
+xs_base64Binary_value::xs_base64Binary_value()
 {
 }
  
-xs_base64Binary::~xs_base64Binary()
+xs_base64Binary_value::~xs_base64Binary_value()
 {
 }
 
-xs_base64Binary::xs_base64Binary(
-	xqp_base64Binary const& _value)
+xs_base64Binary_value::xs_base64Binary_value(
+	xqp_base64Binary const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode Base64Binary::get_type()
+type::typecode xs_base64Binary::get_typecode() const
 {
 	return type::XS_BASE64BINARY;
 }
 
-	//int len = apr_base64_encode_len(value->getSize());	    
-	//len = apr_base64_encode_binary(serializedValue, pTemp, size);
-
-void xs_base64Binary::encode(xml_ostream* xos)
+void xs_base64Binary_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_base64Binary::decode(xml_istream& xis)
+void xs_base64Binary_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -95,33 +112,44 @@ throw (xqp_exception)
 //  xs_boolean
 ///////////////////////////////
 
-xs_boolean::xs_boolean()
+string xs_boolean_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_boolean[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_boolean_value::operator<<(ostream& os)
+{
+	return os << "xs_boolean[" << val << ']'; 
+}
+
+xs_boolean_value::xs_boolean_value()
 {
 }
  
-xs_boolean::~xs_boolean()
+xs_boolean_value::~xs_boolean_value()
 {
 }
 
-xs_boolean::xs_boolean(
-	xqp_boolean const& _value)
+xs_boolean_value::xs_boolean_value(
+	xqp_boolean const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_boolean::get_type()
+type::typecode xs_boolean::get_typecode() const
 {
 	return XS_ANYURI;
 }
 
-void xs_boolean::encode(xml_ostream* xos)
+void xs_boolean_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_boolean::decode(xml_istream& xis)
+void xs_boolean_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -132,33 +160,44 @@ throw (xqp_exception)
 //  xs_byte
 ///////////////////////////////
 
-xs_byte::xs_byte()
+string xs_byte_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_byte[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_byte_value::operator<<(ostream& os)
+{
+	return os << "xs_byte[" << val << ']'; 
+}
+
+xs_byte_value::xs_byte_value()
 {
 }
  
-xs_byte::~xs_byte()
+xs_byte_value::~xs_byte_value()
 {
 }
 
-xs_byte::xs_byte(
-	xqp_byte const& _value)
+xs_byte_value::xs_byte_value(
+	xqp_byte const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_byte::get_type()
+type::typecode xs_byte::get_typecode() const
 {
 	return XS_ANYURI;
 }
 
-void xs_byte::encode(xml_ostream* xos)
+void xs_byte_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_byte::decode(xml_istream& xis)
+void xs_byte_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -169,33 +208,47 @@ throw (xqp_exception)
 //	xs_date
 ///////////////////////////////
 
-xs_date::xs_nnn()
+string xs_date_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_date[" << xqp::put(oss,&val,type::XS_DATE);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_date_value::operator<<(ostream& os)
+{
+	os << "xs_date[" << xqp::put(os,&val,type::XS_DATE);
+	return os << ']'; 
+}
+
+
+xs_date_value::xs_date_value()
 {
 }
  
-xs_date::~xs_date()
+xs_date_value::~xs_date_value()
 {
 }
 
-xs_date::xs_date(
-	xqp_date const& _value)
+xs_date_value::xs_date_value(
+	xqp_date const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_date::get_type()
+type::typecode xs_date::get_typecode() const
 {
 	return XS_ANYURI;
 }
 
-void xs_date::encode(xml_ostream* xos)
+void xs_date_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_date::decode(xml_istream& xis)
+void xs_date_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -204,33 +257,47 @@ throw (xqp_exception)
 ///////////////////////////////
 //	xs_dateTime
 ///////////////////////////////
-xs_dateTime::xs_dateTime()
+
+string xs_dateTime_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_dateTime[" << xqp::put(oss,&val,type::XS_DATETIME);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_dateTime_value::operator<<(ostream& os)
+{
+	os << "xs_dateTime[" << xqp::put(os,&val,type::XS_DATETIME);
+	return os << ']'; 
+}
+
+xs_dateTime_value::xs_dateTime_value()
 {
 }
  
-xs_dateTime::~xs_dateTime()
+xs_dateTime_value::~xs_dateTime_value()
 {
 }
 
-xs_dateTime::xs_dateTime(
-	xqp_dateTime const& _value)
+xs_dateTime_value::xs_dateTime_value(
+	xqp_dateTime const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_dateTime::get_type()
+type::typecode xs_dateTime::get_typecode() const
 {
 	return XS_DATETIME;
 }
 
-void xs_dateTime::encode(xml_ostream* xos)
+void xs_dateTime_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_dateTime::decode(xml_istream& xis)
+void xs_dateTime_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -239,33 +306,45 @@ throw (xqp_exception)
 ///////////////////////////////
 //	xs_decimal
 ///////////////////////////////
-xs_decimal::xs_decimal()
+
+string xs_decimal_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_decimal[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_decimal_value::operator<<(ostream& os)
+{
+	return os << "xs_decimal[" << val << ']'; 
+}
+
+xs_decimal_value::xs_decimal_value()
 {
 }
  
-xs_decimal::~xs_decimal()
+xs_decimal_value::~xs_decimal_value()
 {
 }
 
-xs_decimal::xs_decimal(
-	xqp_decimal const& _value)
+xs_decimal_value::xs_decimal_value(
+	xqp_decimal const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_decimal::get_type()
+type::typecode xs_decimal::get_typecode() const
 {
 	return XS_DECIMAL;
 }
 
-void xs_decimal::encode(xml_ostream* xos)
+void xs_decimal_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_decimal::decode(xml_istream& xis)
+void xs_decimal_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -274,33 +353,45 @@ throw (xqp_exception)
 ///////////////////////////////
 //	xs_double
 ///////////////////////////////
-xs_double::xs_double()
+
+string xs_double_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_double[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_double_value::operator<<(ostream& os)
+{
+	return os << "xs_double[" << val << ']'; 
+}
+
+xs_double_value::xs_double_value()
 {
 }
  
-xs_double::~xs_double()
+xs_double_value::~xs_double_value()
 {
 }
 
-xs_double::xs_double(
-	xqp_double const& _value)
+xs_double_value::xs_double_value(
+	xqp_double const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_double::get_type()
+type::typecode xs_double::get_typecode() const
 {
 	return XS_DOUBLE;
 }
 
-void xs_double::encode(xml_ostream* xos)
+void xs_double_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_double::decode(xml_istream& xis)
+void xs_double_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -309,33 +400,45 @@ throw (xqp_exception)
 ///////////////////////////////
 //	xs_duration
 ///////////////////////////////
-xs_duration::xs_nnn()
+
+string xs_duration_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_duration[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_duration_value::operator<<(ostream& os)
+{
+	return os << "xs_duration[" << val << ']'; 
+}
+
+xs_duration_value::xs_duration_value()
 {
 }
  
-xs_duration::~xs_nnn()
+xs_duration_value::~xs_duration_value()
 {
 }
 
-xs_duration::xs_nnn(
-	xqp_duration const& _value)
+xs_duration_value::xs_duration_value(
+	xqp_duration const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_duration::get_type()
+type::typecode xs_duration::get_typecode() const
 {
 	return XS_DURATION;
 }
 
-void xs_duration::encode(xml_ostream* xos)
+void xs_duration_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_duration::decode(xml_istream& xis)
+void xs_duration_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -344,33 +447,45 @@ throw (xqp_exception)
 ///////////////////////////////
 //	xs_float
 ///////////////////////////////
-xs_float::xs_nnn()
+
+string xs_float_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_float[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_float_value::operator<<(ostream& os)
+{
+	return os << "xs_float[" << val << ']'; 
+}
+
+xs_float_value::xs_float_value()
 {
 }
  
-xs_float::~xs_nnn()
+xs_float_value::~xs_float_value()
 {
 }
 
-xs_float::xs_nnn(
-	xqp_float const& _value)
+xs_float_value::xs_float_value(
+	xqp_float const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_float::get_type()
+type::typecode xs_float::get_typecode() const
 {
 	return XS_FLOAT;
 }
 
-void xs_float::encode(xml_ostream* xos)
+void xs_float_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_float::decode(xml_istream& xis)
+void xs_float_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -381,33 +496,47 @@ throw (xqp_exception)
 //	xs_gDay
 ///////////////////////////////
 
-xs_gDay::xs_gDay()
+string xs_gDay_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_gDay[" << xqp::put(oss,&val,type::XS_GDAY);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_gDay_value::operator<<(ostream& os)
+{
+	os << "xs_gDay[" << xqp::put(os,&val,type::XS_GDAY);
+	return os << ']'; 
+}
+
+
+xs_gDay_value::xs_gDay_value()
 {
 }
  
-xs_gDay::~xs_gDay()
+xs_gDay_value::~xs_gDay_value()
 {
 }
 
-xs_gDay::xs_gDay(
-	xqp_gDay const& _value)
+xs_gDay_value::xs_gDay_value(
+	xqp_gDay const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_gDay::get_type()
+type::typecode xs_gDay::get_typecode() const
 {
 	return XS_GDAY;
 }
 
-void xs_gDay::encode(xml_ostream* xos)
+void xs_gDay_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_gDay::decode(xml_istream& xis)
+void xs_gDay_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -418,33 +547,47 @@ throw (xqp_exception)
 //	xs_gMonth
 ///////////////////////////////
 
-xs_gMonth::xs_gMonth()
+string xs_gMonth_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_gMonth[" << xqp::put(oss,&val,type::XS_GMONTH);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_gMonth_value::operator<<(ostream& os)
+{
+	os << "xs_gMonth[" << xqp::put(os,&val,type::XS_GMONTH);
+	return os << ']'; 
+}
+
+
+xs_gMonth_value::xs_gMonth_value()
 {
 }
  
-xs_gMonth::~xs_gMonth()
+xs_gMonth_value::~xs_gMonth_value()
 {
 }
 
-xs_gMonth::xs_gMonth(
-	xqp_gMonth const& _value)
+xs_gMonth_value::xs_gMonth_value(
+	xqp_gMonth const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_gMonth::get_type()
+type::typecode xs_gMonth::get_typecode() const
 {
 	return XS_GMONTH;
 }
 
-void xs_gMonth::encode(xml_ostream* xos)
+void xs_gMonth_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_gMonth::decode(xml_istream& xis)
+void xs_gMonth_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -455,33 +598,47 @@ throw (xqp_exception)
 //	xs_gMonthDay
 ///////////////////////////////
 
-xs_gMonthDay::xs_nnn()
+string xs_gMonthDay_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_gMonthDay[" << xqp::put(oss,&val,type::XS_GMONTHDAY);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_gMonthDay_value::operator<<(ostream& os)
+{
+	os << "xs_gMonthDay[" << xqp::put(os,&val,type::XS_GMONTHDAY);
+	return os << ']'; 
+}
+
+
+xs_gMonthDay_value::xs_gMonthDay_value()
 {
 }
  
-xs_gMonthDay::~xs_nnn()
+xs_gMonthDay_value::~xs_gMonthDay_value()
 {
 }
 
-xs_gMonthDay::xs_nnn(
-	xqp_gMonthDay const& _value)
+xs_gMonthDay_value::xs_gMonthDay_value(
+	xqp_gMonthDay const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_gMonthDay::get_type()
+type::typecode xs_gMonthDay::get_typecode() const
 {
 	return XS_GMONTHDAY;
 }
 
-void xs_gMonthDay::encode(xml_ostream* xos)
+void xs_gMonthDay_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_gMonthDay::decode(xml_istream& xis)
+void xs_gMonthDay_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -492,33 +649,47 @@ throw (xqp_exception)
 //	xs_gYear
 ///////////////////////////////
 
-xs_gYear::xs_gYear()
+string xs_gYear_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_gYear[" << xqp::put(oss,&val,type::XS_GYEAR);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_gYear_value::operator<<(ostream& os)
+{
+	os << "xs_gYear[" << xqp::put(os,&val,type::XS_GYEAR);
+	return os << ']'; 
+}
+
+
+xs_gYear_value::xs_gYear_value()
 {
 }
  
-xs_gYear::~xs_gYear()
+xs_gYear_value::~xs_gYear_value()
 {
 }
 
-xs_gYear::xs_gYear(
-	xqp_gYear const& _value)
+xs_gYear_value::xs_gYear_value(
+	xqp_gYear const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_gYear::get_type()
+type::typecode xs_gYear::get_typecode() const
 {
 	return XS_GYEAR;
 }
 
-void xs_gYear::encode(xml_ostream* xos)
+void xs_gYear_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_gYear::decode(xml_istream& xis)
+void xs_gYear_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -529,33 +700,47 @@ throw (xqp_exception)
 //	xs_gYearMonth
 ///////////////////////////////
 
-xs_gYearMonth::xs_gYearMonth()
+string xs_gYearMonth_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_gYearMonth[" << xqp::put(oss,&val,type::XS_GYEARMONTH);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_gYearMonth_value::operator<<(ostream& os)
+{
+	os << "xs_gYearMonth[" << xqp::put(os,&val,type::XS_GYEARMONTH);
+	return os << ']'; 
+}
+
+
+xs_gYearMonth_value::xs_gYearMonth_value()
 {
 }
  
-xs_gYearMonth::~xs_gYearMonth()
+xs_gYearMonth_value::~xs_gYearMonth_value()
 {
 }
 
-xs_gYearMonth::xs_gYearMonth(
-	xqp_gYearMonth const& _value)
+xs_gYearMonth_value::xs_gYearMonth_value(
+	xqp_gYearMonth const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_gYearMonth::get_type()
+type::typecode xs_gYearMonth::get_typecode() const
 {
 	return XS_GYEARMONTH;
 }
 
-void xs_gYearMonth::encode(xml_ostream* xos)
+void xs_gYearMonth_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_gYearMonth::decode(xml_istream& xis)
+void xs_gYearMonth_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -566,33 +751,45 @@ throw (xqp_exception)
 //	xs_hexBinary
 ///////////////////////////////
 
-xs_hexBinary::xs_hexBinary()
+string xs_hexBinary_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_hexBinary[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_hexBinary_value::operator<<(ostream& os)
+{
+	return os << "xs_hexBinary[" << val << ']'; 
+}
+
+
+xs_hexBinary_value::xs_hexBinary_value()
 {
 }
  
-xs_hexBinary::~xs_hexBinary()
+xs_hexBinary_value::~xs_hexBinary_value()
 {
 }
 
-xs_hexBinary::xs_hexBinary(
-	xqp_hexBinary const& _value)
+xs_hexBinary_value::xs_hexBinary_value(
+	xqp_hexBinary const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_hexBinary::get_type()
+type::typecode xs_hexBinary::get_typecode() const
 {
 	return XS_HEXBINARY;
 }
 
-void xs_hexBinary::encode(xml_ostream* xos)
+void xs_hexBinary_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_hexBinary::decode(xml_istream& xis)
+void xs_hexBinary_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -603,33 +800,45 @@ throw (xqp_exception)
 //	xs_int
 ///////////////////////////////
 
-xs_int::xs_nnn()
+string xs_int_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_int[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_int_value::operator<<(ostream& os)
+{
+	return os << "xs_int[" << val << ']'; 
+}
+
+
+xs_int_value::xs_int_value()
 {
 }
  
-xs_int::~xs_nnn()
+xs_int_value::~xs_int_value()
 {
 }
 
-xs_int::xs_nnn(
-	xqp_int const& _value)
+xs_int_value::xs_int_value(
+	xqp_int const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_int::get_type()
+type::typecode xs_int::get_typecode() const
 {
 	return XS_INT;
 }
 
-void xs_int::encode(xml_ostream* xos)
+void xs_int_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_int::decode(xml_istream& xis)
+void xs_int_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -640,33 +849,45 @@ throw (xqp_exception)
 //	xs_integer
 ///////////////////////////////
 
-xs_integer::xs_nnn()
+string xs_integer_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_integer[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_integer_value::operator<<(ostream& os)
+{
+	return os << "xs_integer[" << val << ']'; 
+}
+
+
+xs_integer_value::xs_integer_value()
 {
 }
  
-xs_integer::~xs_nnn()
+xs_integer_value::~xs_integer_value()
 {
 }
 
-xs_integer::xs_nnn(
-	xqp_integer const& _value)
+xs_integer_value::xs_integer_value(
+	xqp_integer const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_integer::get_type()
+type::typecode xs_integer::get_typecode() const
 {
 	return XS_INTEGER;
 }
 
-void xs_integer::encode(xml_ostream* xos)
+void xs_integer_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_integer::decode(xml_istream& xis)
+void xs_integer_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -677,33 +898,45 @@ throw (xqp_exception)
 //	xs_language
 ///////////////////////////////
 
-xs_language::xs_language()
+string xs_language_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_language[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_language_value::operator<<(ostream& os)
+{
+	return os << "xs_language[" << val << ']'; 
+}
+
+
+xs_language_value::xs_language_value()
 {
 }
  
-xs_language::~xs_language()
+xs_language_value::~xs_language_value()
 {
 }
 
-xs_language::xs_language(
-	xqp_language const& _value)
+xs_language_value::xs_language_value(
+	xqp_language const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_language::get_type()
+type::typecode xs_language::get_typecode() const
 {
 	return XS_LANGUAGE;
 }
 
-void xs_language::encode(xml_ostream* xos)
+void xs_language_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_language::decode(xml_istream& xis)
+void xs_language_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -714,33 +947,45 @@ throw (xqp_exception)
 //	xs_long
 ///////////////////////////////
 
-xs_long::xs_long()
+string xs_long_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_long[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_long_value::operator<<(ostream& os)
+{
+	return os << "xs_long[" << val << ']'; 
+}
+
+
+xs_long_value::xs_long_value()
 {
 }
  
-xs_long::~xs_long()
+xs_long_value::~xs_long_value()
 {
 }
 
-xs_long::xs_long(
-	xqp_long const& _value)
+xs_long_value::xs_long_value(
+	xqp_long const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_long::get_type()
+type::typecode xs_long::get_typecode() const
 {
 	return XS_LONG;
 }
 
-void xs_long::encode(xml_ostream* xos)
+void xs_long_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_long::decode(xml_istream& xis)
+void xs_long_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -751,33 +996,45 @@ throw (xqp_exception)
 //	xs_negativeInteger
 ///////////////////////////////
 
-xs_negativeInteger::xs_negativeInteger()
+string xs_negativeInteger_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_negativeInteger[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_negativeInteger_value::operator<<(ostream& os)
+{
+	return os << "xs_negativeInteger[" << val << ']'; 
+}
+
+
+xs_negativeInteger_value::xs_negativeInteger_value()
 {
 }
  
-xs_negativeInteger::~xs_negativeInteger()
+xs_negativeInteger_value::~xs_negativeInteger_value()
 {
 }
 
-xs_negativeInteger::xs_negativeInteger(
-	xqp_negativeInteger const& _value)
+xs_negativeInteger_value::xs_negativeInteger_value(
+	xqp_negativeInteger const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_negativeInteger::get_type()
+type::typecode xs_negativeInteger::get_typecode() const
 {
-	return XS_NEGATIVEINTEGER;
+	return XS_NEGATIVE_INTEGER;
 }
 
-void xs_negativeInteger::encode(xml_ostream* xos)
+void xs_negativeInteger_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_negativeInteger::decode(xml_istream& xis)
+void xs_negativeInteger_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -788,33 +1045,45 @@ throw (xqp_exception)
 //	xs_nonNegativeInteger
 ///////////////////////////////
 
-xs_nonNegativeInteger::xs_nonNegativeInteger()
+string xs_nonNegativeInteger_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_nonNegativeInteger[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_nonNegativeInteger_value::operator<<(ostream& os)
+{
+	return os << "xs_nonNegativeInteger[" << val << ']'; 
+}
+
+
+xs_nonNegativeInteger_value::xs_nonNegativeInteger_value()
 {
 }
  
-xs_nonNegativeInteger::~xs_nonNegativeInteger()
+xs_nonNegativeInteger_value::~xs_nonNegativeInteger_value()
 {
 }
 
-xs_nonNegativeInteger::xs_nonNegativeInteger(
-	xqp_nonNegativeInteger const& _value)
+xs_nonNegativeInteger_value::xs_nonNegativeInteger_value(
+	xqp_nonNegativeInteger const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_nonNegativeInteger::get_type()
+type::typecode xs_nonNegativeInteger::get_typecode() const
 {
-	return XS_NONNEGATIVEINTEGER;
+	return XS_NON_NEGATIVE_INTEGER;
 }
 
-void xs_nonNegativeInteger::encode(xml_ostream* xos)
+void xs_nonNegativeInteger_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_nonNegativeInteger::decode(xml_istream& xis)
+void xs_nonNegativeInteger_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -825,33 +1094,45 @@ throw (xqp_exception)
 //	xs_nonPositiveInteger
 ///////////////////////////////
 
-xs_nonPositiveInteger::xs_nonPositiveInteger()
+string xs_nonPositiveInteger_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_nonPositiveInteger[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_nonPositiveInteger_value::operator<<(ostream& os)
+{
+	return os << "xs_nonPositiveInteger[" << val << ']'; 
+}
+
+
+xs_nonPositiveInteger_value::xs_nonPositiveInteger_value()
 {
 }
  
-xs_nonPositiveInteger::~xs_nonPositiveInteger()
+xs_nonPositiveInteger_value::~xs_nonPositiveInteger_value()
 {
 }
 
-xs_nonPositiveInteger::xs_nonPositiveInteger(
-	xqp_nonPositiveInteger const& _value)
+xs_nonPositiveInteger_value::xs_nonPositiveInteger_value(
+	xqp_nonPositiveInteger const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_nonPositiveInteger::get_type()
+type::typecode xs_nonPositiveInteger::get_typecode() const
 {
-	return XS_NONPOSITIVEINTEGER;
+	return XS_NON_POSITIVE_INTEGER;
 }
 
-void xs_nonPositiveInteger::encode(xml_ostream* xos)
+void xs_nonPositiveInteger_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_nonPositiveInteger::decode(xml_istream& xis)
+void xs_nonPositiveInteger_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -862,33 +1143,45 @@ throw (xqp_exception)
 //	xs_normalizedString
 ///////////////////////////////
 
-xs_normalizedString::xs_normalizedString()
+string xs_normalizedString_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_normalizedString[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_normalizedString_value::operator<<(ostream& os)
+{
+	return os << "xs_normalizedString[" << val << ']'; 
+}
+
+
+xs_normalizedString_value::xs_normalizedString_value()
 {
 }
  
-xs_normalizedString::~xs_normalizedString()
+xs_normalizedString_value::~xs_normalizedString_value()
 {
 }
 
-xs_normalizedString::xs_normalizedString(
-	xqp_normalizedString const& _value)
+xs_normalizedString_value::xs_normalizedString_value(
+	xqp_normalizedString const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_normalizedString::get_type()
+type::typecode xs_normalizedString::get_typecode() const
 {
-	return XS_NORMALIZEDSTRING;
+	return XS_NORMALIZED_STRING;
 }
 
-void xs_normalizedString::encode(xml_ostream* xos)
+void xs_normalizedString_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_normalizedString::decode(xml_istream& xis)
+void xs_normalizedString_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -899,33 +1192,45 @@ throw (xqp_exception)
 //	xs_positiveInteger
 ///////////////////////////////
 
-xs_positiveInteger::xs_positiveInteger()
+string xs_positiveInteger_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_positiveInteger[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_positiveInteger_value::operator<<(ostream& os)
+{
+	return os << "xs_positiveInteger[" << val << ']'; 
+}
+
+
+xs_positiveInteger_value::xs_positiveInteger_value()
 {
 }
  
-xs_positiveInteger::~xs_positiveInteger()
+xs_positiveInteger_value::~xs_positiveInteger_value()
 {
 }
 
-xs_positiveInteger::xs_positiveInteger(
-	xqp_positiveInteger const& _value)
+xs_positiveInteger_value::xs_positiveInteger_value(
+	xqp_positiveInteger const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_positiveInteger::get_type()
+type::typecode xs_positiveInteger::get_typecode() const
 {
-	return XS_POSITIVEINTEGER;
+	return XS_POSITIVE_INTEGER;
 }
 
-void xs_positiveInteger::encode(xml_ostream* xos)
+void xs_positiveInteger_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_positiveInteger::decode(xml_istream& xis)
+void xs_positiveInteger_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -936,33 +1241,45 @@ throw (xqp_exception)
 //	xs_short
 ///////////////////////////////
 
-xs_short::xs_short()
+string xs_short_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_short[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_short_value::operator<<(ostream& os)
+{
+	return os << "xs_short[" << val << ']'; 
+}
+
+
+xs_short_value::xs_short_value()
 {
 }
  
-xs_short::~xs_short()
+xs_short_value::~xs_short_value()
 {
 }
 
-xs_short::xs_short(
-	xqp_short const& _value)
+xs_short_value::xs_short_value(
+	xqp_short const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_short::get_type()
+type::typecode xs_short::get_typecode() const
 {
 	return XS_SHORT;
 }
 
-void xs_short::encode(xml_ostream* xos)
+void xs_short_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_short::decode(xml_istream& xis)
+void xs_short_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -973,33 +1290,45 @@ throw (xqp_exception)
 //	xs_string
 ///////////////////////////////
 
-xs_string::xs_string()
+string xs_string_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_string[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_string_value::operator<<(ostream& os)
+{
+	return os << "xs_string[" << val << ']'; 
+}
+
+
+xs_string_value::xs_string_value()
 {
 }
  
-xs_string::~xs_string()
+xs_string_value::~xs_string_value()
 {
 }
 
-xs_string::xs_string(
-	xqp_string const& _value)
+xs_string_value::xs_string_value(
+	xqp_string const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_string::get_type()
+type::typecode xs_string::get_typecode() const
 {
 	return XS_STRING;
 }
 
-void xs_string::encode(xml_ostream* xos)
+void xs_string_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_string::decode(xml_istream& xis)
+void xs_string_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1010,33 +1339,47 @@ throw (xqp_exception)
 //	xs_time
 ///////////////////////////////
 
-xs_time::xs_time()
+string xs_time_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_time[" << xqp::put(oss,&val,type::XS_TIME);
+	oss << ']'; 
+	return oss.str();
+}
+
+ostream& xs_time_value::operator<<(ostream& os)
+{
+	return os << "xs_time[" << xqp::put(os,&val,type::XS_TIME);
+	return os << ']'; 
+}
+
+
+xs_time_value::xs_time_value()
 {
 }
  
-xs_time::~xs_time()
+xs_time_value::~xs_time_value()
 {
 }
 
-xs_time::xs_time(
-	xqp_time const& _value)
+xs_time_value::xs_time_value(
+	xqp_time const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_time::get_type()
+type::typecode xs_time::get_typecode() const
 {
 	return XS_TIME;
 }
 
-void xs_time::encode(xml_ostream* xos)
+void xs_time_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_time::decode(xml_istream& xis)
+void xs_time_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1047,33 +1390,45 @@ throw (xqp_exception)
 //	xs_token
 ///////////////////////////////
 
-xs_token::xs_token()
+string xs_token_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_token[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_token_value::operator<<(ostream& os)
+{
+	return os << "xs_token[" << val << ']'; 
+}
+
+
+xs_token_value::xs_token_value()
 {
 }
  
-xs_token::~xs_token()
+xs_token_value::~xs_token_value()
 {
 }
 
-xs_token::xs_token(
-	xqp_token const& _value)
+xs_token_value::xs_token_value(
+	xqp_token const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_token::get_type()
+type::typecode xs_token::get_typecode() const
 {
 	return XS_TOKEN;
 }
 
-void xs_token::encode(xml_ostream* xos)
+void xs_token_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_token::decode(xml_istream& xis)
+void xs_token_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1084,33 +1439,45 @@ throw (xqp_exception)
 //	xs_unsignedByte
 ///////////////////////////////
 
-xs_unsignedByte::xs_unsignedByte()
+string xs_unsignedByte_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_unsignedByte[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_unsignedByte_value::operator<<(ostream& os)
+{
+	return os << "xs_unsignedByte[" << val << ']'; 
+}
+
+
+xs_unsignedByte_value::xs_unsignedByte_value()
 {
 }
  
-xs_unsignedByte::~xs_unsignedByte()
+xs_unsignedByte_value::~xs_unsignedByte_value()
 {
 }
 
-xs_unsignedByte::xs_unsignedByte(
-	xqp_unsignedByte const& _value)
+xs_unsignedByte_value::xs_unsignedByte_value(
+	xqp_unsignedByte const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_unsignedByte::get_type()
+type::typecode xs_unsignedByte::get_typecode() const
 {
-	return XS_unsignedByte;
+	return XS_UNSIGNED_BYTE;
 }
 
-void xs_unsignedByte::encode(xml_ostream* xos)
+void xs_unsignedByte_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_unsignedByte::decode(xml_istream& xis)
+void xs_unsignedByte_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1121,33 +1488,45 @@ throw (xqp_exception)
 //	xs_unsignedInt
 ///////////////////////////////
 
-xs_unsignedInt::xs_unsignedInt()
+string xs_unsignedInt_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_unsignedInt[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_unsignedInt_value::operator<<(ostream& os)
+{
+	return os << "xs_unsignedInt[" << val << ']'; 
+}
+
+
+xs_unsignedInt_value::xs_unsignedInt_value()
 {
 }
  
-xs_unsignedInt::~xs_unsignedInt()
+xs_unsignedInt_value::~xs_unsignedInt_value()
 {
 }
 
-xs_unsignedInt::xs_unsignedInt(
-	xqp_unsignedInt const& _value)
+xs_unsignedInt_value::xs_unsignedInt_value(
+	xqp_unsignedInt const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_unsignedInt::get_type()
+type::typecode xs_unsignedInt::get_typecode() const
 {
-	return XS_unsignedInt;
+	return XS_UNSIGNED_INT;
 }
 
-void xs_unsignedInt::encode(xml_ostream* xos)
+void xs_unsignedInt_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_unsignedInt::decode(xml_istream& xis)
+void xs_unsignedInt_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1158,33 +1537,45 @@ throw (xqp_exception)
 //	xs_unsignedLong
 ///////////////////////////////
 
-xs_unsignedLong::xs_unsignedLong()
+string xs_unsignedLong_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_unsignedLong[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_unsignedLong_value::operator<<(ostream& os)
+{
+	return os << "xs_unsignedLong[" << val << ']'; 
+}
+
+
+xs_unsignedLong_value::xs_unsignedLong_value()
 {
 }
  
-xs_unsignedLong::~xs_unsignedLong()
+xs_unsignedLong_value::~xs_unsignedLong_value()
 {
 }
 
-xs_unsignedLong::xs_unsignedLong(
-	xqp_unsignedLong const& _value)
+xs_unsignedLong_value::xs_unsignedLong_value(
+	xqp_unsignedLong const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_unsignedLong::get_type()
+type::typecode xs_unsignedLong::get_typecode() const
 {
-	return XS_unsignedLong;
+	return XS_UNSIGNED_LONG;
 }
 
-void xs_unsignedLong::encode(xml_ostream* xos)
+void xs_unsignedLong_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_unsignedLong::decode(xml_istream& xis)
+void xs_unsignedLong_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1195,33 +1586,45 @@ throw (xqp_exception)
 //	xs_unsignedShort
 ///////////////////////////////
 
-xs_unsignedShort::xs_unsignedShort()
+string xs_unsignedShort_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_unsignedShort[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_unsignedShort_value::operator<<(ostream& os)
+{
+	return os << "xs_unsignedShort[" << val << ']'; 
+}
+
+
+xs_unsignedShort_value::xs_unsignedShort_value()
 {
 }
  
-xs_unsignedShort::~xs_unsignedShort()
+xs_unsignedShort_value::~xs_unsignedShort_value()
 {
 }
 
-xs_unsignedShort::xs_unsignedShort(
-	xqp_unsignedShort const& _value)
+xs_unsignedShort_value::xs_unsignedShort_value(
+	xqp_unsignedShort const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_unsignedShort::get_type()
+type::typecode xs_unsignedShort::get_typecode() const
 {
-	return XS_unsignedShort;
+	return XS_UNSIGNED_SHORT;
 }
 
-void xs_unsignedShort::encode(xml_ostream* xos)
+void xs_unsignedShort_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_unsignedShort::decode(xml_istream& xis)
+void xs_unsignedShort_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1232,33 +1635,45 @@ throw (xqp_exception)
 //	xs_ENTITIES
 ///////////////////////////////
 
-xs_ENTITIES::xs_ENTITIES()
+string xs_ENTITIES_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_ENTITIES[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_ENTITIES_value::operator<<(ostream& os)
+{
+	return os << "xs_ENTITIES[" << val << ']'; 
+}
+
+
+xs_ENTITIES_value::xs_ENTITIES_value()
 {
 }
  
-xs_ENTITIES::~xs_ENTITIES()
+xs_ENTITIES_value::~xs_ENTITIES_value()
 {
 }
 
-xs_ENTITIES::xs_ENTITIES(
-	xqp_ENTITIES const& _value)
+xs_ENTITIES_value::xs_ENTITIES_value(
+	xqp_ENTITIES const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_ENTITIES::get_type()
+type::typecode xs_ENTITIES::get_typecode() const
 {
 	return XS_ENTITIES;
 }
 
-void xs_ENTITIES::encode(xml_ostream* xos)
+void xs_ENTITIES_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_ENTITIES::decode(xml_istream& xis)
+void xs_ENTITIES_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1269,33 +1684,45 @@ throw (xqp_exception)
 //	xs_ENTITY
 ///////////////////////////////
 
-xs_ENTITY::xs_ENTITY()
+string xs_ENTITY_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_ENTITY[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_ENTITY_value::operator<<(ostream& os)
+{
+	return os << "xs_ENTITY[" << val << ']'; 
+}
+
+
+xs_ENTITY_value::xs_ENTITY_value()
 {
 }
  
-xs_ENTITY::~xs_ENTITY()
+xs_ENTITY_value::~xs_ENTITY_value()
 {
 }
 
-xs_ENTITY::xs_ENTITY(
-	xqp_ENTITY const& _value)
+xs_ENTITY_value::xs_ENTITY_value(
+	xqp_ENTITY const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_ENTITY::get_type()
+type::typecode xs_ENTITY::get_typecode() const
 {
 	return XS_ENTITY;
 }
 
-void xs_ENTITY::encode(xml_ostream* xos)
+void xs_ENTITY_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_ENTITY::decode(xml_istream& xis)
+void xs_ENTITY_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1306,33 +1733,45 @@ throw (xqp_exception)
 //	xs_ID
 ///////////////////////////////
 
-xs_ID::xs_ID()
+string xs_ID_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_ID[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_ID_value::operator<<(ostream& os)
+{
+	return os << "xs_ID[" << val << ']'; 
+}
+
+
+xs_ID_value::xs_ID_value()
 {
 }
  
-xs_ID::~xs_ID()
+xs_ID_value::~xs_ID_value()
 {
 }
 
-xs_ID::xs_ID(
-	xqp_ID const& _value)
+xs_ID_value::xs_ID_value(
+	xqp_ID const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_ID::get_type()
+type::typecode xs_ID::get_typecode() const
 {
 	return XS_ID;
 }
 
-void xs_ID::encode(xml_ostream* xos)
+void xs_ID_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_ID::decode(xml_istream& xis)
+void xs_ID_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1343,33 +1782,45 @@ throw (xqp_exception)
 //	xs_IDREF
 ///////////////////////////////
 
-xs_IDREF::xs_IDREF()
+string xs_IDREF_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_IDREF[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_IDREF_value::operator<<(ostream& os)
+{
+	return os << "xs_IDREF[" << val << ']'; 
+}
+
+
+xs_IDREF_value::xs_IDREF_value()
 {
 }
  
-xs_IDREF::~xs_IDREF()
+xs_IDREF_value::~xs_IDREF_value()
 {
 }
 
-xs_IDREF::xs_IDREF(
-	xqp_IDREF const& _value)
+xs_IDREF_value::xs_IDREF_value(
+	xqp_IDREF const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_IDREF::get_type()
+type::typecode xs_IDREF::get_typecode() const
 {
 	return XS_IDREF;
 }
 
-void xs_IDREF::encode(xml_ostream* xos)
+void xs_IDREF_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_IDREF::decode(xml_istream& xis)
+void xs_IDREF_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1380,33 +1831,45 @@ throw (xqp_exception)
 //	xs_IDREFS
 ///////////////////////////////
 
-xs_IDREFS::xs_IDREFS()
+string xs_IDREFS_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_IDREFS[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_IDREFS_value::operator<<(ostream& os)
+{
+	return os << "xs_IDREFS[" << val << ']'; 
+}
+
+
+xs_IDREFS_value::xs_IDREFS_value()
 {
 }
  
-xs_IDREFS::~xs_IDREFS()
+xs_IDREFS_value::~xs_IDREFS_value()
 {
 }
 
-xs_IDREFS::xs_IDREFS(
-	xqp_IDREFS const& _value)
+xs_IDREFS_value::xs_IDREFS_value(
+	xqp_IDREFS const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_IDREFS::get_type()
+type::typecode xs_IDREFS::get_typecode() const
 {
 	return XS_IDREFS;
 }
 
-void xs_IDREFS::encode(xml_ostream* xos)
+void xs_IDREFS_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_IDREFS::decode(xml_istream& xis)
+void xs_IDREFS_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1417,33 +1880,45 @@ throw (xqp_exception)
 //	xs_NCName
 ///////////////////////////////
 
-xs_NCNAME::xs_NCNAME()
+string xs_NCName_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_NCName[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_NCName_value::operator<<(ostream& os)
+{
+	return os << "xs_NCName[" << val << ']'; 
+}
+
+
+xs_NCName_value::xs_NCName_value()
 {
 }
  
-xs_NCNAME::~xs_NCNAME()
+xs_NCName_value::~xs_NCName_value()
 {
 }
 
-xs_NCNAME::xs_NCNAME(
-	xqp_NCNAME const& _value)
+xs_NCName_value::xs_NCName_value(
+	xqp_NCName const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_NCNAME::get_type()
+type::typecode xs_NCName::get_typecode() const
 {
 	return XS_NCNAME;
 }
 
-void xs_NCNAME::encode(xml_ostream* xos)
+void xs_NCName_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_NCNAME::decode(xml_istream& xis)
+void xs_NCName_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1454,33 +1929,45 @@ throw (xqp_exception)
 //	xs_NMTOKEN
 ///////////////////////////////
 
-xs_NMTOKEN::xs_NMTOKEN()
+string xs_NMTOKEN_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_NMTOKEN[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_NMTOKEN_value::operator<<(ostream& os)
+{
+	return os << "xs_NMTOKEN[" << val << ']'; 
+}
+
+
+xs_NMTOKEN_value::xs_NMTOKEN_value()
 {
 }
  
-xs_NMTOKEN::~xs_NMTOKEN()
+xs_NMTOKEN_value::~xs_NMTOKEN_value()
 {
 }
 
-xs_NMTOKEN::xs_NMTOKEN(
-	xqp_NMTOKEN const& _value)
+xs_NMTOKEN_value::xs_NMTOKEN_value(
+	xqp_NMTOKEN const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_NMTOKEN::get_type()
+type::typecode xs_NMTOKEN::get_typecode() const
 {
 	return XS_NMTOKEN;
 }
 
-void xs_NMTOKEN::encode(xml_ostream* xos)
+void xs_NMTOKEN_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_NMTOKEN::decode(xml_istream& xis)
+void xs_NMTOKEN_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1491,33 +1978,45 @@ throw (xqp_exception)
 //	xs_NMTOKENS
 ///////////////////////////////
 
-xs_NMTOKENS::xs_NMTOKENS()
+string xs_NMTOKENS_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_NMTOKENS[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_NMTOKENS_value::operator<<(ostream& os)
+{
+	return os << "xs_NMTOKENS[" << val << ']'; 
+}
+
+
+xs_NMTOKENS_value::xs_NMTOKENS_value()
 {
 }
  
-xs_NMTOKENS::~xs_NMTOKENS()
+xs_NMTOKENS_value::~xs_NMTOKENS_value()
 {
 }
 
-xs_NMTOKENS::xs_NMTOKENS(
-	xqp_NMTOKENS const& _value)
+xs_NMTOKENS_value::xs_NMTOKENS_value(
+	xqp_NMTOKENS const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_NMTOKENS::get_type()
+type::typecode xs_NMTOKENS::get_typecode() const
 {
 	return XS_NMTOKENS;
 }
 
-void xs_NMTOKENS::encode(xml_ostream* xos)
+void xs_NMTOKENS_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_NMTOKENS::decode(xml_istream& xis)
+void xs_NMTOKENS_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1528,33 +2027,45 @@ throw (xqp_exception)
 //	xs_NOTATION
 ///////////////////////////////
 
-xs_NOTATION::xs_NOTATION()
+string xs_NOTATION_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_NOTATION[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_NOTATION_value::operator<<(ostream& os)
+{
+	return os << "xs_NOTATION[" << val << ']'; 
+}
+
+
+xs_NOTATION_value::xs_NOTATION_value()
 {
 }
  
-xs_NOTATION::~xs_NOTATION()
+xs_NOTATION_value::~xs_NOTATION_value()
 {
 }
 
-xs_NOTATION::xs_NOTATION(
-	xqp_NOTATION const& _value)
+xs_NOTATION_value::xs_NOTATION_value(
+	xqp_NOTATION const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_NOTATION::get_type()
+type::typecode xs_NOTATION::get_typecode() const
 {
 	return XS_NOTATION;
 }
 
-void xs_NOTATION::encode(xml_ostream* xos)
+void xs_NOTATION_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_NOTATION::decode(xml_istream& xis)
+void xs_NOTATION_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1565,33 +2076,45 @@ throw (xqp_exception)
 //	xs_Name
 ///////////////////////////////
 
-xs_Name::xs_Name()
+string xs_Name_value::describe() const
+{
+	ostringstream oss;
+	oss << "xs_Name[" << val << ']'; 
+	return oss.str();
+}
+
+ostream& xs_Name_value::operator<<(ostream& os)
+{
+	return os << "xs_Name[" << val << ']'; 
+}
+
+
+xs_Name_value::xs_Name_value()
 {
 }
  
-xs_Name::~xs_Name()
+xs_Name_value::~xs_Name_value()
 {
 }
 
-xs_Name::xs_Name(
-	xqp_Name const& _value)
+xs_Name_value::xs_Name_value(
+	xqp_Name const& _val)
 :
-	value(_value)
+	val(_val)
 {
 }
 
-type::typecode xs_Name::get_type()
+type::typecode xs_Name::get_typecode() const
 {
 	return XS_NAME;
 }
 
-void xs_Name::encode(xml_ostream* xos)
+void xs_Name_value::encode(xml_ostream* xos)
 throw (xqp_exception)
 {
-	return 0;
 }
     
-void xs_Name::decode(xml_istream& xis)
+void xs_Name_value::decode(xml_istream& xis)
 throw (xqp_exception)
 {
 }
@@ -1602,34 +2125,6 @@ throw (xqp_exception)
 //	xs_QName
 ///////////////////////////////
 
-xs_QName::xs_QName()
-{
-}
- 
-xs_QName::~xs_QName()
-{
-}
 
-xs_QName::xs_QName(
-	xqp_QName const& _value)
-:
-	value(_value)
-{
-}
+}	/* namespace xqp */
 
-type::typecode xs_QName::get_type()
-{
-	return XS_QNAME;
-}
-
-void xs_QName::encode(xml_ostream* xos)
-throw (xqp_exception)
-{
-	return 0;
-}
-    
-void xs_QName::decode(xml_istream& xis)
-throw (xqp_exception)
-{
-}
- 

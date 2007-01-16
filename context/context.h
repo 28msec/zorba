@@ -12,10 +12,12 @@
 #define XQP_CONTEXT_H
 
 #include "namespace.h"
+
+#include "../functions/function_impl.h"
+#include "../runtime/item_iterator.h"
 #include "../types/types.h"
 #include "../types/collation.h"
 #include "../types/qname.h"
-#include "../functions/function_impl.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
@@ -27,6 +29,7 @@ namespace xqp {
 
 class document_node;
 class collection_node;
+class function_impl;
 
 class var_binding
 {
@@ -405,7 +408,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	XQuery expression. For a built-in function or external function, the 
 	**	function implementation is implementation-dependent.] 
 	*/
-	hashmap<function_impl> function_implementations;
+	hashmap<function_impl const*> function_implementations;
 
 	/*
 	**	[Definition: Current dateTime. This information represents an 
@@ -452,7 +455,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	arguments.] The value of default collection may be initialized by the 
 	**	implementation. 
 	*/
-	rchandle<collection_node*> default_collection;
+	rchandle<collection_node> default_collection;
 	
 	
 public:

@@ -1,4 +1,3 @@
-
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id: xs_primitive_types.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
@@ -13,7 +12,6 @@
 
 using namespace std;
 namespace xqp {
- 
 
 
 ///////////////////////////////

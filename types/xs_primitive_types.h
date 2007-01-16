@@ -14,10 +14,11 @@
 
 #include <time.h>
 #include <ctime>
+#include <ostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
-#include "../runtime/item_iterator.h"
 #include "../util/xqp_exception.h"
 #include "../values/node.h"
 
@@ -78,24 +79,81 @@ typedef long long						xqp_nonPositiveInteger;
 typedef unsigned long long	xqp_positiveInteger;
 typedef long long						xqp_negativeInteger;
 
-typedef struct
+class xqp_base64Binary
 {
+public:
 	xqp_unsignedByte* data; // Binary data
 	uint32_t size;					// Length, in bytes
-} xqp_base64Binary;
+	friend std::ostream& operator<<(std::ostream&, xqp_base64Binary const&);
+};
 
-typedef struct
+class xqp_hexBinary
 {
+public:
 	xqp_unsignedByte* data; // Binary data
 	uint32_t size;					// Length, in bytes
-} xqp_hexBinary;
+	friend std::ostream& operator<<(std::ostream&, xqp_hexBinary const&);
+};
 
-typedef struct
+ostream& operator<<(
+	ostream& os,
+	xqp_base64Binary const& val)
 {
-	// an array of xml encoded strings.
-	std::vector<std::string> _array;
-} xqp_anyType;
+	char const* p = (char const*)val.data;
+	return os << "base64Binary[" << string(p,0,val.size) << ']';
+}
 
+ostream& operator<<(
+	ostream& os,
+	xqp_hexBinary const& val)
+{
+	char const* p = (char const*)val.data;
+	return os << "hexBinary[" << string(p,0,val.size) << ']';
+}
+
+ostream& put(
+	ostream& os,
+	struct tm const* t,
+	enum type::typecode type)
+{
+	char buf[1024];
+	size_t n = 0;
+	switch (type) {
+		// XXX add timezones here
+	case type::XS_DATETIME: n = strftime(buf, 1024, "%Y-%m-%dT%X", t); break;
+	case type::XS_DATE: n = strftime(buf, 1024, "%Y-%m-%d", t); break;
+	case type::XS_TIME: n = strftime(buf, 1024, "%X", t); break;
+	case type::XS_GYEARMONTH: n = strftime(buf, 1024, "-%Y-%m", t); break;
+	case type::XS_GYEAR: n = strftime(buf, 1024, "-%Y", t); break;
+	case type::XS_GMONTHDAY: n = strftime(buf, 1024, "--%m-%d", t); break;
+	case type::XS_GDAY: n = strftime(buf, 1024, "---%d", t); break;
+	case type::XS_GMONTH: n = strftime(buf, 1024, "--%m", t); break;
+	default: buf[0] = 0; n = 0;
+	}
+	return os << string(buf,0,n);
+}
+
+ostream& put(
+	ostringstream& os,
+	struct tm const* t,
+	enum type::typecode type)
+{
+	char buf[1024];
+	size_t n = 0;
+	switch (type) {
+		// XXX add timezones here
+	case type::XS_DATETIME: n = strftime(buf, 1024, "%Y-%m-%dT%X", t); break;
+	case type::XS_DATE: n = strftime(buf, 1024, "%Y-%m-%d", t); break;
+	case type::XS_TIME: n = strftime(buf, 1024, "%X", t); break;
+	case type::XS_GYEARMONTH: n = strftime(buf, 1024, "-%Y-%m", t); break;
+	case type::XS_GYEAR: n = strftime(buf, 1024, "-%Y", t); break;
+	case type::XS_GMONTHDAY: n = strftime(buf, 1024, "--%m-%d", t); break;
+	case type::XS_GDAY: n = strftime(buf, 1024, "---%d", t); break;
+	case type::XS_GMONTH: n = strftime(buf, 1024, "--%m", t); break;
+	default: buf[0] = 0; n = 0;
+	}
+	return os << string(buf,0,n);
+}
 
 
 /*______________________________________________________________________
@@ -130,15 +188,6 @@ public:
 	schema_type const* get_base_type() const throw (xqp_exception);
 	atomic_type const* get_common_atomic_type() const;
 	schema_type const* get_builtin_base_type() const;
-
-	static item_iterator atomize(node const&)
-	throw (xqp_exception);
-
-	static item_iterator get_typed_value(node const&)
-	throw (xqp_exception);
-
-	static item_iterator get_typed_value(char const*)
-	throw (xqp_exception);
 
 };
 

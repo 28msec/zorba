@@ -16,9 +16,7 @@
 
 #include "../types/sequence_type.h"
 #include "../types/qname.h"
-#include "../runtime/item_iterator.h"
 #include "../util/hashmap.h"
-#include "../util/rchandle.h"
  
 namespace xqp {
 
@@ -41,7 +39,6 @@ class function_impl : public rcobject
 {
 public:
 	signature sig;
-  rchandle<item_iterator> val; 
 
 public:
 	function_impl(signature const& _sig) : sig(_sig) {}
