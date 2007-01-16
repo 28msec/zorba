@@ -17,8 +17,8 @@ spectrum : spectrum.h spectrum.cpp
 storage_manager : storage_manager.h storage_manager.cpp
 	g++ -c ${OPT} -o ${BUIILD}/storage_manager.${SUFX} storage_manager.cpp
 
-tree : tree.h tree.cpp
-	g++ -c ${OPT} -o ${BUIILD}/tree.${SUFX} tree.cpp
+#tree : tree.h tree.cpp
+#	g++ -c ${OPT} -o ${BUIILD}/tree.${SUFX} tree.cpp
 
 unicode_decompositions : unicode_decompositions.h unicode_decompositions.cpp
 	g++ -c ${OPT} -o ${BUIILD}/unicode_decompositions.${SUFX} unicode_decompositions.cpp
@@ -44,7 +44,6 @@ all : \
 	source \
 	spectrum \
 	storage_manager \
-	tree \
 	unicode_decompositions \
 	xml_handler \
 	xml_loader \

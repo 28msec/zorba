@@ -4,6 +4,8 @@ Jan 14, 2007
 
 Building zorba
 --------------
+The root directory is
+	$INSTALL/zorba/xquery.
 
 setup.sh
   makes symbolic links needed by configure:
@@ -17,14 +19,15 @@ rebuild_autoconf
   
 configure
   Generated script that creates Makefiles
+
+build.sh
+	Manually created make, using simple Makefile.local
+	scripts.   A lot easier to use during initial development.
   
   
 Known bugs
 ----------
 
 There remain bugs in the autoconf setup.
-Use the generated Makefiles directly for the time being.
-In fact, the build is only partial at this point.
+Use the manual Makefile.local system for the time being.
 
-  - in 'parser', you need to stick to the Makefile.local, as in 
-      > make all -f Makefile.local
