@@ -7,7 +7,7 @@
  */
 
 #include "xml_loader.h"
-#include "xml_ostream.h"
+#include "../store/xml_ostream.h"
 
 using namespace std;
 using namespace xqp;

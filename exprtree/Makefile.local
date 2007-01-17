@@ -1,22 +1,22 @@
-OPT=-g
+include ../Makefile.header
 SUFX=do
 BUILD=Build
 
 expr : expr.h expr.cpp
-	g++ -c ${OPT} -o ${BUILD}/expr.${SUFX} expr.cpp
+	g++ -c $(OPT) -o $(BUILD)/expr.$(SUFX) expr.cpp
 
 expr_test : expr.h expr.cpp expr_test.cpp
-	g++ ${OPT} -o ${BUILD}/expr_test \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		../types/${BUILD}/types.${SUFX} \
-		${BUILD}/expr.${SUFX} \
+	g++ $(OPT) -o $(BUILD)/expr_test \
+		../util/$(BUILD)/xqp_exception.$(SUFX) \
+		../types/$(BUILD)/types.$(SUFX) \
+		$(BUILD)/expr.$(SUFX) \
 		expr_test.cpp
 
 update_expr : update_expr.h update_expr.cpp
-	g++ -c ${OPT} -o ${BUILD}/update_expr.${SUFX} update_expr.cpp
+	g++ -c $(OPT) -o $(BUILD)/update_expr.$(SUFX) update_expr.cpp
 
 ft_expr : ft_expr.h ft_expr.cpp
-	g++ -c ${OPT} -o ${BUILD}/ft_expr.${SUFX} ft_expr.cpp
+	g++ -c $(OPT) -o $(BUILD)/ft_expr.$(SUFX) ft_expr.cpp
 
 
 
@@ -24,5 +24,5 @@ all :	\
   expr update_expr ft_expr
 
 clean:
-	$(CleanRule) *.do *.po *.o *_test ${Executables} ${TestExecutables}
+	$(CleanRule) *.do *.po *.o *_test $(Executables) $(TestExecutables)
 

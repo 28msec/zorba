@@ -1,4 +1,4 @@
-OPT=-g
+include ../Makefile.header
 SUFX=do
 BUILD=Build
 
@@ -22,7 +22,11 @@ update_values :	update_values.h update_values.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/update_values.${SUFX} update_values.cpp
 
 all :	\
- 	values node ft_values update_values
+ 	values \
+	xs_primitive_values \
+	node \
+	ft_values \
+	update_values
 
 clean:
 	$(CleanRule) *.do *.po *.o *_test ${Executables} ${TestExecutables}

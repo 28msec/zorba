@@ -33,7 +33,7 @@ char beta[]  = { 'A','B','C','D','E','F',
 								 'M','N','O','P','Q','R',
 								 'S','T','U','V','W','X', 'Y','Z' };
 
-logger log("blkdata");
+//logger log("blkdata");
 
 
 int rnd(double scale)
@@ -88,13 +88,13 @@ string _timestamp()
 int main(int argc, char* argv[])
 {
 	try {
-		vector<block_id> idv;
+		vector<blockid> idv;
 		uint32_t docid = 1;
 
 		// random insert,update,retrieve
 		do {
-			spectrum rep("specdata",6,28,12);
-			rep.setLogger(&log);
+			spectrum spec("specdata",6,28,12);
+			//spec.setLogger(&log);
 			for (uint32_t n=0; n<5000000; ++n) {
 				if (n%10000==0) {
 					cout << _timestamp() << endl;				
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
 						}
 					}
 	
-					block_id id = rep.batch_insert(uvec);
+					blockid id = spec.put((char *)&uvec.front(), 0, uvec.size() * 4);
 					idv.push_back(id);
 					break;
 				}
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 	
 					// pick a random id
 					uint32_t k = rnd(idv.size());
-					block_id id = idv[k];
+					blockid id = idv[k];
 					uvec_type uvec;			// new value
 					for (uint32_t a=0; a<2000; ++a) {
 						uvec_type uvec0;
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
 						}
 					}
 	
-					block_id new_id = rep.batch_append(id,uvec);
+					blockid new_id = spec.update(id,(char *)&uvec.front(),0,uvec.size() * 4);
 					if (new_id!=id) {
 						idv.erase(idv.begin()+k);
 						idv.push_back(new_id);
@@ -150,18 +150,16 @@ int main(int argc, char* argv[])
 	
 					// pick a random id
 					uint32_t k = rnd(idv.size());
-					block_id id = idv[k];
+					blockid id = idv[k];
 					cout << "--id = " << id << "\n";
 	
 					// pick up the old value
-					cvec_type cvec; 
-					rep.get(id, cvec);
-					cout << "--cvec.size() = " << cvec.size() << endl;
-					cvec_iterator it = cvec.begin();
-					for (; it!=cvec.end(); ++it) {
-						cout << (int)(*it) << "  ";
+					char *buf = new char[1<<20];
+					int n = spec.get(id, buf, 0, 1<<20);
+					cout << "--output size = " << n << endl;
+					if (n>0) {
+						cout << string(buf,0,n) << endl;
 					}
-
 					break;
 				}
 				default: {
@@ -172,8 +170,8 @@ int main(int argc, char* argv[])
 			}
 		} while (0);
 
-	} catch (xqpexception& e) {
-		cerr << "Application exception: " << e.what() << '\t' << e.getMsg() << endl;
+	} catch (xqp_exception& e) {
+		cerr << "Application exception: " << e.what() << '\t' << e.get_msg() << endl;
 	} catch (exception& e) {
 		cerr << "System exception: " << e.what() << endl;
 	} catch (...) {

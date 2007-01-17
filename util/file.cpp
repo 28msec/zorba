@@ -193,7 +193,8 @@ throw (xqp_exception)
 void file::touch()
 throw (xqp_exception)
 {
-  int fd = open(path.c_str(),O_CREAT|O_WRONLY,0666);
+  int fd = 0;
+	fd = open(path.c_str(),O_CREAT|O_WRONLY,0666);
   if (fd<0) error(__FUNCTION__, "failed to open "+path);
   try {
     if (fsync(fd)) error(__FUNCTION__, "failed to fsync "+path);

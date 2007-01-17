@@ -4,11 +4,13 @@
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
+ *	Author: Paul Pedersen
+ *
  */
 
-#include "../../util/file.h"
+#include "../util/file.h"
+#include "../store/xml_ostream.h"
 #include "xml_handler.h"
-#include "xml_ostream.h"
 #include "xml_scanner.h"
 #include "xml_term.h"
 
@@ -38,8 +40,8 @@ int main(int argc, char* argv[])
     xml_scanner xscanner;
 		uint64_t uri = 0;
 		vector<xml_term> xterm_v;
-		xml_ostream xostream;
-    xml_handler* xhandler = new xml_handler(uri, xterm_v, xostream);
+		xml_ostream xos;
+    xml_handler* xhandler = new xml_handler(uri, xterm_v, xos);
 
 		cout << "scanning..\n";
     xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler));
@@ -48,7 +50,7 @@ int main(int argc, char* argv[])
     delete xhandler;
 		delete[] ibuf;
 
-  } catch (xqpexception& e1) {
+  } catch (xqp_exception& e1) {
     cout << "Application exception: " << e1.what() << '\t' << e1.get_msg() << endl;
   } catch (exception& e2) {
     cout << "System exception: " << e2.what() << endl;

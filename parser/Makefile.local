@@ -1,4 +1,4 @@
-OPT=-g
+include ../Makefile.header
 SUFX=o
 
 scanner : xquery_scanner.l

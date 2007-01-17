@@ -9,8 +9,8 @@
 #include <errno.h>
 #include <stdio.h>
 
-#include "../../util/file.h"
-#include "../../util/xqpexception.h"
+#include "../util/file.h"
+#include "../util/xqp_exception.h"
 #include "scan_handler.h"
 #include "xml_scanner.h"
 
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
     xmls.scan(ibuf, n, s);
     delete s;
 		delete[] ibuf;
-  } catch (xqpexception& e1) {
+  } catch (xqp_exception& e1) {
     cout << "Application exception: " << e1.what() << '\t' << e1.get_msg() << endl;
   } catch (exception& e2) {
     cout << "System exception: " << e2.what() << endl;
