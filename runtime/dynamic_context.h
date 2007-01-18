@@ -15,7 +15,7 @@
 #include "../functions/function_impl.h"
 #include "../types/qname.h"
 #include "../types/collation.h"
-#include "../types/types.h"
+#include "../types/base_types.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"

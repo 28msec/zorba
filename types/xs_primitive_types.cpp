@@ -845,6 +845,23 @@ type::typecode xs_QName::get_typecode() const
 }
 
 
-}	/* namespac xqp */
+
+
+
+ostream& operator<<(ostream& os, xqp_base64Binary const& v)
+{
+	char const* p = (char const*)v.data;
+	return os << "base64Binary[" << string(p,0,v.size) << ']';
+}
+
+ostream& operator<<(ostream& os, xqp_hexBinary const& v)
+{
+	char const* p = (char const*)v.data;
+	return os << "hexBinary[" << string(p,0,v.size) << ']';
+}
+
+
+
+}	/* namespace xqp */
 
 

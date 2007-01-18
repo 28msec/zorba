@@ -20,7 +20,7 @@
 #include "../parser/location.hh"
 #include "../types/qname.h"
 #include "../types/sequence_type.h"
-#include "../types/types.h"
+#include "../types/base_types.h"
 #include "../util/rchandle.h"
 #include "../util/triple.h"
 #include "../values/ft_options.h"

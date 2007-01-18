@@ -26,102 +26,6 @@
 
 namespace xqp {
 
-/*______________________________________________________________________
-|  
-|	 XQuery "sequence type" hierarchy
-|  --------------------------------
-|    item_type
-|      xs_anyAtomicType
-|      node
-|        comment_node
-|        document_node
-|          [user-defined document types]
-|        element_node
-|          [user-defined element types]
-|        attribute_node
-|          [user-defined attribute types]
-|        ns_node
-|        pi_node
-|        text_node
-|    
-|
-|  Schema type hierarchy
-|  ---------------------
-|    xs_anyType
-|      schema_type [user-defined]
-|      xs_untyped
-|      xs_anySimpleType
-|        list_type [user-defined]
-|        xs_IDREFS
-|        xs_NMTOKENS
-|        xs_ENTITIES
-|        xs_anyAtomicType                C++ type             type name
-|          xs_untypedAtomic              --------             ---------
-|
-|          xs_dateTime                   struct tm            XSD_DATETIME
-|          xs_date                       struct tm            XSD_DATE
-|          xs_time                       struct tm            XSD_TIME
-|          xs_gYearMonth                 struct tm            XSD_GYEARMONTH
-|          xs_gYear                      struct tm            XSD_GYEAR
-|          xs_gMonthDay                  struct tm            XSD_GMONTHDAY
-|          xs_gDay                       struct tm            XSD_GDAY
-|          xs_gMonth                     struct tm            XSD_GMONTH
-|
-|          xs_duration                   long                 XSD_DURATION
-|            xs_yearMonthDuration        long                 XSD_YEARMONTH_DURATION
-|            xs_dayTimeDuration          long                 XSD_DAYTIME_DURATION
-|
-|          xs_float                      float                XSD_FLOAT
-|          xs_double                     double               XSD_DOUBLE
-|          xs_decimal                    double               XSD_DECIMAL
-|            xs_integer                  long long            XSD_INTEGER
-|              xs_nonPositiveInteger     long long            XSD_NONPOSITIVEINTEGER
-|                xs_negativeInteger      long long            XSD_NEGATIVEINTEGER
-|              xs_long                   long long            XSD_LONG
-|                xs_int                  int                  XSD_INT
-|                  xs_short              short                XSD_SHORT
-|                    xs_byte             signed char          XSD_BYTE
-|              xs_nonNegativeInteger     unsigned long long   XSD_NONNEGATIVEINTEGER
-|                xs_unsignedLong         unsigned long long   XSD_UNSIGNEDLONG
-|                  xs_unsignedInt        unsigned int         XSD_UNSIGNEDINT
-|                    xs_unsignedShort    unsigned short       XSD_UNSIGNEDSHORT
-|                      xs_unsignedByte   unsigned char        XSD_UNSIGNEDBYTE
-|                xs_positiveInteger      unsigned long long   XSD_POSITIVEINTEGER
-|
-|          xs_string                     std::string          XSD_STRING
-|            xs_normalizedString         std::string          XSD_NORMALIZEDSTRING
-|              xs_token                  std::string          XSD_TOKEN
-|                xs_language             std::string          XSD_LANGUAGE
-|                xs_NMTOKEN              std::string          XSD_NMTOKEN
-|                xs_Name                 std::string          XSD_NAME
-|                  xs_NCName             std::string          XSD_NCNAME
-|                    xs_ID               std::string          XSD_ID
-|                    xs_IDREF            std::string          XSD_IDREF
-|                    xs_ENTITY           std::string          XSD_ENTITY
-|
-|          xs_boolean                    bool                 XSD_BOOLEAN
-|          xs_anyURI                     std::string          XSD_ANYURI
-|          xs_QName                      std::string          XSD_QNAME
-|          xs_NOTATION                   std::string          XSD_NOTATION
-|
-|          xs_base64Binary               struct xsd_base64Binary  XSD_BASE64BINARY
-|          xs_hexBinary                  struct xsd_hexBinary     XSD_HEXBINARY
-|
-|
-|  The two type hierarchies intersect at 'anyAtomicType'.
-|
-|  The two hierarchies overlap at
-|    (Schema): user-defined complex types,
-|    (XQuery): user-defined {attribute,element} types.
-|  XQuery SequenceType syntax distinguishes these cases with:
-|    element(elem-name,type-name),
-|    attribute(attr-name,type-name),
-|  versus
-|    schema-element(elem-name),
-|    schema-attribute(attr-name).
-|		
-|_______________________________________________________________________*/
-
 
 // forward references
 class item;
@@ -144,19 +48,91 @@ protected:
 	~type() {}
 
 public:
+/*______________________________________________________________________
+|  
+|	 XQuery "item type" hierarchy
+|
+|  The two type hierarchies intersect at 'anyAtomicType'.
+|  The two hierarchies overlap at
+|    (Schema): user-defined complex types,
+|    (XQuery): user-defined {attribute,element} types.
+|  XQuery SequenceType syntax distinguishes these cases with:
+|    element(elem-name,type-name),
+|    attribute(attr-name,type-name),
+|  versus
+|    schema-element(elem-name),
+|    schema-attribute(attr-name).
+|
+|	XQuery "sequence types" are composed from these item types and
+|	a cardinality indicator: *, +, ?
+|_______________________________________________________________________*/
+	
 	enum typecode {
-		ITEM_TYPE, NODE_TYPE, BINARY, XS_ANY_ATOMIC, XS_ANYTYPE, XS_UNTYPED, 
-		XS_ANYSIMPLETYPE, XS_ANYATOMICTYPE, XS_UNTYPED_ATOMIC, XS_BOOLEAN, 
-		XS_HEXBINARY, XS_BASE64BINARY, XS_DATETIME, XS_TIME, XS_DATE, 
-		XS_GYEARMONTH, XS_GYEAR, XS_GMONTHDAY, XS_GDAY, XS_GMONTH, 
-		XS_DURATION, XS_YEARMONTH_DURATION, XS_DAYTIME_DURATION, NUMERIC, 
-		XS_INTEGER, XS_DECIMAL, XS_FLOAT, XS_DOUBLE, XS_NON_POSITIVE_INTEGER, 
-		XS_NEGATIVE_INTEGER, XS_LONG, XS_INT, XS_SHORT, XS_BYTE, 
-		XS_NON_NEGATIVE_INTEGER, XS_POSITIVE_INTEGER, XS_UNSIGNED_LONG, 
-		XS_UNSIGNED_INT, XS_UNSIGNED_SHORT, XS_UNSIGNED_BYTE, XS_STRING, 
-		XS_ANYURI, XS_QNAME, XS_NOTATION, XS_NORMALIZED_STRING, XS_TOKEN, 
-		XS_LANGUAGE, XS_NMTOKEN, XS_NMTOKENS, XS_NAME, XS_NCNAME, XS_ID, 
-		XS_IDREF, XS_IDREFS, XS_ENTITY, XS_ENTITIES, BUILTIN_LIST 
+		ITEM_TYPE,
+			XS_ANYATOMICTYPE,				//*-v
+			NODE_TYPE,
+				BINARY_NODE,
+				COMMENT_NODE,
+				DOCUMENT_NODE,
+				ELEMENT_NODE,
+				ATTRIBUTE_NODE,
+				NS_NODE,
+				PI_NODE,
+				TEXT_NODE,
+		XS_ANYTYPE,
+			XS_UNTYPED, 
+			XS_ANY_ATOMIC,
+			XS_ANYSIMPLETYPE,
+				XS_NMTOKENS,
+				XS_IDREFS,
+				XS_ENTITIES,
+			//XS_ANYATOMICTYPE,			//*-^
+					XS_UNTYPED_ATOMIC,
+					XS_DATETIME,
+					XS_DATE,
+					XS_TIME,
+					XS_GYEARMONTH,
+					XS_GYEAR,
+					XS_GMONTHDAY,
+					XS_GDAY,
+					XS_GMONTH,
+					XS_DURATION,
+						XS_YEARMONTH_DURATION,
+						XS_DAYTIME_DURATION,
+					NUMERIC,
+						XS_FLOAT,
+						XS_DOUBLE,
+						XS_DECIMAL,
+							XS_INTEGER,
+								XS_NON_POSITIVE_INTEGER,
+									XS_NEGATIVE_INTEGER,
+								XS_LONG,
+									XS_INT,
+										XS_SHORT,
+											XS_BYTE,
+								XS_NON_NEGATIVE_INTEGER,
+									XS_UNSIGNED_LONG,
+										XS_UNSIGNED_INT,
+											XS_UNSIGNED_SHORT,
+												XS_UNSIGNED_BYTE,
+									XS_POSITIVE_INTEGER,
+					XS_STRING,
+						XS_NORMALIZED_STRING,
+							XS_TOKEN,
+								XS_LANGUAGE,
+								XS_NMTOKEN,
+								XS_NAME,
+									XS_NCNAME,
+										XS_ID,
+										XS_IDREF,
+										XS_ENTITY,
+					XS_BOOLEAN,
+					XS_ANYURI,
+					XS_QNAME,
+					XS_NOTATION,
+					XS_BASE64BINARY,
+					XS_HEXBINARY,
+					BUILTIN_LIST 
 	};
 
 	enum type_relation {	
@@ -696,8 +672,8 @@ private:
 	static xs_anyAtomicType the_instance;
 
 protected:
-	xs_anyAtomicType();
-	virtual ~xs_anyAtomicType();
+	xs_anyAtomicType() {}
+	virtual ~xs_anyAtomicType() {}
 
 public:
 	// return const reference to the singleton instance

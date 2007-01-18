@@ -28,8 +28,9 @@
 using namespace std;
 namespace xqp {
 
-#define EMPTY_SEQUENCE item_iterator()
+#define EMPTY_SEQUENCE(X) item_iterator((X))
   
+
 ///////////////////////////////
 //  var_binding
 ///////////////////////////////
@@ -99,7 +100,7 @@ item_iterator context::get_var_value(
 	QName const& qname) const
 throw (xqp_exception)
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(*this);
 }
 
 function_impl const* context::get_function(
@@ -113,20 +114,20 @@ item_iterator context::get_document(
 	string const& doc_uri) const
 throw (xqp_exception)
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(*this);
 }
 
 item_iterator context::get_collection(
 	string const& col_uri) const
 throw (xqp_exception)
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(*this);
 }
 
 item_iterator context::get_default_collection() const
 throw (xqp_exception)
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(*this);
 }
 
 

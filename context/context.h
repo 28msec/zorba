@@ -15,20 +15,19 @@
 
 #include "../functions/function_impl.h"
 #include "../runtime/item_iterator.h"
-#include "../types/types.h"
+#include "../types/base_types.h"
 #include "../types/collation.h"
 #include "../types/qname.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
+#include "../values/node.h"
 
 #include <vector>
 
 namespace xqp {
 
-class document_node;
-class collection_node;
 class function_impl;
 
 class var_binding
@@ -87,6 +86,10 @@ public:	// types
 
 	typedef rchandle<QName> qname_h;
 	typedef rchandle<collation> collation_h;
+
+public:
+	context() {}
+	~context() {}
 	
 protected:	// XQuery 1.0 static context
 	rchandle<context> parent;

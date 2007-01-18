@@ -37,7 +37,7 @@ public:
 	~nodeid() {}
 
 public:
-	bool operator==(nodeid const& id1) const;
+	bool operator==(nodeid const&) const;
 
 };
 
@@ -222,7 +222,7 @@ public:	// accessors
 public:	// ctor,dtor
 	node(nodeid _id) : id(id) {}
 	node(node& n) : id(n.id) {}
-	node() {}
+	node() : id() {}
 	~node() {}
 
 public:	// operator overloading
@@ -284,7 +284,7 @@ public:
 
 public:	//ctor,dtor
 	document_node(nodeid id) : node(id) {}
-	document_node() {}
+	document_node() : node() {}
 	~document_node() {}
 
 };
@@ -301,7 +301,7 @@ public:
 
 public:	//ctor,dtor
 	collection_node(nodeid id) : node(id) {}
-	collection_node() {}
+	collection_node() : node() {}
 	~collection_node() {}
 
 };
@@ -393,7 +393,7 @@ public:	// accessors
 
 public:	//ctor,dtor
 	element_node(nodeid id) : node(id) {}
-	element_node() {}
+	element_node() : node() {}
 	~element_node() {}
 
 };
@@ -435,7 +435,7 @@ public:	// accessors
 
 public:	//ctor,dtor
   attribute_node(nodeid id) : node(id) {}
-  attribute_node() {}
+  attribute_node() : node() {}
   ~attribute_node() {}
 
 };
@@ -465,7 +465,7 @@ public:	// accessors
 
 public:	//ctor,dtor
 	ns_node(nodeid id) : node(id) {}
-	ns_node() {}
+	ns_node() : node() {}
 	~ns_node() {}
 
 };
@@ -499,7 +499,7 @@ public:	// accessors
 
 public:	//ctor,dtor
 	pi_node(nodeid id) : node(id) {}
-	pi_node() {}
+	pi_node() : node() {}
 	~pi_node() {}
 
 };
@@ -539,7 +539,7 @@ public:	// accessors
 
 public:	//ctor,dtor
 	text_node(nodeid id) : node(id) {}
-	text_node() {}
+	text_node() : node() {}
 	~text_node() {}
 
 };
@@ -574,7 +574,7 @@ public:	// accessors
 
 public:	//ctor,dtor
 	binary_node(nodeid id) : node(id) {}
-	binary_node() {}
+	binary_node() : node() {}
 	~binary_node() {}
 
 };

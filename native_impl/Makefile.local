@@ -3,50 +3,50 @@ SUFX=do
 BUILD=Build
 
 html_scanner : html_scanner.h html_scanner.cpp
-	g++ -c $(OPT) -o $(BUILD)/html_scanner.$(SUFX) html_scanner.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/html_scanner.$(SUFX) html_scanner.cpp
 
 scan_handler : scan_handler.h scan_handler.cpp
-	g++ -c $(OPT) -o $(BUILD)/scan_handler.$(SUFX) scan_handler.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/scan_handler.$(SUFX) scan_handler.cpp
 
 source : source.h source.cpp
-	g++ -c $(OPT) -o $(BUILD)/source.$(SUFX) source.cpp
+	g++ -c $(CXXOPT) -o $(BUILD)/source.$(SUFX) source.cpp
 
 spectrum : spectrum.h spectrum.cpp
-	g++ -c $(OPT) -o $(BUILD)/spectrum.$(SUFX) spectrum.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/spectrum.$(SUFX) spectrum.cpp
 
 storage_manager : storage_manager.h storage_manager.cpp
-	g++ -c $(OPT) -o $(BUILD)/storage_manager.$(SUFX) storage_manager.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/storage_manager.$(SUFX) storage_manager.cpp
 
-#tree : tree.h tree.cpp
-#	g++ -c $(OPT) -o $(BUILD)/tree.$(SUFX) tree.cpp
+tree : tree.h tree.cpp
+	g++ -c $(CXXOPT) -o $(BUILD)/tree.$(SUFX) tree.cpp
 
 unicode_decompositions : unicode_decompositions.h unicode_decompositions.cpp
-	g++ -c $(OPT) -o $(BUILD)/unicode_decompositions.$(SUFX) unicode_decompositions.cpp
+	g++ -c $(CXXOPT) -o $(BUILD)/unicode_decompositions.$(SUFX) unicode_decompositions.cpp
 
 xml_handler : xml_handler.h xml_handler.cpp
-	g++ -c $(OPT) -o $(BUILD)/xml_handler.$(SUFX) xml_handler.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/xml_handler.$(SUFX) xml_handler.cpp
 
 xml_loader : xml_loader.h xml_loader.cpp
-	g++ -c $(OPT) -o $(BUILD)/xml_loader.$(SUFX) xml_loader.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/xml_loader.$(SUFX) xml_loader.cpp
 
 xml_scanner : xml_scanner.h xml_scanner.cpp
-	g++ -c $(OPT) -o $(BUILD)/xml_scanner.$(SUFX) xml_scanner.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/xml_scanner.$(SUFX) xml_scanner.cpp
 
 xml_store : xml_store.h xml_store.cpp
-	g++ -c $(OPT) -o $(BUILD)/xml_store.$(SUFX) xml_store.cpp
+	g++ -c $(LARGEFILES) $(CXXOPT) -o $(BUILD)/xml_store.$(SUFX) xml_store.cpp
 
 xml_term : xml_term.h xml_term.cpp
-	g++ -c $(OPT) -o $(BUILD)/xml_term.$(SUFX) xml_term.cpp
+	g++ -c $(CXXOPT) -o $(BUILD)/xml_term.$(SUFX) xml_term.cpp
 
 spectrum_test : spectrum.h spectrum.cpp spectrum_test.cpp
-	g++ $(OPT) -o $(BUILD)/spectrum_test \
+	g++ $(LARGEFILES) $(CXXOPT) -o $(BUILD)/spectrum_test \
 		../util/$(BUILD)/xqp_exception.$(SUFX) \
 		../util/$(BUILD)/mmfile.$(SUFX) \
 		$(BUILD)/spectrum.$(SUFX) \
 	spectrum_test.cpp
 
 storage_manager_test : storage_manager.h storage_manager.cpp storage_manager_test.cpp
-	g++ $(OPT) -o $(BUILD)/storage_manager_test \
+	g++ $(LARGEFILES) $(CXXOPT) -o $(BUILD)/storage_manager_test \
 		../util/$(BUILD)/xqp_exception.$(SUFX) \
 		../util/$(BUILD)/file.$(SUFX) \
 		../util/$(BUILD)/mmfile.$(SUFX) \
@@ -57,7 +57,7 @@ storage_manager_test : storage_manager.h storage_manager.cpp storage_manager_tes
 	storage_manager_test.cpp
 
 xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
-	g++ $(OPT) -o $(BUILD)/xml_handler_test \
+	g++ $(LARGEFILES) $(CXXOPT) -o $(BUILD)/xml_handler_test \
 		../util/$(BUILD)/xqp_exception.$(SUFX) \
 		../util/$(BUILD)/file.$(SUFX) \
 		../util/$(BUILD)/URI.$(SUFX) \
@@ -70,7 +70,7 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 	xml_handler_test.cpp
 
 xml_loader_test : xml_loader.h xml_loader.cpp xml_loader_test.cpp
-	g++ $(OPT) -o $(BUILD)/xml_loader_test \
+	g++ $(LARGEFILES) $(CXXOPT) -o $(BUILD)/xml_loader_test \
 		../util/$(BUILD)/xqp_exception.$(SUFX) \
 		../util/$(BUILD)/file.$(SUFX) \
 		../util/$(BUILD)/URI.$(SUFX) \
@@ -84,7 +84,7 @@ xml_loader_test : xml_loader.h xml_loader.cpp xml_loader_test.cpp
 	xml_loader_test.cpp
 
 xml_scanner_test : xml_scanner.h xml_scanner.cpp xml_scanner_test.cpp
-	g++ $(OPT) -o $(BUILD)/xml_scanner_test \
+	g++ $(LARGEFILES) $(CXXOPT) -o $(BUILD)/xml_scanner_test \
 		../util/$(BUILD)/file.$(SUFX) \
 		../util/$(BUILD)/xqp_exception.$(SUFX) \
 		$(BUILD)/xml_scanner.$(SUFX) \
@@ -92,7 +92,7 @@ xml_scanner_test : xml_scanner.h xml_scanner.cpp xml_scanner_test.cpp
 	xml_scanner_test.cpp
 
 xml_term_test : xml_term.h xml_term.cpp xml_term_test.cpp
-	g++ $(OPT) -o $(BUILD)/xml_term_test \
+	g++ $(CXXOPT) -o $(BUILD)/xml_term_test \
 		../util/$(BUILD)/xqp_exception.$(SUFX) \
 		$(BUILD)/xml_term.$(SUFX) \
 	xml_term_test.cpp
@@ -107,7 +107,7 @@ all : \
 	xml_handler \
 	xml_loader \
 	xml_scanner \
-	xml_store \
+#	xml_store \
 	xml_term \
 	spectrum_test \
 	storage_manager_test \

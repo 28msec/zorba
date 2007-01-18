@@ -10,7 +10,7 @@
 
 #include "values.h"
 
-#include "../types/types.h"
+#include "../types/base_types.h"
 #include "../types/qname.h"
 #include "../util/rchandle.h"
 #include "../util/tokenbuf.h"

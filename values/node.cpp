@@ -21,22 +21,22 @@ namespace xqp {
 |		[http://www.w3.org/TR/xpath-datamodel/]
 |_______________________________________________________________________*/
 
-#define EMPTY_SEQUENCE item_iterator()
+#define EMPTY_SEQUENCE(X) item_iterator((X))
 
 //////////////////////////////////////////////
 //	Nodes
 //////////////////////////////////////////////
 
-item_iterator node::attributes(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::base_uri(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::children(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::document_uri(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::namespace_bindings(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::namespace_nodes(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::node_name(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::parent(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::type_name(context const& p) const { return EMPTY_SEQUENCE; }
-item_iterator node::typed_value(context const& p) const { return EMPTY_SEQUENCE; }
+item_iterator node::attributes(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::base_uri(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::children(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::document_uri(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::namespace_bindings(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::namespace_nodes(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::node_name(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::parent(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::type_name(context const& p) const { return EMPTY_SEQUENCE(p); }
+item_iterator node::typed_value(context const& p) const { return EMPTY_SEQUENCE(p); }
 
 bool node::is_id(context const& p) const { return false; }
 bool node::is_idrefs(context const& p) const { return false; }
@@ -46,14 +46,14 @@ item_iterator node::unparsed_entity_public_id(
   context const& p,
   string const& entity) const
 { 
-  return EMPTY_SEQUENCE; 
+  return EMPTY_SEQUENCE(p); 
 }
   
 item_iterator node::unparsed_entity_system_id(
   context const& p,
   string const& entity) const
 { 
-  return EMPTY_SEQUENCE; 
+  return EMPTY_SEQUENCE(p); 
 }
 
 enum node::node_kind_t node::node_kind() const
@@ -70,19 +70,19 @@ enum node::node_kind_t node::node_kind() const
 item_iterator document_node::base_uri(
   context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator document_node::children(
   context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator document_node::document_uri(
   context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 std::string document_node::string_value(
@@ -94,21 +94,21 @@ std::string document_node::string_value(
 item_iterator document_node::typed_value(
   context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator document_node::unparsed_entity_public_id(
 	context const& p,
 	string const& entityname) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator document_node::unparsed_entity_system_id(
 	context const& p,
 	string const& entityname) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 
@@ -120,19 +120,19 @@ item_iterator document_node::unparsed_entity_system_id(
 item_iterator collection_node::base_uri(
   context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator collection_node::children(
   context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator collection_node::collection_uri(
   context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 
@@ -398,83 +398,96 @@ from an infoset.
 */
 
 
-std::string element_node::string_value(context const& p) const
+std::string element_node::string_value(
+	context const& p) const
 {
   return "";
 }
 
-item_iterator element_node::attributes(context const& p) const
+item_iterator element_node::attributes(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator element_node::base_uri(context const& p) const
+item_iterator element_node::base_uri(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator element_node::children(context const& p) const
+item_iterator element_node::children(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-bool element_node::is_id(context const& p) const
+bool element_node::is_id(
+	context const& p) const
 {
   return false;
 }
 
-bool element_node::is_idrefs(context const& p) const
+bool element_node::is_idrefs(
+	context const& p) const
 {
   return false;
 }
 
-item_iterator element_node::namespace_bindings(context const& p) const
+item_iterator element_node::namespace_bindings(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator element_node::namespace_nodes(context const& p) const
+item_iterator element_node::namespace_nodes(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-bool element_node::nilled(context const& p) const
+bool element_node::nilled(
+	context const& p) const
 {
   return false;
 }
 
-item_iterator element_node::node_name(context const& p) const
+item_iterator element_node::node_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator element_node::parent(context const& p) const
+item_iterator element_node::parent(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator element_node::type_name(context const& p) const
+item_iterator element_node::type_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator element_node::typed_value(context const& p) const
+item_iterator element_node::typed_value(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator element_node::unparsed_entity_public_id(
   context const& p,
   std::string const& entity) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 item_iterator element_node::unparsed_entity_system_id(
   context const& p,
   std::string const& entity) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 
@@ -576,44 +589,52 @@ xsi:type, etc.) appear as ordinary attributes in the data model.
 */
 
 
-std::string attribute_node::string_value(context const& p) const
+std::string attribute_node::string_value(
+	context const& p) const
 {
   return "";
 }
 
-item_iterator attribute_node::base_uri(context const& p) const
+item_iterator attribute_node::base_uri(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-bool attribute_node::is_id(context const& p) const
+bool attribute_node::is_id(
+	context const& p) const
 {
   return false;
 }
 
-bool attribute_node::is_idrefs(context const& p) const
+bool attribute_node::is_idrefs(
+	context const& p) const
 {
   return false;
 }
 
-item_iterator attribute_node::node_name(context const& p) const
+item_iterator attribute_node::node_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator attribute_node::parent(context const& p) const
+item_iterator attribute_node::parent(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator attribute_node::type_name(context const& p) const
+item_iterator attribute_node::type_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator attribute_node::typed_value(context const& p) const
+item_iterator attribute_node::typed_value(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 
@@ -649,24 +670,28 @@ Construction from a PSVI is identical to construction from the Infoset.
 
 
 
-std::string ns_node::string_value(context const& p) const
+std::string ns_node::string_value(
+	context const& p) const
 {
   return "";
 }
 
-item_iterator ns_node::node_name(context const& p) const
+item_iterator ns_node::node_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator ns_node::parent(context const& p) const
+item_iterator ns_node::parent(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator ns_node::typed_value(context const& p) const
+item_iterator ns_node::typed_value(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 
@@ -676,29 +701,34 @@ item_iterator ns_node::typed_value(context const& p) const
 //  Processing Instruction Nodes
 ///////////////////////////////////////////////
 
-std::string pi_node::string_value(context const&) const
+std::string pi_node::string_value(
+	context const& p) const
 {
   return "";
 }
 
-item_iterator pi_node::base_uri(context const&) const
+item_iterator pi_node::base_uri(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator pi_node::node_name(context const&) const
+item_iterator pi_node::node_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator pi_node::parent(context const&) const
+item_iterator pi_node::parent(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator pi_node::typed_value(context const&) const
+item_iterator pi_node::typed_value(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 
@@ -707,29 +737,34 @@ item_iterator pi_node::typed_value(context const&) const
 //  Text Nodes
 ///////////////////////////////////////////////
 
-std::string text_node::string_value(context const&) const
+std::string text_node::string_value(
+	context const& p) const
 {
   return "";
 }
 
-item_iterator text_node::base_uri(context const&) const
+item_iterator text_node::base_uri(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator text_node::parent(context const&) const
+item_iterator text_node::parent(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator text_node::type_name(context const&) const
+item_iterator text_node::type_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator text_node::typed_value(context const&) const
+item_iterator text_node::typed_value(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
 
@@ -738,29 +773,34 @@ item_iterator text_node::typed_value(context const&) const
 //  Binary Nodes
 ///////////////////////////////////////////////
 
-std::string binary_node::string_value(context const&) const
+std::string binary_node::string_value(
+	context const& p) const
 {
   return "";
 }
 
-item_iterator binary_node::base_uri(context const&) const
+item_iterator binary_node::base_uri(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator binary_node::parent(context const&) const
+item_iterator binary_node::parent(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator binary_node::type_name(context const&) const
+item_iterator binary_node::type_name(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 
-item_iterator binary_node::typed_value(context const&) const
+item_iterator binary_node::typed_value(
+	context const& p) const
 {
-  return EMPTY_SEQUENCE;
+  return EMPTY_SEQUENCE(p);
 }
 		
 

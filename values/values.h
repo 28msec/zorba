@@ -13,7 +13,7 @@
 
 #include "../context/context.h"
 #include "../types/qname.h"
-#include "../types/types.h"
+#include "../types/base_types.h"
 #include "../util/rchandle.h"
 
 #include <string>
@@ -79,11 +79,11 @@ class value	: public object
 {
 public:
 	value() {}
-	~value() {}
+	virtual ~value() {}
 
 public:
-  virtual void put(std::ostream&, context const&) const;
-  virtual void describe(std::ostream&,  context const&) const;
+  virtual std::ostream& put(std::ostream&, context const&) const;
+  virtual std::string describe(context const&) const;
 
 	virtual bool is_sequence() const;
 	virtual bool is_empty() const;
@@ -101,11 +101,11 @@ class item : public value
 {
 public:
 	item() {}
-	~item() {}
+	virtual ~item() {}
 
 public:
-  virtual void put(std::ostream&, context const&) const;
-  virtual void describe(std::ostream&,  context const&) const;
+  virtual std::ostream& put(std::ostream&, context const&) const;
+  virtual std::string describe(context const&) const;
 
 	virtual bool is_node() const;
 	virtual bool is_atomic() const;
@@ -126,12 +126,17 @@ protected:
 
 public:
 	atomic_value() {}
-	~atomic_value() {}
+	virtual ~atomic_value() {}
 
 public:
-  virtual void put(std::ostream&, context const&) const;
-  virtual void describe(std::ostream&, context const&) const;
+  virtual std::ostream& put(std::ostream&, context const&) const;
+  virtual std::string describe(context const&) const;
 	virtual enum type::typecode get_typecode() const;
+
+	bool is_sequence() const { return false; }
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return false; }
 
 };
 

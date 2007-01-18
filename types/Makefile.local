@@ -16,8 +16,8 @@ sequence_type : sequence_type.h sequence_type.cpp
 node_types :	node_types.h node_types.cpp
 	g++ -Wall $(OPT) -c -o $(BUILD)/node_types.$(SUFX) node_types.cpp
 
-types :	types.h types.cpp
-	g++ -Wall $(OPT) -c -o $(BUILD)/types.$(SUFX) types.cpp
+base_types :	base_types.h base_types.cpp
+	g++ -Wall $(OPT) -c -o $(BUILD)/base_types.$(SUFX) base_types.cpp
 
 xs_primitive_types :	xs_primitive_types.h xs_primitive_types.cpp
 	g++ -Wall $(OPT) -c -o $(BUILD)/xs_primitive_types.$(SUFX) xs_primitive_types.cpp
@@ -28,8 +28,8 @@ character :	character.h character.cpp
 all :	\
   qname \
   sequence_type \
-	node_type \
-	types \
+	node_types \
+	base_types \
 	xs_primitive_types \
 	character
 

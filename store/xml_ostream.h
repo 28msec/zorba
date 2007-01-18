@@ -10,7 +10,7 @@
 #define XQP_XML_OSTREAM_H
 
 #include "../types/qname.h"
-#include "../types/types.h"
+#include "../types/base_types.h"
 
 //#include "xml_store.h"
 //#include "text_store.h"

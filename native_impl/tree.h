@@ -20,8 +20,8 @@
 
 #include "../context/context.h"
 #include "../runtime/item_iterator.h"
-#include "../runtime/iterators.h"
 #include "../values/node.h"
+#include "../values/values.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 
@@ -73,29 +73,29 @@ protected:	// node locator
 
 public:	// accessors
 	virtual node_kind_t node_kind() const = 0;
-	virtual item_iterator node_name(context const*) const = 0;
-	virtual item_iterator attributes(context const*) const;
-	virtual item_iterator base_uri(context const*) const;
-	virtual item_iterator children(context const*) const;
-	virtual item_iterator document_uri(context const*) const;
-	virtual item_iterator namespace_bindings(context const*) const;
-	virtual item_iterator namespace_nodes(context const*) const;
-	virtual item_iterator nilled(context const*) const;
-	virtual item_iterator parent(context const*) const;
-	virtual item_iterator typed_value(context const*) const;
+	virtual item_iterator node_name(context const&) const = 0;
+	virtual item_iterator attributes(context const&) const;
+	virtual item_iterator base_uri(context const&) const;
+	virtual item_iterator children(context const&) const;
+	virtual item_iterator document_uri(context const&) const;
+	virtual item_iterator namespace_bindings(context const&) const;
+	virtual item_iterator namespace_nodes(context const&) const;
+	virtual item_iterator parent(context const&) const;
+	virtual item_iterator typed_value(context const&) const;
 
-	virtual bool is_id(context const*) const;
-	virtual bool is_idrefs(context const*) const;
+	virtual bool is_id(context const&) const;
+	virtual bool is_idrefs(context const&) const;
+	virtual bool nilled(context const&) const;
 
-	item_type const& get_type(context const*) const;
-	std::string string_value(context const*) const;
+	virtual item_type const& get_type(context const&) const;
+	virtual std::string string_value(context const&) const;
 	
-	item_iterator unparsed_entity_public_id(
-	  context const*,
+	virtual item_iterator unparsed_entity_public_id(
+	  context const&,
 	  std::string const& entity_name) const;
 
-	item_iterator unparsed_entity_system_id(
-	  context const*,
+	virtual item_iterator unparsed_entity_system_id(
+	  context const&,
 	  std::string const& entity_name) const;
 
 public:	// ctor,dtor
@@ -149,19 +149,19 @@ protected:
 public:
 	node_kind_t node_kind() const { return doc_kind; }
 	
-	item_iterator base_uri(context const*) const;
-	item_iterator children(context const*) const;
-	item_iterator document_uri(context const*) const;
-	item_iterator typed_value(context const*) const;
+	item_iterator base_uri(context const&) const;
+	item_iterator children(context const&) const;
+	item_iterator document_uri(context const&) const;
+	item_iterator typed_value(context const&) const;
 
-	std::string string_value(context const*) const;
+	std::string string_value(context const&) const;
 	
   item_iterator unparsed_entity_public_id(
-    context const*,
+    context const&,
     std::string const& entity_name) const;
 	
 	item_iterator unparsed_entity_system_id(
-	  context const*,
+	  context const&,
 	  std::string const& entity_name) const;
 
 protected:
@@ -179,7 +179,29 @@ public:	//ctor,dtor
 	xqp_document() {}
 	~xqp_document() {}
 
+public:
+	class child_iterator : public item_iterator
+	{
+	protected:
+		xqp_document const* parent_p;
+		std::vector<rchandle<xqp_node> >::const_iterator child_it;
+		std::vector<rchandle<xqp_node> >::const_iterator it_end;
+		
+	public:
+		child_iterator(xqp_document const*);
+		~child_iterator();
+	
+	public:
+	 	void open();
+		void close() {}
+		rchandle<item> next();
+		bool done();
+		void rewind();
+
+	};
+
 };
+
 
 
 
@@ -248,6 +270,9 @@ class xqp_pi;
 
 class xqp_element : public element_node, public xqp_node
 {
+	friend class elem_child_iterator;
+	friend class elem_attr_iterator;
+
 protected:
 	std::string baseuri;
 	std::string nodename;
@@ -263,21 +288,21 @@ protected:
 public:	// accessors
 	node_kind_t node_kind() const { return elem_kind; }
 	
-	item_iterator attributes(context const*) const;
-	item_iterator base_uri(context const*) const;
-	item_iterator children(context const*) const;
-	item_iterator namespace_bindings(context const*) const;
-	item_iterator namespace_nodes(context const*) const;
-	item_iterator nilled(context const*) const;
-	item_iterator node_name(context const*) const;
-	item_iterator parent(context const*) const;
-	item_iterator typed_value(context const*) const;
+	item_iterator attributes(context const&) const;
+	item_iterator base_uri(context const&) const;
+	item_iterator children(context const&) const;
+	item_iterator namespace_bindings(context const&) const;
+	item_iterator namespace_nodes(context const&) const;
+	item_iterator node_name(context const&) const;
+	item_iterator parent(context const&) const;
+	item_iterator typed_value(context const&) const;
 	
-	bool is_id(context const*) const;
-	bool is_idrefs(context const*) const;
+	bool is_id(context const&) const;
+	bool is_idrefs(context const&) const;
+	bool nilled(context const&) const;
 
-	item_type const& get_type(context const*) const;
-	std::string string_value(context const*) const;
+	item_type const& get_type(context const&) const;
+	std::string string_value(context const&) const;
 
 protected:
 	void add_element_node(rchandle<xqp_element>);
@@ -308,7 +333,51 @@ public:	//ctor,dtor
 	xqp_element() {}
 	~xqp_element() {}
 
+public:
+
+	class child_iterator : public item_iterator
+	{
+	protected:
+		xqp_element const* parent_p;
+		std::vector<rchandle<xqp_node> >::const_iterator child_it;
+		std::vector<rchandle<xqp_node> >::const_iterator it_end;
+		
+	public:
+		child_iterator(xqp_element const*);
+		~child_iterator();
+	
+	public:
+	 	void open();
+		void close() {}
+		rchandle<item> next();
+		bool done();
+		void rewind();
+	
+	};
+	
+	
+	class attr_iterator : public item_iterator
+	{
+	protected:
+		xqp_element const* parent_p;
+		std::vector<rchandle<xqp_node> >::const_iterator attr_it;
+		std::vector<rchandle<xqp_node> >::const_iterator it_end;
+		
+	public:
+		attr_iterator(xqp_element const*);
+		~attr_iterator();
+	
+	public:
+	 	void open();
+		void close() {}
+		rchandle<item> next();
+		bool done();
+		void rewind();
+	
+	};
+
 };
+
 
 
 
@@ -345,16 +414,16 @@ protected:
 public:	// accessors
 	node_kind_t node_kind() const { return attr_kind; }
 	
-	item_iterator base_uri(context const*) const;
-	item_iterator node_name(context const*) const;
-	item_iterator parent(context const*) const;
-	item_iterator typed_value(context const*) const;
+	item_iterator base_uri(context const&) const;
+	item_iterator node_name(context const&) const;
+	item_iterator parent(context const&) const;
+	item_iterator typed_value(context const&) const;
 
-	bool is_id(context const*) const;
-	bool is_idrefs(context const*) const;
+	bool is_id(context const&) const;
+	bool is_idrefs(context const&) const;
 
-	item_type const& get_type(context const*) const;
-	std::string string_value(context const*) const;
+	item_type const& get_type(context const&) const;
+	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
   xqp_attribute(xqp_nodeid id) : xqp_node(id) {}
@@ -386,11 +455,11 @@ protected:
 public:	// accessors
 	node_kind_t node_kind() const { return ns_kind; }
 
-	item_iterator node_name(context const*) const;
-	item_iterator parent(context const*) const;
-	item_iterator typed_value(context const*) const;
+	item_iterator node_name(context const&) const;
+	item_iterator parent(context const&) const;
+	item_iterator typed_value(context const&) const;
 	
-	std::string string_value(context const*) const;
+	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
 
@@ -425,11 +494,11 @@ protected:
 public:	// accessors
 	node_kind_t node_kind(context const*) const { return pi_kind; }
 	
-	item_iterator base_uri(context const*) const;
-	item_iterator parent(context const*) const;
-	item_iterator typed_value(context const*) const;
-	item_iterator node_name(context const*) const;
-	std::string string_value(context const*) const;
+	item_iterator base_uri(context const&) const;
+	item_iterator parent(context const&) const;
+	item_iterator typed_value(context const&) const;
+	item_iterator node_name(context const&) const;
+	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
 
@@ -469,14 +538,14 @@ protected:
 	rchandle<xqp_element> parent_h;
 	
 public:	// accessors
-	node_kind_t node_kind(context const*) const { return text_kind; }
+	node_kind_t node_kind(context const&) const { return text_kind; }
 	
-	item_iterator base_uri(context const*) const;
-	item_iterator parent(context const*) const;
-	item_iterator typed_value(context const*) const;
+	item_iterator base_uri(context const&) const;
+	item_iterator parent(context const&) const;
+	item_iterator typed_value(context const&) const;
 	
-	item_type const& get_type(context const*) const;
-	std::string string_value(context const*) const;
+	item_type const& get_type(context const&) const;
+	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
 

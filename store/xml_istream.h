@@ -11,7 +11,7 @@
 
 #include <istream>
 #include "../types/qname.h"
-#include "../types/types.h"
+#include "../types/base_types.h"
 
 //#include "xml_storage_manager.h"
 //#include "text_storage_manager.h"

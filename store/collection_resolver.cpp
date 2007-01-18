@@ -19,15 +19,15 @@
 using namespace std;
 namespace xqp {
 
-#define EMPTY_SEQUENCE item_iterator()
+#define EMPTY_SEQUENCE(X) item_iterator((X))
 
 item_iterator collection_resolver::resolve(
 	string const& base,
 	string const& href,
-	context& context)
+	context& p)
 throw (xqp_exception)
 {
-	return EMPTY_SEQUENCE;
+	return EMPTY_SEQUENCE(p);
 }
 
 

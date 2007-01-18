@@ -8,6 +8,4 @@ context :	context.h context.cpp
 all :	\
  context 
 
-clean:
-	$(CleanRule) *.do *.po *.o *_test $(Executables) $(TestExecutables)
 

@@ -6,7 +6,7 @@ xqp_exception : xqp_exception.h xqp_exception.cpp
 	g++ $(CXXOPT) -c -o $(BUILD)/xqp_exception.$(SUFX) xqp_exception.cpp
 
 tokenbuf : tokenbuf.h tokenbuf.cpp
-	g++ -c $(CXXOPT) -o $(BUILD)/tokenbuf.$(SUFX) tokenbuf.cpp
+	g++ $(CXXOPT) -c -o $(BUILD)/tokenbuf.$(SUFX) tokenbuf.cpp
 tokenbuf_test : tokenbuf.h tokenbuf.cpp tokenbuf_test.cpp
 	g++ $(CXXOPT) -o $(BUILD)/tokenbuf_test \
 		$(BUILD)/xqp_exception.$(SUFX) \
@@ -15,9 +15,9 @@ tokenbuf_test : tokenbuf.h tokenbuf.cpp tokenbuf_test.cpp
 		tokenbuf_test.cpp
 
 rwlock :	rwlock.cpp rwlock.h 
-	g++ $(LARGEFILES) -c $(CXXOPT) -o $(BUILD)/rwlock.$(SUFX) rwlock.cpp
+	g++ $(CXXOPT) -c -o $(BUILD)/rwlock.$(SUFX) rwlock.cpp
 rwlock_test :	rwlock_test.cpp rwlock.cpp rwlock.h 
-	g++ $(LARGEFILES) -D DEBUG $(CXXOPT) -lpthread -o $(BUILD)/rwlock_test \
+	g++ -D DEBUG $(CXXOPT) -lpthread -o $(BUILD)/rwlock_test \
 		$(BUILD)/rwlock.$(SUFX) \
 		rwlock_test.cpp; \
 
@@ -34,11 +34,11 @@ hashmap_test :	hashmap_test.cpp hashmap.h
 		hashmap_test.cpp
 
 list_test :	list_test.cpp list.h 
-	g++ $(LARGEFILES) $(CXXOPT) -o $(BUILD)/list_test \
+	g++ $(CXXOPT) -o $(BUILD)/list_test \
 		list_test.cpp
 
 logger : logger.h logger.cpp
-	g++ $(LARGEFILES) -c $(CXXOPT) -o $(BUILD)/logger.$(SUFX) logger.cpp
+	g++ $(CXXOPT) -c -o $(BUILD)/logger.$(SUFX) logger.cpp
 logger_test : logger.h logger.cpp logger_test.cpp
 	g++ $(LARGEFILES) -D DEBUG $(CXXOPT) -o $(BUILD)/logger_test \
 		$(BUILD)/xqp_exception.$(SUFX) \
@@ -46,29 +46,29 @@ logger_test : logger.h logger.cpp logger_test.cpp
 		logger_test.cpp
 
 rchandle_test :	rchandle.h rchandle_test.cpp
-	g++ $(LARGEFILES) $(CXXOPT) -o $(BUILD)/rchandle_test \
+	g++ $(CXXOPT) -o $(BUILD)/rchandle_test \
 		rchandle_test.cpp
 
 sorter_test :	sorter_test.cpp sorter.h 
-	g++ $(LARGEFILES) -D DEBUG $(CXXOPT) -o $(BUILD)/sorter_test \
+	g++ -D DEBUG $(CXXOPT) -o $(BUILD)/sorter_test \
 		sorter_test.cpp; \
 
 URI : URI.h URI.cpp
-	g++ $(LARGEFILES) -c $(CXXOPT) -o $(BUILD)/URI.$(SUFX) URI.cpp
+	g++ -c $(CXXOPT) -c -o $(BUILD)/URI.$(SUFX) URI.cpp
 URI_test : URI.h URI.cpp URI_test.cpp
-	g++ $(LARGEFILES) -D DEBUG $(CXXOPT) -o $(BUILD)/URI_test \
+	g++ -D DEBUG $(CXXOPT) -o $(BUILD)/URI_test \
 		$(BUILD)/URI.$(SUFX) \
 		URI_test.cpp
 
 utf8_encoder :	utf8_encoder.cpp	utf8_encoder.h
-	g++ $(LARGEFILES) -c $(CXXOPT) -o $(BUILD)/utf8_encoder.$(SUFX) utf8_encoder.cpp
+	g++ $(CXXOPT) -c -o $(BUILD)/utf8_encoder.$(SUFX) utf8_encoder.cpp
 utf8_encoder_test :	utf8_encoder_test.cpp utf8_encoder.cpp	utf8_encoder.h
-	g++ $(LARGEFILES) -D DEBUG $(CXXOPT) -o $(BUILD)/utf8_encoder_test \
+	g++ -D DEBUG $(CXXOPT) -o $(BUILD)/utf8_encoder_test \
 		$(BUILD)/utf8_encoder.$(SUFX) \
 		utf8_encoder_test.cpp
 
 file :	file.cpp file.h 
-	g++ $(LARGEFILES) -c $(CXXOPT) -o $(BUILD)/file.$(SUFX) file.cpp
+	g++ $(LARGEFILES) $(CXXOPT) -c -o $(BUILD)/file.$(SUFX) file.cpp
 file_test :	file_test.cpp file.cpp file.h 
 	g++ $(LARGEFILES) -D DEBUG $(CXXOPT) -o $(BUILD)/file_test \
 		$(BUILD)/xqp_exception.$(SUFX) \

@@ -95,66 +95,6 @@ public:
 	friend std::ostream& operator<<(std::ostream&, xqp_hexBinary const&);
 };
 
-ostream& operator<<(
-	ostream& os,
-	xqp_base64Binary const& val)
-{
-	char const* p = (char const*)val.data;
-	return os << "base64Binary[" << string(p,0,val.size) << ']';
-}
-
-ostream& operator<<(
-	ostream& os,
-	xqp_hexBinary const& val)
-{
-	char const* p = (char const*)val.data;
-	return os << "hexBinary[" << string(p,0,val.size) << ']';
-}
-
-ostream& put(
-	ostream& os,
-	struct tm const* t,
-	enum type::typecode type)
-{
-	char buf[1024];
-	size_t n = 0;
-	switch (type) {
-		// XXX add timezones here
-	case type::XS_DATETIME: n = strftime(buf, 1024, "%Y-%m-%dT%X", t); break;
-	case type::XS_DATE: n = strftime(buf, 1024, "%Y-%m-%d", t); break;
-	case type::XS_TIME: n = strftime(buf, 1024, "%X", t); break;
-	case type::XS_GYEARMONTH: n = strftime(buf, 1024, "-%Y-%m", t); break;
-	case type::XS_GYEAR: n = strftime(buf, 1024, "-%Y", t); break;
-	case type::XS_GMONTHDAY: n = strftime(buf, 1024, "--%m-%d", t); break;
-	case type::XS_GDAY: n = strftime(buf, 1024, "---%d", t); break;
-	case type::XS_GMONTH: n = strftime(buf, 1024, "--%m", t); break;
-	default: buf[0] = 0; n = 0;
-	}
-	return os << string(buf,0,n);
-}
-
-ostream& put(
-	ostringstream& os,
-	struct tm const* t,
-	enum type::typecode type)
-{
-	char buf[1024];
-	size_t n = 0;
-	switch (type) {
-		// XXX add timezones here
-	case type::XS_DATETIME: n = strftime(buf, 1024, "%Y-%m-%dT%X", t); break;
-	case type::XS_DATE: n = strftime(buf, 1024, "%Y-%m-%d", t); break;
-	case type::XS_TIME: n = strftime(buf, 1024, "%X", t); break;
-	case type::XS_GYEARMONTH: n = strftime(buf, 1024, "-%Y-%m", t); break;
-	case type::XS_GYEAR: n = strftime(buf, 1024, "-%Y", t); break;
-	case type::XS_GMONTHDAY: n = strftime(buf, 1024, "--%m-%d", t); break;
-	case type::XS_GDAY: n = strftime(buf, 1024, "---%d", t); break;
-	case type::XS_GMONTH: n = strftime(buf, 1024, "--%m", t); break;
-	default: buf[0] = 0; n = 0;
-	}
-	return os << string(buf,0,n);
-}
-
 
 /*______________________________________________________________________
 |  
