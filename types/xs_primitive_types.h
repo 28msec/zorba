@@ -12,7 +12,6 @@
 
 #include "base_types.h"
 #include "../util/xqp_exception.h"
-#include "../values/node.h"
 
 #include <time.h>
 #include <ctime>

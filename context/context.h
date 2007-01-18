@@ -22,7 +22,6 @@
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
-#include "../values/node.h"
 
 #include <vector>
 
@@ -440,7 +439,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	not limited to the set of dynamically known documents, and it may be 
 	**	empty. 
 	*/
-	hashmap<document_node*> available_documents;
+	hashmap<std::string> available_documents;
 
 	/*
 	**	[Definition: Available collections. This is a mapping of strings onto 
@@ -450,7 +449,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	The set of available collections is not limited to the set of 
 	**	dynamically known collections, and it may be empty. 
 	*/
-	hashmap<collection_node*> available_collections;
+	hashmap<std::string> available_collections;
 
 	/*
 	**	[Definition: Default collection. This is the sequence of nodes that 
@@ -458,7 +457,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	arguments.] The value of default collection may be initialized by the 
 	**	implementation. 
 	*/
-	rchandle<collection_node> default_collection;
+	std::string default_collection;
 	
 	
 public:

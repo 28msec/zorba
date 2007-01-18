@@ -66,14 +66,14 @@ class context;
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-void value::put(std::ostream& os, context const& ctx) const 
+ostream& value::put(ostream& os, context const& ctx) const 
 {
-	os << "";
+	return os << "";
 }
 
-void value::describe(std::ostream& os, context const& ctx) const
+string value::describe(context const& ctx) const
 {
-	os << "";
+	return "data()";
 }
 
 bool value::is_sequence() const
@@ -102,14 +102,14 @@ bool value::is_empty() const
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-void item::put(std::ostream& os, context const& ctx) const
+ostream& item::put(ostream& os, context const& ctx) const
 {
-	os << "";
+	return os << "";
 }
 
-void item::describe(std::ostream& os, context const& ctx) const
+string item::describe(context const& ctx) const
 {
-	os << "";
+	return "item()";
 }
 
 bool item::is_node() const
@@ -128,14 +128,14 @@ bool item::is_atomic() const
 |	'atomic_value' encapsulates value of primitive or derived types
 |_______________________________________________________________________*/
 
-void atomic_value::put(std::ostream& os, context const& ctx) const
+ostream& atomic_value::put(ostream& os, context const& ctx) const
 {
-	os << "";
+	return os << "";
 }
 
-void atomic_value::describe(std::ostream& os, context const& ctx) const
+string atomic_value::describe(context const& ctx) const
 {
-	os << "";
+	return "data()";
 }
 
 enum type::typecode atomic_value::get_typecode() const

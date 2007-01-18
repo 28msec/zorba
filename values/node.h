@@ -223,7 +223,7 @@ public:	// ctor,dtor
 	node(nodeid _id) : id(id) {}
 	node(node& n) : id(n.id) {}
 	node() : id() {}
-	~node() {}
+	virtual ~node() {}
 
 public:	// operator overloading
 	//node& operator=(node&);
