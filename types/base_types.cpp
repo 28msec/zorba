@@ -19,7 +19,7 @@
  *
  */
 
-#include "types.h"
+#include "base_types.h"
 
 using namespace std;
 namespace xqp {
