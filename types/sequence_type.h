@@ -11,7 +11,7 @@
 #ifndef XQP_SEQUENCE_TYPE_H
 #define XQP_SEQUENCE_TYPE_H
 
-#include "types.h"
+#include "base_types.h"
 #include "../parser/parse_constants.h"
 #include "../util/rchandle.h"
 

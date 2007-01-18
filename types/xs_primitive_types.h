@@ -10,7 +10,9 @@
 #ifndef XQP_XS_PRIMITIVE_TYPES_H
 #define XQP_XS_PRIMITIVE_TYPES_H
 
-#include "types.h"
+#include "base_types.h"
+#include "../util/xqp_exception.h"
+#include "../values/node.h"
 
 #include <time.h>
 #include <ctime>
@@ -18,10 +20,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-
-#include "../util/xqp_exception.h"
-#include "../values/node.h"
-
 
 namespace xqp {
 

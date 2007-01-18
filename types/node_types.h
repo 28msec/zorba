@@ -36,7 +36,7 @@ public: //	item_type interface
 	virtual bool is_atomic_type() const
 		{ return false; }
 	virtual item_type const* get_supertype() const
-		{ return &item_type::get_instance(); }
+		{ return NULL; }
 	virtual item_type const* get_primitive_type() const
 		{ return NULL; }
 	virtual type::typecode get_typecode() const
@@ -49,7 +49,7 @@ public: //	item_type interface
 };
 
 
-class document_node_type : public node
+class document_node_type : public node_type
 {
 protected:
 	static document_node_type the_instance;
@@ -61,7 +61,7 @@ public: //	item_type interface
 	item_type const* get_supertype() const
 		{ return &node_type::get_instance(); }
 	type::typecode get_typecode() const
-		{ return type::
+		{ return type::DOCUMENT_NODE; }
 
 	bool matches(item const*, context const*) const;
 	xs_anyAtomicType const* get_atomized_type() const;
@@ -71,7 +71,7 @@ public: //	item_type interface
 
 
 
-class element_node : public node
+class element_node_type : public node_type
 {
 protected:
 	static element_node_type the_instance;
@@ -80,19 +80,42 @@ public:
 	static element_node_type const& get_instance();
 
 public: //	item_type interface
-	bool is_atomic_type() const;
+	item_type const* get_supertype() const
+		{ return &node_type::get_instance(); }
+	type::typecode get_typecode() const
+		{ return type::ELEMENT_NODE; }
+
 	bool matches(item const*, context const*) const;
-	item_type const* get_supertype() const;
-	item_type const* get_primitive_type() const;
-	type::typecode get_typecode() const;
 	xs_anyAtomicType const* get_atomized_type() const;
 	std::string describe() const;
-	
+
 };
 
 
 
-class attribute_node : public node
+class comment_node_type : public node_type
+{
+protected:
+	static comment_node_type the_instance;
+
+public:
+	static comment_node_type const& get_instance();
+
+public: //	item_type interface
+	item_type const* get_supertype() const
+		{ return &node_type::get_instance(); }
+	type::typecode get_typecode() const
+		{ return type::COMMENT_NODE; }
+
+	bool matches(item const*, context const*) const;
+	xs_anyAtomicType const* get_atomized_type() const;
+	std::string describe() const;
+
+};
+
+
+
+class attribute_node_type : public node_type
 {
 protected:
 	static attribute_node_type the_instance;
@@ -101,11 +124,12 @@ public:
 	static attribute_node_type const& get_instance();
 
 public: //	item_type interface
-	bool is_atomic_type() const;
+	item_type const* get_supertype() const
+		{ return &node_type::get_instance(); }
+	type::typecode get_typecode() const
+		{ return type::ATTRIBUTE_NODE; }
+
 	bool matches(item const*, context const*) const;
-	item_type const* get_supertype() const;
-	item_type const* get_primitive_type() const;
-	type::typecode get_typecode() const;
 	xs_anyAtomicType const* get_atomized_type() const;
 	std::string describe() const;
 
@@ -113,7 +137,7 @@ public: //	item_type interface
 
 
 
-class ns_node : public node
+class ns_node_type : public node_type
 {
 protected:
 	static ns_node_type the_instance;
@@ -122,11 +146,12 @@ public:
 	static ns_node_type const& get_instance();
 
 public: //	item_type interface
-	bool is_atomic_type() const;
+	item_type const* get_supertype() const
+		{ return &node_type::get_instance(); }
+	type::typecode get_typecode() const
+		{ return type::NS_NODE; }
+
 	bool matches(item const*, context const*) const;
-	item_type const* get_supertype() const;
-	item_type const* get_primitive_type() const;
-	type::typecode get_typecode() const;
 	xs_anyAtomicType const* get_atomized_type() const;
 	std::string describe() const;
 
@@ -134,7 +159,7 @@ public: //	item_type interface
 
 
 
-class pi_node : public node
+class pi_node_type : public node_type
 {
 protected:
 	static pi_node_type the_instance;
@@ -143,11 +168,12 @@ public:
 	static pi_node_type const& get_instance();
 
 public: //	item_type interface
-	bool is_atomic_type() const;
+	item_type const* get_supertype() const
+		{ return &node_type::get_instance(); }
+	type::typecode get_typecode() const
+		{ return type::PI_NODE; }
+
 	bool matches(item const*, context const*) const;
-	item_type const* get_supertype() const;
-	item_type const* get_primitive_type() const;
-	type::typecode get_typecode() const;
 	xs_anyAtomicType const* get_atomized_type() const;
 	std::string describe() const;
 
@@ -155,7 +181,7 @@ public: //	item_type interface
 
 
 
-class text_node : public node
+class text_node_type : public node_type
 {
 protected:
 	static text_node_type the_instance;
@@ -164,11 +190,12 @@ public:
 	static text_node_type const& get_instance();
 
 public: //	item_type interface
-	bool is_atomic_type() const;
+	item_type const* get_supertype() const
+		{ return &node_type::get_instance(); }
+	type::typecode get_typecode() const
+		{ return type::TEXT_NODE; }
+
 	bool matches(item const*, context const*) const;
-	item_type const* get_supertype() const;
-	item_type const* get_primitive_type() const;
-	type::typecode get_typecode() const;
 	xs_anyAtomicType const* get_atomized_type() const;
 	std::string describe() const;
 
