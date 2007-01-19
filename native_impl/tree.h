@@ -45,6 +45,36 @@ public:
 
 
 /*______________________________________________________________________
+|  
+|	We have a "diamond-shaped: inheritance hierarchy.
+|	(See Stroustroup 2nd Ed. 15.2.5)
+|
+|	The xqp_NNN implementation classe inherit from both the corresponding
+|	interface classe NNN_node and the implementation base class xqp_node.
+|
+|                 item
+|                  |
+|                 node 
+|                ^    ^
+|               /      \
+|              /        \
+|       element_node  xqp_node
+|              ^        ^
+|               \      /
+|                \    /
+|              xqp_element
+|
+|	- element_node is the interface,
+|	- xqp_node is the implementation base class.
+|
+|	Caution: multiple-inheritance can create ambiguity in method
+|		and property resolution.
+|
+|_______________________________________________________________________*/
+
+
+
+/*______________________________________________________________________
 | 6.0 Node
 |	 1.	Every node must have a unique identity, distinct from all
 |	 		other nodes.
@@ -165,7 +195,7 @@ public:
 	  std::string const& entity_name) const;
 
 protected:
-	bool get_entity(std::string const& entity, std::string & val);
+	bool get_entity(std::string const& entity, std::string & val) const;
 	void put_entity(std::string const& entity, std::string const& val);
 
 public:	//ctor,dtor
@@ -188,7 +218,7 @@ public:
 		std::vector<rchandle<xqp_node> >::const_iterator it_end;
 		
 	public:
-		child_iterator(xqp_document const*);
+		child_iterator(context const&,xqp_document const*);
 		~child_iterator();
 	
 	public:
@@ -327,7 +357,7 @@ public:	//ctor,dtor
 		xqp_nodeid id,
 		std::string const& baseuri,
 		std::string const& nodename,
-		rchandle<xqp_node> parent);
+		rchandle<xqp_node> parent_h);
 
 	xqp_element(xqp_nodeid id) : xqp_node(id) {}
 	xqp_element() {}
@@ -343,7 +373,7 @@ public:
 		std::vector<rchandle<xqp_node> >::const_iterator it_end;
 		
 	public:
-		child_iterator(xqp_element const*);
+		child_iterator(context const&,xqp_element const*);
 		~child_iterator();
 	
 	public:
@@ -360,11 +390,11 @@ public:
 	{
 	protected:
 		xqp_element const* parent_p;
-		std::vector<rchandle<xqp_node> >::const_iterator attr_it;
-		std::vector<rchandle<xqp_node> >::const_iterator it_end;
+		std::vector<rchandle<xqp_attribute> >::const_iterator attr_it;
+		std::vector<rchandle<xqp_attribute> >::const_iterator it_end;
 		
 	public:
-		attr_iterator(xqp_element const*);
+		attr_iterator(context const&,xqp_element const*);
 		~attr_iterator();
 	
 	public:
@@ -404,10 +434,10 @@ public:
 class xqp_attribute : public attribute_node, public xqp_node
 {
 protected:
-	std::string nodename;
+	rchandle<QName> name;
+	std::string val;
 	rchandle<xqp_element> parent_h;
 	item_type type;
-	std::string val;
 	bool id_b;
 	bool idrefs_b;
 
@@ -426,6 +456,12 @@ public:	// accessors
 	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
+	xqp_attribute(
+		xqp_nodeid id,
+		rchandle<QName> name,
+		std::string const& val,
+		rchandle<xqp_element> parent_h);
+
   xqp_attribute(xqp_nodeid id) : xqp_node(id) {}
   xqp_attribute() {}
   ~xqp_attribute() {}
@@ -467,7 +503,7 @@ public:	//ctor,dtor
 		xqp_nodeid id,
 		std::string const& prefix,
 		std::string const& uri,
-		rchandle<xqp_element> parent);
+		rchandle<xqp_element> parent_h);
 
 	xqp_ns(xqp_nodeid id) : xqp_node(id) {}
 	xqp_ns() {}
@@ -507,7 +543,7 @@ public:	//ctor,dtor
 		std::string const& target,
 		std::string const& content,
 		std::string const& baseuri,
-		rchandle<xqp_element> parent);
+		rchandle<xqp_element> parent_h);
 
 	xqp_pi(xqp_nodeid id) : xqp_node(id) {}
 	xqp_pi() {}
@@ -518,7 +554,52 @@ public:	//ctor,dtor
 
 
 /*______________________________________________________________________
-| 6.6 Text Nodes 
+| 6.6 Comment Nodes 
+| 
+|   If the parent of a text node is not empty, the Text Node 
+|   must not contain the zero-length string as its content.  In 
+|   addition, Document and Element Nodes impose the constraint 
+|   that two consecutive Text Nodes can never occur as adjacent 
+|   siblings. When a Document or Element Node is constructed, 
+|   Text Nodes that would be adjacent must be combined into a 
+|   single Text Node. If the resulting Text Node is empty, it 
+|   must never be placed among the children of its parent, it 
+|   is simply discarded.
+|_______________________________________________________________________*/
+
+class xqp_comment : public comment_node, public xqp_node
+{
+protected:
+	std::string content;
+	rchandle<xqp_element> parent_h;
+	
+public:	// accessors
+	enum node_kind_t node_kind() const { return comment_kind; }
+	
+	item_iterator base_uri(context const&) const;
+	item_iterator parent(context const&) const;
+	item_iterator typed_value(context const&) const;
+	
+	item_type const& get_type(context const&) const;
+	std::string string_value(context const&) const;
+
+public:	//ctor,dtor
+
+	xqp_comment(
+		xqp_nodeid,
+		std::string const& content,
+		rchandle<xqp_element> parent_h);
+
+	xqp_comment(xqp_nodeid id) : xqp_node(id) {}
+	xqp_comment() {}
+	~xqp_comment() {}
+
+};
+
+
+
+/*______________________________________________________________________
+| 6.7 Text Nodes 
 | 
 |   If the parent of a text node is not empty, the Text Node 
 |   must not contain the zero-length string as its content.  In 
@@ -538,11 +619,12 @@ protected:
 	rchandle<xqp_element> parent_h;
 	
 public:	// accessors
-	node_kind_t node_kind(context const&) const { return text_kind; }
+	enum node_kind_t node_kind() const { return text_kind; }
 	
 	item_iterator base_uri(context const&) const;
 	item_iterator parent(context const&) const;
 	item_iterator typed_value(context const&) const;
+	item_iterator node_name(const context&) const;
 	
 	item_type const& get_type(context const&) const;
 	std::string string_value(context const&) const;
@@ -552,7 +634,7 @@ public:	//ctor,dtor
 	xqp_text(
 		xqp_nodeid,
 		std::string const& content,
-		rchandle<xqp_element> parent);
+		rchandle<xqp_element> parent_h);
 
 	xqp_text(xqp_nodeid id) : xqp_node(id) {}
 	xqp_text() {}

@@ -26,7 +26,7 @@ parsenodes : parsenodes.h parsenodes.cpp
 
 test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
 	g++ ${OPT} -o xquery_test \
-		../types/qname.${SUFX} \
+		../values/qname_value.${SUFX} \
 		../util/xqp_exception.${SUFX} \
 		../util/file.${SUFX} \
 		../util/mmfile.${SUFX} \

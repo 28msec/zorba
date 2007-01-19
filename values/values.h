@@ -12,8 +12,8 @@
 #define XQP_VALUES_H
 
 #include "../context/context.h"
-#include "../types/qname.h"
 #include "../types/base_types.h"
+#include "../values/qname_value.h"
 #include "../util/rchandle.h"
 
 #include <string>
@@ -88,6 +88,9 @@ public:
 	virtual bool is_sequence() const;
 	virtual bool is_empty() const;
 
+	virtual item_iterator atomized_value(context const&) const;
+	virtual item_iterator effective_boolean_value(context const&) const;
+
 };
 
 
@@ -109,6 +112,9 @@ public:
 
 	virtual bool is_node() const;
 	virtual bool is_atomic() const;
+
+	virtual item_iterator atomized_value(context const&) const;
+	virtual item_iterator effective_boolean_value(context const&) const;
 
 };
 
@@ -137,6 +143,9 @@ public:
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return false; }
+
+	virtual item_iterator atomized_value(context const&) const;
+	virtual item_iterator effective_boolean_value(context const&) const;
 
 };
 

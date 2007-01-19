@@ -77,6 +77,7 @@ public:	// manipulators
 };
 
 
+
 class singleton_iterator : public item_iterator
 {
 protected:
@@ -94,6 +95,10 @@ public:	// ctor,dtor
 	singleton_iterator(
 		context const&,
 		rchandle<item>);
+
+	singleton_iterator(
+		context const&,
+		item *);
 
 	singleton_iterator(
 		context const&,

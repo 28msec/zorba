@@ -23,7 +23,7 @@
 
 #include "parse_constants.h"
 #include "../context/context.h"
-#include "../types/qname.h"
+#include "../values/qname_value.h"
 #include "../util/rchandle.h"
 
 #include "location.hh"

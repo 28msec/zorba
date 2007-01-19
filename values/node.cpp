@@ -734,6 +734,42 @@ item_iterator pi_node::typed_value(
 
 
 ///////////////////////////////////////////////
+//  Comment Nodes
+///////////////////////////////////////////////
+
+std::string comment_node::string_value(
+	context const& p) const
+{
+  return "";
+}
+
+item_iterator comment_node::base_uri(
+	context const& p) const
+{
+  return EMPTY_SEQUENCE(p);
+}
+
+item_iterator comment_node::parent(
+	context const& p) const
+{
+  return EMPTY_SEQUENCE(p);
+}
+
+item_iterator comment_node::type_name(
+	context const& p) const
+{
+  return EMPTY_SEQUENCE(p);
+}
+
+item_iterator comment_node::typed_value(
+	context const& p) const
+{
+  return EMPTY_SEQUENCE(p);
+}
+
+
+
+///////////////////////////////////////////////
 //  Text Nodes
 ///////////////////////////////////////////////
 

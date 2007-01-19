@@ -16,7 +16,6 @@
 
 #include "namespace.h"
 
-#include "../types/qname.h"
 #include "../types/collation.h"
 #include "../runtime/item_iterator.h"
 #include "../util/hashmap.h"

@@ -13,7 +13,7 @@
 #include <iostream>
 #include <string>
 
-#include "../types/qname.h"
+#include "../values/qname_value.h"
 #include "../util/xqp_exception.h"
 #include "../util/tokenbuf.h"
 #include "../util/URI.h"

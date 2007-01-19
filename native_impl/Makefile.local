@@ -63,7 +63,7 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 		../util/$(BUILD)/URI.$(SUFX) \
 		../util/$(BUILD)/tokenbuf.$(SUFX) \
 		../store/$(BUILD)/xml_ostream.$(SUFX) \
-		../types/$(BUILD)/QName.$(SUFX) \
+		../values/$(BUILD)/qname_value.$(SUFX) \
 		$(BUILD)/scan_handler.$(SUFX) \
 		$(BUILD)/xml_scanner.$(SUFX) \
 		$(BUILD)/xml_handler.$(SUFX) \
@@ -76,7 +76,7 @@ xml_loader_test : xml_loader.h xml_loader.cpp xml_loader_test.cpp
 		../util/$(BUILD)/URI.$(SUFX) \
 		../util/$(BUILD)/tokenbuf.$(SUFX) \
 		../store/$(BUILD)/xml_ostream.$(SUFX) \
-		../types/$(BUILD)/QName.$(SUFX) \
+		../values/$(BUILD)/qname_value.$(SUFX) \
 		$(BUILD)/scan_handler.$(SUFX) \
 		$(BUILD)/xml_loader.$(SUFX) \
 		$(BUILD)/xml_scanner.$(SUFX) \

@@ -15,7 +15,7 @@
 #include <string>
 
 #include "../types/sequence_type.h"
-#include "../types/qname.h"
+#include "../values/qname_value.h"
 #include "../util/hashmap.h"
  
 namespace xqp {

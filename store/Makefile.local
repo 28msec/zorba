@@ -63,7 +63,7 @@ xml_ostream :	xml_ostream.cpp xml_ostream.h
 xml_ostream_test :	xml_ostream_test.cpp xml_ostream.cpp xml_ostream.h
 	g++ $(LARGEFILEFLAGS) -D DEBUG -Wall $(OPT) -o $(BUILD)/xml_ostream_test \
   ../util/$(BUILD)/xqpexception.o \
-  ../datamodel/$(BUILD)/QName.$(SUFX) \
+  ../values/$(BUILD)/qname_value.$(SUFX) \
   $(BUILD)/xml_ostream.$(SUFX) \
   xml_ostream_test.cpp
 
@@ -73,7 +73,7 @@ xml_istream :	xml_istream.cpp xml_istream.h
 xml_istream_test :	xml_istream_test.cpp xml_istream.cpp xml_istream.h
 	g++ $(LARGEFILEFLAGS) -D DEBUG -Wall $(OPT) -o $(BUILD)/xml_istream_test \
   ../util/$(BUILD)/xqpexception.o \
-  ../datamodel/$(BUILD)/QName.$(SUFX) \
+  ../values/$(BUILD)/qname_value.$(SUFX) \
   $(BUILD)/xml_istream.$(SUFX) \
   xml_istream_test.cpp
 

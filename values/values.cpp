@@ -9,10 +9,6 @@
  */
 
 #include "values.h"
-
-#include "../types/base_types.h"
-#include "../types/qname.h"
-#include "../util/rchandle.h"
 #include "../util/tokenbuf.h"
 
 #include <string>
@@ -21,6 +17,8 @@
 
 using namespace std;
 namespace xqp {
+
+#define EMPTY_SEQUENCE(X) item_iterator((X))
 
 class context;
 
@@ -86,6 +84,19 @@ bool value::is_empty() const
 	return false;
 }
 
+item_iterator value::atomized_value(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
+
+item_iterator value::effective_boolean_value(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
+
+
 
 /*______________________________________________________________________
 |  
@@ -122,6 +133,19 @@ bool item::is_atomic() const
 	return false;
 }
 
+item_iterator item::atomized_value(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
+
+item_iterator item::effective_boolean_value(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
+
+
 
 /*______________________________________________________________________
 |  
@@ -143,13 +167,20 @@ enum type::typecode atomic_value::get_typecode() const
 	return type::ITEM_TYPE;
 }
 
+item_iterator atomic_value::atomized_value(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
 
-/*______________________________________________________________________
-|  
-|	'function_impl' encapsulates functional values
-|_______________________________________________________________________*/
+item_iterator atomic_value::effective_boolean_value(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
 
-// no methods currently
+
+
 
 } /* namespace xqp */
 

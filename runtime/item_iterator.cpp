@@ -49,12 +49,12 @@ void binary_iterator::rewind()
 }
 
 binary_iterator::binary_iterator(
-	context const* ctx_p,
+	context const& ctx,
 	rchandle<item_iterator> _it1_h,
 	rchandle<item_iterator> _it2_h,
 	rchandle<item> (*_op)(rchandle<item> const&, rchandle<item> const&))
 :
-	item_iterator(ctx_p),
+	item_iterator(ctx),
 	it1_h(_it1_h),
 	it2_h(_it2_h),
 	op(_op)
@@ -102,20 +102,30 @@ void singleton_iterator::rewind()
 }
 
 singleton_iterator::singleton_iterator(
-	context const* ctx_p,
+	context const& ctx,
 	rchandle<item> _i_h)
 :
-	item_iterator(ctx_p),
+	item_iterator(ctx),
 	i_h(_i_h),
 	done_b(false)
 {
 }
 
 singleton_iterator::singleton_iterator(
-	context const* ctx_p,
+	context const& ctx,
+	item * _i_p)
+:
+	item_iterator(ctx),
+	i_h(_i_p),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
 	string const& s)
 :
-	item_iterator(ctx_p),
+	item_iterator(ctx),
 	i_h(new xs_string_value(s)),
 	done_b(false)
 {

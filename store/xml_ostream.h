@@ -9,8 +9,8 @@
 #ifndef XQP_XML_OSTREAM_H
 #define XQP_XML_OSTREAM_H
 
-#include "../types/qname.h"
 #include "../types/base_types.h"
+#include "../values/qname_value.h"
 
 //#include "xml_store.h"
 //#include "text_store.h"

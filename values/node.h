@@ -505,6 +505,42 @@ public:	//ctor,dtor
 };
 
 
+
+/*______________________________________________________________________
+|
+|	Comments have the following properties:
+|
+|		* content
+|		* parent, possibly empty
+|
+|	Comment Nodes must satisfy the following constraints.
+|
+|		1. The string "--" must not occur within the content.
+|		2. The character "-" must not occur as the last character
+|				of the content.
+|_______________________________________________________________________*/
+
+class comment_node : public node
+{
+public:	// accessors
+	nodeid get_nodeid() const;
+	node_kind_t node_kind(context const&) const { return comment_kind; }
+	std::string string_value(context const&) const;
+
+	item_iterator base_uri(context const&) const;
+	item_iterator parent(context const&) const;
+	item_iterator type_name(context const&) const;
+	item_iterator typed_value(context const&) const;
+
+public:	//ctor,dtor
+	comment_node(nodeid id) : node(id) {}
+	comment_node() : node() {}
+	~comment_node() {}
+
+};
+
+
+
 /*______________________________________________________________________
 |
 | Text Nodes have the following properties:

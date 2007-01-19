@@ -1,13 +1,13 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: qname.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: qname_value.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
  */
 
-#ifndef XQP_QNAME_H
-#define XQP_QNAME_H
+#ifndef XQP_QNAME_VALUE_H
+#define XQP_QNAME_VALUE_H
 
 #include <ostream>
 #include <string>
@@ -67,6 +67,9 @@ public:
 
 	uint64_t get_namespace_hash() const { return namespace_hash; }
 	void set_namespace_hash(uint64_t h) { namespace_hash = h; }
+
+	std::string describe() const
+		{ return prefix.length()>0 ? prefix+':'+name : name; }
 
 public:
 	std::ostream& put(std::ostream& s) const;

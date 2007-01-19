@@ -1,12 +1,12 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: qname.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: qname_value.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
  */
 
-#include "qname.h"
+#include "qname_value.h"
 
 #include <ostream>
 #include <string>

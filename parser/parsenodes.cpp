@@ -18,9 +18,8 @@
 #include <assert.h>
 
 #include "../context/context.h"
-#include "../types/qname.h"
+#include "../values/qname_value.h"
 #include "../util/rchandle.h"
-//#include "xquery_parser.tab.h"
 #include "indent.h"
 
 using namespace std;

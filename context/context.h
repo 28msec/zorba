@@ -17,10 +17,10 @@
 #include "../runtime/item_iterator.h"
 #include "../types/base_types.h"
 #include "../types/collation.h"
-#include "../types/qname.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
+#include "../values/qname_value.h"
 #include "../values/values.h"
 
 #include <vector>
@@ -83,8 +83,8 @@ public:	// types
 		no_preserve_ns
 	};
 
-	typedef rchandle<QName> qname_h;
-	typedef rchandle<collation> collation_h;
+	typedef rchandle<QName> qname_h_t;
+	typedef rchandle<collation> collation_h_t;
 
 public:
 	context() {}
@@ -136,7 +136,7 @@ protected:	// XQuery 1.0 static context
 	**	supported, in-scope schema types also include all type definitions 
 	**	found in imported schemas. ] 
 	*/
-	std::vector<qname_h> in_scope_schema_types;
+	std::vector<qname_h_t> in_scope_schema_types;
 
 	/*
 	**	[Definition: In-scope element declarations. Each element declaration 
@@ -148,7 +148,7 @@ protected:	// XQuery 1.0 static context
 	**	includes information about the element's substitution group 
 	**	affiliation. 
 	*/
-	std::vector<qname_h> in_scope_elem_decls;
+	std::vector<qname_h_t> in_scope_elem_decls;
 
 	/*
 	**	[Definition: In-scope attribute declarations. Each attribute 
@@ -158,7 +158,7 @@ protected:	// XQuery 1.0 static context
 	**	Feature is supported, in-scope attribute declarations include all 
 	**	attribute declarations found in imported schemas.] 
 	*/
-	std::vector<qname_h> in_scope_attr_decls;
+	std::vector<qname_h_t> in_scope_attr_decls;
 
 	/*
 	**	[Definition: In-scope variables. This is a set of (expanded QName, 
@@ -196,7 +196,7 @@ protected:	// XQuery 1.0 static context
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	std::vector<collation_h> collations;
+	std::vector<collation_h_t> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -205,7 +205,7 @@ protected:	// XQuery 1.0 static context
 	**	xs:string and xs:anyURI  (and types derived from them) when no 
 	**	explicit collation is specified.] 
 	*/
-	collation_h default_collation;
+	collation_h_t default_collation;
 
 	/*
 	**	[Definition: Construction mode. The construction mode governs the 
@@ -322,19 +322,19 @@ public:	// manipulators
 		{ return default_elem_or_type_ns; }
 	name_space get_default_function_ns() const
 		{ return default_function_ns; }
-	std::vector<qname_h>get_in_scope_schema_types() const
+	std::vector<qname_h_t>get_in_scope_schema_types() const
 		{ return in_scope_schema_types; }
-	std::vector<qname_h> get_in_scope_elem_decls() const
+	std::vector<qname_h_t> get_in_scope_elem_decls() const
 		{ return in_scope_elem_decls; }
-	std::vector<qname_h> get_in_scope_attr_decls() const
+	std::vector<qname_h_t> get_in_scope_attr_decls() const
 		{ return in_scope_attr_decls; }
 	std::vector<var_binding> get_in_scope_vars() const
 		{ return in_scope_vars; }
 	item_type get_context_item_type() const
 		{ return context_item_type; }
-	std::vector<collation_h> get_collations() const
+	std::vector<collation_h_t> get_collations() const
 		{ return collations; }
-	collation_h get_default_collation() const
+	collation_h_t get_default_collation() const
 		{ return default_collation; }
 	enum construction_mode_t get_construction_mode() const
 		{ return construction_mode; }

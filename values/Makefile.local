@@ -4,6 +4,14 @@ BUILD=Build
 
 values :	values.h values.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/values.${SUFX} values.cpp
+
+qname_value : qname_value.h qname_value.cpp
+	g++ -c $(OPT) -o $(BUILD)/qname_value.$(SUFX) qname_value.cpp
+qname_test : qname_value.h qname_value.cpp qname_test.cpp
+	g++ $(OPT) -o $(BUILD)/qname_test \
+		../util/$(BUILD)/xqp_exception.$(SUFX) \
+		$(BUILD)/qname_value.$(SUFX) \
+		qname_test.cpp
     
 xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/xs_primitive_values.${SUFX} xs_primitive_values.cpp
@@ -23,6 +31,7 @@ update_values :	update_values.h update_values.cpp
 
 all :	\
  	values \
+	qname_value \
 	xs_primitive_values \
 	node \
 	ft_values \
