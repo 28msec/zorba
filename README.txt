@@ -51,9 +51,33 @@ for the time being.
 
 
 
-Current Status
---------------
+                   _____________________________
+                  |                             |
+                  |        Current Status       |
+                  |_____________________________|
+ 
+                  
+The 'parser' subsystem is undergoing conversion to
+include 'context'.  This requires modification to:
+  xquery_driver.h,
+  parsenodes.{h,cpp}
+  xquery_parser.y                  
+                  
+'qname.{h,cpp} got moved from 'types' to 'values' under
+a new name: 'qname_value.{h,cpp}'.          
+     
+zorba/xquery/native_impl/tree.{h,cpp} has the focus of
+a lot of activity.  This module will very likely move to
+a separate location, either 'runtime', or it's own subdirectory
+'xqom' (XQuery Object Model).
 
+
+
+
+
+Current Module List
+-------------------  
+                  
 context
 	XQuery static and dynamic context:
 
@@ -73,12 +97,14 @@ exprtree
 
 
 functions
-	XQuery function libraries.
+	XQuery function libraries:
 
-	function_impl, function_library interfaces defined.
-	Library modules defined but not implemented per the
-	XQuery 1.0 Functions and Operators spec. 
-	Implement in this order:
+	  function_impl               interface: XQuery 1st order functions and operators
+	  function_library            interface: XQuery library module, or std lib
+	  signature                   interface: XQuery function signature
+
+	
+	Proposed implementation order:
 		XQuery semantic spec support functions and operators
 		XQuery spec operators, Sequences, Constructors, Accessors,
 		QName, Strings, Numerics, anyURI, Boolean, Casting, Notation,
@@ -156,7 +182,6 @@ types
 
 		base_types									implementation: top of the XQuery type hierarchy
 		node_types									implementation: the XQuery node types
-		qname												implementation: the XQuery QName type
 		sequence_type								implementation: the XQuery sequence type
 		xs_primitive_types					stub implementation: the Schema atomic types
 
@@ -190,6 +215,7 @@ values
 		ft_values										implementation: XQuery Full-Text search specifier value
 		node												implementation: XQuery node value
 		numeric											implementation: XQuery numeric value
+		qname_value							  	implementation: XQuery QName
 		update_values								implementation: XQuery update specifier value
 		values											implementation: XQuery value base classes
 		xs_primitive_values					implementation: XQuery primitive values
