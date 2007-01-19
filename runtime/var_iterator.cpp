@@ -36,10 +36,10 @@ void var_iterator::rewind()
 }
 
 var_iterator::var_iterator(
-	context *const ctx_p,
+	context const& ctx,
 	rchandle<QName> _varname_h)
 :
-	item_iterator(ctx_p),
+	item_iterator(ctx),
 	varname_h(_varname_h)
 {
 }

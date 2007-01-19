@@ -107,7 +107,6 @@ all : \
 	xml_handler \
 	xml_loader \
 	xml_scanner \
-#	xml_store \
 	xml_term \
 	spectrum_test \
 	storage_manager_test \
@@ -116,3 +115,5 @@ all : \
 	xml_scanner_test \
 	xml_term_test 
 
+#	tree \
+#	xml_store \

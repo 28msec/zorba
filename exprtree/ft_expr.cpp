@@ -25,10 +25,11 @@ namespace xqp {
 
 ft_expr::ft_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<ft_expr> _ft_or_h,
 	rchandle<ft_options> _ft_opt_h)
 :
-	expr(loc),
+	expr(loc,ctx),
 	ft_or_h(_ft_or_h),
 	ft_opt_h(_ft_opt_h)
 {
@@ -38,7 +39,7 @@ ft_expr::~ft_expr()
 {
 }
 
-ostream& ft_expr::put(ostream& os) const
+ostream& ft_expr::put(ostream& os,context const& ctx) const
 {
 	return os << "ft_expr[]\n";
 }
@@ -48,9 +49,10 @@ ostream& ft_expr::put(ostream& os) const
 //[345] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTOr]
 
 ft_or_expr::ft_or_expr(
-	yy::location const& loc)
+	yy::location const& loc,
+	context const& ctx)
 :
-	expr(loc)
+	expr(loc,ctx)
 {
 }
 
@@ -58,7 +60,7 @@ ft_or_expr::~ft_or_expr()
 {
 }
 
-ostream& ft_or_expr::put(ostream& os) const
+ostream& ft_or_expr::put(ostream& os,context const& ctx) const
 {
 	return os << "ft_or_expr[]\n";
 }
@@ -68,9 +70,10 @@ ostream& ft_or_expr::put(ostream& os) const
 //[346] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTAnd]
 
 ft_and_expr::ft_and_expr(
-	yy::location const& loc)
+	yy::location const& loc,
+	context const& ctx)
 :
-	expr(loc)
+	expr(loc,ctx)
 {
 }
 
@@ -78,7 +81,7 @@ ft_and_expr::~ft_and_expr()
 {
 }
 
-ostream& ft_and_expr::put(ostream& os) const
+ostream& ft_and_expr::put(ostream& os,context const& ctx) const
 {
 	return os << "ft_and_expr[]\n";
 }
@@ -88,9 +91,10 @@ ostream& ft_and_expr::put(ostream& os) const
 //[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildnot]
 
 ft_mildnot_expr::ft_mildnot_expr(
-	yy::location const& loc)
+	yy::location const& loc,
+	context const& ctx)
 :
-	expr(loc)
+	expr(loc,ctx)
 {
 }
 
@@ -98,7 +102,7 @@ ft_mildnot_expr::~ft_mildnot_expr()
 {
 }
 
-ostream& ft_mildnot_expr::put(ostream& os) const
+ostream& ft_mildnot_expr::put(ostream& os,context const& ctx) const
 {
 	return os << "ft_mildnot_expr[]\n";
 }
@@ -109,10 +113,11 @@ ostream& ft_mildnot_expr::put(ostream& os) const
 
 ft_unarynot_expr::ft_unarynot_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<ft_words_selection_expr> _words_selection_h,
 	bool _not_b)
 :
-	expr(loc),
+	expr(loc,ctx),
 	words_selection_h(_words_selection_h),
 	not_b(_not_b)
 {
@@ -122,7 +127,7 @@ ft_unarynot_expr::~ft_unarynot_expr()
 {
 }
 
-ostream& ft_unarynot_expr::put(ostream& os) const
+ostream& ft_unarynot_expr::put(ostream& os,context const& ctx) const
 {
 	return os << "ft_unarynot_expr[]\n";
 }
@@ -133,12 +138,13 @@ ostream& ft_unarynot_expr::put(ostream& os) const
 
 ft_words_selection_expr::ft_words_selection_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<ft_words_expr> _words_h,
 	rchandle<expr> _src_h,
 	rchandle<expr> _dst_h,
 	ft_range_mode_t _range_mode)
 :
-	expr(loc),
+	expr(loc,ctx),
 	words_h(_words_h),
 	src_h(_src_h),
 	dst_h(_dst_h),
@@ -148,9 +154,10 @@ ft_words_selection_expr::ft_words_selection_expr(
 
 ft_words_selection_expr::ft_words_selection_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<ft_expr> _selection_h)
 :
-	expr(loc),
+	expr(loc,ctx),
 	selection_h(_selection_h)
 {
 }
@@ -159,7 +166,7 @@ ft_words_selection_expr::~ft_words_selection_expr()
 {
 }
 
-ostream& ft_words_selection_expr::put(ostream& os) const
+ostream& ft_words_selection_expr::put(ostream& os,context const& ctx) const
 {
 	return os << "ft_words_selection_expr[]\n";
 }
@@ -170,10 +177,11 @@ ostream& ft_words_selection_expr::put(ostream& os) const
 
 ft_words_expr::ft_words_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<expr> _words_expr_h,
 	ft_anyall_option_t _anyall_opt)
 :
-	expr(loc),
+	expr(loc,ctx),
 	words_expr_h(_words_expr_h),
 	anyall_opt(_anyall_opt)
 {
@@ -183,7 +191,7 @@ ft_words_expr::~ft_words_expr()
 {
 }
 
-ostream& ft_words_expr::put(ostream& os) const
+ostream& ft_words_expr::put(ostream& os,context const& ctx) const
 {
 	return os << "ft_words_expr[]\n";
 }

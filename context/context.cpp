@@ -15,7 +15,6 @@
 #include <vector>
 
 #include "namespace.h"
-
 #include "../types/collation.h"
 #include "../runtime/item_iterator.h"
 #include "../util/hashmap.h"
@@ -36,7 +35,7 @@ namespace xqp {
 
 var_binding::var_binding()
 :
-  qid(),
+  varname(NULL),
   vartype(item_type())
 {
 }
@@ -45,7 +44,7 @@ var_binding::var_binding(
 	rchandle<QName> qname_h,
 	item_type const& t)
 :
-	qid(qnameid::put_qname(qname_h)),
+	varname(qname_h),
 	vartype(t)
 {
 }
@@ -62,7 +61,7 @@ string context::get_function_type(
 throw (xqp_exception)
 {
   ostringstream oss;
-  fqname.put(oss) << '[' << arity << ']';
+  fqname.put(oss,*this) << '[' << arity << ']';
   string sig_h;
   if (!signature_map.get(oss.str(),sig_h)) {
     throw xqp_exception(__FUNCTION__,

@@ -24,10 +24,11 @@ namespace xqp {
 
 insert_expr::insert_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<expr> _source_expr_h,
 	rchandle<expr> _target_expr_h)
 :
-	expr(loc),
+	expr(loc,ctx),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -48,9 +49,10 @@ ostream& insert_expr::put(ostream& os) const
 
 delete_expr::delete_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<expr> _target_expr_h)
 :
-	expr(loc),
+	expr(loc,ctx),
 	target_expr_h(_target_expr_h)
 {
 }
@@ -70,10 +72,11 @@ ostream& delete_expr::put(ostream& os) const
 
 replace_expr::replace_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<expr> _source_expr_h,
 	rchandle<expr> _target_expr_h)
 :
-	expr(loc),
+	expr(loc,ctx),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -94,10 +97,11 @@ ostream& replace_expr::put(ostream& os) const
 
 rename_expr::rename_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<expr> _source_expr_h,
 	rchandle<expr> _target_expr_h)
 :
-	expr(loc),
+	expr(loc,ctx),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -118,10 +122,11 @@ ostream& rename_expr::put(ostream& os) const
 
 transform_expr::transform_expr(
 	yy::location const& loc,
+	context const& ctx,
 	rchandle<expr> _source_expr_h,
 	rchandle<expr> _target_expr_h)
 :
-	expr(loc),
+	expr(loc,ctx),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {

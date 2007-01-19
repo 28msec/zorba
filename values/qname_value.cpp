@@ -64,13 +64,6 @@ QName::~QName()
 {
 }
 
-ostream& QName::put(ostream& s) const
-{
-	if (prefix.length()>0) {
-		s << prefix << ':';
-	}
-	return s << name << "[" << namespace_hash << ']';
-}
-
 
 }	/* namespace xqp*/
+

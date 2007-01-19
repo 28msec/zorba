@@ -18,7 +18,6 @@ character :	character.h character.cpp
 	g++ -Wall $(OPT) -c -o $(BUILD)/character.$(SUFX) character.cpp
 
 all :	\
-  qname \
   sequence_type \
 	node_types \
 	base_types \

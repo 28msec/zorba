@@ -14,26 +14,13 @@
 #include <vector>
 #include <string>
 
+#include "signature.h"
+#include "../context/context.h"
 #include "../types/sequence_type.h"
 #include "../values/qname_value.h"
 #include "../util/hashmap.h"
  
 namespace xqp {
-
-class signature : public rcobject
-{
-public:
-	QName fname;
-	std::vector<sequence_type> arg_v;
-	sequence_type ret_type;
-	static hashmap<signature const*> sigmap;
-
-public:
-	signature(QName const& _fname) : fname(_fname) {}
-	~signature() {}
-
-};
-
 
 class function_impl : public rcobject
 {
@@ -45,8 +32,8 @@ public:
 	~function_impl() {}
 
 public:
-  static std::string mangle(signature const& sig);
-  static signature const* demangle(std::string const& sig);
+  static std::string mangle(context const&,signature const& sig);
+  static signature const* demangle(context const&,std::string const& sig);
 
 };
 

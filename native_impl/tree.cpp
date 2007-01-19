@@ -519,7 +519,7 @@ item_iterator xqp_ns::node_name(
 {
 	if (prefix.length()==0) return EMPTY_SEQUENCE(ctx);
 	return singleton_iterator(ctx,
-					new QName(QName::qn_ns,prefix,""));
+					ew QName(QName::qn_ns,prefix,""));
 }
 
 item_iterator xqp_ns::parent(

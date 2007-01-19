@@ -12,6 +12,7 @@
 #define XQP_VAR_ITERATOR_H
 
 #include "item_iterator.h"
+#include "../values/qname_value.h"
 
 namespace xqp {
 
@@ -29,7 +30,7 @@ public:	// iterator interface
 
 public:	// ctor,dtor
 	var_iterator(
-		context *const ctx_p,
+		context const& ctx,
 		rchandle<QName>);
 
 	~var_iterator();

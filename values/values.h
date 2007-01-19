@@ -11,9 +11,8 @@
 #ifndef XQP_VALUES_H
 #define XQP_VALUES_H
 
-#include "../context/context.h"
+#include "../runtime/item_iterator.h"
 #include "../types/base_types.h"
-#include "../values/qname_value.h"
 #include "../util/rchandle.h"
 
 #include <string>
@@ -126,10 +125,6 @@ public:
 
 class atomic_value : public item
 {
-protected:
-	// declared or annonymous type
-	qnameid type_annotation;
-
 public:
 	atomic_value() {}
 	virtual ~atomic_value() {}
@@ -142,7 +137,7 @@ public:
 	bool is_sequence() const { return false; }
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
-	bool is_atomic() const { return false; }
+	bool is_atomic() const { return true; }
 
 	virtual item_iterator atomized_value(context const&) const;
 	virtual item_iterator effective_boolean_value(context const&) const;

@@ -11,6 +11,8 @@
 #include "item_iterator.h"
 #include "../values/xs_primitive_values.h"
 
+
+using namespace std;
 namespace xqp {
 
 

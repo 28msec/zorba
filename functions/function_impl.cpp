@@ -17,10 +17,12 @@
 using namespace std;
 namespace xqp {
 
-string function_impl::mangle(signature const& sig)
+string function_impl::mangle(
+	context const& ctx,
+	signature const& sig)
 {
   ostringstream oss;
-  sig.fname.put(oss) << '(';
+  sig.fname.put(oss,ctx) << '(';
   vector<sequence_type>::const_iterator it = sig.arg_v.begin();
   for (; it!=sig.arg_v.end(); ++it) {
     if (it!=sig.arg_v.begin()) oss << ',';
@@ -32,7 +34,9 @@ string function_impl::mangle(signature const& sig)
 }
 
 
-signature const* function_impl::demangle(string const& sig)
+signature const* function_impl::demangle(
+	context const& ctx,
+	string const& sig)
 {
 	signature const* sig_p;
 	if (!signature::sigmap.get(sig, sig_p)) return NULL;

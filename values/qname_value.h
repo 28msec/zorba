@@ -11,12 +11,14 @@
 
 #include <ostream>
 #include <string>
+
+#include "../values/values.h"
 #include "../util/rchandle.h"
 
 namespace xqp {
 
 
-class QName : public rcobject
+class QName : public atomic_value
 {
 public:
 	enum qname_type_t {
@@ -68,11 +70,24 @@ public:
 	uint64_t get_namespace_hash() const { return namespace_hash; }
 	void set_namespace_hash(uint64_t h) { namespace_hash = h; }
 
-	std::string describe() const
+public:	// atomic_value interface
+
+	std::string describe(context const& ctx) const
 		{ return prefix.length()>0 ? prefix+':'+name : name; }
 
-public:
-	std::ostream& put(std::ostream& s) const;
+	std::ostream& put(std::ostream& os, context const& ctx) const
+		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
+
+  enum type::typecode get_typecode() const
+		{ return type::XS_QNAME; }
+
+  bool is_sequence() const { return false; }
+  bool is_empty() const { return false; }
+  bool is_node() const { return false; }
+  bool is_atomic() const { return true; }
+
+  item_iterator atomized_value(context const&) const;
+	item_iterator effective_boolean_value(context const&) const;
 
 };
 

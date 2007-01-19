@@ -69,7 +69,7 @@ public:
 	
 	enum typecode {
 		ITEM_TYPE,
-			XS_ANYATOMICTYPE,				//*-v
+			XS_ANYATOMICTYPE,				//*
 			NODE_TYPE,
 				BINARY_NODE,
 				COMMENT_NODE,
@@ -86,7 +86,7 @@ public:
 				XS_NMTOKENS,
 				XS_IDREFS,
 				XS_ENTITIES,
-			//XS_ANYATOMICTYPE,			//*-^
+			//XS_ANYATOMICTYPE,			//*
 					XS_UNTYPED_ATOMIC,
 					XS_DATETIME,
 					XS_DATE,

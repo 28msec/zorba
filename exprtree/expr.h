@@ -39,21 +39,23 @@ public:
 
 protected:
 	yy::location loc;
+	context const& ctx;
 
 public:
-	expr(yy::location const& _loc) : loc(_loc) {}
-	expr() {}
+	expr(yy::location const&,context const&);
   ~expr() {}
 
 public:
 	yy::location get_loc() const { return loc; }
-	virtual std::ostream& put(std::ostream& s) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
+
+	friend std::ostream& operator<<(std::ostream& s, expr const& r);
 
 };
 
 std::ostream& operator<<(std::ostream& s, expr const& r)
 {
-	return r.put(s);
+	return r.put(s,r.ctx);
 }
 
 
@@ -77,7 +79,7 @@ protected:
 	std::vector<exprref_t> expr_hv;
 
 public:
-	expr_list(yy::location const&);
+	expr_list(yy::location const&,context const&);
 	~expr_list();
 
 public:
@@ -97,7 +99,7 @@ public:
 		{ return expr_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -133,8 +135,8 @@ public:
   rchandle<sequence_type> type_h;
 
 public:
-  var_expr() {}
-  ~var_expr() {}
+  var_expr(yy::location const&,context const&);
+  ~var_expr();
 
 public:
   rchandle<QName> get_varname() const { return varname_h; }
@@ -150,7 +152,7 @@ public:
   void set_type(rchandle<sequence_type> const& t_h) { type_h = t_h; }
 
 public:
-  std::ostream& put(std::ostream&) const;
+  std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -171,8 +173,8 @@ public:
 	std::string collation;
 
 public:
-	order_modifier() :
-		dir(dir_descending),
+	order_modifier()
+	: dir(dir_descending),
 		empty_mode(context::empty_least),
 		collation("")
 	{
@@ -207,7 +209,7 @@ protected:
 	exprref_t retval_h;
 
 public:
-	flwor_expr(yy::location const&);
+	flwor_expr(yy::location const&,context const&);
 	~flwor_expr();
 
 public:
@@ -252,7 +254,7 @@ public:
 	void set_retval(exprref_t e_h) { retval_h = e_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -275,6 +277,7 @@ protected:
 public:
 	quantified_expr(
 		yy::location const&,
+		context const&,
 		enum quantification_mode_t);
 	~quantified_expr();
 
@@ -302,7 +305,7 @@ public:
 	void set_sat_expr(exprref_t e_h) { sat_expr_h = e_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -322,8 +325,8 @@ public:
 	sequence_type seqtype;
 
 public:
-	case_clause() :
-		var_h(NULL),
+	case_clause()
+	: var_h(NULL),
 		case_expr_h(NULL),
 		seqtype()
 	{
@@ -351,7 +354,7 @@ protected:
 	exprref_t default_clause_h;
 
 public:
-	typeswitch_expr(yy::location const&);
+	typeswitch_expr(yy::location const&, context const&);
 	~typeswitch_expr();
 
 public:
@@ -388,7 +391,7 @@ public:
 		{ return case_clause_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -408,12 +411,14 @@ protected:
 public:
 	if_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		exprref_t,
 		exprref_t);
 
 	if_expr(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 
 	~if_expr();
 
@@ -428,7 +433,7 @@ public:
 	void set_else_expr(exprref_t e_h) { else_expr_h = e_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -452,7 +457,7 @@ protected:
 	function_impl const* func;
 
 public:
-	fo_expr(yy::location const&);
+	fo_expr(yy::location const&, context const&);
 	~fo_expr();
 
 public:
@@ -476,7 +481,7 @@ public:
 	void set_func(function_impl const* _func) { func = _func; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -500,6 +505,7 @@ protected:
 public:
 	ft_contains_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		exprref_t,
 		exprref_t);
@@ -512,7 +518,7 @@ public:
 	exprref_t get_ignore() const { return ft_ignore_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -537,6 +543,7 @@ protected:
 public:
 	instanceof_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		sequence_type const&);
 
@@ -547,7 +554,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -566,6 +573,7 @@ protected:
 public:
 	treat_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		sequence_type const&);
 
@@ -576,7 +584,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -603,6 +611,7 @@ protected:
 public:
 	castable_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		single_type_t);
 	~castable_expr();
@@ -614,7 +623,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -633,6 +642,7 @@ protected:
 public:
 	cast_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		single_type_t);
 	~cast_expr();
@@ -644,7 +654,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -663,6 +673,7 @@ protected:
 public:
 	unary_expr(
 		yy::location const&,
+		context const&,
 		bool neg_b,
 		exprref_t);
 	~unary_expr();
@@ -672,7 +683,7 @@ public:
 	exprref_t get_expr() const { return expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -691,6 +702,7 @@ protected:
 public:
 	validate_expr(
 		yy::location const&,
+		context const&,
 		enum validation_mode_t,
 		exprref_t);
 	~validate_expr();
@@ -700,7 +712,7 @@ public:
 	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -725,7 +737,7 @@ protected:
 	exprref_t expr_h;
 
 public:
-	extension_expr(yy::location const&);
+	extension_expr(yy::location const&,context const&);
 	~extension_expr();
 
 public:
@@ -748,7 +760,7 @@ public:
 	exprref_t get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -773,7 +785,7 @@ protected:
 	std::vector<exprref_t > step_hv;
 
 public:
-	relpath_expr(yy::location const&);
+	relpath_expr(yy::location const&,context const&);
 	~relpath_expr();
 
 public:
@@ -793,7 +805,7 @@ public:
 		{ return step_hv[n]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -806,11 +818,11 @@ class step_expr : public expr
 |_______________________________________________________________________*/
 {
 public:
-	step_expr(yy::location const&);
+	step_expr(yy::location const&,context const&);
 	~step_expr();
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -869,7 +881,7 @@ protected:
 	std::vector<exprref_t > pred_hv;
 
 public:
-	axis_step_expr( yy::location const&);
+	axis_step_expr( yy::location const&,context const&);
 	~axis_step_expr();
 
 public:
@@ -904,7 +916,7 @@ public:
 		{ return pred_hv.end(); }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -925,11 +937,12 @@ class primary_expr : public expr
 {
 public:
 	primary_expr(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~primary_expr();
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -960,14 +973,14 @@ protected:
 	};
 
 public:
-	literal_expr(yy::location const&, uint32_t sref);
-	literal_expr(yy::location const&, int);
-	literal_expr(yy::location const&, decimal);
-	literal_expr(yy::location const&, double);
+	literal_expr(yy::location const&, context const&, uint32_t sref);
+	literal_expr(yy::location const&, context const&, int);
+	literal_expr(yy::location const&, context const&, decimal);
+	literal_expr(yy::location const&, context const&, double);
 	~literal_expr();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -995,6 +1008,7 @@ protected:
 public:
 	order_expr(
 		yy::location const&,
+		context const&,
 		order_type_t,
 		exprref_t);
 	~order_expr();
@@ -1004,7 +1018,7 @@ public:
 	exprref_t get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1025,6 +1039,7 @@ protected:
 public:
 	funcall_expr(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	~funcall_expr();
 
@@ -1048,7 +1063,7 @@ public:
 		{ return arg_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1066,11 +1081,11 @@ class cons_expr : public expr
 |_______________________________________________________________________*/
 {
 public:
-	cons_expr(yy::location const&);
+	cons_expr(yy::location const&, context const&);
 	~cons_expr();
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1088,6 +1103,7 @@ protected:
 public:
 	doc_expr(
 		yy::location const&,
+		context const&,
 		exprref_t);
 	~doc_expr();
 
@@ -1095,7 +1111,7 @@ public:
 	exprref_t get_docuri() const { return docuri_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1122,10 +1138,12 @@ protected:
 public:
 	elem_expr(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		exprref_t);
 	elem_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		exprref_t);
 	~elem_expr();
@@ -1152,7 +1170,7 @@ public:
 		{ return nsb_v[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1175,10 +1193,12 @@ protected:
 public:
 	attr_expr(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		exprref_t);
 	attr_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		exprref_t);
 	~attr_expr();
@@ -1189,7 +1209,7 @@ public:
 	exprref_t get_val_expr() const { return val_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1207,6 +1227,7 @@ protected:
 public:
 	text_expr(
 		yy::location const&,
+		context const&,
 		exprref_t);
 	~text_expr();
 
@@ -1214,7 +1235,7 @@ public:
 	exprref_t get_text_expr() const { return text_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1232,6 +1253,7 @@ protected:
 public:
 	comment_expr(
 		yy::location const&,
+		context const&,
 		exprref_t);
 	~comment_expr();
 
@@ -1239,7 +1261,7 @@ public:
 	exprref_t get_comment_expr() const { return comment_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -1262,10 +1284,12 @@ protected:
 public:
 	pi_expr(
 		yy::location const&,
+		context const&,
 		std::string target,
 		exprref_t);
 	pi_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		exprref_t);
 	~pi_expr();
@@ -1276,7 +1300,7 @@ public:
 	exprref_t get_content_expr() const { return content_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 

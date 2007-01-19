@@ -12,6 +12,7 @@
 #define XQP_UPDATE_EXPR_H
 
 #include "expr.h"
+
 #include <iostream>
 
 namespace xqp {
@@ -40,6 +41,7 @@ protected:
 public:
 	insert_expr(
 		yy::location const&,
+		context const&,
 		exprref_t,
 		exprref_t);
 	~insert_expr();
@@ -67,6 +69,7 @@ protected:
 public:
 	delete_expr(
 		yy::location const&,
+		context const&,
 		exprref_t);
 	~delete_expr();
 
@@ -94,6 +97,7 @@ protected:
 public:
 	replace_expr(
 		yy::location const&,
+		context const&,
 		exprref_t source_expr_h,
 		exprref_t target_expr_h);
 	~replace_expr();
@@ -122,6 +126,7 @@ protected:
 public:
 	rename_expr(
 		yy::location const&,
+		context const&,
 		exprref_t source_expr_h,
 		exprref_t target_expr_h);
 	~rename_expr();
@@ -155,6 +160,7 @@ protected:
 public:
 	transform_expr(
 		yy::location const&,
+		context const&,
 		exprref_t source_expr_h,
 		exprref_t target_expr_h);
 	~transform_expr();
