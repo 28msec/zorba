@@ -66,7 +66,7 @@ include 'context'.  This requires modification to:
 'qname.{h,cpp} got moved from 'types' to 'values' under
 a new name: 'qname_value.{h,cpp}'.          
      
-zorba/xquery/native_impl/tree.{h,cpp} has the focus of
+zorba/xquery/native_impl/tree.{h,cpp} has been the focus of
 a lot of activity.  This module will very likely move to
 a separate location, either 'runtime', or it's own subdirectory
 'xqom' (XQuery Object Model).
