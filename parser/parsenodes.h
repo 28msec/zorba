@@ -37,24 +37,34 @@ class parsenode : public rcobject
 {
 protected:
 	yy::location loc;
+	context const& ctx;
 
 public:
-	parsenode(yy::location const& _loc) : loc(_loc) {}
-	parsenode() {}
+	parsenode(
+		yy::location const& _loc,
+		context const& _ctx)
+	:
+		loc(_loc),
+		ctx(_ctx)
+	{
+	}
+
   ~parsenode() {}
 
 public:
+	context const& get_context() const { return ctx; }
 	yy::location get_location() const { return loc; }
 	virtual std::ostream& put(std::ostream&) const;
 
 };
 
 
-/*
-**	See Section 21.2.3.1 in
-**	"The C++ Programming Language", by B. Stroustrup (1997) AT&T
-**
-*/
+/*______________________________________________________________________
+|  
+|  See Section 21.2.3.1 in
+|  "The C++ Programming Language", by B. Stroustrup (1997) AT&T
+|_______________________________________________________________________*/
+
 std::ostream& operator<<(std::ostream& s, parsenode const& r)
 {
 	return r.put(s);
@@ -63,18 +73,29 @@ std::ostream& operator<<(std::ostream& s, parsenode const& r)
 
 /*
 **  base class:  nodes with values.
+**	XXX: todo: Get rid of this class, it's doing no real harm,
+*		but it's been superceeded	by the classes in 'exprtree'.
 */
 class exprnode : public rcobject
 {
 protected:
 	yy::location loc;
+	context const& ctx;
 
 public:
-	exprnode(yy::location const& _loc) : loc(_loc) {}
-	exprnode() {}
+	exprnode(
+		yy::location const& _loc,
+		context const& _ctx)
+	:
+		loc(_loc),
+		ctx(_ctx)
+	{
+	}
+
   ~exprnode() {}
 
 public:
+	context const& get_context() const { return ctx; }
 	yy::location get_location() const { return loc; }
 	virtual std::ostream& put(std::ostream& s) const;
 
@@ -301,15 +322,11 @@ class Module : public parsenode
 |			| VersionDecl LibraryModule 
 |_______________________________________________________________________*/
 {
-protected:
-	context const* context_p;
-
 public:
-	Module(context const*);
+	Module(
+		yy::location const&,
+		context const&);
 	~Module();
-
-public:	//manipulators
-	context const* get_context() const {	return context_p; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -333,6 +350,7 @@ protected:
 public:
 	VersionDecl(
 		yy::location const&,
+		context const&,
 		std::string const& version,
 		std::string const& encoding);
 	~VersionDecl();
@@ -362,10 +380,12 @@ protected:
 public:
 	MainModule(
 		yy::location const&,
+		context const&,
 		rchandle<Prolog>,
 		rchandle<QueryBody>);
 	MainModule(
 		yy::location const&,
+		context const&,
 		rchandle<QueryBody>);
 	~MainModule();
 
@@ -394,6 +414,7 @@ protected:
 public:
 	LibraryModule(
 		yy::location const&,
+		context const&,
 		rchandle<ModuleDecl>, 
 		rchandle<Prolog>);
 	~LibraryModule();
@@ -423,6 +444,7 @@ protected:
 public:
 	ModuleDecl(
 		yy::location const&,
+		context const&,
 		std::string const& prefix,
 		std::string const& target_namespace);
 	~ModuleDecl();
@@ -452,6 +474,7 @@ protected:
 public:
 	Prolog(
 		yy::location const&,
+		context const&,
 		rchandle<SIND_DeclList>,
 		rchandle<VFO_DeclList>);
 	Prolog();
@@ -480,7 +503,8 @@ protected:
 
 public:
 	SIND_DeclList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~SIND_DeclList();
 
 public:
@@ -506,7 +530,8 @@ protected:
 
 public:
 	VFO_DeclList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~VFO_DeclList();
 
 public:
@@ -529,7 +554,8 @@ class SIND_Decl : public parsenode
 {
 public:
 	SIND_Decl(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~SIND_Decl();
 
 public:
@@ -548,7 +574,8 @@ class VFO_Decl : public parsenode
 {
 public:
 	VFO_Decl(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~VFO_Decl();
 
 public:
@@ -573,7 +600,8 @@ class Setter : public parsenode
 {
 public:
 	Setter(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~Setter();
 
 public:
@@ -592,7 +620,8 @@ class Import : public parsenode
 {
 public:
 	Import(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~Import();
 
 public:
@@ -621,6 +650,7 @@ protected:
 public:
 	NamespaceDecl(
 		yy::location const&,
+		context const&,
 		std::string const& prefix,
 		std::string const& uri);
 	~NamespaceDecl();
@@ -649,6 +679,7 @@ protected:
 public:
 	BoundarySpaceDecl(
 		yy::location const&,
+		context const&,
 		context::boundary_space_mode_t);
 	~BoundarySpaceDecl();
 
@@ -678,6 +709,7 @@ protected:
 public:
 	DefaultNamespaceDecl(
 		yy::location const&,
+		context const&,
 		enum default_namespace_mode_t mode,
 		std::string const& default_namespace);
 	~DefaultNamespaceDecl();
@@ -707,6 +739,7 @@ protected:
 public:
 	OptionDecl(
 		yy::location const&,
+		context const&,
 		rchandle<QName> qname_h,
 		std::string const& val);
 	~OptionDecl();
@@ -736,6 +769,7 @@ protected:
 public:
 	FTOptionDecl(
 		yy::location const&,
+		context const&,
 		rchandle<parsenode>);
 	~FTOptionDecl();
 
@@ -762,6 +796,7 @@ protected:
 public:
 	OrderingModeDecl(
 		yy::location const&,
+		context const&,
 		context::ordering_mode_t);
 	~OrderingModeDecl();
 	
@@ -789,6 +824,7 @@ protected:
 public:
 	EmptyOrderDecl(
 		yy::location const&,
+		context const&,
 		context::order_empty_mode_t);
 	~EmptyOrderDecl();
 	
@@ -816,6 +852,7 @@ protected:
 public:
 	CopyNamespacesDecl(
 		yy::location const&,
+		context const&,
 		rchandle<PreserveMode>,
 		rchandle<InheritMode>);
 	~CopyNamespacesDecl();
@@ -844,6 +881,7 @@ protected:
 public:
 	PreserveMode(
 		yy::location const&,
+		context const&,
 		context::copy_ns_mode_t);
 	~PreserveMode();
 
@@ -871,6 +909,7 @@ public:
 public:
 	InheritMode(
 		yy::location const&,
+		context const&,
 		context::copy_ns_mode_t);
 	~InheritMode();
 
@@ -898,6 +937,7 @@ protected:
 public:
 	DefaultCollationDecl(
 		yy::location const&,
+		context const&,
 		std::string const&  collation);
 	~DefaultCollationDecl();
 
@@ -924,6 +964,7 @@ protected:
 public:
 	BaseURIDecl(
 		yy::location const&,
+		context const&,
 		std::string const& base_uri);
 	~BaseURIDecl();
 
@@ -955,6 +996,7 @@ protected:
 public:
 	SchemaImport(
 		yy::location const&,
+		context const&,
 		rchandle<SchemaPrefix>,
 		std::string const& uri,
 		rchandle<URILiteralList>);
@@ -985,7 +1027,8 @@ protected:
 
 public:
 	URILiteralList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~URILiteralList();
 
 public:
@@ -1014,9 +1057,11 @@ protected:
 public:
 	SchemaPrefix(
 		yy::location const&,
+		context const&,
 		bool default_b);
 	SchemaPrefix(
 		yy::location const&,
+		context const&,
 		std::string const& prefix);
 	~SchemaPrefix();
 
@@ -1049,10 +1094,12 @@ protected:
 public:
 	ModuleImport(
 		yy::location const&,
+		context const&,
 		std::string const& uri,
 		rchandle<URILiteralList>);
 	ModuleImport(
 		yy::location const&,
+		context const&,
 		std::string const& prefix,
 		std::string const& uri,
 		rchandle<URILiteralList>);
@@ -1088,6 +1135,7 @@ protected:
 public:
 	VarDecl(
 		yy::location const&,
+		context const&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<exprnode>);
@@ -1120,6 +1168,7 @@ protected:
 public:
 	ConstructionDecl(
 		yy::location const&,
+		context const&,
 		context::construction_mode_t);
 	~ConstructionDecl();
 
@@ -1159,6 +1208,7 @@ protected:
 public:
 	FunctionDecl(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		rchandle<ParamList>,
 		rchandle<SequenceType>,
@@ -1193,7 +1243,8 @@ protected:
 
 public:
 	ParamList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ParamList();
 
 public:
@@ -1222,6 +1273,7 @@ protected:
 public:
 	Param(
 		yy::location const&,
+		context const&,
 		std::string name,
 		rchandle<TypeDeclaration>);
 	~Param();
@@ -1250,6 +1302,7 @@ protected:
 public:
 	EnclosedExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~EnclosedExpr();
 
@@ -1276,6 +1329,7 @@ protected:
 public:
 	QueryBody(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	QueryBody();
 	~QueryBody();
@@ -1303,7 +1357,8 @@ protected:
 
 public:
 	Expr(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~Expr();
 
 public:
@@ -1330,7 +1385,8 @@ class ExprSingle : public exprnode
 {
 public:
 	ExprSingle(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ExprSingle();
 
 public:
@@ -1359,6 +1415,7 @@ protected:
 public:
 	FLWORExpr(
 		yy::location const&,
+		context const&,
 		rchandle<ForLetClauseList>,
 		rchandle<WhereClause>,
 		rchandle<OrderByClause>,
@@ -1391,7 +1448,8 @@ protected:
 
 public:
 	ForLetClauseList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ForLetClauseList();
 
 public:
@@ -1414,7 +1472,8 @@ class ForLetClause : public parsenode
 {
 public:
 	ForLetClause(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ForLetClause();
 
 public:
@@ -1437,6 +1496,7 @@ protected:
 public:
 	ForClause(
 		yy::location const&,
+		context const&,
 		rchandle<VarInDeclList>);
 	~ForClause();
 
@@ -1463,7 +1523,8 @@ protected:
 
 public:
 	VarInDeclList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~VarInDeclList();
 
 public:
@@ -1502,6 +1563,7 @@ protected:
 public:
 	VarInDecl(
 		yy::location const&,
+		context const&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<PositionalVar>,
@@ -1536,6 +1598,7 @@ protected:
 public:
 	PositionalVar(
 		yy::location const&,
+		context const&,
 		std::string const& varname);
 	~PositionalVar();
 
@@ -1563,6 +1626,7 @@ protected:
 public:
 	LetClause(
 		yy::location const&,
+		context const&,
 		rchandle<VarGetsDeclList>);
 	~LetClause();
 
@@ -1589,7 +1653,8 @@ protected:
 
 public:
 	VarGetsDeclList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~VarGetsDeclList();
 
 public:
@@ -1623,6 +1688,7 @@ protected:
 public:
 	VarGetsDecl(
 		yy::location const&,
+		context const&,
 		std::string varname,
 		rchandle<TypeDeclaration>,
 		rchandle<FTScoreVar>,
@@ -1655,6 +1721,7 @@ protected:
 public:
 	FTScoreVar(
 		yy::location const&,
+		context const&,
 		std::string varname);
 	~FTScoreVar();
 
@@ -1681,6 +1748,7 @@ protected:
 public:
 	WhereClause(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~WhereClause();
 
@@ -1709,10 +1777,12 @@ protected:
 public:
 	OrderByClause(
 		yy::location const&,
+		context const&,
 		rchandle<OrderSpecList>,
 		bool stable_b);
 	OrderByClause(
 		yy::location const&,
+		context const&,
 		rchandle<OrderSpecList>);
 	~OrderByClause();
 
@@ -1740,7 +1810,8 @@ protected:
 
 public:
 	OrderSpecList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~OrderSpecList();
 
 public:
@@ -1769,6 +1840,7 @@ protected:
 public:
 	OrderSpec(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<OrderModifier>);
 	~OrderSpec();
@@ -1805,6 +1877,7 @@ protected:
 public:
 	OrderModifier(
 		yy::location const&,
+		context const&,
 		rchandle<OrderDirSpec>,
 		rchandle<OrderEmptySpec>,
 		rchandle<OrderCollationSpec>);
@@ -1838,6 +1911,7 @@ protected:
 public:
 	OrderDirSpec(
 		yy::location const&,
+		context const&,
 		dir_spec_t dir_spec);
 	~OrderDirSpec();
 	
@@ -1864,6 +1938,7 @@ protected:
 public:
 	OrderEmptySpec(
 		yy::location const&,
+		context const&,
 		context::order_empty_mode_t empty_order_spec);
 	~OrderEmptySpec();
 
@@ -1891,6 +1966,7 @@ protected:
 public:
 	OrderCollationSpec(
 		yy::location const&,
+		context const&,
 		std::string const& uri);
 	~OrderCollationSpec();
 
@@ -1920,6 +1996,7 @@ protected:
 public:
 	QuantifiedExpr(
 		yy::location const&,
+		context const&,
 		quantification_mode_t qmode,
 		rchandle<QVarInDeclList>,
 		rchandle<exprnode>);
@@ -1950,7 +2027,8 @@ protected:
 
 public:
 	QVarInDeclList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~QVarInDeclList();
 
 public:
@@ -1980,10 +2058,12 @@ protected:
 public:
 	QVarInDecl(
 		yy::location const&,
+		context const&,
 		std::string name,
 		rchandle<exprnode>);
 	QVarInDecl(
 		yy::location const&,
+		context const&,
 		std::string name,
 		rchandle<TypeDeclaration>,
 		rchandle<exprnode>);
@@ -2019,11 +2099,13 @@ protected:
 public:
 	TypeswitchExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<CaseClauseList>,
 		rchandle<exprnode>);
 	TypeswitchExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<CaseClauseList>,
 		std::string default_varname,
@@ -2056,7 +2138,8 @@ protected:
 
 public:
 	CaseClauseList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~CaseClauseList();
 
 public:
@@ -2086,11 +2169,13 @@ protected:
 public:
 	CaseClause(
 		yy::location const&,
+		context const&,
 		std::string varname,
 		rchandle<SequenceType>,
 		rchandle<exprnode>);
 	CaseClause(
 		yy::location const&,
+		context const&,
 		rchandle<SequenceType>,
 		rchandle<exprnode>);
 	~CaseClause();
@@ -2122,6 +2207,7 @@ protected:
 public:
 	IfExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2154,6 +2240,7 @@ protected:
 public:
 	OrExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~OrExpr();
@@ -2184,6 +2271,7 @@ protected:
 public:
 	AndExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~AndExpr();
@@ -2219,16 +2307,19 @@ protected:
 public:
 	ComparisonExpr(
 		yy::location const&,
+		context const&,
 		rchandle<ValueComp>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	ComparisonExpr(
 		yy::location const&,
+		context const&,
 		rchandle<GeneralComp>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	ComparisonExpr(
 		yy::location const&,
+		context const&,
 		rchandle<NodeComp>,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2265,6 +2356,7 @@ protected:
 public:
 	FTContainsExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<FTSelection>,
 		rchandle<FTIgnoreOption>);
@@ -2298,6 +2390,7 @@ protected:
 public:
 	RangeExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~RangeExpr();
@@ -2331,6 +2424,7 @@ protected:
 public:
 	AdditiveExpr(
 		yy::location const&,
+		context const&,
 		add_op_t add_op,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2368,6 +2462,7 @@ protected:
 public:
 	MultiplicativeExpr(
 		yy::location const&,
+		context const&,
 		mult_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2402,6 +2497,7 @@ protected:
 public:
 	UnionExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~UnionExpr();
@@ -2435,6 +2531,7 @@ protected:
 public:
 	IntersectExceptExpr(
 		yy::location const&,
+		context const&,
 		enum intex_op_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2468,6 +2565,7 @@ protected:
 public:
 	InstanceofExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 	~InstanceofExpr();
@@ -2499,6 +2597,7 @@ protected:
 public:
 	TreatExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<SequenceType>);
 	~TreatExpr();
@@ -2530,6 +2629,7 @@ protected:
 public:
 	CastableExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 	~CastableExpr();
@@ -2561,6 +2661,7 @@ protected:
 public:
 	CastExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<SingleType>);
 	~CastExpr();
@@ -2592,6 +2693,7 @@ protected:
 public:
 	UnaryExpr(
 		yy::location const&,
+		context const&,
 		rchandle<SignList>,
 		rchandle<exprnode>);
 	~UnaryExpr();
@@ -2624,6 +2726,7 @@ protected:
 public:
 	SignList(
 		yy::location const&,
+		context const&,
 		bool _sign);
 	~SignList();
 
@@ -2649,7 +2752,8 @@ class ValueExpr : public exprnode
 {
 public:
 	ValueExpr(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ValueExpr();
 
 public:
@@ -2673,6 +2777,7 @@ protected:
 public:
 	GeneralComp(
 		yy::location const&,
+		context const&,
 		enum gencomp_t);
 	GeneralComp();
 	~GeneralComp();
@@ -2701,6 +2806,7 @@ protected:
 public:
 	ValueComp(
 		yy::location const&,
+		context const&,
 		enum valcomp_t);
 	ValueComp();
 	~ValueComp();
@@ -2729,6 +2835,7 @@ protected:
 public:
 	NodeComp(
 		yy::location const&,
+		context const&,
 		enum nodecomp_t);
 	NodeComp();
 	~NodeComp();
@@ -2759,6 +2866,7 @@ protected:
 public:
 	ValidateExpr(
 		yy::location const&,
+		context const&,
 		std::string const& valmode,
 		rchandle<exprnode>);
 	~ValidateExpr();
@@ -2790,6 +2898,7 @@ protected:
 public:
 	ExtensionExpr(
 		yy::location const&,
+		context const&,
 		rchandle<PragmaList>,
 		rchandle<exprnode>);
 	~ExtensionExpr();
@@ -2818,7 +2927,8 @@ protected:
 
 public:
 	PragmaList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~PragmaList();
 
 public:
@@ -2847,6 +2957,7 @@ protected:
 public:
 	Pragma(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		std::string pragma_lit);
 	~Pragma();
@@ -2906,6 +3017,7 @@ protected:
 public:
 	PathExpr(
 		yy::location const&,
+		context const&,
 		enum pathtype_t type,
 		rchandle<exprnode>);
 	~PathExpr();
@@ -2939,6 +3051,7 @@ protected:
 public:
 	RelativePathExpr(
 		yy::location const&,
+		context const&,
 		enum steptype_t,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
@@ -2966,7 +3079,8 @@ class StepExpr : public exprnode
 {
 public:
 	StepExpr(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~StepExpr();
 
 public:
@@ -2995,10 +3109,12 @@ protected:
 public:
 	AxisStep(
 		yy::location const&,
+		context const&,
 		rchandle<ForwardStep>,
 		rchandle<PredicateList>);
 	AxisStep(
 		yy::location const&,
+		context const&,
 		rchandle<ReverseStep>,
 		rchandle<PredicateList>);
 	~AxisStep();
@@ -3032,10 +3148,12 @@ protected:
 public:
 	ForwardStep(
 		yy::location const&,
+		context const&,
 		rchandle<ForwardAxis>,
 		rchandle<parsenode> node_test_h);
 	ForwardStep(
 		yy::location const&,
+		context const&,
 		rchandle<AbbrevForwardStep>);
 	~ForwardStep();
 
@@ -3071,6 +3189,7 @@ protected:
 public:
 	ForwardAxis(
 		yy::location const&,
+		context const&,
 		enum forward_axis_t);
 	~ForwardAxis();
 
@@ -3100,10 +3219,12 @@ protected:
 public:
 	AbbrevForwardStep(
 		yy::location const&,
+		context const&,
 		rchandle<parsenode>,
 		bool attr_b);
 	AbbrevForwardStep(
 		yy::location const&,
+		context const&,
 		rchandle<parsenode>);
 	~AbbrevForwardStep();
 
@@ -3134,6 +3255,7 @@ protected:
 public:
 	ReverseStep(
 		yy::location const&,
+		context const&,
 		rchandle<ReverseAxis>,
 		rchandle<parsenode>);
 	~ReverseStep();
@@ -3167,6 +3289,7 @@ protected:
 public:
 	ReverseAxis(
 		yy::location const&,
+		context const&,
 		enum reverse_axis_t);
 	~ReverseAxis();
 
@@ -3196,7 +3319,8 @@ class NodeTest : public parsenode
 {
 public:
 	NodeTest(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~NodeTest();
 
 public:
@@ -3221,9 +3345,11 @@ protected:
 public:
 	NameTest(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	NameTest(
 		yy::location const&,
+		context const&,
 		rchandle<Wildcard>);
 	~NameTest();
 
@@ -3256,12 +3382,15 @@ protected:
 public:
 	Wildcard(
 		yy::location const&,
+		context const&,
 		enum wildcard_t);
 	Wildcard(
 		yy::location const&,
+		context const&,
 		std::string const&);
 	Wildcard(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	~Wildcard();
 
@@ -3293,6 +3422,7 @@ protected:
 public:
 	FilterExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<PredicateList>);
 	~FilterExpr();
@@ -3322,7 +3452,8 @@ protected:
 
 public:
 	PredicateList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~PredicateList();
 
 public:
@@ -3350,6 +3481,7 @@ protected:
 public:
 	Predicate(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~Predicate();
 
@@ -3380,7 +3512,8 @@ class PrimaryExpr : public exprnode
 {
 public:
 	PrimaryExpr(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~PrimaryExpr();
 
 public:
@@ -3400,7 +3533,8 @@ class Literal : public exprnode
 {
 public:
 	Literal(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~Literal();
 
 public:
@@ -3434,12 +3568,15 @@ protected:
 public:
 	NumericLiteral(
 		yy::location const&,
+		context const&,
 		int);
 	NumericLiteral(
 		yy::location const&,
+		context const&,
 		decimal);
 	NumericLiteral(
 		yy::location const&,
+		context const&,
 		double);
 	~NumericLiteral();
 
@@ -3470,6 +3607,7 @@ protected:
 public:
 	VarRef(
 		yy::location const&,
+		context const&,
 		std::string varname);
 	~VarRef();
 
@@ -3498,6 +3636,7 @@ protected:
 public:
 	ParenthesizedExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~ParenthesizedExpr();
 
@@ -3521,7 +3660,8 @@ class ContextItemExpr : public exprnode
 {
 public:
 	ContextItemExpr(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ContextItemExpr();
 
 public:
@@ -3545,6 +3685,7 @@ protected:
 public:
 	OrderedExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~OrderedExpr();
 
@@ -3572,6 +3713,7 @@ protected:
 public:
 	UnorderedExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~UnorderedExpr();
 
@@ -3602,6 +3744,7 @@ protected:
 public:
 	FunctionCall(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		rchandle<ArgList>);
 	~FunctionCall();
@@ -3630,7 +3773,8 @@ protected:
 
 public:
 	ArgList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ArgList();
 
 public:
@@ -3654,7 +3798,8 @@ class Constructor : public exprnode
 {
 public:
 	Constructor(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~Constructor();
 
 public:
@@ -3676,7 +3821,8 @@ class DirectConstructor : public exprnode
 {
 public:
 	DirectConstructor(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~DirectConstructor();
 
 public:
@@ -3705,6 +3851,7 @@ protected:
 public:
 	DirElemConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<QName> start_name_h,
 		rchandle<QName> end_name_h,
 		rchandle<DirAttributeList>,
@@ -3737,7 +3884,8 @@ protected:
 
 public:
 	DirElemContentList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~DirElemContentList();
 
 public:
@@ -3767,7 +3915,8 @@ protected:
 
 public:
 	DirAttributeList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~DirAttributeList();
 
 public:
@@ -3798,6 +3947,7 @@ protected:
 public:
 	DirAttr(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		rchandle<DirAttributeValue>);
 	~DirAttr();
@@ -3829,9 +3979,11 @@ protected:
 public:
 	DirAttributeValue(
 		yy::location const&,
+		context const&,
 		rchandle<QuoteAttrContentList>);
 	DirAttributeValue(
 		yy::location const&,
+		context const&,
 		rchandle<AposAttrContentList>);
 	~DirAttributeValue();
 
@@ -3864,7 +4016,8 @@ protected:
 	
 public:
 	QuoteAttrContentList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~QuoteAttrContentList();
 
 public:
@@ -3896,7 +4049,8 @@ protected:
 	
 public:
 	AposAttrContentList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~AposAttrContentList();
 
 public:
@@ -3928,9 +4082,11 @@ protected:
 public:
 	QuoteAttrValueContent(
 		yy::location const&,
+		context const&,
 		std::string quot_atcontent);
 	QuoteAttrValueContent(
 		yy::location const&,
+		context const&,
 		rchandle<CommonContent>);
 	~QuoteAttrValueContent();
 
@@ -3961,9 +4117,11 @@ protected:
 public:
 	AposAttrValueContent(
 		yy::location const&,
+		context const&,
 		std::string apos_atcontent);
 	AposAttrValueContent(
 		yy::location const&,
+		context const&,
 		rchandle<CommonContent>);
 	~AposAttrValueContent();
 
@@ -3998,15 +4156,19 @@ protected:
 public:
 	DirElemContent(
 		yy::location const&,
+		context const&,
 		rchandle<DirectConstructor>);
 	DirElemContent(
 		yy::location const&,
+		context const&,
 		std::string elem_content);
 	DirElemContent(
 		yy::location const&,
+		context const&,
 		rchandle<CDataSection>);
 	DirElemContent(
 		yy::location const&,
+		context const&,
 		rchandle<CommonContent>); 
 	~DirElemContent();
 
@@ -4047,13 +4209,16 @@ protected:
 public:
 	CommonContent(
 		yy::location const&,
+		context const&,
 		enum common_content_t,
 		std::string ref);
 	CommonContent(
 		yy::location const&,
+		context const&,
 		rchandle<EnclosedExpr> expr_h);
 	CommonContent(
 		yy::location const&,
+		context const&,
 		enum common_content_t);
 	~CommonContent();
 
@@ -4083,6 +4248,7 @@ protected:
 public:
 	DirCommentConstructor(
 		yy::location const&,
+		context const&,
 		std::string const& comment);
 	~DirCommentConstructor();
 
@@ -4118,9 +4284,11 @@ protected:
 public:
 	DirPIConstructor(
 		yy::location const&,
+		context const&,
 		std::string const& pi_target);
 	DirPIConstructor(
 		yy::location const&,
+		context const&,
 		std::string const& pi_target,
 		std::string const& pi_content);
 	~DirPIConstructor();
@@ -4156,6 +4324,7 @@ protected:
 public:
 	CDataSection(
 		yy::location const&,
+		context const&,
 		std::string cdata_content);
 	~CDataSection();
 
@@ -4190,7 +4359,8 @@ class ComputedConstructor : public exprnode
 {
 public:
 	ComputedConstructor(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ComputedConstructor();
 
 public:
@@ -4214,6 +4384,7 @@ protected:
 public:
 	CompDocConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~CompDocConstructor();
 
@@ -4246,10 +4417,12 @@ protected:
 public:
 	CompElemConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		rchandle<exprnode>);
 	CompElemConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~CompElemConstructor();
@@ -4281,6 +4454,7 @@ protected:
 public:
 	ContentExpr(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~ContentExpr();
 
@@ -4314,10 +4488,12 @@ protected:
 public:
 	CompAttrConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<QName>,
 		rchandle<exprnode>);
 	CompAttrConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~CompAttrConstructor();
@@ -4348,6 +4524,7 @@ protected:
 public:
 	CompTextConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode> text_expr_h);
 	~CompTextConstructor();
 
@@ -4375,6 +4552,7 @@ protected:
 public:
 	CompCommentConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>);
 	~CompCommentConstructor();
 
@@ -4407,10 +4585,12 @@ protected:
 public:
 	CompPIConstructor(
 		yy::location const&,
+		context const&,
 		std::string target,
 		rchandle<exprnode>);
 	CompPIConstructor(
 		yy::location const&,
+		context const&,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~CompPIConstructor();
@@ -4441,6 +4621,7 @@ protected:
 public:
 	SingleType(
 		yy::location const&,
+		context const&,
 		rchandle<AtomicType>,
 		bool hook_b);
 	~SingleType();
@@ -4469,6 +4650,7 @@ protected:
 public:
 	TypeDeclaration(
 		yy::location const&,
+		context const&,
 		rchandle<SequenceType>);
 	~TypeDeclaration();
 
@@ -4498,6 +4680,7 @@ protected:
 public:
 	SequenceType(
 		yy::location const&,
+		context const&,
 		rchandle<ItemType>,
 		rchandle<OccurrenceIndicator>);
 	~SequenceType();
@@ -4527,6 +4710,7 @@ protected:
 public:
 	OccurrenceIndicator(
 		yy::location const&,
+		context const&,
 		enum occurrence_t);
 	~OccurrenceIndicator();
 
@@ -4553,9 +4737,11 @@ protected:
 public:
 	ItemType(
 		yy::location const&,
+		context const&,
 		bool item_test_b);
 	ItemType(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~ItemType();
 
 public:
@@ -4581,6 +4767,7 @@ protected:
 public:
 	AtomicType(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	~AtomicType();
 
@@ -4611,7 +4798,8 @@ class KindTest : public parsenode
 {
 public:
 	KindTest(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~KindTest();
 
 public:
@@ -4630,7 +4818,8 @@ class AnyKindTest : public parsenode
 {
 public:
 	AnyKindTest(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~AnyKindTest();
 
 public:
@@ -4655,12 +4844,15 @@ protected:
 
 public:
 	DocumentTest(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	DocumentTest(
 		yy::location const&,
+		context const&,
 		rchandle<ElementTest>);
 	DocumentTest(
 		yy::location const&,
+		context const&,
 		rchandle<SchemaElementTest>);
 	~DocumentTest();
 
@@ -4686,7 +4878,8 @@ class TextTest : public parsenode
 {
 public:
 	TextTest(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~TextTest();
 
 public:
@@ -4705,7 +4898,8 @@ class CommentTest : public parsenode
 {
 public:
 	CommentTest(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~CommentTest();
 
 public:
@@ -4731,6 +4925,7 @@ protected:
 public:
 	PITest(
 		yy::location const&,
+		context const&,
 		std::string target,
 		std::string content);
 	~PITest();
@@ -4762,6 +4957,7 @@ protected:
 public:
 	AttributeTest(
 		yy::location const&,
+		context const&,
 		rchandle<AttribNameOrWildcard>,
 		rchandle<TypeName>);
 	~AttributeTest();
@@ -4793,6 +4989,7 @@ protected:
 public:
 	AttribNameOrWildcard(
 		yy::location const&,
+		context const&,
 		rchandle<AttributeName>);
 	~AttribNameOrWildcard();
 
@@ -4820,6 +5017,7 @@ protected:
 public:
 	SchemaAttributeTest(
 		yy::location const&,
+		context const&,
 		rchandle<AttributeDeclaration>);
 	~SchemaAttributeTest();
 
@@ -4846,6 +5044,7 @@ protected:
 public:
 	AttributeDeclaration(
 		yy::location const&,
+		context const&,
 		rchandle<AttributeName>);
 	~AttributeDeclaration();
 
@@ -4877,10 +5076,12 @@ protected:
 public:
 	ElementTest(
 		yy::location const&,
+		context const&,
 		rchandle<ElementNameOrWildcard>,
 		rchandle<TypeName>);
 	ElementTest(
 		yy::location const&,
+		context const&,
 		rchandle<ElementNameOrWildcard>,
 		rchandle<TypeName>,
 		bool optional_b);
@@ -4915,6 +5116,7 @@ protected:
 public:
 	ElementNameOrWildcard(
 		yy::location const&,
+		context const&,
 		rchandle<ElementName>);
 	~ElementNameOrWildcard();
 
@@ -4942,6 +5144,7 @@ protected:
 public:
 	SchemaElementTest(
 		yy::location const&,
+		context const&,
 		rchandle<ElementDeclaration>);
 	~SchemaElementTest();
 
@@ -4968,6 +5171,7 @@ protected:
 public:
 	ElementDeclaration(
 		yy::location const&,
+		context const&,
 		rchandle<ElementName>);
 	~ElementDeclaration();
 
@@ -4994,6 +5198,7 @@ protected:
 public:
 	AttributeName(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	~AttributeName();
 
@@ -5020,6 +5225,7 @@ protected:
 public:
 	ElementName(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	~ElementName();
 
@@ -5046,6 +5252,7 @@ protected:
 public:
 	TypeName(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	~TypeName();
 
@@ -5082,6 +5289,7 @@ protected:
 public:
 	StringLiteral(
 		yy::location const&,
+		context const&,
 		std::string const&);
 	~StringLiteral();
 
@@ -5150,6 +5358,7 @@ protected:
 public:
 	RevalidationDecl(
 		yy::location const&,
+		context const&,
 		rchandle<QName>);
 	~RevalidationDecl();
 
@@ -5182,6 +5391,7 @@ protected:
 public:
 	InsertExpr(
 		yy::location const&,
+		context const&,
 		rchandle<ExprSingle>,
 		rchandle<ExprSingle>);
 	~InsertExpr();
@@ -5211,6 +5421,7 @@ protected:
 public:
 	DeleteExpr(
 		yy::location const&,
+		context const&,
 		rchandle<ExprSingle>);
 	~DeleteExpr();
 
@@ -5240,6 +5451,7 @@ protected:
 public:
 	ReplaceExpr(
 		yy::location const&,
+		context const&,
 		rchandle<ExprSingle> source_expr_h,
 		rchandle<ExprSingle> target_expr_h);
 	~ReplaceExpr();
@@ -5270,6 +5482,7 @@ protected:
 public:
 	RenameExpr(
 		yy::location const&,
+		context const&,
 		rchandle<ExprSingle> source_expr_h,
 		rchandle<ExprSingle> target_expr_h);
 	~RenameExpr();
@@ -5316,6 +5529,7 @@ protected:
 public:
 	TransformExpr(
 		yy::location const&,
+		context const&,
 		rchandle<VarNameList>,
 		rchandle<ExprSingle> source_expr_h,
 		rchandle<ExprSingle> target_expr_h);
@@ -5346,7 +5560,8 @@ protected:
 	
 public:
 	VarNameList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~VarNameList();
 
 public:
@@ -5377,6 +5592,7 @@ protected:
 public:
 	VarBinding(
 		yy::location const&,
+		context const&,
 		std::string varname,
 		rchandle<ExprSingle>);
 	~VarBinding();
@@ -5425,6 +5641,7 @@ protected:
 public:
 	FTSelection(
 		yy::location const&,
+		context const&,
 		rchandle<FTOr>,
 		rchandle<FTMatchOptionProximityList>,
 		rchandle<RangeExpr>);
@@ -5459,7 +5676,8 @@ protected:
 
 public:
 	FTMatchOptionProximityList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTMatchOptionProximityList();
 
 public:
@@ -5490,12 +5708,15 @@ protected:
 public:
 	FTMatchOptionProximity(
 		rchandle<FTMatchOption>,
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	FTMatchOptionProximity(
 		rchandle<FTProximity>,
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	FTMatchOptionProximity(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTMatchOptionProximity();
 
 public:
@@ -5521,6 +5742,7 @@ protected:
 public:
 	FTOr(
 		yy::location const&,
+		context const&,
 		rchandle<FTOr>,
 		rchandle<FTAnd>);
 	~FTOr();
@@ -5552,6 +5774,7 @@ protected:
 public:
 	FTAnd(
 		yy::location const&,
+		context const&,
 		rchandle<FTAnd>,
 		rchandle<FTMildnot>);
 	~FTAnd();
@@ -5583,6 +5806,7 @@ protected:
 public:
 	FTMildnot(
 		yy::location const&,
+		context const&,
 		rchandle<FTMildnot>,
 		rchandle<FTUnaryNot>);
 	~FTMildnot();
@@ -5614,6 +5838,7 @@ protected:
 public:
 	FTUnaryNot(
 		yy::location const&,
+		context const&,
 		rchandle<FTWordsSelection>,
 		bool not_b);
 	~FTUnaryNot();
@@ -5649,6 +5874,7 @@ protected:
 public:
 	FTWordsSelection(
 		yy::location const&,
+		context const&,
 		rchandle<FTWords>,
 		rchandle<FTTimes>,
 		rchandle<FTSelection>);
@@ -5682,6 +5908,7 @@ protected:
 public:
 	FTWords(
 		yy::location const&,
+		context const&,
 		rchandle<FTWordsValue>,
 		rchandle<FTAnyallOption>);
 	~FTWords();
@@ -5715,6 +5942,7 @@ protected:
 public:
 	FTWordsValue(
 		yy::location const&,
+		context const&,
 		rchandle<Literal>,
 		rchandle<Expr>);
 	~FTWordsValue();
@@ -5744,7 +5972,8 @@ class FTProximity : public parsenode
 {
 public:
 	FTProximity(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTProximity();
 
 public:
@@ -5764,7 +5993,8 @@ class FTOrderedIndicator : public FTProximity
 {
 public:
 	FTOrderedIndicator(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTOrderedIndicator();
 
 public:
@@ -5790,7 +6020,8 @@ class FTMatchOption : public parsenode
 {
 public:
 	FTMatchOption(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTMatchOption();
 
 public:
@@ -5817,6 +6048,7 @@ protected:
 public:
 	FTCaseOption(
 		yy::location const&,
+		context const&,
 		enum ft_case_mode_t);
 	~FTCaseOption();
 
@@ -5847,6 +6079,7 @@ protected:
 public:
 	FTDiacriticsOption(
 		yy::location const&,
+		context const&,
 		ft_diacritics_mode_t);
 	~FTDiacriticsOption();
 
@@ -5881,6 +6114,7 @@ protected:
 public:
 	FTStemOption(
 		yy::location const&,
+		context const&,
 		ft_stem_mode_t);
 	~FTStemOption();
 
@@ -5916,6 +6150,7 @@ protected:
 public:
 	FTThesaurusOption(
 		yy::location const&,
+		context const&,
 		rchandle<FTThesaurusID>,
 		rchandle<FTThesaurusList>,
 		bool default_b,
@@ -5952,7 +6187,8 @@ protected:
 
 public:
 	FTThesaurusList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTThesaurusList();
 
 public:
@@ -5987,6 +6223,7 @@ protected:
 public:
 	FTThesaurusID(
 		yy::location const&,
+		context const&,
 		std::string thesaurus_name,
 		std::string relationship_name,
 		rchandle<FTRange> levels_h);
@@ -6024,6 +6261,7 @@ protected:
 public:
 	FTStopwordOption(
 		yy::location const&,
+		context const&,
 		rchandle<FTRefOrList>,
 		rchandle<FTInclExclStringLiteralList>,
 		stop_words_mode_t);
@@ -6058,7 +6296,8 @@ protected:
 
 public:
 	FTInclExclStringLiteralList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTInclExclStringLiteralList();
 
 public:
@@ -6090,6 +6329,7 @@ protected:
 public:
 	FTRefOrList(
 		yy::location const&,
+		context const&,
 		std::string at_str,
 		rchandle<FTStringLiteralList>);
 	~FTRefOrList();
@@ -6120,7 +6360,8 @@ protected:
 
 public:
 	FTStringLiteralList(
-		yy::location const&);
+		yy::location const&,
+		context const&);
 	~FTStringLiteralList();
 
 public:
@@ -6150,6 +6391,7 @@ protected:
 public:
 	FTInclExclStringLiteral(
 		yy::location const&,
+		context const&,
 		rchandle<FTRefOrList>,
 		intex_op_t);
 	~FTInclExclStringLiteral();
@@ -6181,6 +6423,7 @@ protected:
 public:
 	FTLanguageOption(
 		yy::location const&,
+		context const&,
 		std::string lang);
 	~FTLanguageOption();
 
@@ -6209,6 +6452,7 @@ protected:
 public:
 	FTWildcardOption(
 		yy::location const&,
+		context const&,
 		bool with_b);
 	~FTWildcardOption();
 
@@ -6238,6 +6482,7 @@ protected:
 public:
 	FTContent(
 		yy::location const&,
+		context const&,
 		enum ft_content_mode_t);
 	~FTContent();
 
@@ -6269,6 +6514,7 @@ protected:
 public:
 	FTAnyallOption(
 		yy::location const&,
+		context const&,
 		enum ft_anyall_option_t);
 	~FTAnyallOption();
 
@@ -6308,6 +6554,7 @@ protected:
 public:
 	FTRange(
 		yy::location const&,
+		context const&,
 		rchandle<UnionExpr> src_expr_h,
 		rchandle<UnionExpr> dst_expr_h);
 	~FTRange();
@@ -6338,6 +6585,7 @@ protected:
 public:
 	FTDistance(
 		yy::location const&,
+		context const&,
 		rchandle<FTRange>,
 		rchandle<FTUnit>);
 	~FTDistance();
@@ -6368,6 +6616,7 @@ protected:
 public:
 	FTWindow(
 		yy::location const&,
+		context const&,
 		rchandle<UnionExpr> window_h,
 		rchandle<FTUnit> unit_h);
 	~FTWindow();
@@ -6397,6 +6646,7 @@ protected:
 public:
 	FTTimes(
 		yy::location const&,
+		context const&,
 		rchandle<FTRange>);
 	~FTTimes();
 
@@ -6425,6 +6675,7 @@ protected:
 public:
 	FTScope(
 		yy::location const&,
+		context const&,
 		ft_scope_t);
 	~FTScope();
 
@@ -6452,6 +6703,7 @@ protected:
 public:
 	FTUnit(
 		yy::location const&,
+		context const&,
 		ft_unit_t);
 	~FTUnit();
 
@@ -6479,6 +6731,7 @@ protected:
 public:
 	FTBigUnit(
 		yy::location const&,
+		context const&,
 		enum ft_big_unit_t);
 	~FTBigUnit();
 
@@ -6506,6 +6759,7 @@ protected:
 public:
 	FTIgnoreOption(
 		yy::location const&,
+		context const&,
 		rchandle<UnionExpr>);
 	~FTIgnoreOption();
 

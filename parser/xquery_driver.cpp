@@ -54,5 +54,3 @@ void xquery_driver::error(
 	cerr << m << endl;
 }
 
-
-

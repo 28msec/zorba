@@ -12,6 +12,7 @@
 #include <string>
 #include <ostream>
 
+#include "../context/context.h"
 #include "symbol_table.h"
 #include "xquery_parser.tab.h"
 
@@ -45,6 +46,7 @@ public:	// state
   std::string file;
 	xqp::symbol_table symtab;
 	std::ostream& os;
+	context ctx;
 
 	bool rename_bit;
 	bool ftcontains_bit;
@@ -61,6 +63,7 @@ public: // manipulators
   
   std::string get_file() const { return file; }
   std::ostream& get_os() { return os; }
+  context const* get_ctx() { return &ctx; }
 
 public:
 	/**

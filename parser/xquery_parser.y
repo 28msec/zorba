@@ -1062,7 +1062,8 @@ FTOptionDecl :
 		DECLARE_FTOPTION  FTMatchOption
 		{
 			if (debug) cout << "FTOptionDecl [ ]\n";
-			$$ = new FTOptionDecl(@$, $2);
+			$$ = new FTOptionDecl(@$,
+								$2);
 		}
 	;
 
@@ -1557,7 +1558,8 @@ EnclosedExpr :
 		LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "EnclosedExpr [ ]\n";
-			$$ = new EnclosedExpr(@$, $2);
+			$$ = new EnclosedExpr(@$,
+								$2);
 		}
 	;
 
@@ -1568,7 +1570,8 @@ QueryBody :
 		Expr
 		{
 			if (debug) cout << "QueryBody [expr]\n";
-			$$ = new QueryBody(@$, $1);
+			$$ = new QueryBody(@$,
+								$1);
 		}
 	;
 
@@ -1956,7 +1959,8 @@ WhereClause :
 		WHERE  ExprSingle
 		{
 			if (debug) cout << "WhereClause [ ]\n";
-			$$ = new WhereClause(@$, $2);
+			$$ = new WhereClause(@$,
+								$2);
 		}
 	;
 
@@ -2266,7 +2270,8 @@ IfExpr :
 		IF_LPAR  Expr  RPAR  THEN  ExprSingle  ELSE  ExprSingle
 		{
 			if (debug) cout << "IfExpr [ ]\n";
-			$$ = new IfExpr(@$, $2, $5, $7);
+			$$ = new IfExpr(@$,
+								$2, $5, $7);
 		}
 	;
 
@@ -2282,7 +2287,8 @@ OrExpr :
 	|	OrExpr  OR  AndExpr
 		{
 			if (debug) cout << "OrExpr [or.and]\n";
-			$$ = new OrExpr(@$, $1, $3);
+			$$ = new OrExpr(@$,
+								$1, $3);
 		}
 	;
 
@@ -2298,7 +2304,8 @@ AndExpr :
 	|	AndExpr  AND  ComparisonExpr
 		{
 			if (debug) cout << "AndExpr [and.comp]\n";
-			$$ = new AndExpr(@$, $1, $3);
+			$$ = new AndExpr(@$,
+								$1, $3);
 		}
 	;
 
@@ -2387,7 +2394,8 @@ RangeExpr :
 	|	AdditiveExpr  TO  AdditiveExpr
 		{
 			if (debug) cout << "RangeExpr [add.to.add]\n";
-			$$ = new RangeExpr(@$, $1, $3);
+			$$ = new RangeExpr(@$,
+								$1, $3);
 		}
 	;
 
@@ -2454,12 +2462,14 @@ UnionExpr :
 	|	UnionExpr  UNION  IntersectExceptExpr
 		{
 			if (debug) cout << "UnionExpr [union.union.interexcept]\n";
-			$$ = new UnionExpr(@$, $1, $3);
+			$$ = new UnionExpr(@$,
+								$1, $3);
 		}
 	|	UnionExpr  VBAR  IntersectExceptExpr
 		{
 			if (debug) cout << "UnionExpr [union|interexcept]\n";
-			$$ = new UnionExpr(@$, $1, $3);
+			$$ = new UnionExpr(@$,
+								$1, $3);
 		}
 	;
 
@@ -2986,12 +2996,14 @@ AbbrevForwardStep :
 		NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
-			$$ = new AbbrevForwardStep(@$, $1);
+			$$ = new AbbrevForwardStep(@$,
+								$1);
 		}
 	|	AT_SIGN  NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
-			$$ = new AbbrevForwardStep(@$, $2, true);
+			$$ = new AbbrevForwardStep(@$,
+								$2, true);
 		}
 	;
 
@@ -3267,7 +3279,8 @@ ParenthesizedExpr :
 	|	LPAR  Expr  RPAR
 		{
 			if (debug) cout << "ParenthesizedExpr [(expr)]\n";
-			$$ = new ParenthesizedExpr(@$, $2);
+			$$ = new ParenthesizedExpr(@$,
+								$2);
 		}
 	;	
 
@@ -3289,7 +3302,8 @@ OrderedExpr :
 		ORDERED_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "OrderedExpr [expr]\n";
-			$$ = new OrderedExpr(@$, $2);
+			$$ = new OrderedExpr(@$,
+								$2);
 		}
 	;
 
@@ -3300,7 +3314,8 @@ UnorderedExpr :
 		UNORDERED_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "UnorderedExpr [expr]\n";
-			$$ = new UnorderedExpr(@$, $2);
+			$$ = new UnorderedExpr(@$,
+								$2);
 		}
 	;
 
@@ -3821,7 +3836,8 @@ CompDocConstructor :
 		DOCUMENT_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompDocConstructor [ ]\n";
-			$$ = new CompDocConstructor(@$, $2);
+			$$ = new CompDocConstructor(@$,
+								$2);
 		}
 	;
 
@@ -3846,12 +3862,14 @@ CompElemConstructor :
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [name]\n";
-			$$ = new CompElemConstructor(@$, $2, NULL);
+			$$ = new CompElemConstructor(@$,
+								$2, NULL);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [name.content]\n";
-			$$ = new CompElemConstructor(@$, $2, $5);
+			$$ = new CompElemConstructor(@$,
+								$2, $5);
 		}
 	;
 
@@ -3888,12 +3906,14 @@ CompAttrConstructor :
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [name]\n";
-			$$ = new CompAttrConstructor(@$, $2, NULL);
+			$$ = new CompAttrConstructor(@$,
+								$2, NULL);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [name.val]\n";
-			$$ = new CompAttrConstructor(@$, $2, $5);
+			$$ = new CompAttrConstructor(@$,
+								$2, $5);
 		}
 	;
 
@@ -3942,12 +3962,14 @@ CompPIConstructor :
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
 		{
 			if (debug) cout << "CompPIConstructor [target]\n";
-			$$ = new CompPIConstructor(@$, $3, NULL);
+			$$ = new CompPIConstructor(@$,
+								$3, NULL);
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompPIConstructor [target.content]\n";
-			$$ = new CompPIConstructor(@$, $3, $6);
+			$$ = new CompPIConstructor(@$,
+								$3, $6);
 		}
 	;
 
