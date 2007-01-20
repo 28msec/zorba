@@ -63,7 +63,7 @@ public: // manipulators
   
   std::string get_file() const { return file; }
   std::ostream& get_os() { return os; }
-  context const* get_ctx() { return &ctx; }
+  context const& get_ctx() { return ctx; }
 
 public:
 	/**
