@@ -26,7 +26,6 @@
 
 namespace xqp {
 
-
 // forward references
 class item;
 class item_type;
@@ -692,28 +691,28 @@ public:
 	virtual item_type const* get_super_type() const;
 
 	// return a string representing the type
-	std::string describe() const;
+	virtual std::string describe() const;
 
 
 	// stub methods
-	item_type const* get_primitive_type() const;
-	schema_type::derivation_method get_derivation_method() const;
+	virtual item_type const* get_primitive_type() const;
+	virtual schema_type::derivation_method get_derivation_method() const;
 	
-	bool is_complex() const;
-	bool is_anonymous() const;
-	bool is_simple() const;
-	bool is_atomic() const;
-	bool is_list() const;
-	bool is_union() const;
+	virtual bool is_complex() const;
+	virtual bool is_anonymous() const;
+	virtual bool is_simple() const;
+	virtual bool is_atomic() const;
+	virtual bool is_list() const;
+	virtual bool is_union() const;
 	
-	item_type   const* get_primitive_item_type() const;
-	atomic_type const* get_common_atomic_type() const;
-	atomic_type const* get_atomized_item_type() const;
-	schema_type const* get_known_base_type() const;
-	schema_type const* get_base_type() const;
+	virtual item_type   const* get_primitive_item_type() const;
+	virtual atomic_type const* get_common_atomic_type() const;
+	virtual atomic_type const* get_atomized_item_type() const;
+	virtual schema_type const* get_known_base_type() const;
+	virtual schema_type const* get_base_type() const;
 
 
-	void check_type_derivation(
+	virtual void check_type_derivation(
 		schema_type const& type,
 		enum derivation_method)
 	throw (xqp_exception);

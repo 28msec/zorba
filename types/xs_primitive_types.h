@@ -109,8 +109,6 @@ public:
 	std::string get_displayname() const;
 	std::string describe() const;
 
-	bool operator==(schema_type const&);
-
 	bool is_complex() const;
 	bool is_simple() const;
 	bool is_atomic() const;
@@ -121,10 +119,10 @@ public:
 	bool is_namespace_sensitive() const;
 
 	enum type::typecode get_typecode() const;
-
 	schema_type const* get_base_type() const throw (xqp_exception);
-	atomic_type const* get_common_atomic_type() const;
 	schema_type const* get_builtin_base_type() const;
+
+	bool operator==(schema_type const&);
 
 };
 

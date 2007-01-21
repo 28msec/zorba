@@ -29,6 +29,13 @@ namespace xqp {
 //	type (static)
 ////////////////////////////////
 
+any_item_type any_item_type::the_instance;
+xs_anyType xs_anyType::the_instance;
+xs_anySimpleType xs_anySimpleType::the_instance;
+xs_untyped xs_untyped::the_instance;
+xs_anyAtomicType xs_anyAtomicType::the_instance;
+
+
 /*
 xs_anyAtomicType UNTYPED_ATOMIC_TYPE = SchemaFactory.make_type(_UNTYPED_ATOMIC);
 xs_anyAtomicType ANY_ATOMIC_TYPE = SchemaFactory.make_type(_ANY_ATOMIC_TYPE);
@@ -174,7 +181,7 @@ xs_anyAtomicType const* item_type::get_atomized_type() const
 
 any_item_type const& any_item_type::get_instance()
 {
-	return the_instance;
+	return any_item_type::the_instance;
 }
 
 bool any_item_type::is_atomic_type() const 
@@ -381,7 +388,7 @@ bool complex_type::subsumes(
 
 xs_anyType const& xs_anyType::get_instance()
 {
-	return the_instance;
+	return xs_anyType::the_instance;
 }
 
 enum type::typecode xs_anyType::get_typecode() const
@@ -497,7 +504,7 @@ xs_anyType::get_derivation_method() const
 
 xs_anySimpleType const& xs_anySimpleType::get_instance()
 {
-	return the_instance;
+	return xs_anySimpleType::the_instance;
 }
 
 bool xs_anySimpleType::matches(schema_type const& other) const
@@ -588,7 +595,7 @@ throw (xqp_exception)
 
 xs_untyped const& xs_untyped::get_instance()
 {
-	return the_instance;
+	return xs_untyped::the_instance;
 }
 
 schema_type::derivation_method xs_untyped::get_derivation_method() const
@@ -707,12 +714,17 @@ bool xs_untyped::subsumes(
 
 xs_anyAtomicType const& xs_anyAtomicType::get_instance()
 {
-	return the_instance;
+	return xs_anyAtomicType::the_instance;
 }
 
 type::typecode xs_anyAtomicType::get_typecode() const
 {
 	return type::XS_ANYATOMICTYPE;
+}
+
+bool xs_anyAtomicType::operator<(schema_type const& t) const
+{
+	return false;
 }
 
 item_type const* xs_anyAtomicType::get_primitive_type() const

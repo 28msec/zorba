@@ -2169,7 +2169,7 @@ throw (xqp_exception)
 
 
 ///////////////////////////////
-//	xs_QName
+//	xs_QName - appears is a separate module 'QName'
 ///////////////////////////////
 
 

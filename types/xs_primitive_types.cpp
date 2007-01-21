@@ -31,6 +31,57 @@ type::typecode xs_anyURI::get_typecode() const
 	return XS_ANYURI;
 }
 
+bool xs_anyURI::operator==(xqp::schema_type const& t)
+{
+	return false;
+}
+
+bool xs_anyURI::is_complex() const
+{
+	return false;
+}
+
+bool xs_anyURI::is_simple() const
+{
+	return true;
+}
+
+bool xs_anyURI::is_atomic() const
+{
+	return true;
+}
+
+bool xs_anyURI::is_anonymous() const
+{
+	return false;
+}
+
+string xs_anyURI::describe() const
+{
+	return "xs_anyURI";
+}
+
+bool xs_anyURI::is_list() const
+{
+	return false;
+}
+
+bool xs_anyURI::is_union() const
+{
+	return false;
+}
+
+schema_type const* xs_anyURI::get_base_type() const
+throw (xqp_exception)
+{
+	return NULL;
+}
+
+schema_type const* xs_anyURI::get_builtin_base_type() const
+{
+	return NULL;
+}
+
 
 
 ///////////////////////////////
