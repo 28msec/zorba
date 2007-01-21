@@ -21,6 +21,7 @@ xs_primitive_values_test :	xs_primitive_values.h xs_primitive_values.cpp xs_prim
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
 		${BUILD}/values.${SUFX} \
 		${BUILD}/xs_primitive_values.${SUFX} \
+		${BUILD}/qname_value.${SUFX} \
 		xs_primitive_values_test.cpp
     
 node_values :	node_values.h node_values.cpp

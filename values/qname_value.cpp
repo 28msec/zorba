@@ -64,6 +64,19 @@ QName::~QName()
 {
 }
 
+item_iterator QName::atomized_value(
+	context const& ctx) const
+{
+	return item_iterator(ctx);
+}
+
+item_iterator QName::effective_boolean_value(
+	context const& ctx) const
+{
+	return item_iterator(ctx);
+}
+
+
 
 }	/* namespace xqp*/
 
