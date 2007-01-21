@@ -258,15 +258,16 @@ throw (xqp_exception)
 string xs_date_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_date[" << xqp::put(oss,&val,type::XS_DATE);
-	oss << ']'; 
+	oss << "xs_date[";
+	xqp::put(oss,&val,type::XS_DATE) << ']';
 	return oss.str();
 }
 
 ostream& xs_date_value::put(ostream& os, context const& ctx) const
 {
-	os << "xs_date[" << xqp::put(os,&val,type::XS_DATE);
-	return os << ']'; 
+	os << "xs_date[";
+	xqp::put(os,&val,type::XS_DATE) << ']';
+	return os; 
 }
 
 
@@ -308,15 +309,16 @@ throw (xqp_exception)
 string xs_dateTime_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_dateTime[" << xqp::put(oss,&val,type::XS_DATETIME);
-	oss << ']'; 
+	oss << "xs_dateTime[";
+	xqp::put(oss,&val,type::XS_DATETIME) << ']';
 	return oss.str();
 }
 
 ostream& xs_dateTime_value::put(ostream& os, context const& ctx) const
 {
-	os << "xs_dateTime[" << xqp::put(os,&val,type::XS_DATETIME);
-	return os << ']'; 
+	os << "xs_dateTime[";
+	xqp::put(os,&val,type::XS_DATETIME) << ']';
+	return os; 
 }
 
 xs_dateTime_value::xs_dateTime_value()
@@ -546,15 +548,16 @@ throw (xqp_exception)
 string xs_gDay_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_gDay[" << xqp::put(oss,&val,type::XS_GDAY);
-	oss << ']'; 
+	oss << "xs_gDay[";
+	xqp::put(oss,&val,type::XS_GDAY) << ']';
 	return oss.str();
 }
 
 ostream& xs_gDay_value::put(ostream& os, context const& ctx) const
 {
-	os << "xs_gDay[" << xqp::put(os,&val,type::XS_GDAY);
-	return os << ']'; 
+	os << "xs_gDay[";
+	xqp::put(os,&val,type::XS_GDAY) << ']';
+	return os; 
 }
 
 
@@ -597,15 +600,16 @@ throw (xqp_exception)
 string xs_gMonth_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_gMonth[" << xqp::put(oss,&val,type::XS_GMONTH);
-	oss << ']'; 
+	oss << "xs_gMonth[";
+	xqp::put(oss,&val,type::XS_GMONTH) << ']';
 	return oss.str();
 }
 
 ostream& xs_gMonth_value::put(ostream& os, context const& ctx) const
 {
-	os << "xs_gMonth[" << xqp::put(os,&val,type::XS_GMONTH);
-	return os << ']'; 
+	os << "xs_gMonth[";
+	xqp::put(os,&val,type::XS_GMONTH) << ']';
+	return os; 
 }
 
 
@@ -648,15 +652,16 @@ throw (xqp_exception)
 string xs_gMonthDay_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_gMonthDay[" << xqp::put(oss,&val,type::XS_GMONTHDAY);
-	oss << ']'; 
+	oss << "xs_gMonthDay[";
+	xqp::put(oss,&val,type::XS_GMONTHDAY) << ']';
 	return oss.str();
 }
 
 ostream& xs_gMonthDay_value::put(ostream& os, context const& ctx) const
 {
-	os << "xs_gMonthDay[" << xqp::put(os,&val,type::XS_GMONTHDAY);
-	return os << ']'; 
+	os << "xs_gMonthDay[";
+	xqp::put(os,&val,type::XS_GMONTHDAY) << ']';
+	return os; 
 }
 
 
@@ -699,15 +704,16 @@ throw (xqp_exception)
 string xs_gYear_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_gYear[" << xqp::put(oss,&val,type::XS_GYEAR);
-	oss << ']'; 
+	oss << "xs_gYear[";
+	xqp::put(oss,&val,type::XS_GYEAR) << ']';
 	return oss.str();
 }
 
 ostream& xs_gYear_value::put(ostream& os, context const& ctx) const
 {
-	os << "xs_gYear[" << xqp::put(os,&val,type::XS_GYEAR);
-	return os << ']'; 
+	os << "xs_gYear[";
+	xqp::put(os,&val,type::XS_GYEAR) << ']';
+	return os; 
 }
 
 
@@ -750,15 +756,16 @@ throw (xqp_exception)
 string xs_gYearMonth_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_gYearMonth[" << xqp::put(oss,&val,type::XS_GYEARMONTH);
-	oss << ']'; 
+	oss << "xs_gYearMonth[";
+	xqp::put(oss,&val,type::XS_GYEARMONTH) << ']';
 	return oss.str();
 }
 
 ostream& xs_gYearMonth_value::put(ostream& os, context const& ctx) const
 {
-	os << "xs_gYearMonth[" << xqp::put(os,&val,type::XS_GYEARMONTH);
-	return os << ']'; 
+	os << "xs_gYearMonth[";
+	xqp::put(os,&val,type::XS_GYEARMONTH) << ']';
+	return os; 
 }
 
 
@@ -1389,15 +1396,16 @@ throw (xqp_exception)
 string xs_time_value::describe(context const& ctx) const
 {
 	ostringstream oss;
-	oss << "xs_time[" << xqp::put(oss,&val,type::XS_TIME);
-	oss << ']'; 
+	oss << "xs_time[";
+	xqp::put(oss,&val,type::XS_TIME) << ']';
 	return oss.str();
 }
 
 ostream& xs_time_value::put(ostream& os, context const& ctx) const
 {
-	return os << "xs_time[" << xqp::put(os,&val,type::XS_TIME);
-	return os << ']'; 
+	return os << "xs_time[";
+	xqp::put(os,&val,type::XS_TIME) << ']';
+	return os; 
 }
 
 
