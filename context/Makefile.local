@@ -3,7 +3,7 @@ SUFX=do
 BUILD=Build
 
 context :	context.h context.cpp
-	g++ -Wall $(OPT) -c -o $(BUILD)/context.$(SUFX) context.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/context.${SUFX} context.cpp
     
 all :	\
  context 

@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: tree.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: node_values.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -11,33 +11,37 @@
 /*______________________________________________________________________
 |
 | Includes classes supporting each of the 7 node types defined in:
-|   XQuery 1.0 and XPath 2.0 Data Model
-|   [http://www.w3.org/TR/xpath-datamodel/]
+| XQuery 1.0 and XPath 2.0 Data Model (NODE_TYPES)
+| [http://www.w3.org/TR/xpath-datamodel/]
 |_______________________________________________________________________*/
  
-#ifndef XQP_TREE_H
-#define XQP_TREE_H
+#ifndef XQP_NODE_VALUES_H
+#define XQP_NODE_VALUES_H
 
+#include "values.h"
 #include "../context/context.h"
 #include "../runtime/item_iterator.h"
-#include "../values/node.h"
-#include "../values/values.h"
-#include "../util/hashmap.h"
 #include "../util/rchandle.h"
 
 namespace xqp {
 
+#define EMPTY_SEQUENCE(X) item_iterator((X))
 
-class xqp_nodeid : public nodeid
+
+/*______________________________________________________________________
+| Nodeid
+|_______________________________________________________________________*/
+
+class nodeid 
 {
 public:
 	uint64_t id;
 
-	xqp_nodeid(uint64_t _id) : id(_id) {}
-	xqp_nodeid() {}
-	~xqp_nodeid() {}
+	nodeid(uint64_t _id) : id(_id) {}
+	nodeid() : id(0) {}
+	~nodeid() {}
 
-	bool operator==(xqp_nodeid const& n) const
+	bool operator==(nodeid const& n) const
 		{ return id==n.id;  }
 
 };
@@ -45,37 +49,8 @@ public:
 
 
 /*______________________________________________________________________
-|  
-|	We have a "diamond-shaped: inheritance hierarchy.
-|	(See Stroustroup 2nd Ed. 15.2.5)
-|
-|	The xqp_NNN implementation classe inherit from both the corresponding
-|	interface classe NNN_node and the implementation base class xqp_node.
-|
-|                 item
-|                  |
-|                 node 
-|                ^    ^
-|               /      \
-|              /        \
-|       element_node  xqp_node
-|              ^        ^
-|               \      /
-|                \    /
-|              xqp_element
-|
-|	- element_node is the interface,
-|	- xqp_node is the implementation base class.
-|
-|	Caution: multiple-inheritance can create ambiguity in method
-|		and property resolution.
-|
-|_______________________________________________________________________*/
-
-
-
-/*______________________________________________________________________
 | 6.0 Node
+|
 |	 1.	Every node must have a unique identity, distinct from all
 |	 		other nodes.
 |	 2.	The children property of a node must not contain two consecutive
@@ -96,46 +71,177 @@ public:
 |	for determining the result. 
 |_______________________________________________________________________*/
 
-class xqp_node : public node
+class node : public item
 {
-protected:	// node locator
-	xqp_nodeid id;
+public:	// nodes types
+	enum node_kind_t {
+		doc_kind,
+		elem_kind,
+		attr_kind,
+		ns_kind,
+		pi_kind,
+		text_kind,
+		comment_kind,
+		binary_kind,				// zorba-specific: binary node
+		collection_kind,		// zorba-specific: collection node
+		uninitialized_kind
+	};
+
+protected:
+	nodeid id;
 
 public:	// accessors
-	virtual node_kind_t node_kind() const = 0;
-	virtual item_iterator node_name(context const&) const = 0;
-	virtual item_iterator attributes(context const&) const;
-	virtual item_iterator base_uri(context const&) const;
-	virtual item_iterator children(context const&) const;
-	virtual item_iterator document_uri(context const&) const;
-	virtual item_iterator namespace_bindings(context const&) const;
-	virtual item_iterator namespace_nodes(context const&) const;
-	virtual item_iterator parent(context const&) const;
-	virtual item_iterator typed_value(context const&) const;
+	/**
+	 *	Return a node identifier.
+	 */
+	virtual nodeid get_nodeid() const;
 
-	virtual bool is_id(context const&) const;
-	virtual bool is_idrefs(context const&) const;
-	virtual bool nilled(context const&) const;
-
-	virtual item_type const& get_type(context const&) const;
+	/**
+	 *	The dm:node-kind accessor returns a string identifying the kind of 
+	 *	node. It will be one of the following, depending on the kind of node: 
+	 *	"attribute", "comment", "document", "element", "namespace" 
+	 *	"processing-instruction", or "text". 
+	 */
+	virtual enum node_kind_t node_kind() const;
+	
+	/**
+	 *	The dm:string-value accessor returns the string value of a node.
+	 */
 	virtual std::string string_value(context const&) const;
 	
+	/**
+	 * Return the node data type.
+	 */
+	virtual item_type const& get_type(context const&) const;
+
+	/**
+	 *	The dm:attributes accessor returns the attributes of a node as a 
+	 *	sequence containing zero or more Attribute Nodes. The order of 
+	 *	Attribute Nodes is stable but implementation dependent. 
+	 */
+	virtual item_iterator attributes(context const&) const;
+	
+	/**
+	 *	The dm:base-uri accessor returns the base URI of a node as a sequence 
+	 *	containing zero or one URI reference. 
+	 */
+	virtual item_iterator base_uri(context const&) const;
+	
+	/**
+	 *	The dm:children accessor returns the children of a node as a sequence 
+	 *	containing zero or more nodes. 
+	 */
+	virtual item_iterator children(context const&) const;
+	
+	/**
+	 *	The dm:document-uri accessor returns the absolute URI of the resource 
+	 *	from which the Document Node was constructed, if the absolute URI is 
+	 *	available. If there is no URI available, or if it cannot be made 
+	 *	absolute when the Document Node is constructed, or if it is used on a 
+	 *	node other than a Document Node, the empty sequence is returned. 
+	 */
+	virtual item_iterator document_uri(context const&) const;
+	
+	/**
+	 *	The dm:is-id accessor returns true if the node is an XML ID.
+	 */
+	virtual bool is_id(context const&) const;
+	
+	/**
+	 *	The dm:is-idrefs accessor returns true if the node is an 
+	 *  XML IDREF or IDREFS. 
+	 */
+	virtual bool is_idrefs(context const&) const;
+	
+	/**
+	 *	The dm:namespace-bindings accessor returns the dynamic, in-scope 
+	 *	namespaces associated with a node as a set of prefix/URI pairs.
+	 *	The prefix for the default namespace is the zero length string.
+	 *	Note: this accessor and the namespace-nodes accessor provide two views 
+	 *	of the same information. 
+	 */
+	virtual item_iterator namespace_bindings(context const&) const;
+	
+	/**
+	 *	The dm:namespace-nodes accessor returns the dynamic, in-scope 
+	 *	namespaces associated with a node as a sequence containing zero or 
+	 *	more Namespace Nodes. The order of Namespace Nodes is stable but 
+	 *	implementation dependent. 
+	 *	Note: this accessor and the namespace-bindings accessor provide two 
+	 *	views of the same information.
+	 */
+	virtual item_iterator namespace_nodes(context const&) const;
+	
+	/**
+	 *	The dm:nilled accessor returns true if the node is "nilled". [Schema 
+	 *	Part 1] introduced the nilled mechanism to signal that an element 
+	 *	should be accepted as valid when it has no content even when it has a 
+	 *	content type which does not require or even necessarily allow empty 
+	 *	content. 
+	 */
+	virtual bool nilled(context const&) const;
+	
+	/**
+	 *	The dm:node-name accessor returns the name of the node as a sequence 
+	 *	of zero or one xs:QNames. Note that the QName value includes an 
+	 *	optional prefix as described in 3.3.3 QNames and NOTATIONS. 
+	 */
+	virtual item_iterator node_name(context const&) const;
+	
+	/**
+	 *	The dm:parent accessor returns the parent of a node as a sequence 
+	 *	containing zero or one nodes. 
+	 */
+	virtual item_iterator parent(context const&) const;
+	
+	/**
+	 *	The dm:type-name accessor returns the name of the schema type of a 
+	 *	node as a sequence of zero or one xs:QNames. 
+	 */
+	virtual item_iterator type_name(context const&) const;
+	
+	/**
+	 *	The dm:typed-value accessor returns the typed-value of the node as a 
+	 *	sequence of zero or more atomic values. 
+	 */
+	virtual item_iterator typed_value(context const&) const;
+	
+	/**
+	 *	The dm:unparsed-entity-public-id accessor returns the public 
+	 *	identifier of an unparsed external entity declared in the specified 
+	 *	document. If no entity with the name specified in $entityname exists, 
+	 *	or if the entity is not an external unparsed entity, or if the entity 
+	 *	has no public identifier, the empty sequence is returned. 
+	 */
 	virtual item_iterator unparsed_entity_public_id(
 	  context const&,
 	  std::string const& entity_name) const;
 
+	/**
+	 *	The dm:unparsed-entity-system-id accessor returns the system 
+	 *	identifier of an unparsed external entity declared in the specified 
+	 *	document. If no entity with the name specified in $entityname exists, 
+	 *	or if the entity is not an external unparsed entity, the empty 
+	 *	sequence is returned. 
+	 */
 	virtual item_iterator unparsed_entity_system_id(
 	  context const&,
 	  std::string const& entity_name) const;
 
+
 public:	// ctor,dtor
-	xqp_node(xqp_nodeid _id) : id(_id) {}
-	xqp_node(xqp_node& n) : id(n.id) {}
-	xqp_node() : id(0) {}
-	~xqp_node() {}
+	node(nodeid _id) : id(_id) {}
+	node(node& n) : id(n.id) {}
+	node() : id(0) {}
+	virtual ~node() {}
+
+
+public:	// operator overloading
+	//node& operator=(node&);
+	//bool operator==(node&);
+	//ostream& operator<<(ostream&);
 
 };
-
 
 
 /*______________________________________________________________________
@@ -168,15 +274,17 @@ public:	// ctor,dtor
 |	dm:unparsed-entity-system-id and dm:unparsed-entity-public-id 
 |	functions. 
 |_______________________________________________________________________*/
-class xqp_document : public document_node, public xqp_node
+
+class document_node : public node
 {
 protected:
 	std::string baseuri;
-	std::vector<rchandle<xqp_node> > child_hv;
+	std::vector<rchandle<node> > child_hv;
 	hashmap<std::string> unparsed_entity_map;
 	std::string docuri;
 
 public:
+	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return doc_kind; }
 	
 	item_iterator base_uri(context const&) const;
@@ -200,25 +308,24 @@ protected:
 
 public:	//ctor,dtor
 
-	xqp_document(
-		xqp_nodeid id,
+	document_node(
+		nodeid id,
 		std::string const& baseuri,
 		std::string const& docuri);
 
-	xqp_document(xqp_nodeid id) : xqp_node(id) {}
-	xqp_document() {}
-	~xqp_document() {}
+	document_node(nodeid id) : node(id) {}
+	~document_node() {}
 
 public:
 	class child_iterator : public item_iterator
 	{
 	protected:
-		xqp_document const* parent_p;
-		std::vector<rchandle<xqp_node> >::const_iterator child_it;
-		std::vector<rchandle<xqp_node> >::const_iterator it_end;
+		document_node const* parent_p;
+		std::vector<rchandle<node> >::const_iterator child_it;
+		std::vector<rchandle<node> >::const_iterator it_end;
 		
 	public:
-		child_iterator(context const&,xqp_document const*);
+		child_iterator(context const&,document_node const*);
 		~child_iterator();
 	
 	public:
@@ -232,6 +339,30 @@ public:
 
 };
 
+
+
+/*______________________________________________________________________
+| 6.1.5 Collection Node
+|_______________________________________________________________________*/
+
+class collection_node : public node
+{
+public:
+	nodeid get_nodeid() const { return id; }
+	node_kind_t node_kind() const
+		{ return collection_kind; }
+	item_iterator base_uri(context const& ctx) const
+		{ return EMPTY_SEQUENCE(ctx); }
+	item_iterator collection_uri(context const& ctx) const
+		{ return EMPTY_SEQUENCE(ctx); }
+	item_iterator children(context const& ctx) const
+		{ return EMPTY_SEQUENCE(ctx); }
+
+public:	//ctor,dtor
+	collection_node(nodeid id) : node(id) {}
+	~collection_node() {}
+
+};
 
 
 
@@ -292,13 +423,13 @@ public:
 |			zero-length string. 
 |_______________________________________________________________________*/
 
-class xqp_attribute;
-class xqp_ns;
-class xqp_comment;
-class xqp_text;
-class xqp_pi;
+class attribute_node;
+class comment_node;
+class ns_node;
+class pi_node;
+class text_node;
 
-class xqp_element : public element_node, public xqp_node
+class element_node : public node
 {
 	friend class elem_child_iterator;
 	friend class elem_attr_iterator;
@@ -306,16 +437,17 @@ class xqp_element : public element_node, public xqp_node
 protected:
 	std::string baseuri;
 	std::string nodename;
-	rchandle<xqp_node> parent_h;
+	rchandle<node> parent_h;
 	item_type type;
-	std::vector<rchandle<xqp_node> > child_hv;
-	std::vector<rchandle<xqp_attribute> > attr_hv;
-	std::vector<rchandle<xqp_ns> > ns_hv;
+	std::vector<rchandle<node> > child_hv;
+	std::vector<rchandle<node> > attr_hv;
+	std::vector<rchandle<node> > ns_hv;
 	bool nilled_b;
 	bool id_b;
 	bool idrefs_b;
 
 public:	// accessors
+	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return elem_kind; }
 	
 	item_iterator attributes(context const&) const;
@@ -335,13 +467,13 @@ public:	// accessors
 	std::string string_value(context const&) const;
 
 protected:
-	void add_element_node(rchandle<xqp_element>);
-	void add_text_node(rchandle<xqp_text>);
+	void add_element_node(rchandle<element_node>);
+	void add_text_node(rchandle<text_node>);
 	void add_text_node(std::string const&);
-	void add_attribute_node(rchandle<xqp_attribute>);
-	void add_ns_node(rchandle<xqp_ns>);
-	void add_comment_node(rchandle<xqp_comment>);
-	void add_pi_node(rchandle<xqp_pi>);
+	void add_attribute_node(rchandle<attribute_node>);
+	void add_ns_node(rchandle<ns_node>);
+	void add_comment_node(rchandle<comment_node>);
+	void add_pi_node(rchandle<pi_node>);
 
 	bool get_nilled() const { return nilled_b; }
 	bool get_id() const { return id_b; }
@@ -353,27 +485,26 @@ protected:
 
 public:	//ctor,dtor
 
-	xqp_element(
-		xqp_nodeid id,
+	element_node(
+		nodeid id,
 		std::string const& baseuri,
 		std::string const& nodename,
-		rchandle<xqp_node> parent_h);
+		rchandle<node> parent_h);
 
-	xqp_element(xqp_nodeid id) : xqp_node(id) {}
-	xqp_element() {}
-	~xqp_element() {}
+	element_node(nodeid id) : node(id) {}
+	~element_node() {}
 
 public:
 
 	class child_iterator : public item_iterator
 	{
 	protected:
-		xqp_element const* parent_p;
-		std::vector<rchandle<xqp_node> >::const_iterator child_it;
-		std::vector<rchandle<xqp_node> >::const_iterator it_end;
+		element_node const* parent_p;
+		std::vector<rchandle<node> >::const_iterator child_it;
+		std::vector<rchandle<node> >::const_iterator it_end;
 		
 	public:
-		child_iterator(context const&,xqp_element const*);
+		child_iterator(context const&,element_node const*);
 		~child_iterator();
 	
 	public:
@@ -389,12 +520,12 @@ public:
 	class attr_iterator : public item_iterator
 	{
 	protected:
-		xqp_element const* parent_p;
-		std::vector<rchandle<xqp_attribute> >::const_iterator attr_it;
-		std::vector<rchandle<xqp_attribute> >::const_iterator it_end;
+		element_node const* parent_p;
+		std::vector<rchandle<node> >::const_iterator attr_it;
+		std::vector<rchandle<node> >::const_iterator it_end;
 		
 	public:
-		attr_iterator(context const&,xqp_element const*);
+		attr_iterator(context const&,element_node const*);
 		~attr_iterator();
 	
 	public:
@@ -431,17 +562,18 @@ public:
 |	parent element. 
 |_______________________________________________________________________*/
 
-class xqp_attribute : public attribute_node, public xqp_node
+class attribute_node : public node
 {
 protected:
 	rchandle<QName> name;
 	std::string val;
-	rchandle<xqp_element> parent_h;
+	rchandle<element_node> parent_h;
 	item_type type;
 	bool id_b;
 	bool idrefs_b;
 
 public:	// accessors
+	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return attr_kind; }
 	
 	item_iterator base_uri(context const&) const;
@@ -456,15 +588,14 @@ public:	// accessors
 	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
-	xqp_attribute(
-		xqp_nodeid id,
+	attribute_node(
+		nodeid id,
 		rchandle<QName> name,
 		std::string const& val,
-		rchandle<xqp_element> parent_h);
+		rchandle<element_node> parent_h);
 
-  xqp_attribute(xqp_nodeid id) : xqp_node(id) {}
-  xqp_attribute() {}
-  ~xqp_attribute() {}
+  attribute_node(nodeid id) : node(id) {}
+  ~attribute_node() {}
 
 };
 
@@ -481,14 +612,15 @@ public:	//ctor,dtor
 |	
 |	The data model permits Namespace Nodes without parents. 
 |_______________________________________________________________________*/
-class xqp_ns : public ns_node, public xqp_node
+class ns_node : public node
 {
 protected:
 	std::string prefix;
 	std::string uri;
-	rchandle<xqp_element> parent_h;
+	rchandle<element_node> parent_h;
 
 public:	// accessors
+	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return ns_kind; }
 
 	item_iterator node_name(context const&) const;
@@ -499,15 +631,14 @@ public:	// accessors
 
 public:	//ctor,dtor
 
-	xqp_ns(
-		xqp_nodeid id,
+	ns_node(
+		nodeid id,
 		std::string const& prefix,
 		std::string const& uri,
-		rchandle<xqp_element> parent_h);
+		rchandle<element_node> parent_h);
 
-	xqp_ns(xqp_nodeid id) : xqp_node(id) {}
-	xqp_ns() {}
-	~xqp_ns() {}
+	ns_node(nodeid id) : node(id) {}
+	~ns_node() {}
 
 };
 
@@ -519,16 +650,17 @@ public:	//ctor,dtor
 |	 1. The string "?>" must not occur within the content.
 |	 2. The target must be an NCName.
 |_______________________________________________________________________*/
-class xqp_pi : public pi_node, public xqp_node
+class pi_node : public node
 {
 protected:
 	std::string target;
 	std::string content;
 	std::string baseuri;
-	rchandle<xqp_element> parent_h;
+	rchandle<element_node> parent_h;
 
 public:	// accessors
-	node_kind_t node_kind(context const*) const { return pi_kind; }
+	nodeid get_nodeid() const { return id; }
+	node_kind_t node_kind() const { return pi_kind; }
 	
 	item_iterator base_uri(context const&) const;
 	item_iterator parent(context const&) const;
@@ -538,16 +670,15 @@ public:	// accessors
 
 public:	//ctor,dtor
 
-	xqp_pi(
-		xqp_nodeid id,
+	pi_node(
+		nodeid id,
 		std::string const& target,
 		std::string const& content,
 		std::string const& baseuri,
-		rchandle<xqp_element> parent_h);
+		rchandle<element_node> parent_h);
 
-	xqp_pi(xqp_nodeid id) : xqp_node(id) {}
-	xqp_pi() {}
-	~xqp_pi() {}
+	pi_node(nodeid id) : node(id) {}
+	~pi_node() {}
 
 };
 
@@ -567,13 +698,14 @@ public:	//ctor,dtor
 |   is simply discarded.
 |_______________________________________________________________________*/
 
-class xqp_comment : public comment_node, public xqp_node
+class comment_node : public node
 {
 protected:
 	std::string content;
-	rchandle<xqp_element> parent_h;
+	rchandle<element_node> parent_h;
 	
 public:	// accessors
+	nodeid get_nodeid() const { return id; }
 	enum node_kind_t node_kind() const { return comment_kind; }
 	
 	item_iterator base_uri(context const&) const;
@@ -585,14 +717,13 @@ public:	// accessors
 
 public:	//ctor,dtor
 
-	xqp_comment(
-		xqp_nodeid,
+	comment_node(
+		nodeid,
 		std::string const& content,
-		rchandle<xqp_element> parent_h);
+		rchandle<element_node> parent_h);
 
-	xqp_comment(xqp_nodeid id) : xqp_node(id) {}
-	xqp_comment() {}
-	~xqp_comment() {}
+	comment_node(nodeid id) : node(id) {}
+	~comment_node() {}
 
 };
 
@@ -612,13 +743,14 @@ public:	//ctor,dtor
 |   is simply discarded.
 |_______________________________________________________________________*/
 
-class xqp_text : public text_node, public xqp_node
+class text_node : public node
 {
 protected:
 	std::string content;
-	rchandle<xqp_element> parent_h;
+	rchandle<element_node> parent_h;
 	
 public:	// accessors
+	nodeid get_nodeid() const { return id; }
 	enum node_kind_t node_kind() const { return text_kind; }
 	
 	item_iterator base_uri(context const&) const;
@@ -631,17 +763,56 @@ public:	// accessors
 
 public:	//ctor,dtor
 
-	xqp_text(
-		xqp_nodeid,
+	text_node(
+		nodeid,
 		std::string const& content,
-		rchandle<xqp_element> parent_h);
+		rchandle<element_node> parent_h);
 
-	xqp_text(xqp_nodeid id) : xqp_node(id) {}
-	xqp_text() {}
-	~xqp_text() {}
+	text_node(nodeid id) : node(id) {}
+	~text_node() {}
 
 };
 
 
-}	/** namespace xqp */
-#endif /* XQP_TREE_H */
+
+/*______________________________________________________________________
+|
+| Binary Nodes have the following properties:
+| 
+|   * content
+|   * parent, possibly empty.
+| 
+| Binary Nodes must satisfy the following constraint:
+| 
+|   If the parent of a binary node is not empty, the Binary Node 
+|   must not contain zero-length data as its content.  In 
+|   addition, Document and Element Nodes can have only one
+|   Binary Node child.
+|_______________________________________________________________________*/
+
+// stub implementation
+class binary_node : public node
+{
+public:	// accessors
+	nodeid get_nodeid() const { return id; }
+	node_kind_t node_kind(context const&) const { return binary_kind; }
+	std::string string_value(context const&) const { return ""; }
+ 
+	item_iterator base_uri(context const& ctx) const
+		{ return EMPTY_SEQUENCE(ctx); }
+	item_iterator parent(context const& ctx) const
+		{ return EMPTY_SEQUENCE(ctx); }
+	item_iterator type_name(context const& ctx) const
+		{ return EMPTY_SEQUENCE(ctx); }
+	item_iterator typed_value(context const& ctx) const
+		{ return EMPTY_SEQUENCE(ctx); }
+
+public:	//ctor,dtor
+	binary_node(nodeid id) : node(id) {}
+	~binary_node() {}
+
+};
+
+
+}	/* namespace xqp */
+#endif /* XQP_NODE_TYPES_H */

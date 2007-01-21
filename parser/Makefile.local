@@ -1,5 +1,5 @@
 include ../Makefile.header
-SUFX=o
+SUFX=do
 
 scanner : xquery_scanner.l
 	flex -i -t xquery_scanner.l >xquery_scanner.yy.cpp

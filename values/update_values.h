@@ -11,7 +11,7 @@
 #ifndef XQP_UPDATE_VALUES_H
 #define XQP_UPDATE_VALUES_H
 
-#include "node.h"
+#include "node_values.h"
 #include "values.h"
 
 

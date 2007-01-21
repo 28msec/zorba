@@ -3,16 +3,16 @@ SUFX=do
 BUILD=Build
 
 var_iterator : var_iterator.h var_iterator.cpp
-	g++ -c $(OPT) -o var_iterator.$(SUFX) var_iterator.cpp
+	g++ -c ${OPT} -o var_iterator.${SUFX} var_iterator.cpp
 
 item_iterator : item_iterator.h item_iterator.cpp
-	g++ -c $(OPT) -o item_iterator.$(SUFX) item_iterator.cpp
+	g++ -c ${OPT} -o item_iterator.${SUFX} item_iterator.cpp
 item_iterator_test : item_iterator.h item_iterator.cpp item_iterator_test.cpp
-	g++ $(OPT) -o item_iterator_test \
-		../util/$(BUILD)/xqp_exception.$(SUFX) \
-		../types/$(BUILD)/types.$(SUFX) \
-		../types/$(BUILD)/xs_primitive_types.$(SUFX) \
-		../values/$(BUILD)/xs_primitive_values.$(SUFX) \
+	g++ ${OPT} -o item_iterator_test \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../types/${BUILD}/types.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
 	item_iterator.cpp
 
 
