@@ -43,7 +43,7 @@ protected:
 
 public:
 	expr(yy::location const&,context const&);
-  ~expr() {}
+  virtual ~expr() {}
 
 public:
 	yy::location get_loc() const { return loc; }
@@ -52,11 +52,6 @@ public:
 	friend std::ostream& operator<<(std::ostream& s, expr const& r);
 
 };
-
-std::ostream& operator<<(std::ostream& s, expr const& r)
-{
-	return r.put(s,r.ctx);
-}
 
 
 
@@ -481,7 +476,7 @@ public:
 	void set_func(function_impl const* _func) { func = _func; }
 
 public:
-	virtual std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -518,7 +513,7 @@ public:
 	exprref_t get_ignore() const { return ft_ignore_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 
@@ -554,7 +549,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -584,7 +579,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -623,7 +618,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -654,7 +649,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -683,7 +678,7 @@ public:
 	exprref_t get_expr() const { return expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -822,7 +817,7 @@ public:
 	~step_expr();
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -916,7 +911,7 @@ public:
 		{ return pred_hv.end(); }
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -942,7 +937,7 @@ public:
 	~primary_expr();
 
 public:
-	virtual std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -980,6 +975,14 @@ public:
 	~literal_expr();
 
 public:
+	enum literal_type_t get_type() const { return type; }
+	uint32_t get_sref() const { return sref; }
+	int get_ival() const { return ival; }
+	decimal get_decval() { return decval; }
+	double get_dval() const { return dval; }
+
+public:
+	static std::string decode_type(enum literal_type_t t);
 	std::ostream& put(std::ostream&, context const&) const;
 
 };
@@ -1085,7 +1088,7 @@ public:
 	~cons_expr();
 
 public:
-	virtual std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context const&) const;
 
 };
 

@@ -31,6 +31,18 @@ expr::expr(
 {
 }
 
+ostream& expr::put(
+	ostream& os,
+	context const& ctx) const
+{
+	return os;
+}
+
+ostream& operator<<(ostream& s, expr const& r)
+{
+	return r.put(s,r.ctx);
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -852,19 +864,29 @@ literal_expr::~literal_expr()
 {
 }
 
+string literal_expr::decode_type(enum literal_type_t t) 
+{
+	switch (t) {
+	case lit_string: return "STRING"; break;
+	case lit_integer: return "INTEGER"; break;
+	case lit_decimal: return "DECIMAL"; break;
+	case lit_double: return "DOUBLE"; break;
+	default: return "???";
+	}
+}
+
 ostream& literal_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "literal_expr[\n";
 	switch (type) {
-	case lit_string: os << "string[" << sref << "]\n";
-	case lit_integer: os << "integer[" << ival << "]\n";
-	case lit_decimal: os << "decimal[" << decval << "]\n";
-	case lit_double: os << "double[" << dval << "]\n";
-	default: os << "??\n";
+	case lit_string: os << "string[" << sref << "]"; break;
+	case lit_integer: os << "integer[" << ival << "]"; break;
+	case lit_decimal: os << "decimal[" << decval << "]"; break;
+	case lit_double: os << "double[" << dval << "]"; break;
+	default: os << "???[]";
 	}
-	return os << "]\n";
+	return os;
 }
 
 
