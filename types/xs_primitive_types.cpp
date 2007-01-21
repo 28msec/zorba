@@ -14,6 +14,85 @@ using namespace std;
 namespace xqp {
 
 
+/*
+...........................................
+:                                         :
+:       Stub implementations              :
+:                                         :
+:.........................................:
+*/
+
+
+///////////////////////////////
+//  untypedAtomic
+///////////////////////////////
+
+xs_untypedAtomic::xs_untypedAtomic()
+{
+}
+ 
+xs_untypedAtomic::~xs_untypedAtomic()
+{
+}
+
+type::typecode xs_untypedAtomic::get_typecode() const
+{
+	return XS_UNTYPED_ATOMIC;
+}
+
+schema_type const* xs_untypedAtomic::get_base_type() const
+throw (xqp_exception)
+{
+	return NULL;
+}
+
+string xs_untypedAtomic::describe() const
+{
+	return "xs_untypedAtomic";
+}
+
+bool xs_untypedAtomic::operator==(xqp::schema_type const& t) const
+{
+	return false;
+}
+
+bool xs_untypedAtomic::operator<(xqp::schema_type const& t) const
+{
+	return false;
+}
+
+bool xs_untypedAtomic::is_complex() const
+{
+	return false;
+}
+
+bool xs_untypedAtomic::is_simple() const
+{
+	return true;
+}
+
+bool xs_untypedAtomic::is_atomic() const
+{
+	return true;
+}
+
+bool xs_untypedAtomic::is_anonymous() const
+{
+	return false;
+}
+
+bool xs_untypedAtomic::is_list() const
+{
+	return false;
+}
+
+bool xs_untypedAtomic::is_union() const
+{
+	return false;
+}
+
+
+
 ///////////////////////////////
 //  anyURI
 ///////////////////////////////
@@ -31,7 +110,12 @@ type::typecode xs_anyURI::get_typecode() const
 	return XS_ANYURI;
 }
 
-bool xs_anyURI::operator==(xqp::schema_type const& t)
+string xs_anyURI::describe() const
+{
+	return "xs_anyURI";
+}
+
+bool xs_anyURI::operator==(xqp::schema_type const& t) const
 {
 	return false;
 }
@@ -54,11 +138,6 @@ bool xs_anyURI::is_atomic() const
 bool xs_anyURI::is_anonymous() const
 {
 	return false;
-}
-
-string xs_anyURI::describe() const
-{
-	return "xs_anyURI";
 }
 
 bool xs_anyURI::is_list() const

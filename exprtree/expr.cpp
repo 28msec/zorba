@@ -98,11 +98,30 @@ var_expr::~var_expr()
 {
 }
 
-std::ostream& var_expr::put(
-	std::ostream& os,
-	context const& ctx ) const
+string var_expr::decode_var_kind(
+	enum var_kind k)
 {
-	return os << "var_expr[]\n";
+	switch (k) {
+	case for_var: return "FOR_VAR"; break;
+	case let_var: return "LET_VAR"; break;
+	case pos_var: return "POS_VAR"; break;
+	case score_var: return "SCORE_VAR"; break;
+	case quant_var: return "QUANT_VAR"; break;
+	case extern_var: return "EXTERN_VAR"; break;
+	case assign_var: return "ASSIGN_VAR"; break;
+	default: return "???";
+	}
+}
+
+ostream& var_expr::put(
+	ostream& os,
+	context const& ctx) const
+{
+	os << "var_expr[" << decode_var_kind(get_kind());
+	os << " name="; get_varname()->put(os,ctx);
+	os << ", expr="; get_valexpr()->put(os,ctx);
+	os << ", type=" << get_type()->describe();
+	return os << ']';
 }
 
 
@@ -1109,17 +1128,18 @@ ostream& attr_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "attr_expr[\n";
+	os << "attr_expr[qname=";
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os,ctx) << endl;
+		qname_h->put(os,ctx);
 	}
 	else {
-		qname_expr_h->put(os,ctx) << endl;
+		qname_expr_h->put(os,ctx);
 	}
 	Assert<null_pointer>(val_expr_h!=NULL);
-	val_expr_h->put(os,ctx) << endl;
-	return os << "]\n";
+	os << ", val=";
+	val_expr_h->put(os,ctx) << ']';
+	return os;
 }
 
 
@@ -1144,10 +1164,10 @@ ostream& text_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "text_expr[\n";
+	os << "text_expr[";
 	Assert<null_pointer>(text_expr_h!=NULL);
-	text_expr_h->put(os,ctx) << endl;
-	return os << "]\n";
+	text_expr_h->put(os,ctx) << ']';
+	return os;
 }
 
 
@@ -1172,10 +1192,10 @@ ostream& comment_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "comment_expr[\n";
+	os << "comment_expr[";
 	Assert<null_pointer>(comment_expr_h!=NULL);
-	comment_expr_h->put(os,ctx) << endl;
-	return os << "]\n";
+	comment_expr_h->put(os,ctx) << ']';
+	return os;
 }
 
 
@@ -1216,28 +1236,19 @@ ostream& pi_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "pi_expr[\n";
+	os << "pi_expr[target=";
 	Assert<bad_arg>(target.length()>0 || target_expr_h!=NULL);
 	if (target.length()>0) {
-		os << target << endl;
+		os << target;
 	}
 	else {
-		target_expr_h->put(os,ctx) << endl;
+		target_expr_h->put(os,ctx);
 	}
 	Assert<null_pointer>(content_expr_h!=NULL);
-	content_expr_h->put(os,ctx) << endl;
-	return os << "]\n";
+	os << ", context=";
+	content_expr_h->put(os,ctx) << ']';
+	return os;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

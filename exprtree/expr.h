@@ -147,6 +147,7 @@ public:
   void set_type(rchandle<sequence_type> const& t_h) { type_h = t_h; }
 
 public:
+	static std::string decode_var_kind(enum var_kind);
   std::ostream& put(std::ostream&,context const&) const;
 
 };

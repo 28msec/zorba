@@ -22,6 +22,7 @@ class QName : public atomic_value
 {
 public:
 	enum qname_type_t {
+		qn_var,		// variable name
 		qn_attr,	// attribute name
 		qn_elem,	// element name
 		qn_type,	// type name

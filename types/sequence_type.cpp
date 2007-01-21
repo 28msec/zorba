@@ -16,6 +16,20 @@
 using namespace std;
 namespace xqp {
 
+sequence_type sequence_type::ANY_SEQUENCE;			// any sequence of items
+sequence_type sequence_type::SINGLE_ITEM;				// exactly one item, of any kind
+sequence_type sequence_type::SINGLE_ATOMIC;			// exactly one atomic value
+sequence_type sequence_type::OPTIONAL_ATOMIC;		// zero or one atomic values
+sequence_type sequence_type::ATOMIC_SEQUENCE;		// zero or more atomic values
+sequence_type sequence_type::SINGLE_STRING;			// single string
+sequence_type sequence_type::SINGLE_INTEGER;		// single integer
+sequence_type sequence_type::OPTIONAL_INTEGER;	// single integer
+sequence_type sequence_type::OPTIONAL_NODE;			// zero or one nodes
+sequence_type sequence_type::SINGLE_NODE;				// single node
+sequence_type sequence_type::NODE_SEQUENCE;			// sequence of zero or more nodes
+sequence_type sequence_type::NUMERIC_SEQUENCE;	// sequence of zero or more numeric values
+sequence_type sequence_type::EMPTY_SEQUENCE;		// the empty sequence
+
 /*
 void sequence_type::initializer()
 {

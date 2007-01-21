@@ -99,6 +99,35 @@ public:
 |	[http://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes]
 |_______________________________________________________________________*/
 
+
+
+class xs_untypedAtomic : public atomic_type
+{
+public:
+	xs_untypedAtomic();
+	virtual ~xs_untypedAtomic();
+
+public:
+	std::string get_displayname() const;
+	std::string describe() const;
+
+	bool is_complex() const;
+	bool is_anonymous() const;
+	bool is_simple() const;
+	bool is_atomic() const;
+	bool is_list() const;
+	bool is_union() const;
+
+	enum type::typecode get_typecode() const;
+	schema_type const* get_base_type() const throw (xqp_exception);
+
+	bool operator==(schema_type const&) const;
+	bool operator<(schema_type const&) const;
+
+};
+
+
+
 class xs_anyURI : public xs_anyAtomicType
 {
 protected:
@@ -122,7 +151,7 @@ public:
 	schema_type const* get_base_type() const throw (xqp_exception);
 	schema_type const* get_builtin_base_type() const;
 
-	bool operator==(schema_type const&);
+	bool operator==(schema_type const&) const;
 
 };
 
