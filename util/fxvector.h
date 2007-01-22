@@ -63,6 +63,7 @@ public:		// ctor,dtor
 	 **  Create in-memory fxvector 
 	 */
 	fxvector();
+	fxvector(uint32_t);
 
 	/**
 	 **  Create a fxvector with a given backing file
@@ -367,6 +368,21 @@ fxvector<T>::fxvector(
 	finish = reinterpret_cast<T*>(&src[*offset_p]);
 	end_of_storage = reinterpret_cast<T*>(src + mmf_p->get_eofoff());
 
+	cout << "fxvector::ctor: start="<<(uint32_t)(start)
+			 <<", finish="<<(uint32_t)(finish)
+			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
+}
+
+
+template<typename T>
+fxvector<T>::fxvector(uint32_t size)
+:
+	mmf_p(NULL),
+	src(new char[size]),
+	start(reinterpret_cast<T*>(src)),
+	finish(reinterpret_cast<T*>(src)),
+	end_of_storage(reinterpret_cast<T*>(src+size))
+{
 	cout << "fxvector::ctor: start="<<(uint32_t)(start)
 			 <<", finish="<<(uint32_t)(finish)
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;

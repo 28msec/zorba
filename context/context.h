@@ -31,16 +31,18 @@ class function_impl;
 class var_binding
 {
 protected:
-	rchandle<QName> varname;
+	rchandle<QName> varname_h;
 	item_type vartype;
 
 public:
 	var_binding();
 	var_binding(rchandle<QName>, item_type const&);
+	var_binding(var_binding const&);
+	var_binding(var_binding &);
 	~var_binding() {}
 
 public:
-	rchandle<QName> get_qname() const { return varname; }
+	rchandle<QName> get_varname() const { return varname_h; }
 	item_type get_type() const { return vartype; }
 
 };
@@ -82,7 +84,7 @@ public:	// types
 		no_preserve_ns
 	};
 
-	typedef rchandle<QName> qname_h_t;
+	//typedef rchandle<rchandle<QName> > qname_h_t;
 	typedef rchandle<collation> collation_h_t;
 
 public:
@@ -90,7 +92,7 @@ public:
 	~context();
 	
 protected:	// XQuery 1.0 static context
-	rchandle<context> parent;
+	rchandle<context> parent_h;
 
 	/*
 	**	[Definition: Statically known namespaces. This is a set of (prefix, 
@@ -106,7 +108,7 @@ protected:	// XQuery 1.0 static context
 	**	and by namespace declaration attributes in direct element 
 	**	constructors. 
 	*/
-  std::vector<name_space> namespaces;
+  //vector<name_space> namespaces;
 
 	/*
 	**	[Definition: Default element/type namespace. This is a namespace URI 
@@ -135,7 +137,7 @@ protected:	// XQuery 1.0 static context
 	**	supported, in-scope schema types also include all type definitions 
 	**	found in imported schemas. ] 
 	*/
-	std::vector<qname_h_t> in_scope_schema_types;
+	//vector<QName> in_scope_schema_types;
 
 	/*
 	**	[Definition: In-scope element declarations. Each element declaration 
@@ -147,7 +149,7 @@ protected:	// XQuery 1.0 static context
 	**	includes information about the element's substitution group 
 	**	affiliation. 
 	*/
-	std::vector<qname_h_t> in_scope_elem_decls;
+	//vector<QName> in_scope_elem_decls;
 
 	/*
 	**	[Definition: In-scope attribute declarations. Each attribute 
@@ -157,7 +159,7 @@ protected:	// XQuery 1.0 static context
 	**	Feature is supported, in-scope attribute declarations include all 
 	**	attribute declarations found in imported schemas.] 
 	*/
-	std::vector<qname_h_t> in_scope_attr_decls;
+	//vector<QName> in_scope_attr_decls;
 
 	/*
 	**	[Definition: In-scope variables. This is a set of (expanded QName, 
@@ -177,7 +179,7 @@ protected:	// XQuery 1.0 static context
 	**	inference rules as described in [XQuery 1.0 and XPath 2.0 Formal 
 	**	Semantics]. 
 	*/
-	std::vector<var_binding> in_scope_vars;
+	//vector<var_binding> in_scope_vars;
 
 	/*
 	**	[Definition: Context item static type. This component defines the 
@@ -195,7 +197,7 @@ protected:	// XQuery 1.0 static context
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	std::vector<collation_h_t> collations;
+	//vector<collation_h_t> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -311,28 +313,32 @@ protected:	// XQuery 1.0 static context
 	**	other value by an implementation, the value of statically known 
 	**	default collection type is node()*. 
 	*/
-	hashmap<item_type> statically_known_collection_types;
+	//hashmap<item_type> statically_known_collection_types;
 
 
 public:	// manipulators
-  std::vector<name_space> get_namespaces() const
-		{ return namespaces; }
 	name_space get_default_elem_or_type_ns() const
 		{ return default_elem_or_type_ns; }
 	name_space get_default_function_ns() const
 		{ return default_function_ns; }
-	std::vector<qname_h_t>get_in_scope_schema_types() const
+
+/*
+  vector<name_space> const& get_namespaces() const
+		{ return namespaces; }
+	vector<QName> const& get_in_scope_schema_types() const
 		{ return in_scope_schema_types; }
-	std::vector<qname_h_t> get_in_scope_elem_decls() const
+	vector<QName> const& get_in_scope_elem_decls() const
 		{ return in_scope_elem_decls; }
-	std::vector<qname_h_t> get_in_scope_attr_decls() const
+	vector<QName> const& get_in_scope_attr_decls() const
 		{ return in_scope_attr_decls; }
-	std::vector<var_binding> get_in_scope_vars() const
+	vector<var_binding> const& get_in_scope_vars() const
 		{ return in_scope_vars; }
+	vector<collation_h_t> const& get_collations() const
+		{ return collations; }
+*/
+
 	item_type get_context_item_type() const
 		{ return context_item_type; }
-	std::vector<collation_h_t> get_collations() const
-		{ return collations; }
 	collation_h_t get_default_collation() const
 		{ return default_collation; }
 	enum construction_mode_t get_construction_mode() const

@@ -12,14 +12,9 @@
 
 #include <sstream>
 #include <string>
-#include <vector>
 
-#include "namespace.h"
-#include "../types/collation.h"
 #include "../runtime/item_iterator.h"
-#include "../util/hashmap.h"
 #include "../util/rchandle.h"
-#include "../util/URI.h"
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
 
@@ -35,16 +30,32 @@ namespace xqp {
 
 var_binding::var_binding()
 :
-  varname(NULL),
+  varname_h(NULL),
   vartype(item_type())
 {
 }
 
 var_binding::var_binding(
-	rchandle<QName> qname_h,
+	var_binding &  v)
+:
+  varname_h(v.varname_h),
+  vartype(v.vartype)
+{
+}
+
+var_binding::var_binding(
+	var_binding const&  v)
+:
+  varname_h(v.varname_h),
+  vartype(v.vartype)
+{
+}
+
+var_binding::var_binding(
+	rchandle<QName> _varname_h,
 	item_type const& t)
 :
-	varname(qname_h),
+	varname_h(_varname_h),
 	vartype(t)
 {
 }
@@ -57,12 +68,22 @@ var_binding::var_binding(
 
 context::context()
 :
+	parent_h(NULL),
+
+/*
 	namespaces(),
-	in_scope_schema_types(256),
-	in_scope_elem_decls(256),
-	in_scope_attr_decls(256),
+	in_scope_schema_types(1024),
+	in_scope_elem_decls(1024),
+	in_scope_attr_decls(1024),
 	in_scope_vars(1024),
-	collations(32),
+	collations(1024),
+	statically_known_collection_types(32,0.6),
+*/
+
+	signature_map(256,0.6),
+	statically_known_documents(256,0.6),
+	statically_known_collections(64,0.6),
+
 	context_item(*this),
 	context_position(0),
 	context_size(0),

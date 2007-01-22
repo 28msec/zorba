@@ -44,7 +44,7 @@ private:
 public:	// ctor,dtor
   rcobject();
   rcobject(const rcobject& rhs);
-  virtual ~rcobject() = 0;
+  virtual ~rcobject();
 
 public:	// refcounting
   void addReference()			 { ++refCount; }

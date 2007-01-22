@@ -30,7 +30,8 @@ public:
 		qn_optn,	// prolog option name
 		qn_ns,		// ns prefix 
 		qn_pi,		// pi target
-		qn_prag		// pragma label
+		qn_prag,	// pragma label
+		qn_none		// uninitialized
 	};
 
 protected:
@@ -57,6 +58,7 @@ public:
 
 	QName(enum qname_type_t);
 	QName(QName const&);
+	QName();
 	~QName();
 
 public:

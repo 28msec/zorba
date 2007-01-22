@@ -70,6 +70,15 @@ QName::QName(
 {
 }
 
+QName::QName()
+:
+	type(qn_none),
+	prefix(""),
+	name(""),
+	namespace_hash(0)
+{
+}
+
 QName::~QName()
 {
 }

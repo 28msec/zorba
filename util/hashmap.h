@@ -39,9 +39,11 @@ public:
 	{
 		string key;
 		V val;
+
 		entry() {}
-		entry(const string& k, V v) : key(k), val(v) {}
-		entry(const char* k, uint32_t l, V v) : key(string(k,0,l)), val(v) {}
+		entry(string const& k, V v) : key(k), val(v) {}
+		entry(char const* k, uint32_t l, V v) : key(string(k,0,l)), val(v) {}
+		entry(entry const& e) : key(e.key), val(e.val) {}
 		~entry() {}
 	};
 
@@ -56,6 +58,8 @@ private:
 
 public:	// ctor,dtor
 	hashmap(uint32_t sz = 1024, float ld = .6);
+	hashmap(hashmap&);
+	hashmap(hashmap const&);
 	~hashmap();
 
 public:	// housekeeping
@@ -73,6 +77,8 @@ public:	// housekeeping
 public:	// iterator interface
 	typename vector<entry>::const_iterator begin() { return v.begin(); }
 	typename vector<entry>::const_iterator end() { return v.end(); }
+	typename vector<entry>::const_iterator begin() const { return v.begin(); }
+	typename vector<entry>::const_iterator end() const { return v.end(); }
 
 public:	// map interface
 	bool find(string const& key, uint32_t& index) const;		// find hash position(key), true on match
@@ -237,9 +243,8 @@ void hashmap<V>::displayEntries() const
 	}
 }
 	
-
 template<class V>
-inline hashmap<V>::hashmap(
+hashmap<V>::hashmap(
 	uint32_t initial_size,
 	float load_factor)
 :
@@ -247,12 +252,48 @@ inline hashmap<V>::hashmap(
 	tsz(initial_size),
 	ld(load_factor),
 	minsz(initial_size*0.2f),
-	v(vector<entry>()),
+  v(std::vector<entry>()),
 	tab(new int[initial_size]),
 	dp(0)
 {
 	for (uint32_t n=0; n<tsz; ++n) tab[n] = -1;
 	for (uint32_t d = tsz; d>0; d>>=1) dp++;
+}
+
+template<class V>
+hashmap<V>::hashmap(
+	hashmap<V> & m)
+:
+	sz(m.sz),
+	tsz(m.tsz),
+	ld(m.ld),
+	minsz(m.minsz),
+  v(std::vector<entry>()),
+	tab(new int[m.tsz]),
+	dp(m.dp)
+{
+	memcpy(tab, m.tab, tsz*sizeof(int));
+	typename vector<entry>::const_iterator it = m.begin();
+	typename vector<entry>::const_iterator en = m.end();
+	for (; it!=en; ++it) { v.push_back(*it); }
+}
+
+template<class V>
+hashmap<V>::hashmap(
+	hashmap<V> const& m)
+:
+	sz(m.sz),
+	tsz(m.tsz),
+	ld(m.ld),
+	minsz(m.minsz),
+  v(std::vector<entry>()),
+	tab(new int[m.tsz]),
+	dp(m.dp)
+{
+	memcpy(tab, m.tab, tsz*sizeof(int));
+	typename vector<entry>::const_iterator it = m.begin();
+	typename vector<entry>::const_iterator en = m.end();
+	for (; it!=en; ++it) { v.push_back(*it); }
 }
 
 template<class V>
