@@ -22,6 +22,7 @@ string trace_handler::describe(enum trace_level t) const
 	case finer: return "finer";
 	case finest: return "finest";
 	}
+	return "??";
 }
 
 

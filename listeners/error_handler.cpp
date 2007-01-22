@@ -25,6 +25,7 @@ string error_handler::describe(enum error_level e) const
 	case alert: return "alert";
 	case emergency: return "emergency";
 	}
+	return "??";
 }
 
 
