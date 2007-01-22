@@ -244,6 +244,14 @@ public:	// operator overloading
 };
 
 
+class attribute_node;
+class comment_node;
+class element_node;
+class ns_node;
+class pi_node;
+class text_node;
+
+
 /*______________________________________________________________________
 | 6.1 Document Node
 |
@@ -280,7 +288,7 @@ class document_node : public node
 protected:
 	std::string baseuri;
 	std::vector<rchandle<node> > child_hv;
-	hashmap<std::string> unparsed_entity_map;
+	hashmap<std::string> entitymap;
 	std::string docuri;
 
 public:
@@ -302,9 +310,17 @@ public:
 	  context const&,
 	  std::string const& entity_name) const;
 
-protected:
-	bool get_entity(std::string const& entity, std::string & val) const;
-	void put_entity(std::string const& entity, std::string const& val);
+public:
+	bool get_entity(std::string const& entity, std::string & val) const
+		{ return entitymap.get(entity, val); }
+	void put_entity(std::string const& entity, std::string const& val)
+		{ entitymap.put(entity, val); }
+
+	void add_element_node(rchandle<element_node>);
+	void add_text_node(rchandle<text_node>);
+	void add_text_node(nodeid,std::string const&);
+	void add_comment_node(rchandle<comment_node>);
+	void add_pi_node(rchandle<pi_node>);
 
 public:	//ctor,dtor
 
@@ -315,6 +331,9 @@ public:	//ctor,dtor
 
 	document_node(nodeid id) : node(id) {}
 	~document_node() {}
+
+public:
+	std::ostream& put(std::ostream&,context const&) const;
 
 public:
 	class child_iterator : public item_iterator
@@ -361,6 +380,9 @@ public:
 public:	//ctor,dtor
 	collection_node(nodeid id) : node(id) {}
 	~collection_node() {}
+
+public:
+	std::ostream& put(std::ostream& os,context const& ctx) const { return os; }
 
 };
 
@@ -423,12 +445,6 @@ public:	//ctor,dtor
 |			zero-length string. 
 |_______________________________________________________________________*/
 
-class attribute_node;
-class comment_node;
-class ns_node;
-class pi_node;
-class text_node;
-
 class element_node : public node
 {
 	friend class elem_child_iterator;
@@ -436,7 +452,7 @@ class element_node : public node
 
 protected:
 	std::string baseuri;
-	std::string nodename;
+	rchandle<QName> name_h;
 	rchandle<node> parent_h;
 	item_type type;
 	std::vector<rchandle<node> > child_hv;
@@ -466,10 +482,10 @@ public:	// accessors
 	item_type const& get_type(context const&) const;
 	std::string string_value(context const&) const;
 
-protected:
+public:
 	void add_element_node(rchandle<element_node>);
 	void add_text_node(rchandle<text_node>);
-	void add_text_node(std::string const&);
+	void add_text_node(nodeid,std::string const&);
 	void add_attribute_node(rchandle<attribute_node>);
 	void add_ns_node(rchandle<ns_node>);
 	void add_comment_node(rchandle<comment_node>);
@@ -487,12 +503,15 @@ public:	//ctor,dtor
 
 	element_node(
 		nodeid id,
-		std::string const& baseuri,
-		std::string const& nodename,
-		rchandle<node> parent_h);
+		std::string const& _baseuri,
+		rchandle<QName> _name_h,
+		rchandle<node> _parent_h);
 
 	element_node(nodeid id) : node(id) {}
 	~element_node() {}
+
+public:
+	std::ostream& put(std::ostream&,context const&) const;
 
 public:
 
@@ -541,8 +560,6 @@ public:
 
 
 
-
-
 /*______________________________________________________________________
 |
 | 6.3 Attribute Nodes
@@ -565,7 +582,7 @@ public:
 class attribute_node : public node
 {
 protected:
-	rchandle<QName> name;
+	rchandle<QName> name_h;
 	std::string val;
 	rchandle<element_node> parent_h;
 	item_type type;
@@ -589,13 +606,16 @@ public:	// accessors
 
 public:	//ctor,dtor
 	attribute_node(
-		nodeid id,
-		rchandle<QName> name,
-		std::string const& val,
-		rchandle<element_node> parent_h);
+		nodeid _id,
+		rchandle<QName> _name_h,
+		std::string const& _val,
+		rchandle<element_node> _parent_h);
 
   attribute_node(nodeid id) : node(id) {}
   ~attribute_node() {}
+
+public:
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -640,6 +660,9 @@ public:	//ctor,dtor
 	ns_node(nodeid id) : node(id) {}
 	~ns_node() {}
 
+public:
+	std::ostream& put(std::ostream&,context const&) const;
+
 };
 
 
@@ -680,6 +703,9 @@ public:	//ctor,dtor
 	pi_node(nodeid id) : node(id) {}
 	~pi_node() {}
 
+public:
+	std::ostream& put(std::ostream&,context const&) const;
+
 };
 
 
@@ -712,7 +738,6 @@ public:	// accessors
 	item_iterator parent(context const&) const;
 	item_iterator typed_value(context const&) const;
 	
-	item_type const& get_type(context const&) const;
 	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
@@ -724,6 +749,9 @@ public:	//ctor,dtor
 
 	comment_node(nodeid id) : node(id) {}
 	~comment_node() {}
+
+public:
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 
@@ -747,7 +775,7 @@ class text_node : public node
 {
 protected:
 	std::string content;
-	rchandle<element_node> parent_h;
+	rchandle<node> parent_h;
 	
 public:	// accessors
 	nodeid get_nodeid() const { return id; }
@@ -758,7 +786,6 @@ public:	// accessors
 	item_iterator typed_value(context const&) const;
 	item_iterator node_name(const context&) const;
 	
-	item_type const& get_type(context const&) const;
 	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
@@ -766,10 +793,13 @@ public:	//ctor,dtor
 	text_node(
 		nodeid,
 		std::string const& content,
-		rchandle<element_node> parent_h);
+		rchandle<node> parent_h);
 
 	text_node(nodeid id) : node(id) {}
 	~text_node() {}
+
+public:
+	std::ostream& put(std::ostream&,context const&) const;
 
 };
 

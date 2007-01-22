@@ -19,9 +19,20 @@ namespace xqp {
 #define EMPTY_SEQUENCE(X) item_iterator((X))
 
 
-////////////////////////////////
-//	node
-////////////////////////////////
+/*...........................................
+	:             node                        :
+	:.........................................:
+*/
+
+nodeid node::get_nodeid() const
+{
+	return id;
+}
+
+enum node::node_kind_t node::node_kind() const
+{
+	return uninitialized_kind;
+}
 
 item_iterator node::attributes(
 	context const& ctx) const
@@ -89,6 +100,18 @@ item_iterator node::typed_value(
 	return EMPTY_SEQUENCE(ctx);
 }
 
+item_iterator node::type_name(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
+
+item_iterator node::node_name(
+	context const& ctx) const
+{
+	return EMPTY_SEQUENCE(ctx);
+}
+
 item_type const& node::get_type(
 	context const& ctx) const
 {
@@ -117,9 +140,10 @@ item_iterator node::unparsed_entity_system_id(
 
 
 
-////////////////////////////////
-//	document_node::child_iterator
-////////////////////////////////
+/*...........................................
+	:     document_node::child_iterator       :
+	:.........................................:
+*/
 
 document_node::child_iterator::child_iterator(
 	context const& ctx,
@@ -158,9 +182,11 @@ void document_node::child_iterator::rewind()
 }
 
 
-////////////////////////////////
-//	document
-////////////////////////////////
+
+/*...........................................
+	:            document_node                :
+	:.........................................:
+*/
 
 item_iterator document_node::base_uri(
 	context const& ctx) const
@@ -196,7 +222,7 @@ string document_node::string_value(
 	}
 	return oss.str();
 }
-	
+
 item_iterator document_node::unparsed_entity_public_id(
 	context const& ctx,
 	string const& entity_name) const
@@ -219,11 +245,66 @@ item_iterator document_node::unparsed_entity_system_id(
 		return EMPTY_SEQUENCE(ctx);
 }
 
+void document_node::add_element_node(
+	rchandle<element_node> enode_h)
+{
+	child_hv.push_back(dynamic_cast<node*>(&*enode_h));
+}
+
+void document_node::add_text_node(
+	rchandle<text_node> tnode_h)
+{
+	child_hv.push_back(dynamic_cast<node*>(&*tnode_h));
+}
+
+void document_node::add_comment_node(
+	rchandle<comment_node> cnode_h)
+{
+	child_hv.push_back(dynamic_cast<node*>(&*cnode_h));
+}
+
+void document_node::add_pi_node(
+	rchandle<pi_node> pinode_h)
+{
+	child_hv.push_back(dynamic_cast<node*>(&*pinode_h));
+}
+
+void document_node::add_text_node(
+	nodeid id,
+	string const& text)
+{
+	text_node* tnode_p = new text_node(id,text,this);
+	child_hv.push_back(dynamic_cast<node*>(tnode_p));
+}
+
+document_node::document_node(
+	nodeid _id,
+	string const& _baseuri,
+	string const& _docuri)
+:
+	node(id),
+	baseuri(_baseuri),
+	entitymap(1024,0.6),
+	docuri(_docuri)
+{
+}
+
+ostream& document_node::put(ostream& os, context const& ctx) const
+{
+	os << "<?xml version=\"1.0\"?>\n";
+	vector<rchandle<node> >::const_iterator child_it = child_hv.begin();
+	for (; child_it!=child_hv.end(); ++child_it) {
+		(*child_it)->put(os,ctx);
+	}
+	return os;
+}
 
 
-////////////////////////////////
-//	element_node::child_iterator
-////////////////////////////////
+
+/*...........................................
+	:     element_node::child_iterator        :
+	:.........................................:
+*/
 
 element_node::child_iterator::child_iterator(
 	context const& ctx,
@@ -262,9 +343,11 @@ void element_node::child_iterator::rewind()
 }
 
 
-////////////////////////////////
-//	element_node::attr_iterator
-////////////////////////////////
+
+/*...........................................
+	:     element_node::attr_iterator         :
+	:.........................................:
+*/
 
 element_node::attr_iterator::attr_iterator(
 	context const& ctx,
@@ -301,9 +384,11 @@ void element_node::attr_iterator::rewind()
 }
 
 
-////////////////////////////////
-//	element
-////////////////////////////////
+
+/*...........................................
+	:            element nodes                :
+	:.........................................:
+*/
 
 item_iterator element_node::attributes(
 	context const& ctx) const
@@ -356,7 +441,7 @@ bool element_node::nilled(
 item_iterator element_node::node_name(
 	context const& ctx) const
 {
-	return singleton_iterator(ctx,nodename);
+	return singleton_iterator(ctx,name_h->describe(ctx));
 }
 
 item_iterator element_node::parent(
@@ -371,6 +456,12 @@ item_iterator element_node::typed_value(
 	return EMPTY_SEQUENCE(ctx);
 }
 	
+item_type const& element_node::get_type(
+	context const& ctx) const
+{
+	return type;
+}
+
 string element_node::string_value(
 	context const& ctx) const
 {
@@ -394,6 +485,14 @@ void element_node::add_text_node(
 	child_hv.push_back(dynamic_cast<node*>(&*tnode_h));
 }
 
+void element_node::add_text_node(
+	nodeid id,
+	string const& text)
+{
+	text_node* tnode_p = new text_node(id,text,this);
+	child_hv.push_back(dynamic_cast<node*>(tnode_p));
+}
+
 void element_node::add_comment_node(
 	rchandle<comment_node> cnode_h)
 {
@@ -404,13 +503,6 @@ void element_node::add_pi_node(
 	rchandle<pi_node> pinode_h)
 {
 	child_hv.push_back(dynamic_cast<node*>(&*pinode_h));
-}
-
-void element_node::add_text_node(
-	string const& text)
-{
-	text_node* tnode_p = new text_node(rand(),text,this);	//XXX replace rand()
-	child_hv.push_back(dynamic_cast<node*>(tnode_p));
 }
 
 void element_node::add_attribute_node(
@@ -428,20 +520,56 @@ void element_node::add_ns_node(
 element_node::element_node(
 	nodeid _id,
 	string const& _baseuri,
-	string const& _nodename,
+	rchandle<QName> _name_h,
 	rchandle<node> _parent_h)
 :
 	node(_id),
 	baseuri(_baseuri),
-	nodename(_nodename),
+	name_h(_name_h),
 	parent_h(_parent_h)
 {
 }
 
+ostream& element_node::put(ostream& os, context const& ctx) const
+{
+	os << '<';
+	name_h->put(os,ctx);
 
-////////////////////////////////
-//	attribute
-////////////////////////////////
+	vector<rchandle<node> >::const_iterator ns_it = ns_hv.begin();
+	for (; ns_it!=ns_hv.end(); ++ns_it) {
+		os << ' ';
+		(*ns_it)->put(os,ctx);
+	}
+
+	vector<rchandle<node> >::const_iterator attr_it = attr_hv.begin();
+	for (; attr_it!=attr_hv.end(); ++attr_it) {
+		os << ' ';
+		(*attr_it)->put(os,ctx);
+	}
+
+	vector<rchandle<node> >::const_iterator child_it = child_hv.begin();
+	vector<rchandle<node> >::const_iterator child_en = child_hv.end();
+
+	if (child_it==child_en) {
+		os << "/>";
+	}
+	else {
+		os << '>';
+		for (; child_it!=child_en; ++child_it) {
+			(*child_it)->put(os,ctx);
+		}
+		os << "</"; name_h->put(os,ctx) << '>';
+	}
+
+	return os;
+}
+
+
+
+/*...........................................
+	:           attribute nodes               :
+	:.........................................:
+*/
 
 item_iterator attribute_node::base_uri(
 	context const& ctx) const
@@ -466,7 +594,7 @@ bool attribute_node::is_idrefs(
 item_iterator attribute_node::node_name(
 	context const& ctx) const
 {
-	return singleton_iterator(ctx,name->describe(ctx));
+	return singleton_iterator(ctx,name_h->describe(ctx));
 }
 
 item_iterator attribute_node::parent(
@@ -496,21 +624,29 @@ string attribute_node::string_value(
 
 attribute_node::attribute_node(
 	nodeid _id,
-	rchandle<QName> _name,
+	rchandle<QName> _name_h,
 	string const& _val,
 	rchandle<element_node> _parent_h)
 :
 	node(_id),
-	name(_name),
+	name_h(_name_h),
 	val(_val),
 	parent_h(_parent_h)
 {
 }
 
+ostream& attribute_node::put(ostream& os, context const& ctx) const
+{
+	name_h->put(os,ctx);
+	return os << "=\"" << val << '"';
+}
 
-////////////////////////////////
-//	ns nodes
-////////////////////////////////
+
+
+/*...........................................
+	:          namespace nodes                :
+	:.........................................:
+*/
 
 item_iterator ns_node::node_name(
 	context const& ctx) const
@@ -552,12 +688,19 @@ ns_node::ns_node(
 {
 }
 
+ostream& ns_node::put(ostream& os, context const& ctx) const
+{
+	return os << "xmlns:" << prefix << "=\"" << uri << '"';
+}
 
 
-////////////////////////////////
-//	pi
-////////////////////////////////
+
 	
+/*...........................................
+	:    processing instruction nodes         :
+	:.........................................:
+*/
+
 item_iterator pi_node::base_uri(
 	context const& ctx) const
 {
@@ -607,12 +750,17 @@ pi_node::pi_node(
 {
 }
 
+ostream& pi_node::put(ostream& os, context const& ctx) const
+{
+	return os << "<?" << target << " " << content << "?>";
+}
 
 
-/*______________________________________________________________________
-|
-| 6.6 Text Node 
-|_______________________________________________________________________*/
+
+/*...........................................
+	:          comment nodes                  :
+	:.........................................:
+*/
 
 item_iterator comment_node::base_uri(
 	context const& ctx) const
@@ -654,12 +802,17 @@ comment_node::comment_node(
 {
 }
 
+ostream& comment_node::put(ostream& os, context const& ctx) const
+{
+	return os << "<!--" << content << "-->";
+}
 
 
-/*______________________________________________________________________
-|
-| 6.7 Text Node 
-|_______________________________________________________________________*/
+
+/*...........................................
+	:             text nodes                  :
+	:.........................................:
+*/
 
 item_iterator text_node::base_uri(
 	context const& ctx) const
@@ -699,12 +852,17 @@ string text_node::string_value(
 text_node::text_node(
 	nodeid _nodeid,
 	string const& _content,
-	rchandle<element_node> _parent_h)
+	rchandle<node> _parent_h)
 :
 	node(_nodeid),
 	content(_content),
 	parent_h(_parent_h)
 {
+}
+
+ostream& text_node::put(ostream& os, context const& ctx) const
+{
+	return os << content;
 }
 
 

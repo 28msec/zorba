@@ -31,7 +31,7 @@ class object : public rcobject
 {
 public:
 	object() {}
-	~object() {}
+	virtual ~object() {}
 
 };
 

@@ -25,23 +25,23 @@ protected:
 
 public:
 	item_iterator(context const& _ctx) : ctx(_ctx) {}
-	~item_iterator() {}
+	virtual ~item_iterator() {}
   
 public:
 	// aquire resources
-	void open() {}
+	virtual void open() {}
 
 	// release resources
-	void close() {}
+	virtual void close() {}
 
 	// return handle to next item (or NULL)
-	rchandle<item> next() { return NULL; }
+	virtual rchandle<item> next() { return NULL; }
 
 	// return true <=> iterator has no more items
-	bool done() { return true; }
+	virtual bool done() { return true; }
 
 	// rewind the iterator, equivalent to {close();open()}
-	void rewind() {}
+	virtual void rewind() {}
 
 };
 
