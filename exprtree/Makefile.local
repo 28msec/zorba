@@ -29,6 +29,6 @@ ft_expr : ft_expr.h ft_expr.cpp
 
 
 all :	\
-  expr update_expr ft_expr
+  expr expr_test update_expr ft_expr
 
 

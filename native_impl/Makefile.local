@@ -1,24 +1,8 @@
-include ../Makefile.header
-SUFX=do
-BUILD=Build
-
-html_scanner : html_scanner.h html_scanner.cpp
-	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/html_scanner.${SUFX} html_scanner.cpp
-
-scan_handler : scan_handler.h scan_handler.cpp
-	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/scan_handler.${SUFX} scan_handler.cpp
-
-source : source.h source.cpp
-	g++ -c ${CXXOPT} -o ${BUILD}/source.${SUFX} source.cpp
-
-spectrum : spectrum.h spectrum.cpp
+include ../Makefile.header SUFX=do BUILD=Build html_scanner : html_scanner.h html_scanner.cpp g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/html_scanner.${SUFX} html_scanner.cpp scan_handler : scan_handler.h scan_handler.cpp g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/scan_handler.${SUFX} scan_handler.cpp source : source.h source.cpp g++ -c ${CXXOPT} -o ${BUILD}/source.${SUFX} source.cpp spectrum : spectrum.h spectrum.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/spectrum.${SUFX} spectrum.cpp
 
 storage_manager : storage_manager.h storage_manager.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/storage_manager.${SUFX} storage_manager.cpp
-
-tree : tree.h tree.cpp
-	g++ -c ${CXXOPT} -o ${BUILD}/tree.${SUFX} tree.cpp
 
 unicode_decompositions : unicode_decompositions.h unicode_decompositions.cpp
 	g++ -c ${CXXOPT} -o ${BUILD}/unicode_decompositions.${SUFX} unicode_decompositions.cpp
@@ -115,5 +99,3 @@ all : \
 	xml_scanner_test \
 	xml_term_test 
 
-#	tree \
-#	xml_store \
