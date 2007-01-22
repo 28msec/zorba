@@ -60,6 +60,16 @@ QName::QName(
 {
 }
 
+QName::QName(
+	QName const& qn)
+:
+	type(qn.type),
+	prefix(qn.prefix),
+	name(qn.name),
+	namespace_hash(qn.namespace_hash)
+{
+}
+
 QName::~QName()
 {
 }

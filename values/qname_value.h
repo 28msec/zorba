@@ -55,9 +55,8 @@ public:
 		enum qname_type_t,
 		std::string const& name);
 
-	QName(
-		enum qname_type_t);
-
+	QName(enum qname_type_t);
+	QName(QName const&);
 	~QName();
 
 public:

@@ -82,7 +82,7 @@ void fxcharheap::init(bool init_offset)
 
 fxcharheap::~fxcharheap()
 {
-	delete fxary_p;
+	if (fxary_p) delete fxary_p;
 }
 
 

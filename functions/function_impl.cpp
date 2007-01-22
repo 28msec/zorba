@@ -22,12 +22,15 @@ string function_impl::mangle(
 	signature const& sig)
 {
   ostringstream oss;
-  sig.fname.put(oss,ctx) << '(';
+	bool init = true;
+  sig.get_fname()->put(oss,ctx) << '(';
   vector<sequence_type>::const_iterator it = sig.arg_v.begin();
-  for (; it!=sig.arg_v.end(); ++it) {
-    if (it!=sig.arg_v.begin()) oss << ',';
+  for (++it; it!=sig.arg_v.end(); ++it) {
+    if (!init) oss << ',';
+		init = false;
     oss << (*it).describe();
-  } oss << ')' << sig.ret_type.describe();
+  }
+	oss << ')' << sig.return_type().describe();
 	string s = oss.str();
 	signature::sigmap.put(s, &sig);
   return s;

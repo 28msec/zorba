@@ -55,6 +55,30 @@ var_binding::var_binding(
 //  context
 ///////////////////////////////
 
+context::context()
+:
+	namespaces(),
+	in_scope_schema_types(256),
+	in_scope_elem_decls(256),
+	in_scope_attr_decls(256),
+	in_scope_vars(1024),
+	collations(32),
+	context_item(*this),
+	context_position(0),
+	context_size(0),
+	var_values(1024,0.6),
+	function_implementations(1024,0.6),
+	timezone(-8),
+	available_documents(1024,0.6),
+	available_collections(1024,0.6),
+	default_collection("defcol")
+{
+}
+
+context::~context()
+{
+}
+
 string context::get_function_type(
   QName const& fqname, 
   uint32_t arity) const 

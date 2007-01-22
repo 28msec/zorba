@@ -13,8 +13,6 @@
 
 #include "namespace.h"
 
-
-#include "../values/qname_value.h"
 #include "../functions/signature.h"
 #include "../runtime/item_iterator.h"
 #include "../types/base_types.h"
@@ -22,6 +20,7 @@
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
+#include "../values/qname_value.h"
 
 #include <vector>
 
@@ -87,8 +86,8 @@ public:	// types
 	typedef rchandle<collation> collation_h_t;
 
 public:
-	context() : context_item(*this) {}
-	~context() {}
+	context();
+	~context();
 	
 protected:	// XQuery 1.0 static context
 	rchandle<context> parent;

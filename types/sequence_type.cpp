@@ -16,63 +16,19 @@
 using namespace std;
 namespace xqp {
 
-sequence_type sequence_type::ANY_SEQUENCE;			// any sequence of items
-sequence_type sequence_type::SINGLE_ITEM;				// exactly one item, of any kind
-sequence_type sequence_type::SINGLE_ATOMIC;			// exactly one atomic value
-sequence_type sequence_type::OPTIONAL_ATOMIC;		// zero or one atomic values
-sequence_type sequence_type::ATOMIC_SEQUENCE;		// zero or more atomic values
-sequence_type sequence_type::SINGLE_STRING;			// single string
-sequence_type sequence_type::SINGLE_INTEGER;		// single integer
-sequence_type sequence_type::OPTIONAL_INTEGER;	// single integer
-sequence_type sequence_type::OPTIONAL_NODE;			// zero or one nodes
-sequence_type sequence_type::SINGLE_NODE;				// single node
-sequence_type sequence_type::NODE_SEQUENCE;			// sequence of zero or more nodes
-sequence_type sequence_type::NUMERIC_SEQUENCE;	// sequence of zero or more numeric values
-sequence_type sequence_type::EMPTY_SEQUENCE;		// the empty sequence
-
-/*
-void sequence_type::initializer()
-{
-	ANY_SEQUENCE =
-		make_sequence_type(any_item_type::get_instance(), ALLOWS_ZERO_OR_MORE);
-
-	SINGLE_ITEM =
-    make_sequence_type(any_item_type::get_instance(), EXACTLY_ONE);
-
-	SINGLE_ATOMIC =
-    make_sequence_type(atomic_type::get_instance(), EXACTLY_ONE);
-
-	OPTIONAL_ATOMIC =
-    make_sequence_type(atomic_type::get_instance(), ALLOWS_ZERO_OR_ONE);
-
-	ATOMIC_SEQUENCE =
-    make_sequence_type(atomic_type::get_instance(), ALLOWS_ZERO_OR_MORE);
-
-	SINGLE_STRING =
-    make_sequence_type(string_type::get_instance(), EXACTLY_ONE);
-
-	SINGLE_INTEGER =
-    make_sequence_type(integer_type::get_instance(), EXACTLY_ONE);
-
-	OPTIONAL_INTEGER =
-    make_sequence_type(integer_type::get_instance(), ALLOWS_ZERO_OR_ONE);
-
-	OPTIONAL_NODE =
-    make_sequence_type(any_node_test::get_instance(), ALLOWS_ZERO_OR_ONE);
-
-	SINGLE_NODE =
-    make_sequence_type(any_node_test::get_instance(), EXACTLY_ONE);
-
-	NODE_SEQUENCE =
-    make_sequence_type(any_node_test::get_instance(), ALLOWS_ZERO_OR_MORE);
-
-	NUMERIC_SEQUENCE =
-    make_sequence_type(number_type::get_instance(), ALLOWS_ZERO_OR_MORE);
-
-	EMPTY_SEQUENCE =
-    make_sequence_type(empty_sequence::get_instance(), EMPTY);
-}
-*/
+sequence_type sequence_type::ANY_SEQUENCE(item_type(),occurs_zero_or_more);
+sequence_type sequence_type::SINGLE_ITEM(item_type(),occurs_exactly_one);
+sequence_type sequence_type::SINGLE_ATOMIC(atomic_type(),occurs_exactly_one);
+sequence_type sequence_type::OPTIONAL_ATOMIC(atomic_type(),occurs_optionally);
+sequence_type sequence_type::ATOMIC_SEQUENCE(atomic_type(),occurs_zero_or_more);
+sequence_type sequence_type::SINGLE_STRING(item_type(),occurs_exactly_one);
+sequence_type sequence_type::SINGLE_INTEGER(item_type(),occurs_exactly_one);
+sequence_type sequence_type::OPTIONAL_INTEGER(item_type(),occurs_optionally);
+sequence_type sequence_type::OPTIONAL_NODE(item_type(),occurs_optionally);
+sequence_type sequence_type::SINGLE_NODE(item_type(),occurs_exactly_one);
+sequence_type sequence_type::NODE_SEQUENCE(item_type(),occurs_zero_or_more);
+sequence_type sequence_type::NUMERIC_SEQUENCE(item_type(),occurs_zero_or_more);
+sequence_type sequence_type::EMPTY_SEQUENCE(item_type(),occurs_never);
 
 
 sequence_type::sequence_type()
@@ -82,11 +38,9 @@ sequence_type::sequence_type()
 {
 }
 
-
 sequence_type::~sequence_type()
 {
 }
-
 
 sequence_type::sequence_type(
 	item_type _primary,
@@ -97,14 +51,12 @@ sequence_type::sequence_type(
 {
 }
 
-
 sequence_type make_sequence_type(
 	item_type primary, 
 	enum occurrence_t occurs)
 {
 	return sequence_type(primary, occurs);
 }
-
 
 string sequence_type::describe() const
 {
@@ -122,6 +74,5 @@ string sequence_type::describe() const
 	return oss.str();
 }
 
-
-} /* namespace xqp */
+}	/* namepsace xqp */
 

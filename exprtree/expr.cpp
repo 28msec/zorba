@@ -9,8 +9,9 @@
  */
 
 #include "expr.h"
-#include "../parser/parse_constants.h"
 #include "../functions/function_impl.h"
+#include "../parser/indent.h"
+#include "../parser/parse_constants.h"
 #include "../util/Assert.h"
 #include "../util/xqp_exception.h"
 
@@ -21,7 +22,12 @@
 using namespace std;
 namespace xqp {
   
-  
+int printdepth = 0;
+#define DENT		indent[printdepth % 30]
+#define INDENT	indent[++printdepth % 30]
+#define OUTDENT	indent[printdepth-- % 30]
+#define UNDENT	printdepth--
+
 expr::expr(
 	yy::location const& _loc,
 	context const& _ctx)
@@ -71,7 +77,7 @@ ostream& expr_list::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "expr_list[\n";
+	os << INDENT << "expr_list[\n";
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();
 	for (; it!=en; ++it) {
@@ -79,7 +85,7 @@ ostream& expr_list::put(
 		Assert<null_pointer>(e_h!=NULL);
 		e_h->put(os,ctx) << endl;
 	}
-	return os << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -117,16 +123,60 @@ ostream& var_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "var_expr[" << decode_var_kind(get_kind());
+	os << INDENT <<  "var_expr[" << decode_var_kind(get_kind());
 	os << " name="; get_varname()->put(os,ctx);
 	os << ", expr="; get_valexpr()->put(os,ctx);
 	os << ", type=" << get_type()->describe();
-	return os << ']';
+	return os << OUTDENT << "]\n";
 }
 
 
 
 // [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
+
+
+forlet_clause::forlet_clause(
+	enum forlet_t _type,
+	varref_t _var_h,
+	varref_t _pos_var_h,
+	varref_t _score_var_h,
+	exprref_t _expr_h)
+:
+	type(_type),
+	var_h(_var_h),
+	pos_var_h(_pos_var_h),
+	score_var_h(_score_var_h),
+	expr_h(_expr_h)
+{
+}
+
+forlet_clause::~forlet_clause()
+{
+}
+
+ostream & forlet_clause::put(
+	ostream& os,
+	context const& ctx) const
+{
+	os << INDENT << "forlet[";
+	switch (type) {
+	case for_clause: os << "FOR\n"; break;
+	case let_clause: os << "LET\n"; break;
+	default: os << "??\n";
+	}
+	Assert<null_pointer>(var_h!=NULL);
+	var_h->put(os,ctx);
+	if (pos_var_h!=NULL) {
+		os << INDENT << " AT "; pos_var_h->put(os,ctx); UNDENT;
+	}
+	if (score_var_h!=NULL) {
+		os << INDENT << " SCORE "; score_var_h->put(os,ctx); UNDENT;
+	}
+	Assert<null_pointer>(expr_h!=NULL);
+	expr_h->put(os,ctx);
+	return os << OUTDENT << "]\n";
+}
+
 
 flwor_expr::flwor_expr(
 	yy::location const& loc,
@@ -144,74 +194,44 @@ ostream& flwor_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "flwor_expr[\n";
-
-	vector<vartriple_t>::const_iterator var_it = var_begin();
-	vector<vartriple_t>::const_iterator var_en = var_end();
-
-	for (; var_it!=var_en; ++var_it) {
-		vartriple_t vt = *var_it;
-		varref_t v[] = { vt.first, vt.second, vt.third };
-		for (unsigned i=0; i<3; ++i) {
-			varref_t vf_h = v[i];
-			switch (vf_h->kind) {
-			case var_expr::for_var: os << "FOR\n"; break;
-			case var_expr::let_var: os << "LET\n"; break;
-			case var_expr::pos_var: os << "AT\n"; break;
-			case var_expr::score_var: os << "SCORE\n"; break;
-			default: os << "huh??\n";
-			}
-			Assert<null_pointer>(vf_h->varname_h!=NULL);
-			vf_h->varname_h->put(os,ctx);
-			if (vf_h->type_h!=NULL) {
-				os << "AS " << vf_h->type_h->describe() << endl;
-			}
-			switch (vf_h->kind) {
-			case var_expr::for_var: {
-				os << "IN\n";
-				vf_h->valexpr_h->put(os,ctx) << endl;
-				break;
-			}
-			case var_expr::let_var: {
-				os << ":=\n";
-				vf_h->valexpr_h->put(os,ctx) << endl;
-				break;
-			}
-			default: os << "huh??\n";
-			}
-		}
+	os << INDENT << "flwor_expr[\n";
+	vector<forletref_t>::const_iterator it = clause_begin();
+	for (; it!=clause_end(); ++it) {
+		forletref_t fl_h = *it;
+		Assert<null_pointer>(fl_h!=NULL);
+		fl_h->put(os,ctx);
 	}
-
 	if (where_h!=NULL) where_h->put(os,ctx);
 
 	vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
-	vector<orderspec_t>::const_iterator ord_en = orderspec_end();
-
-	for (; ord_it!=ord_en; ++ord_it) {
+	for (; ord_it!=orderspec_end(); ++ord_it) {
 		orderspec_t spec = *ord_it;
 		exprref_t e_h = spec.first;
 		Assert<null_pointer>(e_h!=NULL);
 		orderref_t ord_h = spec.second;
 		Assert<null_pointer>(ord_h!=NULL);
-		os << "ORDERBY\n";
+
+		os << INDENT << "ORDERBY\n";
 		os << e_h->put(os,ctx) << endl;
+		UNDENT;
+
+		os << INDENT;
 		switch (ord_h->dir) {
-		case dir_ascending: os << "ASCENDING\n"; break;
-		case dir_descending: os << "DESCENDING\n"; break;
-		default: os << "??\n";
+		case dir_ascending: os << "ASCENDING "; break;
+		case dir_descending: os << "DESCENDING "; break;
+		default: os << "?? ";
 		}
 		switch (ord_h->empty_mode) {
-		case context::empty_greatest: os << "EMPTY GREATEST\n"; break;
-		case context::empty_least: os << "EMPTY LEAST\n"; break;
-		default: os << "??\n";
+		case context::empty_greatest: os << "EMPTY GREATEST "; break;
+		case context::empty_least: os << "EMPTY LEAST "; break;
+		default: os << "?? ";
 		}
 		os << ord_h->collation << endl;
+		UNDENT;
 	}
-
 	Assert<null_pointer>(retval_h!=NULL);
-	os << "RETURN\n";
-	retval_h->put(os,ctx);
-	return os << "]\n";
+	os << INDENT << "RETURN\n"; retval_h->put(os,ctx); UNDENT;
+	return os << OUTDENT << "]\n";
 
 }
 
@@ -282,20 +302,21 @@ ostream& typeswitch_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "typeswitch_expr[\n";
+	os << INDENT << "typeswitch_expr[\n";
 	Assert<null_pointer>(switch_expr_h!=NULL);
 	switch_expr_h->put(os,ctx);
+
 	vector<case_clause>::const_iterator it = case_clause_hv.begin();
-	vector<case_clause>::const_iterator en = case_clause_hv.end();
-	for (; it!=en; ++it) {
+	for (; it!=case_clause_hv.end(); ++it) {
 		case_clause cc = *it;
-		os << "case ";
+		os << INDENT << "case: ";
 		if (cc.var_h!=NULL) cc.var_h->put(os,ctx) << " as ";
 		os << cc.seqtype.describe() << " return ";
 		Assert<null_pointer>(cc.case_expr_h!=NULL);
 		cc.case_expr_h->put(os,ctx) << endl;
+		UNDENT;
 	}
-	return os << "\n]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -344,17 +365,6 @@ ostream& if_expr::put(
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 ////////////////////////////////
 //	first-order expressions
 ////////////////////////////////
@@ -377,9 +387,9 @@ ostream& fo_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "fo_expr[\n";
+	os << INDENT << "fo_expr[\n";
 	Assert<null_pointer>(func!=NULL);
-	func->sig.fname.put(os,ctx) << endl;
+	func->sig.get_fname()->put(os,ctx) << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();
@@ -388,7 +398,7 @@ ostream& fo_expr::put(
 		Assert<null_pointer>(e_h!=NULL);
 		e_h->put(os,ctx) << endl;
 	}
-	return os << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -463,12 +473,12 @@ ostream& instanceof_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "instanceof_expr[\n";
+	os << INDENT << "instanceof_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "instance of\n";
 	os << seqtype.describe();
-	return os << "\n]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -495,12 +505,12 @@ ostream& treat_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "treat_expr[\n";
+	os << INDENT << "treat_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "treat as\n";
 	os << seqtype.describe();
-	return os << "\n]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -527,13 +537,13 @@ ostream& castable_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "castable_expr[\n";
+	os << INDENT << "castable_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "castable as\n";
 	os << get_atomic_type().describe();
 	if (is_optional()) os << "?";
-	return os << "\n]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -560,13 +570,13 @@ ostream& cast_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "cast_expr[\n";
+	os << INDENT << "cast_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "cast as\n";
 	os << get_atomic_type().describe();
 	if (is_optional()) os << "?";
-	return os << "\n]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -624,7 +634,7 @@ ostream& validate_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "validate_expr[";
+	os << INDENT << "validate_expr[";
 	switch (valmode) {
 	case val_strict: os << "strict\n"; break;
 	case val_lax: os << "lax\n"; break;
@@ -632,7 +642,7 @@ ostream& validate_expr::put(
 	}
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
-	return os << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -655,19 +665,20 @@ ostream& extension_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "extension_expr[\n";
+	os << INDENT << "extension_expr[\n";
 	vector<rchandle<pragma> >::const_iterator it = begin();
-	vector<rchandle<pragma> >::const_iterator en = end();
-	for (; it!=en; ++it) {
+	for (; it!=end(); ++it) {
+		os << INDENT;
 		rchandle<pragma> p_h = *it;
 		Assert<null_pointer>(p_h!=NULL);
 		Assert<null_pointer>(p_h->name_h!=NULL);
-		p_h->name_h->put(os,ctx) << endl;
-		os << p_h->content << endl;
+		os << "?"; p_h->name_h->put(os,ctx);
+		os << " " << p_h->content << endl;
+		UNDENT;
 	}
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
-	return os << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -744,7 +755,7 @@ ostream& axis_step_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "axis_step_expr[";
+	os << INDENT << "axis_step_expr[";
 	switch (axis) {
 	case self: os << "self\n"; break;
 	case child: os << "child\n"; break;
@@ -761,42 +772,44 @@ ostream& axis_step_expr::put(
 	default: os << "??\n";
 	}
 
+	os << INDENT;
 	switch (test) {
-	case no_test: os << "no_test\n"; break;
-	case name_test: os << "name_test\n"; break;
+	case no_test: os << "no_test("; break;
+	case name_test: os << "name_test("; break;
 	case doc_test: {
-		os << "doc_test\n";
+		os << "doc_test(";
 		switch (docnode_test) {
-		case no_test: os << "no_test\n"; break;
-		case elem_test: os << "elem_test\n"; break;
-		case attr_test: os << "attr_test\n"; break;
-		default: os << "??\n";
+		case no_test: os << "no_test("; break;
+		case elem_test: os << "elem_test("; break;
+		case attr_test: os << "attr_test("; break;
+		default: os << "(??";
 		}
 		break;
 	}
-	case elem_test: os << "elem_test\n"; break;
-	case attr_test: os << "attr_test\n"; break;
-	case xs_elem_test: os << "xs_elem_test\n"; break;
-	case xs_attr_test: os << "xs_attr_test\n"; break;
-	case pi_test: os << "pi_test\n"; break;
-	case comment_test: os << "comment_test\n"; break;
-	case text_test: os << "text_test\n"; break;
-	case anykind_test: os << "anykind_test\n"; break;
-	default: os << "??\n";
+	case elem_test: os << "elem_test("; break;
+	case attr_test: os << "attr_test("; break;
+	case xs_elem_test: os << "xs_elem_test("; break;
+	case xs_attr_test: os << "xs_attr_test("; break;
+	case pi_test: os << "pi_test("; break;
+	case comment_test: os << "comment_test("; break;
+	case text_test: os << "text_test("; break;
+	case anykind_test: os << "anykind_test("; break;
+	default: os << "(??";
 	}
 
 	Assert<null_pointer>(name_h!=NULL);
 	switch (wild) {
-	case no_wild: name_h->put(os,ctx) << endl; break;
-	case all_wild: os << "*\n"; break;
-	case prefix_wild: os << "*:"; name_h->put(os,ctx) << endl; break;
-	case name_wild: name_h->put(os,ctx) << ":*\n"; break;
-	default: os << "??\n";
+	case no_wild: name_h->put(os,ctx); break;
+	case all_wild: os << "*"; break;
+	case prefix_wild: os << "*:"; name_h->put(os,ctx); break;
+	case name_wild: name_h->put(os,ctx) << ":*"; break;
+	default: os << "??";
 	}
 
 	if (typename_h!=NULL) {
 		typename_h->put(os,ctx) << endl;
 	}
+	os << OUTDENT << ")\n";
 
 	vector<rchandle<expr> >::const_iterator it = pred_hv.begin();
 	vector<rchandle<expr> >::const_iterator en = pred_hv.end();
@@ -805,7 +818,7 @@ ostream& axis_step_expr::put(
 		Assert<null_pointer>(e_h!=NULL);
 		e_h->put(os,ctx) << endl;
 	}
-	return os << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -899,13 +912,13 @@ ostream& literal_expr::put(
 	context const& ctx) const
 {
 	switch (type) {
-	case lit_string: os << "string[" << sref << "]"; break;
-	case lit_integer: os << "integer[" << ival << "]"; break;
-	case lit_decimal: os << "decimal[" << decval << "]"; break;
-	case lit_double: os << "double[" << dval << "]"; break;
-	default: os << "???[]";
+	case lit_string: os << INDENT << "string[" << sref; break;
+	case lit_integer: os << INDENT << "integer[" << ival; break;
+	case lit_decimal: os << INDENT << "decimal[" << decval; break;
+	case lit_double: os << INDENT << "double[" << dval; break;
+	default: os << INDENT << "???[]";
 	}
-	return os;
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -966,17 +979,16 @@ ostream& funcall_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "funcall_expr[";
+	os << INDENT << "funcall_expr[";
 	Assert<null_pointer>(fname_h!=NULL);
 	fname_h->put(os,ctx) << endl;
 	vector<rchandle<expr> >::const_iterator it = arg_hv.begin();
-	vector<rchandle<expr> >::const_iterator en = arg_hv.end();
-	for (; it!=en; ++it) {
+	for (; it!=arg_hv.end(); ++it) {
 		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
-		e_h->put(os,ctx) << endl;
+		e_h->put(os,ctx);
 	}
-	return os << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -1024,10 +1036,10 @@ ostream& doc_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "doc_expr[\n";
+	os << INDENT << "doc_expr[\n";
 	Assert<null_pointer>(docuri_h!=NULL);
-	docuri_h->put(os,ctx) << endl;
-	return os << "]\n";
+	docuri_h->put(os,ctx);
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -1068,26 +1080,25 @@ ostream& elem_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "elem_expr[\n";
+	os << INDENT << "elem_expr[<";
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os,ctx) << endl;
+		qname_h->put(os,ctx) << ">\n";
 	}
 	else {
-		qname_expr_h->put(os,ctx) << endl;
+		qname_expr_h->put(os,ctx) << ">\n";
 	}
-	Assert<null_pointer>(content_expr_h!=NULL);
-	content_expr_h->put(os,ctx) << endl;
-
 	vector<nsbinding>::const_iterator it = begin();
 	vector<nsbinding>::const_iterator en = end();
 	for (; it!=en; ++it) {
 		nsbinding nsb = *it;
 		string ncname = nsb.first;
 		string nsuri = nsb.second;
-		os << "xmlns:" << ncname << "=\"" << nsuri << "\"\n";
+		os << INDENT << "xmlns:" << ncname << "=\"" << nsuri << "\"\n"; UNDENT;
 	}
-	return os << "]\n";
+	Assert<null_pointer>(content_expr_h!=NULL);
+	content_expr_h->put(os,ctx);
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -1128,7 +1139,7 @@ ostream& attr_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "attr_expr[qname=";
+	os << INDENT << "attr_expr[@";
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
 		qname_h->put(os,ctx);
@@ -1137,9 +1148,9 @@ ostream& attr_expr::put(
 		qname_expr_h->put(os,ctx);
 	}
 	Assert<null_pointer>(val_expr_h!=NULL);
-	os << ", val=";
-	val_expr_h->put(os,ctx) << ']';
-	return os;
+	os << "=";
+	val_expr_h->put(os,ctx);
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -1164,10 +1175,10 @@ ostream& text_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "text_expr[";
+	os << INDENT << "text_expr[";
 	Assert<null_pointer>(text_expr_h!=NULL);
-	text_expr_h->put(os,ctx) << ']';
-	return os;
+	text_expr_h->put(os,ctx);
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -1192,10 +1203,10 @@ ostream& comment_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "comment_expr[";
+	os << INDENT << "comment_expr[";
 	Assert<null_pointer>(comment_expr_h!=NULL);
-	comment_expr_h->put(os,ctx) << ']';
-	return os;
+	comment_expr_h->put(os,ctx);
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -1236,7 +1247,7 @@ ostream& pi_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "pi_expr[target=";
+	os << INDENT << "pi_expr[target=";
 	Assert<bad_arg>(target.length()>0 || target_expr_h!=NULL);
 	if (target.length()>0) {
 		os << target;
@@ -1246,8 +1257,8 @@ ostream& pi_expr::put(
 	}
 	Assert<null_pointer>(content_expr_h!=NULL);
 	os << ", context=";
-	content_expr_h->put(os,ctx) << ']';
-	return os;
+	content_expr_h->put(os,ctx);
+	return os << OUTDENT << "]\n";
 }
 
 

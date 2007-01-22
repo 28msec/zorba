@@ -184,6 +184,53 @@ public:
 
 // [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
 
+class forlet_clause : public rcobject
+{
+public:	// types
+	enum forlet_t {
+		for_clause,
+		let_clause
+	};
+
+	typedef rchandle<var_expr> varref_t;
+	typedef rchandle<expr> exprref_t;
+
+public:	// state
+	enum forlet_t type;
+	varref_t var_h;
+	varref_t pos_var_h;
+	varref_t score_var_h;
+	exprref_t expr_h;
+
+public:	// ctor,dtor
+	forlet_clause(
+		enum forlet_t _type,
+		varref_t _var_h,
+		varref_t _pos_var_h,
+		varref_t _score_var_h,
+		exprref_t _expr_h);
+
+	~forlet_clause();
+
+public:	// accessors
+	enum forlet_t get_type() const { return type; }
+	varref_t get_var() const { return var_h; }
+	varref_t get_pos_var() const { return pos_var_h; }
+	varref_t get_score_var() const { return score_var_h; }
+	exprref_t get_expr() const { return expr_h; }
+
+	void set_type(enum forlet_t v) { type = v; }
+	void set_var(varref_t v) { var_h = v; }
+	void set_pos_var(varref_t v) { pos_var_h = v; }
+	void set_score_var(varref_t v) { score_var_h = v; }
+	void set_expr(exprref_t v) { expr_h = v; }
+
+public:
+	std::ostream& put(ostream&,context const&) const;
+	
+};
+
+
 class flwor_expr : public expr
 /*______________________________________________________________________
 |	::= ForLetClauseList  RETURN  ExprSingle
@@ -192,40 +239,33 @@ class flwor_expr : public expr
 |			|	ForLetClauseList  WhereClause  OrderByClause  RETURN  ExprSingle
 |_______________________________________________________________________*/
 {
-public:
-	typedef rchandle<var_expr> varref_t;
+public:	// types
+	typedef rchandle<forlet_clause> forletref_t;
 	typedef rchandle<order_modifier> orderref_t;
-  typedef triple<varref_t,varref_t,varref_t> vartriple_t;
 	typedef std::pair<exprref_t,orderref_t> orderspec_t;
 
-protected:
-	std::vector<vartriple_t> vartriple_v;
+protected:	// state
+	std::vector<forletref_t> clause_v;
 	std::vector<orderspec_t> orderspec_v;
 	exprref_t where_h;
 	exprref_t retval_h;
 
-public:
+public:	// ctor,dtor
 	flwor_expr(yy::location const&,context const&);
 	~flwor_expr();
 
-public:
-	void add(vartriple_t const& v)
-		{ vartriple_v.push_back(v); } 
+public:	// accessors
+	void add(forletref_t v) { clause_v.push_back(v); } 
+	uint32_t forlet_count() const { return clause_v.size(); }
 
-	uint32_t forlet_count() const
-		{ return vartriple_v.size(); }
+	forletref_t const& operator[](int i) const { return clause_v[i]; }
+	forletref_t & operator[](int i) { return clause_v[i]; }
 
-	vartriple_t & var_at(int i)
-		{ return vartriple_v[i]; }
-	vartriple_t const& var_at(int i) const
-		{ return vartriple_v[i]; }
+	std::vector<forletref_t>::const_iterator clause_begin() const
+		{ return clause_v.begin(); }
+	std::vector<forletref_t>::const_iterator clause_end() const
+		{ return clause_v.end(); }
 
-	std::vector<vartriple_t>::const_iterator var_begin() const
-		{ return vartriple_v.begin(); }
-	std::vector<vartriple_t>::const_iterator var_end() const
-		{ return vartriple_v.end(); }
-
-public:
 	void add(orderspec_t const& v)
 		{ orderspec_v.push_back(v); } 
 
@@ -242,7 +282,6 @@ public:
 	std::vector<orderspec_t>::const_iterator orderspec_end() const
 		{ return orderspec_v.end(); }
 
-public:
 	exprref_t get_where() const { return where_h; }
 	void set_where(exprref_t e_h) { where_h = e_h; }
 
@@ -321,13 +360,7 @@ public:
 	sequence_type seqtype;
 
 public:
-	case_clause()
-	: var_h(NULL),
-		case_expr_h(NULL),
-		seqtype()
-	{
-	}
-
+	case_clause() : var_h(NULL), case_expr_h(NULL), seqtype() { }
 	~case_clause() {}
 
 };
@@ -438,8 +471,6 @@ public:
 //	first-order expressions
 ////////////////////////////////
 
-// fo_expr = vector<expr>,function_impl,
-
 
 // [46] [http://www.w3.org/TR/xquery/#prod-xquery-OrExpr]
 // [47] [http://www.w3.org/TR/xquery/#prod-xquery-AndExpr]
@@ -457,10 +488,8 @@ public:
 	~fo_expr();
 
 public:
-	void add(exprref_t e_h)
-		{ expr_hv.push_back(e_h); }
-	uint32_t size() const
-		{ return expr_hv.size(); }
+	void add(exprref_t e_h) { expr_hv.push_back(e_h); }
+	uint32_t size() const { return expr_hv.size(); }
 
 	exprref_t & operator[](int i)
 		{ return expr_hv[i]; }
@@ -720,6 +749,10 @@ struct pragma : public rcobject
 {
 	rchandle<QName> name_h;
 	std::string content;
+
+	pragma(rchandle<QName> _name_h, std::string const& _content)
+	: name_h(_name_h), content(_content) {}
+	~pragma() {}
 };
 
 
@@ -896,7 +929,7 @@ public:
 	void set_typename(rchandle<QName> v_h) { typename_h = v_h; }
 
 public:
-	void add(exprref_t e_h)
+	void add_pred(exprref_t e_h)
 		{ pred_hv.push_back(e_h); }
 	uint32_t size() const
 		{ return pred_hv.size(); }
@@ -1051,7 +1084,7 @@ public:
 	rchandle<QName> get_fname() const { return fname_h; }
 
 public:
-	void add(exprref_t const& arg_h)
+	void add_arg(exprref_t const& arg_h)
 		{ arg_hv.push_back(arg_h); }
 	uint32_t arg_count() const
 		{ return arg_hv.size(); }

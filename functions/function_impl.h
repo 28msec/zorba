@@ -22,6 +22,10 @@
  
 namespace xqp {
 
+//XXX this type is clearly incomplete,
+//    since it does not contain any method
+//		to return an actual function pointer.
+
 class function_impl : public rcobject
 {
 public:

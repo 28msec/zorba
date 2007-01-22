@@ -9,11 +9,14 @@
 
 #include "expr.h"
 #include "../context/context.h"
+#include "../functions/signature.h"
+#include "../functions/function_impl.h"
 #include "../parser/location.hh"
 #include "../parser/symbol_table.h"
 #include "../types/base_types.h"
 #include "../types/xs_primitive_types.h"
 #include "../types/sequence_type.h"
+#include "../util/xqp_exception.h"
 #include <iostream>
 
 /*
@@ -42,11 +45,13 @@ int main(int argc, char* argv[])
 	uint32_t i2 = symtab.put("symbol2", 7);
 	uint32_t i3 = symtab.put("symbol3", 7);
 
-/*
-	...........................................
+	try {
+
+/*...........................................
 	: literal expresions                      :
 	:.........................................:
 */
+	cout << "\n>>>literal_expr\n";
 	literal_expr lit1(loc, ctx, i1);
 	literal_expr lit2(loc, ctx, i2);
 	literal_expr lit3(loc, ctx, i3);
@@ -68,11 +73,12 @@ int main(int argc, char* argv[])
 	cout << "lit6 [" << literal_expr::decode_type(lit6.get_type()) << "] = ";
 	lit6.put(cout,ctx) << endl;
 
-/*
-	...........................................
+
+/*...........................................
 	: variables                               :
 	:.........................................:
 */
+	cout << "\n>>>var_expr\n";
 	var_expr var1(loc,ctx);
   var1.set_varname(new QName(QName::qn_var,"var1"));
   var1.set_valexpr(&lit1);
@@ -91,57 +97,62 @@ int main(int argc, char* argv[])
 	var3.set_kind(var_expr::pos_var);
   var3.set_type(&sequence_type::SINGLE_ATOMIC);
 
-	cout << "var1 = "; var1.put(cout,ctx) << endl;
-	cout << "var2 = "; var2.put(cout,ctx) << endl;
-	cout << "var3 = "; var3.put(cout,ctx) << endl;
+	var1.put(cout,ctx) << endl;
+	var2.put(cout,ctx) << endl;
+	var3.put(cout,ctx) << endl;
 
-/*
-	...........................................
-	: expr list                               :
+
+/*...........................................
+	: expression list                         :
 	:.........................................:
 */
+	cout << "\n>>>expr_list\n";
 	expr_list exlist1(loc,ctx);
 	exlist1.add(&var1);
 	exlist1.add(&var2);
 	exlist1.add(&var3);
 	exlist1.put(cout,ctx);
 
-/*
-	...........................................
+
+/*...........................................
 	: constructors                            :
 	:.........................................:
 */
+	cout << "\n>>>text_expr\n";
 	text_expr text1(loc, ctx, &lit4);
 	text_expr text2(loc, ctx, &lit5);
 	text_expr text3(loc, ctx, &lit6);
 
-	cout << "text1 = "; text1.put(cout,ctx) << endl;
-	cout << "text2 = "; text2.put(cout,ctx) << endl;
-	cout << "text3 = "; text3.put(cout,ctx) << endl;
+	text1.put(cout,ctx) << endl;
+	text2.put(cout,ctx) << endl;
+	text3.put(cout,ctx) << endl;
 
+	cout << "\n>>>comment_expr\n";
 	comment_expr comment1(loc, ctx, &lit1);
 	comment_expr comment2(loc, ctx, &lit2);
 	comment_expr comment3(loc, ctx, &lit3);
 
-	cout << "comment1 = "; comment1.put(cout,ctx) << endl;
-	cout << "comment2 = "; comment2.put(cout,ctx) << endl;
-	cout << "comment3 = "; comment3.put(cout,ctx) << endl;
+	comment1.put(cout,ctx) << endl;
+	comment2.put(cout,ctx) << endl;
+	comment3.put(cout,ctx) << endl;
 
+	cout << "\n>>>pi_expr\n";
 	pi_expr pi1(loc, ctx, "?PI1", &lit1);
 	pi_expr pi2(loc, ctx, "?PI2", &lit2);
 	pi_expr pi3(loc, ctx, "?PI3", &lit3);
 
-	cout << "pi1 = "; pi1.put(cout,ctx) << endl;
-	cout << "pi2 = "; pi2.put(cout,ctx) << endl;
-	cout << "pi3 = "; pi3.put(cout,ctx) << endl;
+	pi1.put(cout,ctx) << endl;
+	pi2.put(cout,ctx) << endl;
+	pi3.put(cout,ctx) << endl;
 
+	cout << "\n>>>attr_expr\n";
 	attr_expr attr1(loc, ctx, new QName(QName::qn_attr,"attr1"), &lit1);
 	attr_expr attr2(loc, ctx, new QName(QName::qn_attr,"attr2"), &lit2);
 	attr_expr attr3(loc, ctx, new QName(QName::qn_attr,"attr3"), &lit3);
 
-	cout << "attr1 = "; attr1.put(cout,ctx) << endl;
-	cout << "attr2 = "; attr2.put(cout,ctx) << endl;
-	cout << "attr3 = "; attr3.put(cout,ctx) << endl;
+	attr1.put(cout,ctx) << endl;
+	attr2.put(cout,ctx) << endl;
+	attr3.put(cout,ctx) << endl;
 
 	expr_list exlist2(loc,ctx);
 	exlist2.add(&attr1);
@@ -151,136 +162,209 @@ int main(int argc, char* argv[])
 	exlist2.add(&text2);
 	exlist2.add(&text3);
 
+	cout << "\n>>>elem_expr\n";
 	elem_expr elem1(loc, ctx, new QName(QName::qn_elem,"elem1"), &exlist2);
-	cout << "elem1 = "; elem1.put(cout,ctx) << endl;
+	elem_expr::nsbinding ns1("pre1","http://a1.b1.c1");
+	elem_expr::nsbinding ns2("pre2","http://a2.b2.c2");
+	elem1.add(ns1);
+	elem1.add(ns2);
+	elem1.put(cout,ctx) << endl;
 
+	elem_expr elem2(loc, ctx, new QName(QName::qn_elem,"elem2"), &exlist2);
+	elem2.add(ns1);
+	elem2.add(ns2);
+	elem2.put(cout,ctx) << endl;
+
+	cout << "\n>>>doc_expr\n";
 	doc_expr doc1(loc,ctx,&elem1);
 	doc1.put(cout,ctx) << endl;
 
 
+/*...........................................
+	: function call                           :
+	:.........................................:
+*/
+	cout << "\n>>>funcall_expr\n";
+	funcall_expr fun1(loc, ctx, new QName(QName::qn_func,"fun1"));
+	fun1.add_arg(&lit1);
+	fun1.add_arg(&lit2);
+	fun1.add_arg(&lit3);
+	fun1.put(cout,ctx) << endl;
+	for (unsigned i=0; i<fun1.arg_count(); ++i) {
+		cout << "arg[" << i << "] = ";
+		fun1[i]->put(cout,ctx) << endl;
+	}
+
+
+/*...........................................
+	: typeswitch expression                   :
+	:.........................................:
+*/
+	cout << "\n>>>typeswitch_expr\n";
+	typeswitch_expr sw1(loc,ctx);
+	sw1.set_switch_expr(&elem1);
+	sw1.set_default_varname(&var1);
+	sw1.set_default_clause(&elem1);
+
+	case_clause cc1;
+	cc1.var_h = &var2;
+	cc1.case_expr_h = &lit1;
+	cc1.seqtype = sequence_type::ANY_SEQUENCE;
+	sw1.add_clause(cc1);
+
+	case_clause cc2;
+	cc2.var_h = &var3;
+	cc2.case_expr_h = &lit2;
+	cc2.seqtype = sequence_type::ANY_SEQUENCE;
+	sw1.add_clause(cc2);
+
+	sw1.put(cout,ctx);
+
+
+/*...........................................
+	: conditional expression                  :
+	:.........................................:
+*/
+	cout << "\n>>>if_expr\n";
+	if_expr if1(loc, ctx, &lit1, &lit2, &lit3);
+	if1.put(cout,ctx);
+
+	int a=1; 
+	cout << "a = " << a << endl;
+
+
+/*...........................................
+	: cast-related expressions                :
+	:.........................................:
+*/
+	cout << "\n>>>instanceof_expr\n";
+	instanceof_expr inst1(loc,ctx,&lit4,sequence_type::SINGLE_ITEM);
+	inst1.put(cout,ctx) << endl;
+
+	cout << "\n>>>treat_expr\n";
+	treat_expr treat1(loc, ctx, &lit5, sequence_type::SINGLE_INTEGER);
+	treat1.put(cout,ctx) << endl;
+
+	cout << "\n>>>castable_expr\n";
+	castable_expr castable1(loc, ctx, &lit6, single_type_t(atomic_type(),true));
+	castable1.put(cout,ctx) << endl;
+
+	cout << "\n>>>cast_expr\n";
+	cast_expr cast1(loc, ctx, &lit1, single_type_t(atomic_type(),true));
+	cast1.put(cout,ctx) << endl;
+
+
+/*...........................................
+	: validate expression                     :
+	:.........................................:
+*/
+	cout << "\n>>>validate_expr\n";
+	validate_expr val1(loc, ctx, val_strict, &elem1);
+	val1.put(cout,ctx) << endl;
+
+
+/*...........................................
+	: extension expressions                   :
+	:.........................................:
+*/
 /*
-class elem_expr : public expr
-	typedef std::pair<std::string,std::string> nsbinding;
-	elem_expr(loc, ctx, rchandle<QName>, exprref_t);
-	elem_expr(loc, ctx, exprref_t, exprref_t);
-	rchandle<QName> get_qname() const { return qname_h; }
-	exprref_t get_qname_expr() const { return qname_expr_h; }
-	exprref_t get_content_expr() const { return content_expr_h; }
-	void add(nsbinding const& nsb)
-	uint32_t nsbinding_count() const
-	std::vector<nsbinding>::const_iterator begin() const
-	std::vector<nsbinding>::const_iterator end() const
-	nsbinding & operator[](int i)
-	nsbinding const& operator[](int i) const
-	std::ostream& put(std::ostream&, ctx) const;
+	cout << "\n>>>extension_expr\n";
+	extension_expr ext1(loc,ctx);
+	ext1.add(new pragma(new QName(QName::qn_prag,"prag1"), "content1"));
+	ext1.add(new pragma(new QName(QName::qn_prag,"prag2"), "content2"));
+	ext1.put(cout,ctx) << endl;
 */
 
+/*...........................................
+	: path expressions                        :
+	:.........................................:
+*/
+	cout << "\n>>>axis_step_expr\n";
+	axis_step_expr ax1(loc,ctx);
+	ax1.set_axis(axis_step_expr::child);
+	ax1.set_test(axis_step_expr::name_test);
+	ax1.set_name(new QName(QName::qn_elem,"elem1"));
+	ax1.add_pred(&elem1);
+	ax1.put(cout,ctx) << endl;
+
+	axis_step_expr ax2(loc,ctx);
+	ax2.set_axis(axis_step_expr::child);
+	ax2.set_test(axis_step_expr::name_test);
+	ax2.set_name(new QName(QName::qn_elem,"elem2"));
+	ax2.add_pred(&elem2);
+	ax2.put(cout,ctx) << endl;
+
+	relpath_expr path1(loc,ctx);
+	path1.add(&ax1);
+	path1.add(&ax2);
+	path1.put(cout,ctx) << endl;
+
+
+/*...........................................
+	: quantified expressions                  :
+	:.........................................:
+*/
+	cout << "\n>>>quantified_expr\n";
+	quantified_expr quant1(loc,ctx,quant_some);
+	quant1.add(&var1);
+	quant1.set_sat_expr(&elem1);
+	quant1.put(cout,ctx) << endl;
+
+	quantified_expr quant2(loc,ctx,quant_some);
+	quant2.add(&var2);
+	quant2.set_sat_expr(&elem2);
+	quant2.put(cout,ctx) << endl;
+
+
+/*...........................................
+	: FO expressions                          :
+	:.........................................:
+*/
+	cout << "\n>>>fo_expr\n";
+	signature sig1(new QName(QName::qn_func,"func1"));
+	sig1.add_arg(sequence_type::ANY_SEQUENCE);
+	sig1.add_arg(sequence_type::ANY_SEQUENCE);
+	function_impl func1(sig1);
+	fo_expr fo1(loc, ctx);
+	fo1.add(&lit1);
+	fo1.add(&lit2);
+	fo1.set_func(&func1);
+	fo1.put(cout,ctx) << endl;
+
+
+/*...........................................
+	: FLWOR expressions                       :
+	:.........................................:
+*/
+	cout << "\n>>>flwor_expr\n";
+	flwor_expr flwor1(loc,ctx);
+	forlet_clause flc1(forlet_clause::for_clause,&var1,NULL,NULL,&elem1);
+	forlet_clause flc2(forlet_clause::let_clause,&var2,NULL,NULL,&elem2);
+	flwor1.add(&flc1);
+	flwor1.add(&flc2);
+	flwor1.set_where(&var1);
+	flwor1.set_retval(&var2);
+	flwor1.put(cout,ctx) << endl;
+
+
+	} catch (xqp_exception& e) {
+		cout << "Application exception: " << e.get_msg() << endl;
+	} catch (exception& e) {
+		cout << "C++ exception: " << e.what() << endl;
+	} catch (...) {
+		cout << "unrecognized exception" << endl;
+	}
+
+
 };
+
+
+
+
 
 
 
 /*
-
-class order_modifier : public rcobject
-{
-	order_modifier()
-};
-
-
-class flwor_expr : public expr
-{
-	flwor_expr(loc const&,ctx);
-	void add(vartriple_t const& v)
-	uint32_t forlet_count() const
-	vartriple_t & var_at(int i)
-	vartriple_t const& var_at(int i) const
-	std::vector<vartriple_t>::const_iterator var_begin() const
-	std::vector<vartriple_t>::const_iterator var_end() const
-	void add(orderspec_t const& v)
-	uint32_t orderspec_count() const
-	orderspec_t & orderspec_at(int i)
-	orderspec_t const& orderspec_at(int i) const
-	std::vector<orderspec_t>::const_iterator orderspec_begin() const
-	std::vector<orderspec_t>::const_iterator orderspec_end() const
-	exprref_t get_where() const { return where_h; }
-	void set_where(exprref_t e_h) { where_h = e_h; }
-	exprref_t get_retval() const { return retval_h; }
-	void set_retval(exprref_t e_h) { retval_h = e_h; }
-	std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class quantified_expr : public expr
-{
-	quantified_expr(loc, ctx, enum quantification_mode_t);
-	void add(varref_t const& var_h)
-	uint32_t var_count() const
-	varref_t & operator[](int i)
-	varref_t const& operator[](int i) const
-	std::vector<varref_t>::const_iterator begin() const
-	std::vector<varref_t>::const_iterator end() const
-	enum quantification_mode_t get_qmode() const { return qmode; }
-	void set_qmode(enum quantification_mode_t _qmode) { qmode = _qmode; }
-	exprref_t get_sat_expr() const { return sat_expr_h; }
-	void set_sat_expr(exprref_t e_h) { sat_expr_h = e_h; }
-	std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class case_clause : public rcobject
-{
-	case_clause()
-};
-
-
-class typeswitch_expr : public expr
-{
-	typeswitch_expr(loc const&, ctx);
-	exprref_t get_switch_expr() const
-	void set_switch_expr(exprref_t e_h)
-	varref_t get_default_varname() const
-	void set_default_varname(varref_t const& var_h)
-	exprref_t get_default_clause() const
-	void set_default_clause(exprref_t const& e_h)
-	void add_clause(case_clause cc)
-	std::vector<case_clause>::const_iterator begin() const
-	std::vector<case_clause>::const_iterator end() const
-	uint32_t clause_count() const
-	case_clause & operator[](int i)
-	case_clause const& operator[](int i) const
-	std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class if_expr : public expr
-{
-	if_expr(loc, ctx, exprref_t, exprref_t, exprref_t);
-	if_expr(loc, ctx);
-	exprref_t get_cond_expr() const { return cond_expr_h; }
-	void set_cond_expr(exprref_t e_h) { cond_expr_h = e_h; }
-	exprref_t get_then_expr() const { return then_expr_h; }
-	void set_then_expr(exprref_t e_h) { then_expr_h = e_h; }
-	exprref_t get_else_expr() const { return else_expr_h; }
-	void set_else_expr(exprref_t e_h) { else_expr_h = e_h; }
-	std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class fo_expr : public expr
-{
-	fo_expr(loc const&, ctx);
-	void add(exprref_t e_h)
-	uint32_t size() const
-	exprref_t & operator[](int i)
-	exprref_t const& operator[](int i) const
-	std::vector<exprref_t >::const_iterator begin() const
-	std::vector<exprref_t >::const_iterator end() const
-	function_impl const* get_func() const { return func; }
-	void set_func(function_impl const* _func) { func = _func; }
-	virtual std::ostream& put(std::ostream&, ctx) const;
-};
-
-
 class ft_contains_expr : public expr
 	ft_contains_expr(loc, ctx, exprref_t, exprref_t, exprref_t);
 	exprref_t get_range() const { return range_h; }
@@ -289,133 +373,12 @@ class ft_contains_expr : public expr
 	virtual std::ostream& put(std::ostream&, ctx) const;
 };
 
-
-class instanceof_expr : public expr
-{
-	instanceof_expr(loc, ctx, exprref_t, sequence_type const&);
-	exprref_t get_expr() const { return expr_h; }
-	sequence_type get_seqtype() const { return seqtype; }
-	virtual std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class treat_expr : public expr
-	treat_expr(loc, ctx, exprref_t, sequence_type const&);
-	exprref_t get_expr() const { return expr_h; }
-	sequence_type get_seqtype() const { return seqtype; }
-	virtual std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class castable_expr : public expr
-{
-	castable_expr(loc, ctx, exprref_t, single_type_t);
-	exprref_t get_cast_expr() const { return expr_h; }
-	single_type_t get_type() const { return stype; }
-	atomic_type get_atomic_type() const { return stype.first; }
-	bool is_optional() const { return stype.second; }
-	virtual std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class cast_expr : public expr
-	cast_expr(loc, ctx, exprref_t, single_type_t);
-	exprref_t get_unary_expr() const { return expr_h; }
-	single_type_t get_type() const { return stype; }
-	atomic_type get_atomic_type() const { return stype.first; }
-	bool is_optional() const { return stype.second; }
-	virtual std::ostream& put(std::ostream&,ctx) const;
-};
-
-
 class unary_expr : public expr
 	unary_expr(loc, ctx, bool neg_b, exprref_t);
 	bool is_negative() const { return neg_b; }
 	exprref_t get_expr() const { return expr_h; }
 	virtual std::ostream& put(std::ostream&,ctx) const;
 };
-
-
-class validate_expr : public expr
-	validate_expr(loc, ctx, enum validation_mode_t, exprref_t);
-	exprref_t get_expr() const { return expr_h; }
-	enum validation_mode_t get_valmode() const { return valmode; }
-	std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-struct pragma : public rcobject
-{
-	rchandle<QName> name_h;
-	std::string content;
-};
-
-
-class extension_expr : public expr
-	extension_expr(loc const&,ctx);
-	void add(rchandle<pragma> pragma_h)
-	uint32_t size() const
-	rchandle<pragma> & operator[](int i)
-	rchandle<pragma> const& operator[](int i) const
-	std::vector<rchandle<pragma> >::const_iterator begin() const
-	std::vector<rchandle<pragma> >::const_iterator end() const
-	exprref_t get_expr() const { return expr_h; }
-	std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class relpath_expr : public expr
-	relpath_expr(loc const&,ctx);
-	void add(exprref_t step_h)
-	uint32_t size() const
-	std::vector<exprref_t >::const_iterator begin() const
-	std::vector<exprref_t >::const_iterator end() const
-	exprref_t& operator[](int n)
-	exprref_t const& operator[](int n) const
-	std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class step_expr : public expr
-	step_expr(loc const&,ctx);
-	virtual std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class axis_step_expr : public expr
-	enum axis_t { self, child, parent, descendant, descendant_or_self, ancestor, ancestor_or_self, following_sibling, following, preceding_sibling, preceding, attribute };
-
-	enum test_t { no_test, name_test, doc_test, elem_test, attr_test, xs_elem_test, xs_attr_test, pi_test, comment_test, text_test, anykind_test };
-
-	enum wild_t { no_wild, all_wild, prefix_wild, name_wild };
-	axis_step_expr(loc,ctx);
-	axis_t get_axis() const { return axis; }
-	test_t get_test() const { return test; }
-	test_t get_docnode_test() const { return docnode_test; }
-	wild_t get_wild() const { return wild; }
-	rchandle<QName> get_name() const { return name_h; }
-	rchandle<QName> get_typename() const { return typename_h; }
-	void set_axis(axis_t v) { axis = v; }
-	void set_test(test_t v) { test = v; }
-	void set_docnode_test(test_t v) { docnode_test = v; }
-	void set_wild(wild_t v) { wild = v; }
-	void set_name(rchandle<QName> v_h) { name_h = v_h; }
-	void set_typename(rchandle<QName> v_h) { typename_h = v_h; }
-	void add(exprref_t e_h)
-	uint32_t size() const
-	exprref_t & operator[](int i)
-	exprref_t const& operator[](int i) const
-	std::vector<exprref_t >::const_iterator begin() const
-	std::vector<exprref_t >::const_iterator end() const
-	virtual std::ostream& put(std::ostream&,ctx) const;
-};
-
-
-class primary_expr : public expr
-	primary_expr(loc, ctx);
-	virtual std::ostream& put(std::ostream&,ctx) const;
-};
-
 
 class order_expr : public expr
 	enum order_type_t { ordered, unordered };
@@ -424,20 +387,5 @@ class order_expr : public expr
 	exprref_t get_expr() const { return expr_h; }
 	std::ostream& put(std::ostream&, ctx) const;
 };
-
-
-class funcall_expr : public expr
-	funcall_expr(loc, ctx, rchandle<QName>);
-	rchandle<QName> get_fname() const { return fname_h; }
-	void add(exprref_t const& arg_h)
-	uint32_t arg_count() const
-	std::vector<exprref_t >:: const_iterator begin() const
-	std::vector<exprref_t >:: const_iterator end() const
-	exprref_t & operator[](int i)
-	exprref_t const& operator[](int i) const
-	std::ostream& put(std::ostream&, ctx) const;
-};
-
-
 */
 

@@ -41,7 +41,7 @@ all : \
 	values \
 	qname_value \
 	xs_primitive_values \
-#	node_values \
+	node_values \
 	ft_values \
 	update_values
 
