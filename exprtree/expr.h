@@ -762,16 +762,24 @@ class extension_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<pragma> > pragma_hv;
+	rchandle<pragma> pragma_h;
 	exprref_t expr_h;
 
 public:
-	extension_expr(yy::location const&,context const&);
+	extension_expr(
+		yy::location const&,
+		context const&);
+	extension_expr(
+		yy::location const&,
+		context const&,
+		exprref_t);
 	~extension_expr();
 
 public:
-	void add(rchandle<pragma> pragma_h)
-		{ pragma_hv.push_back(pragma_h); }
+	void add(rchandle<pragma> _pragma_h) { pragma_h = _pragma_h; }
+	void add(exprref_t _expr_h) { expr_h = _expr_h; }
+
+/*
 	uint32_t size() const
 		{ return pragma_hv.size(); }
 
@@ -784,6 +792,7 @@ public:
 		{ return pragma_hv.begin(); }
 	std::vector<rchandle<pragma> >::const_iterator end() const
 		{ return pragma_hv.end(); }
+*/
 
 public:
 	exprref_t get_expr() const { return expr_h; }

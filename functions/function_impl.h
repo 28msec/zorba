@@ -11,14 +11,11 @@
 #ifndef XQP_FUNCTION_IMPL_H
 #define XQP_FUNCTION_IMPL_H
 
-#include <vector>
-#include <string>
-
 #include "signature.h"
 #include "../context/context.h"
-#include "../types/sequence_type.h"
-#include "../values/qname_value.h"
-#include "../util/hashmap.h"
+#include "../util/rchandle.h"
+
+#include <string>
  
 namespace xqp {
 
@@ -29,15 +26,20 @@ namespace xqp {
 class function_impl : public rcobject
 {
 public:
-	signature sig;
+	rchandle<signature> sig_h;
 
 public:
-	function_impl(signature const& _sig) : sig(_sig) {}
+	function_impl(rchandle<signature> _sig_h) : sig_h(_sig_h) {}
 	~function_impl() {}
 
 public:
-  static std::string mangle(context const&,signature const& sig);
-  static signature const* demangle(context const&,std::string const& sig);
+  static std::string mangle(
+		context const&,
+		signature const& sig);
+
+  static signature const* demangle(
+		context const&,
+		std::string const& sigstr);
 
 };
 

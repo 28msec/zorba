@@ -257,7 +257,7 @@ ostream& quantified_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "quantified_expr[\n";
+	os << INDENT << "quantified_expr[";
 	switch (qmode) {
 	case quant_some: os << "SOME\n"; break;
 	case quant_every: os << "EVERY\n"; break;
@@ -271,15 +271,17 @@ ostream& quantified_expr::put(
 		varref_t var_h = *it;
 		Assert<null_pointer>(var_h!=NULL);
 		Assert<null_pointer>(var_h->varname_h!=NULL);
+		os << INDENT;
 		var_h->varname_h->put(os,ctx) << " in ";
 		Assert<null_pointer>(var_h->valexpr_h!=NULL);
 		var_h->valexpr_h->put(os,ctx) << endl;
+		UNDENT;
 	}
 
-	os << " satisfies\n";
+	os << " SATISFIES\n";
 	Assert<null_pointer>(sat_expr_h!=NULL);
 	sat_expr_h->put(os,ctx);
-	return os << "\n]\n";
+	return os << OUTDENT << "\n]\n";
 }
 
 
@@ -353,14 +355,14 @@ ostream& if_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << "if_expr[\n";
+	os << INDENT << "if_expr[\n";
 	Assert<null_pointer>(cond_expr_h!=NULL);
 	cond_expr_h->put(os,ctx);
 	Assert<null_pointer>(then_expr_h!=NULL);
 	then_expr_h->put(os,ctx);
 	Assert<null_pointer>(else_expr_h!=NULL);
 	else_expr_h->put(os,ctx);
-	return os << "\n]\n";
+	return os << OUTDENT << "\n]\n";
 }
 
 
@@ -389,7 +391,7 @@ ostream& fo_expr::put(
 {
 	os << INDENT << "fo_expr[\n";
 	Assert<null_pointer>(func!=NULL);
-	func->sig.get_fname()->put(os,ctx) << endl;
+	func->sig_h->get_fname()->put(os,ctx) << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();
@@ -657,6 +659,16 @@ extension_expr::extension_expr(
 {
 }
 
+extension_expr::extension_expr(
+	yy::location const& loc,
+	context const& ctx,
+	exprref_t _expr_h)
+:
+	expr(loc,ctx),
+	expr_h(_expr_h)
+{
+}
+
 extension_expr::~extension_expr()
 {
 }
@@ -666,6 +678,7 @@ ostream& extension_expr::put(
 	context const& ctx) const
 {
 	os << INDENT << "extension_expr[\n";
+	/*
 	vector<rchandle<pragma> >::const_iterator it = begin();
 	for (; it!=end(); ++it) {
 		os << INDENT;
@@ -676,6 +689,15 @@ ostream& extension_expr::put(
 		os << " " << p_h->content << endl;
 		UNDENT;
 	}
+	*/
+
+	os << INDENT;
+	Assert<null_pointer>(pragma_h!=NULL);
+	Assert<null_pointer>(pragma_h->name_h!=NULL);
+	os << "?"; pragma_h->name_h->put(os,ctx);
+	os << " " << pragma_h->content << endl;
+	UNDENT;
+
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	return os << OUTDENT << "]\n";

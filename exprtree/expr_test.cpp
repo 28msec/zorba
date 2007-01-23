@@ -47,306 +47,333 @@ int main(int argc, char* argv[])
 
 	try {
 
-/*...........................................
-	: literal expresions                      :
-	:.........................................:
-*/
-	cout << "\n>>>literal_expr\n";
-	literal_expr lit1(loc, ctx, i1);
-	literal_expr lit2(loc, ctx, i2);
-	literal_expr lit3(loc, ctx, i3);
-	literal_expr lit4(loc, ctx, 123);
-	literal_expr lit5(loc, ctx, 123456);
-	literal_expr lit6(loc, ctx, 123.456);
+		rchandle<QName> qnv1_h = new QName(QName::qn_var,"var1");
+		rchandle<QName> qnv2_h = new QName(QName::qn_var,"var2");
+		rchandle<QName> qnv3_h = new QName(QName::qn_var,"var3");
 
-	cout << "lit1 [" << literal_expr::decode_type(lit1.get_type()) << "] = ";
-	lit1.put(cout,ctx) << " : " << symtab.get(lit1.get_sref()) << endl;
-	cout << "lit2 [" << literal_expr::decode_type(lit2.get_type()) << "] = ";
-	lit2.put(cout,ctx) << " : " << symtab.get(lit2.get_sref()) << endl;
-	cout << "lit3 [" << literal_expr::decode_type(lit3.get_type()) << "] = ";
-	lit3.put(cout,ctx) << " : " << symtab.get(lit3.get_sref()) << endl;
+		rchandle<QName> qna1_h = new QName(QName::qn_attr,"attr1");
+		rchandle<QName> qna2_h = new QName(QName::qn_attr,"attr2");
+		rchandle<QName> qna3_h = new QName(QName::qn_attr,"attr3");
 
-	cout << "lit4 [" << literal_expr::decode_type(lit4.get_type()) << "] = ";
-	lit4.put(cout,ctx) << endl;
-	cout << "lit5 [" << literal_expr::decode_type(lit5.get_type()) << "] = ";
-	lit5.put(cout,ctx) << endl;
-	cout << "lit6 [" << literal_expr::decode_type(lit6.get_type()) << "] = ";
-	lit6.put(cout,ctx) << endl;
+		rchandle<QName> qne1_h = new QName(QName::qn_elem,"elem1");
+		rchandle<QName> qne2_h = new QName(QName::qn_elem,"elem2");
+		rchandle<QName> qne3_h = new QName(QName::qn_elem,"elem3");
+
+		rchandle<QName> qnf1_h = new QName(QName::qn_func,"func1");
+
+		rchandle<QName> qnp1_h = new QName(QName::qn_prag,"prag1");
+		rchandle<QName> qnp2_h = new QName(QName::qn_prag,"prag1");
 
 
-/*...........................................
-	: variables                               :
-	:.........................................:
-*/
-	cout << "\n>>>var_expr\n";
-	var_expr var1(loc,ctx);
-  var1.set_varname(new QName(QName::qn_var,"var1"));
-  var1.set_valexpr(&lit1);
-	var1.set_kind(var_expr::for_var);
-  var1.set_type(&sequence_type::SINGLE_ATOMIC);
+	/*...........................................
+		: literal expresions                      :
+		:.........................................:
+	*/
+		cout << "\n>>>literal_expr\n";
+		rchandle<literal_expr> lit1_h = new literal_expr(loc, ctx, i1);
+		rchandle<literal_expr> lit2_h = new literal_expr(loc, ctx, i2);
+		rchandle<literal_expr> lit3_h = new literal_expr(loc, ctx, i3);
+		rchandle<literal_expr> lit4_h = new literal_expr(loc, ctx, 123);
+		rchandle<literal_expr> lit5_h = new literal_expr(loc, ctx, 123456);
+		rchandle<literal_expr> lit6_h = new literal_expr(loc, ctx, 123.456);
+	
+		cout << "lit1 [" << literal_expr::decode_type(lit1_h->get_type()) << "] = ";
+		lit1_h->put(cout,ctx) << " : " << symtab.get(lit1_h->get_sref()) << endl;
+		cout << "lit2 [" << literal_expr::decode_type(lit2_h->get_type()) << "] = ";
+		lit2_h->put(cout,ctx) << " : " << symtab.get(lit2_h->get_sref()) << endl;
+		cout << "lit3 [" << literal_expr::decode_type(lit3_h->get_type()) << "] = ";
+		lit3_h->put(cout,ctx) << " : " << symtab.get(lit3_h->get_sref()) << endl;
+	
+		cout << "lit4 [" << literal_expr::decode_type(lit4_h->get_type()) << "] = ";
+		lit4_h->put(cout,ctx) << endl;
+		cout << "lit5 [" << literal_expr::decode_type(lit5_h->get_type()) << "] = ";
+		lit5_h->put(cout,ctx) << endl;
+		cout << "lit6 [" << literal_expr::decode_type(lit6_h->get_type()) << "] = ";
+		lit6_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: variables                               :
+		:.........................................:
+	*/
+		cout << "\n>>>var_expr\n";
+		rchandle<var_expr> var1_h = new var_expr(loc,ctx);
+	  var1_h->set_varname(&*qnv1_h);
+	  var1_h->set_valexpr(&*lit1_h);
+		var1_h->set_kind(var_expr::for_var);
+	  var1_h->set_type(&sequence_type::SINGLE_ATOMIC);
+	
+		rchandle<var_expr> var2_h = new var_expr(loc,ctx);
+	  var2_h->set_varname(&*qnv2_h);
+	  var2_h->set_valexpr(&*lit1_h);
+		var2_h->set_kind(var_expr::let_var);
+	  var2_h->set_type(&sequence_type::SINGLE_ATOMIC);
+	
+		rchandle<var_expr> var3_h = new var_expr(loc,ctx);
+	  var3_h->set_varname(&*qnv3_h);
+	  var3_h->set_valexpr(&*lit1_h);
+		var3_h->set_kind(var_expr::pos_var);
+	  var3_h->set_type(&sequence_type::SINGLE_ATOMIC);
+	
+		var1_h->put(cout,ctx) << endl;
+		var2_h->put(cout,ctx) << endl;
+		var3_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: expression list                         :
+		:.........................................:
+	*/
+		cout << "\n>>>expr_list\n";
+		rchandle<expr_list> exlist1_h = new expr_list(loc,ctx);
+		exlist1_h->add(&*var1_h);
+		exlist1_h->add(&*var2_h);
+		exlist1_h->add(&*var3_h);
+		exlist1_h->put(cout,ctx);
+	
+	
+	/*...........................................
+		: constructors                            :
+		:.........................................:
+	*/
+		cout << "\n>>>text_expr\n";
+		rchandle<text_expr> text1_h = new text_expr(loc, ctx, &*lit4_h);
+		rchandle<text_expr> text2_h = new text_expr(loc, ctx, &*lit5_h);
+		rchandle<text_expr> text3_h = new text_expr(loc, ctx, &*lit6_h);
+	
+		text1_h->put(cout,ctx) << endl;
+		text2_h->put(cout,ctx) << endl;
+		text3_h->put(cout,ctx) << endl;
+	
+		cout << "\n>>>comment_expr\n";
+		rchandle<comment_expr> comment1_h = new comment_expr(loc, ctx, &*lit1_h);
+		rchandle<comment_expr> comment2_h = new comment_expr(loc, ctx, &*lit2_h);
+		rchandle<comment_expr> comment3_h = new comment_expr(loc, ctx, &*lit3_h);
+	
+		comment1_h->put(cout,ctx) << endl;
+		comment2_h->put(cout,ctx) << endl;
+		comment3_h->put(cout,ctx) << endl;
+	
+		cout << "\n>>>pi_expr\n";
+		rchandle<pi_expr> pi1_h = new pi_expr(loc, ctx, "?PI1", &*lit1_h);
+		rchandle<pi_expr> pi2_h = new pi_expr(loc, ctx, "?PI2", &*lit2_h);
+		rchandle<pi_expr> pi3_h = new pi_expr(loc, ctx, "?PI3", &*lit3_h);
+	
+		pi1_h->put(cout,ctx) << endl;
+		pi2_h->put(cout,ctx) << endl;
+		pi3_h->put(cout,ctx) << endl;
+	
+		cout << "\n>>>attr_expr\n";
+		rchandle<attr_expr> attr1_h = new attr_expr(loc, ctx, &*qna1_h, &*lit1_h);
+		rchandle<attr_expr> attr2_h = new attr_expr(loc, ctx, &*qna2_h, &*lit2_h);
+		rchandle<attr_expr> attr3_h = new attr_expr(loc, ctx, &*qna3_h, &*lit3_h);
+	
+		attr1_h->put(cout,ctx) << endl;
+		attr2_h->put(cout,ctx) << endl;
+		attr3_h->put(cout,ctx) << endl;
+	
+		rchandle<expr_list> exprlist2_h = new expr_list(loc,ctx);
+		exprlist2_h->add(&*attr1_h);
+		exprlist2_h->add(&*attr2_h);
+		exprlist2_h->add(&*attr3_h);
+		exprlist2_h->add(&*text1_h);
+		exprlist2_h->add(&*text2_h);
+		exprlist2_h->add(&*text3_h);
+	
+		cout << "\n>>>elem_expr\n";
+		rchandle<elem_expr> elem1_h = new elem_expr(loc, ctx, &*qne1_h, &*exprlist2_h);
+		elem_expr::nsbinding ns1("pre1","http://a1.b1.c1");
+		elem_expr::nsbinding ns2("pre2","http://a2.b2.c2");
+		elem1_h->add(ns1);
+		elem1_h->add(ns2);
+		elem1_h->put(cout,ctx) << endl;
+	
+		rchandle<elem_expr> elem2_h = new elem_expr(loc, ctx, &*qne2_h, &*exprlist2_h);
+		elem2_h->add(ns1);
+		elem2_h->add(ns2);
+		elem2_h->put(cout,ctx) << endl;
+	
+		cout << "\n>>>doc_expr\n";
+		rchandle<doc_expr> doc1_h = new doc_expr(loc, ctx, &*elem1_h);
+		doc1_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: function call                           :
+		:.........................................:
+	*/
+		cout << "\n>>>funcall_expr\n";
+		rchandle<funcall_expr> fun1_h = new funcall_expr(loc, ctx, &*qnf1_h);
+		fun1_h->add_arg(&*lit1_h);
+		fun1_h->add_arg(&*lit2_h);
+		fun1_h->add_arg(&*lit3_h);
+		fun1_h->put(cout,ctx) << endl;
+		for (unsigned i=0; i<fun1_h->arg_count(); ++i) {
+			cout << "arg[" << i << "] = ";
+			(*fun1_h)[i]->put(cout,ctx) << endl;
+		}
+	
+	
+	/*...........................................
+		: typeswitch expression                   :
+		:.........................................:
+	*/
+		cout << "\n>>>typeswitch_expr\n";
+		rchandle<typeswitch_expr> sw1_h = new typeswitch_expr(loc,ctx);
+		sw1_h->set_switch_expr(&*elem1_h);
+		sw1_h->set_default_varname(&*var1_h);
+		sw1_h->set_default_clause(&*elem1_h);
+	
+		case_clause cc1;
+		cc1.var_h = var2_h;
+		cc1.case_expr_h = &*lit1_h;
+		cc1.seqtype = sequence_type::ANY_SEQUENCE;
+		sw1_h->add_clause(cc1);
+	
+		case_clause cc2;
+		cc2.var_h = var3_h;
+		cc2.case_expr_h = &*lit2_h;
+		cc2.seqtype = sequence_type::ANY_SEQUENCE;
+		sw1_h->add_clause(cc2);
+		sw1_h->put(cout,ctx);
+	
+	
+	/*...........................................
+		: conditional expression                  :
+		:.........................................:
+	*/
+		cout << "\n>>>if_expr\n";
+		rchandle<if_expr> if1_h = new if_expr(loc, ctx, &*lit1_h, &*lit2_h, &*lit3_h);
+		if1_h->put(cout,ctx);
+	
+	
+	/*...........................................
+		: cast-related expressions                :
+		:.........................................:
+	*/
+		cout << "\n>>>instanceof_expr\n";
+		rchandle<instanceof_expr> inst1_h =
+			new instanceof_expr(loc,ctx,&*lit4_h,sequence_type::SINGLE_ITEM);
+		inst1_h->put(cout,ctx) << endl;
+	
+		cout << "\n>>>treat_expr\n";
+		rchandle<treat_expr> treat1_h =
+			new treat_expr(loc, ctx, &*lit5_h, sequence_type::SINGLE_INTEGER);
+		treat1_h->put(cout,ctx) << endl;
+	
+		cout << "\n>>>castable_expr\n";
+		rchandle<castable_expr> castable1_h =
+			new castable_expr(loc, ctx, &*lit6_h, single_type_t(atomic_type(),true));
+		castable1_h->put(cout,ctx) << endl;
+	
+		cout << "\n>>>cast_expr\n";
+		rchandle<cast_expr> cast1_h =
+			new cast_expr(loc, ctx, &*lit1_h, single_type_t(atomic_type(),true));
+		cast1_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: validate expression                     :
+		:.........................................:
+	*/
+		cout << "\n>>>validate_expr\n";
+		rchandle<validate_expr> val1_h =
+			new validate_expr(loc, ctx, val_strict, &*elem1_h);
+		val1_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: extension expressions                   :
+		:.........................................:
+	*/
+		cout << "\n>>>extension_expr\n";
+		rchandle<extension_expr> ext1_h =
+			new extension_expr(loc,ctx,&*lit1_h);
+		rchandle<pragma> prag1_h = new pragma(&*qnp1_h, "content1");
+		//rchandle<pragma> prag2_h = new pragma(&*qnp2_h, "content2");
+		ext1_h->add(prag1_h);
+		//ext1_h->add(prag2_h);
+		ext1_h->put(cout,ctx) << endl;
 
-	var_expr var2(loc,ctx);
-  var2.set_varname(new QName(QName::qn_var,"var2"));
-  var2.set_valexpr(&lit1);
-	var2.set_kind(var_expr::let_var);
-  var2.set_type(&sequence_type::SINGLE_ATOMIC);
-
-	var_expr var3(loc,ctx);
-  var3.set_varname(new QName(QName::qn_var,"var3"));
-  var3.set_valexpr(&lit1);
-	var3.set_kind(var_expr::pos_var);
-  var3.set_type(&sequence_type::SINGLE_ATOMIC);
-
-	var1.put(cout,ctx) << endl;
-	var2.put(cout,ctx) << endl;
-	var3.put(cout,ctx) << endl;
-
-
-/*...........................................
-	: expression list                         :
-	:.........................................:
-*/
-	cout << "\n>>>expr_list\n";
-	expr_list exlist1(loc,ctx);
-	exlist1.add(&var1);
-	exlist1.add(&var2);
-	exlist1.add(&var3);
-	exlist1.put(cout,ctx);
-
-
-/*...........................................
-	: constructors                            :
-	:.........................................:
-*/
-	cout << "\n>>>text_expr\n";
-	text_expr text1(loc, ctx, &lit4);
-	text_expr text2(loc, ctx, &lit5);
-	text_expr text3(loc, ctx, &lit6);
-
-	text1.put(cout,ctx) << endl;
-	text2.put(cout,ctx) << endl;
-	text3.put(cout,ctx) << endl;
-
-	cout << "\n>>>comment_expr\n";
-	comment_expr comment1(loc, ctx, &lit1);
-	comment_expr comment2(loc, ctx, &lit2);
-	comment_expr comment3(loc, ctx, &lit3);
-
-	comment1.put(cout,ctx) << endl;
-	comment2.put(cout,ctx) << endl;
-	comment3.put(cout,ctx) << endl;
-
-	cout << "\n>>>pi_expr\n";
-	pi_expr pi1(loc, ctx, "?PI1", &lit1);
-	pi_expr pi2(loc, ctx, "?PI2", &lit2);
-	pi_expr pi3(loc, ctx, "?PI3", &lit3);
-
-	pi1.put(cout,ctx) << endl;
-	pi2.put(cout,ctx) << endl;
-	pi3.put(cout,ctx) << endl;
-
-	cout << "\n>>>attr_expr\n";
-	attr_expr attr1(loc, ctx, new QName(QName::qn_attr,"attr1"), &lit1);
-	attr_expr attr2(loc, ctx, new QName(QName::qn_attr,"attr2"), &lit2);
-	attr_expr attr3(loc, ctx, new QName(QName::qn_attr,"attr3"), &lit3);
-
-	attr1.put(cout,ctx) << endl;
-	attr2.put(cout,ctx) << endl;
-	attr3.put(cout,ctx) << endl;
-
-	expr_list exlist2(loc,ctx);
-	exlist2.add(&attr1);
-	exlist2.add(&attr2);
-	exlist2.add(&attr3);
-	exlist2.add(&text1);
-	exlist2.add(&text2);
-	exlist2.add(&text3);
-
-	cout << "\n>>>elem_expr\n";
-	elem_expr elem1(loc, ctx, new QName(QName::qn_elem,"elem1"), &exlist2);
-	elem_expr::nsbinding ns1("pre1","http://a1.b1.c1");
-	elem_expr::nsbinding ns2("pre2","http://a2.b2.c2");
-	elem1.add(ns1);
-	elem1.add(ns2);
-	elem1.put(cout,ctx) << endl;
-
-	elem_expr elem2(loc, ctx, new QName(QName::qn_elem,"elem2"), &exlist2);
-	elem2.add(ns1);
-	elem2.add(ns2);
-	elem2.put(cout,ctx) << endl;
-
-	cout << "\n>>>doc_expr\n";
-	doc_expr doc1(loc,ctx,&elem1);
-	doc1.put(cout,ctx) << endl;
+	
+	/*...........................................
+		: path expressions                        :
+		:.........................................:
+	*/
+		cout << "\n>>>axis_step_expr\n";
+		rchandle<axis_step_expr> ax1_h = new axis_step_expr(loc,ctx);
+		ax1_h->set_axis(axis_step_expr::child);
+		ax1_h->set_test(axis_step_expr::name_test);
+		ax1_h->set_name(&*qne1_h);
+		ax1_h->add_pred(&*elem1_h);
+		ax1_h->put(cout,ctx) << endl;
+	
+		rchandle<axis_step_expr> ax2_h = new axis_step_expr(loc,ctx);
+		ax2_h->set_axis(axis_step_expr::child);
+		ax2_h->set_test(axis_step_expr::name_test);
+		ax2_h->set_name(&*qne2_h);
+		ax2_h->add_pred(&*elem2_h);
+		ax2_h->put(cout,ctx) << endl;
+	
+		rchandle<relpath_expr> path1_h = new relpath_expr(loc,ctx);
+		path1_h->add(&*ax1_h);
+		path1_h->add(&*ax2_h);
+		path1_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: quantified expressions                  :
+		:.........................................:
+	*/
+		cout << "\n>>>quantified_expr\n";
+		rchandle<quantified_expr> quant1_h =
+			new quantified_expr(loc,ctx,quant_some);
+		quant1_h->add(&*var1_h);
+		quant1_h->set_sat_expr(&*elem1_h);
+		quant1_h->put(cout,ctx) << endl;
+	
+		rchandle<quantified_expr> quant2_h =
+			new quantified_expr(loc,ctx,quant_some);
+		quant2_h->add(&*var2_h);
+		quant2_h->set_sat_expr(&*elem2_h);
+		quant2_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: FO expressions                          :
+		:.........................................:
+	*/
+		cout << "\n>>>fo_expr\n";
+		rchandle<signature> sig1_h = new signature(new QName(QName::qn_func,"func1"));
+		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
+		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
+		function_impl func1(sig1_h);
+		rchandle<fo_expr> fo1_h = new fo_expr(loc, ctx);
+		fo1_h->add(&*lit1_h);
+		fo1_h->add(&*lit2_h);
+		fo1_h->set_func(&func1);
+		fo1_h->put(cout,ctx) << endl;
+	
+	
+	/*...........................................
+		: FLWOR expressions                       :
+		:.........................................:
+	*/
+		cout << "\n>>>flwor_expr\n";
+		rchandle<flwor_expr> flwor1_h = new flwor_expr(loc,ctx);
+		rchandle<forlet_clause> flc1_h =
+			new forlet_clause(forlet_clause::for_clause,&*var1_h,NULL,NULL,&*elem1_h);
+		rchandle<forlet_clause> flc2_h =
+			new forlet_clause(forlet_clause::let_clause,&*var2_h,NULL,NULL,&*elem2_h);
+		flwor1_h->add(&*flc1_h);
+		flwor1_h->add(&*flc2_h);
+		flwor1_h->set_where(&*var1_h);
+		flwor1_h->set_retval(&*var2_h);
+		flwor1_h->put(cout,ctx) << endl;
 
 
-/*...........................................
-	: function call                           :
-	:.........................................:
-*/
-	cout << "\n>>>funcall_expr\n";
-	funcall_expr fun1(loc, ctx, new QName(QName::qn_func,"fun1"));
-	fun1.add_arg(&lit1);
-	fun1.add_arg(&lit2);
-	fun1.add_arg(&lit3);
-	fun1.put(cout,ctx) << endl;
-	for (unsigned i=0; i<fun1.arg_count(); ++i) {
-		cout << "arg[" << i << "] = ";
-		fun1[i]->put(cout,ctx) << endl;
-	}
-
-
-/*...........................................
-	: typeswitch expression                   :
-	:.........................................:
-*/
-	cout << "\n>>>typeswitch_expr\n";
-	typeswitch_expr sw1(loc,ctx);
-	sw1.set_switch_expr(&elem1);
-	sw1.set_default_varname(&var1);
-	sw1.set_default_clause(&elem1);
-
-	case_clause cc1;
-	cc1.var_h = &var2;
-	cc1.case_expr_h = &lit1;
-	cc1.seqtype = sequence_type::ANY_SEQUENCE;
-	sw1.add_clause(cc1);
-
-	case_clause cc2;
-	cc2.var_h = &var3;
-	cc2.case_expr_h = &lit2;
-	cc2.seqtype = sequence_type::ANY_SEQUENCE;
-	sw1.add_clause(cc2);
-
-	sw1.put(cout,ctx);
-
-
-/*...........................................
-	: conditional expression                  :
-	:.........................................:
-*/
-	cout << "\n>>>if_expr\n";
-	if_expr if1(loc, ctx, &lit1, &lit2, &lit3);
-	if1.put(cout,ctx);
-
-	int a=1; 
-	cout << "a = " << a << endl;
-
-
-/*...........................................
-	: cast-related expressions                :
-	:.........................................:
-*/
-	cout << "\n>>>instanceof_expr\n";
-	instanceof_expr inst1(loc,ctx,&lit4,sequence_type::SINGLE_ITEM);
-	inst1.put(cout,ctx) << endl;
-
-	cout << "\n>>>treat_expr\n";
-	treat_expr treat1(loc, ctx, &lit5, sequence_type::SINGLE_INTEGER);
-	treat1.put(cout,ctx) << endl;
-
-	cout << "\n>>>castable_expr\n";
-	castable_expr castable1(loc, ctx, &lit6, single_type_t(atomic_type(),true));
-	castable1.put(cout,ctx) << endl;
-
-	cout << "\n>>>cast_expr\n";
-	cast_expr cast1(loc, ctx, &lit1, single_type_t(atomic_type(),true));
-	cast1.put(cout,ctx) << endl;
-
-
-/*...........................................
-	: validate expression                     :
-	:.........................................:
-*/
-	cout << "\n>>>validate_expr\n";
-	validate_expr val1(loc, ctx, val_strict, &elem1);
-	val1.put(cout,ctx) << endl;
-
-
-/*...........................................
-	: extension expressions                   :
-	:.........................................:
-*/
-/*
-	cout << "\n>>>extension_expr\n";
-	extension_expr ext1(loc,ctx);
-	ext1.add(new pragma(new QName(QName::qn_prag,"prag1"), "content1"));
-	ext1.add(new pragma(new QName(QName::qn_prag,"prag2"), "content2"));
-	ext1.put(cout,ctx) << endl;
-*/
-
-/*...........................................
-	: path expressions                        :
-	:.........................................:
-*/
-	cout << "\n>>>axis_step_expr\n";
-	axis_step_expr ax1(loc,ctx);
-	ax1.set_axis(axis_step_expr::child);
-	ax1.set_test(axis_step_expr::name_test);
-	ax1.set_name(new QName(QName::qn_elem,"elem1"));
-	ax1.add_pred(&elem1);
-	ax1.put(cout,ctx) << endl;
-
-	axis_step_expr ax2(loc,ctx);
-	ax2.set_axis(axis_step_expr::child);
-	ax2.set_test(axis_step_expr::name_test);
-	ax2.set_name(new QName(QName::qn_elem,"elem2"));
-	ax2.add_pred(&elem2);
-	ax2.put(cout,ctx) << endl;
-
-	relpath_expr path1(loc,ctx);
-	path1.add(&ax1);
-	path1.add(&ax2);
-	path1.put(cout,ctx) << endl;
-
-
-/*...........................................
-	: quantified expressions                  :
-	:.........................................:
-*/
-	cout << "\n>>>quantified_expr\n";
-	quantified_expr quant1(loc,ctx,quant_some);
-	quant1.add(&var1);
-	quant1.set_sat_expr(&elem1);
-	quant1.put(cout,ctx) << endl;
-
-	quantified_expr quant2(loc,ctx,quant_some);
-	quant2.add(&var2);
-	quant2.set_sat_expr(&elem2);
-	quant2.put(cout,ctx) << endl;
-
-
-/*...........................................
-	: FO expressions                          :
-	:.........................................:
-*/
-	cout << "\n>>>fo_expr\n";
-	signature sig1(new QName(QName::qn_func,"func1"));
-	sig1.add_arg(sequence_type::ANY_SEQUENCE);
-	sig1.add_arg(sequence_type::ANY_SEQUENCE);
-	function_impl func1(sig1);
-	fo_expr fo1(loc, ctx);
-	fo1.add(&lit1);
-	fo1.add(&lit2);
-	fo1.set_func(&func1);
-	fo1.put(cout,ctx) << endl;
-
-
-/*...........................................
-	: FLWOR expressions                       :
-	:.........................................:
-*/
-	cout << "\n>>>flwor_expr\n";
-	flwor_expr flwor1(loc,ctx);
-	forlet_clause flc1(forlet_clause::for_clause,&var1,NULL,NULL,&elem1);
-	forlet_clause flc2(forlet_clause::let_clause,&var2,NULL,NULL,&elem2);
-	flwor1.add(&flc1);
-	flwor1.add(&flc2);
-	flwor1.set_where(&var1);
-	flwor1.set_retval(&var2);
-	flwor1.put(cout,ctx) << endl;
-
-
+	} catch (null_pointer& e) {
+		cout << "Application exception: " << e.get_msg() << endl;
 	} catch (xqp_exception& e) {
 		cout << "Application exception: " << e.get_msg() << endl;
 	} catch (exception& e) {

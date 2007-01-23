@@ -6,7 +6,7 @@ expr : expr.h expr.cpp
 	g++ -c ${OPT} -o ${BUILD}/expr.${SUFX} expr.cpp
 
 expr_test : expr.h expr.cpp expr_test.cpp
-	g++ ${OPT} -o ${BUILD}/expr_test \
+	g++ -g -o ${BUILD}/expr_test \
 		../context/${BUILD}/context.${SUFX} \
 		../parser/${BUILD}/symbol_table.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
