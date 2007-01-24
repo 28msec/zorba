@@ -22,28 +22,31 @@
 #include "../util/xqp_exception.h"
 #include "../values/qname_value.h"
 
+#include <stack>
 #include <vector>
 
 namespace xqp {
 
 class function_impl;
 
-class var_binding
+class var_binding : public rcobject
 {
 protected:
-	rchandle<QName> varname_h;
-	item_type vartype;
+	rchandle<QName> name_h;
+	rchandle<item_iterator> value_h;
+	item_type type;
 
 public:
-	var_binding();
-	var_binding(rchandle<QName>, item_type const&);
+	var_binding(rchandle<QName>, rchandle<item_iterator>, item_type const&);
 	var_binding(var_binding const&);
 	var_binding(var_binding &);
+	var_binding();
 	~var_binding() {}
 
 public:
-	rchandle<QName> get_varname() const { return varname_h; }
-	item_type get_type() const { return vartype; }
+	rchandle<QName> get_qname() const { return name_h; }
+	rchandle<item_iterator> get_value() const { return value_h; }
+	item_type get_type() const { return type; }
 
 };
 
@@ -405,8 +408,10 @@ protected:  // XQuery 1.0 dynamic context
 	**	name of the variable and the value is the dynamic value of the 
 	**	variable, which includes its dynamic type.] 
 	*/
-	hashmap<var_binding> var_values;
-	
+	typedef rchandle<var_binding> varref_t;
+	typedef stack<varref_t>* varstackref_t;
+	hashmap<varstackref_t> var_values;
+
 	/*
 	**	[Definition: Function implementations. Each function in function 
 	**	signatures has a function implementation that enables the function to 
@@ -466,13 +471,16 @@ protected:  // XQuery 1.0 dynamic context
 	
 	
 public:
+	void push_var(rchandle<var_binding>);
+	rchandle<item_iterator> get_var_value(
+		rchandle<QName>) const throw (xqp_exception);
+
 	uint32_t get_context_position() const { return context_position; }
 	uint32_t get_context_size() const { return context_size; }
 	time_t get_currtime() const { return currtime; }
 	int get_timezone() const { return timezone; }
 		
   item_iterator get_context_item() const { return context_item; }
-	item_iterator get_var_value(QName const&) const throw (xqp_exception);
 	item_iterator get_document(std::string const&) const throw (xqp_exception);
 	item_iterator get_collection(std::string const&) const throw (xqp_exception);
 	item_iterator get_default_collection() const throw (xqp_exception);

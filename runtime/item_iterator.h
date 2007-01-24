@@ -12,6 +12,7 @@
 #define XQP_ITEM_ITERATOR_H
 
 #include "../util/rchandle.h"
+#include <iostream>
 
 namespace xqp {
 
@@ -75,7 +76,6 @@ public:	// manipulators
 	rchandle<item_iterator> get_it2() const { return it2_h; };
 
 };
-
 
 
 class singleton_iterator : public item_iterator

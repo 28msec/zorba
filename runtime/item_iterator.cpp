@@ -10,6 +10,7 @@
 
 #include "item_iterator.h"
 #include "../values/xs_primitive_values.h"
+#include <iostream>
 
 
 using namespace std;
@@ -95,6 +96,7 @@ rchandle<item> singleton_iterator::next()
 
 bool singleton_iterator::done()
 {
+	cout << "done_b = " << done_b << endl;
 	return done_b;
 }
 

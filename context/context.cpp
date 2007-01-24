@@ -30,33 +30,38 @@ namespace xqp {
 
 var_binding::var_binding()
 :
-  varname_h(NULL),
-  vartype(item_type())
+  name_h(NULL),
+	value_h(NULL),
+  type(item_type())
 {
 }
 
 var_binding::var_binding(
 	var_binding &  v)
 :
-  varname_h(v.varname_h),
-  vartype(v.vartype)
+  name_h(v.name_h),
+	value_h(v.value_h),
+  type(v.type)
 {
 }
 
 var_binding::var_binding(
 	var_binding const&  v)
 :
-  varname_h(v.varname_h),
-  vartype(v.vartype)
+  name_h(v.name_h),
+  value_h(v.value_h),
+  type(v.type)
 {
 }
 
 var_binding::var_binding(
-	rchandle<QName> _varname_h,
-	item_type const& t)
+	rchandle<QName> _name_h,
+	rchandle<item_iterator> _value_h,
+	item_type const& _type)
 :
-	varname_h(_varname_h),
-	vartype(t)
+	name_h(_name_h),
+	value_h(_value_h),
+	type(_type)
 {
 }
 
@@ -100,6 +105,34 @@ context::~context()
 {
 }
 
+
+void context::push_var(
+	rchandle<var_binding> vb_h)
+{
+	varstackref_t s_p;
+	string varname = vb_h->get_qname()->describe(*this);
+	if (!var_values.get(varname, s_p)) {
+		s_p = new stack<varref_t>;
+		var_values.put(varname, s_p);
+	}
+	s_p->push(vb_h);
+}
+
+rchandle<item_iterator> context::get_var_value(
+	rchandle<QName> vqn_h) const
+throw (xqp_exception)
+{
+	varstackref_t s_p;
+	string varname = vqn_h->describe(*this);
+	if (!var_values.get(varname, s_p)) {
+  	throw bad_arg(__FUNCTION__,"variable not found");
+	}
+	else {
+		varref_t v_h = s_p->top();
+		return new singleton_iterator(*this,&*v_h->get_qname());
+	}
+}
+
 string context::get_function_type(
   QName const& fqname, 
   uint32_t arity) const 
@@ -139,13 +172,6 @@ throw (xqp_exception)
   return t;
 }
 	
-item_iterator context::get_var_value(
-	QName const& qname) const
-throw (xqp_exception)
-{
-  return EMPTY_SEQUENCE(*this);
-}
-
 function_impl const* context::get_function(
 	signature const& sig) const
 throw (xqp_exception)

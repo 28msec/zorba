@@ -13,8 +13,8 @@
 
 #include <string>
 #include <vector>
-#include <assert.h>
 
+#include "../runtime/item_iterator.h"
 #include "../context/context.h"
 #include "../parser/parse_constants.h"
 #include "../parser/location.hh"
@@ -46,9 +46,9 @@ public:
   virtual ~expr() {}
 
 public:
+	item_iterator eval(context &);
 	yy::location get_loc() const { return loc; }
 	virtual std::ostream& put(std::ostream&,context const&) const;
-
 	friend std::ostream& operator<<(std::ostream& s, expr const& r);
 
 };
@@ -94,6 +94,7 @@ public:
 		{ return expr_hv.end(); }
 
 public:
+	item_iterator eval(context &);
 	std::ostream& put(std::ostream&,context const&) const;
 
 };
@@ -105,7 +106,7 @@ class var_expr : public expr
 | ::= VARNAME  ("in"|":=")  ExprSingle
 |     | VARNAME  TypeDeclaration  ("in"|":=")  ExprSingle
 |     | VARNAME  PositionalVar  "in"  ExprSingle
-|     | VARNAME  TypeDeclaration  PositionalVar  ("in"|":=")  ExprSingle
+|     | VARNAME  TypeDeclaration  PositionalVar  "in"  ExprSingle
 | 
 |     | VARNAME  FTScoreVar  ("in"|":=")  ExprSingle
 |     | VARNAME  TypeDeclaration  FTScoreVar  ("in"|":=")  ExprSingle
@@ -121,7 +122,7 @@ public:
 		score_var,
 		quant_var,
 		extern_var,
-		assign_var,
+		assign_var
 	};
 
   rchandle<QName> varname_h;
@@ -147,6 +148,7 @@ public:
   void set_type(rchandle<sequence_type> const& t_h) { type_h = t_h; }
 
 public:
+	item_iterator eval(context &);
 	static std::string decode_var_kind(enum var_kind);
   std::ostream& put(std::ostream&,context const&) const;
 
@@ -289,6 +291,7 @@ public:	// accessors
 	void set_retval(exprref_t e_h) { retval_h = e_h; }
 
 public:
+	item_iterator eval(context &);
 	std::ostream& put(std::ostream&,context const&) const;
 
 };
@@ -340,6 +343,7 @@ public:
 	void set_sat_expr(exprref_t e_h) { sat_expr_h = e_h; }
 
 public:
+	item_iterator eval(context &);
 	std::ostream& put(std::ostream&,context const&) const;
 
 };
@@ -420,6 +424,7 @@ public:
 		{ return case_clause_hv[i]; }
 
 public:
+	item_iterator eval(context &);
 	std::ostream& put(std::ostream&,context const&) const;
 
 };
@@ -462,6 +467,7 @@ public:
 	void set_else_expr(exprref_t e_h) { else_expr_h = e_h; }
 
 public:
+	item_iterator eval(context &);
 	std::ostream& put(std::ostream&,context const&) const;
 
 };
@@ -506,6 +512,7 @@ public:
 	void set_func(function_impl const* _func) { func = _func; }
 
 public:
+	item_iterator eval(context &);
 	std::ostream& put(std::ostream&, context const&) const;
 
 };
