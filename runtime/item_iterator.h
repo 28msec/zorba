@@ -11,6 +11,7 @@
 #ifndef XQP_ITEM_ITERATOR_H
 #define XQP_ITEM_ITERATOR_H
 
+#include "../types/xs_primitive_types.h"
 #include "../util/rchandle.h"
 #include <iostream>
 
@@ -92,17 +93,20 @@ public:	// iterator interface
 	void rewind();
 
 public:	// ctor,dtor
-	singleton_iterator(
-		context const&,
-		rchandle<item>);
-
-	singleton_iterator(
-		context const&,
-		item *);
-
-	singleton_iterator(
-		context const&,
-		std::string const& s);
+	singleton_iterator(context const&, rchandle<item>);
+	singleton_iterator(context const&, item *);
+	singleton_iterator(context const&, std::string const& s);
+	singleton_iterator(context const&, bool);
+	singleton_iterator(context const&, double);
+	singleton_iterator(context const&, float);
+	singleton_iterator(context const&, int);
+	singleton_iterator(context const&, long long);
+	singleton_iterator(context const&, short);
+	singleton_iterator(context const&, signed char);
+	singleton_iterator(context const&, unsigned char);
+	singleton_iterator(context const&, unsigned int);
+	singleton_iterator(context const&, unsigned long long);
+	singleton_iterator(context const&, unsigned short);
 
 	~singleton_iterator();
 
@@ -112,4 +116,5 @@ public:	// ctor,dtor
 
 }	/* namespace xqp */
 #endif	/* XQP_ITEM_ITERATOR_H */
+
 

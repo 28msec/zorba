@@ -9,7 +9,9 @@
  */
 
 #include "item_iterator.h"
+#include "../types/xs_primitive_types.h"
 #include "../values/xs_primitive_values.h"
+
 #include <iostream>
 
 
@@ -96,7 +98,6 @@ rchandle<item> singleton_iterator::next()
 
 bool singleton_iterator::done()
 {
-	cout << "done_b = " << done_b << endl;
 	return done_b;
 }
 
@@ -140,5 +141,119 @@ singleton_iterator::~singleton_iterator()
 }
 
 
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	bool v)
+:
+	item_iterator(ctx),
+	i_h(new xs_boolean_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	double v)
+:
+	item_iterator(ctx),
+	i_h(new xs_double_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	float v)
+:
+	item_iterator(ctx),
+	i_h(new xs_float_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	int v)
+:
+	item_iterator(ctx),
+	i_h(new xs_int_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	long long v)
+:
+	item_iterator(ctx),
+	i_h(new xs_long_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	short v)
+:
+	item_iterator(ctx),
+	i_h(new xs_short_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	signed char v)
+:
+	item_iterator(ctx),
+	i_h(new xs_byte_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	unsigned char v)
+:
+	item_iterator(ctx),
+	i_h(new xs_unsignedByte_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	unsigned int v)
+:
+	item_iterator(ctx),
+	i_h(new xs_unsignedInt_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	unsigned long long v)
+:
+	item_iterator(ctx),
+	i_h(new xs_nonNegativeInteger_value(v)),
+	done_b(false)
+{
+}
+
+singleton_iterator::singleton_iterator(
+	context const& ctx,
+	unsigned short v)
+:
+	item_iterator(ctx),
+	i_h(new xs_unsignedShort_value(v)),
+	done_b(false)
+{
+}
+
+
 }	/* namespace xqp */
+
+
 
