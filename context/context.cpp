@@ -129,7 +129,7 @@ throw (xqp_exception)
 	}
 	else {
 		varref_t v_h = s_p->top();
-		return new singleton_iterator(*this,&*v_h->get_qname());
+		return v_h->get_value();
 	}
 }
 
