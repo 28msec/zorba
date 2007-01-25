@@ -165,6 +165,7 @@ int main(int argc, char* argv[])
 		it_h = text3_h->eval(ctx);
 		print_result(ctx, "text3", &*it_h);
 
+	/*
 		cout << "\n>>>comment_expr\n";
 		rchandle<comment_expr> comment1_h = new comment_expr(loc, ctx, &*lit1_h);
 		rchandle<comment_expr> comment2_h = new comment_expr(loc, ctx, &*lit2_h);
@@ -188,7 +189,7 @@ int main(int argc, char* argv[])
 		print_result(ctx, "pi2", &*it_h);
 		it_h = pi3_h->eval(ctx);
 		print_result(ctx, "pi3", &*it_h);
-	
+	*/
 	
 	/*
 		cout << "\n>>>attr_expr\n";

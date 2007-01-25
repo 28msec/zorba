@@ -19,9 +19,10 @@ using namespace std;
 namespace xqp {
 
 
-////////////////////////////////
-//	binary_iterator
-////////////////////////////////
+/*...........................................
+	: binary iterator                         :
+	:.........................................:
+*/
 
 void binary_iterator::open()
 {
@@ -72,9 +73,10 @@ binary_iterator::~binary_iterator()
 
 
 
-////////////////////////////////
-//	singleton_iterator
-////////////////////////////////
+/*...........................................
+	: singleton iterator                      :
+	:.........................................:
+*/
 
 void singleton_iterator::open()
 {
@@ -295,7 +297,62 @@ singleton_iterator::singleton_iterator(
 }
 
 
-}	/* namespace xqp */
+/*...........................................
+	: concat iterator                         :
+	:.........................................:
+*/
 
+void concat_iterator::open()
+{
+}
+
+void concat_iterator::close()
+{
+}
+
+rchandle<item> concat_iterator::next()
+{
+	while (currit_h->done() && ++walker!=sentinel) {
+		currit_h = *walker;
+	}
+	if (done()) return NULL;
+	return currit_h->next();
+}
+
+bool concat_iterator::done()
+{
+	return walker==sentinel;
+}
+
+void concat_iterator::rewind()
+{
+	walker = it_list.begin();
+	for (; walker!=sentinel; ++walker) {
+		(*walker)->rewind();
+	}
+}
+
+concat_iterator::concat_iterator(
+	context const& ctx,
+	list<rchandle<item_iterator> > _it_list)
+:
+	item_iterator(ctx),
+	it_list(_it_list),
+	walker(_it_list.begin()),
+	sentinel(_it_list.end())
+{
+	currit_h = *walker;
+	while (currit_h->done() && ++walker!=sentinel) {
+		currit_h = *walker;
+	}
+}
+
+concat_iterator::~concat_iterator()
+{
+}
+
+
+
+}	/* namespace xqp */
 
 

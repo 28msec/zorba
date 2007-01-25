@@ -19,6 +19,7 @@
 #include "../parser/location.hh"
 #include "../types/sequence_type.h"
 #include "../types/base_types.h"
+#include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../util/triple.h"
 #include "../values/ft_options.h"
@@ -73,31 +74,28 @@ class expr_list : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<exprref_t> expr_hv;
+	list<exprref_t> elist;
 
 public:
-	expr_list(yy::location const&,context const&);
+	expr_list(yy::location const&, context const&);
 	~expr_list();
 
 public:
 	void add(exprref_t e_h)
-		{ expr_hv.push_back(e_h); }
+		{ elist.push_back(e_h); }
 	uint32_t size() const
-		{ return expr_hv.size(); }
+		{ return elist.size(); }
 
-	exprref_t & operator[](int i)
-		{ return expr_hv[i]; }
-	exprref_t const& operator[](int i) const
-		{ return expr_hv[i]; }
+	list_iterator<exprref_t> begin() const
+		{ return elist.begin(); }
+	list_iterator<exprref_t> end() const
+		{ return elist.end(); }
 
-	std::vector<exprref_t>::const_iterator begin() const
-		{ return expr_hv.begin(); }
-	std::vector<exprref_t>::const_iterator end() const
-		{ return expr_hv.end(); }
+public:
+	std::ostream& put(std::ostream&,context const&) const;
 
 public:
 	rchandle<item_iterator> eval(context &);
-	std::ostream& put(std::ostream&,context const&) const;
 
 };
 

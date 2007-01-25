@@ -78,9 +78,8 @@ ostream& expr_list::put(
 	context const& ctx) const
 {
 	os << INDENT << "expr_list[\n";
-	vector<rchandle<expr> >::const_iterator it = begin();
-	vector<rchandle<expr> >::const_iterator en = end();
-	for (; it!=en; ++it) {
+	list_iterator<exprref_t> it = begin();
+	for (; it!=end(); ++it) {
 		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
 		e_h->put(os,ctx) << endl;

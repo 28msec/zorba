@@ -86,7 +86,7 @@ public: // listnode interface
 	void remove(list_node<T>* node);
 	list_node<T>* get_head() const { return head->next; }
 	list_node<T>* get_tail() const { return tail->prev; }
-	uint32_t size() { return sz; }
+	uint32_t size() const { return sz; }
 
 public:
   list_iterator<T> begin() const { return list_iterator<T>(head->next); }

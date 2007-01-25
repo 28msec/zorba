@@ -145,6 +145,12 @@ item_iterator item::effective_boolean_value(
 	return EMPTY_SEQUENCE(ctx);
 }
 
+string item::string_value(
+	context const& ctx) const
+{
+	return "";
+}
+
 
 
 /*______________________________________________________________________
@@ -179,6 +185,11 @@ item_iterator atomic_value::effective_boolean_value(
 	return EMPTY_SEQUENCE(ctx);
 }
 
+string atomic_value::string_value(
+	context const& ctx) const
+{
+	return "";
+}
 
 
 

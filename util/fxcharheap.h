@@ -144,3 +144,4 @@ protected:	//internals
 
 }  /* namespace xqp */
 #endif  /* XQP_FXCHARHEAP_H */
+

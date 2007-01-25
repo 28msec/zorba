@@ -34,7 +34,6 @@ namespace xqp {
 |  there is no way to make it shareable again.
 |_______________________________________________________________________*/
 
-
 class rcobject
 {
 private:
@@ -61,23 +60,21 @@ public:	// operator overloading
 
 };
 
-
 inline rcobject::rcobject()
 :	refCount(0),
 	shareable(true)
-{}
-
+{
+}
 
 inline rcobject::rcobject(const rcobject& o)
 :	refCount(0),
 	shareable(true) 
-{}
+{
+}
 
-
-// Virtual dtors must always be implemented, 
-// even if they are pure virtual and do nothing.
-inline rcobject::~rcobject() {}
-
+inline rcobject::~rcobject() 
+{
+}
 
 
 /*__________________________________________________________________________  
@@ -92,39 +89,54 @@ template<class T>
 class rchandle
 {
 private:
-  T *p;        // dumb pointer this object is emulating
+  T *p;        // dumb pointer this object emulates
   void init(); // common initialization
 
 public:	// ctor, dtor
   rchandle(T* realPtr = 0);
-  rchandle(const rchandle& rhs);
+  rchandle(rchandle const& rhs);
   ~rchandle();
 
 public:	// operator overloading
-  rchandle& operator=(const rchandle& rhs);
+  rchandle& operator=(rchandle const& rhs);
   T* operator->() const; 
   T& operator*() const;  
-	bool operator==(const rchandle& h) const;
-	bool operator!=(const rchandle& h) const;
-	bool operator==(const T* pp) const;
-	bool operator!=(const T* pp) const;
+	bool operator==(rchandle const& h) const;
+	bool operator!=(rchandle const& h) const;
+	bool operator==(T const* pp) const;
+	bool operator!=(T const* pp) const;
 
 public:
 	std::string debug() const;
 
 }; 
 
+template<class T>
+inline rchandle<T>::rchandle(T* realPtr) : p(realPtr) { init(); }
 
-template<class T> inline rchandle<T>::rchandle(T* realPtr) : p(realPtr) { init(); }
-template<class T> inline rchandle<T>::rchandle(const rchandle& rhs) : p(rhs.p) { init(); }
-template<class T> inline rchandle<T>::~rchandle() { if (p) p->removeReference(); } 
-template<class T> inline T* rchandle<T>::operator->() const { return p; } 
-template<class T> inline T& rchandle<T>::operator*() const { return *p; } 
-template<class T> inline bool rchandle<T>::operator==(const rchandle& h) const { return p==h.p; }
-template<class T> inline bool rchandle<T>::operator!=(const rchandle& h) const { return p!=h.p; }
-template<class T> inline bool rchandle<T>::operator==(const T* pp) const { return p==pp; } 
-template<class T> inline bool rchandle<T>::operator!=(const T* pp) const { return p!=pp; }
+template<class T>
+inline rchandle<T>::rchandle(rchandle const& rhs) : p(rhs.p) { init(); }
 
+template<class T>
+inline rchandle<T>::~rchandle() { if (p) p->removeReference(); } 
+
+template<class T>
+inline T* rchandle<T>::operator->() const { return p; } 
+
+template<class T>
+inline T& rchandle<T>::operator*() const { return *p; } 
+
+template<class T>
+inline bool rchandle<T>::operator==(rchandle const& h) const { return p==h.p; }
+
+template<class T>
+inline bool rchandle<T>::operator!=(rchandle const& h) const { return p!=h.p; }
+
+template<class T>
+inline bool rchandle<T>::operator==(T const* pp) const { return p==pp; } 
+
+template<class T>
+inline bool rchandle<T>::operator!=(T const* pp) const { return p!=pp; }
 
 template<class T>
 inline void rchandle<T>::init()
@@ -136,9 +148,8 @@ inline void rchandle<T>::init()
   p->addReference();
 }
 
-
 template<class T>
-inline rchandle<T>& rchandle<T>::operator=(const rchandle& rhs)
+inline rchandle<T>& rchandle<T>::operator=(rchandle const& rhs)
 {
   if (p != rhs.p) {
     if (p) p->removeReference();
@@ -147,7 +158,6 @@ inline rchandle<T>& rchandle<T>::operator=(const rchandle& rhs)
   }
   return *this;
 }
-
 
 template<class T>
 inline std::string rchandle<T>::debug() const

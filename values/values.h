@@ -115,6 +115,8 @@ public:
 	virtual item_iterator atomized_value(context const&) const;
 	virtual item_iterator effective_boolean_value(context const&) const;
 
+	virtual std::string string_value(context const&) const;
+
 };
 
 
@@ -141,6 +143,8 @@ public:
 
 	virtual item_iterator atomized_value(context const&) const;
 	virtual item_iterator effective_boolean_value(context const&) const;
+
+	virtual std::string string_value(context const&) const;
 
 };
 

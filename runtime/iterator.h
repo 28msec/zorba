@@ -12,6 +12,7 @@
 #define XQP_ITERATOR_H
 
 #include "../types/xs_primitive_types.h"
+#include "../util/list.h"
 #include "../util/rchandle.h"
 #include <iostream>
 
@@ -116,7 +117,10 @@ public:	// ctor,dtor
 class concat_iterator : public item_iterator
 {
 protected:
-	vector<rchandle<item_iterator> > it_hv;
+	list<rchandle<item_iterator> > it_list;
+	list_iterator<rchandle<item_iterator> > walker;
+	list_iterator<rchandle<item_iterator> > sentinel;
+	rchandle<item_iterator> currit_h;
 
 public:	// iterator interface
 	void open();
@@ -124,6 +128,13 @@ public:	// iterator interface
 	rchandle<item> next();
 	bool done();
 	void rewind();
+
+public:
+	concat_iterator(
+		context const&,
+		list<rchandle<item_iterator> >);
+
+	~concat_iterator();
 
 };
 

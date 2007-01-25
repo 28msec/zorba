@@ -12,7 +12,9 @@
 
 #include "../functions/function_impl.h"
 #include "../util/Assert.h"
+#include "../util/list.h"
 #include "../util/xqp_exception.h"
+#include "../values/node_values.h"
 
 #include <iostream>
 #include <sstream>
@@ -55,13 +57,14 @@ rchandle<item_iterator> expr_list::eval(
 #ifdef DEBUG
 	cout << "expr_list::"<<__FUNCTION__ << endl;
 #endif
-	uint32_t n = expr_hv.size();
-	for (uint32_t i=0; i<n-1; ++i) {
-		rchandle<expr> e_h = expr_hv[i];
+	list<rchandle<item_iterator> > it_list;
+	list_iterator<exprref_t> it = begin();
+	for (; it!=end(); ++it) {
+		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
-		e_h->eval(ctx);
+		it_list.push_back(&*e_h->eval(ctx));
 	}
-	return expr_hv[n-1]->eval(ctx);
+	return new concat_iterator(ctx, it_list);
 }
 
 
@@ -214,7 +217,8 @@ rchandle<item_iterator> text_expr::eval(
 		Assert<null_pointer>(i_p!=NULL);
 		i_p->put(oss,ctx);
 	}
-	return new singleton_iterator(ctx,oss.str());
+	rchandle<text_node> tnode_h = new text_node(rand(),oss.str(),NULL);
+	return new singleton_iterator(ctx, &*tnode_h);
 }
 
 
