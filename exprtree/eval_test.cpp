@@ -56,9 +56,9 @@ int main(int argc, char* argv[])
 	yy::location loc;
 	context ctx;
 
-	uint32_t i1 = ctx.symtab.put("symbol1", 7);
-	uint32_t i2 = ctx.symtab.put("symbol2", 7);
-	uint32_t i3 = ctx.symtab.put("symbol3", 7);
+	uint32_t i1 = ctx.string_store.put("symbol1");
+	uint32_t i2 = ctx.string_store.put("symbol2");
+	uint32_t i3 = ctx.string_store.put("symbol3");
 
 	try {
 
@@ -191,23 +191,18 @@ int main(int argc, char* argv[])
 		print_result(ctx, "pi3", &*it_h);
 	*/
 	
-	/*
 		cout << "\n>>>attr_expr\n";
 		rchandle<attr_expr> attr1_h = new attr_expr(loc, ctx, &*qna1_h, &*lit1_h);
 		rchandle<attr_expr> attr2_h = new attr_expr(loc, ctx, &*qna2_h, &*lit2_h);
 		rchandle<attr_expr> attr3_h = new attr_expr(loc, ctx, &*qna3_h, &*lit3_h);
 	
-		attr1_h->put(cout,ctx) << endl;
-		attr2_h->put(cout,ctx) << endl;
-		attr3_h->put(cout,ctx) << endl;
-	
-		rchandle<expr_list> exprlist2_h = new expr_list(loc,ctx);
-		exprlist2_h->add(&*attr1_h);
-		exprlist2_h->add(&*attr2_h);
-		exprlist2_h->add(&*attr3_h);
-		exprlist2_h->add(&*text1_h);
-		exprlist2_h->add(&*text2_h);
-		exprlist2_h->add(&*text3_h);
+		rchandle<expr_list> exlist2_h = new expr_list(loc,ctx);
+		exlist2_h->add(&*attr1_h);
+		exlist2_h->add(&*attr2_h);
+		exlist2_h->add(&*attr3_h);
+		exlist2_h->add(&*text1_h);
+		exlist2_h->add(&*text2_h);
+		exlist2_h->add(&*text3_h);
 	
 		cout << "\n>>>elem_expr\n";
 		rchandle<elem_expr> elem1_h = new elem_expr(loc, ctx, &*qne1_h, &*exprlist2_h);
@@ -215,12 +210,14 @@ int main(int argc, char* argv[])
 		elem_expr::nsbinding ns2("pre2","http://a2.b2.c2");
 		elem1_h->add(ns1);
 		elem1_h->add(ns2);
-		elem1_h->put(cout,ctx) << endl;
-	
+
+		it_h = elem1_h->eval(ctx);
+		print_result(ctx, "elem1", &*it_h);
+
+	/*
 		rchandle<elem_expr> elem2_h = new elem_expr(loc, ctx, &*qne2_h, &*exprlist2_h);
 		elem2_h->add(ns1);
 		elem2_h->add(ns2);
-		elem2_h->put(cout,ctx) << endl;
 	
 		cout << "\n>>>doc_expr\n";
 		rchandle<doc_expr> doc1_h = new doc_expr(loc, ctx, &*elem1_h);

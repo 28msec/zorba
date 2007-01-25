@@ -14,6 +14,8 @@
 #include "../types/xs_primitive_types.h"
 #include "../util/list.h"
 #include "../util/rchandle.h"
+#include "../util/xqp_exception.h"
+
 #include <iostream>
 
 namespace xqp {
@@ -45,6 +47,9 @@ public:
 
 	// rewind the iterator, equivalent to {close();open()}
 	virtual void rewind() {}
+
+public:	// utilities
+	std::string string_value(context const&) throw (null_pointer);
 
 };
 

@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/** -*- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id: context.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
@@ -10,21 +10,91 @@
 
 #include "context.h"
 
+#include "../util/xqp_exception.h"
+#include "../values/values.h"
+
+#include <stdlib.h>
 #include <sstream>
 #include <string>
 
-#include "../util/xqp_exception.h"
-#include "../values/values.h"
+
+/*+=========================================+
+	|                                         |
+	|  The context module is still mostly     |
+	|  stubbed out.                           |
+	|                                         |
+	+=========================================+
+*/
+
 
 using namespace std;
 namespace xqp {
 
 #define EMPTY_SEQUENCE(X) item_iterator((X))
   
+/*...........................................
+	: default constructor                     :
+	:.........................................:
+*/
 
-///////////////////////////////
-//  var_binding
-///////////////////////////////
+//XXX: seriously missing: context constructor from XML config file.
+
+context::context()
+:
+	parent_h(NULL),
+	namespaces(),
+	in_scope_schema_types(),
+	in_scope_elem_decls(),
+	in_scope_attr_decls(),
+	in_scope_vars(),
+	collations(),
+	//statically_known_collection_types(32,0.6),
+	signature_map(256,0.6),
+	statically_known_documents(256,0.6),
+	statically_known_collections(64,0.6),
+	context_item_h(NULL),
+	context_position(0),
+	context_size(0),
+	var_values(1024,0.6),
+	function_implementations(1024,0.6),
+	timezone(-8),
+	available_documents(1024,0.6),
+	available_collections(1024,0.6),
+	default_collection("defcol"),
+	nodeid_counter("nodeid",1),
+	string_store(1<<16)
+{
+}
+
+context::~context()
+{
+}
+
+
+/*...........................................
+	: nodeids                                 :
+	:.........................................:
+*/
+
+	// this is a persistent counter
+nodeid context::next_nodeid()
+{
+	return nodeid(++nodeid_counter[0]);
+}
+
+nodeid context::context_nodeid()
+{
+	if (!context_item_h->is_node())
+		throw xqp_exception(__FUNCTION__,"nodeid expects node");
+	node* n_p = dynamic_cast<node*>(&*context_item_h);
+	return n_p->get_nodeid();
+}
+
+
+/*...........................................
+	: variables                               :
+	:.........................................:
+*/
 
 var_binding::var_binding()
 :
@@ -63,47 +133,6 @@ var_binding::var_binding(
 {
 }
 
-
-
-///////////////////////////////
-//  context
-///////////////////////////////
-
-context::context()
-:
-	parent_h(NULL),
-
-/*
-	namespaces(),
-	in_scope_schema_types(1024),
-	in_scope_elem_decls(1024),
-	in_scope_attr_decls(1024),
-	in_scope_vars(1024),
-	collations(1024),
-	statically_known_collection_types(32,0.6),
-*/
-
-	signature_map(256,0.6),
-	statically_known_documents(256,0.6),
-	statically_known_collections(64,0.6),
-
-	context_item(*this),
-	context_position(0),
-	context_size(0),
-	var_values(1024,0.6),
-	function_implementations(1024,0.6),
-	timezone(-8),
-	available_documents(1024,0.6),
-	available_collections(1024,0.6),
-	default_collection("defcol")
-{
-}
-
-context::~context()
-{
-}
-
-
 void context::push_var(
 	rchandle<var_binding> vb_h)
 {
@@ -131,6 +160,12 @@ throw (xqp_exception)
 	}
 }
 
+
+/*...........................................
+	: functions                               :
+	:.........................................:
+*/
+
 string context::get_function_type(
   QName const& fqname, 
   uint32_t arity) const 
@@ -146,6 +181,19 @@ throw (xqp_exception)
   return sig_h;
 }
 	
+function_impl const* context::get_function(
+	signature const& sig) const
+throw (xqp_exception)
+{
+	return NULL;
+}
+
+
+/*...........................................
+	: context document                        :
+	:.........................................:
+*/
+
 item_type context::get_document_type(
 	string const& doc_uri) const
 throw (xqp_exception)
@@ -158,6 +206,19 @@ throw (xqp_exception)
   return t;
 }
 	
+item_iterator context::get_document(
+	string const& doc_uri) const
+throw (xqp_exception)
+{
+  return EMPTY_SEQUENCE(*this);
+}
+
+
+/*...........................................
+	: context collection                      :
+	:.........................................:
+*/
+
 item_type context::get_collection_type(
 	string const& col_uri) const
 throw (xqp_exception)
@@ -170,20 +231,6 @@ throw (xqp_exception)
   return t;
 }
 	
-function_impl const* context::get_function(
-	signature const& sig) const
-throw (xqp_exception)
-{
-	return NULL;
-}
-
-item_iterator context::get_document(
-	string const& doc_uri) const
-throw (xqp_exception)
-{
-  return EMPTY_SEQUENCE(*this);
-}
-
 item_iterator context::get_collection(
 	string const& col_uri) const
 throw (xqp_exception)

@@ -10,14 +10,34 @@
 
 #include "iterator.h"
 #include "../types/xs_primitive_types.h"
+#include "../util/Assert.h"
+#include "../util/xqp_exception.h"
+#include "../values/values.h"
 #include "../values/xs_primitive_values.h"
 
 #include <iostream>
-
+#include <sstream>
 
 using namespace std;
 namespace xqp {
 
+/*...........................................
+	: utilities                               :
+	:.........................................:
+*/
+
+string item_iterator::string_value(context const& ctx)
+throw (null_pointer)
+{
+	ostringstream oss;
+	while (!done()) {
+		rchandle<item> i_h = next();
+		item* i_p = &*i_h;
+		Assert<null_pointer>(i_p!=NULL);
+		i_p->put(oss,ctx);
+	}
+	return oss.str();
+}
 
 /*...........................................
 	: binary iterator                         :

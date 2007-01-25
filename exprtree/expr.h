@@ -1171,6 +1171,9 @@ public:
 public:
 	std::ostream& put(std::ostream&, context const&) const;
 
+public:
+	rchandle<item_iterator> eval(context&);
+
 };
 
 
@@ -1230,6 +1233,9 @@ public:
 public:
 	std::ostream& put(std::ostream&, context const&) const;
 
+public:
+	rchandle<item_iterator> eval(context&);
+
 };
 
 
@@ -1268,6 +1274,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&, context const&) const;
+
+public:
+	rchandle<item_iterator> eval(context&);
 
 };
 

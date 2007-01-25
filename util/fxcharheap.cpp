@@ -131,13 +131,11 @@ void fxcharheap::dump_heap() const
 }
 
 
-
-
 off_t fxcharheap::put(		// return the target offset
   const char* buf,				// input: string
   uint32_t start_offset,	// input: starting offset
   uint32_t len)						// input: length 
-throw (xqp::xqp_exception)
+throw (xqp_exception)
 {
   off_t id  = *offset_p;
 
@@ -151,6 +149,14 @@ throw (xqp::xqp_exception)
 
   *offset_p += (len+1);
   return id;
+}
+
+
+off_t fxcharheap::put(char const* buf)
+throw (xqp_exception)
+{
+	uint32_t n = strlen(buf);
+	return put(buf, 0, n);
 }
 
 
@@ -179,7 +185,7 @@ void fxcharheap::get(
   char* buf,		        	// output: buffer
   uint32_t output_offset, // input: output buffer offset
   uint32_t maxlen) const	// input: maximum output size, truncate 
-throw (xqp::xqp_exception)
+throw (xqp_exception)
 {
   try {
     uint32_t len = strlen(&data[id]);
@@ -188,6 +194,16 @@ throw (xqp::xqp_exception)
   } catch (...) {
     ioexception(__FUNCTION__,"exception in memcpy"); 
   }
+}
+
+
+string fxcharheap::get(off_t id)
+throw (xqp_exception)
+{
+	uint32_t n = get_length(id);
+	char * buf = new char[n+1];
+	get(id, buf, 0, n);
+	return string(buf,0,n);
 }
 
 

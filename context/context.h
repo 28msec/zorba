@@ -19,9 +19,11 @@
 #include "../types/base_types.h"
 #include "../types/collation.h"
 #include "../util/hashmap.h"
+#include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
 #include "../values/qname_value.h"
+#include "../values/node_values.h"
 
 #include <stack>
 #include <vector>
@@ -112,7 +114,7 @@ protected:	// XQuery 1.0 static context
 	**	and by namespace declaration attributes in direct element 
 	**	constructors. 
 	*/
-  //vector<name_space> namespaces;
+  list<name_space> namespaces;
 
 	/*
 	**	[Definition: Default element/type namespace. This is a namespace URI 
@@ -141,7 +143,7 @@ protected:	// XQuery 1.0 static context
 	**	supported, in-scope schema types also include all type definitions 
 	**	found in imported schemas. ] 
 	*/
-	//vector<QName> in_scope_schema_types;
+	list<QName> in_scope_schema_types;
 
 	/*
 	**	[Definition: In-scope element declarations. Each element declaration 
@@ -153,7 +155,7 @@ protected:	// XQuery 1.0 static context
 	**	includes information about the element's substitution group 
 	**	affiliation. 
 	*/
-	//vector<QName> in_scope_elem_decls;
+	list<QName> in_scope_elem_decls;
 
 	/*
 	**	[Definition: In-scope attribute declarations. Each attribute 
@@ -163,7 +165,7 @@ protected:	// XQuery 1.0 static context
 	**	Feature is supported, in-scope attribute declarations include all 
 	**	attribute declarations found in imported schemas.] 
 	*/
-	//vector<QName> in_scope_attr_decls;
+	list<QName> in_scope_attr_decls;
 
 	/*
 	**	[Definition: In-scope variables. This is a set of (expanded QName, 
@@ -183,7 +185,7 @@ protected:	// XQuery 1.0 static context
 	**	inference rules as described in [XQuery 1.0 and XPath 2.0 Formal 
 	**	Semantics]. 
 	*/
-	//vector<var_binding> in_scope_vars;
+	list<var_binding> in_scope_vars;
 
 	/*
 	**	[Definition: Context item static type. This component defines the 
@@ -201,7 +203,7 @@ protected:	// XQuery 1.0 static context
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	//vector<collation_h_t> collations;
+	list<collation_h_t> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -326,20 +328,36 @@ public:	// manipulators
 	name_space get_default_function_ns() const
 		{ return default_function_ns; }
 
-/*
-  vector<name_space> const& get_namespaces() const
-		{ return namespaces; }
-	vector<QName> const& get_in_scope_schema_types() const
-		{ return in_scope_schema_types; }
-	vector<QName> const& get_in_scope_elem_decls() const
-		{ return in_scope_elem_decls; }
-	vector<QName> const& get_in_scope_attr_decls() const
-		{ return in_scope_attr_decls; }
-	vector<var_binding> const& get_in_scope_vars() const
-		{ return in_scope_vars; }
-	vector<collation_h_t> const& get_collations() const
-		{ return collations; }
-*/
+  list_iterator<name_space> namespaces_begin() const
+		{ return namespaces.begin(); }
+  list_iterator<name_space> namespaces_end() const
+		{ return namespaces.end(); }
+
+	list_iterator<QName> in_scope_schema_types_begin() const
+		{ return in_scope_schema_types.begin(); }
+	list_iterator<QName> in_scope_schema_types_end() const
+		{ return in_scope_schema_types.end(); }
+
+	list_iterator<QName> in_scope_elem_decls_begin() const
+		{ return in_scope_elem_decls.begin(); }
+	list_iterator<QName> in_scope_elem_decls_end() const
+		{ return in_scope_elem_decls.end(); }
+
+	list_iterator<QName> in_scope_attr_decls_begin() const
+		{ return in_scope_attr_decls.begin(); }
+	list_iterator<QName> in_scope_attr_decls_end() const
+		{ return in_scope_attr_decls.end(); }
+
+	list_iterator<var_binding> in_scope_vars_begin() const
+		{ return in_scope_vars.begin(); }
+	list_iterator<var_binding> in_scope_vars_end() const
+		{ return in_scope_vars.end(); }
+
+	list_iterator<collation_h_t> collations_begin() const
+		{ return collations.begin(); }
+	list_iterator<collation_h_t> collations_end() const
+		{ return collations.end(); }
+
 
 	item_type get_context_item_type() const
 		{ return context_item_type; }
@@ -358,6 +376,7 @@ public:	// manipulators
 	std::string get_base_uri() const
 		{ return base_uri; }
 	
+
 	std::string get_function_type(QName const&, uint32_t arity) 
 	 const throw (xqp_exception);
 	item_type get_document_type(std::string const&) 
@@ -376,7 +395,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	item in the sequence obtained by evaluating E1 becomes the context 
 	**	item in the inner focus for an evaluation of E2.
 	*/
-	item_iterator context_item;
+	rchandle<item> context_item_h;
 
 	/*
 	**	[Definition: The context position is the position of the context item 
@@ -470,27 +489,43 @@ protected:  // XQuery 1.0 dynamic context
 	*/
 	std::string default_collection;
 	
+	/*
+	**	Persistent nodeid counter
+	*/
+	fxarray<uint32_t> nodeid_counter;
 
 public:
-	symbol_table symtab; // string storage
+	// string storage
+	fxcharheap string_store;
+
+	// nodeid services
+	nodeid next_nodeid();
+	nodeid context_nodeid();
+
+	// variables 
 	void push_var(rchandle<var_binding>);
 	rchandle<item_iterator> get_var_value(
 		rchandle<QName>) const throw (xqp_exception);
 
+	// context item
+  rchandle<item> get_context_item() const { return context_item_h; }
 	uint32_t get_context_position() const { return context_position; }
 	uint32_t get_context_size() const { return context_size; }
+
+	// local time
 	time_t get_currtime() const { return currtime; }
 	int get_timezone() const { return timezone; }
 		
-  item_iterator get_context_item() const { return context_item; }
+	// default doc/collection
 	item_iterator get_document(std::string const&) const throw (xqp_exception);
 	item_iterator get_collection(std::string const&) const throw (xqp_exception);
 	item_iterator get_default_collection() const throw (xqp_exception);
 	
+	// function library
 	function_impl const* get_function(signature const&) const
 	throw (xqp_exception);
 	
-public:     // diagnostic flags
+	// diagnostic flags
   enum diagnostic_flag_t {
     trace_functions   = 1,
     trace_timing      = 2,

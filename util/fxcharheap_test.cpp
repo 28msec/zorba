@@ -36,10 +36,6 @@ int main(int argc, char* argv[])
 		string cmdline, cmd, arg1, arg2;
 		uint32_t argcount = 0;
     
-    // check metadata
-    cout << "heap.size() = " << h_p->size() << endl;
-    cout << "heap.capacity() = " << h_p->capacity() << endl;
-
     // command loop
     while (true) {
 			getline(cin, cmdline);
@@ -63,15 +59,15 @@ int main(int argc, char* argv[])
       if (cmd=="quit" || cmd=="exit") {
 				break;
 			}
-      else if (cmd=="capacity") {
-        cout << "Capacity = "<<h_p->capacity()<<endl;
+      else if (cmd=="cap") {
+        cout << "capacity = "<<h_p->capacity()<<endl;
       }
       else if (cmd=="(help") {
-        cout <<"capacity     - print capacity\n";
-        cout <<"help         - this help function\n";
-        cout <<"iter         - run the heap iterator\n";
-        cout <<"load FNAME   - load a file of strings\n";
-        cout <<"size         - return the size of this heap\n";
+        cout <<"cap         - print capacity\n";
+        cout <<"help        - this help function\n";
+        cout <<"iter        - run the heap iterator\n";
+        cout <<"load FNAME  - load a file of strings\n";
+        cout <<"size        - return the size of this heap\n";
       }
       else if (cmd=="iter") {
         unsigned k = 0;
@@ -90,13 +86,12 @@ int main(int argc, char* argv[])
 					cout << "load(" << buf << ")\n"; 
           h_p->put(buf.c_str(), 0, buf.length());
         }
-        cout << "_____________Load finished______________\n";
       }
       else if (cmd=="size") {
         cout << "size = " << h_p->size() << endl;
       }
       else {
-        cout << "Unrecognized command\n";
+        cout << "unrecognized command\n";
       }
     }
   } catch (xqp_exception& e) {

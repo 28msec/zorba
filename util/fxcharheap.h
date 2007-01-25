@@ -75,7 +75,10 @@ public:  //heap interface
     char * buf,							// output: output buffer
     uint32_t offset,				// input: buffer starting offset
     uint32_t maxlen) const	// input: maximum output size, truncate
-	throw (xqp::xqp_exception);
+	throw (xqp_exception);
+
+	// convenience method: return a string 
+	std::string get(off_t id) throw (xqp_exception);
 
 	/**
    ** Insert a new block of characters.
@@ -87,7 +90,10 @@ public:  //heap interface
     char const* buf,				// input: string
     uint32_t offset,				// input: starting offset
     uint32_t len)						// input: string length
-	throw (xqp::xqp_exception);
+	throw (xqp_exception);
+
+	// convenience method
+	off_t put(char const*) throw (xqp_exception);
 
 	/**
    **	Replace a block of characters in place.
@@ -97,7 +103,7 @@ public:  //heap interface
     char const* buf,        // input: string
     uint32_t offset,				// input: starting offset
     uint32_t len)						// input: string length
-	throw (xqp::xqp_exception);
+	throw (xqp_exception);
 
 	/**
    **	Return the length of the string at offset 'id'.

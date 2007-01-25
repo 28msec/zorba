@@ -25,6 +25,11 @@ using namespace std;
 namespace xqp {
 
 
+/*...........................................
+	: expr                                    :
+	:.........................................:
+*/
+
 rchandle<item_iterator> expr::eval(
 	context& ctx)
 {
@@ -35,6 +40,11 @@ rchandle<item_iterator> expr::eval(
 }
 
 
+/*...........................................
+	: literal expr                            :
+	:.........................................:
+*/
+
 rchandle<item_iterator> literal_expr::eval(
 	context& ctx)
 {
@@ -42,7 +52,9 @@ rchandle<item_iterator> literal_expr::eval(
 	cout << __FUNCTION__ << endl;
 #endif
 	switch (type) {
-	case lit_string: return new singleton_iterator(ctx,ctx.symtab.get(sref)); 
+	case lit_string: {
+  	return new singleton_iterator(ctx,ctx.string_storage.get(sref));
+	}
 	case lit_integer: return new singleton_iterator(ctx,ival);
 	case lit_decimal: return new singleton_iterator(ctx,decval);
 	case lit_double: return new singleton_iterator(ctx,dval);
@@ -50,6 +62,11 @@ rchandle<item_iterator> literal_expr::eval(
 	}
 }
 
+
+/*...........................................
+	: expr_list                               :
+	:.........................................:
+*/
 
 rchandle<item_iterator> expr_list::eval(
 	context & ctx) 
@@ -68,6 +85,11 @@ rchandle<item_iterator> expr_list::eval(
 }
 
 
+/*...........................................
+	: var_expr                                :
+	:.........................................:
+*/
+
 rchandle<item_iterator> var_expr::eval(
 	context & ctx) 
 {
@@ -84,6 +106,11 @@ rchandle<item_iterator> var_expr::eval(
 	return res_h;
 }
 
+
+/*...........................................
+	: flwor_expr                              :
+	:.........................................:
+*/
 
 rchandle<item_iterator> flwor_expr::eval(
 	context & ctx) 
@@ -123,6 +150,11 @@ rchandle<item_iterator> flwor_expr::eval(
 }
 
 
+/*...........................................
+	: quantified_expr                         :
+	:.........................................:
+*/
+
 rchandle<item_iterator> quantified_expr::eval(
 	context & ctx) 
 {
@@ -149,6 +181,11 @@ rchandle<item_iterator> quantified_expr::eval(
 }
 
 
+/*...........................................
+	: typeswitch_expr                         :
+	:.........................................:
+*/
+
 rchandle<item_iterator> typeswitch_expr::eval(
 	context & ctx)
 {
@@ -169,6 +206,11 @@ rchandle<item_iterator> typeswitch_expr::eval(
 }
 
 
+/*...........................................
+	: if_expr                                 :
+	:.........................................:
+*/
+
 rchandle<item_iterator> if_expr::eval(
 	context & ctx)
 {
@@ -187,6 +229,11 @@ rchandle<item_iterator> if_expr::eval(
 }
 
 
+/*...........................................
+	: fo_expr                                 :
+	:.........................................:
+*/
+
 rchandle<item_iterator> fo_expr::eval(
 	context & ctx)
 {
@@ -203,24 +250,29 @@ rchandle<item_iterator> fo_expr::eval(
 }
 
 
+/*...........................................
+	: text_expr                               :
+	:.........................................:
+*/
+
 rchandle<item_iterator> text_expr::eval(
 	context & ctx)
 {
 	Assert<null_pointer>(text_expr_h!=NULL);
 	rchandle<item_iterator> it_h = text_expr_h->eval(ctx);
-	item_iterator* it_p = &*it_h;
-	Assert<null_pointer>(it_p!=NULL);
-	ostringstream oss;
-	while (!it_p->done()) {
-		rchandle<item> i_h = it_p->next();
-		item* i_p = &*i_h;
-		Assert<null_pointer>(i_p!=NULL);
-		i_p->put(oss,ctx);
-	}
-	rchandle<text_node> tnode_h = new text_node(rand(),oss.str(),NULL);
+	string content = it_h->string_value(ctx);
+
+	rchandle<text_node> tnode_h =
+		new text_node(ctx.next_nodeid(),content,ctx.context_nodeid());
+
 	return new singleton_iterator(ctx, &*tnode_h);
 }
 
+
+/*...........................................
+	: comment_expr                            :
+	:.........................................:
+*/
 
 rchandle<item_iterator> comment_expr::eval(
 	context & ctx)
@@ -231,9 +283,81 @@ rchandle<item_iterator> comment_expr::eval(
 
 
 
+/*...........................................
+	: doc_expr                                :
+	:.........................................:
+*/
+
+rchandle<item_iterator> doc_expr::eval(
+	context t& ctx) 
+{
+	Assert<null_pointer>(docuri_h!=NULL);
+	return docuri_h->eval(ctx);
+}
 
 
 
+/*...........................................
+	: elem_expr                               :
+	:.........................................:
+*/
+
+rchandle<item_iterator> elem_expr::eval(
+	context & ctx) 
+{
+	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
+	if (qname_h!=NULL) {
+		qname_h->put(os,ctx) << ">\n";
+	}
+	else {
+		qname_expr_h->put(os,ctx) << ">\n";
+	}
+	vector<nsbinding>::const_iterator it = begin();
+	vector<nsbinding>::const_iterator en = end();
+	for (; it!=en; ++it) {
+		nsbinding nsb = *it;
+		string ncname = nsb.first;
+		string nsuri = nsb.second;
+		os << INDENT << "xmlns:" << ncname << "=\"" << nsuri << "\"\n"; UNDENT;
+	}
+	Assert<null_pointer>(content_expr_h!=NULL);
+	content_expr_h->put(os,ctx);
+}
+
+
+
+/*...........................................
+	: attr_expr                               :
+	:.........................................:
+*/
+
+rchandle<item_iterator> attr_expr::eval(
+	context & ctx) 
+{
+	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
+	if (qname_h!=NULL) {
+		qname_h->put(os,ctx);
+	}
+	else {
+		qname_expr_h->put(os,ctx);
+	}
+
+	Assert<null_pointer>(val_expr_h!=NULL);
+	rchandle<item_iterator> val_h = val_expr_h->eval(ctx);
+
+
+	rchandle<item> i_h = ctx.get_context_item();
+	elem_node* n_p = dynamic_cast<elem_node*>(&*i_h);
+	if (n_p==NULL) {
+		throw xqp_exception(__FUNCTION__,"expecting element node parent");
+	}
+
+	rchandle<attr_node> anode_h =
+		new attr_node(rand(), name_h, value, n_p->get_nodeid());
+
+	return new singleton_iterator(ctx, &*anode_h);
+
+}
 
 
 
