@@ -121,6 +121,7 @@ protected:
 	list_iterator<rchandle<item_iterator> > walker;
 	list_iterator<rchandle<item_iterator> > sentinel;
 	rchandle<item_iterator> currit_h;
+	uint32_t it_counter;
 
 public:	// iterator interface
 	void open();

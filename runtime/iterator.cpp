@@ -314,6 +314,7 @@ rchandle<item> concat_iterator::next()
 {
 	while (currit_h->done() && ++walker!=sentinel) {
 		currit_h = *walker;
+		++it_counter;
 	}
 	if (done()) return NULL;
 	return currit_h->next();
@@ -321,7 +322,8 @@ rchandle<item> concat_iterator::next()
 
 bool concat_iterator::done()
 {
-	return walker==sentinel;
+	return (it_counter==it_list.size()
+					&& currit_h->done());
 }
 
 void concat_iterator::rewind()
@@ -330,6 +332,7 @@ void concat_iterator::rewind()
 	for (; walker!=sentinel; ++walker) {
 		(*walker)->rewind();
 	}
+	it_counter = 0;
 }
 
 concat_iterator::concat_iterator(
@@ -339,11 +342,13 @@ concat_iterator::concat_iterator(
 	item_iterator(ctx),
 	it_list(_it_list),
 	walker(_it_list.begin()),
-	sentinel(_it_list.end())
+	sentinel(_it_list.end()),
+	it_counter(1)
 {
 	currit_h = *walker;
 	while (currit_h->done() && ++walker!=sentinel) {
 		currit_h = *walker;
+		++it_counter;
 	}
 }
 
