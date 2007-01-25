@@ -1,8 +1,13 @@
 zorba0.1-1
-Jan 18, 2007
+2007.01.25
+
+
 
 zorba versioning conventions
 ----------------------------
+
+2007.01.16
+
 'zorbaN.M-K' means:
 
 	major version  = N
@@ -19,6 +24,9 @@ reimplemetation occurs.
 
 Building zorba
 --------------
+
+2007.01.16
+
 The root directory is
 	$INSTALL/zorba/xquery.
 
@@ -45,18 +53,39 @@ build.sh
 Known bugs
 ----------
 
+2007.01.25
+
+Several of the unit test modules are showing an error
+on exit.  The sequence of unit tests runs fine, but the module bails
+out with an obscure gnu/cygwin error message before exiting.  I suspect
+'delete' applied inappropriately by some rchandle destructor.
+
+
+2007.01.18
+
 There remain bugs in the autoconf setup.
 Use 'build.sh' and the local 'Makefile.local' subsystem
 for the time being.
 
 
 
-                   _____________________________
-                  |                             |
-                  |        Current Status       |
-                  |_____________________________|
+
+
+ _____________________________
+|                             |
+| Current Status: 2007.01.25  |
+|_____________________________|
  
-                  
+
+2007.01.25
+
+Unit testing in the expression tree directory:
+  expr_test looks good,
+  eval_test is in progress
+                
+                   
+2007.01.18
+                 
 The 'parser' subsystem is undergoing conversion to
 include 'context'.  This requires modification to:
   xquery_driver.h,
@@ -74,26 +103,26 @@ a separate location, either 'runtime', or it's own subdirectory
 
 
 
-
 Current Module List
--------------------  
+-------------------
+
+2007.01.25  
                   
 context
 	XQuery static and dynamic context:
 
 		context											XQuery 1.0 static/dynamc context
-
+		                            note: needs much more work
 
 exprtree
 	XQuery expression tree:
 
 		expr												implementation: XQueryP expression nodes
+		eval                        implementation: expression node eval methods, in progress
 		ft_expr											implementation: XQuery Full-text expressions
 		update_expr									implementation: XQuery UPdate expressions
-
-	notes:
-		In progress.  Replacing all the first-order expression classes with a
-		single generic class that points to a function implementation.
+		expr_test                   implementation: expression tree syntax test
+		eval_test                   implementation: expression tree evaluator, in progress
 
 
 functions
@@ -160,7 +189,7 @@ runtime
 
 		content_handler							implementation: mod_xqp to libxqp.so bridge
 		httpd.conf									implementation: apache2 web server config for libxqp
-		item_iterator								implementation: the zorba data interface
+		iterator								    implementation: the zorba runtime iterator interface
 		mod_xqp.c										implementation: the zorba XQueryP apache module
 
 
@@ -213,7 +242,7 @@ values
 		ft_options									implementation: XQuery Full-Text search options
 		ft_selection								implementation: XQuery Full-Text selection constraints
 		ft_values										implementation: XQuery Full-Text search specifier value
-		node												implementation: XQuery node value
+		node_values								  implementation: XQuery node value
 		numeric											implementation: XQuery numeric value
 		qname_value							  	implementation: XQuery QName
 		update_values								implementation: XQuery update specifier value

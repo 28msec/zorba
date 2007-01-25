@@ -19,13 +19,17 @@
 #define XQP_NODE_VALUES_H
 
 #include "values.h"
-#include "../context/context.h"
+#include "qname_value.h"
+
 #include "../runtime/iterator.h"
+#include "../util/hashmap.h"
 #include "../util/rchandle.h"
 
 namespace xqp {
 
 #define EMPTY_SEQUENCE(X) item_iterator((X))
+
+class context;
 
 
 /*______________________________________________________________________

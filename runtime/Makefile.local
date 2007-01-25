@@ -2,9 +2,6 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
-var_iterator : var_iterator.h var_iterator.cpp
-	g++ -c ${OPT} -o ${BUILD}/var_iterator.${SUFX} var_iterator.cpp
-
 iterator : iterator.h iterator.cpp
 	g++ -c ${OPT} -o ${BUILD}/iterator.${SUFX} iterator.cpp
 iterator_test : iterator.h iterator.cpp iterator_test.cpp
@@ -17,5 +14,5 @@ iterator_test : iterator.h iterator.cpp iterator_test.cpp
 		${BUILD}/iterator.${SUFX} \
 		iterator_test.cpp
 
-all : var_iterator item_iterator
+all : iterator
 
