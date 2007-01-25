@@ -15,6 +15,7 @@
 #include "../util/xqp_exception.h"
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -25,6 +26,9 @@ namespace xqp {
 rchandle<item_iterator> expr::eval(
 	context& ctx)
 {
+#ifdef DEBUG
+	cout << "expr::"<<__FUNCTION__ << endl;
+#endif
 	return new item_iterator(ctx);
 }
 
@@ -32,8 +36,11 @@ rchandle<item_iterator> expr::eval(
 rchandle<item_iterator> literal_expr::eval(
 	context& ctx)
 {
+#ifdef DEBUG
+	cout << __FUNCTION__ << endl;
+#endif
 	switch (type) {
-	case lit_string: return new singleton_iterator(ctx,/*heap.get(sref)*/"stub"); 
+	case lit_string: return new singleton_iterator(ctx,ctx.symtab.get(sref)); 
 	case lit_integer: return new singleton_iterator(ctx,ival);
 	case lit_decimal: return new singleton_iterator(ctx,decval);
 	case lit_double: return new singleton_iterator(ctx,dval);
@@ -45,6 +52,9 @@ rchandle<item_iterator> literal_expr::eval(
 rchandle<item_iterator> expr_list::eval(
 	context & ctx) 
 {
+#ifdef DEBUG
+	cout << "expr_list::"<<__FUNCTION__ << endl;
+#endif
 	uint32_t n = expr_hv.size();
 	for (uint32_t i=0; i<n-1; ++i) {
 		rchandle<expr> e_h = expr_hv[i];
@@ -54,11 +64,21 @@ rchandle<item_iterator> expr_list::eval(
 	return expr_hv[n-1]->eval(ctx);
 }
 
-	
+
 rchandle<item_iterator> var_expr::eval(
 	context & ctx) 
 {
-	return get_valexpr()->eval(ctx);
+#ifdef DEBUG
+	cout << "var_expr::"<<__FUNCTION__ << endl;
+#endif
+	rchandle<expr> e_h = get_valexpr();
+	if (e_h==NULL) {
+		cout << __FUNCTION__ << " : NULL value\n";
+		return new item_iterator(ctx);
+	}
+	expr* e_p = &*e_h;
+	rchandle<item_iterator> res_h = e_p->eval(ctx);
+	return res_h;
 }
 
 
@@ -179,6 +199,31 @@ rchandle<item_iterator> fo_expr::eval(
 	return new item_iterator(ctx);
 }
 
+
+rchandle<item_iterator> text_expr::eval(
+	context & ctx)
+{
+	Assert<null_pointer>(text_expr_h!=NULL);
+	rchandle<item_iterator> it_h = text_expr_h->eval(ctx);
+	item_iterator* it_p = &*it_h;
+	Assert<null_pointer>(it_p!=NULL);
+	ostringstream oss;
+	while (!it_p->done()) {
+		rchandle<item> i_h = it_p->next();
+		item* i_p = &*i_h;
+		Assert<null_pointer>(i_p!=NULL);
+		i_p->put(oss,ctx);
+	}
+	return new singleton_iterator(ctx,oss.str());
+}
+
+
+rchandle<item_iterator> comment_expr::eval(
+	context & ctx)
+{
+	Assert<null_pointer>(comment_expr_h!=NULL);
+	return comment_expr_h->eval(ctx);
+}
 
 
 

@@ -11,7 +11,7 @@
 #ifndef XQP_VAR_ITERATOR_H
 #define XQP_VAR_ITERATOR_H
 
-#include "item_iterator.h"
+#include "iterator.h"
 #include "../values/qname_value.h"
 
 namespace xqp {

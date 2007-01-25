@@ -9,14 +9,18 @@ expr_test : expr.h expr.cpp expr_test.cpp
 	g++ -g -o ${BUILD}/expr_test \
 		../context/${BUILD}/context.${SUFX} \
 		../parser/${BUILD}/symbol_table.${SUFX} \
+		../runtime/${BUILD}/item_iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		${BUILD}/eval.${SUFX} \
 		${BUILD}/expr.${SUFX} \
 		expr_test.cpp
 

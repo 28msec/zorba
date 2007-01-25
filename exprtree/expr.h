@@ -7,14 +7,13 @@
  *	Author: Paul Pedersen
  */
 
-
 #ifndef XQP_EXPR_H
 #define XQP_EXPR_H
 
 #include <string>
 #include <vector>
 
-#include "../runtime/item_iterator.h"
+#include "../runtime/iterator.h"
 #include "../context/context.h"
 #include "../parser/parse_constants.h"
 #include "../parser/location.hh"
@@ -46,9 +45,12 @@ public:
   virtual ~expr() {}
 
 public:
-	rchandle<item_iterator> eval(context &);
 	yy::location get_loc() const { return loc; }
+
+public:
+	virtual rchandle<item_iterator> eval(context &);
 	virtual std::ostream& put(std::ostream&,context const&) const;
+
 	friend std::ostream& operator<<(std::ostream& s, expr const& r);
 
 };
@@ -148,9 +150,11 @@ public:
   void set_type(rchandle<sequence_type> const& t_h) { type_h = t_h; }
 
 public:
-	rchandle<item_iterator> eval(context &);
 	static std::string decode_var_kind(enum var_kind);
   std::ostream& put(std::ostream&,context const&) const;
+
+public:
+	rchandle<item_iterator> eval(context &);
 
 };
 
@@ -1018,7 +1022,7 @@ protected:
 	};
 
 public:
-	literal_expr(yy::location const&, context const&, uint32_t sref);
+	literal_expr(yy::location const&, context const&, uint32_t sref, bool);
 	literal_expr(yy::location const&, context const&, int);
 	literal_expr(yy::location const&, context const&, decimal);
 	literal_expr(yy::location const&, context const&, double);
@@ -1293,6 +1297,9 @@ public:
 public:
 	std::ostream& put(std::ostream&, context const&) const;
 
+public:
+	rchandle<item_iterator> eval(context&);
+
 };
 
 
@@ -1318,6 +1325,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&, context const&) const;
+
+public:
+	rchandle<item_iterator> eval(context&);
 
 };
 

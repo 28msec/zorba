@@ -13,7 +13,7 @@
 #include <string>
 
 #include "../context/context.h"
-#include "../runtime/item_iterator.h"
+#include "../runtime/iterator.h"
 #include "../util/xqp_exception.h"
 
 using namespace std;

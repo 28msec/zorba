@@ -20,7 +20,7 @@
 
 #include "values.h"
 #include "../context/context.h"
-#include "../runtime/item_iterator.h"
+#include "../runtime/iterator.h"
 #include "../util/rchandle.h"
 
 namespace xqp {

@@ -11,7 +11,7 @@
 #ifndef XQP_DYNAMIC_CONTEXT_H
 #define XQP_DYNAMIC_CONTEXT_H
 
-#include "../runtime/item_iterator.h"
+#include "../runtime/iterator.h"
 #include "../functions/function_impl.h"
 #include "../types/collation.h"
 #include "../types/base_types.h"

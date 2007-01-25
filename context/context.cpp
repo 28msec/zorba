@@ -13,8 +13,6 @@
 #include <sstream>
 #include <string>
 
-#include "../runtime/item_iterator.h"
-#include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
 

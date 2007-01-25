@@ -18,7 +18,7 @@
 #ifndef XQP_NODE_TYPES_H
 #define XQP_NODE_TYPES_H
 
-#include "../runtime/item_iterator.h"
+#include "../runtime/iterator.h"
 #include "../context/context.h"
 #include "../util/rchandle.h"
 

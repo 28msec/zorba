@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: item_iterator.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: iterator.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef XQP_ITEM_ITERATOR_H
-#define XQP_ITEM_ITERATOR_H
+#ifndef XQP_ITERATOR_H
+#define XQP_ITERATOR_H
 
 #include "../types/xs_primitive_types.h"
 #include "../util/rchandle.h"
@@ -113,8 +113,23 @@ public:	// ctor,dtor
 };
 
 
+class concat_iterator : public item_iterator
+{
+protected:
+	vector<rchandle<item_iterator> > it_hv;
+
+public:	// iterator interface
+	void open();
+	void close();
+	rchandle<item> next();
+	bool done();
+	void rewind();
+
+};
+
+
 
 }	/* namespace xqp */
-#endif	/* XQP_ITEM_ITERATOR_H */
+#endif	/* XQP_ITERATOR_H */
 
 

@@ -8,7 +8,7 @@
  *
  */
 
-#include "item_iterator.h"
+#include "iterator.h"
 #include "../types/xs_primitive_types.h"
 #include "../values/xs_primitive_values.h"
 
@@ -114,6 +114,9 @@ singleton_iterator::singleton_iterator(
 	i_h(_i_h),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(rchandle<item>)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -124,6 +127,9 @@ singleton_iterator::singleton_iterator(
 	i_h(_i_p),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(item*)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -134,6 +140,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_string_value(s)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(string)\n";
+#endif
 }
 
 singleton_iterator::~singleton_iterator()
@@ -150,6 +159,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_boolean_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(bool)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -160,6 +172,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_double_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(double)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -170,6 +185,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_float_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(float)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -180,6 +198,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_int_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(int)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -190,6 +211,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_long_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(long long)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -200,6 +224,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_short_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(short)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -210,6 +237,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_byte_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(signed char)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -220,6 +250,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_unsignedByte_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(unsigned char)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -230,6 +263,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_unsignedInt_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(signed int)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -240,6 +276,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_nonNegativeInteger_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(unsigned long long)\n";
+#endif
 }
 
 singleton_iterator::singleton_iterator(
@@ -250,6 +289,9 @@ singleton_iterator::singleton_iterator(
 	i_h(new xs_unsignedShort_value(v)),
 	done_b(false)
 {
+#ifdef DEBUG
+	cout << "singleton_iterator(unsigned short)\n";
+#endif
 }
 
 

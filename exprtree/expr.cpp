@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: exprnodes.cpp.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: expr.cpp.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -123,7 +123,7 @@ ostream& var_expr::put(
 	ostream& os,
 	context const& ctx) const
 {
-	os << INDENT <<  "var_expr[" << decode_var_kind(get_kind());
+	os << INDENT << "var_expr[" << decode_var_kind(get_kind());
 	os << " name="; get_varname()->put(os,ctx);
 	os << ", expr="; get_valexpr()->put(os,ctx);
 	os << ", type=" << get_type()->describe();
@@ -873,7 +873,8 @@ ostream& primary_expr::put(
 literal_expr::literal_expr(
 	yy::location const& loc,
 	context const& ctx,
-	uint32_t _sref)
+	uint32_t _sref,
+	bool b)
 :
 	expr(loc,ctx),
 	type(lit_string),

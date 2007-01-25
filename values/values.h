@@ -11,7 +11,7 @@
 #ifndef XQP_VALUES_H
 #define XQP_VALUES_H
 
-#include "../runtime/item_iterator.h"
+#include "../runtime/iterator.h"
 #include "../types/base_types.h"
 #include "../util/rchandle.h"
 

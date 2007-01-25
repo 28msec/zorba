@@ -24,8 +24,6 @@
 :                                         :
 : expression tree unit test module        :
 :                                         :
-:                                         :
-:                                         :
 :.........................................:
 */
 
@@ -70,9 +68,9 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>literal_expr\n";
-		rchandle<literal_expr> lit1_h = new literal_expr(loc, ctx, i1);
-		rchandle<literal_expr> lit2_h = new literal_expr(loc, ctx, i2);
-		rchandle<literal_expr> lit3_h = new literal_expr(loc, ctx, i3);
+		rchandle<literal_expr> lit1_h = new literal_expr(loc, ctx, i1, true);
+		rchandle<literal_expr> lit2_h = new literal_expr(loc, ctx, i2, true);
+		rchandle<literal_expr> lit3_h = new literal_expr(loc, ctx, i3, true);
 		rchandle<literal_expr> lit4_h = new literal_expr(loc, ctx, 123);
 		rchandle<literal_expr> lit5_h = new literal_expr(loc, ctx, 123456);
 		rchandle<literal_expr> lit6_h = new literal_expr(loc, ctx, 123.456);

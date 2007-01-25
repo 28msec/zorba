@@ -14,7 +14,8 @@
 #include "namespace.h"
 
 #include "../functions/signature.h"
-#include "../runtime/item_iterator.h"
+#include "../parser/symbol_table.h"
+#include "../runtime/iterator.h"
 #include "../types/base_types.h"
 #include "../types/collation.h"
 #include "../util/hashmap.h"
@@ -469,8 +470,9 @@ protected:  // XQuery 1.0 dynamic context
 	*/
 	std::string default_collection;
 	
-	
+
 public:
+	symbol_table symtab; // string storage
 	void push_var(rchandle<var_binding>);
 	rchandle<item_iterator> get_var_value(
 		rchandle<QName>) const throw (xqp_exception);
