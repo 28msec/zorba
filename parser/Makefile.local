@@ -11,7 +11,7 @@ scanner0 : xquery_scanner.l
 
 parser : xquery_parser.y
 	bison -v -t -d xquery_parser.y
-	g++ ${OPT} -c -o ${BUILD}/xquery_parser.${SUFX} xquery_parser.tab.c
+	g++ -Wall -g -c -o ${BUILD}/xquery_parser.${SUFX} xquery_parser.tab.c
 
 parser0 : xquery_parser.y
 	bison -v -t -d xquery_parser.y

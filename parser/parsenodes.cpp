@@ -62,8 +62,9 @@ Module::~Module()
 {
 }
 
-ostream& Module::put(ostream& s) const
+ostream& Module::put(ostream& os) const
 {
+	return os;
 }
 
 //-Module::
@@ -88,8 +89,9 @@ VersionDecl::~VersionDecl()
 {
 }
 
-ostream& VersionDecl::put(ostream& s) const
+ostream& VersionDecl::put(ostream& os) const
 {
+	return os;
 }
 
 //-VersionDecl::
@@ -306,8 +308,9 @@ SIND_Decl::~SIND_Decl()
 {
 }
 
-ostream& SIND_Decl::put(ostream& s) const
+ostream& SIND_Decl::put(ostream& os) const
 {
+	return os;
 }
 
 //-SIND_Decl::
@@ -329,8 +332,9 @@ VFO_Decl::~VFO_Decl()
 {
 }
 
-ostream& VFO_Decl::put(ostream& s) const
+ostream& VFO_Decl::put(ostream& os) const
 {
+	return os;
 }
 
 //-VFO_Decl::
@@ -352,8 +356,9 @@ Setter::~Setter()
 {
 }
 
-ostream& Setter::put(ostream& s) const
+ostream& Setter::put(ostream& os) const
 {
+	return os;
 }
 
 //-Setter::
@@ -375,8 +380,9 @@ Import::~Import()
 {
 }
 
-ostream& Import::put(ostream& s) const
+ostream& Import::put(ostream& os) const
 {
+	return os;
 }
 
 //-Import::
@@ -968,19 +974,18 @@ ConstructionDecl::~ConstructionDecl()
 {
 }
 
-ostream& ConstructionDecl::put(ostream& s) const
+ostream& ConstructionDecl::put(ostream& os) const
 {
-	s << INDENT << "ConstructionDecl[";
+	os << INDENT << "ConstructionDecl[";
 	switch (mode) {
-	case context::cons_preserve: "preserve"; break;
-	case context::cons_strip: "strip"; break;
-	default: "???";
+	case context::cons_preserve: os << "preserve"; break;
+	case context::cons_strip: os << "strip"; break;
+	default: os << "???";
 	}
-	return s << OUTDENT << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 //-ConstructionDecl::
-
 
 
 
@@ -997,11 +1002,11 @@ FunctionDecl::FunctionDecl(
 	enum function_type_t _type)
 :
 	parsenode(_loc,_ctx),
+	type(_type),
 	name_h(_name_h),
 	paramlist_h(_paramlist_h),
-	return_type_h(_return_type_h),
 	body_h(_body_h),
-	type(_type)
+	return_type_h(_return_type_h)
 {
 }
 
@@ -1027,7 +1032,6 @@ ostream& FunctionDecl::put(ostream& s) const
 }
 
 //-FunctionDecl::
-
 
 
 
@@ -2581,8 +2585,8 @@ UnaryExpr::UnaryExpr(
 	rchandle<exprnode> _value_expr_h)
 :
 	exprnode(_loc,_ctx),
-	signlist_h(_signlist_h),
-	value_expr_h(_value_expr_h)
+	value_expr_h(_value_expr_h),
+	signlist_h(_signlist_h)
 {
 }
 
