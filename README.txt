@@ -55,8 +55,8 @@ Known bugs
 
 2007.01.27
 
-Build is currently down pending conversion to the in-memory
-node store.
+Build is currently partially disabled pending conversion to the
+in-memory node store.
 
 
 2007.01.25
