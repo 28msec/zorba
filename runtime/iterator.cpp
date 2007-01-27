@@ -9,10 +9,10 @@
  */
 
 #include "iterator.h"
-#include "../types/xs_primitive_types.h"
+
+#include "../context/context.h"
 #include "../util/Assert.h"
 #include "../util/xqp_exception.h"
-#include "../values/values.h"
 #include "../values/xs_primitive_values.h"
 
 #include <iostream>
@@ -21,23 +21,88 @@
 using namespace std;
 namespace xqp {
 
+
 /*...........................................
-	: utilities                               :
+	: item_iterator base                      :
 	:.........................................:
 */
 
-string item_iterator::string_value(context const& ctx)
-throw (null_pointer)
+item_iterator::item_iterator(
+	context & _ctx)
+:
+	ctx(_ctx)
+{
+}
+
+item_iterator::item_iterator(
+	item_iterator const& it)
+:
+	ctx(it.ctx)
+{
+}
+
+item_iterator& item_iterator::operator=(
+	item_iterator const& it)
+{
+	ctx = it.ctx;
+	return *this;
+}
+
+item_iterator::~item_iterator()
+{
+}
+
+void item_iterator::open()
+{
+}
+
+void item_iterator::close()
+{
+}
+
+rchandle<item> item_iterator::next()
+{
+	return NULL;
+}
+
+rchandle<item> item_iterator::peek() const
+{
+	return NULL;
+}
+
+bool item_iterator::done() const
+{
+	return true;
+}
+
+void item_iterator::rewind()
+{
+}
+
+rchandle<item> item_iterator::operator*() const
+{
+	return peek();
+}
+
+item_iterator& item_iterator::operator++()
+{
+	next();
+	return *this;
+}
+
+string item_iterator::string_value()
 {
 	ostringstream oss;
 	while (!done()) {
 		rchandle<item> i_h = next();
 		item* i_p = &*i_h;
-		Assert<null_pointer>(i_p!=NULL);
+		if (i_p==NULL) continue;
 		i_p->put(oss,ctx);
 	}
 	return oss.str();
 }
+
+
 
 /*...........................................
 	: binary iterator                         :
@@ -63,7 +128,14 @@ rchandle<item> binary_iterator::next()
 	return (*op)(i1,i2);
 }
 
-bool binary_iterator::done()
+rchandle<item> binary_iterator::peek() const
+{
+	rchandle<item> i1 = it1_h->peek();
+	rchandle<item> i2 = it2_h->peek();
+	return (*op)(i1,i2);
+}
+
+bool binary_iterator::done() const
 {
 	return it1_h->done() || it2_h->done();
 }
@@ -74,8 +146,19 @@ void binary_iterator::rewind()
 	it2_h->rewind();
 }
 
+rchandle<item> binary_iterator::operator*() const
+{
+	return peek();
+}
+
+item_iterator& binary_iterator::operator++()
+{
+	next();
+	return *this;
+}
+
 binary_iterator::binary_iterator(
-	context const& ctx,
+	context& ctx,
 	rchandle<item_iterator> _it1_h,
 	rchandle<item_iterator> _it2_h,
 	rchandle<item> (*_op)(rchandle<item> const&, rchandle<item> const&))
@@ -85,6 +168,16 @@ binary_iterator::binary_iterator(
 	it2_h(_it2_h),
 	op(_op)
 {
+}
+
+binary_iterator& binary_iterator::operator=(
+	binary_iterator const& it)
+{
+	ctx = it.ctx;
+	it1_h = it.it1_h;
+	it2_h = it.it2_h;
+	op = it.op;
+	return *this;
 }
 
 binary_iterator::~binary_iterator()
@@ -118,7 +211,12 @@ rchandle<item> singleton_iterator::next()
 	}
 }
 
-bool singleton_iterator::done()
+rchandle<item> singleton_iterator::peek() const
+{
+	return (!done_b) ? i_h : NULL;
+}
+
+bool singleton_iterator::done() const
 {
 	return done_b;
 }
@@ -128,8 +226,19 @@ void singleton_iterator::rewind()
 	done_b = false;
 }
 
+rchandle<item> singleton_iterator::operator*() const
+{
+	return peek();
+}
+
+item_iterator& singleton_iterator::operator++()
+{
+	next();
+	return *this;
+}
+
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	rchandle<item> _i_h)
 :
 	item_iterator(ctx),
@@ -142,7 +251,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	item * _i_p)
 :
 	item_iterator(ctx),
@@ -155,7 +264,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	string const& s)
 :
 	item_iterator(ctx),
@@ -171,10 +280,8 @@ singleton_iterator::~singleton_iterator()
 {
 }
 
-
-
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	bool v)
 :
 	item_iterator(ctx),
@@ -187,7 +294,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	double v)
 :
 	item_iterator(ctx),
@@ -200,7 +307,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	float v)
 :
 	item_iterator(ctx),
@@ -213,7 +320,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	int v)
 :
 	item_iterator(ctx),
@@ -226,7 +333,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	long long v)
 :
 	item_iterator(ctx),
@@ -239,7 +346,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	short v)
 :
 	item_iterator(ctx),
@@ -252,7 +359,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	signed char v)
 :
 	item_iterator(ctx),
@@ -265,7 +372,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	unsigned char v)
 :
 	item_iterator(ctx),
@@ -278,7 +385,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	unsigned int v)
 :
 	item_iterator(ctx),
@@ -291,7 +398,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	unsigned long long v)
 :
 	item_iterator(ctx),
@@ -304,7 +411,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context const& ctx,
+	context& ctx,
 	unsigned short v)
 :
 	item_iterator(ctx),
@@ -315,6 +422,25 @@ singleton_iterator::singleton_iterator(
 	cout << "singleton_iterator(unsigned short)\n";
 #endif
 }
+
+singleton_iterator::singleton_iterator(
+	singleton_iterator const& it)
+:
+	item_iterator(ctx),
+	i_h(it.i_h),
+	done_b(it.done_b)
+{
+}
+
+singleton_iterator& singleton_iterator::operator=(
+	singleton_iterator const& it)
+{
+	ctx = it.ctx;
+	i_h = it.i_h;
+	done_b = it.done_b;
+	return *this;
+}
+
 
 
 /*...........................................
@@ -340,7 +466,13 @@ rchandle<item> concat_iterator::next()
 	return currit_h->next();
 }
 
-bool concat_iterator::done()
+rchandle<item> concat_iterator::peek() const
+{
+	if (done()) return NULL;
+	return currit_h->peek();
+}
+
+bool concat_iterator::done() const
 {
 	return (it_counter==it_list.size()
 					&& currit_h->done());
@@ -355,8 +487,19 @@ void concat_iterator::rewind()
 	it_counter = 0;
 }
 
+rchandle<item> concat_iterator::operator*() const
+{
+	return peek();
+}
+
+item_iterator& concat_iterator::operator++()
+{
+	next();
+	return *this;
+}
+
 concat_iterator::concat_iterator(
-	context const& ctx,
+	context& ctx,
 	list<rchandle<item_iterator> > _it_list)
 :
 	item_iterator(ctx),
@@ -370,6 +513,30 @@ concat_iterator::concat_iterator(
 		currit_h = *walker;
 		++it_counter;
 	}
+}
+
+concat_iterator::concat_iterator(
+	concat_iterator const& it)
+:
+	item_iterator(it.ctx),
+	it_list(it.it_list),
+	walker(it.walker),
+	sentinel(it.sentinel),
+	currit_h(it.currit_h),
+	it_counter(it.it_counter)
+{
+}
+
+concat_iterator& concat_iterator::operator=(
+	concat_iterator const& it)
+{
+	ctx = it.ctx;
+	it_list = it.it_list;
+	walker = it.walker;
+	sentinel = it.sentinel;
+	currit_h = it.currit_h;
+	it_counter = it.it_counter;
+	return *this;
 }
 
 concat_iterator::~concat_iterator()

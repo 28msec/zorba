@@ -25,6 +25,7 @@ public:	// iterator interface
 	void open();
 	void close();
 	rchandle<item> next();
+	rchandle<item> peek();
 	bool done();
 	void rewind();
 

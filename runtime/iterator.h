@@ -26,33 +26,41 @@ class item;
 class item_iterator : public rcobject
 {
 protected:
-  context const& ctx;
+  context & ctx;
 
-public:
-	item_iterator(context const& _ctx) : ctx(_ctx) {}
-	virtual ~item_iterator() {}
-  
-public:
+public:	// construct,copy,destroy
+	item_iterator(context &);
+	item_iterator(item_iterator const&);
+	virtual item_iterator& operator=(item_iterator const&);
+	virtual ~item_iterator();
+
+public:	// low-level interface
 	// aquire resources
-	virtual void open() {}
+	virtual void open();
 
 	// release resources
-	virtual void close() {}
+	virtual void close();
 
 	// return handle to next item (or NULL)
-	virtual rchandle<item> next() { return NULL; }
+	virtual rchandle<item> next();
+
+	// return handle to current item (or NULL)
+	virtual rchandle<item> peek() const;
 
 	// return true <=> iterator has no more items
-	virtual bool done() { return true; }
+	virtual bool done() const;
 
 	// rewind the iterator, equivalent to {close();open()}
-	virtual void rewind() {}
+	virtual void rewind();
 
-public:	// utilities
-	std::string string_value(context const&) throw (null_pointer);
+public:	// high-level interface
+	virtual rchandle<item> operator*() const;
+	virtual item_iterator& operator++();
+
+public:
+	virtual std::string string_value();
 
 };
-
 
 
 class binary_iterator : public item_iterator
@@ -66,15 +74,23 @@ public:	// iterator interface
 	void open();
 	void close();
 	rchandle<item> next();
-	bool done();
+	rchandle<item> peek() const;
+	bool done() const;
 	void rewind();
+
+public:	// high-level interface
+	rchandle<item> operator*() const;
+	item_iterator& operator++();
 
 public:	// ctor,dtor
 	binary_iterator(
-		context const& ctx,
+		context & ctx,
 		rchandle<item_iterator>,
 		rchandle<item_iterator>,
 		rchandle<item> (*op)(rchandle<item> const&, rchandle<item> const&));
+
+	binary_iterator(binary_iterator const&);
+	binary_iterator& operator=(binary_iterator const&);
 
 	~binary_iterator();
 
@@ -95,24 +111,32 @@ public:	// iterator interface
 	void open();
 	void close();
 	rchandle<item> next();
-	bool done();
+	rchandle<item> peek() const;
+	bool done() const;
 	void rewind();
 
+public:	// high-level interface
+	rchandle<item> operator*() const;
+	item_iterator& operator++();
+
 public:	// ctor,dtor
-	singleton_iterator(context const&, rchandle<item>);
-	singleton_iterator(context const&, item *);
-	singleton_iterator(context const&, std::string const& s);
-	singleton_iterator(context const&, bool);
-	singleton_iterator(context const&, double);
-	singleton_iterator(context const&, float);
-	singleton_iterator(context const&, int);
-	singleton_iterator(context const&, long long);
-	singleton_iterator(context const&, short);
-	singleton_iterator(context const&, signed char);
-	singleton_iterator(context const&, unsigned char);
-	singleton_iterator(context const&, unsigned int);
-	singleton_iterator(context const&, unsigned long long);
-	singleton_iterator(context const&, unsigned short);
+	singleton_iterator(context &, rchandle<item>);
+	singleton_iterator(context &, item *);
+	singleton_iterator(context &, std::string const& s);
+	singleton_iterator(context &, bool);
+	singleton_iterator(context &, double);
+	singleton_iterator(context &, float);
+	singleton_iterator(context &, int);
+	singleton_iterator(context &, long long);
+	singleton_iterator(context &, short);
+	singleton_iterator(context &, signed char);
+	singleton_iterator(context &, unsigned char);
+	singleton_iterator(context &, unsigned int);
+	singleton_iterator(context &, unsigned long long);
+	singleton_iterator(context &, unsigned short);
+
+	singleton_iterator(singleton_iterator const&);
+	singleton_iterator& operator=(singleton_iterator const&);
 
 	~singleton_iterator();
 
@@ -132,21 +156,27 @@ public:	// iterator interface
 	void open();
 	void close();
 	rchandle<item> next();
-	bool done();
+	rchandle<item> peek() const;
+	bool done() const;
 	void rewind();
+
+public:	// high-level interface
+	rchandle<item> operator*() const;
+	item_iterator& operator++();
 
 public:
 	concat_iterator(
-		context const&,
+		context &,
 		list<rchandle<item_iterator> >);
+
+	concat_iterator(concat_iterator const&);
+	concat_iterator& operator=(concat_iterator const&);
 
 	~concat_iterator();
 
 };
 
 
-
 }	/* namespace xqp */
 #endif	/* XQP_ITERATOR_H */
-
 
