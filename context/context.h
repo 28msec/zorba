@@ -517,13 +517,12 @@ public:
 	int get_timezone() const { return timezone; }
 		
 	// default doc/collection
-	item_iterator get_document(std::string const&) const throw (xqp_exception);
-	item_iterator get_collection(std::string const&) const throw (xqp_exception);
-	item_iterator get_default_collection() const throw (xqp_exception);
+	rchandle<item_iterator> get_document(std::string const&) const throw (xqp_exception);
+	rchandle<item_iterator> get_collection(std::string const&) const throw (xqp_exception);
+	rchandle<item_iterator> get_default_collection() const throw (xqp_exception);
 	
 	// function library
-	function_impl const* get_function(signature const&) const
-	throw (xqp_exception);
+	function_impl const* get_function(signature const&) const throw (xqp_exception);
 	
 	// diagnostic flags
   enum diagnostic_flag_t {

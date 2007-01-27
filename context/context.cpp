@@ -26,12 +26,9 @@
 	+=========================================+
 */
 
-
 using namespace std;
 namespace xqp {
 
-#define EMPTY_SEQUENCE(X) item_iterator((X))
-  
 /*...........................................
 	: default constructor                     :
 	:.........................................:
@@ -206,11 +203,12 @@ throw (xqp_exception)
   return t;
 }
 	
-item_iterator context::get_document(
+rchandle<item_iterator> context::get_document(
 	string const& doc_uri) const
 throw (xqp_exception)
 {
-  return EMPTY_SEQUENCE(*this);
+  return new item_iterator(*const_cast<context*>(this));	//XXX suspicious!
+	// how about we return a pointer to some static instance here
 }
 
 
@@ -231,17 +229,17 @@ throw (xqp_exception)
   return t;
 }
 	
-item_iterator context::get_collection(
+rchandle<item_iterator> context::get_collection(
 	string const& col_uri) const
 throw (xqp_exception)
 {
-  return EMPTY_SEQUENCE(*this);
+  return new item_iterator(*const_cast<context*>(this));
 }
 
-item_iterator context::get_default_collection() const
+rchandle<item_iterator> context::get_default_collection() const
 throw (xqp_exception)
 {
-  return EMPTY_SEQUENCE(*this);
+  return new item_iterator(*const_cast<context*>(this));
 }
 
 
