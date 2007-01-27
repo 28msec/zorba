@@ -284,7 +284,7 @@ rchandle<item_iterator> comment_expr::eval(
 
 
 /*...........................................
-	: doc_expr                                :
+	: document constructor                    :
 	:.........................................:
 */
 
@@ -298,7 +298,7 @@ rchandle<item_iterator> doc_expr::eval(
 
 
 /*...........................................
-	: elem_expr                               :
+	: element constructor                     :
 	:.........................................:
 */
 
@@ -306,19 +306,20 @@ rchandle<item_iterator> elem_expr::eval(
 	context & ctx) 
 {
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
-	if (qname_h!=NULL) {
-		qname_h->put(os,ctx) << ">\n";
-	}
-	else {
-		qname_expr_h->put(os,ctx) << ">\n";
+	nodeid parentid = ctx.next_nodeid();
+	if (qname_h==NULL) {
+		rchandle<item_iterator> it_h = qname_expr_h->eval(ctx);
+		qname_h = new QName(Qname::qn_elem,it_h->string_value());
 	}
 	vector<nsbinding>::const_iterator it = begin();
-	vector<nsbinding>::const_iterator en = end();
-	for (; it!=en; ++it) {
+	for (; it!=end(); ++it) {
 		nsbinding nsb = *it;
-		string ncname = nsb.first;
-		string nsuri = nsb.second;
-		os << INDENT << "xmlns:" << ncname << "=\"" << nsuri << "\"\n"; UNDENT;
+		string pre = nsb.first;
+		string uri = nsb.second;
+		rchandle<ns_node> nnode_h =
+			new ns_node(ctx.next_nodeid(),pre,uri,parentid);
+		
+		os << "xmlns:" << ncname << "=\"" << nsuri << "\"\n";
 	}
 	Assert<null_pointer>(content_expr_h!=NULL);
 	content_expr_h->put(os,ctx);
@@ -327,7 +328,7 @@ rchandle<item_iterator> elem_expr::eval(
 
 
 /*...........................................
-	: attr_expr                               :
+	: attribute constructor                   :
 	:.........................................:
 */
 
@@ -335,25 +336,18 @@ rchandle<item_iterator> attr_expr::eval(
 	context & ctx) 
 {
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
-	if (qname_h!=NULL) {
-		qname_h->put(os,ctx);
+	if (qname_h==NULL) {
+		rchandle<item_iterator> it_h = qname_expr_h->eval(ctx);
+		qname_h = new QName(Qname::qn_attr,it_h->string_value());
 	}
-	else {
-		qname_expr_h->put(os,ctx);
-	}
-
 	Assert<null_pointer>(val_expr_h!=NULL);
 	rchandle<item_iterator> val_h = val_expr_h->eval(ctx);
+	string valstr = val_h->string_value(ctx);
+	nodeid parent_id = ctx.context_nodeid();
+	nodeid new_id = ctx.next_nodeid();
 
-
-	rchandle<item> i_h = ctx.get_context_item();
-	elem_node* n_p = dynamic_cast<elem_node*>(&*i_h);
-	if (n_p==NULL) {
-		throw xqp_exception(__FUNCTION__,"expecting element node parent");
-	}
-
-	rchandle<attr_node> anode_h =
-		new attr_node(rand(), name_h, value, n_p->get_nodeid());
+	rchandle<attribute_node> anode_h =
+		new attr_node(new_id, name_h, valstr, parent_id);
 
 	return new singleton_iterator(ctx, &*anode_h);
 
