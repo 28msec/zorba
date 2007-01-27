@@ -62,6 +62,7 @@ public:
 	~QName();
 
 public:
+	enum qname_type_t get_type() const { return type; };
 
 	std::string get_prefix() const { return prefix; }
 	void set_prefix(std::string const& p) { prefix = p; }
@@ -88,8 +89,8 @@ public:	// atomic_value interface
   bool is_node() const { return false; }
   bool is_atomic() const { return true; }
 
-  item_iterator atomized_value(context const&) const;
-	item_iterator effective_boolean_value(context const&) const;
+  rchandle<item_iterator> atomized_value(context &) const;
+	rchandle<item_iterator> effective_boolean_value(context &) const;
 
 };
 

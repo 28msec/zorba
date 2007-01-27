@@ -9,6 +9,8 @@
  */
 
 #include "values.h"
+
+#include "../util/rchandle.h"
 #include "../util/tokenbuf.h"
 
 #include <string>
@@ -84,16 +86,16 @@ bool value::is_empty() const
 	return false;
 }
 
-item_iterator value::atomized_value(
-	context const& ctx) const
+rchandle<item_iterator> value::atomized_value(
+	context & ctx) const
 {
-	return EMPTY_SEQUENCE(ctx);
+	return new item_iterator(ctx);
 }
 
-item_iterator value::effective_boolean_value(
-	context const& ctx) const
+rchandle<item_iterator> value::effective_boolean_value(
+	context & ctx) const
 {
-	return EMPTY_SEQUENCE(ctx);
+	return new item_iterator(ctx);
 }
 
 
@@ -133,16 +135,16 @@ bool item::is_atomic() const
 	return false;
 }
 
-item_iterator item::atomized_value(
-	context const& ctx) const
+rchandle<item_iterator> item::atomized_value(
+	context & ctx) const
 {
-	return EMPTY_SEQUENCE(ctx);
+	return new item_iterator(ctx);
 }
 
-item_iterator item::effective_boolean_value(
-	context const& ctx) const
+rchandle<item_iterator> item::effective_boolean_value(
+	context & ctx) const
 {
-	return EMPTY_SEQUENCE(ctx);
+	return new item_iterator(ctx);
 }
 
 string item::string_value(
@@ -173,16 +175,16 @@ enum type::typecode atomic_value::get_typecode() const
 	return type::ITEM_TYPE;
 }
 
-item_iterator atomic_value::atomized_value(
-	context const& ctx) const
+rchandle<item_iterator> atomic_value::atomized_value(
+	context & ctx) const
 {
-	return EMPTY_SEQUENCE(ctx);
+	return new item_iterator(ctx);
 }
 
-item_iterator atomic_value::effective_boolean_value(
-	context const& ctx) const
+rchandle<item_iterator> atomic_value::effective_boolean_value(
+	context & ctx) const
 {
-	return EMPTY_SEQUENCE(ctx);
+	return new item_iterator(ctx);
 }
 
 string atomic_value::string_value(

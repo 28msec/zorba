@@ -87,8 +87,8 @@ public:
 	virtual bool is_sequence() const;
 	virtual bool is_empty() const;
 
-	virtual item_iterator atomized_value(context const&) const;
-	virtual item_iterator effective_boolean_value(context const&) const;
+	virtual rchandle<item_iterator> atomized_value(context &) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context &) const;
 
 };
 
@@ -112,8 +112,8 @@ public:
 	virtual bool is_node() const;
 	virtual bool is_atomic() const;
 
-	virtual item_iterator atomized_value(context const&) const;
-	virtual item_iterator effective_boolean_value(context const&) const;
+	virtual rchandle<item_iterator> atomized_value(context &) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context &) const;
 
 	virtual std::string string_value(context const&) const;
 
@@ -141,8 +141,8 @@ public:
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
 
-	virtual item_iterator atomized_value(context const&) const;
-	virtual item_iterator effective_boolean_value(context const&) const;
+	virtual rchandle<item_iterator> atomized_value(context &) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context &) const;
 
 	virtual std::string string_value(context const&) const;
 

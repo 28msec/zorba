@@ -27,8 +27,6 @@
 
 namespace xqp {
 
-#define EMPTY_SEQUENCE(X) item_iterator((X))
-
 class context;
 
 
@@ -45,8 +43,7 @@ public:
 	nodeid() : id(0) {}
 	~nodeid() {}
 
-	bool operator==(nodeid const& n) const
-		{ return id==n.id;  }
+	bool operator==(nodeid const& n) const { return id==n.id;  }
 
 };
 
@@ -123,19 +120,19 @@ public:	// accessors
 	 *	sequence containing zero or more Attribute Nodes. The order of 
 	 *	Attribute Nodes is stable but implementation dependent. 
 	 */
-	virtual item_iterator attributes(context const&) const;
+	virtual rchandle<item_iterator> attributes(context &) const;
 	
 	/**
 	 *	The dm:base-uri accessor returns the base URI of a node as a sequence 
 	 *	containing zero or one URI reference. 
 	 */
-	virtual item_iterator base_uri(context const&) const;
+	virtual rchandle<item_iterator> base_uri(context &) const;
 	
 	/**
 	 *	The dm:children accessor returns the children of a node as a sequence 
 	 *	containing zero or more nodes. 
 	 */
-	virtual item_iterator children(context const&) const;
+	virtual rchandle<item_iterator> children(context &) const;
 	
 	/**
 	 *	The dm:document-uri accessor returns the absolute URI of the resource 
@@ -144,7 +141,7 @@ public:	// accessors
 	 *	absolute when the Document Node is constructed, or if it is used on a 
 	 *	node other than a Document Node, the empty sequence is returned. 
 	 */
-	virtual item_iterator document_uri(context const&) const;
+	virtual rchandle<item_iterator> document_uri(context &) const;
 	
 	/**
 	 *	The dm:is-id accessor returns true if the node is an XML ID.
@@ -164,7 +161,7 @@ public:	// accessors
 	 *	Note: this accessor and the namespace-nodes accessor provide two views 
 	 *	of the same information. 
 	 */
-	virtual item_iterator namespace_bindings(context const&) const;
+	virtual rchandle<item_iterator> namespace_bindings(context &) const;
 	
 	/**
 	 *	The dm:namespace-nodes accessor returns the dynamic, in-scope 
@@ -174,7 +171,7 @@ public:	// accessors
 	 *	Note: this accessor and the namespace-bindings accessor provide two 
 	 *	views of the same information.
 	 */
-	virtual item_iterator namespace_nodes(context const&) const;
+	virtual rchandle<item_iterator> namespace_nodes(context &) const;
 	
 	/**
 	 *	The dm:nilled accessor returns true if the node is "nilled". [Schema 
@@ -190,25 +187,25 @@ public:	// accessors
 	 *	of zero or one xs:QNames. Note that the QName value includes an 
 	 *	optional prefix as described in 3.3.3 QNames and NOTATIONS. 
 	 */
-	virtual item_iterator node_name(context const&) const;
+	virtual rchandle<item_iterator> node_name(context &) const;
 	
 	/**
 	 *	The dm:parent accessor returns the parent of a node as a sequence 
 	 *	containing zero or one nodes. 
 	 */
-	virtual item_iterator parent(context const&) const;
+	virtual rchandle<item_iterator> parent(context &) const;
 	
 	/**
 	 *	The dm:type-name accessor returns the name of the schema type of a 
 	 *	node as a sequence of zero or one xs:QNames. 
 	 */
-	virtual item_iterator type_name(context const&) const;
+	virtual rchandle<item_iterator> type_name(context &) const;
 	
 	/**
 	 *	The dm:typed-value accessor returns the typed-value of the node as a 
 	 *	sequence of zero or more atomic values. 
 	 */
-	virtual item_iterator typed_value(context const&) const;
+	virtual rchandle<item_iterator> typed_value(context &) const;
 	
 	/**
 	 *	The dm:unparsed-entity-public-id accessor returns the public 
@@ -217,8 +214,8 @@ public:	// accessors
 	 *	or if the entity is not an external unparsed entity, or if the entity 
 	 *	has no public identifier, the empty sequence is returned. 
 	 */
-	virtual item_iterator unparsed_entity_public_id(
-	  context const&,
+	virtual rchandle<item_iterator> unparsed_entity_public_id(
+	  context &,
 	  std::string const& entity_name) const;
 
 	/**
@@ -228,10 +225,9 @@ public:	// accessors
 	 *	or if the entity is not an external unparsed entity, the empty 
 	 *	sequence is returned. 
 	 */
-	virtual item_iterator unparsed_entity_system_id(
-	  context const&,
+	virtual rchandle<item_iterator> unparsed_entity_system_id(
+	  context &,
 	  std::string const& entity_name) const;
-
 
 public:	// ctor,dtor
 	node(nodeid _id) : id(_id) {}
@@ -239,8 +235,7 @@ public:	// ctor,dtor
 	node() : id(0) {}
 	virtual ~node() {}
 
-
-public:	// operator overloading
+public:
 	//node& operator=(node&);
 	//bool operator==(node&);
 	//ostream& operator<<(ostream&);
@@ -291,27 +286,30 @@ class document_node : public node
 {
 protected:
 	std::string baseuri;
-	std::vector<rchandle<node> > child_hv;
-	hashmap<std::string> entitymap;
 	std::string docuri;
+	std::vector<nodeid> child_hv;
+	hashmap<std::string> entitymap;
 
 public:
 	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return doc_kind; }
+	std::string get_baseuri() const { return baseuri; }
+	std::string get_docuri() const { return docuri; }
 	
-	item_iterator base_uri(context const&) const;
-	item_iterator children(context const&) const;
-	item_iterator document_uri(context const&) const;
-	item_iterator typed_value(context const&) const;
+public:
+	rchandle<item_iterator> base_uri(context &) const;
+	rchandle<item_iterator> children(context &) const;
+	rchandle<item_iterator> document_uri(context &) const;
+	rchandle<item_iterator> typed_value(context &) const;
 
 	std::string string_value(context const&) const;
 	
-  item_iterator unparsed_entity_public_id(
-    context const&,
+  rchandle<item_iterator> unparsed_entity_public_id(
+    context &,
     std::string const& entity_name) const;
 	
-	item_iterator unparsed_entity_system_id(
-	  context const&,
+	rchandle<item_iterator> unparsed_entity_system_id(
+	  context &,
 	  std::string const& entity_name) const;
 
 public:
@@ -322,18 +320,22 @@ public:
 
 	void add_element_node(rchandle<element_node>);
 	void add_text_node(rchandle<text_node>);
-	void add_text_node(nodeid,std::string const&);
 	void add_comment_node(rchandle<comment_node>);
 	void add_pi_node(rchandle<pi_node>);
 
-public:	//ctor,dtor
+	void add_element_node(nodeid);
+	void add_text_node(nodeid,std::string const&);
+	void add_comment_node(nodeid);
+	void add_pi_node(nodeid);
 
+public:	//ctor,dtor
 	document_node(
 		nodeid id,
 		std::string const& baseuri,
 		std::string const& docuri);
 
 	document_node(nodeid id) : node(id) {}
+
 	~document_node() {}
 
 public:
@@ -344,19 +346,23 @@ public:
 	{
 	protected:
 		document_node const* parent_p;
-		std::vector<rchandle<node> >::const_iterator child_it;
-		std::vector<rchandle<node> >::const_iterator it_end;
+		std::vector<nodeid>::const_iterator child_it;
+		std::vector<nodeid>::const_iterator it_end;
 		
 	public:
-		child_iterator(context const&,document_node const*);
+		child_iterator(context &, document_node const*);
 		~child_iterator();
 	
 	public:
-	 	void open();
+	 	void open() {}
 		void close() {}
 		rchandle<item> next();
 		bool done();
 		void rewind();
+
+	public:
+		rchandle<item> operator*() const;
+		child_iterator& operator++();
 
 	};
 
@@ -372,14 +378,16 @@ class collection_node : public node
 {
 public:
 	nodeid get_nodeid() const { return id; }
-	node_kind_t node_kind() const
-		{ return collection_kind; }
-	item_iterator base_uri(context const& ctx) const
-		{ return EMPTY_SEQUENCE(ctx); }
-	item_iterator collection_uri(context const& ctx) const
-		{ return EMPTY_SEQUENCE(ctx); }
-	item_iterator children(context const& ctx) const
-		{ return EMPTY_SEQUENCE(ctx); }
+	node_kind_t node_kind() const { return collection_kind; }
+
+	rchandle<item_iterator> base_uri(context & ctx) const
+		{ return new item_iterator(ctx); }
+
+	rchandle<item_iterator> collection_uri(context & ctx) const
+		{ return new item_iterator(ctx); }
+
+	rchandle<item_iterator> children(context & ctx) const
+		{ return new item_iterator(ctx); }
 
 public:	//ctor,dtor
 	collection_node(nodeid id) : node(id) {}
@@ -455,13 +463,13 @@ class element_node : public node
 	friend class elem_attr_iterator;
 
 protected:
-	std::string baseuri;
+	nodeid parentid;
 	rchandle<QName> name_h;
-	rchandle<node> parent_h;
 	item_type type;
-	std::vector<rchandle<node> > child_hv;
-	std::vector<rchandle<node> > attr_hv;
-	std::vector<rchandle<node> > ns_hv;
+	std::vector<nodeid> child_hv;
+	std::vector<nodeid> attr_hv;
+	std::vector<nodeid> ns_hv;
+
 	bool nilled_b;
 	bool id_b;
 	bool idrefs_b;
@@ -469,15 +477,20 @@ protected:
 public:	// accessors
 	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return elem_kind; }
+	rchandle<QName> get_name() const { return name_h; }
+	uint32_t elem_count() const { return child_hv.size(); }
+	uint32_t attr_count() const { return attr_hv.size(); }
+	uint32_t ns_count() const { return ns_hv.size(); }
 	
-	item_iterator attributes(context const&) const;
-	item_iterator base_uri(context const&) const;
-	item_iterator children(context const&) const;
-	item_iterator namespace_bindings(context const&) const;
-	item_iterator namespace_nodes(context const&) const;
-	item_iterator node_name(context const&) const;
-	item_iterator parent(context const&) const;
-	item_iterator typed_value(context const&) const;
+public:
+	rchandle<item_iterator> attributes(context &) const;
+	rchandle<item_iterator> base_uri(context &) const;
+	rchandle<item_iterator> children(context &) const;
+	rchandle<item_iterator> namespace_bindings(context &) const;
+	rchandle<item_iterator> namespace_nodes(context &) const;
+	rchandle<item_iterator> node_name(context &) const;
+	rchandle<item_iterator> parent(context &) const;
+	rchandle<item_iterator> typed_value(context &) const;
 	
 	bool is_id(context const&) const;
 	bool is_idrefs(context const&) const;
@@ -489,11 +502,17 @@ public:	// accessors
 public:
 	void add_element_node(rchandle<element_node>);
 	void add_text_node(rchandle<text_node>);
-	void add_text_node(nodeid,std::string const&);
 	void add_attribute_node(rchandle<attribute_node>);
 	void add_ns_node(rchandle<ns_node>);
 	void add_comment_node(rchandle<comment_node>);
 	void add_pi_node(rchandle<pi_node>);
+
+	void add_element_node(nodeid);
+	void add_text_node(nodeid,std::string const&);
+	void add_attribute_node(nodeid);
+	void add_ns_node(nodeid);
+	void add_comment_node(nodeid);
+	void add_pi_node(nodeid);
 
 	bool get_nilled() const { return nilled_b; }
 	bool get_id() const { return id_b; }
@@ -504,27 +523,29 @@ public:
 	void set_idrefs(bool b) { idrefs_b = b; }
 
 public:	//ctor,dtor
-
 	element_node(
 		nodeid id,
-		std::string const& _baseuri,
-		rchandle<QName> _name_h,
-		rchandle<node> _parent_h);
-
-	element_node(nodeid id) : node(id) {}
+		nodeid parentid,
+		rchandle<QName> name_h,
+		std::string const& baseuri);
+	element_node(
+		nodeid id,
+		nodeid parentid,
+		rchandle<QName> name_h);
+	element_node(
+		nodeid id) : node(id) {}
 	~element_node() {}
 
 public:
 	std::ostream& put(std::ostream&,context const&) const;
 
 public:
-
 	class child_iterator : public item_iterator
 	{
 	protected:
 		element_node const* parent_p;
-		std::vector<rchandle<node> >::const_iterator child_it;
-		std::vector<rchandle<node> >::const_iterator it_end;
+		std::vector<nodeid>::const_iterator child_it;
+		std::vector<nodeid>::const_iterator it_end;
 		
 	public:
 		child_iterator(context const&,element_node const*);
@@ -536,16 +557,19 @@ public:
 		rchandle<item> next();
 		bool done();
 		void rewind();
-	
+
+	public:
+		rchandle<item> operator*() const;
+		child_iterator& operator++();
+
 	};
-	
 	
 	class attr_iterator : public item_iterator
 	{
 	protected:
 		element_node const* parent_p;
-		std::vector<rchandle<node> >::const_iterator attr_it;
-		std::vector<rchandle<node> >::const_iterator it_end;
+		std::vector<nodeid>::const_iterator attr_it;
+		std::vector<nodeid>::const_iterator it_end;
 		
 	public:
 		attr_iterator(context const&,element_node const*);
@@ -555,9 +579,14 @@ public:
 	 	void open();
 		void close() {}
 		rchandle<item> next();
+		rchandle<item> peek();
 		bool done();
 		void rewind();
 	
+	public:
+		rchandle<item> operator*() const;
+		attr_iterator& operator++();
+
 	};
 
 };
@@ -586,36 +615,39 @@ public:
 class attribute_node : public node
 {
 protected:
+	nodeid parentid;
 	rchandle<QName> name_h;
-	std::string val;
-	rchandle<element_node> parent_h;
 	item_type type;
+	std::string val;
 	bool id_b;
 	bool idrefs_b;
 
 public:	// accessors
 	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return attr_kind; }
+	item_type const& get_type(context const&) const;
+	rchandle<QName> get_name() const { return name_h; }
+	std::string get_val() const { return val; }
 	
-	item_iterator base_uri(context const&) const;
-	item_iterator node_name(context const&) const;
-	item_iterator parent(context const&) const;
-	item_iterator typed_value(context const&) const;
+	rchandle<item_iterator> base_uri(context &) const;
+	rchandle<item_iterator> node_name(context &) const;
+	rchandle<item_iterator> parent(context &) const;
+	rchandle<item_iterator> typed_value(context &) const;
 
 	bool is_id(context const&) const;
 	bool is_idrefs(context const&) const;
 
-	item_type const& get_type(context const&) const;
 	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
 	attribute_node(
-		nodeid _id,
-		rchandle<QName> _name_h,
-		std::string const& _val,
-		rchandle<element_node> _parent_h);
+		nodeid id,
+		nodeid parentid,
+		rchandle<QName> name_h,
+		std::string const& val);
 
   attribute_node(nodeid id) : node(id) {}
+
   ~attribute_node() {}
 
 public:
@@ -639,17 +671,19 @@ public:
 class ns_node : public node
 {
 protected:
+	nodeid parentid;
 	std::string prefix;
 	std::string uri;
-	rchandle<element_node> parent_h;
 
 public:	// accessors
 	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return ns_kind; }
+	std::string get_prefix() const { return prefix; }
+	std::string get_uri() const { return uri; }
 
-	item_iterator node_name(context const&) const;
-	item_iterator parent(context const&) const;
-	item_iterator typed_value(context const&) const;
+	rchandle<item_iterator> node_name(context &) const;
+	rchandle<item_iterator> parent(context &) const;
+	rchandle<item_iterator> typed_value(context &) const;
 	
 	std::string string_value(context const&) const;
 
@@ -657,11 +691,12 @@ public:	//ctor,dtor
 
 	ns_node(
 		nodeid id,
+		nodeid parent_id,
 		std::string const& prefix,
-		std::string const& uri,
-		rchandle<element_node> parent_h);
+		std::string const& uri);
 
 	ns_node(nodeid id) : node(id) {}
+
 	~ns_node() {}
 
 public:
@@ -680,31 +715,35 @@ public:
 class pi_node : public node
 {
 protected:
+	nodeid parentid;
 	std::string target;
 	std::string content;
 	std::string baseuri;
-	rchandle<element_node> parent_h;
 
 public:	// accessors
 	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return pi_kind; }
+	std::string get_target() const { return target; }
+	std::string get_content() const { return content; }
 	
-	item_iterator base_uri(context const&) const;
-	item_iterator parent(context const&) const;
-	item_iterator typed_value(context const&) const;
-	item_iterator node_name(context const&) const;
+	rchandle<item_iterator> base_uri(context &) const;
+	rchandle<item_iterator> parent(context &) const;
+	rchandle<item_iterator> typed_value(context &) const;
+	rchandle<item_iterator> node_name(context &) const;
+
 	std::string string_value(context const&) const;
 
 public:	//ctor,dtor
 
 	pi_node(
 		nodeid id,
+		nodeid parentid,
 		std::string const& target,
 		std::string const& content,
-		std::string const& baseuri,
-		rchandle<element_node> parent_h);
+		std::string const& baseuri);
 
 	pi_node(nodeid id) : node(id) {}
+
 	~pi_node() {}
 
 public:
@@ -731,16 +770,16 @@ public:
 class comment_node : public node
 {
 protected:
+	nodeid parentid;
 	std::string content;
-	rchandle<element_node> parent_h;
 	
 public:	// accessors
 	nodeid get_nodeid() const { return id; }
 	enum node_kind_t node_kind() const { return comment_kind; }
 	
-	item_iterator base_uri(context const&) const;
-	item_iterator parent(context const&) const;
-	item_iterator typed_value(context const&) const;
+	rchandle<item_iterator> base_uri(context &) const;
+	rchandle<item_iterator> parent(context &) const;
+	rchandle<item_iterator> typed_value(context &) const;
 	
 	std::string string_value(context const&) const;
 
@@ -748,10 +787,11 @@ public:	//ctor,dtor
 
 	comment_node(
 		nodeid,
-		std::string const& content,
-		rchandle<element_node> parent_h);
+		nodeid parentid,
+		std::string const& content);
 
 	comment_node(nodeid id) : node(id) {}
+
 	~comment_node() {}
 
 public:
@@ -778,17 +818,17 @@ public:
 class text_node : public node
 {
 protected:
+	nodeid parentid;
 	std::string content;
-	rchandle<node> parent_h;
 	
 public:	// accessors
 	nodeid get_nodeid() const { return id; }
 	enum node_kind_t node_kind() const { return text_kind; }
 	
-	item_iterator base_uri(context const&) const;
-	item_iterator parent(context const&) const;
-	item_iterator typed_value(context const&) const;
-	item_iterator node_name(const context&) const;
+	rchandle<item_iterator> base_uri(context &) const;
+	rchandle<item_iterator> parent(context &) const;
+	rchandle<item_iterator> typed_value(context &) const;
+	rchandle<item_iterator> node_name(context&) const;
 	
 	std::string string_value(context const&) const;
 
@@ -796,10 +836,11 @@ public:	//ctor,dtor
 
 	text_node(
 		nodeid,
-		std::string const& content,
-		rchandle<node> parent_h);
+		nodeid parentid,
+		std::string const& content);
 
 	text_node(nodeid id) : node(id) {}
+
 	~text_node() {}
 
 public:
@@ -832,14 +873,17 @@ public:	// accessors
 	node_kind_t node_kind(context const&) const { return binary_kind; }
 	std::string string_value(context const&) const { return ""; }
  
-	item_iterator base_uri(context const& ctx) const
-		{ return EMPTY_SEQUENCE(ctx); }
-	item_iterator parent(context const& ctx) const
-		{ return EMPTY_SEQUENCE(ctx); }
-	item_iterator type_name(context const& ctx) const
-		{ return EMPTY_SEQUENCE(ctx); }
-	item_iterator typed_value(context const& ctx) const
-		{ return EMPTY_SEQUENCE(ctx); }
+	rchandle<item_iterator> base_uri(context & ctx) const
+		{ return new item_iterator(ctx); }
+
+	rchandle<item_iterator> parent(context & ctx) const
+		{ return new item_iterator(ctx); }
+
+	rchandle<item_iterator> type_name(context & ctx) const
+		{ return new item_iterator(ctx); }
+
+	rchandle<item_iterator> typed_value(context & ctx) const
+		{ return new item_iterator(ctx); }
 
 public:	//ctor,dtor
 	binary_node(nodeid id) : node(id) {}
@@ -849,4 +893,4 @@ public:	//ctor,dtor
 
 
 }	/* namespace xqp */
-#endif /* XQP_NODE_TYPES_H */
+#endif /* XQP_NODE_VALUES_H */

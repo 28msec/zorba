@@ -83,16 +83,16 @@ QName::~QName()
 {
 }
 
-item_iterator QName::atomized_value(
-	context const& ctx) const
+rchandle<item_iterator> QName::atomized_value(
+	context & ctx) const
 {
-	return item_iterator(ctx);
+	return new item_iterator(ctx);
 }
 
-item_iterator QName::effective_boolean_value(
-	context const& ctx) const
+rchandle<item_iterator> QName::effective_boolean_value(
+	context & ctx) const
 {
-	return item_iterator(ctx);
+	return new item_iterator(ctx);
 }
 
 
