@@ -323,9 +323,14 @@ void element_node::child_iterator::open()
 
 rchandle<item> element_node::child_iterator::next()
 {
-	rchandle<node> v = ctx.get_node(*child_it++);
-	rchandle<item> i = dynamic_cast<item*>(&*v);
-	return i;
+	rchandle<node> v_h = ctx.get_node(*child_it++);
+	return v_h.item_value();
+}
+
+rchandle<item> element_node::child_iterator::peek()
+{
+	rchandle<node> v_h = ctx.get_node(*child_it++);
+	return v_h.item_value();
 }
 
 bool element_node::child_iterator::done()
@@ -336,6 +341,17 @@ bool element_node::child_iterator::done()
 void element_node::child_iterator::rewind()
 {
 	child_it = parent_p->child_hv.begin();
+}
+
+rchandle<item> element_node::child_iterator::operator*() const
+{
+	return peek();
+}
+
+element_node::child_iterator& element_node::child_iterator::operator++()
+{
+	next();
+	return *this;
 }
 
 
@@ -353,7 +369,7 @@ element_node::attr_iterator::attr_iterator(
 	parent_p(elem_p)
 {
 }
-	
+
 element_node::attr_iterator::~attr_iterator()
 {
 }
@@ -370,6 +386,11 @@ rchandle<item> element_node::attr_iterator::next()
 	return n_h->item_value();
 }
 
+rchandle<item> element_node::attr_iterator::peek()
+{
+	return ctx.get_node(*attr_it);
+}
+
 bool element_node::attr_iterator::done()
 {
 	return attr_it == it_end;
@@ -378,6 +399,17 @@ bool element_node::attr_iterator::done()
 void element_node::attr_iterator::rewind()
 {
 	attr_it = parent_p->attr_hv.begin();
+}
+
+rchandle<item> element_node::attr_iterator::operator*() const
+{
+	return peek();
+}
+
+element_node::attr_iterator& element_node::attr_iterator::operator++()
+{
+	next();
+	return *this;
 }
 
 
