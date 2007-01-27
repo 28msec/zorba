@@ -44,6 +44,7 @@ public:
 		entry(string const& k, V v) : key(k), val(v) {}
 		entry(char const* k, uint32_t l, V v) : key(string(k,0,l)), val(v) {}
 		entry(entry const& e) : key(e.key), val(e.val) {}
+		entry& operator=(entry const& e) { key = e.key; val = e.val; return *this; }
 		~entry() {}
 	};
 
@@ -252,7 +253,6 @@ hashmap<V>::hashmap(
 	tsz(initial_size),
 	ld(load_factor),
 	minsz(initial_size*0.2f),
-  v(std::vector<entry>()),
 	tab(new int[initial_size]),
 	dp(0)
 {
@@ -268,7 +268,6 @@ hashmap<V>::hashmap(
 	tsz(m.tsz),
 	ld(m.ld),
 	minsz(m.minsz),
-  v(std::vector<entry>()),
 	tab(new int[m.tsz]),
 	dp(m.dp)
 {
@@ -286,7 +285,6 @@ hashmap<V>::hashmap(
 	tsz(m.tsz),
 	ld(m.ld),
 	minsz(m.minsz),
-  v(std::vector<entry>()),
 	tab(new int[m.tsz]),
 	dp(m.dp)
 {
@@ -560,8 +558,7 @@ hash32map<V>::hash32map(
   sz(0),
   dsz(initial_size),
   ld(load_factor),
-  v(std::vector<entry>()),
-  tab(new int[initial_size]),
+  tab(initial_size),
   depth(0)
 {
 #ifdef DEBUG
@@ -578,7 +575,6 @@ hash32map<V>::hash32map()
   sz(0),
   dsz(1024),
   ld(0.6f),
-  v(std::vector<entry>()),
   tab(new int[1024]),
   depth(0)
 {
@@ -801,7 +797,6 @@ hash64map<V>::hash64map(
   sz(0),
   dsz(initial_size),
   ld(load_factor),
-  v(std::vector<entry>()),
   tab(new int[initial_size]),
   depth(0)
 {
@@ -825,7 +820,6 @@ hash64map<V>::hash64map()
   sz(0),
   dsz(1024),
   ld(0.6f),
-  v(std::vector<entry>()),
   tab(new int[1024]),
   depth(0)
 {
