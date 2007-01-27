@@ -26,7 +26,10 @@ parsenodes : parsenodes.h parsenodes.cpp
 	g++ -c -g -o ${BUILD}/parsenodes.${SUFX} parsenodes.cpp
 
 test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
-	g++ ${OPT} -o xquery_test \
+	g++ -Wall -g -o xquery_test \
+		../context/${BUILD}/context.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
+		../types/${BUILD}/base_types.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
