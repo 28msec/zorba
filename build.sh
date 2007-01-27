@@ -1,4 +1,7 @@
 #!/bin/bash -f
+echo "build temporarly disabled, available later today - 2007.01.27, pcp"
+exit
+
 cd util
 if (!(test -d Build)); then
 	mkdir Build;
