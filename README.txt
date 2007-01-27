@@ -14,7 +14,7 @@ zorba versioning conventions
 	minor version  = M
 	patch release  = K
 
-Once nightly build and regression tests are up and running,
+When nightly build and regression tests are up and running,
 then K increment with each nightly build.  M increments as
 new stable releases become available.  N increment when large
 new subsystems are integrated into the product or major
@@ -26,6 +26,11 @@ Building zorba
 --------------
 
 2007.01.16
+
+build.sh
+	Manually created make, using simple 'Makefile.local'
+	scripts. A lot easier to use during initial development.
+	Use this script for now, until autoconf gets adopted/debugged.
 
 The root directory is
 	$INSTALL/zorba/xquery.
@@ -42,22 +47,23 @@ rebuild_autoconf
   
 configure
   Generated script that creates Makefiles
-
-build.sh
-	Manually created make, using simple 'Makefile.local'
-	scripts. A lot easier to use during initial development.
-	Use this script for now, until autoconf gets debugged.
   
 
   
 Known bugs
 ----------
 
+2007.01.27
+
+Build is currently down pending conversion to the in-memory
+node store.
+
+
 2007.01.25
 
 Several of the unit test modules are showing an error
 on exit.  The sequence of unit tests runs fine, but the module bails
-out with an obscure gnu/cygwin error message before exiting.  I suspect
+out with a gnu/cygwin error message before exiting.  I suspect
 'delete' applied inappropriately by some rchandle destructor.
 
 
@@ -73,9 +79,18 @@ for the time being.
 
  _____________________________
 |                             |
-| Current Status: 2007.01.25  |
+| Current Status: 2007.01.27  |
 |_____________________________|
  
+
+2007.01.27
+
+The system is undergoing a big conversion:  in-memory node storage module
+integration.  Much of the code is still local to my machine (pcp).
+
+Added and tested a 'concat_iterator'.
+In-memory node store uses a persistent array of encoded tree structures
+and an auxiliary index which maps 'features' to offsets.
 
 2007.01.25
 
@@ -100,13 +115,15 @@ a lot of activity.  This module will very likely move to
 a separate location, either 'runtime', or it's own subdirectory
 'xqom' (XQuery Object Model).
 
+[note: this file migrated to values/node_values. (pcp,2007.01.27)]
+
 
 
 
 Current Module List
 -------------------
 
-2007.01.25  
+2007.01.27  
                   
 context
 	XQuery static and dynamic context:
@@ -155,6 +172,7 @@ native_impl
 		storage_manager							stub implementation: storage manager
 		text_store									stub implementation: text store
 		xml_store										stub implementation: XML store 
+		node_store                  implementation: native mmfile persistent node storage
 		spectrum										implementation: native block pool manager
 		tree												implementation: node/item_iterator
 		xml_loader									implementation: XML file loader
