@@ -1,4 +1,36 @@
-include ../Makefile.header SUFX=do BUILD=Build html_scanner : html_scanner.h html_scanner.cpp g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/html_scanner.${SUFX} html_scanner.cpp scan_handler : scan_handler.h scan_handler.cpp g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/scan_handler.${SUFX} scan_handler.cpp source : source.h source.cpp g++ -c ${CXXOPT} -o ${BUILD}/source.${SUFX} source.cpp spectrum : spectrum.h spectrum.cpp
+include ../Makefile.header
+SUFX=do
+BUILD=Build
+
+node_store : node_store.h node_store.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/node_store.${SUFX} node_store.cpp
+
+node_store_test : node_store.h node_store.cpp node_store_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/node_store_test \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../context/${BUILD}/context.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
+		../types/${BUILD}/base_types.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		../values/${BUILD}/qname_value.${SUFX} \
+		${BUILD}/node_store.${SUFX} \
+	node_store_test.cpp
+
+html_scanner : html_scanner.h html_scanner.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/html_scanner.${SUFX} html_scanner.cpp
+	
+scan_handler : scan_handler.h scan_handler.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/scan_handler.${SUFX} scan_handler.cpp
+	
+source : source.h source.cpp
+	g++ -c ${CXXOPT} -o ${BUILD}/source.${SUFX} source.cpp
+
+spectrum : spectrum.h spectrum.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/spectrum.${SUFX} spectrum.cpp
 
 storage_manager : storage_manager.h storage_manager.cpp
@@ -57,10 +89,18 @@ xml_loader_test : xml_loader.h xml_loader.cpp xml_loader_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_loader_test \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
 		../util/${BUILD}/tokenbuf.${SUFX} \
+		../context/${BUILD}/context.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
 		../store/${BUILD}/xml_ostream.${SUFX} \
+		../types/${BUILD}/base_types.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/scan_handler.${SUFX} \
 		${BUILD}/xml_loader.${SUFX} \
 		${BUILD}/xml_scanner.${SUFX} \
@@ -88,14 +128,14 @@ all : \
 	spectrum \
 	storage_manager \
 	unicode_decompositions \
-	xml_handler \
 	xml_loader \
 	xml_scanner \
 	xml_term \
 	spectrum_test \
 	storage_manager_test \
-	xml_handler_test \
 	xml_loader_test \
 	xml_scanner_test \
 	xml_term_test 
 
+#xml_handler \
+#xml_handler_test \
