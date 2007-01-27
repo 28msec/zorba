@@ -3,7 +3,7 @@ SUFX=do
 BUILD=Build
 
 iterator : iterator.h iterator.cpp
-	g++ -c ${OPT} -o ${BUILD}/iterator.${SUFX} iterator.cpp
+	g++ ${OPT} -c -o ${BUILD}/iterator.${SUFX} iterator.cpp
 iterator_test : iterator.h iterator.cpp iterator_test.cpp
 	g++ -Wall -g -o ${BUILD}/iterator_test \
 		../util/${BUILD}/xqp_exception.${SUFX} \
