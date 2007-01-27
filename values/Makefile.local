@@ -65,8 +65,8 @@ all : \
 	qname_value \
 	xs_primitive_values \
 	xs_primitive_values_test \
-	node_values \
-	node_values_test \
 	ft_values \
 	update_values
 
+#node_values \
+#node_values_test \
