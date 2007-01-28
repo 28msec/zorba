@@ -110,6 +110,15 @@ fxcharheap_test : fxcharheap.h fxcharheap.cpp fxcharheap_test.cpp
 		${BUILD}/fxcharheap.${SUFX} \
 		fxcharheap_test.cpp
 
+fxhashmap_test :	fxhashmap_test.cpp fxhashmap.h 
+	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -lpthread -o ${BUILD}/fxhashmap_test \
+		${BUILD}/xqp_exception.${SUFX} \
+		${BUILD}/rwlock.${SUFX} \
+		${BUILD}/tokenbuf.${SUFX} \
+		${BUILD}/mmfile.${SUFX} \
+		${BUILD}/file.${SUFX} \
+		${BUILD}/fxcharheap.${SUFX} \
+		fxhashmap_test.cpp
 
 
 all	: \
@@ -126,6 +135,7 @@ all	: \
 	fxvector_test \
 	fxcharheap \
 	fxcharheap_test \
+	fxhashmap_test \
 	list_test \
 	rchandle_test \
 	sorter_test \
