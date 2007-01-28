@@ -19,28 +19,18 @@
 using namespace std;
 using namespace xqp;
 
-struct entry
-{
-  uint64_t key;
-  unsigned val;
-  entry() {}
-  entry(uint64_t k, unsigned v) : key(k), val(v) {}
-  ~entry() {}
-};
-
 
 int main(int argc, char* argv[])
 {
   try {
-		fxvector<uint64_t> * fxvec_p;
+		fxvector<char> * fxvec_p;
 		if (argc > 1) {
-    	fxvec_p = new fxvector<uint64_t>(string(argv[1],0,strlen(argv[0])));
+    	fxvec_p = new fxvector<char>(string(argv[1],0,strlen(argv[0])));
 		}
 		else {
-    	fxvec_p = new fxvector<uint64_t>();
+    	fxvec_p = new fxvector<char>();
 		}
-		fxvector<uint64_t> & fxvec = *fxvec_p;
-
+		fxvector<char> & fxvec = *fxvec_p;
   
     // check metadata
     cout << "v.size() = " << fxvec.size() << endl;
@@ -79,14 +69,20 @@ int main(int argc, char* argv[])
         cout << "at n          - return the n-th element of v\n";
         cout << "cap           - print capacity\n";
         cout << "clear         - clear the vector\n";
+				cout << "cp STRING     - raw byte copy\n";
         cout << "help          - this help function\n";
         cout << "iter          - run the vector iterator\n";
 				cout << "load FNAME    - load file\n";
         cout << "size          - return the size of this vector\n";
 				cout << "uniq          - set the entries to a uniq sequence\n";
+			}
+			else if (cmd=="cp") {
+				uint32_t n = arg1.length();
+				char *p = fxvec.raw_copy(arg1.c_str(), n);
+				cout << string(p,0,n);
       }
       else if (cmd=="iter") {
-        fxvector<uint64_t>::const_iterator it = fxvec.begin();
+        fxvector<char>::const_iterator it = fxvec.begin();
         for (; it!=fxvec.end(); ++it) {
           cout << *it << endl;
         }
@@ -98,7 +94,7 @@ int main(int argc, char* argv[])
       }
       else if (cmd=="at") {
         unsigned n = strtol(arg1.c_str(),NULL,10);
-        uint64_t e = fxvec[n];
+        char e = fxvec[n];
         cout << "v[" << n << "] = " << e << endl;
       }
       else if (cmd=="size") {

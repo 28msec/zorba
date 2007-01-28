@@ -53,7 +53,6 @@ public:
 public:  
 	mmfile* mmf_p;				// memory-mapped file, may be NULL
 	char* src;						// raw view of data
-
 	T* start;							// pointer to first element
 	T* finish;						// pointer to first free element 
 	T* end_of_storage;		// pointer one past end of storage
@@ -79,13 +78,19 @@ public:		// ctor,dtor
 	 */
 	~fxvector();
 
+public:
+	T* get_start() const { return start; }
+	T* get_finish() const { return finish; }
+	void incr_finish(uint32_t n) { finish += n; }
+	T* get_end_of_storage() const { return end_of_storage; }
+	char* get_src() const { return src; }
+	char* raw_copy(char const* data, uint32_t length) throw (bad_arg);
 
 private:
 	/**
 	 **  lock out fxvector copy constructor. 
 	 */
 	fxvector(fxvector const& x) { }
-
 
 public:		// iterator interface
 	/**
@@ -168,7 +173,6 @@ public:		// iterator interface
 		return const_reverse_iterator(begin());
 	}
 
-
 public:		// vector interface
 	/**
 	 **  Return the number of elements in the vector. 
@@ -234,14 +238,12 @@ public:		// vector interface
 		return *(begin() + n);
 	}
 
-
 protected:
 	void range_check(size_type n) const
 	{
 		if (n >= size())
 			throw xqp_exception(__FUNCTION__, "fxvector::range_check");
 	}
-
 
 public:
 	/**
@@ -337,7 +339,7 @@ public:
 
 // INTERNAL
 
-protected:
+public:
 	void expand();
 
 public:
@@ -373,7 +375,6 @@ fxvector<T>::fxvector(
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
 }
 
-
 template<typename T>
 fxvector<T>::fxvector(uint32_t size)
 :
@@ -387,7 +388,6 @@ fxvector<T>::fxvector(uint32_t size)
 			 <<", finish="<<(uint32_t)(finish)
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
 }
-
 
 template<typename T>
 fxvector<T>::fxvector()
@@ -403,13 +403,32 @@ fxvector<T>::fxvector()
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
 }
 
-
 template<typename T>
 fxvector<T>::~fxvector()
 {
 	std::_Destroy(start, finish);
 	if (mmf_p) delete mmf_p;
 }
+
+template<typename T>
+char * fxvector<T>::raw_copy(
+	char const* data,
+	uint32_t length)
+throw (bad_arg)
+{
+	uint32_t n = sizeof(T);
+	if (n!=1) throw bad_arg(__FUNCTION__,"no raw copy to non-char vectors");
+	while ((capacity() - size()) < length) expand();
+	memcpy(finish, data, length);
+	char * res = (char *)finish;
+	finish += length;
+	if (mmf_p) {	// update offset_p
+		off_t* offset_p = reinterpret_cast<off_t*>(src);
+		*offset_p += length;
+	}
+	return res;
+}
+
 
 
 /*___________________________________________________________________
