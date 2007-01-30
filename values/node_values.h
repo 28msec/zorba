@@ -298,7 +298,7 @@ public:
 	std::string get_baseuri() const { return baseuri; }
 	std::string get_docuri() const { return docuri; }
 	
-public:
+public:	// evaluator interface
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> children(context *) const;
 	rchandle<item_iterator> document_uri(context *) const;
@@ -314,7 +314,7 @@ public:
 	  context *,
 	  std::string const& entity_name) const;
 
-public:
+public:	// factory interface
 	bool get_entity(std::string const& entity, std::string & val) const
 		{ return entitymap.get(entity, val); }
 	void put_entity(std::string const& entity, std::string const& val)
@@ -332,10 +332,10 @@ public:	//ctor,dtor
 	document_node(nodeid id);
 	~document_node();
 
-public:
+public:	// i/o interface
 	std::ostream& put(std::ostream&,context *) const;
 
-public:
+public:	// iterator interface
 	class child_iterator : public item_iterator
 	{
 	protected:
@@ -459,22 +459,22 @@ protected:
 	std::vector<nodeid> child_hv;
 	std::vector<nodeid> attr_hv;
 	std::vector<nodeid> ns_hv;
-
 	bool nilled_b;
 	bool id_b;
 	bool idrefs_b;
 
-public:	// accessors
+public:	// storage interface
 	nodeid get_nodeid() const { return id; }
 	nodeid get_parentid() const { return parentid; }
 	nodeid get_docid() const { return docid; }
+
+public:	// evaluator interface
 	node_kind_t node_kind() const { return elem_kind; }
 	rchandle<QName> get_name() const { return name_h; }
 	uint32_t elem_count() const { return child_hv.size(); }
 	uint32_t attr_count() const { return attr_hv.size(); }
 	uint32_t ns_count() const { return ns_hv.size(); }
 	
-public:
 	rchandle<item_iterator> attributes(context *) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> children(context *) const;
@@ -492,7 +492,7 @@ public:
 	item_type const& get_type(context *) const;
 	std::string string_value(context const*) const;
 
-public:
+public:	// factory interface
 	void add_node(rchandle<node>);
 	void add_node(context *, nodeid);
 
@@ -514,10 +514,10 @@ public:	//ctor,dtor
 	element_node(nodeid id);
 	~element_node();
 
-public:
+public:	// i/o interface
 	std::ostream& put(std::ostream&,context *) const;
 
-public:
+public:	// iterator interface
 	class child_iterator : public item_iterator
 	{
 	protected:
@@ -601,9 +601,11 @@ protected:
 	bool id_b;
 	bool idrefs_b;
 
-public:	// accessors
+public:	// storage interface
 	nodeid get_nodeid() const { return id; }
 	nodeid get_parentid() const { return parentid; }
+
+public:	// evaluator interface
 	node_kind_t node_kind() const { return attr_kind; }
 	item_type const& get_type(context *) const;
 	rchandle<QName> get_name() const { return name_h; }

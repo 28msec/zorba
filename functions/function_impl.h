@@ -34,11 +34,11 @@ public:
 
 public:
   static std::string mangle(
-		context const&,
+		context *,
 		signature const& sig);
 
   static signature const* demangle(
-		context const&,
+		context *,
 		std::string const& sigstr);
 
 };

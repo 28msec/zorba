@@ -23,8 +23,8 @@ namespace xqp {
 nodestore::nodestore(
 	string const& path)
 :
-	store_p(new fxvector<unsigned char>(path+"/store")),
-	index_p(new fxhash64map<uint64_t>(path+"/idx_"))
+	store_p(new fxvector<char>(path+"/store")),
+	index_p(new fxhash64map<off_t>(path+"/idx_"))
 {
 }
  
@@ -63,8 +63,8 @@ void nodestore::put(
 	context * ctx_p,
 	uint16_t key)
 {
-	unsigned char g = key>>8 & 0xff;
-	unsigned char h = key    & 0xff;
+	char g = key>>8 & 0xff;
+	char h = key    & 0xff;
 	store_p->push_back(g);
 	store_p->push_back(h);
 }
@@ -85,10 +85,10 @@ void nodestore::put(
 	context * ctx_p,
 	uint32_t key)
 {
-	unsigned char e = key>>24 & 0xff;
-	unsigned char f = key>>16 & 0xff;
-	unsigned char g = key>>8  & 0xff;
-	unsigned char h = key     & 0xff;
+	char e = key>>24 & 0xff;
+	char f = key>>16 & 0xff;
+	char g = key>>8  & 0xff;
+	char h = key     & 0xff;
 	store_p->push_back(e);
 	store_p->push_back(f);
 	store_p->push_back(g);
@@ -113,14 +113,14 @@ void nodestore::put(
 	context * ctx_p,
 	uint64_t key)
 {
-	unsigned char a = key>>56 & 0xff;
-	unsigned char b = key>>48 & 0xff;
-	unsigned char c = key>>40 & 0xff;
-	unsigned char d = key>>32 & 0xff;
-	unsigned char e = key>>24 & 0xff;
-	unsigned char f = key>>16 & 0xff;
-	unsigned char g = key>>8  & 0xff;
-	unsigned char h = key     & 0xff;
+	char a = key>>56 & 0xff;
+	char b = key>>48 & 0xff;
+	char c = key>>40 & 0xff;
+	char d = key>>32 & 0xff;
+	char e = key>>24 & 0xff;
+	char f = key>>16 & 0xff;
+	char g = key>>8  & 0xff;
+	char h = key     & 0xff;
 	store_p->push_back(a);
 	store_p->push_back(b);
 	store_p->push_back(c);
@@ -157,11 +157,11 @@ int nodestore::get(
 
 off_t nodestore::put(
 	context * ctx_p,
-	unsigned char const* content,
+	char const* content,
 	uint32_t len)
 {
 	uint32_t res = store_p->size();
-	store_p->push_back((unsigned char)STRING_CODE);
+	store_p->push_back(STRING_CODE);
 	put(ctx_p,(uint32_t)len);
 	store_p->raw_copy(content, len);
 	return res;
@@ -170,7 +170,7 @@ off_t nodestore::put(
 int nodestore::get(
 	context * ctx_p,
 	off_t offset0,
-	unsigned char *& data,
+	char *& data,
 	uint32_t & len)
 {
 	int k;
@@ -186,7 +186,7 @@ off_t nodestore::put(
 	context * ctx_p,
 	string const& content)
 {
-	return put(ctx_p, (unsigned char*)content.c_str(), content.length());
+	return put(ctx_p, content.c_str(), content.length());
 }
 
 int nodestore::get(
@@ -194,11 +194,11 @@ int nodestore::get(
 	off_t offset,
 	string & content)
 {
-	unsigned char * data;
+	char * data;
 	uint32_t len;
 	int k = get(ctx_p, offset, data, len);
 	if (k<0) return k;
-	content = string((char *)data, 0, len); 
+	content = string(data, 0, len); 
 	return k;
 }
 
@@ -207,7 +207,7 @@ off_t nodestore::put(
 	rchandle<text_node> tnode_h)
 {
 	nodeid parentid = tnode_h->get_parentid();
-	unsigned char const* content = (unsigned char*)tnode_h->get_content();
+	char const* content = tnode_h->get_content();
 	uint32_t content_length = tnode_h->get_content_length();
 	off_t offset = put(ctx_p, parentid, content, content_length);
 	index_p->put(tnode_h->get_nodeid().id, offset);
@@ -219,11 +219,10 @@ int nodestore::get(
 	nodeid nid,     
 	rchandle<text_node>& tnode_h)
 {
-	uint64_t offset0;
-	if (!index_p->get(nid.id, offset0)) return ERR_NODEID_NOT_FOUND;
-	off_t offset = offset0;
+	off_t offset;
+	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
 	nodeid parentid;
-	unsigned char * content;
+	char * content;
 	uint32_t content_length;
 	int k = get(ctx_p, offset, parentid, content, content_length);
 	if (k<0) return k;
@@ -232,16 +231,14 @@ int nodestore::get(
 	return k;
 }
 
-
-
 off_t nodestore::put(
 	context * ctx_p,
-	nodeid const& parent,
-	unsigned char const* content,
+	nodeid parent,
+	char const* content,
 	uint32_t len)
 {
 	uint32_t res = store_p->size();
-	store_p->push_back((unsigned char)STRING_CODE);
+	store_p->push_back(STRING_CODE);
 	put(ctx_p, (uint64_t)parent.id);
 	put(ctx_p, (uint32_t)len);
 	store_p->raw_copy(content, len);
@@ -252,7 +249,7 @@ int nodestore::get(
 	context * ctx_p,
 	off_t offset0,
 	nodeid & parent,
-	unsigned char *& data,
+	char *& data,
 	uint32_t & len)
 {
 	int k;
@@ -269,10 +266,10 @@ int nodestore::get(
 
 off_t nodestore::put(
 	context * ctx_p,
-	nodeid const& parent,
+	nodeid parent,
 	string const& content)
 {
-	return put(ctx_p, parent, (unsigned char*)content.c_str(), content.length());
+	return put(ctx_p, parent, content.c_str(), content.length());
 }
 
 
@@ -287,8 +284,8 @@ off_t nodestore::put(
 {
 	int k;
 	off_t res = store_p->size();
-	store_p->push_back((unsigned char)QNAME_CODE);
-	store_p->push_back((unsigned char)name_h->get_type());
+	store_p->push_back(QNAME_CODE);
+	store_p->push_back(name_h->get_type());
 	put(ctx_p, name_h->get_namespace_hash());
 	if ((k = put(ctx_p, name_h->get_name())) < 0) return k;
 	if ((k = put(ctx_p, name_h->get_prefix())) < 0) return k;
@@ -310,14 +307,14 @@ int nodestore::get(
 	QName::qname_type_t type = (QName::qname_type_t)store_p->operator[](offset++);
 	if ((k = get(ctx_p, offset, key)) < 0) return k; else offset += k;
 
-	unsigned char * name;
+	char * name;
 	uint32_t name_len;
 	if ((k = get(ctx_p, offset, name, name_len)) < 0)
 		return k;
 	else
 		offset += k;
 
-	unsigned char * prefix;
+	char * prefix;
 	uint32_t prefix_len;
 	if ((k = get(ctx_p, offset, prefix, prefix_len)) < 0)
 		return k;
@@ -329,6 +326,45 @@ int nodestore::get(
 										 string((char *)name,0,name_len), key);
 	return (offset-offset0);
 }
+
+
+/*...........................................
+	: atribute nodes                          :
+	:.........................................:
+*/
+off_t nodestore::put(
+	context * ctx_p,
+	rchandle<attribute_node> anode_h)
+{
+	uint32_t res = store_p->size();
+	store_p->push_back(ATTR_CODE);
+	put(ctx_p, (uint64_t)anode_h->get_parentid().id);
+	put(ctx_p, anode_h->get_name());
+	put(ctx_p, anode_h->get_val());
+	index_p->put(anode_h->get_nodeid().id, res);
+	return res;
+}
+
+int nodestore::get(
+	context * ctx_p,
+	nodeid nid,
+	rchandle<attribute_node>& anode_h)
+{
+	int k = 0;
+	off_t offset0;
+	if (!index_p->get(nid.id, offset0)) return ERR_NODEID_NOT_FOUND;
+	off_t offset = offset0;
+	if (store_p->operator[](offset++)!=ATTR_CODE) return ERR_BAD_CODE;
+	uint64_t parentid;
+	if ((k = get(ctx_p, offset, parentid)) < 0) return k; else offset += k;
+	rchandle<QName> name_h;
+	if ((k = get(ctx_p, offset, name_h)) < 0) return k; else offset += k;
+	string value;
+	if ((k = get(ctx_p, offset, value)) < 0) return k; else offset += k;
+	anode_h = new attribute_node(nid, parentid, name_h, value);
+	return (offset-offset0);
+}
+
 
 
 /*
@@ -373,16 +409,6 @@ off_t nodestore::put(
 
 off_t nodestore::put(
 	context * ctx_p,
-	attribute_node const* anode)
-{
-	off_t res = put(ATTR_CODE)
-	put(anode->get_name());
-	put(anode->get_val());
-	return res;
-}
-
-off_t nodestore::put(
-	context * ctx_p,
 	ns_node const* nsnode)
 {
 	off_t res = put(ctx_p, *nsnode->node_name(ctx));
@@ -399,13 +425,6 @@ off_t nodestore::put(
 	put_content(ctx_p, pnode->get_target());
 	put_content(ctx_p, pnode->get_content());
 	return res;
-}
-
-off_t nodestore::put(
-	context * ctx_p,
-	text_node const* tnode)
-{
-	return put_content(ctx_p, tnode->string_value(ctx));
 }
 
 off_t nodestore::put(

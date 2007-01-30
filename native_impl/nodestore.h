@@ -23,6 +23,7 @@ namespace xqp {
 
 #define STRING_CODE 	1
 #define QNAME_CODE		2
+#define ATTR_CODE			3
 
 #define ERR_BAD_CODE						-1
 #define ERR_OVERRUN							-2
@@ -37,8 +38,8 @@ class nodeid;
 class nodestore : public rcobject
 {
 protected:
-	fxvector<unsigned char>* store_p;		// binary data store
-	fxhash64map<uint64_t>* index_p;			// map: nodeid -> off_t
+	fxvector<char>* store_p;					// binary data store
+	fxhash64map<off_t>* index_p;			// map: nodeid -> off_t
 
 public:
 	nodestore(std::string const& path);
@@ -70,8 +71,8 @@ public:
 		: text content                            :
 		:.........................................:
 	*/
-	off_t put( context *, unsigned char const* content, uint32_t len );
-	int get( context *, off_t, unsigned char *& data, uint32_t& len );
+	off_t put( context *, char const* content, uint32_t len );
+	int get( context *, off_t, char *& data, uint32_t& len );
 
 	off_t put( context *, string const& content ); 
 	int get( context *, off_t, string & content ); 
@@ -79,10 +80,10 @@ public:
 	off_t put( context *, rchandle<text_node> );
 	int get( context *, nodeid, rchandle<text_node>& );
 
-	off_t put( context *, nodeid const& parent, unsigned char const* content, uint32_t len );
-	int get( context *, off_t, nodeid & parent, unsigned char *& data, uint32_t& len );
+	off_t put( context *, nodeid parent, char const* content, uint32_t len );
+	int get( context *, off_t, nodeid & parent, char *& data, uint32_t& len );
 
-	off_t put( context *, nodeid const& parent, string const& content );
+	off_t put( context *, nodeid parent, string const& content );
 
 
 	/*...........................................
@@ -98,7 +99,7 @@ public:
 		:.........................................:
 	*/
 	off_t put( context *, rchandle<attribute_node> );
-	int get( context *, off_t, rchandle<attribute_node> & );
+	int get( context *, nodeid, rchandle<attribute_node> & );
 
 
 
