@@ -781,6 +781,7 @@ fxhash64map<V>::fxhash64map(
 	if (sz==0) dir->fill(-1);
 } 
 
+
 // dtor unmaps all the backing files
 template<class V>
 fxhash64map<V>::~fxhash64map()
