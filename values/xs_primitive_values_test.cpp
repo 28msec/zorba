@@ -72,52 +72,52 @@ int main(int argc, char* argv[])
 	//xs_hexBinary_value t22();
 
 
-	cout << "xs_anyURI_value = "; t1.put(cout,ctx) << endl;
-	cout << "xs_boolean_value = "; t3.put(cout,ctx) << endl;
-	cout << "xs_decimal_value = "; t4.put(cout,ctx) << endl;
-	cout << "xs_integer_value = "; t5.put(cout,ctx) << endl;
-	cout << "xs_long_value = "; t6.put(cout,ctx) << endl;
-	cout << "xs_int_value = "; t7.put(cout,ctx) << endl;
-	cout << "xs_short_value = "; t8.put(cout,ctx) << endl;
-	cout << "xs_byte_value = "; t9.put(cout,ctx) << endl;
+	cout << "xs_anyURI_value = "; t1.put(cout,&ctx) << endl;
+	cout << "xs_boolean_value = "; t3.put(cout,&ctx) << endl;
+	cout << "xs_decimal_value = "; t4.put(cout,&ctx) << endl;
+	cout << "xs_integer_value = "; t5.put(cout,&ctx) << endl;
+	cout << "xs_long_value = "; t6.put(cout,&ctx) << endl;
+	cout << "xs_int_value = "; t7.put(cout,&ctx) << endl;
+	cout << "xs_short_value = "; t8.put(cout,&ctx) << endl;
+	cout << "xs_byte_value = "; t9.put(cout,&ctx) << endl;
 
-	cout << "xs_double_value = "; t12.put(cout,ctx) << endl;
-	cout << "xs_float_value = "; t16.put(cout,ctx) << endl;
+	cout << "xs_double_value = "; t12.put(cout,&ctx) << endl;
+	cout << "xs_float_value = "; t16.put(cout,&ctx) << endl;
 
-	cout << "xs_negativeInteger_value = "; t32.put(cout,ctx) << endl;
-	cout << "xs_nonNegativeInteger_value = "; t33.put(cout,ctx) << endl;
-	cout << "xs_nonPositiveInteger_value = "; t34.put(cout,ctx) << endl;
-	cout << "xs_positiveInteger_value = "; t36.put(cout,ctx) << endl;
-	cout << "xs_unsignedByte_value = "; t40.put(cout,ctx) << endl;
-	cout << "xs_unsignedInt_value = "; t41.put(cout,ctx) << endl;
-	cout << "xs_unsignedLong_value = "; t42.put(cout,ctx) << endl;
-	cout << "xs_unsignedShort_value = "; t43.put(cout,ctx) << endl;
+	cout << "xs_negativeInteger_value = "; t32.put(cout,&ctx) << endl;
+	cout << "xs_nonNegativeInteger_value = "; t33.put(cout,&ctx) << endl;
+	cout << "xs_nonPositiveInteger_value = "; t34.put(cout,&ctx) << endl;
+	cout << "xs_positiveInteger_value = "; t36.put(cout,&ctx) << endl;
+	cout << "xs_unsignedByte_value = "; t40.put(cout,&ctx) << endl;
+	cout << "xs_unsignedInt_value = "; t41.put(cout,&ctx) << endl;
+	cout << "xs_unsignedLong_value = "; t42.put(cout,&ctx) << endl;
+	cout << "xs_unsignedShort_value = "; t43.put(cout,&ctx) << endl;
 
-	cout << "xs_date_value = "; t10.put(cout,ctx) << endl;
-	cout << "xs_time_value = "; t38.put(cout,ctx) << endl;
-	cout << "xs_dateTime_value = "; t11.put(cout,ctx) << endl;
-	cout << "xs_gMonth_value = "; t18.put(cout,ctx) << endl;
-	cout << "xs_gDay_value = "; t17.put(cout,ctx) << endl;
-	cout << "xs_gMonthDay_value = "; t19.put(cout,ctx) << endl;
-	cout << "xs_gYear_value = "; t20.put(cout,ctx) << endl;
-	cout << "xs_gYearMonth_value = "; t21.put(cout,ctx) << endl;
+	cout << "xs_date_value = "; t10.put(cout,&ctx) << endl;
+	cout << "xs_time_value = "; t38.put(cout,&ctx) << endl;
+	cout << "xs_dateTime_value = "; t11.put(cout,&ctx) << endl;
+	cout << "xs_gMonth_value = "; t18.put(cout,&ctx) << endl;
+	cout << "xs_gDay_value = "; t17.put(cout,&ctx) << endl;
+	cout << "xs_gMonthDay_value = "; t19.put(cout,&ctx) << endl;
+	cout << "xs_gYear_value = "; t20.put(cout,&ctx) << endl;
+	cout << "xs_gYearMonth_value = "; t21.put(cout,&ctx) << endl;
 
-	cout << "xs_duration_value = "; t13.put(cout,ctx) << endl;
+	cout << "xs_duration_value = "; t13.put(cout,&ctx) << endl;
 
-	cout << "xs_ENTITIES_value = "; t14.put(cout,ctx) << endl;
-	cout << "xs_ENTITY_value = "; t15.put(cout,ctx) << endl;
-	cout << "xs_ID_value = "; t23.put(cout,ctx) << endl;
-	cout << "xs_IDREF_value = "; t24.put(cout,ctx) << endl;
-	cout << "xs_IDREFS_value = "; t25.put(cout,ctx) << endl;
-	cout << "xs_language_value = "; t26.put(cout,ctx) << endl;
-	cout << "xs_NCName_value = "; t27.put(cout,ctx) << endl;
-	cout << "xs_NMTOKEN_value = "; t28.put(cout,ctx) << endl;
-	cout << "xs_NMTOKENS_value = "; t29.put(cout,ctx) << endl;
-	cout << "xs_NOTATION_value = "; t30.put(cout,ctx) << endl;
-	cout << "xs_Name_value = "; t31.put(cout,ctx) << endl;
-	cout << "xs_normalizedString_value = "; t35.put(cout,ctx) << endl;
-	cout << "xs_string_value = "; t37.put(cout,ctx) << endl;
-	cout << "xs_token_value = "; t39.put(cout,ctx) << endl;
+	cout << "xs_ENTITIES_value = "; t14.put(cout,&ctx) << endl;
+	cout << "xs_ENTITY_value = "; t15.put(cout,&ctx) << endl;
+	cout << "xs_ID_value = "; t23.put(cout,&ctx) << endl;
+	cout << "xs_IDREF_value = "; t24.put(cout,&ctx) << endl;
+	cout << "xs_IDREFS_value = "; t25.put(cout,&ctx) << endl;
+	cout << "xs_language_value = "; t26.put(cout,&ctx) << endl;
+	cout << "xs_NCName_value = "; t27.put(cout,&ctx) << endl;
+	cout << "xs_NMTOKEN_value = "; t28.put(cout,&ctx) << endl;
+	cout << "xs_NMTOKENS_value = "; t29.put(cout,&ctx) << endl;
+	cout << "xs_NOTATION_value = "; t30.put(cout,&ctx) << endl;
+	cout << "xs_Name_value = "; t31.put(cout,&ctx) << endl;
+	cout << "xs_normalizedString_value = "; t35.put(cout,&ctx) << endl;
+	cout << "xs_string_value = "; t37.put(cout,&ctx) << endl;
+	cout << "xs_token_value = "; t39.put(cout,&ctx) << endl;
 
 	//xs_base64Binary_value t2();
 	//xs_hexBinary_value t22();

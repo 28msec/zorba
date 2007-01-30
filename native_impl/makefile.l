@@ -16,6 +16,7 @@ nodestore_test : nodestore.h nodestore.cpp nodestore_test.cpp
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
 		${BUILD}/nodestore.${SUFX} \
@@ -99,8 +100,10 @@ xml_loader_test : xml_loader.h xml_loader.cpp xml_loader_test.cpp
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		${BUILD}/nodestore.${SUFX} \
 		${BUILD}/scan_handler.${SUFX} \
 		${BUILD}/xml_loader.${SUFX} \
 		${BUILD}/xml_scanner.${SUFX} \

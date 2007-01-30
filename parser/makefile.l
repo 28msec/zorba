@@ -28,6 +28,7 @@ parsenodes : parsenodes.h parsenodes.cpp
 test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
 	g++ -Wall -g -o xquery_test \
 		../context/${BUILD}/context.${SUFX} \
+		../native_impl/${BUILD}/nodestore.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
@@ -38,6 +39,7 @@ test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_d
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/parsenodes.${SUFX} \
 		${BUILD}/xquery_scanner.${SUFX} \

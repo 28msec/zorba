@@ -12,11 +12,12 @@
 #define XQP_FXCHARHEAP_H
 
 #include "fxarray.h"
+#include "rchandle.h"
 #include "xqp_exception.h"
 
 namespace xqp {
 
-class fxcharheap
+class fxcharheap : public rcobject
 {
 public:  //iterator 
 

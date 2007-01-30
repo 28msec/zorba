@@ -21,11 +21,12 @@ xquery_driver::xquery_driver(
 	trace_parsing(false),
 	symtab(initial_heapsize),
   os(_os),
+	ctx_p(new context()),
 	rename_bit(false),
 	ftcontains_bit(false)
 {
 }
-     
+
 xquery_driver::~xquery_driver()
 {
 }

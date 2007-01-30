@@ -78,8 +78,8 @@ int main(int argc, char* argv[])
 			}
 			else if (cmd=="cp") {
 				uint32_t n = arg1.length();
-				char *p = fxvec.raw_copy(arg1.c_str(), n);
-				cout << string(p,0,n);
+				unsigned char *p = fxvec.raw_copy((unsigned char*)arg1.c_str(), n);
+				cout << string((char*)p,0,n);
       }
       else if (cmd=="iter") {
         fxvector<char>::const_iterator it = fxvec.begin();

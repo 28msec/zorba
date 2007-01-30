@@ -11,6 +11,10 @@
 #ifndef XQP_FXVECTOR_H
 #define XQP_FXVECTOR_H
 
+#include "mmfile.h"
+#include "rchandle.h"
+#include "xqp_exception.h"
+
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -24,14 +28,10 @@
 #include <sstream>
 #include <iostream>
 
-#include "mmfile.h"
-#include "xqp_exception.h"
-
 using namespace std;
 namespace xqp {
 
 #define DEFAULT_SIZE		4096		// default initial (transient) vector size
-
 
 template<typename T>
 class fxvector
@@ -84,7 +84,7 @@ public:
 	void incr_finish(uint32_t n) { finish += n; }
 	T* get_end_of_storage() const { return end_of_storage; }
 	char* get_src() const { return src; }
-	char* raw_copy(char const* data, uint32_t length) throw (bad_arg);
+	unsigned char* raw_copy(unsigned char const* data, uint32_t length) throw (bad_arg);
 
 private:
 	/**
@@ -411,8 +411,8 @@ fxvector<T>::~fxvector()
 }
 
 template<typename T>
-char * fxvector<T>::raw_copy(
-	char const* data,
+unsigned char * fxvector<T>::raw_copy(
+	unsigned char const* data,
 	uint32_t length)
 throw (bad_arg)
 {
@@ -420,7 +420,7 @@ throw (bad_arg)
 	if (n!=1) throw bad_arg(__FUNCTION__,"no raw copy to non-char vectors");
 	while ((capacity() - size()) < length) expand();
 	memcpy(finish, data, length);
-	char * res = (char *)finish;
+	unsigned char * res = (unsigned char *)finish;
 	finish += length;
 	if (mmf_p) {	// update offset_p
 		off_t* offset_p = reinterpret_cast<off_t*>(src);

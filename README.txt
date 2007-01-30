@@ -53,6 +53,11 @@ configure
 Known bugs
 ----------
 
+2007.01.29
+
+Build is clean, except for one residual error in 'funciton_impl'.
+
+
 2007.01.27
 
 Build is currently partially disabled pending conversion to the
@@ -79,9 +84,16 @@ for the time being.
 
  _____________________________
 |                             |
-| Current Status: 2007.01.27  |
+| Current Status: 2007.01.29  |
 |_____________________________|
  
+2007.01.29
+
+Context interface conversion completed.  MMapped/RAM nodestore
+unit testing started.  Nodestore code still in progress. The
+Build is now usable, although the implementation is still only
+at 30%.
+
 
 2007.01.27
 
@@ -171,8 +183,8 @@ native_impl
 		sax2xml_ostream							stub implementation: (adapter) SAX to zorba xml_stream
 		storage_manager							stub implementation: storage manager
 		text_store									stub implementation: text store
-		xml_store										stub implementation: XML store 
-		node_store                  implementation: native mmfile persistent node storage
+		xml_store									  stub implementation: XML store 
+		nodestore                   implementation: native mmfile persistent node storage
 		spectrum										implementation: native block pool manager
 		tree												implementation: node/item_iterator
 		xml_loader									implementation: XML file loader

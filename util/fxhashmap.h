@@ -37,7 +37,7 @@ namespace xqp {
 |______________________________________________________________*/
 
 template<class V>
-class fxhashmap		
+class fxhashmap
 {
 public:
 	struct entry

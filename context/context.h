@@ -496,10 +496,10 @@ protected:  // XQuery 1.0 dynamic context
 
 protected:
 	// string storage
-	fxcharheap string_store;
+	rchandle<fxcharheap> string_store_h;
 
 	// node storage
-	nodestore node_store;
+	rchandle<nodestore> node_store_h;
 	nodeid ctx_nodeid;
 	nodeid ctx_docid;
 

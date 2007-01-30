@@ -46,7 +46,7 @@ public:	// state
   std::string file;
 	xqp::symbol_table symtab;
 	std::ostream& os;
-	context ctx;
+	context* ctx_p;
 
 	bool rename_bit;
 	bool ftcontains_bit;
@@ -63,7 +63,7 @@ public: // manipulators
   
   std::string get_file() const { return file; }
   std::ostream& get_os() { return os; }
-  context const& get_ctx() { return ctx; }
+  context * get_ctx() { return ctx_p; }
 
 public:
 	/**

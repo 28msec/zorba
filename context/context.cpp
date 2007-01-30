@@ -59,8 +59,8 @@ context::context()
 	available_collections(1024,0.6),
 	default_collection("defcol"),
 	nodeid_counter("data/nodeid",1),
-	string_store(1<<16),
-	node_store("data/store")
+	string_store_h(new fxcharheap(1<<16)),
+	node_store_h(new nodestore("data/store"))
 {
 }
 
@@ -76,7 +76,7 @@ string context::get_string(
 	uint32_t sref)
 throw (xqp_exception)
 {
-	return string_store.get(sref);
+	return string_store_h->get(sref);
 }
 
 

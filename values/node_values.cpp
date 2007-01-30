@@ -198,6 +198,17 @@ void document_node::child_iterator::rewind()
 	child_it = parent_p->child_hv.begin();
 }
 
+rchandle<item> document_node::child_iterator::operator*() const
+{
+	return peek();
+}
+
+document_node::child_iterator& document_node::child_iterator::operator++()
+{
+	next();
+	return *this;
+}
+
 
 
 /*...........................................

@@ -52,9 +52,9 @@ ostream& exprnode::put(ostream& s) const
 // ----------
 Module::Module(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -75,11 +75,11 @@ ostream& Module::put(ostream& os) const
 // ---------------
 VersionDecl::VersionDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _version,
 	std::string const& _encoding)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	version(_version),
 	encoding(_encoding)
 {
@@ -104,11 +104,11 @@ ostream& VersionDecl::put(ostream& os) const
 // --------------
 MainModule::MainModule(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<Prolog> _prolog_h,
 	rchandle<QueryBody> _query_body_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prolog_h(_prolog_h),
 	query_body_h(_query_body_h)
 {
@@ -116,10 +116,10 @@ MainModule::MainModule(
 
 MainModule::MainModule(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QueryBody> _query_body_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prolog_h(NULL),
 	query_body_h(_query_body_h)
 {
@@ -147,11 +147,11 @@ ostream& MainModule::put(ostream& s) const
 // -----------------
 LibraryModule::LibraryModule(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ModuleDecl> _decl_h, 
 	rchandle<Prolog> _prolog_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	decl_h(_decl_h),
 	prolog_h(_prolog_h)
 {
@@ -180,11 +180,11 @@ ostream& LibraryModule::put(ostream& s) const
 // --------------
 ModuleDecl::ModuleDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _prefix,
 	std::string const& _target_namespace)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prefix(_prefix),
 	target_namespace(_target_namespace)
 {
@@ -211,11 +211,11 @@ ostream& ModuleDecl::put(ostream& s) const
 // ----------
 Prolog::Prolog(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<SIND_DeclList> _sind_list_h,
 	rchandle<VFO_DeclList> _vfo_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	sind_list_h(_sind_list_h),
 	vfo_list_h(_vfo_list_h)
 {
@@ -243,9 +243,9 @@ ostream& Prolog::put(ostream& s) const
 // ------------------
 SIND_DeclList::SIND_DeclList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -271,9 +271,9 @@ ostream& SIND_DeclList::put(ostream& s) const
 // -----------------
 VFO_DeclList::VFO_DeclList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -298,9 +298,9 @@ ostream& VFO_DeclList::put(ostream& s) const
 // --------------
 SIND_Decl::SIND_Decl(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -322,9 +322,9 @@ ostream& SIND_Decl::put(ostream& os) const
 // -------------
 VFO_Decl::VFO_Decl(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -346,9 +346,9 @@ ostream& VFO_Decl::put(ostream& os) const
 // ----------
 Setter::Setter(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -370,9 +370,9 @@ ostream& Setter::put(ostream& os) const
 // ----------
 Import::Import(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 	
@@ -401,11 +401,11 @@ ostream& Import::put(ostream& os) const
 // ------------------
 NamespaceDecl::NamespaceDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _prefix,
 	std::string const& _uri)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prefix(_prefix),
 	uri(_uri)
 {
@@ -431,10 +431,10 @@ ostream& NamespaceDecl::put(ostream& s) const
 // ----------------------
 BoundarySpaceDecl::BoundarySpaceDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	context::boundary_space_mode_t _mode)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -463,11 +463,11 @@ ostream& BoundarySpaceDecl::put(ostream& s) const
 // -------------------------
 DefaultNamespaceDecl::DefaultNamespaceDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum default_namespace_mode_t _mode,
 	std::string const& _default_namespace)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	mode(_mode),
 	default_namespace(_default_namespace)
 {
@@ -497,11 +497,11 @@ ostream& DefaultNamespaceDecl::put(ostream& s) const
 // ---------------
 OptionDecl::OptionDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _qname_h,
 	std::string const& _val)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	qname_h(_qname_h),
 	val(_val)
 {
@@ -514,7 +514,7 @@ OptionDecl::~OptionDecl()
 ostream& OptionDecl::put(ostream& s) const
 {
 	s << INDENT << "OptionDecl[";
-	if (qname_h!=NULL) qname_h->put(s,ctx);
+	if (qname_h!=NULL) qname_h->put(s,ctx_p);
 	s << " " << val << endl;
 	return s << OUTDENT << "]\n";
 }
@@ -528,10 +528,10 @@ ostream& OptionDecl::put(ostream& s) const
 // ------------------
 FTOptionDecl::FTOptionDecl(
   yy::location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
   rchandle<parsenode> _match_option_h)
 :
-  parsenode(_loc,_ctx),
+  parsenode(_loc,_ctx_p),
  	match_option_h(_match_option_h)
 {
 }
@@ -557,10 +557,10 @@ ostream& FTOptionDecl::put(ostream& s) const
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	context::ordering_mode_t _mode)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -589,10 +589,10 @@ ostream& OrderingModeDecl::put(ostream& s) const
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	context::order_empty_mode_t _mode)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -621,11 +621,11 @@ ostream& EmptyOrderDecl::put(ostream& s) const
 // -----------------------
 CopyNamespacesDecl::CopyNamespacesDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<PreserveMode> _preserve_h,
 	rchandle<InheritMode> _inherit_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	preserve_h(_preserve_h),
 	inherit_h(_inherit_h)
 {
@@ -652,10 +652,10 @@ ostream& CopyNamespacesDecl::put(ostream& s) const
 // -----------------
 PreserveMode::PreserveMode(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	context::copy_ns_mode_t _preserve_mode)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	preserve_mode(_preserve_mode)
 {
 }
@@ -684,10 +684,10 @@ ostream& PreserveMode::put(ostream& s) const
 // ----------------
 InheritMode::InheritMode(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	context::copy_ns_mode_t _inherit_mode)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	inherit_mode(_inherit_mode)
 {
 }
@@ -717,10 +717,10 @@ ostream& InheritMode::put(ostream& s) const
 // -------------------------
 DefaultCollationDecl::DefaultCollationDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const&  _collation)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	collation(_collation)
 {
 }
@@ -746,10 +746,10 @@ ostream& DefaultCollationDecl::put(ostream& s) const
 // ----------------
 BaseURIDecl::BaseURIDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _base_uri)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	base_uri(_base_uri)
 {
 }
@@ -775,12 +775,12 @@ ostream& BaseURIDecl::put(ostream& s) const
 // -----------------
 SchemaImport::SchemaImport(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<SchemaPrefix> _prefix_h,
 	std::string const& _uri,
 	rchandle<URILiteralList> _at_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prefix_h(_prefix_h),
 	uri(_uri),
 	at_list_h(_at_list_h)
@@ -810,9 +810,9 @@ ostream& SchemaImport::put(ostream& s) const
 // --------------------
 URILiteralList::URILiteralList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -839,10 +839,10 @@ ostream& URILiteralList::put(ostream& s) const
 // -----------------
 SchemaPrefix::SchemaPrefix(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	bool _default_b)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prefix(""),
 	default_b(_default_b)
 {
@@ -850,10 +850,10 @@ SchemaPrefix::SchemaPrefix(
 
 SchemaPrefix::SchemaPrefix(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _prefix) 
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prefix(_prefix),
 	default_b(false)
 {
@@ -881,23 +881,23 @@ ostream& SchemaPrefix::put(ostream& s) const
 // -----------------
 ModuleImport::ModuleImport(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& uri,
 	rchandle<URILiteralList> _uri_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	uri_list_h(_uri_list_h)
 {
 }
 
 ModuleImport::ModuleImport(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _prefix,
 	std::string const& _uri,
 	rchandle<URILiteralList> _uri_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	prefix(_prefix),
 	uri(_uri),
 	uri_list_h(_uri_list_h)
@@ -927,12 +927,12 @@ ostream& ModuleImport::put(ostream& s) const
 // ------------
 VarDecl::VarDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<exprnode> _initexpr_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(_varname),
 	typedecl_h(_typedecl_h),
 	initexpr_h(_initexpr_h)
@@ -962,10 +962,10 @@ ostream& VarDecl::put(ostream& s) const
 // ---------------------
 ConstructionDecl::ConstructionDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum context::construction_mode_t _mode)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -994,14 +994,14 @@ ostream& ConstructionDecl::put(ostream& os) const
 // -----------------
 FunctionDecl::FunctionDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _name_h,
 	rchandle<ParamList> _paramlist_h,
 	rchandle<SequenceType> _return_type_h,
 	rchandle<EnclosedExpr> _body_h,
 	enum function_type_t _type)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(_type),
 	name_h(_name_h),
 	paramlist_h(_paramlist_h),
@@ -1017,7 +1017,7 @@ FunctionDecl::~FunctionDecl()
 ostream& FunctionDecl::put(ostream& s) const
 {
 	s << INDENT << "Xxxx[";
-	if (name_h!=NULL) name_h->put(s,ctx);
+	if (name_h!=NULL) name_h->put(s,ctx_p);
 	if (paramlist_h!=NULL) paramlist_h->put(s);
 	if (return_type_h!=NULL) return_type_h->put(s);
 	if (body_h!=NULL) body_h->put(s);
@@ -1040,9 +1040,9 @@ ostream& FunctionDecl::put(ostream& s) const
 // --------------
 ParamList::ParamList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -1069,11 +1069,11 @@ ostream& ParamList::put(ostream& s) const
 // ----------
 Param::Param(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _name,
 	rchandle<TypeDeclaration> _typedecl_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	name(_name),
 	typedecl_h(_typedecl_h)
 {
@@ -1101,10 +1101,10 @@ ostream& Param::put(ostream& s) const
 // -----------------
 EnclosedExpr::EnclosedExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	expr_h(_expr_h)
 {
 }
@@ -1130,10 +1130,10 @@ ostream& EnclosedExpr::put(ostream& s) const
 // --------------
 QueryBody::QueryBody(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	expr_h(_expr_h)
 {
 }
@@ -1159,9 +1159,9 @@ ostream& QueryBody::put(ostream& s) const
 // ---------
 Expr::Expr(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -1187,9 +1187,9 @@ ostream& Expr::put(ostream& s) const
 // ---------------
 ExprSingle::ExprSingle(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -1213,13 +1213,13 @@ ostream& ExprSingle::put(ostream& s) const
 // --------------
 FLWORExpr::FLWORExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ForLetClauseList> _forlet_list_h,
 	rchandle<WhereClause> _where_h,
 	rchandle<OrderByClause> _orderby_h,
 	rchandle<exprnode> _return_val_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	forlet_list_h(_forlet_list_h),
 	where_h(_where_h),
 	orderby_h(_orderby_h),
@@ -1260,9 +1260,9 @@ ostream& FLWORExpr::put(ostream& s) const
 // ----------------------
 ForLetClauseList::ForLetClauseList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -1288,9 +1288,9 @@ ostream& ForLetClauseList::put(ostream& s) const
 // ------------------
 ForLetClause::ForLetClause(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -1314,10 +1314,10 @@ ostream& ForLetClause::put(ostream& s) const
 // --------------
 ForClause::ForClause(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<VarInDeclList> _vardecl_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	vardecl_list_h(_vardecl_list_h)
 {
 }
@@ -1343,9 +1343,9 @@ ostream& ForClause::put(ostream& s) const
 // -------------------
 VarInDeclList::VarInDeclList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -1371,14 +1371,14 @@ ostream& VarInDeclList::put(ostream& s) const
 // ---------------
 VarInDecl::VarInDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<PositionalVar> _posvar_h,
 	rchandle<FTScoreVar> _ftscorevar_h,
 	rchandle<exprnode> _valexpr_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(_varname),
 	typedecl_h(_typedecl_h),
 	posvar_h(_posvar_h),
@@ -1412,10 +1412,10 @@ ostream& VarInDecl::put(ostream& s) const
 // ------------------
 PositionalVar::PositionalVar(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _varname)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(_varname)
 {
 }
@@ -1441,10 +1441,10 @@ ostream& PositionalVar::put(ostream& s) const
 // --------------
 LetClause::LetClause(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<VarGetsDeclList> _vardecl_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	vardecl_list_h(_vardecl_list_h)
 {
 }
@@ -1470,9 +1470,9 @@ ostream& LetClause::put(ostream& s) const
 // ---------------------
 VarGetsDeclList::VarGetsDeclList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -1498,13 +1498,13 @@ ostream& VarGetsDeclList::put(ostream& s) const
 // ------------------
 VarGetsDecl::VarGetsDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<FTScoreVar> _ftscorevar_h,
 	rchandle<exprnode> _valexpr_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(_varname),
 	typedecl_h(_typedecl_h),
 	ftscorevar_h(_ftscorevar_h),
@@ -1536,10 +1536,10 @@ ostream& VarGetsDecl::put(ostream& s) const
 // ----------------
 FTScoreVar::FTScoreVar(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _varname)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(_varname)
 {
 }
@@ -1565,10 +1565,10 @@ ostream& FTScoreVar::put(ostream& s) const
 // ----------------
 WhereClause::WhereClause(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _predicate_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	predicate_h(_predicate_h)
 {
 }
@@ -1594,11 +1594,11 @@ ostream& WhereClause::put(ostream& s) const
 // ------------------
 OrderByClause::OrderByClause(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<OrderSpecList> _spec_list_h,
 	bool _stable_b)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	spec_list_h(_spec_list_h),
 	stable_b(_stable_b)
 {
@@ -1607,10 +1607,10 @@ OrderByClause::OrderByClause(
 
 OrderByClause::OrderByClause(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<OrderSpecList> _spec_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	spec_list_h(_spec_list_h)
 {
 }
@@ -1637,9 +1637,9 @@ ostream& OrderByClause::put(ostream& s) const
 // ------------------
 OrderSpecList::OrderSpecList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -1665,11 +1665,11 @@ ostream& OrderSpecList::put(ostream& s) const
 // --------------
 OrderSpec::OrderSpec(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _spec_h,
 	rchandle<OrderModifier> _modifier_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	spec_h(_spec_h),
 	modifier_h(_modifier_h)
 {
@@ -1697,12 +1697,12 @@ ostream& OrderSpec::put(ostream& s) const
 // ------------------
 OrderModifier::OrderModifier(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<OrderDirSpec> _dir_spec_h,
 	rchandle<OrderEmptySpec> _empty_spec_h,
 	rchandle<OrderCollationSpec> _collation_spec_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	dir_spec_h(_dir_spec_h),
 	empty_spec_h(_empty_spec_h),
 	collation_spec_h(_collation_spec_h)
@@ -1732,10 +1732,10 @@ ostream& OrderModifier::put(ostream& s) const
 // ------------------
 OrderDirSpec::OrderDirSpec(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum dir_spec_t _dir_spec)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	dir_spec(_dir_spec)
 {
 }
@@ -1765,10 +1765,10 @@ ostream& OrderDirSpec::put(ostream& s) const
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	context::order_empty_mode_t _empty_order_spec)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	empty_order_spec(_empty_order_spec)
 {
 }
@@ -1798,10 +1798,10 @@ ostream& OrderEmptySpec::put(ostream& s) const
 // ------------------------
 OrderCollationSpec::OrderCollationSpec(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _uri)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	uri(_uri)
 {
 }
@@ -1827,12 +1827,12 @@ ostream& OrderCollationSpec::put(ostream& s) const
 // -------------------
 QuantifiedExpr::QuantifiedExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	quantification_mode_t _qmode,
 	rchandle<QVarInDeclList> _decl_list_h,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	qmode(_qmode),
 	decl_list_h(_decl_list_h),
 	expr_h(_expr_h)
@@ -1866,9 +1866,9 @@ ostream& QuantifiedExpr::put(ostream& s) const
 // --------------------
 QVarInDeclList::QVarInDeclList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -1894,11 +1894,11 @@ ostream& QVarInDeclList::put(ostream& s) const
 // ----------------
 QVarInDecl::QVarInDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _name,
 	rchandle<exprnode> _val_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	name(_name),
 	typedecl_h(NULL),
 	val_h(_val_h)
@@ -1907,12 +1907,12 @@ QVarInDecl::QVarInDecl(
 
 QVarInDecl::QVarInDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _name,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<exprnode> _val_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	name(_name),
 	typedecl_h(_typedecl_h),
 	val_h(_val_h)
@@ -1942,12 +1942,12 @@ ostream& QVarInDecl::put(ostream& s) const
 // -------------------
 TypeswitchExpr::TypeswitchExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _switch_expr_h,
 	rchandle<CaseClauseList> _clause_list_h,
 	rchandle<exprnode> _default_clause_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	switch_expr_h(_switch_expr_h),
 	clause_list_h(_clause_list_h),
 	default_clause_h(_default_clause_h)
@@ -1957,13 +1957,13 @@ TypeswitchExpr::TypeswitchExpr(
 
 TypeswitchExpr::TypeswitchExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _switch_expr_h,
 	rchandle<CaseClauseList> _clause_list_h,
 	std::string _default_varname,
 	rchandle<exprnode> _default_clause_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	switch_expr_h(_switch_expr_h),
 	clause_list_h(_clause_list_h),
 	default_varname(_default_varname),
@@ -1994,9 +1994,9 @@ ostream& TypeswitchExpr::put(ostream& s) const
 // --------------------
 CaseClauseList::CaseClauseList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -2021,12 +2021,12 @@ ostream& CaseClauseList::put(ostream& s) const
 // ---------------
 CaseClause::CaseClause(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _varname,
 	rchandle<SequenceType> _type_h,
 	rchandle<exprnode> _val_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(_varname),
 	type_h(_type_h),
 	val_h(_val_h)
@@ -2035,11 +2035,11 @@ CaseClause::CaseClause(
 
 CaseClause::CaseClause(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<SequenceType> _type_h,
 	rchandle<exprnode> _val_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(""),
 	type_h(_type_h),
 	val_h(_val_h)
@@ -2068,12 +2068,12 @@ ostream& CaseClause::put(ostream& s) const
 // -----------
 IfExpr::IfExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _cond_expr_h,
 	rchandle<exprnode> _then_expr_h,
 	rchandle<exprnode> _else_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	cond_expr_h(_cond_expr_h),
 	then_expr_h(_then_expr_h),
 	else_expr_h(_else_expr_h)
@@ -2102,11 +2102,11 @@ ostream& IfExpr::put(ostream& s) const
 // -----------
 OrExpr::OrExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _or_expr_h,
 	rchandle<exprnode> _and_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	or_expr_h(_or_expr_h),
 	and_expr_h(_and_expr_h)
 {
@@ -2133,11 +2133,11 @@ ostream& OrExpr::put(ostream& s) const
 // ------------
 AndExpr::AndExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _and_expr_h,
 	rchandle<exprnode> _comp_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	and_expr_h(_and_expr_h),
 	comp_expr_h(_comp_expr_h)
 {
@@ -2164,12 +2164,12 @@ ostream& AndExpr::put(ostream& s) const
 // -------------------
 ComparisonExpr::ComparisonExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ValueComp> _valcomp_h,
 	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	left_h(_left_h),
 	right_h(_right_h),
 	valcomp_h(_valcomp_h),
@@ -2180,12 +2180,12 @@ ComparisonExpr::ComparisonExpr(
 
 ComparisonExpr::ComparisonExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<GeneralComp> _gencomp_h,
 	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	left_h(_left_h),
 	right_h(_right_h),
 	valcomp_h(NULL),
@@ -2196,12 +2196,12 @@ ComparisonExpr::ComparisonExpr(
 
 ComparisonExpr::ComparisonExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<NodeComp> _nodecomp_h,
 	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	left_h(_left_h),
 	right_h(_right_h),
 	valcomp_h(NULL),
@@ -2234,12 +2234,12 @@ ostream& ComparisonExpr::put(ostream& s) const
 // --------------------
 FTContainsExpr::FTContainsExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _range_expr_h,
 	rchandle<FTSelection> _ftselect_h,
 	rchandle<FTIgnoreOption> _ftignore_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	range_expr_h(_range_expr_h),
 	ftselect_h(_ftselect_h),
 	ftignore_h(_ftignore_h)
@@ -2268,11 +2268,11 @@ ostream& FTContainsExpr::put(ostream& s) const
 // --------------
 RangeExpr::RangeExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _from_expr_h,
 	rchandle<exprnode> _to_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	from_expr_h(_from_expr_h),
 	to_expr_h(_to_expr_h)
 {
@@ -2301,12 +2301,12 @@ ostream& RangeExpr::put(ostream& s) const
 // -----------------
 AdditiveExpr::AdditiveExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum add_op_t _add_op,
 	rchandle<exprnode> _add_expr_h,
 	rchandle<exprnode> _mult_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	add_op(_add_op),
 	add_expr_h(_add_expr_h),
 	mult_expr_h(_mult_expr_h)
@@ -2342,12 +2342,12 @@ ostream& AdditiveExpr::put(ostream& s) const
 // -----------------------
 MultiplicativeExpr::MultiplicativeExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum mult_op_t _mult_op,
 	rchandle<exprnode> _mult_expr_h,
 	rchandle<exprnode> _union_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	mult_op(_mult_op),
 	mult_expr_h(_mult_expr_h),
 	union_expr_h(_union_expr_h)
@@ -2383,11 +2383,11 @@ ostream& MultiplicativeExpr::put(ostream& s) const
 // --------------
 UnionExpr::UnionExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _union_expr_h,
 	rchandle<exprnode> _intex_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	union_expr_h(_union_expr_h),
 	intex_expr_h(_intex_expr_h)
 {
@@ -2415,12 +2415,12 @@ ostream& UnionExpr::put(ostream& s) const
 // ------------------------
 IntersectExceptExpr::IntersectExceptExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum intex_op_t _intex_op,
 	rchandle<exprnode> _intex_expr_h,
 	rchandle<exprnode> _instof_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	intex_op(_intex_op),
 	intex_expr_h(_intex_expr_h),
 	instof_expr_h(_instof_expr_h)
@@ -2454,11 +2454,11 @@ ostream& IntersectExceptExpr::put(ostream& s) const
 // -------------------
 InstanceofExpr::InstanceofExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _treat_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	treat_expr_h(_treat_expr_h),
 	seqtype_h(_seqtype_h)
 {
@@ -2486,11 +2486,11 @@ ostream& InstanceofExpr::put(ostream& s) const
 // --------------
 TreatExpr::TreatExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _castable_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	castable_expr_h(_castable_expr_h),
 	seqtype_h(_seqtype_h)
 {
@@ -2517,11 +2517,11 @@ ostream& TreatExpr::put(ostream& s) const
 // -----------------
 CastableExpr::CastableExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _cast_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	cast_expr_h(_cast_expr_h),
 	singletype_h(_singletype_h)
 {
@@ -2548,11 +2548,11 @@ ostream& CastableExpr::put(ostream& s) const
 // -------------
 CastExpr::CastExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _unary_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	unary_expr_h(_unary_expr_h),
 	singletype_h(_singletype_h)
 {
@@ -2580,11 +2580,11 @@ ostream& CastExpr::put(ostream& s) const
 // --------------
 UnaryExpr::UnaryExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<SignList> _signlist_h,
 	rchandle<exprnode> _value_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	value_expr_h(_value_expr_h),
 	signlist_h(_signlist_h)
 {
@@ -2612,10 +2612,10 @@ ostream& UnaryExpr::put(ostream& s) const
 // --------------
 SignList::SignList(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	bool _sign)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	sign(_sign)
 {
 }
@@ -2641,9 +2641,9 @@ ostream& SignList::put(ostream& s) const
 // --------------
 ValueExpr::ValueExpr(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -2667,10 +2667,10 @@ ostream& ValueExpr::put(ostream& s) const
 // ----------------
 GeneralComp::GeneralComp(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum gencomp_t _type)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(_type)
 {
 }
@@ -2705,10 +2705,10 @@ ostream& GeneralComp::put(ostream& s) const
 // --------------
 ValueComp::ValueComp(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum valcomp_t _type)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(_type)
 {
 }
@@ -2743,10 +2743,10 @@ ostream& ValueComp::put(ostream& s) const
 // -------------
 NodeComp::NodeComp(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum nodecomp_t _type)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(_type)
 {
 }
@@ -2778,11 +2778,11 @@ ostream& NodeComp::put(ostream& s) const
 // -----------------
 ValidateExpr::ValidateExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	string const& _valmode,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	valmode(_valmode=="lax" ? val_lax : val_strict),
 	expr_h(_expr_h)
 {
@@ -2814,11 +2814,11 @@ ostream& ValidateExpr::put(ostream& s) const
 // ------------------
 ExtensionExpr::ExtensionExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<PragmaList> _pragma_list_h,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	pragma_list_h(_pragma_list_h),
 	expr_h(_expr_h)
 {
@@ -2845,9 +2845,9 @@ ostream& ExtensionExpr::put(ostream& s) const
 // ----------------
 PragmaList::PragmaList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -2872,11 +2872,11 @@ ostream& PragmaList::put(ostream& s) const
 // -----------
 Pragma::Pragma(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _name,
 	std::string _pragma_lit)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	name(_name),
 	pragma_lit(_pragma_lit)
 {
@@ -2889,7 +2889,7 @@ Pragma::~Pragma()
 ostream& Pragma::put(ostream& s) const
 {
 	s << INDENT << "Pragma[";
-	if (name!=NULL) name->put(s,ctx);
+	if (name!=NULL) name->put(s,ctx_p);
 	s << "pragma_lit=" << pragma_lit << endl;
 	return s << OUTDENT << "]\n";
 }
@@ -2909,11 +2909,11 @@ ostream& Pragma::put(ostream& s) const
 // -------------
 PathExpr::PathExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum pathtype_t _type,
 	rchandle<exprnode> _relpath_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	type(_type),
 	relpath_expr_h(_relpath_expr_h)
 {
@@ -2946,12 +2946,12 @@ ostream& PathExpr::put(ostream& s) const
 // ---------------------
 RelativePathExpr::RelativePathExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum steptype_t _step_type,
 	rchandle<exprnode> _step_expr_h,
 	rchandle<exprnode> _relpath_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	step_type(_step_type),
 	step_expr_h(_step_expr_h),
 	relpath_expr_h(_relpath_expr_h)
@@ -2988,9 +2988,9 @@ ostream& RelativePathExpr::put(ostream& s) const
 // -------------
 StepExpr::StepExpr(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -3013,11 +3013,11 @@ ostream& StepExpr::put(ostream& s) const
 // -------------
 AxisStep::AxisStep(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ForwardStep> _forward_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	forward_step_h(_forward_step_h),
 	reverse_step_h(NULL),
 	predicate_list_h(_predicate_list_h)
@@ -3026,11 +3026,11 @@ AxisStep::AxisStep(
 
 AxisStep::AxisStep(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ReverseStep> _reverse_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	forward_step_h(NULL),
 	reverse_step_h(_reverse_step_h),
 	predicate_list_h(_predicate_list_h)
@@ -3059,11 +3059,11 @@ ostream& AxisStep::put(ostream& s) const
 // ----------------
 ForwardStep::ForwardStep(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ForwardAxis> _forward_axis_h,
 	rchandle<parsenode> _node_test_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	forward_axis_h(_forward_axis_h),
 	node_test_h(_node_test_h),
 	abbrev_step_h(NULL)
@@ -3072,10 +3072,10 @@ ForwardStep::ForwardStep(
 
 ForwardStep::ForwardStep(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<AbbrevForwardStep> _abbrev_step_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	forward_axis_h(NULL),
 	node_test_h(NULL),
 	abbrev_step_h(_abbrev_step_h)
@@ -3104,10 +3104,10 @@ ostream& ForwardStep::put(ostream& s) const
 // ----------------
 ForwardAxis::ForwardAxis(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum forward_axis_t _axis)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	axis(_axis)
 {
 }
@@ -3141,11 +3141,11 @@ ostream& ForwardAxis::put(ostream& s) const
 // ----------------------
 AbbrevForwardStep::AbbrevForwardStep(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<parsenode> _node_test_h,
 	bool _attr_b)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	node_test_h(_node_test_h),
 	attr_b(_attr_b)
 {
@@ -3153,10 +3153,10 @@ AbbrevForwardStep::AbbrevForwardStep(
 
 AbbrevForwardStep::AbbrevForwardStep(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<parsenode> _node_test_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	node_test_h(_node_test_h),
 	attr_b(false)
 {
@@ -3183,11 +3183,11 @@ ostream& AbbrevForwardStep::put(ostream& s) const
 // ----------------
 ReverseStep::ReverseStep(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ReverseAxis> _axis_h,
 	rchandle<parsenode> _node_test_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	axis_h(_axis_h),
 	node_test_h(_node_test_h)
 {
@@ -3214,10 +3214,10 @@ ostream& ReverseStep::put(ostream& s) const
 // ----------------
 ReverseAxis::ReverseAxis(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum reverse_axis_t _axis)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	axis(_axis)
 {
 }
@@ -3255,9 +3255,9 @@ ostream& ReverseAxis::put(ostream& s) const
 // -------------
 NodeTest::NodeTest(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -3280,10 +3280,10 @@ ostream& NodeTest::put(ostream& s) const
 // -------------
 NameTest::NameTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _qname_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	qname_h(_qname_h),
 	wild_h(NULL)
 {
@@ -3291,10 +3291,10 @@ NameTest::NameTest(
 
 NameTest::NameTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<Wildcard> _wild_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	qname_h(NULL),
 	wild_h(_wild_h)
 {
@@ -3307,7 +3307,7 @@ NameTest::~NameTest()
 ostream& NameTest::put(ostream& s) const
 {
 	s << INDENT << "NameTest[";
-	if (qname_h!=NULL) qname_h->put(s,ctx);
+	if (qname_h!=NULL) qname_h->put(s,ctx_p);
 	if (wild_h!=NULL) wild_h->put(s);
 	s << "]\n";
 	UNDENT;
@@ -3323,10 +3323,10 @@ ostream& NameTest::put(ostream& s) const
 // -------------
 Wildcard::Wildcard(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum wildcard_t _type)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(_type),
 	prefix(""),
 	qname_h(NULL)
@@ -3335,10 +3335,10 @@ Wildcard::Wildcard(
 
 Wildcard::Wildcard(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _prefix)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(wild_prefix),
 	prefix(_prefix),
 	qname_h(NULL)
@@ -3347,10 +3347,10 @@ Wildcard::Wildcard(
 
 Wildcard::Wildcard(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _qname_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(wild_elem),
 	prefix(""),
 	qname_h(_qname_h)
@@ -3371,7 +3371,7 @@ ostream& Wildcard::put(ostream& s) const
 	default: s << "???";
 	}
 	s << ", prefix=" << prefix << endl;
-	if (qname_h!=NULL) { s << ", "; qname_h->put(s,ctx); }
+	if (qname_h!=NULL) { s << ", "; qname_h->put(s,ctx_p); }
 	s << endl;
 	UNDENT;
 	return s;
@@ -3386,11 +3386,11 @@ ostream& Wildcard::put(ostream& s) const
 // ---------------
 FilterExpr::FilterExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _primary_h,
 	rchandle<PredicateList> _pred_list_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	primary_h(_primary_h),
 	pred_list_h(_pred_list_h)
 {
@@ -3417,9 +3417,9 @@ ostream& FilterExpr::put(ostream& s) const
 // ------------------
 PredicateList::PredicateList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -3444,10 +3444,10 @@ ostream& PredicateList::put(ostream& s) const
 // --------------
 Predicate::Predicate(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _pred_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	pred_h(_pred_h)
 {
 }
@@ -3472,9 +3472,9 @@ ostream& Predicate::put(ostream& s) const
 // ----------------
 PrimaryExpr::PrimaryExpr(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -3498,9 +3498,9 @@ ostream& PrimaryExpr::put(ostream& s) const
 // ------------
 Literal::Literal(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -3523,10 +3523,10 @@ ostream& Literal::put(ostream& s) const
 // -------------------
 NumericLiteral::NumericLiteral(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	int _ival)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	type(num_integer),
 	ival(_ival)
 {
@@ -3534,10 +3534,10 @@ NumericLiteral::NumericLiteral(
 
 NumericLiteral::NumericLiteral(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	double _dval)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	type(num_double),
 	dval(_dval)
 {
@@ -3545,10 +3545,10 @@ NumericLiteral::NumericLiteral(
 
 NumericLiteral::NumericLiteral(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	decimal _decval)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	type(num_decimal),
 	decval(_decval)
 {
@@ -3580,10 +3580,10 @@ ostream& NumericLiteral::put(ostream& s) const
 // -----------
 VarRef::VarRef(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _varname)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	varname(_varname)
 {
 }
@@ -3607,10 +3607,10 @@ ostream& VarRef::put(ostream& s) const
 // ----------------------
 ParenthesizedExpr::ParenthesizedExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	expr_h(_expr_h)
 {
 }
@@ -3635,9 +3635,9 @@ ostream& ParenthesizedExpr::put(ostream& s) const
 // --------------------
 ContextItemExpr::ContextItemExpr(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -3662,10 +3662,10 @@ ostream& ContextItemExpr::put(ostream& s) const
 
 OrderedExpr::OrderedExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	expr_h(_expr_h)
 {
 }
@@ -3690,10 +3690,10 @@ ostream& OrderedExpr::put(ostream& s) const
 // ------------------
 UnorderedExpr::UnorderedExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	expr_h(_expr_h)
 {
 }
@@ -3719,11 +3719,11 @@ ostream& UnorderedExpr::put(ostream& s) const
 
 FunctionCall::FunctionCall(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _fname_h,
 	rchandle<ArgList> _arg_list_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	fname_h(_fname_h),
 	arg_list_h(_arg_list_h)
 {
@@ -3736,7 +3736,7 @@ FunctionCall::~FunctionCall()
 ostream& FunctionCall::put(ostream& s) const
 {
 	s << INDENT << "FunctionCall[";
-	if (fname_h!=NULL) fname_h->put(s,ctx);
+	if (fname_h!=NULL) fname_h->put(s,ctx_p);
 	s << endl;
 	if (arg_list_h!=NULL) arg_list_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -3751,9 +3751,9 @@ ostream& FunctionCall::put(ostream& s) const
 // -------------
 ArgList::ArgList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -3778,9 +3778,9 @@ ostream& ArgList::put(ostream& s) const
 // ----------------
 Constructor::Constructor(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -3803,9 +3803,9 @@ ostream& Constructor::put(ostream& s) const
 // ----------------------
 DirectConstructor::DirectConstructor(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -3829,13 +3829,13 @@ ostream& DirectConstructor::put(ostream& s) const
 
 DirElemConstructor::DirElemConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _open_name_h,
 	rchandle<QName> _close_name_h,
 	rchandle<DirAttributeList> _attr_list_h,
 	rchandle<DirElemContentList> _dir_content_list_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	elem_name_h(_open_name_h),
 	attr_list_h(_attr_list_h),
 	dir_content_list_h(_dir_content_list_h)
@@ -3852,7 +3852,7 @@ DirElemConstructor::~DirElemConstructor()
 ostream& DirElemConstructor::put(ostream& s) const
 {
 	s << INDENT << "DirElemConstructor[";
-	if (elem_name_h!=NULL) elem_name_h->put(s,ctx);
+	if (elem_name_h!=NULL) elem_name_h->put(s,ctx_p);
 	s << endl;
 	if (attr_list_h!=NULL) attr_list_h->put(s);
 	if (dir_content_list_h!=NULL) dir_content_list_h->put(s);
@@ -3868,9 +3868,9 @@ ostream& DirElemConstructor::put(ostream& s) const
 // ------------------------
 DirElemContentList::DirElemContentList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -3895,9 +3895,9 @@ ostream& DirElemContentList::put(ostream& s) const
 // ---------------------
 DirAttributeList::DirAttributeList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -3923,11 +3923,11 @@ ostream& DirAttributeList::put(ostream& s) const
 	
 DirAttr::DirAttr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _atname_h,
 	rchandle<DirAttributeValue> _dir_atval_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	atname_h(_atname_h),
 	dir_atval_h(_dir_atval_h)
 {
@@ -3940,7 +3940,7 @@ DirAttr::~DirAttr()
 ostream& DirAttr::put(ostream& s) const
 {
 	s << INDENT << "DirAttr[";
-	if (atname_h!=NULL) atname_h->put(s,ctx);
+	if (atname_h!=NULL) atname_h->put(s,ctx_p);
 	s << endl;
 	if (dir_atval_h!=NULL) dir_atval_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -3955,10 +3955,10 @@ ostream& DirAttr::put(ostream& s) const
 // ----------------------
 DirAttributeValue::DirAttributeValue(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QuoteAttrContentList> _quot_attr_content_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	quot_attr_content_h(_quot_attr_content_h),
 	apos_attr_content_h(NULL)
 {
@@ -3966,10 +3966,10 @@ DirAttributeValue::DirAttributeValue(
 
 DirAttributeValue::DirAttributeValue(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<AposAttrContentList> _apos_attr_content_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	quot_attr_content_h(NULL),
 	apos_attr_content_h(_apos_attr_content_h)
 {
@@ -3996,9 +3996,9 @@ ostream& DirAttributeValue::put(ostream& s) const
 // --------------------------
 QuoteAttrContentList::QuoteAttrContentList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -4023,9 +4023,9 @@ ostream& QuoteAttrContentList::put(ostream& s) const
 // -------------------------
 AposAttrContentList::AposAttrContentList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -4050,10 +4050,10 @@ ostream& AposAttrContentList::put(ostream& s) const
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _quot_atcontent)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	quot_atcontent(_quot_atcontent),
 	common_content_h(NULL)
 {
@@ -4061,10 +4061,10 @@ QuoteAttrValueContent::QuoteAttrValueContent(
 
 QuoteAttrValueContent::QuoteAttrValueContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<CommonContent> _common_content_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	quot_atcontent(""),
 	common_content_h(_common_content_h)
 {
@@ -4091,10 +4091,10 @@ ostream& QuoteAttrValueContent::put(ostream& s) const
 // -------------------------
 AposAttrValueContent::AposAttrValueContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _apos_atcontent)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	apos_atcontent(_apos_atcontent),
 	common_content_h(NULL)
 {
@@ -4102,10 +4102,10 @@ AposAttrValueContent::AposAttrValueContent(
 
 AposAttrValueContent::AposAttrValueContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<CommonContent> _common_content_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	apos_atcontent(""),
 	common_content_h(_common_content_h)
 {
@@ -4132,40 +4132,40 @@ ostream& AposAttrValueContent::put(ostream& s) const
 // -------------------
 DirElemContent::DirElemContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<DirectConstructor> _direct_cons_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	direct_cons_h(_direct_cons_h)
 {
 }
 
 DirElemContent::DirElemContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _elem_content)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	elem_content(_elem_content)
 {
 }
 
 DirElemContent::DirElemContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<CDataSection> _cdata_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	cdata_h(_cdata_h)
 {
 }
 
 DirElemContent::DirElemContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<CommonContent> _common_content_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	common_content_h(_common_content_h)
 {
 }
@@ -4193,11 +4193,11 @@ ostream& DirElemContent::put(ostream& s) const
 // -------------------
 CommonContent::CommonContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum common_content_t _type,
 	std::string _ref)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	type(_type),
 	ref(_ref),
 	expr_h(NULL)
@@ -4206,10 +4206,10 @@ CommonContent::CommonContent(
 
 CommonContent::CommonContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<EnclosedExpr> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	type(cont_expr),
 	ref(""),
 	expr_h(_expr_h)
@@ -4218,10 +4218,10 @@ CommonContent::CommonContent(
 
 CommonContent::CommonContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum common_content_t _type)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	type(cont_expr),
 	ref(""),
 	expr_h(NULL)
@@ -4259,10 +4259,10 @@ ostream& CommonContent::put(ostream& s) const
 // ---------------------------
 DirCommentConstructor::DirCommentConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _comment)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	comment(_comment)
 {
 }
@@ -4293,10 +4293,10 @@ ostream& DirCommentConstructor::put(ostream& s) const
 // ----------------------
 DirPIConstructor::DirPIConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _pi_target)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	pi_target(_pi_target),
 	pi_content("")
 {
@@ -4304,11 +4304,11 @@ DirPIConstructor::DirPIConstructor(
 
 DirPIConstructor::DirPIConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string const& _pi_target,
 	std::string const& _pi_content)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	pi_target(_pi_target),
 	pi_content(_pi_content)
 {
@@ -4342,10 +4342,10 @@ ostream& DirPIConstructor::put(ostream& s) const
 // ------------------
 CDataSection::CDataSection(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _cdata_content)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	cdata_content(_cdata_content)
 {
 }
@@ -4377,9 +4377,9 @@ ostream& CDataSection::put(ostream& s) const
 // -------------------------
 ComputedConstructor::ComputedConstructor(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	exprnode(_loc,_ctx)
+	exprnode(_loc,_ctx_p)
 {
 }
 
@@ -4402,10 +4402,10 @@ ostream& ComputedConstructor::put(ostream& s) const
 // ------------------------
 CompDocConstructor::CompDocConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	expr_h(_expr_h)
 {
 }
@@ -4430,11 +4430,11 @@ ostream& CompDocConstructor::put(ostream& s) const
 // -------------------------
 CompElemConstructor::CompElemConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _qname_h,
 	rchandle<exprnode> _content_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	qname_h(_qname_h),
 	qname_expr_h(NULL),
 	content_expr_h(_content_expr_h)
@@ -4443,11 +4443,11 @@ CompElemConstructor::CompElemConstructor(
 
 CompElemConstructor::CompElemConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _qname_expr_h,
 	rchandle<exprnode> _content_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	content_expr_h(_content_expr_h)
@@ -4461,7 +4461,7 @@ CompElemConstructor::~CompElemConstructor()
 ostream& CompElemConstructor::put(ostream& s) const
 {
 	s << INDENT << "CompElemConstructor[";
-	if (qname_h!=NULL) qname_h->put(s,ctx);
+	if (qname_h!=NULL) qname_h->put(s,ctx_p);
 	if (qname_expr_h!=NULL) qname_expr_h->put(s);
 	if (content_expr_h!=NULL) content_expr_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -4477,10 +4477,10 @@ ostream& CompElemConstructor::put(ostream& s) const
 /*
 ContentExpr::ContentExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	expr_h(_expr_h)
 {
 }
@@ -4506,11 +4506,11 @@ ostream& ContentExpr::put(ostream& s) const
 // -------------------------
 CompAttrConstructor::CompAttrConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _qname_h,
 	rchandle<exprnode> _val_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	qname_h(_qname_h),
 	qname_expr_h(NULL),
 	val_expr_h(_val_expr_h)
@@ -4519,11 +4519,11 @@ CompAttrConstructor::CompAttrConstructor(
 
 CompAttrConstructor::CompAttrConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _qname_expr_h,
 	rchandle<exprnode> _val_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	val_expr_h(_val_expr_h)
@@ -4537,7 +4537,7 @@ CompAttrConstructor::~CompAttrConstructor()
 ostream& CompAttrConstructor::put(ostream& s) const
 {
 	s << INDENT << "CompAttrConstructor[";
-	if (qname_h!=NULL) qname_h->put(s,ctx);
+	if (qname_h!=NULL) qname_h->put(s,ctx_p);
 	if (qname_expr_h!=NULL) qname_expr_h->put(s);
 	if (val_expr_h!=NULL) val_expr_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -4552,10 +4552,10 @@ ostream& CompAttrConstructor::put(ostream& s) const
 // -------------------------
 CompTextConstructor::CompTextConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _text_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	text_expr_h(_text_expr_h)
 {
 }
@@ -4580,10 +4580,10 @@ ostream& CompTextConstructor::put(ostream& s) const
 // ----------------------------
 CompCommentConstructor::CompCommentConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _comment_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	comment_expr_h(_comment_expr_h)
 {
 }
@@ -4608,11 +4608,11 @@ ostream& CompCommentConstructor::put(ostream& s) const
 // -----------------------
 CompPIConstructor::CompPIConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _target,
 	rchandle<exprnode> _content_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	target(_target),
 	target_expr_h(NULL),
 	content_expr_h(_content_expr_h)
@@ -4621,11 +4621,11 @@ CompPIConstructor::CompPIConstructor(
 
 CompPIConstructor::CompPIConstructor(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<exprnode> _target_expr_h,
 	rchandle<exprnode> _content_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	target(""),
 	target_expr_h(_target_expr_h),
 	content_expr_h(_content_expr_h)
@@ -4654,11 +4654,11 @@ ostream& CompPIConstructor::put(ostream& s) const
 // ----------------
 SingleType::SingleType(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<AtomicType> _atomic_type_h,
 	bool _hook_b)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	atomic_type_h(_atomic_type_h),
 	hook_b(_hook_b)
 {
@@ -4685,10 +4685,10 @@ ostream& SingleType::put(ostream& s) const
 // ---------------------
 TypeDeclaration::TypeDeclaration(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<SequenceType> _seqtype_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	seqtype_h(_seqtype_h)
 {
 }
@@ -4713,11 +4713,11 @@ ostream& TypeDeclaration::put(ostream& s) const
 // ------------------
 SequenceType::SequenceType(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ItemType> _itemtype_h,
 	rchandle<OccurrenceIndicator> _occur_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	itemtype_h(_itemtype_h),
 	occur_h(_occur_h)
 {
@@ -4744,10 +4744,10 @@ ostream& SequenceType::put(ostream& s) const
 // -------------------------
 OccurrenceIndicator::OccurrenceIndicator(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum occurrence_t _type)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type(_type)
 {
 }
@@ -4777,19 +4777,19 @@ ostream& OccurrenceIndicator::put(ostream& s) const
 // --------------
 ItemType::ItemType(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	bool _item_test_b)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	item_test_b(_item_test_b)
 {
 }
 
 ItemType::ItemType(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	item_test_b(false)
 {
 }
@@ -4814,10 +4814,10 @@ ostream& ItemType::put(ostream& s) const
 // ----------------
 AtomicType::AtomicType(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _qname_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	qname_h(_qname_h)
 {
 }
@@ -4829,7 +4829,7 @@ AtomicType::~AtomicType()
 ostream& AtomicType::put(ostream& s) const
 {
 	s << INDENT << "AtomicType[";
-	if (qname_h!=NULL) qname_h->put(s,ctx);
+	if (qname_h!=NULL) qname_h->put(s,ctx_p);
 	return s << OUTDENT << "]\n";
 }
 
@@ -4842,9 +4842,9 @@ ostream& AtomicType::put(ostream& s) const
 // --------------
 KindTest::KindTest(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -4867,9 +4867,9 @@ ostream& KindTest::put(ostream& s) const
 // -----------------
 AnyKindTest::AnyKindTest(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -4892,9 +4892,9 @@ ostream& AnyKindTest::put(ostream& s) const
 // ------------------
 DocumentTest::DocumentTest(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_test_h(NULL),
 	schema_elem_test_h(NULL)
 {
@@ -4902,10 +4902,10 @@ DocumentTest::DocumentTest(
 
 DocumentTest::DocumentTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ElementTest> _elem_test_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_test_h(_elem_test_h),
 	schema_elem_test_h(NULL)
 {
@@ -4913,10 +4913,10 @@ DocumentTest::DocumentTest(
 
 DocumentTest::DocumentTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<SchemaElementTest> _schema_elem_test_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_test_h(NULL),
 	schema_elem_test_h(_schema_elem_test_h)
 {
@@ -4943,9 +4943,9 @@ ostream& DocumentTest::put(ostream& s) const
 // --------------
 TextTest::TextTest(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -4968,9 +4968,9 @@ ostream& TextTest::put(ostream& s) const
 // -----------------
 CommentTest::CommentTest(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -4993,11 +4993,11 @@ ostream& CommentTest::put(ostream& s) const
 // ------------
 PITest::PITest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _target,
 	std::string _content)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	target(_target),
 	content(_content)
 {
@@ -5024,11 +5024,11 @@ ostream& PITest::put(ostream& s) const
 // -------------------
 AttributeTest::AttributeTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<AttribNameOrWildcard> _attr_name_or_wildcard_h,
 	rchandle<TypeName> _type_name_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	attr_name_or_wildcard_h(_attr_name_or_wildcard_h),
 	type_name_h(_type_name_h)
 {
@@ -5055,10 +5055,10 @@ ostream& AttributeTest::put(ostream& s) const
 // --------------------------
 AttribNameOrWildcard::AttribNameOrWildcard(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<AttributeName> _attr_name_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	attr_name_h(_attr_name_h),
 	star_b(_attr_name_h==NULL)
 {
@@ -5085,10 +5085,10 @@ ostream& AttribNameOrWildcard::put(ostream& s) const
 // -------------------------
 SchemaAttributeTest::SchemaAttributeTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<AttributeDeclaration> _attr_decl_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	attr_decl_h(_attr_decl_h)
 {
 }
@@ -5113,10 +5113,10 @@ ostream& SchemaAttributeTest::put(ostream& s) const
 // --------------------------
 AttributeDeclaration::AttributeDeclaration(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<AttributeName> _attr_name_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	attr_name_h(_attr_name_h)
 {
 }
@@ -5141,11 +5141,11 @@ ostream& AttributeDeclaration::put(ostream& s) const
 // -----------------
 ElementTest::ElementTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ElementNameOrWildcard> _elem_name_or_wildcard_h,
 	rchandle<TypeName> _type_name_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_name_or_wildcard_h(_elem_name_or_wildcard_h),
 	type_name_h(_type_name_h),
 	optional_b(false)
@@ -5154,12 +5154,12 @@ ElementTest::ElementTest(
 
 ElementTest::ElementTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ElementNameOrWildcard> _elem_name_or_wildcard_h,
 	rchandle<TypeName> _type_name_h,
 	bool _optional_b)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_name_or_wildcard_h(_elem_name_or_wildcard_h),
 	type_name_h(_type_name_h),
 	optional_b(_optional_b)
@@ -5188,10 +5188,10 @@ ostream& ElementTest::put(ostream& s) const
 // ---------------------------
 ElementNameOrWildcard::ElementNameOrWildcard(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ElementName> _elem_name_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_name_h(_elem_name_h),
 	star_b(_elem_name_h==NULL)
 {
@@ -5218,10 +5218,10 @@ ostream& ElementNameOrWildcard::put(ostream& s) const
 // -----------------------
 SchemaElementTest::SchemaElementTest(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ElementDeclaration> _elem_decl_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_decl_h(_elem_decl_h)
 {
 }
@@ -5246,10 +5246,10 @@ ostream& SchemaElementTest::put(ostream& s) const
 // ------------------------
 ElementDeclaration::ElementDeclaration(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ElementName> _elem_name_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_name_h(_elem_name_h)
 {
 }
@@ -5274,10 +5274,10 @@ ostream& ElementDeclaration::put(ostream& s) const
 // -------------------
 AttributeName::AttributeName(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _attr_qname_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	attr_qname_h(_attr_qname_h)
 {
 }
@@ -5289,7 +5289,7 @@ AttributeName::~AttributeName()
 ostream& AttributeName::put(ostream& s) const
 {
 	s << INDENT << "AttributeName[";
-	if (attr_qname_h!=NULL) attr_qname_h->put(s,ctx);
+	if (attr_qname_h!=NULL) attr_qname_h->put(s,ctx_p);
 	return s << OUTDENT << "]\n";
 }
 
@@ -5302,10 +5302,10 @@ ostream& AttributeName::put(ostream& s) const
 // -----------------
 ElementName::ElementName(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _elem_qname_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	elem_qname_h(_elem_qname_h)
 {
 }
@@ -5317,7 +5317,7 @@ ElementName::~ElementName()
 ostream& ElementName::put(ostream& s) const
 {
 	s << INDENT << "ElementName[";
-	if (elem_qname_h!=NULL) elem_qname_h->put(s,ctx);
+	if (elem_qname_h!=NULL) elem_qname_h->put(s,ctx_p);
 	return s << OUTDENT << "]\n";
 }
 
@@ -5330,10 +5330,10 @@ ostream& ElementName::put(ostream& s) const
 // --------------
 TypeName::TypeName(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _type_qname_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	type_qname_h(_type_qname_h)
 {
 }
@@ -5345,7 +5345,7 @@ TypeName::~TypeName()
 ostream& TypeName::put(ostream& s) const
 {
 	s << INDENT << "TypeName[";
-	if (type_qname_h!=NULL) type_qname_h->put(s,ctx);
+	if (type_qname_h!=NULL) type_qname_h->put(s,ctx_p);
 	return s << OUTDENT << "]\n";
 }
 
@@ -5369,10 +5369,10 @@ ostream& TypeName::put(ostream& s) const
 // -------------------
 StringLiteral::StringLiteral(
 	yy::location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	string const& _strval)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	strval(_strval)
 {
 }
@@ -5433,10 +5433,10 @@ ostream& StringLiteral::put(ostream& s) const
 // -----------------------
 RevalidationDecl::RevalidationDecl(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<QName> _qname_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	qname_h(_qname_h)
 {
 }
@@ -5448,7 +5448,7 @@ RevalidationDecl::~RevalidationDecl()
 ostream& RevalidationDecl::put(ostream& s) const
 {
 	s << INDENT << "RevalidationDecl[";
-	if (qname_h!=NULL) qname_h->put(s,ctx);
+	if (qname_h!=NULL) qname_h->put(s,ctx_p);
 	return s << OUTDENT << "]\n";
 }
 
@@ -5461,11 +5461,11 @@ ostream& RevalidationDecl::put(ostream& s) const
 // ----------------
 InsertExpr::InsertExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -5492,10 +5492,10 @@ ostream& InsertExpr::put(ostream& s) const
 // ----------------
 DeleteExpr::DeleteExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ExprSingle> _target_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	target_expr_h(_target_expr_h)
 {
 }
@@ -5520,11 +5520,11 @@ ostream& DeleteExpr::put(ostream& s) const
 // -----------------
 ReplaceExpr::ReplaceExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -5551,11 +5551,11 @@ ostream& ReplaceExpr::put(ostream& s) const
 // ----------------
 RenameExpr::RenameExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -5597,12 +5597,12 @@ ostream& RenameExpr::put(ostream& s) const
 // -------------------
 TransformExpr::TransformExpr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<VarNameList> _varname_list_h,
 	rchandle<ExprSingle> _source_expr_h,
 	rchandle<ExprSingle> _target_expr_h)
 :
-	exprnode(_loc,_ctx),
+	exprnode(_loc,_ctx_p),
 	varname_list_h(_varname_list_h),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
@@ -5633,9 +5633,9 @@ ostream& TransformExpr::put(ostream& s) const
 // ------------------
 VarNameList::VarNameList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -5662,11 +5662,11 @@ ostream& VarNameList::put(ostream& s) const
 // -----------------
 VarBinding::VarBinding(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _varname,
 	rchandle<ExprSingle> _val_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	varname(_varname),
 	val_h(_val_h)
 {
@@ -5706,12 +5706,12 @@ ostream& VarBinding::put(ostream& s) const
 // -----------------
 FTSelection::FTSelection(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTOr> _ftor_h,
 	rchandle<FTMatchOptionProximityList> _option_list_h,
 	rchandle<RangeExpr> _weight_expr_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	ftor_h(_ftor_h),
 	option_list_h(_option_list_h),
 	weight_expr_h(_weight_expr_h)
@@ -5740,9 +5740,9 @@ ostream& FTSelection::put(ostream& s) const
 // ---------------------------------
 FTMatchOptionProximityList::FTMatchOptionProximityList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -5768,9 +5768,9 @@ ostream& FTMatchOptionProximityList::put(ostream& s) const
 FTMatchOptionProximity::FTMatchOptionProximity(
 	rchandle<FTMatchOption> _opt_h,
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	opt_h(_opt_h),
 	prox_h(NULL)
 {
@@ -5779,9 +5779,9 @@ FTMatchOptionProximity::FTMatchOptionProximity(
 FTMatchOptionProximity::FTMatchOptionProximity(
 	rchandle<FTProximity> _prox_h,
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	opt_h(NULL),
 	prox_h(_prox_h)
 {
@@ -5789,9 +5789,9 @@ FTMatchOptionProximity::FTMatchOptionProximity(
 
 FTMatchOptionProximity::FTMatchOptionProximity(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	opt_h(NULL),
 	prox_h(NULL)
 {
@@ -5818,11 +5818,11 @@ ostream& FTMatchOptionProximity::put(ostream& s) const
 // ----------
 FTOr::FTOr(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTOr> _ftor_h,
 	rchandle<FTAnd> _ftand_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	ftor_h(_ftor_h),
 	ftand_h(_ftand_h)
 {
@@ -5849,11 +5849,11 @@ ostream& FTOr::put(ostream& s) const
 // -----------
 FTAnd::FTAnd(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTAnd> _ftand_h,
 	rchandle<FTMildnot> _ftmild_not_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	ftand_h(_ftand_h),
 	ftmild_not_h(_ftmild_not_h)
 {
@@ -5880,11 +5880,11 @@ ostream& FTAnd::put(ostream& s) const
 // ---------------
 FTMildnot::FTMildnot(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTMildnot> _ftmild_not_h,
 	rchandle<FTUnaryNot> _ftunary_not_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	ftmild_not_h(_ftmild_not_h),
 	ftunary_not_h(_ftunary_not_h)
 {
@@ -5911,11 +5911,11 @@ ostream& FTMildnot::put(ostream& s) const
 // ----------------
 FTUnaryNot::FTUnaryNot(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTWordsSelection> _words_selection_h,
 	bool _not_b)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	words_selection_h(_words_selection_h),
 	not_b(_not_b)
 {
@@ -5943,12 +5943,12 @@ ostream& FTUnaryNot::put(ostream& s) const
 // ----------------------
 FTWordsSelection::FTWordsSelection(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTWords> _words_h,
 	rchandle<FTTimes> _times_h,
 	rchandle<FTSelection> _selection_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	words_h(_words_h),
 	times_h(_times_h),
 	selection_h(_selection_h)
@@ -5976,11 +5976,11 @@ ostream& FTWordsSelection::put(ostream& s) const
 // -------------
 FTWords::FTWords(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTWordsValue> _words_val_h,
 	rchandle<FTAnyallOption> _any_all_option_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	words_val_h(_words_val_h),
 	any_all_option_h(_any_all_option_h)
 {
@@ -6004,11 +6004,11 @@ ostream& FTWords::put(ostream& s) const
 // ------------------
 FTWordsValue::FTWordsValue(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<Literal> _lit_h,
 	rchandle<Expr> _expr_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	lit_h(_lit_h),
 	expr_h(_expr_h)
 {
@@ -6032,9 +6032,9 @@ ostream& FTWordsValue::put(ostream& s) const
 // -----------------
 FTProximity::FTProximity(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -6056,9 +6056,9 @@ ostream& FTProximity::put(ostream& s) const
 // ------------------------
 FTOrderedIndicator::FTOrderedIndicator(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	FTProximity(_loc,_ctx)
+	FTProximity(_loc,_ctx_p)
 {
 }
 
@@ -6080,9 +6080,9 @@ ostream& FTOrderedIndicator::put(ostream& s) const
 // -------------------
 FTMatchOption::FTMatchOption(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -6104,10 +6104,10 @@ ostream& FTMatchOption::put(ostream& s) const
 // ------------------
 FTCaseOption::FTCaseOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	ft_case_mode_t _mode)
 :
-	FTMatchOption(_loc,_ctx),
+	FTMatchOption(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -6130,10 +6130,10 @@ ostream& FTCaseOption::put(ostream& s) const
 // ------------------------
 FTDiacriticsOption::FTDiacriticsOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	ft_diacritics_mode_t _mode)
 :
-	FTMatchOption(_loc,_ctx),
+	FTMatchOption(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -6156,10 +6156,10 @@ ostream& FTDiacriticsOption::put(ostream& s) const
 // ------------------
 FTStemOption::FTStemOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	ft_stem_mode_t _mode)
 :
-	FTMatchOption(_loc,_ctx),
+	FTMatchOption(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -6182,13 +6182,13 @@ ostream& FTStemOption::put(ostream& s) const
 // -----------------------
 FTThesaurusOption::FTThesaurusOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTThesaurusID> _thesaurusid_h,
 	rchandle<FTThesaurusList> _thesaurus_list_h,
 	bool _default_b,
 	bool _without_b)
 :
-	FTMatchOption(_loc,_ctx),
+	FTMatchOption(_loc,_ctx_p),
 	thesaurusid_h(_thesaurusid_h),
 	thesaurus_list_h(_thesaurus_list_h),
 	default_b(_default_b),
@@ -6215,9 +6215,9 @@ ostream& FTThesaurusOption::put(ostream& s) const
 // ----------------------
 FTThesaurusList::FTThesaurusList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -6242,12 +6242,12 @@ ostream& FTThesaurusList::put(ostream& s) const
 // -------------------
 FTThesaurusID::FTThesaurusID(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _thesaurus_name,
 	std::string _relationship_name,
 	rchandle<FTRange> _levels_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	thesaurus_name(_thesaurus_name),
 	relationship_name(_relationship_name),
 	levels_h(_levels_h)
@@ -6272,12 +6272,12 @@ ostream& FTThesaurusID::put(ostream& s) const
 // ----------------------
 FTStopwordOption::FTStopwordOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTRefOrList> _refor_list_h,
 	rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
 	stop_words_mode_t _mode)
 :
-	FTMatchOption(_loc,_ctx),
+	FTMatchOption(_loc,_ctx_p),
 	refor_list_h(_refor_list_h),
 	incl_excl_list_h(_incl_excl_list_h),
 	mode(_mode)
@@ -6302,9 +6302,9 @@ ostream& FTStopwordOption::put(ostream& s) const
 // ----------------------------------
 FTInclExclStringLiteralList::FTInclExclStringLiteralList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -6330,11 +6330,11 @@ ostream& FTInclExclStringLiteralList::put(ostream& s) const
 // -----------------
 FTRefOrList::FTRefOrList(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _at_str,
 	rchandle<FTStringLiteralList> _stringlit_list_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	at_str(_at_str),
 	stringlit_list_h(_stringlit_list_h)
 {
@@ -6358,9 +6358,9 @@ ostream& FTRefOrList::put(ostream& s) const
 // --------------------------
 FTStringLiteralList::FTStringLiteralList(
 	location const& _loc,
-	context const& _ctx)
+	context * _ctx_p)
 :
-	parsenode(_loc,_ctx)
+	parsenode(_loc,_ctx_p)
 {
 }
 
@@ -6385,11 +6385,11 @@ ostream& FTStringLiteralList::put(ostream& s) const
 // -----------------------------
 FTInclExclStringLiteral::FTInclExclStringLiteral(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTRefOrList> _ref_or_list_h,
 	intex_op_t _mode)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	ref_or_list_h(_ref_or_list_h),
 	mode(_mode)
 {
@@ -6413,10 +6413,10 @@ ostream& FTInclExclStringLiteral::put(ostream& s) const
 // ----------------------
 FTLanguageOption::FTLanguageOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	std::string _lang)
 :
-	FTMatchOption(_loc,_ctx),
+	FTMatchOption(_loc,_ctx_p),
 	lang(_lang)
 {
 }
@@ -6439,10 +6439,10 @@ ostream& FTLanguageOption::put(ostream& s) const
 // ----------------------
 FTWildcardOption::FTWildcardOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	bool _with_b)
 :
-	FTMatchOption(_loc,_ctx),
+	FTMatchOption(_loc,_ctx_p),
 	with_b(_with_b)
 {
 }
@@ -6465,10 +6465,10 @@ ostream& FTWildcardOption::put(ostream& s) const
 // ---------------
 FTContent::FTContent(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	ft_content_mode_t _mode)
 :
-	FTProximity(_loc,_ctx),
+	FTProximity(_loc,_ctx_p),
 	mode(_mode)
 {
 }
@@ -6491,10 +6491,10 @@ ostream& FTContent::put(ostream& s) const
 // --------------------
 FTAnyallOption::FTAnyallOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	ft_anyall_option_t _option)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	option(_option)
 {
 }
@@ -6517,11 +6517,11 @@ ostream& FTAnyallOption::put(ostream& s) const
 // -------------
 FTRange::FTRange(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<UnionExpr> _src_expr_h,
 	rchandle<UnionExpr> _dst_expr_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	src_expr_h(_src_expr_h),
 	dst_expr_h(_dst_expr_h)
 {
@@ -6545,11 +6545,11 @@ ostream& FTRange::put(ostream& s) const
 // ----------------
 FTDistance::FTDistance(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTRange> _dist_h,
 	rchandle<FTUnit> _unit_h)
 :
-	FTProximity(_loc,_ctx),
+	FTProximity(_loc,_ctx_p),
 	dist_h(_dist_h),
 	unit_h(_unit_h)
 {
@@ -6573,11 +6573,11 @@ ostream& FTDistance::put(ostream& s) const
 // --------------
 FTWindow::FTWindow(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<UnionExpr> _window_h,
 	rchandle<FTUnit> _unit_h)
 :
-	FTProximity(_loc,_ctx),
+	FTProximity(_loc,_ctx_p),
 	window_h(_window_h),
 	unit_h(_unit_h)
 {
@@ -6601,10 +6601,10 @@ ostream& FTWindow::put(ostream& s) const
 // -------------
 FTTimes::FTTimes(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<FTRange> _range_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	range_h(_range_h)
 {
 }
@@ -6627,10 +6627,10 @@ ostream& FTTimes::put(ostream& s) const
 // -------------
 FTScope::FTScope(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	ft_scope_t _scope)
 :
-	FTProximity(_loc,_ctx),
+	FTProximity(_loc,_ctx_p),
 	scope(_scope)
 {
 }
@@ -6653,10 +6653,10 @@ ostream& FTScope::put(ostream& s) const
 // ------------
 FTUnit::FTUnit(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	ft_unit_t _unit)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	unit(_unit)
 {
 }
@@ -6679,10 +6679,10 @@ ostream& FTUnit::put(ostream& s) const
 // ---------------
 FTBigUnit::FTBigUnit(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	enum ft_big_unit_t _unit)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	unit(_unit)
 {
 }
@@ -6705,10 +6705,10 @@ ostream& FTBigUnit::put(ostream& s) const
 // --------------------
 FTIgnoreOption::FTIgnoreOption(
 	location const& _loc,
-	context const& _ctx,
+	context * _ctx_p,
 	rchandle<UnionExpr> _union_h)
 :
-	parsenode(_loc,_ctx),
+	parsenode(_loc,_ctx_p),
 	union_h(_union_h)
 {
 }
