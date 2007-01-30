@@ -68,26 +68,26 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>literal_expr\n";
-		rchandle<literal_expr> lit1_h = new literal_expr(loc, ctx, i1, true);
-		rchandle<literal_expr> lit2_h = new literal_expr(loc, ctx, i2, true);
-		rchandle<literal_expr> lit3_h = new literal_expr(loc, ctx, i3, true);
-		rchandle<literal_expr> lit4_h = new literal_expr(loc, ctx, 123);
-		rchandle<literal_expr> lit5_h = new literal_expr(loc, ctx, 123456);
-		rchandle<literal_expr> lit6_h = new literal_expr(loc, ctx, 123.456);
+		rchandle<literal_expr> lit1_h = new literal_expr(loc, &ctx, i1, true);
+		rchandle<literal_expr> lit2_h = new literal_expr(loc, &ctx, i2, true);
+		rchandle<literal_expr> lit3_h = new literal_expr(loc, &ctx, i3, true);
+		rchandle<literal_expr> lit4_h = new literal_expr(loc, &ctx, 123);
+		rchandle<literal_expr> lit5_h = new literal_expr(loc, &ctx, 123456);
+		rchandle<literal_expr> lit6_h = new literal_expr(loc, &ctx, 123.456);
 	
 		cout << "lit1 [" << literal_expr::decode_type(lit1_h->get_type()) << "] = ";
-		lit1_h->put(cout,ctx) << " : " << symtab.get(lit1_h->get_sref()) << endl;
+		lit1_h->put(cout,&ctx) << " : " << symtab.get(lit1_h->get_sref()) << endl;
 		cout << "lit2 [" << literal_expr::decode_type(lit2_h->get_type()) << "] = ";
-		lit2_h->put(cout,ctx) << " : " << symtab.get(lit2_h->get_sref()) << endl;
+		lit2_h->put(cout,&ctx) << " : " << symtab.get(lit2_h->get_sref()) << endl;
 		cout << "lit3 [" << literal_expr::decode_type(lit3_h->get_type()) << "] = ";
-		lit3_h->put(cout,ctx) << " : " << symtab.get(lit3_h->get_sref()) << endl;
+		lit3_h->put(cout,&ctx) << " : " << symtab.get(lit3_h->get_sref()) << endl;
 	
 		cout << "lit4 [" << literal_expr::decode_type(lit4_h->get_type()) << "] = ";
-		lit4_h->put(cout,ctx) << endl;
+		lit4_h->put(cout,&ctx) << endl;
 		cout << "lit5 [" << literal_expr::decode_type(lit5_h->get_type()) << "] = ";
-		lit5_h->put(cout,ctx) << endl;
+		lit5_h->put(cout,&ctx) << endl;
 		cout << "lit6 [" << literal_expr::decode_type(lit6_h->get_type()) << "] = ";
-		lit6_h->put(cout,ctx) << endl;
+		lit6_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -95,27 +95,27 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>var_expr\n";
-		rchandle<var_expr> var1_h = new var_expr(loc,ctx);
+		rchandle<var_expr> var1_h = new var_expr(loc,&ctx);
 	  var1_h->set_varname(&*qnv1_h);
 	  var1_h->set_valexpr(&*lit1_h);
 		var1_h->set_kind(var_expr::for_var);
 	  var1_h->set_type(&sequence_type::SINGLE_ATOMIC);
 	
-		rchandle<var_expr> var2_h = new var_expr(loc,ctx);
+		rchandle<var_expr> var2_h = new var_expr(loc,&ctx);
 	  var2_h->set_varname(&*qnv2_h);
 	  var2_h->set_valexpr(&*lit1_h);
 		var2_h->set_kind(var_expr::let_var);
 	  var2_h->set_type(&sequence_type::SINGLE_ATOMIC);
 	
-		rchandle<var_expr> var3_h = new var_expr(loc,ctx);
+		rchandle<var_expr> var3_h = new var_expr(loc,&ctx);
 	  var3_h->set_varname(&*qnv3_h);
 	  var3_h->set_valexpr(&*lit1_h);
 		var3_h->set_kind(var_expr::pos_var);
 	  var3_h->set_type(&sequence_type::SINGLE_ATOMIC);
 	
-		var1_h->put(cout,ctx) << endl;
-		var2_h->put(cout,ctx) << endl;
-		var3_h->put(cout,ctx) << endl;
+		var1_h->put(cout,&ctx) << endl;
+		var2_h->put(cout,&ctx) << endl;
+		var3_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -123,11 +123,11 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>expr_list\n";
-		rchandle<expr_list> exlist1_h = new expr_list(loc,ctx);
+		rchandle<expr_list> exlist1_h = new expr_list(loc,&ctx);
 		exlist1_h->add(&*var1_h);
 		exlist1_h->add(&*var2_h);
 		exlist1_h->add(&*var3_h);
-		exlist1_h->put(cout,ctx);
+		exlist1_h->put(cout,&ctx);
 	
 	
 	/*...........................................
@@ -135,42 +135,42 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>text_expr\n";
-		rchandle<text_expr> text1_h = new text_expr(loc, ctx, &*lit4_h);
-		rchandle<text_expr> text2_h = new text_expr(loc, ctx, &*lit5_h);
-		rchandle<text_expr> text3_h = new text_expr(loc, ctx, &*lit6_h);
+		rchandle<text_expr> text1_h = new text_expr(loc, &ctx, &*lit4_h);
+		rchandle<text_expr> text2_h = new text_expr(loc, &ctx, &*lit5_h);
+		rchandle<text_expr> text3_h = new text_expr(loc, &ctx, &*lit6_h);
 	
-		text1_h->put(cout,ctx) << endl;
-		text2_h->put(cout,ctx) << endl;
-		text3_h->put(cout,ctx) << endl;
+		text1_h->put(cout,&ctx) << endl;
+		text2_h->put(cout,&ctx) << endl;
+		text3_h->put(cout,&ctx) << endl;
 	
 		cout << "\n>>>comment_expr\n";
-		rchandle<comment_expr> comment1_h = new comment_expr(loc, ctx, &*lit1_h);
-		rchandle<comment_expr> comment2_h = new comment_expr(loc, ctx, &*lit2_h);
-		rchandle<comment_expr> comment3_h = new comment_expr(loc, ctx, &*lit3_h);
+		rchandle<comment_expr> comment1_h = new comment_expr(loc, &ctx, &*lit1_h);
+		rchandle<comment_expr> comment2_h = new comment_expr(loc, &ctx, &*lit2_h);
+		rchandle<comment_expr> comment3_h = new comment_expr(loc, &ctx, &*lit3_h);
 	
-		comment1_h->put(cout,ctx) << endl;
-		comment2_h->put(cout,ctx) << endl;
-		comment3_h->put(cout,ctx) << endl;
+		comment1_h->put(cout,&ctx) << endl;
+		comment2_h->put(cout,&ctx) << endl;
+		comment3_h->put(cout,&ctx) << endl;
 	
 		cout << "\n>>>pi_expr\n";
-		rchandle<pi_expr> pi1_h = new pi_expr(loc, ctx, "?PI1", &*lit1_h);
-		rchandle<pi_expr> pi2_h = new pi_expr(loc, ctx, "?PI2", &*lit2_h);
-		rchandle<pi_expr> pi3_h = new pi_expr(loc, ctx, "?PI3", &*lit3_h);
+		rchandle<pi_expr> pi1_h = new pi_expr(loc, &ctx, "?PI1", &*lit1_h);
+		rchandle<pi_expr> pi2_h = new pi_expr(loc, &ctx, "?PI2", &*lit2_h);
+		rchandle<pi_expr> pi3_h = new pi_expr(loc, &ctx, "?PI3", &*lit3_h);
 	
-		pi1_h->put(cout,ctx) << endl;
-		pi2_h->put(cout,ctx) << endl;
-		pi3_h->put(cout,ctx) << endl;
+		pi1_h->put(cout,&ctx) << endl;
+		pi2_h->put(cout,&ctx) << endl;
+		pi3_h->put(cout,&ctx) << endl;
 	
 		cout << "\n>>>attr_expr\n";
-		rchandle<attr_expr> attr1_h = new attr_expr(loc, ctx, &*qna1_h, &*lit1_h);
-		rchandle<attr_expr> attr2_h = new attr_expr(loc, ctx, &*qna2_h, &*lit2_h);
-		rchandle<attr_expr> attr3_h = new attr_expr(loc, ctx, &*qna3_h, &*lit3_h);
+		rchandle<attr_expr> attr1_h = new attr_expr(loc, &ctx, &*qna1_h, &*lit1_h);
+		rchandle<attr_expr> attr2_h = new attr_expr(loc, &ctx, &*qna2_h, &*lit2_h);
+		rchandle<attr_expr> attr3_h = new attr_expr(loc, &ctx, &*qna3_h, &*lit3_h);
 	
-		attr1_h->put(cout,ctx) << endl;
-		attr2_h->put(cout,ctx) << endl;
-		attr3_h->put(cout,ctx) << endl;
+		attr1_h->put(cout,&ctx) << endl;
+		attr2_h->put(cout,&ctx) << endl;
+		attr3_h->put(cout,&ctx) << endl;
 	
-		rchandle<expr_list> exprlist2_h = new expr_list(loc,ctx);
+		rchandle<expr_list> exprlist2_h = new expr_list(loc,&ctx);
 		exprlist2_h->add(&*attr1_h);
 		exprlist2_h->add(&*attr2_h);
 		exprlist2_h->add(&*attr3_h);
@@ -179,21 +179,21 @@ int main(int argc, char* argv[])
 		exprlist2_h->add(&*text3_h);
 	
 		cout << "\n>>>elem_expr\n";
-		rchandle<elem_expr> elem1_h = new elem_expr(loc, ctx, &*qne1_h, &*exprlist2_h);
+		rchandle<elem_expr> elem1_h = new elem_expr(loc, &ctx, &*qne1_h, &*exprlist2_h);
 		elem_expr::nsbinding ns1("pre1","http://a1.b1.c1");
 		elem_expr::nsbinding ns2("pre2","http://a2.b2.c2");
 		elem1_h->add(ns1);
 		elem1_h->add(ns2);
-		elem1_h->put(cout,ctx) << endl;
+		elem1_h->put(cout,&ctx) << endl;
 	
-		rchandle<elem_expr> elem2_h = new elem_expr(loc, ctx, &*qne2_h, &*exprlist2_h);
+		rchandle<elem_expr> elem2_h = new elem_expr(loc, &ctx, &*qne2_h, &*exprlist2_h);
 		elem2_h->add(ns1);
 		elem2_h->add(ns2);
-		elem2_h->put(cout,ctx) << endl;
+		elem2_h->put(cout,&ctx) << endl;
 	
 		cout << "\n>>>doc_expr\n";
-		rchandle<doc_expr> doc1_h = new doc_expr(loc, ctx, &*elem1_h);
-		doc1_h->put(cout,ctx) << endl;
+		rchandle<doc_expr> doc1_h = new doc_expr(loc, &ctx, &*elem1_h);
+		doc1_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -201,14 +201,14 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>funcall_expr\n";
-		rchandle<funcall_expr> fun1_h = new funcall_expr(loc, ctx, &*qnf1_h);
+		rchandle<funcall_expr> fun1_h = new funcall_expr(loc, &ctx, &*qnf1_h);
 		fun1_h->add_arg(&*lit1_h);
 		fun1_h->add_arg(&*lit2_h);
 		fun1_h->add_arg(&*lit3_h);
-		fun1_h->put(cout,ctx) << endl;
+		fun1_h->put(cout,&ctx) << endl;
 		for (unsigned i=0; i<fun1_h->arg_count(); ++i) {
 			cout << "arg[" << i << "] = ";
-			(*fun1_h)[i]->put(cout,ctx) << endl;
+			(*fun1_h)[i]->put(cout,&ctx) << endl;
 		}
 	
 	
@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>typeswitch_expr\n";
-		rchandle<typeswitch_expr> sw1_h = new typeswitch_expr(loc,ctx);
+		rchandle<typeswitch_expr> sw1_h = new typeswitch_expr(loc,&ctx);
 		sw1_h->set_switch_expr(&*elem1_h);
 		sw1_h->set_default_varname(&*var1_h);
 		sw1_h->set_default_clause(&*elem1_h);
@@ -233,7 +233,7 @@ int main(int argc, char* argv[])
 		cc2.case_expr_h = &*lit2_h;
 		cc2.seqtype = sequence_type::ANY_SEQUENCE;
 		sw1_h->add_clause(cc2);
-		sw1_h->put(cout,ctx);
+		sw1_h->put(cout,&ctx);
 	
 	
 	/*...........................................
@@ -241,8 +241,8 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>if_expr\n";
-		rchandle<if_expr> if1_h = new if_expr(loc, ctx, &*lit1_h, &*lit2_h, &*lit3_h);
-		if1_h->put(cout,ctx);
+		rchandle<if_expr> if1_h = new if_expr(loc, &ctx, &*lit1_h, &*lit2_h, &*lit3_h);
+		if1_h->put(cout,&ctx);
 	
 	
 	/*...........................................
@@ -251,23 +251,23 @@ int main(int argc, char* argv[])
 	*/
 		cout << "\n>>>instanceof_expr\n";
 		rchandle<instanceof_expr> inst1_h =
-			new instanceof_expr(loc,ctx,&*lit4_h,sequence_type::SINGLE_ITEM);
-		inst1_h->put(cout,ctx) << endl;
+			new instanceof_expr(loc,&ctx,&*lit4_h,sequence_type::SINGLE_ITEM);
+		inst1_h->put(cout,&ctx) << endl;
 	
 		cout << "\n>>>treat_expr\n";
 		rchandle<treat_expr> treat1_h =
-			new treat_expr(loc, ctx, &*lit5_h, sequence_type::SINGLE_INTEGER);
-		treat1_h->put(cout,ctx) << endl;
+			new treat_expr(loc, &ctx, &*lit5_h, sequence_type::SINGLE_INTEGER);
+		treat1_h->put(cout,&ctx) << endl;
 	
 		cout << "\n>>>castable_expr\n";
 		rchandle<castable_expr> castable1_h =
-			new castable_expr(loc, ctx, &*lit6_h, single_type_t(atomic_type(),true));
-		castable1_h->put(cout,ctx) << endl;
+			new castable_expr(loc, &ctx, &*lit6_h, single_type_t(atomic_type(),true));
+		castable1_h->put(cout,&ctx) << endl;
 	
 		cout << "\n>>>cast_expr\n";
 		rchandle<cast_expr> cast1_h =
-			new cast_expr(loc, ctx, &*lit1_h, single_type_t(atomic_type(),true));
-		cast1_h->put(cout,ctx) << endl;
+			new cast_expr(loc, &ctx, &*lit1_h, single_type_t(atomic_type(),true));
+		cast1_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -276,8 +276,8 @@ int main(int argc, char* argv[])
 	*/
 		cout << "\n>>>validate_expr\n";
 		rchandle<validate_expr> val1_h =
-			new validate_expr(loc, ctx, val_strict, &*elem1_h);
-		val1_h->put(cout,ctx) << endl;
+			new validate_expr(loc, &ctx, val_strict, &*elem1_h);
+		val1_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -286,12 +286,12 @@ int main(int argc, char* argv[])
 	*/
 		cout << "\n>>>extension_expr\n";
 		rchandle<extension_expr> ext1_h =
-			new extension_expr(loc,ctx,&*lit1_h);
+			new extension_expr(loc,&ctx,&*lit1_h);
 		rchandle<pragma> prag1_h = new pragma(&*qnp1_h, "content1");
 		//rchandle<pragma> prag2_h = new pragma(&*qnp2_h, "content2");
 		ext1_h->add(prag1_h);
 		//ext1_h->add(prag2_h);
-		ext1_h->put(cout,ctx) << endl;
+		ext1_h->put(cout,&ctx) << endl;
 
 	
 	/*...........................................
@@ -299,24 +299,24 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>axis_step_expr\n";
-		rchandle<axis_step_expr> ax1_h = new axis_step_expr(loc,ctx);
+		rchandle<axis_step_expr> ax1_h = new axis_step_expr(loc,&ctx);
 		ax1_h->set_axis(axis_step_expr::child);
 		ax1_h->set_test(axis_step_expr::name_test);
 		ax1_h->set_name(&*qne1_h);
 		ax1_h->add_pred(&*elem1_h);
-		ax1_h->put(cout,ctx) << endl;
+		ax1_h->put(cout,&ctx) << endl;
 	
-		rchandle<axis_step_expr> ax2_h = new axis_step_expr(loc,ctx);
+		rchandle<axis_step_expr> ax2_h = new axis_step_expr(loc,&ctx);
 		ax2_h->set_axis(axis_step_expr::child);
 		ax2_h->set_test(axis_step_expr::name_test);
 		ax2_h->set_name(&*qne2_h);
 		ax2_h->add_pred(&*elem2_h);
-		ax2_h->put(cout,ctx) << endl;
+		ax2_h->put(cout,&ctx) << endl;
 	
-		rchandle<relpath_expr> path1_h = new relpath_expr(loc,ctx);
+		rchandle<relpath_expr> path1_h = new relpath_expr(loc,&ctx);
 		path1_h->add(&*ax1_h);
 		path1_h->add(&*ax2_h);
-		path1_h->put(cout,ctx) << endl;
+		path1_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -325,16 +325,16 @@ int main(int argc, char* argv[])
 	*/
 		cout << "\n>>>quantified_expr\n";
 		rchandle<quantified_expr> quant1_h =
-			new quantified_expr(loc,ctx,quant_some);
+			new quantified_expr(loc,&ctx,quant_some);
 		quant1_h->add(&*var1_h);
 		quant1_h->set_sat_expr(&*elem1_h);
-		quant1_h->put(cout,ctx) << endl;
+		quant1_h->put(cout,&ctx) << endl;
 	
 		rchandle<quantified_expr> quant2_h =
-			new quantified_expr(loc,ctx,quant_some);
+			new quantified_expr(loc,&ctx,quant_some);
 		quant2_h->add(&*var2_h);
 		quant2_h->set_sat_expr(&*elem2_h);
-		quant2_h->put(cout,ctx) << endl;
+		quant2_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -346,11 +346,11 @@ int main(int argc, char* argv[])
 		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
 		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
 		function_impl func1(sig1_h);
-		rchandle<fo_expr> fo1_h = new fo_expr(loc, ctx);
+		rchandle<fo_expr> fo1_h = new fo_expr(loc, &ctx);
 		fo1_h->add(&*lit1_h);
 		fo1_h->add(&*lit2_h);
 		fo1_h->set_func(&func1);
-		fo1_h->put(cout,ctx) << endl;
+		fo1_h->put(cout,&ctx) << endl;
 	
 	
 	/*...........................................
@@ -358,7 +358,7 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>flwor_expr\n";
-		rchandle<flwor_expr> flwor1_h = new flwor_expr(loc,ctx);
+		rchandle<flwor_expr> flwor1_h = new flwor_expr(loc,&ctx);
 		rchandle<forlet_clause> flc1_h =
 			new forlet_clause(forlet_clause::for_clause,&*var1_h,NULL,NULL,&*elem1_h);
 		rchandle<forlet_clause> flc2_h =
@@ -367,7 +367,7 @@ int main(int argc, char* argv[])
 		flwor1_h->add(&*flc2_h);
 		flwor1_h->set_where(&*var1_h);
 		flwor1_h->set_retval(&*var2_h);
-		flwor1_h->put(cout,ctx) << endl;
+		flwor1_h->put(cout,&ctx) << endl;
 
 
 	} catch (null_pointer& e) {

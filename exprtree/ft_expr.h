@@ -37,7 +37,7 @@ protected:
 public:
 	ft_expr(
 		yy::location const&,
-		context const&,
+		context *,
 		rchandle<ft_expr>,
 		rchandle<ft_options>);
 
@@ -48,7 +48,7 @@ public:
 	rchandle<ft_options> get_ft_options() const { return ft_opt_h; }
 
 public:
-	std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context *) const;
 
 };
 
@@ -64,7 +64,7 @@ protected:
 	std::vector<rchandle<ft_expr> > ft_and_expr_hv;
 
 public:
-	ft_or_expr(yy::location const&,context const&);
+	ft_or_expr(yy::location const&,context *);
 	~ft_or_expr();
 
 public:
@@ -84,7 +84,7 @@ public:
 		{ return ft_and_expr_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context *) const;
 
 };
 
@@ -100,7 +100,7 @@ protected:
 	std::vector<rchandle<ft_expr> > ft_mildnot_expr_hv;
 
 public:
-	ft_and_expr(yy::location const&,context const&);
+	ft_and_expr(yy::location const&,context *);
 	~ft_and_expr();
 
 public:
@@ -120,7 +120,7 @@ public:
 		{ return ft_mildnot_expr_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context *) const;
 
 };
 
@@ -136,7 +136,7 @@ protected:
 	std::vector<rchandle<ft_expr> > ft_unary_expr_hv;
 
 public:
-	ft_mildnot_expr(yy::location const&,context const&);
+	ft_mildnot_expr(yy::location const&,context *);
 	~ft_mildnot_expr();
 
 public:
@@ -156,7 +156,7 @@ public:
 		{ return ft_unary_expr_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context *) const;
 
 };
 
@@ -175,7 +175,7 @@ protected:
 public:
 	ft_words_expr(
 		yy::location const&,
-		context const&,
+		context *,
 		rchandle<expr>,
 		ft_anyall_option_t);
 
@@ -188,7 +188,7 @@ public:
 		{ return anyall_opt; }
 
 public:
-	std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context *) const;
 
 };
 
@@ -211,7 +211,7 @@ protected:
 public:
 	ft_words_selection_expr(
 		yy::location const&,
-		context const&,
+		context *,
 		rchandle<ft_words_expr>,
 		rchandle<expr> src_h,
 		rchandle<expr> dst_h,
@@ -219,7 +219,7 @@ public:
 
 	ft_words_selection_expr(
 		yy::location const&,
-		context const&,
+		context *,
 		rchandle<ft_expr>);
 	
 	~ft_words_selection_expr();
@@ -232,7 +232,7 @@ public:
 	rchandle<ft_expr> get_selection() const { return selection_h; }
 
 public:
-	std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context *) const;
 
 };
 
@@ -252,7 +252,7 @@ protected:
 public:
 	ft_unarynot_expr(
 		yy::location const&,
-		context const&,
+		context *,
 		rchandle<ft_words_selection_expr>,
 		bool not_b);
 
@@ -265,7 +265,7 @@ public:
 		{ return not_b; }
 
 public:
-	std::ostream& put(std::ostream&,context const&) const;
+	std::ostream& put(std::ostream&,context *) const;
 
 };
 
