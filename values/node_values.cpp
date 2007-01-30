@@ -23,6 +23,23 @@ namespace xqp {
 	:.........................................:
 */
 
+string node::decode(node_kind_t kind) const
+{
+	switch (kind) {
+	case doc_kind: return "doc";
+	case elem_kind: return "elem";
+	case attr_kind: return "attr";
+	case ns_kind: return "ns";
+	case pi_kind: return "pi";
+	case text_kind: return "text";
+	case comment_kind: return "comment";
+	case binary_kind: return "binary";
+	case collection_kind: return "collection";
+	case uninitialized_kind: return "uninitialized";
+	default: return "??";
+	}
+}
+
 nodeid node::get_nodeid() const
 {
 	return id;
@@ -34,107 +51,107 @@ enum node::node_kind_t node::node_kind() const
 }
 
 rchandle<item_iterator> node::attributes(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::base_uri(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::children(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::document_uri(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 bool node::is_id(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return false;
 }
 
 bool node::is_idrefs(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return false;
 }
 
 rchandle<item_iterator> node::namespace_bindings(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::namespace_nodes(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 bool node::nilled(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return false;
 }
 
 rchandle<item_iterator> node::parent(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::typed_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::type_name(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::node_name(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 item_type const& node::get_type(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return any_item_type::get_instance();
 }
 
 string node::string_value(
-	context const& ctx) const
+	context const* ctx_p) const
 {
 	return "";
 }
 
 rchandle<item_iterator> node::unparsed_entity_public_id(
-  context & ctx,
+  context * ctx_p,
   string const& entity_name) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> node::unparsed_entity_system_id(
-  context & ctx,
+  context * ctx_p,
   string const& entity_name) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 
@@ -145,10 +162,10 @@ rchandle<item_iterator> node::unparsed_entity_system_id(
 */
 
 document_node::child_iterator::child_iterator(
-	context & ctx,
+	context * ctx_p,
 	document_node const* doc_p)
 :
-	item_iterator(ctx),
+	item_iterator(ctx_p),
 	parent_p(doc_p)
 {
 	child_it = parent_p->child_hv.begin();
@@ -161,10 +178,14 @@ document_node::child_iterator::~child_iterator()
 
 rchandle<item> document_node::child_iterator::next()
 {
-	nodeid id = *child_it++;
-	rchandle<node> v_h = ctx.get_node(id);
-	rchandle<item> i_h = dynamic_cast<item*>(&*v_h);
-	return i_h;
+	rchandle<node> v_h = ctx_p->get_node(*child_it++);
+	return (v_h==NULL) ? NULL : &*v_h;
+}
+
+rchandle<item> document_node::child_iterator::peek() const
+{
+	rchandle<node> v_h = ctx_p->get_node(*child_it);
+	return (v_h==NULL) ? NULL : &*v_h;
 }
 
 bool document_node::child_iterator::done()
@@ -184,95 +205,6 @@ void document_node::child_iterator::rewind()
 	:.........................................:
 */
 
-rchandle<item_iterator> document_node::base_uri(
-	context & ctx) const
-{
-	return new singleton_iterator(ctx,baseuri);
-}
-
-rchandle<item_iterator> document_node::children(
-	context & ctx) const
-{
-	return new child_iterator(ctx,this);
-}
-
-rchandle<item_iterator> document_node::document_uri(
-	context & ctx) const
-{
-	return new singleton_iterator(ctx,docuri);
-}
-
-rchandle<item_iterator> document_node::typed_value(
-	context & ctx) const
-{
-	return new item_iterator(ctx);
-}
-
-string document_node::string_value(
-	context const& ctx) const
-{
-	ostringstream oss;
-	vector<nodeid>::const_iterator it = child_hv.begin();
-	for (; it!=child_hv.end(); ++it) {
-		oss << ctx.get_node((*it))->string_value(ctx);
-	}
-	return oss.str();
-}
-
-rchandle<item_iterator> document_node::unparsed_entity_public_id(
-	context & ctx,
-	string const& entity_name) const
-{
-	string val;
-	if (get_entity(entity_name, val))
-		return singleton_iterator(ctx,val);
-	else
-		return new item_iterator(ctx);
-}
-
-rchandle<item_iterator> document_node::unparsed_entity_system_id(
-	context & ctx,
-	string const& entity_name) const
-{
-	string val;
-	if (get_entity(entity_name, val))
-		return singleton_iterator(ctx,val);
-	else
-		return new item_iterator(ctx);
-}
-
-void document_node::add_element_node(
-	rchandle<element_node> enode_h)
-{
-	child_hv.push_back(dynamic_cast<node*>(&*enode_h));
-}
-
-void document_node::add_text_node(
-	rchandle<text_node> tnode_h)
-{
-	child_hv.push_back(dynamic_cast<node*>(&*tnode_h));
-}
-
-void document_node::add_comment_node(
-	rchandle<comment_node> cnode_h)
-{
-	child_hv.push_back(dynamic_cast<node*>(&*cnode_h));
-}
-
-void document_node::add_pi_node(
-	rchandle<pi_node> pinode_h)
-{
-	child_hv.push_back(dynamic_cast<node*>(&*pinode_h));
-}
-
-void document_node::add_text_node(
-	nodeid id,
-	string const& text)
-{
-	text_node* tnode_p = new text_node(id,text,this);
-	child_hv.push_back(dynamic_cast<node*>(tnode_p));
-}
-
 document_node::document_node(
 	nodeid _id,
 	string const& _baseuri,
@@ -280,17 +212,103 @@ document_node::document_node(
 :
 	node(id),
 	baseuri(_baseuri),
-	entitymap(1024,0.6),
-	docuri(_docuri)
+	docuri(_docuri),
+	entitymap(1024,0.6)
 {
 }
 
-ostream& document_node::put(ostream& os, context const& ctx) const
+document_node::document_node(
+	nodeid _id)
+:
+	node(id)
+{
+}
+
+document_node::~document_node()
+{
+}
+
+rchandle<item_iterator> document_node::base_uri(
+	context * ctx_p) const
+{
+	return new singleton_iterator(ctx_p,baseuri);
+}
+
+rchandle<item_iterator> document_node::children(
+	context * ctx_p) const
+{
+	return new child_iterator(ctx_p,this);
+}
+
+rchandle<item_iterator> document_node::document_uri(
+	context * ctx_p) const
+{
+	return new singleton_iterator(ctx_p,docuri);
+}
+
+rchandle<item_iterator> document_node::typed_value(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+string document_node::string_value(
+	context const* ctx_p) const
+{
+	ostringstream oss;
+	vector<nodeid>::const_iterator it = child_hv.begin();
+	for (; it!=child_hv.end(); ++it) {
+		rchandle<node> n_h = ctx_p->get_node(*it);
+		if (n_h!=NULL) oss << n_h->string_value(ctx_p);
+	}
+	return oss.str();
+}
+
+rchandle<item_iterator> document_node::unparsed_entity_public_id(
+	context * ctx_p,
+	string const& entity_name) const
+{
+	string val;
+	if (get_entity(entity_name, val))
+		return new singleton_iterator(ctx_p,val);
+	else
+		return new item_iterator(ctx_p);
+}
+
+rchandle<item_iterator> document_node::unparsed_entity_system_id(
+	context * ctx_p,
+	string const& entity_name) const
+{
+	string val;
+	if (get_entity(entity_name, val))
+		return new singleton_iterator(ctx_p,val);
+	else
+		return new item_iterator(ctx_p);
+}
+
+void document_node::add_node(
+	rchandle<node> node_h)
+{
+	child_hv.push_back(node_h->get_nodeid());
+}
+
+void document_node::add_node(
+	context * ctx_p,
+	nodeid id)
+{
+	rchandle<node> n_h = ctx_p->get_node(id);
+	if (n_h!=NULL) add_node(n_h);
+}
+
+ostream& document_node::put(
+	ostream& os,
+	context * ctx_p) const
 {
 	os << "<?xml version=\"1.0\"?>\n";
 	vector<nodeid>::const_iterator child_it = child_hv.begin();
 	for (; child_it!=child_hv.end(); ++child_it) {
-		ctx.get_node((*child_it))->put(os,ctx);
+		rchandle<node> n_h = ctx_p->get_node((*child_it));
+		if (n_h!=NULL) n_h->put(os,ctx_p);
 	}
 	return os;
 }
@@ -298,15 +316,51 @@ ostream& document_node::put(ostream& os, context const& ctx) const
 
 
 /*...........................................
-	:     element_node::child_iterator        :
+	:  collection nodes                       :
+	:.........................................:
+*/
+
+collection_node::collection_node(
+	nodeid id)
+:
+	node(id)
+{
+}
+
+collection_node::~collection_node()
+{
+}
+
+rchandle<item_iterator> collection_node::base_uri(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+rchandle<item_iterator> collection_node::collection_uri(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+rchandle<item_iterator> collection_node::children(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+
+
+/*...........................................
+	:  element_node::child_iterator           :
 	:.........................................:
 */
 
 element_node::child_iterator::child_iterator(
-	context const& ctx,
+	context * ctx_p,
 	element_node const* elem_p)
 :
-	item_iterator(ctx),
+	item_iterator(ctx_p),
 	parent_p(elem_p)
 {
 }
@@ -323,14 +377,14 @@ void element_node::child_iterator::open()
 
 rchandle<item> element_node::child_iterator::next()
 {
-	rchandle<node> v_h = ctx.get_node(*child_it++);
-	return v_h.item_value();
+	rchandle<node> n_h = ctx_p->get_node(*child_it++);
+	return (n_h==NULL) ? NULL : &*n_h;
 }
 
-rchandle<item> element_node::child_iterator::peek()
+rchandle<item> element_node::child_iterator::peek() const
 {
-	rchandle<node> v_h = ctx.get_node(*child_it++);
-	return v_h.item_value();
+	rchandle<node> n_h = ctx_p->get_node(*child_it);
+	return (n_h==NULL) ? NULL : &*n_h;
 }
 
 bool element_node::child_iterator::done()
@@ -362,10 +416,10 @@ element_node::child_iterator& element_node::child_iterator::operator++()
 */
 
 element_node::attr_iterator::attr_iterator(
-	context const& ctx,
+	context * ctx_p,
 	element_node const* elem_p)
 :
-	item_iterator(ctx),
+	item_iterator(ctx_p),
 	parent_p(elem_p)
 {
 }
@@ -382,13 +436,14 @@ void element_node::attr_iterator::open()
 
 rchandle<item> element_node::attr_iterator::next()
 {
-	rchandle<node> n_h = ctx.get_node(*attr_it++);
-	return n_h->item_value();
+	rchandle<node> n_h = ctx_p->get_node(*attr_it++);
+	return (n_h==NULL) ? NULL : &*n_h;
 }
 
-rchandle<item> element_node::attr_iterator::peek()
+rchandle<item> element_node::attr_iterator::peek() const
 {
-	return ctx.get_node(*attr_it);
+	rchandle<node> n_h = ctx_p->get_node(*attr_it);
+	return (n_h==NULL) ? NULL : &*n_h;
 }
 
 bool element_node::attr_iterator::done()
@@ -419,173 +474,166 @@ element_node::attr_iterator& element_node::attr_iterator::operator++()
 	:.........................................:
 */
 
-rchandle<item_iterator> element_node::attributes(
-	context & ctx) const
+element_node::element_node(
+	nodeid _id,
+	nodeid _parentid,
+	nodeid _docid,
+	rchandle<QName> _name_h)
+:
+	node(_id),
+	parentid(_parentid),
+	docid(_docid),
+	name_h(_name_h)
 {
-	return attr_iterator(ctx,this);
+}
+
+element_node::element_node(
+	nodeid _id)
+:
+	node(_id)
+{
+}
+
+element_node::~element_node()
+{
+}
+
+rchandle<item_iterator> element_node::attributes(
+	context * ctx_p) const
+{
+	return new attr_iterator(ctx_p,this);
 }
 
 rchandle<item_iterator> element_node::base_uri(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,baseuri);
+	rchandle<node> n_h = ctx_p->get_node(docid);
+	return (n_h==NULL) ? NULL : n_h->base_uri(ctx_p);
 }
 
 rchandle<item_iterator> element_node::children(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return child_iterator(ctx,this);
+	return new child_iterator(ctx_p,this);
 }
 
 bool element_node::is_id(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return id_b;
 }
 
 bool element_node::is_idrefs(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return idrefs_b;
 }
 
 rchandle<item_iterator> element_node::namespace_bindings(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> element_node::namespace_nodes(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 bool element_node::nilled(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return nilled_b;
 }
 
 rchandle<item_iterator> element_node::node_name(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,name_h->describe(ctx));
+	return new singleton_iterator(ctx_p,name_h->describe(ctx_p));
 }
 
 rchandle<item_iterator> element_node::parent(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,&*parent_h);
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	return (n_h==NULL) ? NULL : new singleton_iterator(ctx_p, &*n_h);
 }
 
 rchandle<item_iterator> element_node::typed_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 	
 item_type const& element_node::get_type(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return type;
 }
 
 string element_node::string_value(
-	context const& ctx) const
+	context const* ctx_p) const
 {
 	ostringstream oss;
 	vector<nodeid>::const_iterator it = child_hv.begin();
 	for (; it!=child_hv.end(); ++it) {
-		oss << ctx.get_node((*it))->string_value(ctx);
+		rchandle<node> n_h = ctx_p->get_node((*it));
+		if (n_h!=NULL) oss << n_h->string_value(ctx_p);
 	}
 	return oss.str();
 }
 
-void element_node::add_element_node(
-	rchandle<element_node> enode_h)
+void element_node::add_node(
+	context * ctx_p,
+	nodeid id)
 {
-	child_hv.push_back(dynamic_cast<node*>(&*enode_h));
+	rchandle<node> n_h = ctx_p->get_node(id);
+	add_node(n_h);
 }
 
-void element_node::add_text_node(
-	rchandle<text_node> tnode_h)
+void element_node::add_node(
+	rchandle<node> node_h)
 {
-	child_hv.push_back(dynamic_cast<node*>(&*tnode_h));
+	nodeid id = node_h->get_nodeid();
+	node_kind_t kind = node_h->node_kind();
+
+	switch (kind) {
+	case elem_kind: case text_kind: {
+		child_hv.push_back(node_h->get_nodeid());
+		break;
+	}
+	case attr_kind: {
+		attr_hv.push_back(node_h->get_nodeid());
+		break;
+	}
+	case ns_kind: {
+		ns_hv.push_back(node_h->get_nodeid());
+		break;
+	}
+	default : {
+		throw bad_arg(__FUNCTION__,"Illegal element child node type: "+decode(kind));
+	}
+	}
 }
 
-void element_node::add_text_node(
-	nodeid id,
-	string const& text)
-{
-	text_node* tnode_p = new text_node(id,text,this);
-	child_hv.push_back(dynamic_cast<node*>(tnode_p));
-}
-
-void element_node::add_comment_node(
-	rchandle<comment_node> cnode_h)
-{
-	child_hv.push_back(dynamic_cast<node*>(&*cnode_h));
-}
-
-void element_node::add_pi_node(
-	rchandle<pi_node> pinode_h)
-{
-	child_hv.push_back(dynamic_cast<node*>(&*pinode_h));
-}
-
-void element_node::add_attribute_node(
-	rchandle<attribute_node> anode_h)
-{
-	attr_hv.push_back(dynamic_cast<node*>(&*anode_h));
-}
-
-void element_node::add_ns_node(
-	rchandle<ns_node> nsnode_h)
-{
-	ns_hv.push_back(dynamic_cast<node*>(&*nsnode_h));
-}
-
-element_node::element_node(
-	nodeid _id,
-	nodeid _parentid,
-	rchandle<QName> _name_h,
-	string const& _baseuri)
-:
-	node(_id),
-	parentid(_parentid),
-	name_h(_name_h),
-	baseuri(_baseuri)
-{
-}
-
-element_node::element_node(
-	nodeid _id,
-	nodeid _parentid,
-	rchandle<QName> _name_h)
-:
-	node(_id),
-	parentid(_parentid),
-	name_h(_name_h),
-	baseuri("")
-{
-}
-
-ostream& element_node::put(ostream& os, context const& ctx) const
+ostream& element_node::put(ostream& os, context * ctx_p) const
 {
 	os << '<';
-	name_h->put(os,ctx);
+	name_h->put(os,ctx_p);
 
 	vector<nodeid>::const_iterator ns_it = ns_hv.begin();
 	for (; ns_it!=ns_hv.end(); ++ns_it) {
 		os << ' ';
-		ctx.get_node((*ns_it))->put(os,ctx);
+		rchandle<node> n_h = ctx_p->get_node((*ns_it));
+		if (n_h!=NULL) n_h->put(os,ctx_p);
 	}
 
 	vector<nodeid>::const_iterator attr_it = attr_hv.begin();
 	for (; attr_it!=attr_hv.end(); ++attr_it) {
 		os << ' ';
-		ctx.get_node((*attr_it))->put(os,ctx);
+		rchandle<node> n_h = ctx_p->get_node((*attr_it));
+		if (n_h!=NULL) n_h->put(os,ctx_p);
 	}
 
 	vector<nodeid>::const_iterator child_it = child_hv.begin();
@@ -597,9 +645,10 @@ ostream& element_node::put(ostream& os, context const& ctx) const
 	else {
 		os << '>';
 		for (; child_it!=child_en; ++child_it) {
-			ctx.get_node((*child_it))->put(os,ctx);
+			rchandle<node> n_h = ctx_p->get_node((*child_it));
+			if (n_h!=NULL) n_h->put(os,ctx_p);
 		}
-		os << "</"; name_h->put(os,ctx) << '>';
+		os << "</"; name_h->put(os,ctx_p) << '>';
 	}
 
 	return os;
@@ -612,73 +661,92 @@ ostream& element_node::put(ostream& os, context const& ctx) const
 	:.........................................:
 */
 
-rchandle<item_iterator> attribute_node::base_uri(
-	context & ctx) const
+attribute_node::attribute_node(
+	nodeid _id,
+	nodeid _parentid,
+	rchandle<QName> _name_h,
+	string const& _val)
+:
+	node(_id),
+	parentid(_parentid),
+	name_h(_name_h),
+	val(_val)
 {
-	return
-		(parent_h!=NULL) ? parent_h->base_uri(ctx)
-										 : new item_iterator(ctx);
+}
+
+attribute_node::attribute_node(
+	nodeid _id)
+:
+	node(_id)
+{
+}
+
+attribute_node::~attribute_node()
+{
+}
+
+rchandle<item_iterator> attribute_node::base_uri(
+	context * ctx_p) const
+{
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	if (n_h==NULL) return NULL;
+	node_kind_t kind = n_h->node_kind();
+	if (kind!=elem_kind) {
+		throw xqp_exception(__FUNCTION__,"illegal attr parent "+decode(kind));
+	}
+	rchandle<element_node> e_h = dynamic_cast<element_node*>(&*n_h);
+	if (e_h==NULL) {
+		throw xqp_exception(__FUNCTION__,"failed element_node conversion");
+	}
+	return e_h->base_uri(ctx_p);
 }
 
 bool attribute_node::is_id(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return id_b;
 }
 
 bool attribute_node::is_idrefs(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return idrefs_b;
 }
 
 rchandle<item_iterator> attribute_node::node_name(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,name_h->describe(ctx));
+	return new singleton_iterator(ctx_p,name_h->string_value(ctx_p));
 }
 
 rchandle<item_iterator> attribute_node::parent(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,
-			dynamic_cast<node*>(&*parent_h));
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	return (n_h==NULL) ? NULL : new singleton_iterator(ctx_p, &*n_h);
 }
 
 rchandle<item_iterator> attribute_node::typed_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 item_type const& attribute_node::get_type(
-	context const& ctx) const
+	context * ctx_p) const
 {
 	return type;
 }
 
 string attribute_node::string_value(
-	context const& ctx) const
+	context const* ctx_p) const
 {
 	return val;
 }
 
-attribute_node::attribute_node(
-	nodeid _id,
-	rchandle<QName> _name_h,
-	string const& _val,
-	rchandle<element_node> _parent_h)
-:
-	node(_id),
-	name_h(_name_h),
-	val(_val),
-	parent_h(_parent_h)
+ostream& attribute_node::put(ostream& os, context * ctx_p) const
 {
-}
-
-ostream& attribute_node::put(ostream& os, context const& ctx) const
-{
-	name_h->put(os,ctx);
+	name_h->put(os,ctx_p);
 	return os << "=\"" << val << '"';
 }
 
@@ -689,47 +757,57 @@ ostream& attribute_node::put(ostream& os, context const& ctx) const
 	:.........................................:
 */
 
-rchandle<item_iterator> ns_node::node_name(
-	context & ctx) const
+ns_node::ns_node(
+	nodeid _id,
+	nodeid _parentid,
+	string const& _prefix,
+	string const& _uri)
+:
+	node(_id),
+	parentid(_parentid),
+	prefix(_prefix),
+	uri(_uri)
 {
-	if (prefix.length()==0) return new item_iterator(ctx);
-	return singleton_iterator(ctx,
-					new QName(QName::qn_ns,prefix,""));
+}
+
+ns_node::ns_node(
+	nodeid _id)
+:
+	node(_id)
+{
+}
+
+ns_node::~ns_node()
+{
+}
+
+rchandle<item_iterator> ns_node::node_name(
+	context * ctx_p) const
+{
+	if (prefix.length()==0) return new item_iterator(ctx_p);
+	return new singleton_iterator(ctx_p, new QName(QName::qn_ns,prefix,""));
 }
 
 rchandle<item_iterator> ns_node::parent(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,
-			dynamic_cast<node*>(&*parent_h));
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	return (n_h==NULL) ? NULL : new singleton_iterator(ctx_p, &*n_h);
 }
 
 rchandle<item_iterator> ns_node::typed_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 	
 string ns_node::string_value(
-	context const& ctx) const
+	context const* ctx_p) const
 {
 	return uri;
 }
 
-ns_node::ns_node(
-	nodeid _id,
-	string const& _prefix,
-	string const& _uri,
-	rchandle<element_node> _parent_h)
-:
-	node(_id),
-	prefix(_prefix),
-	uri(_uri),
-	parent_h(_parent_h)
-{
-}
-
-ostream& ns_node::put(ostream& os, context const& ctx) const
+ostream& ns_node::put(ostream& os, context * ctx_p) const
 {
 	return os << "xmlns:" << prefix << "=\"" << uri << '"';
 }
@@ -742,56 +820,64 @@ ostream& ns_node::put(ostream& os, context const& ctx) const
 	:.........................................:
 */
 
-rchandle<item_iterator> pi_node::base_uri(
-	context & ctx) const
+pi_node::pi_node(
+	nodeid _id,
+	nodeid _parentid,
+	string const& _target,
+	string const& _content,
+	string const& _baseuri)
+:
+	node(_id),
+	parentid(_parentid),
+	target(_target),
+	content(_content),
+	baseuri(_baseuri)
 {
-	return singleton_iterator(ctx,baseuri);
+}
+
+pi_node::pi_node(
+	nodeid _id)
+:
+	node(_id)
+{
+}
+
+pi_node::~pi_node()
+{
+}
+
+rchandle<item_iterator> pi_node::base_uri(
+	context * ctx_p) const
+{
+	return new singleton_iterator(ctx_p,baseuri);
 }
 
 rchandle<item_iterator> pi_node::node_name(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,
-			new QName(QName::qn_pi, target));
+	return new singleton_iterator(ctx_p, new QName(QName::qn_pi, target));
 }
 
 rchandle<item_iterator> pi_node::parent(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,
-			dynamic_cast<node*>(&*parent_h));
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	return (n_h==NULL) ? NULL : new singleton_iterator(ctx_p, &*n_h);
 }
 
 rchandle<item_iterator> pi_node::typed_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,
-					new xs_string_value(content));
+	return new singleton_iterator(ctx_p, new xs_string_value(content));
 }
 	
 string pi_node::string_value(
-	context const& ctx) const
+	context const* ctx_p) const
 {
 	return content;
 }
 
-
-pi_node::pi_node(
-	nodeid _id,
-	string const& _target,
-	string const& _content,
-	string const& _baseuri,
-	rchandle<element_node> _parent_h)
-:
-	node(_id),
-	target(_target),
-	content(_content),
-	baseuri(_baseuri),
-	parent_h(_parent_h)
-{
-}
-
-ostream& pi_node::put(ostream& os, context const& ctx) const
+ostream& pi_node::put(ostream& os, context * ctx_p) const
 {
 	return os << "<?" << target << " " << content << "?>";
 }
@@ -803,47 +889,64 @@ ostream& pi_node::put(ostream& os, context const& ctx) const
 	:.........................................:
 */
 
-rchandle<item_iterator> comment_node::base_uri(
-	context & ctx) const
+comment_node::comment_node(
+	nodeid _nodeid,
+	nodeid _parentid,
+	string const& _content)
+:
+	node(_nodeid),
+	parentid(_parentid),
+	content(_content)
 {
-	return
-		(parent_h!=NULL) ? parent_h->base_uri(ctx)
-										 : new item_iterator(ctx);
+}
+
+comment_node::comment_node(
+	nodeid _nodeid)
+:
+	node(_nodeid)
+{
+}
+
+comment_node::~comment_node()
+{
+}
+
+rchandle<item_iterator> comment_node::base_uri(
+	context * ctx_p) const
+{
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	if (n_h==NULL) return NULL;
+	node_kind_t kind = n_h->node_kind();
+	if (kind!=elem_kind) {
+		throw xqp_exception(__FUNCTION__,"illegal attr parent "+decode(kind));
+	}
+	rchandle<element_node> e_h = dynamic_cast<element_node*>(&*n_h);
+	if (e_h==NULL) {
+		throw xqp_exception(__FUNCTION__,"failed element_node conversion");
+	}
+	return e_h->base_uri(ctx_p);
 }
 
 rchandle<item_iterator> comment_node::parent(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return
-		(parent_h!=NULL) ? singleton_iterator(ctx,
-													dynamic_cast<node*>(&*parent_h))
-										 : new item_iterator(ctx);
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	return (n_h==NULL) ? NULL : new singleton_iterator(ctx_p, &*n_h);
 }
 
 rchandle<item_iterator> comment_node::typed_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return singleton_iterator(ctx,content);
+	return new singleton_iterator(ctx_p,content);
 }
 	
 string comment_node::string_value(
-	context & ctx) const
+	context const* ctx_p) const
 {
 	return content;
 }
 
-comment_node::comment_node(
-	nodeid _nodeid,
-	string const& _content,
-	rchandle<element_node> _parent_h)
-:
-	node(_nodeid),
-	content(_content),
-	parent_h(_parent_h)
-{
-}
-
-ostream& comment_node::put(ostream& os, context const& ctx) const
+ostream& comment_node::put(ostream& os, context * ctx_p) const
 {
 	return os << "<!--" << content << "-->";
 }
@@ -855,57 +958,141 @@ ostream& comment_node::put(ostream& os, context const& ctx) const
 	:.........................................:
 */
 
-rchandle<item_iterator> text_node::base_uri(
-	context & ctx) const
+text_node::text_node(
+	nodeid id,
+	nodeid _parentid,
+	string const& _content)
+:
+	node(id),
+	parentid(_parentid),
+	content(_content)
 {
-	return
-		(parent_h!=NULL) ? parent_h->base_uri(ctx)
-										 : new item_iterator(ctx);
-}
-
-rchandle<item_iterator> text_node::parent(
-	context & ctx) const
-{
-	return
-		(parent_h!=NULL) ? singleton_iterator(ctx,
-													dynamic_cast<node*>(&*parent_h))
-										 : new item_iterator(ctx);
-}
-
-rchandle<item_iterator> text_node::typed_value(
-	context & ctx) const
-{
-	return new item_iterator(ctx);
-}
-	
-rchandle<item_iterator> text_node::node_name(
-	context & ctx) const
-{
-	return new item_iterator(ctx);
-}
-	
-string text_node::string_value(
-	context const& ctx) const
-{
-	return content;
 }
 
 text_node::text_node(
 	nodeid _nodeid,
-	string const& _content,
-	rchandle<node> _parent_h)
+	nodeid _parentid,
+	char const* data,
+	uint32_t datalen)
 :
 	node(_nodeid),
-	content(_content),
-	parent_h(_parent_h)
+	parentid(_parentid),
+	content(data,0,datalen)
 {
 }
 
-ostream& text_node::put(ostream& os, context const& ctx) const
+text_node::text_node(
+	nodeid id)
+:
+	node(id)
+{
+}
+
+text_node::~text_node()
+{
+}
+
+rchandle<item_iterator> text_node::base_uri(
+	context * ctx_p) const
+{
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	if (n_h==NULL) return NULL;
+	node_kind_t kind = n_h->node_kind();
+	if (kind!=elem_kind) {
+		throw xqp_exception(__FUNCTION__,"illegal attr parent "+decode(kind));
+	}
+	rchandle<element_node> e_h = dynamic_cast<element_node*>(&*n_h);
+	if (e_h==NULL) {
+		throw xqp_exception(__FUNCTION__,"failed element_node conversion");
+	}
+	return e_h->base_uri(ctx_p);
+}
+
+rchandle<item_iterator> text_node::parent(
+	context * ctx_p) const
+{
+	rchandle<node> n_h = ctx_p->get_node(parentid);
+	return (n_h==NULL) ? NULL : new singleton_iterator(ctx_p, &*n_h);
+}
+
+rchandle<item_iterator> text_node::typed_value(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+	
+rchandle<item_iterator> text_node::node_name(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+	
+string text_node::string_value(
+	context const* ctx_p) const
+{
+	return content;
+}
+
+ostream& text_node::put(
+	ostream& os,
+	context * ctx_p) const
 {
 	return os << content;
 }
 
 
 
+/*...........................................
+	:  binary nodes                           :
+	:.........................................:
+*/
+
+binary_node::binary_node(
+	nodeid id)
+:
+	node(id)
+{
+}
+
+binary_node::~binary_node()
+{
+}
+
+nodeid binary_node::get_nodeid() const
+{
+	return id;
+}
+
+std::string binary_node::string_value(
+	context const* ctx_p) const
+{
+	return "";
+}
+ 
+rchandle<item_iterator> binary_node::base_uri(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+rchandle<item_iterator> binary_node::parent(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+rchandle<item_iterator> binary_node::type_name(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+rchandle<item_iterator> binary_node::typed_value(
+	context * ctx_p) const
+{
+	return new item_iterator(ctx_p);
+}
+
+
 }	/* namespace xqp */
+

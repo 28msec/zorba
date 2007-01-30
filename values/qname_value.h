@@ -75,10 +75,13 @@ public:
 
 public:	// atomic_value interface
 
-	std::string describe(context const& ctx) const
+	std::string describe(context * ctx) const
 		{ return prefix.length()>0 ? prefix+':'+name : name; }
 
-	std::ostream& put(std::ostream& os, context const& ctx) const
+	std::ostream& put(std::ostream& os, context * ctx) const
+		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
+
+	std::ostream& put(std::ostream& os, context const* ctx) const
 		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
 
   enum type::typecode get_typecode() const
@@ -89,8 +92,8 @@ public:	// atomic_value interface
   bool is_node() const { return false; }
   bool is_atomic() const { return true; }
 
-  rchandle<item_iterator> atomized_value(context &) const;
-	rchandle<item_iterator> effective_boolean_value(context &) const;
+  rchandle<item_iterator> atomized_value(context *) const;
+	rchandle<item_iterator> effective_boolean_value(context *) const;
 
 };
 

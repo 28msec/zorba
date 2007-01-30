@@ -63,14 +63,14 @@ ostream& put(
 ///////////////////////////////
 //  anyURI
 ///////////////////////////////
-string xs_anyURI_value::describe(context const& ctx) const
+string xs_anyURI_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_anyURI[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_anyURI_value::put(ostream& os, context const& ctx) const
+ostream& xs_anyURI_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_anyURI[" << val << ']'; 
 }
@@ -111,14 +111,14 @@ throw (xqp_exception)
 //  Base64Binary
 ///////////////////////////////
 
-string xs_base64Binary_value::describe(context const& ctx) const
+string xs_base64Binary_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_base64Binary[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_base64Binary_value::put(ostream& os, context const& ctx) const
+ostream& xs_base64Binary_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_base64Binary[" << val << ']'; 
 }
@@ -159,14 +159,14 @@ throw (xqp_exception)
 //  xs_boolean
 ///////////////////////////////
 
-string xs_boolean_value::describe(context const& ctx) const
+string xs_boolean_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_boolean[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_boolean_value::put(ostream& os, context const& ctx) const
+ostream& xs_boolean_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_boolean[" << val << ']'; 
 }
@@ -207,14 +207,14 @@ throw (xqp_exception)
 //  xs_byte
 ///////////////////////////////
 
-string xs_byte_value::describe(context const& ctx) const
+string xs_byte_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_byte[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_byte_value::put(ostream& os, context const& ctx) const
+ostream& xs_byte_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_byte[" << val << ']'; 
 }
@@ -255,7 +255,7 @@ throw (xqp_exception)
 //	xs_date
 ///////////////////////////////
 
-string xs_date_value::describe(context const& ctx) const
+string xs_date_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_date[";
@@ -263,7 +263,7 @@ string xs_date_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_date_value::put(ostream& os, context const& ctx) const
+ostream& xs_date_value::put(ostream& os, context * ctx_p) const
 {
 	os << "xs_date[";
 	xqp::put(os,&val,type::XS_DATE) << ']';
@@ -306,7 +306,7 @@ throw (xqp_exception)
 //	xs_dateTime
 ///////////////////////////////
 
-string xs_dateTime_value::describe(context const& ctx) const
+string xs_dateTime_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_dateTime[";
@@ -314,7 +314,7 @@ string xs_dateTime_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_dateTime_value::put(ostream& os, context const& ctx) const
+ostream& xs_dateTime_value::put(ostream& os, context * ctx_p) const
 {
 	os << "xs_dateTime[";
 	xqp::put(os,&val,type::XS_DATETIME) << ']';
@@ -356,14 +356,14 @@ throw (xqp_exception)
 //	xs_decimal
 ///////////////////////////////
 
-string xs_decimal_value::describe(context const& ctx) const
+string xs_decimal_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_decimal[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_decimal_value::put(ostream& os, context const& ctx) const
+ostream& xs_decimal_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_decimal[" << val << ']'; 
 }
@@ -403,14 +403,14 @@ throw (xqp_exception)
 //	xs_double
 ///////////////////////////////
 
-string xs_double_value::describe(context const& ctx) const
+string xs_double_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_double[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_double_value::put(ostream& os, context const& ctx) const
+ostream& xs_double_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_double[" << val << ']'; 
 }
@@ -450,14 +450,14 @@ throw (xqp_exception)
 //	xs_duration
 ///////////////////////////////
 
-string xs_duration_value::describe(context const& ctx) const
+string xs_duration_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_duration[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_duration_value::put(ostream& os, context const& ctx) const
+ostream& xs_duration_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_duration[" << val << ']'; 
 }
@@ -497,14 +497,14 @@ throw (xqp_exception)
 //	xs_float
 ///////////////////////////////
 
-string xs_float_value::describe(context const& ctx) const
+string xs_float_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_float[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_float_value::put(ostream& os, context const& ctx) const
+ostream& xs_float_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_float[" << val << ']'; 
 }
@@ -545,7 +545,7 @@ throw (xqp_exception)
 //	xs_gDay
 ///////////////////////////////
 
-string xs_gDay_value::describe(context const& ctx) const
+string xs_gDay_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_gDay[";
@@ -553,7 +553,7 @@ string xs_gDay_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_gDay_value::put(ostream& os, context const& ctx) const
+ostream& xs_gDay_value::put(ostream& os, context * ctx_p) const
 {
 	os << "xs_gDay[";
 	xqp::put(os,&val,type::XS_GDAY) << ']';
@@ -597,7 +597,7 @@ throw (xqp_exception)
 //	xs_gMonth
 ///////////////////////////////
 
-string xs_gMonth_value::describe(context const& ctx) const
+string xs_gMonth_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_gMonth[";
@@ -605,7 +605,7 @@ string xs_gMonth_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_gMonth_value::put(ostream& os, context const& ctx) const
+ostream& xs_gMonth_value::put(ostream& os, context * ctx_p) const
 {
 	os << "xs_gMonth[";
 	xqp::put(os,&val,type::XS_GMONTH) << ']';
@@ -649,7 +649,7 @@ throw (xqp_exception)
 //	xs_gMonthDay
 ///////////////////////////////
 
-string xs_gMonthDay_value::describe(context const& ctx) const
+string xs_gMonthDay_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_gMonthDay[";
@@ -657,7 +657,7 @@ string xs_gMonthDay_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_gMonthDay_value::put(ostream& os, context const& ctx) const
+ostream& xs_gMonthDay_value::put(ostream& os, context * ctx_p) const
 {
 	os << "xs_gMonthDay[";
 	xqp::put(os,&val,type::XS_GMONTHDAY) << ']';
@@ -701,7 +701,7 @@ throw (xqp_exception)
 //	xs_gYear
 ///////////////////////////////
 
-string xs_gYear_value::describe(context const& ctx) const
+string xs_gYear_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_gYear[";
@@ -709,7 +709,7 @@ string xs_gYear_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_gYear_value::put(ostream& os, context const& ctx) const
+ostream& xs_gYear_value::put(ostream& os, context * ctx_p) const
 {
 	os << "xs_gYear[";
 	xqp::put(os,&val,type::XS_GYEAR) << ']';
@@ -753,7 +753,7 @@ throw (xqp_exception)
 //	xs_gYearMonth
 ///////////////////////////////
 
-string xs_gYearMonth_value::describe(context const& ctx) const
+string xs_gYearMonth_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_gYearMonth[";
@@ -761,7 +761,7 @@ string xs_gYearMonth_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_gYearMonth_value::put(ostream& os, context const& ctx) const
+ostream& xs_gYearMonth_value::put(ostream& os, context * ctx_p) const
 {
 	os << "xs_gYearMonth[";
 	xqp::put(os,&val,type::XS_GYEARMONTH) << ']';
@@ -805,14 +805,14 @@ throw (xqp_exception)
 //	xs_hexBinary
 ///////////////////////////////
 
-string xs_hexBinary_value::describe(context const& ctx) const
+string xs_hexBinary_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_hexBinary[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_hexBinary_value::put(ostream& os, context const& ctx) const
+ostream& xs_hexBinary_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_hexBinary[" << val << ']'; 
 }
@@ -854,14 +854,14 @@ throw (xqp_exception)
 //	xs_int
 ///////////////////////////////
 
-string xs_int_value::describe(context const& ctx) const
+string xs_int_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_int[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_int_value::put(ostream& os, context const& ctx) const
+ostream& xs_int_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_int[" << val << ']'; 
 }
@@ -903,14 +903,14 @@ throw (xqp_exception)
 //	xs_integer
 ///////////////////////////////
 
-string xs_integer_value::describe(context const& ctx) const
+string xs_integer_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_integer[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_integer_value::put(ostream& os, context const& ctx) const
+ostream& xs_integer_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_integer[" << val << ']'; 
 }
@@ -952,14 +952,14 @@ throw (xqp_exception)
 //	xs_language
 ///////////////////////////////
 
-string xs_language_value::describe(context const& ctx) const
+string xs_language_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_language[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_language_value::put(ostream& os, context const& ctx) const
+ostream& xs_language_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_language[" << val << ']'; 
 }
@@ -1001,14 +1001,14 @@ throw (xqp_exception)
 //	xs_long
 ///////////////////////////////
 
-string xs_long_value::describe(context const& ctx) const
+string xs_long_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_long[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_long_value::put(ostream& os, context const& ctx) const
+ostream& xs_long_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_long[" << val << ']'; 
 }
@@ -1050,14 +1050,14 @@ throw (xqp_exception)
 //	xs_negativeInteger
 ///////////////////////////////
 
-string xs_negativeInteger_value::describe(context const& ctx) const
+string xs_negativeInteger_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_negativeInteger[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_negativeInteger_value::put(ostream& os, context const& ctx) const
+ostream& xs_negativeInteger_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_negativeInteger[" << val << ']'; 
 }
@@ -1099,14 +1099,14 @@ throw (xqp_exception)
 //	xs_nonNegativeInteger
 ///////////////////////////////
 
-string xs_nonNegativeInteger_value::describe(context const& ctx) const
+string xs_nonNegativeInteger_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_nonNegativeInteger[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_nonNegativeInteger_value::put(ostream& os, context const& ctx) const
+ostream& xs_nonNegativeInteger_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_nonNegativeInteger[" << val << ']'; 
 }
@@ -1148,14 +1148,14 @@ throw (xqp_exception)
 //	xs_nonPositiveInteger
 ///////////////////////////////
 
-string xs_nonPositiveInteger_value::describe(context const& ctx) const
+string xs_nonPositiveInteger_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_nonPositiveInteger[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_nonPositiveInteger_value::put(ostream& os, context const& ctx) const
+ostream& xs_nonPositiveInteger_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_nonPositiveInteger[" << val << ']'; 
 }
@@ -1197,14 +1197,14 @@ throw (xqp_exception)
 //	xs_normalizedString
 ///////////////////////////////
 
-string xs_normalizedString_value::describe(context const& ctx) const
+string xs_normalizedString_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_normalizedString[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_normalizedString_value::put(ostream& os, context const& ctx) const
+ostream& xs_normalizedString_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_normalizedString[" << val << ']'; 
 }
@@ -1246,14 +1246,14 @@ throw (xqp_exception)
 //	xs_positiveInteger
 ///////////////////////////////
 
-string xs_positiveInteger_value::describe(context const& ctx) const
+string xs_positiveInteger_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_positiveInteger[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_positiveInteger_value::put(ostream& os, context const& ctx) const
+ostream& xs_positiveInteger_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_positiveInteger[" << val << ']'; 
 }
@@ -1295,14 +1295,14 @@ throw (xqp_exception)
 //	xs_short
 ///////////////////////////////
 
-string xs_short_value::describe(context const& ctx) const
+string xs_short_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_short[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_short_value::put(ostream& os, context const& ctx) const
+ostream& xs_short_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_short[" << val << ']'; 
 }
@@ -1344,14 +1344,14 @@ throw (xqp_exception)
 //	xs_string
 ///////////////////////////////
 
-string xs_string_value::describe(context const& ctx) const
+string xs_string_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_string[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_string_value::put(ostream& os, context const& ctx) const
+ostream& xs_string_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_string[" << val << ']'; 
 }
@@ -1393,7 +1393,7 @@ throw (xqp_exception)
 //	xs_time
 ///////////////////////////////
 
-string xs_time_value::describe(context const& ctx) const
+string xs_time_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_time[";
@@ -1401,7 +1401,7 @@ string xs_time_value::describe(context const& ctx) const
 	return oss.str();
 }
 
-ostream& xs_time_value::put(ostream& os, context const& ctx) const
+ostream& xs_time_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_time[";
 	xqp::put(os,&val,type::XS_TIME) << ']';
@@ -1445,14 +1445,14 @@ throw (xqp_exception)
 //	xs_token
 ///////////////////////////////
 
-string xs_token_value::describe(context const& ctx) const
+string xs_token_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_token[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_token_value::put(ostream& os, context const& ctx) const
+ostream& xs_token_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_token[" << val << ']'; 
 }
@@ -1494,14 +1494,14 @@ throw (xqp_exception)
 //	xs_unsignedByte
 ///////////////////////////////
 
-string xs_unsignedByte_value::describe(context const& ctx) const
+string xs_unsignedByte_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_unsignedByte[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_unsignedByte_value::put(ostream& os, context const& ctx) const
+ostream& xs_unsignedByte_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_unsignedByte[" << val << ']'; 
 }
@@ -1543,14 +1543,14 @@ throw (xqp_exception)
 //	xs_unsignedInt
 ///////////////////////////////
 
-string xs_unsignedInt_value::describe(context const& ctx) const
+string xs_unsignedInt_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_unsignedInt[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_unsignedInt_value::put(ostream& os, context const& ctx) const
+ostream& xs_unsignedInt_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_unsignedInt[" << val << ']'; 
 }
@@ -1592,14 +1592,14 @@ throw (xqp_exception)
 //	xs_unsignedLong
 ///////////////////////////////
 
-string xs_unsignedLong_value::describe(context const& ctx) const
+string xs_unsignedLong_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_unsignedLong[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_unsignedLong_value::put(ostream& os, context const& ctx) const
+ostream& xs_unsignedLong_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_unsignedLong[" << val << ']'; 
 }
@@ -1641,14 +1641,14 @@ throw (xqp_exception)
 //	xs_unsignedShort
 ///////////////////////////////
 
-string xs_unsignedShort_value::describe(context const& ctx) const
+string xs_unsignedShort_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_unsignedShort[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_unsignedShort_value::put(ostream& os, context const& ctx) const
+ostream& xs_unsignedShort_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_unsignedShort[" << val << ']'; 
 }
@@ -1690,14 +1690,14 @@ throw (xqp_exception)
 //	xs_ENTITIES
 ///////////////////////////////
 
-string xs_ENTITIES_value::describe(context const& ctx) const
+string xs_ENTITIES_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_ENTITIES[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_ENTITIES_value::put(ostream& os, context const& ctx) const
+ostream& xs_ENTITIES_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_ENTITIES[" << val << ']'; 
 }
@@ -1739,14 +1739,14 @@ throw (xqp_exception)
 //	xs_ENTITY
 ///////////////////////////////
 
-string xs_ENTITY_value::describe(context const& ctx) const
+string xs_ENTITY_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_ENTITY[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_ENTITY_value::put(ostream& os, context const& ctx) const
+ostream& xs_ENTITY_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_ENTITY[" << val << ']'; 
 }
@@ -1788,14 +1788,14 @@ throw (xqp_exception)
 //	xs_ID
 ///////////////////////////////
 
-string xs_ID_value::describe(context const& ctx) const
+string xs_ID_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_ID[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_ID_value::put(ostream& os, context const& ctx) const
+ostream& xs_ID_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_ID[" << val << ']'; 
 }
@@ -1837,14 +1837,14 @@ throw (xqp_exception)
 //	xs_IDREF
 ///////////////////////////////
 
-string xs_IDREF_value::describe(context const& ctx) const
+string xs_IDREF_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_IDREF[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_IDREF_value::put(ostream& os, context const& ctx) const
+ostream& xs_IDREF_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_IDREF[" << val << ']'; 
 }
@@ -1886,14 +1886,14 @@ throw (xqp_exception)
 //	xs_IDREFS
 ///////////////////////////////
 
-string xs_IDREFS_value::describe(context const& ctx) const
+string xs_IDREFS_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_IDREFS[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_IDREFS_value::put(ostream& os, context const& ctx) const
+ostream& xs_IDREFS_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_IDREFS[" << val << ']'; 
 }
@@ -1935,14 +1935,14 @@ throw (xqp_exception)
 //	xs_NCName
 ///////////////////////////////
 
-string xs_NCName_value::describe(context const& ctx) const
+string xs_NCName_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_NCName[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_NCName_value::put(ostream& os, context const& ctx) const
+ostream& xs_NCName_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_NCName[" << val << ']'; 
 }
@@ -1984,14 +1984,14 @@ throw (xqp_exception)
 //	xs_NMTOKEN
 ///////////////////////////////
 
-string xs_NMTOKEN_value::describe(context const& ctx) const
+string xs_NMTOKEN_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_NMTOKEN[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_NMTOKEN_value::put(ostream& os, context const& ctx) const
+ostream& xs_NMTOKEN_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_NMTOKEN[" << val << ']'; 
 }
@@ -2033,14 +2033,14 @@ throw (xqp_exception)
 //	xs_NMTOKENS
 ///////////////////////////////
 
-string xs_NMTOKENS_value::describe(context const& ctx) const
+string xs_NMTOKENS_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_NMTOKENS[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_NMTOKENS_value::put(ostream& os, context const& ctx) const
+ostream& xs_NMTOKENS_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_NMTOKENS[" << val << ']'; 
 }
@@ -2082,14 +2082,14 @@ throw (xqp_exception)
 //	xs_NOTATION
 ///////////////////////////////
 
-string xs_NOTATION_value::describe(context const& ctx) const
+string xs_NOTATION_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_NOTATION[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_NOTATION_value::put(ostream& os, context const& ctx) const
+ostream& xs_NOTATION_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_NOTATION[" << val << ']'; 
 }
@@ -2131,14 +2131,14 @@ throw (xqp_exception)
 //	xs_Name
 ///////////////////////////////
 
-string xs_Name_value::describe(context const& ctx) const
+string xs_Name_value::describe(context * ctx_p) const
 {
 	ostringstream oss;
 	oss << "xs_Name[" << val << ']'; 
 	return oss.str();
 }
 
-ostream& xs_Name_value::put(ostream& os, context const& ctx) const
+ostream& xs_Name_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "xs_Name[" << val << ']'; 
 }

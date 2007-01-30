@@ -81,14 +81,14 @@ public:
 	virtual ~value() {}
 
 public:
-  virtual std::ostream& put(std::ostream&, context const&) const;
-  virtual std::string describe(context const&) const;
+  virtual std::ostream& put(std::ostream&, context *) const;
+  virtual std::string describe(context *) const;
 
 	virtual bool is_sequence() const;
 	virtual bool is_empty() const;
 
-	virtual rchandle<item_iterator> atomized_value(context &) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context &) const;
+	virtual rchandle<item_iterator> atomized_value(context *) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
 
 };
 
@@ -106,16 +106,16 @@ public:
 	virtual ~item() {}
 
 public:
-  virtual std::ostream& put(std::ostream&, context const&) const;
-  virtual std::string describe(context const&) const;
+  virtual std::ostream& put(std::ostream&, context *) const;
+  virtual std::string describe(context *) const;
 
 	virtual bool is_node() const;
 	virtual bool is_atomic() const;
 
-	virtual rchandle<item_iterator> atomized_value(context &) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context &) const;
+	virtual rchandle<item_iterator> atomized_value(context *) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
 
-	virtual std::string string_value(context const&) const;
+	virtual std::string string_value(context const*) const;
 
 };
 
@@ -132,8 +132,8 @@ public:
 	virtual ~atomic_value() {}
 
 public:
-  virtual std::ostream& put(std::ostream&, context const&) const;
-  virtual std::string describe(context const&) const;
+  virtual std::ostream& put(std::ostream&, context *) const;
+  virtual std::string describe(context *) const;
 	virtual enum type::typecode get_typecode() const;
 
 	bool is_sequence() const { return false; }
@@ -141,10 +141,10 @@ public:
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
 
-	virtual rchandle<item_iterator> atomized_value(context &) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context &) const;
+	virtual rchandle<item_iterator> atomized_value(context *) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
 
-	virtual std::string string_value(context const&) const;
+	virtual std::string string_value(context const*) const;
 
 };
 

@@ -66,12 +66,12 @@ class context;
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-ostream& value::put(ostream& os, context const& ctx) const 
+ostream& value::put(ostream& os, context * ctx_p) const 
 {
 	return os << "";
 }
 
-string value::describe(context const& ctx) const
+string value::describe(context * ctx_p) const
 {
 	return "data()";
 }
@@ -87,15 +87,15 @@ bool value::is_empty() const
 }
 
 rchandle<item_iterator> value::atomized_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> value::effective_boolean_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 
@@ -115,12 +115,12 @@ rchandle<item_iterator> value::effective_boolean_value(
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-ostream& item::put(ostream& os, context const& ctx) const
+ostream& item::put(ostream& os, context * ctx_p) const
 {
 	return os << "";
 }
 
-string item::describe(context const& ctx) const
+string item::describe(context * ctx_p) const
 {
 	return "item()";
 }
@@ -136,19 +136,19 @@ bool item::is_atomic() const
 }
 
 rchandle<item_iterator> item::atomized_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> item::effective_boolean_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 string item::string_value(
-	context const& ctx) const
+	context const* ctx_p) const
 {
 	return "";
 }
@@ -160,12 +160,12 @@ string item::string_value(
 |	'atomic_value' encapsulates value of primitive or derived types
 |_______________________________________________________________________*/
 
-ostream& atomic_value::put(ostream& os, context const& ctx) const
+ostream& atomic_value::put(ostream& os, context * ctx_p) const
 {
 	return os << "";
 }
 
-string atomic_value::describe(context const& ctx) const
+string atomic_value::describe(context * ctx_p) const
 {
 	return "data()";
 }
@@ -176,19 +176,19 @@ enum type::typecode atomic_value::get_typecode() const
 }
 
 rchandle<item_iterator> atomic_value::atomized_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 rchandle<item_iterator> atomic_value::effective_boolean_value(
-	context & ctx) const
+	context * ctx_p) const
 {
-	return new item_iterator(ctx);
+	return new item_iterator(ctx_p);
 }
 
 string atomic_value::string_value(
-	context const& ctx) const
+	context const* ctx_p) const
 {
 	return "";
 }

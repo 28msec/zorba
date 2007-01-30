@@ -43,10 +43,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -70,10 +71,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -97,10 +99,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -124,10 +127,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -151,10 +155,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -178,10 +183,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -205,10 +211,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -232,10 +239,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -260,10 +268,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -288,10 +297,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -316,10 +326,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -344,10 +355,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -372,10 +384,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -400,10 +413,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -428,10 +442,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -456,10 +471,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -484,10 +500,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -512,10 +529,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -540,10 +558,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -568,10 +587,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -596,10 +616,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -624,10 +645,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -652,10 +674,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -680,10 +703,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -708,10 +732,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -736,10 +761,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -764,10 +790,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -792,10 +819,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -820,10 +848,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -848,10 +877,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -876,10 +906,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -904,10 +935,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -932,10 +964,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -960,10 +993,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -988,10 +1022,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1016,10 +1051,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1044,10 +1080,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1072,10 +1109,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1100,10 +1138,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1128,10 +1167,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1156,10 +1196,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1184,10 +1225,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
@@ -1212,10 +1254,11 @@ public:
 	throw (xqp_exception);
 
 public:
-	std::string describe(context const&) const;
+	std::string describe(context *) const;
+	std::string string_value(context const*) const;
 	type::typecode get_typecode() const;
 	bool operator==(schema_type const&);
-	std::ostream& put(std::ostream&, context const&) const;
+	std::ostream& put(std::ostream&, context *) const;
 
 };
 
