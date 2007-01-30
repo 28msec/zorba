@@ -1,0 +1,26 @@
+include ../Makefile.header
+SUFX=do
+BUILD=Build
+
+context :	context.h context.cpp
+	g++ ${OPT} -c -o ${BUILD}/context.${SUFX} context.cpp
+    
+context_test :	context.h context.cpp context_test.cpp
+	g++ ${OPT} -o ${BUILD}/context_test \
+		../runtime/${BUILD}/iterator.${SUFX} \
+		../types/${BUILD}/base_types.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/qname_value.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		${BUILD}/context.${SUFX} \
+		context_test.cpp
+    
+all :	\
+ context 
+
+

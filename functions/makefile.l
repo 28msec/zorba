@@ -1,0 +1,17 @@
+include ../Makefile.header
+SUFX=do
+BUILD=Build
+
+function_impl :	function_impl.h function_impl.cpp
+	g++ ${LARGEFILEFLAGS} -Wall ${OPT} -c -o ${BUILD}/function_impl.${SUFX} function_impl.cpp
+
+function_impl_test :	function_impl.h function_impl.cpp function_impl_test.cpp
+	g++ ${LARGEFILEFLAGS} -Wall ${OPT} -o ${BUILD}/function_impl_test \
+    ../values/qname_value.${SUFX} \
+    ../util/tokenbuf.${SUFX} \
+    function_impl.${SUFX} \
+    function_impl_test.cpp
+
+all :	\
+  function_impl \
+
