@@ -58,13 +58,25 @@ context::context()
 	available_documents(1024,0.6),
 	available_collections(1024,0.6),
 	default_collection("defcol"),
-	nodeid_counter("nodeid",1),
-	string_store(1<<16)
+	nodeid_counter("data/nodeid",1),
+	string_store(1<<16),
+	node_store("data/store")
 {
 }
 
 context::~context()
 {
+}
+
+/*...........................................
+	: strings                                 :
+	:.........................................:
+*/
+string context::get_string(
+	uint32_t sref)
+throw (xqp_exception)
+{
+	return string_store.get(sref);
 }
 
 
@@ -73,7 +85,6 @@ context::~context()
 	:.........................................:
 */
 
-	// this is a persistent counter
 nodeid context::next_nodeid()
 {
 	return nodeid(++nodeid_counter[0]);
@@ -81,10 +92,12 @@ nodeid context::next_nodeid()
 
 nodeid context::context_nodeid()
 {
-	if (!context_item_h->is_node())
-		throw xqp_exception(__FUNCTION__,"nodeid expects node");
-	node* n_p = dynamic_cast<node*>(&*context_item_h);
-	return n_p->get_nodeid();
+	return ctx_nodeid;
+}
+
+nodeid context::context_docid()
+{
+	return ctx_docid;
 }
 
 
@@ -134,7 +147,7 @@ void context::push_var(
 	rchandle<var_binding> vb_h)
 {
 	varstackref_t s_p;
-	string varname = vb_h->get_qname()->describe(*this);
+	string varname = vb_h->get_qname()->describe(this);
 	if (!var_values.get(varname, s_p)) {
 		s_p = new stack<varref_t>;
 		var_values.put(varname, s_p);
@@ -147,7 +160,7 @@ rchandle<item_iterator> context::get_var_value(
 throw (xqp_exception)
 {
 	varstackref_t s_p;
-	string varname = vqn_h->describe(*this);
+	string varname = vqn_h->string_value(this);
 	if (!var_values.get(varname, s_p)) {
   	throw bad_arg(__FUNCTION__,"variable not found");
 	}
@@ -169,7 +182,7 @@ string context::get_function_type(
 throw (xqp_exception)
 {
   ostringstream oss;
-  fqname.put(oss,*this) << '[' << arity << ']';
+  fqname.put(oss,this) << '[' << arity << ']';
   string sig_h;
   if (!signature_map.get(oss.str(),sig_h)) {
     throw xqp_exception(__FUNCTION__,
@@ -207,8 +220,7 @@ rchandle<item_iterator> context::get_document(
 	string const& doc_uri) const
 throw (xqp_exception)
 {
-  return new item_iterator(*const_cast<context*>(this));	//XXX suspicious!
-	// how about we return a pointer to some static instance here
+  return new item_iterator(const_cast<context*>(this));
 }
 
 
@@ -233,13 +245,13 @@ rchandle<item_iterator> context::get_collection(
 	string const& col_uri) const
 throw (xqp_exception)
 {
-  return new item_iterator(*const_cast<context*>(this));
+  return new item_iterator(const_cast<context*>(this));
 }
 
 rchandle<item_iterator> context::get_default_collection() const
 throw (xqp_exception)
 {
-  return new item_iterator(*const_cast<context*>(this));
+  return new item_iterator(const_cast<context*>(this));
 }
 
 

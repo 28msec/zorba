@@ -15,6 +15,7 @@
 
 #include "../functions/signature.h"
 #include "../parser/symbol_table.h"
+#include "../native_impl/nodestore.h"
 #include "../runtime/iterator.h"
 #include "../types/base_types.h"
 #include "../types/collation.h"
@@ -90,7 +91,6 @@ public:	// types
 		no_preserve_ns
 	};
 
-	//typedef rchandle<rchandle<QName> > qname_h_t;
 	typedef rchandle<collation> collation_h_t;
 
 public:
@@ -494,18 +494,31 @@ protected:  // XQuery 1.0 dynamic context
 	*/
 	fxarray<uint32_t> nodeid_counter;
 
-public:
+protected:
 	// string storage
 	fxcharheap string_store;
+
+	// node storage
+	nodestore node_store;
+	nodeid ctx_nodeid;
+	nodeid ctx_docid;
+
+public:
+	// string store services
+	std::string get_string(uint32_t sref) throw (xqp_exception);
 
 	// nodeid services
 	nodeid next_nodeid();
 	nodeid context_nodeid();
+	nodeid context_docid();
+
+	// node store
+	rchandle<node> get_node(nodeid id) { return NULL; }
+	rchandle<node> get_node(nodeid id) const { return NULL; }
 
 	// variables 
 	void push_var(rchandle<var_binding>);
-	rchandle<item_iterator> get_var_value(
-		rchandle<QName>) const throw (xqp_exception);
+	rchandle<item_iterator> get_var_value(rchandle<QName>) const throw (xqp_exception);
 
 	// context item
   rchandle<item> get_context_item() const { return context_item_h; }
