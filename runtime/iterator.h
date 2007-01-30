@@ -1,5 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
- *
+/* -*- mode: c++; indent-tabs-mode: nil -*- *
  *  $Id: iterator.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
@@ -26,10 +25,10 @@ class item;
 class item_iterator : public rcobject
 {
 protected:
-  context & ctx;
+  context* ctx_p;
 
 public:	// construct,copy,destroy
-	item_iterator(context &);
+	item_iterator(context *);
 	item_iterator(item_iterator const&);
 	virtual item_iterator& operator=(item_iterator const&);
 	virtual ~item_iterator();
@@ -68,7 +67,7 @@ class binary_iterator : public item_iterator
 protected:
 	rchandle<item_iterator> it1_h;
 	rchandle<item_iterator> it2_h;
-	rchandle<item> (*op)(rchandle<item> const&,rchandle<item> const&);
+	rchandle<item> (*op)(context *, rchandle<item> const&, rchandle<item> const&);
 
 public:	// iterator interface
 	void open();
@@ -84,10 +83,10 @@ public:	// high-level interface
 
 public:	// ctor,dtor
 	binary_iterator(
-		context & ctx,
+		context * ctx,
 		rchandle<item_iterator>,
 		rchandle<item_iterator>,
-		rchandle<item> (*op)(rchandle<item> const&, rchandle<item> const&));
+		rchandle<item> (*op)(context *, rchandle<item> const&, rchandle<item> const&));
 
 	binary_iterator(binary_iterator const&);
 	binary_iterator& operator=(binary_iterator const&);
@@ -120,20 +119,20 @@ public:	// high-level interface
 	item_iterator& operator++();
 
 public:	// ctor,dtor
-	singleton_iterator(context &, rchandle<item>);
-	singleton_iterator(context &, item *);
-	singleton_iterator(context &, std::string const& s);
-	singleton_iterator(context &, bool);
-	singleton_iterator(context &, double);
-	singleton_iterator(context &, float);
-	singleton_iterator(context &, int);
-	singleton_iterator(context &, long long);
-	singleton_iterator(context &, short);
-	singleton_iterator(context &, signed char);
-	singleton_iterator(context &, unsigned char);
-	singleton_iterator(context &, unsigned int);
-	singleton_iterator(context &, unsigned long long);
-	singleton_iterator(context &, unsigned short);
+	singleton_iterator(context *, rchandle<item>);
+	singleton_iterator(context *, item *);
+	singleton_iterator(context *, std::string const& s);
+	singleton_iterator(context *, bool);
+	singleton_iterator(context *, double);
+	singleton_iterator(context *, float);
+	singleton_iterator(context *, int);
+	singleton_iterator(context *, long long);
+	singleton_iterator(context *, short);
+	singleton_iterator(context *, signed char);
+	singleton_iterator(context *, unsigned char);
+	singleton_iterator(context *, unsigned int);
+	singleton_iterator(context *, unsigned long long);
+	singleton_iterator(context *, unsigned short);
 
 	singleton_iterator(singleton_iterator const&);
 	singleton_iterator& operator=(singleton_iterator const&);
@@ -166,7 +165,7 @@ public:	// high-level interface
 
 public:
 	concat_iterator(
-		context &,
+		context *,
 		list<rchandle<item_iterator> >);
 
 	concat_iterator(concat_iterator const&);
