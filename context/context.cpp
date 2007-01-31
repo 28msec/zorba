@@ -66,6 +66,13 @@ context::~context()
 	:  strings                                :
 	:.........................................:
 */
+
+off_t context::put_string(
+	string const& s)
+{
+	return string_store_h->put(s.c_str());
+}
+
 string context::get_string(
 	uint32_t sref)
 throw (xqp_exception)

@@ -7,15 +7,26 @@ values :	values.h values.cpp
 
 qname_value : qname_value.h qname_value.cpp
 	g++ ${OPT} -c -o ${BUILD}/qname_value.${SUFX} qname_value.cpp
+    
+xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
+	g++ ${OPT} -c -o ${BUILD}/xs_primitive_values.${SUFX} xs_primitive_values.cpp
+   
+node_values :	node_values.h node_values.cpp
+	g++ ${OPT} -c -o ${BUILD}/node_values.${SUFX} node_values.cpp
+    
+ft_values :	ft_values.h ft_values.cpp
+	g++ ${OPT} -c -o ${BUILD}/ft_values.${SUFX} ft_values.cpp
+
+update_values :	update_values.h update_values.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/update_values.${SUFX} update_values.cpp
+
 qname_test : qname_value.h qname_value.cpp qname_test.cpp
 	g++ ${OPT} -o ${BUILD}/qname_test \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/qname_value.${SUFX} \
 		qname_test.cpp
-    
-xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
-	g++ ${OPT} -c -o ${BUILD}/xs_primitive_values.${SUFX} xs_primitive_values.cpp
-xs_primitive_values_test :	xs_primitive_values.h xs_primitive_values.cpp xs_primitive_values_test.cpp
+
+xs_primitive_values_test : xs_primitive_values.h xs_primitive_values.cpp xs_primitive_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/xs_primitive_values_test \
 		../context/${BUILD}/context.${SUFX} \
 		../native_impl/${BUILD}/nodestore.${SUFX} \
@@ -31,14 +42,7 @@ xs_primitive_values_test :	xs_primitive_values.h xs_primitive_values.cpp xs_prim
 		${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/qname_value.${SUFX} \
 		xs_primitive_values_test.cpp
-   
-node_values0 :	node_values.h node_values.cpp
-	echo "Not currently available"	
-node_values_test0 :	node_values.h node_values.cpp
-	echo "Not currently available"			
-		 
-node_values :	node_values.h node_values.cpp
-	g++ ${OPT} -c -o ${BUILD}/node_values.${SUFX} node_values.cpp
+
 node_values_test : node_values.h node_values.cpp node_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/node_values_test \
 		../context/${BUILD}/context.${SUFX} \
@@ -55,24 +59,23 @@ node_values_test : node_values.h node_values.cpp node_values_test.cpp
 		${BUILD}/qname_value.${SUFX} \
 		${BUILD}/xs_primitive_values.${SUFX} \
 		node_values_test.cpp
-    
-ft_values :	ft_values.h ft_values.cpp
-	g++ ${OPT} -c -o ${BUILD}/ft_values.${SUFX} ft_values.cpp
+
 ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/ft_values_test \
 		${BUILD}/ft_values.${SUFX} \
 		ft_values_test.cpp
 
-update_values :	update_values.h update_values.cpp
-	g++ -Wall ${OPT} -c -o ${BUILD}/update_values.${SUFX} update_values.cpp
-
 all : \
 	values \
 	qname_value \
 	xs_primitive_values \
-	xs_primitive_values_test \
 	node_values \
-	node_values_test \
 	ft_values \
 	update_values
+
+test : \
+	qname_test \
+	xs_primitive_values_test \
+	node_values_test \
+	ft_values_test
 

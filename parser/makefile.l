@@ -2,30 +2,24 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
-scanner : xquery_scanner.l
+xquery_scanner : xquery_scanner.l
 	flex -i -t xquery_scanner.l >xquery_scanner.yy.cpp
 	g++ ${OPT} -c -o ${BUILD}/xquery_scanner.${SUFX} xquery_scanner.yy.cpp
 
-scanner0 : xquery_scanner.l
-	flex -i -t xquery_scanner.l >xquery_scanner.yy.cpp
-
-parser : xquery_parser.y
+xquery_parser : xquery_parser.y
 	bison -v -t -d xquery_parser.y
 	g++ -Wall -g -c -o ${BUILD}/xquery_parser.${SUFX} xquery_parser.tab.c
 
-parser0 : xquery_parser.y
-	bison -v -t -d xquery_parser.y
-
-driver : xquery_driver.h xquery_driver.cpp
+xquery_driver : xquery_driver.h xquery_driver.cpp
 	g++ ${OPT} -c -o ${BUILD}/xquery_driver.${SUFX} xquery_driver.cpp
 
-symtab : symbol_table.h symbol_table.cpp
+symbol_table : symbol_table.h symbol_table.cpp
 	g++ ${OPT} -c -o ${BUILD}/symbol_table.${SUFX} symbol_table.cpp
 
 parsenodes : parsenodes.h parsenodes.cpp
 	g++ ${OPT} -c -o ${BUILD}/parsenodes.${SUFX} parsenodes.cpp
 
-test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
+xquery_test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
 	g++ -Wall -g -o xquery_test \
 		../context/${BUILD}/context.${SUFX} \
 		../native_impl/${BUILD}/nodestore.${SUFX} \
@@ -50,8 +44,11 @@ test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_d
 
 all : \
 	parsenodes \
-	parser \
-	scanner \
-	driver \
-	symtab \
+	xquery_parser \
+	xquery_scanner \
+	xquery_driver \
+	symbol_table 
+
+test : \
 	test
+

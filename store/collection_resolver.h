@@ -52,7 +52,7 @@ class collection_resolver
 	item_iterator resolve(
 		std::string const& base,
 		std::string const& href,
-		context& context)
+		context * )
 	throw (xqp_exception);
 
 };

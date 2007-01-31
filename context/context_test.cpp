@@ -22,9 +22,9 @@ int main(int argc, char* argv[])
 		rchandle<QName> var2_h = new QName(QName::qn_var, "var2");
 		rchandle<QName> var3_h = new QName(QName::qn_var, "var3");
 
-		rchandle<item_iterator> it1_h = new singleton_iterator(ctx,string("value-1"));
-		rchandle<item_iterator> it2_h = new singleton_iterator(ctx,string("value-2"));
-		rchandle<item_iterator> it3_h = new singleton_iterator(ctx,string("value-3"));
+		rchandle<item_iterator> it1_h = new singleton_iterator(&ctx,string("value-1"));
+		rchandle<item_iterator> it2_h = new singleton_iterator(&ctx,string("value-2"));
+		rchandle<item_iterator> it3_h = new singleton_iterator(&ctx,string("value-3"));
 
 		// var 1
 		rchandle<var_binding> vb1_h = new var_binding(var1_h, it1_h, item_type());
@@ -35,9 +35,9 @@ int main(int argc, char* argv[])
 			cout << "itv1_p==NULL, bailing\n";
 			exit(-1);
 		}
-		vb1_h->get_qname()->put(cout,ctx) << " = ";
+		vb1_h->get_qname()->put(cout,&ctx) << " = ";
 		while (!(itv1_p->done())) { 
-			itv1_p->next()->put(cout,ctx) << endl;
+			itv1_p->next()->put(cout,&ctx) << endl;
 		}
 
 		// var 2
@@ -49,9 +49,9 @@ int main(int argc, char* argv[])
 			cout << "itv2_p==NULL, bailing\n";
 			exit(-1);
 		}
-		vb2_h->get_qname()->put(cout,ctx) << " = ";
+		vb2_h->get_qname()->put(cout,&ctx) << " = ";
 		while (!(itv2_p->done())) {
-			itv2_p->next()->put(cout,ctx) << endl;
+			itv2_p->next()->put(cout,&ctx) << endl;
 		}
 
 		// shadow var1
@@ -63,9 +63,9 @@ int main(int argc, char* argv[])
 			cout << "itv3_p==NULL, bailing\n";
 			exit(-1);
 		}
-		vb3_h->get_qname()->put(cout,ctx) << " = ";
+		vb3_h->get_qname()->put(cout,&ctx) << " = ";
 		while (!(itv3_p->done())) {
-			itv3_p->next()->put(cout,ctx) << endl;
+			itv3_p->next()->put(cout,&ctx) << endl;
 		}
 
 	} catch (exception& e) {

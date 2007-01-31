@@ -78,7 +78,6 @@ xml_istream_test :	xml_istream_test.cpp xml_istream.cpp xml_istream.h
   xml_istream_test.cpp
 
 
-
 all : \
 	uri_resolver \
 	collation_resolver \
@@ -87,4 +86,13 @@ all : \
 	schema_resolver \
 	xml_ostream \
 	xml_istream 
+
+test : \
+	uri_resolver_test \
+	collation_resolver_test \
+	collection_resolver_test \
+	module_resolver_test \
+	schema_resolver_test \
+	xml_ostream_test \
+	xml_istream_test 
 

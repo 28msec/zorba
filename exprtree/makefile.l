@@ -5,9 +5,19 @@ BUILD=Build
 expr : expr.h expr.cpp
 	g++ -c ${OPT} -o ${BUILD}/expr.${SUFX} expr.cpp
 
+eval : expr.h expr.cpp eval.cpp
+	g++ -c ${OPT} -o ${BUILD}/eval.${SUFX} eval.cpp
+
+update_expr : update_expr.h update_expr.cpp
+	g++ -c ${OPT} -o ${BUILD}/update_expr.${SUFX} update_expr.cpp
+
+ft_expr : ft_expr.h ft_expr.cpp
+	g++ -c ${OPT} -o ${BUILD}/ft_expr.${SUFX} ft_expr.cpp
+
 expr_test : expr.h expr.cpp expr_test.cpp
 	g++ -g -o ${BUILD}/expr_test \
 		../context/${BUILD}/context.${SUFX} \
+		../native_impl/${BUILD}/nodestore.${SUFX} \
 		../parser/${BUILD}/symbol_table.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
@@ -25,11 +35,10 @@ expr_test : expr.h expr.cpp expr_test.cpp
 		${BUILD}/expr.${SUFX} \
 		expr_test.cpp
 
-eval : expr.h expr.cpp eval.cpp
-	g++ -c ${OPT} -o ${BUILD}/eval.${SUFX} eval.cpp
 eval_test : expr.h expr.cpp eval_test.cpp
 	g++ -g -o ${BUILD}/eval_test \
 		../context/${BUILD}/context.${SUFX} \
+		../native_impl/${BUILD}/nodestore.${SUFX} \
 		../parser/${BUILD}/symbol_table.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
@@ -47,18 +56,13 @@ eval_test : expr.h expr.cpp eval_test.cpp
 		${BUILD}/eval.${SUFX} \
 		eval_test.cpp
 
-update_expr : update_expr.h update_expr.cpp
-	g++ -c ${OPT} -o ${BUILD}/update_expr.${SUFX} update_expr.cpp
-
-ft_expr : ft_expr.h ft_expr.cpp
-	g++ -c ${OPT} -o ${BUILD}/ft_expr.${SUFX} ft_expr.cpp
-
-
-
 all :	\
   expr \
+	eval \
 	update_expr \
 	ft_expr
 
+test : \
+	expr_test \
+	eval_test
 
-#expr_test \

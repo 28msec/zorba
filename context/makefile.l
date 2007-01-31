@@ -7,6 +7,7 @@ context :	context.h context.cpp
     
 context_test :	context.h context.cpp context_test.cpp
 	g++ ${OPT} -o ${BUILD}/context_test \
+		../native_impl/${BUILD}/nodestore.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
@@ -15,6 +16,7 @@ context_test :	context.h context.cpp context_test.cpp
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/context.${SUFX} \
@@ -23,4 +25,6 @@ context_test :	context.h context.cpp context_test.cpp
 all :	\
  context 
 
+test : \
+	context_test
 

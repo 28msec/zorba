@@ -4,6 +4,7 @@ BUILD=Build
 
 iterator : iterator.h iterator.cpp
 	g++ ${OPT} -c -o ${BUILD}/iterator.${SUFX} iterator.cpp
+
 iterator_test : iterator.h iterator.cpp iterator_test.cpp
 	g++ -Wall -g -o ${BUILD}/iterator_test \
 		../context/${BUILD}/context.${SUFX} \
@@ -16,4 +17,6 @@ iterator_test : iterator.h iterator.cpp iterator_test.cpp
 		iterator_test.cpp
 
 all : iterator
+
+test : iterator_test
 

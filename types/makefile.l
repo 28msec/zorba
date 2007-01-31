@@ -24,6 +24,3 @@ all :	\
 	xs_primitive_types \
 	character
 
-clean:
-	$(CleanRule) *.do *.po *.o *_test $(Executables) $(TestExecutables)
-

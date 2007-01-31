@@ -5,23 +5,6 @@ BUILD=Build
 nodestore : nodestore.h nodestore.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore.${SUFX} nodestore.cpp
 
-nodestore_test : nodestore.h nodestore.cpp nodestore_test.cpp
-	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore_test \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
-		../util/${BUILD}/fxcharheap.${SUFX} \
-		../context/${BUILD}/context.${SUFX} \
-		../runtime/${BUILD}/iterator.${SUFX} \
-		../types/${BUILD}/base_types.${SUFX} \
-		../types/${BUILD}/xs_primitive_types.${SUFX} \
-		../values/${BUILD}/values.${SUFX} \
-		../values/${BUILD}/node_values.${SUFX} \
-		../values/${BUILD}/xs_primitive_values.${SUFX} \
-		../values/${BUILD}/qname_value.${SUFX} \
-		${BUILD}/nodestore.${SUFX} \
-	nodestore_test.cpp
-
 html_scanner : html_scanner.h html_scanner.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/html_scanner.${SUFX} html_scanner.cpp
 	
@@ -49,11 +32,25 @@ xml_loader : xml_loader.h xml_loader.cpp
 xml_scanner : xml_scanner.h xml_scanner.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_scanner.${SUFX} xml_scanner.cpp
 
-xml_store : xml_store.h xml_store.cpp
-	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_store.${SUFX} xml_store.cpp
-
 xml_term : xml_term.h xml_term.cpp
 	g++ -c ${CXXOPT} -o ${BUILD}/xml_term.${SUFX} xml_term.cpp
+
+nodestore_test : nodestore.h nodestore.cpp nodestore_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore_test \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../context/${BUILD}/context.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
+		../types/${BUILD}/base_types.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		../values/${BUILD}/qname_value.${SUFX} \
+		${BUILD}/nodestore.${SUFX} \
+	nodestore_test.cpp
 
 spectrum_test : spectrum.h spectrum.cpp spectrum_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/spectrum_test \
@@ -125,6 +122,7 @@ xml_term_test : xml_term.h xml_term.cpp xml_term_test.cpp
 	xml_term_test.cpp
 
 all : \
+	nodestore \
 	html_scanner \
 	scan_handler \
 	source \
@@ -133,12 +131,18 @@ all : \
 	unicode_decompositions \
 	xml_loader \
 	xml_scanner \
-	xml_term \
+	xml_term 
+
+#xml_handler \
+
+test :
+	nodestore_test \
 	spectrum_test \
 	storage_manager_test \
 	xml_loader_test \
 	xml_scanner_test \
 	xml_term_test 
 
-#xml_handler \
 #xml_handler_test \
+
+
