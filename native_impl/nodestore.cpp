@@ -39,10 +39,6 @@ nodestore::~nodestore()
 {
 }
 
-/*...........................................
-	: node store                              :
-	:.........................................:
-*/
 
 /*
 off_t nodestore::put(
@@ -63,8 +59,7 @@ off_t nodestore::put(
 
 /*...........................................
 	: integers                                :
-	:.........................................:
-*/
+	:.........................................: */
 
 void nodestore::put(
 	context * ctx_p,
@@ -164,8 +159,7 @@ int nodestore::get(
 	:    len          (uint32_t)              :
 	:    content      (char[])                :
 	:                                         :
-	:.........................................:
-*/
+	:.........................................: */
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -223,8 +217,7 @@ int nodestore::get(
 	:    len          (uint32_t)              :
 	:    content      (char[])                :
 	:                                         :
-	:.........................................:
-*/
+	:.........................................: */
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -306,8 +299,7 @@ off_t nodestore::put(
 	:    local name      (string)             :
 	:    prefix          (string)             :
 	:                                         :
-	:.........................................:
-*/
+	:.........................................: */
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -368,8 +360,8 @@ int nodestore::get(
 	:    name           (QName)               :
 	:    value          (string)              :
 	:                                         :
-	:.........................................:
-*/
+	:.........................................: */
+
 off_t nodestore::put(
 	context * ctx_p,
 	rchandle<attribute_node> anode_h)
@@ -435,8 +427,8 @@ int nodestore::get(
 	:    ...                 ...              :
 	:    elem_m             (element)         :
 	:                                         :
-	:.........................................:
-*/
+	:.........................................: */
+
 off_t nodestore::put(
 	context * ctx_p,
 	rchandle<element_node> enode_h)
@@ -447,11 +439,11 @@ off_t nodestore::put(
 	cout << "PUT_000\n";
 
 	put(ctx_p, (uint64_t)enode_h->get_nodeid().id);
-	cout << "001\n";
+	cout << "PUT_001\n";
 	put(ctx_p, (uint64_t)enode_h->get_parentid().id);
-	cout << "002\n";
+	cout << "PUT_002\n";
 	put(ctx_p, (uint64_t)enode_h->get_docid().id);
-	cout << "003\n";
+	cout << "PUT_003\n";
 	put(ctx_p, enode_h->get_name());
 
 	cout << "PUT_100\n";
@@ -465,11 +457,17 @@ off_t nodestore::put(
 	if (attr_it_h==NULL) {
 		cout << "attr_it == NULL\n";
 	}
+	else if (attr_it_h->done()) {
+		cout << "attr_it == done\n";
+	}
 	else {
 		item_iterator& attr_it = *attr_it_h;
 		for (; !attr_it.done(); ++attr_it) {
 			cout << "@attr\n";
-			put(ctx_p, dynamic_cast<attribute_node*>(&**attr_it));
+			rchandle<item> i_h = *attr_it;
+			if (i_h==NULL) { cout << "i_h == NULL\n"; continue; }
+			rchandle<attribute_node> n_h = dynamic_cast<attribute_node*>(&*i_h);
+			put(ctx_p, n_h);
 		}
 	}
 
@@ -482,11 +480,17 @@ off_t nodestore::put(
 	if (elem_it_h==NULL) {
 		cout << "elem_it == NULL\n";
 	}
+	if (elem_it_h->done()) {
+		cout << "elem_it == done\n";
+	}
 	else {
 		item_iterator& child_it = *elem_it_h;
 		for (; !child_it.done(); ++child_it) {
 			cout << "<child>\n";
-			put(ctx_p, dynamic_cast<element_node*>(&**child_it));
+			rchandle<item> i_h = *child_it;
+			if (i_h==NULL) { cout << "i_h == NULL\n"; continue; }
+			rchandle<element_node> n_h = dynamic_cast<element_node*>(&*i_h);
+			put(ctx_p, n_h);
 		}
 	}
 
@@ -560,7 +564,49 @@ int nodestore::get(
 }
 
 
+/*...........................................
+	:  general nodes                          :
+	:                                         :
+	:.........................................:*/
+
+int nodestore::get(
+	context * ctx_p,
+	nodeid nid,
+	rchandle<node>& node_h)
+{
+	off_t offset;
+	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
+
+	int k = 0;
+	switch (store_p->operator[](offset)) {
+	case TEXT_CODE: {
+		rchandle<text_node> tnode_h;
+		if ((k = get(ctx_p, nid, tnode_h)) < 0) return k;
+		node_h = &*tnode_h;
+		break;
+	}
+	case ATTR_CODE: {
+		rchandle<attribute_node> anode_h;
+		if ((k = get(ctx_p, nid, anode_h)) < 0) return k;
+		node_h = &*anode_h;
+		break;
+	}
+	case ELEM_CODE: {
+		rchandle<element_node> enode_h;
+		if ((k = get(ctx_p, nid, enode_h)) < 0) return k;
+		node_h = &*enode_h;
+		break;
+	}
+	default:;
+	}
+	return k;
+}
+
+
 } /* namespace xqp */
+
+
+
 
 
 

@@ -104,6 +104,13 @@ public:
 	int get( context *, off_t, rchandle<element_node> & );
 
 
+	/*...........................................
+		: general nodes                           :
+		:.........................................:
+	*/
+	int get( context *, nodeid, rchandle<node> & );
+
+
 };
 
 } /* namespace xqp */

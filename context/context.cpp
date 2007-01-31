@@ -18,19 +18,13 @@
 #include <string>
 
 
-/*+=========================================+
-	|                                         |
-	|  The context module is still mostly     |
-	|  stubbed out.                           |
-	|                                         |
-	+=========================================+
-*/
 
 using namespace std;
 namespace xqp {
 
+
 /*...........................................
-	: default constructor                     :
+	:  default constructor                    :
 	:.........................................:
 */
 
@@ -69,7 +63,7 @@ context::~context()
 }
 
 /*...........................................
-	: strings                                 :
+	:  strings                                :
 	:.........................................:
 */
 string context::get_string(
@@ -81,7 +75,7 @@ throw (xqp_exception)
 
 
 /*...........................................
-	: nodeids                                 :
+	:  nodeids                                :
 	:.........................................:
 */
 
@@ -102,7 +96,7 @@ nodeid context::context_docid()
 
 
 /*...........................................
-	: variables                               :
+	:  variables                              :
 	:.........................................:
 */
 
@@ -172,7 +166,7 @@ throw (xqp_exception)
 
 
 /*...........................................
-	: functions                               :
+	:  functions                              :
 	:.........................................:
 */
 
@@ -200,7 +194,7 @@ throw (xqp_exception)
 
 
 /*...........................................
-	: context document                        :
+	:  context document                       :
 	:.........................................:
 */
 
@@ -225,7 +219,7 @@ throw (xqp_exception)
 
 
 /*...........................................
-	: context collection                      :
+	:  context collection                     :
 	:.........................................:
 */
 
@@ -252,6 +246,26 @@ rchandle<item_iterator> context::get_default_collection() const
 throw (xqp_exception)
 {
   return new item_iterator(const_cast<context*>(this));
+}
+
+
+/*...........................................
+	:  node store                             :
+	:.........................................:
+*/
+
+rchandle<node> context::get_node(nodeid id)
+{
+	rchandle<node> n_h;
+	node_store_h->get(this, id, n_h);
+	return n_h;
+}
+
+rchandle<node> context::get_node(nodeid id) const
+{
+	rchandle<node> n_h;
+	node_store_h->get(const_cast<context*>(this), id, n_h);
+	return n_h;
 }
 
 

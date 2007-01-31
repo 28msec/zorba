@@ -196,7 +196,7 @@ rchandle<item> document_node::child_iterator::peek() const
 	return (v_h==NULL) ? NULL : &*v_h;
 }
 
-bool document_node::child_iterator::done()
+bool document_node::child_iterator::done() const
 {
 	return child_it == it_end;
 }
@@ -400,7 +400,7 @@ void element_node::child_iterator::close()
 
 rchandle<item> element_node::child_iterator::next()
 {
-	rchandle<node> n_h = ctx_p->get_node(*child_it++);
+	rchandle<node> n_h = ctx_p->get_node(*++child_it);
 	return (n_h==NULL) ? NULL : &*n_h;
 }
 
@@ -410,7 +410,7 @@ rchandle<item> element_node::child_iterator::peek() const
 	return (n_h==NULL) ? NULL : &*n_h;
 }
 
-bool element_node::child_iterator::done()
+bool element_node::child_iterator::done() const
 {
 	return child_it == it_end;
 }
@@ -427,7 +427,7 @@ rchandle<item> element_node::child_iterator::operator*() const
 
 element_node::child_iterator& element_node::child_iterator::operator++()
 {
-	next();
+	++child_it;
 	return *this;
 }
 
@@ -463,7 +463,7 @@ void element_node::attr_iterator::close()
 
 rchandle<item> element_node::attr_iterator::next()
 {
-	rchandle<node> n_h = ctx_p->get_node(*attr_it++);
+	rchandle<node> n_h = ctx_p->get_node(*++attr_it);
 	return (n_h==NULL) ? NULL : &*n_h;
 }
 
@@ -473,7 +473,7 @@ rchandle<item> element_node::attr_iterator::peek() const
 	return (n_h==NULL) ? NULL : &*n_h;
 }
 
-bool element_node::attr_iterator::done()
+bool element_node::attr_iterator::done() const
 {
 	return attr_it == it_end;
 }
@@ -490,7 +490,7 @@ rchandle<item> element_node::attr_iterator::operator*() const
 
 element_node::attr_iterator& element_node::attr_iterator::operator++()
 {
-	next();
+	++attr_it;
 	return *this;
 }
 

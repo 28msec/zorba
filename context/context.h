@@ -513,8 +513,8 @@ public:
 	nodeid context_docid();
 
 	// node store
-	rchandle<node> get_node(nodeid id) { return NULL; }
-	rchandle<node> get_node(nodeid id) const { return NULL; }
+	rchandle<node> get_node(nodeid id);
+	rchandle<node> get_node(nodeid id) const;
 
 	// variables 
 	void push_var(rchandle<var_binding>);

@@ -352,7 +352,7 @@ public:	// iterator interface
 		void close();
 		rchandle<item> next();
 		rchandle<item> peek() const;
-		bool done();
+		bool done() const;
 		void rewind();
 
 	public:
@@ -534,7 +534,7 @@ public:	// iterator interface
 		void close();
 		rchandle<item> next();
 		rchandle<item> peek() const;
-		bool done();
+		bool done() const;
 		void rewind();
 
 	public:
@@ -559,7 +559,7 @@ public:	// iterator interface
 		void close();
 		rchandle<item> next();
 		rchandle<item> peek() const;
-		bool done();
+		bool done() const;
 		void rewind();
 	
 	public:
