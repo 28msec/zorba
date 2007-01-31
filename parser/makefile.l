@@ -20,7 +20,7 @@ parsenodes : parsenodes.h parsenodes.cpp
 	g++ ${OPT} -c -o ${BUILD}/parsenodes.${SUFX} parsenodes.cpp
 
 xquery_test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
-	g++ -Wall -g -o xquery_test \
+	g++ -Wall -g -o ${BUILD}/xquery_test \
 		../context/${BUILD}/context.${SUFX} \
 		../native_impl/${BUILD}/nodestore.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
@@ -50,5 +50,5 @@ all : \
 	symbol_table 
 
 test : \
-	test
+	xquery_test
 

@@ -12,6 +12,8 @@
 #define XQP_FTOPTIONS_H
 
 #include "../util/rchandle.h"
+
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -35,8 +37,9 @@ namespace xqp {
 #define ft_defined_stopwords				256
 #define ft_with_wildcards					  512
 
-struct ft_thesaurus_id
+class ft_thesaurus_id
 {
+public:
 	enum thesaurus_rel {
 		use,			// preferred term
 		uf,				// non-preferred use
@@ -54,7 +57,27 @@ struct ft_thesaurus_id
 	thesaurus_rel rel;
 	uint32_t level;
 
+	std::string decode(enum thesaurus_rel rel) const
+	{
+		switch (rel) {
+		case use: return "preferred term";
+		case uf: return "non-preferred use";
+		case bt: return "broader term";
+		case nt: return "narrower term";
+		case btg: return "broader term generic";
+		case ntg: return "narrower term generic";
+		case btp: return "broader term partative";
+		case ntp: return "narrower term partative";
+		case tt: return "top terms";
+		case rt: return "related term";
+		default: return "??";
+		}
+	}
+
+	friend std::ostream& operator<<(std::ostream&, ft_thesaurus_id const&);
+
 };
+
 
 class ft_options : public rcobject
 {
@@ -111,7 +134,10 @@ public:
 	void add_stopword_exclusion(std::string const& v)
 		{ stopword_exclusion_v.push_back(v); }
 
+	friend std::ostream& operator<<(std::ostream & os, ft_options const&); 
+
 };
+
 
 
 } /* namespace xqp */

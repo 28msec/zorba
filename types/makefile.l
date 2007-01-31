@@ -24,3 +24,5 @@ all :	\
 	xs_primitive_types \
 	character
 
+test : \
+

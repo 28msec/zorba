@@ -24,19 +24,19 @@ namespace xqp {
 class ft_or_value : public ft_value
 {
 protected:
-	std::vector<rchandle<ft_value> > and_hv;
+	std::vector<rchandle<ft_value> > hv;
 
 public:
 	ft_or_value() {}
 	~ft_or_value() {}
 
 public:
-	void add(rchandle<ft_value> ft_h) { and_hv.push_back(ft_h); }
-	uint32_t count() const { return and_hv.size(); }
+	void add(rchandle<ft_value> ft_h) { hv.push_back(ft_h); }
+	uint32_t count() const { return hv.size(); }
 	std::vector<rchandle<ft_value> >::const_iterator begin()
-		{ return and_hv.begin(); }
+		{ return hv.begin(); }
 	std::vector<rchandle<ft_value> >::const_iterator end()
-		{ return and_hv.end(); }
+		{ return hv.end(); }
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, ft_or_value const&);
@@ -47,19 +47,19 @@ public:
 class ft_and_value : public ft_value
 {
 protected:
-	std::vector<rchandle<ft_value> > mildnot_hv;
+	std::vector<rchandle<ft_value> > hv;
 
 public:
 	ft_and_value() {}
 	~ft_and_value() {}
 
 public:
-	void add(rchandle<ft_value> ft_h) { mildnot_hv.push_back(ft_h); }
-	uint32_t count() const { return mildnot_hv.size(); }
+	void add(rchandle<ft_value> ft_h) { hv.push_back(ft_h); }
+	uint32_t count() const { return hv.size(); }
 	std::vector<rchandle<ft_value> >::const_iterator begin()
-		{ return mildnot_hv.begin(); }
+		{ return hv.begin(); }
 	std::vector<rchandle<ft_value> >::const_iterator end()
-		{ return mildnot_hv.end(); }
+		{ return hv.end(); }
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, ft_and_value const&);
@@ -135,6 +135,7 @@ public:
 
 public:
 	enum ft_anyall_option get_opt() const { return opt; }
+	void set_opt(enum ft_anyall_option _opt) { opt = _opt; }
 	void add(std::string const& s) { word_v.push_back(s); }
 	uint32_t count() const { return word_v.size(); }
 	std::vector<std::string>::const_iterator begin()
@@ -146,7 +147,6 @@ public:
 	friend std::ostream& operator<<(std::ostream& os, ft_qphrase_value const&);
 
 };
-
 
 
 } /* namespace xqp */

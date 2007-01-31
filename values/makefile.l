@@ -14,6 +14,9 @@ xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
 node_values :	node_values.h node_values.cpp
 	g++ ${OPT} -c -o ${BUILD}/node_values.${SUFX} node_values.cpp
     
+ft_options :	ft_options.h ft_options.cpp
+	g++ ${OPT} -c -o ${BUILD}/ft_options.${SUFX} ft_options.cpp
+
 ft_values :	ft_values.h ft_values.cpp
 	g++ ${OPT} -c -o ${BUILD}/ft_values.${SUFX} ft_values.cpp
 
@@ -62,6 +65,7 @@ node_values_test : node_values.h node_values.cpp node_values_test.cpp
 
 ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/ft_values_test \
+		${BUILD}/ft_options.${SUFX} \
 		${BUILD}/ft_values.${SUFX} \
 		ft_values_test.cpp
 
@@ -74,7 +78,6 @@ all : \
 	update_values
 
 test : \
-	qname_test \
 	xs_primitive_values_test \
 	node_values_test \
 	ft_values_test

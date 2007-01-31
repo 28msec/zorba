@@ -9,6 +9,7 @@
  */
 
 #include "uri_resolver.h"
+
 #include <iostream>
 #include <string>
 
@@ -21,8 +22,16 @@ int main(int argc, char* argv[])
 	string base(argv[1]);
 	string url(argv[2]);
   string result;
-  res.resolve(base, url, result);
-	cout << result << endl;
+  rchandle<source> src_h = res.resolve(base, url);
 }
 
+
+/* class uri_resolver:
+string get_base(URI const&); 
+string get_base(string const&); 
+bool make_absolute( string const& base, string const& url, string& result);
+bool make_absolute( URI const& base, URI const& url, string& result);
+rchandle<source> resolve( string const& base, string const& uri);
+rchandle<source> resolve( URI const& base, URI const& uri);
+*/
 
