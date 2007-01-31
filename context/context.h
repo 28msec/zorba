@@ -516,6 +516,7 @@ public:
 	// node store
 	rchandle<node> get_node(nodeid id);
 	rchandle<node> get_node(nodeid id) const;
+	rchandle<nodestore> get_nodestore();
 
 	// variables 
 	void push_var(rchandle<var_binding>);

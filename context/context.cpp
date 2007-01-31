@@ -275,5 +275,10 @@ rchandle<node> context::get_node(nodeid id) const
 	return n_h;
 }
 
+rchandle<nodestore> context::get_nodestore()
+{
+	return node_store_h;
+}
+
 
 }	/* namespace xqp */

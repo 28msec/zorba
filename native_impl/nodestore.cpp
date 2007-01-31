@@ -17,6 +17,7 @@
 
 #include <string>
 
+#define SOURCE __FILE__ << "::" << __FUNCTION__
 
 /*______________________________________________________________________
 |  
@@ -436,65 +437,58 @@ off_t nodestore::put(
 	uint32_t res = store_p->size();
 	store_p->push_back(ELEM_CODE);
 
-	cout << "PUT_000\n";
-
 	put(ctx_p, (uint64_t)enode_h->get_nodeid().id);
-	cout << "PUT_001\n";
 	put(ctx_p, (uint64_t)enode_h->get_parentid().id);
-	cout << "PUT_002\n";
 	put(ctx_p, (uint64_t)enode_h->get_docid().id);
-	cout << "PUT_003\n";
 	put(ctx_p, enode_h->get_name());
-
-	cout << "PUT_100\n";
 
 	// put namespaces
 
 	uint32_t attr_count = enode_h->attr_count();
-	cout << "PUT_101 [attr_count = " << attr_count << "]\n";
+	cout << SOURCE << "PUT_[attr_count = " << attr_count << "]\n";
 	put(ctx_p, attr_count);
 	rchandle<item_iterator> attr_it_h = enode_h->attributes(ctx_p);
 	if (attr_it_h==NULL) {
-		cout << "attr_it == NULL\n";
+		cout << SOURCE << "attr_it == NULL\n";
 	}
 	else if (attr_it_h->done()) {
-		cout << "attr_it == done\n";
+		cout << SOURCE << "attr_it == done\n";
 	}
 	else {
 		item_iterator& attr_it = *attr_it_h;
 		for (; !attr_it.done(); ++attr_it) {
-			cout << "@attr\n";
+			cout << SOURCE << "PUT_attr\n";
 			rchandle<item> i_h = *attr_it;
-			if (i_h==NULL) { cout << "i_h == NULL\n"; continue; }
+			if (i_h==NULL) { cout << SOURCE << "i_h == NULL\n"; continue; }
 			rchandle<attribute_node> n_h = dynamic_cast<attribute_node*>(&*i_h);
+			if (n_h==NULL) { cout << SOURCE << "n_h == NULL\n"; continue; }
+			n_h->put(cout,ctx_p) << endl;
 			put(ctx_p, n_h);
 		}
 	}
 
-	cout << "PUT_200\n";
-
 	uint32_t elem_count = enode_h->elem_count();
-	cout << "PUT_201 [elem_count = " << elem_count << "]\n";
+	cout << SOURCE << "PUT_[elem_count = " << elem_count << "]\n";
 	put(ctx_p, elem_count);
 	rchandle<item_iterator> elem_it_h = enode_h->children(ctx_p);
 	if (elem_it_h==NULL) {
-		cout << "elem_it == NULL\n";
+		cout << SOURCE << "elem_it == NULL\n";
 	}
 	if (elem_it_h->done()) {
-		cout << "elem_it == done\n";
+		cout << SOURCE << "elem_it == done\n";
 	}
 	else {
 		item_iterator& child_it = *elem_it_h;
 		for (; !child_it.done(); ++child_it) {
-			cout << "<child>\n";
+			cout << SOURCE << "PUT_child\n";
 			rchandle<item> i_h = *child_it;
-			if (i_h==NULL) { cout << "i_h == NULL\n"; continue; }
+			if (i_h==NULL) { cout << SOURCE << "i_h == NULL\n"; continue; }
 			rchandle<element_node> n_h = dynamic_cast<element_node*>(&*i_h);
+			if (n_h==NULL) { cout << SOURCE << "n_h == NULL\n"; continue; }
+			n_h->put(cout,ctx_p) << endl; 
 			put(ctx_p, n_h);
 		}
 	}
-
-	cout << "PUT_300\n";
 
 	index_p->put(enode_h->get_nodeid().id, res);
 	return res;
@@ -510,8 +504,6 @@ int nodestore::get(
 	off_t offset = offset0;
 	if (store_p->operator[](offset++)!=ELEM_CODE) return ERR_BAD_CODE;
 
-	cout << "GET_000\n";
-
 	uint64_t id;
 	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
 	uint64_t parentid;
@@ -521,36 +513,31 @@ int nodestore::get(
 	rchandle<QName> name_h;
 	if ((k = get(ctx_p, offset, name_h)) < 0) return k; else offset += k;
 
-	cout << "GET_100\n";
-
 	enode_h = new element_node(id, parentid, docid, name_h);
-
-	cout << "GET_200\n";
 
 	uint32_t attr_count;
 	rchandle<attribute_node> anode_h;
 	if ((k = get(ctx_p, offset, attr_count)) < 0) return k; else offset += k;
 
-	cout << "GET_300 [count=" << attr_count << "]\n";
+	cout << SOURCE << "GET_[attr_count=" << attr_count << "]\n";
 
 	for (uint32_t i=0; i<attr_count; ++i) {
 		if ((k = get(ctx_p, offset,  anode_h)) < 0) return k; else offset += k;
 		enode_h->add_node(&*anode_h);
 	}
 
-	cout << "GET_400\n";
-
 	uint32_t elem_count;
 	rchandle<element_node> enode0_h;
 	if ((k = get(ctx_p, offset, elem_count)) < 0) return k; else offset += k;
 
-	cout << "GET_500 [count=" << elem_count << "]\n";
+	cout << SOURCE << "GET_[chid_count=" << elem_count << "]\n";
 
 	for (uint32_t i=0; i<elem_count; ++i) {
 		if ((k = get(ctx_p, offset, enode0_h)) < 0) return k; else offset += k;
 		enode_h->add_node(&*enode0_h);
 	}
 	return (offset-offset0);
+
 }
 
 int nodestore::get(
@@ -575,7 +562,10 @@ int nodestore::get(
 	rchandle<node>& node_h)
 {
 	off_t offset;
-	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
+	if (!index_p->get(nid.id, offset)) {
+		cout << SOURCE << " : nid not found\n";
+		return ERR_NODEID_NOT_FOUND;
+	}
 
 	int k = 0;
 	switch (store_p->operator[](offset)) {
@@ -597,7 +587,9 @@ int nodestore::get(
 		node_h = &*enode_h;
 		break;
 	}
-	default:;
+	default: {
+		cout << SOURCE << " : code=" << store_p->operator[](offset) << endl;
+	}
 	}
 	return k;
 }
