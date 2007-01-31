@@ -40,10 +40,9 @@ string node::decode(node_kind_t kind) const
 	}
 }
 
-nodeid node::get_nodeid() const
-{
-	return id;
-}
+nodeid node::get_nodeid() const { return id; }
+nodeid node::get_parentid() const { return parentid; }
+void node::set_parentid(nodeid _parentid) { parentid = _parentid; }
 
 enum node::node_kind_t node::node_kind() const
 {
@@ -239,7 +238,7 @@ document_node::document_node(
 document_node::document_node(
 	nodeid _id)
 :
-	node(id)
+	node(_id)
 {
 }
 
@@ -340,9 +339,9 @@ ostream& document_node::put(
 */
 
 collection_node::collection_node(
-	nodeid id)
+	nodeid _id)
 :
-	node(id)
+	node(_id)
 {
 }
 
@@ -507,8 +506,7 @@ element_node::element_node(
 	nodeid _docid,
 	rchandle<QName> _name_h)
 :
-	node(_id),
-	parentid(_parentid),
+	node(_id,_parentid),
 	docid(_docid),
 	name_h(_name_h)
 {
@@ -694,8 +692,7 @@ attribute_node::attribute_node(
 	rchandle<QName> _name_h,
 	string const& _val)
 :
-	node(_id),
-	parentid(_parentid),
+	node(_id,_parentid),
 	name_h(_name_h),
 	val(_val)
 {
@@ -790,8 +787,7 @@ ns_node::ns_node(
 	string const& _prefix,
 	string const& _uri)
 :
-	node(_id),
-	parentid(_parentid),
+	node(_id,_parentid),
 	prefix(_prefix),
 	uri(_uri)
 {
@@ -854,8 +850,7 @@ pi_node::pi_node(
 	string const& _content,
 	string const& _baseuri)
 :
-	node(_id),
-	parentid(_parentid),
+	node(_id,_parentid),
 	target(_target),
 	content(_content),
 	baseuri(_baseuri)
@@ -921,8 +916,7 @@ comment_node::comment_node(
 	nodeid _parentid,
 	string const& _content)
 :
-	node(_nodeid),
-	parentid(_parentid),
+	node(_nodeid,_parentid),
 	content(_content)
 {
 }
@@ -986,24 +980,22 @@ ostream& comment_node::put(ostream& os, context * ctx_p) const
 */
 
 text_node::text_node(
-	nodeid id,
+	nodeid _id,
 	nodeid _parentid,
 	string const& _content)
 :
-	node(id),
-	parentid(_parentid),
+	node(_id,_parentid),
 	content(_content)
 {
 }
 
 text_node::text_node(
-	nodeid _nodeid,
+	nodeid _id,
 	nodeid _parentid,
 	char const* data,
 	uint32_t datalen)
 :
-	node(_nodeid),
-	parentid(_parentid),
+	node(_id,_parentid),
 	content(data,0,datalen)
 {
 }
@@ -1083,11 +1075,6 @@ binary_node::binary_node(
 
 binary_node::~binary_node()
 {
-}
-
-nodeid binary_node::get_nodeid() const
-{
-	return id;
 }
 
 std::string binary_node::string_value(

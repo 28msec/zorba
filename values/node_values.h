@@ -92,12 +92,15 @@ public:	// nodes types
 
 protected:
 	nodeid id;
+	nodeid parentid;
 
 public:	// accessors
 	/**
-	 *	Return a node identifier.
+	 *	Get/set node identifiers.
 	 */
-	virtual nodeid get_nodeid() const;
+	nodeid get_nodeid() const;
+	nodeid get_parentid() const;
+	void set_parentid(nodeid);
 
 	/**
 	 *	The dm:node-kind accessor returns a string identifying the kind of 
@@ -232,9 +235,10 @@ public:	// accessors
 	  std::string const& entity_name) const;
 
 public:	// ctor,dtor
-	node(nodeid _id) : id(_id) {}
-	node(node& n) : id(n.id) {}
-	node() : id(0) {}
+	node(nodeid _id) : id(_id), parentid(0) {}
+	node(nodeid _id, nodeid _parentid) : id(_id), parentid(_parentid) {}
+	node(node& n) : id(n.id), parentid(n.parentid) {}
+	node() : id(0), parentid(0) {}
 	virtual ~node() {}
 
 public:
@@ -293,7 +297,6 @@ protected:
 	hashmap<std::string> entitymap;
 
 public:
-	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return doc_kind; }
 	std::string get_baseuri() const { return baseuri; }
 	std::string get_docuri() const { return docuri; }
@@ -373,7 +376,6 @@ class collection_node : public node
 {
 public:
 	node_kind_t node_kind() const { return collection_kind; }
-
 	rchandle<item_iterator> base_uri(context * ctx) const;
 	rchandle<item_iterator> collection_uri(context * ctx) const;
 	rchandle<item_iterator> children(context * ctx) const;
@@ -452,7 +454,6 @@ class element_node : public node
 	friend class elem_attr_iterator;
 
 protected:
-	nodeid parentid;
 	nodeid docid;
 	rchandle<QName> name_h;
 	item_type type;
@@ -464,8 +465,6 @@ protected:
 	bool idrefs_b;
 
 public:	// storage interface
-	nodeid get_nodeid() const { return id; }
-	nodeid get_parentid() const { return parentid; }
 	nodeid get_docid() const { return docid; }
 
 public:	// evaluator interface
@@ -594,16 +593,11 @@ public:	// iterator interface
 class attribute_node : public node
 {
 protected:
-	nodeid parentid;
 	rchandle<QName> name_h;
 	item_type type;
 	std::string val;
 	bool id_b;
 	bool idrefs_b;
-
-public:	// storage interface
-	nodeid get_nodeid() const { return id; }
-	nodeid get_parentid() const { return parentid; }
 
 public:	// evaluator interface
 	node_kind_t node_kind() const { return attr_kind; }
@@ -652,12 +646,10 @@ public:
 class ns_node : public node
 {
 protected:
-	nodeid parentid;
 	std::string prefix;
 	std::string uri;
 
 public:	// accessors
-	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return ns_kind; }
 	std::string get_prefix() const { return prefix; }
 	std::string get_uri() const { return uri; }
@@ -695,13 +687,11 @@ public:
 class pi_node : public node
 {
 protected:
-	nodeid parentid;
 	std::string target;
 	std::string content;
 	std::string baseuri;
 
 public:	// accessors
-	nodeid get_nodeid() const { return id; }
 	node_kind_t node_kind() const { return pi_kind; }
 	std::string get_target() const { return target; }
 	std::string get_content() const { return content; }
@@ -749,13 +739,10 @@ public:
 class comment_node : public node
 {
 protected:
-	nodeid parentid;
 	std::string content;
 	
 public:	// accessors
-	nodeid get_nodeid() const { return id; }
 	enum node_kind_t node_kind() const { return comment_kind; }
-	
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
@@ -796,12 +783,9 @@ public:
 class text_node : public node
 {
 protected:
-	nodeid parentid;
 	std::string content;
 	
 public:	// accessors
-	nodeid get_nodeid() const { return id; }
-	nodeid get_parentid() const { return parentid; }
 	enum node_kind_t node_kind() const { return text_kind; }
 	char const* get_content() const { return content.c_str(); }
 	uint32_t get_content_length() const { return content.length(); }
@@ -855,7 +839,6 @@ public:
 class binary_node : public node
 {
 public:	// accessors
-	nodeid get_nodeid() const;
 	node_kind_t node_kind(context *) const { return binary_kind; }
 	std::string string_value(context const*) const;
  

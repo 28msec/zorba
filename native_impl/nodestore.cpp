@@ -17,7 +17,7 @@
 
 #include <string>
 
-#define SOURCE __FILE__ << "::" << __FUNCTION__
+#define SOURCE __FILE__ << ':' << __LINE__ << "::" << __FUNCTION__ << ": "
 
 /*______________________________________________________________________
 |  
@@ -214,9 +214,9 @@ int nodestore::get(
 	:  text nodes                             :
 	:                                         :
 	:    TEXT_CODE    (char)                  :
+	:    nodeid       (uint64_t)              :
 	:    parentid     (uint64_t)              :
-	:    len          (uint32_t)              :
-	:    content      (char[])                :
+	:    content      (string)                :
 	:                                         :
 	:.........................................: */
 
@@ -224,71 +224,47 @@ off_t nodestore::put(
 	context * ctx_p,
 	rchandle<text_node> tnode_h)
 {
-	nodeid parentid = tnode_h->get_parentid();
-	char const* content = tnode_h->get_content();
-	uint32_t content_length = tnode_h->get_content_length();
-	off_t offset = put(ctx_p, parentid, content, content_length);
-	index_p->put(tnode_h->get_nodeid().id, offset);
-	return offset;
-}
-
-int nodestore::get(
-	context * ctx_p,
-	nodeid nid,     
-	rchandle<text_node>& tnode_h)
-{
-	off_t offset;
-	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
-	nodeid parentid;
-	char * content;
-	uint32_t content_length;
-	int k = get(ctx_p, offset, parentid, content, content_length);
-	if (k<0) return k;
-	tnode_h = new text_node(nid, parentid,
-							string((char *)content,0,content_length));
-	return k;
-}
-
-off_t nodestore::put(
-	context * ctx_p,
-	nodeid parent,
-	char const* content,
-	uint32_t len)
-{
 	uint32_t res = store_p->size();
 	store_p->push_back(TEXT_CODE);
-	put(ctx_p, (uint64_t)parent.id);
-	put(ctx_p, (uint32_t)len);
-	store_p->raw_copy(content, len);
+	put(ctx_p, (uint64_t)tnode_h->get_nodeid().id);
+	put(ctx_p, (uint64_t)tnode_h->get_parentid().id);
+	put(ctx_p, tnode_h->get_content());
+	index_p->put(tnode_h->get_nodeid().id, res);
 	return res;
 }
 
 int nodestore::get(
 	context * ctx_p,
 	off_t offset0,
-	nodeid & parent,
-	char *& data,
-	uint32_t & len)
+	rchandle<text_node>& tnode_h)
 {
-	int k;
-	uint64_t p;
+	int k = 0;
 	off_t offset = offset0;
 	if (store_p->operator[](offset++)!=TEXT_CODE) return ERR_BAD_CODE;
-	if ((k = get(ctx_p, offset, p)) < 0) return k; else offset += k;
-	if ((k = get(ctx_p, offset, len)) < 0) return k; else offset += k;
-	data = &store_p->operator[](offset);
-	offset += len;
-	parent.id = p;
+	uint64_t id;
+	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
+	uint64_t parentid;
+	if ((k = get(ctx_p, offset, parentid)) < 0) return k; else offset += k;
+	string content;
+	if ((k = get(ctx_p, offset, content)) < 0) return k; else offset += k;
+	tnode_h = new text_node(id, parentid, content);
 	return (offset-offset0);
 }
 
-off_t nodestore::put(
+int nodestore::get(
 	context * ctx_p,
-	nodeid parent,
-	string const& content)
+	nodeid nid,
+	rchandle<text_node>& tnode_h)
 {
-	return put(ctx_p, parent, content.c_str(), content.length());
+	cout << SOURCE << "get(" << nid.id << ")\n";
+	off_t offset;
+	if (!index_p->get(nid.id, offset)) {
+		cout << SOURCE << "not found\n";
+		return ERR_NODEID_NOT_FOUND;
+	}
+	return get(ctx_p, offset, tnode_h);
 }
+
 
 
 /*...........................................
@@ -402,8 +378,12 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<attribute_node>& anode_h)
 {
+	cout << SOURCE << "get(" << nid.id << ")\n";
 	off_t offset;
-	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
+	if (!index_p->get(nid.id, offset)) {
+		cout << SOURCE << "not found\n";
+		return ERR_NODEID_NOT_FOUND;
+	}
 	return get(ctx_p, offset, anode_h);
 }
 
@@ -444,49 +424,64 @@ off_t nodestore::put(
 
 	// put namespaces
 
+	// put attributes
 	uint32_t attr_count = enode_h->attr_count();
-	cout << SOURCE << "PUT_[attr_count = " << attr_count << "]\n";
 	put(ctx_p, attr_count);
 	rchandle<item_iterator> attr_it_h = enode_h->attributes(ctx_p);
-	if (attr_it_h==NULL) {
-		cout << SOURCE << "attr_it == NULL\n";
-	}
-	else if (attr_it_h->done()) {
-		cout << SOURCE << "attr_it == done\n";
-	}
-	else {
-		item_iterator& attr_it = *attr_it_h;
-		for (; !attr_it.done(); ++attr_it) {
-			cout << SOURCE << "PUT_attr\n";
-			rchandle<item> i_h = *attr_it;
-			if (i_h==NULL) { cout << SOURCE << "i_h == NULL\n"; continue; }
+	if (attr_it_h!=NULL) {
+		for (; !attr_it_h->done(); ++(*attr_it_h)) {
+			rchandle<item> i_h = **attr_it_h;
+			if (i_h==NULL) { cout << SOURCE << "item == NULL\n"; continue; }
 			rchandle<attribute_node> n_h = dynamic_cast<attribute_node*>(&*i_h);
-			if (n_h==NULL) { cout << SOURCE << "n_h == NULL\n"; continue; }
+			if (n_h==NULL) { cout << SOURCE << "attribute node == NULL\n"; continue; }
 			n_h->put(cout,ctx_p) << endl;
 			put(ctx_p, n_h);
 		}
 	}
 
+	// put children
 	uint32_t elem_count = enode_h->elem_count();
-	cout << SOURCE << "PUT_[elem_count = " << elem_count << "]\n";
 	put(ctx_p, elem_count);
-	rchandle<item_iterator> elem_it_h = enode_h->children(ctx_p);
-	if (elem_it_h==NULL) {
-		cout << SOURCE << "elem_it == NULL\n";
-	}
-	if (elem_it_h->done()) {
-		cout << SOURCE << "elem_it == done\n";
-	}
-	else {
-		item_iterator& child_it = *elem_it_h;
-		for (; !child_it.done(); ++child_it) {
-			cout << SOURCE << "PUT_child\n";
-			rchandle<item> i_h = *child_it;
-			if (i_h==NULL) { cout << SOURCE << "i_h == NULL\n"; continue; }
-			rchandle<element_node> n_h = dynamic_cast<element_node*>(&*i_h);
-			if (n_h==NULL) { cout << SOURCE << "n_h == NULL\n"; continue; }
-			n_h->put(cout,ctx_p) << endl; 
-			put(ctx_p, n_h);
+	rchandle<item_iterator> child_it_h = enode_h->children(ctx_p);
+	if (child_it_h!=NULL) {
+		for (; !child_it_h->done(); ++(*child_it_h)) {
+			rchandle<item> i_h = **child_it_h;
+			if (i_h==NULL) { cout << SOURCE << "item == NULL\n"; continue; }
+			rchandle<node> n_h = dynamic_cast<node*>(&*i_h);
+			if (n_h==NULL) { cout << SOURCE << "node == NULL\n"; continue; }
+
+			switch (n_h->node_kind()) {
+			case node::elem_kind: {
+				cout << SOURCE << "PUT_elem\n";
+				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
+				put(ctx_p, en_h);
+				break;
+			}
+			case node::text_kind: {
+				cout << SOURCE << "PUT_text\n";
+				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
+				put(ctx_p, tn_h);
+				break;
+			}
+			case node::comment_kind: {
+				// stub
+				cout << SOURCE << "PUT_comment\n";
+				break;
+			}
+			case node::pi_kind: {
+				// stub
+				cout << SOURCE << "PUT_pi\n";
+				break;
+			}
+			case node::binary_kind: {
+				// stub
+				cout << SOURCE << "PUT_binary\n";
+				break;
+			}
+			default: {
+				cout << SOURCE << "Something seriously wrong here: illegal node_kind\n";
+				continue; }
+			}
 		}
 	}
 
@@ -500,10 +495,12 @@ int nodestore::get(
 	off_t offset0,
 	rchandle<element_node>& enode_h)
 {
+	cout << SOURCE << endl;
 	int k = 0;
 	off_t offset = offset0;
 	if (store_p->operator[](offset++)!=ELEM_CODE) return ERR_BAD_CODE;
 
+	cout << SOURCE << endl;
 	uint64_t id;
 	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
 	uint64_t parentid;
@@ -513,31 +510,31 @@ int nodestore::get(
 	rchandle<QName> name_h;
 	if ((k = get(ctx_p, offset, name_h)) < 0) return k; else offset += k;
 
+	cout << SOURCE << endl;
 	enode_h = new element_node(id, parentid, docid, name_h);
 
+	cout << SOURCE << endl;
 	uint32_t attr_count;
 	rchandle<attribute_node> anode_h;
 	if ((k = get(ctx_p, offset, attr_count)) < 0) return k; else offset += k;
 
-	cout << SOURCE << "GET_[attr_count=" << attr_count << "]\n";
-
+	cout << SOURCE << endl;
 	for (uint32_t i=0; i<attr_count; ++i) {
 		if ((k = get(ctx_p, offset,  anode_h)) < 0) return k; else offset += k;
 		enode_h->add_node(&*anode_h);
 	}
 
-	uint32_t elem_count;
-	rchandle<element_node> enode0_h;
-	if ((k = get(ctx_p, offset, elem_count)) < 0) return k; else offset += k;
+	cout << SOURCE << endl;
+	uint32_t child_count;
+	if ((k = get(ctx_p, offset, child_count)) < 0) return k; else offset += k;
 
-	cout << SOURCE << "GET_[chid_count=" << elem_count << "]\n";
-
-	for (uint32_t i=0; i<elem_count; ++i) {
-		if ((k = get(ctx_p, offset, enode0_h)) < 0) return k; else offset += k;
-		enode_h->add_node(&*enode0_h);
+	cout << SOURCE << endl;
+	rchandle<node> node_h;
+	for (uint32_t i=0; i<child_count; ++i) {
+		if ((k = get(ctx_p, offset, node_h)) < 0) return k; else offset += k;
+		enode_h->add_node(&*node_h);
 	}
 	return (offset-offset0);
-
 }
 
 int nodestore::get(
@@ -545,8 +542,12 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<element_node>& enode_h)
 {
+	cout << SOURCE << "get(" << nid.id << ")\n";
 	off_t offset;
-	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
+	if (!index_p->get(nid.id, offset)) {
+		cout << SOURCE << "not found\n";
+		return ERR_NODEID_NOT_FOUND;
+	}
 	return get(ctx_p, offset, enode_h);
 }
 
@@ -563,27 +564,34 @@ int nodestore::get(
 {
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << SOURCE << " : nid not found\n";
+		cout << SOURCE << "nid [" << nid.id << "] not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
+	return get(ctx_p, offset, node_h);
+}
 
+int nodestore::get(
+	context * ctx_p,
+	off_t offset,
+	rchandle<node>& node_h)
+{
 	int k = 0;
 	switch (store_p->operator[](offset)) {
 	case TEXT_CODE: {
 		rchandle<text_node> tnode_h;
-		if ((k = get(ctx_p, nid, tnode_h)) < 0) return k;
+		if ((k = get(ctx_p, offset, tnode_h)) < 0) return k;
 		node_h = &*tnode_h;
 		break;
 	}
 	case ATTR_CODE: {
 		rchandle<attribute_node> anode_h;
-		if ((k = get(ctx_p, nid, anode_h)) < 0) return k;
+		if ((k = get(ctx_p, offset, anode_h)) < 0) return k;
 		node_h = &*anode_h;
 		break;
 	}
 	case ELEM_CODE: {
 		rchandle<element_node> enode_h;
-		if ((k = get(ctx_p, nid, enode_h)) < 0) return k;
+		if ((k = get(ctx_p, offset, enode_h)) < 0) return k;
 		node_h = &*enode_h;
 		break;
 	}

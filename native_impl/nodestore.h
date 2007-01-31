@@ -60,7 +60,7 @@ public:
 	
 
 	/*...........................................
-		: text content                            :
+		: strings                                 :
 		:.........................................:
 	*/
 	off_t put( context *, char const* content, uint32_t len );
@@ -69,13 +69,14 @@ public:
 	off_t put( context *, string const& content ); 
 	int get( context *, off_t, string & content ); 
 
+
+	/*...........................................
+		: text nodes                              :
+		:.........................................:
+	*/
 	off_t put( context *, rchandle<text_node> );
 	int get( context *, nodeid, rchandle<text_node>& );
-
-	off_t put( context *, nodeid parent, char const* content, uint32_t len );
-	int get( context *, off_t, nodeid & parent, char *& data, uint32_t& len );
-
-	off_t put( context *, nodeid parent, string const& content );
+	int get( context *, off_t, rchandle<text_node>& );
 
 
 	/*...........................................
@@ -109,6 +110,7 @@ public:
 		:.........................................:
 	*/
 	int get( context *, nodeid, rchandle<node> & );
+	int get( context *, off_t, rchandle<node> & );
 
 
 };
