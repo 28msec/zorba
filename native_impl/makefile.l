@@ -135,7 +135,7 @@ all : \
 
 #xml_handler \
 
-test :
+test : \
 	nodestore_test \
 	spectrum_test \
 	storage_manager_test \
