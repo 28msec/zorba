@@ -11,6 +11,7 @@
 #ifndef XQP_NODESTORE_H
 #define XQP_NODESTORE_H
 
+#include "store_common.h"
 #include "../util/fxvector.h"
 #include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
@@ -20,15 +21,6 @@
 #include <string>
 
 namespace xqp {
-
-#define STRING_CODE 	1
-#define QNAME_CODE		2
-#define ATTR_CODE			3
-
-#define ERR_BAD_CODE						-1
-#define ERR_OVERRUN							-2
-#define ERR_NODEID_NOT_FOUND		-3
-
 
 class context;
 class item_iterator;
@@ -95,12 +87,21 @@ public:
 
 
 	/*...........................................
-		: attribute node                          :
+		: attribute nodes                         :
 		:.........................................:
 	*/
 	off_t put( context *, rchandle<attribute_node> );
 	int get( context *, nodeid, rchandle<attribute_node> & );
+	int get( context *, off_t, rchandle<attribute_node> & );
 
+
+	/*...........................................
+		: element nodes                           :
+		:.........................................:
+	*/
+	off_t put( context *, rchandle<element_node> );
+	int get( context *, nodeid, rchandle<element_node> & );
+	int get( context *, off_t, rchandle<element_node> & );
 
 
 };

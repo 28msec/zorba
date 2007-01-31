@@ -166,13 +166,21 @@ document_node::child_iterator::child_iterator(
 	document_node const* doc_p)
 :
 	item_iterator(ctx_p),
-	parent_p(doc_p)
+	parent_p(doc_p),
+	child_it(doc_p->child_hv.begin()),
+	it_end(doc_p->child_hv.end())
 {
-	child_it = parent_p->child_hv.begin();
-	it_end = parent_p->child_hv.end();
 }
 	
 document_node::child_iterator::~child_iterator()
+{
+}
+
+void document_node::child_iterator::open()
+{
+}
+
+void document_node::child_iterator::close()
 {
 }
 
@@ -372,7 +380,9 @@ element_node::child_iterator::child_iterator(
 	element_node const* elem_p)
 :
 	item_iterator(ctx_p),
-	parent_p(elem_p)
+	parent_p(elem_p),
+	child_it(elem_p->child_hv.begin()),
+	it_end(elem_p->child_hv.end())
 {
 }
 	
@@ -382,8 +392,10 @@ element_node::child_iterator::~child_iterator()
 
 void element_node::child_iterator::open()
 {
-	child_it = parent_p->child_hv.begin();
-	it_end = parent_p->child_hv.end();
+}
+
+void element_node::child_iterator::close()
+{
 }
 
 rchandle<item> element_node::child_iterator::next()
@@ -422,7 +434,7 @@ element_node::child_iterator& element_node::child_iterator::operator++()
 
 
 /*...........................................
-	:     element_node::attr_iterator         :
+	:  element_node::attr_iterator            :
 	:.........................................:
 */
 
@@ -431,7 +443,9 @@ element_node::attr_iterator::attr_iterator(
 	element_node const* elem_p)
 :
 	item_iterator(ctx_p),
-	parent_p(elem_p)
+	parent_p(elem_p),
+	attr_it(elem_p->attr_hv.begin()),
+	it_end(elem_p->attr_hv.end())
 {
 }
 
@@ -441,8 +455,10 @@ element_node::attr_iterator::~attr_iterator()
 
 void element_node::attr_iterator::open()
 {
-	attr_it = parent_p->attr_hv.begin();
-	it_end = parent_p->attr_hv.end();
+}
+
+void element_node::attr_iterator::close()
+{
 }
 
 rchandle<item> element_node::attr_iterator::next()

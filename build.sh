@@ -1,5 +1,4 @@
 #!/bin/bash -f
-echo "partial build available - 2007.01.27, pcp"
 
 cd util
 if (!(test -d Build)); then

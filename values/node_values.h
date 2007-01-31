@@ -348,8 +348,8 @@ public:	// iterator interface
 		~child_iterator();
 	
 	public:
-	 	void open() {}
-		void close() {}
+	 	void open();
+		void close();
 		rchandle<item> next();
 		rchandle<item> peek() const;
 		bool done();
@@ -531,7 +531,7 @@ public:	// iterator interface
 	
 	public:
 	 	void open();
-		void close() {}
+		void close();
 		rchandle<item> next();
 		rchandle<item> peek() const;
 		bool done();
@@ -556,7 +556,7 @@ public:	// iterator interface
 	
 	public:
 	 	void open();
-		void close() {}
+		void close();
 		rchandle<item> next();
 		rchandle<item> peek() const;
 		bool done();

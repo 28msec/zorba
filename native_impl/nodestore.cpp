@@ -17,6 +17,13 @@
 
 #include <string>
 
+
+/*______________________________________________________________________
+|  
+|  Byte-aligned, depth-first, inline XML encoding.
+|  
+|_______________________________________________________________________*/
+
 using namespace std;
 namespace xqp {
 
@@ -151,7 +158,12 @@ int nodestore::get(
 
 
 /*...........................................
-	: text content                            :
+	:  strings                                :
+	:                                         :
+	:    STRING_CODE  (char)                  :
+	:    len          (uint32_t)              :
+	:    content      (char[])                :
+	:                                         :
 	:.........................................:
 */
 
@@ -202,6 +214,18 @@ int nodestore::get(
 	return k;
 }
 
+
+/*...........................................
+	:  text nodes                             :
+	:                                         :
+	:    TEXT_CODE    (char)                  :
+	:    parentid     (uint64_t)              :
+	:    len          (uint32_t)              :
+	:    content      (char[])                :
+	:                                         :
+	:.........................................:
+*/
+
 off_t nodestore::put(
 	context * ctx_p,
 	rchandle<text_node> tnode_h)
@@ -238,7 +262,7 @@ off_t nodestore::put(
 	uint32_t len)
 {
 	uint32_t res = store_p->size();
-	store_p->push_back(STRING_CODE);
+	store_p->push_back(TEXT_CODE);
 	put(ctx_p, (uint64_t)parent.id);
 	put(ctx_p, (uint32_t)len);
 	store_p->raw_copy(content, len);
@@ -255,7 +279,7 @@ int nodestore::get(
 	int k;
 	uint64_t p;
 	off_t offset = offset0;
-	if (store_p->operator[](offset++)!=STRING_CODE) return ERR_BAD_CODE;
+	if (store_p->operator[](offset++)!=TEXT_CODE) return ERR_BAD_CODE;
 	if ((k = get(ctx_p, offset, p)) < 0) return k; else offset += k;
 	if ((k = get(ctx_p, offset, len)) < 0) return k; else offset += k;
 	data = &store_p->operator[](offset);
@@ -274,7 +298,14 @@ off_t nodestore::put(
 
 
 /*...........................................
-	: qname                                   :
+	:  qname                                  :
+	:                                         :
+	:    QNAME_CODE      (char)               :
+	:    type            (char)               :
+	:    namespace hash  (uint64_t)           :
+	:    local name      (string)             :
+	:    prefix          (string)             :
+	:                                         :
 	:.........................................:
 */
 
@@ -329,7 +360,14 @@ int nodestore::get(
 
 
 /*...........................................
-	: atribute nodes                          :
+	:  attribute nodes                        :
+	:                                         :
+	:    ATTR_CODE      (char)                :
+	:    nodeid         (uint64_t)            :
+	:    parentid       (uint64_t)            :
+	:    name           (QName)               :
+	:    value          (string)              :
+	:                                         :
 	:.........................................:
 */
 off_t nodestore::put(
@@ -338,6 +376,7 @@ off_t nodestore::put(
 {
 	uint32_t res = store_p->size();
 	store_p->push_back(ATTR_CODE);
+	put(ctx_p, (uint64_t)anode_h->get_nodeid().id);
 	put(ctx_p, (uint64_t)anode_h->get_parentid().id);
 	put(ctx_p, anode_h->get_name());
 	put(ctx_p, anode_h->get_val());
@@ -347,23 +386,183 @@ off_t nodestore::put(
 
 int nodestore::get(
 	context * ctx_p,
-	nodeid nid,
+	off_t offset0,
 	rchandle<attribute_node>& anode_h)
 {
 	int k = 0;
-	off_t offset0;
-	if (!index_p->get(nid.id, offset0)) return ERR_NODEID_NOT_FOUND;
 	off_t offset = offset0;
 	if (store_p->operator[](offset++)!=ATTR_CODE) return ERR_BAD_CODE;
+	uint64_t id;
+	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
 	uint64_t parentid;
 	if ((k = get(ctx_p, offset, parentid)) < 0) return k; else offset += k;
 	rchandle<QName> name_h;
 	if ((k = get(ctx_p, offset, name_h)) < 0) return k; else offset += k;
 	string value;
 	if ((k = get(ctx_p, offset, value)) < 0) return k; else offset += k;
-	anode_h = new attribute_node(nid, parentid, name_h, value);
+	anode_h = new attribute_node(id, parentid, name_h, value);
 	return (offset-offset0);
 }
+
+int nodestore::get(
+	context * ctx_p,
+	nodeid nid,
+	rchandle<attribute_node>& anode_h)
+{
+	off_t offset;
+	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
+	return get(ctx_p, offset, anode_h);
+}
+
+
+
+/*...........................................
+	:  element nodes                          :
+	:                                         :
+	:    ELEM_CODE          (char)            :
+	:    nodeid             (uint64_t)        :
+	:    parentid           (uint64_t)        :
+	:    docid              (uint64_t)        :
+	:    name               (QName)           :
+	:    attr_count (= n)   (uint32_t)        :
+	:    attr_1             (attribute)       :
+	:    attr_2             (attribute)       :
+	:    ...                 ...              :
+	:    attr_n             (attribute)       :
+	:    elem_count (= m)   (uint32_t)        :
+	:    elem_1             (element)         :
+	:    elem_2             (element)         :
+	:    ...                 ...              :
+	:    elem_m             (element)         :
+	:                                         :
+	:.........................................:
+*/
+off_t nodestore::put(
+	context * ctx_p,
+	rchandle<element_node> enode_h)
+{
+	uint32_t res = store_p->size();
+	store_p->push_back(ELEM_CODE);
+
+	cout << "PUT_000\n";
+
+	put(ctx_p, (uint64_t)enode_h->get_nodeid().id);
+	cout << "001\n";
+	put(ctx_p, (uint64_t)enode_h->get_parentid().id);
+	cout << "002\n";
+	put(ctx_p, (uint64_t)enode_h->get_docid().id);
+	cout << "003\n";
+	put(ctx_p, enode_h->get_name());
+
+	cout << "PUT_100\n";
+
+	// put namespaces
+
+	uint32_t attr_count = enode_h->attr_count();
+	cout << "PUT_101 [attr_count = " << attr_count << "]\n";
+	put(ctx_p, attr_count);
+	rchandle<item_iterator> attr_it_h = enode_h->attributes(ctx_p);
+	if (attr_it_h==NULL) {
+		cout << "attr_it == NULL\n";
+	}
+	else {
+		item_iterator& attr_it = *attr_it_h;
+		for (; !attr_it.done(); ++attr_it) {
+			cout << "@attr\n";
+			put(ctx_p, dynamic_cast<attribute_node*>(&**attr_it));
+		}
+	}
+
+	cout << "PUT_200\n";
+
+	uint32_t elem_count = enode_h->elem_count();
+	cout << "PUT_201 [elem_count = " << elem_count << "]\n";
+	put(ctx_p, elem_count);
+	rchandle<item_iterator> elem_it_h = enode_h->children(ctx_p);
+	if (elem_it_h==NULL) {
+		cout << "elem_it == NULL\n";
+	}
+	else {
+		item_iterator& child_it = *elem_it_h;
+		for (; !child_it.done(); ++child_it) {
+			cout << "<child>\n";
+			put(ctx_p, dynamic_cast<element_node*>(&**child_it));
+		}
+	}
+
+	cout << "PUT_300\n";
+
+	index_p->put(enode_h->get_nodeid().id, res);
+	return res;
+}
+
+
+int nodestore::get(
+	context * ctx_p,
+	off_t offset0,
+	rchandle<element_node>& enode_h)
+{
+	int k = 0;
+	off_t offset = offset0;
+	if (store_p->operator[](offset++)!=ELEM_CODE) return ERR_BAD_CODE;
+
+	cout << "GET_000\n";
+
+	uint64_t id;
+	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
+	uint64_t parentid;
+	if ((k = get(ctx_p, offset, parentid)) < 0) return k; else offset += k;
+	uint64_t docid;
+	if ((k = get(ctx_p, offset, docid)) < 0) return k; else offset += k;
+	rchandle<QName> name_h;
+	if ((k = get(ctx_p, offset, name_h)) < 0) return k; else offset += k;
+
+	cout << "GET_100\n";
+
+	enode_h = new element_node(id, parentid, docid, name_h);
+
+	cout << "GET_200\n";
+
+	uint32_t attr_count;
+	rchandle<attribute_node> anode_h;
+	if ((k = get(ctx_p, offset, attr_count)) < 0) return k; else offset += k;
+
+	cout << "GET_300 [count=" << attr_count << "]\n";
+
+	for (uint32_t i=0; i<attr_count; ++i) {
+		if ((k = get(ctx_p, offset,  anode_h)) < 0) return k; else offset += k;
+		enode_h->add_node(&*anode_h);
+	}
+
+	cout << "GET_400\n";
+
+	uint32_t elem_count;
+	rchandle<element_node> enode0_h;
+	if ((k = get(ctx_p, offset, elem_count)) < 0) return k; else offset += k;
+
+	cout << "GET_500 [count=" << elem_count << "]\n";
+
+	for (uint32_t i=0; i<elem_count; ++i) {
+		if ((k = get(ctx_p, offset, enode0_h)) < 0) return k; else offset += k;
+		enode_h->add_node(&*enode0_h);
+	}
+	return (offset-offset0);
+}
+
+int nodestore::get(
+	context * ctx_p,
+	nodeid nid,
+	rchandle<element_node>& enode_h)
+{
+	off_t offset;
+	if (!index_p->get(nid.id, offset)) return ERR_NODEID_NOT_FOUND;
+	return get(ctx_p, offset, enode_h);
+}
+
+
+} /* namespace xqp */
+
+
 
 
 
@@ -381,31 +580,6 @@ off_t nodestore::put(
 	put(ctx_p, *dnode->children(ctx);
 	return res;
 }
-
-off_t nodestore::put(
-	context * ctx_p,
-	element_node const* enode)
-{
-	off_t res = offset;
-	store[offset++] = ELEM_CODE;
-	put(ctx_p, enode->get_name());
-	put(ctx_p, enode->ns_count());
-	put(ctx_p, *enode->namespace_nodes(ctx));
-	put(ctx_p, enode->attr_count());
-	put(ctx_p, *enode->attributes(ctx));
-	put(ctx_p, enode->elem_count());
-	put(ctx_p, *enode->children(ctx));
-	return res;
-}
-
-
-off_t nodestore::put(
-	uint16_t code)
-{
-	store[offset++] = code;
-	return offset; 
-}
-
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -437,5 +611,4 @@ off_t nodestore::put(
 */
 
   
-} /* namespace xqp */
 

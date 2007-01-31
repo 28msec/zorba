@@ -9,23 +9,23 @@
  */
 
 #include "node_values.h"
+
+#include "../context/context.h"
 #include "../util/xqp_exception.h"
+
 #include <iostream>
 
 using namespace std;
 using namespace xqp;
 
+
 int main(int argc, char* argv[])
 {
-
 	try {
 		context ctx;
-
-		vector<nodeid> id_v;
-		for (unsigned i=0; i<100; ++i) {
-			id_v.push_back(nodeid(rand()));
-		}
-		uint32_t idcounter = 0;
+		nodeid parent(1);
+		nodeid doc(2);
+		uint32_t idcounter = 3;
 
 		string baseuri("http://base.uri.net/");
 		string uri1("uri_01");
@@ -41,61 +41,93 @@ int main(int argc, char* argv[])
 
 		/*
 				doc(base_uri/uri1) = 
-
-				<elem1 at1="atval1" at2="atval2">
-					<elem2>text1</elem2>
-					<elem3>text1</elem2>
-				</elem1>
+				  <elem1 at1="atval1" at2="atval2">
+					  <elem2>text1</elem2>
+					  <elem3>text1</elem2>
+				  </elem1>
 		*/
-		rchandle<document_node> doc1_h = new document_node(id_v[idcounter++], baseuri, uri2);
 
+		rchandle<document_node> doc1_h =
+			new document_node(doc, baseuri, uri2);
+
+		nodeid el1_id(idcounter++);
 		rchandle<element_node> e1_h =
-			new element_node(id_v[idcounter++], baseuri, qne1_h, &*doc1_h);
+			new element_node(el1_id, parent, doc, qne1_h);
+
+		nodeid at1_id(idcounter++);
 		rchandle<attribute_node> at1_h =
-			new attribute_node(id_v[idcounter++], qna1_h, "atval1", &*e1_h);
-		e1_h->add_attribute_node(at1_h);
+			new attribute_node(at1_id, el1_id, qna1_h, "atval1");
+		e1_h->add_node(&*at1_h);
+
+		nodeid at2_id(idcounter++);
 		rchandle<attribute_node> at2_h =
-			new attribute_node(id_v[idcounter++], qna2_h, "atval2", &*e1_h);
-		e1_h->add_attribute_node(at2_h);
+			new attribute_node(at2_id, el1_id, qna2_h, "atval2");
+		e1_h->add_node(&*at2_h);
 
+		nodeid el2_id(idcounter++);
 		rchandle<element_node> e2_h =
-			new element_node(id_v[idcounter++], baseuri, qne2_h, &*doc1_h);
+			new element_node(el2_id, parent, doc, qne2_h);
+
+		nodeid at3_id(idcounter++);
 		rchandle<attribute_node> at3_h =
-			new attribute_node(id_v[idcounter++], qna1_h, "atval3", &*e2_h);
-		e2_h->add_attribute_node(at3_h);
+			new attribute_node(at3_id, el2_id, qna1_h, "atval3");
+		e2_h->add_node(&*at3_h);
+
+		nodeid at4_id(idcounter++);
 		rchandle<attribute_node> at4_h =
-			new attribute_node(id_v[idcounter++], qna2_h, "atval4", &*e2_h);
-		e2_h->add_attribute_node(at4_h);
+			new attribute_node(at4_id, el2_id, qna2_h, "atval4");
+		e2_h->add_node(&*at4_h);
 
-		e2_h->add_text_node(new text_node(id_v[idcounter++], "text of elem2", &*e2_h));
+		nodeid tx1_id(idcounter++);
+		rchandle<text_node> tx1_h =
+			new text_node(tx1_id, el2_id, "text of elem2");
+		e2_h->add_node(&*tx1_h);
 
-		rchandle<text_node> txt1_h = new text_node(id_v[idcounter++], "\n  ", &*e1_h);
-		rchandle<text_node> txt2_h = new text_node(id_v[idcounter++], "\n", &*e1_h);
+		nodeid tx2_id(idcounter++);
+		rchandle<text_node> tx2_h =
+			new text_node(tx2_id, el1_id, "\n  ");
 
-		e1_h->add_text_node(txt1_h);
-		e1_h->add_element_node(e2_h);
-		e1_h->add_text_node(txt2_h);
+		nodeid tx3_id(idcounter++);
+		rchandle<text_node> tx3_h =
+			new text_node(tx3_id, el1_id, "\n");
 
+		e1_h->add_node(&*tx2_h);
+		e1_h->add_node(&*e2_h);
+		e1_h->add_node(&*tx3_h);
+
+		nodeid el3_id(idcounter++);
 		rchandle<element_node> e3_h =
-			new element_node(id_v[idcounter++], baseuri, qne3_h, &*doc1_h);
+			new element_node(el3_id, parent, doc, qne3_h);
+
+		nodeid at5_id(idcounter++);
 		rchandle<attribute_node> at5_h =
-			new attribute_node(id_v[idcounter++], qna1_h, "atval5", &*e3_h);
-		e3_h->add_attribute_node(at5_h);
+			new attribute_node(at5_id, el3_id, qna1_h, "atval5");
+		e3_h->add_node(&*at5_h);
+
+		nodeid at6_id(idcounter++);
 		rchandle<attribute_node> at6_h =
-			new attribute_node(id_v[idcounter++], qna2_h, "atval6", &*e3_h);
-		e3_h->add_attribute_node(at6_h);
+			new attribute_node(at6_id, el3_id, qna2_h, "atval6");
+		e3_h->add_node(&*at6_h);
 
-		e3_h->add_text_node(new text_node(id_v[idcounter++], "text of elem3", &*e3_h));
+		nodeid tx4_id(idcounter++);
+		rchandle<text_node> tx4_h =
+			new text_node(tx4_id, el3_id, "text of elem3");
+		e3_h->add_node(&*tx4_h);
 
-		rchandle<text_node> txt3_h = new text_node(id_v[idcounter++], "\n  ", &*e1_h);
-		rchandle<text_node> txt4_h = new text_node(id_v[idcounter++], "\n", &*e1_h);
+		nodeid tx5_id(idcounter++);
+		rchandle<text_node> tx5_h =
+			new text_node(tx5_id, el1_id, "\n  ");
 
-		e1_h->add_text_node(txt3_h);
-		e1_h->add_element_node(e3_h);
-		e1_h->add_text_node(txt4_h);
+		nodeid tx6_id(idcounter++);
+		rchandle<text_node> tx6_h =
+			new text_node(tx6_id, el1_id, "\n");
 
-		doc1_h->add_element_node(e1_h);
-		doc1_h->put(cout,ctx);
+		e1_h->add_node(&*tx5_h);
+		e1_h->add_node(&*e3_h);
+		e1_h->add_node(&*tx6_h);
+
+		doc1_h->add_node(&*e1_h);
+		doc1_h->put(cout, &ctx);
 
 
 	/*...........................................

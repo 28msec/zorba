@@ -54,6 +54,21 @@ public:
 
 	friend std::ostream& operator<<(std::ostream& s, expr const& r);
 
+
+/*
+public:	 // manipulators
+	typedef pair<var_expr*,expr*> substitution;
+	typedef std::vector<substitution> subst_list;
+	rchandle<expr> clone() const;
+	rchandle<expr> clone(subst_list) const;
+	void sub(substitution);
+	list<var_expr*> variables() const;						// free variables
+	list<funcall_expr*> functions() const;				// return all function calls
+	rchandle<substitution> resolve(expr*, expr*);			// return subst_list expression match
+	void resolve(expr*, expr*, rchandle<subst_list>);	// return subst_list expression match
+	void traverse(void* (*op) (void*), int flags);
+*/
+
 };
 
 

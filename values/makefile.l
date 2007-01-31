@@ -42,9 +42,13 @@ node_values :	node_values.h node_values.cpp
 node_values_test : node_values.h node_values.cpp node_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/node_values_test \
 		../context/${BUILD}/context.${SUFX} \
-		../runtime/iterator.${SUFX} \
+		../native_impl/${BUILD}/nodestore.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/values.${SUFX} \
 		${BUILD}/node_values.${SUFX} \
@@ -67,8 +71,8 @@ all : \
 	qname_value \
 	xs_primitive_values \
 	xs_primitive_values_test \
+	node_values \
+	node_values_test \
 	ft_values \
 	update_values
 
-#node_values \
-#node_values_test \
