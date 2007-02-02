@@ -82,6 +82,12 @@ public:  //heap interface
 	std::string get(off_t id) throw (xqp_exception);
 
 	/**
+	 ** Return pointer to NUL_delimited string at a given offset
+	 */
+  char * get(								// return: heap char pointer
+    off_t id)	const;				// input:  the string offset
+
+	/**
    ** Insert a new block of characters.
 	 **
    **	@return byte offset of the new string entry

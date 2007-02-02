@@ -27,6 +27,8 @@ class item_iterator;
 class node;
 class nodeid;
 
+
+
 class nodestore : public rcobject
 {
 protected:
@@ -103,6 +105,15 @@ public:
 	off_t put( context *, rchandle<element_node> );
 	int get( context *, nodeid, rchandle<element_node> & );
 	int get( context *, off_t, rchandle<element_node> & );
+
+
+	/*...........................................
+		: document nodes                          :
+		:.........................................:
+	*/
+	off_t put( context *, rchandle<document_node> );
+	int get( context *, nodeid, rchandle<document_node> & );
+	int get( context *, off_t, rchandle<document_node> & );
 
 
 	/*...........................................

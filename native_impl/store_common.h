@@ -18,6 +18,7 @@ namespace xqp {
 #define QNAME_CODE							3
 #define ATTR_CODE								4
 #define ELEM_CODE								5
+#define DOC_CODE 								6
 
 #define ERR_BAD_CODE						-1
 #define ERR_OVERRUN							-2

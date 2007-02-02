@@ -228,7 +228,7 @@ document_node::document_node(
 	string const& _baseuri,
 	string const& _docuri)
 :
-	node(id),
+	node(_id),
 	baseuri(_baseuri),
 	docuri(_docuri),
 	entitymap(1024,0.6)
@@ -1001,9 +1001,9 @@ text_node::text_node(
 }
 
 text_node::text_node(
-	nodeid id)
+	nodeid _id)
 :
-	node(id)
+	node(_id)
 {
 }
 
@@ -1067,9 +1067,9 @@ ostream& text_node::put(
 */
 
 binary_node::binary_node(
-	nodeid id)
+	nodeid _id)
 :
-	node(id)
+	node(_id)
 {
 }
 

@@ -2,6 +2,9 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
+namespace_pool : namespace_pool.h namespace_pool.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/namespace_pool.${SUFX} namespace_pool.cpp
+
 nodestore : nodestore.h nodestore.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore.${SUFX} nodestore.cpp
 
@@ -34,6 +37,15 @@ xml_scanner : xml_scanner.h xml_scanner.cpp
 
 xml_term : xml_term.h xml_term.cpp
 	g++ -c ${CXXOPT} -o ${BUILD}/xml_term.${SUFX} xml_term.cpp
+
+namespace_pool_test : namespace_pool.h namespace_pool.cpp namespace_pool_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/namespace_pool_test \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		${BUILD}/namespace_pool.${SUFX} \
+	namespace_pool_test.cpp
 
 nodestore_test : nodestore.h nodestore.cpp nodestore_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore_test \

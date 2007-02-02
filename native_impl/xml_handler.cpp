@@ -27,10 +27,12 @@ namespace xqp {
 xml_handler::xml_handler(
 	uint64_t _uri,
 	vector<xml_term>& _term_v,
-	xml_ostream& _xos)
+	rchandle<nodestore> _nstore_h,
+	context * _ctx_p)
 :
 	scan_handler(),
 	top(0),
+	nid_top(0),
 	the_attribute(""),
 	the_element(""),
 	the_PCDATA(""),
@@ -41,7 +43,11 @@ xml_handler::xml_handler(
 	uri(_uri),
 	term_v(_term_v),
 	attr_v(8),
-	xos(_xos)
+	nstore_h(_nstore_h),
+	ctx_p(_ctx_p),
+	nodeid(0),
+	parentid(0),
+	docid(0)
 {
 }
 
@@ -49,10 +55,12 @@ xml_handler::xml_handler(
 xml_handler::xml_handler(
 	string const&  _uri,
 	vector<xml_term>& _term_v,
-	xml_ostream& _xos)
+	rchandle<nodestore> _nstore_h,
+	context * _ctx_p)
 :
 	scan_handler(),
 	top(0),
+	nid_top(0),
 	the_attribute(""),
 	the_element(""),
 	the_PCDATA(""),
@@ -63,12 +71,17 @@ xml_handler::xml_handler(
 	uri(URI(_uri).hashkey()),
 	term_v(_term_v),
 	attr_v(8),
-	xos(_xos)
+	nstore_h(_nstore_h),
+	ctx_p(_ctx_p),
+	nodeid(0),
+	parentid(0),
+	docid(0)
 {
 }
 
 
-void xml_handler::error(string const& msg) const
+void xml_handler::error(
+	string const& msg) const
 throw (xqp_exception)
 {
 	throw xqp_exception("XML_HANDLER", msg);
@@ -97,10 +110,7 @@ void xml_handler::adup(const char* buf, int offset, int length)
 	else {
 		name = the_attribute;
 	}
-	xos << QName(QName::qn_attr,prefix,name);
-#ifdef DEBUG
-	cout << "@" << the_attribute << endl;
-#endif
+	nstore_p->put(ctx_p, new QName(QName::qn_attr,prefix,name));
 }
 
 
@@ -109,9 +119,6 @@ void xml_handler::aname(const char* buf, int offset, int length)
 {
 	if (length==0) return;
 	the_attribute = string(buf,offset,length);
-#ifdef DEBUG
-	cout << "@" << the_attribute << endl;
-#endif
 }
 
 
@@ -139,7 +146,7 @@ void xml_handler::aval(const char* buf, int offset, int length)
 		add_term(xml_term(elem_attr_term,uri,term_pos++));
 	}
 	
-	attr_v.push_back(attrpair_t(the_attribute,string(buf,offset,length)));
+	nstore_p->put(ctx, new attribute_node());
 }
 
 
@@ -174,6 +181,7 @@ void xml_handler::etag(const char* buf, int offset, int length)
 {
 	if (length==0) return;
 	string tag(buf,offset,length);
+
 #ifdef DEBUG
 	cout << "</" << tag << ">" << endl;
 	for (uint32_t k=0; k<top; ++k) {
@@ -193,6 +201,7 @@ void xml_handler::etag(const char* buf, int offset, int length)
 	
 	// serialize
 	xos << QName(QName::qn_elem,the_element);
+
 	attrpair_it_t it = attr_v.begin();
 	for (; it!=attr_v.end(); ++it) {
   	attrpair_t p = *it;
@@ -208,13 +217,29 @@ void xml_handler::gi(const char* buf, int offset, int length)
 	if (length==0) return;
 	the_element = string(buf,offset,length);
 	if (top>=STACK_CAPACITY) error("stack overflow");
+
 	the_stack[top++] = the_element;
+	nodeid_stack[nid_top++] = nodeid;
+	nodeid = ctx_p->get_nodeid(); 
+
+	string prefix;
+	string name;
+	string::size_type loc = the_element.find(':', 0);
+	if (loc!=string::npos) {
+		prefix = the_element.substr(0,loc);
+		name = the_element.substr(loc+1);
+	}
+	else {
+		name = the_attribute;
+	}
+	nstore_p->put(ELEM_CODE);
+	nstore_p->put(ctx_p,(uint64_t)nodeid); 
+	nstore_p->put(ctx_p,(uint64_t)parentid); 
+	nstore_p->put(ctx_p,(uint64_t)docid); 
+	nstore_p->put(ctx_p,new QName(QName::elem,prefix,name));
 
 #ifdef DEBUG
 	cout <<'<'<<the_element<<"> ";
-	for (uint32_t k=0; k<top; ++k) {
-		cout << "stack["<<k<<"] = "<<the_stack[k]<<endl;
-	}
 #endif
 }
 

@@ -300,6 +300,7 @@ public:
 	node_kind_t node_kind() const { return doc_kind; }
 	std::string get_baseuri() const { return baseuri; }
 	std::string get_docuri() const { return docuri; }
+	uint32_t child_count() const { return child_hv.size(); }
 	
 public:	// evaluator interface
 	rchandle<item_iterator> base_uri(context *) const;
@@ -470,7 +471,7 @@ public:	// storage interface
 public:	// evaluator interface
 	node_kind_t node_kind() const { return elem_kind; }
 	rchandle<QName> get_name() const { return name_h; }
-	uint32_t elem_count() const { return child_hv.size(); }
+	uint32_t child_count() const { return child_hv.size(); }
 	uint32_t attr_count() const { return attr_hv.size(); }
 	uint32_t ns_count() const { return ns_hv.size(); }
 	

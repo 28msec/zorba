@@ -24,6 +24,8 @@
 using namespace std;
 namespace xqp {
 
+#define _SOURCE  __FUNCTION__
+
 void fxcharheap::ioexception(
 	string const& location,
 	string const& msg) const
@@ -144,7 +146,7 @@ throw (xqp_exception)
     memcpy(&data[id], &buf[start_offset], len);
     data[id+len] = 0;
   } catch (...) {
-    ioexception(__FUNCTION__,"exception in expanding before put()");
+    ioexception(_SOURCE,"exception in expanding before put()");
   }
 
   *offset_p += (len+1);
@@ -169,13 +171,13 @@ throw (xqp::xqp_exception)
 {
   // check if we have enough room
 	if (strlen(&data[id]) < len) {
-		ioexception(__FUNCTION__,"insufficient space for replace");
+		ioexception(_SOURCE,"insufficient space for replace");
 	}
   try {
     memcpy(&data[id], &buf[start_offset], len);
     data[id+len] = 0;
   } catch (...) {
-		ioexception(__FUNCTION__,"exception in memcpy");
+		ioexception(_SOURCE,"exception in memcpy");
   }
 }
 
@@ -192,7 +194,7 @@ throw (xqp_exception)
     if (maxlen < len+1) len = maxlen-1;
     memcpy(&buf[output_offset], &data[id], len+1);  // include the trailing 0
   } catch (...) {
-    ioexception(__FUNCTION__,"exception in memcpy"); 
+    ioexception(_SOURCE,"exception in memcpy"); 
   }
 }
 
@@ -204,6 +206,12 @@ throw (xqp_exception)
 	char * buf = new char[n+1];
 	get(id, buf, 0, n);
 	return string(buf,0,n);
+}
+
+
+char * fxcharheap::get(off_t id) const
+{
+  return &data[id];
 }
 
 
