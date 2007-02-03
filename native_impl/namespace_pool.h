@@ -57,6 +57,9 @@ struct prefix_key
 
 class namespace_pool : public rcobject
 {
+public:
+	typedef std::vector<uint32_t> nslist_t;
+
 protected:
 	// (namespace key) -> uri string
 	fxcharheap uriheap;						// zero-delimted strings heap
@@ -74,49 +77,73 @@ public:
 	~namespace_pool();
 
 public:
+	/**
+	** map: prefix -> uri
+	*/
+	bool prefix2uri(						// return: true <-> prefix found
+		uint32_t docid,						// input: document id
+		string const& prefix,			// input: namespace prefix
+		off_t & uri_offset);			// output: namespace uri offset
 
-	// scan prefix map for a given (docid,prefix),
-	// set uri_offset, return true if found
-	bool find_prefix(
-		uint32_t docid,
-		string const& prefix,
-		off_t & uri_offset);
+	/**
+	** map: uri -> prefix
+	*/
+	bool uri2prefix(						// return true <-> (docid,uri) found
+		uint32_t docid,						// input: document id
+		off_t uri_offset,					// input: uri
+		off_t & prefix_offset			// output: prefix 
+	) const;
 
-	// scan prefix map for a given (docid,uri),
-	// set prefix_offset, return true if found
-	bool ns2prefix(
-		uint32_t docid,
-		off_t uri_offset,
-		off_t & prefix_offset) const;
+	/**
+	** add (docid,prefix,uri) to the pool
+	*/
+	uint32_t put(								// return: id of new, or previous
+		uint32_t docid,						// input: document id
+		string const& prefix,			// input: prefix
+		string const& uri);				// input: uri
 
-	// add (docid,prefix,uri) to the pool
-	uint32_t put(
-		uint32_t docid,
-		string const& prefix,
-		string const& uri);
+	/**
+	** find id for a given (docid,prefix,uri)
+	*/
+	bool find(									// return: true <-> (docid,prefix,uri) found
+		uint32_t docid,						// input: document id
+		string const& prefix,			// input: namesapce prefix
+		string const& uri,				// input: namespace uri
+		uint32_t& id) const;			// output: namespace id, if found
 
-	// add a set of in-scope namespace id's to the pool
-	uint32_t put_nslist(
-		std::vector<uint32_t> nslist);
+	/**
+	** add set of (in-scope) namespaces to the pool
+	*/
+	uint32_t put_nslist(				// return: id of name list
+		nslist_t nslist);					// input: list of namespaces
 
-	// find a set of in-scope namespace id's 
-	bool get_nslist(
-		uint32_t id,
-		std::vector<uint32_t> & nslist);
+	/**
+	** find a set of in-scope namespaces 
+	*/
+	bool get_nslist(						// return true <-> namespace set found
+		uint32_t id,							// input: namespace set id
+		nslist_t & nslist);				// output: list of namespace ids
 
-	// find the URI for a given id
+	/**
+	** find the URI for a given id
+	*/
 	bool get_uri(								// return: true <-> id found
 		uint32_t uri_id,					// input: namespace id
 		string & uri) const				// output: namespace URI
 	throw (bad_arg);						// throw: id is out of range
 
-	// find the prefix for a given (docid,uri) 
+	/**
+	** find the prefix for a given (docid,uri) 
+	*/
 	bool get_prefix(						// return: true <-> id found
 		uint32_t docid,						// input: doc id
 		uint32_t uri_id,					// input: namespace id
 		string & prefix) const		// output: prefix, of any
 	throw (bad_arg);						// throw: id is out of range
 
+	/**
+	** return count of namespaces in the pool
+	*/
 	uint32_t count() const;
 
 };

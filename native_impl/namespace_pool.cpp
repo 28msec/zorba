@@ -15,7 +15,6 @@
 using namespace std;
 namespace xqp {
 
-#define REDUNDANT_KEY (uint32_t)-1
 
 namespace_pool::namespace_pool(
 	string const& datapath)
@@ -28,13 +27,13 @@ namespace_pool::namespace_pool(
 {
 }
 
+
 namespace_pool::~namespace_pool()
 {
 }
 
-// scan prefix map for a given (docid,prefix),
-// set uri_offset, return true if found
-bool namespace_pool::find_prefix(
+
+bool namespace_pool::prefix2uri(
 	uint32_t docid,
 	string const& prefix,
 	off_t & uri_offset)
@@ -52,9 +51,8 @@ bool namespace_pool::find_prefix(
 	return false;
 }
 
-// scan prefix map for a given (docid,uri),
-// set prefix_offset, return true if found
-bool namespace_pool::ns2prefix(
+
+bool namespace_pool::uri2prefix(
 	uint32_t docid,
 	off_t uri_offset,
 	off_t & prefix_offset) const
@@ -70,18 +68,18 @@ bool namespace_pool::ns2prefix(
 	return false;
 }
 
-// add (docid,prefix,uri) to the pool
+
 uint32_t namespace_pool::put(
 	uint32_t docid,
 	string const& prefix,
 	string const& uri)
 {
-	off_t uri_offset;
-	if (find_prefix(docid,prefix,uri_offset)) {
-		if (strcmp(uri.c_str(),uriheap.get(uri_offset))==0) return REDUNDANT_KEY;
-	}
-	uri_offset = uriheap.put(uri.c_str(),0,uri.length());
-	uint32_t uri_id = uriv.size();
+	uint32_t uri_id;
+	if (find(docid,prefix,uri,uri_id)) return uri_id;
+
+	// not found: stuff it, and return new id
+	off_t uri_offset = uriheap.put(uri.c_str(),0,uri.length());
+	uri_id = uriv.size();
 	uriv.push_back(uri_offset);
 	off_t prefix_offset = uriheap.put(prefix.c_str(),0,prefix.length());
 	prefix_key pkey(docid,prefix_offset,uri_offset);
@@ -89,7 +87,29 @@ uint32_t namespace_pool::put(
 	return uri_id;
 }
 
-// add a set of in-scope namespace id's to the pool
+
+bool namespace_pool::find(
+	uint32_t docid,
+	string const& prefix,
+	string const& uri,
+	uint32_t& id) const
+{
+	for (uint32_t uri_id=0; uri_id<uriv.size(); ++uri_id) {
+		off_t uri_offset = uriv[uri_id];
+		if (strcmp(uri.c_str(),uriheap.get(uri_offset))==0) {
+			string prefix0;
+			if (get_prefix(docid,uri_id,prefix0)) {
+				if (prefix==prefix0) {
+					id = uri_id;
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+
 uint32_t namespace_pool::put_nslist(
 	vector<uint32_t> nslist)
 {
@@ -102,7 +122,7 @@ uint32_t namespace_pool::put_nslist(
 	return ns_id;
 }
 
-// find a set of in-scope namespace id's 
+
 bool namespace_pool::get_nslist(
 	uint32_t id,
 	vector<uint32_t> & nslist)
@@ -115,10 +135,11 @@ bool namespace_pool::get_nslist(
 	return true;
 }
 
-bool namespace_pool::get_uri(			// return: true <-> id found
-	uint32_t uri_id,								// input: namespace uri id
-	string & uri) const							// output: namespace URI
-throw (bad_arg)										// throw: id is out of range
+
+bool namespace_pool::get_uri(
+	uint32_t uri_id,					
+	string & uri) const			
+throw (bad_arg)					
 {
 	if (uri_id>=uriv.size()) {
 		throw bad_arg(__FUNCTION__,"id out of range");
@@ -129,18 +150,19 @@ throw (bad_arg)										// throw: id is out of range
 	return true;
 }
 
-bool namespace_pool::get_prefix(	// return: true <-> id found
-	uint32_t docid,									// input: doc id
-	uint32_t uri_id,								// input: namespace uri id
-	string & prefix) const					// output: prefix, of any
-throw (bad_arg)										// throw: id is out of rang
+
+bool namespace_pool::get_prefix(
+	uint32_t docid,							
+	uint32_t uri_id,					
+	string & prefix) const	
+throw (bad_arg)					
 {
 	if (uri_id>=uriv.size()) {
 		throw bad_arg(__FUNCTION__,"id out of range");
 	}
 	off_t uri_offset = uriv[uri_id];
 	off_t prefix_offset;
-	if (ns2prefix(docid, uri_offset, prefix_offset)) {
+	if (uri2prefix(docid, uri_offset, prefix_offset)) {
 		char* prefix_p = uriheap.get(prefix_offset);
 		prefix = string(prefix_p,0,strlen(prefix_p));
 	}
@@ -149,6 +171,7 @@ throw (bad_arg)										// throw: id is out of rang
 	}
 	return true;
 }
+
 
 uint32_t namespace_pool::count() const
 {

@@ -58,59 +58,69 @@ int main(int argc, char* argv[])
 		cout << "put(\"pre9\",..) returned -1\n";
 	}
 
-	cout << "cout = " << nspool.count() << endl;
+	cout << "count = " << nspool.count() << endl;
 
 	string prefix;
 	string uri;
 
-	if (!nspool.get(a0, prefix, uri)) {
+	if (!nspool.get_uri(a0, uri)) {
 		cout << "key [" << a0 << "] not found\n";
 	} else {
+		nspool.get_prefix(1,a0,prefix);
 		cout << "key [" << a0 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a1, prefix, uri)) {
+	if (!nspool.get_uri(a1, uri)) {
 		cout << "key [" << a1 << "] not found\n";
 	} else {
+		nspool.get_prefix(1,a1,prefix);
 		cout << "key [" << a1 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a2, prefix, uri)) {
+	if (!nspool.get_uri(a2, uri)) {
 		cout << "key [" << a2 << "] not found\n";
 	} else {
+		nspool.get_prefix(1,a2,prefix);
 		cout << "key [" << a2 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a3, prefix, uri)) {
+	if (!nspool.get_uri(a3, uri)) {
 		cout << "key [" << a3 << "] not found\n";
 	} else {
+		nspool.get_prefix(2,a3,prefix);
 		cout << "key [" << a3 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a4, prefix, uri)) {
+	if (!nspool.get_uri(a4, uri)) {
 		cout << "key [" << a4 << "] not found\n";
 	} else {
+		nspool.get_prefix(2,a4,prefix);
 		cout << "key [" << a4 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a5, prefix, uri)) {
+	if (!nspool.get_uri(a5, uri)) {
 		cout << "key [" << a5 << "] not found\n";
 	} else {
+		nspool.get_prefix(2,a5,prefix);
 		cout << "key [" << a5 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a6, prefix, uri)) {
+	if (!nspool.get_uri(a6, uri)) {
 		cout << "key [" << a6 << "] not found\n";
 	} else {
+		nspool.get_prefix(3,a6,prefix);
 		cout << "key [" << a6 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a7, prefix, uri)) {
+	if (!nspool.get_uri(a7, uri)) {
 		cout << "key [" << a7 << "] not found\n";
 	} else {
+		nspool.get_prefix(3,a7,prefix);
 		cout << "key [" << a7 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a8, prefix, uri)) {
+	if (!nspool.get_uri(a8, uri)) {
 		cout << "key [" << a8 << "] not found\n";
 	} else {
+		nspool.get_prefix(3,a8,prefix);
 		cout << "key [" << a8 << "] = (" << prefix << ", " << uri << ")\n";
 	}
-	if (!nspool.get(a9, prefix, uri)) {
+	if (!nspool.get_uri(a9, uri)) {
 		cout << "key [" << a9 << "] not found\n";
 	} else {
+		nspool.get_prefix(3,a9,prefix);
 		cout << "key [" << a9 << "] = (" << prefix << ", " << uri << ")\n";
 	}
 
