@@ -199,7 +199,7 @@ throw (xqp_exception)
 }
 
 
-string fxcharheap::get(off_t id)
+string fxcharheap::gets(off_t id)
 throw (xqp_exception)
 {
 	uint32_t n = get_length(id);

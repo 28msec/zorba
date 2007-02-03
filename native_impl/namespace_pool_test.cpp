@@ -17,43 +17,43 @@ int main(int argc, char* argv[])
 {
 	namespace_pool nspool("data");
 
-	int a0 = nspool.put("pre0", "http://this.is.my.uri-00/this/is/the/path/00");
+	int a0 = nspool.put(1,"pre0","http://this.is.my.uri-00/this/is/the/path/00");
 	if (a0==-1) {
 		cout << "put(\"pre0\",..) returned -1\n";
 	}
-	int a1 = nspool.put("pre1", "http://this.is.my.uri-01/this/is/the/path/01");
+	int a1 = nspool.put(1,"pre1","http://this.is.my.uri-01/this/is/the/path/01");
 	if (a0==-1) {
 		cout << "put(\"pre1\",..) returned -1\n";
 	}
-	int a2 = nspool.put("pre2", "http://this.is.my.uri-02/this/is/the/path/02");
+	int a2 = nspool.put(1,"pre2","http://this.is.my.uri-02/this/is/the/path/02");
 	if (a0==-1) {
 		cout << "put(\"pre2\",..) returned -1\n";
 	}
-	int a3 = nspool.put("pre3", "http://this.is.my.uri-03/this/is/the/path/03");
+	int a3 = nspool.put(2,"pre0", "http://this.is.my.uri-03/this/is/the/path/03");
 	if (a0==-1) {
 		cout << "put(\"pre3\",..) returned -1\n";
 	}
-	int a4 = nspool.put("pre4", "http://this.is.my.uri-04/this/is/the/path/04");
+	int a4 = nspool.put(2,"pre1", "http://this.is.my.uri-04/this/is/the/path/02");
 	if (a0==-1) {
 		cout << "put(\"pre4\",..) returned -1\n";
 	}
-	int a5 = nspool.put("pre5", "http://this.is.my.uri-05/this/is/the/path/05");
+	int a5 = nspool.put(2,"pre2", "http://this.is.my.uri-05/this/is/the/path/04");
 	if (a0==-1) {
 		cout << "put(\"pre5\",..) returned -1\n";
 	}
-	int a6 = nspool.put("pre6", "http://this.is.my.uri-06/this/is/the/path/06");
+	int a6 = nspool.put(3,"pre0", "http://this.is.my.uri-06/this/is/the/path/01");
 	if (a0==-1) {
 		cout << "put(\"pre6\",..) returned -1\n";
 	}
-	int a7 = nspool.put("pre7", "http://this.is.my.uri-07/this/is/the/path/07");
+	int a7 = nspool.put(3,"pre1", "http://this.is.my.uri-07/this/is/the/path/07");
 	if (a0==-1) {
 		cout << "put(\"pre7\",..) returned -1\n";
 	}
-	int a8 = nspool.put("pre8", "http://this.is.my.uri-08/this/is/the/path/08");
+	int a8 = nspool.put(3,"pre2", "http://this.is.my.uri-08/this/is/the/path/08");
 	if (a0==-1) {
 		cout << "put(\"pre8\",..) returned -1\n";
 	}
-	int a9 = nspool.put("pre9", "http://this.is.my.uri-09/this/is/the/path/09");
+	int a9 = nspool.put(4,"pre0", "http://this.is.my.uri-09/this/is/the/path/09");
 	if (a0==-1) {
 		cout << "put(\"pre9\",..) returned -1\n";
 	}

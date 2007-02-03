@@ -79,10 +79,12 @@ public:  //heap interface
 	throw (xqp_exception);
 
 	// convenience method: return a string 
-	std::string get(off_t id) throw (xqp_exception);
+	std::string gets(
+		off_t id)
+	throw (xqp_exception);
 
 	/**
-	 ** Return pointer to NUL_delimited string at a given offset
+	 ** Return a pointer to the NULL-delimited string at a given offset
 	 */
   char * get(								// return: heap char pointer
     off_t id)	const;				// input:  the string offset
