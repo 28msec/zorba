@@ -18,12 +18,12 @@ QName::QName(
 	enum qname_type_t _type,
 	string const& _prefix,
 	string const& _name,
-	uint64_t _namespace_hash)
+	uint32_t _ns_id)
 :
 	type(_type),
 	prefix(_prefix),
 	name(_name),
-	namespace_hash(_namespace_hash)
+	ns_id(_ns_id)
 { 
 }
 
@@ -35,7 +35,7 @@ QName::QName(
 	type(_type),
 	prefix(_prefix),
 	name(_name),
-	namespace_hash(0)
+	ns_id(0)
 { 
 }
 
@@ -46,7 +46,7 @@ QName::QName(
 	type(_type),
 	prefix(""),
 	name(_name),
-	namespace_hash(0)
+	ns_id(0)
 {
 }
 
@@ -56,7 +56,7 @@ QName::QName(
 	type(_type),
 	prefix(""),
 	name(""),
-	namespace_hash(0)
+	ns_id(0)
 {
 }
 
@@ -66,7 +66,7 @@ QName::QName(
 	type(qn.type),
 	prefix(qn.prefix),
 	name(qn.name),
-	namespace_hash(qn.namespace_hash)
+	ns_id(qn.ns_id)
 {
 }
 
@@ -75,7 +75,7 @@ QName::QName()
 	type(qn_none),
 	prefix(""),
 	name(""),
-	namespace_hash(0)
+	ns_id(0)
 {
 }
 

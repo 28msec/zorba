@@ -38,14 +38,14 @@ protected:
 	enum qname_type_t type;
 	std::string prefix;
 	std::string name;
-	uint64_t namespace_hash;
+	uint32_t ns_id;
 
 public:
 	QName(
 		enum qname_type_t,
 		std::string const& prefix,
 		std::string const& name,
-		uint64_t namespace_hash);
+		uint32_t ns_id);
 
 	QName(
 		enum qname_type_t,
@@ -70,8 +70,8 @@ public:
 	std::string get_name() const { return name; }
 	void set_name(std::string const& n) { name = n; }
 
-	uint64_t get_namespace_hash() const { return namespace_hash; }
-	void set_namespace_hash(uint64_t h) { namespace_hash = h; }
+	uint64_t get_ns_id() const { return ns_id; }
+	void set_ns_id(uint32_t id) { ns_id = id; }
 
 public:	// atomic_value interface
 

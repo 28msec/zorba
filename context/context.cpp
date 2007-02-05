@@ -74,7 +74,7 @@ off_t context::put_string(
 }
 
 string context::get_string(
-	uint32_t sref)
+	off_t sref)
 throw (xqp_exception)
 {
 	return string_store_h->get(sref);

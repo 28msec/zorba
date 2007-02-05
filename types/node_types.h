@@ -4,7 +4,7 @@
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
- *  Author: Paul Pedersen
+ *  Author: John Cowan, Paul Pedersen
  *
  */
 

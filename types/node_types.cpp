@@ -4,7 +4,7 @@
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
- *  Author: Paul Pedersen
+ *  Author: JOhn Cowan, Paul Pedersen
  *
  */
 
@@ -12,6 +12,16 @@
 
 using namespace std;
 namespace xqp {
+
+
+node_type node_type::the_instance;
+document_node_type document_node_type::the_instance;
+element_node_type element_node_type::the_instance;
+comment_node_type comment_node_type::the_instance;
+attribute_node_type attribute_node_type::the_instance;
+ns_node_type ns_node_type::the_instance;
+pi_node_type pi_node_type::the_instance;
+text_node_type text_node_type::the_instance;
 
 
 ////////////////////////////////

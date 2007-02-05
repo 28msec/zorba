@@ -2,6 +2,9 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
+qname_pool : qname_pool.h qname_pool.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/qname_pool.${SUFX} qname_pool.cpp
+
 namespace_pool : namespace_pool.h namespace_pool.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/namespace_pool.${SUFX} namespace_pool.cpp
 
@@ -37,6 +40,26 @@ xml_scanner : xml_scanner.h xml_scanner.cpp
 
 xml_term : xml_term.h xml_term.cpp
 	g++ -c ${CXXOPT} -o ${BUILD}/xml_term.${SUFX} xml_term.cpp
+
+qname_pool_test : qname_pool.h qname_pool.cpp qname_pool_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/qname_pool_test \
+		../context/${BUILD}/context.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
+		../types/${BUILD}/base_types.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../types/${BUILD}/node_types.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/qname_value.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		${BUILD}/nodestore.${SUFX} \
+		${BUILD}/namespace_pool.${SUFX} \
+		${BUILD}/qname_pool.${SUFX} \
+	qname_pool_test.cpp
 
 namespace_pool_test : namespace_pool.h namespace_pool.cpp namespace_pool_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/namespace_pool_test \

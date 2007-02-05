@@ -38,7 +38,6 @@ class rcobject
 {
 private:
   int refCount;
-  bool shareable;
 
 public:	// ctor,dtor
   rcobject();
@@ -48,11 +47,8 @@ public:	// ctor,dtor
 public:	// refcounting
   void addReference()			 { ++refCount; }
   void removeReference()	 { if (--refCount == 0) delete this; }
-  bool isShared() const		 { return refCount > 1; }
 
 public:	// sharing
-  void markUnshareable()	 { shareable = false; }
-  bool isShareable() const { return shareable; }
 	int get_refCount() const { return refCount; }
 
 public:	// operator overloading
@@ -61,14 +57,12 @@ public:	// operator overloading
 };
 
 inline rcobject::rcobject()
-:	refCount(0),
-	shareable(true)
+:	refCount(0)
 {
 }
 
 inline rcobject::rcobject(const rcobject& o)
-:	refCount(0),
-	shareable(true) 
+:	refCount(0)
 {
 }
 
@@ -142,9 +136,6 @@ template<class T>
 inline void rchandle<T>::init()
 {
   if (p == 0) return;
-  if (p->isShareable() == false) {
-		p = new T(*p);
-  }
   p->addReference();
 }
 
@@ -163,7 +154,7 @@ template<class T>
 inline std::string rchandle<T>::debug() const
 {
 	std::ostringstream oss;
-	oss << "rchandle[refcount="<<p->get_refCount()<<",shareable="<<p->isShareable()<<']';
+	oss << "rchandle[refcount="<<p->get_refCount()<<']';
 	return oss.str();
 }
 
@@ -240,12 +231,16 @@ inline rcihandle<T>::rcihandle(T* realPtr)
 template<class T>
 inline rcihandle<T>::rcihandle(const rcihandle& rhs)
 : counter(rhs.counter)
-{ init(); }
+{
+	init();
+}
 
 
 template<class T>
 inline rcihandle<T>::~rcihandle()
-{ counter->removeReference(); }
+{
+	counter->removeReference();
+}
 
 
 template<class T>
@@ -275,22 +270,30 @@ inline void rcihandle<T>::makeCopy()							// of copy-on-write (conw)
 
 template<class T>																	// const access,
 inline const T* rcihandle<T>::operator->() const	// no conw needed
-{ return counter->p; }
+{
+	return counter->p;
+}
 
 
 template<class T>																	// non-const access,
 inline T* rcihandle<T>::operator->()							// conw needed
-{ makeCopy(); return counter->p; } 
+{
+	makeCopy(); return counter->p;
+} 
 
 
 template<class T>																	// const access,
 inline const T& rcihandle<T>::operator*() const		// no conw needed
-{ return *(counter->p); }
+{
+	return *(counter->p);
+}
 
 
 template<class T>																	// non-const access,
 inline T& rcihandle<T>::operator*()								// conw needed
-{ makeCopy(); return *(counter->p); } 
+{
+	makeCopy(); return *(counter->p);
+} 
 
 
 }	/* namespace xqp */

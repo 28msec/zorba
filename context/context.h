@@ -506,7 +506,7 @@ protected:
 public:
 	// string store services
 	off_t put_string(std::string const& s);
-	std::string get_string(uint32_t sref) throw (xqp_exception);
+	std::string get_string(off_t sref) throw (xqp_exception);
 
 	// nodeid services
 	nodeid next_nodeid();

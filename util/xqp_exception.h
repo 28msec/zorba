@@ -17,6 +17,24 @@
 namespace xqp
 {
 
+#define XQP_EXCEPTION_MACRO(X) \
+		ostringstream os_loc_, os_err_; \
+		os_loc_ << __FILE__ << ":" << __LINE__ << "::" << __FUNCTION__; \
+		os_err_ << X; \
+		throw xqp_exception(os_loc_.str(),os_err_.str());
+
+#define BAD_ARG_MACRO(X) \
+		ostringstream os_loc_, os_err_; \
+		os_loc_ << __FILE__ << ":" << __LINE__ << "::" << __FUNCTION__; \
+		os_err_ << X; \
+		throw bad_arg(os_loc_.str(),os_err_.str());
+
+#define NULL_POINTER_MACRO(X) \
+		ostringstream os_loc_, os_err_; \
+		os_loc_ << __FILE__ << ":" << __LINE__ << "::" << __FUNCTION__; \
+		os_err_ << X; \
+		throw null_pointer(os_loc_.str(),os_err_.str());
+
 class xqp_exception : public std::runtime_error 
 { 
 public:

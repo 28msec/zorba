@@ -17,13 +17,14 @@ namespace xqp {
 
 
 namespace_pool::namespace_pool(
-	string const& datapath)
+	string const& _datapath)
 :
-	uriheap(datapath+"/uriheap",1<<16),
-	uriv(datapath+"/uriv"),
-	nsheap(datapath+"/nsheap"),
-	nsv(datapath+"/nsv"),
-	prefixv(datapath+"/pmap")
+	datapath(_datapath),
+	uriheap(_datapath+"/uriheap",1<<16),
+	uriv(		_datapath+"/uriv"),
+	nsheap(	_datapath+"/nsheap"),
+	nsv(		_datapath+"/nsv"),
+	prefixv(_datapath+"/pmap")
 {
 }
 
@@ -36,7 +37,8 @@ namespace_pool::~namespace_pool()
 bool namespace_pool::prefix2uri(
 	uint32_t docid,
 	string const& prefix,
-	off_t & uri_offset)
+	off_t & uri_offset,
+	uint32_t & uri_id) const
 {
 	fxvector<prefix_key>::const_iterator it = prefixv.begin();
 	for (; it!=prefixv.end(); ++it) {
@@ -44,6 +46,7 @@ bool namespace_pool::prefix2uri(
 		if (docid==k.docid) {
 			if (strcmp(prefix.c_str(),uriheap.get(k.prefix_offset))==0) {
 				uri_offset = k.uri_offset;
+				uri_id = k.uri_id;
 				return true;
 			}
 		}
@@ -53,14 +56,13 @@ bool namespace_pool::prefix2uri(
 
 
 bool namespace_pool::uri2prefix(
-	uint32_t docid,
 	off_t uri_offset,
 	off_t & prefix_offset) const
 {
 	fxvector<prefix_key>::const_iterator it = prefixv.begin();
 	for (; it!=prefixv.end(); ++it) {
 		prefix_key k = *it;
-		if (docid==k.docid && uri_offset==k.uri_offset) {
+		if (uri_offset==k.uri_offset) {
 			prefix_offset = k.prefix_offset;
 			return true;
 		}
@@ -82,7 +84,7 @@ uint32_t namespace_pool::put(
 	uri_id = uriv.size();
 	uriv.push_back(uri_offset);
 	off_t prefix_offset = uriheap.put(prefix.c_str(),0,prefix.length());
-	prefix_key pkey(docid,prefix_offset,uri_offset);
+	prefix_key pkey(docid,prefix_offset,uri_offset,uri_id);
 	prefixv.push_back(pkey);
 	return uri_id;
 }
@@ -98,7 +100,7 @@ bool namespace_pool::find(
 		off_t uri_offset = uriv[uri_id];
 		if (strcmp(uri.c_str(),uriheap.get(uri_offset))==0) {
 			string prefix0;
-			if (get_prefix(docid,uri_id,prefix0)) {
+			if (get_prefix(uri_id,prefix0)) {
 				if (prefix==prefix0) {
 					id = uri_id;
 					return true;
@@ -152,7 +154,6 @@ throw (bad_arg)
 
 
 bool namespace_pool::get_prefix(
-	uint32_t docid,							
 	uint32_t uri_id,					
 	string & prefix) const	
 throw (bad_arg)					
@@ -162,7 +163,7 @@ throw (bad_arg)
 	}
 	off_t uri_offset = uriv[uri_id];
 	off_t prefix_offset;
-	if (uri2prefix(docid, uri_offset, prefix_offset)) {
+	if (uri2prefix(uri_offset, prefix_offset)) {
 		char* prefix_p = uriheap.get(prefix_offset);
 		prefix = string(prefix_p,0,strlen(prefix_p));
 	}

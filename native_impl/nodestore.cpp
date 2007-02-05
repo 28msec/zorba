@@ -302,7 +302,7 @@ off_t nodestore::put(
 	off_t res = store_p->size();
 	store_p->push_back(QNAME_CODE);
 	store_p->push_back(name_h->get_type());
-	put(ctx_p, name_h->get_namespace_hash());
+	put(ctx_p, name_h->get_ns_id());
 	if ((k = put(ctx_p, name_h->get_name())) < 0) return k;
 	if ((k = put(ctx_p, name_h->get_prefix())) < 0) return k;
 	return res;
