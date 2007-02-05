@@ -225,10 +225,12 @@ document_node::child_iterator& document_node::child_iterator::operator++()
 
 document_node::document_node(
 	nodeid _id,
+	nodeid _docid,
 	string const& _baseuri,
 	string const& _docuri)
 :
 	node(_id),
+	docid(_docid),
 	baseuri(_baseuri),
 	docuri(_docuri),
 	entitymap(1024,0.6)

@@ -291,6 +291,7 @@ class text_node;
 class document_node : public node
 {
 protected:
+	nodeid docid;
 	std::string baseuri;
 	std::string docuri;
 	std::vector<nodeid> child_hv;
@@ -330,6 +331,7 @@ public:	// factory interface
 public:	//ctor,dtor
 	document_node(
 		nodeid id,
+		nodeid docid,
 		std::string const& baseuri,
 		std::string const& docuri);
 

@@ -54,7 +54,10 @@ context::context()
 	default_collection("defcol"),
 	nodeid_counter("data/nodeid",1),
 	string_store_h(new fxcharheap(1<<16)),
-	node_store_h(new nodestore("data/store"))
+	nodestore_h(new nodestore("data/nodestore/")),
+	ctx_nodeid(0),
+	ctx_docid(0),
+	in_scope_ns(0)
 {
 }
 
@@ -264,20 +267,20 @@ throw (xqp_exception)
 rchandle<node> context::get_node(nodeid id)
 {
 	rchandle<node> n_h;
-	node_store_h->get(this, id, n_h);
+	nodestore_h->get(this, id, n_h);
 	return n_h;
 }
 
 rchandle<node> context::get_node(nodeid id) const
 {
 	rchandle<node> n_h;
-	node_store_h->get(const_cast<context*>(this), id, n_h);
+	nodestore_h->get(const_cast<context*>(this), id, n_h);
 	return n_h;
 }
 
 rchandle<nodestore> context::get_nodestore()
 {
-	return node_store_h;
+	return nodestore_h;
 }
 
 

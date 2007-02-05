@@ -17,45 +17,29 @@
 
 #include <string>
 
-#define SOURCE __FILE__ << ':' << __LINE__ << "::" << __FUNCTION__ << ": "
+#define TRACE __FILE__<<':'<<__LINE__<<"::"<< __FUNCTION__<<": "
 
 /*______________________________________________________________________
 |  
 |  Byte-aligned, depth-first, inline XML encoding.
-|  
 |_______________________________________________________________________*/
 
 using namespace std;
 namespace xqp {
 
 nodestore::nodestore(
-	string const& path)
+	string const& datapath)
 :
-	store_p(new fxvector<char>(path+"/store")),
-	index_p(new fxhash64map<off_t>(path+"/idx_"))
+	store_p(new fxvector<char>(			datapath+"store")),
+	index_p(new fxhash64map<off_t>(	datapath+"idx_")),
+	nspool_h(new namespace_pool(		datapath+"nspool/"))
 {
+	qnpool_h = new qname_pool(datapath+"qnpool/", nspool_h);
 }
  
 nodestore::~nodestore()
 {
 }
-
-
-/*
-off_t nodestore::put(
-	context * ctx_p,
-	item_iterator & it)
-{
-	off_t res = *store_p->offset_p;
-	for (; !it.done(); ++it) {
-		rchandle<item> i_h = *it;
-		node* n_p = dynamic_cast<node*>(&*i_h);
-		if (n_p==NULL) continue;	//log error
-		put(ctx_p, n_p);
-	}
-	return res;
-}
-*/
 
 
 /*...........................................
@@ -272,10 +256,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<text_node>& tnode_h)
 {
-	cout << SOURCE << "get(" << nid.id << ")\n";
+	cout << TRACE << "get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << SOURCE << "not found\n";
+		cout << TRACE << "not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, tnode_h);
@@ -287,27 +271,25 @@ int nodestore::get(
 	:  qname                                  :
 	:                                         :
 	:    QNAME_CODE      (char)               :
-	:    type            (char)               :
-	:    namespace hash  (uint64_t)           :
-	:    local name      (string)             :
-	:    prefix          (string)             :
+	:    qname_id        (uint32_t)           :
 	:                                         :
 	:.........................................: */
 
 off_t nodestore::put(
 	context * ctx_p,
-	rchandle<QName> name_h)
+	rchandle<QName> qname_h)
 {
-	int k;
 	off_t res = store_p->size();
 	store_p->push_back(QNAME_CODE);
-	store_p->push_back(name_h->get_type());
-	put(ctx_p, name_h->get_ns_id());
-	if ((k = put(ctx_p, name_h->get_name())) < 0) return k;
-	if ((k = put(ctx_p, name_h->get_prefix())) < 0) return k;
+	uint32_t qname_id = qnpool_h->put(ctx_p->context_docid().id,qname_h);
+	put(ctx_p,qname_id);
 	return res;
 }
 
+/*
+ns_id = nspool_h->put(docid,prefix,uri);
+qn_id = qnpool.put(docid,QName::qn_elem,qname);
+*/
 
 int nodestore::get(
 	context * ctx_p,
@@ -315,32 +297,12 @@ int nodestore::get(
 	rchandle<QName> & name_h)
 {
 	int k;
-	uint64_t key;
-	nodeid parent;
+	uint32_t qname_id;
 
 	off_t offset = offset0;
 	if (store_p->operator[](offset++)!=QNAME_CODE) return ERR_BAD_CODE;
-
-	QName::qname_type_t type = (QName::qname_type_t)store_p->operator[](offset++);
-	if ((k = get(ctx_p, offset, key)) < 0) return k; else offset += k;
-
-	char * name;
-	uint32_t name_len;
-	if ((k = get(ctx_p, offset, name, name_len)) < 0)
-		return k;
-	else
-		offset += k;
-
-	char * prefix;
-	uint32_t prefix_len;
-	if ((k = get(ctx_p, offset, prefix, prefix_len)) < 0)
-		return k;
-	else
-		offset += k;
-
-	name_h = new QName(type,
-										 string((char *)prefix,0,prefix_len),
-										 string((char *)name,0,name_len), key);
+	if ((k = get(ctx_p,offset,qname_id)) < 0) return k; else offset += k;
+	name_h = qnpool_h->get(qname_id); 
 	return (offset-offset0);
 }
 
@@ -351,7 +313,7 @@ int nodestore::get(
 	:    ATTR_CODE      (char)                :
 	:    nodeid         (uint64_t)            :
 	:    parentid       (uint64_t)            :
-	:    name           (QName)               :
+	:    qname_id       (uint32_t)            :
 	:    value          (string)              :
 	:                                         :
 	:.........................................: */
@@ -406,10 +368,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<attribute_node>& anode_h)
 {
-	cout << SOURCE << "get(" << nid.id << ")\n";
+	cout << TRACE << "get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << SOURCE << "not found\n";
+		cout << TRACE << "not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, anode_h);
@@ -421,15 +383,16 @@ int nodestore::get(
 	:  element nodes                          :
 	:                                         :
 	:    ELEM_CODE          (char)            :
-	:    nodeid             (uint64_t)        :
-	:    parentid           (uint64_t)        :
-	:    docid              (uint64_t)        :
-	:    name               (QName)           :
+	:    docid              (uint32_t)        :
+	:    nodeid             (uint32_t)        :
+	:    parentid           (uint32_t)        :
+	:    qname_id           (uint32_t)        :
+	:    ns_id              (uint32_t)        :
 	:    attr_count (= n)   (uint32_t)        :
-	:    attr_1             (attribute)       :
-	:    attr_2             (attribute)       :
+	:    attr_1             (attribute_node)  :
+	:    attr_2             (attribute_node)  :
 	:    ...                 ...              :
-	:    attr_n             (attribute)       :
+	:    attr_n             (attribute_node)  :
 	:    child_count(= m)   (uint32_t)        :
 	:    child_1            (node)            :
 	:    child_2            (node)            :
@@ -444,16 +407,19 @@ off_t nodestore::put(
 {
 	if (enode_h==NULL) return 0;
 	uint32_t res = store_p->size();
-	uint64_t id = enode_h->get_nodeid().id;
+	uint32_t docid = ctx_p->context_docid().id;
+	uint32_t id = enode_h->get_nodeid().id;
+	uint32_t parentid = enode_h->get_parentid().id;
+	uint32_t nsid = ctx_p->get_in_scope_ns(enode_h);
+	uint32_t qnameid = qnpool_h->put(docid,enode_h->get_name());
 
-	// handle
+	// navigation
 	store_p->push_back(ELEM_CODE);
+	put(ctx_p, docid);
 	put(ctx_p, id);
-	put(ctx_p, (uint64_t)enode_h->get_parentid().id);
-	put(ctx_p, (uint64_t)enode_h->get_docid().id);
-	put(ctx_p, enode_h->get_name());
-
-	// put namespaces
+	put(ctx_p, parentid);
+	put(ctx_p, qnameid);
+	put(ctx_p, nsid);
 
 	// put attributes
 	uint32_t attr_count = enode_h->attr_count();
@@ -462,9 +428,9 @@ off_t nodestore::put(
 	if (attr_it_h!=NULL) {
 		for (; !attr_it_h->done(); ++(*attr_it_h)) {
 			rchandle<item> i_h = **attr_it_h;
-			if (i_h==NULL) { cout << SOURCE << "item == NULL\n"; continue; }
+			if (i_h==NULL) { cout << TRACE << "item == NULL\n"; continue; }
 			rchandle<attribute_node> n_h = dynamic_cast<attribute_node*>(&*i_h);
-			if (n_h==NULL) { cout << SOURCE << "attribute node == NULL\n"; continue; }
+			if (n_h==NULL) { cout << TRACE << "attribute node == NULL\n"; continue; }
 			n_h->put(cout,ctx_p) << endl;
 			put(ctx_p, n_h);
 		}
@@ -478,40 +444,40 @@ off_t nodestore::put(
 	if (child_it_h!=NULL) {
 		for (; !child_it_h->done(); ++(*child_it_h)) {
 			rchandle<item> i_h = **child_it_h;
-			if (i_h==NULL) { cout << SOURCE << "item == NULL\n"; continue; }
+			if (i_h==NULL) { cout << TRACE << "item == NULL\n"; continue; }
 			rchandle<node> n_h = dynamic_cast<node*>(&*i_h);
-			if (n_h==NULL) { cout << SOURCE << "node == NULL\n"; continue; }
+			if (n_h==NULL) { cout << TRACE << "node == NULL\n"; continue; }
 
 			switch (n_h->node_kind()) {
 			case node::elem_kind: {
-				cout << SOURCE << "PUT_elem\n";
+				cout << TRACE << "PUT_elem\n";
 				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
 				put(ctx_p, en_h);
 				break;
 			}
 			case node::text_kind: {
-				cout << SOURCE << "PUT_text\n";
+				cout << TRACE << "PUT_text\n";
 				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
 				put(ctx_p, tn_h);
 				break;
 			}
 			case node::comment_kind: {
 				// stub
-				cout << SOURCE << "PUT_comment\n";
+				cout << TRACE << "PUT_comment\n";
 				break;
 			}
 			case node::pi_kind: {
 				// stub
-				cout << SOURCE << "PUT_pi\n";
+				cout << TRACE << "PUT_pi\n";
 				break;
 			}
 			case node::binary_kind: {
 				// stub
-				cout << SOURCE << "PUT_binary\n";
+				cout << TRACE << "PUT_binary\n";
 				break;
 			}
 			default: {
-				cout << SOURCE << "Something seriously wrong here: illegal node_kind\n";
+				cout << TRACE << "Something seriously wrong here: illegal node_kind\n";
 				continue; }
 			}
 		}
@@ -529,20 +495,24 @@ int nodestore::get(
 {
 	int k = 0;
 	off_t offset = offset0;
+
 	char code = (*store_p)[offset++];
-
-	// inline
 	if (code!=ELEM_CODE) return ERR_BAD_CODE;
-	uint64_t id;
-	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
-	uint64_t parentid;
-	if ((k = get(ctx_p, offset, parentid)) < 0) return k; else offset += k;
-	uint64_t docid;
-	if ((k = get(ctx_p, offset, docid)) < 0) return k; else offset += k;
-	rchandle<QName> name_h;
-	if ((k = get(ctx_p, offset, name_h)) < 0) return k; else offset += k;
 
-	enode_h = new element_node(id, parentid, docid, name_h);
+	// navigation
+	uint32_t docid;
+	if ((k = get(ctx_p, offset, docid)) < 0) return k; else offset += k;
+	uint32_t id;
+	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
+	uint32_t parentid;
+	if ((k = get(ctx_p, offset, parentid)) < 0) return k; else offset += k;
+	uint32_t qname_id;
+	if ((k = get(ctx_p, offset, qname_id)) < 0) return k; else offset += k;
+	rchandle<QName> qname_h = qnpool_h->get(qname_id);
+	uint32_t ns_id;
+	if ((k = get(ctx_p, offset, ns_id)) < 0) return k; else offset += k;
+
+	enode_h = new element_node(id, parentid, docid, qname_h);
 
 	uint32_t attr_count;
 	rchandle<attribute_node> anode_h;
@@ -571,10 +541,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<element_node>& enode_h)
 {
-	cout << SOURCE << "get(" << nid.id << ")\n";
+	cout << TRACE << "get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << SOURCE << "not found\n";
+		cout << TRACE << "not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, enode_h);
@@ -586,7 +556,9 @@ int nodestore::get(
 	:  document nodes                         :
 	:                                         :
 	:    DOC_CODE           (char)            :
-	:    nodeid             (uint64_t)        :
+	:    docid              (uint32_t)        :
+	:    nodeid             (uint32_t)        :
+	:    ns_id              (uint32_t)        :
 	:    baseuri            (string)          :
 	:    docuri             (string)          :
 	:    child_count(= m)   (uint32_t)        :
@@ -603,15 +575,18 @@ off_t nodestore::put(
 {
 	if (dnode_h==NULL) return 0;
 	uint32_t res = store_p->size();
-	uint64_t id = dnode_h->get_nodeid().id;
+	uint32_t docid = ctx_p->context_docid().id;
+	uint32_t id = dnode_h->get_nodeid().id;
+	uint32_t nsid = ctx_p->get_in_scope_ns(dnode_h);
 
-	// inline
 	store_p->push_back(DOC_CODE);
+
+	// navigation
+	put(ctx_p, docid);
 	put(ctx_p, id);
+	put(ctx_p, nsid);
 	put(ctx_p, dnode_h->get_baseuri());
 	put(ctx_p, dnode_h->get_docuri());
-
-	// put namespaces
 
 	// put children
 	uint32_t child_count = dnode_h->child_count();
@@ -621,40 +596,40 @@ off_t nodestore::put(
 	if (child_it_h!=NULL) {
 		for (; !child_it_h->done(); ++(*child_it_h)) {
 			rchandle<item> i_h = **child_it_h;
-			if (i_h==NULL) { cout << SOURCE << "item == NULL\n"; continue; }
+			if (i_h==NULL) { cout << TRACE << "item == NULL\n"; continue; }
 			rchandle<node> n_h = dynamic_cast<node*>(&*i_h);
-			if (n_h==NULL) { cout << SOURCE << "node == NULL\n"; continue; }
+			if (n_h==NULL) { cout << TRACE << "node == NULL\n"; continue; }
 
 			switch (n_h->node_kind()) {
 			case node::elem_kind: {
-				cout << SOURCE << "PUT_elem\n";
+				cout << TRACE << "PUT_elem\n";
 				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
 				put(ctx_p, en_h);
 				break;
 			}
 			case node::text_kind: {
-				cout << SOURCE << "PUT_text\n";
+				cout << TRACE << "PUT_text\n";
 				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
 				put(ctx_p, tn_h);
 				break;
 			}
 			case node::comment_kind: {
 				// stub
-				cout << SOURCE << "PUT_comment\n";
+				cout << TRACE << "PUT_comment\n";
 				break;
 			}
 			case node::pi_kind: {
 				// stub
-				cout << SOURCE << "PUT_pi\n";
+				cout << TRACE << "PUT_pi\n";
 				break;
 			}
 			case node::binary_kind: {
 				// stub
-				cout << SOURCE << "PUT_binary\n";
+				cout << TRACE << "PUT_binary\n";
 				break;
 			}
 			default: {
-				cout << SOURCE << "Something seriously wrong here: illegal node_kind\n";
+				cout << TRACE << "Something seriously wrong here: illegal node_kind\n";
 				continue; }
 			}
 		}
@@ -672,19 +647,25 @@ int nodestore::get(
 {
 	int k = 0;
 	off_t offset = offset0;
-	char code = (*store_p)[offset++];
 
-	// inline
+	char code = (*store_p)[offset++];
 	if (code!=DOC_CODE) return ERR_BAD_CODE;
-	uint64_t id;
+
+	// navigation
+	uint32_t docid;
+	if ((k = get(ctx_p, offset, docid)) < 0) return k; else offset += k;
+	uint32_t id;
 	if ((k = get(ctx_p, offset, id)) < 0) return k; else offset += k;
+	uint32_t nsid;
+	if ((k = get(ctx_p, offset, nsid)) < 0) return k; else offset += k;
 	string baseuri;
 	if ((k = get(ctx_p, offset, baseuri)) < 0) return k; else offset += k;
 	string docuri;
 	if ((k = get(ctx_p, offset, docuri)) < 0) return k; else offset += k;
 
-	dnode_h = new document_node(id, baseuri, docuri);
+	dnode_h = new document_node(id, docid, baseuri, docuri);
 
+	// children
 	uint32_t child_count;
 	if ((k = get(ctx_p, offset, child_count)) < 0) return k; else offset += k;
 
@@ -702,10 +683,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<document_node>& dnode_h)
 {
-	cout << SOURCE << "get(" << nid.id << ")\n";
+	cout << TRACE << "get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << SOURCE << "not found\n";
+		cout << TRACE << "not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, dnode_h);
@@ -725,7 +706,7 @@ int nodestore::get(
 {
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << SOURCE << "nid [" << nid.id << "] not found\n";
+		cout << TRACE << "nid [" << nid.id << "] not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, node_h);
@@ -758,7 +739,7 @@ int nodestore::get(
 		break;
 	}
 	default: {
-		cout << SOURCE << " : code=" << store_p->operator[](offset) << endl;
+		cout << TRACE << " : code=" << store_p->operator[](offset) << endl;
 	}
 	}
 	return k;

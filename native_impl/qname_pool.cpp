@@ -12,7 +12,7 @@
 #include <vector>
 #include <string.h>
 
-#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+#define TRACE "++"<<__FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
 
 using namespace std;
 namespace xqp {
@@ -49,29 +49,37 @@ uint32_t qname_pool::put(
 	uint32_t docid,
 	rchandle<QName> qname_h)
 {
+cout << TRACE << endl;
 	string prefix = qname_h->get_prefix();
-cout << TRACE << ": prefix = " << prefix << endl;
+cout << TRACE << endl;
 	string name = qname_h->get_name();
-cout << TRACE << ": name = " << name << endl;
+cout << TRACE << endl;
 	QName::qname_type_t type = qname_h->get_type();
 
 	off_t uri_offset;
 	uint32_t uri_id;
+cout << TRACE << endl;
 	if (!nspool_h->prefix2uri(docid,prefix,uri_offset,uri_id)) {
+cout << TRACE << ": docid="<<docid<<", prefix="<<prefix<<endl;
 		BAD_ARG_MACRO("Prefix '"<<prefix<<"' not found");
 	}
 
 	uint32_t qname_id;
+cout << TRACE << endl;
 	if (find(name,uri_id,qname_id)) {
-cout << TRACE << ": [found] qname_id = " << qname_id << endl;
+cout << TRACE << endl;
 		return qname_id;
 	}
 
+cout << TRACE << endl;
 	qname_id = qnamev.size();
+cout << TRACE << endl;
 	uint32_t qn_offset = qnheap.put(name.c_str(),0,name.length());
-cout << TRACE << ": qname_id = " << qname_id << ", uri_id = " << uri_id << endl;
+cout << TRACE << endl;
 	qname_key qkey(qn_offset,uri_id,type);
+cout << TRACE << endl;
 	qnamev.push_back(qkey);
+cout << TRACE << endl;
 	return qname_id;
 }
 

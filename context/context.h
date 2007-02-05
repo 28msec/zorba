@@ -499,9 +499,12 @@ protected:
 	rchandle<fxcharheap> string_store_h;
 
 	// node storage
-	rchandle<nodestore> node_store_h;
+	rchandle<nodestore> nodestore_h;
 	nodeid ctx_nodeid;
 	nodeid ctx_docid;
+
+	// in-scope namespaces
+	uint32_t in_scope_ns;
 
 public:
 	// string store services
@@ -512,6 +515,7 @@ public:
 	nodeid next_nodeid();
 	nodeid context_nodeid();
 	nodeid context_docid();
+	void set_context_docid(uint32_t docid) { ctx_docid = docid; }
 
 	// node store
 	rchandle<node> get_node(nodeid id);
@@ -526,6 +530,14 @@ public:
   rchandle<item> get_context_item() const { return context_item_h; }
 	uint32_t get_context_position() const { return context_position; }
 	uint32_t get_context_size() const { return context_size; }
+
+	// in-scope namespaces
+	uint32_t get_in_scope_ns() const
+		{ return in_scope_ns; }
+	uint32_t get_in_scope_ns(rchandle<element_node> const&) const
+		{ return in_scope_ns; }
+	uint32_t get_in_scope_ns(rchandle<document_node> const&) const
+		{ return in_scope_ns; }
 
 	// local time
 	time_t get_currtime() const { return currtime; }

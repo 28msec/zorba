@@ -17,6 +17,8 @@
 #include "../util/rchandle.h"
 #include "../values/qname_value.h"
 #include "../values/node_values.h"
+#include "namespace_pool.h"
+#include "qname_pool.h"
 
 #include <string>
 
@@ -34,19 +36,21 @@ class nodestore : public rcobject
 protected:
 	fxvector<char>* store_p;					// binary data store
 	fxhash64map<off_t>* index_p;			// map: nodeid -> off_t
+	rchandle<namespace_pool> nspool_h;
+	rchandle<qname_pool> qnpool_h;
 
 public:
 	nodestore(std::string const& path);
 	~nodestore();
 
+public:	
+	rchandle<namespace_pool> get_namespace_pool() const
+		{ return nspool_h; }
+	rchandle<qname_pool> get_qname_pool() const
+		{ return qnpool_h; }
+
 public:
 
-/*
-	off_t put(
-		context * ctx_p,
-		item_iterator & it);
-*/
-	
 	/*...........................................
 		: integers                                :
 		:.........................................:

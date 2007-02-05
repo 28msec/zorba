@@ -50,7 +50,7 @@ mmfile::mmfile(
 	}
 
   if (eofoff==0) {	// new, empty file
-		cout << "mmfile::ctor: new, empty file\n";
+		cout << "mmfile::ctor: new, empty file: \"" << path << "\"\n";
 		off_t m = (initial_size >> 12) << 12;	// multiple of 4096
 		if (m<initial_size) m += (1<<12);			// round up
 
@@ -74,7 +74,7 @@ mmfile::mmfile(
 	 	memset(data, 0, eofoff);
   }
 	else {	// map an existing file
-		cout << "mmfile::ctor: map existing file\n";
+		cout << "mmfile::ctor: map existing file: \"" << path << "\"\n";
     if ((data = (char*)mmap(0, eofoff, PROT_READ|PROT_WRITE,
                             MAP_FILE|MAP_SHARED, fd, 0))==MAP_FAILED) {
       IOEXCEPTION("mmap failed on: '"+path+"'");

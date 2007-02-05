@@ -72,18 +72,20 @@ namespace_pool_test : namespace_pool.h namespace_pool.cpp namespace_pool_test.cp
 
 nodestore_test : nodestore.h nodestore.cpp nodestore_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore_test \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
-		../util/${BUILD}/fxcharheap.${SUFX} \
 		../context/${BUILD}/context.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
 		../values/${BUILD}/node_values.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
+		${BUILD}/namespace_pool.${SUFX} \
+		${BUILD}/qname_pool.${SUFX} \
 		${BUILD}/nodestore.${SUFX} \
 	nodestore_test.cpp
 
