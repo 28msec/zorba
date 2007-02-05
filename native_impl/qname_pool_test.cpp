@@ -15,16 +15,13 @@
 using namespace std;
 using namespace xqp;
 
-#define SOURCE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
 
 int main(int argc, char* argv[])
 {
 	rchandle<namespace_pool> nspool_h = new namespace_pool("data/nspool");
-cout << SOURCE << endl;
 	qname_pool qnpool("data/qnpool/", nspool_h);
-cout << SOURCE << endl;
 	context ctx;
-cout << SOURCE << endl;
 
 	int a0 = nspool_h->put(1,"pre0","http://this.is.my.uri-00/this/is/the/path/00");
 	if (a0==-1) { cout << "put(\"pre0\",..) returned -1\n"; return -1; }
@@ -59,36 +56,50 @@ cout << SOURCE << endl;
 	catch (bad_arg) { cout << "put(\"pre1:elem3)\",..) failed\n"; }
 
 	rchandle<QName> qn1_h, qn2_h, qn3_h, qn4_h, qn5_h, qn6_h;
+	off_t uri_offset;
+	uint32_t uri_id;
 
 	if ((qn1_h = qnpool.get(q1))==NULL) {
 		cout <<"key ["<<q1<<"] not found\n";
 	} else {
-		qn1_h->put(cout,&ctx) << endl;
+		nspool_h->prefix2uri(1,"pre0",uri_offset,uri_id);
+		nspool_h->get_uri(uri_id,uri);
+		qn1_h->put(cout,&ctx) << " [" << uri << "]\n";
 	}
 	if ((qn2_h = qnpool.get(q2))==NULL) {
 		cout <<"key ["<<q2<<"] not found\n";
 	} else {
-		qn2_h->put(cout,&ctx) << endl;
+		nspool_h->prefix2uri(1,"pre0",uri_offset,uri_id);
+		nspool_h->get_uri(uri_id,uri);
+		qn2_h->put(cout,&ctx) << " [" << uri << "]\n";
 	}
 	if ((qn3_h = qnpool.get(q3))==NULL) {
 		cout <<"key ["<<q3<<"] not found\n";
 	} else {
-		qn3_h->put(cout,&ctx) << endl;
+		nspool_h->prefix2uri(1,"pre0",uri_offset,uri_id);
+		nspool_h->get_uri(uri_id,uri);
+		qn3_h->put(cout,&ctx) << " [" << uri << "]\n";
 	}
 	if ((qn4_h = qnpool.get(q4))==NULL) {
 		cout <<"key ["<<q4<<"] not found\n";
 	} else {
-		qn4_h->put(cout,&ctx) << endl;
+		nspool_h->prefix2uri(2,"pre1",uri_offset,uri_id);
+		nspool_h->get_uri(uri_id,uri);
+		qn4_h->put(cout,&ctx) << " [" << uri << "]\n";
 	}
 	if ((qn5_h = qnpool.get(q5))==NULL) {
 		cout <<"key ["<<q5<< "] not found\n";
 	} else {
-		qn5_h->put(cout,&ctx) << endl;
+		nspool_h->prefix2uri(2,"pre1",uri_offset,uri_id);
+		nspool_h->get_uri(uri_id,uri);
+		qn5_h->put(cout,&ctx) << " [" << uri << "]\n";
 	}
 	if ((qn6_h = qnpool.get(q6))==NULL) {
 		cout <<"key ["<<q6<<"] not found\n";
 	} else {
-		qn6_h->put(cout,&ctx) << endl;
+		nspool_h->prefix2uri(2,"pre1",uri_offset,uri_id);
+		nspool_h->get_uri(uri_id,uri);
+		qn6_h->put(cout,&ctx) << " [" << uri << "]\n";
 	}
 
 }
