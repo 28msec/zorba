@@ -12,6 +12,8 @@
 #include <vector>
 #include <string.h>
 
+#define SOURCE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+
 using namespace std;
 namespace xqp {
 
@@ -20,11 +22,11 @@ namespace_pool::namespace_pool(
 	string const& _datapath)
 :
 	datapath(_datapath),
-	uriheap(_datapath+"/uriheap",1<<16),
-	uriv(		_datapath+"/uriv"),
-	nsheap(	_datapath+"/nsheap"),
-	nsv(		_datapath+"/nsv"),
-	prefixv(_datapath+"/pmap")
+	uriheap(_datapath+"uriheap",1<<16),
+	uriv(		_datapath+"uriv"),
+	nsheap(	_datapath+"nsheap"),
+	nsv(		_datapath+"nsv"),
+	prefixv(_datapath+"pmap")
 {
 }
 
@@ -41,16 +43,24 @@ bool namespace_pool::prefix2uri(
 	uint32_t & uri_id) const
 {
 	fxvector<prefix_key>::const_iterator it = prefixv.begin();
+cout << SOURCE << ": docid = " << docid << ", prefix = " << prefix << endl;
 	for (; it!=prefixv.end(); ++it) {
+cout << SOURCE << endl;
 		prefix_key k = *it;
+cout << SOURCE << ": k.docid = " << k.docid << endl;
 		if (docid==k.docid) {
+cout << SOURCE << endl;
+			char * p = uriheap.get(k.prefix_offset);
+cout << SOURCE << ": p = " << p << endl;
 			if (strcmp(prefix.c_str(),uriheap.get(k.prefix_offset))==0) {
+cout << SOURCE << endl;
 				uri_offset = k.uri_offset;
 				uri_id = k.uri_id;
 				return true;
 			}
 		}
 	}
+cout << SOURCE << endl;
 	return false;
 }
 

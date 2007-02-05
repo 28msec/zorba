@@ -15,11 +15,16 @@
 using namespace std;
 using namespace xqp;
 
+#define SOURCE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+
 int main(int argc, char* argv[])
 {
 	rchandle<namespace_pool> nspool_h = new namespace_pool("data/nspool");
-	qname_pool qnpool("data/qnpool", nspool_h);
+cout << SOURCE << endl;
+	qname_pool qnpool("data/qnpool/", nspool_h);
+cout << SOURCE << endl;
 	context ctx;
+cout << SOURCE << endl;
 
 	int a0 = nspool_h->put(1,"pre0","http://this.is.my.uri-00/this/is/the/path/00");
 	if (a0==-1) { cout << "put(\"pre0\",..) returned -1\n"; return -1; }

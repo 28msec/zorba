@@ -12,6 +12,8 @@
 #include <vector>
 #include <string.h>
 
+#define SOURCE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+
 using namespace std;
 namespace xqp {
 
@@ -22,8 +24,8 @@ qname_pool::qname_pool(
 :
 	datapath(_datapath),
 	nspool_h(_nspool_h),
-	qnamev(	_datapath+"/qnpool/qnamev"),
-	qnheap(	_datapath+"/qnpool/qnheap",1<<16)
+	qnamev(	_datapath+"qnamev"),
+	qnheap(	_datapath+"qnheap",1<<16)
 {
 }
 
@@ -38,6 +40,7 @@ uint32_t qname_pool::put(
 	QName::qname_type_t type,
 	string const& qname)
 {
+cout << SOURCE << ": qname = " << qname << endl;
 	rchandle<QName> qname_h = new QName(type,qname);
 	return put(docid,qname_h);
 }
@@ -47,23 +50,36 @@ uint32_t qname_pool::put(
 	uint32_t docid,
 	rchandle<QName> qname_h)
 {
-	string prefix = qname_h->get_name();
+cout << SOURCE << endl;
+	string prefix = qname_h->get_prefix();
+cout << SOURCE << ": prefix = " << prefix << endl;
 	string name = qname_h->get_name();
+cout << SOURCE << ": name = " << name << endl;
 	QName::qname_type_t type = qname_h->get_type();
+cout << SOURCE << endl;
 
 	off_t uri_offset;
+cout << SOURCE << endl;
 	uint32_t uri_id;
+cout << SOURCE << endl;
 	if (!nspool_h->prefix2uri(docid,prefix,uri_offset,uri_id)) {
 		BAD_ARG_MACRO("Prefix '"<<prefix<<"' not found");
 	}
 
+cout << SOURCE << endl;
 	uint32_t qname_id;
+cout << SOURCE << endl;
 	if (find(uri_id,qname_id)) return qname_id;
+cout << SOURCE << endl;
 
 	qname_id = qnamev.size();
+cout << SOURCE << endl;
 	uint32_t qn_offset = qnheap.put(name.c_str(),0,name.length());
+cout << SOURCE << endl;
 	qname_key qkey(qn_offset,uri_id,type);
+cout << SOURCE << endl;
 	qnamev.push_back(qkey);
+cout << SOURCE << endl;
 	return qname_id;
 }
 

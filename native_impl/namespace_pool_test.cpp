@@ -15,7 +15,7 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
-	namespace_pool nspool("data/nspool");
+	namespace_pool nspool("data/nspool/");
 	vector<bool> errorv(10,false);
 
 	int a0 = nspool.put(1,"pre0","http://this.is.my.uri-00/this/is/the/path/00");
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a0, uri)) {
 			cout << "key [" << a0 << "] not found\n";
 		} else {
-			nspool.get_prefix(1,a0,prefix);
+			nspool.get_prefix(a0,prefix);
 			cout << "key [" << a0 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a1, uri)) {
 			cout << "key [" << a1 << "] not found\n";
 		} else {
-			nspool.get_prefix(1,a1,prefix);
+			nspool.get_prefix(a1,prefix);
 			cout << "key [" << a1 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a2, uri)) {
 			cout << "key [" << a2 << "] not found\n";
 		} else {
-			nspool.get_prefix(1,a2,prefix);
+			nspool.get_prefix(a2,prefix);
 			cout << "key [" << a2 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a3, uri)) {
 			cout << "key [" << a3 << "] not found\n";
 		} else {
-			nspool.get_prefix(2,a3,prefix);
+			nspool.get_prefix(a3,prefix);
 			cout << "key [" << a3 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a4, uri)) {
 			cout << "key [" << a4 << "] not found\n";
 		} else {
-			nspool.get_prefix(2,a4,prefix);
+			nspool.get_prefix(a4,prefix);
 			cout << "key [" << a4 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a5, uri)) {
 			cout << "key [" << a5 << "] not found\n";
 		} else {
-			nspool.get_prefix(2,a5,prefix);
+			nspool.get_prefix(a5,prefix);
 			cout << "key [" << a5 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a6, uri)) {
 			cout << "key [" << a6 << "] not found\n";
 		} else {
-			nspool.get_prefix(3,a6,prefix);
+			nspool.get_prefix(a6,prefix);
 			cout << "key [" << a6 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -134,7 +134,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a7, uri)) {
 			cout << "key [" << a7 << "] not found\n";
 		} else {
-			nspool.get_prefix(3,a7,prefix);
+			nspool.get_prefix(a7,prefix);
 			cout << "key [" << a7 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -142,7 +142,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a8, uri)) {
 			cout << "key [" << a8 << "] not found\n";
 		} else {
-			nspool.get_prefix(3,a8,prefix);
+			nspool.get_prefix(a8,prefix);
 			cout << "key [" << a8 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}
@@ -150,7 +150,7 @@ int main(int argc, char* argv[])
 		if (!nspool.get_uri(a9, uri)) {
 			cout << "key [" << a9 << "] not found\n";
 		} else {
-			nspool.get_prefix(4,a9,prefix);
+			nspool.get_prefix(a9,prefix);
 			cout << "key [" << a9 << "] = (" << prefix << ", " << uri << ")\n";
 		}
 	}

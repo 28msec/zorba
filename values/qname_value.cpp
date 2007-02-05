@@ -41,13 +41,18 @@ QName::QName(
 
 QName::QName(
 	enum qname_type_t _type,
-	string const& _name)
+	string const& qname)
 :
 	type(_type),
 	prefix(""),
-	name(_name),
+	name(qname),
 	ns_id(0)
 {
+	size_t n = qname.find(':');
+	if (n!=string::npos) {
+		prefix = qname.substr(0,n);
+		name = qname.substr(n);
+	}
 }
 
 QName::QName(
