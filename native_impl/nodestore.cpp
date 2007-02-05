@@ -17,7 +17,7 @@
 
 #include <string>
 
-#define TRACE __FILE__<<':'<<__LINE__<<"::"<< __FUNCTION__<<": "
+#define TRACE "++"<<__FILE__<<':'<<__LINE__<<"::"<< __FUNCTION__
 
 /*______________________________________________________________________
 |  
@@ -256,10 +256,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<text_node>& tnode_h)
 {
-	cout << TRACE << "get(" << nid.id << ")\n";
+	cout << TRACE << ": get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << "not found\n";
+		cout << TRACE << ": not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, tnode_h);
@@ -368,10 +368,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<attribute_node>& anode_h)
 {
-	cout << TRACE << "get(" << nid.id << ")\n";
+	cout << TRACE << ": get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << "not found\n";
+		cout << TRACE << ": not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, anode_h);
@@ -428,9 +428,9 @@ off_t nodestore::put(
 	if (attr_it_h!=NULL) {
 		for (; !attr_it_h->done(); ++(*attr_it_h)) {
 			rchandle<item> i_h = **attr_it_h;
-			if (i_h==NULL) { cout << TRACE << "item == NULL\n"; continue; }
+			if (i_h==NULL) { cout << TRACE << ": item == NULL\n"; continue; }
 			rchandle<attribute_node> n_h = dynamic_cast<attribute_node*>(&*i_h);
-			if (n_h==NULL) { cout << TRACE << "attribute node == NULL\n"; continue; }
+			if (n_h==NULL) { cout << TRACE << ": attribute node == NULL\n"; continue; }
 			n_h->put(cout,ctx_p) << endl;
 			put(ctx_p, n_h);
 		}
@@ -444,40 +444,40 @@ off_t nodestore::put(
 	if (child_it_h!=NULL) {
 		for (; !child_it_h->done(); ++(*child_it_h)) {
 			rchandle<item> i_h = **child_it_h;
-			if (i_h==NULL) { cout << TRACE << "item == NULL\n"; continue; }
+			if (i_h==NULL) { cout << TRACE << ": item == NULL\n"; continue; }
 			rchandle<node> n_h = dynamic_cast<node*>(&*i_h);
-			if (n_h==NULL) { cout << TRACE << "node == NULL\n"; continue; }
+			if (n_h==NULL) { cout << TRACE << ": node == NULL\n"; continue; }
 
 			switch (n_h->node_kind()) {
 			case node::elem_kind: {
-				cout << TRACE << "PUT_elem\n";
+				cout << TRACE << ": PUT_elem\n";
 				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
 				put(ctx_p, en_h);
 				break;
 			}
 			case node::text_kind: {
-				cout << TRACE << "PUT_text\n";
+				cout << TRACE << ": PUT_text\n";
 				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
 				put(ctx_p, tn_h);
 				break;
 			}
 			case node::comment_kind: {
 				// stub
-				cout << TRACE << "PUT_comment\n";
+				cout << TRACE << ": PUT_comment\n";
 				break;
 			}
 			case node::pi_kind: {
 				// stub
-				cout << TRACE << "PUT_pi\n";
+				cout << TRACE << ": PUT_pi\n";
 				break;
 			}
 			case node::binary_kind: {
 				// stub
-				cout << TRACE << "PUT_binary\n";
+				cout << TRACE << ": PUT_binary\n";
 				break;
 			}
 			default: {
-				cout << TRACE << "Something seriously wrong here: illegal node_kind\n";
+				cout << TRACE << ": Something seriously wrong here: illegal node_kind\n";
 				continue; }
 			}
 		}
@@ -541,10 +541,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<element_node>& enode_h)
 {
-	cout << TRACE << "get(" << nid.id << ")\n";
+	cout << TRACE << ": get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << "not found\n";
+		cout << TRACE << ": not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, enode_h);
@@ -596,40 +596,40 @@ off_t nodestore::put(
 	if (child_it_h!=NULL) {
 		for (; !child_it_h->done(); ++(*child_it_h)) {
 			rchandle<item> i_h = **child_it_h;
-			if (i_h==NULL) { cout << TRACE << "item == NULL\n"; continue; }
+			if (i_h==NULL) { cout << TRACE << ": item == NULL\n"; continue; }
 			rchandle<node> n_h = dynamic_cast<node*>(&*i_h);
-			if (n_h==NULL) { cout << TRACE << "node == NULL\n"; continue; }
+			if (n_h==NULL) { cout << TRACE << ": node == NULL\n"; continue; }
 
 			switch (n_h->node_kind()) {
 			case node::elem_kind: {
-				cout << TRACE << "PUT_elem\n";
+				cout << TRACE << ": PUT_elem\n";
 				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
 				put(ctx_p, en_h);
 				break;
 			}
 			case node::text_kind: {
-				cout << TRACE << "PUT_text\n";
+				cout << TRACE << ": PUT_text\n";
 				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
 				put(ctx_p, tn_h);
 				break;
 			}
 			case node::comment_kind: {
 				// stub
-				cout << TRACE << "PUT_comment\n";
+				cout << TRACE << ": PUT_comment\n";
 				break;
 			}
 			case node::pi_kind: {
 				// stub
-				cout << TRACE << "PUT_pi\n";
+				cout << TRACE << ": PUT_pi\n";
 				break;
 			}
 			case node::binary_kind: {
 				// stub
-				cout << TRACE << "PUT_binary\n";
+				cout << TRACE << ": PUT_binary\n";
 				break;
 			}
 			default: {
-				cout << TRACE << "Something seriously wrong here: illegal node_kind\n";
+				cout << TRACE << ": Something seriously wrong here: illegal node_kind\n";
 				continue; }
 			}
 		}
@@ -683,10 +683,10 @@ int nodestore::get(
 	nodeid nid,
 	rchandle<document_node>& dnode_h)
 {
-	cout << TRACE << "get(" << nid.id << ")\n";
+	cout << TRACE << ": get(" << nid.id << ")\n";
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << "not found\n";
+		cout << TRACE << ": not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, dnode_h);
@@ -706,7 +706,7 @@ int nodestore::get(
 {
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << "nid [" << nid.id << "] not found\n";
+		cout << TRACE << ": nid [" << nid.id << "] not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, node_h);
@@ -739,7 +739,7 @@ int nodestore::get(
 		break;
 	}
 	default: {
-		cout << TRACE << " : code=" << store_p->operator[](offset) << endl;
+		cout << TRACE << ": code=" << store_p->operator[](offset) << endl;
 	}
 	}
 	return k;

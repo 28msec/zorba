@@ -9,10 +9,11 @@
  */
 
 #include "namespace_pool.h"
+
 #include <vector>
 #include <string.h>
 
-#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+#define TRACE "++"<<__FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
 
 using namespace std;
 namespace xqp {
