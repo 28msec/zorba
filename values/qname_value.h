@@ -70,7 +70,7 @@ public:
 	std::string get_name() const { return name; }
 	void set_name(std::string const& n) { name = n; }
 
-	uint64_t get_ns_id() const { return ns_id; }
+	uint32_t get_ns_id() const { return ns_id; }
 	void set_ns_id(uint32_t id) { ns_id = id; }
 
 public:	// atomic_value interface

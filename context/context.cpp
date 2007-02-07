@@ -89,19 +89,9 @@ throw (xqp_exception)
 	:.........................................:
 */
 
-nodeid context::next_nodeid()
+uint32_t context::next_nodeid()
 {
-	return nodeid(++nodeid_counter[0]);
-}
-
-nodeid context::context_nodeid()
-{
-	return ctx_nodeid;
-}
-
-nodeid context::context_docid()
-{
-	return ctx_docid;
+	return (++nodeid_counter[0]);
 }
 
 

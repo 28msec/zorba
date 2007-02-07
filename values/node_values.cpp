@@ -17,6 +17,8 @@
 using namespace std;
 namespace xqp {
 
+#define TRACE "++"<<__FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+
 
 /*...........................................
 	:             node                        :
@@ -471,6 +473,9 @@ rchandle<item> element_node::attr_iterator::next()
 rchandle<item> element_node::attr_iterator::peek() const
 {
 	rchandle<node> n_h = ctx_p->get_node(*attr_it);
+	if (n_h==NULL) {
+		cout << TRACE << ": n_h==NULL\n";
+	}
 	return (n_h==NULL) ? NULL : &*n_h;
 }
 

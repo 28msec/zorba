@@ -233,14 +233,17 @@ void xml_handler::gi(const char* buf, int offset, int length)
 		name = the_attribute;
 	}
 	nstore_p->put(ELEM_CODE);
-	nstore_p->put(ctx_p,(uint64_t)nodeid); 
-	nstore_p->put(ctx_p,(uint64_t)parentid); 
-	nstore_p->put(ctx_p,(uint64_t)docid); 
-	nstore_p->put(ctx_p,new QName(QName::elem,prefix,name));
+	nstore_p->put(ctx_p,docid); 
+	nstore_p->put(ctx_p,nodeid); 
+	nstore_p->put(ctx_p,parentid); 
+	qnameid = qnpool_h->put(new QName(QName::elem,prefix,name));
+	nstore_p->put(ctx_p,qnameid);
+	nstore_p->put(ctx_p,nsid);
 
 #ifdef DEBUG
 	cout <<'<'<<the_element<<"> ";
 #endif
+
 }
 
 

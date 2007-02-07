@@ -65,9 +65,11 @@ protected:  // state
 	rchandle<nodestore> nstore_p;
 	context * ctx_p;
 
-	nodeid nodeid;									// context node
-	nodeid parentid;								// parent nodeid
-	nodeid docid;										// context docid
+	uint32_t nodeid;								// context node
+	uint32_t parentid;							// context parent id
+	uint32_t docid;									// context document id
+	uint32_t qnameid;								// context qname id
+	uint32_t nsid;									// context namespace id
 
 public:	// ctor, dtor
 	xml_handler(

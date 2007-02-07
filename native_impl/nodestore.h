@@ -55,8 +55,8 @@ public:
 		: integers                                :
 		:.........................................:
 	*/
-	void put( context *, uint16_t );
-	int get( context *, off_t, uint16_t & );
+	//void put( context *, uint16_t );
+	//int get( context *, off_t, uint16_t & );
 	
 	void put( context *, uint32_t ); 
 	int get( context *, off_t, uint32_t & );

@@ -500,8 +500,8 @@ protected:
 
 	// node storage
 	rchandle<nodestore> nodestore_h;
-	nodeid ctx_nodeid;
-	nodeid ctx_docid;
+	uint32_t ctx_nodeid;
+	uint32_t ctx_docid;
 
 	// in-scope namespaces
 	uint32_t in_scope_ns;
@@ -512,9 +512,9 @@ public:
 	std::string get_string(off_t sref) throw (xqp_exception);
 
 	// nodeid services
-	nodeid next_nodeid();
-	nodeid context_nodeid();
-	nodeid context_docid();
+	uint32_t next_nodeid();
+	uint32_t context_nodeid() const { return ctx_nodeid; }
+	uint32_t context_docid() const { return ctx_docid; }
 	void set_context_docid(uint32_t docid) { ctx_docid = docid; }
 
 	// node store

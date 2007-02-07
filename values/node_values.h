@@ -37,9 +37,9 @@ class context;
 class nodeid 
 {
 public:
-	uint64_t id;
+	uint32_t id;
 
-	nodeid(uint64_t _id) : id(_id) {}
+	nodeid(uint32_t _id) : id(_id) {}
 	nodeid() : id(0) {}
 	~nodeid() {}
 
