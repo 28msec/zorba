@@ -13,6 +13,7 @@
 
 namespace xqp {
 
+#define END_CODE 								(uint32_t)0
 #define STRING_CODE 						(uint32_t)1
 #define TEXT_CODE   						(uint32_t)2
 #define QNAME_CODE							(uint32_t)3

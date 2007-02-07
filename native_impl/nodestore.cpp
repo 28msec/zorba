@@ -495,7 +495,6 @@ cout << TRACE << ": put_elem(res=" << res << ")\n";
 			if (i_h==NULL) { cout << TRACE << ": item == NULL\n"; continue; }
 			rchandle<attribute_node> n_h = dynamic_cast<attribute_node*>(&*i_h);
 			if (n_h==NULL) { cout << TRACE << ": attribute node == NULL\n"; continue; }
-			cout << TRACE << ": "; n_h->put(cout,ctx_p) << endl;
 			put(ctx_p, n_h);
 		}
 	}
@@ -511,30 +510,30 @@ cout << TRACE << ": put_elem(res=" << res << ")\n";
 
 			switch (n_h->node_kind()) {
 			case node::elem_kind: {
-				cout << TRACE << ": PUT_elem\n";
+				//cout << TRACE << ": PUT_elem\n";
 				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
 				put(ctx_p, en_h);
 				break;
 			}
 			case node::text_kind: {
-				cout << TRACE << ": PUT_text\n";
+				//cout << TRACE << ": PUT_text\n";
 				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
 				put(ctx_p, tn_h);
 				break;
 			}
 			case node::comment_kind: {
 				// stub
-				cout << TRACE << ": PUT_comment\n";
+				//cout << TRACE << ": PUT_comment\n";
 				break;
 			}
 			case node::pi_kind: {
 				// stub
-				cout << TRACE << ": PUT_pi\n";
+				//cout << TRACE << ": PUT_pi\n";
 				break;
 			}
 			case node::binary_kind: {
 				// stub
-				cout << TRACE << ": PUT_binary\n";
+				//cout << TRACE << ": PUT_binary\n";
 				break;
 			}
 			default: {
@@ -544,6 +543,7 @@ cout << TRACE << ": put_elem(res=" << res << ")\n";
 		}
 	}
 
+	put(ctx_p, END_CODE);
 	index_p->put(id, res);
 	return res;
 }
@@ -598,8 +598,7 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 			enode_h->add_node(&*attr_node_h);
 		}
 		else {
-			cout << TRACE << ": terminate attributes on: "
-						<< decode_nodekind(code) << endl;
+			//cout <<TRACE<<": terminate attributes on: "<<decode_nodekind(code)<<endl;
 			break;
 		}
 	}
@@ -613,8 +612,8 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 			enode_h->add_node(&*node_h);
 		}
 		else {
-			cout << TRACE << ": terminate children on: "
-						<< decode_nodekind(code) << endl;
+			if (code==END_CODE) offset += k;
+			else cout <<TRACE<<": elem children end on "<<decode_nodekind(code)<<endl;
 			break;
 		}
 	}
@@ -725,6 +724,7 @@ cout << TRACE << ": put_doc(res=" << res << ")\n";
 		}
 	}
 
+	put(ctx_p, END_CODE);
 	index_p->put(id, res);
 	return res;
 }
@@ -767,6 +767,8 @@ cout << TRACE << ": get_doc(offset=" << offset0 << ")\n";
 			dnode_h->add_node(&*node_h);
 		}
 		else {
+			if (code==END_CODE) offset += k;
+			else cout <<TRACE<<": doc children end on "<<code<<endl;
 			break;
 		}
 	}
@@ -835,14 +837,14 @@ cout << TRACE << ": get_node(offset=" << offset0 << ")\n";
 
 	switch (code) {
 	case TEXT_CODE: {
-		cout << TRACE << " [TEXT]\n";
+		//cout << TRACE << " [TEXT]\n";
 		rchandle<text_node> tnode_h;
 		if ((k = get(ctx_p, offset, tnode_h)) < 0) return k;
 		node_h = &*tnode_h;
 		break;
 	}
 	case ATTR_CODE: {
-		cout << TRACE << " [ATTR]\n";
+		//cout << TRACE << " [ATTR]\n";
 		rchandle<attribute_node> anode_h;
 		if ((k = get(ctx_p, offset, anode_h)) < 0) {
 			cout << TRACE<<" [ATTR] error: "<<k<<"\n";
@@ -855,7 +857,7 @@ cout << TRACE << ": get_node(offset=" << offset0 << ")\n";
 		break;
 	}
 	case ELEM_CODE: {
-		cout << TRACE << " [ELEM]\n";
+		//cout << TRACE << " [ELEM]\n";
 		rchandle<element_node> enode_h;
 		if ((k = get(ctx_p, offset, enode_h)) < 0) return k;
 		node_h = &*enode_h;

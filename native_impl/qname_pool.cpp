@@ -49,23 +49,18 @@ uint32_t qname_pool::put(
 	uint32_t docid,
 	rchandle<QName> qname_h)
 {
-cout << TRACE << endl;
 	string prefix = qname_h->get_prefix();
-cout << TRACE << ": prefix=" << prefix << endl;
 	string name = qname_h->get_name();
-cout << TRACE << ": name=" << name << endl;
 	QName::qname_type_t type = qname_h->get_type();
 
 	off_t uri_offset;
 	uint32_t uri_id;
 	if (!nspool_h->prefix2uri(docid,prefix,uri_offset,uri_id)) {
-cout << TRACE << ": docid="<<docid<<", prefix="<<prefix<<endl;
 		BAD_ARG_MACRO("Prefix '"<<prefix<<"' not found");
 	}
 
 	uint32_t qname_id;
 	if (find(name,uri_id,qname_id)) {
-cout << TRACE << ": found -> " << qname_id << endl;
 		return qname_id;
 	}
 
