@@ -4,6 +4,8 @@
  *
  *  Copyright 2005-2006 FLWOR Foundation.
  *
+ *	Authors: John Cowan, Paul Pedersen
+ *
  */
  
 /*_______________________________________________________________________
@@ -280,10 +282,10 @@ void xml_scanner::scan(const char* r, unsigned len, scan_handler* h)
 			continue;
 		}
 
-
+/*
 		cerr<< decodeState1(theState) << '(' << (char)ch << ")[ " << decodeTok1(tok) << " ] -> "
 				<< decodeAction1(action) << ", " << decodeState1(theNextState) << endl;
-
+*/
   
 		switch (action) {
 		case A_ADUP:							// attr(=)

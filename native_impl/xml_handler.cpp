@@ -4,7 +4,7 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
- *	Author: Paul Pedersen
+ *	Author: John Cowan, Paul Pedersen
  *
  */
 
@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 
+#include "../context/context.h"
 #include "../values/qname_value.h"
 #include "../util/xqp_exception.h"
 #include "../util/tokenbuf.h"
@@ -22,17 +23,22 @@
 using namespace std;
 namespace xqp {
 
+#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
 #define DELIMSET " \n,.;:?!\r\t+-_!@#$%&*()[]{}=/|\\<>'\""
+#define NAME  first
+#define VALUE second
+
 
 xml_handler::xml_handler(
-	uint64_t _uri,
-	vector<xml_term>& _term_v,
+	context * _ctx_p,
 	rchandle<nodestore> _nstore_h,
-	context * _ctx_p)
+	uint64_t _uri,
+	vector<xml_term>& _term_v)
 :
 	scan_handler(),
 	top(0),
-	nid_top(0),
+	qtop(0),
+	ntop(0),
 	the_attribute(""),
 	the_element(""),
 	the_PCDATA(""),
@@ -45,22 +51,25 @@ xml_handler::xml_handler(
 	attr_v(8),
 	nstore_h(_nstore_h),
 	ctx_p(_ctx_p),
-	nodeid(0),
-	parentid(0),
-	docid(0)
+	the_id(0),
+	the_parentid(0),
+	the_docid(0),
+	the_qnameid(0),
+	the_nsid(0)
 {
 }
 
 
 xml_handler::xml_handler(
-	string const&  _uri,
-	vector<xml_term>& _term_v,
+	context * _ctx_p,
 	rchandle<nodestore> _nstore_h,
-	context * _ctx_p)
+	string const&  _uri,
+	vector<xml_term>& _term_v)
 :
 	scan_handler(),
 	top(0),
-	nid_top(0),
+	qtop(0),
+	ntop(0),
 	the_attribute(""),
 	the_element(""),
 	the_PCDATA(""),
@@ -73,9 +82,11 @@ xml_handler::xml_handler(
 	attr_v(8),
 	nstore_h(_nstore_h),
 	ctx_p(_ctx_p),
-	nodeid(0),
-	parentid(0),
-	docid(0)
+	the_id(0),
+	the_parentid(0),
+	the_docid(0),
+	the_qnameid(0),
+	the_nsid(0)
 {
 }
 
@@ -110,7 +121,10 @@ void xml_handler::adup(const char* buf, int offset, int length)
 	else {
 		name = the_attribute;
 	}
-	nstore_p->put(ctx_p, new QName(QName::qn_attr,prefix,name));
+
+	// memo
+	attr_v.push_back(attrpair_t(the_attribute,""));
+	
 }
 
 
@@ -133,7 +147,6 @@ void xml_handler::aval(const char* buf, int offset, int length)
 
 	tokenbuf tokbuf(p,0,length,DELIMSET);
 	tokbuf.set_lowercase();
-
 	tokenbuf::token_iterator it = tokbuf.begin();
 	tokenbuf::token_iterator end = tokbuf.end();
 
@@ -146,7 +159,9 @@ void xml_handler::aval(const char* buf, int offset, int length)
 		add_term(xml_term(elem_attr_term,uri,term_pos++));
 	}
 	
-	nstore_p->put(ctx, new attribute_node());
+	// memo
+	attr_v.push_back(attrpair_t(the_attribute,string(buf,offset,length)));
+
 }
 
 
@@ -173,41 +188,37 @@ void xml_handler::eof(const char* buf, int offset, int length)
 }
 
 
-#define NAME  first
-#define VALUE second
-
 // end tag callback
 void xml_handler::etag(const char* buf, int offset, int length)
 {
 	if (length==0) return;
-	string tag(buf,offset,length);
+	string etag0(buf,offset,length);
 
-#ifdef DEBUG
-	cout << "</" << tag << ">" << endl;
-	for (uint32_t k=0; k<top; ++k) {
-		cout << "stack["<<k<<"] = "<<the_stack[k]<<endl;
+	string prefix;
+	string localname;
+	string::size_type loc = the_element.find(':', 0);
+	if (loc!=string::npos) {
+		prefix = the_element.substr(0,loc);
+		localname = the_element.substr(loc+1);
 	}
-#endif
+	else {
+		localname = the_attribute;
+	}
+
+	uint32_t etag0_id;
+	nstore_h->get_qname_pool()->find(localname,the_nsid,etag0_id);
 
 	int k = top;
 	while (k>0) {
-		string tag0 = the_stack[--k];
-		size_t a = tag0.find(' ');
-		if (a!=string::npos) tag0 = tag0.substr(0,a);
-		if (tag0==tag) break;
+		uint32_t tag_id = the_id_stack[--k];
+		if (tag_id==etag0_id) break;
 	}
 	if (k==0) return;
 	top = k;
-	
-	// serialize
-	xos << QName(QName::qn_elem,the_element);
 
-	attrpair_it_t it = attr_v.begin();
-	for (; it!=attr_v.end(); ++it) {
-  	attrpair_t p = *it;
-  	xos << QName(QName::qn_attr,p.NAME);
-  	xos << p.VALUE;
-	}
+	// serialize: terminate element
+	nstore_h->put(ctx_p, END_CODE);
+	
 }
 
 
@@ -216,11 +227,10 @@ void xml_handler::gi(const char* buf, int offset, int length)
 {
 	if (length==0) return;
 	the_element = string(buf,offset,length);
-	if (top>=STACK_CAPACITY) error("stack overflow");
-
-	the_stack[top++] = the_element;
-	nodeid_stack[nid_top++] = nodeid;
-	nodeid = ctx_p->get_nodeid(); 
+	the_name_stack[top++] = the_element;
+	the_parentid = the_id;
+	the_id = ctx_p->next_nodeid(); 
+	nodeid_stack[ntop++] = the_id;
 
 	string prefix;
 	string name;
@@ -232,17 +242,25 @@ void xml_handler::gi(const char* buf, int offset, int length)
 	else {
 		name = the_attribute;
 	}
-	nstore_p->put(ELEM_CODE);
-	nstore_p->put(ctx_p,docid); 
-	nstore_p->put(ctx_p,nodeid); 
-	nstore_p->put(ctx_p,parentid); 
-	qnameid = qnpool_h->put(new QName(QName::elem,prefix,name));
-	nstore_p->put(ctx_p,qnameid);
-	nstore_p->put(ctx_p,nsid);
+
+	rchandle<qname_pool> qnpool_h = nstore_h->get_qname_pool();
+	the_qnameid = qnpool_h->put(the_docid,new QName(QName::qn_elem,prefix,name));
+
+	if (top>=STACK_CAPACITY) error("stack overflow");
+	the_id_stack[top++] = the_qnameid;
 
 #ifdef DEBUG
 	cout <<'<'<<the_element<<"> ";
 #endif
+
+	// serialize concatenated text node
+	if (textbuf.str().length()>0) {
+		nstore_h->put(ctx_p, TEXT_CODE);
+		nstore_h->put(ctx_p, ctx_p->next_nodeid());
+		nstore_h->put(ctx_p, the_id);
+		nstore_h->put(ctx_p, textbuf.str());
+		textbuf.str("");
+	}
 
 }
 
@@ -277,22 +295,22 @@ void xml_handler::add_term(
 		add_term(xml_term(term, uri, pos));
 	}
 	if (top>=1) {
-		e = the_stack[top-1];
+		e = the_name_stack[top-1];
 		e += "/word::"+term;
 		if (e_indexing) add_term(xml_term(e, uri, pos));
 	}
 	if (top>=2) {
-		p = the_stack[top-2];
+		p = the_name_stack[top-2];
 		p += "/child::"+e;
 		if (p_indexing) add_term(xml_term(p, uri, pos));
 	}
 	if (top>=3) {
-		string gp = the_stack[top-3];
+		string gp = the_name_stack[top-3];
 		gp += "/child::"+p;
 		if (gp_indexing) add_term(xml_term(gp, uri, pos));
 	}
 	if (top>=4) {
-		ggp = the_stack[top-4];
+		ggp = the_name_stack[top-4];
 		ggp += "/child::"+gp;
 		if (ggp_indexing) add_term(xml_term(ggp, uri, pos));
 	}
@@ -309,7 +327,6 @@ void xml_handler::handle_pcdata(const char* buf, int offset, int length)
 	tokenbuf tokbuf(buf,offset,length,DELIMSET);
 	tokbuf.set_lowercase(true);
 	string last("");
-
 	tokenbuf::token_iterator it = tokbuf.begin();
 	tokenbuf::token_iterator end = tokbuf.end();
 
@@ -332,15 +349,15 @@ void xml_handler::handle_pcdata(const char* buf, int offset, int length)
 			string bigram = last+"#"+term;
 			add_term(bigram, uri, last_pos);
 		}
-
 		last_pos = term_pos;
 		last = term;
 		++term_pos;
 	}
-	
-	xos << string(buf,offset,length);
-}
 
+	// concat text
+	textbuf << string(buf,offset,length);
+
+}
 
 
 // processing instruction callback
@@ -363,6 +380,7 @@ void xml_handler::pitarget(const char* buf, int offset, int length)
 }
 
 
+
 // start tag close (attributes all processed) callback 
 void xml_handler::stagc(const char* buf, int offset, int length)
 {
@@ -370,6 +388,25 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 	string s(buf,offset,length);
 	cout << ">" << endl;
 #endif
+
+	// serialize: element QName
+	nstore_h->put(ctx_p,ELEM_CODE);
+	nstore_h->put(ctx_p,the_docid); 
+	nstore_h->put(ctx_p,the_id); 
+	nstore_h->put(ctx_p,the_parentid); 
+	nstore_h->put(ctx_p,the_qnameid);
+	nstore_h->put(ctx_p,the_nsid);
+
+	// serialize attribute list
+	vector<attrpair_t>::const_iterator it = attr_v.begin();
+	for (; it!=attr_v.end(); ++it) {
+  	attrpair_t p = *it;
+		nstore_h->put(ctx_p,ATTR_CODE);
+		nstore_h->put(ctx_p,ctx_p->next_nodeid());
+		nstore_h->put(ctx_p,the_id);
+		nstore_h->put(ctx_p,p.NAME);
+		nstore_h->put(ctx_p,p.VALUE);
+	}
 }
 
 

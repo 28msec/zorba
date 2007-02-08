@@ -4,21 +4,24 @@
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
- *	Author: Paul Pedersen
+ *	Author: John Cowan,Paul Pedersen
  *
  */
 
-#include "../util/file.h"
-#include "../store/xml_ostream.h"
 #include "xml_handler.h"
 #include "xml_scanner.h"
 #include "xml_term.h"
+#include "../context/context.h"
+#include "../util/file.h"
 
 using namespace std;
 using namespace xqp;
 
 int main(int argc, char* argv[]) 
 {
+	context ctx;
+	rchandle<nodestore> nstore_h = ctx.get_nodestore();
+
   try {
     if (argc<2) {
       cerr << "Expecting one argument: PATH\n";
@@ -40,8 +43,7 @@ int main(int argc, char* argv[])
     xml_scanner xscanner;
 		uint64_t uri = 0;
 		vector<xml_term> xterm_v;
-		xml_ostream xos;
-    xml_handler* xhandler = new xml_handler(uri, xterm_v, xos);
+    xml_handler* xhandler = new xml_handler(&ctx,nstore_h,uri,xterm_v);
 
 		cout << "scanning..\n";
     xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler));

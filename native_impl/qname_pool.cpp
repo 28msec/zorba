@@ -55,7 +55,10 @@ uint32_t qname_pool::put(
 
 	off_t uri_offset;
 	uint32_t uri_id;
-	if (!nspool_h->prefix2uri(docid,prefix,uri_offset,uri_id)) {
+	if (prefix.length()==0) {
+		uri_id = 0;
+	}
+	else if (!nspool_h->prefix2uri(docid,prefix,uri_offset,uri_id)) {
 		BAD_ARG_MACRO("Prefix '"<<prefix<<"' not found");
 	}
 

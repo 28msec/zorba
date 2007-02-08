@@ -41,6 +41,32 @@ xml_scanner : xml_scanner.h xml_scanner.cpp
 xml_term : xml_term.h xml_term.cpp
 	g++ -c ${CXXOPT} -o ${BUILD}/xml_term.${SUFX} xml_term.cpp
 
+xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_handler_test \
+		../context/${BUILD}/context.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
+		../types/${BUILD}/base_types.${SUFX} \
+		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../types/${BUILD}/node_types.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/URI.${SUFX} \
+		../util/${BUILD}/tokenbuf.${SUFX} \
+		../store/${BUILD}/xml_ostream.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/qname_value.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		${BUILD}/scan_handler.${SUFX} \
+		${BUILD}/xml_scanner.${SUFX} \
+		${BUILD}/xml_handler.${SUFX} \
+		${BUILD}/nodestore.${SUFX} \
+		${BUILD}/namespace_pool.${SUFX} \
+		${BUILD}/qname_pool.${SUFX} \
+	xml_handler_test.cpp
+
 qname_pool_test : qname_pool.h qname_pool.cpp qname_pool_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/qname_pool_test \
 		../context/${BUILD}/context.${SUFX} \
@@ -106,19 +132,6 @@ storage_manager_test : storage_manager.h storage_manager.cpp storage_manager_tes
 		${BUILD}/spectrum.${SUFX} \
 		${BUILD}/xml_scanner.${SUFX} \
 	storage_manager_test.cpp
-
-xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
-	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_handler_test \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/URI.${SUFX} \
-		../util/${BUILD}/tokenbuf.${SUFX} \
-		../store/${BUILD}/xml_ostream.${SUFX} \
-		../values/${BUILD}/qname_value.${SUFX} \
-		${BUILD}/scan_handler.${SUFX} \
-		${BUILD}/xml_scanner.${SUFX} \
-		${BUILD}/xml_handler.${SUFX} \
-	xml_handler_test.cpp
 
 xml_loader_test : xml_loader.h xml_loader.cpp xml_loader_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_loader_test \

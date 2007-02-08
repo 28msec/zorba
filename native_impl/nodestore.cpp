@@ -17,7 +17,8 @@
 
 #include <string>
 
-#define TRACE "++"<<__FILE__<<':'<<__LINE__<<"::"<< __FUNCTION__
+#define TRACE __FILE__<<':'<<__LINE__<<"::"<< __FUNCTION__
+
 
 /*______________________________________________________________________
 |  
@@ -40,7 +41,6 @@ nodestore::nodestore(
 nodestore::~nodestore()
 {
 }
-
 
 string decode_nodekind(uint32_t code)
 {

@@ -4,7 +4,7 @@
  *
  *  Copyright 2006-2007 FLWOR Foundation.
  *
- *	Author: Paul Pedersen
+ *	Author: John Cowan,Paul Pedersen
  *
  */
  
@@ -18,15 +18,17 @@
 #ifndef XQP_XML_HANDLER_H
 #define XQP_XML_HANDLER_H
 
+#include "nodestore.h"
 #include "scan_handler.h"
 #include "xml_term.h"
-#include "../native_impl/nodestore.h"
+
 #include "../util/rchandle.h"
 #include "../util/URI.h"
 
 #include <string>
 #include <stack>
 #include <ostream>
+#include <sstream>
 #include <utility>
 
 
@@ -36,23 +38,29 @@ class context;
 
 class xml_handler : public scan_handler
 {
+public:
+	typedef std::pair<std::string,std::string> attrpair_t;
+
 protected:  // state
 	static const uint32_t STACK_CAPACITY = 65536;
-
-	std::string the_stack[STACK_CAPACITY];
+	std::string the_name_stack[STACK_CAPACITY];
+	uint32_t the_id_stack[STACK_CAPACITY];
+	uint32_t nodeid_stack[STACK_CAPACITY];
 	uint32_t top;
-	nodeid nodeid_stack[STACK_CAPACITY];
-	uint32_t nid_top;
+	uint32_t qtop;
+	uint32_t ntop;
 
   std::string the_attribute;			// most recent attribute
   std::string the_element;				// most recent element tag
 	std::string	the_PCDATA;					// most recent PCDATA
   std::string	the_PITarget;				// most recent PITarget
   uint16_t the_entity;						// most recent entity 
+
 	uint32_t term_pos;							// current term position
 	uint32_t last_pos;							// last term position, for delta-coding
 	uint64_t uri;										// current URI hash
 	std::vector<xml_term>& term_v;	// term index accumulator
+	std::vector<attrpair_t> attr_v;	// term index accumulator
 
 	// indexing switches
 	bool term_indexing;							// index terms
@@ -62,27 +70,29 @@ protected:  // state
 	bool gp_indexing;								// index   b/c/word::t
 	bool ggp_indexing;							// index a/b/c/word::t
 
-	rchandle<nodestore> nstore_p;
+	rchandle<nodestore> nstore_h;
 	context * ctx_p;
 
-	uint32_t nodeid;								// context node
-	uint32_t parentid;							// context parent id
-	uint32_t docid;									// context document id
-	uint32_t qnameid;								// context qname id
-	uint32_t nsid;									// context namespace id
+	uint32_t the_id;								// context node
+	uint32_t the_parentid;					// context parent id
+	uint32_t the_docid;							// context document id
+	uint32_t the_qnameid;						// context qname id
+	uint32_t the_nsid;							// context namespace id
+
+	ostringstream textbuf;
 
 public:	// ctor, dtor
 	xml_handler(
-		uint64_t uri,
-	  std::vector<xml_term>&,				// accumulate terms here
+		context *,
 	  rchandle<nodestore>, 					// accumulate document here
-		context *);
+		uint64_t uri,									// document URI
+	  std::vector<xml_term>&);			// accumulate terms here
 
 	xml_handler(
-		std::string const& uri,
-	  std::vector<xml_term>&,				// accumulate terms here
+		context *,
 	  rchandle<nodestore>, 					// accumulate document here
-		context *);
+		std::string const& uri,				// doucment URI
+	  std::vector<xml_term>&);			// accumulate terms here
 
 	~xml_handler() {}
 

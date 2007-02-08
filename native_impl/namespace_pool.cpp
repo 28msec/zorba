@@ -29,6 +29,11 @@ namespace_pool::namespace_pool(
 	nsv(		_datapath+"nsv"),
 	prefixv(_datapath+"pmap")
 {
+	if (uriv.size()==0) {
+		// initialize with "nonamespace" empty uri
+		uriv.push_back(0);
+		uriheap.put(" ");
+	}
 }
 
 
@@ -43,6 +48,13 @@ bool namespace_pool::prefix2uri(
 	off_t & uri_offset,
 	uint32_t & uri_id) const
 {
+	// "nonamespace" namespace
+	if (prefix.length()==0) {
+		uri_offset = 0;
+		uri_id = 0;
+		return true;
+	}
+	
 	fxvector<prefix_key>::const_iterator it = prefixv.begin();
 	for (; it!=prefixv.end(); ++it) {
 		prefix_key k = *it;
@@ -62,6 +74,12 @@ bool namespace_pool::uri2prefix(
 	off_t uri_offset,
 	off_t & prefix_offset) const
 {
+	// "nonamespace" namespace
+	if (uri_offset==0) {
+		prefix_offset = 0;
+		return true;
+	}
+
 	fxvector<prefix_key>::const_iterator it = prefixv.begin();
 	for (; it!=prefixv.end(); ++it) {
 		prefix_key k = *it;
@@ -99,6 +117,12 @@ bool namespace_pool::find(
 	string const& uri,
 	uint32_t& id) const
 {
+	// "nonamespace" namespace
+	if (prefix.length()==0) {
+		id = 0;
+		return true;
+	}
+
 	for (uint32_t uri_id=0; uri_id<uriv.size(); ++uri_id) {
 		off_t uri_offset = uriv[uri_id];
 		if (strcmp(uri.c_str(),uriheap.get(uri_offset))==0) {
@@ -146,6 +170,11 @@ bool namespace_pool::get_uri(
 	string & uri) const			
 throw (bad_arg)					
 {
+	// "nonamespace" namespace
+	if (uri_id==0) {
+		uri = "";
+		return true;
+	}
 	if (uri_id>=uriv.size()) {
 		throw bad_arg(__FUNCTION__,"id out of range");
 	}
@@ -161,6 +190,12 @@ bool namespace_pool::get_prefix(
 	string & prefix) const	
 throw (bad_arg)					
 {
+	// "nonamespace" namespace
+	if (uri_id==0) {
+		prefix = "";
+		return true;
+	}
+
 	if (uri_id>=uriv.size()) {
 		throw bad_arg(__FUNCTION__,"id out of range");
 	}
