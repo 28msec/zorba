@@ -41,16 +41,28 @@ int main(int argc, char* argv[])
 
 		cout << "allocating scan/handlers..\n";
     xml_scanner xscanner;
-		uint64_t uri = 0;
 		vector<xml_term> xterm_v;
-    xml_handler* xhandler = new xml_handler(&ctx,nstore_h,uri,xterm_v);
+		string baseuri = "/";
+		string uri = path;
+    xml_handler* xhandler_p = new xml_handler(&ctx,baseuri,uri,xterm_v);
 
 		cout << "scanning..\n";
-    xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler));
+    xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
+		uint32_t dnid = xhandler_p->get_dnid();
 
 		cout << "cleaning up..\n";
-    delete xhandler;
+    delete xhandler_p;
 		delete[] ibuf;
+
+		cout << "read doc..\n";
+		rchandle<document_node> dn_h;
+		int k = nstore_h->get(&ctx, dnid, dn_h);
+		if (k < 0) {
+			cout << "Error [" << dnid << "]: " << nstore_h->decode_error(k) << endl;
+		} else {
+			cout << "doc(\"" << dn_h->get_baseuri() << '/' << dn_h->get_docuri() << "\")\n";
+			dn_h->put(cout, &ctx) << endl;
+		}
 
   } catch (xqp_exception& e1) {
     cout << "Application exception: " << e1.what() << '\t' << e1.get_msg() << endl;

@@ -516,6 +516,7 @@ public:
 	uint32_t context_nodeid() const { return ctx_nodeid; }
 	uint32_t context_docid() const { return ctx_docid; }
 	void set_context_docid(uint32_t docid) { ctx_docid = docid; }
+	uint32_t default_element_nsid() const { return 0; /*STUB*/ }
 
 	// node store
 	rchandle<node> get_node(nodeid id);

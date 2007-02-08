@@ -48,6 +48,11 @@ public:
 		{ return nspool_h; }
 	rchandle<qname_pool> get_qname_pool() const
 		{ return qnpool_h; }
+	uint32_t get_eos() const
+		{ return store_p->size(); }
+
+	std::string decode_nodekind(uint32_t code);
+	std::string decode_error(int code);
 
 public:
 

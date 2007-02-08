@@ -29,40 +29,10 @@ namespace xqp {
 #define VALUE second
 
 
-xml_handler::xml_handler(
-	context * _ctx_p,
-	rchandle<nodestore> _nstore_h,
-	uint64_t _uri,
-	vector<xml_term>& _term_v)
-:
-	scan_handler(),
-	top(0),
-	qtop(0),
-	ntop(0),
-	the_attribute(""),
-	the_element(""),
-	the_PCDATA(""),
-	the_PITarget(""),
-	the_entity(0),
-	term_pos(0),
-	last_pos(0),
-	uri(_uri),
-	term_v(_term_v),
-	attr_v(8),
-	nstore_h(_nstore_h),
-	ctx_p(_ctx_p),
-	the_id(0),
-	the_parentid(0),
-	the_docid(0),
-	the_qnameid(0),
-	the_nsid(0)
-{
-}
-
 
 xml_handler::xml_handler(
 	context * _ctx_p,
-	rchandle<nodestore> _nstore_h,
+	string const&  _baseuri,
 	string const&  _uri,
 	vector<xml_term>& _term_v)
 :
@@ -80,14 +50,21 @@ xml_handler::xml_handler(
 	uri(URI(_uri).hashkey()),
 	term_v(_term_v),
 	attr_v(8),
-	nstore_h(_nstore_h),
 	ctx_p(_ctx_p),
+
+	nstore_h(ctx_p->get_nodestore()),
 	the_id(0),
 	the_parentid(0),
-	the_docid(0),
+	the_docid(ctx_p->context_docid()),
 	the_qnameid(0),
-	the_nsid(0)
+	the_nsid(ctx_p->default_element_nsid())
 {
+	nstore_h->put(ctx_p,DOC_CODE);
+	nstore_h->put(ctx_p,the_docid);
+	nstore_h->put(ctx_p,ctx_p->next_nodeid());
+	nstore_h->put(ctx_p,the_nsid);
+	nstore_h->put(ctx_p,_baseuri);
+	nstore_h->put(ctx_p,_uri);
 }
 
 
@@ -122,8 +99,10 @@ void xml_handler::adup(const char* buf, int offset, int length)
 		name = the_attribute;
 	}
 
-	// memo
-	attr_v.push_back(attrpair_t(the_attribute,""));
+	// store for load on start tag close
+	rchandle<QName> qname_h = new QName(QName::qn_attr,the_attribute);
+	uint32_t qname_id = nstore_h->get_qname_pool()->put(the_docid,qname_h);
+	attr_v.push_back(attrpair_t(qname_id,""));
 	
 }
 
@@ -159,8 +138,10 @@ void xml_handler::aval(const char* buf, int offset, int length)
 		add_term(xml_term(elem_attr_term,uri,term_pos++));
 	}
 	
-	// memo
-	attr_v.push_back(attrpair_t(the_attribute,string(buf,offset,length)));
+	// store for load on start tag close
+	rchandle<QName> qname_h = new QName(QName::qn_attr,the_attribute);
+	uint32_t qname_id = nstore_h->get_qname_pool()->put(the_docid,qname_h);
+	attr_v.push_back(attrpair_t(qname_id,string(buf,offset,length)));
 
 }
 
@@ -402,10 +383,10 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 	for (; it!=attr_v.end(); ++it) {
   	attrpair_t p = *it;
 		nstore_h->put(ctx_p,ATTR_CODE);
-		nstore_h->put(ctx_p,ctx_p->next_nodeid());
-		nstore_h->put(ctx_p,the_id);
-		nstore_h->put(ctx_p,p.NAME);
-		nstore_h->put(ctx_p,p.VALUE);
+		nstore_h->put(ctx_p,ctx_p->next_nodeid());	// attr node id
+		nstore_h->put(ctx_p,the_id);								// parent elem node id
+		nstore_h->put(ctx_p,p.NAME);								// attr QName id
+		nstore_h->put(ctx_p,p.VALUE);								// attr value
 	}
 }
 

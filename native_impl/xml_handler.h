@@ -39,7 +39,8 @@ class context;
 class xml_handler : public scan_handler
 {
 public:
-	typedef std::pair<std::string,std::string> attrpair_t;
+	typedef std::pair<uint32_t,std::string> attrpair_t;
+	// (QName id, attr value) pairs
 
 protected:  // state
 	static const uint32_t STACK_CAPACITY = 65536;
@@ -70,27 +71,22 @@ protected:  // state
 	bool gp_indexing;								// index   b/c/word::t
 	bool ggp_indexing;							// index a/b/c/word::t
 
-	rchandle<nodestore> nstore_h;
 	context * ctx_p;
+	rchandle<nodestore> nstore_h;
 
 	uint32_t the_id;								// context node
 	uint32_t the_parentid;					// context parent id
 	uint32_t the_docid;							// context document id
 	uint32_t the_qnameid;						// context qname id
 	uint32_t the_nsid;							// context namespace id
+	uint32_t the_dnid;							// context document nodeid
 
 	ostringstream textbuf;
 
 public:	// ctor, dtor
 	xml_handler(
 		context *,
-	  rchandle<nodestore>, 					// accumulate document here
-		uint64_t uri,									// document URI
-	  std::vector<xml_term>&);			// accumulate terms here
-
-	xml_handler(
-		context *,
-	  rchandle<nodestore>, 					// accumulate document here
+		std::string const& baseuri,		// doucment base URI
 		std::string const& uri,				// doucment URI
 	  std::vector<xml_term>&);			// accumulate terms here
 
@@ -104,6 +100,7 @@ public:
 	void add_term(std::string const& term, uint64_t uri, uint32_t pos);
 	uint32_t get_term_position() const { return term_pos; }
 	uint32_t short get_entity() { return the_entity; }
+	uint32_t get_dnid() const { return the_dnid; }
 
 public:	// callback methods
 	//  Report an attribute name with no value.

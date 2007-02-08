@@ -30,9 +30,10 @@ namespace_pool::namespace_pool(
 	prefixv(_datapath+"pmap")
 {
 	if (uriv.size()==0) {
-		// initialize with "nonamespace" empty uri
-		uriv.push_back(0);
-		uriheap.put(" ");
+		put(0," ",		" ");	// 'nonamespace'
+		put(0,"xmlns","http://www.w3.org/2000/xmlns/");	
+		put(0,"xml",	"http://www.w3.org/XML/1998/namespace");
+		put(0,"xhtml","http://www.w3.org/1999/xhtml");
 	}
 }
 
@@ -48,7 +49,7 @@ bool namespace_pool::prefix2uri(
 	off_t & uri_offset,
 	uint32_t & uri_id) const
 {
-	// "nonamespace" namespace
+	// 'nonamespace' namespace
 	if (prefix.length()==0) {
 		uri_offset = 0;
 		uri_id = 0;
@@ -74,7 +75,7 @@ bool namespace_pool::uri2prefix(
 	off_t uri_offset,
 	off_t & prefix_offset) const
 {
-	// "nonamespace" namespace
+	// 'nonamespace' namespace
 	if (uri_offset==0) {
 		prefix_offset = 0;
 		return true;
@@ -117,7 +118,7 @@ bool namespace_pool::find(
 	string const& uri,
 	uint32_t& id) const
 {
-	// "nonamespace" namespace
+	// 'nonamespace' namespace
 	if (prefix.length()==0) {
 		id = 0;
 		return true;
@@ -170,7 +171,7 @@ bool namespace_pool::get_uri(
 	string & uri) const			
 throw (bad_arg)					
 {
-	// "nonamespace" namespace
+	// 'nonamespace' namespace
 	if (uri_id==0) {
 		uri = "";
 		return true;
@@ -190,7 +191,7 @@ bool namespace_pool::get_prefix(
 	string & prefix) const	
 throw (bad_arg)					
 {
-	// "nonamespace" namespace
+	// 'nonamespace' namespace
 	if (uri_id==0) {
 		prefix = "";
 		return true;

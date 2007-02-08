@@ -42,7 +42,7 @@ nodestore::~nodestore()
 {
 }
 
-string decode_nodekind(uint32_t code)
+string nodestore::decode_nodekind(uint32_t code)
 {
 	switch (code) {
 	 case STRING_CODE:	return "STRING";
@@ -57,6 +57,17 @@ string decode_nodekind(uint32_t code)
 	 default: return "??";
 	}
 }
+
+string nodestore::decode_error(int code)
+{
+	switch (code) {
+	case ERR_BAD_CODE: return "bad node kind";
+	case ERR_OVERRUN:	return "output overrun";
+	case ERR_NODEID_NOT_FOUND: return "nodeid not found";
+	default: return "logic error: code not recognized";
+	}
+}
+
 
 
 /*...........................................
