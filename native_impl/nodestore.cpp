@@ -45,6 +45,7 @@ nodestore::~nodestore()
 string nodestore::decode_nodekind(uint32_t code)
 {
 	switch (code) {
+	 case END_CODE:     return "END";
 	 case STRING_CODE:	return "STRING";
 	 case TEXT_CODE:		return "TEXT";
 	 case QNAME_CODE:		return "QNAME";
@@ -72,7 +73,7 @@ string nodestore::decode_error(int code)
 
 /*...........................................
 	: integers                                :
-	:.........................................: */
+	:.........................................:*/
 
 void nodestore::put(
 	context * ctx_p,
@@ -99,11 +100,21 @@ int nodestore::get(
 	uint32_t & v)
 {
 	off_t offset = offset0;
-	uint32_t e = (uint32_t)store_p->operator[](offset++) << 24;
-	uint32_t f = (uint32_t)store_p->operator[](offset++) << 16;
-	uint32_t g = (uint32_t)store_p->operator[](offset++) << 8;
-	uint32_t h = (uint32_t)store_p->operator[](offset++);
+
+#ifdef DEBUG
+	cout << "get_32(" << offset << ") => ";
+#endif
+
+	uint32_t e = (uint32_t)(unsigned char)store_p->operator[](offset++) << 24;
+	uint32_t f = (uint32_t)(unsigned char)store_p->operator[](offset++) << 16;
+	uint32_t g = (uint32_t)(unsigned char)store_p->operator[](offset++) << 8;
+	uint32_t h = (uint32_t)(unsigned char)store_p->operator[](offset++);
 	v = e|f|g|h;
+
+#ifdef DEBUG
+	cout << v << endl;
+#endif
+
 	return 4;
 }
 
@@ -140,14 +151,14 @@ int nodestore::get(
 	uint64_t & v)
 {
 	off_t offset = offset0;
-	uint64_t a = (uint64_t)store_p->operator[](offset++) << 56;
-	uint64_t b = (uint64_t)store_p->operator[](offset++) << 48;
-	uint64_t c = (uint64_t)store_p->operator[](offset++) << 40;
-	uint64_t d = (uint64_t)store_p->operator[](offset++) << 32;
-	uint64_t e = (uint64_t)store_p->operator[](offset++) << 24;
-	uint64_t f = (uint64_t)store_p->operator[](offset++) << 16;
-	uint64_t g = (uint64_t)store_p->operator[](offset++) << 8;
-	uint64_t h = (uint64_t)store_p->operator[](offset++);
+	uint64_t a = (uint64_t)(unsigned char)store_p->operator[](offset++) << 56;
+	uint64_t b = (uint64_t)(unsigned char)store_p->operator[](offset++) << 48;
+	uint64_t c = (uint64_t)(unsigned char)store_p->operator[](offset++) << 40;
+	uint64_t d = (uint64_t)(unsigned char)store_p->operator[](offset++) << 32;
+	uint64_t e = (uint64_t)(unsigned char)store_p->operator[](offset++) << 24;
+	uint64_t f = (uint64_t)(unsigned char)store_p->operator[](offset++) << 16;
+	uint64_t g = (uint64_t)(unsigned char)store_p->operator[](offset++) << 8;
+	uint64_t h = (uint64_t)(unsigned char)store_p->operator[](offset++);
 	v = a|b|c|d|e|f|g|h;
 	return 8;
 }
@@ -161,7 +172,7 @@ int nodestore::get(
 	:    len          (uint32_t)              :
 	:    content      (char[])                :
 	:                                         :
-	:.........................................: */
+	:.........................................:*/
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -188,11 +199,6 @@ int nodestore::get(
 	uint32_t & len)
 {
 	int k;
-
-#ifdef DEBUG
-cout << TRACE << ": get_char[](offset=" << offset0 << ")\n";
-#endif
-
 	off_t offset = offset0;
 	uint32_t code;
 	if ((k = get(ctx_p, offset, code)) < 0) return k; else offset += k;
@@ -225,13 +231,18 @@ int nodestore::get(
 	int k = 0;
 
 #ifdef DEBUG
-cout << TRACE << ": get_string(offset=" << offset << ")\n";
+cout << TRACE << ": get_string(offset=" << offset << ") => ";
 #endif
 
 	char * data;
 	uint32_t len;
 	if ((k = get(ctx_p, offset, data, len)) < 0) return k; 
 	content = string(data, 0, len); 
+
+#ifdef DEBUG
+cout << content << endl;
+#endif
+
 	return k;
 }
 
@@ -245,7 +256,7 @@ cout << TRACE << ": get_string(offset=" << offset << ")\n";
 	:    parentid     (uint32_t)              :
 	:    content      (string)                :
 	:                                         :
-	:.........................................: */
+	:.........................................:*/
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -324,7 +335,7 @@ cout << TRACE << ": get_text(id=" << nid.id << ")\n";
 	:    QNAME_CODE      (uint32_t)           :
 	:    qname_id        (uint32_t)           :
 	:                                         :
-	:.........................................: */
+	:.........................................:*/
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -351,7 +362,7 @@ int nodestore::get(
 	int k;
 
 #ifdef DEBUG
-cout << TRACE << ": get_QName(offset=" << offset0 << ")\n";
+cout << TRACE << ": get_QName(offset=" << offset0 << ") => ";
 #endif
 
 	uint32_t qname_id;
@@ -363,6 +374,11 @@ cout << TRACE << ": get_QName(offset=" << offset0 << ")\n";
 	if ((k = get(ctx_p,offset,qname_id)) < 0) return k; else offset += k;
 
 	name_h = qnpool_h->get(qname_id); 
+
+#ifdef DEBUG
+name_h->put(cout,ctx_p) << endl;
+#endif
+
 	return (offset-offset0);
 }
 
@@ -377,7 +393,7 @@ cout << TRACE << ": get_QName(offset=" << offset0 << ")\n";
 	:    qname_id       (uint32_t)            :
 	:    value          (string)              :
 	:                                         :
-	:.........................................: */
+	:.........................................:*/
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -471,8 +487,9 @@ cout << TRACE << ": get_attr(id=" << nid.id << ")\n";
 	:    child_2            (node)            :
 	:    ...                 ...              :
 	:    child_m            (node)            :
+	:    END_CODE           (uint32_t)        :
 	:                                         :
-	:.........................................: */
+	:.........................................:*/
 
 off_t nodestore::put(
 	context * ctx_p,
@@ -599,11 +616,17 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 	if ((k = get(ctx_p, offset, nsid)) < 0) return k; else offset += k;
 
 	enode_h = new element_node(id, parentid, docid, qname_h);
+	cout << "get_elem: new element_node\n";
 
 	// attributes
 	rchandle<attribute_node> attr_node_h;
 	for (;;) {
 		if ((k = get(ctx_p, offset, code)) < 0) return k;
+
+#ifdef DEBUG
+	cout << "get_elem[attr]: CODE = " << decode_nodekind(code) << endl;
+#endif
+
 		if (code==ATTR_CODE) {
 			if ((k = get(ctx_p, offset, attr_node_h)) < 0) return k; else offset += k;
 			enode_h->add_node(&*attr_node_h);
@@ -618,17 +641,40 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 	rchandle<node> node_h;
 	for (;;) {
 		if ((k = get(ctx_p, offset, code)) < 0) return k;
+
+#ifdef DEBUG
+	cout << "get_elem[child]: CODE = " << decode_nodekind(code) << endl;
+#endif
+
 		if (_valid_child(code)) {
 			if ((k = get(ctx_p, offset, node_h)) < 0) return k; else offset += k;
+
+#ifdef DEBUG
+	cout << "get_elem: add node: ";
+	rchandle<element_node> enode0_h = dynamic_cast<element_node*>(&*node_h);
+	if (enode0_h!=NULL) {
+		rchandle<QName> qn_h = enode0_h->get_name();
+		qn_h->put(cout,ctx_p) << endl;
+	}
+	rchandle<text_node> tnode0_h = dynamic_cast<text_node*>(&*node_h);
+	if (tnode0_h!=NULL) {
+		tnode0_h->put(cout,ctx_p) << endl;
+	}
+#endif
+
 			enode_h->add_node(&*node_h);
 		}
 		else {
-			if (code==END_CODE) offset += k;
-			else cout <<TRACE<<": elem children end on "<<decode_nodekind(code)<<endl;
+			if (code==END_CODE) {
+				offset += k;
+			} else {
+				cout <<TRACE<<": elem children end on "<<decode_nodekind(code)<<endl;
+			}
 			break;
 		}
 	}
 
+	cout << "get_elem: return\n";
 	return (offset-offset0);
 }
 
@@ -666,8 +712,9 @@ cout << TRACE << ": get_elem(id=" << nid.id << ")\n";
 	:    child_2            (node)            :
 	:    ...                 ...              :
 	:    child_m            (node)            :
+	:    END_CODE           (uint32_t)        :
 	:                                         :
-	:.........................................: */
+	:.........................................:*/
 
 off_t nodestore::put(
 	context * ctx_p,

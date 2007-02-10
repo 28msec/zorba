@@ -73,6 +73,8 @@ protected:  // state
 
 	context * ctx_p;
 	rchandle<nodestore> nstore_h;
+	rchandle<namespace_pool> nspool_h;
+	rchandle<qname_pool> qnpool_h;
 
 	uint32_t the_id;								// context node
 	uint32_t the_parentid;					// context parent id

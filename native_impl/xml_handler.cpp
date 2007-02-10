@@ -49,16 +49,19 @@ xml_handler::xml_handler(
 	last_pos(0),
 	uri(URI(_uri).hashkey()),
 	term_v(_term_v),
-	attr_v(8),
 	ctx_p(_ctx_p),
 
 	nstore_h(ctx_p->get_nodestore()),
+	nspool_h(nstore_h->get_namespace_pool()),
+	qnpool_h(nstore_h->get_qname_pool()),
+
 	the_id(0),
 	the_parentid(0),
 	the_docid(ctx_p->context_docid()),
 	the_qnameid(0),
 	the_nsid(ctx_p->default_element_nsid())
 {
+	cout << "put(DOC_CODE)\n";
 	nstore_h->put(ctx_p,DOC_CODE);
 	nstore_h->put(ctx_p,the_docid);
 	nstore_h->put(ctx_p,ctx_p->next_nodeid());
@@ -101,8 +104,9 @@ void xml_handler::adup(const char* buf, int offset, int length)
 
 	// store for load on start tag close
 	rchandle<QName> qname_h = new QName(QName::qn_attr,the_attribute);
-	uint32_t qname_id = nstore_h->get_qname_pool()->put(the_docid,qname_h);
+	uint32_t qname_id = qnpool_h->put(the_docid,qname_h);
 	attr_v.push_back(attrpair_t(qname_id,""));
+	cout << "attr_v.push_back( id(" << the_attribute << ") )\n";
 	
 }
 
@@ -140,8 +144,10 @@ void xml_handler::aval(const char* buf, int offset, int length)
 	
 	// store for load on start tag close
 	rchandle<QName> qname_h = new QName(QName::qn_attr,the_attribute);
-	uint32_t qname_id = nstore_h->get_qname_pool()->put(the_docid,qname_h);
+	uint32_t qname_id = qnpool_h->put(the_docid,qname_h);
 	attr_v.push_back(attrpair_t(qname_id,string(buf,offset,length)));
+	cout << "attr_v.push_back( id(" << the_attribute << "), "
+														<< string(buf,offset,length) << " )\n";
 
 }
 
@@ -166,6 +172,22 @@ void xml_handler::eof(const char* buf, int offset, int length)
 #ifdef DEBUG
 	cout << "===== eof =====" << endl;
 #endif
+
+	// serialize concatenated text node
+	if (textbuf.str().length()>0) {
+		cout << "put(TEXT_CODE)\n";
+		nstore_h->put(ctx_p, TEXT_CODE);
+		nstore_h->put(ctx_p, ctx_p->next_nodeid());
+		nstore_h->put(ctx_p, the_id);
+		nstore_h->put(ctx_p, textbuf.str());
+		nstore_h->put(ctx_p, END_CODE);
+		textbuf.str("");
+	}
+
+	// serialize: terminate document
+	cout << "put(END_CODE[eof])\n";
+	nstore_h->put(ctx_p, END_CODE);
+	
 }
 
 
@@ -187,7 +209,7 @@ void xml_handler::etag(const char* buf, int offset, int length)
 	}
 
 	uint32_t etag0_id;
-	nstore_h->get_qname_pool()->find(localname,the_nsid,etag0_id);
+	qnpool_h->find(localname,the_nsid,etag0_id);
 
 	int k = top;
 	while (k>0) {
@@ -197,7 +219,19 @@ void xml_handler::etag(const char* buf, int offset, int length)
 	if (k==0) return;
 	top = k;
 
+	// serialize concatenated text node
+	if (textbuf.str().length()>0) {
+		cout << "put(TEXT_CODE)\n";
+		nstore_h->put(ctx_p, TEXT_CODE);
+		nstore_h->put(ctx_p, ctx_p->next_nodeid());
+		nstore_h->put(ctx_p, the_id);
+		nstore_h->put(ctx_p, textbuf.str());
+		nstore_h->put(ctx_p, END_CODE);
+		textbuf.str("");
+	}
+
 	// serialize: terminate element
+	cout << "put(END_CODE[elem])\n";
 	nstore_h->put(ctx_p, END_CODE);
 	
 }
@@ -221,11 +255,14 @@ void xml_handler::gi(const char* buf, int offset, int length)
 		name = the_element.substr(loc+1);
 	}
 	else {
-		name = the_attribute;
+		name = the_element;
 	}
 
-	rchandle<qname_pool> qnpool_h = nstore_h->get_qname_pool();
 	the_qnameid = qnpool_h->put(the_docid,new QName(QName::qn_elem,prefix,name));
+	cout << "the_qnameid("
+			 <<(prefix.length()>0?prefix+":":"")
+			 <<name
+			 <<") = "<<the_qnameid<<endl;
 
 	if (top>=STACK_CAPACITY) error("stack overflow");
 	the_id_stack[top++] = the_qnameid;
@@ -236,10 +273,12 @@ void xml_handler::gi(const char* buf, int offset, int length)
 
 	// serialize concatenated text node
 	if (textbuf.str().length()>0) {
+		cout << "put(TEXT_CODE)\n";
 		nstore_h->put(ctx_p, TEXT_CODE);
 		nstore_h->put(ctx_p, ctx_p->next_nodeid());
 		nstore_h->put(ctx_p, the_id);
 		nstore_h->put(ctx_p, textbuf.str());
+		nstore_h->put(ctx_p, END_CODE);
 		textbuf.str("");
 	}
 
@@ -361,7 +400,6 @@ void xml_handler::pitarget(const char* buf, int offset, int length)
 }
 
 
-
 // start tag close (attributes all processed) callback 
 void xml_handler::stagc(const char* buf, int offset, int length)
 {
@@ -371,6 +409,7 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 #endif
 
 	// serialize: element QName
+	cout << "put(ELEM_CODE)\n";
 	nstore_h->put(ctx_p,ELEM_CODE);
 	nstore_h->put(ctx_p,the_docid); 
 	nstore_h->put(ctx_p,the_id); 
@@ -379,15 +418,19 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 	nstore_h->put(ctx_p,the_nsid);
 
 	// serialize attribute list
+	cout << "attr_v.size()= " << attr_v.size() << endl;
 	vector<attrpair_t>::const_iterator it = attr_v.begin();
 	for (; it!=attr_v.end(); ++it) {
   	attrpair_t p = *it;
+		cout << "put(ATTR_CODE)\n";
 		nstore_h->put(ctx_p,ATTR_CODE);
 		nstore_h->put(ctx_p,ctx_p->next_nodeid());	// attr node id
 		nstore_h->put(ctx_p,the_id);								// parent elem node id
+		nstore_h->put(ctx_p,QNAME_CODE);						// start QName
 		nstore_h->put(ctx_p,p.NAME);								// attr QName id
 		nstore_h->put(ctx_p,p.VALUE);								// attr value
 	}
+	attr_v.clear();
 }
 
 

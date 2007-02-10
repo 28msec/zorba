@@ -86,7 +86,7 @@ public:
 	*/
 	bool find(										// return: true <-> uri_id found
 		std::string const&,					// input: localname
-		uint32_t uri_id,						// input: uri index
+		uint32_t uri_id,						// input: uri id
 		uint32_t& qname_id					// output: qname index, if found
 	) const;
 

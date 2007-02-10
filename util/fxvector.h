@@ -420,6 +420,7 @@ throw (bad_arg)
 	if (n!=1) throw bad_arg(__FUNCTION__,"no raw copy to non-char vectors");
 	while ((capacity() - size()) < length) expand();
 	memcpy(finish, data, length);
+cout << "fxvector copied: " << string(finish,0,length) << endl;
 	char * res = (char *)finish;
 	finish += length;
 	if (mmf_p) {	// update offset_p
