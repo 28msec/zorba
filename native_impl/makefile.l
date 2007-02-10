@@ -9,7 +9,7 @@ namespace_pool : namespace_pool.h namespace_pool.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/namespace_pool.${SUFX} namespace_pool.cpp
 
 nodestore : nodestore.h nodestore.cpp
-	g++ -DDEBUG -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore.${SUFX} nodestore.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodestore.${SUFX} nodestore.cpp
 
 html_scanner : html_scanner.h html_scanner.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/html_scanner.${SUFX} html_scanner.cpp

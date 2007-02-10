@@ -54,15 +54,17 @@ public:
 	std::string decode_nodekind(uint32_t code);
 	std::string decode_error(int code);
 
+	bool index_put(off_t id, off_t res)
+		{ return index_p->put(id, res); }
+	uint32_t get_offset() const
+		{ return store_p->size(); }
+
 public:
 
 	/*...........................................
 		: integers                                :
 		:.........................................:
 	*/
-	//void put( context *, uint16_t );
-	//int get( context *, off_t, uint16_t & );
-	
 	void put( context *, uint32_t ); 
 	int get( context *, off_t, uint32_t & );
 	

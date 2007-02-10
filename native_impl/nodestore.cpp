@@ -321,7 +321,7 @@ cout << TRACE << ": get_text(id=" << nid.id << ")\n";
 
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << ": not found\n";
+		cout << TRACE << ": text node(id=" << nid.id << ") not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, tnode_h);
@@ -462,7 +462,7 @@ cout << TRACE << ": get_attr(id=" << nid.id << ")\n";
 
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << ": not found\n";
+		cout << TRACE << ": attribute node(id=" << nid.id << ") not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, anode_h);
@@ -538,30 +538,25 @@ cout << TRACE << ": put_elem(res=" << res << ")\n";
 
 			switch (n_h->node_kind()) {
 			case node::elem_kind: {
-				//cout << TRACE << ": PUT_elem\n";
 				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
 				put(ctx_p, en_h);
 				break;
 			}
 			case node::text_kind: {
-				//cout << TRACE << ": PUT_text\n";
 				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
 				put(ctx_p, tn_h);
 				break;
 			}
 			case node::comment_kind: {
 				// stub
-				//cout << TRACE << ": PUT_comment\n";
 				break;
 			}
 			case node::pi_kind: {
 				// stub
-				//cout << TRACE << ": PUT_pi\n";
 				break;
 			}
 			case node::binary_kind: {
 				// stub
-				//cout << TRACE << ": PUT_binary\n";
 				break;
 			}
 			default: {
@@ -616,7 +611,7 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 	if ((k = get(ctx_p, offset, nsid)) < 0) return k; else offset += k;
 
 	enode_h = new element_node(id, parentid, docid, qname_h);
-	cout << "get_elem: new element_node\n";
+	//cout << "get_elem: new element_node\n";
 
 	// attributes
 	rchandle<attribute_node> attr_node_h;
@@ -624,7 +619,7 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 		if ((k = get(ctx_p, offset, code)) < 0) return k;
 
 #ifdef DEBUG
-	cout << "get_elem[attr]: CODE = " << decode_nodekind(code) << endl;
+cout << "get_elem[attr]: CODE = " << decode_nodekind(code) << endl;
 #endif
 
 		if (code==ATTR_CODE) {
@@ -632,7 +627,6 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 			enode_h->add_node(&*attr_node_h);
 		}
 		else {
-			//cout <<TRACE<<": terminate attributes on: "<<decode_nodekind(code)<<endl;
 			break;
 		}
 	}
@@ -643,23 +637,23 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 		if ((k = get(ctx_p, offset, code)) < 0) return k;
 
 #ifdef DEBUG
-	cout << "get_elem[child]: CODE = " << decode_nodekind(code) << endl;
+cout << "get_elem[child]: CODE = " << decode_nodekind(code) << endl;
 #endif
 
 		if (_valid_child(code)) {
 			if ((k = get(ctx_p, offset, node_h)) < 0) return k; else offset += k;
 
 #ifdef DEBUG
-	cout << "get_elem: add node: ";
-	rchandle<element_node> enode0_h = dynamic_cast<element_node*>(&*node_h);
-	if (enode0_h!=NULL) {
-		rchandle<QName> qn_h = enode0_h->get_name();
-		qn_h->put(cout,ctx_p) << endl;
-	}
-	rchandle<text_node> tnode0_h = dynamic_cast<text_node*>(&*node_h);
-	if (tnode0_h!=NULL) {
-		tnode0_h->put(cout,ctx_p) << endl;
-	}
+cout << "get_elem: add node: ";
+rchandle<element_node> enode0_h = dynamic_cast<element_node*>(&*node_h);
+if (enode0_h!=NULL) {
+	rchandle<QName> qn_h = enode0_h->get_name();
+	qn_h->put(cout,ctx_p) << endl;
+}
+rchandle<text_node> tnode0_h = dynamic_cast<text_node*>(&*node_h);
+if (tnode0_h!=NULL) {
+	cout << "\""; tnode0_h->put(cout,ctx_p) << "\"\n";
+}
 #endif
 
 			enode_h->add_node(&*node_h);
@@ -674,7 +668,6 @@ cout << TRACE << ": get_elem(offset=" << offset0 << ")\n";
 		}
 	}
 
-	cout << "get_elem: return\n";
 	return (offset-offset0);
 }
 
@@ -691,7 +684,7 @@ cout << TRACE << ": get_elem(id=" << nid.id << ")\n";
 
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << ": not found\n";
+		cout << TRACE << ": element node(id=" << nid.id << ") not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, enode_h);
