@@ -153,7 +153,7 @@ inline void fxhashmap<V>::displayEntries() const
 	for (it = vp->begin(); it!=vp->end(); it++) {
 		const entry& e = *it;
 		hp->get(e.key,buf,0,MAX_KEYLEN);
-		cout << " -> " << string(buf,0,strlen(buf)) << ',' << e.val << endl;
+		cout << e.key << " -> " << string(buf,0,strlen(buf)) << ',' << e.val << endl;
 	}
 }
 

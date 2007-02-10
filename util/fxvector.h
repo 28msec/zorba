@@ -94,9 +94,9 @@ private:
 
 public:		// iterator interface
 	/**
-	 **  Returns a read/write iterator that points to the first
-	 **  element in the vector.  Iteration is done in ordinary
-	 **  element order.
+	 *  Returns a read/write iterator that points to the first
+	 *  element in the vector.  Iteration is done in ordinary
+	 *  element order.
 	 */
 	iterator begin()
 	{
@@ -104,9 +104,9 @@ public:		// iterator interface
 	}
 
 	/**
-	 **  Returns a read-only (constant) iterator that points to the
-	 **  first element in the vector.  Iteration is done in ordinary
-	 **  element order.
+	 *  Returns a read-only (constant) iterator that points to the
+	 *  first element in the vector.  Iteration is done in ordinary
+	 *  element order.
 	 */
 	const_iterator begin() const
 	{
@@ -114,9 +114,9 @@ public:		// iterator interface
 	}
 
 	/**
-	 **  Returns a read/write iterator that points one past the last
-	 **  element in the vector.  Iteration is done in ordinary
-	 **  element order.
+	 *  Returns a read/write iterator that points one past the last
+	 *  element in the vector.  Iteration is done in ordinary
+	 *  element order.
 	 */
 	iterator end()
 	{
@@ -124,9 +124,9 @@ public:		// iterator interface
 	}
 
 	/**
-	 **  Returns a read-only (constant) iterator that points one past
-	 **  the last element in the vector.  Iteration is done in
-	 **  ordinary element order.
+	 *  Returns a read-only (constant) iterator that points one past
+	 *  the last element in the vector.  Iteration is done in
+	 *  ordinary element order.
 	 */
 	const_iterator end() const
 	{
@@ -134,9 +134,9 @@ public:		// iterator interface
 	}
 
 	/**
-	 **  Returns a read/write reverse iterator that points to the
-	 **  last element in the vector.  Iteration is done in reverse
-	 **  element order.
+	 *  Returns a read/write reverse iterator that points to the
+	 *  last element in the vector.  Iteration is done in reverse
+	 *  element order.
 	 */
 	reverse_iterator rbegin()
 	{
@@ -144,9 +144,9 @@ public:		// iterator interface
 	}
 
 	/**
-	 **  Returns a read-only (constant) reverse iterator that points
-	 **  to the last element in the vector.  Iteration is done in
-	 **  reverse element order.
+	 *  Returns a read-only (constant) reverse iterator that points
+	 *  to the last element in the vector.  Iteration is done in
+	 *  reverse element order.
 	 */
 	const_reverse_iterator rbegin() const
 	{
@@ -154,9 +154,9 @@ public:		// iterator interface
 	}
 
 	/**
-	 **  Return a read/write reverse iterator that points to one
-	 **  before the first element in the vector.  Iteration is done
-	 **  in reverse element order.
+	 *  Return a read/write reverse iterator that points to one
+	 *  before the first element in the vector.  Iteration is done
+	 *  in reverse element order.
 	 */
 	reverse_iterator rend()
 	{
@@ -164,9 +164,9 @@ public:		// iterator interface
 	}
 
 	/**
-	 **  Return a read-only (constant) reverse iterator that points
-	 **  to one before the first element in the vector.  Iteration
-	 **  is done in reverse element order.
+	 *  Return a read-only (constant) reverse iterator that points
+	 *  to one before the first element in the vector.  Iteration
+	 *  is done in reverse element order.
 	 */
 	const_reverse_iterator rend() const
 	{
@@ -175,7 +175,7 @@ public:		// iterator interface
 
 public:		// vector interface
 	/**
-	 **  Return the number of elements in the vector. 
+	 *  Return the number of elements in the vector. 
 	 */
 	size_type size() const
 	{
@@ -183,7 +183,7 @@ public:		// vector interface
 	}
 
 	/**
-	 **  Return the size() of the largest possible vector. 
+	 *  Return the size() of the largest possible vector. 
 	 */
 	size_type max_size() const
 	{
@@ -191,8 +191,8 @@ public:		// vector interface
 	}
 
 	/**
-	 **  Returns the total number of elements that the vector can
-	 **  hold before needing to allocate more memory.
+	 *  Returns the total number of elements that the vector can
+	 *  hold before needing to allocate more memory.
 	 */
 	size_type capacity() const
 	{
@@ -200,8 +200,8 @@ public:		// vector interface
 	}
 
 	/**
-	 **  Returns true if the vector is empty.  (Thus begin() would
-	 **  equal end().)
+	 *  Returns true if the vector is empty.  (Thus begin() would
+	 *  equal end().)
 	 */
 	bool empty() const
 	{
@@ -209,14 +209,14 @@ public:		// vector interface
 	}
 
 	/**
-	 **  Subscript access to the data contained in the vector.
-	 **  @param n index of the element for which data should be accessed.
-	 **  @return  Read/write reference to data.
-	 **
-	 **  This operator allows for easy, array-style, data access.
-	 **  Note that data access with this operator is unchecked and
-	 **  out_of_range lookups are not defined. (For checked lookups
-	 **  see at().)
+	 *  Subscript access to the data contained in the vector.
+	 *  @param n index of the element for which data should be accessed.
+	 *  @return  Read/write reference to data.
+	 *
+	 *  This operator allows for easy, array-style, data access.
+	 *  Note that data access with this operator is unchecked and
+	 *  out_of_range lookups are not defined. (For checked lookups
+	 *  see at().)
 	 */
 	reference operator[](size_type n)
 	{
@@ -224,14 +224,14 @@ public:		// vector interface
 	}
 
 	/**
-	 **  Subscript access to the data contained in the vector.
-	 **  @param n index of the element for which data should be accessed.
- 	 **  @return  Read-only (constant) reference to data.
-	 **
-	 **  This operator allows for easy, array-style, data access.
-	 **  Note that data access with this operator is unchecked and
-	 **  out_of_range lookups are not defined. (For checked lookups
-	 **  see at().)
+	 *  Subscript access to the data contained in the vector.
+	 *  @param n index of the element for which data should be accessed.
+ 	 *  @return  Read-only (constant) reference to data.
+	 *
+	 *  This operator allows for easy, array-style, data access.
+	 *  Note that data access with this operator is unchecked and
+	 *  out_of_range lookups are not defined. (For checked lookups
+	 *  see at().)
 	 */
 	const_reference operator[](size_type n) const
 	{
@@ -247,14 +247,14 @@ protected:
 
 public:
 	/**
-	 **  Provides access to the data contained in the vector.
-	 **  @param n index of the element for which data should be accessed.
-	 **  @return  Read/write reference to data.
-	 **  @throw  std::out_of_range  If n is an invalid index.
-	 **
-	 **  This function provides for safer data access.  The parameter
-	 **  is first checked that it is in the range of the vector.  The
-	 **  function throws out_of_range if the check fails.
+	 *  Provides access to the data contained in the vector.
+	 *  @param n index of the element for which data should be accessed.
+	 *  @return  Read/write reference to data.
+	 *  @throw  std::out_of_range  If n is an invalid index.
+	 *
+	 *  This function provides for safer data access.  The parameter
+	 *  is first checked that it is in the range of the vector.  The
+	 *  function throws out_of_range if the check fails.
 	 */
 	reference at(size_type n)
 	{
@@ -263,14 +263,14 @@ public:
 	}
 
 	/**
-	 **  Provides access to the data contained in the vector.
-	 **  @param n index of the element for which data should be accessed.
-	 **  @return  Read-only (constant) reference to data.
-	 **  @throw  std::out_of_range  If n is an invalid index.
-	 **
-	 **  This function provides for safer data access.  The parameter
-	 **  is first checked that it is in the range of the vector.  The
-	 **  function throws out_of_range if the check fails.
+	 *  Provides access to the data contained in the vector.
+	 *  @param n index of the element for which data should be accessed.
+	 *  @return  Read-only (constant) reference to data.
+	 *  @throw  std::out_of_range  If n is an invalid index.
+	 *
+	 *  This function provides for safer data access.  The parameter
+	 *  is first checked that it is in the range of the vector.  The
+	 *  function throws out_of_range if the check fails.
 	 */
 	const_reference at(size_type n) const
 	{
@@ -279,32 +279,32 @@ public:
 	}
 
 	/**
-	 **  Returns a read/write reference to the data at the first
-	 **  element of the vector.
+	 *  Returns a read/write reference to the data at the first
+	 *  element of the vector.
 	 */
 	reference front() { return *begin(); }
 
 	/**
-	 **  Returns a read-only (constant) reference to the data at the first
-	 **  element of the vector.
+	 *  Returns a read-only (constant) reference to the data at the first
+	 *  element of the vector.
 	 */
 	const_reference front() const { return *begin(); }
 
 	/**
-	 **  Returns a read/write reference to the data at the last
-	 **  element of the vector.
+	 *  Returns a read/write reference to the data at the last
+	 *  element of the vector.
 	 */
 	reference back() { return *(end() - 1); }
 
 	/**
-	 **  Returns a read-only (constant) reference to the data at the
- 	 **  last element of the vector.
+	 *  Returns a read-only (constant) reference to the data at the
+ 	 *  last element of the vector.
 	 */
 	const_reference back() const { return *(end() - 1); }
 
 	/**
-	 **  Add data to the end of the vector.
- 	 **  @param  x  data to be added.
+	 *  Add data to the end of the vector.
+ 	 *  @param  x  data to be added.
 	 */
 	void push_back(const value_type& x)
 	{
@@ -319,10 +319,10 @@ public:
 	}
 
 	/**
-	 **  Remove last element.  It shrinks the vector by one.
-	 **
-	 **  No data is returned, and if the last element's data is
-	 **  needed, it should be retrieved before pop_back() is called.
+	 *  Remove last element.  It shrinks the vector by one.
+	 *
+	 *  No data is returned, and if the last element's data is
+	 *  needed, it should be retrieved before pop_back() is called.
 	 */
 	void pop_back()
 	{
@@ -331,8 +331,8 @@ public:
 	}
 
 	/**
-	 **  Clear the vector.                     
-	 **  Set the size to zero.         
+	 *  Clear the vector.                     
+	 *  Set the size to zero.         
 	 */
 	void clear();
 
@@ -364,15 +364,20 @@ fxvector<T>::fxvector(
 	if (*offset_p == 0) {
 		*offset_p = sizeof(off_t);
 	}
+
+#ifdef DEBUG
 	cout << "fxvector::ctor: offset = " << *offset_p << endl; 
+#endif
 
 	start  = reinterpret_cast<T*>(src + sizeof(off_t));
 	finish = reinterpret_cast<T*>(&src[*offset_p]);
 	end_of_storage = reinterpret_cast<T*>(src + mmf_p->get_eofoff());
 
+#ifdef DEBUG
 	cout << "fxvector::ctor: start="<<(uint32_t)(start)
 			 <<", finish="<<(uint32_t)(finish)
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
+#endif
 }
 
 template<typename T>
@@ -384,9 +389,13 @@ fxvector<T>::fxvector(uint32_t size)
 	finish(reinterpret_cast<T*>(src)),
 	end_of_storage(reinterpret_cast<T*>(src+size))
 {
+
+#ifdef DEBUG
 	cout << "fxvector::ctor: start="<<(uint32_t)(start)
 			 <<", finish="<<(uint32_t)(finish)
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
+#endif
+
 }
 
 template<typename T>
@@ -398,9 +407,13 @@ fxvector<T>::fxvector()
 	finish(reinterpret_cast<T*>(src)),
 	end_of_storage(reinterpret_cast<T*>(src+DEFAULT_SIZE))
 {
+
+#ifdef DEBUG
 	cout << "fxvector::ctor: start="<<(uint32_t)(start)
 			 <<", finish="<<(uint32_t)(finish)
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
+#endif
+
 }
 
 template<typename T>
@@ -420,7 +433,6 @@ throw (bad_arg)
 	if (n!=1) throw bad_arg(__FUNCTION__,"no raw copy to non-char vectors");
 	while ((capacity() - size()) < length) expand();
 	memcpy(finish, data, length);
-cout << "fxvector copied: " << string(finish,0,length) << endl;
 	char * res = (char *)finish;
 	finish += length;
 	if (mmf_p) {	// update offset_p
@@ -480,16 +492,21 @@ void fxvector<T>::expand()
 	uint32_t n = size() * sizeof(value_type);
 	uint32_t m = capacity() * sizeof(value_type);
 
+#ifdef DEBUG
 	cout << "fxvector::expand: n="<<n<<", m="<<m<<endl;
 	cout << "fxvector::expand: start="<<(uint32_t)(start)
 			 <<", finish="<<(uint32_t)(finish)
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
+#endif
 
 	if (mmf_p) {
 		mmf_p->expand();
 		src = mmf_p->get_data();
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
-		cout << "fxvector::expand: offset = " << *offset_p << endl;
+
+#ifdef DEBUG
+	cout << "fxvector::expand: offset = " << *offset_p << endl;
+#endif
 
 		// update vector state
 		start = reinterpret_cast<T*>(src + sizeof(off_t));
@@ -508,9 +525,11 @@ void fxvector<T>::expand()
 		end_of_storage = reinterpret_cast<T*>(&src[m<<1]);
 	}
 
+#ifdef DEBUG
 	cout << "fxvector::expand: start="<<(uint32_t)(start)
 			 <<", finish="<<(uint32_t)(finish)
 			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
+#endif
 
 }
 

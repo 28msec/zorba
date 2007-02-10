@@ -74,7 +74,7 @@ int main(int argc, char* argv[])
           m.put(line,n++);
         }
         in.close();
-        cout << "______________Load finished______________\n";
+        cout << "Load finished\n";
       }
       else if (cmd=="put") {
         m.put(arg1,m.size()+1);

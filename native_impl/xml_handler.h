@@ -103,6 +103,7 @@ public:
 	uint32_t get_term_position() const { return term_pos; }
 	uint32_t short get_entity() { return the_entity; }
 	uint32_t get_dnid() const { return the_dnid; }
+	uint32_t get_docid() const { return the_docid; }
 
 public:	// callback methods
 	//  Report an attribute name with no value.

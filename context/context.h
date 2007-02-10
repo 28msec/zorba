@@ -506,22 +506,41 @@ protected:
 	// in-scope namespaces
 	uint32_t in_scope_ns;
 
+	// doc index, map: uri -> document_node id
+	fxhashmap<uint32_t> docindex;
+
+	// context error code
+	uint32_t err;
+
 public:
 	// string store services
 	off_t put_string(std::string const& s);
 	std::string get_string(off_t sref) throw (xqp_exception);
 
+	// docid services
+	uint32_t next_docid();
+	uint32_t context_docid() const { return ctx_docid; }
+	void set_context_docid(uint32_t docid) { ctx_docid = docid; }
+
 	// nodeid services
 	uint32_t next_nodeid();
 	uint32_t context_nodeid() const { return ctx_nodeid; }
-	uint32_t context_docid() const { return ctx_docid; }
-	void set_context_docid(uint32_t docid) { ctx_docid = docid; }
 	uint32_t default_element_nsid() const { return 0; /*STUB*/ }
 
 	// node store
 	rchandle<node> get_node(nodeid id);
 	rchandle<node> get_node(nodeid id) const;
 	rchandle<nodestore> get_nodestore();
+
+	// docindex
+	bool put_docuri(char const* uri, uint32_t dnid);
+	bool put_docuri(std::string const& uri, uint32_t dnid);
+	bool get_dnid(char const* uri, uint32_t & dnid) const;
+	bool get_dnid(std::string const& uri, uint32_t & dnid) const;
+
+	// errors
+	uint32_t get_error() const { return err; }
+	void set_error(uint32_t _err) { err = _err; }
 
 	// variables 
 	void push_var(rchandle<var_binding>);

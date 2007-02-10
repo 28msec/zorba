@@ -742,30 +742,25 @@ cout << TRACE << ": put_doc(res=" << res << ")\n";
 
 			switch (n_h->node_kind()) {
 			case node::elem_kind: {
-				cout << TRACE << ": PUT_elem\n";
 				rchandle<element_node> en_h = dynamic_cast<element_node*>(&*n_h);
 				put(ctx_p, en_h);
 				break;
 			}
 			case node::text_kind: {
-				cout << TRACE << ": PUT_text\n";
 				rchandle<text_node> tn_h = dynamic_cast<text_node*>(&*n_h);
 				put(ctx_p, tn_h);
 				break;
 			}
 			case node::comment_kind: {
 				// stub
-				cout << TRACE << ": PUT_comment\n";
 				break;
 			}
 			case node::pi_kind: {
 				// stub
-				cout << TRACE << ": PUT_pi\n";
 				break;
 			}
 			case node::binary_kind: {
 				// stub
-				cout << TRACE << ": PUT_binary\n";
 				break;
 			}
 			default: {
@@ -839,7 +834,7 @@ cout << TRACE << ": get_doc(id=" << nid.id << ")\n";
 
 	off_t offset;
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << ": not found\n";
+		cout << TRACE << ": document node(id=" << nid.id << ") not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, dnode_h);
@@ -864,7 +859,7 @@ cout << TRACE << ": get_node(id=" << nid.id << ")\n";
 #endif
 
 	if (!index_p->get(nid.id, offset)) {
-		cout << TRACE << ": nid [" << nid.id << "] not found\n";
+		cout << TRACE << ": node(id=" << nid.id << ") not found\n";
 		return ERR_NODEID_NOT_FOUND;
 	}
 	return get(ctx_p, offset, node_h);
@@ -915,7 +910,7 @@ cout << TRACE << ": get_node(offset=" << offset0 << ")\n";
 		break;
 	}
 	default: {
-		cout << TRACE << ": code=" << store_p->operator[](offset) << endl;
+		//cout << TRACE << ": code=" << code << endl;
 	}
 	}
 	return k;

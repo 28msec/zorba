@@ -51,7 +51,7 @@ QName::QName(
 	size_t n = qname.find(':');
 	if (n!=string::npos) {
 		prefix = qname.substr(0,n);
-		name = qname.substr(n);
+		name = qname.substr(n+1);
 	}
 }
 

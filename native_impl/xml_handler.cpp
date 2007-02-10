@@ -29,7 +29,6 @@ namespace xqp {
 #define VALUE second
 
 
-
 xml_handler::xml_handler(
 	context * _ctx_p,
 	string const&  _baseuri,
@@ -55,35 +54,33 @@ xml_handler::xml_handler(
 	nspool_h(nstore_h->get_namespace_pool()),
 	qnpool_h(nstore_h->get_qname_pool()),
 
-	the_id(0),
+	the_id(ctx_p->next_nodeid()),
 	the_parentid(0),
-	the_docid(ctx_p->context_docid()),
+	the_docid(ctx_p->next_docid()),
 	the_qnameid(0),
-	the_nsid(ctx_p->default_element_nsid())
+	the_nsid(ctx_p->default_element_nsid()),
+	the_dnid(the_id)
 {
 	//cout << "put(DOC_CODE)\n";
 	uint32_t res = nstore_h->get_offset();
-	uint32_t id = ctx_p->next_nodeid();
 	nstore_h->put(ctx_p,DOC_CODE);
 	nstore_h->put(ctx_p,the_docid);
-	nstore_h->put(ctx_p,id);
+	nstore_h->put(ctx_p,the_dnid);
 	nstore_h->put(ctx_p,the_nsid);
 	nstore_h->put(ctx_p,_baseuri);
 	nstore_h->put(ctx_p,_uri);
-	nstore_h->index_put(id, res);
+	nstore_h->index_put(the_id, res);
 }
 
 
-void xml_handler::error(
-	string const& msg) const
+void xml_handler::error(string const& msg) const
 throw (xqp_exception)
 {
 	throw xqp_exception("XML_HANDLER", msg);
 }
 
 
-inline void xml_handler::add_term(
-	xml_term const& term)
+inline void xml_handler::add_term(xml_term const& term)
 {
 	term_v.push_back(term);
 }
@@ -109,7 +106,6 @@ void xml_handler::adup(const char* buf, int offset, int length)
 	rchandle<QName> qname_h = new QName(QName::qn_attr,the_attribute);
 	uint32_t qname_id = qnpool_h->put(the_docid,qname_h);
 	attr_v.push_back(attrpair_t(qname_id,""));
-	
 }
 
 
@@ -263,7 +259,7 @@ void xml_handler::gi(const char* buf, int offset, int length)
 		name = the_element;
 	}
 
-	the_qnameid = qnpool_h->put(the_docid,new QName(QName::qn_elem,prefix,name));
+	the_qnameid = qnpool_h->put(the_docid,new QName(QName::qn_elem,the_element));
 
 #ifdef DEBUG
 	cout << "the_qnameid("
@@ -281,7 +277,7 @@ void xml_handler::gi(const char* buf, int offset, int length)
 
 	// serialize concatenated text node
 	if (textbuf.str().length()>0) {
-		cout << "put(TEXT_CODE)[gi]\n";
+		//cout << "put(TEXT_CODE)[gi]\n";
 		uint32_t res = nstore_h->get_offset();
 		uint32_t id = ctx_p->next_nodeid();
 		nstore_h->put(ctx_p, TEXT_CODE);
@@ -419,7 +415,7 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 #endif
 
 	// serialize: element QName
-	cout << "put(ELEM_CODE)\n";
+	//cout << "put(ELEM_CODE)\n";
 	uint32_t res = nstore_h->get_offset();
 	nstore_h->put(ctx_p,ELEM_CODE);
 	nstore_h->put(ctx_p,the_docid); 

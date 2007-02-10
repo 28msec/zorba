@@ -52,12 +52,13 @@ context::context()
 	available_documents(1024,0.6),
 	available_collections(1024,0.6),
 	default_collection("defcol"),
-	nodeid_counter("data/nodeid",1),
+	nodeid_counter("data/nodeid",2),
 	string_store_h(new fxcharheap(1<<16)),
 	nodestore_h(new nodestore("data/nodestore/")),
 	ctx_nodeid(0),
 	ctx_docid(0),
-	in_scope_ns(0)
+	in_scope_ns(0),
+	docindex("data/docindex/", 0.6f, 6)
 {
 }
 
@@ -65,10 +66,9 @@ context::~context()
 {
 }
 
-/*...........................................
-	:  strings                                :
-	:.........................................:
-*/
+/*..........................................
+ :  strings                                :
+ :.........................................*/
 
 off_t context::put_string(
 	string const& s)
@@ -84,21 +84,62 @@ throw (xqp_exception)
 }
 
 
-/*...........................................
-	:  nodeids                                :
-	:.........................................:
-*/
+/*..........................................
+ :  docids                                 :
+ :.........................................*/
 
-uint32_t context::next_nodeid()
+uint32_t context::next_docid()
 {
 	return (++nodeid_counter[0]);
 }
 
 
-/*...........................................
-	:  variables                              :
-	:.........................................:
-*/
+/*..........................................
+ :  nodeids                                :
+ :.........................................*/
+
+uint32_t context::next_nodeid()
+{
+	return (++nodeid_counter[1]);
+}
+
+
+/*..........................................
+ :  docindex                               :
+ :.........................................*/
+
+bool context::put_docuri(
+	char const* uri,
+	uint32_t dnid)
+{
+	return docindex.put(uri, dnid);
+}
+
+bool context::put_docuri(
+	std::string const& uri,
+	uint32_t dnid)
+{
+	return docindex.put(uri, dnid);
+}
+
+bool context::get_dnid(
+	char const* uri,
+	uint32_t & dnid) const
+{
+	return docindex.get(uri, dnid);
+}
+
+bool context::get_dnid(
+	std::string const& uri,
+	uint32_t & dnid) const
+{
+	return docindex.get(uri, dnid);
+}
+
+
+/*..........................................
+ :  variables                              :
+ :.........................................*/
 
 var_binding::var_binding()
 :
@@ -165,10 +206,9 @@ throw (xqp_exception)
 }
 
 
-/*...........................................
-	:  functions                              :
-	:.........................................:
-*/
+/*..........................................
+ :  functions                              :
+ :.........................................*/
 
 string context::get_function_type(
   QName const& fqname, 
@@ -193,10 +233,9 @@ throw (xqp_exception)
 }
 
 
-/*...........................................
-	:  context document                       :
-	:.........................................:
-*/
+/*..........................................
+ :  context document                       :
+ :.........................................*/
 
 item_type context::get_document_type(
 	string const& doc_uri) const
@@ -218,10 +257,9 @@ throw (xqp_exception)
 }
 
 
-/*...........................................
-	:  context collection                     :
-	:.........................................:
-*/
+/*..........................................
+ :  context collection                     :
+ :.........................................*/
 
 item_type context::get_collection_type(
 	string const& col_uri) const
@@ -249,10 +287,9 @@ throw (xqp_exception)
 }
 
 
-/*...........................................
-	:  node store                             :
-	:.........................................:
-*/
+/*..........................................
+ :  node store                             :
+ :.........................................*/
 
 rchandle<node> context::get_node(nodeid id)
 {

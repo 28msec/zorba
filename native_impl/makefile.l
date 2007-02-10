@@ -54,7 +54,6 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
 		../util/${BUILD}/tokenbuf.${SUFX} \
-		../store/${BUILD}/xml_ostream.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
 		../values/${BUILD}/node_values.${SUFX} \
