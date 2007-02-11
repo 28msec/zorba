@@ -19,6 +19,9 @@ symbol_table : symbol_table.h symbol_table.cpp
 parsenodes : parsenodes.h parsenodes.cpp
 	g++ ${OPT} -c -o ${BUILD}/parsenodes.${SUFX} parsenodes.cpp
 
+normalize : normalize.cpp
+	g++ ${OPT} -c -o ${BUILD}/normalize.${SUFX} normalize.cpp
+
 xquery_test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
 	g++ -Wall -g -o ${BUILD}/xquery_test \
 		../context/${BUILD}/context.${SUFX} \

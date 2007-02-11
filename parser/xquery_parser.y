@@ -609,7 +609,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FTTimes
 %type <node> FTUnaryNot
 %type <node> FTUnit
-%type <node> FTWildCardOption
+%type <node> FTWildcardOption
 %type <node> FTWindow
 %type <node> FTWords
 %type <node> FTWordsSelection
@@ -4801,7 +4801,7 @@ FTMatchOption :
 			if (debug) cout << "FTMatchOption [language]\n";
 			$$ = $1;
 		}
-	| FTWildCardOption
+	| FTWildcardOption
 		{
 			if (debug) cout << "FTMatchOption [wildcard]\n";
 			$$ = $1;
@@ -5029,16 +5029,16 @@ FTLanguageOption :
 	;
 
 
-//[364] FTWildCardOption
+//[364] FTWildcardOption
 //----------------------
-FTWildCardOption :
+FTWildcardOption :
 		WITH_WILDCARDS
 		{
-			if (debug) cout << "FTWildCardOption [with]\n";
+			if (debug) cout << "FTWildcardOption [with]\n";
 		}
 	| WITHOUT_WILDCARDS
 		{
-			if (debug) cout << "FTWildCardOption [without]\n";
+			if (debug) cout << "FTWildcardOption [without]\n";
 		}
 	;
 

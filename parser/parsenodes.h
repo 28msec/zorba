@@ -30,6 +30,11 @@
 
 namespace xqp {
 
+
+// (See: runtime/normalize.h)
+class normalize_visitor;
+
+
 /*
 **  base class: syntax-only nodes
 */
@@ -51,10 +56,15 @@ public:
 
   ~parsenode() {}
 
-public:
+public:	// context
 	context * get_context() const { return ctx_p; }
 	yy::location get_location() const { return loc; }
+
+public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -73,8 +83,7 @@ std::ostream& operator<<(std::ostream& s, parsenode const& r)
 
 /*
 **  base class:  nodes with values.
-**	XXX: todo: Get rid of this class, it's doing no real harm,
-*		but it's been superceeded	by the classes in 'exprtree'.
+*		approximately matches the classes in 'exprtree'.
 */
 class exprnode : public rcobject
 {
@@ -94,10 +103,15 @@ public:
 
   ~exprnode() {}
 
-public:
+public:	// context
 	context * get_context() const { return ctx_p; }
 	yy::location get_location() const { return loc; }
+
+public:
 	virtual std::ostream& put(std::ostream& s) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -331,6 +345,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -361,6 +378,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -396,6 +416,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -426,6 +449,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -455,6 +481,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -487,6 +516,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -513,6 +545,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -541,6 +576,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -561,6 +599,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -580,6 +621,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -607,6 +651,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -626,6 +673,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -662,6 +712,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -689,6 +742,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -721,6 +777,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -751,6 +810,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -779,6 +841,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -805,6 +870,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -833,6 +901,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -864,6 +935,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -891,6 +965,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -920,6 +997,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -947,6 +1027,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -973,6 +1056,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1010,6 +1096,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1037,6 +1126,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1071,6 +1163,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1113,6 +1208,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1150,6 +1248,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1177,6 +1278,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1226,6 +1330,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1253,6 +1360,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1285,6 +1395,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1311,6 +1424,9 @@ public:
 	
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1340,6 +1456,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1368,6 +1487,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1391,6 +1513,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1431,6 +1556,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1459,6 +1587,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1478,6 +1609,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1506,6 +1640,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1533,6 +1670,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1581,6 +1721,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1607,6 +1750,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1636,6 +1782,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1663,6 +1812,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1704,6 +1856,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1731,6 +1886,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1757,6 +1915,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1793,6 +1954,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1820,6 +1984,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1851,6 +2018,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1894,6 +2064,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1920,6 +2093,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -1949,6 +2125,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -1975,6 +2154,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2010,6 +2192,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2037,6 +2222,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2076,6 +2264,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2121,6 +2312,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2148,6 +2342,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2188,6 +2385,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2221,6 +2421,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2252,6 +2455,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2282,6 +2488,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2335,6 +2544,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2370,6 +2582,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2401,6 +2616,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2437,6 +2655,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2476,6 +2697,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2508,6 +2732,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2545,6 +2772,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2576,6 +2806,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2609,6 +2842,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2640,6 +2876,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2673,6 +2912,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2704,6 +2946,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2737,6 +2982,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2758,6 +3006,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2788,6 +3039,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2817,6 +3071,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2845,6 +3102,9 @@ public:
 	
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2878,6 +3138,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2910,6 +3173,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -2937,6 +3203,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -2968,6 +3237,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3029,6 +3301,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3065,6 +3340,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3085,6 +3363,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3127,6 +3408,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3165,6 +3449,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3198,6 +3485,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3235,6 +3525,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3266,6 +3559,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3299,6 +3595,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3325,6 +3624,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
  
@@ -3359,6 +3661,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3402,6 +3707,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3434,6 +3742,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3463,6 +3774,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3490,6 +3804,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3519,6 +3836,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3539,6 +3859,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3589,6 +3912,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3616,6 +3942,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3646,6 +3975,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };	
 
 
@@ -3666,6 +3998,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };	
 
@@ -3695,6 +4030,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3722,6 +4060,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3756,6 +4097,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3784,6 +4128,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3804,6 +4151,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3827,6 +4177,9 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3866,6 +4219,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3896,6 +4252,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3928,6 +4287,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -3958,6 +4320,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -3996,6 +4361,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4029,6 +4397,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4061,6 +4432,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4097,6 +4471,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4131,6 +4508,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4185,6 +4565,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4230,6 +4613,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4257,6 +4643,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4300,6 +4689,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4334,6 +4726,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4366,6 +4761,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4393,6 +4791,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4435,6 +4836,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4463,6 +4867,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 */
@@ -4506,6 +4913,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4534,6 +4944,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4561,6 +4974,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4603,6 +5019,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4633,6 +5052,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4659,6 +5081,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4693,6 +5118,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4719,6 +5147,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4750,6 +5181,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4776,6 +5210,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4805,6 +5242,9 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4824,6 +5264,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
  
@@ -4865,6 +5308,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4885,6 +5331,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -4904,6 +5353,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
  
@@ -4936,6 +5388,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -4971,6 +5426,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5000,6 +5458,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5027,6 +5488,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5053,6 +5517,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5098,6 +5565,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5127,6 +5597,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5153,6 +5626,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5181,6 +5657,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5207,6 +5686,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5235,6 +5717,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5261,6 +5746,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5298,6 +5786,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5368,6 +5859,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5403,6 +5897,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5430,6 +5927,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5463,6 +5963,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5493,6 +5996,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5543,6 +6049,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5572,6 +6081,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5603,6 +6115,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5658,6 +6173,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5688,6 +6206,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5722,6 +6243,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5753,6 +6277,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5786,6 +6313,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5817,6 +6347,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5851,6 +6384,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -5888,6 +6424,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5922,6 +6461,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5954,6 +6496,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5979,6 +6524,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -5999,6 +6547,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6026,6 +6577,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6058,6 +6612,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6088,6 +6645,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6123,6 +6683,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6169,6 +6732,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6199,6 +6765,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6236,6 +6805,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6278,6 +6850,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6308,6 +6883,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6342,6 +6920,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6370,6 +6951,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6405,6 +6989,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6432,6 +7019,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6462,6 +7052,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6491,6 +7084,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6523,6 +7119,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6566,6 +7165,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6596,6 +7198,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6628,6 +7233,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6655,6 +7263,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6685,6 +7296,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6712,6 +7326,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
@@ -6741,6 +7358,9 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
+
 };
 
 
@@ -6768,6 +7388,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+
+public:	// normalization visitor
+	virtual void accept(normalize_visitor&) = 0;
 
 };
 
