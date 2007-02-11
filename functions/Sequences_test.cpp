@@ -80,7 +80,7 @@ using namespace xqp;
 
 //15.5.4 fn:doc
 
-void handle_doc(
+void _doc(
 	context & ctx,
 	string const& uri)
 {
@@ -97,7 +97,7 @@ void handle_doc(
 | Extensions
 |_______________________________________________________________________*/
 
-void handle_document_load(
+void _document_load(
 	context & ctx,
 	string const& path,
 	string const& baseuri,
@@ -143,8 +143,8 @@ int main(int argc, char* argv[])
       if (cmd=="quit" || cmd=="exit") {
         break;
       }
-      else if (cmd=="doc") 						handle_doc(ctx,arg1);
-      else if (cmd=="document-load")	handle_document_load(ctx,arg1,arg2,arg3);
+      else if (cmd=="doc") 						_doc(ctx,arg1);
+      else if (cmd=="document-load")	_document_load(ctx,arg1,arg2,arg3);
 
 			uint32_t err = ctx.get_error();
 			if (err>0) cout << cmd << ": error: " << err << endl;

@@ -15,6 +15,7 @@
 #include "../native_impl/xml_term.h"
 #include "../native_impl/nodestore.h"
 #include "../util/file.h"
+#include "../util/tracer.h"
 #include "errors.h"
 
 #include <string>
@@ -119,11 +120,13 @@ rchandle<document_node> fn_doc(
 
 	if (!ctx.get_dnid(uri, dnid)) {
 		ctx.set_error(ERR_FODC0005);
+		cout << TRACE << endl;
 		return NULL;
 	}
 	int k = nstore_h->get(&ctx, nodeid(dnid), dn_h);
 	if (k < 0) {
 		ctx.set_error(ERR_FODC0005);
+		cout << TRACE << endl;
 		return NULL;
 	}
 
@@ -173,7 +176,14 @@ void xqp_document_load(
 	xml_handler* xhandler_p = new xml_handler(&ctx,baseuri,uri,xterm_v);
 	xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
 	uint32_t dnid = xhandler_p->get_dnid();
-	ctx.put_docuri(path,dnid);
+
+	uint32_t m = baseuri.length();
+	if (baseuri[m-1]!='/') {
+		ctx.put_docuri(baseuri+'/'+uri, dnid);
+	}
+	else {
+		ctx.put_docuri(baseuri+uri, dnid);
+	}
 
 	delete xhandler_p;
 	delete[] ibuf;

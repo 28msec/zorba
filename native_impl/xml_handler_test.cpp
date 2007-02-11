@@ -48,7 +48,10 @@ int main(int argc, char* argv[])
 
 		uint32_t dnid = xhandler_p->get_dnid();
 		cout << "docindex.put(\"" << path << "\", " << dnid << ")\n";
-		ctx.put_docuri(path,dnid);
+		
+		uint32_t n = baseuri.length();
+		if (baseuri[n-1]!='/') baseuri += '/';
+		ctx.put_docuri(baseuri+path,dnid);
 
     delete xhandler_p;
 		delete[] ibuf;

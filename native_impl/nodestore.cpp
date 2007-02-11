@@ -802,6 +802,8 @@ cout << TRACE << ": get_doc(offset=" << offset0 << ")\n";
 	string docuri;
 	if ((k = get(ctx_p, offset, docuri)) < 0) return k; else offset += k;
 
+cout << "new document_node("<<id<<','<<docid<<','<<baseuri<<','<<docuri<<")\n";
+
 	dnode_h = new document_node(id, docid, baseuri, docuri);
 
 	// children
