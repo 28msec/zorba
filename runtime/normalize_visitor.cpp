@@ -482,10 +482,6 @@ void normalize_visitor::visit(Constructor& v)
 {
 }
 
-void normalize_visitor::visit(ContentExpr& v)
-{
-}
-
 void normalize_visitor::visit(ContextItemExpr& v)
 {
 }

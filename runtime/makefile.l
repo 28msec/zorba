@@ -2,6 +2,9 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
+normalize_visitor : normalize_visitor.h normalize_visitor.cpp
+	g++ ${OPT} -c -o ${BUILD}/normalize_visitor.${SUFX} normalize_visitor.cpp
+
 iterator : iterator.h iterator.cpp
 	g++ ${OPT} -c -o ${BUILD}/iterator.${SUFX} iterator.cpp
 
