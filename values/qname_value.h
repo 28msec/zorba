@@ -78,10 +78,16 @@ public:	// atomic_value interface
 	std::string describe(context * ctx) const
 		{ return prefix.length()>0 ? prefix+':'+name : name; }
 
-	std::ostream& put(std::ostream& os, context * ctx) const
+	std::ostream& put(std::ostream& os, context * ctx_p) const
 		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
 
-	std::ostream& put(std::ostream& os, context const* ctx) const
+	std::ostream& put(std::ostream& os, context const* ctx_p) const
+		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
+
+	std::ostream& put(std::ostream& os, context & ctx) const
+		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
+
+	std::ostream& put(std::ostream& os, context const& ctx) const
 		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
 
   enum type::typecode get_typecode() const
