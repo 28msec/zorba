@@ -39,31 +39,28 @@ public:
 
 protected:
 	yy::location loc;
-	context * ctx_p;
 
 public:
-	expr(yy::location const&,context *);
+	expr(yy::location const&);
   virtual ~expr() {}
 
 public:
 	yy::location get_loc() const { return loc; }
-
-public:
 	virtual rchandle<item_iterator> eval(context *);
-	virtual std::ostream& put(std::ostream&,context *) const;
-
-	friend std::ostream& operator<<(std::ostream& s, expr const& r);
+	virtual std::ostream& put(std::ostream&,context&) const;
 
 
 /*
-public:	 // manipulators
+public:	
 	typedef pair<var_expr*,expr*> substitution;
 	typedef std::vector<substitution> subst_list;
+
+public:
 	rchandle<expr> clone() const;
 	rchandle<expr> clone(subst_list) const;
 	void sub(substitution);
-	list<var_expr*> variables() const;						// free variables
-	list<funcall_expr*> functions() const;				// return all function calls
+	list<var_expr*> variables() const;				// free variables
+	list<funcall_expr*> functions() const;		// return all function calls
 	rchandle<substitution> resolve(expr*, expr*);			// return subst_list expression match
 	void resolve(expr*, expr*, rchandle<subst_list>);	// return subst_list expression match
 	void traverse(void* (*op) (void*), int flags);
@@ -92,7 +89,7 @@ protected:
 	list<exprref_t> elist;
 
 public:
-	expr_list(yy::location const&, context *);
+	expr_list(yy::location const&);
 	~expr_list();
 
 public:
@@ -107,13 +104,12 @@ public:
 		{ return elist.end(); }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
 
 };
-
 
 
 class var_expr : public expr
@@ -146,7 +142,7 @@ public:
   rchandle<sequence_type> type_h;
 
 public:
-  var_expr(yy::location const&,context *);
+  var_expr(yy::location const&);
   ~var_expr();
 
 public:
@@ -164,13 +160,12 @@ public:
 
 public:
 	static std::string decode_var_kind(enum var_kind);
-  std::ostream& put(std::ostream&,context *) const;
+  std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
 
 };
-
 
 
 // [41] [http://www.w3.org/TR/xquery/#prod-xquery-OrderModifier]
@@ -198,7 +193,6 @@ public:
 	~order_modifier() {}
 
 };
-
 
 
 // [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
@@ -245,7 +239,7 @@ public:	// accessors
 	void set_expr(exprref_t v) { expr_h = v; }
 
 public:
-	std::ostream& put(ostream&,context *) const;
+	std::ostream& put(ostream&,context&) const;
 	
 };
 
@@ -270,7 +264,7 @@ protected:	// state
 	exprref_t retval_h;
 
 public:	// ctor,dtor
-	flwor_expr(yy::location const&,context *);
+	flwor_expr(yy::location const&);
 	~flwor_expr();
 
 public:	// accessors
@@ -309,10 +303,9 @@ public:	// accessors
 
 public:
 	rchandle<item_iterator> eval(context *);
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
-
 
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
@@ -332,7 +325,6 @@ protected:
 public:
 	quantified_expr(
 		yy::location const&,
-		context *,
 		enum quantification_mode_t);
 	~quantified_expr();
 
@@ -361,10 +353,9 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
-
 
 
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
@@ -404,7 +395,7 @@ protected:
 	exprref_t default_clause_h;
 
 public:
-	typeswitch_expr(yy::location const&, context *);
+	typeswitch_expr(yy::location const&);
 	~typeswitch_expr();
 
 public:
@@ -442,7 +433,7 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -462,14 +453,12 @@ protected:
 public:
 	if_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		exprref_t,
 		exprref_t);
 
 	if_expr(
-		yy::location const&,
-		context *);
+		yy::location const&);
 
 	~if_expr();
 
@@ -485,7 +474,7 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -507,7 +496,7 @@ protected:
 	function_impl const* func;
 
 public:
-	fo_expr(yy::location const&, context *);
+	fo_expr(yy::location const&);
 	~fo_expr();
 
 public:
@@ -530,7 +519,7 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -554,7 +543,6 @@ protected:
 public:
 	ft_contains_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		exprref_t,
 		exprref_t);
@@ -567,7 +555,7 @@ public:
 	exprref_t get_ignore() const { return ft_ignore_h; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -592,7 +580,6 @@ protected:
 public:
 	instanceof_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		sequence_type const&);
 
@@ -603,7 +590,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -622,7 +609,6 @@ protected:
 public:
 	treat_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		sequence_type const&);
 
@@ -633,7 +619,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -660,7 +646,6 @@ protected:
 public:
 	castable_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		single_type_t);
 	~castable_expr();
@@ -672,7 +657,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -691,7 +676,6 @@ protected:
 public:
 	cast_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		single_type_t);
 	~cast_expr();
@@ -703,7 +687,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -722,7 +706,6 @@ protected:
 public:
 	unary_expr(
 		yy::location const&,
-		context *,
 		bool neg_b,
 		exprref_t);
 	~unary_expr();
@@ -732,7 +715,7 @@ public:
 	exprref_t get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -751,7 +734,6 @@ protected:
 public:
 	validate_expr(
 		yy::location const&,
-		context *,
 		enum validation_mode_t,
 		exprref_t);
 	~validate_expr();
@@ -761,7 +743,7 @@ public:
 	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -791,11 +773,9 @@ protected:
 
 public:
 	extension_expr(
-		yy::location const&,
-		context *);
+		yy::location const&);
 	extension_expr(
 		yy::location const&,
-		context *,
 		exprref_t);
 	~extension_expr();
 
@@ -822,7 +802,7 @@ public:
 	exprref_t get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -847,7 +827,7 @@ protected:
 	std::vector<exprref_t > step_hv;
 
 public:
-	relpath_expr(yy::location const&,context *);
+	relpath_expr(yy::location const&);
 	~relpath_expr();
 
 public:
@@ -867,7 +847,7 @@ public:
 		{ return step_hv[n]; }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -880,11 +860,11 @@ class step_expr : public expr
 |_______________________________________________________________________*/
 {
 public:
-	step_expr(yy::location const&,context *);
+	step_expr(yy::location const&);
 	~step_expr();
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -943,7 +923,7 @@ protected:
 	std::vector<exprref_t > pred_hv;
 
 public:
-	axis_step_expr( yy::location const&,context *);
+	axis_step_expr(yy::location const&);
 	~axis_step_expr();
 
 public:
@@ -978,7 +958,7 @@ public:
 		{ return pred_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -999,12 +979,11 @@ class primary_expr : public expr
 {
 public:
 	primary_expr(
-		yy::location const&,
-		context *);
+		yy::location const&);
 	~primary_expr();
 
 public:
-	std::ostream& put(std::ostream&,context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1035,10 +1014,10 @@ protected:
 	};
 
 public:
-	literal_expr(yy::location const&, context *, uint32_t sref, bool);
-	literal_expr(yy::location const&, context *, int);
-	literal_expr(yy::location const&, context *, decimal);
-	literal_expr(yy::location const&, context *, double);
+	literal_expr(yy::location const&, uint32_t sref, bool);
+	literal_expr(yy::location const&, int);
+	literal_expr(yy::location const&, decimal);
+	literal_expr(yy::location const&, double);
 	~literal_expr();
 
 public:
@@ -1050,7 +1029,7 @@ public:
 
 public:
 	static std::string decode_type(enum literal_type_t t);
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -1081,7 +1060,6 @@ protected:
 public:
 	order_expr(
 		yy::location const&,
-		context *,
 		order_type_t,
 		exprref_t);
 	~order_expr();
@@ -1091,7 +1069,7 @@ public:
 	exprref_t get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1112,7 +1090,6 @@ protected:
 public:
 	funcall_expr(
 		yy::location const&,
-		context *,
 		rchandle<QName>);
 	~funcall_expr();
 
@@ -1136,7 +1113,7 @@ public:
 		{ return arg_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1154,11 +1131,11 @@ class cons_expr : public expr
 |_______________________________________________________________________*/
 {
 public:
-	cons_expr(yy::location const&, context *);
+	cons_expr(yy::location const&);
 	~cons_expr();
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1176,7 +1153,6 @@ protected:
 public:
 	doc_expr(
 		yy::location const&,
-		context *,
 		exprref_t);
 	~doc_expr();
 
@@ -1184,7 +1160,7 @@ public:
 	exprref_t get_docuri() const { return docuri_h; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -1214,12 +1190,10 @@ protected:
 public:
 	elem_expr(
 		yy::location const&,
-		context *,
 		rchandle<QName>,
 		exprref_t);
 	elem_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		exprref_t);
 	~elem_expr();
@@ -1241,7 +1215,7 @@ public:
 		{ return nsb_v.end(); }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -1267,12 +1241,10 @@ protected:
 public:
 	attr_expr(
 		yy::location const&,
-		context *,
 		rchandle<QName>,
 		exprref_t);
 	attr_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		exprref_t);
 	~attr_expr();
@@ -1283,7 +1255,7 @@ public:
 	exprref_t get_val_expr() const { return val_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -1304,7 +1276,6 @@ protected:
 public:
 	text_expr(
 		yy::location const&,
-		context *,
 		exprref_t);
 	~text_expr();
 
@@ -1312,7 +1283,7 @@ public:
 	exprref_t get_text_expr() const { return text_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -1333,7 +1304,6 @@ protected:
 public:
 	comment_expr(
 		yy::location const&,
-		context *,
 		exprref_t);
 	~comment_expr();
 
@@ -1341,7 +1311,7 @@ public:
 	exprref_t get_comment_expr() const { return comment_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -1367,12 +1337,10 @@ protected:
 public:
 	pi_expr(
 		yy::location const&,
-		context *,
 		std::string target,
 		exprref_t);
 	pi_expr(
 		yy::location const&,
-		context *,
 		exprref_t,
 		exprref_t);
 	~pi_expr();
@@ -1383,7 +1351,7 @@ public:
 	exprref_t get_content_expr() const { return content_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&, context *) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 

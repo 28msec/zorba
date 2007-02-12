@@ -29,24 +29,17 @@ int printdepth = 0;
 #define UNDENT	printdepth--
 
 expr::expr(
-	yy::location const& _loc,
-	context * _ctx_p)
+	yy::location const& _loc)
 :
-	loc(_loc),
-	ctx_p(_ctx_p)
+	loc(_loc)
 {
 }
 
 ostream& expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	return os;
-}
-
-ostream& operator<<(ostream& s, expr const& r)
-{
-	return r.put(s,r.ctx_p);
 }
 
 
@@ -62,10 +55,9 @@ ostream& operator<<(ostream& s, expr const& r)
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
 
 expr_list::expr_list(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -75,14 +67,14 @@ expr_list::~expr_list()
 
 ostream& expr_list::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "expr_list[\n";
 	list_iterator<exprref_t> it = begin();
 	for (; it!=end(); ++it) {
 		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
-		e_h->put(os,ctx_p) << endl;
+		e_h->put(os,ctx) << endl;
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -92,10 +84,9 @@ ostream& expr_list::put(
 // [33a]
 
 var_expr::var_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -120,11 +111,11 @@ string var_expr::decode_var_kind(
 
 ostream& var_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "var_expr[" << decode_var_kind(get_kind());
-	os << " name="; get_varname()->put(os,ctx_p);
-	os << ", expr="; get_valexpr()->put(os,ctx_p);
+	os << " name="; get_varname()->put(os,ctx);
+	os << ", expr="; get_valexpr()->put(os,ctx);
 	os << ", type=" << get_type()->describe();
 	return os << OUTDENT << "]\n";
 }
@@ -155,7 +146,7 @@ forlet_clause::~forlet_clause()
 
 ostream & forlet_clause::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "forlet[";
 	switch (type) {
@@ -164,24 +155,23 @@ ostream & forlet_clause::put(
 	default: os << "??\n";
 	}
 	Assert<null_pointer>(var_h!=NULL);
-	var_h->put(os,ctx_p);
+	var_h->put(os,ctx);
 	if (pos_var_h!=NULL) {
-		os << INDENT << " AT "; pos_var_h->put(os,ctx_p); UNDENT;
+		os << INDENT << " AT "; pos_var_h->put(os,ctx); UNDENT;
 	}
 	if (score_var_h!=NULL) {
-		os << INDENT << " SCORE "; score_var_h->put(os,ctx_p); UNDENT;
+		os << INDENT << " SCORE "; score_var_h->put(os,ctx); UNDENT;
 	}
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p);
+	expr_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
 }
 
 
 flwor_expr::flwor_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -191,16 +181,16 @@ flwor_expr::~flwor_expr()
 
 ostream& flwor_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "flwor_expr[\n";
 	vector<forletref_t>::const_iterator it = clause_begin();
 	for (; it!=clause_end(); ++it) {
 		forletref_t fl_h = *it;
 		Assert<null_pointer>(fl_h!=NULL);
-		fl_h->put(os,ctx_p);
+		fl_h->put(os,ctx);
 	}
-	if (where_h!=NULL) where_h->put(os,ctx_p);
+	if (where_h!=NULL) where_h->put(os,ctx);
 
 	vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
 	for (; ord_it!=orderspec_end(); ++ord_it) {
@@ -211,7 +201,7 @@ ostream& flwor_expr::put(
 		Assert<null_pointer>(ord_h!=NULL);
 
 		os << INDENT << "ORDERBY\n";
-		os << e_h->put(os,ctx_p) << endl;
+		os << e_h->put(os,ctx) << endl;
 		UNDENT;
 
 		os << INDENT;
@@ -229,7 +219,7 @@ ostream& flwor_expr::put(
 		UNDENT;
 	}
 	Assert<null_pointer>(retval_h!=NULL);
-	os << INDENT << "RETURN\n"; retval_h->put(os,ctx_p); UNDENT;
+	os << INDENT << "RETURN\n"; retval_h->put(os,ctx); UNDENT;
 	return os << OUTDENT << "]\n";
 
 }
@@ -240,10 +230,9 @@ ostream& flwor_expr::put(
 
 quantified_expr::quantified_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	enum quantification_mode_t _qmode)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	qmode(_qmode)
 {
 }
@@ -254,7 +243,7 @@ quantified_expr::~quantified_expr()
 
 ostream& quantified_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "quantified_expr[";
 	switch (qmode) {
@@ -271,15 +260,15 @@ ostream& quantified_expr::put(
 		Assert<null_pointer>(var_h!=NULL);
 		Assert<null_pointer>(var_h->varname_h!=NULL);
 		os << INDENT;
-		var_h->varname_h->put(os,ctx_p) << " in ";
+		var_h->varname_h->put(os,ctx) << " in ";
 		Assert<null_pointer>(var_h->valexpr_h!=NULL);
-		var_h->valexpr_h->put(os,ctx_p) << endl;
+		var_h->valexpr_h->put(os,ctx) << endl;
 		UNDENT;
 	}
 
 	os << " SATISFIES\n";
 	Assert<null_pointer>(sat_expr_h!=NULL);
-	sat_expr_h->put(os,ctx_p);
+	sat_expr_h->put(os,ctx);
 	return os << OUTDENT << "\n]\n";
 }
 
@@ -288,10 +277,9 @@ ostream& quantified_expr::put(
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 
 typeswitch_expr::typeswitch_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -301,20 +289,20 @@ typeswitch_expr::~typeswitch_expr()
 
 ostream& typeswitch_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "typeswitch_expr[\n";
 	Assert<null_pointer>(switch_expr_h!=NULL);
-	switch_expr_h->put(os,ctx_p);
+	switch_expr_h->put(os,ctx);
 
 	vector<case_clause>::const_iterator it = case_clause_hv.begin();
 	for (; it!=case_clause_hv.end(); ++it) {
 		case_clause cc = *it;
 		os << INDENT << "case: ";
-		if (cc.var_h!=NULL) cc.var_h->put(os,ctx_p) << " as ";
+		if (cc.var_h!=NULL) cc.var_h->put(os,ctx) << " as ";
 		os << cc.seqtype.describe() << " return ";
 		Assert<null_pointer>(cc.case_expr_h!=NULL);
-		cc.case_expr_h->put(os,ctx_p) << endl;
+		cc.case_expr_h->put(os,ctx) << endl;
 		UNDENT;
 	}
 	return os << OUTDENT << "]\n";
@@ -326,12 +314,11 @@ ostream& typeswitch_expr::put(
 
 if_expr::if_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _cond_expr_h,
 	rchandle<expr> _then_expr_h,
 	rchandle<expr> _else_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	cond_expr_h(_cond_expr_h),
 	then_expr_h(_then_expr_h),
 	else_expr_h(_else_expr_h)
@@ -339,10 +326,9 @@ if_expr::if_expr(
 }
 
 if_expr::if_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -352,15 +338,15 @@ if_expr::~if_expr()
 
 ostream& if_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "if_expr[\n";
 	Assert<null_pointer>(cond_expr_h!=NULL);
-	cond_expr_h->put(os,ctx_p);
+	cond_expr_h->put(os,ctx);
 	Assert<null_pointer>(then_expr_h!=NULL);
-	then_expr_h->put(os,ctx_p);
+	then_expr_h->put(os,ctx);
 	Assert<null_pointer>(else_expr_h!=NULL);
-	else_expr_h->put(os,ctx_p);
+	else_expr_h->put(os,ctx);
 	return os << OUTDENT << "\n]\n";
 }
 
@@ -373,10 +359,9 @@ ostream& if_expr::put(
 // [46] [http://www.w3.org/TR/xquery/#prod-xquery-OrExpr]
 
 fo_expr::fo_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -386,18 +371,18 @@ fo_expr::~fo_expr()
 
 ostream& fo_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "fo_expr[\n";
 	Assert<null_pointer>(func!=NULL);
-	func->sig_h->get_fname()->put(os,ctx_p) << endl;
+	func->sig_h->get_fname()->put(os,ctx) << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();
 	for (; it!=en; ++it) {
 		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
-		e_h->put(os,ctx_p) << endl;
+		e_h->put(os,ctx) << endl;
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -419,12 +404,11 @@ ostream& fo_expr::put(
 
 ft_contains_expr::ft_contains_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _range_h,
 	rchandle<expr> _ft_select_h,
 	rchandle<expr> _ft_ignore_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	range_h(_range_h),
 	ft_select_h(_ft_select_h),
 	ft_ignore_h(_ft_ignore_h)
@@ -437,15 +421,15 @@ ft_contains_expr::~ft_contains_expr()
 
 ostream& ft_contains_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << "ft_contains_expr[\n";
 	Assert<null_pointer>(range_h!=NULL);
-	range_h->put(os,ctx_p) << endl;
+	range_h->put(os,ctx) << endl;
 	Assert<null_pointer>(ft_select_h!=NULL);
 	os << "ft_contains\n";
-	ft_select_h->put(os,ctx_p) << endl;
-	if (ft_ignore_h!=NULL) ft_ignore_h->put(os,ctx_p);
+	ft_select_h->put(os,ctx) << endl;
+	if (ft_ignore_h!=NULL) ft_ignore_h->put(os,ctx);
 	return os << "\n]\n";
 }
 
@@ -456,11 +440,10 @@ ostream& ft_contains_expr::put(
 
 instanceof_expr::instanceof_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _expr_h,
 	sequence_type const& _seqtype)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	expr_h(_expr_h),
 	seqtype(_seqtype)
 {
@@ -472,11 +455,11 @@ instanceof_expr::~instanceof_expr()
 
 ostream& instanceof_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "instanceof_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	os << "instance of\n";
 	os << seqtype.describe();
 	return os << OUTDENT << "]\n";
@@ -488,11 +471,10 @@ ostream& instanceof_expr::put(
 
 treat_expr::treat_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _expr_h,
 	sequence_type const& _seqtype)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	expr_h(_expr_h),
 	seqtype(_seqtype)
 {
@@ -504,11 +486,11 @@ treat_expr::~treat_expr()
 
 ostream& treat_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "treat_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	os << "treat as\n";
 	os << seqtype.describe();
 	return os << OUTDENT << "]\n";
@@ -520,11 +502,10 @@ ostream& treat_expr::put(
 
 castable_expr::castable_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _expr_h,
 	single_type_t _stype)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	expr_h(_expr_h),
 	stype(_stype)
 {
@@ -536,11 +517,11 @@ castable_expr::~castable_expr()
 
 ostream& castable_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "castable_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	os << "castable as\n";
 	os << get_atomic_type().describe();
 	if (is_optional()) os << "?";
@@ -553,11 +534,10 @@ ostream& castable_expr::put(
 
 cast_expr::cast_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _expr_h,
 	single_type_t _stype)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	expr_h(_expr_h),
 	stype(_stype)
 {
@@ -569,11 +549,11 @@ cast_expr::~cast_expr()
 
 ostream& cast_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "cast_expr[\n";
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	os << "cast as\n";
 	os << get_atomic_type().describe();
 	if (is_optional()) os << "?";
@@ -586,11 +566,10 @@ ostream& cast_expr::put(
 
 unary_expr::unary_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	bool _neg_b,
 	rchandle<expr> _expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	neg_b(_neg_b),
 	expr_h(_expr_h)
 {
@@ -602,12 +581,12 @@ unary_expr::~unary_expr()
 
 ostream& unary_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << "unary_expr[";
 	os << (neg_b ? "MINUS\n" : "\n");
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	return os << "]\n";
 }
 
@@ -617,11 +596,10 @@ ostream& unary_expr::put(
 
 validate_expr::validate_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	enum validation_mode_t _valmode,
 	rchandle<expr> _expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	valmode(_valmode),
 	expr_h(_expr_h)
 {
@@ -633,7 +611,7 @@ validate_expr::~validate_expr()
 
 ostream& validate_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "validate_expr[";
 	switch (valmode) {
@@ -642,7 +620,7 @@ ostream& validate_expr::put(
 	default: os << "??\n";
 	}
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	return os << OUTDENT << "]\n";
 }
 
@@ -651,19 +629,17 @@ ostream& validate_expr::put(
 // [65] [http://www.w3.org/TR/xquery/#prod-xquery-ExtensionExpr]
 
 extension_expr::extension_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
 extension_expr::extension_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	exprref_t _expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	expr_h(_expr_h)
 {
 }
@@ -674,7 +650,7 @@ extension_expr::~extension_expr()
 
 ostream& extension_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "extension_expr[\n";
 	/*
@@ -684,7 +660,7 @@ ostream& extension_expr::put(
 		rchandle<pragma> p_h = *it;
 		Assert<null_pointer>(p_h!=NULL);
 		Assert<null_pointer>(p_h->name_h!=NULL);
-		os << "?"; p_h->name_h->put(os,ctx_p);
+		os << "?"; p_h->name_h->put(os,ctx);
 		os << " " << p_h->content << endl;
 		UNDENT;
 	}
@@ -693,12 +669,12 @@ ostream& extension_expr::put(
 	os << INDENT;
 	Assert<null_pointer>(pragma_h!=NULL);
 	Assert<null_pointer>(pragma_h->name_h!=NULL);
-	os << "?"; pragma_h->name_h->put(os,ctx_p);
+	os << "?"; pragma_h->name_h->put(os,ctx);
 	os << " " << pragma_h->content << endl;
 	UNDENT;
 
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	return os << OUTDENT << "]\n";
 }
 
@@ -707,10 +683,9 @@ ostream& extension_expr::put(
 // [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
 
 relpath_expr::relpath_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -720,7 +695,7 @@ relpath_expr::~relpath_expr()
 
 ostream& relpath_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << "relpath_expr[\n";
 	vector<rchandle<expr> >::const_iterator it = begin();
@@ -728,7 +703,7 @@ ostream& relpath_expr::put(
 	for (; it!=en; ++it) {
 		rchandle<expr> se_h = *it;
 		Assert<null_pointer>(se_h!=NULL);
-		se_h->put(os,ctx_p) << endl;
+		se_h->put(os,ctx) << endl;
 	}
 	return os << "]\n";
 }
@@ -738,10 +713,9 @@ ostream& relpath_expr::put(
 // [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
 
 step_expr::step_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -751,7 +725,7 @@ step_expr::~step_expr()
 
 ostream& step_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	return os << "step_expr[]\n";
 }
@@ -761,10 +735,9 @@ ostream& step_expr::put(
 // [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
 
 axis_step_expr::axis_step_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -774,7 +747,7 @@ axis_step_expr::~axis_step_expr()
 
 ostream& axis_step_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "axis_step_expr[";
 	switch (axis) {
@@ -820,15 +793,15 @@ ostream& axis_step_expr::put(
 
 	Assert<null_pointer>(name_h!=NULL);
 	switch (wild) {
-	case no_wild: name_h->put(os,ctx_p); break;
+	case no_wild: name_h->put(os,ctx); break;
 	case all_wild: os << "*"; break;
-	case prefix_wild: os << "*:"; name_h->put(os,ctx_p); break;
-	case name_wild: name_h->put(os,ctx_p) << ":*"; break;
+	case prefix_wild: os << "*:"; name_h->put(os,ctx); break;
+	case name_wild: name_h->put(os,ctx) << ":*"; break;
 	default: os << "??";
 	}
 
 	if (typename_h!=NULL) {
-		typename_h->put(os,ctx_p) << endl;
+		typename_h->put(os,ctx) << endl;
 	}
 	os << OUTDENT << ")\n";
 
@@ -837,7 +810,7 @@ ostream& axis_step_expr::put(
 	for (; it!=en; ++it) {
 		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
-		e_h->put(os,ctx_p) << endl;
+		e_h->put(os,ctx) << endl;
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -847,10 +820,9 @@ ostream& axis_step_expr::put(
 // [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 
 primary_expr::primary_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -860,7 +832,7 @@ primary_expr::~primary_expr()
 
 ostream& primary_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	return os << "primary_expr[]\n";
 }
@@ -871,11 +843,10 @@ ostream& primary_expr::put(
 
 literal_expr::literal_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	uint32_t _sref,
 	bool b)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	type(lit_string),
 	sref(_sref)
 {
@@ -883,10 +854,9 @@ literal_expr::literal_expr(
 
 literal_expr::literal_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	int i)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	type(lit_integer),
 	ival(i)
 {
@@ -894,10 +864,9 @@ literal_expr::literal_expr(
 
 literal_expr::literal_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	decimal d)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	type(lit_decimal),
 	decval(d)
 {
@@ -905,10 +874,9 @@ literal_expr::literal_expr(
 
 literal_expr::literal_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	double d)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	type(lit_double),
 	dval(d)
 {
@@ -931,7 +899,7 @@ string literal_expr::decode_type(enum literal_type_t t)
 
 ostream& literal_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	switch (type) {
 	case lit_string: os << INDENT << "string[" << sref; break;
@@ -950,11 +918,10 @@ ostream& literal_expr::put(
 
 order_expr::order_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	order_type_t _type,
 	rchandle<expr> _expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	type(_type),
 	expr_h(_expr_h)
 {
@@ -966,7 +933,7 @@ order_expr::~order_expr()
 
 ostream& order_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << "order_expr[";
 	switch (type) {
@@ -975,7 +942,7 @@ ostream& order_expr::put(
 	default: os << "??\n";
 	}
 	Assert<null_pointer>(expr_h!=NULL);
-	expr_h->put(os,ctx_p) << endl;
+	expr_h->put(os,ctx) << endl;
 	return os << "]\n";
 }
 
@@ -985,10 +952,9 @@ ostream& order_expr::put(
 
 funcall_expr::funcall_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<QName> _fname_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	fname_h(_fname_h)
 {
 }
@@ -999,16 +965,16 @@ funcall_expr::~funcall_expr()
 
 ostream& funcall_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "funcall_expr[";
 	Assert<null_pointer>(fname_h!=NULL);
-	fname_h->put(os,ctx_p) << endl;
+	fname_h->put(os,ctx) << endl;
 	vector<rchandle<expr> >::const_iterator it = arg_hv.begin();
 	for (; it!=arg_hv.end(); ++it) {
 		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
-		e_h->put(os,ctx_p);
+		e_h->put(os,ctx);
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -1018,10 +984,9 @@ ostream& funcall_expr::put(
 // [109] [http://www.w3.org/TR/xquery/#prod-xquery-ComputedConstructor]
 
 cons_expr::cons_expr(
-	yy::location const& loc,
-	context * ctx_p)
+	yy::location const& loc)
 :
-	expr(loc,ctx_p)
+	expr(loc)
 {
 }
 
@@ -1031,7 +996,7 @@ cons_expr::~cons_expr()
 
 ostream& cons_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	return os << "cons_expr[]\n";
 }
@@ -1042,10 +1007,9 @@ ostream& cons_expr::put(
 
 doc_expr::doc_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _docuri_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	docuri_h(_docuri_h)
 {
 }
@@ -1056,11 +1020,11 @@ doc_expr::~doc_expr()
 
 ostream& doc_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "doc_expr[\n";
 	Assert<null_pointer>(docuri_h!=NULL);
-	docuri_h->put(os,ctx_p);
+	docuri_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1070,11 +1034,10 @@ ostream& doc_expr::put(
 
 elem_expr::elem_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<QName> _qname_h,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	qname_h(_qname_h),
 	qname_expr_h(NULL),
 	content_expr_h(_content_expr_h)
@@ -1083,11 +1046,10 @@ elem_expr::elem_expr(
 
 elem_expr::elem_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _qname_expr_h,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	content_expr_h(_content_expr_h)
@@ -1100,15 +1062,15 @@ elem_expr::~elem_expr()
 
 ostream& elem_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "elem_expr[<";
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os,ctx_p) << ">\n";
+		qname_h->put(os,ctx) << ">\n";
 	}
 	else {
-		qname_expr_h->put(os,ctx_p) << ">\n";
+		qname_expr_h->put(os,ctx) << ">\n";
 	}
 	vector<nsbinding>::const_iterator it = ns_begin();
 	vector<nsbinding>::const_iterator en = ns_end();
@@ -1119,7 +1081,7 @@ ostream& elem_expr::put(
 		os << INDENT << "xmlns:" << ncname << "=\"" << nsuri << "\"\n"; UNDENT;
 	}
 	Assert<null_pointer>(content_expr_h!=NULL);
-	content_expr_h->put(os,ctx_p);
+	content_expr_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1129,11 +1091,10 @@ ostream& elem_expr::put(
 
 attr_expr::attr_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<QName> _qname_h,
 	rchandle<expr> _val_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	qname_h(_qname_h),
 	qname_expr_h(NULL),
 	val_expr_h(_val_expr_h)
@@ -1142,11 +1103,10 @@ attr_expr::attr_expr(
 
 attr_expr::attr_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _qname_expr_h,
 	rchandle<expr> _val_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	val_expr_h(_val_expr_h)
@@ -1159,19 +1119,19 @@ attr_expr::~attr_expr()
 
 ostream& attr_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "attr_expr[@";
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os,ctx_p);
+		qname_h->put(os,ctx);
 	}
 	else {
-		qname_expr_h->put(os,ctx_p);
+		qname_expr_h->put(os,ctx);
 	}
 	Assert<null_pointer>(val_expr_h!=NULL);
 	os << "=";
-	val_expr_h->put(os,ctx_p);
+	val_expr_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1181,10 +1141,9 @@ ostream& attr_expr::put(
 
 text_expr::text_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _text_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	text_expr_h(_text_expr_h)
 {
 }
@@ -1195,11 +1154,11 @@ text_expr::~text_expr()
 
 ostream& text_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "text_expr[";
 	Assert<null_pointer>(text_expr_h!=NULL);
-	text_expr_h->put(os,ctx_p);
+	text_expr_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1209,10 +1168,9 @@ ostream& text_expr::put(
 
 comment_expr::comment_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _comment_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	comment_expr_h(_comment_expr_h)
 {
 }
@@ -1223,11 +1181,11 @@ comment_expr::~comment_expr()
 
 ostream& comment_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "comment_expr[";
 	Assert<null_pointer>(comment_expr_h!=NULL);
-	comment_expr_h->put(os,ctx_p);
+	comment_expr_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1237,11 +1195,10 @@ ostream& comment_expr::put(
 
 pi_expr::pi_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	std::string _target,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	target(_target),
 	target_expr_h(NULL),
 	content_expr_h(_content_expr_h)
@@ -1250,11 +1207,10 @@ pi_expr::pi_expr(
 
 pi_expr::pi_expr(
 	yy::location const& loc,
-	context * ctx_p,
 	rchandle<expr> _target_expr_h,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc,ctx_p),
+	expr(loc),
 	target(""),
 	target_expr_h(_target_expr_h),
 	content_expr_h(_content_expr_h)
@@ -1267,7 +1223,7 @@ pi_expr::~pi_expr()
 
 ostream& pi_expr::put(
 	ostream& os,
-	context * ctx_p) const
+	context& ctx) const
 {
 	os << INDENT << "pi_expr[target=";
 	Assert<bad_arg>(target.length()>0 || target_expr_h!=NULL);
@@ -1275,11 +1231,11 @@ ostream& pi_expr::put(
 		os << target;
 	}
 	else {
-		target_expr_h->put(os,ctx_p);
+		target_expr_h->put(os,ctx);
 	}
 	Assert<null_pointer>(content_expr_h!=NULL);
 	os << ", context=";
-	content_expr_h->put(os,ctx_p);
+	content_expr_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
 }
 
