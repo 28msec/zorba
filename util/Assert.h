@@ -34,3 +34,4 @@ inline void Assert(A assertion, const std::string& location)
 
 }	/* namespace xqp */
 #endif	/* XQP_ASSERT_H */
+

@@ -720,7 +720,7 @@ Module :
 		{
 			if (debug) cout << "Module [main]\n";
 			$$ = $1;
-			$$->put(driver.get_os());
+			driver.set_expr($$);
 		}
   | VersionDecl MainModule
 		{
@@ -3123,9 +3123,7 @@ FilterExpr :
 		PrimaryExpr 
 		{
 			if (debug) cout << "FilterExpr [primary]\n";
-			$$ = new FilterExpr(@$,driver.get_ctx(),
-								$1,
-								NULL);
+			$$ = $1;
 		}
 	|	PrimaryExpr  PredicateList
 		{

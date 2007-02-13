@@ -35,6 +35,12 @@ namespace xqp
 		os_err_ << X; \
 		throw null_pointer(os_loc_.str(),os_err_.str());
 
+#define BAD_DYNAMIC_CAST_MACRO(X) \
+		ostringstream os_loc_, os_err_; \
+		os_loc_ << __FILE__ << ":" << __LINE__ << "::" << __FUNCTION__; \
+		os_err_ << X; \
+		throw bad_dynamic_cast(os_loc_.str(),os_err_.str());
+
 class xqp_exception : public std::runtime_error 
 { 
 public:
@@ -96,6 +102,20 @@ public:
 
 public:
 	std::string get_msg() const { return "null_pointer: " + msg; }
+};
+
+
+class bad_dynamic_cast : public xqp_exception
+{
+public:
+	bad_dynamic_cast();
+  bad_dynamic_cast(const bad_dynamic_cast&);
+	bad_dynamic_cast(const std::string& loc);
+	bad_dynamic_cast(const std::string& loc, const std::string& msg);
+	~bad_dynamic_cast() throw();
+
+public:
+	std::string get_msg() const { return "bad_dynamic_cast: " + msg; }
 };
 
 

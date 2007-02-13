@@ -3,6 +3,7 @@
  *  $Id: xquery_driver.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
+ *	Author: Paul Pedersen
  *
  */
 
@@ -47,6 +48,7 @@ public:	// state
 	xqp::symbol_table symtab;
 	std::ostream& os;
 	context* ctx_p;
+	parsenode* expr_p;
 
 	bool rename_bit;
 	bool ftcontains_bit;
@@ -60,10 +62,15 @@ public: // manipulators
   void set_trace_parsing() { trace_parsing = true; }
   bool get_trace_scanning() const { return trace_scanning; }
   bool get_trace_parsing() const { return trace_parsing; }
+	int get_debug() const { return debug; }
+	void set_debug(int d) { debug = d; }
   
   std::string get_file() const { return file; }
   std::ostream& get_os() { return os; }
   context * get_ctx() { return ctx_p; }
+
+	void set_expr(parsenode* e_p) { expr_p = e_p; }
+	parsenode* get_expr() const { return expr_p; }
 
 public:
 	/**
@@ -75,7 +82,7 @@ public:
   void scan_end();
 
 	/**
-	**	Similarly for the parser itself.
+	**	Parse the contents of a file
 	*/
   void parse(const std::string& fname);
 

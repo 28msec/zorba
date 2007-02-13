@@ -17,6 +17,8 @@ ft_expr : ft_expr.h ft_expr.cpp
 expr_test : expr.h expr.cpp expr_test.cpp
 	g++ -g -o ${BUILD}/expr_test \
 		../context/${BUILD}/context.${SUFX} \
+		../native_impl/${BUILD}/namespace_pool.${SUFX} \
+		../native_impl/${BUILD}/qname_pool.${SUFX} \
 		../native_impl/${BUILD}/nodestore.${SUFX} \
 		../parser/${BUILD}/symbol_table.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \

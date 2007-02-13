@@ -116,7 +116,7 @@ throw()
 
 
 // null_pointer implementations
-// ---------------------------
+// ----------------------------
 null_pointer::null_pointer()
 : xqp_exception(string())
 {
@@ -139,6 +139,33 @@ null_pointer::null_pointer(const string& loc, const string& msg)
 
 
 null_pointer::~null_pointer() throw() { }
+
+
+
+// bad_dynamic_cast implementations
+// ----------------------------
+bad_dynamic_cast::bad_dynamic_cast()
+: xqp_exception(string())
+{
+}
+
+bad_dynamic_cast::bad_dynamic_cast(const bad_dynamic_cast& e)
+: xqp_exception(e.loc, e.msg)
+{
+}
+
+bad_dynamic_cast::bad_dynamic_cast(const string& loc)
+: xqp_exception(loc)
+{
+}
+
+bad_dynamic_cast::bad_dynamic_cast(const string& loc, const string& msg)
+: xqp_exception(loc,msg)
+{
+}
+
+
+bad_dynamic_cast::~bad_dynamic_cast() throw() { }
 
 
 

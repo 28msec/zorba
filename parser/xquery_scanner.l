@@ -243,7 +243,7 @@ std::string start_state()
 	case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
 	case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
 	case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
-	default: cout << "Something's drastically wrong here, unrecognized start state!\n";
+	default: return "Something's drastically wrong here, unrecognized start state!\n";
 	}
 }
 

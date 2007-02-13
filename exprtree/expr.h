@@ -387,10 +387,11 @@ class typeswitch_expr : public expr
 {
 public:
 	typedef rchandle<var_expr> varref_t;
+	typedef rchandle<case_clause> clauseref_t;
 
 protected:
 	exprref_t switch_expr_h;
-	std::vector<case_clause> case_clause_hv;
+	std::vector<clauseref_t> case_clause_hv;
 	varref_t  default_var_h;
 	exprref_t default_clause_h;
 
@@ -415,20 +416,20 @@ public:
 		{ default_clause_h = e_h; }
 
 public:
-	void add_clause(case_clause cc)
-		{ case_clause_hv.push_back(cc); }
+	void add_clause(clauseref_t cc_h)
+		{ case_clause_hv.push_back(cc_h); }
 
-	std::vector<case_clause>::const_iterator begin() const
+	std::vector<clauseref_t>::const_iterator begin() const
 		{ return case_clause_hv.begin(); }
-	std::vector<case_clause>::const_iterator end() const
+	std::vector<clauseref_t>::const_iterator end() const
 		{ return case_clause_hv.end(); }
 
 	uint32_t clause_count() const
 		{ return case_clause_hv.size(); }
 
-	case_clause & operator[](int i)
+	clauseref_t & operator[](int i)
 		{ return case_clause_hv[i]; }
-	case_clause const& operator[](int i) const
+	clauseref_t const& operator[](int i) const
 		{ return case_clause_hv[i]; }
 
 public:

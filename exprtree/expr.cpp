@@ -13,6 +13,7 @@
 #include "../parser/indent.h"
 #include "../parser/parse_constants.h"
 #include "../util/Assert.h"
+#include "../util/tracer.h"
 #include "../util/xqp_exception.h"
 
 #include <iostream>
@@ -22,11 +23,11 @@
 using namespace std;
 namespace xqp {
   
-int printdepth = 0;
-#define DENT		indent[printdepth % 30]
-#define INDENT	indent[++printdepth % 30]
-#define OUTDENT	indent[printdepth-- % 30]
-#define UNDENT	printdepth--
+int printdepth0 = 0;
+#define DENT		indent[printdepth0 % 30]
+#define INDENT	indent[++printdepth0 % 30]
+#define OUTDENT	indent[printdepth0-- % 30]
+#define UNDENT	printdepth0--
 
 expr::expr(
 	yy::location const& _loc)
@@ -73,7 +74,11 @@ ostream& expr_list::put(
 	list_iterator<exprref_t> it = begin();
 	for (; it!=end(); ++it) {
 		rchandle<expr> e_h = *it;
-		Assert<null_pointer>(e_h!=NULL);
+		if (e_h==NULL) {
+			cout << TRACE << ": e_h==NULL\n";
+			continue;
+		}
+		cout << TRACE << ": typeid(*e_h) = " << typeid(*e_h).name() << endl;
 		e_h->put(os,ctx) << endl;
 	}
 	return os << OUTDENT << "]\n";
@@ -114,9 +119,15 @@ ostream& var_expr::put(
 	context& ctx) const
 {
 	os << INDENT << "var_expr[" << decode_var_kind(get_kind());
-	os << " name="; get_varname()->put(os,ctx);
-	os << ", expr="; get_valexpr()->put(os,ctx);
-	os << ", type=" << get_type()->describe();
+	if (varname_h!=NULL) {
+		os << " name="; get_varname()->put(os,ctx);
+	}
+	if (valexpr_h!=NULL) {
+		os << ", expr="; get_valexpr()->put(os,ctx);
+	}
+	if (type_h!=NULL) {
+		os << ", type=" << get_type()->describe();
+	}
 	return os << OUTDENT << "]\n";
 }
 
@@ -295,14 +306,14 @@ ostream& typeswitch_expr::put(
 	Assert<null_pointer>(switch_expr_h!=NULL);
 	switch_expr_h->put(os,ctx);
 
-	vector<case_clause>::const_iterator it = case_clause_hv.begin();
+	vector<clauseref_t>::const_iterator it = case_clause_hv.begin();
 	for (; it!=case_clause_hv.end(); ++it) {
-		case_clause cc = *it;
+		clauseref_t cc_h = *it;
 		os << INDENT << "case: ";
-		if (cc.var_h!=NULL) cc.var_h->put(os,ctx) << " as ";
-		os << cc.seqtype.describe() << " return ";
-		Assert<null_pointer>(cc.case_expr_h!=NULL);
-		cc.case_expr_h->put(os,ctx) << endl;
+		if (cc_h->var_h!=NULL) cc_h->var_h->put(os,ctx) << " as ";
+		os << cc_h->seqtype.describe() << " return ";
+		Assert<null_pointer>(cc_h->case_expr_h!=NULL);
+		cc_h->case_expr_h->put(os,ctx) << endl;
 		UNDENT;
 	}
 	return os << OUTDENT << "]\n";
