@@ -830,7 +830,7 @@ public:
 	~relpath_expr();
 
 public:
-	void add(expr_h_t step_h)
+	void add_step(expr_h_t step_h)
 		{ step_hv.push_back(step_h); }
 	uint32_t size() const
 		{ return step_hv.size(); }

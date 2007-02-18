@@ -3509,7 +3509,7 @@ class PredicateList : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<Predicate> > pred_hv;
+	std::vector<rchandle<exprnode> > pred_hv;
 
 public:
 	PredicateList(
@@ -3518,8 +3518,8 @@ public:
 	~PredicateList();
 
 public:
-	void push_back(rchandle<Predicate> pred_h) { pred_hv.push_back(pred_h); }
-	rchandle<Predicate> operator[](int i) { return pred_hv[i]; }
+	void push_back(rchandle<exprnode> pred_h) { pred_hv.push_back(pred_h); }
+	rchandle<exprnode> operator[](int i) { return pred_hv[i]; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -3529,32 +3529,9 @@ public:
 
 
 
-// [82] Predicate
-// --------------
-class Predicate : public exprnode
-/*______________________________________________________________________
-|
-|	::= LBRACK  Expr  RBRACK
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<exprnode> pred_h;
-
-public:
-	Predicate(
-		yy::location const&,
-		context *,
-		rchandle<exprnode>);
-	~Predicate();
-
-public:
-	rchandle<exprnode> get_pred() const { return pred_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
+/* RHS reduces to Expr */
+/* ------------------- */
+// [82] Predicate ::= LBRACK  Expr  RBRACK
 
 
 

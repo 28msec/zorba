@@ -78,8 +78,8 @@ ostream& expr_list::put(
 			cout << TRACE << ": e_h==NULL\n";
 			continue;
 		}
-		cout << TRACE << ": typeid(*e_h) = " << typeid(*e_h).name() << endl;
-		e_h->put(os,ctx) << endl;
+		//cout << TRACE << ": typeid(*e_h) = " << typeid(*e_h).name() << endl;
+		e_h->put(os,ctx);
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -708,15 +708,14 @@ ostream& relpath_expr::put(
 	ostream& os,
 	context& ctx) const
 {
-	os << "relpath_expr[\n";
+	os << INDENT << "relpath_expr[\n";
 	vector<rchandle<expr> >::const_iterator it = begin();
-	vector<rchandle<expr> >::const_iterator en = end();
-	for (; it!=en; ++it) {
-		rchandle<expr> se_h = *it;
-		Assert<null_pointer>(se_h!=NULL);
-		se_h->put(os,ctx) << endl;
+	for (; it!=end(); ++it) {
+		rchandle<expr> e_h = *it;
+		Assert<null_pointer>(e_h!=NULL);
+		e_h->put(os,ctx);
 	}
-	return os << "]\n";
+	return os << OUTDENT << "]\n";
 }
 
 
@@ -730,7 +729,8 @@ ostream& relpath_expr::put(
 axis_step_expr::axis_step_expr(
 	yy::location const& loc)
 :
-	expr(loc)
+	expr(loc),
+	wild(no_wild)
 {
 }
 
@@ -802,7 +802,7 @@ ostream& axis_step_expr::put(
 	for (; it!=en; ++it) {
 		rchandle<expr> e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
-		e_h->put(os,ctx) << endl;
+		e_h->put(os,ctx);
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -894,7 +894,7 @@ ostream& literal_expr::put(
 	context& ctx) const
 {
 	switch (type) {
-	case lit_string: os << INDENT << "string[" << sref; break;
+	case lit_string: os << INDENT << "string[" << ctx.get_string(sref); break;
 	case lit_integer: os << INDENT << "integer[" << ival; break;
 	case lit_decimal: os << INDENT << "decimal[" << decval; break;
 	case lit_double: os << INDENT << "double[" << dval; break;

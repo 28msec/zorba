@@ -9,6 +9,8 @@
  */
 
 #include "normalize_visitor.h"
+#include "indent.h"
+
 #include "../parser/parsenodes.h"
 #include "../util/tracer.h"
 
@@ -16,6 +18,8 @@
 
 using namespace std;
 namespace xqp {
+
+static uint32_t depth = 0;
 
 
 /*..........................................
@@ -36,7 +40,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(AbbrevForwardStep const& v)
 {
-cout << TRACE << ": AbbrevForwardStep\n";
+cout << indent[++depth] << TRACE << ": AbbrevForwardStep\n";
 	return true;
 }
 
@@ -61,7 +65,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(ArgList const& v)
 {
-cout << TRACE << ": ArgList" << endl;
+cout << indent[++depth] << TRACE << ": ArgList" << endl;
 	nodestack.push(NULL);
 	return true;
 }
@@ -219,16 +223,13 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(ForwardStep const& v)
 {
-cout << TRACE << ": ForwardStep\n";
+cout << indent[++depth] << TRACE << ": ForwardStep\n";
 	return true;
 }
 
 bool normalize_visitor::begin_visit(FunctionDecl const& v)
 {
 cout << TRACE << endl;
-	rchandle<funcall_expr> fexpr_h =
-		new funcall_expr(v.get_location());
-	nodestack.push(&*fexpr_h);
 	return true;
 }
 
@@ -300,14 +301,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(NameTest const& v)
 {
-cout << TRACE << ": NameTest\n";
-	rchandle<axis_step_expr> axpr_h =
-		dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	if (axpr_h==NULL) {
-		cout << "expecting axis_step_expr on top of stack\n";
-		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-		return false;
-	}
+cout << indent[++depth] << TRACE << ": NameTest\n";
 	return true;
 }
 
@@ -432,7 +426,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(PredicateList const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": PredicateList" << endl;
 	nodestack.push(NULL);
 	return true;
 }
@@ -659,10 +653,10 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(AxisStep const& v)
 {
-cout << TRACE << ": AxisStep\n";
-	rchandle<axis_step_expr> axpr_h =
+cout << indent[++depth] << TRACE << ": AxisStep\n";
+	rchandle<axis_step_expr> aexpr_h =
 		new axis_step_expr(v.get_location());
-	nodestack.push(&*axpr_h);
+	nodestack.push(&*aexpr_h);
 	return true;
 }
 
@@ -788,7 +782,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(Expr const& v)
 {
-cout << TRACE << ": Expr\n";
+cout << indent[++depth] << TRACE << ": Expr\n";
 	nodestack.push(NULL);
 	return true;
 }
@@ -819,7 +813,10 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(FunctionCall const& v)
 {
-cout << TRACE << ": FunctionCall" << endl;
+cout << indent[++depth] << TRACE << ": FunctionCall" << endl;
+	rchandle<funcall_expr> fexpr_h =
+		new funcall_expr(v.get_location(),v.get_fname());
+	nodestack.push(&*fexpr_h);
 	return true;
 }
 
@@ -855,7 +852,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(NumericLiteral const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": NumericLiteral" << endl;
 	return true;
 }
 
@@ -885,7 +882,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(Predicate const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": Predicate" << endl;
 	return true;
 }
 
@@ -913,22 +910,10 @@ cout << TRACE << endl;
 	return true;
 }
 
-/*
-	Push relpath_expr if not already present.
-	This stack entry absorbs subsequent step expressions.
-*/
 bool normalize_visitor::begin_visit(RelativePathExpr const& v)
 {
-cout << TRACE << ": RelativePathExpr\n";
-	if (nodestack.empty()) {
-		nodestack.push(new relpath_expr(v.get_location()));
-		return true;
-	}
-	rchandle<relpath_expr> rexpr_h =
-		dynamic_cast<relpath_expr*>(&*nodestack.top());
-	if (rexpr_h==NULL) {
-		nodestack.push(new relpath_expr(v.get_location()));
-	}
+cout << indent[++depth] << TRACE << ": RelativePathExpr\n";
+	nodestack.push(NULL);
 	return true;
 }
 
@@ -940,7 +925,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(StringLiteral const& v)
 {
-cout << TRACE << ": StringLiteral" << endl;
+cout << indent[++depth] << TRACE << ": StringLiteral" << endl;
 	return true;
 }
 
@@ -1290,14 +1275,14 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(AbbrevForwardStep const& v)
 {
-cout << TRACE << ": AbbrevForwardStep\n";
-	rchandle<axis_step_expr> axpr_h =
+cout << indent[depth--] << TRACE << ": AbbrevForwardStep\n";
+	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	if (axpr_h==NULL) {
+	if (aexpr_h==NULL) {
 		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
-	axpr_h->set_axis(axis_step_expr::child);
+	aexpr_h->set_axis(axis_step_expr::child);
 }
 
 void normalize_visitor::end_visit(AnyKindTest const& v)
@@ -1317,7 +1302,13 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(ArgList const& v)
 {
-cout << TRACE << ": ArgList" << endl;
+cout << indent[depth--] << TRACE << ": ArgList" << endl;
+	clear_argstack();
+	while (true) {
+		expr_h_t e_h = pop_nodestack();
+		if (e_h==NULL) break;
+		argstack.push(e_h);
+	}
 }
 
 void normalize_visitor::end_visit(AtomicType const& v)
@@ -1432,7 +1423,7 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(ForwardStep const& v)
 {
-cout << TRACE << ": ForwardStep\n";
+cout << indent[depth--] << TRACE << ": ForwardStep\n";
 }
 
 void normalize_visitor::end_visit(FunctionDecl const& v)
@@ -1497,17 +1488,22 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(NameTest const& v)
 {
-cout << TRACE << ": NameTest\n";
-	rchandle<axis_step_expr> axpr_h =
+cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout,*ctx_p)<<")\n";
+	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	axpr_h->set_name(v.get_qname());
-	axpr_h->set_test(axis_step_expr::name_test);
+	if (aexpr_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+
+	aexpr_h->set_name(v.get_qname());
+	aexpr_h->set_test(axis_step_expr::name_test);
 	rchandle<Wildcard> wild_h = v.get_wild();
 	if (wild_h==NULL) return;
 	switch (wild_h->get_type()) {
-	case wild_all: axpr_h->set_wild(axis_step_expr::all_wild); break;
-	case wild_elem: axpr_h->set_wild(axis_step_expr::name_wild); break;
-	case wild_prefix: axpr_h->set_wild(axis_step_expr::prefix_wild); break;
+	case wild_all: aexpr_h->set_wild(axis_step_expr::all_wild); break;
+	case wild_elem: aexpr_h->set_wild(axis_step_expr::name_wild); break;
+	case wild_prefix: aexpr_h->set_wild(axis_step_expr::prefix_wild); break;
 	}
 }
 
@@ -1608,7 +1604,13 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(PredicateList const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": PredicateList" << endl;
+	clear_pstack();
+	while (true) {
+		expr_h_t e_h = pop_nodestack();
+		if (e_h==NULL) break;
+		pstack.push(e_h);
+	}
 }
 
 void normalize_visitor::end_visit(PreserveMode const& v)
@@ -1657,7 +1659,7 @@ cout << TRACE << endl;
 	expr_h_t e_h;
 	rchandle<expr_list> elist_h = new expr_list(v.get_location());
 	while (true) {	
-		if ((e_h = nodestack_pop2())==NULL) break;
+		if ((e_h = pop_nodestack())==NULL) break;
 		elist_h->add(e_h);
 	}
 	nodestack.push(&*elist_h);
@@ -1799,19 +1801,19 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(AxisStep const& v)
 {
-cout << TRACE << ": AxisStep\n";
+cout << indent[depth--] << TRACE << ": AxisStep\n";
 	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	if (aexpr_h==NULL) return;
-	nodestack.pop();
-
-	rchandle<relpath_expr> rexpr_h =
-		dynamic_cast<relpath_expr*>(&*nodestack.top());
-	if (rexpr_h==NULL) return;
-
-	rexpr_h->add(&*aexpr_h);
+	if (aexpr_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	while (!pstack.empty()) {
+		expr_h_t e_h = pstack.top();
+		pstack.pop();
+		aexpr_h->add_pred(e_h);
+	}
 }
-
 
 void normalize_visitor::end_visit(CDataSection const& v)
 {
@@ -1915,11 +1917,11 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(Expr const& v)
 {
-cout << TRACE << ": Expr\n";
-	expr_h_t e_h;
+cout << indent[depth--] << TRACE << ": Expr\n";
 	rchandle<expr_list> elist_h = new expr_list(v.get_location());
 	while (true) {	
-		if ((e_h = nodestack_pop2())==NULL) break;
+		expr_h_t e_h = pop_nodestack();
+		if (e_h==NULL) break;
 		elist_h->add(e_h);
 	}
 	nodestack.push(&*elist_h);
@@ -1947,17 +1949,19 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(FunctionCall const& v)
 {
-cout << TRACE << ": FunctionCall" << endl;
+cout << indent[depth] << TRACE << ": FunctionCall" << endl;
+cout << indent[depth--] << TRACE << ": argstack.size() = " << argstack.size() << endl;
+
 	rchandle<funcall_expr> fexpr_h =
 		dynamic_cast<funcall_expr*>(&*nodestack.top());
 	if (fexpr_h==NULL) return;
-	nodestack.pop();
 
-	rchandle<relpath_expr> rexpr_h =
-		dynamic_cast<relpath_expr*>(&*nodestack.top());
-	if (rexpr_h==NULL) return;
-
-	rexpr_h->add(&*fexpr_h);
+	while (!argstack.empty()) {
+		expr_h_t e_h = argstack.top();
+		argstack.pop();
+		if (e_h==NULL) continue;
+		fexpr_h->add_arg(e_h);
+	}
 }
 
 void normalize_visitor::end_visit(IfExpr const& v)
@@ -1987,7 +1991,21 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(NumericLiteral const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": NumericLiteral" << endl;
+	switch (v.get_type()) {
+	case num_integer: {
+		nodestack.push(new literal_expr(v.get_location(), v.get_int()));
+		break;
+	}
+	case num_decimal: {
+		nodestack.push(new literal_expr(v.get_location(), v.get_decimal()));
+		break;
+	}
+	case num_double: {
+		nodestack.push(new literal_expr(v.get_location(), v.get_double()));
+		break;
+	}
+	}
 }
 
 void normalize_visitor::end_visit(OrExpr const& v)
@@ -2012,7 +2030,7 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(Predicate const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": Predicate" << endl;
 }
 
 void normalize_visitor::end_visit(PrimaryExpr const& v)
@@ -2037,7 +2055,32 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(RelativePathExpr const& v)
 {
-cout << TRACE << ": RelativePath\n";
+cout << indent[depth--] << TRACE << ": RelativePath\n";
+	stack<expr_h_t> expr_stack;
+	while (true) {
+		expr_h_t e_h = pop_nodestack();
+		if (e_h==NULL) break;
+		expr_stack.push(e_h);
+	}
+	rchandle<relpath_expr> rexpr_h = new relpath_expr(v.get_location());
+
+	while (!expr_stack.empty()) {
+		expr_h_t e_h = expr_stack.top();
+		expr_stack.pop();
+
+		// check for sub-relpath, and combine
+		rchandle<relpath_expr> rexpr0_h = dynamic_cast<relpath_expr*>(&*e_h);
+		if (rexpr0_h!=NULL) {
+			vector<expr_h_t>::const_iterator it = rexpr0_h->begin();
+			for (; it!=rexpr0_h->end(); ++it) {
+				rexpr_h->add_step(*it);
+			}
+		}
+		else {
+			rexpr_h->add_step(e_h);
+		}
+	}
+	nodestack.push(&*rexpr_h);
 }
 
 void normalize_visitor::end_visit(StepExpr const& v)
@@ -2047,7 +2090,9 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(StringLiteral const& v)
 {
-cout << TRACE << ": StringLiteral" << endl;
+cout << indent[depth--] << TRACE << ": StringLiteral" << endl;
+	off_t sid = ctx_p->put_string(v.get_strval());
+	nodestack.push(new literal_expr(v.get_location(), sid, true));
 }
 
 void normalize_visitor::end_visit(TreatExpr const& v)
@@ -2066,10 +2111,10 @@ cout << TRACE << endl;
 	ve_h->set_varname(new QName(QName::qn_var,v.get_default_varname()));
 	tse_h->set_default_varname(ve_h);
 
-	Assert<null_pointer>((e_h = nodestack_pop2())!=NULL);
+	Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
 	tse_h->set_switch_expr(e_h);
 
-	Assert<null_pointer>((e_h = nodestack_pop2())!=NULL);
+	Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
 	tse_h->set_default_clause(e_h);
 
 	while (true) {	// pop clauses

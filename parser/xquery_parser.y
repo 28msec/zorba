@@ -51,7 +51,7 @@ namespace xqp {
 	class exprnode;
 }
 
-static bool debug = true;
+static bool debug = false;
 
 %}
 
@@ -3132,7 +3132,7 @@ PredicateList :
 		{
 			if (debug) cout << "PredicateList [single]\n";
 			PredicateList* pred_list_p = new PredicateList(@$,driver.get_ctx());
-			pred_list_p->push_back(dynamic_cast<Predicate*>($1));
+			pred_list_p->push_back(dynamic_cast<exprnode*>($1));
 			$$ = pred_list_p;
 		}
 	|	PredicateList  Predicate
@@ -3140,7 +3140,7 @@ PredicateList :
 			if (debug) cout << "PredicateList [list]\n";
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>($1);
 			if (pred_list_p) {
-				pred_list_p->push_back(dynamic_cast<Predicate*>($2));
+				pred_list_p->push_back(dynamic_cast<exprnode*>($2));
 			}
 			$$ = $1;
 		}
@@ -3153,8 +3153,7 @@ Predicate :
 		LBRACK  Expr  RBRACK
 		{
 			if (debug) cout << "Predicate [ ]\n";
-			$$ = new Predicate(@$,driver.get_ctx(),
-								$2);
+			$$ = $2;
 		}
 	;
 

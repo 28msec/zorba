@@ -3993,7 +3993,7 @@ PredicateList::~PredicateList()
 ostream& PredicateList::put(ostream& s) const
 {
 	s << INDENT << "PredicateList[\n";
-	vector<rchandle<Predicate> >::const_iterator it = pred_hv.begin();
+	vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
 	for (; it!=pred_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
 	return s << OUTDENT << "]\n";
 }
@@ -4003,7 +4003,7 @@ ostream& PredicateList::put(ostream& s) const
 void PredicateList::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	vector<rchandle<Predicate> >::const_reverse_iterator it = pred_hv.rbegin();
+	vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
 	for (; it!=pred_hv.rend(); ++it) {
 		exprnode* e_p = &**it;
 		Assert<null_pointer>(e_p!=NULL,LOCATION);
@@ -4014,37 +4014,9 @@ void PredicateList::accept(parsenode_visitor& v) const
 
 
 
-// [82] Predicate
-// --------------
-Predicate::Predicate(
-	location const& _loc,
-	context * _ctx_p,
-	rchandle<exprnode> _pred_h)
-:
-	exprnode(_loc,_ctx_p),
-	pred_h(_pred_h)
-{
-}
-
-Predicate::~Predicate()
-{
-}
-
-ostream& Predicate::put(ostream& s) const
-{
-	s << INDENT << "Predicate[\n";
-	if (pred_h!=NULL) pred_h->put(s);
-	return s << OUTDENT << "]\n";
-}
-
-//-Predicate::
-
-void Predicate::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	pred_h->accept(v);
-	v.end_visit(*this); 
-}
+/* RHS reduces to Expr */
+/* ------------------- */
+// [82] Predicate ::= LBRAC  Expr  RBRAC
 
 
 

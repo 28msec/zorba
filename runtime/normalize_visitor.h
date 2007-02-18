@@ -35,28 +35,30 @@ public:
 protected:
 	context * ctx_p;
 	std::stack<expr_h_t> nodestack;
-	enum state_t {
-		default,
-		funarg,
-		relpath
-	} state;
+	std::stack<expr_h_t> argstack;
+	std::stack<expr_h_t> pstack;
 
 public:
-	normalize_visitor(context* _ctx_p) : ctx_p(_ctx_p), state(default) {}
+	normalize_visitor(context* _ctx_p) : ctx_p(_ctx_p) {}
 	~normalize_visitor() {}
 
 public:
-	expr_h_t nodestack_pop2()
+	expr_h_t pop_nodestack()
 	{
 		if (nodestack.empty()) return NULL;
 		rchandle<expr> r = nodestack.top();
 		nodestack.pop();
 		return r;
 	}
-	void mark_stack()
+	void clear_argstack()
 	{
-		nodestack.push(NULL);
+		while (!argstack.empty()) argstack.pop();
 	}
+	void clear_pstack()
+	{
+		while (!pstack.empty()) pstack.pop();
+	}
+
 
 public:
 
