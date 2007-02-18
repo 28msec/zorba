@@ -308,7 +308,7 @@ public:
 	 */
 	void push_back(const value_type& x)
 	{
-		if (finish >= end_of_storage) expand();
+		if (finish+sizeof(value_type) >= end_of_storage) expand();
 		std::_Construct(finish, x);
 		++finish;
 		if (mmf_p) {	// update offset_p

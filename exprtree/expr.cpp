@@ -71,7 +71,7 @@ ostream& expr_list::put(
 	context& ctx) const
 {
 	os << INDENT << "expr_list[\n";
-	list_iterator<exprref_t> it = begin();
+	list_iterator<expr_h_t> it = begin();
 	for (; it!=end(); ++it) {
 		rchandle<expr> e_h = *it;
 		if (e_h==NULL) {
@@ -141,7 +141,7 @@ forlet_clause::forlet_clause(
 	varref_t _var_h,
 	varref_t _pos_var_h,
 	varref_t _score_var_h,
-	exprref_t _expr_h)
+	expr_h_t _expr_h)
 :
 	type(_type),
 	var_h(_var_h),
@@ -206,7 +206,7 @@ ostream& flwor_expr::put(
 	vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
 	for (; ord_it!=orderspec_end(); ++ord_it) {
 		orderspec_t spec = *ord_it;
-		exprref_t e_h = spec.first;
+		expr_h_t e_h = spec.first;
 		Assert<null_pointer>(e_h!=NULL);
 		orderref_t ord_h = spec.second;
 		Assert<null_pointer>(ord_h!=NULL);
@@ -648,7 +648,7 @@ extension_expr::extension_expr(
 
 extension_expr::extension_expr(
 	yy::location const& loc,
-	exprref_t _expr_h)
+	expr_h_t _expr_h)
 :
 	expr(loc),
 	expr_h(_expr_h)
@@ -723,24 +723,6 @@ ostream& relpath_expr::put(
 
 // [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
 
-step_expr::step_expr(
-	yy::location const& loc)
-:
-	expr(loc)
-{
-}
-
-step_expr::~step_expr()
-{
-}
-
-ostream& step_expr::put(
-	ostream& os,
-	context& ctx) const
-{
-	return os << "step_expr[]\n";
-}
-
 
 
 // [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
@@ -762,43 +744,42 @@ ostream& axis_step_expr::put(
 {
 	os << INDENT << "axis_step_expr[";
 	switch (axis) {
-	case self: os << "self\n"; break;
-	case child: os << "child\n"; break;
-	case parent: os << "parent\n"; break;
-	case descendant: os << "descendant\n"; break;
-	case descendant_or_self: os << "descendant-or-self\n"; break;
-	case ancestor: os << "ancestor\n"; break;
-	case ancestor_or_self: os << "ancestor-or-self\n"; break;
-	case following_sibling: os << "following-sibling\n"; break;
-	case following: os << "following\n"; break;
-	case preceding_sibling: os << "preceding-sibling\n"; break;
-	case preceding: os << "preceding\n"; break;
-	case attribute: os << "attribute\n"; break;
+	case self:								os << "self::"; break;
+	case child:								os << "child::"; break;
+	case parent:							os << "parent::"; break;
+	case descendant:					os << "descendant::"; break;
+	case descendant_or_self:	os << "descendant-or-self::"; break;
+	case ancestor:						os << "ancestor::"; break;
+	case ancestor_or_self:		os << "ancestor-or-self::"; break;
+	case following_sibling:		os << "following-sibling::"; break;
+	case following:						os << "following::"; break;
+	case preceding_sibling:		os << "preceding-sibling::"; break;
+	case preceding:						os << "preceding::"; break;
+	case attribute:						os << "attribute::"; break;
 	default: os << "??\n";
 	}
 
-	os << INDENT;
 	switch (test) {
-	case no_test: os << "no_test("; break;
+	case no_test:   os << "no_test("; break;
 	case name_test: os << "name_test("; break;
 	case doc_test: {
 		os << "doc_test(";
 		switch (docnode_test) {
-		case no_test: os << "no_test("; break;
-		case elem_test: os << "elem_test("; break;
-		case attr_test: os << "attr_test("; break;
+		case no_test:   os << "no_test("; break;
+		case elem_test: os << "element("; break;
+		case attr_test: os << "attribute("; break;
 		default: os << "(??";
 		}
 		break;
 	}
-	case elem_test: os << "elem_test("; break;
-	case attr_test: os << "attr_test("; break;
-	case xs_elem_test: os << "xs_elem_test("; break;
-	case xs_attr_test: os << "xs_attr_test("; break;
-	case pi_test: os << "pi_test("; break;
-	case comment_test: os << "comment_test("; break;
-	case text_test: os << "text_test("; break;
-	case anykind_test: os << "anykind_test("; break;
+	case elem_test:			os << "element("; break;
+	case attr_test:			os << "attribute("; break;
+	case xs_elem_test:	os << "schema-element("; break;
+	case xs_attr_test:	os << "schema-element("; break;
+	case pi_test:				os << "pi("; break;
+	case comment_test:	os << "comment("; break;
+	case text_test:			os << "text("; break;
+	case anykind_test:	os << "anykind("; break;
 	default: os << "(??";
 	}
 
@@ -814,7 +795,7 @@ ostream& axis_step_expr::put(
 	if (typename_h!=NULL) {
 		typename_h->put(os,ctx) << endl;
 	}
-	os << OUTDENT << ")\n";
+	os << ")\n";
 
 	vector<rchandle<expr> >::const_iterator it = pred_hv.begin();
 	vector<rchandle<expr> >::const_iterator en = pred_hv.end();

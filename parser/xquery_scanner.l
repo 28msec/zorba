@@ -394,7 +394,69 @@ typedef yy::xquery_parser::token token;
 	return token::IF_LPAR;
 }
 
-	/* order dependence: this must follow the rule: if{S}"(" */
+
+	/* transition to KINDTEST */
+	/* ---------------------- */
+"element"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::ELEMENT_LPAR;
+}
+
+"attribute"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::ATTRIBUTE_LPAR;
+}
+
+"schema-element"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::SCHEMA_ELEMENT_LPAR;
+}
+
+"schema-attribute"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::SCHEMA_ATTRIBUTE_LPAR;
+}
+
+"comment"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::COMMENT_LPAR;
+}
+
+"text"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::TEXT_LPAR;
+}
+
+"node"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::NODE_LPAR;
+}
+
+"document-node"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	return token::DOCUMENT_NODE_LPAR;
+}
+
+
+	/* transition to KINDTESTFORPI */
+	/* --------------------------- */
+"processing-instruction"{S}"(" {
+	BEGIN MODE_OPERATOR;
+	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI);
+	return token::PROCESSING_INSTRUCTION;
+}
+
+
+
+	/* order dependence: this must follow the rules: xxx{S}"(" */
 {QName}{S}"(" {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng-1);
 	return token::QNAME_LPAR;
@@ -633,66 +695,6 @@ typedef yy::xquery_parser::token token;
 	BEGIN MODE_ITEMTYPE;
 	return token::RPAR_AS;
 }	
-
-
-	/* transition to KINDTEST */
-	/* ---------------------- */
-"element"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::ELEMENT_LPAR;
-}
-
-"attribute"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::ATTRIBUTE_LPAR;
-}
-
-"schema-element"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::SCHEMA_ELEMENT_LPAR;
-}
-
-"schema-attribute"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::SCHEMA_ATTRIBUTE_LPAR;
-}
-
-"comment"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::COMMENT_LPAR;
-}
-
-"text"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::TEXT_LPAR;
-}
-
-"node"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::NODE_LPAR;
-}
-
-"document-node"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
-	return token::DOCUMENT_NODE_LPAR;
-}
-
-
-	/* transition to KINDTESTFORPI */
-	/* --------------------------- */
-"processing-instruction"{S}"(" {
-	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI);
-	return token::PROCESSING_INSTRUCTION;
-}
 
 
 	/* transition to XML_COMMENT */

@@ -25,18 +25,28 @@
 
 namespace xqp 
 {
+class context;
 
 class normalize_visitor : public parsenode_visitor
 {
+public:
+	typedef rchandle<expr> expr_h_t;
+
 protected:
-	std::stack<rchandle<expr> > nodestack;
+	context * ctx_p;
+	std::stack<expr_h_t> nodestack;
+	enum state_t {
+		default,
+		funarg,
+		relpath
+	} state;
 
 public:
-	normalize_visitor() {}
+	normalize_visitor(context* _ctx_p) : ctx_p(_ctx_p), state(default) {}
 	~normalize_visitor() {}
 
 public:
-	rchandle<expr> nodestack_pop2()
+	expr_h_t nodestack_pop2()
 	{
 		if (nodestack.empty()) return NULL;
 		rchandle<expr> r = nodestack.top();
@@ -60,9 +70,6 @@ public:
 	bool begin_visit(AposAttrValueContent const&);
 	bool begin_visit(ArgList const&);
 	bool begin_visit(AtomicType const&);
-	bool begin_visit(AttribNameOrWildcard const&);
-	bool begin_visit(AttributeDeclaration const&);
-	bool begin_visit(AttributeName const&);
 	bool begin_visit(AttributeTest const&);
 	bool begin_visit(BaseURIDecl const&);
 	bool begin_visit(BoundarySpaceDecl const&);
@@ -78,9 +85,6 @@ public:
 	bool begin_visit(DirAttributeValue const&);
 	bool begin_visit(DirElemContentList const&);
 	bool begin_visit(DocumentTest const&);
-	bool begin_visit(ElementDeclaration const&);
-	bool begin_visit(ElementName const&);
-	bool begin_visit(ElementNameOrWildcard const&);
 	bool begin_visit(ElementTest const&);
 	bool begin_visit(EmptyOrderDecl const&);
 	bool begin_visit(ForClause const&);
@@ -271,9 +275,6 @@ public:
 	void end_visit(AposAttrValueContent const&);
 	void end_visit(ArgList const&);
 	void end_visit(AtomicType const&);
-	void end_visit(AttribNameOrWildcard const&);
-	void end_visit(AttributeDeclaration const&);
-	void end_visit(AttributeName const&);
 	void end_visit(AttributeTest const&);
 	void end_visit(BaseURIDecl const&);
 	void end_visit(BoundarySpaceDecl const&);
@@ -289,9 +290,6 @@ public:
 	void end_visit(DirAttributeValue const&);
 	void end_visit(DirElemContentList const&);
 	void end_visit(DocumentTest const&);
-	void end_visit(ElementDeclaration const&);
-	void end_visit(ElementName const&);
-	void end_visit(ElementNameOrWildcard const&);
 	void end_visit(ElementTest const&);
 	void end_visit(EmptyOrderDecl const&);
 	void end_visit(ForClause const&);

@@ -35,7 +35,7 @@ namespace xqp {
 class expr : public rcobject
 {
 public:
-	typedef rchandle<expr> exprref_t;
+	typedef rchandle<expr> expr_h_t;
 
 protected:
 	yy::location loc;
@@ -86,21 +86,21 @@ class expr_list : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	list<exprref_t> elist;
+	list<expr_h_t> elist;
 
 public:
 	expr_list(yy::location const&);
 	~expr_list();
 
 public:
-	void add(exprref_t e_h)
+	void add(expr_h_t e_h)
 		{ elist.push_back(e_h); }
 	uint32_t size() const
 		{ return elist.size(); }
 
-	list_iterator<exprref_t> begin() const
+	list_iterator<expr_h_t> begin() const
 		{ return elist.begin(); }
-	list_iterator<exprref_t> end() const
+	list_iterator<expr_h_t> end() const
 		{ return elist.end(); }
 
 public:
@@ -137,7 +137,7 @@ public:
 	};
 
   rchandle<QName> varname_h;
-  exprref_t valexpr_h;
+  expr_h_t valexpr_h;
 	var_kind kind;
   rchandle<sequence_type> type_h;
 
@@ -149,8 +149,8 @@ public:
   rchandle<QName> get_varname() const { return varname_h; }
   void set_varname(rchandle<QName> q_h) { varname_h = q_h; }
 
-  exprref_t get_valexpr() const { return valexpr_h; }
-  void set_valexpr(exprref_t e_h) { valexpr_h = e_h; }
+  expr_h_t get_valexpr() const { return valexpr_h; }
+  void set_valexpr(expr_h_t e_h) { valexpr_h = e_h; }
 
 	var_kind get_kind() const { return kind; }
 	void set_kind(var_kind k) { kind = k; }
@@ -206,14 +206,14 @@ public:	// types
 	};
 
 	typedef rchandle<var_expr> varref_t;
-	typedef rchandle<expr> exprref_t;
+	typedef rchandle<expr> expr_h_t;
 
 public:	// state
 	enum forlet_t type;
 	varref_t var_h;
 	varref_t pos_var_h;
 	varref_t score_var_h;
-	exprref_t expr_h;
+	expr_h_t expr_h;
 
 public:	// ctor,dtor
 	forlet_clause(
@@ -221,7 +221,7 @@ public:	// ctor,dtor
 		varref_t _var_h,
 		varref_t _pos_var_h,
 		varref_t _score_var_h,
-		exprref_t _expr_h);
+		expr_h_t _expr_h);
 
 	~forlet_clause();
 
@@ -230,13 +230,13 @@ public:	// accessors
 	varref_t get_var() const { return var_h; }
 	varref_t get_pos_var() const { return pos_var_h; }
 	varref_t get_score_var() const { return score_var_h; }
-	exprref_t get_expr() const { return expr_h; }
+	expr_h_t get_expr() const { return expr_h; }
 
 	void set_type(enum forlet_t v) { type = v; }
 	void set_var(varref_t v) { var_h = v; }
 	void set_pos_var(varref_t v) { pos_var_h = v; }
 	void set_score_var(varref_t v) { score_var_h = v; }
-	void set_expr(exprref_t v) { expr_h = v; }
+	void set_expr(expr_h_t v) { expr_h = v; }
 
 public:
 	std::ostream& put(ostream&,context&) const;
@@ -255,13 +255,13 @@ class flwor_expr : public expr
 public:	// types
 	typedef rchandle<forlet_clause> forletref_t;
 	typedef rchandle<order_modifier> orderref_t;
-	typedef std::pair<exprref_t,orderref_t> orderspec_t;
+	typedef std::pair<expr_h_t,orderref_t> orderspec_t;
 
 protected:	// state
 	std::vector<forletref_t> clause_v;
 	std::vector<orderspec_t> orderspec_v;
-	exprref_t where_h;
-	exprref_t retval_h;
+	expr_h_t where_h;
+	expr_h_t retval_h;
 
 public:	// ctor,dtor
 	flwor_expr(yy::location const&);
@@ -295,11 +295,11 @@ public:	// accessors
 	std::vector<orderspec_t>::const_iterator orderspec_end() const
 		{ return orderspec_v.end(); }
 
-	exprref_t get_where() const { return where_h; }
-	void set_where(exprref_t e_h) { where_h = e_h; }
+	expr_h_t get_where() const { return where_h; }
+	void set_where(expr_h_t e_h) { where_h = e_h; }
 
-	exprref_t get_retval() const { return retval_h; }
-	void set_retval(exprref_t e_h) { retval_h = e_h; }
+	expr_h_t get_retval() const { return retval_h; }
+	void set_retval(expr_h_t e_h) { retval_h = e_h; }
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -320,7 +320,7 @@ public:
 protected:
 	enum quantification_mode_t qmode;
 	std::vector<varref_t> var_v;
-	exprref_t sat_expr_h;
+	expr_h_t sat_expr_h;
 
 public:
 	quantified_expr(
@@ -348,8 +348,8 @@ public:
 	enum quantification_mode_t get_qmode() const { return qmode; }
 	void set_qmode(enum quantification_mode_t _qmode) { qmode = _qmode; }
 
-	exprref_t get_sat_expr() const { return sat_expr_h; }
-	void set_sat_expr(exprref_t e_h) { sat_expr_h = e_h; }
+	expr_h_t get_sat_expr() const { return sat_expr_h; }
+	void set_sat_expr(expr_h_t e_h) { sat_expr_h = e_h; }
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -363,12 +363,12 @@ public:
 class case_clause : public rcobject
 {
 public:
-	typedef rchandle<expr> exprref_t;
+	typedef rchandle<expr> expr_h_t;
 	typedef rchandle<var_expr> varref_t;
 
 public:
 	varref_t var_h;
-	exprref_t case_expr_h;
+	expr_h_t case_expr_h;
 	sequence_type seqtype;
 
 public:
@@ -390,19 +390,19 @@ public:
 	typedef rchandle<case_clause> clauseref_t;
 
 protected:
-	exprref_t switch_expr_h;
+	expr_h_t switch_expr_h;
 	std::vector<clauseref_t> case_clause_hv;
 	varref_t  default_var_h;
-	exprref_t default_clause_h;
+	expr_h_t default_clause_h;
 
 public:
 	typeswitch_expr(yy::location const&);
 	~typeswitch_expr();
 
 public:
-	exprref_t get_switch_expr() const
+	expr_h_t get_switch_expr() const
 		{ return switch_expr_h; }
-	void set_switch_expr(exprref_t e_h)
+	void set_switch_expr(expr_h_t e_h)
 		{ switch_expr_h = e_h; }
 
 	varref_t get_default_varname() const
@@ -410,9 +410,9 @@ public:
 	void set_default_varname(varref_t const& var_h)
 		{ default_var_h = var_h; }
 
-	exprref_t get_default_clause() const
+	expr_h_t get_default_clause() const
 		{ return default_clause_h; }
-	void set_default_clause(exprref_t const& e_h)
+	void set_default_clause(expr_h_t const& e_h)
 		{ default_clause_h = e_h; }
 
 public:
@@ -447,16 +447,16 @@ class if_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t cond_expr_h;
-	exprref_t then_expr_h;
-	exprref_t else_expr_h;
+	expr_h_t cond_expr_h;
+	expr_h_t then_expr_h;
+	expr_h_t else_expr_h;
 
 public:
 	if_expr(
 		yy::location const&,
-		exprref_t,
-		exprref_t,
-		exprref_t);
+		expr_h_t,
+		expr_h_t,
+		expr_h_t);
 
 	if_expr(
 		yy::location const&);
@@ -464,14 +464,14 @@ public:
 	~if_expr();
 
 public:
-	exprref_t get_cond_expr() const { return cond_expr_h; }
-	void set_cond_expr(exprref_t e_h) { cond_expr_h = e_h; }
+	expr_h_t get_cond_expr() const { return cond_expr_h; }
+	void set_cond_expr(expr_h_t e_h) { cond_expr_h = e_h; }
 
-	exprref_t get_then_expr() const { return then_expr_h; }
-	void set_then_expr(exprref_t e_h) { then_expr_h = e_h; }
+	expr_h_t get_then_expr() const { return then_expr_h; }
+	void set_then_expr(expr_h_t e_h) { then_expr_h = e_h; }
 
-	exprref_t get_else_expr() const { return else_expr_h; }
-	void set_else_expr(exprref_t e_h) { else_expr_h = e_h; }
+	expr_h_t get_else_expr() const { return else_expr_h; }
+	void set_else_expr(expr_h_t e_h) { else_expr_h = e_h; }
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -493,7 +493,7 @@ public:
 class fo_expr : public expr
 {
 protected:
-	std::vector<exprref_t > expr_hv;
+	std::vector<expr_h_t> expr_hv;
 	function_impl const* func;
 
 public:
@@ -501,17 +501,17 @@ public:
 	~fo_expr();
 
 public:
-	void add(exprref_t e_h) { expr_hv.push_back(e_h); }
+	void add(expr_h_t e_h) { expr_hv.push_back(e_h); }
 	uint32_t size() const { return expr_hv.size(); }
 
-	exprref_t & operator[](int i)
+	expr_h_t & operator[](int i)
 		{ return expr_hv[i]; }
-	exprref_t const& operator[](int i) const
+	expr_h_t const& operator[](int i) const
 		{ return expr_hv[i]; }
 
-	std::vector<exprref_t >::const_iterator begin() const
+	std::vector<expr_h_t>::const_iterator begin() const
 		{ return expr_hv.begin(); }
-	std::vector<exprref_t >::const_iterator end() const
+	std::vector<expr_h_t>::const_iterator end() const
 		{ return expr_hv.end(); }
 
 public:
@@ -537,23 +537,23 @@ class ft_contains_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t range_h;
-	exprref_t ft_select_h;
-	exprref_t ft_ignore_h;
+	expr_h_t range_h;
+	expr_h_t ft_select_h;
+	expr_h_t ft_ignore_h;
 
 public:
 	ft_contains_expr(
 		yy::location const&,
-		exprref_t,
-		exprref_t,
-		exprref_t);
+		expr_h_t,
+		expr_h_t,
+		expr_h_t);
 
 	~ft_contains_expr();
 
 public:
-	exprref_t get_range() const { return range_h; }
-	exprref_t get_ft_select() const { return ft_select_h; }
-	exprref_t get_ignore() const { return ft_ignore_h; }
+	expr_h_t get_range() const { return range_h; }
+	expr_h_t get_ft_select() const { return ft_select_h; }
+	expr_h_t get_ignore() const { return ft_ignore_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -575,19 +575,19 @@ class instanceof_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t expr_h;
+	expr_h_t expr_h;
 	sequence_type seqtype;
 
 public:
 	instanceof_expr(
 		yy::location const&,
-		exprref_t,
+		expr_h_t,
 		sequence_type const&);
 
 	~instanceof_expr();
 
 public:
-	exprref_t get_expr() const { return expr_h; }
+	expr_h_t get_expr() const { return expr_h; }
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
@@ -604,19 +604,19 @@ class treat_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t expr_h;
+	expr_h_t expr_h;
 	sequence_type seqtype;
 
 public:
 	treat_expr(
 		yy::location const&,
-		exprref_t,
+		expr_h_t,
 		sequence_type const&);
 
 	~treat_expr();
 
 public:
-	exprref_t get_expr() const { return expr_h; }
+	expr_h_t get_expr() const { return expr_h; }
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
@@ -641,18 +641,18 @@ class castable_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t expr_h;
+	expr_h_t expr_h;
 	single_type_t stype;
 
 public:
 	castable_expr(
 		yy::location const&,
-		exprref_t,
+		expr_h_t,
 		single_type_t);
 	~castable_expr();
 
 public:
-	exprref_t get_cast_expr() const { return expr_h; }
+	expr_h_t get_cast_expr() const { return expr_h; }
 	single_type_t get_type() const { return stype; }
 	atomic_type get_atomic_type() const { return stype.first; }
 	bool is_optional() const { return stype.second; }
@@ -671,18 +671,18 @@ class cast_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t expr_h;
+	expr_h_t expr_h;
 	single_type_t stype;
 
 public:
 	cast_expr(
 		yy::location const&,
-		exprref_t,
+		expr_h_t,
 		single_type_t);
 	~cast_expr();
 
 public:
-	exprref_t get_unary_expr() const { return expr_h; }
+	expr_h_t get_unary_expr() const { return expr_h; }
 	single_type_t get_type() const { return stype; }
 	atomic_type get_atomic_type() const { return stype.first; }
 	bool is_optional() const { return stype.second; }
@@ -702,18 +702,18 @@ class unary_expr : public expr
 {
 protected:
 	bool neg_b;
-	exprref_t expr_h;
+	expr_h_t expr_h;
 
 public:
 	unary_expr(
 		yy::location const&,
 		bool neg_b,
-		exprref_t);
+		expr_h_t);
 	~unary_expr();
 
 public:
 	bool is_negative() const { return neg_b; }
-	exprref_t get_expr() const { return expr_h; }
+	expr_h_t get_expr() const { return expr_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -730,17 +730,17 @@ class validate_expr : public expr
 {
 protected:
 	enum validation_mode_t valmode;
-	exprref_t expr_h;
+	expr_h_t expr_h;
 
 public:
 	validate_expr(
 		yy::location const&,
 		enum validation_mode_t,
-		exprref_t);
+		expr_h_t);
 	~validate_expr();
 
 public:
-	exprref_t get_expr() const { return expr_h; }
+	expr_h_t get_expr() const { return expr_h; }
 	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
@@ -770,19 +770,19 @@ class extension_expr : public expr
 {
 protected:
 	rchandle<pragma> pragma_h;
-	exprref_t expr_h;
+	expr_h_t expr_h;
 
 public:
 	extension_expr(
 		yy::location const&);
 	extension_expr(
 		yy::location const&,
-		exprref_t);
+		expr_h_t);
 	~extension_expr();
 
 public:
 	void add(rchandle<pragma> _pragma_h) { pragma_h = _pragma_h; }
-	void add(exprref_t _expr_h) { expr_h = _expr_h; }
+	void add(expr_h_t _expr_h) { expr_h = _expr_h; }
 
 /*
 	uint32_t size() const
@@ -800,7 +800,7 @@ public:
 */
 
 public:
-	exprref_t get_expr() const { return expr_h; }
+	expr_h_t get_expr() const { return expr_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -810,8 +810,6 @@ public:
 
 
 // [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
-class step_expr;
-
 class relpath_expr : public expr
 /*______________________________________________________________________
 |	::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
@@ -825,26 +823,26 @@ class relpath_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<exprref_t > step_hv;
+	std::vector<expr_h_t> step_hv;
 
 public:
 	relpath_expr(yy::location const&);
 	~relpath_expr();
 
 public:
-	void add(exprref_t step_h)
+	void add(expr_h_t step_h)
 		{ step_hv.push_back(step_h); }
 	uint32_t size() const
 		{ return step_hv.size(); }
 
-	std::vector<exprref_t >::const_iterator begin() const
+	std::vector<expr_h_t>::const_iterator begin() const
 		{ return step_hv.begin(); }
-	std::vector<exprref_t >::const_iterator end() const
+	std::vector<expr_h_t>::const_iterator end() const
 		{ return step_hv.end(); }
 
-	exprref_t& operator[](int n)
+	expr_h_t& operator[](int n)
 		{ return step_hv[n]; }
-	exprref_t const& operator[](int n) const
+	expr_h_t const& operator[](int n) const
 		{ return step_hv[n]; }
 
 public:
@@ -855,19 +853,9 @@ public:
 
 
 // [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
-class step_expr : public expr
 /*______________________________________________________________________
-|	::= AxisStep  |  FilterExpr
+|	StepExpr ::= AxisStep  |  FilterExpr
 |_______________________________________________________________________*/
-{
-public:
-	step_expr(yy::location const&);
-	~step_expr();
-
-public:
-	std::ostream& put(std::ostream&,context&) const;
-
-};
 
 
 
@@ -921,7 +909,7 @@ protected:
 	wild_t wild;
 	rchandle<QName> name_h;
 	rchandle<QName> typename_h;
-	std::vector<exprref_t > pred_hv;
+	std::vector<expr_h_t> pred_hv;
 
 public:
 	axis_step_expr(yy::location const&);
@@ -936,26 +924,26 @@ public:
 	rchandle<QName> get_typename() const { return typename_h; }
 
 	void set_axis(axis_t v) { axis = v; }
-	void set_test(test_t v) { test = v; }
-	void set_docnode_test(test_t v) { docnode_test = v; }
-	void set_wild(wild_t v) { wild = v; }
+	void set_test(enum test_t v) { test = v; }
+	void set_docnode_test(enum test_t v) { docnode_test = v; }
+	void set_wild(enum wild_t v) { wild = v; }
 	void set_name(rchandle<QName> v_h) { name_h = v_h; }
 	void set_typename(rchandle<QName> v_h) { typename_h = v_h; }
 
 public:
-	void add_pred(exprref_t e_h)
+	void add_pred(expr_h_t e_h)
 		{ pred_hv.push_back(e_h); }
 	uint32_t size() const
 		{ return pred_hv.size(); }
 
-	exprref_t & operator[](int i)
+	expr_h_t & operator[](int i)
 		{ return pred_hv[i]; }
-	exprref_t const& operator[](int i) const
+	expr_h_t const& operator[](int i) const
 		{ return pred_hv[i]; }
 
-	std::vector<exprref_t >::const_iterator begin() const
+	std::vector<expr_h_t>::const_iterator begin() const
 		{ return pred_hv.begin(); }
-	std::vector<exprref_t >::const_iterator end() const
+	std::vector<expr_h_t>::const_iterator end() const
 		{ return pred_hv.end(); }
 
 public:
@@ -1001,7 +989,8 @@ public:
 		lit_string,
 		lit_integer,
 		lit_decimal,
-		lit_double
+		lit_double,
+		lit_bool
 	};
 	typedef long long decimal;
 
@@ -1012,6 +1001,7 @@ protected:
 		int ival;
 		decimal decval;
 		double dval;
+		bool bval;
 	};
 
 public:
@@ -1019,6 +1009,7 @@ public:
 	literal_expr(yy::location const&, int);
 	literal_expr(yy::location const&, decimal);
 	literal_expr(yy::location const&, double);
+	literal_expr(yy::location const&, bool);
 	~literal_expr();
 
 public:
@@ -1027,6 +1018,7 @@ public:
 	int get_ival() const { return ival; }
 	decimal get_decval() { return decval; }
 	double get_dval() const { return dval; }
+	bool get_bval() const { return bval; }
 
 public:
 	static std::string decode_type(enum literal_type_t t);
@@ -1056,18 +1048,18 @@ public:
 
 protected:
 	order_type_t type;
-	exprref_t expr_h;
+	expr_h_t expr_h;
 
 public:
 	order_expr(
 		yy::location const&,
 		order_type_t,
-		exprref_t);
+		expr_h_t);
 	~order_expr();
 
 public:
 	order_type_t get_type() const { return type; }
-	exprref_t get_expr() const { return expr_h; }
+	expr_h_t get_expr() const { return expr_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -1086,7 +1078,7 @@ class funcall_expr : public expr
 {
 protected:
 	rchandle<QName> fname_h;
-	std::vector<exprref_t > arg_hv;
+	std::vector<expr_h_t> arg_hv;
 
 public:
 	funcall_expr(
@@ -1098,19 +1090,19 @@ public:
 	rchandle<QName> get_fname() const { return fname_h; }
 
 public:
-	void add_arg(exprref_t const& arg_h)
+	void add_arg(expr_h_t const& arg_h)
 		{ arg_hv.push_back(arg_h); }
 	uint32_t arg_count() const
 		{ return arg_hv.size(); }
 
-	std::vector<exprref_t >:: const_iterator begin() const
+	std::vector<expr_h_t>::const_iterator begin() const
 		{ return arg_hv.begin(); }
-	std::vector<exprref_t >:: const_iterator end() const
+	std::vector<expr_h_t>::const_iterator end() const
 		{ return arg_hv.end(); }
 
-	exprref_t & operator[](int i)
+	expr_h_t & operator[](int i)
 		{ return arg_hv[i]; }
-	exprref_t const& operator[](int i) const
+	expr_h_t const& operator[](int i) const
 		{ return arg_hv[i]; }
 
 public:
@@ -1149,16 +1141,16 @@ class doc_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t docuri_h;
+	expr_h_t docuri_h;
 
 public:
 	doc_expr(
 		yy::location const&,
-		exprref_t);
+		expr_h_t);
 	~doc_expr();
 
 public:
-	exprref_t get_docuri() const { return docuri_h; }
+	expr_h_t get_docuri() const { return docuri_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -1184,25 +1176,25 @@ public:
 
 protected:
 	rchandle<QName> qname_h;
-	exprref_t qname_expr_h;
-	exprref_t content_expr_h;
+	expr_h_t qname_expr_h;
+	expr_h_t content_expr_h;
 	std::vector<nsbinding> nsb_v;
 
 public:
 	elem_expr(
 		yy::location const&,
 		rchandle<QName>,
-		exprref_t);
+		expr_h_t);
 	elem_expr(
 		yy::location const&,
-		exprref_t,
-		exprref_t);
+		expr_h_t,
+		expr_h_t);
 	~elem_expr();
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
-	exprref_t get_qname_expr() const { return qname_expr_h; }
-	exprref_t get_content_expr() const { return content_expr_h; }
+	expr_h_t get_qname_expr() const { return qname_expr_h; }
+	expr_h_t get_content_expr() const { return content_expr_h; }
 
 public:
 	void add(nsbinding const& nsb)
@@ -1236,24 +1228,24 @@ class attr_expr : public expr
 {
 protected:
 	rchandle<QName> qname_h;
-	exprref_t qname_expr_h;
-	exprref_t val_expr_h;
+	expr_h_t qname_expr_h;
+	expr_h_t val_expr_h;
 
 public:
 	attr_expr(
 		yy::location const&,
 		rchandle<QName>,
-		exprref_t);
+		expr_h_t);
 	attr_expr(
 		yy::location const&,
-		exprref_t,
-		exprref_t);
+		expr_h_t,
+		expr_h_t);
 	~attr_expr();
 
 public:
 	rchandle<QName> get_qname() const { return qname_h; }
-	exprref_t get_qname_expr() const { return qname_expr_h; }
-	exprref_t get_val_expr() const { return val_expr_h; }
+	expr_h_t get_qname_expr() const { return qname_expr_h; }
+	expr_h_t get_val_expr() const { return val_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -1272,16 +1264,16 @@ class text_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t text_expr_h;
+	expr_h_t text_expr_h;
 
 public:
 	text_expr(
 		yy::location const&,
-		exprref_t);
+		expr_h_t);
 	~text_expr();
 
 public:
-	exprref_t get_text_expr() const { return text_expr_h; }
+	expr_h_t get_text_expr() const { return text_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -1300,16 +1292,16 @@ class comment_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t comment_expr_h;
+	expr_h_t comment_expr_h;
 
 public:
 	comment_expr(
 		yy::location const&,
-		exprref_t);
+		expr_h_t);
 	~comment_expr();
 
 public:
-	exprref_t get_comment_expr() const { return comment_expr_h; }
+	expr_h_t get_comment_expr() const { return comment_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;
@@ -1332,24 +1324,24 @@ class pi_expr : public expr
 {
 protected:
 	std::string target;
-	exprref_t target_expr_h;
-	exprref_t content_expr_h;
+	expr_h_t target_expr_h;
+	expr_h_t content_expr_h;
 
 public:
 	pi_expr(
 		yy::location const&,
 		std::string target,
-		exprref_t);
+		expr_h_t);
 	pi_expr(
 		yy::location const&,
-		exprref_t,
-		exprref_t);
+		expr_h_t,
+		expr_h_t);
 	~pi_expr();
 
 public:
 	std::string get_target() const { return target; }
-	exprref_t get_target_expr() const { return target_expr_h; }
-	exprref_t get_content_expr() const { return content_expr_h; }
+	expr_h_t get_target_expr() const { return target_expr_h; }
+	expr_h_t get_content_expr() const { return content_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&,context&) const;

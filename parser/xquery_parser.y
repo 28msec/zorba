@@ -407,9 +407,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> AposAttrValueContent
 %type <node> ArgList
 %type <node> AtomicType
-%type <node> AttribNameOrWildcard
-%type <node> AttributeDeclaration
-%type <node> AttributeName
 %type <node> AttributeTest
 %type <node> BaseURIDecl
 %type <node> BoundarySpaceDecl
@@ -425,9 +422,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> DirAttributeValue
 %type <node> DirElemContentList
 %type <node> DocumentTest
-%type <node> ElementDeclaration
-%type <node> ElementName
-%type <node> ElementNameOrWildcard
 %type <node> ElementTest
 %type <node> EmptyOrderDecl
 %type <node> ForClause
@@ -438,7 +432,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FunctionDecl
 %type <node> GeneralComp
 %type <node> Import
-%type <node> InheritMode
 %type <node> ItemType
 %type <node> KindTest
 %type <node> LetClause
@@ -468,7 +461,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> Pragma
 %type <node> PragmaList
 %type <node> PredicateList
-%type <node> PreserveMode
 %type <node> Prolog
 %type <node> QVarInDecl
 %type <node> QVarInDeclList
@@ -1108,50 +1100,42 @@ EmptyOrderDecl :
 // [16] CopyNamespacesDecl
 // -----------------------
 CopyNamespacesDecl :
-		DECLARE_COPY_NAMESPACES  PreserveMode  COMMA  InheritMode
+		DECLARE_COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
 		{
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			$$ = new CopyNamespacesDecl(@$,driver.get_ctx(),
-								dynamic_cast<PreserveMode*>($2),
-								dynamic_cast<InheritMode*>($4));
+								context::preserve_ns,
+								context::inherit_ns);
+		}
+	| DECLARE_COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
+		{
+			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+			$$ = new CopyNamespacesDecl(@$,driver.get_ctx(),
+								context::preserve_ns,
+								context::no_inherit_ns);
+		}
+	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
+		{
+			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+			$$ = new CopyNamespacesDecl(@$,driver.get_ctx(),
+								context::no_preserve_ns,
+								context::inherit_ns);
+		}
+	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
+		{
+			if (debug) cout << "CopyNamespacesDecl [ ]\n";
+			$$ = new CopyNamespacesDecl(@$,driver.get_ctx(),
+								context::no_preserve_ns,
+								context::no_inherit_ns);
 		}
 	;
 
 
 // [17] PreserveMode
 // -----------------
-PreserveMode :
-		PRESERVE
-		{
-			if (debug) cout << "PreserveMode [preserve]\n";
-			$$ = new PreserveMode(@$,driver.get_ctx(),
-								context::preserve_ns);
-		}
-	| NO_PRESERVE
-		{
-			if (debug) cout << "PreserveMode [no preserve]\n";
-			$$ = new PreserveMode(@$,driver.get_ctx(),
-								context::no_preserve_ns);
-		}
-	;
-
 
 // [18] InheritMode
 // ----------------
-InheritMode :
-		INHERIT
-		{
-			if (debug) cout << "InheritMode [inherit]\n";
-			$$ = new InheritMode(@$,driver.get_ctx(),
-								context::inherit_ns);
-		}
-	| NO_INHERIT
-		{
-			if (debug) cout << "InheritMode [no inherit]\n";
-			$$ = new InheritMode(@$,driver.get_ctx(),
-								context::no_inherit_ns);
-		}
-	;
 
 
 // [19] DefaultCollationDecl
@@ -3019,7 +3003,9 @@ ReverseStep :
 	|	DOT_DOT
 		{
 			if (debug) cout << "ReverseStep [..]\n";
-			$$ = new ReverseAxis(@$,driver.get_ctx(), axis_parent);
+			ReverseAxis* rev_p = new ReverseAxis(@$,driver.get_ctx(), axis_parent);
+			$$ = new ReverseStep(@$,driver.get_ctx(),
+								rev_p);
 		}
 	;
 
@@ -3100,19 +3086,23 @@ Wildcard :
 		STAR
 		{
 			if (debug) cout << "Wildcard [*]\n";
-			$$ = new Wildcard(@$,driver.get_ctx(), wild_all);
+			$$ = new Wildcard(@$,driver.get_ctx(),
+									new QName(QName::qn_elem,"",""),
+									wild_all);
 		}
 	|	ELEM_WILDCARD
 		{
 			if (debug) cout << "Wildcard [pref:*]\n";
 			$$ = new Wildcard(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($1)));
+									new QName(QName::qn_elem,"",driver.symtab.get($1)),
+									wild_elem);
 		}
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
 		{
 			if (debug) cout << "Wildcard [*:qname]\n";
 			$$ = new Wildcard(@$,driver.get_ctx(),
-								driver.symtab.get($1));
+									new QName(QName::qn_elem,driver.symtab.get($1),""),
+									wild_prefix);
 		}
 	;
 
@@ -3150,7 +3140,7 @@ PredicateList :
 			if (debug) cout << "PredicateList [list]\n";
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>($1);
 			if (pred_list_p) {
-				pred_list_p->push_back(dynamic_cast<Predicate*>($1));
+				pred_list_p->push_back(dynamic_cast<Predicate*>($2));
 			}
 			$$ = $1;
 		}
@@ -4249,36 +4239,35 @@ AttributeTest :
 								NULL,
 								NULL);
 		}
-	|	ATTRIBUTE_LPAR  AttribNameOrWildcard  RPAR
+	|	ATTRIBUTE_LPAR  QNAME  RPAR
 		{
-			if (debug) cout << "AttributeTest [name_or_wild]\n";
+			if (debug) cout << "AttributeTest [name]\n";
 			$$ = new AttributeTest(@$,driver.get_ctx(),
-								dynamic_cast<AttribNameOrWildcard*>($2),
+								new QName(QName::qn_attr,driver.symtab.get($2)),
 								NULL);
 		}
-	|	ATTRIBUTE_LPAR  AttribNameOrWildcard  COMMA  TypeName  RPAR
+	|	ATTRIBUTE_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
-			if (debug) cout << "AttributeTest [name_or_wild.type]\n";
+			if (debug) cout << "AttributeTest [name.type]\n";
 			$$ = new AttributeTest(@$,driver.get_ctx(),
-								dynamic_cast<AttribNameOrWildcard*>($2),
+								new QName(QName::qn_attr,driver.symtab.get($2)),
 								dynamic_cast<TypeName*>($4));
 		}
-	;
-
-
-// [128] AttribNameOrWildcard
-// --------------------------
-AttribNameOrWildcard :
-		AttributeName
+	|	ATTRIBUTE_LPAR  STAR  RPAR
 		{
-			if (debug) cout << "AttribNameOrWildcard [attr]\n";
-			$$ = new AttribNameOrWildcard(@$,driver.get_ctx(),
-								dynamic_cast<AttributeName*>($1));
+			if (debug) cout << "AttributeTest [*]\n";
+			$$ = new AttributeTest(@$,driver.get_ctx(),
+								NULL,
+								NULL,
+								true);
 		}
-	|	STAR
+	|	ATTRIBUTE_LPAR  STAR  COMMA  TypeName  RPAR
 		{
-			if (debug) cout << "AttribNameOrWildcard [*]\n";
-			$$ = new AttribNameOrWildcard(@$,driver.get_ctx(), NULL);
+			if (debug) cout << "AttributeTest [*.type]\n";
+			$$ = new AttributeTest(@$,driver.get_ctx(),
+								NULL,
+								dynamic_cast<TypeName*>($4),
+								true);
 		}
 	;
 
@@ -4286,23 +4275,11 @@ AttribNameOrWildcard :
 // [129] SchemaAttributeTest
 // -------------------------
 SchemaAttributeTest :
-		SCHEMA_ATTRIBUTE_LPAR  AttributeDeclaration  RPAR
+		SCHEMA_ATTRIBUTE_LPAR  QNAME  RPAR
 		{
 			if (debug) cout << "SchemaAttributeTest [ ]\n";
 			$$ = new SchemaAttributeTest(@$,driver.get_ctx(),
-								dynamic_cast<AttributeDeclaration*>($2));
-		}
-	;
-
-
-// [130] AttributeDeclaration
-// --------------------------
-AttributeDeclaration :
-		AttributeName
-		{
-			if (debug) cout << "AttributeDeclaration [ ]\n";
-			$$ = new AttributeDeclaration(@$,driver.get_ctx(),
-								dynamic_cast<AttributeName*>($1));
+								new QName(QName::qn_attr, driver.symtab.get($2)));
 		}
 	;
 
@@ -4314,47 +4291,38 @@ ElementTest :
 		{
 			if (debug) cout << "ElementTest [ ]\n";
 			$$ = new ElementTest(@$,driver.get_ctx(),
-								NULL,
-								NULL);
+									NULL,
+									NULL);
 		}
-	|	ELEMENT_LPAR  ElementNameOrWildcard  RPAR
+	|	ELEMENT_LPAR  QNAME  RPAR
 		{
-			if (debug) cout << "ElementTest [name_or_wild]\n";
+			if (debug) cout << "ElementTest [name]\n";
 			$$ = new ElementTest(@$,driver.get_ctx(),
-								dynamic_cast<ElementNameOrWildcard*>($2),
-								NULL);
+									new QName(QName::qn_elem,driver.symtab.get($2)),
+									NULL);
 		}
-	|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR
+	|	ELEMENT_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
-			if (debug) cout << "ElementTest [name_or_wild.type]\n";
+			if (debug) cout << "ElementTest [name.type]\n";
 			$$ = new ElementTest(@$,driver.get_ctx(),
-								dynamic_cast<ElementNameOrWildcard*>($2),
-								dynamic_cast<TypeName*>($4));
+									new QName(QName::qn_elem,driver.symtab.get($2)),
+									dynamic_cast<TypeName*>($4));
 		}
-	|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
+	|	ELEMENT_LPAR  STAR  RPAR
 		{
-			if (debug) cout << "ElementTest [name_or_wild.type ?]\n";
+			if (debug) cout << "ElementTest [*]\n";
 			$$ = new ElementTest(@$,driver.get_ctx(),
-								dynamic_cast<ElementNameOrWildcard*>($2),
-								dynamic_cast<TypeName*>($4));
+									NULL,
+									NULL,
+									true);
 		}
-	;
-
-
-// [132] ElementNameOrWildcard
-// ---------------------------
-ElementNameOrWildcard :
-		ElementName
+	|	ELEMENT_LPAR  STAR  COMMA  TypeName  RPAR
 		{
-			if (debug) cout << "ElementNameOrWildcard [elem]\n";
-			$$ = new ElementNameOrWildcard(@$,driver.get_ctx(),
-								dynamic_cast<ElementName*>($1));
-		}
-	|	STAR
-		{
-			if (debug) cout << "ElementNameOrWildcard [*]\n";
-			$$ = new ElementNameOrWildcard(@$,driver.get_ctx(),
-								NULL);
+			if (debug) cout << "ElementTest [*.type]\n";
+			$$ = new ElementTest(@$,driver.get_ctx(),
+									NULL,
+									dynamic_cast<TypeName*>($4),
+									true);
 		}
 	;
 
@@ -4362,57 +4330,40 @@ ElementNameOrWildcard :
 // [133] SchemaElementTest
 // -----------------------
 SchemaElementTest :
-		SCHEMA_ELEMENT_LPAR  ElementDeclaration  RPAR
+		SCHEMA_ELEMENT_LPAR  QNAME  RPAR
 		{
 			if (debug) cout << "SchemaElementTest [ ]\n";
 			$$ = new SchemaElementTest(@$,driver.get_ctx(),
-								dynamic_cast<ElementDeclaration*>($2));
+									new QName(QName::qn_elem,driver.symtab.get($2)));
 		}
 	;
 
 
-// [134] ElementDeclaration
-// ------------------------
-ElementDeclaration :
-		ElementName
-		{
-			if (debug) cout << "ElementDeclaration [ ]\n";
-		}
-	;
+/* productions inlined */
+/* ------------------- */
+// [128] AttribNameOrWildcard ::= AttributeName | "*"
+// [130] AttributeDeclaration ::= AttributeName
+// [132] ElementNameOrWildcard ::= ElementName | "*"
+// [134] ElementDeclaration ::= ElementName
+// [135] AttributeName ::= QName
+// [136] ElementName ::= QName
 
 
-// [135] AttributeName
-// -------------------
-AttributeName :
-		QNAME
-		{
-			if (debug) cout << "AttributeName [ ]\n";
-			$$ = new AttributeName(@$,driver.get_ctx(),
-								new QName(QName::qn_attr, driver.symtab.get($1)));
-		}
-	;
-
-
-// [136] ElementName
-// -----------------
-ElementName :
-		QNAME
-		{
-			if (debug) cout << "ElementName [ ]\n";
-			$$ = new ElementName(@$,driver.get_ctx(),
-								new QName(QName::qn_elem, driver.symtab.get($1)));
-		}
-	;
-
-
-// [137] TypeName
-// --------------
+// [137] TypeName */
+/* -------------- */
 TypeName :
 		QNAME
 		{
-			if (debug) cout << "TypeName [ ]\n";
+			if (debug) cout << "TypeName [name]\n";
 			$$ = new TypeName(@$,driver.get_ctx(),
-								new QName(QName::qn_type, driver.symtab.get($1)));
+								new QName(QName::qn_type,driver.symtab.get($1)));
+		}
+	| QNAME  HOOK
+		{
+			if (debug) cout << "TypeName [name?]\n";
+			$$ = new TypeName(@$,driver.get_ctx(),
+								new QName(QName::qn_type,driver.symtab.get($1)),
+								true);
 		}
 	;
 
@@ -4425,7 +4376,6 @@ TypeName :
 // [141] URILiteral 
 
 
-
 // [142] StringLiteral
 // -------------------
 StringLiteral :
@@ -4435,7 +4385,6 @@ StringLiteral :
 			$$ = new StringLiteral(@$,driver.get_ctx(), driver.symtab.get($1));
 		}
 	;
-
 
 
 /* lexical rules, see xquery.l */

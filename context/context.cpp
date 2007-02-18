@@ -85,6 +85,75 @@ throw (xqp_exception)
 
 
 /*..........................................
+ :  namespaces, collation, base URIs       :
+ :.........................................*/
+
+void context::add_namespace(
+	string const& prefix,
+	string const& uri)
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	namespaces.push_back(nspool_h->put(0,prefix,uri));
+}
+
+bool context::get_default_elem_or_type_ns(
+	string& uri) const
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	return nspool_h->get_uri(default_elem_or_type_ns, uri);
+}
+
+void context::set_default_elem_or_type_ns(
+	string const& uri)
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	default_elem_or_type_ns = nspool_h->put(0,"#def-elem",uri);
+}
+
+bool context::get_default_function_ns(
+	string& uri) const
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	return nspool_h->get_uri(default_function_ns, uri);
+}
+
+void context::set_default_function_ns(
+	string const& uri)
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	default_function_ns = nspool_h->put(0,"#def-func",uri);
+}
+
+bool context::get_default_collation(
+	string& uri) const
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	return nspool_h->get_uri(default_collation, uri);
+}
+
+void context::set_default_collation(
+	std::string const& uri)
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	default_collation = nspool_h->put(0,"#def-coll",uri);
+}
+
+bool context::get_base_uri(
+	string& uri) const
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	return nspool_h->get_uri(base_uri, uri);
+}
+
+void context::set_base_uri(
+	std::string const& uri)
+{
+	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
+	base_uri = nspool_h->put(0,"#base_uri",uri);
+}
+
+
+/*..........................................
  :  docids                                 :
  :.........................................*/
 

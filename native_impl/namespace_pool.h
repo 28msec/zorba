@@ -141,7 +141,7 @@ public:
 	** find the URI for a given id
 	*/
 	bool get_uri(									// return: true <-> id found
-		uint32_t uri_id,						// input: namespace id
+		uint32_t uri_id,						// input: namespace uri id
 		string & uri) const					// output: namespace URI
 	throw (bad_arg);							// throw: id is out of range
 

@@ -115,8 +115,6 @@ class AposAttrValueContent;
 class ArgList;
 class AtomicType;
 class AttribNameOrWildcard;
-class AttributeDeclaration;
-class AttributeName;
 class AttributeTest;
 class AxisStep;
 class BaseURIDecl;
@@ -327,8 +325,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -361,8 +357,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -398,8 +392,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -431,8 +423,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -464,8 +454,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -498,8 +486,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -528,8 +514,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -558,8 +542,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -581,8 +563,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -604,8 +584,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -633,8 +611,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -656,8 +632,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -694,8 +668,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -725,8 +697,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -759,8 +729,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -792,8 +760,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -823,8 +789,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -853,8 +817,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -884,8 +846,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -896,94 +856,41 @@ public:
 class CopyNamespacesDecl : public parsenode
 /*______________________________________________________________________
 |
-|	::= DECLARE_COPY_NAMESPACES  PreserveMode  COMMA  InheritMode
+|	::= DECLARE_COPY_NAMESPACES  ("preserve"|"no preserve")
+|				COMMA  ("inherit"|"no inherit")
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<PreserveMode> preserve_h;
-	rchandle<InheritMode> inherit_h;
+	context::preserve_mode_t preserve_mode;
+	context::inherit_mode_t inherit_mode;
 
 public:
 	CopyNamespacesDecl(
 		yy::location const&,
 		context *,
-		rchandle<PreserveMode>,
-		rchandle<InheritMode>);
+		context::preserve_mode_t preserve_mode,
+		context::inherit_mode_t  inherit_mode);
+
 	~CopyNamespacesDecl();
 
 public: 
-	rchandle<PreserveMode> get_preserve() const { return preserve_h; }
-	rchandle<InheritMode> get_inherit() const { return inherit_h; }
+	context::preserve_mode_t get_preserve_mode() const;
+	context::inherit_mode_t  get_inherit_mode() const;
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
+
 
 
 // [17] PreserveMode
 // -----------------
-class PreserveMode : public parsenode
-/*______________________________________________________________________
-|
-|	::=	PRESERVE | NO_PRESERVE
-|_______________________________________________________________________*/
-{
-protected:
-	context::copy_ns_mode_t preserve_mode;
-
-public:
-	PreserveMode(
-		yy::location const&,
-		context *,
-		context::copy_ns_mode_t);
-	~PreserveMode();
-
-public:
-	context::copy_ns_mode_t
-		get_preserve_mode() const { return preserve_mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
 
 // [18] InheritMode
 // ----------------
-class InheritMode : public parsenode
-/*______________________________________________________________________
-|
-|	::= INHERIT | NO_INHERIT
-|_______________________________________________________________________*/
-{
-public:
-	context::copy_ns_mode_t inherit_mode;
-	
-public:
-	InheritMode(
-		yy::location const&,
-		context *,
-		context::copy_ns_mode_t);
-	~InheritMode();
 
-public:
-	context::copy_ns_mode_t
-		get_inherit_mode() const { return inherit_mode; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [19] DefaultCollationDecl
@@ -1009,8 +916,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1039,8 +944,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1078,8 +981,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1109,8 +1010,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1146,8 +1045,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1190,8 +1087,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1230,8 +1125,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1261,8 +1154,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1312,8 +1203,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1343,8 +1232,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1377,8 +1264,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1407,8 +1292,6 @@ public:
 	
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1438,8 +1321,6 @@ public:
 	
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1469,8 +1350,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1496,8 +1375,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1538,8 +1415,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1569,8 +1444,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1592,8 +1465,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1622,8 +1493,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1653,8 +1522,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1703,8 +1570,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1733,8 +1598,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1764,8 +1627,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1795,8 +1656,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1838,8 +1697,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1868,8 +1725,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1898,8 +1753,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1936,8 +1789,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1967,8 +1818,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2001,8 +1850,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2046,8 +1893,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2076,8 +1921,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2107,8 +1950,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2137,8 +1978,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2174,8 +2013,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2205,8 +2042,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2247,8 +2082,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2294,8 +2127,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2328,13 +2159,15 @@ public:
 		{ return clause_hv.begin(); }
 	std::vector<rchandle<CaseClause> >::const_iterator end()
 		{ return clause_hv.end(); }
+	std::vector<rchandle<CaseClause> >::const_reverse_iterator rbegin()
+		{ return clause_hv.rbegin(); }
+	std::vector<rchandle<CaseClause> >::const_reverse_iterator rend()
+		{ return clause_hv.rend(); }
 	uint32_t size() const 
 		{ return clause_hv.size(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2375,8 +2208,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2411,8 +2242,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2445,8 +2274,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2479,8 +2306,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2534,8 +2359,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2572,8 +2395,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2607,8 +2428,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2646,8 +2465,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2687,8 +2504,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2723,8 +2538,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2762,8 +2575,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2797,8 +2608,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2832,8 +2641,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2867,8 +2674,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2902,8 +2707,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2937,8 +2740,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2972,8 +2773,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2997,8 +2796,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3029,8 +2826,6 @@ public:
 	
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3061,8 +2856,6 @@ public:
 	
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3093,8 +2886,6 @@ public:
 	
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3128,8 +2919,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3163,8 +2952,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3194,8 +2981,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3228,8 +3013,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3283,6 +3066,7 @@ public:
 		context *,
 		enum pathtype_t type,
 		rchandle<exprnode>);
+
 	~PathExpr();
 
 public:
@@ -3291,8 +3075,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3330,8 +3112,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3354,8 +3134,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3367,10 +3145,7 @@ public:
 class AxisStep : public exprnode
 /*______________________________________________________________________
 |
-|	::= ForwardStep
-|			| ForwardStep  PredicateList
-|			|	ReverseStep
-|			|	ReverseStep  PredicateList
+|	::= (ForwardStep | ReverseStep)  PredicateList?
 |_______________________________________________________________________*/
 {
 protected:
@@ -3398,8 +3173,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3439,8 +3212,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3476,8 +3247,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3515,8 +3284,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3542,6 +3309,11 @@ public:
 		context *,
 		rchandle<ReverseAxis>,
 		rchandle<parsenode>);
+	ReverseStep(
+		yy::location const&,
+		context *,
+		rchandle<ReverseAxis>);
+
 	~ReverseStep();
 
 public:
@@ -3550,8 +3322,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3585,8 +3355,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3607,6 +3375,9 @@ class NodeTest : public parsenode
 |	::= KindTest | NameTest
 |_______________________________________________________________________*/
 {
+protected:
+	bool attr_b;
+
 public:
 	NodeTest(
 		yy::location const&,
@@ -3614,9 +3385,11 @@ public:
 	~NodeTest();
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	void set_attr_b(bool b) { attr_b = b; }
+	bool get_attr_b() const { return attr_b; }
 
 public:
+	virtual std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3625,7 +3398,7 @@ public:
 
 // [78] NameTest
 // -------------
-class NameTest : public parsenode
+class NameTest : public NodeTest
 /*______________________________________________________________________
 |
 |	::= QNAME | Wildcard
@@ -3652,8 +3425,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3672,33 +3443,23 @@ class Wildcard : public parsenode
 {
 protected:
 	enum wildcard_t type;
-	std::string prefix;
 	rchandle<QName> qname_h;
 	
 public:
 	Wildcard(
 		yy::location const&,
 		context *,
+		rchandle<QName>,
 		enum wildcard_t);
-	Wildcard(
-		yy::location const&,
-		context *,
-		std::string const&);
-	Wildcard(
-		yy::location const&,
-		context *,
-		rchandle<QName>);
+
 	~Wildcard();
 
 public:
 	enum wildcard_t get_type() const { return type; }
-	std::string get_prefix() const { return prefix; }
 	rchandle<QName> get_qname() const { return qname_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3732,8 +3493,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3764,8 +3523,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3795,8 +3552,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3826,8 +3581,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3850,8 +3603,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3902,8 +3653,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3933,8 +3682,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3965,8 +3712,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };	
@@ -3989,8 +3734,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };	
@@ -4020,8 +3763,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4051,8 +3792,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4087,8 +3826,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4118,8 +3855,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4142,8 +3877,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4168,8 +3901,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4209,8 +3940,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4243,8 +3972,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4277,8 +4004,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4311,8 +4036,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4351,8 +4074,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4387,8 +4108,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4423,8 +4142,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4461,8 +4178,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4499,8 +4214,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4555,8 +4268,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4603,8 +4314,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4634,8 +4343,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4679,8 +4386,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4716,8 +4421,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4751,8 +4454,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4782,8 +4483,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4826,8 +4525,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4858,8 +4555,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4903,8 +4598,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4934,8 +4627,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4965,8 +4656,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5009,8 +4698,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5042,8 +4729,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5072,8 +4757,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5108,8 +4791,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5138,8 +4819,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5171,8 +4850,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5201,8 +4878,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5210,7 +4885,7 @@ public:
 
 // [121] KindTest
 // --------------
-class KindTest : public parsenode
+class KindTest : public NodeTest
 /*______________________________________________________________________
 |
 |	::= DocumentTest
@@ -5232,8 +4907,6 @@ public:
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5255,8 +4928,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5298,8 +4969,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5317,12 +4986,11 @@ public:
 	TextTest(
 		yy::location const&,
 		context *);
+
 	~TextTest();
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5340,12 +5008,11 @@ public:
 	CommentTest(
 		yy::location const&,
 		context *);
+
 	~CommentTest();
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5371,6 +5038,7 @@ public:
 		context *,
 		std::string target,
 		std::string content);
+
 	~PITest();
 
 public:
@@ -5379,8 +5047,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5397,62 +5063,37 @@ class AttributeTest : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<AttribNameOrWildcard> attr_name_or_wildcard_h;
-	rchandle<TypeName> type_name_h;
+	rchandle<QName> attr_h;
+	rchandle<TypeName> type_h;
+	bool wild_b;
 
 public:
 	AttributeTest(
 		yy::location const&,
 		context *,
-		rchandle<AttribNameOrWildcard>,
+		rchandle<QName>,
 		rchandle<TypeName>);
+
+	AttributeTest(
+		yy::location const&,
+		context *,
+		rchandle<QName>,
+		rchandle<TypeName>,
+		bool wild_bit);
+
 	~AttributeTest();
 
 public:
-	rchandle<AttribNameOrWildcard> get_attr_name_or_wildcard() const
-		{ return attr_name_or_wildcard_h; }
-	rchandle<TypeName> get_type_name() const
-		{ return type_name_h; }
+	rchandle<QName> get_attr() const { return attr_h; }
+	rchandle<TypeName> get_type() const { return type_h; }
+	bool get_wild_bit() const { return wild_b; }
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
 
-
-// [128] AttribNameOrWildcard
-// --------------------------
-class AttribNameOrWildcard : public parsenode
-/*______________________________________________________________________
-|
-|	::= AttributeName | STAR
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<AttributeName> attr_name_h;
-	bool star_b;
-
-public:
-	AttribNameOrWildcard(
-		yy::location const&,
-		context *,
-		rchandle<AttributeName>);
-	~AttribNameOrWildcard();
-
-public:
-	rchandle<AttributeName> get_attr_name() const { return attr_name_h; }
-	bool get_star_bit() const { return star_b; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [129] SchemaAttributeTest
@@ -5464,52 +5105,21 @@ class SchemaAttributeTest : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<AttributeDeclaration> attr_decl_h;
+	rchandle<QName> attr_h;
 
 public:
 	SchemaAttributeTest(
 		yy::location const&,
 		context *,
-		rchandle<AttributeDeclaration>);
+		rchandle<QName>);
+
 	~SchemaAttributeTest();
 
 public:
-	rchandle<AttributeDeclaration> get_attr_decl() const { return attr_decl_h; }
+	rchandle<QName> get_attr() const { return attr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [130] AttributeDeclaration
-// --------------------------
-class AttributeDeclaration : public parsenode
-/*______________________________________________________________________
-|
-|	::= AttributeName
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<AttributeName> attr_name_h;
-
-public:
-	AttributeDeclaration(
-		yy::location const&,
-		context *,
-		rchandle<AttributeName>);
-	~AttributeDeclaration();
-
-public:
-	rchandle<AttributeName> get_attr_name() const { return attr_name_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5527,68 +5137,33 @@ class ElementTest : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ElementNameOrWildcard> elem_name_or_wildcard_h;
-	rchandle<TypeName> type_name_h;
+	rchandle<QName> elem_h;
+	rchandle<TypeName> type_h;
 	bool optional_b;
 
 public:
 	ElementTest(
 		yy::location const&,
 		context *,
-		rchandle<ElementNameOrWildcard>,
+		rchandle<QName>,
 		rchandle<TypeName>);
+
 	ElementTest(
 		yy::location const&,
 		context *,
-		rchandle<ElementNameOrWildcard>,
+		rchandle<QName>,
 		rchandle<TypeName>,
-		bool optional_b);
+		bool optional_bit);
+
 	~ElementTest();
 
 public:
-	rchandle<ElementNameOrWildcard> get_elem_name_or_wildcard() const
-		{ return elem_name_or_wildcard_h; }
-	rchandle<TypeName> get_type_name() const
-		{ return type_name_h; }
-	bool get_optional_bit() const
-		{ return optional_b; }
+	rchandle<QName> get_elem() const { return elem_h; }
+	rchandle<TypeName> get_type() const { return type_h; }
+	bool get_optional_bit() const { return optional_b; }
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [132] ElementNameOrWildcard
-// ---------------------------
-class ElementNameOrWildcard : public parsenode
-/*______________________________________________________________________
-|
-|	::= ElementName | STAR
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<ElementName> elem_name_h;
-	bool star_b;
-
-public:
-	ElementNameOrWildcard(
-		yy::location const&,
-		context *,
-		rchandle<ElementName>);
-	~ElementNameOrWildcard();
-
-public:
-	rchandle<ElementName> get_elem_name() const { return elem_name_h; }
-	bool get_star_bit() const { return star_b; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5603,115 +5178,36 @@ class SchemaElementTest : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ElementDeclaration> elem_decl_h;
+	rchandle<QName> elem_h;
 
 public:
 	SchemaElementTest(
 		yy::location const&,
 		context *,
-		rchandle<ElementDeclaration>);
+		rchandle<QName> _elem_h);
+
 	~SchemaElementTest();
 
 public:
-	rchandle<ElementDeclaration> get_elem_decl() const { return elem_decl_h; }
+	rchandle<QName> get_elem() const { return elem_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
 
 
-// [134] ElementDeclaration
-// ------------------------
-class ElementDeclaration : public parsenode
-/*______________________________________________________________________
-|
-|	::= ElementName
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<ElementName> elem_name_h;
 
-public:
-	ElementDeclaration(
-		yy::location const&,
-		context *,
-		rchandle<ElementName>);
-	~ElementDeclaration();
+/* inlined productions */
+/* ------------------- */
+// [128] AttribNameOrWildcard ::= AttributeName | STAR
+// [130] AttributeDeclaration ::= AttributeName
+// [132] ElementNameOrWildcard ::= ElementName | STAR
+// [134] ElementDeclaration ::= ElementName
+// [135] AttributeName ::= QNAME
+// [136] ElementName ::= QNAME
 
-public:
-	rchandle<ElementName> get_elem_name() const { return elem_name_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [135] AttributeName
-// -------------------
-class AttributeName : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> attr_qname_h;
-
-public:
-	AttributeName(
-		yy::location const&,
-		context *,
-		rchandle<QName>);
-	~AttributeName();
-
-public:
-	rchandle<QName> get_attr_qname() const { return attr_qname_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-// [136] ElementName
-// -----------------
-class ElementName : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> elem_qname_h;
-
-public:
-	ElementName(
-		yy::location const&,
-		context *,
-		rchandle<QName>);
-	~ElementName();
-
-public:
-	rchandle<QName> get_elem_qname() const { return elem_qname_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-
-public:
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [137] TypeName
@@ -5719,26 +5215,34 @@ public:
 class TypeName : public parsenode
 /*______________________________________________________________________
 |
-|	::= QNAME
+|	::=  QName  |  QName "?"
 |_______________________________________________________________________*/
+// [137] TypeName ::= QNAME
 {
 protected:
-	rchandle<QName> type_qname_h;
+	rchandle<QName> qname_h;
+	bool optional_b;
 
 public:
 	TypeName(
 		yy::location const&,
 		context *,
 		rchandle<QName>);
+
+	TypeName(
+		yy::location const&,
+		context *,
+		rchandle<QName>,
+		bool);
+
 	~TypeName();
 
 public:
-	rchandle<QName> get_type_qname() const { return type_qname_h; }
-
+	rchandle<QName> get_name() const { return qname_h; }
+	bool get_optional_bit() const { return optional_b; }
+	
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5777,8 +5281,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5800,17 +5302,10 @@ public:
 // [153] AposAttrContentChar
 // [154] Comment
 // [155] CommentContents
-
 // [156] QName
-// -----------
-/* included from "../types/qname.h" */
-
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
-
-
-
 
 
 
@@ -5849,8 +5344,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5887,8 +5380,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5918,8 +5409,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5953,8 +5442,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5987,8 +5474,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6039,8 +5524,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6072,8 +5555,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6106,8 +5587,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6163,8 +5642,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6197,8 +5674,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6233,8 +5708,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6268,8 +5741,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6303,8 +5774,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6338,8 +5807,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6375,8 +5842,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6414,8 +5879,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6451,8 +5914,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6486,8 +5947,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6514,8 +5973,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6538,8 +5995,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6568,8 +6023,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6602,8 +6055,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6636,8 +6087,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6674,8 +6123,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6756,8 +6203,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6796,8 +6241,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6840,8 +6283,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6910,8 +6351,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6942,8 +6381,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6979,8 +6416,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7010,8 +6445,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7042,8 +6475,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7075,8 +6506,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7110,8 +6539,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7155,8 +6582,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7189,8 +6614,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7223,8 +6646,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7254,8 +6675,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7286,8 +6705,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7317,8 +6734,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7348,8 +6763,6 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
@@ -7379,30 +6792,9 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
-
-public:
 	void accept(parsenode_visitor&) const;
 
 };
-
-
-// three-valued boolean
-enum Bool {
-  falseBool,
-  trueBool,
-  indeterminateBool
-};
-
-
-static inline enum Bool 
-not3(enum Bool b)
-{
-  switch (b) {
-  case falseBool: return trueBool;
-  case trueBool: return falseBool;
-  default: return indeterminateBool;
-  }
-}
 
 
 }	/* namespace xqp */

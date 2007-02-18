@@ -55,7 +55,7 @@ Known bugs
 
 2007.01.29
 
-Build is clean, except for one residual error in 'funciton_impl'.
+Build is clean, except for one residual error in 'function_impl'.
 
 
 2007.01.27

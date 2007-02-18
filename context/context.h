@@ -84,14 +84,16 @@ public:	// types
 		strip_space
 	};
 
-	enum copy_ns_mode_t {
+	enum inherit_mode_t {
 		inherit_ns,
-		no_inherit_ns,
+		no_inherit_ns
+	};
+
+	enum preserve_mode_t {
 		preserve_ns,
 		no_preserve_ns
 	};
 
-	typedef rchandle<collation> collation_h_t;
 
 public:
 	context();
@@ -114,7 +116,7 @@ protected:	// XQuery 1.0 static context
 	**	and by namespace declaration attributes in direct element 
 	**	constructors. 
 	*/
-  list<name_space> namespaces;
+  list<uint32_t> namespaces;
 
 	/*
 	**	[Definition: Default element/type namespace. This is a namespace URI 
@@ -123,7 +125,7 @@ protected:	// XQuery 1.0 static context
 	**	expected.] The URI value is whitespace normalized according to the 
 	**	rules for the xs:anyURI type in [XML Schema]. 
 	*/
-	name_space default_elem_or_type_ns;
+	uint32_t default_elem_or_type_ns;
 
 	/*
 	**	[Definition: Default function namespace.  This is a namespace URI or 
@@ -132,7 +134,7 @@ protected:	// XQuery 1.0 static context
 	**	URI value is whitespace normalized according to the rules for the 
 	**	xs:anyURI type in [XML Schema]. 
 	*/
-	name_space default_function_ns;
+	uint32_t default_function_ns;
 
 	/*
 	**	[Definition: In-scope schema types. Each schema type definition is 
@@ -203,7 +205,7 @@ protected:	// XQuery 1.0 static context
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	list<collation_h_t> collations;
+	list<uint32_t> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -212,7 +214,7 @@ protected:	// XQuery 1.0 static context
 	**	xs:string and xs:anyURI  (and types derived from them) when no 
 	**	explicit collation is specified.] 
 	*/
-	collation_h_t default_collation;
+	uint32_t default_collation;
 
 	/*
 	**	[Definition: Construction mode. The construction mode governs the 
@@ -260,7 +262,8 @@ protected:	// XQuery 1.0 static context
 	**	Constructors. Its value consists of two parts: preserve or 
 	**	no-preserve, and inherit or no-inherit.] 
 	*/
-	enum copy_ns_mode_t copy_ns_mode;
+	enum inherit_mode_t inherit_mode;
+	enum preserve_mode_t preserve_mode;
 
 	/*
 	**	[Definition: Base URI. This is an absolute URI, used when necessary in 
@@ -268,7 +271,7 @@ protected:	// XQuery 1.0 static context
 	**	function.)] The URI value is whitespace normalized according to the 
 	**	rules for the xs:anyURI type in [XML Schema]. 
 	*/
-	std::string base_uri;
+	uint32_t base_uri;
 
 	/*
 	**	[Definition: Function signatures. This component defines the set of 
@@ -323,14 +326,15 @@ protected:	// XQuery 1.0 static context
 
 
 public:	// manipulators
-	name_space get_default_elem_or_type_ns() const
-		{ return default_elem_or_type_ns; }
-	name_space get_default_function_ns() const
-		{ return default_function_ns; }
+	bool get_default_elem_or_type_ns(std::string&) const;
+	bool get_default_function_ns(std::string&) const;
+	void set_default_elem_or_type_ns(std::string const& uri);
+	void set_default_function_ns(std::string const& uri);
+	void add_namespace(std::string const& prefix, std::string const& uri);
 
-  list_iterator<name_space> namespaces_begin() const
+  list_iterator<uint32_t> namespaces_begin() const
 		{ return namespaces.begin(); }
-  list_iterator<name_space> namespaces_end() const
+  list_iterator<uint32_t> namespaces_end() const
 		{ return namespaces.end(); }
 
 	list_iterator<QName> in_scope_schema_types_begin() const
@@ -353,16 +357,14 @@ public:	// manipulators
 	list_iterator<var_binding> in_scope_vars_end() const
 		{ return in_scope_vars.end(); }
 
-	list_iterator<collation_h_t> collations_begin() const
+	list_iterator<uint32_t> collations_begin() const
 		{ return collations.begin(); }
-	list_iterator<collation_h_t> collations_end() const
+	list_iterator<uint32_t> collations_end() const
 		{ return collations.end(); }
 
 
 	item_type get_context_item_type() const
 		{ return context_item_type; }
-	collation_h_t get_default_collation() const
-		{ return default_collation; }
 	enum construction_mode_t get_construction_mode() const
 		{ return construction_mode; }
 	enum ordering_mode_t get_ordering_mode() const
@@ -371,10 +373,32 @@ public:	// manipulators
 		{ return order_empty_mode; }
 	enum boundary_space_mode_t get_boundary_space_mode() const
 		{ return boundary_space_mode; }
-	enum copy_ns_mode_t get_copy_ns_mode() const
-		{ return copy_ns_mode; }
-	std::string get_base_uri() const
-		{ return base_uri; }
+	enum inherit_mode_t get_inherit_mode() const
+		{ return inherit_mode; }
+	enum preserve_mode_t get_preserve_mode() const
+		{ return preserve_mode; }
+
+	
+	void set_context_item_type(item_type v)
+		{ context_item_type = v; }
+	void set_construction_mode(enum construction_mode_t v)
+		{ construction_mode = v; }
+	void set_ordering_mode(enum ordering_mode_t v)
+		{ ordering_mode = v; }
+	void set_order_empty_mode(enum order_empty_mode_t v)
+		{ order_empty_mode = v; }
+	void set_boundary_space_mode(enum boundary_space_mode_t v)
+		{ boundary_space_mode = v; }
+	void set_inherit_mode(enum inherit_mode_t v)
+		{ inherit_mode = v; }
+	void set_preserve_mode(enum preserve_mode_t v)
+		{ preserve_mode = v; }
+
+
+	bool get_default_collation(std::string& collation_uri) const;
+	void set_default_collation(std::string const&);
+	bool get_base_uri(std::string& base_uri) const;
+	void set_base_uri(std::string const&);
 	
 
 	std::string get_function_type(QName const&, uint32_t arity) 
@@ -532,6 +556,9 @@ public:
 	rchandle<node> get_node(nodeid id) const;
 	rchandle<nodestore> get_nodestore();
 
+	// namespace service
+	bool namespace_uri(uint32_t uri_id, std::string & uri);
+
 	// docindex
 	bool put_docuri(char const* uri, uint32_t dnid);
 	bool put_docuri(std::string const& uri, uint32_t dnid);
@@ -552,12 +579,9 @@ public:
 	uint32_t get_context_size() const { return context_size; }
 
 	// in-scope namespaces
-	uint32_t get_in_scope_ns() const
-		{ return in_scope_ns; }
-	uint32_t get_in_scope_ns(rchandle<element_node> const&) const
-		{ return in_scope_ns; }
-	uint32_t get_in_scope_ns(rchandle<document_node> const&) const
-		{ return in_scope_ns; }
+	uint32_t get_in_scope_ns() const { return in_scope_ns; }
+	uint32_t get_in_scope_ns(rchandle<element_node> const&) const { return in_scope_ns; }
+	uint32_t get_in_scope_ns(rchandle<document_node> const&) const { return in_scope_ns; }
 
 	// local time
 	time_t get_currtime() const { return currtime; }
