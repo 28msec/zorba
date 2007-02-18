@@ -212,27 +212,20 @@ fxhashmap<V>::~fxhashmap()
 template<class V>
 inline void fxhashmap<V>::resize()
 {
-//cout << TRACE << endl;
 	fxarray<int>* dir0;
 	int oldindex;
 
 	// create and initialize new table
-//cout << TRACE << endl;
 	dir0 = dir;
-//cout << TRACE << endl;
 	dir0->rename_backing_file(datapath+"dir0");
-//cout << TRACE << endl;
 	dir = new fxarray<int>(datapath+"dir", dir0->size()<<1);
-//cout << TRACE << endl;
 	dir->fill(-1);
-//cout << TRACE << endl;
 	unsigned dsz0 = dir0->size();
 	dsz  = dir->size();
 
 	Assert<invariant>(dsz==dsz0*2, "fxhashmap::resize[01]");
 
 	// rehash: place old entry offset in new hash location
-//cout << TRACE << endl;
 	for (unsigned k = 0; k<dsz0; ++k) {
 		oldindex = (*dir0)[k];
 		if (oldindex>=0) {
@@ -248,7 +241,6 @@ inline void fxhashmap<V>::resize()
 	}
 
 	// cleanup
-//cout << TRACE << endl;
 	dir0->destroy();
 	//delete dir0;
 }
@@ -355,28 +347,20 @@ template<class V>
 inline bool fxhashmap<V>::put(const string& key, V val)
 throw (bad_arg)
 {
-//cout << TRACE << endl;
 	uint32_t n = key.length();
 	if (n > MAX_KEYLEN) {
 		throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
 	}
-//cout << TRACE << endl;
 	if (sz > dsz*ld) resize();
-//cout << TRACE<<": (sz,dsz,ld) = ("<<sz<<','<<dsz<<','<<ld<<")\n";
 	uint32_t h0;
 	if (find(key,h0)) {
-//cout << TRACE << endl;
 		entry* e = &((*vp)[(*dir)[h0]]); 
 		e->val = val;
 		return true;
 	} else {
-//cout << TRACE << endl;
 		uint64_t id = hp->put(key.c_str(), 0, n);
-//cout << TRACE << endl;
 		vp->push_back(entry(id,val));
-//cout << TRACE << endl;
 		(*dir)[h0] = sz++;
-//cout << TRACE << endl;
 		return false;
 	}
 }
@@ -388,22 +372,17 @@ template<class V>
 inline bool fxhashmap<V>::put(const char* key, V val) 
 throw (bad_arg)
 {
-//cout << TRACE << endl;
 	uint32_t n = strlen(key);
 	if (n > MAX_KEYLEN) {
 		throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
 	}
-//cout << TRACE << endl;
 	if (sz > dsz*ld) resize();
-//cout << TRACE << endl;
 	uint32_t h0;
 	if (find(key,h0)) {
-//cout << TRACE << endl;
 		entry* e = &((*vp)[(*dir)[h0]]); 
 		e->val = val;
 		return true;
 	} else {
-//cout << TRACE << endl;
 		uint64_t id = hp->put(key, 0, n);
 		vp->push_back(entry(id,val));
 		(*dir)[h0] = sz++;
@@ -418,22 +397,17 @@ template<class V>
 inline uint64_t fxhashmap<V>::put0(const char* key, V val) 
 throw (bad_arg)
 {
-//cout << TRACE << endl;
 	uint32_t n = strlen(key);
 	if (n > MAX_KEYLEN) {
 		throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
 	}
-//cout << TRACE << endl;
 	if (sz > dsz*ld) resize();
-//cout << TRACE << endl;
 	uint32_t h0;
 	if (find(key,h0)) {
-//cout << TRACE << endl;
 		entry* e = &((*vp)[(*dir)[h0]]); 
 		e->val = val;
 		return e->key;
 	} else {
-//cout << TRACE << endl;
 		uint64_t id = hp->put(key, 0, n);
 		vp->push_back(entry(id,val));
 		(*dir)[h0] = sz++;
