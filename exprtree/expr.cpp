@@ -709,9 +709,9 @@ ostream& relpath_expr::put(
 	context& ctx) const
 {
 	os << INDENT << "relpath_expr[\n";
-	vector<rchandle<expr> >::const_iterator it = begin();
+	list_iterator<expr_h_t> it = begin();
 	for (; it!=end(); ++it) {
-		rchandle<expr> e_h = *it;
+		expr_h_t e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
 		e_h->put(os,ctx);
 	}
@@ -783,14 +783,15 @@ ostream& axis_step_expr::put(
 	default: os << "(??";
 	}
 
-	Assert<null_pointer>(name_h!=NULL);
-	switch (wild) {
-	case no_wild: name_h->put(os,ctx); break;
-	case all_wild: os << "*"; break;
-	case prefix_wild: os << "*:"; name_h->put(os,ctx); break;
-	case name_wild: name_h->put(os,ctx) << ":*"; break;
-	default: os << "??";
-	}
+	if (name_h!=NULL) {
+  	switch (wild) {
+  	case no_wild: name_h->put(os,ctx); break;
+  	case all_wild: os << "*"; break;
+  	case prefix_wild: os << "*:"; name_h->put(os,ctx); break;
+  	case name_wild: name_h->put(os,ctx) << ":*"; break;
+  	default: os << "??";
+  	}
+  }
 
 	if (typename_h!=NULL) {
 		typename_h->put(os,ctx) << endl;

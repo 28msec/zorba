@@ -58,5 +58,11 @@ int main(int argc, char* argv[])
 
 	delete l_p;
 
+	l_p = new list<int>;
+	l_p->push_front(10);
+	cout << "l[0] = " << (*l_p)[0] << endl;
+
+	delete l_p;
+
 }
 

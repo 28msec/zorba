@@ -217,7 +217,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(ForwardAxis const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": ForwardAxis" << endl;
 	return true;
 }
 
@@ -471,13 +471,13 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(ReverseAxis const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": ReverseAxis" << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(ReverseStep const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": ReverseStep" << endl;
 	return true;
 }
 
@@ -913,7 +913,6 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(RelativePathExpr const& v)
 {
 cout << indent[++depth] << TRACE << ": RelativePathExpr\n";
-	nodestack.push(NULL);
 	return true;
 }
 
@@ -1282,7 +1281,12 @@ cout << indent[depth--] << TRACE << ": AbbrevForwardStep\n";
 		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
-	aexpr_h->set_axis(axis_step_expr::child);
+	if (v.get_attr_bit()) {
+		aexpr_h->set_axis(axis_step_expr::attribute);
+	}
+	else {
+		aexpr_h->set_axis(axis_step_expr::child);
+	}
 }
 
 void normalize_visitor::end_visit(AnyKindTest const& v)
@@ -1418,7 +1422,43 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(ForwardAxis const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": ForwardAxis" << endl;
+	rchandle<axis_step_expr> aexpr_h =
+		dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (aexpr_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	switch (v.get_axis()) {
+	case axis_child: {
+		aexpr_h->set_axis(axis_step_expr::child);
+		break;
+	}
+	case axis_descendant: {
+		aexpr_h->set_axis(axis_step_expr::descendant);
+		break;
+	}
+	case axis_attribute: {
+		aexpr_h->set_axis(axis_step_expr::attribute);
+		break;
+	}
+	case axis_self: {
+		aexpr_h->set_axis(axis_step_expr::self);
+		break;
+	}
+	case axis_descendant_or_self: {
+		aexpr_h->set_axis(axis_step_expr::descendant_or_self);
+		break;
+	}
+	case axis_following_sibling: {
+		aexpr_h->set_axis(axis_step_expr::following_sibling);
+		break;
+	}
+	case axis_following: {
+		aexpr_h->set_axis(axis_step_expr::following);
+		break;
+	}
+	}
 }
 
 void normalize_visitor::end_visit(ForwardStep const& v)
@@ -1645,12 +1685,40 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(ReverseAxis const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": ReverseAxis" << endl;
+	rchandle<axis_step_expr> aexpr_h =
+		dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (aexpr_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	switch (v.get_axis()) {
+	case axis_parent: {
+		aexpr_h->set_axis(axis_step_expr::parent);
+		break;
+	}
+	case axis_ancestor: {
+		aexpr_h->set_axis(axis_step_expr::ancestor);
+		break;
+	}
+	case axis_preceding_sibling: {
+		aexpr_h->set_axis(axis_step_expr::preceding_sibling);
+		break;
+	}
+	case axis_preceding: {
+		aexpr_h->set_axis(axis_step_expr::preceding);
+		break;
+	}
+	case axis_ancestor_or_self: {
+		aexpr_h->set_axis(axis_step_expr::ancestor_or_self);
+		break;
+	}
+	}
 }
 
 void normalize_visitor::end_visit(ReverseStep const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": ReverseStep" << endl;
 }
 
 void normalize_visitor::end_visit(SIND_Decl const& v)
@@ -2056,30 +2124,24 @@ cout << TRACE << endl;
 void normalize_visitor::end_visit(RelativePathExpr const& v)
 {
 cout << indent[depth--] << TRACE << ": RelativePath\n";
-	stack<expr_h_t> expr_stack;
-	while (true) {
-		expr_h_t e_h = pop_nodestack();
-		if (e_h==NULL) break;
-		expr_stack.push(e_h);
-	}
-	rchandle<relpath_expr> rexpr_h = new relpath_expr(v.get_location());
+	expr_h_t e0_h = pop_nodestack();		// b
+	expr_h_t e1_h = pop_nodestack();		// a
 
-	while (!expr_stack.empty()) {
-		expr_h_t e_h = expr_stack.top();
-		expr_stack.pop();
-
-		// check for sub-relpath, and combine
-		rchandle<relpath_expr> rexpr0_h = dynamic_cast<relpath_expr*>(&*e_h);
-		if (rexpr0_h!=NULL) {
-			vector<expr_h_t>::const_iterator it = rexpr0_h->begin();
-			for (; it!=rexpr0_h->end(); ++it) {
-				rexpr_h->add_step(*it);
-			}
-		}
-		else {
-			rexpr_h->add_step(e_h);
-		}
+	rchandle<relpath_expr> rexpr_h = dynamic_cast<relpath_expr*>(&*e0_h);
+	if (rexpr_h==NULL) {
+		rexpr_h = new relpath_expr(v.get_location());
+		rexpr_h->add_front(e0_h);
 	}
+
+	// check for 'a//b'
+	if (v.get_step_type()==st_slashslash) {
+		rchandle<axis_step_expr> axpr_h = new axis_step_expr(v.get_location());
+		axpr_h->set_axis(axis_step_expr::descendant_or_self);
+		axpr_h->set_test(axis_step_expr::anykind_test);
+		rexpr_h->add_front(&*axpr_h);
+	}
+
+	rexpr_h->add_front(e1_h);
 	nodestack.push(&*rexpr_h);
 }
 

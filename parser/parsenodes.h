@@ -3263,23 +3263,25 @@ class AbbrevForwardStep : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<parsenode> node_test_h;
+	rchandle<NodeTest> node_test_h;
 	bool attr_b;
 	
 public:
 	AbbrevForwardStep(
 		yy::location const&,
 		context *,
-		rchandle<parsenode>,
+		rchandle<NodeTest>,
 		bool attr_b);
+		
 	AbbrevForwardStep(
 		yy::location const&,
 		context *,
-		rchandle<parsenode>);
+		rchandle<NodeTest>);
+		
 	~AbbrevForwardStep();
 
 public:
-	rchandle<parsenode> get_node_test() const { return node_test_h; }
+	rchandle<NodeTest> get_node_test() const { return node_test_h; }
 	bool get_attr_bit() const { return attr_b; }
 
 public:

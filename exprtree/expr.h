@@ -823,26 +823,26 @@ class relpath_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<expr_h_t> step_hv;
+	list<expr_h_t> step_hv;
 
 public:
 	relpath_expr(yy::location const&);
 	~relpath_expr();
 
 public:
-	void add_step(expr_h_t step_h)
+	void add_back(expr_h_t step_h)
 		{ step_hv.push_back(step_h); }
+	void add_front(expr_h_t step_h)
+		{ step_hv.push_front(step_h); }
 	uint32_t size() const
 		{ return step_hv.size(); }
 
-	std::vector<expr_h_t>::const_iterator begin() const
+	list_iterator<expr_h_t> begin() const
 		{ return step_hv.begin(); }
-	std::vector<expr_h_t>::const_iterator end() const
+	list_iterator<expr_h_t> end() const
 		{ return step_hv.end(); }
 
 	expr_h_t& operator[](int n)
-		{ return step_hv[n]; }
-	expr_h_t const& operator[](int n) const
 		{ return step_hv[n]; }
 
 public:

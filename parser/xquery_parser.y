@@ -2979,13 +2979,13 @@ AbbrevForwardStep :
 		{
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
 			$$ = new AbbrevForwardStep(@$,driver.get_ctx(),
-								$1);
+								dynamic_cast<NodeTest*>($1));
 		}
 	|	AT_SIGN  NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
 			$$ = new AbbrevForwardStep(@$,driver.get_ctx(),
-								$2, true);
+								dynamic_cast<NodeTest*>($2), true);
 		}
 	;
 
@@ -2998,7 +2998,7 @@ ReverseStep :
 			if (debug) cout << "ReverseStep [nodetest]\n";
 			$$ = new ReverseStep(@$,driver.get_ctx(),
 								dynamic_cast<ReverseAxis*>($1),
-								$2);
+								dynamic_cast<NodeTest*>($2));
 		}
 	|	DOT_DOT
 		{

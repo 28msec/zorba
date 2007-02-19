@@ -3681,7 +3681,7 @@ void ForwardAxis::accept(parsenode_visitor& v) const
 AbbrevForwardStep::AbbrevForwardStep(
 	location const& _loc,
 	context * _ctx_p,
-	rchandle<parsenode> _node_test_h,
+	rchandle<NodeTest> _node_test_h,
 	bool _attr_b)
 :
 	parsenode(_loc,_ctx_p),
@@ -3693,7 +3693,7 @@ AbbrevForwardStep::AbbrevForwardStep(
 AbbrevForwardStep::AbbrevForwardStep(
 	location const& _loc,
 	context * _ctx_p,
-	rchandle<parsenode> _node_test_h)
+	rchandle<NodeTest> _node_test_h)
 :
 	parsenode(_loc,_ctx_p),
 	node_test_h(_node_test_h),
