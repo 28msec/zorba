@@ -740,7 +740,7 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(ContextItemExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": ContextItemExpr" << endl;
 	return true;
 }
 
@@ -1950,7 +1950,10 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(ContextItemExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": ContextItemExpr" << endl;
+	rchandle<var_expr> v_h = new var_expr(v.get_location());
+	v_h->set_kind(var_expr::context_var);
+	nodestack.push(&*v_h);
 }
 
 void normalize_visitor::end_visit(DirCommentConstructor const& v)

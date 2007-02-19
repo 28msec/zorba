@@ -2194,11 +2194,13 @@ public:
 		std::string varname,
 		rchandle<SequenceType>,
 		rchandle<exprnode>);
+		
 	CaseClause(
 		yy::location const&,
 		context *,
 		rchandle<SequenceType>,
 		rchandle<exprnode>);
+		
 	~CaseClause();
 
 public:
@@ -4819,9 +4821,11 @@ public:
 		yy::location const&,
 		context *,
 		bool item_test_b);
+		
 	ItemType(
 		yy::location const&,
 		context *);
+		
 	~ItemType();
 
 public:
@@ -4850,6 +4854,7 @@ public:
 		yy::location const&,
 		context *,
 		rchandle<QName>);
+		
 	~AtomicType();
 
 public:
@@ -4864,7 +4869,7 @@ public:
 
 // [121] KindTest
 // --------------
-class KindTest : public NodeTest
+class KindTest : public NodeTest, public ItemType
 /*______________________________________________________________________
 |
 |	::= DocumentTest
@@ -4882,6 +4887,7 @@ public:
 	KindTest(
 		yy::location const&,
 		context *);
+		
 	~KindTest();
 
 public:

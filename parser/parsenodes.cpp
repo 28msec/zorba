@@ -2283,14 +2283,21 @@ TypeswitchExpr::~TypeswitchExpr()
 {
 }
 
-ostream& TypeswitchExpr::put(ostream& s) const
+ostream& TypeswitchExpr::put(ostream& os) const
 {
-	s << INDENT << "TypeswitchExpr[\n";
-	if (switch_expr_h!=NULL) switch_expr_h->put(s);
-	if (clause_list_h!=NULL) clause_list_h->put(s);
-	s << "default_varname=" << default_varname << endl;
-	if (default_clause_h!=NULL) default_clause_h->put(s);
-	return s << OUTDENT << "]\n";
+	os << INDENT << "TypeswitchExpr[\n";
+	if (switch_expr_h!=NULL) switch_expr_h->put(os);
+	if (clause_list_h!=NULL) clause_list_h->put(os);
+	if (default_clause_h!=NULL) {
+  	os << INDENT << "DEFAULT\n";
+  	if (default_varname.length()>0) {
+  	  os << INDENT << "VARNAME=" 
+          << default_varname << OUTDENT << endl;
+    }
+  	default_clause_h->put(os);
+  	UNDENT;
+	}
+	return os << OUTDENT << "]\n";
 }
 
 //-TypeswitchExpr::
@@ -2334,12 +2341,20 @@ CaseClauseList::~CaseClauseList()
 {
 }
 
-ostream& CaseClauseList::put(ostream& s) const
+ostream& CaseClauseList::put(ostream& os) const
 {
-	s << INDENT << "CaseClauseList[\n";
+	os << INDENT << "CaseClauseList[("<<size()<<")\n";
 	vector<rchandle<CaseClause> >::const_iterator it = clause_hv.begin();
-	for (; it!=clause_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+	for (; it!=clause_hv.end(); ++it) { 
+  	if (*it!=NULL) {
+    	(*it)->put(os);
+  	}
+  	else { 
+    	os << INDENT << "CASE CLAUSE == NULL!\n"; 
+    	UNDENT; 
+    }
+  }
+	return os << OUTDENT << "]\n";
 }
 
 //-CaseClauseList::
@@ -2391,13 +2406,19 @@ CaseClause::~CaseClause()
 {
 }
 
-ostream& CaseClause::put(ostream& s) const
+ostream& CaseClause::put(ostream& os) const
 {
-	s << INDENT << "CaseClause[\n";
-	s << "varname=" << varname << endl;
-	if (type_h!=NULL) type_h->put(s);
-	if (val_h!=NULL) val_h->put(s);
-	return s << OUTDENT << "]\n";
+	os << INDENT << "CaseClause[\n";
+	if (varname.length()>0) os << "VARNAME=" << varname;
+	if (type_h!=NULL) { 
+  	os << INDENT << "AS\n"; 
+  	type_h->put(os); UNDENT;
+  }
+	if (val_h!=NULL) {
+  	os << INDENT << "RETURN\n"; 
+  	val_h->put(os); UNDENT;
+  }
+	return os << OUTDENT << "]\n";
 }
 
 //-CaseClause::
@@ -4374,8 +4395,8 @@ ostream& ArgList::put(ostream& s) const
 void ArgList::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	vector<rchandle<exprnode> >::const_reverse_iterator it = arg_hv.rbegin();
-	for (; it!=arg_hv.rend(); ++it) {
+	vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
+	for (; it!=arg_hv.end(); ++it) {
 		exprnode* e_p = &**it;
 		Assert<null_pointer>(e_p!=NULL,LOCATION);
 		e_p->accept(v);
@@ -5478,11 +5499,11 @@ TypeDeclaration::~TypeDeclaration()
 {
 }
 
-ostream& TypeDeclaration::put(ostream& s) const
+ostream& TypeDeclaration::put(ostream& os) const
 {
-	s << INDENT << "TypeDeclaration[";
-	if (seqtype_h!=NULL) seqtype_h->put(s);
-	return s << OUTDENT << "]\n";
+	os << INDENT << "TypeDeclaration[";
+	if (seqtype_h!=NULL) seqtype_h->put(os);
+	return os << OUTDENT << "]\n";
 }
 
 //-TypeDeclaration::
@@ -5514,12 +5535,12 @@ SequenceType::~SequenceType()
 {
 }
 
-ostream& SequenceType::put(ostream& s) const
+ostream& SequenceType::put(ostream& os) const
 {
-	s << INDENT << "SequenceType[";
-	if (itemtype_h!=NULL) itemtype_h->put(s);
-	if (occur_h!=NULL) occur_h->put(s);
-	return s << OUTDENT << "]\n";
+	os << INDENT << "SequenceType[";
+	if (itemtype_h!=NULL) itemtype_h->put(os);
+	if (occur_h!=NULL) occur_h->put(os);
+	return os << OUTDENT << "]\n";
 }
 
 //-SequenceType::
@@ -5654,7 +5675,8 @@ KindTest::KindTest(
 	location const& _loc,
 	context * _ctx_p)
 :
-	NodeTest(_loc,_ctx_p)
+	NodeTest(_loc,_ctx_p),
+	ItemType(_loc,_ctx_p)
 {
 }
 

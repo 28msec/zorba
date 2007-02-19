@@ -133,7 +133,8 @@ public:
 		score_var,
 		quant_var,
 		extern_var,
-		assign_var
+		assign_var,
+		context_var
 	};
 
   rchandle<QName> varname_h;

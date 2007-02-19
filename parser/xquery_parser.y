@@ -3,6 +3,7 @@
  *  $Id: xquery_parser.y,v 1.2 2006/11/14 05:24:43 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
+ *	Author: Paul Pedersen
  */
 
 
@@ -34,7 +35,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <typeinfo.h>
 #include <string>
 
 #include "../context/context.h"
@@ -51,7 +51,7 @@ namespace xqp {
 	class exprnode;
 }
 
-static bool debug = false;
+static bool debug = true;
 
 %}
 
@@ -2219,7 +2219,7 @@ CaseClauseList :
 		{
 			if (debug) cout << "CaseClauseList [list]\n";
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>($1);
-			cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
+			cc_list_p->push_back(dynamic_cast<CaseClause*>($2));
 			$$ = $1;
 		}
 	;
@@ -2764,7 +2764,7 @@ PragmaList :
 			if (debug) cout << "PragmaList [list]\n";
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>($1);
 			if (pragma_list_p) {
-				pragma_list_p->push_back(dynamic_cast<Pragma*>($1));
+				pragma_list_p->push_back(dynamic_cast<Pragma*>($2));
 			}
 			$$ = $1;
 		}

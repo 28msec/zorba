@@ -110,6 +110,7 @@ string var_expr::decode_var_kind(
 	case quant_var: return "QUANT_VAR"; break;
 	case extern_var: return "EXTERN_VAR"; break;
 	case assign_var: return "ASSIGN_VAR"; break;
+	case context_var: return "$DOT"; break;
 	default: return "???";
 	}
 }
