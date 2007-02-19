@@ -1,12 +1,12 @@
-zorba0.1-1
-2007.01.25
+zorba0.1-2
+2007.02.19
 
 
 
 zorba versioning conventions
 ----------------------------
 
-2007.01.16
+2007.02.19
 
 'zorbaN.M-K' means:
 
@@ -25,7 +25,7 @@ reimplemetation occurs.
 Building zorba
 --------------
 
-2007.01.16
+2007.02.19
 
 build.sh
 	Manually created make, using simple 'Makefile.local'
@@ -53,15 +53,23 @@ configure
 Known bugs
 ----------
 
+2007.02.19
+
+Type system is undergoing rewrite.  For the time being we use
+the old code.
+
+
 2007.01.29
 
 Build is clean, except for one residual error in 'function_impl'.
+[Residual error was correctred.]
 
 
 2007.01.27
 
 Build is currently partially disabled pending conversion to the
 in-memory node store.
+[The conversion is now conplete; the build fully enabled.]
 
 
 2007.01.25
@@ -70,6 +78,7 @@ Several of the unit test modules are showing an error
 on exit.  The sequence of unit tests runs fine, but the module bails
 out with a gnu/cygwin error message before exiting.  I suspect
 'delete' applied inappropriately by some rchandle destructor.
+[This suspicion was subsequently confirmed and the problem corrected.]
 
 
 2007.01.18
@@ -84,8 +93,17 @@ for the time being.
 
  _____________________________
 |                             |
-| Current Status: 2007.01.29  |
+| Current Status: 2007.02.19  |
 |_____________________________|
+
+
+2007.02.19
+
+'Visitor' system developed and end-to-end testing begun.
+We can run command-line test of (a few) individual queries
+through parse -> normalize -> plan -> exec.
+Implementation (-schema, -function lib) is at about 50%.
+
  
 2007.01.29
 
@@ -147,11 +165,13 @@ exprtree
 	XQuery expression tree:
 
 		expr												implementation: XQueryP expression nodes
-		eval                        implementation: expression node eval methods, in progress
+		eval                        implementation: expression node eval methods, deprecated
 		ft_expr											implementation: XQuery Full-text expressions
 		update_expr									implementation: XQuery UPdate expressions
 		expr_test                   implementation: expression tree syntax test
-		eval_test                   implementation: expression tree evaluator, in progress
+		eval_test                   implementation: expression tree evaluator, deprecated.
+		parsenode_visitor           interface: parsenode -> expr conversion
+		normalize_visitor           implementation: parsenode -> normalized expr tree
 
 
 functions
@@ -185,6 +205,8 @@ native_impl
 		text_store									stub implementation: text store
 		xml_store									  stub implementation: XML store 
 		nodestore                   implementation: native mmfile persistent node storage
+		qname_pool                  implementation: native QName pool
+		namespace_pool              implementation: native namespace pool
 		spectrum										implementation: native block pool manager
 		tree												implementation: node/item_iterator
 		xml_loader									implementation: XML file loader
@@ -220,6 +242,8 @@ runtime
 		content_handler							implementation: mod_xqp to libxqp.so bridge
 		httpd.conf									implementation: apache2 web server config for libxqp
 		iterator								    implementation: the zorba runtime iterator interface
+		expr_visitor                interface: expr tree -> plan tree conversion
+		plan_visitor                implementation: expr tree -> plan tree conversion
 		mod_xqp.c										implementation: the zorba XQueryP apache module
 
 
