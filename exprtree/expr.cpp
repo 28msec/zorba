@@ -84,6 +84,10 @@ ostream& expr_list::put(
 	return os << OUTDENT << "]\n";
 }
 
+void expr_list::accept(
+	expr_visitor& v) const
+{
+}
 
 
 // [33a]
@@ -130,6 +134,11 @@ ostream& var_expr::put(
 		os << ", type=" << get_type()->describe();
 	}
 	return os << OUTDENT << "]\n";
+}
+
+void var_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -236,6 +245,11 @@ ostream& flwor_expr::put(
 
 }
 
+void flwor_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
@@ -284,6 +298,11 @@ ostream& quantified_expr::put(
 	return os << OUTDENT << "\n]\n";
 }
 
+void quantified_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
@@ -318,6 +337,11 @@ ostream& typeswitch_expr::put(
 		UNDENT;
 	}
 	return os << OUTDENT << "]\n";
+}
+
+void typeswitch_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -362,6 +386,11 @@ ostream& if_expr::put(
 	return os << OUTDENT << "\n]\n";
 }
 
+void if_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 ////////////////////////////////
@@ -397,6 +426,11 @@ ostream& fo_expr::put(
 		e_h->put(os,ctx) << endl;
 	}
 	return os << OUTDENT << "]\n";
+}
+
+void fo_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -445,6 +479,11 @@ ostream& ft_contains_expr::put(
 	return os << "\n]\n";
 }
 
+void ft_contains_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 
@@ -477,6 +516,11 @@ ostream& instanceof_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void instanceof_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [55] [http://www.w3.org/TR/xquery/#prod-xquery-TreatExpr]
@@ -506,6 +550,11 @@ ostream& treat_expr::put(
 	os << "treat as\n";
 	os << seqtype.describe();
 	return os << OUTDENT << "]\n";
+}
+
+void treat_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -540,6 +589,11 @@ ostream& castable_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void castable_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [57] [http://www.w3.org/TR/xquery/#prod-xquery-CastExpr]
@@ -572,6 +626,11 @@ ostream& cast_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void cast_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [58] [http://www.w3.org/TR/xquery/#prod-xquery-UnaryExpr]
@@ -600,6 +659,11 @@ ostream& unary_expr::put(
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	return os << "]\n";
+}
+
+void unary_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -634,6 +698,11 @@ ostream& validate_expr::put(
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	return os << OUTDENT << "]\n";
+}
+
+void validate_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -690,6 +759,11 @@ ostream& extension_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void extension_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
@@ -717,6 +791,11 @@ ostream& relpath_expr::put(
 		e_h->put(os,ctx);
 	}
 	return os << OUTDENT << "]\n";
+}
+
+void relpath_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -809,6 +888,11 @@ ostream& axis_step_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void axis_step_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
@@ -829,6 +913,11 @@ ostream& primary_expr::put(
 	context& ctx) const
 {
 	return os << "primary_expr[]\n";
+}
+
+void primary_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -905,6 +994,11 @@ ostream& literal_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void literal_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 
@@ -940,6 +1034,11 @@ ostream& order_expr::put(
 	return os << "]\n";
 }
 
+void order_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
@@ -973,6 +1072,11 @@ ostream& funcall_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void funcall_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [109] [http://www.w3.org/TR/xquery/#prod-xquery-ComputedConstructor]
@@ -993,6 +1097,11 @@ ostream& cons_expr::put(
 	context& ctx) const
 {
 	return os << "cons_expr[]\n";
+}
+
+void cons_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -1020,6 +1129,11 @@ ostream& doc_expr::put(
 	Assert<null_pointer>(docuri_h!=NULL);
 	docuri_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
+}
+
+void doc_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -1079,6 +1193,11 @@ ostream& elem_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void elem_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
@@ -1129,6 +1248,11 @@ ostream& attr_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void attr_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
@@ -1156,6 +1280,11 @@ ostream& text_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
+void text_expr::accept(
+	expr_visitor& v) const
+{
+}
+
 
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
@@ -1181,6 +1310,11 @@ ostream& comment_expr::put(
 	Assert<null_pointer>(comment_expr_h!=NULL);
 	comment_expr_h->put(os,ctx);
 	return os << OUTDENT << "]\n";
+}
+
+void comment_expr::accept(
+	expr_visitor& v) const
+{
 }
 
 
@@ -1233,9 +1367,10 @@ ostream& pi_expr::put(
 	return os << OUTDENT << "]\n";
 }
 
-
-
-
+void pi_expr::accept(
+	expr_visitor& v) const
+{
+}
 
 
 

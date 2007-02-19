@@ -62,8 +62,6 @@ public:	// context
 
 public:
 	virtual std::ostream& put(std::ostream&) const;
-
-public:
 	virtual void accept(parsenode_visitor&) const = 0;
 
 };

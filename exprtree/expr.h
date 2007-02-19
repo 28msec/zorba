@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include "expr_visitor.h"
 #include "../runtime/iterator.h"
 #include "../context/context.h"
 #include "../parser/parse_constants.h"
@@ -46,11 +47,13 @@ public:
 
 public:
 	yy::location get_loc() const { return loc; }
+
+public:
 	virtual rchandle<item_iterator> eval(context *);
+	virtual void accept(expr_visitor&) const = 0;
 	virtual std::ostream& put(std::ostream&,context&) const;
 
-
-/*
+/* (some proposed optimizer interface methods:)
 public:	
 	typedef pair<var_expr*,expr*> substitution;
 	typedef std::vector<substitution> subst_list;
@@ -104,10 +107,9 @@ public:
 		{ return elist.end(); }
 
 public:
-	std::ostream& put(std::ostream&,context&) const;
-
-public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -161,10 +163,11 @@ public:
 
 public:
 	static std::string decode_var_kind(enum var_kind);
-  std::ostream& put(std::ostream&,context&) const;
 
 public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+  std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -304,6 +307,7 @@ public:	// accessors
 
 public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -354,6 +358,7 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -435,6 +440,7 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -476,6 +482,7 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -521,6 +528,7 @@ public:
 
 public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -557,6 +565,7 @@ public:
 	expr_h_t get_ignore() const { return ft_ignore_h; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -592,6 +601,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -621,6 +631,7 @@ public:
 	sequence_type get_seqtype() const { return seqtype; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -659,6 +670,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -689,6 +701,7 @@ public:
 	bool is_optional() const { return stype.second; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -717,6 +730,7 @@ public:
 	expr_h_t get_expr() const { return expr_h; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -745,6 +759,7 @@ public:
 	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -804,6 +819,7 @@ public:
 	expr_h_t get_expr() const { return expr_h; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -847,6 +863,7 @@ public:
 		{ return step_hv[n]; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -948,6 +965,7 @@ public:
 		{ return pred_hv.end(); }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -973,6 +991,7 @@ public:
 	~primary_expr();
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -1023,10 +1042,10 @@ public:
 
 public:
 	static std::string decode_type(enum literal_type_t t);
-	std::ostream& put(std::ostream&,context&) const;
 
-public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1063,6 +1082,7 @@ public:
 	expr_h_t get_expr() const { return expr_h; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -1107,6 +1127,7 @@ public:
 		{ return arg_hv[i]; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -1129,6 +1150,7 @@ public:
 	~cons_expr();
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };
@@ -1154,10 +1176,9 @@ public:
 	expr_h_t get_docuri() const { return docuri_h; }
 
 public:
-	std::ostream& put(std::ostream&,context&) const;
-
-public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1209,10 +1230,9 @@ public:
 		{ return nsb_v.end(); }
 
 public:
-	std::ostream& put(std::ostream&,context&) const;
-
-public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1249,10 +1269,9 @@ public:
 	expr_h_t get_val_expr() const { return val_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&,context&) const;
-
-public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1277,10 +1296,9 @@ public:
 	expr_h_t get_text_expr() const { return text_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&,context&) const;
-
-public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1305,10 +1323,9 @@ public:
 	expr_h_t get_comment_expr() const { return comment_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&,context&) const;
-
-public:
 	rchandle<item_iterator> eval(context *);
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&,context&) const;
 
 };
 
@@ -1345,6 +1362,7 @@ public:
 	expr_h_t get_content_expr() const { return content_expr_h; }
 
 public:
+	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
 };

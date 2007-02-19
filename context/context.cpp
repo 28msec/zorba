@@ -28,7 +28,19 @@ namespace xqp {
 	:.........................................:
 */
 
-//XXX: seriously missing: context constructor from XML config file.
+/*
+
+	Expecting directories:
+
+		data/
+		     docindex
+				 nodestore/
+				           nspool
+									 qnpool
+
+	XXX: define these dependencies in an XML config file.
+
+*/
 
 context::context()
 :
