@@ -18,26 +18,41 @@ using namespace xqp;
 int main(int argc, char* argv[])
 {
 
-	list<int> l;
+	list<int>* l_p = new list<int>;
 	for (uint32_t i = 0; i<50; ++i) {
-		l.push_back(2*i);
+		l_p->push_back(2*i);
 	}
 
-	cout << "l.size() = " << l.size() << endl;
-	list_iterator<int> it  = l.begin();
-	list_iterator<int> end = l.end();
+	cout << "l_p->size() = " << l_p->size() << endl;
+	list_iterator<int> it  = l_p->begin();
+	list_iterator<int> end = l_p->end();
 	for ( ; it!=end; ++it) { cout << *it << endl; }
 
-	it  = l.begin();
-	end = l.end();
+	it  = l_p->begin();
+	end = l_p->end();
 	for (uint32_t i = 0; i<50 && it!=end; ++i,++it,++it) {
-		l.insert_after(it.get_curr(), new list_node<int>(2*i+1,NULL,NULL));
+		l_p->insert_after(it.get_curr(), new list_node<int>(2*i+1,NULL,NULL));
 	}
 
-	cout << "l.size() = " << l.size() << endl;
-	it  = l.begin();
-	end = l.end();
+	cout << "l_p->size() = " << l_p->size() << endl;
+	it  = l_p->begin();
+	end = l_p->end();
 	for ( ; it!=end; ++it) { cout << *it << endl; }
+
+	for (uint32_t i = 0; i<50; ++i) {
+		l_p->push_front(3*i);
+	}
+
+	cout << "l_p->size() = " << l_p->size() << endl;
+	it  = l_p->begin();
+	end = l_p->end();
+	for ( ; it!=end; ++it) { cout << *it << endl; }
+
+	list_reverse_iterator<int> r_it  = l_p->rbegin();
+	list_reverse_iterator<int> r_end = l_p->rend();
+	for ( ; r_it!=r_end; ++r_it) { cout << *r_it << endl; }
+
+	delete l_p;
 
 }
 

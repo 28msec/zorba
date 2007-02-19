@@ -44,6 +44,22 @@ public:
 };
 
 
+template <class T>
+class list_reverse_iterator
+{
+protected:
+  list_node<T>* curr;
+public:
+  list_reverse_iterator& operator++() { curr = curr->prev; return *this; }
+  T& operator*() { return curr->data; }
+	list_node<T>* get_curr() { return curr; }
+  list_reverse_iterator(list_node<T>* n) : curr(n) {}
+	~list_reverse_iterator() {}
+	bool operator!=(const list_reverse_iterator& a) { return curr!=a.curr; }
+	bool operator==(const list_reverse_iterator& a) { return curr==a.curr; }
+};
+
+
 template<class T> class list;
 template<class T> list<T> operator*(const list<T>&, const list<T>&);		// intersection
 template<class T> list<T> operator+(const list<T>&, const list<T>&);		// union
@@ -73,12 +89,14 @@ protected:
 :
 :......................................................................*/
 
+
 public:
   list();
 	~list();
 
 public:	// list value interface
-  void push_back(const T&);
+  void push_back(T const&);
+  void push_front(T const&);
   T pop_front();
 
 public: // listnode interface
@@ -89,12 +107,19 @@ public: // listnode interface
 	uint32_t size() const { return sz; }
 
 public:
-  list_iterator<T> begin() const { return list_iterator<T>(head->next); }
-  list_iterator<T> end() const { return list_iterator<T>(tail); }
+  list_iterator<T> begin() const
+    { return list_iterator<T>(head->next); }
+  list_iterator<T> end() const
+    { return list_iterator<T>(tail); } 
+    
+  list_reverse_iterator<T> rbegin() const
+    { return list_reverse_iterator<T>(tail->prev); }
+  list_reverse_iterator<T> rend() const
+    { return list_reverse_iterator<T>(head); }
 
 public:
-	friend list operator*<>(const list&, const list&);		// intersection
-	friend list operator+<>(const list&, const list&);		// union
+	friend list operator*<>(list const&, list const&);		// intersection
+	friend list operator+<>(list const&, list const&);		// union
 };
 
 
@@ -114,15 +139,28 @@ list<T>::list()
 template<class T>
 list<T>::~list()
 {
+  list_node<T>* n_p;
+  list_iterator<T> it = begin();
+  for (; it!=end(); ++it,delete n_p) n_p = it.get_curr();
 }
 
 
 template<class T>
-void list<T>::push_back(const T& d)
+void list<T>::push_back(T const& d)
 {
 	list_node<T>* n = new list_node<T>(d,tail,tail->prev);
 	tail->prev->next = n;
   tail->prev = n;
+	sz++;
+}
+
+
+template<class T>
+void list<T>::push_front(T const& d)
+{
+	list_node<T>* n = new list_node<T>(d,head->next,head);
+	head->next->prev = n;
+  head->next = n;
 	sz++;
 }
 
@@ -144,7 +182,9 @@ T list<T>::pop_front()
 
 
 template<class T>
-void list<T>::insert_after(list_node<T>* oldnode, list_node<T>* newnode)
+void list<T>::insert_after(
+  list_node<T>* oldnode, 
+  list_node<T>* newnode)
 {
 	newnode->next = oldnode->next;
 	newnode->prev = oldnode;
@@ -165,7 +205,9 @@ void list<T>::remove(list_node<T>* node)
 
 // intersection
 template<class T>
-list<T> operator*(const list<T>& a, const list<T>& b)
+list<T> operator*(
+  list<T> const& a, 
+  list<T> const& b)
 {
 	list<T> result;
 	list_iterator<T> i1 = a.begin();
@@ -190,7 +232,9 @@ list<T> operator*(const list<T>& a, const list<T>& b)
 
 // union
 template<class T>
-list<T> operator+(const list<T>& a, const list<T>& b)
+list<T> operator+(
+  list<T> const& a, 
+  list<T> const& b)
 {
 	list<T> result;
 	list_iterator<T> i1 = a.begin();
