@@ -163,7 +163,7 @@ public:
 |	double values
 |_______________________________________________________________________*/
 
-class double : public numeric
+class double_val : public numeric_val
 {
 public:
   double d;

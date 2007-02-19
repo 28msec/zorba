@@ -124,15 +124,8 @@ public:	// ctor,dtor
 	singleton_iterator(context *, std::string const& s);
 	singleton_iterator(context *, bool);
 	singleton_iterator(context *, double);
-	singleton_iterator(context *, float);
 	singleton_iterator(context *, int);
 	singleton_iterator(context *, long long);
-	singleton_iterator(context *, short);
-	singleton_iterator(context *, signed char);
-	singleton_iterator(context *, unsigned char);
-	singleton_iterator(context *, unsigned int);
-	singleton_iterator(context *, unsigned long long);
-	singleton_iterator(context *, unsigned short);
 
 	singleton_iterator(singleton_iterator const&);
 	singleton_iterator& operator=(singleton_iterator const&);

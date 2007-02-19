@@ -8,6 +8,7 @@
  */
 
 #include "plan_visitor.h"
+#include "indent.h"
 #include "../exprtree/expr.h"
 #include <iostream>
 
@@ -17,196 +18,199 @@ using namespace std;
 namespace xqp 
 {
 
+static uint32_t depth = 0;
+
 /*..........................................
  :  begin visit                            :
  :.........................................*/
-bool begin_visit(expr& v)
+bool plan_visitor::begin_visit(expr const& v)
+{
+cout << indent[++depth] << TRACE << ": expr" << endl;
+	return true;
+}
+
+bool plan_visitor::begin_visit(expr_list const& v)
+{
+cout << indent[++depth] << TRACE << ": expr_list" << endl;
+	itstack.push(NULL);
+	return true;
+}
+
+bool plan_visitor::begin_visit(var_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(expr_list& v)
+bool plan_visitor::begin_visit(order_modifier const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(var_expr& v)
+bool plan_visitor::begin_visit(flwor_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(order_modifier& v)
+bool plan_visitor::begin_visit(quantified_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(flwor_expr& v)
+bool plan_visitor::begin_visit(case_clause const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(quantified_expr& v)
+bool plan_visitor::begin_visit(typeswitch_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(case_clause& v)
+bool plan_visitor::begin_visit(if_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(typeswitch_expr& v)
+bool plan_visitor::begin_visit(fo_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(if_expr& v)
+bool plan_visitor::begin_visit(ft_select_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(fo_expr& v)
+bool plan_visitor::begin_visit(ft_contains_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(ft_select_expr& v)
+bool plan_visitor::begin_visit(instanceof_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(ft_contains_expr& v)
+bool plan_visitor::begin_visit(treat_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(instanceof_expr& v)
+bool plan_visitor::begin_visit(castable_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(treat_expr& v)
+bool plan_visitor::begin_visit(cast_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(castable_expr& v)
+bool plan_visitor::begin_visit(unary_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(cast_expr& v)
+bool plan_visitor::begin_visit(validate_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(unary_expr& v)
+bool plan_visitor::begin_visit(extension_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(validate_expr& v)
+bool plan_visitor::begin_visit(relpath_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(extension_expr& v)
+bool plan_visitor::begin_visit(axis_step_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(relpath_expr& v)
+bool plan_visitor::begin_visit(primary_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(axis_step_expr& v)
+bool plan_visitor::begin_visit(literal_expr const& v)
+{
+cout << indent[++depth] << TRACE << ": literal_expr" << endl;
+	return true;
+}
+
+bool plan_visitor::begin_visit(order_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(primary_expr& v)
+bool plan_visitor::begin_visit(funcall_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(literal_expr& v)
+bool plan_visitor::begin_visit(cons_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(order_expr& v)
+bool plan_visitor::begin_visit(doc_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(funcall_expr& v)
+bool plan_visitor::begin_visit(elem_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(cons_expr& v)
+bool plan_visitor::begin_visit(attr_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(doc_expr& v)
+bool plan_visitor::begin_visit(text_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(elem_expr& v)
+bool plan_visitor::begin_visit(comment_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool begin_visit(attr_expr& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool begin_visit(text_expr& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool begin_visit(comment_expr& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool begin_visit(pi_expr& v)
+bool plan_visitor::begin_visit(pi_expr const& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -217,162 +221,202 @@ cout << TRACE << endl;
 /*..........................................
  :  end visit                              :
  :.........................................*/
-void end_visit(expr& v)
+void plan_visitor::end_visit(expr const& v)
+{
+cout << indent[depth--] << TRACE << ": expr" << endl;
+}
+
+void plan_visitor::end_visit(expr_list const& v)
+{
+cout << indent[depth--] << TRACE << ": expr_list" << endl;
+	list<it_h_t> it_list;
+	while (true) {
+		it_h_t it_h = pop_itstack();
+		if (it_h==NULL) break;
+		it_list.push_back(it_h);
+	}
+	rchandle<concat_iterator> cit_h = new concat_iterator(ctx_p, it_list);
+	itstack.push(&*cit_h);
+}
+
+void plan_visitor::end_visit(var_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(expr_list& v)
+void plan_visitor::end_visit(order_modifier const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(var_expr& v)
+void plan_visitor::end_visit(flwor_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(order_modifier& v)
+void plan_visitor::end_visit(quantified_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(flwor_expr& v)
+void plan_visitor::end_visit(case_clause const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(quantified_expr& v)
+void plan_visitor::end_visit(typeswitch_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(case_clause& v)
+void plan_visitor::end_visit(if_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(typeswitch_expr& v)
+void plan_visitor::end_visit(fo_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(if_expr& v)
+void plan_visitor::end_visit(ft_select_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(fo_expr& v)
+void plan_visitor::end_visit(ft_contains_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(ft_select_expr& v)
+void plan_visitor::end_visit(instanceof_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(ft_contains_expr& v)
+void plan_visitor::end_visit(treat_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(instanceof_expr& v)
+void plan_visitor::end_visit(castable_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(treat_expr& v)
+void plan_visitor::end_visit(cast_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(castable_expr& v)
+void plan_visitor::end_visit(unary_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(cast_expr& v)
+void plan_visitor::end_visit(validate_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(unary_expr& v)
+void plan_visitor::end_visit(extension_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(validate_expr& v)
+void plan_visitor::end_visit(relpath_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(extension_expr& v)
+void plan_visitor::end_visit(axis_step_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(relpath_expr& v)
+void plan_visitor::end_visit(primary_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(axis_step_expr& v)
+void plan_visitor::end_visit(literal_expr const& v)
+{
+cout << indent[depth--] << TRACE << ": literal_expr" << endl;
+  switch (v.get_type()) {
+  case literal_expr::lit_string: {
+    rchandle<singleton_iterator> it_h =
+      new singleton_iterator(ctx_p, ctx_p->get_string(v.get_sref()));
+    itstack.push(&*it_h);
+    break;
+  }
+  case literal_expr::lit_integer: {
+    rchandle<singleton_iterator> it_h =
+			new singleton_iterator(ctx_p, v.get_ival());
+    itstack.push(&*it_h);
+    break;
+  }
+  case literal_expr::lit_decimal: {
+    rchandle<singleton_iterator> it_h =
+			new singleton_iterator(ctx_p, v.get_decval());
+    itstack.push(&*it_h);
+    break;
+  }
+  case literal_expr::lit_double: {
+    rchandle<singleton_iterator> it_h =
+			new singleton_iterator(ctx_p, v.get_dval());
+    itstack.push(&*it_h);
+    break;
+  }
+  case literal_expr::lit_bool: {
+    rchandle<singleton_iterator> it_h =
+			new singleton_iterator(ctx_p, v.get_bval());
+    itstack.push(&*it_h);
+    break;
+  }
+  }
+}
+
+void plan_visitor::end_visit(order_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(primary_expr& v)
+void plan_visitor::end_visit(funcall_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(literal_expr& v)
+void plan_visitor::end_visit(cons_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(order_expr& v)
+void plan_visitor::end_visit(doc_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(funcall_expr& v)
+void plan_visitor::end_visit(elem_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(cons_expr& v)
+void plan_visitor::end_visit(attr_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(doc_expr& v)
+void plan_visitor::end_visit(text_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(elem_expr& v)
+void plan_visitor::end_visit(comment_expr const& v)
 {
 cout << TRACE << endl;
 }
 
-void end_visit(attr_expr& v)
-{
-cout << TRACE << endl;
-}
-
-void end_visit(text_expr& v)
-{
-cout << TRACE << endl;
-}
-
-void end_visit(comment_expr& v)
-{
-cout << TRACE << endl;
-}
-
-void end_visit(pi_expr& v)
+void plan_visitor::end_visit(pi_expr const& v)
 {
 cout << TRACE << endl;
 }

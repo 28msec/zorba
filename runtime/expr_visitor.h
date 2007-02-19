@@ -20,6 +20,7 @@
 namespace xqp 
 {
 
+class context;
 class expr;
 class expr_list;
 class var_expr;
@@ -64,75 +65,75 @@ public:
  /*..........................................
  	:  begin visit                            :
  	:.........................................*/
-	virtual bool begin_visit(expr&) = 0;
-	virtual bool begin_visit(expr_list&) = 0;
-	virtual bool begin_visit(var_expr&) = 0;
-	virtual bool begin_visit(order_modifier&) = 0;
-	virtual bool begin_visit(flwor_expr&) = 0;
-	virtual bool begin_visit(quantified_expr&) = 0;
-	virtual bool begin_visit(case_clause&) = 0;
-	virtual bool begin_visit(typeswitch_expr&) = 0;
-	virtual bool begin_visit(if_expr&) = 0;
-	virtual bool begin_visit(fo_expr&) = 0;
-	virtual bool begin_visit(ft_select_expr&) = 0;
-	virtual bool begin_visit(ft_contains_expr&) = 0;
-	virtual bool begin_visit(instanceof_expr&) = 0;
-	virtual bool begin_visit(treat_expr&) = 0;
-	virtual bool begin_visit(castable_expr&) = 0;
-	virtual bool begin_visit(cast_expr&) = 0;
-	virtual bool begin_visit(unary_expr&) = 0;
-	virtual bool begin_visit(validate_expr&) = 0;
-	virtual bool begin_visit(extension_expr&) = 0;
-	virtual bool begin_visit(relpath_expr&) = 0;
-	virtual bool begin_visit(axis_step_expr&) = 0;
-	virtual bool begin_visit(primary_expr&) = 0;
-	virtual bool begin_visit(literal_expr&) = 0;
-	virtual bool begin_visit(order_expr&) = 0;
-	virtual bool begin_visit(funcall_expr&) = 0;
-	virtual bool begin_visit(cons_expr&) = 0;
-	virtual bool begin_visit(doc_expr&) = 0;
-	virtual bool begin_visit(elem_expr&) = 0;
-	virtual bool begin_visit(attr_expr&) = 0;
-	virtual bool begin_visit(text_expr&) = 0;
-	virtual bool begin_visit(comment_expr&) = 0;
-	virtual bool begin_visit(pi_expr&) = 0;
+	virtual bool begin_visit(expr const&) = 0;
+	virtual bool begin_visit(expr_list const&) = 0;
+	virtual bool begin_visit(var_expr const&) = 0;
+	virtual bool begin_visit(order_modifier const&) = 0;
+	virtual bool begin_visit(flwor_expr const&) = 0;
+	virtual bool begin_visit(quantified_expr const&) = 0;
+	virtual bool begin_visit(case_clause const&) = 0;
+	virtual bool begin_visit(typeswitch_expr const&) = 0;
+	virtual bool begin_visit(if_expr const&) = 0;
+	virtual bool begin_visit(fo_expr const&) = 0;
+	virtual bool begin_visit(ft_select_expr const&) = 0;
+	virtual bool begin_visit(ft_contains_expr const&) = 0;
+	virtual bool begin_visit(instanceof_expr const&) = 0;
+	virtual bool begin_visit(treat_expr const&) = 0;
+	virtual bool begin_visit(castable_expr const&) = 0;
+	virtual bool begin_visit(cast_expr const&) = 0;
+	virtual bool begin_visit(unary_expr const&) = 0;
+	virtual bool begin_visit(validate_expr const&) = 0;
+	virtual bool begin_visit(extension_expr const&) = 0;
+	virtual bool begin_visit(relpath_expr const&) = 0;
+	virtual bool begin_visit(axis_step_expr const&) = 0;
+	virtual bool begin_visit(primary_expr const&) = 0;
+	virtual bool begin_visit(literal_expr const&) = 0;
+	virtual bool begin_visit(order_expr const&) = 0;
+	virtual bool begin_visit(funcall_expr const&) = 0;
+	virtual bool begin_visit(cons_expr const&) = 0;
+	virtual bool begin_visit(doc_expr const&) = 0;
+	virtual bool begin_visit(elem_expr const&) = 0;
+	virtual bool begin_visit(attr_expr const&) = 0;
+	virtual bool begin_visit(text_expr const&) = 0;
+	virtual bool begin_visit(comment_expr const&) = 0;
+	virtual bool begin_visit(pi_expr const&) = 0;
 
 
  /*..........................................
  	:  end visit                              :
  	:.........................................*/
-	virtual void end_visit(expr&) = 0;
-	virtual void end_visit(expr_list&) = 0;
-	virtual void end_visit(var_expr&) = 0;
-	virtual void end_visit(order_modifier&) = 0;
-	virtual void end_visit(flwor_expr&) = 0;
-	virtual void end_visit(quantified_expr&) = 0;
-	virtual void end_visit(case_clause&) = 0;
-	virtual void end_visit(typeswitch_expr&) = 0;
-	virtual void end_visit(if_expr&) = 0;
-	virtual void end_visit(fo_expr&) = 0;
-	virtual void end_visit(ft_select_expr&) = 0;
-	virtual void end_visit(ft_contains_expr&) = 0;
-	virtual void end_visit(instanceof_expr&) = 0;
-	virtual void end_visit(treat_expr&) = 0;
-	virtual void end_visit(castable_expr&) = 0;
-	virtual void end_visit(cast_expr&) = 0;
-	virtual void end_visit(unary_expr&) = 0;
-	virtual void end_visit(validate_expr&) = 0;
-	virtual void end_visit(extension_expr&) = 0;
-	virtual void end_visit(relpath_expr&) = 0;
-	virtual void end_visit(axis_step_expr&) = 0;
-	virtual void end_visit(primary_expr&) = 0;
-	virtual void end_visit(literal_expr&) = 0;
-	virtual void end_visit(order_expr&) = 0;
-	virtual void end_visit(funcall_expr&) = 0;
-	virtual void end_visit(cons_expr&) = 0;
-	virtual void end_visit(doc_expr&) = 0;
-	virtual void end_visit(elem_expr&) = 0;
-	virtual void end_visit(attr_expr&) = 0;
-	virtual void end_visit(text_expr&) = 0;
-	virtual void end_visit(comment_expr&) = 0;
-	virtual void end_visit(pi_expr&) = 0;
+	virtual void end_visit(expr const&) = 0;
+	virtual void end_visit(expr_list const&) = 0;
+	virtual void end_visit(var_expr const&) = 0;
+	virtual void end_visit(order_modifier const&) = 0;
+	virtual void end_visit(flwor_expr const&) = 0;
+	virtual void end_visit(quantified_expr const&) = 0;
+	virtual void end_visit(case_clause const&) = 0;
+	virtual void end_visit(typeswitch_expr const&) = 0;
+	virtual void end_visit(if_expr const&) = 0;
+	virtual void end_visit(fo_expr const&) = 0;
+	virtual void end_visit(ft_select_expr const&) = 0;
+	virtual void end_visit(ft_contains_expr const&) = 0;
+	virtual void end_visit(instanceof_expr const&) = 0;
+	virtual void end_visit(treat_expr const&) = 0;
+	virtual void end_visit(castable_expr const&) = 0;
+	virtual void end_visit(cast_expr const&) = 0;
+	virtual void end_visit(unary_expr const&) = 0;
+	virtual void end_visit(validate_expr const&) = 0;
+	virtual void end_visit(extension_expr const&) = 0;
+	virtual void end_visit(relpath_expr const&) = 0;
+	virtual void end_visit(axis_step_expr const&) = 0;
+	virtual void end_visit(primary_expr const&) = 0;
+	virtual void end_visit(literal_expr const&) = 0;
+	virtual void end_visit(order_expr const&) = 0;
+	virtual void end_visit(funcall_expr const&) = 0;
+	virtual void end_visit(cons_expr const&) = 0;
+	virtual void end_visit(doc_expr const&) = 0;
+	virtual void end_visit(elem_expr const&) = 0;
+	virtual void end_visit(attr_expr const&) = 0;
+	virtual void end_visit(text_expr const&) = 0;
+	virtual void end_visit(comment_expr const&) = 0;
+	virtual void end_visit(pi_expr const&) = 0;
 
 };
 

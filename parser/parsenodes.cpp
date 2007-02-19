@@ -18,7 +18,7 @@
 #include <assert.h>
 
 #include "../context/context.h"
-#include "../runtime/parsenode_visitor.h"
+#include "../exprtree/parsenode_visitor.h"
 #include "../util/rchandle.h"
 #include "../util/tracer.h"
 #include "../values/qname_value.h"

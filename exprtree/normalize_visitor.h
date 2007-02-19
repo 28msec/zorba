@@ -45,9 +45,9 @@ public:
 	expr_h_t pop_nodestack()
 	{
 		if (nodestack.empty()) return NULL;
-		rchandle<expr> r = nodestack.top();
+		rchandle<expr> e_h = nodestack.top();
 		nodestack.pop();
-		return r;
+		return e_h;
 	}
 	void clear_argstack()
 	{

@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "expr_visitor.h"
+#include "../runtime/expr_visitor.h"
 #include "../runtime/iterator.h"
 #include "../context/context.h"
 #include "../parser/parse_constants.h"
@@ -22,7 +22,6 @@
 #include "../types/base_types.h"
 #include "../util/list.h"
 #include "../util/rchandle.h"
-#include "../util/triple.h"
 #include "../values/ft_options.h"
 #include "../values/qname_value.h"
 
@@ -1036,7 +1035,7 @@ public:
 	enum literal_type_t get_type() const { return type; }
 	uint32_t get_sref() const { return sref; }
 	int get_ival() const { return ival; }
-	decimal get_decval() { return decval; }
+	decimal get_decval() const { return decval; }
 	double get_dval() const { return dval; }
 	bool get_bval() const { return bval; }
 

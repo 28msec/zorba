@@ -308,19 +308,6 @@ singleton_iterator::singleton_iterator(
 
 singleton_iterator::singleton_iterator(
 	context * ctx_p,
-	float v)
-:
-	item_iterator(ctx_p),
-	i_h(new xs_float_value(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(float)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_p,
 	int v)
 :
 	item_iterator(ctx_p),
@@ -342,84 +329,6 @@ singleton_iterator::singleton_iterator(
 {
 #ifdef DEBUG
 	cout << "singleton_iterator(long long)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_p,
-	short v)
-:
-	item_iterator(ctx_p),
-	i_h(new xs_short_value(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(short)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_p,
-	signed char v)
-:
-	item_iterator(ctx_p),
-	i_h(new xs_byte_value(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(signed char)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_p,
-	unsigned char v)
-:
-	item_iterator(ctx_p),
-	i_h(new xs_unsignedByte_value(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(unsigned char)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_p,
-	unsigned int v)
-:
-	item_iterator(ctx_p),
-	i_h(new xs_unsignedInt_value(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(signed int)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_p,
-	unsigned long long v)
-:
-	item_iterator(ctx_p),
-	i_h(new xs_nonNegativeInteger_value(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(unsigned long long)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_P,
-	unsigned short v)
-:
-	item_iterator(ctx_p),
-	i_h(new xs_unsignedShort_value(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(unsigned short)\n";
 #endif
 }
 

@@ -87,6 +87,14 @@ ostream& expr_list::put(
 void expr_list::accept(
 	expr_visitor& v) const
 {
+  if (!v.begin_visit(*this)) return;
+	list_iterator<expr_h_t> it = begin();
+	for (; it!=end(); ++it) {
+		rchandle<expr> e_h = *it;
+		if (e_h==NULL) { cout << TRACE << ": e_h==NULL\n"; continue; }
+		e_h->accept(v);
+	}
+	v.end_visit(*this);
 }
 
 
@@ -997,8 +1005,9 @@ ostream& literal_expr::put(
 void literal_expr::accept(
 	expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
+	v.end_visit(*this);
 }
-
 
 
 

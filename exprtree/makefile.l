@@ -90,17 +90,16 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 		${BUILD}/normalize_visitor.${SUFX} \
 	normalize_visitor_test.cpp
 
-plan_visitor : plan_visitor.h plan_visitor.cpp
-	g++ ${OPT} -c -o ${BUILD}/plan_visitor.${SUFX} plan_visitor.cpp
-
 
 all :	\
   expr \
 	eval \
 	update_expr \
-	ft_expr
+	ft_expr \
+	normalize_visitor
 
 test : \
 	expr_test \
-	eval_test
+	eval_test \
+	normalize_visitor_test
 
