@@ -3,7 +3,6 @@
  *  $Id: list.h,v 1.1 2006/10/09 07:07:57 Paul Pedersen Exp $
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
- *
  *	Author: Paul Pedersen
  *
  */
@@ -116,6 +115,8 @@ public:
     { return list_reverse_iterator<T>(tail->prev); }
   list_reverse_iterator<T> rend() const
     { return list_reverse_iterator<T>(head); }
+    
+  T& operator[](int);
 
 public:
 	friend list operator*<>(list const&, list const&);		// intersection
@@ -200,6 +201,24 @@ void list<T>::remove(list_node<T>* node)
 	node->prev->next = node->next;
 	node->next->prev = node->prev;
 	sz--;
+}
+
+
+// random access
+template<class T>
+T& list<T>::operator[](int n)
+{
+  int sz0 = sz;
+  if (n<(sz0>>1)) {
+    list_iterator<T> it = begin();
+    for (int i=0; i<n; ++i) ++it;
+    return *it;
+  }
+  else {
+    list_reverse_iterator<T> it = rbegin();
+    for (int i=0; i<sz0-n; ++i) ++it;
+    return *it;
+  }
 }
 
 

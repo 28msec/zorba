@@ -52,6 +52,10 @@ int main(int argc, char* argv[])
 	list_reverse_iterator<int> r_end = l_p->rend();
 	for ( ; r_it!=r_end; ++r_it) { cout << *r_it << endl; }
 
+	for (int i=0; i<150; ++i) {
+		cout << "l["<<i<<"] = " << (*l_p)[i] << endl;
+	}
+
 	delete l_p;
 
 }
