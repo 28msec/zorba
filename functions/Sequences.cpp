@@ -119,19 +119,17 @@ rchandle<document_node> fn_doc(
 	rchandle<nodestore> nstore_h = ctx.get_nodestore();
 
 	if (!ctx.get_dnid(uri, dnid)) {
+	// Implentation note:  the mapping uri -> docnode_ref belongs in doc_resolver
 		ctx.set_error(ERR_FODC0005);
 		cout << TRACE << endl;
 		return NULL;
 	}
-	int k = nstore_h->get(&ctx, nodeid(dnid), dn_h);
-	if (k < 0) {
+	if (nstore_h->get(&ctx, nodeid(dnid), dn_h) < 0) {
 		ctx.set_error(ERR_FODC0005);
 		cout << TRACE << endl;
 		return NULL;
 	}
-
 	return dn_h;
-
 }
   
 

@@ -3,9 +3,7 @@
  *  $Id: Sequences.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: John Cowan, Paul Pedersen
- *
+ *  Authors: John Cowan, Paul Pedersen
  */
 
 #ifndef XQP_SEQUENCES_H
