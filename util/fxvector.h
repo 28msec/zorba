@@ -47,15 +47,15 @@ public:
 	typedef ptrdiff_t   difference_type;
 	typedef __gnu_cxx::__normal_iterator<pointer,vector_type>				iterator;
 	typedef __gnu_cxx::__normal_iterator<const_pointer,vector_type>	const_iterator;
-	typedef std::reverse_iterator<const_iterator>										const_reverse_iterator;
 	typedef std::reverse_iterator<iterator>													reverse_iterator;
+	typedef std::reverse_iterator<const_iterator>										const_reverse_iterator;
 
 public:  
-	mmfile* mmf_p;				// memory-mapped file, may be NULL
-	char* src;						// raw view of data
-	T* start;							// pointer to first element
-	T* finish;						// pointer to first free element 
-	T* end_of_storage;		// pointer one past end of storage
+	mmfile* mmf_p;			// memory-mapped file, may be NULL
+	char* src;					// raw view of data
+	T* start;						// pointer to first element
+	T* finish;					// pointer to first free element 
+	T* end_of_storage;	// pointer one past end of storage
 
 public:		// ctor,dtor
 	/**
@@ -74,7 +74,7 @@ public:		// ctor,dtor
 	 **  dtor erases all elements.
 	 **  Note: if the elements themselves are pointers, the
 	 **  pointed-to memory is not touched in any way.  Managing
-	 **  the pointer is the user's responsibilty.
+	 **  the pointers is the user's responsibilty.
 	 */
 	~fxvector();
 
@@ -84,7 +84,7 @@ public:
 	void incr_finish(uint32_t n) { finish += n; }
 	T* get_end_of_storage() const { return end_of_storage; }
 	char* get_src() const { return src; }
-	char* raw_copy(char const* data, uint32_t length) throw (bad_arg);
+	char* raw_copy(char const* data, uint32_t length);
 
 private:
 	/**
@@ -426,20 +426,26 @@ fxvector<T>::~fxvector()
 template<typename T>
 char * fxvector<T>::raw_copy(
 	char const* data,
-	uint32_t length)
-throw (bad_arg)
+	uint32_t length0)
 {
+	// compute ceiling_4(length0)
+	uint32_t length = ((length0>>2) + (length0&0x3 ? 1 : 0)) << 2;
+	// size per item
 	uint32_t n = sizeof(T);
-	if (n!=1) throw bad_arg(__FUNCTION__,"no raw copy to non-char vectors");
-	while ((capacity() - size()) < length) expand();
-	memcpy(finish, data, length);
-	char * res = (char *)finish;
-	finish += length;
-	if (mmf_p) {	// update offset_p
+	// insure capacity
+	while (n * (capacity() - size()) < length) expand();
+
+	// copy
+	char* p = reinterpret_cast<char*>(finish);
+	memcpy(p, data, length);
+	finish += length>>2;
+
+	// update mmfile
+	if (mmf_p) {
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
 		*offset_p += length;
 	}
-	return res;
+	return p;
 }
 
 
