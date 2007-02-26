@@ -69,7 +69,7 @@ cout << "mmfile::ctor: new, empty file: \"" << path << "\"\n";
 	  }
 	
 	  if ((data = (char*)mmap(0, m, PROT_READ|PROT_WRITE,
-	                           MAP_FILE|MAP_SHARED, fd, 0))==MAP_FAILED) {
+	                           MAP_FILE|MAP_PRIVATE|MAP_ANONYMOUS, fd, 0))==MAP_FAILED) {
 			IOEXCEPTION("mmap failed on: '"+path+"'");
 	  }
 	
@@ -84,7 +84,7 @@ cout << "mmfile::ctor: map existing file: \"" << path << "\"\n";
 #endif
 
     if ((data = (char*)mmap(0, eofoff, PROT_READ|PROT_WRITE,
-                            MAP_FILE|MAP_SHARED, fd, 0))==MAP_FAILED) {
+                            MAP_FILE|MAP_PRIVATE|MAP_ANONYMOUS, fd, 0))==MAP_FAILED) {
       IOEXCEPTION("mmap failed on: '"+path+"'");
     }
   }
@@ -142,7 +142,7 @@ throw (xqp_exception)
   // remap the file
   eofoff <<= 1;
   if ((data = (char*)mmap(0, eofoff, PROT_READ|PROT_WRITE,
-                           MAP_SHARED, fd, 0))==MAP_FAILED) {
+                           MAP_PRIVATE|MAP_ANONYMOUS, fd, 0))==MAP_FAILED) {
 		IOEXCEPTION("mmap failed on: '"+path+"'");
   }
 }
