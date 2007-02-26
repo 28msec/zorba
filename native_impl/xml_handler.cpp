@@ -103,7 +103,7 @@ void xml_handler::adup(const char* buf, int offset, int length)
 	}
 
 	// store for load on start tag close
-	rchandle<QName> qname_h = new QName(QName::qn_attr,the_attribute);
+	rchandle<QName> qname_h = new QName(the_attribute);
 	uint32_t qname_id = qnpool_h->put(the_docid,qname_h);
 	attr_v.push_back(attrpair_t(qname_id,""));
 }
@@ -141,7 +141,7 @@ void xml_handler::aval(const char* buf, int offset, int length)
 	}
 	
 	// store for load on start tag close
-	rchandle<QName> qname_h = new QName(QName::qn_attr,the_attribute);
+	rchandle<QName> qname_h = new QName(the_attribute);
 	uint32_t qname_id = qnpool_h->put(the_docid,qname_h);
 	attr_v.push_back(attrpair_t(qname_id,string(buf,offset,length)));
 
@@ -259,7 +259,7 @@ void xml_handler::gi(const char* buf, int offset, int length)
 		name = the_element;
 	}
 
-	the_qnameid = qnpool_h->put(the_docid,new QName(QName::qn_elem,the_element));
+	the_qnameid = qnpool_h->put(the_docid,new QName(the_element));
 
 #ifdef DEBUG
 	cout << "the_qnameid("

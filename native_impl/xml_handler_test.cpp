@@ -36,14 +36,17 @@ int main(int argc, char* argv[])
     unsigned sz = f.get_size();
     size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
     char* ibuf = new char[n+1];
+		cout << "reading file of size (" << sz << ")\n";
 		f.readfile(ibuf,n);
 
     xml_scanner xscanner;
 		vector<xml_term> xterm_v;
 		string baseuri = "/";
 		string uri = path;
+		cout << "allocate xml_handler\n":
     xml_handler* xhandler_p = new xml_handler(&ctx,baseuri,uri,xterm_v);
 
+		cout << "run xml_scanner\n";
     xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
 
 		uint32_t dnid = xhandler_p->get_dnid();

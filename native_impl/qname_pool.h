@@ -41,12 +41,13 @@ struct qname_key
 {
 	off_t qn_offset;
 	uint32_t uri_id;
-	QName::qname_type_t type;
 
-	qname_key( off_t _qn_offset, uint32_t _uri_id, QName::qname_type_t _type)
-	: qn_offset(_qn_offset), uri_id(_uri_id), type(_type) { }
+	qname_key( off_t _qn_offset, uint32_t _uri_id)
+	: qn_offset(_qn_offset), uri_id(_uri_id)
+		{}
 
-	~qname_key() {}
+	~qname_key()
+		{}
 };
 
 
@@ -71,7 +72,6 @@ public:
 	*/
 	uint32_t put(									// return: id of new, or previous
 		uint32_t docid,							// input: document id
-		QName::qname_type_t type,		// input: QName type
 		string const& qname);				// input: "prefix:localname" string
 
 	/**
@@ -106,4 +106,3 @@ public:
 
 } /* namespace xqp */
 #endif /* XQP_QNAME_POOL_H */
-

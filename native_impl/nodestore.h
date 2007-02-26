@@ -12,6 +12,7 @@
 #define XQP_NODESTORE_H
 
 #include "store_common.h"
+#include "../context/common.h"
 #include "../util/fxvector.h"
 #include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
@@ -27,8 +28,6 @@ namespace xqp {
 class context;
 class item_iterator;
 class node;
-class nodeid;
-
 
 
 class nodestore : public rcobject

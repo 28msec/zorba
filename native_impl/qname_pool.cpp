@@ -37,10 +37,9 @@ qname_pool::~qname_pool()
 
 uint32_t qname_pool::put(
 	uint32_t docid,
-	QName::qname_type_t type,
 	string const& qname)
 {
-	rchandle<QName> qname_h = new QName(type,qname);
+	rchandle<QName> qname_h = new QName(qname);
 	return put(docid,qname_h);
 }
 
@@ -98,12 +97,11 @@ rchandle<QName> qname_pool::get(
 		BAD_ARG_MACRO("Illegal qname_id: "<<qname_id);
 	}
 	qname_key qkey = qnamev[qname_id];
-	QName::qname_type_t type = qkey.type;
 	uint32_t uri_id = qkey.uri_id;
 	string name = qnheap.get(qkey.qn_offset);
 	string prefix;
 	nspool_h->get_prefix(uri_id,prefix);
-	return new QName(type,prefix,name,qname_id);
+	return new QName(prefix,name,qname_id);
 }
 
 
