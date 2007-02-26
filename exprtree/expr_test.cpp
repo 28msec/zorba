@@ -45,22 +45,22 @@ int main(int argc, char* argv[])
 
 	try {
 
-		rchandle<QName> qnv1_h = new QName(QName::qn_var,"var1");
-		rchandle<QName> qnv2_h = new QName(QName::qn_var,"var2");
-		rchandle<QName> qnv3_h = new QName(QName::qn_var,"var3");
+		rchandle<QName> qnv1_h = new QName("var1");
+		rchandle<QName> qnv2_h = new QName("var2");
+		rchandle<QName> qnv3_h = new QName("var3");
 
-		rchandle<QName> qna1_h = new QName(QName::qn_attr,"attr1");
-		rchandle<QName> qna2_h = new QName(QName::qn_attr,"attr2");
-		rchandle<QName> qna3_h = new QName(QName::qn_attr,"attr3");
+		rchandle<QName> qna1_h = new QName("attr1");
+		rchandle<QName> qna2_h = new QName("attr2");
+		rchandle<QName> qna3_h = new QName("attr3");
 
-		rchandle<QName> qne1_h = new QName(QName::qn_elem,"elem1");
-		rchandle<QName> qne2_h = new QName(QName::qn_elem,"elem2");
-		rchandle<QName> qne3_h = new QName(QName::qn_elem,"elem3");
+		rchandle<QName> qne1_h = new QName("elem1");
+		rchandle<QName> qne2_h = new QName("elem2");
+		rchandle<QName> qne3_h = new QName("elem3");
 
-		rchandle<QName> qnf1_h = new QName(QName::qn_func,"func1");
+		rchandle<QName> qnf1_h = new QName("func1");
 
-		rchandle<QName> qnp1_h = new QName(QName::qn_prag,"prag1");
-		rchandle<QName> qnp2_h = new QName(QName::qn_prag,"prag1");
+		rchandle<QName> qnp1_h = new QName("prag1");
+		rchandle<QName> qnp2_h = new QName("prag1");
 
 
 	/*...........................................
@@ -342,7 +342,7 @@ int main(int argc, char* argv[])
 		:.........................................:
 	*/
 		cout << "\n>>>fo_expr\n";
-		rchandle<signature> sig1_h = new signature(new QName(QName::qn_func,"func1"));
+		rchandle<signature> sig1_h = new signature(new QName("func1"));
 		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
 		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
 		function_impl func1(sig1_h);

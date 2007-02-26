@@ -25,10 +25,9 @@ using namespace std;
 namespace xqp {
 
 
-/*...........................................
-	: expr                                    :
-	:.........................................:
-*/
+/*..........................................
+ :  expr                                   :
+ :.........................................*/
 
 rchandle<item_iterator> expr::eval(
 	context * ctx_p)
@@ -40,10 +39,9 @@ rchandle<item_iterator> expr::eval(
 }
 
 
-/*...........................................
-	: literal expr                            :
-	:.........................................:
-*/
+/*..........................................
+ :  literal                                :
+ :.........................................*/
 
 rchandle<item_iterator> literal_expr::eval(
 	context * ctx_p)
@@ -63,10 +61,9 @@ rchandle<item_iterator> literal_expr::eval(
 }
 
 
-/*...........................................
-	: expr_list                               :
-	:.........................................:
-*/
+/*..........................................
+ :  expr_list                              :
+ :.........................................*/
 
 rchandle<item_iterator> expr_list::eval(
 	context * ctx_p) 
@@ -85,10 +82,9 @@ rchandle<item_iterator> expr_list::eval(
 }
 
 
-/*...........................................
-	: var_expr                                :
-	:.........................................:
-*/
+/*..........................................
+ :  var_expr                               :
+ :.........................................*/
 
 rchandle<item_iterator> var_expr::eval(
 	context * ctx_p) 
@@ -107,10 +103,9 @@ rchandle<item_iterator> var_expr::eval(
 }
 
 
-/*...........................................
-	: flwor_expr                              :
-	:.........................................:
-*/
+/*..........................................
+ :  flwor_expr                             :
+ :.........................................*/
 
 rchandle<item_iterator> flwor_expr::eval(
 	context * ctx_p) 
@@ -150,10 +145,9 @@ rchandle<item_iterator> flwor_expr::eval(
 }
 
 
-/*...........................................
-	: quantified_expr                         :
-	:.........................................:
-*/
+/*..........................................
+ :  quantified_expr                        :
+ :.........................................*/
 
 rchandle<item_iterator> quantified_expr::eval(
 	context * ctx_p) 
@@ -181,10 +175,9 @@ rchandle<item_iterator> quantified_expr::eval(
 }
 
 
-/*...........................................
-	: typeswitch_expr                         :
-	:.........................................:
-*/
+/*..........................................
+ :  typeswitch_expr                        :
+ :.........................................*/
 
 rchandle<item_iterator> typeswitch_expr::eval(
 	context * ctx_p)
@@ -206,10 +199,9 @@ rchandle<item_iterator> typeswitch_expr::eval(
 }
 
 
-/*...........................................
-	: if_expr                                 :
-	:.........................................:
-*/
+/*..........................................
+ :  if_expr                                :
+ :.........................................*/
 
 rchandle<item_iterator> if_expr::eval(
 	context * ctx_p)
@@ -229,10 +221,9 @@ rchandle<item_iterator> if_expr::eval(
 }
 
 
-/*...........................................
-	: fo_expr                                 :
-	:.........................................:
-*/
+/*..........................................
+ :  fo_expr                                :
+ :.........................................*/
 
 rchandle<item_iterator> fo_expr::eval(
 	context * ctx_p)
@@ -250,10 +241,9 @@ rchandle<item_iterator> fo_expr::eval(
 }
 
 
-/*...........................................
-	: text_expr                               :
-	:.........................................:
-*/
+/*..........................................
+ :  text_expr                              :
+ :.........................................*/
 
 rchandle<item_iterator> text_expr::eval(
 	context * ctx_p)
@@ -271,10 +261,9 @@ rchandle<item_iterator> text_expr::eval(
 }
 
 
-/*...........................................
-	: comment_expr                            :
-	:.........................................:
-*/
+/*..........................................
+ :  comment_expr                           :
+ :.........................................*/
 
 rchandle<item_iterator> comment_expr::eval(
 	context * ctx_p)
@@ -285,10 +274,9 @@ rchandle<item_iterator> comment_expr::eval(
 
 
 
-/*...........................................
-	: document constructor                    :
-	:.........................................:
-*/
+/*..........................................
+ :  document constructor                   :
+ :.........................................*/
 
 rchandle<item_iterator> doc_expr::eval(
 	context * ctx_p) 
@@ -299,10 +287,9 @@ rchandle<item_iterator> doc_expr::eval(
 
 
 
-/*...........................................
-	: element constructor                     :
-	:.........................................:
-*/
+/*..........................................
+ :  element constructor                    :
+ :.........................................*/
 
 /*_________________________________________________________________________
 |
@@ -372,7 +359,7 @@ rchandle<item_iterator> elem_expr::eval(
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h==NULL) {
 		rchandle<item_iterator> it_h = qname_expr_h->eval(ctx_p);
-		qname_h = new QName(QName::qn_elem,it_h->string_value());
+		qname_h = new QName(it_h->string_value());
 	}
 
 	nodeid docid = ctx_p->context_docid();
@@ -420,10 +407,9 @@ rchandle<item_iterator> elem_expr::eval(
 
 
 
-/*...........................................
-	: attribute constructor                   :
-	:.........................................:
-*/
+/*..........................................
+ :  attribute constructor                  :
+ :.........................................*/
 
 rchandle<item_iterator> attr_expr::eval(
 	context * ctx_p) 
@@ -431,7 +417,7 @@ rchandle<item_iterator> attr_expr::eval(
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h==NULL) {
 		rchandle<item_iterator> it_h = qname_expr_h->eval(ctx_p);
-		qname_h = new QName(QName::qn_attr,it_h->string_value());
+		qname_h = new QName(it_h->string_value());
 	}
 	Assert<null_pointer>(val_expr_h!=NULL);
 	rchandle<item_iterator> val_h = val_expr_h->eval(ctx_p);

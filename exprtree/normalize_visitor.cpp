@@ -2172,7 +2172,7 @@ cout << TRACE << endl;
 	rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
-	ve_h->set_varname(new QName(QName::qn_var,v.get_default_varname()));
+	ve_h->set_varname(new QName(v.get_default_varname()));
 	tse_h->set_default_varname(ve_h);
 
 	Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
@@ -2220,7 +2220,7 @@ void normalize_visitor::end_visit(VarRef const& v)
 {
 cout << TRACE << endl;
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
-	ve_h->set_varname(new QName(QName::qn_var,v.get_varname()));
+	ve_h->set_varname(new QName(v.get_varname()));
 	nodestack.push(&*ve_h);
 }
 
