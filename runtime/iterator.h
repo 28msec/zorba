@@ -10,7 +10,6 @@
 #ifndef XQP_ITERATOR_H
 #define XQP_ITERATOR_H
 
-#include "../types/xs_primitive_types.h"
 #include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"

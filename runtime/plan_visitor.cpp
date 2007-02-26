@@ -233,7 +233,7 @@ cout << indent[depth--] << TRACE << ": expr_list" << endl;
 	while (true) {
 		it_h_t it_h = pop_itstack();
 		if (it_h==NULL) break;
-		it_list.push_back(it_h);
+		it_list.push_front(it_h);
 	}
 	rchandle<concat_iterator> cit_h = new concat_iterator(ctx_p, it_list);
 	itstack.push(&*cit_h);
