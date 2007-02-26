@@ -12,7 +12,7 @@
 #define XQP_VALUES_H
 
 #include "../runtime/iterator.h"
-#include "../types/base_types.h"
+#include "../types/sequence_type.h"
 #include "../util/rchandle.h"
 
 #include <string>
@@ -76,20 +76,23 @@ public:
 
 class value	: public object
 {
+protected:
+	sequence_type_t type;
+
 public:
 	value() {}
 	virtual ~value() {}
 
 public:
+	sequence_type_t get_type() const { return type; }
+
   virtual std::ostream& put(std::ostream&, context *) const;
   virtual std::string describe(context *) const;
-
-	virtual bool is_sequence() const;
-	virtual bool is_empty() const;
-
 	virtual rchandle<item_iterator> atomized_value(context *) const;
 	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
 
+	virtual bool is_sequence() const;
+	virtual bool is_empty() const;
 };
 
 
@@ -108,21 +111,18 @@ public:
 public:
   virtual std::ostream& put(std::ostream&, context *) const;
   virtual std::string describe(context *) const;
+	virtual rchandle<item_iterator> atomized_value(context *) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
+	virtual std::string string_value(context const*) const;
 
 	virtual bool is_node() const;
 	virtual bool is_atomic() const;
-
-	virtual rchandle<item_iterator> atomized_value(context *) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
-
-	virtual std::string string_value(context const*) const;
-
 };
 
 
 /*______________________________________________________________________
 |  
-|	'atomic_value' encapsulates value of primitive or derived types
+|	'atomic_value' encapsulates values of primitive or derived types
 |_______________________________________________________________________*/
 
 class atomic_value : public item
@@ -134,25 +134,21 @@ public:
 public:
   virtual std::ostream& put(std::ostream&, context *) const;
   virtual std::string describe(context *) const;
-	virtual enum type::typecode get_typecode() const;
+	virtual rchandle<item_iterator> atomized_value(context *) const;
+	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
+	virtual std::string string_value(context const*) const;
+	virtual sequence_type_t get_type() const;
 
 	bool is_sequence() const { return false; }
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
-
-	virtual rchandle<item_iterator> atomized_value(context *) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
-
-	virtual std::string string_value(context const*) const;
-
 };
 
 
 /*______________________________________________________________________
 |  
 |	'node' values defined in 'nodes.h'
-|	'function' values defined in 'funcval.h'
 |_______________________________________________________________________*/
 
 } /* namespace xqp */

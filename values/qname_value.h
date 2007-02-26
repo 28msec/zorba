@@ -12,6 +12,7 @@
 #include <ostream>
 #include <string>
 
+#include "../context/common.h"
 #include "../values/values.h"
 #include "../util/rchandle.h"
 
@@ -20,58 +21,45 @@ namespace xqp {
 
 class QName : public atomic_value
 {
-public:
-	enum qname_type_t {
-		qn_var,		// variable name
-		qn_attr,	// attribute name
-		qn_elem,	// element name
-		qn_type,	// type name
-		qn_func,	// function name
-		qn_optn,	// prolog option name
-		qn_ns,		// ns prefix 
-		qn_pi,		// pi target
-		qn_prag,	// pragma label
-		qn_none		// uninitialized
-	};
-
 protected:
-	enum qname_type_t type;
 	std::string prefix;
 	std::string name;
-	uint32_t ns_id;
+	nsid ns_id;
+	uint32_t arity;
 
 public:
-	QName(
-		enum qname_type_t,
+  QName(
 		std::string const& prefix,
 		std::string const& name,
-		uint32_t ns_id);
-
+		uint32_t ns_id,
+		uint32_t arity);
+		
 	QName(
-		enum qname_type_t,
 		std::string const& prefix,
-		std::string const& name);
+		std::string const& name,
+		nsid ns_id);
 
 	QName(
-		enum qname_type_t,
 		std::string const& name);
 
-	QName(enum qname_type_t);
 	QName(QName const&);
 	QName();
 	~QName();
 
 public:
-	enum qname_type_t get_type() const { return type; };
-
 	std::string get_prefix() const { return prefix; }
 	void set_prefix(std::string const& p) { prefix = p; }
 
 	std::string get_name() const { return name; }
 	void set_name(std::string const& n) { name = n; }
 
-	uint32_t get_ns_id() const { return ns_id; }
-	void set_ns_id(uint32_t id) { ns_id = id; }
+	nsid get_ns_id() const { return ns_id; }
+	void set_ns_id(nsid id) { ns_id = id; }
+
+	uint32_t get_arity() const { return arity; }
+	void set_arity(uint32_t _arity) { arity = _arity; }
+
+	uint32_t hash_value() const;
 
 public:	// atomic_value interface
 
@@ -90,9 +78,6 @@ public:	// atomic_value interface
 	std::ostream& put(std::ostream& os, context const& ctx) const
 		{ return os << (prefix.length()>0 ? prefix+':'+name : name); }
 
-  enum type::typecode get_typecode() const
-		{ return type::XS_QNAME; }
-
   bool is_sequence() const { return false; }
   bool is_empty() const { return false; }
   bool is_node() const { return false; }
@@ -103,23 +88,6 @@ public:	// atomic_value interface
 
 };
 
-
-/*______________________________________________________________________
-|  
-|	opaque implementation-defined QName id
-|
-|	qnameid's index into a QName pool which manages QName
-|	namespace URIs and localnames.
-|_______________________________________________________________________*/
-
-class qnameid
-{
-public:
-	bool operator==(qnameid const&) const;
-	static rchandle<QName> get_qname(qnameid const&);
-	static qnameid put_qname(rchandle<QName>);
-
-};
 
 
 }	/* namespace xqp*/

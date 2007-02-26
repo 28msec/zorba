@@ -129,10 +129,10 @@ rchandle<item_iterator> node::node_name(
 	return new item_iterator(ctx_p);
 }
 
-item_type const& node::get_type(
+sequence_type_t const& node::get_type(
 	context * ctx_p) const
 {
-	return any_item_type::get_instance();
+	return any_sequence_type_t::get_instance();
 }
 
 string node::string_value(
@@ -598,7 +598,7 @@ rchandle<item_iterator> element_node::typed_value(
 	return new item_iterator(ctx_p);
 }
 	
-item_type const& element_node::get_type(
+sequence_type_t const& element_node::get_type(
 	context * ctx_p) const
 {
 	return type;
@@ -763,7 +763,7 @@ rchandle<item_iterator> attribute_node::typed_value(
 	return new item_iterator(ctx_p);
 }
 
-item_type const& attribute_node::get_type(
+sequence_type_t const& attribute_node::get_type(
 	context * ctx_p) const
 {
 	return type;
@@ -815,7 +815,7 @@ rchandle<item_iterator> ns_node::node_name(
 	context * ctx_p) const
 {
 	if (prefix.length()==0) return new item_iterator(ctx_p);
-	return new singleton_iterator(ctx_p, new QName(QName::qn_ns,prefix,""));
+	return new singleton_iterator(ctx_p, new QName(prefix,""));
 }
 
 rchandle<item_iterator> ns_node::parent(
@@ -884,7 +884,7 @@ rchandle<item_iterator> pi_node::base_uri(
 rchandle<item_iterator> pi_node::node_name(
 	context * ctx_p) const
 {
-	return new singleton_iterator(ctx_p, new QName(QName::qn_pi, target));
+	return new singleton_iterator(ctx_p, new QName(target));
 }
 
 rchandle<item_iterator> pi_node::parent(

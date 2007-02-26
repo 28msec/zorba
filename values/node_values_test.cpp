@@ -32,12 +32,12 @@ int main(int argc, char* argv[])
 		string uri2("uri_02");
 		string uri3("uri_03");
 
-		rchandle<QName> qna1_h = new QName(QName::qn_attr,"at1");
-		rchandle<QName> qna2_h = new QName(QName::qn_attr,"at2");
-		rchandle<QName> qna3_h = new QName(QName::qn_attr,"at3");
-		rchandle<QName> qne1_h = new QName(QName::qn_attr,"elem1");
-		rchandle<QName> qne2_h = new QName(QName::qn_attr,"elem2");
-		rchandle<QName> qne3_h = new QName(QName::qn_attr,"elem3");
+		rchandle<QName> qna1_h = new QName("at1");
+		rchandle<QName> qna2_h = new QName("at2");
+		rchandle<QName> qna3_h = new QName("at3");
+		rchandle<QName> qne1_h = new QName("elem1");
+		rchandle<QName> qne2_h = new QName("elem2");
+		rchandle<QName> qne3_h = new QName("elem3");
 
 		/*
 				doc(base_uri/uri1) = 

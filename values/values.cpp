@@ -10,6 +10,7 @@
 
 #include "values.h"
 
+#include "../types/sequence_type.h"
 #include "../util/rchandle.h"
 #include "../util/tokenbuf.h"
 
@@ -170,9 +171,9 @@ string atomic_value::describe(context * ctx_p) const
 	return "data()";
 }
 
-enum type::typecode atomic_value::get_typecode() const
+sequence_type_t atomic_value::get_type() const
 {
-	return type::ITEM_TYPE;
+	return untypedAtomicValue;
 }
 
 rchandle<item_iterator> atomic_value::atomized_value(

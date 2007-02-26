@@ -21,33 +21,15 @@
 #include "values.h"
 #include "qname_value.h"
 
+#include "../context/common.h"
 #include "../runtime/iterator.h"
+#include "../types/sequence_type.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 
 namespace xqp {
 
 class context;
-
-
-/*______________________________________________________________________
-| Nodeid
-|_______________________________________________________________________*/
-
-class nodeid 
-{
-public:
-	uint32_t id;
-
-	nodeid(uint32_t _id) : id(_id) {}
-	nodeid() : id(0) {}
-	~nodeid() {}
-
-	bool operator==(nodeid const& n) const { return id==n.id;  }
-
-};
-
-
 
 /*______________________________________________________________________
 | 6.0 Node
@@ -87,7 +69,6 @@ public:	// nodes types
 		collection_kind,		// zorba-specific: collection node
 		uninitialized_kind
 	};
-
 	std::string decode(node_kind_t) const;
 
 protected:
@@ -118,7 +99,7 @@ public:	// accessors
 	/**
 	 * Return the node data type.
 	 */
-	virtual item_type const& get_type(context *) const;
+	virtual sequence_type_t const& get_type(context *) const;
 
 	/**
 	 *	The dm:attributes accessor returns the attributes of a node as a 
@@ -459,7 +440,7 @@ class element_node : public node
 protected:
 	nodeid docid;
 	rchandle<QName> name_h;
-	item_type type;
+	sequence_type_t type;
 	std::vector<nodeid> child_hv;
 	std::vector<nodeid> attr_hv;
 	std::vector<nodeid> ns_hv;
@@ -491,7 +472,7 @@ public:	// evaluator interface
 	bool is_idrefs(context *) const;
 	bool nilled(context *) const;
 
-	item_type const& get_type(context *) const;
+	sequence_type_t const& get_type(context *) const;
 	std::string string_value(context const*) const;
 
 public:	// factory interface
@@ -597,14 +578,14 @@ class attribute_node : public node
 {
 protected:
 	rchandle<QName> name_h;
-	item_type type;
+	sequence_type type;
 	std::string val;
 	bool id_b;
 	bool idrefs_b;
 
 public:	// evaluator interface
 	node_kind_t node_kind() const { return attr_kind; }
-	item_type const& get_type(context *) const;
+	sequence_type_t const& get_type(context *) const;
 	rchandle<QName> get_name() const { return name_h; }
 	std::string get_val() const { return val; }
 	
