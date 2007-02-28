@@ -59,6 +59,9 @@ typedef double						xqp_unsignedShort;
 typedef double						xqp_nonPositiveInteger;
 typedef double						xqp_positiveInteger;
 typedef double						xqp_negativeInteger;
+typedef void*							xqp_base64Binary;
+typedef void*							xqp_base64Binary;
+typedef void*							xqp_hexBinary;
 
 
 } /* namespace xqp */
