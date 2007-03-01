@@ -3,21 +3,20 @@
  *  $Id: context.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan,Paul Pedersen
  *
  */
 
 #ifndef XQP_CONTEXT_H
 #define XQP_CONTEXT_H
 
-#include "namespace.h"
-
+#include "common.h"
 #include "../functions/signature.h"
-#include "../parser/symbol_table.h"
+#include "../functions/function.h"
+#include "../functions/library.h"
 #include "../native_impl/nodestore.h"
 #include "../runtime/iterator.h"
-#include "../types/base_types.h"
+#include "../types/sequence_type.h"
 #include "../types/collation.h"
 #include "../util/hashmap.h"
 #include "../util/list.h"
@@ -31,26 +30,26 @@
 
 namespace xqp {
 
-class function_impl;
+class context;
 
 class var_binding : public rcobject
 {
 protected:
-	rchandle<QName> name_h;
+	qnameid name;
 	rchandle<item_iterator> value_h;
-	item_type type;
+	sequence_type_t type;
 
 public:
-	var_binding(rchandle<QName>, rchandle<item_iterator>, item_type const&);
+	var_binding(qnameid, rchandle<item_iterator>, sequence_type_t);
 	var_binding(var_binding const&);
 	var_binding(var_binding &);
 	var_binding();
 	~var_binding() {}
 
 public:
-	rchandle<QName> get_qname() const { return name_h; }
+	rchandle<QName> get_name(context * ctx_p) const;
 	rchandle<item_iterator> get_value() const { return value_h; }
-	item_type get_type() const { return type; }
+	sequence_type_t get_type() const { return type; }
 
 };
 
@@ -116,7 +115,7 @@ protected:	// XQuery 1.0 static context
 	**	and by namespace declaration attributes in direct element 
 	**	constructors. 
 	*/
-  list<uint32_t> namespaces;
+  list<nsid> namespaces;
 
 	/*
 	**	[Definition: Default element/type namespace. This is a namespace URI 
@@ -125,7 +124,7 @@ protected:	// XQuery 1.0 static context
 	**	expected.] The URI value is whitespace normalized according to the 
 	**	rules for the xs:anyURI type in [XML Schema]. 
 	*/
-	uint32_t default_elem_or_type_ns;
+	nsid default_elem_or_type_ns;
 
 	/*
 	**	[Definition: Default function namespace.  This is a namespace URI or 
@@ -134,7 +133,7 @@ protected:	// XQuery 1.0 static context
 	**	URI value is whitespace normalized according to the rules for the 
 	**	xs:anyURI type in [XML Schema]. 
 	*/
-	uint32_t default_function_ns;
+	nsid default_function_ns;
 
 	/*
 	**	[Definition: In-scope schema types. Each schema type definition is 
@@ -145,7 +144,7 @@ protected:	// XQuery 1.0 static context
 	**	supported, in-scope schema types also include all type definitions 
 	**	found in imported schemas. ] 
 	*/
-	list<QName> in_scope_schema_types;
+	list<qnameid> in_scope_schema_types;
 
 	/*
 	**	[Definition: In-scope element declarations. Each element declaration 
@@ -157,7 +156,7 @@ protected:	// XQuery 1.0 static context
 	**	includes information about the element's substitution group 
 	**	affiliation. 
 	*/
-	list<QName> in_scope_elem_decls;
+	list<qnameid> in_scope_elem_decls;
 
 	/*
 	**	[Definition: In-scope attribute declarations. Each attribute 
@@ -167,7 +166,7 @@ protected:	// XQuery 1.0 static context
 	**	Feature is supported, in-scope attribute declarations include all 
 	**	attribute declarations found in imported schemas.] 
 	*/
-	list<QName> in_scope_attr_decls;
+	list<qnameid> in_scope_attr_decls;
 
 	/*
 	**	[Definition: In-scope variables. This is a set of (expanded QName, 
@@ -194,7 +193,7 @@ protected:	// XQuery 1.0 static context
 	**	static type of the context item within the scope of a given 
 	**	expression.] 
 	*/
-	item_type context_item_type;
+	sequence_type_t context_item_type;
 
 	/*
 	**	[Definition: Statically known collations. This is an 
@@ -205,7 +204,7 @@ protected:	// XQuery 1.0 static context
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	list<uint32_t> collations;
+	list<qnameid> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -214,7 +213,7 @@ protected:	// XQuery 1.0 static context
 	**	xs:string and xs:anyURI  (and types derived from them) when no 
 	**	explicit collation is specified.] 
 	*/
-	uint32_t default_collation;
+	qnameid default_collation;
 
 	/*
 	**	[Definition: Construction mode. The construction mode governs the 
@@ -271,7 +270,7 @@ protected:	// XQuery 1.0 static context
 	**	function.)] The URI value is whitespace normalized according to the 
 	**	rules for the xs:anyURI type in [XML Schema]. 
 	*/
-	uint32_t base_uri;
+	std::string base_uri;
 
 	/*
 	**	[Definition: Function signatures. This component defines the set of 
@@ -280,7 +279,6 @@ protected:	// XQuery 1.0 static context
 	**	arity (number of parameters).] In addition to the name and arity, each 
 	**	function signature specifies the static types of the function 
 	**	parameters and result. 
-	**
 	**	The function signatures include the signatures of constructor 
 	**	functions, which are discussed in 3.12.5 Constructor Functions. 
 	*/
@@ -298,7 +296,7 @@ protected:	// XQuery 1.0 static context
 	**	available. A URI need not be found in the statically known documents 
 	**	to be accessed using fn:doc. 
 	*/
-	hashmap<item_type> statically_known_documents;
+	hashmap<sequence_type_t> statically_known_documents;
 
 	/*
 	**	[Definition: Statically known collections. This is a mapping from 
@@ -313,7 +311,7 @@ protected:	// XQuery 1.0 static context
 	**	available. A URI need not be found in the statically known collections 
 	**	to be accessed using fn:collection. 
 	*/
-	hashmap<item_type> statically_known_collections;
+	hashmap<sequence_type_t> statically_known_collections;
 
 	/*
 	**	[Definition: Statically known default collection type. This is the 
@@ -322,7 +320,7 @@ protected:	// XQuery 1.0 static context
 	**	other value by an implementation, the value of statically known 
 	**	default collection type is node()*. 
 	*/
-	//hashmap<item_type> statically_known_collection_types;
+	//hashmap<sequence_type_t> statically_known_collection_types;
 
 
 public:	// manipulators
@@ -332,24 +330,24 @@ public:	// manipulators
 	void set_default_function_ns(std::string const& uri);
 	void add_namespace(std::string const& prefix, std::string const& uri);
 
-  list_iterator<uint32_t> namespaces_begin() const
+  list_iterator<nsid> namespaces_begin() const
 		{ return namespaces.begin(); }
-  list_iterator<uint32_t> namespaces_end() const
+  list_iterator<nsid> namespaces_end() const
 		{ return namespaces.end(); }
 
-	list_iterator<QName> in_scope_schema_types_begin() const
+	list_iterator<qnameid> in_scope_schema_types_begin() const
 		{ return in_scope_schema_types.begin(); }
-	list_iterator<QName> in_scope_schema_types_end() const
+	list_iterator<qnameid> in_scope_schema_types_end() const
 		{ return in_scope_schema_types.end(); }
 
-	list_iterator<QName> in_scope_elem_decls_begin() const
+	list_iterator<qnameid> in_scope_elem_decls_begin() const
 		{ return in_scope_elem_decls.begin(); }
-	list_iterator<QName> in_scope_elem_decls_end() const
+	list_iterator<qnameid> in_scope_elem_decls_end() const
 		{ return in_scope_elem_decls.end(); }
 
-	list_iterator<QName> in_scope_attr_decls_begin() const
+	list_iterator<qnameid> in_scope_attr_decls_begin() const
 		{ return in_scope_attr_decls.begin(); }
-	list_iterator<QName> in_scope_attr_decls_end() const
+	list_iterator<qnameid> in_scope_attr_decls_end() const
 		{ return in_scope_attr_decls.end(); }
 
 	list_iterator<var_binding> in_scope_vars_begin() const
@@ -357,13 +355,13 @@ public:	// manipulators
 	list_iterator<var_binding> in_scope_vars_end() const
 		{ return in_scope_vars.end(); }
 
-	list_iterator<uint32_t> collations_begin() const
+	list_iterator<qnameid> collations_begin() const
 		{ return collations.begin(); }
-	list_iterator<uint32_t> collations_end() const
+	list_iterator<qnameid> collations_end() const
 		{ return collations.end(); }
 
 
-	item_type get_context_item_type() const
+	sequence_type_t get_context_item_type() const
 		{ return context_item_type; }
 	enum construction_mode_t get_construction_mode() const
 		{ return construction_mode; }
@@ -379,7 +377,7 @@ public:	// manipulators
 		{ return preserve_mode; }
 
 	
-	void set_context_item_type(item_type v)
+	void set_context_item_type(sequence_type_t v)
 		{ context_item_type = v; }
 	void set_construction_mode(enum construction_mode_t v)
 		{ construction_mode = v; }
@@ -401,11 +399,11 @@ public:	// manipulators
 	void set_base_uri(std::string const&);
 	
 
-	std::string get_function_type(QName const&, uint32_t arity) 
+	sequence_type_t get_function_type(QName const&) 
 	 const throw (xqp_exception);
-	item_type get_document_type(std::string const&) 
+	sequence_type get_document_type(std::string const&) 
 	  const throw (xqp_exception);
-	item_type get_collection_type(std::string const&) 
+	sequence_type get_collection_type(std::string const&) 
 	  const throw (xqp_exception);
 	
 	
@@ -464,7 +462,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	XQuery expression. For a built-in function or external function, the 
 	**	function implementation is implementation-dependent.] 
 	*/
-	hashmap<function_impl const*> function_implementations;
+	rchandle<library> function_lib;
 
 	/*
 	**	[Definition: Current dateTime. This information represents an 
@@ -536,6 +534,9 @@ protected:
 	// context error code
 	uint32_t err;
 
+	// context arg list
+	std::vector<rchandle<item_iterator> > arg_hv;
+
 public:
 	// string store services
 	off_t put_string(std::string const& s);
@@ -552,8 +553,9 @@ public:
 	uint32_t default_element_nsid() const { return 0; /*STUB*/ }
 
 	// node store
-	rchandle<node> get_node(nodeid id);
-	rchandle<node> get_node(nodeid id) const;
+	rchandle<node> get_node(nodeid);
+	rchandle<node> get_node(nodeid) const;
+	rchandle<QName> get_qname(qnameid) const;
 	rchandle<nodestore> get_nodestore();
 
 	// namespace service
@@ -593,7 +595,21 @@ public:
 	rchandle<item_iterator> get_default_collection() const throw (xqp_exception);
 	
 	// function library
-	function_impl const* get_function(signature const&) const throw (xqp_exception);
+	rchandle<library> get_function_lib() const { return function_lib; }
+	function& get_function(rchandle<QName>,uint32_t arity) const
+	throw (xqp_exception);
+
+	// context arg list
+	uint32_t arg_count() const
+		{ return arg_hv.size(); }
+	void add_arg(rchandle<item_iterator> arg)
+		{ arg_hv.push_back(arg); }
+	void clear_args()
+		{ arg_hv.clear(); }
+	vector<rchandle<item_iterator> >::const_iterator arg_begin() const
+		{ return arg_hv.begin(); }
+	vector<rchandle<item_iterator> >::const_iterator arg_end() const
+		{ return arg_hv.end(); }
 	
 	// diagnostic flags
   enum diagnostic_flag_t {

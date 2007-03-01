@@ -58,30 +58,64 @@ schema_resolver_test : schema_resolver_test.cpp schema_resolver.cpp schema_resol
     ${BUILD}/schema_resolver.${SUFX} \
 		schema_resolver_test.cpp
 
-xml_ostream :	xml_ostream.cpp xml_ostream.h 
-	g++ -Wall -c ${OPT} -o ${BUILD}/xml_ostream.${SUFX} xml_ostream.cpp
-xml_ostream_test :	xml_ostream_test.cpp xml_ostream.cpp xml_ostream.h
-	g++ ${LARGEFILEFLAGS} -D DEBUG -Wall ${OPT} -o ${BUILD}/xml_ostream_test \
+scan_handler : scan_handler.h scan_handler.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/scan_handler.${SUFX} scan_handler.cpp
+
+xml_handler : xml_handler.h xml_handler.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_handler.${SUFX} xml_handler.cpp
+
+xml_loader : xml_loader.h xml_loader.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_loader.${SUFX} xml_loader.cpp
+
+xml_scanner : xml_scanner.h xml_scanner.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_scanner.${SUFX} xml_scanner.cpp
+
+xml_term : xml_term.h xml_term.cpp
+	g++ -c ${CXXOPT} -o ${BUILD}/xml_term.${SUFX} xml_term.cpp
+
+itemstore : itemstore.h itemstore.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore.${SUFX} itemstore.cpp
+
+itemstore_test : itemstore.h itemstore.cpp itemstore_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore_test \
+		../context/${BUILD}/context.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
+		../types/${BUILD}/sequence_types.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../values/${BUILD}/values.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		../values/${BUILD}/qname_value.${SUFX} \
+		${BUILD}/itemstore.${SUFX} \
+	itemstore_test.cpp
+
+xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_handler_test \
+		../context/${BUILD}/context.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/base_types.${SUFX} \
 		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../types/${BUILD}/node_types.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/URI.${SUFX} \
+		../util/${BUILD}/tokenbuf.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
 		../values/${BUILD}/qname_value.${SUFX} \
+		../values/${BUILD}/node_values.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
-		${BUILD}/xml_ostream.${SUFX} \
-		xml_ostream_test.cpp
-
-
-xml_istream :	xml_istream.cpp xml_istream.h 
-	g++ -Wall -c ${OPT} -o ${BUILD}/xml_istream.${SUFX} xml_istream.cpp
-xml_istream_test :	xml_istream_test.cpp xml_istream.cpp xml_istream.h
-	g++ ${LARGEFILEFLAGS} -D DEBUG -Wall ${OPT} -o ${BUILD}/xml_istream_test \
-  ../util/${BUILD}/xqp_exception.${SUFX} \
-  ../values/${BUILD}/qname_value.${SUFX} \
-  ${BUILD}/xml_istream.${SUFX} \
-  xml_istream_test.cpp
-
+		${BUILD}/scan_handler.${SUFX} \
+		${BUILD}/xml_scanner.${SUFX} \
+		${BUILD}/xml_handler.${SUFX} \
+		${BUILD}/nodestore.${SUFX} \
+		${BUILD}/namespace_pool.${SUFX} \
+		${BUILD}/qname_pool.${SUFX} \
+	xml_handler_test.cpp
 
 all : \
 	uri_resolver \
@@ -89,10 +123,11 @@ all : \
 	collection_resolver \
 	module_resolver \
 	schema_resolver \
-	xml_ostream \
-	xml_istream 
+	xml_term \
+	xml_scanner \
+	xml_handler
 
 test : \
 	uri_resolver_test \
-	xml_ostream_test 
+	xml_handler_test
 

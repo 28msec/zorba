@@ -25,12 +25,7 @@
 using namespace std;
 namespace xqp {
 
-#define IOEXCEPTION(s) \
-	{ \
-		ostringstream oerr; \
-		oerr << s << " [" << strerror(errno) << ']'; \
-		throw xqpxception(__FUNCTION__, oerr.str()); \
-	}
+#define DEFAULT_SIZE 4096
 
 
 /*_____________________________________________________________
@@ -57,24 +52,19 @@ public:		// state
 
 public:		// ctor,dtor
 	/**
-   ** Default construction: create no elements.
-   */
-  explicit fxarray() {}
-
-	/**
    ** Create a memory-mapped fxarray with a given backing file.
 	 **
    ** @param path - backing file pathname 
 	 ** @param size - initial size
   */
-  fxarray(string const& path, uint32_t size);
+  fxarray(string const& path, uint32_t initial_size=DEFAULT_SIZE);
 
 	/**
    ** Create a fxarray in memory.
 	 **
 	 ** @param size - initial size
    */
-  fxarray(uint32_t size);
+  fxarray(uint32_t initial_size=DEFAULT_SIZE);
 
 	/**
    ** Deallocate, possibly unmap and delete backing file.

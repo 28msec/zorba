@@ -2,7 +2,8 @@
  *
  *  $Id: hashfun_test.cpp,v 1.1 2006/10/09 07:07:54 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
+ *	Author: Paul Pedersen
  *
  */
 

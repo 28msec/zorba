@@ -30,7 +30,7 @@ using namespace std;
 namespace xqp {
 
 #define MAX_KEYLEN 65535
-//#define TRACE __FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__
+#define TRACE __FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__
 
 /*_____________________________________________________________
 |
@@ -62,6 +62,10 @@ private:
 	float ld;									// load factor, default = .6
 
 public:
+	fxhashmap(
+		float ld = .6,					// default load factor
+		unsigned depth);				// initial depth of hash directory, 10 => 1M
+
 	fxhashmap(
 		const string& datapath,	// data files directrory
 		float ld = .6,					// default load factor
@@ -182,6 +186,22 @@ inline void fxhashmap<V>::getentryKey(
 // ctor creates and initializes all the memory mapped objects
 template<class V>
 fxhashmap<V>::fxhashmap(
+	float    _factor,
+	unsigned _depth)
+:
+	vp(  new fxvector<entry> ),
+	hp(  new fxcharheap( 1<<_depth )),
+	dir( new fxarray<int>( _depth )),
+	ld(_factor )
+{
+	dsz = dir->size();
+	sz  = vp->size();
+	if (sz==0) dir->fill(-1);
+}
+
+
+template<class V>
+fxhashmap<V>::fxhashmap(
 	std::string const& _datapath,
 	float    _factor,
 	unsigned _depth)
@@ -212,27 +232,33 @@ fxhashmap<V>::~fxhashmap()
 template<class V>
 inline void fxhashmap<V>::resize()
 {
+	uint32_t dsz0;
 	fxarray<int>* dir0;
 	int oldindex;
 
 	// create and initialize new table
+	cout << TRACE << endl;
+	dsz0 = dsz;
+	dsz <<= 1;
+	cout << TRACE << endl;
 	dir0 = dir;
 	dir0->rename_backing_file(datapath+"dir0");
-	dir = new fxarray<int>(datapath+"dir", dir0->size()<<1);
+	cout << TRACE << endl;
+	dir = new fxarray<int>(datapath+"dir",dsz);
 	dir->fill(-1);
-	unsigned dsz0 = dir0->size();
-	dsz  = dir->size();
-
-	Assert<invariant>(dsz==dsz0*2, "fxhashmap::resize[01]");
+	cout << TRACE << endl;
 
 	// rehash: place old entry offset in new hash location
 	for (unsigned k = 0; k<dsz0; ++k) {
+		cout << TRACE << endl;
 		oldindex = (*dir0)[k];
 		if (oldindex>=0) {
+			cout << TRACE << endl;
 			char buf[MAX_KEYLEN+1];
 			hp->get((*vp)[oldindex].key,buf,0,MAX_KEYLEN);
 			uint32_t h0 = h(buf);
 			while (true) {
+				cout << TRACE << endl;
 				if ((*dir)[h0]==-1) break;
 				h0 = (h0 + 1) % dsz;
 			}
@@ -241,8 +267,8 @@ inline void fxhashmap<V>::resize()
 	}
 
 	// cleanup
-	dir0->destroy();
-	//delete dir0;
+	cout << TRACE << endl;
+	delete dir0;
 }
 
 

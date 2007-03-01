@@ -59,7 +59,8 @@ public:
 	uint32_t get_arity() const { return arity; }
 	void set_arity(uint32_t _arity) { arity = _arity; }
 
-	uint32_t hash_value() const;
+	uint32_t hash32() const;
+	uint64_t hash64() const;
 
 public:	// atomic_value interface
 

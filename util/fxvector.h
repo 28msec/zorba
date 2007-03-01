@@ -31,7 +31,7 @@
 using namespace std;
 namespace xqp {
 
-#define DEFAULT_SIZE		4096		// default initial (transient) vector size
+#define DEFAULT_SIZE		4096		// default initial vector size
 
 template<typename T>
 class fxvector
@@ -61,14 +61,13 @@ public:		// ctor,dtor
 	/**
 	 **  Create in-memory fxvector 
 	 */
-	fxvector();
-	fxvector(uint32_t);
+	fxvector(uint32_t initial_size=DEFAULT_SIZE);
 
 	/**
 	 **  Create a fxvector with a given backing file
 	 **  @param  path    The pathname of the backing file
 	 */
-	fxvector(string const& path);
+	fxvector(string const& path, uint32_t initial_size=DEFAULT_SIZE);
 
 	/**
 	 **  dtor erases all elements.
@@ -353,9 +352,10 @@ public:
 
 template<typename T>
 fxvector<T>::fxvector(
-	const string& _path) 
+	const string& _path,
+	uint32_t initial_size) 
 :
-	mmf_p(new mmfile(_path))
+	mmf_p(new mmfile(_path, initial_size))
 {
 	src = mmf_p->get_data();
 
@@ -381,31 +381,14 @@ fxvector<T>::fxvector(
 }
 
 template<typename T>
-fxvector<T>::fxvector(uint32_t size)
+fxvector<T>::fxvector(
+	uint32_t initial_size)
 :
 	mmf_p(NULL),
-	src(new char[size]),
+	src(new char[initial_size]),
 	start(reinterpret_cast<T*>(src)),
 	finish(reinterpret_cast<T*>(src)),
-	end_of_storage(reinterpret_cast<T*>(src+size))
-{
-
-#ifdef DEBUG
-	cout << "fxvector::ctor: start="<<(uint32_t)(start)
-			 <<", finish="<<(uint32_t)(finish)
-			 <<", end_of_storage="<<(uint32_t)(end_of_storage)<<endl;
-#endif
-
-}
-
-template<typename T>
-fxvector<T>::fxvector()
-:
-	mmf_p(NULL),
-	src(new char[DEFAULT_SIZE]),
-	start(reinterpret_cast<T*>(src)),
-	finish(reinterpret_cast<T*>(src)),
-	end_of_storage(reinterpret_cast<T*>(src+DEFAULT_SIZE))
+	end_of_storage(reinterpret_cast<T*>(src+initial_size))
 {
 
 #ifdef DEBUG
@@ -443,7 +426,9 @@ char * fxvector<T>::raw_copy(
 	// update mmfile
 	if (mmf_p) {
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
+		cout << "offset = " << (*offset_p) << endl;
 		*offset_p += length;
+		cout << "offset = " << (*offset_p) << endl;
 	}
 	return p;
 }

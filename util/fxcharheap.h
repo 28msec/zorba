@@ -17,6 +17,8 @@
 
 namespace xqp {
 
+#define DEFAULT_SIZE 4096
+
 class fxcharheap : public rcobject
 {
 public:  //iterator 
@@ -54,12 +56,12 @@ public:	//ctor,dtor
 	/**
 	 **	Create memory-mapped char heap.
 	 */
-  fxcharheap(std::string const& path, uint32_t initial_size);
+  fxcharheap(std::string const& path, uint32_t initial_size=DEFAULT_SIZE);
 
 	/**
 	 **	Create in-memory char heap.
 	 */
-  fxcharheap(uint32_t initial_size);
+  fxcharheap(uint32_t initial_size=DEFAULT_SIZE);
 
 	/**
 	 **	Destroy char heap.

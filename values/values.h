@@ -78,6 +78,7 @@ class value	: public object
 {
 protected:
 	sequence_type_t type;
+	size_t length;
 
 public:
 	value() {}
@@ -85,14 +86,14 @@ public:
 
 public:
 	sequence_type_t get_type() const { return type; }
-
+	size_t get_length() const { return length; }
   virtual std::ostream& put(std::ostream&, context *) const;
   virtual std::string describe(context *) const;
 	virtual rchandle<item_iterator> atomized_value(context *) const;
 	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
-
 	virtual bool is_sequence() const;
 	virtual bool is_empty() const;
+
 };
 
 

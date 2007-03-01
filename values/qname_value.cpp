@@ -8,6 +8,9 @@
  */
 
 #include "qname_value.h"
+
+#include "../context/common.h"
+#include "../util/hashfun.h"
 #include <ostream>
 #include <string>
 
@@ -17,7 +20,7 @@ namespace xqp {
 QName::QName(
 	string const& _prefix,
 	string const& _name,
-	uint32_t _ns_id)
+	nsid _ns_id)
 :
 	prefix(_prefix),
 	name(_name),
@@ -72,6 +75,23 @@ rchandle<item_iterator> QName::effective_boolean_value(
 	return new item_iterator(ctx_p);
 }
 
+uint32_t QName::hash32(
+	context * ctx_p) const
+{
+	string uri,name;
+	if (!ctx_p->namespace_uri(ns_id,uri)) {
+		throw(xqp_exception("failed to find namespace URI");
+	}
+	if (!ctx_p->namespace_uri(ns_id,uri)) {
+		throw(xqp_exception("failed to find namespace URI");
+	}
+	return hashfun::h32(
+}
+
+uint64_t QName::hash64(
+	context * ctx_p) const
+{
+}
 
 }	/* namespace xqp*/
 

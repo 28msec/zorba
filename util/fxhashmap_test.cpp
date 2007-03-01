@@ -20,7 +20,13 @@ using namespace xqp;
 int main(int argc, char* argv[])
 {
   try {
-    fxhashmap<uint64_t> m(argv[1], .6, 6);
+    fxhashmap<uint64_t>* m_p;
+		if (argc==1) {
+			m_p = new fxhashmap<uint64_t>(.6,6);
+		} else {
+    	m_p = new fxhashmap<uint64_t>(argv[1], .6, 6);
+		}
+		fxhashmap<uint64_t>& m= *m_p;
 
     // command loop
 		string cmdline, cmd, arg1, arg2;
@@ -70,7 +76,11 @@ int main(int argc, char* argv[])
 				string line;
         while (!in.eof()) {
 					getline(in, line);
-					cout << line<<endl;
+					cout << line << endl;
+					if (line=="arguable") {
+						int a = 1;
+						cout << "z = " <<  1/(a-1) << endl;	// jump to line 84
+					}
           m.put(line,n++);
         }
         in.close();

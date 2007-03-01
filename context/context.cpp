@@ -29,17 +29,10 @@ namespace xqp {
 */
 
 /*
-
 	Expecting directories:
-
-		data/
-		     docindex
-				 nodestore/
-				           nspool
+		data/docindex
+				 nodestore/nspool
 									 qnpool
-
-	XXX: define these dependencies in an XML config file.
-
 */
 
 context::context()
@@ -59,7 +52,7 @@ context::context()
 	context_position(0),
 	context_size(0),
 	var_values(1024,0.6),
-	function_implementations(1024,0.6),
+	function_lib(NULL),
 	timezone(-8),
 	available_documents(1024,0.6),
 	available_collections(1024,0.6),
@@ -154,14 +147,14 @@ bool context::get_base_uri(
 	string& uri) const
 {
 	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	return nspool_h->get_uri(base_uri, uri);
+	uri = base_uri;
+	return true;
 }
 
 void context::set_base_uri(
 	std::string const& uri)
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	base_uri = nspool_h->put(0,"#base_uri",uri);
+	base_uri = uri;
 }
 
 
@@ -224,16 +217,16 @@ bool context::get_dnid(
 
 var_binding::var_binding()
 :
-  name_h(NULL),
+  name(0),
 	value_h(NULL),
-  type(item_type())
+  type(xs_untypedValue)
 {
 }
 
 var_binding::var_binding(
 	var_binding &  v)
 :
-  name_h(v.name_h),
+  name(v.name),
 	value_h(v.value_h),
   type(v.type)
 {
@@ -242,28 +235,35 @@ var_binding::var_binding(
 var_binding::var_binding(
 	var_binding const&  v)
 :
-  name_h(v.name_h),
+  name(v.name),
   value_h(v.value_h),
   type(v.type)
 {
 }
 
 var_binding::var_binding(
-	rchandle<QName> _name_h,
+	qnameid _name,
 	rchandle<item_iterator> _value_h,
-	item_type const& _type)
+	sequence_type_t _type)
 :
-	name_h(_name_h),
+	name(_name),
 	value_h(_value_h),
 	type(_type)
 {
+}
+
+
+rchandle<QName> var_binding::get_name(
+	context * ctx_p) const
+{
+	return ctx_p->get_qname(name);
 }
 
 void context::push_var(
 	rchandle<var_binding> vb_h)
 {
 	varstackref_t s_p;
-	string varname = vb_h->get_qname()->describe(this);
+	string varname = vb_h->get_name(this)->describe(this);
 	if (!var_values.get(varname, s_p)) {
 		s_p = new stack<varref_t>;
 		var_values.put(varname, s_p);
@@ -291,9 +291,8 @@ throw (xqp_exception)
  :  functions                              :
  :.........................................*/
 
-string context::get_function_type(
-  QName const& fqname, 
-  uint32_t arity) const 
+sequence_type_t context::get_function_type(
+  QName const& fqname) const 
 throw (xqp_exception)
 {
   ostringstream oss;

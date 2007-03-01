@@ -18,9 +18,9 @@ int main(int argc, char* argv[])
 {
 	try {
 		context ctx;
-		rchandle<QName> var1_h = new QName(QName::qn_var, "var1");
-		rchandle<QName> var2_h = new QName(QName::qn_var, "var2");
-		rchandle<QName> var3_h = new QName(QName::qn_var, "var3");
+		rchandle<QName> var1_h = new QName("var1");
+		rchandle<QName> var2_h = new QName("var2");
+		rchandle<QName> var3_h = new QName("var3");
 
 		rchandle<item_iterator> it1_h = new singleton_iterator(&ctx,string("value-1"));
 		rchandle<item_iterator> it2_h = new singleton_iterator(&ctx,string("value-2"));

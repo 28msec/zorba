@@ -2,7 +2,8 @@
  *
  *  $Id: hashmap.h,v 1.2 2006/10/11 00:13:43 Paul Pedersen Exp $
  *
- *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
+ *  Copyright 2006-2007 FLWOR Foundation.
+ *	Author: Paul Pedersen
  *
  */
 
