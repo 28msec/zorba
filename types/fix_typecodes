@@ -1,0 +1,48 @@
+#!/usr/bin/perl -wi.bak
+
+# Preprocesses typecodes.h to re-create the enum entries from the ITEM_ARITY ones.
+
+while (<>) {
+	if (/emptySeq = /) {
+		# Found empty sequence (special case): pass through
+		print;
+		}
+	elsif (/= ITEM_ARITY/) {
+		# Found an item arity; regenerate other arities and references
+		my $item = $_;
+		print;		# item
+
+		s/ = /Ref = IS_REF + /;
+		s/[A-Z_]+_REP/REFERENCE_REP/;
+		print;		# ref to item
+
+		$_ = $item;
+		s/ = ITEM_ARITY/Seq = SEQUENCE_ARITY/;
+		s/[A-Z_]+_REP/SEQUENCE_REP/;
+		print;		# sequence
+
+		s/ = /Ref = IS_REF + /;
+		s/[A-Z_]+_REP/REFERENCE_REP/;
+		print;		# ref to sequence
+
+		$_ = $item;
+		s/ = ITEM_ARITY/Plus = NONEMPTY_SEQ_ARITY/;
+		s/[A-Z_]+_REP/NO_REP/;
+		print;		# nonempty sequence
+
+		$_ = $item;
+		s/ = ITEM_ARITY/Opt = OPT_ITEM_ARITY/;
+		s/[A-Z_]+_REP/NO_REP/;
+		print;		# optional item
+		}
+	elsif (/ = [A-Z_]+_ARITY/) {
+		# Found a non-item arity: ignore it
+		}
+	elsif (/ = IS_REF/) {
+		# Found a reference: ignore it
+		}
+	else {
+		# Found something else: pass through
+		print;
+		}
+	}
