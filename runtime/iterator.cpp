@@ -21,6 +21,7 @@
 using namespace std;
 namespace xqp {
 
+item_iterator empty_sequence(NULL);
 
 /*...........................................
 	: item_iterator base                      :
@@ -268,7 +269,7 @@ singleton_iterator::singleton_iterator(
 	string const& s)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_string_value(s)),
+	i_h(new xs_stringValue(s)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -285,7 +286,7 @@ singleton_iterator::singleton_iterator(
 	bool v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_boolean_value(v)),
+	i_h(new xs_booleanValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -298,7 +299,7 @@ singleton_iterator::singleton_iterator(
 	double v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_double_value(v)),
+	i_h(new xs_doubleValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -311,7 +312,7 @@ singleton_iterator::singleton_iterator(
 	int v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_int_value(v)),
+	i_h(new xs_intValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -324,7 +325,7 @@ singleton_iterator::singleton_iterator(
 	long long v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_long_value(v)),
+	i_h(new xs_longValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
