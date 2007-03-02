@@ -18,7 +18,8 @@
 namespace xqp {
 
 class context;
-class library
+
+class library : public rcobject
 {
 protected:
 	hashmap<function> funtab;
