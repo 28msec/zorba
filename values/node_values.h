@@ -72,16 +72,18 @@ public:	// nodes types
 	std::string decode(node_kind_t) const;
 
 protected:
-	nodeid id;
-	nodeid parentid;
+	uint32_t _gen;				// generation number
+	void* 	_ref;					// forwarding reference for update
+	nodeid _id;						// node id
+	nodeid _parentid;			// parent node id
 
-public:
-	nodeid get_id() const { return id; }
-	nodeid get_parentid() const { return parentid; }
-	void set_id(nodeid _id) { id = _id; }
-	void set_parentid(nodeid _parentid) { parentid = _parentid; }
+public:		// storage interface
+	uint32_t& gen() { return _ref; }
+	void*& ref() { return _ref; }
+	nodeid& id() { return _id; }
+	nodeid& parentid() const { return _parentid; }
 
-public:
+public:		// XQUery interface
 	/**
 	 *	The dm:node-kind accessor returns a string identifying the kind of 
 	 *	node. It will be one of the following, depending on the kind of node: 
@@ -254,34 +256,40 @@ class namespace_node;
 class document_node : public node
 {
 protected:
-	nodeid docid;
+	nodeid _doc_id;
+	uri_id _base_uri_id;
+	uri_id _doc_uri_d;
+	uint32_t _ns_count;
+	uint32_t _child_count;
 	char rest[0];
 
-public:		// rest[0] consists of:
-	std::string baseuri() const;
-	std::string docuri() const;
-	uint32_t namespace_count() const;
-	namespace_node * get_namespace(uint32_t) const;
-	uint32_t child_count() const;
-	node * get_child(uint32_t) const;
+public:		// storage interface
+	nodeid& docid() { return _docid; }
+	uri_id& base_uri_id() { return _base_uri_id; }
+	uri_id& doc_uri_id() { return _doc_uri_id; }
+	uint32_t& ns_count() { return _ns_count; }
+	uint32_t& child_count() { return _child_count; }
+
+	char* baseuri() const;
+	char* docuri() const;
+
+	namespace_node& get_namespace(uint32_t);
+	node& get_child(uint32_t);
 
 	void* operator new(size_t, itemstore&);
 	void* operator new(size_t, void*);
+	void operator delete() {}
 
-public:		// data interface
+public:		// XQuery interface
 	node_kind_t node_kind() const { return doc_kind; }
+	std::string string_value(context const*) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> document_uri(context *) const;
 	rchandle<item_iterator> children(context *) const;
 	rchandle<item_iterator> namespaces(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
-  rchandle<item_iterator> unparsed_entity_public_id(context *,
-    std::string const& entity_name) const;
-	rchandle<item_iterator> unparsed_entity_system_id(context *,
-	  std::string const& entity_name) const;
-	std::string string_value(context const*) const;
 
-private:	//ctor,dtor
+private:	// ctor,dtor
 	document_node() {}
 	document_node(document_node&) {}
 	~document_node() {}
@@ -345,31 +353,7 @@ public:
 |			Instruction, Comment, and Text Nodes if it is not empty. Attribute, 
 |			Namespace, and Document Nodes can never appear as children 
 | 2.	The Attribute Nodes of an element must have distinct xs:QNames.
-| 3.	If a node N is among the children of an element E, then the 
-|			parent of N must be E. 
-| 4.	Exclusive of Attribute and Namespace Nodes, if a node N has a 
-|			parent element E, then N must be among the children of E. (Attribute 
-|			and Namespace Nodes have a parent, but they do not appear among the 
-|			children of their parent.)  The data model permits Element Nodes
-|     without parents (to represent partial results during expression
-|     processing, for example).  Such Element Nodes must not appear
-|     among the children of any other node. 
-| 5.	If an Attribute Node A is among the attributes of an element E, 
-|			then the parent of A must be E. 
-| 6.	If an Attribute Node A has a parent element E, then A must be 
-|			among the attributes of E.  The data model permits Attribute Nodes
-|     without parents. Such Attribute Nodes must not appear among the
-|     attributes of any Element Node. 
-| 7.	If a Namespace Node N is among the namespaces of an element E, 
-|			then the parent of N must be E. 
-| 8.	If a Namespace Node N has a parent element E, then N must be 
-|			among the namespaces of E.  The data model permits Namespace Nodes
-|     without parents. Such Namespace Nodes must not appear among the
-|     namespaces of any Element Node.
-| 9.	If the dm:type-name of an Element Node is xs:untyped, then the 
-|			dm:type-name of all its descendant elements must also be xs:untyped 
-|			and the dm:type-name of all its Attribute Nodes must be 
-|			xs:untypedAtomic. 
+| 3.-9.  Parent-child consistency.
 | 10. If the dm:type-name of an Element Node is xs:untyped, then the 
 |			nilled property must be false. 
 | 11. If the nilled property is true, then the children property must 
@@ -397,29 +381,32 @@ public:
 class element_node : public node
 {
 protected:
+	nodeid _docid;						// cached parent docid
+	uint32_t _ns_count;				// count of namespace nodes
+	uint32_t _attr_count;			// count of attribute nodes
+	uint32_t _child_count;		// count of child nodes
+	
 	char rest[0];
 
 public:	// storage interface
-	nodeid get_docid() const { return docid; }
-	bool is_nilled() const;
-	bool is_id() const { return type & ID_SUB5; }
-	bool is_idref() const { return type & IDREF_SUB5; }
+	nodeid& docid() const { return _docid; }
+	uint32_t& ns_count() const { return _ns_count; }
+	uint32_t& attr_count() const { return _attr_count; }
+	uint32_t& child_count() const { return _child_count; }
 
-	uint32_t ns_count() const;
-	uint32_t attr_count() const;
-	uint32_t child_count() const;
+	namespace_node& namespace(uint32_t);
+	attribute_node& attribute(uint32_t);
+	node& child(uint32_t);
 
-	namespace_node * get_namespace(uint32_t) const;
-	attribute_node * get_attribute(uint32_t) const;
-	node * get_child(uint32_t) const;
-
+	// arena allocation
 	void * operator new(size_t, itemstore&);
 	void * operator new(size_t, void*);
+	void operator delete() {}
 
 public:	// data interface
 	node_kind_t node_kind() const { return elem_kind; }
+	std::string string_value(context const*) const;
 	rchandle<QName> get_name() const;
-
 	rchandle<item_iterator> attributes(context *) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> children(context *) const;
@@ -429,9 +416,12 @@ public:	// data interface
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> doc(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
-	std::string string_value(context const*) const;
 
-private:	//ctor,dtor
+	bool is_nilled() const;
+	bool is_id() const { return type & ID_SUB5; }
+	bool is_idref() const { return type & IDREF_SUB5; }
+
+private:	//ctor,dtor - lock out
 	element_node(element_node const&) {}
 	element_node() {}
 	~element_node() {}
@@ -527,6 +517,11 @@ protected:
 
 public:	// storage interface
 
+	// arena allocation
+	void * operator new(size_t, itemstore&);
+	void * operator new(size_t, void*);
+	void operator delete() {}
+
 public:	// data interface
 	node_kind_t node_kind() const { return attr_kind; }
 	bool is_id() const { return type & ID_SUB5; }
@@ -539,14 +534,12 @@ public:	// data interface
 	rchandle<item_iterator> typed_value(context *) const;
 	std::string string_value(context const*) const;
 
-private:	//ctor,dtor
+private:	//ctor,dtor - lock out
 	attribute_node(attribute_node&);
   attribute_node(nodeid id);
   ~attribute_node();
 
-public:
-	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void*);
+public:		// output,debugging
 	std::ostream& put(std::ostream&,context *) const;
 
 };
@@ -568,24 +561,28 @@ class namespace_node : public node
 protected:
 	char rest[0];
 
-public:	// accessors
+public:		// storage interface
 	node_kind_t node_kind() const { return ns_kind; }
 	std::string get_prefix() const;
 	std::string get_uri() const;
 
+	// arena allocation
+	void * operator new(size_t, itemstore&);
+	void * operator new(size_t, void*);
+	void operator delete() {}
+
+public:		// XQuery interface
 	rchandle<item_iterator> node_name(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 	std::string string_value(context const*) const;
 
-private:	//ctor,dtor
+private:	//ctor,dtor - lock out
 	namespace_node(namespace_node&) {}
 	namespace_node() {}
 	~namespace_node() {}
 
-public:
-	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void*);
+public:		// output, debugging
 	std::ostream& put(std::ostream&,context *) const;
 
 };
@@ -602,25 +599,28 @@ class pi_node : public node
 protected:
 	char rest[0];
 
-public:	// accessors
-	node_kind_t node_kind() const { return pi_kind; }
-	std::string get_target() const;
-	std::string get_content() const;
+public:		// storage interface
+	char * get_target() const;
+	char * get_content() const;
 	
+	// arena allocation
+	void * operator new(size_t, itemstore&);
+	void * operator new(size_t, void*);
+
+public:		// XQuery interface
+	node_kind_t node_kind() const { return pi_kind; }
+	std::string string_value(context const*) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 	rchandle<item_iterator> node_name(context *) const;
-	std::string string_value(context const*) const;
 
-private:	//ctor,dtor
+private:	//ctor,dtor - lock out
 	pi_node(pi_node&) {}
 	pi_node() {}
 	~pi_node() {}
 
-public:
-	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void*);
+public:		// output, debugging
 	std::ostream& put(std::ostream&,context *) const;
 
 };
@@ -629,7 +629,6 @@ public:
 
 /*______________________________________________________________________
 | 6.6 Comment Nodes 
-| 
 |_______________________________________________________________________*/
 
 class comment_node : public node
@@ -637,21 +636,25 @@ class comment_node : public node
 protected:
 	char rest[0];
 	
-public:	// accessors
+public:		// storage interface
+
+	// arena allocation
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, void*);
+
+public:		// XQUery interface
 	enum node_kind_t node_kind() const { return comment_kind; }
+	std::string string_value(context const*) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
-	std::string string_value(context const*) const;
 
-private:	//ctor,dtor
+private:	//ctor,dtor - lock out
 	comment_node(comment_node&) {}
 	comment_node() {}
 	~comment_node() {}
 
-public:
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void*);
+public:		// output, debugging
 	std::ostream& put(std::ostream&,context *) const;
 
 };
@@ -677,15 +680,22 @@ class text_node : public node
 protected:
 	char rest[0];
 	
-public:	// accessors
+public:		// storage interface
+	char const* content() const { return rest; }
+	uint32_t content_length() const;
+
+	// arena allocation
+	void* operator new(size_t node_size, itemstore&);
+	void* operator new(size_t node_size, void*);
+	void operator delete(void*) {}
+
+public:		// accessors
 	enum node_kind_t node_kind() const { return text_kind; }
-	char const* get_content() const { return rest; }
-	uint32_t get_content_length() const;
+	std::string string_value(context const*) const;
 	
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
-	std::string string_value(context const*) const;
 
 private://ctor,dtor
 	text_node(text_node&) {}
@@ -693,9 +703,6 @@ private://ctor,dtor
 	~text_node() {}
 
 public:
-	void* operator new(size_t node_size, itemstore&);
-	void* operator new(size_t node_size, void*);
-	void operator delete(void*) {}
 	std::ostream& put(std::ostream&,context *) const;
 
 };
