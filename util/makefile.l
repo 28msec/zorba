@@ -77,7 +77,7 @@ file_test :	file_test.cpp file.cpp file.h
 		file_test.cpp; \
 
 mmfile :	mmfile.cpp mmfile.h 
-	g++ ${LARGEFILES} -c ${CXXOPT} -o ${BUILD}/mmfile.${SUFX} mmfile.cpp
+	g++ -DDEBUG ${LARGEFILES} -c ${CXXOPT} -o ${BUILD}/mmfile.${SUFX} mmfile.cpp
 mmfile_test :	mmfile_test.cpp mmfile.cpp mmfile.h 
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -o ${BUILD}/mmfile_test \
 		${BUILD}/xqp_exception.${SUFX} \

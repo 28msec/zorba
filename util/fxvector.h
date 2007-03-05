@@ -178,6 +178,8 @@ public:		// vector interface
 	 */
 	size_type size() const
 	{
+		cout << "start = " << start << endl;
+		cout << "finish = " << finish << endl;
 		return size_type(end() - begin());
 	}
 
@@ -307,7 +309,8 @@ public:
 	 */
 	void push_back(const value_type& x)
 	{
-		if (finish+sizeof(value_type) >= end_of_storage) expand();
+		//if (finish+sizeof(value_type) >= end_of_storage) expand();
+		if (&finish[1] > end_of_storage) expand();
 		std::_Construct(finish, x);
 		++finish;
 		if (mmf_p) {	// update offset_p
@@ -403,7 +406,16 @@ template<typename T>
 fxvector<T>::~fxvector()
 {
 	std::_Destroy(start, finish);
-	if (mmf_p) delete mmf_p;
+	if (mmf_p) {
+
+#ifdef DEBUG
+	cout << "fxvector::dtor: offset = "
+			 << *reinterpret_cast<off_t*>(src) << endl;
+#endif
+
+		unmap();
+		delete mmf_p;
+	}
 }
 
 template<typename T>
@@ -491,12 +503,15 @@ void fxvector<T>::expand()
 #endif
 
 	if (mmf_p) {
+		off_t offset = *reinterpret_cast<off_t*>(src);
 		mmf_p->expand();
 		src = mmf_p->get_data();
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
+		*offset_p = offset;
 
 #ifdef DEBUG
-	cout << "fxvector::expand: offset = " << *offset_p << endl;
+	cout << "fxvector::expand: offset = "
+			 << *reinterpret_cast<off_t*>(src) << endl;
 #endif
 
 		// update vector state
@@ -528,17 +543,7 @@ void fxvector<T>::expand()
 template<typename T>
 void fxvector<T>::unmap()
 {
-	if (mmf_p) {
-		uint32_t m = capacity() * sizeof(value_type);
-
-	/*if (msync(src, eofoff,0)==-1) {
-			throw xqp_exception("msync failed");
-		}
-	*/
-		if (munmap(src, m)==-1) {
-			throw xqp_exception("munmap failed");
-		}
-	}
+	if (mmf_p) mmf_p->unmap();
 }
 
 

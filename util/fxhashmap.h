@@ -30,6 +30,7 @@ using namespace std;
 namespace xqp {
 
 #define MAX_KEYLEN 65535
+#define DEFAULT_DIR_SIZE 65536
 #define TRACE __FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__
 
 /*_____________________________________________________________
@@ -57,33 +58,36 @@ private:
 	fxvector<entry>* vp;			// memory-mapped hash entry vector
 	fxcharheap* hp;						// memory-mapped string heap
 	fxarray<int>* dir;				// hash directory, indexes into v, -1 = empty
-	unsigned dsz;							// directory size
-	unsigned sz;							// count of hashed entries
+	uint32_t dsz;							// directory size
+	uint32_t sz;							// count of hashed entries
 	float ld;									// load factor, default = .6
+	bool persistent;					// true <-> persistent map
 
 public:
+	// transient map
 	fxhashmap(
-		float ld = .6,					// default load factor
-		unsigned depth);				// initial depth of hash directory, 10 => 1M
+		float ld = .6,							// default load factor
+		uint32_t initial_size = DEFAULT_DIR_SIZE);
 
+	// persistent map
 	fxhashmap(
 		const string& datapath,	// data files directrory
 		float ld = .6,					// default load factor
-		unsigned depth);				// initial depth of hash directory, 10 => 1M
+		uint32_t initial_size = DEFAULT_DIR_SIZE);
 
 	~fxhashmap();
 
 public:
-	unsigned size() const { return sz; }			// return the number of hashed entries
+	uint32_t size() const { return sz; }			// return the number of hashed entries
 	float load() const { return ld; }					// return the load factor
-	unsigned dirSize() const { return dsz; }	// return the current hash directory size
+	uint32_t dirSize() const { return dsz; }	// return the current hash directory size
 	void resize();														// double the hash directory
 
-	V getentryVal(unsigned n) const { return (*vp)[n].val; }
-	void displayentry(unsigned n) const;
+	V getentryVal(uint32_t n) const { return (*vp)[n].val; }
+	void displayentry(uint32_t n) const;
 	void displayEntries() const;
 	void getentryKey(const entry&, char* buf, unsigned maxlen) const;
-	void getentryKey(uint64_t entry_offset, char* buf, unsigned maxlen) const;
+	void getentryKey(off_t entry_offset, char* buf, unsigned maxlen) const;
 	typename fxvector<entry>::const_iterator begin() { return vp->begin(); }
 	typename fxvector<entry>::const_iterator end() { return vp->end(); }
 
@@ -95,7 +99,7 @@ public:
 	bool find(const char* key, uint32_t& index) const;
 
 	// find key heap offset, true on match
-	bool find_heap(const string& key, uint64_t& heap_offset) const;
+	bool find_heap(const string& key, off_t& heap_offset) const;
 
 	// copy hash entry to result, true on match
 	bool get(const string& key, V& result) const;
@@ -112,7 +116,7 @@ public:
 	throw (bad_arg);
 
 	// add (key,val) entry to map, return offset
-	uint64_t put0(const char* key, V val)
+	off_t put0(const char* key, V val)
 	throw (bad_arg);
 
 	// the hash functions
@@ -141,7 +145,7 @@ public:
 
 // display one entry
 template<class V>
-inline void fxhashmap<V>::displayentry(unsigned n) const
+inline void fxhashmap<V>::displayentry(uint32_t n) const
 {
 	char buf[MAX_KEYLEN+1];
 	hp->get((*vp)[n].key,buf,0,MAX_KEYLEN);
@@ -175,7 +179,7 @@ inline void fxhashmap<V>::getentryKey(
 
 template<class V>
 inline void fxhashmap<V>::getentryKey(
-	uint64_t key,
+	off_t key,
 	char* buf,
 	unsigned maxlen) const
 {
@@ -187,12 +191,13 @@ inline void fxhashmap<V>::getentryKey(
 template<class V>
 fxhashmap<V>::fxhashmap(
 	float    _factor,
-	unsigned _depth)
+	uint32_t _initial_size)
 :
 	vp(  new fxvector<entry> ),
-	hp(  new fxcharheap( 1<<_depth )),
-	dir( new fxarray<int>( _depth )),
-	ld(_factor )
+	hp(  new fxcharheap( _initial_size )),
+	dir( new fxarray<int>( _initial_size )),
+	ld(_factor ),
+	persistent(false)
 {
 	dsz = dir->size();
 	sz  = vp->size();
@@ -204,13 +209,14 @@ template<class V>
 fxhashmap<V>::fxhashmap(
 	std::string const& _datapath,
 	float    _factor,
-	unsigned _depth)
+	uint32_t _initial_size)
 :
 	datapath( _datapath ),
-	vp(  new fxvector<entry>( _datapath+"keys" )),
-	hp(  new fxcharheap( 			_datapath+"heap", 1<<_depth )),
-	dir( new fxarray<int>(		_datapath+"dir", _depth )),
-	ld(_factor )
+	vp(  new fxvector<entry>(_datapath+"keys" )),
+	hp(  new fxcharheap( 		 _datapath+"heap", _initial_size )),
+	dir( new fxarray<int>(	 _datapath+"dir", _initial_size )),
+	ld(_factor ),
+	persistent(true)
 {
 	dsz = dir->size();
 	sz  = vp->size();
@@ -237,28 +243,27 @@ inline void fxhashmap<V>::resize()
 	int oldindex;
 
 	// create and initialize new table
-	cout << TRACE << endl;
 	dsz0 = dsz;
 	dsz <<= 1;
-	cout << TRACE << endl;
+
 	dir0 = dir;
-	dir0->rename_backing_file(datapath+"dir0");
-	cout << TRACE << endl;
-	dir = new fxarray<int>(datapath+"dir",dsz);
+	if (persistent) {
+		dir0->rename_backing_file(datapath+"dir0");
+		dir = new fxarray<int>(datapath+"dir", dsz);
+	}
+	else {
+		dir = new fxarray<int>(dsz);
+	}
 	dir->fill(-1);
-	cout << TRACE << endl;
 
 	// rehash: place old entry offset in new hash location
 	for (unsigned k = 0; k<dsz0; ++k) {
-		cout << TRACE << endl;
 		oldindex = (*dir0)[k];
 		if (oldindex>=0) {
-			cout << TRACE << endl;
 			char buf[MAX_KEYLEN+1];
 			hp->get((*vp)[oldindex].key,buf,0,MAX_KEYLEN);
 			uint32_t h0 = h(buf);
 			while (true) {
-				cout << TRACE << endl;
 				if ((*dir)[h0]==-1) break;
 				h0 = (h0 + 1) % dsz;
 			}
@@ -267,15 +272,16 @@ inline void fxhashmap<V>::resize()
 	}
 
 	// cleanup
-	cout << TRACE << endl;
-	delete dir0;
+	dir0->destroy();
 }
 
 
 // Store the hash location for a given key (or next available slot) 
-// in 'index'.  Return true <=> key matched.
+// in 'h'.  Return true <=> key matched.
 template<class V>
-inline bool fxhashmap<V>::find(const string& key, uint32_t& index) const
+inline bool fxhashmap<V>::find(
+	const string& key,
+	uint32_t& hval) const
 {
 	char keybuf[key.length()+1];
 	strcpy(keybuf,key.c_str());
@@ -283,14 +289,17 @@ inline bool fxhashmap<V>::find(const string& key, uint32_t& index) const
 	bool result = false;
 	while (true) {
 		int x = (*dir)[h0];
-		if (x==-1) break;							// -1 => empty
-		entry& e = (*vp)[x];					// (id,val)
+		if (x==-1) { hval = h0; break; }	// -1 => empty
+		entry& e = (*vp)[x];							// (id,val)
 		char buf[MAX_KEYLEN+1];
-		hp->get(e.key,buf,0,MAX_KEYLEN);		// string(id)
-		if (strcasecmp(buf,keybuf)==0) { result = true; break; }
-		h0 = (h0 + 1) % dir->size();	// collision
+		hp->get(e.key,buf,0,MAX_KEYLEN);	// string(id)
+		if (strcasecmp(buf,keybuf)==0) {
+			result = true;
+			break;
+		}
+		h0 = (h0 + 1) % dir->size();			// collision
 	}
-	index = h0;
+	hval = h0;
 	return result;
 }
 
@@ -298,20 +307,25 @@ inline bool fxhashmap<V>::find(const string& key, uint32_t& index) const
 // Store the hash location for a given key (or next available slot) 
 // in 'index'.  Return true <=> key matched.   
 template<class V>
-inline bool fxhashmap<V>::find(const char* key, uint32_t& index) const
+inline bool fxhashmap<V>::find(
+	const char* key,
+	uint32_t& hval) const
 {
 	uint32_t h0 = h(key);
 	bool result = false;
 	while (true) {
 		int x = (*dir)[h0];
-		if (x==-1) break;							// -1 => empty
-		entry& e = (*vp)[x];					// (id,val) 
+		if (x==-1) { hval = h0; break; }	// -1 => empty
+		entry& e = (*vp)[x];							// (id,val) 
 		char buf[MAX_KEYLEN+1];
-		hp->get(e.key,buf,0,MAX_KEYLEN);		// string(id)
-		if (strcasecmp(buf,key)==0) { result = true; break; }
-		h0 = (h0 + 1) % dir->size();	// collision
+		hp->get(e.key,buf,0,MAX_KEYLEN);	// string(id)
+		if (strcasecmp(buf,key)==0) {
+			result = true;
+			break;
+		}
+		h0 = (h0 + 1) % dir->size();			// collision
 	}
-	index = h0;
+	hval = h0;
 	return result;
 }
 
@@ -319,13 +333,13 @@ inline bool fxhashmap<V>::find(const char* key, uint32_t& index) const
 // Store the key heap offset for a given key in 'index'.
 // Return true <=> key matched. 
 template<class V>
-inline bool fxhashmap<V>::find_heap(const string& key, uint64_t& heap_offset) const
+inline bool fxhashmap<V>::find_heap(const string& key, off_t& heap_offset) const
 {
 	char keybuf[key.length()+1];
 	strcpy(keybuf,key.c_str());
 	uint32_t h0 = h(key);
 	bool result = false;
-	uint64_t offset = 0;
+	off_t offset = 0;
 	while (true) {
 		int x = (*dir)[h0];
 		if (x==-1) break;							// -1 => empty
@@ -420,7 +434,7 @@ throw (bad_arg)
 // Store a new (key.val) pair in the map.
 // Return key heap offset.
 template<class V>
-inline uint64_t fxhashmap<V>::put0(const char* key, V val) 
+inline off_t fxhashmap<V>::put0(const char* key, V val) 
 throw (bad_arg)
 {
 	uint32_t n = strlen(key);
@@ -434,7 +448,7 @@ throw (bad_arg)
 		e->val = val;
 		return e->key;
 	} else {
-		uint64_t id = hp->put(key, 0, n);
+		off_t id = hp->put(key, 0, n);
 		vp->push_back(entry(id,val));
 		(*dir)[h0] = sz++;
 		return id;
@@ -485,8 +499,15 @@ private:
 	unsigned dsz;							// directory size
 	unsigned sz;							// count of hashed entries
 	float ld;									// load factor, default = .6
+	bool persistent;					// true <-> persistent map
 
 public:
+	// transient map
+	fxhash32map(
+		float ld = .6,					// default load factor
+		unsigned depth = 10);		// initial depth of hash directory 10 => 1M
+
+	// persistent map
 	fxhash32map(
 		const string& datapath,	// data directory path
 		float ld = .6,					// default load factor
@@ -565,7 +586,24 @@ void fxhash32map<V>::displayEntries() const
 }
 
 
-// ctor creates and initializes all the memory mapped objects
+// construct transient map
+template<class V>
+fxhash32map<V>::fxhash32map(
+	float    _factor,
+	unsigned _depth)
+:
+	vp(  new fxvector<entry> ),
+	dir( new fxarray<int>( _depth )),
+	ld(_factor ),
+	persistent(false)
+{
+	dsz = dir->size();
+	sz  = vp->size();
+	if (sz==0) dir->fill(-1);
+} 
+
+
+// construct persistent map
 template<class V>
 fxhash32map<V>::fxhash32map(
 	const std::string& _datapath,
@@ -575,7 +613,8 @@ fxhash32map<V>::fxhash32map(
 	datapath( _datapath ),
 	vp(  new fxvector<entry>( _datapath+"keys" )),
 	dir( new fxarray<int>( 		_datapath+"dir", _depth )),
-	ld(_factor )
+	ld(_factor ),
+	persistent(true)
 {
 	dsz = dir->size();
 	sz  = vp->size();
@@ -600,8 +639,13 @@ inline void fxhash32map<V>::resize()
 
 	// create and initialize new table
 	dir0 = dir;
-	dir0->rename_backing_file(datapath+"dir0");
-	dir = new fxarray<int>(datapath+"dir", dir0->size()<<1);
+	if (persistent) {
+		dir0->rename_backing_file(datapath+"dir0");
+		dir = new fxarray<int>(datapath+"dir", dir0->size()<<1);
+	}
+	else {
+		dir = new fxarray<int>(dir0->size()<<1);
+	}
 	dir->fill(-1);
 	unsigned dsz0 = dir0->size();
 	dsz  = dir->size();
@@ -620,6 +664,7 @@ inline void fxhash32map<V>::resize()
 			(*dir)[h0] = oldindex;
 		}
 	}
+
 	// cleanup
 	dir0->destroy();
 	//delete dir0;
@@ -629,18 +674,23 @@ inline void fxhash32map<V>::resize()
 // Store the hash location for a given key (or next available slot) 
 // in 'index'.  Return true <=> key matched.
 template<class V>
-inline bool fxhash32map<V>::find(uint32_t key, uint32_t& index) const
+inline bool fxhash32map<V>::find(
+	uint32_t key,
+	uint32_t& hval) const
 {
 	uint32_t h0 = key % dsz;
 	bool result = false;
 	while (true) {
 		int x = (*dir)[h0];
-		if (x==-1) break;							// -1 => empty
-		entry& e = (*vp)[x];					// (id,val)
-		if (key==e.key) { result = true; break; }
-		h0 = (h0 + 1) % dir->size();	// collision
+		if (x==-1) { hval = h0; break; }	// -1 => empty
+		entry& e = (*vp)[x];							// (id,val)
+		if (key==e.key) {
+			result = true;
+			break;
+		}
+		h0 = (h0 + 1) % dir->size();			// collision
 	}
-	index = h0;
+	hval = h0;
 	return result;
 }
 
@@ -713,12 +763,19 @@ private:
 	unsigned dsz;							// directory size
 	unsigned sz;							// count of hashed entries
 	float ld;									// load factor, default = .6
+	bool persistent;					// true <-> persistent map
 
 public:
+	// transient map
+	fxhash64map(
+		float ld = .6,					// default load factor
+		unsigned depth = 6);		// initial depth of hash directory 6 => 64K
+
+	// persistent map
 	fxhash64map(
 		const string& datapath,	// data directory path
 		float ld = .6,					// default load factor
-		unsigned depth = 10);		// initial depth of hash directory 10 => 1M
+		unsigned depth = 6);		// initial depth of hash directory 6 => 64K
 
 	~fxhash64map();
 
@@ -793,7 +850,24 @@ void fxhash64map<V>::displayEntries() const
 }
 
 
-// ctor creates and initializes all the memory mapped objects
+// allocate transient hash64map
+template<class V>
+fxhash64map<V>::fxhash64map(
+	float    _factor,
+	unsigned _depth)
+:
+	vp(  new fxvector<entry> ),
+	dir( new fxarray<int>( _depth )),
+	ld(_factor),
+	persistent(false)
+{
+	dsz = dir->size();
+	sz  = vp->size();
+	if (sz==0) dir->fill(-1);
+} 
+
+
+// allocate persistent hash64map
 template<class V>
 fxhash64map<V>::fxhash64map(
 	const std::string& _datapath,
@@ -803,7 +877,8 @@ fxhash64map<V>::fxhash64map(
 	datapath( _datapath ),
 	vp(  new fxvector<entry>( _datapath+"keys" )),
 	dir( new fxarray<int>(		_datapath+"dir", _depth )),
-	ld(_factor )
+	ld(_factor),
+	persistent(true)
 {
 	dsz = dir->size();
 	sz  = vp->size();
@@ -829,8 +904,13 @@ inline void fxhash64map<V>::resize()
 
 	// create and initialize new table
 	dir0 = dir;
-	dir0->rename_backing_file(datapath+"dir0");
-	dir = new fxarray<int>(datapath+"dir", dir0->size()<<1);
+	if (persistent) {
+		dir0->rename_backing_file(datapath+"dir0");
+		dir = new fxarray<int>(datapath+"dir", dir0->size()<<1);
+	}
+	else {
+		dir = new fxarray<int>(dir0->size()<<1);
+	}
 	dir->fill(-1);
 	unsigned dsz0 = dir0->size();
 	dsz  = dir->size();
@@ -849,6 +929,7 @@ inline void fxhash64map<V>::resize()
 			(*dir)[h0] = oldindex;
 		}
 	}
+
 	// cleanup
 	dir0->destroy();
 	//delete dir0;
@@ -858,18 +939,23 @@ inline void fxhash64map<V>::resize()
 // Store the hash location for a given key (or next available slot) 
 // in 'index'.  Return true <=> key matched.
 template<class V>
-inline bool fxhash64map<V>::find(uint64_t key, uint32_t& index) const
+inline bool fxhash64map<V>::find(
+	uint64_t key,
+	uint32_t& hval) const
 {
 	uint32_t h0 = key % dsz;
 	bool result = false;
 	while (true) {
 		int x = (*dir)[h0];
-		if (x==-1) break;							// -1 => empty
-		entry& e = (*vp)[x];					// (id,val)
-		if (key==e.key) { result = true; break; }
-		h0 = (h0 + 1) % dir->size();	// collision
+		if (x==-1) { hval = h0; break; }		// -1 => empty
+		entry& e = (*vp)[x];								// (id,val)
+		if (key==e.key) {
+			result = true;
+			break;
+		}
+		h0 = (h0 + 1) % dir->size();				// collision
 	}
-	index = h0;
+	hval = h0;
 	return result;
 }
 

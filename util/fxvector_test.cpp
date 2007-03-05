@@ -60,6 +60,7 @@ int main(int argc, char* argv[])
 			if (arg_count>1) cout << "arg2 = " << arg2 << endl;
 
       if (cmd=="quit" || cmd=="exit") {
+				delete fxvec_p;
 				break;
 			}
       else if (cmd=="capacity") {
