@@ -35,6 +35,7 @@ protected:
 
 public:
 	qname_cache(std::string const& datapath);
+	qname_cache();
 	~qname_cache();
 
 public:
@@ -52,7 +53,7 @@ public:
 	bool find_prefix_urikey( std::string const& prefix, uint32_t& index ) const;
 	urikey_t get_prefix_urikey( std::string const& prefix ) const;
 
-	off_t put(
+	itemref_t put(
 		std::string const& uri_s,
 		std::string const& prefix_s,
 		std::string const& name_s,

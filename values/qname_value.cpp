@@ -20,7 +20,7 @@ namespace xqp {
 QName::QName(
 	string const& _prefix,
 	string const& _name,
-	nsid _ns_id)
+	nsid_t _ns_id)
 :
 	prefix(_prefix),
 	name(_name),
@@ -75,8 +75,7 @@ rchandle<item_iterator> QName::effective_boolean_value(
 	return new item_iterator(ctx_p);
 }
 
-uint32_t QName::hash32(
-	context * ctx_p) const
+uint32_t QName::hash32() const
 {
 	string uri,name;
 	if (!ctx_p->namespace_uri(ns_id,uri)) {
@@ -85,12 +84,13 @@ uint32_t QName::hash32(
 	if (!ctx_p->namespace_uri(ns_id,uri)) {
 		throw(xqp_exception("failed to find namespace URI");
 	}
-	return hashfun::h32(
+	return 0;
 }
 
 uint64_t QName::hash64(
 	context * ctx_p) const
 {
+	reutrn 0;
 }
 
 }	/* namespace xqp*/

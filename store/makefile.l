@@ -73,6 +73,18 @@ xml_scanner : xml_scanner.h xml_scanner.cpp
 xml_term : xml_term.h xml_term.cpp
 	g++ -c ${CXXOPT} -o ${BUILD}/xml_term.${SUFX} xml_term.cpp
 
+qname_cache : qname_cache.h qname_cache.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/qname_cache.${SUFX} qname_cache.cpp
+
+qname_cache_test : qname_cache.h qname_cache.cpp qname_cache_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/qname_cache_test \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		${BUILD}/qname_cache.${SUFX} \
+	qname_cache_test.cpp
+
 itemstore : itemstore.h itemstore.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore.${SUFX} itemstore.cpp
 

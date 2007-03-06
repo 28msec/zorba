@@ -31,7 +31,7 @@ public:
 	virtual ~function() {}
 
 public:
-	rchandle<QName> get_fname(context * ctx_p) const
+	qname get_fname(context * ctx_p) const
 		{ return sig.get_name(ctx_p); }
 
 public:

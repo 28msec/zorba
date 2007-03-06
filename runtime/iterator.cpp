@@ -61,12 +61,12 @@ void item_iterator::close()
 {
 }
 
-rchandle<item> item_iterator::next()
+item* item_iterator::next(uint32_t delta)
 {
 	return NULL;
 }
 
-rchandle<item> item_iterator::peek() const 
+item* item_iterator::peek() const 
 {
 	return NULL;
 }
@@ -80,7 +80,7 @@ void item_iterator::rewind()
 {
 }
 
-rchandle<item> item_iterator::operator*() const
+item* item_iterator::operator*() const
 {
 	return peek();
 }
@@ -122,14 +122,14 @@ void binary_iterator::close()
 	it2_h->close();
 }
 
-rchandle<item> binary_iterator::next()
+item* binary_iterator::next(uint32_t delta)
 {
-	rchandle<item> i1 = it1_h->next();
-	rchandle<item> i2 = it2_h->next();
+	rchandle<item> i1 = it1_h->next(delta);
+	rchandle<item> i2 = it2_h->next(delta);
 	return (*op)(ctx_p,i1,i2);
 }
 
-rchandle<item> binary_iterator::peek() const 
+item* binary_iterator::peek() const 
 {
 	rchandle<item> i1 = it1_h->peek();
 	rchandle<item> i2 = it2_h->peek();
@@ -145,17 +145,6 @@ void binary_iterator::rewind()
 {
 	it1_h->rewind();
 	it2_h->rewind();
-}
-
-rchandle<item> binary_iterator::operator*() const
-{
-	return peek();
-}
-
-item_iterator& binary_iterator::operator++()
-{
-	next();
-	return *this;
 }
 
 binary_iterator::binary_iterator(
@@ -201,9 +190,9 @@ void singleton_iterator::close()
 	done_b = false;
 }
 
-rchandle<item> singleton_iterator::next()
+item* singleton_iterator::next(uint32_t delta)
 {
-	if (!done_b) {
+	if (!done_b&& delta==1) {
 		done_b = true;
 		return i_h;
 	}
@@ -212,7 +201,7 @@ rchandle<item> singleton_iterator::next()
 	}
 }
 
-rchandle<item> singleton_iterator::peek() const 
+item* singleton_iterator::peek() const 
 {
 	return (!done_b) ? i_h : NULL;
 }
@@ -225,17 +214,6 @@ bool singleton_iterator::done() const
 void singleton_iterator::rewind()
 {
 	done_b = false;
-}
-
-rchandle<item> singleton_iterator::operator*() const
-{
-	return peek();
-}
-
-item_iterator& singleton_iterator::operator++()
-{
-	next();
-	return *this;
 }
 
 singleton_iterator::singleton_iterator(
@@ -366,17 +344,17 @@ void concat_iterator::close()
 {
 }
 
-rchandle<item> concat_iterator::next()
+item* concat_iterator::next(uint32_t delta)
 {
 	while (currit_h->done() && ++walker!=sentinel) {
 		currit_h = *walker;
 		++it_counter;
 	}
 	if (done()) return NULL;
-	return currit_h->next();
+	return currit_h->next(delta);
 }
 
-rchandle<item> concat_iterator::peek() const
+item* concat_iterator::peek() const
 {
 	if (done()) return NULL;
 	return currit_h->peek();
@@ -395,17 +373,6 @@ void concat_iterator::rewind()
 		(*walker)->rewind();
 	}
 	it_counter = 0;
-}
-
-rchandle<item> concat_iterator::operator*() const
-{
-	return peek();
-}
-
-item_iterator& concat_iterator::operator++()
-{
-	next();
-	return *this;
 }
 
 concat_iterator::concat_iterator(
@@ -454,7 +421,5 @@ concat_iterator::~concat_iterator()
 }
 
 
-
 }	/* namespace xqp */
-
 

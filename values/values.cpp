@@ -27,7 +27,7 @@ class context;
 
 /*______________________________________________________________________
 |  
-|	'value' - base class for the value hierarchy
+|	'object' - base class for the value hierarchy
 |_______________________________________________________________________*/
 
 // no methods currently
@@ -66,6 +66,20 @@ class context;
 |	'value' - top of the XQuery value hierarchy
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
+
+void * value::operator new(
+	size_t node_size,
+	itemstore& istore)
+{
+	return istore.alloc(node_size);
+}
+
+void * value::operator new(
+	size_t node_size,
+	void * p)
+{
+	return p;
+}
 
 ostream& value::put(ostream& os, context * ctx_p) const 
 {
@@ -115,6 +129,20 @@ rchandle<item_iterator> value::effective_boolean_value(
 |	'item' - union of node types and atomic types
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
+
+void * item::operator new(
+	size_t node_size,
+	itemstore& istore)
+{
+	return istore.alloc(node_size);
+}
+
+void * item::operator new(
+	size_t node_size,
+	void * p)
+{
+	return p;
+}
 
 ostream& item::put(ostream& os, context * ctx_p) const
 {
@@ -173,7 +201,7 @@ string atomic_value::describe(context * ctx_p) const
 
 sequence_type_t atomic_value::get_type() const
 {
-	return untypedAtomicValue;
+	return xs_untypedAtomicValue;
 }
 
 rchandle<item_iterator> atomic_value::atomized_value(

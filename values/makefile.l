@@ -11,8 +11,8 @@ qname_value : qname_value.h qname_value.cpp
 xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
 	g++ ${OPT} -c -o ${BUILD}/xs_primitive_values.${SUFX} xs_primitive_values.cpp
    
-node_values :	node_values.h node_values.cpp
-	g++ ${OPT} -c -o ${BUILD}/node_values.${SUFX} node_values.cpp
+nodes :	nodes.h nodes.cpp
+	g++ ${OPT} -c -o ${BUILD}/nodes.${SUFX} nodes.cpp
     
 ft_options :	ft_options.h ft_options.cpp
 	g++ ${OPT} -c -o ${BUILD}/ft_options.${SUFX} ft_options.cpp
@@ -46,22 +46,19 @@ xs_primitive_values_test : xs_primitive_values.h xs_primitive_values.cpp xs_prim
 		${BUILD}/qname_value.${SUFX} \
 		xs_primitive_values_test.cpp
 
-node_values_test : node_values.h node_values.cpp node_values_test.cpp
+nodes_test : nodes.h nodes.cpp nodes_test.cpp
 	g++ ${OPT} -o ${BUILD}/node_values_test \
 		../context/${BUILD}/context.${SUFX} \
-		../native_impl/${BUILD}/nodestore.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
-		../types/${BUILD}/base_types.${SUFX} \
-		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../types/${BUILD}/sequence_type.${SUFX} \
+		../store/${BUILD}/itemstore.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/values.${SUFX} \
-		${BUILD}/node_values.${SUFX} \
-		${BUILD}/qname_value.${SUFX} \
-		${BUILD}/xs_primitive_values.${SUFX} \
-		node_values_test.cpp
+		${BUILD}/nodes.${SUFX} \
+		nodes_test.cpp
 
 ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/ft_values_test \

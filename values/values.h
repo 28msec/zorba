@@ -12,6 +12,7 @@
 #define XQP_VALUES_H
 
 #include "../runtime/iterator.h"
+#include "../store/itemstore.h"
 #include "../types/sequence_type.h"
 #include "../util/rchandle.h"
 
@@ -77,16 +78,19 @@ public:
 class value	: public object
 {
 protected:
-	sequence_type_t type;
-	size_t length;
+	sequence_type_t m_type;
+	size_t m_length;
 
 public:
-	value() {}
+	value(sequence_type_t t, size_t l) : m_type(t), m_length(l) {}
 	virtual ~value() {}
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, void*);
+	void operator delete(void*) {}
 
 public:
-	sequence_type_t get_type() const { return type; }
-	size_t get_length() const { return length; }
+	sequence_type_t type() const { return m_type; }
+	size_t& length() { return m_length; }
   virtual std::ostream& put(std::ostream&, context *) const;
   virtual std::string describe(context *) const;
 	virtual rchandle<item_iterator> atomized_value(context *) const;
@@ -106,8 +110,12 @@ public:
 class item : public value
 {
 public:
-	item() {}
+	item(sequence_type_t type, size_t length) : value(type,length) {}
 	virtual ~item() {}
+
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, void*);
+	void operator delete(void*) {}
 
 public:
   virtual std::ostream& put(std::ostream&, context *) const;
@@ -129,7 +137,7 @@ public:
 class atomic_value : public item
 {
 public:
-	atomic_value() {}
+	atomic_value(sequence_type_t type, size_t length) : item(type,length) {}
 	virtual ~atomic_value() {}
 
 public:
@@ -145,6 +153,39 @@ public:
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
 };
+
+
+/*______________________________________________________________________
+|  
+|	'atomic_value' encapsulates values of primitive or derived types
+|_______________________________________________________________________*/
+
+class qname_value : public value 
+{
+protected:
+	uint64_t m_qnamekey;
+	uint64_t m_qnameref;
+	char rest[0];
+	/*
+		char[] localname
+		namespace_node namespace
+	*/
+
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, void*);
+	void operator delete(void*) {}
+
+private:	// ctor,dtor - lock out
+	qname_value(qname_value& qn) : value(xs_qname,0) {}
+	qname_value() : value(xs_qname,0) {}
+	~qname_value() {}
+
+public:		// output,debugging
+	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
+
+};
+
+
 
 
 /*______________________________________________________________________

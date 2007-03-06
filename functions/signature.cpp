@@ -8,22 +8,15 @@
  */
  
 #include "signature.h"
+#include "../util/fxhashmap.h"
 
-#include <vector>
-#include <string>
-#include "../context/context.h"
-#include "../util/hashmap.h"
-#include "../util/rchandle.h"
-#include "../values/qname_value.h"
-
- 
 using namespace std;
 namespace xqp {
 
-hashmap<signature const*> signature::sigmap;
+fxhashmap<signature const*> signature::sigmap;
 
 signature::signature(
-	qnameid _qname,
+	qnameid_t _qname,
 	sequence_type_t return_type)
 :
 	qname(_qname)
@@ -33,11 +26,6 @@ signature::signature(
 
 signature::~signature()
 {
-}
-
-rchandle<QName> signature::get_name(context * ctx_p) const
-{
-	return ctx_p->get_qname(qname);
 }
 
 

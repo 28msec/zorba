@@ -14,7 +14,7 @@
 #include "../functions/signature.h"
 #include "../functions/function.h"
 #include "../functions/library.h"
-#include "../native_impl/nodestore.h"
+#include "../store/itemstore.h"
 #include "../runtime/iterator.h"
 #include "../types/sequence_type.h"
 #include "../types/collation.h"
@@ -22,7 +22,6 @@
 #include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
-#include "../values/qname_value.h"
 #include "../values/node_values.h"
 
 #include <stack>
@@ -35,19 +34,19 @@ class context;
 class var_binding : public rcobject
 {
 protected:
-	qnameid name;
+	qnameid_t name;
 	rchandle<item_iterator> value_h;
 	sequence_type_t type;
 
 public:
-	var_binding(qnameid, rchandle<item_iterator>, sequence_type_t);
+	var_binding(qnameid_t, rchandle<item_iterator>, sequence_type_t);
 	var_binding(var_binding const&);
 	var_binding(var_binding &);
 	var_binding();
 	~var_binding() {}
 
 public:
-	rchandle<QName> get_name(context * ctx_p) const;
+	qname_node* get_name(context * ctx_p) const;
 	rchandle<item_iterator> get_value() const { return value_h; }
 	sequence_type_t get_type() const { return type; }
 
@@ -115,7 +114,7 @@ protected:	// XQuery 1.0 static context
 	**	and by namespace declaration attributes in direct element 
 	**	constructors. 
 	*/
-  list<nsid> namespaces;
+  list<std::pair<nsid_t,off_t> > namespaces;
 
 	/*
 	**	[Definition: Default element/type namespace. This is a namespace URI 
@@ -144,7 +143,7 @@ protected:	// XQuery 1.0 static context
 	**	supported, in-scope schema types also include all type definitions 
 	**	found in imported schemas. ] 
 	*/
-	list<qnameid> in_scope_schema_types;
+	list<qnameid_t> in_scope_schema_types;
 
 	/*
 	**	[Definition: In-scope element declarations. Each element declaration 
@@ -156,7 +155,7 @@ protected:	// XQuery 1.0 static context
 	**	includes information about the element's substitution group 
 	**	affiliation. 
 	*/
-	list<qnameid> in_scope_elem_decls;
+	list<qnameid_t> in_scope_elem_decls;
 
 	/*
 	**	[Definition: In-scope attribute declarations. Each attribute 
@@ -166,7 +165,7 @@ protected:	// XQuery 1.0 static context
 	**	Feature is supported, in-scope attribute declarations include all 
 	**	attribute declarations found in imported schemas.] 
 	*/
-	list<qnameid> in_scope_attr_decls;
+	list<qnameid_t> in_scope_attr_decls;
 
 	/*
 	**	[Definition: In-scope variables. This is a set of (expanded QName, 
@@ -204,7 +203,7 @@ protected:	// XQuery 1.0 static context
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	list<qnameid> collations;
+	list<qnameid_t> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -213,7 +212,7 @@ protected:	// XQuery 1.0 static context
 	**	xs:string and xs:anyURI  (and types derived from them) when no 
 	**	explicit collation is specified.] 
 	*/
-	qnameid default_collation;
+	qnameid_t default_collation;
 
 	/*
 	**	[Definition: Construction mode. The construction mode governs the 
@@ -335,19 +334,19 @@ public:	// manipulators
   list_iterator<nsid> namespaces_end() const
 		{ return namespaces.end(); }
 
-	list_iterator<qnameid> in_scope_schema_types_begin() const
+	list_iterator<qnameid_t> in_scope_schema_types_begin() const
 		{ return in_scope_schema_types.begin(); }
-	list_iterator<qnameid> in_scope_schema_types_end() const
+	list_iterator<qnameid_t> in_scope_schema_types_end() const
 		{ return in_scope_schema_types.end(); }
 
-	list_iterator<qnameid> in_scope_elem_decls_begin() const
+	list_iterator<qnameid_t> in_scope_elem_decls_begin() const
 		{ return in_scope_elem_decls.begin(); }
-	list_iterator<qnameid> in_scope_elem_decls_end() const
+	list_iterator<qnameid_t> in_scope_elem_decls_end() const
 		{ return in_scope_elem_decls.end(); }
 
-	list_iterator<qnameid> in_scope_attr_decls_begin() const
+	list_iterator<qnameid_t> in_scope_attr_decls_begin() const
 		{ return in_scope_attr_decls.begin(); }
-	list_iterator<qnameid> in_scope_attr_decls_end() const
+	list_iterator<qnameid_t> in_scope_attr_decls_end() const
 		{ return in_scope_attr_decls.end(); }
 
 	list_iterator<var_binding> in_scope_vars_begin() const
@@ -355,9 +354,9 @@ public:	// manipulators
 	list_iterator<var_binding> in_scope_vars_end() const
 		{ return in_scope_vars.end(); }
 
-	list_iterator<qnameid> collations_begin() const
+	list_iterator<qnameid_t> collations_begin() const
 		{ return collations.begin(); }
-	list_iterator<qnameid> collations_end() const
+	list_iterator<qnameid_t> collations_end() const
 		{ return collations.end(); }
 
 
@@ -399,7 +398,7 @@ public:	// manipulators
 	void set_base_uri(std::string const&);
 	
 
-	sequence_type_t get_function_type(QName const&) 
+	sequence_type_t get_function_type(qnameid_t const&) 
 	 const throw (xqp_exception);
 	sequence_type get_document_type(std::string const&) 
 	  const throw (xqp_exception);
@@ -553,9 +552,9 @@ public:
 	uint32_t default_element_nsid() const { return 0; /*STUB*/ }
 
 	// node store
-	rchandle<node> get_node(nodeid);
-	rchandle<node> get_node(nodeid) const;
-	rchandle<QName> get_qname(qnameid) const;
+	node* get_node(nodeid_t);
+	node* get_node(nodeid_t) const;
+	qname_node* get_qname(qnameid_t) const;
 	rchandle<nodestore> get_nodestore();
 
 	// namespace service
@@ -573,7 +572,7 @@ public:
 
 	// variables 
 	void push_var(rchandle<var_binding>);
-	rchandle<item_iterator> get_var_value(rchandle<QName>) const throw (xqp_exception);
+	rchandle<item_iterator> get_var_value(qnameid_t) const throw (xqp_exception);
 
 	// context item
   rchandle<item> get_context_item() const { return context_item_h; }
@@ -596,7 +595,7 @@ public:
 	
 	// function library
 	rchandle<library> get_function_lib() const { return function_lib; }
-	function& get_function(rchandle<QName>,uint32_t arity) const
+	function& get_function(qnameid_t,uint32_t arity) const
 	throw (xqp_exception);
 
 	// context arg list

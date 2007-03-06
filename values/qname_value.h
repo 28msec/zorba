@@ -24,7 +24,7 @@ class QName : public atomic_value
 protected:
 	std::string prefix;
 	std::string name;
-	nsid ns_id;
+	nsid_t ns_id;
 	uint32_t arity;
 
 public:
@@ -37,7 +37,7 @@ public:
 	QName(
 		std::string const& prefix,
 		std::string const& name,
-		nsid ns_id);
+		nsid_t ns_id);
 
 	QName(
 		std::string const& name);
@@ -53,8 +53,8 @@ public:
 	std::string get_name() const { return name; }
 	void set_name(std::string const& n) { name = n; }
 
-	nsid get_ns_id() const { return ns_id; }
-	void set_ns_id(nsid id) { ns_id = id; }
+	nsid_t get_ns_id() const { return ns_id; }
+	void set_ns_id(nsid_t id) { ns_id = id; }
 
 	uint32_t get_arity() const { return arity; }
 	void set_arity(uint32_t _arity) { arity = _arity; }

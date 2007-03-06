@@ -18,9 +18,17 @@ namespace xqp {
 qname_cache::qname_cache(
 	string const& _datapath)
 :
-	qname_map(	_datapath+"/qnamecache"),
-	uri_map(		_datapath+"/uricache"),
-	prefix_map(	_datapath+"/prefixcache")
+	qname_map( _datapath+"/qncache_",  0.6f, 1<<16),
+	uri_map(   _datapath+"/uricache_", 0.6f, 1<<16),
+	prefix_map(_datapath+"/pfxcache_", 0.6f, 1<<16)
+{
+}
+
+qname_cache::qname_cache()
+:
+	qname_map( 0.6f, 1<<16),
+	uri_map(   0.6f, 1<<16),
+	prefix_map(0.6f, 1<<16)
 {
 }
 

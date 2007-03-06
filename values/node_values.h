@@ -18,13 +18,12 @@
 #define XQP_NODE_VALUES_H
 
 #include "values.h"
-#include "qname_value.h"
-
 #include "../context/common.h"
 #include "../runtime/iterator.h"
 #include "../types/sequence_type.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
+#include <sys/types.h>
 
 namespace xqp {
 
@@ -65,25 +64,38 @@ public:	// nodes types
 		pi_kind,
 		text_kind,
 		comment_kind,
-		binary_kind,				// zorba-specific: binary node
-		collection_kind,		// zorba-specific: collection node
+		binary_kind,					// zorba-specific: binary node
+		collection_kind,			// zorba-specific: collection node
 		uninitialized_kind
 	};
 	std::string decode(node_kind_t) const;
 
 protected:
-	uint32_t _gen;				// generation number
-	void* 	_ref;					// forwarding reference for update
-	nodeid _id;						// node id
-	nodeid _parentid;			// parent node id
+	uint32_t  _gen;					// generation number
+	off_t     _ref;					// forwarding reference for update
+	nodeid_t  _id;					// node id
+	nodeid_t  _parentid;		// parent node id
+
+public:		// ctor,dtor
+	node(sequence_type_t,size_t,uint32_t,off_t,nodeid_t,nodeid_t);
+
+private:
+	~node() {}
 
 public:		// storage interface
-	uint32_t& gen() { return _ref; }
-	void*& ref() { return _ref; }
+	uint32_t& gen() { return _gen; }
+	off_t& ref() { return _ref; }
 	nodeid& id() { return _id; }
-	nodeid& parentid() const { return _parentid; }
+	nodeid& parentid() { return _parentid; }
 
-public:		// XQUery interface
+	void* operator new(size_t node_size, itemstore&);
+	void* operator new(size_t node_size, void*);
+	void operator delete() {}
+
+private:
+	void* operator new(size_t) {}
+
+public:		// XQuery interface
 	/**
 	 *	The dm:node-kind accessor returns a string identifying the kind of 
 	 *	node. It will be one of the following, depending on the kind of node: 
@@ -194,28 +206,6 @@ public:		// XQUery interface
 	 */
 	virtual rchandle<item_iterator> typed_value(context *) const;
 	
-	/**
-	 *	The dm:unparsed-entity-public-id accessor returns the public 
-	 *	identifier of an unparsed external entity declared in the specified 
-	 *	document. If no entity with the name specified in $entityname exists, 
-	 *	or if the entity is not an external unparsed entity, or if the entity 
-	 *	has no public identifier, the empty sequence is returned. 
-	 */
-	virtual rchandle<item_iterator> unparsed_entity_public_id(
-	  context *,
-	  std::string const& entity_name) const;
-
-	/**
-	 *	The dm:unparsed-entity-system-id accessor returns the system 
-	 *	identifier of an unparsed external entity declared in the specified 
-	 *	document. If no entity with the name specified in $entityname exists, 
-	 *	or if the entity is not an external unparsed entity, the empty 
-	 *	sequence is returned. 
-	 */
-	virtual rchandle<item_iterator> unparsed_entity_system_id(
-	  context *,
-	  std::string const& entity_name) const;
-
 };
 
 
@@ -256,29 +246,26 @@ class namespace_node;
 class document_node : public node
 {
 protected:
-	nodeid _doc_id;
-	uri_id _base_uri_id;
-	uri_id _doc_uri_d;
+	nodeid_t _docid;
+	uriid _baseuri_id;
+	uriid _docuri_id;
 	uint32_t _ns_count;
 	uint32_t _child_count;
 	char rest[0];
 
 public:		// storage interface
 	nodeid& docid() { return _docid; }
-	uri_id& base_uri_id() { return _base_uri_id; }
-	uri_id& doc_uri_id() { return _doc_uri_id; }
+	uriid& base_uri_id() { return _baseuri_id; }
+	uriid& doc_uri_id() { return _docuri_id; }
 	uint32_t& ns_count() { return _ns_count; }
 	uint32_t& child_count() { return _child_count; }
-
 	char* baseuri() const;
 	char* docuri() const;
 
-	namespace_node& get_namespace(uint32_t);
-	node& get_child(uint32_t);
-
+	// arena allocation
 	void* operator new(size_t, itemstore&);
 	void* operator new(size_t, void*);
-	void operator delete() {}
+	void operator delete(void*) {}
 
 public:		// XQuery interface
 	node_kind_t node_kind() const { return doc_kind; }
@@ -303,18 +290,19 @@ public:		// iterator interface
 	{
 	protected:
 		document_node const* parent_p;
+		node const* current_node;
 	public:
 		child_iterator(context *, document_node const*);
 		~child_iterator();
 	public:
 	 	void open();
 		void close();
-		rchandle<item> next();
-		rchandle<item> peek() const;
+		item* next(uint32_t delta = 1);
+		item* peek() const;
 		bool done() const;
 		void rewind();
 	public:
-		rchandle<item> operator*() const;
+		item* operator*() const;
 		child_iterator& operator++();
 	};
 
@@ -322,10 +310,8 @@ public:		// iterator interface
 
 
 
-/*______________________________________________________________________
-| 6.1.5 Collection Node
-|_______________________________________________________________________*/
-
+// Zorba-specific
+//
 class collection_node : public node
 {
 public:
@@ -334,11 +320,43 @@ public:
 	rchandle<item_iterator> collection_uri(context * ctx) const;
 	rchandle<item_iterator> children(context * ctx) const;
 
-public:	//ctor,dtor
-	collection_node(nodeid id);
-	~collection_node();
+private:	// ctor,dtor - lock out
+	collection_node(collection_node const&) {}
+	collection_node() {}
+	~collection_node() {}
+
+public:		// output,debugging
+	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
+
+};
+
+
+
+// Zorba-specific
+//
+class qname_node : public value 
+{
+protected:
+	uint64_t qnamekey;
+	uint64_t qnameref;
+	char rest[0];
+	/*
+		char[] localname
+		namespace_node namespace
+	*/
+
+	void* operator new(size_t, itemstore&);
 
 public:
+	char* get_localname() const;
+	namespace_node& get_namespace() const;
+
+private:	// ctor,dtor - lock out
+	qname_node(qname_node const&) {}
+	qname_node() {}
+	~qname_node() {}
+
+public:		// output,debugging
 	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
 
 };
@@ -381,18 +399,30 @@ public:
 class element_node : public node
 {
 protected:
-	nodeid _docid;						// cached parent docid
-	uint32_t _ns_count;				// count of namespace nodes
-	uint32_t _attr_count;			// count of attribute nodes
-	uint32_t _child_count;		// count of child nodes
+	docid_t _docid;						// parent docid
+	off_t _ns_ref;					// in-scope namespaces
+	off_t _attr_offset;			// attribute list offset 
+	uint32_t _attr_count;		// count of attribute nodes
+	off_t _child_offset;		// child list offset 
+	uint32_t _child_count;	// count of child nodes
 	
 	char rest[0];
+	/*
+
+     	attribute_node attr_0
+     	attribute_node attr_1
+     	...
+     	attribute_node attr_(attr_count-1)
+     	node child_0
+     	node child_1
+     	...
+     	node child_(child_count-1)
+	*/
 
 public:	// storage interface
-	nodeid& docid() const { return _docid; }
-	uint32_t& ns_count() const { return _ns_count; }
-	uint32_t& attr_count() const { return _attr_count; }
-	uint32_t& child_count() const { return _child_count; }
+	docid_t& docid() { return _docid; }
+	uint32_t& attr_count() { return _attr_count; }
+	uint32_t& child_count() { return _child_count; }
 
 	namespace_node& namespace(uint32_t);
 	attribute_node& attribute(uint32_t);
@@ -401,7 +431,7 @@ public:	// storage interface
 	// arena allocation
 	void * operator new(size_t, itemstore&);
 	void * operator new(size_t, void*);
-	void operator delete() {}
+	void operator delete(void*) {}
 
 public:	// data interface
 	node_kind_t node_kind() const { return elem_kind; }
@@ -434,18 +464,18 @@ public:	// iterator interface
 	{
 	protected:
 		element_node const* parent_p;
+		node const* current_node;
 	public:
 		child_iterator(context *,element_node const*);
 		~child_iterator();
 	public:
 	 	void open();
 		void close();
-		rchandle<item> next();
-		rchandle<item> peek() const;
+		item* next(uint32_t delta=1);
+		item* peek() const;
 		bool done() const;
 		void rewind();
-	public:
-		rchandle<item> operator*() const;
+		item* operator*() const;
 		child_iterator& operator++();
 	};
 	
@@ -453,18 +483,18 @@ public:	// iterator interface
 	{
 	protected:
 		element_node const* parent_p;
+		attribute_node const* current_node;
 	public:
 		attr_iterator(context *,element_node const*);
 		~attr_iterator();
 	public:
 	 	void open();
 		void close();
-		rchandle<item> next();
-		rchandle<item> peek() const;
+		item* next(uint32_t delta=1);
+		item* peek() const;
 		bool done() const;
 		void rewind();
-	public:
-		rchandle<item> operator*() const;
+		item* operator*() const;
 		attr_iterator& operator++();
 	};
 
@@ -478,12 +508,12 @@ public:	// iterator interface
 	public:
 	 	void open();
 		void close();
-		rchandle<item> next();
-		rchandle<item> peek() const;
+		item* next(uint32_t delta=1);
+		item* peek() const;
 		bool done() const;
 		void rewind();
 	public:
-		rchandle<item> operator*() const;
+		item* operator*() const;
 		attr_iterator& operator++();
 	};
 
@@ -513,20 +543,25 @@ public:	// iterator interface
 class attribute_node : public node
 {
 protected:
+	qnameref qname
 	char rest[0];
+	/*
+		[qname]
+		char[] string_value
+	*/
 
 public:	// storage interface
 
 	// arena allocation
 	void * operator new(size_t, itemstore&);
 	void * operator new(size_t, void*);
-	void operator delete() {}
+	void operator delete(void*) {}
 
-public:	// data interface
+public:	// XQuery interface
 	node_kind_t node_kind() const { return attr_kind; }
 	bool is_id() const { return type & ID_SUB5; }
 	bool is_idref() const { return type & IDREF_SUB5; }
-	rchandle<QName> get_name() const;
+	QName* get_name() const;
 	
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> node_name(context *) const;
@@ -536,7 +571,7 @@ public:	// data interface
 
 private:	//ctor,dtor - lock out
 	attribute_node(attribute_node&);
-  attribute_node(nodeid id);
+  attribute_node(nodeid_t id);
   ~attribute_node();
 
 public:		// output,debugging
@@ -559,23 +594,71 @@ public:		// output,debugging
 class namespace_node : public node
 {
 protected:
+	uint32_t _namespace_id;
+	off_t _nsref;
+
 	char rest[0];
+	/*
+		// optionally inline
+		char[]  prefix
+		char[]  uri
+	*/
 
 public:		// storage interface
-	node_kind_t node_kind() const { return ns_kind; }
-	std::string get_prefix() const;
-	std::string get_uri() const;
+	uint32_t namespace_id() const { return _namespace_id; }
+	off_t nsref() const { return _nsref; }
 
 	// arena allocation
 	void * operator new(size_t, itemstore&);
 	void * operator new(size_t, void*);
-	void operator delete() {}
+	void operator delete(void*) {}
 
 public:		// XQuery interface
+	node_kind_t node_kind() const { return ns_kind; }
 	rchandle<item_iterator> node_name(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 	std::string string_value(context const*) const;
+	std::string prefix() const;
+	std::string uri() const;
+
+private:	//ctor,dtor - lock out
+	namespace_node(namespace_node&) {}
+	namespace_node() {}
+	~namespace_node() {}
+
+public:		// output, debugging
+	std::ostream& put(std::ostream&,context *) const;
+
+};
+
+
+
+/*______________________________________________________________________
+|
+| 6.4.1 Namespace node set
+|_______________________________________________________________________*/
+class namespace_node_set : public node
+{
+protected:
+	uint32_t _ns_count;
+
+	char rest[0];
+	/*
+		namespace_node ns_0 
+		namespace_node ns_1 
+		...
+		namespace_node ns_(ns_count-1)
+	*/
+
+public:		// storage interface
+	uint32_t& ns_count() { return _ns_count; }
+	namespace_node& operator[](uint32_t);
+
+	// arena allocation
+	void * operator new(size_t, itemstore&);
+	void * operator new(size_t, void*);
+	void operator delete(void*) {}
 
 private:	//ctor,dtor - lock out
 	namespace_node(namespace_node&) {}
@@ -598,6 +681,10 @@ class pi_node : public node
 {
 protected:
 	char rest[0];
+	/*
+		char[] target
+		char[] content
+	*/
 
 public:		// storage interface
 	char * get_target() const;
@@ -606,6 +693,7 @@ public:		// storage interface
 	// arena allocation
 	void * operator new(size_t, itemstore&);
 	void * operator new(size_t, void*);
+	void operator delete(void*) {}
 
 public:		// XQuery interface
 	node_kind_t node_kind() const { return pi_kind; }
@@ -635,12 +723,16 @@ class comment_node : public node
 {
 protected:
 	char rest[0];
+	/*
+		char[] content
+	*/
 	
 public:		// storage interface
 
 	// arena allocation
 	void* operator new(size_t, itemstore&);
 	void* operator new(size_t, void*);
+	void operator delete(void*) {}
 
 public:		// XQUery interface
 	enum node_kind_t node_kind() const { return comment_kind; }
@@ -679,13 +771,16 @@ class text_node : public node
 {
 protected:
 	char rest[0];
+	/*
+		char[] content
+	*/
 	
 public:		// storage interface
 	char const* content() const { return rest; }
 	uint32_t content_length() const;
 
 	// arena allocation
-	void* operator new(size_t node_size, itemstore&);
+	void* operator new(size_t node_size, size_t text_size, itemstore&);
 	void* operator new(size_t node_size, void*);
 	void operator delete(void*) {}
 
@@ -727,6 +822,9 @@ class binary_node : public node
 {
 protected:
 	char rest[0];
+	/*
+		char[] blob
+	*/
 
 public:	// accessors
 	node_kind_t node_kind(context *) const { return binary_kind; }
@@ -739,7 +837,7 @@ public:	// accessors
 
 private:	//ctor,dtor
 	binary_node(binary_node&) {}
-	binary_node(nodeid id) {}
+	binary_node() {}
 	~binary_node() {}
 
 

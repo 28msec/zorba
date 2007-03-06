@@ -97,8 +97,9 @@ void context::add_namespace(
 	string const& prefix,
 	string const& uri)
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	namespaces.push_back(nspool_h->put(0,prefix,uri));
+	nsid_t id;
+	off_t offset = itemstore.add_namespace(prefix,uri, id);
+	namespaces.push_back(pair<nsid_t,off_t>(id,offset));
 }
 
 bool context::get_default_elem_or_type_ns(
@@ -242,7 +243,7 @@ var_binding::var_binding(
 }
 
 var_binding::var_binding(
-	qnameid _name,
+	qname _name,
 	rchandle<item_iterator> _value_h,
 	sequence_type_t _type)
 :
@@ -253,7 +254,7 @@ var_binding::var_binding(
 }
 
 
-rchandle<QName> var_binding::get_name(
+qname_node* var_binding::get_name(
 	context * ctx_p) const
 {
 	return ctx_p->get_qname(name);
@@ -272,18 +273,10 @@ void context::push_var(
 }
 
 rchandle<item_iterator> context::get_var_value(
-	rchandle<QName> vqn_h) const
+	qnameid_t qnid) const
 throw (xqp_exception)
 {
-	varstackref_t s_p;
-	string varname = vqn_h->string_value(this);
-	if (!var_values.get(varname, s_p)) {
-  	throw bad_arg(__FUNCTION__,"variable not found");
-	}
-	else {
-		varref_t v_h = s_p->top();
-		return v_h->get_value();
-	}
+	return &iterator::EMPTY_SEQUENCE;
 }
 
 
@@ -292,17 +285,10 @@ throw (xqp_exception)
  :.........................................*/
 
 sequence_type_t context::get_function_type(
-  QName const& fqname) const 
+  qnameid_t fname) const 
 throw (xqp_exception)
 {
-  ostringstream oss;
-  fqname.put(oss,this) << '[' << arity << ']';
-  string sig_h;
-  if (!signature_map.get(oss.str(),sig_h)) {
-    throw xqp_exception(__FUNCTION__,
-      "no signature for: "+fqname.get_prefix()+':'+fqname.get_name());
-  }
-  return sig_h;
+	return xs_untyped;
 }
 	
 function_impl const* context::get_function(

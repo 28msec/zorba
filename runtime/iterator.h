@@ -41,11 +41,11 @@ public:	// low-level interface
 	// release resources
 	virtual void close();
 
-	// return handle to next item (or NULL)
-	virtual rchandle<item> next();
+	// return handle to item + delta (or NULL)
+	virtual item* next(uint32_t delta = 1);
 
 	// return handle to current item (or NULL)
-	virtual rchandle<item> peek() const;
+	virtual item* peek() const;
 
 	// return true <=> iterator has no more items
 	virtual bool done() const;
@@ -53,12 +53,9 @@ public:	// low-level interface
 	// rewind the iterator, equivalent to {close();open()}
 	virtual void rewind();
 
-public:	// high-level interface
-	virtual rchandle<item> operator*() const;
-	virtual item_iterator& operator++();
-
-public:
-	virtual std::string string_value();
+public:	// C++ interface
+	item* operator*() const;
+	item_iterator& operator++();
 
 };
 
@@ -68,30 +65,24 @@ class binary_iterator : public item_iterator
 protected:
 	rchandle<item_iterator> it1_h;
 	rchandle<item_iterator> it2_h;
-	rchandle<item> (*op)(context *, rchandle<item> const&, rchandle<item> const&);
+	item* (*op)(context *, rchandle<item> const&, rchandle<item> const&);
 
 public:	// iterator interface
 	void open();
 	void close();
-	rchandle<item> next();
-	rchandle<item> peek() const;
+	item* next(uint32_t delta = 1);
+	item* peek() const;
 	bool done() const;
 	void rewind();
-
-public:	// high-level interface
-	rchandle<item> operator*() const;
-	item_iterator& operator++();
 
 public:	// ctor,dtor
 	binary_iterator(
 		context * ctx,
 		rchandle<item_iterator>,
 		rchandle<item_iterator>,
-		rchandle<item> (*op)(context *, rchandle<item> const&, rchandle<item> const&));
-
+		item* (*op)(context *, rchandle<item> const&, rchandle<item> const&));
 	binary_iterator(binary_iterator const&);
 	binary_iterator& operator=(binary_iterator const&);
-
 	~binary_iterator();
 
 public:	// manipulators
@@ -104,33 +95,26 @@ public:	// manipulators
 class singleton_iterator : public item_iterator
 {
 protected:
-	rchandle<item> i_h;
+	item* i_h;
 	bool done_b;
 
 public:	// iterator interface
 	void open();
 	void close();
-	rchandle<item> next();
-	rchandle<item> peek() const;
+	item* next(uint32_t delta = 1);
+	item* peek() const;
 	bool done() const;
 	void rewind();
 
-public:	// high-level interface
-	rchandle<item> operator*() const;
-	item_iterator& operator++();
-
 public:	// ctor,dtor
-	singleton_iterator(context *, rchandle<item>);
-	singleton_iterator(context *, item *);
+	singleton_iterator(context *, item*);
 	singleton_iterator(context *, std::string const& s);
 	singleton_iterator(context *, bool);
 	singleton_iterator(context *, double);
 	singleton_iterator(context *, int);
 	singleton_iterator(context *, long long);
-
 	singleton_iterator(singleton_iterator const&);
 	singleton_iterator& operator=(singleton_iterator const&);
-
 	~singleton_iterator();
 
 };
@@ -148,23 +132,17 @@ protected:
 public:	// iterator interface
 	void open();
 	void close();
-	rchandle<item> next();
-	rchandle<item> peek() const;
+	item* next(uint32_t delta = 1);
+	item* peek() const;
 	bool done() const;
 	void rewind();
-
-public:	// high-level interface
-	rchandle<item> operator*() const;
-	item_iterator& operator++();
 
 public:
 	concat_iterator(
 		context *,
 		list<rchandle<item_iterator> >);
-
 	concat_iterator(concat_iterator const&);
 	concat_iterator& operator=(concat_iterator const&);
-
 	~concat_iterator();
 
 };
