@@ -10,7 +10,7 @@
 #ifndef XQP_SEQUENCE_TYPE_H
 #define XQP_SEQUENCE_TYPE_H
 
-#include "TypeCodes.h"
+#include "typecodes.h"
 #include <string>
 
 namespace xqp {
