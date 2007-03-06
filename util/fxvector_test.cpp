@@ -67,7 +67,8 @@ int main(int argc, char* argv[])
         cout << "capacity = " << fxvec.capacity() << endl;
       }
       else if (cmd=="help") {
-        cout << "at n          - return the n-th element of v\n";
+				cout << "alloc N       - allocate N bytes off end of vector\n";
+        cout << "at N          - return the N-th element of v\n";
         cout << "cap           - print capacity\n";
         cout << "clear         - clear the vector\n";
 				cout << "cp STRING     - raw byte copy\n";
@@ -76,6 +77,10 @@ int main(int argc, char* argv[])
 				cout << "load FNAME    - load file\n";
         cout << "size          - return the size of this vector\n";
 				cout << "uniq          - set the entries to a uniq sequence\n";
+			}
+			else if (cmd=="alloc") {
+        unsigned n = strtol(arg1.c_str(),NULL,10);
+				fxvec.alloc(n);
 			}
 			else if (cmd=="cp") {
 				uint32_t n = arg1.length();

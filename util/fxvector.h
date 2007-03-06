@@ -320,6 +320,8 @@ public:
 		//msync(src, mmf_p->get_eofoff(), MS_SYNC);
 	}
 
+	void* alloc(size_t n);
+
 	/**
 	 *  Remove last element.  It shrinks the vector by one.
 	 *
@@ -421,30 +423,47 @@ fxvector<T>::~fxvector()
 template<typename T>
 char * fxvector<T>::raw_copy(
 	char const* data,
-	uint32_t length0)
+	uint32_t length)
 {
-	// compute ceiling_4(length0)
-	uint32_t length = ((length0>>2) + (length0&0x3 ? 1 : 0)) << 2;
-	// size per item
-	uint32_t n = sizeof(T);
 	// insure capacity
-	while (n * (capacity() - size()) < length) expand();
+	uint32_t n = sizeof(T);
+	uint32_t T_count = (length/n + (length%n?1:0));
+	while (capacity()-size() < T_count) expand();
 
 	// copy
 	char* p = reinterpret_cast<char*>(finish);
 	memcpy(p, data, length);
-	finish += length>>2;
+	finish += T_count;
 
 	// update mmfile
 	if (mmf_p) {
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
-		cout << "offset = " << (*offset_p) << endl;
-		*offset_p += length;
-		cout << "offset = " << (*offset_p) << endl;
+		*offset_p += n * T_count;
 	}
 	return p;
 }
 
+
+template<typename T>
+void * fxvector<T>::alloc(
+	size_t length)
+{
+	// insure capacity
+	uint32_t n = sizeof(T);
+	size_t T_count = (length/n + (length%n?1:0));
+	while (capacity()-size() < T_count) expand();
+
+	// alloc
+	void* v = reinterpret_cast<void*>(finish);
+	finish += T_count;
+
+	// update mmfile
+	if (mmf_p) {
+		off_t* offset_p = reinterpret_cast<off_t*>(src);
+		*offset_p += n * T_count;
+	}
+	return v;
+}
 
 
 /*___________________________________________________________________

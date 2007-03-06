@@ -31,7 +31,6 @@ namespace xqp {
 
 #define MAX_KEYLEN 65535
 #define DEFAULT_DIR_SIZE 65536
-#define TRACE __FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__
 
 /*_____________________________________________________________
 |
