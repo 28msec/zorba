@@ -75,6 +75,7 @@ static const int PI_NODE = 5 << NODE_SHIFT;
 static const int COMMENT_NODE = 6 << NODE_SHIFT;
 static const int TEXT_NODE = 7 << NODE_SHIFT;
 static const int ANY_NODE = 8 << NODE_SHIFT;
+static const int BINARY_NODE = 9 << NODE_SHIFT;
 
 // NONATOMIC specifies if the type is atomic or not (complex or sequence)
 // TODO: actually set this bit everywhere
@@ -217,6 +218,12 @@ enum TypeCode {
 	anyNodeSeqRef = REF_OBJECT + SEQUENCE_ARITY + ANY_NODE + REFERENCE_REP + UNTYPED_TYPE,
 	anyNodePlus = NONEMPTY_SEQ_ARITY + ANY_NODE + NO_REP + UNTYPED_TYPE,
 	anyNodeOpt = OPT_ITEM_ARITY + ANY_NODE + NO_REP + UNTYPED_TYPE,
+	binaryNode = ITEM_ARITY + BINARY_NODE + NO_REP + UNTYPED_TYPE,
+	binaryNodeRef = REF_OBJECT + ITEM_ARITY + BINARY_NODE + REFERENCE_REP + UNTYPED_TYPE,
+	binaryNodeSeq = SEQUENCE_ARITY + BINARY_NODE + SEQUENCE_REP + UNTYPED_TYPE,
+	binaryNodeSeqRef = REF_OBJECT + SEQUENCE_ARITY + BINARY_NODE + REFERENCE_REP + UNTYPED_TYPE,
+	binaryNodePlus = NONEMPTY_SEQ_ARITY + BINARY_NODE + NO_REP + UNTYPED_TYPE,
+	binaryNodeOpt = OPT_ITEM_ARITY + BINARY_NODE + NO_REP + UNTYPED_TYPE,
 
 	// String values.
 	xs_string = ITEM_ARITY + NOT_NODE + STRING_REP + STRING_TYPE,

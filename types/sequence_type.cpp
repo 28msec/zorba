@@ -38,27 +38,27 @@ std::string _describe_atomictype(
 	TypeCode t)
 {
 	switch (t&&TYPE_MASK) {
-	case UNTYPED_PRIM: return "xs:untyped";
-	case UNTYPED_ATOMIC_PRIM: return "xs:untypedAtomic";
-	case STRING_PRIM: return "xs:string";
-	case DECIMAL_PRIM: return "xs:decimal";
-	case BOOLEAN_PRIM: return "xs:boolean";
-	case FLOAT_PRIM: return "xs:float";
-	case DOUBLE_PRIM: return "xs:double";
-	case DURATION_PRIM: return "xs:duration";
-	case DATE_TIME_PRIM: return "xs:dateTime";
-	case TIME_PRIM: return "xs:time";
-	case DATE_PRIM: return "xs:date";
-	case G_YEAR_MONTH_PRIM: return "xs:gYearMonth";
-	case G_YEAR_PRIM: return "xs:gYear";
-	case G_MONTH_DAY_PRIM: return "xs:gMonthDay";
-	case G_DAY_PRIM: return "xs:gDay";
-	case G_MONTH_PRIM: return "xs:gMonth";
-	case HEX_BINARY_PRIM: return "xs:hexBinary";
-	case BASE_64_BINARY_PRIM: return "xs:base64Binary";
-	case ANY_URI_PRIM: return "xs:anyURI";
-	case QNAME_PRIM: return "xs:QName";
-	case NOTATION_PRIM: return "xs:NOTATION";
+	case UNTYPED_TYPE: return "xs:untyped";
+	case UNTYPED_ATOMIC_TYPE: return "xs:untypedAtomic";
+	case STRING_TYPE: return "xs:string";
+	case DECIMAL_TYPE: return "xs:decimal";
+	case BOOLEAN_TYPE: return "xs:boolean";
+	case FLOAT_TYPE: return "xs:float";
+	case DOUBLE_TYPE: return "xs:double";
+	case DURATION_TYPE: return "xs:duration";
+	case DATE_TIME_TYPE: return "xs:dateTime";
+	case TIME_TYPE: return "xs:time";
+	case DATE_TYPE: return "xs:date";
+	case G_YEAR_MONTH_TYPE: return "xs:gYearMonth";
+	case G_YEAR_TYPE: return "xs:gYear";
+	case G_MONTH_DAY_TYPE: return "xs:gMonthDay";
+	case G_DAY_TYPE: return "xs:gDay";
+	case G_MONTH_TYPE: return "xs:gMonth";
+	case HEX_BINARY_TYPE: return "xs:hexBinary";
+	case BASE_64_BINARY_TYPE: return "xs:base64Binary";
+	case ANY_URI_TYPE: return "xs:anyURI";
+	case QNAME_TYPE: return "xs:QName";
+	case NOTATION_TYPE: return "xs:NOTATION";
 	case COMPLEX_TYPE: return "xs:complex_type";
 	case NORMALIZED_STRING_SUB: return "xs:normalizedString";
 	case TOKEN_SUB2: return "xs:TOKEN";
@@ -82,8 +82,8 @@ std::string _describe_atomictype(
 	case UNSIGNED_SHORT_SUB5: return "xs:unsignedShort";
 	case UNSIGNED_BYTE_SUB6: return "xs:unsignedByte";
 	case POSITIVE_INTEGER_SUB3: return "xs:positiveInteger";
-	case DAY_TIME_DURATION_SUB2: return "xs:dayTimeDuration";
-	case YEAR_MONTH_DURATION_SUB2: return "xs:yearMonthDuration";
+	case DAY_TIME_DURATION_SUB: return "xs:dayTimeDuration";
+	case YEAR_MONTH_DURATION_SUB: return "xs:yearMonthDuration";
 	default: {
 		ostringstream oss;
   	oss << TRACE << ": Unexpected type bits\n";
@@ -100,7 +100,7 @@ std::string _describe_nodetype(
 	case ELEMENT_NODE: return "element()";
 	case ATTRIBUTE_NODE: return "attribute()";
 	case NAMESPACE_NODE: return "namespace()";
-	case PROCESSING_INSTRUCTION_NODE: return "pi()";
+	case PI_NODE: return "pi()";
 	case COMMENT_NODE: return "commnet()";
 	case TEXT_NODE: return "text()";
 	case ANY_NODE: return "node()";
