@@ -22,7 +22,8 @@
 #include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
-#include "../values/node_values.h"
+#include "../values/values.h"
+#include "../values/nodes.h"
 
 #include <stack>
 #include <vector>
@@ -34,19 +35,19 @@ class context;
 class var_binding : public rcobject
 {
 protected:
-	qnameid_t name;
+	qname_value* qname_p;
 	rchandle<item_iterator> value_h;
 	sequence_type_t type;
 
 public:
-	var_binding(qnameid_t, rchandle<item_iterator>, sequence_type_t);
+	var_binding(qname_value*, rchandle<item_iterator>, sequence_type_t);
 	var_binding(var_binding const&);
 	var_binding(var_binding &);
 	var_binding();
 	~var_binding() {}
 
 public:
-	qname_node* get_name(context * ctx_p) const;
+	qname_value* get_name() const { return qname_p; }
 	rchandle<item_iterator> get_value() const { return value_h; }
 	sequence_type_t get_type() const { return type; }
 
@@ -114,7 +115,7 @@ protected:	// XQuery 1.0 static context
 	**	and by namespace declaration attributes in direct element 
 	**	constructors. 
 	*/
-  list<std::pair<nsid_t,off_t> > namespaces;
+  list<namespace_node*> namespaces;
 
 	/*
 	**	[Definition: Default element/type namespace. This is a namespace URI 
@@ -123,7 +124,7 @@ protected:	// XQuery 1.0 static context
 	**	expected.] The URI value is whitespace normalized according to the 
 	**	rules for the xs:anyURI type in [XML Schema]. 
 	*/
-	nsid default_elem_or_type_ns;
+	namespace_node* default_ns_p;
 
 	/*
 	**	[Definition: Default function namespace.  This is a namespace URI or 
@@ -132,7 +133,7 @@ protected:	// XQuery 1.0 static context
 	**	URI value is whitespace normalized according to the rules for the 
 	**	xs:anyURI type in [XML Schema]. 
 	*/
-	nsid default_function_ns;
+	namespace_node* default_function_ns_p;
 
 	/*
 	**	[Definition: In-scope schema types. Each schema type definition is 
@@ -143,7 +144,7 @@ protected:	// XQuery 1.0 static context
 	**	supported, in-scope schema types also include all type definitions 
 	**	found in imported schemas. ] 
 	*/
-	list<qnameid_t> in_scope_schema_types;
+	list<qname_value*> in_scope_schema_types;
 
 	/*
 	**	[Definition: In-scope element declarations. Each element declaration 
@@ -155,7 +156,7 @@ protected:	// XQuery 1.0 static context
 	**	includes information about the element's substitution group 
 	**	affiliation. 
 	*/
-	list<qnameid_t> in_scope_elem_decls;
+	list<qname_value*> in_scope_elem_decls;
 
 	/*
 	**	[Definition: In-scope attribute declarations. Each attribute 
@@ -165,7 +166,7 @@ protected:	// XQuery 1.0 static context
 	**	Feature is supported, in-scope attribute declarations include all 
 	**	attribute declarations found in imported schemas.] 
 	*/
-	list<qnameid_t> in_scope_attr_decls;
+	list<qname_value*> in_scope_attr_decls;
 
 	/*
 	**	[Definition: In-scope variables. This is a set of (expanded QName, 
@@ -203,7 +204,7 @@ protected:	// XQuery 1.0 static context
 	**	extension, ordered. For a more complete definition of collation, see 
 	**	[XQuery 1.0 and XPath 2.0 Functions and Operators].] 
 	*/
-	list<qnameid_t> collations;
+	list<qname_value*> collations;
 
 	/*
 	**	[Definition: Default collation. This identifies one of the collations 
@@ -212,7 +213,7 @@ protected:	// XQuery 1.0 static context
 	**	xs:string and xs:anyURI  (and types derived from them) when no 
 	**	explicit collation is specified.] 
 	*/
-	qnameid_t default_collation;
+	qname_value* default_collation_p;
 
 	/*
 	**	[Definition: Construction mode. The construction mode governs the 
@@ -323,30 +324,30 @@ protected:	// XQuery 1.0 static context
 
 
 public:	// manipulators
-	bool get_default_elem_or_type_ns(std::string&) const;
-	bool get_default_function_ns(std::string&) const;
-	void set_default_elem_or_type_ns(std::string const& uri);
-	void set_default_function_ns(std::string const& uri);
-	void add_namespace(std::string const& prefix, std::string const& uri);
+	namespace_node* get_default_ns() const;
+	namespace_node* get_default_function_ns() const;
+	void set_default_ns(namespace_node*);
+	void set_default_function_ns(namespace_node*);
+	void add_namespace(namespace_node*);
 
-  list_iterator<nsid> namespaces_begin() const
+  list_iterator<namespace_node*> namespaces_begin() const
 		{ return namespaces.begin(); }
-  list_iterator<nsid> namespaces_end() const
+  list_iterator<namespace_node*> namespaces_end() const
 		{ return namespaces.end(); }
 
-	list_iterator<qnameid_t> in_scope_schema_types_begin() const
+	list_iterator<qname_value*> in_scope_schema_types_begin() const
 		{ return in_scope_schema_types.begin(); }
-	list_iterator<qnameid_t> in_scope_schema_types_end() const
+	list_iterator<qname_value*> in_scope_schema_types_end() const
 		{ return in_scope_schema_types.end(); }
 
-	list_iterator<qnameid_t> in_scope_elem_decls_begin() const
+	list_iterator<qname_value*> in_scope_elem_decls_begin() const
 		{ return in_scope_elem_decls.begin(); }
-	list_iterator<qnameid_t> in_scope_elem_decls_end() const
+	list_iterator<qname_value*> in_scope_elem_decls_end() const
 		{ return in_scope_elem_decls.end(); }
 
-	list_iterator<qnameid_t> in_scope_attr_decls_begin() const
+	list_iterator<qname_value*> in_scope_attr_decls_begin() const
 		{ return in_scope_attr_decls.begin(); }
-	list_iterator<qnameid_t> in_scope_attr_decls_end() const
+	list_iterator<qname_value*> in_scope_attr_decls_end() const
 		{ return in_scope_attr_decls.end(); }
 
 	list_iterator<var_binding> in_scope_vars_begin() const
@@ -354,9 +355,9 @@ public:	// manipulators
 	list_iterator<var_binding> in_scope_vars_end() const
 		{ return in_scope_vars.end(); }
 
-	list_iterator<qnameid_t> collations_begin() const
+	list_iterator<qname_value*> collations_begin() const
 		{ return collations.begin(); }
-	list_iterator<qnameid_t> collations_end() const
+	list_iterator<qname_value*> collations_end() const
 		{ return collations.end(); }
 
 
@@ -392,17 +393,17 @@ public:	// manipulators
 		{ preserve_mode = v; }
 
 
-	bool get_default_collation(std::string& collation_uri) const;
-	void set_default_collation(std::string const&);
-	bool get_base_uri(std::string& base_uri) const;
+	qname_value* get_default_collation() const;
+	void set_default_collation(qname_value*);
+	std::string get_base_uri() const;
 	void set_base_uri(std::string const&);
 	
 
-	sequence_type_t get_function_type(qnameid_t const&) 
+	sequence_type_t get_function_type(qname_value const*) 
 	 const throw (xqp_exception);
-	sequence_type get_document_type(std::string const&) 
+	sequence_type_t get_document_type(uri_value const*) 
 	  const throw (xqp_exception);
-	sequence_type get_collection_type(std::string const&) 
+	sequence_type_t get_collection_type(uri_value const*) 
 	  const throw (xqp_exception);
 	
 	
@@ -416,7 +417,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	item in the sequence obtained by evaluating E1 becomes the context 
 	**	item in the inner focus for an evaluation of E2.
 	*/
-	rchandle<item> context_item_h;
+	item* context_item_h;
 
 	/*
 	**	[Definition: The context position is the position of the context item 
@@ -490,7 +491,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	not limited to the set of dynamically known documents, and it may be 
 	**	empty. 
 	*/
-	hashmap<std::string> available_documents;
+	hashmap<document_node*> available_documents;
 
 	/*
 	**	[Definition: Available collections. This is a mapping of strings onto 
@@ -500,7 +501,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	The set of available collections is not limited to the set of 
 	**	dynamically known collections, and it may be empty. 
 	*/
-	hashmap<std::string> available_collections;
+	hashmap<collection_node*> available_collections;
 
 	/*
 	**	[Definition: Default collection. This is the sequence of nodes that 
@@ -508,7 +509,7 @@ protected:  // XQuery 1.0 dynamic context
 	**	arguments.] The value of default collection may be initialized by the 
 	**	implementation. 
 	*/
-	std::string default_collection;
+	collection_node* default_collection;
 	
 	/*
 	**	Persistent nodeid counter
@@ -519,8 +520,8 @@ protected:
 	// string storage
 	rchandle<fxcharheap> string_store_h;
 
-	// node storage
-	rchandle<nodestore> nodestore_h;
+	// blocl storage
+	rchandle<itemstore> itemstore_h;
 	uint32_t ctx_nodeid;
 	uint32_t ctx_docid;
 
@@ -551,11 +552,8 @@ public:
 	uint32_t context_nodeid() const { return ctx_nodeid; }
 	uint32_t default_element_nsid() const { return 0; /*STUB*/ }
 
-	// node store
-	node* get_node(nodeid_t);
-	node* get_node(nodeid_t) const;
-	qname_node* get_qname(qnameid_t) const;
-	rchandle<nodestore> get_nodestore();
+	// item store
+	rchandle<itemstore> get_itemstore();
 
 	// namespace service
 	bool namespace_uri(uint32_t uri_id, std::string & uri);
@@ -572,30 +570,31 @@ public:
 
 	// variables 
 	void push_var(rchandle<var_binding>);
-	rchandle<item_iterator> get_var_value(qnameid_t) const throw (xqp_exception);
+
+	rchandle<item_iterator> get_var_value(qname_value*) const
+	throw (xqp_exception);
 
 	// context item
-  rchandle<item> get_context_item() const { return context_item_h; }
+  item* get_context_item() const { return context_item_h; }
 	uint32_t get_context_position() const { return context_position; }
 	uint32_t get_context_size() const { return context_size; }
-
-	// in-scope namespaces
-	uint32_t get_in_scope_ns() const { return in_scope_ns; }
-	uint32_t get_in_scope_ns(rchandle<element_node> const&) const { return in_scope_ns; }
-	uint32_t get_in_scope_ns(rchandle<document_node> const&) const { return in_scope_ns; }
 
 	// local time
 	time_t get_currtime() const { return currtime; }
 	int get_timezone() const { return timezone; }
 		
 	// default doc/collection
-	rchandle<item_iterator> get_document(std::string const&) const throw (xqp_exception);
-	rchandle<item_iterator> get_collection(std::string const&) const throw (xqp_exception);
-	rchandle<item_iterator> get_default_collection() const throw (xqp_exception);
+	rchandle<item_iterator> get_document(uri_value const*) const
+	throw (xqp_exception);
+	rchandle<item_iterator> get_collection(uri_value const*) const
+	throw (xqp_exception);
+	rchandle<item_iterator> get_default_collection() const
+	throw (xqp_exception);
 	
 	// function library
 	rchandle<library> get_function_lib() const { return function_lib; }
-	function& get_function(qnameid_t,uint32_t arity) const
+
+	function const* get_function(qname_value const*) const
 	throw (xqp_exception);
 
 	// context arg list

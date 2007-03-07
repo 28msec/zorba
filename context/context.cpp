@@ -10,6 +10,8 @@
 
 #include "context.h"
 
+#include "../runtime/iterator.h"
+#include "../types/sequence_type.h"
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
 
@@ -56,10 +58,10 @@ context::context()
 	timezone(-8),
 	available_documents(1024,0.6),
 	available_collections(1024,0.6),
-	default_collection("defcol"),
+	default_collection(NULL),
 	nodeid_counter("data/nodeid",2),
 	string_store_h(new fxcharheap(1<<16)),
-	nodestore_h(new nodestore("data/nodestore/")),
+	itemstore_h(new itemstore("data/itemstore/")),
 	ctx_nodeid(0),
 	ctx_docid(0),
 	in_scope_ns(0),
@@ -94,62 +96,46 @@ throw (xqp_exception)
  :.........................................*/
 
 void context::add_namespace(
-	string const& prefix,
-	string const& uri)
+	namespace_node* ns_p)
 {
-	nsid_t id;
-	off_t offset = itemstore.add_namespace(prefix,uri, id);
-	namespaces.push_back(pair<nsid_t,off_t>(id,offset));
+	namespaces.push_back(ns_p);
 }
 
-bool context::get_default_elem_or_type_ns(
-	string& uri) const
+namespace_node* context::get_default_ns() const
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	return nspool_h->get_uri(default_elem_or_type_ns, uri);
+	return default_ns_p;
 }
 
-void context::set_default_elem_or_type_ns(
-	string const& uri)
+void context::set_default_ns(
+	namespace_node* ns_p)
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	default_elem_or_type_ns = nspool_h->put(0,"#def-elem",uri);
+	default_ns_p = ns_p;
 }
 
-bool context::get_default_function_ns(
-	string& uri) const
+namespace_node* context::get_default_function_ns() const
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	return nspool_h->get_uri(default_function_ns, uri);
+	return default_function_ns_p;
 }
 
 void context::set_default_function_ns(
-	string const& uri)
+	namespace_node* ns_p)
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	default_function_ns = nspool_h->put(0,"#def-func",uri);
+	default_function_ns_p = ns_p;
 }
 
-bool context::get_default_collation(
-	string& uri) const
+qname_value* context::get_default_collation() const
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	return nspool_h->get_uri(default_collation, uri);
+	return default_collation_p;
 }
 
-void context::set_default_collation(
-	std::string const& uri)
+void context::set_default_collation(qname_value* q_p)
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	default_collation = nspool_h->put(0,"#def-coll",uri);
+	default_collation_p = q_p;
 }
 
-bool context::get_base_uri(
-	string& uri) const
+string context::get_base_uri() const
 {
-	rchandle<namespace_pool> nspool_h = nodestore_h->get_namespace_pool();
-	uri = base_uri;
-	return true;
+	return base_uri;
 }
 
 void context::set_base_uri(
@@ -218,7 +204,7 @@ bool context::get_dnid(
 
 var_binding::var_binding()
 :
-  name(0),
+  qname_p(NULL),
 	value_h(NULL),
   type(xs_untypedValue)
 {
@@ -227,7 +213,7 @@ var_binding::var_binding()
 var_binding::var_binding(
 	var_binding &  v)
 :
-  name(v.name),
+  qname_p(v.qname_p),
 	value_h(v.value_h),
   type(v.type)
 {
@@ -236,47 +222,34 @@ var_binding::var_binding(
 var_binding::var_binding(
 	var_binding const&  v)
 :
-  name(v.name),
+  qname_p(v.qname_p),
   value_h(v.value_h),
   type(v.type)
 {
 }
 
 var_binding::var_binding(
-	qname _name,
+	qname_value* _qname_p,
 	rchandle<item_iterator> _value_h,
 	sequence_type_t _type)
 :
-	name(_name),
+	qname_p(_qname_p),
 	value_h(_value_h),
 	type(_type)
 {
 }
 
-
-qname_node* var_binding::get_name(
-	context * ctx_p) const
-{
-	return ctx_p->get_qname(name);
-}
-
 void context::push_var(
 	rchandle<var_binding> vb_h)
 {
-	varstackref_t s_p;
-	string varname = vb_h->get_name(this)->describe(this);
-	if (!var_values.get(varname, s_p)) {
-		s_p = new stack<varref_t>;
-		var_values.put(varname, s_p);
-	}
-	s_p->push(vb_h);
+	
 }
 
 rchandle<item_iterator> context::get_var_value(
-	qnameid_t qnid) const
+	qname_value*) const
 throw (xqp_exception)
 {
-	return &iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 
 
@@ -285,14 +258,14 @@ throw (xqp_exception)
  :.........................................*/
 
 sequence_type_t context::get_function_type(
-  qnameid_t fname) const 
+  qname_value const* fname_p) const 
 throw (xqp_exception)
 {
-	return xs_untyped;
+	return xs_untypedValue;
 }
 	
-function_impl const* context::get_function(
-	signature const& sig) const
+function const* context::get_function(
+	qname_value const*) const
 throw (xqp_exception)
 {
 	return NULL;
@@ -303,23 +276,18 @@ throw (xqp_exception)
  :  context document                       :
  :.........................................*/
 
-item_type context::get_document_type(
-	string const& doc_uri) const
+sequence_type_t context::get_document_type(
+	uri_value const* doc_uri) const
 throw (xqp_exception)
 {
-  item_type t;
-  if (!statically_known_documents.get(doc_uri,t)) {
-    throw xqp_exception(__FUNCTION__,
-      "no static document type for: "+doc_uri);
-  }
-  return t;
+  return xs_untypedValue;
 }
 	
 rchandle<item_iterator> context::get_document(
-	string const& doc_uri) const
+	uri_value const* doc_uri) const
 throw (xqp_exception)
 {
-  return new item_iterator(const_cast<context*>(this));
+  return NULL;
 }
 
 
@@ -327,29 +295,24 @@ throw (xqp_exception)
  :  context collection                     :
  :.........................................*/
 
-item_type context::get_collection_type(
-	string const& col_uri) const
+sequence_type_t context::get_collection_type(
+	uri_value const* col_uri) const
 throw (xqp_exception)
 {
-  item_type t;
-  if (!statically_known_collections.get(col_uri,t)) {
-    throw xqp_exception(__FUNCTION__,
-      "no static collection type for: "+col_uri);
-  }
-  return t;
+	return xs_untypedValue;
 }
 	
 rchandle<item_iterator> context::get_collection(
-	string const& col_uri) const
+	uri_value const* col_uri) const
 throw (xqp_exception)
 {
-  return new item_iterator(const_cast<context*>(this));
+  return NULL;
 }
 
 rchandle<item_iterator> context::get_default_collection() const
 throw (xqp_exception)
 {
-  return new item_iterator(const_cast<context*>(this));
+  return NULL;
 }
 
 
@@ -357,23 +320,9 @@ throw (xqp_exception)
  :  node store                             :
  :.........................................*/
 
-rchandle<node> context::get_node(nodeid id)
+rchandle<itemstore> context::get_itemstore()
 {
-	rchandle<node> n_h;
-	nodestore_h->get(this, id, n_h);
-	return n_h;
-}
-
-rchandle<node> context::get_node(nodeid id) const
-{
-	rchandle<node> n_h;
-	nodestore_h->get(const_cast<context*>(this), id, n_h);
-	return n_h;
-}
-
-rchandle<nodestore> context::get_nodestore()
-{
-	return nodestore_h;
+	return itemstore_h;
 }
 
 
