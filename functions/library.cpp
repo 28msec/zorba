@@ -23,12 +23,13 @@ library::~library()
 void library::put(
 	function const& func)
 {
-	funtab.put(func.get_qname(), func);
+	funtab.put(func.get_qname()->stringValue(), func);
 }
 
-function& library::get(
-	qnameref qname_r)
+function* library::get(
+	qname_value const* qname_p)
 {
+	return NULL;
 }
 
 } /* namespace xqp */

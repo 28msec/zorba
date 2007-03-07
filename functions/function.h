@@ -15,7 +15,7 @@
 #include "../context/common.h"
 #include "../runtime/iterator.h"
 #include "../util/rchandle.h"
-#include "../values/qname_value.h"
+#include "../values/values.h"
 
 #include <string>
  
@@ -31,12 +31,12 @@ public:
 	virtual ~function() {}
 
 public:
-	qname get_fname(context * ctx_p) const
-		{ return sig.get_name(ctx_p); }
+	qname_value const* get_fname(context * ctx_p) const
+		{ return sig.get_name(); }
 
 public:
 	virtual rchandle<item_iterator> operator()(context *)
-		{ return new item_iterator(NULL); }
+		{ return &item_iterator::empty_sequence; }
 
 };
 

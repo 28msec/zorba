@@ -13,7 +13,7 @@
 #include "../context/common.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
-#include "../values/qname_value.h"
+#include "../values/values.h"
 
 namespace xqp {
 
@@ -30,8 +30,7 @@ public:
 
 public:
 	void put(function const&);
-	function& get(context *, qnameid);
-	function& get(context *, rchandle<QName>);
+	function* get(context *, qname_value const*);
 
 };
 

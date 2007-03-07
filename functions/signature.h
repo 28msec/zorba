@@ -14,6 +14,7 @@
 #include "../types/sequence_type.h"
 #include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
+#include "../values/values.h"
 #include <vector>
 
 namespace xqp {
@@ -31,22 +32,22 @@ class context;
 class signature : public rcobject
 {
 public:
-	qnameid_t qname;
+	qname_value const* qname_p;
 	std::vector<sequence_type_t> arg_v;
 	static fxhashmap<signature const*> sigmap;
 
 public:
-	signature(qnameid_t _qname, sequence_type_t return_type);
+	signature(qname_value const*, sequence_type_t return_type);
 	~signature();
 
 public:
 	void add_arg(sequence_type_t t) { arg_v.push_back(t); }
-	uint32_t arg_count() const { return arg_v.size(); }
+	uint32_t arg_count() const { return arg_v.size() - 1; }
 	sequence_type_t const& operator[](int i) const { return arg_v[i]; }
 	sequence_type_t & operator[](int i) { return arg_v[i]; }
 	sequence_type_t const& return_type() const { return arg_v[0]; }
 	sequence_type_t & return_type() { return arg_v[0]; }
-	qnameid_t get_name() const { return qname; }
+	qname_value const* get_name() const { return qname_p; }
 
 };
 
