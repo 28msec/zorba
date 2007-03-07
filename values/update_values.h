@@ -11,8 +11,8 @@
 #ifndef XQP_UPDATE_VALUES_H
 #define XQP_UPDATE_VALUES_H
 
-#include "node_values.h"
 #include "values.h"
+#include "nodes.h"
 
 
 /*______________________________________________________________________
@@ -38,16 +38,16 @@ namespace xqp {
 
 class update_value : public object
 {
+public:
+	typedef node const* nodeptr;
+
 protected:
 	context& ctx;
-	rchandle<node> target_h;
+	nodeptr target_p;
 
 public:
-	update_value(
-		context& _ctx, rchandle<node> _target_h)
-		:
-		ctx(_ctx), target_h(_target_h)
-	{}
+	update_value(context& _ctx, nodeptr _target_p)
+		: ctx(_ctx), target_p(_target_p) {}
 	~update_value() {}
 
 };
@@ -65,13 +65,13 @@ public:
 class upd_insert_before : public update_value
 {
 protected:
-	std::vector<rchandle<node> >& content_hv;
+	std::vector<nodeptr>& content_pv;
 
 public:
 	upd_insert_before(
 		context& ctx,
-		rchandle<node> target_h,
-		vector<rchandle<node> > & content_hv);
+		nodeptr target_p,
+		vector<nodeptr> & content_pv);
 
 	~upd_insert_before();
 
@@ -90,13 +90,13 @@ public:
 class upd_insert_after : public update_value
 {
 protected:
-	std::vector<rchandle<node> > & content_hv;
+	std::vector<nodeptr> & content_pv;
 
 public:
 	upd_insert_after(
 		context& ctx,
-		rchandle<node> target_h,
-		std::vector<rchandle<node> > & content_hv);
+		nodeptr target_p,
+		std::vector<nodeptr> & content_pv);
 
 	~upd_insert_after();
 
@@ -114,13 +114,13 @@ public:
 class upd_insert_into : public update_value
 {
 protected:
-	std::vector<rchandle<node> > & content_hv;
+	std::vector<nodeptr> & content_pv;
 
 public:
 	upd_insert_into(
 		context& ctx,
-		rchandle<node> target_h,
-		std::vector<rchandle<node> > & content_hv);
+		nodeptr target_p,
+		std::vector<nodeptr> & content_pv);
 
 	~upd_insert_into();
 
@@ -138,13 +138,13 @@ public:
 class upd_insert_into_as_first : public update_value
 {
 protected:
-	std::vector<rchandle<node> > & content_hv;
+	std::vector<nodeptr> & content_pv;
 
 public:
 	upd_insert_into_as_first(
 		context& ctx,
-		rchandle<node> target_h,
-		std::vector<rchandle<node> > & content_hv);
+		nodeptr target_p,
+		std::vector<nodeptr> & content_pv);
 
 	~upd_insert_into_as_first();
 
@@ -162,13 +162,13 @@ public:
 class upd_insert_into_as_last : public update_value
 {
 protected:
-	std::vector<rchandle<node> > & content_hv;
+	std::vector<nodeptr> & content_pv;
 
 public:
 	upd_insert_into_as_last(
 		context& ctx,
-		rchandle<node> target_h,
-		std::vector<rchandle<node> > & content_hv);
+		nodeptr target_p,
+		std::vector<nodeptr> & content_pv);
 
 	~upd_insert_into_as_last();
 
@@ -181,13 +181,13 @@ public:
 class upd_insert_attributes : public update_value
 {
 protected:
-	std::vector<rchandle<attribute_node> > & content_hv;
+	std::vector<attribute_node const*> & content_pv;
 
 public:
 	upd_insert_attributes(
 		context& ctx,
-		rchandle<node> target_h,
-		std::vector<rchandle<attribute_node> > & content_hv);
+		nodeptr target_p,
+		std::vector<attribute_node const*> & content_pv);
 
 	~upd_insert_attributes();
 
@@ -202,7 +202,7 @@ class upd_delete : public update_value
 public:
 	upd_delete(
 		context& ctx,
-		rchandle<node> target_h);
+		nodeptr target_p);
 
 	~upd_delete();
 
@@ -222,13 +222,13 @@ public:
 class upd_replace_node : public update_value
 {
 protected:
-	std::vector<rchandle<node> > & content_hv;
+	std::vector<nodeptr> & content_pv;
 
 public:
 	upd_replace_node(
 		context& ctx,
-		rchandle<node> target_h,
-		std::vector<rchandle<node> > & content_hv);
+		nodeptr target_p,
+		std::vector<nodeptr> & content_pv);
 
 	~upd_replace_node();
 
@@ -249,7 +249,7 @@ protected:
 public:
 	upd_replace_value(
 		context& ctx,
-		rchandle<node> target_h,
+		nodeptr target_p,
 		std::string const& content);
 
 	~upd_replace_value();
@@ -263,13 +263,13 @@ public:
 class upd_replace_element_content : public update_value
 {
 protected:
-	rchandle<text_node> content_h;
+	text_node const* content_p;
 	
 public:
 	upd_replace_element_content(
 		context& ctx,
-		rchandle<node> target_h,
-		rchandle<text_node> content_h);
+		nodeptr target_p,
+		text_node const* content_p);
 
 	~upd_replace_element_content();
 
@@ -282,13 +282,13 @@ public:
 class upd_rename : public update_value
 {
 protected:
-	rchandle<QName> new_name_h;
+	qname_value const* new_name_p;
 
 public:
 	upd_rename(
 		context& ctx,
-		rchandle<node> target_h,
-		rchandle<QName> new_name_h);
+		nodeptr target_p,
+		qname_value const* new_name_p);
 
 	~upd_rename();
 

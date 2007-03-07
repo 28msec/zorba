@@ -11,6 +11,7 @@
 
 #include "xs_primitive_values.h"
 #include "../context/context.h"
+#include "../runtime/errors.h"
 #include "../runtime/iterator.h"
 #include "../util/tracer.h"
 
@@ -41,18 +42,19 @@ string node::decode(node_kind_t kind) const
 }
 
 node::node(
-	sequence_type_t _type,
-	size_t _length,
-	uint32_t _gen,
-	off_t _ref,
-	nodeid_t _id,
-	nodeid_t _parentid)
+	sequence_type_t type,
+	size_t length,
+	uint32_t gen,
+	off_t ref,
+	nodeid_t id,
+	nodeid_t parentid)
 :
-	item(_type,_length),
-	gen(_gen),
-	ref(_ref),
-	id(_id),
-	parentid(_parentid)
+	item(type,length),
+	m_gen(gen),
+	m_ref(ref),
+	m_id(id),
+	m_parentid(parentid),
+	m_offset(0)
 {
 }
 
@@ -62,41 +64,38 @@ enum node::node_kind_t node::node_kind() const
 }
 
 rchandle<item_iterator> node::attributes(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::base_uri(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::children(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::document_uri(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 bool node::is_id(context * ctx_p) const { return false; }
 bool node::is_idrefs(context * ctx_p) const { return false; }
 bool node::nilled(context * ctx_p) const { return false; }
 
 rchandle<item_iterator> node::namespace_bindings(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::namespace_nodes(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::parent(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::typed_value(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::type_name(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> node::node_name(context * ctx_p) const
-{ return &iterator::EMPTY_SEQUENCE; }
-
-sequence_type_t const& node::get_type(context * ctx_p) const
-{ return xs_anyNode; }
+{ return &item_iterator::empty_sequence; }
 
 string node::string_value(context const* ctx_p) const
 { return ""; }
@@ -107,12 +106,38 @@ string node::string_value(context const* ctx_p) const
  :.........................................*/
 
 child_iterator::child_iterator(
-	context * ctx_p,
-	node const* node_p)
+	context * _ctx_p,
+	node const* _parent_p)
 :
 	item_iterator(ctx_p),
-	parent_p(node_p),
+	parent_p(_parent_p),
+	ctx_p(_ctx_p)
 {
+	end_p =
+		reinterpret_cast<node const*>(
+			parent_p->length() +
+				reinterpret_cast<uint32_t const*>(parent_p));
+	current_p = 
+		reinterpret_cast<node const*>(
+			parent_p->offset() +
+				reinterpret_cast<uint32_t const*>(parent_p));
+}
+	
+child_iterator::child_iterator(
+	node const* _parent_p)
+:
+	item_iterator(ctx_p),
+	parent_p(_parent_p),
+	ctx_p(NULL)
+{
+	end_p =
+		reinterpret_cast<node const*>(
+			parent_p->length() +
+				reinterpret_cast<uint32_t const*>(parent_p));
+	current_p = 
+		reinterpret_cast<node const*>(
+			parent_p->offset() +
+				reinterpret_cast<uint32_t const*>(parent_p));
 }
 	
 child_iterator::~child_iterator() { }
@@ -120,63 +145,68 @@ child_iterator::~child_iterator() { }
 void child_iterator::open() { }
 void child_iterator::close() { }
 
-item* child_iterator::next()
+item* child_iterator::next(uint32_t delta)
 {
-	offset += current_node.length();
-	if (!itemstore.check(offset)) {
-		errors::error(ERR_ITERATOR_OVERRUN);
-	}
-	switch (itemstore[offset]) {
-	case attributeNode: {
-		return new(&itemstore[offset]) attribute_node();
-		break;
-	}
-	case elementNode: {
-		return new(&itemstore[offset]) element_node();
-		break;
-	}
-	case processingInstructionNode: {
-		return new(&itemstore[offset]) pi_node();
-		break;
-	}
-	case commentNode: {
-		return new(&itemstore[offset]) comment_node();
-		break;
-	}
-	case textNode: {
-		return new(&itemstore[offset]) text_node();
-		break;
-	}
-	case binaryNode: {
-		return new(&itemstore[offset]) binary_node();
-		break;
-	}
-	default: {
-		errors::error(ERR_ILLEGAL_DOC_CHILD);
-	} }
-
+	++(*this);
+	return **this;
 }
 
-item& child_iterator::peek() const
+item * child_iterator::peek() const
 {
+	return **this;
 }
 
 bool child_iterator::done() const
 {
+	return (current_p >= end_p);
 }
 
 void child_iterator::rewind()
 {
 }
 
-item& child_iterator::operator*() const
+item * child_iterator::operator*() const
 {
-	return peek();
+	switch (current_p->type()) {
+	case attributeNode: {
+		return new(current_p) attribute_node();
+		break;
+	}
+	case elementNode: {
+		return new(current_p) element_node();
+		break;
+	}
+	case processingInstructionNode: {
+		return new(current_p) pi_node();
+		break;
+	}
+	case commentNode: {
+		return new(current_p) comment_node();
+		break;
+	}
+	case textNode: {
+		return new(current_p) text_node();
+		break;
+	}
+	case binaryNode: {
+		return new(current_p) binary_node();
+		break;
+	}
+	default: {
+		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
+	} }
+	return NULL;
 }
 
-child_iterator& node::child_iterator::operator++()
+child_iterator& child_iterator::operator++()
 {
-	next();
+	if (current_p >= end_p) {
+		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+	}
+	current_p =
+		reinterpret_cast<node const*>(
+			current_p->length() +
+				reinterpret_cast<uint32_t const*>(parent_p));
 	return *this;
 }
 
@@ -209,34 +239,34 @@ document_node::document_node(
 rchandle<item_iterator> document_node::base_uri(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> document_node::children(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> document_node::document_uri(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> document_node::typed_value(
 	context * ctx_p) const
 {
-	return &iterm_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 
 string document_node::string_value(
 	context const* ctx_p) const
 {
 	ostringstream oss;
-	child_iterator it(ctx_p, this);
+	child_iterator it(this);
 	while (!it.done()) {
-		oss << (*it).string_value(ctx_p);
+		oss << (*it)->string_value(ctx_p);
 	}
 	return oss.str();
 }
@@ -246,9 +276,9 @@ ostream& document_node::put(
 	context * ctx_p) const
 {
 	os << "<?xml version=\"1.0\"?>\n";
-	child_iterator it(ctx_p, this);
+	child_iterator it(this);
 	while (!it.done()) {
-		oss << (*it).put(os,ctx_p);
+		os << (*it)->put(os,ctx_p);
 	}
 	return os;
 }
@@ -260,13 +290,13 @@ ostream& document_node::put(
  :.........................................*/
 
 rchandle<item_iterator> collection_node::base_uri(context * ctx_p) const
-{ return &item_iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> collection_node::collection_uri(context * ctx_p) const
-{ return &item_iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 rchandle<item_iterator> collection_node::children(context * ctx_p) const
-{ return &item_iterator::EMPTY_SEQUENCE; }
+{ return &item_iterator::empty_sequence; }
 
 
 
@@ -296,90 +326,55 @@ element_node::element_node(
 rchandle<item_iterator> element_node::attributes(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> element_node::base_uri(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> element_node::children(
 	context * ctx_p) const
 {
-	return NULL;
-}
-
-bool element_node::is_id(
-	context * ctx_p) const
-{
-	return false;
-}
-
-bool element_node::is_idrefs(
-	context * ctx_p) const
-{
-	return false;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> element_node::namespace_bindings(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> element_node::namespace_nodes(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
-}
-
-bool element_node::nilled(
-	context * ctx_p) const
-{
-	return false;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> element_node::node_name(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> element_node::parent(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> element_node::typed_value(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 	
-sequence_type_t const& element_node::get_type(
-	context * ctx_p) const
-{
-	return xs_untyped;
-}
-
 string element_node::string_value(
 	context const* ctx_p) const
 {
 	return "";
-}
-
-void element_node::add_node(
-	context * ctx_p,
-	nodeid id)
-{
-}
-
-void element_node::add_node(
-	rchandle<node> node_h)
-{
 }
 
 ostream& element_node::put(ostream& os, context * ctx_p) const
@@ -410,43 +405,25 @@ attribute_node::attribute_node(
 rchandle<item_iterator> attribute_node::base_uri(
 	context * ctx_p) const
 {
-	return NULL;
-}
-
-bool attribute_node::is_id(
-	context * ctx_p) const
-{
-	return false;
-}
-
-bool attribute_node::is_idrefs(
-	context * ctx_p) const
-{
-	return false;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> attribute_node::node_name(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> attribute_node::parent(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> attribute_node::typed_value(
 	context * ctx_p) const
 {
-	return NULL;
-}
-
-sequence_type_t const& attribute_node::get_type(
-	context * ctx_p) const
-{
-	return xs_untypedAtomic;
+	return &item_iterator::empty_sequence;
 }
 
 string attribute_node::string_value(
@@ -470,9 +447,7 @@ namespace_node::namespace_node(
 	uint32_t gen,
 	itemref_t ref,
 	nodeid_t id,
-	nodeid_t parentid,
-	docid_t docid,
-	itemref_t qname_ref)
+	nodeid_t parentid)
 :
 	node(namespaceNode, 0, gen, ref, id, parentid)
 {
@@ -481,19 +456,19 @@ namespace_node::namespace_node(
 rchandle<item_iterator> namespace_node::node_name(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> namespace_node::parent(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> namespace_node::typed_value(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 	
 string namespace_node::string_value(
@@ -529,25 +504,25 @@ pi_node::pi_node(
 rchandle<item_iterator> pi_node::base_uri(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> pi_node::node_name(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> pi_node::parent(
 	context * ctx_p) const
 {
-	return NULL:
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> pi_node::typed_value(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 	
 string pi_node::string_value(
@@ -582,19 +557,19 @@ comment_node::comment_node(
 rchandle<item_iterator> comment_node::base_uri(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> comment_node::parent(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> comment_node::typed_value(
 	context * ctx_p) const
 {
-	return NULL;
+	return &item_iterator::empty_sequence;
 }
 	
 string comment_node::string_value(
@@ -619,23 +594,15 @@ void* text_node::operator new(
 	size_t text_size,
 	itemstore& istore)
 {
-	istore.check(node_size+text_size);
+	istore.assure_words(node_size+text_size);
 	return istore.last();
 }
 
 void* text_node::operator new(
 	size_t node_size,
-	void* p)
+	void const* p)
 {
-	return p;
-}
-
-void* text_node::operator new(
-	size_t node_size,
-	itemstore& istore,
-	uint64_t offset)
-{
-	return (void*)&istore[offset];
+	return (void*)p;
 }
 
 text_node::text_node(
@@ -653,23 +620,19 @@ text_node::text_node(
 rchandle<item_iterator> text_node::base_uri(
 	context * ctx_p) const
 {
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> text_node::parent(
 	context * ctx_p) const
 {
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> text_node::typed_value(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
-}
-	
-rchandle<item_iterator> text_node::node_name(
-	context * ctx_p) const
-{
-	return &item_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 	
 string text_node::string_value(
@@ -712,25 +675,25 @@ std::string binary_node::string_value(
 rchandle<item_iterator> binary_node::base_uri(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> binary_node::parent(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> binary_node::type_name(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 
 rchandle<item_iterator> binary_node::typed_value(
 	context * ctx_p) const
 {
-	return &item_iterator::EMPTY_SEQUENCE;
+	return &item_iterator::empty_sequence;
 }
 
 

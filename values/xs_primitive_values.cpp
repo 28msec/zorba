@@ -83,6 +83,7 @@ ostream& xs_anyURIValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_anyURIValue::xs_anyURIValue()
+: atomic_value(xs_anyURI,0)
 {
 }
  
@@ -93,6 +94,7 @@ xs_anyURIValue::~xs_anyURIValue()
 xs_anyURIValue::xs_anyURIValue(
 	xqp_anyURI const& _val)
 :
+	atomic_value(xs_anyURI,0),
 	val(_val)
 {
 }
@@ -128,6 +130,7 @@ ostream& xs_base64BinaryValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_base64BinaryValue::xs_base64BinaryValue()
+: atomic_value(xs_base64Binary,0)
 {
 }
  
@@ -138,6 +141,7 @@ xs_base64BinaryValue::~xs_base64BinaryValue()
 xs_base64BinaryValue::xs_base64BinaryValue(
 	xqp_base64Binary const& _val)
 :
+  atomic_value(xs_base64Binary,0),
 	val(_val)
 {
 }
@@ -173,6 +177,7 @@ ostream& xs_booleanValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_booleanValue::xs_booleanValue()
+: atomic_value(xs_boolean,0)
 {
 }
  
@@ -183,6 +188,7 @@ xs_booleanValue::~xs_booleanValue()
 xs_booleanValue::xs_booleanValue(
 	xqp_boolean const& _val)
 :
+	atomic_value(xs_boolean,0),
 	val(_val)
 {
 }
@@ -218,6 +224,7 @@ ostream& xs_byteValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_byteValue::xs_byteValue()
+:	atomic_value(xs_byte,0)
 {
 }
  
@@ -228,6 +235,7 @@ xs_byteValue::~xs_byteValue()
 xs_byteValue::xs_byteValue(
 	xqp_byte const& _val)
 :
+	atomic_value(xs_byte,0),
 	val(_val)
 {
 }
@@ -266,6 +274,7 @@ ostream& xs_dateValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_dateValue::xs_dateValue()
+: atomic_value(xs_date,0)
 {
 }
  
@@ -276,6 +285,7 @@ xs_dateValue::~xs_dateValue()
 xs_dateValue::xs_dateValue(
 	xqp_date const& _val)
 :
+	atomic_value(xs_date,0),
 	val(_val)
 {
 }
@@ -313,6 +323,7 @@ ostream& xs_dateTimeValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_dateTimeValue::xs_dateTimeValue()
+: atomic_value(xs_dateTime,0)
 {
 }
  
@@ -322,7 +333,8 @@ xs_dateTimeValue::~xs_dateTimeValue()
 
 xs_dateTimeValue::xs_dateTimeValue(
 	xqp_dateTime const& _val)
-:
+:	
+	atomic_value(xs_dateTime,0),
 	val(_val)
 {
 }
@@ -357,6 +369,7 @@ ostream& xs_decimalValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_decimalValue::xs_decimalValue()
+: atomic_value(xs_decimal,0)
 {
 }
  
@@ -367,13 +380,9 @@ xs_decimalValue::~xs_decimalValue()
 xs_decimalValue::xs_decimalValue(
 	xqp_decimal const& _val)
 :
+	atomic_value(xs_decimal,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_decimalValue::get_type() const
-{
-	return xs_decimal;
 }
 
 
@@ -401,6 +410,7 @@ ostream& xs_doubleValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_doubleValue::xs_doubleValue()
+: atomic_value(xs_double,0)
 {
 }
  
@@ -411,13 +421,9 @@ xs_doubleValue::~xs_doubleValue()
 xs_doubleValue::xs_doubleValue(
 	xqp_double const& _val)
 :
+	atomic_value(xs_double,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_doubleValue::get_type() const
-{
-	return xs_double;
 }
 
 
@@ -445,6 +451,7 @@ ostream& xs_durationValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_durationValue::xs_durationValue()
+: atomic_value(xs_duration,0)
 {
 }
  
@@ -455,13 +462,9 @@ xs_durationValue::~xs_durationValue()
 xs_durationValue::xs_durationValue(
 	xqp_duration const& _val)
 :
+	atomic_value(xs_duration,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_durationValue::get_type() const
-{
-	return xs_duration;
 }
 
 
@@ -489,6 +492,7 @@ ostream& xs_floatValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_floatValue::xs_floatValue()
+: atomic_value(xs_float,0)
 {
 }
  
@@ -499,15 +503,10 @@ xs_floatValue::~xs_floatValue()
 xs_floatValue::xs_floatValue(
 	xqp_float const& _val)
 :
+	atomic_value(xs_float,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_floatValue::get_type() const
-{
-	return xs_float;
-}
-
 
 
 ///////////////////////////////
@@ -537,6 +536,7 @@ ostream& xs_gDayValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_gDayValue::xs_gDayValue()
+: atomic_value(xs_gDay,0)
 {
 }
  
@@ -547,15 +547,10 @@ xs_gDayValue::~xs_gDayValue()
 xs_gDayValue::xs_gDayValue(
 	xqp_gDay const& _val)
 :
+	atomic_value(xs_gDay,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_gDayValue::get_type() const
-{
-	return xs_gDay;
-}
-
 
 
 ///////////////////////////////
@@ -585,6 +580,7 @@ ostream& xs_gMonthValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_gMonthValue::xs_gMonthValue()
+: atomic_value(xs_gMonth,0)
 {
 }
  
@@ -595,15 +591,10 @@ xs_gMonthValue::~xs_gMonthValue()
 xs_gMonthValue::xs_gMonthValue(
 	xqp_gMonth const& _val)
 :
+	atomic_value(xs_gMonth,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_gMonthValue::get_type() const
-{
-	return xs_gMonth;
-}
-
 
 
 ///////////////////////////////
@@ -633,6 +624,7 @@ ostream& xs_gMonthDayValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_gMonthDayValue::xs_gMonthDayValue()
+: atomic_value(xs_gMonthDay,0)
 {
 }
  
@@ -643,15 +635,10 @@ xs_gMonthDayValue::~xs_gMonthDayValue()
 xs_gMonthDayValue::xs_gMonthDayValue(
 	xqp_gMonthDay const& _val)
 :
+	atomic_value(xs_gMonthDay,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_gMonthDayValue::get_type() const
-{
-	return xs_gMonthDay;
-}
-
 
 
 ///////////////////////////////
@@ -681,6 +668,7 @@ ostream& xs_gYearValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_gYearValue::xs_gYearValue()
+: atomic_value(xs_gYear,0)
 {
 }
  
@@ -691,15 +679,10 @@ xs_gYearValue::~xs_gYearValue()
 xs_gYearValue::xs_gYearValue(
 	xqp_gYear const& _val)
 :
+	atomic_value(xs_gYear,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_gYearValue::get_type() const
-{
-	return xs_gYear;
-}
-
 
 
 ///////////////////////////////
@@ -729,6 +712,7 @@ ostream& xs_gYearMonthValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_gYearMonthValue::xs_gYearMonthValue()
+: atomic_value(xs_gYearMonth,0)
 {
 }
  
@@ -739,15 +723,10 @@ xs_gYearMonthValue::~xs_gYearMonthValue()
 xs_gYearMonthValue::xs_gYearMonthValue(
 	xqp_gYearMonth const& _val)
 :
+	atomic_value(xs_gYearMonth,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_gYearMonthValue::get_type() const
-{
-	return xs_gYearMonth;
-}
-
 
 
 ///////////////////////////////
@@ -774,6 +753,7 @@ ostream& xs_hexBinaryValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_hexBinaryValue::xs_hexBinaryValue()
+: atomic_value(xs_hexBinary,0)
 {
 }
  
@@ -784,15 +764,10 @@ xs_hexBinaryValue::~xs_hexBinaryValue()
 xs_hexBinaryValue::xs_hexBinaryValue(
 	xqp_hexBinary const& _val)
 :
+	atomic_value(xs_hexBinary,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_hexBinaryValue::get_type() const
-{
-	return xs_hexBinary;
-}
-
 
 
 ///////////////////////////////
@@ -819,6 +794,7 @@ ostream& xs_intValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_intValue::xs_intValue()
+: atomic_value(xs_int,0)
 {
 }
  
@@ -829,15 +805,10 @@ xs_intValue::~xs_intValue()
 xs_intValue::xs_intValue(
 	xqp_int const& _val)
 :
+	atomic_value(xs_int,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_intValue::get_type() const
-{
-	return xs_int;
-}
-
 
 
 ///////////////////////////////
@@ -864,6 +835,7 @@ ostream& xs_integerValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_integerValue::xs_integerValue()
+: atomic_value(xs_integer,0)
 {
 }
  
@@ -874,15 +846,10 @@ xs_integerValue::~xs_integerValue()
 xs_integerValue::xs_integerValue(
 	xqp_integer const& _val)
 :
+	atomic_value(xs_integer,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_integerValue::get_type() const
-{
-	return xs_integer;
-}
-
 
 
 ///////////////////////////////
@@ -909,6 +876,7 @@ ostream& xs_languageValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_languageValue::xs_languageValue()
+: atomic_value(xs_language,0)
 {
 }
  
@@ -919,15 +887,10 @@ xs_languageValue::~xs_languageValue()
 xs_languageValue::xs_languageValue(
 	xqp_language const& _val)
 :
+	atomic_value(xs_language,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_languageValue::get_type() const
-{
-	return xs_language;
-}
-
 
 
 ///////////////////////////////
@@ -954,6 +917,7 @@ ostream& xs_longValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_longValue::xs_longValue()
+: atomic_value(xs_long,0)
 {
 }
  
@@ -964,15 +928,10 @@ xs_longValue::~xs_longValue()
 xs_longValue::xs_longValue(
 	xqp_long const& _val)
 :
+	atomic_value(xs_long,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_longValue::get_type() const
-{
-	return xs_long;
-}
-
 
 
 ///////////////////////////////
@@ -999,6 +958,7 @@ ostream& xs_negativeIntegerValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_negativeIntegerValue::xs_negativeIntegerValue()
+: atomic_value(xs_negativeInteger,0)
 {
 }
  
@@ -1009,15 +969,10 @@ xs_negativeIntegerValue::~xs_negativeIntegerValue()
 xs_negativeIntegerValue::xs_negativeIntegerValue(
 	xqp_negativeInteger const& _val)
 :
+	atomic_value(xs_negativeInteger,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_negativeIntegerValue::get_type() const
-{
-	return xs_negativeInteger;
-}
-
 
 
 ///////////////////////////////
@@ -1044,6 +999,7 @@ ostream& xs_nonNegativeIntegerValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_nonNegativeIntegerValue::xs_nonNegativeIntegerValue()
+: atomic_value(xs_nonNegativeInteger,0)
 {
 }
  
@@ -1054,15 +1010,10 @@ xs_nonNegativeIntegerValue::~xs_nonNegativeIntegerValue()
 xs_nonNegativeIntegerValue::xs_nonNegativeIntegerValue(
 	xqp_nonNegativeInteger const& _val)
 :
+	atomic_value(xs_nonNegativeInteger,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_nonNegativeIntegerValue::get_type() const
-{
-	return xs_nonNegativeInteger;
-}
-
 
 
 ///////////////////////////////
@@ -1089,6 +1040,7 @@ ostream& xs_nonPositiveIntegerValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_nonPositiveIntegerValue::xs_nonPositiveIntegerValue()
+: atomic_value(xs_nonPositiveInteger,0)
 {
 }
  
@@ -1099,15 +1051,10 @@ xs_nonPositiveIntegerValue::~xs_nonPositiveIntegerValue()
 xs_nonPositiveIntegerValue::xs_nonPositiveIntegerValue(
 	xqp_nonPositiveInteger const& _val)
 :
+	atomic_value(xs_nonPositiveInteger,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_nonPositiveIntegerValue::get_type() const
-{
-	return xs_nonPositiveInteger;
-}
-
 
 
 ///////////////////////////////
@@ -1134,6 +1081,7 @@ ostream& xs_normalizedStringValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_normalizedStringValue::xs_normalizedStringValue()
+: atomic_value(xs_normalizedString,0)
 {
 }
  
@@ -1144,15 +1092,10 @@ xs_normalizedStringValue::~xs_normalizedStringValue()
 xs_normalizedStringValue::xs_normalizedStringValue(
 	xqp_normalizedString const& _val)
 :
+	atomic_value(xs_normalizedString,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_normalizedStringValue::get_type() const
-{
-	return xs_normalizedString;
-}
-
 
 
 ///////////////////////////////
@@ -1179,6 +1122,7 @@ ostream& xs_positiveIntegerValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_positiveIntegerValue::xs_positiveIntegerValue()
+: atomic_value(xs_positiveInteger,0)
 {
 }
  
@@ -1189,15 +1133,10 @@ xs_positiveIntegerValue::~xs_positiveIntegerValue()
 xs_positiveIntegerValue::xs_positiveIntegerValue(
 	xqp_positiveInteger const& _val)
 :
+	atomic_value(xs_positiveInteger,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_positiveIntegerValue::get_type() const
-{
-	return xs_positiveInteger;
-}
-
 
 
 ///////////////////////////////
@@ -1224,6 +1163,7 @@ ostream& xs_shortValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_shortValue::xs_shortValue()
+: atomic_value(xs_short,0)
 {
 }
  
@@ -1234,6 +1174,7 @@ xs_shortValue::~xs_shortValue()
 xs_shortValue::xs_shortValue(
 	xqp_short const& _val)
 :
+	atomic_value(xs_short,0),
 	val(_val)
 {
 }
@@ -1269,6 +1210,7 @@ ostream& xs_stringValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_stringValue::xs_stringValue()
+: atomic_value(xs_string,0)
 {
 }
  
@@ -1279,15 +1221,10 @@ xs_stringValue::~xs_stringValue()
 xs_stringValue::xs_stringValue(
 	xqp_string const& _val)
 :
+	atomic_value(xs_string,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_stringValue::get_type() const
-{
-	return xs_string;
-}
-
 
 
 ///////////////////////////////
@@ -1317,6 +1254,7 @@ ostream& xs_timeValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_timeValue::xs_timeValue()
+: atomic_value(xs_time,0)
 {
 }
  
@@ -1327,15 +1265,10 @@ xs_timeValue::~xs_timeValue()
 xs_timeValue::xs_timeValue(
 	xqp_time const& _val)
 :
+	atomic_value(xs_time,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_timeValue::get_type() const
-{
-	return xs_time;
-}
-
 
 
 ///////////////////////////////
@@ -1362,6 +1295,7 @@ ostream& xs_tokenValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_tokenValue::xs_tokenValue()
+: atomic_value(xs_token,0)
 {
 }
  
@@ -1372,15 +1306,10 @@ xs_tokenValue::~xs_tokenValue()
 xs_tokenValue::xs_tokenValue(
 	xqp_token const& _val)
 :
+	atomic_value(xs_token,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_tokenValue::get_type() const
-{
-	return xs_token;
-}
-
 
 
 ///////////////////////////////
@@ -1407,6 +1336,7 @@ ostream& xs_unsignedByteValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_unsignedByteValue::xs_unsignedByteValue()
+: atomic_value(xs_unsignedByte,0)
 {
 }
  
@@ -1417,15 +1347,10 @@ xs_unsignedByteValue::~xs_unsignedByteValue()
 xs_unsignedByteValue::xs_unsignedByteValue(
 	xqp_unsignedByte const& _val)
 :
+	atomic_value(xs_unsignedByte,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_unsignedByteValue::get_type() const
-{
-	return xs_unsignedByte;
-}
-
 
 
 ///////////////////////////////
@@ -1452,6 +1377,7 @@ ostream& xs_unsignedIntValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_unsignedIntValue::xs_unsignedIntValue()
+: atomic_value(xs_unsignedInt,0)
 {
 }
  
@@ -1462,15 +1388,10 @@ xs_unsignedIntValue::~xs_unsignedIntValue()
 xs_unsignedIntValue::xs_unsignedIntValue(
 	xqp_unsignedInt const& _val)
 :
+	atomic_value(xs_unsignedInt,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_unsignedIntValue::get_type() const
-{
-	return xs_unsignedInt;
-}
-
 
 
 ///////////////////////////////
@@ -1497,6 +1418,7 @@ ostream& xs_unsignedLongValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_unsignedLongValue::xs_unsignedLongValue()
+: atomic_value(xs_unsignedLong,0)
 {
 }
  
@@ -1507,15 +1429,10 @@ xs_unsignedLongValue::~xs_unsignedLongValue()
 xs_unsignedLongValue::xs_unsignedLongValue(
 	xqp_unsignedLong const& _val)
 :
+	atomic_value(xs_unsignedLong,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_unsignedLongValue::get_type() const
-{
-	return xs_unsignedLong;
-}
-
 
 
 ///////////////////////////////
@@ -1542,6 +1459,7 @@ ostream& xs_unsignedShortValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_unsignedShortValue::xs_unsignedShortValue()
+: atomic_value(xs_unsignedShort,0)
 {
 }
  
@@ -1552,15 +1470,10 @@ xs_unsignedShortValue::~xs_unsignedShortValue()
 xs_unsignedShortValue::xs_unsignedShortValue(
 	xqp_unsignedShort const& _val)
 :
+	atomic_value(xs_unsignedShort,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_unsignedShortValue::get_type() const
-{
-	return xs_unsignedShort;
-}
-
 
 
 ///////////////////////////////
@@ -1587,6 +1500,7 @@ ostream& xs_ENTITIESValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_ENTITIESValue::xs_ENTITIESValue()
+: atomic_value(xs_entitySeq,0)
 {
 }
  
@@ -1597,15 +1511,10 @@ xs_ENTITIESValue::~xs_ENTITIESValue()
 xs_ENTITIESValue::xs_ENTITIESValue(
 	xqp_ENTITIES const& _val)
 :
+	atomic_value(xs_entitySeq,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_ENTITIESValue::get_type() const
-{
-	return xs_entitySeq;
-}
-
 
 
 ///////////////////////////////
@@ -1632,6 +1541,7 @@ ostream& xs_ENTITYValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_ENTITYValue::xs_ENTITYValue()
+: atomic_value(xs_entity,0)
 {
 }
  
@@ -1642,13 +1552,9 @@ xs_ENTITYValue::~xs_ENTITYValue()
 xs_ENTITYValue::xs_ENTITYValue(
 	xqp_ENTITY const& _val)
 :
+	atomic_value(xs_entity,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_ENTITYValue::get_type() const
-{
-	return xs_entity;
 }
 
 
@@ -1677,6 +1583,7 @@ ostream& xs_IDValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_IDValue::xs_IDValue()
+: atomic_value(xs_id,0)
 {
 }
  
@@ -1687,13 +1594,9 @@ xs_IDValue::~xs_IDValue()
 xs_IDValue::xs_IDValue(
 	xqp_ID const& _val)
 :
+	atomic_value(xs_id,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_IDValue::get_type() const
-{
-	return xs_id;
 }
 
 
@@ -1722,6 +1625,7 @@ ostream& xs_IDREFValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_IDREFValue::xs_IDREFValue()
+: atomic_value(xs_idref,0)
 {
 }
  
@@ -1732,13 +1636,9 @@ xs_IDREFValue::~xs_IDREFValue()
 xs_IDREFValue::xs_IDREFValue(
 	xqp_IDREF const& _val)
 :
+	atomic_value(xs_idref,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_IDREFValue::get_type() const
-{
-	return xs_idref;
 }
 
 
@@ -1767,6 +1667,7 @@ ostream& xs_IDREFSValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_IDREFSValue::xs_IDREFSValue()
+: atomic_value(xs_idrefSeq,0)
 {
 }
  
@@ -1777,15 +1678,10 @@ xs_IDREFSValue::~xs_IDREFSValue()
 xs_IDREFSValue::xs_IDREFSValue(
 	xqp_IDREFS const& _val)
 :
+	atomic_value(xs_idrefSeq,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_IDREFSValue::get_type() const
-{
-	return xs_idrefSeq;
-}
-
 
 
 ///////////////////////////////
@@ -1812,6 +1708,7 @@ ostream& xs_NCNameValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_NCNameValue::xs_NCNameValue()
+: atomic_value(xs_ncName,0)
 {
 }
  
@@ -1822,13 +1719,9 @@ xs_NCNameValue::~xs_NCNameValue()
 xs_NCNameValue::xs_NCNameValue(
 	xqp_NCName const& _val)
 :
+	atomic_value(xs_ncName,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_NCNameValue::get_type() const
-{
-	return xs_ncName;
 }
 
 
@@ -1857,6 +1750,7 @@ ostream& xs_NMTOKENValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_NMTOKENValue::xs_NMTOKENValue()
+: atomic_value(xs_nmtoken,0)
 {
 }
  
@@ -1867,15 +1761,10 @@ xs_NMTOKENValue::~xs_NMTOKENValue()
 xs_NMTOKENValue::xs_NMTOKENValue(
 	xqp_NMTOKEN const& _val)
 :
+	atomic_value(xs_nmtoken ,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_NMTOKENValue::get_type() const
-{
-	return xs_nmtoken;
-}
-
 
 
 ///////////////////////////////
@@ -1902,6 +1791,7 @@ ostream& xs_NMTOKENSValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_NMTOKENSValue::xs_NMTOKENSValue()
+: atomic_value(xs_nmtokenSeq ,0)
 {
 }
  
@@ -1912,13 +1802,9 @@ xs_NMTOKENSValue::~xs_NMTOKENSValue()
 xs_NMTOKENSValue::xs_NMTOKENSValue(
 	xqp_NMTOKENS const& _val)
 :
+	atomic_value(xs_nmtokenSeq ,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_NMTOKENSValue::get_type() const
-{
-	return xs_nmtokenSeq;
 }
 
 
@@ -1947,6 +1833,7 @@ ostream& xs_NOTATIONValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_NOTATIONValue::xs_NOTATIONValue()
+: atomic_value(xs_notation ,0)
 {
 }
  
@@ -1957,15 +1844,10 @@ xs_NOTATIONValue::~xs_NOTATIONValue()
 xs_NOTATIONValue::xs_NOTATIONValue(
 	xqp_NOTATION const& _val)
 :
+	atomic_value(xs_notation ,0),
 	val(_val)
 {
 }
-
-sequence_type_t xs_NOTATIONValue::get_type() const
-{
-	return xs_notation;
-}
-
 
 
 ///////////////////////////////
@@ -1992,6 +1874,7 @@ ostream& xs_NameValue::put(ostream& os, context * ctx_p) const
 }
 
 xs_NameValue::xs_NameValue()
+: atomic_value(xs_name ,0)
 {
 }
  
@@ -2002,20 +1885,11 @@ xs_NameValue::~xs_NameValue()
 xs_NameValue::xs_NameValue(
 	xqp_Name const& _val)
 :
+	atomic_value(xs_name ,0),
 	val(_val)
 {
 }
 
-sequence_type_t xs_NameValue::get_type() const
-{
-	return xs_name;
-}
-
-
-
-///////////////////////////////
-//	xs_QName - appears is a separate module 'QName'
-///////////////////////////////
 
 
 }	/* namespace xqp */

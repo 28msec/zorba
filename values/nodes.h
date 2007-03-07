@@ -73,10 +73,11 @@ public:	// nodes types
 	std::string decode(node_kind_t) const;
 
 protected:
-	uint32_t  _gen;					// generation number
-	off_t     _ref;					// forwarding reference for update
-	nodeid_t  _id;					// node id
-	nodeid_t  _parentid;		// parent node id
+	uint32_t  m_gen;				// generation number
+	off_t     m_ref;				// forwarding reference for update
+	nodeid_t  m_id;					// node ordinal id
+	nodeid_t  m_parentid;		// parent node ordinal id
+	uint32_t	m_offset;			// offset to first child
 
 public:		// ctor,dtor
 	node(sequence_type_t,size_t,uint32_t,off_t,nodeid_t,nodeid_t);
@@ -84,13 +85,15 @@ public:		// ctor,dtor
 	~node() {}
 
 public:		// storage interface
-	uint32_t& gen() { return _gen; }
-	off_t& ref() { return _ref; }
-	nodeid_t& id() { return _id; }
-	nodeid_t& parentid() { return _parentid; }
+	uint32_t& gen() { return m_gen; }
+	off_t& ref() { return m_ref; }
+	nodeid_t& id() { return m_id; }
+	nodeid_t& parentid() { return m_parentid; }
+	uint32_t& offset() { return m_offset; }
+	uint32_t const& offset() const { return m_offset; }
 
 	void* operator new(size_t node_size, itemstore&);
-	void* operator new(size_t node_size, void*);
+	void* operator new(size_t node_size, void const*);
 	void operator delete(void*) {}
 
 public:		// XQuery interface
@@ -110,7 +113,7 @@ public:		// XQuery interface
 	/**
 	 * Return the node data type.
 	 */
-	virtual sequence_type_t const& get_type(context *) const;
+	virtual sequence_type_t get_type(context *) const;
 
 	/**
 	 *	The dm:attributes accessor returns the attributes of a node as a 
@@ -211,10 +214,13 @@ class child_iterator : public item_iterator
 {
 protected:
 	node const* parent_p;
-	node const* current_node;
+	node const* current_p;
+	node const* end_p;
+	context* ctx_p;
 
 public:
 	child_iterator(context *, node const*);
+	child_iterator(node const*);
 	~child_iterator();
 
 public:
@@ -268,6 +274,8 @@ class namespace_node;
 
 class document_node : public node
 {
+	friend class child_iterator;
+
 protected:
 	docid_t   m_docid;					// parent docid
 	itemref_t m_baseuri_ref;		// document base URI
@@ -304,7 +312,7 @@ public:		// storage interface
 
 	// arena allocation
 	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void*);
+	void* operator new(size_t, void const*);
 	void operator delete(void*) {}
 
 public:		// XQuery interface
@@ -332,6 +340,8 @@ public:		// output and debugging
 //
 class collection_node : public node
 {
+	friend class child_iterator;
+
 public:
 	node_kind_t node_kind() const { return collection_kind; }
 	rchandle<item_iterator> base_uri(context * ctx) const;
@@ -386,6 +396,8 @@ public:		// output,debugging
 
 class element_node : public node
 {
+	friend class child_iterator;
+
 protected:
 	docid_t   m_docid;					// parent docid
 	itemref_t m_qname_ref;			// element QName
@@ -433,7 +445,7 @@ public:	// storage interface
 
 	// arena allocation
 	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void*);
+	void * operator new(size_t, void const*);
 	void operator delete(void*) {}
 
 public:	// data interface
@@ -450,7 +462,7 @@ public:	// data interface
 	rchandle<item_iterator> doc(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 
-	bool is_nilled() const;
+	bool is_nilled() const { return false; }
 	bool is_id() const { return (m_type & ID_SUB5); }
 	bool is_idref() const { return (m_type & IDREF_SUB5); }
 
@@ -507,6 +519,8 @@ public:		// namespace iterator
 
 class attribute_node : public node
 {
+	friend class child_iterator;
+
 protected:
 	docid_t   m_docid;					// parent docid
 	itemref_t m_qname_ref;			// element QName
@@ -528,7 +542,7 @@ public:
 public:	// storage interface
 	// arena allocation
 	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void*);
+	void * operator new(size_t, void const*);
 	void operator delete(void*) {}
 
 public:	// XQuery interface
@@ -545,7 +559,7 @@ public:	// XQuery interface
 
 private:	//ctor,dtor - lock out
 	attribute_node(attribute_node&);
-  attribute_node(nodeid_t id);
+  attribute_node();
   ~attribute_node();
 
 public:		// output,debugging
@@ -567,6 +581,8 @@ public:		// output,debugging
 |_______________________________________________________________________*/
 class namespace_node : public node
 {
+	friend class child_iterator;
+
 protected:
 	itemref_t m_nsref;
 	nskey_t m_nskey;
@@ -589,7 +605,7 @@ public:		// storage interface
 
 	// arena allocation
 	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void*);
+	void * operator new(size_t, void const*);
 	void operator delete(void*) {}
 
 public:		// XQuery interface
@@ -620,6 +636,8 @@ public:		// output, debugging
 |_______________________________________________________________________*/
 class pi_node : public node
 {
+	friend class child_iterator;
+
 protected:
 	docid_t m_docid;
 	itemref_t m_target_ref;
@@ -644,7 +662,7 @@ public:		// storage interface
 	
 	// arena allocation
 	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void*);
+	void * operator new(size_t, void const*);
 	void operator delete(void*) {}
 
 public:		// XQuery interface
@@ -673,7 +691,10 @@ public:		// output, debugging
 
 class comment_node : public node
 {
+	friend class child_iterator;
+
 protected:
+	docid_t m_docid;				// parent docid
 	char rest[0];
 	/*
 		char[] content
@@ -690,7 +711,7 @@ public:
 public:		// storage interface
 	// arena allocation
 	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void*);
+	void* operator new(size_t, void const*);
 	void operator delete(void*) {}
 
 public:		// XQUery interface
@@ -728,7 +749,10 @@ public:		// output, debugging
 
 class text_node : public node
 {
+	friend class child_iterator;
+
 protected:
+	docid_t m_docid;		// parent doc id
 	char rest[0];
 	/*
 		char[] content
@@ -745,13 +769,14 @@ public:
 public:		// storage interface
 	char const* content() const { return rest; }
 	uint32_t length() const;
+	docid_t& docid() { return m_docid; }
 
 	// arena allocation
 	void* operator new(size_t node_size, size_t text_size, itemstore&);
-	void* operator new(size_t node_size, void*);
+	void* operator new(size_t node_size, void const*);
 	void operator delete(void*) {}
 
-public:		// accessors
+public:		// XQuery interface
 	enum node_kind_t node_kind() const { return text_kind; }
 	std::string string_value(context const*) const;
 	
@@ -759,7 +784,7 @@ public:		// accessors
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 
-private://ctor,dtor
+private:	//ctor,dtor
 	text_node(text_node&) {}
 	text_node() {}
 	~text_node() {}
@@ -784,10 +809,12 @@ public:
 |   Binary Node child.
 |_______________________________________________________________________*/
 
-// stub implementation
 class binary_node : public node
 {
+	friend class child_iterator;
+
 protected:
+	docid_t m_docid;		// parent doc id
 	char rest[0];
 	/*
 		char[] blob
@@ -801,8 +828,11 @@ public:
 		nodeid_t parentid,
 		docid_t docid);
 
-public:	// accessors
+public:		// storage interface
+	docid_t& docid() { return m_docid; }
 	char* blob() { return rest; }
+
+public:		// XQuery interface
 	node_kind_t node_kind(context *) const { return binary_kind; }
 	std::string string_value(context const*) const;
  
@@ -811,11 +841,10 @@ public:	// accessors
 	rchandle<item_iterator> type_name(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 
-private:	//ctor,dtor
+private:	// ctor,dtor - lock out
 	binary_node(binary_node&) {}
 	binary_node() {}
 	~binary_node() {}
-
 
 };
 

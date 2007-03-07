@@ -5,9 +5,6 @@ BUILD=Build
 values :	values.h values.cpp
 	g++ ${OPT} -c -o ${BUILD}/values.${SUFX} values.cpp
 
-qname_value : qname_value.h qname_value.cpp
-	g++ ${OPT} -c -o ${BUILD}/qname_value.${SUFX} qname_value.cpp
-    
 xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
 	g++ ${OPT} -c -o ${BUILD}/xs_primitive_values.${SUFX} xs_primitive_values.cpp
    
@@ -68,14 +65,13 @@ ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp
 
 all : \
 	values \
-	qname_value \
+	nodes \
 	xs_primitive_values \
-	node_values \
 	ft_values \
 	update_values
 
 test : \
 	xs_primitive_values_test \
-	node_values_test \
+	nodes_test \
 	ft_values_test
 

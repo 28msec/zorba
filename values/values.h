@@ -90,7 +90,7 @@ public:
 
 public:
 	sequence_type_t type() const { return m_type; }
-	size_t& length() { return m_length; }
+	size_t length() const { return m_length; }
   virtual std::ostream& put(std::ostream&, context *) const;
   virtual std::string describe(context *) const;
 	virtual rchandle<item_iterator> atomized_value(context *) const;
@@ -157,14 +157,14 @@ public:
 
 /*______________________________________________________________________
 |  
-|	'atomic_value' encapsulates values of primitive or derived types
+|	'qname_value' encapsulates XML QNames
 |_______________________________________________________________________*/
 
 class qname_value : public value 
 {
 protected:
 	uint64_t m_qnamekey;
-	uint64_t m_qnameref;
+	itemref_t m_qnameref;
 	char rest[0];
 	/*
 		char[] localname
@@ -179,6 +179,36 @@ private:	// ctor,dtor - lock out
 	qname_value(qname_value& qn) : value(xs_qname,0) {}
 	qname_value() : value(xs_qname,0) {}
 	~qname_value() {}
+
+public:		// output,debugging
+	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
+
+};
+
+
+/*______________________________________________________________________
+|  
+|	'uri_value' encapsulates URIs
+|_______________________________________________________________________*/
+
+class uri_value : public value 
+{
+protected:
+	uint64_t m_urikey;
+	itemref_t m_uriref;
+	char rest[0];
+	/*
+		char[] uri
+	*/
+
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, void*);
+	void operator delete(void*) {}
+
+private:	// ctor,dtor - lock out
+	uri_value(uri_value& qn) : value(xs_anyURI,0) {}
+	uri_value() : value(xs_anyURI,0) {}
+	~uri_value() {}
 
 public:		// output,debugging
 	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
