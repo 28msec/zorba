@@ -21,7 +21,7 @@
 #include "../exprtree/parsenode_visitor.h"
 #include "../util/rchandle.h"
 #include "../util/tracer.h"
-#include "../values/qname_value.h"
+#include "../values/values.h"
 #include "indent.h"
 
 using namespace std;
@@ -30,14 +30,11 @@ using namespace yy;
 namespace xqp {
 
 int printdepth = 0;
-ostringstream __oss;
+ostringstream	__oss;
+
 #define INDENT		indent[++printdepth % 30]
 #define OUTDENT		indent[printdepth-- % 30]
 #define UNDENT		printdepth--
-#define LOCATION	(__oss.str(""), \
-										__oss<<__FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__, \
-										__oss.str())
-
 
 ostream& parsenode::put(ostream& s) const
 {
@@ -615,7 +612,7 @@ OptionDecl::~OptionDecl()
 ostream& OptionDecl::put(ostream& s) const
 {
 	s << INDENT << "OptionDecl[";
-	if (qname_h!=NULL) qname_h->put(s,ctx_p);
+	if (qname_h!=NULL) qname_h->put(s);
 	s << " " << val << endl;
 	return s << OUTDENT << "]\n";
 }
@@ -1136,7 +1133,7 @@ FunctionDecl::~FunctionDecl()
 ostream& FunctionDecl::put(ostream& s) const
 {
 	s << INDENT << "Xxxx[";
-	if (name_h!=NULL) name_h->put(s,ctx_p);
+	if (name_h!=NULL) name_h->put(s);
 	if (paramlist_h!=NULL) paramlist_h->put(s);
 	if (return_type_h!=NULL) return_type_h->put(s);
 	if (body_h!=NULL) body_h->put(s);
@@ -3388,11 +3385,11 @@ void PragmaList::accept(parsenode_visitor& v) const
 Pragma::Pragma(
 	location const& _loc,
 	context * _ctx_p,
-	rchandle<QName> _name,
+	rchandle<QName> _name_h,
 	std::string _pragma_lit)
 :
 	parsenode(_loc,_ctx_p),
-	name(_name),
+	name_h(_name_h),
 	pragma_lit(_pragma_lit)
 {
 }
@@ -3404,7 +3401,7 @@ Pragma::~Pragma()
 ostream& Pragma::put(ostream& s) const
 {
 	s << INDENT << "Pragma[";
-	if (name!=NULL) name->put(s,ctx_p);
+	if (name_h!=NULL) name_h->put(s);
 	s << "pragma_lit=" << pragma_lit << endl;
 	return s << OUTDENT << "]\n";
 }
@@ -3901,7 +3898,7 @@ NameTest::~NameTest()
 ostream& NameTest::put(ostream& os) const
 {
 	os << INDENT << "NameTest[";
-	if (qname_h!=NULL) qname_h->put(os,ctx_p);
+	if (qname_h!=NULL) qname_h->put(os);
 	if (wild_h!=NULL) wild_h->put(os);
 	os << "]\n"; UNDENT;
 	return os;
@@ -3942,7 +3939,7 @@ ostream& Wildcard::put(ostream& os) const
 	os << "Wildcard[ ";
 	switch(type) {
 	case wild_all:		os << "* ]"; break;
-	case wild_prefix:	os << "*:" << qname_h->get_name() << " ]"; break;
+	case wild_prefix:	os << "*:" << qname_h->get_localname() << " ]"; break;
 	case wild_elem:		os << qname_h->get_prefix() << ":* ]"; break;
 	default: os << "???";
 	}
@@ -4350,7 +4347,7 @@ FunctionCall::~FunctionCall()
 ostream& FunctionCall::put(ostream& s) const
 {
 	s << INDENT << "FunctionCall[";
-	if (fname_h!=NULL) fname_h->put(s,ctx_p);
+	if (fname_h!=NULL) fname_h->put(s);
 	s << endl;
 	if (arg_list_h!=NULL) arg_list_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -4494,7 +4491,7 @@ DirElemConstructor::~DirElemConstructor()
 ostream& DirElemConstructor::put(ostream& s) const
 {
 	s << INDENT << "DirElemConstructor[";
-	if (elem_name_h!=NULL) elem_name_h->put(s,ctx_p);
+	if (elem_name_h!=NULL) elem_name_h->put(s);
 	s << endl;
 	if (attr_list_h!=NULL) attr_list_h->put(s);
 	if (dir_content_list_h!=NULL) dir_content_list_h->put(s);
@@ -4613,7 +4610,7 @@ DirAttr::~DirAttr()
 ostream& DirAttr::put(ostream& s) const
 {
 	s << INDENT << "DirAttr[";
-	if (atname_h!=NULL) atname_h->put(s,ctx_p);
+	if (atname_h!=NULL) atname_h->put(s);
 	s << endl;
 	if (dir_atval_h!=NULL) dir_atval_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -5189,19 +5186,6 @@ void CompDocConstructor::accept(parsenode_visitor& v) const
 CompElemConstructor::CompElemConstructor(
 	location const& _loc,
 	context * _ctx_p,
-	rchandle<QName> _qname_h,
-	rchandle<exprnode> _content_expr_h)
-:
-	exprnode(_loc,_ctx_p),
-	qname_h(_qname_h),
-	qname_expr_h(NULL),
-	content_expr_h(_content_expr_h)
-{
-}
-
-CompElemConstructor::CompElemConstructor(
-	location const& _loc,
-	context * _ctx_p,
 	rchandle<exprnode> _qname_expr_h,
 	rchandle<exprnode> _content_expr_h)
 :
@@ -5219,7 +5203,7 @@ CompElemConstructor::~CompElemConstructor()
 ostream& CompElemConstructor::put(ostream& s) const
 {
 	s << INDENT << "CompElemConstructor[";
-	if (qname_h!=NULL) qname_h->put(s,ctx_p);
+	if (qname_h!=NULL) qname_h->put(s);
 	if (qname_expr_h!=NULL) qname_expr_h->put(s);
 	if (content_expr_h!=NULL) content_expr_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -5278,19 +5262,6 @@ void ContentExpr::accept(parsenode_visitor& v) const
 CompAttrConstructor::CompAttrConstructor(
 	location const& _loc,
 	context * _ctx_p,
-	rchandle<QName> _qname_h,
-	rchandle<exprnode> _val_expr_h)
-:
-	exprnode(_loc,_ctx_p),
-	qname_h(_qname_h),
-	qname_expr_h(NULL),
-	val_expr_h(_val_expr_h)
-{
-}
-
-CompAttrConstructor::CompAttrConstructor(
-	location const& _loc,
-	context * _ctx_p,
 	rchandle<exprnode> _qname_expr_h,
 	rchandle<exprnode> _val_expr_h)
 :
@@ -5308,7 +5279,7 @@ CompAttrConstructor::~CompAttrConstructor()
 ostream& CompAttrConstructor::put(ostream& s) const
 {
 	s << INDENT << "CompAttrConstructor[";
-	if (qname_h!=NULL) qname_h->put(s,ctx_p);
+	if (qname_h!=NULL) qname_h->put(s);
 	if (qname_expr_h!=NULL) qname_expr_h->put(s);
 	if (val_expr_h!=NULL) val_expr_h->put(s);
 	return s << OUTDENT << "]\n";
@@ -5654,7 +5625,7 @@ AtomicType::~AtomicType()
 ostream& AtomicType::put(ostream& s) const
 {
 	s << INDENT << "AtomicType[";
-	if (qname_h!=NULL) qname_h->put(s,ctx_p);
+	if (qname_h!=NULL) qname_h->put(s);
 	return s << OUTDENT << "]\n";
 }
 
@@ -5918,7 +5889,7 @@ AttributeTest::~AttributeTest()
 ostream& AttributeTest::put(ostream& os) const
 {
 	os << INDENT << "AttributeTest[";
-	if (attr_h!=NULL) attr_h->put(os,ctx_p);
+	if (attr_h!=NULL) attr_h->put(os);
 	if (type_h!=NULL) type_h->put(os);
 	if (wild_b) os << "?";
 	return os << OUTDENT << "]\n";
@@ -5956,7 +5927,7 @@ SchemaAttributeTest::~SchemaAttributeTest()
 ostream& SchemaAttributeTest::put(ostream& os) const
 {
 	os << INDENT << "SchemaAttributeTest[";
-	if (attr_h!=NULL) attr_h->put(os,ctx_p);
+	if (attr_h!=NULL) attr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -6007,7 +5978,7 @@ ElementTest::~ElementTest()
 ostream& ElementTest::put(ostream& os) const
 {
 	os << INDENT << "ElementTest[\n";
-	if (elem_h!=NULL) elem_h->put(os,ctx_p);
+	if (elem_h!=NULL) elem_h->put(os);
 	if (type_h!=NULL) type_h->put(os);
 	if (optional_b) os << "?";
 	return os << OUTDENT << "]\n";
@@ -6045,7 +6016,7 @@ SchemaElementTest::~SchemaElementTest()
 ostream& SchemaElementTest::put(ostream& os) const
 {
 	os << INDENT << "SchemaElementTest[";
-	if (elem_h!=NULL) elem_h->put(os,ctx_p);
+	if (elem_h!=NULL) elem_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -6103,7 +6074,7 @@ TypeName::~TypeName()
 ostream& TypeName::put(ostream& os) const
 {
 	os << INDENT << "TypeName[";
-	if (qname_h!=NULL) qname_h->put(os,ctx_p);
+	if (qname_h!=NULL) qname_h->put(os);
 	if (optional_b) os << "?";
 	return os << OUTDENT << "]\n";
 }
@@ -6176,11 +6147,53 @@ void StringLiteral::accept(parsenode_visitor& v) const
 // [153] AposAttrContentChar
 // [154] Comment
 // [155] CommentContents
-// [156] QName
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
 
+
+
+// [156] QName
+// -----------
+QName::QName(
+	yy::location const& _loc,
+	context * _ctx_p,
+	string const& _qname)
+:
+	exprnode(_loc,_ctx_p),
+	qname(_qname)
+{
+}
+
+QName::~QName()
+{
+}
+
+string QName::get_localname() const
+{
+	string::size_type n = qname.find(':');
+	return (n!=string::npos ? qname.substr(n+1) : qname);
+}
+
+string QName::get_prefix() const
+{
+	string::size_type n = qname.find(':');
+	return (n!=string::npos ? qname.substr(0,n) : "");
+}
+
+ostream& QName::put(ostream& s) const
+{
+	s << INDENT << "QName[ " << qname;
+	return s << OUTDENT << "]\n";
+}
+
+//-QName::
+
+void QName::accept(parsenode_visitor& v) const 
+{ 
+	if (!v.begin_visit(*this)) return;
+	v.end_visit(*this); 
+}
 
 
 
@@ -6192,7 +6205,6 @@ void StringLiteral::accept(parsenode_visitor& v) const
 **  [http:://www.w3.org/TR/xqupdate/]
 **
 */
-
 
 // [241]	RevalidationDecl
 // -----------------------
@@ -6213,7 +6225,7 @@ RevalidationDecl::~RevalidationDecl()
 ostream& RevalidationDecl::put(ostream& s) const
 {
 	s << INDENT << "RevalidationDecl[";
-	if (qname_h!=NULL) qname_h->put(s,ctx_p);
+	if (qname_h!=NULL) qname_h->put(s);
 	return s << OUTDENT << "]\n";
 }
 

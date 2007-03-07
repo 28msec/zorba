@@ -23,7 +23,7 @@
 
 #include "parse_constants.h"
 #include "../context/context.h"
-#include "../values/qname_value.h"
+#include "../values/values.h"
 #include "../util/rchandle.h"
 
 #include "location.hh"
@@ -252,6 +252,7 @@ class PredicateList;
 class PreserveMode;
 class PrimaryExpr;
 class Prolog;
+class QName;
 class QVarInDecl;
 class QVarInDeclList;
 class QuantifiedExpr;
@@ -2996,7 +2997,7 @@ class Pragma : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> name;
+	rchandle<QName> name_h;
 	std::string pragma_lit;
 
 public:
@@ -3008,7 +3009,7 @@ public:
 	~Pragma();
 
 public:
-	rchandle<QName> get_name() const { return name; }
+	rchandle<QName> get_name() const { return name_h; }
 	std::string get_pragma_lit() const { return pragma_lit; }
 
 public:
@@ -4488,11 +4489,6 @@ public:
 	CompElemConstructor(
 		yy::location const&,
 		context *,
-		rchandle<QName>,
-		rchandle<exprnode>);
-	CompElemConstructor(
-		yy::location const&,
-		context *,
 		rchandle<exprnode>,
 		rchandle<exprnode>);
 	~CompElemConstructor();
@@ -4558,11 +4554,6 @@ protected:
 	rchandle<exprnode> val_expr_h;
 
 public:
-	CompAttrConstructor(
-		yy::location const&,
-		context *,
-		rchandle<QName>,
-		rchandle<exprnode>);
 	CompAttrConstructor(
 		yy::location const&,
 		context *,
@@ -5285,12 +5276,42 @@ public:
 // [153] AposAttrContentChar
 // [154] Comment
 // [155] CommentContents
+
 // [156] QName
+// -----------
+class QName : public exprnode
+/*______________________________________________________________________
+|
+|	::=  QNAME
+|_______________________________________________________________________*/
+{
+protected:
+	std::string qname;
+
+public:
+	QName(
+		yy::location const&,
+		context *,
+		std::string const&);
+	~QName();
+
+public:
+	std::string get_qname() const { return qname; }
+	std::string get_localname() const;
+	std::string get_prefix() const;
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+
+
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
-
-
 
 
 

@@ -1041,7 +1041,7 @@ OptionDecl :
 		{
 			if (debug) cout << "OptionDecl [ ]\n";
 			$$ = new OptionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_optn,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								driver.symtab.get($3));
 		}
 	;
@@ -1339,7 +1339,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,NULL,NULL,
 								fn_extern);
 		}
@@ -1347,7 +1347,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
 								fn_read);
@@ -1356,7 +1356,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
 								fn_extern);
@@ -1365,7 +1365,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1375,7 +1375,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [as_type.external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
@@ -1385,7 +1385,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [as_type.expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1395,7 +1395,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.as_type.external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
@@ -1405,7 +1405,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.as_type.expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
@@ -1415,7 +1415,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,NULL,NULL,
 								fn_extern_update);
 		}
@@ -1423,7 +1423,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
 								fn_update);
@@ -1432,7 +1432,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
 								fn_extern_update);
@@ -1441,7 +1441,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1451,7 +1451,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) as_type.external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
@@ -1461,7 +1461,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) as_type.expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1471,7 +1471,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
@@ -1481,7 +1481,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
 			$$ = new FunctionDecl(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
@@ -2778,7 +2778,7 @@ Pragma :
 		{
 			if (debug) cout << "Pragma [ ]\n";
 			$$ = new Pragma(@$,driver.get_ctx(),
-								new QName(QName::qn_prag,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								driver.symtab.get($3));
 
 		}
@@ -3069,7 +3069,7 @@ NameTest :
 		{
 			if (debug) cout << "NameTest [qname]\n";
 			$$ = new NameTest(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($1)));
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)));
 		}
 	|	Wildcard
 		{
@@ -3087,21 +3087,21 @@ Wildcard :
 		{
 			if (debug) cout << "Wildcard [*]\n";
 			$$ = new Wildcard(@$,driver.get_ctx(),
-									new QName(QName::qn_elem,"",""),
+									new QName(@$,driver.get_ctx(),""),
 									wild_all);
 		}
 	|	ELEM_WILDCARD
 		{
 			if (debug) cout << "Wildcard [pref:*]\n";
 			$$ = new Wildcard(@$,driver.get_ctx(),
-									new QName(QName::qn_elem,"",driver.symtab.get($1)),
+									new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 									wild_elem);
 		}
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
 		{
 			if (debug) cout << "Wildcard [*:qname]\n";
 			$$ = new Wildcard(@$,driver.get_ctx(),
-									new QName(QName::qn_elem,driver.symtab.get($1),""),
+									new QName(@$,driver.get_ctx(),""),
 									wild_prefix);
 		}
 	;
@@ -3357,14 +3357,14 @@ FunctionCall :
 		{
 			if (debug) cout << "FunctionCall [ ]\n";
 			$$ = new FunctionCall(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								NULL);
 		}
 	|	QNAME_LPAR  ArgList  RPAR
 		{
 			if (debug) cout << "FunctionCall [arglist]\n";
 			$$ = new FunctionCall(@$,driver.get_ctx(),
-								new QName(QName::qn_func,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								dynamic_cast<ArgList*>($2));
 		}
 	;
@@ -3434,7 +3434,7 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname/> ]\n";
 			$$ = new DirElemConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,
 								NULL,
 								NULL);
@@ -3443,7 +3443,7 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname attrlist/> ]\n";
 			$$ = new DirElemConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL,
 								dynamic_cast<DirAttributeList*>($3), 
 								NULL);
@@ -3452,8 +3452,8 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname>content</qname>]\n";
 			$$ = new DirElemConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($2)),
-								new QName(QName::qn_elem,driver.symtab.get($6)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($6)),
 								NULL,
 								dynamic_cast<DirElemContentList*>($4));
 		}
@@ -3461,8 +3461,8 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
 			$$ = new DirElemConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($2)),
-								new QName(QName::qn_elem,driver.symtab.get($7)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($7)),
 								dynamic_cast<DirAttributeList*>($3), 
 								dynamic_cast<DirElemContentList*>($5));
 		}
@@ -3519,7 +3519,7 @@ DirAttr :
 		{
 			if (debug) cout << "DirAttr [ ]\n";
 			$$ = new DirAttr(@$,driver.get_ctx(),
-								new QName(QName::qn_attr,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								dynamic_cast<DirAttributeValue*>($3));
 		}
 	;
@@ -3834,14 +3834,14 @@ CompElemConstructor :
 		{
 			if (debug) cout << "CompElemConstructor [ ]\n";
 			$$ = new CompElemConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								NULL);
 		}
 	|	ELEMENT_QNAME_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [content]\n";
 			$$ = new CompElemConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_elem,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								$2);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -3878,14 +3878,14 @@ CompAttrConstructor :
 		{
 			if (debug) cout << "CompAttrConstructor [ ]\n";
 			$$ = new CompAttrConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_attr,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								NULL);
 		}
 	|	ATTRIBUTE_QNAME_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [val]\n";
 			$$ = new CompAttrConstructor(@$,driver.get_ctx(),
-								new QName(QName::qn_attr,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								$2);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -4095,7 +4095,7 @@ AtomicType :
 		{
 			if (debug) cout << "AtomicType [qname]\n";
 			$$ = new AtomicType(@$,driver.get_ctx(),
-								new QName(QName::qn_type, driver.symtab.get($1)));
+								new QName(@$,driver.get_ctx(), driver.symtab.get($1)));
 		}
 	;
 
@@ -4242,14 +4242,14 @@ AttributeTest :
 		{
 			if (debug) cout << "AttributeTest [name]\n";
 			$$ = new AttributeTest(@$,driver.get_ctx(),
-								new QName(QName::qn_attr,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								NULL);
 		}
 	|	ATTRIBUTE_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			if (debug) cout << "AttributeTest [name.type]\n";
 			$$ = new AttributeTest(@$,driver.get_ctx(),
-								new QName(QName::qn_attr,driver.symtab.get($2)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 								dynamic_cast<TypeName*>($4));
 		}
 	|	ATTRIBUTE_LPAR  STAR  RPAR
@@ -4278,7 +4278,7 @@ SchemaAttributeTest :
 		{
 			if (debug) cout << "SchemaAttributeTest [ ]\n";
 			$$ = new SchemaAttributeTest(@$,driver.get_ctx(),
-								new QName(QName::qn_attr, driver.symtab.get($2)));
+								new QName(@$,driver.get_ctx(), driver.symtab.get($2)));
 		}
 	;
 
@@ -4297,14 +4297,14 @@ ElementTest :
 		{
 			if (debug) cout << "ElementTest [name]\n";
 			$$ = new ElementTest(@$,driver.get_ctx(),
-									new QName(QName::qn_elem,driver.symtab.get($2)),
+									new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 									NULL);
 		}
 	|	ELEMENT_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			if (debug) cout << "ElementTest [name.type]\n";
 			$$ = new ElementTest(@$,driver.get_ctx(),
-									new QName(QName::qn_elem,driver.symtab.get($2)),
+									new QName(@$,driver.get_ctx(),driver.symtab.get($2)),
 									dynamic_cast<TypeName*>($4));
 		}
 	|	ELEMENT_LPAR  STAR  RPAR
@@ -4333,7 +4333,7 @@ SchemaElementTest :
 		{
 			if (debug) cout << "SchemaElementTest [ ]\n";
 			$$ = new SchemaElementTest(@$,driver.get_ctx(),
-									new QName(QName::qn_elem,driver.symtab.get($2)));
+									new QName(@$,driver.get_ctx(),driver.symtab.get($2)));
 		}
 	;
 
@@ -4355,13 +4355,13 @@ TypeName :
 		{
 			if (debug) cout << "TypeName [name]\n";
 			$$ = new TypeName(@$,driver.get_ctx(),
-								new QName(QName::qn_type,driver.symtab.get($1)));
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)));
 		}
 	| QNAME  HOOK
 		{
 			if (debug) cout << "TypeName [name?]\n";
 			$$ = new TypeName(@$,driver.get_ctx(),
-								new QName(QName::qn_type,driver.symtab.get($1)),
+								new QName(@$,driver.get_ctx(),driver.symtab.get($1)),
 								true);
 		}
 	;
