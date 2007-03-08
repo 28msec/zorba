@@ -75,7 +75,6 @@ static const int PI_NODE = 5 << NODE_SHIFT;
 static const int COMMENT_NODE = 6 << NODE_SHIFT;
 static const int TEXT_NODE = 7 << NODE_SHIFT;
 static const int ANY_NODE = 8 << NODE_SHIFT;
-static const int BINARY_NODE = 9 << NODE_SHIFT;
 
 // NONATOMIC specifies if the type is atomic or not (complex or sequence)
 // TODO: actually set this bit everywhere
@@ -83,9 +82,12 @@ static const int BINARY_NODE = 9 << NODE_SHIFT;
 static const int NOT_NONATOMIC = 0 << NONATOMIC_SHIFT;
 static const int IS_NONATOMIC = 1 << NONATOMIC_SHIFT;
 
-// TYPE specifies the XML Schema type.
-// UNTYPED is used for elements, UNTYPED_ATOMIC for other node types.
+// TYPE specifies the XML Schema type, plus these extensions:
+// UNTYPED_TYPE is used for elements, UNTYPED_ATOMIC_TYPE for other node types.
 // COMPLEX_TYPE is reserved for later use with complex types.
+// EMPTY_TYPE is a pseudo-type used to construct empty sequences.
+// ANY_TYPE is a pseudo-type used to specify "sequences of any type"
+// RAW_BINARY_TYPE is not in XML Schema, and represents non-XML entity bodies.
 static const int UNTYPED_TYPE = 0 << TYPE_SHIFT;
 static const int UNTYPED_ATOMIC_TYPE = 1 << TYPE_SHIFT;
 static const int STRING_TYPE = 2 << TYPE_SHIFT;
@@ -108,8 +110,9 @@ static const int ANY_URI_TYPE = 18 << TYPE_SHIFT;
 static const int QNAME_TYPE = 19 << TYPE_SHIFT;
 static const int NOTATION_TYPE = 20 << TYPE_SHIFT;
 static const int COMPLEX_TYPE = 21 << TYPE_SHIFT;
-static const int EMPTY_SEQUENCE_TYPE = 22 << TYPE_SHIFT;
+static const int EMPTY_TYPE = 22 << TYPE_SHIFT;
 static const int ANY_TYPE = 23 << TYPE_SHIFT;
+static const int RAW_BINARY_TYPE = 24 << TYPE_SHIFT;
 
 // SUB2-SUB5 specify derived XML Schema types.
 static const int NORMALIZED_STRING_SUB = STRING_TYPE | 1 << SUB_SHIFT;
@@ -218,12 +221,6 @@ enum TypeCode {
 	anyNodeSeqRef = REF_OBJECT + SEQUENCE_ARITY + ANY_NODE + REFERENCE_REP + UNTYPED_TYPE,
 	anyNodePlus = NONEMPTY_SEQ_ARITY + ANY_NODE + NO_REP + UNTYPED_TYPE,
 	anyNodeOpt = OPT_ITEM_ARITY + ANY_NODE + NO_REP + UNTYPED_TYPE,
-	binaryNode = ITEM_ARITY + BINARY_NODE + NO_REP + UNTYPED_TYPE,
-	binaryNodeRef = REF_OBJECT + ITEM_ARITY + BINARY_NODE + REFERENCE_REP + UNTYPED_TYPE,
-	binaryNodeSeq = SEQUENCE_ARITY + BINARY_NODE + SEQUENCE_REP + UNTYPED_TYPE,
-	binaryNodeSeqRef = REF_OBJECT + SEQUENCE_ARITY + BINARY_NODE + REFERENCE_REP + UNTYPED_TYPE,
-	binaryNodePlus = NONEMPTY_SEQ_ARITY + BINARY_NODE + NO_REP + UNTYPED_TYPE,
-	binaryNodeOpt = OPT_ITEM_ARITY + BINARY_NODE + NO_REP + UNTYPED_TYPE,
 
 	// String values.
 	xs_string = ITEM_ARITY + NOT_NODE + STRING_REP + STRING_TYPE,
@@ -554,6 +551,24 @@ enum TypeCode {
 	xs_complexTypeSeqRef = REF_OBJECT + SEQUENCE_ARITY + NOT_NODE + REFERENCE_REP + NOTATION_TYPE,
 	xs_complexTypePlus = NONEMPTY_SEQ_ARITY + NOT_NODE + NO_REP + NOTATION_TYPE,
 	xs_complexTypeOpt = OPT_ITEM_ARITY + NOT_NODE + NO_REP + NOTATION_TYPE,
+	xs_emptyType = ITEM_ARITY + NOT_NODE + NO_REP + EMPTY_TYPE,
+	xs_emptyTypeRef = REF_OBJECT + ITEM_ARITY + NOT_NODE + REFERENCE_REP + EMPTY_TYPE,
+	xs_emptyTypeSeq = SEQUENCE_ARITY + NOT_NODE + SEQUENCE_REP + EMPTY_TYPE,
+	xs_emptyTypeSeqRef = REF_OBJECT + SEQUENCE_ARITY + NOT_NODE + REFERENCE_REP + EMPTY_TYPE,
+	xs_emptyTypePlus = NONEMPTY_SEQ_ARITY + NOT_NODE + NO_REP + EMPTY_TYPE,
+	xs_emptyTypeOpt = OPT_ITEM_ARITY + NOT_NODE + NO_REP + EMPTY_TYPE,
+	xs_anyType = ITEM_ARITY + NOT_NODE + NO_REP + ANY_TYPE,
+	xs_anyTypeRef = REF_OBJECT + ITEM_ARITY + NOT_NODE + REFERENCE_REP + ANY_TYPE,
+	xs_anyTypeSeq = SEQUENCE_ARITY + NOT_NODE + SEQUENCE_REP + ANY_TYPE,
+	xs_anyTypeSeqRef = REF_OBJECT + SEQUENCE_ARITY + NOT_NODE + REFERENCE_REP + ANY_TYPE,
+	xs_anyTypePlus = NONEMPTY_SEQ_ARITY + NOT_NODE + NO_REP + ANY_TYPE,
+	xs_anyTypeOpt = OPT_ITEM_ARITY + NOT_NODE + NO_REP + ANY_TYPE,
+	xs_rawBinaryType = ITEM_ARITY + NOT_NODE + BINARY_REP + RAW_BINARY_TYPE,
+	xs_rawBinaryTypeRef = REF_OBJECT + ITEM_ARITY + NOT_NODE + REFERENCE_REP + RAW_BINARY_TYPE,
+	xs_rawBinaryTypeSeq = SEQUENCE_ARITY + NOT_NODE + SEQUENCE_REP + RAW_BINARY_TYPE,
+	xs_rawBinaryTypeSeqRef = REF_OBJECT + SEQUENCE_ARITY + NOT_NODE + REFERENCE_REP + RAW_BINARY_TYPE,
+	xs_rawBinaryTypePlus = NONEMPTY_SEQ_ARITY + NOT_NODE + NO_REP + RAW_BINARY_TYPE,
+	xs_rawBinaryTypeOpt = OPT_ITEM_ARITY + NOT_NODE + NO_REP + RAW_BINARY_TYPE,
 };
 
 } /* namespace xqp */
