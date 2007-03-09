@@ -34,7 +34,7 @@ string node::decode(node_kind_t kind) const
 	case pi_kind: return "pi";
 	case text_kind: return "text";
 	case comment_kind: return "comment";
-	case binary_kind: return "binary";
+	//case binary_kind: return "binary";
 	case collection_kind: return "collection";
 	case uninitialized_kind: return "uninitialized";
 	default: return "??";
@@ -188,10 +188,10 @@ item * child_iterator::operator*() const
 		return new(current_p) text_node();
 		break;
 	}
-	case binaryNode: {
-		return new(current_p) binary_node();
-		break;
-	}
+	//case binaryNode: {
+	//	return new(current_p) binary_node();
+	//	break;
+	//}
 	default: {
 		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
 	} }
@@ -665,7 +665,7 @@ ostream& text_node::put(
 /*..........................................
  :  binary nodes                           :
  :.........................................*/
-
+/*
 binary_node::binary_node(
 	uint32_t gen,
 	itemref_t ref,
@@ -707,7 +707,7 @@ rchandle<item_iterator> binary_node::typed_value(
 {
 	return &item_iterator::empty_sequence;
 }
-
+*/
 
 }	/* namespace xqp */
 

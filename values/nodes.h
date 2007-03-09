@@ -66,7 +66,7 @@ public:	// nodes types
 		pi_kind,
 		text_kind,
 		comment_kind,
-		binary_kind,					// zorba-specific: binary node
+		//binary_kind,					// zorba-specific: binary node
 		collection_kind,			// zorba-specific: collection node
 		uninitialized_kind
 	};
@@ -812,7 +812,7 @@ public:
 |   addition, Document and Element Nodes can have only one
 |   Binary Node child.
 |_______________________________________________________________________*/
-
+/*
 class binary_node : public node
 {
 	friend class child_iterator;
@@ -820,9 +820,6 @@ class binary_node : public node
 protected:
 	docid_t m_docid;		// parent doc id
 	char rest[0];
-	/*
-		char[] blob
-	*/
 	
 public:
 	binary_node(
@@ -849,9 +846,8 @@ private:	// ctor,dtor - lock out
 	binary_node(binary_node&) {}
 	binary_node() {}
 	~binary_node() {}
-
 };
-
+*/
 
 }	/* namespace xqp */
 #endif /* XQP_NODE_VALUES_H */
