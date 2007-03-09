@@ -514,13 +514,18 @@ protected:  // XQuery 1.0 dynamic context
 	/*
 	**	Persistent nodeid counter
 	*/
-	fxarray<uint32_t> nodeid_counter;
+	fxarray<uint32_t> counters;
+	enum counter_kind {
+		docid_counter		= 0,
+		nodeid_counter	= 1,
+		gen_counter			= 2
+	};
 
 protected:
 	// string storage
 	rchandle<fxcharheap> string_store_h;
 
-	// blocl storage
+	// blob storage
 	rchandle<itemstore> itemstore_h;
 	uint32_t ctx_nodeid;
 	uint32_t ctx_docid;
@@ -552,8 +557,12 @@ public:
 	uint32_t context_nodeid() const { return ctx_nodeid; }
 	uint32_t default_element_nsid() const { return 0; /*STUB*/ }
 
+	// generation numbers
+	uint32_t gen();
+	uint32_t next_gen();
+
 	// item store
-	rchandle<itemstore> get_itemstore();
+	rchandle<itemstore> istore();
 
 	// namespace service
 	bool namespace_uri(uint32_t uri_id, std::string & uri);

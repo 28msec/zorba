@@ -3,8 +3,7 @@
  *  $Id: update_expr.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan, Paul Pedersen
  *
  */
 
@@ -35,20 +34,19 @@ class insert_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t source_expr_h;
-	exprref_t target_expr_h;
+	expr_h_t source_expr_h;
+	expr_h_t target_expr_h;
 
 public:
 	insert_expr(
 		yy::location const&,
-		context *,
-		exprref_t,
-		exprref_t);
+		expr_h_t,
+		expr_h_t);
 	~insert_expr();
 
 public:
-	exprref_t get_source_expr() const { return source_expr_h; }
-	exprref_t get_target_expr() const { return target_expr_h; }
+	expr_h_t get_source_expr() const { return source_expr_h; }
+	expr_h_t get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -64,17 +62,16 @@ class delete_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t target_expr_h;
+	expr_h_t target_expr_h;
 
 public:
 	delete_expr(
 		yy::location const&,
-		context *,
-		exprref_t);
+		expr_h_t);
 	~delete_expr();
 
 public:
-	exprref_t get_target_expr() const { return target_expr_h; }
+	expr_h_t get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -91,20 +88,19 @@ class replace_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t source_expr_h;
-	exprref_t target_expr_h;
+	expr_h_t source_expr_h;
+	expr_h_t target_expr_h;
 
 public:
 	replace_expr(
 		yy::location const&,
-		context *,
-		exprref_t source_expr_h,
-		exprref_t target_expr_h);
+		expr_h_t source_expr_h,
+		expr_h_t target_expr_h);
 	~replace_expr();
 
 public:
-	exprref_t get_source_expr() const { return source_expr_h; }
-	exprref_t get_target_expr() const { return target_expr_h; }
+	expr_h_t get_source_expr() const { return source_expr_h; }
+	expr_h_t get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -120,20 +116,19 @@ class rename_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	exprref_t source_expr_h;
-	exprref_t target_expr_h;
+	expr_h_t source_expr_h;
+	expr_h_t target_expr_h;
 
 public:
 	rename_expr(
 		yy::location const&,
-		context *,
-		exprref_t source_expr_h,
-		exprref_t target_expr_h);
+		expr_h_t source_expr_h,
+		expr_h_t target_expr_h);
 	~rename_expr();
 
 public:
-	exprref_t get_source_expr() const { return source_expr_h; }
-	exprref_t get_target_expr() const { return target_expr_h; }
+	expr_h_t get_source_expr() const { return source_expr_h; }
+	expr_h_t get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -154,20 +149,19 @@ public:
 
 protected:
 	std::vector<varref_t> vref_hv;
-	exprref_t source_expr_h;
-	exprref_t target_expr_h;
+	expr_h_t source_expr_h;
+	expr_h_t target_expr_h;
 
 public:
 	transform_expr(
 		yy::location const&,
-		context *,
-		exprref_t source_expr_h,
-		exprref_t target_expr_h);
+		expr_h_t source_expr_h,
+		expr_h_t target_expr_h);
 	~transform_expr();
 
 public:
-	exprref_t get_source_expr() const { return source_expr_h; }
-	exprref_t get_target_expr() const { return target_expr_h; }
+	expr_h_t get_source_expr() const { return source_expr_h; }
+	expr_h_t get_target_expr() const { return target_expr_h; }
 
 public:
 	void add(varref_t vref_h)

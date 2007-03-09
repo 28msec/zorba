@@ -92,7 +92,7 @@ itemstore_test : itemstore.h itemstore.cpp itemstore_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore_test \
 		../context/${BUILD}/context.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
-		../types/${BUILD}/sequence_types.${SUFX} \
+		../types/${BUILD}/sequence_type.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \

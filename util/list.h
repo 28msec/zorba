@@ -60,8 +60,8 @@ public:
 
 
 template<class T> class list;
-template<class T> list<T> operator*(const list<T>&, const list<T>&);		// intersection
-template<class T> list<T> operator+(const list<T>&, const list<T>&);		// union
+template<class T> list<T> operator*(const list<T>&, const list<T>&);	// intersection
+template<class T> list<T> operator+(const list<T>&, const list<T>&);	// union
 
 
 template <class T>

@@ -9,9 +9,10 @@
  */
 
 #include "expr.h"
-#include "../functions/function_impl.h"
+#include "../functions/function.h"
 #include "../parser/indent.h"
 #include "../parser/parse_constants.h"
+#include "../parser/parsenodes.h"
 #include "../util/Assert.h"
 #include "../util/tracer.h"
 #include "../util/xqp_exception.h"
@@ -133,14 +134,12 @@ ostream& var_expr::put(
 {
 	os << INDENT << "var_expr[" << decode_var_kind(get_kind());
 	if (varname_h!=NULL) {
-		os << " name="; get_varname()->put(os,ctx);
+		os << " name="; get_varname()->put(os);
 	}
 	if (valexpr_h!=NULL) {
 		os << ", expr="; get_valexpr()->put(os,ctx);
 	}
-	if (type_h!=NULL) {
-		os << ", type=" << get_type()->describe();
-	}
+	os << ", type=" << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
 }
 
@@ -294,7 +293,7 @@ ostream& quantified_expr::put(
 		Assert<null_pointer>(var_h!=NULL);
 		Assert<null_pointer>(var_h->varname_h!=NULL);
 		os << INDENT;
-		var_h->varname_h->put(os,ctx) << " in ";
+		var_h->varname_h->put(os) << " in ";
 		Assert<null_pointer>(var_h->valexpr_h!=NULL);
 		var_h->valexpr_h->put(os,ctx) << endl;
 		UNDENT;
@@ -339,7 +338,7 @@ ostream& typeswitch_expr::put(
 		clauseref_t cc_h = *it;
 		os << INDENT << "case: ";
 		if (cc_h->var_h!=NULL) cc_h->var_h->put(os,ctx) << " as ";
-		os << cc_h->seqtype.describe() << " return ";
+		os << sequence_type::describe(cc_h->type) << " return ";
 		Assert<null_pointer>(cc_h->case_expr_h!=NULL);
 		cc_h->case_expr_h->put(os,ctx) << endl;
 		UNDENT;
@@ -424,7 +423,7 @@ ostream& fo_expr::put(
 {
 	os << INDENT << "fo_expr[\n";
 	Assert<null_pointer>(func!=NULL);
-	func->sig_h->get_fname()->put(os,ctx) << endl;
+	func->get_fname(&ctx)->put(os,&ctx) << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();
@@ -500,11 +499,11 @@ void ft_contains_expr::accept(
 instanceof_expr::instanceof_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	sequence_type const& _seqtype)
+	sequence_type_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
-	seqtype(_seqtype)
+	type(_type)
 {
 }
 
@@ -520,7 +519,7 @@ ostream& instanceof_expr::put(
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "instance of\n";
-	os << seqtype.describe();
+	os << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
 }
 
@@ -536,11 +535,11 @@ void instanceof_expr::accept(
 treat_expr::treat_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	sequence_type const& _seqtype)
+	sequence_type_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
-	seqtype(_seqtype)
+	type(_type)
 {
 }
 
@@ -556,7 +555,7 @@ ostream& treat_expr::put(
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "treat as\n";
-	os << seqtype.describe();
+	os << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
 }
 
@@ -572,11 +571,11 @@ void treat_expr::accept(
 castable_expr::castable_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	single_type_t _stype)
+	sequence_type_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
-	stype(_stype)
+	type(_type)
 {
 }
 
@@ -592,7 +591,7 @@ ostream& castable_expr::put(
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "castable as\n";
-	os << get_atomic_type().describe();
+	os << sequence_type::describe(get_type());
 	if (is_optional()) os << "?";
 	return os << OUTDENT << "]\n";
 }
@@ -609,11 +608,11 @@ void castable_expr::accept(
 cast_expr::cast_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	single_type_t _stype)
+	sequence_type_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
-	stype(_stype)
+	type(_type)
 {
 }
 
@@ -629,7 +628,7 @@ ostream& cast_expr::put(
 	Assert<null_pointer>(expr_h!=NULL);
 	expr_h->put(os,ctx) << endl;
 	os << "cast as\n";
-	os << get_atomic_type().describe();
+	os << sequence_type::describe(type);
 	if (is_optional()) os << "?";
 	return os << OUTDENT << "]\n";
 }
@@ -758,7 +757,7 @@ ostream& extension_expr::put(
 	os << INDENT;
 	Assert<null_pointer>(pragma_h!=NULL);
 	Assert<null_pointer>(pragma_h->name_h!=NULL);
-	os << "?"; pragma_h->name_h->put(os,ctx);
+	os << "?"; pragma_h->name_h->put(os);
 	os << " " << pragma_h->content << endl;
 	UNDENT;
 
@@ -873,16 +872,16 @@ ostream& axis_step_expr::put(
 
 	if (name_h!=NULL) {
   	switch (wild) {
-  	case no_wild: name_h->put(os,ctx); break;
+  	case no_wild: name_h->put(os); break;
   	case all_wild: os << "*"; break;
-  	case prefix_wild: os << "*:"; name_h->put(os,ctx); break;
-  	case name_wild: name_h->put(os,ctx) << ":*"; break;
+  	case prefix_wild: os << "*:"; name_h->put(os); break;
+  	case name_wild: name_h->put(os) << ":*"; break;
   	default: os << "??";
   	}
   }
 
 	if (typename_h!=NULL) {
-		typename_h->put(os,ctx) << endl;
+		typename_h->put(os) << endl;
 	}
 	os << ")\n";
 
@@ -1071,7 +1070,7 @@ ostream& funcall_expr::put(
 {
 	os << INDENT << "funcall_expr[";
 	Assert<null_pointer>(fname_h!=NULL);
-	fname_h->put(os,ctx) << endl;
+	fname_h->put(os) << endl;
 	vector<rchandle<expr> >::const_iterator it = arg_hv.begin();
 	for (; it!=arg_hv.end(); ++it) {
 		rchandle<expr> e_h = *it;
@@ -1184,7 +1183,7 @@ ostream& elem_expr::put(
 	os << INDENT << "elem_expr[<";
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os,ctx) << ">\n";
+		qname_h->put(os) << ">\n";
 	}
 	else {
 		qname_expr_h->put(os,ctx) << ">\n";
@@ -1246,7 +1245,7 @@ ostream& attr_expr::put(
 	os << INDENT << "attr_expr[@";
 	Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os,ctx);
+		qname_h->put(os);
 	}
 	else {
 		qname_expr_h->put(os,ctx);

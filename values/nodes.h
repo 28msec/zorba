@@ -599,6 +599,10 @@ public:
 		nodeid_t id,
 		nodeid_t parentid);
 
+	namespace_node(
+		context *,
+		std::string const&);
+
 public:		// storage interface
 	itemref_t nsref() const { return m_nsref; }
 	nskey_t& nskey() { return m_nskey; }

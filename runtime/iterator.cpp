@@ -124,16 +124,16 @@ void binary_iterator::close()
 
 item* binary_iterator::next(uint32_t delta)
 {
-	rchandle<item> i1 = it1_h->next(delta);
-	rchandle<item> i2 = it2_h->next(delta);
-	return (*op)(ctx_p,i1,i2);
+	item* i1_p = it1_h->next(delta);
+	item* i2_p = it2_h->next(delta);
+	return (*op)(ctx_p,i1_p,i2_p);
 }
 
 item* binary_iterator::peek() const 
 {
-	rchandle<item> i1 = it1_h->peek();
-	rchandle<item> i2 = it2_h->peek();
-	return (*op)(ctx_p,i1,i2);
+	item * i1_p = it1_h->peek();
+	item * i2_p = it2_h->peek();
+	return (*op)(ctx_p,i1_p,i2_p);
 }
 
 bool binary_iterator::done() const
@@ -151,7 +151,7 @@ binary_iterator::binary_iterator(
 	context * ctx_p,
 	rchandle<item_iterator> _it1_h,
 	rchandle<item_iterator> _it2_h,
-	rchandle<item> (*_op)(context *, rchandle<item> const&, rchandle<item> const&))
+	item * (*_op)(context *, item *, item *))
 :
 	item_iterator(ctx_p),
 	it1_h(_it1_h),
@@ -218,19 +218,6 @@ void singleton_iterator::rewind()
 
 singleton_iterator::singleton_iterator(
 	context * ctx_p,
-	rchandle<item> _i_h)
-:
-	item_iterator(ctx_p),
-	i_h(_i_h),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(rchandle<item>)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
-	context * ctx_p,
 	item * _i_p)
 :
 	item_iterator(ctx_p),
@@ -247,7 +234,7 @@ singleton_iterator::singleton_iterator(
 	string const& s)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_stringValue(s)),
+	i_h(new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),s)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -264,7 +251,7 @@ singleton_iterator::singleton_iterator(
 	bool v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_booleanValue(v)),
+	i_h(new(*ctx_p->istore()) xs_booleanValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -277,7 +264,7 @@ singleton_iterator::singleton_iterator(
 	double v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_doubleValue(v)),
+	i_h(new(*ctx_p->istore()) xs_doubleValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -290,7 +277,7 @@ singleton_iterator::singleton_iterator(
 	int v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_intValue(v)),
+	i_h(new(*ctx_p->istore()) xs_intValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -300,10 +287,23 @@ singleton_iterator::singleton_iterator(
 
 singleton_iterator::singleton_iterator(
 	context * ctx_p,
+	long v)
+:
+	item_iterator(ctx_p),
+	i_h(new(*ctx_p->istore()) xs_longValue(v)),
+	done_b(false)
+{
+#ifdef DEBUG
+	cout << "singleton_iterator(long)\n";
+#endif
+}
+
+singleton_iterator::singleton_iterator(
+	context * ctx_p,
 	long long v)
 :
 	item_iterator(ctx_p),
-	i_h(new xs_longValue(v)),
+	i_h(new(*ctx_p->istore()) xs_longValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -378,6 +378,7 @@ void concat_iterator::rewind()
 concat_iterator::concat_iterator(
 	context * ctx_p,
 	list<rchandle<item_iterator> > _it_list)
+	//vector<rchandle<item_iterator> > _it_list)
 :
 	item_iterator(ctx_p),
 	it_list(_it_list),

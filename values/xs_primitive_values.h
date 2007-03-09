@@ -23,6 +23,7 @@
 
 
 namespace xqp {
+
 class xs_anyURIValue : public atomic_value
 {
 protected:
@@ -711,12 +712,17 @@ public:
 class xs_stringValue : public atomic_value
 {
 protected:
-	xqp_string val;
+	char rest[0];
 
 public:
-	xs_stringValue(xqp_string const&);
-	xs_stringValue();
-	~xs_stringValue();
+	void* operator new(size_t,itemstore&);
+	void* operator new(size_t,void*);
+
+	xs_stringValue(itemstore&,std::string const&);
+
+private:
+	xs_stringValue() : atomic_value(xs_string,0) {}
+	~xs_stringValue() {}
 
 public:
 	std::string describe(context *) const;

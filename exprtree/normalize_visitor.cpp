@@ -127,23 +127,33 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DefaultCollationDecl const& v)
+bool normalize_visitor::begin_visit(
+	DefaultCollationDecl const& v)
 {
 cout << TRACE << endl;
-	ctx_p->set_default_collation(v.get_collation());
+	qname_value* qn_p =
+		new (*ctx_p->istore()) qname_value(*ctx_p->istore(),v.get_collation());
+	ctx_p->set_default_collation(qn_p);
 	return false;
 }
 
-bool normalize_visitor::begin_visit(DefaultNamespaceDecl const& v)
+bool normalize_visitor::begin_visit(
+	DefaultNamespaceDecl const& v)
 {
 cout << TRACE << endl;
 	switch (v.get_mode()) {
 	case ns_element_default: {
-		ctx_p->set_default_elem_or_type_ns(v.get_default_namespace());
+		namespace_node* ns_p =
+			new (*ctx_p->istore())
+				namespace_node(ctx_p,v.get_default_namespace());
+		ctx_p->set_default_ns(ns_p);
 		break;
 	}
 	case ns_function_default: {
-		ctx_p->set_default_function_ns(v.get_default_namespace());
+		namespace_node* ns_p =
+			new (*ctx_p->istore())
+				namespace_node(ctx_p, v.get_default_namespace());
+		ctx_p->set_default_function_ns(ns_p);
 		break;
 	}
 	}
@@ -1527,7 +1537,7 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(NameTest const& v)
 {
-cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout,*ctx_p)<<")\n";
+cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
 	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (aexpr_h==NULL) {
@@ -2172,7 +2182,7 @@ cout << TRACE << endl;
 	rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
-	ve_h->set_varname(new QName(v.get_default_varname()));
+	//ve_h->set_varname(new QName(v.get_default_varname()));
 	tse_h->set_default_varname(ve_h);
 
 	Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
@@ -2220,7 +2230,7 @@ void normalize_visitor::end_visit(VarRef const& v)
 {
 cout << TRACE << endl;
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
-	ve_h->set_varname(new QName(v.get_varname()));
+	//ve_h->set_varname(new QName(v.get_varname()));
 	nodestack.push(&*ve_h);
 }
 

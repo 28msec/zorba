@@ -36,6 +36,7 @@ public:
 
 public:	
 	uint32_t eos() const { return store.size(); }
+	void * eos_p() { return &store[store.size()]; }
 	bool index_put(off_t id, off_t res) { return index.put(id, res); }
 
 	void put(uint32_t u) { store.push_back(u); }
@@ -43,23 +44,12 @@ public:
 
 	bool check_words(size_t n);
 	void assure_words(size_t n);
+	void assure_bytes(size_t n);
 	void* alloc(size_t);
 
-	off_t add_text(
-		std::string const& content);
-
-	off_t add_key(
-		uint64_t key);
-
-	off_t add_namespace(
-		std::string const& prefix,
-		std::string const& uri);
-
-	off_t add_qname(
-		std::string const& localname,
-		std::string const& prefix,
-		std::string const& uri);
-
+	off_t add_text(std::string const& content);
+	std::string get_text(off_t n) const;
+	off_t add_key(uint64_t key);
 	void * last();
 
 };

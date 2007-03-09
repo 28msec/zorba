@@ -164,24 +164,40 @@ class qname_value : public value
 {
 protected:
 	uint64_t m_qnamekey;
-	itemref_t m_qnameref;
+	itemref_t m_nameref;
+	itemref_t m_prefixref;
 	char rest[0];
 	/*
 		char[] localname
-		namespace_node namespace
+		char[] prefix
 	*/
 
+public:
 	void* operator new(size_t, itemstore&);
 	void* operator new(size_t, void*);
 	void operator delete(void*) {}
 
-private:	// ctor,dtor - lock out
+public:
+	qname_value(
+		itemstore& istore,
+		std::string const&);
+
+public:
+	std::string prefix(itemstore&) const;
+	std::string localname(itemstore&) const;
+
+private:	// ctor,dtor - lock out default and copy constructors
 	qname_value(qname_value& qn) : value(xs_qname,0) {}
 	qname_value() : value(xs_qname,0) {}
 	~qname_value() {}
 
 public:		// output,debugging
-	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
+	std::ostream& put(std::ostream& os,context * ctx) const;
+	string describe(context * ctx) const;
+
+	rchandle<item_iterator> qname_value::atomized_value(context *) const;
+	rchandle<item_iterator> qname_value::effective_boolean_value(context *) const;
+	string qname_value::string_value(context const*) const;
 
 };
 
@@ -212,6 +228,7 @@ private:	// ctor,dtor - lock out
 
 public:		// output,debugging
 	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
+	string describe(context * ctx) const;
 
 };
 

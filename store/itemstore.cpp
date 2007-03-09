@@ -41,14 +41,19 @@ itemstore::~itemstore()
 {
 }
 
-inline bool itemstore::check_words(uint32_t n)
+inline bool itemstore::check_words(size_t n)
 {
 	return (store.size() + n >= store.capacity());
 }
 
-inline void itemstore::assure_words(uint32_t n)
+inline void itemstore::assure_words(size_t n)
 {
 	while (store.size() + n >= store.capacity()) store.expand();
+}
+
+inline void itemstore::assure_bytes(size_t n)
+{
+	while (store.size() + (n>>2) >= store.capacity()) store.expand();
 }
 
 inline void * itemstore::alloc(size_t n)
@@ -69,6 +74,14 @@ itemref_t itemstore::add_text(
 	return sz;
 }
 
+string itemstore::get_text(off_t n) const
+{
+	uint32_t type = store[n];
+	Assert<bad_arg>(type==xs_string);
+	uint32_t length = store[n+1];
+	return string((char*)&store[n+1],0,length);
+}
+
 itemref_t itemstore::add_key(
 	uint64_t key)
 {
@@ -77,74 +90,6 @@ itemref_t itemstore::add_key(
 	store.push_back(key&0xffffffff);
 	return sz;
 }
-
-
-itemref_t itemstore::add_namespace(
-	std::string const& uri,
-	std::string const& prefix)
-{
-	Assert<bad_arg>(uri.length()!=0);
-
-	uint32_t sz = store.size();
-	urikey_t ukey = hashfun::h64(uri);
-	uint64_t nkey = ukey + 3*hashfun::h64(prefix);
-
-	itemref_t uriref = qncache.get_uri(ukey);
-	if (uriref) {
-		store.push_back(xs_anyURIRef);
-		store.push_back(0);				// length
-		add_key(nkey);						// [prefix+uri] hash key
-		add_text(prefix);					// prefix string
-		store.push_back(uriref);	// uri reference
-	}
-	else {
-		store.push_back(xs_anyURI);
-		store.push_back(0);				// length
-		add_key(nkey);						// [prefix+uri] hash key
-		add_text(prefix);					// prefix string
-		uriref = store.size()+1;
-		store.push_back(uriref);	// uri ref
-		add_text(uri);						// uri string
-	}
-	store[sz+1] = store.size() - sz;
-	return sz;
-}
-
-
-itemref_t itemstore::add_qname(
-	std::string const& name,
-	std::string const& prefix,
-	std::string const& uri)
-{
-	Assert<bad_arg>(uri.length()!=0);
-
-	uint32_t sz = store.size();
-	uint64_t nkey = hashfun::h64(name);
-	uint64_t pkey = hashfun::h64(prefix);
-	uint64_t ukey = hashfun::h64(uri);
-	uint64_t qkey = ukey + 3*(nkey + 3*pkey);
-
-	itemref_t qnref = qncache.get_qname(qkey);
-	if (qnref) {
-		store.push_back(xs_qname);
-		store.push_back(0);				// length
-		add_key(qkey);						// [prefix+uri+localname] hash key
-		store.push_back(qnref);		// qname reference
-	}
-	else {
-		store.push_back(xs_qname);
-		store.push_back(0);				// length
-		add_key(qkey);						// [prefix+uri+localname] hash key
-		qnref = store.size()+1;
-		store.push_back(qnref);		// qname reference
-		add_text(name);
-		add_text(prefix);
-		add_text(uri);
-	}
-	store[sz+1] = store.size() - sz;
-	return sz;
-}
-
 
 void* itemstore::last()
 {

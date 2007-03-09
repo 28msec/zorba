@@ -14,11 +14,18 @@
 #include "../util/xqp_exception.h"
 
 #include <iostream>
+#include <string>
+//#include <vector>
 
 namespace xqp {
 
 class context;
 class item;
+class xs_stringValue;
+class xs_boolValue;
+class xs_doubleValue;
+class xs_intValue;
+class xs_longValue;
 
 class item_iterator : public rcobject
 {
@@ -57,6 +64,9 @@ public:	// C++ interface
 	item* operator*() const;
 	item_iterator& operator++();
 
+public:
+	std::string string_value();
+
 };
 
 
@@ -65,7 +75,7 @@ class binary_iterator : public item_iterator
 protected:
 	rchandle<item_iterator> it1_h;
 	rchandle<item_iterator> it2_h;
-	item* (*op)(context *, rchandle<item> const&, rchandle<item> const&);
+	item* (*op)(context *, item*, item*);
 
 public:	// iterator interface
 	void open();
@@ -77,10 +87,10 @@ public:	// iterator interface
 
 public:	// ctor,dtor
 	binary_iterator(
-		context * ctx,
+		context* ctx,
 		rchandle<item_iterator>,
 		rchandle<item_iterator>,
-		item* (*op)(context *, rchandle<item> const&, rchandle<item> const&));
+		item* (*op)(context*, item*, item*));
 	binary_iterator(binary_iterator const&);
 	binary_iterator& operator=(binary_iterator const&);
 	~binary_iterator();
@@ -108,10 +118,11 @@ public:	// iterator interface
 
 public:	// ctor,dtor
 	singleton_iterator(context *, item*);
-	singleton_iterator(context *, std::string const& s);
+	singleton_iterator(context *, std::string const&);
 	singleton_iterator(context *, bool);
 	singleton_iterator(context *, double);
 	singleton_iterator(context *, int);
+	singleton_iterator(context *, long);
 	singleton_iterator(context *, long long);
 	singleton_iterator(singleton_iterator const&);
 	singleton_iterator& operator=(singleton_iterator const&);
@@ -126,6 +137,11 @@ protected:
 	list<rchandle<item_iterator> > it_list;
 	list_iterator<rchandle<item_iterator> > walker;
 	list_iterator<rchandle<item_iterator> > sentinel;
+
+	//std::vector<rchandle<item_iterator> > it_list;
+	//std::vector<rchandle<item_iterator> >::const_iterator walker;
+	//std::vector<rchandle<item_iterator> >::const_iterator sentinel;
+
 	rchandle<item_iterator> currit_h;
 	uint32_t it_counter;
 

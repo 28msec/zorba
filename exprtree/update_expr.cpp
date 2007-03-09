@@ -3,8 +3,7 @@
  *  $Id: update_expr.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan, Paul Pedersen
  *
  */
 
@@ -24,11 +23,10 @@ namespace xqp {
 
 insert_expr::insert_expr(
 	yy::location const& loc,
-	context * ctx,
-	rchandle<expr> _source_expr_h,
-	rchandle<expr> _target_expr_h)
+	expr_h_t _source_expr_h,
+	expr_h_t _target_expr_h)
 :
-	expr(loc,ctx),
+	expr(loc),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -49,10 +47,9 @@ ostream& insert_expr::put(ostream& os) const
 
 delete_expr::delete_expr(
 	yy::location const& loc,
-	context * ctx,
-	rchandle<expr> _target_expr_h)
+	expr_h_t _target_expr_h)
 :
-	expr(loc,ctx),
+	expr(loc),
 	target_expr_h(_target_expr_h)
 {
 }
@@ -72,11 +69,10 @@ ostream& delete_expr::put(ostream& os) const
 
 replace_expr::replace_expr(
 	yy::location const& loc,
-	context * ctx,
-	rchandle<expr> _source_expr_h,
-	rchandle<expr> _target_expr_h)
+	expr_h_t _source_expr_h,
+	expr_h_t _target_expr_h)
 :
-	expr(loc,ctx),
+	expr(loc),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -97,11 +93,10 @@ ostream& replace_expr::put(ostream& os) const
 
 rename_expr::rename_expr(
 	yy::location const& loc,
-	context * ctx,
-	rchandle<expr> _source_expr_h,
-	rchandle<expr> _target_expr_h)
+	expr_h_t _source_expr_h,
+	expr_h_t _target_expr_h)
 :
-	expr(loc,ctx),
+	expr(loc),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {
@@ -122,11 +117,10 @@ ostream& rename_expr::put(ostream& os) const
 
 transform_expr::transform_expr(
 	yy::location const& loc,
-	context * ctx,
-	rchandle<expr> _source_expr_h,
-	rchandle<expr> _target_expr_h)
+	expr_h_t _source_expr_h,
+	expr_h_t _target_expr_h)
 :
-	expr(loc,ctx),
+	expr(loc),
 	source_expr_h(_source_expr_h),
 	target_expr_h(_target_expr_h)
 {

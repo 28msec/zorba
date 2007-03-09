@@ -8,6 +8,8 @@
  */
  
 #include "signature.h"
+
+#include "../context/common.h"
 #include "../util/fxhashmap.h"
 
 using namespace std;
@@ -16,10 +18,10 @@ namespace xqp {
 fxhashmap<signature const*> signature::sigmap;
 
 signature::signature(
-	qnameid_t _qname,
+	qname_value const* _qname_p,
 	sequence_type_t return_type)
 :
-	qname(_qname)
+	qname_p(_qname_p)
 {
 	arg_v.push_back(return_type);
 }

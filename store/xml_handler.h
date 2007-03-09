@@ -78,6 +78,7 @@ protected:  // state
 	uint32_t the_parentid;					// context parent id
 	uint32_t the_docid;							// context document id
 	uint32_t the_qnameid;						// context qname id
+	uint64_t the_qnamekey;					// context qname id
 	uint32_t the_nsid;							// context namespace id
 	uint32_t the_dnid;							// context document nodeid
 

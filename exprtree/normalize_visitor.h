@@ -36,9 +36,11 @@ protected:
 	std::stack<expr_h_t> nodestack;
 	std::stack<expr_h_t> argstack;
 	std::stack<expr_h_t> pstack;
+	rchandle<itemstore> istore_h;
 
 public:
-	normalize_visitor(context* _ctx_p) : ctx_p(_ctx_p) {}
+	normalize_visitor(context* _ctx_p)
+		: ctx_p(_ctx_p), istore_h(ctx_p->istore()) {}
 	~normalize_visitor() {}
 
 public:

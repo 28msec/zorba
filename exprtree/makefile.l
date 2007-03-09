@@ -93,7 +93,6 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 
 all :	\
   expr \
-	eval \
 	update_expr \
 	ft_expr \
 	normalize_visitor

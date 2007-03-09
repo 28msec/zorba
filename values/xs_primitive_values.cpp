@@ -1193,38 +1193,32 @@ sequence_type_t xs_shortValue::get_type() const
 string xs_stringValue::describe(context * ctx_p) const
 {
 	ostringstream oss;
-	oss << "xs_string[" << val << ']'; 
+	oss << "xs_string[" << rest << ']'; 
 	return oss.str();
 }
 
 string xs_stringValue::stringValue(context const* ctx_p) const
 {
 	ostringstream oss;
-	oss << val; 
+	oss << rest; 
 	return oss.str();
 }
 
 ostream& xs_stringValue::put(ostream& os, context * ctx_p) const
 {
-	return os << "xs_string[" << val << ']'; 
-}
-
-xs_stringValue::xs_stringValue()
-: atomic_value(xs_string,0)
-{
-}
- 
-xs_stringValue::~xs_stringValue()
-{
+	return os << "xs_string[" << rest << ']'; 
 }
 
 xs_stringValue::xs_stringValue(
-	xqp_string const& _val)
+	itemstore& istore,
+	string const& s)
 :
-	atomic_value(xs_string,0),
-	val(_val)
+	atomic_value(xs_string,0)
 {
+	m_length = s.length();
+	strcpy(rest, s.c_str());
 }
+ 
 
 
 ///////////////////////////////

@@ -13,17 +13,18 @@
 #include <string>
 #include <vector>
 
+#include "../context/context.h"
+#include "../functions/function.h"
 #include "../runtime/expr_visitor.h"
 #include "../runtime/iterator.h"
-#include "../context/context.h"
-#include "../parser/parse_constants.h"
 #include "../parser/location.hh"
+#include "../parser/parse_constants.h"
+#include "../parser/parsenodes.h"
 #include "../types/sequence_type.h"
-#include "../types/base_types.h"
 #include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../values/ft_options.h"
-#include "../values/qname_value.h"
+#include "../values/values.h"
 
 namespace xqp {
 
@@ -141,7 +142,7 @@ public:
   rchandle<QName> varname_h;
   expr_h_t valexpr_h;
 	var_kind kind;
-  rchandle<sequence_type> type_h;
+  sequence_type_t type;
 
 public:
   var_expr(yy::location const&);
@@ -157,8 +158,8 @@ public:
 	var_kind get_kind() const { return kind; }
 	void set_kind(var_kind k) { kind = k; }
 
-  rchandle<sequence_type> get_type() const { return type_h; }
-  void set_type(rchandle<sequence_type> const& t_h) { type_h = t_h; }
+  sequence_type_t get_type() const { return type; }
+  void set_type(sequence_type_t t) { type = t; }
 
 public:
 	static std::string decode_var_kind(enum var_kind);
@@ -374,10 +375,10 @@ public:
 public:
 	varref_t var_h;
 	expr_h_t case_expr_h;
-	sequence_type seqtype;
+	sequence_type_t type;
 
 public:
-	case_clause() : var_h(NULL), case_expr_h(NULL), seqtype() { }
+	case_clause() : var_h(NULL), case_expr_h(NULL), type(xs_untypedValue) { }
 	~case_clause() {}
 
 };
@@ -501,7 +502,7 @@ class fo_expr : public expr
 {
 protected:
 	std::vector<expr_h_t> expr_hv;
-	function_impl const* func;
+	function const* func;
 
 public:
 	fo_expr(yy::location const&);
@@ -522,8 +523,8 @@ public:
 		{ return expr_hv.end(); }
 
 public:
-	function_impl const* get_func() const { return func; }
-	void set_func(function_impl const* _func) { func = _func; }
+	function const* get_func() const { return func; }
+	void set_func(function const* _func) { func = _func; }
 
 public:
 	rchandle<item_iterator> eval(context *);
@@ -585,19 +586,19 @@ class instanceof_expr : public expr
 {
 protected:
 	expr_h_t expr_h;
-	sequence_type seqtype;
+	sequence_type_t type;
 
 public:
 	instanceof_expr(
 		yy::location const&,
 		expr_h_t,
-		sequence_type const&);
+		sequence_type_t);
 
 	~instanceof_expr();
 
 public:
 	expr_h_t get_expr() const { return expr_h; }
-	sequence_type get_seqtype() const { return seqtype; }
+	sequence_type_t get_type() const { return type; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -615,19 +616,19 @@ class treat_expr : public expr
 {
 protected:
 	expr_h_t expr_h;
-	sequence_type seqtype;
+	sequence_type_t type;
 
 public:
 	treat_expr(
 		yy::location const&,
 		expr_h_t,
-		sequence_type const&);
+		sequence_type_t);
 
 	~treat_expr();
 
 public:
 	expr_h_t get_expr() const { return expr_h; }
-	sequence_type get_seqtype() const { return seqtype; }
+	sequence_type_t get_type() const { return type; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -635,14 +636,6 @@ public:
 
 };
 
-
-
-/*______________________________________________________________________
-|  
-| SingleType ::= AtomicType "?"?
-|_______________________________________________________________________*/
-
-typedef std::pair<atomic_type,bool> single_type_t;
 
 
 // [56] [http://www.w3.org/TR/xquery/#prod-xquery-CastableExpr]
@@ -653,20 +646,19 @@ class castable_expr : public expr
 {
 protected:
 	expr_h_t expr_h;
-	single_type_t stype;
+	sequence_type_t type;
 
 public:
 	castable_expr(
 		yy::location const&,
 		expr_h_t,
-		single_type_t);
+		sequence_type_t);
 	~castable_expr();
 
 public:
 	expr_h_t get_cast_expr() const { return expr_h; }
-	single_type_t get_type() const { return stype; }
-	atomic_type get_atomic_type() const { return stype.first; }
-	bool is_optional() const { return stype.second; }
+	sequence_type_t get_type() const { return type; }
+	bool is_optional() const { return type&ARITY_MASK==OPT_ITEM_ARITY; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -684,20 +676,19 @@ class cast_expr : public expr
 {
 protected:
 	expr_h_t expr_h;
-	single_type_t stype;
+	sequence_type_t type;
 
 public:
 	cast_expr(
 		yy::location const&,
 		expr_h_t,
-		single_type_t);
+		sequence_type_t);
 	~cast_expr();
 
 public:
 	expr_h_t get_unary_expr() const { return expr_h; }
-	single_type_t get_type() const { return stype; }
-	atomic_type get_atomic_type() const { return stype.first; }
-	bool is_optional() const { return stype.second; }
+	sequence_type_t get_type() const { return type; }
+	bool is_optional() const { return type&ARITY_MASK==OPT_ITEM_ARITY; }
 
 public:
 	void accept(expr_visitor&) const;

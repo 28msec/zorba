@@ -59,7 +59,7 @@ context::context()
 	available_documents(1024,0.6),
 	available_collections(1024,0.6),
 	default_collection(NULL),
-	nodeid_counter("data/nodeid",2),
+	counters("data/nodeid",256),
 	string_store_h(new fxcharheap(1<<16)),
 	itemstore_h(new itemstore("data/itemstore/")),
 	ctx_nodeid(0),
@@ -151,7 +151,7 @@ void context::set_base_uri(
 
 uint32_t context::next_docid()
 {
-	return (++nodeid_counter[0]);
+	return (++counters[docid_counter]);
 }
 
 
@@ -161,7 +161,22 @@ uint32_t context::next_docid()
 
 uint32_t context::next_nodeid()
 {
-	return (++nodeid_counter[1]);
+	return (++counters[nodeid_counter]);
+}
+
+
+/*..........................................
+ :  generation number                      :
+ :.........................................*/
+
+uint32_t context::gen()
+{
+	return (counters[gen_counter]);
+}
+
+uint32_t context::next_gen()
+{
+	return (++counters[gen_counter]);
 }
 
 
@@ -317,10 +332,10 @@ throw (xqp_exception)
 
 
 /*..........................................
- :  node store                             :
+ :  item store                             :
  :.........................................*/
 
-rchandle<itemstore> context::get_itemstore()
+rchandle<itemstore> context::istore()
 {
 	return itemstore_h;
 }

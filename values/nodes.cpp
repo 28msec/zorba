@@ -453,6 +453,18 @@ namespace_node::namespace_node(
 {
 }
 
+namespace_node::namespace_node(
+	context * ctx_p,
+	string const& ns)
+:
+	node(namespaceNode, 0,
+				ctx_p->next_gen(),
+				ctx_p->istore()->eos(),
+				ctx_p->next_nodeid(),
+				ctx_p->context_nodeid())
+{
+}
+
 rchandle<item_iterator> namespace_node::node_name(
 	context * ctx_p) const
 {
