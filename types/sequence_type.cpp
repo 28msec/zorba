@@ -21,15 +21,14 @@ namespace xqp {
 enum sequence_type::occurs_t sequence_type::get_occurs(
 	TypeCode t)
 {
-	switch ((t&&ARITY_MASK)>>ARITY_SHIFT) {
+	switch (t&ARITY_MASK) {
 	case ITEM_ARITY: return occurs_once;
 	case SEQUENCE_ARITY: return occurs_zero_or_more;
 	case NONEMPTY_SEQ_ARITY: return occurs_one_or_more;
 	case OPT_ITEM_ARITY: return occurs_zero_or_one;
 	default:  {
-		ostringstream oss;
-		oss << TRACE << ": Unexpected arity bits\n";
-		throw xqp_exception(oss.str());
+		cout << TRACE << " : Unexpected arity bits\n";
+		return occurs_once;
 	}
 	}
 }
@@ -37,7 +36,7 @@ enum sequence_type::occurs_t sequence_type::get_occurs(
 std::string _describe_atomictype(
 	TypeCode t)
 {
-	switch (t&&TYPE_MASK) {
+	switch (t&TYPE_MASK) {
 	case UNTYPED_TYPE: return "xs:untyped";
 	case UNTYPED_ATOMIC_TYPE: return "xs:untypedAtomic";
 	case STRING_TYPE: return "xs:string";
@@ -60,6 +59,9 @@ std::string _describe_atomictype(
 	case QNAME_TYPE: return "xs:QName";
 	case NOTATION_TYPE: return "xs:NOTATION";
 	case COMPLEX_TYPE: return "xs:complex_type";
+  case EMPTY_TYPE: return "xdm:empty";
+  case ANY_TYPE: return "xs:anyType";
+  case RAW_BINARY_TYPE: return "xqp:binary";
 	case NORMALIZED_STRING_SUB: return "xs:normalizedString";
 	case TOKEN_SUB2: return "xs:TOKEN";
 	case LANGUAGE_SUB3: return "xs:language";
@@ -85,9 +87,8 @@ std::string _describe_atomictype(
 	case DAY_TIME_DURATION_SUB: return "xs:dayTimeDuration";
 	case YEAR_MONTH_DURATION_SUB: return "xs:yearMonthDuration";
 	default: {
-		ostringstream oss;
-  	oss << TRACE << ": Unexpected type bits\n";
-		throw xqp_exception(oss.str());
+  	cout << TRACE << " : Unexpected type bits: " << t << "\n";
+		return "xs:untyped";
 	}
 	}
 }
@@ -95,19 +96,18 @@ std::string _describe_atomictype(
 std::string _describe_nodetype(
 	TypeCode t)
 {
-	switch ((t&&NODE_MASK)>>NODE_SHIFT) {
+	switch (t&NODE_MASK) {
 	case DOCUMENT_NODE: return "document()";
 	case ELEMENT_NODE: return "element()";
 	case ATTRIBUTE_NODE: return "attribute()";
 	case NAMESPACE_NODE: return "namespace()";
 	case PI_NODE: return "pi()";
-	case COMMENT_NODE: return "commnet()";
+	case COMMENT_NODE: return "comment()";
 	case TEXT_NODE: return "text()";
 	case ANY_NODE: return "node()";
 	default: {
-		ostringstream oss;
-  	oss << TRACE << ": Unexpected node bits\n";
-		throw xqp_exception(oss.str());
+  	cout << TRACE << " : Unexpected node bits\n";
+		return "node()";
 	}
 	}
 }
@@ -115,7 +115,7 @@ std::string _describe_nodetype(
 std::string _describe_itemtype(
 	TypeCode t)
 {
-	uint32_t node = (t&&NODE_MASK)>>NODE_SHIFT;
+	uint32_t node = (t&NODE_MASK);
 	return (node ? _describe_nodetype(t) : _describe_atomictype(t));
 }
 
@@ -130,9 +130,7 @@ std::string sequence_type::describe(
 	case occurs_one_or_more: oss << "+"; break;
 	case occurs_zero_or_one: oss << "?"; break;
 	default: {
-		ostringstream oss0;
-		oss0 << TRACE << ": Unexpected occurence indicator\n";
-		throw xqp_exception(oss0.str());
+		cout << TRACE << " : Unexpected occurence indicator\n";
 	}
 	}
 	return oss.str();
