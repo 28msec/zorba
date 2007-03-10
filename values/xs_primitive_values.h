@@ -707,16 +707,11 @@ public:
 };
 
 
-class qname_value : public value
+class qname_value : public atomic_value
 {
 protected:
-	uint64_t m_qnamekey;
+	uint64_t  m_qnamekey;
 	itemref_t m_nameref;
-	char rest[0];
-	/*
-		char[] localname	// xs_string
-		char[] prefix			// xs_string
-	*/
 
 public:
 	void* operator new(size_t, itemstore&);
@@ -724,11 +719,12 @@ public:
 	void operator delete(void*) {}
 
 public:
-	qname_value() {}
+	qname_value() : atomic_value(xs_qname,0) {}
 
 	qname_value(
-		itemstore& istore,
-		std::string const&);
+	  itemstore& istore,
+	  qnamekey_t key,
+	  itemref_t nameref);
 
 public:
 	sequence_type_t type() const { return m_type; }
@@ -737,7 +733,7 @@ public:
 	std::string localname(itemstore&) const;
 
 private:	// ctor,dtor - lock out default and copy constructors
-	qname_value(qname_value& qn) : value(xs_qname,0) {}
+	qname_value(qname_value& qn) : atomic_value(xs_qname,0) {}
 	~qname_value() {}
 
 public:		// output,debugging

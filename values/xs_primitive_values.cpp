@@ -1247,47 +1247,31 @@ string xs_stringValue::str() const
 
 qname_value::qname_value(
 	itemstore& istore,
-	string const& qname_s)
+	qnamekey_t key,
+	itemref_t nameref)
 :
-	value(xs_anyURI,0),
-	m_qnamekey(hashfun::h64(qname_s))
+	atomic_value(xs_qname,sizeof(qname_value)),
+	m_qnamekey(key),
+	m_nameref(nameref)
 {
-	size_t n = qname_s.find(':');
-	string prefix = (n!=string::npos?qname_s.substr(0,n):"");
-	string localname = (n!=string::npos?qname_s.substr(n+1):qname_s);
-
-cout << TRACE << " : [0] prefix = " << prefix << endl;
-cout << TRACE << " :     localname = " << localname << endl;
-
-	m_nameref = istore.eos();
-	new(istore) xs_stringValue(istore,localname);
-	new(istore) xs_stringValue(istore,prefix);
-	m_length  = (istore.eos()-m_nameref) + (sizeof(value)>>2);
-
-cout << TRACE << " : [4] m_length = " << m_length << endl;
-cout << TRACE << " :     m_nameref = " << m_nameref << endl;
-
 }
 
 string qname_value::prefix(
 	itemstore& istore) const
 {
 	xs_stringValue* s_p = new(istore,m_nameref) xs_stringValue();
-cout << TRACE << " : s_p = " << s_p->str() << endl;
-	itemref_t prefixref = m_nameref + s_p->length();
-cout << TRACE << " : prefixref = " << prefixref << endl;
-	xs_stringValue* t_p = new(istore,prefixref) xs_stringValue();
-cout << TRACE << " : t_p = " << t_p->str() << endl;
-	return t_p->str();
+	string name = s_p->str();
+	string::size_type n = name.find(':');
+  return name.substr(0,n);
 }
 
 string qname_value::localname(
 	itemstore& istore) const
 {
-cout << TRACE << " : m_nameref = " << m_nameref << endl;
-	xs_stringValue* s_p = new(istore,m_nameref) xs_stringValue();
-cout << TRACE << " : s_p = " << s_p->str() << endl;
-	return s_p->str();
+  xs_stringValue* s_p = new(istore,m_nameref) xs_stringValue();
+	string name = s_p->str();
+	string::size_type n = name.find(':');
+  return name.substr(n+1);
 }
 
 void* qname_value::operator new(
