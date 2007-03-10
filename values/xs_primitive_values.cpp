@@ -356,23 +356,50 @@ xs_decimalValue::xs_decimalValue(
 //	xs_double
 ///////////////////////////////
 
-string xs_doubleValue::describe(context * ctx_p) const
+void * xs_doubleValue::operator new(
+	size_t node_size,
+	itemstore& istore)
+{
+cout << TRACE << " : node_size = " << node_size << endl;
+	return istore.alloc(node_size);
+}
+
+void * xs_doubleValue::operator new(
+	size_t node_size,
+	itemstore& istore,
+	off_t offset)
+{
+cout << TRACE << " : offset = " << offset << endl;
+	return static_cast<void *>(&istore[offset]);
+}
+
+void * xs_doubleValue::operator new(
+	size_t node_size,
+	void * p)
+{
+	return p;
+}
+
+string xs_doubleValue::describe(
+  context * ctx_p) const
 {
 	ostringstream oss;
-	oss << "xs_double[" << val << ']'; 
+	oss << "xs_double[" << m_val << ']'; 
 	return oss.str();
 }
 
-string xs_doubleValue::stringValue(context const* ctx_p) const
+string xs_doubleValue::stringValue(
+  context const* ctx_p) const
 {
 	ostringstream oss;
-	oss << val; 
+	oss << m_val; 
 	return oss.str();
 }
 
-ostream& xs_doubleValue::put(ostream& os, context * ctx_p) const
+ostream& xs_doubleValue::put(
+  ostream& os, context * ctx_p) const
 {
-	return os << "xs_double[" << val << ']'; 
+	return os << "xs_double[" << m_val << ']'; 
 }
 
 xs_doubleValue::xs_doubleValue()
@@ -387,8 +414,8 @@ xs_doubleValue::~xs_doubleValue()
 xs_doubleValue::xs_doubleValue(
 	xqp_double const& _val)
 :
-	atomic_value(xs_double,0),
-	val(_val)
+	atomic_value(xs_double,sizeof(xs_doubleValue)),
+	m_val(_val)
 {
 }
 

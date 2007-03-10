@@ -225,11 +225,19 @@ public:
 class xs_doubleValue : public atomic_value
 {
 protected:
-	xqp_double val;
-
+	xqp_double m_val;
+	
 public:
-	xs_doubleValue(xqp_double const&);
+	void* operator new(size_t,itemstore&);
+	void* operator new(size_t,itemstore&, off_t);
+	void* operator new(size_t,void*);
+
 	xs_doubleValue();
+	xs_doubleValue(xqp_double const&);
+	
+	double val() const { return m_val; }
+	
+private:
 	~xs_doubleValue();
 
 public:
