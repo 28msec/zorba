@@ -99,12 +99,6 @@ xs_anyURIValue::xs_anyURIValue(
 {
 }
 
-sequence_type_t xs_anyURIValue::get_type() const
-{
-	return xs_anyURI;
-}
-
-
 
 ///////////////////////////////
 //  Base64Binary
@@ -146,12 +140,6 @@ xs_base64BinaryValue::xs_base64BinaryValue(
 {
 }
 
-sequence_type_t xs_base64BinaryValue::get_type() const
-{
-	return xs_base64Binary;
-}
-
- 
  
 ///////////////////////////////
 //  xs_boolean
@@ -193,12 +181,6 @@ xs_booleanValue::xs_booleanValue(
 {
 }
 
-sequence_type_t xs_booleanValue::get_type() const
-{
-	return xs_boolean;
-}
-
-
 
 ///////////////////////////////
 //  xs_byte
@@ -239,12 +221,6 @@ xs_byteValue::xs_byteValue(
 	val(_val)
 {
 }
-
-sequence_type_t xs_byteValue::get_type() const
-{
-	return xs_byte;
-}
-
 
 
 ///////////////////////////////
@@ -290,11 +266,6 @@ xs_dateValue::xs_dateValue(
 {
 }
 
-sequence_type_t xs_dateValue::get_type() const
-{
-	return xs_date;
-}
-
 
 ///////////////////////////////
 //	xs_dateTime
@@ -337,11 +308,6 @@ xs_dateTimeValue::xs_dateTimeValue(
 	atomic_value(xs_dateTime,0),
 	val(_val)
 {
-}
-
-sequence_type_t xs_dateTimeValue::get_type() const
-{
-	return xs_dateTime;
 }
 
 
@@ -1179,16 +1145,34 @@ xs_shortValue::xs_shortValue(
 {
 }
 
-sequence_type_t xs_shortValue::get_type() const
-{
-	return xs_short;
-}
-
-
 
 ///////////////////////////////
 //	xs_string
 ///////////////////////////////
+
+void * xs_stringValue::operator new(
+	size_t node_size,
+	itemstore& istore)
+{
+cout << TRACE << " : node_size = " << node_size << endl;
+	return istore.alloc(node_size);
+}
+
+void * xs_stringValue::operator new(
+	size_t node_size,
+	itemstore& istore,
+	off_t offset)
+{
+cout << TRACE << " : offset = " << offset << endl;
+	return static_cast<void *>(&istore[offset]);
+}
+
+void * xs_stringValue::operator new(
+	size_t node_size,
+	void * p)
+{
+	return p;
+}
 
 string xs_stringValue::describe(context * ctx_p) const
 {
@@ -1197,14 +1181,17 @@ string xs_stringValue::describe(context * ctx_p) const
 	return oss.str();
 }
 
-string xs_stringValue::stringValue(context const* ctx_p) const
+string xs_stringValue::stringValue(
+	context const* ctx_p) const
 {
 	ostringstream oss;
 	oss << rest; 
 	return oss.str();
 }
 
-ostream& xs_stringValue::put(ostream& os, context * ctx_p) const
+ostream& xs_stringValue::put(
+	ostream& os,
+	context * ctx_p) const
 {
 	return os << "xs_string[" << rest << ']'; 
 }
@@ -1213,12 +1200,114 @@ xs_stringValue::xs_stringValue(
 	itemstore& istore,
 	string const& s)
 :
-	atomic_value(xs_string,0)
+	atomic_value(xs_string,s.length())
 {
-	m_length = s.length();
-	strcpy(rest, s.c_str());
+	istore.add_text(s);
 }
  
+string xs_stringValue::str() const
+{
+	ostringstream oss;
+	oss << rest; 
+	return oss.str();
+}
+ 
+
+
+///////////////////////////////
+//	qname_value
+///////////////////////////////
+
+qname_value::qname_value(
+	itemstore& istore,
+	string const& qname_s)
+:
+	value(xs_anyURI,0),
+	m_qnamekey(hashfun::h64(qname_s))
+{
+	size_t n = qname_s.find(':');
+	string prefix = (n!=string::npos?qname_s.substr(0,n):"");
+	string localname = (n!=string::npos?qname_s.substr(n+1):qname_s);
+
+cout << TRACE << " : [0] prefix = " << prefix << endl;
+cout << TRACE << " :     localname = " << localname << endl;
+
+	m_nameref = istore.eos();
+	new(istore) xs_stringValue(istore,localname);
+	new(istore) xs_stringValue(istore,prefix);
+	m_length  = (istore.eos()-m_nameref) + (sizeof(value)>>2);
+
+cout << TRACE << " : [4] m_length = " << m_length << endl;
+cout << TRACE << " :     m_nameref = " << m_nameref << endl;
+
+}
+
+string qname_value::prefix(
+	itemstore& istore) const
+{
+	xs_stringValue* s_p = new(istore,m_nameref) xs_stringValue();
+cout << TRACE << " : s_p = " << s_p->str() << endl;
+	itemref_t prefixref = m_nameref + s_p->length();
+cout << TRACE << " : prefixref = " << prefixref << endl;
+	xs_stringValue* t_p = new(istore,prefixref) xs_stringValue();
+cout << TRACE << " : t_p = " << t_p->str() << endl;
+	return t_p->str();
+}
+
+string qname_value::localname(
+	itemstore& istore) const
+{
+cout << TRACE << " : m_nameref = " << m_nameref << endl;
+	xs_stringValue* s_p = new(istore,m_nameref) xs_stringValue();
+cout << TRACE << " : s_p = " << s_p->str() << endl;
+	return s_p->str();
+}
+
+void* qname_value::operator new(
+	size_t node_size,
+	itemstore& istore)
+{
+	istore.alloc(node_size);
+	return istore.eos_p();
+}
+
+void* qname_value::operator new(
+	size_t n,
+	void* p)
+{
+	return p;
+}
+
+ostream& qname_value::put(
+	ostream& os,
+	context * ctx_p) const
+{
+	return os << "";
+}
+
+string qname_value::describe(
+	context * ctx_p) const
+{
+	return "xs_qname()";
+}
+
+rchandle<item_iterator> qname_value::atomized_value(
+	context * ctx_p) const
+{
+	return &item_iterator::empty_sequence;
+}
+
+rchandle<item_iterator> qname_value::effective_boolean_value(
+	context * ctx_p) const
+{
+	return &item_iterator::empty_sequence;
+}
+
+string qname_value::string_value(
+	context const* ctx_p) const
+{
+	return "";
+}
 
 
 ///////////////////////////////

@@ -14,7 +14,6 @@
 #include "../runtime/iterator.h"
 #include "../store/itemstore.h"
 #include "../types/sequence_type.h"
-#include "../util/rchandle.h"
 
 #include <string>
 #include <vector>
@@ -28,14 +27,13 @@ class context;
 |	Base class for the value hierarchy
 |_______________________________________________________________________*/
 
-class object : public rcobject
+class object
 {
 public:
 	object() {}
-	virtual ~object() {}
+	~object() {}
 
 };
-
 
 
 /*______________________________________________________________________
@@ -83,20 +81,12 @@ protected:
 
 public:
 	value(sequence_type_t t, size_t l) : m_type(t), m_length(l) {}
-	virtual ~value() {}
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void*);
-	void operator delete(void*) {}
+	value() {}
+	~value() {}
 
 public:
 	sequence_type_t type() const { return m_type; }
 	size_t length() const { return m_length; }
-  virtual std::ostream& put(std::ostream&, context *) const;
-  virtual std::string describe(context *) const;
-	virtual rchandle<item_iterator> atomized_value(context *) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
-	virtual bool is_sequence() const;
-	virtual bool is_empty() const;
 
 };
 
@@ -111,21 +101,21 @@ class item : public value
 {
 public:
 	item(sequence_type_t type, size_t length) : value(type,length) {}
-	virtual ~item() {}
+	~item() {}
 
 	void* operator new(size_t, itemstore&);
 	void* operator new(size_t, void*);
 	void operator delete(void*) {}
 
 public:
-  virtual std::ostream& put(std::ostream&, context *) const;
-  virtual std::string describe(context *) const;
-	virtual rchandle<item_iterator> atomized_value(context *) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
-	virtual std::string string_value(context const*) const;
+  std::ostream& put(std::ostream&, context *) const;
+  std::string describe(context *) const;
+	rchandle<item_iterator> atomized_value(context *) const;
+	rchandle<item_iterator> effective_boolean_value(context *) const;
+	std::string string_value(context const*) const;
 
-	virtual bool is_node() const;
-	virtual bool is_atomic() const;
+	bool is_node() const;
+	bool is_atomic() const;
 };
 
 
@@ -138,98 +128,19 @@ class atomic_value : public item
 {
 public:
 	atomic_value(sequence_type_t type, size_t length) : item(type,length) {}
-	virtual ~atomic_value() {}
+	~atomic_value() {}
 
 public:
-  virtual std::ostream& put(std::ostream&, context *) const;
-  virtual std::string describe(context *) const;
-	virtual rchandle<item_iterator> atomized_value(context *) const;
-	virtual rchandle<item_iterator> effective_boolean_value(context *) const;
-	virtual std::string string_value(context const*) const;
-	virtual sequence_type_t get_type() const;
+  std::ostream& put(std::ostream&, context *) const;
+  std::string describe(context *) const;
+	rchandle<item_iterator> atomized_value(context *) const;
+	rchandle<item_iterator> effective_boolean_value(context *) const;
+	std::string string_value(context const*) const;
 
 	bool is_sequence() const { return false; }
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
-};
-
-
-/*______________________________________________________________________
-|  
-|	'qname_value' encapsulates XML QNames
-|_______________________________________________________________________*/
-
-class qname_value : public value 
-{
-protected:
-	uint64_t m_qnamekey;
-	itemref_t m_nameref;
-	itemref_t m_prefixref;
-	char rest[0];
-	/*
-		char[] localname
-		char[] prefix
-	*/
-
-public:
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void*);
-	void operator delete(void*) {}
-
-public:
-	qname_value(
-		itemstore& istore,
-		std::string const&);
-
-public:
-	std::string prefix(itemstore&) const;
-	std::string localname(itemstore&) const;
-
-private:	// ctor,dtor - lock out default and copy constructors
-	qname_value(qname_value& qn) : value(xs_qname,0) {}
-	qname_value() : value(xs_qname,0) {}
-	~qname_value() {}
-
-public:		// output,debugging
-	std::ostream& put(std::ostream& os,context * ctx) const;
-	string describe(context * ctx) const;
-
-	rchandle<item_iterator> qname_value::atomized_value(context *) const;
-	rchandle<item_iterator> qname_value::effective_boolean_value(context *) const;
-	string qname_value::string_value(context const*) const;
-
-};
-
-
-/*______________________________________________________________________
-|  
-|	'uri_value' encapsulates URIs
-|_______________________________________________________________________*/
-
-class uri_value : public value 
-{
-protected:
-	uint64_t m_urikey;
-	itemref_t m_uriref;
-	char rest[0];
-	/*
-		char[] uri
-	*/
-
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void*);
-	void operator delete(void*) {}
-
-private:	// ctor,dtor - lock out
-	uri_value(uri_value& qn) : value(xs_anyURI,0) {}
-	uri_value() : value(xs_anyURI,0) {}
-	~uri_value() {}
-
-public:		// output,debugging
-	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
-	string describe(context * ctx) const;
-
 };
 
 

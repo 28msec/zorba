@@ -35,7 +35,7 @@ echo ""; echo "- parser -"
 if (!(test -d Build)); then
 	mkdir Build;
 fi;
-make all -f makefile.l
+make all0 -f makefile.l
 cd ../runtime
 echo ""; echo "- runtime -"
 if (!(test -d Build)); then

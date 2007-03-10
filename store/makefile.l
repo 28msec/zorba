@@ -98,9 +98,8 @@ itemstore_test : itemstore.h itemstore.cpp itemstore_test.cpp
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../values/${BUILD}/values.${SUFX} \
-		../values/${BUILD}/node_values.${SUFX} \
+		../values/${BUILD}/nodes.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
-		../values/${BUILD}/qname_value.${SUFX} \
 		${BUILD}/itemstore.${SUFX} \
 	itemstore_test.cpp
 
@@ -130,6 +129,8 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 	xml_handler_test.cpp
 
 all : \
+	qname_cache \
+	itemstore \
 	uri_resolver \
 	collation_resolver \
 	collection_resolver \

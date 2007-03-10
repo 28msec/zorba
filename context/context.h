@@ -526,7 +526,7 @@ protected:
 	rchandle<fxcharheap> string_store_h;
 
 	// blob storage
-	rchandle<itemstore> itemstore_h;
+	rchandle<itemstore> istore_h;
 	uint32_t ctx_nodeid;
 	uint32_t ctx_docid;
 
@@ -562,7 +562,8 @@ public:
 	uint32_t next_gen();
 
 	// item store
-	rchandle<itemstore> istore();
+	rchandle<itemstore> istore() { return istore_h; }
+	void set_istore(rchandle<itemstore> _istore_h) { istore_h = _istore_h; }
 
 	// namespace service
 	bool namespace_uri(uint32_t uri_id, std::string & uri);

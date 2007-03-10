@@ -24,19 +24,19 @@ namespace xqp {
 class ft_or_value : public ft_value
 {
 protected:
-	std::vector<rchandle<ft_value> > hv;
+	std::vector<ft_value const*> pv;
 
 public:
 	ft_or_value() {}
 	~ft_or_value() {}
 
 public:
-	void add(rchandle<ft_value> ft_h) { hv.push_back(ft_h); }
-	uint32_t count() const { return hv.size(); }
-	std::vector<rchandle<ft_value> >::const_iterator begin()
-		{ return hv.begin(); }
-	std::vector<rchandle<ft_value> >::const_iterator end()
-		{ return hv.end(); }
+	void add(ft_value const* ft_p) { pv.push_back(ft_p); }
+	uint32_t count() const { return pv.size(); }
+	std::vector<ft_value const*>::const_iterator begin()
+		{ return pv.begin(); }
+	std::vector<ft_value const*>::const_iterator end()
+		{ return pv.end(); }
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, ft_or_value const&);
@@ -47,19 +47,19 @@ public:
 class ft_and_value : public ft_value
 {
 protected:
-	std::vector<rchandle<ft_value> > hv;
+	std::vector<ft_value const*> pv;
 
 public:
 	ft_and_value() {}
 	~ft_and_value() {}
 
 public:
-	void add(rchandle<ft_value> ft_h) { hv.push_back(ft_h); }
-	uint32_t count() const { return hv.size(); }
-	std::vector<rchandle<ft_value> >::const_iterator begin()
-		{ return hv.begin(); }
-	std::vector<rchandle<ft_value> >::const_iterator end()
-		{ return hv.end(); }
+	void add(ft_value const* ft_p) { pv.push_back(ft_p); }
+	uint32_t count() const { return pv.size(); }
+	std::vector<ft_value const*>::const_iterator begin()
+		{ return pv.begin(); }
+	std::vector<ft_value const*>::const_iterator end()
+		{ return pv.end(); }
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, ft_and_value const&);
@@ -70,23 +70,23 @@ public:
 class ft_mildnot_value : public ft_value
 {
 protected:
-	rchandle<ft_value> posval_h;
-	std::vector<rchandle<ft_value> > negval_hv;
+	ft_value const* pos_p;
+	std::vector<ft_value const*> neg_pv;
 
 public:
 	ft_mildnot_value(
-		rchandle<ft_value> pos_h,
-		rchandle<ft_value> neg_h);
+		ft_value const* pos_p,
+		ft_value const* neg_p);
 	ft_mildnot_value() {}
 	~ft_mildnot_value() {}
 
 public:
-	void add_negval(rchandle<ft_value> ft_h) { negval_hv.push_back(ft_h); }
-	uint32_t negval_count() const { return negval_hv.size(); }
-	std::vector<rchandle<ft_value> >::const_iterator negval_begin()
-		{ return negval_hv.begin(); }
-	std::vector<rchandle<ft_value> >::const_iterator negval_end()
-		{ return negval_hv.end(); }
+	void add_negval(ft_value const* ft_p) { neg_pv.push_back(ft_p); }
+	uint32_t negval_count() const { return neg_pv.size(); }
+	std::vector<ft_value const*>::const_iterator negval_begin()
+		{ return neg_pv.begin(); }
+	std::vector<ft_value const*>::const_iterator negval_end()
+		{ return neg_pv.end(); }
 
 public:
 	friend std::ostream& operator<<(std::ostream& os, ft_mildnot_value const&);
@@ -97,15 +97,15 @@ public:
 class ft_unarynot_value : public ft_value
 {
 protected:
-	rchandle<ft_value> qphrase_h;
+	ft_value const* qphrase_p;
 
 public:
-	ft_unarynot_value(rchandle<ft_value> ft_h) : qphrase_h(ft_h) {}
+	ft_unarynot_value(ft_value const* ft_p) : qphrase_p(ft_p) {}
 	ft_unarynot_value() {}
 	~ft_unarynot_value() {}
 
 public:
-	rchandle<ft_value> get_qphrase() const { return qphrase_h; };
+	ft_value const* get_qphrase() const { return qphrase_p; };
 	
 public:
 	friend std::ostream& operator<<(std::ostream& os, ft_unarynot_value const&);

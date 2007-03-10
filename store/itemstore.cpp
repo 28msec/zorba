@@ -9,6 +9,9 @@
 
 #include "itemstore.h"
 #include "../types/sequence_type.h"
+#include "../util/tracer.h"
+
+#include <iostream>
 
 /*______________________________________________________________________
 |  
@@ -31,7 +34,7 @@ itemstore::itemstore(
 	string const& datapath,
 	uint32_t initial_size)
 :
-	store( datapath+"/store_" ),
+	store( datapath+"/store" ),
 	index( datapath+"/idx_", 0.6f, initial_size ),
 	qncache( datapath )
 {
@@ -41,45 +44,19 @@ itemstore::~itemstore()
 {
 }
 
-inline bool itemstore::check_words(size_t n)
-{
-	return (store.size() + n >= store.capacity());
-}
-
-inline void itemstore::assure_words(size_t n)
-{
-	while (store.size() + n >= store.capacity()) store.expand();
-}
-
-inline void itemstore::assure_bytes(size_t n)
-{
-	while (store.size() + (n>>2) >= store.capacity()) store.expand();
-}
-
-inline void * itemstore::alloc(size_t n)
-{
-	return store.alloc(n);
-}
-
 itemref_t itemstore::add_text(
 	std::string const& content)
 {
-	uint32_t n = content.length();
-	uint32_t m = n >> 2;
 	uint32_t sz = store.size();
-	assure_words(m + 2);
-	store.push_back(xs_string);
-	store.push_back(n);
-	store.raw_copy(content.c_str(), n);
+	store.raw_copy(content.c_str(), content.length());
 	return sz;
 }
 
-string itemstore::get_text(off_t n) const
+string itemstore::get_text(
+	off_t offset,
+	uint32_t length) const
 {
-	uint32_t type = store[n];
-	Assert<bad_arg>(type==xs_string);
-	uint32_t length = store[n+1];
-	return string((char*)&store[n+1],0,length);
+	return string((char*)&store[offset],0,length);
 }
 
 itemref_t itemstore::add_key(

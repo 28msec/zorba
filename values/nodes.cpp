@@ -323,6 +323,28 @@ element_node::element_node(
 {
 }
 
+element_node::element_node(
+	context * ctx_p,
+	char const* name,
+	uint32_t length)
+:
+	node( elementNode,		// typecode
+				0,							// the length
+				ctx_p->gen(),		// generation number
+				ctx_p->istore()->eos(),		// end-of-store offset
+				ctx_p->next_nodeid(),
+				ctx_p->context_nodeid()),
+
+	m_docid(ctx_p->context_docid()),
+	m_qname_ref(0),				// element QName ref
+	m_nsseq_ref(0),				// element in-scope namespaces ref
+	m_attrseq_ref(0),			// attribute node seq ref
+	m_attr_count(0),			// attribute node count
+	m_childseq_ref(0),		// child node set ref
+	m_child_count(0)			// child node count
+{
+}
+
 rchandle<item_iterator> element_node::attributes(
 	context * ctx_p) const
 {

@@ -10,6 +10,9 @@ xquery_parser : xquery_parser.y
 	bison -v -t -d xquery_parser.y
 	g++ -Wall -g -c -o ${BUILD}/xquery_parser.${SUFX} xquery_parser.tab.c
 
+xquery_parser0 : xquery_parser.y
+	bison -v -t -d xquery_parser.y
+
 xquery_driver : xquery_driver.h xquery_driver.cpp
 	g++ ${OPT} -c -o ${BUILD}/xquery_driver.${SUFX} xquery_driver.cpp
 
@@ -50,6 +53,13 @@ xquery_test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h x
 all : \
 	parsenodes \
 	xquery_parser \
+	xquery_scanner \
+	xquery_driver \
+	symbol_table 
+
+all0 : \
+	parsenodes \
+	xquery_parser0 \
 	xquery_scanner \
 	xquery_driver \
 	symbol_table 

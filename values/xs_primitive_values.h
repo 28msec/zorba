@@ -37,7 +37,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -56,7 +55,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -75,7 +73,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -94,7 +91,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -113,7 +109,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -132,7 +127,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -151,7 +145,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -170,7 +163,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -189,7 +181,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -208,7 +199,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -227,7 +217,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -246,7 +235,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -265,7 +253,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -284,7 +271,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -303,7 +289,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -322,7 +307,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -342,7 +326,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -361,7 +344,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -380,7 +362,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -399,7 +380,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -418,7 +398,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -437,7 +416,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -456,7 +434,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -475,7 +452,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -494,7 +470,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -513,7 +488,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -532,7 +506,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -551,7 +524,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -570,7 +542,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -589,7 +560,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -608,7 +578,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -627,7 +596,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -646,7 +614,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -665,7 +632,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -684,7 +650,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -703,7 +668,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -716,21 +680,95 @@ protected:
 
 public:
 	void* operator new(size_t,itemstore&);
+	void* operator new(size_t,itemstore&, off_t);
 	void* operator new(size_t,void*);
 
 	xs_stringValue(itemstore&,std::string const&);
+	xs_stringValue() : atomic_value(xs_string,0) {}
+
+	std::string str() const;
 
 private:
-	xs_stringValue() : atomic_value(xs_string,0) {}
 	~xs_stringValue() {}
 
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
+
+
+class qname_value : public value
+{
+protected:
+	uint64_t m_qnamekey;
+	itemref_t m_nameref;
+	char rest[0];
+	/*
+		char[] localname	// xs_string
+		char[] prefix			// xs_string
+	*/
+
+public:
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, void*);
+	void operator delete(void*) {}
+
+public:
+	qname_value() {}
+
+	qname_value(
+		itemstore& istore,
+		std::string const&);
+
+public:
+	sequence_type_t type() const { return m_type; }
+	size_t length() const { return m_length; }
+	std::string prefix(itemstore&) const;
+	std::string localname(itemstore&) const;
+
+private:	// ctor,dtor - lock out default and copy constructors
+	qname_value(qname_value& qn) : value(xs_qname,0) {}
+	~qname_value() {}
+
+public:		// output,debugging
+	std::ostream& put(std::ostream& os,context * ctx) const;
+	string describe(context * ctx) const;
+
+	rchandle<item_iterator> qname_value::atomized_value(context *) const;
+	rchandle<item_iterator> qname_value::effective_boolean_value(context *) const;
+	string qname_value::string_value(context const*) const;
+
+};
+
+
+
+class uri_value : public value 
+{
+protected:
+	uint64_t m_urikey;
+	itemref_t m_uriref;
+	char rest[0];
+	/*
+		char[] uri
+	*/
+
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, void*);
+	void operator delete(void*) {}
+
+private:	// ctor,dtor - lock out
+	uri_value(uri_value& qn) : value(xs_anyURI,0) {}
+	uri_value() : value(xs_anyURI,0) {}
+	~uri_value() {}
+
+public:		// output,debugging
+	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
+	string describe(context * ctx) const;
+
+};
+
 
 
 class xs_timeValue : public atomic_value
@@ -746,7 +784,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -765,7 +802,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -784,7 +820,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -803,7 +838,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -822,7 +856,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };
@@ -841,7 +874,6 @@ public:
 public:
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
-	sequence_type_t get_type() const;
 	std::ostream& put(std::ostream&, context *) const;
 
 };

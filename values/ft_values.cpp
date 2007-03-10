@@ -41,12 +41,12 @@ ostream& operator<<(ostream& os, ft_qphrase_value const&)
 
 
 ft_mildnot_value::ft_mildnot_value(
-	rchandle<ft_value> _posval_h,
-	rchandle<ft_value> _negval_h)
+	ft_value const* _pos_p,
+	ft_value const* _neg_p)
 :
-	posval_h(_posval_h)
+	pos_p(_pos_p)
 {
-	negval_hv.push_back(_negval_h);
+	neg_pv.push_back(_neg_p);
 }
 
 

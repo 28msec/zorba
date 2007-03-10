@@ -44,7 +44,7 @@ protected:
 	**	item in the sequence obtained by evaluating E1 becomes the context 
 	**	item in the inner focus for an evaluation of E2.
 	*/
-	rchandle<item> context_item;
+	item const* context_item;
 
 	/*
 	**	[Definition: The context position is the position of the context item 
@@ -138,7 +138,7 @@ protected:
 	
 	
 public:	
-  rchandle<item> get_context_item() const { return context_item; }
+  item const* get_context_item() const { return context_item; }
 	uint32_t get_context_position() const { return context_position; }
 	uint32_t get_context_size() const { return context_size; }
 	time_t get_currtime() const { return currtime; }

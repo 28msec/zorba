@@ -9,10 +9,11 @@
 
 #include "plan_visitor.h"
 #include "indent.h"
-#include "../exprtree/expr.h"
-#include <iostream>
 
-#define TRACE __FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__
+#include "../exprtree/expr.h"
+#include "../util/tracer.h"
+
+#include <iostream>
 
 using namespace std;
 namespace xqp 

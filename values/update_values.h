@@ -12,6 +12,7 @@
 #define XQP_UPDATE_VALUES_H
 
 #include "values.h"
+#include "xs_primitive_values.h"
 #include "nodes.h"
 
 

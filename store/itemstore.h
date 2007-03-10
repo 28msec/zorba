@@ -42,13 +42,29 @@ public:
 	void put(uint32_t u) { store.push_back(u); }
 	uint32_t& operator[](uint32_t n) { return store[n]; }
 
-	bool check_words(size_t n);
-	void assure_words(size_t n);
-	void assure_bytes(size_t n);
-	void* alloc(size_t);
+	bool check_words(size_t n)
+	{
+		return (store.size() + n >= store.capacity());
+	}
+	
+	void assure_words(size_t n)
+	{
+		while (store.size() + n >= store.capacity()) store.expand();
+	}
+	
+	void assure(size_t n)
+	{
+		while (store.size() + (n>>2) >= store.capacity()) store.expand();
+	}
+
+	void* alloc(size_t n)
+	{
+		assure(n);
+		return store.alloc(n);
+	}
 
 	off_t add_text(std::string const& content);
-	std::string get_text(off_t n) const;
+	std::string get_text(off_t offset, uint32_t length) const;
 	off_t add_key(uint64_t key);
 	void * last();
 

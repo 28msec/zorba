@@ -12,13 +12,13 @@
 
 #include "../runtime/iterator.h"
 #include "../types/sequence_type.h"
+#include "../util/tracer.h"
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
 
 #include <stdlib.h>
 #include <sstream>
 #include <string>
-
 
 
 using namespace std;
@@ -61,12 +61,13 @@ context::context()
 	default_collection(NULL),
 	counters("data/nodeid",256),
 	string_store_h(new fxcharheap(1<<16)),
-	itemstore_h(new itemstore("data/itemstore/")),
+	istore_h(new itemstore("data/itemstore")),
 	ctx_nodeid(0),
 	ctx_docid(0),
 	in_scope_ns(0),
-	docindex("data/docindex/", 0.6f, 6)
+	docindex("data/docindex", 0.6f, 6)
 {
+cout << TRACE << endl;
 }
 
 context::~context()
@@ -331,14 +332,5 @@ throw (xqp_exception)
 }
 
 
-/*..........................................
- :  item store                             :
- :.........................................*/
-
-rchandle<itemstore> context::istore()
-{
-	return itemstore_h;
-}
-
-
 }	/* namespace xqp */
+

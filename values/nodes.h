@@ -103,36 +103,36 @@ public:		// XQuery interface
 	 *	"attribute", "comment", "document", "element", "namespace" 
 	 *	"processing-instruction", or "text". 
 	 */
-	virtual enum node_kind_t node_kind() const;
+	enum node_kind_t node_kind() const;
 	
 	/**
 	 *	The dm:string-value accessor returns the string value of a node.
 	 */
-	virtual std::string string_value(context const*) const;
+	std::string string_value(context const*) const;
 	
 	/**
 	 * Return the node data type.
 	 */
-	virtual sequence_type_t get_type(context *) const;
+	sequence_type_t get_type(context *) const;
 
 	/**
 	 *	The dm:attributes accessor returns the attributes of a node as a 
 	 *	sequence containing zero or more Attribute Nodes. The order of 
 	 *	Attribute Nodes is stable but implementation dependent. 
 	 */
-	virtual rchandle<item_iterator> attributes(context *) const;
+	rchandle<item_iterator> attributes(context *) const;
 	
 	/**
 	 *	The dm:base-uri accessor returns the base URI of a node as a sequence 
 	 *	containing zero or one URI reference. 
 	 */
-	virtual rchandle<item_iterator> base_uri(context *) const;
+	rchandle<item_iterator> base_uri(context *) const;
 	
 	/**
 	 *	The dm:children accessor returns the children of a node as a sequence 
 	 *	containing zero or more nodes. 
 	 */
-	virtual rchandle<item_iterator> children(context *) const;
+	rchandle<item_iterator> children(context *) const;
 	
 	/**
 	 *	The dm:document-uri accessor returns the absolute URI of the resource 
@@ -141,18 +141,18 @@ public:		// XQuery interface
 	 *	absolute when the Document Node is constructed, or if it is used on a 
 	 *	node other than a Document Node, the empty sequence is returned. 
 	 */
-	virtual rchandle<item_iterator> document_uri(context *) const;
+	rchandle<item_iterator> document_uri(context *) const;
 	
 	/**
 	 *	The dm:is-id accessor returns true if the node is an XML ID.
 	 */
-	virtual bool is_id(context *) const;
+	bool is_id(context *) const;
 	
 	/**
 	 *	The dm:is-idrefs accessor returns true if the node is an 
 	 *  XML IDREF or IDREFS. 
 	 */
-	virtual bool is_idrefs(context *) const;
+	bool is_idrefs(context *) const;
 	
 	/**
 	 *	The dm:namespace-bindings accessor returns the dynamic, in-scope 
@@ -161,7 +161,7 @@ public:		// XQuery interface
 	 *	Note: this accessor and the namespace-nodes accessor provide two views 
 	 *	of the same information. 
 	 */
-	virtual rchandle<item_iterator> namespace_bindings(context *) const;
+	rchandle<item_iterator> namespace_bindings(context *) const;
 	
 	/**
 	 *	The dm:namespace-nodes accessor returns the dynamic, in-scope 
@@ -171,7 +171,7 @@ public:		// XQuery interface
 	 *	Note: this accessor and the namespace-bindings accessor provide two 
 	 *	views of the same information.
 	 */
-	virtual rchandle<item_iterator> namespace_nodes(context *) const;
+	rchandle<item_iterator> namespace_nodes(context *) const;
 	
 	/**
 	 *	The dm:nilled accessor returns true if the node is "nilled". [Schema 
@@ -180,32 +180,32 @@ public:		// XQuery interface
 	 *	content type which does not require or even necessarily allow empty 
 	 *	content. 
 	 */
-	virtual bool nilled(context *) const;
+	bool nilled(context *) const;
 	
 	/**
 	 *	The dm:node-name accessor returns the name of the node as a sequence 
 	 *	of zero or one xs:QNames. Note that the QName value includes an 
 	 *	optional prefix as described in 3.3.3 QNames and NOTATIONS. 
 	 */
-	virtual rchandle<item_iterator> node_name(context *) const;
+	rchandle<item_iterator> node_name(context *) const;
 	
 	/**
 	 *	The dm:parent accessor returns the parent of a node as a sequence 
 	 *	containing zero or one nodes. 
 	 */
-	virtual rchandle<item_iterator> parent(context *) const;
+	rchandle<item_iterator> parent(context *) const;
 	
 	/**
 	 *	The dm:type-name accessor returns the name of the schema type of a 
 	 *	node as a sequence of zero or one xs:QNames. 
 	 */
-	virtual rchandle<item_iterator> type_name(context *) const;
+	rchandle<item_iterator> type_name(context *) const;
 	
 	/**
 	 *	The dm:typed-value accessor returns the typed-value of the node as a 
 	 *	sequence of zero or more atomic values. 
 	 */
-	virtual rchandle<item_iterator> typed_value(context *) const;
+	rchandle<item_iterator> typed_value(context *) const;
 
 };
 	
@@ -428,6 +428,11 @@ public:
 		nodeid_t parentid,
 		docid_t docid,
 		itemref_t qname_ref);
+
+	element_node(
+		context *,
+		char const* name,
+		uint32_t length);
 
 public:	// storage interface
 	docid_t&   docid() { return m_docid; }

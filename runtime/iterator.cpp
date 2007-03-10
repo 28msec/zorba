@@ -21,7 +21,7 @@
 using namespace std;
 namespace xqp {
 
-item_iterator empty_sequence(NULL);
+item_iterator item_iterator::empty_sequence(NULL);
 
 /*...........................................
 	: item_iterator base                      :
@@ -95,8 +95,7 @@ string item_iterator::string_value()
 {
 	ostringstream oss;
 	while (!done()) {
-		rchandle<item> i_h = next();
-		item* i_p = &*i_h;
+		item* i_p = next();
 		if (i_p==NULL) continue;
 		i_p->put(oss,ctx_p);
 	}

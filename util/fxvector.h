@@ -13,6 +13,7 @@
 
 #include "mmfile.h"
 #include "rchandle.h"
+#include "tracer.h"
 #include "xqp_exception.h"
 
 #include <sys/mman.h>
@@ -84,6 +85,7 @@ public:
 	T* get_end_of_storage() const { return end_of_storage; }
 	char* get_src() const { return src; }
 	char* raw_copy(char const* data, uint32_t length);
+	char* raw_copy(std::string const&);
 
 private:
 	/**
@@ -422,23 +424,43 @@ fxvector<T>::~fxvector()
 
 template<typename T>
 char * fxvector<T>::raw_copy(
+	string const& s)
+{
+	uint32_t n = s.length()+1;
+	char buf[n];
+	strcpy(buf,s.c_str());
+	return raw_copy(buf,n);
+}
+
+template<typename T>
+char * fxvector<T>::raw_copy(
 	char const* data,
 	uint32_t length)
 {
 	// insure capacity
 	uint32_t n = sizeof(T);
 	uint32_t T_count = (length/n + (length%n?1:0));
+	uint32_t aligned_length = n * T_count;
+	std::cout << TRACE<<" : T_count = "<<T_count<<std::endl;
+	std::cout << TRACE<<" : length = "<<length<<std::endl;
+	std::cout << TRACE<<" : aligned_length = "<<aligned_length<<std::endl;
 	while (capacity()-size() < T_count) expand();
 
 	// copy
 	char* p = reinterpret_cast<char*>(finish);
-	memcpy(p, data, length);
-	finish += T_count;
+	strncpy(p, data, length);
+	memset(p+length, 0, aligned_length - length);
+
+	std::cout << TRACE<<" : stored>> "<<string(p,0,length)<<endl;
+	std::cout << TRACE<<" : finish = "<<finish<<std::endl;
+	finish += aligned_length;
+	std::cout << TRACE<<" : finish = "<<finish<<std::endl;
 
 	// update mmfile
 	if (mmf_p) {
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
-		*offset_p += n * T_count;
+		*offset_p += aligned_length;
+		std::cout << TRACE<<" : *offset_p = "<<*offset_p<<std::endl;
 	}
 	return p;
 }
@@ -451,16 +473,18 @@ void * fxvector<T>::alloc(
 	// insure capacity
 	uint32_t n = sizeof(T);
 	size_t T_count = (length/n + (length%n?1:0));
+	uint32_t aligned_length = n * T_count;
 	while (capacity()-size() < T_count) expand();
 
 	// alloc
 	void* v = reinterpret_cast<void*>(finish);
-	finish += T_count;
+	//finish += aligned_length;
+	//finish += T_count;
 
 	// update mmfile
 	if (mmf_p) {
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
-		*offset_p += n * T_count;
+		*offset_p += aligned_length;
 	}
 	return v;
 }
