@@ -59,7 +59,6 @@ public:
 
 	void* alloc(size_t n)
 	{
-		assure(n);
 		return store.alloc(n);
 	}
 

@@ -54,6 +54,7 @@ public:
 public:  
 	mmfile* mmf_p;			// memory-mapped file, may be NULL
 	char* src;					// raw view of data
+	                    //   the first 8 bytes stores end-of-storage offset
 	T* start;						// pointer to first element
 	T* finish;					// pointer to first free element 
 	T* end_of_storage;	// pointer one past end of storage
@@ -441,9 +442,9 @@ char * fxvector<T>::raw_copy(
 	uint32_t n = sizeof(T);
 	uint32_t T_count = (length/n + (length%n?1:0));
 	uint32_t aligned_length = n * T_count;
-	std::cout << TRACE<<" : T_count = "<<T_count<<std::endl;
-	std::cout << TRACE<<" : length = "<<length<<std::endl;
-	std::cout << TRACE<<" : aligned_length = "<<aligned_length<<std::endl;
+	std::cout << TRACE<<" : [1] T_count = "<<T_count<<std::endl;
+	std::cout << TRACE<<" :     length = "<<length<<std::endl;
+	std::cout << TRACE<<" :     aligned_length = "<<aligned_length<<std::endl;
 	while (capacity()-size() < T_count) expand();
 
 	// copy
@@ -451,16 +452,16 @@ char * fxvector<T>::raw_copy(
 	strncpy(p, data, length);
 	memset(p+length, 0, aligned_length - length);
 
-	std::cout << TRACE<<" : stored>> "<<string(p,0,length)<<endl;
-	std::cout << TRACE<<" : finish = "<<finish<<std::endl;
+	std::cout << TRACE<<" : [2] stored>> "<<string(p,0,length)<<endl;
+	std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
 	finish += aligned_length;
-	std::cout << TRACE<<" : finish = "<<finish<<std::endl;
+	std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
 
 	// update mmfile
 	if (mmf_p) {
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
 		*offset_p += aligned_length;
-		std::cout << TRACE<<" : *offset_p = "<<*offset_p<<std::endl;
+		std::cout << TRACE<<" : [3] *offset_p = "<<*offset_p<<std::endl;
 	}
 	return p;
 }
@@ -479,7 +480,7 @@ void * fxvector<T>::alloc(
 	// alloc
 	void* v = reinterpret_cast<void*>(finish);
 	//finish += aligned_length;
-	//finish += T_count;
+	finish += T_count;
 
 	// update mmfile
 	if (mmf_p) {
