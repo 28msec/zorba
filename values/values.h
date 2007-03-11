@@ -101,6 +101,7 @@ class item : public value
 {
 public:
 	item(sequence_type_t type, size_t length) : value(type,length) {}
+	item() {}
 	~item() {}
 
 	void* operator new(size_t, itemstore&);
@@ -128,6 +129,7 @@ class atomic_value : public item
 {
 public:
 	atomic_value(sequence_type_t type, size_t length) : item(type,length) {}
+	atomic_value() {}
 	~atomic_value() {}
 
 public:

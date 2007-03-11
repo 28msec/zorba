@@ -26,6 +26,13 @@ qname_test : qname_value.h qname_value.cpp qname_test.cpp
 		${BUILD}/qname_value.${SUFX} \
 		qname_test.cpp
 
+refv_test : refv_test.cpp
+	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -o ${BUILD}/refv_test \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../util/${BUILD}/tokenbuf.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		refv_test.cpp
+
 xs_primitive_values_test : xs_primitive_values.h xs_primitive_values.cpp xs_primitive_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/xs_primitive_values_test \
 		../context/${BUILD}/context.${SUFX} \

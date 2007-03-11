@@ -1254,6 +1254,12 @@ qname_value::qname_value(
 	m_qnamekey(key),
 	m_nameref(nameref)
 {
+cout << TRACE << " : nameref = " << m_nameref << endl;
+}
+
+qname_value::qname_value()
+{
+cout << TRACE << " : nameref = " << m_nameref << endl;
 }
 
 string qname_value::prefix(
@@ -1278,8 +1284,15 @@ void* qname_value::operator new(
 	size_t node_size,
 	itemstore& istore)
 {
-	istore.alloc(node_size);
-	return istore.eos_p();
+	return istore.alloc(node_size);
+}
+
+void* qname_value::operator new(
+	size_t node_size,
+	itemstore& istore,
+	off_t offset)
+{
+	return &istore[offset];
 }
 
 void* qname_value::operator new(

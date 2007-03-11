@@ -715,11 +715,12 @@ protected:
 
 public:
 	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, itemstore&, off_t);
 	void* operator new(size_t, void*);
 	void operator delete(void*) {}
 
 public:
-	qname_value() : atomic_value(xs_qname,0) {}
+	qname_value();
 
 	qname_value(
 	  itemstore& istore,

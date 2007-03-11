@@ -181,8 +181,6 @@ public:		// vector interface
 	 */
 	size_type size() const
 	{
-		cout << "start = " << start << endl;
-		cout << "finish = " << finish << endl;
 		return size_type(end() - begin());
 	}
 
@@ -445,6 +443,7 @@ char * fxvector<T>::raw_copy(
 	std::cout << TRACE<<" : [1] T_count = "<<T_count<<std::endl;
 	std::cout << TRACE<<" :     length = "<<length<<std::endl;
 	std::cout << TRACE<<" :     aligned_length = "<<aligned_length<<std::endl;
+	std::cout << TRACE<<" :     size = "<<size()<<std::endl;
 	while (capacity()-size() < T_count) expand();
 
 	// copy
