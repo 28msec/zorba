@@ -242,7 +242,7 @@ protected:
 
 public:
 	child_const_iterator(context const*, node const*, off_t);
-	~child_const_iterator();
+	~child_const_iterator() {}
 
 public:
  	void open() {}
@@ -318,21 +318,18 @@ protected:
 
 public:
 	document_node() {}
-	
-	document_node(
-		context *,
-		itemref_t baseuri_ref,
-		itemref_t uri_ref);
+	document_node(context*, itemref_t baseuri_ref, itemref_t uri_ref);
 
 public:		// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
+	void operator delete(void*) {}
+
+public:		// accessors
 	nodeid_t& docid() { return m_docid; }
 	uint32_t& child_count() { return m_child_count; }
 	itemref_t uri_ref() { return m_uri_ref; }
-
-	// arena allocation
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void const*);
-	void operator delete(void*) {}
 
 public:		// XQuery interface
 	node_kind_t node_kind() const { return doc_kind; }
@@ -351,7 +348,6 @@ public:		// output and debugging
 	std::ostream& put(std::ostream&,context *) const;
 
 };
-
 
 
 // Zorba-specific
@@ -375,8 +371,6 @@ public:		// output,debugging
 	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
 
 };
-
-
 
 
 /*______________________________________________________________________
@@ -450,7 +444,7 @@ public:
 		char const* name,
 		uint32_t length);
 
-public:	// storage interface
+public:	// accessors
 	docid_t&   docid() { return m_docid; }
 	itemref_t& qname_ref() { return m_qname_ref; }
 	itemref_t& nsseq_ref() { return m_nsseq_ref; }
@@ -459,14 +453,14 @@ public:	// storage interface
 	itemref_t& childseq_ref() { return m_childseq_ref; }
 	uint32_t&  child_count() { return m_child_count; }
 
-	// random access
 	namespace_node& name_space(uint32_t);
 	attribute_node& attribute(uint32_t);
 	node& child(uint32_t);
 
-	// arena allocation
-	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void const*);
+public:	// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
 	void operator delete(void*) {}
 
 public:	// data interface
@@ -551,16 +545,16 @@ protected:
 	*/
 
 public:
-  attribute_node();
+  attribute_node() {}
 
 	attribute_node(
 		context *,
 		itemref_t qname_ref);
 
 public:	// storage interface
-	// arena allocation
-	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void const*);
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
 	void operator delete(void*) {}
 
 public:	// XQuery interface
@@ -618,9 +612,10 @@ public:		// storage interface
 	itemref_t nsref() const { return m_nsref; }
 	nskey_t& nskey() { return m_nskey; }
 
-	// arena allocation
-	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void const*);
+public:	// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
 	void operator delete(void*) {}
 
 public:		// XQuery interface
@@ -671,9 +666,10 @@ public:		// storage interface
 	itemref_t& target_ref() { return m_target_ref; }
 	itemref_t& content_ref() { return m_content_ref; }
 	
-	// arena allocation
-	void * operator new(size_t, itemstore&);
-	void * operator new(size_t, void const*);
+public:	// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
 	void operator delete(void*) {}
 
 public:		// XQuery interface
@@ -714,10 +710,10 @@ public:
 	comment_node() {}
 	comment_node(context *);
 	
-public:		// storage interface
-	// arena allocation
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void const*);
+public:	// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
 	void operator delete(void*) {}
 
 public:		// XQUery interface
@@ -760,20 +756,21 @@ protected:
 	docid_t m_docid;	// parent doc id
 	char rest[0];
 
-public:		// storage interface
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, itemstore&, off_t);
-	void* operator new(size_t, void *);
-	void* operator new(size_t, void const*);
+public:	// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void * p) { return p; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
 	void operator delete(void*) {}
 	
 public:
-	text_node();
+	text_node() {}
 	text_node(context *, std::string const&);
 	
 public:		// accessors
 	char const* content() const;
 	docid_t& docid() { return m_docid; }
+	std::string str(context *) const;
 
 public:		// XQuery interface
 	enum node_kind_t node_kind() const { return text_kind; }

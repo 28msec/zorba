@@ -66,6 +66,7 @@ nodes_test : nodes.h nodes.cpp nodes_test.cpp
 values_test : values.h values.cpp values_test.cpp
 	g++ ${OPT} -o ${BUILD}/values_test \
 		../context/${BUILD}/context.${SUFX} \
+		../runtime/${BUILD}/errors.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
 		../store/${BUILD}/qname_cache.${SUFX} \
@@ -76,6 +77,7 @@ values_test : values.h values.cpp values_test.cpp
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/values.${SUFX} \
 		${BUILD}/xs_primitive_values.${SUFX} \
+		${BUILD}/nodes.${SUFX} \
 		values_test.cpp
 
 ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp

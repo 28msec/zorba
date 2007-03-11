@@ -2,6 +2,9 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
+errors : errors.h errors.cpp
+	g++ ${OPT} -c -o ${BUILD}/errors.${SUFX} errors.cpp
+
 iterator : iterator.h iterator.cpp
 	g++ ${OPT} -c -o ${BUILD}/iterator.${SUFX} iterator.cpp
 

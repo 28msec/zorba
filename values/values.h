@@ -79,12 +79,19 @@ protected:
 	sequence_type_t m_type;
 	size_t m_length;
 
+public:		// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void * p) { return p; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
+	void operator delete(void*) {}
+	
 public:
 	value(sequence_type_t t, size_t l) : m_type(t), m_length(l) {}
 	value() {}
 	~value() {}
 
-public:
+public:		// accessors
 	sequence_type_t type() const { return m_type; }
 	size_t length() const { return m_length; }
 
@@ -99,14 +106,23 @@ public:
 
 class item : public value
 {
+public:		// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void * p) { return p; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
+	void operator delete(void*) {}
+	
 public:
 	item(sequence_type_t type, size_t length) : value(type,length) {}
 	item() {}
 	~item() {}
 
-public:
+public:		// accessors
   std::ostream& put(std::ostream&, context *) const;
   std::string describe(context *) const;
+
+public:		// XQuery interface
 	rchandle<item_iterator> atomized_value(context *) const;
 	rchandle<item_iterator> effective_boolean_value(context *) const;
 	rchandle<item_iterator> string_value(context const*) const;
@@ -122,18 +138,26 @@ public:
 
 class atomic_value : public item
 {
+public:		// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void * p) { return p; }
+	void* operator new(size_t n, void const* p) { return (void*)p; }
+	void operator delete(void*) {}
+	
 public:
 	atomic_value(sequence_type_t type, size_t length) : item(type,length) {}
 	atomic_value() {}
 	~atomic_value() {}
 
-public:
+public:		// accessors
   std::ostream& put(std::ostream&, context *) const;
   std::string describe(context *) const;
+
+public:		// XQuery interface
 	rchandle<item_iterator> atomized_value(context *) const;
 	rchandle<item_iterator> effective_boolean_value(context *) const;
 	rchandle<item_iterator> string_value(context const*) const;
-
 	bool is_sequence() const { return false; }
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }

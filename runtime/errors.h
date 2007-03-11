@@ -10,6 +10,8 @@
 #ifndef XQP_ERRORS_H
 #define XQP_ERRORS_H
 
+#include <string>
+
 namespace xqp {
 
 class errors
@@ -93,8 +95,8 @@ public:
 
 	};
 
+	static std::string decode(enum errcode);
 	static void err(enum errcode);
-
 
 };
 

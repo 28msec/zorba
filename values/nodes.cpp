@@ -100,135 +100,6 @@ bool node::nilled(context * ctx_p) const { return false; }
 
 
 /*..........................................
- :     child_iterator                      :
- :.........................................*/
-
-child_iterator::child_iterator(
-	context * _ctx_p,
-	node * _parent_p,
-	off_t offset)
-:
-	item_iterator(ctx_p),
-	parent_p(_parent_p),
-	ctx_p(_ctx_p)
-{
-	end_p =
-		reinterpret_cast<node *>(
-			parent_p->length() +
-				reinterpret_cast<uint32_t *>(parent_p));
-	current_p = 
-		reinterpret_cast<node *>(
-			offset + reinterpret_cast<uint32_t *>(parent_p));
-}
-	
-item * child_iterator::operator*() const
-{
-	switch (current_p->type()) {
-	case attributeNode: {
-		return new(current_p) attribute_node();
-		break;
-	}
-	case elementNode: {
-		return new(current_p) element_node();
-		break;
-	}
-	case processingInstructionNode: {
-		return new(current_p) pi_node();
-		break;
-	}
-	case commentNode: {
-		return new(current_p) comment_node();
-		break;
-	}
-	case textNode: {
-		return new(current_p) text_node();
-		break;
-	}
-	default: {
-		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
-	} }
-	return NULL;
-}
-
-child_iterator& child_iterator::operator++()
-{
-	if (current_p >= end_p) {
-		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
-	}
-	current_p =
-		reinterpret_cast<node *>(
-			current_p->length() +
-				reinterpret_cast<uint32_t *>(parent_p));
-	return *this;
-}
-
-
-/*..........................................
- :     child_const_iterator                :
- :.........................................*/
-
-child_const_iterator::child_const_iterator(
-	context const* _ctx_p,
-	node const* _parent_p,
-	off_t offset)
-:
-	item_iterator(const_cast<context*>(ctx_p)),
-	parent_p(_parent_p),
-	ctx_p(_ctx_p)
-{
-	end_p =
-		reinterpret_cast<node const*>(
-			parent_p->length() +
-				reinterpret_cast<uint32_t const*>(parent_p));
-	current_p = 
-		reinterpret_cast<node const*>(
-			offset + reinterpret_cast<uint32_t const*>(parent_p));
-}
-	
-item * child_const_iterator::operator*() const
-{
-	switch (current_p->type()) {
-	case attributeNode: {
-		return new(current_p) attribute_node();
-		break;
-	}
-	case elementNode: {
-		return new(current_p) element_node();
-		break;
-	}
-	case processingInstructionNode: {
-		return new(current_p) pi_node();
-		break;
-	}
-	case commentNode: {
-		return new(current_p) comment_node();
-		break;
-	}
-	case textNode: {
-		return new(current_p) text_node();
-		break;
-	}
-	default: {
-		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
-	} }
-	return NULL;
-}
-
-child_const_iterator const& child_const_iterator::operator++()
-{
-	if (current_p >= end_p) {
-		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
-	}
-	current_p =
-		reinterpret_cast<node const*>(
-			current_p->length() +
-				reinterpret_cast<uint32_t const*>(parent_p));
-	return *this;
-}
-
-
-
-/*..........................................
  :            document_node                :
  :.........................................*/
 
@@ -592,32 +463,9 @@ ostream& comment_node::put(ostream& os, context * ctx_p) const
 }
 
 
-
 /*..........................................
  :             text nodes                  :
  :.........................................*/
-
-void* text_node::operator new(
-	size_t node_size,
-	itemstore& istore)
-{
-	return istore.alloc(node_size);
-}
-
-void* text_node::operator new(
-	size_t node_size,
-	itemstore& istore,
-	off_t offset)
-{
-	return &istore[offset];
-}
-
-void* text_node::operator new(
-	size_t node_size,
-	void * p)
-{
-	return p;
-}
 
 text_node::text_node(
 	context * ctx_p,
@@ -651,7 +499,8 @@ rchandle<item_iterator> text_node::typed_value(
 rchandle<item_iterator> text_node::string_value(
 	context * ctx_p) const
 {
-	xs_stringValue* s_p = new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),rest);
+	xs_stringValue* s_p =
+		new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),rest);
 	rchandle<item_iterator> it_h =
 		dynamic_cast<item_iterator*>(new singleton_iterator(ctx_p, s_p));
 	return it_h;
@@ -661,10 +510,144 @@ ostream& text_node::put(
 	ostream& os,
 	context * ctx_p) const
 {
-	xs_stringValue* s_p = new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),rest);
+	xs_stringValue* s_p =
+		new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),rest);
 	return os << s_p->str();
 }
 
+string text_node::str(context * ctx_p) const
+{
+	xs_stringValue* s_p = new((void*)rest) xs_stringValue();
+	return s_p->str();
+}
+
+
+/*..........................................
+ :     child_iterator                      :
+ :.........................................*/
+
+child_iterator::child_iterator(
+	context * _ctx_p,
+	node * _parent_p,
+	off_t offset)
+:
+	item_iterator(ctx_p),
+	parent_p(_parent_p),
+	ctx_p(_ctx_p)
+{
+	end_p =
+		reinterpret_cast<node *>(
+			parent_p->length() +
+				reinterpret_cast<uint32_t *>(parent_p));
+	current_p = 
+		reinterpret_cast<node *>(
+			offset + reinterpret_cast<uint32_t *>(parent_p));
+}
+	
+item * child_iterator::operator*() const
+{
+	switch (current_p->type()) {
+	case attributeNode: {
+		return new(current_p) attribute_node();
+		break;
+	}
+	case elementNode: {
+		return new(current_p) element_node();
+		break;
+	}
+	case processingInstructionNode: {
+		return new(current_p) pi_node();
+		break;
+	}
+	case commentNode: {
+		return new(current_p) comment_node();
+		break;
+	}
+	case textNode: {
+		return new(current_p) text_node();
+		break;
+	}
+	default: {
+		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
+	} }
+	return NULL;
+}
+
+child_iterator& child_iterator::operator++()
+{
+	if (current_p >= end_p) {
+		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+	}
+	current_p =
+		reinterpret_cast<node *>(
+			current_p->length() +
+				reinterpret_cast<uint32_t *>(parent_p));
+	return *this;
+}
+
+
+/*..........................................
+ :     child_const_iterator                :
+ :.........................................*/
+
+child_const_iterator::child_const_iterator(
+	context const* _ctx_p,
+	node const* _parent_p,
+	off_t offset)
+:
+	item_iterator(const_cast<context*>(ctx_p)),
+	parent_p(_parent_p),
+	ctx_p(_ctx_p)
+{
+	end_p =
+		reinterpret_cast<node const*>(
+			parent_p->length() +
+				reinterpret_cast<uint32_t const*>(parent_p));
+	current_p = 
+		reinterpret_cast<node const*>(
+			offset + reinterpret_cast<uint32_t const*>(parent_p));
+}
+	
+item * child_const_iterator::operator*() const
+{
+	switch (current_p->type()) {
+	case attributeNode: {
+		return new(current_p) attribute_node();
+		break;
+	}
+	case elementNode: {
+		return new(current_p) element_node();
+		break;
+	}
+	case processingInstructionNode: {
+		return new(current_p) pi_node();
+		break;
+	}
+	case commentNode: {
+		return new(current_p) comment_node();
+		break;
+	}
+	case textNode: {
+		return new(current_p) text_node();
+		break;
+	}
+	default: {
+		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
+	} }
+	return NULL;
+}
+
+child_const_iterator const& child_const_iterator::operator++()
+{
+	if (current_p >= end_p) {
+		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+	}
+	current_p =
+		reinterpret_cast<node const*>(
+			current_p->length() +
+				reinterpret_cast<uint32_t const*>(parent_p));
+	return *this;
+}
 
 
 }	/* namespace xqp */
