@@ -345,32 +345,37 @@ void plan_visitor::end_visit(literal_expr const& v)
 cout << indent[depth--] << TRACE << ": literal_expr" << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
-    rchandle<singleton_iterator> it_h =
-      new singleton_iterator(ctx_p, ctx_p->get_string(v.get_sref()));
-    itstack.push(&*it_h);
+    rchandle<item_iterator> it_h =
+			dynamic_cast<item_iterator*>(
+      	new singleton_iterator(ctx_p, ctx_p->get_string(v.get_sref())));
+    itstack.push(it_h);
     break;
   }
   case literal_expr::lit_integer: {
-    rchandle<singleton_iterator> it_h =
-			new singleton_iterator(ctx_p, v.get_ival());
+    rchandle<item_iterator> it_h =
+			dynamic_cast<item_iterator*>(
+				new singleton_iterator(ctx_p, v.get_ival()));
     itstack.push(&*it_h);
     break;
   }
   case literal_expr::lit_decimal: {
-    rchandle<singleton_iterator> it_h =
-			new singleton_iterator(ctx_p, v.get_decval());
+    rchandle<item_iterator> it_h =
+			dynamic_cast<item_iterator*>(
+				new singleton_iterator(ctx_p, (double)v.get_decval()));
     itstack.push(&*it_h);
     break;
   }
   case literal_expr::lit_double: {
-    rchandle<singleton_iterator> it_h =
-			new singleton_iterator(ctx_p, v.get_dval());
+    rchandle<item_iterator> it_h =
+			dynamic_cast<item_iterator*>(
+				new singleton_iterator(ctx_p, v.get_dval()));
     itstack.push(&*it_h);
     break;
   }
   case literal_expr::lit_bool: {
-    rchandle<singleton_iterator> it_h =
-			new singleton_iterator(ctx_p, v.get_bval());
+    rchandle<item_iterator> it_h =
+			dynamic_cast<item_iterator*>(
+				new singleton_iterator(ctx_p, v.get_bval()));
     itstack.push(&*it_h);
     break;
   }

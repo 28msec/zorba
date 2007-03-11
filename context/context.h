@@ -543,6 +543,9 @@ protected:
 	std::vector<rchandle<item_iterator> > arg_hv;
 
 public:
+	// handle to the empty sequence
+	rchandle<item_iterator> emptyseq;
+
 	// string store services
 	off_t put_string(std::string const& s);
 	std::string get_string(off_t sref) throw (xqp_exception);

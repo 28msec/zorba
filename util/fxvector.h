@@ -440,10 +440,10 @@ char * fxvector<T>::raw_copy(
 	uint32_t n = sizeof(T);
 	uint32_t T_count = (length/n + (length%n?1:0));
 	uint32_t aligned_length = n * T_count;
-	std::cout << TRACE<<" : [1] T_count = "<<T_count<<std::endl;
-	std::cout << TRACE<<" :     length = "<<length<<std::endl;
-	std::cout << TRACE<<" :     aligned_length = "<<aligned_length<<std::endl;
-	std::cout << TRACE<<" :     size = "<<size()<<std::endl;
+	//std::cout << TRACE<<" : [1] T_count = "<<T_count<<std::endl;
+	//std::cout << TRACE<<" :     length = "<<length<<std::endl;
+	//std::cout << TRACE<<" :     aligned_length = "<<aligned_length<<std::endl;
+	//std::cout << TRACE<<" :     size = "<<size()<<std::endl;
 	while (capacity()-size() < T_count) expand();
 
 	// copy
@@ -451,16 +451,16 @@ char * fxvector<T>::raw_copy(
 	strncpy(p, data, length);
 	memset(p+length, 0, aligned_length - length);
 
-	std::cout << TRACE<<" : [2] stored>> "<<string(p,0,length)<<endl;
-	std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
+	//std::cout << TRACE<<" : [2] stored>> "<<string(p,0,length)<<endl;
+	//std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
 	finish += aligned_length;
-	std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
+	//std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
 
 	// update mmfile
 	if (mmf_p) {
 		off_t* offset_p = reinterpret_cast<off_t*>(src);
 		*offset_p += aligned_length;
-		std::cout << TRACE<<" : [3] *offset_p = "<<*offset_p<<std::endl;
+		//std::cout << TRACE<<" : [3] *offset_p = "<<*offset_p<<std::endl;
 	}
 	return p;
 }

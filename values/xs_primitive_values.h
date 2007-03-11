@@ -63,11 +63,24 @@ public:
 class xs_booleanValue : public atomic_value
 {
 protected:
-	xqp_boolean val;
+	xqp_boolean m_val;
 	
 public:
-	xs_booleanValue(xqp_boolean const&);
-	xs_booleanValue();
+	void* operator new(size_t n,itemstore& istore)
+		{ return istore.alloc(n); }
+	void* operator new(size_t n,itemstore& istore, off_t offset)
+		{ return &istore[offset]; }
+	void* operator new(size_t n, void * p)
+		{ return p; }
+
+	bool val() const { return (bool)m_val; }
+
+	xs_booleanValue()
+		: atomic_value(xs_boolean,sizeof(xs_booleanValue)) { }
+	xs_booleanValue(xqp_boolean const& val)
+		: atomic_value(xs_boolean,sizeof(xs_booleanValue)), m_val(val) { }
+	
+private:
 	~xs_booleanValue();
 
 public:
@@ -117,12 +130,25 @@ public:
 class xs_longValue : public atomic_value
 {
 protected:
-	xqp_long val;
+	xqp_long m_val;
 
 public:
-	xs_longValue(xqp_long const&);
-	xs_longValue();
-	~xs_longValue();
+	void* operator new(size_t n,itemstore& istore)
+		{ return istore.alloc(n); }
+	void* operator new(size_t n,itemstore& istore, off_t offset)
+		{ return &istore[offset]; }
+	void* operator new(size_t n, void * p)
+		{ return p; }
+
+	long val() const { return (long)m_val; }
+
+	xs_longValue()
+		: atomic_value(xs_long,sizeof(xs_longValue)) { }
+	xs_longValue( xqp_int const& val)
+		: atomic_value(xs_long,sizeof(xs_longValue)), m_val(val) { }
+	
+private:
+	~xs_longValue() {}
 
 public:
 	std::string describe(context *) const;
@@ -135,12 +161,25 @@ public:
 class xs_intValue : public atomic_value
 {
 protected:
-	xqp_int val;
+	xqp_int m_val;
 
 public:
-	xs_intValue(xqp_int const&);
-	xs_intValue();
-	~xs_intValue();
+	void* operator new(size_t n,itemstore& istore)
+		{ return istore.alloc(n); }
+	void* operator new(size_t n,itemstore& istore, off_t offset)
+		{ return &istore[offset]; }
+	void* operator new(size_t n, void * p)
+		{ return p; }
+
+	int val() const { return (int)m_val; }
+
+	xs_intValue()
+		: atomic_value(xs_int,sizeof(xs_intValue)) { }
+	xs_intValue( xqp_int const& val)
+		: atomic_value(xs_int,sizeof(xs_intValue)), m_val(val) { }
+	
+private:
+	~xs_intValue() {}
 
 public:
 	std::string describe(context *) const;
@@ -228,14 +267,19 @@ protected:
 	xqp_double m_val;
 	
 public:
-	void* operator new(size_t,itemstore&);
-	void* operator new(size_t,itemstore&, off_t);
-	void* operator new(size_t,void*);
+	void* operator new(size_t n,itemstore& istore)
+		{ return istore.alloc(n); }
+	void* operator new(size_t n,itemstore& istore, off_t offset)
+		{ return &istore[offset]; }
+	void* operator new(size_t n, void * p)
+		{ return p; }
 
-	xs_doubleValue();
-	xs_doubleValue(xqp_double const&);
-	
-	double val() const { return m_val; }
+	double val() const { return (double)m_val; }
+
+	xs_doubleValue()
+		: atomic_value(xs_double,sizeof(xs_doubleValue)) { }
+	xs_doubleValue(xqp_double const& val)
+		: atomic_value(xs_double,sizeof(xs_doubleValue)), m_val(val) { }
 	
 private:
 	~xs_doubleValue();
@@ -686,20 +730,23 @@ class xs_stringValue : public atomic_value
 protected:
 	char rest[0];
 
-public:
-	void* operator new(size_t,itemstore&);
-	void* operator new(size_t,itemstore&, off_t);
-	void* operator new(size_t,void*);
+public:   // storage interface
+	void* operator new(size_t n,itemstore& istore)
+		{ return istore.alloc(n); }
+	void* operator new(size_t n,itemstore& istore, off_t offset)
+		{ return &istore[offset]; }
+	void* operator new(size_t n, void * p)
+		{ return p; }
 
 	xs_stringValue(itemstore&,std::string const&);
+	xs_stringValue(char const*,uint32_t length);
 	xs_stringValue() : atomic_value(xs_string,0) {}
-
-	std::string str() const;
 
 private:
 	~xs_stringValue() {}
 
-public:
+public:   // accessors
+	std::string str() const;
 	std::string describe(context *) const;
 	std::string stringValue(context const*) const;
 	std::ostream& put(std::ostream&, context *) const;
@@ -721,11 +768,7 @@ public:
 
 public:
 	qname_value();
-
-	qname_value(
-	  itemstore& istore,
-	  qnamekey_t key,
-	  itemref_t nameref);
+	qname_value(itemstore&, qnamekey_t, itemref_t);
 
 public:
 	sequence_type_t type() const { return m_type; }

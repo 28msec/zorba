@@ -1,10 +1,9 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: xs_primitive_types.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: xs_primitive_values.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan,Paul Pedersen
  *
  */
 
@@ -57,7 +56,6 @@ ostream& put(
 	}
 	return os << string(buf,0,n);
 }
-
 
 
 ///////////////////////////////
@@ -148,37 +146,20 @@ xs_base64BinaryValue::xs_base64BinaryValue(
 string xs_booleanValue::describe(context * ctx_p) const
 {
 	ostringstream oss;
-	oss << "xs_boolean[" << val << ']'; 
+	oss << "xs_boolean[" << m_val << ']'; 
 	return oss.str();
 }
 
 string xs_booleanValue::stringValue(context const* ctx_p) const
 {
 	ostringstream oss;
-	oss << val; 
+	oss << m_val; 
 	return oss.str();
 }
 
 ostream& xs_booleanValue::put(ostream& os, context * ctx_p) const
 {
-	return os << "xs_boolean[" << val << ']'; 
-}
-
-xs_booleanValue::xs_booleanValue()
-: atomic_value(xs_boolean,0)
-{
-}
- 
-xs_booleanValue::~xs_booleanValue()
-{
-}
-
-xs_booleanValue::xs_booleanValue(
-	xqp_boolean const& _val)
-:
-	atomic_value(xs_boolean,0),
-	val(_val)
-{
+	return os << "xs_boolean[" << m_val << ']'; 
 }
 
 
@@ -356,30 +337,6 @@ xs_decimalValue::xs_decimalValue(
 //	xs_double
 ///////////////////////////////
 
-void * xs_doubleValue::operator new(
-	size_t node_size,
-	itemstore& istore)
-{
-cout << TRACE << " : node_size = " << node_size << endl;
-	return istore.alloc(node_size);
-}
-
-void * xs_doubleValue::operator new(
-	size_t node_size,
-	itemstore& istore,
-	off_t offset)
-{
-cout << TRACE << " : offset = " << offset << endl;
-	return static_cast<void *>(&istore[offset]);
-}
-
-void * xs_doubleValue::operator new(
-	size_t node_size,
-	void * p)
-{
-	return p;
-}
-
 string xs_doubleValue::describe(
   context * ctx_p) const
 {
@@ -400,23 +357,6 @@ ostream& xs_doubleValue::put(
   ostream& os, context * ctx_p) const
 {
 	return os << "xs_double[" << m_val << ']'; 
-}
-
-xs_doubleValue::xs_doubleValue()
-: atomic_value(xs_double,0)
-{
-}
- 
-xs_doubleValue::~xs_doubleValue()
-{
-}
-
-xs_doubleValue::xs_doubleValue(
-	xqp_double const& _val)
-:
-	atomic_value(xs_double,sizeof(xs_doubleValue)),
-	m_val(_val)
-{
 }
 
 
@@ -770,37 +710,20 @@ xs_hexBinaryValue::xs_hexBinaryValue(
 string xs_intValue::describe(context * ctx_p) const
 {
 	ostringstream oss;
-	oss << "xs_int[" << val << ']'; 
+	oss << "xs_int(" << m_val << ')'; 
 	return oss.str();
 }
 
 string xs_intValue::stringValue(context const* ctx_p) const
 {
 	ostringstream oss;
-	oss << val; 
+	oss << m_val; 
 	return oss.str();
 }
 
 ostream& xs_intValue::put(ostream& os, context * ctx_p) const
 {
-	return os << "xs_int[" << val << ']'; 
-}
-
-xs_intValue::xs_intValue()
-: atomic_value(xs_int,0)
-{
-}
- 
-xs_intValue::~xs_intValue()
-{
-}
-
-xs_intValue::xs_intValue(
-	xqp_int const& _val)
-:
-	atomic_value(xs_int,0),
-	val(_val)
-{
+	return os << "xs_int[" << m_val << ']'; 
 }
 
 
@@ -893,37 +816,20 @@ xs_languageValue::xs_languageValue(
 string xs_longValue::describe(context * ctx_p) const
 {
 	ostringstream oss;
-	oss << "xs_long[" << val << ']'; 
+	oss << "xs_long[" << m_val << ']'; 
 	return oss.str();
 }
 
 string xs_longValue::stringValue(context const* ctx_p) const
 {
 	ostringstream oss;
-	oss << val; 
+	oss << m_val; 
 	return oss.str();
 }
 
 ostream& xs_longValue::put(ostream& os, context * ctx_p) const
 {
-	return os << "xs_long[" << val << ']'; 
-}
-
-xs_longValue::xs_longValue()
-: atomic_value(xs_long,0)
-{
-}
- 
-xs_longValue::~xs_longValue()
-{
-}
-
-xs_longValue::xs_longValue(
-	xqp_long const& _val)
-:
-	atomic_value(xs_long,0),
-	val(_val)
-{
+	return os << "xs_long[" << m_val << ']'; 
 }
 
 
@@ -1177,30 +1083,6 @@ xs_shortValue::xs_shortValue(
 //	xs_string
 ///////////////////////////////
 
-void * xs_stringValue::operator new(
-	size_t node_size,
-	itemstore& istore)
-{
-cout << TRACE << " : node_size = " << node_size << endl;
-	return istore.alloc(node_size);
-}
-
-void * xs_stringValue::operator new(
-	size_t node_size,
-	itemstore& istore,
-	off_t offset)
-{
-cout << TRACE << " : offset = " << offset << endl;
-	return static_cast<void *>(&istore[offset]);
-}
-
-void * xs_stringValue::operator new(
-	size_t node_size,
-	void * p)
-{
-	return p;
-}
-
 string xs_stringValue::describe(context * ctx_p) const
 {
 	ostringstream oss;
@@ -1254,12 +1136,12 @@ qname_value::qname_value(
 	m_qnamekey(key),
 	m_nameref(nameref)
 {
-cout << TRACE << " : nameref = " << m_nameref << endl;
+//cout << TRACE << " : nameref = " << m_nameref << endl;
 }
 
 qname_value::qname_value()
 {
-cout << TRACE << " : nameref = " << m_nameref << endl;
+//cout << TRACE << " : nameref = " << m_nameref << endl;
 }
 
 string qname_value::prefix(

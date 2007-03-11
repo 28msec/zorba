@@ -23,22 +23,17 @@ namespace xqp {
 
 item_iterator item_iterator::empty_sequence(NULL);
 
-/*...........................................
-	: item_iterator base                      :
-	:.........................................:
-*/
+/*..........................................
+ : item_iterator base                      :
+ :.........................................*/
 
-item_iterator::item_iterator(
-	context * _ctx_p)
-:
-	ctx_p(_ctx_p)
+item_iterator::item_iterator(context * _ctx_p)
+: ctx_p(_ctx_p)
 {
 }
 
-item_iterator::item_iterator(
-	item_iterator const& it)
-:
-	ctx_p(it.ctx_p)
+item_iterator::item_iterator( item_iterator const& it)
+: ctx_p(it.ctx_p)
 {
 }
 
@@ -49,41 +44,14 @@ item_iterator& item_iterator::operator=(
 	return *this;
 }
 
-item_iterator::~item_iterator()
-{
-}
-
-void item_iterator::open()
-{
-}
-
-void item_iterator::close()
-{
-}
-
-item* item_iterator::next(uint32_t delta)
-{
-	return NULL;
-}
-
-item* item_iterator::peek() const 
-{
-	return NULL;
-}
-
-bool item_iterator::done() const
-{
-	return true;
-}
-
-void item_iterator::rewind()
-{
-}
-
-item* item_iterator::operator*() const
-{
-	return peek();
-}
+item_iterator::~item_iterator() { }
+void item_iterator::open() { }
+void item_iterator::close() { }
+item* item_iterator::next(uint32_t delta) { return NULL; }
+item* item_iterator::peek() const { return NULL; }
+bool item_iterator::done() const { return true; }
+void item_iterator::rewind() { }
+item* item_iterator::operator*() const { return peek(); }
 
 item_iterator& item_iterator::operator++()
 {
@@ -104,10 +72,54 @@ string item_iterator::string_value()
 
 
 
-/*...........................................
-	: binary iterator                         :
-	:.........................................:
-*/
+/*..........................................
+ : item_const_iterator                     :
+ :.........................................*/
+
+item_const_iterator::item_const_iterator() { }
+
+item_const_iterator::item_const_iterator(
+	item_const_iterator const& it)
+{
+}
+
+item_const_iterator& item_const_iterator::operator=(
+	item_const_iterator const& it)
+{
+	return *this;
+}
+
+item_const_iterator::~item_const_iterator() { }
+void item_const_iterator::open() { }
+void item_const_iterator::close() { }
+item * item_const_iterator::next(uint32_t delta) { return NULL; }
+item * item_const_iterator::peek() const { return NULL; }
+bool item_const_iterator::done() const { return true; }
+void item_const_iterator::rewind() { }
+item* item_const_iterator::operator*() const { return peek(); }
+
+item_const_iterator& item_const_iterator::operator++()
+{
+	next();
+	return *this;
+}
+
+string item_const_iterator::string_value(
+	context * ctx_p)
+{
+	ostringstream oss;
+	while (!done()) {
+		item* i_p = next();
+		if (i_p==NULL) continue;
+		i_p->put(oss,ctx_p);
+	}
+	return oss.str();
+}
+
+
+/*..........................................
+ : binary iterator                         :
+ :.........................................*/
 
 void binary_iterator::open()
 {
@@ -175,51 +187,14 @@ binary_iterator::~binary_iterator()
 
 
 
-/*...........................................
-	: singleton iterator                      :
-	:.........................................:
-*/
-
-void singleton_iterator::open()
-{
-}
-
-void singleton_iterator::close()
-{
-	done_b = false;
-}
-
-item* singleton_iterator::next(uint32_t delta)
-{
-	if (!done_b&& delta==1) {
-		done_b = true;
-		return i_h;
-	}
-	else {
-		return NULL;
-	}
-}
-
-item* singleton_iterator::peek() const 
-{
-	return (!done_b) ? i_h : NULL;
-}
-
-bool singleton_iterator::done() const
-{
-	return done_b;
-}
-
-void singleton_iterator::rewind()
-{
-	done_b = false;
-}
+/*..........................................
+ : singleton iterator                      :
+ :.........................................*/
 
 singleton_iterator::singleton_iterator(
 	context * ctx_p,
 	item * _i_p)
 :
-	item_iterator(ctx_p),
 	i_h(_i_p),
 	done_b(false)
 {
@@ -232,7 +207,6 @@ singleton_iterator::singleton_iterator(
 	context * ctx_p,
 	string const& s)
 :
-	item_iterator(ctx_p),
 	i_h(new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),s)),
 	done_b(false)
 {
@@ -241,15 +215,10 @@ singleton_iterator::singleton_iterator(
 #endif
 }
 
-singleton_iterator::~singleton_iterator()
-{
-}
-
 singleton_iterator::singleton_iterator(
 	context * ctx_p,
 	bool v)
 :
-	item_iterator(ctx_p),
 	i_h(new(*ctx_p->istore()) xs_booleanValue(v)),
 	done_b(false)
 {
@@ -262,7 +231,6 @@ singleton_iterator::singleton_iterator(
 	context * ctx_p,
 	double v)
 :
-	item_iterator(ctx_p),
 	i_h(new(*ctx_p->istore()) xs_doubleValue(v)),
 	done_b(false)
 {
@@ -275,7 +243,6 @@ singleton_iterator::singleton_iterator(
 	context * ctx_p,
 	int v)
 :
-	item_iterator(ctx_p),
 	i_h(new(*ctx_p->istore()) xs_intValue(v)),
 	done_b(false)
 {
@@ -288,7 +255,6 @@ singleton_iterator::singleton_iterator(
 	context * ctx_p,
 	long v)
 :
-	item_iterator(ctx_p),
 	i_h(new(*ctx_p->istore()) xs_longValue(v)),
 	done_b(false)
 {
@@ -298,22 +264,8 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context * ctx_p,
-	long long v)
-:
-	item_iterator(ctx_p),
-	i_h(new(*ctx_p->istore()) xs_longValue(v)),
-	done_b(false)
-{
-#ifdef DEBUG
-	cout << "singleton_iterator(long long)\n";
-#endif
-}
-
-singleton_iterator::singleton_iterator(
 	singleton_iterator const& it)
 :
-	item_iterator(it.ctx_p),
 	i_h(it.i_h),
 	done_b(it.done_b)
 {
@@ -322,7 +274,6 @@ singleton_iterator::singleton_iterator(
 singleton_iterator& singleton_iterator::operator=(
 	singleton_iterator const& it)
 {
-	ctx_p = it.ctx_p;
 	i_h = it.i_h;
 	done_b = it.done_b;
 	return *this;
@@ -330,10 +281,9 @@ singleton_iterator& singleton_iterator::operator=(
 
 
 
-/*...........................................
-	: concat iterator                         :
-	:.........................................:
-*/
+/*..........................................
+ : concat iterator                         :
+ :.........................................*/
 
 void concat_iterator::open()
 {

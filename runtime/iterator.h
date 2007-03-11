@@ -35,30 +35,19 @@ public:
 protected:
   context* ctx_p;
 
-public:	// construct,copy,destroy
+public:
 	item_iterator(context *);
 	item_iterator(item_iterator const&);
 	virtual item_iterator& operator=(item_iterator const&);
 	virtual ~item_iterator();
 
 public:	// low-level interface
-	// aquire resources
-	virtual void open();
-
-	// release resources
-	virtual void close();
-
-	// return handle to item + delta (or NULL)
-	virtual item* next(uint32_t delta = 1);
-
-	// return handle to current item (or NULL)
-	virtual item* peek() const;
-
-	// return true <=> iterator has no more items
-	virtual bool done() const;
-
-	// rewind the iterator, equivalent to {close();open()}
-	virtual void rewind();
+	virtual void open();				// aquire resources
+	virtual void close();				// release resources
+	virtual item* next(uint32_t delta = 1); // seek + delta (or NULL)
+	virtual item* peek() const;	// current item (or NULL)
+	virtual bool done() const;	// true <=> no more items
+	virtual void rewind(); 			// equivalent to {close();open()}
 
 public:	// C++ interface
 	item* operator*() const;
@@ -67,6 +56,31 @@ public:	// C++ interface
 public:
 	std::string string_value();
 
+};
+
+
+class item_const_iterator : public rcobject
+{
+public:
+	item_const_iterator();
+	item_const_iterator(item_const_iterator const&);
+	virtual item_const_iterator& operator=(item_const_iterator const&);
+	virtual ~item_const_iterator();
+
+public:	// low-level interface
+	virtual void open();
+	virtual void close();
+	virtual item* next(uint32_t delta = 1);
+	virtual item* peek() const;
+	virtual bool done() const;
+	virtual void rewind();
+
+public:	// C++ interface
+	item* operator*() const;
+	item_const_iterator& operator++();
+
+public:
+	std::string string_value(context *);
 };
 
 
@@ -102,19 +116,23 @@ public:	// manipulators
 };
 
 
-class singleton_iterator : public item_iterator
+class singleton_iterator : public item_const_iterator
 {
 protected:
 	item* i_h;
 	bool done_b;
 
 public:	// iterator interface
-	void open();
-	void close();
-	item* next(uint32_t delta = 1);
-	item* peek() const;
-	bool done() const;
-	void rewind();
+	void open() { }
+	void close() { done_b = false; }
+	item* next(uint32_t delta=1) { done_b = true; return NULL; }
+	item* peek() const { return **this; }
+	bool done() const { return done_b; }
+	void rewind() { done_b = false; }
+
+public:	// C++ interface
+	item* operator*() const { return i_h; }
+	item_const_iterator& operator++() { done_b = true; return *this; }
 
 public:	// ctor,dtor
 	singleton_iterator(context *, item*);
@@ -123,10 +141,9 @@ public:	// ctor,dtor
 	singleton_iterator(context *, double);
 	singleton_iterator(context *, int);
 	singleton_iterator(context *, long);
-	singleton_iterator(context *, long long);
 	singleton_iterator(singleton_iterator const&);
 	singleton_iterator& operator=(singleton_iterator const&);
-	~singleton_iterator();
+	~singleton_iterator() {}
 
 };
 

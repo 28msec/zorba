@@ -369,13 +369,7 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 #endif
 
 	// serialize: element QName
-	new(*store_h) element_node(
-		ctx_p->gen(),				// node generation number
-		0,									// update ref
-		the_id,							// node id
-		the_parentid,				// node parent id
-		the_docid,					// cached document id
-		0); //the_qnameref);			// element qname 
+	new(*store_h) element_node(ctx_p, buf, length);
 
 	//(nstore.get_offset()-off, off+1);
 	//nstore.index_put(the_id, res);

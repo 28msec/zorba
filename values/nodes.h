@@ -57,7 +57,7 @@ class itemstore;
 
 class node : public item
 {
-public:	// nodes types
+public:   // nodes types
 	enum node_kind_t {
 		doc_kind,
 		elem_kind,
@@ -66,8 +66,7 @@ public:	// nodes types
 		pi_kind,
 		text_kind,
 		comment_kind,
-		//binary_kind,					// zorba-specific: binary node
-		collection_kind,			// zorba-specific: collection node
+		collection_kind,			// zorba-specific
 		uninitialized_kind
 	};
 	std::string decode(node_kind_t) const;
@@ -77,24 +76,24 @@ protected:
 	off_t     m_ref;				// forwarding reference for update
 	nodeid_t  m_id;					// node ordinal id
 	nodeid_t  m_parentid;		// parent node ordinal id
-	uint32_t	m_offset;			// offset to first child
 
 public:		// ctor,dtor
-	node(sequence_type_t,size_t,uint32_t,off_t,nodeid_t,nodeid_t);
-	node() : item(anyNode,0) {}
+	node(
+	  sequence_type_t,      // node type
+	  size_t,               // value length
+	  uint32_t,             // generation number
+	  off_t,                // forwarding reference
+	  nodeid_t,             // ordinal node id
+	  nodeid_t);            // parent node id
+	  
+	node() {}
 	~node() {}
 
-public:		// storage interface
+public:		// accessors
 	uint32_t& gen() { return m_gen; }
 	off_t& ref() { return m_ref; }
 	nodeid_t& id() { return m_id; }
 	nodeid_t& parentid() { return m_parentid; }
-	uint32_t& offset() { return m_offset; }
-	uint32_t const& offset() const { return m_offset; }
-
-	void* operator new(size_t node_size, itemstore&);
-	void* operator new(size_t node_size, void const*);
-	void operator delete(void*) {}
 
 public:		// XQuery interface
 	/**
@@ -108,12 +107,7 @@ public:		// XQuery interface
 	/**
 	 *	The dm:string-value accessor returns the string value of a node.
 	 */
-	std::string string_value(context const*) const;
-	
-	/**
-	 * Return the node data type.
-	 */
-	sequence_type_t get_type(context *) const;
+	rchandle<item_iterator> string_value(context *) const;
 
 	/**
 	 *	The dm:attributes accessor returns the attributes of a node as a 
@@ -144,17 +138,6 @@ public:		// XQuery interface
 	rchandle<item_iterator> document_uri(context *) const;
 	
 	/**
-	 *	The dm:is-id accessor returns true if the node is an XML ID.
-	 */
-	bool is_id(context *) const;
-	
-	/**
-	 *	The dm:is-idrefs accessor returns true if the node is an 
-	 *  XML IDREF or IDREFS. 
-	 */
-	bool is_idrefs(context *) const;
-	
-	/**
 	 *	The dm:namespace-bindings accessor returns the dynamic, in-scope 
 	 *	namespaces associated with a node as a set of prefix/URI pairs.
 	 *	The prefix for the default namespace is the zero length string.
@@ -172,15 +155,6 @@ public:		// XQuery interface
 	 *	views of the same information.
 	 */
 	rchandle<item_iterator> namespace_nodes(context *) const;
-	
-	/**
-	 *	The dm:nilled accessor returns true if the node is "nilled". [Schema 
-	 *	Part 1] introduced the nilled mechanism to signal that an element 
-	 *	should be accepted as valid when it has no content even when it has a 
-	 *	content type which does not require or even necessarily allow empty 
-	 *	content. 
-	 */
-	bool nilled(context *) const;
 	
 	/**
 	 *	The dm:node-name accessor returns the name of the node as a sequence 
@@ -206,6 +180,27 @@ public:		// XQuery interface
 	 *	sequence of zero or more atomic values. 
 	 */
 	rchandle<item_iterator> typed_value(context *) const;
+	
+		
+	/**
+	 *	The dm:is-id accessor returns true if the node is an XML ID.
+	 */
+	bool is_id(context *) const;
+	
+	/**
+	 *	The dm:is-idrefs accessor returns true if the node is an 
+	 *  XML IDREF or IDREFS. 
+	 */
+	bool is_idrefs(context *) const;
+		
+	/**
+	 *	The dm:nilled accessor returns true if the node is "nilled". [Schema 
+	 *	Part 1] introduced the nilled mechanism to signal that an element 
+	 *	should be accepted as valid when it has no content even when it has a 
+	 *	content type which does not require or even necessarily allow empty 
+	 *	content. 
+	 */
+	bool nilled(context *) const;
 
 };
 	
@@ -213,27 +208,53 @@ public:		// XQuery interface
 class child_iterator : public item_iterator
 {
 protected:
-	node const* parent_p;
-	node const* current_p;
-	node const* end_p;
+	node * parent_p;
+	node * current_p;
+	node * end_p;
 	context* ctx_p;
 
 public:
-	child_iterator(context *, node const*);
-	child_iterator(node const*);
-	~child_iterator();
+	child_iterator(context *, node *, off_t);
+	~child_iterator() {}
 
 public:
- 	void open();
-	void close();
-	item* next(uint32_t delta = 1);
-	item* peek() const;
-	bool done() const;
-	void rewind();
+ 	void open() {}
+	void close() {}
+	item* next(uint32_t delta = 1) { ++(*this); return **this; }
+	item* peek() const { return **this; }
+	bool done() const { return current_p >= end_p; }
+	void rewind() {}
 
 public:
 	item* operator*() const;
 	child_iterator& operator++();
+
+};
+
+
+class child_const_iterator : public item_iterator
+{
+protected:
+	node const* parent_p;
+	node const* current_p;
+	node const* end_p;
+	context const* ctx_p;
+
+public:
+	child_const_iterator(context const*, node const*, off_t);
+	~child_const_iterator();
+
+public:
+ 	void open() {}
+	void close() {}
+	item* next(uint32_t delta = 1) { ++(*this); return **this; }
+	item* peek() const { return **this; }
+	bool done() const { return current_p >= end_p; }
+	void rewind() {}
+
+public:
+	item * operator*() const;
+	child_const_iterator const& operator++();
 
 };
 
@@ -296,12 +317,10 @@ protected:
 	*/
 
 public:
+	document_node() {}
+	
 	document_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid,
-		docid_t docid,
+		context *,
 		itemref_t baseuri_ref,
 		itemref_t uri_ref);
 
@@ -317,7 +336,7 @@ public:		// storage interface
 
 public:		// XQuery interface
 	node_kind_t node_kind() const { return doc_kind; }
-	std::string string_value(context const*) const;
+	rchandle<item_iterator> string_value(context *) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> document_uri(context *) const;
 	rchandle<item_iterator> children(context *) const;
@@ -325,7 +344,6 @@ public:		// XQuery interface
 	rchandle<item_iterator> typed_value(context *) const;
 
 private:	// ctor,dtor
-	document_node() {}
 	document_node(document_node&) {}
 	~document_node() {}
 
@@ -421,12 +439,10 @@ protected:
 	*/
 
 public:
+	element_node() {}
+
 	element_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid,
-		docid_t docid,
+		context *,
 		itemref_t qname_ref);
 
 	element_node(
@@ -455,8 +471,7 @@ public:	// storage interface
 
 public:	// data interface
 	node_kind_t node_kind() const { return elem_kind; }
-	std::string string_value(context const*) const;
-	char const* get_name() const;
+	rchandle<item_iterator> string_value(context *) const;
 	rchandle<item_iterator> attributes(context *) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> children(context *) const;
@@ -470,10 +485,10 @@ public:	// data interface
 	bool is_nilled() const { return false; }
 	bool is_id() const { return (m_type & ID_SUB5); }
 	bool is_idref() const { return (m_type & IDREF_SUB5); }
+	char const* get_name() const;
 
 private:	//ctor,dtor - lock out
 	element_node(element_node const&) {}
-	element_node() {}
 	~element_node() {}
 
 public:		// output and debugging
@@ -531,17 +546,15 @@ protected:
 	itemref_t m_qname_ref;			// element QName
 	char rest[0];
 	/*
-	[	qname_value ]
+	[	qname ]
 		char[] value
 	*/
 
 public:
+  attribute_node();
+
 	attribute_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid,
-		docid_t docid,
+		context *,
 		itemref_t qname_ref);
 
 public:	// storage interface
@@ -560,11 +573,10 @@ public:	// XQuery interface
 	rchandle<item_iterator> node_name(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
-	std::string string_value(context const*) const;
+	rchandle<item_iterator> string_value(context *) const;
 
 private:	//ctor,dtor - lock out
 	attribute_node(attribute_node&);
-  attribute_node();
   ~attribute_node();
 
 public:		// output,debugging
@@ -598,15 +610,9 @@ protected:
 	*/
 
 public:
-	namespace_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid);
-
-	namespace_node(
-		context *,
-		std::string const&);
+	namespace_node() {}
+	namespace_node(context *);
+	namespace_node(context *, std::string const&);
 
 public:		// storage interface
 	itemref_t nsref() const { return m_nsref; }
@@ -622,13 +628,13 @@ public:		// XQuery interface
 	rchandle<item_iterator> node_name(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
-	std::string string_value(context const*) const;
+	rchandle<item_iterator> string_value(context *) const;
+	
 	std::string prefix() const;
 	std::string uri() const;
 
 private:	//ctor,dtor - lock out
 	namespace_node(namespace_node&) {}
-	namespace_node() {}
 	~namespace_node() {}
 
 public:		// output, debugging
@@ -658,12 +664,8 @@ protected:
 	*/
 
 public:
-	pi_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid,
-		docid_t docid);
+	pi_node() {}
+	pi_node(context *);
 
 public:		// storage interface
 	itemref_t& target_ref() { return m_target_ref; }
@@ -676,7 +678,7 @@ public:		// storage interface
 
 public:		// XQuery interface
 	node_kind_t node_kind() const { return pi_kind; }
-	std::string string_value(context const*) const;
+	rchandle<item_iterator> string_value(context *) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
@@ -684,7 +686,6 @@ public:		// XQuery interface
 
 private:	//ctor,dtor - lock out
 	pi_node(pi_node&) {}
-	pi_node() {}
 	~pi_node() {}
 
 public:		// output, debugging
@@ -710,12 +711,8 @@ protected:
 	*/
 
 public:
-	comment_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid,
-		docid_t docid);
+	comment_node() {}
+	comment_node(context *);
 	
 public:		// storage interface
 	// arena allocation
@@ -725,14 +722,13 @@ public:		// storage interface
 
 public:		// XQUery interface
 	enum node_kind_t node_kind() const { return comment_kind; }
-	std::string string_value(context const*) const;
+	rchandle<item_iterator> string_value(context *) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 
 private:	//ctor,dtor - lock out
 	comment_node(comment_node&) {}
-	comment_node() {}
 	~comment_node() {}
 
 public:		// output, debugging
@@ -761,98 +757,40 @@ class text_node : public node
 	friend class child_iterator;
 
 protected:
-	docid_t m_docid;		// parent doc id
+	docid_t m_docid;	// parent doc id
 	char rest[0];
-	/*
-		char[] content
-	*/
+
+public:		// storage interface
+	void* operator new(size_t, itemstore&);
+	void* operator new(size_t, itemstore&, off_t);
+	void* operator new(size_t, void *);
+	void* operator new(size_t, void const*);
+	void operator delete(void*) {}
 	
 public:
-	text_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid,
-		docid_t docid);
+	text_node();
+	text_node(context *, std::string const&);
 	
-public:		// storage interface
-	char const* content() const { return rest; }
-	uint32_t length() const;
+public:		// accessors
+	char const* content() const;
 	docid_t& docid() { return m_docid; }
-
-	// arena allocation
-	void* operator new(size_t node_size, size_t text_size, itemstore&);
-	void* operator new(size_t node_size, void const*);
-	void operator delete(void*) {}
 
 public:		// XQuery interface
 	enum node_kind_t node_kind() const { return text_kind; }
-	std::string string_value(context const*) const;
-	
+	rchandle<item_iterator> string_value(context *) const;
 	rchandle<item_iterator> base_uri(context *) const;
 	rchandle<item_iterator> parent(context *) const;
 	rchandle<item_iterator> typed_value(context *) const;
 
 private:	//ctor,dtor
 	text_node(text_node&) {}
-	text_node() {}
 	~text_node() {}
 
-public:
+public:		// output/debugging
 	std::ostream& put(std::ostream&,context *) const;
 
 };
 
-
-
-/*______________________________________________________________________
-|
-| Binary Nodes have the following properties:
-|   * content
-|   * parent, possibly empty.
-| 
-| Binary Nodes must satisfy the following constraint:
-|   If the parent of a binary node is not empty, the Binary Node 
-|   must not contain zero-length data as its content.  In 
-|   addition, Document and Element Nodes can have only one
-|   Binary Node child.
-|_______________________________________________________________________*/
-/*
-class binary_node : public node
-{
-	friend class child_iterator;
-
-protected:
-	docid_t m_docid;		// parent doc id
-	char rest[0];
-	
-public:
-	binary_node(
-		uint32_t gen,
-		itemref_t ref,
-		nodeid_t id,
-		nodeid_t parentid,
-		docid_t docid);
-
-public:		// storage interface
-	docid_t& docid() { return m_docid; }
-	char* blob() { return rest; }
-
-public:		// XQuery interface
-	node_kind_t node_kind(context *) const { return binary_kind; }
-	std::string string_value(context const*) const;
- 
-	rchandle<item_iterator> base_uri(context *) const;
-	rchandle<item_iterator> parent(context *) const;
-	rchandle<item_iterator> type_name(context *) const;
-	rchandle<item_iterator> typed_value(context *) const;
-
-private:	// ctor,dtor - lock out
-	binary_node(binary_node&) {}
-	binary_node() {}
-	~binary_node() {}
-};
-*/
 
 }	/* namespace xqp */
 #endif /* XQP_NODE_VALUES_H */

@@ -47,8 +47,9 @@ public:
 	// Sequence type matching
 	// [http://www.w3.org/TR/xquery/#id-sequencetype-matching]
 	static bool derives_from(TypeCode a, TypeCode e);
-
+	
 };
+
 
 
 } /* namespace xqp */

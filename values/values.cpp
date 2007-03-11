@@ -10,6 +10,7 @@
 
 #include "values.h"
 
+#include "../context/context.h"
 #include "../types/sequence_type.h"
 #include "../util/rchandle.h"
 #include "../util/tokenbuf.h"
@@ -80,21 +81,6 @@ class context;
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-void * item::operator new(
-	size_t node_size,
-	itemstore& istore)
-{
-	istore.assure(node_size);
-	return istore.eos_p();
-}
-
-void * item::operator new(
-	size_t node_size,
-	void * p)
-{
-	return p;
-}
-
 ostream& item::put(ostream& os, context * ctx_p) const
 {
 	return os << "";
@@ -127,12 +113,11 @@ rchandle<item_iterator> item::effective_boolean_value(
 	return new item_iterator(ctx_p);
 }
 
-string item::string_value(
+rchandle<item_iterator> item::string_value(
 	context const* ctx_p) const
 {
-	return "";
+	return ctx_p->emptyseq;
 }
-
 
 
 /*______________________________________________________________________
@@ -162,10 +147,10 @@ rchandle<item_iterator> atomic_value::effective_boolean_value(
 	return &item_iterator::empty_sequence;
 }
 
-string atomic_value::string_value(
+rchandle<item_iterator> atomic_value::string_value(
 	context const* ctx_p) const
 {
-	return "";
+	return ctx_p->emptyseq;
 }
 
 

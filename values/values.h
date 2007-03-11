@@ -104,17 +104,12 @@ public:
 	item() {}
 	~item() {}
 
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, void*);
-	void operator delete(void*) {}
-
 public:
   std::ostream& put(std::ostream&, context *) const;
   std::string describe(context *) const;
 	rchandle<item_iterator> atomized_value(context *) const;
 	rchandle<item_iterator> effective_boolean_value(context *) const;
-	std::string string_value(context const*) const;
-
+	rchandle<item_iterator> string_value(context const*) const;
 	bool is_node() const;
 	bool is_atomic() const;
 };
@@ -137,7 +132,7 @@ public:
   std::string describe(context *) const;
 	rchandle<item_iterator> atomized_value(context *) const;
 	rchandle<item_iterator> effective_boolean_value(context *) const;
-	std::string string_value(context const*) const;
+	rchandle<item_iterator> string_value(context const*) const;
 
 	bool is_sequence() const { return false; }
 	bool is_empty() const { return false; }
