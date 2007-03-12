@@ -50,9 +50,11 @@ context::context()
 	signature_map(256,0.6),
 	statically_known_documents(256,0.6),
 	statically_known_collections(64,0.6),
+
 	context_item_h(NULL),
 	context_position(0),
 	context_size(0),
+
 	var_values(1024,0.6),
 	function_lib(NULL),
 	timezone(-8),
@@ -62,9 +64,12 @@ context::context()
 	counters("data/nodeid",256),
 	string_store_h(new fxcharheap(1<<16)),
 	istore_h(new itemstore("data/itemstore")),
+
 	ctx_nodeid(0),
 	ctx_docid(0),
-	in_scope_ns(0),
+	ctx_nsseqid(0),
+	ctx_nsseqref(0),
+
 	docindex("data/docindex", 0.6f, 6),
 	err(0),
 	emptyseq(&item_iterator::empty_sequence)

@@ -116,9 +116,12 @@ public:
 class qname_expr : public rcobject
 {
 protected:
+	yy::location m_loc;
 	std::string m_name;
 
 public:
+	qname_expr(yy::location const& loc, std::string const& name)
+		: m_loc(loc), m_name(name) {}
 	qname_expr(std::string const& name) : m_name(name) {}
 	~qname_expr() {}
 

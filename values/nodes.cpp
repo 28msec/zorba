@@ -229,11 +229,11 @@ element_node::element_node(
 	m_childseq_ref(0),					// child node set ref
 	m_child_count(0)						// child node count
 {
-	itemstore& istore = &ctx_p->istore();
-	// lock
+	itemstore& istore = *ctx_p->istore();
+	// istore.lock()
 	m_qname_ref = istore.eos();
-	new(istore) qname_value(ctx_p,string(name,0,length)) 
-	//unlock
+	new(istore) qname_value(ctx_p,string(name,0,length));
+	// istore.unlock()
 }
 
 rchandle<item_iterator> element_node::attributes(

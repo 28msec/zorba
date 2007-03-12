@@ -827,8 +827,10 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(FunctionCall const& v)
 {
 cout << indent[++depth] << TRACE << ": FunctionCall" << endl;
-	rchandle<funcall_expr> fexpr_h =
-		new funcall_expr(v.get_location(),v.get_fname());
+	string qname = v.get_fname()->get_qname();
+	yy::location loc = v.get_location();
+	rchandle<qname_expr> q_h = new qname_expr(loc,qname);
+	rchandle<funcall_expr> fexpr_h = new funcall_expr(loc, q_h);
 	nodestack.push(&*fexpr_h);
 	return true;
 }
@@ -1549,7 +1551,9 @@ cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
-	aexpr_h->set_name(v.get_qname());
+	string qname = v.get_qname()->get_qname();	//??!
+	rchandle<qname_expr> qn_h = new qname_expr(v.get_location(),qname);
+	aexpr_h->set_name(qn_h);
 	aexpr_h->set_test(axis_step_expr::name_test);
 	rchandle<Wildcard> wild_h = v.get_wild();
 	if (wild_h==NULL) return;

@@ -531,7 +531,8 @@ protected:
 	uint32_t ctx_docid;
 
 	// in-scope namespaces
-	uint32_t in_scope_ns;
+	uint32_t ctx_nsseqid;
+	itemref_t ctx_nsseqref;
 
 	// doc index, map: uri -> document_node id
 	fxhashmap<uint32_t> docindex;
@@ -558,6 +559,7 @@ public:
 	// nodeid services
 	uint32_t next_nodeid();
 	uint32_t context_nodeid() const { return ctx_nodeid; }
+	uint32_t context_nsseq() const { return ctx_nsseqref; }
 	uint32_t default_element_nsid() const { return 0; /*STUB*/ }
 
 	// generation numbers
