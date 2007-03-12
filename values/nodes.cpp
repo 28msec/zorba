@@ -223,43 +223,58 @@ element_node::element_node(
 		ctx_p->context_nodeid()),	// parent node id
 
 	m_docid(ctx_p->context_docid()),
-	m_qname_ref(0),							// element QName ref
-	m_nsseq_ref(0),							// element in-scope namespaces ref
+	m_nsseq_ref(ctx_p->context_nsseq()),	// element in-scope namespaces
 	m_attrseq_ref(0),						// attribute node seq ref
 	m_attr_count(0),						// attribute node count
 	m_childseq_ref(0),					// child node set ref
 	m_child_count(0)						// child node count
 {
+	itemstore& istore = &ctx_p->istore();
+	// lock
+	m_qname_ref = istore.eos();
+	new(istore) qname_value(ctx_p,string(name,0,length)) 
+	//unlock
 }
 
-rchandle<item_iterator> element_node::attributes(context * ctx_p) const
+rchandle<item_iterator> element_node::attributes(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-rchandle<item_iterator> element_node::base_uri(context * ctx_p) const
+rchandle<item_iterator> element_node::base_uri(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-rchandle<item_iterator> element_node::children(context * ctx_p) const
+rchandle<item_iterator> element_node::children(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-rchandle<item_iterator> element_node::namespace_bindings(context * ctx_p) const
+rchandle<item_iterator> element_node::namespace_bindings(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-rchandle<item_iterator> element_node::namespace_nodes(context * ctx_p) const
+rchandle<item_iterator> element_node::namespace_nodes(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-rchandle<item_iterator> element_node::node_name(context * ctx_p) const
+rchandle<item_iterator> element_node::node_name(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-rchandle<item_iterator> element_node::parent(context * ctx_p) const
+rchandle<item_iterator> element_node::parent(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-rchandle<item_iterator> element_node::typed_value(context * ctx_p) const
+rchandle<item_iterator> element_node::typed_value(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 	
-rchandle<item_iterator> element_node::string_value(context * ctx_p) const
+rchandle<item_iterator> element_node::string_value(
+	context * ctx_p) const
 { return ctx_p->emptyseq; }
 
-ostream& element_node::put(ostream& os, context * ctx_p) const
+ostream& element_node::put(
+	ostream& os,
+	context * ctx_p) const
 {
 	return os << "<../>";
 }
