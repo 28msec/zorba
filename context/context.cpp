@@ -61,12 +61,13 @@ context::context()
 	default_collection(NULL),
 	counters("data/nodeid",256),
 	string_store_h(new fxcharheap(1<<16)),
-	emptyseq(&item_iterator::empty_sequence),
 	istore_h(new itemstore("data/itemstore")),
 	ctx_nodeid(0),
 	ctx_docid(0),
 	in_scope_ns(0),
-	docindex("data/docindex", 0.6f, 6)
+	docindex("data/docindex", 0.6f, 6),
+	err(0),
+	emptyseq(&item_iterator::empty_sequence)
 {
 }
 
