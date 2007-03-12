@@ -769,6 +769,7 @@ public:
 public:
 	qname_value();
 	qname_value(itemstore&, qnamekey_t, itemref_t);
+	qname_value(context*, std::string const& name);
 
 public:
 	sequence_type_t type() const { return m_type; }

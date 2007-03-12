@@ -5293,6 +5293,7 @@ public:
 		yy::location const&,
 		context *,
 		std::string const&);
+
 	~QName();
 
 public:

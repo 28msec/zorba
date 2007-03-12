@@ -134,10 +134,12 @@ ostream& var_expr::put(
 {
 	os << INDENT << "var_expr[" << decode_var_kind(get_kind());
 	if (varname_h!=NULL) {
-		os << " name="; get_varname()->put(os);
+		os << " name=";
+		get_varname()->put(os);
 	}
 	if (valexpr_h!=NULL) {
-		os << ", expr="; get_valexpr()->put(os,ctx);
+		os << ", expr=";
+		get_valexpr()->put(os,ctx);
 	}
 	os << ", type=" << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
@@ -1053,7 +1055,7 @@ void order_expr::accept(
 
 funcall_expr::funcall_expr(
 	yy::location const& loc,
-	rchandle<QName> _fname_h)
+	rchandle<qname_expr> _fname_h)
 :
 	expr(loc),
 	fname_h(_fname_h)
@@ -1150,7 +1152,7 @@ void doc_expr::accept(
 
 elem_expr::elem_expr(
 	yy::location const& loc,
-	rchandle<QName> _qname_h,
+	rchandle<qname_expr> _qname_h,
 	rchandle<expr> _content_expr_h)
 :
 	expr(loc),
@@ -1212,7 +1214,7 @@ void elem_expr::accept(
 
 attr_expr::attr_expr(
 	yy::location const& loc,
-	rchandle<QName> _qname_h,
+	rchandle<qname_expr> _qname_h,
 	rchandle<expr> _val_expr_h)
 :
 	expr(loc),

@@ -49,9 +49,9 @@ public:
 	yy::location get_loc() const { return loc; }
 
 public:
-	virtual rchandle<item_iterator> eval(context *);
 	virtual void accept(expr_visitor&) const = 0;
 	virtual std::ostream& put(std::ostream&,context&) const;
+
 
 /* (some proposed optimizer interface methods:)
 public:	
@@ -107,9 +107,24 @@ public:
 		{ return elist.end(); }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
+
+};
+
+
+class qname_expr : public rcobject
+{
+protected:
+	std::string m_name;
+
+public:
+	qname_expr(std::string const& name) : m_name(name) {}
+	~qname_expr() {}
+
+public:
+	std::string name() const { return m_name; }
+	std::ostream& put(std::ostream& os) const { return os << m_name; }
 
 };
 
@@ -139,7 +154,7 @@ public:
 		context_var
 	};
 
-  rchandle<QName> varname_h;
+  rchandle<qname_expr> varname_h;
   expr_h_t valexpr_h;
 	var_kind kind;
   sequence_type_t type;
@@ -149,8 +164,8 @@ public:
   ~var_expr();
 
 public:
-  rchandle<QName> get_varname() const { return varname_h; }
-  void set_varname(rchandle<QName> q_h) { varname_h = q_h; }
+  rchandle<qname_expr> get_varname() const { return varname_h; }
+  void set_varname(rchandle<qname_expr> q_h) { varname_h = q_h; }
 
   expr_h_t get_valexpr() const { return valexpr_h; }
   void set_valexpr(expr_h_t e_h) { valexpr_h = e_h; }
@@ -165,7 +180,6 @@ public:
 	static std::string decode_var_kind(enum var_kind);
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
   std::ostream& put(std::ostream&,context&) const;
 
@@ -306,7 +320,6 @@ public:	// accessors
 	void set_retval(expr_h_t e_h) { retval_h = e_h; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -357,7 +370,6 @@ public:
 	void set_sat_expr(expr_h_t e_h) { sat_expr_h = e_h; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -439,7 +451,6 @@ public:
 		{ return case_clause_hv[i]; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -481,7 +492,6 @@ public:
 	void set_else_expr(expr_h_t e_h) { else_expr_h = e_h; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -527,7 +537,6 @@ public:
 	void set_func(function const* _func) { func = _func; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -760,10 +769,10 @@ public:
 
 struct pragma : public rcobject
 {
-	rchandle<QName> name_h;
+	rchandle<qname_expr> name_h;
 	std::string content;
 
-	pragma(rchandle<QName> _name_h, std::string const& _content)
+	pragma(rchandle<qname_expr> _name_h, std::string const& _content)
 	: name_h(_name_h), content(_content) {}
 	~pragma() {}
 };
@@ -915,8 +924,8 @@ protected:
 	test_t test;
 	test_t docnode_test;
 	wild_t wild;
-	rchandle<QName> name_h;
-	rchandle<QName> typename_h;
+	rchandle<qname_expr> name_h;
+	rchandle<qname_expr> typename_h;
 	std::vector<expr_h_t> pred_hv;
 
 public:
@@ -928,15 +937,15 @@ public:
 	test_t get_test() const { return test; }
 	test_t get_docnode_test() const { return docnode_test; }
 	wild_t get_wild() const { return wild; }
-	rchandle<QName> get_name() const { return name_h; }
-	rchandle<QName> get_typename() const { return typename_h; }
+	rchandle<qname_expr> get_name() const { return name_h; }
+	rchandle<qname_expr> get_typename() const { return typename_h; }
 
 	void set_axis(axis_t v) { axis = v; }
 	void set_test(enum test_t v) { test = v; }
 	void set_docnode_test(enum test_t v) { docnode_test = v; }
 	void set_wild(enum wild_t v) { wild = v; }
-	void set_name(rchandle<QName> v_h) { name_h = v_h; }
-	void set_typename(rchandle<QName> v_h) { typename_h = v_h; }
+	void set_name(rchandle<qname_expr> v_h) { name_h = v_h; }
+	void set_typename(rchandle<qname_expr> v_h) { typename_h = v_h; }
 
 public:
 	void add_pred(expr_h_t e_h)
@@ -1033,7 +1042,6 @@ public:
 public:
 	static std::string decode_type(enum literal_type_t t);
 
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -1088,17 +1096,17 @@ class funcall_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> fname_h;
+	rchandle<qname_expr> fname_h;
 	std::vector<expr_h_t> arg_hv;
 
 public:
 	funcall_expr(
 		yy::location const&,
-		rchandle<QName>);
+		rchandle<qname_expr>);
 	~funcall_expr();
 
 public:
-	rchandle<QName> get_fname() const { return fname_h; }
+	rchandle<qname_expr> get_fname() const { return fname_h; }
 
 public:
 	void add_arg(expr_h_t const& arg_h)
@@ -1166,7 +1174,6 @@ public:
 	expr_h_t get_docuri() const { return docuri_h; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -1187,7 +1194,7 @@ public:
 	typedef std::pair<std::string,std::string> nsbinding;
 
 protected:
-	rchandle<QName> qname_h;
+	rchandle<qname_expr> qname_h;
 	expr_h_t qname_expr_h;
 	expr_h_t content_expr_h;
 	std::vector<nsbinding> nsb_v;
@@ -1195,7 +1202,7 @@ protected:
 public:
 	elem_expr(
 		yy::location const&,
-		rchandle<QName>,
+		rchandle<qname_expr>,
 		expr_h_t);
 	elem_expr(
 		yy::location const&,
@@ -1204,7 +1211,7 @@ public:
 	~elem_expr();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
+	rchandle<qname_expr> get_qname() const { return qname_h; }
 	expr_h_t get_qname_expr() const { return qname_expr_h; }
 	expr_h_t get_content_expr() const { return content_expr_h; }
 
@@ -1220,7 +1227,6 @@ public:
 		{ return nsb_v.end(); }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -1238,14 +1244,14 @@ class attr_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> qname_h;
+	rchandle<qname_expr> qname_h;
 	expr_h_t qname_expr_h;
 	expr_h_t val_expr_h;
 
 public:
 	attr_expr(
 		yy::location const&,
-		rchandle<QName>,
+		rchandle<qname_expr>,
 		expr_h_t);
 	attr_expr(
 		yy::location const&,
@@ -1254,12 +1260,11 @@ public:
 	~attr_expr();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
+	rchandle<qname_expr> get_qname() const { return qname_h; }
 	expr_h_t get_qname_expr() const { return qname_expr_h; }
 	expr_h_t get_val_expr() const { return val_expr_h; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -1286,7 +1291,6 @@ public:
 	expr_h_t get_text_expr() const { return text_expr_h; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 
@@ -1313,7 +1317,6 @@ public:
 	expr_h_t get_comment_expr() const { return comment_expr_h; }
 
 public:
-	rchandle<item_iterator> eval(context *);
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&,context&) const;
 

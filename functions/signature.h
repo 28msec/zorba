@@ -15,6 +15,8 @@
 #include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
 #include "../values/xs_primitive_values.h"
+
+#include <string>
 #include <vector>
 
 namespace xqp {
@@ -32,12 +34,13 @@ class context;
 class signature : public rcobject
 {
 public:
-	qname_value const* qname_p;
+qname_value const* qname_p;
 	std::vector<sequence_type_t> arg_v;
 	static fxhashmap<signature const*> sigmap;
 
 public:
 	signature(qname_value const*, sequence_type_t return_type);
+	signature(context*, std::string const& fname, sequence_type_t ret_type);
 	~signature();
 
 public:

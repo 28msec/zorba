@@ -8,7 +8,10 @@
  */
 
 #include "xs_primitive_values.h"
+
+#include "../context/context.h"
 #include "../types/typecodes.h"
+
 #include <iostream>
 
 using namespace std;
@@ -1137,6 +1140,19 @@ qname_value::qname_value(
 	m_nameref(nameref)
 {
 //cout << TRACE << " : nameref = " << m_nameref << endl;
+}
+
+qname_value::qname_value(
+	context * ctx_p,
+	string const& name)
+:
+	atomic_value(xs_qname,sizeof(qname_value)),
+	m_qnamekey(hashfun::h64(name))
+{
+//cout << TRACE << " : nameref = " << m_nameref << endl;
+  itemstore & istore = *ctx_p->istore();
+  m_nameref = istore.eos();
+  new(istore) xs_stringValue(istore,name);
 }
 
 qname_value::qname_value()

@@ -236,8 +236,11 @@ cout << indent[depth--] << TRACE << ": expr_list" << endl;
 		if (it_h==NULL) break;
 		it_list.push_front(it_h);
 	}
+cout << TRACE << " : [1]\n";
 	rchandle<concat_iterator> cit_h = new concat_iterator(ctx_p, it_list);
+cout << TRACE << " : [2]\n";
 	itstack.push(&*cit_h);
+cout << TRACE << " : [3]\n";
 }
 
 void plan_visitor::end_visit(var_expr const& v)

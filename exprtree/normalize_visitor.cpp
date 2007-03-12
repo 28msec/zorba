@@ -131,8 +131,12 @@ bool normalize_visitor::begin_visit(
 	DefaultCollationDecl const& v)
 {
 cout << TRACE << endl;
-	qname_value* qn_p =
-		new (*ctx_p->istore()) qname_value(*ctx_p->istore(),v.get_collation());
+	string uri = v.get_collation();
+	itemstore& istore = *ctx_p->istore();
+	itemref_t ref = istore.eos();
+	qnamekey_t key = hashfun::h64(uri);
+	new (istore) xs_stringValue(istore,uri);
+	qname_value* qn_p = new (istore) qname_value(istore,key,ref);
 	ctx_p->set_default_collation(qn_p);
 	return false;
 }

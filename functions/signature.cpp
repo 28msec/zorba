@@ -10,6 +10,7 @@
 #include "signature.h"
 
 #include "../context/common.h"
+#include "../context/context.h"
 #include "../util/fxhashmap.h"
 
 using namespace std;
@@ -22,6 +23,16 @@ signature::signature(
 	sequence_type_t return_type)
 :
 	qname_p(_qname_p)
+{
+	arg_v.push_back(return_type);
+}
+
+signature::signature(
+	context * ctx_p,
+	string const& fname ,
+	sequence_type_t return_type)
+:
+	qname_p(new(*ctx_p->istore()) qname_value(ctx_p,fname))
 {
 	arg_v.push_back(return_type);
 }

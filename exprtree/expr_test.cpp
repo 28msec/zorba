@@ -10,20 +10,18 @@
 #include "expr.h"
 #include "../context/context.h"
 #include "../functions/signature.h"
-#include "../functions/function_impl.h"
+#include "../functions/function.h"
 #include "../parser/location.hh"
 #include "../parser/symbol_table.h"
-#include "../types/base_types.h"
-#include "../types/xs_primitive_types.h"
 #include "../types/sequence_type.h"
 #include "../util/xqp_exception.h"
+
 #include <iostream>
 
 /*
 ...........................................
 :                                         :
-: expression tree unit test module        :
-:                                         :
+: expression tree unit test               :
 :.........................................:
 */
 
@@ -45,28 +43,22 @@ int main(int argc, char* argv[])
 
 	try {
 
-		rchandle<QName> qnv1_h = new QName("var1");
-		rchandle<QName> qnv2_h = new QName("var2");
-		rchandle<QName> qnv3_h = new QName("var3");
-
-		rchandle<QName> qna1_h = new QName("attr1");
-		rchandle<QName> qna2_h = new QName("attr2");
-		rchandle<QName> qna3_h = new QName("attr3");
-
-		rchandle<QName> qne1_h = new QName("elem1");
-		rchandle<QName> qne2_h = new QName("elem2");
-		rchandle<QName> qne3_h = new QName("elem3");
-
-		rchandle<QName> qnf1_h = new QName("func1");
-
-		rchandle<QName> qnp1_h = new QName("prag1");
-		rchandle<QName> qnp2_h = new QName("prag1");
-
+		rchandle<qname_expr> qnv1_h = new qname_expr("var1");
+		rchandle<qname_expr> qnv2_h = new qname_expr("var2");
+		rchandle<qname_expr> qnv3_h = new qname_expr("var3");
+		rchandle<qname_expr> qna1_h = new qname_expr("attr1");
+		rchandle<qname_expr> qna2_h = new qname_expr("attr2");
+		rchandle<qname_expr> qna3_h = new qname_expr("attr3");
+		rchandle<qname_expr> qne1_h = new qname_expr("elem1");
+		rchandle<qname_expr> qne2_h = new qname_expr("elem2");
+		rchandle<qname_expr> qne3_h = new qname_expr("elem3");
+		rchandle<qname_expr> qnf1_h = new qname_expr("func1");
+		rchandle<qname_expr> qnp1_h = new qname_expr("prag1");
+		rchandle<qname_expr> qnp2_h = new qname_expr("prag1");
 
 	/*...........................................
 		: literal expresions                      :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>literal_expr\n";
 		rchandle<literal_expr> lit1_h = new literal_expr(loc, i1, true);
 		rchandle<literal_expr> lit2_h = new literal_expr(loc, i2, true);
@@ -92,26 +84,25 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: variables                               :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>var_expr\n";
 		rchandle<var_expr> var1_h = new var_expr(loc);
 	  var1_h->set_varname(&*qnv1_h);
 	  var1_h->set_valexpr(&*lit1_h);
 		var1_h->set_kind(var_expr::for_var);
-	  var1_h->set_type(&sequence_type::SINGLE_ATOMIC);
+	  var1_h->set_type(xs_untypedAtomicValue);
 	
 		rchandle<var_expr> var2_h = new var_expr(loc);
 	  var2_h->set_varname(&*qnv2_h);
 	  var2_h->set_valexpr(&*lit1_h);
 		var2_h->set_kind(var_expr::let_var);
-	  var2_h->set_type(&sequence_type::SINGLE_ATOMIC);
+	  var2_h->set_type(xs_untypedAtomicValue);
 	
 		rchandle<var_expr> var3_h = new var_expr(loc);
 	  var3_h->set_varname(&*qnv3_h);
 	  var3_h->set_valexpr(&*lit1_h);
 		var3_h->set_kind(var_expr::pos_var);
-	  var3_h->set_type(&sequence_type::SINGLE_ATOMIC);
+	  var3_h->set_type(xs_untypedAtomicValue);
 	
 		var1_h->put(cout,ctx) << endl;
 		var2_h->put(cout,ctx) << endl;
@@ -120,8 +111,7 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: expression list                         :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>expr_list\n";
 		rchandle<expr_list> exlist1_h = new expr_list(loc);
 		exlist1_h->add(&*var1_h);
@@ -132,8 +122,7 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: constructors                            :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>text_expr\n";
 		rchandle<text_expr> text1_h = new text_expr(loc, &*lit4_h);
 		rchandle<text_expr> text2_h = new text_expr(loc, &*lit5_h);
@@ -198,8 +187,7 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: function call                           :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>funcall_expr\n";
 		rchandle<funcall_expr> fun1_h = new funcall_expr(loc, &*qnf1_h);
 		fun1_h->add_arg(&*lit1_h);
@@ -214,8 +202,7 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: typeswitch expression                   :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>typeswitch_expr\n";
 		rchandle<typeswitch_expr> sw1_h = new typeswitch_expr(loc);
 		sw1_h->set_switch_expr(&*elem1_h);
@@ -225,21 +212,20 @@ int main(int argc, char* argv[])
 		case_clause cc1;
 		cc1.var_h = var2_h;
 		cc1.case_expr_h = &*lit1_h;
-		cc1.seqtype = sequence_type::ANY_SEQUENCE;
+		cc1.type = xs_anyTypeSeq;
 		sw1_h->add_clause(&cc1);
 	
 		case_clause cc2;
 		cc2.var_h = var3_h;
 		cc2.case_expr_h = &*lit2_h;
-		cc2.seqtype = sequence_type::ANY_SEQUENCE;
+		cc2.type = xs_anyTypeSeq;
 		sw1_h->add_clause(&cc2);
 		sw1_h->put(cout,ctx);
 	
 	
 	/*...........................................
 		: conditional expression                  :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>if_expr\n";
 		rchandle<if_expr> if1_h = new if_expr(loc, &*lit1_h, &*lit2_h, &*lit3_h);
 		if1_h->put(cout,ctx);
@@ -247,33 +233,31 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: cast-related expressions                :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>instanceof_expr\n";
 		rchandle<instanceof_expr> inst1_h =
-			new instanceof_expr(loc,&*lit4_h,sequence_type::SINGLE_ITEM);
+			new instanceof_expr(loc,&*lit4_h,xs_anyType);
 		inst1_h->put(cout,ctx) << endl;
 	
 		cout << "\n>>>treat_expr\n";
 		rchandle<treat_expr> treat1_h =
-			new treat_expr(loc, &*lit5_h, sequence_type::SINGLE_INTEGER);
+			new treat_expr(loc, &*lit5_h, xs_int);
 		treat1_h->put(cout,ctx) << endl;
 	
 		cout << "\n>>>castable_expr\n";
 		rchandle<castable_expr> castable1_h =
-			new castable_expr(loc, &*lit6_h, single_type_t(atomic_type(),true));
+			new castable_expr(loc, &*lit6_h, xs_untypedAtomicValue);
 		castable1_h->put(cout,ctx) << endl;
 	
 		cout << "\n>>>cast_expr\n";
 		rchandle<cast_expr> cast1_h =
-			new cast_expr(loc, &*lit1_h, single_type_t(atomic_type(),true));
+			new cast_expr(loc, &*lit1_h, xs_untypedAtomicValue);
 		cast1_h->put(cout,ctx) << endl;
 	
 	
 	/*...........................................
 		: validate expression                     :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>validate_expr\n";
 		rchandle<validate_expr> val1_h =
 			new validate_expr(loc, val_strict, &*elem1_h);
@@ -282,22 +266,20 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: extension expressions                   :
-		:.........................................:
-	*/
+		:.........................................*/
+		/*
 		cout << "\n>>>extension_expr\n";
 		rchandle<extension_expr> ext1_h =
 			new extension_expr(loc,&*lit1_h);
 		rchandle<pragma> prag1_h = new pragma(&*qnp1_h, "content1");
-		//rchandle<pragma> prag2_h = new pragma(&*qnp2_h, "content2");
 		ext1_h->add(prag1_h);
-		//ext1_h->add(prag2_h);
 		ext1_h->put(cout,ctx) << endl;
+		*/
 
 	
 	/*...........................................
 		: path expressions                        :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>axis_step_expr\n";
 		rchandle<axis_step_expr> ax1_h = new axis_step_expr(loc);
 		ax1_h->set_axis(axis_step_expr::child);
@@ -314,15 +296,14 @@ int main(int argc, char* argv[])
 		ax2_h->put(cout,ctx) << endl;
 	
 		rchandle<relpath_expr> path1_h = new relpath_expr(loc);
-		path1_h->add(&*ax1_h);
-		path1_h->add(&*ax2_h);
+		path1_h->add_back(&*ax1_h);
+		path1_h->add_back(&*ax2_h);
 		path1_h->put(cout,ctx) << endl;
 	
 	
 	/*...........................................
 		: quantified expressions                  :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>quantified_expr\n";
 		rchandle<quantified_expr> quant1_h =
 			new quantified_expr(loc,quant_some);
@@ -339,13 +320,12 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: FO expressions                          :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>fo_expr\n";
-		rchandle<signature> sig1_h = new signature(new QName("func1"));
-		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
-		sig1_h->add_arg(sequence_type::ANY_SEQUENCE);
-		function_impl func1(sig1_h);
+		rchandle<signature> sig1_h = new signature(&ctx,"func1",anyNodeSeq);
+		sig1_h->add_arg(anyNodeSeq);
+		sig1_h->add_arg(anyNodeSeq);
+		function func1(*sig1_h);
 		rchandle<fo_expr> fo1_h = new fo_expr(loc);
 		fo1_h->add(&*lit1_h);
 		fo1_h->add(&*lit2_h);
@@ -355,8 +335,7 @@ int main(int argc, char* argv[])
 	
 	/*...........................................
 		: FLWOR expressions                       :
-		:.........................................:
-	*/
+		:.........................................*/
 		cout << "\n>>>flwor_expr\n";
 		rchandle<flwor_expr> flwor1_h = new flwor_expr(loc);
 		rchandle<forlet_clause> flc1_h =
@@ -368,7 +347,6 @@ int main(int argc, char* argv[])
 		flwor1_h->set_where(&*var1_h);
 		flwor1_h->set_retval(&*var2_h);
 		flwor1_h->put(cout,ctx) << endl;
-
 
 	} catch (null_pointer& e) {
 		cout << "Application exception: " << e.get_msg() << endl;
