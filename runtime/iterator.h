@@ -15,7 +15,7 @@
 
 #include <iostream>
 #include <string>
-//#include <vector>
+#include <vector>
 
 namespace xqp {
 
@@ -151,13 +151,13 @@ public:	// ctor,dtor
 class concat_iterator : public item_iterator
 {
 protected:
-	list<rchandle<item_iterator> > it_list;
-	list_iterator<rchandle<item_iterator> > walker;
-	list_iterator<rchandle<item_iterator> > sentinel;
+	//list<rchandle<item_iterator> > it_list;
+	//list_iterator<rchandle<item_iterator> > walker;
+	//list_iterator<rchandle<item_iterator> > sentinel;
 
-	//std::vector<rchandle<item_iterator> > it_list;
-	//std::vector<rchandle<item_iterator> >::const_iterator walker;
-	//std::vector<rchandle<item_iterator> >::const_iterator sentinel;
+	std::vector<rchandle<item_iterator> > it_list;
+	std::vector<rchandle<item_iterator> >::const_iterator walker;
+	std::vector<rchandle<item_iterator> >::const_iterator sentinel;
 
 	rchandle<item_iterator> currit_h;
 	uint32_t it_counter;
@@ -173,7 +173,8 @@ public:	// iterator interface
 public:
 	concat_iterator(
 		context *,
-		list<rchandle<item_iterator> >);
+		std::vector<rchandle<item_iterator> >);
+		//list<rchandle<item_iterator> >);
 	concat_iterator(concat_iterator const&);
 	concat_iterator& operator=(concat_iterator const&);
 	~concat_iterator();

@@ -529,6 +529,7 @@ protected:
 	rchandle<itemstore> istore_h;
 	uint32_t ctx_nodeid;
 	uint32_t ctx_docid;
+	itemref_t ctx_docref;
 
 	// in-scope namespaces
 	uint32_t ctx_nsseqid;
@@ -555,6 +556,7 @@ public:
 	uint32_t next_docid();
 	uint32_t context_docid() const { return ctx_docid; }
 	void set_context_docid(uint32_t docid) { ctx_docid = docid; }
+	itemref_t& docref() { return ctx_docref; }
 
 	// nodeid services
 	uint32_t next_nodeid();

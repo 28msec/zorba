@@ -2,8 +2,7 @@
  *
  *  $Id: rchandle.h,v 1.1 2006/10/09 07:08:02 Paul Pedersen Exp $
  *
- *  Copyright 2005-2006 FLWOR Foundation.  All Rights Reserved.
- *
+ *  Copyright 2006-2007 FLWOR Foundation.  Apache License.
  *	Author: Paul Pedersen
  *
  */

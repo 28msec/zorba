@@ -453,7 +453,7 @@ char * fxvector<T>::raw_copy(
 
 	//std::cout << TRACE<<" : [2] stored>> "<<string(p,0,length)<<endl;
 	//std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
-	finish += aligned_length;
+	finish += T_count;
 	//std::cout << TRACE<<" :     finish = "<<finish<<std::endl;
 
 	// update mmfile

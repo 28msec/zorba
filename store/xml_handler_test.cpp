@@ -3,16 +3,16 @@
  *  $Id: xml_handler_test.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
  *	Author: John Cowan,Paul Pedersen
  *
  */
 
+#include "../context/context.h"
+#include "../util/file.h"
+
 #include "xml_handler.h"
 #include "xml_scanner.h"
 #include "xml_term.h"
-#include "../context/context.h"
-#include "../util/file.h"
 
 using namespace std;
 using namespace xqp;
@@ -20,8 +20,7 @@ using namespace xqp;
 int main(int argc, char* argv[]) 
 {
 	context ctx;
-	rchandle<nodestore> nstore_h = ctx.get_nodestore();
-
+	itemstore& istore = *ctx.istore();
   try {
     if (argc<2) {
       cerr << "Expecting one argument: PATH\n";
@@ -43,29 +42,24 @@ int main(int argc, char* argv[])
 		vector<xml_term> xterm_v;
 		string baseuri = "/";
 		string uri = path;
-		cout << "allocate xml_handler\n":
+		cout << "allocate xml_handler\n";
     xml_handler* xhandler_p = new xml_handler(&ctx,baseuri,uri,xterm_v);
 
 		cout << "run xml_scanner\n";
     xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
 
-		uint32_t dnid = xhandler_p->get_dnid();
-		cout << "docindex.put(\"" << path << "\", " << dnid << ")\n";
-		
-		uint32_t n = baseuri.length();
-		if (baseuri[n-1]!='/') baseuri += '/';
-		ctx.put_docuri(baseuri+path,dnid);
+		cout << "docindex.put(\"" << path << "\")\n";
+		uint32_t m = baseuri.length();
+		if (baseuri[m-1]!='/') baseuri += '/';
 
     delete xhandler_p;
 		delete[] ibuf;
 
-		rchandle<document_node> dn_h;
-		int k = nstore_h->get(&ctx, nodeid(dnid), dn_h);
-		if (k < 0) {
-			cout << "Error [" << dnid << "]: " << nstore_h->decode_error(k) << endl;
+		document_node * d_p = new(istore,ctx.docref()) document_node();
+		if (d_p==NULL) {
+			cout << "doc (" << path << ") not found\n"; 
 		} else {
-			//cout << "doc(\"" << dn_h->get_baseuri() << '/' << dn_h->get_docuri() << "\")\n";
-			dn_h->put(cout, &ctx) << endl;
+			d_p->put(cout, &ctx) << endl;
 		}
 
   } catch (xqp_exception& e1) {

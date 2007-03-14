@@ -14,6 +14,7 @@
 #include "../util/tracer.h"
 
 #include <iostream>
+#include <vector>
 
 using namespace std;
 namespace xqp 
@@ -230,11 +231,13 @@ cout << indent[depth--] << TRACE << ": expr" << endl;
 void plan_visitor::end_visit(expr_list const& v)
 {
 cout << indent[depth--] << TRACE << ": expr_list" << endl;
-	list<it_h_t> it_list;
+	//list<it_h_t> it_list;
+	vector<it_h_t> it_list;
 	while (true) {
 		it_h_t it_h = pop_itstack();
 		if (it_h==NULL) break;
-		it_list.push_front(it_h);
+		//it_list.push_front(it_h);
+		it_list.push_back(it_h);
 	}
 cout << TRACE << " : [1]\n";
 	rchandle<concat_iterator> cit_h = new concat_iterator(ctx_p, it_list);

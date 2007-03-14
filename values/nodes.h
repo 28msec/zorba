@@ -551,6 +551,16 @@ public:
 		context *,
 		itemref_t qname_ref);
 
+	attribute_node(
+		context *,
+		itemref_t qname_ref,
+		std::string const& val);
+
+	attribute_node(
+		context *,
+		char const* name,
+		uint32_t length);
+
 public:	// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
 	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }

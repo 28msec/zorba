@@ -326,8 +326,8 @@ void concat_iterator::rewind()
 
 concat_iterator::concat_iterator(
 	context * ctx_p,
-	list<rchandle<item_iterator> > _it_list)
-	//vector<rchandle<item_iterator> > _it_list)
+	//list<rchandle<item_iterator> > _it_list)
+	vector<rchandle<item_iterator> > _it_list)
 :
 	item_iterator(ctx_p),
 	it_list(_it_list),

@@ -123,6 +123,8 @@ document_node::document_node(
 	m_childseq_ref(0),
 	m_child_count(0)
 {
+	m_childseq_ref = ctx_p->istore()->eos();
+cout << TRACE << endl;
 }
 
 
@@ -163,6 +165,7 @@ ostream& document_node::put(
 	os << "<?xml version=\"1.0\"?>\n";
 	child_const_iterator it(ctx_p,this,m_childseq_ref);
 	while (!it.done()) {
+cout << TRACE << endl;
 		os << (*it)->put(os,ctx_p);
 	}
 	return os;
@@ -207,6 +210,7 @@ element_node::element_node(
 	m_childseq_ref(0),					// child node set ref
 	m_child_count(0)						// child node count
 {
+cout << TRACE << endl;
 }
 
 element_node::element_node(
@@ -234,6 +238,7 @@ element_node::element_node(
 	m_qname_ref = istore.eos();
 	new(istore) qname_value(ctx_p,string(name,0,length));
 	// istore.unlock()
+cout << TRACE << endl;
 }
 
 rchandle<item_iterator> element_node::attributes(
@@ -300,7 +305,55 @@ attribute_node::attribute_node(
 	m_docid(ctx_p->context_docid()),
 	m_qname_ref(qname_ref)
 {
+cout << TRACE << endl;
 }
+
+attribute_node::attribute_node(
+	context * ctx_p,
+	itemref_t qname_ref,
+	string const& val)
+:
+	node(
+		attributeNode,								// typecode
+		sizeof(attribute_node),				// item length
+		ctx_p->gen(),									// generation number
+		0,														// forwarding itemref
+		ctx_p->next_nodeid(),					// ordinal node id
+		ctx_p->context_nodeid()),			// parent node id
+
+	m_docid(ctx_p->context_docid()),
+	m_qname_ref(qname_ref)
+{
+	itemstore& istore = *ctx_p->istore();
+	// istore.lock()
+	new(istore) xs_stringValue(istore,val);
+	// istore.unlock()
+cout << TRACE << endl;
+}
+
+attribute_node::attribute_node(
+	context * ctx_p,
+	char const* name,
+	uint32_t length)
+:
+	node(
+		attributeNode,								// typecode
+		sizeof(attribute_node),				// item length
+		ctx_p->gen(),									// generation number
+		0,														// forwarding itemref
+		ctx_p->next_nodeid(),					// ordinal node id
+		ctx_p->context_nodeid()),			// parent node id
+
+	m_docid(ctx_p->context_docid())
+{
+	itemstore& istore = *ctx_p->istore();
+	// istore.lock()
+	m_qname_ref = istore.eos();
+	new(istore) qname_value(ctx_p,string(name,0,length));
+	// istore.unlock()
+cout << TRACE << endl;
+}
+
 
 rchandle<item_iterator> attribute_node::base_uri(
 	context * ctx_p) const
@@ -458,6 +511,7 @@ comment_node::comment_node(
 
 	m_docid(ctx_p->context_docid())
 {
+cout << TRACE << endl;
 }
 
 rchandle<item_iterator> comment_node::base_uri(context * ctx_p) const
@@ -497,6 +551,7 @@ text_node::text_node(
 	m_docid(ctx_p->context_docid())
 {
 	new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),content);
+cout << TRACE << endl;
 }
 
 rchandle<item_iterator> text_node::base_uri(context * ctx_p) const
@@ -614,10 +669,12 @@ child_const_iterator::child_const_iterator(
 	parent_p(_parent_p),
 	ctx_p(_ctx_p)
 {
+cout << TRACE << endl;
 	end_p =
 		reinterpret_cast<node const*>(
 			parent_p->length() +
 				reinterpret_cast<uint32_t const*>(parent_p));
+cout << TRACE << endl;
 	current_p = 
 		reinterpret_cast<node const*>(
 			offset + reinterpret_cast<uint32_t const*>(parent_p));
@@ -625,12 +682,15 @@ child_const_iterator::child_const_iterator(
 	
 item * child_const_iterator::operator*() const
 {
+cout << TRACE << endl;
 	switch (current_p->type()) {
 	case attributeNode: {
+cout << TRACE << " : attributeNode" << endl;
 		return new(current_p) attribute_node();
 		break;
 	}
 	case elementNode: {
+cout << TRACE << " : elementNode" << endl;
 		return new(current_p) element_node();
 		break;
 	}
@@ -643,10 +703,13 @@ item * child_const_iterator::operator*() const
 		break;
 	}
 	case textNode: {
+cout << TRACE << " : textNode" << endl;
 		return new(current_p) text_node();
 		break;
 	}
 	default: {
+cout << TRACE << " ERROR: bad node type: "
+							<< sequence_type::describe(current_p->type()) << endl;
 		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
 	} }
 	return NULL;
@@ -654,13 +717,17 @@ item * child_const_iterator::operator*() const
 
 child_const_iterator const& child_const_iterator::operator++()
 {
+cout << TRACE << " : textNode" << endl;
 	if (current_p >= end_p) {
+cout << TRACE << " : iterator overrun" << endl;
 		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
 	}
+cout << TRACE << endl;
 	current_p =
 		reinterpret_cast<node const*>(
 			current_p->length() +
 				reinterpret_cast<uint32_t const*>(parent_p));
+cout << TRACE << endl;
 	return *this;
 }
 

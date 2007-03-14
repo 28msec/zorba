@@ -21,6 +21,7 @@
 #include "scan_handler.h"
 #include "xml_term.h"
 
+#include "../context/common.h"
 #include "../util/rchandle.h"
 #include "../util/URI.h"
 
@@ -38,15 +39,14 @@ class context;
 class xml_handler : public scan_handler
 {
 public:
-	typedef std::pair<uint32_t,std::string> attrpair_t;
-	// (QName id, attr value) pairs
+	typedef std::pair<itemref_t,std::string> attrpair_t;
+	// (QName ref, attr value) pairs
 
 protected:  // state
 	static const uint32_t STACK_CAPACITY = 65536;
 	
 	std::string the_name_stack[STACK_CAPACITY];
 	uint32_t the_id_stack[STACK_CAPACITY];
-	uint32_t nodeid_stack[STACK_CAPACITY];
 	uint32_t top;
 	uint32_t qtop;
 	uint32_t ntop;
@@ -72,7 +72,7 @@ protected:  // state
 	bool ggp_indexing;							// index a/b/c/word::t
 
 	context * ctx_p;
-	rchandle<itemstore> store_h;
+	rchandle<itemstore> istore_h;
 
 	uint32_t the_id;								// context node
 	uint32_t the_parentid;					// context parent id

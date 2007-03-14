@@ -12,6 +12,7 @@
 #define XQP_FILE_H
 
 #include <sys/types.h>
+#include <sys/vfs.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <time.h>
@@ -58,7 +59,7 @@ private:	// volume attributes
   uint64_t filtotal;    	// total number of file inodes in file system
   uint64_t filfree;     	// number of free file inodes in file system
   uint64_t filavail;    	// number of free file inodes available to non super-users
-  uint64_t fsid;          // file system id
+  uint64_t fsid; 		      // file system id
   uint64_t fstype;        // numeric file system type identifier (fs-specific)
   uint64_t blksize;     	// recommended file system block size in bytes
   uint64_t blktotal;    	// total number of blocks in file system

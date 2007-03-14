@@ -46,25 +46,19 @@ xml_handler::xml_handler(
 	last_pos(0),
 	uri(URI(_uri).hashkey()),
 	term_v(_term_v),
-	ctx_p(_ctx_p),
-	the_id(ctx_p->next_nodeid()),
-	the_parentid(0),
-	the_docid(ctx_p->next_docid()),
-	the_qnameid(0),
-	the_nsid(ctx_p->default_element_nsid()),
-	the_dnid(the_id)
+	ctx_p(_ctx_p)
 {
-	uint32_t sz = store_h->eos();
-	store_h->put(documentNode);				// type
-	store_h->put(0);									// length		
-	store_h->put(the_id);							// node id
-	store_h->put(0);									// parent id
-	store_h->put(the_docid);					// doc id
-	store_h->add_text(_baseuri);			// base URI
-	store_h->add_text(_uri);					// base URI
-	(*store_h)[sz] = (store_h->eos() - sz);
-	store_h->index_put(the_id, sz);	
+	istore_h = ctx_p->istore();
+	itemstore& istore = *istore_h;
 
+	itemref_t baseuri_ref = istore.eos();
+	new(istore) xs_stringValue(istore,_baseuri);
+
+	itemref_t uri_ref = istore.eos();
+	new(istore) xs_stringValue(istore,_uri);
+
+	ctx_p->docref() = istore.eos();
+	new(istore) document_node(ctx_p,baseuri_ref,uri_ref);
 }
 
 
@@ -126,6 +120,7 @@ void xml_handler::aval(const char* buf, int offset, int length)
 	tokenbuf::token_iterator it = tokbuf.begin();
 	tokenbuf::token_iterator end = tokbuf.end();
 
+	// index terms
 	for (; it!=end; ++it) {
 		const string& term = *it;
 		if (term.length()==0) continue;
@@ -135,10 +130,11 @@ void xml_handler::aval(const char* buf, int offset, int length)
 		add_term(xml_term(elem_attr_term,uri,term_pos++));
 	}
 	
-	// store for load on start tag close
-	//rchandle<QName> qname_h = new QName(the_attribute);
-	uint32_t qname_id = 0; //qnpool_h->put(the_docid,qname_h);
-	attr_v.push_back(attrpair_t(qname_id,string(buf,offset,length)));
+	// store 
+	itemstore& istore = *ctx_p->istore();
+	itemref_t ref = istore.eos();
+	new (istore) qname_value(ctx_p,the_attribute);
+	attr_v.push_back(attrpair_t(ref,string(buf,offset,length)));
 
 }
 
@@ -161,17 +157,7 @@ cout << '&' << string(buf,offset,length) << ';' << endl;
 void xml_handler::flush_textbuf_as_text_node()
 {
 	if (textbuf.str().length()>0) {
-		uint32_t id = ctx_p->next_nodeid();
-		uint32_t off = store_h->eos();
-
-		store_h->put(textNode);						// type
-		store_h->put(0);										// length
-		store_h->put(id);									// node id
-		store_h->put(the_id);							// parent id
-		store_h->add_text(textbuf.str());	// content
-		(*store_h)[off] = (store_h->eos()-off);
-
-		store_h->index_put(id, off);
+		new (*istore_h) text_node(ctx_p, textbuf.str());
 		textbuf.str("");
 	}
 }
@@ -186,7 +172,6 @@ cout << "===== eof =====" << endl;
 
 	// serialize concatenated text node
 	flush_textbuf_as_text_node();
-
 }
 
 
@@ -196,23 +181,11 @@ void xml_handler::etag(const char* buf, int offset, int length)
 	if (length==0) return;
 	string etag0(buf,offset,length);
 
-	string prefix;
-	string localname;
-	string::size_type loc = the_element.find(':', 0);
-	if (loc!=string::npos) {
-		prefix = the_element.substr(0,loc);
-		localname = the_element.substr(loc+1);
-	}
-	else {
-		localname = the_attribute;
-	}
-
 	// serialize concatenated text node
 	flush_textbuf_as_text_node();
 	
 	// clear stack to matching tag
 	uint32_t etag0_id;
-	//qnpool_h->find(localname,the_nsid,etag0_id);
 	int k = top;
 	while (k>0) {
 		uint32_t tag_id = the_id_stack[--k];
@@ -220,7 +193,6 @@ void xml_handler::etag(const char* buf, int offset, int length)
 	}
 	if (k==0) return;
 	top = k;
-
 }
 
 
@@ -228,43 +200,16 @@ void xml_handler::etag(const char* buf, int offset, int length)
 void xml_handler::gi(const char* buf, int offset, int length)
 {
 	if (length==0) return;
-	the_element = string(buf,offset,length);
-	the_name_stack[top++] = the_element;
-	the_parentid = the_id;
-	the_id = ctx_p->next_nodeid(); 
-	nodeid_stack[ntop++] = the_id;
-
-	string prefix;
-	string name;
-	string::size_type loc = the_element.find(':', 0);
-	if (loc!=string::npos) {
-		prefix = the_element.substr(0,loc);
-		name = the_element.substr(loc+1);
-	}
-	else {
-		name = the_element;
-	}
-
-	the_qnameid = 0; //qnpool_h->put(the_docid,new QName(the_element));
-
-#ifdef DEBUG
-	cout << "the_qnameid("
-			 <<(prefix.length()>0?prefix+":":"")
-			 <<name
-			 <<") = "<<the_qnameid<<endl;
-#endif
-
-	if (top>=STACK_CAPACITY) error("stack overflow");
-	the_id_stack[top++] = the_qnameid;
-
-#ifdef DEBUG
-	cout <<'<'<<the_element<<' ';
-#endif
+	itemstore& istore = *istore_h;
+	itemref_t qname_ref = istore.eos();
+	new(istore) qname_value(ctx_p,string(buf,0,length));
+	the_element = istore.eos();
+	new(istore) element_node(ctx_p,qname_ref);
 
 	// serialize concatenated text node
 	flush_textbuf_as_text_node();
-
 }
+
 
 // add an index term
 void xml_handler::add_term(
@@ -307,9 +252,9 @@ void xml_handler::add_term(
 void xml_handler::pcdata(const char* buf, int offset, int length)
 {
 #ifdef DEBUG2
-	cout << "pcata = |" << string(buf,offset,length)
-			 << "| [" << length << "]\n";
+	cout << "pcata = |"<<string(buf,offset,length)<<"| ["<<length<<"]\n";
 #endif
+
 	if (length==0) return;
 
 	// tokenize for search indexing
@@ -321,8 +266,7 @@ void xml_handler::pcdata(const char* buf, int offset, int length)
 	for (;it!=tokbuf.end(); ++it) {
 		string const& term = *it;
 #ifdef DEBUG2
-		cout << "pcdata::term = " << term << endl;
-		cout << "it.get_token_pos() = " << it.get_token_pos() << endl;
+		cout << "pcdata::term = "<<term<< endl<<"it.get_token_pos() = "<<it.get_token_pos()<<endl;
 #endif
 		if (term.length()==0) continue;
 		add_term(term, uri, term_pos);
@@ -337,7 +281,6 @@ void xml_handler::pcdata(const char* buf, int offset, int length)
 
 	// concat text
 	textbuf << string(buf,offset,length);
-
 }
 
 
@@ -369,28 +312,16 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 #endif
 
 	// serialize: element QName
-	new(*store_h) element_node(ctx_p, buf, length);
-
-	//(nstore.get_offset()-off, off+1);
-	//nstore.index_put(the_id, res);
+	new(*istore_h) element_node(ctx_p,buf,length);
 
 	// serialize attribute list
 	vector<attrpair_t>::const_iterator it = attr_v.begin();
 	for (; it!=attr_v.end(); ++it) {
   	attrpair_t p = *it;
 		//cout << "put(ATTR_CODE)\n";
-		uint32_t id = ctx_p->next_nodeid();
-		uint32_t off = store_h->eos();
-
-		store_h->put(attributeNode);				// type
-		store_h->put(0);										// length
-		store_h->put(id);										// node id
-		store_h->put(the_id);								// parent id
-		store_h->put(xs_qname);							// start QName
-		store_h->put(p.NAME);								// attr QName id
-		store_h->add_text(p.VALUE);					// attr value
-
-		store_h->index_put(the_id, off); 
+		itemref_t qname_ref = p.first;
+		string val = p.second;
+		new (*istore_h) attribute_node(ctx_p,qname_ref,val);
 	}
 	attr_v.clear();
 }
