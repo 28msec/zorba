@@ -1,12 +1,12 @@
 zorba0.1-2
-2007.02.19
+2007.03.14
 
 
 
 zorba versioning conventions
 ----------------------------
 
-2007.02.19
+2007.03.14
 
 'zorbaN.M-K' means:
 
@@ -25,7 +25,7 @@ reimplemetation occurs.
 Building zorba
 --------------
 
-2007.02.19
+2007.03.14
 
 build.sh
 	Manually created make, using simple 'Makefile.local'
@@ -35,6 +35,8 @@ build.sh
 The root directory is
 	$INSTALL/zorba/xquery.
 
+Not yet available:
+[
 setup.sh
   makes symbolic links needed by configure:
     install-sh, depcomp, missing
@@ -47,16 +49,25 @@ rebuild_autoconf
   
 configure
   Generated script that creates Makefiles
-  
+]
 
   
 Known bugs
 ----------
 
+2007.03.14
+
+The xml_handler <-> item store interaction has residual bugs.
+All items are stored, but the node binary structure has several
+gaps.
+
+
 2007.02.19
 
 Type system is undergoing rewrite.  For the time being we use
 the old code.
+[The type system has now been completely replaced and is funcitoning
+ correctly.]
 
 
 2007.01.29
@@ -93,8 +104,20 @@ for the time being.
 
  _____________________________
 |                             |
-| Current Status: 2007.02.19  |
+| Current Status: 2007.03.14  |
 |_____________________________|
+
+2007.03.14
+
+- 'native_impl' has been completely removed, and the class we
+retained migrted to 'store'. 
+- Itemstore is written and unit tested.
+- Integration of itemstore with xml_handler is in progress.
+- We have found that the piccolo XML parser seems to compile
+  effectively, and plan to use piccolo essentially as-is for the
+  time being.
+- 'node_values' was recast as 'nodes'
+- 'qname_value' was folded into xs_primitive_values, where it belongs
 
 
 2007.02.19
@@ -165,11 +188,9 @@ exprtree
 	XQuery expression tree:
 
 		expr												implementation: XQueryP expression nodes
-		eval                        implementation: expression node eval methods, deprecated
 		ft_expr											implementation: XQuery Full-text expressions
 		update_expr									implementation: XQuery UPdate expressions
 		expr_test                   implementation: expression tree syntax test
-		eval_test                   implementation: expression tree evaluator, deprecated.
 		parsenode_visitor           interface: parsenode -> expr conversion
 		normalize_visitor           implementation: parsenode -> normalized expr tree
 
@@ -177,7 +198,7 @@ exprtree
 functions
 	XQuery function libraries:
 
-	  function_impl               interface: XQuery 1st order functions and operators
+	  function                    interface: XQuery 1st order functions and operators
 	  function_library            interface: XQuery library module, or std lib
 	  signature                   interface: XQuery function signature
 
@@ -194,27 +215,6 @@ listeners
 
 		trace_handler								stub interface: XQuery runtime trace callback
 		error_handler								stub interface: XQUery runtime error callback
-
-
-native_impl
-	Micro-storage manager and XML parser:
-
-		character_entities					definitions: a big table of SGML character entities
-		sax2xml_ostream							stub implementation: (adapter) SAX to zorba xml_stream
-		storage_manager							stub implementation: storage manager
-		text_store									stub implementation: text store
-		xml_store									  stub implementation: XML store 
-		nodestore                   implementation: native mmfile persistent node storage
-		qname_pool                  implementation: native QName pool
-		namespace_pool              implementation: native namespace pool
-		spectrum										implementation: native block pool manager
-		tree												implementation: node/item_iterator
-		xml_loader									implementation: XML file loader
-		xml_handler									implementation: tagsoup-derived XML callback handler
-		xml_scanner									implementation: tagsoup-derived XML scanner
-		scan_handler								implementation: tagsoup-derived scan handler
-		html_scanner								implementation: tagsoup-derived HTML scanner
-		xml_term										implementation: XML term
 
 
 parser
@@ -250,23 +250,26 @@ runtime
 store
 	The XML storage data interface:
 
-		source											interface: abstract 'data source'
+		itemstore										implementation: basic linear blob item store
+		qname_cache                 implementation: qname cache
 		collation_resolver					interface: collation URI resolver
 		collection_resolver					interface: collection URI resolver
 		module_resolver							interface: module URI resolver
 		schema_resolver							interface: schema URI resolver
 		uri_resolver								interface: URL resolver (should be renamed)
-		xml_istream									interface: XML input stream
-		xml_ostream									interface: XML output stream
+		xml_handler									implementation: tagsoup-derived XML callback handler
+		xml_scanner									implementation: tagsoup-derived XML scanner
+		scan_handler								implementation: tagsoup-derived scan handler
+		xml_term										implementation: XML term
+		character_entities					definitions: a big table of SGML character entities
 
 
 types
 	The Query item_type subsystem:
 
-		base_types									implementation: top of the XQuery type hierarchy
-		node_types									implementation: the XQuery node types
+		typecodes.h                 interface: sequence type encoding
+		fix_typecodes               implemetation: perl scrip tfor generating 'typecodes.h'
 		sequence_type								implementation: the XQuery sequence type
-		xs_primitive_types					stub implementation: the Schema atomic types
 
 
 util
@@ -293,14 +296,10 @@ util
 values
 	The Query item_value subsystem:
 
+		values											implementation: XQuery value base classes
+	  nodes								        implementation: XQuery nodes
+		xs_primitive_values					implementation: XQuery primitive values
 		ft_options									implementation: XQuery Full-Text search options
 		ft_selection								implementation: XQuery Full-Text selection constraints
 		ft_values										implementation: XQuery Full-Text search specifier value
-		node_values								  implementation: XQuery node value
-		numeric											implementation: XQuery numeric value
-		qname_value							  	implementation: XQuery QName
 		update_values								implementation: XQuery update specifier value
-		values											implementation: XQuery value base classes
-		xs_primitive_values					implementation: XQuery primitive values
-
-
