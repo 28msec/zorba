@@ -12,18 +12,10 @@ while (<>) {
 		my $item = $_;
 		print;		# item
 
-		s/ = /Ref = REF_OBJECT + /;
-		s/[A-Z_]+_REP/REFERENCE_REP/;
-		print;		# ref to item
-
 		$_ = $item;
 		s/ = ITEM_ARITY/Seq = SEQUENCE_ARITY/;
 		s/[A-Z_]+_REP/SEQUENCE_REP/;
 		print;		# sequence
-
-		s/ = /Ref = REF_OBJECT + /;
-		s/[A-Z_]+_REP/REFERENCE_REP/;
-		print;		# ref to sequence
 
 		$_ = $item;
 		s/ = ITEM_ARITY/Plus = NONEMPTY_SEQ_ARITY/;
@@ -39,7 +31,7 @@ while (<>) {
 		# Found a non-item arity: ignore it
 		}
 	elsif (/ = REF_OBJECT/) {
-		# Found a reference: ignore it
+		# Found a reference (obsolete): ignore it
 		}
 	else {
 		# Found something else: pass through
