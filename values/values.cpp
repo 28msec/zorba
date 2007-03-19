@@ -78,25 +78,12 @@ class context;
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-ostream& item::put(ostream& os) const { return os << ""; }
-string item::describe() const { return "item()"; }
-bool item::is_node() const { return false; }
-bool item::is_atomic() const { return false; }
-rchandle<item_iterator> item::atomized_value() const { return NULL; }
-rchandle<item_iterator> item::effective_boolean_value() const { return NULL; }
-string item::string_value() const { return ""; }
 
 
 /*______________________________________________________________________
 |  
 |	'atomic_value' encapsulates value of primitive or derived types
 |_______________________________________________________________________*/
-
-ostream& atomic_value::put(ostream& os) const { return os << ""; }
-string atomic_value::describe() const { return "data()"; }
-rchandle<item_iterator> atomic_value::atomized_value() const { return NULL; }
-rchandle<item_iterator> atomic_value::effective_boolean_value() const { return NULL; }
-string atomic_value::string_value() const { return ""; }
 
 
 } /* namespace xqp */
