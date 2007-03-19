@@ -9,6 +9,8 @@
 
 #include "../context/context.h"
 #include "../util/file.h"
+#include "../util/hashfun.h"
+#include "../util/tracer.h"
 
 #include "xml_handler.h"
 #include "xml_scanner.h"
@@ -21,6 +23,7 @@ int main(int argc, char* argv[])
 {
 	context ctx;
 	itemstore& istore = *ctx.istore();
+
   try {
     if (argc<2) {
       cerr << "Expecting one argument: PATH\n";
@@ -48,19 +51,25 @@ int main(int argc, char* argv[])
 		cout << "run xml_scanner\n";
     xscanner.scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
 
-		cout << "docindex.put(\"" << path << "\")\n";
-		uint32_t m = baseuri.length();
-		if (baseuri[m-1]!='/') baseuri += '/';
+		urikey_t key = xhandler_p->get_uri();
 
     delete xhandler_p;
 		delete[] ibuf;
 
-		document_node * d_p = new(istore,ctx.docref()) document_node();
+		string ans;
+		nodeid_t id;
+		itemref_t ref;
+		ctx.get_dnid(key,id);
+		ctx.get_noderef(id,ref);
+		document_node * d_p = new(istore,ref) document_node();
+
 		if (d_p==NULL) {
 			cout << "doc (" << path << ") not found\n"; 
 		} else {
 			d_p->put(cout, &ctx) << endl;
 		}
+
+		cout << "Finish? "; cin >> ans;
 
   } catch (xqp_exception& e1) {
     cout << "Application exception: " << e1.what() << '\t' << e1.get_msg() << endl;

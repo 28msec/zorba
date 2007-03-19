@@ -85,6 +85,9 @@ qname_cache_test : qname_cache.h qname_cache.cpp qname_cache_test.cpp
 		${BUILD}/qname_cache.${SUFX} \
 	qname_cache_test.cpp
 
+nodeid_index : nodeid_index.h nodeid_index.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodeid_index.${SUFX} nodeid_index.cpp
+
 itemstore : itemstore.h itemstore.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore.${SUFX} itemstore.cpp
 
@@ -124,6 +127,7 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 		${BUILD}/qname_cache.${SUFX} \
 		${BUILD}/itemstore.${SUFX} \
 	xml_handler_test.cpp
+
 
 all : \
 	qname_cache \

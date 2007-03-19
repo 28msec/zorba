@@ -3,8 +3,7 @@
  *  $Id: values.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan,Paul Pedersen
  *
  */
 
@@ -22,8 +21,6 @@
 
 using namespace std;
 namespace xqp {
-
-#define EMPTY_SEQUENCE(X) item_iterator((X))
 
 class context;
 
@@ -81,43 +78,13 @@ class context;
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-ostream& item::put(ostream& os, context * ctx_p) const
-{
-	return os << "";
-}
-
-string item::describe(context * ctx_p) const
-{
-	return "item()";
-}
-
-bool item::is_node() const
-{
-	return false;
-}
-
-bool item::is_atomic() const
-{
-	return false;
-}
-
-rchandle<item_iterator> item::atomized_value(
-	context * ctx_p) const
-{
-	return new item_iterator(ctx_p);
-}
-
-rchandle<item_iterator> item::effective_boolean_value(
-	context * ctx_p) const
-{
-	return new item_iterator(ctx_p);
-}
-
-rchandle<item_iterator> item::string_value(
-	context const* ctx_p) const
-{
-	return ctx_p->emptyseq;
-}
+ostream& item::put(ostream& os) const { return os << ""; }
+string item::describe() const { return "item()"; }
+bool item::is_node() const { return false; }
+bool item::is_atomic() const { return false; }
+rchandle<item_iterator> item::atomized_value() const { return NULL; }
+rchandle<item_iterator> item::effective_boolean_value() const { return NULL; }
+string item::string_value() const { return ""; }
 
 
 /*______________________________________________________________________
@@ -125,34 +92,11 @@ rchandle<item_iterator> item::string_value(
 |	'atomic_value' encapsulates value of primitive or derived types
 |_______________________________________________________________________*/
 
-ostream& atomic_value::put(ostream& os, context * ctx_p) const
-{
-	return os << "";
-}
-
-string atomic_value::describe(context * ctx_p) const
-{
-	return "data()";
-}
-
-rchandle<item_iterator> atomic_value::atomized_value(
-	context * ctx_p) const
-{
-	return &item_iterator::empty_sequence;
-}
-
-rchandle<item_iterator> atomic_value::effective_boolean_value(
-	context * ctx_p) const
-{
-	return &item_iterator::empty_sequence;
-}
-
-rchandle<item_iterator> atomic_value::string_value(
-	context const* ctx_p) const
-{
-	return ctx_p->emptyseq;
-}
-
+ostream& atomic_value::put(ostream& os) const { return os << ""; }
+string atomic_value::describe() const { return "data()"; }
+rchandle<item_iterator> atomic_value::atomized_value() const { return NULL; }
+rchandle<item_iterator> atomic_value::effective_boolean_value() const { return NULL; }
+string atomic_value::string_value() const { return ""; }
 
 
 } /* namespace xqp */

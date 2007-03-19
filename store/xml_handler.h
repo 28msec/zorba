@@ -38,20 +38,14 @@ class context;
 
 class xml_handler : public scan_handler
 {
-public:
-	typedef std::pair<itemref_t,std::string> attrpair_t;
-	// (QName ref, attr value) pairs
-
 protected:  // state
 	static const uint32_t STACK_CAPACITY = 65536;
-	
-	std::string the_name_stack[STACK_CAPACITY];
-	uint32_t the_id_stack[STACK_CAPACITY];
+	std::string name_stack[STACK_CAPACITY];
 	uint32_t top;
-	uint32_t qtop;
-	uint32_t ntop;
 
-  std::string the_attribute;			// most recent attribute
+	std::stack<elempair_t> node_stack;
+
+  attrname_t the_attribute;				// most recent attribute
   std::string the_element;				// most recent element tag
 	std::string	the_PCDATA;					// most recent PCDATA
   std::string	the_PITarget;				// most recent PITarget
@@ -61,7 +55,7 @@ protected:  // state
 	uint32_t last_pos;							// last term position, for delta-coding
 	uint64_t uri;										// current URI hash
 	std::vector<xml_term>& term_v;	// term index accumulator
-	std::vector<attrpair_t> attr_v;	// term index accumulator
+	std::vector<attrpair_t> attr_v;	// attr name-val accumulator
 
 	// indexing switches
 	bool term_indexing;							// index terms
@@ -72,7 +66,8 @@ protected:  // state
 	bool ggp_indexing;							// index a/b/c/word::t
 
 	context * ctx_p;
-	rchandle<itemstore> istore_h;
+	itemstore& istore;
+	itemref_t baseref;
 
 	uint32_t the_id;								// context node
 	uint32_t the_parentid;					// context parent id
@@ -105,6 +100,7 @@ public:
 	uint32_t short get_entity() { return the_entity; }
 	uint32_t get_dnid() const { return the_dnid; }
 	uint32_t get_docid() const { return the_docid; }
+	urikey_t get_uri() const { return uri; }
 
 public:	// callback methods
 	//  Report an attribute name with no value.

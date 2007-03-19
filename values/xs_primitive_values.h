@@ -21,7 +21,6 @@
 #include "../types/sequence_type.h"
 #include "../util/xqp_exception.h"
 
-
 namespace xqp {
 
 class xs_anyURIValue : public atomic_value
@@ -35,9 +34,9 @@ public:
 	~xs_anyURIValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -53,9 +52,9 @@ public:
 	~xs_base64BinaryValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -84,9 +83,9 @@ private:
 	~xs_booleanValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -102,9 +101,9 @@ public:
 	~xs_decimalValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -120,9 +119,9 @@ public:
 	~xs_integerValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -151,9 +150,9 @@ private:
 	~xs_longValue() {}
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -182,9 +181,9 @@ private:
 	~xs_intValue() {}
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -200,9 +199,9 @@ public:
 	~xs_shortValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -218,9 +217,9 @@ public:
 	~xs_byteValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -236,9 +235,9 @@ public:
 	~xs_dateValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -254,9 +253,9 @@ public:
 	~xs_dateTimeValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -285,9 +284,9 @@ private:
 	~xs_doubleValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -303,9 +302,9 @@ public:
 	~xs_durationValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -321,9 +320,9 @@ public:
 	~xs_ENTITIESValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -339,9 +338,9 @@ public:
 	~xs_ENTITYValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -357,9 +356,9 @@ public:
 	~xs_floatValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -376,9 +375,9 @@ public:
 
 public:
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -394,9 +393,9 @@ public:
 	~xs_gMonthValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -412,9 +411,9 @@ public:
 	~xs_gMonthDayValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -430,9 +429,9 @@ public:
 	~xs_gYearValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -448,9 +447,9 @@ public:
 	~xs_gYearMonthValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -466,9 +465,9 @@ public:
 	~xs_hexBinaryValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -484,9 +483,9 @@ public:
 	~xs_IDValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -502,9 +501,9 @@ public:
 	~xs_IDREFValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -520,9 +519,9 @@ public:
 	~xs_IDREFSValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -538,9 +537,9 @@ public:
 	~xs_languageValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -556,9 +555,9 @@ public:
 	~xs_NCNameValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -574,9 +573,9 @@ public:
 	~xs_NMTOKENValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -592,9 +591,9 @@ public:
 	~xs_NMTOKENSValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -610,9 +609,9 @@ public:
 	~xs_NOTATIONValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -628,9 +627,9 @@ public:
 	~xs_NameValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -646,9 +645,9 @@ public:
 	~xs_negativeIntegerValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -664,9 +663,9 @@ public:
 	~xs_nonNegativeIntegerValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -682,9 +681,9 @@ public:
 	~xs_nonPositiveIntegerValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -700,9 +699,9 @@ public:
 	~xs_normalizedStringValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -718,9 +717,9 @@ public:
 	~xs_positiveIntegerValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -731,66 +730,25 @@ protected:
 	char rest[0];
 
 public:   // storage interface
-	void* operator new(size_t n,itemstore& istore)
-		{ return istore.alloc(n); }
-	void* operator new(size_t n,itemstore& istore, off_t offset)
-		{ return &istore[offset]; }
-	void* operator new(size_t n, void * p)
-		{ return p; }
+	void* operator new(size_t n,itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n,itemstore& i, itemref_t o) { return &i[o]; }
+	void* operator new(size_t n, void* p) { return p; }
+	void* operator new(size_t n, const void* p) { return (void*)p; }
 
 	xs_stringValue(itemstore&,std::string const&);
 	xs_stringValue(char const*,uint32_t length);
-	xs_stringValue() : atomic_value(xs_string,0) {}
+	xs_stringValue() {}
 
 private:
 	~xs_stringValue() {}
 
 public:   // accessors
 	std::string str() const;
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
-
-
-class qname_value : public atomic_value
-{
-protected:
-	uint64_t  m_qnamekey;
-	itemref_t m_nameref;
-
-public:
-	void* operator new(size_t, itemstore&);
-	void* operator new(size_t, itemstore&, off_t);
-	void* operator new(size_t, void*);
-	void operator delete(void*) {}
-
-public:
-	qname_value();
-	qname_value(itemstore&, qnamekey_t, itemref_t);
-	qname_value(context*, std::string const& name);
-
-public:
-	sequence_type_t type() const { return m_type; }
-	size_t length() const { return m_length; }
-	std::string prefix(itemstore&) const;
-	std::string localname(itemstore&) const;
-
-private:	// ctor,dtor - lock out default and copy constructors
-	qname_value(qname_value& qn) : atomic_value(xs_qname,0) {}
-	~qname_value() {}
-
-public:		// output,debugging
-	std::ostream& put(std::ostream& os,context * ctx) const;
-	string describe(context * ctx) const;
-
-	rchandle<item_iterator> qname_value::atomized_value(context *) const;
-	rchandle<item_iterator> qname_value::effective_boolean_value(context *) const;
-	string qname_value::string_value(context const*) const;
-
-};
-
 
 
 class uri_value : public value 
@@ -806,15 +764,16 @@ protected:
 	void* operator new(size_t, itemstore&);
 	void* operator new(size_t, void*);
 	void operator delete(void*) {}
+	
+  uri_value() {}
 
 private:	// ctor,dtor - lock out
 	uri_value(uri_value& qn) : value(xs_anyURI,0) {}
-	uri_value() : value(xs_anyURI,0) {}
 	~uri_value() {}
 
 public:		// output,debugging
-	std::ostream& put(std::ostream& os,context * ctx) const { return os; }
-	string describe(context * ctx) const;
+	std::ostream& put(std::ostream& os) const { return os; }
+	string describe() const;
 
 };
 
@@ -831,9 +790,9 @@ public:
 	~xs_timeValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -849,9 +808,9 @@ public:
 	~xs_tokenValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -867,9 +826,9 @@ public:
 	~xs_unsignedByteValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -885,9 +844,9 @@ public:
 	~xs_unsignedIntValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -903,9 +862,9 @@ public:
 	~xs_unsignedLongValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -921,9 +880,9 @@ public:
 	~xs_unsignedShortValue();
 
 public:
-	std::string describe(context *) const;
-	std::string stringValue(context const*) const;
-	std::ostream& put(std::ostream&, context *) const;
+	std::string describe() const;
+	std::string string_value() const;
+	std::ostream& put(std::ostream&) const;
 
 };
 

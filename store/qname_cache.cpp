@@ -8,136 +8,75 @@
  */
 
 #include "qname_cache.h"
-
-#include <vector>
-#include <string.h>
+#include <string>
 
 using namespace std;
 namespace xqp {
 
 qname_cache::qname_cache(
-	string const& _datapath)
+	const string& _datapath)
 :
 	qname_map( _datapath+"/qncache_",  0.6f, 1<<16),
-	uri_map(   _datapath+"/uricache_", 0.6f, 1<<16),
-	prefix_map(_datapath+"/pfxcache_", 0.6f, 1<<16)
+	uri_map(   _datapath+"/uricache_", 0.6f, 1<<16)
 {
 }
 
 qname_cache::qname_cache()
 :
 	qname_map( 0.6f, 1<<16),
-	uri_map(   0.6f, 1<<16),
-	prefix_map(0.6f, 1<<16)
+	uri_map(   0.6f, 1<<16)
 {
 }
 
-qname_cache::~qname_cache()
-{
-}
 
-bool qname_cache::put_qname(
-	qnamekey_t qnamekey,
-	itemref_t qnameref)
-{
-	return qname_map.put(qnamekey, qnameref);
-}
-
-bool qname_cache::find_qname(
-	qnamekey_t qnamekey,
-	uint32_t& qname_index) const
-{
-	return qname_map.find(qnamekey, qname_index);
-}
-
-itemref_t qname_cache::get_qname(
-	qnamekey_t qnamekey) const
-{
-	itemref_t result;
-	bool b = qname_map.get(qnamekey, result);
-	return b ? result : 0;
-}
-
-uint32_t qname_cache::size() const
-{
-	return qname_map.size();
-}
+// URIs by key
 
 bool qname_cache::put_uri(
-	urikey_t urikey,
-	itemref_t uriref)
+	const string& prefix,
+	nodeid_t uri)
 {
-	return uri_map.put(urikey, uriref);
+	uint64_t pkey = hashfun::h64(prefix);
+	return uri_map.put(pkey, uri);
 }
 
-bool qname_cache::find_uri(
-	urikey_t urikey,
-	uint32_t& uri_index) const
+bool qname_cache::contains_uri(
+	const string& prefix) const
 {
-	return uri_map.find(urikey, uri_index);
+	uint32_t index;
+	uint64_t pkey = hashfun::h64(prefix);
+	return uri_map.find(pkey, index);
 }
 
-itemref_t qname_cache::get_uri(
-	urikey_t urikey) const
+bool qname_cache::get_uri(
+	const string& prefix,
+	nodeid_t& uri) const
 {
-	itemref_t result;
-	bool b = uri_map.get(urikey, result);
-	return b ? result : 0;
+	uint64_t pkey = hashfun::h64(prefix);
+	return uri_map.get(pkey, uri);
 }
 
-bool qname_cache::put_prefix_urikey(
-	string const& prefix,
-	urikey_t urikey)
+
+
+// qnames by value
+
+bool qname_cache::put(
+	const string& prefix,
+	const string& localname,
+	nodeid_t qname)
 {
-	return prefix_map.put(prefix, urikey);
+	uint64_t ukey = hashfun::h64(prefix);
+	qnamekey_t qnkey = hashfun::h64(localname.c_str(),ukey);
+	return qname_map.put(qnkey, qname);
 }
 
-bool qname_cache::find_prefix_urikey(
-	string const& prefix,
-	uint32_t& prefix_index) const
+bool qname_cache::get(
+	const string& prefix,
+	const string& localname,
+	nodeid_t& qname) const
 {
-	return prefix_map.find(prefix, prefix_index);
-}
-
-urikey_t qname_cache::get_prefix_urikey(
-	string const& prefix) const
-{
-	urikey_t result;
-	bool b = prefix_map.get(prefix, result);
-	return b ? result : 0;
-}
-
-off_t qname_cache::put(
-	string const& uri_s,
-	string const& prefix_s,
-	string const& name_s,
-	char* store, off_t eos0)
-{
-	off_t eos = eos0;
-	urikey_t ukey = hashfun::h32(uri_s);
-	//qnamekey_t qnkey = hashfun::compose(ukey,hashfun::h32(name_s));
-	qnamekey_t qnkey = ukey + 3*hashfun::h32(name_s);
-	strcpy(&store[eos],uri_s.c_str());
-	cout << "uri = " << &store[eos] << endl;
-	put_uri(ukey,eos);
-	eos += (uri_s.length()+1);
-	strcpy(&store[eos],prefix_s.c_str());
-	cout << "prefix = " << &store[eos] << endl;
-	put_prefix_urikey(prefix_s, ukey);
-	eos += (prefix_s.length()+1);
-	strcpy(&store[eos],name_s.c_str());
-	cout << "name = " << &store[eos] << endl;
-	put_qname(qnkey, eos0);
-	eos += (name_s.length()+1);
-	return eos;
-}
-
-qnamekey_t qname_cache::get(
-	string const& prefix_s,
-	string const& name_s) const
-{
-	urikey_t ukey = get_prefix_urikey(prefix_s);
-	return ukey + 3*hashfun::h32(name_s);
+	uint64_t ukey = hashfun::h64(prefix);
+	qnamekey_t qkey = hashfun::h64(localname.c_str(),ukey);
+	return qname_map.get(qkey, qname);
 }
 
 

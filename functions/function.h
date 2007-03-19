@@ -35,8 +35,8 @@ public:
 		{ return sig.get_name(); }
 
 public:
-	virtual rchandle<item_iterator> operator()(context *)
-		{ return &item_iterator::empty_sequence; }
+	virtual rchandle<abstract_iterator> operator()(context *)
+		{ return &abstract_iterator::emptySequence; }
 
 };
 

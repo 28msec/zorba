@@ -9,6 +9,8 @@
 #ifndef XQP_ITERATOR_H
 #define XQP_ITERATOR_H
 
+#include "abstract_iterator.h"
+
 #include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
@@ -27,30 +29,27 @@ class xs_doubleValue;
 class xs_intValue;
 class xs_longValue;
 
-class item_iterator : public rcobject
+class item_iterator : public abstract_iterator
 {
-public:
-	static item_iterator empty_sequence;
-
 protected:
   context* ctx_p;
 
 public:
 	item_iterator(context *);
-	item_iterator(item_iterator const&);
-	virtual item_iterator& operator=(item_iterator const&);
-	virtual ~item_iterator();
+	item_iterator(const item_iterator&);
+	virtual item_iterator& operator=(const item_iterator&);
+	virtual ~item_iterator() {}
 
-public:	// low-level interface
-	virtual void open();				// aquire resources
-	virtual void close();				// release resources
-	virtual item* next(uint32_t delta = 1); // seek + delta (or NULL)
-	virtual item* peek() const;	// current item (or NULL)
-	virtual bool done() const;	// true <=> no more items
-	virtual void rewind(); 			// equivalent to {close();open()}
+public:	// abstract iterator interface
+	virtual void open() { }
+	virtual void close() { }
+	virtual abstract_item* next(uint32_t delta = 1) { return NULL; }
+	virtual abstract_item* peek() const { return NULL; }
+	virtual bool done() const { return true; }
+	virtual void rewind() { }
 
 public:	// C++ interface
-	item* operator*() const;
+	item* operator*() const { return NULL; }
 	item_iterator& operator++();
 
 public:
@@ -59,28 +58,30 @@ public:
 };
 
 
-class item_const_iterator : public rcobject
+
+class item_const_iterator : public abstract_iterator
 {
 public:
 	item_const_iterator();
-	item_const_iterator(item_const_iterator const&);
-	virtual item_const_iterator& operator=(item_const_iterator const&);
+	item_const_iterator(const item_const_iterator&);
+	virtual item_const_iterator& operator=(const item_const_iterator&);
 	virtual ~item_const_iterator();
 
-public:	// low-level interface
-	virtual void open();
-	virtual void close();
-	virtual item* next(uint32_t delta = 1);
-	virtual item* peek() const;
-	virtual bool done() const;
-	virtual void rewind();
+public:	// abstract iterator interface
+	virtual void open() { }
+	virtual void close() { }
+	virtual abstract_item* next(uint32_t delta = 1) { return NULL; }
+	virtual abstract_item* peek() const { return NULL; }
+	virtual bool done() const { return true; }
+	virtual void rewind() { }
 
 public:	// C++ interface
-	item* operator*() const;
+	item* operator*() const { return NULL; }
 	item_const_iterator& operator++();
 
 public:
 	std::string string_value(context *);
+
 };
 
 
@@ -89,13 +90,13 @@ class binary_iterator : public item_iterator
 protected:
 	rchandle<item_iterator> it1_h;
 	rchandle<item_iterator> it2_h;
-	item* (*op)(context *, item*, item*);
+	abstract_item* (*op)(context *, abstract_item*, abstract_item*);
 
-public:	// iterator interface
+public:	// abstract iterator interface
 	void open();
 	void close();
-	item* next(uint32_t delta = 1);
-	item* peek() const;
+	abstract_item* next(uint32_t delta = 1);
+	abstract_item* peek() const;
 	bool done() const;
 	void rewind();
 
@@ -104,9 +105,10 @@ public:	// ctor,dtor
 		context* ctx,
 		rchandle<item_iterator>,
 		rchandle<item_iterator>,
-		item* (*op)(context*, item*, item*));
-	binary_iterator(binary_iterator const&);
-	binary_iterator& operator=(binary_iterator const&);
+		abstract_item* (*op)(context*, abstract_item*, abstract_item*));
+
+	binary_iterator(const binary_iterator&);
+	binary_iterator& operator=(const binary_iterator&);
 	~binary_iterator();
 
 public:	// manipulators
@@ -119,30 +121,30 @@ public:	// manipulators
 class singleton_iterator : public item_const_iterator
 {
 protected:
-	item* i_h;
+	abstract_item* i_p;
 	bool done_b;
 
-public:	// iterator interface
+public:	// abstract iterator interface
 	void open() { }
 	void close() { done_b = false; }
-	item* next(uint32_t delta=1) { done_b = true; return NULL; }
-	item* peek() const { return **this; }
+	abstract_item* next(uint32_t delta=1) { done_b = true; return NULL; }
+	abstract_item* peek() const { return i_p; }
 	bool done() const { return done_b; }
 	void rewind() { done_b = false; }
 
 public:	// C++ interface
-	item* operator*() const { return i_h; }
-	item_const_iterator& operator++() { done_b = true; return *this; }
+	item* operator*() const { return (item*)(i_p); }
+	singleton_iterator& operator++() { done_b = true; return *this; }
 
 public:	// ctor,dtor
-	singleton_iterator(context *, item*);
-	singleton_iterator(context *, std::string const&);
+	singleton_iterator(context *, abstract_item*);
+	singleton_iterator(context *, const std::string&);
 	singleton_iterator(context *, bool);
 	singleton_iterator(context *, double);
 	singleton_iterator(context *, int);
 	singleton_iterator(context *, long);
-	singleton_iterator(singleton_iterator const&);
-	singleton_iterator& operator=(singleton_iterator const&);
+	singleton_iterator(const singleton_iterator&);
+	singleton_iterator& operator=(const singleton_iterator&);
 	~singleton_iterator() {}
 
 };
@@ -151,10 +153,6 @@ public:	// ctor,dtor
 class concat_iterator : public item_iterator
 {
 protected:
-	//list<rchandle<item_iterator> > it_list;
-	//list_iterator<rchandle<item_iterator> > walker;
-	//list_iterator<rchandle<item_iterator> > sentinel;
-
 	std::vector<rchandle<item_iterator> > it_list;
 	std::vector<rchandle<item_iterator> >::const_iterator walker;
 	std::vector<rchandle<item_iterator> >::const_iterator sentinel;
@@ -162,21 +160,24 @@ protected:
 	rchandle<item_iterator> currit_h;
 	uint32_t it_counter;
 
-public:	// iterator interface
+public:	// abstract iterator interface
 	void open();
 	void close();
-	item* next(uint32_t delta = 1);
-	item* peek() const;
+	abstract_item* next(uint32_t delta = 1);
+	abstract_item* peek() const;
 	bool done() const;
 	void rewind();
+
+public:	// C++ interface
+	item* operator*() const;
+	concat_iterator& operator++();
 
 public:
 	concat_iterator(
 		context *,
 		std::vector<rchandle<item_iterator> >);
-		//list<rchandle<item_iterator> >);
-	concat_iterator(concat_iterator const&);
-	concat_iterator& operator=(concat_iterator const&);
+	concat_iterator(const concat_iterator&);
+	concat_iterator& operator=(const concat_iterator&);
 	~concat_iterator();
 
 };

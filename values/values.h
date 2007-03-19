@@ -3,14 +3,14 @@
  *  $Id: values.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan,Paul Pedersen
  *
  */
 
 #ifndef XQP_VALUES_H
 #define XQP_VALUES_H
 
+#include "abstract_values.h"
 #include "../runtime/iterator.h"
 #include "../store/itemstore.h"
 #include "../types/sequence_type.h"
@@ -75,25 +75,26 @@ public:
 
 class value	: public object
 {
-protected:
+public:
 	sequence_type_t m_type;
-	size_t m_length;
+	uint32_t m_length;
 
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
 	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
-	void* operator new(size_t n, void * p) { return p; }
-	void* operator new(size_t n, void const* p) { return (void*)p; }
-	void operator delete(void*) {}
+	void* operator new(size_t n, void* p) { return p; }
+	void* operator new(size_t n, const void* p) { return (void*)p; }
+	void  operator delete(void*) {}
 	
 public:
-	value(sequence_type_t t, size_t l) : m_type(t), m_length(l) {}
+	value(sequence_type_t type, size_t len) : m_type(type), m_length(len) {}
 	value() {}
 	~value() {}
 
 public:		// accessors
 	sequence_type_t type() const { return m_type; }
-	size_t length() const { return m_length; }
+	uint32_t length() const { return m_length; }
+	uint32_t& length() { return m_length; }
 
 };
 
@@ -104,14 +105,14 @@ public:		// accessors
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class item : public value
+class item : public value, public abstract_item
 {
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
 	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
 	void* operator new(size_t n, void * p) { return p; }
-	void* operator new(size_t n, void const* p) { return (void*)p; }
-	void operator delete(void*) {}
+	void* operator new(size_t n, const void* p) { return (void*)p; }
+	void  operator delete(void*) {}
 	
 public:
 	item(sequence_type_t type, size_t length) : value(type,length) {}
@@ -119,16 +120,18 @@ public:
 	~item() {}
 
 public:		// accessors
-  std::ostream& put(std::ostream&, context *) const;
-  std::string describe(context *) const;
+  std::ostream& put(std::ostream&) const;
+  std::string describe() const;
 
 public:		// XQuery interface
-	rchandle<item_iterator> atomized_value(context *) const;
-	rchandle<item_iterator> effective_boolean_value(context *) const;
-	rchandle<item_iterator> string_value(context const*) const;
+	rchandle<item_iterator> atomized_value() const;
+	rchandle<item_iterator> effective_boolean_value() const;
+
+	string string_value() const;
 	bool is_node() const;
 	bool is_atomic() const;
 };
+
 
 
 /*______________________________________________________________________
@@ -142,8 +145,8 @@ public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
 	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
 	void* operator new(size_t n, void * p) { return p; }
-	void* operator new(size_t n, void const* p) { return (void*)p; }
-	void operator delete(void*) {}
+	void* operator new(size_t n, const void* p) { return (void*)p; }
+	void  operator delete(void*) {}
 	
 public:
 	atomic_value(sequence_type_t type, size_t length) : item(type,length) {}
@@ -151,19 +154,19 @@ public:
 	~atomic_value() {}
 
 public:		// accessors
-  std::ostream& put(std::ostream&, context *) const;
-  std::string describe(context *) const;
+  std::ostream& put(std::ostream&) const;
+  std::string describe() const;
 
 public:		// XQuery interface
-	rchandle<item_iterator> atomized_value(context *) const;
-	rchandle<item_iterator> effective_boolean_value(context *) const;
-	rchandle<item_iterator> string_value(context const*) const;
+	rchandle<item_iterator> atomized_value() const;
+	rchandle<item_iterator> effective_boolean_value() const;
+
+	string string_value() const;
 	bool is_sequence() const { return false; }
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
 };
-
 
 
 

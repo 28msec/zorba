@@ -16,7 +16,6 @@
 #include "../util/xqp_exception.h"
 
 #include <string>
-#include <vector>
 
 /*===========================================================+
 |                                                            |
@@ -29,39 +28,32 @@ namespace xqp {
 class qname_cache : public rcobject
 {
 protected:
-	fxhash64map<itemref_t> qname_map;		// map: qnamekey_t -> qname itemref
-	fxhash64map<itemref_t> uri_map;			// map: urikey_t -> uri itemref
-	fxhashmap<urikey_t> prefix_map;			// map: prefix -> uri hash key
+	fxhash64map<nodeid_t> qname_map;		// map: qnamekey_t -> qnameid
+	fxhash64map<nodeid_t> uri_map;			// map: prefixkey_t -> uriid
 
 public:
-	qname_cache(std::string const& datapath);
+	qname_cache(const std::string& datapath);
 	qname_cache();
-	~qname_cache();
+	~qname_cache() {}
 
 public:
-	bool put_qname( qnamekey_t qnamekey, itemref_t qnameref );
-	bool find_qname( qnamekey_t qnamekey, uint32_t& index ) const;
-	itemref_t get_qname( qnamekey_t qnamekey ) const;
+	uint32_t size() const { return qname_map.size(); }
 
-	uint32_t size() const;
+	// map: qname -> qnameref 
+	bool put(
+		const std::string& prefix,
+		const std::string& localname,
+		nodeid_t qnameid );
 
-	bool put_uri( urikey_t urikey, itemref_t uriref );
-	bool find_uri( urikey_t urikey, uint32_t& index ) const;
-	itemref_t get_uri( urikey_t urikey ) const;
+	bool get(
+		const std::string& prefix,
+		const std::string& localname,
+		nodeid_t& qnameid) const;
 
-	bool put_prefix_urikey( std::string const& prefix, urikey_t urikey );
-	bool find_prefix_urikey( std::string const& prefix, uint32_t& index ) const;
-	urikey_t get_prefix_urikey( std::string const& prefix ) const;
-
-	itemref_t put(
-		std::string const& uri_s,
-		std::string const& prefix_s,
-		std::string const& name_s,
-		char* store, off_t eos);
-
-	qnamekey_t get(
-		std::string const& prefix_s,
-		std::string const& name_s) const;
+	// map: prefix -> uri 
+	bool put_uri( const std::string&, nodeid_t uriid );
+	bool get_uri( const std::string&, nodeid_t& uriid ) const;
+	bool contains_uri( const std::string& ) const;
 
 };
 

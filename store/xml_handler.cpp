@@ -7,25 +7,22 @@
  *
  */
 
-
 #include <iostream>
 #include <string>
 
+#include "../context/common.h"
 #include "../context/context.h"
 #include "../values/values.h"
 #include "../util/xqp_exception.h"
 #include "../util/tokenbuf.h"
+#include "../util/tracer.h"
 #include "../util/URI.h"
 #include "xml_handler.h"
 
 using namespace std;
 namespace xqp {
 
-#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
 #define DELIMSET " \n,.;:?!\r\t+-_!@#$%&*()[]{}=/|\\<>'\""
-#define NAME  first
-#define VALUE second
-
 
 xml_handler::xml_handler(
 	context * _ctx_p,
@@ -35,30 +32,30 @@ xml_handler::xml_handler(
 :
 	scan_handler(),
 	top(0),
-	qtop(0),
-	ntop(0),
-	the_attribute(""),
+	the_attribute(attrname_t(0,"")),
 	the_element(""),
 	the_PCDATA(""),
 	the_PITarget(""),
 	the_entity(0),
 	term_pos(0),
 	last_pos(0),
-	uri(URI(_uri).hashkey()),
+	uri(URI(_baseuri+'/'+_uri).hashkey()),
 	term_v(_term_v),
-	ctx_p(_ctx_p)
+	ctx_p(_ctx_p),
+	istore(*ctx_p->istore())
 {
-	istore_h = ctx_p->istore();
-	itemstore& istore = *istore_h;
-
 	itemref_t baseuri_ref = istore.eos();
 	new(istore) xs_stringValue(istore,_baseuri);
 
 	itemref_t uri_ref = istore.eos();
 	new(istore) xs_stringValue(istore,_uri);
 
-	ctx_p->docref() = istore.eos();
-	new(istore) document_node(ctx_p,baseuri_ref,uri_ref);
+	baseref = istore.eos();
+	document_node* d_p = new(istore) document_node(ctx_p,baseuri_ref,uri_ref);
+
+	nodeid_t nid = d_p->id();
+	ctx_p->put_dnid(uri, nid);
+	ctx_p->put_noderef(nid, baseref);
 }
 
 
@@ -79,22 +76,21 @@ inline void xml_handler::add_term(xml_term const& term)
 void xml_handler::adup(const char* buf, int offset, int length)
 {
 	if (length==0) return;
-	the_attribute = string(buf,offset,length);
-	string prefix("");
-	string name("");
-	string::size_type loc = the_attribute.find(':', 0);
+	string name(buf,offset,length);
+	string prefix(NON_PREFIX);
+	string::size_type loc = name.find(':', 0);
 	if (loc!=string::npos) {
-		prefix = the_attribute.substr(0,loc);
-		name = the_attribute.substr(loc+1);
-	}
-	else {
-		name = the_attribute;
+		prefix = name.substr(0,loc);
+		name = name.substr(loc+1);
 	}
 
+	// find namespace
+	itemref_t uriref = istore.namespace(prefix);
+	the_attribute = attrname_t(uriref,name);
+
 	// store for load on start tag close
-	//rchandle<QName> qname_h = new QName(the_attribute);
-	uint32_t qname_id = 0; // qnpool_h->put(the_docid,qname_h);
-	attr_v.push_back(attrpair_t(qname_id,""));
+	qnamepair_t qn = istore.add_qname(uriref,name);
+	attr_v.push_back(attrpair_t(qn,""));
 }
 
 
@@ -103,6 +99,12 @@ void xml_handler::aname(const char* buf, int offset, int length)
 {
 	if (length==0) return;
 	the_attribute = string(buf,offset,length);
+	string::size_type n = the_attribute.find(':');
+	if (n!=string::npos) {
+		string prefix = the_attribute.substr(0,n);
+		nskey_t nskey;
+		ctx_p->get_nskey(prefix,nskey);
+	}
 }
 
 
@@ -114,7 +116,6 @@ void xml_handler::aval(const char* buf, int offset, int length)
 #endif
 	if (length==0) return;
 	const char* p = &buf[offset];
-
 	tokenbuf tokbuf(p,0,length,DELIMSET);
 	tokbuf.set_lowercase();
 	tokenbuf::token_iterator it = tokbuf.begin();
@@ -131,11 +132,9 @@ void xml_handler::aval(const char* buf, int offset, int length)
 	}
 	
 	// store 
-	itemstore& istore = *ctx_p->istore();
-	itemref_t ref = istore.eos();
-	new (istore) qname_value(ctx_p,the_attribute);
-	attr_v.push_back(attrpair_t(ref,string(buf,offset,length)));
-
+	itemref_t attr_ref = istore.eos();
+	new(istore) qname_value(istore,the_attribute.URIEF,the_attribute.ATTRNAME);
+	attr_v.push_back(attrpair_t(attr_ref,string(buf,offset,length)));
 }
 
 
@@ -157,7 +156,9 @@ cout << '&' << string(buf,offset,length) << ';' << endl;
 void xml_handler::flush_textbuf_as_text_node()
 {
 	if (textbuf.str().length()>0) {
-		new (*istore_h) text_node(ctx_p, textbuf.str());
+		itemref_t ref = istore.eos();
+		text_node* t_p = new(istore) text_node(ctx_p, textbuf.str());
+		ctx_p->put_noderef(t_p->id(),ref);
 		textbuf.str("");
 	}
 }
@@ -172,6 +173,12 @@ cout << "===== eof =====" << endl;
 
 	// serialize concatenated text node
 	flush_textbuf_as_text_node();
+
+	// set document_node length
+	node* n_p =  new(istore,baseref) node();
+	n_p->length() = istore.eos() - baseref;
+	cout << TRACE << " : set length = " << (istore.eos() - baseref) << endl;
+	cout << TRACE << " : baseref = " << baseref << endl;
 }
 
 
@@ -179,20 +186,34 @@ cout << "===== eof =====" << endl;
 void xml_handler::etag(const char* buf, int offset, int length)
 {
 	if (length==0) return;
-	string etag0(buf,offset,length);
+	qnamekey_t key = hashfun::h64(string(buf,offset,length));// XXX
 
 	// serialize concatenated text node
 	flush_textbuf_as_text_node();
 	
 	// clear stack to matching tag
-	uint32_t etag0_id;
-	int k = top;
-	while (k>0) {
-		uint32_t tag_id = the_id_stack[--k];
-		if (tag_id==etag0_id) break;
+	stack<elempair_t> recover_stack;
+	while (!node_stack.empty()) {
+		elempair_t ep = node_stack.top();
+		node_stack.pop();
+		if (ep.first==key) {
+			itemref_t ref = ep.second;
+			itemref_t eref = istore.eos();
+			node* n_p = new(istore,ref) node();
+			n_p->m_length = (eref - ref);
+			cout << TRACE << " : set length = " << (eref - ref) << endl;
+			cout << TRACE << " : length = " << n_p->m_length << endl;
+			break;
+		}
+		else {
+			recover_stack.push(ep);
+		}
 	}
-	if (k==0) return;
-	top = k;
+	while (!recover_stack.empty()) {
+		elempair_t ep= recover_stack.top();
+		recover_stack.pop();
+		node_stack.push(ep);
+	}
 }
 
 
@@ -200,11 +221,14 @@ void xml_handler::etag(const char* buf, int offset, int length)
 void xml_handler::gi(const char* buf, int offset, int length)
 {
 	if (length==0) return;
-	itemstore& istore = *istore_h;
+	string name(buf,offset,length);
+	name_stack[top++] = name;
 	itemref_t qname_ref = istore.eos();
-	new(istore) qname_value(ctx_p,string(buf,0,length));
-	the_element = istore.eos();
-	new(istore) element_node(ctx_p,qname_ref);
+	qname_value* q_p = new(istore) qname_value(ctx_p,name);
+	itemref_t ref = istore.eos();
+	element_node* e_p = new(istore) element_node(ctx_p,qname_ref);
+	ctx_p->put_noderef(e_p->id(),ref);
+	node_stack.push(elempair_t(q_p->qnamekey(),ref));
 
 	// serialize concatenated text node
 	flush_textbuf_as_text_node();
@@ -226,22 +250,22 @@ void xml_handler::add_term(
 		add_term(xml_term(term, uri, pos));
 	}
 	if (top>=1) {
-		e = the_name_stack[top-1];
+		e = name_stack[top-1];
 		e += "/word::"+term;
 		if (e_indexing) add_term(xml_term(e, uri, pos));
 	}
 	if (top>=2) {
-		p = the_name_stack[top-2];
+		p = name_stack[top-2];
 		p += "/child::"+e;
 		if (p_indexing) add_term(xml_term(p, uri, pos));
 	}
 	if (top>=3) {
-		string gp = the_name_stack[top-3];
+		string gp = name_stack[top-3];
 		gp += "/child::"+p;
 		if (gp_indexing) add_term(xml_term(gp, uri, pos));
 	}
 	if (top>=4) {
-		ggp = the_name_stack[top-4];
+		ggp = name_stack[top-4];
 		ggp += "/child::"+gp;
 		if (ggp_indexing) add_term(xml_term(ggp, uri, pos));
 	}
@@ -251,7 +275,7 @@ void xml_handler::add_term(
 // parsed content (tag body) callback
 void xml_handler::pcdata(const char* buf, int offset, int length)
 {
-#ifdef DEBUG2
+#ifdef DEBUG
 	cout << "pcata = |"<<string(buf,offset,length)<<"| ["<<length<<"]\n";
 #endif
 
@@ -265,8 +289,8 @@ void xml_handler::pcdata(const char* buf, int offset, int length)
 	tokenbuf::token_iterator it = tokbuf.begin();
 	for (;it!=tokbuf.end(); ++it) {
 		string const& term = *it;
-#ifdef DEBUG2
-		cout << "pcdata::term = "<<term<< endl<<"it.get_token_pos() = "<<it.get_token_pos()<<endl;
+#ifdef DEBUG
+		cout << "pcdata::term = "<<term<<", pos = "<<it.get_token_pos()<<endl;
 #endif
 		if (term.length()==0) continue;
 		add_term(term, uri, term_pos);
@@ -311,17 +335,15 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 	cout << ">" << endl;
 #endif
 
-	// serialize: element QName
-	new(*istore_h) element_node(ctx_p,buf,length);
-
 	// serialize attribute list
 	vector<attrpair_t>::const_iterator it = attr_v.begin();
 	for (; it!=attr_v.end(); ++it) {
   	attrpair_t p = *it;
-		//cout << "put(ATTR_CODE)\n";
 		itemref_t qname_ref = p.first;
 		string val = p.second;
-		new (*istore_h) attribute_node(ctx_p,qname_ref,val);
+		itemref_t ref = istore.eos();
+		attribute_node* a_p = new(istore) attribute_node(ctx_p,qname_ref,val);
+		ctx_p->put_noderef(a_p->id(), ref);
 	}
 	attr_v.clear();
 }

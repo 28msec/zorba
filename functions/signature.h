@@ -14,7 +14,7 @@
 #include "../types/sequence_type.h"
 #include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
-#include "../values/xs_primitive_values.h"
+#include "../values/nodes.h"
 
 #include <string>
 #include <vector>
