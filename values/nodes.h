@@ -60,7 +60,8 @@ class qname_value;
 
 class node : public item, public abstract_node
 {
-	std::string decode(node_kind_t) const;
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	uint32_t  m_gen;				// generation number
@@ -85,6 +86,7 @@ public:		// accessors
 	itemref_t& ref() { return m_ref; }
 	nodeid_t& id() { return m_id; }
 	nodeid_t& parentid() { return m_parentid; }
+	std::string decode(node_kind_t) const;
 
 public:		// XQuery interface
 	/**
@@ -314,6 +316,9 @@ class document_node : public node, public abstract_document_node
 {
 	friend class child_iterator;
 
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
 	nodeid_t m_baseuri;		// document base URI
 	nodeid_t m_uri;				// document URI
@@ -394,6 +399,9 @@ public:		// output and debugging
 class element_node : public node, public abstract_element_node
 {
 	friend class child_iterator;
+
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	nodeid_t m_qname;				// element QName
@@ -483,6 +491,9 @@ class attribute_node : public node, public abstract_attribute_node
 {
 	friend class child_iterator;
 
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
 	nodeid_t m_qname;
 	char rest[0];
@@ -545,6 +556,9 @@ class namespace_node : public node, public abstract_namespace_node
 {
 	friend class child_iterator;
 
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
 	nskey_t  m_nskey;
 	uint32_t m_uri_offset;
@@ -597,6 +611,9 @@ class pi_node : public node, public abstract_pi_node
 {
 	friend class child_iterator;
 
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
 	uint32_t m_content_offset;
 	char rest[0];
@@ -642,6 +659,9 @@ public:		// output, debugging
 class comment_node : public node, public abstract_comment_node
 {
 	friend class child_iterator;
+
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	char rest[0];
@@ -695,6 +715,9 @@ class text_node : public node, abstract_text_node
 {
 	friend class child_iterator;
 
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
 	char rest[0];
 
@@ -734,6 +757,9 @@ public:		// output/debugging
 class collection_node : public node
 {
 	friend class child_iterator;
+
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
 
 public:
 	iterator_t base_uri() const;

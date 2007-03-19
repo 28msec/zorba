@@ -27,7 +27,7 @@ class context;
 |	Base class for the value hierarchy
 |_______________________________________________________________________*/
 
-class object
+class object : public abstract_object
 {
 public:
 	object() {}
@@ -41,7 +41,7 @@ public:
 |	'exception' encapsulates an xquery exception.
 |_______________________________________________________________________*/
 
-class xquery_exception : public object
+class xquery_exception : public object, public abstract_xquery_exception
 {
 public:
 	xquery_exception() {}
@@ -57,7 +57,7 @@ public:
 |	[http://www.w3.org/TR/xquery-full-text/]
 |_______________________________________________________________________*/
 
-class ft_value : public object
+class ft_value : public object, public abstract_ft_value
 {
 public:
 	ft_value() {}
@@ -73,7 +73,7 @@ public:
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-class value	: public object
+class value	: public object, public abstract_value
 {
 public:
 	sequence_type_t m_type;
@@ -139,7 +139,7 @@ public:		// XQuery interface
 |	'atomic_value' encapsulates values of primitive or derived types
 |_______________________________________________________________________*/
 
-class atomic_value : public item
+class atomic_value : public item, public abstract_atomic_value
 {
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
