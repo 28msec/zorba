@@ -18,12 +18,21 @@
 #define XQP_ABSTRACT_NODES_H
 
 #include "abstract_values.h"
-#include "abstract_iterator.h"
+#include "../runtime/abstract_iterator.h"
+#include "../util/rchandle.h"
+#include <string>
 
 namespace xqp {
 
 class abstract_context;
 class abstract_itemstore;
+
+class abstract_nodeid
+{
+public:
+	bool operator==(abstract_nodeid& id);
+};
+
 
 /*______________________________________________________________________
 | 6.0 Node
@@ -50,7 +59,7 @@ class abstract_itemstore;
 
 class abstract_node : public abstract_item
 {
-public:   // nodes types
+public:   // types
 	enum node_kind_t {
 		doc_kind,
 		elem_kind,
@@ -58,8 +67,14 @@ public:   // nodes types
 		ns_kind,
 		pi_kind,
 		text_kind,
-		comment_kind
+		comment_kind,
+
+		// zorba-specific:
+		collection_kind,
+		unknown_kind
 	};
+
+	typedef rchandle<abstract_iterator> iterator_t;
 
 public:		// accessors
 	abstract_nodeid id();
@@ -68,33 +83,33 @@ public:		// accessors
 public:
 	// XDM interface
 	enum node_kind_t node_kind();
-	string string_value();
-	rchandle<abstract_iterator> attributes();
-	rchandle<abstract_iterator> base_uri();
-	rchandle<abstract_iterator> document_uri();
-	rchandle<abstract_iterator> children();
-	rchandle<abstract_iterator> namespace_nodes();
-	rchandle<abstract_iterator> node_name();
-	rchandle<abstract_iterator> parent();
-	rchandle<abstract_iterator> type_name();
-	rchandle<abstract_iterator> typed_value();
+	std::string string_value();
+	iterator_t attributes();
+	iterator_t base_uri();
+	iterator_t document_uri();
+	iterator_t children();
+	iterator_t namespace_nodes();
+	iterator_t node_name();
+	iterator_t parent();
+	iterator_t type_name();
+	iterator_t typed_value();
 
 	bool is_id();
 	bool is_idrefs();
 	bool nilled();
 
 	// update facility
-  void insertBefore(abstract_iterator newNodes) = 0;
-  void insertAfter(abstract_iterator newNodes) = 0;
-  void insertInto(abstract_iterator newNodes) = 0;
-  void insertIntoAsFirst(abstract_iterator newNodes) = 0;
-  void insertIntoAsLast(abstract_iterator newNodes) = 0;
-  void insertAttributes(abstract_iterator newNodes) = 0;
-  void delete() = 0;
-  void replaceNode(abstract_iterator newNodes) = 0;
-  void replaceValue(std:;string newValue) = 0;
-  void replaceElementContent(abstract_text_node newContent) = 0;
-  void rename(abstract_qname newName) = 0;
+  void insertBefore(iterator_t newNodes);
+  void insertAfter(iterator_t newNodes);
+  void insertInto(iterator_t newNodes);
+  void insertIntoAsFirst(iterator_t newNodes);
+  void insertIntoAsLast(iterator_t newNodes);
+  void insertAttributes(iterator_t newNodes);
+  void deleteNode();
+  void replaceNode(iterator_t newNodes);
+  void replaceValue(std::string newValue);
+  void replaceElementContent(abstract_text_node newContent);
+  void rename(abstract_qname newName);
 
 	// serialization testing
 	std::string toXML() const;
@@ -139,21 +154,22 @@ class abstract_document_node : public abstract_node
 public:		// XQuery interface
 	node_kind_t node_kind() const { return doc_kind; }
 
-	rchandle<abstract_iterator> string_value();
-	rchandle<abstract_iterator> base_uri();
-	rchandle<abstract_iterator> document_uri();
-	rchandle<abstract_iterator> children();
-	rchandle<abstract_iterator> namespaces();
-	rchandle<abstract_iterator> typed_value();
+	std::string string_value();
+	iterator_t base_uri();
+	iterator_t document_uri();
+	iterator_t children();
+	iterator_t namespaces();
+	iterator_t typed_value();
 
-	rchandle<abstract_iterator> is-id() const { return NULL; }
-	rchandle<abstract_iterator> is-idrefs const { return NULL; }
-	rchandle<abstract_iterator> namespace-bindings const { return NULL; }
-	rchandle<abstract_iterator> namespace-nodes const { return NULL; }
-	rchandle<abstract_iterator> nilled const { return NULL; }
-	rchandle<abstract_iterator> node-kind const { return NULL; }
-	rchandle<abstract_iterator> node-name const { return NULL; }
-	rchandle<abstract_iterator> parent const { return NULL; }
+	iterator_t namespace-bindings const { return NULL; }
+	iterator_t namespace-nodes const { return NULL; }
+	iterator_t node-kind const { return NULL; }
+	iterator_t node-name const { return NULL; }
+	iterator_t parent const { return NULL; }
+
+	bool is-id() const { return false; }
+	bool is-idrefs const { return false; }
+	bool nilled const { return false; }
 
 };
 
@@ -196,16 +212,16 @@ class abstract_element_node : public abstract_node
 public:
 	node_kind_t node_kind() const { return elem_kind; }
 
-	rchandle<abstract_iterator> string_value();
-	rchandle<abstract_iterator> attributes();
-	rchandle<abstract_iterator> base_uri();
-	rchandle<abstract_iterator> children();
-	rchandle<abstract_iterator> namespace_bindings();
-	rchandle<abstract_iterator> namespace_nodes();
-	rchandle<abstract_iterator> node_name();
-	rchandle<abstract_iterator> parent();
-	rchandle<abstract_iterator> doc();
-	rchandle<abstract_iterator> typed_value();
+	std::string string_value();
+	iterator_t attributes();
+	iterator_t base_uri();
+	iterator_t children();
+	iterator_t namespace_bindings();
+	iterator_t namespace_nodes();
+	iterator_t node_name();
+	iterator_t parent();
+	iterator_t doc();
+	iterator_t typed_value();
 
 	bool is_nilled();
 	bool is_id();
@@ -239,11 +255,11 @@ class abstract_attribute_node : public abstract_node
 public:
 	node_kind_t node_kind() const { return attr_kind; }
 	
-	rchandle<abstract_iterator> base_uri();
-	rchandle<abstract_iterator> node_name();
-	rchandle<abstract_iterator> parent();
-	rchandle<abstract_iterator> typed_value();
-	rchandle<abstract_iterator> string_value();
+	iterator_t base_uri();
+	iterator_t node_name();
+	iterator_t parent();
+	iterator_t typed_value();
+	iterator_t string_value();
 
 	bool is_id();
 	bool is_idref();
@@ -267,10 +283,10 @@ class abstract_namespace_node : public abstract_node
 public:
 	node_kind_t node_kind() const { return ns_kind; }
 
-	rchandle<abstract_iterator> node_name();
-	rchandle<abstract_iterator> parent();
-	rchandle<abstract_iterator> typed_value();
-	rchandle<abstract_iterator> string_value();
+	iterator_t node_name();
+	iterator_t parent();
+	iterator_t typed_value();
+	iterator_t string_value();
 	
 };
 
@@ -286,11 +302,11 @@ class abstract_pi_node : public abstract_node
 public:
 	node_kind_t node_kind() const { return pi_kind; }
 
-	rchandle<abstract_iterator> string_value();
-	rchandle<abstract_iterator> base_uri();
-	rchandle<abstract_iterator> parent();
-	rchandle<abstract_iterator> typed_value();
-	rchandle<abstract_iterator> node_name();
+	iterator_t string_value();
+	iterator_t base_uri();
+	iterator_t parent();
+	iterator_t typed_value();
+	iterator_t node_name();
 
 };
 
@@ -305,10 +321,10 @@ class abstract_comment_node : public abstract_node
 public:
 	enum node_kind_t node_kind() const { return comment_kind; }
 
-	rchandle<abstract_iterator> string_value();
-	rchandle<abstract_iterator> base_uri();
-	rchandle<abstract_iterator> parent();
-	rchandle<abstract_iterator> typed_value();
+	iterator_t string_value();
+	iterator_t base_uri();
+	iterator_t parent();
+	iterator_t typed_value();
 
 };
 
@@ -333,10 +349,10 @@ class abstract_text_node : public abstract_node
 public:
 	enum node_kind_t node_kind() const { return text_kind; }
 
-	rchandle<abstract_iterator> string_value();
-	rchandle<abstract_iterator> base_uri();
-	rchandle<abstract_iterator> parent();
-	rchandle<abstract_iterator> typed_value();
+	iterator_t string_value();
+	iterator_t base_uri();
+	iterator_t parent();
+	iterator_t typed_value();
 
 };
 
