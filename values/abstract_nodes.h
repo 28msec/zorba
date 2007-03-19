@@ -34,6 +34,9 @@ public:
 };
 
 
+class abstract_text_node;
+class abstract_qname;
+
 /*______________________________________________________________________
 | 6.0 Node
 |
@@ -107,9 +110,9 @@ public:
   void insertAttributes(iterator_t newNodes);
   void deleteNode();
   void replaceNode(iterator_t newNodes);
-  void replaceValue(std::string newValue);
-  void replaceElementContent(abstract_text_node newContent);
-  void rename(abstract_qname newName);
+  void replaceValue(const std::string& newValue);
+  void replaceElementContent(const abstract_text_node& newContent);
+  void rename(const abstract_qname& newName);
 
 	// serialization testing
 	std::string toXML() const;
@@ -158,18 +161,15 @@ public:		// XQuery interface
 	iterator_t base_uri();
 	iterator_t document_uri();
 	iterator_t children();
-	iterator_t namespaces();
 	iterator_t typed_value();
 
-	iterator_t namespace-bindings const { return NULL; }
-	iterator_t namespace-nodes const { return NULL; }
-	iterator_t node-kind const { return NULL; }
-	iterator_t node-name const { return NULL; }
-	iterator_t parent const { return NULL; }
+	iterator_t namespaces() const { return NULL; }
+	iterator_t node_name() const { return NULL; }
+	iterator_t parent() const { return NULL; }
 
-	bool is-id() const { return false; }
-	bool is-idrefs const { return false; }
-	bool nilled const { return false; }
+	bool is_id() const { return false; }
+	bool is_idrefs() const { return false; }
+	bool nilled() const { return false; }
 
 };
 
@@ -216,7 +216,6 @@ public:
 	iterator_t attributes();
 	iterator_t base_uri();
 	iterator_t children();
-	iterator_t namespace_bindings();
 	iterator_t namespace_nodes();
 	iterator_t node_name();
 	iterator_t parent();

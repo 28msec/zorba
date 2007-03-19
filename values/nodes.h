@@ -17,6 +17,7 @@
 #ifndef XQP_NODES_H
 #define XQP_NODES_H
 
+#include "abstract_nodes.h"
 #include "values.h"
 
 #include "../context/common.h"
@@ -57,20 +58,8 @@ class qname_value;
 |	for determining the result. 
 |_______________________________________________________________________*/
 
-class node : public item
+class node : public item, public abstract_node
 {
-public:   // nodes types
-	enum node_kind_t {
-		doc_kind,
-		elem_kind,
-		attr_kind,
-		ns_kind,
-		pi_kind,
-		text_kind,
-		comment_kind,
-		collection_kind,			// zorba-specific
-		uninitialized_kind
-	};
 	std::string decode(node_kind_t) const;
 
 protected:
@@ -116,19 +105,19 @@ public:		// XQuery interface
 	 *	sequence containing zero or more Attribute Nodes. The order of 
 	 *	Attribute Nodes is stable but implementation dependent. 
 	 */
-	rchandle<abstract_iterator> attributes() const;
+	iterator_t attributes() const;
 	
 	/**
 	 *	The dm:base-uri accessor returns the base URI of a node as a sequence 
 	 *	containing zero or one URI reference. 
 	 */
-	rchandle<abstract_iterator> base_uri() const;
+	iterator_t base_uri() const;
 	
 	/**
 	 *	The dm:children accessor returns the children of a node as a sequence 
 	 *	containing zero or more nodes. 
 	 */
-	rchandle<abstract_iterator> children() const;
+	iterator_t children() const;
 	
 	/**
 	 *	The dm:document-uri accessor returns the absolute URI of the resource 
@@ -137,7 +126,7 @@ public:		// XQuery interface
 	 *	absolute when the Document Node is constructed, or if it is used on a 
 	 *	node other than a Document Node, the empty sequence is returned. 
 	 */
-	rchandle<abstract_iterator> document_uri() const;
+	iterator_t document_uri() const;
 	
 	/**
 	 *	The dm:namespace-bindings accessor returns the dynamic, in-scope 
@@ -146,7 +135,7 @@ public:		// XQuery interface
 	 *	Note: this accessor and the namespace-nodes accessor provide two views 
 	 *	of the same information. 
 	 */
-	rchandle<abstract_iterator> namespace_bindings() const;
+	iterator_t namespace_bindings() const;
 	
 	/**
 	 *	The dm:namespace-nodes accessor returns the dynamic, in-scope 
@@ -156,32 +145,32 @@ public:		// XQuery interface
 	 *	Note: this accessor and the namespace-bindings accessor provide two 
 	 *	views of the same information.
 	 */
-	rchandle<abstract_iterator> namespace_nodes() const;
+	iterator_t namespace_nodes() const;
 	
 	/**
 	 *	The dm:node-name accessor returns the name of the node as a sequence 
 	 *	of zero or one xs:QNames. Note that the QName value includes an 
 	 *	optional prefix as described in 3.3.3 QNames and NOTATIONS. 
 	 */
-	rchandle<abstract_iterator> node_name() const;
+	iterator_t node_name() const;
 	
 	/**
 	 *	The dm:parent accessor returns the parent of a node as a sequence 
 	 *	containing zero or one nodes. 
 	 */
-	rchandle<abstract_iterator> parent() const;
+	iterator_t parent() const;
 	
 	/**
 	 *	The dm:type-name accessor returns the name of the schema type of a 
 	 *	node as a sequence of zero or one xs:QNames. 
 	 */
-	rchandle<abstract_iterator> type_name() const;
+	iterator_t type_name() const;
 	
 	/**
 	 *	The dm:typed-value accessor returns the typed-value of the node as a 
 	 *	sequence of zero or more atomic values. 
 	 */
-	rchandle<abstract_iterator> typed_value() const;
+	iterator_t typed_value() const;
 		
 	/**
 	 *	The dm:is-id accessor returns true if the node is an XML ID.
@@ -321,7 +310,7 @@ class namespace_node;
 |	functions. 
 |_______________________________________________________________________*/
 
-class document_node : public node
+class document_node : public node, public abstract_document_node
 {
 	friend class child_iterator;
 
@@ -349,16 +338,15 @@ public:		// storage interface
 public:		// accessors
 	string baseuri(context*) const;
 	string uri(context*) const;
-	rchandle<abstract_iterator> children(context*) const;
+	iterator_t children(context*) const;
 
 public:		// XQuery interface
-	node_kind_t node_kind() const { return doc_kind; }
 	string string_value() const;
-	rchandle<abstract_iterator> base_uri() const;
-	rchandle<abstract_iterator> document_uri() const;
-	rchandle<abstract_iterator> children() const;
-	rchandle<abstract_iterator> namespaces() const;
-	rchandle<abstract_iterator> typed_value() const;
+	iterator_t base_uri() const;
+	iterator_t document_uri() const;
+	iterator_t children() const;
+	iterator_t namespaces() const;
+	iterator_t typed_value() const;
 
 private:	// ctor,dtor
 	document_node(document_node&) {}
@@ -403,7 +391,7 @@ public:		// output and debugging
 |			zero-length string. 
 |_______________________________________________________________________*/
 
-class element_node : public node
+class element_node : public node, public abstract_element_node
 {
 	friend class child_iterator;
 
@@ -445,17 +433,16 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery interface
-	node_kind_t node_kind() const { return elem_kind; }
 	string string_value() const;
-	rchandle<abstract_iterator> attributes() const;
-	rchandle<abstract_iterator> base_uri() const;
-	rchandle<abstract_iterator> children() const;
-	rchandle<abstract_iterator> children(context*) const;
-	rchandle<abstract_iterator> namespace_nodes() const;
-	rchandle<abstract_iterator> node_name() const;
-	rchandle<abstract_iterator> parent() const;
-	rchandle<abstract_iterator> doc() const;
-	rchandle<abstract_iterator> typed_value() const;
+	iterator_t attributes() const;
+	iterator_t base_uri() const;
+	iterator_t children() const;
+	iterator_t children(context*) const;
+	iterator_t namespace_nodes() const;
+	iterator_t node_name() const;
+	iterator_t parent() const;
+	iterator_t doc() const;
+	iterator_t typed_value() const;
 
 	bool is_nilled() const { return false; }
 	bool is_id() const { return (m_type & ID_SUB5); }
@@ -492,7 +479,7 @@ public:		// output and debugging
 |	parent element. 
 |_______________________________________________________________________*/
 
-class attribute_node : public node
+class attribute_node : public node, public abstract_attribute_node
 {
 	friend class child_iterator;
 
@@ -523,15 +510,14 @@ public:	// storage interface
 	void  operator delete(void*) {}
 
 public:	// XQuery interface
-	node_kind_t node_kind() const { return attr_kind; }
 	bool is_id() const { return (m_type & ID_SUB5); }
 	bool is_idref() const { return (m_type & IDREF_SUB5); }
 	const char* name() const;
 	
-	rchandle<abstract_iterator> base_uri() const;
-	rchandle<abstract_iterator> node_name() const;
-	rchandle<abstract_iterator> parent() const;
-	rchandle<abstract_iterator> typed_value() const;
+	iterator_t base_uri() const;
+	iterator_t node_name() const;
+	iterator_t parent() const;
+	iterator_t typed_value() const;
 	string string_value() const;
 
 private:	//ctor,dtor - lock out
@@ -555,7 +541,7 @@ public:		// output,debugging
 |	
 |	The data model permits Namespace Nodes without parents. 
 |_______________________________________________________________________*/
-class namespace_node : public node
+class namespace_node : public node, public abstract_namespace_node
 {
 	friend class child_iterator;
 
@@ -583,10 +569,9 @@ public:	// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery interface
-	node_kind_t node_kind() const { return ns_kind; }
-	rchandle<abstract_iterator> node_name() const;
-	rchandle<abstract_iterator> parent() const;
-	rchandle<abstract_iterator> typed_value() const;
+	iterator_t node_name() const;
+	iterator_t parent() const;
+	iterator_t typed_value() const;
 	string string_value() const;
 
 	std::string prefix() const;
@@ -608,7 +593,7 @@ public:		// output, debugging
 |	 1. The string "?>" must not occur within the content.
 |	 2. The target must be an NCName.
 |_______________________________________________________________________*/
-class pi_node : public node
+class pi_node : public node, public abstract_pi_node
 {
 	friend class child_iterator;
 
@@ -633,12 +618,11 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery interface
-	node_kind_t node_kind() const { return pi_kind; }
 	string string_value() const;
-	rchandle<abstract_iterator> base_uri() const;
-	rchandle<abstract_iterator> parent() const;
-	rchandle<abstract_iterator> typed_value() const;
-	rchandle<abstract_iterator> node_name() const;
+	iterator_t base_uri() const;
+	iterator_t parent() const;
+	iterator_t typed_value() const;
+	iterator_t node_name() const;
 
 private:	//ctor,dtor - lock out
 	pi_node(pi_node&) {}
@@ -655,7 +639,7 @@ public:		// output, debugging
 | 6.6 Comment Nodes 
 |_______________________________________________________________________*/
 
-class comment_node : public node
+class comment_node : public node, public abstract_comment_node
 {
 	friend class child_iterator;
 
@@ -677,11 +661,10 @@ public:	// storage interface
 	void operator delete(void*) {}
 
 public:		// XQUery interface
-	enum node_kind_t node_kind() const { return comment_kind; }
 	string string_value() const;
-	rchandle<abstract_iterator> base_uri() const;
-	rchandle<abstract_iterator> parent() const;
-	rchandle<abstract_iterator> typed_value() const;
+	iterator_t base_uri() const;
+	iterator_t parent() const;
+	iterator_t typed_value() const;
 
 private:	//ctor,dtor - lock out
 	comment_node(comment_node&) {}
@@ -708,7 +691,7 @@ public:		// output, debugging
 |   is simply discarded.
 |_______________________________________________________________________*/
 
-class text_node : public node
+class text_node : public node, abstract_text_node
 {
 	friend class child_iterator;
 
@@ -731,11 +714,10 @@ public:		// accessors
 	std::string str() const;
 
 public:		// XQuery interface
-	enum node_kind_t node_kind() const { return text_kind; }
 	string string_value() const;
-	rchandle<abstract_iterator> base_uri() const;
-	rchandle<abstract_iterator> parent() const;
-	rchandle<abstract_iterator> typed_value() const;
+	iterator_t base_uri() const;
+	iterator_t parent() const;
+	iterator_t typed_value() const;
 
 private:	//ctor,dtor
 	text_node(text_node&) {}
@@ -754,10 +736,9 @@ class collection_node : public node
 	friend class child_iterator;
 
 public:
-	node_kind_t node_kind() const { return collection_kind; }
-	rchandle<abstract_iterator> base_uri() const;
-	rchandle<abstract_iterator> collection_uri() const;
-	rchandle<abstract_iterator> children() const;
+	iterator_t base_uri() const;
+	iterator_t collection_uri() const;
+	iterator_t children() const;
 
 private:	// ctor,dtor - lock out
 	collection_node(const collection_node&) {}
@@ -776,6 +757,9 @@ public:		// output,debugging
 
 class qname_value : public atomic_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
 	itemref_t m_uriref;
 	char rest[0];
@@ -807,8 +791,8 @@ public:		// output,debugging
 	std::ostream& put(std::ostream& os) const;
 	string describe() const;
 
-	rchandle<abstract_iterator> atomized_value() const;
-	rchandle<abstract_iterator> effective_boolean_value() const;
+	iterator_t atomized_value() const;
+	iterator_t effective_boolean_value() const;
 	std::string string_value() const;
 
 };

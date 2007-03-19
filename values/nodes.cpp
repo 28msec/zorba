@@ -35,7 +35,7 @@ string node::decode(node_kind_t kind) const
 	case text_kind: return "text";
 	case comment_kind: return "comment";
 	case collection_kind: return "collection";
-	case uninitialized_kind: return "uninitialized";
+	case unknown_kind: return "unknown";
 	default: return "??";
 	}
 }
@@ -54,11 +54,6 @@ node::node(
 	m_id(id),
 	m_parentid(parentid)
 {
-}
-
-enum node::node_kind_t node::node_kind() const
-{
-	return uninitialized_kind;
 }
 
 rchandle<abstract_iterator> node::attributes() const
