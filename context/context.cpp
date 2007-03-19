@@ -12,6 +12,7 @@
 
 #include "../runtime/iterator.h"
 #include "../types/sequence_type.h"
+#include "../util/hashfun.h"
 #include "../util/tracer.h"
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
@@ -62,7 +63,7 @@ context::context()
 	available_collections(1024,0.6),
 	default_collection(NULL),
 	counters("data/nodeid",256),
-	string_store_h(new fxcharheap(1<<16)),
+	string_store_h(new fxcharheap(1<<16)),		// XXX obsolete
 	istore_h(new itemstore("data/itemstore")),
 
 	ctx_nodeid(0),
@@ -70,10 +71,19 @@ context::context()
 	ctx_nsseqid(0),
 	ctx_nsseqref(0),
 
+	nskeymap("data/nskeymap", 0.6f, 6),
+	urimap("data/urimap", 0.6f, 6),
 	docindex("data/docindex", 0.6f, 6),
+	nodeindex("data/nodeindex", 0.6f, 6),
 	err(0),
 	emptyseq(&item_iterator::empty_sequence)
 {
+	// XXX read these out of a config file
+	addns("xml","http://www.w3.org/XML/1998/namespace");
+	addns("xmlns","http://www.w3.org/2000/xmlns/");
+	addns("xh","http://www.w3.org/1999/xhtml/");
+	// .. and others
+
 }
 
 context::~context()
@@ -191,32 +201,78 @@ uint32_t context::next_gen()
  :  docindex                               :
  :.........................................*/
 
-bool context::put_docuri(
-	char const* uri,
-	uint32_t dnid)
-{
-	return docindex.put(uri, dnid);
-}
-
-bool context::put_docuri(
-	std::string const& uri,
-	uint32_t dnid)
+bool context::put_dnid(
+	urikey_t uri,
+	nodeid_t dnid)
 {
 	return docindex.put(uri, dnid);
 }
 
 bool context::get_dnid(
-	char const* uri,
-	uint32_t & dnid) const
+	urikey_t uri,
+	nodeid_t & dnid) const
 {
 	return docindex.get(uri, dnid);
 }
 
-bool context::get_dnid(
-	std::string const& uri,
-	uint32_t & dnid) const
+
+/*..........................................
+ :  nodeindex                              :
+ :.........................................*/
+
+bool context::put_noderef(
+	nodeid_t id,
+	itemref_t ref)
 {
-	return docindex.get(uri, dnid);
+	return nodeindex.put(id, ref);
+}
+
+bool context::get_noderef(
+	nodeid_t id,
+	itemref_t& ref) const
+{
+	return nodeindex.get(id, ref);
+}
+
+
+/*..........................................
+ :  namespaces                             :
+ :.........................................*/
+
+bool context::get_nskey(
+	const string& prefix,
+	nskey_t& key) const
+{
+	return nskeymap.get(prefix,key);
+}
+
+bool context::put_nskey(
+	const string& prefix,
+	nskey_t key) 
+{
+	return nskeymap.put(prefix,key);
+}
+
+bool context::get_uri(
+	const string& prefix,
+	string& uri) const
+{
+	return urimap.get(prefix,uri);
+}
+
+bool context::put_uri(
+	const string& prefix,
+	const string& uri) 
+{
+	return urimap.put(prefix,uri);
+}
+
+bool context::addns(
+	const string& prefix,
+	const string& uri) 
+{
+	if (!urimap.put(prefix,uri)) return false;
+	return nskeymap.put(prefix,hashfun::h64(uri));
 }
 
 

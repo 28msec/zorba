@@ -24,6 +24,7 @@
 #include "../util/xqp_exception.h"
 #include "../values/values.h"
 #include "../values/nodes.h"
+#include "../values/xs_primitive_values.h"
 
 #include <stack>
 #include <vector>
@@ -531,12 +532,15 @@ protected:
 	uint32_t ctx_docid;
 	itemref_t ctx_docref;
 
-	// in-scope namespaces
+	// namespaces
 	uint32_t ctx_nsseqid;
 	itemref_t ctx_nsseqref;
+	fxhashmap<nskey_t> nskeymap;			// map: prefix -> nskey
+	fxhashmap<string> urimap;					// map: prefix -> uri 
 
-	// doc index, map: uri -> document_node id
-	fxhashmap<uint32_t> docindex;
+	// node indexes
+	fxhash64map<nodeid_t> docindex;		// map: urikey -> doc node id
+	fxhash64map<itemref_t> nodeindex;	// map: nodeid -> node offset
 
 	// context error code
 	uint32_t err;
@@ -573,13 +577,20 @@ public:
 	void set_istore(rchandle<itemstore> _istore_h) { istore_h = _istore_h; }
 
 	// namespace service
-	bool namespace_uri(uint32_t uri_id, std::string & uri);
+	bool namespace_uri(uint32_t uri_id, std::string& uri);
+	bool get_nskey(const std::string& prefix, nskey_t&) const;
+	bool put_nskey(const std::string& prefix, nskey_t);
+	bool get_uri(const std::string& prefix, std::string& uri) const;
+	bool put_uri(const std::string& prefix, const std::string& uri);
+	bool addns(const std::string& prefix, const std::string& uri);
 
 	// docindex
-	bool put_docuri(char const* uri, uint32_t dnid);
-	bool put_docuri(std::string const& uri, uint32_t dnid);
-	bool get_dnid(char const* uri, uint32_t & dnid) const;
-	bool get_dnid(std::string const& uri, uint32_t & dnid) const;
+	bool put_dnid(urikey_t uri, nodeid_t);
+	bool get_dnid(urikey_t uri, nodeid_t&) const;
+
+	// nodeindex
+	bool put_noderef(nodeid_t, itemref_t);
+	bool get_noderef(nodeid_t, itemref_t&) const;
 
 	// errors
 	uint32_t get_error() const { return err; }
