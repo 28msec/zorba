@@ -18,15 +18,23 @@ class abstract_item;
 class abstract_iterator : public rcobject
 {
 public:
-	static abstract_iterator emptySequence;
+	// open: aquire resources
+	virtual void open() = 0;						
 
-public:
-	void open();								// aquire resources
-	void close();								// release resources
-	abstract_item* next(uint32_t d = 1);	// seek + delta (or NULL)
-	abstract_item* peek() const;					// current item (or NULL)
-	bool done() const;					// true <-> no more items
-	void rewind(); 							// equivalent to { close(); open() }
+	// close: release resources
+	virtual void close() = 0;
+
+	// next: seek + delta (or NULL)
+	virtual abstract_item* next(uint32_t d = 1) = 0;
+
+	// current item (or NULL)
+	virtual abstract_item* peek() const = 0;
+
+	// done => true <-> no more items
+	virtual bool done() const = 0;
+
+	// rewind: equivalent to { close(); open() }
+	virtual void rewind() = 0; 
 
 };
 

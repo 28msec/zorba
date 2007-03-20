@@ -10,12 +10,8 @@
 #define XQP_ITERATOR_H
 
 #include "abstract_iterator.h"
-
-#include "../util/list.h"
 #include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
 
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -29,14 +25,16 @@ class xs_doubleValue;
 class xs_intValue;
 class xs_longValue;
 
+
 class item_iterator : public abstract_iterator
 {
 protected:
   context* ctx_p;
 
 public:
-	item_iterator(context *);
-	item_iterator(const item_iterator&);
+	item_iterator() : ctx_p(NULL) {}
+	item_iterator(context* _ctx_p) : ctx_p(_ctx_p) {}
+	item_iterator(const item_iterator& it) : ctx_p(it.ctx_p) {}
 	virtual item_iterator& operator=(const item_iterator&);
 	virtual ~item_iterator() {}
 
@@ -58,14 +56,12 @@ public:
 };
 
 
-
 class item_const_iterator : public abstract_iterator
 {
 public:
-	item_const_iterator();
-	item_const_iterator(const item_const_iterator&);
+	item_const_iterator() {}
 	virtual item_const_iterator& operator=(const item_const_iterator&);
-	virtual ~item_const_iterator();
+	virtual ~item_const_iterator() {}
 
 public:	// abstract iterator interface
 	virtual void open() { }
@@ -121,23 +117,23 @@ public:	// manipulators
 class singleton_iterator : public item_const_iterator
 {
 protected:
-	abstract_item* i_p;
+	item* i_p;
 	bool done_b;
 
 public:	// abstract iterator interface
 	void open() { }
 	void close() { done_b = false; }
 	abstract_item* next(uint32_t delta=1) { done_b = true; return NULL; }
-	abstract_item* peek() const { return i_p; }
+	abstract_item* peek() const { return reinterpret_cast<abstract_item*>(i_p); }
 	bool done() const { return done_b; }
 	void rewind() { done_b = false; }
 
 public:	// C++ interface
-	item* operator*() const { return (item*)(i_p); }
+	item* operator*() const { return i_p; }
 	singleton_iterator& operator++() { done_b = true; return *this; }
 
 public:	// ctor,dtor
-	singleton_iterator(context *, abstract_item*);
+	singleton_iterator(context *, item*);
 	singleton_iterator(context *, const std::string&);
 	singleton_iterator(context *, bool);
 	singleton_iterator(context *, double);
@@ -160,7 +156,7 @@ protected:
 	rchandle<item_iterator> currit_h;
 	uint32_t it_counter;
 
-public:	// abstract iterator interface
+public:		// abstract iterator interface
 	void open();
 	void close();
 	abstract_item* next(uint32_t delta = 1);
@@ -168,7 +164,7 @@ public:	// abstract iterator interface
 	bool done() const;
 	void rewind();
 
-public:	// C++ interface
+public:		// C++ interface
 	item* operator*() const;
 	concat_iterator& operator++();
 
@@ -176,6 +172,7 @@ public:
 	concat_iterator(
 		context *,
 		std::vector<rchandle<item_iterator> >);
+
 	concat_iterator(const concat_iterator&);
 	concat_iterator& operator=(const concat_iterator&);
 	~concat_iterator();

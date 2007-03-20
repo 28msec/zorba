@@ -138,8 +138,9 @@ all : \
 	module_resolver \
 	schema_resolver \
 	xml_term \
-	xml_scanner \
-	xml_handler
+	xml_scanner 
+
+#xml_handler
 
 test : \
 	uri_resolver_test \

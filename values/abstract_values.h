@@ -1,8 +1,8 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: abstract_values.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ * $Id: abstract_values.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *	Copyright 2006-2007 FLWOR Foundation.  
  *  Author: John Cowan,Paul Pedersen
  *
  */
@@ -74,11 +74,12 @@ public:
 
 class abstract_item : public abstract_value
 {
-public:		// XQuery interface
+public:
+	sequence_type_t type() const;
 	std::string string_value() const;
 	iterator_t atomized_value() const;
-	iterator_t effective_boolean_value() const;
 
+	bool is_empty() const;
 	bool is_node() const;
 	bool is_atomic() const;
 };
@@ -92,20 +93,18 @@ public:		// XQuery interface
 class abstract_atomic_value : public abstract_item
 {
 public:		// accessors
+	sequence_type_t type() const;
   std::ostream& put(std::ostream&) const;
   std::string describe() const;
 
-public:		// XQuery interface
+public:
 	std::string string_value() const;
 	iterator_t atomized_value() const;
-	iterator_t effective_boolean_value() const;
 
-	bool is_sequence() const;
 	bool is_empty() const;
 	bool is_node() const;
 	bool is_atomic() const;
 };
-
 
 
 /*______________________________________________________________________

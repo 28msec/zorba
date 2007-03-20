@@ -32,7 +32,7 @@ signature::signature(
 	string const& fname ,
 	sequence_type_t return_type)
 :
-	qname_p(new(*ctx_p->istore()) qname_value(ctx_p,fname))
+	qname_p(NULL)		// XXX fix this
 {
 	arg_v.push_back(return_type);
 }

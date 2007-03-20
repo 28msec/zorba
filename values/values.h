@@ -41,7 +41,8 @@ public:
 |	'exception' encapsulates an xquery exception.
 |_______________________________________________________________________*/
 
-class xquery_exception : public object, public abstract_xquery_exception
+class xquery_exception :	public object,
+													public virtual abstract_xquery_exception
 {
 public:
 	xquery_exception() {}
@@ -57,7 +58,8 @@ public:
 |	[http://www.w3.org/TR/xquery-full-text/]
 |_______________________________________________________________________*/
 
-class ft_value : public object, public abstract_ft_value
+class ft_value :	public object,
+									public abstract_ft_value
 {
 public:
 	ft_value() {}
@@ -73,7 +75,8 @@ public:
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-class value	: public object, public abstract_value
+class value	: public object,
+							public abstract_value
 {
 public:
 	sequence_type_t m_type;
@@ -92,9 +95,9 @@ public:
 	~value() {}
 
 public:		// accessors
-	sequence_type_t type() const { return m_type; }
 	uint32_t length() const { return m_length; }
 	uint32_t& length() { return m_length; }
+	sequence_type_t type() const { return m_type; }
 
 };
 
@@ -105,7 +108,8 @@ public:		// accessors
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class item : public value, public abstract_item
+class item :	public value,
+							public abstract_item
 {
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
@@ -120,16 +124,17 @@ public:
 	~item() {}
 
 public:		// accessors
-  std::ostream& put(std::ostream&) const;
-  std::string describe() const;
+  std::ostream& put(std::ostream& os) const { return os; }
+  std::string describe() const { return "item()"; }
+	sequence_type_t type() const { return m_type; }
 
 public:		// XQuery interface
-	rchandle<item_iterator> atomized_value() const;
-	rchandle<item_iterator> effective_boolean_value() const;
+	iterator_t atomized_value() const { return NULL; }
+	string string_value() const { return ""; }
 
-	string string_value() const;
-	bool is_node() const;
-	bool is_atomic() const;
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return false; }
 };
 
 
@@ -139,7 +144,8 @@ public:		// XQuery interface
 |	'atomic_value' encapsulates values of primitive or derived types
 |_______________________________________________________________________*/
 
-class atomic_value : public item, public abstract_atomic_value
+class atomic_value :	public item, 
+											public abstract_atomic_value
 {
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
@@ -154,15 +160,14 @@ public:
 	~atomic_value() {}
 
 public:		// accessors
-  std::ostream& put(std::ostream&) const;
-  std::string describe() const;
+  std::ostream& put(std::ostream& os) const { return os; }
+  std::string describe() const { return "xs_atomicValue"; }
+	sequence_type_t type() const { return m_type; }
 
 public:		// XQuery interface
-	rchandle<item_iterator> atomized_value() const;
-	rchandle<item_iterator> effective_boolean_value() const;
+	iterator_t atomized_value() const { return NULL; }
+	string string_value() const { return "xs_atomicValue"; }
 
-	string string_value() const;
-	bool is_sequence() const { return false; }
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }

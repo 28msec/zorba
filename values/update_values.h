@@ -3,17 +3,18 @@
  *  $Id: update_values.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan, Paul Pedersen
  *
  */
 
 #ifndef XQP_UPDATE_VALUES_H
 #define XQP_UPDATE_VALUES_H
 
+#include "abstract_update_values.h"
 #include "values.h"
-#include "xs_primitive_values.h"
 #include "nodes.h"
+#include "../runtime/abstract_iterator.h"
+#include "../util/rchandle.h"
 
 
 /*______________________________________________________________________
@@ -27,8 +28,10 @@
 |_______________________________________________________________________*/
 
 
-
 namespace xqp {
+
+class abstract_qname;
+
 
 /*______________________________________________________________________
 |  
@@ -37,21 +40,25 @@ namespace xqp {
 |	[http://http://www.w3.org/TR/xqupdate/]
 |_______________________________________________________________________*/
 
-class update_value : public object
+class update_value :	public object,
+											public abstract_update_value
 {
 public:
-	typedef node const* nodeptr;
+	typedef const node* nodeptr;
+	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
-	context& ctx;
 	nodeptr target_p;
 
 public:
-	update_value(context& _ctx, nodeptr _target_p)
-		: ctx(_ctx), target_p(_target_p) {}
+	update_value(nodeptr _target_p) : target_p(_target_p) {}
 	~update_value() {}
 
+public:
+	const abstract_node* target() const { return target_p; }
+
 };
+
 
 /*______________________________________________________________________
 |  
@@ -63,20 +70,28 @@ public:
 |	'content' must be a sequence containing only element, text, 
 |	processing instruction, and comment nodes. 
 |_______________________________________________________________________*/
-class upd_insert_before : public update_value
+
+class insert_before_value : public update_value,
+														public abstract_insert_before_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
-	std::vector<nodeptr>& content_pv;
+	const std::vector<nodeptr>& content_pv;
 
 public:
-	upd_insert_before(
-		context& ctx,
+	insert_before_value(
 		nodeptr target_p,
-		vector<nodeptr> & content_pv);
+		const vector<nodeptr>& content_pv);
 
-	~upd_insert_before();
+	~insert_before_value();
+
+public:
+	iterator_t new_nodes() const;
 
 };
+
 
 /*______________________________________________________________________
 |  
@@ -88,20 +103,27 @@ public:
 |	'content' must be a sequence containing only element, text, 
 |	processing instruction, and comment nodes. 
 |_______________________________________________________________________*/
-class upd_insert_after : public update_value
+class insert_after_value :	public update_value,
+														public abstract_insert_after_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
-	std::vector<nodeptr> & content_pv;
+	const std::vector<nodeptr>& content_pv;
 
 public:
-	upd_insert_after(
-		context& ctx,
+	insert_after_value(
 		nodeptr target_p,
-		std::vector<nodeptr> & content_pv);
+		const std::vector<nodeptr>& content_pv);
 
-	~upd_insert_after();
+	~insert_after_value();
+
+public:
+	iterator_t new_nodes() const;
 
 };
+
 
 /*______________________________________________________________________
 |  
@@ -112,20 +134,27 @@ public:
 |	'content' must be a sequence containing only element, text, 
 |	processing instruction, and comment nodes. 
 |_______________________________________________________________________*/
-class upd_insert_into : public update_value
+class insert_into_value : public update_value,
+													public abstract_insert_into_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
-	std::vector<nodeptr> & content_pv;
+	const std::vector<nodeptr>& content_pv;
 
 public:
-	upd_insert_into(
-		context& ctx,
+	insert_into_value(
 		nodeptr target_p,
-		std::vector<nodeptr> & content_pv);
+		const std::vector<nodeptr>& content_pv);
 
-	~upd_insert_into();
+	~insert_into_value();
+
+public:
+	iterator_t new_nodes() const;
 
 };
+
 
 /*______________________________________________________________________
 |  
@@ -136,20 +165,27 @@ public:
 |	'content' must be a sequence containing only element, text, 
 |	processing instruction, and comment nodes. 
 |_______________________________________________________________________*/
-class upd_insert_into_as_first : public update_value
+class insert_into_as_first_value :	public update_value,
+																		public abstract_insert_into_as_first_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
-	std::vector<nodeptr> & content_pv;
+	const std::vector<nodeptr>& content_pv;
 
 public:
-	upd_insert_into_as_first(
-		context& ctx,
+	insert_into_as_first_value(
 		nodeptr target_p,
-		std::vector<nodeptr> & content_pv);
+		const std::vector<nodeptr>& content_pv);
 
-	~upd_insert_into_as_first();
+	~insert_into_as_first_value();
+
+public:
+	iterator_t new_nodes() const;
 
 };
+
 
 /*______________________________________________________________________
 |  
@@ -160,54 +196,69 @@ public:
 |	'content' must be a sequence containing only element, text, 
 |	processing instruction, and comment nodes. 
 |_______________________________________________________________________*/
-class upd_insert_into_as_last : public update_value
+class insert_into_as_last_value : public update_value,
+																	public abstract_insert_into_as_last_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
-	std::vector<nodeptr> & content_pv;
+	const std::vector<nodeptr>& content_pv;
 
 public:
-	upd_insert_into_as_last(
-		context& ctx,
+	insert_into_as_last_value(
 		nodeptr target_p,
-		std::vector<nodeptr> & content_pv);
+		const std::vector<nodeptr>& content_pv);
 
-	~upd_insert_into_as_last();
+	~insert_into_as_last_value();
+
+public:
+	iterator_t new_nodes() const;
 
 };
+
 
 /*______________________________________________________________________
 |  
 |	upd:insertAttributes
 |_______________________________________________________________________*/
-class upd_insert_attributes : public update_value
+class insert_attributes_value : public update_value,
+																public abstract_insert_attributes_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
-	std::vector<attribute_node const*> & content_pv;
+	const std::vector<attribute_node const*>& content_pv;
 
 public:
-	upd_insert_attributes(
-		context& ctx,
+	insert_attributes_value(
 		nodeptr target_p,
-		std::vector<attribute_node const*> & content_pv);
+		const std::vector<const attribute_node*>& content_pv);
 
-	~upd_insert_attributes();
+	~insert_attributes_value();
+
+public:
+	iterator_t new_nodes() const;
 
 };
+
 
 /*______________________________________________________________________
 |  
 |	upd:delete
 |_______________________________________________________________________*/
-class upd_delete : public update_value
+class delete_value :	public update_value,
+											public abstract_delete_value
 {
 public:
-	upd_delete(
-		context& ctx,
+	delete_value(
 		nodeptr target_p);
 
-	~upd_delete();
+	~delete_value();
 
 };
+
 
 /*______________________________________________________________________
 |  
@@ -220,20 +271,27 @@ public:
 |	instruction node, 'content' must be consist of zero or
 |	more element, text, comment, or processing instruction nodes. 
 |_______________________________________________________________________*/
-class upd_replace_node : public update_value
+class replace_node_value :	public update_value,
+														public abstract_replace_node_value
 {
+public:
+	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
-	std::vector<nodeptr> & content_pv;
+	const std::vector<nodeptr>& content_pv;
 
 public:
-	upd_replace_node(
-		context& ctx,
+	replace_node_value(
 		nodeptr target_p,
-		std::vector<nodeptr> & content_pv);
+		const std::vector<nodeptr>& content_pv);
 
-	~upd_replace_node();
+	~replace_node_value();
+
+public:
+	iterator_t new_nodes() const;
 
 };
+
 
 /*______________________________________________________________________
 |  
@@ -242,56 +300,67 @@ public:
 |	'target' must be an attribute, text, comment, or processing
 |	instruction node.
 |_______________________________________________________________________*/
-class upd_replace_value : public update_value
+class replace_value_value : public update_value,
+														public abstract_replace_value_value
 {
 protected:
-	std::string content;
+	std::string m_content;
 
 public:
-	upd_replace_value(
-		context& ctx,
+	replace_value_value(
 		nodeptr target_p,
-		std::string const& content);
+		const std::string& content);
 
-	~upd_replace_value();
+	~replace_value_value();
+
+public:
+	string content() const { return m_content; }
 
 };
+
 
 /*______________________________________________________________________
 |  
 |	upd:replaceElementContent
 |_______________________________________________________________________*/
-class upd_replace_element_content : public update_value
+class replace_element_content_value : public update_value,
+																			public abstract_replace_element_content_value
 {
 protected:
-	text_node const* content_p;
+	const text_node* content_p;
 	
 public:
-	upd_replace_element_content(
-		context& ctx,
+	replace_element_content_value(
 		nodeptr target_p,
-		text_node const* content_p);
+		const text_node*);
 
-	~upd_replace_element_content();
+	~replace_element_content_value();
+
+public:
+	const text_node* content() const { return content_p; }
 
 };
+
 
 /*______________________________________________________________________
 |  
 |	upd:rename
 |_______________________________________________________________________*/
-class upd_rename : public update_value
+class rename_value :	public update_value,
+											public abstract_rename_value
 {
 protected:
-	qname_value const* new_name_p;
+	const abstract_qname* name_p;
 
 public:
-	upd_rename(
-		context& ctx,
+	rename_value(
 		nodeptr target_p,
-		qname_value const* new_name_p);
+		const qname_value*);
 
-	~upd_rename();
+	~rename_value();
+
+public:
+	//const abstract_qame* qname() const { return name_p; }
 
 };
 

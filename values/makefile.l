@@ -2,9 +2,6 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
-values :	values.h values.cpp
-	g++ ${OPT} -c -o ${BUILD}/values.${SUFX} values.cpp
-
 xs_primitive_values :	xs_primitive_values.h xs_primitive_values.cpp
 	g++ ${OPT} -c -o ${BUILD}/xs_primitive_values.${SUFX} xs_primitive_values.cpp
    
@@ -36,16 +33,16 @@ refv_test : refv_test.cpp
 xs_primitive_values_test : xs_primitive_values.h xs_primitive_values.cpp xs_primitive_values_test.cpp
 	g++ ${OPT} -o ${BUILD}/xs_primitive_values_test \
 		../context/${BUILD}/context.${SUFX} \
-		../native_impl/${BUILD}/nodestore.${SUFX} \
+		../store/${BUILD}/qname_cache.${SUFX} \
+		../store/${BUILD}/itemstore.${SUFX} \
 		../runtime/${BUILD}/iterator.${SUFX} \
-		../types/${BUILD}/base_types.${SUFX} \
-		../types/${BUILD}/xs_primitive_types.${SUFX} \
+		../runtime/${BUILD}/errors.${SUFX} \
+		../types/${BUILD}/sequence_type.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
-		${BUILD}/values.${SUFX} \
-		${BUILD}/node_values.${SUFX} \
+		${BUILD}/nodes.${SUFX} \
 		${BUILD}/xs_primitive_values.${SUFX} \
 		xs_primitive_values_test.cpp
 
@@ -87,11 +84,11 @@ ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp
 		ft_values_test.cpp
 
 all : \
-	values \
 	nodes \
 	xs_primitive_values \
-	ft_values \
-	update_values
+	ft_values
+	
+#	update_values
 
 test : \
 	xs_primitive_values_test \

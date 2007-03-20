@@ -58,6 +58,12 @@ public:
 		return hval;
 	}
 	
+	static inline uint32_t h32(
+		const std::string& key,
+		uint32_t hval)
+	{
+		return h32(key.c_str(), key.length(), hval);
+	}
 	
 	/*
 	 * 32 bit Fowler/Noll/Vo FNV-1a hash on a null-delimited string

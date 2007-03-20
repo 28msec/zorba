@@ -43,14 +43,14 @@ string node::decode(node_kind_t kind) const
 node::node(
 	sequence_type_t type,		// node type
 	uint32_t length,				// item length
+	itemref_t ref,					// forwarding item reference
 	uint32_t gen,						// genration number
-	off_t ref,							// forwarding item reference
 	nodeid_t id,						// ordinal node id
 	nodeid_t parentid)			// parent node id
 :
 	item(type,length),
-	m_gen(gen),
 	m_ref(ref),
+	m_gen(gen),
 	m_id(id),
 	m_parentid(parentid)
 {
@@ -274,8 +274,8 @@ ostream& element_node::put(
 	node* n_p = new(rest) node();
 	child_const_iterator it(this,n_p);
 	for (; !it.done(); ++it) {
-    item* i_p = *it;
-		switch (n_p->type()) {
+    abstract_item* i_p = *it;
+		switch (i_p->type()) {
 		case documentNode: {
 			cout << TRACE << " : documentNode" << endl;
 			document_node* d_p = new(i_p) document_node();

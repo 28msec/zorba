@@ -75,8 +75,7 @@ context::context()
 	urimap("data/urimap", 0.6f, 6),
 	docindex("data/docindex", 0.6f, 6),
 	nodeindex("data/nodeindex", 0.6f, 6),
-	err(0),
-	emptyseq(&item_iterator::empty_sequence)
+	err(0)
 {
 	// XXX read these out of a config file
 	addns("xml","http://www.w3.org/XML/1998/namespace");
@@ -327,7 +326,7 @@ rchandle<item_iterator> context::get_var_value(
 	qname_value*) const
 throw (xqp_exception)
 {
-	return &item_iterator::empty_sequence;
+	return NULL;
 }
 
 

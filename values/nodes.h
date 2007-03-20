@@ -64,8 +64,8 @@ public:
 	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
-	uint32_t  m_gen;				// generation number
 	itemref_t m_ref;				// forwarding reference for update
+	uint32_t  m_gen;				// generation number
 	nodeid_t  m_id;					// node ordinal id
 	nodeid_t  m_parentid;		// parent node ordinal id
 
@@ -73,8 +73,8 @@ public:		// ctor,dtor
 	node(
 	  sequence_type_t,      // node type
 	  uint32_t,							// value length
+	  itemref_t,						// forwarding reference
 	  uint32_t,             // generation number
-	  off_t,                // forwarding reference
 	  nodeid_t,             // ordinal node id
 	  nodeid_t);            // parent node id
 
@@ -82,10 +82,12 @@ public:		// ctor,dtor
 	~node() {}
 
 public:		// accessors
-	uint32_t& gen() { return m_gen; }
+	sequence_type_t type() const { return m_type; }
 	itemref_t& ref() { return m_ref; }
+	uint32_t& gen() { return m_gen; }
 	nodeid_t& id() { return m_id; }
 	nodeid_t& parentid() { return m_parentid; }
+
 	std::string decode(node_kind_t) const;
 
 public:		// XQuery interface
@@ -197,7 +199,7 @@ public:		// XQuery interface
 };
 	
 
-class child_iterator : public item_iterator
+class child_iterator :	public item_iterator
 {
 protected:
 	node* parent_p;
@@ -228,7 +230,7 @@ public:
 };
 
 
-class child_const_iterator : public item_const_iterator
+class child_const_iterator :	public item_iterator
 {
 protected:
 	const node* parent_p;
@@ -242,8 +244,13 @@ public:
 public:
  	void open() {}
 	void close() {}
-	abstract_item* next(uint32_t delta = 1) { ++(*this); return **this; }
-	abstract_item* peek() { return **this; }
+
+	abstract_item* next(uint32_t delta = 1)
+	{ ++(*this); return **this; }
+
+	abstract_item* peek()
+	{ return **this; }
+
 	bool done() const { return current_p >= end_p; }
 	void rewind() {}
 
@@ -254,7 +261,7 @@ public:
 };
 
 
-class namespace_iterator : public item_const_iterator
+class namespace_iterator :	public item_iterator
 {
 protected:
 	const element_node* parent_p;
@@ -266,8 +273,13 @@ public:
 public:
  	void open() {}
 	void close() {}
-	abstract_item* next(uint32_t delta=1) { ++(*this); return **this; }
-	abstract_item* peek() const { return **this; }
+
+	abstract_item* next(uint32_t delta=1)
+	{ ++(*this); return **this; }
+
+	abstract_item* peek() const
+	{ return **this; }
+
 	bool done() const;
 	void rewind() {}
 
@@ -781,7 +793,7 @@ public:		// output,debugging
 // node-like objects
 //
 
-class qname_value : public atomic_value
+class qname_value : public atomic_value, public abstract_qname
 {
 public:
 	typedef rchandle<abstract_iterator> iterator_t;
@@ -808,6 +820,8 @@ public:
 	std::string prefix() const;
 	std::string localname() const;
 	std::string uri(itemstore&) const;
+	nodeid_t id(itemstore& istore) const
+	{ return hashfun::h32(uri(istore),hashfun::h32(prefix(),hashfun::h32(localname()))); }
 
 private:	// ctor,dtor - lock out default and copy constructors
 	qname_value(qname_value& qn) : atomic_value(xs_qname,0) {}
@@ -861,4 +875,4 @@ public:		// output,debugging
 
 
 }	/* namespace xqp */
-#endif /* XQP_NODE_VALUES_H */
+#endif /* XQP_NODES_H */

@@ -24,15 +24,23 @@
 
 namespace xqp {
 
-class abstract_context;
 class abstract_itemstore;
+class xs_anyURIValue;
+class abstract_qname;
+class abstract_context;
 
 class abstract_nodeid
 {
 public:
 	bool operator==(abstract_nodeid& id);
+	bool operator<(abstract_nodeid& id);
+	abstract_nodeid parent(abstract_context*);
+	abstract_qname* name(abstract_context*);
 };
 
+
+// "ord-path" paper - for nodeid implementation (sigmod 2005-06)
+// ms implementation - check this
 
 class abstract_text_node;
 class abstract_qname;
@@ -354,6 +362,20 @@ public:
 	iterator_t typed_value();
 
 };
+
+
+
+class abstract_qname : public abstract_atomic_value
+{
+public:
+	std::string prefix() const;
+	std::string localname() const;
+	xs_anyURIValue* uri() const;
+	iterator_t atomized_value() const;
+	std::string string_value() const;
+
+};
+
 
 
 }	/* namespace xqp */

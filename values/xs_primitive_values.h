@@ -744,9 +744,16 @@ private:
 
 public:   // accessors
 	std::string str() const;
-	std::string describe() const;
-	std::string string_value() const;
 	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+
+public:   // XQuery interface
+  iterator_t atomized_value() const { return NULL; }
+  string string_value() const;
+
+  bool is_empty() const { return false; }
+  bool is_node() const { return false; }
+  bool is_atomic() const { return true; }
 
 };
 

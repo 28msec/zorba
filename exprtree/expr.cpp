@@ -425,7 +425,7 @@ ostream& fo_expr::put(
 {
 	os << INDENT << "fo_expr[\n";
 	Assert<null_pointer>(func!=NULL);
-	func->get_fname(&ctx)->put(os,&ctx) << endl;
+	func->get_fname(&ctx)->put(os) << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();

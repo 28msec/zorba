@@ -8,201 +8,227 @@
  */
 
 #include "update_values.h"
+#include "../runtime/iterator.h"
 
 using namespace std;
 namespace xqp {
 
 // upd_insert_before
+// -----------------
 
-upd_insert_before::upd_insert_before(
-	context& _ctx,
+insert_before_value::insert_before_value(
 	nodeptr _target_p,
-	vector<nodeptr> & _content_pv)
+	const vector<nodeptr>& _content_pv)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_pv(_content_pv)
 {
 }
 
-upd_insert_before::~upd_insert_before()
+insert_before_value::~insert_before_value()
 {
 }
 
+iterator_t insert_before_value::new_nodes()
+{
+	return new node_vector_iterator(content_pv);
+}
 
 
 // upd_insert_after
+// ----------------
 
-upd_insert_after::upd_insert_after(
-	context& _ctx,
+insert_after_value::insert_after_value(
 	nodeptr _target_p,
 	std::vector<nodeptr> & _content_pv)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_pv(_content_pv)
 {
 }
 
-upd_insert_after::~upd_insert_after()
+insert_after_value::~insert_after_value()
 {
 }
 
+iterator_t insert_after_value::new_nodes()
+{
+	return new node_vector_iterator(content_pv);
+}
 
 
 // upd_insert_into
+// ---------------
 
-upd_insert_into::upd_insert_into(
-	context& _ctx,
+insert_into_value::insert_into_value(
 	nodeptr _target_p,
 	std::vector<nodeptr> & _content_pv)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_pv(_content_pv)
 {
 }
 
-upd_insert_into::~upd_insert_into()
+insert_into_value::~insert_into_value()
 {
 }
 
+iterator_t insert_into_value::new_nodes()
+{
+	return new node_vector_iterator(content_pv);
+}
 
 
 // upd_insert_into_as_first
+// ------------------------
 
-upd_insert_into_as_first::upd_insert_into_as_first(
-	context& _ctx,
+insert_into_as_first_value::insert_into_as_first_value(
 	nodeptr _target_p,
 	std::vector<nodeptr> & _content_pv)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_pv(_content_pv)
 {
 }
 
-upd_insert_into_as_first::~upd_insert_into_as_first()
+insert_into_as_first_value::~insert_into_as_first_value()
 {
 }
 
+iterator_t insert_into_as_first_value::new_nodes()
+{
+	return new node_vector_iterator(content_pv);
+}
 
 
 // upd_insert_into_as_last
+// -----------------------
 
-upd_insert_into_as_last::upd_insert_into_as_last(
-	context& _ctx,
+insert_into_as_last_value::insert_into_as_last_value(
 	nodeptr _target_p,
 	std::vector<nodeptr> & _content_pv)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_pv(_content_pv)
 {
 }
 
-upd_insert_into_as_last::~upd_insert_into_as_last()
+insert_into_as_last_value::~insert_into_as_last_value()
 {
 }
 
+iterator_t insert_into_as_last_value::new_nodes()
+{
+	return new node_vector_iterator(content_pv);
+}
 
 
 // upd_insert_attributes
+// ---------------------
 
-upd_insert_attributes::upd_insert_attributes(
-	context& _ctx,
+insert_attributes_value::insert_attributes_value(
 	nodeptr _target_p,
-	std::vector<attribute_node const*> & _content_pv)
+	std::vector<const attribute_node*> & _content_pv)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_pv(_content_pv)
 {
 }
 
-upd_insert_attributes::~upd_insert_attributes()
+insert_attributes_value::~insert_attributes_value()
 {
 }
 
+iterator_t insert_attributes_value::new_nodes()
+{
+	return new attribute_vector_iterator(content_pv);
+}
 
 
 // upd_delete
+// ----------
 
-upd_delete::upd_delete(
-	context& _ctx,
+delete_value::delete_value(
 	nodeptr _target_p)
 :
-	update_value(_ctx,_target_p)
+	update_value(_target_p)
 {
 }
 
-upd_delete::~upd_delete()
+delete_value::~delete_value()
 {
 }
-
 
 
 // upd_replace_node
+// ----------------
 
-upd_replace_node::upd_replace_node(
-	context& _ctx,
+replace_node_value::replace_node_value(
 	nodeptr _target_p,
 	std::vector<nodeptr> & _content_pv)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_pv(_content_pv)
 {
 }
 
-upd_replace_node::~upd_replace_node()
+replace_node_value::~replace_node_value()
 {
 }
 
+iterator_t replace_node_value::new_nodes()
+{
+	return new node_vector_iterator(content_pv);
+}
 
 
 // upd_replace_value
+// -----------------
 
-upd_replace_value::upd_replace_value(
-	context& _ctx,
+replace_value_value::replace_value_value(
 	nodeptr _target_p,
 	std::string const& _content)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content(_content)
 {
 }
 
-upd_replace_value::~upd_replace_value()
+replace_value_value::~replace_value_value()
 {
 }
 
 
-
 // upd_replace_element_content
+// ---------------------------
 
-upd_replace_element_content::upd_replace_element_content(
-	context& _ctx,
+replace_element_content_value::replace_element_content_value(
 	nodeptr _target_p,
-	text_node const* _content_p)
+	const text_node* _content_p)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	content_p(_content_p)
 {
 }
 
-upd_replace_element_content::~upd_replace_element_content()
+replace_element_content_value::~replace_element_content_value()
 {
 }
 
 
-
 // upd_replace_element_rename
+// --------------------------
 
-upd_rename::upd_rename(
-	context& _ctx,
+rename_value::rename_value(
 	nodeptr _target_p,
-	qname_value const* _new_name_p)
+	const qname_value* _new_name_p)
 :
-	update_value(_ctx,_target_p),
+	update_value(_target_p),
 	new_name_p(_new_name_p)
 {
 }
 
-upd_rename::~upd_rename()
+rename_value::~rename_value()
 {
 }
 

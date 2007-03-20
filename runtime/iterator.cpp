@@ -26,16 +26,6 @@ namespace xqp {
  : item_iterator base                      :
  :.........................................*/
 
-item_iterator::item_iterator(context * _ctx_p)
-: ctx_p(_ctx_p)
-{
-}
-
-item_iterator::item_iterator(const item_iterator& it)
-: ctx_p(it.ctx_p)
-{
-}
-
 item_iterator& item_iterator::operator=(
 	const item_iterator& it)
 {
@@ -53,7 +43,7 @@ string item_iterator::string_value()
 {
 	ostringstream oss;
 	while (!done()) {
-		item* i_p = static_cast<item*>(next());
+		item* i_p = reinterpret_cast<item*>(next());
 		if (i_p==NULL) continue;
 		i_p->put(oss);
 	}
@@ -65,13 +55,6 @@ string item_iterator::string_value()
 /*..........................................
  : item_const_iterator                     :
  :.........................................*/
-
-item_const_iterator::item_const_iterator() { }
-
-item_const_iterator::item_const_iterator(
-	const item_const_iterator& it)
-{
-}
 
 item_const_iterator& item_const_iterator::operator=(
 	const item_const_iterator& it)
@@ -90,7 +73,7 @@ string item_const_iterator::string_value(
 {
 	ostringstream oss;
 	while (!done()) {
-		item* i_p = static_cast<item*>(next());
+		item* i_p = reinterpret_cast<item*>(next());
 		if (i_p==NULL) continue;
 		i_p->put(oss);
 	}
@@ -173,8 +156,8 @@ binary_iterator::~binary_iterator()
  :.........................................*/
 
 singleton_iterator::singleton_iterator(
-	context * ctx_p,
-	abstract_item * _i_p)
+	context* ctx_p,
+	item* _i_p)
 :
 	i_p(_i_p),
 	done_b(false)
@@ -197,7 +180,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context * ctx_p,
+	context* ctx_p,
 	bool v)
 :
 	i_p(new(*ctx_p->istore()) xs_booleanValue(v)),
@@ -209,7 +192,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context * ctx_p,
+	context* ctx_p,
 	double v)
 :
 	i_p(new(*ctx_p->istore()) xs_doubleValue(v)),
@@ -221,7 +204,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context * ctx_p,
+	context* ctx_p,
 	int v)
 :
 	i_p(new(*ctx_p->istore()) xs_intValue(v)),
@@ -233,7 +216,7 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context * ctx_p,
+	context* ctx_p,
 	long v)
 :
 	i_p(new(*ctx_p->istore()) xs_longValue(v)),

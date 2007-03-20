@@ -102,6 +102,7 @@ qnamepair_t itemstore::add_qname(
 		prefix = qname.substr(0,n);
 		localname = qname.substr(n+1);
 	}
+	qname_value* qname_p;
 	itemref_t qnameref;
 	if (!qncache.get(prefix,localname,qnameref)) {
 		itemref_t uriref;
@@ -109,10 +110,14 @@ qnamepair_t itemstore::add_qname(
 			errors::err(errors::XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND);
 		}
 		qnameref = eos();
-		new(*this) qname_value(*this,uriref,localname);
+		qname_p = new(*this) qname_value(*this,uriref,localname);
 		qncache.put(prefix,localname,qnameref);
 	}
-	return qnameref;
+	else {
+		qname_p = new(*this,qnameref) qname_value();
+	}
+
+	return qnamepair(qname_p->id(*this),qnameref);
 }
 
 
@@ -122,14 +127,14 @@ inline bool itemstore::get_itemref(
 	nodeid_t id, 
 	itemref_t& ref) const
 {
-	return nodeid_index.get(id, ref);
+	return nidindex.get(id, ref);
 }
 
 inline bool itemstore::put_itemref(
 	nodeid_t id,
 	itemref_t ref)
 {
-	return nodeid_index.put(id, ref);
+	return nidindex.put(id, ref);
 }
 
 

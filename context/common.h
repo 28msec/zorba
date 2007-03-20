@@ -28,29 +28,58 @@ typedef uint32_t offset_t;    // itemstore short offset
 #define NONAMESPACE	"http://nonamespace"
 #define NON_PREFIX	"non#prefix"
 
-typedef struct {
+typedef struct qnamekeyref
+{
 	qnamekey_t qnamekey;
 	itemref_t qnameref;
-} qname_t;
 
-typedef struct {
+	qnamekeyref(qnamekey_t _qnamekey, itemref_t _qnameref)
+	: qnamekey(_qnamekey), qnameref(_qnameref) {}
+
+} qnamekeyref_t;
+
+
+typedef struct qnamepair
+{
 	qnameid_t qnameid;
 	itemref_t qnameref;
+
+	qnamepair(qnameid_t _qnameid, itemref_t _qnameref)
+	: qnameid(_qnameid), qnameref(_qnameref) {}
+
 } qnamepair_t;
 
-typedef struct {
+
+typedef struct attrname
+{
 	itemref_t uriref;
 	std::string name;
+
+	attrname(itemref_t _uriref, const std::string& _name)
+	: uriref(_uriref), name(_name) {}
+
 } attrname_t;
 
-typedef struct {
+
+typedef struct attrpair
+{
 	itemref_t attrref;
 	std::string value;
+
+	attrpair(itemref_t _attrref, const std::string& _value)
+	: attrref(_attrref), value(_value) {}
+
 } attrpair_t;
 
-typedef struct {
+
+typedef struct elempair
+{
 	qnamekey_t qnamekey;
 	itemref_t noderef;
+
+	elempair(qnamekey_t _qnamekey, itemref_t _noderef)
+	: qnamekey(_qnamekey), noderef(_noderef) {}
+
 } elempair_t;
 
 
