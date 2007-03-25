@@ -73,20 +73,8 @@ xml_scanner : xml_scanner.h xml_scanner.cpp
 xml_term : xml_term.h xml_term.cpp
 	g++ -c ${CXXOPT} -o ${BUILD}/xml_term.${SUFX} xml_term.cpp
 
-qname_cache : qname_cache.h qname_cache.cpp
-	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/qname_cache.${SUFX} qname_cache.cpp
-
-qname_cache_test : qname_cache.h qname_cache.cpp qname_cache_test.cpp
-	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/qname_cache_test \
-		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
-		../util/${BUILD}/fxcharheap.${SUFX} \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		${BUILD}/qname_cache.${SUFX} \
-	qname_cache_test.cpp
-
-nodeid_index : nodeid_index.h nodeid_index.cpp
-	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/nodeid_index.${SUFX} nodeid_index.cpp
+namepool : namepool.h namepool.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/namepool.${SUFX} namepool.cpp
 
 itemstore : itemstore.h itemstore.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore.${SUFX} itemstore.cpp
@@ -100,12 +88,11 @@ itemstore_test : itemstore.h itemstore.cpp itemstore_test.cpp
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
-		../values/${BUILD}/values.${SUFX} \
 		../values/${BUILD}/nodes.${SUFX} \
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/itemstore.${SUFX} \
 	itemstore_test.cpp
-
+ 
 xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_handler_test \
 		../context/${BUILD}/context.${SUFX} \
@@ -130,7 +117,6 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 
 
 all : \
-	qname_cache \
 	itemstore \
 	uri_resolver \
 	collation_resolver \
@@ -138,11 +124,8 @@ all : \
 	module_resolver \
 	schema_resolver \
 	xml_term \
-	xml_scanner 
-
-#xml_handler
+	xml_scanner
 
 test : \
 	uri_resolver_test \
 	xml_handler_test
-

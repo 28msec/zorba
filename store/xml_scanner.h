@@ -3,8 +3,7 @@
  *  $Id: xml_scanner.h,v 1.1.1.1 2006/10/09 06:58:38 Paul Pedersen Exp $
  *
  *  Copyright 2006-2007 FLWOR Foundation.
- *
- *	Author: Paul Pedersen
+ *	Author: John Cowan, Paul Pedersen
  *
  */
 

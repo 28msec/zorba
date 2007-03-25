@@ -23,28 +23,28 @@
 namespace xqp {
 
 //tokens
-#define EOF_								 0		// 	eof
-#define WS									 1		// 	whitespace
-#define DEF									 2		//	default
-#define CR									 3		// 	cr  = 0xa
-#define LF									 4		// 	lf  = 0xd
-#define LT									 5		//	'<' = 0x3c
-#define GT									 6		//	'>' = 0x3e
-#define SL									 7		//	'/' 
-#define EQ									 8		//	'=' 
-#define DASH								 9		//	'-' 
-#define AMP									10		//	'&' 
-#define APOS								11		//	''' 
-#define QUOT								12		//	'"' 
-#define BANG								13		//	'!' 
-#define HOOK								14		//	'?' 
-#define PER 								15		//	'%' 
-#define C										16		//	'C' 
-#define D										17		//	'D' 
-#define A										18		//	'A' 
-#define T										19		//	'T' 
-#define LBRA								20		//	'[' 
-#define RBRA								21		//	']' 
+#define T_EOF								 0		// 	eof
+#define T_WS								 1		// 	whitespace
+#define T_DEF								 2		//	default
+#define T_CR								 3		// 	cr  = 0xa
+#define T_LF								 4		// 	lf  = 0xd
+#define T_LT								 5		//	'<' = 0x3c
+#define T_GT								 6		//	'>' = 0x3e
+#define T_SL								 7		//	'/' 
+#define T_EQ								 8		//	'=' 
+#define T_DASH							 9		//	'-' 
+#define T_AMP								10		//	'&' 
+#define T_APOS							11		//	''' 
+#define T_QUOT							12		//	'"' 
+#define T_BANG							13		//	'!' 
+#define T_HOOK							14		//	'?' 
+#define T_PER 							15		//	'%' 
+#define T_C									16		//	'C' 
+#define T_D									17		//	'D' 
+#define T_A									18		//	'A' 
+#define T_T									19		//	'T' 
+#define T_LBRA							20		//	'[' 
+#define T_RBRA							21		//	']' 
 
 //states
 #define S_ANAME			 				 0

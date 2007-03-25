@@ -113,91 +113,90 @@ static int actionTable[34][22] = {
 };
 
 static int lexTable[128] = {
-/*0x00-0x07*/   -1,   -1,   -1,   -1,   -1,   -1,   -1,   WS,
-/*0x08-0x0f*/   WS,   WS,   LF,   WS,   WS,   CR,   -1,   -1,
-/*0x10-0x17*/   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-/*0x18-0x1f*/   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-/*0x20-0x27*/   WS, BANG, QUOT,  DEF,  DEF,  PER,  AMP, APOS,
-/*0x28-0x2f*/  DEF,  DEF,  DEF,  DEF,  DEF, DASH,  DEF,   SL,
-/*0x30-0x37*/  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,
-/*0x38-0x3f*/  DEF,  DEF,  DEF,  DEF,   LT,   EQ,   GT, HOOK,
-/*0x40-0x47*/  DEF,    A,  DEF,    C,    D,  DEF,  DEF,  DEF,
-/*0x48-0x4f*/  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,
-/*0x50-0x57*/  DEF,  DEF,  DEF,  DEF,    T,  DEF,  DEF,  DEF,
-/*0x58-0x5f*/  DEF,  DEF,  DEF, LBRA,  DEF, RBRA,  DEF,  DEF,
-/*0x60-0x67*/  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,
-/*0x68-0x6f*/  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,
-/*0x70-0x77*/  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,
-/*0x78-0x7f*/  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,  DEF,   -1
-};
+/*0x00-0x07*/     -1,     -1,     -1,     -1,     -1,     -1,     -1,   T_WS,
+/*0x08-0x0f*/   T_WS,   T_WS,   T_LF,   T_WS,   T_WS,   T_CR,     -1,     -1,
+/*0x10-0x17*/     -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1,
+/*0x18-0x1f*/     -1,     -1,     -1,     -1,     -1,     -1,     -1,     -1,
+/*0x20-0x27*/   T_WS, T_BANG, T_QUOT,  T_DEF,  T_DEF,  T_PER,  T_AMP, T_APOS,
+/*0x28-0x2f*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF, T_DASH,  T_DEF,   T_SL,
+/*0x30-0x37*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,
+/*0x38-0x3f*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,   T_LT,   T_EQ,   T_GT, T_HOOK,
+/*0x40-0x47*/  T_DEF,    T_A,  T_DEF,    T_C,    T_D,  T_DEF,  T_DEF,  T_DEF,
+/*0x48-0x4f*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,
+/*0x50-0x57*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,    T_T,  T_DEF,  T_DEF,  T_DEF,
+/*0x58-0x5f*/  T_DEF,  T_DEF,  T_DEF, T_LBRA,  T_DEF, T_RBRA,  T_DEF,  T_DEF,
+/*0x60-0x67*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,
+/*0x68-0x6f*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,
+/*0x70-0x77*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,
+/*0x78-0x7f*/  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,  T_DEF,     -1 };
 
 
 const char* decodeTok1(int tok)
 {
 	switch (tok) {
-	case EOF_:	return "EOF_";
-	case WS:		return "WS";
-	case DEF:		return "DEF";
-	case CR:		return "CR";
-	case LF:		return "LF";
-	case LT:		return "LT";
-	case GT:		return "GT";
-	case SL:		return "SL";
-	case EQ:		return "EQ";
-	case DASH:	return "DASH";
-	case AMP:		return "AMP";
-	case APOS:	return "APOS";
-	case QUOT:	return "QUOT";
-	case BANG:	return "BANG";
-	case HOOK:	return "HOOK";
-	case PER:		return "PER";
-	case C:			return "C";
-	case D:			return "D";
-	case A:			return "A";
-	case T:			return "T";
-	case LBRA:	return "LBRA";
-	case RBRA:	return "RBRA";
-	default: return "CH_UNRECOGNIZED";
+	case T_EOF:		return "EOF";
+	case T_WS:		return "WS";
+	case T_DEF:		return "DEF";
+	case T_CR:		return "CR";
+	case T_LF:		return "LF";
+	case T_LT:		return "LT";
+	case T_GT:		return "GT";
+	case T_SL:		return "SL";
+	case T_EQ:		return "EQ";
+	case T_DASH:	return "DASH";
+	case T_AMP:		return "AMP";
+	case T_APOS:	return "APOS";
+	case T_QUOT:	return "QUOT";
+	case T_BANG:	return "BANG";
+	case T_HOOK:	return "HOOK";
+	case T_PER:		return "PER";
+	case T_C:			return "C";
+	case T_D:			return "D";
+	case T_A:			return "A";
+	case T_T:			return "T";
+	case T_LBRA:	return "LBRA";
+	case T_RBRA:	return "RBRA";
+	default: return "UNRECOGNIZED";
 	}
 }
 
 const char* decodeState1(int state)
 {
 	switch (state) {
-	case  S_ANAME:    				return "S_ANAME";
-	case  S_APOS:    				  return "S_APOS";
-	case  S_AVAL:     				return "S_AVAL";
-	case  S_CDATA:   				  return "S_CDATA";
-	case  S_CDATA2:   				return "S_CDATA2";
-	case  S_COM:      				return "S_COM";
-	case  S_COMCRLF:   				return "S_COMCRLF";
-	case  S_COMD:     				return "S_COMD";
-	case  S_CRLF:     				return "S_CRLF";
-	case  S_CCRLF:    				return "S_CCRLF";
-	case  S_DECL:     				return "S_DECL";
-	case  S_DECL2:   				  return "S_DECL2";
-	case  S_ENT:      				return "S_ENT";
-	case  S_EQ:       				return "S_EQ";
-	case  S_ETAG:     				return "S_ETAG";
-	case  S_GI:       				return "S_GI";
-	case  S_PCDATA:   				return "S_PCDATA";
-	case  S_PI:       				return "S_PI";
-	case  S_PITARGET: 				return "S_PITARGET";
-	case  S_QUOT:     				return "S_QUOT";
-	case  S_STAGC:    				return "S_STAGC";
-	case  S_TAG:      				return "S_TAG";
-	case  S_TAGWS:    				return "S_TAGWS";
-	case  S_EMPTYTAG: 				return "S_EMPTYTAG";
-	case  S_BB:       				return "S_BB";
-	case  S_BBC:      				return "S_BBC";
-	case  S_BBCD:     				return "S_BBCD";
-	case  S_BBCDA:    				return "S_BBCDA";
-	case  S_BBCDAT:   				return "S_BBCDAT";
-	case  S_BBCDATA:  				return "S_BBCDATA";
-	case  S_CDSECT:   				return "S_CDSECT";
-	case  S_CDSECT1:  				return "S_CDSECT1";
-	case  S_CDSECT2:  				return "S_CDSECT2";
-	case  S_DONE:     				return "S_DONE";
+	case  S_ANAME:   	return "S_ANAME";
+	case  S_APOS:    	return "S_APOS";
+	case  S_AVAL:    	return "S_AVAL";
+	case  S_CDATA:   	return "S_CDATA";
+	case  S_CDATA2:   return "S_CDATA2";
+	case  S_COM:      return "S_COM";
+	case  S_COMCRLF:  return "S_COMCRLF";
+	case  S_COMD:     return "S_COMD";
+	case  S_CRLF:     return "S_CRLF";
+	case  S_CCRLF:    return "S_CCRLF";
+	case  S_DECL:     return "S_DECL";
+	case  S_DECL2:   	return "S_DECL2";
+	case  S_ENT:      return "S_ENT";
+	case  S_EQ:       return "S_EQ";
+	case  S_ETAG:     return "S_ETAG";
+	case  S_GI:       return "S_GI";
+	case  S_PCDATA:   return "S_PCDATA";
+	case  S_PI:       return "S_PI";
+	case  S_PITARGET: return "S_PITARGET";
+	case  S_QUOT:     return "S_QUOT";
+	case  S_STAGC:    return "S_STAGC";
+	case  S_TAG:      return "S_TAG";
+	case  S_TAGWS:    return "S_TAGWS";
+	case  S_EMPTYTAG: return "S_EMPTYTAG";
+	case  S_BB:       return "S_BB";
+	case  S_BBC:      return "S_BBC";
+	case  S_BBCD:     return "S_BBCD";
+	case  S_BBCDA:    return "S_BBCDA";
+	case  S_BBCDAT:   return "S_BBCDAT";
+	case  S_BBCDATA:  return "S_BBCDATA";
+	case  S_CDSECT:   return "S_CDSECT";
+	case  S_CDSECT1:  return "S_CDSECT1";
+	case  S_CDSECT2:  return "S_CDSECT2";
+	case  S_DONE:     return "S_DONE";
 	default: return "S_UNRECOGNIZED";
 	}
 }
@@ -260,7 +259,7 @@ void xml_scanner::scan(const char* r, unsigned len, scan_handler* h)
 	while (theState!=S_DONE && p<e) {
 		int ch = *p++;
 		if (ch < 0x9 || (0xd < ch && ch < 0x20)) continue;
-		int tok = (ch < 0x80) ? lexTable[ch] : DEF;
+		int tok = (ch < 0x80) ? lexTable[ch] : T_DEF;
 		if (tok == -1) continue;
 
 		if (theState<0 || theState>34) {
