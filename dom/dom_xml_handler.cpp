@@ -12,7 +12,6 @@
 #include "dom_nodes.h"
 
 #include "../context/common.h"
-#include "../context/context.h"
 #include "../values/values.h"
 #include "../util/xqp_exception.h"
 #include "../util/tokenbuf.h"
@@ -27,12 +26,10 @@ namespace xqp {
 
 
 dom_xml_handler::dom_xml_handler(
-	context* _ctx_p,
 	string const&  _baseuri,
 	string const&  _uri)
 :
 	scan_handler(),
-	ctx_p(_ctx_p),
 	the_attribute_prefix(""),
 	the_attribute_uri(""),
 	the_attribute_name(""),

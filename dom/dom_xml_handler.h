@@ -19,7 +19,6 @@
 
 #include "dom_namepool.h"
 #include "../store/scan_handler.h"
-#include "../context/common.h"
 #include "../util/list.h"
 #include "../util/rchandle.h"
 #include "../util/URI.h"
@@ -32,7 +31,6 @@
 
 namespace xqp {
 
-class context;
 class dom_qname;
 class dom_element_node;
 
@@ -78,39 +76,10 @@ struct attr_entry
 class dom_xml_handler : public scan_handler
 {
 protected:  // state
-	context* ctx_p;
-
 	std::stack<elem_entry*> node_stack;		// parser element node stack
 	list<ns_entry*> nslist;								// in-scope namespaces list
 	std::vector<attr_entry> attrv;				// attribute (qname,value) accumulator
 	dom_namepool pool;										// qname pool
-
-/* pool:
-	qnamekey_t put_qname(									// return: qname key
-		const std::string& uri,							// input: namespace uri
-		const std::string& prefix,					// input: prefix
-		const std::string& localname);			// input: localname
-	bool get_qname(												// return: true <-> found
-		const qnamekey_t&,									// input: qname key
-		std::string& uri,										// output: namespace uri
-		std::string& prefix,								// output: namespace key
-		std::string& localname) const;			// output: localname
-	nskey_t put_ns(												// return: namespace key
-		const std::string& prefix,					// input: prefix
-		const std::string& uri);						// input: uri
-	bool get_ns(													// return: true <-> found
-		const nskey_t&,											// input: namespace key
-		std::string& prefix,								// output: prefix
-		std::string& uri) const;						// output: uri
-	bool put_prefix(											// return: true <-> new entry
-		const std::string& prefix,					// input: prefix
-		const std::string& uri);						// input: uri
-	bool get_ns(													// return: true <-> found
-		const nskey_t&,											// input: namespace key
-		std::string& prefix,								// output: prefix
-		std::string& uri) const;						// output: uri
-*/
-
 	char* the_baseuri;										// document base URI
   std::string the_attribute_prefix;			// most recent attribute prefix
   std::string the_attribute_uri; 				// most recent attribute namespace URI
@@ -122,9 +91,8 @@ protected:  // state
 	ostringstream textbuf;								// text accumulator
 	dom_element_node* the_context_node;
 
-public:	// ctor, dtor
+public:		// ctor, dtor
 	dom_xml_handler(
-		context*,														// eval context
 		std::string const& baseuri,					// document base URI
 		std::string const& uri);						// document URI
 
@@ -134,10 +102,12 @@ protected:
 	void error(std::string const& msg) const throw (xqp_exception);
 
 public:	
-	uint16_t get_entity() { return the_entity; }
 	void flush_textbuf_as_text_node();
 	bool find_nsuri(const std::string& prefix, std::string& uri);
 	qnamekey_t process_qname(const char* buf, int offset, int length);
+
+	dom_element_node* context_node() const { return the_context_node; }
+	uint16_t entity() { return the_entity; }
 
 public:	// callback methods
 	//  Report an attribute name with no value.
