@@ -13,6 +13,10 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+#include <sys/param.h>
+#include <sys/mount.h>
+
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/vfs.h>

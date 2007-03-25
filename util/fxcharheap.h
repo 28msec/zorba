@@ -14,6 +14,7 @@
 #include "fxarray.h"
 #include "rchandle.h"
 #include "xqp_exception.h"
+#include <string>
 
 namespace xqp {
 
@@ -103,8 +104,9 @@ public:  //heap interface
     uint32_t len)						// input: string length
 	throw (xqp_exception);
 
-	// convenience method
+	// convenience methods
 	off_t put(char const*) throw (xqp_exception);
+	off_t put(const std::string &) throw (xqp_exception);
 
 	/**
    **	Replace a block of characters in place.

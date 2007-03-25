@@ -34,7 +34,7 @@ namespace xqp {
 
 /*_____________________________________________________________
 |
-|  Persistent hash map: string -> V
+|  hash map: string -> V
 |______________________________________________________________*/
 
 template<class V>
@@ -91,10 +91,9 @@ public:
 	typename fxvector<entry>::const_iterator end() { return vp->end(); }
 
 public:
-	// find hash index, true on match
+	// find: true on match, (index = hash index)
 	bool find(const string& key, uint32_t& index) const;
-
-	// find hash index, true on match
+	bool find(const string& key) const;
 	bool find(const char* key, uint32_t& index) const;
 
 	// find key heap offset, true on match
@@ -302,6 +301,14 @@ inline bool fxhashmap<V>::find(
 	return result;
 }
 
+template<class V>
+inline bool fxhashmap<V>::find(
+	const string& key) const
+{
+	uint32_t index;
+	return find(key,index);
+}
+
 
 // Store the hash location for a given key (or next available slot) 
 // in 'index'.  Return true <=> key matched.   
@@ -473,7 +480,7 @@ inline uint32_t fxhashmap<V>::h(const char* key) const
 
 /*_____________________________________________________________
 |                                
-|  Persistent hash map: 32 bits -> V
+|  hash map: 32 bits -> V
 |______________________________________________________________*/
 
 template<class V>
@@ -528,8 +535,6 @@ public:
 public:
 	// find hash position(key), true on match
 	bool find(uint32_t key, uint32_t& index) const;
-
-	// true on match
 	bool find(uint32_t key) const;	
 
 	// copy hash entry to result, true on match
@@ -737,7 +742,7 @@ inline bool fxhash32map<V>::put(uint32_t key, V val)
 
 /*_____________________________________________________________
 |
-|  Persistent hash map: 64 bits -> V
+|  hash map: 64 bits -> V
 |______________________________________________________________*/
 
 template<class V>
@@ -792,8 +797,6 @@ public:
 public:
 	// find hash position(key), true on match
 	bool find(uint64_t key, uint32_t& index) const;
-
-	// true on match
 	bool find(uint64_t key) const;						
 
 	// copy hash entry to result, true on match

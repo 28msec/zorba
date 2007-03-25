@@ -173,6 +173,12 @@ public:
 		return hval;
 	}
 	
+	static uint64_t h64(
+		const std::string& s,
+		uint64_t hval)
+	{
+		return h64(s.c_str(), s.length(), hval);
+	}
 	
 	/*
 	 * 64 bit Fowler/Noll/Vo hash on null-delimited char string
