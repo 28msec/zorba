@@ -1110,12 +1110,20 @@ ostream& xs_stringValue::put(ostream& os) const
 
 xs_stringValue::xs_stringValue(
 	itemstore& istore,
-	string const& s)
+	const string& s)
 :
 	atomic_value(xs_string, 0)
 {
 	istore.add_text(s);
   m_length = sizeof(xs_stringValue)/4 + _mod4(s.length());
+}
+ 
+xs_stringValue::xs_stringValue(
+	const string& s)
+:
+	atomic_value(xs_string,0)
+{
+	strcpy(rest,s.c_str());
 }
  
 string xs_stringValue::str() const

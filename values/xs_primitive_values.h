@@ -71,6 +71,8 @@ public:
 		{ return &istore[offset]; }
 	void* operator new(size_t n, void * p)
 		{ return p; }
+	void* operator new(size_t n)
+		{ return new char[n]; }
 
 	bool val() const { return (bool)m_val; }
 
@@ -138,6 +140,8 @@ public:
 		{ return &istore[offset]; }
 	void* operator new(size_t n, void * p)
 		{ return p; }
+	void* operator new(size_t n)
+		{ return new char[n]; }
 
 	long val() const { return (long)m_val; }
 
@@ -169,6 +173,8 @@ public:
 		{ return &istore[offset]; }
 	void* operator new(size_t n, void * p)
 		{ return p; }
+	void* operator new(size_t n)
+		{ return new char[n]; }
 
 	int val() const { return (int)m_val; }
 
@@ -272,6 +278,8 @@ public:
 		{ return &istore[offset]; }
 	void* operator new(size_t n, void * p)
 		{ return p; }
+	void* operator new(size_t n)
+		{ return new char[n]; }
 
 	double val() const { return (double)m_val; }
 
@@ -730,13 +738,19 @@ protected:
 	char rest[0];
 
 public:   // storage interface
-	void* operator new(size_t n,itemstore& istore) { return istore.alloc(n); }
-	void* operator new(size_t n,itemstore& i, itemref_t o) { return &i[o]; }
-	void* operator new(size_t n, void* p) { return p; }
-	void* operator new(size_t n, const void* p) { return (void*)p; }
+	void* operator new(size_t n,itemstore& istore)
+		{ return istore.alloc(n); }
+	void* operator new(size_t n,itemstore& i, itemref_t o)
+		{ return &i[o]; }
+	void* operator new(size_t n, void* p)
+		{ return p; }
+	void* operator new(size_t n, const void* p)
+		{ return (void*)p; }
+	void* operator new(size_t n, size_t m)
+		{ return new char[n+m+1]; }
 
-	xs_stringValue(itemstore&,std::string const&);
-	xs_stringValue(char const*,uint32_t length);
+	xs_stringValue(itemstore&, const std::string&);
+	xs_stringValue(const std::string&);
 	xs_stringValue() {}
 
 private:

@@ -8,8 +8,9 @@
  */
 
 #include "nodes.h"
-
+#include "qname_value.h"
 #include "xs_primitive_values.h"
+
 #include "../context/context.h"
 #include "../runtime/errors.h"
 #include "../runtime/iterator.h"
@@ -578,72 +579,6 @@ cout << TRACE << endl;
 ostream& nsseq::put(ostream& os) const
 {
 	return os;
-}
-
-
-/*..........................................
- :  qname_value                            :
- :.........................................*/
-
-qname_value::qname_value(
-	itemstore& istore,
-	itemref_t uriref,
-	const string& qname)
-:
-	atomic_value(xs_qname,0),
-	m_uriref(uriref)
-{
-	xs_stringValue* s_p = new(istore) xs_stringValue(istore,qname);
-  m_length = sizeof(qname_value)/4 + s_p->length();
-}
-
-string qname_value::prefix() const
-{
-	xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	string name = s_p->str();
-	string::size_type n = name.find(':');
-  return name.substr(0,n);
-}
-
-string qname_value::localname() const
-{
-  xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	string name = s_p->str();
-	string::size_type n = name.find(':');
-  return name.substr(n+1);
-}
-
-string qname_value::uri(
-	itemstore& istore) const
-{
-	xs_stringValue* s_p = new(istore,m_uriref) xs_stringValue();
-	return s_p->str();
-}
-
-ostream& qname_value::put(ostream& os) const
-{
-	xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	return s_p->put(os);
-}
-
-string qname_value::describe() const
-{
-  xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	ostringstream oss;
-	oss << "xs_qname(" << s_p->str() << ')';
-	return oss.str();
-}
-
-rchandle<abstract_iterator> qname_value::atomized_value() const
-{ return NULL; }
-
-rchandle<abstract_iterator> qname_value::effective_boolean_value() const
-{ return NULL; }
-
-string qname_value::string_value() const
-{
-  xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	return s_p->str();
 }
 
 

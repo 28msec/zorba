@@ -85,32 +85,10 @@ public:
 };
 
 
-/*______________________________________________________________________
-|  
-|	'atomic_value' encapsulates values of primitive or derived types
-|_______________________________________________________________________*/
+// no abstract atomic values
 
-class abstract_atomic_value : public abstract_item
-{
-public:		// accessors
-	sequence_type_t type() const;
-  std::ostream& put(std::ostream&) const;
-  std::string describe() const;
+// abstract nodes defined in 'abstract_nodes.h'
 
-public:
-	std::string string_value() const;
-	iterator_t atomized_value() const;
-
-	bool is_empty() const;
-	bool is_node() const;
-	bool is_atomic() const;
-};
-
-
-/*______________________________________________________________________
-|  
-|	 abstract nodes defined in 'abstract_nodes.h'
-|_______________________________________________________________________*/
 
 } /* namespace xqp */
 #endif /* XQP_ABSTRACT_VALUES_H */

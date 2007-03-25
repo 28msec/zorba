@@ -87,7 +87,6 @@ public:		// accessors
 	uint32_t& gen() { return m_gen; }
 	nodeid_t& id() { return m_id; }
 	nodeid_t& parentid() { return m_parentid; }
-
 	std::string decode(node_kind_t) const;
 
 public:		// XQuery interface
@@ -324,7 +323,8 @@ class namespace_node;
 |	functions. 
 |_______________________________________________________________________*/
 
-class document_node : public node, public abstract_document_node
+class document_node : public node
+											//public abstract_document_node
 {
 	friend class child_iterator;
 
@@ -408,7 +408,8 @@ public:		// output and debugging
 |			zero-length string. 
 |_______________________________________________________________________*/
 
-class element_node : public node, public abstract_element_node
+class element_node :	public node
+											//public abstract_element_node
 {
 	friend class child_iterator;
 
@@ -499,7 +500,8 @@ public:		// output and debugging
 |	parent element. 
 |_______________________________________________________________________*/
 
-class attribute_node : public node, public abstract_attribute_node
+class attribute_node :	public node
+												//public abstract_attribute_node
 {
 	friend class child_iterator;
 
@@ -564,7 +566,8 @@ public:		// output,debugging
 |	
 |	The data model permits Namespace Nodes without parents. 
 |_______________________________________________________________________*/
-class namespace_node : public node, public abstract_namespace_node
+class namespace_node : 	public node
+												//public abstract_namespace_node
 {
 	friend class child_iterator;
 
@@ -619,7 +622,8 @@ public:		// output, debugging
 |	 1. The string "?>" must not occur within the content.
 |	 2. The target must be an NCName.
 |_______________________________________________________________________*/
-class pi_node : public node, public abstract_pi_node
+class pi_node : public node
+								//public abstract_pi_node
 {
 	friend class child_iterator;
 
@@ -668,7 +672,8 @@ public:		// output, debugging
 | 6.6 Comment Nodes 
 |_______________________________________________________________________*/
 
-class comment_node : public node, public abstract_comment_node
+class comment_node : 	public node
+											//public abstract_comment_node
 {
 	friend class child_iterator;
 
@@ -723,7 +728,8 @@ public:		// output, debugging
 |   is simply discarded.
 |_______________________________________________________________________*/
 
-class text_node : public node, abstract_text_node
+class text_node : public node
+									//abstract_text_node
 {
 	friend class child_iterator;
 
@@ -792,51 +798,6 @@ public:		// output,debugging
 
 // node-like objects
 //
-
-class qname_value : public atomic_value, public abstract_qname
-{
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
-protected:
-	itemref_t m_uriref;
-	char rest[0];
-	/*
-		char[] localname
-	*/
-
-public:
-	void* operator new(size_t n,itemstore& istore) { return istore.alloc(n); }
-	void* operator new(size_t n,itemstore& i, itemref_t o) { return &i[o]; }
-	void* operator new(size_t n, void* p) { return p; }
-	void* operator new(size_t n, const void* p) { return (void*)p; }
-	void  operator delete(void*) {}
-
-public:
-	qname_value() {}
-	qname_value(itemstore&, itemref_t uriref, const std::string& qname);
-
-public:
-	std::string prefix() const;
-	std::string localname() const;
-	std::string uri(itemstore&) const;
-	nodeid_t id(itemstore& istore) const
-	{ return hashfun::h32(uri(istore),hashfun::h32(prefix(),hashfun::h32(localname()))); }
-
-private:	// ctor,dtor - lock out default and copy constructors
-	qname_value(qname_value& qn) : atomic_value(xs_qname,0) {}
-	~qname_value() {}
-
-public:		// output,debugging
-	std::ostream& put(std::ostream& os) const;
-	string describe() const;
-
-	iterator_t atomized_value() const;
-	iterator_t effective_boolean_value() const;
-	std::string string_value() const;
-
-};
-
 
 class nsseq : public atomic_value
 {

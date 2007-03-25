@@ -144,8 +144,7 @@ public:		// XQuery interface
 |	'atomic_value' encapsulates values of primitive or derived types
 |_______________________________________________________________________*/
 
-class atomic_value :	public item, 
-											public abstract_atomic_value
+class atomic_value :	public item
 {
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }

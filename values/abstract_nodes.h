@@ -24,10 +24,15 @@
 
 namespace xqp {
 
-class abstract_itemstore;
+
 class xs_anyURIValue;
 class abstract_qname;
 class abstract_context;
+class abstract_text_node;
+
+/*______________________________________________________________________
+| Opaque node identifier
+|______________________________________________________________________*/
 
 class abstract_nodeid
 {
@@ -39,11 +44,9 @@ public:
 };
 
 
-// "ord-path" paper - for nodeid implementation (sigmod 2005-06)
-// ms implementation - check this
+// (see "ord-path" paper - for nodeid implementation (sigmod 2005-06)
+// (check ms; good duo-decimal node number implementation)
 
-class abstract_text_node;
-class abstract_qname;
 
 /*______________________________________________________________________
 | 6.0 Node
@@ -122,7 +125,7 @@ public:
   void replaceElementContent(const abstract_text_node& newContent);
   void rename(const abstract_qname& newName);
 
-	// serialization testing
+	// serialization/testing
 	std::string toXML() const;
 
 
@@ -237,7 +240,6 @@ public:
 };
 
 
-
 /*______________________________________________________________________
 |
 | 6.3 Attribute Nodes
@@ -274,7 +276,6 @@ public:
 };
 
 
-
 /*______________________________________________________________________
 |
 | 6.4 Namespace nodes
@@ -298,7 +299,6 @@ public:
 };
 
 
-
 /*______________________________________________________________________
 | 6.5 Processing Instruction Nodes
 |	 1. The string "?>" must not occur within the content.
@@ -318,7 +318,6 @@ public:
 };
 
 
-
 /*______________________________________________________________________
 | 6.6 Comment Nodes 
 |_______________________________________________________________________*/
@@ -334,7 +333,6 @@ public:
 	iterator_t typed_value();
 
 };
-
 
 
 /*______________________________________________________________________
@@ -365,18 +363,6 @@ public:
 
 
 
-class abstract_qname : public abstract_atomic_value
-{
-public:
-	std::string prefix() const;
-	std::string localname() const;
-	xs_anyURIValue* uri() const;
-	iterator_t atomized_value() const;
-	std::string string_value() const;
-
-};
-
-
-
 }	/* namespace xqp */
 #endif /* XQP_ABSTRACT_NODES_H */
+

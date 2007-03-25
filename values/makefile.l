@@ -17,6 +17,8 @@ ft_values :	ft_values.h ft_values.cpp
 update_values :	update_values.h update_values.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/update_values.${SUFX} update_values.cpp
 
+qname_value :	qname_value.h qname_value.cpp
+	g++ -Wall ${OPT} -c -o ${BUILD}/qname_value.${SUFX} qname_value.cpp
 qname_test : qname_value.h qname_value.cpp qname_test.cpp
 	g++ ${OPT} -o ${BUILD}/qname_test \
 		../util/${BUILD}/xqp_exception.${SUFX} \
@@ -84,9 +86,10 @@ ft_values_test :	ft_values.h ft_values.cpp ft_values_test.cpp
 		ft_values_test.cpp
 
 all : \
-	nodes \
+	qname_value \
 	xs_primitive_values \
-	ft_values
+	nodes \
+	ft_values 
 	
 #	update_values
 
