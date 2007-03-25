@@ -72,7 +72,7 @@ public:		// ctor,dtor
 	virtual ~dom_node() {}
 
 public:		// output/debugging
-	virtual std::ostream& put(std::ostream&);
+	virtual std::ostream& put(std::ostream& os) const;
 
 public:		// XQuery interface
 	/**
@@ -213,8 +213,8 @@ public:
 	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
-	std::string ibaseuri;
-	std::string idocuri;
+	std::string the_baseuri;
+	std::string the_docuri;
 	std::vector<dom_node*> childv;
 
 public:
@@ -223,12 +223,13 @@ public:
 	~dom_document_node() {}
 
 public:		// accessors
-	std::string baseuri() const { return ibaseuri; }
-	std::string docuri() const { return idocuri; }
+	std::string baseuri() const { return the_baseuri; }
+	std::string docuri() const { return the_docuri; }
 	const std::vector<dom_node*>& get_childv() const { return childv; }
-	void add_node(dom_node* dn_p) { childv.push_back(dn_p); }
+	void add_child(dom_node* dn_p) { childv.push_back(dn_p); }
 
 public:		// XQuery interface
+  enum node_kind_t node_kind() const { return doc_kind; }
 	string string_value() const;
 	iterator_t base_uri() const;
 	iterator_t document_uri() const;
@@ -237,6 +238,15 @@ public:		// XQuery interface
 
 public:		// output and debugging
 	std::ostream& put(std::ostream&) const;
+	std::string describe() const { return "doc("+the_baseuri+the_docuri+")"; }
+	
+  iterator_t attributes() const { return NULL; }
+  iterator_t namespace_nodes() const { return NULL; }
+  iterator_t node_name() const { return NULL; }
+  iterator_t type_name() const { return NULL; }
+  bool is_id() const { return false; }
+  bool is_idrefs() const { return false; }
+  bool nilled() const { return false; }
 
 public:		// iterator interface
 
@@ -246,7 +256,6 @@ public:		// iterator interface
 		const dom_document_node* doc_p;
 		std::vector<dom_node*>::const_iterator it;
 		std::vector<dom_node*>::const_iterator end;
-	
 	public:
 		child_iterator(const dom_document_node* _doc_p)
 		:
@@ -341,6 +350,10 @@ public:
 	std::vector<dom_namespace_node*>& get_nsv() { return nsv; }
 	std::vector<dom_attribute_node*>& get_attrv() { return attrv; }
 	std::vector<dom_node*>& get_childv() { return childv; }
+	
+	void add_namespace(dom_namespace_node* ns_p) { nsv.push_back(ns_p); }
+	void add_attribute(dom_attribute_node* at_p) { attrv.push_back(at_p); }
+	void add_child(dom_node* node_p) { childv.push_back(node_p); }
 
 public:
 	dom_element_node(dom_qname*, atomic_value*);
@@ -365,6 +378,7 @@ public:		// XQuery interface
 
 public:		// output and debugging
 	std::ostream& put(std::ostream&) const;
+  std::string describe() const { return qname_p->describe(); }
 
 public:		// iterators
 	class child_iterator :	public abstract_iterator
@@ -590,6 +604,7 @@ public:
 	~dom_namespace_node() {}
 
 public:		// XQuery interface
+	enum node_kind_t node_kind() const { return ns_kind; }
 	iterator_t node_name() const;
 	iterator_t typed_value() const;
 	string string_value() const;
@@ -599,7 +614,6 @@ public:		// output, debugging
 	std::string uri() const { return iuri; }
 	std::ostream& put(std::ostream&) const;
 
-	enum node_kind_t node_kind() const { return ns_kind; }
 	iterator_t attributes() const { return NULL; }
 	iterator_t base_uri() const { return NULL; }
 	iterator_t children() const { return NULL; }
@@ -634,6 +648,7 @@ public:
 	~dom_pi_node() {}
 
 public:		// XQuery interface
+	enum node_kind_t node_kind() const { return pi_kind; }
 	string string_value() const;
 	iterator_t base_uri() const;
 	iterator_t typed_value() const;
@@ -643,7 +658,6 @@ public:		// output, debugging
 	std::string content() const { return icontent; }
 	std::ostream& put(std::ostream&) const;
 
-	enum node_kind_t node_kind() const { return pi_kind; }
 	iterator_t attributes() const { return NULL; }
 	iterator_t children() const { return NULL; }
 	iterator_t document_uri() const { return NULL; }
@@ -668,7 +682,7 @@ public:
 	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
-	std::string icontent;
+	std::string the_content;
 
 public:
 	dom_comment_node(const std::string& content);
@@ -676,15 +690,15 @@ public:
 	~dom_comment_node() {}
 	
 public:		// XQuery interface
+	enum node_kind_t node_kind() const { return comment_kind; }
 	string string_value() const;
 	iterator_t base_uri() const;
 	iterator_t typed_value() const;
 
 public:		// output, debugging
-	std::string content() const { return icontent; }
+	std::string content() const { return the_content; }
 	std::ostream& put(std::ostream&) const;
 
-	enum node_kind_t node_kind() const { return comment_kind; }
 	iterator_t attributes() const { return NULL; }
 	iterator_t children() const { return NULL; }
 	iterator_t document_uri() const { return NULL; }
@@ -721,7 +735,7 @@ public:
 	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
-	std::string icontent;
+	std::string the_content;
 
 public:
 	dom_text_node(const std::string& content);
@@ -734,7 +748,7 @@ public:		// accessors
 	iterator_t typed_value() const;
 
 public:		// output/debugging
-	std::string content() { return icontent; }
+	std::string content() { return the_content; }
 	std::ostream& put(std::ostream& os) const;
 
 	enum node_kind_t node_kind() const { return text_kind; }

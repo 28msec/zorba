@@ -26,8 +26,8 @@ namespace xqp {
 
 
 dom_xml_handler::dom_xml_handler(
-	string const&  _baseuri,
-	string const&  _uri)
+	string const& baseuri,
+	string const& uri)
 :
 	scan_handler(),
 	the_attribute_prefix(""),
@@ -36,7 +36,14 @@ dom_xml_handler::dom_xml_handler(
 	the_element(""),
 	the_PCDATA(""),
 	the_PITarget(""),
-	the_entity(0)
+	the_entity(0),
+	
+	the_context_node(new dom_document_node(baseuri, uri)),
+	
+	default_attribute_prefix("noname"),
+	default_attribute_uri("http://noname"),
+	default_element_prefix("noname"),
+	default_element_uri("http://noname")
 {
 }
 
@@ -65,7 +72,9 @@ bool dom_xml_handler::find_nsuri(
 
 
 qnamekey_t dom_xml_handler::process_qname(
-	const char* buf, int offset, int length)
+	const char* buf, int offset, int length,
+	const string& default_prefix,
+	const string& default_uri)
 {
 	string prefix("");
 	string uri("");
@@ -80,10 +89,14 @@ qnamekey_t dom_xml_handler::process_qname(
 
 	// find uri for prefix
 	if (prefix.length()>0) {
-		if(!find_nsuri(prefix,uri)) {
+		if (!find_nsuri(prefix,uri)) {
 			cout << TRACE << " : unrecognized prefix: " << prefix << endl;
 			return 0;
 		}
+	}
+	else {
+  	prefix = default_prefix;
+  	uri = default_uri;
 	}
 
 	// cache qname, return key
@@ -97,12 +110,57 @@ qnamekey_t dom_xml_handler::process_qname(
 }
 
 
+void dom_xml_handler::add_child(
+  dom_node* node_p)
+{
+  //cout << TRACE << " : add_child("; node_p->put(cout) << ")\n";
+  dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
+	if (en_p) { en_p->add_child(node_p); return; }
+	dom_document_node* dn_p = dynamic_cast<dom_document_node*>(the_context_node);
+  if (dn_p) { dn_p->add_child(node_p); return; }
+  cout << TRACE << " : bad context node\n";
+}
+
+void dom_xml_handler::add_namespace(
+  dom_namespace_node* ns_p)
+{
+  //cout << TRACE << " : add_namespace("; ns_p->put(cout) << ")\n";
+  dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
+	if (en_p) { en_p->add_namespace(ns_p); return; }
+  cout << TRACE << " : bad context node\n";
+}
+
+
+void dom_xml_handler::add_attribute(
+  dom_attribute_node* at_p)
+{
+  //cout << TRACE << " : add_attribute("; at_p->put(cout) << ")\n";
+  dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
+	if (en_p) { en_p->add_attribute(at_p); return; }
+  cout << TRACE << " : bad context node\n";
+}
+
+void dom_xml_handler::display_context_node() const
+{
+  //cout << TRACE << " : add_child("; node_p->put(cout) << ")\n";
+  dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
+	if (en_p) { en_p->put(cout); return; }
+	dom_document_node* dn_p = dynamic_cast<dom_document_node*>(the_context_node);
+  if (dn_p) { dn_p->put(cout); return; }
+  cout << TRACE << " : bad context node\n";
+}
+
+
 
 // attribute without value callback
 void dom_xml_handler::adup(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	if (length==0) return;
-	qnamekey_t qnkey = process_qname(buf,offset,length);
+	qnamekey_t qnkey = 
+	  process_qname(buf,offset,length,
+	                  default_attribute_prefix,
+	                  default_attribute_uri);
 	attrv.push_back(attr_entry(qnkey,""));
 }
 
@@ -110,8 +168,12 @@ void dom_xml_handler::adup(const char* buf, int offset, int length)
 // attribute name callback
 void dom_xml_handler::aname(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	if (length==0) return;
-	qnamekey_t qnamekey = process_qname(buf,offset,length);
+	qnamekey_t qnamekey =
+	  process_qname(buf,offset,length,
+	                  default_attribute_prefix,
+	                  default_attribute_uri);
 	attrv.push_back(attr_entry(qnamekey,""));
 }
 
@@ -119,6 +181,7 @@ void dom_xml_handler::aname(const char* buf, int offset, int length)
 // attribute value callback
 void dom_xml_handler::aval(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	if (length==0) return;
 	string value = string(buf,offset,length);
 
@@ -130,16 +193,12 @@ void dom_xml_handler::aval(const char* buf, int offset, int length)
 		cout << TRACE << " : pool missing QName\n";
 		return;
 	}
-
 	if (qn_p->prefix()=="xmlns") {
-		ns_entry* nse_p = new /*delete on etag*/
-												ns_entry(qn_p->prefix(), value);
+		ns_entry* nse_p = new ns_entry(qn_p->prefix(), value);
 		nslist.push_back(nse_p);
-		dom_namespace_node* ns_p = new dom_namespace_node(nse_p->prefix, nse_p->uri);
-		the_context_node->get_nsv().push_back(ns_p);
+		add_namespace(new dom_namespace_node(nse_p->prefix, nse_p->uri));
 		return;
 	}
-		
 	ae.value = value;
 }
 
@@ -147,6 +206,7 @@ void dom_xml_handler::aval(const char* buf, int offset, int length)
 // &ent; entity callback
 void dom_xml_handler::entity(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	string s(buf,offset,length);
 	unsigned short code;
   entityMap.get(s, code);
@@ -158,13 +218,10 @@ void dom_xml_handler::entity(const char* buf, int offset, int length)
 // serialize concatenated text node
 void dom_xml_handler::flush_textbuf_as_text_node()
 {
+  //cout << TRACE << endl;
 	if (textbuf.str().length()>0) {
-		dom_text_node* tn_p =
-			new /* delete external */
-				dom_text_node(textbuf.str());
-
-		the_context_node->get_childv().push_back(tn_p);
-		textbuf.str(""); // clear accumulator
+		add_child(new dom_text_node(textbuf.str()));
+		textbuf.str("");
 	}
 }
 
@@ -179,56 +236,74 @@ void dom_xml_handler::eof(const char* buf, int offset, int length)
 // end tag callback
 void dom_xml_handler::etag(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	if (length==0) return;
 
 	// add last concatenated text node
 	flush_textbuf_as_text_node();
 
 	// find matching tag
-	qnamekey_t qnkey = process_qname(buf,offset,length);
-	stack<elem_entry*> recover_stack;
+	qnamekey_t qnkey = 
+	  process_qname(buf,offset,length,
+	                  default_element_prefix,
+	                  default_element_uri);
+	    
+	bool matched = false;                   
 	while (!node_stack.empty()) {
-		elem_entry* e_p = node_stack.top();
-		node_stack.pop();
-		if (e_p->qnamekey==qnkey) {
-			the_context_node = e_p->en_p;
-			delete e_p;
-			break;
+		elem_entry* entry_p = node_stack.top();
+		dom_node* node_p = entry_p->en_p;
+		
+		cout << TRACE << " stack top: "; node_p->put(cout) << endl;
+		
+		if (matched) {
+  	  the_context_node = node_p;
+  	  display_context_node();
+  	  break;
 		}
-		else {
-			recover_stack.push(e_p);
+		if (entry_p->qnamekey==qnkey) {
+  		matched = true;
 		}
+  	node_stack.pop();
+  	cout << TRACE << " stack pop\n";
+		delete entry_p;
 	}
-
-	while (!recover_stack.empty()) {
-		elem_entry* e_p = recover_stack.top();
-		recover_stack.pop();
-		node_stack.push(e_p);
-	}
+	
 }
 
 
 // general identifier = tag callback
 void dom_xml_handler::gi(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	if (length==0) return;
-	qnamekey_t qnkey = process_qname(buf,offset,length);
+	
+	// add accumulated text
+	flush_textbuf_as_text_node();
+		
+	// add new element child
+	qnamekey_t qnkey =
+	  process_qname(buf,offset,length,
+	                default_element_prefix,
+	                default_element_uri);
 	dom_qname* qn_p;
 	if (!pool.get_qname(qnkey, qn_p)) {
 		cout << TRACE << " : QName not found: " << string(buf,offset,length) << endl;
 		return;
 	}
-	the_context_node = new dom_element_node(qn_p, NULL);
-	elem_entry* e_p  = new /* delete when popped */
-												elem_entry(qnkey, the_context_node);
-	node_stack.push(e_p);
-	flush_textbuf_as_text_node();
+	dom_element_node* elem_p;
+	add_child(elem_p = new dom_element_node(qn_p, NULL));
+	the_context_node = elem_p;
+	display_context_node();
+	elem_entry* entry_p  = new elem_entry(qnkey, elem_p);
+	cout << TRACE << " : push stack: "; elem_p->put(cout) << endl;
+	node_stack.push(entry_p);
 }
 
 
 // parsed content (tag body) callback
 void dom_xml_handler::pcdata(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	if (length==0) return;
 	textbuf << string(buf,offset,length);
 }
@@ -237,9 +312,9 @@ void dom_xml_handler::pcdata(const char* buf, int offset, int length)
 // processing instruction callback
 void dom_xml_handler::pi(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	string content(buf,offset,length);
-	dom_pi_node* pn_p = new dom_pi_node(the_PITarget,content);
-	the_context_node->get_childv().push_back(pn_p);
+	add_child(new dom_pi_node(the_PITarget,content));
 	the_PITarget = "";
 }
 
@@ -247,6 +322,7 @@ void dom_xml_handler::pi(const char* buf, int offset, int length)
 // processing instruction target callback
 void dom_xml_handler::pitarget(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	the_PITarget = string(buf,offset,length);
 }
 
@@ -254,6 +330,7 @@ void dom_xml_handler::pitarget(const char* buf, int offset, int length)
 // start tag close (attributes all processed) callback 
 void dom_xml_handler::stagc(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	vector<attr_entry>::const_iterator it = attrv.begin();
 	for (; it!=attrv.end(); ++it) {
   	attr_entry ae = *it;
@@ -262,8 +339,7 @@ void dom_xml_handler::stagc(const char* buf, int offset, int length)
 			cout << TRACE << " : qnamekey not found: " << ae.qnamekey << endl;
 			continue;
 		}
-		dom_attribute_node* an_p = new dom_attribute_node(qn_p, ae.value);
-		the_context_node->get_attrv().push_back(an_p);
+		add_attribute(new dom_attribute_node(qn_p, ae.value));
 	}
 	attrv.clear();
 }
@@ -272,9 +348,9 @@ void dom_xml_handler::stagc(const char* buf, int offset, int length)
 // comment callback
 void dom_xml_handler::cmnt(const char* buf, int offset, int length)
 {
+  //cout << TRACE << endl;
 	string content(buf,offset,length);
-	dom_comment_node* cn_p = new dom_comment_node(content);
-	the_context_node->get_childv().push_back(cn_p);
+	add_child(new dom_comment_node(content));
 }
 
 

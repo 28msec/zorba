@@ -23,8 +23,10 @@ dom_xml_handler_test : dom_xml_handler_test.cpp dom_xml_handler.h dom_xml_handle
 		../store/Build/scan_handler.${SUFX} \
 		../store/Build/xml_scanner.${SUFX} \
 		../util/Build/file.${SUFX} \
+		../util/Build/mmfile.${SUFX} \
+		../util/Build/fxcharheap.${SUFX} \
 		../util/Build/xqp_exception.${SUFX} \
-		../values/Build/nodes.${SUFX} \
+		../values/Build/qname_value.${SUFX} \
 		../values/Build/xs_primitive_values.${SUFX} \
 		Build/dom_iterator.${SUFX} \
 		Build/dom_qname.${SUFX} \

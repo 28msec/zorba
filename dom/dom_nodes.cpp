@@ -14,6 +14,43 @@ namespace xqp {
 typedef rchandle<abstract_iterator> iterator_t;
 
 
+
+ostream& dom_node::put(ostream& os) const
+{
+  switch (node_kind()) {
+    case doc_kind: {
+      const dom_document_node* doc_p = dynamic_cast<const dom_document_node*>(this);
+      return doc_p->put(os);
+    }
+    case elem_kind: {
+      const dom_element_node* elem_p = dynamic_cast<const dom_element_node*>(this);
+      return elem_p->put(os);
+    }
+    case attr_kind: {
+      const dom_attribute_node* at_p = dynamic_cast<const dom_attribute_node*>(this);
+      return at_p->put(os);
+    }
+    case ns_kind: {
+      const dom_namespace_node* ns_p = dynamic_cast<const dom_namespace_node*>(this);
+      return ns_p->put(os);
+    }
+    case text_kind: {
+      const dom_text_node* txt_p = dynamic_cast<const dom_text_node*>(this);
+      return txt_p->put(os);
+    }
+    case comment_kind: {
+      const dom_comment_node* cmnt_p = dynamic_cast<const dom_comment_node*>(this);
+      return cmnt_p->put(os);
+    }
+    case pi_kind: {
+      const dom_pi_node* pi_p = dynamic_cast<const dom_pi_node*>(this);
+      return pi_p->put(os);
+    }
+		default: return os << "??";
+  }
+}
+
+
 // dom_document_node
 // -----------------
 
@@ -21,15 +58,15 @@ dom_document_node::dom_document_node(
 	const std::string& baseuri,
 	const std::string& docuri)
 :
-	ibaseuri(baseuri),
-	idocuri(docuri)
+	the_baseuri(baseuri),
+	the_docuri(docuri)
 {}
 	
 dom_document_node::dom_document_node(
 	dom_document_node::dom_document_node& dn)
 :
-	ibaseuri(dn.ibaseuri),
-	idocuri(dn.idocuri)
+	the_baseuri(dn.the_baseuri),
+	the_docuri(dn.the_docuri)
 {}
 
 string dom_document_node::string_value() const
@@ -40,10 +77,10 @@ string dom_document_node::string_value() const
 }
 
 iterator_t dom_document_node::base_uri() const
-{ return new dom_singleton_iterator(ibaseuri); }
+{ return new dom_singleton_iterator(the_baseuri); }
 
 iterator_t dom_document_node::document_uri() const
-{ return new dom_singleton_iterator(idocuri); }
+{ return new dom_singleton_iterator(the_docuri); }
 
 iterator_t dom_document_node::children() const
 { return new child_iterator(this); }
@@ -127,8 +164,11 @@ iterator_t dom_element_node::typed_value() const
 ostream& dom_element_node::put(
 	ostream& os) const
 {
+  os << '[' << childv.size() << ']';
 	os << '<';
-	qname_p->put(os) << ' ';
+	qname_p->put(os);
+
+	if (nsv.size() + attrv.size() > 0) os << ' ';
 	vector<dom_namespace_node*>::const_iterator ns_it = nsv.begin();
 	for (; ns_it!=nsv.end(); ++ns_it) {
 		(*ns_it)->put(os) << ' ';
@@ -142,6 +182,8 @@ ostream& dom_element_node::put(
 	for (; nd_it!=childv.end(); ++nd_it) {
 		(*nd_it)->put(os);
 	}
+	os << "</";
+	qname_p->put(os);
 	return os << '>';
 }
 
@@ -266,14 +308,14 @@ std::ostream& dom_pi_node::put(std::ostream& os) const
 
 dom_comment_node::dom_comment_node(
 	const string& content)
-: icontent(content) {}
+: the_content(content) {}
 
 dom_comment_node::dom_comment_node(
 	const dom_comment_node& cn)
-: icontent(cn.icontent) {}
+: the_content(cn.the_content) {}
 
 string dom_comment_node::string_value() const
-{ return icontent; }
+{ return the_content; }
 
 iterator_t dom_comment_node::base_uri() const
 { return parent_p ? parent_p->base_uri() : NULL; }
@@ -282,7 +324,7 @@ iterator_t dom_comment_node::typed_value() const
 { return new dom_singleton_iterator(this); }
 
 std::ostream& dom_comment_node::put(std::ostream& os) const
-{ return os << "<!--" << icontent << "-->"; }
+{ return os << "<!--" << the_content << "-->"; }
 
 
 
@@ -292,23 +334,23 @@ std::ostream& dom_comment_node::put(std::ostream& os) const
 
 dom_text_node::dom_text_node(
 	const string& content)
-: icontent(content) {}
+: the_content(content) {}
 
 dom_text_node::dom_text_node(
 	const dom_text_node& tn) 
-: icontent(tn.icontent) {}
+: the_content(tn.the_content) {}
 
 string dom_text_node::string_value() const
-{ return icontent; }
+{ return the_content; }
 
 iterator_t dom_text_node::base_uri() const
 { return parent_p ? parent_p->base_uri() : NULL; }
 
 iterator_t dom_text_node::typed_value() const
-{ return new dom_singleton_iterator(icontent); }
+{ return new dom_singleton_iterator(the_content); }
 
 ostream& dom_text_node::put(ostream& os) const
-{ return os << icontent; }
+{ return os << the_content; }
 
 
 }	/* namespace xqp */

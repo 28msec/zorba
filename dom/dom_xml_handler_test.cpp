@@ -56,7 +56,8 @@ int main(int argc, char* argv[])
 		dom_xml_handler* dxmlh_p = new dom_xml_handler(baseuri, uri);
 		xml_scanner* xmls_p = new xml_scanner();
 		xmls_p->scan(ibuf, nread, dynamic_cast<scan_handler*>(dxmlh_p));
-		dom_element_node* en_p = dxmlh_p->context_node();
+		dom_node* en_p = dxmlh_p->context_node();
+		cout << "\n=====================\n";
 		en_p->put(cout);
 
 		delete en_p;

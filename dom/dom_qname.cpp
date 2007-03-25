@@ -23,17 +23,17 @@ dom_qname::dom_qname(
 	const string& prefix,
 	const string& localname)
 :
-	iuri(uri),
-	iprefix(prefix),
-	ilocalname(localname)
+	the_uri(uri),
+	the_prefix(prefix),
+	the_localname(localname)
 {}
 
 dom_qname::dom_qname(
 	const dom_qname& qn)
 :
-	iuri(qn.iuri),
-	iprefix(qn.iprefix),
-	ilocalname(qn.ilocalname)
+	the_uri(qn.the_uri),
+	the_prefix(qn.the_prefix),
+	the_localname(qn.the_localname)
 {}
 
 qnamekey_t dom_qname::hashkey(
@@ -46,18 +46,28 @@ qnamekey_t dom_qname::hashkey(
 
 qnamekey_t dom_qname::nodeid() const
 {
-	return dom_qname::hashkey(iuri,iprefix,ilocalname);
+	return dom_qname::hashkey(the_uri,the_prefix,the_localname);
 }
 
 ostream& dom_qname::put(ostream& os) const
 {
-	return os << iprefix << '[' << iuri << "]:" << ilocalname;
+  if (the_uri!="http://noname") {
+	  return os << the_prefix << '[' << the_uri << "]:" << the_localname;
+  }
+  else {
+    return os << the_localname;
+  }
 }
 
 string dom_qname::describe() const
 {
 	ostringstream oss;
-	oss << "qname(" << iprefix << '[' << iuri << "]:" << ilocalname << ')';
+	if (the_uri!="http://noname") {
+	  oss << "qname(" << the_prefix << '[' << the_uri << "]:" << the_localname << ')';
+  }
+  else {
+    oss << "qname(" << the_localname << ')';
+  }
 	return oss.str();
 }
 

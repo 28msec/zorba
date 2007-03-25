@@ -31,6 +31,9 @@
 
 namespace xqp {
 
+class dom_node;
+class dom_namespace_node;
+class dom_attribute_node;
 class dom_qname;
 class dom_element_node;
 
@@ -89,7 +92,12 @@ protected:  // state
   std::string	the_PITarget;							// most recent PITarget
   uint16_t the_entity;									// most recent entity 
 	ostringstream textbuf;								// text accumulator
-	dom_element_node* the_context_node;
+	dom_node* the_context_node;
+	
+	std::string default_attribute_prefix;
+	std::string default_attribute_uri;
+	std::string default_element_prefix;
+	std::string default_element_uri;
 
 public:		// ctor, dtor
 	dom_xml_handler(
@@ -104,9 +112,18 @@ protected:
 public:	
 	void flush_textbuf_as_text_node();
 	bool find_nsuri(const std::string& prefix, std::string& uri);
-	qnamekey_t process_qname(const char* buf, int offset, int length);
+	
+	qnamekey_t process_qname(
+  	const char* buf, int offset, int length,
+  	const std::string& default_prefix,
+  	const std::string& default_uri);
+  	
+  void add_namespace(dom_namespace_node*);
+  void add_attribute(dom_attribute_node*);
+  void add_child(dom_node*);
 
-	dom_element_node* context_node() const { return the_context_node; }
+	dom_node* context_node() const { return the_context_node; }
+	void display_context_node() const;
 	uint16_t entity() { return the_entity; }
 
 public:	// callback methods
