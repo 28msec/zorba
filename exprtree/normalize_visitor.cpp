@@ -132,12 +132,7 @@ bool normalize_visitor::begin_visit(
 {
 cout << TRACE << endl;
 	string uri = v.get_collation();
-	itemstore& istore = *ctx_p->istore();
-	itemref_t ref = istore.eos();
-	qnamekey_t key = hashfun::h64(uri);
-	new (istore) xs_stringValue(istore,uri);
-	qname_value* qn_p = new (istore) qname_value(istore,key,ref);
-	ctx_p->set_default_collation(qn_p);
+	ctx_p->set_default_collation(uri);
 	return false;
 }
 
@@ -149,14 +144,14 @@ cout << TRACE << endl;
 	case ns_element_default: {
 		namespace_node* ns_p =
 			new (*ctx_p->istore())
-				namespace_node(ctx_p,v.get_default_namespace());
+				namespace_node(ctx_p,"#elem#",v.get_default_namespace());
 		ctx_p->set_default_ns(ns_p);
 		break;
 	}
 	case ns_function_default: {
 		namespace_node* ns_p =
 			new (*ctx_p->istore())
-				namespace_node(ctx_p, v.get_default_namespace());
+				namespace_node(ctx_p,"#func#",v.get_default_namespace());
 		ctx_p->set_default_function_ns(ns_p);
 		break;
 	}
