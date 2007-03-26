@@ -31,13 +31,20 @@ qname_value::qname_value(
   m_length = sizeof(qname_value)/4 + s_p->length();
 }
 
-void* qname_value::operator new(
+inline void* qname_value::operator new(
+	size_t n,
+	itemstore& istore,
+	itemref_t offset)
+{
+	return &istore[offset];
+}
+
+inline void* qname_value::operator new(
 	size_t n,
 	itemstore& istore)
 {
 	return istore.alloc(n);
 }
-
 
 nodeid_t qname_value::id(itemstore& istore) const
 {

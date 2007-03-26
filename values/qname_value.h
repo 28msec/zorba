@@ -35,8 +35,8 @@ protected:
 	*/
 
 public:
-	void* operator new(size_t n,itemstore& istore);
-	void* operator new(size_t n,itemstore& i, itemref_t o) { return &i[o]; }
+	void* operator new(size_t n, itemstore&);
+	void* operator new(size_t n, itemstore&, itemref_t);
 	void* operator new(size_t n, void* p) { return p; }
 	void* operator new(size_t n, const void* p) { return (void*)p; }
 	void  operator delete(void*) {}
