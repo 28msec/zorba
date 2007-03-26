@@ -88,6 +88,7 @@ static const int IS_NONATOMIC = 1 << NONATOMIC_SHIFT;
 // EMPTY_TYPE is a pseudo-type used to construct empty sequences.
 // ANY_TYPE is a pseudo-type used to specify "sequences of any type"
 // RAW_BINARY_TYPE is not in XML Schema, and represents non-XML entity bodies.
+// TYPE_TYPE is a type whose value is one of these typecodes.
 static const int UNTYPED_TYPE = 0 << TYPE_SHIFT;
 static const int UNTYPED_ATOMIC_TYPE = 1 << TYPE_SHIFT;
 static const int STRING_TYPE = 2 << TYPE_SHIFT;
@@ -113,6 +114,7 @@ static const int COMPLEX_TYPE = 21 << TYPE_SHIFT;
 static const int EMPTY_TYPE = 22 << TYPE_SHIFT;
 static const int ANY_TYPE = 23 << TYPE_SHIFT;
 static const int RAW_BINARY_TYPE = 24 << TYPE_SHIFT;
+static const int TYPE_TYPE = 25 << TYPE_SHIFT;
 
 // SUB-SUB6 specify derived XML Schema types.
 // SUB should be read as "subtype", SUB2 as "sub-subtype", etc.
@@ -166,6 +168,7 @@ static const int QNAME_REP = 14 << REP_SHIFT;
 static const int SEQUENCE_REP = 15 << REP_SHIFT;
 static const int BARE_REP = 16 << REP_SHIFT;
 static const int COMPLEX_TYPE_REP = 17 << REP_SHIFT;
+static const int TYPE_REP = 18 << REP_SHIFT;
 
 // Okay, at last the bit-twiddling is done.  Now we just make an enum of type codes
 // that assembles the correct values together.
@@ -439,6 +442,10 @@ enum TypeCode {
 	xs_rawBinaryTypeSeq = SEQUENCE_ARITY + NOT_NODE + RAW_BINARY_TYPE + SEQUENCE_REP,
 	xs_rawBinaryTypePlus = NONEMPTY_SEQ_ARITY + NOT_NODE + RAW_BINARY_TYPE + NO_REP,
 	xs_rawBinaryTypeOpt = OPT_ITEM_ARITY + NOT_NODE + RAW_BINARY_TYPE + NO_REP,
+	xs_typeType = ITEM_ARITY + NOT_NODE + TYPE_TYPE + TEYP_REP,
+	xs_typeTypeSeq = SEQUENCE_ARITY + NOT_NODE + TYPE_TYPE + SEQUENCE_REP,
+	xs_typeTypePlus = NONEMPTY_SEQ_ARITY + NOT_NODE + TYPE_TYPE + NO_REP,
+	xs_typeTypeOpt = OPT_ITEM_ARITY + NOT_NODE + TYPE_TYPE + NO_REP,
 };
 
 } /* namespace xqp */
