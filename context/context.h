@@ -214,7 +214,7 @@ protected:	// XQuery 1.0 static context
 	**	xs:string and xs:anyURI  (and types derived from them) when no 
 	**	explicit collation is specified.] 
 	*/
-	qname_value* default_collation_p;
+	std::string default_collation;
 
 	/*
 	**	[Definition: Construction mode. The construction mode governs the 
@@ -394,10 +394,11 @@ public:	// manipulators
 		{ preserve_mode = v; }
 
 
-	qname_value* get_default_collation() const;
-	void set_default_collation(qname_value*);
+	string get_default_collation() const;
 	std::string get_base_uri() const;
-	void set_base_uri(std::string const&);
+
+	void set_default_collation(const std::string&);
+	void set_base_uri(const std::string&);
 	
 
 	sequence_type_t get_function_type(qname_value const*) 

@@ -139,14 +139,14 @@ void context::set_default_function_ns(
 	default_function_ns_p = ns_p;
 }
 
-qname_value* context::get_default_collation() const
+string context::get_default_collation() const
 {
-	return default_collation_p;
+	return default_collation;
 }
 
-void context::set_default_collation(qname_value* q_p)
+void context::set_default_collation(const string& s)
 {
-	default_collation_p = q_p;
+	default_collation = s;
 }
 
 string context::get_base_uri() const

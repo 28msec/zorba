@@ -35,7 +35,7 @@ public:
 
 public:
 	const abstract_qname* get_fname(context* ctx_p) const
-		{ return sig.get_name(); }
+		{ return (abstract_qname*)sig.get_name(); }
 
 public:
 	virtual iterator_t operator()(context *) { return NULL; }

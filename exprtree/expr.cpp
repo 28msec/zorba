@@ -16,6 +16,7 @@
 #include "../util/Assert.h"
 #include "../util/tracer.h"
 #include "../util/xqp_exception.h"
+#include "../values/abstract_qname.h"
 
 #include <iostream>
 #include <string>
@@ -425,7 +426,7 @@ ostream& fo_expr::put(
 {
 	os << INDENT << "fo_expr[\n";
 	Assert<null_pointer>(func!=NULL);
-	func->get_fname(&ctx)->put(os) << endl;
+	os << func->get_fname(&ctx)->string_value() << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();

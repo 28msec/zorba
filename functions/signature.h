@@ -34,7 +34,7 @@ class context;
 class signature : public rcobject
 {
 public:
-qname_value const* qname_p;
+	const qname_value* qname_p;
 	std::vector<sequence_type_t> arg_v;
 	static fxhashmap<signature const*> sigmap;
 
