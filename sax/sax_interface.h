@@ -27,6 +27,13 @@
 // It doesn't provide implementations for parse()
 // or for feature/property handling, so it is still abstract.
 
+// All arguments are either const or references, in accordance with Java semantics.
+
+// char* is treated as an opaque object; the only thing you
+// can do with it is pass it to strcmp.  Clients are solely
+// responsible for making sure that char* arguments and
+// results point somewhere sensible.
+
 
 #ifndef SAX_ATTRIBUTES_H
 #define SAX_ATTRIBUTES_H
@@ -61,81 +68,81 @@ class XMLReaderImpl;
 class Attributes {
 public:
 	// Look up the index of an attribute by XML qualified (prefixed) name.
-	virtual int getIndex(char* qName) = 0;
+	virtual int getIndex(char* const qName) = 0;
 	// Look up the index of an attribute by namespace name.
-	virtual int getIndex(char* uri, char* localName) = 0;
+	virtual int getIndex(char* const uri, char* const localName) = 0;
 	// Return the number of attributes in the list.
 	virtual int getLength() = 0;
 	// Look up an attribute's local name by index.
-	virtual char* getLocalName(int index) = 0;
+	virtual char* getLocalName(int const index) = 0;
 	// Look up an attribute's XML qualified (prefixed) name by index.
-	virtual char* getQName(int index) = 0;
+	virtual char* getQName(int const index) = 0;
 	// Look up an attribute's type by index.
-	virtual char* getType(int index) = 0;
+	virtual char* getType(int const index) = 0;
 	// Look up an attribute's type by XML qualified (prefixed) name.
-	virtual char* getType(char* qName) = 0;
+	virtual char* getType(char* const qName) = 0;
 	// Look up an attribute's type by namespace name.
-	virtual char* getType(char* uri, char* localName) = 0;
+	virtual char* getType(char* const uri, char* const localName) = 0;
 	// Look up an attribute's namespace URI by index.
-	virtual char* getURI(int index) = 0;
+	virtual char* getURI(int const index) = 0;
 	// Look up an attribute's value by index.
-	virtual char* getValue(int index) = 0;
+	virtual char* getValue(int const index) = 0;
 	// Look up an attribute's value by XML qualified (prefixed) name.
-	virtual char* getValue(char* qName) = 0;
+	virtual char* getValue(char* const qName) = 0;
 	// Look up an attribute's value by namespace name.
-	virtual char* getValue(char* uri, char* localName) = 0;
+	virtual char* getValue(char* const uri, char* const localName) = 0;
 	// Returns false unless the attribute was declared in the DTD.
-	virtual bool isDeclared(int index) = 0;
+	virtual bool isDeclared(int const index) = 0;
 	// Returns false unless the attribute was declared in the DTD.
-	virtual bool isDeclared(char* qName) = 0;
+	virtual bool isDeclared(char* const qName) = 0;
 	// Returns false unless the attribute was declared in the DTD.
-	virtual bool isDeclared(char* uri, char* localName) = 0;
+	virtual bool isDeclared(char* const uri, char* const localName) = 0;
 	// Returns true unless the attribute value was provided by DTD defaulting.
-	virtual bool isSpecified(int index) = 0;
+	virtual bool isSpecified(int const index) = 0;
 	// Returns true unless the attribute value was provided by DTD defaulting.
-	virtual bool isSpecified(char* qName) = 0;
+	virtual bool isSpecified(char* const qName) = 0;
 	// Returns true unless the attribute value was provided by DTD defaulting.
-	virtual bool isSpecified(char* uri, char* localName) = 0;
+	virtual bool isSpecified(char* const uri, char* const localName) = 0;
 	};
 
 class ContentHandler {
 public:
 	// Receive notification of character data.
-	virtual void characters(char* ch, int start, int length) = 0;
+	virtual void characters(char* const ch, int const start, int const length) = 0;
 	// Receive notification of the end of a document.
 	virtual void endDocument() = 0;
 	// Receive notification of the end of an element.
-	virtual void endElement(char* uri, char* localName, char* qName) = 0;
+	virtual void endElement(char* const uri, char* const localName, char* const qName) = 0;
 	// End the scope of a prefix-URI mapping.
-	virtual void endPrefixMapping(char* prefix) = 0;
+	virtual void endPrefixMapping(char* const prefix) = 0;
 	// Receive notification of ignorable whitespace in element content.
-	virtual void ignorableWhitespace(char* ch, int start, int length) = 0;
+	virtual void ignorableWhitespace(char* const ch, int const start, int const length) = 0;
 	// Receive notification of a processing instruction.
-	virtual void processingInstruction(char* target, char* data) = 0;
+	virtual void processingInstruction(char* const target, char* const data) = 0;
 	// Receive an object for locating the origin of SAX document events.
 	virtual void setDocumentLocator(Locator& locator) = 0;
 	// Receive notification of a skipped entity.
-	virtual void skippedEntity(char* name) = 0;
+	virtual void skippedEntity(char* const name) = 0;
 	// Receive notification of the beginning of a document.
 	virtual void startDocument() = 0;
 	// Receive notification of the beginning of an element.
-	virtual void startElement(char* uri, char* localName, char* qName, Attributes& atts) = 0;
+	virtual void startElement(char* const uri, char* const localName, char* const qName, Attributes& atts) = 0;
 	// Begin the scope of a prefix-URI namespace mapping.
-	virtual void startPrefixMapping(char* prefix, char* uri) = 0;
+	virtual void startPrefixMapping(char* const prefix, char* const uri) = 0;
 	};
 
 class DTDHandler {
 public:
 	// Receive notification of a notation declaration event.
-	virtual void notationDecl(char* name, char* publicId, char* systemId) = 0;
+	virtual void notationDecl(char* const name, char* const publicId, char* const systemId) = 0;
 	// Receive notification of an unparsed entity declaration event.
-	virtual void unparsedEntityDecl(char* name, char* publicId, char* systemId, char* notationName) = 0;
+	virtual void unparsedEntityDecl(char* const name, char* const publicId, char* const systemId, char* const notationName) = 0;
 	};
 
 class EntityResolver {
 public:
 	// Allow the application to resolve external entities.
-	virtual char* resolveEntity(char* publicId, char* systemId, int& size) = 0;
+	virtual char* resolveEntity(char* const publicId, char* const systemId, int* const size) = 0;
 	};
 
 class ErrorHandler {
@@ -179,11 +186,11 @@ public:
 	// Return the current lexical handler.
 	virtual LexicalHandler& getLexicalHandler() = 0;
 	// Look up the value of a feature flag.
-	virtual bool getFeature(char* name) = 0;
+	virtual bool getFeature(char* const name) = 0;
 	// Look up the value of a property.
-	virtual void * getProperty(char* name) = 0;
+	virtual void * getProperty(char* const name) = 0;
 	// Parse an XML document.
-	virtual void parse(char* input, int size) = 0;
+	virtual void parse(char* const input, int const size) = 0;
 	// Allow an application to register a content event handler.
 	virtual void setContentHandler(ContentHandler& handler) = 0;
 	// Allow an application to register a DTD event handler.
@@ -197,9 +204,9 @@ public:
 	// Allow an application to register an lexical handler.
 	virtual void setLexicalHandler(LexicalHandler& handler) = 0;
 	// Set the value of a feature flag.
-	virtual void setFeature(char* name, bool value) = 0;
+	virtual void setFeature(char* const name, bool const value) = 0;
 	// Set the value of a property.
-	virtual void setProperty(char* name, void * value) = 0;
+	virtual void setProperty(char* const name, const void * value) = 0;
 	};
 
 class XMLFilter : public XMLReader {
@@ -213,31 +220,31 @@ public:
 class DeclHandler {
 public:
 	// Report an attribute type declaration.
-	virtual void attributeDecl(char* eName, char* aName, char* type, char* mode, char* value) = 0;
+	virtual void attributeDecl(char* const eName, char* const aName, char* const type, char* const mode, char* const value) = 0;
 	// Report an element type declaration.
-	virtual void elementDecl(char* name, char* model) = 0;
+	virtual void elementDecl(char* const name, char* const model) = 0;
 	// Report a parsed external entity declaration.
-	virtual void externalEntityDecl(char* name, char* publicId, char* systemId) = 0;
+	virtual void externalEntityDecl(char* const name, char* const publicId, char* const systemId) = 0;
 	// Report an internal entity declaration.
-	virtual void internalEntityDecl(char* name, char* value) = 0;
+	virtual void internalEntityDecl(char* const name, char* const value) = 0;
 	};
 
 class LexicalHandler {
 public:
 	// Report an XML comment anywhere in the document.
-	virtual void comment(char* ch, int start, int length) = 0;
+	virtual void comment(char* const ch, int const start, int const length) = 0;
 	// Report the end of a CDATA section.
 	virtual void endCDATA() = 0;
 	// Report the end of DTD declarations.
 	virtual void endDTD() = 0;
 	// Report the end of an entity.
-	virtual void endEntity(char* name) = 0;
+	virtual void endEntity(char* const name) = 0;
 	// Report the start of a CDATA section.
 	virtual void startCDATA() = 0;
 	// Report the start of DTD declarations, if any.
-	virtual void startDTD(char* name, char* publicId, char* systemId) = 0;
+	virtual void startDTD(char* const name, char* const publicId, char* const systemId) = 0;
 	// Report the beginning of some internal and external XML entities.
-	virtual void startEntity(char* name) = 0;
+	virtual void startEntity(char* const name) = 0;
 	};
 
 // The following classes are concrete, but simple enough to fully inline.
@@ -245,41 +252,41 @@ public:
 class DefaultHandler : public ContentHandler, public DTDHandler, public EntityResolver, public ErrorHandler, public LexicalHandler, public DeclHandler {
 public:
 	// Receive notification of character data.
-	void characters(char* ch, int start, int length) {}
+	void characters(char* const ch, int const start, int const length) {}
 	// Receive notification of the end of a document.
 	void endDocument() {}
 	// Receive notification of the end of an element.
-	void endElement(char* uri, char* localName, char* qName) {}
+	void endElement(char* const uri, char* const localName, char* const qName) {}
 	// End the scope of a prefix-URI mapping.
-	void endPrefixMapping(char* prefix) {}
+	void endPrefixMapping(char* const prefix) {}
 	// Receive notification of ignorable whitespace in element content.
-	void ignorableWhitespace(char* ch, int start, int length) {}
+	void ignorableWhitespace(char* const ch, int const start, int const length) {}
 	// Receive notification of a processing instruction.
-	void processingInstruction(char* target, char* data) {}
+	void processingInstruction(char* const target, char* const data) {}
 	// Receive an object for locating the origin of SAX document events.
 	void setDocumentLocator(Locator& locator) {}
 	// Receive notification of a skipped entity.
-	void skippedEntity(char* name) {}
+	void skippedEntity(char* const name) {}
 	// Receive notification of the beginning of a document.
 	void startDocument() {}
 	// Receive notification of the beginning of an element.
-	void startElement(char* uri, char* localName, char* qName, Attributes& atts) {}
+	void startElement(char* const uri, char* const localName, char* const qName, Attributes& atts) {}
 	// Begin the scope of a prefix-URI namespace mapping.
-	void startPrefixMapping(char* prefix, char* uri) {}
+	void startPrefixMapping(char* const prefix, char* const uri) {}
 	// Receive notification of a notation declaration event.
-	void notationDecl(char* name, char* publicId, char* systemId) {}
+	void notationDecl(char* const name, char* const publicId, char* const systemId) {}
 	// Receive notification of an unparsed entity declaration event.
-	void unparsedEntityDecl(char* name, char* publicId, char* systemId, char* notationName) {}
+	void unparsedEntityDecl(char* const name, char* const publicId, char* const systemId, char* const notationName) {}
 	// Allow the application to resolve external entities.
-	char* resolveEntity(char* publicId, char* systemId) {
+	char* resolveEntity(char* const publicId, char* const systemId) {
 		return "";
 		}
 	// Allows applications to provide an external subset for documents that don't explicitly define one.
-	char* getExternalSubset(char* name, char* baseURI) {
+	char* getExternalSubset(char* const name, char* const baseURI) {
 		return 0;
 		}
 	// Allows applications to map references to external entities into input sources, or tell the parser it should use conventional URI resolution.
-	char* resolveEntity(char* name, char* publicId, char* baseURI, char* systemId) {
+	char* resolveEntity(char* const name, char* const publicId, char* const baseURI, char* const systemId) {
 		return 0;
 		}
 	// Receive notification of a recoverable error.
@@ -289,27 +296,27 @@ public:
 	// Receive notification of a warning.
 	void warning(SAXParseException& exception) {}
 	// Report an XML comment anywhere in the document.
-	void comment(char* ch, int start, int length) {}
+	void comment(char* const ch, int const start, int const length) {}
 	// Report the end of a CDATA section.
 	void endCDATA() {}
 	// Report the end of DTD declarations.
 	void endDTD() {}
 	// Report the end of an entity.
-	void endEntity(char* name) {}
+	void endEntity(char* const name) {}
 	// Report the start of a CDATA section.
 	void startCDATA() {}
 	// Report the start of DTD declarations, if any.
-	void startDTD(char* name, char* publicId, char* systemId) {}
+	void startDTD(char* const name, char* const publicId, char* const systemId) {}
 	// Report the beginning of some internal and external XML entities.
-	void startEntity(char* name) {}
+	void startEntity(char* const name) {}
 	// Report an attribute type declaration.
-	void attributeDecl(char* eName, char* aName, char* type, char* mode, char* value) {}
+	void attributeDecl(char* const eName, char* const aName, char* const type, char* const mode, char* const value) {}
 	// Report an element type declaration.
-	void elementDecl(char* name, char* model) {}
+	void elementDecl(char* const name, char* const model) {}
 	// Report a parsed external entity declaration.
-	void externalEntityDecl(char* name, char* publicId, char* systemId) {}
+	void externalEntityDecl(char* const name, char* const publicId, char* const systemId) {}
 	// Report an internal entity declaration.
-	void internalEntityDecl(char* name, char* value) {}
+	void internalEntityDecl(char* const name, char* const value) {}
 	};
 
 class LocatorImpl : public Locator {
@@ -321,15 +328,6 @@ protected:
 	char* encoding_;
 	char* XMLVersion_;
 public:
-	LocatorImpl() {
-		publicId_ = 0;
-		systemId_ = 0;
-		lineNumber_ = 0;
-		columnNumber_ = 0;
-		encoding_ = 0;
-		XMLVersion_ = 0;
-		}
-
 	char* getPublicId() {
 		return publicId_;
 		}
@@ -359,7 +357,7 @@ public:
 	SAXParseException() {
 		message_ = 0;
 		}
-	SAXParseException(char* message, Locator& locator) {
+	SAXParseException(char* const message, Locator& locator) {
 		message_ = message;
 		publicId_ = locator.getPublicId();
 		systemId_ = locator.getSystemId();
@@ -369,7 +367,7 @@ public:
 		XMLVersion_ = locator.getXMLVersion();
 		}
 
-	SAXParseException(char* message, char* publicId, char* systemId, int lineNumber, int columnNumber, char* encoding, char* XMLVersion) {
+	SAXParseException(char* const message, char* const publicId, char* const systemId, int const lineNumber, int const columnNumber, char* const encoding, char* const XMLVersion) {
 		message_ = message;
 		publicId_ = publicId;
 		systemId_ = systemId;
@@ -447,13 +445,13 @@ public:
 	XMLFilterImpl(XMLReader& parent) {
 		parent_ = reinterpret_cast<XMLReader*>(&parent);
 		}
-	bool getFeature(char* name) {
+	bool getFeature(char* const name) {
 		return parent_->getFeature(name);
 		}
-	void * getProperty(char* name) {
+	void * getProperty(char* const name) {
 		return parent_->getProperty(name);
 		}
-	void parse(char* input, int size) {
+	void parse(char* const input, int const size) {
 		parent_->setDeclHandler(reinterpret_cast<DeclHandler&>(declHandler));
 		parent_->setDTDHandler(reinterpret_cast<DTDHandler&>(dtdHandler));
 		parent_->setEntityResolver(reinterpret_cast<EntityResolver&>(entityResolver));
@@ -462,10 +460,10 @@ public:
 		parent_->setContentHandler(reinterpret_cast<ContentHandler&>(contentHandler));
 		parent_->parse(input, size);
 		}
-	void setFeature(char* name, bool value) {
+	void setFeature(char* const name, bool const value) {
 		parent_->setFeature(name, value);
 		}
-	void setProperty(char* name, void * value) {
+	void setProperty(char* const name, void * value) {
 		parent_->setProperty(name, value);
 		}
 	XMLReader& getParent() {
@@ -485,7 +483,7 @@ private:
 		bool declared_;
 	public:
 
-		AttributeImpl(char* uri, char* localName, char* qName, char* type, char* value, bool specified, bool declared) {
+		AttributeImpl(char* const uri, char* const localName, char* const qName, char* const type, char* const value, bool const specified, bool const declared) {
 			uri_ = uri;
 			localName_ = localName;
 			qName_ = qName;
@@ -495,7 +493,7 @@ private:
 			declared_ = declared;
 			}
 
-		AttributeImpl(char* uri, char* localName, char* qName, char* type, char* value) {
+		AttributeImpl(char* const uri, char* const localName, char* const qName, char* const type, char* const value) {
 			uri_ = uri;
 			localName_ = localName;
 			qName_ = qName;
@@ -511,12 +509,12 @@ private:
 
 public:
 	// Add an attribute to the end of the list.
-	void addAttribute(char* uri, char* localName, char* qName, char* type, char* value) {
+	void addAttribute(char* const uri, char* const localName, char* const qName, char* const type, char* const value) {
 		AttributeImpl a(uri, localName, qName, type, value);
 		data.insert(data.end(), a);
 		}
 
-	void addAttribute(char* uri, char* localName, char* qName, char* type, char* value, bool specified, bool declared) {
+	void addAttribute(char* const uri, char* const localName, char* const qName, char* const type, char* const value, bool const specified, bool const declared) {
 		AttributeImpl a(uri, localName, qName, type, value, specified, declared);
 		data.insert(data.end(), a);
 		}
@@ -527,7 +525,7 @@ public:
 		}
 
 	// Look up an attribute's index by qualified (prefixed) name.
-	int getIndex(char* qName) {
+	int getIndex(char* const qName) {
 		// Really should use an algorithm
 		int size = data.size();
 		for (int i = 0; i <= size; i++)
@@ -536,7 +534,7 @@ public:
 		}
 
 	// Look up an attribute's index by Namespace name.
-	int getIndex(char* uri, char* localName) {
+	int getIndex(char* const uri, char* const localName) {
 		// Really should use an algorithm
 		int size = data.size();
 		for (int i = 0; i <= size; i++)
@@ -551,52 +549,52 @@ public:
 		}
 
 	// Return an attribute's local name.
-	char* getLocalName(int index) {
+	char* getLocalName(int const index) {
 		return data[index].localName_;
 		}
 
 	// Return an attribute's qualified (prefixed) name.
-	char* getQName(int index) {
+	char* getQName(int const index) {
 		return data[index].qName_;
 		}
 
 	// Return an attribute's type by index.
-	char* getType(int index) {
+	char* getType(int const index) {
 		return data[index].type_;
 		}
 
 	// Look up an attribute's type by qualified (prefixed) name.
-	char* getType(char* qName) {
+	char* getType(char* const qName) {
 		return getType(getIndex(qName));
 		}
 
 	// Look up an attribute's type by Namespace-qualified name.
-	char* getType(char* uri, char* localName) {
+	char* getType(char* const uri, char* const localName) {
 		return getType(getIndex(uri, localName));
 		}
 
 	// Return an attribute's Namespace URI.
-	char* getURI(int index) {
+	char* getURI(int const index) {
 		return data[index].uri_;
 		}
 
 	// Return an attribute's value by index.
-	char* getValue(int index) {
+	char* getValue(int const index) {
 		return data[index].value_;
 		}
 
 	// Look up an attribute's value by qualified (prefixed) name.
-	char* getValue(char* qName) {
+	char* getValue(char* const qName) {
 		return getValue(getIndex(qName));
 		}
 
 	// Look up an attribute's value by Namespace-qualified name.
-	char* getValue(char* uri, char* localName) {
+	char* getValue(char* const uri, char* const localName) {
 		return getValue(getIndex(uri, localName));
 		}
 
 	// Set an attribute in the list.
-	void setAttribute(int index, char* uri, char* localName, char* qName, char* type, char* value) {
+	void setAttribute(int const index, char* const uri, char* const localName, char* const qName, char* const type, char* const value) {
 		AttributeImpl a(uri, localName, qName, type, value);
 		data[index] = a;
 		}
@@ -619,72 +617,72 @@ public:
 		}
 
 	// Set the local name of a specific attribute.
-	void setLocalName(int index, char* localName) {
+	void setLocalName(int const index, char* const localName) {
 		data[index].localName_ = localName;
 		}
 
 	// Set the qualified name of a specific attribute.
-	void setQName(int index, char* qName) {
+	void setQName(int const index, char* const qName) {
 		data[index].qName_ = qName;
 		}
 
 	// Set the type of a specific attribute.
-	void setType(int index, char* type) {
+	void setType(int const index, char* const type) {
 		data[index].type_ = type;
 		}
 
 	// Set the Namespace URI of a specific attribute.
-	void setURI(int index, char* uri) {
+	void setURI(int const index, char* const uri) {
 		data[index].uri_ = uri;
 		}
 
 	// Set the value of a specific attribute.
-	void setValue(int index, char* value) {
+	void setValue(int const index, char* const value) {
 		data[index].value_ = value;
 		}
 
 	// Returns the current value of the attribute's "declared" flag.
-	bool isDeclared(int index) {
+	bool isDeclared(int const index) {
 		return data[index].declared_;
 		}
 
 	// Returns the current value of the attribute's "declared" flag.
-	bool isDeclared(char* qName) {
+	bool isDeclared(char* const qName) {
 		return isDeclared(getIndex(qName));
 		}
 
 	// Returns the current value of the attribute's "declared" flag.
-	bool isDeclared(char* uri, char* localName) {
+	bool isDeclared(char* const uri, char* const localName) {
 		return isDeclared(getIndex(uri, localName));
 		}
 
 	// Returns the current value of an attribute's "specified" flag.
-	bool isSpecified(int index) {
+	bool isSpecified(int const index) {
 		return data[index].specified_;
 		}
 
 	// Returns the current value of an attribute's "specified" flag.
-	bool isSpecified(char* qName) {
+	bool isSpecified(char* const qName) {
 		return isSpecified(getIndex(qName));
 		}
 
 	// Returns the current value of an attribute's "specified" flag.
-	bool isSpecified(char* uri, char* localName) {
+	bool isSpecified(char* const uri, char* const localName) {
 		return isSpecified(getIndex(uri, localName));
 		}
 
 	// Assign a value to the "declared" flag of a specific attribute.
-	void setDeclared(int index, bool value) {
+	void setDeclared(int const index, bool const value) {
 		data[index].declared_ = value;
 		}
 
 	// Assign a value to the "specified" flag of a specific attribute.
-	void setSpecified(int index, bool value) {
+	void setSpecified(int const index, bool const value) {
 		data[index].specified_ = value;
 		}
 	};
 
 
 
-	};
+	}
 #endif
