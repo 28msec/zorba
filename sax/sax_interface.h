@@ -1,45 +1,65 @@
 // Public domain port by John Cowan <cowan@ccil.org>
 //    of org.xml.sax.* classes by David Megginson
-//   NO WARRANTY!
+// NO WARRANTY!  Use as you will.
+// For compatibility, Java uppercasing conventions are used throughout.
 
-// SAX1-specific interfaces have been removed.
-// Interfaces and classes ending in 2 have been merged with the originals.
-// InputSource and String are both represented by char*.
-// No support for parsing from a URI.
-// SAXParseException has no parent and no embedded exception.
+// Deviations from SAX as defined at http://www.saxproject.org/apidoc/ :
+// The Java package structure is flattened into a single SAX namespace.
+// SAX1-specific interfaces and classes have been removed.
+// Interfaces and classes ending in 2 have been merged with the originals,
+//    except for EntityResolver.
+// String arguments are represented by char*.
+// Parsing is done from a char* plus a length rather than an
+//    InputSource.  EntityResolver is repurposed to map an external
+//    identifier to a char* and size.  There is no direct support
+//    for parsing from a URI, therefore.
+// SAXParseException derives from LocatorImpl, and has no embedded exception.
+// XMLReaderFactory is not provided.
+// XMLReader treats LexicalHandler and DeclHandler like all other handlers.
+// XMLFilterImpl does not have a zero-argument constructor, so the
+//    parent is never null.
+// AttributesImpl omits the removeAttribute method, which is broken in Java anyhow.
+// NamespaceSupport is not provided.
+
+// XMLReaderImpl is a new class which provides support for get/set
+// of handlers with default no-op handling.  It also has an
+// embedded SAXParseException (which also serves as a Locator).
+// It doesn't provide implementations for parse()
+// or for feature/property handling, so it is still abstract.
+
 
 #ifndef SAX_ATTRIBUTES_H
 #define SAX_ATTRIBUTES_H
 
+#include <vector>
 using namespace std;
 
 namespace SAX {
 
-// Declare all classes forward to avoid ordering issues.
+// Declare all classes forward to avoid most ordering issues.
+// We still need to declare base classes before derived ones.
 class Attributes;
+class AttributesImpl;		// FIXME
 class ContentHandler;
 class DTDHandler;
+class DeclHandler;
+class DefaultHandler;
 class EntityResolver;
 class ErrorHandler;
-class Locator;
-class XMLFilter;
-class XMLReader;
-class DeclHandler;
 class LexicalHandler;
-class DefaultHandler;
+class Locator;
+class LocatorImpl;
 class SAXParseException;
-class AttributesImpl;		// FIXME, needs 2
-class LocatorImpl;		// FIXME, needs 2
-class NamespaceSupport;		// FIXME
-class XMLFilterImpl;		// FIXME
-class XMLReaderFactory;		// FIXME
+class XMLFilter;
+class XMLFilterImpl;
+class XMLReader;
+class XMLReaderImpl;
 
-// All these classes are abstract;
+// All these classes are abstract and correspond to Java interfaces.
 // SAX parser drivers and SAX clients should implement them.
-// For compatibility, they use Java uppercasing conventions.
 
 class Attributes {
-	public:
+public:
 	// Look up the index of an attribute by XML qualified (prefixed) name.
 	virtual int getIndex(char* qName) = 0;
 	// Look up the index of an attribute by namespace name.
@@ -79,7 +99,7 @@ class Attributes {
 	};
 
 class ContentHandler {
-	public:
+public:
 	// Receive notification of character data.
 	virtual void characters(char* ch, int start, int length) = 0;
 	// Receive notification of the end of a document.
@@ -105,7 +125,7 @@ class ContentHandler {
 	};
 
 class DTDHandler {
-	public:
+public:
 	// Receive notification of a notation declaration event.
 	virtual void notationDecl(char* name, char* publicId, char* systemId) = 0;
 	// Receive notification of an unparsed entity declaration event.
@@ -113,17 +133,13 @@ class DTDHandler {
 	};
 
 class EntityResolver {
-	public:
+public:
 	// Allow the application to resolve external entities.
-	virtual char* resolveEntity(char* publicId, char* systemId) = 0;
-	// Allows applications to provide an external subset for documents that don't explicitly define one.
-	virtual char* getExternalSubset(char* name, char* baseURI) = 0;
-	// Allows applications to map references to external entities into input sources, or tell the parser it should use conventional URI resolution.
-	virtual char* resolveEntity(char* name, char* publicId, char* baseURI, char* systemId) = 0;
+	virtual char* resolveEntity(char* publicId, char* systemId, int& size) = 0;
 	};
 
 class ErrorHandler {
-	public:
+public:
 	// Receive notification of a recoverable error.
 	virtual void error(SAXParseException& exception) = 0;
 	// Receive notification of a non-recoverable error.
@@ -133,7 +149,7 @@ class ErrorHandler {
 	};
 
 class Locator {
-	public:
+public:
 	// Return the column number where the current document event ends.
 	virtual int getColumnNumber() = 0;
 	// Return the line number where the current document event ends.
@@ -148,46 +164,54 @@ class Locator {
 	virtual char* 	getXMLVersion() = 0;
 	};
 
-class XMLFilter {
-	public:
-	// Get the parent reader.
-	virtual XMLReader& getParent() = 0;
-	// Set the parent reader.
-	virtual void setParent(XMLReader& parent) = 0;
-	};
-
 class XMLReader {
-	public:
+public:
 	// Return the current content handler.
 	virtual ContentHandler& getContentHandler() = 0;
+	// Return the current declaration handler.
+	virtual DeclHandler& getDeclHandler() = 0;
 	// Return the current DTD handler.
 	virtual DTDHandler& getDTDHandler() = 0;
 	// Return the current entity resolver.
 	virtual EntityResolver& getEntityResolver() = 0;
 	// Return the current error handler.
 	virtual ErrorHandler& getErrorHandler() = 0;
+	// Return the current lexical handler.
+	virtual LexicalHandler& getLexicalHandler() = 0;
 	// Look up the value of a feature flag.
 	virtual bool getFeature(char* name) = 0;
 	// Look up the value of a property.
 	virtual void * getProperty(char* name) = 0;
 	// Parse an XML document.
-	virtual void parse(char* input) = 0;
+	virtual void parse(char* input, int size) = 0;
 	// Allow an application to register a content event handler.
 	virtual void setContentHandler(ContentHandler& handler) = 0;
 	// Allow an application to register a DTD event handler.
 	virtual void setDTDHandler(DTDHandler& handler) = 0;
+	// Allow an application to register a declaration event handler.
+	virtual void setDeclHandler(DeclHandler& handler) = 0;
 	// Allow an application to register an entity resolver.
 	virtual void setEntityResolver(EntityResolver& resolver) = 0;
 	// Allow an application to register an error event handler.
 	virtual void setErrorHandler(ErrorHandler& handler) = 0;
+	// Allow an application to register an lexical handler.
+	virtual void setLexicalHandler(LexicalHandler& handler) = 0;
 	// Set the value of a feature flag.
 	virtual void setFeature(char* name, bool value) = 0;
 	// Set the value of a property.
 	virtual void setProperty(char* name, void * value) = 0;
 	};
 
+class XMLFilter : public XMLReader {
+public:
+	// Get the parent reader.
+	virtual XMLReader& getParent() = 0;
+	// Set the parent reader.
+	virtual void setParent(XMLReader& parent) = 0;
+	};
+
 class DeclHandler {
-	public:
+public:
 	// Report an attribute type declaration.
 	virtual void attributeDecl(char* eName, char* aName, char* type, char* mode, char* value) = 0;
 	// Report an element type declaration.
@@ -199,7 +223,7 @@ class DeclHandler {
 	};
 
 class LexicalHandler {
-	public:
+public:
 	// Report an XML comment anywhere in the document.
 	virtual void comment(char* ch, int start, int length) = 0;
 	// Report the end of a CDATA section.
@@ -216,10 +240,10 @@ class LexicalHandler {
 	virtual void startEntity(char* name) = 0;
 	};
 
-// The following classes are concrete, but trivial.
+// The following classes are concrete, but simple enough to fully inline.
 
-class DefaultHandler : ContentHandler, DTDHandler, EntityResolver, ErrorHandler,
-			LexicalHandler, DeclHandler {
+class DefaultHandler : public ContentHandler, public DTDHandler, public EntityResolver, public ErrorHandler, public LexicalHandler, public DeclHandler {
+public:
 	// Receive notification of character data.
 	void characters(char* ch, int start, int length) {}
 	// Receive notification of the end of a document.
@@ -247,11 +271,17 @@ class DefaultHandler : ContentHandler, DTDHandler, EntityResolver, ErrorHandler,
 	// Receive notification of an unparsed entity declaration event.
 	void unparsedEntityDecl(char* name, char* publicId, char* systemId, char* notationName) {}
 	// Allow the application to resolve external entities.
-	char* resolveEntity(char* publicId, char* systemId) {}
+	char* resolveEntity(char* publicId, char* systemId) {
+		return "";
+		}
 	// Allows applications to provide an external subset for documents that don't explicitly define one.
-	char* getExternalSubset(char* name, char* baseURI) {}
+	char* getExternalSubset(char* name, char* baseURI) {
+		return 0;
+		}
 	// Allows applications to map references to external entities into input sources, or tell the parser it should use conventional URI resolution.
-	char* resolveEntity(char* name, char* publicId, char* baseURI, char* systemId) {}
+	char* resolveEntity(char* name, char* publicId, char* baseURI, char* systemId) {
+		return 0;
+		}
 	// Receive notification of a recoverable error.
 	void error(SAXParseException& exception) {}
 	// Receive notification of a non-recoverable error.
@@ -282,35 +312,379 @@ class DefaultHandler : ContentHandler, DTDHandler, EntityResolver, ErrorHandler,
 	void internalEntityDecl(char* name, char* value) {}
 	};
 
-class SAXParseException {
-	char* message_;
+class LocatorImpl : public Locator {
+protected:
 	char* publicId_;
 	char* systemId_;
 	int lineNumber_;
 	int columnNumber_;
+	char* encoding_;
+	char* XMLVersion_;
+public:
+	LocatorImpl() {
+		publicId_ = 0;
+		systemId_ = 0;
+		lineNumber_ = 0;
+		columnNumber_ = 0;
+		encoding_ = 0;
+		XMLVersion_ = 0;
+		}
 
+	char* getPublicId() {
+		return publicId_;
+		}
+	char* getSystemId() {
+		return systemId_;
+		}
+	int getLineNumber() {
+		return lineNumber_;
+		}
+	int getColumnNumber() {
+		return columnNumber_;
+		}
+	char* getEncoding() {
+		return encoding_;
+		}
+	char* getXMLVersion() {
+		return XMLVersion_;
+		}
+	};
+
+
+class SAXParseException : public LocatorImpl {
+private:
+	char* message_;
+
+public:
+	SAXParseException() {
+		message_ = 0;
+		}
 	SAXParseException(char* message, Locator& locator) {
 		message_ = message;
 		publicId_ = locator.getPublicId();
 		systemId_ = locator.getSystemId();
 		lineNumber_ = locator.getLineNumber();
 		columnNumber_ = locator.getColumnNumber();
+		encoding_ = locator.getEncoding();
+		XMLVersion_ = locator.getXMLVersion();
 		}
 
-	SAXParseException(char* message, char* publicId, char* systemId, int lineNumber, int columnNumber) {
+	SAXParseException(char* message, char* publicId, char* systemId, int lineNumber, int columnNumber, char* encoding, char* XMLVersion) {
 		message_ = message;
 		publicId_ = publicId;
 		systemId_ = systemId;
 		lineNumber_ = lineNumber;
 		columnNumber_ = columnNumber;
+		encoding_ = encoding;
+		XMLVersion_ = XMLVersion;
 		}
 
-	char* getMessage() { return message_;}
-	char* getPublicId() { return publicId_;}
-	char* getSystemId() { return systemId_;}
-	int getLineNumber() { return lineNumber_;}
-	int getColumnNumber() { return columnNumber_;}
+	char* getMessage() {
+		return message_;}
+
 	};
 
-};
+class XMLReaderImpl : public DefaultHandler, public XMLReader {
+protected:
+	ContentHandler* contentHandler;
+	DTDHandler* dtdHandler;
+	EntityResolver* entityResolver;
+	ErrorHandler* errorHandler;
+	LexicalHandler* lexicalHandler;
+	DeclHandler* declHandler;
+	SAXParseException exception;
+public:
+	XMLReaderImpl() {
+		contentHandler = this;
+		dtdHandler = this;
+		entityResolver = this;
+		errorHandler = this;
+		lexicalHandler = this;
+		declHandler = this;
+		}
+	ContentHandler& getContentHandler() {
+		return reinterpret_cast<ContentHandler&> (contentHandler);
+		}
+	DeclHandler& getDeclHandler() {
+		return reinterpret_cast<DeclHandler&> (declHandler);
+		}
+	DTDHandler& getDTDHandler() {
+		return reinterpret_cast<DTDHandler&> (dtdHandler);
+		}
+	EntityResolver& getEntityResolver() {
+		return reinterpret_cast<EntityResolver&> (entityResolver);
+		}
+	ErrorHandler& getErrorHandler() {
+		return reinterpret_cast<ErrorHandler&> (errorHandler);
+		}
+	LexicalHandler& getLexicalHandler() {
+		return reinterpret_cast<LexicalHandler&> (lexicalHandler);
+		}
+	void setContentHandler(ContentHandler& handler) {
+		contentHandler = reinterpret_cast <ContentHandler*>(&handler);
+		}
+	void setDTDHandler(DTDHandler& handler) {
+		dtdHandler = reinterpret_cast <DTDHandler*>(&handler);
+		}
+	void setDeclHandler(DeclHandler& handler) {
+		declHandler = reinterpret_cast <DeclHandler*>(&handler);
+		}
+	void setEntityResolver(EntityResolver& resolver) {
+		entityResolver = reinterpret_cast<EntityResolver*>(&resolver);
+		}
+	void setErrorHandler(ErrorHandler& handler) {
+		errorHandler = reinterpret_cast <ErrorHandler*>(&handler);
+		}
+	void setLexicalHandler(LexicalHandler& handler) {
+		lexicalHandler = reinterpret_cast <LexicalHandler*>(&handler);
+		}
+	};
+
+class XMLFilterImpl : public XMLReaderImpl, public XMLFilter {
+private:
+	XMLReader* parent_;
+public:
+	XMLFilterImpl(XMLReader& parent) {
+		parent_ = reinterpret_cast<XMLReader*>(&parent);
+		}
+	bool getFeature(char* name) {
+		return parent_->getFeature(name);
+		}
+	void * getProperty(char* name) {
+		return parent_->getProperty(name);
+		}
+	void parse(char* input, int size) {
+		parent_->setDeclHandler(reinterpret_cast<DeclHandler&>(declHandler));
+		parent_->setDTDHandler(reinterpret_cast<DTDHandler&>(dtdHandler));
+		parent_->setEntityResolver(reinterpret_cast<EntityResolver&>(entityResolver));
+		parent_->setErrorHandler(reinterpret_cast<ErrorHandler&>(errorHandler));
+		parent_->setLexicalHandler(reinterpret_cast<LexicalHandler&>(lexicalHandler));
+		parent_->setContentHandler(reinterpret_cast<ContentHandler&>(contentHandler));
+		parent_->parse(input, size);
+		}
+	void setFeature(char* name, bool value) {
+		parent_->setFeature(name, value);
+		}
+	void setProperty(char* name, void * value) {
+		parent_->setProperty(name, value);
+		}
+	XMLReader& getParent() {
+		return reinterpret_cast<XMLReader&>(parent_);
+		}
+	};
+
+class AttributesImpl {
+private:
+	struct AttributeImpl {
+		char* uri_;
+		char* localName_;
+		char* qName_;
+		char* type_;
+		char* value_;
+		bool specified_;
+		bool declared_;
+	public:
+
+		AttributeImpl(char* uri, char* localName, char* qName, char* type, char* value, bool specified, bool declared) {
+			uri_ = uri;
+			localName_ = localName;
+			qName_ = qName;
+			type_ = type;
+			value_ = value;
+			specified_ = specified;
+			declared_ = declared;
+			}
+
+		AttributeImpl(char* uri, char* localName, char* qName, char* type, char* value) {
+			uri_ = uri;
+			localName_ = localName;
+			qName_ = qName;
+			type_ = type;
+			value_ = value;
+			specified_ = true;
+			declared_ = (strcmp(type, "CDATA") != 0);
+			}
+
+		};
+
+	vector<AttributeImpl> data;
+
+public:
+	// Add an attribute to the end of the list.
+	void addAttribute(char* uri, char* localName, char* qName, char* type, char* value) {
+		AttributeImpl a(uri, localName, qName, type, value);
+		data.insert(data.end(), a);
+		}
+
+	void addAttribute(char* uri, char* localName, char* qName, char* type, char* value, bool specified, bool declared) {
+		AttributeImpl a(uri, localName, qName, type, value, specified, declared);
+		data.insert(data.end(), a);
+		}
+
+	// Clear the attribute list for reuse.
+	void clear() {
+		data.clear();
+		}
+
+	// Look up an attribute's index by qualified (prefixed) name.
+	int getIndex(char* qName) {
+		// Really should use an algorithm
+		int size = data.size();
+		for (int i = 0; i <= size; i++)
+			if (strcmp(data[i].qName_, qName) == 0) return i;
+		return -1;
+		}
+
+	// Look up an attribute's index by Namespace name.
+	int getIndex(char* uri, char* localName) {
+		// Really should use an algorithm
+		int size = data.size();
+		for (int i = 0; i <= size; i++)
+			if (strcmp(data[i].uri_, uri) == 0 && strcmp(data[i].localName_, localName) == 0)
+				return i;
+		return -1;
+		}
+
+	// Return the number of attributes in the list.
+	int getLength() {
+		return data.size();
+		}
+
+	// Return an attribute's local name.
+	char* getLocalName(int index) {
+		return data[index].localName_;
+		}
+
+	// Return an attribute's qualified (prefixed) name.
+	char* getQName(int index) {
+		return data[index].qName_;
+		}
+
+	// Return an attribute's type by index.
+	char* getType(int index) {
+		return data[index].type_;
+		}
+
+	// Look up an attribute's type by qualified (prefixed) name.
+	char* getType(char* qName) {
+		return getType(getIndex(qName));
+		}
+
+	// Look up an attribute's type by Namespace-qualified name.
+	char* getType(char* uri, char* localName) {
+		return getType(getIndex(uri, localName));
+		}
+
+	// Return an attribute's Namespace URI.
+	char* getURI(int index) {
+		return data[index].uri_;
+		}
+
+	// Return an attribute's value by index.
+	char* getValue(int index) {
+		return data[index].value_;
+		}
+
+	// Look up an attribute's value by qualified (prefixed) name.
+	char* getValue(char* qName) {
+		return getValue(getIndex(qName));
+		}
+
+	// Look up an attribute's value by Namespace-qualified name.
+	char* getValue(char* uri, char* localName) {
+		return getValue(getIndex(uri, localName));
+		}
+
+	// Set an attribute in the list.
+	void setAttribute(int index, char* uri, char* localName, char* qName, char* type, char* value) {
+		AttributeImpl a(uri, localName, qName, type, value);
+		data[index] = a;
+		}
+
+	// Copy an entire Attributes object.
+	void setAttributes(Attributes& atts) {
+		data.clear();
+		int length = getLength();
+		for (int i = 0; i <= length; i++) {
+			addAttribute(
+				atts.getURI(i),
+				atts.getLocalName(i),
+				atts.getQName(i),
+				atts.getType(i),
+				atts.getValue(i),
+				atts.isSpecified(i),
+				atts.isDeclared(i)
+				);
+			}
+		}
+
+	// Set the local name of a specific attribute.
+	void setLocalName(int index, char* localName) {
+		data[index].localName_ = localName;
+		}
+
+	// Set the qualified name of a specific attribute.
+	void setQName(int index, char* qName) {
+		data[index].qName_ = qName;
+		}
+
+	// Set the type of a specific attribute.
+	void setType(int index, char* type) {
+		data[index].type_ = type;
+		}
+
+	// Set the Namespace URI of a specific attribute.
+	void setURI(int index, char* uri) {
+		data[index].uri_ = uri;
+		}
+
+	// Set the value of a specific attribute.
+	void setValue(int index, char* value) {
+		data[index].value_ = value;
+		}
+
+	// Returns the current value of the attribute's "declared" flag.
+	bool isDeclared(int index) {
+		return data[index].declared_;
+		}
+
+	// Returns the current value of the attribute's "declared" flag.
+	bool isDeclared(char* qName) {
+		return isDeclared(getIndex(qName));
+		}
+
+	// Returns the current value of the attribute's "declared" flag.
+	bool isDeclared(char* uri, char* localName) {
+		return isDeclared(getIndex(uri, localName));
+		}
+
+	// Returns the current value of an attribute's "specified" flag.
+	bool isSpecified(int index) {
+		return data[index].specified_;
+		}
+
+	// Returns the current value of an attribute's "specified" flag.
+	bool isSpecified(char* qName) {
+		return isSpecified(getIndex(qName));
+		}
+
+	// Returns the current value of an attribute's "specified" flag.
+	bool isSpecified(char* uri, char* localName) {
+		return isSpecified(getIndex(uri, localName));
+		}
+
+	// Assign a value to the "declared" flag of a specific attribute.
+	void setDeclared(int index, bool value) {
+		data[index].declared_ = value;
+		}
+
+	// Assign a value to the "specified" flag of a specific attribute.
+	void setSpecified(int index, bool value) {
+		data[index].specified_ = value;
+		}
+	};
+
+
+
+	};
 #endif
