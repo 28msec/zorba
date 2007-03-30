@@ -26,7 +26,7 @@ typedef uint32_t itemref_t;		// itemstore offset
 typedef uint32_t offset_t;    // itemstore short offset
 
 #define NONAMESPACE	"http://nonamespace"
-#define NON_PREFIX	"non#prefix"
+#define NONS_PREFIX	"no-ns"
 
 typedef struct qnamekeyref
 {
@@ -41,11 +41,11 @@ typedef struct qnamekeyref
 
 typedef struct qnamepair
 {
-	qnameid_t qnameid;
+	qnamekey_t qnamekey;
 	itemref_t qnameref;
 
-	qnamepair(qnameid_t _qnameid, itemref_t _qnameref)
-	: qnameid(_qnameid), qnameref(_qnameref) {}
+	qnamepair(qnamekey_t _qnamekey, itemref_t _qnameref)
+	: qnamekey(_qnamekey), qnameref(_qnameref) {}
 
 } qnamepair_t;
 
