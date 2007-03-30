@@ -10,6 +10,10 @@
 #ifndef XQP_ABSTRACT_VALUE_FACTORY_H
 #define XQP_ABSTRACT_VALUE_FACTORY_H
 
+#include "qname_value.h"
+#include "xs_primitive_values.h"
+#include <string>
+
 namespace xqp {
 
 class abstract_value_factory
@@ -51,9 +55,9 @@ public:
 	virtual xs_NMTOKENSValue* make_xs_NMTOKENSValue(const std::string&) = 0;
 	virtual xs_NOTATIONValue* make_xs_NOTATIONValue(const std::string&) = 0;
 	virtual xs_NameValue* make_xs_NameValue(const std::string&) = 0;
-	virtual xs_negativeIntegerValue* make_xs_negativeIntegerValue() = 0;
-	virtual xs_nonNegativeIntegerValue* make_xs_nonNegativeIntegerValue() = 0;
-	virtual xs_nonPositiveIntegerValue* make_xs_nonPositiveIntegerValue() = 0;
+	virtual xs_negativeIntegerValue* make_xs_negativeIntegerValue(int) = 0;
+	virtual xs_nonNegativeIntegerValue* make_xs_nonNegativeIntegerValue(int) = 0;
+	virtual xs_nonPositiveIntegerValue* make_xs_nonPositiveIntegerValue(int) = 0;
 	virtual xs_normalizedStringValue* make_xs_normalizedStringValue(const std::string&) = 0;
 	virtual xs_positiveIntegerValue* make_xs_positiveIntegerValue(unsigned int) = 0;
 	virtual xs_stringValue* make_xs_stringValue(const std::string&) = 0;
@@ -64,6 +68,8 @@ public:
 	virtual xs_unsignedIntValue* make_xs_unsignedIntValue(unsigned int) = 0;
 	virtual xs_unsignedLongValue* make_xs_unsignedLongValue(unsigned long) = 0;
 	virtual xs_unsignedShortValue* make_xs_unsignedShortValue(uint16_t) = 0;
+
+};
 
 
 } /* namespace xqp */

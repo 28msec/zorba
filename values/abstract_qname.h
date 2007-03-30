@@ -27,6 +27,7 @@ public:
 	xs_anyURIValue* uri() const;
 	iterator_t atomized_value() const;
 	std::string string_value() const;
+	qnamekey_t qnamekey() const;
 
 };
 

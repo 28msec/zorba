@@ -20,15 +20,24 @@ namespace xqp {
   
   
 qname_value::qname_value(
-	itemstore& istore,
-	itemref_t uriref,
-	const string& qname)
+	const string& uri,
+	const string& prefix, 
+	const string& localname)
 :
-	atomic_value(xs_qname,0),
-	m_uriref(uriref)
+	atomic_value(xs_qname,0)
 {
-	xs_stringValue* s_p = new(istore) xs_stringValue(istore,qname);
-  m_length = sizeof(qname_value)/4 + s_p->length();
+	char* p = rest;
+	uint32_t n, len;
+	xs_stringValue* s_p;
+
+	s_p = new(p) xs_stringValue(uri);
+	n = s_p->length(); len += n; p += n<<2;
+	s_p = new(p) xs_stringValue(prefix);
+	n = s_p->length(); len += n; p += n<<2;
+	s_p = new(p) xs_stringValue(localname);
+	n = s_p->length(); len += n; p += n<<2;
+
+  m_length = sizeof(qname_value)/4 + len;
 }
 
 inline void* qname_value::operator new(
@@ -46,45 +55,48 @@ inline void* qname_value::operator new(
 	return istore.alloc(n);
 }
 
-nodeid_t qname_value::id(itemstore& istore) const
+qnamekey_t qname_value::qnamekey() const
 {
-	return hashfun::h32(uri(istore),hashfun::h32(prefix(),hashfun::h32(localname())));
+	return hashfun::h64(uri(),hashfun::h64(prefix(),hashfun::h64(localname())));
 }
 
 string qname_value::prefix() const
 {
 	xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	string name = s_p->str();
-	string::size_type n = name.find(':');
-  return name.substr(0,n);
+	string qname = s_p->str();
+	string::size_type n = qname.find(':');
+  return qname.substr(0,n);
 }
 
 string qname_value::localname() const
 {
   xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	string name = s_p->str();
-	string::size_type n = name.find(':');
-  return name.substr(n+1);
+	string qname = s_p->str();
+	string::size_type n = qname.find(':');
+	string::size_type m = qname.find(':',n+1);
+  return qname.substr(n+1,(m-n-1));
 }
 
-string qname_value::uri(
-	itemstore& istore) const
+string qname_value::uri() const
 {
-	xs_stringValue* s_p = new(istore,m_uriref) xs_stringValue();
-	return s_p->str();
+  xs_stringValue* s_p = new((void*)rest) xs_stringValue();
+	string qname = s_p->str();
+	string::size_type n = qname.find(':');
+	string::size_type m = qname.find(':',n+1);
+  return qname.substr(m+1);
 }
 
 ostream& qname_value::put(ostream& os) const
 {
-	xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	return s_p->put(os);
+	os << '[' << uri() << ']' << prefix() << ':' << localname();
+	return os;
 }
 
 string qname_value::describe() const
 {
-  xs_stringValue* s_p = new((void*)rest) xs_stringValue();
 	ostringstream oss;
-	oss << "xs_qname(" << s_p->str() << ')';
+	oss << "xs_qname(";
+	put(oss) << ')';
 	return oss.str();
 }
 
@@ -96,8 +108,9 @@ rchandle<abstract_iterator> qname_value::effective_boolean_value() const
 
 string qname_value::string_value() const
 {
-  xs_stringValue* s_p = new((void*)rest) xs_stringValue();
-	return s_p->str();
+	ostringstream oss;
+	put(oss);
+	return oss.str();
 }
 
 

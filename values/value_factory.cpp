@@ -9,6 +9,7 @@
 
 #include "value_factory.h"
 
+using namespace std;
 namespace xqp {
 
 qname_value* value_factory::make_qname(
@@ -16,6 +17,7 @@ qname_value* value_factory::make_qname(
 	const string& prefix,
 	const string& localname)
 {
+	return NULL;
 }
 
 xs_anyURIValue* value_factory::make_xs_anyURIValue()

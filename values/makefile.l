@@ -17,6 +17,15 @@ ft_values :	ft_values.h ft_values.cpp
 update_values :	update_values.h update_values.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/update_values.${SUFX} update_values.cpp
 
+value_factory :	value_factory.h value_factory.cpp
+	g++ ${OPT} -c -o ${BUILD}/value_factory.${SUFX} value_factory.cpp
+   
+
+value_factory_test :	value_factory.h value_factory.cpp value_factory_test.cpp
+	g++ ${OPT} -o ${BUILD}/value_factory_test \
+		${BUILD}/value_factory.${SUFX} \
+		value_factory_test.cpp
+
 qname_value :	qname_value.h qname_value.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/qname_value.${SUFX} qname_value.cpp
 qname_test : qname_value.h qname_value.cpp qname_test.cpp

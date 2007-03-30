@@ -10,6 +10,7 @@
 #ifndef XQP_VALUE_FACTORY_H
 #define XQP_VALUE_FACTORY_H
 
+#include "abstract_value_factory.h"
 #include "xs_primitive_values.h"
 
 namespace xqp {
@@ -20,8 +21,8 @@ protected:
 	itemstore& istore;
 
 public:
-	value_factort();
-	~value_factort();
+	value_factory();
+	virtual ~value_factory();
 
 public:
 	qname_value* make_qname(
@@ -59,9 +60,9 @@ public:
 	xs_NMTOKENSValue* make_xs_NMTOKENSValue(const string&);
 	xs_NOTATIONValue* make_xs_NOTATIONValue(const string&);
 	xs_NameValue* make_xs_NameValue(const string&);
-	xs_negativeIntegerValue* make_xs_negativeIntegerValue();
-	xs_nonNegativeIntegerValue* make_xs_nonNegativeIntegerValue();
-	xs_nonPositiveIntegerValue* make_xs_nonPositiveIntegerValue();
+	xs_negativeIntegerValue* make_xs_negativeIntegerValue(int);
+	xs_nonNegativeIntegerValue* make_xs_nonNegativeIntegerValue(int);
+	xs_nonPositiveIntegerValue* make_xs_nonPositiveIntegerValue(int);
 	xs_normalizedStringValue* make_xs_normalizedStringValue(const string&);
 	xs_positiveIntegerValue* make_xs_positiveIntegerValue(unsigned int);
 	xs_stringValue* make_xs_stringValue(const string&);
@@ -72,6 +73,9 @@ public:
 	xs_unsignedIntValue* make_xs_unsignedIntValue(unsigned int);
 	xs_unsignedLongValue* make_xs_unsignedLongValue(unsigned long);
 	xs_unsignedShortValue* make_xs_unsignedShortValue(uint16_t);
+
+};
+
 
 } /* namespace xqp */
 #endif /* XQP_VALUE_FACTORY_H */

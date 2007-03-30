@@ -28,10 +28,9 @@ public:
 	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
-	itemref_t m_uriref;
 	char rest[0];
 	/*
-		char[] localname
+		xs_stringValue  `prefix:localname:uri`
 	*/
 
 public:
@@ -43,13 +42,16 @@ public:
 
 public:
 	qname_value() {}
-	qname_value(itemstore&, itemref_t uriref, const std::string& qname);
+	qname_value(
+		const std::string& uri,
+		const std::string& prefix,
+		const std::string& localname);
 
 public:
+	std::string uri() const;
 	std::string prefix() const;
 	std::string localname() const;
-	std::string uri(itemstore&) const;
-	nodeid_t id(itemstore& istore) const;
+	qnamekey_t qnamekey() const;
 
 private:	// ctor,dtor - lock out default and copy constructors
 	qname_value(qname_value& qn) : atomic_value(xs_qname,0) {}
