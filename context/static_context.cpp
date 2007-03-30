@@ -46,7 +46,7 @@ void static_context::init(
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-rchandle<abstract_context>
+rchandle<context>
 static_context::parent() const
 {
 	return parent_h;

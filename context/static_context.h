@@ -11,7 +11,7 @@
 #define XQP_STATIC_CONTEXT_H
 
 #include "common.h"
-#include "abstract_context.h"
+#include "context.h"
 #include "../runtime/abstract_iterator.h"
 #include "../values/abstract_qname.h"
 #include "../values/abstract_nodes.h"
@@ -32,7 +32,7 @@ class itemstore;
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-class static_context : public abstract_context
+class static_context : public context
 {
 public:	// types
 	enum construction_mode_t		{ cons_preserve, cons_strip };
@@ -44,7 +44,7 @@ public:	// types
 
 protected:
 	fxhash64map<iterator_t> keymap;
-	rchandle<abstract_context> parent_h;
+	rchandle<context> parent_h;
 	abstract_value_factory* vf_p;
 
 	static bool static_init;
@@ -68,7 +68,7 @@ public:
 
 public:
 	// context interface
-	rchandle<abstract_context> parent() const;
+	rchandle<context> parent() const;
 	iterator_t context_value(qnamekey_t context_key) const;
 
 public:
