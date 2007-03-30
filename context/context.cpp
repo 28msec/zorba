@@ -112,52 +112,68 @@ throw (xqp_exception)
  :.........................................*/
 
 void context::add_namespace(
+	abstract_namespace_node* ns_p)
+{
+	the_statically_known_namespaces.push_back(ns_p);
+}
+
+abstract_namespace_node* context::default_element_type_namespace() const
+{
+	return the_default_element_type_namespace_p;
+}
+
+void context::set_default_element_type_namespace(
+	abstract_namespace_node* ns_p)
+{
+	the_default_element_type_namespace_p = ns_p;
+}
+
+abstract_namespace_node* context::get_default_function_namespace() const
+{
+	return the_default_function_namespace_p;
+}
+
+void context::set_default_function_namespace(
 	namespace_node* ns_p)
 {
-	namespaces.push_back(ns_p);
+	the_default_function_namespace_p = ns_p;
 }
 
-namespace_node* context::get_default_ns() const
-{
-	return default_ns_p;
-}
-
-void context::set_default_ns(
-	namespace_node* ns_p)
-{
-	default_ns_p = ns_p;
-}
-
-namespace_node* context::get_default_function_ns() const
-{
-	return default_function_ns_p;
-}
-
-void context::set_default_function_ns(
-	namespace_node* ns_p)
-{
-	default_function_ns_p = ns_p;
-}
-
+<<<<<<< .mine
+abstract_qname* context::get_default_collation() const
+=======
 string context::get_default_collation() const
+>>>>>>> .r511
 {
+<<<<<<< .mine
+	return the_default_collation_p;
+=======
 	return default_collation;
+>>>>>>> .r511
 }
 
+<<<<<<< .mine
+void context::set_default_collation(abstract_qname* q_p)
+=======
 void context::set_default_collation(const string& s)
+>>>>>>> .r511
 {
+<<<<<<< .mine
+	the_default_collation_p = q_p;
+=======
 	default_collation = s;
+>>>>>>> .r511
 }
 
 string context::get_base_uri() const
 {
-	return base_uri;
+	return the_baseuri;
 }
 
-void context::set_base_uri(
+void context::set_baseuri(
 	std::string const& uri)
 {
-	base_uri = uri;
+	the_baseuri = uri;
 }
 
 
