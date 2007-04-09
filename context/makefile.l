@@ -2,10 +2,10 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
-static_context :	static_context.h static_context.cpp
+static_context :	context.h static_context.h static_context.cpp 
 	g++ ${OPT} -c -o ${BUILD}/static_context.${SUFX} static_context.cpp
     
-dynamic_context :	dynamic_context.h dynamic_context.cpp
+dynamic_context :	context.h dynamic_context.h dynamic_context.cpp
 	g++ ${OPT} -c -o ${BUILD}/dynamic_context.${SUFX} dynamic_context.cpp
     
 context_test :	context.h context.cpp context_test.cpp
@@ -26,7 +26,8 @@ context_test :	context.h context.cpp context_test.cpp
 		context_test.cpp
     
 all :	\
- context 
+ static_context \
+ dynamic_context 
 
 test : \
 	context_test

@@ -11,12 +11,11 @@
 #define XQP_FUNCTION_H
 
 #include "signature.h"
-
-#include "../context/context.h"
 #include "../context/common.h"
 #include "../runtime/abstract_iterator.h"
-#include "../util/rchandle.h"
 #include "../values/abstract_values.h"
+#include "../util/list.h"
+#include "../util/rchandle.h"
 
 #include <string>
  
@@ -26,19 +25,21 @@ class function : public rcobject
 {
 public:
 	typedef rchandle<abstract_iterator> iterator_t;
+
 protected:
+	abstract_qname* fname;
 	signature sig;
+
+	// polymorphism inference
+	sequence_type_t (*type_checker)(signature);
 	
 public:
-	function(const signature& _sig) : sig(_sig) {}
+	function(const signature&);
 	virtual ~function() {}
 
 public:
-	const abstract_qname* get_fname(context* ctx_p) const
-		{ return (abstract_qname*)sig.get_name(); }
-
-public:
-	virtual iterator_t operator()(context *) { return NULL; }
+	const abstract_qname* get_fname() const;
+	virtual iterator_t operator()(list<void*>);
 
 };
 

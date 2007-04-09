@@ -40,4 +40,3 @@ public:
 } /* namespace xqp */
 #endif /* XQP_COLLATION_RESOLVER_H */
 
-

@@ -75,8 +75,8 @@ public:
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-class value	: public object,
-							public abstract_value
+class sequence: public object,
+								public abstract_sequence
 {
 public:
 	sequence_type_t m_type;
@@ -90,9 +90,9 @@ public:		// storage interface
 	void  operator delete(void*) {}
 	
 public:
-	value(sequence_type_t type, size_t len) : m_type(type), m_length(len) {}
-	value() {}
-	~value() {}
+	sequence(sequence_type_t type, size_t len) : m_type(type), m_length(len) {}
+	sequence() {}
+	~sequence() {}
 
 public:		// accessors
 	uint32_t length() const { return m_length; }
@@ -108,7 +108,7 @@ public:		// accessors
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class item :	public value,
+class item :	public sequence,
 							public abstract_item
 {
 public:		// storage interface
@@ -119,7 +119,7 @@ public:		// storage interface
 	void  operator delete(void*) {}
 	
 public:
-	item(sequence_type_t type, size_t length) : value(type,length) {}
+	item(sequence_type_t type, size_t length) : sequence(type,length) {}
 	item() {}
 	~item() {}
 

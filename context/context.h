@@ -14,6 +14,7 @@
 #include "../runtime/abstract_iterator.h"
 #include "../values/abstract_qname.h"
 
+#include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
 
@@ -30,10 +31,19 @@ class context : public rcobject
 public:
 	typedef rchandle<abstract_iterator> iterator_t; 
 
-public:
-	// context interface
-	virtual rchandle<context> parent() const = 0;
-	virtual iterator_t context_value(qnamekey_t key) const = 0;
+protected:
+	rchandle<context> parent_h;
+	fxhash64map<iterator_t> keymap;
+
+public: // context interface
+	rchandle<context> parent() const { return parent_h; }
+
+	iterator_t context_value(qnamekey_t key) const
+	{
+		iterator_t it_h;
+		if (!keymap.get(key, it_h)) return NULL;
+		return it_h;
+	}
 
 };
 

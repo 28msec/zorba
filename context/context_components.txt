@@ -10,7 +10,7 @@
   | Component    | Default      | (overwrite,  | (overwrite,  | Scope        | Consistency  |
   |              | init value   |    augment)  |    augment)  |              | rules        |
   |              |              | by impl      | by query     |              |              |
-	|==============#==============#==============#==============#==============#==============|
+  |==============#==============#==============#==============#==============#==============|
   | XPath 1.0    | 'false'      | (no,no)      | (no,no)      | global       | must be      |
   | compatibility|              |              |              |              | 'false'      |
   | mode         |              |              |              |              |              |

@@ -59,7 +59,6 @@ public:
 
 
 
-
 class nodeid_index : public rcobject
 {
 protected:
@@ -76,8 +75,6 @@ public:
 	bool get(nodeid_t, itemref_t& ) const;
 
 };
-
-
 
 
 
@@ -123,10 +120,6 @@ public:
 	
 	// keys
 	itemref_t add_key(uint64_t key);
-
-	// qnames
-	qnamepair_t add_qname(const std::string& qname);
-	itemref_t name_space(const std::string& prefix);
 
 	// nodeid index
 	bool get_itemref(nodeid_t, itemref_t&) const;

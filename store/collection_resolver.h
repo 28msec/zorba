@@ -11,13 +11,16 @@
 #ifndef XQP_COLLECTION_RESOLVER_H
 #define XQP_COLLECTION_RESOLVER_H
 
-#include "../context/context.h"
+#include "../context/static_context.h"
+#include "../runtime/abstract_iterator.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
 
 #include <string>
 
 namespace xqp {
+
+typedef rchandle<abstract_iterator> iterator_t;
 
 class collection_resolver
 {
@@ -49,10 +52,10 @@ class collection_resolver
 	 *   transformation fails.  Returning NULL has the same effect 
 	 *   as returning an empty iterator. 
    */
-	item_iterator resolve(
+	iterator_t resolve(
+		static_context*,
 		std::string const& base,
-		std::string const& href,
-		context * )
+		std::string const& href)
 	throw (xqp_exception);
 
 };

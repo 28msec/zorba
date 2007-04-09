@@ -772,7 +772,7 @@ public:   // XQuery interface
 };
 
 
-class uri_value : public value 
+class uri_value : public atomic_value
 {
 protected:
 	uint64_t m_urikey;
@@ -789,7 +789,7 @@ protected:
   uri_value() {}
 
 private:	// ctor,dtor - lock out
-	uri_value(uri_value& qn) : value(xs_anyURI,0) {}
+	uri_value(uri_value& qn) : atomic_value(xs_anyURI,0) {}
 	~uri_value() {}
 
 public:		// output,debugging

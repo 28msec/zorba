@@ -13,6 +13,7 @@
 
 #include "parsenode_visitor.h"
 #include "expr.h"
+#include "../util/fxcharheap.h"
 #include <stack>
 
 /*______________________________________________________________________
@@ -22,9 +23,9 @@
 |	 Chapter 10.
 |_______________________________________________________________________*/
 
-namespace xqp 
-{
-class context;
+namespace xqp {
+
+class zorba;
 
 class normalize_visitor : public parsenode_visitor
 {
@@ -32,15 +33,15 @@ public:
 	typedef rchandle<expr> expr_h_t;
 
 protected:
-	context * ctx_p;
+	zorba* zorp;
 	std::stack<expr_h_t> nodestack;
 	std::stack<expr_h_t> argstack;
 	std::stack<expr_h_t> pstack;
 	rchandle<itemstore> istore_h;
+	fxcharheap sheap;
 
 public:
-	normalize_visitor(context* _ctx_p)
-		: ctx_p(_ctx_p), istore_h(ctx_p->istore()) {}
+	normalize_visitor(zorba*);
 	~normalize_visitor() {}
 
 public:

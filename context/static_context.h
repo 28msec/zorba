@@ -36,15 +36,12 @@ class static_context : public context
 {
 public:	// types
 	enum construction_mode_t		{ cons_preserve, cons_strip };
-	enum ordering_mode_t				{ ordered, unordered };
 	enum order_empty_mode_t			{ empty_greatest, empty_least };
 	enum boundary_space_mode_t	{ preserve_space, strip_space };
 	enum inherit_mode_t					{ inherit_ns, no_inherit_ns };
 	enum preserve_mode_t				{ preserve_ns, no_preserve_ns };
 
 protected:
-	fxhash64map<iterator_t> keymap;
-	rchandle<context> parent_h;
 	abstract_value_factory* vf_p;
 
 	static bool static_init;
@@ -62,14 +59,9 @@ protected:
 	static qnamekey_t baseuri_key;
 
 public:
-	void init(itemstore&) const;
-	static_context();
-	~static_context();
-
-public:
-	// context interface
-	rchandle<context> parent() const;
-	iterator_t context_value(qnamekey_t context_key) const;
+	static void init(abstract_value_factory*);
+	static_context(abstract_value_factory* v_p) : vf_p(v_p) {}
+	~static_context() {}
 
 public:
 	// XQuery 1.0 static context

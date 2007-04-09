@@ -12,20 +12,20 @@
 
 #include <string>
 
-#include "../context/context.h"
-#include "../runtime/iterator.h"
+#include "../runtime/abstract_iterator.h"
+#include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
 
 using namespace std;
 namespace xqp {
 
-item_iterator collection_resolver::resolve(
-	string const& base,
-	string const& href,
-	context * ctx_p)
+iterator_t resolve(
+	static_context*,
+	std::string const& base,
+	std::string const& href)
 throw (xqp_exception)
 {
-	return item_iterator(ctx_p);
+	return NULL;
 }
 
 

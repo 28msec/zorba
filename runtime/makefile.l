@@ -8,6 +8,12 @@ errors : errors.h errors.cpp
 iterator : iterator.h iterator.cpp
 	g++ ${OPT} -c -o ${BUILD}/iterator.${SUFX} iterator.cpp
 
+plan_visitor : plan_visitor.h plan_visitor.cpp
+	g++ ${OPT} -c -o ${BUILD}/plan_visitor.${SUFX} plan_visitor.cpp
+
+zorba : zorba.h zorba.cpp
+	g++ ${OPT} -c -o ${BUILD}/zorba.${SUFX} zorba.cpp
+
 iterator_test : iterator.h iterator.cpp iterator_test.cpp
 	g++ -Wall -g -o ${BUILD}/iterator_test \
 		../context/${BUILD}/context.${SUFX} \
@@ -27,9 +33,6 @@ iterator_test : iterator.h iterator.cpp iterator_test.cpp
 		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/iterator.${SUFX} \
 		iterator_test.cpp
-
-plan_visitor : plan_visitor.h plan_visitor.cpp
-	g++ ${OPT} -c -o ${BUILD}/plan_visitor.${SUFX} plan_visitor.cpp
 
 plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 	g++ -Wall -g -o ${BUILD}/plan_visitor_test \
@@ -59,9 +62,12 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 
 
 all : \
+	errors \
 	iterator \
-	plan_visitor
+	plan_visitor \
+	zorba
 
 test : \
-	iterator_test
+	iterator_test \
+	plan_visitor_test 
 

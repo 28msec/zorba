@@ -11,6 +11,7 @@
 #include "normalize_visitor.h"
 #include "indent.h"
 #include "../parser/parsenodes.h"
+#include "../runtime/zorba.h"
 #include "../util/tracer.h"
 
 #include <iostream>
@@ -19,6 +20,15 @@ using namespace std;
 namespace xqp {
 
 static uint32_t depth = 0;
+
+
+normalize_visitor::normalize_visitor(
+	zorba* _zorp)
+:
+	zorp(_zorp),
+	istore_h(zorp->istore()) 
+{
+}
 
 
 /*..........................................
@@ -84,14 +94,14 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(BaseURIDecl const& v)
 {
 cout << TRACE << endl;
-	ctx_p->set_base_uri(v.get_base_uri());
+	zorp->get_static_context()->set_baseuri(v.get_base_uri());
 	return false;
 }
 
 bool normalize_visitor::begin_visit(BoundarySpaceDecl const& v)
 {
 cout << TRACE << endl;
-	ctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
+	zorp->get_static_context()->set_boundary_space_mode(v.get_boundary_space_mode());
 	return false;
 }
 
@@ -117,7 +127,7 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(ConstructionDecl const& v)
 {
 cout << TRACE << endl;
-	ctx_p->set_construction_mode(v.get_mode());
+	zorp->get_static_context()->set_construction_mode(v.get_mode());
 	return false;
 }
 
@@ -132,7 +142,7 @@ bool normalize_visitor::begin_visit(
 {
 cout << TRACE << endl;
 	string uri = v.get_collation();
-	ctx_p->set_default_collation(uri);
+	zorp->get_static_context()->set_default_collation(uri);
 	return false;
 }
 
@@ -143,16 +153,18 @@ cout << TRACE << endl;
 	switch (v.get_mode()) {
 	case ns_element_default: {
 		namespace_node* ns_p =
-			new (*ctx_p->istore())
-				namespace_node(ctx_p,"#elem#",v.get_default_namespace());
-		ctx_p->set_default_ns(ns_p);
+			new (*zorp->istore())
+				namespace_node(zorp,"#elem#",v.get_default_namespace());
+		zorp->get_dynamic_context()->set_default_element_type_namespace(
+			(abstract_namespace_node*)ns_p);
 		break;
 	}
 	case ns_function_default: {
 		namespace_node* ns_p =
-			new (*ctx_p->istore())
-				namespace_node(ctx_p,"#func#",v.get_default_namespace());
-		ctx_p->set_default_function_ns(ns_p);
+			new (*zorp->istore())
+				namespace_node(zorp,"#func#",v.get_default_namespace());
+		zorp->get_static_context()->set_default_function_namespace(
+			(abstract_namespace_node*)ns_p);
 		break;
 	}
 	}
@@ -200,7 +212,7 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(EmptyOrderDecl const& v)
 {
 cout << TRACE << endl;
-	ctx_p->set_order_empty_mode(v.get_mode());
+	zorp->get_static_context()->set_order_empty_mode(v.get_mode());
 	return true;
 }
 
@@ -390,7 +402,7 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(OrderingModeDecl const& v)
 {
 cout << TRACE << endl;
-	ctx_p->set_ordering_mode(v.get_mode());
+	zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
 	return false;
 }
 
@@ -2168,7 +2180,7 @@ cout << TRACE << endl;
 void normalize_visitor::end_visit(StringLiteral const& v)
 {
 cout << indent[depth--] << TRACE << ": StringLiteral" << endl;
-	off_t sid = ctx_p->put_string(v.get_strval());
+	off_t sid = sheap.put(v.get_strval());
 	nodestack.push(new literal_expr(v.get_location(), sid, true));
 }
 

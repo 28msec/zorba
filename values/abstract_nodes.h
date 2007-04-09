@@ -26,6 +26,7 @@ namespace xqp {
 
 
 class xs_anyURIValue;
+class dynamic_context;
 class abstract_qname;
 class abstract_context;
 class abstract_text_node;
@@ -98,10 +99,10 @@ public:
 	// XDM interface
 	enum node_kind_t node_kind();
 	std::string string_value();
-	iterator_t attributes();
+	iterator_t attributes(dynamic_context*);
 	iterator_t base_uri();
 	iterator_t document_uri();
-	iterator_t children();
+	iterator_t children(dynamic_context*);
 	iterator_t namespace_nodes();
 	iterator_t node_name();
 	iterator_t parent();
@@ -127,7 +128,6 @@ public:
 
 	// serialization/testing
 	std::string toXML() const;
-
 
 };
 	
@@ -171,7 +171,7 @@ public:		// XQuery interface
 	std::string string_value();
 	iterator_t base_uri();
 	iterator_t document_uri();
-	iterator_t children();
+	iterator_t children(dynamic_context*);
 	iterator_t typed_value();
 
 	iterator_t namespaces() const { return NULL; }
@@ -224,9 +224,9 @@ public:
 	node_kind_t node_kind() const { return elem_kind; }
 
 	std::string string_value();
-	iterator_t attributes();
+	iterator_t attributes(dynamic_context*);
 	iterator_t base_uri();
-	iterator_t children();
+	iterator_t children(dynamic_context*);
 	iterator_t namespace_nodes();
 	iterator_t node_name();
 	iterator_t parent();

@@ -19,7 +19,7 @@ namespace xqp {
 
 class xs_anyURIValue;
 
-class abstract_qname : public abstract_value
+class abstract_qname : public abstract_item
 {
 public:
 	std::string prefix() const;

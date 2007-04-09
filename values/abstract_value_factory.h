@@ -12,11 +12,12 @@
 
 #include "qname_value.h"
 #include "xs_primitive_values.h"
+#include "../util/rchandle.h"
 #include <string>
 
 namespace xqp {
 
-class abstract_value_factory
+class abstract_value_factory : public rcobject
 {
 public:
 	virtual qname_value* make_qname(
@@ -69,6 +70,8 @@ public:
 	virtual xs_unsignedLongValue* make_xs_unsignedLongValue(unsigned long) = 0;
 	virtual xs_unsignedShortValue* make_xs_unsignedShortValue(uint16_t) = 0;
 
+public:
+	virtual ~abstract_value_factory() {}
 };
 
 

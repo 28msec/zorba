@@ -8,8 +8,6 @@
  */
 
 #include "xs_primitive_values.h"
-
-#include "../context/context.h"
 #include "../types/typecodes.h"
 
 #include <iostream>

@@ -12,6 +12,7 @@
 
 #include "../context/common.h"
 #include "../context/context.h"
+#include "../runtime/zorba.h"
 #include "../values/values.h"
 #include "../util/xqp_exception.h"
 #include "../util/tokenbuf.h"
@@ -25,7 +26,7 @@ namespace xqp {
 #define DELIMSET " \n,.;:?!\r\t+-_!@#$%&*()[]{}=/|\\<>'\""
 
 xml_handler::xml_handler(
-	context * _ctx_p,
+	zorba* _zorba_p,
 	string const&  _baseuri,
 	string const&  _uri,
 	vector<xml_term>& _term_v)
@@ -41,8 +42,8 @@ xml_handler::xml_handler(
 	last_pos(0),
 	uri(URI(_baseuri+'/'+_uri).hashkey()),
 	term_v(_term_v),
-	ctx_p(_ctx_p),
-	istore(*ctx_p->istore())
+	zorba_p(_zorba_p),
+	istore(*zorba_p->istore())
 {
 	itemref_t baseuri_ref = istore.eos();
 	new(istore) xs_stringValue(istore,_baseuri);
@@ -51,11 +52,11 @@ xml_handler::xml_handler(
 	new(istore) xs_stringValue(istore,_uri);
 
 	baseref = istore.eos();
-	document_node* d_p = new(istore) document_node(ctx_p,baseuri_ref,uri_ref);
+	document_node* d_p = new(istore) document_node(zorba_p,baseuri_ref,uri_ref);
 
 	nodeid_t nid = d_p->id();
-	ctx_p->put_dnid(uri, nid);
-	ctx_p->put_noderef(nid, baseref);
+	zorba_p->put_dnid(uri, nid);
+	zorba_p->put_noderef(nid, baseref);
 }
 
 
@@ -103,7 +104,7 @@ void xml_handler::aname(const char* buf, int offset, int length)
 	if (n!=string::npos) {
 		string prefix = the_attribute.substr(0,n);
 		nskey_t nskey;
-		ctx_p->get_nskey(prefix,nskey);
+		zorba_p->get_nskey(prefix,nskey);
 	}
 }
 
@@ -157,8 +158,8 @@ void xml_handler::flush_textbuf_as_text_node()
 {
 	if (textbuf.str().length()>0) {
 		itemref_t ref = istore.eos();
-		text_node* t_p = new(istore) text_node(ctx_p, textbuf.str());
-		ctx_p->put_noderef(t_p->id(),ref);
+		text_node* t_p = new(istore) text_node(zorba_p, textbuf.str());
+		zorba_p->put_noderef(t_p->id(),ref);
 		textbuf.str("");
 	}
 }
@@ -224,10 +225,10 @@ void xml_handler::gi(const char* buf, int offset, int length)
 	string name(buf,offset,length);
 	name_stack[top++] = name;
 	itemref_t qname_ref = istore.eos();
-	qname_value* q_p = new(istore) qname_value(ctx_p,name);
+	qname_value* q_p = new(istore) qname_value(zorba_p,name);
 	itemref_t ref = istore.eos();
-	element_node* e_p = new(istore) element_node(ctx_p,qname_ref);
-	ctx_p->put_noderef(e_p->id(),ref);
+	element_node* e_p = new(istore) element_node(zorba_p,qname_ref);
+	zorba_p->put_noderef(e_p->id(),ref);
 	node_stack.push(elempair_t(q_p->qnamekey(),ref));
 
 	// serialize concatenated text node
@@ -342,8 +343,8 @@ void xml_handler::stagc(const char* buf, int offset, int length)
 		itemref_t qname_ref = p.first;
 		string val = p.second;
 		itemref_t ref = istore.eos();
-		attribute_node* a_p = new(istore) attribute_node(ctx_p,qname_ref,val);
-		ctx_p->put_noderef(a_p->id(), ref);
+		attribute_node* a_p = new(istore) attribute_node(zorba_p,qname_ref,val);
+		zorba_p->put_noderef(a_p->id(), ref);
 	}
 	attr_v.clear();
 }

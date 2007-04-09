@@ -56,7 +56,7 @@ class abstract_ft_value : public abstract_object
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-class abstract_value : public abstract_object
+class abstract_sequence : public abstract_object
 {
 public:
 	typedef rchandle<abstract_iterator> iterator_t;
@@ -72,7 +72,7 @@ public:
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class abstract_item : public abstract_value
+class abstract_item : public abstract_sequence
 {
 public:
 	sequence_type_t type() const;
@@ -86,7 +86,6 @@ public:
 
 
 // no abstract atomic values
-
 // abstract nodes defined in 'abstract_nodes.h'
 
 

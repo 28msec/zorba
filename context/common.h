@@ -19,14 +19,19 @@ namespace xqp {
 
 typedef uint32_t nodeid_t;		// node id
 typedef uint32_t qnameid_t;		// qname id
+typedef uint32_t docid_t;			// document id
+
 typedef uint64_t nskey_t;			// namespace hash key
 typedef uint64_t urikey_t;		// URI hash key
 typedef uint64_t qnamekey_t;	// QName hash key
+
 typedef uint32_t itemref_t;		// itemstore offset
 typedef uint32_t offset_t;    // itemstore short offset
 
-#define NONAMESPACE	"http://nonamespace"
+#define ZORBA 			"http://www.zorba.org/"
+#define NONAMESPACE	"http://nonamespace/"
 #define NONS_PREFIX	"no-ns"
+
 
 typedef struct qnamekeyref
 {

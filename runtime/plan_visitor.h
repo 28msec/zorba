@@ -12,6 +12,7 @@
 
 #include "expr_visitor.h"
 #include "iterator.h"
+#include "../runtime/zorba.h"
 #include "../util/rchandle.h"
 #include <stack>
 
@@ -31,12 +32,12 @@ public:
 	typedef rchandle<expr> expr_h_t;
 
 protected:
-	context * ctx_p;
+	zorba* zorp;
 	std::stack<it_h_t> itstack;
 	std::stack<it_h_t> argstack;
 
 public:
-	plan_visitor(context* _ctx_p) : ctx_p(_ctx_p) {}
+	plan_visitor(zorba* _zorp) : zorp(_zorp) {}
 	~plan_visitor() {}
 
 public:

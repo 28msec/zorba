@@ -22,7 +22,8 @@ namespace xqp {
 
 class itemstore;
 
-class qname_value : public atomic_value, public abstract_qname
+class qname_value : public atomic_value,
+										public abstract_qname
 {
 public:
 	typedef rchandle<abstract_iterator> iterator_t;

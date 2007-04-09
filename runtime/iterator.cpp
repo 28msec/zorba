@@ -10,9 +10,9 @@
 
 #include "iterator.h"
 
-#include "../context/context.h"
 #include "../util/Assert.h"
 #include "../util/xqp_exception.h"
+#include "../values/abstract_value_factory.h"
 #include "../values/xs_primitive_values.h"
 
 #include <iostream>
@@ -29,7 +29,7 @@ namespace xqp {
 item_iterator& item_iterator::operator=(
 	const item_iterator& it)
 {
-	ctx_p = it.ctx_p;
+	dctx_p = it.dctx_p;
 	return *this;
 }
 
@@ -68,14 +68,13 @@ item_const_iterator& item_const_iterator::operator++()
 	return *this;
 }
 
-string item_const_iterator::string_value(
-	context * ctx_p)
+string item_const_iterator::string_value()
 {
 	ostringstream oss;
 	while (!done()) {
-		item* i_p = reinterpret_cast<item*>(next());
+		abstract_item* i_p = next();
 		if (i_p==NULL) continue;
-		i_p->put(oss);
+		oss << i_p->string_value();
 	}
 	return oss.str();
 }
@@ -101,14 +100,14 @@ abstract_item* binary_iterator::next(uint32_t delta)
 {
 	abstract_item* i1_p = it1_h->next(delta);
 	abstract_item* i2_p = it2_h->next(delta);
-	return (*op)(ctx_p,i1_p,i2_p);
+	return (*op)(i1_p,i2_p);
 }
 
 abstract_item* binary_iterator::peek() const 
 {
 	abstract_item* i1_p = it1_h->peek();
 	abstract_item* i2_p = it2_h->peek();
-	return (*op)(ctx_p,i1_p,i2_p);
+	return (*op)(i1_p,i2_p);
 }
 
 bool binary_iterator::done() const
@@ -123,12 +122,12 @@ void binary_iterator::rewind()
 }
 
 binary_iterator::binary_iterator(
-	context * ctx_p,
+	dynamic_context * dctx_p,
 	rchandle<item_iterator> _it1_h,
 	rchandle<item_iterator> _it2_h,
-	abstract_item* (*_op)(context *, abstract_item*, abstract_item*))
+	abstract_item* (*_op)(abstract_item*, abstract_item*))
 :
-	item_iterator(ctx_p),
+	item_iterator(dctx_p),
 	it1_h(_it1_h),
 	it2_h(_it2_h),
 	op(_op)
@@ -138,7 +137,7 @@ binary_iterator::binary_iterator(
 binary_iterator& binary_iterator::operator=(
 	const binary_iterator& it)
 {
-	ctx_p = it.ctx_p;
+	dctx_p = it.dctx_p;
 	it1_h = it.it1_h;
 	it2_h = it.it2_h;
 	op = it.op;
@@ -156,22 +155,21 @@ binary_iterator::~binary_iterator()
  :.........................................*/
 
 singleton_iterator::singleton_iterator(
-	context* ctx_p,
-	item* _i_p)
+	abstract_item* _i_p)
 :
 	i_p(_i_p),
 	done_b(false)
 {
 #ifdef DEBUG
-	cout << "singleton_iterator(item*)\n";
+	cout << "singleton_iterator(abstract_item*)\n";
 #endif
 }
 
 singleton_iterator::singleton_iterator(
-	context* ctx_p,
+	abstract_value_factory* vf_p,
 	const string& s)
 :
-	i_p(new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),s)),
+	i_p(vf_p->make_xs_stringValue(s)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -180,10 +178,10 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context* ctx_p,
+	abstract_value_factory* vf_p,
 	bool v)
 :
-	i_p(new(*ctx_p->istore()) xs_booleanValue(v)),
+	i_p(vf_p->make_xs_booleanValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -192,10 +190,10 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context* ctx_p,
+	abstract_value_factory* vf_p,
 	double v)
 :
-	i_p(new(*ctx_p->istore()) xs_doubleValue(v)),
+	i_p(vf_p->make_xs_doubleValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -204,10 +202,10 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context* ctx_p,
+	abstract_value_factory* vf_p,
 	int v)
 :
-	i_p(new(*ctx_p->istore()) xs_intValue(v)),
+	i_p(vf_p->make_xs_intValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -216,10 +214,10 @@ singleton_iterator::singleton_iterator(
 }
 
 singleton_iterator::singleton_iterator(
-	context* ctx_p,
+	abstract_value_factory* vf_p,
 	long v)
 :
-	i_p(new(*ctx_p->istore()) xs_longValue(v)),
+	i_p(vf_p->make_xs_longValue(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -289,11 +287,11 @@ void concat_iterator::rewind()
 }
 
 concat_iterator::concat_iterator(
-	context * ctx_p,
+	dynamic_context* dctx_p,
 	//list<rchandle<item_iterator> > _it_list)
 	vector<rchandle<item_iterator> > _it_list)
 :
-	item_iterator(ctx_p),
+	item_iterator(dctx_p),
 	it_list(_it_list),
 	walker(_it_list.begin()),
 	sentinel(_it_list.end()),
@@ -309,7 +307,7 @@ concat_iterator::concat_iterator(
 concat_iterator::concat_iterator(
 	const concat_iterator& it)
 :
-	item_iterator(it.ctx_p),
+	item_iterator(it.dctx_p),
 	it_list(it.it_list),
 	walker(it.walker),
 	sentinel(it.sentinel),
@@ -321,7 +319,7 @@ concat_iterator::concat_iterator(
 concat_iterator& concat_iterator::operator=(
 	const concat_iterator& it)
 {
-	ctx_p = it.ctx_p;
+	dctx_p = it.dctx_p;
 	it_list = it.it_list;
 	walker = it.walker;
 	sentinel = it.sentinel;

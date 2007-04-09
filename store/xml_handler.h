@@ -22,6 +22,7 @@
 #include "xml_term.h"
 
 #include "../context/common.h"
+#include "../runtime/zorba.h"
 #include "../util/rchandle.h"
 #include "../util/URI.h"
 
@@ -33,8 +34,6 @@
 
 
 namespace xqp {
-
-class context;
 
 class xml_handler : public scan_handler
 {
@@ -65,7 +64,7 @@ protected:  // state
 	bool gp_indexing;								// index   b/c/word::t
 	bool ggp_indexing;							// index a/b/c/word::t
 
-	context * ctx_p;
+	zorba* zorba_p;
 	itemstore& istore;
 	itemref_t baseref;
 
@@ -81,7 +80,7 @@ protected:  // state
 
 public:	// ctor, dtor
 	xml_handler(
-		context *,
+		zorba*,
 		std::string const& baseuri,		// doucment base URI
 		std::string const& uri,				// doucment URI
 	  std::vector<xml_term>&);			// accumulate terms here

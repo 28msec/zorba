@@ -78,7 +78,7 @@ public:
 |_______________________________________________________________________*/
 
 class dom_value	: public dom_object,
-									public abstract_value
+									public abstract_sequence
 {
 public:
 	sequence_type_t mType;

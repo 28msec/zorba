@@ -3,8 +3,7 @@
  *  $Id: expr.h,v 1.1.1.1 2006/11/06 08:42:18 Paul Pedersen Exp $
  *
  *  Copyright 2006-2007 FLWOR FOundation.
- *
- *	Author: Paul Pedersen
+ *	Author: John Cowan, Paul Pedersen
  */
 
 #ifndef XQP_EXPR_H
@@ -13,7 +12,7 @@
 #include <string>
 #include <vector>
 
-#include "../context/context.h"
+#include "../context/static_context.h"
 #include "../functions/function.h"
 #include "../runtime/expr_visitor.h"
 #include "../runtime/iterator.h"
@@ -50,7 +49,7 @@ public:
 
 public:
 	virtual void accept(expr_visitor&) const = 0;
-	virtual std::ostream& put(std::ostream&,context&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 
 /* (some proposed optimizer interface methods:)
@@ -108,7 +107,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -184,7 +183,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-  std::ostream& put(std::ostream&,context&) const;
+  std::ostream& put(std::ostream&) const;
 
 };
 
@@ -200,13 +199,13 @@ class order_modifier : public rcobject
 {
 public:
 	dir_spec_t dir;
-	context::order_empty_mode_t empty_mode;
+	static_context::order_empty_mode_t empty_mode;
 	std::string collation;
 
 public:
 	order_modifier()
 	: dir(dir_descending),
-		empty_mode(context::empty_least),
+		empty_mode(static_context::empty_least),
 		collation("")
 	{
 	}
@@ -260,7 +259,7 @@ public:	// accessors
 	void set_expr(expr_h_t v) { expr_h = v; }
 
 public:
-	std::ostream& put(ostream&,context&) const;
+	std::ostream& put(ostream&) const;
 	
 };
 
@@ -324,7 +323,7 @@ public:	// accessors
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -374,7 +373,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -455,7 +454,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -496,7 +495,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -541,7 +540,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -578,7 +577,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -614,7 +613,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -644,7 +643,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -674,7 +673,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -704,7 +703,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -733,7 +732,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -762,7 +761,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -822,7 +821,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -866,7 +865,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -968,7 +967,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -994,7 +993,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1044,9 +1043,8 @@ public:
 
 public:
 	static std::string decode_type(enum literal_type_t t);
-
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1084,7 +1082,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1100,6 +1098,7 @@ class funcall_expr : public expr
 {
 protected:
 	rchandle<qname_expr> fname_h;
+	//XXX replace with: function* fun;
 	std::vector<expr_h_t> arg_hv;
 
 public:
@@ -1129,7 +1128,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1152,7 +1151,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1178,7 +1177,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1231,7 +1230,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1269,7 +1268,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1295,7 +1294,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1321,7 +1320,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1359,7 +1358,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&,context&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 

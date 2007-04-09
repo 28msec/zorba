@@ -17,24 +17,37 @@ namespace xqp {
 
 typedef rchandle<abstract_iterator> iterator_t;
 bool static_context::static_init = false;
+#define ZORBA "http://www.zorba.org/"
 
 
 void static_context::init(
-	itemstore& istore) const
+	abstract_value_factory* vf_p)
 {
 	if (!static_context::static_init) {
-		default_function_ns_key = istore.add_qname("xqp:default-function-ns").qnamekey;
-		default_collation_key = istore.add_qname("xqp:default-collation").qnamekey;
-		in_scope_schema_types_key = istore.add_qname("xqp:in-scope-schema-types").qnamekey;
-		in_scope_element_decls_key = istore.add_qname("xqp:in-scope-element-decls").qnamekey;
-		in_scope_attribute_decls_key = istore.add_qname("xqp:in-scope-attribute-decls").qnamekey;
-		collations_key = istore.add_qname("xqp:collations").qnamekey;
-		construction_mode_key = istore.add_qname("xqp:construction-mode").qnamekey;
-		order_empty_mode_key = istore.add_qname("xqp:order-empty-mode").qnamekey;
-		boundary_space_mode_key = istore.add_qname("xqp:boundary-space-mode").qnamekey;
-		inherit_mode_key = istore.add_qname("xqp:inherit-mode").qnamekey;
-		preserve_mode_key = istore.add_qname("xqp:preserve-mode").qnamekey;
-		baseuri_key = istore.add_qname("xqp:baseuri").qnamekey;
+		default_function_ns_key =
+			vf_p->make_qname(ZORBA,"xqp","default-function-ns")->qnamekey();
+		default_collation_key =
+			vf_p->make_qname(ZORBA,"xqp","default-collation")->qnamekey();
+		in_scope_schema_types_key =
+			vf_p->make_qname(ZORBA,"xqp","in-scope-schema-types")->qnamekey();
+		in_scope_element_decls_key =
+			vf_p->make_qname(ZORBA,"xqp","in-scope-element-decls")->qnamekey();
+		in_scope_attribute_decls_key =
+			vf_p->make_qname(ZORBA,"xqp","in-scope-attribute-decls")->qnamekey();
+		collations_key =
+			vf_p->make_qname(ZORBA,"xqp","collations")->qnamekey();
+		construction_mode_key =
+			vf_p->make_qname(ZORBA,"xqp","construction-mode")->qnamekey();
+		order_empty_mode_key =
+			vf_p->make_qname(ZORBA,"xqp","order-empty-mode")->qnamekey();
+		boundary_space_mode_key =
+			vf_p->make_qname(ZORBA,"xqp","boundary-space-mode")->qnamekey();
+		inherit_mode_key =
+			vf_p->make_qname(ZORBA,"xqp","inherit-mode")->qnamekey();
+		preserve_mode_key =
+			vf_p->make_qname(ZORBA,"xqp","preserve-mode")->qnamekey();
+		baseuri_key =
+			vf_p->make_qname(ZORBA,"xqp","baseuri")->qnamekey();
 	}
 }
 
@@ -45,20 +58,6 @@ void static_context::init(
 |	XQuery 1.0 context
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
-
-rchandle<context>
-static_context::parent() const
-{
-	return parent_h;
-}
-
-iterator_t
-static_context::context_value(qnamekey_t key) const
-{
-	iterator_t it_h;
-	if (!keymap.get(key, it_h)) return NULL;
-	return it_h;
-}
 
 abstract_namespace_node*
 static_context::default_function_namespace() const
@@ -72,7 +71,6 @@ void static_context::set_default_function_namespace(
 	abstract_namespace_node* nn_p)
 {
 	iterator_t it_h = new singleton_iterator(nn_p);
-		//reinterpret_cast<abstract_item*>(nn_p));
 	keymap.put(default_function_ns_key,it_h);
 }
 
@@ -98,45 +96,40 @@ iterator_t static_context::collations() const
 
 static_context::construction_mode_t static_context::construction_mode() const
 {
-	qname_value* qn_p =
-		(qname_value*)context_value(construction_mode_key)->peek();
-	string mode = qn_p->localname();
+	abstract_item* i_p = context_value(construction_mode_key)->peek();
+	string mode = i_p->string_value();
 	if (mode=="preserve") return cons_preserve;
 	return cons_strip;
 }
 
 static_context::order_empty_mode_t static_context::order_empty_mode() const
 {
-	qname_value* qn_p =
-		(qname_value*)context_value(order_empty_mode_key)->peek();
-	string mode = qn_p->localname();
+	abstract_item* i_p = context_value(order_empty_mode_key)->peek();
+	string mode = i_p->string_value();
 	if (mode=="empty_greatest") return empty_greatest;
 	return empty_least;
 }
 
 static_context::boundary_space_mode_t static_context::boundary_space_mode() const
 {
-	qname_value* qn_p =
-		(qname_value*)context_value(boundary_space_mode_key)->peek();
-	string mode = qn_p->localname();
+	abstract_item* i_p = context_value(boundary_space_mode_key)->peek();
+	string mode = i_p->string_value();
 	if (mode=="preserve_space") return preserve_space;
 	return strip_space;
 }
 
 static_context::inherit_mode_t static_context::inherit_mode() const
 {
-	qname_value* qn_p =
-		(qname_value*)context_value(inherit_mode_key)->peek();
-	string mode = qn_p->localname();
+	abstract_item* i_p = context_value(inherit_mode_key)->peek();
+	string mode = i_p->string_value();
 	if (mode=="inherit_ns") return inherit_ns;
 	return no_inherit_ns;
 }
 
 static_context::preserve_mode_t static_context::preserve_mode() const
 {
-	qname_value* qn_p =
-		(qname_value*)context_value(preserve_mode_key)->peek();
-	string mode = qn_p->localname();
+	abstract_item* i_p = context_value(preserve_mode_key)->peek();
+	string mode = i_p->string_value();
 	if (mode=="preserve_ns") return preserve_ns;
 	return no_preserve_ns;
 }

@@ -11,9 +11,9 @@
 #include "qname_value.h"
 #include "xs_primitive_values.h"
 
-#include "../context/context.h"
 #include "../runtime/errors.h"
 #include "../runtime/iterator.h"
+#include "../runtime/zorba.h"
 #include "../util/tracer.h"
 
 #include <stdlib.h>
@@ -57,13 +57,15 @@ node::node(
 {
 }
 
-rchandle<abstract_iterator> node::attributes() const
+rchandle<abstract_iterator> node::attributes(
+	dynamic_context*) const
 { return NULL; }
 
 rchandle<abstract_iterator> node::base_uri() const
 { return NULL; }
 
-rchandle<abstract_iterator> node::children() const
+rchandle<abstract_iterator> node::children(
+	dynamic_context*) const
 { return NULL; }
 
 rchandle<abstract_iterator> node::document_uri() const
@@ -105,13 +107,16 @@ bool node::nilled() const
  :.........................................*/
 
 document_node::document_node(
-	context * ctx_p,
+	zorba* zor_p,
 	nodeid_t baseuri,
 	nodeid_t uri)
 :
-	node( documentNode, 0, ctx_p->gen(), 0,
-					ctx_p->next_nodeid(),
-					ctx_p->context_nodeid()),
+	node( documentNode,							/* type								*/
+				0,												/* length 						*/
+				0,												/* forwarding ref			*/
+				zor_p->gen(),							/* generation number	*/
+				zor_p->next_nodeid(),			/* ordinal node id		*/
+				zor_p->context_nodeid()),	/* parent node id			*/
 	m_baseuri(baseuri),
 	m_uri(uri)
 {
@@ -119,20 +124,15 @@ cout << TRACE << endl;
 	m_length = sizeof(document_node)>>2;
 }
 
-string document_node::baseuri(context* ctx_p) const { return ""; }
-string document_node::uri(context* ctx_p) const { return ""; }
+string document_node::baseuri() const { return ""; } 
+string document_node::uri() const { return ""; } 
+rchandle<abstract_iterator> document_node::base_uri() const { return NULL; } 
+rchandle<abstract_iterator> document_node::document_uri() const { return NULL; } 
+rchandle<abstract_iterator> document_node::typed_value() const { return NULL; } 
 
-rchandle<abstract_iterator> document_node::base_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> document_node::children() const
-{ return NULL; }
-
-rchandle<abstract_iterator> document_node::document_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> document_node::typed_value() const
-{ return NULL; }
+rchandle<abstract_iterator> document_node::children(
+	dynamic_context*) const
+{ return NULL; } 
 
 string document_node::string_value() const
 {
@@ -145,7 +145,7 @@ string document_node::string_value() const
 	return oss.str();
 }
 
-ostream& document_node::put(ostream& os) const
+ostream& document_node::put(zorba* z_p,ostream& os) const
 {
 	os << "<?xml version=\"1.0\"?>\n";
 	node* n_p = new(rest) node();
@@ -156,35 +156,35 @@ ostream& document_node::put(ostream& os) const
 		case documentNode: {
 			cout << TRACE << " : documentNode" << endl;
 			document_node* d_p = new(i_p) document_node();
-			d_p->put(os);
+			d_p->put(z_p,os);
 			break;
 		}
 		case attributeNode: {
 			cout << TRACE << " : attributeNode" << endl;
 			attribute_node* a_p = new(i_p) attribute_node();
-			a_p->put(os);
+			a_p->put(z_p,os);
 			break;
 		}
 		case elementNode: {
 			cout << TRACE << " : elementNode" << endl;
 			element_node* e_p = new(i_p) element_node();
-			e_p->put(os);
+			e_p->put(z_p,os);
 			break;
 		}
 		case processingInstructionNode: {
 			pi_node* pi_p = new(i_p) pi_node();
-			pi_p->put(os);
+			pi_p->put(z_p,os);
 			break;
 		}
 		case commentNode: {
 			comment_node* c_p = new(i_p) comment_node();
-			c_p->put(os);
+			c_p->put(z_p,os);
 			break;
 		}
 		case textNode: {
 			cout << TRACE << " : textNode" << endl;
 			text_node* t_p = new(i_p) text_node();
-			t_p->put(os);
+			t_p->put(z_p,os);
 			break;
 		}
 		default: {
@@ -206,7 +206,8 @@ rchandle<abstract_iterator> collection_node::base_uri() const
 rchandle<abstract_iterator> collection_node::collection_uri() const
 { return NULL; }
 
-rchandle<abstract_iterator> collection_node::children() const
+rchandle<abstract_iterator> collection_node::children(
+	dynamic_context*) const
 { return NULL; }
 
 
@@ -215,36 +216,34 @@ rchandle<abstract_iterator> collection_node::children() const
  :.........................................*/
 
 element_node::element_node(
-	context* ctx_p,
+	zorba* zorp,
 	nodeid_t qname)
 :
 	node(
-		elementNode,								// typecode
-		0,	                      	// the length
-		ctx_p->gen(),								// generation number
-		0,													// forwarding itemref
-		ctx_p->next_nodeid(),				// ordinal node id
-		ctx_p->context_nodeid()),		// parent node id
-	m_qname(qname),								// element QName id
-	m_nsseq(0)										// in-scope namespaces XXX replace this
+		elementNode,							// typecode
+		0,	                     	// the length
+		0,												// forwarding itemref
+		zorp->gen(),							// generation number
+		zorp->next_nodeid(),			// ordinal node id
+		zorp->context_nodeid()),	// parent node id
+	qnameID(qname),							// element QName id
+	namespacesID(0)							// XXX in-scope namespaces
 {
 cout << TRACE << endl;
 }
 
-rchandle<abstract_iterator> element_node::attributes() const
+rchandle<abstract_iterator> element_node::attributes(
+	dynamic_context*) const
 { return NULL; }
 
 rchandle<abstract_iterator> element_node::base_uri() const
 { return NULL; }
 
 rchandle<abstract_iterator> element_node::children(
-	context* ctx_p) const
+	dynamic_context* dctx_p) const
 {
-	return new child_iterator(ctx_p,(node*)this,new(&rest[m_node_offset]) node());
+	return new child_iterator(dctx_p, this, new(&rest[nodeOffset]) node());
 }
-
-rchandle<abstract_iterator> element_node::children() const
-{ return NULL; }
 
 rchandle<abstract_iterator> element_node::namespace_nodes() const
 { return NULL; }
@@ -261,15 +260,11 @@ rchandle<abstract_iterator> element_node::typed_value() const
 string element_node::string_value() const
 { return ""; }
 
-ostream& element_node::put(
-	context* ctx_p,
-	ostream& os) const
+ostream& element_node::put(zorba* zorp, ostream& os) const
 {
   cout << TRACE << " : element_node" << endl;
-  itemstore& istore = *ctx_p->istore();
-	itemref_t ref;
-	Assert<bad_arg>(istore.get_itemref(m_qname,ref));
-  qname_value* q_p = new(istore,ref) qname_value();
+
+  qname_value* q_p = zorp->get_qname(qnameID);
   q_p->put(os);
   
 	node* n_p = new(rest) node();
@@ -280,35 +275,35 @@ ostream& element_node::put(
 		case documentNode: {
 			cout << TRACE << " : documentNode" << endl;
 			document_node* d_p = new(i_p) document_node();
-			d_p->put(os);
+			d_p->put(zorp,os);
 			break;
 		}
 		case attributeNode: {
 			cout << TRACE << " : attributeNode" << endl;
 			attribute_node* a_p = new(i_p) attribute_node();
-			a_p->put(os);
+			a_p->put(zorp,os);
 			break;
 		}
 		case elementNode: {
 			cout << TRACE << " : elementNode" << endl;
 			element_node* e_p = new(i_p) element_node();
-			e_p->put(os);
+			e_p->put(zorp,os);
 			break;
 		}
 		case processingInstructionNode: {
 			pi_node* pi_p = new(i_p) pi_node();
-			pi_p->put(os);
+			pi_p->put(zorp,os);
 			break;
 		}
 		case commentNode: {
 			comment_node* c_p = new(i_p) comment_node();
-			c_p->put(os);
+			c_p->put(zorp,os);
 			break;
 		}
 		case textNode: {
 			cout << TRACE << " : textNode" << endl;
 			text_node* t_p = new(i_p) text_node();
-			t_p->put(os);
+			t_p->put(zorp,os);
 			break;
 		}
 		default: {
@@ -319,7 +314,7 @@ ostream& element_node::put(
 
 node* element_node::node_at(uint32_t n) const
 {
-	child_const_iterator it((node*)this,new(&rest[m_node_offset]) node());
+	child_const_iterator it((node*)this,new(&rest[nodeOffset]) node());
 	uint32_t i = 0;
 	for (; i<n && !it.done(); ++it);
 	Assert<bad_arg>(i==n);
@@ -328,7 +323,6 @@ node* element_node::node_at(uint32_t n) const
 
 namespace_node* element_node::name_space_at(uint32_t) const
 { return NULL; }
-
 
 attribute_node* element_node::attr_at(uint32_t) const
 { return NULL; }
@@ -339,39 +333,37 @@ attribute_node* element_node::attr_at(uint32_t) const
  :.........................................*/
 
 attribute_node::attribute_node(
-	context * ctx_p,
+	zorba* zor_p,
 	nodeid_t qname)
 :
 	node(
 		attributeNode,								// typecode
 		sizeof(attribute_node)>>2,		// item length
-		ctx_p->gen(),									// generation number
 		0,														// forwarding itemref
-		ctx_p->next_nodeid(),					// ordinal node id
-		ctx_p->context_nodeid()),			// parent node id
+		zor_p->gen(),									// generation number
+		zor_p->next_nodeid(),					// ordinal node id
+		zor_p->context_nodeid()),			// parent node id
 	m_qname(qname)
 {
 cout << TRACE << endl;
 }
 
 attribute_node::attribute_node(
-	context * ctx_p,
+	zorba* zor_p,
 	nodeid_t qname,
 	string const& val)
 :
 	node(
 		attributeNode,								// typecode
 		sizeof(attribute_node)>>2,		// item length
-		ctx_p->gen(),									// generation number
 		0,														// forwarding itemref
-		ctx_p->next_nodeid(),					// ordinal node id
-		ctx_p->context_nodeid()),			// parent node id
+		zor_p->gen(),									// generation number
+		zor_p->next_nodeid(),					// ordinal node id
+		zor_p->context_nodeid()),			// parent node id
 	m_qname(qname)
 {
-	itemstore& istore = *ctx_p->istore();
-	//lock()
+	itemstore& istore = *zor_p->istore();
 	new(istore) xs_stringValue(istore,val);
-	//unlock()
 	cout << TRACE << endl;
 }
 
@@ -390,7 +382,7 @@ rchandle<abstract_iterator> attribute_node::typed_value() const
 string attribute_node::string_value() const
 { return ""; }
 
-ostream& attribute_node::put(ostream& os) const
+ostream& attribute_node::put(zorba* z_p,ostream& os) const
 { return os << "@=\"\""; }
 
 
@@ -399,19 +391,19 @@ ostream& attribute_node::put(ostream& os) const
  :.........................................*/
 
 namespace_node::namespace_node(
-	context* ctx_p,
+	zorba* zor_p,
 	const string& prefix,
 	const string& uri)
 :
 	node(
 		namespaceNode,						// type
 		0,                    		// length
-		ctx_p->gen(),							// generation number
 		0,												// forwarding reference
-		ctx_p->next_nodeid(),			// ordinal node id
-		ctx_p->context_nodeid())	// parent node id
+		zor_p->gen(),							// generation number
+		zor_p->next_nodeid(),			// ordinal node id
+		zor_p->context_nodeid())	// parent node id
 {
-	itemstore& istore = *ctx_p->istore();
+	itemstore& istore = *zor_p->istore();
 	xs_stringValue* p = new(istore) xs_stringValue(istore,prefix);
 	m_uri_offset = istore.eos();
 	xs_stringValue* q = new(istore) xs_stringValue(istore,uri);
@@ -430,7 +422,7 @@ rchandle<abstract_iterator> namespace_node::typed_value() const
 string namespace_node::string_value() const
 { return ""; }
 
-ostream& namespace_node::put(ostream& os) const
+ostream& namespace_node::put(zorba* z_p,ostream& os) const
 {
 	return os << "xmlns:pre=\"..\"";
 }
@@ -441,15 +433,15 @@ ostream& namespace_node::put(ostream& os) const
  :.........................................*/
 
 pi_node::pi_node(
-	context * ctx_p)
+	zorba* zor_p)
 :
 	node(
 		processingInstructionNode,
 		sizeof(pi_node)>>2,
-		ctx_p->next_gen(),
 		0,
-		ctx_p->next_nodeid(),
-		ctx_p->context_nodeid())
+		zor_p->next_gen(),
+		zor_p->next_nodeid(),
+		zor_p->context_nodeid())
 {
 }
 
@@ -468,7 +460,7 @@ rchandle<abstract_iterator> pi_node::typed_value() const
 string pi_node::string_value() const
 { return ""; }
 
-ostream& pi_node::put(ostream& os) const
+ostream& pi_node::put(zorba* z_p,ostream& os) const
 {
 	return os << "<?..?>";
 }
@@ -480,15 +472,15 @@ ostream& pi_node::put(ostream& os) const
  :.........................................*/
 
 comment_node::comment_node(
-	context * ctx_p)
+	zorba* zor_p)
 :
 	node(
 		commentNode,									// typecode
 		sizeof(comment_node)>>2,			// item length
-		ctx_p->gen(),									// generation number
 		0,														// forwarding itemref
-		ctx_p->next_nodeid(),					// ordinal node id
-		ctx_p->context_nodeid())			// parent node id
+		zor_p->gen(),									// generation number
+		zor_p->next_nodeid(),					// ordinal node id
+		zor_p->context_nodeid())			// parent node id
 {
 cout << TRACE << endl;
 }
@@ -505,7 +497,7 @@ rchandle<abstract_iterator> comment_node::typed_value() const
 string comment_node::string_value() const
 { return ""; }
 
-ostream& comment_node::put(ostream& os) const
+ostream& comment_node::put(zorba* z_p,ostream& os) const
 {
 	return os << "<!-- ... -->";
 }
@@ -516,18 +508,19 @@ ostream& comment_node::put(ostream& os) const
  :.........................................*/
 
 text_node::text_node(
-	context * ctx_p,
+	zorba* z_p,
 	string const& content)
 :
 	node(
 		textNode,									// type
 		0,												// length
-		ctx_p->gen(),							// generation number
 		0,												// forwarding reference
-		ctx_p->next_nodeid(),			// ordinal node id
-		ctx_p->context_nodeid())	// parent node id
+		z_p->gen(),								// generation number
+		z_p->next_nodeid(),				// ordinal node id
+		z_p->context_nodeid())		// parent node id
 {
-	new(*ctx_p->istore()) xs_stringValue(*ctx_p->istore(),content);
+	itemstore& istore = *z_p->istore();
+	new(istore) xs_stringValue(istore,content);
 cout << TRACE << endl;
 }
 
@@ -546,7 +539,7 @@ string text_node::string_value() const
 	return s_p->str();
 }
 
-ostream& text_node::put(ostream& os) const
+ostream& text_node::put(zorba* z_p,ostream& os) const
 {
 	xs_stringValue* s_p = new(rest) xs_stringValue();
 	return os << s_p->str();
@@ -576,7 +569,7 @@ cout << TRACE << endl;
 	m_length = sizeof(nsseq)/4 + count;
 }
 
-ostream& nsseq::put(ostream& os) const
+ostream& nsseq::put(zorba*,ostream& os) const
 {
 	return os;
 }
@@ -587,18 +580,15 @@ ostream& nsseq::put(ostream& os) const
  :.........................................*/
 
 child_iterator::child_iterator(
-	context* ctx_p,
-	node* _parent_p,
+	dynamic_context* dctx_p,
+	const node* _parent_p,
 	node* _current_p)
 :
-	item_iterator(ctx_p),
+	item_iterator(dctx_p),
 	parent_p(_parent_p),
 	current_p(_current_p)
 {
-	end_p =
-		reinterpret_cast<node *>(
-			parent_p->length() +
-				reinterpret_cast<uint32_t *>(parent_p));
+	end_p = parent_p + parent_p->length();
 }
 	
 item* child_iterator::operator*() const
@@ -630,10 +620,7 @@ child_iterator& child_iterator::operator++()
 	if (current_p >= end_p) {
 		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
 	}
-	current_p =
-		reinterpret_cast<node *>(
-			current_p->length() +
-				reinterpret_cast<uint32_t *>(parent_p));
+	current_p += current_p->length();
 	return *this;
 }
 

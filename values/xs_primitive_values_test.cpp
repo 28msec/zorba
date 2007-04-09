@@ -8,8 +8,6 @@
  */
 
 #include "xs_primitive_values.h"
-
-#include "../context/context.h"
 #include "../store/itemstore.h"
 
 #include <time.h>
@@ -20,8 +18,7 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
-	context ctx;
-	itemstore& istore = *ctx.istore();
+	itemstore istore("data/itemstore");
 	struct tm time1 = { 10, 30, 12, 15, 5, 107, 0, 135, 0 };
 
 	xs_anyURIValue* t1 = new(istore) xs_anyURIValue("http://aa.bb.c..");

@@ -175,17 +175,17 @@ xs_NameValue* value_factory::make_xs_NameValue(const string&)
 	return NULL;
 }
 
-xs_negativeIntegerValue* value_factory::make_xs_negativeIntegerValue()
+xs_negativeIntegerValue* value_factory::make_xs_negativeIntegerValue(int)
 {
 	return NULL;
 }
 
-xs_nonNegativeIntegerValue* value_factory::make_xs_nonNegativeIntegerValue()
+xs_nonNegativeIntegerValue* value_factory::make_xs_nonNegativeIntegerValue(int)
 {
 	return NULL;
 }
 
-xs_nonPositiveIntegerValue* value_factory::make_xs_nonPositiveIntegerValue()
+xs_nonPositiveIntegerValue* value_factory::make_xs_nonPositiveIntegerValue(int)
 {
 	return NULL;
 }

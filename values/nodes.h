@@ -30,10 +30,11 @@
 
 namespace xqp {
 
-class context;
-class itemstore;
+class dynamic_context;
 class element_node;
+class itemstore;
 class qname_value;
+class zorba;
 
 /*______________________________________________________________________
 | 6.0 Node
@@ -108,7 +109,7 @@ public:		// XQuery interface
 	 *	sequence containing zero or more Attribute Nodes. The order of 
 	 *	Attribute Nodes is stable but implementation dependent. 
 	 */
-	iterator_t attributes() const;
+	iterator_t attributes(dynamic_context*) const;
 	
 	/**
 	 *	The dm:base-uri accessor returns the base URI of a node as a sequence 
@@ -120,7 +121,7 @@ public:		// XQuery interface
 	 *	The dm:children accessor returns the children of a node as a sequence 
 	 *	containing zero or more nodes. 
 	 */
-	iterator_t children() const;
+	iterator_t children(dynamic_context*) const;
 	
 	/**
 	 *	The dm:document-uri accessor returns the absolute URI of the resource 
@@ -201,12 +202,12 @@ public:		// XQuery interface
 class child_iterator :	public item_iterator
 {
 protected:
-	node* parent_p;
+	const node* parent_p;
 	node* current_p;
-	node* end_p;
+	const node* end_p;
 
 public:
-	child_iterator(context*, node* parent, node* current);
+	child_iterator(dynamic_context*, const node* parent, node* current);
 	~child_iterator() {}
 
 public:
@@ -343,7 +344,7 @@ protected:
 
 public:
 	document_node() {}
-	document_node(context*, nodeid_t baseuri, nodeid_t uri);
+	document_node(zorba*, nodeid_t baseuri, nodeid_t uri);
 
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
@@ -353,15 +354,14 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// accessors
-	string baseuri(context*) const;
-	string uri(context*) const;
-	iterator_t children(context*) const;
+	string baseuri() const;
+	string uri() const;
 
 public:		// XQuery interface
 	string string_value() const;
 	iterator_t base_uri() const;
 	iterator_t document_uri() const;
-	iterator_t children() const;
+	iterator_t children(dynamic_context*) const;
 	iterator_t namespaces() const;
 	iterator_t typed_value() const;
 
@@ -370,7 +370,7 @@ private:	// ctor,dtor
 	~document_node() {}
 
 public:		// output and debugging
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -417,9 +417,9 @@ public:
 	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
-	nodeid_t m_qname;				// element QName
-	nodeid_t m_nsseq;				// in-scope namespaces
-	uint32_t m_node_offset;	// offset to first node
+	nodeid_t qnameID;					// element QName
+	nodeid_t namespacesID;		// in-scope namespaces
+	uint32_t nodeOffset;			// offset to first node
 	char rest[0];
 	/*
     attr[0]
@@ -432,10 +432,7 @@ protected:
 
 public:
 	element_node() {}
-
-	element_node(
-		context *,
-		itemref_t qnamedi);
+	element_node(zorba*, nodeid_t qnameid);
 
 public:		// accessors
 	qname_value& qname() const;											// element QName
@@ -455,10 +452,9 @@ public:		// storage interface
 
 public:		// XQuery interface
 	string string_value() const;
-	iterator_t attributes() const;
+	iterator_t attributes(dynamic_context*) const;
 	iterator_t base_uri() const;
-	iterator_t children() const;
-	iterator_t children(context*) const;
+	iterator_t children(dynamic_context*) const;
 	iterator_t namespace_nodes() const;
 	iterator_t node_name() const;
 	iterator_t parent() const;
@@ -474,8 +470,7 @@ private:	//ctor,dtor - lock out
 	~element_node() {}
 
 public:		// output and debugging
-	std::ostream& put(std::ostream&) const;
-	std::ostream& put(context*,std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -519,11 +514,11 @@ public:
   attribute_node() {}
 
 	attribute_node(
-		context *,
+		zorba*,
 		nodeid_t qname);
 
 	attribute_node(
-		context *,
+		zorba*,
 		nodeid_t qname,
 		const std::string& val);
 
@@ -550,7 +545,7 @@ private:	//ctor,dtor - lock out
   ~attribute_node();
 
 public:		// output,debugging
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -585,7 +580,10 @@ protected:
 
 public:
 	namespace_node() {}
-	namespace_node(context*,const std::string& prefix, const std::string& uri);
+	namespace_node(
+		zorba*,
+		const std::string& prefix,
+		const std::string& uri);
 
 public:		// storage interface
 	nskey_t& nskey() { return m_nskey; }
@@ -611,7 +609,7 @@ private:	//ctor,dtor - lock out
 	~namespace_node() {}
 
 public:		// output, debugging
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -640,7 +638,7 @@ protected:
 
 public:
 	pi_node() {}
-	pi_node(context *);
+	pi_node(zorba*);
 
 public:		// storage interface
 	uint32_t& content() { return m_content_offset; }
@@ -662,7 +660,7 @@ private:	//ctor,dtor - lock out
 	~pi_node() {}
 
 public:		// output, debugging
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -687,8 +685,8 @@ protected:
 	*/
 
 public:
+	comment_node(zorba*);
 	comment_node() {}
-	comment_node(context *);
 	
 public:	// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
@@ -708,7 +706,7 @@ private:	//ctor,dtor - lock out
 	~comment_node() {}
 
 public:		// output, debugging
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -748,7 +746,7 @@ public:	// storage interface
 	
 public:
 	text_node() {}
-	text_node(context*, const std::string&);
+	text_node(zorba*,const std::string&);
 	
 public:		// accessors
 	const char* content() const;
@@ -765,7 +763,7 @@ private:	//ctor,dtor
 	~text_node() {}
 
 public:		// output/debugging
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -782,7 +780,7 @@ public:
 public:
 	iterator_t base_uri() const;
 	iterator_t collection_uri() const;
-	iterator_t children() const;
+	iterator_t children(dynamic_context*) const;
 
 private:	// ctor,dtor - lock out
 	collection_node(const collection_node&) {}
@@ -790,7 +788,7 @@ private:	// ctor,dtor - lock out
 	~collection_node() {}
 
 public:		// output,debugging
-	std::ostream& put(std::ostream& os) const { return os; }
+	std::ostream& put(zorba*,std::ostream& os) const { return os; }
 
 };
 
@@ -829,7 +827,7 @@ private:	// ctor,dtor - lock out default and copy constructors
 	~nsseq() {}
 
 public:		// output,debugging
-	std::ostream& put(std::ostream& os) const;
+	std::ostream& put(zorba*,std::ostream& os) const;
 
 };
 

@@ -17,8 +17,9 @@
 
 namespace xqp {
 
-class context;
-class item;
+class abstract_value_factory;
+class abstract_item;
+class dynamic_context;
 class xs_stringValue;
 class xs_boolValue;
 class xs_doubleValue;
@@ -29,12 +30,12 @@ class xs_longValue;
 class item_iterator : public abstract_iterator
 {
 protected:
-  context* ctx_p;
+  dynamic_context* dctx_p;
 
 public:
-	item_iterator() : ctx_p(NULL) {}
-	item_iterator(context* _ctx_p) : ctx_p(_ctx_p) {}
-	item_iterator(const item_iterator& it) : ctx_p(it.ctx_p) {}
+	item_iterator() : dctx_p(NULL) {}
+	item_iterator(dynamic_context* _dctx_p) : dctx_p(_dctx_p) {}
+	item_iterator(const item_iterator& it) : dctx_p(it.dctx_p) {}
 	virtual item_iterator& operator=(const item_iterator&);
 	virtual ~item_iterator() {}
 
@@ -47,7 +48,7 @@ public:	// abstract iterator interface
 	virtual void rewind() { }
 
 public:	// C++ interface
-	item* operator*() const { return NULL; }
+	abstract_item* operator*() const { return NULL; }
 	item_iterator& operator++();
 
 public:
@@ -72,11 +73,11 @@ public:	// abstract iterator interface
 	virtual void rewind() { }
 
 public:	// C++ interface
-	item* operator*() const { return NULL; }
+	abstract_item* operator*() const { return NULL; }
 	item_const_iterator& operator++();
 
 public:
-	std::string string_value(context *);
+	std::string string_value();
 
 };
 
@@ -86,7 +87,7 @@ class binary_iterator : public item_iterator
 protected:
 	rchandle<item_iterator> it1_h;
 	rchandle<item_iterator> it2_h;
-	abstract_item* (*op)(context *, abstract_item*, abstract_item*);
+	abstract_item* (*op)(abstract_item*, abstract_item*);
 
 public:	// abstract iterator interface
 	void open();
@@ -98,10 +99,10 @@ public:	// abstract iterator interface
 
 public:	// ctor,dtor
 	binary_iterator(
-		context* ctx,
+		dynamic_context* ctx,
 		rchandle<item_iterator>,
 		rchandle<item_iterator>,
-		abstract_item* (*op)(context*, abstract_item*, abstract_item*));
+		abstract_item* (*op)(abstract_item*, abstract_item*));
 
 	binary_iterator(const binary_iterator&);
 	binary_iterator& operator=(const binary_iterator&);
@@ -114,31 +115,31 @@ public:	// manipulators
 };
 
 
-class singleton_iterator : public item_const_iterator
+class singleton_iterator : public item_iterator
 {
 protected:
-	item* i_p;
+	abstract_item* i_p;
 	bool done_b;
 
 public:	// abstract iterator interface
 	void open() { }
 	void close() { done_b = false; }
 	abstract_item* next(uint32_t delta=1) { done_b = true; return NULL; }
-	abstract_item* peek() const { return reinterpret_cast<abstract_item*>(i_p); }
+	abstract_item* peek() const { return i_p; }
 	bool done() const { return done_b; }
 	void rewind() { done_b = false; }
 
 public:	// C++ interface
-	item* operator*() const { return i_p; }
+	abstract_item* operator*() const { return i_p; }
 	singleton_iterator& operator++() { done_b = true; return *this; }
 
 public:	// ctor,dtor
-	singleton_iterator(context *, item*);
-	singleton_iterator(context *, const std::string&);
-	singleton_iterator(context *, bool);
-	singleton_iterator(context *, double);
-	singleton_iterator(context *, int);
-	singleton_iterator(context *, long);
+	singleton_iterator(abstract_item*);
+	singleton_iterator(abstract_value_factory*, const std::string&);
+	singleton_iterator(abstract_value_factory*, bool);
+	singleton_iterator(abstract_value_factory*, double);
+	singleton_iterator(abstract_value_factory*, int);
+	singleton_iterator(abstract_value_factory*, long);
 	singleton_iterator(const singleton_iterator&);
 	singleton_iterator& operator=(const singleton_iterator&);
 	~singleton_iterator() {}
@@ -152,7 +153,6 @@ protected:
 	std::vector<rchandle<item_iterator> > it_list;
 	std::vector<rchandle<item_iterator> >::const_iterator walker;
 	std::vector<rchandle<item_iterator> >::const_iterator sentinel;
-
 	rchandle<item_iterator> currit_h;
 	uint32_t it_counter;
 
@@ -165,14 +165,11 @@ public:		// abstract iterator interface
 	void rewind();
 
 public:		// C++ interface
-	item* operator*() const;
+	abstract_item* operator*() const;
 	concat_iterator& operator++();
 
 public:
-	concat_iterator(
-		context *,
-		std::vector<rchandle<item_iterator> >);
-
+	concat_iterator(dynamic_context*, std::vector<rchandle<item_iterator> >);
 	concat_iterator(const concat_iterator&);
 	concat_iterator& operator=(const concat_iterator&);
 	~concat_iterator();

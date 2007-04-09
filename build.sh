@@ -60,4 +60,10 @@ if (!(test -d Build)); then
 	mkdir Build;
 fi;
 make all -f makefile.l
+cd ../dom
+echo ""; echo "- dom -"
+if (!(test -d Build)); then
+	mkdir Build;
+fi;
+make all -f makefile.l
 
