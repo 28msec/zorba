@@ -40,11 +40,13 @@ dom_xml_handler::dom_xml_handler(
 	
 	the_context_node(new dom_document_node(baseuri, uri)),
 	
-	default_attribute_prefix("noname"),
-	default_attribute_uri("http://noname"),
-	default_element_prefix("noname"),
-	default_element_uri("http://noname")
+	default_attribute_prefix(NONS_PREFIX),
+	default_attribute_uri(NONAMESPACE),
+	default_element_prefix(NONS_PREFIX),
+	default_element_uri(NONAMESPACE)
 {
+	ns_entry* nse_p = new ns_entry("xmlns", "http://www.w3.org/2000/xmlns/");
+	nslist.push_back(nse_p);
 }
 
 
@@ -144,9 +146,9 @@ void dom_xml_handler::display_context_node() const
 {
   //cout << TRACE << " : add_child("; node_p->put(cout) << ")\n";
   dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
-	if (en_p) { en_p->put(cout); return; }
+	if (en_p) { en_p->put(cout) << endl; return; }
 	dom_document_node* dn_p = dynamic_cast<dom_document_node*>(the_context_node);
-  if (dn_p) { dn_p->put(cout); return; }
+  if (dn_p) { dn_p->put(cout) << endl; return; }
   cout << TRACE << " : bad context node\n";
 }
 
@@ -194,7 +196,8 @@ void dom_xml_handler::aval(const char* buf, int offset, int length)
 		return;
 	}
 	if (qn_p->prefix()=="xmlns") {
-		ns_entry* nse_p = new ns_entry(qn_p->prefix(), value);
+  	cout << "NS: new namespace declared\n";
+		ns_entry* nse_p = new ns_entry(qn_p->localname(), value);
 		nslist.push_back(nse_p);
 		add_namespace(new dom_namespace_node(nse_p->prefix, nse_p->uri));
 		return;
@@ -295,7 +298,7 @@ void dom_xml_handler::gi(const char* buf, int offset, int length)
 	the_context_node = elem_p;
 	display_context_node();
 	elem_entry* entry_p  = new elem_entry(qnkey, elem_p);
-	cout << TRACE << " : push stack: "; elem_p->put(cout) << endl;
+	cout << TRACE << " : push stack:\n  "; elem_p->put(cout) << endl;
 	node_stack.push(entry_p);
 }
 
