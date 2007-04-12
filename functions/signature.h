@@ -36,11 +36,29 @@ class signature : public rcobject
 public:
 	const qname_value* qname_p;
 	std::vector<sequence_type_t> arg_v;
-	static fxhashmap<signature const*> sigmap;
+	static fxhashmap<signature const*> sigmap;	// map: fname -> signture
 
 public:
-	signature(qname_value const*, sequence_type_t return_type);
-	signature(context*, std::string const& fname, sequence_type_t ret_type);
+	signature(qname_value const*,
+						sequence_type_t return_type);
+	signature(qname_value const*,
+						sequence_type_t arg1,
+						sequence_type_t return_type);
+	signature(qname_value const*,
+						sequence_type_t arg1,
+						sequence_type_t arg2,
+						sequence_type_t return_type);
+	signature(qname_value const*,
+						sequence_type_t arg1,
+						sequence_type_t arg2,
+						sequence_type_t arg3,
+						sequence_type_t return_type);
+	signature(qname_value const*,
+						sequence_type_t arg1,
+						sequence_type_t arg2,
+						sequence_type_t arg3,
+						sequence_type_t arg4,
+						sequence_type_t return_type);
 	~signature();
 
 public:

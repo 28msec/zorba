@@ -43,7 +43,7 @@ public:	// abstract iterator interface
 	virtual void rewind() { }
 
 public:	// C++ interface
-	dom_item* operator*() const { return NULL; }
+	abstract_item* operator*() const { return NULL; }
 	dom_iterator& operator++();
 	dom_iterator operator++(int);
 
@@ -69,11 +69,8 @@ public:	// abstract iterator interface
 	void rewind() { done_b = false; }
 
 public:	// C++ interface
-	abstract_item* operator*() const
-		{ return i_p; }
-
-	dom_singleton_iterator& operator++()
-		{ done_b = true; return *this; }
+	abstract_item* operator*() const { return i_p; }
+	dom_singleton_iterator& operator++() { done_b = true; return *this; }
 
 	dom_singleton_iterator operator++(int)
 		{ dom_singleton_iterator result = *this; done_b = true; return result; }

@@ -3,14 +3,14 @@
  *  $Id: Sequences_test.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
  *  Author: John Cowan, Paul Pedersen
  *
  */
 
 #include "Sequences.h"
 
-#include "../context/context.h"
+#include "../context/common.h"
+#include "../dom/dom_nodes.h"
 #include "../util/tokenbuf.h"
 #include "../util/xqp_exception.h"
 
@@ -19,6 +19,13 @@
 
 using namespace std;
 using namespace xqp;
+
+// debugging
+uint32_t qname_buf[1<<16];
+uint32_t eos = 0;
+
+qname_value* fn_doc_fname_p;
+fn_doc fn_doc_(signature(fn_doc_fname_p,xs_string,documentNode));
 
 /*______________________________________________________________________
 |  
@@ -79,36 +86,35 @@ using namespace xqp;
 
 
 //15.5.4 fn:doc
-
+//-------------
 void _doc(
-	context & ctx,
+	zorba* zorp,
 	string const& uri)
 {
-	rchandle<document_node> dn_h = fn_doc(ctx, uri);
-	if (!ctx.get_error()) dn_h->put(cout, &ctx) << endl;
+	vector<iterator_t> argv;
+	xs_stringValue* uri_p = zorp->get_value_factory()->make_xs_string(uri);
+	argv.push_back(new singleton_iterator(uri_p));
+	iterator_t it = fn_doc_(zorp, argv);
+	if (it==NULL) { cout << "Error: doc returned NULL\n"; return; }
+	if (it->done()) { cout << "Error: doc returned empty\n"; return; }
+	item* i_p = (item*)it->next();
+	if (i_p->type()!=documentNode) { cout << "Error: non-doc node\n"; return; }
+	dom_node* dn_p = (dom_node*)i_p;
+	cout << "\n======================\n"; dn_p->put(cout) << endl;
 }
+
+
 
 //15.5.5 fn:doc-available
 //15.5.6 fn:collection
 
 
-/*______________________________________________________________________
-|
-| Extensions
-|_______________________________________________________________________*/
 
-void _document_load(
-	context & ctx,
-	string const& path,
-	string const& baseuri,
-	string const& uri)
+void init()
 {
-	xqp_document_load(ctx, path, baseuri, uri);
+	fn_doc_fname_p = new(&qname_buf[eos]) qname_value(XQUERY_FN,"fn","doc");
+	eos += fn_doc_fname_p->length();
 }
-
-
-
-
 
 
 int main(int argc, char* argv[])
@@ -116,10 +122,11 @@ int main(int argc, char* argv[])
   try {
     string cmdline, cmd, arg1, arg2, arg3;
     uint32_t arg_count = 0;
-		context ctx;
+		zorba zor;
+
+		init();
 
     while (true) {
-			ctx.set_error(0);
       getline(cin, cmdline);
       if (cmdline.length()==0) continue;
 
@@ -140,14 +147,13 @@ int main(int argc, char* argv[])
       if (arg_count>1) cout << "arg2 = " << arg2 << endl;
       if (arg_count>2) cout << "arg3 = " << arg3 << endl;
 
-      if (cmd=="quit" || cmd=="exit") {
-        break;
-      }
-      else if (cmd=="doc") 						_doc(ctx,arg1);
-      else if (cmd=="document-load")	_document_load(ctx,arg1,arg2,arg3);
+      if (cmd=="quit" || cmd=="exit") break;
+      else if (cmd=="doc") _doc(&zor,arg1);
 
-			uint32_t err = ctx.get_error();
-			if (err>0) cout << cmd << ": error: " << err << endl;
+			errors::errcode err = zor.get_error();
+			if (err>0) {
+				cout << cmd << ": error: " << err << endl;
+			}
 		}
 	} catch (xqp_exception& e) {
 		cout << "application exception: " << e.what() << '\t' << e.get_msg() << endl;

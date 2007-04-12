@@ -1122,6 +1122,7 @@ xs_stringValue::xs_stringValue(
 	atomic_value(xs_string,0)
 {
 	strcpy(rest,s.c_str());
+  m_length = sizeof(xs_stringValue)/4 + _mod4(s.length());
 }
  
 string xs_stringValue::str() const

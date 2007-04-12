@@ -13,33 +13,36 @@
 #include "signature.h"
 #include "../context/common.h"
 #include "../runtime/abstract_iterator.h"
-#include "../values/abstract_values.h"
-#include "../util/list.h"
+#include "../runtime/zorba.h"
+#include "../values/qname_value.h"
 #include "../util/rchandle.h"
 
 #include <string>
+#include <vector>
  
 namespace xqp {
 
 class function : public rcobject
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
-	abstract_qname* fname;
 	signature sig;
-
-	// polymorphism inference
-	sequence_type_t (*type_checker)(signature);
 	
 public:
-	function(const signature&);
+	function(const signature& _sig) : sig(_sig) {}
 	virtual ~function() {}
 
 public:
-	const abstract_qname* get_fname() const;
-	virtual iterator_t operator()(list<void*>);
+	// XQuery signature (name+arity)
+	const qname_value* get_fname() const { return sig.get_name(); }
+
+	// functor specification
+	virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) = 0;
+
+	// polymorphic type inference
+	virtual sequence_type_t type_check(signature&) = 0;
+
+	// runtime arg validation
+	virtual bool validate_args(std::vector<iterator_t>& argv) = 0;
 
 };
 

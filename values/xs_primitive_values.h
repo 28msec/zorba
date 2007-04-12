@@ -147,7 +147,7 @@ public:
 
 	xs_longValue()
 		: atomic_value(xs_long,sizeof(xs_longValue)) { }
-	xs_longValue( xqp_int const& val)
+	xs_longValue(const xqp_int& val)
 		: atomic_value(xs_long,sizeof(xs_longValue)), m_val(val) { }
 	
 private:
@@ -180,7 +180,7 @@ public:
 
 	xs_intValue()
 		: atomic_value(xs_int,sizeof(xs_intValue)) { }
-	xs_intValue( xqp_int const& val)
+	xs_intValue(const xqp_int& val)
 		: atomic_value(xs_int,sizeof(xs_intValue)), m_val(val) { }
 	
 private:

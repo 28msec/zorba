@@ -2,48 +2,69 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
-Sequences :	Sequences.h Sequences.cpp
-	g++ -Wall ${OPT} -c -o ${BUILD}/Sequences.${SUFX} Sequences.cpp
-
-Sequences_test : Sequences.h Sequences.cpp Sequences_test.cpp
-	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/Sequences_test \
-		../context/${BUILD}/context.${SUFX} \
-		../runtime/${BUILD}/iterator.${SUFX} \
-		../types/${BUILD}/base_types.${SUFX} \
-		../types/${BUILD}/xs_primitive_types.${SUFX} \
-		../types/${BUILD}/node_types.${SUFX} \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
-		../util/${BUILD}/fxcharheap.${SUFX} \
-		../util/${BUILD}/URI.${SUFX} \
-		../util/${BUILD}/tokenbuf.${SUFX} \
-		../values/${BUILD}/values.${SUFX} \
-		../values/${BUILD}/qname_value.${SUFX} \
-		../values/${BUILD}/node_values.${SUFX} \
-		../values/${BUILD}/xs_primitive_values.${SUFX} \
-		../native_impl/${BUILD}/scan_handler.${SUFX} \
-		../native_impl/${BUILD}/xml_scanner.${SUFX} \
-		../native_impl/${BUILD}/nodestore.${SUFX} \
-		../native_impl/${BUILD}/namespace_pool.${SUFX} \
-		../native_impl/${BUILD}/qname_pool.${SUFX} \
-		../native_impl/${BUILD}/xml_handler.${SUFX} \
-		${BUILD}/Sequences.${SUFX} \
-	Sequences_test.cpp
-
 signature :	signature.h signature.cpp
-	g++ -Wall ${OPT} -c -o ${BUILD}/signature.${SUFX} signature.cpp
+	g++ ${OPT} -c -o ${BUILD}/signature.${SUFX} signature.cpp
 
-function_test :	function.h function_test.cpp
-	g++ -Wall ${OPT} -c -o ${BUILD}/function_test \
-		function_test.cpp
+function :	function.h function.cpp
+	g++ ${OPT} -c -o ${BUILD}/function.${SUFX} function.cpp
+
+library :	library.h library.cpp
+	g++ ${OPT} -c -o ${BUILD}/library.${SUFX} library.cpp
+
+Sequences :	Sequences.h Sequences.cpp
+	g++ ${OPT} -c -o ${BUILD}/Sequences.${SUFX} Sequences.cpp
+SequencesImpl :	SequencesImpl.h SequencesImpl.cpp
+	g++ ${OPT} -c -o ${BUILD}/SequencesImpl.${SUFX} SequencesImpl.cpp
+
+function_test :	function.h function.cpp
+	g++ ${OPT} -o ${BUILD}/function_test \
+		../types/Build/sequence_type.${SUFX} \
+		../store/Build/itemstore.${SUFX} \
+		../util/Build/file.${SUFX} \
+		../util/Build/mmfile.${SUFX} \
+		../util/Build/fxcharheap.${SUFX} \
+		../util/Build/xqp_exception.${SUFX} \
+		../values/Build/qname_value.${SUFX} \
+		../values/Build/xs_primitive_values.${SUFX} \
+		Build/signature.${SUFX} \
+		function.cpp
 
 library_test :	function.h ibrary_test.cpp
 	g++ -Wall ${OPT} -c -o ${BUILD}/library_test \
 		library_test.cpp
 
+Sequences_test : Sequences.h Sequences.cpp Sequences_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/Sequences_test \
+		../runtime/${BUILD}/errors.${SUFX} \
+		../runtime/${BUILD}/iterator.${SUFX} \
+		../runtime/${BUILD}/zorba.${SUFX} \
+		../store/${BUILD}/scan_handler.${SUFX} \
+		../store/${BUILD}/xml_scanner.${SUFX} \
+		../store/${BUILD}/itemstore.${SUFX} \
+		../types/${BUILD}/sequence_type.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/tokenbuf.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../values/${BUILD}/qname_value.${SUFX} \
+		../values/${BUILD}/nodes.${SUFX} \
+		../values/${BUILD}/value_factory.${SUFX} \
+		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		../dom/${BUILD}/dom_iterator.${SUFX} \
+		../dom/${BUILD}/dom_qname.${SUFX} \
+		../dom/${BUILD}/dom_namepool.${SUFX} \
+		../dom/${BUILD}/dom_nodes.${SUFX} \
+		../dom/${BUILD}/dom_xml_handler.${SUFX} \
+		${BUILD}/signature.${SUFX} \
+		${BUILD}/Sequences.${SUFX} \
+		${BUILD}/SequencesImpl.${SUFX} \
+	Sequences_test.cpp
+
+
 all :	\
-	signature \
+	signature 
+
 
 test : \
 	function_test \

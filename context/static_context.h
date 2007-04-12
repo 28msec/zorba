@@ -16,7 +16,6 @@
 #include "../values/abstract_qname.h"
 #include "../values/abstract_nodes.h"
 #include "../values/abstract_value_factory.h"
-
 #include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
 #include "../util/xqp_exception.h"
@@ -87,9 +86,10 @@ public:
 	void set_preserve_mode(enum preserve_mode_t v);
 
 	const abstract_qname* get_default_collation() const;
-	std::string get_baseuri() const;
-
+	abstract_qname* get_default_collation();
 	void set_default_collation(const std::string&);
+
+	std::string get_baseuri() const;
 	void set_baseuri(const std::string&);
 	
 	sequence_type_t get_function_type(const abstract_qname*) 

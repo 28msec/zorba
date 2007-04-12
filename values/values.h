@@ -149,7 +149,7 @@ class atomic_value :	public item
 public:		// storage interface
 	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
 	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
-	void* operator new(size_t n, void * p) { return p; }
+	void* operator new(size_t n, void* p) { return p; }
 	void* operator new(size_t n, const void* p) { return (void*)p; }
 	void  operator delete(void*) {}
 	

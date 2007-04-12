@@ -10,6 +10,7 @@
 #define XQP_ITERATOR_H
 
 #include "abstract_iterator.h"
+#include "../context/common.h"
 #include "../util/rchandle.h"
 
 #include <string>
@@ -82,6 +83,30 @@ public:
 };
 
 
+class funcall_iterator : public item_iterator
+{
+protected:
+	std::vector<iterator_t> arg_list;
+
+public:	// abstract iterator interface
+	virtual void open() = 0;
+	virtual void close() = 0;
+	virtual abstract_item* next(uint32_t delta = 1) = 0;
+	virtual abstract_item* peek() const = 0;
+	virtual bool done() const = 0;
+	virtual void rewind() = 0;
+
+public:	// ctor,dtor
+	funcall_iterator(dynamic_context* dctx_p) : item_iterator(dctx_p) {}
+	virtual ~funcall_iterator() {}
+
+public:	// C++ interface
+	virtual abstract_item* operator*() const = 0;
+	virtual funcall_iterator& operator++() = 0;
+
+};
+
+
 class binary_iterator : public item_iterator
 {
 protected:
@@ -146,7 +171,7 @@ public:	// ctor,dtor
 
 };
 
-
+/*
 class concat_iterator : public item_iterator
 {
 protected:
@@ -175,6 +200,7 @@ public:
 	~concat_iterator();
 
 };
+*/
 
 
 }	/* namespace xqp */

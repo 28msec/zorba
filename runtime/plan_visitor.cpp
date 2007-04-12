@@ -11,6 +11,7 @@
 #include "indent.h"
 
 #include "../exprtree/expr.h"
+#include "../functions/SequencesImpl.h"
 #include "../util/tracer.h"
 
 #include <iostream>
@@ -231,11 +232,11 @@ cout << indent[depth--] << TRACE << ": expr" << endl;
 void plan_visitor::end_visit(expr_list const& v)
 {
 cout << indent[depth--] << TRACE << ": expr_list" << endl;
-	vector<it_h_t> it_list;
+	vector<iterator_t> it_list;
 	while (true) {
-		it_h_t it_h = pop_itstack();
-		if (it_h==NULL) break;
-		it_list.push_back(it_h);
+		iterator_t it = pop_itstack();
+		if (it==NULL) break;
+		it_list.push_back(it);
 	}
 cout << TRACE << " : [1]\n";
 	rchandle<concat_iterator> cit_h =
@@ -354,38 +355,28 @@ void plan_visitor::end_visit(literal_expr const& v)
 cout << indent[depth--] << TRACE << ": literal_expr" << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
-    rchandle<item_iterator> it_h =
-			dynamic_cast<item_iterator*>(
-      	new singleton_iterator(zorp->get_value_factory(), "test string"));
-    itstack.push(it_h);
+    iterator_t it = new singleton_iterator(zorp->get_value_factory(), "test string");
+    itstack.push(it);
     break;
   }
   case literal_expr::lit_integer: {
-    rchandle<item_iterator> it_h =
-			dynamic_cast<item_iterator*>(
-				new singleton_iterator(zorp->get_value_factory(), v.get_ival()));
-    itstack.push(&*it_h);
+    iterator_t it = new singleton_iterator(zorp->get_value_factory(), v.get_ival());
+    itstack.push(it);
     break;
   }
   case literal_expr::lit_decimal: {
-    rchandle<item_iterator> it_h =
-			dynamic_cast<item_iterator*>(
-				new singleton_iterator(zorp->get_value_factory(), (double)v.get_decval()));
-    itstack.push(&*it_h);
+    iterator_t it = new singleton_iterator(zorp->get_value_factory(),(double)v.get_decval());
+    itstack.push(it);
     break;
   }
   case literal_expr::lit_double: {
-    rchandle<item_iterator> it_h =
-			dynamic_cast<item_iterator*>(
-				new singleton_iterator(zorp->get_value_factory(), v.get_dval()));
-    itstack.push(&*it_h);
+    iterator_t it = new singleton_iterator(zorp->get_value_factory(), v.get_dval());
+    itstack.push(it);
     break;
   }
   case literal_expr::lit_bool: {
-    rchandle<item_iterator> it_h =
-			dynamic_cast<item_iterator*>(
-				new singleton_iterator(zorp->get_value_factory(), v.get_bval()));
-    itstack.push(&*it_h);
+    iterator_t it = new singleton_iterator(zorp->get_value_factory(), v.get_bval());
+    itstack.push(it);
     break;
   }
   }

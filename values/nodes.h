@@ -213,13 +213,8 @@ public:
 public:
  	void open() {}
 	void close() {}
-
-	abstract_item* next(uint32_t delta = 1)
-	{ ++(*this); return **this; }
-
-	abstract_item* peek() const
-	{ return **this; }
-
+	abstract_item* next(uint32_t delta = 1) { ++(*this); return **this; }
+	abstract_item* peek() const { return **this; }
 	bool done() const { return current_p >= end_p; }
 	void rewind() {}
 
@@ -244,19 +239,14 @@ public:
 public:
  	void open() {}
 	void close() {}
-
-	abstract_item* next(uint32_t delta = 1)
-	{ ++(*this); return **this; }
-
-	abstract_item* peek()
-	{ return **this; }
-
+	abstract_item* next(uint32_t delta = 1) { ++(*this); return **this; }
+	abstract_item* peek() { return **this; }
 	bool done() const { return current_p >= end_p; }
 	void rewind() {}
 
 public:
 	item* operator*();
-	const child_const_iterator& operator++();
+	child_const_iterator& operator++();
 
 };
 
@@ -273,13 +263,8 @@ public:
 public:
  	void open() {}
 	void close() {}
-
-	abstract_item* next(uint32_t delta=1)
-	{ ++(*this); return **this; }
-
-	abstract_item* peek() const
-	{ return **this; }
-
+	abstract_item* next(uint32_t delta=1) { ++(*this); return **this; }
+	abstract_item* peek() const { return **this; }
 	bool done() const;
 	void rewind() {}
 

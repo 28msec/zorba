@@ -36,6 +36,10 @@ public:
 	// rewind: equivalent to { close(); open() }
 	virtual void rewind() = 0; 
 
+public:	// C++ interface
+	virtual abstract_item* operator*() const = 0;
+	virtual abstract_iterator& operator++() = 0;
+
 };
 
 

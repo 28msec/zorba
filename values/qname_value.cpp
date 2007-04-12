@@ -26,18 +26,9 @@ qname_value::qname_value(
 :
 	atomic_value(xs_qname,0)
 {
-	char* p = rest;
-	uint32_t n, len;
-	xs_stringValue* s_p;
-
-	s_p = new(p) xs_stringValue(uri);
-	n = s_p->length(); len += n; p += n<<2;
-	s_p = new(p) xs_stringValue(prefix);
-	n = s_p->length(); len += n; p += n<<2;
-	s_p = new(p) xs_stringValue(localname);
-	n = s_p->length(); len += n; p += n<<2;
-
-  m_length = sizeof(qname_value)/4 + len;
+	xs_stringValue* s_p = new(rest) xs_stringValue(prefix+':'+localname+':'+uri);
+	uint32_t n = s_p->length();
+  m_length = sizeof(qname_value)/4 + n;
 }
 
 inline void* qname_value::operator new(

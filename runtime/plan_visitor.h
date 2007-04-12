@@ -11,9 +11,11 @@
 #define XQP_PLAN_VISITOR_H
 
 #include "expr_visitor.h"
-#include "iterator.h"
+#include "abstract_iterator.h"
+
 #include "../runtime/zorba.h"
 #include "../util/rchandle.h"
+
 #include <stack>
 
 /*______________________________________________________________________
@@ -28,25 +30,24 @@ namespace xqp {
 class plan_visitor : public expr_visitor
 {
 public:
-	typedef rchandle<item_iterator> it_h_t;
 	typedef rchandle<expr> expr_h_t;
 
 protected:
 	zorba* zorp;
-	std::stack<it_h_t> itstack;
-	std::stack<it_h_t> argstack;
+	std::stack<iterator_t> itstack;
+	std::stack<iterator_t> argstack;
 
 public:
 	plan_visitor(zorba* _zorp) : zorp(_zorp) {}
 	~plan_visitor() {}
 
 public:
-	it_h_t pop_itstack()
+	iterator_t pop_itstack()
 	{
 		if (itstack.empty()) return NULL;
-		it_h_t it_h = itstack.top();
+		iterator_t it = itstack.top();
 		itstack.pop();
-		return it_h;
+		return it;
 	}
 
 public:

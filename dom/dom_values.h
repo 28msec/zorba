@@ -77,16 +77,16 @@ public:
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-class dom_value	: public dom_object,
-									public abstract_sequence
+class dom_sequence :	public dom_object,
+											public abstract_sequence
 {
 public:
 	sequence_type_t mType;
 
 public:
-	dom_value(sequence_type_t _type) : mType(_type) {}
-	dom_value() {}
-	~dom_value() {}
+	dom_sequence(sequence_type_t _type) : mType(_type) {}
+	dom_sequence() {}
+	~dom_sequence() {}
 
 public:		// accessors
 	sequence_type_t type() const { return mType; }
@@ -100,11 +100,10 @@ public:		// accessors
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class dom_item :	public dom_value,
-									public abstract_item
+class dom_item :	public dom_sequence
 {
 public:
-	dom_item(sequence_type_t type) : dom_value(type) {}
+	dom_item(sequence_type_t type) : dom_sequence(type) {}
 	dom_item() {}
 	~dom_item() {}
 

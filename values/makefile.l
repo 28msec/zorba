@@ -23,6 +23,13 @@ value_factory :	value_factory.h value_factory.cpp
 
 value_factory_test :	value_factory.h value_factory.cpp value_factory_test.cpp
 	g++ ${OPT} -o ${BUILD}/value_factory_test \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../store/${BUILD}/itemstore.${SUFX} \
+		${BUILD}/qname_value.${SUFX} \
+		${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/value_factory.${SUFX} \
 		value_factory_test.cpp
 

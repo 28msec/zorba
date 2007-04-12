@@ -20,16 +20,16 @@ library::~library()
 {
 }
 
-void library::put(
-	function const& func)
+void library::put(const function* func_p)
 {
-	funtab.put(func.get_qname()->stringValue(), func);
+	funtab.put(func_p->get_fname()->string_value(), func_p);
 }
 
-function* library::get(
-	qname_value const* qname_p)
+const function* library::get(const qname_value* qname_p)
 {
-	return NULL;
+	const function* func_p = NULL;
+	funtab.get(qname_p->string_value(), func_p);
+	return func_p;
 }
 
 } /* namespace xqp */

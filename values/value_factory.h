@@ -12,67 +12,80 @@
 
 #include "abstract_value_factory.h"
 #include "xs_primitive_values.h"
+#include "../context/common.h"
+#include "../types/sequence_type.h"
 
 namespace xqp {
+
+class atomic_value;
 
 class value_factory : public abstract_value_factory
 {
 protected:
-	itemstore& istore;
+	itemstore* istore;
+
+	//debugging
+	uint32_t buf[1<<16];
+	uint32_t eos;
 
 public:
-	value_factory();
-	virtual ~value_factory();
+	value_factory() : istore(NULL), eos(0) {}
+	virtual ~value_factory() {}
 
 public:
 	qname_value* make_qname(
 		const std::string& uri,
 		const std::string& prefix,
 		const std::string& localname);
-	xs_anyURIValue* make_xs_anyURIValue();
-	xs_base64BinaryValue* make_xs_base64BinaryValue();
-	xs_booleanValue* make_xs_booleanValue(bool);
-	xs_decimalValue* make_xs_decimalValue();
-	xs_integerValue* make_xs_integerValue(int);
-	xs_longValue* make_xs_longValue(long);
-	xs_intValue* make_xs_intValue(int);
-	xs_shortValue* make_xs_shortValue(short);
-	xs_byteValue* make_xs_byteValue(char);
-	xs_dateValue* make_xs_dateValue();
-	xs_dateTimeValue* make_xs_dateTimeValue();
-	xs_doubleValue* make_xs_doubleValue(double);
-	xs_durationValue* make_xs_durationValue();
-	xs_ENTITIESValue* make_xs_ENTITIESValue();
-	xs_ENTITYValue* make_xs_ENTITYValue();
-	xs_floatValue* make_xs_floatValue(float);
-	xs_gDayValue* make_xs_gDayValue();
-	xs_gMonthValue* make_xs_gMonthValue();
-	xs_gMonthDayValue* make_xs_gMonthDayValue();
-	xs_gYearValue* make_xs_gYearValue();
-	xs_gYearMonthValue* make_xs_gYearMonthValue();
-	xs_hexBinaryValue* make_xs_hexBinaryValue();
-	xs_IDValue* make_xs_IDValue();
-	xs_IDREFValue* make_xs_IDREFValue();
-	xs_IDREFSValue* make_xs_IDREFSValue();
-	xs_languageValue* make_xs_languageValue(const string&);
-	xs_NCNameValue* make_xs_NCNameValue(const string&);
-	xs_NMTOKENValue* make_xs_NMTOKENValue(const string&);
-	xs_NMTOKENSValue* make_xs_NMTOKENSValue(const string&);
-	xs_NOTATIONValue* make_xs_NOTATIONValue(const string&);
-	xs_NameValue* make_xs_NameValue(const string&);
-	xs_negativeIntegerValue* make_xs_negativeIntegerValue(int);
-	xs_nonNegativeIntegerValue* make_xs_nonNegativeIntegerValue(int);
-	xs_nonPositiveIntegerValue* make_xs_nonPositiveIntegerValue(int);
-	xs_normalizedStringValue* make_xs_normalizedStringValue(const string&);
-	xs_positiveIntegerValue* make_xs_positiveIntegerValue(unsigned int);
-	xs_stringValue* make_xs_stringValue(const string&);
-	uri_value* make_uri_value(const string&);
-	xs_timeValue* make_xs_timeValue();
-	xs_tokenValue* make_xs_tokenValue(const string&);
-	xs_unsignedByteValue* make_xs_unsignedByteValue(unsigned char);
-	xs_unsignedIntValue* make_xs_unsignedIntValue(unsigned int);
-	xs_unsignedLongValue* make_xs_unsignedLongValue(unsigned long);
-	xs_unsignedShortValue* make_xs_unsignedShortValue(uint16_t);
+
+	uri_value* make_uri(
+		const std::string&);
+
+	xs_anyURIValue* make_xs_anyURI();
+	xs_base64BinaryValue* make_xs_base64Binary();
+	xs_booleanValue* make_xs_boolean(bool);
+	xs_decimalValue* make_xs_decimal();
+	xs_integerValue* make_xs_integer(int);
+	xs_longValue* make_xs_long(long);
+	xs_intValue* make_xs_int(int);
+	xs_shortValue* make_xs_short(short);
+	xs_byteValue* make_xs_byte(char);
+	xs_dateValue* make_xs_date();
+	xs_dateTimeValue* make_xs_dateTime();
+	xs_doubleValue* make_xs_double(double);
+	xs_durationValue* make_xs_duration();
+	xs_ENTITIESValue* make_xs_ENTITIES();
+	xs_ENTITYValue* make_xs_ENTITY();
+	xs_floatValue* make_xs_float(float);
+	xs_gDayValue* make_xs_gDay();
+	xs_gMonthValue* make_xs_gMonth();
+	xs_gMonthDayValue* make_xs_gMonthDay();
+	xs_gYearValue* make_xs_gYear();
+	xs_gYearMonthValue* make_xs_gYearMonth();
+	xs_hexBinaryValue* make_xs_hexBinary();
+	xs_IDValue* make_xs_ID();
+	xs_IDREFValue* make_xs_IDREF();
+	xs_IDREFSValue* make_xs_IDREFS();
+	xs_languageValue* make_xs_language(const string&);
+	xs_NCNameValue* make_xs_NCName(const string&);
+	xs_NMTOKENValue* make_xs_NMTOKEN(const string&);
+	xs_NMTOKENSValue* make_xs_NMTOKENS(const string&);
+	xs_NOTATIONValue* make_xs_NOTATION(const string&);
+	xs_NameValue* make_xs_Name(const string&);
+	xs_negativeIntegerValue* make_xs_negativeInteger(int);
+	xs_nonNegativeIntegerValue* make_xs_nonNegativeInteger(int);
+	xs_nonPositiveIntegerValue* make_xs_nonPositiveInteger(int);
+	xs_normalizedStringValue* make_xs_normalizedString(const string&);
+	xs_positiveIntegerValue* make_xs_positiveInteger(unsigned int);
+	xs_stringValue* make_xs_string(const string&);
+	xs_timeValue* make_xs_time();
+	xs_tokenValue* make_xs_token(const string&);
+	xs_unsignedByteValue* make_xs_unsignedByte(unsigned char);
+	xs_unsignedIntValue* make_xs_unsignedInt(unsigned int);
+	xs_unsignedLongValue* make_xs_unsignedLong(unsigned long);
+	xs_unsignedShortValue* make_xs_unsignedShort(uint16_t);
+
+	static atomic_value* cast_as(iterator_t,sequence_type_t);
 
 };
 

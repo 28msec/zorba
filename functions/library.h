@@ -10,27 +10,27 @@
 #ifndef XQP_LIBRARY_H
 #define XQP_LIBRARY_H
 
-#include "../context/common.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
 #include "../values/values.h"
 
 namespace xqp {
 
-class context;
+class function;
+class qname_value;
 
 class library : public rcobject
 {
 protected:
-	hashmap<function> funtab;
+	hashmap<const function*> funtab;
 
 public:
 	library();
 	~library();
 
 public:
-	void put(function const&);
-	function* get(context *, qname_value const*);
+	void put(const function*);
+	const function* get(const qname_value*);
 
 };
 

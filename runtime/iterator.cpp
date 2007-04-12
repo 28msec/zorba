@@ -72,7 +72,7 @@ string item_const_iterator::string_value()
 {
 	ostringstream oss;
 	while (!done()) {
-		abstract_item* i_p = next();
+		item* i_p = (item*)next();
 		if (i_p==NULL) continue;
 		oss << i_p->string_value();
 	}
@@ -169,7 +169,7 @@ singleton_iterator::singleton_iterator(
 	abstract_value_factory* vf_p,
 	const string& s)
 :
-	i_p(vf_p->make_xs_stringValue(s)),
+	i_p(vf_p->make_xs_string(s)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -181,7 +181,7 @@ singleton_iterator::singleton_iterator(
 	abstract_value_factory* vf_p,
 	bool v)
 :
-	i_p(vf_p->make_xs_booleanValue(v)),
+	i_p(vf_p->make_xs_boolean(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -193,7 +193,7 @@ singleton_iterator::singleton_iterator(
 	abstract_value_factory* vf_p,
 	double v)
 :
-	i_p(vf_p->make_xs_doubleValue(v)),
+	i_p(vf_p->make_xs_double(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -205,7 +205,7 @@ singleton_iterator::singleton_iterator(
 	abstract_value_factory* vf_p,
 	int v)
 :
-	i_p(vf_p->make_xs_intValue(v)),
+	i_p(vf_p->make_xs_int(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -217,7 +217,7 @@ singleton_iterator::singleton_iterator(
 	abstract_value_factory* vf_p,
 	long v)
 :
-	i_p(vf_p->make_xs_longValue(v)),
+	i_p(vf_p->make_xs_long(v)),
 	done_b(false)
 {
 #ifdef DEBUG
@@ -246,7 +246,7 @@ singleton_iterator& singleton_iterator::operator=(
 /*..........................................
  : concat iterator                         :
  :.........................................*/
-
+/*
 void concat_iterator::open()
 {
 }
@@ -331,6 +331,7 @@ concat_iterator& concat_iterator::operator=(
 concat_iterator::~concat_iterator()
 {
 }
+*/
 
 
 }	/* namespace xqp */

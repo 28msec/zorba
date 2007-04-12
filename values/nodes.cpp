@@ -270,7 +270,7 @@ ostream& element_node::put(zorba* zorp, ostream& os) const
 	node* n_p = new(rest) node();
 	child_const_iterator it(this,n_p);
 	for (; !it.done(); ++it) {
-    abstract_item* i_p = *it;
+    item* i_p = *it;
 		switch (i_p->type()) {
 		case documentNode: {
 			cout << TRACE << " : documentNode" << endl;
@@ -702,7 +702,7 @@ cout << TRACE << endl;
 	}
 }
 
-const child_const_iterator& child_const_iterator::operator++()
+child_const_iterator& child_const_iterator::operator++()
 {
 cout << TRACE << " : current_p = " << (uint32_t)(current_p) << endl;
 	if (current_p >= end_p) {
@@ -728,7 +728,6 @@ namespace_iterator::namespace_iterator(
 {
 }
 	
-
 abstract_item* namespace_iterator::operator*() const
 {
 cout << TRACE << endl;
@@ -739,6 +738,12 @@ namespace_iterator& namespace_iterator::operator++()
 {
 	return *this;
 }
+
+bool namespace_iterator::done() const
+{
+	return true;
+}
+
 
 
 

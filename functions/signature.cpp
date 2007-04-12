@@ -28,13 +28,59 @@ signature::signature(
 }
 
 signature::signature(
-	context * ctx_p,
-	string const& fname ,
+	qname_value const* _qname_p,
+	sequence_type_t arg1,
 	sequence_type_t return_type)
 :
-	qname_p(NULL)		// XXX fix this
+	qname_p(_qname_p)
 {
 	arg_v.push_back(return_type);
+	arg_v.push_back(arg1);
+}
+
+signature::signature(
+	qname_value const* _qname_p,
+	sequence_type_t arg1,
+	sequence_type_t arg2,
+	sequence_type_t return_type)
+:
+	qname_p(_qname_p)
+{
+	arg_v.push_back(return_type);
+	arg_v.push_back(arg1);
+	arg_v.push_back(arg2);
+}
+
+signature::signature(
+	qname_value const* _qname_p,
+	sequence_type_t arg1,
+	sequence_type_t arg2,
+	sequence_type_t arg3,
+	sequence_type_t return_type)
+:
+	qname_p(_qname_p)
+{
+	arg_v.push_back(return_type);
+	arg_v.push_back(arg1);
+	arg_v.push_back(arg2);
+	arg_v.push_back(arg3);
+}
+
+signature::signature(
+	qname_value const* _qname_p,
+	sequence_type_t arg1,
+	sequence_type_t arg2,
+	sequence_type_t arg3,
+	sequence_type_t arg4,
+	sequence_type_t return_type)
+:
+	qname_p(_qname_p)
+{
+	arg_v.push_back(return_type);
+	arg_v.push_back(arg1);
+	arg_v.push_back(arg2);
+	arg_v.push_back(arg3);
+	arg_v.push_back(arg4);
 }
 
 signature::~signature()

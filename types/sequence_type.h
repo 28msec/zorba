@@ -11,11 +11,14 @@
 #define XQP_SEQUENCE_TYPE_H
 
 #include "typecodes.h"
+#include "../context/common.h"
+
 #include <string>
 
 namespace xqp {
 
 typedef TypeCode sequence_type_t;
+
 
 /*______________________________________________________________________
 |  
@@ -46,7 +49,7 @@ public:
 
 	// Sequence type matching
 	// [http://www.w3.org/TR/xquery/#id-sequencetype-matching]
-	static bool derives_from(TypeCode a, TypeCode e);
+	static bool derives_from(TypeCode ta, TypeCode te);
 	
 };
 

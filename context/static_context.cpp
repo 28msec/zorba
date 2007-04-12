@@ -179,6 +179,11 @@ const abstract_qname* static_context::get_default_collation() const
 	return (abstract_qname*)context_value(default_collation_key)->peek();
 }
 
+abstract_qname* static_context::get_default_collation()
+{
+	return (abstract_qname*)context_value(default_collation_key)->peek();
+}
+
 std::string static_context::get_baseuri() const
 {
 	return context_value(baseuri_key)->peek()->string_value();

@@ -7,3 +7,6 @@
 9.2.3 op:boolean-greater-than
 9.3 Functions on Boolean Values
 9.3.1 fn:not
+
+fn:boolean
+// boolean effective value!
