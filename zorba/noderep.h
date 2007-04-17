@@ -17,8 +17,8 @@
 #ifndef XQP_NODEREP_H
 #define XQP_NODEREP_H
 
+#include "valuerep.h"
 #include "noderep_iterator.h"
-#include "../store/itemstore.h"
 #include "../types/sequence_type.h"
 #include "../util/rchandle.h"
 
@@ -36,11 +36,9 @@ class qname_value;
 class zorba;
 
 
-class noderep
+class noderep : public itemrep
 {
 protected:
-  sequence_type_t theType;	// item type
-  uint32_t  theLength;			// storage size in bytes
 	itemref_t theRef;					// forwarding reference for update
 	uint32_t  theGen;					// generation number
 	nodeid_t  theID;					// node ordinal id
@@ -59,15 +57,11 @@ public:		// ctor,dtor
 	~noderep() {}
 
 public:		// accessors
-	sequence_type_t type() const { return theType; }
-	uint32_t length() const { return theLength; }
 	itemref_t ref() const { return theRef; }
 	uint32_t gen() const { return theGen; }
 	nodeid_t id() const { return theID; }
 	nodeid_t parentid() const { return theParentID; }
 
-	sequence_type_t& type() { return theType; }
-	uint32_t& length() { return theLength; }
 	itemref_t& ref() { return theRef; }
 	uint32_t& gen() { return theGen; }
 	nodeid_t& id() { return theID; }

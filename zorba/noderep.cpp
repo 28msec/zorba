@@ -32,8 +32,7 @@ noderep::noderep(
 	nodeid_t id,						// ordinal node id
 	nodeid_t parentid)			// parent node id
 :
-	theType(type),
-	theLength(length),
+	itemrep(type,length),
 	theRef(ref),
 	theGen(gen),
 	theID(id),
