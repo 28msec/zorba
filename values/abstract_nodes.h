@@ -17,9 +17,11 @@
 #ifndef XQP_ABSTRACT_NODES_H
 #define XQP_ABSTRACT_NODES_H
 
-#include "abstract_values.h"
+#include "values.h"
 #include "../runtime/abstract_iterator.h"
+#include "../values/abstract_nodes.h"
 #include "../util/rchandle.h"
+
 #include <string>
 
 namespace xqp {
@@ -72,7 +74,7 @@ public:
 |	for determining the result. 
 |_______________________________________________________________________*/
 
-class abstract_node : public abstract_item
+class abstract_node : public item
 {
 public:   // types
 	enum node_kind_t {
@@ -89,7 +91,10 @@ public:   // types
 		unknown_kind
 	};
 
-	typedef rchandle<abstract_iterator> iterator_t;
+public:
+	abstract_node(sequence_type_t type, size_t length) : item(type,length) {}
+	abstract_node() {}
+	~abstract_node() {}
 
 public:		// accessors
 	abstract_nodeid id();
