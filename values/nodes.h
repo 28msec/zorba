@@ -59,11 +59,8 @@ class zorba;
 |	for determining the result. 
 |_______________________________________________________________________*/
 
-class node : public item, public abstract_node
+class node : public abstract_node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
 	itemref_t m_ref;				// forwarding reference for update
 	uint32_t  m_gen;				// generation number
@@ -90,6 +87,13 @@ public:		// accessors
 	nodeid_t& parentid() { return m_parentid; }
 	std::string decode(node_kind_t) const;
 
+public:		// storage interface
+	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
+	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
+	void* operator new(size_t n, void * p) { return p; }
+	void* operator new(size_t n, const void* p) { return (void*)p; }
+	void  operator delete(void*) {}
+	
 public:		// XQuery interface
 	/**
 	 *	The dm:node-kind accessor returns a string identifying the kind of 
@@ -213,8 +217,8 @@ public:
 public:
  	void open() {}
 	void close() {}
-	abstract_item* next(uint32_t delta = 1) { ++(*this); return **this; }
-	abstract_item* peek() const { return **this; }
+	item* next(uint32_t delta = 1) { ++(*this); return **this; }
+	item* peek() const { return **this; }
 	bool done() const { return current_p >= end_p; }
 	void rewind() {}
 
@@ -239,8 +243,8 @@ public:
 public:
  	void open() {}
 	void close() {}
-	abstract_item* next(uint32_t delta = 1) { ++(*this); return **this; }
-	abstract_item* peek() { return **this; }
+	item* next(uint32_t delta = 1) { ++(*this); return **this; }
+	item* peek() { return **this; }
 	bool done() const { return current_p >= end_p; }
 	void rewind() {}
 
@@ -263,13 +267,13 @@ public:
 public:
  	void open() {}
 	void close() {}
-	abstract_item* next(uint32_t delta=1) { ++(*this); return **this; }
-	abstract_item* peek() const { return **this; }
+	item* next(uint32_t delta=1) { ++(*this); return **this; }
+	item* peek() const { return **this; }
 	bool done() const;
 	void rewind() {}
 
 public:
-	abstract_item* operator*() const;
+	item* operator*() const;
 	namespace_iterator& operator++();
 
 };
@@ -310,12 +314,8 @@ class namespace_node;
 |_______________________________________________________________________*/
 
 class document_node : public node
-											//public abstract_document_node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	nodeid_t m_baseuri;		// document base URI
@@ -394,12 +394,8 @@ public:		// output and debugging
 |_______________________________________________________________________*/
 
 class element_node :	public node
-											//public abstract_element_node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	nodeid_t qnameID;					// element QName
@@ -481,12 +477,8 @@ public:		// output and debugging
 |_______________________________________________________________________*/
 
 class attribute_node :	public node
-												//public abstract_attribute_node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	nodeid_t m_qname;
@@ -547,12 +539,8 @@ public:		// output,debugging
 |	The data model permits Namespace Nodes without parents. 
 |_______________________________________________________________________*/
 class namespace_node : 	public node
-												//public abstract_namespace_node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	nskey_t  m_nskey;
@@ -606,12 +594,8 @@ public:		// output, debugging
 |	 2. The target must be an NCName.
 |_______________________________________________________________________*/
 class pi_node : public node
-								//public abstract_pi_node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	uint32_t m_content_offset;
@@ -656,12 +640,8 @@ public:		// output, debugging
 |_______________________________________________________________________*/
 
 class comment_node : 	public node
-											//public abstract_comment_node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	char rest[0];
@@ -712,12 +692,8 @@ public:		// output, debugging
 |_______________________________________________________________________*/
 
 class text_node : public node
-									//abstract_text_node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 protected:
 	char rest[0];
@@ -758,9 +734,6 @@ public:		// output/debugging
 class collection_node : public node
 {
 	friend class child_iterator;
-
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
 
 public:
 	iterator_t base_uri() const;

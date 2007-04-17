@@ -49,7 +49,7 @@ node::node(
 	nodeid_t id,						// ordinal node id
 	nodeid_t parentid)			// parent node id
 :
-	item(type,length),
+	abstract_node(type,length),
 	m_ref(ref),
 	m_gen(gen),
 	m_id(id),
@@ -57,49 +57,20 @@ node::node(
 {
 }
 
-rchandle<abstract_iterator> node::attributes(
-	dynamic_context*) const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::base_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::children(
-	dynamic_context*) const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::document_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::namespace_bindings() const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::namespace_nodes() const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::parent() const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::typed_value() const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::type_name() const
-{ return NULL; }
-
-rchandle<abstract_iterator> node::node_name() const
-{ return NULL; }
-
-string node::string_value() const
-{ return ""; }
-
-bool node::is_id() const
-{ return false; }
-
-bool node::is_idrefs() const
-{ return false; }
-
-bool node::nilled() const
-{ return false; }
+iterator_t node::attributes( dynamic_context*) const { return NULL; }
+iterator_t node::base_uri() const { return NULL; } 
+iterator_t node::children( dynamic_context*) const { return NULL; }
+iterator_t node::document_uri() const { return NULL; } 
+iterator_t node::namespace_bindings() const { return NULL; }
+iterator_t node::namespace_nodes() const { return NULL; }
+iterator_t node::parent() const { return NULL; }
+iterator_t node::typed_value() const { return NULL; }
+iterator_t node::type_name() const { return NULL; }
+iterator_t node::node_name() const { return NULL; }
+string node::string_value() const { return ""; }
+bool node::is_id() const { return false; }
+bool node::is_idrefs() const { return false; }
+bool node::nilled() const { return false; }
 
 
 /*..........................................
@@ -126,11 +97,11 @@ cout << TRACE << endl;
 
 string document_node::baseuri() const { return ""; } 
 string document_node::uri() const { return ""; } 
-rchandle<abstract_iterator> document_node::base_uri() const { return NULL; } 
-rchandle<abstract_iterator> document_node::document_uri() const { return NULL; } 
-rchandle<abstract_iterator> document_node::typed_value() const { return NULL; } 
+iterator_t document_node::base_uri() const { return NULL; } 
+iterator_t document_node::document_uri() const { return NULL; } 
+iterator_t document_node::typed_value() const { return NULL; } 
 
-rchandle<abstract_iterator> document_node::children(
+iterator_t document_node::children(
 	dynamic_context*) const
 { return NULL; } 
 
@@ -200,15 +171,9 @@ ostream& document_node::put(zorba* z_p,ostream& os) const
  :  collection nodes                       :
  :.........................................*/
 
-rchandle<abstract_iterator> collection_node::base_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> collection_node::collection_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> collection_node::children(
-	dynamic_context*) const
-{ return NULL; }
+iterator_t collection_node::base_uri() const { return NULL; }
+iterator_t collection_node::collection_uri() const { return NULL; }
+iterator_t collection_node::children( dynamic_context*) const { return NULL; }
 
 
 /*..........................................
@@ -232,33 +197,20 @@ element_node::element_node(
 cout << TRACE << endl;
 }
 
-rchandle<abstract_iterator> element_node::attributes(
-	dynamic_context*) const
-{ return NULL; }
+iterator_t element_node::attributes( dynamic_context*) const { return NULL; }
+iterator_t element_node::base_uri() const { return NULL; }
 
-rchandle<abstract_iterator> element_node::base_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> element_node::children(
+iterator_t element_node::children(
 	dynamic_context* dctx_p) const
 {
 	return new child_iterator(dctx_p, this, new(&rest[nodeOffset]) node());
 }
 
-rchandle<abstract_iterator> element_node::namespace_nodes() const
-{ return NULL; }
-
-rchandle<abstract_iterator> element_node::node_name() const
-{ return NULL; }
-
-rchandle<abstract_iterator> element_node::parent() const
-{ return NULL; }
-
-rchandle<abstract_iterator> element_node::typed_value() const
-{ return NULL; }
-
-string element_node::string_value() const
-{ return ""; }
+iterator_t element_node::namespace_nodes() const { return NULL; }
+iterator_t element_node::node_name() const { return NULL; }
+iterator_t element_node::parent() const { return NULL; }
+iterator_t element_node::typed_value() const { return NULL; }
+string element_node::string_value() const { return ""; }
 
 ostream& element_node::put(zorba* zorp, ostream& os) const
 {
@@ -367,20 +319,11 @@ attribute_node::attribute_node(
 	cout << TRACE << endl;
 }
 
-rchandle<abstract_iterator> attribute_node::base_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> attribute_node::node_name() const
-{ return NULL; }
-
-rchandle<abstract_iterator> attribute_node::parent() const
-{ return NULL; }
-
-rchandle<abstract_iterator> attribute_node::typed_value() const
-{ return NULL; }
-
-string attribute_node::string_value() const
-{ return ""; }
+iterator_t attribute_node::base_uri() const { return NULL; }
+iterator_t attribute_node::node_name() const { return NULL; }
+iterator_t attribute_node::parent() const { return NULL; }
+iterator_t attribute_node::typed_value() const { return NULL; }
+string attribute_node::string_value() const { return ""; }
 
 ostream& attribute_node::put(zorba* z_p,ostream& os) const
 { return os << "@=\"\""; }
@@ -410,13 +353,13 @@ namespace_node::namespace_node(
 	m_length = sizeof(namespace_node)>>2 + p->length() + q->length();
 }
 
-rchandle<abstract_iterator> namespace_node::node_name() const
+iterator_t namespace_node::node_name() const
 { return NULL; }
 
-rchandle<abstract_iterator> namespace_node::parent() const
+iterator_t namespace_node::parent() const
 { return NULL; }
 
-rchandle<abstract_iterator> namespace_node::typed_value() const
+iterator_t namespace_node::typed_value() const
 { return NULL; }
 
 string namespace_node::string_value() const
@@ -445,20 +388,11 @@ pi_node::pi_node(
 {
 }
 
-rchandle<abstract_iterator> pi_node::base_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> pi_node::node_name() const
-{ return NULL; }
-
-rchandle<abstract_iterator> pi_node::parent() const
-{ return NULL; }
-
-rchandle<abstract_iterator> pi_node::typed_value() const
-{ return NULL; }
-
-string pi_node::string_value() const
-{ return ""; }
+iterator_t pi_node::base_uri() const { return NULL; }
+iterator_t pi_node::node_name() const { return NULL; }
+iterator_t pi_node::parent() const { return NULL; }
+iterator_t pi_node::typed_value() const { return NULL; }
+string pi_node::string_value() const { return ""; }
 
 ostream& pi_node::put(zorba* z_p,ostream& os) const
 {
@@ -485,13 +419,13 @@ comment_node::comment_node(
 cout << TRACE << endl;
 }
 
-rchandle<abstract_iterator> comment_node::base_uri() const
+iterator_t comment_node::base_uri() const
 { return NULL; }
 
-rchandle<abstract_iterator> comment_node::parent() const
+iterator_t comment_node::parent() const
 { return NULL; }
 
-rchandle<abstract_iterator> comment_node::typed_value() const
+iterator_t comment_node::typed_value() const
 { return NULL; }
 
 string comment_node::string_value() const
@@ -524,14 +458,9 @@ text_node::text_node(
 cout << TRACE << endl;
 }
 
-rchandle<abstract_iterator> text_node::base_uri() const
-{ return NULL; }
-
-rchandle<abstract_iterator> text_node::parent() const
-{ return NULL; }
-
-rchandle<abstract_iterator> text_node::typed_value() const
-{ return NULL; }
+iterator_t text_node::base_uri() const { return NULL; }
+iterator_t text_node::parent() const { return NULL; }
+iterator_t text_node::typed_value() const { return NULL; }
 	
 string text_node::string_value() const
 {
@@ -728,7 +657,7 @@ namespace_iterator::namespace_iterator(
 {
 }
 	
-abstract_item* namespace_iterator::operator*() const
+item* namespace_iterator::operator*() const
 {
 cout << TRACE << endl;
 	return NULL;
