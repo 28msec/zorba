@@ -14,7 +14,7 @@ while (<>) {
 
 		$_ = $item;
 		s/ = ITEM_ARITY/Seq = SEQUENCE_ARITY/;
-		s/[A-Z_]+_REP/SEQUENCE_REP/;
+		s/[A-Z_]+_REP/NO_REP/;
 		print;		# sequence
 
 		$_ = $item;
