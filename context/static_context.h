@@ -12,13 +12,13 @@
 
 #include "common.h"
 #include "context.h"
-#include "../runtime/abstract_iterator.h"
-#include "../values/abstract_qname.h"
-#include "../values/abstract_nodes.h"
-#include "../values/abstract_value_factory.h"
-#include "../util/fxhashmap.h"
-#include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
+#include "runtime/item_iterator.h"
+#include "values/qname.h"
+#include "values/nodes.h"
+#include "values/value_factory.h"
+#include "util/fxhashmap.h"
+#include "util/rchandle.h"
+#include "util/xqp_exception.h"
 
 
 namespace xqp {
@@ -41,7 +41,7 @@ public:	// types
 	enum preserve_mode_t				{ preserve_ns, no_preserve_ns };
 
 protected:
-	abstract_value_factory* vf_p;
+	value_factory* vf_p;
 
 	static bool static_init;
 	static qnamekey_t default_function_ns_key;
@@ -58,14 +58,14 @@ protected:
 	static qnamekey_t baseuri_key;
 
 public:
-	static void init(abstract_value_factory*);
-	static_context(abstract_value_factory* v_p) : vf_p(v_p) {}
+	static void init(value_factory*);
+	static_context(value_factory* v_p) : vf_p(v_p) {}
 	~static_context() {}
 
 public:
 	// XQuery 1.0 static context
-	abstract_namespace_node* default_function_namespace() const;
-	void set_default_function_namespace(abstract_namespace_node*);
+	namespace_node* default_function_namespace() const;
+	void set_default_function_namespace(namespace_node*);
 
   iterator_t namespaces() const;
 	iterator_t in_scope_schema_types() const;
@@ -85,14 +85,14 @@ public:
 	void set_inherit_mode(enum inherit_mode_t v);
 	void set_preserve_mode(enum preserve_mode_t v);
 
-	const abstract_qname* get_default_collation() const;
-	abstract_qname* get_default_collation();
+	const qname* get_default_collation() const;
+	qname* get_default_collation();
 	void set_default_collation(const std::string&);
 
 	std::string get_baseuri() const;
 	void set_baseuri(const std::string&);
 	
-	sequence_type_t get_function_type(const abstract_qname*) 
+	sequence_type_t get_function_type(const qname*) 
 		const throw (xqp_exception);
 	sequence_type_t get_document_type(const std::string&) 
 	  const throw (xqp_exception);

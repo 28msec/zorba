@@ -11,12 +11,11 @@
 #define XQP_CONTEXT_H
 
 #include "common.h"
-#include "../runtime/abstract_iterator.h"
-#include "../values/abstract_qname.h"
-
-#include "../util/fxhashmap.h"
-#include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
+#include "runtime/item_iterator.h"
+#include "values/qname.h"
+#include "util/fxhashmap.h"
+#include "util/rchandle.h"
+#include "util/xqp_exception.h"
 
 namespace xqp {
 
@@ -28,9 +27,6 @@ namespace xqp {
 
 class context : public rcobject
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t; 
-
 protected:
 	rchandle<context> parent_h;
 	fxhash64map<iterator_t> keymap;

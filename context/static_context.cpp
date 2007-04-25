@@ -9,45 +9,45 @@
 
 
 #include "static_context.h"
-#include "../store/itemstore.h"
-#include "../values/qname_value.h"
+#include "common.h"
+#include "values/qname.h"
+#include "zorba/zorba_iterator.h"
+
 
 using namespace std;
 namespace xqp {
 
-typedef rchandle<abstract_iterator> iterator_t;
 bool static_context::static_init = false;
-#define ZORBA "http://www.zorba.org/"
 
 
 void static_context::init(
-	abstract_value_factory* vf_p)
+	value_factory* vf_p)
 {
 	if (!static_context::static_init) {
 		default_function_ns_key =
-			vf_p->make_qname(ZORBA,"xqp","default-function-ns")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","default-function-ns")->qnamekey();
 		default_collation_key =
-			vf_p->make_qname(ZORBA,"xqp","default-collation")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","default-collation")->qnamekey();
 		in_scope_schema_types_key =
-			vf_p->make_qname(ZORBA,"xqp","in-scope-schema-types")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","in-scope-schema-types")->qnamekey();
 		in_scope_element_decls_key =
-			vf_p->make_qname(ZORBA,"xqp","in-scope-element-decls")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","in-scope-element-decls")->qnamekey();
 		in_scope_attribute_decls_key =
-			vf_p->make_qname(ZORBA,"xqp","in-scope-attribute-decls")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","in-scope-attribute-decls")->qnamekey();
 		collations_key =
-			vf_p->make_qname(ZORBA,"xqp","collations")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","collations")->qnamekey();
 		construction_mode_key =
-			vf_p->make_qname(ZORBA,"xqp","construction-mode")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","construction-mode")->qnamekey();
 		order_empty_mode_key =
-			vf_p->make_qname(ZORBA,"xqp","order-empty-mode")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","order-empty-mode")->qnamekey();
 		boundary_space_mode_key =
-			vf_p->make_qname(ZORBA,"xqp","boundary-space-mode")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","boundary-space-mode")->qnamekey();
 		inherit_mode_key =
-			vf_p->make_qname(ZORBA,"xqp","inherit-mode")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","inherit-mode")->qnamekey();
 		preserve_mode_key =
-			vf_p->make_qname(ZORBA,"xqp","preserve-mode")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","preserve-mode")->qnamekey();
 		baseuri_key =
-			vf_p->make_qname(ZORBA,"xqp","baseuri")->qnamekey();
+			vf_p->make_qname(ZORBA_NS,"xqp","baseuri")->qnamekey();
 	}
 }
 
@@ -59,16 +59,16 @@ void static_context::init(
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-abstract_namespace_node*
+namespace_node*
 static_context::default_function_namespace() const
 {
-	abstract_item* i_p = context_value(default_function_ns_key)->peek();
-	if (!i_p->type()==namespaceNode) return NULL;
-	return static_cast<abstract_namespace_node*>(i_p);
+	item* i_p = context_value(default_function_ns_key)->peek();
+	namespace_node* nn_p = dynamic_cast<namespace_node*>(i_p);
+	return nn_p;	// may be NULL
 }
 
 void static_context::set_default_function_namespace(
-	abstract_namespace_node* nn_p)
+	namespace_node* nn_p)
 {
 	iterator_t it_h = new singleton_iterator(nn_p);
 	keymap.put(default_function_ns_key,it_h);
@@ -96,7 +96,7 @@ iterator_t static_context::collations() const
 
 static_context::construction_mode_t static_context::construction_mode() const
 {
-	abstract_item* i_p = context_value(construction_mode_key)->peek();
+	item* i_p = context_value(construction_mode_key)->peek();
 	string mode = i_p->string_value();
 	if (mode=="preserve") return cons_preserve;
 	return cons_strip;
@@ -104,7 +104,7 @@ static_context::construction_mode_t static_context::construction_mode() const
 
 static_context::order_empty_mode_t static_context::order_empty_mode() const
 {
-	abstract_item* i_p = context_value(order_empty_mode_key)->peek();
+	item* i_p = context_value(order_empty_mode_key)->peek();
 	string mode = i_p->string_value();
 	if (mode=="empty_greatest") return empty_greatest;
 	return empty_least;
@@ -112,7 +112,7 @@ static_context::order_empty_mode_t static_context::order_empty_mode() const
 
 static_context::boundary_space_mode_t static_context::boundary_space_mode() const
 {
-	abstract_item* i_p = context_value(boundary_space_mode_key)->peek();
+	item* i_p = context_value(boundary_space_mode_key)->peek();
 	string mode = i_p->string_value();
 	if (mode=="preserve_space") return preserve_space;
 	return strip_space;
@@ -120,7 +120,7 @@ static_context::boundary_space_mode_t static_context::boundary_space_mode() cons
 
 static_context::inherit_mode_t static_context::inherit_mode() const
 {
-	abstract_item* i_p = context_value(inherit_mode_key)->peek();
+	item* i_p = context_value(inherit_mode_key)->peek();
 	string mode = i_p->string_value();
 	if (mode=="inherit_ns") return inherit_ns;
 	return no_inherit_ns;
@@ -128,7 +128,7 @@ static_context::inherit_mode_t static_context::inherit_mode() const
 
 static_context::preserve_mode_t static_context::preserve_mode() const
 {
-	abstract_item* i_p = context_value(preserve_mode_key)->peek();
+	item* i_p = context_value(preserve_mode_key)->peek();
 	string mode = i_p->string_value();
 	if (mode=="preserve_ns") return preserve_ns;
 	return no_preserve_ns;
@@ -174,14 +174,14 @@ void static_context::set_preserve_mode(
 	keymap.put(preserve_mode_key, it_h);
 }
 
-const abstract_qname* static_context::get_default_collation() const
+const qname* static_context::get_default_collation() const
 {
-	return (abstract_qname*)context_value(default_collation_key)->peek();
+	return (qname*)context_value(default_collation_key)->peek();
 }
 
-abstract_qname* static_context::get_default_collation()
+qname* static_context::get_default_collation()
 {
-	return (abstract_qname*)context_value(default_collation_key)->peek();
+	return (qname*)context_value(default_collation_key)->peek();
 }
 
 std::string static_context::get_baseuri() const
@@ -202,7 +202,7 @@ void static_context::set_baseuri(const std::string& uri)
 }
 
 sequence_type_t static_context::get_function_type(
-	const abstract_qname* qname_p) const
+	const qname* qname_p) const
 throw (xqp_exception)
 {
 	//stub

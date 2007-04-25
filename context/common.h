@@ -10,7 +10,6 @@
 #ifndef XQP_COMMON_H
 #define XQP_COMMON_H
 
-#include "../runtime/abstract_iterator.h"
 #include "../util/rchandle.h"
 
 #include <utility>
@@ -20,9 +19,8 @@
 using namespace std;
 namespace xqp {
 
-// zorba nodeid types
-typedef uint32_t nodeid_t;		// node id
-typedef uint32_t qnameid_t;		// qname id
+// zorba id types
+typedef uint32_t itemid_t;		// node id
 typedef uint32_t docid_t;			// document id
 
 // zorba key tyeps
@@ -31,7 +29,7 @@ typedef uint64_t urikey_t;		// URI hash key
 typedef uint64_t qnamekey_t;	// QName hash key
 
 // zorba reference types
-typedef uint32_t itemref_t;		// itemstore offset
+typedef uint32_t itemref_t;		// itemstore offset	(64 bits on 64-bit machines)
 typedef uint32_t offset_t;    // itemstore short offset
 
 // namespaces
@@ -41,12 +39,9 @@ typedef uint32_t offset_t;    // itemstore short offset
 #define NONS_PREFIX		"no-ns"
 
 
-// zorba iterator type
-typedef rchandle<abstract_iterator> iterator_t;
-
-
-// concrete cast for abstract_item
-#define item_t dom_item
+// iterator type
+class item_iterator;
+typedef rchandle<item_iterator> iterator_t;
 
 
 typedef struct qnamekeyref
