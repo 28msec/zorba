@@ -5,34 +5,11 @@ BUILD=Build
 errors : errors.h errors.cpp
 	g++ ${OPT} -c -o ${BUILD}/errors.${SUFX} errors.cpp
 
-iterator : iterator.h iterator.cpp
-	g++ ${OPT} -c -o ${BUILD}/iterator.${SUFX} iterator.cpp
-
 plan_visitor : plan_visitor.h plan_visitor.cpp
 	g++ ${OPT} -c -o ${BUILD}/plan_visitor.${SUFX} plan_visitor.cpp
 
 zorba : zorba.h zorba.cpp
 	g++ ${OPT} -c -o ${BUILD}/zorba.${SUFX} zorba.cpp
-
-iterator_test : iterator.h iterator.cpp iterator_test.cpp
-	g++ -Wall -g -o ${BUILD}/iterator_test \
-		../context/${BUILD}/context.${SUFX} \
-		../native_impl/${BUILD}/namespace_pool.${SUFX} \
-		../native_impl/${BUILD}/qname_pool.${SUFX} \
-		../native_impl/${BUILD}/nodestore.${SUFX} \
-		../types/${BUILD}/base_types.${SUFX} \
-		../types/${BUILD}/xs_primitive_types.${SUFX} \
-		../types/${BUILD}/sequence_type.${SUFX} \
-		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
-		../util/${BUILD}/fxcharheap.${SUFX} \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		../values/${BUILD}/values.${SUFX} \
-		../values/${BUILD}/node_values.${SUFX} \
-		../values/${BUILD}/qname_value.${SUFX} \
-		../values/${BUILD}/xs_primitive_values.${SUFX} \
-		${BUILD}/iterator.${SUFX} \
-		iterator_test.cpp
 
 plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 	g++ -Wall -g -o ${BUILD}/plan_visitor_test \
@@ -63,11 +40,9 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 
 all : \
 	errors \
-	iterator \
-	plan_visitor \
-	zorba
+	zorba \
+	plan_visitor
 
 test : \
-	iterator_test \
 	plan_visitor_test 
 
