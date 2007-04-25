@@ -10,13 +10,12 @@
 #include "dom_xml_handler.h"
 #include "dom_qname.h"
 #include "dom_nodes.h"
-
-#include "../context/common.h"
-#include "../values/values.h"
-#include "../util/xqp_exception.h"
-#include "../util/tokenbuf.h"
-#include "../util/tracer.h"
-#include "../util/URI.h"
+#include "context/common.h"
+#include "values/values.h"
+#include "util/xqp_exception.h"
+#include "util/tokenbuf.h"
+#include "util/tracer.h"
+#include "util/URI.h"
 
 #include <iostream>
 #include <string>

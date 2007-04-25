@@ -4,6 +4,9 @@ SUFX=do
 dom_qname : dom_qname.h dom_qname.cpp
 	g++ -c ${CXXOPT} -o Build/dom_qname.${SUFX} dom_qname.cpp
 
+dom_primitive_values : dom_primitive_values.h dom_primitive_values.cpp
+	g++ -c ${CXXOPT} -o Build/dom_primitive_values.${SUFX} dom_primitive_values.cpp
+
 dom_nodes : dom_nodes.h dom_nodes.cpp
 	g++ -c ${CXXOPT} -o Build/dom_nodes.${SUFX} dom_nodes.cpp
 
@@ -38,7 +41,6 @@ dom_xml_handler_test : dom_xml_handler_test.cpp dom_xml_handler.h dom_xml_handle
 all : \
 	dom_qname \
 	dom_nodes \
-	dom_iterator \
 	dom_namepool \
 	dom_xml_handler
 

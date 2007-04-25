@@ -1,4 +1,3 @@
-
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id: dom_qname.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
@@ -11,15 +10,15 @@
 #ifndef XQP_DOM_QNAME_H
 #define XQP_DOM_QNAME_H
 
-#include "../context/common.h"
-#include "../values/abstract_qname.h"
+#include "context/common.h"
+#include "values/qname.h"
 
 #include <string>
 #include <vector>
 
 namespace xqp {
 
-class dom_qname : public abstract_qname
+class dom_qname : public qname
 {
 protected:
 	std::string the_uri;

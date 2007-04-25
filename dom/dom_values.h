@@ -121,6 +121,33 @@ public:		// XQuery interface
 };
 
 
+/*______________________________________________________________________
+|  
+|	'atomic_value' encapsulates values of primitive or derived types
+|_______________________________________________________________________*/
+
+class dom_atomic_value :	public dom_item
+{
+public:
+	dom_atomic_value(sequence_type_t type) : dom_item(type) {}
+	dom_atomic_value() {}
+	~dom_atomic_value() {}
+
+public:		// accessors
+  std::ostream& put(std::ostream& os) const { return os; }
+  std::string describe() const { return "xs_atomicValue"; }
+
+public:		// XQuery interface
+	iterator_t atomized_value() const { return NULL; }
+	string string_value() const { return "xs_atomicValue"; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
+};
+
+
+
 
 } /* namespace xqp */
 #endif /* XQP_DOM_VALUES_H */

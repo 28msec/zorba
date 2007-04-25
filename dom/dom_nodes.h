@@ -17,15 +17,14 @@
 #ifndef XQP_DOM_H
 #define XQP_DOM_H
 
-#include "dom_iterator.h"
 #include "dom_qname.h"
-#include "../context/common.h"
-#include "../values/abstract_nodes.h"
-#include "../values/abstract_values.h"
-#include "../values/values.h"
-#include "../runtime/abstract_iterator.h"
-#include "../types/sequence_type.h"
-#include "../util/rchandle.h"
+#include "context/common.h"
+#include "context/dynamic_context.h"
+#include "values/nodes.h"
+#include "values/values.h"
+#include "runtime/item_iterator.h"
+#include "types/sequence_type.h"
+#include "util/rchandle.h"
 
 #include <sys/types.h>
 
@@ -59,20 +58,19 @@ class dom_namespace_node;
 |	for determining the result. 
 |_______________________________________________________________________*/
 
-class dom_node : public abstract_node
+class dom_node : virtual public node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
-	dom_node* parent_p;
+	const dom_node* parent_p;
 
-public:		// ctor,dtor
+public:	
 	dom_node() {}
 	virtual ~dom_node() {}
 
-public:		// output/debugging
-	virtual std::ostream& put(std::ostream& os) const;
+public:		// output,debugging
+	virtual std::ostream& put(std::ostream& os) const = 0;
+	virtual std::string toXML() const = 0;
+	virtual std::string describe() const = 0;
 
 public:		// XQuery interface
 	/**
@@ -81,7 +79,7 @@ public:		// XQuery interface
 	 *	"attribute", "comment", "document", "element", "namespace" 
 	 *	"processing-instruction", or "text". 
 	 */
-	virtual enum node_kind_t node_kind() const = 0;
+	virtual sequence_type_t node_kind() const = 0;
 	
 	/**
 	 *	The dm:string-value accessor returns the string value of a node.
@@ -89,23 +87,10 @@ public:		// XQuery interface
 	virtual string string_value() const = 0;
 
 	/**
-	 *	The dm:attributes accessor returns the attributes of a node as a 
-	 *	sequence containing zero or more Attribute Nodes. The order of 
-	 *	Attribute Nodes is stable but implementation dependent. 
-	 */
-	virtual iterator_t attributes() const = 0;
-	
-	/**
 	 *	The dm:base-uri accessor returns the base URI of a node as a sequence 
 	 *	containing zero or one URI reference. 
 	 */
-	virtual iterator_t base_uri() const = 0;
-	
-	/**
-	 *	The dm:children accessor returns the children of a node as a sequence 
-	 *	containing zero or more nodes. 
-	 */
-	virtual iterator_t children() const = 0;
+	virtual std::string base_uri() const = 0;
 	
 	/**
 	 *	The dm:document-uri accessor returns the absolute URI of the resource 
@@ -114,7 +99,20 @@ public:		// XQuery interface
 	 *	absolute when the Document Node is constructed, or if it is used on a 
 	 *	node other than a Document Node, the empty sequence is returned. 
 	 */
-	virtual iterator_t document_uri() const = 0;
+	virtual std::string document_uri() const = 0;
+	
+	/**
+	 *	The dm:children accessor returns the children of a node as a sequence 
+	 *	containing zero or more nodes. 
+	 */
+	virtual iterator_t children(dynamic_context*) const = 0;
+	
+	/**
+	 *	The dm:attributes accessor returns the attributes of a node as a 
+	 *	sequence containing zero or more Attribute Nodes. The order of 
+	 *	Attribute Nodes is stable but implementation dependent. 
+	 */
+	virtual iterator_t attributes(dynamic_context*) const = 0;
 	
 	/**
 	 *	The dm:namespace-nodes accessor returns the dynamic, in-scope 
@@ -124,33 +122,32 @@ public:		// XQuery interface
 	 *	Note: this accessor and the namespace-bindings accessor provide two 
 	 *	views of the same information.
 	 */
-	virtual iterator_t namespace_nodes() const = 0;
+	virtual iterator_t namespace_nodes(dynamic_context*) const = 0;
 	
 	/**
 	 *	The dm:node-name accessor returns the name of the node as a sequence 
 	 *	of zero or one xs:QNames. Note that the QName value includes an 
 	 *	optional prefix as described in 3.3.3 QNames and NOTATIONS. 
 	 */
-	virtual iterator_t node_name() const = 0;
+	virtual rchandle<qname> node_name() const = 0;
 	
 	/**
 	 *	The dm:parent accessor returns the parent of a node as a sequence 
 	 *	containing zero or one nodes. 
 	 */
-	virtual iterator_t parent() const
-	{ return new dom_singleton_iterator((abstract_item*)parent_p); }
+	virtual const node* parent() const { return parent_p; }
 	
 	/**
 	 *	The dm:type-name accessor returns the name of the schema type of a 
 	 *	node as a sequence of zero or one xs:QNames. 
 	 */
-	virtual iterator_t type_name() const = 0;
+	virtual rchandle<qname> type_name() const = 0;
 	
 	/**
 	 *	The dm:typed-value accessor returns the typed-value of the node as a 
 	 *	sequence of zero or more atomic values. 
 	 */
-	virtual iterator_t typed_value() const = 0;
+	virtual rchandle<item> typed_value() const = 0;
 		
 	/**
 	 *	The dm:is-id accessor returns true if the node is an XML ID.
@@ -161,7 +158,7 @@ public:		// XQuery interface
 	 *	The dm:is-idrefs accessor returns true if the node is an 
 	 *  XML IDREF or IDREFS. 
 	 */
-	virtual bool is_idrefs() const = 0;
+	virtual bool is_idref() const = 0;
 		
 	/**
 	 *	The dm:nilled accessor returns true if the node is "nilled". [Schema 
@@ -171,6 +168,20 @@ public:		// XQuery interface
 	 *	content. 
 	 */
 	virtual bool nilled() const = 0;
+
+
+	// update facility
+  void insertBefore(iterator_t newNodes) { }
+  void insertAfter(iterator_t newNodes) { }
+  void insertInto(iterator_t newNodes) { }
+  void insertIntoAsFirst(iterator_t newNodes) { }
+  void insertIntoAsLast(iterator_t newNodes) { }
+  void insertAttributes(iterator_t newNodes) { }
+  void deleteNode() { }
+  void replaceNode(iterator_t newNodes) { }
+  void replaceValue(const std::string& newValue) { }
+  void replaceElementContent(const text_node& newContent) { }
+  void rename(const qname& newName) { }
 
 };
 	
@@ -207,14 +218,12 @@ public:		// XQuery interface
 |	functions. 
 |_______________________________________________________________________*/
 
-class dom_document_node : public dom_node
+class dom_document_node : public dom_node,
+														virtual public document_node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
-	std::string the_baseuri;
-	std::string the_docuri;
+	std::string theBaseURI;
+	std::string theDocURI;
 	std::vector<dom_node*> childv;
 
 public:
@@ -223,74 +232,136 @@ public:
 	~dom_document_node() {}
 
 public:		// accessors
-	std::string baseuri() const { return the_baseuri; }
-	std::string docuri() const { return the_docuri; }
 	const std::vector<dom_node*>& get_childv() const { return childv; }
 	void add_child(dom_node* dn_p) { childv.push_back(dn_p); }
 
 public:		// XQuery interface
-  enum node_kind_t node_kind() const { return doc_kind; }
-	string string_value() const;
-	iterator_t base_uri() const;
-	iterator_t document_uri() const;
+	sequence_type_t node_kind() const { return documentNode; }
+	sequence_type_t type() const { return documentNode; }
+
+	std::string string_value() const;
+	std::string base_uri() const { return theBaseURI; }
+	std::string document_uri() const { return theDocURI; }
+
+	const node* parent() const { return parent_p; }
+  rchandle<qname> node_name() const { return NULL; }
+  rchandle<qname> type_name() const { return NULL; }
+	rchandle<item>  typed_value() const;
+
 	iterator_t children() const;
-	iterator_t typed_value() const;
+	iterator_t children(dynamic_context*) const;
+  iterator_t attributes(dynamic_context*) const { return NULL; }
+  iterator_t namespace_nodes(dynamic_context*) const { return NULL; }
+	iterator_t atomized_value() const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return true; }
+	bool is_atomic() const { return false; }
+  bool is_id() const { return false; }
+  bool is_idref() const { return false; }
+  bool nilled() const { return false; }
 
 public:		// output and debugging
 	std::ostream& put(std::ostream&) const;
-	std::string describe() const { return "doc("+the_baseuri+the_docuri+")"; }
-	
-  iterator_t attributes() const { return NULL; }
-  iterator_t namespace_nodes() const { return NULL; }
-  iterator_t node_name() const { return NULL; }
-  iterator_t type_name() const { return NULL; }
-  bool is_id() const { return false; }
-  bool is_idrefs() const { return false; }
-  bool nilled() const { return false; }
+	std::string toXML() const;
+	std::string describe() const;
 
 public:		// iterator interface
-
-	class child_iterator :	public abstract_iterator
+	class child_iterator :	public item_iterator
 	{
 	protected:
 		const dom_document_node* doc_p;
 		std::vector<dom_node*>::const_iterator it;
 		std::vector<dom_node*>::const_iterator end;
+		dynamic_context* dctx_p;
+
 	public:
-		child_iterator(const dom_document_node* _doc_p)
+		child_iterator(
+			dynamic_context* _dctx_p,
+			const dom_document_node* _doc_p)
 		:
 			doc_p(_doc_p),
 			it(doc_p->get_childv().begin()),
-			end(doc_p->get_childv().end())
+			end(doc_p->get_childv().end()),
+			dctx_p(_dctx_p)
 		{}
-	
+
 		~child_iterator() {}
 	
 	public:
 	 	void open() {}
 		void close() {}
-	
-		abstract_item* next(uint32_t delta = 1)
-		{ ++(*this); return **this; }
-	
-		abstract_item* peek() const
-		{ return **this; }
-	
+		const item& next(uint32_t delta = 1) { ++(*this); return **this; }
+		const item& peek() const { return **this; }
 		bool done() const { return it==end; }
-		void rewind() { it = doc_p->get_childv().begin(); }
 	
 	public:
-		abstract_item* operator*() const
-			{ return (abstract_item*)(*it); }
-	
+		const item& operator*() const
+		{
+			return **it;
+		}
+
 		child_iterator& operator++()
-			{ ++it; return *this; }
+		{
+			++it;
+			dctx_p->set_context_item(*it);
+			return *this;
+		}
 
 		child_iterator operator++(int)
-			{ child_iterator result = *this; it++; return result; }
+		{
+			child_iterator result = *this;
+			it++;
+			return result;
+		}
 	
 	};
 
+	class child_const_iterator :	public item_iterator
+	{
+	protected:
+		const dom_document_node* doc_p;
+		std::vector<dom_node*>::const_iterator it;
+		std::vector<dom_node*>::const_iterator end;
+
+	public:
+		child_const_iterator(
+			const dom_document_node* _doc_p)
+		:
+			doc_p(_doc_p),
+			it(doc_p->get_childv().begin()),
+			end(doc_p->get_childv().end())
+		{}
+
+		~child_const_iterator() {}
+	
+	public:
+	 	void open() {}
+		void close() {}
+		const item& next(uint32_t delta = 1) { ++(*this); return **this; }
+		const item& peek() const { return **this; }
+		bool done() const { return it==end; }
+	
+	public:
+		const item& operator*() const
+		{
+			return **it;
+		}
+
+		child_const_iterator& operator++()
+		{
+			++it;
+			return *this;
+		}
+
+		child_const_iterator operator++(int)
+		{
+			child_const_iterator result = *this;
+			it++;
+			return result;
+		}
+	
+	};
 };
 
 
@@ -327,33 +398,32 @@ public:		// iterator interface
 |			zero-length string. 
 |_______________________________________________________________________*/
 
-class dom_element_node :	public dom_node
+class dom_element_node : public dom_node,
+													virtual public element_node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
 	dom_qname* qname_p;
 	atomic_value* value_p;
-	std::vector<dom_namespace_node*> nsv;
-	std::vector<dom_attribute_node*> attrv;
+
+	std::vector<dom_node*> nsv;
+	std::vector<dom_node*> attrv;
 	std::vector<dom_node*> childv;
 
 	bool id_b;
-	bool idrefs_b;
+	bool idref_b;
 	bool nilled_b;
 
 public:
-	const std::vector<dom_namespace_node*>& get_nsv() const { return nsv; }
-	const std::vector<dom_attribute_node*>& get_attrv() const { return attrv; }
+	const std::vector<dom_node*>& get_nsv() const { return nsv; }
+	const std::vector<dom_node*>& get_attrv() const { return attrv; }
 	const std::vector<dom_node*>& get_childv() const { return childv; }
-	std::vector<dom_namespace_node*>& get_nsv() { return nsv; }
-	std::vector<dom_attribute_node*>& get_attrv() { return attrv; }
+	std::vector<dom_node*>& get_nsv() { return nsv; }
+	std::vector<dom_node*>& get_attrv() { return attrv; }
 	std::vector<dom_node*>& get_childv() { return childv; }
-	
-	void add_namespace(dom_namespace_node* ns_p) { nsv.push_back(ns_p); }
-	void add_attribute(dom_attribute_node* at_p) { attrv.push_back(at_p); }
-	void add_child(dom_node* node_p) { childv.push_back(node_p); }
+
+	void add_namespace(dom_namespace_node*);
+	void add_attribute(dom_attribute_node*);
+	void add_child(dom_node*);
 
 public:
 	dom_element_node(dom_qname*, atomic_value*);
@@ -361,27 +431,37 @@ public:
 	~dom_element_node() {}
 
 public:		// XQuery interface
-	enum node_kind_t node_kind() const { return elem_kind; }
-	std::string string_value() const;
-	iterator_t attributes() const;
-	iterator_t base_uri() const;
-	iterator_t document_uri() const;
-	iterator_t children() const;
-	iterator_t namespace_nodes() const;
-	iterator_t node_name() const;
-	iterator_t typed_value() const;
-	iterator_t type_name() const { return NULL; }
+	sequence_type_t node_kind() const { return elementNode; }
+	sequence_type_t type() const { return elementNode; }
 
+	std::string string_value() const;
+	std::string base_uri() const;
+	std::string document_uri() const;
+
+	const node* parent() const { return parent_p; }
+  rchandle<qname> node_name() const;
+  rchandle<qname> type_name() const { return NULL; }
+	rchandle<item>  typed_value() const;
+
+	iterator_t attributes(dynamic_context*) const;
+	iterator_t children(dynamic_context*) const;
+	iterator_t namespace_nodes(dynamic_context*) const;
+	iterator_t atomized_value() const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return true; }
+	bool is_atomic() const { return false; }
 	bool is_id() const { return id_b; }
-	bool is_idrefs() const { return idrefs_b; }
+	bool is_idref() const { return idref_b; }
 	bool nilled() const { return false; }
 
 public:		// output and debugging
 	std::ostream& put(std::ostream&) const;
-  std::string describe() const { return qname_p->describe(); }
+	std::string toXML() const;
+  std::string describe() const;
 
 public:		// iterators
-	class child_iterator :	public abstract_iterator
+	class child_iterator :	public item_iterator
 	{
 	protected:
 		const dom_element_node* elem_p;
@@ -395,41 +475,29 @@ public:		// iterators
 			it(elem_p->get_childv().begin()),
 			end(elem_p->get_childv().end())
 		{}
-	
 		~child_iterator() {}
 	
 	public:
 	 	void open() {}
 		void close() {}
-	
-		abstract_item* next(uint32_t delta = 1)
-		{ ++(*this); return **this; }
-	
-		abstract_item* peek() const
-		{ return **this; }
-	
+		const item& next(uint32_t delta = 1) { ++(*this); return **this; }
+		const item& peek() const { return **this; }
 		bool done() const { return it==end; }
-		void rewind() { it = elem_p->get_childv().begin(); }
 	
 	public:
-		abstract_item* operator*() const
-			{ return (abstract_item*)(*it); }
-	
-		child_iterator& operator++()
-			{ ++it; return *this; }
-
+		const item& operator*() const { return **it; }
+		child_iterator& operator++() { ++it; return *this; }
 		child_iterator operator++(int)
 			{ child_iterator result = *this; it++; return result; }
-	
 	};
 	
 	
-	class attribute_iterator :	public abstract_iterator
+	class attribute_iterator :	public item_iterator
 	{
 	protected:
 		const dom_element_node* elem_p;
-		std::vector<dom_attribute_node*>::const_iterator it;
-		std::vector<dom_attribute_node*>::const_iterator end;
+		std::vector<dom_node*>::const_iterator it;
+		std::vector<dom_node*>::const_iterator end;
 	
 	public:
 		attribute_iterator(const dom_element_node* _elem_p)
@@ -444,35 +512,24 @@ public:		// iterators
 	public:
 	 	void open() {}
 		void close() {}
-	
-		abstract_item* next(uint32_t delta = 1)
-		{ ++(*this); return **this; }
-	
-		abstract_item* peek() const
-		{ return **this; }
-	
+		const item& next(uint32_t delta = 1) { ++(*this); return **this; }
+		const item& peek() const { return **this; }
 		bool done() const { return it==end; }
-		void rewind() { it = elem_p->get_attrv().begin(); }
 	
 	public:
-		abstract_item* operator*() const
-			{ return (abstract_item*)(*it); }
-
-		attribute_iterator& operator++()
-			{ ++it; return *this; }
-
+		const item& operator*() const { return **it; }
+		attribute_iterator& operator++() { ++it; return *this; }
 		attribute_iterator operator++(int)
 			{ attribute_iterator result = *this; it++; return result; }
-	
 	};
 	
 	
-	class namespace_iterator :	public abstract_iterator
+	class namespace_iterator :	public item_iterator
 	{
 	protected:
 		const dom_element_node* elem_p;
-		std::vector<dom_namespace_node*>::const_iterator it;
-		std::vector<dom_namespace_node*>::const_iterator end;
+		std::vector<dom_node*>::const_iterator it;
+		std::vector<dom_node*>::const_iterator end;
 	
 	public:
 		namespace_iterator(const dom_element_node* _elem_p)
@@ -487,26 +544,15 @@ public:		// iterators
 	public:
 	 	void open() {}
 		void close() {}
-	
-		abstract_item* next(uint32_t delta=1)
-		{ ++(*this); return **this; }
-	
-		abstract_item* peek() const
-		{ return **this; }
-	
+		const item& next(uint32_t delta=1) { ++(*this); return **this; }
+		const item& peek() const { return **this; }
 		bool done() const { return it==end; }
-		void rewind() { it = elem_p->get_nsv().begin(); }
 	
 	public:
-		abstract_item* operator*() const
-			{ return (abstract_item*)(*it); }
-
-		namespace_iterator& operator++()
-			{ ++it; return *this; }
-
+		const item& operator*() const { return **it; }
+		namespace_iterator& operator++() { ++it; return *this; }
 		namespace_iterator operator++(int)
 			{ namespace_iterator result = *this; it++; return result; }
-	
 	};
 
 
@@ -533,16 +579,14 @@ public:		// iterators
 |	parent element. 
 |_______________________________________________________________________*/
 
-class dom_attribute_node :	public dom_node
+class dom_attribute_node : public dom_node,
+														virtual public attribute_node 
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
 	dom_qname* qname_p;
 	std::string value;
 	bool id_b;
-	bool idrefs_b;
+	bool idref_b;
 	bool nilled_b;
 
 public:
@@ -556,24 +600,35 @@ public:
   ~dom_attribute_node() {}
 
 public:	// XQuery interface
-	enum node_kind_t node_kind() const { return attr_kind; }
-	bool is_id() const { return id_b; }
-	bool is_idrefs() const { return idrefs_b; }
-	bool nilled() const { return nilled_b; }
+	sequence_type_t node_kind() const { return attributeNode; }
+	sequence_type_t type() const { return attributeNode; }
 
-	iterator_t base_uri() const;
-	iterator_t node_name() const;
-	iterator_t typed_value() const;
-	string string_value() const;
+	std::string string_value() const;
+	std::string base_uri() const;
+	std::string document_uri() const;
+
+	const node* parent() const { return parent_p; }
+  rchandle<qname> node_name() const;
+  rchandle<qname> type_name() const { return NULL; }
+	rchandle<item>  typed_value() const;
+
+	iterator_t attributes(dynamic_context*) const { return NULL; }
+	iterator_t children(dynamic_context*) const { return NULL; }
+	iterator_t namespace_nodes(dynamic_context*) const { return NULL; }
+	iterator_t atomized_value() const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return true; }
+	bool is_atomic() const { return false; }
+	bool is_id() const { return id_b; }
+	bool is_idref() const { return idref_b; }
+	bool nilled() const { return nilled_b; }
 
 public:		// output,debugging
 	std::ostream& put(std::ostream&) const;
+	std::string toXML() const;
+	std::string describe() const;
 
-	iterator_t attributes() const { return NULL; }
-	iterator_t children() const { return NULL; }
-	iterator_t document_uri() const { return NULL; }
-	iterator_t namespace_nodes() const { return NULL; }
-	iterator_t type_name() const { return NULL; }
 
 };
 
@@ -589,14 +644,12 @@ public:		// output,debugging
 |	
 |	The data model permits Namespace Nodes without parents. 
 |_______________________________________________________________________*/
-class dom_namespace_node :	public dom_node
+class dom_namespace_node : public dom_node,
+														virtual public namespace_node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
-	std::string iprefix;
-	std::string iuri;
+	std::string thePrefix;
+	std::string theURI;
 
 public:
 	dom_namespace_node(const std::string& prefix, const std::string& uri);
@@ -604,25 +657,36 @@ public:
 	~dom_namespace_node() {}
 
 public:		// XQuery interface
-	enum node_kind_t node_kind() const { return ns_kind; }
-	iterator_t node_name() const;
-	iterator_t typed_value() const;
-	string string_value() const;
+	sequence_type_t node_kind() const { return namespaceNode; }
+	sequence_type_t type() const { return namespaceNode; }
 
-public:		// output, debugging
-	std::string prefix() const { return iprefix; }
-	std::string uri() const { return iuri; }
-	std::ostream& put(std::ostream&) const;
+	std::string string_value() const;
+	std::string prefix() const { return thePrefix; }
+	std::string uri() const { return theURI; }
+	std::string base_uri() const;
+	std::string document_uri() const;
 
-	iterator_t attributes() const { return NULL; }
-	iterator_t base_uri() const { return NULL; }
-	iterator_t children() const { return NULL; }
-	iterator_t document_uri() const { return NULL; }
-	iterator_t namespace_nodes() const { return NULL; }
-	iterator_t type_name() const { return NULL; }
+	const node* parent() const { return parent_p; }
+  rchandle<qname> node_name() const;
+  rchandle<qname> type_name() const { return NULL; }
+	rchandle<item> typed_value() const;
+
+	iterator_t attributes(dynamic_context*) const { return NULL; }
+	iterator_t children(dynamic_context*) const { return NULL; }
+	iterator_t namespace_nodes(dynamic_context*) const { return NULL; }
+	iterator_t atomized_value() const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return true; }
+	bool is_atomic() const { return false; }
 	bool is_id() const { return false; }
-	bool is_idrefs() const { return false; }
+	bool is_idref() const { return false; }
 	bool nilled() const { return false; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	std::string toXML() const;
+	std::string describe() const;
 
 };
 
@@ -633,14 +697,12 @@ public:		// output, debugging
 |	 1. The string "?>" must not occur within the content.
 |	 2. The target must be an NCName.
 |_______________________________________________________________________*/
-class dom_pi_node : public dom_node
+class dom_pi_node : public dom_node,
+											virtual public pi_node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
-	std::string itarget;
-	std::string icontent;
+	std::string theTarget;
+	std::string theContent;
 
 public:
 	dom_pi_node(const std::string& target, const std::string& content);
@@ -648,26 +710,37 @@ public:
 	~dom_pi_node() {}
 
 public:		// XQuery interface
-	enum node_kind_t node_kind() const { return pi_kind; }
-	string string_value() const;
-	iterator_t base_uri() const;
-	iterator_t typed_value() const;
+	sequence_type_t node_kind() const { return processingInstructionNode; }
+	sequence_type_t type() const { return processingInstructionNode; }
 
-public:		// output, debugging
-	std::string target() const { return itarget; }
-	std::string content() const { return icontent; }
-	std::ostream& put(std::ostream&) const;
+	std::string string_value() const;
+	std::string target() const { return theTarget; }
+	std::string content() const { return theContent; }
+	std::string base_uri() const;
+	std::string document_uri() const;
 
-	iterator_t attributes() const { return NULL; }
-	iterator_t children() const { return NULL; }
-	iterator_t document_uri() const { return NULL; }
-	iterator_t namespace_nodes() const { return NULL; }
-	iterator_t type_name() const { return NULL; }
-	iterator_t node_name() const;
+	const node* parent() const { return parent_p; }
+  rchandle<qname> node_name() const;
+  rchandle<qname> type_name() const { return NULL; }
+	rchandle<item>  typed_value() const;
+
+	iterator_t attributes(dynamic_context*) const { return NULL; }
+	iterator_t children(dynamic_context*) const { return NULL; }
+	iterator_t namespace_nodes(dynamic_context*) const { return NULL; }
+	iterator_t atomized_value() const { return NULL; }
 	
+	bool is_empty() const { return false; }
+	bool is_node() const { return true; }
+	bool is_atomic() const { return false; }
 	bool is_id() const { return false; }
-	bool is_idrefs() const { return false; }
+	bool is_idref() const { return false; }
 	bool nilled() const { return false; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	std::string toXML() const;
+	std::string describe() const;
+
 };
 
 
@@ -676,13 +749,11 @@ public:		// output, debugging
 | 6.6 Comment Nodes 
 |_______________________________________________________________________*/
 
-class dom_comment_node :	public dom_node
+class dom_comment_node : public dom_node,
+													virtual public comment_node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
-	std::string the_content;
+	std::string theContent;
 
 public:
 	dom_comment_node(const std::string& content);
@@ -690,25 +761,35 @@ public:
 	~dom_comment_node() {}
 	
 public:		// XQuery interface
-	enum node_kind_t node_kind() const { return comment_kind; }
-	string string_value() const;
-	iterator_t base_uri() const;
-	iterator_t typed_value() const;
+	sequence_type_t node_kind() const { return commentNode; }
+	sequence_type_t type() const { return commentNode; }
 
-public:		// output, debugging
-	std::string content() const { return the_content; }
-	std::ostream& put(std::ostream&) const;
+	std::string string_value() const;
+	std::string content() const { return theContent; }
+	std::string base_uri() const;
+	std::string document_uri() const { return NULL; }
 
-	iterator_t attributes() const { return NULL; }
-	iterator_t children() const { return NULL; }
-	iterator_t document_uri() const { return NULL; }
-	iterator_t namespace_nodes() const { return NULL; }
-	iterator_t node_name() const { return NULL; }
-	iterator_t type_name() const { return NULL; }
+	const node* parent() const { return parent_p; }
+  rchandle<qname> node_name() const { return NULL; }
+  rchandle<qname> type_name() const { return NULL; }
+	rchandle<item>  typed_value() const;
+
+	iterator_t attributes(dynamic_context*) const { return NULL; }
+	iterator_t children(dynamic_context*) const { return NULL; }
+	iterator_t namespace_nodes(dynamic_context*) const { return NULL; }
+	iterator_t atomized_value() const { return NULL; }
 	
+	bool is_empty() const { return false; }
+	bool is_node() const { return true; }
+	bool is_atomic() const { return false; }
 	bool is_id() const { return false; }
-	bool is_idrefs() const { return false; }
+	bool is_idref() const { return false; }
 	bool nilled() const { return false; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	std::string toXML() const;
+	std::string describe() const;
 
 };
 
@@ -728,40 +809,47 @@ public:		// output, debugging
 |   is simply discarded.
 |_______________________________________________________________________*/
 
-class dom_text_node : public dom_node
-											//abstract_text_node
+class dom_text_node : public dom_node,
+												virtual public text_node
 {
-public:
-	typedef rchandle<abstract_iterator> iterator_t;
-
 protected:
-	std::string the_content;
+	std::string theContent;
 
 public:
 	dom_text_node(const std::string& content);
 	dom_text_node(const dom_text_node&);
 	~dom_text_node() {}
 	
-public:		// accessors
+public:		// XQuery interface
+	sequence_type_t node_kind() const { return textNode; }
+	sequence_type_t type() const { return textNode; }
+
 	std::string string_value() const;
-	iterator_t base_uri() const;
-	iterator_t typed_value() const;
+	std::string base_uri() const;
+	std::string document_uri() const;
+	std::string content() { return theContent; }
 
-public:		// output/debugging
-	std::string content() { return the_content; }
-	std::ostream& put(std::ostream& os) const;
+	const node* parent() const { return parent_p; }
+  rchandle<qname> node_name() const { return NULL; }
+  rchandle<qname> type_name() const { return NULL; }
+	rchandle<item>  typed_value() const;
 
-	enum node_kind_t node_kind() const { return text_kind; }
-	iterator_t attributes() const { return NULL; }
-	iterator_t children() const { return NULL; }
-	iterator_t document_uri() const { return NULL; }
-	iterator_t namespace_nodes() const { return NULL; }
-	iterator_t node_name() const { return NULL; }
-	iterator_t type_name() const { return NULL; }
+	iterator_t attributes(dynamic_context*) const { return NULL; }
+	iterator_t children(dynamic_context*) const { return NULL; }
+	iterator_t namespace_nodes(dynamic_context*) const { return NULL; }
+	iterator_t atomized_value() const { return NULL; }
 	
+	bool is_empty() const { return false; }
+	bool is_node() const { return true; }
+	bool is_atomic() const { return false; }
 	bool is_id() const { return false; }
-	bool is_idrefs() const { return false; }
+	bool is_idref() const { return false; }
 	bool nilled() const { return false; }
+
+public:
+	std::ostream& put(std::ostream& os) const;
+	std::string toXML() const;
+	std::string describe() const;
 
 };
 

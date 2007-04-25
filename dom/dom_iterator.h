@@ -9,8 +9,8 @@
 #ifndef XQP_DOM_ITERATOR_H
 #define XQP_DOM_ITERATOR_H
 
-#include "../runtime/abstract_iterator.h"
-#include "../util/rchandle.h"
+#include "runtime/item_iterator.h"
+#include "util/rchandle.h"
 
 #include <string>
 #include <vector>
@@ -26,7 +26,7 @@ class dom_intValue;
 class dom_longValue;
 
 
-class dom_iterator : public abstract_iterator
+class dom_iterator : public item_iterator
 {
 public:
 	dom_iterator() {}
@@ -37,13 +37,12 @@ public:
 public:	// abstract iterator interface
 	virtual void open() { }
 	virtual void close() { }
-	virtual abstract_item* next(uint32_t delta = 1) { return NULL; }
-	virtual abstract_item* peek() const { return NULL; }
+	virtual item* next(uint32_t delta = 1) { return NULL; }
+	virtual item* peek() const { return NULL; }
 	virtual bool done() const { return true; }
-	virtual void rewind() { }
 
 public:	// C++ interface
-	abstract_item* operator*() const { return NULL; }
+	item* operator*() const { return NULL; }
 	dom_iterator& operator++();
 	dom_iterator operator++(int);
 
@@ -57,31 +56,25 @@ public:
 class dom_singleton_iterator : public dom_iterator
 {
 protected:
-	abstract_item* i_p;
+	dom_item* i_p;
 	bool done_b;
 
 public:	// abstract iterator interface
 	void open() { }
 	void close() { done_b = false; }
-	abstract_item* next(uint32_t delta=1) { done_b = true; return NULL; }
-	abstract_item* peek() const { return reinterpret_cast<abstract_item*>(i_p); }
+	dom_item* next(uint32_t delta=1) { done_b = true; return NULL; }
+	dom_item* peek() const { return i_p; }
 	bool done() const { return done_b; }
-	void rewind() { done_b = false; }
 
 public:	// C++ interface
-	abstract_item* operator*() const { return i_p; }
+	dom_item* operator*() const { return i_p; }
 	dom_singleton_iterator& operator++() { done_b = true; return *this; }
-
 	dom_singleton_iterator operator++(int)
 		{ dom_singleton_iterator result = *this; done_b = true; return result; }
 
 public:	// ctor,dtor
-	dom_singleton_iterator(abstract_item*);
+	dom_singleton_iterator(dom_item*);
 	dom_singleton_iterator(const std::string&);
-	dom_singleton_iterator(bool);
-	dom_singleton_iterator(double);
-	dom_singleton_iterator(int);
-	dom_singleton_iterator(long);
 	dom_singleton_iterator(const dom_singleton_iterator&);
 	dom_singleton_iterator& operator=(const dom_singleton_iterator&);
 	~dom_singleton_iterator() {}

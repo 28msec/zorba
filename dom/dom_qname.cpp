@@ -51,7 +51,7 @@ qnamekey_t dom_qname::nodeid() const
 
 ostream& dom_qname::put(ostream& os) const
 {
-  if (the_uri!="http://noname") {
+  if (the_uri!="http://nonamespace/") {
 	  return os << the_prefix << '[' << the_uri << "]:" << the_localname;
   }
   else {
