@@ -10,29 +10,23 @@
 #ifndef XQP_VALUES_H
 #define XQP_VALUES_H
 
-#include "abstract_values.h"
-#include "../runtime/iterator.h"
-#include "../store/itemstore.h"
+#include "../context/common.h"
 #include "../types/sequence_type.h"
+#include "../util/rchandle.h"
+#include <sstream>
 
-#include <string>
-#include <vector>
- 
 namespace xqp {
-
-class context;
 
 /*______________________________________________________________________
 |  
-|	Base class for the value hierarchy
+|	Base class for the abstract value hierarchy
 |_______________________________________________________________________*/
 
-class object : public abstract_object
+class object : public rcobject
 {
 public:
 	object() {}
 	~object() {}
-
 };
 
 
@@ -41,13 +35,12 @@ public:
 |	'exception' encapsulates an xquery exception.
 |_______________________________________________________________________*/
 
-class xquery_exception :	public object,
-													public virtual abstract_xquery_exception
+class xquery_exception : public object
+													
 {
 public:
 	xquery_exception() {}
 	~xquery_exception() {}
-
 };
 
 
@@ -58,46 +51,28 @@ public:
 |	[http://www.w3.org/TR/xquery-full-text/]
 |_______________________________________________________________________*/
 
-class ft_value :	public object,
-									public abstract_ft_value
+class ft_value : public object
 {
 public:
 	ft_value() {}
 	~ft_value() {}
-
 };
 
 
 /*______________________________________________________________________
 |  
-|	'value' - top of the XQuery value hierarchy
-|
+|	'sequence' - top of the XQuery value hierarchy
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
 |_______________________________________________________________________*/
 
-class sequence: public object,
-								public abstract_sequence
+class sequence : public object
 {
 public:
-	sequence_type_t m_type;
-	uint32_t m_length;
-
-public:		// storage interface
-	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
-	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
-	void* operator new(size_t n, void* p) { return p; }
-	void* operator new(size_t n, const void* p) { return (void*)p; }
-	void  operator delete(void*) {}
-	
-public:
-	sequence(sequence_type_t type, size_t len) : m_type(type), m_length(len) {}
-	sequence() {}
-	~sequence() {}
+	virtual ~sequence() {}
 
 public:		// accessors
-	uint32_t length() const { return m_length; }
-	uint32_t& length() { return m_length; }
-	sequence_type_t type() const { return m_type; }
+	virtual sequence_type_t type() const = 0;
+  virtual std::string describe() const = 0;
 
 };
 
@@ -108,35 +83,23 @@ public:		// accessors
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class item :	public sequence,
-							public abstract_item
+class item : public sequence
 {
-public:		// storage interface
-	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
-	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
-	void* operator new(size_t n, void * p) { return p; }
-	void* operator new(size_t n, const void* p) { return (void*)p; }
-	void  operator delete(void*) {}
-	
 public:
-	item(sequence_type_t type, size_t length) : sequence(type,length) {}
-	item() {}
-	~item() {}
-
-public:		// accessors
-  std::ostream& put(std::ostream& os) const { return os; }
-  std::string describe() const { return "item()"; }
-	sequence_type_t type() const { return m_type; }
+	virtual ~item() {}
 
 public:		// XQuery interface
-	iterator_t atomized_value() const { return NULL; }
-	string string_value() const { return ""; }
+	virtual iterator_t atomized_value() const = 0;
+	virtual string string_value() const = 0;
 
-	bool is_empty() const { return false; }
-	bool is_node() const { return false; }
-	bool is_atomic() const { return false; }
+	virtual bool is_empty() const = 0;
+	virtual bool is_node() const = 0;
+	virtual bool is_atomic() const = 0;
+
+public:
+  virtual std::ostream& put(std::ostream& os) const = 0;
+
 };
-
 
 
 /*______________________________________________________________________
@@ -146,38 +109,30 @@ public:		// XQuery interface
 
 class atomic_value :	public item
 {
-public:		// storage interface
-	void* operator new(size_t n, itemstore& istore) { return istore.alloc(n); }
-	void* operator new(size_t n, itemstore& i, off_t o) { return &i[o]; }
-	void* operator new(size_t n, void* p) { return p; }
-	void* operator new(size_t n, const void* p) { return (void*)p; }
-	void  operator delete(void*) {}
-	
+protected:
+	sequence_type_t theType;
+
 public:
-	atomic_value(sequence_type_t type, size_t length) : item(type,length) {}
-	atomic_value() {}
-	~atomic_value() {}
+	atomic_value() : theType(xs_anyType) {}
+	atomic_value(sequence_type_t type) : theType(type) {}
+	virtual ~atomic_value() {}
 
 public:		// accessors
-  std::ostream& put(std::ostream& os) const { return os; }
-  std::string describe() const { return "xs_atomicValue"; }
-	sequence_type_t type() const { return m_type; }
+	sequence_type_t type() const { return theType; }
+  virtual std::string describe() const
+		{ ostringstream oss; put(oss); return oss.str(); }
+  virtual std::ostream& put(std::ostream& os) const = 0;
 
 public:		// XQuery interface
-	iterator_t atomized_value() const { return NULL; }
-	string string_value() const { return "xs_atomicValue"; }
+	virtual iterator_t atomized_value() const = 0;
+	virtual string string_value() const = 0;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
+
 };
 
-
-
-/*______________________________________________________________________
-|  
-|	'node' values defined in 'nodes.h'
-|_______________________________________________________________________*/
 
 } /* namespace xqp */
 #endif /* XQP_VALUES_H */

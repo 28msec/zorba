@@ -3,8 +3,7 @@
  *  $Id: ft_values.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: John Cowan,Paul Pedersen
  *
  */
 
