@@ -21,8 +21,8 @@
 #include "zorba_qname.h"
 
 #include "../context/common.h"
-#include "../values/abstract_nodes.h"
-#include "../runtime/abstract_iterator.h"
+#include "../values/nodes.h"
+#include "../runtime/iterator.h"
 #include "../types/sequence_type.h"
 #include "../values/values.h"
 #include "../util/rchandle.h"
@@ -59,11 +59,9 @@ class zorba_namespace_node;
 |	for determining the result. 
 |_______________________________________________________________________*/
 
-class zorba_node : public abstract_node
+class zorba_node : public zorba_item,
+										public abstract node
 {
-protected:
-	zorba_node* parent_p;
-
 public:		// ctor,dtor
 	zorba_node() {}
 	virtual ~zorba_node() {}
@@ -204,7 +202,8 @@ public:		// XQuery interface
 |	functions. 
 |_______________________________________________________________________*/
 
-class zorba_document_node : public zorba_node
+class zorba_document_node : public zorba_node,
+															public abstract document_node
 {
 protected:
 	document_noderep* rep;
@@ -221,15 +220,17 @@ public:		// accessors
 public:		// XQuery interface
   enum node_kind_t node_kind() const { return doc_kind; }
 
-	string string_value() const;
-	iterator_t base_uri() const;
-	iterator_t document_uri() const;
+	std::string string_value() const;
+	std::string base_uri() const;
+	std::string document_uri() const;
+
+  qname* node_name() const;
+  qname* type_name() const;
+
 	iterator_t children() const;
 	iterator_t typed_value() const;
   iterator_t attributes() const;
   iterator_t namespace_nodes() const;
-  iterator_t node_name() const;
-  iterator_t type_name() const;
 
   bool is_id() const { return false; }
   bool is_idrefs() const { return false; }
@@ -241,7 +242,7 @@ public:		// output and debugging
 	
 public:		// iterator interface
 
-	class child_iterator :	public abstract_iterator
+	class child_iterator :	public item_iterator
 	{
 	protected:
 		const zorba_document_node* doc_p;
@@ -254,13 +255,12 @@ public:		// iterator interface
 	public:
 	 	void open();
 		void close();
-		abstract_item* next(uint32_t delta = 1);
-		abstract_item* peek() const;
+		item& next(uint32_t delta = 1);
+		item& peek() const;
 		bool done() const;
-		void rewind();
 	
 	public:
-		abstract_item* operator*() const;
+		item& operator*() const;
 		child_iterator& operator++();
 		child_iterator operator++(int);
 	
@@ -302,83 +302,65 @@ public:		// iterator interface
 |			zero-length string. 
 |_______________________________________________________________________*/
 
-class zorba_element_node :	public zorba_node
+class zorba_element_node : public zorba_node,
+														public abstract element_node
 {
 protected:
-	zorba_qname* qname_p;
-	atomic_value* value_p;
-	std::vector<zorba_namespace_node*> nsv;
-	std::vector<zorba_attribute_node*> attrv;
-	std::vector<zorba_node*> childv;
-
-	bool id_b;
-	bool idrefs_b;
-	bool nilled_b;
+	element_noderep* rep;
 
 public:
-	const std::vector<zorba_namespace_node*>& get_nsv() const { return nsv; }
-	const std::vector<zorba_attribute_node*>& get_attrv() const { return attrv; }
-	const std::vector<zorba_node*>& get_childv() const { return childv; }
-	std::vector<zorba_namespace_node*>& get_nsv() { return nsv; }
-	std::vector<zorba_attribute_node*>& get_attrv() { return attrv; }
-	std::vector<zorba_node*>& get_childv() { return childv; }
-	
-	void add_namespace(zorba_namespace_node* ns_p) { nsv.push_back(ns_p); }
-	void add_attribute(zorba_attribute_node* at_p) { attrv.push_back(at_p); }
-	void add_child(zorba_node* node_p) { childv.push_back(node_p); }
-
-public:
-	zorba_element_node(zorba_qname*, atomic_value*);
+	zorba_element_node(qname*, atomic_value*);
 	zorba_element_node(const zorba_element_node&);
 	~zorba_element_node() {}
 
 public:		// XQuery interface
 	enum node_kind_t node_kind() const { return elem_kind; }
+
 	std::string string_value() const;
+	std::string base_uri() const;
+	std::string document_uri() const;
+
+	qname* node_name() const;
+	qname* type_name() const;
+
 	iterator_t attributes() const;
-	iterator_t base_uri() const;
-	iterator_t document_uri() const;
 	iterator_t children() const;
 	iterator_t namespace_nodes() const;
-	iterator_t node_name() const;
 	iterator_t typed_value() const;
-	iterator_t type_name() const { return NULL; }
 
-	bool is_id() const { return id_b; }
-	bool is_idrefs() const { return idrefs_b; }
-	bool nilled() const { return false; }
+	bool is_id() const;
+	bool is_idrefs() const;
+	bool nilled() const;
 
 public:		// output and debugging
 	std::ostream& put(std::ostream&) const;
-  std::string describe() const { return qname_p->describe(); }
+  std::string describe() const;
 
 public:		// iterators
-	class child_iterator :	public abstract_iterator<zorba_item>
+	class child_iterator :	public item_iterator
 	{
 	protected:
 		const zorba_element_node* elem_p;
-		std::vector<zorba_node*>::const_iterator it;
-		std::vector<zorba_node*>::const_iterator end;
+		std::vector<
 	
 	public:
 		child_iterator(const zorba_element_node* _elem_p)
-		:
-			elem_p(_elem_p),
+		: elem_p(_elem_p),
 			it(elem_p->get_childv().begin()),
 			end(elem_p->get_childv().end())
 		{}
+
 		~child_iterator() {}
 	
 	public:
 	 	void open() {}
 		void close() {}
-		zorba_item* next(uint32_t delta = 1) { ++(*this); return **this; }
-		zorba_item* peek() const { return **this; }
+		item& next(uint32_t delta = 1) { ++(*this); return **this; }
+		item& peek() const { return **this; }
 		bool done() const { return it==end; }
-		void rewind() { it = elem_p->get_childv().begin(); }
 	
 	public:
-		zorba_item* operator*() const { return (zorba_item*)*it; }
+		item& operator*() const { return *it; }
 		child_iterator& operator++() { ++it; return *this; }
 		child_iterator operator++(int)
 			{ child_iterator result = *this; it++; return result; }
@@ -405,13 +387,12 @@ public:		// iterators
 	public:
 	 	void open() {}
 		void close() {}
-		zorba_item* next(uint32_t delta = 1) { ++(*this); return **this; }
-		zorba_item* peek() const { return **this; }
+		item& next(uint32_t delta = 1) { ++(*this); return **this; }
+		item& peek() const { return **this; }
 		bool done() const { return it==end; }
-		void rewind() { it = elem_p->get_attrv().begin(); }
 	
 	public:
-		zorba_item* operator*() const { return (zorba_item*)(*it); }
+		item& operator*() const { return *it; }
 		attribute_iterator& operator++() { ++it; return *this; }
 		attribute_iterator operator++(int)
 			{ attribute_iterator result = *this; it++; return result; }
@@ -438,13 +419,12 @@ public:		// iterators
 	public:
 	 	void open() {}
 		void close() {}
-		zorba_item* next(uint32_t delta=1) { ++(*this); return **this; }
-		zorba_item* peek() const { return **this; }
+		item& next(uint32_t delta=1) { ++(*this); return **this; }
+		item& peek() const { return **this; }
 		bool done() const { return it==end; }
-		void rewind() { it = elem_p->get_nsv().begin(); }
 	
 	public:
-		zorba_item* operator*() const { return (zorba_item*)(*it); }
+		item& operator*() const { return (zorba_item*)(*it); }
 		namespace_iterator& operator++() { ++it; return *this; }
 		namespace_iterator operator++(int)
 			{ namespace_iterator result = *this; it++; return result; }
@@ -474,7 +454,8 @@ public:		// iterators
 |	parent element. 
 |_______________________________________________________________________*/
 
-class zorba_attribute_node :	public zorba_node
+class zorba_attribute_node :	public zorba_node,
+																public abstract attribute_node
 {
 protected:
 	zorba_qname* qname_p;
@@ -527,7 +508,8 @@ public:		// output,debugging
 |	
 |	The data model permits Namespace Nodes without parents. 
 |_______________________________________________________________________*/
-class zorba_namespace_node :	public zorba_node
+class zorba_namespace_node :	public zorba_node,
+																public abstract namespace_node
 {
 protected:
 	std::string iprefix;
@@ -568,7 +550,8 @@ public:		// output, debugging
 |	 1. The string "?>" must not occur within the content.
 |	 2. The target must be an NCName.
 |_______________________________________________________________________*/
-class zorba_pi_node : public zorba_node
+class zorba_pi_node : public zorba_node,
+												public abstract pi_node
 {
 protected:
 	std::string itarget;
@@ -608,7 +591,8 @@ public:		// output, debugging
 | 6.6 Comment Nodes 
 |_______________________________________________________________________*/
 
-class zorba_comment_node :	public zorba_node
+class zorba_comment_node :	public zorba_node,
+															public abstract comment_node
 {
 protected:
 	std::string the_content;
@@ -657,7 +641,8 @@ public:		// output, debugging
 |   is simply discarded.
 |_______________________________________________________________________*/
 
-class zorba_text_node : public zorba_node
+class zorba_text_node : public zorba_node,
+													public abstract text_node
 {
 protected:
 	std::string the_content;

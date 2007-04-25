@@ -34,9 +34,6 @@ public:
 	// done => true <-> no more items
 	virtual bool done() const = 0;
 
-	// rewind: equivalent to:  close(); open() 
-	virtual void rewind() = 0; 
-
 public:	// C++ interface
 	virtual noderep* operator*() const = 0;
 	virtual noderep_iterator& operator++() = 0;
