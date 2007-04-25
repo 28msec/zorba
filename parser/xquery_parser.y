@@ -37,7 +37,7 @@
 #include <string.h>
 #include <string>
 
-#include "../context/context.h"
+#include "context/context.h"
 #include "parsenodes.h"
 #include "parse_constants.h"
 

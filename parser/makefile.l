@@ -8,7 +8,7 @@ xquery_scanner : xquery_scanner.l
 
 xquery_parser : xquery_parser.y
 	bison -v -t -d xquery_parser.y
-	g++ -Wall -g -c -o ${BUILD}/xquery_parser.${SUFX} xquery_parser.tab.c
+	g++ ${OPT} -g -c -o ${BUILD}/xquery_parser.${SUFX} xquery_parser.tab.c
 
 xquery_parser0 : xquery_parser.y
 	bison -v -t -d xquery_parser.y
