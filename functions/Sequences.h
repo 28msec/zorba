@@ -9,10 +9,10 @@
 #ifndef XQP_SEQUENCES_H
 #define XQP_SEQUENCES_H
 
-#include "../functions/function.h"
-#include "../runtime/iterator.h"
-#include "../util/rchandle.h"
-#include "../values/nodes.h"
+#include "functions/function.h"
+#include "runtime/item_iterator.h"
+#include "util/rchandle.h"
+#include "values/nodes.h"
 #include <string>
 #include <vector>
 

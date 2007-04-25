@@ -11,11 +11,11 @@
 #define XQP_FUNCTION_H
 
 #include "signature.h"
-#include "../context/common.h"
-#include "../runtime/abstract_iterator.h"
-#include "../runtime/zorba.h"
-#include "../values/qname_value.h"
-#include "../util/rchandle.h"
+#include "context/common.h"
+#include "runtime/item_iterator.h"
+#include "runtime/zorba.h"
+#include "values/qname.h"
+#include "util/rchandle.h"
 
 #include <string>
 #include <vector>
@@ -33,7 +33,7 @@ public:
 
 public:
 	// XQuery signature (name+arity)
-	const qname_value* get_fname() const { return sig.get_name(); }
+	const qname* get_fname() const { return sig.get_name(); }
 
 	// functor specification
 	virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) = 0;

@@ -11,6 +11,7 @@
 
 #include "../context/static_context.h"
 #include "../dom/dom_xml_handler.h"
+#include "../dom/dom_iterator.h"
 #include "../dom/dom_values.h"
 #include "../dom/dom_nodes.h"
 #include "../runtime/zorba.h"
@@ -18,8 +19,11 @@
 #include "../store/xml_scanner.h"
 #include "../types/sequence_type.h"
 #include "../util/file.h"
+#include "../util/tracer.h"
 #include "../values/abstract_qname.h"
 #include "../values/value_factory.h"
+
+#include <iostream>
 
 
 using namespace std;
@@ -29,8 +33,13 @@ namespace xqp {
 template<typename T>
 bool _validate(iterator_t it, sequence_type_t t)
 {
+cout << TRACE << endl;
 	if (it->done()) return false;
+cout << TRACE << " : non-empty iterator" << endl;
 	T* i_p = (T*)it->peek();
+cout << TRACE << " : item extracted" << endl;
+cout << TRACE << " : arg type = " << sequence_type::describe(i_p->type()) << endl;
+cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
 	return (i_p->type()==t);
 }
 
@@ -362,23 +371,68 @@ fn_doc::fn_doc(const signature& sig)
 {
 }
 
+iterator_t xqp_load(
+	zorba* zorp,
+	string const& path,
+	string const& baseuri,
+	string const& uri)
+{
+cout << TRACE << endl;
+	file f(path);
+	if (!f.exists()) {
+cout << TRACE << " : file '" << path << "' not found" << endl;
+		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		return NULL;
+	}
+cout << TRACE << " : file '" << path << "' found" << endl;
+	unsigned sz = f.get_size();
+	size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
+	char* ibuf = new char[n+1];
+	try {
+		f.readfile(ibuf,n);
+	} catch (xqp_exception& e) {
+		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		delete[] ibuf;
+		return NULL;
+	}
+cout << TRACE << " : read[" << n << ']' << endl;
+	xml_scanner* scanner_p = new xml_scanner();
+	dom_xml_handler* xhandler_p = new dom_xml_handler(baseuri,uri);
+	scanner_p->scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
+cout << TRACE << " : scanned" << endl;
+	iterator_t result = new dom_singleton_iterator(xhandler_p->context_node());
+cout << TRACE << " : wrap context_node as iteratror" << endl;
+	delete xhandler_p;
+	delete[] ibuf;
+	return result;
+}
+  
+
 iterator_t fn_doc::operator()(
 	zorba* zorp,
 	vector<iterator_t>& argv)
 {
+cout << TRACE << endl;
 	if (!validate_args(argv)) return NULL;
+cout << TRACE << " : args validated" << endl;
 	item_t* i_p = (item_t*)(argv[0]->peek());
+cout << TRACE << " : item extracted from iterator" << endl;
 	if (i_p->is_empty()) return NULL;
-	xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[1],xs_string);
+cout << TRACE << " : item not empty" << endl;
+	xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[0],xs_string);
+cout << TRACE << " : item cast to string" << endl;
 	string uri = v_p->string_value();
+cout << TRACE << " : string value returned: " << uri << endl;
 	return xqp_load(zorp,uri,"/",uri);
 }
   
 bool fn_doc::validate_args(
 	vector<iterator_t>& argv)
 {
+cout << TRACE << endl;
 	if (argv.size()!=1) return false;
-	return _validate<dom_item>(argv[0],xs_string);
+cout << TRACE << " : argv.size()==1" << endl;
+	return _validate<item>(argv[0],xs_string);
 }
 
 sequence_type_t fn_doc::type_check(signature& sig)
@@ -392,45 +446,6 @@ sequence_type_t fn_doc::type_check(signature& sig)
 //15.5.6 fn:collection
 
 
-
-/*______________________________________________________________________
-|
-| Extensions
-|_______________________________________________________________________*/
-
-/*..........................................
- : document-load                           :
- :.........................................*/
-iterator_t xqp_load(
-	zorba* zorp,
-	string const& path,
-	string const& baseuri,
-	string const& uri)
-{
-	file f(path);
-	if (!f.exists()) {
-		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
-		return NULL;
-	}
-	unsigned sz = f.get_size();
-	size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
-	char* ibuf = new char[n+1];
-	try {
-		f.readfile(ibuf,n);
-	} catch (xqp_exception& e) {
-		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
-		delete[] ibuf;
-		return NULL;
-	}
-	xml_scanner* scanner_p = new xml_scanner();
-	dom_xml_handler* xhandler_p = new dom_xml_handler(baseuri,uri);
-	scanner_p->scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
-	iterator_t result = new singleton_iterator(xhandler_p->context_node());
-	delete xhandler_p;
-	delete[] ibuf;
-	return result;
-}
-  
 
 } /* namespace xqp */
  

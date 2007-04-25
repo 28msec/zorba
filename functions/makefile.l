@@ -63,7 +63,10 @@ Sequences_test : Sequences.h Sequences.cpp Sequences_test.cpp
 
 
 all :	\
-	signature 
+	signature \
+	function \
+	Sequences \
+	SequencesImpl
 
 
 test : \

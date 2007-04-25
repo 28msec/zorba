@@ -10,11 +10,14 @@
 #include "Sequences.h"
 
 #include "../context/common.h"
+#include "../dom/dom_values.h"
 #include "../dom/dom_nodes.h"
 #include "../util/tokenbuf.h"
+#include "../util/tracer.h"
 #include "../util/xqp_exception.h"
 
 #include <iostream>
+#include <typeinfo>
 
 
 using namespace std;
@@ -95,11 +98,20 @@ void _doc(
 	xs_stringValue* uri_p = zorp->get_value_factory()->make_xs_string(uri);
 	argv.push_back(new singleton_iterator(uri_p));
 	iterator_t it = fn_doc_(zorp, argv);
+	cout << TRACE << " : fn_doc_ returned" << endl;
 	if (it==NULL) { cout << "Error: doc returned NULL\n"; return; }
+	cout << TRACE << " : fn_doc_ returned non-NULL" << endl;
 	if (it->done()) { cout << "Error: doc returned empty\n"; return; }
-	item* i_p = (item*)it->next();
-	if (i_p->type()!=documentNode) { cout << "Error: non-doc node\n"; return; }
-	dom_node* dn_p = (dom_node*)i_p;
+	cout << TRACE << " : fn_doc_ returned non-empty" << endl;
+
+	//item* i_p = (item*)it->next();
+	//cout << TRACE << " : item type = " << typeid(*i_p).name() << endl;
+	//if (i_p->type()!=documentNode) { cout << "Error: non-doc node\n"; return; }
+	//cout << TRACE << " : item has document node type" << endl;
+
+	dom_document_node* dn_p = (dom_document_node*)it->next();
+	cout << TRACE << " : cast item as document node" << endl;
+	if (dn_p==NULL) { cout << TRACE << " : dn_p==NULL" << endl; return; }
 	cout << "\n======================\n"; dn_p->put(cout) << endl;
 }
 
@@ -152,7 +164,7 @@ int main(int argc, char* argv[])
 
 			errors::errcode err = zor.get_error();
 			if (err>0) {
-				cout << cmd << ": error: " << err << endl;
+				cout << cmd << ": error: " << errors::decode(err) << endl;
 			}
 		}
 	} catch (xqp_exception& e) {

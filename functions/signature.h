@@ -10,11 +10,12 @@
 #ifndef XQP_SIGNATURE_H
 #define XQP_SIGNATURE_H
 
-#include "../context/common.h"
-#include "../types/sequence_type.h"
-#include "../util/fxhashmap.h"
-#include "../util/rchandle.h"
-#include "../values/nodes.h"
+#include "context/common.h"
+#include "types/sequence_type.h"
+#include "util/fxhashmap.h"
+#include "util/rchandle.h"
+#include "values/qname.h"
+#include "values/nodes.h"
 
 #include <string>
 #include <vector>
@@ -34,26 +35,26 @@ class context;
 class signature : public rcobject
 {
 public:
-	const qname_value* qname_p;
+	const qname* qname_p;
 	std::vector<sequence_type_t> arg_v;
 	static fxhashmap<signature const*> sigmap;	// map: fname -> signture
 
 public:
-	signature(qname_value const*,
+	signature(qname const*,
 						sequence_type_t return_type);
-	signature(qname_value const*,
+	signature(qname const*,
 						sequence_type_t arg1,
 						sequence_type_t return_type);
-	signature(qname_value const*,
+	signature(qname const*,
 						sequence_type_t arg1,
 						sequence_type_t arg2,
 						sequence_type_t return_type);
-	signature(qname_value const*,
+	signature(qname const*,
 						sequence_type_t arg1,
 						sequence_type_t arg2,
 						sequence_type_t arg3,
 						sequence_type_t return_type);
-	signature(qname_value const*,
+	signature(qname const*,
 						sequence_type_t arg1,
 						sequence_type_t arg2,
 						sequence_type_t arg3,
@@ -68,7 +69,7 @@ public:
 	sequence_type_t & operator[](int i) { return arg_v[i]; }
 	sequence_type_t const& return_type() const { return arg_v[0]; }
 	sequence_type_t & return_type() { return arg_v[0]; }
-	qname_value const* get_name() const { return qname_p; }
+	qname const* get_name() const { return qname_p; }
 
 };
 
