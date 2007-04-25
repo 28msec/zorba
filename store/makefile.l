@@ -124,6 +124,7 @@ all : \
 	module_resolver \
 	schema_resolver \
 	xml_term \
+	scan_handler \
 	xml_scanner
 
 test : \
