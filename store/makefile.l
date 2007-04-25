@@ -76,23 +76,6 @@ xml_term : xml_term.h xml_term.cpp
 namepool : namepool.h namepool.cpp
 	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/namepool.${SUFX} namepool.cpp
 
-itemstore : itemstore.h itemstore.cpp
-	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore.${SUFX} itemstore.cpp
-
-itemstore_test : itemstore.h itemstore.cpp itemstore_test.cpp
-	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/itemstore_test \
-		../context/${BUILD}/context.${SUFX} \
-		../runtime/${BUILD}/iterator.${SUFX} \
-		../types/${BUILD}/sequence_type.${SUFX} \
-		../util/${BUILD}/xqp_exception.${SUFX} \
-		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
-		../util/${BUILD}/fxcharheap.${SUFX} \
-		../values/${BUILD}/nodes.${SUFX} \
-		../values/${BUILD}/xs_primitive_values.${SUFX} \
-		${BUILD}/itemstore.${SUFX} \
-	itemstore_test.cpp
- 
 xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/xml_handler_test \
 		../context/${BUILD}/context.${SUFX} \
@@ -117,7 +100,6 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 
 
 all : \
-	itemstore \
 	uri_resolver \
 	collation_resolver \
 	collection_resolver \
