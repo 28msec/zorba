@@ -3,7 +3,6 @@
  *  $Id: fxvector.h,v 1.3 2006/11/01 17:56:20 Paul Pedersen Exp $
  *
  *  Copyright 2006-2007 FLWOR Foundation.  All Rights Reserved.
- *
  *	Author: Paul Pedersen
  *
  */
