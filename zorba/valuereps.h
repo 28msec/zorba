@@ -63,49 +63,40 @@ public:
 
 /*______________________________________________________________________
 |  
-|  'value' - top of the XQuery value hierarchy
-|  [http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
-|_______________________________________________________________________*/
-
-class sequenceRep : public objectRep
-{
-public:
-	sequence_type_t theType;		// typecode
-
-public:
-	sequenceRep(sequence_type_t type) : theType(type) {}
-	sequenceRep() : theType(xs_anyType) {}
-	~sequenceRep() {}
-
-public:
-	sequence_type_t type() const { return theType; }
-  std::string describe() const;
-};
-
-
-/*______________________________________________________________________
-|  
-|  'item' - union of node types and atomic types
+|  'item' - top of the XQuery value hierarchy
+|           union of node types and atomic types
 |  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class itemRep : public sequenceRep
+class itemRep : public objectRep
 {
 public:
-	itemRep(sequence_type_t type) : sequenceRep(type) {}
+	sequence_type_t theType;		// typecode
+	uint32_t theLength;					// full length in bytes
+
+public:
+	itemRep(sequence_type_t type, uint32_t length)
+		: theType(type), theLength(length) {}
+	itemRep(sequence_type_t type)
+		: theType(type), theLength(0) {}
 	itemRep() {}
-	~itemRep() {}
 
 public:		// accessors
-  std::ostream& put(std::ostream& os) const;
-  std::string describe() const;
+	sequence_type_t type() const { return theType; }
+	uint32_t length() const { return theLength; }
 
-public:		// XQuery interface
+	sequence_type_t& type() { return theType; }
+	uint32_t& length() { return theLength; }
+
+public:		// output
+  std::ostream& put(zorba*,std::ostream&) const;
+  std::string describe() const;
 	std::string string_value() const;
-	iterator_t atomized_value() const;
-	bool is_empty() const;
-	bool is_node() const;
-	bool is_atomic() const;
+
+protected:	// lock out
+	itemRep(itemRep&) {}
+	~itemRep() {}
+
 };
 
 
@@ -117,20 +108,21 @@ public:		// XQuery interface
 class atomic_valueRep :	public itemRep
 {
 public:
-	atomic_valueRep(sequence_type_t type) : itemRep(type) {}
+	atomic_valueRep(sequence_type_t type, uint32_t length)
+		: itemRep(type,length) {}
+	atomic_valueRep(sequence_type_t type)
+		: itemRep(type) {}
+	atomic_valueRep() {}
+
+public:		// output
+  std::ostream& put(zorba*,std::ostream&) const;
+  std::string describe() const;
+	std::string string_value() const;
+
+protected:	// lock out
+	atomic_valueRep(itemRep&) {}
 	~atomic_valueRep() {}
 
-public:		// accessors
-  std::ostream& put(std::ostream& os) const;
-  std::string describe() const;
-
-public:		// XQuery interface
-	string string_value() const;
-	iterator_t atomized_value() const;
-
-	bool is_empty() const;
-	bool is_node() const;
-	bool is_atomic() const;
 };
 
 

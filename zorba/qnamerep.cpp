@@ -10,49 +10,57 @@
 #include "qnamerep.h"
 #include "context/common.h"
 #include "runtime/item_iterator.h"
+#include "runtime/singleton_iterators.h"
 #include "util/hashfun.h"
 
 using namespace std;
 namespace xqp {
   
 qnamerep::qnamerep(
-	const string& uri,
+	itemid_t uri_id,
 	const string& prefix, 
 	const string& localname)
 :
-	atomic_value(xs_qname)
+	theURIID(uri_id),
+	theName(prefix+':'+localname)
 {
-	name = string(prefix+':'+localname+':'+uri);
+}
+
+qnamerep::qnamerep(
+	itemid_t uri_id,
+	const string& name)
+:
+	theURIID(uri_id),
+	theName(name)
+{
 }
 
 qnamekey_t qnamerep::qnamekey() const
 {
-	return hashfun::h64(uri(),hashfun::h64(prefix(),hashfun::h64(localname())));
+	return hashfun::h64(prefix(),hashfun::h64(localname(),theURIID));
 }
 
 string qnamerep::prefix() const
 {
-	string::size_type n = name.find(':');
-  return name.substr(0,n);
+	string::size_type n = theName.find(':');
+  return theName.substr(0,n);
 }
 
 string qnamerep::localname() const
 {
-	string::size_type n = name.find(':');
-	string::size_type m = name.find(':',n+1);
-  return name.substr(n+1,(m-n-1));
+	string::size_type n = theName.find(':');
+	string::size_type m = theName.find(':',n+1);
+  return theName.substr(n+1,(m-n-1));
 }
 
-string qnamerep::uri() const
+itemid_t qnamerep::uri_id() const
 {
-	string::size_type n = name.find(':');
-	string::size_type m = name.find(':',n+1);
-  return name.substr(m+1);
+  return theURIID;
 }
 
 ostream& qnamerep::put(ostream& os) const
 {
-	os << '[' << uri() << ']' << prefix() << ':' << localname();
+	os << '[' << uri_id() << ']' << prefix() << ':' << localname();
 	return os;
 }
 
@@ -64,11 +72,26 @@ string qnamerep::describe() const
 	return oss.str();
 }
 
-iterator_t qnamerep::atomized_value() const
-{ return NULL; }
+iterator_t qnamerep::atomized_value(
+	zorba* zorp) const
+{
+	return NULL;
+}
 
-iterator_t qnamerep::effective_boolean_value() const
-{ return NULL; }
+iterator_t qnamerep::effective_boolean_value(
+	zorba* zorp) const
+{
+	return NULL;
+}
+
+iterator_t qnamerep::string_value(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	put(oss);
+	item_iterator* it_p = new string_singleton(stringValue(oss.str()));
+	return it_p;
+}
 
 string qnamerep::string_value() const
 {

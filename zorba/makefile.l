@@ -8,6 +8,9 @@ valuereps : valuereps.h valuereps.cpp
 qnamerep : qnamerep.h qnamerep.cpp
 	g++ -c ${OPT} -o Build/qnamerep.${SUFX} qnamerep.cpp
 
+stringrep : stringrep.h stringrep.cpp
+	g++ -c ${OPT} -o Build/stringrep.${SUFX} stringrep.cpp
+
 primitive_valuereps : primitive_valuereps.h primitive_valuereps.cpp
 	g++ -c ${OPT} -o Build/primitive_valuereps.${SUFX} primitive_valuereps.cpp
 
@@ -38,10 +41,8 @@ zorba_iterator : zorba_iterator.h zorba_iterator.cpp
 all : \
 	valuereps \
 	qnamerep \
-	primitive_valuereps \
-	nodereps \
-	zorba_values \
-	zorba_primitive_values \
-	zorba_iterator
+	nodereps
 
+#zorba_nodes 
+#zorba_qname 
 

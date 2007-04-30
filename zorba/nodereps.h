@@ -22,6 +22,7 @@
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
 
+#include <string>
 #include <vector>
 #include <sys/types.h>
 
@@ -29,7 +30,6 @@ namespace xqp {
 
 typedef rchandle<noderep_iterator> noderep_it;
 
-class xs_stringValue;
 class element_noderep;
 class qname;
 class zorba;
@@ -38,8 +38,7 @@ class zorba;
 class noderep : public itemRep
 {
 protected:
-	uint32_t  theLength;			// blob storage length
-	itemref_t theRef;					// forwarding reference for update
+	off_t theRef;							// forwarding reference for update
 	uint32_t  theGen;					// generation number
 	itemid_t  theID;					// node ordinal id
 	itemid_t  theParentID;		// parent node ordinal id
@@ -48,7 +47,7 @@ public:		// ctor,dtor
 	noderep(
 	  sequence_type_t,      	// node type
 	  uint32_t length,				// length in bytes
-	  itemref_t ref,					// forwarding reference
+	  off_t ref,							// forwarding reference
 	  uint32_t gen,			 			// generation number
 	  itemid_t id,           	// ordinal node id
 	  itemid_t parent);      	// parent node id
@@ -57,12 +56,12 @@ public:		// ctor,dtor
 	~noderep() {}
 
 public:		// accessors
-	itemref_t ref() const { return theRef; }
+	off_t ref() const { return theRef; }
 	uint32_t gen() const { return theGen; }
 	itemid_t id() const { return theID; }
 	itemid_t parentid() const { return theParentID; }
 
-	itemref_t& ref() { return theRef; }
+	off_t& ref() { return theRef; }
 	uint32_t& gen() { return theGen; }
 	itemid_t& id() { return theID; }
 	itemid_t& parentid() { return theParentID; }
@@ -72,24 +71,6 @@ public:		// storage interface
 	void* operator new(size_t nBytes, const void* p) { return (void*)p; }
 	void* operator new(size_t n, size_t m) { return new char[n+m]; }
 	void  operator delete(void*) {}
-	
-public:		// XQuery sub-interface
-	string string_value() const { return ""; } 
-	const xs_stringValue* baseuri(zorba*) const { return NULL; }
-	const xs_stringValue* docuri(zorba*)  const { return NULL; }
-
-	qname* node_name() const { return NULL; }
-	qname* type_name() const { return NULL; }
-
-	noderep* parent(zorba*) const;
-
-	noderep_it namespaces() const { return NULL; }
-	noderep_it attributes() const { return NULL; }
-	noderep_it children() const { return NULL; }
-
-	bool is_id() const { return false; }
-	bool is_idrefs() const { return false; }
-	bool nilled() const { return false; }
 
 };
 	
@@ -145,7 +126,7 @@ public:
 
 public:
 	noderep* operator*() const;
-	child_noderep_iterator& operator++();
+	child_const_noderep_iterator& operator++();
 
 };
 
@@ -215,8 +196,8 @@ class document_noderep : public noderep
 	friend class child_noderep_iterator;
 
 protected:
-	itemid_t theBaseuri;		// base URI
-	itemid_t theDocuri;			// document URI
+	itemid_t theBaseUriID;
+	itemid_t theDocUriID;
 	char rest[0];
 	/*
     node child[0]
@@ -236,12 +217,9 @@ public:		// storage interface
 
 public:		// XQuery sub-interface
 	std::string string_value() const;
-
-	const xs_stringValue* baseuri(zorba*) const;
-	const xs_stringValue* docuri(zorba*) const;
-
+	itemid_t baseuri() const { return theBaseUriID; }
+	itemid_t docuri() const { return theDocUriID; }
 	noderep_it children() const;
-	noderep_it namespaces() const;
 
 private:	// ctor,dtor
 	document_noderep(document_noderep&) {}
@@ -264,15 +242,16 @@ class element_noderep : public noderep
 	friend class attribute_noderep_iterator;
 
 protected:
-	itemid_t qnameID;					// element QName
-	itemid_t namespacesID;		// in-scope namespaces
-	uint32_t nodeOffset;			// offset to first node
+	itemid_t theQNameID;			// element QName
+	itemid_t theTypeID;				// type QName
+	itemid_t theNSID;					// in-scope namespaces
+	uint32_t theNodeOffset;		// offset to first node
 	char rest[0];
 	/*
     attr[0]
     ...
     attr[m-1]
-    node[0]      <- node_offset
+    node[0]      <- theNodeOffset
     ...
     node[n-1]
 	*/
@@ -282,13 +261,9 @@ public:
 	element_noderep(zorba*, itemid_t qnameid);
 
 public:		// accessors
-	qname& get_qname() const;													// element QName
-	namespace_noderep* name_space_at(uint32_t) const;	// n-th namespace
-	attribute_noderep* attr_at(uint32_t) const;				// n-th attribute
-	noderep* node_at(uint32_t) const;									// n-th child
-	uint32_t ns_count() const;												// number of namespaces
-	uint32_t attr_count() const;											// number of attributes
-	uint32_t child_count() const;											// number of children
+	itemid_t qnameID() const { return theQNameID; }
+	itemid_t typeID() const { return theTypeID; }
+	itemid_t nsID() const { return theNSID; }
 
 public:		// storage interface
 	void* operator new(size_t n, void* p) { return p; }
@@ -297,19 +272,9 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery sub-interface
-	std::string string_value() const;
-	qname* node_name(zorba*) const;
-
-	const xs_stringValue* baseuri(zorba*) const;
-	const xs_stringValue* docuri(zorba*) const;
-
+	std::string string_value(zorba*) const;
 	noderep_it attributes() const;
 	noderep_it children() const;
-	noderep_it namespaces(zorba*) const;
-
-	bool is_nilled() const { return false; }
-	bool is_id() const { return (theType & ID_SUB5); }
-	bool is_idref() const { return (theType & IDREF_SUB5); }
 
 private:	//ctor,dtor - lock out
 	element_noderep(const element_noderep&) {}
@@ -330,10 +295,10 @@ class attribute_noderep :	public noderep
 	friend class child_noderep_iterator;
 
 protected:
-	itemid_t qnameID;
+	itemid_t theQNameID;
 	char rest[0];
 	/*
-		char[] value
+		stringRep value
 	*/
 
 public:
@@ -354,13 +319,11 @@ public:	// storage interface
 	void* operator new(size_t n, size_t m) { return new char[n+m]; }
 	void  operator delete(void*) {}
 
+public:		// accessors
+	itemid_t qnameID() const { return theQNameID; }
+
 public:	// XQuery sub-interface
 	std::string string_value() const;
-	qname* node_name(zorba*) const;
-	const xs_stringValue* baseuri(zorba*) const;
-
-	bool is_id() const { return (theType & ID_SUB5); }
-	bool is_idref() const { return (theType & IDREF_SUB5); }
 
 private:	//ctor,dtor - lock out
 	attribute_noderep(attribute_noderep&);
@@ -382,11 +345,11 @@ class namespace_noderep : public noderep
 
 protected:
 	nskey_t  theNsid;
-	uint32_t uriOffset;
+	uint32_t theURIOffset;
 	char rest[0];
 	/*
-		char[] prefix
-		char[] uri  
+		stringRep prefix
+		stringRep uri  
 	*/
 
 public:
@@ -399,8 +362,6 @@ public:
 
 public:		// storage interface
 	nskey_t& nsid() { return theNsid; }
-
-public:	// storage interface
 	void* operator new(size_t n, void* p) { return p; }
 	void* operator new(size_t n, const void* p) { return (void*)p; }
 	void* operator new(size_t n, size_t m) { return new char[n+m]; }
@@ -408,8 +369,6 @@ public:	// storage interface
 
 public:		// XQuery sub-interface
 	std::string string_value() const;
-	qname* node_name(zorba*) const;
-
 	std::string prefix() const;
 	std::string uri() const;
 
@@ -436,8 +395,8 @@ protected:
 	uint32_t theContentOffset;
 	char rest[0];
 	/*
-		char[] target
-		char[] content
+		stringRep target
+		stringRep content
 	*/
 
 public:
@@ -445,16 +404,15 @@ public:
 	pi_noderep(zorba*);
 
 public:		// storage interface
-	uint32_t& content() { return theContentOffset; }
 	void* operator new(size_t n, void* p) { return p; }
 	void* operator new(size_t n, const void* p) { return (void*)p; }
 	void* operator new(size_t n, size_t m) { return new char[n+m]; }
 	void  operator delete(void*) {}
 
-public:		// XQuery interface
+public:		// XQuery sub-interface
 	std::string string_value() const;
-	const xs_stringValue* baseuri(zorba*) const;
-	qname* node_name(zorba*) const;
+	std::string content() const;
+	std::string target() const;
 
 private:	//ctor,dtor - lock out
 	pi_noderep(pi_noderep&) {}
@@ -478,7 +436,7 @@ class comment_noderep : public noderep
 protected:
 	char rest[0];
 	/*
-		char[] content
+		stringRep content
 	*/
 
 public:
@@ -491,9 +449,9 @@ public:	// storage interface
 	void* operator new(size_t n, size_t m) { return new char[n+m]; }
 	void operator delete(void*) {}
 
-public:		// XQUery interface
+public:		// XQuery sub-interface
+	std::string content() const;
 	std::string string_value() const;
-	const xs_stringValue* baseuri(zorba*) const;
 
 private:	// lock out default and copy constructors
 	comment_noderep(comment_noderep&) {}
@@ -515,6 +473,9 @@ class text_noderep : public noderep
 
 protected:
 	char rest[0];
+	/*
+		stringRep content
+	*/
 
 public:	// storage interface
 	void* operator new(size_t n, void* p) { return p; }
@@ -531,8 +492,8 @@ public:		// accessors
 	std::string str() const;
 
 public:		// XQuery interface
-	string string_value() const;
-	const xs_stringValue* baseuri(zorba*) const;
+	std::string string_value() const;
+	std::string baseuri(zorba*) const;
 
 private:	// lock out default and copy constructors
 	text_noderep(text_noderep&) {}
@@ -565,9 +526,9 @@ public:
 	contentRep(zorba* zorp,const std::string& s)
 	:
 		type(xs_string),
-		length(s.length()),
-		strcpy(rest,s.c_str(),length)
+		length(s.length())
 	{
+		strncpy(rest,s.c_str(),length);
 	}
 	
 public:		// accessors
@@ -579,7 +540,7 @@ private:	// lock out default and copy constructors
 	~contentRep() {}
 
 public:		// output/debugging
-	std::ostream& put(std::ostream& os) const 
+	std::ostream& put(zorba*,std::ostream& os) const 
 	{
 		return os << str();
 	}
@@ -607,8 +568,8 @@ public:
 	collection_noderep(zorba*,const std::string& uri);
 	
 public:
-	const xs_stringValue* baseuri(zorba*) const;
-	const xs_stringValue* colluri(zorba*) const;
+	std::string baseuri(zorba*) const;
+	std::string colluri(zorba*) const;
 	noderep_it children() const;
 
 private:	// lock out default and copy constructors

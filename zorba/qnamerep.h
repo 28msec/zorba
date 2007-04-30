@@ -21,30 +21,44 @@ class itemstore;
 class qnamerep : public atomic_value
 {
 protected:
-	std::string name;	// prefix:localname:uri
+	itemid_t theURIID;
+	std::string theName;	// prefix:localname
 
 public:
-	~qnamerep() {}
-	qnamerep() : atomic_value(xs_qname) {}
+	qnamerep() {}
 	qnamerep(
-		const std::string& uri,
+		itemid_t uri_id,
+		const std::string& name);
+	qnamerep(
+		itemid_t uri_id,
 		const std::string& prefix,
 		const std::string& localname);
 
+	~qnamerep() {}
+
 public:
-	std::string uri() const;
+	itemid_t uri_id() const;
 	std::string prefix() const;
 	std::string localname() const;
+	std::string string_value() const;
 	qnamekey_t qnamekey() const;
+
+public: 	// XQuery atomic_value
+	sequence_type_t type() const { return xs_qname; }
+	iterator_t atomized_value(zorba*) const;
+	iterator_t effective_boolean_value(zorba*) const;
+	iterator_t string_value(zorba*) const;
+
+	bool is_empty() const;
+	bool is_node() const;
+	bool is_atomic() const;
 
 public:		// output,debugging
 	std::ostream& put(std::ostream& os) const;
-	std::string string_value() const;
 	std::string describe() const;
-	iterator_t atomized_value() const;
-	iterator_t effective_boolean_value() const;
 
 };
+
 
 
 } /* namespace xqp */

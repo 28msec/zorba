@@ -8,13 +8,14 @@
  */
 
 #include "nodereps.h"
-#include "primitive_valuereps.h"
+#include "stringrep.h"
 
-#include "../runtime/errors.h"
-#include "../runtime/zorba.h"
-#include "../util/tracer.h"
-#include "../values/qname.h"
-#include "../values/xs_primitive_values.h"
+#include "runtime/errors.h"
+#include "runtime/zorba.h"
+#include "util/Assert.h"
+#include "util/tracer.h"
+#include "util/xqp_exception.h"
+#include "values/qname.h"
 
 #include <stdlib.h>
 
@@ -26,25 +27,19 @@ namespace xqp {
 	:.........................................*/
 
 noderep::noderep(
-	sequence_type_t type,		// node type
+	sequence_type_t type,		// XQuery type
 	uint32_t length,				// item length
-	itemref_t ref,					// forwarding item reference
+	off_t ref,							// forwarding item reference
 	uint32_t gen,						// genration number
 	itemid_t id,						// ordinal node id
 	itemid_t parentid)			// parent node id
 :
-	itemRep(type),
-	theLength(length),
+	itemRep(type,length),
 	theRef(ref),
 	theGen(gen),
 	theID(id),
 	theParentID(parentid)
 {
-}
-
-noderep* noderep::parent(zorba* zorp) const
-{
-	return zorp->get_store()->get_noderep(theParentID);
 }
 
 
@@ -58,32 +53,24 @@ document_noderep::document_noderep(
 	itemid_t uri)
 :
 	noderep(
-		documentNode,							/* type								*/
-		0,												/* length 						*/
-		0,												/* forwarding ref			*/
-		zorp->gen(),							/* generation number	*/
-		zorp->next_itemid(),			/* ordinal item id		*/
-		zorp->context_itemid()),	/* parent item id			*/
-	theBaseuri(baseuri),
-	theDocuri(uri)
+		documentNode,	// XQuery type
+		0,						// length
+		0,						// forwarding ref
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid()),
+
+	theBaseUriID(baseuri),
+	theDocUriID(uri)
 {
 cout << TRACE << endl;
 	theLength = sizeof(document_noderep);
 }
 
-const xs_stringValue* document_noderep::baseuri(
-	zorba* zorp) const
-{
-	return zorp->get_store()->get_uri(theBaseuri);
-} 
-
-const xs_stringValue* document_noderep::docuri(
-	zorba* zorp) const
-{
-	return zorp->get_store()->get_uri(theDocuri);
-} 
-
-noderep_it document_noderep::children() const
+noderep_it document_noderep::children( ) const
 {
 	return new child_noderep_iterator(this, new(rest) noderep());
 } 
@@ -99,7 +86,9 @@ string document_noderep::string_value() const
 	return oss.str();
 }
 
-ostream& document_noderep::put(zorba* zorp,ostream& os) const
+ostream& document_noderep::put(
+	zorba* zorp,
+	ostream& os) const
 {
 	os << "<?xml version=\"1.0\"?>\n";
 	noderep* n_p = new(rest) noderep();
@@ -154,16 +143,16 @@ ostream& document_noderep::put(zorba* zorp,ostream& os) const
  :  collection nodes                       :
  :.........................................*/
 
-const xs_stringValue* collection_noderep::baseuri(
+string collection_noderep::baseuri(
 	zorba* zorp) const
 {
-	return NULL;
+	return "";
 }
 
-const xs_stringValue* collection_noderep::colluri(
+string collection_noderep::colluri(
 	zorba* zorp) const
 {
-	return NULL;
+	return "";
 }
 
 noderep_it collection_noderep::children() const
@@ -183,66 +172,57 @@ element_noderep::element_noderep(
 	noderep(
 		elementNode,							// typecode
 		0,	                     	// the length
-		0,												// forwarding itemref
-		zorp->gen(),							// generation number
-		zorp->next_itemid(),			// ordinal item id
-		zorp->context_itemid()),	// parent item id
-	qnameID(qname),							// element QName id
-	namespacesID(0)							// XXX in-scope namespaces
+		0,												// forwarding off
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid()),
+
+	theQNameID(qname),					// element qname id
+	theNSID((dynamic_cast<itemstore*>(zorp->get_data_manager()))->in_scope_ns())
 {
 cout << TRACE << endl;
 }
 
-string element_noderep::string_value() const
-{
-	return "";
-}
-
-const xs_stringValue* element_noderep::baseuri(
+string element_noderep::string_value(
 	zorba* zorp) const
 {
-	return parent(zorp)->baseuri(zorp);
-}
-
-qname* element_noderep::node_name(
-	zorba* zorp) const
-{
-	return zorp->get_qname(qnameID);
-}
-
-const xs_stringValue* element_noderep::docuri(
-	zorba* zorp) const
-{
-	return parent(zorp)->docuri(zorp);
+	ostringstream oss;
+	for (noderep_it it = children(); it->done(); ++(*it)) {
+		(**it)->put(zorp,oss);
+	}
+	return oss.str();
 }
 
 noderep_it element_noderep::attributes() const
 {
-	return new attribute_noderep_iterator(
-		this,
-		new(&rest) noderep(),
-		new(&rest[nodeOffset]) noderep());
+	return
+		new attribute_noderep_iterator(
+			this,
+			new(&rest) noderep(),
+			new(&rest[theNodeOffset]) noderep());
 }
 
 noderep_it element_noderep::children() const
 {
-	return new child_noderep_iterator(
-		this,
-		new(&rest[nodeOffset]) noderep());
+	return
+		new child_noderep_iterator(
+			this,
+			new(&rest[theNodeOffset]) noderep());
 }
 
-noderep_it element_noderep::namespaces(
-	zorba* zorp) const
-{
-	return new namespace_noderep_iterator(this);
-}
-
-ostream& element_noderep::put(zorba* zorp, ostream& os) const
+ostream& element_noderep::put(
+	zorba* zorp,
+	ostream& os) const
 {
   cout << TRACE << " : element_node" << endl;
 
-  qname* q_p = zorp->get_qname(qnameID);
-  q_p->put(os);
+	data_manager* dmgr_p = zorp->get_data_manager();
+  qname* qn_p = dmgr_p->get_qname(theQNameID);
+	Assert<null_pointer>(qn_p);
+  qn_p->put(os);
   
 	noderep* n_p = new(rest) noderep();
 	child_const_noderep_iterator it(this,n_p);
@@ -291,20 +271,6 @@ ostream& element_noderep::put(zorba* zorp, ostream& os) const
 	return os;
 }
 
-noderep* element_noderep::node_at(uint32_t n) const
-{
-	child_const_noderep_iterator it(this, new(&rest[nodeOffset]) noderep());
-	uint32_t i = 0;
-	for (; i<n && !it.done(); ++it);
-	Assert<bad_arg>(i==n);
-	return *it;
-}
-
-namespace_noderep* element_noderep::name_space_at(uint32_t) const
-{ return NULL; }
-
-attribute_noderep* element_noderep::attr_at(uint32_t) const
-{ return NULL; }
 
 
 /*..........................................
@@ -318,11 +284,15 @@ attribute_noderep::attribute_noderep(
 	noderep(
 		attributeNode,									// typecode
 		sizeof(attribute_noderep),			// item length
-		0,															// forwarding itemref
-		zorp->gen(),										// generation number
-		zorp->next_itemid(),						// ordinal item id
-		zorp->context_itemid()),				// parent item id
-	qnameID(qname)
+		0,															// forwarding off
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid()),
+
+	theQNameID(qname)
 {
 cout << TRACE << endl;
 }
@@ -335,46 +305,35 @@ attribute_noderep::attribute_noderep(
 	noderep(
 		attributeNode,									// typecode
 		sizeof(attribute_noderep),			// item length
-		0,															// forwarding itemref
-		zorp->gen(),										// generation number
-		zorp->next_itemid(),						// ordinal item id
-		zorp->context_itemid()),				// parent item id
-	qnameID(qname)
-{
-	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_store());
-	if (istore_p==NULL) {
-		cout << TRACE << " : ctor failed, no 'itemstore'" << endl;
-		return;
-	}
-	itemstore& istore = *istore_p;
-	new(istore) stringRep(istore,val);
-	cout << TRACE << endl;
-}
+		0,															// forwarding off
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid()),
 
-qname* attribute_noderep::node_name(
-	zorba* zorp) const
+	theQNameID(qname)
 {
-	return zorp->get_qname(qnameID);
+	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_data_manager());
+	Assert<null_pointer>(istore_p!=NULL);
+	istore_p->add_text(val);
 }
 
 string attribute_noderep::string_value() const
 {
-	stringRep* s_p = new(rest) stringRep();
-	return s_p->val();
-}
-
-const xs_stringValue* attribute_noderep::baseuri(
-	zorba* zorp) const
-{
-	return parent(zorp)->baseuri(zorp);
+	stringrep* srep = new(rest) stringrep();
+	return srep->string_value();
 }
 
 ostream& attribute_noderep::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	return os << "@" << node_name(zorp)->string_value()
-						<< "=\"" << string_value() << "\"";
+	data_manager* dmgr_p = zorp->get_data_manager();
+	qname* qn_p = dmgr_p->get_qname(theQNameID);
+	qn_p->put(os);
+	return os << "=\"" << string_value() << "\"";
 }
 
 
@@ -391,36 +350,44 @@ namespace_noderep::namespace_noderep(
 		namespaceNode,						// type
 		0,                    		// length
 		0,												// forwarding reference
-		zorp->gen(),							// generation number
-		zorp->next_itemid(),			// ordinal item id
-		zorp->context_itemid())		// parent item id
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid())
 {
-	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_store());
-	if (istore_p==NULL) {
-		cout << TRACE << " : ctor failed, no 'itemstore'" << endl;
-		return;
-	}
+	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_data_manager());
+	Assert<null_pointer>(istore_p!=NULL);
 	itemstore& istore = *istore_p;
-	stringRep* p = new(istore) stringRep(istore,prefix);
-	uriOffset = istore.eos();
-	stringRep* q = new(istore) stringRep(istore,uri);
+	stringrep* p = new(prefix.length()) stringrep(istore,prefix);
+	theURIOffset = istore.eos();
+	stringrep* q = new(uri.length()) stringrep(istore,uri);
 	theLength = sizeof(namespace_noderep) + p->length() + q->length();
 }
 
-qname* namespace_noderep::node_name(
-	zorba* zorp) const
+string namespace_noderep::prefix() const
 {
-	return NULL;
+	stringrep* srep = new(rest) stringrep();
+	return srep->string_value();
+}
+
+string namespace_noderep::uri() const
+{
+	stringrep* srep = new(&rest[theURIOffset]) stringrep();
+	return srep->string_value();
 }
 
 string namespace_noderep::string_value() const
 {
-	return "";
+	return uri();
 }
 
-ostream& namespace_noderep::put(zorba* z_p,ostream& os) const
+ostream& namespace_noderep::put(
+	zorba* zorp,
+	ostream& os) const
 {
-	return os << "xmlns:pre=\"..\"";
+	return os << "xmlns:" << prefix() << "=\"" << uri() <<"\"";
 }
 
 	
@@ -435,9 +402,12 @@ pi_noderep::pi_noderep(
 		processingInstructionNode,
 		sizeof(pi_noderep)>>2,
 		0,
-		zorp->next_gen(),
-		zorp->next_itemid(),
-		zorp->context_itemid())
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid())
 {
 }
 
@@ -446,23 +416,23 @@ string pi_noderep::string_value() const
 	return "";
 }
 
-const xs_stringValue* pi_noderep::baseuri(
-	zorba* zorp) const
+string pi_noderep::target() const
 {
-	return parent(zorp)->baseuri(zorp);
+	stringrep* srep = new(rest) stringrep();
+	return srep->string_value();
 }
 
-qname* pi_noderep::node_name(
-	zorba*) const
+string pi_noderep::content() const
 {
-	return NULL;
+	stringrep* srep = new(&rest[theContentOffset]) stringrep();
+	return srep->string_value();
 }
 
 ostream& pi_noderep::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	return os << "<?..?>";
+	return os << "<?" << target() <<  ' ' << content() << " ?>";
 }
 
 
@@ -477,30 +447,33 @@ comment_noderep::comment_noderep(
 	noderep(
 		commentNode,									// typecode
 		sizeof(comment_noderep),			// item length in bytes
-		0,														// forwarding itemref
-		zorp->gen(),									// generation number
-		zorp->next_itemid(),					// ordinal node id
-		zorp->context_itemid())				// parent node id
+		0,														// forwarding off
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid())
 {
 cout << TRACE << endl;
 }
 
-const xs_stringValue* comment_noderep::baseuri(
-	zorba* zorp) const
+string comment_noderep::content() const
 {
-	return parent(zorp)->baseuri(zorp);
+	stringrep* srep = new(rest) stringrep();
+	return srep->string_value();
 }
 
 string comment_noderep::string_value() const
 {
-	return "";
+	return content();
 }
 
 ostream& comment_noderep::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	return os << "<!-- ... -->";
+	return os << "<!-- " << content() << " -->";
 }
 
 
@@ -516,44 +489,38 @@ text_noderep::text_noderep(
 		textNode,									// type
 		0,												// length
 		0,												// forwarding reference
-		zorp->gen(),								// generation number
-		zorp->next_itemid(),				// ordinal node id
-		zorp->context_itemid())		// parent node id
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid())
 {
 cout << TRACE << endl;
-	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_store());
-	if (istore_p==NULL) {
-		cout << TRACE << " : ctor failed, no 'itemstore'" << endl;
-		return;
-	}
+	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_data_manager());
+	Assert<null_pointer>(istore_p!=NULL);
 	itemstore& istore = *istore_p;
-	new(istore) stringRep(istore,content);
-}
-
-const xs_stringValue* text_noderep::baseuri(
-	zorba* zorp) const
-{
-	return parent(zorp)->baseuri(zorp);
+	new(content.length()) stringrep(istore,content);
 }
 
 string text_noderep::string_value() const
 {
-	stringRep* s_p = new(rest) stringRep();
-	return s_p->val();
+	stringrep* srep = new(rest) stringrep();
+	return srep->string_value();
 }
 
 ostream& text_noderep::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	stringRep* s_p = new(rest) stringRep();
-	return os << s_p->val();
+	stringrep* srep = new(rest) stringrep();
+	return os << srep->string_value();
 }
 
 string text_noderep::str() const
 {
-	stringRep* s_p = new(rest) stringRep();
-	return s_p->val();
+	stringrep* srep = new(rest) stringrep();
+	return srep->string_value();
 }
 
 
@@ -569,17 +536,20 @@ nsseqrep::nsseqrep(
 		namespaceNodeSeq,					// type
 		0,												// byte length
 		0,												// forwarding reference
-		zorp->gen(),							// generation number
-		zorp->next_itemid(),			// ordinal node id
-		zorp->context_itemid())		// parent node id
+		// generation number
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->gen(),
+		// ordinal item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->next_itemid(),
+		// parent item id
+		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid())
 {
 cout << TRACE << endl;
-	//vector<itemid_t>::const_iterator it = nsv.begin();
-	//for (; it!=nsv.end(); ++it) { zorp->get_store()->put(*it); }
 	theLength = sizeof(nsseqrep); // + count<<2;
 }
 
-ostream& nsseqrep::put(zorba*,ostream& os) const
+ostream& nsseqrep::put(
+	zorba* zorp,
+	ostream& os) const
 {
 	return os;
 }
@@ -692,7 +662,8 @@ cout << TRACE << endl;
 }
 
 
-child_const_noderep_iterator& child_const_noderep_iterator::operator++()
+child_const_noderep_iterator&
+child_const_noderep_iterator::operator++()
 {
 cout << TRACE << endl;
 	if (theCurrentNodePtr >= theEndNodePtr) {
@@ -712,7 +683,7 @@ cout << TRACE << endl;
  :.........................................*/
 
 namespace_noderep_iterator::namespace_noderep_iterator(
-	const element_noderep* parent)
+	const noderep* parent)
 :
 	theParentNodePtr(parent)
 {
@@ -727,7 +698,7 @@ namespace_noderep_iterator::namespace_noderep_iterator(
 attribute_noderep_iterator::attribute_noderep_iterator(
 	const noderep* parent,
 	noderep* current,
-	noderep* end)
+	const noderep* end)
 :
 	theParentNodePtr(parent),
 	theCurrentNodePtr(current),

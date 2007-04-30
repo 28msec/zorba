@@ -31,6 +31,10 @@ class zorba_object : public object
 public:
 	zorba_object() {}
 	~zorba_object() {}
+
+public:
+	virtual std::string describe() const { return "zorba_object"; }
+	virtual std::ostream& put(std::ostream& os) const { return os; }
 };
 
 
@@ -40,12 +44,16 @@ public:
 |_______________________________________________________________________*/
 
 class zorba_xquery_exception : public zorba_object,
-																public virtual xquery_exception
+																virtual public xquery_exception
 													
 {
 public:
 	zorba_xquery_exception() {}
 	~zorba_xquery_exception() {}
+
+public:
+	virtual std::string describe() const { return "zorba_xquery_exception"; }
+	virtual std::ostream& put(std::ostream& os) const { return os; }
 };
 
 
@@ -57,55 +65,40 @@ public:
 |_______________________________________________________________________*/
 
 class zorba_ft_value : public zorba_object,
-												public virtual ft_value
+												virtual public ft_value
 {
 public:
 	zorba_ft_value() {}
 	~zorba_ft_value() {}
-};
 
-
-/*______________________________________________________________________
-|  
-|  'value' - top of the XQuery value hierarchy
-|  [http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
-|_______________________________________________________________________*/
-
-class zorba_sequence : public zorba_object,
-												public virtual sequence
-{
 public:
-	zorba_sequence() {}
-	~zorba_sequence() {}
-
-public:		// accessors
-  virtual std::string describe() const { return "item*"; }
-	virtual sequence_type_t type() const { return xs_anyTypeSeq; }
-  virtual std::ostream& put(std::ostream& os) const { return os; }
-
+	virtual std::string describe() const { return "zorba_tf_value"; }
+	virtual std::ostream& put(std::ostream& os) const { return os; }
 };
 
 
 /*______________________________________________________________________
 |  
-|  'item' - union of node types and atomic types
+|  'item' - top of the XQuery value hierarchy,
+|  					union of node types and atomic types
 |  [http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class zorba_item : public zorba_sequence//,
-										//public virtual item
+class zorba_item : public zorba_object,
+										virtual public item
 {
 public:
 	zorba_item() {}
-	~zorba_item() {}
+	virtual ~zorba_item() {}
 
 public:		// accessors
   virtual std::string describe() const { return "item"; }
 	virtual sequence_type_t type() const { return xs_anyType; }
 
 public:		// XQuery interface
-	virtual string string_value() const { return ""; }
-	virtual iterator_t atomized_value() const { return NULL; }
+	virtual iterator_t atomized_value() const { return 0; }
+	virtual iterator_t string_value() const { return 0; }
+
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }
 	virtual bool is_atomic() const { return false; }
@@ -118,20 +111,20 @@ public:		// XQuery interface
 |  'atomic_value' encapsulates values of primitive or derived types
 |_______________________________________________________________________*/
 
-class zorba_atomic_value :	public zorba_item,
-															public virtual atomic_value
+class zorba_atomic_value : public zorba_item,
+														virtual public atomic_value
 {
 public:
 	zorba_atomic_value() {}
-	~zorba_atomic_value() {}
+	virtual ~zorba_atomic_value() {}
 
 public:		// accessors
   virtual std::string describe() const { return "xs_atomicValue"; }
 	virtual sequence_type_t type() const { return xs_anyAtomicType; }
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value() const { return NULL; }
-	virtual string string_value() const { return ""; }
+	virtual iterator_t atomized_value() const { return 0; }
+	virtual iterator_t string_value() const { return 0; }
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }

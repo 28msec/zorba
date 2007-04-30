@@ -12,245 +12,281 @@
 namespace xqp {
 
 // zorba_document_node
-// -----------------
+// -------------------
 
-zorba_document_node::zorba_document_node()
-{}
-	
 zorba_document_node::zorba_document_node(
-	zorba_document_node& dn)
-{}
-
-string zorba_document_node::string_value() const
+	document_noderep* _rep)
+:
+	rep(_rep)
 {
-	ostringstream oss;
-	put(oss);
-	return oss.str();
 }
 
-iterator_t zorba_document_node::base_uri() const
-{ return new zorba_singleton_iterator(baseuri()); }
+zorba_document_node::zorba_document_node(
+	zorba_document_node& dn)
+:
+	rep(dn.rep)
+{
+}
 
-iterator_t zorba_document_node::document_uri() const
-{ return new zorba_singleton_iterator(docuri()); }
+iterator_t zorba_document_node::string_value(zorba*) const
+{
+	return new singleton_iterator(rep->strval());
+}
 
-iterator_t zorba_document_node::children() const
-{ return new child_iterator(this); }
+iterator_t zorba_document_node::base_uri(zorba*) const
+{
+	itemid_t id = rep->baseuri();
+	return new singleton_iterator(zorba->get_uri(id));
+}
 
-iterator_t zorba_document_node::typed_value() const
-{ return new singleton_iterator(string_value()); }
+iterator_t zorba_document_node::document_uri(zorba*) const
+{
+	itemid_t id = rep->docuri();
+	return new singleton_iterator(zorba->get_uri(id));
+}
+
+iterator_t zorba_document_node::children(zorba*) const
+{
+	return new child_iterator(this);
+}
+
+iterator_t zorba_document_node::typed_value(zorba*) const
+{
+	return string_value();
+}
 
 ostream& zorba_document_node::put(ostream& os) const
 {
-	iterator_t it = children();
-	while (!it->done()) {
-	node* n_p = it->next();
-		os << n_p->string_value();
-	}
+	rep->put(os);
 	return os;
 }
 
 
 
 // zorba_element_node
-// ----------------
+// ------------------
 
 zorba_element_node::zorba_element_node(
-	zorba_qname* _qname_p,
-	atomic_value* _value_p)
+	element_noderep* _rep)
 :
-	qname_p(_qname_p),
-	value_p(_value_p),
-	id_b(false),
-	idrefs_b(false)
-{}
-
+	rep(_rep)
+{
+}
 
 zorba_element_node::zorba_element_node(
 	const zorba_element_node& en)
 :
-	qname_p(en.qname_p),
-	value_p(en.value_p),
-	nsv(en.nsv),
-	attrv(en.attrv),
-	childv(en.childv),
-	id_b(en.id_b),
-	idrefs_b(en.idrefs_b)
-{}
-
-
-std::string zorba_element_node::string_value() const
+	rep(en.rep)
 {
-	ostringstream oss;
-	put(oss);
-	return oss.str();
 }
 
-iterator_t zorba_element_node::attributes() const
-{ return new attribute_iterator(this); }
+iterator_t zorba_element_node::string_value() const
+{
+	return new singleton_iterator(rep->strval());
+}
 
-iterator_t zorba_element_node::base_uri() const
-{ return parent_p->base_uri(); }
+iterator_t zorba_element_node::base_uri(
+	zorba* zorp) const
+{
+	node* n_p = zorp->get_store()->get_node(parentid());
+	return (n_p ? n_p->base_uri(zorp) : NULL);
+}
 
-iterator_t zorba_element_node::document_uri() const
-{ return parent_p ? parent_p->document_uri() : NULL; }
+iterator_t zorba_element_node::type_name(
+	zorba*) const
+{
+	itemid_t id = rep->typeID();
+	itemstore* istore = reinterpret_cast<itemstore*>(zorp->get_store());
+	Assert<NullPointer>(istore!=NULL, "storage manager NULL");
+	const qnameRep* p = istore->get_qnamerep(id);
+	return new qname_singleton(new zorba_qname(*p));
+}
 
-iterator_t zorba_element_node::children() const
-{ return new child_iterator(this); }
+iterator_t zorba_element_node::node_name(zorba*) const
+{
+	const qname* p = rep->node_name();
+	return new qname_singleton(*p);
+}
 
-iterator_t zorba_element_node::namespace_nodes() const
-{ return new namespace_iterator(this); }
-
-iterator_t zorba_element_node::node_name() const
-{ return new singleton_iterator(qname_p); }
+iterator_t zorba_element_node::parent(
+	zorba*) const
+{
+	itemid_t id = rep->parentid();
+	itemstore* istore = reinterpret_cast<itemstore*>(zorp->get_store());
+	Assert<NullPointer>(istore!=NULL, "storage manager NULL");
+	const noderep* p = istore->get_noderep(id);
+	switch (p->type()) {
+	case documentNode: {
+		document_noderep* q = reinterpret_cast<document_noderep*>(p)
+		return new singleton_iterator(new zorba_document_node(q));
+	}
+	case elementNode: {
+		element_noderep* q = reinterpret_cast<element_noderep*>(p)
+		return new singleton_iterator(new zorba_element_node(q));
+	}
+	default: }
+		return NULL;
+	}}
+}
 
 iterator_t zorba_element_node::typed_value() const
 {
-	if (value_p) {
-		return new singleton_iterator(value_p);
-	} else {
-		return new singleton_iterator(string_value());
-	}
+	return string_value();
+}
+
+iterator_t zorba_element_node::attributes(zorba*) const
+{
+	return new attribute_iterator(this);
+}
+
+iterator_t zorba_element_node::children(zorba*) const
+{
+	return new child_iterator(this);
+}
+
+iterator_t zorba_element_node::namespace_nodes(zorba*) const
+{
+	return new namespace_iterator(this);
 }
 
 ostream& zorba_element_node::put(
 	ostream& os) const
 {
-  os << '[' << childv.size() << ']';
-	os << '<';
-	qname_p->put(os);
-
-	if (nsv.size() + attrv.size() > 0) os << ' ';
-	vector<zorba_namespace_node*>::const_iterator ns_it = nsv.begin();
-	for (; ns_it!=nsv.end(); ++ns_it) {
-		(*ns_it)->put(os) << ' ';
-	}
-	vector<zorba_attribute_node*>::const_iterator at_it = attrv.begin();
-	for (; at_it!=attrv.end(); ++at_it) {
-		(*at_it)->put(os) << ' ';
-	}
-	os << '>';
-	vector<zorba_node*>::const_iterator nd_it = childv.begin();
-	for (; nd_it!=childv.end(); ++nd_it) {
-		(*nd_it)->put(os);
-	}
-	os << "</";
-	qname_p->put(os);
-	return os << '>';
+	rep->put(os);
+	return os;
 }
 
 
 
 // zorba_attribute_node
-// ------------------
+// --------------------
 
 zorba_attribute_node::zorba_attribute_node(
-	zorba_qname* _qname_p,
-	const std::string& _value,
-	bool _id_b,
-	bool _idrefs_b)
+	attribute_noderep* _rep)
 :
-	qname_p(_qname_p),
-	value(_value),
-	id_b(_id_b),
-	idrefs_b(_idrefs_b)
-{}
+	rep(_rep)
+{
+}
 
 zorba_attribute_node::zorba_attribute_node(
 	zorba_attribute_node& an)
 :
-	qname_p(an.qname_p),
-	value(an.value),
-	id_b(an.id_b),
-	idrefs_b(an.idrefs_b)
-{}
-
-iterator_t zorba_attribute_node::base_uri() const
-{ return parent_p ? parent_p->base_uri() : NULL; }
-
-iterator_t zorba_attribute_node::node_name() const
-{ return new singleton_iterator(qname_p); }
-
-iterator_t zorba_attribute_node::typed_value() const
-{ return new singleton_iterator(value); }
+	rep(an.rep)
+{
+}
 
 string zorba_attribute_node::string_value() const
-{ return value; }
+{
+	return new singleton_iterator(rep->strval());
+}
+
+iterator_t zorba_attribute_node::base_uri(zorba*) const
+{
+	return new singleton_iterator(rep->baseuri());
+}
+
+iterator_t zorba_attribute_node::node_name(zorba*) const
+{
+	const qname* p = rep->node_name();
+	return new qname_singleton(*p);
+}
+
+iterator_t zorba_attribute_node::typed_value(zorba*) const
+{
+	return string_value();
+}
 
 ostream& zorba_attribute_node::put(
 	ostream& os) const
 {
-	qname_p->put(os);
-	return os << "=\"" << value << "\"";
+	rep->put(os);
+	return os;
 }
 
 
 
-
 // zorba_namespace_node
-// ------------------
+// --------------------
 
 zorba_namespace_node::zorba_namespace_node(
-	const std::string& prefix,
-	const std::string& uri)
+	namespace_noderep* _rep)
 :
-	iprefix(prefix),
-	iuri(uri)
-{}
+	rep(_rep)
+{
+}
 
 zorba_namespace_node::zorba_namespace_node(
 	zorba_namespace_node& nn)
 :
-	iprefix(nn.iprefix),
-	iuri(nn.iuri)
-{}
-
-iterator_t zorba_namespace_node::node_name() const
-{ return new singleton_iterator(new zorba_qname("","",iprefix)); }
-
-iterator_t zorba_namespace_node::typed_value() const
-{ return NULL; }
+	rep(nn.rep)
+{
+}
 
 string zorba_namespace_node::string_value() const
-{ return iuri; }
+{
+	return new singleton_iterator(rep->uri());
+}
+
+iterator_t zorba_namespace_node::node_name(zorba*) const
+{
+	return new singleton_iterator(rep->prefix());
+}
+
+iterator_t zorba_namespace_node::typed_value(zorba*) const
+{
+	return string_value();
+}
 
 std::ostream& zorba_namespace_node::put(std::ostream& os) const
-{ return os << "xmlns:" << iprefix << "=\"" << iuri << "\""; }
-
+{
+	rep->put(os);
+	return os;
+}
 
 
 
 // zorba_pi_node
-// -----------
+// -------------
 
 zorba_pi_node::zorba_pi_node(
-	const string& target,
-	const string& content)
+	pi_noderep* _rep)
 :
-	itarget(target),
-	icontent(content)
-{}
+	rep(_rep)
+{
+}
 
-zorba_pi_node::zorba_pi_node(const zorba_pi_node& pn)
+zorba_pi_node::zorba_pi_node(
+	const zorba_pi_node& pn)
 :
-	itarget(pn.itarget),
-	icontent(pn.icontent)
-{}
+	rep(pn.rep)
+{
+}
 
 string zorba_pi_node::string_value() const 
-{ return icontent; }
+{
+	return new singleton_iterator(rep->content());
+}
 
-iterator_t zorba_pi_node::base_uri() const
-{ return parent_p ? parent_p->base_uri() : NULL; }
+iterator_t zorba_pi_node::base_uri(zorba*) const
+{
+	return new singleton_iterator(rep->baseuri());
+}
 
-iterator_t zorba_pi_node::typed_value() const
-{ return new singleton_iterator(icontent); }
+iterator_t zorba_pi_node::node_name(zorba*) const
+{
+	return new singleton_iterator(rep->target());
+}
 
-iterator_t zorba_pi_node::node_name() const
-{ return new singleton_iterator(itarget); }
+iterator_t zorba_pi_node::typed_value(zorba*) const
+{
+	return string_value();
+}
 
 std::ostream& zorba_pi_node::put(std::ostream& os) const
-{ return os << "<?" << itarget << ' ' << icontent << "?>"; }
+{
+	rep->put(os);
+	return os;
+}
 
 
 
@@ -269,10 +305,10 @@ zorba_comment_node::zorba_comment_node(
 string zorba_comment_node::string_value() const
 { return the_content; }
 
-iterator_t zorba_comment_node::base_uri() const
+iterator_t zorba_comment_node::base_uri(zorba*) const
 { return parent_p ? parent_p->base_uri() : NULL; }
 
-iterator_t zorba_comment_node::typed_value() const
+iterator_t zorba_comment_node::typed_value(zorba*) const
 { return new singleton_iterator(this); }
 
 std::ostream& zorba_comment_node::put(std::ostream& os) const
@@ -295,10 +331,10 @@ zorba_text_node::zorba_text_node(
 string zorba_text_node::string_value() const
 { return the_content; }
 
-iterator_t zorba_text_node::base_uri() const
+iterator_t zorba_text_node::base_uri(zorba*) const
 { return parent_p ? parent_p->base_uri() : NULL; }
 
-iterator_t zorba_text_node::typed_value() const
+iterator_t zorba_text_node::typed_value(zorba*) const
 { return new singleton_iterator(the_content); }
 
 ostream& zorba_text_node::put(ostream& os) const
