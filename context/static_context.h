@@ -12,18 +12,13 @@
 
 #include "common.h"
 #include "context.h"
-#include "runtime/item_iterator.h"
-#include "values/qname.h"
-#include "values/nodes.h"
-#include "values/value_factory.h"
-#include "util/fxhashmap.h"
-#include "util/rchandle.h"
 #include "util/xqp_exception.h"
-
 
 namespace xqp {
 
-class itemstore;
+class namespace_node;
+class qname;
+class value_factory;
 
 /*______________________________________________________________________
 |  
@@ -34,11 +29,11 @@ class itemstore;
 class static_context : public context
 {
 public:	// types
-	enum construction_mode_t		{ cons_preserve, cons_strip };
-	enum order_empty_mode_t			{ empty_greatest, empty_least };
-	enum boundary_space_mode_t	{ preserve_space, strip_space };
-	enum inherit_mode_t					{ inherit_ns, no_inherit_ns };
-	enum preserve_mode_t				{ preserve_ns, no_preserve_ns };
+	enum construction_mode_t	 { cons_preserve, cons_strip };
+	enum order_empty_mode_t		 { empty_greatest, empty_least };
+	enum boundary_space_mode_t { preserve_space, strip_space };
+	enum inherit_mode_t				 { inherit_ns, no_inherit_ns };
+	enum preserve_mode_t			 { preserve_ns, no_preserve_ns };
 
 protected:
 	value_factory* vf_p;
@@ -64,8 +59,8 @@ public:
 
 public:
 	// XQuery 1.0 static context
-	namespace_node* default_function_namespace() const;
-	void set_default_function_namespace(namespace_node*);
+	iterator_t default_function_namespace() const;
+	void set_default_function_namespace(const namespace_node*);
 
   iterator_t namespaces() const;
 	iterator_t in_scope_schema_types() const;
@@ -85,8 +80,7 @@ public:
 	void set_inherit_mode(enum inherit_mode_t v);
 	void set_preserve_mode(enum preserve_mode_t v);
 
-	const qname* get_default_collation() const;
-	qname* get_default_collation();
+	const qname& get_default_collation() const;
 	void set_default_collation(const std::string&);
 
 	std::string get_baseuri() const;

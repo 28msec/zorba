@@ -49,16 +49,21 @@ public:
 
 public:
 	// XQuery 1.0 dynamic context 
-	const item* context_item() const;
+	const item& context_item() const;
+
 	sequence_type_t context_item_type() const;
 	uint32_t context_position() const;
 	uint32_t context_size() const;
-	void set_context_item(const item*);
+
+	void set_context_item(const item&);
 	void set_context_item_type(sequence_type_t );
+
 	iterator_t namespaces() const;
-	void add_namespace(const namespace_node*);
-	const namespace_node* default_element_type_namespace() const;
-	void set_default_element_type_namespace(namespace_node*);
+	void add_namespace(const namespace_node&);
+
+	const namespace_node& default_element_type_namespace() const;
+	void set_default_element_type_namespace(const namespace_node&);
+
 	enum ordering_mode_t ordering_mode() const;
 	void set_ordering_mode(enum ordering_mode_t v);
 

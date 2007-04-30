@@ -20,8 +20,8 @@ using namespace std;
 namespace xqp {
 
 // zorba id types
-typedef uint32_t itemid_t;		// node id
-typedef uint32_t docid_t;			// document id
+typedef uint32_t itemid_t;		// item identifier
+typedef uint32_t docid_t;			// document identifier
 
 // zorba key tyeps
 typedef uint64_t nskey_t;			// namespace hash key
@@ -29,7 +29,6 @@ typedef uint64_t urikey_t;		// URI hash key
 typedef uint64_t qnamekey_t;	// QName hash key
 
 // zorba reference types
-typedef uint32_t itemref_t;		// itemstore offset	(64 bits on 64-bit machines)
 typedef uint32_t offset_t;    // itemstore short offset
 
 // namespaces
@@ -47,9 +46,9 @@ typedef rchandle<item_iterator> iterator_t;
 typedef struct qnamekeyref
 {
 	qnamekey_t qnamekey;
-	itemref_t qnameref;
+	off_t qnameref;
 
-	qnamekeyref(qnamekey_t _qnamekey, itemref_t _qnameref)
+	qnamekeyref(qnamekey_t _qnamekey, off_t _qnameref)
 	: qnamekey(_qnamekey), qnameref(_qnameref) {}
 
 } qnamekeyref_t;
@@ -58,9 +57,9 @@ typedef struct qnamekeyref
 typedef struct qnamepair
 {
 	qnamekey_t qnamekey;
-	itemref_t qnameref;
+	off_t qnameref;
 
-	qnamepair(qnamekey_t _qnamekey, itemref_t _qnameref)
+	qnamepair(qnamekey_t _qnamekey, off_t _qnameref)
 	: qnamekey(_qnamekey), qnameref(_qnameref) {}
 
 } qnamepair_t;
@@ -68,10 +67,10 @@ typedef struct qnamepair
 
 typedef struct attrname
 {
-	itemref_t uriref;
+	off_t uriref;
 	std::string name;
 
-	attrname(itemref_t _uriref, const std::string& _name)
+	attrname(off_t _uriref, const std::string& _name)
 	: uriref(_uriref), name(_name) {}
 
 } attrname_t;
@@ -79,10 +78,10 @@ typedef struct attrname
 
 typedef struct attrpair
 {
-	itemref_t attrref;
+	off_t attrref;
 	std::string value;
 
-	attrpair(itemref_t _attrref, const std::string& _value)
+	attrpair(off_t _attrref, const std::string& _value)
 	: attrref(_attrref), value(_value) {}
 
 } attrpair_t;
@@ -91,9 +90,9 @@ typedef struct attrpair
 typedef struct elempair
 {
 	qnamekey_t qnamekey;
-	itemref_t noderef;
+	off_t noderef;
 
-	elempair(qnamekey_t _qnamekey, itemref_t _noderef)
+	elempair(qnamekey_t _qnamekey, off_t _noderef)
 	: qnamekey(_qnamekey), noderef(_noderef) {}
 
 } elempair_t;

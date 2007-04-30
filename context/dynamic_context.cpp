@@ -9,7 +9,7 @@
 
 #include "dynamic_context.h"
 #include "runtime/item_iterator.h"
-#include "zorba/zorba_iterator.h"
+#include "runtime/singleton_iterators.h"
 
 using namespace std;
 namespace xqp {
@@ -45,17 +45,17 @@ void dynamic_context::init(
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-const namespace_node*
+const namespace_node&
 dynamic_context::default_element_type_namespace() const
 {
-	item* i_p = context_value(default_element_type_ns_key)->peek();
-	return dynamic_cast<namespace_node*>(i_p);
+	const item& i = **context_value(default_element_type_ns_key);
+	return dynamic_cast<const namespace_node&>(i);
 }
 
 void dynamic_context::set_default_element_type_namespace(
-	namespace_node* nn_p)
+	const namespace_node& nn_p)
 {
-	iterator_t it_h = new singleton_iterator(nn_p);
+	iterator_t it_h = new node_singleton(&nn_p);
 	keymap.put(default_element_type_ns_key,it_h);
 }
 
@@ -75,11 +75,12 @@ sequence_type_t dynamic_context::context_item_type() const
 
 dynamic_context::ordering_mode_t dynamic_context::ordering_mode() const
 {
-	item* i_p = context_value(ordering_mode_key)->peek();
-	string mode = i_p->string_value();
+	iterator_t it_h = context_value(ordering_mode_key);
+	string mode = (**it_h).string_value();
 	if (mode=="ordered") return ordered;
 	return unordered;
 }
+
 
 void dynamic_context::set_context_item_type(sequence_type_t v)
 {
@@ -88,9 +89,10 @@ void dynamic_context::set_context_item_type(sequence_type_t v)
 void dynamic_context::set_ordering_mode(enum ordering_mode_t v)
 {
 	string mode = (v==ordered?"ordered":"unordered");
-	iterator_t it_h = new singleton_iterator(vfactory_p,mode);
+	iterator_t it_h = new string_singleton(stringValue(mode));
 	keymap.put(ordering_mode_key, it_h);
 }
+
 
 }	/* namespace xqp */
 
