@@ -169,20 +169,6 @@ public:		// XQuery interface
 	 */
 	virtual bool nilled() const = 0;
 
-
-	// update facility
-  void insertBefore(iterator_t newNodes) { }
-  void insertAfter(iterator_t newNodes) { }
-  void insertInto(iterator_t newNodes) { }
-  void insertIntoAsFirst(iterator_t newNodes) { }
-  void insertIntoAsLast(iterator_t newNodes) { }
-  void insertAttributes(iterator_t newNodes) { }
-  void deleteNode() { }
-  void replaceNode(iterator_t newNodes) { }
-  void replaceValue(const std::string& newValue) { }
-  void replaceElementContent(const text_node& newContent) { }
-  void rename(const qname& newName) { }
-
 };
 	
 
