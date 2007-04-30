@@ -10,7 +10,6 @@
 #define XQP_ITEM_ITERATOR_H
 
 #include "util/rchandle.h"
-#include "values/primitive_values.h"
 
 namespace xqp {
 
@@ -66,7 +65,7 @@ public:		// treat as operators
 };
 
 
-class item_const_iterator : public rcobject
+class item_const_iterator : public item_iterator
 {
 public:
 	item_const_iterator() {}
@@ -76,40 +75,31 @@ public:
 public:	// iterator interface
 	virtual void open() = 0;
 	virtual void close() = 0;
-	virtual item& next(uint32_t delta = 1) = 0;
-	virtual item& peek() const = 0;
+	virtual const item& next(uint32_t delta = 1) = 0;
+	virtual const item& peek() const = 0;
 	virtual bool done() const = 0;
-	virtual void rewind() = 0;
 
 public:	// C++ interface
-	virtual item* operator*() const = 0;
+	virtual const item& operator*() const = 0;
 	virtual item_const_iterator& operator++() = 0;
 	//virtual item_const_iterator& operator=(const item_const_iterator&);
 
 };
 
 
-class item_singleton : public item_iterator
+class item_singleton : public item_const_iterator
 {
 protected:
 	const item* i_p;
 	bool done_b;
 
 public:
-	item_singleton(
-		dynamic_context* _dctx_p,
-		const item* _i_p)
-	:
-		item_iterator(_dctx_p),
-		i_p(_i_p),
-		done_b(false)
-	{ }
+	item_singleton(const item* _i_p)
+	: i_p(_i_p),
+		done_b(false) { }
 
-	item_singleton(
-		const item_singleton& it)
-	:
-		item_iterator(it.dctx_p),
-		i_p(it.i_p),
+	item_singleton(const item_singleton& it)
+	: i_p(it.i_p),
 		done_b(false)
 	{ }
 
@@ -129,7 +119,6 @@ public:	// C++ interface
 	item_singleton& operator=(
 		const item_singleton& it)
 	{
-		dctx_p = it.dctx_p;
 		i_p    = it.i_p;
 		done_b = it.done_b;
 		return *this;
@@ -138,27 +127,20 @@ public:	// C++ interface
 };
 
 
-class node_singleton : public item_iterator
+class node_singleton : public item_const_iterator
 {
 protected:
 	const node* n_p;
 	bool done_b;
 
 public:
-	node_singleton(
-		dynamic_context* _dctx_p,
-		const node* _n_p)
-	:
-		item_iterator(_dctx_p),
-		n_p(_n_p),
+	node_singleton(const node* _n_p)
+	: n_p(_n_p),
 		done_b(false)
 	{ }
 
-	node_singleton(
-		const node_singleton& it)
-	:
-		item_iterator(it.dctx_p),
-		n_p(it.n_p),
+	node_singleton(const node_singleton& it)
+	: n_p(it.n_p),
 		done_b(false)
 	{ }
 
@@ -183,7 +165,6 @@ public:	// C++ interface
 	node_singleton& operator=(
 		const node_singleton& it)
 	{
-		dctx_p = it.dctx_p;
 		n_p    = it.n_p;
 		done_b = it.done_b;
 		return *this;
@@ -193,27 +174,20 @@ public:	// C++ interface
 
 
 template<class T>
-class singleton_iterator : public item_iterator
+class singleton_iterator : public item_const_iterator
 {
 protected:
-	T& val;
+	const T& val;
 	bool done_b;
 
 public:
-	singleton_iterator(
-		dynamic_context* _dctx_p,
-		T _val)
-	:
-		item_iterator(_dctx_p),
-		val(_val),
+	singleton_iterator(const T& _val)
+	: val(_val),
 		done_b(false)
 	{ }
 
-	singleton_iterator(
-		const singleton_iterator& it)
-	:
-		item_iterator(it.dctx_p),
-		val(it.val),
+	singleton_iterator(const singleton_iterator& it)
+	: val(it.val),
 		done_b(false)
 	{ }
 
@@ -227,23 +201,16 @@ public:	// iterator interface
 	bool done() const { return done_b; }
 
 public:	// C++ interface
-	const item& operator*() const { return val; }
-	singleton_iterator& operator++() { done_b = true; return *this; }
+	const item& operator*() const
+		{ return val; }
+
+	singleton_iterator& operator++()
+		{ done_b = true; return *this; }
 
 	singleton_iterator& operator=(const singleton_iterator& it)
-	{
-		dctx_p = it.dctx_p;
-		val = it.val;
-		done_b = it.done_b;
-	}
+		{ val = it.val; done_b = it.done_b; }
 
 };
-
-typedef singleton_iterator<qname> qname_singleton;
-typedef singleton_iterator<numericValue> numeric_singleton;
-typedef singleton_iterator<stringValue> string_singleton;
-typedef singleton_iterator<timeValue> time_singleton;
-typedef singleton_iterator<binaryValue> binary_singleton;
 
 
 }	/* namespace xqp */
