@@ -10,6 +10,7 @@
 #include "primitive_values.h"
 #include "types/typecodes.h"
 #include "util/tracer.h"
+#include "runtime/singleton_iterators.h"
 
 #include <iostream>
 #include <sstream>
@@ -83,13 +84,25 @@ ostream& numericValue::put(ostream& os) const
 	}
 }
 
+string numericValue::describe() const
+{
+	ostringstream oss;
+	put(oss);
+	return oss.str();
+}
+
 numericValue::numericValue(
 	sequence_type_t type,
 	long double val)
 :
-	atomic_value(type),
+	theType(type),
 	theVal(val)
 {
+}
+
+string numericValue::string_value() const
+{
+	return describe();
 }
 
 
@@ -99,7 +112,7 @@ timeValue::timeValue(
 	sequence_type_t type,
 	struct tm t)
 :
-	atomic_value(type),
+	theType(type),
 	theVal(t)
 {
 }
@@ -107,7 +120,7 @@ timeValue::timeValue(
 timeValue::timeValue(
 	const string& s)
 :
-	atomic_value(xs_dateTime)
+	theType(xs_dateTime)
 {
 	// parse date-time-duration string
 }
@@ -119,6 +132,19 @@ ostream& timeValue::put(
 	return _put(os,&theVal,theType) << ')';
 }
 
+string timeValue::describe() const
+{
+	ostringstream oss;
+	put(oss);
+	return oss.str();
+}
+
+string timeValue::string_value() const
+{
+	return describe();
+}
+
+
 
 // stringValue
 // -----------
@@ -126,7 +152,7 @@ stringValue::stringValue(
 	sequence_type_t type,
 	const string& s)
 :
-	atomic_value(type),
+	theType(type),
 	theVal(s)
 {
 }
@@ -134,7 +160,7 @@ stringValue::stringValue(
 stringValue::stringValue(
 	const string& s)
 :
-	atomic_value(xs_string),
+	theType(xs_string),
 	theVal(s)
 {
 }
@@ -157,6 +183,36 @@ ostream& stringValue::put(ostream& os) const
 	}
 }
 
+string stringValue::describe() const
+{
+	ostringstream oss;
+	put(oss);
+	return oss.str();
+}
+
+iterator_t stringValue::atomized_value(
+	zorba* zorp) const
+{
+	return new string_singleton(*this);
+}
+
+iterator_t stringValue::effective_boolean_value(
+	zorba* zorp) const
+{
+	return NULL;
+}
+
+iterator_t stringValue::string_value(
+	zorba* zorp) const
+{
+	return new string_singleton(*this);
+}
+
+string stringValue::string_value() const
+{
+	return theVal;
+}
+
 
 // binaryValue
 // -----------
@@ -165,7 +221,7 @@ binaryValue::binaryValue(
 	const void* p,
 	size_t length)
 :
-	atomic_value(type),
+	theType(type),
 	theVal(new unsigned char[length]),
 	theLength(length)
 {
@@ -183,13 +239,45 @@ ostream& binaryValue::put(std::ostream& os) const
 	// some printable representation of binary
 }
 
+string binaryValue::describe() const
+{
+	ostringstream oss;
+	put(oss);
+	return oss.str();
+}
+
+string binaryValue::string_value() const
+{
+	return "";
+}
+
 
 // booleanValue
 // ------------
+booleanValue::booleanValue(
+	bool b)
+:
+	theType(xs_boolean),
+	theVal(b)
+{
+}
+
 ostream& booleanValue::put(
 	ostream& os) const
 {
 	return os << "boolean(" << theVal << ')';
+}
+
+string booleanValue::describe() const
+{
+	ostringstream oss;
+	put(oss);
+	return oss.str();
+}
+
+string booleanValue::string_value() const
+{
+	return theVal ? "true" : "false";
 }
 
 

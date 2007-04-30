@@ -21,6 +21,7 @@ namespace xqp {
 class numericValue : public atomic_value
 {
 protected:
+	sequence_type_t theType;
 	long double theVal;
 
 public:
@@ -30,10 +31,19 @@ public:
 public:
 	long double val() const { return theVal; }
 	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string string_value() const;
 
 public:		// XQuery interface
-	iterator_t atomized_value() const { return NULL; }
-	string string_value() const { return describe(); }
+	sequence_type_t type() const { return theType; }
+
+	iterator_t atomized_value(zorba*) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
 
 };
 
@@ -49,6 +59,7 @@ protected:
 	uint32_t month_period;
 	uint64_t second_period;
 */
+	sequence_type_t theType;
 	struct tm theVal;
 
 public:
@@ -61,10 +72,20 @@ public:
 
 public:
 	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string string_value() const;
 
 public:		// XQuery interface
-	iterator_t atomized_value() const { return NULL; }
-	string string_value() const { return describe(); }
+	sequence_type_t type() const { return theType; }
+
+	iterator_t atomized_value(zorba*) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
+
 
 };
 
@@ -72,7 +93,8 @@ public:		// XQuery interface
 class stringValue : public atomic_value
 {
 protected:
-	const std::string theVal;
+	sequence_type_t theType;
+	std::string theVal;
 
 public:
 	stringValue(sequence_type_t,const std::string&);
@@ -82,10 +104,22 @@ public:
 public: 
 	std::string val() const { return theVal; }
 	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string string_value() const;
+
+	stringValue& operator=(const stringValue& v)
+		{ theVal = v.theVal; return *this; }
 
 public:		// XQuery interface
-	iterator_t atomized_value() const { return NULL; }
-	string string_value() const { return describe(); }
+	sequence_type_t type() const { return theType; }
+
+	iterator_t atomized_value(zorba*) const;
+	iterator_t effective_boolean_value(zorba*) const;
+	iterator_t string_value(zorba*) const;
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
 
 };
 
@@ -93,6 +127,7 @@ public:		// XQuery interface
 class binaryValue : public atomic_value
 {
 protected:
+	sequence_type_t theType;
 	unsigned char* theVal;
 	size_t theLength;
 
@@ -103,10 +138,20 @@ public:
 public: 
 	unsigned char* val() const { return theVal; }
 	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string string_value() const;
 
 public:		// XQuery interface
-	iterator_t atomized_value() const { return NULL; }
-	string string_value() const { return describe(); }
+	sequence_type_t type() const { return theType; }
+
+	iterator_t atomized_value(zorba*) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
+
 
 };
 
@@ -114,19 +159,29 @@ public:		// XQuery interface
 class booleanValue : public atomic_value
 {
 protected:
+	sequence_type_t theType;
 	bool theVal;
 	
 public:
-	booleanValue(bool b) : atomic_value(xs_boolean), theVal(b) { }
+	booleanValue(bool b);
 	~booleanValue() {}
 
 public:
 	bool val() const { return theVal; }
 	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string string_value() const;
 
 public:		// XQuery interface
-	iterator_t atomized_value() const { return NULL; }
-	string string_value() const { return describe(); }
+	sequence_type_t type() const { return theType; }
+
+	iterator_t atomized_value(zorba*) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const { return NULL; }
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
 
 };
 

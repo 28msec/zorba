@@ -17,6 +17,7 @@
 namespace xqp {
 
 class xs_anyURIValue;
+class zorba;
 
 class qname : public atomic_value
 {
@@ -26,9 +27,12 @@ public:
 	xs_anyURIValue* uri() const;
 
 public:
-	iterator_t atomized_value() const;
-	std::string string_value() const;
+	iterator_t atomized_value(zorba*) const;
+	iterator_t string_value(zorba*) const;
+
+public:
 	qnamekey_t qnamekey() const;
+  std::ostream& put(std::ostream& os);
 
 };
 

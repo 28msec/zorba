@@ -13,9 +13,14 @@
 #include "../context/common.h"
 #include "../types/sequence_type.h"
 #include "../util/rchandle.h"
+
+#include <iostream>
 #include <sstream>
+#include <string>
 
 namespace xqp {
+
+class zorba;
 
 /*______________________________________________________________________
 |  
@@ -25,8 +30,8 @@ namespace xqp {
 class object : public rcobject
 {
 public:
-	object() {}
-	~object() {}
+  virtual std::string describe() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
 };
 
 
@@ -36,11 +41,10 @@ public:
 |_______________________________________________________________________*/
 
 class xquery_exception : public object
-													
 {
 public:
-	xquery_exception() {}
-	~xquery_exception() {}
+  virtual std::string describe() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
 };
 
 
@@ -54,43 +58,28 @@ public:
 class ft_value : public object
 {
 public:
-	ft_value() {}
-	~ft_value() {}
-};
-
-
-/*______________________________________________________________________
-|  
-|	'sequence' - top of the XQuery value hierarchy
-|	[http://www.w3.org/TR/xquery-semantics/doc-fs-Value]
-|_______________________________________________________________________*/
-
-class sequence : public object
-{
-public:
-	virtual ~sequence() {}
-
-public:		// accessors
-	virtual sequence_type_t type() const = 0;
   virtual std::string describe() const = 0;
-
+  virtual std::ostream& put(std::ostream& os) const = 0;
 };
 
 
 /*______________________________________________________________________
 |  
-|	'item' - union of node types and atomic types
+|	'item' - top of the XQuery value hierarchy,
+|	         union of node types and atomic types
 |	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
 |_______________________________________________________________________*/
 
-class item : public sequence
+class item : public object
 {
-public:
-	virtual ~item() {}
+public:		// accessors
+	virtual sequence_type_t type() const = 0;
+  virtual std::string describe() const = 0;
+	virtual std::string string_value() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value() const = 0;
-	virtual string string_value() const = 0;
+	virtual iterator_t atomized_value(zorba*) const = 0;
+	virtual iterator_t string_value(zorba*) const = 0;
 
 	virtual bool is_empty() const = 0;
 	virtual bool is_node() const = 0;
@@ -107,29 +96,24 @@ public:
 |	'atomic_value' encapsulates values of primitive or derived types
 |_______________________________________________________________________*/
 
-class atomic_value :	public item
+class atomic_value :	virtual public item
 {
-protected:
-	sequence_type_t theType;
-
-public:
-	atomic_value() : theType(xs_anyType) {}
-	atomic_value(sequence_type_t type) : theType(type) {}
-	virtual ~atomic_value() {}
-
 public:		// accessors
-	sequence_type_t type() const { return theType; }
-  virtual std::string describe() const
-		{ ostringstream oss; put(oss); return oss.str(); }
-  virtual std::ostream& put(std::ostream& os) const = 0;
+	virtual sequence_type_t type() const = 0;
+  virtual std::string describe() const = 0;
+	virtual std::string string_value() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value() const = 0;
-	virtual string string_value() const = 0;
+	virtual iterator_t atomized_value(zorba*) const = 0;
+	virtual iterator_t effective_boolean_value(zorba*) const = 0;
+	virtual iterator_t string_value(zorba*) const = 0;
 
-	bool is_empty() const { return false; }
-	bool is_node() const { return false; }
-	bool is_atomic() const { return true; }
+	bool is_empty() const = 0;
+	bool is_node() const = 0;
+	bool is_atomic() const = 0;
+
+public:
+  virtual std::ostream& put(std::ostream& os) const = 0;
 
 };
 

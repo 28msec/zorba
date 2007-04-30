@@ -25,10 +25,8 @@
 
 namespace xqp {
 
-class context;
-class dynamic_context;
-class qname;
-class text_node;
+class zorba;
+
 
 // (see "ord-path" paper - for nodeid implementation (sigmod 2005-06)
 // (check ms; good duo-decimal node number implementation)
@@ -57,52 +55,31 @@ class text_node;
 |	for determining the result. 
 |_______________________________________________________________________*/
 
-class node : public item
+class node : virtual public item
 {
-public:
-	node() {}
-	virtual ~node() {}
-
 public:		// accessors
-	itemid id();
-	itemid parentid();
+	virtual itemid_t id() = 0;
+	virtual itemid_t parentid() = 0;
+	virtual std::string toXML() const = 0;
+	virtual std::string string_value() const = 0;
 
-public:
-	// XQuery interface
+public:		// XQuery interface
 	virtual sequence_type_t node_kind() const = 0;
 
-	virtual std::string string_value() const  = 0;
-	virtual std::string base_uri() const = 0;
-	virtual std::string document_uri() const = 0;
-
-	virtual const node* parent() const = 0;
-	virtual rchandle<qname> node_name() const = 0;
-	virtual rchandle<qname> type_name() const = 0;
-	virtual rchandle<item>  typed_value() const = 0;
-
-	virtual iterator_t attributes(dynamic_context*) const = 0;
-	virtual iterator_t children(dynamic_context*) const = 0;
-	virtual iterator_t namespace_nodes(dynamic_context*) const = 0;
+	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t base_uri(zorba*) const = 0;
+	virtual iterator_t document_uri(zorba*) const = 0;
+	virtual iterator_t type_name(zorba*) const = 0;
+	virtual iterator_t typed_value(zorba*) const = 0;
+	virtual iterator_t parent(zorba*) const = 0;
+	virtual iterator_t node_name(zorba*) const = 0;
+	virtual iterator_t attributes(zorba*) const = 0;
+	virtual iterator_t children(zorba*) const = 0;
+	virtual iterator_t namespace_nodes(zorba*) const = 0;
 
 	virtual bool is_id() const = 0;
-	virtual bool is_idref() const = 0;
+	virtual bool is_idrefs() const = 0;
 	virtual bool nilled() const = 0;
-
-	// update facility
-  virtual void insertBefore(iterator_t newNodes) = 0;
-  virtual void insertAfter(iterator_t newNodes) = 0;
-  virtual void insertInto(iterator_t newNodes) = 0;
-  virtual void insertIntoAsFirst(iterator_t newNodes) = 0;
-  virtual void insertIntoAsLast(iterator_t newNodes) = 0;
-  virtual void insertAttributes(iterator_t newNodes) = 0;
-  virtual void deleteNode() = 0;
-  virtual void replaceNode(iterator_t newNodes) = 0;
-  virtual void replaceValue(const std::string& newValue) = 0;
-  virtual void replaceElementContent(const text_node& newContent) = 0;
-  virtual void rename(const qname& newName) = 0;
-
-	// serialization/testing
-	virtual std::string toXML() const = 0;
 
 };
 	
@@ -140,22 +117,18 @@ public:
 
 class document_node : virtual public node
 {
-public:		// XQuery interface
-	virtual sequence_type_t node_kind() const { return documentNode; }
+public:
+	virtual sequence_type_t node_kind() const
+		{ return documentNode; }
+
+	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t base_uri(zorba*) const = 0;
+	virtual iterator_t document_uri(zorba*) const = 0;
+	virtual iterator_t typed_value(zorba*) const = 0;
+	virtual iterator_t children(zorba*) const = 0;
+	virtual iterator_t namespace_nodes(zorba*) const = 0;
+
 	virtual std::string string_value() const = 0;
-	virtual std::string base_uri() const = 0;
-	virtual std::string document_uri() const = 0;
-
-	virtual const node* parent() const = 0;
-	virtual rchandle<qname> node_name() const = 0;
-	virtual rchandle<item> typed_value() const = 0;
-
-	virtual iterator_t children(dynamic_context*) const = 0;
-	virtual iterator_t namespace_nodes(dynamic_context*) const = 0;
-
-	virtual bool is_id() const = 0;
-	virtual bool is_idref() const = 0;
-	virtual bool nilled() const = 0;
 
 };
 
@@ -195,23 +168,24 @@ public:		// XQuery interface
 
 class element_node : virtual public node
 {
-public:		// XQuery interface
-	virtual sequence_type_t node_kind() { return elementNode; }
+public:
+	virtual sequence_type_t node_kind()
+		{ return elementNode; }
+
+	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t base_uri(zorba*) const = 0;
+	virtual iterator_t parent(zorba*) const = 0;
+	virtual iterator_t type_name(zorba*) const = 0;
+	virtual iterator_t typed_value(zorba*) const = 0;
+	virtual iterator_t node_name(zorba*) const = 0;
+	virtual iterator_t attributes(zorba*) const = 0;
+	virtual iterator_t children(zorba*) const = 0;
+	virtual iterator_t namespace_nodess(zorba*) const = 0;
+
 	virtual std::string string_value() const = 0;
-	virtual std::string base_uri() const = 0;
-	virtual std::string document_uri() const = 0;
-
-	virtual const node* parent() const = 0;
-	virtual rchandle<qname> node_name() const = 0;
-	virtual rchandle<item> typed_value() const = 0;
-
-	virtual iterator_t attributes(dynamic_context*) const = 0;
-	virtual iterator_t children(dynamic_context*) const = 0;
-	virtual iterator_t namespace_nodes(dynamic_context*) const = 0;
-
-	virtual bool nilled() const = 0;
 	virtual bool is_id() const = 0;
-	virtual bool is_idref() const = 0;
+	virtual bool is_idrefs() const = 0;
+	virtual bool nilled() const = 0;
 
 };
 
@@ -237,18 +211,19 @@ public:		// XQuery interface
 
 class attribute_node : virtual public node
 {
-public:		// XQuery interface
-	virtual sequence_type_t node_kind() const { return attributeNode; }
+public:
+	virtual sequence_type_t node_kind() const
+		{ return attributeNode; }
+
+	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t type_name(zorba*) const = 0;
+	virtual iterator_t typed_value(zorba*) const = 0;
+	virtual iterator_t parent(zorba*) const = 0;
+	virtual iterator_t node_name(zorba*) const = 0;
 
 	virtual std::string string_value() const = 0;
-	virtual std::string base_uri() const  = 0;
-
-	virtual const node* parent() const = 0;
-	virtual rchandle<qname> node_name() const = 0;
-	virtual rchandle<item> typed_value() const = 0;
-
 	virtual bool is_id() const = 0;
-	virtual bool is_idref() const = 0;
+	virtual bool is_idrefs() const = 0;
 
 };
 
@@ -265,13 +240,17 @@ public:		// XQuery interface
 |_______________________________________________________________________*/
 class namespace_node : virtual public node
 {
-public:		// XQuery interface
-	virtual sequence_type_t node_kind() const { return namespaceNode; }
-	virtual string string_value() const = 0;
-	virtual const node* parent() const = 0;
-	virtual rchandle<qname> node_name() const = 0;
-	virtual rchandle<item> typed_value() const = 0;
+public:
+	virtual sequence_type_t node_kind() const
+		{ return namespaceNode; }
+
+	virtual iterator_t string_value(zorba*) const = 0;		// URI
+	virtual iterator_t node_name(zorba*) const = 0;				// prefix
+	virtual iterator_t typed_value(zorba*) const = 0;			// URI
+	virtual iterator_t parent(zorba*) const = 0;
 	
+	virtual std::string string_value() const = 0;
+
 };
 
 
@@ -282,13 +261,17 @@ public:		// XQuery interface
 |_______________________________________________________________________*/
 class pi_node : virtual public node
 {
-public:		// XQuery interface
-	virtual sequence_type_t node_kind() const { return processingInstructionNode; }
+public:
+	virtual sequence_type_t node_kind() const
+		{ return processingInstructionNode; }
+
+	virtual iterator_t string_value(zorba*) const = 0;	// content
+	virtual iterator_t base_uri(zorba*) const = 0;				// parent baseuri
+	virtual iterator_t node_name(zorba*) const = 0;				// target
+	virtual iterator_t typed_value(zorba*) const = 0;			// content
+	virtual iterator_t parent(zorba*) const = 0;
+
 	virtual std::string string_value() const = 0;
-	virtual std::string base_uri() const = 0;
-	virtual const node* parent() const = 0;
-	virtual rchandle<qname> node_name() const = 0;
-	virtual rchandle<item> typed_value() const = 0;
 
 };
 
@@ -299,12 +282,16 @@ public:		// XQuery interface
 
 class comment_node : virtual public node
 {
-public:		// XQuery interface
-	virtual sequence_type_t node_kind() const { return commentNode; }
+public:
+	virtual sequence_type_t node_kind() const
+		{ return commentNode; }
+
+	virtual iterator_t string_value(zorba*) const = 0;	// content
+	virtual iterator_t base_uri(zorba*) const = 0;				// parent baseuri	
+	virtual iterator_t typed_value(zorba*) const = 0;			// content
+	virtual iterator_t parent(zorba*) const = 0;
+
 	virtual std::string string_value() const = 0;
-	virtual std::string base_uri() const = 0;
-	virtual const node* parent() const = 0;
-	virtual rchandle<item> typed_value() const = 0;
 
 };
 
@@ -325,12 +312,16 @@ public:		// XQuery interface
 
 class text_node : virtual public node
 {
-public:		// XQuery interface
-	virtual sequence_type_t node_kind() const { return textNode; }
+public:
+	virtual sequence_type_t node_kind() const
+		{ return textNode; }
+
+	virtual iterator_t string_value(zorba*) const = 0;	// content
+	virtual iterator_t base_uri(zorba*) const = 0;				// parent baseuri
+	virtual iterator_t typed_value(zorba*) const = 0;			// content
+	virtual iterator_t parent(zorba*) const = 0;			
+
 	virtual std::string string_value() const = 0;
-	virtual std::string base_uri() const = 0;
-	virtual const node* parent() const = 0;
-	virtual rchandle<item> typed_value() const = 0;
 
 };
 
