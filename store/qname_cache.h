@@ -28,8 +28,8 @@ namespace xqp {
 class qname_cache : public rcobject
 {
 protected:
-	fxhash64map<nodeid_t> qname_map;		// map: qnamekey_t -> qnameid
-	fxhash64map<nodeid_t> uri_map;			// map: prefixkey_t -> uriid
+	fxhash64map<itemid_t> qname_map;		// map: qname -> itemid
+	fxhash64map<itemid_t> uri_map;			// map: prefix -> itemid
 
 public:
 	qname_cache(const std::string& datapath);
@@ -43,16 +43,16 @@ public:
 	bool put(
 		const std::string& prefix,
 		const std::string& localname,
-		nodeid_t qnameid );
+		itemid_t qnameid );
 
 	bool get(
 		const std::string& prefix,
 		const std::string& localname,
-		nodeid_t& qnameid) const;
+		itemid_t& qnameid) const;
 
 	// map: prefix -> uri 
-	bool put_uri( const std::string&, nodeid_t uriid );
-	bool get_uri( const std::string&, nodeid_t& uriid ) const;
+	bool put_uri( const std::string&, itemid_t uriid );
+	bool get_uri( const std::string&, itemid_t& uriid ) const;
 	bool contains_uri( const std::string& ) const;
 
 };
