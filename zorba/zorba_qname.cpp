@@ -12,6 +12,7 @@
 #include "qnamerep.h"
 
 #include "context/common.h"
+#include "runtime/singleton_iterators.h"
 #include "store/itemstore.h"
 #include "util/hashfun.h"
 #include "values/values.h"
@@ -22,18 +23,16 @@ namespace xqp {
   
   
 zorba_qname::zorba_qname(
-	const string& uri,
+	itemid_t uri_id,
 	const string& prefix, 
 	const string& localname)
-:
-	atomic_value(xs_qname)
 {
-	rep = new qnamerep(uri,prefix,localname);
+	rep = new qnamerep(uri_id,prefix,localname);
 }
 
 qnamekey_t zorba_qname::qnamekey() const
 {
-	return hashfun::h64(uri(),hashfun::h64(prefix(),hashfun::h64(localname())));
+	return hashfun::h64(prefix(),hashfun::h64(localname(),uri_id()));
 }
 
 string zorba_qname::prefix() const
@@ -46,36 +45,42 @@ string zorba_qname::localname() const
   return rep->localname();
 }
 
-string zorba_qname::uri() const
+itemid_t zorba_qname::uri_id() const
 {
-  return rep->uri();
+  return rep->uri_id();
 }
 
-ostream& zorba_qname::put(ostream& os) const
+ostream& zorba_qname::put(
+	zorba* zorp,
+	ostream& os) const
 {
 	os << '[' << uri() << ']' << prefix() << ':' << localname();
 	return os;
 }
 
-string zorba_qname::describe() const
+string zorba_qname::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
 	oss << "xs_qname(";
-	put(oss) << ')';
+	put(zorp,oss) << ')';
 	return oss.str();
 }
 
 iterator_t zorba_qname::atomized_value() const
-{ return NULL; }
+{
+	return NULL;
+}
 
 iterator_t zorba_qname::effective_boolean_value() const
-{ return NULL; }
-
-string zorba_qname::string_value() const
 {
-	ostringstream oss;
-	put(oss);
-	return oss.str();
+	return NULL;
+}
+
+iterator_t zorba_qname::string_value(
+	zorba* zorp) const
+{
+	return new string_singleton(stringValue(describe(zorp)));
 }
 
 

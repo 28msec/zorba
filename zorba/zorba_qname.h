@@ -23,9 +23,10 @@ namespace xqp {
 
 class itemstore;
 class qnamerep;
+class zorba;
 
 class zorba_qname : public zorba_atomic_value,
-											public virtual qname
+											public qname
 {
 protected:
 	qnamerep* rep;
@@ -35,24 +36,31 @@ public:
 	zorba_qname() {}
 	zorba_qname(zorba_qname& qn) : rep(qn.rep)  {}
 	zorba_qname(
-		const std::string& uri,
+		itemid_t uri_id,
 		const std::string& prefix,
 		const std::string& localname);
 
-public:
-	std::string uri() const;
+public:		// accessors
+	itemid_t uri_id() const;
 	std::string prefix() const;
 	std::string localname() const;
 	qnamekey_t qnamekey() const;
 
-private:	// ctor,dtor - lock out default and copy constructors
+public:		// XQuery interface
+	sequence_type_t type() const { return xs_qname; }
 
-public:		// output,debugging
-	std::ostream& put(std::ostream& os) const;
-	std::string describe() const;
+	iterator_t atomized_value(xqp::zorba*) const { return NULL; }
+	iterator_t string_value(xqp::zorba*) const;
 	iterator_t atomized_value() const;
 	iterator_t effective_boolean_value() const;
-	std::string string_value() const;
+
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
+
+public:		// output,debugging
+	std::ostream& put(zorba*,std::ostream& os) const;
+	std::string describe(zorba*) const;
 
 };
 

@@ -17,17 +17,16 @@
 #ifndef XQP_ZORBA_NODES_H
 #define XQP_ZORBA_NODES_H
 
-#include "zorba_iterator.h"
 #include "zorba_qname.h"
+#include "nodereps.h"
 
-#include "../context/common.h"
-#include "../values/nodes.h"
-#include "../runtime/iterator.h"
-#include "../types/sequence_type.h"
-#include "../values/values.h"
-#include "../util/rchandle.h"
-
-#include <sys/types.h>
+#include "context/common.h"
+#include "values/nodes.h"
+#include "runtime/item_iterator.h"
+#include "types/sequence_type.h"
+#include "values/values.h"
+#include "values/qname.h"
+#include "util/rchandle.h"
 
 namespace xqp {
 
@@ -55,8 +54,11 @@ public:		// ctor,dtor
 	zorba_node() {}
 	virtual ~zorba_node() {}
 
-public:		// output/debugging
-	virtual std::ostream& put(std::ostream& os) const = 0;
+public:		// accessors
+	virtual sequence_type_t type() const = 0;
+	virtual itemid_t id() const = 0;
+	virtual itemid_t parentid() const = 0;
+	virtual std::string toXML() const = 0;
 
 public:		// XQuery interface
 	virtual iterator_t string_value(zorba*) const { return 0; }
@@ -69,13 +71,27 @@ public:		// XQuery interface
 	virtual iterator_t parent(zorba*) const { return 0; }
 	virtual iterator_t type_name(zorba*) const { return 0; }
 	virtual iterator_t typed_value(zorba*) const { return 0; }
+	virtual iterator_t atomized_value(zorba*) const { return 0; }
 
 	virtual bool is_id() const { return false; }
 	virtual bool is_idrefs() const { return false; }
 	virtual bool nilled() const { return false; }
 
+public:		// internal interface		
+	virtual std::string get_string_value(zorba*) const { return ""; }
+	virtual std::string get_base_uri(zorba*) const { return ""; };
+	virtual std::string get_document_uri(zorba*) const { return ""; };
+	virtual std::string get_typed_value(zorba*) const { return ""; };
+	virtual const qname* get_node_name(zorba*) const { return 0; }
+	virtual const node*  get_parent(zorba*) const { return 0; }
+	virtual const qname* get_type_name(zorba*) const { return 0; }
+
+public:		// output,debugging
+	virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
+	virtual std::string describe(zorba*) const = 0;
+
 };
-	
+
 
 
 class child_iterator : public item_iterator
@@ -84,7 +100,7 @@ protected:
 	rchandle<child_noderep_iterator> itref;
 
 public:
-	child_iterator(const zorba_element_node&);
+	child_iterator(const zorba_node&);
 	~child_iterator() {}
 
 public:
@@ -121,6 +137,7 @@ public:
 public:
 	item& operator*() const;
 	attribute_iterator& operator++();
+
 };
 
 
@@ -144,6 +161,7 @@ public:
 public:
 	item& operator*() const;
 	namespace_iterator& operator++();
+
 };
 
 
@@ -159,19 +177,30 @@ public:
 	~zorba_document_node();
 
 public:		// accessors
-	std::string baseuri() const;
-	std::string docuri() const;
+	sequence_type_t type() const { return documentNode; }
+	itemid_t id() const;
+	itemid_t parentid() const;
+	std::string toXML() const;
 
 public:		// XQuery interface
 	iterator_t string_value(zorba*) const;
 	iterator_t base_uri(zorba*) const;
 	iterator_t document_uri(zorba*) const;
 	iterator_t children(zorba*) const;
+	iterator_t namespace_nodes(zorba*) const;
 	iterator_t typed_value(zorba*) const;
+	iterator_t atomized_value(zorba*) const;
+
+public:		// internal interface		
+	std::string get_string_value(zorba*) const;
+	std::string get_base_uri(zorba*) const;
+	std::string get_document_uri(zorba*) const;
+	std::string get_typed_value(zorba*) const;
+	const qname* get_type_name(zorba*) const;
 
 public:		// output and debugging
-	std::ostream& put(std::ostream&) const;
-	std::string describe() const { return "doc("+baseuri()+docuri()+")"; }
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const; 
 	
 };
 
@@ -187,24 +216,41 @@ public:
 	zorba_element_node(const zorba_element_node&);
 	~zorba_element_node() {}
 
+public:		// accessors
+	sequence_type_t type() const { return elementNode; }
+	itemid_t id() const;
+	itemid_t parentid() const;
+	std::string toXML() const;
+
 public:		// XQuery interface
+	iterator_t parent(zorba*) const;
 	iterator_t string_value(zorba*) const;
 	iterator_t base_uri(zorba*) const;
 	iterator_t document_uri(zorba*) const;
 	iterator_t node_name(zorba*) const;
 	iterator_t type_name(zorba*) const;
+	iterator_t typed_value(zorba*) const;
+	iterator_t atomized_value(zorba*) const;
 	iterator_t attributes(zorba*) const;
 	iterator_t children(zorba*) const;
 	iterator_t namespace_nodes(zorba*) const;
-	iterator_t typed_value(zorba*) const;
 
 	bool is_id() const;
 	bool is_idrefs() const;
 	bool nilled() const;
 
+public:		// internal interface		
+	std::string get_string_value(zorba*) const;
+	std::string get_base_uri(zorba*) const;
+	std::string get_document_uri(zorba*) const;
+	std::string get_typed_value(zorba*) const;
+	const qname* get_node_name(zorba*) const;
+	const node*  get_parent(zorba*) const;
+	const qname* get_type_name(zorba*) const;
+
 public:		// output and debugging
-	std::ostream& put(std::ostream&) const;
-  std::string describe() const;
+	std::ostream& put(zorba*,std::ostream&) const;
+  std::string describe(zorba*) const;
 
 
 };
@@ -221,18 +267,36 @@ public:
 	zorba_attribute_node(zorba_attribute_node&);
   ~zorba_attribute_node() {}
 
+public:		// accessors
+	sequence_type_t type() const { return attributeNode; }
+	itemid_t id() const;
+	itemid_t parentid() const;
+	std::string toXML() const;
+
 public:	// XQuery interface
+	iterator_t parent(zorba*) const;
 	iterator_t string_value(zorba*) const;
 	iterator_t base_uri(zorba*) const;
 	iterator_t node_name(zorba*) const;
+	iterator_t type_name(zorba*) const;
 	iterator_t typed_value(zorba*) const;
+	iterator_t atomized_value(zorba*) const;
 
 	bool is_id() const;
 	bool is_idrefs() const;
 	bool nilled() const;
 
+public:		// internal interface		
+	std::string get_string_value(zorba*) const { return ""; }
+	std::string get_base_uri(zorba*) const { return ""; }
+	std::string get_typed_value(zorba*) const { return ""; }
+	const qname* get_node_name(zorba*) const { return 0; }
+	const node*  get_parent(zorba*) const { return 0; }
+	const qname* get_type_name(zorba*) const { return 0; }
+
 public:		// output,debugging
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 };
 
@@ -248,16 +312,30 @@ public:
 	zorba_namespace_node(zorba_namespace_node&);
 	~zorba_namespace_node() {}
 
+public:		// accessors
+	sequence_type_t type() const { return namespaceNode; }
+	itemid_t id() const;
+	itemid_t parentid() const;
+	std::string prefix() const;
+	std::string uri() const;
+	std::string toXML() const;
+
 public:		// XQuery interface
 	iterator_t string_value(zorba*) const;
 	iterator_t node_name(zorba*) const;
 	iterator_t typed_value(zorba*) const;
+	iterator_t atomized_value(zorba*) const;
 	iterator_t parent(zorba*) const;
 
+public:		// internal interface		
+	virtual std::string get_string_value(zorba*) const { return ""; }
+	virtual std::string get_typed_value(zorba*) const { return ""; };
+	virtual const qname* get_node_name(zorba*) const { return 0; }
+	virtual const node*  get_parent(zorba*) const { return 0; }
+
 public:		// output, debugging
-	std::string prefix() const;
-	std::string uri() const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 };
 
@@ -273,17 +351,32 @@ public:
 	zorba_pi_node(const zorba_pi_node&);
 	~zorba_pi_node() {}
 
+public:		// accessors
+	sequence_type_t type() const { return processingInstructionNode; }
+	itemid_t id() const;
+	itemid_t parentid() const;
+	std::string target() const;
+	std::string content() const;
+	std::string toXML() const;
+
 public:		// XQuery interface
 	iterator_t string_value(zorba*) const;
 	iterator_t base_uri(zorba*) const;
 	iterator_t node_name(zorba*) const;
 	iterator_t typed_value(zorba*) const;
+	iterator_t atomized_value(zorba*) const;
 	iterator_t parent(zorba*) const;
 	
+public:		// internal interface		
+	std::string get_string_value(zorba*) const { return ""; }
+	std::string get_base_uri(zorba*) const { return ""; };
+	std::string get_typed_value(zorba*) const { return ""; };
+	const qname* get_node_name(zorba*) const { return 0; }
+	const node*  get_parent(zorba*) const { return 0; }
+
 public:		// output, debugging
-	std::string target() const;
-	std::string content() const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 };
 
@@ -299,15 +392,29 @@ public:
 	zorba_comment_node(const zorba_comment_node&);
 	~zorba_comment_node() {}
 	
+public:		// accessors
+	sequence_type_t type() const { return commentNode; }
+	itemid_t id() const;
+	itemid_t parentid() const;
+	std::string content() const;
+	std::string toXML() const;
+
 public:		// XQuery interface
 	iterator_t string_value(zorba*) const;
 	iterator_t base_uri(zorba*) const;
 	iterator_t typed_value(zorba*) const;
+	iterator_t atomized_value(zorba*) const;
 	iterator_t parent(zorba*) const;
 	
+public:		// internal interface		
+	std::string get_string_value(zorba*) const { return ""; }
+	std::string get_base_uri(zorba*) const { return ""; };
+	std::string get_typed_value(zorba*) const { return ""; };
+	const node* get_parent(zorba*) const { return 0; }
+
 public:		// output, debugging
-	std::string content() const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 };
 
@@ -323,15 +430,29 @@ public:
 	zorba_text_node(const zorba_text_node&);
 	~zorba_text_node() {}
 	
+public:		// accessors
+	sequence_type_t type() const { return textNode; }
+	itemid_t id() const;
+	itemid_t parentid() const;
+	std::string content() const;
+	std::string toXML() const;
+
 public:		// XQuery interface
 	iterator_t string_value(zorba*) const;
 	iterator_t base_uri(zorba*) const;
 	iterator_t typed_value(zorba*) const;
+	iterator_t atomized_value(zorba*) const;
 	iterator_t parent(zorba*) const;
 
+public:		// internal interface		
+	std::string get_string_value(zorba*) const { return ""; }
+	std::string get_base_uri(zorba*) const { return ""; };
+	std::string get_typed_value(zorba*) const { return ""; };
+	const node* get_parent(zorba*) const { return 0; }
+
 public:		// output,debugging
-	std::string content() const;
-	std::ostream& put(std::ostream& os) const;
+	std::ostream& put(zorba*,std::ostream& os) const;
+	std::string describe(zorba*) const;
 
 };
 

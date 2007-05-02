@@ -58,17 +58,20 @@ itemid_t qnamerep::uri_id() const
   return theURIID;
 }
 
-ostream& qnamerep::put(ostream& os) const
+ostream& qnamerep::put(
+	zorba* zorp,
+	ostream& os) const
 {
 	os << '[' << uri_id() << ']' << prefix() << ':' << localname();
 	return os;
 }
 
-string qnamerep::describe() const
+string qnamerep::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
 	oss << "xs_qname(";
-	put(oss) << ')';
+	put(zorp,oss) << ')';
 	return oss.str();
 }
 
@@ -88,15 +91,16 @@ iterator_t qnamerep::string_value(
 	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	item_iterator* it_p = new string_singleton(stringValue(oss.str()));
 	return it_p;
 }
 
-string qnamerep::string_value() const
+string qnamerep::str(
+	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	return oss.str();
 }
 

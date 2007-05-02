@@ -36,8 +36,8 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// accessors
-	std::string string_value() const;
 	uint32_t length() const { return theLength; }
+	std::string str() const;
 
 public: 	// XQuery atomic_value
 	sequence_type_t type() const { return xs_string; }
@@ -50,8 +50,8 @@ public: 	// XQuery atomic_value
 	bool is_atomic() const;
 
 public:		// output,debugging
-	std::ostream& put(std::ostream& os) const;
-	std::string describe() const;
+	std::ostream& put(zorba*,std::ostream& os) const;
+	std::string describe(zorba*) const;
 
 };
 

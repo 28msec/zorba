@@ -216,7 +216,6 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery sub-interface
-	std::string string_value() const;
 	itemid_t baseuri() const { return theBaseUriID; }
 	itemid_t docuri() const { return theDocUriID; }
 	noderep_it children() const;
@@ -227,6 +226,7 @@ private:	// ctor,dtor
 
 public:		// output and debugging
 	std::ostream& put(zorba*,std::ostream&) const;
+	std::string str(zorba*) const;
 
 };
 
@@ -272,7 +272,6 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery sub-interface
-	std::string string_value(zorba*) const;
 	noderep_it attributes() const;
 	noderep_it children() const;
 
@@ -282,6 +281,7 @@ private:	//ctor,dtor - lock out
 
 public:		// output and debugging
 	std::ostream& put(zorba*,std::ostream&) const;
+	std::string str(zorba*) const;
 
 };
 
@@ -298,7 +298,7 @@ protected:
 	itemid_t theQNameID;
 	char rest[0];
 	/*
-		stringRep value
+		contentRep
 	*/
 
 public:
@@ -319,11 +319,8 @@ public:	// storage interface
 	void* operator new(size_t n, size_t m) { return new char[n+m]; }
 	void  operator delete(void*) {}
 
-public:		// accessors
-	itemid_t qnameID() const { return theQNameID; }
-
 public:	// XQuery sub-interface
-	std::string string_value() const;
+	itemid_t qnameID() const { return theQNameID; }
 
 private:	//ctor,dtor - lock out
 	attribute_noderep(attribute_noderep&);
@@ -331,6 +328,7 @@ private:	//ctor,dtor - lock out
 
 public:		// output,debugging
 	std::ostream& put(zorba*,std::ostream&) const;
+	std::string str(zorba*) const;
 
 };
 
@@ -348,8 +346,8 @@ protected:
 	uint32_t theURIOffset;
 	char rest[0];
 	/*
-		stringRep prefix
-		stringRep uri  
+		contentRep prefix
+		contentRep uri  
 	*/
 
 public:
@@ -368,7 +366,6 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery sub-interface
-	std::string string_value() const;
 	std::string prefix() const;
 	std::string uri() const;
 
@@ -378,6 +375,7 @@ private:	//ctor,dtor - lock out
 
 public:		// output, debugging
 	std::ostream& put(zorba*,std::ostream&) const;
+	std::string str(zorba*) const;
 
 };
 
@@ -395,8 +393,8 @@ protected:
 	uint32_t theContentOffset;
 	char rest[0];
 	/*
-		stringRep target
-		stringRep content
+		contentRep target
+		contentRep content
 	*/
 
 public:
@@ -410,7 +408,6 @@ public:		// storage interface
 	void  operator delete(void*) {}
 
 public:		// XQuery sub-interface
-	std::string string_value() const;
 	std::string content() const;
 	std::string target() const;
 
@@ -420,6 +417,7 @@ private:	//ctor,dtor - lock out
 
 public:		// output, debugging
 	std::ostream& put(zorba*,std::ostream&) const;
+	std::string str(zorba*) const;
 
 };
 
@@ -436,7 +434,7 @@ class comment_noderep : public noderep
 protected:
 	char rest[0];
 	/*
-		stringRep content
+		contentRep content
 	*/
 
 public:
@@ -451,7 +449,6 @@ public:	// storage interface
 
 public:		// XQuery sub-interface
 	std::string content() const;
-	std::string string_value() const;
 
 private:	// lock out default and copy constructors
 	comment_noderep(comment_noderep&) {}
@@ -459,6 +456,7 @@ private:	// lock out default and copy constructors
 
 public:		// output, debugging
 	std::ostream& put(zorba*,std::ostream&) const;
+	std::string str(zorba*) const;
 
 };
 
@@ -474,7 +472,7 @@ class text_noderep : public noderep
 protected:
 	char rest[0];
 	/*
-		stringRep content
+		contentRep content
 	*/
 
 public:	// storage interface
@@ -489,10 +487,8 @@ public:
 	
 public:		// accessors
 	const char* content() const;
-	std::string str() const;
 
 public:		// XQuery interface
-	std::string string_value() const;
 	std::string baseuri(zorba*) const;
 
 private:	// lock out default and copy constructors
@@ -501,6 +497,7 @@ private:	// lock out default and copy constructors
 
 public:		// output/debugging
 	std::ostream& put(zorba*,std::ostream&) const;
+	std::string str(zorba*) const;
 
 };
 
@@ -540,7 +537,7 @@ private:	// lock out default and copy constructors
 	~contentRep() {}
 
 public:		// output/debugging
-	std::ostream& put(zorba*,std::ostream& os) const 
+	std::ostream& put(zorba* zorp, std::ostream& os) const 
 	{
 		return os << str();
 	}

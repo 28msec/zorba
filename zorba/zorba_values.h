@@ -18,8 +18,7 @@
  
 namespace xqp {
 
-class context;
-class itemstore;
+class zorba;
 
 /*______________________________________________________________________
 |  
@@ -33,8 +32,8 @@ public:
 	~zorba_object() {}
 
 public:
-	virtual std::string describe() const { return "zorba_object"; }
-	virtual std::ostream& put(std::ostream& os) const { return os; }
+	virtual std::string describe(zorba*) const { return "zorba_object"; }
+	virtual std::ostream& put(zorba*,std::ostream& os) const { return os; }
 };
 
 
@@ -43,17 +42,17 @@ public:
 |	 'xquery_exception' encapsulate xquery exceptions
 |_______________________________________________________________________*/
 
-class zorba_xquery_exception : public zorba_object,
+class zorba_exception : public zorba_object,
 																virtual public xquery_exception
 													
 {
 public:
-	zorba_xquery_exception() {}
-	~zorba_xquery_exception() {}
+	zorba_exception() {}
+	~zorba_exception() {}
 
 public:
-	virtual std::string describe() const { return "zorba_xquery_exception"; }
-	virtual std::ostream& put(std::ostream& os) const { return os; }
+	virtual std::string describe(zorba*) const { return "zorba_exception"; }
+	virtual std::ostream& put(zorba*,std::ostream& os) const { return os; }
 };
 
 
@@ -72,8 +71,8 @@ public:
 	~zorba_ft_value() {}
 
 public:
-	virtual std::string describe() const { return "zorba_tf_value"; }
-	virtual std::ostream& put(std::ostream& os) const { return os; }
+	virtual std::string describe(zorba*) const { return "zorba_tf_value"; }
+	virtual std::ostream& put(zorba*,std::ostream& os) const { return os; }
 };
 
 
@@ -92,12 +91,12 @@ public:
 	virtual ~zorba_item() {}
 
 public:		// accessors
-  virtual std::string describe() const { return "item"; }
-	virtual sequence_type_t type() const { return xs_anyType; }
+	virtual sequence_type_t type() const = 0;
+  virtual std::string describe(zorba*) const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value() const { return 0; }
-	virtual iterator_t string_value() const { return 0; }
+	virtual iterator_t atomized_value(zorba*) const = 0;
+	virtual iterator_t string_value(zorba*) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }
@@ -119,12 +118,13 @@ public:
 	virtual ~zorba_atomic_value() {}
 
 public:		// accessors
-  virtual std::string describe() const { return "xs_atomicValue"; }
-	virtual sequence_type_t type() const { return xs_anyAtomicType; }
+	virtual sequence_type_t type() const = 0;
+  virtual std::string describe(zorba*) const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value() const { return 0; }
-	virtual iterator_t string_value() const { return 0; }
+	virtual iterator_t atomized_value(zorba*) const = 0;
+	virtual iterator_t effective_boolean_value(zorba*) const = 0;
+	virtual iterator_t string_value(zorba*) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }

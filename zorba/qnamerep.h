@@ -40,7 +40,6 @@ public:
 	itemid_t uri_id() const;
 	std::string prefix() const;
 	std::string localname() const;
-	std::string string_value() const;
 	qnamekey_t qnamekey() const;
 
 public: 	// XQuery atomic_value
@@ -54,8 +53,9 @@ public: 	// XQuery atomic_value
 	bool is_atomic() const;
 
 public:		// output,debugging
-	std::ostream& put(std::ostream& os) const;
-	std::string describe() const;
+	std::ostream& put(zorba*,std::ostream& os) const;
+	std::string describe(zorba*) const;
+	std::string str(zorba*) const;
 
 };
 

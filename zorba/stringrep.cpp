@@ -27,17 +27,20 @@ stringrep::stringrep(
 }
 
 
-ostream& stringrep::put(ostream& os) const
+ostream& stringrep::put(
+	zorba* zorp,
+	ostream& os) const
 {
 	os << string(rest,0,theLength-sizeof(stringrep));
 	return os;
 }
 
-string stringrep::describe() const
+string stringrep::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
 	oss << "xs_string(";
-	put(oss) << ')';
+	put(zorp,oss) << ')';
 	return oss.str();
 }
 
@@ -53,20 +56,20 @@ iterator_t stringrep::effective_boolean_value(
 	return NULL;
 }
 
+string stringrep::str() const
+{
+	ostringstream oss;
+	os << string(rest,0,theLength-sizeof(stringrep));
+	return oss.str();
+}
+
 iterator_t stringrep::string_value(
 	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	item_iterator* it_p = new string_singleton(stringValue(oss.str()));
 	return it_p;
-}
-
-string stringrep::string_value() const
-{
-	ostringstream oss;
-	put(oss);
-	return oss.str();
 }
 
 

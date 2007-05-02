@@ -75,7 +75,8 @@ noderep_it document_noderep::children( ) const
 	return new child_noderep_iterator(this, new(rest) noderep());
 } 
 
-string document_noderep::string_value() const
+string document_noderep::str(
+	zorba* zorp) const
 {
 	ostringstream oss;
 	noderep* n_p = new(rest) noderep();
@@ -186,7 +187,7 @@ element_noderep::element_noderep(
 cout << TRACE << endl;
 }
 
-string element_noderep::string_value(
+string element_noderep::str(
 	zorba* zorp) const
 {
 	ostringstream oss;
@@ -220,7 +221,7 @@ ostream& element_noderep::put(
   cout << TRACE << " : element_node" << endl;
 
 	data_manager* dmgr_p = zorp->get_data_manager();
-  qname* qn_p = dmgr_p->get_qname(theQNameID);
+  const qname* qn_p = dmgr_p->get_qname(theQNameID);
 	Assert<null_pointer>(qn_p);
   qn_p->put(os);
   
@@ -320,10 +321,11 @@ attribute_noderep::attribute_noderep(
 	istore_p->add_text(val);
 }
 
-string attribute_noderep::string_value() const
+string attribute_noderep::str(
+	zorba* zorp) const
 {
-	stringrep* srep = new(rest) stringrep();
-	return srep->string_value();
+	contentRep* crep = new(rest) contentRep();
+	return crep->str();
 }
 
 ostream& attribute_noderep::put(
@@ -331,7 +333,7 @@ ostream& attribute_noderep::put(
 	ostream& os) const
 {
 	data_manager* dmgr_p = zorp->get_data_manager();
-	qname* qn_p = dmgr_p->get_qname(theQNameID);
+	const qname* qn_p = dmgr_p->get_qname(theQNameID);
 	qn_p->put(os);
 	return os << "=\"" << string_value() << "\"";
 }
@@ -368,17 +370,18 @@ namespace_noderep::namespace_noderep(
 
 string namespace_noderep::prefix() const
 {
-	stringrep* srep = new(rest) stringrep();
-	return srep->string_value();
+	contentRep* crep = new(rest) contentRep();
+	return crep->str();
 }
 
 string namespace_noderep::uri() const
 {
-	stringrep* srep = new(&rest[theURIOffset]) stringrep();
-	return srep->string_value();
+	contentRep* crep = new(&rest[theURIOffset]) contentRep();
+	return crep->str();
 }
 
-string namespace_noderep::string_value() const
+string namespace_noderep::str(
+	zorba*) const
 {
 	return uri();
 }
@@ -411,21 +414,22 @@ pi_noderep::pi_noderep(
 {
 }
 
-string pi_noderep::string_value() const
+string pi_noderep::str(
+	zorba*) const
 {
-	return "";
+	return content();
 }
 
 string pi_noderep::target() const
 {
-	stringrep* srep = new(rest) stringrep();
-	return srep->string_value();
+	contentRep* crep = new(rest) contentRep();
+	return crep->str();
 }
 
 string pi_noderep::content() const
 {
-	stringrep* srep = new(&rest[theContentOffset]) stringrep();
-	return srep->string_value();
+	contentRep* crep = new(&rest[theContentOffset]) contentRep();
+	return crep->str();
 }
 
 ostream& pi_noderep::put(
@@ -460,11 +464,12 @@ cout << TRACE << endl;
 
 string comment_noderep::content() const
 {
-	stringrep* srep = new(rest) stringrep();
-	return srep->string_value();
+	contentRep* crep = new(rest) contentRep();
+	return crep->str();
 }
 
-string comment_noderep::string_value() const
+string comment_noderep::str(
+	zorba*) const
 {
 	return content();
 }
@@ -503,25 +508,21 @@ cout << TRACE << endl;
 	new(content.length()) stringrep(istore,content);
 }
 
-string text_noderep::string_value() const
+string text_noderep::str(
+	zorba*) const
 {
-	stringrep* srep = new(rest) stringrep();
-	return srep->string_value();
+	contentRep* crep = new(rest) contentRep();
+	return crep->str();
 }
 
 ostream& text_noderep::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	stringrep* srep = new(rest) stringrep();
-	return os << srep->string_value();
+	contentRep* crep = new(rest) contentRep();
+	return os << crep->str();
 }
 
-string text_noderep::str() const
-{
-	stringrep* srep = new(rest) stringrep();
-	return srep->string_value();
-}
 
 
 /*..........................................
