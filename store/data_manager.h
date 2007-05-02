@@ -40,9 +40,9 @@ public:
 	virtual void apply(const update_value*) = 0;
 
 	// value index
-	virtual node* get_node(itemid_t) = 0;
-	virtual xs_stringValue* get_uri(itemid_t) = 0;
-	virtual qname* get_qname(itemid_t) = 0;
+	virtual const node* get_node(itemid_t) const = 0;
+	virtual const xs_stringValue* get_uri(itemid_t) const = 0;
+	virtual const qname* get_qname(itemid_t) const = 0;
 
 };
 

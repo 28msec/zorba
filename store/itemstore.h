@@ -11,6 +11,8 @@
 #define XQP_ITEMSTORE_H
 
 #include "store_common.h"
+#include "data_manager.h"
+
 #include "context/common.h"
 #include "util/fxvector.h"
 #include "util/fxhashmap.h"
@@ -79,7 +81,7 @@ public:
 
 
 
-class itemstore : public rcobject
+class itemstore : public data_manager
 {
 protected:
 	fxvector<uint32_t> store;		// binary data store
@@ -115,9 +117,9 @@ public:		// data manager interface
 	void apply(const update_value*);
 
 	// value cache
-	node* get_node(itemid_t);
-	xs_stringValue* get_uri(itemid_t);
-	qname* get_qname(itemid_t);
+	const node* get_node(itemid_t) const;
+	const xs_stringValue* get_uri(itemid_t) const;
+	const qname* get_qname(itemid_t) const;
 
 
 public:		// storage interface
