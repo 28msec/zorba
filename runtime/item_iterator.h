@@ -91,38 +91,50 @@ class item_singleton : public item_const_iterator
 {
 protected:
 	const item* i_p;
-	bool done_b;
 
 public:
-	item_singleton(const item* _i_p)
-	: i_p(_i_p),
-		done_b(false) { }
-
-	item_singleton(const item_singleton& it)
-	: i_p(it.i_p),
-		done_b(false)
-	{ }
-
+	item_singleton(const item* _i_p) : i_p(_i_p) {}
+	item_singleton(const item_singleton& it) : i_p(it.i_p) {}
 	~item_singleton() { }
 
 public:	// iterator interface
 	void open() {}
 	void close() {}
-	const item& next(uint32_t delta = 1) { done_b = true; return *i_p; }
+	const item& next(uint32_t delta = 1) 
+		{ const item* p = i_p; i_p = NULL; return *p; }
 	const item& peek() const { return *i_p; }
-	bool done() const { return done_b; }
+	bool done() const { return (i_p==NULL); }
 
 public:	// C++ interface
 	const item& operator*() const { return *i_p; }
-	item_singleton& operator++() { done_b = true; return *this; }
+	item_singleton& operator++() { i_p = NULL; return *this; }
+	item_singleton& operator=(const item_singleton& it)
+		{ i_p = it.i_p; return *this; }
 
-	item_singleton& operator=(
-		const item_singleton& it)
-	{
-		i_p    = it.i_p;
-		done_b = it.done_b;
-		return *this;
-	}
+};
+
+
+class qname_singleton : public item_const_iterator
+{
+protected:
+	const qname* qn_p;
+
+public:
+	qname_singleton(const qname* _qn_p) : qn_p(_qn_p) {}
+	qname_singleton(const qname_singleton& it) : qn_p(it.qn_p) {}
+	~qname_singleton() { }
+
+public:	// iterator interface
+	void open() {}
+	void close() {}
+	const item& next(uint32_t delta = 1);
+	const item& peek() const;
+	bool done() const { return (qn_p==NULL); }
+
+public:	// C++ interface
+	const item& operator*() const;
+	qname_singleton& operator++() { qn_p=NULL; return *this; }
+	qname_singleton& operator=(const qname_singleton& it);
 
 };
 
@@ -131,19 +143,10 @@ class node_singleton : public item_const_iterator
 {
 protected:
 	const node* n_p;
-	bool done_b;
 
 public:
-	node_singleton(const node* _n_p)
-	: n_p(_n_p),
-		done_b(false)
-	{ }
-
-	node_singleton(const node_singleton& it)
-	: n_p(it.n_p),
-		done_b(false)
-	{ }
-
+	node_singleton(const node* _n_p) : n_p(_n_p) {} 
+	node_singleton(const node_singleton& it) : n_p(it.n_p) {}
 	~node_singleton() { }
 
 public:	// iterator interface
@@ -151,24 +154,13 @@ public:	// iterator interface
 	void close() {}
 	const item& next(uint32_t delta = 1);
 	const item& peek() const;
-	bool done() const { return done_b; }
+	bool done() const { return n_p==NULL; }
 
 public:	// C++ interface
 	const item& operator*() const;
-
-	node_singleton& operator++()
-	{
-		done_b = true;
-		return *this;
-	}
-
-	node_singleton& operator=(
-		const node_singleton& it)
-	{
-		n_p    = it.n_p;
-		done_b = it.done_b;
-		return *this;
-	}
+	node_singleton& operator++() { n_p = NULL; return *this; }
+	node_singleton& operator=(const node_singleton& it)
+		{ n_p = it.n_p; return *this; }
 
 };
 

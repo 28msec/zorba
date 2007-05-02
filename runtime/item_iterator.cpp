@@ -9,10 +9,13 @@
 #include "item_iterator.h"
 #include "values/values.h"
 #include "values/nodes.h"
+#include "values/qname.h"
 
 using namespace std;
 namespace xqp {
 
+// node_singleton
+// --------------
 const item& node_singleton::next(
 	uint32_t delta = 1)
 {
@@ -31,6 +34,34 @@ const item& node_singleton::operator*() const
 }
 
 
+// qname_singleton
+// ---------------
+const item& qname_singleton::next(uint32_t delta = 1)
+{
+	const qname* p = qn_p;
+	qn_p = NULL;
+	return dynamic_cast<const item&>(*qn_p);
+}
+
+const item& qname_singleton::peek() const
+{
+	return dynamic_cast<const item&>(*qn_p);
+}
+
+const item& qname_singleton::operator*() const
+{
+	return dynamic_cast<item&>(*qn_p);
+}
+
+qname_singleton& qname_singleton::operator=(
+	const qname_singleton& it)
+{
+	qn_p = it.qn_p;
+	return *this;
+}
+
+
+};
 
 }	/* namespace xqp */
 
