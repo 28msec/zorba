@@ -92,7 +92,7 @@ string zorba_document_node::describe(
 
 // internal interface		
 // (stubs for now)
-string zorba_document_node::get_string_value(
+string zorba_document_node::str(
 	zorba* zorp) const 
 {
 	return "";
@@ -212,7 +212,7 @@ iterator_t zorba_element_node::namespace_nodes(
 }
 
 // internal interface
-string zorba_element_node::get_string_value(zorba*) const { return ""; }
+string zorba_element_node::str(zorba*) const { return ""; }
 string zorba_element_node::get_base_uri(zorba*) const { return ""; }
 string zorba_element_node::get_document_uri(zorba*) const { return ""; }
 string zorba_element_node::get_typed_value(zorba*) const { return ""; }

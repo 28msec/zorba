@@ -76,7 +76,7 @@ sequence_type_t dynamic_context::context_item_type() const
 dynamic_context::ordering_mode_t dynamic_context::ordering_mode() const
 {
 	iterator_t it_h = context_value(ordering_mode_key);
-	string mode = (**it_h).string_value();
+	string mode = (**it_h).str(zorp);
 	if (mode=="ordered") return ordered;
 	return unordered;
 }

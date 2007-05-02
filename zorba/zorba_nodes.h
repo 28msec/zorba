@@ -78,7 +78,7 @@ public:		// XQuery interface
 	virtual bool nilled() const { return false; }
 
 public:		// internal interface		
-	virtual std::string get_string_value(zorba*) const { return ""; }
+	virtual std::string str(zorba*) const { return ""; }
 	virtual std::string get_base_uri(zorba*) const { return ""; };
 	virtual std::string get_document_uri(zorba*) const { return ""; };
 	virtual std::string get_typed_value(zorba*) const { return ""; };
@@ -192,7 +192,7 @@ public:		// XQuery interface
 	iterator_t atomized_value(zorba*) const;
 
 public:		// internal interface		
-	std::string get_string_value(zorba*) const;
+	std::string str(zorba*) const;
 	std::string get_base_uri(zorba*) const;
 	std::string get_document_uri(zorba*) const;
 	std::string get_typed_value(zorba*) const;
@@ -240,7 +240,7 @@ public:		// XQuery interface
 	bool nilled() const;
 
 public:		// internal interface		
-	std::string get_string_value(zorba*) const;
+	std::string str(zorba*) const;
 	std::string get_base_uri(zorba*) const;
 	std::string get_document_uri(zorba*) const;
 	std::string get_typed_value(zorba*) const;
@@ -287,7 +287,7 @@ public:	// XQuery interface
 	bool nilled() const;
 
 public:		// internal interface		
-	std::string get_string_value(zorba*) const { return ""; }
+	std::string str(zorba*) const { return ""; }
 	std::string get_base_uri(zorba*) const { return ""; }
 	std::string get_typed_value(zorba*) const { return ""; }
 	const qname* get_node_name(zorba*) const { return 0; }
@@ -328,7 +328,7 @@ public:		// XQuery interface
 	iterator_t parent(zorba*) const;
 
 public:		// internal interface		
-	virtual std::string get_string_value(zorba*) const { return ""; }
+	virtual std::string str(zorba*) const { return ""; }
 	virtual std::string get_typed_value(zorba*) const { return ""; };
 	virtual const qname* get_node_name(zorba*) const { return 0; }
 	virtual const node*  get_parent(zorba*) const { return 0; }
@@ -368,7 +368,7 @@ public:		// XQuery interface
 	iterator_t parent(zorba*) const;
 	
 public:		// internal interface		
-	std::string get_string_value(zorba*) const { return ""; }
+	std::string str(zorba*) const { return ""; }
 	std::string get_base_uri(zorba*) const { return ""; };
 	std::string get_typed_value(zorba*) const { return ""; };
 	const qname* get_node_name(zorba*) const { return 0; }
@@ -407,7 +407,7 @@ public:		// XQuery interface
 	iterator_t parent(zorba*) const;
 	
 public:		// internal interface		
-	std::string get_string_value(zorba*) const { return ""; }
+	std::string str(zorba*) const { return ""; }
 	std::string get_base_uri(zorba*) const { return ""; };
 	std::string get_typed_value(zorba*) const { return ""; };
 	const node* get_parent(zorba*) const { return 0; }
@@ -445,7 +445,7 @@ public:		// XQuery interface
 	iterator_t parent(zorba*) const;
 
 public:		// internal interface		
-	std::string get_string_value(zorba*) const { return ""; }
+	std::string str(zorba*) const { return ""; }
 	std::string get_base_uri(zorba*) const { return ""; };
 	std::string get_typed_value(zorba*) const { return ""; };
 	const node* get_parent(zorba*) const { return 0; }

@@ -67,6 +67,15 @@ string zorba_qname::describe(
 	return oss.str();
 }
 
+string zorba_qname::str(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	oss << "xs_qname(";
+	put(zorp,oss) << ')';
+	return oss.str();
+}
+
 iterator_t zorba_qname::atomized_value() const
 {
 	return NULL;

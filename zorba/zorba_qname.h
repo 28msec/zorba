@@ -61,6 +61,7 @@ public:		// XQuery interface
 public:		// output,debugging
 	std::ostream& put(zorba*,std::ostream& os) const;
 	std::string describe(zorba*) const;
+	std::string str(zorba*) const;
 
 };
 

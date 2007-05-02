@@ -32,6 +32,7 @@ public:
 	long double val() const { return theVal; }
 	std::ostream& put(zorba*,std::ostream&) const;
 	std::string describe(zorba*) const;
+	std::string str(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
@@ -72,6 +73,7 @@ public:
 public:		// accessors
 	std::ostream& put(zorba*,std::ostream&) const;
 	std::string describe(zorba*) const;
+	std::string str(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
@@ -103,6 +105,7 @@ public:
 	std::string val() const { return theVal; }
 	std::ostream& put(zorba*,std::ostream&) const;
 	std::string describe(zorba*) const;
+	std::string str(zorba*) const;
 
 	stringValue& operator=(const stringValue& v)
 		{ theVal = v.theVal; return *this; }
@@ -136,6 +139,7 @@ public:
 	unsigned char* val() const { return theVal; }
 	std::ostream& put(zorba*,std::ostream&) const;
 	std::string describe(zorba*) const;
+	std::string str(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
@@ -166,6 +170,7 @@ public:
 	bool val() const { return theVal; }
 	std::ostream& put(zorba*,std::ostream&) const;
 	std::string describe(zorba*) const;
+	std::string str(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }

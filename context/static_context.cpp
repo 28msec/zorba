@@ -91,18 +91,20 @@ iterator_t static_context::collations() const
 	return context_value(collations_key);
 }
 
-static_context::construction_mode_t static_context::construction_mode() const
+static_context::construction_mode_t 
+static_context::construction_mode() const
 {
 	iterator_t it_h = context_value(construction_mode_key);
-	string mode = (**it_h).string_value();
+	string mode = (**it_h).str(zorp);
 	if (mode=="preserve") return cons_preserve;
 	return cons_strip;
 }
 
-static_context::order_empty_mode_t static_context::order_empty_mode() const
+static_context::order_empty_mode_t 
+static_context::order_empty_mode() const
 {
 	iterator_t it_h = context_value(order_empty_mode_key);
-	string mode = (**it_h).string_value();
+	string mode = (**it_h).str(zorp);
 	if (mode=="empty_greatest") return empty_greatest;
 	return empty_least;
 }
@@ -110,7 +112,7 @@ static_context::order_empty_mode_t static_context::order_empty_mode() const
 static_context::boundary_space_mode_t static_context::boundary_space_mode() const
 {
 	iterator_t it_h = context_value(boundary_space_mode_key);
-	string mode = (**it_h).string_value();
+	string mode = (**it_h).str(zorp);
 	if (mode=="preserve_space") return preserve_space;
 	return strip_space;
 }
@@ -118,7 +120,7 @@ static_context::boundary_space_mode_t static_context::boundary_space_mode() cons
 static_context::inherit_mode_t static_context::inherit_mode() const
 {
 	iterator_t it_h = context_value(inherit_mode_key);
-	string mode = (**it_h).string_value();
+	string mode = (**it_h).str(zorp);
 	if (mode=="inherit_ns") return inherit_ns;
 	return no_inherit_ns;
 }
@@ -126,7 +128,7 @@ static_context::inherit_mode_t static_context::inherit_mode() const
 static_context::preserve_mode_t static_context::preserve_mode() const
 {
 	iterator_t it_h = context_value(preserve_mode_key);
-	string mode = (**it_h).string_value();
+	string mode = (**it_h).str(zorp);
 	if (mode=="preserve_ns") return preserve_ns;
 	return no_preserve_ns;
 }
@@ -178,7 +180,7 @@ const qname& static_context::get_default_collation() const
 
 std::string static_context::get_baseuri() const
 {
-	return (**context_value(baseuri_key)).string_value();
+	return (**context_value(baseuri_key)).str(zorp);
 }
 
 void static_context::set_default_collation(const string& uri)

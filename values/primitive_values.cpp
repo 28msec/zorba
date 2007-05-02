@@ -95,6 +95,14 @@ string numericValue::describe(
 	return oss.str();
 }
 
+string numericValue::str(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	put(zorp,oss);
+	return oss.str();
+}
+
 numericValue::numericValue(
 	sequence_type_t type,
 	long double val)
@@ -136,6 +144,14 @@ ostream& timeValue::put(
 {
 	os << "time(";
 	return _put(os,&theVal,theType) << ')';
+}
+
+string timeValue::str(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	put(zorp,oss);
+	return oss.str();
 }
 
 string timeValue::describe(
@@ -201,6 +217,14 @@ string stringValue::describe(
 	return oss.str();
 }
 
+string stringValue::str(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	put(zorp,oss);
+	return oss.str();
+}
+
 iterator_t stringValue::atomized_value(
 	zorba* zorp) const
 {
@@ -248,6 +272,14 @@ ostream& binaryValue::put(
 	// some printable representation of binary
 }
 
+string binaryValue::str(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	put(zorp,oss);
+	return oss.str();
+}
+
 string binaryValue::describe(
 	zorba* zorp) const
 {
@@ -282,6 +314,14 @@ ostream& booleanValue::put(
 }
 
 string booleanValue::describe(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	put(zorp,oss);
+	return oss.str();
+}
+
+string booleanValue::str(
 	zorba* zorp) const
 {
 	ostringstream oss;
