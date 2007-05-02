@@ -25,7 +25,7 @@ int main(int argc, char* argv[])
   try {
 		fxvector<uint32_t> * fxvec_p;
 		if (argc > 1) {
-    	fxvec_p = new fxvector<uint32_t>(string(argv[1],0,strlen(argv[0])));
+    	fxvec_p = new fxvector<uint32_t>(string(argv[1],0,strlen(argv[1])));
 		}
 		else {
     	fxvec_p = new fxvector<uint32_t>();
