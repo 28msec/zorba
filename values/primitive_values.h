@@ -30,16 +30,15 @@ public:
 
 public:
 	long double val() const { return theVal; }
-	std::ostream& put(std::ostream&) const;
-	std::string describe() const;
-	std::string string_value() const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
 	iterator_t atomized_value(zorba*) const { return NULL; }
 	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -70,17 +69,16 @@ public:
 	// 6-arg ctor
 	// 6 getters
 
-public:
-	std::ostream& put(std::ostream&) const;
-	std::string describe() const;
-	std::string string_value() const;
+public:		// accessors
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
 	iterator_t atomized_value(zorba*) const { return NULL; }
 	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -103,9 +101,8 @@ public:
 
 public: 
 	std::string val() const { return theVal; }
-	std::ostream& put(std::ostream&) const;
-	std::string describe() const;
-	std::string string_value() const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 	stringValue& operator=(const stringValue& v)
 		{ theVal = v.theVal; return *this; }
@@ -137,16 +134,15 @@ public:
 
 public: 
 	unsigned char* val() const { return theVal; }
-	std::ostream& put(std::ostream&) const;
-	std::string describe() const;
-	std::string string_value() const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
 	iterator_t atomized_value(zorba*) const { return NULL; }
 	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -168,16 +164,15 @@ public:
 
 public:
 	bool val() const { return theVal; }
-	std::ostream& put(std::ostream&) const;
-	std::string describe() const;
-	std::string string_value() const;
+	std::ostream& put(zorba*,std::ostream&) const;
+	std::string describe(zorba*) const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
 	iterator_t atomized_value(zorba*) const { return NULL; }
 	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const { return NULL; }
+	iterator_t string_value(zorba*) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }

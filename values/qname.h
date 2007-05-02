@@ -32,7 +32,7 @@ public:
 
 public:
 	qnamekey_t qnamekey() const;
-  std::ostream& put(std::ostream& os);
+  std::ostream& put(std::ostream& os) const;
 
 };
 

@@ -10,6 +10,7 @@
 #include "primitive_values.h"
 #include "types/typecodes.h"
 #include "util/tracer.h"
+#include "runtime/item_iterator.h"
 #include "runtime/singleton_iterators.h"
 
 #include <iostream>
@@ -63,7 +64,9 @@ ostream& _put(
 
 // numericValue
 // ------------
-ostream& numericValue::put(ostream& os) const
+ostream& numericValue::put(
+	zorba* zorp,
+	ostream& os) const
 {
 	switch (type()) {
 	case xs_decimal: return os << "decimal(" << theVal << ')';
@@ -84,10 +87,11 @@ ostream& numericValue::put(ostream& os) const
 	}
 }
 
-string numericValue::describe() const
+string numericValue::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	return oss.str();
 }
 
@@ -100,9 +104,10 @@ numericValue::numericValue(
 {
 }
 
-string numericValue::string_value() const
+iterator_t numericValue::string_value(
+	zorba* zorp) const
 {
-	return describe();
+	return new string_singleton(stringValue(describe(zorp)));
 }
 
 
@@ -126,22 +131,25 @@ timeValue::timeValue(
 }
 
 ostream& timeValue::put(
+	zorba* zorp,
 	ostream& os) const
 {
 	os << "time(";
 	return _put(os,&theVal,theType) << ')';
 }
 
-string timeValue::describe() const
+string timeValue::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	return oss.str();
 }
 
-string timeValue::string_value() const
+iterator_t timeValue::string_value(
+	zorba* zorp) const
 {
-	return describe();
+	return new string_singleton(stringValue(describe(zorp)));
 }
 
 
@@ -165,7 +173,9 @@ stringValue::stringValue(
 {
 }
 
-ostream& stringValue::put(ostream& os) const
+ostream& stringValue::put(
+	zorba* zorp,
+	ostream& os) const
 {
 	switch (type()) {
 	case xs_string: return os << "string(" << theVal << ')';
@@ -183,10 +193,11 @@ ostream& stringValue::put(ostream& os) const
 	}
 }
 
-string stringValue::describe() const
+string stringValue::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	return oss.str();
 }
 
@@ -208,10 +219,6 @@ iterator_t stringValue::string_value(
 	return new string_singleton(*this);
 }
 
-string stringValue::string_value() const
-{
-	return theVal;
-}
 
 
 // binaryValue
@@ -233,23 +240,28 @@ binaryValue::~binaryValue()
 	delete[] theVal;
 }
 
-ostream& binaryValue::put(std::ostream& os) const
+ostream& binaryValue::put(
+	zorba* zorp,
+	std::ostream& os) const
 {
 	return os;
 	// some printable representation of binary
 }
 
-string binaryValue::describe() const
+string binaryValue::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	return oss.str();
 }
 
-string binaryValue::string_value() const
+iterator_t binaryValue::string_value(
+	zorba* zorp) const
 {
-	return "";
+	return new string_singleton(stringValue(describe(zorp)));
 }
+
 
 
 // booleanValue
@@ -263,22 +275,26 @@ booleanValue::booleanValue(
 }
 
 ostream& booleanValue::put(
+	zorba* zorp,
 	ostream& os) const
 {
 	return os << "boolean(" << theVal << ')';
 }
 
-string booleanValue::describe() const
+string booleanValue::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
-	put(oss);
+	put(zorp,oss);
 	return oss.str();
 }
 
-string booleanValue::string_value() const
+iterator_t booleanValue::string_value(
+	zorba* zorp) const
 {
-	return theVal ? "true" : "false";
+	return new string_singleton(stringValue(describe(zorp)));
 }
+
 
 
 }	/* namespace xqp */

@@ -58,10 +58,9 @@ class zorba;
 class node : virtual public item
 {
 public:		// accessors
-	virtual itemid_t id() = 0;
-	virtual itemid_t parentid() = 0;
+	virtual itemid_t id() const = 0;
+	virtual itemid_t parentid() const = 0;
 	virtual std::string toXML() const = 0;
-	virtual std::string string_value() const = 0;
 
 public:		// XQuery interface
 	virtual sequence_type_t node_kind() const = 0;
@@ -128,8 +127,6 @@ public:
 	virtual iterator_t children(zorba*) const = 0;
 	virtual iterator_t namespace_nodes(zorba*) const = 0;
 
-	virtual std::string string_value() const = 0;
-
 };
 
 
@@ -169,7 +166,7 @@ public:
 class element_node : virtual public node
 {
 public:
-	virtual sequence_type_t node_kind()
+	virtual sequence_type_t node_kind() const
 		{ return elementNode; }
 
 	virtual iterator_t string_value(zorba*) const = 0;
@@ -180,9 +177,8 @@ public:
 	virtual iterator_t node_name(zorba*) const = 0;
 	virtual iterator_t attributes(zorba*) const = 0;
 	virtual iterator_t children(zorba*) const = 0;
-	virtual iterator_t namespace_nodess(zorba*) const = 0;
+	virtual iterator_t namespace_nodes(zorba*) const = 0;
 
-	virtual std::string string_value() const = 0;
 	virtual bool is_id() const = 0;
 	virtual bool is_idrefs() const = 0;
 	virtual bool nilled() const = 0;
@@ -221,7 +217,6 @@ public:
 	virtual iterator_t parent(zorba*) const = 0;
 	virtual iterator_t node_name(zorba*) const = 0;
 
-	virtual std::string string_value() const = 0;
 	virtual bool is_id() const = 0;
 	virtual bool is_idrefs() const = 0;
 
@@ -249,8 +244,6 @@ public:
 	virtual iterator_t typed_value(zorba*) const = 0;			// URI
 	virtual iterator_t parent(zorba*) const = 0;
 	
-	virtual std::string string_value() const = 0;
-
 };
 
 
@@ -271,8 +264,6 @@ public:
 	virtual iterator_t typed_value(zorba*) const = 0;			// content
 	virtual iterator_t parent(zorba*) const = 0;
 
-	virtual std::string string_value() const = 0;
-
 };
 
 
@@ -290,8 +281,6 @@ public:
 	virtual iterator_t base_uri(zorba*) const = 0;				// parent baseuri	
 	virtual iterator_t typed_value(zorba*) const = 0;			// content
 	virtual iterator_t parent(zorba*) const = 0;
-
-	virtual std::string string_value() const = 0;
 
 };
 
@@ -320,8 +309,6 @@ public:
 	virtual iterator_t base_uri(zorba*) const = 0;				// parent baseuri
 	virtual iterator_t typed_value(zorba*) const = 0;			// content
 	virtual iterator_t parent(zorba*) const = 0;			
-
-	virtual std::string string_value() const = 0;
 
 };
 
