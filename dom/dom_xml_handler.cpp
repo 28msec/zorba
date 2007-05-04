@@ -10,12 +10,14 @@
 #include "dom_xml_handler.h"
 #include "dom_qname.h"
 #include "dom_nodes.h"
+
 #include "context/common.h"
-#include "values/values.h"
+#include "runtime/zorba.h"
 #include "util/xqp_exception.h"
 #include "util/tokenbuf.h"
 #include "util/tracer.h"
 #include "util/URI.h"
+#include "values/values.h"
 
 #include <iostream>
 #include <string>
@@ -25,6 +27,7 @@ namespace xqp {
 
 
 dom_xml_handler::dom_xml_handler(
+	zorba* zorp,
 	string const& baseuri,
 	string const& uri)
 :
@@ -114,7 +117,7 @@ qnamekey_t dom_xml_handler::process_qname(
 void dom_xml_handler::add_child(
   dom_node* node_p)
 {
-  //cout << TRACE << " : add_child("; node_p->put(cout) << ")\n";
+  //cout << TRACE << " : add_child("; node_p->put(zorp,cout) << ")\n";
   dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
 	if (en_p) { en_p->add_child(node_p); return; }
 	dom_document_node* dn_p = dynamic_cast<dom_document_node*>(the_context_node);
@@ -125,7 +128,7 @@ void dom_xml_handler::add_child(
 void dom_xml_handler::add_namespace(
   dom_namespace_node* ns_p)
 {
-  //cout << TRACE << " : add_namespace("; ns_p->put(cout) << ")\n";
+  //cout << TRACE << " : add_namespace("; ns_p->put(zorp,cout) << ")\n";
   dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
 	if (en_p) { en_p->add_namespace(ns_p); return; }
   cout << TRACE << " : bad context node\n";
@@ -135,7 +138,7 @@ void dom_xml_handler::add_namespace(
 void dom_xml_handler::add_attribute(
   dom_attribute_node* at_p)
 {
-  //cout << TRACE << " : add_attribute("; at_p->put(cout) << ")\n";
+  //cout << TRACE << " : add_attribute("; at_p->put(zorp,cout) << ")\n";
   dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
 	if (en_p) { en_p->add_attribute(at_p); return; }
   cout << TRACE << " : bad context node\n";
@@ -143,11 +146,11 @@ void dom_xml_handler::add_attribute(
 
 void dom_xml_handler::display_context_node() const
 {
-  //cout << TRACE << " : add_child("; node_p->put(cout) << ")\n";
+  //cout << TRACE << " : add_child("; node_p->put(zorp,cout) << ")\n";
   dom_element_node* en_p = dynamic_cast<dom_element_node*>(the_context_node);
-	if (en_p) { en_p->put(cout) << endl; return; }
+	if (en_p) { en_p->put(zorp,cout) << endl; return; }
 	dom_document_node* dn_p = dynamic_cast<dom_document_node*>(the_context_node);
-  if (dn_p) { dn_p->put(cout) << endl; return; }
+  if (dn_p) { dn_p->put(zorp,cout) << endl; return; }
   cout << TRACE << " : bad context node\n";
 }
 
@@ -255,7 +258,7 @@ void dom_xml_handler::etag(const char* buf, int offset, int length)
 		elem_entry* entry_p = node_stack.top();
 		dom_node* node_p = entry_p->en_p;
 		
-		cout << TRACE << " stack top: "; node_p->put(cout) << endl;
+		cout << TRACE << " stack top: "; node_p->put(zorp,cout) << endl;
 		
 		if (matched) {
   	  the_context_node = node_p;
@@ -297,7 +300,7 @@ void dom_xml_handler::gi(const char* buf, int offset, int length)
 	the_context_node = elem_p;
 	display_context_node();
 	elem_entry* entry_p  = new elem_entry(qnkey, elem_p);
-	cout << TRACE << " : push stack:\n  "; elem_p->put(cout) << endl;
+	cout << TRACE << " : push stack:\n  "; elem_p->put(zorp,cout) << endl;
 	node_stack.push(entry_p);
 }
 

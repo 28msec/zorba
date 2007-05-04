@@ -18,10 +18,10 @@
 #define XQP_DOM_XML_HANDLER_H
 
 #include "dom_namepool.h"
-#include "../store/scan_handler.h"
-#include "../util/list.h"
-#include "../util/rchandle.h"
-#include "../util/URI.h"
+#include "store/scan_handler.h"
+#include "util/list.h"
+#include "util/rchandle.h"
+#include "util/URI.h"
 
 #include <string>
 #include <stack>
@@ -31,6 +31,7 @@
 
 namespace xqp {
 
+class zorba;
 class dom_node;
 class dom_namespace_node;
 class dom_attribute_node;
@@ -93,6 +94,7 @@ protected:  // state
   uint16_t the_entity;									// most recent entity 
 	ostringstream textbuf;								// text accumulator
 	dom_node* the_context_node;
+	zorba* zorp;
 	
 	std::string default_attribute_prefix;
 	std::string default_attribute_uri;
@@ -101,6 +103,7 @@ protected:  // state
 
 public:		// ctor, dtor
 	dom_xml_handler(
+		zorba*,
 		std::string const& baseuri,					// document base URI
 		std::string const& uri);						// document URI
 

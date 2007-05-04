@@ -26,7 +26,7 @@ qnamekey_t dom_namepool::put_qname(	// return: qname key
 	dom_qname* qname_p)								// input:  dom qname
 {
   //cout << TRACE << " : put_qname( [" << (uint32_t)(qname_p) << ']';
-  qname_p->put(cout) << " =>\n  ";
+  //qname_p->put(cout) << " =>\n  ";
 	qnamekey_t key = qname_p->nodeid();
 	//cout << key << endl;
 	if (qname_map.find(key)) return key;

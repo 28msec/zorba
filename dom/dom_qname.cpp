@@ -8,7 +8,9 @@
  */
 
 #include "dom_qname.h"
-#include "../util/hashfun.h"
+#include "util/hashfun.h"
+#include "runtime/singleton_iterators.h"
+
 #include <string>
 
 using namespace std;
@@ -49,7 +51,9 @@ qnamekey_t dom_qname::nodeid() const
 	return dom_qname::hashkey(the_uri,the_prefix,the_localname);
 }
 
-ostream& dom_qname::put(ostream& os) const
+ostream& dom_qname::put(
+	zorba* zorp,
+	ostream& os) const
 {
   if (the_uri!="http://nonamespace/") {
 	  return os << the_prefix << '[' << the_uri << "]:" << the_localname;
@@ -59,7 +63,8 @@ ostream& dom_qname::put(ostream& os) const
   }
 }
 
-string dom_qname::describe() const
+string dom_qname::describe(
+	zorba* zorp) const
 {
 	ostringstream oss;
 	if (the_uri!="http://noname") {
@@ -71,5 +76,18 @@ string dom_qname::describe() const
 	return oss.str();
 }
 
+string dom_qname::str(
+	zorba* zorp) const
+{
+	ostringstream oss;
+	put(zorp,oss);
+	return oss.str();
+}
+
+iterator_t dom_qname::effective_boolean_value(
+	zorba* zorp) const
+{
+	return new boolean_singleton(booleanValue(true));
+}
 
 } /* namespace xqp */

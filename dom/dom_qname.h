@@ -18,6 +18,8 @@
 
 namespace xqp {
 
+class zorba;
+
 class dom_qname : public qname
 {
 protected:
@@ -34,20 +36,28 @@ public:
 	dom_qname(const dom_qname& qn);
 	~dom_qname() {}
 
-public:
+public:		// accessors
+	qnamekey_t nodeid() const;
 	std::string uri() const { return the_uri; }
 	std::string prefix() const { return the_prefix; }
 	std::string localname() const { return the_localname; }
-	qnamekey_t nodeid() const;
+	std::string str(zorba*) const;
 
 	static qnamekey_t hashkey(
 		const std::string& uri,
 		const std::string& prefix,
 		const std::string& localname);
 
+public:		// XQuery interface
+	sequence_type_t type() const { return xs_qname; }
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
+	iterator_t effective_boolean_value(zorba*) const;
+
 public:		// output,debugging
-	std::ostream& put(std::ostream& os) const;
-	std::string describe() const;
+	std::ostream& put(zorba*,std::ostream& os) const;
+	std::string describe(zorba*) const;
 
 };
 
