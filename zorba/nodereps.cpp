@@ -8,8 +8,6 @@
  */
 
 #include "nodereps.h"
-#include "stringrep.h"
-
 #include "runtime/errors.h"
 #include "runtime/zorba.h"
 #include "util/Assert.h"
@@ -362,9 +360,9 @@ namespace_noderep::namespace_noderep(
 	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_data_manager());
 	Assert<null_pointer>(istore_p!=NULL);
 	itemstore& istore = *istore_p;
-	stringrep* p = new(prefix.length()) stringrep(istore,prefix);
+	contentRep* p = new(prefix.length()) contentRep(zorp,prefix);
 	theURIOffset = istore.eos();
-	stringrep* q = new(uri.length()) stringrep(istore,uri);
+	contentRep* q = new(uri.length()) contentRep(zorp,uri);
 	theLength = sizeof(namespace_noderep) + p->length() + q->length();
 }
 
@@ -501,11 +499,7 @@ text_noderep::text_noderep(
 		// parent item id
 		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid())
 {
-cout << TRACE << endl;
-	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_data_manager());
-	Assert<null_pointer>(istore_p!=NULL);
-	itemstore& istore = *istore_p;
-	new(content.length()) stringrep(istore,content);
+	new(content.length()) contentRep(zorp,content);
 }
 
 string text_noderep::str(

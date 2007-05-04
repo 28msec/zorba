@@ -505,11 +505,9 @@ public:		// output/debugging
 /*..........................................
  :          content                        :
  :.........................................*/
-class contentRep 
+class contentRep : public itemRep
 {
 protected:
-	sequence_type_t type;
-	uint32_t length;
 	char rest[0];
 
 public:	// storage interface
@@ -521,16 +519,14 @@ public:	// storage interface
 public:
 	contentRep() {}
 	contentRep(zorba* zorp,const std::string& s)
-	:
-		type(xs_string),
-		length(s.length())
+	: itemRep(xs_string,s.length())
 	{
-		strncpy(rest,s.c_str(),length);
+		strncpy(rest,s.c_str(),s.length());
 	}
 	
 public:		// accessors
 	const char* content() const { return rest; }
-	std::string str() const { return string(rest,0,length); } 
+	std::string str() const { return string(rest,0,theLength); } 
 
 private:	// lock out default and copy constructors
 	contentRep(text_noderep&) {}
