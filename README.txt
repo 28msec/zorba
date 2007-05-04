@@ -1,5 +1,5 @@
-zorba0.1-2
-2007.03.14
+zorba0.2-1
+2007.05.04
 
 
 
@@ -10,9 +10,9 @@ zorba versioning conventions
 
 'zorbaN.M-K' means:
 
-	major version  = N
-	minor version  = M
-	patch release  = K
+  major version  = N
+  minor version  = M
+  patch release  = K
 
 When nightly build and regression tests are up and running,
 then K increment with each nightly build.  M increments as
@@ -28,12 +28,12 @@ Building zorba
 2007.03.14
 
 build.sh
-	Manually created make, using simple 'Makefile.local'
-	scripts. A lot easier to use during initial development.
-	Use this script for now, until autoconf gets adopted/debugged.
+  Manually created make, using simple 'Makefile.local'
+  scripts. A lot easier to use during initial development.
+  Use this script for now, until autoconf gets adopted/debugged.
 
 The root directory is
-	$INSTALL/zorba/xquery.
+  $INSTALL/zorba/xquery.
 
 Not yet available:
 [
@@ -54,6 +54,11 @@ configure
   
 Known bugs
 ----------
+
+2007.05.04
+
+Clean build reched after essentially complete rewrite of the XML
+storage interfaces.
 
 2007.03.14
 
@@ -104,8 +109,14 @@ for the time being.
 
  _____________________________
 |                             |
-| Current Status: 2007.03.14  |
+| Current Status: 2007.05.04  |
 |_____________________________|
+
+2007.05.04
+
+Complete rewrite of the storage interfaces and implementations.
+Finally got back to a clean build state.  Testing of some basic
+functions like 'doc', ',' can resume.
 
 2007.03.14
 
@@ -176,130 +187,137 @@ a separate location, either 'runtime', or it's own subdirectory
 Current Module List
 -------------------
 
-2007.01.27  
+2007.05.04 
                   
 context
-	XQuery static and dynamic context:
+  XQuery static and dynamic context:
 
-		context											XQuery 1.0 static/dynamc context
-		                            note: needs much more work
+    context                      interface
+    static_context               implementation of XQuery 1.0 static context
+    dynmamic_context             implementation of XQuery 1.0 dynamic context
+                             
 
 exprtree
-	XQuery expression tree:
+  XQuery expression tree:
 
-		expr												implementation: XQueryP expression nodes
-		ft_expr											implementation: XQuery Full-text expressions
-		update_expr									implementation: XQuery UPdate expressions
-		expr_test                   implementation: expression tree syntax test
-		parsenode_visitor           interface: parsenode -> expr conversion
-		normalize_visitor           implementation: parsenode -> normalized expr tree
+    expr                         implementation: XQueryP expression nodes
+    ft_expr                      implementation: XQuery Full-text expressions
+    update_expr                  implementation: XQuery UPdate expressions
+    expr_test                    implementation: expression tree syntax test
+    parsenode_visitor            interface: parsenode -> expr conversion
+    normalize_visitor            implementation: parsenode -> normalized expr tree
 
 
 functions
-	XQuery function libraries:
+  XQuery function libraries:
 
-	  function                    interface: XQuery 1st order functions and operators
-	  function_library            interface: XQuery library module, or std lib
-	  signature                   interface: XQuery function signature
+    function                     interface: XQuery 1st order functions and operators
+    function_library             interface: XQuery library module, or std lib
+    signature                    interface: XQuery function signature
+    Sequences                    implementation: some sample sequence functions
 
-	
-	Proposed implementation order:
-		XQuery semantic spec support functions and operators
-		XQuery spec operators, Sequences, Constructors, Accessors,
-		QName, Strings, Numerics, anyURI, Boolean, Casting, Notation,
-		DurationsDatesTimes, Trace
+  
+  Proposed implementation order:
+    XQuery semantic spec support functions and operators
+    XQuery spec operators, Sequences, Constructors, Accessors,
+    QName, Strings, Numerics, anyURI, Boolean, Casting, Notation,
+    DurationsDatesTimes, Trace
 
 
 listeners
-	Pluggable error, logging, tracing facilities.
+  Pluggable error, logging, tracing facilities.
 
-		trace_handler								stub interface: XQuery runtime trace callback
-		error_handler								stub interface: XQUery runtime error callback
+    trace_handler                stub interface: XQuery runtime trace callback
+    error_handler                stub interface: XQUery runtime error callback
 
 
 parser
-	XQuery query parser:
+  XQuery query parser:
 
-		location.hh		}
-		position.hh   }			...			flex/bison infrastructure
-		stack.hh      }
-		xquery_parser.tab.c	}	...		bison generated source files
-		xquery_parser.tab.h	}
-		xquery_scanner.yy.cpp	...		flex generated output file
+    location.hh    }
+    position.hh   }      ...     flex/bison infrastructure
+    stack.hh      }
+    xquery_parser.tab.c  }  ...  bison generated source files
+    xquery_parser.tab.h  }
+    xquery_scanner.yy.cpp  ...   flex generated output file
 
-		parse_constants.h						definitions: common parse constants
-		xquery_scanner.l						implementation: flex XQueryP scanner
-		xquery_parser.y							implementation: flex XQueryP parser
-		parsenodes.cpp							implementation: the parse tree
-		symbol_table.cpp						implementation: scanenr parse table 
-		xquery_driver.cpp						implementation: parser driver 
-		xquery_test.cpp							implementation: top-level command-line query loop 
+    parse_constants.h            definitions: common parse constants
+    xquery_scanner.l             implementation: flex XQueryP scanner
+    xquery_parser.y              implementation: flex XQueryP parser
+    parsenodes.cpp               implementation: the parse tree
+    symbol_table.cpp             implementation: scanenr parse table 
+    xquery_driver.cpp            implementation: parser driver 
+    xquery_test.cpp              implementation: top-level command-line query loop 
 
 
 runtime
-	The XQueryP processor:
+  The XQueryP processor:
 
-		content_handler							implementation: mod_xqp to libxqp.so bridge
-		httpd.conf									implementation: apache2 web server config for libxqp
-		iterator								    implementation: the zorba runtime iterator interface
-		expr_visitor                interface: expr tree -> plan tree conversion
-		plan_visitor                implementation: expr tree -> plan tree conversion
-		mod_xqp.c										implementation: the zorba XQueryP apache module
+    content_handler              implementation: mod_xqp to libxqp.so bridge
+    httpd.conf                   implementation: apache2 web server config for libxqp
+    iterator                     implementation: the zorba runtime iterator interface
+    expr_visitor                 interface: expr tree -> plan tree conversion
+    plan_visitor                 implementation: expr tree -> plan tree conversion
+    mod_xqp.c                    implementation: the zorba XQueryP apache module
 
 
 store
-	The XML storage data interface:
+  The XML storage data interface:
 
-		itemstore										implementation: basic linear blob item store
-		qname_cache                 implementation: qname cache
-		collation_resolver					interface: collation URI resolver
-		collection_resolver					interface: collection URI resolver
-		module_resolver							interface: module URI resolver
-		schema_resolver							interface: schema URI resolver
-		uri_resolver								interface: URL resolver (should be renamed)
-		xml_handler									implementation: tagsoup-derived XML callback handler
-		xml_scanner									implementation: tagsoup-derived XML scanner
-		scan_handler								implementation: tagsoup-derived scan handler
-		xml_term										implementation: XML term
-		character_entities					definitions: a big table of SGML character entities
+    itemstore                    implementation: basic linear blob item store
+    qname_cache                  implementation: qname cache
+    collation_resolver           interface: collation URI resolver
+    collection_resolver          interface: collection URI resolver
+    module_resolver              interface: module URI resolver
+    schema_resolver              interface: schema URI resolver
+    uri_resolver                 interface: URL resolver (should be renamed)
+    xml_handler                  implementation: tagsoup-derived XML callback handler
+    xml_scanner                  implementation: tagsoup-derived XML scanner
+    scan_handler                 implementation: tagsoup-derived scan handler
+    xml_term                     implementation: XML term
+    character_entities           definitions: a big table of SGML character entities
 
 
 types
-	The Query item_type subsystem:
+  The Query item_type subsystem:
 
-		typecodes.h                 interface: sequence type encoding
-		fix_typecodes               implemetation: perl scrip tfor generating 'typecodes.h'
-		sequence_type								implementation: the XQuery sequence type
+    typecodes.h                  interface: sequence type encoding
+    fix_typecodes                implemetation: perl scrip tfor generating 'typecodes.h'
+    sequence_type                implementation: the XQuery sequence type
 
 
 util
-	Shared general purpose utilities: hashing, sorting, etc.:
+  Shared general purpose utilities: hashing, sorting, etc.:
 
-		Assert											implementation: assertion templates
-		URI													implementation: apache-derived URI parsing module
-		file												implementation: file abstraction module
-		fxarray											implementation: flex array
-		fxcharheap									implementation: flex character heap
-		fxvector										implementation: flex vector
-		hashfun											implementation: 32 and 64-bit hash functions
-		hashmap											implementation: template hashmaps
-		list												implementation: template doubly-linked list
-		mmfile											implementation: memory-mapped file
-		rchandle										implementation: reference-counting pointer template
-		rwlock											implementation: reads-writers locking system
-		sorter											implementation: template quicksort functions
-		tokenbuf										implementation: tokenizer
-		utf8_encoder								implementation: utf-8 encoder
-		xqp_exception								implementation: application exception classes
+    Assert                       implementation: assertion templates
+    URI                          implementation: apache-derived URI parsing module
+    file                         implementation: file abstraction module
+    fxarray                      implementation: flex array
+    fxcharheap                   implementation: flex character heap
+    fxvector                     implementation: flex vector
+    hashfun                      implementation: 32 and 64-bit hash functions
+    hashmap                      implementation: template hashmaps
+    list                         implementation: template doubly-linked list
+    mmfile                       implementation: memory-mapped file
+    rchandle                     implementation: reference-counting pointer template
+    rwlock                       implementation: reads-writers locking system
+    sorter                       implementation: template quicksort functions
+    tokenbuf                     implementation: tokenizer
+    utf8_encoder                 implementation: utf-8 encoder
+    xqp_exception                implementation: application exception classes
 
 
 values
-	The Query item_value subsystem:
+  The Query alue subsystem:
 
-		values											implementation: XQuery value base classes
-	  nodes								        implementation: XQuery nodes
-		xs_primitive_values					implementation: XQuery primitive values
-		ft_options									implementation: XQuery Full-Text search options
-		ft_selection								implementation: XQuery Full-Text selection constraints
-		ft_values										implementation: XQuery Full-Text search specifier value
-		update_values								implementation: XQuery update specifier value
+    values                       implementation: XQuery value base classes
+    nodes                        implementation: XQuery nodes
+    primitive_values             implementation: XQuery Schema primitive values
+    ft_options                   implementation: XQuery Full-Text search options
+    ft_selection                 implementation: XQuery Full-Text selection constraints
+    ft_values                    implementation: XQuery Full-Text search specifier value
+    update_values                implementation: XQuery update specifier value
+    value_factory                interface: abstract value factory
+
+
+
