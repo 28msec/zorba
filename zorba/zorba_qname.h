@@ -46,17 +46,17 @@ public:		// accessors
 	std::string localname() const;
 	qnamekey_t qnamekey() const;
 
-public:		// XQuery interface
-	sequence_type_t type() const { return xs_qname; }
-
-	iterator_t atomized_value(xqp::zorba*) const { return NULL; }
-	iterator_t string_value(xqp::zorba*) const;
-	iterator_t atomized_value() const;
-	iterator_t effective_boolean_value() const;
-
+public:		// internal interface
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
+
+public:		// XQuery interface
+	sequence_type_t type() const { return xs_qname; }
+
+	iterator_t atomized_value(zorba*) const;
+	iterator_t string_value(zorba*) const;
+	iterator_t effective_boolean_value(zorba*) const;
 
 public:		// output,debugging
 	std::ostream& put(zorba*,std::ostream& os) const;

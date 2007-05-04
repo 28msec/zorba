@@ -76,12 +76,14 @@ string zorba_qname::str(
 	return oss.str();
 }
 
-iterator_t zorba_qname::atomized_value() const
+iterator_t zorba_qname::atomized_value(
+	zorba* zorp) const
 {
 	return NULL;
 }
 
-iterator_t zorba_qname::effective_boolean_value() const
+iterator_t zorba_qname::effective_boolean_value(
+	zorba* zorp) const
 {
 	return NULL;
 }
