@@ -12,18 +12,18 @@
 #include <string>
 #include <vector>
 
-#include "../context/static_context.h"
-#include "../functions/function.h"
-#include "../runtime/expr_visitor.h"
-#include "../runtime/iterator.h"
-#include "../parser/location.hh"
-#include "../parser/parse_constants.h"
-#include "../parser/parsenodes.h"
-#include "../types/sequence_type.h"
-#include "../util/list.h"
-#include "../util/rchandle.h"
-#include "../values/ft_options.h"
-#include "../values/values.h"
+#include "context/static_context.h"
+#include "functions/function.h"
+#include "runtime/expr_visitor.h"
+#include "runtime/item_iterator.h"
+#include "parser/location.hh"
+#include "parser/parse_constants.h"
+#include "parser/parsenodes.h"
+#include "types/sequence_type.h"
+#include "util/list.h"
+#include "util/rchandle.h"
+#include "values/ft_options.h"
+#include "values/values.h"
 
 namespace xqp {
 

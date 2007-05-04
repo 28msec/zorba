@@ -10,9 +10,12 @@
 
 #include "normalize_visitor.h"
 #include "indent.h"
-#include "../parser/parsenodes.h"
-#include "../runtime/zorba.h"
-#include "../util/tracer.h"
+
+#include "dom/dom_nodes.h"
+#include "parser/parsenodes.h"
+#include "runtime/zorba.h"
+#include "util/tracer.h"
+#include "values/nodes.h"
 
 #include <iostream>
 
@@ -26,7 +29,7 @@ normalize_visitor::normalize_visitor(
 	zorba* _zorp)
 :
 	zorp(_zorp),
-	istore_h(zorp->istore()) 
+	dmgr_h(zorp->get_data_manager()) 
 {
 }
 
@@ -152,22 +155,15 @@ bool normalize_visitor::begin_visit(
 cout << TRACE << endl;
 	switch (v.get_mode()) {
 	case ns_element_default: {
-		namespace_node* ns_p =
-			new (*zorp->istore())
-				namespace_node(zorp,"#elem#",v.get_default_namespace());
-		zorp->get_dynamic_context()->set_default_element_type_namespace(
-			(abstract_namespace_node*)ns_p);
+		namespace_node* ns_p = new dom_namespace_node("#elem#",v.get_default_namespace());
+		zorp->get_dynamic_context()->set_default_element_type_namespace(*ns_p);
 		break;
 	}
 	case ns_function_default: {
-		namespace_node* ns_p =
-			new (*zorp->istore())
-				namespace_node(zorp,"#func#",v.get_default_namespace());
-		zorp->get_static_context()->set_default_function_namespace(
-			(abstract_namespace_node*)ns_p);
+		namespace_node* ns_p = new dom_namespace_node("#func#",v.get_default_namespace());
+		zorp->get_static_context()->set_default_function_namespace(ns_p);
 		break;
-	}
-	}
+	}}
 	return false;
 }
 

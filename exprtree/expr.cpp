@@ -9,14 +9,14 @@
  */
 
 #include "expr.h"
-#include "../functions/function.h"
-#include "../parser/indent.h"
-#include "../parser/parse_constants.h"
-#include "../parser/parsenodes.h"
-#include "../util/Assert.h"
-#include "../util/tracer.h"
-#include "../util/xqp_exception.h"
-#include "../values/abstract_qname.h"
+#include "functions/function.h"
+#include "parser/indent.h"
+#include "parser/parse_constants.h"
+#include "parser/parsenodes.h"
+#include "util/Assert.h"
+#include "util/tracer.h"
+#include "util/xqp_exception.h"
+//#include "values/qname.h"
 
 #include <iostream>
 #include <string>
@@ -408,7 +408,7 @@ ostream& fo_expr::put(ostream& os) const
 {
 	os << INDENT << "fo_expr[\n";
 	Assert<null_pointer>(func!=NULL);
-	os << func->get_fname()->string_value() << endl;
+	//os << func->get_fname()->string_value() << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	vector<rchandle<expr> >::const_iterator en = end();

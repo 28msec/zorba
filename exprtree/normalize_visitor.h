@@ -13,7 +13,10 @@
 
 #include "parsenode_visitor.h"
 #include "expr.h"
-#include "../util/fxcharheap.h"
+
+#include "store/data_manager.h"
+#include "util/fxcharheap.h"
+
 #include <stack>
 
 /*______________________________________________________________________
@@ -37,7 +40,7 @@ protected:
 	std::stack<expr_h_t> nodestack;
 	std::stack<expr_h_t> argstack;
 	std::stack<expr_h_t> pstack;
-	rchandle<itemstore> istore_h;
+	rchandle<data_manager> dmgr_h;
 	fxcharheap sheap;
 
 public:
