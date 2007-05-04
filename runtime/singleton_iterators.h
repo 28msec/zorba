@@ -18,6 +18,7 @@ typedef singleton_iterator<numericValue> numeric_singleton;
 typedef singleton_iterator<stringValue> string_singleton;
 typedef singleton_iterator<timeValue> time_singleton;
 typedef singleton_iterator<binaryValue> binary_singleton;
+typedef singleton_iterator<booleanValue> boolean_singleton;
 
 } /* namespace xqp */
 #endif /* XQP_SINGLETON_ITERATOR_H */
