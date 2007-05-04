@@ -9,19 +9,17 @@
 #include "Sequences.h"
 #include "SequencesImpl.h"
 
-#include "../context/static_context.h"
-#include "../dom/dom_xml_handler.h"
-#include "../dom/dom_iterator.h"
-#include "../dom/dom_values.h"
-#include "../dom/dom_nodes.h"
-#include "../runtime/zorba.h"
-#include "../store/scan_handler.h"
-#include "../store/xml_scanner.h"
-#include "../types/sequence_type.h"
-#include "../util/file.h"
-#include "../util/tracer.h"
-#include "../values/abstract_qname.h"
-#include "../values/value_factory.h"
+#include "context/static_context.h"
+#include "dom/dom_xml_handler.h"
+#include "dom/dom_nodes.h"
+#include "runtime/zorba.h"
+#include "store/scan_handler.h"
+#include "store/xml_scanner.h"
+#include "types/sequence_type.h"
+#include "util/file.h"
+#include "util/tracer.h"
+#include "values/qname.h"
+#include "values/value_factory.h"
 
 #include <iostream>
 
@@ -36,11 +34,11 @@ bool _validate(iterator_t it, sequence_type_t t)
 cout << TRACE << endl;
 	if (it->done()) return false;
 cout << TRACE << " : non-empty iterator" << endl;
-	T* i_p = (T*)it->peek();
+	const T& i = dynamic_cast<const T&>(it->peek());
 cout << TRACE << " : item extracted" << endl;
-cout << TRACE << " : arg type = " << sequence_type::describe(i_p->type()) << endl;
+cout << TRACE << " : arg type = " << sequence_type::describe(i.type()) << endl;
 cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
-	return (i_p->type()==t);
+	return (i.type()==t);
 }
 
 
@@ -73,7 +71,7 @@ iterator_t op_concatenate::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	return new concat_iterator(zorp->get_dynamic_context(),argv);
+	return new concat_iterator(zorp->get_dynamic_context(),argv[0],argv[1]);
 }
 
 bool op_concatenate::validate_args(
@@ -128,8 +126,8 @@ iterator_t fn_index_of::operator()(
 
 	string collation;
 	if (argv.size()==3) {
-		xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[2],xs_string);
-		collation = v_p->string_value();
+		//xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[2],xs_string);
+		collation = "default_collation"; //v_p->string_value();
 	}
 	else {
 		//static_context* sctx_p = zorp->get_static_context();
@@ -144,11 +142,11 @@ bool fn_index_of::validate_args(
 	vector<iterator_t>& argv)
 {
 	if (argv.size()==2) {
-		return _validate<dom_item>(argv[1],xs_anyType);
+		return _validate<item>(argv[1],xs_anyType);
 	}
 	if (argv.size()==3) {
-		return _validate<dom_item>(argv[1],xs_anyType)
-						&& _validate<dom_item>(argv[2],xs_string);
+		return _validate<item>(argv[1],xs_anyType)
+						&& _validate<item>(argv[2],xs_string);
 	}
 	return false;
 }
@@ -397,10 +395,10 @@ cout << TRACE << " : file '" << path << "' found" << endl;
 	}
 cout << TRACE << " : read[" << n << ']' << endl;
 	xml_scanner* scanner_p = new xml_scanner();
-	dom_xml_handler* xhandler_p = new dom_xml_handler(baseuri,uri);
+	dom_xml_handler* xhandler_p = new dom_xml_handler(zorp,baseuri,uri);
 	scanner_p->scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
 cout << TRACE << " : scanned" << endl;
-	iterator_t result = new dom_singleton_iterator(xhandler_p->context_node());
+	iterator_t result = new node_singleton(xhandler_p->context_node());
 cout << TRACE << " : wrap context_node as iteratror" << endl;
 	delete xhandler_p;
 	delete[] ibuf;
@@ -415,13 +413,13 @@ iterator_t fn_doc::operator()(
 cout << TRACE << endl;
 	if (!validate_args(argv)) return NULL;
 cout << TRACE << " : args validated" << endl;
-	item_t* i_p = (item_t*)(argv[0]->peek());
+	const item& i = argv[0]->peek();
 cout << TRACE << " : item extracted from iterator" << endl;
-	if (i_p->is_empty()) return NULL;
+	if (i.is_empty()) return NULL;
 cout << TRACE << " : item not empty" << endl;
-	xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[0],xs_string);
+	//xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[0],xs_string);
 cout << TRACE << " : item cast to string" << endl;
-	string uri = v_p->string_value();
+	string uri = "test.xml"; //XXX v_p->string_value();
 cout << TRACE << " : string value returned: " << uri << endl;
 	return xqp_load(zorp,uri,"/",uri);
 }

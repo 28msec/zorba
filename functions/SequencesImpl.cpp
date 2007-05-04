@@ -33,9 +33,8 @@ qname* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-item* concat_iterator::next(uint32_t delta)
+const item& concat_iterator::next(uint32_t delta)
 {
-	if (done()) return NULL;
 	if (currit->done() && first_b) {
 		currit = theNext;
 		first_b = false;
@@ -43,7 +42,7 @@ item* concat_iterator::next(uint32_t delta)
 	return currit->next(delta);
 }
 
-item* concat_iterator::peek() const
+const item& concat_iterator::peek() const
 {
 	return operator*();
 }
@@ -85,9 +84,8 @@ concat_iterator& concat_iterator::operator=(
 	return *this;
 }
 
-item* concat_iterator::operator*() const
+const item& concat_iterator::operator*() const
 {
-	if (done()) return NULL;
 	return **currit;
 }
 

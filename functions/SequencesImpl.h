@@ -41,13 +41,13 @@ protected:
 public:	
 	void open() {}
 	void close() {}
-	item* next(uint32_t delta = 1);
-	item* peek() const;
+	const item& next(uint32_t delta = 1);
+	const item& peek() const;
 	bool done() const;
 	void rewind();
 
 public:
-	item* operator*() const;
+	const item& operator*() const;
 	concat_iterator& operator++();
 	concat_iterator& operator=(const concat_iterator& it);
 
