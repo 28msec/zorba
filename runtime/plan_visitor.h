@@ -11,10 +11,11 @@
 #define XQP_PLAN_VISITOR_H
 
 #include "expr_visitor.h"
-#include "abstract_iterator.h"
+#include "item_iterator.h"
+#include "singleton_iterators.h"
 
-#include "../runtime/zorba.h"
-#include "../util/rchandle.h"
+#include "runtime/zorba.h"
+#include "util/rchandle.h"
 
 #include <stack>
 
