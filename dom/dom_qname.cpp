@@ -90,4 +90,16 @@ iterator_t dom_qname::effective_boolean_value(
 	return new boolean_singleton(booleanValue(true));
 }
 
+iterator_t dom_qname::string_value(
+	zorba* zorp) const
+{
+	return new string_singleton(stringValue(str(zorp)));
+}
+
+iterator_t dom_qname::atomized_value(
+	zorba* zorp) const
+{
+	return string_value(zorp);
+}
+
 } /* namespace xqp */
