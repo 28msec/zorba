@@ -19,6 +19,15 @@ using namespace std;
 namespace xqp {
 
 
+zorba::zorba()
+:
+	theDataManager(NULL),
+	theValueFactory(NULL),
+	theStaticContext(NULL),
+	theDynamicContext(NULL)
+{
+}
+
 zorba::zorba(
 	rchandle<data_manager> dataManager,
 	rchandle<value_factory> valueFactory,

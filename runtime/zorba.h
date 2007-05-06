@@ -25,11 +25,14 @@ class zorba : public rcobject
 {
 protected:
 	rchandle<data_manager> theDataManager;
-	rchandle<value_factory> theValueFactory;
+	rchandle<value_factory> theValueFactory;  // move to data_manager
 	rchandle<static_context> theStaticContext;
 	rchandle<dynamic_context> theDynamicContext;
+	// requestor identity, for concurrency
 
 public:
+	zorba();
+
 	zorba(
 		rchandle<data_manager>,
 		rchandle<value_factory>,
@@ -49,6 +52,10 @@ public:
 	void set_static_context(static_context* v) { theStaticContext = v; }
 	void set_dynamic_context(dynamic_context* v) { theDynamicContext = v; }
 
+	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
+	void set_value_factory(rchandle<value_factory> v) { theValueFactory = v; }
+	void set_static_context(rchandle<static_context> v) { theStaticContext = v; }
+	void set_dynamic_context(rchandle<dynamic_context> v) { theDynamicContext = v; }
 
 public:	// diagnostics
   enum diagnostic_flag_t {

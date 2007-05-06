@@ -5,6 +5,12 @@ BUILD=Build
 errors : errors.h errors.cpp
 	g++ ${OPT} -c -o ${BUILD}/errors.${SUFX} errors.cpp
 
+item_iterator : item_iterator.h item_iterator.cpp
+	g++ ${OPT} -c -o ${BUILD}/item_iterator.${SUFX} item_iterator.cpp
+
+singleton_iterators : singleton_iterators.h singleton_iterators.cpp
+	g++ ${OPT} -c -o ${BUILD}/singleton_iterators.${SUFX} singleton_iterators.cpp
+
 plan_visitor : plan_visitor.h plan_visitor.cpp
 	g++ ${OPT} -c -o ${BUILD}/plan_visitor.${SUFX} plan_visitor.cpp
 
@@ -40,6 +46,8 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 
 all : \
 	errors \
+	item_iterator \
+	singleton_iterators \
 	zorba \
 	plan_visitor
 

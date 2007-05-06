@@ -7,6 +7,8 @@
  */
 
 #include "item_iterator.h"
+#include "util/Assert.h"
+#include "util/xqp_exception.h"
 #include "values/values.h"
 #include "values/nodes.h"
 #include "values/qname.h"
@@ -16,41 +18,43 @@ namespace xqp {
 
 // node_singleton
 // --------------
-const item& node_singleton::next(
-	uint32_t delta = 1)
+const item& node_singleton::next(uint32_t delta)
 {
-	done_b = true;
-	return dynamic_cast<const item&>(*n_p);
+	n_p = NULL;
+	throw xqp_exception("iterator overrun");
 }
 
 const item& node_singleton::peek() const
 {
-	return dynamic_cast<const item&>(*n_p);
+	Assert<null_pointer>(n_p!=NULL);
+	return *n_p;
 }
 
 const item& node_singleton::operator*() const
 {
-	return dynamic_cast<const item&>(*n_p);
+	Assert<null_pointer>(n_p!=NULL);
+	return *n_p;
 }
 
 
 // qname_singleton
 // ---------------
-const item& qname_singleton::next(uint32_t delta = 1)
+const item& qname_singleton::next(uint32_t delta)
 {
-	const qname* p = qn_p;
 	qn_p = NULL;
-	return dynamic_cast<const item&>(*qn_p);
+	throw xqp_exception("iterator overrun");
 }
 
 const item& qname_singleton::peek() const
 {
-	return dynamic_cast<const item&>(*qn_p);
+	Assert<null_pointer>(qn_p!=NULL);
+	return *qn_p;
 }
 
 const item& qname_singleton::operator*() const
 {
-	return dynamic_cast<item&>(*qn_p);
+	Assert<null_pointer>(qn_p!=NULL);
+	return *qn_p;
 }
 
 qname_singleton& qname_singleton::operator=(
@@ -60,8 +64,6 @@ qname_singleton& qname_singleton::operator=(
 	return *this;
 }
 
-
-};
 
 }	/* namespace xqp */
 

@@ -41,6 +41,7 @@ public:	// C++ interface
 	virtual item_iterator& operator++() = 0;
 	//virtual item_iterator& operator=(const item_iterator&) = 0;
 
+
 /*
 public:		// treat as operators
 	string_iterator& treat_as_string();
@@ -65,6 +66,7 @@ public:		// treat as operators
 };
 
 
+
 class item_const_iterator : public item_iterator
 {
 public:
@@ -85,6 +87,7 @@ public:	// C++ interface
 	//virtual item_const_iterator& operator=(const item_const_iterator&);
 
 };
+
 
 
 class item_singleton : public item_const_iterator
