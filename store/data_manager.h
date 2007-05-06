@@ -43,6 +43,8 @@ public:
 	virtual const node* get_node(itemid_t) const = 0;
 	virtual const xs_stringValue* get_uri(itemid_t) const = 0;
 	virtual const qname* get_qname(itemid_t) const = 0;
+	
+	//XXX add value factory?
 
 };
 

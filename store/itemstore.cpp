@@ -161,68 +161,75 @@ itemstore::itemstore(
 itemstore::~itemstore() { }
 
 
+
 // data manager interface
 // ----------------------
-iterator_t document(
+iterator_t itemstore::document(
 	const string& uri)
 {
 	return NULL;
 }
 
-void add_document(
+bool itemstore::add_document(
 	const string& uri,
 	const document_node& dn)
 {
-	return;
+	return false;
 }
 
-void remove_document(
+bool itemstore::remove_document(
 	const string& uri)
 {
-	return;
+	return false;
 }
 
-iterator_t collection(
+iterator_t itemstore::collection(
 	const string& uri)
 {
 	return NULL;
 }
 
-void add_collection(
+bool itemstore::add_collection(
 	const string& uri,
 	iterator_t it)
 {
-	return;
+	return false;
 }
 
-void remove_collection(
+bool itemstore::remove_collection(
 	const string& uri)
 {
-	return;
+	return false;
 }
 
-void append_to_collection(
+bool itemstore::append_to_collection(
 	const string& uri,
 	iterator_t it)
 {
-	return;
+	return false;
 }
 
-void apply(
+void itemstore::apply(
 	const update_value* vap_p)
 {
 	return;
 }
 
-node* get_node(itemid_t id)
+const node* itemstore::get_node(itemid_t id) const
 {
 	return NULL;
 }
 
-xs_stringValue* get_uri(itemid_t  id)
+const xs_stringValue* itemstore::get_uri(itemid_t  id) const
 {
 	return NULL;
 }
+
+const qname* itemstore::get_qname(itemid_t  id) const
+{
+	return NULL;
+}
+
 
 
 // text
