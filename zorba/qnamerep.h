@@ -48,9 +48,9 @@ public: 	// XQuery atomic_value
 	iterator_t effective_boolean_value(zorba*) const;
 	iterator_t string_value(zorba*) const;
 
-	bool is_empty() const;
-	bool is_node() const;
-	bool is_atomic() const;
+	bool is_empty() const { return false; }
+	bool is_node() const { return false; }
+	bool is_atomic() const { return true; }
 
 public:		// output,debugging
 	std::ostream& put(zorba*,std::ostream& os) const;
