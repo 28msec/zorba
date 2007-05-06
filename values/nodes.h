@@ -259,9 +259,9 @@ public:
 		{ return processingInstructionNode; }
 
 	virtual iterator_t string_value(zorba*) const = 0;	// content
-	virtual iterator_t base_uri(zorba*) const = 0;				// parent baseuri
-	virtual iterator_t node_name(zorba*) const = 0;				// target
-	virtual iterator_t typed_value(zorba*) const = 0;			// content
+	virtual iterator_t base_uri(zorba*) const = 0;			// parent baseuri
+	virtual iterator_t node_name(zorba*) const = 0;			// target
+	virtual iterator_t typed_value(zorba*) const = 0;		// content
 	virtual iterator_t parent(zorba*) const = 0;
 
 };
@@ -278,8 +278,9 @@ public:
 		{ return commentNode; }
 
 	virtual iterator_t string_value(zorba*) const = 0;	// content
-	virtual iterator_t base_uri(zorba*) const = 0;				// parent baseuri	
-	virtual iterator_t typed_value(zorba*) const = 0;			// content
+	virtual iterator_t base_uri(zorba*) const = 0;			// parent baseuri	
+	virtual iterator_t node_name(zorba*) const = 0;			// 
+	virtual iterator_t typed_value(zorba*) const = 0;		// content
 	virtual iterator_t parent(zorba*) const = 0;
 
 };

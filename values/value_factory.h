@@ -27,6 +27,7 @@ public:
 		const std::string& prefix,
 		const std::string& localname) = 0;
 
+	// value construtors
 	virtual rchandle<atomic_value> make_xs_anyURI() = 0;
 	virtual rchandle<atomic_value> make_xs_base64Binary() = 0;
 	virtual rchandle<atomic_value> make_xs_boolean(bool) = 0;
@@ -70,6 +71,22 @@ public:
 	virtual rchandle<atomic_value> make_xs_unsignedInt(unsigned int) = 0;
 	virtual rchandle<atomic_value> make_xs_unsignedLong(unsigned long) = 0;
 	virtual rchandle<atomic_value> make_xs_unsignedShort(uint16_t) = 0;
+	
+	// node constructors
+	/*
+	virtual rchandle<element_node*> make_element_node(
+	  bool transient, ...) = 0;
+	virtual rchandle<element_node*> make_attribute_node(
+	  bool transient, ...) = 0;
+	virtual rchandle<element_node*> make_text_node(
+	  bool transient, ...) = 0;
+	virtual rchandle<element_node*> make_namespace_node(
+	  bool transient, ...) = 0;
+	virtual rchandle<element_node*> make_comment_node(
+	  bool transient, ...) = 0;
+	virtual rchandle<element_node*> make_pi_node(s
+	  bool transient, ...) = 0;
+	*/
 
 };
 

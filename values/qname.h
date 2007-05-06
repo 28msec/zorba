@@ -19,20 +19,20 @@ namespace xqp {
 class xs_anyURIValue;
 class zorba;
 
-class qname : public atomic_value
+class qname : virtual public atomic_value
 {
 public:
-	std::string prefix() const;
-	std::string localname() const;
-	xs_anyURIValue* uri() const;
+	virtual std::string prefix() const = 0;
+	virtual std::string localname() const = 0;
+	virtual std::string uri() const = 0;
 
 public:
-	iterator_t atomized_value(zorba*) const;
-	iterator_t string_value(zorba*) const;
+	virtual iterator_t atomized_value(zorba*) const = 0;
+	virtual iterator_t string_value(zorba*) const = 0;
 
 public:
-	qnamekey_t qnamekey() const;
-  std::ostream& put(std::ostream& os) const;
+	virtual qnamekey_t qnamekey() const = 0;
+  virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
 
 };
 
