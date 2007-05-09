@@ -2650,19 +2650,19 @@ AdditiveExpr::~AdditiveExpr()
 {
 }
 
-ostream& AdditiveExpr::put(ostream& s) const
+ostream& AdditiveExpr::put(ostream& os) const
 {
-	s << INDENT << "AdditiveExpr[\n";
+	os << INDENT << "AdditiveExpr[\n";
 	if (add_expr_h!=NULL) {
-		add_expr_h->put(s);
+		add_expr_h->put(os);
 		switch(add_op) {
-		case op_plus: s << "plus"; break;
-		case op_minus: s << "minus"; break;
-		default: s << "???";
+		case op_plus: os << INDENT << "plus"; break;
+		case op_minus: os << INDENT << "minus"; break;
+		default: os << "???";
 		}
 	}
-	if (mult_expr_h!=NULL) mult_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+	if (mult_expr_h!=NULL) mult_expr_h->put(os);
+	return os << OUTDENT << "]\n";
 }
 
 //-AdditiveExpr::
