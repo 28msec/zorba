@@ -31,13 +31,13 @@ namespace xqp {
 template<typename T>
 bool _validate(iterator_t it, sequence_type_t t)
 {
-cout << TRACE << endl;
+	cout << TRACE << endl;
 	if (it->done()) return false;
-cout << TRACE << " : non-empty iterator" << endl;
+	cout << TRACE << " : non-empty iterator" << endl;
 	const T& i = dynamic_cast<const T&>(it->peek());
-cout << TRACE << " : item extracted" << endl;
-cout << TRACE << " : arg type = " << sequence_type::describe(i.type()) << endl;
-cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
+	cout << TRACE << " : item extracted" << endl;
+	cout << TRACE << " : arg type = " << sequence_type::describe(i.type()) << endl;
+	cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
 	return (i.type()==t);
 }
 
@@ -53,18 +53,22 @@ cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
 
 //15.1.2 op:concatenate 
 //---------------------
-/*
-	op:concatenate($seq1 as item()*, $seq2 as item()*) as item()*
+/*_______________________________________________________________________
+|
+|	op:concatenate($seq1 as item()*, $seq2 as item()*) as item()*
+|
+|	Summary: Returns a sequence consisting of the items in $seq1 followed 
+|	by the items in $seq2. This function backs up the infix operator ",". 
+|	If either sequence is the empty sequence, the other operand is 
+|	returned. 
+|________________________________________________________________________*/
 
-	Summary: Returns a sequence consisting of the items in $seq1 followed 
-	by the items in $seq2. This function backs up the infix operator ",". 
-	If either sequence is the empty sequence, the other operand is 
-	returned. 
-
-*/
-
-op_concatenate::op_concatenate(const signature& sig)
-: function(sig) { }
+op_concatenate::op_concatenate(
+	const signature& sig)
+:
+	function(sig)
+{
+}
 
 iterator_t op_concatenate::operator()(
 	zorba* zorp,
@@ -80,7 +84,8 @@ bool op_concatenate::validate_args(
 	return (argv.size()==2);
 }
 
-sequence_type_t op_concatenate::type_check(signature& sig)
+sequence_type_t op_concatenate::type_check(
+	signature& sig)
 {
 	return xs_anyType;
 }

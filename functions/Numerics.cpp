@@ -4,8 +4,7 @@
  *  $Id: Numerics.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: Paul Pedersen
+ *  Author: Paul Pedersen, John Cowan
  *
  */
 
@@ -13,7 +12,148 @@
 
 using namespace std;
 namespace xqp {
- 
+
+
+// 6.2.1 op:numeric-add
+// --------------------
+class op_numeric_add : public function
+{
+public:
+	op_numeric_add(const signature&);
+	~op_numeric_add() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+
+// 6.2.2 op:numeric-subtract
+// -------------------------
+class op_numeric_subtract : public function
+{
+public:
+	op_numeric_subtract(const signature&);
+	~op_numeric_subtract() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+
+// 6.2.3 op:numeric-multiply
+// -------------------------
+class op_numeric_multiply : public function
+{
+public:
+	op_numeric_multiply(const signature&);
+	~op_numeric_multiply() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+
+// 6.2.4 op:numeric-divide
+// -----------------------
+class op_numeric_divide : public function
+{
+public:
+	op_numeric_divide(const signature&);
+	~op_numeric_divide() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+// 6.2.5 op:numeric-integer-divide
+// -------------------------------
+class op_numeric_integer_divide : public function
+{
+public:
+	op_numeric_integer_divide(const signature&);
+	~op_numeric_integer_divide() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+// 6.2.6 op:numeric-mod
+// --------------------
+class op_numeric_mod : public function
+{
+public:
+	op_numeric_mod(const signature&);
+	~op_numeric_mod() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+// 6.2.7 op:numeric-unary-plus
+// ---------------------------
+class op_numeric_unary_plus : public function
+{
+public:
+	op_numeric_unary_plus(const signature&);
+	~op_numeric_unary_plus() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+// 6.2.8 op:numeric-unary-minus
+// ----------------------------
+class op_numeric_unary_minus : public function
+{
+public:
+	op_numeric_unary_minus(const signature&);
+	~op_numeric_unary_minus() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+
+
+/*______________________________________________________________________
+|  
+| 6.3 Comparison Operators on Numeric Values
+|_______________________________________________________________________*/
+
+// 6.3.1 op:numeric-equal
+// 6.3.2 op:numeric-less-than
+// 6.3.3 op:numeric-greater-than
+
+
+/*______________________________________________________________________
+|  
+| 6.4 Functions on Numeric Values
+|_______________________________________________________________________*/
+
+// 6.4.1 fn:abs
+// 6.4.2 fn:ceiling
+// 6.4.3 fn:floor
+// 6.4.4 fn:round
+// 6.4.5 fn:round-half-to-even
+
+
+
 
 /*______________________________________________________________________
 |  
@@ -31,10 +171,34 @@ namespace xqp {
 |	NaN is returned.
 |_______________________________________________________________________*/
 
-rchandle<item> op_numeric_add(context const* context_p)
+op_numeric_add::op_numeric_add(
+	const signature& sig)
+:
+	function(sig)
 {
-	handle<item> arg1_h = content_p->argv[1];
-	handle<item> arg2_h = content_p->argv[2];
+}
+
+iterator_t op_numeric_add::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
+	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
+	return new numeric_singleton(zorp,n0.val()+n1.val());
+
+}
+
+sequence_type_t op_numeric_add::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_add::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==2);
 }
 
 
@@ -55,6 +219,34 @@ rchandle<item> op_numeric_add(context const* context_p)
 |	infinity of the appropriate sign is returned.
 |_______________________________________________________________________*/
 
+op_numeric_subtract::op_numeric_subtract(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t op_numeric_subtract::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
+	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
+	return new numeric_singleton(zorp,n0.val()-n1.val());
+}
+
+sequence_type_t op_numeric_subtract::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_subtract::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==2);
+}
 
 
 
@@ -73,6 +265,34 @@ rchandle<item> op_numeric_add(context const* context_p)
 |	appropriate sign is returned.
 |_______________________________________________________________________*/
 
+op_numeric_multiply::op_numeric_multiply(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t op_numeric_multiply::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
+	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
+	return new numeric_singleton(zorp,n0.val()*n1.val());
+}
+
+sequence_type_t op_numeric_multiply::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_multiply::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==2);
+}
 
 
 
@@ -101,6 +321,34 @@ rchandle<item> op_numeric_add(context const* context_p)
 |	returns NaN.
 |_______________________________________________________________________*/
 
+op_numeric_divide::op_numeric_divide(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t op_numeric_divide::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
+	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
+	return new numeric_singleton(zorp,n0.val() / n1.val());
+}
+
+sequence_type_t op_numeric_divide::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_divide::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==2);
+}
 
 
 
@@ -131,6 +379,34 @@ rchandle<item> op_numeric_add(context const* context_p)
 |	defined in programming languages such as Java and C++.
 |_______________________________________________________________________*/
 
+op_numeric_integer_divide::op_numeric_integer_divide(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t op_numeric_integer_divide::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
+	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
+	return new numeric_singleton(zorp,n0.val() / n1.val());
+}
+
+sequence_type_t op_numeric_integer_divide::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_integer_divide::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==2);
+}
 
 
 
@@ -169,6 +445,34 @@ rchandle<item> op_numeric_add(context const* context_p)
 |			required precision.
 |_______________________________________________________________________*/
 
+op_numeric_mod::op_numeric_mod(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t op_numeric_mod::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
+	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
+	return new numeric_singleton(zorp,n0.val() % n1.val());
+}
+
+sequence_type_t op_numeric_mod::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_mod::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==2);
+}
 
 
 
@@ -182,6 +486,32 @@ rchandle<item> op_numeric_add(context const* context_p)
 |	operation.
 |_______________________________________________________________________*/
 
+op_numeric_unary_plus::op_numeric_unary_plus(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t op_numeric_unary_plus::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	return argv[0];
+}
+
+sequence_type_t op_numeric_unary_plus::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_unary_plus::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==1);
+}
 
 
 
@@ -200,7 +530,32 @@ rchandle<item> op_numeric_add(context const* context_p)
 |	INF.
 |_______________________________________________________________________*/
 
+op_numeric_unary_minus::op_numeric_unary_minus(
+	const signature& sig)
+:
+	function(sig)
+{
+}
 
+iterator_t op_numeric_unary_minus::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	return -argv[0];
+}
+
+sequence_type_t op_numeric_unary_minus::type_check(
+	signature& sig)
+{
+	return xs_decimal;
+}
+
+bool op_numeric_unary_minus::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==1);
+}
 
   
   
