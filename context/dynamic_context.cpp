@@ -15,6 +15,14 @@ using namespace std;
 namespace xqp {
 
 bool dynamic_context::static_init = false;
+qnamekey_t dynamic_context::namespaces_key;
+qnamekey_t dynamic_context::default_element_type_ns_key;
+qnamekey_t dynamic_context::context_item_key;
+qnamekey_t dynamic_context::context_item_type_key;
+qnamekey_t dynamic_context::ordering_mode_key;
+qnamekey_t dynamic_context::current_time_key;
+qnamekey_t dynamic_context::implicit_timezone_key;
+
 #define ZORBA "http://www.zorba.org/"
 
 void dynamic_context::init(

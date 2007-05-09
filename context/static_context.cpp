@@ -19,6 +19,18 @@ using namespace std;
 namespace xqp {
 
 bool static_context::static_init = false;
+qnamekey_t static_context::default_function_ns_key;
+qnamekey_t static_context::default_collation_key;
+qnamekey_t static_context::in_scope_schema_types_key;
+qnamekey_t static_context::in_scope_element_decls_key;
+qnamekey_t static_context::in_scope_attribute_decls_key;
+qnamekey_t static_context::collations_key;
+qnamekey_t static_context::construction_mode_key;
+qnamekey_t static_context::order_empty_mode_key;
+qnamekey_t static_context::boundary_space_mode_key;
+qnamekey_t static_context::inherit_mode_key;
+qnamekey_t static_context::preserve_mode_key;
+qnamekey_t static_context::baseuri_key;
 
 
 void static_context::init(
