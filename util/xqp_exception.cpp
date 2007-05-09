@@ -115,6 +115,34 @@ throw()
 }
 
 
+// normalize_error implementations
+// ----------------------
+normalize_error::normalize_error()
+: xqp_exception(string())
+{
+}
+
+normalize_error::normalize_error(const normalize_error& e)
+: xqp_exception(e.loc, e.msg)
+{
+}
+
+normalize_error::normalize_error(const string& loc)
+: xqp_exception(loc)
+{
+}
+
+normalize_error::normalize_error(const string& loc, const string& msg)
+: xqp_exception(loc,msg)
+{
+}
+
+normalize_error::~normalize_error()
+throw()
+{
+}
+
+
 // null_pointer implementations
 // ----------------------------
 null_pointer::null_pointer()

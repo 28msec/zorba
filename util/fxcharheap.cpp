@@ -162,6 +162,13 @@ throw (xqp_exception)
 }
 
 
+off_t fxcharheap::put(const string& s)
+throw (xqp_exception)
+{
+	return put(s.c_str());
+}
+
+
 void fxcharheap::replace(
 	off_t id,								// input: heap offset
   const char* buf,				// input: string

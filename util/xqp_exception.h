@@ -91,6 +91,20 @@ public:
 };
 
 
+class normalize_error : public xqp_exception
+{
+public:
+	normalize_error();
+  normalize_error(const normalize_error&);
+	normalize_error(const std::string& loc);
+	normalize_error(const std::string& loc, const std::string& msg);
+	~normalize_error() throw();
+
+public:
+	std::string get_msg() const { return "normalize_error: " + msg; }
+};
+
+
 class null_pointer : public xqp_exception
 {
 public:
