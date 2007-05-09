@@ -9,148 +9,10 @@
  */
 
 #include "Numerics.h"
+#include "runtime/singleton_iterators.h"
 
 using namespace std;
 namespace xqp {
-
-
-// 6.2.1 op:numeric-add
-// --------------------
-class op_numeric_add : public function
-{
-public:
-	op_numeric_add(const signature&);
-	~op_numeric_add() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-
-// 6.2.2 op:numeric-subtract
-// -------------------------
-class op_numeric_subtract : public function
-{
-public:
-	op_numeric_subtract(const signature&);
-	~op_numeric_subtract() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-
-// 6.2.3 op:numeric-multiply
-// -------------------------
-class op_numeric_multiply : public function
-{
-public:
-	op_numeric_multiply(const signature&);
-	~op_numeric_multiply() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-
-// 6.2.4 op:numeric-divide
-// -----------------------
-class op_numeric_divide : public function
-{
-public:
-	op_numeric_divide(const signature&);
-	~op_numeric_divide() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-// 6.2.5 op:numeric-integer-divide
-// -------------------------------
-class op_numeric_integer_divide : public function
-{
-public:
-	op_numeric_integer_divide(const signature&);
-	~op_numeric_integer_divide() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-// 6.2.6 op:numeric-mod
-// --------------------
-class op_numeric_mod : public function
-{
-public:
-	op_numeric_mod(const signature&);
-	~op_numeric_mod() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-// 6.2.7 op:numeric-unary-plus
-// ---------------------------
-class op_numeric_unary_plus : public function
-{
-public:
-	op_numeric_unary_plus(const signature&);
-	~op_numeric_unary_plus() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-// 6.2.8 op:numeric-unary-minus
-// ----------------------------
-class op_numeric_unary_minus : public function
-{
-public:
-	op_numeric_unary_minus(const signature&);
-	~op_numeric_unary_minus() {}
-
-public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
-};
-
-
-
-/*______________________________________________________________________
-|  
-| 6.3 Comparison Operators on Numeric Values
-|_______________________________________________________________________*/
-
-// 6.3.1 op:numeric-equal
-// 6.3.2 op:numeric-less-than
-// 6.3.3 op:numeric-greater-than
-
-
-/*______________________________________________________________________
-|  
-| 6.4 Functions on Numeric Values
-|_______________________________________________________________________*/
-
-// 6.4.1 fn:abs
-// 6.4.2 fn:ceiling
-// 6.4.3 fn:floor
-// 6.4.4 fn:round
-// 6.4.5 fn:round-half-to-even
 
 
 
@@ -183,10 +45,10 @@ iterator_t op_numeric_add::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
-	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
-	return new numeric_singleton(zorp,n0.val()+n1.val());
-
+	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
+	numericValue v(xs_decimal, n0.val() + n1.val());
+	return new numeric_singleton(v);
 }
 
 sequence_type_t op_numeric_add::type_check(
@@ -231,9 +93,10 @@ iterator_t op_numeric_subtract::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
-	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
-	return new numeric_singleton(zorp,n0.val()-n1.val());
+	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
+	numericValue v(xs_decimal, n0.val() - n1.val());
+	return new numeric_singleton(v);
 }
 
 sequence_type_t op_numeric_subtract::type_check(
@@ -277,9 +140,10 @@ iterator_t op_numeric_multiply::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
-	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
-	return new numeric_singleton(zorp,n0.val()*n1.val());
+	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
+	numericValue v(xs_decimal, n0.val() * n1.val());
+	return new numeric_singleton(v);
 }
 
 sequence_type_t op_numeric_multiply::type_check(
@@ -333,9 +197,10 @@ iterator_t op_numeric_divide::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
-	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
-	return new numeric_singleton(zorp,n0.val() / n1.val());
+	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
+	numericValue v(xs_decimal, n0.val() / n1.val());
+	return new numeric_singleton(v);
 }
 
 sequence_type_t op_numeric_divide::type_check(
@@ -391,9 +256,10 @@ iterator_t op_numeric_integer_divide::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
-	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
-	return new numeric_singleton(zorp,n0.val() / n1.val());
+	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
+	numericValue v(xs_decimal, n0.val() / n1.val());
+	return new numeric_singleton(v);
 }
 
 sequence_type_t op_numeric_integer_divide::type_check(
@@ -457,9 +323,10 @@ iterator_t op_numeric_mod::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	numericValue& n0 = dynamic_cast<numericValue&>(*argv[0]);
-	numericValue& n1 = dynamic_cast<numericValue&>(*argv[1]);
-	return new numeric_singleton(zorp,n0.val() % n1.val());
+	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
+	numericValue v(xs_decimal, (long)n0.val() % (long)n1.val());
+	return new numeric_singleton(v);
 }
 
 sequence_type_t op_numeric_mod::type_check(
@@ -542,7 +409,8 @@ iterator_t op_numeric_unary_minus::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
-	return -argv[0];
+	const numericValue& n = dynamic_cast<const numericValue&>(**argv[0]);
+	return new numeric_singleton(numericValue(xs_decimal, -n.val() ));
 }
 
 sequence_type_t op_numeric_unary_minus::type_check(
@@ -558,6 +426,29 @@ bool op_numeric_unary_minus::validate_args(
 }
 
   
+/*______________________________________________________________________
+|  
+| 6.3 Comparison Operators on Numeric Values
+|_______________________________________________________________________*/
+
+// 6.3.1 op:numeric-equal
+// 6.3.2 op:numeric-less-than
+// 6.3.3 op:numeric-greater-than
+
+
+/*______________________________________________________________________
+|  
+| 6.4 Functions on Numeric Values
+|_______________________________________________________________________*/
+
+// 6.4.1 fn:abs
+// 6.4.2 fn:ceiling
+// 6.4.3 fn:floor
+// 6.4.4 fn:round
+// 6.4.5 fn:round-half-to-even
+
+
+
   
 } /* namespace xqp */
 

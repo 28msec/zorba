@@ -13,8 +13,12 @@ library :	library.h library.cpp
 
 Sequences :	Sequences.h Sequences.cpp
 	g++ ${OPT} -c -o ${BUILD}/Sequences.${SUFX} Sequences.cpp
+
 SequencesImpl :	SequencesImpl.h SequencesImpl.cpp
 	g++ ${OPT} -c -o ${BUILD}/SequencesImpl.${SUFX} SequencesImpl.cpp
+
+Numerics :	Numerics.h Numerics.cpp
+	g++ ${OPT} -c -o ${BUILD}/Numerics.${SUFX} Numerics.cpp
 
 function_test :	function.h function.cpp
 	g++ ${OPT} -o ${BUILD}/function_test \
@@ -66,10 +70,12 @@ all :	\
 	signature \
 	function \
 	Sequences \
+	Numerics \
 	SequencesImpl
 
 
 test : \
 	function_test \
-	library_test
+	library_test \
+	Sequences_test
 
