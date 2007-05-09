@@ -657,7 +657,13 @@ cout << TRACE << endl;
 /* expressions */
 bool normalize_visitor::begin_visit(AdditiveExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": AdditiveExpr\n";
+	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	switch (v.get_add_op()) {
+	case op_plus: fo_h->set_func(fn_plus); break;
+	case op_minus: fo_h->set_func(fn_minus); break;
+	}
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -1879,7 +1885,21 @@ cout << TRACE << endl;
 /* expressions */
 void normalize_visitor::end_visit(AdditiveExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
+
+	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+
+	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
+	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
+
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		cout << TRACE << ": expecting fo_expr on top of stack" << endl;
+		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+
+	fo_h->add(e2_h);
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(AndExpr const& v)

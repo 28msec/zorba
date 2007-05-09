@@ -16,7 +16,7 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
-	context ctx;
+	zorba* zorp = new zorba();
 	xquery_driver driver(cout);
 
 	try {
@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
 				cout << endl;
 				n_p->put(cout) << endl;
 	
-				normalize_visitor nvs(&ctx);
+				normalize_visitor nvs(zorp);
 				MainModule * mm_p;
 				QueryBody * qb_p;
 				Expr * ex_p;
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
 					cout << "e_h==NULL\n";
 				}
 				else {
-					e_h->put(cout,ctx) << endl;
+					e_h->put(cout) << endl;
 				}
 			}
 		}

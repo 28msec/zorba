@@ -35,27 +35,28 @@ normalize_visitor : normalize_visitor.h normalize_visitor.cpp
 	g++ ${OPT} -c -o ${BUILD}/normalize_visitor.${SUFX} normalize_visitor.cpp
 
 normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_visitor_test.cpp
-	g++ -Wall -g -o ${BUILD}/normalize_visitor_test \
-		../context/${BUILD}/context.${SUFX} \
-		../exprtree/${BUILD}/expr.${SUFX} \
-		../store/${BUILD}/qname_cache.${SUFX} \
-		../store/${BUILD}/itemstore.${SUFX} \
+	g++ ${OPT} -o ${BUILD}/normalize_visitor_test \
+		../context/${BUILD}/static_context.${SUFX} \
+		../context/${BUILD}/dynamic_context.${SUFX} \
+		../dom/${BUILD}/dom_nodes.${SUFX} \
+		../dom/${BUILD}/dom_qname.${SUFX} \
 		../parser/${BUILD}/parsenodes.${SUFX} \
 		../parser/${BUILD}/xquery_scanner.${SUFX} \
 		../parser/${BUILD}/xquery_parser.${SUFX} \
 		../parser/${BUILD}/symbol_table.${SUFX} \
 		../parser/${BUILD}/xquery_driver.${SUFX} \
 		../runtime/${BUILD}/errors.${SUFX} \
-		../runtime/${BUILD}/iterator.${SUFX} \
+		../runtime/${BUILD}/item_iterator.${SUFX} \
+		../runtime/${BUILD}/singleton_iterators.${SUFX} \
+		../runtime/${BUILD}/zorba.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
-		../values/${BUILD}/values.${SUFX} \
-		../values/${BUILD}/nodes.${SUFX} \
-		../values/${BUILD}/xs_primitive_values.${SUFX} \
+		../values/${BUILD}/primitive_values.${SUFX} \
+		${BUILD}/expr.${SUFX} \
 		${BUILD}/normalize_visitor.${SUFX} \
 	normalize_visitor_test.cpp
 
