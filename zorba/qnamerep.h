@@ -21,23 +21,23 @@ class itemstore;
 class qnamerep : public atomic_value
 {
 protected:
-	itemid_t theURIID;
+	std::string theURI;
 	std::string theName;	// prefix:localname
 
 public:
 	qnamerep() {}
 	qnamerep(
-		itemid_t uri_id,
+		const std::string& uri,
 		const std::string& name);
 	qnamerep(
-		itemid_t uri_id,
+		const std::string& uri,
 		const std::string& prefix,
 		const std::string& localname);
 
 	~qnamerep() {}
 
 public:
-	itemid_t uri_id() const;
+	std::string uri() const;
 	std::string prefix() const;
 	std::string localname() const;
 	qnamekey_t qnamekey() const;

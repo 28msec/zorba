@@ -1,253 +1,287 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
  *
- *  $Id: value_factory.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: zorba_value_factory.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *  Author: John Cowan, Paul Pedersen
  *
  */
 
-#include "value_factory.h"
-#include "../types/sequence_type.h"
+#include "zorba_value_factory.h"
+#include "zorba_qname.h"
 
 using namespace std;
 namespace xqp {
 
-qname_value* value_factory::make_qname(
+rchandle<atomic_value> zorba_value_factory::make_qname(
 	const string& uri,
 	const string& prefix,
 	const string& localname)
-{
-	qname_value* result = new(&buf[eos]) qname_value(uri,prefix,localname);
-	eos += result->length();
-	return result;
+{  
+	qname* result = new zorba_qname(uri,prefix,localname);
+	return dynamic_cast<atomic_value*>(result);
 }
 
-xs_anyURIValue* value_factory::make_xs_anyURI()
+rchandle<atomic_value> zorba_value_factory::make_xs_anyURI(
+  const string& uri)
 {
-	return NULL;
+	return new stringValue(xs_anyURI,uri);
 }
 
-xs_base64BinaryValue* value_factory::make_xs_base64Binary()
+rchandle<atomic_value> zorba_value_factory::make_xs_base64Binary(
+	const void* v, uint32_t length)
 {
-	return NULL;
+	return new binaryValue(xs_base64Binary,v,length);
 }
 
-xs_booleanValue* value_factory::make_xs_boolean(bool)
+rchandle<atomic_value> zorba_value_factory::make_xs_boolean(
+  bool b)
 {
-	return NULL;
+	return new booleanValue(b);
 }
 
-xs_decimalValue* value_factory::make_xs_decimal()
+rchandle<atomic_value> zorba_value_factory::make_xs_decimal(
+	long double v)
 {
-	return NULL;
+	return new numericValue(xs_decimal, v);
 }
 
-xs_integerValue* value_factory::make_xs_integer(int)
+rchandle<atomic_value> zorba_value_factory::make_xs_integer(
+  int v)
 {
-	return NULL;
+	return new numericValue(xs_integer, v);
 }
 
-xs_longValue* value_factory::make_xs_long(long)
+rchandle<atomic_value> zorba_value_factory::make_xs_long(
+  long v)
 {
-	return NULL;
+	return new numericValue(xs_long, v);
 }
 
-xs_intValue* value_factory::make_xs_int(int n)
+rchandle<atomic_value> zorba_value_factory::make_xs_int(
+  int v)
 {
-	xs_intValue* result = new(&buf[eos]) xs_intValue(n);
-	eos += result->length();
-	return result;
+  return new numericValue(xs_int,v);
 }
 
-xs_shortValue* value_factory::make_xs_short(short)
+rchandle<atomic_value> zorba_value_factory::make_xs_short(
+  short v)
 {
-	return NULL;
+	return new numericValue(xs_short, v);
 }
 
-xs_byteValue* value_factory::make_xs_byte(char)
+rchandle<atomic_value> zorba_value_factory::make_xs_byte(
+  char v)
 {
-	return NULL;
+	return new numericValue(xs_byte, v);
 }
 
-xs_dateValue* value_factory::make_xs_date()
-{
-	return NULL;
-}
-
-xs_dateTimeValue* value_factory::make_xs_dateTime()
-{
-	return NULL;
-}
-
-xs_doubleValue* value_factory::make_xs_double(double)
+rchandle<atomic_value> zorba_value_factory::make_xs_date(
+	)
 {
 	return NULL;
 }
 
-xs_durationValue* value_factory::make_xs_duration()
+rchandle<atomic_value> zorba_value_factory::make_xs_dateTime(
+	)
 {
 	return NULL;
 }
 
-xs_ENTITIESValue* value_factory::make_xs_ENTITIES()
+rchandle<atomic_value> zorba_value_factory::make_xs_double(
+  double v)
+{
+	return new numericValue(xs_double, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_duration(
+	)
 {
 	return NULL;
 }
 
-xs_ENTITYValue* value_factory::make_xs_ENTITY()
+rchandle<atomic_value> zorba_value_factory::make_xs_ENTITIES(
+	const string& v)
+{
+	return new stringValue(xs_entitySeq, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_ENTITY(
+	const string& v)
+{
+	return new stringValue(xs_entity, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_float(
+  float v)
+{
+	return new numericValue(xs_float, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_gDay(
+	)
 {
 	return NULL;
 }
 
-xs_floatValue* value_factory::make_xs_float(float)
+rchandle<atomic_value> zorba_value_factory::make_xs_gMonth(
+	)
 {
 	return NULL;
 }
 
-xs_gDayValue* value_factory::make_xs_gDay()
+rchandle<atomic_value> zorba_value_factory::make_xs_gMonthDay(
+	)
 {
 	return NULL;
 }
 
-xs_gMonthValue* value_factory::make_xs_gMonth()
+rchandle<atomic_value> zorba_value_factory::make_xs_gYear()
 {
 	return NULL;
 }
 
-xs_gMonthDayValue* value_factory::make_xs_gMonthDay()
+rchandle<atomic_value> zorba_value_factory::make_xs_gYearMonth(
+	)
 {
 	return NULL;
 }
 
-xs_gYearValue* value_factory::make_xs_gYear()
+rchandle<atomic_value> zorba_value_factory::make_xs_hexBinary(
+	const void* v, uint32_t n)
+{
+	return new binaryValue(xs_hexBinary,v,n);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_ID(
+	const string& v)
+{
+	return new stringValue(xs_id, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_IDREF(
+	const string& v)
+{
+	return new stringValue(xs_idref, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_IDREFS(
+	const string& v)
+{
+	return new stringValue(xs_idrefSeq, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_language(
+  const string& v)
+{
+	return new stringValue(xs_language, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_NCName(
+  const string& v)
+{
+	return new stringValue(xs_ncName, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_NMTOKEN(
+  const string& v)
+{
+	return new stringValue(xs_nmtoken, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_NMTOKENS(
+  const string& v)
+{
+	return new stringValue(xs_nmtokenSeq, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_NOTATION(
+  const string& v)
+{
+	return new stringValue(xs_notation, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_Name(
+  const string& v)
+{
+	return new stringValue(xs_name, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_negativeInteger(
+  int v)
+{
+	return new numericValue(xs_negativeInteger, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_nonNegativeInteger(
+  int v)
+{
+	return new numericValue(xs_nonNegativeInteger, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_nonPositiveInteger(
+  int v)
+{
+	return new numericValue(xs_nonPositiveInteger, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_normalizedString(
+  const string& v)
+{
+	return new stringValue(xs_normalizedString, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_positiveInteger(
+  unsigned int v)
+{
+	return new numericValue(xs_positiveInteger, v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_string(
+  const string& v)
+{
+	return new stringValue(xs_string,v);
+}
+
+rchandle<atomic_value> zorba_value_factory::make_xs_time(
+	)
 {
 	return NULL;
 }
 
-xs_gYearMonthValue* value_factory::make_xs_gYearMonth()
+rchandle<atomic_value> zorba_value_factory::make_xs_token(
+  const string& v)
 {
-	return NULL;
+	return new stringValue(xs_token,v);
 }
 
-xs_hexBinaryValue* value_factory::make_xs_hexBinary()
+rchandle<atomic_value> zorba_value_factory::make_xs_unsignedByte(
+  unsigned char v)
 {
-	return NULL;
+	return new numericValue(xs_unsignedByte, v);
 }
 
-xs_IDValue* value_factory::make_xs_ID()
+rchandle<atomic_value> zorba_value_factory::make_xs_unsignedInt(
+  unsigned int v)
 {
-	return NULL;
+	return new numericValue(xs_unsignedInt, v);
 }
 
-xs_IDREFValue* value_factory::make_xs_IDREF()
+rchandle<atomic_value> zorba_value_factory::make_xs_unsignedLong(
+  unsigned long v)
 {
-	return NULL;
+	return new numericValue(xs_unsignedLong, v);
 }
 
-xs_IDREFSValue* value_factory::make_xs_IDREFS()
+rchandle<atomic_value> zorba_value_factory::make_xs_unsignedShort(
+  uint16_t v)
 {
-	return NULL;
+	return new numericValue(xs_unsignedShort, v);
 }
 
-xs_languageValue* value_factory::make_xs_language(const string&)
-{
-	return NULL;
-}
 
-xs_NCNameValue* value_factory::make_xs_NCName(const string&)
-{
-	return NULL;
-}
-
-xs_NMTOKENValue* value_factory::make_xs_NMTOKEN(const string&)
-{
-	return NULL;
-}
-
-xs_NMTOKENSValue* value_factory::make_xs_NMTOKENS(const string&)
-{
-	return NULL;
-}
-
-xs_NOTATIONValue* value_factory::make_xs_NOTATION(const string&)
-{
-	return NULL;
-}
-
-xs_NameValue* value_factory::make_xs_Name(const string&)
-{
-	return NULL;
-}
-
-xs_negativeIntegerValue* value_factory::make_xs_negativeInteger(int)
-{
-	return NULL;
-}
-
-xs_nonNegativeIntegerValue* value_factory::make_xs_nonNegativeInteger(int)
-{
-	return NULL;
-}
-
-xs_nonPositiveIntegerValue* value_factory::make_xs_nonPositiveInteger(int)
-{
-	return NULL;
-}
-
-xs_normalizedStringValue* value_factory::make_xs_normalizedString(const string&)
-{
-	return NULL;
-}
-
-xs_positiveIntegerValue* value_factory::make_xs_positiveInteger(unsigned int)
-{
-	return NULL;
-}
-
-xs_stringValue* value_factory::make_xs_string(const string& s)
-{
-	xs_stringValue* result = new(&buf[eos]) xs_stringValue(s);
-	eos += result->length();
-	return result;
-}
-
-uri_value* value_factory::make_uri(const string&)
-{
-	return NULL;
-}
-
-xs_timeValue* value_factory::make_xs_time()
-{
-	return NULL;
-}
-
-xs_tokenValue* value_factory::make_xs_token(const string&)
-{
-	return NULL;
-}
-
-xs_unsignedByteValue* value_factory::make_xs_unsignedByte(unsigned char)
-{
-	return NULL;
-}
-
-xs_unsignedIntValue* value_factory::make_xs_unsignedInt(unsigned int)
-{
-	return NULL;
-}
-
-xs_unsignedLongValue* value_factory::make_xs_unsignedLong(unsigned long)
-{
-	return NULL;
-}
-
-xs_unsignedShortValue* value_factory::make_xs_unsignedShort(uint16_t)
-{
-	return NULL;
-}
-
-atomic_value* value_factory::cast_as(
+/*
+atomic_value* zorba_value_factory::cast_as(
 	iterator_t it, 
 	sequence_type_t t)
 {
@@ -301,8 +335,7 @@ atomic_value* value_factory::cast_as(
 	case xs_unsignedShort: return new(i_p) xs_unsignedShortValue();
 	default: return NULL;
 	}
-
-}
+*/
 
 
 } /* namespace xqp */

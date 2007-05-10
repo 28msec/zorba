@@ -23,8 +23,17 @@ zorba_ft_values : zorba_ft_values.h zorba_ft_values.cpp
 zorba_update_values : zorba_update_values.h zorba_update_values.cpp
 	g++ -c ${OPT} -o Build/zorba_update_values.${SUFX} zorba_update_values.cpp
 
-zorba_values : zorba_values.h zorba_values.cpp
-	g++ -c ${OPT} -o Build/zorba_values.${SUFX} zorba_values.cpp
+zorba_value_factory : zorba_value_factory.h zorba_value_factory.cpp
+	g++ -c ${OPT} -o Build/zorba_value_factory.${SUFX} zorba_value_factory.cpp
+	
+zorba_value_factory_test : zorba_value_factory.h zorba_value_factory.cpp zorba_value_factory_test.cpp
+	g++ ${OPT} -o Build/zorba_value_factory_test \
+	  ../runtime/${BUILD}/zorba.${SUFX} \
+	  ../values/${BUILD}/primitive_values.${SUFX} \
+	  ${BUILD}/qnamerep.${SUFX} \
+	  ${BUILD}/zorba_qname.${SUFX} \
+	  ${BUILD}/zorba_value_factory.${SUFX} \
+	zorba_value_factory_test.cpp
 
 zorba_qname : zorba_qname.h zorba_qname.cpp
 	g++ -c ${OPT} -o Build/zorba_qname.${SUFX} zorba_qname.cpp

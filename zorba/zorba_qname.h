@@ -36,12 +36,12 @@ public:
 	zorba_qname() {}
 	zorba_qname(zorba_qname& qn) : rep(qn.rep)  {}
 	zorba_qname(
-		itemid_t uri_id,
+		const std::string& uri,
 		const std::string& prefix,
 		const std::string& localname);
 
 public:		// accessors
-	itemid_t uri_id() const;
+	std::string uri() const;
 	std::string prefix() const;
 	std::string localname() const;
 	qnamekey_t qnamekey() const;
@@ -53,7 +53,6 @@ public:		// internal interface
 
 public:		// XQuery interface
 	sequence_type_t type() const { return xs_qname; }
-
 	iterator_t atomized_value(zorba*) const;
 	iterator_t string_value(zorba*) const;
 	iterator_t effective_boolean_value(zorba*) const;

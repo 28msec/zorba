@@ -17,27 +17,27 @@ using namespace std;
 namespace xqp {
   
 qnamerep::qnamerep(
-	itemid_t uri_id,
+	const string& uri,
 	const string& prefix, 
 	const string& localname)
 :
-	theURIID(uri_id),
+	theURI(uri),
 	theName(prefix+':'+localname)
 {
 }
 
 qnamerep::qnamerep(
-	itemid_t uri_id,
+	const string& uri,
 	const string& name)
 :
-	theURIID(uri_id),
+	theURI(uri),
 	theName(name)
 {
 }
 
 qnamekey_t qnamerep::qnamekey() const
 {
-	return hashfun::h64(prefix(),hashfun::h64(localname(),theURIID));
+	return hashfun::h64(prefix(),hashfun::h64(localname(),hashfun::h64(uri())));
 }
 
 string qnamerep::prefix() const
@@ -53,16 +53,16 @@ string qnamerep::localname() const
   return theName.substr(n+1,(m-n-1));
 }
 
-itemid_t qnamerep::uri_id() const
+string qnamerep::uri() const
 {
-  return theURIID;
+  return theURI;
 }
 
 ostream& qnamerep::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	os << '[' << uri_id() << ']' << prefix() << ':' << localname();
+	os << '[' << uri() << ']' << prefix() << ':' << localname();
 	return os;
 }
 
