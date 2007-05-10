@@ -99,6 +99,11 @@ public:
 
 	static std::string decode(enum errcode);
 	static void err(enum errcode);
+	/*
+	bool is_static_err(enum errcode);
+	bool is_dynamic_err(enum errcode);
+	bool is_type_err(enum errcode);
+	*/
 
 };
 
