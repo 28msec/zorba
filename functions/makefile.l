@@ -93,6 +93,7 @@ all :	\
 	function \
 	Sequences \
 	Numerics \
+	Numerics_test \
 	SequencesImpl
 
 
