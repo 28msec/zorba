@@ -221,7 +221,7 @@ ostream& element_noderep::put(
 	data_manager* dmgr_p = zorp->get_data_manager();
   const qname* qn_p = dmgr_p->get_qname(theQNameID);
 	Assert<null_pointer>(qn_p);
-  qn_p->put(os);
+  qn_p->put(zorp,os);
   
 	noderep* n_p = new(rest) noderep();
 	child_const_noderep_iterator it(this,n_p);
@@ -332,7 +332,7 @@ ostream& attribute_noderep::put(
 {
 	data_manager* dmgr_p = zorp->get_data_manager();
 	const qname* qn_p = dmgr_p->get_qname(theQNameID);
-	qn_p->put(os);
+	qn_p->put(zorp,os);
 	return os << "=\"" << string_value() << "\"";
 }
 

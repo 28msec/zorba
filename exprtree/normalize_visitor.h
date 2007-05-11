@@ -37,10 +37,12 @@ public:
 
 protected:
 	zorba* zorp;
+	dynamic_context* dctx_p;
+	rchandle<data_manager> dmgr_h;
+
 	std::stack<expr_h_t> nodestack;
 	std::stack<expr_h_t> argstack;
-	std::stack<expr_h_t> pstack;
-	rchandle<data_manager> dmgr_h;
+	std::stack<expr_h_t> pstack;	// predicates stack
 	fxcharheap sheap;
 
 public:

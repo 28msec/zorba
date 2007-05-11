@@ -28,12 +28,14 @@ protected:
 	signature sig;
 	
 public:
+	function() {}
 	function(const signature& _sig) : sig(_sig) {}
 	virtual ~function() {}
 
 public:
 	// XQuery signature (name+arity)
 	const qname* get_fname() const { return sig.get_name(); }
+	void set_signature(signature& _sig) { sig = _sig; }
 
 	// functor specification
 	virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) = 0;

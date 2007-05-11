@@ -10,6 +10,7 @@
 
 #include "Numerics.h"
 #include "runtime/singleton_iterators.h"
+#include <iostream>
 
 using namespace std;
 namespace xqp {
@@ -45,10 +46,15 @@ iterator_t op_numeric_add::operator()(
 	vector<iterator_t>& argv)
 {
 	if (!validate_args(argv)) return NULL;
+
 	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
 	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
-	numericValue v(xs_decimal, n0.val() + n1.val());
-	return new numeric_singleton(v);
+
+	cout << TRACE << ": n0 = "; n0.put(NULL,cout) << endl;
+	cout << TRACE << ": n1 = "; n1.put(NULL,cout) << endl;
+
+	const numericValue* vp = new numericValue(xs_decimal, n0.val() + n1.val());
+	return new numeric_singleton(*vp);
 }
 
 sequence_type_t op_numeric_add::type_check(
@@ -58,6 +64,37 @@ sequence_type_t op_numeric_add::type_check(
 }
 
 bool op_numeric_add::validate_args(
+	vector<iterator_t>& argv)
+{
+	return (argv.size()==2);
+}
+
+
+op_numeric_add_int::op_numeric_add_int(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t op_numeric_add_int::operator()(
+	zorba* zorp,
+	vector<iterator_t>& argv)
+{
+	if (!validate_args(argv)) return NULL;
+	const numericValue& n0 = dynamic_cast<const numericValue&>(**argv[0]);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(**argv[1]);
+	numericValue v(xs_integer, n0.val() + n1.val());
+	return new numeric_singleton(v);
+}
+
+sequence_type_t op_numeric_add_int::type_check(
+	signature& sig)
+{
+	return xs_integer;
+}
+
+bool op_numeric_add_int::validate_args(
 	vector<iterator_t>& argv)
 {
 	return (argv.size()==2);

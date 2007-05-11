@@ -13,7 +13,9 @@
 #include "store/data_manager.h"
 #include "values/qname.h"
 
+using namespace std;
 namespace xqp {
+
 
 // zorba_document_node
 // -------------------
@@ -376,9 +378,9 @@ iterator_t zorba_namespace_node::atomized_value(
 
 // internal iterface
 
-std::ostream& zorba_namespace_node::put(
+ostream& zorba_namespace_node::put(
 	zorba* zorp,
-	std::ostream& os) const
+	ostream& os) const
 {
 	rep->put(zorp,os);
 	return os;
@@ -450,9 +452,9 @@ iterator_t zorba_pi_node::parent(
 
 // internal interface
 
-std::ostream& zorba_pi_node::put(
+ostream& zorba_pi_node::put(
 	zorba* zorp,
-	std::ostream& os) const
+	ostream& os) const
 {
 	rep->put(zorp,os);
 	return os;
@@ -507,9 +509,15 @@ iterator_t zorba_comment_node::atomized_value(
 
 // internal interface
 
-std::ostream& zorba_comment_node::put(
+string zorba_comment_node::str(
+	zorba* zorp) const
+{
+	return rep->str(zorp);
+}
+
+ostream& zorba_comment_node::put(
 	zorba* zorp,
-	std::ostream& os) const
+	ostream& os) const
 {
 	return os << "<!--" << rep->str(zorp) << "-->";
 }

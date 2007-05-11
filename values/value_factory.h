@@ -68,7 +68,7 @@ public:
 	virtual rchandle<atomic_value> make_xs_time() = 0;
 	virtual rchandle<atomic_value> make_xs_token(const string&) = 0;
 	virtual rchandle<atomic_value> make_xs_unsignedByte(unsigned char) = 0;
-	virtual rchandle<atomic_value> make_xs_unsignedInt(int) = 0;
+	virtual rchandle<atomic_value> make_xs_unsignedInt(unsigned int) = 0;
 	virtual rchandle<atomic_value> make_xs_unsignedLong(unsigned long) = 0;
 	virtual rchandle<atomic_value> make_xs_unsignedShort(uint16_t) = 0;
 	

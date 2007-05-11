@@ -10,27 +10,39 @@
 #ifndef XQP_LIBRARY_H
 #define XQP_LIBRARY_H
 
-#include "../util/hashmap.h"
-#include "../util/rchandle.h"
-#include "../values/values.h"
+#include "context/common.h"
+#include "util/fxhashmap.h"
+#include <string>
 
 namespace xqp {
 
 class function;
-class qname_value;
+class value_factory;
+class zorba;
 
 class library : public rcobject
 {
 protected:
-	hashmap<const function*> funtab;
+	zorba* zorp;
+	fxhash64map<const function*> funtab;
 
 public:
-	library();
+	// Numeric functions
+	static qnamekey_t op_add_key;
+	static qnamekey_t op_subtract_key;
+
+	// Sequence functions
+	static qnamekey_t op_concatenate_key;
+
+public:
+	library(zorba* zorp);
 	~library();
+	static bool static_init;
+	void init(value_factory*);
 
 public:
 	void put(const function*);
-	const function* get(const qname_value*);
+	const function* get(qnamekey_t);
 
 };
 

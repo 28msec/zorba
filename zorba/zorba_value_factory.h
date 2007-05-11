@@ -20,7 +20,7 @@ namespace xqp {
 
 class atomic_value;
 
-class zorba_value_factory
+class zorba_value_factory : public value_factory
 {
 
 public:
@@ -28,7 +28,7 @@ public:
 	virtual ~zorba_value_factory() {}
 
 public:
-	rchandle<atomic_value> make_qname(
+	rchandle<qname> make_qname(
 		const std::string& uri,
 		const std::string& prefix,
 		const std::string& localname);

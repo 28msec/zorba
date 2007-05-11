@@ -13,13 +13,12 @@
 using namespace std;
 namespace xqp {
 
-rchandle<atomic_value> zorba_value_factory::make_qname(
+rchandle<qname> zorba_value_factory::make_qname(
 	const string& uri,
 	const string& prefix,
 	const string& localname)
 {  
-	qname* result = new zorba_qname(uri,prefix,localname);
-	return dynamic_cast<atomic_value*>(result);
+	return new zorba_qname(uri,prefix,localname);
 }
 
 rchandle<atomic_value> zorba_value_factory::make_xs_anyURI(

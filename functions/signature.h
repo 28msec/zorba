@@ -24,9 +24,9 @@ namespace xqp {
 
 /*______________________________________________________________________
 |  
-|	By convention arg_v[0] = return type
-|	              arg_v[1] = first input argument type
-|	              arg_v[2] = second input argument type
+|	By convention argv[0] = return type
+|	              argv[1] = first input argument type
+|	              argv[2] = second input argument type
 |	               ...     =  ...                         
 |_______________________________________________________________________*/
 
@@ -36,10 +36,11 @@ class signature : public rcobject
 {
 public:
 	const qname* qname_p;
-	std::vector<sequence_type_t> arg_v;
+	std::vector<sequence_type_t> argv;
 	static fxhashmap<signature const*> sigmap;	// map: fname -> signture
 
 public:
+	signature() {}
 	signature(qname const*,
 						sequence_type_t return_type);
 	signature(qname const*,
@@ -60,16 +61,21 @@ public:
 						sequence_type_t arg3,
 						sequence_type_t arg4,
 						sequence_type_t return_type);
+	signature(qname const*,
+						const std::vector<sequence_type_t>& argv);
 	~signature();
 
 public:
-	void add_arg(sequence_type_t t) { arg_v.push_back(t); }
-	uint32_t arg_count() const { return arg_v.size() - 1; }
-	sequence_type_t const& operator[](int i) const { return arg_v[i]; }
-	sequence_type_t & operator[](int i) { return arg_v[i]; }
-	sequence_type_t const& return_type() const { return arg_v[0]; }
-	sequence_type_t & return_type() { return arg_v[0]; }
 	qname const* get_name() const { return qname_p; }
+	void set_name(const qname* name) {  qname_p = name; }
+	void set_return_type(sequence_type_t t);
+	void add_arg(sequence_type_t t) { argv.push_back(t); }
+	uint32_t arg_count() const { return argv.size() - 1; }
+
+	sequence_type_t const& operator[](int i) const { return argv[i]; }
+	sequence_type_t & operator[](int i) { return argv[i]; }
+	sequence_type_t const& return_type() const { return argv[0]; }
+	sequence_type_t & return_type() { return argv[0]; }
 
 };
 

@@ -152,6 +152,17 @@ bool operator!=(
 	return false;
 }
 
+bool operator==(
+	tokenbuf::token_iterator const& x,
+	tokenbuf::token_iterator const& y)
+{
+	if (x.buf_p != y.buf_p)   { return false; }
+	if (x.cursor != y.cursor) { return false; }
+	if (x.token_index != y.token_index) { return false; }
+	if (x.delim_index != y.delim_index) { return false; }
+	return true;
+}
+
 
 }	/* namespace xqp */
 

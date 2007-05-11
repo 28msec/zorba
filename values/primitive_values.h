@@ -14,6 +14,9 @@
 #include "runtime/item_iterator.h"
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
+#include "util/tracer.h"
+
+#include <iostream>
 #include <time.h>
 
 namespace xqp {
@@ -26,7 +29,7 @@ protected:
 
 public:
 	numericValue(sequence_type_t, long double);
-	~numericValue() {}
+	~numericValue() { }
 
 public:
 	long double val() const { return theVal; }

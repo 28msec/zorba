@@ -10,6 +10,8 @@
 #define XQP_ITEM_ITERATOR_H
 
 #include "util/rchandle.h"
+#include "util/tracer.h"
+#include <iostream>
 
 namespace xqp {
 
@@ -169,7 +171,7 @@ public:	// C++ interface
 
 
 template<class T>
-class singleton_iterator : public item_const_iterator
+class singleton_iterator : public item_iterator
 {
 protected:
 	const T& val;

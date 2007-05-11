@@ -9,9 +9,9 @@
  
 #include "signature.h"
 
-#include "../context/common.h"
-#include "../context/context.h"
-#include "../util/fxhashmap.h"
+#include "context/common.h"
+#include "types/sequence_type.h"
+#include "util/fxhashmap.h"
 
 using namespace std;
 namespace xqp {
@@ -24,7 +24,7 @@ signature::signature(
 :
 	qname_p(_qname_p)
 {
-	arg_v.push_back(return_type);
+	argv.push_back(return_type);
 }
 
 signature::signature(
@@ -34,8 +34,8 @@ signature::signature(
 :
 	qname_p(_qname_p)
 {
-	arg_v.push_back(return_type);
-	arg_v.push_back(arg1);
+	argv.push_back(return_type);
+	argv.push_back(arg1);
 }
 
 signature::signature(
@@ -46,9 +46,9 @@ signature::signature(
 :
 	qname_p(_qname_p)
 {
-	arg_v.push_back(return_type);
-	arg_v.push_back(arg1);
-	arg_v.push_back(arg2);
+	argv.push_back(return_type);
+	argv.push_back(arg1);
+	argv.push_back(arg2);
 }
 
 signature::signature(
@@ -60,10 +60,10 @@ signature::signature(
 :
 	qname_p(_qname_p)
 {
-	arg_v.push_back(return_type);
-	arg_v.push_back(arg1);
-	arg_v.push_back(arg2);
-	arg_v.push_back(arg3);
+	argv.push_back(return_type);
+	argv.push_back(arg1);
+	argv.push_back(arg2);
+	argv.push_back(arg3);
 }
 
 signature::signature(
@@ -76,15 +76,30 @@ signature::signature(
 :
 	qname_p(_qname_p)
 {
-	arg_v.push_back(return_type);
-	arg_v.push_back(arg1);
-	arg_v.push_back(arg2);
-	arg_v.push_back(arg3);
-	arg_v.push_back(arg4);
+	argv.push_back(return_type);
+	argv.push_back(arg1);
+	argv.push_back(arg2);
+	argv.push_back(arg3);
+	argv.push_back(arg4);
+}
+
+signature::signature(
+	const qname* _qname_p,
+	const vector<sequence_type_t>& _argv)
+:
+	qname_p(_qname_p),
+	argv(_argv)
+{
 }
 
 signature::~signature()
 {
+}
+
+void signature::set_return_type(
+	sequence_type_t t)
+{
+	if (argv.size()>0) argv[0] = t; else argv.push_back(t);
 }
 
 

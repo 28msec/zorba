@@ -65,6 +65,28 @@ Sequences_test : Sequences.h Sequences.cpp Sequences_test.cpp
 		${BUILD}/SequencesImpl.${SUFX} \
 	Sequences_test.cpp
 
+Numerics_test : Numerics.h Numerics.cpp Numerics_test.cpp
+	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/Numerics_test \
+		../runtime/${BUILD}/errors.${SUFX} \
+		../runtime/${BUILD}/item_iterator.${SUFX} \
+		../runtime/${BUILD}/singleton_iterators.${SUFX} \
+		../runtime/${BUILD}/zorba.${SUFX} \
+		../store/${BUILD}/itemstore.${SUFX} \
+		../types/${BUILD}/sequence_type.${SUFX} \
+		../util/${BUILD}/file.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/tokenbuf.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
+		../values/${BUILD}/primitive_values.${SUFX} \
+		../zorba/${BUILD}/qnamerep.${SUFX} \
+		../zorba/${BUILD}/zorba_qname.${SUFX} \
+		../zorba/${BUILD}/zorba_value_factory.${SUFX} \
+		${BUILD}/signature.${SUFX} \
+		${BUILD}/library.${SUFX} \
+		${BUILD}/Numerics.${SUFX} \
+	Numerics_test.cpp
+
 
 all :	\
 	signature \

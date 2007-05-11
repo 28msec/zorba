@@ -288,7 +288,7 @@ qnamerep& itemstore::add_qname(
 		errors::err(errors::XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND);
 	}
 	if (!qncache.get_qname_id(uri_id, localname, qname_id)) {
-		qname_id = qncache.add_qname(qnamerep(uri_id, prefix, localname));
+		qname_id = qncache.add_qname(qnamerep(/*uri_id*/"xxx", prefix, localname));
 	}
 	
 	return qncache[qname_id];

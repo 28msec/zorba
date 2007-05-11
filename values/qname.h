@@ -32,6 +32,7 @@ public:
 
 public:
 	virtual qnamekey_t qnamekey() const = 0;
+	virtual std::string str(zorba*) const = 0;
   virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
 
 };

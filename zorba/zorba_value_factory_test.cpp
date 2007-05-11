@@ -11,6 +11,9 @@
 #include "values/primitive_values.h"
 #include "runtime/zorba.h"
 
+#include <iostream>
+#include <iomanip>
+
 using namespace std;
 using namespace xqp;
 
@@ -54,7 +57,8 @@ int main(int argc, char* argv[])
 	rchandle<atomic_value> decimalValue = 
 		factory.make_xs_decimal(123456789123456789.12);
 	if (decimalValue!=NULL)
-		cout << "decimalValue = " << decimalValue->str(zorp) << endl;
+		cout << "decimalValue = " << setw(18) << setprecision(18)
+															<< decimalValue->str(zorp) << endl;
 	else
 		cout << "decimalValue = NULL\n";
 
@@ -66,7 +70,7 @@ int main(int argc, char* argv[])
 		cout << "integerValue = NULL\n";
 
 	rchandle<atomic_value> longValue =
-		factory.make_xs_long(2000000000000000000LL);
+		factory.make_xs_long(2000000000LL);
 	if (longValue!=NULL)
 		cout << "longValue = " << longValue->str(zorp) << endl;
 	else
@@ -325,7 +329,7 @@ int main(int argc, char* argv[])
 		cout << "unsignedIntValue = NULL\n";
 
 	rchandle<atomic_value> unsignedLongValue =
-		factory.make_xs_unsignedLong(4000000000000000000LL);
+		factory.make_xs_unsignedLong(2000000000);
 	if (unsignedLongValue!=NULL)
 		cout << "unsignedLongValue = " << unsignedLongValue->str(zorp) << endl;
 	else

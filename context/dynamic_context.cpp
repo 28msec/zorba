@@ -23,26 +23,25 @@ qnamekey_t dynamic_context::ordering_mode_key;
 qnamekey_t dynamic_context::current_time_key;
 qnamekey_t dynamic_context::implicit_timezone_key;
 
-#define ZORBA "http://www.zorba.org/"
 
 void dynamic_context::init(
 	value_factory* vfactory_p)
 {
 	if (!dynamic_context::static_init) {
 		default_element_type_ns_key =
-			vfactory_p->make_qname(ZORBA,"xqp","default-element-type")->qnamekey();
+			vfactory_p->make_qname(ZORBA_NS,"xqp","default-element-type")->qnamekey();
 		context_item_type_key =
-			vfactory_p->make_qname(ZORBA,"xqp","context-item-type")->qnamekey();
+			vfactory_p->make_qname(ZORBA_NS,"xqp","context-item-type")->qnamekey();
 		context_item_key =
-			vfactory_p->make_qname(ZORBA,"xqp","context-item")->qnamekey();
+			vfactory_p->make_qname(ZORBA_NS,"xqp","context-item")->qnamekey();
 		ordering_mode_key =
-			vfactory_p->make_qname(ZORBA,"xqp","ordering-mode")->qnamekey();
+			vfactory_p->make_qname(ZORBA_NS,"xqp","ordering-mode")->qnamekey();
 		namespaces_key =
-			vfactory_p->make_qname(ZORBA,"xqp","namespaces")->qnamekey();
+			vfactory_p->make_qname(ZORBA_NS,"xqp","namespaces")->qnamekey();
 		current_time_key =
-			vfactory_p->make_qname(ZORBA,"xqp","current-time")->qnamekey();
+			vfactory_p->make_qname(ZORBA_NS,"xqp","current-time")->qnamekey();
 		implicit_timezone_key =
-			vfactory_p->make_qname(ZORBA,"xqp","implicit-timezone")->qnamekey();
+			vfactory_p->make_qname(ZORBA_NS,"xqp","implicit-timezone")->qnamekey();
 	}
 }
 

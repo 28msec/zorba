@@ -120,6 +120,7 @@ public:
 public:		// accessors
 	virtual sequence_type_t type() const = 0;
   virtual std::string describe(zorba*) const = 0;
+  virtual std::string str(zorba*) const = 0;
 
 public:		// XQuery interface
 	virtual iterator_t atomized_value(zorba*) const = 0;

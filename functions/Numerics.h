@@ -32,8 +32,21 @@ class zorba;
 class op_numeric_add : public function
 {
 public:
+	op_numeric_add() {}
 	op_numeric_add(const signature&);
 	~op_numeric_add() {}
+
+public:
+	iterator_t operator()(zorba*,std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&);
+	bool validate_args(std::vector<iterator_t>&);
+};
+
+class op_numeric_add_int : public function
+{
+public:
+	op_numeric_add_int(const signature&);
+	~op_numeric_add_int() {}
 
 public:
 	iterator_t operator()(zorba*,std::vector<iterator_t>&);

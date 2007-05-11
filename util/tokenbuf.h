@@ -83,6 +83,7 @@ public:	// iterators
 		std::string& get_delim() { return next_delim; }	// return delim defining token
 
 		friend bool operator!=(token_iterator const& x, token_iterator const& y);
+		friend bool operator==(token_iterator const& x, token_iterator const& y);
 	};
 
 public:

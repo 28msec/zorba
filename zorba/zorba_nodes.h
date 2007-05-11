@@ -386,7 +386,7 @@ public:		// internal interface
 	itemid_t parentid() const;
 	const node* get_parent(zorba*) const { return 0; }
 	std::string content() const;
-	std::string str(zorba*) const { return ""; }
+	std::string str(zorba*) const;
 	std::string get_base_uri(zorba*) const { return ""; };
 	std::string get_typed_value(zorba*) const { return ""; };
 
@@ -394,6 +394,7 @@ public:		// XQuery interface
 	iterator_t string_value(zorba*) const;
 	iterator_t base_uri(zorba*) const;
 	iterator_t typed_value(zorba*) const;
+	iterator_t node_name(zorba*) const;
 	iterator_t atomized_value(zorba*) const;
 	iterator_t parent(zorba*) const;
 	

@@ -12,6 +12,7 @@
 #include "indent.h"
 
 #include "dom/dom_nodes.h"
+#include "functions/std_library.h"
 #include "parser/parsenodes.h"
 #include "runtime/zorba.h"
 #include "util/tracer.h"
@@ -29,9 +30,11 @@ normalize_visitor::normalize_visitor(
 	zorba* _zorp)
 :
 	zorp(_zorp),
+	dctx_p(zorp->get_dynamic_context()),
 	dmgr_h(zorp->get_data_manager()) 
 {
 }
+
 
 
 /*..........................................
@@ -660,8 +663,12 @@ bool normalize_visitor::begin_visit(AdditiveExpr const& v)
 cout << indent[++depth] << TRACE << ": AdditiveExpr\n";
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
 	switch (v.get_add_op()) {
-	case op_plus: fo_h->set_func(fn_plus); break;
-	case op_minus: fo_h->set_func(fn_minus); break;
+	case op_plus:
+		fo_h->set_func(dctx_p->get_function(library::op_add_key));
+		break;
+	case op_minus:
+		fo_h->set_func(dctx_p->get_function(library::op_subtract_key));
+		break;
 	}
 	nodestack.push(&*fo_h);
 	return true;
