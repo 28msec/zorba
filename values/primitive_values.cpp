@@ -11,7 +11,6 @@
 #include "types/typecodes.h"
 #include "util/tracer.h"
 #include "runtime/item_iterator.h"
-#include "runtime/singleton_iterators.h"
 
 #include <iostream>
 #include <sstream>
@@ -115,7 +114,7 @@ numericValue::numericValue(
 iterator_t numericValue::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(describe(zorp)));
+	return new singleton_iterator(new stringValue(describe(zorp)));
 }
 
 
@@ -165,7 +164,7 @@ string timeValue::describe(
 iterator_t timeValue::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(describe(zorp)));
+	return new singleton_iterator(new stringValue(describe(zorp)));
 }
 
 
@@ -228,7 +227,7 @@ string stringValue::str(
 iterator_t stringValue::atomized_value(
 	zorba* zorp) const
 {
-	return new string_singleton(*this);
+	return new singleton_iterator((item*)this);
 }
 
 iterator_t stringValue::effective_boolean_value(
@@ -240,7 +239,7 @@ iterator_t stringValue::effective_boolean_value(
 iterator_t stringValue::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(*this);
+	return new singleton_iterator((item*)this);
 }
 
 
@@ -291,7 +290,7 @@ string binaryValue::describe(
 iterator_t binaryValue::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(describe(zorp)));
+	return new singleton_iterator(new stringValue(describe(zorp)));
 }
 
 
@@ -332,7 +331,7 @@ string booleanValue::str(
 iterator_t booleanValue::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(describe(zorp)));
+	return new singleton_iterator(new stringValue(describe(zorp)));
 }
 
 

@@ -8,9 +8,9 @@
  */
 
 #include "qnamerep.h"
+#include "valuereps.h"
 #include "context/common.h"
 #include "runtime/item_iterator.h"
-#include "runtime/singleton_iterators.h"
 #include "util/hashfun.h"
 
 using namespace std;
@@ -92,8 +92,7 @@ iterator_t qnamerep::string_value(
 {
 	ostringstream oss;
 	put(zorp,oss);
-	item_iterator* it_p = new string_singleton(stringValue(oss.str()));
-	return it_p;
+	return new singleton_iterator(new stringValue(oss.str()));
 }
 
 string qnamerep::str(

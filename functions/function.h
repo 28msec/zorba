@@ -43,7 +43,7 @@ public:
 	// polymorphic type inference
 	virtual sequence_type_t type_check(signature&) = 0;
 
-	// runtime arg validation
+	// runtime arg validation: XXX move this out
 	virtual bool validate_args(std::vector<iterator_t>& argv) = 0;
 
 };

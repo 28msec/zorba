@@ -33,7 +33,7 @@ qname* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-const item& concat_iterator::next(uint32_t delta)
+item_t concat_iterator::next(uint32_t delta)
 {
 	if (currit->done() && first_b) {
 		currit = theNext;
@@ -42,9 +42,9 @@ const item& concat_iterator::next(uint32_t delta)
 	return currit->next(delta);
 }
 
-const item& concat_iterator::peek() const
+item_t concat_iterator::peek() const
 {
-	return operator*();
+	return **this;
 }
 
 bool concat_iterator::done() const
@@ -53,11 +53,11 @@ bool concat_iterator::done() const
 }
 
 concat_iterator::concat_iterator(
-	dynamic_context* dctx_p,
+	zorba* zorp,
 	iterator_t theFirst,
 	iterator_t theSecond)
 :
-	funcall_iterator(dctx_p),
+	item_iterator(zorp),
 	currit(theFirst),
 	theNext(theSecond),
 	first_b(true)
@@ -67,7 +67,7 @@ concat_iterator::concat_iterator(
 concat_iterator::concat_iterator(
 	const concat_iterator& it)
 :
-	funcall_iterator(it.dctx_p),
+	item_iterator(it.zorp),
 	currit(it.currit),
 	theNext(it.theNext),
 	first_b(it.first_b)
@@ -77,14 +77,14 @@ concat_iterator::concat_iterator(
 concat_iterator& concat_iterator::operator=(
 	const concat_iterator& it)
 {
-	dctx_p = it.dctx_p;
+	zorp = it.zorp;
 	currit = it.currit;
 	theNext = it.theNext;
 	first_b = it.first_b;
 	return *this;
 }
 
-const item& concat_iterator::operator*() const
+item_t concat_iterator::operator*() const
 {
 	return **currit;
 }

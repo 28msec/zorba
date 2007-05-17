@@ -12,8 +12,6 @@
 
 #include "expr_visitor.h"
 #include "item_iterator.h"
-#include "singleton_iterators.h"
-
 #include "runtime/zorba.h"
 #include "util/rchandle.h"
 

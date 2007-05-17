@@ -69,7 +69,6 @@ Numerics_test : Numerics.h Numerics.cpp Numerics_test.cpp
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/Numerics_test \
 		../runtime/${BUILD}/errors.${SUFX} \
 		../runtime/${BUILD}/item_iterator.${SUFX} \
-		../runtime/${BUILD}/singleton_iterators.${SUFX} \
 		../runtime/${BUILD}/zorba.${SUFX} \
 		../store/${BUILD}/itemstore.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \

@@ -9,7 +9,6 @@
 
 #include "dom_nodes.h"
 #include "runtime/item_iterator.h"
-#include "runtime/singleton_iterators.h"
 #include "values/primitive_values.h"
 
 namespace xqp {
@@ -22,7 +21,7 @@ namespace xqp {
 iterator_t dom_node::parent(
 	zorba* zorp) const
 {
-	return new node_singleton(parent_p);
+	return new singleton_iterator((item*)parent_p);
 }
 
 
@@ -44,31 +43,31 @@ string dom_node::get_document_uri(
 iterator_t dom_node::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(str(zorp)));
+	return new singleton_iterator(new stringValue(str(zorp)));
 }
 
 iterator_t dom_node::base_uri(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(get_base_uri(zorp)));
+	return new singleton_iterator(new stringValue(get_base_uri(zorp)));
 }
 
 iterator_t dom_node::document_uri(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(get_document_uri(zorp)));
+	return new singleton_iterator(new stringValue(get_document_uri(zorp)));
 }
 
 iterator_t dom_node::node_name(
 	zorba* zorp) const
 {
-	return new qname_singleton(get_node_name(zorp));
+	return new singleton_iterator((item*)get_node_name(zorp));
 }
 
 iterator_t dom_node::type_name(
 	zorba* zorp) const
 {
-	return new qname_singleton(get_type_name(zorp));
+	return new singleton_iterator((item*)get_type_name(zorp));
 }
 
 iterator_t dom_node::typed_value(
@@ -111,8 +110,8 @@ string dom_document_node::str(
 	ostringstream oss;
 	iterator_t it = children(zorp);
 	for (; !it->done(); ++(*it)) {
-		const dom_node& dn = dynamic_cast<const dom_node&>(**it);
-		oss << dn.str(zorp);
+		item_t dn_h = **it;
+		oss << dn_h->str(zorp);
 	}
 	return oss.str();
 }
@@ -148,8 +147,8 @@ ostream& dom_document_node::put(
 {
 	iterator_t it = children(zorp);
 	for (; !it->done(); ++(*it)) {
-		const dom_node& dn = dynamic_cast<const dom_node&>(**it);
-		os << dn.str(zorp);
+		item_t dn_h = **it;
+		os << dn_h->str(zorp);
 	}
 	return os;
 }
@@ -160,8 +159,8 @@ string dom_document_node::toXML(
 	ostringstream oss;
 	iterator_t it = children(zorp);
 	for (; !it->done(); ++(*it)) {
-		const dom_node& dn = dynamic_cast<const dom_node&>(**it);
-		oss << dn.toXML(zorp);
+		dom_node* dn_p = dynamic_cast<dom_node*>(&***it);
+		oss << dn_p->toXML(zorp);
 	}
 	return oss.str();
 }
@@ -208,8 +207,8 @@ std::string dom_element_node::str(
 	ostringstream oss;
 	iterator_t it = children(zorp);
 	for (; !it->done(); ++(*it)) {
-		const dom_node& dn = dynamic_cast<const dom_node&>(**it);
-		oss << dn.str(zorp);
+		item_t dn_h = **it;
+		oss << dn_h->str(zorp);
 	}
 	return oss.str();
 }
@@ -256,7 +255,7 @@ iterator_t dom_element_node::typed_value(
 	zorba* zorp) const
 {
 	if (value_p) {
-		return new item_singleton(value_p);
+		return new singleton_iterator(value_p);
 	} else {
 		return string_value(zorp);
 	}

@@ -23,7 +23,6 @@
 #include "values/nodes.h"
 #include "values/values.h"
 #include "runtime/item_iterator.h"
-#include "runtime/singleton_iterators.h"
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
 
@@ -136,12 +135,12 @@ public:
 public:
 	void open() { }
 	void close() { }
-	const item& next(uint32_t delta = 1) { return **(++it); }
-	const item& peek() const { return **it; }
+	item_t next(uint32_t delta = 1) { return *(++it); }
+	item_t peek() const { return *it; }
 	bool done() const { return (it==end); }
 
 public:
-	const item& operator*() const { return **it; }
+	item_t operator*() const { return *it; }
 	dom_doc_child_iterator& operator++() { ++it; return *this; }
 
 };
@@ -161,12 +160,12 @@ public:
 public:
 	void open() { }
 	void close() { }
-	const item& next(uint32_t delta = 1) { return **(++it); }
-	const item& peek() const { return **it; }
+	item_t next(uint32_t delta = 1) { return *(++it); }
+	item_t peek() const { return *it; }
 	bool done() const { return (it==end); }
 
 public:
-	const item& operator*() const { return **it; }
+	item_t operator*() const { return *it; }
 	dom_child_iterator& operator++() { ++it; return *this; }
 
 };
@@ -186,12 +185,12 @@ public:
 public:
 	void open() { }
 	void close() { }
-	const item& next(uint32_t delta = 1) { return **(++it); }
-	const item& peek() const { return **it; }
+	item_t next(uint32_t delta = 1) { return *(++it); }
+	item_t peek() const { return *it; }
 	bool done() const { return (it==end); }
 
 public:
-	const item& operator*() const { return **it; }
+	item_t operator*() const { return *it; }
 	dom_attribute_iterator& operator++() { ++it; return *this; }
 
 };
@@ -211,12 +210,12 @@ public:
 public:
 	void open() { }
 	void close() { }
-	const item& next(uint32_t delta = 1) { return **(++it); }
-	const item& peek() const { return **it; }
+	item_t next(uint32_t delta = 1) { return *(++it); }
+	item_t peek() const { return *it; }
 	bool done() const { return (it==end); }
 
 public:
-	const item& operator*() const { return **it; }
+	item_t operator*() const { return *it; }
 	dom_namespace_iterator& operator++() { ++it; return *this; }
 
 };

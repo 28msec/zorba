@@ -12,7 +12,6 @@
 #include "qnamerep.h"
 
 #include "context/common.h"
-#include "runtime/singleton_iterators.h"
 #include "store/itemstore.h"
 #include "util/hashfun.h"
 #include "values/values.h"
@@ -90,7 +89,7 @@ iterator_t zorba_qname::effective_boolean_value(
 iterator_t zorba_qname::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(describe(zorp)));
+	return new singleton_iterator(new stringValue(describe(zorp)));
 }
 
 

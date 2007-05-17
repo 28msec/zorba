@@ -8,8 +8,9 @@
  */
 
 #include "dom_qname.h"
+#include "runtime/item_iterator.h"
 #include "util/hashfun.h"
-#include "runtime/singleton_iterators.h"
+#include "zorba/valuereps.h"
 
 #include <string>
 
@@ -87,13 +88,13 @@ string dom_qname::str(
 iterator_t dom_qname::effective_boolean_value(
 	zorba* zorp) const
 {
-	return new boolean_singleton(booleanValue(true));
+	return new singleton_iterator(new booleanValue(true));
 }
 
 iterator_t dom_qname::string_value(
 	zorba* zorp) const
 {
-	return new string_singleton(stringValue(str(zorp)));
+	return new singleton_iterator(new stringValue(str(zorp)));
 }
 
 iterator_t dom_qname::atomized_value(

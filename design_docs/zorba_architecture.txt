@@ -801,9 +801,13 @@ Query Plan
 The zorba expression tree is compiled into an execution plan
 which consists of a compositon of iterators.  Evaluation is
 kept as lazy as possible within the constraints of the XQueryP
-semantics.  The type 'iterator_t' is declared as
+semantics.  The types 'item_t' and 'iterator_t' are declared as
   
-  // iterator type (file 'context/common.h')
+  // item handle
+  class item;
+  typedef rchandle<item> item_t;
+
+  // iterator handle
   class item_iterator;
   typedef rchandle<item_iterator> iterator_t;
 
@@ -871,12 +875,13 @@ The iterator interface:
     public:  // iterator interface
       virtual void open() = 0;
       virtual void close() = 0;
-      virtual const item& next(uint32_t delta = 1) = 0;
-      virtual const item& peek() const = 0;
+      virtual item_t next(uint32_t delta = 1) = 0;
+      virtual item_t peek() const = 0;
       virtual bool done() const = 0;
+			virtual iterator_t clone() = 0;
     
     public:  // C++ interface
-      virtual const item& operator*() const = 0;
+      virtual item_t operator*() const = 0;
       virtual item_iterator& operator++() = 0;
       virtual item_iterator& operator=(const item_iterator&) = 0;
     };
@@ -969,12 +974,13 @@ can be implemented as follows:
     public:      // general iterator interface  
       void open();
       void close();
-      item& next(uint32_t delta = 1);
-      item& peek() const;
+      item_t next(uint32_t delta = 1);
+      item_t peek() const;
       bool done() const;
+			iterator_t clone();
     
     public:      // C++ iterator interface
-      item& operator*() const;
+      item_t operator*() const;
       concat_iterator& operator++();
       concat_iterator& operator=(const concat_iterator& it);
     

@@ -104,12 +104,12 @@ public:
 public:
  	void open();
 	void close();
-	item& next(uint32_t delta = 1);
-	item& peek() const;
+	item_t next(uint32_t delta = 1);
+	item_t peek() const;
 	bool done() const;
 
 public:
-	item& operator*() const;
+	item_t operator*() const;
 	child_iterator& operator++();
 
 };
@@ -129,11 +129,11 @@ public:
  	void open();
 	void close();
 	bool done() const;
-	item& next(uint32_t delta = 1);
-	item& peek() const;
+	item_t next(uint32_t delta = 1);
+	item_t peek() const;
 
 public:
-	item& operator*() const;
+	item_t operator*() const;
 	attribute_iterator& operator++();
 
 };
@@ -153,11 +153,11 @@ public:
  	void open();
 	void close();
 	bool done() const;
-	item& next(uint32_t delta = 1);
-	item& peek() const;
+	item_t next(uint32_t delta = 1);
+	item_t peek() const;
 
 public:
-	item& operator*() const;
+	item_t operator*() const;
 	namespace_iterator& operator++();
 
 };

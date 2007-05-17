@@ -16,54 +16,6 @@
 using namespace std;
 namespace xqp {
 
-// node_singleton
-// --------------
-const item& node_singleton::next(uint32_t delta)
-{
-	n_p = NULL;
-	throw xqp_exception("iterator overrun");
-}
-
-const item& node_singleton::peek() const
-{
-	Assert<null_pointer>(n_p!=NULL);
-	return *n_p;
-}
-
-const item& node_singleton::operator*() const
-{
-	Assert<null_pointer>(n_p!=NULL);
-	return *n_p;
-}
-
-
-// qname_singleton
-// ---------------
-const item& qname_singleton::next(uint32_t delta)
-{
-	qn_p = NULL;
-	throw xqp_exception("iterator overrun");
-}
-
-const item& qname_singleton::peek() const
-{
-	Assert<null_pointer>(qn_p!=NULL);
-	return *qn_p;
-}
-
-const item& qname_singleton::operator*() const
-{
-	Assert<null_pointer>(qn_p!=NULL);
-	return *qn_p;
-}
-
-qname_singleton& qname_singleton::operator=(
-	const qname_singleton& it)
-{
-	qn_p = it.qn_p;
-	return *this;
-}
-
 
 }	/* namespace xqp */
 

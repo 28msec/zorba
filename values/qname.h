@@ -31,7 +31,7 @@ public:
 	virtual iterator_t string_value(zorba*) const = 0;
 
 public:
-	virtual qnamekey_t qnamekey() const = 0;
+	virtual qnamekey_t qnamekey() const = 0; // XXX provide a default impl(uri,localname)
 	virtual std::string str(zorba*) const = 0;
   virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
 

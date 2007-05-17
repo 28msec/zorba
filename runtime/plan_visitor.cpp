@@ -13,7 +13,6 @@
 #include "exprtree/expr.h"
 #include "functions/SequencesImpl.h"
 #include "runtime/item_iterator.h"
-#include "runtime/singleton_iterators.h"
 #include "util/tracer.h"
 
 #include <iostream>
@@ -242,7 +241,7 @@ cout << indent[depth--] << TRACE << ": expr_list" << endl;
 	}
 cout << TRACE << " : [1]\n";
 	rchandle<concat_iterator> cit_h =
-		new concat_iterator(zorp->get_dynamic_context(), it_list[0], it_list[1]);
+		new concat_iterator(zorp, it_list[0], it_list[1]);
 
 	// impl note: use this pattern for code gen of all funcall_expr nodes
 	//  it_h = new funcall_iterator(fun, it_list)
@@ -357,27 +356,27 @@ void plan_visitor::end_visit(literal_expr const& v)
 cout << indent[depth--] << TRACE << ": literal_expr" << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
-    iterator_t it = new string_singleton(stringValue("test string"));
+    iterator_t it = new singleton_iterator(new stringValue("test string"));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_integer: {
-    iterator_t it = new numeric_singleton(numericValue(xs_integer,v.get_ival()));
+    iterator_t it = new singleton_iterator(new numericValue(xs_integer,v.get_ival()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_decimal: {
-    iterator_t it = new numeric_singleton(numericValue(xs_decimal,v.get_decval()));
+    iterator_t it = new singleton_iterator(new numericValue(xs_decimal,v.get_decval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_double: {
-    iterator_t it = new numeric_singleton(numericValue(xs_double,v.get_dval()));
+    iterator_t it = new singleton_iterator(new numericValue(xs_double,v.get_dval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_bool: {
-    iterator_t it = new boolean_singleton(booleanValue(v.get_bval()));
+    iterator_t it = new singleton_iterator(new booleanValue(v.get_bval()));
     itstack.push(it);
     break;
   }

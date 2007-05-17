@@ -1,15 +1,29 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/**
  *
- *  $Id: dynamic_context.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ * @copyright
+ * ========================================================================
+ *	Copyright 2007 FLWOR Foundation
  *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan,Paul Pedersen
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *	
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *	
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ * ========================================================================
+ *
+ * @author John Cowan,Paul Pedersen (pcp071098@yahoo.com)
+ * @file context/dynamic_context.cpp
  *
  */
 
 #include "dynamic_context.h"
 #include "runtime/item_iterator.h"
-#include "runtime/singleton_iterators.h"
 
 using namespace std;
 namespace xqp {
@@ -55,14 +69,14 @@ void dynamic_context::init(
 const namespace_node&
 dynamic_context::default_element_type_namespace() const
 {
-	const item& i = **context_value(default_element_type_ns_key);
-	return dynamic_cast<const namespace_node&>(i);
+	item_t i = **context_value(default_element_type_ns_key);
+	return *dynamic_cast<const namespace_node*>(&*i);
 }
 
 void dynamic_context::set_default_element_type_namespace(
-	const namespace_node& nn_p)
+	namespace_node& nn_p)
 {
-	iterator_t it_h = new node_singleton(&nn_p);
+	iterator_t it_h = new singleton_iterator(&nn_p);
 	keymap.put(default_element_type_ns_key,it_h);
 }
 
@@ -83,20 +97,22 @@ sequence_type_t dynamic_context::context_item_type() const
 dynamic_context::ordering_mode_t dynamic_context::ordering_mode() const
 {
 	iterator_t it_h = context_value(ordering_mode_key);
-	string mode = (**it_h).str(zorp);
+	string mode = (**it_h)->str(zorp);
 	if (mode=="ordered") return ordered;
 	return unordered;
 }
 
 
-void dynamic_context::set_context_item_type(sequence_type_t v)
+void dynamic_context::set_context_item_type(
+	sequence_type_t v)
 {
 }
 
-void dynamic_context::set_ordering_mode(enum ordering_mode_t v)
+void dynamic_context::set_ordering_mode(
+	enum ordering_mode_t v)
 {
 	string mode = (v==ordered?"ordered":"unordered");
-	iterator_t it_h = new string_singleton(stringValue(mode));
+	iterator_t it_h = new singleton_iterator(new stringValue(mode));
 	keymap.put(ordering_mode_key, it_h);
 }
 

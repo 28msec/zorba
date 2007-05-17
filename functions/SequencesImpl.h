@@ -10,7 +10,6 @@
 #define XQP_SEQUENCES_IMPL_H
 
 #include "function.h"
-#include "funcall_iterator.h"
 #include "context/common.h"
 #include "runtime/item_iterator.h"
 #include "util/rchandle.h"
@@ -20,6 +19,8 @@
 #include <vector>
 
 namespace xqp {
+
+class zorba;
 
 /*______________________________________________________________________
 |  
@@ -31,7 +32,7 @@ namespace xqp {
 
 
 //15.1.2 op:concatenate
-class concat_iterator : public funcall_iterator
+class concat_iterator : public item_iterator
 {
 protected:
 	iterator_t currit;
@@ -41,18 +42,18 @@ protected:
 public:	
 	void open() {}
 	void close() {}
-	const item& next(uint32_t delta = 1);
-	const item& peek() const;
+	item_t next(uint32_t delta = 1);
+	item_t peek() const;
 	bool done() const;
 	void rewind();
 
 public:
-	const item& operator*() const;
+	item_t operator*() const;
 	concat_iterator& operator++();
 	concat_iterator& operator=(const concat_iterator& it);
 
 public:	// ctor,dtor
-	concat_iterator(dynamic_context*, iterator_t, iterator_t);
+	concat_iterator(zorba*, iterator_t, iterator_t);
 	concat_iterator(const concat_iterator& it);
 	~concat_iterator() {}
 
