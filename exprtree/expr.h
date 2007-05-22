@@ -1,9 +1,21 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/**
+ * @file exprtree/expr.h
+ * @author: John Cowan, Paul Pedersen
+ * @copyright 2006-2007 FLWOR FOundation.
+ * ========================================================================
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *	
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *	
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
+ * ========================================================================
  *
- *  $Id: expr.h,v 1.1.1.1 2006/11/06 08:42:18 Paul Pedersen Exp $
- *
- *  Copyright 2006-2007 FLWOR FOundation.
- *	Author: John Cowan, Paul Pedersen
  */
 
 #ifndef XQP_EXPR_H
@@ -870,6 +882,68 @@ public:
 };
 
 
+// [123] KindTest 
+/*______________________________________________________________________
+|	KindTest ::= DocumentTest | ElementTest | AttributeTest
+|								| SchemaElementTest | SchemaAttributeTest
+|								| PITest | CommentTest | TextTest | AnyKindTest
+|_______________________________________________________________________*/
+class match_expr : public expr
+{
+public:
+	enum test_t {
+		no_test,
+		name_test,
+		doc_test,
+		elem_test,
+		attr_test,
+		xs_elem_test,
+		xs_attr_test,
+		pi_test,
+		comment_test,
+		text_test,
+		anykind_test
+	};
+
+	enum wild_t {
+		no_wild,
+		all_wild,
+		prefix_wild,
+		name_wild
+	};
+
+protected:
+	test_t test;
+	test_t docnode_test;
+	wild_t wild;
+	rchandle<qname_expr> name_h;
+	rchandle<qname_expr> typename_h;
+
+public:
+	match_expr(yy::location const&);
+	~match_expr();
+
+public:
+	test_t get_test() const { return test; }
+	test_t get_docnode_test() const { return docnode_test; }
+	wild_t get_wild() const { return wild; }
+	rchandle<qname_expr> get_name() const { return name_h; }
+	rchandle<qname_expr> get_typename() const { return typename_h; }
+
+	void set_test(enum test_t v) { test = v; }
+	void set_docnode_test(enum test_t v) { docnode_test = v; }
+	void set_wild(enum wild_t v) { wild = v; }
+	void set_name(rchandle<qname_expr> v_h) { name_h = v_h; }
+	void set_typename(rchandle<qname_expr> v_h) { typename_h = v_h; }
+
+public:
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&) const;
+
+};
+
+
+
 
 // [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
 /*______________________________________________________________________
@@ -877,6 +951,7 @@ public:
 |_______________________________________________________________________*/
 
 
+// XXX Add: primitive_path_expr - for $x/a/b/c/d/e
 
 // [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
 class axis_step_expr : public expr
@@ -900,32 +975,9 @@ public:
 		attribute
 	};
 
-	enum test_t {
-		no_test,
-		name_test,
-		doc_test,
-		elem_test,
-		attr_test,
-		xs_elem_test,
-		xs_attr_test,
-		pi_test,
-		comment_test,
-		text_test,
-		anykind_test
-	};
-
-	enum wild_t {
-		no_wild,
-		all_wild,
-		prefix_wild,
-		name_wild
-	};
-
 protected:
 	axis_t axis;
-	test_t test;
-	test_t docnode_test;
-	wild_t wild;
+	rchandle<match_expr> test_h;
 	rchandle<qname_expr> name_h;
 	rchandle<qname_expr> typename_h;
 	std::vector<expr_h_t> pred_hv;
@@ -936,18 +988,10 @@ public:
 
 public:
 	axis_t get_axis() const { return axis; }
-	test_t get_test() const { return test; }
-	test_t get_docnode_test() const { return docnode_test; }
-	wild_t get_wild() const { return wild; }
-	rchandle<qname_expr> get_name() const { return name_h; }
-	rchandle<qname_expr> get_typename() const { return typename_h; }
-
 	void set_axis(axis_t v) { axis = v; }
-	void set_test(enum test_t v) { test = v; }
-	void set_docnode_test(enum test_t v) { docnode_test = v; }
-	void set_wild(enum wild_t v) { wild = v; }
-	void set_name(rchandle<qname_expr> v_h) { name_h = v_h; }
-	void set_typename(rchandle<qname_expr> v_h) { typename_h = v_h; }
+
+	rchandle<match_expr> get_test() const { return test_h; }
+	void set_test(rchandle<match_expr> v) { test_h = v; }
 
 public:
 	void add_pred(expr_h_t e_h)

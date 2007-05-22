@@ -774,17 +774,76 @@ void relpath_expr::accept(
 
 
 
+// match_epxr
+// [123] [http://www.w3.org/TR/xquery/#prod-xquery-KindTest]
+
+match_expr::match_expr(
+	yy::location const& loc)
+:
+	expr(loc)
+{
+}
+
+match_expr::~match_expr()
+{
+}
+
+ostream& match_expr::put(ostream& os) const
+{
+	os << INDENT << "match_expr[";
+	switch (test) {
+	case no_test:   os << "no_test("; break;
+	case name_test: os << "name_test("; break;
+	case doc_test: {
+		os << "doc_test(";
+		switch (docnode_test) {
+		case no_test:   os << "no_test("; break;
+		case elem_test: os << "element("; break;
+		case attr_test: os << "attribute("; break;
+		default: os << "(??";
+		}
+		break;
+	}
+	case elem_test:			os << "element("; break;
+	case attr_test:			os << "attribute("; break;
+	case xs_elem_test:	os << "schema-element("; break;
+	case xs_attr_test:	os << "schema-element("; break;
+	case pi_test:				os << "pi("; break;
+	case comment_test:	os << "comment("; break;
+	case text_test:			os << "text("; break;
+	case anykind_test:	os << "anykind("; break;
+	default: os << "(??";
+	}
+	if (name_h!=NULL) {
+  	switch (wild) {
+  	case no_wild: name_h->put(os); break;
+  	case all_wild: os << "*"; break;
+  	case prefix_wild: os << "*:"; name_h->put(os); break;
+  	case name_wild: name_h->put(os) << ":*"; break;
+  	default: os << "??";
+  	}
+  }
+	if (typename_h!=NULL) {
+		typename_h->put(os) << endl;
+	}
+	os << ")\n";
+	return os << OUTDENT << "]\n";
+}
+
+void match_expr::accept(
+	expr_visitor& v) const
+{
+}
+
+
+
 // [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
-
-
-
 // [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
 
 axis_step_expr::axis_step_expr(
 	yy::location const& loc)
 :
-	expr(loc),
-	wild(no_wild)
+	expr(loc)
 {
 }
 
@@ -811,44 +870,9 @@ ostream& axis_step_expr::put(ostream& os) const
 	default: os << "??\n";
 	}
 
-	switch (test) {
-	case no_test:   os << "no_test("; break;
-	case name_test: os << "name_test("; break;
-	case doc_test: {
-		os << "doc_test(";
-		switch (docnode_test) {
-		case no_test:   os << "no_test("; break;
-		case elem_test: os << "element("; break;
-		case attr_test: os << "attribute("; break;
-		default: os << "(??";
-		}
-		break;
-	}
-	case elem_test:			os << "element("; break;
-	case attr_test:			os << "attribute("; break;
-	case xs_elem_test:	os << "schema-element("; break;
-	case xs_attr_test:	os << "schema-element("; break;
-	case pi_test:				os << "pi("; break;
-	case comment_test:	os << "comment("; break;
-	case text_test:			os << "text("; break;
-	case anykind_test:	os << "anykind("; break;
-	default: os << "(??";
-	}
-
-	if (name_h!=NULL) {
-  	switch (wild) {
-  	case no_wild: name_h->put(os); break;
-  	case all_wild: os << "*"; break;
-  	case prefix_wild: os << "*:"; name_h->put(os); break;
-  	case name_wild: name_h->put(os) << ":*"; break;
-  	default: os << "??";
-  	}
+	if (test_h!=NULL) {
+		test_h->put(os);
   }
-
-	if (typename_h!=NULL) {
-		typename_h->put(os) << endl;
-	}
-	os << ")\n";
 
 	vector<rchandle<expr> >::const_iterator it = pred_hv.begin();
 	vector<rchandle<expr> >::const_iterator en = pred_hv.end();

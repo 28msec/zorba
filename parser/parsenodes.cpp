@@ -5688,21 +5688,7 @@ AttributeTest::AttributeTest(
 :
 	parsenode(_loc),
 	attr_h(_attr_h),
-	type_h(_type_h),
-	wild_b(false)
-{
-}
-
-AttributeTest::AttributeTest(
-	location const& _loc,
-	rchandle<QName> _attr_h,
-	rchandle<TypeName> _type_h,
-	bool _bit)
-:
-	parsenode(_loc),
-	attr_h(_attr_h),
-	type_h(_type_h),
-	wild_b(_bit)
+	type_h(_type_h)
 {
 }
 
@@ -5713,9 +5699,11 @@ AttributeTest::~AttributeTest()
 ostream& AttributeTest::put(ostream& os) const
 {
 	os << INDENT << "AttributeTest[";
-	if (attr_h!=NULL) attr_h->put(os);
-	if (type_h!=NULL) type_h->put(os);
-	if (wild_b) os << "?";
+	if (attr_h!=NULL) attr_h->put(os); else os << '*';
+	if (type_h!=NULL) {
+		os << ", ";
+		type_h->put(os);
+	}
 	return os << OUTDENT << "]\n";
 }
 
@@ -5724,9 +5712,6 @@ ostream& AttributeTest::put(ostream& os) const
 void AttributeTest::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	//if (attr_h!=NULL) attr_h->accept(v);
-	//if (type_h!=NULL) type_h->accept(v);
-	//if (wild_b) os << "?";
 	v.end_visit(*this); 
 }
 
@@ -5799,8 +5784,11 @@ ElementTest::~ElementTest()
 ostream& ElementTest::put(ostream& os) const
 {
 	os << INDENT << "ElementTest[\n";
-	if (elem_h!=NULL) elem_h->put(os);
-	if (type_h!=NULL) type_h->put(os);
+	if (elem_h!=NULL) elem_h->put(os); else os << '*';
+	if (type_h!=NULL) {
+		os << ", ";
+		type_h->put(os);
+	}
 	if (optional_b) os << "?";
 	return os << OUTDENT << "]\n";
 }
@@ -5810,9 +5798,6 @@ ostream& ElementTest::put(ostream& os) const
 void ElementTest::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	//if (elem_h!=NULL) elem_h->accept(v);
-	//if (type_h!=NULL) type_h->accept(v);
-	//if (optional_b) os << "?";
 	v.end_visit(*this); 
 }
 

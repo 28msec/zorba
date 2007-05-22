@@ -4257,16 +4257,14 @@ AttributeTest :
 			if (debug) cout << "AttributeTest [*]\n";
 			$$ = new AttributeTest(@$,
 								NULL,
-								NULL,
-								true);
+								NULL);
 		}
 	|	ATTRIBUTE_LPAR  STAR  COMMA  TypeName  RPAR
 		{
 			if (debug) cout << "AttributeTest [*.type]\n";
 			$$ = new AttributeTest(@$,
 								NULL,
-								dynamic_cast<TypeName*>($4),
-								true);
+								dynamic_cast<TypeName*>($4));
 		}
 	;
 

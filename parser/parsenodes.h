@@ -4927,7 +4927,6 @@ class AttributeTest : public parsenode
 protected:
 	rchandle<QName> attr_h;
 	rchandle<TypeName> type_h;
-	bool wild_b;
 
 public:
 	AttributeTest(
@@ -4935,18 +4934,12 @@ public:
 		rchandle<QName>,
 		rchandle<TypeName>);
 
-	AttributeTest(
-		yy::location const&,
-		rchandle<QName>,
-		rchandle<TypeName>,
-		bool wild_bit);
-
 	~AttributeTest();
 
 public:
 	rchandle<QName> get_attr() const { return attr_h; }
 	rchandle<TypeName> get_type() const { return type_h; }
-	bool get_wild_bit() const { return wild_b; }
+	bool is_wild() const { return attr_h==NULL; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5017,6 +5010,7 @@ public:
 public:
 	rchandle<QName> get_elem() const { return elem_h; }
 	rchandle<TypeName> get_type() const { return type_h; }
+	bool is_wild() const { return elem_h==NULL; }
 	bool get_optional_bit() const { return optional_b; }
 
 public:

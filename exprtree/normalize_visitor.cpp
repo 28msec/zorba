@@ -62,6 +62,9 @@ cout << indent[++depth] << TRACE << ": AbbrevForwardStep\n";
 bool normalize_visitor::begin_visit(AnyKindTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::anykind_test);
+	nodestack.push(&*m_h);
 	return true;
 }
 
@@ -94,6 +97,23 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(AttributeTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::attr_test);
+
+	rchandle<QName> elem_h = v.get_attr();
+	if (elem_h!=NULL) {
+		m_h->set_name(new qname_expr(v.get_location(),
+																	elem_h->get_qname()));
+	}
+	rchandle<TypeName> type_h = v.get_type();
+	if (type_h!=NULL) {
+		m_h->set_typename(new qname_expr(v.get_location(),
+																			type_h->get_name()->get_qname()));
+	}
+	if (v.is_wild()) {
+		// XXX missing member variable for this
+	}
+	nodestack.push(&*m_h);
 	return true;
 }
 
@@ -127,6 +147,9 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(CommentTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::comment_test);
+	nodestack.push(&*m_h);
 	return true;
 }
 
@@ -199,12 +222,51 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(DocumentTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::doc_test);
+
+	rchandle<ElementTest> e_h = v.get_elem_test();
+	if (e_h!=NULL) {
+		rchandle<QName> elem_h = e_h->get_elem();
+		if (elem_h!=NULL) {
+			m_h->set_name(new qname_expr(v.get_location(),
+																		elem_h->get_qname()));
+		}
+		rchandle<TypeName> type_h = e_h->get_type();
+		if (type_h!=NULL) {
+			m_h->set_typename(new qname_expr(v.get_location(),
+																				type_h->get_name()->get_qname()));
+		}
+		bool optional_b =  e_h->get_optional_bit();
+		if (optional_b) {
+			// XXX missing member variable for this
+		}
+	}
+	nodestack.push(&*m_h);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(ElementTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::elem_test);
+
+	rchandle<QName> elem_h = v.get_elem();
+	if (elem_h!=NULL) {
+		m_h->set_name(new qname_expr(v.get_location(),
+																	elem_h->get_qname()));
+	}
+	rchandle<TypeName> type_h = v.get_type();
+	if (type_h!=NULL) {
+		m_h->set_typename(new qname_expr(v.get_location(),
+																			type_h->get_name()->get_qname()));
+	}
+	bool optional_b =  v.get_optional_bit();
+	if (optional_b) {
+		// XXX missing member variable for this
+	}
+	nodestack.push(&*m_h);
 	return true;
 }
 
@@ -408,6 +470,12 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(PITest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::pi_test);
+
+	string target = v.get_target();
+	m_h->set_name(new qname_expr(v.get_location(), target));
+	nodestack.push(&*m_h);
 	return true;
 }
 
@@ -516,12 +584,30 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(SchemaAttributeTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::xs_attr_test);
+
+	rchandle<QName> attr_h = v.get_attr();
+	if (attr_h!=NULL) {
+		m_h->set_name(new qname_expr(v.get_location(),
+																	attr_h->get_qname()));
+	}
+	nodestack.push(&*m_h);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(SchemaElementTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::xs_elem_test);
+
+	rchandle<QName> elem_h = v.get_elem();
+	if (elem_h!=NULL) {
+		m_h->set_name(new qname_expr(v.get_location(),
+																	elem_h->get_qname()));
+	}
+	nodestack.push(&*m_h);
 	return true;
 }
 
@@ -564,6 +650,9 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(TextTest const& v)
 {
 cout << TRACE << endl;
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::text_test);
+	nodestack.push(&*m_h);
 	return true;
 }
 
@@ -1560,24 +1649,27 @@ cout << TRACE << endl;
 void normalize_visitor::end_visit(NameTest const& v)
 {
 cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
-	rchandle<axis_step_expr> aexpr_h =
+	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	if (aexpr_h==NULL) {
+	if (ase_h==NULL) {
 		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
 	string qname = v.get_qname()->get_qname();	//??!
 	rchandle<qname_expr> qn_h = new qname_expr(v.get_location(),qname);
-	aexpr_h->set_name(qn_h);
-	aexpr_h->set_test(axis_step_expr::name_test);
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+
+	m_h->set_name(qn_h);
+	m_h->set_test(match_expr::name_test);
 	rchandle<Wildcard> wild_h = v.get_wild();
 	if (wild_h==NULL) return;
 	switch (wild_h->get_type()) {
-	case wild_all: aexpr_h->set_wild(axis_step_expr::all_wild); break;
-	case wild_elem: aexpr_h->set_wild(axis_step_expr::name_wild); break;
-	case wild_prefix: aexpr_h->set_wild(axis_step_expr::prefix_wild); break;
+	case wild_all: m_h->set_wild(match_expr::all_wild); break;
+	case wild_elem: m_h->set_wild(match_expr::name_wild); break;
+	case wild_prefix: m_h->set_wild(match_expr::prefix_wild); break;
 	}
+	ase_h->set_test(m_h);
 }
 
 void normalize_visitor::end_visit(NamespaceDecl const& v)
@@ -2177,22 +2269,24 @@ cout << indent[depth--] << TRACE << ": RelativePath\n";
 	expr_h_t e0_h = pop_nodestack();		// b
 	expr_h_t e1_h = pop_nodestack();		// a
 
-	rchandle<relpath_expr> rexpr_h = dynamic_cast<relpath_expr*>(&*e0_h);
-	if (rexpr_h==NULL) {
-		rexpr_h = new relpath_expr(v.get_location());
-		rexpr_h->add_front(e0_h);
+	rchandle<relpath_expr> rp_h = dynamic_cast<relpath_expr*>(&*e0_h);
+	if (rp_h==NULL) {
+		rp_h = new relpath_expr(v.get_location());
+		rp_h->add_front(e0_h);
 	}
 
 	// check for 'a//b'
 	if (v.get_step_type()==st_slashslash) {
-		rchandle<axis_step_expr> axpr_h = new axis_step_expr(v.get_location());
-		axpr_h->set_axis(axis_step_expr::descendant_or_self);
-		axpr_h->set_test(axis_step_expr::anykind_test);
-		rexpr_h->add_front(&*axpr_h);
+		rchandle<axis_step_expr> ase_h = new axis_step_expr(v.get_location());
+		rchandle<match_expr> m_h = new match_expr(v.get_location());
+		m_h->set_test(match_expr::anykind_test);
+		ase_h->set_axis(axis_step_expr::descendant_or_self);
+		ase_h->set_test(m_h);
+		rp_h->add_front(&*ase_h);
 	}
 
-	rexpr_h->add_front(e1_h);
-	nodestack.push(&*rexpr_h);
+	rp_h->add_front(e1_h);
+	nodestack.push(&*rp_h);
 }
 
 void normalize_visitor::end_visit(StepExpr const& v)
