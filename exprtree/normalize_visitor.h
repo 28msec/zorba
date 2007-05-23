@@ -106,7 +106,6 @@ public:
 	bool begin_visit(Import const&);
 	bool begin_visit(InheritMode const&);
 	bool begin_visit(ItemType const&);
-	bool begin_visit(KindTest const&);
 	bool begin_visit(LetClause const&);
 	bool begin_visit(LibraryModule const&);
 	bool begin_visit(MainModule  const&);
@@ -142,7 +141,6 @@ public:
 	bool begin_visit(QuoteAttrContentList const&);
 	bool begin_visit(ReverseAxis const&);
 	bool begin_visit(ReverseStep const&);
-	bool begin_visit(SIND_Decl const&);
 	bool begin_visit(SIND_DeclList const&);
 	bool begin_visit(SchemaAttributeTest const&);
 	bool begin_visit(SchemaElementTest const&);
@@ -163,7 +161,6 @@ public:
 	bool begin_visit(VarInDecl const&);
 	bool begin_visit(VarInDeclList const&);
 	bool begin_visit(VersionDecl const&);
-	bool begin_visit(VFO_Decl const&);
 	bool begin_visit(VFO_DeclList const&);
 	bool begin_visit(WhereClause const&);
 	bool begin_visit(Wildcard const&);
@@ -183,13 +180,11 @@ public:
 	bool begin_visit(CompElemConstructor const&);
 	bool begin_visit(CompPIConstructor const&);
 	bool begin_visit(CompTextConstructor const&);
-	bool begin_visit(Constructor const&);
 	bool begin_visit(ContextItemExpr const&);
 	bool begin_visit(DirCommentConstructor const&);
 	bool begin_visit(DirElemConstructor const&);
 	bool begin_visit(DirElemContent const&);
 	bool begin_visit(DirPIConstructor const&);
-	bool begin_visit(DirectConstructor const&);
 	bool begin_visit(EnclosedExpr const&);
 	bool begin_visit(Expr const&);
 	bool begin_visit(ExprSingle const&);
@@ -310,7 +305,6 @@ public:
 	void end_visit(Import const&);
 	void end_visit(InheritMode const&);
 	void end_visit(ItemType const&);
-	void end_visit(KindTest const&);
 	void end_visit(LetClause const&);
 	void end_visit(LibraryModule const&);
 	void end_visit(MainModule  const&);
@@ -346,7 +340,6 @@ public:
 	void end_visit(QuoteAttrContentList const&);
 	void end_visit(ReverseAxis const&);
 	void end_visit(ReverseStep const&);
-	void end_visit(SIND_Decl const&);
 	void end_visit(SIND_DeclList const&);
 	void end_visit(SchemaAttributeTest const&);
 	void end_visit(SchemaElementTest const&);
@@ -367,7 +360,6 @@ public:
 	void end_visit(VarInDecl const&);
 	void end_visit(VarInDeclList const&);
 	void end_visit(VersionDecl const&);
-	void end_visit(VFO_Decl const&);
 	void end_visit(VFO_DeclList const&);
 	void end_visit(WhereClause const&);
 	void end_visit(Wildcard const&);
@@ -387,13 +379,11 @@ public:
 	void end_visit(CompElemConstructor const&);
 	void end_visit(CompPIConstructor const&);
 	void end_visit(CompTextConstructor const&);
-	void end_visit(Constructor const&);
 	void end_visit(ContextItemExpr const&);
 	void end_visit(DirCommentConstructor const&);
 	void end_visit(DirElemConstructor const&);
 	void end_visit(DirElemContent const&);
 	void end_visit(DirPIConstructor const&);
-	void end_visit(DirectConstructor const&);
 	void end_visit(EnclosedExpr const&);
 	void end_visit(Expr const&);
 	void end_visit(ExprSingle const&);

@@ -349,57 +349,9 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 
 // [6c] SIND_Decl
 // --------------
-SIND_Decl::SIND_Decl(
-	location const& _loc)
-:
-	parsenode(_loc)
-{
-}
-
-SIND_Decl::~SIND_Decl()
-{
-}
-
-ostream& SIND_Decl::put(ostream& os) const
-{
-	return os;
-}
-
-//-SIND_Decl::
-
-void SIND_Decl::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
-
 
 // [6d] VFO_Decl
 // -------------
-VFO_Decl::VFO_Decl(
-	location const& _loc)
-:
-	parsenode(_loc)
-{
-}
-
-VFO_Decl::~VFO_Decl()
-{
-}
-
-ostream& VFO_Decl::put(ostream& os) const
-{
-	return os;
-}
-
-//-VFO_Decl::
-
-void VFO_Decl::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
 
 
 
@@ -4282,61 +4234,11 @@ void ArgList::accept(parsenode_visitor& v) const
 
 // [94] Constructor
 // ----------------
-Constructor::Constructor(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
-
-Constructor::~Constructor()
-{
-}
-
-ostream& Constructor::put(ostream& s) const
-{
-	s << INDENT << "Constructor[";
-	return s << OUTDENT << "]\n";
-}
-
-//-Constructor::
-
-void Constructor::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
-
 
 // [95] DirectConstructor
 // ----------------------
-DirectConstructor::DirectConstructor(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
 
-DirectConstructor::~DirectConstructor()
-{
-}
 
-ostream& DirectConstructor::put(ostream& s) const
-{
-	s << INDENT << "DirectConstructor[";
-	return s << OUTDENT << "]\n";
-}
-
-//-DirectConstructor::
-
-void DirectConstructor::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
- 
 
 // [96] DirElemConstructor
 // -----------------------
@@ -4715,7 +4617,7 @@ void AposAttrValueContent::accept(parsenode_visitor& v) const
 // --------------------
 DirElemContent::DirElemContent(
 	location const& _loc,
-	rchandle<DirectConstructor> _direct_cons_h)
+	rchandle<exprnode> _direct_cons_h)
 :
 	exprnode(_loc),
 	direct_cons_h(_direct_cons_h)
@@ -5424,31 +5326,6 @@ void AtomicType::accept(parsenode_visitor& v) const
 
 // [123] KindTest
 // --------------
-KindTest::KindTest(
-	location const& _loc)
-:
-	NodeTest(_loc),
-	ItemType(_loc)
-{
-}
-
-KindTest::~KindTest()
-{
-}
-
-ostream& KindTest::put(ostream& s) const
-{
-	s << INDENT << "KindTest[]\n"; UNDENT;
-	return s;
-}
-
-//-KindTest::
-
-void KindTest::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
 
 
 

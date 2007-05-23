@@ -40,13 +40,13 @@ class OrderModifier; class OrderSpec; class OrderSpecList; class OrderingModeDec
 class PITest; class Param; class ParamList; class PositionalVar;
 class Pragma; class PragmaList; class PredicateList; class PreserveMode;
 class Prolog; class QVarInDecl; class QVarInDeclList; class QuoteAttrValueContent; 
-class QuoteAttrContentList; class ReverseAxis; class ReverseStep; class SIND_Decl;
+class QuoteAttrContentList; class ReverseAxis; class ReverseStep;
 class SIND_DeclList; class SchemaAttributeTest; class SchemaElementTest; 
 class SchemaImport; class SchemaPrefix; class SequenceType; class Setter; 
 class SignList; class SingleType; class TextTest; class TypeDeclaration;
 class TypeName; class URILiteralList; class ValueComp; class VarDecl;
 class VarGetsDecl; class VarGetsDeclList; class VarInDecl; class VarInDeclList;
-class VersionDecl; class VFO_Decl; class VFO_DeclList; class WhereClause;
+class VersionDecl; class VFO_DeclList; class WhereClause;
 class Wildcard; 
 
 
@@ -55,9 +55,9 @@ class AdditiveExpr; class AndExpr; class AxisStep; class CDataSection;
 class CastExpr; class CastableExpr; class CommonContent; class ComparisonExpr;
 class CompAttrConstructor; class CompCommentConstructor; class CompDocConstructor;
 class CompElemConstructor; class CompPIConstructor; class CompTextConstructor;
-class ComputedConstructor; class Constructor; class ContextItemExpr;
+class ComputedConstructor; class ContextItemExpr;
 class DirCommentConstructor; class DirElemConstructor; class DirElemContent;
-class DirPIConstructor; class DirectConstructor; class EnclosedExpr;
+class DirPIConstructor; class EnclosedExpr;
 class Expr; class ExprSingle; class ExtensionExpr; class FLWORExpr;
 class FilterExpr; class FunctionCall; class IfExpr; class InstanceofExpr;
 class IntersectExceptExpr; class Literal; class MultiplicativeExpr;
@@ -132,7 +132,6 @@ public:
 	virtual bool begin_visit(Import const&) = 0;
 	virtual bool begin_visit(InheritMode const&) = 0;
 	virtual bool begin_visit(ItemType const&) = 0;
-	virtual bool begin_visit(KindTest const&) = 0;
 	virtual bool begin_visit(LetClause const&) = 0;
 	virtual bool begin_visit(LibraryModule const&) = 0;
 	virtual bool begin_visit(MainModule  const&) = 0;
@@ -168,7 +167,6 @@ public:
 	virtual bool begin_visit(QuoteAttrContentList const&) = 0;
 	virtual bool begin_visit(ReverseAxis const&) = 0;
 	virtual bool begin_visit(ReverseStep const&) = 0;
-	virtual bool begin_visit(SIND_Decl const&) = 0;
 	virtual bool begin_visit(SIND_DeclList const&) = 0;
 	virtual bool begin_visit(SchemaAttributeTest const&) = 0;
 	virtual bool begin_visit(SchemaElementTest const&) = 0;
@@ -189,7 +187,6 @@ public:
 	virtual bool begin_visit(VarInDecl const&) = 0;
 	virtual bool begin_visit(VarInDeclList const&) = 0;
 	virtual bool begin_visit(VersionDecl const&) = 0;
-	virtual bool begin_visit(VFO_Decl const&) = 0;
 	virtual bool begin_visit(VFO_DeclList const&) = 0;
 	virtual bool begin_visit(WhereClause const&) = 0;
 	virtual bool begin_visit(Wildcard const&) = 0;
@@ -209,14 +206,11 @@ public:
 	virtual bool begin_visit(CompElemConstructor const&) = 0;
 	virtual bool begin_visit(CompPIConstructor const&) = 0;
 	virtual bool begin_visit(CompTextConstructor const&) = 0;
-	virtual bool begin_visit(ComputedConstructor const&) = 0;
-	virtual bool begin_visit(Constructor const&) = 0;
 	virtual bool begin_visit(ContextItemExpr const&) = 0;
 	virtual bool begin_visit(DirCommentConstructor const&) = 0;
 	virtual bool begin_visit(DirElemConstructor const&) = 0;
 	virtual bool begin_visit(DirElemContent const&) = 0;
 	virtual bool begin_visit(DirPIConstructor const&) = 0;
-	virtual bool begin_visit(DirectConstructor const&) = 0;
 	virtual bool begin_visit(EnclosedExpr const&) = 0;
 	virtual bool begin_visit(Expr const&) = 0;
 	virtual bool begin_visit(ExprSingle const&) = 0;
@@ -339,7 +333,6 @@ public:
 	virtual void end_visit(Import const&) = 0;
 	virtual void end_visit(InheritMode const&) = 0;
 	virtual void end_visit(ItemType const&) = 0;
-	virtual void end_visit(KindTest const&) = 0;
 	virtual void end_visit(LetClause const&) = 0;
 	virtual void end_visit(LibraryModule const&) = 0;
 	virtual void end_visit(MainModule  const&) = 0;
@@ -375,7 +368,6 @@ public:
 	virtual void end_visit(QuoteAttrContentList const&) = 0;
 	virtual void end_visit(ReverseAxis const&) = 0;
 	virtual void end_visit(ReverseStep const&) = 0;
-	virtual void end_visit(SIND_Decl const&) = 0;
 	virtual void end_visit(SIND_DeclList const&) = 0;
 	virtual void end_visit(SchemaAttributeTest const&) = 0;
 	virtual void end_visit(SchemaElementTest const&) = 0;
@@ -396,7 +388,6 @@ public:
 	virtual void end_visit(VarInDecl const&) = 0;
 	virtual void end_visit(VarInDeclList const&) = 0;
 	virtual void end_visit(VersionDecl const&) = 0;
-	virtual void end_visit(VFO_Decl const&) = 0;
 	virtual void end_visit(VFO_DeclList const&) = 0;
 	virtual void end_visit(WhereClause const&) = 0;
 	virtual void end_visit(Wildcard const&) = 0;
@@ -416,14 +407,11 @@ public:
 	virtual void end_visit(CompElemConstructor const&) = 0;
 	virtual void end_visit(CompPIConstructor const&) = 0;
 	virtual void end_visit(CompTextConstructor const&) = 0;
-	virtual void end_visit(ComputedConstructor const&) = 0;
-	virtual void end_visit(Constructor const&) = 0;
 	virtual void end_visit(ContextItemExpr const&) = 0;
 	virtual void end_visit(DirCommentConstructor const&) = 0;
 	virtual void end_visit(DirElemConstructor const&) = 0;
 	virtual void end_visit(DirElemContent const&) = 0;
 	virtual void end_visit(DirPIConstructor const&) = 0;
-	virtual void end_visit(DirectConstructor const&) = 0;
 	virtual void end_visit(EnclosedExpr const&) = 0;
 	virtual void end_visit(Expr const&) = 0;
 	virtual void end_visit(ExprSingle const&) = 0;

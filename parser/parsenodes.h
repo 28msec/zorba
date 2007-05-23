@@ -138,7 +138,6 @@ class DirElemConstructor;
 class DirElemContent;
 class DirElemContentList;
 class DirPIConstructor;
-class DirectConstructor;
 class DocumentTest;
 class ElementDeclaration;
 class ElementName;
@@ -533,40 +532,20 @@ public:
 
 // [6c] SIND_Decl
 // --------------
-class SIND_Decl : public parsenode
 /*______________________________________________________________________
 |
 |	::= Setter | Import | NamespaceDecl | DefaultNamespaceDecl
 |_______________________________________________________________________*/
-{
-public:
-	SIND_Decl(yy::location const&);
-	~SIND_Decl();
 
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [6d] VFO_Decl
 // -------------
-class VFO_Decl : public parsenode
 /*______________________________________________________________________
 |
 |	::= VarDecl | FunctionDecl | OptionDecl
 |_______________________________________________________________________*/
-{
-public:
-	VFO_Decl(yy::location const&);
-	~VFO_Decl();
 
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [7] Setter
@@ -3762,46 +3741,20 @@ public:
 
 
 // [92] Constructor
-// ----------------
-class Constructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= DirectConstructor |	ComputedConstructor
 |_______________________________________________________________________*/
-{
-public:
-	Constructor(yy::location const&);
-	~Constructor();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
 
 // [93] DirectConstructor
-// ----------------------
-class DirectConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= DirElemConstructor
 |			|	DirCommentConstructor
 |			|	DirPIConstructor
 |_______________________________________________________________________*/
-{
-public:
-	DirectConstructor(yy::location const&);
-	~DirectConstructor();
 
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
 
-};
-
- 
 
 // [94] DirElemConstructor
 // -----------------------
@@ -4120,7 +4073,7 @@ class DirElemContent : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<DirectConstructor> direct_cons_h;
+	rchandle<exprnode> direct_cons_h;
 	std::string elem_content;
 	rchandle<CDataSection> cdata_h;
 	rchandle<CommonContent> common_content_h;
@@ -4128,7 +4081,7 @@ protected:
 public:
 	DirElemContent(
 		yy::location const&,
-		rchandle<DirectConstructor>);
+		rchandle<exprnode>);
 
 	DirElemContent(
 		yy::location const&,
@@ -4145,7 +4098,7 @@ public:
 	~DirElemContent();
 
 public:
-	rchandle<DirectConstructor> get_direct_cons() const
+	rchandle<exprnode> get_direct_cons() const
 		{ return direct_cons_h; }
 	std::string get_elem_content() const
 		{ return elem_content; }
@@ -4749,7 +4702,6 @@ public:
 
 // [121] KindTest
 // --------------
-class KindTest : public NodeTest, public ItemType
 /*______________________________________________________________________
 |
 |	::= DocumentTest
@@ -4762,16 +4714,7 @@ class KindTest : public NodeTest, public ItemType
 |			| TextTest
 |			| AnyKindTest
 |_______________________________________________________________________*/
-{
-public:
-	KindTest(yy::location const&);
-	~KindTest();
 
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [122] AnyKindTest

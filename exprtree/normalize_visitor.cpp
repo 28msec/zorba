@@ -338,12 +338,6 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(KindTest const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool normalize_visitor::begin_visit(LetClause const& v)
 {
 cout << TRACE << endl;
@@ -568,12 +562,6 @@ cout << indent[++depth] << TRACE << ": ReverseStep" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SIND_Decl const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool normalize_visitor::begin_visit(SIND_DeclList const& v)
 {
 cout << TRACE << endl;
@@ -714,12 +702,6 @@ cout << TRACE << endl;
 }
 
 bool normalize_visitor::begin_visit(VersionDecl const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool normalize_visitor::begin_visit(VFO_Decl const& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -905,12 +887,6 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Constructor const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool normalize_visitor::begin_visit(ContextItemExpr const& v)
 {
 cout << indent[++depth] << TRACE << ": ContextItemExpr" << endl;
@@ -936,12 +912,6 @@ cout << TRACE << endl;
 }
 
 bool normalize_visitor::begin_visit(DirPIConstructor const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool normalize_visitor::begin_visit(DirectConstructor const& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -1697,11 +1667,6 @@ void normalize_visitor::end_visit(ItemType const& v)
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(KindTest const& v)
-{
-cout << TRACE << endl;
-}
-
 void normalize_visitor::end_visit(LetClause const& v)
 {
 cout << TRACE << endl;
@@ -1932,18 +1897,6 @@ void normalize_visitor::end_visit(ReverseStep const& v)
 cout << indent[depth--] << TRACE << ": ReverseStep" << endl;
 }
 
-void normalize_visitor::end_visit(SIND_Decl const& v)
-{
-cout << TRACE << endl;
-	expr_h_t e_h;
-	rchandle<expr_list> elist_h = new expr_list(v.get_location());
-	while (true) {	
-		if ((e_h = pop_nodestack())==NULL) break;
-		elist_h->add(e_h);
-	}
-	nodestack.push(&*elist_h);
-}
-
 void normalize_visitor::end_visit(SIND_DeclList const& v)
 {
 cout << TRACE << endl;
@@ -2040,11 +1993,6 @@ cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(VersionDecl const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(VFO_Decl const& v)
 {
 cout << TRACE << endl;
 }
@@ -2171,11 +2119,6 @@ void normalize_visitor::end_visit(CompTextConstructor const& v)
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(Constructor const& v)
-{
-cout << TRACE << endl;
-}
-
 void normalize_visitor::end_visit(ContextItemExpr const& v)
 {
 cout << indent[depth--] << TRACE << ": ContextItemExpr" << endl;
@@ -2200,11 +2143,6 @@ cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(DirPIConstructor const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(DirectConstructor const& v)
 {
 cout << TRACE << endl;
 }

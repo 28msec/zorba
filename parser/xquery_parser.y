@@ -823,7 +823,7 @@ SIND_DeclList :
 		{
 			if (debug) cout << "SIND_DeclList [single]\n";
 			SIND_DeclList* sindList_p = new SIND_DeclList(@$);
-			sindList_p->push_back(dynamic_cast<SIND_Decl*>($1));
+			sindList_p->push_back($1);
 			$$ = sindList_p;
 		}
 	| SIND_DeclList  SEMI  SIND_Decl
@@ -831,7 +831,7 @@ SIND_DeclList :
 			if (debug) cout << "SIND_DeclList [list]\n";
 			SIND_DeclList* sindList_p = dynamic_cast<SIND_DeclList*>($1);
 			if (sindList_p) {
-				sindList_p->push_back(dynamic_cast<SIND_Decl*>($3));
+				sindList_p->push_back($3);
 			}
 			$$ = $1;
 		}
@@ -845,7 +845,7 @@ VFO_DeclList :
 		{
 			if (debug) cout << "VFO_DeclList [single]\n";
 			VFO_DeclList* vfoList_p = new VFO_DeclList(@$);
-			vfoList_p->push_back(dynamic_cast<VFO_Decl*>($1));
+			vfoList_p->push_back($1);
 			$$ = vfoList_p;
 		}
 	| VFO_DeclList  SEMI  VFO_Decl
@@ -853,7 +853,7 @@ VFO_DeclList :
 			if (debug) cout << "VFO_DeclList [list]\n";
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>($1);
 			if (vfoList_p) {
-				vfoList_p->push_back(dynamic_cast<VFO_Decl*>($3));
+				vfoList_p->push_back($3);
 			}
 			$$ = $1;
 		}
@@ -3660,7 +3660,7 @@ DirElemContent :
 		{
 			if (debug) cout << "DirElemContent [cons]\n";
 			$$ = new DirElemContent(@$,
-								dynamic_cast<DirectConstructor*>($1));
+								$1);
 		}
 	|	ELEMENT_CONTENT
 		{
@@ -3671,14 +3671,16 @@ DirElemContent :
 	|	CDataSection
 		{
 			if (debug) cout << "DirElemContent [cdata]\n";
+			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>($1);
 			$$ = new DirElemContent(@$,
-								dynamic_cast<CDataSection*>($1));
+								cdata_h);
 		}
 	|	CommonContent
 		{
 			if (debug) cout << "DirElemContent [common_content]\n";
+			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>($1);
 			$$ = new DirElemContent(@$,
-								dynamic_cast<CommonContent*>($1));
+								cont_h);
 		}
 	;
 
