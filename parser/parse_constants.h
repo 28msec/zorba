@@ -41,14 +41,13 @@ enum add_op_t {
 };
 
 enum mult_op_t {
-	op_times,
+	op_mul,
 	op_div,
 	op_idiv,
 	op_mod
 };
 
 enum intex_op_t {
-	op_union,
 	op_intersect,
 	op_except	
 };

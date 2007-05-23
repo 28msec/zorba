@@ -513,7 +513,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> CompTextConstructor
 %type <expr> ComputedConstructor
 %type <expr> Constructor
-//%type <expr> ContentExpr
 %type <expr> ContextItemExpr
 %type <expr> DirCommentConstructor
 %type <expr> DirElemConstructor
@@ -2413,7 +2412,7 @@ MultiplicativeExpr :
 	|	MultiplicativeExpr  STAR  UnionExpr
 		{
 			if (debug) cout << "MultiplicativeExpr [mult*union]\n";
-			$$ = new MultiplicativeExpr(@$, op_times, $1, $3);
+			$$ = new MultiplicativeExpr(@$, op_mul, $1, $3);
 		}
 	|	MultiplicativeExpr  DIV  UnionExpr
 		{

@@ -30,9 +30,33 @@ public:
 	// Numeric functions
 	static qnamekey_t op_add_key;
 	static qnamekey_t op_subtract_key;
+  static qnamekey_t op_mul_key;
+  static qnamekey_t op_div_key;
+  static qnamekey_t op_idiv_key;
+  static qnamekey_t op_mod_key;
+
+	// comparison operators
+	static qnamekey_t op_eq_key;
+	static qnamekey_t op_ne_key;
+	static qnamekey_t op_lt_key;
+	static qnamekey_t op_le_key;
+	static qnamekey_t op_gt_key;
+	static qnamekey_t op_ge_key;
+	static qnamekey_t op_val_eq_key;
+	static qnamekey_t op_val_ne_key;
+	static qnamekey_t op_val_lt_key;
+	static qnamekey_t op_val_le_key;
+	static qnamekey_t op_val_gt_key;
+	static qnamekey_t op_val_ge_key;
+	static qnamekey_t op_is_key;
+	static qnamekey_t op_precedes_key;
+	static qnamekey_t op_follows_key;
 
 	// Sequence functions
 	static qnamekey_t op_concatenate_key;
+	static qnamekey_t op_union_key;
+	static qnamekey_t op_intersect_key;
+	static qnamekey_t op_except_key;
 
 public:
 	library(zorba* zorp);

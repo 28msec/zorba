@@ -46,7 +46,6 @@ class primary_expr;
 class literal_expr;
 class order_expr;
 class funcall_expr;
-class cons_expr;
 class doc_expr;
 class elem_expr;
 class attr_expr;
@@ -90,7 +89,6 @@ public:
 	virtual bool begin_visit(literal_expr const&) = 0;
 	virtual bool begin_visit(order_expr const&) = 0;
 	virtual bool begin_visit(funcall_expr const&) = 0;
-	virtual bool begin_visit(cons_expr const&) = 0;
 	virtual bool begin_visit(doc_expr const&) = 0;
 	virtual bool begin_visit(elem_expr const&) = 0;
 	virtual bool begin_visit(attr_expr const&) = 0;
@@ -127,7 +125,6 @@ public:
 	virtual void end_visit(literal_expr const&) = 0;
 	virtual void end_visit(order_expr const&) = 0;
 	virtual void end_visit(funcall_expr const&) = 0;
-	virtual void end_visit(cons_expr const&) = 0;
 	virtual void end_visit(doc_expr const&) = 0;
 	virtual void end_visit(elem_expr const&) = 0;
 	virtual void end_visit(attr_expr const&) = 0;

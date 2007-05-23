@@ -26,7 +26,7 @@ namespace xqp {
 // clear static initializer state
 bool library::static_init = false;
 
-// Numeric functions
+// Numerics
 op_numeric_add  op_add(
 	signature(
 		new zorba_qname(XQUERY_FN_NS,XQUERY_PRE,"op_add"),
@@ -48,7 +48,40 @@ op_numeric_subtract  op_subtract(
 
 qnamekey_t library::op_add_key;
 qnamekey_t library::op_subtract_key;
+qnamekey_t library::op_mul_key;
+qnamekey_t library::op_div_key;
+qnamekey_t library::op_idiv_key;
+qnamekey_t library::op_mod_key;
 
+
+
+// Comparison operators
+qnamekey_t library::op_eq_key;
+qnamekey_t library::op_ne_key;
+qnamekey_t library::op_lt_key;
+qnamekey_t library::op_le_key;
+qnamekey_t library::op_gt_key;
+qnamekey_t library::op_ge_key;
+qnamekey_t library::op_val_eq_key;
+qnamekey_t library::op_val_ne_key;
+qnamekey_t library::op_val_lt_key;
+qnamekey_t library::op_val_le_key;
+qnamekey_t library::op_val_gt_key;
+qnamekey_t library::op_val_ge_key;
+qnamekey_t library::op_is_key;
+qnamekey_t library::op_precedes_key;
+qnamekey_t library::op_follows_key;
+
+
+// Sequences
+qnamekey_t library::op_concatenate_key;
+qnamekey_t library::op_union_key;
+qnamekey_t library::op_intersect_key;
+qnamekey_t library::op_except_key;
+
+
+
+// static initializer
 
 void library::init(
 	value_factory* vf_p)
@@ -65,6 +98,8 @@ void library::init(
 }
 
 
+// ctor, dtor
+
 library::library(zorba* _zorp) : zorp(_zorp)
 {
 	init(&*zorp->get_value_factory());
@@ -73,6 +108,9 @@ library::library(zorba* _zorp) : zorp(_zorp)
 library::~library()
 {
 }
+
+
+// map interface
 
 void library::put(const function* funp)
 {

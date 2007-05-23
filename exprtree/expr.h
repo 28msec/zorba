@@ -149,7 +149,6 @@ class var_expr : public expr
 |     | VARNAME  TypeDeclaration  ("in"|":=")  ExprSingle
 |     | VARNAME  PositionalVar  "in"  ExprSingle
 |     | VARNAME  TypeDeclaration  PositionalVar  "in"  ExprSingle
-| 
 |     | VARNAME  FTScoreVar  ("in"|":=")  ExprSingle
 |     | VARNAME  TypeDeclaration  FTScoreVar  ("in"|":=")  ExprSingle
 |     | VARNAME  PositionalVar  FTScoreVar  "in"  ExprSingle
@@ -1169,29 +1168,6 @@ public:
 		{ return arg_hv[i]; }
 	expr_h_t const& operator[](int i) const
 		{ return arg_hv[i]; }
-
-public:
-	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
-// [109] [http://www.w3.org/TR/xquery/#prod-xquery-ComputedConstructor]
-class cons_expr : public expr
-/*______________________________________________________________________
-|	::= CompDocConstructor
-|			|	CompElemConstructor
-|			|	CompAttrConstructor
-|			|	CompTextConstructor
-|			|	CompCommentConstructor
-|			|	CompPIConstructor
-|_______________________________________________________________________*/
-{
-public:
-	cons_expr(yy::location const&);
-	~cons_expr();
 
 public:
 	void accept(expr_visitor&) const;

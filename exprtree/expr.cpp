@@ -1068,31 +1068,6 @@ void funcall_expr::accept(
 
 
 
-// [109] [http://www.w3.org/TR/xquery/#prod-xquery-ComputedConstructor]
-
-cons_expr::cons_expr(
-	yy::location const& loc)
-:
-	expr(loc)
-{
-}
-
-cons_expr::~cons_expr()
-{
-}
-
-ostream& cons_expr::put(ostream& os) const
-{
-	return os << "cons_expr[]\n";
-}
-
-void cons_expr::accept(
-	expr_visitor& v) const
-{
-}
-
-
-
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 
 doc_expr::doc_expr(

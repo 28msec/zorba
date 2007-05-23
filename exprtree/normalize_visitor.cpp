@@ -804,7 +804,68 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(ComparisonExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": ComparisonExpr\n";
+	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+
+	if (v.get_gencomp()!=NULL) {
+		switch (v.get_gencomp()->get_type()) {
+		case op_eq:
+			fo_h->set_func(dctx_p->get_function(library::op_eq_key));
+			break;
+		case op_ne:
+			fo_h->set_func(dctx_p->get_function(library::op_ne_key));
+			break;
+		case op_lt:
+			fo_h->set_func(dctx_p->get_function(library::op_lt_key));
+			break;
+		case op_le:
+			fo_h->set_func(dctx_p->get_function(library::op_le_key));
+			break;
+		case op_gt:
+			fo_h->set_func(dctx_p->get_function(library::op_gt_key));
+			break;
+		case op_ge:
+			fo_h->set_func(dctx_p->get_function(library::op_ge_key));
+			break;
+		}
+	}
+	else if (v.get_valcomp()!=NULL) {
+		switch (v.get_valcomp()->get_type()) {
+		case op_val_eq:
+			fo_h->set_func(dctx_p->get_function(library::op_val_eq_key));
+			break;
+		case op_val_ne:
+			fo_h->set_func(dctx_p->get_function(library::op_val_ne_key));
+			break;
+		case op_val_lt:
+			fo_h->set_func(dctx_p->get_function(library::op_val_lt_key));
+			break;
+		case op_val_le:
+			fo_h->set_func(dctx_p->get_function(library::op_val_le_key));
+			break;
+		case op_val_gt:
+			fo_h->set_func(dctx_p->get_function(library::op_val_gt_key));
+			break;
+		case op_val_ge:
+			fo_h->set_func(dctx_p->get_function(library::op_val_ge_key));
+			break;
+		}
+	}
+	else if (v.get_nodecomp()!=NULL) {
+		switch (v.get_nodecomp()->get_type()) {
+		case op_is:
+			fo_h->set_func(dctx_p->get_function(library::op_is_key));
+			break;
+		case op_precedes:
+			fo_h->set_func(dctx_p->get_function(library::op_precedes_key));
+			break;
+		case op_follows:
+			fo_h->set_func(dctx_p->get_function(library::op_follows_key));
+			break;
+		}
+	}
+
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -839,12 +900,6 @@ cout << TRACE << endl;
 }
 
 bool normalize_visitor::begin_visit(CompTextConstructor const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool normalize_visitor::begin_visit(ComputedConstructor const& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -943,6 +998,7 @@ cout << indent[++depth] << TRACE << ": FunctionCall" << endl;
 bool normalize_visitor::begin_visit(IfExpr const& v)
 {
 cout << TRACE << endl;
+	// nothing to do here
 	return true;
 }
 
@@ -954,7 +1010,18 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(IntersectExceptExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": IntersectExceptExpr\n";
+	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+
+	switch (v.get_intex_op()) {
+	case op_intersect:
+		fo_h->set_func(dctx_p->get_function(library::op_intersect_key));
+		break;
+	case op_except:
+		fo_h->set_func(dctx_p->get_function(library::op_except_key));
+		break;
+	}
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -966,7 +1033,23 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(MultiplicativeExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": MultiplicativeExpr\n";
+	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	switch (v.get_mult_op()) {
+	case op_mul:
+		fo_h->set_func(dctx_p->get_function(library::op_mul_key));
+		break;
+	case op_div:
+		fo_h->set_func(dctx_p->get_function(library::op_div_key));
+		break;
+	case op_idiv:
+		fo_h->set_func(dctx_p->get_function(library::op_idiv_key));
+		break;
+	case op_mod:
+		fo_h->set_func(dctx_p->get_function(library::op_mod_key));
+		break;
+	}
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -1068,7 +1151,10 @@ cout << TRACE << endl;
 
 bool normalize_visitor::begin_visit(UnionExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << ": UnionExpr\n";
+	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	fo_h->set_func(dctx_p->get_function(library::op_union_key));
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -1987,16 +2073,13 @@ void normalize_visitor::end_visit(AdditiveExpr const& v)
 cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
 
 	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
-
 	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
-
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
 		cout << TRACE << ": expecting fo_expr on top of stack" << endl;
 		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
-
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
 }
@@ -2044,7 +2127,18 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(ComparisonExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": ComparisonExpr\n";
+
+	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
+	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		cout << TRACE << ": expecting fo_expr on top of stack" << endl;
+		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	fo_h->add(e2_h);
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(CompAttrConstructor const& v)
@@ -2073,11 +2167,6 @@ cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(CompTextConstructor const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(ComputedConstructor const& v)
 {
 cout << TRACE << endl;
 }
@@ -2177,6 +2266,11 @@ cout << indent[depth--] << TRACE << ": argstack.size() = " << argstack.size() <<
 void normalize_visitor::end_visit(IfExpr const& v)
 {
 cout << TRACE << endl;
+	expr_h_t c_h = nodestack.top(); nodestack.pop();
+	expr_h_t t_h = nodestack.top(); nodestack.pop();
+	expr_h_t e_h = nodestack.top(); nodestack.pop();
+	rchandle<if_expr> if_h = new if_expr(v.get_location(),c_h,t_h,e_h);
+	nodestack.push(&*if_h);
 }
 
 void normalize_visitor::end_visit(InstanceofExpr const& v)
@@ -2186,7 +2280,18 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(IntersectExceptExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
+
+	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
+	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		cout << TRACE << ": expecting fo_expr on top of stack" << endl;
+		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	fo_h->add(e2_h);
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(Literal const& v)
@@ -2196,7 +2301,18 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(MultiplicativeExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": MultiplicativeExpr\n";
+
+	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
+	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		cout << TRACE << ": expecting fo_expr on top of stack" << endl;
+		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	fo_h->add(e2_h);
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(NumericLiteral const& v)
@@ -2340,7 +2456,18 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(UnionExpr const& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": UnionExpr\n";
+
+	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
+	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		cout << TRACE << ": expecting fo_expr on top of stack" << endl;
+		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	fo_h->add(e2_h);
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(UnorderedExpr const& v)

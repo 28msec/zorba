@@ -2544,7 +2544,6 @@ ostream& ComparisonExpr::put(ostream& s) const
 void ComparisonExpr::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	valcomp_h->accept(v);
 	left_h->accept(v);
 	right_h->accept(v);
 	v.end_visit(*this); 
@@ -2701,7 +2700,7 @@ ostream& MultiplicativeExpr::put(ostream& s) const
 	s << INDENT << "MultiplicativeExpr[\n";
 	if (mult_expr_h!=NULL) mult_expr_h->put(s);
 	switch(mult_op) {
-	case op_times: s << "times"; break;
+	case op_mul: s << "mul"; break;
 	case op_div: s << "div"; break;
 	case op_idiv: s << "idiv"; break;
 	case op_mod: s << "mod"; break;
@@ -3213,7 +3212,7 @@ void ValidateExpr::accept(parsenode_visitor& v) const
 
 
 
-// [64] ExtensionExpr
+// [65] ExtensionExpr
 // ------------------
 ExtensionExpr::ExtensionExpr(
 	location const& _loc,
@@ -3250,7 +3249,7 @@ void ExtensionExpr::accept(parsenode_visitor& v) const
 
 
 
-// [64a] PragmaList
+// [65a] PragmaList
 // ----------------
 PragmaList::PragmaList(
 	location const& _loc)
@@ -3287,7 +3286,7 @@ void PragmaList::accept(parsenode_visitor& v) const
 
 
 
-// [65] Pragma
+// [66] Pragma
 // -----------
 Pragma::Pragma(
 	location const& _loc,
@@ -3323,13 +3322,13 @@ void Pragma::accept(parsenode_visitor& v) const
 
 
 
-// [66] PragmaContents
+// [67] PragmaContents
 // -------------------
-/* folded into [65] */
+/* folded into [66] */
 
 
 
-// [67] PathExpr
+// [68] PathExpr
 // -------------
 PathExpr::PathExpr(
 	location const& _loc,
@@ -3371,7 +3370,7 @@ void PathExpr::accept(parsenode_visitor& v) const
 
 
 
-// [68] RelativePathExpr
+// [69] RelativePathExpr
 // ---------------------
 RelativePathExpr::RelativePathExpr(
 	location const& _loc,
@@ -3419,7 +3418,7 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
 
 
 
-// [69] StepExpr
+// [70] StepExpr
 // -------------
 StepExpr::StepExpr(
 	location const& _loc)
@@ -3448,7 +3447,7 @@ void StepExpr::accept(parsenode_visitor& v) const
 
 
 
-// [70] AxisStep
+// [71] AxisStep
 // -------------
 AxisStep::AxisStep(
 	location const& _loc,
@@ -3500,7 +3499,7 @@ void AxisStep::accept(parsenode_visitor& v) const
 
 
 
-// [71] ForwardStep
+// [72] ForwardStep
 // ----------------
 ForwardStep::ForwardStep(
 	location const& _loc,
@@ -3551,7 +3550,7 @@ void ForwardStep::accept(parsenode_visitor& v) const
 
 
 
-// [72] ForwardAxis
+// [73] ForwardAxis
 // ----------------
 ForwardAxis::ForwardAxis(
 	location const& _loc,
@@ -3592,7 +3591,7 @@ void ForwardAxis::accept(parsenode_visitor& v) const
 
 
 
-// [73] AbbrevForwardStep
+// [74] AbbrevForwardStep
 // ----------------------
 AbbrevForwardStep::AbbrevForwardStep(
 	location const& _loc,
@@ -3638,7 +3637,7 @@ void AbbrevForwardStep::accept(parsenode_visitor& v) const
 
 
 
-// [74] ReverseStep
+// [75] ReverseStep
 // ----------------
 ReverseStep::ReverseStep(
 	location const& _loc,
@@ -3685,7 +3684,7 @@ void ReverseStep::accept(parsenode_visitor& v) const
 
 
 
-// [75] ReverseAxis
+// [76] ReverseAxis
 // ----------------
 ReverseAxis::ReverseAxis(
 	location const& _loc,
@@ -3724,13 +3723,13 @@ void ReverseAxis::accept(parsenode_visitor& v) const
 
 
 
-// [76] AbbrevReverseStep
+// [77] AbbrevReverseStep
 // ----------------------
 /* folded into [74] */
 
 
 
-// [77] NodeTest
+// [78] NodeTest
 // -------------
 NodeTest::NodeTest(
 	location const& _loc)
@@ -3759,7 +3758,7 @@ void NodeTest::accept(parsenode_visitor& v) const
 
 
 
-// [78] NameTest
+// [79] NameTest
 // -------------
 NameTest::NameTest(
 	location const& _loc,
@@ -3806,7 +3805,7 @@ void NameTest::accept(parsenode_visitor& v) const
 
 
 
-// [79] Wildcard
+// [80] Wildcard
 // -------------
 Wildcard::Wildcard(
 	location const& _loc,
@@ -3845,7 +3844,7 @@ void Wildcard::accept(parsenode_visitor& v) const
 
 
 
-// [80] FilterExpr
+// [81] FilterExpr
 // ---------------
 FilterExpr::FilterExpr(
 	location const& _loc,
@@ -3882,7 +3881,7 @@ void FilterExpr::accept(parsenode_visitor& v) const
 
 
 
-// [81] PredicateList
+// [82] PredicateList
 // ------------------
 PredicateList::PredicateList(
 	location const& _loc)
@@ -3921,11 +3920,11 @@ void PredicateList::accept(parsenode_visitor& v) const
 
 /* RHS reduces to Expr */
 /* ------------------- */
-// [82] Predicate ::= LBRAC  Expr  RBRAC
+// [83] Predicate ::= LBRAC  Expr  RBRAC
 
 
 
-// [83] PrimaryExpr
+// [84] PrimaryExpr
 // ----------------
 PrimaryExpr::PrimaryExpr(
 	location const& _loc)
@@ -3954,7 +3953,7 @@ void PrimaryExpr::accept(parsenode_visitor& v) const
 
 
 
-// [84] Literal
+// [85] Literal
 // ------------
 Literal::Literal(
 	location const& _loc)
@@ -3983,7 +3982,7 @@ void Literal::accept(parsenode_visitor& v) const
 
 
 
-// [85] NumericLiteral
+// [86] NumericLiteral
 // -------------------
 NumericLiteral::NumericLiteral(
 	location const& _loc,
@@ -4042,7 +4041,7 @@ void NumericLiteral::accept(parsenode_visitor& v) const
 
 
 
-// [86] VarRef
+// [87] VarRef
 // -----------
 VarRef::VarRef(
 	location const& _loc,
@@ -4072,8 +4071,11 @@ void VarRef::accept(parsenode_visitor& v) const
 }
 
 
+// [88] VarName
+// ------------
 
-// [87] ParenthesizedExpr
+
+// [89] ParenthesizedExpr
 // ----------------------
 ParenthesizedExpr::ParenthesizedExpr(
 	location const& _loc,
@@ -4106,7 +4108,7 @@ void ParenthesizedExpr::accept(parsenode_visitor& v) const
 
 
 
-// [88] ContextItemExpr
+// [90] ContextItemExpr
 // --------------------
 ContextItemExpr::ContextItemExpr(
 	location const& _loc)
@@ -4135,7 +4137,7 @@ void ContextItemExpr::accept(parsenode_visitor& v) const
 
 
 
-// [89] OrderedExpr
+// [91] OrderedExpr
 // ----------------
 
 OrderedExpr::OrderedExpr(
@@ -4169,7 +4171,7 @@ void OrderedExpr::accept(parsenode_visitor& v) const
 
 
 
-// [90] UnorderedExpr
+// [92] UnorderedExpr
 // ------------------
 UnorderedExpr::UnorderedExpr(
 	location const& _loc,
@@ -4202,7 +4204,7 @@ void UnorderedExpr::accept(parsenode_visitor& v) const
 
 
 
-// [91] FunctionCall
+// [93] FunctionCall
 // -----------------
 
 FunctionCall::FunctionCall(
@@ -4241,7 +4243,7 @@ void FunctionCall::accept(parsenode_visitor& v) const
 
 
 
-// [91a] ArgList
+// [93a] ArgList
 // -------------
 ArgList::ArgList(
 	location const& _loc)
@@ -4278,7 +4280,7 @@ void ArgList::accept(parsenode_visitor& v) const
 
 
 
-// [92] Constructor
+// [94] Constructor
 // ----------------
 Constructor::Constructor(
 	location const& _loc)
@@ -4307,7 +4309,7 @@ void Constructor::accept(parsenode_visitor& v) const
 
 
 
-// [93] DirectConstructor
+// [95] DirectConstructor
 // ----------------------
 DirectConstructor::DirectConstructor(
 	location const& _loc)
@@ -4336,7 +4338,7 @@ void DirectConstructor::accept(parsenode_visitor& v) const
 
  
 
-// [94] DirElemConstructor
+// [96] DirElemConstructor
 // -----------------------
 
 DirElemConstructor::DirElemConstructor(
@@ -4384,7 +4386,7 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [94a] DirElemContentList
+// [96a] DirElemContentList
 // ------------------------
 DirElemContentList::DirElemContentList(
 	location const& _loc)
@@ -4421,7 +4423,7 @@ void DirElemContentList::accept(parsenode_visitor& v) const
 
 
 
-// [95] DirAttributeList
+// [97] DirAttributeList
 // ---------------------
 DirAttributeList::DirAttributeList(
 	location const& _loc)
@@ -4458,7 +4460,7 @@ void DirAttributeList::accept(parsenode_visitor& v) const
 
 
 
-// [95a] DirAttr
+// [97a] DirAttr
 // -------------
 	
 DirAttr::DirAttr(
@@ -4497,7 +4499,7 @@ void DirAttr::accept(parsenode_visitor& v) const
 
 
 
-// [96] DirAttributeValue
+// [98] DirAttributeValue
 // ----------------------
 DirAttributeValue::DirAttributeValue(
 	location const& _loc,
@@ -4543,7 +4545,7 @@ void DirAttributeValue::accept(parsenode_visitor& v) const
 
 
 
-// [96a] QuoteAttrContentList
+// [98a] QuoteAttrContentList
 // --------------------------
 QuoteAttrContentList::QuoteAttrContentList(
 	location const& _loc)
@@ -4582,7 +4584,7 @@ void QuoteAttrContentList::accept(parsenode_visitor& v) const
 
 
 
-// [96b] AposAttrContentList
+// [98b] AposAttrContentList
 // -------------------------
 AposAttrContentList::AposAttrContentList(
 	location const& _loc)
@@ -4621,7 +4623,7 @@ void AposAttrContentList::accept(parsenode_visitor& v) const
 
 
 
-// [97] QuotAttrValueContent
+// [99] QuotAttrValueContent
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
 	location const& _loc,
@@ -4665,8 +4667,8 @@ void QuoteAttrValueContent::accept(parsenode_visitor& v) const
 
 
 
-// [98] AposAttrValueContent
-// -------------------------
+// [100] AposAttrValueContent
+// --------------------------
 AposAttrValueContent::AposAttrValueContent(
 	location const& _loc,
 	std::string _apos_atcontent)
@@ -4709,8 +4711,8 @@ void AposAttrValueContent::accept(parsenode_visitor& v) const
 
 
 
-// [99] DirElemContent
-// -------------------
+// [101] DirElemContent
+// --------------------
 DirElemContent::DirElemContent(
 	location const& _loc,
 	rchandle<DirectConstructor> _direct_cons_h)
@@ -4772,7 +4774,7 @@ void DirElemContent::accept(parsenode_visitor& v) const
 
 
 
-// [100] CommonContent
+// [102] CommonContent
 // -------------------
 CommonContent::CommonContent(
 	location const& _loc,
@@ -4840,7 +4842,7 @@ void CommonContent::accept(parsenode_visitor& v) const
 
 
 
-// [101] DirCommentConstructor
+// [103] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor::DirCommentConstructor(
 	location const& _loc,
@@ -4872,13 +4874,13 @@ void DirCommentConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [102] DirCommentContents
+// [104] DirCommentContents
 // ------------------------
 /* lexical rule */
 
 
 
-// [103] DirPIConstructor
+// [105] DirPIConstructor
 // ----------------------
 DirPIConstructor::DirPIConstructor(
 	location const& _loc,
@@ -4923,13 +4925,13 @@ void DirPIConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [104] DirPIContents
+// [106] DirPIContents
 // -------------------
 /* lexical rule */
 
 
 
-// [105] CDataSection
+// [107] CDataSection
 // ------------------
 CDataSection::CDataSection(
 	location const& _loc,
@@ -4961,42 +4963,18 @@ void CDataSection::accept(parsenode_visitor& v) const
 
 
 
-// [106] CDataSectionContents
+// [108] CDataSectionContents
 // --------------------------
 /* lexical rule */
 
 
 
-// [107] ComputedConstructor
+// [109] ComputedConstructor
 // -------------------------
-ComputedConstructor::ComputedConstructor(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
-
-ComputedConstructor::~ComputedConstructor()
-{
-}
-
-ostream& ComputedConstructor::put(ostream& s) const
-{
-	s << INDENT << "ComputedConstructor[";
-	return s << OUTDENT << "]\n";
-}
-
-//-ComputedConstructor::
-
-void ComputedConstructor::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
 
 
 
-// [108] CompDocConstructor
+// [110] CompDocConstructor
 // ------------------------
 CompDocConstructor::CompDocConstructor(
 	location const& _loc,
@@ -5029,7 +5007,7 @@ void CompDocConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [109] CompElemConstructor
+// [111] CompElemConstructor
 // -------------------------
 CompElemConstructor::CompElemConstructor(
 	location const& _loc,
@@ -5068,42 +5046,12 @@ void CompElemConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [110] ContentExpr
+// [112] ContentExpr
 // -----------------
-/*
-ContentExpr::ContentExpr(
-	location const& _loc,
-	rchandle<exprnode> _expr_h)
-:
-	exprnode(_loc),
-	expr_h(_expr_h)
-{
-}
-
-ContentExpr::~ContentExpr()
-{
-}
-
-ostream& ContentExpr::put(ostream& s) const
-{
-	s << INDENT << "ContentExpr[";
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
-}
-
-//-ContentExpr::
-
-void ContentExpr::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	expr_h->accept(v);
-	v.end_visit(*this); 
-}
-*/
 
 
 
-// [111] CompAttrConstructor
+// [113] CompAttrConstructor
 // -------------------------
 CompAttrConstructor::CompAttrConstructor(
 	location const& _loc,
@@ -5142,7 +5090,7 @@ void CompAttrConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [112] CompTextConstructor
+// [114] CompTextConstructor
 // -------------------------
 CompTextConstructor::CompTextConstructor(
 	location const& _loc,
@@ -5175,7 +5123,7 @@ void CompTextConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [113] CompCommentConstructor
+// [115] CompCommentConstructor
 // ----------------------------
 CompCommentConstructor::CompCommentConstructor(
 	location const& _loc,
@@ -5208,7 +5156,7 @@ void CompCommentConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [114] CompPIConstructor
+// [116] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
 	location const& _loc,
@@ -5258,7 +5206,7 @@ void CompPIConstructor::accept(parsenode_visitor& v) const
 
 
 
-// [115] SingleType
+// [117] SingleType
 // ----------------
 SingleType::SingleType(
 	location const& _loc,
@@ -5327,7 +5275,7 @@ void TypeDeclaration::accept(parsenode_visitor& v) const
 
 
 
-// [117] SequenceType
+// [119] SequenceType
 // ------------------
 SequenceType::SequenceType(
 	location const& _loc,
@@ -5364,7 +5312,7 @@ void SequenceType::accept(parsenode_visitor& v) const
 
 
 
-// [118] OccurrenceIndicator
+// [120] OccurrenceIndicator
 // -------------------------
 OccurrenceIndicator::OccurrenceIndicator(
 	location const& _loc,
@@ -5401,7 +5349,7 @@ void OccurrenceIndicator::accept(parsenode_visitor& v) const
 
 
 
-// [119] ItemType
+// [121] ItemType
 // --------------
 ItemType::ItemType(
 	location const& _loc,
@@ -5441,7 +5389,7 @@ void ItemType::accept(parsenode_visitor& v) const
 
 
 
-// [120] AtomicType
+// [122] AtomicType
 // ----------------
 AtomicType::AtomicType(
 	location const& _loc,
@@ -5474,7 +5422,7 @@ void AtomicType::accept(parsenode_visitor& v) const
 
 
 
-// [121] KindTest
+// [123] KindTest
 // --------------
 KindTest::KindTest(
 	location const& _loc)
@@ -5504,7 +5452,7 @@ void KindTest::accept(parsenode_visitor& v) const
 
 
 
-// [122] AnyKindTest
+// [124] AnyKindTest
 // -----------------
 AnyKindTest::AnyKindTest(
 	location const& _loc)
@@ -5533,7 +5481,7 @@ void AnyKindTest::accept(parsenode_visitor& v) const
 
 
 
-// [123] DocumentTest
+// [125] DocumentTest
 // ------------------
 DocumentTest::DocumentTest(
 	location const& _loc)
@@ -5586,7 +5534,7 @@ void DocumentTest::accept(parsenode_visitor& v) const
 
 
 
-// [124] TextTest
+// [126] TextTest
 // --------------
 TextTest::TextTest(
 	location const& _loc)
@@ -5615,7 +5563,7 @@ void TextTest::accept(parsenode_visitor& v) const
 
 
 
-// [125] CommentTest
+// [127] CommentTest
 // -----------------
 CommentTest::CommentTest(
 	location const& _loc)
@@ -5644,7 +5592,7 @@ void CommentTest::accept(parsenode_visitor& v) const
 
  
 
-// [126] PITest
+// [128] PITest
 // ------------
 PITest::PITest(
 	location const& _loc,
@@ -5679,7 +5627,7 @@ void PITest::accept(parsenode_visitor& v) const
 
 
 
-// [127] AttributeTest
+// [129] AttributeTest
 // -------------------
 AttributeTest::AttributeTest(
 	location const& _loc,
@@ -5716,8 +5664,11 @@ void AttributeTest::accept(parsenode_visitor& v) const
 }
 
 
+// [130] AttribNameOrWildcard
+// --------------------------
 
-// [129] SchemaAttributeTest
+
+// [131] SchemaAttributeTest
 // -------------------------
 SchemaAttributeTest::SchemaAttributeTest(
 	location const& _loc,
@@ -5750,7 +5701,7 @@ void SchemaAttributeTest::accept(parsenode_visitor& v) const
 
 
 
-// [131] ElementTest
+// [133] ElementTest
 // -----------------
 ElementTest::ElementTest(
 	location const& _loc,
@@ -5803,7 +5754,7 @@ void ElementTest::accept(parsenode_visitor& v) const
 
 
 
-// [133] SchemaElementTest
+// [135] SchemaElementTest
 // -----------------------
 SchemaElementTest::SchemaElementTest(
 	location const& _loc,
@@ -5838,16 +5789,16 @@ void SchemaElementTest::accept(parsenode_visitor& v) const
 
 /* inlined productions */
 /* ------------------- */
-// [128] AttribNameOrWildcard ::= AttributeName | STAR
-// [130] AttributeDeclaration ::= AttributeName
-// [132] ElementNameOrWildcard ::= ElementName | STAR
-// [134] ElementDeclaration ::= ElementName
-// [135] AttributeName ::= QNAME
-// [136] ElementName ::= QNAME
+// [130] AttribNameOrWildcard ::= AttributeName | STAR
+// [132] AttributeDeclaration ::= AttributeName
+// [134] ElementNameOrWildcard ::= ElementName | STAR
+// [136] ElementDeclaration ::= ElementName
+// [137] AttributeName ::= QNAME
+// [138] ElementName ::= QNAME
 
 
 
-// [137] TypeName
+// [139] TypeName
 // --------------
 TypeName::TypeName(
 	location const& _loc,
@@ -5895,14 +5846,14 @@ void TypeName::accept(parsenode_visitor& v) const
 
 /* lexical rules, see xquery.l */
 /* --------------------------- */
-// [138] IntegerLiteral
-// [139] DecimalLiteral
-// [140] DoubleLiteral
-// [141] URILiteral 
+// [140] URILiteral 
+// [141] IntegerLiteral
+// [142] DecimalLiteral
+// [143] DoubleLiteral
 
 
 
-// [142] StringLiteral
+// [144] StringLiteral
 // -------------------
 StringLiteral::StringLiteral(
 	yy::location const& _loc,
@@ -5936,26 +5887,26 @@ void StringLiteral::accept(parsenode_visitor& v) const
 
 /* lexical rules, see xquery.l */
 /* --------------------------- */
-// [143] PITarget
-// [144] VarName
-// [145] ValidationMode
-// [146] Digits
-// [147] PredefinedEntityRef
-// [148] CharRef
-// [149] EscapeQuot
-// [150] EscapeApos
-// [151] ElementContentChar
-// [152] QuotAttrContentChar
-// [153] AposAttrContentChar
-// [154] Comment
-// [155] CommentContents
-// [157] NCName
-// [158] S  (WS)
-// [159] Char
+
+// [145] PredefinedEntityRef
+// [146] EscapeQuot
+// [147] EscapeApos
+// [148] ElementContentChar
+// [149] QuotAttrContentChar
+// [150] AposAttrContentChar
+// [151] Comment
+// [152] PITarget
+// [153] CharRef
+
+// [155] NCName
+// [156] S  (WS)
+// [157] Char
+// [158] Digits
+// [159] CommentContents
 
 
 
-// [156] QName
+// [154] QName
 // -----------
 QName::QName(
 	yy::location const& _loc,

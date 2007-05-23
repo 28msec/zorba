@@ -183,7 +183,6 @@ public:
 	bool begin_visit(CompElemConstructor const&);
 	bool begin_visit(CompPIConstructor const&);
 	bool begin_visit(CompTextConstructor const&);
-	bool begin_visit(ComputedConstructor const&);
 	bool begin_visit(Constructor const&);
 	bool begin_visit(ContextItemExpr const&);
 	bool begin_visit(DirCommentConstructor const&);
@@ -388,7 +387,6 @@ public:
 	void end_visit(CompElemConstructor const&);
 	void end_visit(CompPIConstructor const&);
 	void end_visit(CompTextConstructor const&);
-	void end_visit(ComputedConstructor const&);
 	void end_visit(Constructor const&);
 	void end_visit(ContextItemExpr const&);
 	void end_visit(DirCommentConstructor const&);

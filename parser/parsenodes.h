@@ -2268,6 +2268,7 @@ protected:
 	rchandle<ValueComp> valcomp_h;
 	rchandle<GeneralComp> gencomp_h;
 	rchandle<NodeComp> nodecomp_h;
+	// XXX could use a union for these three
 
 public:
 	ComparisonExpr(
@@ -4322,7 +4323,6 @@ public:
 
 // [107] ComputedConstructor
 // -------------------------
-class ComputedConstructor : public exprnode
 /*______________________________________________________________________
 |
 |	::= CompDocConstructor
@@ -4332,16 +4332,6 @@ class ComputedConstructor : public exprnode
 |			|	CompCommentConstructor
 |			|	CompPIConstructor
 |_______________________________________________________________________*/
-{
-public:
-	ComputedConstructor(yy::location const&);
-	~ComputedConstructor();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 
