@@ -240,7 +240,6 @@ class PragmaList;
 class Predicate;
 class PredicateList;
 class PreserveMode;
-class PrimaryExpr;
 class Prolog;
 class QName;
 class QVarInDecl;
@@ -263,7 +262,6 @@ class SchemaElementTest;
 class SchemaImport;
 class SchemaPrefix;
 class SequenceType;
-class Setter;
 class SignList;
 class SingleType;
 class StepExpr;
@@ -531,28 +529,19 @@ public:
 
 
 // [6c] SIND_Decl
-// --------------
 /*______________________________________________________________________
-|
 |	::= Setter | Import | NamespaceDecl | DefaultNamespaceDecl
 |_______________________________________________________________________*/
 
 
-
 // [6d] VFO_Decl
-// -------------
 /*______________________________________________________________________
-|
 |	::= VarDecl | FunctionDecl | OptionDecl
 |_______________________________________________________________________*/
 
 
-
 // [7] Setter
-// ----------
-class Setter : public parsenode
 /*______________________________________________________________________
-|
 |	::= BoundarySpaceDecl
 |			| DefaultCollationDecl
 |			| BaseURIDecl
@@ -561,40 +550,16 @@ class Setter : public parsenode
 |			| EmptyOrderDecl
 |			| CopyNamespacesDecl
 |_______________________________________________________________________*/
-{
-public:
-	Setter(yy::location const&);
-	~Setter();
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [8] Import
-// ----------
-class Import : public parsenode
 /*______________________________________________________________________
-|
 |	::= SchemaImport | ModuleImport
 |_______________________________________________________________________*/
-{
-public:
-	Import(yy::location const&);
-	~Import();
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
-// [9] Separator
+// [9] Separator (Lexical rule)
 // -------------
-// (Lexical rule)
 
 
 // [10] NamespaceDecl
@@ -3383,8 +3348,7 @@ public:
 class FilterExpr : public exprnode
 /*______________________________________________________________________
 |
-|	::= PrimaryExpr  PredicateList
-|			| PrimaryExpr
+|	::= PrimaryExpr  PredicateList  | PrimaryExpr
 |_______________________________________________________________________*/
 {
 protected:
@@ -3439,15 +3403,16 @@ public:
 
 
 
-/* RHS reduces to Expr */
-/* ------------------- */
-// [82] Predicate ::= LBRACK  Expr  RBRACK
-
+// [82] Predicate
+// --------------
+/*______________________________________________________________________
+|
+|	::= LBRACK  Expr  RBRACK
+|_______________________________________________________________________*/
 
 
 // [83] PrimaryExpr
 // ----------------
-class PrimaryExpr : public exprnode
 /*______________________________________________________________________
 |
 |	::= Literal
@@ -3459,16 +3424,6 @@ class PrimaryExpr : public exprnode
 |			|	OrderedExpr
 |			|	UnorderedExpr
 |_______________________________________________________________________*/
-{
-public:
-	PrimaryExpr(yy::location const&);
-	~PrimaryExpr();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 

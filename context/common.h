@@ -58,9 +58,12 @@ typedef uint32_t offset_t;    // itemstore short offset
 class item;
 typedef rchandle<item> item_t;
 
-// iterator type
-class item_iterator;
-typedef rchandle<item_iterator> iterator_t;
+// iterator types
+class basic_iterator;
+typedef rchandle<basic_iterator> iterator_t;
+
+class singleton_iterator;
+typedef rchandle<singleton_iterator> singleton_t;
 
 
 typedef struct qnamekeyref

@@ -37,7 +37,7 @@ public:
 	const qname* get_fname() const { return sig.get_name(); }
 	void set_signature(signature& _sig) { sig = _sig; }
 
-	// functor specification
+	// codegen: functor specification
 	virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) = 0;
 
 	// polymorphic type inference
@@ -47,6 +47,16 @@ public:
 	virtual bool validate_args(std::vector<iterator_t>& argv) = 0;
 
 };
+
+/*
+class user_function : public function
+{
+private:
+	parsenode* body_node;
+	expr* body_expr;
+
+};
+*/
 
 
 } /* namespace xqp */

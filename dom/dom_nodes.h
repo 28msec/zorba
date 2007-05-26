@@ -121,7 +121,7 @@ public:		// output,serialization
 
 // iterators
 
-class dom_doc_child_iterator :	public item_iterator
+class dom_doc_child_iterator :	public basic_iterator
 {
 protected:
 	const dom_node& parent;
@@ -133,10 +133,9 @@ public:
 	~dom_doc_child_iterator() { }
 
 public:
-	void open() { }
-	void close() { }
-	item_t next(uint32_t delta = 1) { return *(++it); }
-	item_t peek() const { return *it; }
+	void _open() { }
+	void _close() { }
+	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:
@@ -146,7 +145,7 @@ public:
 };
 
 
-class dom_child_iterator :	public item_iterator
+class dom_child_iterator :	public basic_iterator
 {
 protected:
 	const dom_node& parent;
@@ -158,10 +157,9 @@ public:
 	~dom_child_iterator() { }
 
 public:
-	void open() { }
-	void close() { }
-	item_t next(uint32_t delta = 1) { return *(++it); }
-	item_t peek() const { return *it; }
+	void _open() { }
+	void _close() { }
+	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:
@@ -171,7 +169,7 @@ public:
 };
 
 
-class dom_attribute_iterator :	public item_iterator
+class dom_attribute_iterator :	public basic_iterator
 {
 protected:
 	const dom_node& parent;
@@ -183,10 +181,9 @@ public:
 	~dom_attribute_iterator() { }
 
 public:
-	void open() { }
-	void close() { }
-	item_t next(uint32_t delta = 1) { return *(++it); }
-	item_t peek() const { return *it; }
+	void _open() { }
+	void _close() { }
+	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:
@@ -196,7 +193,7 @@ public:
 };
 
 
-class dom_namespace_iterator :	public item_iterator
+class dom_namespace_iterator :	public basic_iterator
 {
 protected:
 	const dom_node& parent;
@@ -208,10 +205,9 @@ public:
 	~dom_namespace_iterator() { }
 
 public:
-	void open() { }
-	void close() { }
-	item_t next(uint32_t delta = 1) { return *(++it); }
-	item_t peek() const { return *it; }
+	void _open() { }
+	void _close() { }
+	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:

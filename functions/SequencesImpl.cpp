@@ -33,18 +33,13 @@ qname* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-item_t concat_iterator::next(uint32_t delta)
+item_t concat_iterator::_next()
 {
 	if (currit->done() && first_b) {
 		currit = theNext;
 		first_b = false;
 	}
-	return currit->next(delta);
-}
-
-item_t concat_iterator::peek() const
-{
-	return **this;
+	return currit->next();
 }
 
 bool concat_iterator::done() const
@@ -57,7 +52,7 @@ concat_iterator::concat_iterator(
 	iterator_t theFirst,
 	iterator_t theSecond)
 :
-	item_iterator(zorp),
+	basic_iterator(zorp),
 	currit(theFirst),
 	theNext(theSecond),
 	first_b(true)
@@ -67,7 +62,7 @@ concat_iterator::concat_iterator(
 concat_iterator::concat_iterator(
 	const concat_iterator& it)
 :
-	item_iterator(it.zorp),
+	basic_iterator(it.zorp),
 	currit(it.currit),
 	theNext(it.theNext),
 	first_b(it.first_b)

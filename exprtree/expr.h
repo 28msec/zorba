@@ -94,6 +94,7 @@ public:
 
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
 
+// XXX replace with fo_expr(CONCAT)
 class expr_list : public expr
 /*______________________________________________________________________
 |	::= ExprSingle  ( ","  ExprSingle )*
@@ -839,6 +840,14 @@ public:
 
 
 // [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
+
+// p:l == (match "p:l" (children $dot))
+// p1:l1/p2:l2 == (for ( ($x (match "p1:l1" (children $dot))) )
+//                     (match "p2:l2" (children $x)))
+// 
+
+// XXX remove this, replace with primitive_path_expr
+
 class relpath_expr : public expr
 /*______________________________________________________________________
 |	::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
@@ -953,6 +962,9 @@ public:
 // XXX Add: primitive_path_expr - for $x/a/b/c/d/e
 
 // [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
+
+// XXX Move this to fo_expr: one function for each axis.
+
 class axis_step_expr : public expr
 /*______________________________________________________________________
 |	::= Axis NodeTest Predicate*
@@ -1017,9 +1029,9 @@ public:
 
 
 // [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
-class primary_expr : public expr
 /*______________________________________________________________________
-|	::= Literal
+|	primary_expr ::=
+|       Literal
 |			|	VarRef
 |			|	ParenthesizedExpr
 |			|	ContextItemExpr
@@ -1028,17 +1040,6 @@ class primary_expr : public expr
 |			|	OrderedExpr
 |			|	UnorderedExpr
 |_______________________________________________________________________*/
-{
-public:
-	primary_expr(
-		yy::location const&);
-	~primary_expr();
-
-public:
-	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
-
-};
 
 
 

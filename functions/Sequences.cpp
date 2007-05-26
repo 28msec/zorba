@@ -34,7 +34,7 @@ bool _validate(iterator_t it, sequence_type_t t)
 	cout << TRACE << endl;
 	if (it->done()) return false;
 	cout << TRACE << " : non-empty iterator" << endl;
-	item_t i_h = it->peek();
+	item_t i_h = **it;
 	cout << TRACE << " : item extracted" << endl;
 	cout << TRACE << " : arg type = " << sequence_type::describe(i_h->type()) << endl;
 	cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
@@ -419,7 +419,7 @@ iterator_t fn_doc::operator()(
 cout << TRACE << endl;
 	if (!validate_args(argv)) return NULL;
 cout << TRACE << " : args validated" << endl;
-	item_t i_h = argv[0]->peek();
+	item_t i_h = **argv[0];
 cout << TRACE << " : item extracted from iterator" << endl;
 	if (i_h->is_empty()) return NULL;
 cout << TRACE << " : item not empty" << endl;

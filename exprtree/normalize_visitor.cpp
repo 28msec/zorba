@@ -320,12 +320,6 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Import const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool normalize_visitor::begin_visit(InheritMode const& v)
 {
 cout << TRACE << endl;
@@ -612,12 +606,6 @@ cout << TRACE << endl;
 }
 
 bool normalize_visitor::begin_visit(SequenceType const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool normalize_visitor::begin_visit(Setter const& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -1056,12 +1044,6 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(Predicate const& v)
 {
 cout << indent[++depth] << TRACE << ": Predicate" << endl;
-	return true;
-}
-
-bool normalize_visitor::begin_visit(PrimaryExpr const& v)
-{
-cout << TRACE << endl;
 	return true;
 }
 
@@ -1652,11 +1634,6 @@ void normalize_visitor::end_visit(GeneralComp const& v)
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(Import const& v)
-{
-cout << TRACE << endl;
-}
-
 void normalize_visitor::end_visit(InheritMode const& v)
 {
 cout << TRACE << endl;
@@ -1923,11 +1900,6 @@ cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(SequenceType const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(Setter const& v)
 {
 cout << TRACE << endl;
 }
@@ -2295,11 +2267,6 @@ cout << TRACE << endl;
 void normalize_visitor::end_visit(Predicate const& v)
 {
 cout << indent[depth--] << TRACE << ": Predicate" << endl;
-}
-
-void normalize_visitor::end_visit(PrimaryExpr const& v)
-{
-cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(QuantifiedExpr const& v)

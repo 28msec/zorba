@@ -32,7 +32,7 @@ class zorba;
 
 
 //15.1.2 op:concatenate
-class concat_iterator : public item_iterator
+class concat_iterator : public basic_iterator
 {
 protected:
 	iterator_t currit;
@@ -40,12 +40,10 @@ protected:
 	bool first_b;
 
 public:	
-	void open() {}
-	void close() {}
-	item_t next(uint32_t delta = 1);
-	item_t peek() const;
+	void _open() {}
+	void _close() {}
+	item_t _next();
 	bool done() const;
-	void rewind();
 
 public:
 	item_t operator*() const;

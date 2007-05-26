@@ -103,7 +103,6 @@ public:
 	bool begin_visit(ForwardStep const&);
 	bool begin_visit(FunctionDecl const&);
 	bool begin_visit(GeneralComp const&);
-	bool begin_visit(Import const&);
 	bool begin_visit(InheritMode const&);
 	bool begin_visit(ItemType const&);
 	bool begin_visit(LetClause const&);
@@ -147,7 +146,6 @@ public:
 	bool begin_visit(SchemaImport const&);
 	bool begin_visit(SchemaPrefix const&);
 	bool begin_visit(SequenceType const&);
-	bool begin_visit(Setter const&);
 	bool begin_visit(SignList const&);
 	bool begin_visit(SingleType const&);
 	bool begin_visit(TextTest const&);
@@ -203,7 +201,6 @@ public:
 	bool begin_visit(ParenthesizedExpr const&);
 	bool begin_visit(PathExpr const&);
 	bool begin_visit(Predicate const&);
-	bool begin_visit(PrimaryExpr const&);
 	bool begin_visit(QuantifiedExpr const&);
 	bool begin_visit(QueryBody const&);
 	bool begin_visit(RangeExpr const&);
@@ -302,7 +299,6 @@ public:
 	void end_visit(ForwardStep const&);
 	void end_visit(FunctionDecl const&);
 	void end_visit(GeneralComp const&);
-	void end_visit(Import const&);
 	void end_visit(InheritMode const&);
 	void end_visit(ItemType const&);
 	void end_visit(LetClause const&);
@@ -346,7 +342,6 @@ public:
 	void end_visit(SchemaImport const&);
 	void end_visit(SchemaPrefix const&);
 	void end_visit(SequenceType const&);
-	void end_visit(Setter const&);
 	void end_visit(SignList const&);
 	void end_visit(SingleType const&);
 	void end_visit(TextTest const&);
@@ -402,7 +397,6 @@ public:
 	void end_visit(ParenthesizedExpr const&);
 	void end_visit(PathExpr const&);
 	void end_visit(Predicate const&);
-	void end_visit(PrimaryExpr const&);
 	void end_visit(QuantifiedExpr const&);
 	void end_visit(QueryBody const&);
 	void end_visit(RangeExpr const&);

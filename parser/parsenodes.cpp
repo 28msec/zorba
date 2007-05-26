@@ -346,75 +346,18 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 }
 
 
+// pass-through rules generate no classes
 
 // [6c] SIND_Decl
 // --------------
-
 // [6d] VFO_Decl
 // -------------
-
-
-
 // [7] Setter
 // ----------
-Setter::Setter(
-	location const& _loc)
-:
-	parsenode(_loc)
-{
-}
-
-Setter::~Setter()
-{
-}
-
-ostream& Setter::put(ostream& os) const
-{
-	return os;
-}
-
-//-Setter::
-
-void Setter::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
-
-
 // [8] Import
 // ----------
-Import::Import(
-	location const& _loc)
-:
-	parsenode(_loc)
-{
-}
-	
-Import::~Import()
-{
-}
-
-ostream& Import::put(ostream& os) const
-{
-	return os;
-}
-
-//-Import::
-
-void Import::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
-
-
-// [9] Separator
+// [9] Separator (Lexical rule)
 // -------------
-// (Lexical rule)
-
 
 
 
@@ -3870,39 +3813,11 @@ void PredicateList::accept(parsenode_visitor& v) const
 
 
 
-/* RHS reduces to Expr */
-/* ------------------- */
-// [83] Predicate ::= LBRAC  Expr  RBRAC
-
-
+// [83] Predicate
+// --------------
 
 // [84] PrimaryExpr
 // ----------------
-PrimaryExpr::PrimaryExpr(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
-
-PrimaryExpr::~PrimaryExpr()
-{
-}
-
-ostream& PrimaryExpr::put(ostream& s) const
-{
-	s << INDENT << "PrimaryExpr[]\n"; UNDENT;
-	return s;
-}
-
-//-PrimaryExpr::
-
-void PrimaryExpr::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
 
 
 // [85] Literal

@@ -893,27 +893,6 @@ void axis_step_expr::accept(
 
 // [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 
-primary_expr::primary_expr(
-	yy::location const& loc)
-:
-	expr(loc)
-{
-}
-
-primary_expr::~primary_expr()
-{
-}
-
-ostream& primary_expr::put(ostream& os) const
-{
-	return os << "primary_expr[]\n";
-}
-
-void primary_expr::accept(
-	expr_visitor& v) const
-{
-}
-
 
 
 // [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]

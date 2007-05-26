@@ -154,12 +154,6 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(primary_expr const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool plan_visitor::begin_visit(literal_expr const& v)
 {
 cout << indent[++depth] << TRACE << ": literal_expr" << endl;
@@ -336,11 +330,6 @@ cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(axis_step_expr const& v)
-{
-cout << TRACE << endl;
-}
-
-void plan_visitor::end_visit(primary_expr const& v)
 {
 cout << TRACE << endl;
 }

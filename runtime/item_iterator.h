@@ -12,7 +12,9 @@
 #include "context/common.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
+
 #include <iostream>
+#include <vector>
 
 namespace xqp {
 
@@ -21,29 +23,64 @@ class node;
 class qname;
 class zorba;
 
-class item_iterator : public rcobject
+class basic_iterator : public rcobject
 {
 protected:
  	zorba* zorp;
+	bool open_b;
 
 public:
-	item_iterator() : zorp(NULL) {}
-	item_iterator(zorba* _zorp) : zorp(_zorp) {}
-	item_iterator(const item_iterator& it) : zorp(it.zorp) {}
-	virtual ~item_iterator() {}
+	basic_iterator()
+		: zorp(NULL), open_b(false) {}
 
-public:	// iterator interface
-	virtual void open() = 0;
-	virtual void close() = 0;
-	virtual item_t next(uint32_t delta = 1) = 0;
-	virtual item_t peek() const = 0;
+	basic_iterator(zorba* _zorp)
+		: zorp(_zorp), open_b(false) {}
+
+	basic_iterator(const basic_iterator& it)
+		: zorp(it.zorp), open_b(it.open_b) {}
+
+	virtual ~basic_iterator() {}
+
+public:		// inline base logic
+
+	void open()
+	{
+		assert(!open_b);
+		open_b = true;
+		_open();
+	}
+
+	item_t next()
+	{
+		assert(open_b);
+		return _next(); 
+	}
+
+	void close()
+	{
+		assert(open_b);
+		open_b = false;
+		_close();
+	}
+
+	bool is_open() const
+	{
+		return open_b;
+	}
+
 	virtual bool done() const = 0;
 
-public:	// C++ interface
+protected:	// dispatch to concrete classes
+	virtual void	 _open() = 0;
+	virtual item_t _next() = 0;
+	virtual void	 _close() = 0;
+
+public:			// C++ interface
 	virtual item_t operator*() const = 0;
-	virtual item_iterator& operator++() = 0;
+	virtual basic_iterator& operator++() = 0;
 
 };
+
 
 
 /*
@@ -68,8 +105,12 @@ public:		// "treat as" operators
 */
 
 
+/*_____________________________________________________________
+|
+|	literals and for_var bindings
+|______________________________________________________________*/
 
-class singleton_iterator : public item_iterator
+class singleton_iterator : public basic_iterator
 {
 protected:
 	rchandle<item> i_h;
@@ -79,15 +120,16 @@ public:
 	singleton_iterator(const singleton_iterator& it) : i_h(it.i_h) {}
 	~singleton_iterator() { }
 
-public:	// iterator interface
-	void open() {}
-	void close() {}
-	item_t next(uint32_t delta = 1)
-		{ item_t p = i_h; i_h = NULL; return p; }
-	item_t peek() const { return i_h; }
+public:		// iterator interface
+	void _open() {}
+	void _close() {}
+	item_t _next() { item_t p = i_h; i_h = NULL; return p; }
 	bool done() const { return (i_h==NULL); }
 
-public:	// C++ interface
+public:		// variable binding
+	void bind(item_t _i_h) { i_h = _i_h; }
+
+public:		// C++ interface
 	item_t operator*() const { return i_h; }
 
 	singleton_iterator& operator++()
@@ -131,9 +173,138 @@ public:	// C++ interface
 		{ val = it.val; done_b = it.done_b; }
 
 };
+
 */
 
 
+
+/*_____________________________________________________________
+|
+|	let_var bindings
+|______________________________________________________________*/
+
+class ref_iterator : public basic_iterator
+{
+private:
+	iterator_t it;
+
+public:
+	ref_iterator(iterator_t _it) : it(_it) {}
+
+public:
+	void _open() { it->open();  }
+	item_t _next() { return it->next(); }
+	void _close() { it->close(); }
+	bool done() const { return it->done(); }
+	void bind(iterator_t _it) { it = _it;}
+
+public:
+	item_t operator*() const { return **it; }
+	ref_iterator& operator++() { ++(*it); return *this; }
+};
+
+
+
+/*_____________________________________________________________
+|
+|	for $x in  _input_  return  _expr_
+|______________________________________________________________*/
+
+class map_iterator : public basic_iterator
+{
+private:
+	enum state {
+		outer,
+		inner
+	};
+
+	iterator_t theInput;
+	iterator_t theExpr;
+	std::vector<singleton_t> varv;
+	enum state theState;
+
+public:
+	map_iterator(
+		iterator_t _input,
+		iterator_t _expr,
+		std::vector<singleton_t> _varv)
+	:
+		theInput(_input),
+		theExpr(_expr),
+		varv(_varv),
+		theState(outer)
+	{}
+
+	~map_iterator() {}
+
+public:
+	void _open()
+	{
+		theState = outer;
+		theInput->open();
+	}
+
+	void _close()
+	{
+		theInput->close();
+		if (theState!=outer) theExpr->close();
+	} 
+
+	item_t _next()
+	{
+		basic_iterator& input = *theInput;
+		basic_iterator& expr = *theExpr;
+
+		while (true) {
+			if (theState==outer) {
+				item_t i_h = input.next();
+				if (i_h==NULL) return NULL;
+				vector<singleton_t>::const_iterator itv = varv.begin();
+				for (; itv!=varv.end(); ++itv) { (*itv)->bind(i_h); }
+				expr.open();
+				theState = inner;
+			}
+			item_t r_h = expr.next();
+			if (r_h != NULL) return r_h;
+			expr.close();
+			theState = outer;
+		}
+	}
+
+	bool done() const { return theInput->done(); }
+
+public:
+	item_t operator*() const
+	{
+		return **theExpr;
+	}
+
+	map_iterator& operator++()
+	{
+		basic_iterator& input = *theInput;
+		basic_iterator& expr = *theExpr;
+
+		while (true) {
+			if (theState==outer) {
+				if (!input.done()) ++input;
+				vector<singleton_t>::const_iterator itv = varv.begin();
+				for (; itv!=varv.end(); ++itv) { (*itv)->bind(*input); }
+				expr.open();
+				theState = inner;
+			}
+			++expr;
+			if (!expr.done()) break;
+			expr.close();
+			theState = outer;
+		}
+		return *this;
+	}
+
+};
+
+
+
+
 }	/* namespace xqp */
-#endif	/* XQP_ITERATOR_H */
+#endif	/* XQP_ITEM_ITERATOR_H */
 
