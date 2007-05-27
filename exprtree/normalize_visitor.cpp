@@ -320,12 +320,6 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(InheritMode const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool normalize_visitor::begin_visit(ItemType const& v)
 {
 cout << TRACE << endl;
@@ -382,12 +376,6 @@ cout << TRACE << endl;
 }
 
 bool normalize_visitor::begin_visit(NodeComp const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool normalize_visitor::begin_visit(NodeTest const& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -503,12 +491,6 @@ bool normalize_visitor::begin_visit(PredicateList const& v)
 {
 cout << indent[++depth] << TRACE << ": PredicateList" << endl;
 	nodestack.push(NULL);
-	return true;
-}
-
-bool normalize_visitor::begin_visit(PreserveMode const& v)
-{
-cout << TRACE << endl;
 	return true;
 }
 
@@ -983,12 +965,6 @@ cout << indent[++depth] << TRACE << ": IntersectExceptExpr\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Literal const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool normalize_visitor::begin_visit(MultiplicativeExpr const& v)
 {
 cout << indent[++depth] << TRACE << ": MultiplicativeExpr\n";
@@ -1041,12 +1017,6 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Predicate const& v)
-{
-cout << indent[++depth] << TRACE << ": Predicate" << endl;
-	return true;
-}
-
 bool normalize_visitor::begin_visit(QuantifiedExpr const& v)
 {
 cout << TRACE << endl;
@@ -1068,12 +1038,6 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(RelativePathExpr const& v)
 {
 cout << indent[++depth] << TRACE << ": RelativePathExpr\n";
-	return true;
-}
-
-bool normalize_visitor::begin_visit(StepExpr const& v)
-{
-cout << TRACE << endl;
 	return true;
 }
 
@@ -1117,12 +1081,6 @@ cout << TRACE << endl;
 }
 
 bool normalize_visitor::begin_visit(ValidateExpr const& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool normalize_visitor::begin_visit(ValueExpr const& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -1634,11 +1592,6 @@ void normalize_visitor::end_visit(GeneralComp const& v)
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(InheritMode const& v)
-{
-cout << TRACE << endl;
-}
-
 void normalize_visitor::end_visit(ItemType const& v)
 {
 cout << TRACE << endl;
@@ -1706,11 +1659,6 @@ cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(NodeComp const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(NodeTest const& v)
 {
 cout << TRACE << endl;
 }
@@ -1804,11 +1752,6 @@ cout << indent[depth--] << TRACE << ": PredicateList" << endl;
 		if (e_h==NULL) break;
 		pstack.push(e_h);
 	}
-}
-
-void normalize_visitor::end_visit(PreserveMode const& v)
-{
-cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(Prolog const& v)
@@ -2204,11 +2147,6 @@ cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
 	fo_h->add(e1_h);
 }
 
-void normalize_visitor::end_visit(Literal const& v)
-{
-cout << TRACE << endl;
-}
-
 void normalize_visitor::end_visit(MultiplicativeExpr const& v)
 {
 cout << indent[depth--] << TRACE << ": MultiplicativeExpr\n";
@@ -2264,11 +2202,6 @@ void normalize_visitor::end_visit(PathExpr const& v)
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(Predicate const& v)
-{
-cout << indent[depth--] << TRACE << ": Predicate" << endl;
-}
-
 void normalize_visitor::end_visit(QuantifiedExpr const& v)
 {
 cout << TRACE << endl;
@@ -2308,11 +2241,6 @@ cout << indent[depth--] << TRACE << ": RelativePath\n";
 
 	rp_h->add_front(e1_h);
 	nodestack.push(&*rp_h);
-}
-
-void normalize_visitor::end_visit(StepExpr const& v)
-{
-cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(StringLiteral const& v)
@@ -2381,11 +2309,6 @@ cout << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(ValidateExpr const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(ValueExpr const& v)
 {
 cout << TRACE << endl;
 }

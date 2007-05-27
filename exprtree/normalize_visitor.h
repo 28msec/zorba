@@ -103,7 +103,6 @@ public:
 	bool begin_visit(ForwardStep const&);
 	bool begin_visit(FunctionDecl const&);
 	bool begin_visit(GeneralComp const&);
-	bool begin_visit(InheritMode const&);
 	bool begin_visit(ItemType const&);
 	bool begin_visit(LetClause const&);
 	bool begin_visit(LibraryModule const&);
@@ -114,7 +113,6 @@ public:
 	bool begin_visit(NameTest const&);
 	bool begin_visit(NamespaceDecl const&);
 	bool begin_visit(NodeComp const&);
-	bool begin_visit(NodeTest const&);
 	bool begin_visit(OccurrenceIndicator const&);
 	bool begin_visit(OptionDecl const&);
 	bool begin_visit(OrderByClause const&);
@@ -132,7 +130,6 @@ public:
 	bool begin_visit(Pragma const&);
 	bool begin_visit(PragmaList const&);
 	bool begin_visit(PredicateList const&);
-	bool begin_visit(PreserveMode const&);
 	bool begin_visit(Prolog const&);
 	bool begin_visit(QVarInDecl const&);
 	bool begin_visit(QVarInDeclList const&);
@@ -193,19 +190,16 @@ public:
 	bool begin_visit(IfExpr const&);
 	bool begin_visit(InstanceofExpr const&);
 	bool begin_visit(IntersectExceptExpr const&);
-	bool begin_visit(Literal const&);
 	bool begin_visit(MultiplicativeExpr const&);
 	bool begin_visit(NumericLiteral const&);
 	bool begin_visit(OrExpr const&);
 	bool begin_visit(OrderedExpr const&);
 	bool begin_visit(ParenthesizedExpr const&);
 	bool begin_visit(PathExpr const&);
-	bool begin_visit(Predicate const&);
 	bool begin_visit(QuantifiedExpr const&);
 	bool begin_visit(QueryBody const&);
 	bool begin_visit(RangeExpr const&);
 	bool begin_visit(RelativePathExpr const&);
-	bool begin_visit(StepExpr const&);
 	bool begin_visit(StringLiteral const&);
 	bool begin_visit(TreatExpr const&);
 	bool begin_visit(TypeswitchExpr const&);
@@ -213,7 +207,6 @@ public:
 	bool begin_visit(UnionExpr const&);
 	bool begin_visit(UnorderedExpr const&);
 	bool begin_visit(ValidateExpr const&);
-	bool begin_visit(ValueExpr const&);
 	bool begin_visit(VarRef const&);
 
 /* update-related */
@@ -299,7 +292,6 @@ public:
 	void end_visit(ForwardStep const&);
 	void end_visit(FunctionDecl const&);
 	void end_visit(GeneralComp const&);
-	void end_visit(InheritMode const&);
 	void end_visit(ItemType const&);
 	void end_visit(LetClause const&);
 	void end_visit(LibraryModule const&);
@@ -310,7 +302,6 @@ public:
 	void end_visit(NameTest const&);
 	void end_visit(NamespaceDecl const&);
 	void end_visit(NodeComp const&);
-	void end_visit(NodeTest const&);
 	void end_visit(OccurrenceIndicator const&);
 	void end_visit(OptionDecl const&);
 	void end_visit(OrderByClause const&);
@@ -328,7 +319,6 @@ public:
 	void end_visit(Pragma const&);
 	void end_visit(PragmaList const&);
 	void end_visit(PredicateList const&);
-	void end_visit(PreserveMode const&);
 	void end_visit(Prolog const&);
 	void end_visit(QVarInDecl const&);
 	void end_visit(QVarInDeclList const&);
@@ -389,19 +379,16 @@ public:
 	void end_visit(IfExpr const&);
 	void end_visit(InstanceofExpr const&);
 	void end_visit(IntersectExceptExpr const&);
-	void end_visit(Literal const&);
 	void end_visit(MultiplicativeExpr const&);
 	void end_visit(NumericLiteral const&);
 	void end_visit(OrExpr const&);
 	void end_visit(OrderedExpr const&);
 	void end_visit(ParenthesizedExpr const&);
 	void end_visit(PathExpr const&);
-	void end_visit(Predicate const&);
 	void end_visit(QuantifiedExpr const&);
 	void end_visit(QueryBody const&);
 	void end_visit(RangeExpr const&);
 	void end_visit(RelativePathExpr const&);
-	void end_visit(StepExpr const&);
 	void end_visit(StringLiteral const&);
 	void end_visit(TreatExpr const&);
 	void end_visit(TypeswitchExpr const&);
@@ -409,7 +396,6 @@ public:
 	void end_visit(UnionExpr const&);
 	void end_visit(UnorderedExpr const&);
 	void end_visit(ValidateExpr const&);
-	void end_visit(ValueExpr const&);
 	void end_visit(VarRef const&);
 
 /* update-related */

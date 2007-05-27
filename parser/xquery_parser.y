@@ -2977,14 +2977,12 @@ AbbrevForwardStep :
 		NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
-			$$ = new AbbrevForwardStep(@$,
-								dynamic_cast<NodeTest*>($1));
+			$$ = new AbbrevForwardStep(@$, $1);
 		}
 	|	AT_SIGN  NodeTest
 		{
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
-			$$ = new AbbrevForwardStep(@$,
-								dynamic_cast<NodeTest*>($2), true);
+			$$ = new AbbrevForwardStep(@$, $2, true);
 		}
 	;
 
@@ -2997,7 +2995,7 @@ ReverseStep :
 			if (debug) cout << "ReverseStep [nodetest]\n";
 			$$ = new ReverseStep(@$,
 								dynamic_cast<ReverseAxis*>($1),
-								dynamic_cast<NodeTest*>($2));
+								$2);
 		}
 	|	DOT_DOT
 		{

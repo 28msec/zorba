@@ -30,15 +30,15 @@ class DefaultCollationDecl; class DefaultNamespaceDecl; class DirAttr;
 class DirAttributeList; class DirAttributeValue; class DirElemContentList;
 class DocumentTest; class ElementTest; class EmptyOrderDecl; class ForClause;
 class ForLetClause; class ForLetClauseList; class ForwardAxis; class ForwardStep;
-class FunctionDecl; class GeneralComp; class InheritMode;
-class ItemType; class KindTest; class LetClause; class LibraryModule;
+class FunctionDecl; class GeneralComp; 
+class ItemType; class LetClause; class LibraryModule;
 class MainModule ; class Module; class ModuleDecl; class ModuleImport;
-class NameTest; class NamespaceDecl; class NodeComp; class NodeTest;
+class NameTest; class NamespaceDecl; class NodeComp; 
 class OccurrenceIndicator; class OptionDecl; class OrderByClause; 
 class OrderCollationSpec; class OrderDirSpec; class OrderEmptySpec; 
 class OrderModifier; class OrderSpec; class OrderSpecList; class OrderingModeDecl;
 class PITest; class Param; class ParamList; class PositionalVar;
-class Pragma; class PragmaList; class PredicateList; class PreserveMode;
+class Pragma; class PragmaList; class PredicateList; 
 class Prolog; class QVarInDecl; class QVarInDeclList; class QuoteAttrValueContent; 
 class QuoteAttrContentList; class ReverseAxis; class ReverseStep;
 class SIND_DeclList; class SchemaAttributeTest; class SchemaElementTest; 
@@ -60,12 +60,12 @@ class DirCommentConstructor; class DirElemConstructor; class DirElemContent;
 class DirPIConstructor; class EnclosedExpr;
 class Expr; class ExprSingle; class ExtensionExpr; class FLWORExpr;
 class FilterExpr; class FunctionCall; class IfExpr; class InstanceofExpr;
-class IntersectExceptExpr; class Literal; class MultiplicativeExpr;
+class IntersectExceptExpr; class MultiplicativeExpr;
 class NumericLiteral; class OrExpr; class OrderedExpr; class ParenthesizedExpr;
-class PathExpr; class Predicate; class PrimaryExpr; class QuantifiedExpr;
-class QueryBody; class RangeExpr; class RelativePathExpr; class StepExpr;
+class PathExpr; class PrimaryExpr; class QuantifiedExpr;
+class QueryBody; class RangeExpr; class RelativePathExpr; 
 class StringLiteral; class TreatExpr; class TypeswitchExpr; class UnaryExpr;
-class UnionExpr; class UnorderedExpr; class ValidateExpr; class ValueExpr;
+class UnionExpr; class UnorderedExpr; class ValidateExpr; 
 class VarRef;
 
 /* update-related */
@@ -129,7 +129,6 @@ public:
 	virtual bool begin_visit(ForwardStep const&) = 0;
 	virtual bool begin_visit(FunctionDecl const&) = 0;
 	virtual bool begin_visit(GeneralComp const&) = 0;
-	virtual bool begin_visit(InheritMode const&) = 0;
 	virtual bool begin_visit(ItemType const&) = 0;
 	virtual bool begin_visit(LetClause const&) = 0;
 	virtual bool begin_visit(LibraryModule const&) = 0;
@@ -140,7 +139,6 @@ public:
 	virtual bool begin_visit(NameTest const&) = 0;
 	virtual bool begin_visit(NamespaceDecl const&) = 0;
 	virtual bool begin_visit(NodeComp const&) = 0;
-	virtual bool begin_visit(NodeTest const&) = 0;
 	virtual bool begin_visit(OccurrenceIndicator const&) = 0;
 	virtual bool begin_visit(OptionDecl const&) = 0;
 	virtual bool begin_visit(OrderByClause const&) = 0;
@@ -158,7 +156,6 @@ public:
 	virtual bool begin_visit(Pragma const&) = 0;
 	virtual bool begin_visit(PragmaList const&) = 0;
 	virtual bool begin_visit(PredicateList const&) = 0;
-	virtual bool begin_visit(PreserveMode const&) = 0;
 	virtual bool begin_visit(Prolog const&) = 0;
 	virtual bool begin_visit(QVarInDecl const&) = 0;
 	virtual bool begin_visit(QVarInDeclList const&) = 0;
@@ -219,20 +216,17 @@ public:
 	virtual bool begin_visit(IfExpr const&) = 0;
 	virtual bool begin_visit(InstanceofExpr const&) = 0;
 	virtual bool begin_visit(IntersectExceptExpr const&) = 0;
-	virtual bool begin_visit(Literal const&) = 0;
 	virtual bool begin_visit(MultiplicativeExpr const&) = 0;
 	virtual bool begin_visit(NumericLiteral const&) = 0;
 	virtual bool begin_visit(OrExpr const&) = 0;
 	virtual bool begin_visit(OrderedExpr const&) = 0;
 	virtual bool begin_visit(ParenthesizedExpr const&) = 0;
 	virtual bool begin_visit(PathExpr const&) = 0;
-	virtual bool begin_visit(Predicate const&) = 0;
 	virtual bool begin_visit(PrimaryExpr const&) = 0;
 	virtual bool begin_visit(QuantifiedExpr const&) = 0;
 	virtual bool begin_visit(QueryBody const&) = 0;
 	virtual bool begin_visit(RangeExpr const&) = 0;
 	virtual bool begin_visit(RelativePathExpr const&) = 0;
-	virtual bool begin_visit(StepExpr const&) = 0;
 	virtual bool begin_visit(StringLiteral const&) = 0;
 	virtual bool begin_visit(TreatExpr const&) = 0;
 	virtual bool begin_visit(TypeswitchExpr const&) = 0;
@@ -240,7 +234,6 @@ public:
 	virtual bool begin_visit(UnionExpr const&) = 0;
 	virtual bool begin_visit(UnorderedExpr const&) = 0;
 	virtual bool begin_visit(ValidateExpr const&) = 0;
-	virtual bool begin_visit(ValueExpr const&) = 0;
 	virtual bool begin_visit(VarRef const&) = 0;
 
 /* update-related */
@@ -328,7 +321,6 @@ public:
 	virtual void end_visit(ForwardStep const&) = 0;
 	virtual void end_visit(FunctionDecl const&) = 0;
 	virtual void end_visit(GeneralComp const&) = 0;
-	virtual void end_visit(InheritMode const&) = 0;
 	virtual void end_visit(ItemType const&) = 0;
 	virtual void end_visit(LetClause const&) = 0;
 	virtual void end_visit(LibraryModule const&) = 0;
@@ -339,7 +331,6 @@ public:
 	virtual void end_visit(NameTest const&) = 0;
 	virtual void end_visit(NamespaceDecl const&) = 0;
 	virtual void end_visit(NodeComp const&) = 0;
-	virtual void end_visit(NodeTest const&) = 0;
 	virtual void end_visit(OccurrenceIndicator const&) = 0;
 	virtual void end_visit(OptionDecl const&) = 0;
 	virtual void end_visit(OrderByClause const&) = 0;
@@ -357,7 +348,6 @@ public:
 	virtual void end_visit(Pragma const&) = 0;
 	virtual void end_visit(PragmaList const&) = 0;
 	virtual void end_visit(PredicateList const&) = 0;
-	virtual void end_visit(PreserveMode const&) = 0;
 	virtual void end_visit(Prolog const&) = 0;
 	virtual void end_visit(QVarInDecl const&) = 0;
 	virtual void end_visit(QVarInDeclList const&) = 0;
@@ -418,20 +408,17 @@ public:
 	virtual void end_visit(IfExpr const&) = 0;
 	virtual void end_visit(InstanceofExpr const&) = 0;
 	virtual void end_visit(IntersectExceptExpr const&) = 0;
-	virtual void end_visit(Literal const&) = 0;
 	virtual void end_visit(MultiplicativeExpr const&) = 0;
 	virtual void end_visit(NumericLiteral const&) = 0;
 	virtual void end_visit(OrExpr const&) = 0;
 	virtual void end_visit(OrderedExpr const&) = 0;
 	virtual void end_visit(ParenthesizedExpr const&) = 0;
 	virtual void end_visit(PathExpr const&) = 0;
-	virtual void end_visit(Predicate const&) = 0;
 	virtual void end_visit(PrimaryExpr const&) = 0;
 	virtual void end_visit(QuantifiedExpr const&) = 0;
 	virtual void end_visit(QueryBody const&) = 0;
 	virtual void end_visit(RangeExpr const&) = 0;
 	virtual void end_visit(RelativePathExpr const&) = 0;
-	virtual void end_visit(StepExpr const&) = 0;
 	virtual void end_visit(StringLiteral const&) = 0;
 	virtual void end_visit(TreatExpr const&) = 0;
 	virtual void end_visit(TypeswitchExpr const&) = 0;
@@ -439,7 +426,6 @@ public:
 	virtual void end_visit(UnionExpr const&) = 0;
 	virtual void end_visit(UnorderedExpr const&) = 0;
 	virtual void end_visit(ValidateExpr const&) = 0;
-	virtual void end_visit(ValueExpr const&) = 0;
 	virtual void end_visit(VarRef const&) = 0;
 
 /* update-related */

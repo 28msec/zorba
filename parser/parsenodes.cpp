@@ -1199,34 +1199,8 @@ void Expr::accept(parsenode_visitor& v) const
 }
 
 
-
 // [32] ExprSingle
 // ---------------
-ExprSingle::ExprSingle(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
-
-ExprSingle::~ExprSingle()
-{
-}
-
-ostream& ExprSingle::put(ostream& s) const
-{
-	s << INDENT << "ExprSingle[";
-	return s << OUTDENT << "]\n";
-}
-
-//-ExprSingle::
-
-void ExprSingle::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
 
 
 // [33] FLWORExpr
@@ -1322,30 +1296,6 @@ void ForLetClauseList::accept(parsenode_visitor& v) const
 
 // [33b] ForLetClause
 // ------------------
-ForLetClause::ForLetClause(
-	location const& _loc)
-:
-	parsenode(_loc)
-{
-}
-
-ForLetClause::~ForLetClause()
-{
-}
-
-ostream& ForLetClause::put(ostream& s) const
-{
-	s << INDENT << "ForLetClause[\n";
-	return s << OUTDENT << "]\n";
-}
-
-//-ForLetClause::
-
-void ForLetClause::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
 
 
 
@@ -2917,31 +2867,6 @@ void SignList::accept(parsenode_visitor& v) const
 
 // [59] ValueExpr
 // --------------
-ValueExpr::ValueExpr(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
-
-ValueExpr::~ValueExpr()
-{
-}
-
-ostream& ValueExpr::put(ostream& s) const
-{
-	s << INDENT << "ValueExpr[";
-	return s << OUTDENT << "]\n";
-}
-
-//-ValueExpr::
-
-void ValueExpr::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
-
 
 
 // [60] GeneralComp
@@ -3315,30 +3240,6 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
 
 // [70] StepExpr
 // -------------
-StepExpr::StepExpr(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
-
-StepExpr::~StepExpr()
-{
-}
-
-ostream& StepExpr::put(ostream& s) const
-{
-	s << INDENT << "StepExpr[";
-	return s << OUTDENT << "]\n";
-}
-
-//-StepExpr::
-
-void StepExpr::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
 
 
 
@@ -3490,7 +3391,7 @@ void ForwardAxis::accept(parsenode_visitor& v) const
 // ----------------------
 AbbrevForwardStep::AbbrevForwardStep(
 	location const& _loc,
-	rchandle<NodeTest> _node_test_h,
+	rchandle<parsenode> _node_test_h,
 	bool _attr_b)
 :
 	parsenode(_loc),
@@ -3501,7 +3402,7 @@ AbbrevForwardStep::AbbrevForwardStep(
 
 AbbrevForwardStep::AbbrevForwardStep(
 	location const& _loc,
-	rchandle<NodeTest> _node_test_h)
+	rchandle<parsenode> _node_test_h)
 :
 	parsenode(_loc),
 	node_test_h(_node_test_h),
@@ -3622,34 +3523,8 @@ void ReverseAxis::accept(parsenode_visitor& v) const
 // ----------------------
 /* folded into [74] */
 
-
-
 // [78] NodeTest
 // -------------
-NodeTest::NodeTest(
-	location const& _loc)
-:
-	parsenode(_loc)
-{
-}
-
-NodeTest::~NodeTest()
-{
-}
-
-ostream& NodeTest::put(ostream& s) const
-{
-	s << INDENT << "NodeTest[]\n"; UNDENT;
-	return s;
-}
-
-//-NodeTest::
-
-void NodeTest::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
 
 
 
@@ -3659,7 +3534,7 @@ NameTest::NameTest(
 	location const& _loc,
 	rchandle<QName> _qname_h)
 :
-	NodeTest(_loc),
+	parsenode(_loc),
 	qname_h(_qname_h),
 	wild_h(NULL)
 {
@@ -3669,7 +3544,7 @@ NameTest::NameTest(
 	location const& _loc,
 	rchandle<Wildcard> _wild_h)
 :
-	NodeTest(_loc),
+	parsenode(_loc),
 	qname_h(NULL),
 	wild_h(_wild_h)
 {
@@ -3819,33 +3694,8 @@ void PredicateList::accept(parsenode_visitor& v) const
 // [84] PrimaryExpr
 // ----------------
 
-
 // [85] Literal
 // ------------
-Literal::Literal(
-	location const& _loc)
-:
-	exprnode(_loc)
-{
-}
-
-Literal::~Literal()
-{
-}
-
-ostream& Literal::put(ostream& s) const
-{
-	s << INDENT << "Literal[]\n"; UNDENT;
-	return s;
-}
-
-//-Literal::
-
-void Literal::accept(parsenode_visitor& v) const 
-{ 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
-}
 
 
 
@@ -5787,8 +5637,8 @@ void RevalidationDecl::accept(parsenode_visitor& v) const
 // ----------------
 InsertExpr::InsertExpr(
 	location const& _loc,
-	rchandle<ExprSingle> _source_expr_h,
-	rchandle<ExprSingle> _target_expr_h)
+	rchandle<exprnode> _source_expr_h,
+	rchandle<exprnode> _target_expr_h)
 :
 	exprnode(_loc),
 	source_expr_h(_source_expr_h),
@@ -5822,7 +5672,7 @@ void InsertExpr::accept(parsenode_visitor& v) const
 // ----------------
 DeleteExpr::DeleteExpr(
 	location const& _loc,
-	rchandle<ExprSingle> _target_expr_h)
+	rchandle<exprnode> _target_expr_h)
 :
 	exprnode(_loc),
 	target_expr_h(_target_expr_h)
@@ -5855,8 +5705,8 @@ void DeleteExpr::accept(parsenode_visitor& v) const
 // -----------------
 ReplaceExpr::ReplaceExpr(
 	location const& _loc,
-	rchandle<ExprSingle> _source_expr_h,
-	rchandle<ExprSingle> _target_expr_h)
+	rchandle<exprnode> _source_expr_h,
+	rchandle<exprnode> _target_expr_h)
 :
 	exprnode(_loc),
 	source_expr_h(_source_expr_h),
@@ -5892,8 +5742,8 @@ void ReplaceExpr::accept(parsenode_visitor& v) const
 // ----------------
 RenameExpr::RenameExpr(
 	location const& _loc,
-	rchandle<ExprSingle> _source_expr_h,
-	rchandle<ExprSingle> _target_expr_h)
+	rchandle<exprnode> _source_expr_h,
+	rchandle<exprnode> _target_expr_h)
 :
 	exprnode(_loc),
 	source_expr_h(_source_expr_h),
@@ -5944,8 +5794,8 @@ void RenameExpr::accept(parsenode_visitor& v) const
 TransformExpr::TransformExpr(
 	location const& _loc,
 	rchandle<VarNameList> _varname_list_h,
-	rchandle<ExprSingle> _source_expr_h,
-	rchandle<ExprSingle> _target_expr_h)
+	rchandle<exprnode> _source_expr_h,
+	rchandle<exprnode> _target_expr_h)
 :
 	exprnode(_loc),
 	varname_list_h(_varname_list_h),
@@ -6022,7 +5872,7 @@ void VarNameList::accept(parsenode_visitor& v) const
 VarBinding::VarBinding(
 	location const& _loc,
 	std::string _varname,
-	rchandle<ExprSingle> _val_h)
+	rchandle<exprnode> _val_h)
 :
 	parsenode(_loc),
 	varname(_varname),
@@ -6421,7 +6271,7 @@ void FTWords::accept(parsenode_visitor& v) const
 // ------------------
 FTWordsValue::FTWordsValue(
 	location const& _loc,
-	rchandle<Literal> _lit_h,
+	rchandle<StringLiteral> _lit_h,
 	rchandle<Expr> _expr_h)
 :
 	parsenode(_loc),

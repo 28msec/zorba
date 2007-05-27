@@ -103,7 +103,6 @@ class AposAttrContentList;
 class AposAttrValueContent;
 class ArgList;
 class AtomicType;
-class AttribNameOrWildcard;
 class AttributeTest;
 class AxisStep;
 class BaseURIDecl;
@@ -122,9 +121,7 @@ class CompElemConstructor;
 class CompPIConstructor;
 class CompTextConstructor;
 class ComparisonExpr;
-class ComputedConstructor;
 class ConstructionDecl;
-class Constructor;
 class ContextItemExpr;
 class CopyNamespacesDecl;
 class DefaultCollationDecl;
@@ -139,14 +136,10 @@ class DirElemContent;
 class DirElemContentList;
 class DirPIConstructor;
 class DocumentTest;
-class ElementDeclaration;
-class ElementName;
-class ElementNameOrWildcard;
 class ElementTest;
 class EmptyOrderDecl;
 class EnclosedExpr;
 class Expr;
-class ExprSingle;
 class ExtensionExpr;
 class FLWORExpr;
 class FTAnd;
@@ -189,7 +182,6 @@ class FTWordsSelection;
 class FTWordsValue;
 class FilterExpr;
 class ForClause;
-class ForLetClause;
 class ForLetClauseList;
 class ForwardAxis;
 class ForwardStep;
@@ -197,16 +189,12 @@ class FunctionCall;
 class FunctionDecl;
 class GeneralComp;
 class IfExpr;
-class Import;
-class InheritMode;
 class InsertExpr;
 class InstanceofExpr;
 class IntersectExceptExpr;
 class ItemType;
-class KindTest;
 class LetClause;
 class LibraryModule;
-class Literal;
 class MainModule;
 class Module;
 class ModuleDecl;
@@ -215,7 +203,6 @@ class MultiplicativeExpr;
 class NameTest;
 class NamespaceDecl;
 class NodeComp;
-class NodeTest;
 class NumericLiteral;
 class OccurrenceIndicator;
 class OptionDecl;
@@ -237,9 +224,7 @@ class PathExpr;
 class PositionalVar;
 class Pragma;
 class PragmaList;
-class Predicate;
 class PredicateList;
-class PreserveMode;
 class Prolog;
 class QName;
 class QVarInDecl;
@@ -255,7 +240,6 @@ class ReplaceExpr;
 class RevalidationDecl;
 class ReverseAxis;
 class ReverseStep;
-class SIND_Decl;
 class SIND_DeclList;
 class SchemaAttributeTest;
 class SchemaElementTest;
@@ -264,7 +248,6 @@ class SchemaPrefix;
 class SequenceType;
 class SignList;
 class SingleType;
-class StepExpr;
 class TextTest;
 class TransformExpr;
 class TreatExpr;
@@ -275,11 +258,9 @@ class URILiteralList;
 class UnaryExpr;
 class UnionExpr;
 class UnorderedExpr;
-class VFO_Decl;
 class VFO_DeclList;
 class ValidateExpr;
 class ValueComp;
-class ValueExpr;
 class VarBinding;
 class VarDecl;
 class VarGetsDecl;
@@ -528,15 +509,21 @@ public:
 };
 
 
+
 // [6c] SIND_Decl
 /*______________________________________________________________________
-|	::= Setter | Import | NamespaceDecl | DefaultNamespaceDecl
+|	::= Setter
+|			| Import
+|			| NamespaceDecl
+|			| DefaultNamespaceDecl
 |_______________________________________________________________________*/
 
 
 // [6d] VFO_Decl
 /*______________________________________________________________________
-|	::= VarDecl | FunctionDecl | OptionDecl
+|	::= VarDecl
+|			| FunctionDecl
+|			| OptionDecl
 |_______________________________________________________________________*/
 
 
@@ -554,7 +541,8 @@ public:
 
 // [8] Import
 /*______________________________________________________________________
-|	::= SchemaImport | ModuleImport
+|	::= SchemaImport
+|			| ModuleImport
 |_______________________________________________________________________*/
 
 
@@ -1269,26 +1257,13 @@ public:
 
 
 // [32] ExprSingle
-// ---------------
-class ExprSingle : public exprnode
 /*______________________________________________________________________
-|
 |	::= FLWORExpr
 |			|	QuantifiedExpr
 |			|	TypeswitchExpr
 |			|	IfExpr
 |			|	OrExpr
 |_______________________________________________________________________*/
-{
-public:
-	ExprSingle(yy::location const&);
-	~ExprSingle();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [33] FLWORExpr
@@ -1359,22 +1334,9 @@ public:
 
 
 // [33b] ForLetClause
-// ------------------
-class ForLetClause : public parsenode
 /*______________________________________________________________________
-|
 |	::= ForClause | LetClause
 |_______________________________________________________________________*/
-{
-public:
-	ForLetClause(yy::location const&);
-	~ForLetClause();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 // [34] ForClause
@@ -2664,24 +2626,11 @@ public:
 
 
 // [59] ValueExpr
-// --------------
-class ValueExpr : public exprnode
 /*______________________________________________________________________
-|
 |	::= ValidateExpr
 |			|	PathExpr
 |			|	ExtensionExpr
 |_______________________________________________________________________*/
-{
-public:
-	ValueExpr(yy::location const&);
-	~ValueExpr();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 
@@ -3002,22 +2951,9 @@ public:
 
 
 // [69] StepExpr
-// -------------
-class StepExpr : public exprnode
 /*______________________________________________________________________
-|
 |	::= AxisStep  |  FilterExpr
 |_______________________________________________________________________*/
-{
-public:
-	StepExpr(yy::location const&);
-	~StepExpr();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
 
 
 
@@ -3144,23 +3080,23 @@ class AbbrevForwardStep : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<NodeTest> node_test_h;
+	rchandle<parsenode> node_test_h;
 	bool attr_b;
 	
 public:
 	AbbrevForwardStep(
 		yy::location const&,
-		rchandle<NodeTest>,
+		rchandle<parsenode>,
 		bool attr_b);
 		
 	AbbrevForwardStep(
 		yy::location const&,
-		rchandle<NodeTest>);
+		rchandle<parsenode>);
 		
 	~AbbrevForwardStep();
 
 public:
-	rchandle<NodeTest> get_node_test() const { return node_test_h; }
+	rchandle<parsenode> get_node_test() const { return node_test_h; }
 	bool get_attr_bit() const { return attr_b; }
 
 public:
@@ -3246,37 +3182,16 @@ public:
 /* folded into [74] */
 
 
-
 // [77] NodeTest
-// -------------
-class NodeTest : public parsenode
 /*______________________________________________________________________
-|
 |	::= KindTest | NameTest
 |_______________________________________________________________________*/
-{
-protected:
-	bool attr_b;
-
-public:
-	NodeTest(yy::location const&);
-	~NodeTest();
-
-public:
-	void set_attr_b(bool b) { attr_b = b; }
-	bool get_attr_b() const { return attr_b; }
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
  
 
 
 // [78] NameTest
 // -------------
-class NameTest : public NodeTest
+class NameTest : public parsenode
 /*______________________________________________________________________
 |
 |	::= QNAME | Wildcard
@@ -3404,17 +3319,13 @@ public:
 
 
 // [82] Predicate
-// --------------
 /*______________________________________________________________________
-|
 |	::= LBRACK  Expr  RBRACK
 |_______________________________________________________________________*/
 
 
 // [83] PrimaryExpr
-// ----------------
 /*______________________________________________________________________
-|
 |	::= Literal
 |			|	VarRef
 |			|	ParenthesizedExpr
@@ -3426,25 +3337,10 @@ public:
 |_______________________________________________________________________*/
 
 
-
 // [84] Literal
-// ------------
-class Literal : public exprnode
 /*______________________________________________________________________
-|
 |	::= NumericLiteral | StringLiteral
 |_______________________________________________________________________*/
-{
-public:
-	Literal(yy::location const&);
-	~Literal();
-
-public:
-	virtual std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
 
 
 // [85] NumericLiteral
@@ -5129,20 +5025,20 @@ class InsertExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<exprnode> source_expr_h;
+	rchandle<exprnode> target_expr_h;
 
 public:
 	InsertExpr(
 		yy::location const&,
-		rchandle<ExprSingle>,
-		rchandle<ExprSingle>);
+		rchandle<exprnode>,
+		rchandle<exprnode>);
 
 	~InsertExpr();
 
 public:
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
+	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5161,17 +5057,17 @@ class DeleteExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<exprnode> target_expr_h;
 
 public:
 	DeleteExpr(
 		yy::location const&,
-		rchandle<ExprSingle>);
+		rchandle<exprnode>);
 
 	~DeleteExpr();
 
 public:
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5191,20 +5087,20 @@ class ReplaceExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<exprnode> source_expr_h;
+	rchandle<exprnode> target_expr_h;
 
 public:
 	ReplaceExpr(
 		yy::location const&,
-		rchandle<ExprSingle> source_expr_h,
-		rchandle<ExprSingle> target_expr_h);
+		rchandle<exprnode> source_expr_h,
+		rchandle<exprnode> target_expr_h);
 
 	~ReplaceExpr();
 
 public:
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
+	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5223,20 +5119,20 @@ class RenameExpr : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<exprnode> source_expr_h;
+	rchandle<exprnode> target_expr_h;
 
 public:
 	RenameExpr(
 		yy::location const&,
-		rchandle<ExprSingle> source_expr_h,
-		rchandle<ExprSingle> target_expr_h);
+		rchandle<exprnode> source_expr_h,
+		rchandle<exprnode> target_expr_h);
 
 	~RenameExpr();
 
 public:
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
+	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5271,22 +5167,22 @@ class TransformExpr : public exprnode
 {
 protected:
 	rchandle<VarNameList> varname_list_h;
-	rchandle<ExprSingle> source_expr_h;
-	rchandle<ExprSingle> target_expr_h;
+	rchandle<exprnode> source_expr_h;
+	rchandle<exprnode> target_expr_h;
 
 public:
 	TransformExpr(
 		yy::location const&,
 		rchandle<VarNameList>,
-		rchandle<ExprSingle> source_expr_h,
-		rchandle<ExprSingle> target_expr_h);
+		rchandle<exprnode> source_expr_h,
+		rchandle<exprnode> target_expr_h);
 
 	~TransformExpr();
 
 public:
 	rchandle<VarNameList> get_varname_list() const { return varname_list_h; }
-	rchandle<ExprSingle> get_source_expr() const { return source_expr_h; }
-	rchandle<ExprSingle> get_target_expr() const { return target_expr_h; }
+	rchandle<exprnode> get_source_expr() const { return source_expr_h; }
+	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5335,19 +5231,19 @@ class VarBinding : public parsenode
 {
 protected:
 	std::string varname;
-	rchandle<ExprSingle> val_h;
+	rchandle<exprnode> val_h;
 
 public:
 	VarBinding(
 		yy::location const&,
 		std::string varname,
-		rchandle<ExprSingle>);
+		rchandle<exprnode>);
 
 	~VarBinding();
 
 public:
 	std::string get_varname() const { return varname; }
-	rchandle<ExprSingle> get_val() const { return val_h; }
+	rchandle<exprnode> get_val() const { return val_h; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -5692,19 +5588,19 @@ class FTWordsValue : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<Literal> lit_h;
+	rchandle<StringLiteral> lit_h;
 	rchandle<Expr> expr_h;
 
 public:
 	FTWordsValue(
 		yy::location const&,
-		rchandle<Literal>,
+		rchandle<StringLiteral>,
 		rchandle<Expr>);
 
 	~FTWordsValue();
 
 public:
-	rchandle<Literal> get_lit() const { return lit_h; }
+	rchandle<StringLiteral> get_lit() const { return lit_h; }
 	rchandle<Expr> get_expr() const { return expr_h; }
 
 public:
