@@ -38,9 +38,9 @@ public:
 	~op_concatenate() {}
 
 public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 
@@ -53,9 +53,9 @@ public:
 	~fn_index_of() {}
 
 public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 
@@ -68,9 +68,9 @@ public:
 	~fn_empty() {}
 
 public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 
@@ -83,9 +83,9 @@ public:
 	~fn_exists() {}
 
 public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 
@@ -98,9 +98,9 @@ public:
 	~fn_distinct_values() {}
 
 public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 
@@ -121,9 +121,9 @@ public:
 	~fn_reverse() {}
 
 public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 
@@ -136,9 +136,9 @@ public:
 	~fn_subsequence() {}
 
 public:
-	iterator_t operator()(zorba*,std::vector<iterator_t>&);
-	sequence_type_t type_check(signature&);
-	bool validate_args(std::vector<iterator_t>&);
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 
@@ -193,9 +193,9 @@ public:
 	~fn_min() {}
 
 public:
-	sequence_type_t type_check(signature&) { return xs_untypedValue; }
-	iterator_t operator()(zorba*,std::vector<iterator_t>&) { return NULL; } 
-	bool validate_args(std::vector<iterator_t>&) { return true; }
+	sequence_type_t type_check(signature&) const { return xs_untypedValue; }
+	iterator_t operator()(zorba*,std::vector<iterator_t>&) const { return NULL; } 
+	bool validate_args(std::vector<iterator_t>&) const { return true; }
 
 };
 
@@ -207,8 +207,8 @@ public:
 	fn_min_int(const signature&);
 	~fn_min_int() {}
 public:
-	sequence_type_t type_check(signature&);
-	iterator_t operator()(zorba*, vector<iterator_t>);
+	sequence_type_t type_check(signature&) const;
+	iterator_t operator()(zorba*, vector<iterator_t>) const;
 };
 
 class fn_min_float : public function
@@ -217,8 +217,8 @@ public:
 	fn_min_float(const signature&);
 	~fn_min_float() {}
 public:
-	sequence_type_t type_check(signature&);
-	iterator_t operator()(zorba*, vector<iterator_t>);
+	sequence_type_t type_check(signature&) const;
+	iterator_t operator()(zorba*, vector<iterator_t>) const;
 };
 */
 
@@ -239,16 +239,16 @@ public:
 
 
 //15.5.4 fn:doc
-class fn_doc : public function
+class fn_doc_func : public function
 {
 public:
-	fn_doc(const signature&);
-	~fn_doc() {}
+	fn_doc_func(const signature&);
+	~fn_doc_func() {}
 
 public:
-	sequence_type_t type_check(signature&);
-	iterator_t operator()(zorba*, std::vector<iterator_t>&);
-	bool validate_args(std::vector<iterator_t>&);
+	sequence_type_t type_check(signature&) const;
+	iterator_t operator()(zorba*, std::vector<iterator_t>&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
 };
 
 

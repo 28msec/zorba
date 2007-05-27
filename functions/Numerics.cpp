@@ -42,7 +42,7 @@ op_numeric_add::op_numeric_add(
 
 iterator_t op_numeric_add::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	const numericValue* n0 = dynamic_cast<const numericValue*>(&***argv[0]);
 	const numericValue* n1 = dynamic_cast<const numericValue*>(&***argv[1]);
@@ -56,13 +56,13 @@ iterator_t op_numeric_add::operator()(
 }
 
 sequence_type_t op_numeric_add::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_add::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -77,7 +77,7 @@ op_numeric_add_int::op_numeric_add_int(
 
 iterator_t op_numeric_add_int::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	const numericValue* n0 = dynamic_cast<const numericValue*>(&***argv[0]);
@@ -87,13 +87,13 @@ iterator_t op_numeric_add_int::operator()(
 }
 
 sequence_type_t op_numeric_add_int::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_integer;
 }
 
 bool op_numeric_add_int::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -125,7 +125,7 @@ op_numeric_subtract::op_numeric_subtract(
 
 iterator_t op_numeric_subtract::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	const numericValue* n0 = dynamic_cast<const numericValue*>(&***argv[0]);
@@ -135,13 +135,13 @@ iterator_t op_numeric_subtract::operator()(
 }
 
 sequence_type_t op_numeric_subtract::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_subtract::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -172,7 +172,7 @@ op_numeric_multiply::op_numeric_multiply(
 
 iterator_t op_numeric_multiply::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	const numericValue* n0 = dynamic_cast<const numericValue*>(&***argv[0]);
@@ -182,13 +182,13 @@ iterator_t op_numeric_multiply::operator()(
 }
 
 sequence_type_t op_numeric_multiply::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_multiply::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -229,7 +229,7 @@ op_numeric_divide::op_numeric_divide(
 
 iterator_t op_numeric_divide::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	const numericValue* n0 = dynamic_cast<const numericValue*>(&***argv[0]);
@@ -239,13 +239,13 @@ iterator_t op_numeric_divide::operator()(
 }
 
 sequence_type_t op_numeric_divide::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_divide::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -288,7 +288,7 @@ op_numeric_integer_divide::op_numeric_integer_divide(
 
 iterator_t op_numeric_integer_divide::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	const numericValue* n0 = dynamic_cast<const numericValue*>(&***argv[0]);
@@ -298,13 +298,13 @@ iterator_t op_numeric_integer_divide::operator()(
 }
 
 sequence_type_t op_numeric_integer_divide::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_integer_divide::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -355,7 +355,7 @@ op_numeric_mod::op_numeric_mod(
 
 iterator_t op_numeric_mod::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	const numericValue* n0 = dynamic_cast<const numericValue*>(&***argv[0]);
@@ -365,13 +365,13 @@ iterator_t op_numeric_mod::operator()(
 }
 
 sequence_type_t op_numeric_mod::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_mod::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -397,20 +397,20 @@ op_numeric_unary_plus::op_numeric_unary_plus(
 
 iterator_t op_numeric_unary_plus::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return argv[0];
 }
 
 sequence_type_t op_numeric_unary_plus::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_unary_plus::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==1);
 }
@@ -441,7 +441,7 @@ op_numeric_unary_minus::op_numeric_unary_minus(
 
 iterator_t op_numeric_unary_minus::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	const numericValue* n = dynamic_cast<const numericValue*>(&***argv[0]);
@@ -450,13 +450,13 @@ iterator_t op_numeric_unary_minus::operator()(
 }
 
 sequence_type_t op_numeric_unary_minus::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_decimal;
 }
 
 bool op_numeric_unary_minus::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==1);
 }

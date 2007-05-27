@@ -73,20 +73,20 @@ op_concatenate::op_concatenate(
 
 iterator_t op_concatenate::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new concat_iterator(zorp,argv[0],argv[1]);
 }
 
 bool op_concatenate::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
 
 sequence_type_t op_concatenate::type_check(
-	signature& sig)
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -126,7 +126,7 @@ fn_index_of::fn_index_of(const signature& sig)
 
 iterator_t fn_index_of::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 
@@ -145,7 +145,7 @@ iterator_t fn_index_of::operator()(
 }
 
 bool fn_index_of::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	if (argv.size()==2) {
 		return _validate<item>(argv[1],xs_anyType);
@@ -157,7 +157,8 @@ bool fn_index_of::validate_args(
 	return false;
 }
 
-sequence_type_t fn_index_of::type_check(signature& sig)
+sequence_type_t fn_index_of::type_check(
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -170,18 +171,19 @@ fn_empty::fn_empty(const signature& sig)
 
 iterator_t fn_empty::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_empty::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return true;
 }
 
-sequence_type_t fn_empty::type_check(signature& sig)
+sequence_type_t fn_empty::type_check(
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -194,18 +196,19 @@ fn_exists::fn_exists(const signature& sig)
 
 iterator_t fn_exists::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_exists::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return true;
 }
 
-sequence_type_t fn_exists::type_check(signature& sig)
+sequence_type_t fn_exists::type_check(
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -213,23 +216,26 @@ sequence_type_t fn_exists::type_check(signature& sig)
 
 //15.1.6 fn:distinct-values
 //-------------------------
-fn_distinct_values::fn_distinct_values(const signature& sig)
-: function(sig) { }
+fn_distinct_values::fn_distinct_values(
+	const signature& sig)
+:
+	function(sig) { }
 
 iterator_t fn_distinct_values::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_distinct_values::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return true;
 }
 
-sequence_type_t fn_distinct_values::type_check(signature& sig)
+sequence_type_t fn_distinct_values::type_check(
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -250,18 +256,19 @@ fn_reverse::fn_reverse(const signature& sig)
 
 iterator_t fn_reverse::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_reverse::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return true;
 }
 
-sequence_type_t fn_reverse::type_check(signature& sig)
+sequence_type_t fn_reverse::type_check(
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -274,18 +281,19 @@ fn_subsequence::fn_subsequence(const signature& sig)
 
 iterator_t fn_subsequence::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_subsequence::validate_args(
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 	return true;
 }
 
-sequence_type_t fn_subsequence::type_check(signature& sig)
+sequence_type_t fn_subsequence::type_check(
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -370,10 +378,11 @@ sequence_type_t fn_subsequence::type_check(signature& sig)
 	If $uri is the empty sequence, the result is an empty sequence.
 */
 
-fn_doc::fn_doc(const signature& sig)
+fn_doc_func::fn_doc_func(const signature& sig)
 : function(sig)
 {
 }
+
 
 iterator_t xqp_load(
 	zorba* zorp,
@@ -382,6 +391,7 @@ iterator_t xqp_load(
 	string const& uri)
 {
 cout << TRACE << endl;
+
 	file f(path);
 	if (!f.exists()) {
 cout << TRACE << " : file '" << path << "' not found" << endl;
@@ -389,6 +399,7 @@ cout << TRACE << " : file '" << path << "' not found" << endl;
 		return NULL;
 	}
 cout << TRACE << " : file '" << path << "' found" << endl;
+
 	unsigned sz = f.get_size();
 	size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
 	char* ibuf = new char[n+1];
@@ -400,38 +411,47 @@ cout << TRACE << " : file '" << path << "' found" << endl;
 		return NULL;
 	}
 cout << TRACE << " : read[" << n << ']' << endl;
+
 	xml_scanner* scanner_p = new xml_scanner();
 	dom_xml_handler* xhandler_p = new dom_xml_handler(zorp,baseuri,uri);
 	scanner_p->scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
 cout << TRACE << " : scanned" << endl;
+
 	iterator_t result = new singleton_iterator(xhandler_p->context_node());
 cout << TRACE << " : wrap context_node as iteratror" << endl;
+
 	delete xhandler_p;
 	delete[] ibuf;
 	return result;
 }
   
 
-iterator_t fn_doc::operator()(
+iterator_t fn_doc_func::operator()(
 	zorba* zorp,
-	vector<iterator_t>& argv)
+	vector<iterator_t>& argv) const
 {
 cout << TRACE << endl;
+
 	if (!validate_args(argv)) return NULL;
 cout << TRACE << " : args validated" << endl;
+
 	item_t i_h = **argv[0];
 cout << TRACE << " : item extracted from iterator" << endl;
+
 	if (i_h->is_empty()) return NULL;
 cout << TRACE << " : item not empty" << endl;
+
 	//xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[0],xs_string);
 cout << TRACE << " : item cast to string" << endl;
+
 	string uri = "test.xml"; //XXX v_p->string_value();
 cout << TRACE << " : string value returned: " << uri << endl;
+
 	return xqp_load(zorp,uri,"/",uri);
 }
   
-bool fn_doc::validate_args(
-	vector<iterator_t>& argv)
+bool fn_doc_func::validate_args(
+	vector<iterator_t>& argv) const
 {
 cout << TRACE << endl;
 	if (argv.size()!=1) return false;
@@ -439,7 +459,8 @@ cout << TRACE << " : argv.size()==1" << endl;
 	return _validate<item>(argv[0],xs_string);
 }
 
-sequence_type_t fn_doc::type_check(signature& sig)
+sequence_type_t fn_doc_func::type_check(
+	signature& sig) const
 {
 	return xs_anyType;
 }
@@ -452,4 +473,4 @@ sequence_type_t fn_doc::type_check(signature& sig)
 
 
 } /* namespace xqp */
- 
+

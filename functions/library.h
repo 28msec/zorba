@@ -1,5 +1,5 @@
 /* -*- mode: c++; indent-tabs-mode: nil -*-
- *
+*
  *  $Id: function_library.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
@@ -57,6 +57,7 @@ public:
 	static qnamekey_t op_union_key;
 	static qnamekey_t op_intersect_key;
 	static qnamekey_t op_except_key;
+	static qnamekey_t fn_doc_key;
 
 public:
 	library(zorba* zorp);

@@ -1,15 +1,26 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/**
+ * @file plan_visitor_test.cpp
+ * @author Paul Pedersen
+ * @copyright 2006-2007 FLWOR Foundation.
  *
- *  $Id: plan_visitor_test.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan, Paul Pedersen
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
  */
 
 #include "plan_visitor.h"
-#include "../exprtree/normalize_visitor.h"
-#include "../parser/xquery_driver.h"
+#include "exprtree/normalize_visitor.h"
+#include "parser/xquery_driver.h"
+
 #include <iostream>
 
 using namespace std;
@@ -17,7 +28,7 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
-	context ctx;
+	zorba* zorp = new zorba();
 	xquery_driver driver(cout);
 
 	try {
@@ -36,7 +47,7 @@ int main(int argc, char* argv[])
 				cout << "Parse tree:\n";
 				n_p->put(cout) << endl;
 	
-				normalize_visitor normvs(&ctx);
+				normalize_visitor nvs(zorp);
 				MainModule * mm_p;
 				QueryBody * qb_p;
 				Expr * ex_p;
@@ -55,8 +66,8 @@ int main(int argc, char* argv[])
 				}
 
 				cout << "Normalization run:\n";
-				ex_p->accept(normvs);
-				rchandle<expr> e_h = normvs.pop_nodestack();
+				ex_p->accept(nvs);
+				rchandle<expr> e_h = nvs.pop_nodestack();
 
 				cout << endl;
 				cout << "Normalized expression tree:\n";
@@ -64,12 +75,12 @@ int main(int argc, char* argv[])
 					cout << "e_h==NULL\n";
 					return -1;
 				}
-				e_h->put(cout,ctx) << endl;
+				e_h->put(cout) << endl;
 
 				cout << "Plan run:\n";
-				plan_visitor planvs(&ctx);
-				e_h->accept(planvs);
-				rchandle<item_iterator> it_h = planvs.pop_itstack();
+				plan_visitor pvs(zorp);
+				e_h->accept(pvs);
+				iterator_t it_h = pvs.pop_itstack();
 
 				cout << endl;
 				cout << "Iterator run:\n";
@@ -80,9 +91,9 @@ int main(int argc, char* argv[])
 
 				it_h->open();
 				while (!it_h->done()) {
-					item* i_p = it_h->next();
+					item_t i_p = it_h->next();
 					if (i_p==NULL) continue;
-					i_p->put(cout,&ctx) << endl;
+					i_p->put(zorp,cout) << endl;
 				}
 				it_h->close();
 			}

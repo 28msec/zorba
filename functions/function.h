@@ -38,15 +38,16 @@ public:
 	void set_signature(signature& _sig) { sig = _sig; }
 
 	// codegen: functor specification
-	virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) = 0;
+	virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) const = 0;
 
 	// polymorphic type inference
-	virtual sequence_type_t type_check(signature&) = 0;
+	virtual sequence_type_t type_check(signature&) const = 0;
 
 	// runtime arg validation: XXX move this out
-	virtual bool validate_args(std::vector<iterator_t>& argv) = 0;
+	virtual bool validate_args(std::vector<iterator_t>& argv) const = 0;
 
 };
+
 
 /*
 class user_function : public function

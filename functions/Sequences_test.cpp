@@ -1,20 +1,34 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/**
+ * @file Sequences_test.cpp
+ * @author Paul Pedersen
+ * @copyright 2006-2007 FLWOR Foundation.
  *
- *  $Id: Sequences_test.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan, Paul Pedersen
  *
  */
 
 #include "Sequences.h"
+#include "library.h"
 
-#include "../context/common.h"
-#include "../dom/dom_values.h"
-#include "../dom/dom_nodes.h"
-#include "../util/tokenbuf.h"
-#include "../util/tracer.h"
-#include "../util/xqp_exception.h"
+#include "context/common.h"
+#include "dom/dom_nodes.h"
+#include "store/itemstore.h"
+#include "util/tokenbuf.h"
+#include "util/tracer.h"
+#include "util/xqp_exception.h"
+#include "values/values.h"
+#include "zorba/zorba_value_factory.h"
 
 #include <iostream>
 #include <typeinfo>
@@ -23,12 +37,6 @@
 using namespace std;
 using namespace xqp;
 
-// debugging
-uint32_t qname_buf[1<<16];
-uint32_t eos = 0;
-
-qname_value* fn_doc_fname_p;
-fn_doc fn_doc_(signature(fn_doc_fname_p,xs_string,documentNode));
 
 /*______________________________________________________________________
 |  
@@ -94,25 +102,34 @@ void _doc(
 	zorba* zorp,
 	string const& uri)
 {
+	dynamic_context* dctx_p = zorp->get_dynamic_context();
+	value_factory* valfac_p = zorp->get_value_factory();
+	assert(valfac_p!=NULL);
+	rchandle<atomic_value> uri_h = valfac_p->make_xs_string(uri);
 	vector<iterator_t> argv;
-	xs_stringValue* uri_p = zorp->get_value_factory()->make_xs_string(uri);
-	argv.push_back(new singleton_iterator(uri_p));
-	iterator_t it = fn_doc_(zorp, argv);
-	cout << TRACE << " : fn_doc_ returned" << endl;
-	if (it==NULL) { cout << "Error: doc returned NULL\n"; return; }
-	cout << TRACE << " : fn_doc_ returned non-NULL" << endl;
-	if (it->done()) { cout << "Error: doc returned empty\n"; return; }
-	cout << TRACE << " : fn_doc_ returned non-empty" << endl;
+	argv.push_back(new singleton_iterator(&*uri_h));
 
-	//item* i_p = (item*)it->next();
-	//cout << TRACE << " : item type = " << typeid(*i_p).name() << endl;
-	//if (i_p->type()!=documentNode) { cout << "Error: non-doc node\n"; return; }
-	//cout << TRACE << " : item has document node type" << endl;
+	const function* fn_doc_p = dctx_p->get_function(library::fn_doc_key);
+	assert(fn_doc_p!=NULL);
+	const function& fn_doc = *fn_doc_p;
+	iterator_t iter_h = fn_doc(zorp, argv);
+cout << TRACE << " : fn_doc returned" << endl;
 
-	dom_document_node* dn_p = (dom_document_node*)it->next();
-	cout << TRACE << " : cast item as document node" << endl;
-	if (dn_p==NULL) { cout << TRACE << " : dn_p==NULL" << endl; return; }
-	cout << "\n======================\n"; dn_p->put(cout) << endl;
+	if (iter_h==NULL) { cout << "Error: doc returned NULL\n"; return; }
+cout << TRACE << " : fn_doc returned non-NULL" << endl;
+
+	iter_h->open();
+	if (iter_h->done()) { cout << "Error: doc returned empty\n"; return; }
+cout << TRACE << " : fn_doc returned non-empty" << endl;
+
+	item_t i_h = iter_h->next();
+cout << TRACE << " : item type = " << typeid(*i_h).name() << endl;
+
+	if (i_h->type()!=documentNode) { cout << "Error: non-doc node\n"; return; }
+cout << TRACE << " : item has document node type" << endl;
+
+	cout << "\n======================\n";
+	i_h->put(zorp,cout) << endl;
 }
 
 
@@ -122,21 +139,26 @@ void _doc(
 
 
 
-void init()
-{
-	fn_doc_fname_p = new(&qname_buf[eos]) qname_value(XQUERY_FN,"fn","doc");
-	eos += fn_doc_fname_p->length();
-}
-
-
 int main(int argc, char* argv[])
 {
+
   try {
+		zorba* zorp = new zorba();
+		itemstore* istore = new itemstore();
+		zorba_value_factory* factory = new zorba_value_factory();
+		static_context* sctx_p   = new static_context(zorp,NULL);
+
+		dynamic_context* dctx_p = new dynamic_context(zorp, NULL);
+		library lib(zorp);
+		dctx_p->set_library(&lib);
+	
+		zorp->set_data_manager(istore);
+		zorp->set_value_factory(factory);
+		zorp->set_static_context(sctx_p);
+		zorp->set_dynamic_context(dctx_p);
+
     string cmdline, cmd, arg1, arg2, arg3;
     uint32_t arg_count = 0;
-		zorba zor;
-
-		init();
 
     while (true) {
       getline(cin, cmdline);
@@ -160,9 +182,9 @@ int main(int argc, char* argv[])
       if (arg_count>2) cout << "arg3 = " << arg3 << endl;
 
       if (cmd=="quit" || cmd=="exit") break;
-      else if (cmd=="doc") _doc(&zor,arg1);
+      else if (cmd=="doc") _doc(zorp,arg1);
 
-			errors::errcode err = zor.get_error();
+			errors::errcode err = zorp->get_error();
 			if (err>0) {
 				cout << cmd << ": error: " << errors::decode(err) << endl;
 			}

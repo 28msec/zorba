@@ -11,6 +11,7 @@
 #include "signature.h"
 
 #include "Numerics.h"
+#include "Sequences.h"
 
 #include "context/common.h"
 #include "runtime/zorba.h"
@@ -42,6 +43,16 @@ op_numeric_subtract  op_subtract(
 		xs_decimal,					// arg[1] type
 		xs_decimal,					// arg[2] type
 		xs_decimal					// return type
+	)
+);
+
+
+// Sequences
+fn_doc_func fn_doc(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,XQUERY_PRE,"fn_doc"),
+		xs_string,					// arg[1] type
+		documentNode				// return type
 	)
 );
 
@@ -78,6 +89,7 @@ qnamekey_t library::op_concatenate_key;
 qnamekey_t library::op_union_key;
 qnamekey_t library::op_intersect_key;
 qnamekey_t library::op_except_key;
+qnamekey_t library::fn_doc_key;
 
 
 
@@ -87,12 +99,19 @@ void library::init(
 	value_factory* vf_p)
 {
 	if (!library::static_init) {
+  	
 		// Numeric functions
 		put(&op_add);
 		put(&op_subtract);
 
 		op_add_key = op_add.get_fname()->qnamekey();
 		op_subtract_key = op_subtract.get_fname()->qnamekey();
+		
+		// Sequences functions
+		put(&fn_doc);
+		
+		fn_doc_key = fn_doc.get_fname()->qnamekey();
+cout << TRACE << " : fn_doc_key = " << fn_doc_key << endl;
 
 	}
 }
@@ -100,7 +119,11 @@ void library::init(
 
 // ctor, dtor
 
-library::library(zorba* _zorp) : zorp(_zorp)
+library::library(
+	zorba* _zorp)
+:
+	zorp(_zorp),
+	funtab(0.6, 1024)
 {
 	init(&*zorp->get_value_factory());
 }
@@ -120,10 +143,14 @@ void library::put(const function* funp)
 
 const function* library::get(qnamekey_t fun_key)
 {
-	const function* funp = NULL;
+cout << TRACE << " : fun_key = " << fun_key << endl;
+	const function* fun_p = NULL;
 	uint64_t key = fun_key;
-	funtab.get(key, funp);
-	return funp;
+	if (!funtab.get(key, fun_p)) {
+		cout << TRACE << "function not found!\n";
+		return NULL;
+	}
+	return fun_p;
 }
 
 } /* namespace xqp */
