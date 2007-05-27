@@ -26,23 +26,11 @@ normalize : normalize.cpp
 	g++ ${OPT} -c -o ${BUILD}/normalize.${SUFX} normalize.cpp
 
 xquery_test : xquery_test.cpp xquery_scanner.l xquery_parser.y xquery_driver.h xquery_driver.cpp
-	g++ -Wall -g -o ${BUILD}/xquery_test \
-		../context/${BUILD}/context.${SUFX} \
-		../native_impl/${BUILD}/namespace_pool.${SUFX} \
-		../native_impl/${BUILD}/qname_pool.${SUFX} \
-		../native_impl/${BUILD}/nodestore.${SUFX} \
-		../runtime/${BUILD}/iterator.${SUFX} \
-		../types/${BUILD}/base_types.${SUFX} \
-		../types/${BUILD}/xs_primitive_types.${SUFX} \
-		../values/${BUILD}/qname_value.${SUFX} \
+	g++ ${OPT} -Wall -g -o ${BUILD}/xquery_test \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
-		../util/${BUILD}/URI.${SUFX} \
-		../values/${BUILD}/values.${SUFX} \
-		../values/${BUILD}/node_values.${SUFX} \
-		../values/${BUILD}/xs_primitive_values.${SUFX} \
 		${BUILD}/parsenodes.${SUFX} \
 		${BUILD}/xquery_scanner.${SUFX} \
 		${BUILD}/xquery_parser.${SUFX} \

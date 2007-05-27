@@ -62,7 +62,7 @@ class Expr; class ExprSingle; class ExtensionExpr; class FLWORExpr;
 class FilterExpr; class FunctionCall; class IfExpr; class InstanceofExpr;
 class IntersectExceptExpr; class MultiplicativeExpr;
 class NumericLiteral; class OrExpr; class OrderedExpr; class ParenthesizedExpr;
-class PathExpr; class PrimaryExpr; class QuantifiedExpr;
+class PathExpr; class QuantifiedExpr;
 class QueryBody; class RangeExpr; class RelativePathExpr; 
 class StringLiteral; class TreatExpr; class TypeswitchExpr; class UnaryExpr;
 class UnionExpr; class UnorderedExpr; class ValidateExpr; 
@@ -222,7 +222,6 @@ public:
 	virtual bool begin_visit(OrderedExpr const&) = 0;
 	virtual bool begin_visit(ParenthesizedExpr const&) = 0;
 	virtual bool begin_visit(PathExpr const&) = 0;
-	virtual bool begin_visit(PrimaryExpr const&) = 0;
 	virtual bool begin_visit(QuantifiedExpr const&) = 0;
 	virtual bool begin_visit(QueryBody const&) = 0;
 	virtual bool begin_visit(RangeExpr const&) = 0;
@@ -414,7 +413,6 @@ public:
 	virtual void end_visit(OrderedExpr const&) = 0;
 	virtual void end_visit(ParenthesizedExpr const&) = 0;
 	virtual void end_visit(PathExpr const&) = 0;
-	virtual void end_visit(PrimaryExpr const&) = 0;
 	virtual void end_visit(QuantifiedExpr const&) = 0;
 	virtual void end_visit(QueryBody const&) = 0;
 	virtual void end_visit(RangeExpr const&) = 0;

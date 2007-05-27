@@ -12,7 +12,7 @@
 #include "indent.h"
 
 #include "dom/dom_nodes.h"
-#include "functions/std_library.h"
+#include "functions/library.h"
 #include "parser/parsenodes.h"
 #include "runtime/zorba.h"
 #include "util/tracer.h"

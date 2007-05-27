@@ -37,7 +37,8 @@
 #include <string.h>
 #include <string>
 
-#include "context/context.h"
+#include "../context/static_context.h"
+#include "../context/dynamic_context.h"
 #include "parsenodes.h"
 #include "parse_constants.h"
 

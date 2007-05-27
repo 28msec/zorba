@@ -2500,9 +2500,9 @@ ostream& AdditiveExpr::put(ostream& os) const
 	if (add_expr_h!=NULL) {
 		add_expr_h->put(os);
 		switch(add_op) {
-		case op_plus: os << INDENT << "plus"; break;
-		case op_minus: os << INDENT << "minus"; break;
-		default: os << "???";
+		case op_plus: os << INDENT << " plus\n"; break;
+		case op_minus: os << INDENT << " minus\n"; break;
+		default: os << INDENT << "???";
 		}
 	}
 	if (mult_expr_h!=NULL) mult_expr_h->put(os);
@@ -2545,10 +2545,10 @@ ostream& MultiplicativeExpr::put(ostream& s) const
 	s << INDENT << "MultiplicativeExpr[\n";
 	if (mult_expr_h!=NULL) mult_expr_h->put(s);
 	switch(mult_op) {
-	case op_mul: s << "mul"; break;
-	case op_div: s << "div"; break;
-	case op_idiv: s << "idiv"; break;
-	case op_mod: s << "mod"; break;
+	case op_mul: s << " mul\n"; break;
+	case op_div: s << " div\n"; break;
+	case op_idiv: s << " idiv\n"; break;
+	case op_mod: s << " mod\n"; break;
 	default: s << "???";
 	}
 	if (union_expr_h!=NULL) union_expr_h->put(s);

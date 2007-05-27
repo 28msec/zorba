@@ -40,6 +40,9 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 		../context/${BUILD}/dynamic_context.${SUFX} \
 		../dom/${BUILD}/dom_nodes.${SUFX} \
 		../dom/${BUILD}/dom_qname.${SUFX} \
+		../functions/${BUILD}/library.${SUFX} \
+		../functions/${BUILD}/Numerics.${SUFX} \
+		../functions/${BUILD}/signature.${SUFX} \
 		../parser/${BUILD}/parsenodes.${SUFX} \
 		../parser/${BUILD}/xquery_scanner.${SUFX} \
 		../parser/${BUILD}/xquery_parser.${SUFX} \
@@ -47,7 +50,6 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 		../parser/${BUILD}/xquery_driver.${SUFX} \
 		../runtime/${BUILD}/errors.${SUFX} \
 		../runtime/${BUILD}/item_iterator.${SUFX} \
-		../runtime/${BUILD}/singleton_iterators.${SUFX} \
 		../runtime/${BUILD}/zorba.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
@@ -56,6 +58,8 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
 		../values/${BUILD}/primitive_values.${SUFX} \
+		../zorba/${BUILD}/zorba_qname.${SUFX} \
+		../zorba/${BUILD}/qnamerep.${SUFX} \
 		${BUILD}/expr.${SUFX} \
 		${BUILD}/normalize_visitor.${SUFX} \
 	normalize_visitor_test.cpp
