@@ -360,102 +360,25 @@ sequence_type_t fn_subsequence::type_check(
 
 //15.5.4 fn:doc
 //-------------
-/*
-	fn:doc($uri as xs:string?) as document-node()?
-	
-	Summary: Retrieves a document using an xs:anyURI, which may include a 
-	fragment identifier, supplied as an xs:string. If $uri is not a valid 
-	xs:anyURI, an error is raised [err:FODC0005]. If it is a relative URI 
-	Reference, it is resolved relative to the value of the base URI 
-	property from the static context. The resulting absolute URI Reference 
-	is promoted to an xs:string. If the Available documents discussed in 
-	Section 2.1.2 Dynamic ContextXP provides a mapping from this string to 
-	a document node, the function returns that document node. If the 
-	Available documents maps the string to an empty sequence, then the 
-	function returns an empty sequence. If the Available documents 
-	provides no mapping for the string, an error is raised [err:FODC0005]. 
-	
-	If $uri is the empty sequence, the result is an empty sequence.
-*/
-
-fn_doc_func::fn_doc_func(const signature& sig)
-: function(sig)
+fn_doc_func::fn_doc_func(
+	const signature& sig)
+:
+	function(sig)
 {
 }
-
-
-iterator_t xqp_load(
-	zorba* zorp,
-	string const& path,
-	string const& baseuri,
-	string const& uri)
-{
-cout << TRACE << endl;
-
-	file f(path);
-	if (!f.exists()) {
-cout << TRACE << " : file '" << path << "' not found" << endl;
-		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
-		return NULL;
-	}
-cout << TRACE << " : file '" << path << "' found" << endl;
-
-	unsigned sz = f.get_size();
-	size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
-	char* ibuf = new char[n+1];
-	try {
-		f.readfile(ibuf,n);
-	} catch (xqp_exception& e) {
-		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
-		delete[] ibuf;
-		return NULL;
-	}
-cout << TRACE << " : read[" << n << ']' << endl;
-
-	xml_scanner* scanner_p = new xml_scanner();
-	dom_xml_handler* xhandler_p = new dom_xml_handler(zorp,baseuri,uri);
-	scanner_p->scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
-cout << TRACE << " : scanned" << endl;
-
-	iterator_t result = new singleton_iterator(xhandler_p->context_node());
-cout << TRACE << " : wrap context_node as iteratror" << endl;
-
-	delete xhandler_p;
-	delete[] ibuf;
-	return result;
-}
- 
 
 iterator_t fn_doc_func::operator()(
 	zorba* zorp,
 	vector<iterator_t>& argv) const
 {
-cout << TRACE << endl;
-
 	if (!validate_args(argv)) return NULL;
-cout << TRACE << " : args validated" << endl;
-
-	item_t i_h = **argv[0];
-cout << TRACE << " : item extracted from iterator" << endl;
-
-	if (i_h->is_empty()) return NULL;
-cout << TRACE << " : item not empty" << endl;
-
-	//xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[0],xs_string);
-cout << TRACE << " : item cast to string" << endl;
-
-	string uri = "test.xml"; //XXX v_p->string_value();
-cout << TRACE << " : string value returned: " << uri << endl;
-
-	return xqp_load(zorp,uri,"/",uri);
+	return new doc_iterator(zorp, argv[0]);
 }
   
 bool fn_doc_func::validate_args(
 	vector<iterator_t>& argv) const
 {
-cout << TRACE << endl;
 	if (argv.size()!=1) return false;
-cout << TRACE << " : argv.size()==1" << endl;
 	return _validate<item>(argv[0],xs_string);
 }
 

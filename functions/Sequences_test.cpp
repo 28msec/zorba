@@ -96,6 +96,7 @@ using namespace xqp;
 //15.5.3 fn:idref
 
 
+
 //15.5.4 fn:doc
 //-------------
 void _doc(
@@ -108,26 +109,15 @@ void _doc(
 	rchandle<atomic_value> uri_h = valfac_p->make_xs_string(uri);
 	vector<iterator_t> argv;
 	argv.push_back(new singleton_iterator(&*uri_h));
-
 	const function* fn_doc_p = dctx_p->get_function(library::fn_doc_key);
 	assert(fn_doc_p!=NULL);
 	const function& fn_doc = *fn_doc_p;
 	iterator_t iter_h = fn_doc(zorp, argv);
-cout << TRACE << " : fn_doc returned" << endl;
-
 	if (iter_h==NULL) { cout << "Error: doc returned NULL\n"; return; }
-cout << TRACE << " : fn_doc returned non-NULL" << endl;
-
 	iter_h->open();
 	if (iter_h->done()) { cout << "Error: doc returned empty\n"; return; }
-cout << TRACE << " : fn_doc returned non-empty" << endl;
-
 	item_t i_h = iter_h->next();
-cout << TRACE << " : item type = " << typeid(*i_h).name() << endl;
-
 	if (i_h->type()!=documentNode) { cout << "Error: non-doc node\n"; return; }
-cout << TRACE << " : item has document node type" << endl;
-
 	cout << "\n======================\n";
 	i_h->put(zorp,cout) << endl;
 }

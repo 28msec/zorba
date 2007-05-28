@@ -219,9 +219,7 @@ string stringValue::describe(
 string stringValue::str(
 	zorba* zorp) const
 {
-	ostringstream oss;
-	put(zorp,oss);
-	return oss.str();
+	return theVal;
 }
 
 iterator_t stringValue::atomized_value(

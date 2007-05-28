@@ -49,11 +49,14 @@ Sequences_test : Sequences.h Sequences.cpp Sequences_test.cpp
 		../store/${BUILD}/itemstore.${SUFX} \
 		../store/${BUILD}/scan_handler.${SUFX} \
 		../store/${BUILD}/xml_scanner.${SUFX} \
+		../store/${BUILD}/uri_resolver.${SUFX} \
+		../store/${BUILD}/zorba_uri_resolver.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/tokenbuf.${SUFX} \
+		../util/${BUILD}/URI.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../values/${BUILD}/primitive_values.${SUFX} \
 		../zorba/${BUILD}/qnamerep.${SUFX} \
