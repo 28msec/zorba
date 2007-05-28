@@ -33,16 +33,16 @@ class zorba;
 class normalize_visitor : public parsenode_visitor
 {
 public:
-	typedef rchandle<expr> expr_h_t;
+	typedef rchandle<expr> expr_t;
 
 protected:
 	zorba* zorp;
 	dynamic_context* dctx_p;
 	rchandle<data_manager> dmgr_h;
 
-	std::stack<expr_h_t> nodestack;
-	std::stack<expr_h_t> argstack;
-	std::stack<expr_h_t> pstack;	// predicates stack
+	std::stack<expr_t> nodestack;
+	std::stack<expr_t> argstack;
+	std::stack<expr_t> pstack;	// predicates stack
 	fxcharheap sheap;
 
 public:
@@ -50,7 +50,7 @@ public:
 	~normalize_visitor() {}
 
 public:
-	expr_h_t pop_nodestack()
+	expr_t pop_nodestack()
 	{
 		if (nodestack.empty()) return NULL;
 		rchandle<expr> e_h = nodestack.top();

@@ -8,7 +8,7 @@
  */
 
 #include "normalize_visitor.h"
-#include "../parser/xquery_driver.h"
+#include "parser/xquery_driver.h"
 #include <iostream>
 
 using namespace std;
@@ -17,6 +17,15 @@ using namespace xqp;
 int main(int argc, char* argv[])
 {
 	zorba* zorp = new zorba();
+	static_context* sctx_p   = new static_context(zorp,NULL);
+	dynamic_context* dctx_p = new dynamic_context(zorp, NULL);
+
+	library lib(zorp);
+	dctx_p->set_library(&lib);
+
+	zorp->set_static_context(sctx_p);
+	zorp->set_dynamic_context(dctx_p);
+
 	xquery_driver driver(cout);
 
 	try {

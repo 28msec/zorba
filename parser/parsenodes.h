@@ -4945,16 +4945,23 @@ class QName : public exprnode
 {
 protected:
 	std::string qname;
+	std::string theURI;
 
 public:
 	QName(
-		yy::location const&,
-		std::string const&);
+		const yy::location&,
+		const std::string& qname);
+
+	QName(
+		const yy::location&,
+		const std::string& qname,
+		const std::string& uri);
 
 	~QName();
 
 public:
 	std::string get_qname() const { return qname; }
+	std::string get_uri() const { return theURI; }
 	std::string get_localname() const;
 	std::string get_prefix() const;
 

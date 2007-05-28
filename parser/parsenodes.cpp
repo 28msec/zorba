@@ -5551,11 +5551,23 @@ void StringLiteral::accept(parsenode_visitor& v) const
 // [154] QName
 // -----------
 QName::QName(
-	yy::location const& _loc,
-	string const& _qname)
+	const yy::location& _loc,
+	const string& _qname)
 :
 	exprnode(_loc),
-	qname(_qname)
+	qname(_qname),
+	theURI("")
+{
+}
+
+QName::QName(
+	const yy::location& _loc,
+	const string& _qname,
+	const string& _uri)
+:
+	exprnode(_loc),
+	qname(_qname),
+	theURI(_uri)
 {
 }
 

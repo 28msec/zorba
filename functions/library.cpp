@@ -30,7 +30,7 @@ bool library::static_init = false;
 // Numerics
 op_numeric_add  op_add(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,XQUERY_PRE,"op_add"),
+		new zorba_qname(XQUERY_FN_NS,"op","op_add"),
 		xs_decimal,					// arg[1] type
 		xs_decimal,					// arg[2] type
 		xs_decimal					// return type
@@ -39,7 +39,7 @@ op_numeric_add  op_add(
 
 op_numeric_subtract  op_subtract(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,XQUERY_PRE,"op_subtract"),
+		new zorba_qname(XQUERY_FN_NS,"op","op_subtract"),
 		xs_decimal,					// arg[1] type
 		xs_decimal,					// arg[2] type
 		xs_decimal					// return type
@@ -50,7 +50,7 @@ op_numeric_subtract  op_subtract(
 // Sequences
 fn_doc_func fn_doc(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,XQUERY_PRE,"fn_doc"),
+		new zorba_qname(XQUERY_FN_NS,"fn","fn_doc"),
 		xs_string,					// arg[1] type
 		documentNode				// return type
 	)

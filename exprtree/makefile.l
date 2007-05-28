@@ -38,10 +38,14 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 	g++ ${OPT} -o ${BUILD}/normalize_visitor_test \
 		../context/${BUILD}/static_context.${SUFX} \
 		../context/${BUILD}/dynamic_context.${SUFX} \
+		../dom/${BUILD}/dom_namepool.${SUFX} \
 		../dom/${BUILD}/dom_nodes.${SUFX} \
 		../dom/${BUILD}/dom_qname.${SUFX} \
+		../dom/${BUILD}/dom_xml_handler.${SUFX} \
 		../functions/${BUILD}/library.${SUFX} \
 		../functions/${BUILD}/Numerics.${SUFX} \
+		../functions/${BUILD}/Sequences.${SUFX} \
+		../functions/${BUILD}/SequencesImpl.${SUFX} \
 		../functions/${BUILD}/signature.${SUFX} \
 		../parser/${BUILD}/parsenodes.${SUFX} \
 		../parser/${BUILD}/xquery_scanner.${SUFX} \
@@ -51,12 +55,17 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 		../runtime/${BUILD}/errors.${SUFX} \
 		../runtime/${BUILD}/item_iterator.${SUFX} \
 		../runtime/${BUILD}/zorba.${SUFX} \
+		../store/${BUILD}/scan_handler.${SUFX} \
+		../store/${BUILD}/uri_resolver.${SUFX} \
+		../store/${BUILD}/xml_scanner.${SUFX} \
+		../store/${BUILD}/zorba_uri_resolver.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
-		../util/${BUILD}/xqp_exception.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/tokenbuf.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
 		../values/${BUILD}/primitive_values.${SUFX} \
 		../zorba/${BUILD}/zorba_qname.${SUFX} \
 		../zorba/${BUILD}/qnamerep.${SUFX} \

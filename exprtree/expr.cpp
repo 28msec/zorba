@@ -69,7 +69,7 @@ expr_list::~expr_list()
 ostream& expr_list::put(ostream& os) const
 {
 	os << INDENT << "expr_list[\n";
-	list_iterator<expr_h_t> it = begin();
+	list_iterator<expr_t> it = begin();
 	for (; it!=end(); ++it) {
 		rchandle<expr> e_h = *it;
 		if (e_h==NULL) {
@@ -86,7 +86,7 @@ void expr_list::accept(
 	expr_visitor& v) const
 {
   if (!v.begin_visit(*this)) return;
-	list_iterator<expr_h_t> it = begin();
+	list_iterator<expr_t> it = begin();
 	for (; it!=end(); ++it) {
 		rchandle<expr> e_h = *it;
 		if (e_h==NULL) { cout << TRACE << ": e_h==NULL\n"; continue; }
@@ -155,7 +155,7 @@ forlet_clause::forlet_clause(
 	varref_t _var_h,
 	varref_t _pos_var_h,
 	varref_t _score_var_h,
-	expr_h_t _expr_h)
+	expr_t _expr_h)
 :
 	type(_type),
 	var_h(_var_h),
@@ -216,7 +216,7 @@ ostream& flwor_expr::put(ostream& os) const
 	vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
 	for (; ord_it!=orderspec_end(); ++ord_it) {
 		orderspec_t spec = *ord_it;
-		expr_h_t e_h = spec.first;
+		expr_t e_h = spec.first;
 		Assert<null_pointer>(e_h!=NULL);
 		orderref_t ord_h = spec.second;
 		Assert<null_pointer>(ord_h!=NULL);
@@ -696,7 +696,7 @@ extension_expr::extension_expr(
 
 extension_expr::extension_expr(
 	yy::location const& loc,
-	expr_h_t _expr_h)
+	expr_t _expr_h)
 :
 	expr(loc),
 	expr_h(_expr_h)
@@ -758,9 +758,9 @@ relpath_expr::~relpath_expr()
 ostream& relpath_expr::put(ostream& os) const
 {
 	os << INDENT << "relpath_expr[\n";
-	list_iterator<expr_h_t> it = begin();
+	list_iterator<expr_t> it = begin();
 	for (; it!=end(); ++it) {
-		expr_h_t e_h = *it;
+		expr_t e_h = *it;
 		Assert<null_pointer>(e_h!=NULL);
 		e_h->put(os);
 	}
@@ -1012,38 +1012,6 @@ void order_expr::accept(
 
 
 // [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
-
-funcall_expr::funcall_expr(
-	yy::location const& loc,
-	rchandle<qname_expr> _fname_h)
-:
-	expr(loc),
-	fname_h(_fname_h)
-{
-}
-
-funcall_expr::~funcall_expr()
-{
-}
-
-ostream& funcall_expr::put(ostream& os) const
-{
-	os << INDENT << "funcall_expr[";
-	Assert<null_pointer>(fname_h!=NULL);
-	fname_h->put(os) << endl;
-	vector<rchandle<expr> >::const_iterator it = arg_hv.begin();
-	for (; it!=arg_hv.end(); ++it) {
-		rchandle<expr> e_h = *it;
-		Assert<null_pointer>(e_h!=NULL);
-		e_h->put(os);
-	}
-	return os << OUTDENT << "]\n";
-}
-
-void funcall_expr::accept(
-	expr_visitor& v) const
-{
-}
 
 
 

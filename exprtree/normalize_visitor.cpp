@@ -17,6 +17,7 @@
 #include "runtime/zorba.h"
 #include "util/tracer.h"
 #include "values/nodes.h"
+#include "zorba/zorba_qname.h"
 
 #include <iostream>
 
@@ -927,11 +928,25 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(FunctionCall const& v)
 {
 cout << indent[++depth] << TRACE << ": FunctionCall" << endl;
-	string qname = v.get_fname()->get_qname();
+	rchandle<QName> qn_h = v.get_fname();
+	string uri;
+	string prefix = qn_h->get_prefix();
+	string fname = qn_h->get_localname();
+
+	if (prefix=="fn" || prefix=="op") {
+		uri = XQUERY_FN_NS;
+		fname = prefix+"_"+fname;
+	}
+	else {
+		uri = ZORBA_NS;
+		prefix = ZORBA_PRE;
+	}
+
+	qnamekey_t funkey = zorba_qname(uri,prefix,fname).qnamekey();
 	yy::location loc = v.get_location();
-	rchandle<qname_expr> q_h = new qname_expr(loc,qname);
-	rchandle<funcall_expr> fexpr_h = new funcall_expr(loc, q_h);
-	nodestack.push(&*fexpr_h);
+	rchandle<fo_expr> fo_h = new fo_expr(loc);
+	fo_h->set_func(dctx_p->get_function(funkey));
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -1425,7 +1440,7 @@ void normalize_visitor::end_visit(ArgList const& v)
 cout << indent[depth--] << TRACE << ": ArgList" << endl;
 	clear_argstack();
 	while (true) {
-		expr_h_t e_h = pop_nodestack();
+		expr_t e_h = pop_nodestack();
 		if (e_h==NULL) break;
 		argstack.push(e_h);
 	}
@@ -1748,7 +1763,7 @@ void normalize_visitor::end_visit(PredicateList const& v)
 cout << indent[depth--] << TRACE << ": PredicateList" << endl;
 	clear_pstack();
 	while (true) {
-		expr_h_t e_h = pop_nodestack();
+		expr_t e_h = pop_nodestack();
 		if (e_h==NULL) break;
 		pstack.push(e_h);
 	}
@@ -1962,7 +1977,7 @@ cout << indent[depth--] << TRACE << ": AxisStep\n";
 		cout << TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	while (!pstack.empty()) {
-		expr_h_t e_h = pstack.top();
+		expr_t e_h = pstack.top();
 		pstack.pop();
 		aexpr_h->add_pred(e_h);
 	}
@@ -2072,7 +2087,7 @@ void normalize_visitor::end_visit(Expr const& v)
 cout << indent[depth--] << TRACE << ": Expr\n";
 	rchandle<expr_list> elist_h = new expr_list(v.get_location());
 	while (true) {	
-		expr_h_t e_h = pop_nodestack();
+		expr_t e_h = pop_nodestack();
 		if (e_h==NULL) break;
 		elist_h->add(e_h);
 	}
@@ -2104,24 +2119,23 @@ void normalize_visitor::end_visit(FunctionCall const& v)
 cout << indent[depth] << TRACE << ": FunctionCall" << endl;
 cout << indent[depth--] << TRACE << ": argstack.size() = " << argstack.size() << endl;
 
-	rchandle<funcall_expr> fexpr_h =
-		dynamic_cast<funcall_expr*>(&*nodestack.top());
-	if (fexpr_h==NULL) return;
-
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) return;
 	while (!argstack.empty()) {
-		expr_h_t e_h = argstack.top();
+		expr_t e_h = argstack.top();
 		argstack.pop();
 		if (e_h==NULL) continue;
-		fexpr_h->add_arg(e_h);
+		// >>add type promotion wrappers here<<
+		fo_h->add(e_h);
 	}
 }
 
 void normalize_visitor::end_visit(IfExpr const& v)
 {
 cout << TRACE << endl;
-	expr_h_t c_h = nodestack.top(); nodestack.pop();
-	expr_h_t t_h = nodestack.top(); nodestack.pop();
-	expr_h_t e_h = nodestack.top(); nodestack.pop();
+	expr_t c_h = nodestack.top(); nodestack.pop();
+	expr_t t_h = nodestack.top(); nodestack.pop();
+	expr_t e_h = nodestack.top(); nodestack.pop();
 	rchandle<if_expr> if_h = new if_expr(v.get_location(),c_h,t_h,e_h);
 	nodestack.push(&*if_h);
 }
@@ -2220,8 +2234,8 @@ cout << TRACE << endl;
 void normalize_visitor::end_visit(RelativePathExpr const& v)
 {
 cout << indent[depth--] << TRACE << ": RelativePath\n";
-	expr_h_t e0_h = pop_nodestack();		// b
-	expr_h_t e1_h = pop_nodestack();		// a
+	expr_t e0_h = pop_nodestack();		// b
+	expr_t e1_h = pop_nodestack();		// a
 
 	rchandle<relpath_expr> rp_h = dynamic_cast<relpath_expr*>(&*e0_h);
 	if (rp_h==NULL) {
@@ -2259,7 +2273,7 @@ void normalize_visitor::end_visit(TypeswitchExpr const& v)
 {
 cout << TRACE << endl;
 	case_clause * cc_p;
-	expr_h_t e_h;
+	expr_t e_h;
 	rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
