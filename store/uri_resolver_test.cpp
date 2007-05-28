@@ -9,6 +9,7 @@
  */
 
 #include "uri_resolver.h"
+#include "runtime/zorba.h"
 
 #include <iostream>
 #include <string>
@@ -18,20 +19,22 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
+	zorba* zorp = new zorba();
 	uri_resolver res;
 	string base(argv[1]);
 	string url(argv[2]);
   string result;
   rchandle<source> src_h = res.resolve(base, url);
+	istream* is_p = src_h->get_input(zorp);
+	assert(is_p!=NULL);
+	istream& is = *is_p;
+	string line;
+	while (true) {
+		getline(is,line);
+		if (line.length()==0) break;
+		cout << line << endl;
+	}
 }
 
 
-/* class uri_resolver:
-string get_base(URI const&); 
-string get_base(string const&); 
-bool make_absolute( string const& base, string const& url, string& result);
-bool make_absolute( URI const& base, URI const& url, string& result);
-rchandle<source> resolve( string const& base, string const& uri);
-rchandle<source> resolve( URI const& base, URI const& uri);
-*/
 

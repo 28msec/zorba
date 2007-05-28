@@ -168,7 +168,92 @@ concat_iterator& concat_iterator::operator++()
 
 //15.5.3 fn:idref
 
+
 //15.5.4 fn:doc
+
+iterator_t xqp_load(
+	zorba* zorp,
+	string const& path,
+	string const& baseuri,
+	string const& uri)
+{
+cout << TRACE << endl;
+
+	file f(path);
+	if (!f.exists()) {
+cout << TRACE << " : file '" << path << "' not found" << endl;
+		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		return NULL;
+	}
+cout << TRACE << " : file '" << path << "' found" << endl;
+
+	unsigned sz = f.get_size();
+	size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
+	char* ibuf = new char[n+1];
+	try {
+		f.readfile(ibuf,n);
+	} catch (xqp_exception& e) {
+		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		delete[] ibuf;
+		return NULL;
+	}
+cout << TRACE << " : read[" << n << ']' << endl;
+
+	xml_scanner* scanner_p = new xml_scanner();
+	dom_xml_handler* xhandler_p = new dom_xml_handler(zorp,baseuri,uri);
+	scanner_p->scan(ibuf, n, dynamic_cast<scan_handler*>(xhandler_p));
+cout << TRACE << " : scanned" << endl;
+
+	iterator_t result = new singleton_iterator(xhandler_p->context_node());
+cout << TRACE << " : wrap context_node as iteratror" << endl;
+
+	delete xhandler_p;
+	delete[] ibuf;
+	return result;
+}
+  
+item_t doc_iterator::_next()
+{
+}
+
+bool doc_iterator::done() const
+{
+}
+
+doc_iterator::doc_iterator(
+	zorba* zorp,
+	iterator_t uri)
+:
+	basic_iterator(zorp),
+{
+}
+
+doc_iterator::doc_iterator(
+	const doc_iterator& it)
+:
+	basic_iterator(it.zorp)
+{
+}
+
+doc_iterator& doc_iterator::operator=(
+	const doc_iterator& it)
+{
+	zorp = it.zorp;
+	return *this;
+}
+
+item_t doc_iterator::operator*() const
+{
+	return **currit;
+}
+
+doc_iterator& doc_iterator::operator++()
+{
+	if (done()) throw xqp_exception("iterating past end");
+	return *this;
+}
+
+
 
 //15.5.5 fn:doc-available
 

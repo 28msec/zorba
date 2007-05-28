@@ -424,7 +424,7 @@ cout << TRACE << " : wrap context_node as iteratror" << endl;
 	delete[] ibuf;
 	return result;
 }
-  
+ 
 
 iterator_t fn_doc_func::operator()(
 	zorba* zorp,

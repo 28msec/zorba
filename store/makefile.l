@@ -12,15 +12,25 @@ buildVersion :
 	echo "\"" >> buildVersion.h
 	echo "#endif" >> buildVersion.h
 
+file_source : file_source.h file_source.cpp
+	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/file_source.${SUFX} file_source.cpp
 
 uri_resolver :	uri_resolver.cpp uri_resolver.h 
 	g++ -Wall -c ${OPT} -o ${BUILD}/uri_resolver.${SUFX} uri_resolver.cpp
-uri_resolver_test :	uri_resolver_test.cpp uri_resolver.cpp uri_resolver.h 
-	g++ -Wall ${OPT} -o ${BUILD}/uri_resolver_test \
+
+zorba_uri_resolver :	zorba_uri_resolver.cpp zorba_uri_resolver.h 
+	g++ -Wall -c ${OPT} -o ${BUILD}/zorba_uri_resolver.${SUFX} zorba_uri_resolver.cpp
+
+zorba_uri_resolver_test :	zorba_uri_resolver_test.cpp zorba_uri_resolver.cpp zorba_uri_resolver.h uri_resolver.h 
+	g++ ${OPT} -o ${BUILD}/uri_resolver_test \
+    ../runtime/${BUILD}/zorba.${SUFX} \
+    ../util/${BUILD}/xqp_exception.${SUFX} \
+    ../util/${BUILD}/file.${SUFX} \
     ../util/${BUILD}/tokenbuf.${SUFX} \
     ../util/${BUILD}/URI.${SUFX} \
     ${BUILD}/uri_resolver.${SUFX} \
-    uri_resolver_test.cpp
+    ${BUILD}/zorba_uri_resolver.${SUFX} \
+   zorba_uri_resolver_test.cpp
 
 collation_resolver :	collection_resolver.cpp collection_resolver.h 
 	g++ -Wall -c ${OPT} -o ${BUILD}/collation_resolver.${SUFX} collection_resolver.cpp
@@ -29,7 +39,7 @@ collation_resolver_test : collection_resolver_test.cpp collection_resolver.cpp c
     ../util/${BUILD}/tokenbuf.${SUFX} \
     ../util/${BUILD}/URI.${SUFX} \
     ${BUILD}/collation_resolver.${SUFX} \
-    collation_resolver_test.cpp
+   collation_resolver_test.cpp
 
 collection_resolver :	collection_resolver.cpp collection_resolver.h 
 	g++ -Wall -c ${OPT} -o ${BUILD}/collection_resolver.${SUFX} collection_resolver.cpp
@@ -38,7 +48,7 @@ collection_resolver_test : collection_resolver_test.cpp collection_resolver.cpp 
     ../util/${BUILD}/tokenbuf.${SUFX} \
     ../util/${BUILD}/URI.${SUFX} \
     ${BUILD}/collection_resolver.${SUFX} \
-    collection_resolver_test.cpp
+   collection_resolver_test.cpp
 
 module_resolver :	module_resolver.cpp module_resolver.h 
 	g++ -Wall -c ${OPT} -o ${BUILD}/module_resolver.${SUFX} module_resolver.cpp
@@ -47,7 +57,7 @@ module_resolver_test : module_resolver_test.cpp module_resolver.cpp module_resol
     ../util/${BUILD}/tokenbuf.${SUFX} \
     ../util/${BUILD}/URI.${SUFX} \
     ${BUILD}/module_resolver.${SUFX} \
-		module_resolver_test.cpp
+	module_resolver_test.cpp
 
 schema_resolver :	schema_resolver.cpp schema_resolver.h 
 	g++ -Wall -c ${OPT} -o ${BUILD}/schema_resolver.${SUFX} schema_resolver.cpp
@@ -103,6 +113,7 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 
 
 all : \
+	file_source \
 	itemstore \
 	uri_resolver \
 	collation_resolver \

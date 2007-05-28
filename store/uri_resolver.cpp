@@ -27,7 +27,7 @@ using namespace std;
 namespace xqp {
 
 string uri_resolver::get_base(
-  string const& baseurl)
+  const string& baseurl)
 {
   URI baseuri(baseurl);
 	return get_base(baseuri);
@@ -35,7 +35,7 @@ string uri_resolver::get_base(
 
 
 string uri_resolver::get_base(
-  URI const& baseuri)
+  const URI& baseuri)
 {
   ostringstream oss;
   oss << baseuri.get_scheme() << "://" << baseuri.get_hostinfo();
@@ -56,8 +56,8 @@ string uri_resolver::get_base(
 
 
 bool uri_resolver::make_absolute(
-  string const& base,
-  string const& url,
+  const string& base,
+  const string& url,
 	string& result)
 {
   URI baseuri(base);
@@ -67,8 +67,8 @@ bool uri_resolver::make_absolute(
 
 
 bool uri_resolver::make_absolute(
-  URI const& baseuri,
-  URI const& uri0,
+  const URI& baseuri,
+  const URI& uri0,
   string& result)
 {
 	URI uri(uri0);
@@ -137,28 +137,6 @@ bool uri_resolver::make_absolute(
   result= uri.toString();
   return true;
 }
-
-
-rchandle<source> uri_resolver::resolve(
-	string const& base,
-	string const& uri)
-{
-	// stub
-	return NULL;
-}
-
-
-rchandle<source> uri_resolver::resolve(
-	URI const& base,
-	URI const& uri)
-{
-	// stub
-	return NULL;
-}
-
-
-
-
 
 
 }	/* namespace xqp */

@@ -131,6 +131,29 @@ public:	// ctor,dtor
 //15.5.3 fn:idref
 
 //15.5.4 fn:doc
+class doc_iterator : public basic_iterator
+{
+private:
+	std::string uri;
+
+public:	
+	void _open() {}
+	void _close() {}
+	item_t _next();
+	bool done() const;
+
+public:
+	item_t operator*() const;
+	doc_iterator& operator++();
+	doc_iterator& operator=(const doc_iterator& it);
+
+public:	// ctor,dtor
+	doc_iterator(zorba*, iterator_t, iterator_t);
+	doc_iterator(const concat_iterator& it);
+	~doc_iterator() {}
+
+};
+
 
 //15.5.5 fn:doc-available
 
