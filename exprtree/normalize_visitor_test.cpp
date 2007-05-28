@@ -44,9 +44,9 @@ int main(int argc, char* argv[])
 				n_p->put(cout) << endl;
 	
 				normalize_visitor nvs(zorp);
-				MainModule * mm_p;
-				QueryBody * qb_p;
-				Expr * ex_p;
+				MainModule* mm_p;
+				QueryBody* qb_p;
+				Expr* ex_p;
 	
 				if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) {
 					cout << "Parse error: expecting MainModule\n";
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 					cout << "e_h==NULL\n";
 				}
 				else {
-					e_h->put(cout) << endl;
+					e_h->put(zorp,cout) << endl;
 				}
 			}
 		}

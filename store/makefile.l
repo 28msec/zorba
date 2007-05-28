@@ -12,9 +12,6 @@ buildVersion :
 	echo "\"" >> buildVersion.h
 	echo "#endif" >> buildVersion.h
 
-file_source : file_source.h file_source.cpp
-	g++ -c ${LARGEFILES} ${CXXOPT} -o ${BUILD}/file_source.${SUFX} file_source.cpp
-
 uri_resolver :	uri_resolver.cpp uri_resolver.h 
 	g++ -Wall -c ${OPT} -o ${BUILD}/uri_resolver.${SUFX} uri_resolver.cpp
 
@@ -113,9 +110,9 @@ xml_handler_test : xml_handler.h xml_handler.cpp xml_handler_test.cpp
 
 
 all : \
-	file_source \
 	itemstore \
 	uri_resolver \
+	zorba_uri_resolver \
 	collation_resolver \
 	collection_resolver \
 	module_resolver \

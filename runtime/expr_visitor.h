@@ -87,7 +87,6 @@ public:
 	virtual bool begin_visit(axis_step_expr const&) = 0;
 	virtual bool begin_visit(literal_expr const&) = 0;
 	virtual bool begin_visit(order_expr const&) = 0;
-	virtual bool begin_visit(funcall_expr const&) = 0;
 	virtual bool begin_visit(doc_expr const&) = 0;
 	virtual bool begin_visit(elem_expr const&) = 0;
 	virtual bool begin_visit(attr_expr const&) = 0;
@@ -122,7 +121,6 @@ public:
 	virtual void end_visit(axis_step_expr const&) = 0;
 	virtual void end_visit(literal_expr const&) = 0;
 	virtual void end_visit(order_expr const&) = 0;
-	virtual void end_visit(funcall_expr const&) = 0;
 	virtual void end_visit(doc_expr const&) = 0;
 	virtual void end_visit(elem_expr const&) = 0;
 	virtual void end_visit(attr_expr const&) = 0;

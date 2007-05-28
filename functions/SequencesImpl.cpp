@@ -201,6 +201,8 @@ void doc_iterator::_open()
 	string path = arg->next()->str(zorp);
 	rchandle<source> src_h = urires_p->resolve(path);
 	istream* is_p = src_h->get_input(zorp);
+	assert(is_p!=NULL);
+
 	ostringstream oss;
 	string line;
 	while (!is_p->eof()) {
@@ -211,10 +213,12 @@ void doc_iterator::_open()
 	size_t n = bufs.length();
 	char buf[n+1];
 	strcpy(buf, bufs.c_str());
+
 	xml_scanner* scanner_p = new xml_scanner();
 	dom_xml_handler* xhandler_p = new dom_xml_handler(zorp,"/",path);
 	scanner_p->scan(buf, n, dynamic_cast<scan_handler*>(xhandler_p));
 	doc_node = dynamic_cast<dom_document_node*>(xhandler_p->context_node());
+
 	delete xhandler_p;
 }
   

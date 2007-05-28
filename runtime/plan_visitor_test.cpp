@@ -29,6 +29,15 @@ using namespace xqp;
 int main(int argc, char* argv[])
 {
 	zorba* zorp = new zorba();
+	static_context* sctx_p = new static_context(zorp,NULL);
+	dynamic_context* dctx_p = new dynamic_context(zorp,NULL);
+
+	library lib(zorp);
+	dctx_p->set_library(&lib);
+
+	zorp->set_static_context(sctx_p);
+	zorp->set_dynamic_context(dctx_p);
+
 	xquery_driver driver(cout);
 
 	try {
@@ -44,13 +53,13 @@ int main(int argc, char* argv[])
 				driver.parse(*argv);
 				parsenode* n_p = driver.get_expr();
 				cout << endl;
-				cout << "Parse tree:\n";
+				cout << "Syntax tree:\n";
 				n_p->put(cout) << endl;
 	
 				normalize_visitor nvs(zorp);
-				MainModule * mm_p;
-				QueryBody * qb_p;
-				Expr * ex_p;
+				MainModule* mm_p;
+				QueryBody* qb_p;
+				Expr* ex_p;
 	
 				if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) {
 					cout << "Parse error: expecting MainModule\n";
@@ -65,25 +74,25 @@ int main(int argc, char* argv[])
 					return -1;
 				}
 
-				cout << "Normalization run:\n";
+				cout << "Expression tree:\n";
 				ex_p->accept(nvs);
 				rchandle<expr> e_h = nvs.pop_nodestack();
 
 				cout << endl;
-				cout << "Normalized expression tree:\n";
+
 				if (e_h==NULL) {
 					cout << "e_h==NULL\n";
 					return -1;
 				}
-				e_h->put(cout) << endl;
+				e_h->put(zorp,cout) << endl;
 
-				cout << "Plan run:\n";
+				cout << "Codegen:\n";
 				plan_visitor pvs(zorp);
 				e_h->accept(pvs);
 				iterator_t it_h = pvs.pop_itstack();
-
 				cout << endl;
-				cout << "Iterator run:\n";
+
+				cout << "\nIterator run:\n";
 				if (it_h==NULL) {
 					cout << "it_h==NULL\n";
 					return -1;

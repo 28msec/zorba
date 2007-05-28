@@ -3939,13 +3939,12 @@ FunctionCall::~FunctionCall()
 {
 }
 
-ostream& FunctionCall::put(ostream& s) const
+ostream& FunctionCall::put(ostream& os) const
 {
-	s << INDENT << "FunctionCall[";
-	if (fname_h!=NULL) fname_h->put(s);
-	s << endl;
-	if (arg_list_h!=NULL) arg_list_h->put(s);
-	return s << OUTDENT << "]\n";
+	os << INDENT << "FunctionCall[";
+	if (fname_h!=NULL) { os << endl; fname_h->put(os); }
+	if (arg_list_h!=NULL) { os << endl; arg_list_h->put(os); }
+	return os << OUTDENT << "]\n";
 }
 
 //-FunctionCall::
@@ -5513,7 +5512,7 @@ StringLiteral::~StringLiteral()
 ostream& StringLiteral::put(ostream& s) const
 {
 	s << INDENT << "StringLiteral[";
-	s << "strval=" << strval << endl;
+	s << "strval=\"" << strval << "\"\n";
 	return s << OUTDENT << "]\n";
 }
 

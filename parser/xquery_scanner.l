@@ -573,7 +573,7 @@ typedef yy::xquery_parser::token token;
 }
 
 {StringLiteral} {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
+	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::STRING_LITERAL;
 }
@@ -1429,7 +1429,7 @@ typedef yy::xquery_parser::token token;
 	return token::RBRACK;
 }
 {StringLiteral} {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
+	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	return token::STRING_LITERAL;
 }
 
@@ -1644,7 +1644,7 @@ typedef yy::xquery_parser::token token;
 	/* maintain XQUERYVERSION */
 	/* ---------------------- */
 {StringLiteral} {
-	yylval->sval = driver.symtab.put(yytext, yyleng);
+	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	return token::STRING_LITERAL;
 }
 

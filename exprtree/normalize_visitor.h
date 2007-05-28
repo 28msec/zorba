@@ -13,9 +13,7 @@
 
 #include "parsenode_visitor.h"
 #include "expr.h"
-
 #include "store/data_manager.h"
-#include "util/fxcharheap.h"
 
 #include <stack>
 
@@ -43,7 +41,6 @@ protected:
 	std::stack<expr_t> nodestack;
 	std::stack<expr_t> argstack;
 	std::stack<expr_t> pstack;	// predicates stack
-	fxcharheap sheap;
 
 public:
 	normalize_visitor(zorba*);

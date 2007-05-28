@@ -31,13 +31,19 @@ namespace xqp {
 template<typename T>
 bool _validate(iterator_t it, sequence_type_t t)
 {
-	cout << TRACE << endl;
+#ifdef DEBUG
+cout << TRACE << endl;
+#endif
+
 	if (it->done()) return false;
-	cout << TRACE << " : non-empty iterator" << endl;
 	item_t i_h = **it;
+
+#ifdef DEBUG
 	cout << TRACE << " : item extracted" << endl;
 	cout << TRACE << " : arg type = " << sequence_type::describe(i_h->type()) << endl;
 	cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
+#endif
+
 	return (i_h->type()==t);
 }
 

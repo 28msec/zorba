@@ -18,8 +18,8 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 	g++ ${OPT} -o ${BUILD}/plan_visitor_test \
 		../context/${BUILD}/static_context.${SUFX} \
 		../context/${BUILD}/dynamic_context.${SUFX} \
-		../dom/${BUILD}/dom_nodes.${SUFX} \
 		../dom/${BUILD}/dom_namepool.${SUFX} \
+		../dom/${BUILD}/dom_nodes.${SUFX} \
 		../dom/${BUILD}/dom_qname.${SUFX} \
 		../dom/${BUILD}/dom_xml_handler.${SUFX} \
 		../exprtree/${BUILD}/expr.${SUFX} \
@@ -35,12 +35,16 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 		../parser/${BUILD}/symbol_table.${SUFX} \
 		../parser/${BUILD}/xquery_driver.${SUFX} \
 		../store/${BUILD}/scan_handler.${SUFX} \
+		../store/${BUILD}/uri_resolver.${SUFX} \
+		../store/${BUILD}/xml_scanner.${SUFX} \
+		../store/${BUILD}/zorba_uri_resolver.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
-		../util/${BUILD}/xqp_exception.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
-		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
+		../util/${BUILD}/mmfile.${SUFX} \
+		../util/${BUILD}/tokenbuf.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
+		../util/${BUILD}/xqp_exception.${SUFX} \
 		../values/${BUILD}/primitive_values.${SUFX} \
 		../zorba/${BUILD}/zorba_qname.${SUFX} \
 		../zorba/${BUILD}/qnamerep.${SUFX} \

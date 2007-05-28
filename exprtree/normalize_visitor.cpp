@@ -2091,7 +2091,13 @@ cout << indent[depth--] << TRACE << ": Expr\n";
 		if (e_h==NULL) break;
 		elist_h->add(e_h);
 	}
-	nodestack.push(&*elist_h);
+	if (elist_h->size()==1) {
+		list_iterator<expr_t> it = elist_h->begin();
+		nodestack.push(&**it);
+	}
+	else {
+		nodestack.push(&*elist_h);
+	}
 }
 
 void normalize_visitor::end_visit(ExprSingle const& v)
@@ -2116,8 +2122,8 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(FunctionCall const& v)
 {
-cout << indent[depth] << TRACE << ": FunctionCall" << endl;
-cout << indent[depth--] << TRACE << ": argstack.size() = " << argstack.size() << endl;
+cout << indent[depth--] << TRACE << ": FunctionCall" 
+			<< " : argstack.size() = " << argstack.size() << endl;
 
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) return;
@@ -2260,8 +2266,7 @@ cout << indent[depth--] << TRACE << ": RelativePath\n";
 void normalize_visitor::end_visit(StringLiteral const& v)
 {
 cout << indent[depth--] << TRACE << ": StringLiteral" << endl;
-	off_t sid = sheap.put(v.get_strval());
-	nodestack.push(new literal_expr(v.get_location(), sid, true));
+	nodestack.push(new literal_expr(v.get_location(),v.get_strval()));
 }
 
 void normalize_visitor::end_visit(TreatExpr const& v)

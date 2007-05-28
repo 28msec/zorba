@@ -2,6 +2,7 @@
  * @file exprtree/expr.h
  * @author: John Cowan, Paul Pedersen
  * @copyright 2006-2007 FLWOR FOundation.
+ *
  * ========================================================================
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -61,7 +62,7 @@ public:
 
 public:
 	virtual void accept(expr_visitor&) const = 0;
-	virtual std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(zorba*,std::ostream&) const;
 
 
 /* (some proposed optimizer interface methods:)
@@ -120,7 +121,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -139,7 +140,7 @@ public:
 
 public:
 	std::string name() const { return m_name; }
-	std::ostream& put(std::ostream& os) const { return os << m_name; }
+	std::ostream& put(zorba*,std::ostream& os) const { return os << m_name; }
 
 };
 
@@ -195,7 +196,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-  std::ostream& put(std::ostream&) const;
+  std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -271,7 +272,7 @@ public:	// accessors
 	void set_expr(expr_t v) { expr_h = v; }
 
 public:
-	std::ostream& put(ostream&) const;
+	std::ostream& put(zorba*,ostream&) const;
 	
 };
 
@@ -335,7 +336,7 @@ public:	// accessors
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -385,7 +386,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -466,7 +467,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -507,7 +508,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -525,34 +526,29 @@ public:
 class fo_expr : public expr
 {
 protected:
-	std::vector<expr_t> expr_hv;
-	function const* func;
+	std::vector<expr_t> argv;
+	const function* func;
 
 public:
 	fo_expr(yy::location const&);
 	~fo_expr();
 
 public:
-	void add(expr_t e_h) { expr_hv.push_back(e_h); }
-	uint32_t size() const { return expr_hv.size(); }
-
-	expr_t & operator[](int i)
-		{ return expr_hv[i]; }
-	expr_t const& operator[](int i) const
-		{ return expr_hv[i]; }
-
-	std::vector<expr_t>::const_iterator begin() const
-		{ return expr_hv.begin(); }
-	std::vector<expr_t>::const_iterator end() const
-		{ return expr_hv.end(); }
+	void add(expr_t e_h) { argv.push_back(e_h); }
+	uint32_t size() const { return argv.size(); }
+	expr_t& operator[](int i) { return argv[i]; }
+	const expr_t& operator[](int i) const { return argv[i]; }
+	std::vector<expr_t>::const_iterator begin() const { return argv.begin(); }
+	std::vector<expr_t>::const_iterator end() const { return argv.end(); }
+	std::vector<expr_t>& get_argv() { return argv; }
 
 public:
-	function const* get_func() const { return func; }
+	const function* get_func() const { return func; }
 	void set_func(function const* _func) { func = _func; }
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -589,7 +585,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -625,7 +621,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -655,7 +651,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -685,7 +681,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -715,7 +711,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -744,7 +740,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -773,7 +769,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -833,7 +829,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -885,7 +881,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -946,7 +942,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1022,7 +1018,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1061,8 +1057,9 @@ public:
 
 protected:
 	enum literal_type_t type;
+	std::string sval;
 	union {
-		uint32_t sref;
+		//uint32_t sref;
 		int ival;
 		decimal decval;
 		double dval;
@@ -1070,7 +1067,8 @@ protected:
 	};
 
 public:
-	literal_expr(yy::location const&, uint32_t sref, bool);
+	//literal_expr(yy::location const&, uint32_t sref, bool);
+	literal_expr(yy::location const&, const std::string& sval);
 	literal_expr(yy::location const&, int);
 	literal_expr(yy::location const&, decimal);
 	literal_expr(yy::location const&, double);
@@ -1079,7 +1077,8 @@ public:
 
 public:
 	enum literal_type_t get_type() const { return type; }
-	uint32_t get_sref() const { return sref; }
+	//uint32_t get_sref() const { return sref; }
+	std::string get_sval() const { return sval; }
 	int get_ival() const { return ival; }
 	decimal get_decval() const { return decval; }
 	double get_dval() const { return dval; }
@@ -1088,7 +1087,7 @@ public:
 public:
 	static std::string decode_type(enum literal_type_t t);
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1126,7 +1125,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1161,7 +1160,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1214,7 +1213,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1252,7 +1251,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1278,7 +1277,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1304,7 +1303,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
@@ -1342,7 +1341,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
+	std::ostream& put(zorba*,std::ostream&) const;
 
 };
 
