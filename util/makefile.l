@@ -100,9 +100,9 @@ fxvector_test :	fxvector_test.cpp fxvector.h mmfile.h mmfile.cpp
 	fxvector_test.cpp; \
 
 fxcharheap : fxcharheap.h fxcharheap.cpp
-	g++ ${CXXOPT} -c ${OPT} -o ${BUILD}/fxcharheap.${SUFX} fxcharheap.cpp
+	g++ ${CXXOPT} ${LARGEFILES} -c ${OPT} -o ${BUILD}/fxcharheap.${SUFX} fxcharheap.cpp
 fxcharheap_test : fxcharheap.h fxcharheap.cpp fxcharheap_test.cpp
-	g++ ${CXXOPT} -o ${BUILD}/fxcharheap_test \
+	g++ ${CXXOPT} ${LARGEFILES} -o ${BUILD}/fxcharheap_test \
 		${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 		${BUILD}/mmfile.${SUFX} \
