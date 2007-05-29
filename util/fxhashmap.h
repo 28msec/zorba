@@ -43,10 +43,10 @@ class fxhashmap
 public:
 	struct entry
 	{
-		uint64_t key;						// fxcharheap offset
+		off_t key;							// fxcharheap offset
 		V val;									
 		entry() {}
-		entry(uint64_t k, V v) : key(k), val(v) {}
+		entry(off_t k, V v) : key(k), val(v) {}
 		entry(entry const& e) : key(e.key), val(e.val) {}
 		entry& operator=(entry const& e) { key = e.key; val = e.val; return *this; }
 		~entry() {}
@@ -404,7 +404,7 @@ throw (bad_arg)
 		e->val = val;
 		return true;
 	} else {
-		uint64_t id = hp->put(key.c_str(), 0, n);
+		off_t id = hp->put(key.c_str(), 0, n);
 		vp->push_back(entry(id,val));
 		(*dir)[h0] = sz++;
 		return false;
@@ -429,7 +429,7 @@ throw (bad_arg)
 		e->val = val;
 		return true;
 	} else {
-		uint64_t id = hp->put(key, 0, n);
+		off_t id = hp->put(key, 0, n);
 		vp->push_back(entry(id,val));
 		(*dir)[h0] = sz++;
 		return false;

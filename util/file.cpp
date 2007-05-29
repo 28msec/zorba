@@ -225,7 +225,7 @@ throw (xqp_exception)
   filtotal = buf.f_files;
   filfree  = buf.f_ffree;
   filavail = buf.f_ffree;
-  fsid     = buf.f_fsid;
+  //fsid     = buf.f_fsid;
   fstype   = buf.f_type;
 
   for (uint32_t i = 0; i < sizeof(FS_TYPES); ++i) {
