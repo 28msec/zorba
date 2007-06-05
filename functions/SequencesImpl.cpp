@@ -37,65 +37,56 @@ qname* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
+void concat_iterator::_open()
+{
+	currit_h->open();
+}
+
+void concat_iterator::_close()
+{
+	currit_h->close();
+}
+
 item_t concat_iterator::_next()
 {
-	if (currit->done() && first_b) {
-		currit = theNext;
-		first_b = false;
+	if (currit_h->done()) {
+		++cursor;
+		if (cursor==argv.size()) return NULL;
+		currit_h = argv[cursor];
 	}
-	return currit->next();
+	return currit_h->next();
 }
 
 bool concat_iterator::done() const
 {
-	return (!first_b && currit->done());
+	return (currit_h->done() && cursor==(argv.size()-1));
 }
 
 concat_iterator::concat_iterator(
 	zorba* zorp,
-	iterator_t theFirst,
-	iterator_t theSecond)
+	vector<iterator_t> _argv)
 :
 	basic_iterator(zorp),
-	currit(theFirst),
-	theNext(theSecond),
-	first_b(true)
+	argv(_argv),
+	cursor(0)
 {
 }
 
 concat_iterator::concat_iterator(
-	const concat_iterator& it)
+	const concat_iterator& concat_it)
 :
-	basic_iterator(it.zorp),
-	currit(it.currit),
-	theNext(it.theNext),
-	first_b(it.first_b)
+	basic_iterator(concat_it.zorp),
+	argv(concat_it.argv),
+	cursor(concat_it.cursor)
 {
 }
 
 concat_iterator& concat_iterator::operator=(
-	const concat_iterator& it)
+	const concat_iterator& concat_it)
 {
-	zorp = it.zorp;
-	currit = it.currit;
-	theNext = it.theNext;
-	first_b = it.first_b;
-	return *this;
-}
-
-item_t concat_iterator::operator*() const
-{
-	return **currit;
-}
-
-concat_iterator& concat_iterator::operator++()
-{
-	if (done()) throw xqp_exception("iterating past end");
-	if (currit->done() && first_b) {
-		currit = theNext;
-		first_b = false;
-	}
-	++(*currit);
+	zorp = concat_it.zorp;
+	argv = concat_it.argv;
+	cursor = concat_it.cursor;
 	return *this;
 }
 
@@ -263,18 +254,6 @@ doc_iterator& doc_iterator::operator=(
 	zorp = it.zorp;
 	arg = it.arg;
 	doc_node = it.doc_node;
-	return *this;
-}
-
-item_t doc_iterator::operator*() const
-{
-	return doc_node;
-}
-
-doc_iterator& doc_iterator::operator++()
-{
-	if (done()) throw xqp_exception("iterating past end");
-	doc_node = NULL;
 	return *this;
 }
 

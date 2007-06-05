@@ -108,11 +108,13 @@ string dom_document_node::str(
 	zorba* zorp) const 
 {
 	ostringstream oss;
-	iterator_t it = children(zorp);
-	for (; !it->done(); ++(*it)) {
-		item_t dn_h = **it;
+	iterator_t it_h = children(zorp);
+	it_h->open();
+	while (!it_h->done()) {
+		item_t dn_h = it_h->next();
 		oss << dn_h->str(zorp);
 	}
+	it_h->close();
 	return oss.str();
 }
 
@@ -145,11 +147,13 @@ ostream& dom_document_node::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	iterator_t it = children(zorp);
-	for (; !it->done(); ++(*it)) {
-		item_t dn_h = **it;
+	iterator_t it_h = children(zorp);
+	it_h->open();
+	while (!it_h->done()) {
+		item_t dn_h = it_h->next();
 		os << dn_h->str(zorp);
 	}
+	it_h->close();
 	return os;
 }
 
@@ -157,11 +161,14 @@ string dom_document_node::toXML(
 	zorba* zorp) const
 {
 	ostringstream oss;
-	iterator_t it = children(zorp);
-	for (; !it->done(); ++(*it)) {
-		dom_node* dn_p = dynamic_cast<dom_node*>(&***it);
+	iterator_t it_h = children(zorp);
+	it_h->open();
+	while (!it_h->done()) {
+		item_t i_h = it_h->next();
+		dom_node* dn_p = dynamic_cast<dom_node*>(&*i_h);
 		oss << dn_p->toXML(zorp);
 	}
+	it_h->close();
 	return oss.str();
 }
 
@@ -205,11 +212,13 @@ std::string dom_element_node::str(
 	zorba* zorp) const
 {
 	ostringstream oss;
-	iterator_t it = children(zorp);
-	for (; !it->done(); ++(*it)) {
-		item_t dn_h = **it;
+	iterator_t it_h = children(zorp);
+	it_h->open();
+	while (!it_h->done()) {
+		item_t dn_h = it_h->next();
 		oss << dn_h->str(zorp);
 	}
+	it_h->close();
 	return oss.str();
 }
 

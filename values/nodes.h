@@ -79,6 +79,9 @@ public:		// XQuery interface
 	virtual bool is_id() const = 0;
 	virtual bool is_idrefs() const = 0;
 	virtual bool nilled() const = 0;
+	
+	/* add: operator<(), operator==()    */
+	/* remove: id(), parentid()          */
 
 };
 	

@@ -13,6 +13,7 @@
 #include "util/rchandle.h"
 #include "util/tracer.h"
 
+#include <assert.h>
 #include <iostream>
 #include <vector>
 
@@ -75,10 +76,6 @@ protected:	// dispatch to concrete classes
 	virtual item_t _next() = 0;
 	virtual void	 _close() = 0;
 
-public:			// C++ interface
-	virtual item_t operator*() const = 0;
-	virtual basic_iterator& operator++() = 0;
-
 };
 
 
@@ -129,12 +126,7 @@ public:		// iterator interface
 public:		// variable binding
 	void bind(item_t _i_h) { i_h = _i_h; }
 
-public:		// C++ interface
-	item_t operator*() const { return i_h; }
-
-	singleton_iterator& operator++()
-		{ i_h = NULL; return *this; }
-
+public:
 	singleton_iterator& operator=(const singleton_iterator& it)
 		{ i_h = it.i_h; return *this; }
 
@@ -162,18 +154,11 @@ public:	// iterator interface
 	item_t peek() const { return val; }
 	bool done() const { return done_b; }
 
-public:	// C++ interface
-	item_t operator*() const
-		{ return val; }
-
-	singleton_iterator& operator++()
-		{ done_b = true; return *this; }
-
+public:
 	singleton_iterator& operator=(const singleton_iterator& it)
 		{ val = it.val; done_b = it.done_b; }
 
 };
-
 */
 
 
@@ -198,9 +183,6 @@ public:
 	bool done() const { return it->done(); }
 	void bind(iterator_t _it) { it = _it;}
 
-public:
-	item_t operator*() const { return **it; }
-	ref_iterator& operator++() { ++(*it); return *this; }
 };
 
 
@@ -272,33 +254,6 @@ public:
 	}
 
 	bool done() const { return theInput->done(); }
-
-public:
-	item_t operator*() const
-	{
-		return **theExpr;
-	}
-
-	map_iterator& operator++()
-	{
-		basic_iterator& input = *theInput;
-		basic_iterator& expr = *theExpr;
-
-		while (true) {
-			if (theState==outer) {
-				if (!input.done()) ++input;
-				vector<singleton_t>::const_iterator itv = varv.begin();
-				for (; itv!=varv.end(); ++itv) { (*itv)->bind(*input); }
-				expr.open();
-				theState = inner;
-			}
-			++expr;
-			if (!expr.done()) break;
-			expr.close();
-			theState = outer;
-		}
-		return *this;
-	}
 
 };
 

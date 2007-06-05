@@ -521,6 +521,12 @@ typedef yy::xquery_parser::token token;
 
 	/* transition to OPERATOR */
 	/* ---------------------- */
+{IntegerLiteral}	{
+	yylval->ival = driver.symtab.intval(yytext, yyleng);
+	BEGIN MODE_OPERATOR;
+	return token::INTEGER_LITERAL;
+}
+
 {DecimalLiteral}	{
 	yylval->decval = driver.symtab.decimalval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -531,12 +537,6 @@ typedef yy::xquery_parser::token token;
 	yylval->dval = driver.symtab.doubleval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
 	return token::DOUBLE_LITERAL;
-}
-
-{IntegerLiteral}	{
-	yylval->ival = driver.symtab.intval(yytext, yyleng);
-	BEGIN MODE_OPERATOR;
-	return token::INTEGER_LITERAL;
 }
 
 "NaN" {

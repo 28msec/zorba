@@ -35,23 +35,21 @@ class zorba;
 class concat_iterator : public basic_iterator
 {
 protected:
-	iterator_t currit;
-	iterator_t theNext;
-	bool first_b;
+	std::vector<iterator_t> argv;
+	iterator_t currit_h;
+	uint32_t cursor;
 
-public:	
-	void _open() {}
-	void _close() {}
+public:
+	void _open();
+	void _close();
 	item_t _next();
 	bool done() const;
 
 public:
-	item_t operator*() const;
-	concat_iterator& operator++();
 	concat_iterator& operator=(const concat_iterator& it);
 
 public:	// ctor,dtor
-	concat_iterator(zorba*, iterator_t, iterator_t);
+	concat_iterator(zorba*, std::vector<iterator_t>);
 	concat_iterator(const concat_iterator& it);
 	~concat_iterator() {}
 
@@ -145,8 +143,6 @@ public:
 	bool done() const;
 
 public:
-	item_t operator*() const;
-	doc_iterator& operator++();
 	doc_iterator& operator=(const doc_iterator& it);
 
 public:	// ctor,dtor

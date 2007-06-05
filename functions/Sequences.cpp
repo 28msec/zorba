@@ -1,8 +1,20 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*- *
- *  $Id: Sequences.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+/**
+ * @file Sequences.cpp
+ * @author Paul Pedersen (pcp071098@yahoo.com)
+ * @copyright 2006-2007 FLWOR Foundation (flworfound.org).
  *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan, Paul Pedersen
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  *
  */
 
@@ -23,29 +35,8 @@
 
 #include <iostream>
 
-
 using namespace std;
 namespace xqp {
-
-
-template<typename T>
-bool _validate(iterator_t it, sequence_type_t t)
-{
-#ifdef DEBUG
-cout << TRACE << endl;
-#endif
-
-	if (it->done()) return false;
-	item_t i_h = **it;
-
-#ifdef DEBUG
-	cout << TRACE << " : item extracted" << endl;
-	cout << TRACE << " : arg type = " << sequence_type::describe(i_h->type()) << endl;
-	cout << TRACE << " : target type = " << sequence_type::describe(t) << endl;
-#endif
-
-	return (i_h->type()==t);
-}
 
 
 /*______________________________________________________________________
@@ -59,7 +50,6 @@ cout << TRACE << endl;
 
 
 //15.1.2 op:concatenate 
-//---------------------
 /*_______________________________________________________________________
 |
 |	op:concatenate($seq1 as item()*, $seq2 as item()*) as item()*
@@ -82,13 +72,13 @@ iterator_t op_concatenate::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new concat_iterator(zorp,argv[0],argv[1]);
+	return new concat_iterator(zorp,argv);
 }
 
 bool op_concatenate::validate_args(
 	vector<iterator_t>& argv) const
 {
-	return (argv.size()==2);
+	return true;
 }
 
 sequence_type_t op_concatenate::type_check(
@@ -99,33 +89,33 @@ sequence_type_t op_concatenate::type_check(
 
 
 //15.1.3 fn:index-of
-//------------------
-/*
-	fn:index-of($seqParam as xs:anyAtomicType*,
-							$srchParam as xs:anyAtomicType) as xs:integer*
-	fn:index-of($seqParam as xs:anyAtomicType*,
-							$srchParam as xs:anyAtomicType,
-							$collation as xs:string) as xs:integer*
-	
-	Summary: Returns a sequence of positive integers giving the positions 
-	within the sequence $seqParam of items that are equal to $srchParam. 
-	
-	The collation used by the invocation of this function is determined 
-	according to the rules in 7.3.1 Collations. The collation is used when 
-	string comparison is required. 
-
-	The items in the sequence $seqParam are compared with $srchParam under 
-	the rules for the 'eq' operator. Values that cannot be compared, i.e. 
-	the 'eq' operator is not defined for their types, are considered to be 
-	distinct. If an item compares equal, then the position of that item in 
-	the sequence $seqParam is included in the result. 
-
-	If the value of $seqParam is the empty sequence, or if no item in 
-	$seqParam matches $srchParam, then the empty sequence is returned. 
-
-	The first item in a sequence is at position 1, not position 0.
-	The result sequence is in ascending numeric order.
-*/
+/*_______________________________________________________________________
+|
+|	fn:index-of($seqParam as xs:anyAtomicType*,
+|							$srchParam as xs:anyAtomicType) as xs:integer*
+|	fn:index-of($seqParam as xs:anyAtomicType*,
+|							$srchParam as xs:anyAtomicType,
+|							$collation as xs:string) as xs:integer*
+|	
+|	Summary: Returns a sequence of positive integers giving the positions 
+|	within the sequence $seqParam of items that are equal to $srchParam. 
+|	
+|	The collation used by the invocation of this function is determined 
+|	according to the rules in 7.3.1 Collations. The collation is used when 
+|	string comparison is required. 
+|
+|	The items in the sequence $seqParam are compared with $srchParam under 
+|	the rules for the 'eq' operator. Values that cannot be compared, i.e. 
+|	the 'eq' operator is not defined for their types, are considered to be 
+|	distinct. If an item compares equal, then the position of that item in 
+|	the sequence $seqParam is included in the result. 
+|
+|	If the value of $seqParam is the empty sequence, or if no item in 
+|	$seqParam matches $srchParam, then the empty sequence is returned. 
+|
+|	The first item in a sequence is at position 1, not position 0.
+|	The result sequence is in ascending numeric order.
+|________________________________________________________________________*/
 
 fn_index_of::fn_index_of(const signature& sig)
 : function(sig) { }
@@ -153,13 +143,7 @@ iterator_t fn_index_of::operator()(
 bool fn_index_of::validate_args(
 	vector<iterator_t>& argv) const
 {
-	if (argv.size()==2) {
-		return _validate<item>(argv[1],xs_anyType);
-	}
-	if (argv.size()==3) {
-		return _validate<item>(argv[1],xs_anyType)
-						&& _validate<item>(argv[2],xs_string);
-	}
+	if (argv.size()==2 || argv.size()==3) return true;
 	return false;
 }
 
@@ -385,7 +369,7 @@ bool fn_doc_func::validate_args(
 	vector<iterator_t>& argv) const
 {
 	if (argv.size()!=1) return false;
-	return _validate<item>(argv[0],xs_string);
+	return true;
 }
 
 sequence_type_t fn_doc_func::type_check(

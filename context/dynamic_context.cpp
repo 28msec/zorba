@@ -69,8 +69,11 @@ void dynamic_context::init(
 const namespace_node&
 dynamic_context::default_element_type_namespace() const
 {
-	item_t i = **context_value(default_element_type_ns_key);
-	return *dynamic_cast<const namespace_node*>(&*i);
+	iterator_t it_h = context_value(default_element_type_ns_key);
+	it_h->open();
+	item_t i_h = it_h->next();
+	it_h->close();
+	return dynamic_cast<const namespace_node&>(*i_h);
 }
 
 void dynamic_context::set_default_element_type_namespace(
@@ -97,7 +100,10 @@ sequence_type_t dynamic_context::context_item_type() const
 dynamic_context::ordering_mode_t dynamic_context::ordering_mode() const
 {
 	iterator_t it_h = context_value(ordering_mode_key);
-	string mode = (**it_h)->str(zorp);
+	it_h->open();
+	item_t i_h = it_h->next();
+	it_h->close();
+	string mode = i_h->str(zorp);
 	if (mode=="ordered") return ordered;
 	return unordered;
 }

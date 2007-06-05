@@ -3,7 +3,7 @@ SUFX=do
 BUILD=Build
 
 xquery_scanner : xquery_scanner.l
-	flex -i -t xquery_scanner.l >xquery_scanner.yy.cpp
+	flex -i -t -v xquery_scanner.l >xquery_scanner.yy.cpp
 	g++ ${OPT} -c -o ${BUILD}/xquery_scanner.${SUFX} xquery_scanner.yy.cpp
 
 xquery_parser : xquery_parser.y

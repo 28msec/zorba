@@ -222,16 +222,8 @@ cout << indent[depth--] << TRACE << ": expr_list" << endl;
 		if (it==NULL) break;
 		it_list.push_back(it);
 	}
-cout << TRACE << " : [1]\n";
-	rchandle<concat_iterator> cit_h =
-		new concat_iterator(zorp, it_list[0], it_list[1]);
-
-	// impl note: use this pattern for code gen of all funcall_expr nodes
-	//  it_h = new funcall_iterator(fun, it_list)
-
-cout << TRACE << " : [2]\n";
+	rchandle<concat_iterator> cit_h = new concat_iterator(zorp, it_list);
 	itstack.push(&*cit_h);
-cout << TRACE << " : [3]\n";
 }
 
 void plan_visitor::end_visit(const var_expr& v)

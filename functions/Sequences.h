@@ -1,18 +1,31 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/**
+ * @file Sequences.h
+ * @author Paul Pedersen (pcp071098@yahoo.com)
+ * @copyright 2006-2007 FLWOR Foundation (flworfound.org)
  *
- *  $Id: Sequences.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Authors: John Cowan, Paul Pedersen
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 
 #ifndef XQP_SEQUENCES_H
 #define XQP_SEQUENCES_H
 
-#include "functions/function.h"
+#include "function.h"
+
 #include "runtime/item_iterator.h"
 #include "util/rchandle.h"
 #include "values/nodes.h"
+
 #include <string>
 #include <vector>
 

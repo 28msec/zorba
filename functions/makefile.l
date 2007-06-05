@@ -81,12 +81,15 @@ Numerics_test : Numerics.h Numerics.cpp Numerics_test.cpp
 		../runtime/${BUILD}/zorba.${SUFX} \
 		../store/${BUILD}/itemstore.${SUFX} \
 		../store/${BUILD}/scan_handler.${SUFX} \
+		../store/${BUILD}/uri_resolver.${SUFX} \
+		../store/${BUILD}/zorba_uri_resolver.${SUFX} \
 		../store/${BUILD}/xml_scanner.${SUFX} \
 		../types/${BUILD}/sequence_type.${SUFX} \
 		../util/${BUILD}/file.${SUFX} \
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/fxcharheap.${SUFX} \
 		../util/${BUILD}/tokenbuf.${SUFX} \
+		../util/${BUILD}/URI.${SUFX} \
 		../util/${BUILD}/xqp_exception.${SUFX} \
 		../values/${BUILD}/primitive_values.${SUFX} \
 		../zorba/${BUILD}/qnamerep.${SUFX} \
