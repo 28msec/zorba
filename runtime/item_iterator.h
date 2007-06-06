@@ -31,15 +31,9 @@ protected:
 	bool open_b;
 
 public:
-	basic_iterator()
-		: zorp(NULL), open_b(false) {}
-
-	basic_iterator(zorba* _zorp)
-		: zorp(_zorp), open_b(false) {}
-
-	basic_iterator(const basic_iterator& it)
-		: zorp(it.zorp), open_b(it.open_b) {}
-
+	basic_iterator() : zorp(NULL), open_b(false) {}
+	basic_iterator(zorba* _zorp) : zorp(_zorp), open_b(false) {}
+	basic_iterator(const basic_iterator& it) : zorp(it.zorp), open_b(it.open_b) {}
 	virtual ~basic_iterator() {}
 
 public:		// inline base logic

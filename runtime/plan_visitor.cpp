@@ -216,13 +216,13 @@ cout << indent[depth--] << TRACE << ": expr" << endl;
 void plan_visitor::end_visit(const expr_list& v)
 {
 cout << indent[depth--] << TRACE << ": expr_list" << endl;
-	vector<iterator_t> it_list;
+	vector<iterator_t> argv;
 	while (true) {
 		iterator_t it = pop_itstack();
 		if (it==NULL) break;
-		it_list.push_back(it);
+		argv.push_back(it);
 	}
-	rchandle<concat_iterator> cit_h = new concat_iterator(zorp, it_list);
+	rchandle<concat_iterator> cit_h = new concat_iterator(zorp, argv);
 	itstack.push(&*cit_h);
 }
 

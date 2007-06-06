@@ -59,15 +59,16 @@ item_t concat_iterator::_next()
 
 bool concat_iterator::done() const
 {
-	return (currit_h->done() && cursor==(argv.size()-1));
+	return (currit_h->done() && cursor==argv.size()-1);
 }
 
 concat_iterator::concat_iterator(
 	zorba* zorp,
-	vector<iterator_t> _argv)
+	const vector<iterator_t>& _argv)
 :
 	basic_iterator(zorp),
 	argv(_argv),
+	currit_h(argv.size()>0?argv[0]:NULL),
 	cursor(0)
 {
 }
@@ -77,17 +78,9 @@ concat_iterator::concat_iterator(
 :
 	basic_iterator(concat_it.zorp),
 	argv(concat_it.argv),
+	currit_h(concat_it.currit_h),
 	cursor(concat_it.cursor)
 {
-}
-
-concat_iterator& concat_iterator::operator=(
-	const concat_iterator& concat_it)
-{
-	zorp = concat_it.zorp;
-	argv = concat_it.argv;
-	cursor = concat_it.cursor;
-	return *this;
 }
 
 

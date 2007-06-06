@@ -1,9 +1,20 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/**
+ * @file SequencesImpl.h
+ * @authors Paul Pedersen (pcp071098@yahoo.com)
+ * @copyright 2006-2007 FLWOR Foundation (flworfound.org).
  *
- *  $Id: SequencesImpl.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Authors: John Cowan, Paul Pedersen
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  */
 
 #ifndef XQP_SEQUENCES_IMPL_H
@@ -35,7 +46,7 @@ class zorba;
 class concat_iterator : public basic_iterator
 {
 protected:
-	std::vector<iterator_t> argv;
+	const std::vector<iterator_t>& argv;
 	iterator_t currit_h;
 	uint32_t cursor;
 
@@ -45,11 +56,8 @@ public:
 	item_t _next();
 	bool done() const;
 
-public:
-	concat_iterator& operator=(const concat_iterator& it);
-
 public:	// ctor,dtor
-	concat_iterator(zorba*, std::vector<iterator_t>);
+	concat_iterator(zorba*, const std::vector<iterator_t>&);
 	concat_iterator(const concat_iterator& it);
 	~concat_iterator() {}
 
