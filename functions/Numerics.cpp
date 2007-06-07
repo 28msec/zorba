@@ -9,6 +9,7 @@
  */
 
 #include "Numerics.h"
+#include "NumericsImpl.h"
 #include <iostream>
 
 using namespace std;
@@ -45,20 +46,7 @@ iterator_t op_numeric_add::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open(); argv[1]->open();
-	item_t i0_h = argv[0]->next();
-	item_t i1_h = argv[1]->next();
-	argv[0]->close(); argv[1]->close();
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*i1_h);
-
-	cout << TRACE << ": n0 = "; n0.put(NULL,cout) << endl;
-	cout << TRACE << ": n1 = "; n1.put(NULL,cout) << endl;
-
-	// XXX: optimize this
-	return new singleton_iterator(
-					new numericValue(xs_decimal, n0.val() + n1.val()));
+	return new op_numeric_add_iterator(argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add::type_check(
@@ -86,17 +74,7 @@ iterator_t op_numeric_add_int::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open(); argv[1]->open();
-	item_t i0_h = argv[0]->next();
-	item_t i1_h = argv[1]->next();
-	argv[0]->close(); argv[1]->close();
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*i1_h);
-
-	return new singleton_iterator(
-					new numericValue(xs_integer, n0.val() + n1.val()));
+	return new op_numeric_add_iterator(argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add_int::type_check(
@@ -141,17 +119,7 @@ iterator_t op_numeric_subtract::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open(); argv[1]->open();
-	item_t i0_h = argv[0]->next();
-	item_t i1_h = argv[1]->next();
-	argv[0]->close(); argv[1]->close();
-	
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*i1_h);
-
-	return new singleton_iterator(
-					new numericValue(xs_decimal, n0.val() - n1.val()));
+	return new op_numeric_subtract_iterator(argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_subtract::type_check(
@@ -195,17 +163,7 @@ iterator_t op_numeric_multiply::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open(); argv[1]->open();
-	item_t i0_h = argv[0]->next();
-	item_t i1_h = argv[1]->next();
-	argv[0]->close(); argv[1]->close();
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*i1_h);
-
-	return new singleton_iterator(
-					new numericValue(xs_decimal, n0.val() * n1.val()));
+	return new op_numeric_multiply_iterator(argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_multiply::type_check(
@@ -259,17 +217,7 @@ iterator_t op_numeric_divide::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open(); argv[1]->open();
-	item_t i0_h = argv[0]->next();
-	item_t i1_h = argv[1]->next();
-	argv[0]->close(); argv[1]->close();
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*i1_h);
-
-	return new singleton_iterator(
-					new numericValue(xs_decimal, n0.val() / n1.val()));
+	return new op_numeric_divide_iterator(argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_divide::type_check(
@@ -325,17 +273,7 @@ iterator_t op_numeric_integer_divide::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open(); argv[1]->open();
-	item_t i0_h = argv[0]->next();
-	item_t i1_h = argv[1]->next();
-	argv[0]->close(); argv[1]->close();
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*i1_h);
-
-	return new singleton_iterator(
-					new numericValue(xs_decimal, n0.val() / n1.val()));
+	return new op_numeric_integer_divide_iterator(argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_integer_divide::type_check(
@@ -399,17 +337,7 @@ iterator_t op_numeric_mod::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open(); argv[1]->open();
-	item_t i0_h = argv[0]->next();
-	item_t i1_h = argv[1]->next();
-	argv[0]->close(); argv[1]->close();
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*i1_h);
-
-	return new singleton_iterator(
-					new numericValue(xs_decimal, (long)n0.val() % (long)n1.val()));
+	return new op_numeric_mod_iterator(argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_mod::type_check(
@@ -492,15 +420,7 @@ iterator_t op_numeric_unary_minus::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-
-	argv[0]->open();
-	item_t i0_h = argv[0]->next();
-	argv[0]->close();
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*i0_h);
-
-	return new singleton_iterator(
-					new numericValue(xs_decimal, -(n0.val())));
+	return new op_numeric_unary_minus_iterator(argv[0]);
 }
 
 sequence_type_t op_numeric_unary_minus::type_check(
