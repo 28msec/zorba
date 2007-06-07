@@ -20,6 +20,9 @@ SequencesImpl :	SequencesImpl.h SequencesImpl.cpp
 Numerics : Numerics.h Numerics.cpp
 	g++ ${OPT} -c -o ${BUILD}/Numerics.${SUFX} Numerics.cpp
 
+NumericsImpl : NumericsImpl.h NumericsImpl.cpp
+	g++ ${OPT} -c -o ${BUILD}/NumericsImpl.${SUFX} NumericsImpl.cpp
+
 function_test :	function.h function.cpp
 	g++ ${OPT} -o ${BUILD}/function_test \
 		../types/Build/sequence_type.${SUFX} \
