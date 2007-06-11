@@ -42,135 +42,114 @@ normalize_visitor::normalize_visitor(
  :  begin visit                            :
  :.........................................*/
 
-bool normalize_visitor::begin_visit(parsenode const& v)
+bool normalize_visitor::begin_visit(const parsenode& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(exprnode const& v)
+bool normalize_visitor::begin_visit(const exprnode& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AbbrevForwardStep const& v)
+bool normalize_visitor::begin_visit(const AbbrevForwardStep& v)
 {
 cout << indent[++depth] << TRACE << ": AbbrevForwardStep\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AnyKindTest const& v)
+bool normalize_visitor::begin_visit(const AnyKindTest& v)
 {
-cout << TRACE << endl;
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->set_test(match_expr::anykind_test);
-	nodestack.push(&*m_h);
+cout << indent[++depth] << TRACE << ": AnyKindTest\n";
+	// no action needed here
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AposAttrContentList const& v)
+bool normalize_visitor::begin_visit(const AposAttrContentList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AposAttrValueContent const& v)
+bool normalize_visitor::begin_visit(const AposAttrValueContent& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ArgList const& v)
+bool normalize_visitor::begin_visit(const ArgList& v)
 {
 cout << indent[++depth] << TRACE << ": ArgList" << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AtomicType const& v)
+bool normalize_visitor::begin_visit(const AtomicType& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AttributeTest const& v)
+bool normalize_visitor::begin_visit(const AttributeTest& v)
 {
-cout << TRACE << endl;
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->set_test(match_expr::attr_test);
-
-	rchandle<QName> elem_h = v.get_attr();
-	if (elem_h!=NULL) {
-		m_h->set_name(new qname_expr(v.get_location(),
-																	elem_h->get_qname()));
-	}
-	rchandle<TypeName> type_h = v.get_type();
-	if (type_h!=NULL) {
-		m_h->set_typename(new qname_expr(v.get_location(),
-																			type_h->get_name()->get_qname()));
-	}
-	if (v.is_wild()) {
-		// XXX missing member variable for this
-	}
-	nodestack.push(&*m_h);
+cout << indent[++depth] << TRACE << ": AttributeTest\n";
+	// no action needed here
 	return true;
 }
 
-bool normalize_visitor::begin_visit(BaseURIDecl const& v)
+bool normalize_visitor::begin_visit(const BaseURIDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	zorp->get_static_context()->set_baseuri(v.get_base_uri());
 	return false;
 }
 
-bool normalize_visitor::begin_visit(BoundarySpaceDecl const& v)
+bool normalize_visitor::begin_visit(const BoundarySpaceDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	zorp->get_static_context()->set_boundary_space_mode(v.get_boundary_space_mode());
 	return false;
 }
 
-bool normalize_visitor::begin_visit(CaseClause const& v)
+bool normalize_visitor::begin_visit(const CaseClause& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CaseClauseList const& v)
+bool normalize_visitor::begin_visit(const CaseClauseList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CommentTest const& v)
+bool normalize_visitor::begin_visit(const CommentTest& v)
 {
-cout << TRACE << endl;
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->set_test(match_expr::comment_test);
-	nodestack.push(&*m_h);
+cout << indent[++depth] << TRACE << ": CommentTest\n";
+	// no action needed here
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ConstructionDecl const& v)
+bool normalize_visitor::begin_visit(const ConstructionDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	zorp->get_static_context()->set_construction_mode(v.get_mode());
 	return false;
 }
 
-bool normalize_visitor::begin_visit(CopyNamespacesDecl const& v)
+bool normalize_visitor::begin_visit(const CopyNamespacesDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(
-	DefaultCollationDecl const& v)
+bool normalize_visitor::begin_visit(DefaultCollationDecl const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	string uri = v.get_collation();
 	zorp->get_static_context()->set_default_collation(uri);
 	return false;
@@ -179,7 +158,7 @@ cout << TRACE << endl;
 bool normalize_visitor::begin_visit(
 	DefaultNamespaceDecl const& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	switch (v.get_mode()) {
 	case ns_element_default: {
 		namespace_node* ns_p = new dom_namespace_node("#elem#",v.get_default_namespace());
@@ -194,35 +173,35 @@ cout << TRACE << endl;
 	return false;
 }
 
-bool normalize_visitor::begin_visit(DirAttr const& v)
+bool normalize_visitor::begin_visit(const DirAttr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DirAttributeList const& v)
+bool normalize_visitor::begin_visit(const DirAttributeList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DirAttributeValue const& v)
+bool normalize_visitor::begin_visit(const DirAttributeValue& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DirElemContentList const& v)
+bool normalize_visitor::begin_visit(const DirElemContentList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DocumentTest const& v)
+bool normalize_visitor::begin_visit(const DocumentTest& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::doc_test);
 
@@ -247,206 +226,189 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ElementTest const& v)
+bool normalize_visitor::begin_visit(const ElementTest& v)
 {
-cout << TRACE << endl;
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->set_test(match_expr::elem_test);
-
-	rchandle<QName> elem_h = v.get_elem();
-	if (elem_h!=NULL) {
-		m_h->set_name(new qname_expr(v.get_location(),
-																	elem_h->get_qname()));
-	}
-	rchandle<TypeName> type_h = v.get_type();
-	if (type_h!=NULL) {
-		m_h->set_typename(new qname_expr(v.get_location(),
-																			type_h->get_name()->get_qname()));
-	}
-	bool optional_b =  v.get_optional_bit();
-	if (optional_b) {
-		// XXX missing member variable for this
-	}
-	nodestack.push(&*m_h);
+cout << indent[++depth]<<TRACE<<": ElementTest\n";
+	// no action needed here
 	return true;
 }
 
-bool normalize_visitor::begin_visit(EmptyOrderDecl const& v)
+bool normalize_visitor::begin_visit(const EmptyOrderDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	zorp->get_static_context()->set_order_empty_mode(v.get_mode());
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ForClause const& v)
+bool normalize_visitor::begin_visit(const ForClause& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ForLetClause const& v)
+bool normalize_visitor::begin_visit(const ForLetClause& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ForLetClauseList const& v)
+bool normalize_visitor::begin_visit(const ForLetClauseList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ForwardAxis const& v)
+bool normalize_visitor::begin_visit(const ForwardAxis& v)
 {
 cout << indent[++depth] << TRACE << ": ForwardAxis" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ForwardStep const& v)
+bool normalize_visitor::begin_visit(const ForwardStep& v)
 {
 cout << indent[++depth] << TRACE << ": ForwardStep\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FunctionDecl const& v)
+bool normalize_visitor::begin_visit(const FunctionDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(GeneralComp const& v)
+bool normalize_visitor::begin_visit(const GeneralComp& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ItemType const& v)
+bool normalize_visitor::begin_visit(const ItemType& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(LetClause const& v)
+bool normalize_visitor::begin_visit(const LetClause& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(LibraryModule const& v)
+bool normalize_visitor::begin_visit(const LibraryModule& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(MainModule  const& v)
+bool normalize_visitor::begin_visit(const MainModule & v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Module const& v)
+bool normalize_visitor::begin_visit(const Module& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ModuleDecl const& v)
+bool normalize_visitor::begin_visit(const ModuleDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ModuleImport const& v)
+bool normalize_visitor::begin_visit(const ModuleImport& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(NameTest const& v)
+bool normalize_visitor::begin_visit(const NameTest& v)
 {
 cout << indent[++depth] << TRACE << ": NameTest\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(NamespaceDecl const& v)
+bool normalize_visitor::begin_visit(const NamespaceDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	// add namespace def to context
 	return false;
 }
 
-bool normalize_visitor::begin_visit(NodeComp const& v)
+bool normalize_visitor::begin_visit(const NodeComp& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OccurrenceIndicator const& v)
+bool normalize_visitor::begin_visit(const OccurrenceIndicator& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OptionDecl const& v)
+bool normalize_visitor::begin_visit(const OptionDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderByClause const& v)
+bool normalize_visitor::begin_visit(const OrderByClause& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderCollationSpec const& v)
+bool normalize_visitor::begin_visit(const OrderCollationSpec& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderDirSpec const& v)
+bool normalize_visitor::begin_visit(const OrderDirSpec& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderEmptySpec const& v)
+bool normalize_visitor::begin_visit(const OrderEmptySpec& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderModifier const& v)
+bool normalize_visitor::begin_visit(const OrderModifier& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderSpec const& v)
+bool normalize_visitor::begin_visit(const OrderSpec& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderSpecList const& v)
+bool normalize_visitor::begin_visit(const OrderSpecList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderingModeDecl const& v)
+bool normalize_visitor::begin_visit(const OrderingModeDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
 	return false;
 }
 
-bool normalize_visitor::begin_visit(PITest const& v)
+bool normalize_visitor::begin_visit(const PITest& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::pi_test);
 
@@ -456,99 +418,99 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Param const& v)
+bool normalize_visitor::begin_visit(const Param& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ParamList const& v)
+bool normalize_visitor::begin_visit(const ParamList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(PositionalVar const& v)
+bool normalize_visitor::begin_visit(const PositionalVar& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Pragma const& v)
+bool normalize_visitor::begin_visit(const Pragma& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(PragmaList const& v)
+bool normalize_visitor::begin_visit(const PragmaList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(PredicateList const& v)
+bool normalize_visitor::begin_visit(const PredicateList& v)
 {
 cout << indent[++depth] << TRACE << ": PredicateList" << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Prolog const& v)
+bool normalize_visitor::begin_visit(const Prolog& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(QVarInDecl const& v)
+bool normalize_visitor::begin_visit(const QVarInDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(QVarInDeclList const& v)
+bool normalize_visitor::begin_visit(const QVarInDeclList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(QuoteAttrValueContent const& v)
+bool normalize_visitor::begin_visit(const QuoteAttrValueContent& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(QuoteAttrContentList const& v)
+bool normalize_visitor::begin_visit(const QuoteAttrContentList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ReverseAxis const& v)
+bool normalize_visitor::begin_visit(const ReverseAxis& v)
 {
 cout << indent[++depth] << TRACE << ": ReverseAxis" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ReverseStep const& v)
+bool normalize_visitor::begin_visit(const ReverseStep& v)
 {
 cout << indent[++depth] << TRACE << ": ReverseStep" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SIND_DeclList const& v)
+bool normalize_visitor::begin_visit(const SIND_DeclList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SchemaAttributeTest const& v)
+bool normalize_visitor::begin_visit(const SchemaAttributeTest& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::xs_attr_test);
 
@@ -561,9 +523,9 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SchemaElementTest const& v)
+bool normalize_visitor::begin_visit(const SchemaElementTest& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::xs_elem_test);
 
@@ -576,131 +538,129 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SchemaImport const& v)
+bool normalize_visitor::begin_visit(const SchemaImport& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SchemaPrefix const& v)
+bool normalize_visitor::begin_visit(const SchemaPrefix& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SequenceType const& v)
+bool normalize_visitor::begin_visit(const SequenceType& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SignList const& v)
+bool normalize_visitor::begin_visit(const SignList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(SingleType const& v)
+bool normalize_visitor::begin_visit(const SingleType& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(TextTest const& v)
+bool normalize_visitor::begin_visit(const TextTest& v)
 {
-cout << TRACE << endl;
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->set_test(match_expr::text_test);
-	nodestack.push(&*m_h);
+cout << indent[++depth] << TRACE << ": TextTest\n";
+	// no action needed here
 	return true;
 }
 
-bool normalize_visitor::begin_visit(TypeDeclaration const& v)
+bool normalize_visitor::begin_visit(const TypeDeclaration& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(TypeName const& v)
+bool normalize_visitor::begin_visit(const TypeName& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(URILiteralList const& v)
+bool normalize_visitor::begin_visit(const URILiteralList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ValueComp const& v)
+bool normalize_visitor::begin_visit(const ValueComp& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VarDecl const& v)
+bool normalize_visitor::begin_visit(const VarDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VarGetsDecl const& v)
+bool normalize_visitor::begin_visit(const VarGetsDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VarGetsDeclList const& v)
+bool normalize_visitor::begin_visit(const VarGetsDeclList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VarInDecl const& v)
+bool normalize_visitor::begin_visit(const VarInDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VarInDeclList const& v)
+bool normalize_visitor::begin_visit(const VarInDeclList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VersionDecl const& v)
+bool normalize_visitor::begin_visit(const VersionDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VFO_DeclList const& v)
+bool normalize_visitor::begin_visit(const VFO_DeclList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(WhereClause const& v)
+bool normalize_visitor::begin_visit(const WhereClause& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Wildcard const& v)
+bool normalize_visitor::begin_visit(const Wildcard& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
 
 
 /* expressions */
-bool normalize_visitor::begin_visit(AdditiveExpr const& v)
+bool normalize_visitor::begin_visit(const AdditiveExpr& v)
 {
 cout << indent[++depth] << TRACE << ": AdditiveExpr\n";
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
@@ -716,13 +676,13 @@ cout << indent[++depth] << TRACE << ": AdditiveExpr\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AndExpr const& v)
+bool normalize_visitor::begin_visit(const AndExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(AxisStep const& v)
+bool normalize_visitor::begin_visit(const AxisStep& v)
 {
 cout << indent[++depth] << TRACE << ": AxisStep\n";
 	rchandle<axis_step_expr> aexpr_h =
@@ -731,31 +691,31 @@ cout << indent[++depth] << TRACE << ": AxisStep\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CDataSection const& v)
+bool normalize_visitor::begin_visit(const CDataSection& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CastExpr const& v)
+bool normalize_visitor::begin_visit(const CastExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CastableExpr const& v)
+bool normalize_visitor::begin_visit(const CastableExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CommonContent const& v)
+bool normalize_visitor::begin_visit(const CommonContent& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ComparisonExpr const& v)
+bool normalize_visitor::begin_visit(const ComparisonExpr& v)
 {
 cout << indent[++depth] << TRACE << ": ComparisonExpr\n";
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
@@ -822,110 +782,110 @@ cout << indent[++depth] << TRACE << ": ComparisonExpr\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CompAttrConstructor const& v)
+bool normalize_visitor::begin_visit(const CompAttrConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CompCommentConstructor const& v)
+bool normalize_visitor::begin_visit(const CompCommentConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CompDocConstructor const& v)
+bool normalize_visitor::begin_visit(const CompDocConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CompElemConstructor const& v)
+bool normalize_visitor::begin_visit(const CompElemConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CompPIConstructor const& v)
+bool normalize_visitor::begin_visit(const CompPIConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(CompTextConstructor const& v)
+bool normalize_visitor::begin_visit(const CompTextConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ContextItemExpr const& v)
+bool normalize_visitor::begin_visit(const ContextItemExpr& v)
 {
 cout << indent[++depth] << TRACE << ": ContextItemExpr" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DirCommentConstructor const& v)
+bool normalize_visitor::begin_visit(const DirCommentConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DirElemConstructor const& v)
+bool normalize_visitor::begin_visit(const DirElemConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DirElemContent const& v)
+bool normalize_visitor::begin_visit(const DirElemContent& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(DirPIConstructor const& v)
+bool normalize_visitor::begin_visit(const DirPIConstructor& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(EnclosedExpr const& v)
+bool normalize_visitor::begin_visit(const EnclosedExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(Expr const& v)
+bool normalize_visitor::begin_visit(const Expr& v)
 {
 cout << indent[++depth] << TRACE << ": Expr\n";
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ExprSingle const& v)
+bool normalize_visitor::begin_visit(const ExprSingle& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ExtensionExpr const& v)
+bool normalize_visitor::begin_visit(const ExtensionExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FLWORExpr const& v)
+bool normalize_visitor::begin_visit(const FLWORExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FilterExpr const& v)
+bool normalize_visitor::begin_visit(const FilterExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FunctionCall const& v)
+bool normalize_visitor::begin_visit(const FunctionCall& v)
 {
 cout << indent[++depth] << TRACE << ": FunctionCall" << endl;
 	rchandle<QName> qn_h = v.get_fname();
@@ -950,20 +910,20 @@ cout << indent[++depth] << TRACE << ": FunctionCall" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(IfExpr const& v)
+bool normalize_visitor::begin_visit(const IfExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	// nothing to do here
 	return true;
 }
 
-bool normalize_visitor::begin_visit(InstanceofExpr const& v)
+bool normalize_visitor::begin_visit(const InstanceofExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(IntersectExceptExpr const& v)
+bool normalize_visitor::begin_visit(const IntersectExceptExpr& v)
 {
 cout << indent[++depth] << TRACE << ": IntersectExceptExpr\n";
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
@@ -980,7 +940,7 @@ cout << indent[++depth] << TRACE << ": IntersectExceptExpr\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(MultiplicativeExpr const& v)
+bool normalize_visitor::begin_visit(const MultiplicativeExpr& v)
 {
 cout << indent[++depth] << TRACE << ": MultiplicativeExpr\n";
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
@@ -1002,85 +962,85 @@ cout << indent[++depth] << TRACE << ": MultiplicativeExpr\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(NumericLiteral const& v)
+bool normalize_visitor::begin_visit(const NumericLiteral& v)
 {
 cout << indent[++depth] << TRACE << ": NumericLiteral" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrExpr const& v)
+bool normalize_visitor::begin_visit(const OrExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(OrderedExpr const& v)
+bool normalize_visitor::begin_visit(const OrderedExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ParenthesizedExpr const& v)
+bool normalize_visitor::begin_visit(const ParenthesizedExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(PathExpr const& v)
+bool normalize_visitor::begin_visit(const PathExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(QuantifiedExpr const& v)
+bool normalize_visitor::begin_visit(const QuantifiedExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(QueryBody const& v)
+bool normalize_visitor::begin_visit(const QueryBody& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(RangeExpr const& v)
+bool normalize_visitor::begin_visit(const RangeExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(RelativePathExpr const& v)
+bool normalize_visitor::begin_visit(const RelativePathExpr& v)
 {
 cout << indent[++depth] << TRACE << ": RelativePathExpr\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(StringLiteral const& v)
+bool normalize_visitor::begin_visit(const StringLiteral& v)
 {
 cout << indent[++depth] << TRACE << ": StringLiteral" << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(TreatExpr const& v)
+bool normalize_visitor::begin_visit(const TreatExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(TypeswitchExpr const& v)
+bool normalize_visitor::begin_visit(const TypeswitchExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(UnaryExpr const& v)
+bool normalize_visitor::begin_visit(const UnaryExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(UnionExpr const& v)
+bool normalize_visitor::begin_visit(const UnionExpr& v)
 {
 cout << indent[++depth] << TRACE << ": UnionExpr\n";
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
@@ -1089,66 +1049,66 @@ cout << indent[++depth] << TRACE << ": UnionExpr\n";
 	return true;
 }
 
-bool normalize_visitor::begin_visit(UnorderedExpr const& v)
+bool normalize_visitor::begin_visit(const UnorderedExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ValidateExpr const& v)
+bool normalize_visitor::begin_visit(const ValidateExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VarRef const& v)
+bool normalize_visitor::begin_visit(const VarRef& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
 
 
 /* update-related */
-bool normalize_visitor::begin_visit(DeleteExpr const& v)
+bool normalize_visitor::begin_visit(const DeleteExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(InsertExpr const& v)
+bool normalize_visitor::begin_visit(const InsertExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(RenameExpr const& v)
+bool normalize_visitor::begin_visit(const RenameExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(ReplaceExpr const& v)
+bool normalize_visitor::begin_visit(const ReplaceExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(RevalidationDecl const& v)
+bool normalize_visitor::begin_visit(const RevalidationDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(TransformExpr const& v)
+bool normalize_visitor::begin_visit(const TransformExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(VarNameList const& v)
+bool normalize_visitor::begin_visit(const VarNameList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
@@ -1156,235 +1116,235 @@ cout << TRACE << endl;
 
 
 /* full-text-related */
-bool normalize_visitor::begin_visit(FTAnd const& v)
+bool normalize_visitor::begin_visit(const FTAnd& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTAnyallOption const& v)
+bool normalize_visitor::begin_visit(const FTAnyallOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTBigUnit const& v)
+bool normalize_visitor::begin_visit(const FTBigUnit& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTCaseOption const& v)
+bool normalize_visitor::begin_visit(const FTCaseOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTContainsExpr const& v)
+bool normalize_visitor::begin_visit(const FTContainsExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTContent const& v)
+bool normalize_visitor::begin_visit(const FTContent& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTDiacriticsOption const& v)
+bool normalize_visitor::begin_visit(const FTDiacriticsOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTDistance const& v)
+bool normalize_visitor::begin_visit(const FTDistance& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTIgnoreOption const& v)
+bool normalize_visitor::begin_visit(const FTIgnoreOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTInclExclStringLiteral const& v)
+bool normalize_visitor::begin_visit(const FTInclExclStringLiteral& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTInclExclStringLiteralList const& v)
+bool normalize_visitor::begin_visit(const FTInclExclStringLiteralList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTLanguageOption const& v)
+bool normalize_visitor::begin_visit(const FTLanguageOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTMatchOption const& v)
+bool normalize_visitor::begin_visit(const FTMatchOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTMatchOptionProximityList const& v)
+bool normalize_visitor::begin_visit(const FTMatchOptionProximityList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTMildnot const& v)
+bool normalize_visitor::begin_visit(const FTMildnot& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTOptionDecl const& v)
+bool normalize_visitor::begin_visit(const FTOptionDecl& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTOr const& v)
+bool normalize_visitor::begin_visit(const FTOr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTOrderedIndicator const& v)
+bool normalize_visitor::begin_visit(const FTOrderedIndicator& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTProximity const& v)
+bool normalize_visitor::begin_visit(const FTProximity& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTRange const& v)
+bool normalize_visitor::begin_visit(const FTRange& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTRefOrList const& v)
+bool normalize_visitor::begin_visit(const FTRefOrList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTScope const& v)
+bool normalize_visitor::begin_visit(const FTScope& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTScoreVar const& v)
+bool normalize_visitor::begin_visit(const FTScoreVar& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTSelection const& v)
+bool normalize_visitor::begin_visit(const FTSelection& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTStemOption const& v)
+bool normalize_visitor::begin_visit(const FTStemOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTStopwordOption const& v)
+bool normalize_visitor::begin_visit(const FTStopwordOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTStringLiteralList const& v)
+bool normalize_visitor::begin_visit(const FTStringLiteralList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTThesaurusID const& v)
+bool normalize_visitor::begin_visit(const FTThesaurusID& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTThesaurusList const& v)
+bool normalize_visitor::begin_visit(const FTThesaurusList& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTThesaurusOption const& v)
+bool normalize_visitor::begin_visit(const FTThesaurusOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTTimes const& v)
+bool normalize_visitor::begin_visit(const FTTimes& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTUnaryNot const& v)
+bool normalize_visitor::begin_visit(const FTUnaryNot& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTUnit const& v)
+bool normalize_visitor::begin_visit(const FTUnit& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTWildcardOption const& v)
+bool normalize_visitor::begin_visit(const FTWildcardOption& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTWindow const& v)
+bool normalize_visitor::begin_visit(const FTWindow& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTWords const& v)
+bool normalize_visitor::begin_visit(const FTWords& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTWordsSelection const& v)
+bool normalize_visitor::begin_visit(const FTWordsSelection& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(FTWordsValue const& v)
+bool normalize_visitor::begin_visit(const FTWordsValue& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
@@ -1393,17 +1353,17 @@ cout << TRACE << endl;
  :  end visit                              :
  :.........................................*/
 
-void normalize_visitor::end_visit(parsenode const& v)
+void normalize_visitor::end_visit(const parsenode& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(exprnode const& v)
+void normalize_visitor::end_visit(const exprnode& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(AbbrevForwardStep const& v)
+void normalize_visitor::end_visit(const AbbrevForwardStep& v)
 {
 cout << indent[depth--] << TRACE << ": AbbrevForwardStep\n";
 	rchandle<axis_step_expr> aexpr_h =
@@ -1420,22 +1380,31 @@ cout << indent[depth--] << TRACE << ": AbbrevForwardStep\n";
 	}
 }
 
-void normalize_visitor::end_visit(AnyKindTest const& v)
+void normalize_visitor::end_visit(const AnyKindTest& v)
+{
+cout << indent[depth--]<<TRACE<<": AnyKindTest()\n";
+	rchandle<axis_step_expr> ase_h =
+		dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::anykind_test);
+	ase_h->set_test(m_h);
+}
+
+void normalize_visitor::end_visit(const AposAttrContentList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(AposAttrContentList const& v)
+void normalize_visitor::end_visit(const AposAttrValueContent& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(AposAttrValueContent const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(ArgList const& v)
+void normalize_visitor::end_visit(const ArgList& v)
 {
 cout << indent[depth--] << TRACE << ": ArgList" << endl;
 	clear_argstack();
@@ -1446,112 +1415,192 @@ cout << indent[depth--] << TRACE << ": ArgList" << endl;
 	}
 }
 
-void normalize_visitor::end_visit(AtomicType const& v)
+void normalize_visitor::end_visit(const AtomicType& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(AttributeTest const& v)
+void normalize_visitor::end_visit(const AttributeTest& v)
+{
+cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_attr()->put(cout)<<")\n";
+
+	/*
+	 * find axis step expression on top of stack
+	 */
+	rchandle<axis_step_expr> ase_h =
+		dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+
+	/*
+	 * construct the attribute match
+	 */
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::attr_test);
+	rchandle<QName> elem_h = v.get_attr();
+	if (elem_h!=NULL) {
+		m_h->set_name(new qname_expr(v.get_location(),
+																	elem_h->get_qname()));
+	}
+	rchandle<TypeName> type_h = v.get_type();
+	if (type_h!=NULL) {
+		m_h->set_typename(new qname_expr(v.get_location(),
+																			type_h->get_name()->get_qname()));
+	}
+	if (v.is_wild()) {
+		// XXX missing member variable for this
+	}
+
+	/*
+	 * add the match expression
+	 */
+	ase_h->set_test(m_h);
+}
+
+void normalize_visitor::end_visit(const BaseURIDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(BaseURIDecl const& v)
+void normalize_visitor::end_visit(const BoundarySpaceDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(BoundarySpaceDecl const& v)
+void normalize_visitor::end_visit(const CaseClause& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CaseClause const& v)
+void normalize_visitor::end_visit(const CaseClauseList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CaseClauseList const& v)
+void normalize_visitor::end_visit(const CommentTest& v)
+{
+cout << indent[depth--]<<TRACE<<": CommentTest()\n";
+	rchandle<axis_step_expr> ase_h =
+		dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::comment_test);
+	ase_h->set_test(m_h);
+}
+
+void normalize_visitor::end_visit(const ConstructionDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CommentTest const& v)
+void normalize_visitor::end_visit(const CopyNamespacesDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ConstructionDecl const& v)
+void normalize_visitor::end_visit(const DefaultCollationDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CopyNamespacesDecl const& v)
+void normalize_visitor::end_visit(const DefaultNamespaceDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DefaultCollationDecl const& v)
+void normalize_visitor::end_visit(const DirAttr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DefaultNamespaceDecl const& v)
+void normalize_visitor::end_visit(const DirAttributeList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DirAttr const& v)
+void normalize_visitor::end_visit(const DirAttributeValue& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DirAttributeList const& v)
+void normalize_visitor::end_visit(const DirElemContentList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DirAttributeValue const& v)
+void normalize_visitor::end_visit(const DocumentTest& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DirElemContentList const& v)
+void normalize_visitor::end_visit(const ElementTest& v)
+{
+cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n";
+
+	/*
+	 * find axis step expression on top of stack
+	 */
+	rchandle<axis_step_expr> ase_h =
+		dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+
+	/*
+	 * construct the element match
+	 */
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::elem_test);
+
+	rchandle<QName> elem_h = v.get_elem();
+	if (elem_h!=NULL) {
+		m_h->set_name(new qname_expr(v.get_location(),
+																	elem_h->get_qname()));
+	}
+	rchandle<TypeName> type_h = v.get_type();
+	if (type_h!=NULL) {
+		m_h->set_typename(new qname_expr(v.get_location(),
+																			type_h->get_name()->get_qname()));
+	}
+	bool optional_b =  v.get_optional_bit();
+	if (optional_b) {
+		// XXX missing member variable for this
+	}
+
+	/*
+	 * add the match expression
+	 */
+	ase_h->set_test(m_h);
+
+}
+
+void normalize_visitor::end_visit(const EmptyOrderDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DocumentTest const& v)
+void normalize_visitor::end_visit(const ForClause& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ElementTest const& v)
+void normalize_visitor::end_visit(const ForLetClause& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(EmptyOrderDecl const& v)
+void normalize_visitor::end_visit(const ForLetClauseList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ForClause const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(ForLetClause const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(ForLetClauseList const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(ForwardAxis const& v)
+void normalize_visitor::end_visit(const ForwardAxis& v)
 {
 cout << indent[depth--] << TRACE << ": ForwardAxis" << endl;
 	rchandle<axis_step_expr> aexpr_h =
@@ -1592,59 +1641,62 @@ cout << indent[depth--] << TRACE << ": ForwardAxis" << endl;
 	}
 }
 
-void normalize_visitor::end_visit(ForwardStep const& v)
+void normalize_visitor::end_visit(const ForwardStep& v)
 {
 cout << indent[depth--] << TRACE << ": ForwardStep\n";
 }
 
-void normalize_visitor::end_visit(FunctionDecl const& v)
+void normalize_visitor::end_visit(const FunctionDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(GeneralComp const& v)
+void normalize_visitor::end_visit(const GeneralComp& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ItemType const& v)
+void normalize_visitor::end_visit(const ItemType& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(LetClause const& v)
+void normalize_visitor::end_visit(const LetClause& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(LibraryModule const& v)
+void normalize_visitor::end_visit(const LibraryModule& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(MainModule  const& v)
+void normalize_visitor::end_visit(const MainModule & v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(Module const& v)
+void normalize_visitor::end_visit(const Module& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ModuleDecl const& v)
+void normalize_visitor::end_visit(const ModuleDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ModuleImport const& v)
+void normalize_visitor::end_visit(const ModuleImport& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(NameTest const& v)
+void normalize_visitor::end_visit(const NameTest& v)
 {
 cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
+	/*
+	 * find axis step on top of stack
+	 */
 	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h==NULL) {
@@ -1652,113 +1704,124 @@ cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
-	string qname = v.get_qname()->get_qname();	//??!
+	/*
+	 * construct and add name test match
+	 */
+	string qname = v.get_qname()->get_qname();
 	rchandle<qname_expr> qn_h = new qname_expr(v.get_location(),qname);
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
-
 	m_h->set_name(qn_h);
 	m_h->set_test(match_expr::name_test);
+
+	/*
+	 * set wildcard type: *,  pre:*,  *:name
+	 */
 	rchandle<Wildcard> wild_h = v.get_wild();
-	if (wild_h==NULL) return;
-	switch (wild_h->get_type()) {
-	case wild_all: m_h->set_wild(match_expr::all_wild); break;
-	case wild_elem: m_h->set_wild(match_expr::name_wild); break;
-	case wild_prefix: m_h->set_wild(match_expr::prefix_wild); break;
+	if (wild_h!=NULL) {
+		switch (wild_h->get_type()) {
+		case wild_all: m_h->set_wild(match_expr::all_wild); break;
+		case wild_elem: m_h->set_wild(match_expr::name_wild); break;
+		case wild_prefix: m_h->set_wild(match_expr::prefix_wild); break;
+		}
 	}
+
+	/*
+	 * add the match expression
+	 */
 	ase_h->set_test(m_h);
 }
 
-void normalize_visitor::end_visit(NamespaceDecl const& v)
+void normalize_visitor::end_visit(const NamespaceDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(NodeComp const& v)
+void normalize_visitor::end_visit(const NodeComp& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OccurrenceIndicator const& v)
+void normalize_visitor::end_visit(const OccurrenceIndicator& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OptionDecl const& v)
+void normalize_visitor::end_visit(const OptionDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderByClause const& v)
+void normalize_visitor::end_visit(const OrderByClause& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderCollationSpec const& v)
+void normalize_visitor::end_visit(const OrderCollationSpec& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderDirSpec const& v)
+void normalize_visitor::end_visit(const OrderDirSpec& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderEmptySpec const& v)
+void normalize_visitor::end_visit(const OrderEmptySpec& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderModifier const& v)
+void normalize_visitor::end_visit(const OrderModifier& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderSpec const& v)
+void normalize_visitor::end_visit(const OrderSpec& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderSpecList const& v)
+void normalize_visitor::end_visit(const OrderSpecList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderingModeDecl const& v)
+void normalize_visitor::end_visit(const OrderingModeDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(PITest const& v)
+void normalize_visitor::end_visit(const PITest& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(Param const& v)
+void normalize_visitor::end_visit(const Param& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ParamList const& v)
+void normalize_visitor::end_visit(const ParamList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(PositionalVar const& v)
+void normalize_visitor::end_visit(const PositionalVar& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(Pragma const& v)
+void normalize_visitor::end_visit(const Pragma& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(PragmaList const& v)
+void normalize_visitor::end_visit(const PragmaList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(PredicateList const& v)
+void normalize_visitor::end_visit(const PredicateList& v)
 {
 cout << indent[depth--] << TRACE << ": PredicateList" << endl;
 	clear_pstack();
@@ -1769,32 +1832,32 @@ cout << indent[depth--] << TRACE << ": PredicateList" << endl;
 	}
 }
 
-void normalize_visitor::end_visit(Prolog const& v)
+void normalize_visitor::end_visit(const Prolog& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(QVarInDecl const& v)
+void normalize_visitor::end_visit(const QVarInDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(QVarInDeclList const& v)
+void normalize_visitor::end_visit(const QVarInDeclList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(QuoteAttrValueContent const& v)
+void normalize_visitor::end_visit(const QuoteAttrValueContent& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(QuoteAttrContentList const& v)
+void normalize_visitor::end_visit(const QuoteAttrContentList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ReverseAxis const& v)
+void normalize_visitor::end_visit(const ReverseAxis& v)
 {
 cout << indent[depth--] << TRACE << ": ReverseAxis" << endl;
 	rchandle<axis_step_expr> aexpr_h =
@@ -1827,117 +1890,126 @@ cout << indent[depth--] << TRACE << ": ReverseAxis" << endl;
 	}
 }
 
-void normalize_visitor::end_visit(ReverseStep const& v)
+void normalize_visitor::end_visit(const ReverseStep& v)
 {
 cout << indent[depth--] << TRACE << ": ReverseStep" << endl;
 }
 
-void normalize_visitor::end_visit(SIND_DeclList const& v)
+void normalize_visitor::end_visit(const SIND_DeclList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(SchemaAttributeTest const& v)
+void normalize_visitor::end_visit(const SchemaAttributeTest& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(SchemaElementTest const& v)
+void normalize_visitor::end_visit(const SchemaElementTest& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(SchemaImport const& v)
+void normalize_visitor::end_visit(const SchemaImport& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(SchemaPrefix const& v)
+void normalize_visitor::end_visit(const SchemaPrefix& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(SequenceType const& v)
+void normalize_visitor::end_visit(const SequenceType& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(SignList const& v)
+void normalize_visitor::end_visit(const SignList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(SingleType const& v)
+void normalize_visitor::end_visit(const SingleType& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(TextTest const& v)
+void normalize_visitor::end_visit(const TextTest& v)
+{
+cout << indent[depth--]<<TRACE<<": TextTest()\n";
+	rchandle<axis_step_expr> ase_h =
+		dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase_h==NULL) {
+		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::text_test);
+	ase_h->set_test(m_h);
+}
+
+void normalize_visitor::end_visit(const TypeDeclaration& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(TypeDeclaration const& v)
+void normalize_visitor::end_visit(const TypeName& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(TypeName const& v)
+void normalize_visitor::end_visit(const URILiteralList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(URILiteralList const& v)
+void normalize_visitor::end_visit(const ValueComp& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ValueComp const& v)
+void normalize_visitor::end_visit(const VarDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VarDecl const& v)
+void normalize_visitor::end_visit(const VarGetsDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VarGetsDecl const& v)
+void normalize_visitor::end_visit(const VarGetsDeclList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VarGetsDeclList const& v)
+void normalize_visitor::end_visit(const VarInDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VarInDecl const& v)
+void normalize_visitor::end_visit(const VarInDeclList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VarInDeclList const& v)
+void normalize_visitor::end_visit(const VersionDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VersionDecl const& v)
+void normalize_visitor::end_visit(const VFO_DeclList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VFO_DeclList const& v)
+void normalize_visitor::end_visit(const WhereClause& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(WhereClause const& v)
-{
-cout << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(Wildcard const& v)
+void normalize_visitor::end_visit(const Wildcard& v)
 {
 cout << TRACE << endl;
 }
@@ -1946,7 +2018,7 @@ cout << TRACE << endl;
 
 
 /* expressions */
-void normalize_visitor::end_visit(AdditiveExpr const& v)
+void normalize_visitor::end_visit(const AdditiveExpr& v)
 {
 cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
 
@@ -1962,12 +2034,12 @@ cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
 	fo_h->add(e1_h);
 }
 
-void normalize_visitor::end_visit(AndExpr const& v)
+void normalize_visitor::end_visit(const AndExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(AxisStep const& v)
+void normalize_visitor::end_visit(const AxisStep& v)
 {
 cout << indent[depth--] << TRACE << ": AxisStep\n";
 	rchandle<axis_step_expr> aexpr_h =
@@ -1983,27 +2055,27 @@ cout << indent[depth--] << TRACE << ": AxisStep\n";
 	}
 }
 
-void normalize_visitor::end_visit(CDataSection const& v)
+void normalize_visitor::end_visit(const CDataSection& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CastExpr const& v)
+void normalize_visitor::end_visit(const CastExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CastableExpr const& v)
+void normalize_visitor::end_visit(const CastableExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CommonContent const& v)
+void normalize_visitor::end_visit(const CommonContent& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ComparisonExpr const& v)
+void normalize_visitor::end_visit(const ComparisonExpr& v)
 {
 cout << indent[depth--] << TRACE << ": ComparisonExpr\n";
 
@@ -2019,37 +2091,37 @@ cout << indent[depth--] << TRACE << ": ComparisonExpr\n";
 	fo_h->add(e1_h);
 }
 
-void normalize_visitor::end_visit(CompAttrConstructor const& v)
+void normalize_visitor::end_visit(const CompAttrConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CompCommentConstructor const& v)
+void normalize_visitor::end_visit(const CompCommentConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CompDocConstructor const& v)
+void normalize_visitor::end_visit(const CompDocConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CompElemConstructor const& v)
+void normalize_visitor::end_visit(const CompElemConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CompPIConstructor const& v)
+void normalize_visitor::end_visit(const CompPIConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(CompTextConstructor const& v)
+void normalize_visitor::end_visit(const CompTextConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ContextItemExpr const& v)
+void normalize_visitor::end_visit(const ContextItemExpr& v)
 {
 cout << indent[depth--] << TRACE << ": ContextItemExpr" << endl;
 	rchandle<var_expr> v_h = new var_expr(v.get_location());
@@ -2057,32 +2129,32 @@ cout << indent[depth--] << TRACE << ": ContextItemExpr" << endl;
 	nodestack.push(&*v_h);
 }
 
-void normalize_visitor::end_visit(DirCommentConstructor const& v)
+void normalize_visitor::end_visit(const DirCommentConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DirElemConstructor const& v)
+void normalize_visitor::end_visit(const DirElemConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DirElemContent const& v)
+void normalize_visitor::end_visit(const DirElemContent& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(DirPIConstructor const& v)
+void normalize_visitor::end_visit(const DirPIConstructor& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(EnclosedExpr const& v)
+void normalize_visitor::end_visit(const EnclosedExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(Expr const& v)
+void normalize_visitor::end_visit(const Expr& v)
 {
 cout << indent[depth--] << TRACE << ": Expr\n";
 	rchandle<expr_list> elist_h = new expr_list(v.get_location());
@@ -2100,27 +2172,27 @@ cout << indent[depth--] << TRACE << ": Expr\n";
 	}
 }
 
-void normalize_visitor::end_visit(ExprSingle const& v)
+void normalize_visitor::end_visit(const ExprSingle& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ExtensionExpr const& v)
+void normalize_visitor::end_visit(const ExtensionExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FLWORExpr const& v)
+void normalize_visitor::end_visit(const FLWORExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FilterExpr const& v)
+void normalize_visitor::end_visit(const FilterExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FunctionCall const& v)
+void normalize_visitor::end_visit(const FunctionCall& v)
 {
 cout << indent[depth--] << TRACE << ": FunctionCall" 
 			<< " : argstack.size() = " << argstack.size() << endl;
@@ -2136,7 +2208,7 @@ cout << indent[depth--] << TRACE << ": FunctionCall"
 	}
 }
 
-void normalize_visitor::end_visit(IfExpr const& v)
+void normalize_visitor::end_visit(const IfExpr& v)
 {
 cout << TRACE << endl;
 	expr_t c_h = nodestack.top(); nodestack.pop();
@@ -2146,12 +2218,12 @@ cout << TRACE << endl;
 	nodestack.push(&*if_h);
 }
 
-void normalize_visitor::end_visit(InstanceofExpr const& v)
+void normalize_visitor::end_visit(const InstanceofExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(IntersectExceptExpr const& v)
+void normalize_visitor::end_visit(const IntersectExceptExpr& v)
 {
 cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
 
@@ -2167,7 +2239,7 @@ cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
 	fo_h->add(e1_h);
 }
 
-void normalize_visitor::end_visit(MultiplicativeExpr const& v)
+void normalize_visitor::end_visit(const MultiplicativeExpr& v)
 {
 cout << indent[depth--] << TRACE << ": MultiplicativeExpr\n";
 
@@ -2183,7 +2255,7 @@ cout << indent[depth--] << TRACE << ": MultiplicativeExpr\n";
 	fo_h->add(e1_h);
 }
 
-void normalize_visitor::end_visit(NumericLiteral const& v)
+void normalize_visitor::end_visit(const NumericLiteral& v)
 {
 cout << indent[depth--] << TRACE << ": NumericLiteral" << endl;
 	switch (v.get_type()) {
@@ -2202,42 +2274,42 @@ cout << indent[depth--] << TRACE << ": NumericLiteral" << endl;
 	}
 }
 
-void normalize_visitor::end_visit(OrExpr const& v)
+void normalize_visitor::end_visit(const OrExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(OrderedExpr const& v)
+void normalize_visitor::end_visit(const OrderedExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ParenthesizedExpr const& v)
+void normalize_visitor::end_visit(const ParenthesizedExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(PathExpr const& v)
+void normalize_visitor::end_visit(const PathExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(QuantifiedExpr const& v)
+void normalize_visitor::end_visit(const QuantifiedExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(QueryBody const& v)
+void normalize_visitor::end_visit(const QueryBody& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(RangeExpr const& v)
+void normalize_visitor::end_visit(const RangeExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(RelativePathExpr const& v)
+void normalize_visitor::end_visit(const RelativePathExpr& v)
 {
 cout << indent[depth--] << TRACE << ": RelativePath\n";
 	expr_t e0_h = pop_nodestack();		// b
@@ -2263,18 +2335,18 @@ cout << indent[depth--] << TRACE << ": RelativePath\n";
 	nodestack.push(&*rp_h);
 }
 
-void normalize_visitor::end_visit(StringLiteral const& v)
+void normalize_visitor::end_visit(const StringLiteral& v)
 {
 cout << indent[depth--] << TRACE << ": StringLiteral" << endl;
 	nodestack.push(new literal_expr(v.get_location(),v.get_strval()));
 }
 
-void normalize_visitor::end_visit(TreatExpr const& v)
+void normalize_visitor::end_visit(const TreatExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(TypeswitchExpr const& v)
+void normalize_visitor::end_visit(const TypeswitchExpr& v)
 {
 cout << TRACE << endl;
 	case_clause * cc_p;
@@ -2301,12 +2373,12 @@ cout << TRACE << endl;
 	nodestack.push(&*tse_h);
 }
 
-void normalize_visitor::end_visit(UnaryExpr const& v)
+void normalize_visitor::end_visit(const UnaryExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(UnionExpr const& v)
+void normalize_visitor::end_visit(const UnionExpr& v)
 {
 cout << indent[depth--] << TRACE << ": UnionExpr\n";
 
@@ -2322,17 +2394,17 @@ cout << indent[depth--] << TRACE << ": UnionExpr\n";
 	fo_h->add(e1_h);
 }
 
-void normalize_visitor::end_visit(UnorderedExpr const& v)
+void normalize_visitor::end_visit(const UnorderedExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ValidateExpr const& v)
+void normalize_visitor::end_visit(const ValidateExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VarRef const& v)
+void normalize_visitor::end_visit(const VarRef& v)
 {
 cout << TRACE << endl;
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
@@ -2343,37 +2415,37 @@ cout << TRACE << endl;
 
 
 /* update-related */
-void normalize_visitor::end_visit(DeleteExpr const& v)
+void normalize_visitor::end_visit(const DeleteExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(InsertExpr const& v)
+void normalize_visitor::end_visit(const InsertExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(RenameExpr const& v)
+void normalize_visitor::end_visit(const RenameExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(ReplaceExpr const& v)
+void normalize_visitor::end_visit(const ReplaceExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(RevalidationDecl const& v)
+void normalize_visitor::end_visit(const RevalidationDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(TransformExpr const& v)
+void normalize_visitor::end_visit(const TransformExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(VarNameList const& v)
+void normalize_visitor::end_visit(const VarNameList& v)
 {
 cout << TRACE << endl;
 }
@@ -2381,192 +2453,192 @@ cout << TRACE << endl;
 
 
 /* full-text-related */
-void normalize_visitor::end_visit(FTAnd const& v)
+void normalize_visitor::end_visit(const FTAnd& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTAnyallOption const& v)
+void normalize_visitor::end_visit(const FTAnyallOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTBigUnit const& v)
+void normalize_visitor::end_visit(const FTBigUnit& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTCaseOption const& v)
+void normalize_visitor::end_visit(const FTCaseOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTContainsExpr const& v)
+void normalize_visitor::end_visit(const FTContainsExpr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTContent const& v)
+void normalize_visitor::end_visit(const FTContent& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTDiacriticsOption const& v)
+void normalize_visitor::end_visit(const FTDiacriticsOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTDistance const& v)
+void normalize_visitor::end_visit(const FTDistance& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTIgnoreOption const& v)
+void normalize_visitor::end_visit(const FTIgnoreOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTInclExclStringLiteral const& v)
+void normalize_visitor::end_visit(const FTInclExclStringLiteral& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTInclExclStringLiteralList const& v)
+void normalize_visitor::end_visit(const FTInclExclStringLiteralList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTLanguageOption const& v)
+void normalize_visitor::end_visit(const FTLanguageOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTMatchOption const& v)
+void normalize_visitor::end_visit(const FTMatchOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTMatchOptionProximityList const& v)
+void normalize_visitor::end_visit(const FTMatchOptionProximityList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTMildnot const& v)
+void normalize_visitor::end_visit(const FTMildnot& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTOptionDecl const& v)
+void normalize_visitor::end_visit(const FTOptionDecl& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTOr const& v)
+void normalize_visitor::end_visit(const FTOr& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTOrderedIndicator const& v)
+void normalize_visitor::end_visit(const FTOrderedIndicator& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTProximity const& v)
+void normalize_visitor::end_visit(const FTProximity& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTRange const& v)
+void normalize_visitor::end_visit(const FTRange& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTRefOrList const& v)
+void normalize_visitor::end_visit(const FTRefOrList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTScope const& v)
+void normalize_visitor::end_visit(const FTScope& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTScoreVar const& v)
+void normalize_visitor::end_visit(const FTScoreVar& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTSelection const& v)
+void normalize_visitor::end_visit(const FTSelection& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTStemOption const& v)
+void normalize_visitor::end_visit(const FTStemOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTStopwordOption const& v)
+void normalize_visitor::end_visit(const FTStopwordOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTStringLiteralList const& v)
+void normalize_visitor::end_visit(const FTStringLiteralList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTThesaurusID const& v)
+void normalize_visitor::end_visit(const FTThesaurusID& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTThesaurusList const& v)
+void normalize_visitor::end_visit(const FTThesaurusList& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTThesaurusOption const& v)
+void normalize_visitor::end_visit(const FTThesaurusOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTTimes const& v)
+void normalize_visitor::end_visit(const FTTimes& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTUnaryNot const& v)
+void normalize_visitor::end_visit(const FTUnaryNot& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTUnit const& v)
+void normalize_visitor::end_visit(const FTUnit& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTWildcardOption const& v)
+void normalize_visitor::end_visit(const FTWildcardOption& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTWindow const& v)
+void normalize_visitor::end_visit(const FTWindow& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTWords const& v)
+void normalize_visitor::end_visit(const FTWords& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTWordsSelection const& v)
+void normalize_visitor::end_visit(const FTWordsSelection& v)
 {
 cout << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(FTWordsValue const& v)
+void normalize_visitor::end_visit(const FTWordsValue& v)
 {
 cout << TRACE << endl;
 }

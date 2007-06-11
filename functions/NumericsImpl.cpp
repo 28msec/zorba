@@ -79,13 +79,8 @@ op_numeric_add_iterator::op_numeric_add_iterator(
 
 item_t op_numeric_add_iterator::_next()
 {
-	if (done()) return NULL;
 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-
-	cout << TRACE << ": n0 = "; n0.put(NULL,cout) << endl;
-	cout << TRACE << ": n1 = "; n1.put(NULL,cout) << endl;
-
 	return new numericValue(xs_decimal, n0.val() + n1.val());
 }
 

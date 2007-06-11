@@ -44,6 +44,7 @@ normalize_visitor_test : normalize_visitor.h normalize_visitor.cpp normalize_vis
 		../dom/${BUILD}/dom_xml_handler.${SUFX} \
 		../functions/${BUILD}/library.${SUFX} \
 		../functions/${BUILD}/Numerics.${SUFX} \
+		../functions/${BUILD}/NumericsImpl.${SUFX} \
 		../functions/${BUILD}/Sequences.${SUFX} \
 		../functions/${BUILD}/SequencesImpl.${SUFX} \
 		../functions/${BUILD}/signature.${SUFX} \

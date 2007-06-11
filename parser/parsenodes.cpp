@@ -5588,8 +5588,7 @@ string QName::get_prefix() const
 
 ostream& QName::put(ostream& s) const
 {
-	s << INDENT << "QName[ " << qname;
-	return s << OUTDENT << "]\n";
+	return s << "QName[ " << qname << " ]";
 }
 
 //-QName::

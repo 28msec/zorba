@@ -26,6 +26,7 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 		../exprtree/${BUILD}/normalize_visitor.${SUFX} \
 		../functions/${BUILD}/library.${SUFX} \
 		../functions/${BUILD}/Numerics.${SUFX} \
+		../functions/${BUILD}/NumericsImpl.${SUFX} \
 		../functions/${BUILD}/Sequences.${SUFX} \
 		../functions/${BUILD}/SequencesImpl.${SUFX} \
 		../functions/${BUILD}/signature.${SUFX} \

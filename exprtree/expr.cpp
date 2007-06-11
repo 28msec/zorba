@@ -782,7 +782,10 @@ void relpath_expr::accept(
 match_expr::match_expr(
 	yy::location const& loc)
 :
-	expr(loc)
+	expr(loc),
+	wild(no_wild),
+	name_h(NULL),
+	typename_h(NULL)
 {
 }
 
@@ -869,13 +872,16 @@ ostream& axis_step_expr::put(zorba* zorp,ostream& os) const
 	case preceding_sibling:		os << "preceding-sibling::"; break;
 	case preceding:						os << "preceding::"; break;
 	case attribute:						os << "attribute::"; break;
-	default: os << "??\n";
+	default: os << "??";
 	}
+	os << endl;
 
 	if (test_h!=NULL) {
 		test_h->put(zorp,os);
   }
-
+	if (name_h!=NULL) {
+		name_h->put(zorp,os);
+  }
 	vector<rchandle<expr> >::const_iterator it = pred_hv.begin();
 	vector<rchandle<expr> >::const_iterator en = pred_hv.end();
 	for (; it!=en; ++it) {

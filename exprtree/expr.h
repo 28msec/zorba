@@ -1001,15 +1001,10 @@ public:
 	void set_test(rchandle<match_expr> v) { test_h = v; }
 
 public:
-	void add_pred(expr_t e_h)
-		{ pred_hv.push_back(e_h); }
-	uint32_t size() const
-		{ return pred_hv.size(); }
-
-	expr_t & operator[](int i)
-		{ return pred_hv[i]; }
-	expr_t const& operator[](int i) const
-		{ return pred_hv[i]; }
+	void add_pred(expr_t e_h) { pred_hv.push_back(e_h); }
+	uint32_t size() const { return pred_hv.size(); }
+	expr_t & operator[](int i) { return pred_hv[i]; }
+	expr_t const& operator[](int i) const { return pred_hv[i]; }
 
 	std::vector<expr_t>::const_iterator begin() const
 		{ return pred_hv.begin(); }

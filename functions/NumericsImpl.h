@@ -64,7 +64,7 @@ class op_numeric_add_iterator : public op_numeric_binary_iterator
 {
 public:
 	op_numeric_add_iterator(iterator_t, iterator_t);
-	~op_numeric_add_iterator();
+	~op_numeric_add_iterator() {}
 
 public:	// iterator interface
 	item_t _next();
@@ -85,6 +85,7 @@ public:	// iterator interface
 	item_t _next();
 
 };
+
 
 
 // 6.2.3 op:numeric-multiply
