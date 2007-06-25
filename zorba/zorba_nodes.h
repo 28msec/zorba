@@ -92,7 +92,7 @@ public:		// output,serialization
 
 
 
-class child_iterator : public item_iterator
+class child_iterator : public basic_iterator
 {
 protected:
 	rchandle<child_noderep_iterator> itref;
@@ -102,21 +102,17 @@ public:
 	~child_iterator() {}
 
 public:
- 	void open();
-	void close();
-	item_t next(uint32_t delta = 1);
-	item_t peek() const;
+ 	void _open();
+ 	item_t _next();
+	void _close();
 	bool done() const;
 
-public:
-	item_t operator*() const;
-	child_iterator& operator++();
 
 };
 
 
 
-class attribute_iterator : public item_iterator
+class attribute_iterator : public basic_iterator
 {
 protected:
 	rchandle<attribute_noderep_iterator> itref;
@@ -126,21 +122,17 @@ public:
 	~attribute_iterator() {}
 
 public:
- 	void open();
-	void close();
+ 	void _open();
+ 	item_t _next();
+	void _close();
 	bool done() const;
-	item_t next(uint32_t delta = 1);
-	item_t peek() const;
 
-public:
-	item_t operator*() const;
-	attribute_iterator& operator++();
 
 };
 
 
 
-class namespace_iterator : public item_iterator
+class namespace_iterator : public basic_iterator
 {
 protected:
 	rchandle<namespace_noderep_iterator> itref;
@@ -150,15 +142,10 @@ public:
 	~namespace_iterator() {}
 
 public:
- 	void open();
-	void close();
+ 	void _open();
+	item_t _next();
+	void _close();
 	bool done() const;
-	item_t next(uint32_t delta = 1);
-	item_t peek() const;
-
-public:
-	item_t operator*() const;
-	namespace_iterator& operator++();
 
 };
 

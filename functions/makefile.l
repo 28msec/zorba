@@ -114,6 +114,7 @@ all :	\
 	Sequences \
 	SequencesImpl \
 	Numerics \
+	NumericsImpl \
 	Numerics_test \
 	Sequences_test
 
