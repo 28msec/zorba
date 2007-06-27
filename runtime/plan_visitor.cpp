@@ -276,7 +276,7 @@ cout << indent[depth--] << TRACE << ": fo_expr" << endl;
 		argv.push_back(it_h);
 	}
 
-	itstack.push(&*func(zorp,argv));
+	itstack.push(func(zorp,argv));
 }
 
 void plan_visitor::end_visit(const ft_select_expr& v)
