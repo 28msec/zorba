@@ -21,6 +21,7 @@
 #include "xquery_parser.tab.h"
 
 using namespace std;
+namespace xqp {
 
 xquery_driver::xquery_driver(
   ostream& _os,
@@ -63,3 +64,4 @@ void xquery_driver::error(
 	cerr << m << endl;
 }
 
+}	/* namespace xqp */

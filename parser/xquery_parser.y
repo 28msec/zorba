@@ -37,17 +37,17 @@
 #include <string.h>
 #include <string>
 
-#include "../context/static_context.h"
-#include "../context/dynamic_context.h"
+#include "context/static_context.h"
+#include "context/dynamic_context.h"
 #include "parsenodes.h"
 #include "parse_constants.h"
 
-class xquery_driver;
 
 using namespace std;
 using namespace xqp;
 
 namespace xqp {
+	class xquery_driver;
 	class parsenode;
 	class exprnode;
 }

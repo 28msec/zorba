@@ -44,6 +44,7 @@ using namespace yy;
 // ... and declare it for the parser's sake.
 YY_DECL;
 
+namespace xqp {
 
 /**
 ** Conducting the whole scanning and parsing of xquery.
@@ -112,5 +113,6 @@ public:
 
 };
 
+}	/* namespace xqp */
 #endif /* XQP_XQUERY_DRIVER_H */
 
