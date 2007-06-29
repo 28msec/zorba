@@ -332,7 +332,7 @@ void xml_scanner::scan(const char* r, unsigned len, scan_handler* h)
 			h->pcdata(theOutputBuffer, 0, theSize);
 			theSize = 0;
 			break;
-		case A_ENTITY:						// &ent;
+		case A_ENTITY:		{				// &ent;
 			char ch1 = (char)ch;
 			if (isalnum(ch1) || ch1 == '#') {
 				if (theSize >= ((1<<20)-20)) flush(h);
@@ -361,6 +361,7 @@ void xml_scanner::scan(const char* r, unsigned len, scan_handler* h)
 			}
 			theNextState = savedState;
 			break;
+		}
    	case A_ETAG:							// <tag/>
 			h->etag(theOutputBuffer, 0, theSize);
 			theSize = 0;
