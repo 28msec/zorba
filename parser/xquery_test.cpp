@@ -31,7 +31,7 @@ int main (int argc, char *argv[])
 		}
 		else {
 			driver.parse(*argv);
-			std::cout << *driver.get_expr() << std::endl;
+			driver.get_expr()->put(cout) << std::endl;
 		}
 	}
 }

@@ -64,10 +64,12 @@ public:
 |  "The C++ Programming Language", by B. Stroustrup (1997) AT&T
 |_______________________________________________________________________*/
 
+/*
 std::ostream& operator<<(std::ostream& s, parsenode const& r)
 {
 	return r.put(s);
 }
+*/
 
 
 /*
@@ -87,10 +89,12 @@ public:
 
 };
 
+/*
 std::ostream& operator<<(std::ostream& s, exprnode const& r)
 {
 	return r.put(s);
 }
+*/
 
 
 
