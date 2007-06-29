@@ -81,7 +81,7 @@ item_t op_numeric_add_iterator::_next()
 {
 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-	return new numericValue(xs_decimal, n0.val() + n1.val());
+	return new numericValue(xs_decimal, n1.val() + n0.val());
 }
 
 
@@ -114,7 +114,7 @@ item_t op_numeric_subtract_iterator::_next()
 {
 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-	return new numericValue(xs_decimal, n0.val() - n1.val());
+	return new numericValue(xs_decimal, n1.val() - n0.val());
 }
 
 
@@ -146,7 +146,7 @@ item_t op_numeric_multiply_iterator::_next()
 {
 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-	return new numericValue(xs_decimal, n0.val() * n1.val());
+	return new numericValue(xs_decimal, n1.val() * n0.val());
 }
 
 
@@ -188,7 +188,7 @@ item_t op_numeric_divide_iterator::_next()
 {
 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-	return new numericValue(xs_decimal, n0.val() / n1.val());
+	return new numericValue(xs_decimal, n1.val() / n0.val());
 }
 
 
@@ -232,7 +232,7 @@ item_t op_numeric_integer_divide_iterator::_next()
 {
 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-	return new numericValue(xs_decimal, n0.val() / n1.val());
+	return new numericValue(xs_decimal, n1.val() / n0.val());
 }
 
 
@@ -284,7 +284,7 @@ item_t op_numeric_mod_iterator::_next()
 {
 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-	return new numericValue(xs_decimal, (long)n0.val() % (long)n1.val());
+	return new numericValue(xs_decimal, (long)n1.val() % (long)n0.val());
 }
 
 
