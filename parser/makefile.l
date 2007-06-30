@@ -1,5 +1,5 @@
 include ../Makefile.header
-SUFX=o
+SUFX=do
 BUILD=Build
 
 xquery_scanner : xquery_scanner.l
