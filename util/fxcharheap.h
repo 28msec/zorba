@@ -14,7 +14,9 @@
 #include "fxarray.h"
 #include "rchandle.h"
 #include "xqp_exception.h"
+
 #include <string>
+#include <sys/types.h>
 
 namespace xqp {
 
@@ -81,6 +83,13 @@ public:  //heap interface
     uint32_t maxlen) const	// input: maximum output size, truncate
 	throw (xqp_exception);
 
+  void get0(
+    long id,								// input: heap offset
+    char * buf,							// output: output buffer
+    uint32_t offset,				// input: buffer starting offset
+    uint32_t maxlen) const	// input: maximum output size, truncate
+	throw (xqp_exception);
+
 	// convenience method: return a string 
 	std::string gets(
 		off_t id)
@@ -124,6 +133,7 @@ public:  //heap interface
 	 **	@return length
 	 */
   uint32_t get_length(off_t id) const;
+  uint32_t get_length0(long id) const;
 
 	/**
    **	Return the heap capacity.

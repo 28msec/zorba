@@ -750,8 +750,8 @@ MainModule :
 		{
 			if (debug) cout << "MainModule [prolog.querybody]\n";
 			$$ = new MainModule(@$,
-								dynamic_cast<Prolog*>($1),
-								dynamic_cast<QueryBody*>($2));
+								static_cast<Prolog*>($1),
+								static_cast<QueryBody*>($2));
 		}
 	|
     QueryBody
@@ -759,7 +759,7 @@ MainModule :
 			if (debug) cout << "MainModule [querybody]\n";
 			$$ = new MainModule(@$,
 								NULL,
-								dynamic_cast<QueryBody*>($1));
+								static_cast<QueryBody*>($1));
 		}
   ;
 
@@ -771,8 +771,8 @@ LibraryModule :
 		{
 			if (debug) cout << "LibraryModule [ ]\n";
 			$$ = new LibraryModule(@$,
-								dynamic_cast<ModuleDecl*>($1),
-								dynamic_cast<Prolog*>($2));
+								static_cast<ModuleDecl*>($1),
+								static_cast<Prolog*>($2));
 		}
 	;
 
@@ -784,8 +784,8 @@ ModuleDecl :
 		{
 			if (debug) cout << "ModuleDecl [ ]\n";
 			$$ = new ModuleDecl(@$,
-								driver.symtab.get($2), 
-								driver.symtab.get($4));
+								driver.symtab.get((off_t)$2), 
+								driver.symtab.get((off_t)$4));
 		}
 	;
 
@@ -797,7 +797,7 @@ Prolog :
 		{
 			if (debug) cout << "Prolog [sind]\n";
 			$$ = new Prolog(@$,
-								dynamic_cast<SIND_DeclList*>($1),
+								static_cast<SIND_DeclList*>($1),
 								NULL);
 		}
 	|	VFO_DeclList  SEMI
@@ -805,14 +805,14 @@ Prolog :
 			if (debug) cout << "Prolog [vfo]\n";
 			$$ = new Prolog(@$,
 								NULL,
-								dynamic_cast<VFO_DeclList*>($1));
+								static_cast<VFO_DeclList*>($1));
 		}
 	|	SIND_DeclList  SEMI  VFO_DeclList  SEMI
 		{
 			if (debug) cout << "Prolog [sind.vfo]\n";
 			$$ = new Prolog(@$,
-								dynamic_cast<SIND_DeclList*>($1),
-								dynamic_cast<VFO_DeclList*>($3));
+								static_cast<SIND_DeclList*>($1),
+								static_cast<VFO_DeclList*>($3));
 		}
 	;
 
@@ -830,7 +830,7 @@ SIND_DeclList :
 	| SIND_DeclList  SEMI  SIND_Decl
 		{
 			if (debug) cout << "SIND_DeclList [list]\n";
-			SIND_DeclList* sindList_p = dynamic_cast<SIND_DeclList*>($1);
+			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>($1);
 			if (sindList_p) {
 				sindList_p->push_back($3);
 			}
@@ -990,8 +990,8 @@ NamespaceDecl :
 		{
 			if (debug) cout << "NamespaceDecl [ ]\n";
 			$$ = new NamespaceDecl(@$,
-								driver.symtab.get($2),
-								driver.symtab.get($4));
+								driver.symtab.get((off_t)$2),
+								driver.symtab.get((off_t)44));
 		}
 	;
 
@@ -1022,14 +1022,14 @@ DefaultNamespaceDecl :
 			if (debug) cout << "DefaultNamespaceDecl [element]\n";
 			$$ = new DefaultNamespaceDecl(@$,
 								ns_element_default,
-								driver.symtab.get($3));
+								driver.symtab.get((off_t)$3));
 		}
 	| DECLARE_DEFAULT_FUNCTION  NAMESPACE  URI_LITERAL
 		{
 			if (debug) cout << "DefaultNamespaceDecl [function]\n";
 			$$ = new DefaultNamespaceDecl(@$,
 								ns_function_default,
-								driver.symtab.get($3));
+								driver.symtab.get((off_t)$3));
 		}
 	;
 
@@ -1041,8 +1041,8 @@ OptionDecl :
 		{
 			if (debug) cout << "OptionDecl [ ]\n";
 			$$ = new OptionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
-								driver.symtab.get($3));
+								new QName(@$,driver.symtab.get((off_t)$2)),
+								driver.symtab.get((off_t)$3));
 		}
 	;
 
@@ -1145,7 +1145,7 @@ DefaultCollationDecl :
 		{
 			if (debug) cout << "DefaultCollationMode [ ]\n";
 			$$ = new DefaultCollationDecl(@$,
-								driver.symtab.get($2));
+								driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -1157,7 +1157,7 @@ BaseURIDecl :
 		{
 			if (debug) cout << "BaseURIDecl [ ]\n";
 			$$ = new BaseURIDecl(@$,
-								driver.symtab.get($2));
+								driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -1170,7 +1170,7 @@ SchemaImport :
 			if (debug) cout << "SchemaImport [uri]\n";
 			$$ = new SchemaImport(@$,
 								NULL,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								NULL);
 		}
 	| IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL
@@ -1178,7 +1178,7 @@ SchemaImport :
 			if (debug) cout << "SchemaImport [prefix.uri]\n";
 			$$ = new SchemaImport(@$,
 								dynamic_cast<SchemaPrefix*>($2),
-								driver.symtab.get($3),
+								driver.symtab.get((off_t)$3),
 								NULL);
 		}
 	|	IMPORT_SCHEMA  URI_LITERAL  AT  URILiteralList
@@ -1186,7 +1186,7 @@ SchemaImport :
 			if (debug) cout << "SchemaImport [uri.urilist]\n";
 			$$ = new SchemaImport(@$,
 								NULL,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								dynamic_cast<URILiteralList*>($4));
 		}
 	|	IMPORT_SCHEMA  SchemaPrefix  URI_LITERAL  AT  URILiteralList
@@ -1194,7 +1194,7 @@ SchemaImport :
 			if (debug) cout << "SchemaImport [prefix.uri.aturi]\n";
 			$$ = new SchemaImport(@$,
 								dynamic_cast<SchemaPrefix*>($2),
-								driver.symtab.get($3),
+								driver.symtab.get((off_t)$3),
 								dynamic_cast<URILiteralList*>($5));
 		}
 	;
@@ -1207,7 +1207,7 @@ URILiteralList :
 		{
 			if (debug) cout << "URILiteralList [single]\n";
 			URILiteralList* uri_list_p = new URILiteralList(@$);
-			uri_list_p->push_back(driver.symtab.get($1));
+			uri_list_p->push_back(driver.symtab.get((off_t)$1));
 			$$ = uri_list_p;
 		}
 	| URILiteralList  COMMA  URI_LITERAL
@@ -1215,7 +1215,7 @@ URILiteralList :
 			if (debug) cout << "URILiteralList [list]\n";
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>($1);
 			if (uri_list_p) {
-				uri_list_p->push_back(driver.symtab.get($3));
+				uri_list_p->push_back(driver.symtab.get((off_t)$3));
 			}
 			$$ = $1;
 		}
@@ -1229,7 +1229,7 @@ SchemaPrefix :
 		NAMESPACE  NCNAME  EQUALS
 		{
 			if (debug) cout << "SchemaPrefix [namespace]\n";
-			$$ = new SchemaPrefix(@$, driver.symtab.get($2));
+			$$ = new SchemaPrefix(@$, driver.symtab.get((off_t)$2));
 		}
 	|	DEFAULT_ELEMENT  NAMESPACE
 		{
@@ -1246,30 +1246,30 @@ ModuleImport :
 		{
 			if (debug) cout << "ModuleImport [uri]\n";
 			$$ = new ModuleImport(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								NULL);
 		}
 	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
 		{
 			if (debug) cout << "ModuleImport [namespace.uri]\n";
 			$$ = new ModuleImport(@$,
-								driver.symtab.get($3),
-								driver.symtab.get($5),
+								driver.symtab.get((off_t)$3),
+								driver.symtab.get((off_t)$5),
 								NULL);
 		}
 	|	IMPORT_MODULE  URI_LITERAL  AT  URILiteralList
 		{
 			if (debug) cout << "ModuleImport [uri.at_uri.list]\n";
 			$$ = new ModuleImport(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								dynamic_cast<URILiteralList*>($4));
 		}
 	|	IMPORT_MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
 		{
 			if (debug) cout << "ModuleImport [namespace.uri.at_uri.list]\n";
 			$$ = new ModuleImport(@$,
-								driver.symtab.get($3),
-								driver.symtab.get($5),
+								driver.symtab.get((off_t)$3),
+								driver.symtab.get((off_t)$5),
 								dynamic_cast<URILiteralList*>($7));
 		}
 	;
@@ -1283,7 +1283,7 @@ VarDecl :
 		{
 			if (debug) cout << "VarDecl [expr]\n";
 			$$ = new VarDecl(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								NULL,
 								$4);
 		}
@@ -1291,7 +1291,7 @@ VarDecl :
 		{
 			if (debug) cout << "VarDecl [external]\n";
 			$$ = new VarDecl(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								NULL,
 								NULL);
 		}
@@ -1299,7 +1299,7 @@ VarDecl :
 		{
 			if (debug) cout << "VarDecl [type.expr]\n";
 			$$ = new VarDecl(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								dynamic_cast<TypeDeclaration*>($3),
 								$5);
 		}
@@ -1307,7 +1307,7 @@ VarDecl :
 		{
 			if (debug) cout << "VarDecl [type.external]\n";
 			$$ = new VarDecl(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								dynamic_cast<TypeDeclaration*>($3),
 								NULL);
 		}
@@ -1339,7 +1339,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,NULL,NULL,
 								fn_extern);
 		}
@@ -1347,7 +1347,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
 								fn_read);
@@ -1356,7 +1356,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
 								fn_extern);
@@ -1365,7 +1365,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1375,7 +1375,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [as_type.external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
@@ -1385,7 +1385,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [as_type.expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1395,7 +1395,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.as_type.external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
@@ -1405,7 +1405,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [paramlist.as_type.expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
@@ -1415,7 +1415,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,NULL,NULL,
 								fn_extern_update);
 		}
@@ -1423,7 +1423,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,NULL,
 								dynamic_cast<EnclosedExpr*>($4),
 								fn_update);
@@ -1432,7 +1432,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,NULL,
 								fn_extern_update);
@@ -1441,7 +1441,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								NULL,
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1451,7 +1451,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) as_type.external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								NULL,
@@ -1461,7 +1461,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) as_type.expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<SequenceType*>($4),
 								dynamic_cast<EnclosedExpr*>($5),
@@ -1471,7 +1471,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								NULL,
@@ -1481,7 +1481,7 @@ FunctionDecl :
 		{
 			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
 			$$ = new FunctionDecl(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<ParamList*>($3),
 								dynamic_cast<SequenceType*>($5),
 								dynamic_cast<EnclosedExpr*>($6),
@@ -1521,14 +1521,14 @@ Param :
 		{
 			if (debug) cout << "Param [varname]\n";
 			$$ = new Param(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								NULL);
 		}
 	|	DOLLAR  VARNAME  TypeDeclaration
 		{
 			if (debug) cout << "Param [varname.type]\n";
 			$$ = new Param(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								dynamic_cast<TypeDeclaration*>($3));
 		}
 	;
@@ -1755,7 +1755,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								NULL,NULL,NULL,
 								$3);
 		}
@@ -1763,7 +1763,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [type.in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,NULL,
 								$4);
@@ -1772,7 +1772,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [posvar.in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								NULL,
@@ -1782,7 +1782,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [type.posvar.in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
 								NULL,
@@ -1793,7 +1793,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [scorevar.in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								NULL,NULL,
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
@@ -1802,7 +1802,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [type.scorevar.in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
 								dynamic_cast<FTScoreVar*>($3),
@@ -1812,7 +1812,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [posvar.scorevar.in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								NULL,
 								dynamic_cast<PositionalVar*>($2),
 								dynamic_cast<FTScoreVar*>($3),
@@ -1822,7 +1822,7 @@ VarInDecl :
 		{
 			if (debug) cout << "VarInDecl [type.posvar.scorevar.in]\n";
 			$$ = new VarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<PositionalVar*>($3),
 								dynamic_cast<FTScoreVar*>($4),
@@ -1838,7 +1838,7 @@ PositionalVar :
 		{
 			if (debug) cout << "PositionalVar [ ]\n";
 			$$ = new PositionalVar(@$,
-								driver.symtab.get($3));
+								driver.symtab.get((off_t)$3));
 		}
 	;
 
@@ -1851,7 +1851,7 @@ FTScoreVar :
 		{
 			if (debug) cout << "FTScoreVar [ ]\n";
 			$$ = new FTScoreVar(@$,
-								driver.symtab.get($3));
+								driver.symtab.get((off_t)$3));
 		}
 	;
 
@@ -1898,7 +1898,7 @@ VarGetsDecl :
 		{
 			if (debug) cout << "VarGetsDecl [gets]\n";
 			$$ = new VarGetsDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								NULL,
 								NULL,
 								$3);
@@ -1907,7 +1907,7 @@ VarGetsDecl :
 		{
 			if (debug) cout << "VarGetsDecl [type.gets]\n";
 			$$ = new VarGetsDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								NULL,
 								$4);
@@ -1917,7 +1917,7 @@ VarGetsDecl :
 		{
 			if (debug) cout << "VarGetsDecl [scorevar.gets]\n";
 			$$ = new VarGetsDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								NULL,
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
@@ -1926,7 +1926,7 @@ VarGetsDecl :
 		{
 			if (debug) cout << "VarGetsDecl [type.scorevar.gets]\n";
 			$$ = new VarGetsDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
@@ -2111,7 +2111,7 @@ OrderCollationSpec :
 		{
 			if (debug) cout << "OrderCollationSpec [ ]\n";
 			$$ = new OrderCollationSpec(@$,
-								driver.symtab.get($2));
+								driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -2168,14 +2168,14 @@ QVarInDecl :
 		{
 			if (debug) cout << "QVarInDecl [in]\n";
 			$$ = new QVarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								$3);
 		}
 	|	VARNAME  TypeDeclaration  IN  ExprSingle 
 		{
 			if (debug) cout << "QVarInDecl [type.in]\n";
 			$$ = new QVarInDecl(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								dynamic_cast<TypeDeclaration*>($2),
 								$4);
 		}
@@ -2199,7 +2199,7 @@ TypeswitchExpr :
 			$$ = new TypeswitchExpr(@$,
 								$2,
 								dynamic_cast<CaseClauseList*>($4),
-								driver.symtab.get($7),
+								driver.symtab.get((off_t)$7),
 								$9);
 		}
 	;
@@ -2239,7 +2239,7 @@ CaseClause :
 		{
 			if (debug) cout << "CaseClause [case.as.return]\n";
 			$$ = new CaseClause(@$,
-								driver.symtab.get($3),
+								driver.symtab.get((off_t)$3),
 								dynamic_cast<SequenceType*>($5),
 								$7);
 		}
@@ -2723,7 +2723,7 @@ ValidateExpr :
 		{
 			if (debug) cout << "ValidateExpr [mode.expr]\n";
 			$$ = new ValidateExpr(@$,
-								driver.symtab.get($1),
+								driver.symtab.get((off_t)$1),
 								$3);
 		}
 	;
@@ -2778,8 +2778,8 @@ Pragma :
 		{
 			if (debug) cout << "Pragma [ ]\n";
 			$$ = new Pragma(@$,
-								new QName(@$,driver.symtab.get($2)),
-								driver.symtab.get($3));
+								new QName(@$,driver.symtab.get((off_t)$2)),
+								driver.symtab.get((off_t)$3));
 
 		}
 	;	/* ws: explicit */
@@ -3067,7 +3067,7 @@ NameTest :
 		{
 			if (debug) cout << "NameTest [qname]\n";
 			$$ = new NameTest(@$,
-								new QName(@$,driver.symtab.get($1)));
+								new QName(@$,driver.symtab.get((off_t)$1)));
 		}
 	|	Wildcard
 		{
@@ -3092,7 +3092,7 @@ Wildcard :
 		{
 			if (debug) cout << "Wildcard [pref:*]\n";
 			$$ = new Wildcard(@$,
-									new QName(@$,driver.symtab.get($1)),
+									new QName(@$,driver.symtab.get((off_t)$1)),
 									wild_elem);
 		}
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
@@ -3246,7 +3246,7 @@ VarRef :
 		DOLLAR  VARNAME
 		{
 			if (debug) cout << "VarRef [ ]\n";
-			$$ = new VarRef(@$, driver.symtab.get($2));
+			$$ = new VarRef(@$, driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -3355,14 +3355,14 @@ FunctionCall :
 		{
 			if (debug) cout << "FunctionCall [ ]\n";
 			$$ = new FunctionCall(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								NULL);
 		}
 	|	QNAME_LPAR  ArgList  RPAR
 		{
 			if (debug) cout << "FunctionCall [arglist]\n";
 			$$ = new FunctionCall(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								dynamic_cast<ArgList*>($2));
 		}
 	;
@@ -3432,7 +3432,7 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname/> ]\n";
 			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
 								NULL,
 								NULL);
@@ -3441,7 +3441,7 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname attrlist/> ]\n";
 			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL,
 								dynamic_cast<DirAttributeList*>($3), 
 								NULL);
@@ -3450,8 +3450,8 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname>content</qname>]\n";
 			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get($2)),
-								new QName(@$,driver.symtab.get($6)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
+								new QName(@$,driver.symtab.get((off_t)$6)),
 								NULL,
 								dynamic_cast<DirElemContentList*>($4));
 		}
@@ -3459,8 +3459,8 @@ DirElemConstructor :
 		{
 			if (debug) cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
 			$$ = new DirElemConstructor(@$,
-								new QName(@$,driver.symtab.get($2)),
-								new QName(@$,driver.symtab.get($7)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
+								new QName(@$,driver.symtab.get((off_t)$7)),
 								dynamic_cast<DirAttributeList*>($3), 
 								dynamic_cast<DirElemContentList*>($5));
 		}
@@ -3517,7 +3517,7 @@ DirAttr :
 		{
 			if (debug) cout << "DirAttr [ ]\n";
 			$$ = new DirAttr(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								dynamic_cast<DirAttributeValue*>($3));
 		}
 	;
@@ -3623,7 +3623,7 @@ QuoteAttrValueContent :
 		{
 			if (debug) cout << "QuoteAttrValueContent [quote_attr_content]\n";
 			$$ = new QuoteAttrValueContent(@$,
-								driver.symtab.get($1));
+								driver.symtab.get((off_t)$1));
 		}
 	|	CommonContent
 		{
@@ -3641,7 +3641,7 @@ AposAttrValueContent :
 		{
 			if (debug) cout << "AposAttrValueContent [apos_attr_content]\n";
 			$$ = new AposAttrValueContent(@$,
-								driver.symtab.get($1));
+								driver.symtab.get((off_t)$1));
 		}
 	|	CommonContent
 		{
@@ -3665,7 +3665,7 @@ DirElemContent :
 		{
 			if (debug) cout << "DirElemContent [elem_content]\n";
 			$$ = new DirElemContent(@$,
-								driver.symtab.get($1));
+								driver.symtab.get((off_t)$1));
 		}
 	|	CDataSection
 		{
@@ -3692,14 +3692,14 @@ CommonContent :
 			if (debug) cout << "CommonContent [entity_ref]\n";
 			$$ = new CommonContent(@$,
 								cont_entity,
-								driver.symtab.get($1));
+								driver.symtab.get((off_t)$1));
 		}
 	|	CHAR_REF_LITERAL
 		{
 			if (debug) cout << "CommonContent [char_ref]\n";
 			$$ = new CommonContent(@$,
 								cont_charref,
-								driver.symtab.get($1));
+								driver.symtab.get((off_t)$1));
 		}
 	|	DOUBLE_LBRACE
 		{
@@ -3729,7 +3729,7 @@ DirCommentConstructor :
 		{
 			if (debug) cout << "DirCommentConstructor [ ]\n";
 			$$ = new DirCommentConstructor(@$,
-								driver.symtab.get($2));
+								driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -3746,14 +3746,14 @@ DirPIConstructor :
 		{
 			if (debug) cout << "DirPIConstructor [target]\n";
 			$$ = new DirPIConstructor(@$,
-								driver.symtab.get($2));
+								driver.symtab.get((off_t)$2));
 		}
 	|	PI_BEGIN  PI_TARGET_LITERAL  CHAR_LITERAL  PI_END 	/* ws: explicitXQ */
 		{
 			if (debug) cout << "DirPIConstructor [target.charlit]\n";
 			$$ = new DirPIConstructor(@$,
-								driver.symtab.get($2),
-								driver.symtab.get($3));
+								driver.symtab.get((off_t)$2),
+								driver.symtab.get((off_t)$3));
 		}
 	;
 
@@ -3769,7 +3769,7 @@ CDataSection :
 		CDATA_BEGIN  CHAR_LITERAL  CDATA_END 				/* ws: explicitXQ */
 		{
 			if (debug) cout << "CDataSection [ ]\n";
-			$$ = new CDataSection(@$,driver.symtab.get($2));
+			$$ = new CDataSection(@$,driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -3834,14 +3834,14 @@ CompElemConstructor :
 		{
 			if (debug) cout << "CompElemConstructor [ ]\n";
 			$$ = new CompElemConstructor(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								NULL);
 		}
 	|	ELEMENT_QNAME_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompElemConstructor [content]\n";
 			$$ = new CompElemConstructor(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								$2);
 		}
 	|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -3878,14 +3878,14 @@ CompAttrConstructor :
 		{
 			if (debug) cout << "CompAttrConstructor [ ]\n";
 			$$ = new CompAttrConstructor(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								NULL);
 		}
 	|	ATTRIBUTE_QNAME_LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompAttrConstructor [val]\n";
 			$$ = new CompAttrConstructor(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								$2);
 		}
 	|	ATTRIBUTE_LBRACE  Expr  RBRACE  LBRACE  RBRACE
@@ -3934,14 +3934,14 @@ CompPIConstructor :
 		{
 			if (debug) cout << "CompPIConstructor [ ]\n";
 			$$ = new CompPIConstructor(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								NULL);
 		}
 	|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
 		{
 			if (debug) cout << "CompPIConstructor [content]\n";
 			$$ = new CompPIConstructor(@$,
-								driver.symtab.get($2),
+								driver.symtab.get((off_t)$2),
 								$4);
 		}
 	|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
@@ -4095,7 +4095,7 @@ AtomicType :
 		{
 			if (debug) cout << "AtomicType [qname]\n";
 			$$ = new AtomicType(@$,
-								new QName(@$, driver.symtab.get($1)));
+								new QName(@$, driver.symtab.get((off_t)$1)));
 		}
 	;
 
@@ -4218,12 +4218,12 @@ PITest :
 	|	PI_LPAR  NCNAME  RPAR
 		{
 			if (debug) cout << "PITest [ncname]\n";
-			$$ = new PITest(@$, driver.symtab.get($2), "");
+			$$ = new PITest(@$, driver.symtab.get((off_t)$2), "");
 		}
 	|	PI_LPAR  STRING_LITERAL  RPAR
 		{
 			if (debug) cout << "PITest [stringlit]\n";
-			$$ = new PITest(@$, "", driver.symtab.get($2));
+			$$ = new PITest(@$, "", driver.symtab.get((off_t)$2));
 		}
 	;
 
@@ -4242,14 +4242,14 @@ AttributeTest :
 		{
 			if (debug) cout << "AttributeTest [name]\n";
 			$$ = new AttributeTest(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								NULL);
 		}
 	|	ATTRIBUTE_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			if (debug) cout << "AttributeTest [name.type]\n";
 			$$ = new AttributeTest(@$,
-								new QName(@$,driver.symtab.get($2)),
+								new QName(@$,driver.symtab.get((off_t)$2)),
 								dynamic_cast<TypeName*>($4));
 		}
 	|	ATTRIBUTE_LPAR  STAR  RPAR
@@ -4276,7 +4276,7 @@ SchemaAttributeTest :
 		{
 			if (debug) cout << "SchemaAttributeTest [ ]\n";
 			$$ = new SchemaAttributeTest(@$,
-								new QName(@$, driver.symtab.get($2)));
+								new QName(@$, driver.symtab.get((off_t)$2)));
 		}
 	;
 
@@ -4295,14 +4295,14 @@ ElementTest :
 		{
 			if (debug) cout << "ElementTest [name]\n";
 			$$ = new ElementTest(@$,
-									new QName(@$,driver.symtab.get($2)),
+									new QName(@$,driver.symtab.get((off_t)$2)),
 									NULL);
 		}
 	|	ELEMENT_LPAR  QNAME  COMMA  TypeName  RPAR
 		{
 			if (debug) cout << "ElementTest [name.type]\n";
 			$$ = new ElementTest(@$,
-									new QName(@$,driver.symtab.get($2)),
+									new QName(@$,driver.symtab.get((off_t)$2)),
 									dynamic_cast<TypeName*>($4));
 		}
 	|	ELEMENT_LPAR  STAR  RPAR
@@ -4331,7 +4331,7 @@ SchemaElementTest :
 		{
 			if (debug) cout << "SchemaElementTest [ ]\n";
 			$$ = new SchemaElementTest(@$,
-									new QName(@$,driver.symtab.get($2)));
+									new QName(@$,driver.symtab.get((off_t)$2)));
 		}
 	;
 
@@ -4353,13 +4353,13 @@ TypeName :
 		{
 			if (debug) cout << "TypeName [name]\n";
 			$$ = new TypeName(@$,
-								new QName(@$,driver.symtab.get($1)));
+								new QName(@$,driver.symtab.get((off_t)$1)));
 		}
 	| QNAME  HOOK
 		{
 			if (debug) cout << "TypeName [name?]\n";
 			$$ = new TypeName(@$,
-								new QName(@$,driver.symtab.get($1)),
+								new QName(@$,driver.symtab.get((off_t)$1)),
 								true);
 		}
 	;
@@ -4379,7 +4379,7 @@ StringLiteral :
 		STRING_LITERAL
 		{
 			if (debug) cout << "StringLiteral [ ]\n";
-			$$ = new StringLiteral(@$, driver.symtab.get($1));
+			$$ = new StringLiteral(@$, driver.symtab.get((off_t)$1));
 		}
 	;
 

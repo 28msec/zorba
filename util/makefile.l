@@ -1,5 +1,5 @@
 include ../Makefile.header
-SUFX=do
+SUFX=o
 BUILD=Build
 
 xqp_exception : xqp_exception.h xqp_exception.cpp

@@ -17,15 +17,14 @@
 #include <vector>
 #include <assert.h>
 
-#include "../exprtree/parsenode_visitor.h"
-#include "../util/rchandle.h"
-#include "../util/tracer.h"
-#include "../values/values.h"
+#include "exprtree/parsenode_visitor.h"
+#include "util/rchandle.h"
+#include "util/tracer.h"
+#include "util/xqp_exception.h"
+#include "values/values.h"
 #include "indent.h"
 
 using namespace std;
-using namespace yy;
-
 namespace xqp {
 
 int printdepth = 0;
@@ -35,6 +34,7 @@ ostringstream	__oss;
 #define OUTDENT		indent[printdepth-- % 30]
 #define UNDENT		printdepth--
 
+/*
 ostream& parsenode::put(ostream& s) const
 {
 	s << INDENT << "parsenode[]\n"; UNDENT;
@@ -46,13 +46,14 @@ ostream& exprnode::put(ostream& s) const
 	s << INDENT << "exprnode[]\n"; UNDENT;
 	return s;
 }
+*/
 
 
 
 // [1] Module
 // ----------
 Module::Module(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -80,7 +81,7 @@ void Module::accept(parsenode_visitor& v) const
 // [2] VersionDecl
 // ---------------
 VersionDecl::VersionDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _version,
 	std::string const& _encoding)
 :
@@ -114,7 +115,7 @@ void VersionDecl::accept(parsenode_visitor& v) const
 // [3] MainModule
 // --------------
 MainModule::MainModule(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<Prolog> _prolog_h,
 	rchandle<QueryBody> _query_body_h)
 :
@@ -125,7 +126,7 @@ MainModule::MainModule(
 }
 
 MainModule::MainModule(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QueryBody> _query_body_h)
 :
 	parsenode(_loc),
@@ -163,7 +164,7 @@ void MainModule::accept(parsenode_visitor& v) const
 // [4] LibraryModule
 // -----------------
 LibraryModule::LibraryModule(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ModuleDecl> _decl_h, 
 	rchandle<Prolog> _prolog_h)
 :
@@ -203,7 +204,7 @@ void LibraryModule::accept(parsenode_visitor& v) const
 // [5] ModuleDecl
 // --------------
 ModuleDecl::ModuleDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _prefix,
 	std::string const& _target_namespace)
 :
@@ -239,7 +240,7 @@ void ModuleDecl::accept(parsenode_visitor& v) const
 // [6] Prolog
 // ----------
 Prolog::Prolog(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<SIND_DeclList> _sind_list_h,
 	rchandle<VFO_DeclList> _vfo_list_h)
 :
@@ -273,10 +274,10 @@ void Prolog::accept(parsenode_visitor& v) const
 
 
 
-// [6a] SIDN_DeclList
+// [6a] SIND_DeclList
 // ------------------
 SIND_DeclList::SIND_DeclList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -313,7 +314,7 @@ void SIND_DeclList::accept(parsenode_visitor& v) const
 // [6b] VFO_DeclList
 // -----------------
 VFO_DeclList::VFO_DeclList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -364,7 +365,7 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 // [10] NamespaceDecl
 // ------------------
 NamespaceDecl::NamespaceDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _prefix,
 	std::string const& _uri)
 :
@@ -398,7 +399,7 @@ void NamespaceDecl::accept(parsenode_visitor& v) const
 // [11] BoundarySpaceDecl
 // ----------------------
 BoundarySpaceDecl::BoundarySpaceDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	static_context::boundary_space_mode_t _mode)
 :
 	parsenode(_loc),
@@ -434,7 +435,7 @@ void BoundarySpaceDecl::accept(parsenode_visitor& v) const
 // [12] DefaultNamespaceDecl
 // -------------------------
 DefaultNamespaceDecl::DefaultNamespaceDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	enum default_namespace_mode_t _mode,
 	std::string const& _default_namespace)
 :
@@ -472,7 +473,7 @@ void DefaultNamespaceDecl::accept(parsenode_visitor& v) const
 // [13] OptionDecl
 // ---------------
 OptionDecl::OptionDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _qname_h,
 	std::string const& _val)
 :
@@ -508,7 +509,7 @@ void OptionDecl::accept(parsenode_visitor& v) const
 // [13a] FTOptionDecl
 // ------------------
 FTOptionDecl::FTOptionDecl(
-  yy::location const& _loc,
+  const yy::location& _loc,
   rchandle<parsenode> _match_option_h)
 :
   parsenode(_loc),
@@ -541,7 +542,7 @@ void FTOptionDecl::accept(parsenode_visitor& v) const
 // [14] OrderingModeDecl
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	dynamic_context::ordering_mode_t _mode)
 :
 	parsenode(_loc),
@@ -577,7 +578,7 @@ void OrderingModeDecl::accept(parsenode_visitor& v) const
 // [15] EmptyOrderDecl
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	static_context::order_empty_mode_t _mode)
 :
 	parsenode(_loc),
@@ -613,7 +614,7 @@ void EmptyOrderDecl::accept(parsenode_visitor& v) const
 // [16] CopyNamespacesDecl
 // -----------------------
 CopyNamespacesDecl::CopyNamespacesDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	static_context::preserve_mode_t _preserve_mode,
 	static_context::inherit_mode_t  _inherit_mode)
 :
@@ -663,7 +664,7 @@ void CopyNamespacesDecl::accept(parsenode_visitor& v) const
 // [19] DefaultCollationDecl
 // -------------------------
 DefaultCollationDecl::DefaultCollationDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const&  _collation)
 :
 	parsenode(_loc),
@@ -695,7 +696,7 @@ void DefaultCollationDecl::accept(parsenode_visitor& v) const
 // [20] BaseURIDecl
 // ----------------
 BaseURIDecl::BaseURIDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _base_uri)
 :
 	parsenode(_loc),
@@ -727,7 +728,7 @@ void BaseURIDecl::accept(parsenode_visitor& v) const
 // [21] SchemaImport
 // -----------------
 SchemaImport::SchemaImport(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<SchemaPrefix> _prefix_h,
 	std::string const& _uri,
 	rchandle<URILiteralList> _at_list_h)
@@ -767,7 +768,7 @@ void SchemaImport::accept(parsenode_visitor& v) const
 // [21a] URLLiteralList
 // --------------------
 URILiteralList::URILiteralList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -803,7 +804,7 @@ void URILiteralList::accept(parsenode_visitor& v) const
 // [22] SchemaPrefix
 // -----------------
 SchemaPrefix::SchemaPrefix(
-	location const& _loc,
+	const yy::location& _loc,
 	bool _default_b)
 :
 	parsenode(_loc),
@@ -813,7 +814,7 @@ SchemaPrefix::SchemaPrefix(
 }
 
 SchemaPrefix::SchemaPrefix(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _prefix) 
 :
 	parsenode(_loc),
@@ -847,7 +848,7 @@ void SchemaPrefix::accept(parsenode_visitor& v) const
 // [23] ModuleImport
 // -----------------
 ModuleImport::ModuleImport(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& uri,
 	rchandle<URILiteralList> _uri_list_h)
 :
@@ -857,7 +858,7 @@ ModuleImport::ModuleImport(
 }
 
 ModuleImport::ModuleImport(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _prefix,
 	std::string const& _uri,
 	rchandle<URILiteralList> _uri_list_h)
@@ -896,7 +897,7 @@ void ModuleImport::accept(parsenode_visitor& v) const
 // [24] VarDecl
 // ------------
 VarDecl::VarDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<exprnode> _initexpr_h)
@@ -936,7 +937,7 @@ void VarDecl::accept(parsenode_visitor& v) const
 // [25] ConstructionDecl
 // ---------------------
 ConstructionDecl::ConstructionDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	static_context::construction_mode_t _mode)
 :
 	parsenode(_loc),
@@ -972,7 +973,7 @@ void ConstructionDecl::accept(parsenode_visitor& v) const
 // [26] FunctionDecl
 // -----------------
 FunctionDecl::FunctionDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _name_h,
 	rchandle<ParamList> _paramlist_h,
 	rchandle<SequenceType> _return_type_h,
@@ -1026,7 +1027,7 @@ void FunctionDecl::accept(parsenode_visitor& v) const
 // [27] ParamList
 // --------------
 ParamList::ParamList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -1064,7 +1065,7 @@ void ParamList::accept(parsenode_visitor& v) const
 // [28] Param
 // ----------
 Param::Param(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _name,
 	rchandle<TypeDeclaration> _typedecl_h)
 :
@@ -1100,7 +1101,7 @@ void Param::accept(parsenode_visitor& v) const
 // [29] EnclosedExpr
 // -----------------
 EnclosedExpr::EnclosedExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _expr_h)
 :
 	exprnode(_loc),
@@ -1133,7 +1134,7 @@ void EnclosedExpr::accept(parsenode_visitor& v) const
 // [30] QueryBody
 // --------------
 QueryBody::QueryBody(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _expr_h)
 :
 	exprnode(_loc),
@@ -1166,7 +1167,7 @@ void QueryBody::accept(parsenode_visitor& v) const
 // [31] Expr
 // ---------
 Expr::Expr(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	exprnode(_loc)
 {
@@ -1206,7 +1207,7 @@ void Expr::accept(parsenode_visitor& v) const
 // [33] FLWORExpr
 // --------------
 FLWORExpr::FLWORExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ForLetClauseList> _forlet_list_h,
 	rchandle<WhereClause> _where_h,
 	rchandle<OrderByClause> _orderby_h,
@@ -1260,7 +1261,7 @@ void FLWORExpr::accept(parsenode_visitor& v) const
 // [33a] ForLetClauseList
 // ----------------------
 ForLetClauseList::ForLetClauseList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -1302,7 +1303,7 @@ void ForLetClauseList::accept(parsenode_visitor& v) const
 // [34] ForClause
 // --------------
 ForClause::ForClause(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<VarInDeclList> _vardecl_list_h)
 :
 	parsenode(_loc),
@@ -1335,7 +1336,7 @@ void ForClause::accept(parsenode_visitor& v) const
 // [34a] VarInDeclList
 // -------------------
 VarInDeclList::VarInDeclList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -1372,7 +1373,7 @@ void VarInDeclList::accept(parsenode_visitor& v) const
 // [34b] VarInDecl
 // ---------------
 VarInDecl::VarInDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<PositionalVar> _posvar_h,
@@ -1420,7 +1421,7 @@ void VarInDecl::accept(parsenode_visitor& v) const
 // [35] PositionalVar
 // ------------------
 PositionalVar::PositionalVar(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _varname)
 :
 	parsenode(_loc),
@@ -1452,7 +1453,7 @@ void PositionalVar::accept(parsenode_visitor& v) const
 // [36] LetClause
 // --------------
 LetClause::LetClause(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<VarGetsDeclList> _vardecl_list_h)
 :
 	parsenode(_loc),
@@ -1485,7 +1486,7 @@ void LetClause::accept(parsenode_visitor& v) const
 // [36a] VarGetsDeclList
 // ---------------------
 VarGetsDeclList::VarGetsDeclList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -1522,7 +1523,7 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
 // [36b] VarGetsDecl
 // ------------------
 VarGetsDecl::VarGetsDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _varname,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<FTScoreVar> _ftscorevar_h,
@@ -1566,7 +1567,7 @@ void VarGetsDecl::accept(parsenode_visitor& v) const
 // [36c] FTScoreVar
 // ----------------
 FTScoreVar::FTScoreVar(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _varname)
 :
 	parsenode(_loc),
@@ -1598,7 +1599,7 @@ void FTScoreVar::accept(parsenode_visitor& v) const
 // [37] WhereClause
 // ----------------
 WhereClause::WhereClause(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _predicate_h)
 :
 	parsenode(_loc),
@@ -1631,7 +1632,7 @@ void WhereClause::accept(parsenode_visitor& v) const
 // [38] OrderByClause
 // ------------------
 OrderByClause::OrderByClause(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<OrderSpecList> _spec_list_h,
 	bool _stable_b)
 :
@@ -1643,7 +1644,7 @@ OrderByClause::OrderByClause(
 
 
 OrderByClause::OrderByClause(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<OrderSpecList> _spec_list_h)
 :
 	parsenode(_loc),
@@ -1677,7 +1678,7 @@ void OrderByClause::accept(parsenode_visitor& v) const
 // [39] OrderSpecList
 // ------------------
 OrderSpecList::OrderSpecList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -1714,7 +1715,7 @@ void OrderSpecList::accept(parsenode_visitor& v) const
 // [40] OrderSpec
 // --------------
 OrderSpec::OrderSpec(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _spec_h,
 	rchandle<OrderModifier> _modifier_h)
 :
@@ -1751,7 +1752,7 @@ void OrderSpec::accept(parsenode_visitor& v) const
 // [41] OrderModifier
 // ------------------
 OrderModifier::OrderModifier(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<OrderDirSpec> _dir_spec_h,
 	rchandle<OrderEmptySpec> _empty_spec_h,
 	rchandle<OrderCollationSpec> _collation_spec_h)
@@ -1792,7 +1793,7 @@ void OrderModifier::accept(parsenode_visitor& v) const
 // [41a] OrderDirSpec
 // ------------------
 OrderDirSpec::OrderDirSpec(
-	location const& _loc,
+	const yy::location& _loc,
 	enum dir_spec_t _dir_spec)
 :
 	parsenode(_loc),
@@ -1828,7 +1829,7 @@ void OrderDirSpec::accept(parsenode_visitor& v) const
 // [41b] OrderEmptySpec
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
-	location const& _loc,
+	const yy::location& _loc,
 	static_context::order_empty_mode_t _empty_order_spec)
 :
 	parsenode(_loc),
@@ -1864,7 +1865,7 @@ void OrderEmptySpec::accept(parsenode_visitor& v) const
 // [41c] OrderCollationSpec
 // ------------------------
 OrderCollationSpec::OrderCollationSpec(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _uri)
 :
 	parsenode(_loc),
@@ -1896,7 +1897,7 @@ void OrderCollationSpec::accept(parsenode_visitor& v) const
 // [42] QuantifiedExpr 	   
 // -------------------
 QuantifiedExpr::QuantifiedExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	quantification_mode_t _qmode,
 	rchandle<QVarInDeclList> _decl_list_h,
 	rchandle<exprnode> _expr_h)
@@ -1940,7 +1941,7 @@ void QuantifiedExpr::accept(parsenode_visitor& v) const
 // [42a] QVarInDeclList
 // --------------------
 QVarInDeclList::QVarInDeclList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -1977,7 +1978,7 @@ void QVarInDeclList::accept(parsenode_visitor& v) const
 // [42b] QVarInDecl
 // ----------------
 QVarInDecl::QVarInDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _name,
 	rchandle<exprnode> _val_h)
 :
@@ -1989,7 +1990,7 @@ QVarInDecl::QVarInDecl(
 }
 
 QVarInDecl::QVarInDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _name,
 	rchandle<TypeDeclaration> _typedecl_h,
 	rchandle<exprnode> _val_h)
@@ -2028,7 +2029,7 @@ void QVarInDecl::accept(parsenode_visitor& v) const
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr::TypeswitchExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _switch_expr_h,
 	rchandle<CaseClauseList> _clause_list_h,
 	rchandle<exprnode> _default_clause_h)
@@ -2042,7 +2043,7 @@ TypeswitchExpr::TypeswitchExpr(
 
 
 TypeswitchExpr::TypeswitchExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _switch_expr_h,
 	rchandle<CaseClauseList> _clause_list_h,
 	std::string _default_varname,
@@ -2068,8 +2069,8 @@ ostream& TypeswitchExpr::put(ostream& os) const
 	if (default_clause_h!=NULL) {
   	os << INDENT << "DEFAULT\n";
   	if (default_varname.length()>0) {
-  	  os << INDENT << "VARNAME=" 
-          << default_varname << OUTDENT << endl;
+  	  os << INDENT << "VARNAME=" << default_varname;
+			os << OUTDENT << endl;
     }
   	default_clause_h->put(os);
   	UNDENT;
@@ -2107,7 +2108,7 @@ void TypeswitchExpr::accept(parsenode_visitor& v) const
 // [43a] CaseClauseList
 // --------------------
 CaseClauseList::CaseClauseList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -2152,7 +2153,7 @@ void CaseClauseList::accept(parsenode_visitor& v) const
 // [44] CaseClause
 // ---------------
 CaseClause::CaseClause(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _varname,
 	rchandle<SequenceType> _type_h,
 	rchandle<exprnode> _val_h)
@@ -2165,7 +2166,7 @@ CaseClause::CaseClause(
 }
 
 CaseClause::CaseClause(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<SequenceType> _type_h,
 	rchandle<exprnode> _val_h)
 :
@@ -2210,7 +2211,7 @@ void CaseClause::accept(parsenode_visitor& v) const
 // [45] IfExpr
 // -----------
 IfExpr::IfExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _cond_expr_h,
 	rchandle<exprnode> _then_expr_h,
 	rchandle<exprnode> _else_expr_h)
@@ -2251,7 +2252,7 @@ void IfExpr::accept(parsenode_visitor& v) const
 // [46] OrExpr
 // -----------
 OrExpr::OrExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _or_expr_h,
 	rchandle<exprnode> _and_expr_h)
 :
@@ -2288,7 +2289,7 @@ void OrExpr::accept(parsenode_visitor& v) const
 // [47] AndExpr
 // ------------
 AndExpr::AndExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _and_expr_h,
 	rchandle<exprnode> _comp_expr_h)
 :
@@ -2325,7 +2326,7 @@ void AndExpr::accept(parsenode_visitor& v) const
 // [48] ComparisonExpr
 // -------------------
 ComparisonExpr::ComparisonExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ValueComp> _valcomp_h,
 	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
@@ -2340,7 +2341,7 @@ ComparisonExpr::ComparisonExpr(
 }
 
 ComparisonExpr::ComparisonExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<GeneralComp> _gencomp_h,
 	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
@@ -2355,7 +2356,7 @@ ComparisonExpr::ComparisonExpr(
 }
 
 ComparisonExpr::ComparisonExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<NodeComp> _nodecomp_h,
 	rchandle<exprnode> _left_h,
 	rchandle<exprnode> _right_h)
@@ -2399,7 +2400,7 @@ void ComparisonExpr::accept(parsenode_visitor& v) const
 // [48a] FTContainsExpr
 // --------------------
 FTContainsExpr::FTContainsExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _range_expr_h,
 	rchandle<FTSelection> _ftselect_h,
 	rchandle<FTIgnoreOption> _ftignore_h)
@@ -2440,7 +2441,7 @@ void FTContainsExpr::accept(parsenode_visitor& v) const
 // [49] RangeExpr
 // --------------
 RangeExpr::RangeExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _from_expr_h,
 	rchandle<exprnode> _to_expr_h)
 :
@@ -2478,7 +2479,7 @@ void RangeExpr::accept(parsenode_visitor& v) const
 // [50] AdditiveExpr
 // -----------------
 AdditiveExpr::AdditiveExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	enum add_op_t _add_op,
 	rchandle<exprnode> _add_expr_h,
 	rchandle<exprnode> _mult_expr_h)
@@ -2524,7 +2525,7 @@ void AdditiveExpr::accept(parsenode_visitor& v) const
 // [51] MultiplicativeExpr
 // -----------------------
 MultiplicativeExpr::MultiplicativeExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	enum mult_op_t _mult_op,
 	rchandle<exprnode> _mult_expr_h,
 	rchandle<exprnode> _union_expr_h)
@@ -2570,7 +2571,7 @@ void MultiplicativeExpr::accept(parsenode_visitor& v) const
 // [52] UnionExpr
 // --------------
 UnionExpr::UnionExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _union_expr_h,
 	rchandle<exprnode> _intex_expr_h)
 :
@@ -2607,7 +2608,7 @@ void UnionExpr::accept(parsenode_visitor& v) const
 // [53] IntersectExceptExpr
 // ------------------------
 IntersectExceptExpr::IntersectExceptExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	enum intex_op_t _intex_op,
 	rchandle<exprnode> _intex_expr_h,
 	rchandle<exprnode> _instof_expr_h)
@@ -2651,7 +2652,7 @@ void IntersectExceptExpr::accept(parsenode_visitor& v) const
 // [54] InstanceofExpr
 // -------------------
 InstanceofExpr::InstanceofExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _treat_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
@@ -2688,7 +2689,7 @@ void InstanceofExpr::accept(parsenode_visitor& v) const
 // [55] TreatExpr
 // --------------
 TreatExpr::TreatExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _castable_expr_h,
 	rchandle<SequenceType> _seqtype_h)
 :
@@ -2725,7 +2726,7 @@ void TreatExpr::accept(parsenode_visitor& v) const
 // [56] CastableExpr
 // -----------------
 CastableExpr::CastableExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _cast_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
@@ -2762,7 +2763,7 @@ void CastableExpr::accept(parsenode_visitor& v) const
 // [57] CastExpr 	   
 // -------------
 CastExpr::CastExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _unary_expr_h,
 	rchandle<SingleType> _singletype_h)
 :
@@ -2799,7 +2800,7 @@ void CastExpr::accept(parsenode_visitor& v) const
 // [58] UnaryExpr
 // --------------
 UnaryExpr::UnaryExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<SignList> _signlist_h,
 	rchandle<exprnode> _value_expr_h)
 :
@@ -2836,7 +2837,7 @@ void UnaryExpr::accept(parsenode_visitor& v) const
 // [58a] SignList
 // --------------
 SignList::SignList(
-	location const& _loc,
+	const yy::location& _loc,
 	bool _sign)
 :
 	parsenode(_loc),
@@ -2872,7 +2873,7 @@ void SignList::accept(parsenode_visitor& v) const
 // [60] GeneralComp
 // ----------------
 GeneralComp::GeneralComp(
-	location const& _loc,
+	const yy::location& _loc,
 	enum gencomp_t _type)
 :
 	parsenode(_loc),
@@ -2914,7 +2915,7 @@ void GeneralComp::accept(parsenode_visitor& v) const
 // [61] ValueComp
 // --------------
 ValueComp::ValueComp(
-	location const& _loc,
+	const yy::location& _loc,
 	enum valcomp_t _type)
 :
 	parsenode(_loc),
@@ -2956,7 +2957,7 @@ void ValueComp::accept(parsenode_visitor& v) const
 // [62] NodeComp
 // -------------
 NodeComp::NodeComp(
-	location const& _loc,
+	const yy::location& _loc,
 	enum nodecomp_t _type)
 :
 	parsenode(_loc),
@@ -2995,7 +2996,7 @@ void NodeComp::accept(parsenode_visitor& v) const
 // [63] ValidateExpr
 // -----------------
 ValidateExpr::ValidateExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	string const& _valmode,
 	rchandle<exprnode> _expr_h)
 :
@@ -3035,7 +3036,7 @@ void ValidateExpr::accept(parsenode_visitor& v) const
 // [65] ExtensionExpr
 // ------------------
 ExtensionExpr::ExtensionExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<PragmaList> _pragma_list_h,
 	rchandle<exprnode> _expr_h)
 :
@@ -3072,7 +3073,7 @@ void ExtensionExpr::accept(parsenode_visitor& v) const
 // [65a] PragmaList
 // ----------------
 PragmaList::PragmaList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -3109,7 +3110,7 @@ void PragmaList::accept(parsenode_visitor& v) const
 // [66] Pragma
 // -----------
 Pragma::Pragma(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _name_h,
 	std::string _pragma_lit)
 :
@@ -3151,7 +3152,7 @@ void Pragma::accept(parsenode_visitor& v) const
 // [68] PathExpr
 // -------------
 PathExpr::PathExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	enum pathtype_t _type,
 	rchandle<exprnode> _relpath_expr_h)
 :
@@ -3193,7 +3194,7 @@ void PathExpr::accept(parsenode_visitor& v) const
 // [69] RelativePathExpr
 // ---------------------
 RelativePathExpr::RelativePathExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	enum steptype_t _step_type,
 	rchandle<exprnode> _step_expr_h,
 	rchandle<exprnode> _relpath_expr_h)
@@ -3246,7 +3247,7 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
 // [71] AxisStep
 // -------------
 AxisStep::AxisStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ForwardStep> _forward_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
@@ -3258,7 +3259,7 @@ AxisStep::AxisStep(
 }
 
 AxisStep::AxisStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ReverseStep> _reverse_step_h,
 	rchandle<PredicateList> _predicate_list_h)
 :
@@ -3298,7 +3299,7 @@ void AxisStep::accept(parsenode_visitor& v) const
 // [72] ForwardStep
 // ----------------
 ForwardStep::ForwardStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ForwardAxis> _forward_axis_h,
 	rchandle<parsenode> _node_test_h)
 :
@@ -3310,7 +3311,7 @@ ForwardStep::ForwardStep(
 }
 
 ForwardStep::ForwardStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<AbbrevForwardStep> _abbrev_step_h)
 :
 	parsenode(_loc),
@@ -3349,7 +3350,7 @@ void ForwardStep::accept(parsenode_visitor& v) const
 // [73] ForwardAxis
 // ----------------
 ForwardAxis::ForwardAxis(
-	location const& _loc,
+	const yy::location& _loc,
 	enum forward_axis_t _axis)
 :
 	parsenode(_loc),
@@ -3390,7 +3391,7 @@ void ForwardAxis::accept(parsenode_visitor& v) const
 // [74] AbbrevForwardStep
 // ----------------------
 AbbrevForwardStep::AbbrevForwardStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<parsenode> _node_test_h,
 	bool _attr_b)
 :
@@ -3401,7 +3402,7 @@ AbbrevForwardStep::AbbrevForwardStep(
 }
 
 AbbrevForwardStep::AbbrevForwardStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<parsenode> _node_test_h)
 :
 	parsenode(_loc),
@@ -3436,7 +3437,7 @@ void AbbrevForwardStep::accept(parsenode_visitor& v) const
 // [75] ReverseStep
 // ----------------
 ReverseStep::ReverseStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ReverseAxis> _axis_h,
 	rchandle<parsenode> _node_test_h)
 :
@@ -3447,7 +3448,7 @@ ReverseStep::ReverseStep(
 }
 
 ReverseStep::ReverseStep(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ReverseAxis> _axis_h)
 :
 	parsenode(_loc),
@@ -3483,7 +3484,7 @@ void ReverseStep::accept(parsenode_visitor& v) const
 // [76] ReverseAxis
 // ----------------
 ReverseAxis::ReverseAxis(
-	location const& _loc,
+	const yy::location& _loc,
 	enum reverse_axis_t _axis)
 :
 	parsenode(_loc),
@@ -3531,7 +3532,7 @@ void ReverseAxis::accept(parsenode_visitor& v) const
 // [79] NameTest
 // -------------
 NameTest::NameTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
@@ -3541,7 +3542,7 @@ NameTest::NameTest(
 }
 
 NameTest::NameTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<Wildcard> _wild_h)
 :
 	parsenode(_loc),
@@ -3578,7 +3579,7 @@ void NameTest::accept(parsenode_visitor& v) const
 // [80] Wildcard
 // -------------
 Wildcard::Wildcard(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _qname_h,
 	enum wildcard_t _type)
 :
@@ -3617,7 +3618,7 @@ void Wildcard::accept(parsenode_visitor& v) const
 // [81] FilterExpr
 // ---------------
 FilterExpr::FilterExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _primary_h,
 	rchandle<PredicateList> _pred_list_h)
 :
@@ -3654,7 +3655,7 @@ void FilterExpr::accept(parsenode_visitor& v) const
 // [82] PredicateList
 // ------------------
 PredicateList::PredicateList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -3702,7 +3703,7 @@ void PredicateList::accept(parsenode_visitor& v) const
 // [86] NumericLiteral
 // -------------------
 NumericLiteral::NumericLiteral(
-	location const& _loc,
+	const yy::location& _loc,
 	int _ival)
 :
 	exprnode(_loc),
@@ -3712,7 +3713,7 @@ NumericLiteral::NumericLiteral(
 }
 
 NumericLiteral::NumericLiteral(
-	location const& _loc,
+	const yy::location& _loc,
 	double _dval)
 :
 	exprnode(_loc),
@@ -3722,7 +3723,7 @@ NumericLiteral::NumericLiteral(
 }
 
 NumericLiteral::NumericLiteral(
-	location const& _loc,
+	const yy::location& _loc,
 	decimal _decval)
 :
 	exprnode(_loc),
@@ -3761,7 +3762,7 @@ void NumericLiteral::accept(parsenode_visitor& v) const
 // [87] VarRef
 // -----------
 VarRef::VarRef(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _varname)
 :
 	exprnode(_loc),
@@ -3795,7 +3796,7 @@ void VarRef::accept(parsenode_visitor& v) const
 // [89] ParenthesizedExpr
 // ----------------------
 ParenthesizedExpr::ParenthesizedExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _expr_h)
 :
 	exprnode(_loc),
@@ -3828,7 +3829,7 @@ void ParenthesizedExpr::accept(parsenode_visitor& v) const
 // [90] ContextItemExpr
 // --------------------
 ContextItemExpr::ContextItemExpr(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	exprnode(_loc)
 {
@@ -3858,7 +3859,7 @@ void ContextItemExpr::accept(parsenode_visitor& v) const
 // ----------------
 
 OrderedExpr::OrderedExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _expr_h)
 :
 	exprnode(_loc),
@@ -3891,7 +3892,7 @@ void OrderedExpr::accept(parsenode_visitor& v) const
 // [92] UnorderedExpr
 // ------------------
 UnorderedExpr::UnorderedExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _expr_h)
 :
 	exprnode(_loc),
@@ -3925,7 +3926,7 @@ void UnorderedExpr::accept(parsenode_visitor& v) const
 // -----------------
 
 FunctionCall::FunctionCall(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _fname_h,
 	rchandle<ArgList> _arg_list_h)
 :
@@ -3962,7 +3963,7 @@ void FunctionCall::accept(parsenode_visitor& v) const
 // [93a] ArgList
 // -------------
 ArgList::ArgList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -4008,7 +4009,7 @@ void ArgList::accept(parsenode_visitor& v) const
 // -----------------------
 
 DirElemConstructor::DirElemConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _open_name_h,
 	rchandle<QName> _close_name_h,
 	rchandle<DirAttributeList> _attr_list_h,
@@ -4055,7 +4056,7 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
 // [96a] DirElemContentList
 // ------------------------
 DirElemContentList::DirElemContentList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -4092,7 +4093,7 @@ void DirElemContentList::accept(parsenode_visitor& v) const
 // [97] DirAttributeList
 // ---------------------
 DirAttributeList::DirAttributeList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -4130,7 +4131,7 @@ void DirAttributeList::accept(parsenode_visitor& v) const
 // -------------
 	
 DirAttr::DirAttr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _atname_h,
 	rchandle<DirAttributeValue> _dir_atval_h)
 :
@@ -4168,7 +4169,7 @@ void DirAttr::accept(parsenode_visitor& v) const
 // [98] DirAttributeValue
 // ----------------------
 DirAttributeValue::DirAttributeValue(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QuoteAttrContentList> _quot_attr_content_h)
 :
 	parsenode(_loc),
@@ -4178,7 +4179,7 @@ DirAttributeValue::DirAttributeValue(
 }
 
 DirAttributeValue::DirAttributeValue(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<AposAttrContentList> _apos_attr_content_h)
 :
 	parsenode(_loc),
@@ -4214,7 +4215,7 @@ void DirAttributeValue::accept(parsenode_visitor& v) const
 // [98a] QuoteAttrContentList
 // --------------------------
 QuoteAttrContentList::QuoteAttrContentList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -4253,7 +4254,7 @@ void QuoteAttrContentList::accept(parsenode_visitor& v) const
 // [98b] AposAttrContentList
 // -------------------------
 AposAttrContentList::AposAttrContentList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -4292,7 +4293,7 @@ void AposAttrContentList::accept(parsenode_visitor& v) const
 // [99] QuotAttrValueContent
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _quot_atcontent)
 :
 	parsenode(_loc),
@@ -4302,7 +4303,7 @@ QuoteAttrValueContent::QuoteAttrValueContent(
 }
 
 QuoteAttrValueContent::QuoteAttrValueContent(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<CommonContent> _common_content_h)
 :
 	parsenode(_loc),
@@ -4336,7 +4337,7 @@ void QuoteAttrValueContent::accept(parsenode_visitor& v) const
 // [100] AposAttrValueContent
 // --------------------------
 AposAttrValueContent::AposAttrValueContent(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _apos_atcontent)
 :
 	parsenode(_loc),
@@ -4346,7 +4347,7 @@ AposAttrValueContent::AposAttrValueContent(
 }
 
 AposAttrValueContent::AposAttrValueContent(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<CommonContent> _common_content_h)
 :
 	parsenode(_loc),
@@ -4380,7 +4381,7 @@ void AposAttrValueContent::accept(parsenode_visitor& v) const
 // [101] DirElemContent
 // --------------------
 DirElemContent::DirElemContent(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _direct_cons_h)
 :
 	exprnode(_loc),
@@ -4389,7 +4390,7 @@ DirElemContent::DirElemContent(
 }
 
 DirElemContent::DirElemContent(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _elem_content)
 :
 	exprnode(_loc),
@@ -4398,7 +4399,7 @@ DirElemContent::DirElemContent(
 }
 
 DirElemContent::DirElemContent(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<CDataSection> _cdata_h)
 :
 	exprnode(_loc),
@@ -4407,7 +4408,7 @@ DirElemContent::DirElemContent(
 }
 
 DirElemContent::DirElemContent(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<CommonContent> _common_content_h)
 :
 	exprnode(_loc),
@@ -4443,7 +4444,7 @@ void DirElemContent::accept(parsenode_visitor& v) const
 // [102] CommonContent
 // -------------------
 CommonContent::CommonContent(
-	location const& _loc,
+	const yy::location& _loc,
 	enum common_content_t _type,
 	std::string _ref)
 :
@@ -4455,7 +4456,7 @@ CommonContent::CommonContent(
 }
 
 CommonContent::CommonContent(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<EnclosedExpr> _expr_h)
 :
 	exprnode(_loc),
@@ -4466,7 +4467,7 @@ CommonContent::CommonContent(
 }
 
 CommonContent::CommonContent(
-	location const& _loc,
+	const yy::location& _loc,
 	enum common_content_t _type)
 :
 	exprnode(_loc),
@@ -4511,7 +4512,7 @@ void CommonContent::accept(parsenode_visitor& v) const
 // [103] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor::DirCommentConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _comment)
 :
 	exprnode(_loc),
@@ -4549,7 +4550,7 @@ void DirCommentConstructor::accept(parsenode_visitor& v) const
 // [105] DirPIConstructor
 // ----------------------
 DirPIConstructor::DirPIConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _pi_target)
 :
 	exprnode(_loc),
@@ -4559,7 +4560,7 @@ DirPIConstructor::DirPIConstructor(
 }
 
 DirPIConstructor::DirPIConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string const& _pi_target,
 	std::string const& _pi_content)
 :
@@ -4600,7 +4601,7 @@ void DirPIConstructor::accept(parsenode_visitor& v) const
 // [107] CDataSection
 // ------------------
 CDataSection::CDataSection(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _cdata_content)
 :
 	exprnode(_loc),
@@ -4643,7 +4644,7 @@ void CDataSection::accept(parsenode_visitor& v) const
 // [110] CompDocConstructor
 // ------------------------
 CompDocConstructor::CompDocConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _expr_h)
 :
 	exprnode(_loc),
@@ -4676,7 +4677,7 @@ void CompDocConstructor::accept(parsenode_visitor& v) const
 // [111] CompElemConstructor
 // -------------------------
 CompElemConstructor::CompElemConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _qname_expr_h,
 	rchandle<exprnode> _content_expr_h)
 :
@@ -4720,7 +4721,7 @@ void CompElemConstructor::accept(parsenode_visitor& v) const
 // [113] CompAttrConstructor
 // -------------------------
 CompAttrConstructor::CompAttrConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _qname_expr_h,
 	rchandle<exprnode> _val_expr_h)
 :
@@ -4759,7 +4760,7 @@ void CompAttrConstructor::accept(parsenode_visitor& v) const
 // [114] CompTextConstructor
 // -------------------------
 CompTextConstructor::CompTextConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _text_expr_h)
 :
 	exprnode(_loc),
@@ -4792,7 +4793,7 @@ void CompTextConstructor::accept(parsenode_visitor& v) const
 // [115] CompCommentConstructor
 // ----------------------------
 CompCommentConstructor::CompCommentConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _comment_expr_h)
 :
 	exprnode(_loc),
@@ -4825,7 +4826,7 @@ void CompCommentConstructor::accept(parsenode_visitor& v) const
 // [116] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _target,
 	rchandle<exprnode> _content_expr_h)
 :
@@ -4837,7 +4838,7 @@ CompPIConstructor::CompPIConstructor(
 }
 
 CompPIConstructor::CompPIConstructor(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _target_expr_h,
 	rchandle<exprnode> _content_expr_h)
 :
@@ -4875,7 +4876,7 @@ void CompPIConstructor::accept(parsenode_visitor& v) const
 // [117] SingleType
 // ----------------
 SingleType::SingleType(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<AtomicType> _atomic_type_h,
 	bool _hook_b)
 :
@@ -4911,7 +4912,7 @@ void SingleType::accept(parsenode_visitor& v) const
 // [116] TypeDeclaration
 // ---------------------
 TypeDeclaration::TypeDeclaration(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<SequenceType> _seqtype_h)
 :
 	parsenode(_loc),
@@ -4944,7 +4945,7 @@ void TypeDeclaration::accept(parsenode_visitor& v) const
 // [119] SequenceType
 // ------------------
 SequenceType::SequenceType(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ItemType> _itemtype_h,
 	rchandle<OccurrenceIndicator> _occur_h)
 :
@@ -4981,7 +4982,7 @@ void SequenceType::accept(parsenode_visitor& v) const
 // [120] OccurrenceIndicator
 // -------------------------
 OccurrenceIndicator::OccurrenceIndicator(
-	location const& _loc,
+	const yy::location& _loc,
 	enum occurrence_t _type)
 :
 	parsenode(_loc),
@@ -5018,7 +5019,7 @@ void OccurrenceIndicator::accept(parsenode_visitor& v) const
 // [121] ItemType
 // --------------
 ItemType::ItemType(
-	location const& _loc,
+	const yy::location& _loc,
 	bool _item_test_b)
 :
 	parsenode(_loc),
@@ -5027,7 +5028,7 @@ ItemType::ItemType(
 }
 
 ItemType::ItemType(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc),
 	item_test_b(false)
@@ -5058,7 +5059,7 @@ void ItemType::accept(parsenode_visitor& v) const
 // [122] AtomicType
 // ----------------
 AtomicType::AtomicType(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
@@ -5096,7 +5097,7 @@ void AtomicType::accept(parsenode_visitor& v) const
 // [124] AnyKindTest
 // -----------------
 AnyKindTest::AnyKindTest(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -5125,7 +5126,7 @@ void AnyKindTest::accept(parsenode_visitor& v) const
 // [125] DocumentTest
 // ------------------
 DocumentTest::DocumentTest(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc),
 	elem_test_h(NULL),
@@ -5134,7 +5135,7 @@ DocumentTest::DocumentTest(
 }
 
 DocumentTest::DocumentTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<ElementTest> _elem_test_h)
 :
 	parsenode(_loc),
@@ -5144,7 +5145,7 @@ DocumentTest::DocumentTest(
 }
 
 DocumentTest::DocumentTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<SchemaElementTest> _schema_elem_test_h)
 :
 	parsenode(_loc),
@@ -5178,7 +5179,7 @@ void DocumentTest::accept(parsenode_visitor& v) const
 // [126] TextTest
 // --------------
 TextTest::TextTest(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -5207,7 +5208,7 @@ void TextTest::accept(parsenode_visitor& v) const
 // [127] CommentTest
 // -----------------
 CommentTest::CommentTest(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -5236,7 +5237,7 @@ void CommentTest::accept(parsenode_visitor& v) const
 // [128] PITest
 // ------------
 PITest::PITest(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _target,
 	std::string _content)
 :
@@ -5271,7 +5272,7 @@ void PITest::accept(parsenode_visitor& v) const
 // [129] AttributeTest
 // -------------------
 AttributeTest::AttributeTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _attr_h,
 	rchandle<TypeName> _type_h)
 :
@@ -5312,7 +5313,7 @@ void AttributeTest::accept(parsenode_visitor& v) const
 // [131] SchemaAttributeTest
 // -------------------------
 SchemaAttributeTest::SchemaAttributeTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _attr_h)
 :
 	parsenode(_loc),
@@ -5345,7 +5346,7 @@ void SchemaAttributeTest::accept(parsenode_visitor& v) const
 // [133] ElementTest
 // -----------------
 ElementTest::ElementTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _elem_h,
 	rchandle<TypeName> _type_h)
 :
@@ -5357,7 +5358,7 @@ ElementTest::ElementTest(
 }
 
 ElementTest::ElementTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _elem_h,
 	rchandle<TypeName> _type_h,
 	bool _b)
@@ -5398,7 +5399,7 @@ void ElementTest::accept(parsenode_visitor& v) const
 // [135] SchemaElementTest
 // -----------------------
 SchemaElementTest::SchemaElementTest(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _elem_h)
 :
 	parsenode(_loc),
@@ -5442,7 +5443,7 @@ void SchemaElementTest::accept(parsenode_visitor& v) const
 // [139] TypeName
 // --------------
 TypeName::TypeName(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
@@ -5452,7 +5453,7 @@ TypeName::TypeName(
 }
 
 TypeName::TypeName(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _qname_h,
 	bool _b)
 :
@@ -5497,7 +5498,7 @@ void TypeName::accept(parsenode_visitor& v) const
 // [144] StringLiteral
 // -------------------
 StringLiteral::StringLiteral(
-	yy::location const& _loc,
+	const yy::location& _loc,
 	string const& _strval)
 :
 	exprnode(_loc),
@@ -5613,7 +5614,7 @@ void QName::accept(parsenode_visitor& v) const
 // [241]	RevalidationDecl
 // -----------------------
 RevalidationDecl::RevalidationDecl(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<QName> _qname_h)
 :
 	parsenode(_loc),
@@ -5646,7 +5647,7 @@ void RevalidationDecl::accept(parsenode_visitor& v) const
 // [242]	InsertExpr
 // ----------------
 InsertExpr::InsertExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _source_expr_h,
 	rchandle<exprnode> _target_expr_h)
 :
@@ -5681,7 +5682,7 @@ void InsertExpr::accept(parsenode_visitor& v) const
 // [243] DeleteExpr
 // ----------------
 DeleteExpr::DeleteExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _target_expr_h)
 :
 	exprnode(_loc),
@@ -5714,7 +5715,7 @@ void DeleteExpr::accept(parsenode_visitor& v) const
 // [244] ReplaceExpr
 // -----------------
 ReplaceExpr::ReplaceExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _source_expr_h,
 	rchandle<exprnode> _target_expr_h)
 :
@@ -5751,7 +5752,7 @@ void ReplaceExpr::accept(parsenode_visitor& v) const
 // [245] RenameExpr
 // ----------------
 RenameExpr::RenameExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<exprnode> _source_expr_h,
 	rchandle<exprnode> _target_expr_h)
 :
@@ -5802,7 +5803,7 @@ void RenameExpr::accept(parsenode_visitor& v) const
 // [249] TransformExpr
 // -------------------
 TransformExpr::TransformExpr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<VarNameList> _varname_list_h,
 	rchandle<exprnode> _source_expr_h,
 	rchandle<exprnode> _target_expr_h)
@@ -5843,7 +5844,7 @@ void TransformExpr::accept(parsenode_visitor& v) const
 // [249a] VarNameList
 // ------------------
 VarNameList::VarNameList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -5880,7 +5881,7 @@ void VarNameList::accept(parsenode_visitor& v) const
 // [249b] VarBinding
 // -----------------
 VarBinding::VarBinding(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _varname,
 	rchandle<exprnode> _val_h)
 :
@@ -5926,7 +5927,7 @@ void VarBinding::accept(parsenode_visitor& v) const
 // [344] FTSelection
 // -----------------
 FTSelection::FTSelection(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTOr> _ftor_h,
 	rchandle<FTMatchOptionProximityList> _option_list_h,
 	rchandle<RangeExpr> _weight_expr_h)
@@ -5967,7 +5968,7 @@ void FTSelection::accept(parsenode_visitor& v) const
 // [344a] FTMatchOptionProximityList
 // ---------------------------------
 FTMatchOptionProximityList::FTMatchOptionProximityList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -6007,7 +6008,7 @@ void FTMatchOptionProximityList::accept(parsenode_visitor& v) const
 // -----------------------------
 FTMatchOptionProximity::FTMatchOptionProximity(
 	rchandle<FTMatchOption> _opt_h,
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc),
 	opt_h(_opt_h),
@@ -6017,7 +6018,7 @@ FTMatchOptionProximity::FTMatchOptionProximity(
 
 FTMatchOptionProximity::FTMatchOptionProximity(
 	rchandle<FTProximity> _prox_h,
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc),
 	opt_h(NULL),
@@ -6026,7 +6027,7 @@ FTMatchOptionProximity::FTMatchOptionProximity(
 }
 
 FTMatchOptionProximity::FTMatchOptionProximity(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc),
 	opt_h(NULL),
@@ -6060,7 +6061,7 @@ void FTMatchOptionProximity::accept(parsenode_visitor& v) const
 // [345] FTOr
 // ----------
 FTOr::FTOr(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTOr> _ftor_h,
 	rchandle<FTAnd> _ftand_h)
 :
@@ -6097,7 +6098,7 @@ void FTOr::accept(parsenode_visitor& v) const
 // [346] FTAnd
 // -----------
 FTAnd::FTAnd(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTAnd> _ftand_h,
 	rchandle<FTMildnot> _ftmild_not_h)
 :
@@ -6134,7 +6135,7 @@ void FTAnd::accept(parsenode_visitor& v) const
 // [347] FTMildnot
 // ---------------
 FTMildnot::FTMildnot(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTMildnot> _ftmild_not_h,
 	rchandle<FTUnaryNot> _ftunary_not_h)
 :
@@ -6171,7 +6172,7 @@ void FTMildnot::accept(parsenode_visitor& v) const
 // [348] FTUnaryNot
 // ----------------
 FTUnaryNot::FTUnaryNot(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTWordsSelection> _words_selection_h,
 	bool _not_b)
 :
@@ -6207,7 +6208,7 @@ void FTUnaryNot::accept(parsenode_visitor& v) const
 // [349] FTWordsSelection
 // ----------------------
 FTWordsSelection::FTWordsSelection(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTWords> _words_h,
 	rchandle<FTTimes> _times_h,
 	rchandle<FTSelection> _selection_h)
@@ -6245,7 +6246,7 @@ void FTWordsSelection::accept(parsenode_visitor& v) const
 // [350] FTWords
 // -------------
 FTWords::FTWords(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTWordsValue> _words_val_h,
 	rchandle<FTAnyallOption> _any_all_option_h)
 :
@@ -6280,7 +6281,7 @@ void FTWords::accept(parsenode_visitor& v) const
 // [351] FTWordsValue
 // ------------------
 FTWordsValue::FTWordsValue(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<StringLiteral> _lit_h,
 	rchandle<Expr> _expr_h)
 :
@@ -6315,7 +6316,7 @@ void FTWordsValue::accept(parsenode_visitor& v) const
 // [352] FTProximity
 // -----------------
 FTProximity::FTProximity(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -6344,7 +6345,7 @@ void FTProximity::accept(parsenode_visitor& v) const
 // [353] FTOrderedIndicator
 // ------------------------
 FTOrderedIndicator::FTOrderedIndicator(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	FTProximity(_loc)
 {
@@ -6373,7 +6374,7 @@ void FTOrderedIndicator::accept(parsenode_visitor& v) const
 // [354] FTMatchOption 	
 // -------------------
 FTMatchOption::FTMatchOption(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -6402,7 +6403,7 @@ void FTMatchOption::accept(parsenode_visitor& v) const
 // [355] FTCaseOption
 // ------------------
 FTCaseOption::FTCaseOption(
-	location const& _loc,
+	const yy::location& _loc,
 	ft_case_mode_t _mode)
 :
 	FTMatchOption(_loc),
@@ -6433,7 +6434,7 @@ void FTCaseOption::accept(parsenode_visitor& v) const
 // [356] FTDiacriticsOption
 // ------------------------
 FTDiacriticsOption::FTDiacriticsOption(
-	location const& _loc,
+	const yy::location& _loc,
 	ft_diacritics_mode_t _mode)
 :
 	FTMatchOption(_loc),
@@ -6464,7 +6465,7 @@ void FTDiacriticsOption::accept(parsenode_visitor& v) const
 // [357] FTStemOption
 // ------------------
 FTStemOption::FTStemOption(
-	location const& _loc,
+	const yy::location& _loc,
 	ft_stem_mode_t _mode)
 :
 	FTMatchOption(_loc),
@@ -6495,7 +6496,7 @@ void FTStemOption::accept(parsenode_visitor& v) const
 // [358] FTThesaurusOption
 // -----------------------
 FTThesaurusOption::FTThesaurusOption(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTThesaurusID> _thesaurusid_h,
 	rchandle<FTThesaurusList> _thesaurus_list_h,
 	bool _default_b,
@@ -6535,7 +6536,7 @@ void FTThesaurusOption::accept(parsenode_visitor& v) const
 // [358a] FTThesaurusList
 // ----------------------
 FTThesaurusList::FTThesaurusList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -6573,7 +6574,7 @@ void FTThesaurusList::accept(parsenode_visitor& v) const
 // [359] FTThesaurusID
 // -------------------
 FTThesaurusID::FTThesaurusID(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _thesaurus_name,
 	std::string _relationship_name,
 	rchandle<FTRange> _levels_h)
@@ -6609,7 +6610,7 @@ void FTThesaurusID::accept(parsenode_visitor& v) const
 // [360] FTStopwordOption
 // ----------------------
 FTStopwordOption::FTStopwordOption(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTRefOrList> _refor_list_h,
 	rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
 	stop_words_mode_t _mode)
@@ -6646,7 +6647,7 @@ void FTStopwordOption::accept(parsenode_visitor& v) const
 // [360a] FTInclExclStringLiteralList
 // ----------------------------------
 FTInclExclStringLiteralList::FTInclExclStringLiteralList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -6686,7 +6687,7 @@ void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const
 // [361] FTRefOrList
 // -----------------
 FTRefOrList::FTRefOrList(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _at_str,
 	rchandle<FTStringLiteralList> _stringlit_list_h)
 :
@@ -6720,7 +6721,7 @@ void FTRefOrList::accept(parsenode_visitor& v) const
 // [361a] FTStringLiteralList
 // --------------------------
 FTStringLiteralList::FTStringLiteralList(
-	location const& _loc)
+	const yy::location& _loc)
 :
 	parsenode(_loc)
 {
@@ -6756,7 +6757,7 @@ void FTStringLiteralList::accept(parsenode_visitor& v) const
 // [362] FTInclExclStringLiteral
 // -----------------------------
 FTInclExclStringLiteral::FTInclExclStringLiteral(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTRefOrList> _ref_or_list_h,
 	intex_op_t _mode)
 :
@@ -6790,7 +6791,7 @@ void FTInclExclStringLiteral::accept(parsenode_visitor& v) const
 // [363] FTLanguageOption
 // ----------------------
 FTLanguageOption::FTLanguageOption(
-	location const& _loc,
+	const yy::location& _loc,
 	std::string _lang)
 :
 	FTMatchOption(_loc),
@@ -6821,7 +6822,7 @@ void FTLanguageOption::accept(parsenode_visitor& v) const
 // [364] FTWildcardOption
 // ----------------------
 FTWildcardOption::FTWildcardOption(
-	location const& _loc,
+	const yy::location& _loc,
 	bool _with_b)
 :
 	FTMatchOption(_loc),
@@ -6852,7 +6853,7 @@ void FTWildcardOption::accept(parsenode_visitor& v) const
 // [365]	FTContent
 // ---------------
 FTContent::FTContent(
-	location const& _loc,
+	const yy::location& _loc,
 	ft_content_mode_t _mode)
 :
 	FTProximity(_loc),
@@ -6883,7 +6884,7 @@ void FTContent::accept(parsenode_visitor& v) const
 // [366]	FTAnyallOption
 // --------------------
 FTAnyallOption::FTAnyallOption(
-	location const& _loc,
+	const yy::location& _loc,
 	ft_anyall_option_t _option)
 :
 	parsenode(_loc),
@@ -6914,7 +6915,7 @@ void FTAnyallOption::accept(parsenode_visitor& v) const
 // [367] FTRange
 // -------------
 FTRange::FTRange(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<UnionExpr> _src_expr_h,
 	rchandle<UnionExpr> _dst_expr_h)
 :
@@ -6949,7 +6950,7 @@ void FTRange::accept(parsenode_visitor& v) const
 // [368] FTDistance
 // ----------------
 FTDistance::FTDistance(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTRange> _dist_h,
 	rchandle<FTUnit> _unit_h)
 :
@@ -6984,7 +6985,7 @@ void FTDistance::accept(parsenode_visitor& v) const
 // [369] FTWindow
 // --------------
 FTWindow::FTWindow(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<UnionExpr> _window_h,
 	rchandle<FTUnit> _unit_h)
 :
@@ -7019,7 +7020,7 @@ void FTWindow::accept(parsenode_visitor& v) const
 // [370] FTTimes
 // -------------
 FTTimes::FTTimes(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<FTRange> _range_h)
 :
 	parsenode(_loc),
@@ -7051,7 +7052,7 @@ void FTTimes::accept(parsenode_visitor& v) const
 // [371] FTScope
 // -------------
 FTScope::FTScope(
-	location const& _loc,
+	const yy::location& _loc,
 	ft_scope_t _scope)
 :
 	FTProximity(_loc),
@@ -7082,7 +7083,7 @@ void FTScope::accept(parsenode_visitor& v) const
 // [372] FTUnit
 // ------------
 FTUnit::FTUnit(
-	location const& _loc,
+	const yy::location& _loc,
 	ft_unit_t _unit)
 :
 	parsenode(_loc),
@@ -7113,7 +7114,7 @@ void FTUnit::accept(parsenode_visitor& v) const
 // [373] FTBigUnit
 // ---------------
 FTBigUnit::FTBigUnit(
-	location const& _loc,
+	const yy::location& _loc,
 	enum ft_big_unit_t _unit)
 :
 	parsenode(_loc),
@@ -7144,7 +7145,7 @@ void FTBigUnit::accept(parsenode_visitor& v) const
 // [374] FTIgnoreOption
 // --------------------
 FTIgnoreOption::FTIgnoreOption(
-	location const& _loc,
+	const yy::location& _loc,
 	rchandle<UnionExpr> _union_h)
 :
 	parsenode(_loc),

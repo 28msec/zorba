@@ -1,4 +1,3 @@
-#!/bin/bash -f 
 cd util
 echo ""; echo "- util -"
 if (!(test -d Build)); then

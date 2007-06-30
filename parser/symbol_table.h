@@ -8,7 +8,8 @@
 #ifndef XQP_SYMBOL_TABLE_H
 #define XQP_SYMBOL_TABLE_H
 
-#include "../util/fxcharheap.h"
+#include "util/fxcharheap.h"
+#include <sys/types.h>
 
 namespace xqp {
 
@@ -22,16 +23,16 @@ public:			// ctor,dtor
 	~symbol_table();
 
 public:			// table interface
-	uint32_t put(char const* text, uint32_t length);
-	uint32_t put_ncname(char const* text, uint32_t length);
-	uint32_t put_qname(char const* text, uint32_t length);
-	uint32_t put_uri(char const* text, uint32_t length);
-	uint32_t put_varname(char const* text, uint32_t length);
-	uint32_t put_entityref(char const* text, uint32_t length);
-	uint32_t put_charref(char const* text, uint32_t length);
-	uint32_t put_stringlit(char const* text, uint32_t length);
+	off_t put(char const* text, uint32_t length);
+	off_t put_ncname(char const* text, uint32_t length);
+	off_t put_qname(char const* text, uint32_t length);
+	off_t put_uri(char const* text, uint32_t length);
+	off_t put_varname(char const* text, uint32_t length);
+	off_t put_entityref(char const* text, uint32_t length);
+	off_t put_charref(char const* text, uint32_t length);
+	off_t put_stringlit(char const* text, uint32_t length);
 
-	std::string get(uint32_t id);
+	std::string get(off_t id);
 	uint32_t size() const;
 
 	long long decimalval(char const* text, uint32_t length);
@@ -42,3 +43,4 @@ public:			// table interface
 
 }	/* namespace xqp */
 #endif	/* XQP_SYMBOL_TABLE */
+
