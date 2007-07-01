@@ -1,0 +1,27 @@
+
+SOURCES 	= xqp_exception.cpp \
+	rwlock.cpp \
+	tokenbuf.cpp \
+	hashfun_test.cpp \
+	hashmap_test.cpp \
+	file.cpp \
+	tokenbuf_test.cpp \
+	file_test.cpp \
+	mmfile.cpp \
+	fxarray_test.cpp \
+	fxvector_test.cpp \
+	fxcharheap.cpp \
+	fxcharheap_test.cpp \
+	fxhashmap_test.cpp \
+	list_test.cpp \
+	rchandle_test.cpp \
+	sorter_test.cpp \
+	utf8_encoder.cpp \
+	URI.cpp
+
+EXECUTABLES = 
+
+
+# Include global Makefile rules
+ROOT_PATH	= ..
+include $(ROOT_PATH)/Makefile.rules

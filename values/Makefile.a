@@ -1,0 +1,12 @@
+
+SOURCES 	= primitive_values.cpp \
+	ft_options.cpp \
+	ft_values.cpp \
+	update_values.cpp
+
+EXECUTABLES = 
+
+
+# Include global Makefile rules
+ROOT_PATH	= ..
+include $(ROOT_PATH)/Makefile.rules

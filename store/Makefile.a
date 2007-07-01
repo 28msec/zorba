@@ -1,0 +1,18 @@
+
+SOURCES 	= itemstore.cpp \
+	uri_resolver.cpp \
+	zorba_uri_resolver.cpp \
+#	collation_resolver.cpp \
+	collection_resolver.cpp \
+	module_resolver.cpp \
+	schema_resolver.cpp \
+	xml_term.cpp \
+	scan_handler.cpp \
+	xml_scanner.cpp
+
+EXECUTABLES = 
+
+
+# Include global Makefile rules
+ROOT_PATH	= ..
+include $(ROOT_PATH)/Makefile.rules

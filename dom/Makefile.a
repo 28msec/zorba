@@ -1,0 +1,12 @@
+
+SOURCES 	= dom_qname.cpp dom_nodes.cpp dom_namepool.cpp dom_xml_handler.cpp
+
+dom_xml_handler_test = dom_xml_handler_test.cpp dom_xml_handler.cpp \
+	$(ROOT_PATH)/runtime/$(BUILD_FOLDER)/errors.${SUFX}
+
+EXECUTABLES	= dom_xml_handler_test
+
+
+# Include global Makefile rules
+ROOT_PATH	= ..
+include $(ROOT_PATH)/Makefile.rules

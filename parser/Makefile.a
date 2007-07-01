@@ -1,0 +1,9 @@
+
+SOURCES 	= xquery_parser.y xquery_scanner.l xquery_driver.cpp symbol_table.cpp parsenodes.cpp
+
+EXECUTABLES = 
+
+
+# Include global Makefile rules
+ROOT_PATH	= ..
+include $(ROOT_PATH)/Makefile.rules
