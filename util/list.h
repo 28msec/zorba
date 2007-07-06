@@ -143,6 +143,7 @@ list<T>::~list()
   list_node<T>* n_p;
   list_iterator<T> it = begin();
   for (; it!=end(); ++it,delete n_p) n_p = it.get_curr();
+  delete head; delete tail;
 }
 
 
