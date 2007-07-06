@@ -52,7 +52,9 @@ item_t concat_iterator::_next()
 	if (currit_h->done()) {
 		++cursor;
 		if (cursor==argv.size()) return NULL;
+		currit_h->close();
 		currit_h = argv[cursor];
+		currit_h->open();
 	}
 	return currit_h->next();
 }

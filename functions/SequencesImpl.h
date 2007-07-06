@@ -46,7 +46,7 @@ class zorba;
 class concat_iterator : public basic_iterator
 {
 protected:
-	const std::vector<iterator_t>& argv;
+	const std::vector<iterator_t> argv;
 	iterator_t currit_h;
 	uint32_t cursor;
 
