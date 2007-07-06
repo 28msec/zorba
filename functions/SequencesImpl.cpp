@@ -50,10 +50,13 @@ void concat_iterator::_close()
 item_t concat_iterator::_next()
 {
 	if (currit_h->done()) {
+		this->currit_h->close();
 		++cursor;
-		if (cursor==argv.size()) return NULL;
-		currit_h->close();
-		currit_h = argv[cursor];
+		if (cursor>=argv.size()) { 
+			return NULL;
+		}
+		this->currit_h = argv[cursor];
+ 		this->currit_h->open();
 		currit_h->open();
 	}
 	return currit_h->next();
