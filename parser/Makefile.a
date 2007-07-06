@@ -1,7 +1,21 @@
 
-SOURCES 	= xquery_parser.y xquery_scanner.l xquery_driver.cpp symbol_table.cpp parsenodes.cpp
+SOURCES 	= xquery_parser.y xquery_scanner.l xquery_driver.cpp symbol_table.cpp parsenodes.cpp 
 
-EXECUTABLES = 
+
+xquery_test	= \
+		../util/xqp_exception.cpp \
+		../util/file.cpp \
+		../util/mmfile.cpp \
+		../util/fxcharheap.cpp \
+		parsenodes.cpp \
+		xquery_scanner.cpp \
+		xquery_parser.cpp \
+		symbol_table.cpp \
+		xquery_driver.cpp \
+		xquery_test.cpp
+
+
+EXECUTABLES = xquery_test
 
 
 # Include global Makefile rules

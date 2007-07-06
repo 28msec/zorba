@@ -14,14 +14,15 @@ SUBDIRS		= \
 				zorba
 
 
-all: 
-	$(MAKE) subdirs TARGET=all_all -f Makefile.a
+all: TARGET=all
+all: subdirs
 
-test:
-	$(MAKE) subdirs TARGET=test -f Makefile.a
 
-clean: 
-	$(MAKE) subdirs TARGET=clean_all -f Makefile.a
+test: TARGET=test
+test: subdirs
+
+clean: TARGET=clean
+clean: subdirs
 
 
 .PHONY: subdirs $(SUBDIRS)
@@ -30,8 +31,3 @@ subdirs: $(SUBDIRS)
 
 $(SUBDIRS):
 	$(MAKE) $(TARGET) -C $@ -f Makefile.a 
-
-
-# Include global Makefile rules
-ROOT_PATH	= .
-include $(ROOT_PATH)/Makefile.rules

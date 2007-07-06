@@ -1,11 +1,22 @@
 
-SOURCES 	= valuereps.cpp \
+SOURCES 	= \
+	valuereps.cpp \
 	qnamerep.cpp \
 	nodereps.cpp \
 	zorba_qname.cpp \
 	zorba_nodes.cpp
 
-EXECUTABLES = 
+
+zorba_value_factory_test	= \
+	../runtime/zorba.cpp \
+	../values/primitive_values.cpp \
+	qnamerep.cpp \
+	zorba_qname.cpp \
+	zorba_value_factory.cpp \
+	zorba_value_factory_test.cpp
+
+
+EXECUTABLES = zorba_value_factory_test
 
 
 # Include global Makefile rules

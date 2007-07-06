@@ -1,7 +1,23 @@
 
 SOURCES			= static_context.cpp dynamic_context.cpp 
 
-context_test	= context_test.cpp
+context_test	= \
+		../native_impl/nodestore.cpp \
+		../native_impl/nodestore.cpp \
+		../runtime/iterator.cpp \
+		../types/base_types.cpp \
+		../types/xs_primitive_types.cpp \
+		../util/file.cpp \
+		../util/mmfile.cpp \
+		../util/fxcharheap.cpp \
+		../util/xqp_exception.cpp \
+		../values/values.cpp \
+		../values/node_values.cpp \
+		../values/qname_value.cpp \
+		../values/xs_primitive_values.cpp \
+		context.cpp \
+		context_test.cpp
+
 
 EXECUTABLES		= context_test
 

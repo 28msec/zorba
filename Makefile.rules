@@ -2,56 +2,84 @@
 include $(ROOT_PATH)/Makefile.conf
 
 ##############################################################################
-# Commands
+# Functions
 ##############################################################################
 
 DF				= $(BUILD_FOLDER)/$(*F)
 
-OBJS			= $(patsubst %.y,$(BUILD_FOLDER)/%.$(SUFX),$(patsubst %.l,$(BUILD_FOLDER)/%.$(SUFX),$(patsubst %.cpp,$(BUILD_FOLDER)/%.$(SUFX), \
-	$(patsubst %.c,$(BUILD_FOLDER)/%.$(SUFX),$(notdir $(SOURCES))))))
+EXES			= $(patsubst %,$(BUILD_FOLDER)/%,$(notdir $(BINARIES)))
+
+MAKE_OBJS 		= $(foreach target,$(1),$(dir $(target))$(BUILD_FOLDER)/$(notdir $(basename $(target))).$(SUFX))
+
+PARENT_FOLDER 	= $(notdir $(subst /$(BUILD_FOLDER)/,,$(dir $(abspath $(DF)))))
 
 
-define MAKEDEP
-	@cp $(DF).d $(DF).P
+define MAKEDEP	
+	@sed -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
+		 -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
+		 -e "s/ \([^/ \n\t\\]\+\)$$/ ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
+		 -e "s/\($(BUILD_FOLDER)\/[^/ \n\t\\]\+\):/\1 ..\/$(call PARENT_FOLDER,$(DF))\/\1:/g" < $(DF).d > $(DF).dd
+	@cp $(DF).dd $(DF).P
 	@sed -e 's/#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-		 -e '/^$$/ d' -e 's/$$/ :/' < $(DF).d >> $(DF).P
-	@rm -f $(DF).d
+		 -e '/^$$/ d' -e 's/$$/ :/' < $(DF).dd >> $(DF).P
+	@rm -f $(DF).d $(DF).dd 
 endef
 
 
-define MAKE_OBJ
-target_$(1): $(BUILD_FOLDER)/$(1).$(SUFX)
+define MAKE_DEPENDENCY
+
+ifneq ($(dir $(1)),)
+ifneq ($(dir $(1)),./)
+
+$(call MAKE_OBJS,$(1)):
+	$(MAKE) -C $$(subst /$(BUILD_FOLDER)/,,$$(dir $$@)) -f Makefile.a SOURCES=$(notdir $(1))
+
+-include $(patsubst %.$(SUFX),%.P,$(call MAKE_OBJS,$(1))) 
+
+endif
+endif
+
 endef
+
 
 define MAKE_TARGET
 
-#.PHONY: target_$(1) $(BUILD_FOLDER)/$(1).$(SUFX)
+$(foreach dependency,$(2),$(call MAKE_DEPENDENCY,$(dependency)))
 
-#target_$(1): $(BUILD_FOLDER)/$(1).$(SUFX)
-#	echo 1- $^ $(1)  $($(1)) $(BUILD_FOLDER)/$(1).$(SUFX)
-#	echo
-
-$$(BUILD_FOLDER)/$(1).$$(SUFX): $(call MAKE_OBJS,$($(1)))
+$$(BUILD_FOLDER)/$(1): $(call MAKE_OBJS,$(2))
 	$(CXX) $(CXXFLAGS) -o $$@ $$^
 
 endef
 
 
 
-all_all: build_objs
+##############################################################################
+# Targets
+##############################################################################
 
-build: $(BUILD_FOLDER) $(EXECUTABLES) 
+all build: build_objs
 
-build_objs: $(BUILD_FOLDER) $(OBJS)
+build_objs: $(BUILD_FOLDER) $(call MAKE_OBJS,$(SOURCES))
 
-clean_all:
+test: $(BUILD_FOLDER) $(EXES)
+
+clean:
 	rm -rf $(BUILD_FOLDER)
+
+
+.PHONY: all build build_objs test clean
+
+
+##############################################################################
+# Rules
+##############################################################################
+
+
+$(foreach target,$(BINARIES),$(eval $(call MAKE_TARGET,$(target),$($(target)))))
+
 
 $(BUILD_FOLDER):
 	mkdir -p $(BUILD_FOLDER)
-
-
-$(foreach target,$(TARGETS),$(eval $(call MAKE_TARGET,$(target))))
 
 $(BUILD_FOLDER)/%.$(SUFX) : %.cpp
 	$(CXX) -c $(CXXFLAGS) -MMD -o $@ $<
@@ -65,5 +93,4 @@ $(BUILD_FOLDER)/%.$(SUFX) : %.cpp
 	$(YACC.y) $< 
 	mv -f $*.tab.c $@
 
-
--include $(OBJS:%.$(SUFX)=%.P)
+-include $(patsubst %.$(SUFX),%.P,$(call MAKE_OBJS,$(SOURCES))) $(ROOT_PATH)/Makefile.conf

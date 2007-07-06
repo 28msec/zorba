@@ -1,5 +1,6 @@
 
-SOURCES 	= xqp_exception.cpp \
+SOURCES			= \
+	xqp_exception.cpp \
 	rwlock.cpp \
 	tokenbuf.cpp \
 	hashfun_test.cpp \
@@ -19,7 +20,110 @@ SOURCES 	= xqp_exception.cpp \
 	utf8_encoder.cpp \
 	URI.cpp
 
-EXECUTABLES = 
+
+tokenbuf_test	= \
+	xqp_exception.cpp \
+	file.cpp \
+	tokenbuf.cpp \
+	tokenbuf_test.cpp
+
+rwlock_test		= \
+	rwlock.cpp \
+	rwlock_test.cpp
+
+
+hashfun_test	= \
+	xqp_exception.cpp \
+	hashfun_test.cpp
+
+
+hashmap_test	= \
+	xqp_exception.cpp \
+	rwlock.cpp \
+	tokenbuf.cpp \
+	hashmap_test.cpp
+
+
+list_test		= \
+	list_test.cpp
+
+
+logger_test		= \
+	xqp_exception.cpp \
+	logger.cpp \
+	logger_test.cpp
+
+
+rchandle_test	= \
+	rchandle_test.cpp
+
+
+sorter_test		= \
+	sorter_test.cpp
+
+
+URI_test		= \
+	URI.cpp \
+	URI_test.cpp
+
+
+utf8_encoder_test	= \
+	utf8_encoder.cpp \
+	utf8_encoder_test.cpp
+
+
+file_test 		= \
+	xqp_exception.cpp \
+	tokenbuf.cpp \
+	file.cpp \
+	file_test.cpp
+
+
+mmfile_test		= \
+	xqp_exception.cpp \
+	tokenbuf.cpp \
+	mmfile.cpp \
+	mmfile_test.cpp
+
+
+fxarray_test	= \
+	xqp_exception.cpp \
+	tokenbuf.cpp \
+	mmfile.cpp \
+	fxarray_test.cpp
+
+
+fxvector_test	= \
+	xqp_exception.cpp \
+	tokenbuf.cpp \
+	mmfile.cpp \
+	fxvector_test.cpp
+
+
+fxcharheap_test	= \
+	xqp_exception.cpp \
+	tokenbuf.cpp \
+	mmfile.cpp \
+	file.cpp \
+	fxcharheap.cpp \
+	fxcharheap_test.cpp
+
+
+fxhashmap_test	= \
+	xqp_exception.cpp \
+	rwlock.cpp \
+	tokenbuf.cpp \
+	mmfile.cpp \
+	file.cpp \
+	fxcharheap.cpp \
+	fxhashmap_test.cpp
+
+
+
+EXECUTABLES = tokenbuf_test rwlock_test hashfun_test hashmap_test \
+	list_test logger_test rchandle_test sorter_test URI_test \
+	utf8_encoder_test file_test mmfile_test fxarray_test \
+	fxvector_test fxcharheap_test fxhashmap_test 
 
 
 # Include global Makefile rules

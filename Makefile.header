@@ -1,4 +1,4 @@
-INSTALL = /cygdrive/c/zorba
+INSTALL = /cygdrive/c/colea/xquery
 CXXOPT = -Wall -g -I${INSTALL}/xquery
 OPT = -Wall -Wno-uninitialized -g -I${INSTALL}/xquery
 LARGEFILES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
