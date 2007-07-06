@@ -52,7 +52,6 @@ bool op_numeric_binary_iterator::done() const
 }
 
 
-
 /*______________________________________________________________________
 |  
 |	6.2.1 op:numeric-add
@@ -79,8 +78,11 @@ op_numeric_add_iterator::op_numeric_add_iterator(
 
 item_t op_numeric_add_iterator::_next()
 {
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+	item_t n0_h = arg0->next();
+	item_t n1_h = arg1->next();
+
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
 	return new numericValue(xs_decimal, n1.val() + n0.val());
 }
 
@@ -112,8 +114,11 @@ op_numeric_subtract_iterator::op_numeric_subtract_iterator(
 
 item_t op_numeric_subtract_iterator::_next()
 {
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+	item_t n0_h = arg0->next();
+	item_t n1_h = arg1->next();
+
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
 	return new numericValue(xs_decimal, n1.val() - n0.val());
 }
 
@@ -144,8 +149,11 @@ op_numeric_multiply_iterator::op_numeric_multiply_iterator(
 
 item_t op_numeric_multiply_iterator::_next()
 {
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+	item_t n0_h = arg0->next();
+	item_t n1_h = arg1->next();
+
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
 	return new numericValue(xs_decimal, n1.val() * n0.val());
 }
 
@@ -186,8 +194,11 @@ op_numeric_divide_iterator::op_numeric_divide_iterator(
 
 item_t op_numeric_divide_iterator::_next()
 {
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+	item_t n0_h = arg0->next();
+	item_t n1_h = arg1->next();
+
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
 	return new numericValue(xs_decimal, n1.val() / n0.val());
 }
 
@@ -230,8 +241,11 @@ op_numeric_integer_divide_iterator::op_numeric_integer_divide_iterator(
 
 item_t op_numeric_integer_divide_iterator::_next()
 {
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+	item_t n0_h = arg0->next();
+	item_t n1_h = arg1->next();
+
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
 	return new numericValue(xs_decimal, n1.val() / n0.val());
 }
 
@@ -282,8 +296,11 @@ op_numeric_mod_iterator::op_numeric_mod_iterator(
 
 item_t op_numeric_mod_iterator::_next()
 {
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+	item_t n0_h = arg0->next();
+	item_t n1_h = arg1->next();
+
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
 	return new numericValue(xs_decimal, (long)n1.val() % (long)n0.val());
 }
 
@@ -325,7 +342,8 @@ op_numeric_unary_minus_iterator::op_numeric_unary_minus_iterator(
 
 item_t op_numeric_unary_minus_iterator::_next()
 {
-	const numericValue& n = dynamic_cast<const numericValue&>(*arg0->next());
+	item_t n_h = arg0->next();
+	const numericValue& n = dynamic_cast<const numericValue&>(*n_h);
 	return new numericValue(xs_decimal, -n.val());
 }
 
