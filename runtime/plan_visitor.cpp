@@ -220,7 +220,7 @@ cout << indent[depth--] << TRACE << ": expr_list" << endl;
 	while (true) {
 		iterator_t it = pop_itstack();
 		if (it==NULL) break;
-		argv.push_back(it);
+		argv.insert(argv.begin(),it);
 	}
 	rchandle<concat_iterator> cit_h = new concat_iterator(zorp, argv);
 	itstack.push(&*cit_h);

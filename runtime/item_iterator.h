@@ -256,8 +256,6 @@ public:
 };
 
 
-
-
 }	/* namespace xqp */
 #endif	/* XQP_ITEM_ITERATOR_H */
 

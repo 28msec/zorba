@@ -57,7 +57,6 @@ item_t concat_iterator::_next()
 		}
 		this->currit_h = argv[cursor];
  		this->currit_h->open();
-		currit_h->open();
 	}
 	return currit_h->next();
 }

@@ -370,6 +370,28 @@ bool op_numeric_unary_minus_iterator::done() const
 |_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
+op_numeric_equal_iterator::op_numeric_equal_iterator(
+	iterator_t arg0,
+	iterator_t arg1)
+:
+	op_numeric_binary_iterator(arg0,arg1)
+{
+}
+
+item_t op_numeric_equal_iterator::_next()
+{
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
+	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+	return new booleanValue(n1.val() == n0.val());
+
+}
+
+// item_t op_numeric_equal_iterator::_next()
+// {
+// 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
+// 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
+// 	return new booleanValue(n1.val() == n0.val());
+// }
 // 6.3.2 op:numeric-less-than
 // 6.3.3 op:numeric-greater-than
 

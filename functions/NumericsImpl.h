@@ -176,6 +176,16 @@ private:
 |_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
+// -------------------------
+class op_numeric_equal_iterator : public op_numeric_binary_iterator {
+public:
+	op_numeric_equal_iterator(iterator_t, iterator_t);
+	~op_numeric_equal_iterator() {}
+	
+public:
+	item_t _next();
+};
+
 // 6.3.2 op:numeric-less-than
 // 6.3.3 op:numeric-greater-than
 

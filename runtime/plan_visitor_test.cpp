@@ -39,7 +39,6 @@ int main(int argc, char* argv[])
 	zorp->set_dynamic_context(dctx_p);
 
 	xquery_driver driver(cout);
-
 	try {
 
 		for (++argv; argv[0]; ++argv) {

@@ -46,6 +46,15 @@ op_numeric_subtract  op_subtract(
 	)
 );
 
+op_numeric_equal op_equal(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"op","op_equal"),
+		xs_decimal,
+		xs_decimal,
+		xs_boolean
+	)
+);
+
 
 // Sequences
 fn_doc_func fn_doc(
@@ -103,9 +112,11 @@ void library::init(
 		// Numeric functions
 		put(&op_add);
 		put(&op_subtract);
+		put(&op_equal);
 
 		op_add_key = op_add.get_fname()->qnamekey();
 		op_subtract_key = op_subtract.get_fname()->qnamekey();
+		op_val_eq_key = op_equal.get_fname()->qnamekey();
 		
 		// Sequences functions
 		put(&fn_doc);

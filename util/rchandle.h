@@ -12,6 +12,7 @@
 
 #include <string>
 #include <sstream>
+#include <iostream>
 
 namespace xqp {
 
@@ -44,8 +45,14 @@ public:	// ctor,dtor
   virtual ~rcobject();
 
 public:	// refcounting
-  void addReference()			 { ++refCount; }
-  void removeReference()	 { if (--refCount == 0) delete this; }
+  void addReference() {
+  	++(this->refCount); 
+  }
+  void removeReference() { 
+  	if (--refCount == 0) {
+  		delete this; 
+  	}
+  }
 
 public:	// sharing
 	int get_refCount() const { return refCount; }
