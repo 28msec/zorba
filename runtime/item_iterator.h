@@ -105,17 +105,21 @@ class singleton_iterator : public basic_iterator
 {
 protected:
 	rchandle<item> i_h;
+	bool is_done;
 
 public:
-	singleton_iterator(item* _i_p) : i_h(_i_p) {}
+	singleton_iterator(item* _i_p) : i_h(_i_p), is_done (false) {}
 	singleton_iterator(const singleton_iterator& it) : i_h(it.i_h) {}
 	~singleton_iterator() { }
 
 public:		// iterator interface
 	void _open() {}
 	void _close() {}
-	item_t _next() { item_t p = i_h; i_h = NULL; return p; }
-	bool done() const { return (i_h==NULL); }
+	item_t _next() {
+		bool was_done = is_done; is_done = true;
+		return was_done ? NULL : i_h;
+	}
+	bool done() const { return is_done; }
 
 public:		// variable binding
 	void bind(item_t _i_h) { i_h = _i_h; }
