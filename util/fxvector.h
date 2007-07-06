@@ -418,6 +418,7 @@ fxvector<T>::~fxvector()
 		unmap();
 		delete mmf_p;
 	}
+	else delete [] src;
 }
 
 template<typename T>
