@@ -982,7 +982,7 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const ParenthesizedExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << indent[++depth] << TRACE << ": ParenthesizedExpr" << endl;
 	return true;
 }
 
@@ -2286,7 +2286,7 @@ cout << TRACE << endl;
 
 void normalize_visitor::end_visit(const ParenthesizedExpr& v)
 {
-cout << TRACE << endl;
+cout << indent[depth--] << TRACE << ": ParenthesizedExpr" << endl;
 }
 
 void normalize_visitor::end_visit(const PathExpr& v)
