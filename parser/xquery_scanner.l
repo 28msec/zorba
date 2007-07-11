@@ -2450,7 +2450,7 @@ typedef yy::xquery_parser::token token;
 	/* anything else: push back, goto OPERATOR */
 	/* --------------------------------------- */
 {CatchAll} {
-	yyless();
+	yyless(1);
 	BEGIN MODE_OPERATOR;
 }
 
