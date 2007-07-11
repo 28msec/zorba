@@ -33,7 +33,7 @@ protected:
 public:
 	basic_iterator() : zorp(NULL), open_b(false) {}
 	basic_iterator(zorba* _zorp) : zorp(_zorp), open_b(false) {}
-	basic_iterator(const basic_iterator& it) : zorp(it.zorp), open_b(it.open_b) {}
+	basic_iterator(const basic_iterator& it) : rcobject (), zorp(it.zorp), open_b(it.open_b) {}
 	virtual ~basic_iterator() {}
 
 public:		// inline base logic
@@ -109,7 +109,7 @@ protected:
 
 public:
 	singleton_iterator(item* _i_p) : i_h(_i_p), is_done (false) {}
-	singleton_iterator(const singleton_iterator& it) : i_h(it.i_h) {}
+	singleton_iterator(const singleton_iterator& it) : basic_iterator (it), i_h(it.i_h) {}
 	~singleton_iterator() { }
 
 public:		// iterator interface

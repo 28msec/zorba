@@ -34,7 +34,7 @@ protected:
 public:
 	~zorba_qname() {}
 	zorba_qname() {}
-	zorba_qname(zorba_qname& qn) : rep(qn.rep)  {}
+	zorba_qname(zorba_qname& qn) : item (qn), atomic_value (qn), zorba_atomic_value (qn), qname (qn), rep(qn.rep)  {}
 	zorba_qname(
 		const std::string& uri,
 		const std::string& prefix,

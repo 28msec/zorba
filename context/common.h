@@ -25,6 +25,8 @@
 #ifndef XQP_COMMON_H
 #define XQP_COMMON_H
 
+#include <stdint.h>
+
 #include "../util/rchandle.h"
 
 #include <utility>

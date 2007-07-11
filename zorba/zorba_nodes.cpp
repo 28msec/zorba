@@ -29,7 +29,8 @@ zorba_document_node::zorba_document_node(
 zorba_document_node::zorba_document_node(
 	zorba_document_node& dn)
 :
-rep(dn.rep)
+	item (dn), node (dn), zorba_node (dn), document_node (dn),
+	rep(dn.rep)
 {
 }
 
@@ -139,6 +140,7 @@ zorba_element_node::zorba_element_node(
 zorba_element_node::zorba_element_node(
 	const zorba_element_node& en)
 :
+  item (en), node (en), zorba_node (en), element_node (en),
 	rep(en.rep)
 {
 }
@@ -266,6 +268,7 @@ zorba_attribute_node::zorba_attribute_node(
 zorba_attribute_node::zorba_attribute_node(
 	zorba_attribute_node& an)
 :
+  item (an), node (an), zorba_node (an), attribute_node (an),
 	rep(an.rep)
 {
 }
@@ -346,6 +349,7 @@ zorba_namespace_node::zorba_namespace_node(
 zorba_namespace_node::zorba_namespace_node(
 	zorba_namespace_node& nn)
 :
+  item (nn), node (nn), zorba_node (nn), namespace_node (nn),
 	rep(nn.rep)
 {
 }
@@ -400,6 +404,7 @@ zorba_pi_node::zorba_pi_node(
 zorba_pi_node::zorba_pi_node(
 	const zorba_pi_node& pn)
 :
+  item (pn), node (pn), zorba_node (pn), pi_node (pn),
 	rep(pn.rep)
 {
 }
@@ -474,6 +479,7 @@ zorba_comment_node::zorba_comment_node(
 zorba_comment_node::zorba_comment_node(
 	const zorba_comment_node& cn)
 :
+  item (cn), node (cn), zorba_node (cn), comment_node (cn),
 	rep(cn.rep)
 {
 }
@@ -536,6 +542,7 @@ zorba_text_node::zorba_text_node(
 zorba_text_node::zorba_text_node(
 	const zorba_text_node& tn) 
 :
+  item (tn), node (tn), zorba_node (tn), text_node (tn),
 	rep(tn.rep)
 {
 }

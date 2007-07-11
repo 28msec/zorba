@@ -94,7 +94,7 @@ public:		// output
 	std::string string_value() const;
 
 protected:	// lock out
-	itemRep(itemRep&) {}
+	itemRep(itemRep& other) : objectRep (other) {}
 	~itemRep() {}
 
 };

@@ -89,8 +89,9 @@ dom_document_node::dom_document_node(
 {}
 	
 dom_document_node::dom_document_node(
-	dom_document_node::dom_document_node& dn)
+	const dom_document_node::dom_document_node& dn)
 :
+  item (dn), node (dn), dom_node (dn), document_node (dn),
 	theBaseURI(dn.theBaseURI),
 	theDocURI(dn.theDocURI)
 {}
@@ -197,6 +198,7 @@ dom_element_node::dom_element_node(
 dom_element_node::dom_element_node(
 	const dom_element_node& en)
 :
+  item (en), node (en), dom_node (en), element_node (en),
 	qname_p(en.qname_p),
 	value_p(en.value_p),
 	nsv(en.nsv),
@@ -353,6 +355,7 @@ dom_attribute_node::dom_attribute_node(
 dom_attribute_node::dom_attribute_node(
 	dom_attribute_node& an)
 :
+  item (an), node (an), attribute_node (an), dom_node (an),
 	qname_p(an.qname_p),
 	value(an.value),
 	id_b(an.id_b),
@@ -427,6 +430,7 @@ dom_namespace_node::dom_namespace_node(
 dom_namespace_node::dom_namespace_node(
 	dom_namespace_node& nn)
 :
+  item (nn), node (nn), dom_node (nn), namespace_node (nn),
 	thePrefix(nn.thePrefix),
 	theURI(nn.theURI)
 {
@@ -490,6 +494,7 @@ dom_pi_node::dom_pi_node(
 dom_pi_node::dom_pi_node(
 	const dom_pi_node& pn)
 :
+  item (pn), node (pn), dom_node (pn), pi_node (pn),
 	theTarget(pn.theTarget),
 	theContent(pn.theContent)
 {}
@@ -551,6 +556,7 @@ dom_comment_node::dom_comment_node(
 dom_comment_node::dom_comment_node(
 	const dom_comment_node& cn)
 :
+  item (cn), node (cn), comment_node (cn), dom_node (cn),
 	theContent(cn.theContent)
 {
 }
@@ -601,8 +607,9 @@ dom_text_node::dom_text_node(
 : theContent(content) {}
 
 dom_text_node::dom_text_node(
-	const dom_text_node& tn) 
-: theContent(tn.theContent) {}
+	const dom_text_node& tn)
+: item (tn), node (tn), dom_node (tn), text_node (tn), theContent(tn.theContent)
+{}
 
 
 // internal interface

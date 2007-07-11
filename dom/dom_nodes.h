@@ -261,7 +261,7 @@ protected:
 public:
 	dom_document_node(const std::string& baseuri,
 										const std::string& docuri);
-	dom_document_node(dom_document_node&);
+	dom_document_node(const dom_document_node&);
 	~dom_document_node() {}
 
 public:		// internal interface		

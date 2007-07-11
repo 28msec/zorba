@@ -34,6 +34,7 @@ dom_qname::dom_qname(
 dom_qname::dom_qname(
 	const dom_qname& qn)
 :
+  item (qn), atomic_value (qn), qname (qn),
 	the_uri(qn.the_uri),
 	the_prefix(qn.the_prefix),
 	the_localname(qn.the_localname)
