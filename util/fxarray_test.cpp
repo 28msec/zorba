@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: fxarray_test.cpp,v 1.1 2006/10/09 07:07:58 Paul Pedersen Exp $
  *
@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
         uint32_t n = strtoul(arg1.c_str(), NULL, 10);
         uint32_t m = strtoul(arg2.c_str(), NULL, 10);
         int t = strtol(arg3.c_str(), NULL, 10);
-        if (n<0 || m > fxary.size()) {
+        if (m > fxary.size()) {
           cout << "range out of bounds\n";
           continue;
         }
