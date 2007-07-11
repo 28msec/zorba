@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: mmfile.cpp,v 1.2 2006/10/22 01:32:22 Paul Pedersen Exp $
  *
@@ -55,7 +55,7 @@ mmfile::mmfile(
 cout << "mmfile::ctor: new, empty file: \"" << path << "\"\n";
 #endif
 
-		off_t m = (initial_size >> 12) << 12;	// multiple of 4096
+		uint32_t m = (initial_size >> 12) << 12;	// multiple of 4096
 		if (m<initial_size) m += (1<<12);			// round up
 
 	  if (lseek(fd, m-1, SEEK_END)==-1) {
