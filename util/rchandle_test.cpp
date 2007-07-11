@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: rchandle_unittest.cpp,v 1.1 2006/10/09 07:08:02 Paul Pedersen Exp $
  *
@@ -29,7 +29,7 @@ class complex : public rcobject
 public:
 	complex(double _re, double _im) : re(_re), im(_im) {}
 	complex(double _re) : re(_re), im(0) {}
-	complex(const complex& c) : re(c.re), im(c.im) {}
+	complex(const complex& c) : rcobject (c), re(c.re), im(c.im) {}
 	~complex() {}
 
 public:
