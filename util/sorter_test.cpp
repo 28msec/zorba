@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: sorter_test.cpp,v 1.1 2006/10/11 00:01:33 Paul Pedersen Exp $
  *

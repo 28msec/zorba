@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: URI.cpp,v 1.1 2006/10/09 07:07:49 Paul Pedersen Exp $
  *

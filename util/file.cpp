@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: file.cpp,v 1.3 2006/10/13 06:53:30 Paul Pedersen Exp $
  *

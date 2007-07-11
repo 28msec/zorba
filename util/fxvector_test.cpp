@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: persistent_vector_test.cpp,v 1.1 2006/10/09 07:08:01 Paul Pedersen Exp $
  *

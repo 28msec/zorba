@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: tokenbuf.h,v 1.1 2006/10/09 07:08:04 Paul Pedersen Exp $
  *

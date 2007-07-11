@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: Assert.h,v 1.2 2006/10/13 06:53:29 Paul Pedersen Exp $
  *

@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: fxvector.h,v 1.3 2006/11/01 17:56:20 Paul Pedersen Exp $
  *
