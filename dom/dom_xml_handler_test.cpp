@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: dom_xml_handler_test.cpp 703 2006-06-09 16:28:05Z paul $
  *  Copyright 2006-2007  FLWOR Foundation
