@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: scan_handler.cpp,v 1.1.1.1 2006/10/09 06:58:35 Paul Pedersen Exp $
  *
