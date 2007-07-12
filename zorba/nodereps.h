@@ -221,7 +221,7 @@ public:		// XQuery sub-interface
 	noderep_it children() const;
 
 private:	// ctor,dtor
-	document_noderep(document_noderep& other) : noderep (other) {}
+	document_noderep(const document_noderep& other) : noderep (other) {}
 	~document_noderep() {}
 
 public:		// output and debugging
@@ -276,7 +276,7 @@ public:		// XQuery sub-interface
 	noderep_it children() const;
 
 private:	//ctor,dtor - lock out
-	element_noderep(const element_noderep& other) : noderep () {}
+	element_noderep(const element_noderep& other) : noderep (other) {}
 	~element_noderep() {}
 
 public:		// output and debugging
@@ -370,7 +370,7 @@ public:		// XQuery sub-interface
 	std::string uri() const;
 
 private:	//ctor,dtor - lock out
-	namespace_noderep(namespace_noderep& other) : noderep (other) {}
+	namespace_noderep(const namespace_noderep& other) : noderep (other) {}
 	~namespace_noderep() {}
 
 public:		// output, debugging
@@ -412,7 +412,7 @@ public:		// XQuery sub-interface
 	std::string target() const;
 
 private:	//ctor,dtor - lock out
-	pi_noderep(pi_noderep& other) : noderep (other) {}
+	pi_noderep(const pi_noderep& other) : noderep (other) {}
 	~pi_noderep() {}
 
 public:		// output, debugging
@@ -451,7 +451,7 @@ public:		// XQuery sub-interface
 	std::string content() const;
 
 private:	// lock out default and copy constructors
-	comment_noderep(comment_noderep& other) : noderep (other) {}
+	comment_noderep(const comment_noderep& other) : noderep (other) {}
 	~comment_noderep() {}
 
 public:		// output, debugging
@@ -492,7 +492,7 @@ public:		// XQuery interface
 	std::string baseuri(zorba*) const;
 
 private:	// lock out default and copy constructors
-	text_noderep(text_noderep& other) : noderep (other) {}
+	text_noderep(const text_noderep& other) : noderep (other) {}
 	~text_noderep() {}
 
 public:		// output/debugging
