@@ -5,17 +5,18 @@ include $(ROOT_PATH)/Makefile.conf
 # Functions
 ##############################################################################
 
+DEPENDENCIES	=
+
 DF				= $(BUILD_FOLDER)/$(*F)
 
 EXES			= $(patsubst %,$(BUILD_FOLDER)/%,$(notdir $(BINARIES)))
 
 MAKE_OBJS 		= $(foreach target,$(1),$(dir $(target))$(BUILD_FOLDER)/$(notdir $(basename $(target))).$(SUFX))
 
-PARENT_FOLDER 	= $(notdir $(subst /$(BUILD_FOLDER)/,,$(dir $(abspath $(DF)))))
+PARENT_FOLDER 	= $(notdir $(subst /$(BUILD_FOLDER)/,,$(dir $(abspath $(1)))))
 
 
 define MAKEDEP	
-	@if test -f $(*F).d; then mv $(*F).d $(BUILD_FOLDER)/; fi
 	@sed -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
 		 -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
 		 -e "s/ \([^/ \n\t\\]\+\)$$/ ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
@@ -43,9 +44,12 @@ endif
 endef
 
 
-define MAKE_TARGET
+define CONCAT_DEPENDENCIES
+DEPENDENCIES 	+= $($(1))
+endef
 
-$(foreach dependency,$(2),$(call MAKE_DEPENDENCY,$(dependency)))
+
+define MAKE_TARGET
 
 $$(BUILD_FOLDER)/$(1): $(call MAKE_OBJS,$(2))
 	$(CXX) $(CXXFLAGS) -o $$@ $$^
@@ -78,12 +82,16 @@ clean:
 
 $(foreach target,$(BINARIES),$(eval $(call MAKE_TARGET,$(target),$($(target)))))
 
+$(foreach dependency,$(BINARIES),$(eval $(call CONCAT_DEPENDENCIES,$(dependency))))
+
+$(foreach dependency,$(sort $(DEPENDENCIES)),$(eval $(call MAKE_DEPENDENCY,$(dependency))))
+
 
 $(BUILD_FOLDER):
 	mkdir -p $(BUILD_FOLDER)
 
 $(BUILD_FOLDER)/%.$(SUFX) : %.cpp
-	$(CXX) -c $(CXXFLAGS) -MMD -o $@ $<
+	$(CXX) -c $(CXXFLAGS) -MMD -MF $(patsubst %.$(SUFX),%.d,$@) -o $@ $<
 	$(MAKEDEP)
 
 %.cpp: %.l
@@ -94,4 +102,8 @@ $(BUILD_FOLDER)/%.$(SUFX) : %.cpp
 	$(YACC.y) $< -o $(subst .cpp,.tab.c,$@)
 	mv -f $*.tab.c $@
 
+%.tab.h: %.cpp
+
+
 -include $(patsubst %.$(SUFX),%.P,$(call MAKE_OBJS,$(SOURCES))) $(ROOT_PATH)/Makefile.conf
+
