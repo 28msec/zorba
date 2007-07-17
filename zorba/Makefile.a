@@ -16,7 +16,7 @@ zorba_value_factory_test	= \
 	zorba_value_factory_test.cpp
 
 
-EXECUTABLES = zorba_value_factory_test
+BINARIES	= zorba_value_factory_test
 
 
 # Include global Makefile rules

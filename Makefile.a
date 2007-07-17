@@ -25,6 +25,10 @@ clean: TARGET=clean
 clean: subdirs
 
 
+plan_visitor_test:
+	$(MAKE) test -C runtime -f Makefile.a
+
+
 .PHONY: subdirs $(SUBDIRS)
 
 subdirs: $(SUBDIRS)

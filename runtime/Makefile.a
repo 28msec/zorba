@@ -22,8 +22,8 @@ plan_visitor_test	= \
 		../functions/SequencesImpl.cpp \
 		../functions/signature.cpp \
 		../parser/parsenodes.cpp \
-		../parser/xquery_scanner.cpp \
 		../parser/xquery_parser.cpp \
+		../parser/xquery_scanner.cpp \
 		../parser/symbol_table.cpp \
 		../parser/xquery_driver.cpp \
 		../store/scan_handler.cpp \

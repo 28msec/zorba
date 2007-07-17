@@ -91,7 +91,7 @@ $(BUILD_FOLDER)/%.$(SUFX) : %.cpp
 	$(LEX.l) $< > $@
 
 %.cpp: %.y
-	$(YACC.y) $< 
+	$(YACC.y) $< -o $(subst .cpp,.tab.c,$@)
 	mv -f $*.tab.c $@
 
 -include $(patsubst %.$(SUFX),%.P,$(call MAKE_OBJS,$(SOURCES))) $(ROOT_PATH)/Makefile.conf

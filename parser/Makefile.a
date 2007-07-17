@@ -15,7 +15,7 @@ xquery_test	= \
 		xquery_test.cpp
 
 
-EXECUTABLES = xquery_test
+BINARIES	= xquery_test
 
 
 # Include global Makefile rules

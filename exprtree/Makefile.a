@@ -65,7 +65,7 @@ normalize_visitor_test = \
 		normalize_visitor_test.cpp
 
 
-EXECUTABLES = expr_test normalize_visitor_test
+BINARIES	= expr_test normalize_visitor_test
 
 
 # Include global Makefile rules

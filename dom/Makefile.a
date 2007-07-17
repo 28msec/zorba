@@ -21,7 +21,7 @@ dom_xml_handler_test = \
 		dom_xml_handler_test.cpp
 
 
-EXECUTABLES	= dom_xml_handler_test
+BINARIES	= dom_xml_handler_test
 
 
 # Include global Makefile rules

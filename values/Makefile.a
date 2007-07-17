@@ -11,7 +11,7 @@ primitive_values_test =	\
 	primitive_values_test.cpp
 
 
-EXECUTABLES = primitive_values_test
+BINARIES	= primitive_values_test
 
 
 # Include global Makefile rules

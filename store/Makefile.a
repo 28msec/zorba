@@ -74,7 +74,7 @@ xml_handler_test	= \
 
 
 
-EXECUTABLES = zorba_uri_resolver_test collation_resolver_test collection_resolver_test \
+BINARIES	= zorba_uri_resolver_test collation_resolver_test collection_resolver_test \
 	module_resolver_test schema_resolver_test xml_handler_test
 
 
