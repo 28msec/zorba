@@ -1,0 +1,72 @@
+CXXFLAGS                = -Wall -Wno-uninitialized -W -Wno-unused -g -I $(shell pwd)
+
+YFLAGS                  = -v -t -d 
+YACC                    = bison
+
+SRC := $(shell find . -name \*.cpp)
+HDR := $(shell find . -name \*.h)
+
+include beautify.mak
+
+depend: $(SRC) $(HDR)
+	@makedepend -f - $(SRC) >depend 2>/dev/null
+
+-include depend
+
+%.cpp: %.y
+	$(YACC.y) $<
+	echo $*
+	mv -f $(notdir $*.tab.c) $@
+	mv -f $(basename $(notdir $*.tab.c)).* $(dir $@)
+
+%.tab.h: %.cpp
+
+parser/xquery_parser.o: parser/xquery_parser.cpp
+
+ZORBA_OBJS := \
+                context/static_context.o \
+                context/dynamic_context.o \
+                dom/dom_namepool.o \
+                dom/dom_nodes.o \
+                dom/dom_qname.o \
+                dom/dom_xml_handler.o \
+                exprtree/expr.o \
+                exprtree/normalize_visitor.o \
+                functions/library.o \
+                functions/Numerics.o \
+                functions/NumericsImpl.o \
+                functions/Sequences.o \
+                functions/SequencesImpl.o \
+                functions/signature.o \
+                parser/parsenodes.o \
+                parser/xquery_scanner.o \
+                parser/xquery_parser.o \
+                parser/symbol_table.o \
+                parser/xquery_driver.o \
+                store/scan_handler.o \
+                store/uri_resolver.o \
+                store/xml_scanner.o \
+                store/zorba_uri_resolver.o \
+                types/sequence_type.o \
+                util/file.o \
+                util/fxcharheap.o \
+                util/mmfile.o \
+                util/tokenbuf.o \
+                util/URI.o \
+                util/xqp_exception.o \
+                values/primitive_values.o \
+                zorba/zorba_qname.o \
+                zorba/qnamerep.o \
+                runtime/errors.o \
+                runtime/item_iterator.o \
+                runtime/zorba.o \
+                runtime/plan_visitor.o \
+                runtime/plan_visitor_test.o \
+
+runtime/plan_visitor_test: $(ZORBA_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(ZORBA_OBJS)
+
+clean:
+	$(RM) $(shell find . -name \*.o) runtime/plan_visitor_test
+
+.SECONDARY:
