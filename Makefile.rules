@@ -15,6 +15,7 @@ PARENT_FOLDER 	= $(notdir $(subst /$(BUILD_FOLDER)/,,$(dir $(abspath $(DF)))))
 
 
 define MAKEDEP	
+	@if test -f $(*F).d; then mv $(*F).d $(BUILD_FOLDER)/; fi
 	@sed -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
 		 -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
 		 -e "s/ \([^/ \n\t\\]\+\)$$/ ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
