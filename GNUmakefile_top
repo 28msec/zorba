@@ -4,15 +4,10 @@ YFLAGS    = -v -t -d
 YACC      = bison
 LEX       = flex
 
-SRC := $(shell find . -name \*.cpp)
-HDR := $(shell find . -name \*.h)
+SRC := $(shell find . -name \*.cpp) parser/xquery_scanner.cpp
+HDR := $(shell find . -name \*.h) parser/xquery_parser.tab.h
 
 include beautify.mak
-
-depend: $(SRC) $(HDR)
-	@makedepend -f - $(SRC) >depend 2>/dev/null
-
--include depend
 
 # cancel some implicit rules
 %.c: %.l
@@ -28,48 +23,66 @@ depend: $(SRC) $(HDR)
 
 parser/xquery_scanner.o: parser/xquery_parser.tab.h
 
-ZORBA_OBJS := \
-  context/static_context.o \
-  context/dynamic_context.o \
-  dom/dom_namepool.o \
-  dom/dom_nodes.o \
-  dom/dom_qname.o \
-  dom/dom_xml_handler.o \
-  exprtree/expr.o \
-  exprtree/normalize_visitor.o \
-  functions/library.o \
-  functions/Numerics.o \
-  functions/NumericsImpl.o \
-  functions/Sequences.o \
-  functions/SequencesImpl.o \
-  functions/signature.o \
-  parser/parsenodes.o \
-  parser/xquery_scanner.o \
-  parser/xquery_parser.o \
-  parser/symbol_table.o \
-  parser/xquery_driver.o \
-  store/scan_handler.o \
-  store/uri_resolver.o \
-  store/xml_scanner.o \
-  store/zorba_uri_resolver.o \
-  types/sequence_type.o \
-  util/file.o \
-  util/fxcharheap.o \
-  util/mmfile.o \
-  util/tokenbuf.o \
-  util/URI.o \
-  util/xqp_exception.o \
-  values/primitive_values.o \
-  zorba/zorba_qname.o \
-  zorba/qnamerep.o \
-  runtime/errors.o \
-  runtime/item_iterator.o \
-  runtime/zorba.o \
-  runtime/plan_visitor.o \
-  runtime/plan_visitor_test.o \
+depend: $(SRC) $(HDR)
+	@makedepend -f - $(SRC) >depend 2>/dev/null
 
-runtime/plan_visitor_test: $(ZORBA_OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $(ZORBA_OBJS)
+-include depend
+
+if_exists = \
+  $(shell if test -f $(1); then echo $(1); fi)
+
+find_deps = $(shell grep $(1).o depend | cut -f 2 -d':')
+
+find_obj_deps = \
+  $(patsubst %.cpp,%.o, \
+    $(foreach f,$(patsubst %.h,%.cpp,$(1).cpp $(call find_deps,$(1))), \
+      $(call if_exists,$(f))))
+
+find_deps:
+	@echo $(call find_obj_deps,$(TARGET))
+
+-ZORBA_OBJS := \
+
+runtime/plan_visitor_test: \
+ context/static_context.o \
+ context/dynamic_context.o \
+ dom/dom_namepool.o \
+ dom/dom_nodes.o \
+ dom/dom_qname.o \
+ dom/dom_xml_handler.o \
+ exprtree/expr.o \
+ exprtree/normalize_visitor.o \
+ functions/library.o \
+ functions/Numerics.o \
+ functions/NumericsImpl.o \
+ functions/Sequences.o \
+ functions/SequencesImpl.o \
+ functions/signature.o \
+ parser/parsenodes.o \
+ parser/xquery_scanner.o \
+ parser/xquery_parser.o \
+ parser/symbol_table.o \
+ parser/xquery_driver.o \
+ store/scan_handler.o \
+ store/uri_resolver.o \
+ store/xml_scanner.o \
+ store/zorba_uri_resolver.o \
+ types/sequence_type.o \
+ util/file.o \
+ util/fxcharheap.o \
+ util/mmfile.o \
+ util/tokenbuf.o \
+ util/URI.o \
+ util/xqp_exception.o \
+ values/primitive_values.o \
+ zorba/zorba_qname.o \
+ zorba/qnamerep.o \
+ runtime/errors.o \
+ runtime/item_iterator.o \
+ runtime/zorba.o \
+ runtime/plan_visitor.o \
+ runtime/plan_visitor_test.o
+	$(CXX) $(CXXFLAGS) -o $@ $^
 
 clean:
 	$(RM) $(shell find . -name \*.o) \
