@@ -67,6 +67,9 @@ typedef rchandle<basic_iterator> iterator_t;
 class singleton_iterator;
 typedef rchandle<singleton_iterator> singleton_t;
 
+class var_iterator;
+typedef rchandle<var_iterator> var_iter_t;
+
 
 typedef struct qnamekeyref
 {

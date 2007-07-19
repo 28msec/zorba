@@ -140,9 +140,10 @@ ostream& var_expr::put(zorba* zorp,ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-void var_expr::accept(
-	expr_visitor& v) const
+void var_expr::accept(expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
+	v.end_visit(*this);
 }
 
 
@@ -245,9 +246,20 @@ ostream& flwor_expr::put(zorba* zorp,ostream& os) const
 
 }
 
-void flwor_expr::accept(
-	expr_visitor& v) const
+void flwor_expr::accept(expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
+	
+	vector<forletref_t>::const_iterator it = this->clause_v.begin();
+	for (; it!=this->clause_v.end(); ++it) {
+		(*it)->expr_h->accept(v);
+	}
+	
+	// TODO WHERE & ORDER BY
+	
+	this->retval_h->accept(v);
+	
+	v.end_visit(*this);	
 }
 
 

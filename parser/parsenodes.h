@@ -1357,7 +1357,6 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -1380,6 +1379,7 @@ public:
 public:
 	void push_back(rchandle<VarInDecl> vardecl_h) { vardecl_hv.push_back(vardecl_h); }
 	rchandle<VarInDecl> operator[](int i) const { return vardecl_hv[i]; }
+	int size() { return vardecl_hv.size();}
 
 public:
 	std::ostream& put(std::ostream&) const;

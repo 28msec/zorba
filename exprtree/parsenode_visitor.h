@@ -474,7 +474,7 @@ public:
 	virtual void end_visit(FTWords const&) = 0;
 	virtual void end_visit(FTWordsSelection const&) = 0;
 	virtual void end_visit(FTWordsValue const&) = 0;
-
+	
 };
 
 } /* namespace xqp */

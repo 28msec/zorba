@@ -34,7 +34,9 @@ public:
 protected:
 	zorba* zorp;
 	std::stack<iterator_t> itstack;
+	// FIXME wrong for expressions like 'func1(a,b,func2(c,d),e)'
 	std::stack<iterator_t> argstack;
+	std::stack<var_iter_t> timstack;
 
 public:
 	plan_visitor(zorba* _zorp) : zorp(_zorp) {}

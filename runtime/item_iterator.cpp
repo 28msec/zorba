@@ -12,6 +12,7 @@
 #include "values/values.h"
 #include "values/nodes.h"
 #include "values/qname.h"
+#include "exprtree/expr.h"
 
 using namespace std;
 namespace xqp {

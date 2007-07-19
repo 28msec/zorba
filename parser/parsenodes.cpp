@@ -1250,8 +1250,12 @@ void FLWORExpr::accept(parsenode_visitor& v) const
 { 
 	if (!v.begin_visit(*this)) return;
 	forlet_list_h->accept(v);
-	if (where_h != NULL) where_h->accept(v);
-	if (where_h != NULL) orderby_h->accept(v);
+	if (where_h != NULL) {
+		where_h->accept(v);
+	}
+	if (orderby_h != NULL) {
+		orderby_h->accept(v);
+	}
 	return_val_h->accept(v);
 	v.end_visit(*this); 
 }
@@ -1409,10 +1413,18 @@ ostream& VarInDecl::put(ostream& s) const
 void VarInDecl::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	if (typedecl_h != NULL) typedecl_h->accept(v);
-	if (posvar_h != NULL) posvar_h->accept(v);
-	if (ftscorevar_h != NULL) ftscorevar_h->accept(v);
-	if (valexpr_h != NULL) valexpr_h->accept(v);
+	if (typedecl_h != NULL) {
+		typedecl_h->accept(v);
+	}
+	if (posvar_h != NULL) {
+		posvar_h->accept(v);
+	}
+	if (ftscorevar_h != NULL) {
+		ftscorevar_h->accept(v);
+	}
+	if (valexpr_h != NULL) {
+		valexpr_h->accept(v);
+	}
 	v.end_visit(*this); 
 }
 

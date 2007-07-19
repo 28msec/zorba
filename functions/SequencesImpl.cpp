@@ -39,6 +39,8 @@ qname* fn_doc_fname_p;
 //---------------------
 void concat_iterator::_open()
 {
+	this->cursor = 0;
+	this->currit_h = argv[cursor];
 	currit_h->open();
 }
 
@@ -72,7 +74,7 @@ concat_iterator::concat_iterator(
 :
 	basic_iterator(zorp),
 	argv(_argv),
-	currit_h(argv.size()>0?argv[0]:NULL),
+	currit_h(NULL),
 	cursor(0)
 {
 }

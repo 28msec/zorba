@@ -29,13 +29,13 @@ static uint32_t depth = 0;
  :.........................................*/
 bool plan_visitor::begin_visit(const expr& v)
 {
-cout << indent[++depth] << TRACE << ": expr" << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
 bool plan_visitor::begin_visit(const expr_list& v)
 {
-cout << indent[++depth] << TRACE << ": expr_list" << endl;
+cout << indent[++depth] << TRACE << endl;
 	itstack.push(NULL);
 	return true;
 }
@@ -84,7 +84,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const fo_expr& v)
 {
-cout << indent[++depth] << TRACE << ": fo_expr" << endl;
+cout << indent[++depth] << TRACE << endl;
 	itstack.push(NULL);
 	return true;
 }
@@ -157,7 +157,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const literal_expr& v)
 {
-cout << indent[++depth] << TRACE << ": literal_expr" << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
@@ -169,7 +169,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const doc_expr& v)
 {
-cout << TRACE << endl;
+cout << TRACE  << endl;
 	return true;
 }
 
@@ -210,12 +210,12 @@ cout << TRACE << endl;
  :.........................................*/
 void plan_visitor::end_visit(const expr& v)
 {
-cout << indent[depth--] << TRACE << ": expr" << endl;
+cout << indent[depth--] << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const expr_list& v)
 {
-cout << indent[depth--] << TRACE << ": expr_list" << endl;
+cout << indent[depth--] << TRACE << endl;
 	vector<iterator_t> argv;
 	while (true) {
 		iterator_t it = pop_itstack();
@@ -228,7 +228,9 @@ cout << indent[depth--] << TRACE << ": expr_list" << endl;
 
 void plan_visitor::end_visit(const var_expr& v)
 {
-cout << TRACE << endl;
+	var_iter_t v_h = new var_iterator("x");
+	itstack.push(&*v_h);
+	timstack.push(&*v_h);
 }
 
 void plan_visitor::end_visit(const order_modifier& v)
@@ -239,6 +241,19 @@ cout << TRACE << endl;
 void plan_visitor::end_visit(const flwor_expr& v)
 {
 cout << TRACE << endl;
+	iterator_t expr = pop_itstack();
+	iterator_t input = pop_itstack();
+	std::vector<var_iter_t> var_iters;
+	
+// 	while (true) {
+	
+		var_iter_t var = timstack.top(); timstack.pop();
+// 		if (var==NULL) break;
+		var_iters.push_back(&*var);
+// 	}
+	rchandle<map_iterator> map_iter = new map_iterator(input, expr, var_iters);
+	itstack.push(&*map_iter);
+// 	rchandle<map_iterator> m_h = new map_iterator();
 }
 
 void plan_visitor::end_visit(const quantified_expr& v)
@@ -263,7 +278,7 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const fo_expr& v)
 {
-cout << indent[depth--] << TRACE << ": fo_expr" << endl;
+cout << indent[depth--] << TRACE << endl;
 
 	const function* func_p = v.get_func();
 	assert(func_p!=NULL);
@@ -336,7 +351,7 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const literal_expr& v)
 {
-cout << indent[depth--] << TRACE << ": literal_expr" << endl;
+cout << indent[depth--] << TRACE << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
     iterator_t it = new singleton_iterator(

@@ -131,7 +131,6 @@ public:
 };
 
 
-
 class namespace_iterator : public basic_iterator
 {
 protected:

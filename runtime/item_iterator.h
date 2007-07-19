@@ -114,15 +114,14 @@ public:
 
 public:		// iterator interface
 	void _open() {}
-	void _close() {}
+	void _close() {
+		this->is_done = false;
+	}
 	item_t _next() {
 		bool was_done = is_done; is_done = true;
 		return was_done ? NULL : i_h;
 	}
 	bool done() const { return is_done; }
-
-public:		// variable binding
-	void bind(item_t _i_h) { i_h = _i_h; }
 
 public:
 	singleton_iterator& operator=(const singleton_iterator& it)
@@ -130,7 +129,20 @@ public:
 
 };
 
-
+// FIXME No expressions in iterators!!
+class var_iterator : public singleton_iterator {
+protected:
+	string s_h;
+	
+public:
+	var_iterator(string s_p) : singleton_iterator(NULL), s_h(s_p){}
+	~var_iterator(){
+		
+	}
+	
+public:		// variable binding
+	void bind(item_t _i_h) { i_h = _i_h; }
+};
 
 /*
 template<class T>
@@ -200,14 +212,14 @@ private:
 
 	iterator_t theInput;
 	iterator_t theExpr;
-	std::vector<singleton_t> varv;
+	std::vector<var_iter_t> varv;
 	enum state theState;
 
 public:
 	map_iterator(
 		iterator_t _input,
 		iterator_t _expr,
-		std::vector<singleton_t> _varv)
+		std::vector<var_iter_t> _varv)
 	:
 		theInput(_input),
 		theExpr(_expr),
@@ -239,7 +251,7 @@ public:
 			if (theState==outer) {
 				item_t i_h = input.next();
 				if (i_h==NULL) return NULL;
-				vector<singleton_t>::const_iterator itv = varv.begin();
+				vector<var_iter_t>::const_iterator itv = varv.begin();
 				for (; itv!=varv.end(); ++itv) { (*itv)->bind(i_h); }
 				expr.open();
 				theState = inner;
