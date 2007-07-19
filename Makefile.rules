@@ -34,7 +34,7 @@ ifneq ($(dir $(1)),)
 ifneq ($(dir $(1)),./)
 
 $(call MAKE_OBJS,$(1)):
-	$(MAKE) -C $$(subst /$(BUILD_FOLDER)/,,$$(dir $$@)) -f Makefile.a SOURCES=$(notdir $(1))
+	$(MAKE) -C $$(subst /$(BUILD_FOLDER)/,,$$(dir $$@)) SOURCES=$(notdir $(1))
 
 -include $(patsubst %.$(SUFX),%.P,$(call MAKE_OBJS,$(1))) 
 

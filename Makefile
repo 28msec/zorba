@@ -26,7 +26,7 @@ clean: subdirs
 
 
 plan_visitor_test:
-	$(MAKE) test -C runtime -f Makefile.a
+	$(MAKE) test -C runtime
 
 
 .PHONY: subdirs $(SUBDIRS)
@@ -34,4 +34,4 @@ plan_visitor_test:
 subdirs: $(SUBDIRS)
 
 $(SUBDIRS):
-	$(MAKE) $(TARGET) -C $@ -f Makefile.a 
+	$(MAKE) $(TARGET) -C $@
