@@ -76,23 +76,23 @@ string qnamerep::describe(
 }
 
 iterator_t qnamerep::atomized_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t qnamerep::effective_boolean_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t qnamerep::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
 	ostringstream oss;
 	put(zorp,oss);
-	return new singleton_iterator(new stringValue(oss.str()));
+	return new singleton_iterator(zorp,loc, new stringValue(oss.str()));
 }
 
 string qnamerep::str(

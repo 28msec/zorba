@@ -13,7 +13,7 @@
 
 #include <string>
 
-#include "xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 namespace xqp {
 

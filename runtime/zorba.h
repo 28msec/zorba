@@ -13,13 +13,19 @@
 #include "context/common.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "runtime/errors.h"
+//daniel #include "runtime/errors.h"
 #include "store/data_manager.h"
 #include "util/rchandle.h"
 #include "values/value_factory.h"
+#include "errors/Error.h"
+
+#include <stack>
 
 
 namespace xqp {
+
+class ZorbaErrorAlerts;
+class basic_iterator;
 
 class zorba : public rcobject
 {
@@ -30,6 +36,16 @@ protected:
 	rchandle<dynamic_context> theDynamicContext;
 	// requestor identity, for concurrency
 
+	//daniel
+	rchandle<ZorbaErrorAlerts>	error_manager;
+public:
+	///keep a track of the current parse node or expr node (at compile time)
+	//std::stack<const parsenode*>		current_parsenode;
+	///keep a track of the current iterator executed (at execution time)
+	std::stack<const basic_iterator*>	current_iterator;
+	yy::location	null_loc;
+	///end daniel
+
 public:
 	zorba();
 
@@ -37,7 +53,8 @@ public:
 		rchandle<data_manager>,
 		rchandle<value_factory>,
 		rchandle<static_context>,
-		rchandle<dynamic_context>);
+		rchandle<dynamic_context>,
+		rchandle<ZorbaErrorAlerts>);
 
 	~zorba() {}
 
@@ -46,16 +63,23 @@ public:
 	value_factory* get_value_factory() const { return &*theValueFactory; }
 	static_context* get_static_context() const { return &*theStaticContext; }
 	dynamic_context* get_dynamic_context() const { return &*theDynamicContext; }
+	//daniel
+	ZorbaErrorAlerts* get_error_manager() const { return &*error_manager; }
 
 	void set_data_manager(data_manager* v) { theDataManager = v; }
 	void set_value_factory(value_factory* v) { theValueFactory = v; }
 	void set_static_context(static_context* v) { theStaticContext = v; }
 	void set_dynamic_context(dynamic_context* v) { theDynamicContext = v; }
+	//daniel
+	void set_error_manager(ZorbaErrorAlerts *err_manag) { error_manager = err_manag; }
 
 	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
 	void set_value_factory(rchandle<value_factory> v) { theValueFactory = v; }
 	void set_static_context(rchandle<static_context> v) { theStaticContext = v; }
 	void set_dynamic_context(rchandle<dynamic_context> v) { theDynamicContext = v; }
+	//daniel
+	void set_error_manager(rchandle<ZorbaErrorAlerts> err_manag) { error_manager = err_manag; }
+	yy::location& GetCurrentLocation();//from top iterator
 
 public:	// diagnostics
   enum diagnostic_flag_t {
@@ -66,10 +90,10 @@ public:	// diagnostics
 	
   uint32_t lineno;
   uint32_t charpos;
-	errors::errcode zorba_errno;
+//daniel	errors::errcode zorba_errno;
 
-	errors::errcode get_error() const { return zorba_errno; }
-	void set_error(errors::errcode err) { zorba_errno = err; }
+//daniel	errors::errcode get_error() const { return zorba_errno; }
+//daniel	void set_error(errors::errcode err) { zorba_errno = err; }
 
 };
 

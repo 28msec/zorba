@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
+/* -*- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id: xqp_exception.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
@@ -16,7 +16,7 @@
 
 namespace xqp
 {
-
+/*
 #define XQP_EXCEPTION_MACRO(X) \
 		ostringstream os_loc_, os_err_; \
 		os_loc_ << __FILE__ << ":" << __LINE__ << "::" << __FUNCTION__; \
@@ -40,6 +40,7 @@ namespace xqp
 		os_loc_ << __FILE__ << ":" << __LINE__ << "::" << __FUNCTION__; \
 		os_err_ << X; \
 		throw bad_dynamic_cast(os_loc_.str(),os_err_.str());
+*/
 
 class xqp_exception : public std::runtime_error 
 { 

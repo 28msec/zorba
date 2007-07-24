@@ -24,7 +24,8 @@ zorba::zorba()
 	theDataManager(NULL),
 	theValueFactory(NULL),
 	theStaticContext(NULL),
-	theDynamicContext(NULL)
+	theDynamicContext(NULL),
+	error_manager(NULL)
 {
 }
 
@@ -32,15 +33,24 @@ zorba::zorba(
 	rchandle<data_manager> dataManager,
 	rchandle<value_factory> valueFactory,
 	rchandle<static_context> staticContext,
-	rchandle<dynamic_context> dynamicContext)
+	rchandle<dynamic_context> dynamicContext,
+	rchandle<ZorbaErrorAlerts> zorbaAlerts)
 :
 	theDataManager(dataManager),
 	theValueFactory(valueFactory),
 	theStaticContext(staticContext),
-	theDynamicContext(dynamicContext)
+	theDynamicContext(dynamicContext),
+	error_manager(zorbaAlerts)
 {
 }
 
+yy::location& zorba::GetCurrentLocation()//from top iterator
+{
+	if(current_iterator.empty())
+		return null_loc;///no current location information
+	else
+		return (yy::location&)(current_iterator.top()->loc);
+}
 
 
 }	/* namespace xqp */

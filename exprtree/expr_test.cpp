@@ -14,7 +14,7 @@
 #include "../parser/location.hh"
 #include "../parser/symbol_table.h"
 #include "../types/sequence_type.h"
-#include "../util/xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 #include <iostream>
 

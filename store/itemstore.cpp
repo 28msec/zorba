@@ -10,7 +10,7 @@
 #include "itemstore.h"
 
 #include "context/common.h"
-#include "runtime/errors.h"
+#include "errors/errors.h"
 #include "types/sequence_type.h"
 #include "util/hashfun.h"
 #include "util/tracer.h"
@@ -18,6 +18,7 @@
 #include "values/nodes.h"
 #include "values/primitive_values.h"
 #include "zorba/qnamerep.h"
+#include "errors/Error.h"
 
 #include <iostream>
 
@@ -285,7 +286,11 @@ qnamerep& itemstore::add_qname(
 	itemid_t uri_id;
 
 	if (!qncache.get_uri_id(prefix, uri_id)) {
-		errors::err(errors::XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND);
+		//daniel errors::err(errors::XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND, 
+																	error_messages::RUNTIME_ERROR,
+																	NULL//get the location from current iterator saved in zorba object
+																	);
 	}
 	if (!qncache.get_qname_id(uri_id, localname, qname_id)) {
 		qname_id = qncache.add_qname(qnamerep(/*uri_id*/"xxx", prefix, localname));

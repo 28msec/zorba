@@ -211,52 +211,6 @@ ValidationMode				("strict"|"lax"|"skip")
 	Comments would be treated equally. 
 */
 
-%{
-std::string start_state()
-{
-	switch (YY_START) {
-	case INITIAL: return "INITIAL";
-	case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
-	case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
-	case MODE_CLOSE_KINDTEST: return "MODE_CLOSE_KINDTEST";
-	case MODE_DECLAREORDERING: return "MODE_DECLAREORDERING";
-	case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
-	case MODE_END_TAG: return "MODE_END_TAG";
-	case MODE_EXPR_COMMENT: return "MODE_EXPR_COMMENT";
-	case MODE_ITEMTYPE: return "MODE_ITEMTYPE";
-	case MODE_KINDTEST: return "MODE_KINDTEST";
-	case MODE_KINDTESTFORPI: return "MODE_KINDTESTFORPI";
-	case MODE_NAMESPACEDECL: return "MODE_NAMESPACEDECL";
-	case MODE_NAMESPACEKEYWORD: return "MODE_NAMESPACEKEYWORD";
-	case MODE_OCCURRENCE_INDICATOR: return "MODE_OCCURRENCE_INDICATOR";
-	case MODE_OPERATOR: return "MODE_OPERATOR";
-	case MODE_OPTION: return "MODE_OPTION";
-	case MODE_PRAGMA: return "MODE_PRAGMA";
-	case MODE_PRAGMACONTENTS: return "MODE_PRAGMACONTENTS";
-	case MODE_PROCESSING_INSTRUCTION: return "MODE_PROCESSING_INSTRUCTION";
-	case MODE_PROCESSING_INSTRUCTION_CONTENT: return "MODE_PROCESSING_INSTRUCTION_CONTENT";
-	case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
-	case MODE_SINGLETYPE: return "MODE_SINGLETYPE";
-	case MODE_START_TAG: return "MODE_START_TAG";
-	case MODE_URITOOPERATOR: return "MODE_URITOOPERATOR";
-	case MODE_VARNAME: return "MODE_VARNAME";
-	case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
-	case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-	case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
-	default: return "Something's drastically wrong here, unrecognized start state!\n";
-	}
-}
-
-/*
-#define YY_USER_ACTION \
-	{ \
-		std::cout<<'<'<<start_state()<<"> [["<<yytext<<"]]"<<std::endl; \
-		yylloc->columns(yyleng); \
-	}
-*/
-
-
-%}
 %%
 %{
  yylloc->step ();
@@ -3085,6 +3039,52 @@ void xquery_driver::scan_end()
 }
 
 }
+
+
+std::string start_state()
+{
+	switch (YY_START) {
+	case INITIAL: return "INITIAL";
+	case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
+	case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
+	case MODE_CLOSE_KINDTEST: return "MODE_CLOSE_KINDTEST";
+	case MODE_DECLAREORDERING: return "MODE_DECLAREORDERING";
+	case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
+	case MODE_END_TAG: return "MODE_END_TAG";
+	case MODE_EXPR_COMMENT: return "MODE_EXPR_COMMENT";
+	case MODE_ITEMTYPE: return "MODE_ITEMTYPE";
+	case MODE_KINDTEST: return "MODE_KINDTEST";
+	case MODE_KINDTESTFORPI: return "MODE_KINDTESTFORPI";
+	case MODE_NAMESPACEDECL: return "MODE_NAMESPACEDECL";
+	case MODE_NAMESPACEKEYWORD: return "MODE_NAMESPACEKEYWORD";
+	case MODE_OCCURRENCE_INDICATOR: return "MODE_OCCURRENCE_INDICATOR";
+	case MODE_OPERATOR: return "MODE_OPERATOR";
+	case MODE_OPTION: return "MODE_OPTION";
+	case MODE_PRAGMA: return "MODE_PRAGMA";
+	case MODE_PRAGMACONTENTS: return "MODE_PRAGMACONTENTS";
+	case MODE_PROCESSING_INSTRUCTION: return "MODE_PROCESSING_INSTRUCTION";
+	case MODE_PROCESSING_INSTRUCTION_CONTENT: return "MODE_PROCESSING_INSTRUCTION_CONTENT";
+	case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
+	case MODE_SINGLETYPE: return "MODE_SINGLETYPE";
+	case MODE_START_TAG: return "MODE_START_TAG";
+	case MODE_URITOOPERATOR: return "MODE_URITOOPERATOR";
+	case MODE_VARNAME: return "MODE_VARNAME";
+	case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
+	case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
+	case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
+	default: return "Something's drastically wrong here, unrecognized start state!\n";
+	}
+}
+
+/*
+#define YY_USER_ACTION \
+	{ \
+		std::cout<<'<'<<start_state()<<"> [["<<yytext<<"]]"<<std::endl; \
+		yylloc->columns(yyleng); \
+	}
+*/
+
+
 
 
 

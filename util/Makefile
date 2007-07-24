@@ -1,6 +1,5 @@
 
 SOURCES			= \
-	xqp_exception.cpp \
 	rwlock.cpp \
 	tokenbuf.cpp \
 	hashfun_test.cpp \
@@ -22,7 +21,7 @@ SOURCES			= \
 
 
 tokenbuf_test	= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	file.cpp \
 	tokenbuf.cpp \
 	tokenbuf_test.cpp
@@ -33,12 +32,12 @@ rwlock_test		= \
 
 
 hashfun_test	= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	hashfun_test.cpp
 
 
 hashmap_test	= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	rwlock.cpp \
 	tokenbuf.cpp \
 	hashmap_test.cpp
@@ -49,7 +48,7 @@ list_test		= \
 
 
 logger_test		= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	logger.cpp \
 	logger_test.cpp
 
@@ -73,35 +72,35 @@ utf8_encoder_test	= \
 
 
 file_test 		= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	tokenbuf.cpp \
 	file.cpp \
 	file_test.cpp
 
 
 mmfile_test		= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	tokenbuf.cpp \
 	mmfile.cpp \
 	mmfile_test.cpp
 
 
 fxarray_test	= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	tokenbuf.cpp \
 	mmfile.cpp \
 	fxarray_test.cpp
 
 
 fxvector_test	= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	tokenbuf.cpp \
 	mmfile.cpp \
 	fxvector_test.cpp
 
 
 fxcharheap_test	= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	tokenbuf.cpp \
 	mmfile.cpp \
 	file.cpp \
@@ -110,7 +109,7 @@ fxcharheap_test	= \
 
 
 fxhashmap_test	= \
-	xqp_exception.cpp \
+	../errors/xqp_exception.cpp \
 	rwlock.cpp \
 	tokenbuf.cpp \
 	mmfile.cpp \

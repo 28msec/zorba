@@ -1,4 +1,11 @@
-cd util
+cd errors
+echo ""; echo "- errors -"
+if (!(test -d Build)); then
+	mkdir Build;
+fi;
+make all -f makefile.l
+#
+cd ../util
 echo ""; echo "- util -"
 if (!(test -d Build)); then
 	mkdir Build;
@@ -26,12 +33,12 @@ if (!(test -d Build)); then
 fi;
 make all -f makefile.l
 #
-cd ../listeners
-echo ""; echo "- listeners -"
-if (!(test -d Build)); then
-	mkdir Build;
-fi;
-make all -f makefile.l
+#cd ../listeners
+#echo ""; echo "- listeners -"
+#if (!(test -d Build)); then
+#	mkdir Build;
+#fi;
+#make all -f makefile.l
 #
 cd ../parser
 echo ""; echo "- parser -"
@@ -81,4 +88,5 @@ if (!(test -d Build)); then
 	mkdir Build;
 fi;
 make all -f makefile.l
+
 

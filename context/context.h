@@ -31,7 +31,7 @@
 #include "values/qname.h"
 #include "util/fxhashmap.h"
 #include "util/rchandle.h"
-#include "util/xqp_exception.h"
+#include "errors/xqp_exception.h"
 
 namespace xqp {
 

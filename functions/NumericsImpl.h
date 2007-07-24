@@ -37,7 +37,7 @@ class zorba;
 class op_numeric_binary_iterator : public basic_iterator
 {
 public:
-	op_numeric_binary_iterator(iterator_t, iterator_t);
+	op_numeric_binary_iterator(yy::location loc, iterator_t, iterator_t);
 	virtual ~op_numeric_binary_iterator() {}
 
 public:	// iterator interface
@@ -63,7 +63,7 @@ protected:
 class op_numeric_add_iterator : public op_numeric_binary_iterator
 {
 public:
-	op_numeric_add_iterator(iterator_t, iterator_t);
+	op_numeric_add_iterator(yy::location loc, iterator_t, iterator_t);
 	~op_numeric_add_iterator() {}
 
 public:	// iterator interface
@@ -78,7 +78,7 @@ public:	// iterator interface
 class op_numeric_subtract_iterator : public op_numeric_binary_iterator
 {
 public:
-	op_numeric_subtract_iterator(iterator_t, iterator_t);
+	op_numeric_subtract_iterator(yy::location loc, iterator_t, iterator_t);
 	~op_numeric_subtract_iterator() {}
 
 public:	// iterator interface
@@ -93,7 +93,7 @@ public:	// iterator interface
 class op_numeric_multiply_iterator : public op_numeric_binary_iterator
 {
 public:
-	op_numeric_multiply_iterator(iterator_t, iterator_t);
+	op_numeric_multiply_iterator(yy::location loc, iterator_t, iterator_t);
 	~op_numeric_multiply_iterator() { }
 
 public:	// iterator interface
@@ -107,7 +107,7 @@ public:	// iterator interface
 class op_numeric_divide_iterator : public op_numeric_binary_iterator
 {
 public:
-	op_numeric_divide_iterator(iterator_t, iterator_t);
+	op_numeric_divide_iterator(yy::location loc, iterator_t, iterator_t);
 	~op_numeric_divide_iterator() {}
 
 public:	// iterator interface
@@ -121,7 +121,7 @@ public:	// iterator interface
 class op_numeric_integer_divide_iterator : public op_numeric_binary_iterator
 {
 public:
-	op_numeric_integer_divide_iterator(iterator_t, iterator_t);
+	op_numeric_integer_divide_iterator(yy::location loc, iterator_t, iterator_t);
 	~op_numeric_integer_divide_iterator() {}
 
 public:	// iterator interface
@@ -135,7 +135,7 @@ public:	// iterator interface
 class op_numeric_mod_iterator : public op_numeric_binary_iterator
 {
 public:
-	op_numeric_mod_iterator(iterator_t, iterator_t);
+	op_numeric_mod_iterator(yy::location loc, iterator_t, iterator_t);
 	~op_numeric_mod_iterator() {}
 
 
@@ -154,7 +154,7 @@ public:	// iterator interface
 class op_numeric_unary_minus_iterator : public basic_iterator
 {
 public:
-	op_numeric_unary_minus_iterator(iterator_t);
+	op_numeric_unary_minus_iterator(yy::location loc, iterator_t);
 	~op_numeric_unary_minus_iterator() {}
 
 public:	// iterator interface
@@ -179,7 +179,7 @@ private:
 // -------------------------
 class op_numeric_equal_iterator : public op_numeric_binary_iterator {
 public:
-	op_numeric_equal_iterator(iterator_t, iterator_t);
+	op_numeric_equal_iterator(yy::location loc, iterator_t, iterator_t);
 	~op_numeric_equal_iterator() {}
 	
 public:

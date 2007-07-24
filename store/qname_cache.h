@@ -13,7 +13,7 @@
 #include "../context/common.h"
 #include "../util/fxhashmap.h"
 #include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 #include <string>
 

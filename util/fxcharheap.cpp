@@ -19,7 +19,7 @@
 #include <iostream>
 
 #include "file.h"
-#include "xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 using namespace std;
 namespace xqp {

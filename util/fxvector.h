@@ -13,7 +13,7 @@
 #include "mmfile.h"
 #include "rchandle.h"
 #include "tracer.h"
-#include "xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 #include <sys/mman.h>
 #include <sys/types.h>

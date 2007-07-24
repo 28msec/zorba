@@ -2,9 +2,6 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
-errors : errors.h errors.cpp
-	g++ ${OPT} -c -o ${BUILD}/errors.${SUFX} errors.cpp
-
 item_iterator : item_iterator.h item_iterator.cpp
 	g++ ${OPT} -c -o ${BUILD}/item_iterator.${SUFX} item_iterator.cpp
 
@@ -45,11 +42,12 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 		../util/${BUILD}/mmfile.${SUFX} \
 		../util/${BUILD}/tokenbuf.${SUFX} \
 		../util/${BUILD}/URI.${SUFX} \
-		../util/${BUILD}/xqp_exception.${SUFX} \
 		../values/${BUILD}/primitive_values.${SUFX} \
 		../zorba/${BUILD}/zorba_qname.${SUFX} \
 		../zorba/${BUILD}/qnamerep.${SUFX} \
-		${BUILD}/errors.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/errors.${SUFX} \
+		../errors/${BUILD}/Error.${SUFX} \
 		${BUILD}/item_iterator.${SUFX} \
 		${BUILD}/zorba.${SUFX} \
 		${BUILD}/plan_visitor.${SUFX} \
@@ -57,7 +55,6 @@ plan_visitor_test : plan_visitor.h plan_visitor.cpp plan_visitor_test.cpp
 
 
 all : \
-	errors \
 	item_iterator \
 	zorba \
 	plan_visitor

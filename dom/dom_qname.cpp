@@ -87,21 +87,21 @@ string dom_qname::str(
 }
 
 iterator_t dom_qname::effective_boolean_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new booleanValue(true));
+	return new singleton_iterator(zorp,loc, new booleanValue(true));
 }
 
 iterator_t dom_qname::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(str(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(str(zorp)));
 }
 
 iterator_t dom_qname::atomized_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return string_value(zorp);
+	return string_value(zorp, loc);
 }
 
 } /* namespace xqp */

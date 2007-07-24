@@ -21,7 +21,7 @@
 #include "hashfun.h"
 #include "rchandle.h"
 #include "rwlock.h"
-#include "xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 
 using namespace std;

@@ -8,14 +8,57 @@
 
 #include "item_iterator.h"
 #include "util/Assert.h"
-#include "util/xqp_exception.h"
+#include "errors/xqp_exception.h"
 #include "values/values.h"
 #include "values/nodes.h"
 #include "values/qname.h"
+#include "runtime/zorba.h"
 #include "exprtree/expr.h"
 
 using namespace std;
 namespace xqp {
+
+void basic_iterator::open()
+{
+	assert(!open_b);
+	open_b = true;
+	_open();
+}
+
+item_t basic_iterator::next()
+{
+	assert(open_b);
+	//daniel: save the current iterator in zorba object (to keep track of the current iterator being executed)
+	if(zorp)
+	{
+		zorp->current_iterator.push( this );
+
+		item_t retitem = _next(); 
+
+		zorp->current_iterator.pop();///restore the previous iterator
+		return retitem;
+	}
+	else
+		return _next();
+}
+
+void basic_iterator::close()
+{
+	assert(open_b);
+	open_b = false;
+	_close();
+}
+
+bool basic_iterator::is_open() const
+{
+	return open_b;
+}
+
+void map_iterator::_open() {
+	theState = outer;
+	theInput->open();
+}
+
 
 item_t map_iterator::_next() {
 	basic_iterator& input = *theInput;
@@ -37,11 +80,6 @@ item_t map_iterator::_next() {
 		expr.close();
 		theState = outer;
 	}
-}
-
-void map_iterator::_open() {
-	theState = outer;
-	theInput->open();
 }
 
 void map_iterator::_close() {

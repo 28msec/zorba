@@ -12,6 +12,7 @@
 #include "context/common.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
+#include "parser/location.hh"
 
 #include <assert.h>
 #include <iostream>
@@ -27,41 +28,33 @@ class zorba;
 class basic_iterator : public rcobject
 {
 protected:
- 	zorba* zorp;
+ 	zorba *zorp;
 	bool open_b;
 
+	//daniel
 public:
-	basic_iterator() : zorp(NULL), open_b(false) {}
-	basic_iterator(zorba* _zorp) : zorp(_zorp), open_b(false) {}
-	basic_iterator(const basic_iterator& it) : rcobject (), zorp(it.zorp), open_b(it.open_b) {}
+	yy::location	loc;
+
+public:
+	//daniel basic_iterator() : zorp(NULL), open_b(false) {}
+	basic_iterator(zorba *_zorp, yy::location _loc) : zorp(_zorp), 
+																										open_b(false),
+																										loc(_loc)
+	{}
+	basic_iterator(const basic_iterator& it) : rcobject (), 
+																						zorp(it.zorp), 
+																						open_b(it.open_b),
+																						loc(it.loc)
+	{}
 	virtual ~basic_iterator() {}
 
 public:		// inline base logic
 
-	void open()
-	{
-		assert(!open_b);
-		open_b = true;
-		_open();
-	}
+	void open();
+	item_t next();
+	void close();
 
-	item_t next()
-	{
-		assert(open_b);
-		return _next(); 
-	}
-
-	void close()
-	{
-		assert(open_b);
-		open_b = false;
-		_close();
-	}
-
-	bool is_open() const
-	{
-		return open_b;
-	}
+	bool is_open() const;
 
 	virtual bool done() const = 0;
 
@@ -108,8 +101,12 @@ protected:
 	bool is_done;
 
 public:
-	singleton_iterator(item* _i_p) : i_h(_i_p), is_done (false) {}
-	singleton_iterator(const singleton_iterator& it) : basic_iterator (it), i_h(it.i_h) {}
+	singleton_iterator(zorba *zorp, yy::location loc, item* _i_p) : 
+												basic_iterator(zorp, loc),
+												i_h(_i_p), is_done (false) {}
+	singleton_iterator(const singleton_iterator& it) : basic_iterator (it), i_h(it.i_h),
+																										is_done(it.is_done) 
+																										{}
 	~singleton_iterator() { }
 
 public:		// iterator interface
@@ -125,7 +122,10 @@ public:		// iterator interface
 
 public:
 	singleton_iterator& operator=(const singleton_iterator& it)
-		{ i_h = it.i_h; return *this; }
+		{ i_h = it.i_h; 
+			loc = it.loc;
+			zorp = it.zorp;
+			return *this; }
 
 };
 
@@ -135,7 +135,9 @@ protected:
 	string s_h;
 	
 public:
-	var_iterator(string s_p) : singleton_iterator(NULL), s_h(s_p){}
+	var_iterator(string s_p, zorba *zorp, yy::location loc) : 
+							singleton_iterator(zorp, loc,NULL), 
+							s_h(s_p){}
 	~var_iterator(){
 		
 	}
@@ -184,7 +186,9 @@ private:
 	iterator_t it;
 
 public:
-	ref_iterator(iterator_t _it) : it(_it) {}
+	ref_iterator(iterator_t _it,zorba *zorp, yy::location loc) : 
+										basic_iterator(zorp,loc),
+										it(_it) {}
 
 public:
 	void _open() { it->open();  }
@@ -217,11 +221,14 @@ private:
 
 public:
 	map_iterator(
+		zorba *zorp, 
+		yy::location loc,
 		iterator_t _input,
 		iterator_t _expr,
 		std::vector<var_iter_t> _varv)
-	: 
-		theInput(_input), 
+	:
+		basic_iterator(zorp, loc),
+		theInput(_input),
 		theExpr(_expr),
 		varv(_varv),
 		theState(outer)

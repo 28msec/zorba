@@ -20,7 +20,7 @@
 #include "exprtree/parsenode_visitor.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
-#include "util/xqp_exception.h"
+#include "errors/xqp_exception.h"
 #include "values/values.h"
 #include "indent.h"
 

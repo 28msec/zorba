@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
+/* -*- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id: xqp_exception.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *

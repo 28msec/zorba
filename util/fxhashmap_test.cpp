@@ -10,7 +10,7 @@
 
 #include "fxhashmap.h"
 #include "tokenbuf.h"
-#include "xqp_exception.h"
+#include "errors/xqp_exception.h"
 #include <iostream>
 #include <fstream>
 

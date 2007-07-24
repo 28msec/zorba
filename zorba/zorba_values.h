@@ -41,7 +41,7 @@ public:
 |  
 |	 'xquery_exception' encapsulate xquery exceptions
 |_______________________________________________________________________*/
-
+/*daniel
 class zorba_exception : public zorba_object,
 																virtual public xquery_exception
 													
@@ -54,7 +54,7 @@ public:
 	virtual std::string describe(zorba*) const { return "zorba_exception"; }
 	virtual std::ostream& put(zorba*,std::ostream& os) const { return os; }
 };
-
+*/
 
 /*______________________________________________________________________
 |  
@@ -95,8 +95,8 @@ public:		// accessors
   virtual std::string describe(zorba*) const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*) const = 0;
-	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }
@@ -123,9 +123,9 @@ public:		// accessors
   virtual std::string str(zorba*) const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*) const = 0;
-	virtual iterator_t effective_boolean_value(zorba*) const = 0;
-	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t effective_boolean_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }

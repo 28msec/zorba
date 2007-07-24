@@ -1,6 +1,5 @@
 
 SOURCES			= \
-		errors.cpp \
 		item_iterator.cpp \
 		zorba.cpp \
 		plan_visitor.cpp
@@ -36,13 +35,14 @@ plan_visitor_test	= \
 		../util/mmfile.cpp \
 		../util/tokenbuf.cpp \
 		../util/URI.cpp \
-		../util/xqp_exception.cpp \
 		../values/primitive_values.cpp \
 		../zorba/zorba_qname.cpp \
 		../zorba/qnamerep.cpp \
-		errors.cpp \
-		item_iterator.cpp \
 		zorba.cpp \
+		../errors/xqp_exception.cpp \
+		../errors/errors.cpp \
+		../errors/Error.cpp \
+		item_iterator.cpp \
 		plan_visitor.cpp \
 		plan_visitor_test.cpp
 

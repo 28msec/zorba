@@ -15,6 +15,7 @@
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
+#include "parser/location.hh"
 
 #include <iostream>
 #include <time.h>
@@ -40,9 +41,9 @@ public:
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t string_value(zorba*, yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -81,9 +82,9 @@ public:		// accessors
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t string_value(zorba*, yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -116,9 +117,9 @@ public:
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*) const;
-	iterator_t effective_boolean_value(zorba*) const;
-	iterator_t string_value(zorba*) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t effective_boolean_value(zorba*, yy::location &loc) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -147,9 +148,9 @@ public:
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t string_value(zorba*, yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -178,9 +179,9 @@ public:
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*) const { return NULL; }
-	iterator_t string_value(zorba*) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
+	iterator_t string_value(zorba*, yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }

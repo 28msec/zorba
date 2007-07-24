@@ -13,6 +13,7 @@
 #include "../context/common.h"
 #include "../types/sequence_type.h"
 #include "../util/rchandle.h"
+#include "parser/location.hh"
 
 #include <iostream>
 #include <sstream>
@@ -39,14 +40,14 @@ public:
 |  
 |	'exception' encapsulates an xquery exception.
 |_______________________________________________________________________*/
-
+/*daniel
 class xquery_exception : public object
 {
 public:
   virtual std::string describe(zorba*) const = 0;
   virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
 };
-
+*/
 
 /*______________________________________________________________________
 |  
@@ -79,8 +80,8 @@ public:
 	virtual std::string str(zorba*) const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*) const = 0;
-	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
 
 	virtual bool is_empty() const = 0;
 	virtual bool is_node() const = 0;
@@ -103,9 +104,9 @@ public:		// accessors
 	virtual std::string str(zorba*) const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*) const = 0;
-	virtual iterator_t effective_boolean_value(zorba*) const = 0;
-	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t effective_boolean_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
 
 	bool is_empty() const = 0;
 	bool is_node() const = 0;

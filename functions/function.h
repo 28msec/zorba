@@ -38,7 +38,7 @@ public:
 	void set_signature(signature& _sig) { sig = _sig; }
 
 	// codegen: functor specification
-	virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) const = 0;
+	virtual iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>& argv) const = 0;
 
 	// polymorphic type inference
 	virtual sequence_type_t type_check(signature&) const = 0;

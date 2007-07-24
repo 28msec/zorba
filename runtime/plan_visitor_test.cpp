@@ -20,6 +20,8 @@
 #include "plan_visitor.h"
 #include "exprtree/normalize_visitor.h"
 #include "parser/xquery_driver.h"
+#include "errors/Error.h"
+#include "zorba.h"
 
 #include <iostream>
 
@@ -31,12 +33,17 @@ int main(int argc, char* argv[])
 	zorba* zorp = new zorba();
 	static_context* sctx_p = new static_context(zorp,NULL);
 	dynamic_context* dctx_p = new dynamic_context(zorp,NULL);
+	//add the error manager
+	errors_english	*err_messages = new errors_english;///the english error messages
+	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages, zorp);
+
 
 	library lib(zorp);
 	dctx_p->set_library(&lib);
 
 	zorp->set_static_context(sctx_p);
 	zorp->set_dynamic_context(dctx_p);
+	zorp->set_error_manager(err_manag);//add the error manager
 
 	xquery_driver driver(cout);
 	try {

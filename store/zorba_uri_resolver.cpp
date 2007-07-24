@@ -36,7 +36,12 @@ istream* zorba_uri_resolver::file_source::get_input(
 {
 	file f(get_uri());
 	if (!f.exists()) {
-		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		//zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		ZorbaErrorAlerts::error_alert(error_messages::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING,
+																	error_messages::RUNTIME_ERROR,
+																	NULL,///the location is not known here
+																	true///continue execution
+																	);
 		return NULL;
 	}
 	unsigned sz = f.get_size();
@@ -46,7 +51,12 @@ istream* zorba_uri_resolver::file_source::get_input(
 	try {
 		m = f.readfile(ibuf,n);
 	} catch (xqp_exception& e) {
-		zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		//zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
+		ZorbaErrorAlerts::error_alert(error_messages::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING,
+																	error_messages::RUNTIME_ERROR,
+																	NULL,///the location is not known here
+																	true///continue execution
+																	);
 		delete[] ibuf;
 		return NULL;
 	}

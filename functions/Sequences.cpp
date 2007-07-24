@@ -69,10 +69,11 @@ op_concatenate::op_concatenate(
 
 iterator_t op_concatenate::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new concat_iterator(zorp,argv);
+	return new concat_iterator(zorp,loc,argv);
 }
 
 bool op_concatenate::validate_args(
@@ -122,6 +123,7 @@ fn_index_of::fn_index_of(const signature& sig)
 
 iterator_t fn_index_of::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -136,7 +138,7 @@ iterator_t fn_index_of::operator()(
 		//qname_value* qn_p = (qname_value*)(sctx_p->get_default_collation());
 		collation = "default_collation"; //qn_p->string_value();
 	}
-	//return new index_of_iterator(argv[0],argv[1],collation);
+	//return new index_of_iterator(loc, argv[0],argv[1],collation);
 	return NULL;
 }
 
@@ -161,6 +163,7 @@ fn_empty::fn_empty(const signature& sig)
 
 iterator_t fn_empty::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	return NULL;
@@ -186,6 +189,7 @@ fn_exists::fn_exists(const signature& sig)
 
 iterator_t fn_exists::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	return NULL;
@@ -213,6 +217,7 @@ fn_distinct_values::fn_distinct_values(
 
 iterator_t fn_distinct_values::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	return NULL;
@@ -246,6 +251,7 @@ fn_reverse::fn_reverse(const signature& sig)
 
 iterator_t fn_reverse::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	return NULL;
@@ -271,6 +277,7 @@ fn_subsequence::fn_subsequence(const signature& sig)
 
 iterator_t fn_subsequence::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	return NULL;
@@ -359,10 +366,11 @@ fn_doc_func::fn_doc_func(
 
 iterator_t fn_doc_func::operator()(
 	zorba* zorp,
+	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new doc_iterator(zorp, argv[0]);
+	return new doc_iterator(zorp, loc, argv[0]);
 }
   
 bool fn_doc_func::validate_args(

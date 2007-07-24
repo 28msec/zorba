@@ -44,9 +44,9 @@ public:
 
 public: 	// XQuery atomic_value
 	sequence_type_t type() const { return xs_qname; }
-	iterator_t atomized_value(zorba*) const;
-	iterator_t effective_boolean_value(zorba*) const;
-	iterator_t string_value(zorba*) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t effective_boolean_value(zorba*, yy::location &loc) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }

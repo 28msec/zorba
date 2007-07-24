@@ -2,6 +2,7 @@
 SUBDIRS		= \
 				context \
 				dom \
+				errors \
 				exprtree \
 				functions \
 				listeners \

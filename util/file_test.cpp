@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <sstream>
-#include "xqp_exception.h"
+#include "errors/xqp_exception.h"
 
 using namespace std;
 using namespace xqp;

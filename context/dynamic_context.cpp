@@ -79,7 +79,7 @@ dynamic_context::default_element_type_namespace() const
 void dynamic_context::set_default_element_type_namespace(
 	namespace_node& nn_p)
 {
-	iterator_t it_h = new singleton_iterator(&nn_p);
+	iterator_t it_h = new singleton_iterator(zorp,yy::location(), &nn_p);
 	keymap.put(default_element_type_ns_key,it_h);
 }
 
@@ -118,7 +118,7 @@ void dynamic_context::set_ordering_mode(
 	enum ordering_mode_t v)
 {
 	string mode = (v==ordered?"ordered":"unordered");
-	iterator_t it_h = new singleton_iterator(new stringValue(mode));
+	iterator_t it_h = new singleton_iterator(zorp,yy::location(), new stringValue(mode));
 	keymap.put(ordering_mode_key, it_h);
 }
 

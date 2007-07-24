@@ -12,7 +12,7 @@
 
 #include <iostream>
 
-#include "xqp_exception.h"
+#include "errors/xqp_exception.h"
 #include "tokenbuf.h"
 
 using namespace std;

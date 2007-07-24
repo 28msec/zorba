@@ -112,9 +112,9 @@ numericValue::numericValue(
 }
 
 iterator_t numericValue::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(describe(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
 }
 
 
@@ -162,9 +162,9 @@ string timeValue::describe(
 }
 
 iterator_t timeValue::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(describe(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
 }
 
 
@@ -223,21 +223,21 @@ string stringValue::str(
 }
 
 iterator_t stringValue::atomized_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator((item*)this);
+	return new singleton_iterator(zorp,loc, (item*)this);
 }
 
 iterator_t stringValue::effective_boolean_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t stringValue::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator((item*)this);
+	return new singleton_iterator(zorp,loc, (item*)this);
 }
 
 
@@ -286,9 +286,9 @@ string binaryValue::describe(
 }
 
 iterator_t binaryValue::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(describe(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
 }
 
 
@@ -327,9 +327,9 @@ string booleanValue::str(
 }
 
 iterator_t booleanValue::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(describe(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
 }
 
 

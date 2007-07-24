@@ -15,7 +15,7 @@
 #include "parser/parsenodes.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
-#include "util/xqp_exception.h"
+#include "errors/xqp_exception.h"
 //#include "values/qname.h"
 
 #include <iostream>

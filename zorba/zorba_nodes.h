@@ -67,17 +67,17 @@ public:		// internal interface
 	virtual const node* get_parent(zorba*) const { return 0; }
 
 public:		// XQuery interface
-	virtual iterator_t string_value(zorba*) const { return 0; }
-	virtual iterator_t base_uri(zorba*) const { return 0; }
-	virtual iterator_t document_uri(zorba*) const { return 0; }
-	virtual iterator_t attributes(zorba*) const { return 0; }
-	virtual iterator_t children(zorba*) const { return 0; }
-	virtual iterator_t namespace_nodes(zorba*) const { return 0; }
-	virtual iterator_t node_name(zorba*) const { return 0; }
-	virtual iterator_t parent(zorba*) const { return 0; }
-	virtual iterator_t type_name(zorba*) const { return 0; }
-	virtual iterator_t typed_value(zorba*) const { return 0; }
-	virtual iterator_t atomized_value(zorba*) const { return 0; }
+	virtual iterator_t string_value(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t base_uri(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t document_uri(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t attributes(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t children(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t namespace_nodes(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t node_name(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t parent(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t type_name(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t typed_value(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t atomized_value(zorba*, yy::location &loc) const { return 0; }
 
 	virtual bool is_id() const { return false; }
 	virtual bool is_idrefs() const { return false; }
@@ -98,7 +98,7 @@ protected:
 	rchandle<child_noderep_iterator> itref;
 
 public:
-	child_iterator(const zorba_node&);
+	child_iterator(const zorba_node&, yy::location &loc);
 	~child_iterator() {}
 
 public:
@@ -118,7 +118,7 @@ protected:
 	rchandle<attribute_noderep_iterator> itref;
 
 public:
-	attribute_iterator(const zorba_element_node&);
+	attribute_iterator(const zorba_element_node&, yy::location &loc);
 	~attribute_iterator() {}
 
 public:
@@ -137,7 +137,7 @@ protected:
 	rchandle<namespace_noderep_iterator> itref;
 
 public:
-	namespace_iterator(const zorba_element_node&);
+	namespace_iterator(const zorba_element_node&, yy::location &loc);
 	~namespace_iterator() {}
 
 public:
@@ -171,13 +171,13 @@ public:		// internal interface
 	std::string get_typed_value(zorba*) const;
 
 public:		// XQuery interface
-	iterator_t string_value(zorba*) const;
-	iterator_t base_uri(zorba*) const;
-	iterator_t document_uri(zorba*) const;
-	iterator_t children(zorba*) const;
-	iterator_t namespace_nodes(zorba*) const;
-	iterator_t typed_value(zorba*) const;
-	iterator_t atomized_value(zorba*) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t base_uri(zorba*, yy::location &loc) const;
+	iterator_t document_uri(zorba*, yy::location &loc) const;
+	iterator_t children(zorba*, yy::location &loc) const;
+	iterator_t namespace_nodes(zorba*, yy::location &loc) const;
+	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
 
 public:		// output, serialization
 	std::string toXML() const;
@@ -211,17 +211,17 @@ public:		// internal interface
 	const node* get_parent(zorba*) const;
 
 public:		// XQuery interface
-	iterator_t parent(zorba*) const;
-	iterator_t string_value(zorba*) const;
-	iterator_t base_uri(zorba*) const;
-	iterator_t document_uri(zorba*) const;
-	iterator_t node_name(zorba*) const;
-	iterator_t type_name(zorba*) const;
-	iterator_t typed_value(zorba*) const;
-	iterator_t atomized_value(zorba*) const;
-	iterator_t attributes(zorba*) const;
-	iterator_t children(zorba*) const;
-	iterator_t namespace_nodes(zorba*) const;
+	iterator_t parent(zorba*, yy::location &loc) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t base_uri(zorba*, yy::location &loc) const;
+	iterator_t document_uri(zorba*, yy::location &loc) const;
+	iterator_t node_name(zorba*, yy::location &loc) const;
+	iterator_t type_name(zorba*, yy::location &loc) const;
+	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t attributes(zorba*, yy::location &loc) const;
+	iterator_t children(zorba*, yy::location &loc) const;
+	iterator_t namespace_nodes(zorba*, yy::location &loc) const;
 
 	bool is_id() const;
 	bool is_idrefs() const;
@@ -259,13 +259,13 @@ public:		// internal interface
 	const node* get_parent(zorba*) const { return 0; }
 
 public:	// XQuery interface
-	iterator_t parent(zorba*) const;
-	iterator_t string_value(zorba*) const;
-	iterator_t base_uri(zorba*) const;
-	iterator_t node_name(zorba*) const;
-	iterator_t type_name(zorba*) const;
-	iterator_t typed_value(zorba*) const;
-	iterator_t atomized_value(zorba*) const;
+	iterator_t parent(zorba*, yy::location &loc) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t base_uri(zorba*, yy::location &loc) const;
+	iterator_t node_name(zorba*, yy::location &loc) const;
+	iterator_t type_name(zorba*, yy::location &loc) const;
+	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
 
 	bool is_id() const;
 	bool is_idrefs() const;
@@ -302,11 +302,11 @@ public:		// internal interface
 	const node* get_parent(zorba*) const { return 0; }
 
 public:		// XQuery interface
-	iterator_t string_value(zorba*) const;
-	iterator_t node_name(zorba*) const;
-	iterator_t typed_value(zorba*) const;
-	iterator_t atomized_value(zorba*) const;
-	iterator_t parent(zorba*) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t node_name(zorba*, yy::location &loc) const;
+	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t parent(zorba*, yy::location &loc) const;
 
 public:		// output, serialization
 	std::string toXML() const;
@@ -340,12 +340,12 @@ public:		// internal interface
 	const node* get_parent(zorba*) const { return 0; }
 
 public:		// XQuery interface
-	iterator_t string_value(zorba*) const;
-	iterator_t base_uri(zorba*) const;
-	iterator_t node_name(zorba*) const;
-	iterator_t typed_value(zorba*) const;
-	iterator_t atomized_value(zorba*) const;
-	iterator_t parent(zorba*) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t base_uri(zorba*, yy::location &loc) const;
+	iterator_t node_name(zorba*, yy::location &loc) const;
+	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t parent(zorba*, yy::location &loc) const;
 
 public:		// output, serialization
 	std::string toXML() const;
@@ -377,12 +377,12 @@ public:		// internal interface
 	std::string get_typed_value(zorba*) const { return ""; };
 
 public:		// XQuery interface
-	iterator_t string_value(zorba*) const;
-	iterator_t base_uri(zorba*) const;
-	iterator_t typed_value(zorba*) const;
-	iterator_t node_name(zorba*) const;
-	iterator_t atomized_value(zorba*) const;
-	iterator_t parent(zorba*) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t base_uri(zorba*, yy::location &loc) const;
+	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t node_name(zorba*, yy::location &loc) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t parent(zorba*, yy::location &loc) const;
 	
 public:		// output, serialization
 	std::string toXML() const;
@@ -414,11 +414,11 @@ public:		// internal interface
 	std::string get_typed_value(zorba*) const { return ""; };
 
 public:		// XQuery interface
-	iterator_t string_value(zorba*) const;
-	iterator_t base_uri(zorba*) const;
-	iterator_t typed_value(zorba*) const;
-	iterator_t atomized_value(zorba*) const;
-	iterator_t parent(zorba*) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t base_uri(zorba*, yy::location &loc) const;
+	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t parent(zorba*, yy::location &loc) const;
 
 public:		// output, serialization
 	std::string toXML() const;

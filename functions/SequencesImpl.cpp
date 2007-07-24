@@ -13,7 +13,7 @@
 #include "dom/dom_xml_handler.h"
 #include "store/zorba_uri_resolver.h"
 #include "store/xml_scanner.h"
-#include "util/xqp_exception.h"
+#include "errors/xqp_exception.h"
 
 #include <string>
 #include <vector>
@@ -70,9 +70,10 @@ bool concat_iterator::done() const
 
 concat_iterator::concat_iterator(
 	zorba* zorp,
+	yy::location loc,
 	const vector<iterator_t>& _argv)
 :
-	basic_iterator(zorp),
+	basic_iterator(zorp, loc),
 	argv(_argv),
 	currit_h(NULL),
 	cursor(0)
@@ -82,7 +83,7 @@ concat_iterator::concat_iterator(
 concat_iterator::concat_iterator(
 	const concat_iterator& concat_it)
 :
-	basic_iterator(concat_it.zorp),
+	basic_iterator(concat_it),
 	argv(concat_it.argv),
 	currit_h(concat_it.currit_h),
 	cursor(concat_it.cursor)
@@ -230,9 +231,10 @@ bool doc_iterator::done() const
 
 doc_iterator::doc_iterator(
 	zorba* zorp,
+	yy::location loc,
 	iterator_t _arg)
 :
-	basic_iterator(zorp),
+	basic_iterator(zorp, loc),
 	arg(_arg),
 	doc_node(NULL)
 {
@@ -241,7 +243,7 @@ doc_iterator::doc_iterator(
 doc_iterator::doc_iterator(
 	const doc_iterator& it)
 :
-	basic_iterator(it.zorp),
+	basic_iterator(it),
 	arg(it.arg),
 	doc_node(it.doc_node)
 {

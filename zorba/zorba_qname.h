@@ -53,9 +53,9 @@ public:		// internal interface
 
 public:		// XQuery interface
 	sequence_type_t type() const { return xs_qname; }
-	iterator_t atomized_value(zorba*) const;
-	iterator_t string_value(zorba*) const;
-	iterator_t effective_boolean_value(zorba*) const;
+	iterator_t atomized_value(zorba*, yy::location &loc) const;
+	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t effective_boolean_value(zorba*, yy::location &loc) const;
 
 public:		// output,debugging
 	std::ostream& put(zorba*,std::ostream& os) const;

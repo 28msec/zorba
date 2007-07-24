@@ -18,14 +18,15 @@
  */
 
 #include"errors.h"
-#include"../util/xqp_exception.h"
+#include"../errors/xqp_exception.h"
 
 #include <string>
 
 using namespace std;
 namespace xqp {
   
-string errors::decode(enum errcode e)
+
+string errors_english::err_decode(enum errcode e)
 {
 	switch (e) {
 	case XPST0001_STATIC_CONTEXT_COMPONENT_MISSING:
@@ -50,7 +51,7 @@ string errors::decode(enum errcode e)
 		return "XQST0013_STATIC_PRAGMA_NOT_VALID";
 	case XQST0016_STATIC_MODULE_IMPORT_NOT_SUPPORTED:
 		return "XQST0016_STATIC_MODULE_IMPORT_NOT_SUPPORTED";
-	case XPST0017_STATIC_FUCTION_NOT_FOUND:
+	case XPST0017_STATIC_FUNCTION_NOT_FOUND:
 		return "XPST0017_STATIC_FUCTION_NOT_FOUND";
 	case XPTY0018_TYPE_MIXED_PATHEXPR:
 		return "XPTY0018_TYPE_MIXED_PATHEXPR";
@@ -174,13 +175,69 @@ string errors::decode(enum errcode e)
 		return "XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND";
 	default: return "??";
 	}
-}
 
+} 
 
-void errors::err(enum errcode e)
+std::string errors_english::errtype_decode(enum error_type errtype)
 {
-	throw xqp_exception(decode(e));
+	switch(errtype)
+	{
+	case STATIC_ERROR: return "Static: ";
+	case RUNTIME_ERROR: return "Runtime: ";
+	case SYSTEM_ERROR: return "System: ";
+	case USER_ERROR: return "User";
+	}
+
+	return "";
 }
-  
-} /* namespace xqp */
+
+std::string errors_english::warning_decode(enum warning_code)
+{
+	return "?";
+}
+
+std::string errors_english::notify_event_decode(enum NotifyEvent_code)
+{
+	return "?";
+}
+
+std::string errors_english::ask_user_decode(enum AskUserString_code)
+{
+	return "?";
+}
+
+std::string errors_english::ask_user_options_decode(enum AskUserStringOptions_code)
+{
+	return "";
+}
+
+//void errors::err(enum errcode e)
+//{
+//	throw xqp_exception(decode(e));
+//}
+
+/*find next place for param in err_decoded
+Put the param in that place
+
+A place for param looks like "/s"
+*/
+void error_messages::ApplyParam(string *err_decoded, const string *param1)
+{
+	std::string::size_type		off;
+
+	off = err_decoded->find_first_of("/s");
+
+	if(off == std::string::npos)
+		return;///just ignore
+
+	err_decoded->replace(off, 2, *param1);
+}
+
+
+
+errors_string_table::errors_string_table( std::string file_name )
+{
+}
+
+}///end namespace xqp
 

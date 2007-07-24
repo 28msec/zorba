@@ -13,7 +13,7 @@
 
 #include "fxarray.h"
 #include "rchandle.h"
-#include "xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 #include <string>
 #include <sys/types.h>

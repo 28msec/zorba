@@ -14,7 +14,7 @@
 #include "../context/context.h"
 #include "../runtime/zorba.h"
 #include "../values/values.h"
-#include "../util/xqp_exception.h"
+#include "../errors/xqp_exception.h"
 #include "../util/tokenbuf.h"
 #include "../util/tracer.h"
 #include "../util/URI.h"

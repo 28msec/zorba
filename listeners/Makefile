@@ -1,5 +1,5 @@
 
-SOURCES		= error_handler.cpp trace_handler.cpp
+SOURCES		= 
 
 BINARIES	= 
 

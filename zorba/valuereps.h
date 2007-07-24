@@ -36,7 +36,7 @@ public:
 |  
 |	 'xquery_exception' encapsulate xquery exceptions
 |_______________________________________________________________________*/
-
+/*daniel ??
 class exceptionRep : public objectRep
 													
 {
@@ -44,7 +44,7 @@ public:
 	exceptionRep() {}
 	~exceptionRep() {}
 };
-
+*/
 
 /*______________________________________________________________________
 |  

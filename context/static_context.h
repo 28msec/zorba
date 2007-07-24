@@ -27,7 +27,7 @@
 
 #include "common.h"
 #include "context.h"
-#include "util/xqp_exception.h"
+#include "errors/xqp_exception.h"
 
 namespace xqp {
 

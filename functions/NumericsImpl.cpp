@@ -26,9 +26,11 @@ namespace xqp {
 
 
 op_numeric_binary_iterator::op_numeric_binary_iterator(
+	yy::location loc, 
 	iterator_t _arg0,
 	iterator_t _arg1)
 :
+	basic_iterator(NULL, loc),
 	arg0(_arg0),
 	arg1(_arg1)
 {
@@ -69,10 +71,11 @@ bool op_numeric_binary_iterator::done() const
 |_______________________________________________________________________*/
 
 op_numeric_add_iterator::op_numeric_add_iterator(
+	yy::location loc, 
 	iterator_t arg0,
 	iterator_t arg1)
 :
-	op_numeric_binary_iterator(arg0,arg1)
+	op_numeric_binary_iterator(loc,arg0,arg1)
 {
 }
 
@@ -105,10 +108,11 @@ item_t op_numeric_add_iterator::_next()
 |_______________________________________________________________________*/
 
 op_numeric_subtract_iterator::op_numeric_subtract_iterator(
+	yy::location loc, 
 	iterator_t arg0,
 	iterator_t arg1)
 :
-	op_numeric_binary_iterator(arg0,arg1)
+	op_numeric_binary_iterator(loc,arg0,arg1)
 {
 }
 
@@ -140,10 +144,11 @@ item_t op_numeric_subtract_iterator::_next()
 |_______________________________________________________________________*/
 
 op_numeric_multiply_iterator::op_numeric_multiply_iterator(
+	yy::location loc, 
 	iterator_t arg0,
 	iterator_t arg1)
 :
-	op_numeric_binary_iterator(arg0,arg1)
+	op_numeric_binary_iterator(loc,arg0,arg1)
 {
 }
 
@@ -185,10 +190,11 @@ item_t op_numeric_multiply_iterator::_next()
 |_______________________________________________________________________*/
 
 op_numeric_divide_iterator::op_numeric_divide_iterator(
+	yy::location loc, 
 	iterator_t arg0,
 	iterator_t arg1)
 :
-	op_numeric_binary_iterator(arg0,arg1)
+	op_numeric_binary_iterator(loc,arg0,arg1)
 {
 }
 
@@ -232,10 +238,11 @@ item_t op_numeric_divide_iterator::_next()
 |_______________________________________________________________________*/
 
 op_numeric_integer_divide_iterator::op_numeric_integer_divide_iterator(
+	yy::location loc, 
 	iterator_t arg0,
 	iterator_t arg1)
 :
-	op_numeric_binary_iterator(arg0,arg1)
+	op_numeric_binary_iterator(loc,arg0,arg1)
 {
 }
 
@@ -287,10 +294,11 @@ item_t op_numeric_integer_divide_iterator::_next()
 |_______________________________________________________________________*/
 
 op_numeric_mod_iterator::op_numeric_mod_iterator(
+	yy::location loc, 
 	iterator_t arg0,
 	iterator_t arg1)
 :
-	op_numeric_binary_iterator(arg0,arg1)
+	op_numeric_binary_iterator(loc,arg0,arg1)
 {
 }
 
@@ -334,8 +342,10 @@ item_t op_numeric_mod_iterator::_next()
 |_______________________________________________________________________*/
 
 op_numeric_unary_minus_iterator::op_numeric_unary_minus_iterator(
+	yy::location loc, 
 	iterator_t _arg0)
 :
+	basic_iterator(NULL, loc),
 	arg0(_arg0)
 {
 }
@@ -371,10 +381,11 @@ bool op_numeric_unary_minus_iterator::done() const
 
 // 6.3.1 op:numeric-equal
 op_numeric_equal_iterator::op_numeric_equal_iterator(
+	yy::location loc, 
 	iterator_t arg0,
 	iterator_t arg1)
 :
-	op_numeric_binary_iterator(arg0,arg1)
+	op_numeric_binary_iterator(loc,arg0,arg1)
 {
 }
 

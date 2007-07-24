@@ -19,7 +19,7 @@
 #include <dirent.h>
 #include <string>
 
-#include "xqp_exception.h"
+#include "../errors/xqp_exception.h"
 #include "rchandle.h"
 
 namespace xqp {

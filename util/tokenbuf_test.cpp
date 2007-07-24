@@ -15,7 +15,7 @@
 #include <sstream>
 #include <vector>
 
-#include "xqp_exception.h"
+#include "errors/xqp_exception.h"
 #include "file.h"
 
 using namespace std;

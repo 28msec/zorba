@@ -1,5 +1,5 @@
 
-SOURCES 		= signature.cpp function.cpp library.cpp Sequences.cpp SequencesImpl.cpp Numerics.cpp NumericsImpl.cpp 
+SOURCES 		= signature.cpp library.cpp Sequences.cpp SequencesImpl.cpp Numerics.cpp NumericsImpl.cpp 
 
 
 function_test 	= \
@@ -8,7 +8,7 @@ function_test 	= \
 		../util/file.cpp \
 		../util/mmfile.cpp \
 		../util/fxcharheap.cpp \
-		../util/xqp_exception.cpp \
+		../errors/xqp_exception.cpp \
 		../values/qname_value.cpp \
 		../values/xs_primitive_values.cpp \
 		signature.cpp \
@@ -34,7 +34,7 @@ Sequences_test 	= \
 		../util/fxcharheap.cpp \
 		../util/tokenbuf.cpp \
 		../util/URI.cpp \
-		../util/xqp_exception.cpp \
+		../errors/xqp_exception.cpp \
 		../values/primitive_values.cpp \
 		../zorba/qnamerep.cpp \
 		../zorba/valuereps.cpp \
@@ -67,7 +67,7 @@ Numerics_test	= \
 		../util/fxcharheap.cpp \
 		../util/tokenbuf.cpp \
 		../util/URI.cpp \
-		../util/xqp_exception.cpp \
+		../errors/xqp_exception.cpp \
 		../values/primitive_values.cpp \
 		../zorba/qnamerep.cpp \
 		../zorba/valuereps.cpp \

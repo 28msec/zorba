@@ -75,21 +75,21 @@ string zorba_qname::str(
 }
 
 iterator_t zorba_qname::atomized_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t zorba_qname::effective_boolean_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t zorba_qname::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(describe(zorp)));
+	return new singleton_iterator(zorp,loc,new stringValue(describe(zorp)));
 }
 
 

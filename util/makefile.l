@@ -2,14 +2,11 @@ include ../Makefile.header
 SUFX=do
 BUILD=Build
 
-xqp_exception : xqp_exception.h xqp_exception.cpp
-	g++ ${CXXOPT} -c -o ${BUILD}/xqp_exception.${SUFX} xqp_exception.cpp
-
 tokenbuf : tokenbuf.h tokenbuf.cpp
 	g++ ${CXXOPT} -c -o ${BUILD}/tokenbuf.${SUFX} tokenbuf.cpp
 tokenbuf_test : tokenbuf.h tokenbuf.cpp tokenbuf_test.cpp
 	g++ ${CXXOPT} -o ${BUILD}/tokenbuf_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/file.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 	tokenbuf_test.cpp
@@ -23,12 +20,12 @@ rwlock_test :	rwlock_test.cpp rwlock.cpp rwlock.h
 
 hashfun_test :	hashfun_test.cpp hashfun.h 
 	g++ ${LARGEFILES} ${CXXOPT} -o ${BUILD}/hashfun_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 	hashfun_test.cpp
 
 hashmap_test :	hashmap_test.cpp hashmap.h 
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -lpthread -o ${BUILD}/hashmap_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/rwlock.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 	hashmap_test.cpp
@@ -41,7 +38,7 @@ logger : logger.h logger.cpp
 	g++ ${CXXOPT} -c -o ${BUILD}/logger.${SUFX} logger.cpp
 logger_test : logger.h logger.cpp logger_test.cpp
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -o ${BUILD}/logger_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/logger.${SUFX} \
 	logger_test.cpp
 
@@ -71,7 +68,7 @@ file :	file.cpp file.h
 	g++ ${LARGEFILES} ${CXXOPT} -c -o ${BUILD}/file.${SUFX} file.cpp
 file_test :	file_test.cpp file.cpp file.h 
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -o ${BUILD}/file_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 		${BUILD}/file.${SUFX} \
 	file_test.cpp; \
@@ -80,21 +77,21 @@ mmfile :	mmfile.cpp mmfile.h
 	g++ -DDEBUG ${LARGEFILES} -c ${CXXOPT} -o ${BUILD}/mmfile.${SUFX} mmfile.cpp
 mmfile_test :	mmfile_test.cpp mmfile.cpp mmfile.h 
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -o ${BUILD}/mmfile_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 		${BUILD}/mmfile.${SUFX} \
 	mmfile_test.cpp; \
 
 fxarray_test :	fxarray_test.cpp fxarray.h mmfile.h mmfile.cpp
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -o ${BUILD}/fxarray_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 		${BUILD}/mmfile.${SUFX} \
 	fxarray_test.cpp; \
 
 fxvector_test :	fxvector_test.cpp fxvector.h mmfile.h mmfile.cpp
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -o ${BUILD}/fxvector_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 		${BUILD}/mmfile.${SUFX} \
 	fxvector_test.cpp; \
@@ -103,7 +100,7 @@ fxcharheap : fxcharheap.h fxcharheap.cpp
 	g++ ${CXXOPT} ${LARGEFILES} -c ${OPT} -o ${BUILD}/fxcharheap.${SUFX} fxcharheap.cpp
 fxcharheap_test : fxcharheap.h fxcharheap.cpp fxcharheap_test.cpp
 	g++ ${CXXOPT} ${LARGEFILES} -o ${BUILD}/fxcharheap_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 		${BUILD}/mmfile.${SUFX} \
 		${BUILD}/file.${SUFX} \
@@ -112,7 +109,7 @@ fxcharheap_test : fxcharheap.h fxcharheap.cpp fxcharheap_test.cpp
 
 fxhashmap_test :	fxhashmap_test.cpp fxhashmap.h 
 	g++ ${LARGEFILES} -D DEBUG ${CXXOPT} -lpthread -o ${BUILD}/fxhashmap_test \
-		${BUILD}/xqp_exception.${SUFX} \
+		../errors/${BUILD}/xqp_exception.${SUFX} \
 		${BUILD}/rwlock.${SUFX} \
 		${BUILD}/tokenbuf.${SUFX} \
 		${BUILD}/mmfile.${SUFX} \
@@ -122,7 +119,6 @@ fxhashmap_test :	fxhashmap_test.cpp fxhashmap.h
 
 
 all	: \
-	xqp_exception \
 	rwlock \
 	tokenbuf \
 	hashfun_test \

@@ -10,6 +10,7 @@
 #include "dom_nodes.h"
 #include "runtime/item_iterator.h"
 #include "values/primitive_values.h"
+#include "runtime/zorba.h"
 
 namespace xqp {
 
@@ -19,9 +20,9 @@ namespace xqp {
 
 // XQuery interface
 iterator_t dom_node::parent(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator((item*)parent_p);
+	return new singleton_iterator(zorp,loc, (item*)parent_p);
 }
 
 
@@ -41,39 +42,39 @@ string dom_node::get_document_uri(
 
 // XQuery interface
 iterator_t dom_node::string_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(str(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(str(zorp)));
 }
 
 iterator_t dom_node::base_uri(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(get_base_uri(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(get_base_uri(zorp)));
 }
 
 iterator_t dom_node::document_uri(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator(new stringValue(get_document_uri(zorp)));
+	return new singleton_iterator(zorp,loc, new stringValue(get_document_uri(zorp)));
 }
 
 iterator_t dom_node::node_name(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator((item*)get_node_name(zorp));
+	return new singleton_iterator(zorp,loc, (item*)get_node_name(zorp));
 }
 
 iterator_t dom_node::type_name(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new singleton_iterator((item*)get_type_name(zorp));
+	return new singleton_iterator(zorp,loc, (item*)get_type_name(zorp));
 }
 
 iterator_t dom_node::typed_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return string_value(zorp);
+	return string_value(zorp, loc);
 }
 
 
@@ -98,9 +99,9 @@ dom_document_node::dom_document_node(
 
 // XQuery interface
 iterator_t dom_document_node::children(
-	zorba* zorp) const
+				zorba* zorp, yy::location &loc) const
 {
-	return new dom_child_iterator(*this);
+	return new dom_child_iterator(*this, loc);
 }
 
 
@@ -109,7 +110,7 @@ string dom_document_node::str(
 	zorba* zorp) const 
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorp);
+	iterator_t it_h = children(zorp, zorp->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t dn_h = it_h->next();
@@ -148,7 +149,7 @@ ostream& dom_document_node::put(
 	zorba* zorp,
 	ostream& os) const
 {
-	iterator_t it_h = children(zorp);
+	iterator_t it_h = children(zorp,zorp->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t dn_h = it_h->next();
@@ -162,7 +163,7 @@ string dom_document_node::toXML(
 	zorba* zorp) const
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorp);
+	iterator_t it_h = children(zorp,zorp->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t i_h = it_h->next();
@@ -214,7 +215,7 @@ std::string dom_element_node::str(
 	zorba* zorp) const
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorp);
+	iterator_t it_h = children(zorp,zorp->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t dn_h = it_h->next();
@@ -263,31 +264,31 @@ void dom_element_node::add_child(
 
 // XQuery interface
 iterator_t dom_element_node::typed_value(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
 	if (value_p) {
-		return new singleton_iterator(value_p);
+		return new singleton_iterator(zorp,loc,value_p);
 	} else {
-		return string_value(zorp);
+		return string_value(zorp,loc);
 	}
 }
 
 iterator_t dom_element_node::attributes(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new dom_attribute_iterator(*this);
+	return new dom_attribute_iterator(*this,loc);
 }
 
 iterator_t dom_element_node::children(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new dom_child_iterator(*this);
+	return new dom_child_iterator(*this,loc);
 }
 
 iterator_t dom_element_node::namespace_nodes(
-	zorba* zorp) const
+	zorba* zorp, yy::location &loc) const
 {
-	return new dom_namespace_iterator(*this);
+	return new dom_namespace_iterator(*this,loc);
 }
 
 
@@ -651,8 +652,9 @@ string dom_text_node::describe(
 
 // dom_doc_child_iterator
 dom_doc_child_iterator::dom_doc_child_iterator(
-	const dom_node& dn)
+	const dom_node& dn, yy::location &loc)
 :
+	basic_iterator(NULL,loc),
 	parent(dn)
 {
 	const dom_document_node* dn_p =
@@ -665,8 +667,9 @@ dom_doc_child_iterator::dom_doc_child_iterator(
 
 // dom_child_iterator
 dom_child_iterator::dom_child_iterator(
-	const dom_node& dn)
+	const dom_node& dn, yy::location &loc)
 :
+	basic_iterator(NULL, loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =
@@ -679,8 +682,9 @@ dom_child_iterator::dom_child_iterator(
 
 // dom_attribute_iterator
 dom_attribute_iterator::dom_attribute_iterator(
-	const dom_node& dn)
+	const dom_node& dn, yy::location &loc)
 :
+	basic_iterator(NULL,loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =
@@ -693,8 +697,9 @@ dom_attribute_iterator::dom_attribute_iterator(
 
 // dom_namespace_iterator
 dom_namespace_iterator::dom_namespace_iterator(
-	const dom_node& dn)
+	const dom_node& dn, yy::location &loc)
 :
+	basic_iterator(NULL,loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =

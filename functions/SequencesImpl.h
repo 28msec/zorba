@@ -57,7 +57,7 @@ public:
 	bool done() const;
 
 public:	// ctor,dtor
-	concat_iterator(zorba*, const std::vector<iterator_t>&);
+	concat_iterator(zorba*, yy::location loc, const std::vector<iterator_t>&);
 	concat_iterator(const concat_iterator& it);
 	~concat_iterator() {}
 
@@ -154,7 +154,7 @@ public:
 	doc_iterator& operator=(const doc_iterator& it);
 
 public:	// ctor,dtor
-	doc_iterator(zorba*, iterator_t);
+	doc_iterator(zorba*, yy::location loc, iterator_t);
 	doc_iterator(const doc_iterator&);
 	~doc_iterator() {}
 

@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 #include "../util/file.h"
-#include "../util/xqp_exception.h"
+#include "../errors/xqp_exception.h"
 #include "scan_handler.h"
 #include "xml_scanner.h"
 

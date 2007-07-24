@@ -8,11 +8,11 @@
  */
 
 #include "nodereps.h"
-#include "runtime/errors.h"
+#include "errors/Error.h"
 #include "runtime/zorba.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
-#include "util/xqp_exception.h"
+//#include "errors/xqp_exception.h"
 #include "values/qname.h"
 
 #include <stdlib.h>
@@ -585,15 +585,24 @@ noderep* child_noderep_iterator::operator*() const
 		return new(theCurrentNodePtr) text_noderep();
 	}
 	default: {
-		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
-	}}
+	//daniel	errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD,
+																	error_messages::RUNTIME_ERROR, 
+																	NULL);
+																	
+					 }
+	}
 	return NULL;
 }
 
 child_noderep_iterator& child_noderep_iterator::operator++()
 {
 	if (theCurrentNodePtr >= theEndNodePtr) {
-		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+	//daniel	errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0001_DYNAMIC_ITERATOR_OVERRUN,
+																	error_messages::RUNTIME_ERROR, 
+																	NULL);
+																	
 	}
 	char* p = ((char*)theCurrentNodePtr)+theCurrentNodePtr->length();
 	theCurrentNodePtr = new(p) noderep();
@@ -663,7 +672,10 @@ child_const_noderep_iterator::operator++()
 cout << TRACE << endl;
 	if (theCurrentNodePtr >= theEndNodePtr) {
 		cout << TRACE << " : iterator overrun" << endl;
-		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+		//daniel errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0001_DYNAMIC_ITERATOR_OVERRUN,
+																	error_messages::RUNTIME_ERROR, 
+																	NULL);
 	}
 	cout << TRACE << " : length = " << theCurrentNodePtr->length() << endl;
 	char* p = ((char*)theCurrentNodePtr)+theCurrentNodePtr->length();
@@ -709,7 +721,10 @@ noderep* attribute_noderep_iterator::operator*() const
 		return new(theCurrentNodePtr) attribute_noderep();
 	}
 	default: {
-		errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
+	//daniel	errors::err(errors::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD,
+																	error_messages::RUNTIME_ERROR, 
+																	NULL);
 	}}
 	return NULL;
 }
@@ -717,7 +732,10 @@ noderep* attribute_noderep_iterator::operator*() const
 attribute_noderep_iterator& attribute_noderep_iterator::operator++()
 {
 	if (theCurrentNodePtr >= theEndNodePtr) {
-		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+	//daniel	errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0001_DYNAMIC_ITERATOR_OVERRUN,
+																	error_messages::RUNTIME_ERROR, 
+																	NULL);
 	}
 	char* p = ((char*)theCurrentNodePtr)+theCurrentNodePtr->length();
 	theCurrentNodePtr = new(p) noderep();

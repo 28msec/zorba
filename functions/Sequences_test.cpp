@@ -26,7 +26,7 @@
 #include "store/itemstore.h"
 #include "util/tokenbuf.h"
 #include "util/tracer.h"
-#include "util/xqp_exception.h"
+#include "errors/xqp_exception.h"
 #include "values/values.h"
 #include "zorba/zorba_value_factory.h"
 

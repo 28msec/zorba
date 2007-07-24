@@ -27,8 +27,8 @@ public:
 	virtual std::string uri() const = 0;
 
 public:
-	virtual iterator_t atomized_value(zorba*) const = 0;
-	virtual iterator_t string_value(zorba*) const = 0;
+	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
 
 public:
 	virtual qnamekey_t qnamekey() const = 0; // XXX provide a default impl(uri,localname)

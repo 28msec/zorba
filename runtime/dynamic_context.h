@@ -18,7 +18,7 @@
 #include "../values/qname_value.h"
 #include "../util/hashmap.h"
 #include "../util/rchandle.h"
-#include "../util/xqp_exception.h"
+#include "../errors/xqp_exception.h"
 
 namespace xqp {
 

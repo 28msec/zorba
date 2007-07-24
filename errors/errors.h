@@ -21,10 +21,11 @@
 #define XQP_ERRORS_H
 
 #include <string>
+#include "util/rchandle.h"
 
 namespace xqp {
 
-class errors
+class error_messages : public rcobject
 {
 public:
 	enum errcode {
@@ -40,7 +41,7 @@ public:
 		XQST0012_STATIC_SCHEMA_NOT_VALID										= 12,
 		XQST0013_STATIC_PRAGMA_NOT_VALID										= 13,
 		XQST0016_STATIC_MODULE_IMPORT_NOT_SUPPORTED					= 16,
-		XPST0017_STATIC_FUCTION_NOT_FOUND										= 17,
+		XPST0017_STATIC_FUNCTION_NOT_FOUND									= 17,
 		XPTY0018_TYPE_MIXED_PATHEXPR												= 18,
 		XPTY0019_TYPE_STEP_IS_ATOMIC												= 19,
 		XPTY0020_TYPE_CONTEXT_NOT_A_NODE										= 20,
@@ -107,8 +108,44 @@ public:
 
 	};
 
-	static std::string decode(enum errcode);
-	static void err(enum errcode);
+	enum error_type
+	{
+		STATIC_ERROR,
+		RUNTIME_ERROR,
+		SYSTEM_ERROR,
+		USER_ERROR
+	};
+
+		enum warning_code {
+		};
+
+		enum NotifyEvent_code{
+		};
+
+		enum AskUserString_code{
+		};
+
+		enum AskUserStringOptions_code{
+			YES_NO,  //"Yes/NO"
+			OK_CANCEL, //"OK/Cancel"
+		};
+
+//?	enum alert_initiator
+//	{
+//		USER_INITIATED_ALERT,
+//		SYSTEM_INITIATED_ALERT
+//	};
+
+	virtual std::string err_decode(enum errcode) = 0;
+	virtual std::string warning_decode(enum warning_code) = 0;
+	virtual std::string notify_event_decode(enum NotifyEvent_code) = 0;
+	virtual std::string ask_user_decode(enum AskUserString_code) = 0;
+	virtual std::string ask_user_options_decode(enum AskUserStringOptions_code) = 0;
+//	static void err(enum errcode);
+
+	virtual std::string errtype_decode(enum error_type errtype) = 0;
+
+	void ApplyParam(std::string *err_decoded, const std::string *param1);
 
 	/*
 	bool is_static_err(enum errcode);
@@ -117,6 +154,34 @@ public:
 	*/
 
 };
+
+class errors_english : public error_messages
+{
+public:
+	virtual std::string err_decode(enum errcode);
+	virtual std::string errtype_decode(enum error_type errtype);
+	virtual std::string warning_decode(enum warning_code);
+	virtual std::string notify_event_decode(enum NotifyEvent_code);
+	virtual std::string ask_user_decode(enum AskUserString_code);
+	virtual std::string ask_user_options_decode(enum AskUserStringOptions_code);
+};
+
+/*
+	This class reads the error messages from a string table file.
+	No need to recompile the code to use international languages.
+*/
+class errors_string_table : public error_messages
+{
+public:
+	errors_string_table( std::string file_name );
+
+//+	virtual std::string err_decode(enum errcode);
+//+	virtual std::string warning_decode(enum warning_code);
+//+	virtual std::string notify_event_decode(enum NotifyEvent_code);
+//+	virtual std::string ask_user_decode(enum AskUserString_code);
+//+	virtual std::string ask_user_options_decode(enum AskUserStringOptions_code);
+};
+
 
 } /* namespace xqp */
 #endif /* XQP_ERRORS_H */

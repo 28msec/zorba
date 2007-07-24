@@ -77,7 +77,10 @@ child_noderep_iterator& child_noderep_iterator::operator++()
 cout << TRACE << " : current = " << (uint32_t)(theCurrentNodePtr) << endl;
 	if (theCurrentNodePtr >= theEndNodePtr) {
 		cout << TRACE << " : iterator overrun" << endl;
-		errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+		//errors::err(errors::XQP0001_DYNAMIC_ITERATOR_OVERRUN);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0001_DYNAMIC_ITERATOR_OVERRUN,
+																	error_messages::RUNTIME_ERROR, 
+																	NULL);
 	}
 cout << TRACE << " : length = " << theCurrentNodePtr->length() << endl;
 	theCurrentNodePtr += theCurrentNodePtr->length();
