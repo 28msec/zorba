@@ -116,7 +116,7 @@ public:		// iterator interface
 	void _open() {}
 	void _close() {
 		this->is_done = false;
-	}
+	} 
 	item_t _next() {
 		bool was_done = is_done; is_done = true;
 		return was_done ? NULL : i_h;
@@ -220,8 +220,8 @@ public:
 		iterator_t _input,
 		iterator_t _expr,
 		std::vector<var_iter_t> _varv)
-	:
-		theInput(_input),
+	: 
+		theInput(_input), 
 		theExpr(_expr),
 		varv(_varv),
 		theState(outer)
@@ -230,42 +230,12 @@ public:
 	~map_iterator() {}
 
 public:
-	void _open()
-	{
-		theState = outer;
-		theInput->open();
-	}
+	item_t _next();
+	void _open();
+	void _close();
+	bool done() const;
 
-	void _close()
-	{
-		theInput->close();
-		if (theState!=outer) theExpr->close();
-	} 
-
-	item_t _next()
-	{
-		basic_iterator& input = *theInput;
-		basic_iterator& expr = *theExpr;
-
-		while (true) {
-			if (theState==outer) {
-				item_t i_h = input.next();
-				if (i_h==NULL) return NULL;
-				vector<var_iter_t>::const_iterator itv = varv.begin();
-				for (; itv!=varv.end(); ++itv) { (*itv)->bind(i_h); }
-				expr.open();
-				theState = inner;
-			}
-			item_t r_h = expr.next();
-			if (r_h != NULL) return r_h;
-			expr.close();
-			theState = outer;
-		}
-	}
-
-	bool done() const { return theInput->done(); }
-
-};
+}; 
 
 
 }	/* namespace xqp */

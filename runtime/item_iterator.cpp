@@ -17,6 +17,42 @@
 using namespace std;
 namespace xqp {
 
+item_t map_iterator::_next() {
+	basic_iterator& input = *theInput;
+	basic_iterator& expr = *theExpr;
 
-}	/* namespace xqp */
+	while (true) {
+		if (theState==outer) {
+			item_t i_h = input.next();
+			vector<var_iter_t>::const_iterator itv = varv.begin();
+			for (; itv!=varv.end(); ++itv) {
+				(*itv)->bind(i_h);
+			}
+			expr.open();
+			theState = inner;
+		} 
+		if (!expr.done()) {
+			return expr.next();
+		}
+		expr.close();
+		theState = outer;
+	}
+}
+
+void map_iterator::_open() {
+	theState = outer;
+	theInput->open();
+}
+
+void map_iterator::_close() {
+	theInput->close();
+	if (theState!=outer)
+		theExpr->close();
+}
+
+bool map_iterator::done() const {
+	return (theInput->done() && (theState==outer || theExpr->done()));
+}
+
+} /* namespace xqp */
 
