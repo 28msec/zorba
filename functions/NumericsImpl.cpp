@@ -413,11 +413,46 @@ item_t op_numeric_equal_iterator::_next()
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
+fn_abs_iterator::fn_abs_iterator(
+	yy::location loc,
+	iterator_t _arg0)
+:
+	basic_iterator(NULL, loc),
+	arg0(_arg0)
+{
+}
+
+void fn_abs_iterator::_open()
+{
+	arg0->open();
+}
+
+void fn_abs_iterator::_close()
+{
+	arg0->close();
+}
+
+item_t fn_abs_iterator::_next()
+{
+	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
+
+	if (n0.val() >= 0)
+		return new numericValue(xs_decimal, n0.val());
+	else
+		return new numericValue(xs_decimal, -n0.val());
+
+}
+
+bool fn_abs_iterator::done() const
+{
+	return arg0->done();
+}
+
+
 // 6.4.2 fn:ceiling
 // 6.4.3 fn:floor
 // 6.4.4 fn:round
 // 6.4.5 fn:round-half-to-even
-
 
 
   

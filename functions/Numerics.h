@@ -185,6 +185,18 @@ public:
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
+class fn_abs : public function 
+{
+public:
+	fn_abs(const signature&);
+	~fn_abs() {}
+
+public:
+	iterator_t operator()(zorba*, yy::location loc, std::vector<iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<iterator_t>&) const;
+};
+
 // 6.4.2 fn:ceiling
 // 6.4.3 fn:floor
 // 6.4.4 fn:round

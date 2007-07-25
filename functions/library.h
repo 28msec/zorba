@@ -35,6 +35,8 @@ public:
   static qnamekey_t op_idiv_key;
   static qnamekey_t op_mod_key;
 
+	static qnamekey_t fn_abs_key;
+
 	// comparison operators
 	static qnamekey_t op_eq_key;
 	static qnamekey_t op_ne_key;

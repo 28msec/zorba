@@ -480,6 +480,29 @@ bool op_numeric_equal::validate_args(vector<iterator_t>& argv) const {
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
+fn_abs::fn_abs(const signature& sig)
+:
+	function(sig)
+{   	
+}
+
+iterator_t fn_abs::operator()(zorba* zorp, yy::location loc, vector<iterator_t>& argv) const
+{
+	if (!validate_args(argv))
+		return NULL;
+	return new fn_abs_iterator(loc, argv[0]);
+}
+
+sequence_type_t fn_abs::type_check(signature& sig) const
+{
+	return xs_decimal;
+}
+
+bool fn_abs::validate_args(vector<iterator_t>& argv) const
+{
+	return (argv.size() == 1);
+}
+
 // 6.4.2 fn:ceiling
 // 6.4.3 fn:floor
 // 6.4.4 fn:round

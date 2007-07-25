@@ -196,6 +196,22 @@ public:
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
+class fn_abs_iterator : public basic_iterator 
+{
+public:
+	fn_abs_iterator(yy::location loc, iterator_t);
+	~fn_abs_iterator() {}
+
+public:
+	void _open();
+	void _close();
+	item_t _next();
+	bool done() const;
+
+private:
+	iterator_t arg0;
+};
+
 // 6.4.2 fn:ceiling
 // 6.4.3 fn:floor
 // 6.4.4 fn:round

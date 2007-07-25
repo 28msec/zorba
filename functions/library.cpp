@@ -56,6 +56,14 @@ op_numeric_equal op_equal(
 );
 
 
+fn_abs fn_abs_sig(
+	signature(
+		new zorba_qname(XQUERY_FN_NS, "fn", "fn_abs"),
+		xs_decimal,
+		xs_decimal
+	)
+);
+
 // Sequences
 fn_doc_func fn_doc(
 	signature(
@@ -73,6 +81,7 @@ qnamekey_t library::op_div_key;
 qnamekey_t library::op_idiv_key;
 qnamekey_t library::op_mod_key;
 
+qnamekey_t library::fn_abs_key;
 
 
 // Comparison operators
@@ -113,10 +122,14 @@ void library::init(
 		put(&op_add);
 		put(&op_subtract);
 		put(&op_equal);
+		put(&fn_abs_sig);
 
 		op_add_key = op_add.get_fname()->qnamekey();
 		op_subtract_key = op_subtract.get_fname()->qnamekey();
 		op_val_eq_key = op_equal.get_fname()->qnamekey();
+
+		fn_abs_key = fn_abs_sig.get_fname()->qnamekey();
+
 		
 		// Sequences functions
 		put(&fn_doc);
