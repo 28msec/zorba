@@ -10,8 +10,14 @@
 
 #include "mmfile.h"
 
-#include <sys/mman.h>
+#ifndef WIN32
+	#include <sys/mman.h>
+#else
+	#include <io.h>
+#endif
+
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <string>
@@ -38,7 +44,9 @@ mmfile::mmfile(
 :
 	path(_path)
 {
-  fd = open(path.c_str(), O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
+	data = NULL;
+#ifndef WIN32
+	fd = open(path.c_str(), O_RDWR|O_CREAT, S_IRUSR|S_IWUSR);
   if (fd < 0) {
 		IOEXCEPTION("open failed on '"+path+"'");
 	}
@@ -88,13 +96,96 @@ cout << "mmfile::ctor: map existing file: \"" << path << "\"\n";
       IOEXCEPTION("mmap failed on: '"+path+"'");
     }
   }
+#else ///for Win32
+	file_mapping = NULL;
+
+	fd = CreateFile(path.c_str(), GENERIC_READ | GENERIC_WRITE, 
+									FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS,
+									0, NULL);
+	if(fd == INVALID_HANDLE_VALUE)
+	{
+		IOEXCEPTION("open failed on '"+path+"'");
+	}
+
+	eofoff = GetFileSize(fd, NULL);
+
+	if (eofoff==-1) {
+		CloseHandle(fd);
+		fd = INVALID_HANDLE_VALUE;
+		IOEXCEPTION("lseek(EOF) failed on: '"+path+"'");
+	}
+
+  if (eofoff==0) {	// new, empty file, extend it to initial size
+#ifdef DEBUG
+cout << "mmfile::ctor: new, empty file: \"" << path << "\"\n";
+#endif
+
+		uint32_t m = (initial_size >> 12) << 12;	// multiple of 4096
+		if ((m < 0xfffff000) && (m<initial_size))
+			m += (1<<12);			// round up
+
+	  if (SetFilePointer(fd, m-1, NULL, FILE_END)==INVALID_SET_FILE_POINTER) 
+		{
+			CloseHandle(fd);
+			fd = INVALID_HANDLE_VALUE;
+			IOEXCEPTION("lseek m-1 past EOF failed on: '"+path+"'");
+	  }
+
+		if(!SetEndOfFile(fd))
+		{
+			CloseHandle(fd);
+			fd = INVALID_HANDLE_VALUE;
+			IOEXCEPTION("write to m-1 past EOF failed on: '"+path+"'");
+	  }
+	
+	//  if ((data = (char*)mmap(0, m, PROT_READ|PROT_WRITE,
+	//                           MAP_SHARED, fd, 0))==MAP_FAILED) {
+	//		IOEXCEPTION("mmap failed on: '"+path+"'");
+	//  }
+  }
+	else {	// map an existing file
+
+#ifdef DEBUG
+cout << "mmfile::ctor: map existing file: \"" << path << "\"\n";
+#endif
+
+  }
+	file_mapping = CreateFileMapping(fd, NULL, PAGE_READWRITE, 0, 0, NULL);
+	if(file_mapping == NULL)
+	{
+		CloseHandle(fd);
+		fd = INVALID_HANDLE_VALUE;
+		IOEXCEPTION("mmap failed on: '"+path+"'");
+	}
+	data = (char*)MapViewOfFile(file_mapping, FILE_MAP_WRITE, 0, 0, 0);
+	if(data == NULL)
+	{
+		CloseHandle(file_mapping);
+		file_mapping = NULL;
+		CloseHandle(fd);
+		fd = INVALID_HANDLE_VALUE;
+		IOEXCEPTION("mmap failed on: '"+path+"'");
+	}
+	
+	if(eofoff == 0)
+	{
+	  // file created new, initialize state
+		eofoff = GetFileSize(fd, NULL);
+	 	memset(data, 0, eofoff);
+	}
+#endif
 }
 
 
 mmfile::~mmfile()
 {
 	unmap();
+#ifndef WIN32
 	close(fd);
+#else
+	if(fd != INVALID_HANDLE_VALUE)
+		CloseHandle(fd);
+#endif
 }
 
 
@@ -103,7 +194,12 @@ throw (xqp_exception)
 {
 	try {
     unmap();
-    close(fd);
+#ifndef WIN32
+		close(fd);
+#else
+		if(fd != INVALID_HANDLE_VALUE)
+			CloseHandle(fd);
+#endif
     remove(path.c_str());
 	} catch (xqp_exception& e) {
 		IOEXCEPTION("remove on: '"+path+"' application exception: "+e.what()+", "+e.get_msg());
@@ -127,6 +223,7 @@ throw (xqp_exception)
 	// release current map
   unmap();
 
+#ifndef WIN32
   // double past the end
   if (lseek(fd, eofoff-1, SEEK_END)==-1) {
 		IOEXCEPTION("lseek to 2*EOF failed on: '"+path+"'");
@@ -145,18 +242,67 @@ throw (xqp_exception)
                            MAP_SHARED, fd, 0))==MAP_FAILED) {
 		IOEXCEPTION("mmap failed on: '"+path+"'");
   }
+#else
+
+	  if (SetFilePointer(fd, eofoff-1, NULL, FILE_END)==INVALID_SET_FILE_POINTER) 
+		{
+			CloseHandle(fd);
+			fd = INVALID_HANDLE_VALUE;
+			IOEXCEPTION("lseek m-1 past EOF failed on: '"+path+"'");
+	  }
+
+		if(!SetEndOfFile(fd))
+		{
+			CloseHandle(fd);
+			fd = INVALID_HANDLE_VALUE;
+			IOEXCEPTION("write to m-1 past EOF failed on: '"+path+"'");
+	  }
+
+
+		file_mapping = CreateFileMapping(fd, NULL, PAGE_READWRITE, 0, 0, NULL);
+		if(file_mapping == NULL)
+		{
+			CloseHandle(fd);
+			fd = INVALID_HANDLE_VALUE;
+			IOEXCEPTION("mmap failed on: '"+path+"'");
+		}
+		data = (char*)MapViewOfFile(file_mapping, FILE_MAP_WRITE, 0, 0, 0);
+		if(data == NULL)
+		{
+			CloseHandle(file_mapping);
+			file_mapping = NULL;
+			CloseHandle(fd);
+			fd = INVALID_HANDLE_VALUE;
+			IOEXCEPTION("mmap failed on: '"+path+"'");
+		}
+#endif
+
 }
 
 
 void mmfile::unmap()
 throw (xqp_exception)
 {
+#ifndef WIN32
   //if (msync(data, eofoff, 0)==-1) {
 	//	IOEXCEPTION("msync failed on: '"+path+"'");
   //}
   if (munmap(data, eofoff)==-1) {
 		IOEXCEPTION("munmap failed on: '"+path+"'");
   }
+#else
+	if(data)
+	{
+		if(!UnmapViewOfFile(data))
+		{
+			IOEXCEPTION("munmap failed on: '"+path+"'");
+		}
+	}
+	data = NULL;
+	if(file_mapping)
+		CloseHandle(file_mapping);
+	file_mapping = NULL;
+#endif
 }
 
 

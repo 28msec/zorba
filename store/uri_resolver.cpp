@@ -10,7 +10,11 @@
 
 #include "uri_resolver.h"
 
-#include <sys/time.h>
+#ifndef WIN32
+	#include <sys/time.h>
+#else
+	#include <time.h>
+#endif
 #include <time.h>
 #include <string>
 #include <sstream>

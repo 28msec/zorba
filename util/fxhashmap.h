@@ -20,7 +20,11 @@
 
 #include <stddef.h>
 #include <stdlib.h>
-#include <strings.h>
+#ifndef WIN32
+	#include <strings.h>
+#else
+	#include "win32/compatib_defs.h"
+#endif
 
 #include <iostream>
 #include <string>
@@ -923,7 +927,7 @@ inline void fxhash64map<V>::resize()
 	for (unsigned k = 0; k<dsz0; ++k) {
 		oldindex = (*dir0)[k];
 		if (oldindex>=0) {
-			uint32_t h0 = (*vp)[oldindex].key % dsz0;
+			uint32_t h0 = (uint32_t)((*vp)[oldindex].key % dsz0);
 			while (true) {
 				if ((*dir)[h0]==-1) break;
 				h0 = (h0 + 1) % dsz;
@@ -945,7 +949,7 @@ inline bool fxhash64map<V>::find(
 	uint64_t key,
 	uint32_t& hval) const
 {
-	uint32_t h0 = key % dsz;
+	uint32_t h0 = (uint32_t)(key % dsz);
 	bool result = false;
 	while (true) {
 		int x = (*dir)[h0];

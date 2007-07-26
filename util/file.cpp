@@ -13,13 +13,21 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <time.h>
+#include <sys/stat.h>
+#include <stdio.h>
 
-#include <sys/param.h>
-#include <sys/mount.h>
+#ifdef WIN32
+#include <io.h>
+#include <direct.h>
+#else
+	#include <sys/param.h>
+	#include <sys/mount.h>
+	#include <unistd.h>
+	#include <sys/vfs.h>
+#endif
 
 #include <fcntl.h>
-#include <unistd.h>
-#include <sys/vfs.h>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -52,6 +60,7 @@ throw (xqp_exception)
 	path(_path),
   type(type_non_existent)
 {
+#ifndef WIN32
 	struct stat st;
   if (::stat(path.c_str(), &st)) {
     if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
@@ -64,6 +73,22 @@ throw (xqp_exception)
   					(st.st_mode & S_IFREG ) ? type_file :
   					(st.st_mode & S_IFLNK)  ? type_link : type_invalid;
 	}
+#else
+	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
+  if (::_stat32i64(path.c_str(), &st)) {
+    if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
+  } 
+	else {
+  	size	= st.st_size;
+  	atime	= st.st_atime;
+  	mtime	= st.st_mtime;
+		type 	=	(st.st_mode & _S_IFDIR)  ? type_directory :
+						(st.st_mode & _S_IFREG ) ? type_file :
+  					//(st.st_mode & S_IFLNK)  ? type_link : 
+						type_invalid;
+	}
+
+#endif
 }
 
 
@@ -74,6 +99,7 @@ file::file(
 	path(base+"/"+name),
   type(type_non_existent)
 {
+#ifndef WIN32
 	struct stat st;
   if (::stat(path.c_str(), &st)) {
     if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
@@ -86,6 +112,28 @@ file::file(
   					(st.st_mode & S_IFREG ) ? type_file :
   					(st.st_mode & S_IFLNK)  ? type_link : type_invalid;
 	}
+#else
+	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
+  if (::_stat32i64(path.c_str(), &st)) {
+    if (errno!=ENOENT) 
+			error(__FUNCTION__,"stat failed on "+path);
+		else
+		{
+			errno = 0;
+    	type = type_non_existent;
+		}
+  } 
+	else {
+  	size	= st.st_size;
+  	atime	= st.st_atime;
+  	mtime	= st.st_mtime;
+		type 	=	(st.st_mode & _S_IFDIR)  ? type_directory :
+						(st.st_mode & _S_IFREG ) ? type_file :
+  					//(st.st_mode & S_IFLNK)  ? type_link : 
+						type_invalid;
+	}
+
+#endif
 }
 
 
@@ -113,7 +161,8 @@ throw (xqp_exception)
   mtime	= st.st_mtime;
 	return (type 	=	(st.st_mode & S_IFDIR)  ? type_directory :
   								(st.st_mode & S_IFREG ) ? type_file :
-  								(st.st_mode & S_IFLNK)  ? type_link : type_invalid );
+  								//(st.st_mode & S_IFLNK)  ? type_link : 
+									type_invalid );
 }
 
 
@@ -131,16 +180,25 @@ throw (xqp_exception)
 void file::create()
 throw (xqp_exception)
 {
+#ifndef WIN32
   int fd = ::creat(path.c_str(),0666);
   if (fd < 0) error(__FUNCTION__, "failed to create file "+path);
   ::close(fd);
   set_filetype(type_file); 
+#else
+	int fd = ::_creat(path.c_str(),_S_IREAD | _S_IWRITE);
+  if (fd < 0) 
+		error(__FUNCTION__, "failed to create file "+path);
+	::_close(fd);
+  set_filetype(type_file); 
+#endif
 }
 
 
 void file::mkdir()
 throw (xqp_exception)
 {
+#ifndef WIN32
 	if (::mkdir(path.c_str(),0777)) {
 		ostringstream oss;
 		oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: "<<path;
@@ -148,6 +206,15 @@ throw (xqp_exception)
     error(__FUNCTION__,oss.str());
 	}
   set_filetype(file::type_directory);
+#else
+	if (::_mkdir(path.c_str())) {
+		ostringstream oss;
+		oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: "<<path;
+		cout << oss.str() << endl;	//DEBUG
+    error(__FUNCTION__,oss.str());
+	}
+  set_filetype(file::type_directory);
+#endif
 }
 
 
@@ -164,10 +231,17 @@ throw (xqp_exception)
 void file::rmdir(bool ignore)
 throw (xqp_exception)
 {
+#ifndef WIN32
 	if (::rmdir(path.c_str()) && !ignore) {
     error(__FUNCTION__, "rmdir failed on "+path);
 	}
   set_filetype(file::type_non_existent);
+#else
+	if (::_rmdir(path.c_str()) && !ignore) {
+    error(__FUNCTION__, "rmdir failed on "+path);
+	}
+  set_filetype(file::type_non_existent);
+#endif
 }
 
 
@@ -175,9 +249,15 @@ void file::chdir()
 throw (xqp_exception)
 {
   if (!is_directory()) return;
-  if (::chdir(path.c_str())) {
+#ifndef WIN32
+	if (::chdir(path.c_str())) {
     error(__FUNCTION__, "chdir failed on "+path);
 	}
+#else
+  if (::_chdir(path.c_str())) {
+    error(__FUNCTION__, "chdir failed on "+path);
+	}
+#endif
 }
 
 
@@ -197,6 +277,7 @@ throw (xqp_exception)
 void file::touch()
 throw (xqp_exception)
 {
+#ifndef WIN32
   int fd = 0;
 	fd = open(path.c_str(),O_CREAT|O_WRONLY,0666);
   if (fd<0) error(__FUNCTION__, "failed to open "+path);
@@ -207,9 +288,24 @@ throw (xqp_exception)
     throw;
   }
   if (close(fd)) error(__FUNCTION__, "failed to close "+path);
+#else
+	FILE	*fd;
+	fd = fopen(path.c_str(),"a");
+  if (fd == NULL) 
+		error(__FUNCTION__, "failed to open "+path);
+  try {
+    if (fflush(fd)) 
+			error(__FUNCTION__, "failed to fsync "+path);
+  } catch (xqp_exception &) {
+    fclose(fd);
+    throw;
+  }
+  if (fclose(fd)) 
+		error(__FUNCTION__, "failed to close "+path);
+#endif
 }
 
-
+#ifndef WIN32
 void file::do_statfs(
 	std::string const& path)
 throw (xqp_exception)
@@ -221,7 +317,7 @@ throw (xqp_exception)
   blksize  = buf.f_bsize;
   blktotal = buf.f_blocks;
   blkfree  = buf.f_bfree;
-  blkavail = buf.f_bavail;
+  blkavail = buf.f_bavail;	
   filtotal = buf.f_files;
   filfree  = buf.f_ffree;
   filavail = buf.f_ffree;
@@ -239,7 +335,7 @@ throw (xqp_exception)
   setuid = true;
   truncnames = false;
 }
-
+#endif
 
 // read a file into a buffer
 int file::readfile(
@@ -247,18 +343,32 @@ int file::readfile(
 	uint32_t maxlen)
 throw (xqp_exception)
 {
+#ifndef WIN32
   int fd = open(path.c_str(), O_RDONLY);
-  if (fd < 0) {
+#else
+  int fd = _open(path.c_str(), _O_RDONLY);
+#endif
+	if (fd < 0) {
 		error(__FUNCTION__, "open("+path+") failed ["+strerror(errno)+"]");
 	}
-  ssize_t n = read(fd, docbuf, size);
-  if (n<0) {
+#ifndef WIN32
+  ssize_t n = read(fd, docbuf, maxlen);
+#else
+  __int64 n = _read(fd, docbuf, maxlen);
+#endif
+	if (n<0) {
 		error(__FUNCTION__, "read("+path+") failed ["+strerror(errno)+"]");
   }
+#ifndef WIN32
 	if (close(fd)==-1) {
 		error(__FUNCTION__, "close("+path+") failed ["+strerror(errno)+"]");
   }
-	return n;
+#else
+	if (_close(fd)==-1) {
+		error(__FUNCTION__, "close("+path+") failed ["+strerror(errno)+"]");
+  }
+#endif
+	return (int)n;
 }
 
 
@@ -282,25 +392,51 @@ file::dir_iterator::dir_iterator(
 	bool end_iterator)
 throw (xqp_exception)
 :
-	dirpath(path),
-	dir(opendir(path.c_str())),
-  dirent(0)
+	dirpath(path)
+#ifndef WIN32
+	,dirent(0)
+#endif
 {
+#ifndef WIN32
+	dir = opendir(path.c_str());
   if (dir==0) {
     error(__FUNCTION__, "opendir failed on "+dirpath);
 	}
   if (!end_iterator) operator++();
+#else
+	if(!end_iterator)
+	{
+		if((*path.end() == '/') || (*path.end() == '\\'))
+			win32_dir = FindFirstFile((LPCTSTR)(path+"\\*.*").c_str(), &win32_direntry);
+		else
+			win32_dir = FindFirstFile((LPCTSTR)(path+"*.*").c_str(), &win32_direntry);
+		if(win32_dir == INVALID_HANDLE_VALUE)
+			error(__FUNCTION__, "opendir failed on "+dirpath);
+	}
+	else
+	{
+		win32_dir = INVALID_HANDLE_VALUE;
+		strcpy(win32_direntry.cFileName, "");
+	}
+#endif
+
 }
 
 
 file::dir_iterator::~dir_iterator()
 {
+#ifndef WIN32
   if (dir!=0) closedir(dir);
+#else
+	if(win32_dir != INVALID_HANDLE_VALUE)
+		FindClose(win32_dir);
+#endif
 }
 
 
 void file::dir_iterator::operator++()
 {
+#ifndef WIN32
   if (dir!=0) {
     while (true) {
       dirent = readdir(dir);
@@ -316,6 +452,27 @@ void file::dir_iterator::operator++()
 			}
     }
   }
+#else
+	if(win32_dir != INVALID_HANDLE_VALUE)
+	{
+		while(true)
+		{
+			if(!FindNextFile(win32_dir, &win32_direntry))
+			{				
+        FindClose(win32_dir); 
+        win32_dir = INVALID_HANDLE_VALUE; 
+				strcpy(win32_direntry.cFileName, "");
+        break; 
+      }
+			if (strcmp(win32_direntry.cFileName,".") &&
+          strcmp(win32_direntry.cFileName,"..") &&
+          strcmp(win32_direntry.cFileName,"lost+found")) //daniel ??
+			{
+        break;
+			}
+		}
+	}
+#endif
 }
 
 
@@ -323,9 +480,15 @@ bool operator!=(
 	file::dir_iterator const& x,
 	file::dir_iterator const& y)
 {
+#ifndef WIN32
 	if (x.dirpath==y.dirpath) return false;
 	if (x.dirent==y.dirent) return false;
 	return true;
+#else
+	if (x.dirpath==y.dirpath) return false;
+	if (!strcmp(x.win32_direntry.cFileName, y.win32_direntry.cFileName)) return false;
+	return true;
+#endif
 }
 
 

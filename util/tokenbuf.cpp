@@ -95,7 +95,7 @@ string const& tokenbuf::token_iterator::operator*()
 void tokenbuf::token_iterator::operator++()
 {
 	if (buf_p->return_delims) {
-		token_parity = ~token_parity;
+		token_parity = !token_parity;
 		if (!token_parity) return_val_p = &next_delim;
 	}
 

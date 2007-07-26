@@ -28,6 +28,11 @@
 #pragma warning(disable: 4786)
 #endif
 
+#ifdef WIN32
+#include "win32/compatib_defs.h"
+#include <io.h>
+#endif
+
 #include <cstdlib>
 #include <errno.h>
 #include <limits.h>
@@ -1166,7 +1171,7 @@ typedef yy::xquery_parser::token token;
 }
 "in" {
 	BEGIN INITIAL;
-	return token::IN;
+	return token::_IN_;
 }
 "is" {
 	BEGIN INITIAL;
@@ -2061,7 +2066,7 @@ typedef yy::xquery_parser::token token;
 
 "in" {
 	BEGIN INITIAL;
-	return token::IN;
+	return token::_IN_;
 }
 
 "is" {

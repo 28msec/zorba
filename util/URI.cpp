@@ -11,6 +11,10 @@
 #include <sstream>
 #include <iostream>
 
+#ifdef WIN32
+	#include <algorithm>
+#endif
+
 using namespace std;
 namespace xqp {
 
@@ -129,10 +133,12 @@ URI::URI(
 	dns_resolved(false)
 {
 	uint32_t n = uriStr.length();
-	char uribuf[n+1];
-	memset(uribuf, '\0', n+1);
+	char *uribuf;
+	uribuf = (char*)malloc((n+1)*sizeof(char));
+	memset(uribuf, '\0', (n+1)*sizeof(char));
 	memcpy(uribuf, uriStr.c_str(), n);
 	init_uri(uribuf);
+	free(uribuf);
 }
 
 URI::URI(
@@ -234,7 +240,7 @@ deal_with_host:
                         transform(hostname.begin(),
                                   hostname.end(),
                                   hostname.begin(),
-                                  (int(*)(int))std::tolower);
+                                  (int(*)(int))tolower);
 			hostandport = hostname;
 			goto deal_with_path;
 		}
@@ -242,7 +248,7 @@ deal_with_host:
                 transform(hostname.begin(),
                           hostname.end(),
                           hostname.begin(),
-                          (int(*)(int))std::tolower);
+                          (int(*)(int))tolower);
 		hostandport = hostname;
 		++s;
 		port_str = string(s, 0, uri-s);

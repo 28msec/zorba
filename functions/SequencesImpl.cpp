@@ -202,13 +202,16 @@ void doc_iterator::_open()
 	}
 	string bufs = oss.str();
 	size_t n = bufs.length();
-	char buf[n+1];
+	char *buf;
+	buf = (char*)malloc(n+1);
 	strcpy(buf, bufs.c_str());
 
 	xml_scanner* scanner_p = new xml_scanner();
 	dom_xml_handler* xhandler_p = new dom_xml_handler(zorp,"/",path);
 	scanner_p->scan(buf, n, dynamic_cast<scan_handler*>(xhandler_p));
 	doc_node = dynamic_cast<dom_document_node*>(xhandler_p->context_node());
+
+	free(buf);
 
 	delete xhandler_p;
 }

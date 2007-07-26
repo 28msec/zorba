@@ -10,7 +10,7 @@
 #include "nodereps.h"
 #include "noderep_iterator.h"
 #include "qnamerep.h"
-#include "runtime/errors.h"
+#include "errors/Error.h"
 #include "util/tracer.h"
 #include "values/primitive_values.h"
 

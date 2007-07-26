@@ -147,7 +147,7 @@ library::library(
 	zorba* _zorp)
 :
 	zorp(_zorp),
-	funtab(0.6, 1024)
+	funtab((float)0.6, 1024)
 {
 	init(&*zorp->get_value_factory());
 }

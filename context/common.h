@@ -25,7 +25,11 @@
 #ifndef XQP_COMMON_H
 #define XQP_COMMON_H
 
-#include <stdint.h>
+#ifndef WIN32
+	#include <stdint.h>
+#else
+	#include "win32/compatib_defs.h"
+#endif
 
 #include "../util/rchandle.h"
 

@@ -10,6 +10,10 @@
 #ifndef XQP_XML_TERM_H
 #define XQP_XML_TERM_H
 
+#ifdef WIN32
+	#include "win32/compatib_defs.h"
+#endif
+
 #include <string>
 #include <sstream>
 

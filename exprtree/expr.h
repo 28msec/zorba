@@ -677,7 +677,7 @@ public:
 public:
 	expr_t get_cast_expr() const { return expr_h; }
 	sequence_type_t get_type() const { return type; }
-	bool is_optional() const { return type&ARITY_MASK==OPT_ITEM_ARITY; }
+	bool is_optional() const { return (type&ARITY_MASK)==OPT_ITEM_ARITY; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -707,7 +707,7 @@ public:
 public:
 	expr_t get_unary_expr() const { return expr_h; }
 	sequence_type_t get_type() const { return type; }
-	bool is_optional() const { return type&ARITY_MASK==OPT_ITEM_ARITY; }
+	bool is_optional() const { return (type&ARITY_MASK)==OPT_ITEM_ARITY; }
 
 public:
 	void accept(expr_visitor&) const;

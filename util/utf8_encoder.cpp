@@ -10,6 +10,11 @@
 
 #include "utf8_encoder.h"
 
+#ifdef WIN32
+	#include <io.h>
+	#include "win32/compatib_defs.h"
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -39,6 +44,8 @@ void utf8_encoder::encode(
   int  fd;
   char* ibuf;
   char* obuf;
+
+#ifndef WIN32
   struct stat statbuf;
 
 	fd = open(path, O_RDONLY);
@@ -50,10 +57,29 @@ void utf8_encoder::encode(
 		cerr<<"I/O error: fstat failed"<<endl;
 		return;
 	}
+#else
+  struct _stat statbuf;
+
+	fd = _open(path, O_RDONLY);
+	if (fd < 0) {
+		cerr<<"I/O error: open failed"<<endl;
+		return;
+	}
+	if (_fstat(fd, &statbuf)<0) {
+		cerr<<"I/O error: fstat failed"<<endl;
+		return;
+	}
+#endif
+
 	off_t sz = statbuf.st_size;
+
 	ibuf = new char[sz];
 	obuf = new char[3*sz];
+#ifndef WIN32
 	ssize_t n = read(fd,&ibuf[0],sz);  
+#else
+	int n = _read(fd,&ibuf[0],sz);  
+#endif
 	if (n<0) {
 		cerr<<"I/O error: read failed with error "<<errno<<endl;
 		delete[] ibuf;
@@ -83,9 +109,15 @@ void utf8_encoder::encode(
 
 	delete[] ibuf;
 	delete[] obuf;
+#ifndef WIN32
 	if (close(fd) < 0) {
 		cerr<<"I/O error: close failed with error "<<errno<<endl;
 	}
+#else
+	if (_close(fd) < 0) {
+		cerr<<"I/O error: close failed with error "<<errno<<endl;
+	}
+#endif
 }
 
 
@@ -94,7 +126,8 @@ string utf8_encoder::encode(
 {
 	const char* ibuf = s.c_str();
 	uint32_t n = s.length();
-	char obuf[3*n];
+	char *obuf;
+	obuf = (char*)malloc(3*n);
 
   uint32_t q = 0;
 	for (uint32_t p=0; p<n; ++p) {
@@ -111,7 +144,9 @@ string utf8_encoder::encode(
        obuf[q++] = (char)((c&0x3f) | 0x80);
      }
 	}
-	return string(obuf, q);
+	string retstr = string(obuf, q);
+	free(obuf);
+	return retstr;
 }
 
 
@@ -121,7 +156,8 @@ string utf8_encoder::urlencode(
 {
 	const char* ibuf = s.c_str();
 	uint32_t n = s.length();
-	char obuf[3*n];
+	char *obuf;
+	obuf = (char*)malloc(3*n);
 
   uint32_t q = 0;
 	for (uint32_t p=0; p<n; ++p) {
@@ -138,7 +174,9 @@ string utf8_encoder::urlencode(
        obuf[q++] = (char)((c&0x3f) | 0x80);
      }
 	}
-	return string(obuf, q);
+	string retstr = string(obuf, q);
+	free(obuf);
+	return retstr;
 }
 
 

@@ -15,13 +15,16 @@
 #include "tracer.h"
 #include "../errors/xqp_exception.h"
 
-#include <sys/mman.h>
+#ifndef WIN32
+	#include <sys/mman.h>
+	#include <unistd.h>
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
-#include <unistd.h>
 
 #include <memory>
 #include <string>
@@ -407,7 +410,15 @@ fxvector<T>::fxvector(
 template<typename T>
 fxvector<T>::~fxvector()
 {
+#ifndef WIN32
 	std::_Destroy(start, finish);
+#else
+	T*	_First = start;
+	T*	_Last = finish;
+	for (; _First != _Last; ++_First)
+		_First->~T();
+#endif
+
 	if (mmf_p) {
 
 #ifdef DEBUG

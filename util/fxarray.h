@@ -11,7 +11,11 @@
 #ifndef XQP_FXARRAY_H
 #define XQP_FXARRAY_H
 
+#ifdef WIN32
+#else
 #include <sys/mman.h>
+#endif
+
 #include <sys/types.h>
 #include <errno.h>
 #include <fcntl.h>

@@ -26,7 +26,7 @@ symbol_table::~symbol_table()
 
 uint32_t symbol_table::size() const
 {
-	return heap.size();
+	return (uint32_t)heap.size();
 }
 
 off_t symbol_table::put(char const* text, uint32_t length)
@@ -71,7 +71,11 @@ off_t symbol_table::put_stringlit(char const* text, uint32_t length)
 
 long long symbol_table::decimalval(char const* text, uint32_t length)
 {
+#ifndef WIN32
 	return strtoll(text, NULL, 10);
+#else
+	return _strtoi64(text, NULL, 10);
+#endif
 }
 
 double symbol_table::doubleval(char const* text, uint32_t length)
@@ -87,9 +91,12 @@ int symbol_table::intval(char const* text, uint32_t length)
 std::string symbol_table::get(off_t id)
 {
 	uint32_t n = heap.get_length0(id);
-	char buf[n+1];
+	char *buf;
+	buf = (char*)malloc(n+1);
 	heap.get0(id, buf, 0, n);
-	return string(buf, 0, n);
+	std::string retstr = string(buf, 0, n);
+	free(buf);
+	return retstr;
 }
 
 

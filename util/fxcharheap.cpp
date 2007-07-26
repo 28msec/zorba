@@ -11,9 +11,15 @@
 #include "fxcharheap.h"
 
 #include <sys/types.h>
-#include <sys/mman.h>
+
+#ifdef WIN32
+	
+#else
+	#include <sys/mman.h>
+	#include <unistd.h>
+#endif
 #include <errno.h>
-#include <unistd.h>
+
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -123,8 +129,8 @@ fxcharheap::fxcharheap_iterator fxcharheap::end()
 
 void fxcharheap::dump_heap() const
 {
-	char * tmp = new char[size()];
-	memcpy(tmp, &data[sizeof(off_t)], size());
+	char * tmp = new char[(uint32_t)size()];
+	memcpy(tmp, &data[sizeof(off_t)], (size_t)size());
 	for (uint32_t i=0; i<size(); ++i) {
 		if (tmp[i]==0) tmp[i] = '#';
 	}

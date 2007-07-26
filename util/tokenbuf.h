@@ -10,6 +10,9 @@
 #define XQP_TOKENBUF_H
 
 #include <string>
+#ifdef WIN32
+#include "win32/compatib_defs.h"
+#endif
 
 namespace xqp {
 

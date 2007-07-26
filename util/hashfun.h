@@ -12,6 +12,10 @@
 
 #include <string>
 
+#ifdef WIN32
+	#include "win32/compatib_defs.h"	
+#endif
+
 /*_____________________________________________________________
 |                                                              |
 |  hash functions                                              |

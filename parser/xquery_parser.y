@@ -32,6 +32,11 @@
 #pragma warning(disable: 4786)
 #endif
 
+#ifdef WIN32
+#include "win32/compatib_defs.h"
+#include <io.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -233,7 +238,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token IF_LPAR										"'<if (>'"
 %token IMPORT_MODULE							"'<import module>"	
 %token IMPORT_SCHEMA							"'<import schema>'"
-%token IN													"'in'"
+%token _IN_													"'in'"
 %token INHERIT										"'inherit'"
 %token INSTANCE_OF								"'<instance of>'"
 %token INTEGER_LITERAL						"'INTEGER'"
@@ -1751,7 +1756,7 @@ VarInDeclList :
 // [34b] VarInDecl
 // ---------------
 VarInDecl :
-		VARNAME  IN  ExprSingle
+		VARNAME  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [in]\n";
 			$$ = new VarInDecl(@$,
@@ -1759,7 +1764,7 @@ VarInDecl :
 								NULL,NULL,NULL,
 								$3);
 		}
-	|	VARNAME  TypeDeclaration  IN  ExprSingle
+	|	VARNAME  TypeDeclaration  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [type.in]\n";
 			$$ = new VarInDecl(@$,
@@ -1768,7 +1773,7 @@ VarInDecl :
 								NULL,NULL,
 								$4);
 		}
-	|	VARNAME  PositionalVar  IN  ExprSingle
+	|	VARNAME  PositionalVar  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [posvar.in]\n";
 			$$ = new VarInDecl(@$,
@@ -1778,7 +1783,7 @@ VarInDecl :
 								NULL,
 								$4);
 		}
-	|	VARNAME  TypeDeclaration  PositionalVar  IN  ExprSingle
+	|	VARNAME  TypeDeclaration  PositionalVar  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [type.posvar.in]\n";
 			$$ = new VarInDecl(@$,
@@ -1789,7 +1794,7 @@ VarInDecl :
 								$5);
 		}
 	/* full-text extensions */
-	| VARNAME  FTScoreVar  IN  ExprSingle
+	| VARNAME  FTScoreVar  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [scorevar.in]\n";
 			$$ = new VarInDecl(@$,
@@ -1798,7 +1803,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($2),
 								$4);
 		}
-	| VARNAME  TypeDeclaration  FTScoreVar  IN  ExprSingle
+	| VARNAME  TypeDeclaration  FTScoreVar  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [type.scorevar.in]\n";
 			$$ = new VarInDecl(@$,
@@ -1808,7 +1813,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
 		}
-	| VARNAME  PositionalVar  FTScoreVar  IN  ExprSingle
+	| VARNAME  PositionalVar  FTScoreVar  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [posvar.scorevar.in]\n";
 			$$ = new VarInDecl(@$,
@@ -1818,7 +1823,7 @@ VarInDecl :
 								dynamic_cast<FTScoreVar*>($3),
 								$5);
 		}
-	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  IN  ExprSingle
+	| VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN_  ExprSingle
 		{
 			if (debug) cout << "VarInDecl [type.posvar.scorevar.in]\n";
 			$$ = new VarInDecl(@$,
@@ -2164,14 +2169,14 @@ QVarInDeclList :
 // [42b] QVarInDecl
 // ----------------
 QVarInDecl :
-		VARNAME  IN  ExprSingle 
+		VARNAME  _IN_  ExprSingle 
 		{
 			if (debug) cout << "QVarInDecl [in]\n";
 			$$ = new QVarInDecl(@$,
 								driver.symtab.get((off_t)$1),
 								$3);
 		}
-	|	VARNAME  TypeDeclaration  IN  ExprSingle 
+	|	VARNAME  TypeDeclaration  _IN_  ExprSingle 
 		{
 			if (debug) cout << "QVarInDecl [type.in]\n";
 			$$ = new QVarInDecl(@$,

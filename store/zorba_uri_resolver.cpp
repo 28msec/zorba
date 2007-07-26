@@ -44,13 +44,13 @@ istream* zorba_uri_resolver::file_source::get_input(
 																	);
 		return NULL;
 	}
-	unsigned sz = f.get_size();
+	unsigned sz = (unsigned)f.get_size();
 	size_t n = (sz > (1<<24) ? (1<<24) : (size_t)(sz));
 	char* ibuf = new char[n+1];
 	int m = 0;
 	try {
 		m = f.readfile(ibuf,n);
-	} catch (xqp_exception& e) {
+	} catch (xqp_exception& ) {
 		//zorp->set_error(errors::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING);
 		ZorbaErrorAlerts::error_alert(error_messages::XPDY0002_DYNAMIC_CONTEXT_COMPONENT_MISSING,
 																	error_messages::RUNTIME_ERROR,

@@ -13,6 +13,10 @@
 
 #include "../util/rchandle.h"
 
+#ifdef WIN32
+	#include "win32/compatib_defs.h"
+#endif
+
 #include <iostream>
 #include <string>
 #include <vector>

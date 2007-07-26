@@ -12,7 +12,11 @@
 #ifndef XQP_TYPECODES_H
 #define XQP_TYPECODES_H
 
+#ifndef WIN32
 #include <stdint.h>
+#else
+	#include "win32/compatib_defs.h"
+#endif
 
 namespace xqp {
 

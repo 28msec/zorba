@@ -11,6 +11,12 @@
 #ifndef XQP_MMFILE_H
 #define XQP_MMFILE_H
 
+#ifdef WIN32
+	#include "win32/compatib_defs.h"
+	#include <windows.h>
+#endif
+
+#include <sys/types.h>
 #include <string>
 
 #include "../errors/xqp_exception.h"
@@ -30,9 +36,14 @@ class mmfile
 {
 protected:	// state
   std::string path;			// backing file path name
-  int fd;								// backing file id
   off_t eofoff;					// offset to eof = size of array in bytes
   char* data;						// raw bytes
+#ifndef WIN32
+  int fd;								// backing file id
+#else
+	HANDLE	fd;
+	HANDLE	file_mapping;
+#endif
 
 public:			// ctor,dtor
 	mmfile(std::string const& path, uint32_t initial_size=4096);

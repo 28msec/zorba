@@ -90,7 +90,7 @@ dom_document_node::dom_document_node(
 {}
 	
 dom_document_node::dom_document_node(
-	const dom_document_node::dom_document_node& dn)
+	const dom_document_node& dn)
 :
   item (dn), node (dn), dom_node (dn), document_node (dn),
 	theBaseURI(dn.theBaseURI),

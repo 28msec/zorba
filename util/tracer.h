@@ -13,11 +13,18 @@
 
 namespace xqp {
 
+#ifndef WIN32
 #define TRACE __FILE__<<':'<<__LINE__<<"::"<<__PRETTY_FUNCTION__
 #define LOCATION	(__oss.str(""), \
 										__oss<<__FILE__<<":"<<__LINE__<<"::"<<__PRETTY_FUNCTION__, \
 										__oss.str())
+#else
+#define TRACE __FILE__<<':'<<__LINE__<<"::"<<__FUNCTION__
+#define LOCATION	(__oss.str(""), \
+										__oss<<__FILE__<<":"<<__LINE__<<"::"<<__FUNCTION__, \
+										__oss.str())
 
+#endif
 
 } /* namespace xqp */
 #endif /* XQP_TRACER_H */

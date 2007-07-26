@@ -17,6 +17,10 @@
 #ifndef XQP_XML_HANDLER_H
 #define XQP_XML_HANDLER_H
 
+#ifdef WIN32
+	#include "win32/compatib_defs.h"
+#endif
+
 #include "itemstore.h"
 #include "scan_handler.h"
 #include "xml_term.h"

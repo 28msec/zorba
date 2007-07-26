@@ -9,6 +9,9 @@
 #include "rwlock.h"
 
 #include <pthread.h>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 using namespace std;
 namespace xqp {

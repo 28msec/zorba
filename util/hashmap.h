@@ -13,7 +13,11 @@
 #include <pthread.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include <strings.h>
+#ifndef WIN32
+	#include <strings.h>
+#else
+	#include <string.h>
+#endif
 #include <string>
 #include <vector>
 #include <iostream>
@@ -60,7 +64,7 @@ private:
 
 public:	// ctor,dtor
 	hashmap(uint32_t sz = 1024, float ld = .6);
-	hashmap(hashmap&);
+	//daniel hashmap(hashmap&);
 	hashmap(hashmap const&);
 	~hashmap();
 
@@ -261,6 +265,7 @@ hashmap<V>::hashmap(
 	for (uint32_t d = tsz; d>0; d>>=1) dp++;
 }
 
+/*daniel
 template<class V>
 hashmap<V>::hashmap(
 	hashmap<V> & m)
@@ -277,6 +282,7 @@ hashmap<V>::hashmap(
 	typename vector<entry>::const_iterator en = m.end();
 	for (; it!=en; ++it) { v.push_back(*it); }
 }
+*/
 
 template<class V>
 hashmap<V>::hashmap(
@@ -351,7 +357,8 @@ inline void hashmap<V>::resize()
 template<class V>
 inline bool hashmap<V>::find(const string& key, uint32_t& index) const
 {
-	char keybuf[key.length()+1];
+	char *keybuf;
+	keybuf = (char*)malloc(key.length()+1);
 	strcpy(keybuf,key.c_str());
 	uint32_t h0 = h(key);
 	bool result = false;
@@ -359,12 +366,17 @@ inline bool hashmap<V>::find(const string& key, uint32_t& index) const
 		int x = tab[h0];
 		if (x==-1) break;
 		const entry& e = v[x];
-		char buf[e.key.length()+1];
-		strcpy(buf,e.key.c_str());
-		if (strcasecmp(buf,keybuf)==0) { result = true; break; }
+		//char *buf;
+		//buf = (char*)malloc(e.key.length()+1);
+		//strcpy(buf,e.key.c_str());
+		if (strcasecmp(e.key.c_str(),keybuf)==0) { result = true; 
+																			//free(buf);
+																			break; }
 		h0 = (h0 + 1) % tsz;
+		//free(buf);
 	}
 	index = h0;
+	free(keybuf);
 	return result;
 }
 
@@ -380,9 +392,9 @@ inline bool hashmap<V>::find( const char* key, uint32_t& index) const
 		int x = tab[h0];
 		if (x==-1) break;
 		const entry& e = v[x];
-		char buf[e.key.length()+1];
-		strcpy(buf,e.key.c_str());
-		if (strcasecmp(buf,key)==0) { result = true; break; }
+		//char buf[e.key.length()+1];
+		//strcpy(buf,e.key.c_str());
+		if (strcasecmp(e.key.c_str(),key)==0) { result = true; break; }
 		h0 = (h0 + 1) % tsz;
 	}
 	index = h0;
