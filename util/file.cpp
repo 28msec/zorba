@@ -6,6 +6,7 @@
  *
  *	Author: Paul Pedersen
  *
+  ported to windows
  */
 
 #include "file.h"
