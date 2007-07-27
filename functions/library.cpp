@@ -12,6 +12,7 @@
 
 #include "Numerics.h"
 #include "Sequences.h"
+#include "Strings.h"
 
 #include "context/common.h"
 #include "runtime/zorba.h"
@@ -74,6 +75,24 @@ fn_doc_func fn_doc(
 );
 
 
+// Strings
+
+fn_codepoints_to_string fn_codepoints_to_string_func(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"fn","fn_codepoints-to-string"),
+		xs_integer,					// arg[1] type
+		documentNode				// return type
+	)
+); 
+
+fn_string_to_codepoints fn_string_to_codepoints_func(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"fn","fn_string-to-codepoints"),
+		xs_string,					// arg[1] type
+		documentNode				// return type
+	)
+);
+
 qnamekey_t library::op_add_key;
 qnamekey_t library::op_subtract_key;
 qnamekey_t library::op_mul_key;
@@ -109,7 +128,9 @@ qnamekey_t library::op_intersect_key;
 qnamekey_t library::op_except_key;
 qnamekey_t library::fn_doc_key;
 
-
+// Strings
+qnamekey_t library::fn_codepoints_to_string_key;
+qnamekey_t library::fn_string_to_codepoints_key;
 
 // static initializer
 
@@ -133,10 +154,18 @@ void library::init(
 		
 		// Sequences functions
 		put(&fn_doc);
+
 		
 		fn_doc_key = fn_doc.get_fname()->qnamekey();
-cout << TRACE << " : fn_doc_key = " << fn_doc_key << endl;
+//		cout << TRACE << " : fn_doc_key = " << fn_doc_key << endl;
+		
 
+		// String functions
+		put(&fn_codepoints_to_string_func);
+		fn_codepoints_to_string_key = fn_codepoints_to_string_func.get_fname()->qnamekey();
+
+		put(&fn_string_to_codepoints_func);
+		fn_string_to_codepoints_key = fn_string_to_codepoints_func.get_fname()->qnamekey();
 	}
 }
 
@@ -168,7 +197,7 @@ void library::put(const function* funp)
 const function* library::get(qnamekey_t fun_key)
 {
 #ifdef DEBUG
-cout << TRACE << " : fun_key = " << fun_key << endl;
+	cout << TRACE << " : fun_key = " << fun_key->qnamekey() << endl;
 #endif
 
 	const function* fun_p = NULL;

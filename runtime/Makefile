@@ -19,6 +19,8 @@ plan_visitor_test	= \
 		../functions/NumericsImpl.cpp \
 		../functions/Sequences.cpp \
 		../functions/SequencesImpl.cpp \
+		../functions/Strings.cpp \
+		../functions/StringsImpl.cpp \
 		../functions/signature.cpp \
 		../parser/parsenodes.cpp \
 		../parser/xquery_parser.cpp \

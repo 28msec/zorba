@@ -61,6 +61,10 @@ public:
 	static qnamekey_t op_except_key;
 	static qnamekey_t fn_doc_key;
 
+	// String functions
+	static qnamekey_t fn_codepoints_to_string_key;
+	static qnamekey_t fn_string_to_codepoints_key;
+	
 public:
 	library(zorba* zorp);
 	~library();
