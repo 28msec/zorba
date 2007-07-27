@@ -133,7 +133,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\,..\,values\,win32"
-				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;__STDC__;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="_DEBUG;WIN32;_CONSOLE;_CRT_SECURE_NO_DEPRECATE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -147,7 +147,6 @@
 				DebugInformationFormat="4"
 				DisableSpecificWarnings="4290, 4250"
 				ShowIncludes="false"
-				UndefinePreprocessorDefinitions="__STDC__"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -1100,6 +1099,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\functions\StringsImpl.cpp"
+				>
+			</File>
+			<File
 				RelativePath="parser\symbol_table.cpp"
 				>
 				<FileConfiguration
@@ -1534,11 +1537,11 @@
 				>
 			</File>
 			<File
-				RelativePath="functions\Context.h"
+				RelativePath="context\context.h"
 				>
 			</File>
 			<File
-				RelativePath="context\context.h"
+				RelativePath="functions\Context.h"
 				>
 			</File>
 			<File
@@ -1566,11 +1569,11 @@
 				>
 			</File>
 			<File
-				RelativePath="context\dynamic_context.h"
+				RelativePath="runtime\dynamic_context.h"
 				>
 			</File>
 			<File
-				RelativePath="runtime\dynamic_context.h"
+				RelativePath="context\dynamic_context.h"
 				>
 			</File>
 			<File
@@ -1799,6 +1802,10 @@
 			</File>
 			<File
 				RelativePath="functions\Strings.h"
+				>
+			</File>
+			<File
+				RelativePath=".\functions\StringsImpl.h"
 				>
 			</File>
 			<File
