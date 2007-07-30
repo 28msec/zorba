@@ -13,6 +13,7 @@
 #include "Numerics.h"
 #include "Sequences.h"
 #include "Strings.h"
+#include "Boolean.h"
 
 #include "context/common.h"
 #include "runtime/zorba.h"
@@ -93,6 +94,14 @@ fn_string_to_codepoints fn_string_to_codepoints_func(
 	)
 );
 
+fn_boolean fn_boolean_func(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"fn","fn_boolean"),
+		xs_anyType,
+		xs_boolean
+	)
+);
+
 qnamekey_t library::op_add_key;
 qnamekey_t library::op_subtract_key;
 qnamekey_t library::op_mul_key;
@@ -132,6 +141,8 @@ qnamekey_t library::fn_doc_key;
 qnamekey_t library::fn_codepoints_to_string_key;
 qnamekey_t library::fn_string_to_codepoints_key;
 
+qnamekey_t library::fn_boolean_key;
+
 // static initializer
 
 void library::init(
@@ -166,6 +177,9 @@ void library::init(
 
 		put(&fn_string_to_codepoints_func);
 		fn_string_to_codepoints_key = fn_string_to_codepoints_func.get_fname()->qnamekey();
+		
+		put(&fn_boolean_func);
+		fn_boolean_key = fn_boolean_func.get_fname()->qnamekey();
 	}
 }
 

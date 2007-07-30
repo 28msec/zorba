@@ -15,6 +15,8 @@ plan_visitor_test	= \
 		../exprtree/expr.cpp \
 		../exprtree/normalize_visitor.cpp \
 		../functions/library.cpp \
+		../functions/Boolean.cpp \
+		../functions/BooleanImpl.cpp \
 		../functions/Numerics.cpp \
 		../functions/NumericsImpl.cpp \
 		../functions/Sequences.cpp \

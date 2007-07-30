@@ -1,5 +1,5 @@
 
-SOURCES 		= signature.cpp library.cpp Sequences.cpp SequencesImpl.cpp Numerics.cpp NumericsImpl.cpp Strings.cpp StringsImpl.cpp
+SOURCES 		= signature.cpp library.cpp Sequences.cpp SequencesImpl.cpp Numerics.cpp NumericsImpl.cpp Strings.cpp StringsImpl.cpp Boolean.cpp BooleanImpl.cpp
 
 
 function_test 	= \
