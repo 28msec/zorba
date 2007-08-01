@@ -13,7 +13,7 @@
 #include "dom/dom_xml_handler.h"
 #include "store/zorba_uri_resolver.h"
 #include "store/xml_scanner.h"
-#include "errors/xqp_exception.h"
+#include "errors/Error.h"
 
 #include <string>
 #include <vector>

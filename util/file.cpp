@@ -33,7 +33,7 @@
 #include <sstream>
 #include <string>
 
-#include "../errors/xqp_exception.h"
+#include "../errors/Error.h"
 
 
 using namespace std;
@@ -167,6 +167,7 @@ throw (xqp_exception)
 }
 
 
+
 volatile void file::error(
 	string const& location,
 	string const& msg)
@@ -174,7 +175,11 @@ throw (xqp_exception)
 {
   std::string err = strerror(errno);
   errno = 0;
-  throw xqp_exception(location, msg + " ["+err+']');
+  //daniel throw xqp_exception(location, msg + " ["+err+']');
+	ZorbaErrorAlerts::error_alert(error_messages::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
+													error_messages::SYSTEM_ERROR,
+													NULL,false,
+													msg + " ["+err+']', location);
 }
 
 

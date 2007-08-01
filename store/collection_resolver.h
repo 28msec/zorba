@@ -15,7 +15,7 @@
 #include "context/static_context.h"
 #include "runtime/item_iterator.h"
 #include "util/rchandle.h"
-#include "errors/xqp_exception.h"
+#include "errors/Error.h"
 
 #include <string>
 

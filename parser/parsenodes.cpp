@@ -20,7 +20,7 @@
 #include "exprtree/parsenode_visitor.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
-#include "errors/xqp_exception.h"
+#include "errors/Error.h"
 #include "values/values.h"
 #include "indent.h"
 
@@ -303,7 +303,8 @@ void SIND_DeclList::accept(parsenode_visitor& v) const
 	vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
 	for (; it!=sind_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -340,7 +341,8 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 	vector<rchandle<parsenode> >::const_reverse_iterator it = vfo_hv.rbegin();
 	for (; it!=vfo_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -1054,7 +1056,8 @@ void ParamList::accept(parsenode_visitor& v) const
 	vector<rchandle<Param> >::const_reverse_iterator it = param_hv.rbegin();
 	for (; it!=param_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -1193,7 +1196,8 @@ void Expr::accept(parsenode_visitor& v) const
 	vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
 	for (; it!=expr_hv.rend(); ++it) {
 		exprnode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -1291,7 +1295,8 @@ void ForLetClauseList::accept(parsenode_visitor& v) const
 	vector<rchandle<parsenode> >::const_reverse_iterator it = forlet_hv.rbegin();
 	for (; it!=forlet_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -1366,7 +1371,8 @@ void VarInDeclList::accept(parsenode_visitor& v) const
 	vector<rchandle<VarInDecl> >::const_reverse_iterator it = vardecl_hv.rbegin();
 	for (; it!=vardecl_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -1524,7 +1530,8 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
 	vector<rchandle<VarGetsDecl> >::const_reverse_iterator it = vardecl_hv.rbegin();
 	for (; it!=vardecl_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -1716,7 +1723,8 @@ void OrderSpecList::accept(parsenode_visitor& v) const
 	vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
 	for (; it!=spec_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -1979,7 +1987,8 @@ void QVarInDeclList::accept(parsenode_visitor& v) const
 	vector<rchandle<QVarInDecl> >::const_reverse_iterator it = qvar_decl_hv.rbegin();
 	for (; it!=qvar_decl_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -2099,17 +2108,21 @@ void TypeswitchExpr::accept(parsenode_visitor& v) const
 	clause_list_h->accept(v);
 	default_clause_h->accept(v);
 
-	Assert<null_pointer>(switch_expr_h!=NULL,LOCATION);
+	//d Assert<null_pointer>(switch_expr_h!=NULL,LOCATION);
+	Assert(switch_expr_h!=NULL,LOCATION);
 	switch_expr_h->accept(v);
 
-	Assert<null_pointer>(default_clause_h!=NULL,LOCATION);
+	//d Assert<null_pointer>(default_clause_h!=NULL,LOCATION);
+	Assert(default_clause_h!=NULL,LOCATION);
 	default_clause_h->accept(v);
 
-	Assert<null_pointer>(clause_list_h!=NULL,LOCATION);
+	//d Assert<null_pointer>(clause_list_h!=NULL,LOCATION);
+	Assert(clause_list_h!=NULL,LOCATION);
 	vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_list_h->rbegin();
 	for (; it!=clause_list_h->rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -2154,7 +2167,8 @@ void CaseClauseList::accept(parsenode_visitor& v) const
 	vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
 	for (; it!=clause_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -3111,7 +3125,8 @@ void PragmaList::accept(parsenode_visitor& v) const
 	vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
 	for (; it!=pragma_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -3693,7 +3708,8 @@ void PredicateList::accept(parsenode_visitor& v) const
 	vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
 	for (; it!=pred_hv.rend(); ++it) {
 		exprnode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -4001,7 +4017,8 @@ void ArgList::accept(parsenode_visitor& v) const
 	vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
 	for (; it!=arg_hv.end(); ++it) {
 		exprnode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -4094,7 +4111,8 @@ void DirElemContentList::accept(parsenode_visitor& v) const
 	vector<rchandle<exprnode> >::const_reverse_iterator it = dir_content_hv.rbegin();
 	for (; it!=dir_content_hv.rend(); ++it) {
 		exprnode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -4131,7 +4149,8 @@ void DirAttributeList::accept(parsenode_visitor& v) const
 	vector<rchandle<DirAttr> >::const_reverse_iterator it = dir_attr_hv.rbegin();
 	for (; it!=dir_attr_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -4255,7 +4274,8 @@ void QuoteAttrContentList::accept(parsenode_visitor& v) const
 		quot_atval_content_hv.rbegin();
 	for (; it!=quot_atval_content_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -4294,7 +4314,8 @@ void AposAttrContentList::accept(parsenode_visitor& v) const
 		apos_atval_content_hv.rbegin();
 	for (; it!=apos_atval_content_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -5882,7 +5903,8 @@ void VarNameList::accept(parsenode_visitor& v) const
 	vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
 	for (; it!=varbinding_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -6008,7 +6030,8 @@ void FTMatchOptionProximityList::accept(parsenode_visitor& v) const
 		opt_prox_hv.rbegin();
 	for (; it!=opt_prox_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -6575,7 +6598,8 @@ void FTThesaurusList::accept(parsenode_visitor& v) const
 	vector<rchandle<FTThesaurusID> >::const_reverse_iterator it = thesaurus_hv.rbegin();
 	for (; it!=thesaurus_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
@@ -6688,7 +6712,8 @@ void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const
 		incl_excl_lit_hv.rbegin();
 	for (; it!=incl_excl_lit_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		Assert<null_pointer>(e_p!=NULL,LOCATION);
+		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
+		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 

@@ -25,7 +25,7 @@
 #include <iostream>
 
 #include "file.h"
-#include "../errors/xqp_exception.h"
+#include "../errors/Error.h"
 
 using namespace std;
 namespace xqp {
@@ -38,7 +38,11 @@ void fxcharheap::ioexception(
 {
 	ostringstream oss;
 	oss << msg << " [" << strerror(errno) << ']';
-	throw xqp_exception(location, oss.str());
+	//throw xqp_exception(location, oss.str());
+	ZorbaErrorAlerts::error_alert(error_messages::XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
+													error_messages::SYSTEM_ERROR,
+													NULL,false,
+													oss.str(), location);
 }
 
 

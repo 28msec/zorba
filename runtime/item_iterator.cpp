@@ -8,7 +8,7 @@
 
 #include "item_iterator.h"
 #include "util/Assert.h"
-#include "errors/xqp_exception.h"
+#include "errors/Error.h"
 #include "values/values.h"
 #include "values/nodes.h"
 #include "values/qname.h"

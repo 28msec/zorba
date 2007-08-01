@@ -25,7 +25,7 @@
 #include <time.h>
 #include <string>
 
-#include "../errors/xqp_exception.h"
+#include "../errors/Error.h"
 #include "rchandle.h"
 
 namespace xqp {

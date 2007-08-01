@@ -86,7 +86,7 @@ xqp_exception::xqp_exception(
 
 xqp_exception::~xqp_exception() throw() { }
 
-
+/*daniel
 // bad_arg implementations
 // ----------------------
 bad_arg::bad_arg()
@@ -225,6 +225,7 @@ throw()
 {
 }
 
+daniel */
 
 } /* namespace xqp */
 

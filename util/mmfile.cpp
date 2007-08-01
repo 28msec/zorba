@@ -24,7 +24,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../errors/xqp_exception.h"
+#include "../errors/Error.h"
 
 using namespace std;
 namespace xqp {
@@ -34,7 +34,10 @@ namespace xqp {
 	{ \
 		ostringstream oerr; \
 		oerr << s << " [" << strerror(errno) << ']'; \
-		throw xqp_exception(__FUNCTION__, oerr.str()); \
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
+													error_messages::SYSTEM_ERROR,\
+													NULL,false,\
+													oerr.str(), __FUNCTION__);\
 	}
 
 

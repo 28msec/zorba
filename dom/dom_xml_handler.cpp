@@ -13,7 +13,7 @@
 
 #include "context/common.h"
 #include "runtime/zorba.h"
-#include "errors/xqp_exception.h"
+#include "errors/Error.h"
 #include "util/tokenbuf.h"
 #include "util/tracer.h"
 #include "util/URI.h"
@@ -51,13 +51,13 @@ dom_xml_handler::dom_xml_handler(
 	nslist.push_back(nse_p);
 }
 
-
+/*daniel
 void dom_xml_handler::error(string const& msg) const
 throw (xqp_exception)
 {
 	throw xqp_exception("DOM_XML_HANDLER", msg);
 }
-
+*/
 
 bool dom_xml_handler::find_nsuri(
 	const string& prefix,

@@ -11,6 +11,7 @@
 #define XQP_ASSERT_H
 
 #include <string>
+#include "errors/Error.h"
 
 namespace xqp {
 
@@ -19,16 +20,28 @@ namespace xqp {
 |  See: Stroustrup, Third Ed., Section 24.3.7.2.   |
 |__________________________________________________*/
 
-template<class X, class A>
-inline void Assert(A assertion)
+//template<class X, class A>
+inline void Assert(bool assertion)
 {
-	if (!assertion) throw X();
+	if (!assertion) 
+	{
+		//daniel throw X();
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
+														error_messages::SYSTEM_ERROR);
+	}
 }
 
-template<class X, class A>
-inline void Assert(A assertion, const std::string& location)
+//template<class X, class A>
+inline void Assert(bool assertion, const std::string& location)
 {
-	if (!assertion) throw X(location);
+	if (!assertion) 
+	{
+	//daniel	throw X(location);
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
+														error_messages::SYSTEM_ERROR,
+														NULL, false,
+														location);
+	}
 }
 
 

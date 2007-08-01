@@ -659,7 +659,8 @@ dom_doc_child_iterator::dom_doc_child_iterator(
 {
 	const dom_document_node* dn_p =
 		dynamic_cast<const dom_document_node*>(&dn);
-	Assert<bad_arg>(dn_p!=NULL);
+	//d Assert<bad_arg>(dn_p!=NULL);
+	Assert(dn_p!=NULL);
 	it = dn_p->childv.begin();
 	end = dn_p->childv.end();
 }
@@ -674,7 +675,8 @@ dom_child_iterator::dom_child_iterator(
 {
 	const dom_element_node* en_p =
 		dynamic_cast<const dom_element_node*>(&dn);
-	Assert<bad_arg>(en_p!=NULL);
+	//d Assert<bad_arg>(en_p!=NULL);
+	Assert(en_p!=NULL);
 	it = en_p->childv.begin();
 	end = en_p->childv.end();
 }
@@ -689,7 +691,8 @@ dom_attribute_iterator::dom_attribute_iterator(
 {
 	const dom_element_node* en_p =
 		dynamic_cast<const dom_element_node*>(&dn);
-	Assert<bad_arg>(en_p!=NULL);
+	//d Assert<bad_arg>(en_p!=NULL);
+	Assert(en_p!=NULL);
 	it = en_p->attrv.begin();
 	end = en_p->attrv.end();
 }
@@ -704,7 +707,8 @@ dom_namespace_iterator::dom_namespace_iterator(
 {
 	const dom_element_node* en_p =
 		dynamic_cast<const dom_element_node*>(&dn);
-	Assert<bad_arg>(en_p!=NULL);
+	//d Assert<bad_arg>(en_p!=NULL);
+	Assert(en_p!=NULL);
 	it = en_p->nsv.begin();
 	end = en_p->nsv.end();
 }

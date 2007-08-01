@@ -19,7 +19,7 @@
 #include <sys/types.h>
 #include <string>
 
-#include "../errors/xqp_exception.h"
+#include "../errors/Error.h"
 
 namespace xqp {
 

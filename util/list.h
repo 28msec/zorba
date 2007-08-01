@@ -10,7 +10,7 @@
 #ifndef XQP_LIST_H
 #define XQP_LIST_H
 
-#include "../errors/xqp_exception.h"
+#include "../errors/Error.h"
 
 namespace xqp {
 
@@ -171,7 +171,9 @@ template<class T>
 T list<T>::pop_front()
 {
 	if (sz==0) {
-		throw xqp_exception("list::pop_front", "list empty");
+		//throw xqp_exception("list::pop_front", "list empty");
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0010_SYSTEM_POP_FROM_EMPTY_LIST,
+														error_messages::SYSTEM_ERROR);
 	}
 	list_node<T>* front_node = head->next;
 	T result = front_node->data;

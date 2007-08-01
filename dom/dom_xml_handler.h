@@ -110,7 +110,7 @@ public:		// ctor, dtor
 	~dom_xml_handler() {}
 
 protected:
-	void error(std::string const& msg) const throw (xqp_exception);
+//daniel	void error(std::string const& msg) const throw (xqp_exception);
 
 public:	
 	void flush_textbuf_as_text_node();

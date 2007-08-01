@@ -14,7 +14,7 @@
 #include "../context/context.h"
 #include "../runtime/zorba.h"
 #include "../values/values.h"
-#include "../errors/xqp_exception.h"
+//daniel #include "../errors/xqp_exception.h"
 #include "../util/tokenbuf.h"
 #include "../util/tracer.h"
 #include "../util/URI.h"
@@ -59,13 +59,13 @@ xml_handler::xml_handler(
 	zorba_p->put_noderef(nid, baseref);
 }
 
-
+/*daniel
 void xml_handler::error(string const& msg) const
 throw (xqp_exception)
 {
 	throw xqp_exception("XML_HANDLER", msg);
 }
-
+*/
 
 inline void xml_handler::add_term(xml_term const& term)
 {

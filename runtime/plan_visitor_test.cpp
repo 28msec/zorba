@@ -37,7 +37,6 @@ int main(int argc, char* argv[])
 	errors_english	*err_messages = new errors_english;///the english error messages
 	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages, zorp);
 
-
 	library lib(zorp);
 	dctx_p->set_library(&lib);
 

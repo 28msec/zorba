@@ -17,6 +17,8 @@
 #include "fxvector.h"
 #include "hashfun.h"
 #include "rchandle.h"
+#include "errors/Error.h"
+#include <sstream>
 
 #include <stddef.h>
 #include <stdlib.h>
@@ -111,15 +113,15 @@ public:
 
 	// add (key,val) entry to map, true on match
 	bool put(const string& key, V val)
-	throw (bad_arg);
+	throw (xqp_exception);//throw (bad_arg);
 
 	// add (key,val) entry to map, true on match
 	bool put(const char* key, V val)
-	throw (bad_arg);
+	throw (xqp_exception);//throw (bad_arg);
 
 	// add (key,val) entry to map, return offset
 	off_t put0(const char* key, V val)
-	throw (bad_arg);
+	throw (xqp_exception);//throw (bad_arg);
 
 	// the hash functions
 	uint32_t h(const char*) const;
@@ -395,11 +397,21 @@ inline bool fxhashmap<V>::get(const char* key, V& result) const
 // Return true <=> key matched.
 template<class V>
 inline bool fxhashmap<V>::put(const string& key, V val)
-throw (bad_arg)
+throw (xqp_exception)//throw (bad_arg)
 {
 	uint32_t n = key.length();
 	if (n > MAX_KEYLEN) {
-		throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
+		//daniel throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
+		ostringstream	ostr1;
+		ostringstream	ostr2;
+
+		ostr1 << n;
+		ostr2 << MAX_KEYLEN;
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
+														error_messages::SYSTEM_ERROR,
+														NULL, false,///dont continue execution, stop here
+														ostr1.c_str(), ostr2.c_str()///param1 and param2 for error message
+														);
 	}
 	if (sz > dsz*ld) resize();
 	uint32_t h0;
@@ -420,11 +432,21 @@ throw (bad_arg)
 // Return true <=> key matched.
 template<class V>
 inline bool fxhashmap<V>::put(const char* key, V val) 
-throw (bad_arg)
+throw (xqp_exception) //throw (bad_arg)
 {
 	uint32_t n = strlen(key);
 	if (n > MAX_KEYLEN) {
-		throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
+		//daniel throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
+		ostringstream	ostr1;
+		ostringstream	ostr2;
+
+		ostr1 << n;
+		ostr2 << MAX_KEYLEN;
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
+														error_messages::SYSTEM_ERROR,
+														NULL, false,///dont continue execution, stop here
+														ostr1.c_str(), ostr2.c_str()///param1 and param2 for error message
+														);
 	}
 	if (sz > dsz*ld) resize();
 	uint32_t h0;
@@ -445,11 +467,21 @@ throw (bad_arg)
 // Return key heap offset.
 template<class V>
 inline off_t fxhashmap<V>::put0(const char* key, V val) 
-throw (bad_arg)
+throw (xqp_exception)//throw (bad_arg)
 {
 	uint32_t n = strlen(key);
 	if (n > MAX_KEYLEN) {
-		throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
+		//throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
+		ostringstream	ostr1;
+		ostringstream	ostr2;
+
+		ostr1 << n;
+		ostr2 << MAX_KEYLEN;
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
+														error_messages::SYSTEM_ERROR,
+														NULL, false,///dont continue execution, stop here
+														ostr1.c_str(), ostr2.c_str()///param1 and param2 for error message
+														);
 	}
 	if (sz > dsz*ld) resize();
 	uint32_t h0;
@@ -658,7 +690,8 @@ inline void fxhash32map<V>::resize()
 	unsigned dsz0 = dir0->size();
 	dsz  = dir->size();
 
-	Assert<invariant>(dsz==dsz0*2, "fxhash32map::resize[01]");
+	//d Assert<invariant>(dsz==dsz0*2, "fxhash32map::resize[01]");
+	Assert(dsz==dsz0*2, "fxhash32map::resize[01]");
 
 	// rehash: place old entry offset in new hash location
 	for (unsigned k = 0; k<dsz0; ++k) {
@@ -921,7 +954,8 @@ inline void fxhash64map<V>::resize()
 	unsigned dsz0 = dir0->size();
 	dsz  = dir->size();
 
-	Assert<invariant>(dsz==dsz0*2, "fxhash64map::resize[01]");
+//d	Assert<invariant>(dsz==dsz0*2, "fxhash64map::resize[01]");
+	Assert(dsz==dsz0*2, "fxhash64map::resize[01]");
 
 	// rehash: place old entry offset in new hash location
 	for (unsigned k = 0; k<dsz0; ++k) {

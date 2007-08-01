@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <stdlib.h>
+#include "runtime/zorba.h"
 
 using namespace std;
 namespace xqp {

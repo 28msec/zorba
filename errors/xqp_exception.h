@@ -77,7 +77,7 @@ public:
 	std::string get_msg() const { return msg; }
 };
 
-
+/*daniel
 class bad_arg : public xqp_exception
 {
 public:
@@ -146,6 +146,8 @@ public:
 public:
 	std::string get_msg() const { return "invariant: " + msg; }
 };
+
+*/
 
 
 } /* namespace xqp */

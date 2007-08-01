@@ -2059,7 +2059,8 @@ void normalize_visitor::end_visit(const AdditiveExpr& v)
 {
 cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
 
-	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	Assert(nodestack.size()>=3,"stack underflow");
 	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
@@ -2116,7 +2117,8 @@ void normalize_visitor::end_visit(const ComparisonExpr& v)
 {
 cout << indent[depth--] << TRACE << ": ComparisonExpr\n";
 
-	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	Assert(nodestack.size()>=3,"stack underflow");
 	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
@@ -2269,7 +2271,8 @@ void normalize_visitor::end_visit(const IntersectExceptExpr& v)
 {
 cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
 
-	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	Assert(nodestack.size()>=3,"stack underflow");
 	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
@@ -2285,7 +2288,8 @@ void normalize_visitor::end_visit(const MultiplicativeExpr& v)
 {
 cout << indent[depth--] << TRACE << endl;
 
-	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	Assert(nodestack.size()>=3,"stack underflow");
 	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
@@ -2399,10 +2403,12 @@ cout << indent[depth--] << TRACE << endl;
 	//ve_h->set_varname(new QName(v.get_default_varname()));
 	tse_h->set_default_varname(ve_h);
 
-	Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
+	//d Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
+	Assert((e_h = pop_nodestack())!=NULL);
 	tse_h->set_switch_expr(e_h);
 
-	Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
+	//d Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
+	Assert((e_h = pop_nodestack())!=NULL);
 	tse_h->set_default_clause(e_h);
 
 	while (true) {	// pop clauses
@@ -2424,7 +2430,8 @@ void normalize_visitor::end_visit(const UnionExpr& v)
 {
 cout << indent[depth--] << TRACE << endl;
 
-	Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
+	Assert(nodestack.size()>=3,"stack underflow");
 	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());

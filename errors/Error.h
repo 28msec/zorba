@@ -13,12 +13,16 @@
 
 #include <string>
 #include "errors.h"
+#include "xqp_exception.h"
 #include "util/rchandle.h"
 #include "parser/location.hh"
-#include "runtime/zorba.h"
+//#include "runtime/zorba.h"
+#include <vector>
 
 using namespace std;
 namespace xqp {
+
+class zorba;
 
 class ZorbaErrorAlerts : public rcobject
 {

@@ -24,7 +24,7 @@
 #include <iostream>
 
 #include "mmfile.h"
-#include "../errors/xqp_exception.h"
+#include "../errors/Error.h"
 
 using namespace std;
 namespace xqp {
