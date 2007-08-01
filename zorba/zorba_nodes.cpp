@@ -156,7 +156,8 @@ iterator_t zorba_element_node::base_uri(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return n_p->base_uri(zorp,loc);
 }
 
@@ -164,7 +165,8 @@ iterator_t zorba_element_node::type_name(
 	zorba* zorp, yy::location &loc) const
 {
 	const qname* qn_p = get_type_name(zorp);
-	Assert<null_pointer>(qn_p!=NULL);
+	//d Assert<null_pointer>(qn_p!=NULL);
+	Assert(qn_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)qn_p);
 }
 
@@ -172,7 +174,8 @@ iterator_t zorba_element_node::node_name(
 	zorba* zorp, yy::location &loc) const
 {
 	const qname* qn_p = get_node_name(zorp);
-	Assert<null_pointer>(qn_p!=NULL);
+	//d Assert<null_pointer>(qn_p!=NULL);
+	Assert(qn_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)qn_p);
 }
 
@@ -180,7 +183,8 @@ iterator_t zorba_element_node::parent(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)n_p);
 }
 
@@ -231,12 +235,14 @@ const node* zorba_element_node::get_parent(
 	switch (p->type()) {
 	case documentNode: {
 		document_noderep* q = new(p) document_noderep();
-		Assert<null_pointer>(q!=NULL);
+		//d Assert<null_pointer>(q!=NULL);
+		Assert(q!=NULL);
 		return new zorba_document_node(q);
 	}
 	case elementNode: {
 		element_noderep* q = new (p) element_noderep();
-		Assert<null_pointer>(q!=NULL);
+		//d Assert<null_pointer>(q!=NULL);
+		Assert(q!=NULL);
 		return new zorba_element_node(q);
 	}
 	default: {
@@ -284,7 +290,8 @@ iterator_t zorba_attribute_node::base_uri(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return n_p->base_uri(zorp,loc);
 }
 
@@ -292,7 +299,8 @@ iterator_t zorba_attribute_node::type_name(
 	zorba* zorp, yy::location &loc) const
 {
 	const qname* qn_p = get_type_name(zorp);
-	Assert<null_pointer>(qn_p!=NULL);
+	//d Assert<null_pointer>(qn_p!=NULL);
+	Assert(qn_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)qn_p);
 }
 
@@ -300,7 +308,8 @@ iterator_t zorba_attribute_node::node_name(
 	zorba* zorp, yy::location &loc) const
 {
 	const qname* qn_p = get_node_name(zorp);
-	Assert<null_pointer>(qn_p!=NULL);
+	//d Assert<null_pointer>(qn_p!=NULL);
+	Assert(qn_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)qn_p);
 }
 
@@ -308,7 +317,8 @@ iterator_t zorba_attribute_node::parent(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)n_p);
 }
 
@@ -432,7 +442,8 @@ iterator_t zorba_pi_node::base_uri(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return n_p->base_uri(zorp,loc);
 }
 
@@ -440,7 +451,8 @@ iterator_t zorba_pi_node::node_name(
 	zorba* zorp, yy::location &loc) const
 {
 	const qname* qn_p = get_node_name(zorp);
-	Assert<null_pointer>(qn_p!=NULL);
+	//d Assert<null_pointer>(qn_p!=NULL);
+	Assert(qn_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)qn_p);
 }
 
@@ -448,7 +460,8 @@ iterator_t zorba_pi_node::parent(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return new singleton_iterator(zorp,loc,(item*)n_p);
 }
 
@@ -495,7 +508,8 @@ iterator_t zorba_comment_node::base_uri(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return n_p->base_uri(zorp,loc);
 }
 
@@ -559,7 +573,8 @@ iterator_t zorba_text_node::base_uri(
 	zorba* zorp, yy::location &loc) const
 {
 	const node* n_p = get_parent(zorp);
-	Assert<null_pointer>(n_p!=NULL);
+	//d Assert<null_pointer>(n_p!=NULL);
+	Assert(n_p!=NULL);
 	return n_p->base_uri(zorp,loc);
 }
 

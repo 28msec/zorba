@@ -220,7 +220,8 @@ ostream& element_noderep::put(
 
 	data_manager* dmgr_p = zorp->get_data_manager();
   const qname* qn_p = dmgr_p->get_qname(theQNameID);
-	Assert<null_pointer>(qn_p);
+	//d Assert<null_pointer>(qn_p);
+	Assert(qn_p);
   qn_p->put(zorp,os);
   
 	noderep* n_p = new(rest) noderep();
@@ -315,7 +316,8 @@ attribute_noderep::attribute_noderep(
 	theQNameID(qname)
 {
 	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_data_manager());
-	Assert<null_pointer>(istore_p!=NULL);
+	//d Assert<null_pointer>(istore_p!=NULL);
+	Assert(istore_p!=NULL);
 	istore_p->add_text(val);
 }
 
@@ -358,7 +360,8 @@ namespace_noderep::namespace_noderep(
 		(dynamic_cast<itemstore*>(zorp->get_data_manager()))->context_itemid())
 {
 	itemstore* istore_p = dynamic_cast<itemstore*>(zorp->get_data_manager());
-	Assert<null_pointer>(istore_p!=NULL);
+	//d Assert<null_pointer>(istore_p!=NULL);
+	Assert(istore_p!=NULL);
 	itemstore& istore = *istore_p;
 	contentRep* p = new(prefix.length()) contentRep(zorp,prefix);
 	theURIOffset = istore.eos();
