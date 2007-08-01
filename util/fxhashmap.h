@@ -410,7 +410,7 @@ throw (xqp_exception)//throw (bad_arg)
 		ZorbaErrorAlerts::error_alert(error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
 														error_messages::SYSTEM_ERROR,
 														NULL, false,///dont continue execution, stop here
-														ostr1.c_str(), ostr2.c_str()///param1 and param2 for error message
+														ostr1.str(), ostr2.str()///param1 and param2 for error message
 														);
 	}
 	if (sz > dsz*ld) resize();
@@ -445,7 +445,7 @@ throw (xqp_exception) //throw (bad_arg)
 		ZorbaErrorAlerts::error_alert(error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
 														error_messages::SYSTEM_ERROR,
 														NULL, false,///dont continue execution, stop here
-														ostr1.c_str(), ostr2.c_str()///param1 and param2 for error message
+														ostr1.str(), ostr2.str()///param1 and param2 for error message
 														);
 	}
 	if (sz > dsz*ld) resize();
@@ -480,7 +480,7 @@ throw (xqp_exception)//throw (bad_arg)
 		ZorbaErrorAlerts::error_alert(error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
 														error_messages::SYSTEM_ERROR,
 														NULL, false,///dont continue execution, stop here
-														ostr1.c_str(), ostr2.c_str()///param1 and param2 for error message
+														ostr1.str(), ostr2.str()///param1 and param2 for error message
 														);
 	}
 	if (sz > dsz*ld) resize();

@@ -256,7 +256,7 @@ protected:
 			ZorbaErrorAlerts::error_alert(error_messages::XQP0007_SYSTEM_VECTOR_OUT_OF_RANGE,
 															error_messages::SYSTEM_ERROR,
 															NULL, false,///dont continue execution, stop here
-															ostr1.c_str(), ostr2.c_str()///param1 and param2 for error message
+															ostr1.str(), ostr2.str()///param1 and param2 for error message
 															);
 		}
 	}
