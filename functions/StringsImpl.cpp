@@ -43,7 +43,9 @@ void fn_codepoints_to_string_iterator::_open()
   
 item_t fn_codepoints_to_string_iterator::_next()
 {
-	arg->next();
+	item_t codepoint = arg->next();
+	if(&*codepoint == NULL)
+		return NULL;
 	//TO DO implement the wchar_t funtionality
 	return new stringValue( xs_string, "test");
 }
@@ -116,6 +118,8 @@ void fn_string_to_codepoints_iterator::_open()
 item_t fn_string_to_codepoints_iterator::_next()
 {
 	item_t nextChar = arg->next();
+	if(&*nextChar == NULL)
+		return NULL;
 	//TO DO implement the wchar_t functionality
 	return new numericValue(xs_integer, 2222);
 }

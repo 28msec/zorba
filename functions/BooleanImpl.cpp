@@ -51,10 +51,14 @@ bool fn_boolean_iterator::done() const
 item_t fn_boolean_iterator::_next()
 {
 	this->donef = true;
-	if(arg0->done()){
+	if(arg0->done()){///daniel ?? should it return NULL?
 		return new booleanValue(false);
 	}
 	item_t n_h = arg0->next();
+
+	if(&*n_h == NULL)
+		return NULL;
+
 	sequence_type_t type = n_h->type();
 	bool retValue = false;
 	

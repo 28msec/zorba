@@ -11,7 +11,7 @@
 
 // Definitions for Duff's device
 #define STACK_INIT() switch (current_line) { case 0:
-#define STACK_PUSH(x,line_) do { current_line = line_; return x; case line_:; } while (0)
+#define STACK_PUSH(x) do { current_line = __LINE__; return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL;
 
 #include "context/common.h"

@@ -70,13 +70,13 @@ item_t concat_iterator::_next() {
 		this->currit_h = this->argv[this->cursor];
 		item = this->currit_h->next();
 		while (item != NULL) {
-			STACK_PUSH (item,1);
+			STACK_PUSH (item);
 			item = this->currit_h->next();
 
 		}
 	}
 	
-	STACK_PUSH(NULL,2);
+	STACK_PUSH(NULL);
 	STACK_END();
 }
 
