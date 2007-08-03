@@ -28,6 +28,23 @@ void basic_iterator::open()
 	_open();
 }
 
+item_t basic_iterator::next()
+{
+	assert(open_b);
+	//daniel: saves the current iterator in zorba object (to keep track of the current iterator)
+	if(zorp)
+	{
+		zorp->current_iterator.push(this);
+		
+		item_t retitem = _next();
+		
+		zorp->current_iterator.pop();
+		return retitem;
+	}
+	else
+		return _next();
+}
+
 void basic_iterator::close()
 {
 	assert(open_b);

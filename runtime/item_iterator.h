@@ -59,11 +59,8 @@ public:		// inline base logic
 
 	void open();
 
-	item_t next() // Forcing inlining of this function in g++: __attribute__((always_inline))
-	{
-		assert(open_b);
-		return _next();
-	}
+	item_t next(); 
+	// Info: Forcing inlining a function in g++: item_t next() __attribute__((always_inline)) {...}
 	
 	void close();
 
