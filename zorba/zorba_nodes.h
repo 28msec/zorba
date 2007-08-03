@@ -107,7 +107,7 @@ public:
 	void _close();
 	bool done() const;
 
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -127,7 +127,7 @@ public:
 	void _close();
 	bool done() const;
 
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -146,6 +146,7 @@ public:
 	void _close();
 	bool done() const;
 
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
