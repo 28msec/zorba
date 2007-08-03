@@ -84,9 +84,13 @@ item_t op_numeric_add_iterator::_next()
 	item_t n0_h = arg0->next();
 	item_t n1_h = arg1->next();
 
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-	return new numericValue(xs_decimal, n1.val() + n0.val());
+	if (n0_h == NULL || n1_h == NULL) {
+		return NULL;
+	} else {
+		const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+		const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
+		return new numericValue(xs_decimal, n1.val() + n0.val());
+	}
 }
 
 

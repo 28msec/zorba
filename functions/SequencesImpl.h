@@ -29,39 +29,39 @@
 #include <string>
 #include <vector>
 
-namespace xqp {
+namespace xqp
+{
 
-class zorba;
+	class zorba;
 
-/*______________________________________________________________________
-|  
-| 15.1 General Functions and Operators on Sequences
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| 15.1 General Functions and Operators on Sequences
+	|_______________________________________________________________________*/
 
 
 //15.1.1 fn:boolean
 
 
 //15.1.2 op:concatenate
-class concat_iterator : public basic_iterator
-{
-protected:
-	const std::vector<iterator_t> argv;
-	iterator_t currit_h;
-	uint32_t cursor;
+	class concat_iterator : public basic_iterator
+	{
+		protected:
+			const std::vector<iterator_t> argv;
+			iterator_t currit_h;
+			uint32_t cursor;
 
-public:
-	void _open();
-	void _close();
-	item_t _next();
-	bool done() const;
+		public:
+			void _open();
+			void _close();
+			item_t _next();
+			bool done() const;
 
-public:	// ctor,dtor
-	concat_iterator(zorba*, yy::location loc, const std::vector<iterator_t>&);
-	concat_iterator(const concat_iterator& it);
-	~concat_iterator() {}
-
-};
+		public:	// ctor,dtor
+			concat_iterator ( zorba*, yy::location loc, const std::vector<iterator_t>& );
+			concat_iterator ( const concat_iterator& it );
+			~concat_iterator() {}
+	};
 
 
 //15.1.3 fn:index-of
@@ -83,10 +83,10 @@ public:	// ctor,dtor
 //15.1.11 fn:unordered
 
 
-/*______________________________________________________________________
-|  
-| 15.2 Functions That Test the Cardinality of Sequences
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| 15.2 Functions That Test the Cardinality of Sequences
+	|_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
 
@@ -95,10 +95,10 @@ public:	// ctor,dtor
 //15.2.3 fn:exactly-one
 
 
-/*______________________________________________________________________
-|
-| 15.3 Equals, Union, Intersection and Except
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| 15.3 Equals, Union, Intersection and Except
+	|_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
 
@@ -109,10 +109,10 @@ public:	// ctor,dtor
 //15.3.4 op:except
 
 
-/*______________________________________________________________________
-|
-| 15.4 Aggregate Functions
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| 15.4 Aggregate Functions
+	|_______________________________________________________________________*/
 
 //15.4.1 fn:count
 
@@ -125,10 +125,10 @@ public:	// ctor,dtor
 //15.4.5 fn:sum
 
 
-/*______________________________________________________________________
-|
-| 15.5 Functions and Operators that Generate Sequences
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| 15.5 Functions and Operators that Generate Sequences
+	|_______________________________________________________________________*/
 
 //15.5.1 op:to
 
@@ -138,27 +138,26 @@ public:	// ctor,dtor
 
 
 //15.5.4 fn:doc
-class doc_iterator : public basic_iterator
-{
-private:
-	iterator_t arg;
-	document_node* doc_node;
+	class doc_iterator : public basic_iterator
+	{
+		private:
+			iterator_t arg;
+			document_node* doc_node;
 
-public:	
-	void _open();
-	void _close();
-	item_t _next();
-	bool done() const;
+		public:
+			void _open();
+			void _close();
+			item_t _next();
+			bool done() const;
 
-public:
-	doc_iterator& operator=(const doc_iterator& it);
+		public:
+			doc_iterator& operator= ( const doc_iterator& it );
 
-public:	// ctor,dtor
-	doc_iterator(zorba*, yy::location loc, iterator_t);
-	doc_iterator(const doc_iterator&);
-	~doc_iterator() {}
-
-};
+		public:	// ctor,dtor
+			doc_iterator ( zorba*, yy::location loc, iterator_t );
+			doc_iterator ( const doc_iterator& );
+			~doc_iterator() {}
+	};
 
 
 //15.5.5 fn:doc-available
@@ -166,10 +165,10 @@ public:	// ctor,dtor
 //15.5.6 fn:collection
 
 
-/*______________________________________________________________________
-|
-| Extensions
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| Extensions
+	|_______________________________________________________________________*/
 
 
 } /* namespace xqp */

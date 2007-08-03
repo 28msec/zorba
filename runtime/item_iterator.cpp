@@ -22,24 +22,10 @@ void basic_iterator::open()
 {
 	assert(!open_b);
 	open_b = true;
+	
+	// Line Info for Duff's device be reset to allow resetting iterators that use Duff's device
+	this->current_line = 0;
 	_open();
-}
-
-item_t basic_iterator::next()
-{
-	assert(open_b);
-	//daniel: save the current iterator in zorba object (to keep track of the current iterator being executed)
-	if(zorp)
-	{
-		zorp->current_iterator.push( this );
-
-		item_t retitem = _next(); 
-
-		zorp->current_iterator.pop();///restore the previous iterator
-		return retitem;
-	}
-	else
-		return _next();
 }
 
 void basic_iterator::close()

@@ -40,32 +40,43 @@ qname* fn_doc_fname_p;
 void concat_iterator::_open()
 {
 	this->cursor = 0;
-	this->currit_h = argv[cursor];
-	currit_h->open();
+	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+  for (; iter != this->argv.end(); ++iter) {
+  	(*iter)->open();
+  }
 }
 
 void concat_iterator::_close()
 {
-	currit_h->close();
+	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		(*iter)->close();
+	}
 }
 
-item_t concat_iterator::_next()
-{
-	if (currit_h->done()) {
-		this->currit_h->close();
-		++cursor;
-		if (cursor>=argv.size()) { 
-			return NULL;
+item_t concat_iterator::_next() {
+	item_t item;
+	STACK_INIT();
+	for (; this->cursor < this->argv.size (); this->cursor++) {
+		this->currit_h = this->argv[this->cursor];
+		item = this->currit_h->next();
+		while (item != NULL) {
+			STACK_PUSH (item);
+			item = this->currit_h->next();
 		}
-		this->currit_h = argv[cursor];
- 		this->currit_h->open();
 	}
-	return currit_h->next();
+	
+	STACK_PUSH(NULL);
+	STACK_END();
 }
+
 
 bool concat_iterator::done() const
 {
-	return (currit_h->done() && cursor==argv.size()-1);
+// 	return (currit_h->done() && cursor==argv.size()-1);
+	// This function has to disappear!
+	ZorbaErrorAlerts::error_alert(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED, error_messages::SYSTEM_ERROR,NULL); 
+	return false;
 }
 
 concat_iterator::concat_iterator(

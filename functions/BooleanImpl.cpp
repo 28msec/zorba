@@ -81,6 +81,7 @@ item_t fn_boolean_iterator::_next()
 			NULL
 		);
 	}
+	return NULL;
 }
 
 }

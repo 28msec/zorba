@@ -9,6 +9,11 @@
 #ifndef XQP_ITEM_ITERATOR_H
 #define XQP_ITEM_ITERATOR_H
 
+// Definitions for Duff's device
+#define STACK_INIT() switch (current_line) { case 0:
+#define STACK_PUSH(x) do { current_line = __LINE__; return x; case __LINE__:; } while (0)
+#define STACK_END() } return NULL;
+
 #include "context/common.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
@@ -30,6 +35,8 @@ class basic_iterator : public rcobject
 protected:
  	zorba *zorp;
 	bool open_b;
+	// Line Info for Duff's device
+	int current_line;
 
 	//daniel
 public:
@@ -51,7 +58,13 @@ public:
 public:		// inline base logic
 
 	void open();
-	item_t next();
+
+	item_t next() // Forcing inlining of this function in g++: __attribute__((always_inline))
+	{
+		assert(open_b);
+		return _next();
+	}
+	
 	void close();
 
 	bool is_open() const;

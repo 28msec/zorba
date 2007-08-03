@@ -106,9 +106,11 @@ int main(int argc, char* argv[])
 				}
 
 				it_h->open();
-				while (!it_h->done()) {
+				while (true) {
 					item_t i_p = it_h->next();
-					if (i_p==NULL) continue;
+					if (i_p==NULL){ 
+						break;
+					}
 					i_p->put(zorp,cout) << endl;
 				}
 				it_h->close();
