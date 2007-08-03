@@ -43,6 +43,7 @@ public:
 public:	// iterator interface
 	virtual void _open();
 	virtual void _close();
+	virtual std::ostream&  _show(std::ostream&) const = 0;
 	virtual item_t _next() = 0;
 	virtual bool done() const;
 
@@ -68,7 +69,7 @@ public:
 
 public:	// iterator interface
 	item_t _next();
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -83,7 +84,7 @@ public:
 
 public:	// iterator interface
 	item_t _next();
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -98,7 +99,7 @@ public:
 
 public:	// iterator interface
 	item_t _next();
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -112,7 +113,7 @@ public:
 
 public:	// iterator interface
 	item_t _next();
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -126,7 +127,7 @@ public:
 
 public:	// iterator interface
 	item_t _next();
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -141,7 +142,7 @@ public:
 
 public:	// iterator interface
 	item_t _next();
-
+	std::ostream&  _show(std::ostream&) const;
 };
 
 
@@ -161,6 +162,7 @@ public:	// iterator interface
 	void _open();
 	void _close();
 	item_t _next();
+	std::ostream&  _show(std::ostream&) const;
 	bool done() const;
 
 private:
@@ -184,6 +186,7 @@ public:
 	
 public:
 	item_t _next();
+	std::ostream&  _show(std::ostream&) const;
 };
 
 // 6.3.2 op:numeric-less-than
@@ -206,6 +209,7 @@ public:
 	void _open();
 	void _close();
 	item_t _next();
+	std::ostream&  _show(std::ostream&) const;
 	bool done() const;
 
 private:

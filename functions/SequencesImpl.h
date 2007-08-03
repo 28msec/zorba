@@ -44,24 +44,25 @@ namespace xqp
 
 
 //15.1.2 op:concatenate
-	class concat_iterator : public basic_iterator
-	{
-		protected:
-			const std::vector<iterator_t> argv;
-			iterator_t currit_h;
-			uint32_t cursor;
+class concat_iterator : public basic_iterator
+{
+protected:
+	const std::vector<iterator_t> argv;
+	iterator_t currit_h;
+	uint32_t cursor;
 
-		public:
-			void _open();
-			void _close();
-			item_t _next();
-			bool done() const;
+public:
+	void _open();
+	void _close();
+	std::ostream&  _show(std::ostream&) const;
+	item_t _next();
+	bool done() const;
 
-		public:	// ctor,dtor
-			concat_iterator ( zorba*, yy::location loc, const std::vector<iterator_t>& );
-			concat_iterator ( const concat_iterator& it );
-			~concat_iterator() {}
-	};
+public:	// ctor,dtor
+	concat_iterator ( zorba*, yy::location loc, const std::vector<iterator_t>& );
+	concat_iterator ( const concat_iterator& it );
+	~concat_iterator() {}
+};
 
 
 //15.1.3 fn:index-of
@@ -138,26 +139,27 @@ namespace xqp
 
 
 //15.5.4 fn:doc
-	class doc_iterator : public basic_iterator
-	{
-		private:
-			iterator_t arg;
-			document_node* doc_node;
+class doc_iterator : public basic_iterator
+{
+	private:
+		iterator_t arg;
+		document_node* doc_node;
 
-		public:
-			void _open();
-			void _close();
-			item_t _next();
-			bool done() const;
+public:
+	void _open();
+	void _close();
+	std::ostream&  _show(std::ostream&) const;
+	item_t _next();
+	bool done() const;
 
-		public:
-			doc_iterator& operator= ( const doc_iterator& it );
+public:
+	doc_iterator& operator= ( const doc_iterator& it );
 
-		public:	// ctor,dtor
-			doc_iterator ( zorba*, yy::location loc, iterator_t );
-			doc_iterator ( const doc_iterator& );
-			~doc_iterator() {}
-	};
+public:	// ctor,dtor
+	doc_iterator ( zorba*, yy::location loc, iterator_t );
+	doc_iterator ( const doc_iterator& );
+	~doc_iterator() {}
+};
 
 
 //15.5.5 fn:doc-available

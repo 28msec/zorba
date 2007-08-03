@@ -97,7 +97,10 @@ int main(int argc, char* argv[])
 				iterator_t it_h = pvs.pop_itstack();
 				cout << endl;
 
-				cout << "iterator type = " << typeid(*it_h).name() << endl;
+				//cout << "iterator type = " << typeid(*it_h).name() << endl;
+
+				cout << "Iterator tree:\n";
+				it_h->show(cout);
 
 				cout << "\nIterator run:\n";
 				if (it_h==NULL) {

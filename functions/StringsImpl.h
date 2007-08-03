@@ -56,6 +56,7 @@ public:
 public:	// iterator interface
 	virtual void _open();
 	virtual void _close();
+	virtual std::ostream&  _show(std::ostream&) const;
 	virtual item_t _next();
 	virtual bool done() const;
 };
@@ -81,6 +82,7 @@ public:
 public:	// iterator interface
 	virtual void _open();
 	virtual void _close();
+	virtual std::ostream&  _show(std::ostream&) const;
 	virtual item_t _next();
 	virtual bool done() const;
 };

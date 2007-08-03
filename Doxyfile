@@ -1,4 +1,4 @@
-# Doxyfile 1.5.1
+# Doxyfile 1.5.1-KDevelop
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -47,12 +47,12 @@ EXTRACT_ALL            = YES
 EXTRACT_PRIVATE        = NO
 EXTRACT_STATIC         = YES
 EXTRACT_LOCAL_CLASSES  = YES
-EXTRACT_LOCAL_METHODS  = NO
+EXTRACT_LOCAL_METHODS  = YES
 HIDE_UNDOC_MEMBERS     = NO
 HIDE_UNDOC_CLASSES     = NO
 HIDE_FRIEND_COMPOUNDS  = NO
 HIDE_IN_BODY_DOCS      = NO
-INTERNAL_DOCS          = NO
+INTERNAL_DOCS          = YES
 CASE_SENSE_NAMES       = YES
 HIDE_SCOPE_NAMES       = NO
 SHOW_INCLUDE_FILES     = YES
@@ -138,7 +138,7 @@ FILTER_SOURCE_FILES    = NO
 #---------------------------------------------------------------------------
 # configuration options related to source browsing
 #---------------------------------------------------------------------------
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 INLINE_SOURCES         = NO
 STRIP_CODE_COMMENTS    = YES
 REFERENCED_BY_RELATION = YES

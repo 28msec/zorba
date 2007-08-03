@@ -93,7 +93,15 @@ item_t op_numeric_add_iterator::_next()
 	}
 }
 
-
+std::ostream& op_numeric_add_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<op_numeric_add_iterator>\n";
+	arg1->show(os);
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_add_iterator>\n";
+	return os;
+}
 
 /*______________________________________________________________________
 |  
@@ -130,7 +138,15 @@ item_t op_numeric_subtract_iterator::_next()
 	return new numericValue(xs_decimal, n1.val() - n0.val());
 }
 
-
+std::ostream& op_numeric_subtract_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<op_numeric_subtract_iterator>\n";
+	arg1->show(os);
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_subtract_iterator>\n";
+	return os;
+}
 
 /*______________________________________________________________________
 |  
@@ -166,7 +182,15 @@ item_t op_numeric_multiply_iterator::_next()
 	return new numericValue(xs_decimal, n1.val() * n0.val());
 }
 
-
+std::ostream& op_numeric_multiply_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<op_numeric_multiply_iterator>\n";
+	arg1->show(os);
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_multiply_iterator>\n";
+	return os;
+}
 
 /*______________________________________________________________________
 |  
@@ -212,7 +236,15 @@ item_t op_numeric_divide_iterator::_next()
 	return new numericValue(xs_decimal, n1.val() / n0.val());
 }
 
-
+std::ostream& op_numeric_divide_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<op_numeric_divide_iterator>\n";
+	arg1->show(os);
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_divide_iterator>\n";
+	return os;
+}
 
 /*______________________________________________________________________
 |  
@@ -260,7 +292,15 @@ item_t op_numeric_integer_divide_iterator::_next()
 	return new numericValue(xs_decimal, n1.val() / n0.val());
 }
 
-
+std::ostream& op_numeric_integer_divide_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<op_numeric_integer_divide_iterator>\n";
+	arg1->show(os);
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_integer_divide_iterator>\n";
+	return os;
+}
 
 /*______________________________________________________________________
 |  
@@ -316,7 +356,15 @@ item_t op_numeric_mod_iterator::_next()
 	return new numericValue(xs_decimal, (long)n1.val() % (long)n0.val());
 }
 
-
+std::ostream& op_numeric_mod_iterator::_show(std::ostream& os)
+const
+{
+	os  << IT_INDENT << "<op_numeric_mod_iterator>\n";
+	arg1->show(os);
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_mod_iterator>\n";
+	return os;
+}
 
 /*______________________________________________________________________
 |  
@@ -361,6 +409,15 @@ item_t op_numeric_unary_minus_iterator::_next()
 	return new numericValue(xs_decimal, -n.val());
 }
 
+std::ostream& op_numeric_unary_minus_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<op_numeric_unary_minus_iterator>\n";
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_unary_minus_iterator>\n";
+	return os;
+}
+
 void op_numeric_unary_minus_iterator::_open()
 {
 	arg0->open();
@@ -401,6 +458,16 @@ item_t op_numeric_equal_iterator::_next()
 
 }
 
+std::ostream& op_numeric_equal_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<op_numeric_equal_iterator>\n";
+	arg1->show(os);
+	arg0->show(os);
+	os << IT_OUTDENT << "</op_numeric_equal_iterator>\n";
+	return os;
+}
+		
 // item_t op_numeric_equal_iterator::_next()
 // {
 // 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
@@ -445,6 +512,15 @@ item_t fn_abs_iterator::_next()
 	else
 		return new numericValue(xs_decimal, -n0.val());
 
+}
+
+std::ostream& fn_abs_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<fn_abs_iterator>\n";
+	arg0->show(os);
+	os << IT_OUTDENT << "</fn_abs_iterator>\n";
+	return os;
 }
 
 bool fn_abs_iterator::done() const

@@ -135,6 +135,7 @@ public:
 public:
 	void _open() { }
 	void _close() { }
+	std::ostream&  _show(std::ostream& os) const {return os;}
 	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
@@ -159,6 +160,7 @@ public:
 public:
 	void _open() { }
 	void _close() { }
+	std::ostream&  _show(std::ostream& os) const {return os;}
 	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
@@ -183,6 +185,7 @@ public:
 public:
 	void _open() { }
 	void _close() { }
+	std::ostream&  _show(std::ostream& os) const {return os;}
 	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
@@ -207,6 +210,7 @@ public:
 public:
 	void _open() { }
 	void _close() { }
+	std::ostream&  _show(std::ostream& os) const {return os;}
 	item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 

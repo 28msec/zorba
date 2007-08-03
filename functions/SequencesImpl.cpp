@@ -54,6 +54,15 @@ void concat_iterator::_close()
 	}
 }
 
+std::ostream& concat_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<concat_iterator>\n";
+	currit_h->show(os);
+	os << IT_OUTDENT << "</concat_iterator>\n";
+	return os;
+}
+
 item_t concat_iterator::_next() {
 	item_t item;
 	STACK_INIT();
@@ -63,6 +72,7 @@ item_t concat_iterator::_next() {
 		while (item != NULL) {
 			STACK_PUSH (item,1);
 			item = this->currit_h->next();
+
 		}
 	}
 	
@@ -236,6 +246,15 @@ item_t doc_iterator::_next()
 
 void doc_iterator::_close()
 {
+}
+
+std::ostream& doc_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<doc_iterator>\n";
+	arg->show(os);
+	os << IT_OUTDENT << "</doc_iterator>\n";
+	return os;
 }
 
 bool doc_iterator::done() const

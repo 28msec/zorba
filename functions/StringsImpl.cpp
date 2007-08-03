@@ -44,13 +44,22 @@ void fn_codepoints_to_string_iterator::_open()
 item_t fn_codepoints_to_string_iterator::_next()
 {
 	arg->next();
-	//TO DO implement the wchar_t functionality
-	return new stringValue(xs_string, "test");
+	//TO DO implement the wchar_t funtionality
+	return new stringValue( xs_string, "test");
 }
 
 void fn_codepoints_to_string_iterator::_close()
 {
 	arg->close();
+}
+
+std::ostream& fn_codepoints_to_string_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<fn_codepoints_to_string>\n";
+	arg->show(os);
+	os << IT_OUTDENT << "</fn_codepoints_to_string>\n";
+	return os;
 }
 
 bool fn_codepoints_to_string_iterator::done() const
@@ -106,14 +115,23 @@ void fn_string_to_codepoints_iterator::_open()
 
 item_t fn_string_to_codepoints_iterator::_next()
 {
-	arg->next();
-//TO DO implement the wchar_t functionality
+	item_t nextChar = arg->next();
+	//TO DO implement the wchar_t functionality
 	return new numericValue(xs_integer, 2222);
 }
 
 void fn_string_to_codepoints_iterator::_close()
 {
 	arg->close();
+}
+
+std::ostream& fn_string_to_codepoints_iterator::_show(std::ostream& os)
+const
+{
+	os << IT_INDENT << "<fn_string_to_codepoints>\n";
+	arg->show(os);
+	os << IT_OUTDENT << "</fn_string_to_codepoints>\n";
+	return os;
 }
 
 bool fn_string_to_codepoints_iterator::done() const

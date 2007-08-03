@@ -18,6 +18,7 @@
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "parser/location.hh"
+#include "parser/indent.h"
 
 #include <assert.h>
 #include <iostream>
@@ -25,6 +26,11 @@
 
 namespace xqp {
 
+extern int iteratorTreeDepth;
+
+#define IT_INDENT			indent[++iteratorTreeDepth % 30]
+#define IT_OUTDENT		indent[iteratorTreeDepth-- % 30]
+	
 class item;
 class node;
 class qname;
@@ -63,7 +69,9 @@ public:		// inline base logic
 	// Info: Forcing inlining a function in g++: item_t next() __attribute__((always_inline)) {...}
 	
 	void close();
+	std::ostream& show(std::ostream&);
 
+	
 	bool is_open() const;
 
 	virtual bool done() const = 0;
@@ -73,6 +81,7 @@ protected:	// dispatch to concrete classes
 	virtual item_t _next() = 0;
 	virtual void	 _close() = 0;
 
+	virtual std::ostream&  _show(std::ostream&) const = 0;
 };
 
 
@@ -121,13 +130,18 @@ public:
 
 public:		// iterator interface
 	void _open() {}
+
 	void _close() {
 		this->is_done = false;
-	} 
+	}
+	
+	std::ostream&  _show(std::ostream& os)	const {return os;}
+	
 	item_t _next() {
 		bool was_done = is_done; is_done = true;
 		return was_done ? NULL : i_h;
 	}
+	
 	bool done() const { return is_done; }
 
 public:
@@ -204,6 +218,7 @@ public:
 	void _open() { it->open();  }
 	item_t _next() { return it->next(); }
 	void _close() { it->close(); }
+	std::ostream&  _show(std::ostream& os) const {return os;}
 	bool done() const { return it->done(); }
 	void bind(iterator_t _it) { it = _it;}
 
@@ -250,6 +265,7 @@ public:
 	item_t _next();
 	void _open();
 	void _close();
+	std::ostream&  _show(std::ostream& os) const;
 	bool done() const;
 
 }; 

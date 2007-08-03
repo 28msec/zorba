@@ -18,6 +18,8 @@
 using namespace std;
 namespace xqp {
 
+int iteratorTreeDepth = 0;
+
 void basic_iterator::open()
 {
 	assert(!open_b);
@@ -50,6 +52,12 @@ void basic_iterator::close()
 	assert(open_b);
 	open_b = false;
 	_close();
+}
+
+std::ostream& basic_iterator::show(std::ostream& os)
+{
+	_show(os);
+	return os;
 }
 
 bool basic_iterator::is_open() const
@@ -90,6 +98,15 @@ void map_iterator::_close() {
 	if (theState!=outer)
 		theExpr->close();
 }
+
+std::ostream& map_iterator::_show(std::ostream& os)
+const
+{
+	theInput->show(os);
+	if (theState!=outer)
+		theExpr->show(os);
+	return os;
+} 
 
 bool map_iterator::done() const {
 	return (theInput->done() && (theState==outer || theExpr->done()));

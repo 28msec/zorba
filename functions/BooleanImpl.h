@@ -32,6 +32,7 @@ public:
 public:	// iterator interface
 	void _open();
 	void _close();
+	std::ostream&  _show(std::ostream&) const;
 	item_t _next();
 	bool done() const;
 
