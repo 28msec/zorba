@@ -10,7 +10,8 @@
 #include "dom_qname.h"
 #include "runtime/item_iterator.h"
 #include "util/hashfun.h"
-#include "zorba/valuereps.h"
+#include "values/primitive_values.h"
+//#include "zorba/valuereps.h"
 
 #include <string>
 
