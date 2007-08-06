@@ -46,9 +46,9 @@ public:		// accessors
 	qnamekey_t qnamekey() const { return hashkey(the_uri,the_prefix,the_localname); }
 
 	static qnamekey_t hashkey(
-		const std::string& uri,
-		const std::string& prefix,
-		const std::string& localname);
+	const std::string& uri,
+	const std::string& prefix,
+	const std::string& localname);
 
 public:		// XQuery interface
 	sequence_type_t type() const { return xs_qname; }
