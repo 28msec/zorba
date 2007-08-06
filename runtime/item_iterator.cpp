@@ -18,7 +18,7 @@
 using namespace std;
 namespace xqp {
 
-int iteratorTreeDepth = 0;
+int iteratorTreeDepth = -1;
 
 void basic_iterator::open()
 {
@@ -56,7 +56,9 @@ void basic_iterator::close()
 
 std::ostream& basic_iterator::show(std::ostream& os)
 {
+	os << IT_INDENT << "<" << typeid(*this).name() << ">" << std::endl;
 	_show(os);
+	os << IT_OUTDENT << "</" << typeid(*this).name() << ">" << std::endl;
 	return os;
 }
 

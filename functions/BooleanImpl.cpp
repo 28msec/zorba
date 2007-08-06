@@ -37,9 +37,7 @@ void fn_boolean_iterator::_close()
 std::ostream& fn_boolean_iterator::_show(std::ostream& os)
 const
 {
-	os << IT_INDENT << "<fn_boolean_iterator>\n";
 	arg0->show(os);
-	os << IT_OUTDENT <<"</fn_boolean_iterator>\n";
 	return os;
 }
 

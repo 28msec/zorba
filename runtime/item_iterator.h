@@ -29,6 +29,7 @@ namespace xqp {
 extern int iteratorTreeDepth;
 
 #define IT_INDENT			indent[++iteratorTreeDepth % 30]
+#define IT_DEPTH			indent[iteratorTreeDepth % 30]
 #define IT_OUTDENT		indent[iteratorTreeDepth-- % 30]
 	
 class item;
@@ -135,12 +136,17 @@ public:		// iterator interface
 		this->is_done = false;
 	}
 	
-	std::ostream&  _show(std::ostream& os)	const {return os;}
+	std::ostream&  _show(std::ostream& os)	const
+	{
+		return os;
+	}
 	
 	item_t _next() {
 		bool was_done = is_done; is_done = true;
 		return was_done ? NULL : i_h;
 	}
+
+	
 	
 	bool done() const { return is_done; }
 

@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 
 				//cout << "iterator type = " << typeid(*it_h).name() << endl;
 
-				cout << "Iterator tree:\n";
+				cout << "Iterator tree:" << std::endl;
 				it_h->show(cout);
 
 				cout << "\nIterator run:\n";

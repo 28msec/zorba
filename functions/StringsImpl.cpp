@@ -58,9 +58,7 @@ void fn_codepoints_to_string_iterator::_close()
 std::ostream& fn_codepoints_to_string_iterator::_show(std::ostream& os)
 const
 {
-	os << IT_INDENT << "<fn_codepoints_to_string>\n";
 	arg->show(os);
-	os << IT_OUTDENT << "</fn_codepoints_to_string>\n";
 	return os;
 }
 
@@ -132,9 +130,7 @@ void fn_string_to_codepoints_iterator::_close()
 std::ostream& fn_string_to_codepoints_iterator::_show(std::ostream& os)
 const
 {
-	os << IT_INDENT << "<fn_string_to_codepoints>\n";
 	arg->show(os);
-	os << IT_OUTDENT << "</fn_string_to_codepoints>\n";
 	return os;
 }
 

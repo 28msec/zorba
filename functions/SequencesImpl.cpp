@@ -57,9 +57,7 @@ void concat_iterator::_close()
 std::ostream& concat_iterator::_show(std::ostream& os)
 const
 {
-	os << IT_INDENT << "<concat_iterator>\n";
 	currit_h->show(os);
-	os << IT_OUTDENT << "</concat_iterator>\n";
 	return os;
 }
 
@@ -251,9 +249,7 @@ void doc_iterator::_close()
 std::ostream& doc_iterator::_show(std::ostream& os)
 const
 {
-	os << IT_INDENT << "<doc_iterator>\n";
 	arg->show(os);
-	os << IT_OUTDENT << "</doc_iterator>\n";
 	return os;
 }
 
