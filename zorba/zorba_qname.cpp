@@ -86,7 +86,7 @@ iterator_t zorba_qname::effective_boolean_value(
 iterator_t zorba_qname::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(describe()));
+	return new SingletonIterator(loc,new stringValue(describe()));
 }
 
 

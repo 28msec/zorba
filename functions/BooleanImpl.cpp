@@ -18,7 +18,7 @@ fn_boolean_iterator::fn_boolean_iterator(
 	yy::location loc, 
 	iterator_t _arg0)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	arg0(_arg0)
 {
 	this->donef = false;

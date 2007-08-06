@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
 				//cout << "iterator type = " << typeid(*it_h).name() << endl;
 
 				cout << "Iterator tree:" << std::endl;
-				it_h->show(cout);
+// 				it_h->show(cout);
 
 				cout << "\nIterator run:\n";
 				if (it_h==NULL) {
@@ -110,15 +110,23 @@ int main(int argc, char* argv[])
 					return -1;
 				}
 
-				it_h->open();
+// 				it_h->open();
+// 				while (true) {
+// 					item_t i_p = it_h->next();
+// 					if (i_p==NULL){ 
+// 						break;
+// 					}
+// 					i_p->put(zorp,cout) << endl;
+// 				}
+// 				it_h->close();
+					
 				while (true) {
-					item_t i_p = it_h->next();
-					if (i_p==NULL){ 
+					item_t i_p = it_h->produceNext();
+					if (i_p == NULL)
 						break;
-					}
 					i_p->put(cout) << endl;
 				}
-				it_h->close();
+				it_h->releaseResources();
 			}
 		}
 	} catch (xqp_exception & e) {

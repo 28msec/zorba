@@ -897,7 +897,6 @@ cout << indent[++depth] << TRACE << endl;
 
 	if (prefix=="fn" || prefix=="op") {
 		uri = XQUERY_FN_NS;
-		fname = prefix+"_"+fname;
 	}
 	else {
 		uri = ZORBA_NS;

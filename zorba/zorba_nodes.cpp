@@ -38,7 +38,7 @@ zorba_document_node::zorba_document_node(
 iterator_t zorba_document_node::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->str()));
+	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
 iterator_t zorba_document_node::base_uri(
@@ -46,7 +46,7 @@ iterator_t zorba_document_node::base_uri(
 {
 	data_manager* dmgr_p = zorba::getZorbaForCurrentThread()->get_data_manager();
 	const qname* qn_p = dmgr_p->get_qname(rep->baseuri());
-	return new singleton_iterator(loc,(item*)qn_p);
+	return new SingletonIterator(loc,(item*)qn_p);
 }
 
 iterator_t zorba_document_node::document_uri(
@@ -54,7 +54,7 @@ iterator_t zorba_document_node::document_uri(
 {
 	data_manager* dmgr_p = zorba::getZorbaForCurrentThread()->get_data_manager();
 	const qname* qn_p = dmgr_p->get_qname(rep->docuri());
-	return new singleton_iterator(loc,(item*)qn_p);
+	return new SingletonIterator(loc,(item*)qn_p);
 }
 
 iterator_t zorba_document_node::children(
@@ -66,13 +66,13 @@ iterator_t zorba_document_node::children(
 iterator_t zorba_document_node::typed_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->str()));
+	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
 iterator_t zorba_document_node::atomized_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->str()));
+	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
 ostream& zorba_document_node::put(
@@ -142,7 +142,7 @@ zorba_element_node::zorba_element_node(
 iterator_t zorba_element_node::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->str()));
+	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
 iterator_t zorba_element_node::base_uri(
@@ -160,7 +160,7 @@ iterator_t zorba_element_node::type_name(
 	const qname* qn_p = get_type_name();
 	//d Assert<null_pointer>(qn_p!=NULL);
 	Assert(qn_p!=NULL);
-	return new singleton_iterator(loc,(item*)qn_p);
+	return new SingletonIterator(loc,(item*)qn_p);
 }
 
 iterator_t zorba_element_node::node_name(
@@ -169,7 +169,7 @@ iterator_t zorba_element_node::node_name(
 	const qname* qn_p = get_node_name();
 	//d Assert<null_pointer>(qn_p!=NULL);
 	Assert(qn_p!=NULL);
-	return new singleton_iterator(loc,(item*)qn_p);
+	return new SingletonIterator(loc,(item*)qn_p);
 }
 
 iterator_t zorba_element_node::parent(
@@ -178,7 +178,7 @@ iterator_t zorba_element_node::parent(
 	const node* n_p = get_parent();
 	//d Assert<null_pointer>(n_p!=NULL);
 	Assert(n_p!=NULL);
-	return new singleton_iterator(loc,(item*)n_p);
+	return new SingletonIterator(loc,(item*)n_p);
 }
 
 iterator_t zorba_element_node::typed_value(
@@ -274,7 +274,7 @@ zorba_attribute_node::zorba_attribute_node(
 iterator_t zorba_attribute_node::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->str()));
+	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
 iterator_t zorba_attribute_node::base_uri(
@@ -292,7 +292,7 @@ iterator_t zorba_attribute_node::type_name(
 	const qname* qn_p = get_type_name();
 	//d Assert<null_pointer>(qn_p!=NULL);
 	Assert(qn_p!=NULL);
-	return new singleton_iterator(loc,(item*)qn_p);
+	return new SingletonIterator(loc,(item*)qn_p);
 }
 
 iterator_t zorba_attribute_node::node_name(
@@ -301,7 +301,7 @@ iterator_t zorba_attribute_node::node_name(
 	const qname* qn_p = get_node_name();
 	//d Assert<null_pointer>(qn_p!=NULL);
 	Assert(qn_p!=NULL);
-	return new singleton_iterator(loc,(item*)qn_p);
+	return new SingletonIterator(loc,(item*)qn_p);
 }
 
 iterator_t zorba_attribute_node::parent(
@@ -310,7 +310,7 @@ iterator_t zorba_attribute_node::parent(
 	const node* n_p = get_parent();
 	//d Assert<null_pointer>(n_p!=NULL);
 	Assert(n_p!=NULL);
-	return new singleton_iterator(loc,(item*)n_p);
+	return new SingletonIterator(loc,(item*)n_p);
 }
 
 iterator_t zorba_attribute_node::typed_value(
@@ -358,13 +358,13 @@ zorba_namespace_node::zorba_namespace_node(
 iterator_t zorba_namespace_node::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->uri()));
+	return new SingletonIterator(loc,new stringValue(rep->uri()));
 }
 
 iterator_t zorba_namespace_node::node_name(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->prefix()));
+	return new SingletonIterator(loc,new stringValue(rep->prefix()));
 }
 
 iterator_t zorba_namespace_node::typed_value(
@@ -412,7 +412,7 @@ zorba_pi_node::zorba_pi_node(
 iterator_t zorba_pi_node::string_value(
 	yy::location &loc) const 
 {
-	return new singleton_iterator(loc,new stringValue(rep->content()));
+	return new SingletonIterator(loc,new stringValue(rep->content()));
 }
 
 iterator_t zorba_pi_node::typed_value(
@@ -442,7 +442,7 @@ iterator_t zorba_pi_node::node_name(
 	const qname* qn_p = get_node_name();
 	//d Assert<null_pointer>(qn_p!=NULL);
 	Assert(qn_p!=NULL);
-	return new singleton_iterator(loc,(item*)qn_p);
+	return new SingletonIterator(loc,(item*)qn_p);
 }
 
 iterator_t zorba_pi_node::parent(
@@ -451,7 +451,7 @@ iterator_t zorba_pi_node::parent(
 	const node* n_p = get_parent();
 	//d Assert<null_pointer>(n_p!=NULL);
 	Assert(n_p!=NULL);
-	return new singleton_iterator(loc,(item*)n_p);
+	return new SingletonIterator(loc,(item*)n_p);
 }
 
 
@@ -489,7 +489,7 @@ zorba_comment_node::zorba_comment_node(
 iterator_t zorba_comment_node::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->str()));
+	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
 iterator_t zorba_comment_node::base_uri(
@@ -504,7 +504,7 @@ iterator_t zorba_comment_node::base_uri(
 iterator_t zorba_comment_node::typed_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,(item*)this);
+	return new SingletonIterator(loc,(item*)this);
 }
 
 iterator_t zorba_comment_node::atomized_value(
@@ -552,7 +552,7 @@ zorba_text_node::zorba_text_node(
 iterator_t zorba_text_node::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc,new stringValue(rep->str()));
+	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
 iterator_t zorba_text_node::base_uri(

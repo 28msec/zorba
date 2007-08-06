@@ -32,7 +32,7 @@ bool library::static_init = false;
 // Numerics
 op_numeric_add  op_add(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","op_add"),
+		new zorba_qname(XQUERY_FN_NS,"op","add"),
 		xs_decimal,					// arg[1] type
 		xs_decimal,					// arg[2] type
 		xs_decimal					// return type
@@ -41,7 +41,7 @@ op_numeric_add  op_add(
 
 op_numeric_subtract  op_subtract(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","op_subtract"),
+		new zorba_qname(XQUERY_FN_NS,"op","subtract"),
 		xs_decimal,					// arg[1] type
 		xs_decimal,					// arg[2] type
 		xs_decimal					// return type
@@ -50,7 +50,7 @@ op_numeric_subtract  op_subtract(
 
 op_numeric_equal op_equal(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","op_equal"),
+		new zorba_qname(XQUERY_FN_NS,"op","equal"),
 		xs_decimal,
 		xs_decimal,
 		xs_boolean
@@ -60,7 +60,7 @@ op_numeric_equal op_equal(
 
 fn_abs fn_abs_sig(
 	signature(
-		new zorba_qname(XQUERY_FN_NS, "fn", "fn_abs"),
+		new zorba_qname(XQUERY_FN_NS, "fn", "abs"),
 		xs_decimal,
 		xs_decimal
 	)
@@ -69,7 +69,7 @@ fn_abs fn_abs_sig(
 // Sequences
 fn_doc_func fn_doc(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","fn_doc"),
+		new zorba_qname(XQUERY_FN_NS,"fn","doc"),
 		xs_string,					// arg[1] type
 		documentNode				// return type
 	)
@@ -80,7 +80,7 @@ fn_doc_func fn_doc(
 
 fn_codepoints_to_string fn_codepoints_to_string_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","fn_codepoints-to-string"),
+		new zorba_qname(XQUERY_FN_NS,"fn","codepoints-to-string"),
 		xs_integer,					// arg[1] type
 		documentNode				// return type
 	)
@@ -88,7 +88,7 @@ fn_codepoints_to_string fn_codepoints_to_string_func(
 
 fn_string_to_codepoints fn_string_to_codepoints_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","fn_string-to-codepoints"),
+		new zorba_qname(XQUERY_FN_NS,"fn","string-to-codepoints"),
 		xs_string,					// arg[1] type
 		documentNode				// return type
 	)
@@ -96,7 +96,7 @@ fn_string_to_codepoints fn_string_to_codepoints_func(
 
 fn_boolean fn_boolean_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","fn_boolean"),
+		new zorba_qname(XQUERY_FN_NS,"fn","boolean"),
 		xs_anyType,
 		xs_boolean
 	)

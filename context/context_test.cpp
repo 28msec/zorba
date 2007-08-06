@@ -36,9 +36,9 @@ int main(int argc, char* argv[])
 		rchandle<QName> var2_h = new QName("var2");
 		rchandle<QName> var3_h = new QName("var3");
 
-		rchandle<item_iterator> it1_h = new singleton_iterator(&ctx,string("value-1"));
-		rchandle<item_iterator> it2_h = new singleton_iterator(&ctx,string("value-2"));
-		rchandle<item_iterator> it3_h = new singleton_iterator(&ctx,string("value-3"));
+		rchandle<item_iterator> it1_h = new SingletonIterator(&ctx,string("value-1"));
+		rchandle<item_iterator> it2_h = new SingletonIterator(&ctx,string("value-2"));
+		rchandle<item_iterator> it3_h = new SingletonIterator(&ctx,string("value-3"));
 
 		// var 1
 		rchandle<var_binding> vb1_h = new var_binding(var1_h, it1_h, item_type());

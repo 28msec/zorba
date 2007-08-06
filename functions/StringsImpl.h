@@ -39,7 +39,7 @@ class zorba;
 // 7.2.1 fn:codepoints-to-string
 // --------------------
 
-class fn_codepoints_to_string_iterator : public basic_iterator
+class fn_codepoints_to_string_iterator : public BasicIterator
 {
 private:
 	iterator_t arg;
@@ -65,7 +65,7 @@ public:	// iterator interface
 // 7.2.2 fn:string-to-codepoints
 // --------------------
 
-class fn_string_to_codepoints_iterator : public basic_iterator
+class fn_string_to_codepoints_iterator : public BasicIterator
 {
 private:
 	iterator_t arg;

@@ -20,34 +20,48 @@ namespace xqp {
 
 int iteratorTreeDepth = -1;
 
-basic_iterator::basic_iterator(yy::location _loc) : 
+BasicIterator::BasicIterator(yy::location _loc) : 
 																	open_b(false),
 																	loc(_loc)
 {
+  this->current_line = 0;
 	zorp = zorba::getZorbaForCurrentThread();
 }
-basic_iterator::basic_iterator(const basic_iterator& it) : rcobject (), 
+BasicIterator::BasicIterator(const BasicIterator& it) : rcobject (), 
 																					open_b(it.open_b),
 																					loc(it.loc)
 {
+  this->current_line = 0;
 	zorp = zorba::getZorbaForCurrentThread();
 }
 
-basic_iterator::~basic_iterator()
+BasicIterator::~BasicIterator()
 {
 }
 
-void basic_iterator::open()
+void BasicIterator::open()
 {
 	assert(!open_b);
 	open_b = true;
 	
-	// Line Info for Duff's device be reset to allow resetting iterators that use Duff's device
+	// Initialization of the line info for Duff's device.
 	this->current_line = 0;
 	_open();
 }
 
-item_t basic_iterator::next()
+void BasicIterator::close()
+{
+	assert(open_b);
+	open_b = false;
+	_close();
+}
+
+bool BasicIterator::isOpen() const
+{
+	return open_b;
+}
+
+item_t BasicIterator::next()
 {
 	assert(open_b);
 	//daniel: saves the current iterator in zorba object (to keep track of the current iterator)
@@ -64,14 +78,45 @@ item_t basic_iterator::next()
 		return _next();
 }
 
-void basic_iterator::close()
-{
-	assert(open_b);
-	open_b = false;
-	_close();
+item_t BasicIterator::produceNext() {
+	return this->nextImpl_();
 }
 
-std::ostream& basic_iterator::show(std::ostream& os)
+void BasicIterator::reset() {
+	this->current_line = 0;
+	this->resetImpl_();
+}
+
+void BasicIterator::releaseResources() {
+	this->releaseResourcesImpl_();
+}
+
+item_t BasicIterator::consumeNext(iterator_t& subIterator) {
+	return subIterator->next();
+}
+
+void BasicIterator::resetChild(iterator_t& subIterator) {
+	subIterator->reset();
+}
+
+void BasicIterator::releaseChildResources(iterator_t& subIterator) {
+	subIterator->releaseResources();
+}
+
+item_t BasicIterator::nextImpl_() {
+	cout << "'nextImpl_' is missing" << endl;
+	return NULL;
+}
+
+void BasicIterator::resetImpl_() {
+	cout << "'resetImpl_' is missing" << endl;
+}
+
+void BasicIterator::releaseResourcesImpl_(){
+	cout << "'releaseResourcesImpl_' is missing" << endl;
+}
+
+std::ostream& BasicIterator::show(std::ostream& os)
 {
 	os << IT_INDENT << "<" << typeid(*this).name() << ">" << std::endl;
 	_show(os);
@@ -79,10 +124,7 @@ std::ostream& basic_iterator::show(std::ostream& os)
 	return os;
 }
 
-bool basic_iterator::is_open() const
-{
-	return open_b;
-}
+
 
 void map_iterator::_open() {
 	theState = outer;
@@ -91,8 +133,8 @@ void map_iterator::_open() {
 
 
 item_t map_iterator::_next() {
-	basic_iterator& input = *theInput;
-	basic_iterator& expr = *theExpr;
+	BasicIterator& input = *theInput;
+	BasicIterator& expr = *theExpr;
 
 	while (true) {
 		if (theState==outer) {

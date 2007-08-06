@@ -44,10 +44,10 @@ namespace xqp
 
 
 //15.1.2 op:concatenate
-class concat_iterator : public basic_iterator
+class ConcatIterator : public BasicIterator
 {
 protected:
-	const std::vector<iterator_t> argv;
+	std::vector<iterator_t> argv;
 	iterator_t currit_h;
 	uint32_t cursor;
 
@@ -58,10 +58,15 @@ public:
 	item_t _next();
 	bool done() const;
 
+protected:
+	item_t nextImpl_();
+	void resetImpl_();
+	void releaseResourcesImpl_();
+
 public:	// ctor,dtor
-	concat_iterator ( yy::location loc, const std::vector<iterator_t>& );
-	concat_iterator ( const concat_iterator& it );
-	~concat_iterator() {}
+	ConcatIterator ( yy::location loc, const std::vector<iterator_t>& );
+	ConcatIterator ( const ConcatIterator& it );
+	~ConcatIterator() {}
 };
 
 
@@ -139,7 +144,7 @@ public:	// ctor,dtor
 
 
 //15.5.4 fn:doc
-class doc_iterator : public basic_iterator
+class doc_iterator : public BasicIterator
 {
 	private:
 		iterator_t arg;

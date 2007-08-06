@@ -111,7 +111,7 @@ numericValue::numericValue(
 iterator_t numericValue::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(describe()));
+	return new SingletonIterator(loc, new stringValue(describe()));
 }
 
 
@@ -158,7 +158,7 @@ string timeValue::describe() const
 iterator_t timeValue::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(describe()));
+	return new SingletonIterator(loc, new stringValue(describe()));
 }
 
 
@@ -216,7 +216,7 @@ string stringValue::str() const
 iterator_t stringValue::atomized_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, (item*)this);
+	return new SingletonIterator(loc, (item*)this);
 }
 
 iterator_t stringValue::effective_boolean_value(
@@ -228,7 +228,7 @@ iterator_t stringValue::effective_boolean_value(
 iterator_t stringValue::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, (item*)this);
+	return new SingletonIterator(loc, (item*)this);
 }
 
 
@@ -276,7 +276,7 @@ string binaryValue::describe() const
 iterator_t binaryValue::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(describe()));
+	return new SingletonIterator(loc, new stringValue(describe()));
 }
 
 
@@ -314,7 +314,7 @@ string booleanValue::str() const
 iterator_t booleanValue::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(describe()));
+	return new SingletonIterator(loc, new stringValue(describe()));
 }
 
 

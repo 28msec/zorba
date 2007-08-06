@@ -71,7 +71,7 @@ fn_codepoints_to_string_iterator::fn_codepoints_to_string_iterator(
 	yy::location loc,
 	iterator_t _arg)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	arg(_arg),
 	doc_node(NULL)
 {
@@ -80,7 +80,7 @@ fn_codepoints_to_string_iterator::fn_codepoints_to_string_iterator(
 fn_codepoints_to_string_iterator::fn_codepoints_to_string_iterator(
 	const fn_codepoints_to_string_iterator& it)
 :
-	basic_iterator(it),
+	BasicIterator(it),
 	arg(it.arg),
 	doc_node(it.doc_node)
 {
@@ -142,7 +142,7 @@ fn_string_to_codepoints_iterator::fn_string_to_codepoints_iterator(
 	yy::location loc,
 iterator_t _arg)
 :
-basic_iterator(loc),
+BasicIterator(loc),
 	arg(_arg),
 	doc_node(NULL)
 {
@@ -151,7 +151,7 @@ basic_iterator(loc),
 fn_string_to_codepoints_iterator::fn_string_to_codepoints_iterator(
 	const fn_string_to_codepoints_iterator& it)
 :
-basic_iterator(it),
+BasicIterator(it),
 	arg(it.arg),
 	doc_node(it.doc_node)
 {

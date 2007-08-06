@@ -34,7 +34,7 @@ class zorba;
 
 // binary iterator base class
 
-class op_numeric_binary_iterator : public basic_iterator
+class op_numeric_binary_iterator : public BasicIterator
 {
 public:
 	op_numeric_binary_iterator(yy::location loc, iterator_t, iterator_t);
@@ -152,7 +152,7 @@ public:	// iterator interface
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
-class op_numeric_unary_minus_iterator : public basic_iterator
+class op_numeric_unary_minus_iterator : public BasicIterator
 {
 public:
 	op_numeric_unary_minus_iterator(yy::location loc, iterator_t);
@@ -199,7 +199,7 @@ public:
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-class fn_abs_iterator : public basic_iterator 
+class fn_abs_iterator : public BasicIterator 
 {
 public:
 	fn_abs_iterator(yy::location loc, iterator_t);

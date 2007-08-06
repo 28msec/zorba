@@ -37,7 +37,7 @@ qname* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-void concat_iterator::_open()
+void ConcatIterator::_open()
 {
 	this->cursor = 0;
 	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
@@ -46,7 +46,7 @@ void concat_iterator::_open()
   }
 }
 
-void concat_iterator::_close()
+void ConcatIterator::_close()
 {
 	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
@@ -54,16 +54,18 @@ void concat_iterator::_close()
 	}
 }
 
-std::ostream& concat_iterator::_show(std::ostream& os)
+std::ostream& ConcatIterator::_show(std::ostream& os)
 const
 {
 	currit_h->show(os);
 	return os;
 }
 
-item_t concat_iterator::_next() {
+item_t ConcatIterator::_next() {
 	item_t item;
+	
 	STACK_INIT();
+	
 	for (; this->cursor < this->argv.size (); this->cursor++) {
 		this->currit_h = this->argv[this->cursor];
 		item = this->currit_h->next();
@@ -79,7 +81,7 @@ item_t concat_iterator::_next() {
 }
 
 
-bool concat_iterator::done() const
+bool ConcatIterator::done() const
 {
 // 	return (currit_h->done() && cursor==argv.size()-1);
 	// This function has to disappear!
@@ -87,21 +89,56 @@ bool concat_iterator::done() const
 	return false;
 }
 
-concat_iterator::concat_iterator(
+item_t ConcatIterator::nextImpl_() {
+	item_t item;
+	
+	STACK_INIT();
+	
+	this->cursor = 0;
+	
+	for (; this->cursor < this->argv.size (); this->cursor++) {
+		this->currit_h = this->argv[this->cursor];
+		item = this->currit_h->produceNext();
+		while (item != NULL) {
+			STACK_PUSH (item);
+			item = this->currit_h->produceNext();
+
+		}
+	}
+	
+	STACK_PUSH(NULL);
+	STACK_END();
+}
+
+void ConcatIterator::resetImpl_() {
+	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		this->resetChild(*iter);
+	}
+}
+
+void ConcatIterator::releaseResourcesImpl_() {
+	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		this->releaseChildResources(*iter);
+	}
+}
+
+ConcatIterator::ConcatIterator(
 	yy::location loc,
 	const vector<iterator_t>& _argv)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	argv(_argv),
 	currit_h(NULL),
 	cursor(0)
 {
 }
 
-concat_iterator::concat_iterator(
-	const concat_iterator& concat_it)
+ConcatIterator::ConcatIterator(
+	const ConcatIterator& concat_it)
 :
-	basic_iterator(concat_it),
+	BasicIterator(concat_it),
 	argv(concat_it.argv),
 	currit_h(concat_it.currit_h),
 	cursor(concat_it.cursor)
@@ -261,7 +298,7 @@ doc_iterator::doc_iterator(
 	yy::location loc,
 	iterator_t _arg)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	arg(_arg),
 	doc_node(NULL)
 {
@@ -270,7 +307,7 @@ doc_iterator::doc_iterator(
 doc_iterator::doc_iterator(
 	const doc_iterator& it)
 :
-	basic_iterator(it),
+	BasicIterator(it),
 	arg(it.arg),
 	doc_node(it.doc_node)
 {

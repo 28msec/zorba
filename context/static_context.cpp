@@ -93,7 +93,7 @@ iterator_t static_context::default_function_namespace() const
 void static_context::set_default_function_namespace(
 	const namespace_node* nn_p)
 {
-	iterator_t it_h = new singleton_iterator(yy::location(), (item*)nn_p);
+	iterator_t it_h = new SingletonIterator(yy::location(), (item*)nn_p);
 	keymap.put(default_function_ns_key,it_h);
 }
 
@@ -173,7 +173,7 @@ void static_context::set_construction_mode(
 	enum construction_mode_t v)
 {
 	string mode = (v==cons_preserve?"cons_preserve":"cons_strip");
-	iterator_t it_h = new singleton_iterator(yy::location(), new stringValue(mode));
+	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
 	keymap.put(construction_mode_key, it_h);
 }
 
@@ -181,7 +181,7 @@ void static_context::set_order_empty_mode(
 	enum order_empty_mode_t v)
 {
 	string mode = (v==empty_greatest?"empty_greatest":"empty_least");
-	iterator_t it_h = new singleton_iterator(yy::location(), new stringValue(mode));
+	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
 	keymap.put(order_empty_mode_key, it_h);
 }
 
@@ -189,7 +189,7 @@ void static_context::set_boundary_space_mode(
 	enum boundary_space_mode_t v)
 {
 	string mode = (v==preserve_space?"preserve_space":"strip_space");
-	iterator_t it_h = new singleton_iterator(yy::location(), new stringValue(mode));
+	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
 	keymap.put(boundary_space_mode_key, it_h);
 }
 
@@ -197,7 +197,7 @@ void static_context::set_inherit_mode(
 	enum inherit_mode_t v)
 {
 	string mode = (v==inherit_ns?"inherit_ns":"no_inherit_ns");
-	iterator_t it_h = new singleton_iterator(yy::location(), new stringValue(mode));
+	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
 	keymap.put(inherit_mode_key, it_h);
 }
 
@@ -205,7 +205,7 @@ void static_context::set_preserve_mode(
 	enum preserve_mode_t v)
 {
 	string mode = (v==preserve_ns?"preserve_ns":"no_preserve_ns");
-	iterator_t it_h = new singleton_iterator(yy::location(), new stringValue(mode));
+	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
 	keymap.put(preserve_mode_key, it_h);
 }
 
@@ -229,13 +229,13 @@ std::string static_context::get_baseuri() const
 
 void static_context::set_default_collation(const string& uri)
 {
-	iterator_t it_h = new singleton_iterator(yy::location(), new stringValue(uri));
+	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(uri));
 	keymap.put(default_collation_key, it_h);
 }
 
 void static_context::set_baseuri(const std::string& uri)
 {
-	iterator_t it_h = new singleton_iterator(yy::location(), new stringValue(uri));
+	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(uri));
 	keymap.put(default_collation_key, it_h);
 }
 

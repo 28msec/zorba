@@ -37,7 +37,7 @@ class node;
 class qname;
 class zorba;
 
-class basic_iterator : public rcobject
+class BasicIterator : public rcobject
 {
 protected:
 	bool open_b;
@@ -50,30 +50,75 @@ public:
 	yy::location	loc;
 
 public:
-	//daniel basic_iterator() : zorp(NULL), open_b(false) {}
-	basic_iterator(yy::location _loc);
-	basic_iterator(const basic_iterator& it);
-	virtual ~basic_iterator();
+	//daniel BasicIterator() : zorp(NULL), open_b(false) {}
+	BasicIterator(yy::location _loc);
+	BasicIterator(const BasicIterator& it);
+	virtual ~BasicIterator();
 
 public:		// inline base logic
 
 	void open();
+	void close();
+	bool isOpen() const;
+	virtual bool done() const = 0;
 
 	item_t next(); 
 	// Info: Forcing inlining a function in g++: item_t next() __attribute__((always_inline)) {...}
 	
-	void close();
-	std::ostream& show(std::ostream&);
-
+	/** Produces an output item of the iterator. Implicitly, the first call 
+	 * of 'producNext' initializes the iterator and allocates resources 
+	 * (main memory, file descriptors, etc.). 
+	 */
+	item_t produceNext();
 	
-	bool is_open() const;
-
-	virtual bool done() const = 0;
+	/** 
+	 * Restarts the iterator so that the next 'produceNext' call will start 
+	 * again from the beginning (should not release any resources). 
+	 */
+	void reset();
+	
+	/** 
+	 * Releases all resources of the iterator 
+	 */
+	void releaseResources();
+	
+	/** 
+	 * Consumes the next item from one of the child iterators of the iterator. 
+	 */
+	item_t consumeNext(iterator_t& subIterator);
+	
+	/** 
+	 * Resets a child iterator 
+	 */
+	void resetChild(iterator_t& subIterator);
+	
+	/** 
+	 * Releases all resources of a child iterator. 
+	 */
+	void releaseChildResources(iterator_t& subIterator);
+	
+	std::ostream& show(std::ostream&);
 
 protected:	// dispatch to concrete classes
 	virtual void	 _open() = 0;
 	virtual item_t _next() = 0;
 	virtual void	 _close() = 0;
+	
+	/** 
+	 * Produces the next item;  implicitly initializes the iterator and allocates 
+	 * resources (if any) at its first call (or after a releaseResourcesImpl).
+	 */
+	virtual item_t nextImpl_()/* = 0*/;
+	
+	/**
+	 * Resets the iterator so that it restarts from the beginning.
+	 */
+	virtual void resetImpl_()/* = 0*/;
+	
+	/**
+	 * Releases all the resources. 
+	 */
+	virtual void releaseResourcesImpl_()/* = 0*/;
 
 	virtual std::ostream&  _show(std::ostream&) const = 0;
 };
@@ -107,20 +152,30 @@ public:		// "treat as" operators
 |	literals and for_var bindings
 |______________________________________________________________*/
 
-class singleton_iterator : public basic_iterator
+class SingletonIterator : public BasicIterator
 {
 protected:
 	rchandle<item> i_h;
 	bool is_done;
 
 public:
-	singleton_iterator(yy::location loc, item* _i_p) : 
-												basic_iterator( loc),
+	SingletonIterator(yy::location loc, item* _i_p) : 
+												BasicIterator( loc),
 												i_h(_i_p), is_done (false) {}
-	singleton_iterator(const singleton_iterator& it) : basic_iterator (it), i_h(it.i_h),
+	SingletonIterator(const SingletonIterator& it) : BasicIterator (it), i_h(it.i_h),
 																										is_done(it.is_done) 
 																										{}
-	~singleton_iterator() { }
+	~SingletonIterator() { }
+	
+protected:
+	item_t nextImpl_() {
+		bool was_done = is_done; is_done = true;
+		return was_done ? NULL : i_h;
+	}
+	void resetImpl_() {
+		this->is_done = false;
+	}
+	void releaseResourcesImpl_(){}
 
 public:		// iterator interface
 	void _open() {}
@@ -144,7 +199,7 @@ public:		// iterator interface
 	bool done() const { return is_done; }
 
 public:
-	singleton_iterator& operator=(const singleton_iterator& it)
+	SingletonIterator& operator=(const SingletonIterator& it)
 		{ i_h = it.i_h; 
 			loc = it.loc;
 			return *this; }
@@ -152,13 +207,13 @@ public:
 };
 
 // FIXME No expressions in iterators!!
-class var_iterator : public singleton_iterator {
+class var_iterator : public SingletonIterator {
 protected:
 	string s_h;
 	
 public:
 	var_iterator(string s_p, yy::location loc) : 
-							singleton_iterator(loc,NULL), 
+							SingletonIterator(loc,NULL), 
 							s_h(s_p){}
 	~var_iterator(){
 		
@@ -170,16 +225,16 @@ public:		// variable binding
 
 /*
 template<class T>
-class singleton_iterator : public item_iterator
+class SingletonIterator : public item_iterator
 {
 protected:
 	const T* val;
 	bool done_b;
 
 public:
-	singleton_iterator(T _val) : val(_val), done_b(false) { }
-	singleton_iterator(const singleton_iterator& it) : val(it.val), done_b(false) { }
-	~singleton_iterator() {}
+	SingletonIterator(T _val) : val(_val), done_b(false) { }
+	SingletonIterator(const SingletonIterator& it) : val(it.val), done_b(false) { }
+	~SingletonIterator() {}
 
 public:	// iterator interface
 	void open() {}
@@ -189,7 +244,7 @@ public:	// iterator interface
 	bool done() const { return done_b; }
 
 public:
-	singleton_iterator& operator=(const singleton_iterator& it)
+	SingletonIterator& operator=(const SingletonIterator& it)
 		{ val = it.val; done_b = it.done_b; }
 
 };
@@ -202,14 +257,14 @@ public:
 |	let_var bindings
 |______________________________________________________________*/
 
-class ref_iterator : public basic_iterator
+class ref_iterator : public BasicIterator
 {
 private:
 	iterator_t it;
 
 public:
 	ref_iterator(iterator_t _it,yy::location loc) : 
-										basic_iterator(loc),
+										BasicIterator(loc),
 										it(_it) {}
 
 public:
@@ -229,7 +284,7 @@ public:
 |	for $x in  _input_  return  _expr_
 |______________________________________________________________*/
 
-class map_iterator : public basic_iterator
+class map_iterator : public BasicIterator
 {
 private:
 	enum state {
@@ -249,7 +304,7 @@ public:
 		iterator_t _expr,
 		std::vector<var_iter_t> _varv)
 	:
-		basic_iterator(loc),
+		BasicIterator(loc),
 		theInput(_input),
 		theExpr(_expr),
 		varv(_varv),

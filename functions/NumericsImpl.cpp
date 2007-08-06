@@ -30,7 +30,7 @@ op_numeric_binary_iterator::op_numeric_binary_iterator(
 	iterator_t _arg0,
 	iterator_t _arg1)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	arg0(_arg0),
 	arg1(_arg1)
 {
@@ -430,7 +430,7 @@ op_numeric_unary_minus_iterator::op_numeric_unary_minus_iterator(
 	yy::location loc, 
 	iterator_t _arg0)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	arg0(_arg0)
 {
 }
@@ -524,7 +524,7 @@ fn_abs_iterator::fn_abs_iterator(
 	yy::location loc,
 	iterator_t _arg0)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	arg0(_arg0)
 {
 }

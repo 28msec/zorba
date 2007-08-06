@@ -121,7 +121,7 @@ public:		// output,serialization
 
 // iterators
 
-class dom_doc_child_iterator :	public basic_iterator
+class dom_doc_child_iterator :	public BasicIterator
 {
 protected:
 	const dom_node& parent;
@@ -146,7 +146,7 @@ public:
 };
 
 
-class dom_child_iterator :	public basic_iterator
+class dom_child_iterator :	public BasicIterator
 {
 protected:
 	const dom_node& parent;
@@ -171,7 +171,7 @@ public:
 };
 
 
-class dom_attribute_iterator :	public basic_iterator
+class dom_attribute_iterator :	public BasicIterator
 {
 protected:
 	const dom_node& parent;
@@ -196,7 +196,7 @@ public:
 };
 
 
-class dom_namespace_iterator :	public basic_iterator
+class dom_namespace_iterator :	public BasicIterator
 {
 protected:
 	const dom_node& parent;

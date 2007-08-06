@@ -92,7 +92,7 @@ public:		// output,serialization
 
 
 
-class child_iterator : public basic_iterator
+class child_iterator : public BasicIterator
 {
 protected:
 	rchandle<child_noderep_iterator> itref;
@@ -112,7 +112,7 @@ public:
 
 
 
-class attribute_iterator : public basic_iterator
+class attribute_iterator : public BasicIterator
 {
 protected:
 	rchandle<attribute_noderep_iterator> itref;
@@ -131,7 +131,7 @@ public:
 };
 
 
-class namespace_iterator : public basic_iterator
+class namespace_iterator : public BasicIterator
 {
 protected:
 	rchandle<namespace_noderep_iterator> itref;

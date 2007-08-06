@@ -87,13 +87,13 @@ string dom_qname::str() const
 iterator_t dom_qname::effective_boolean_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, new booleanValue(true));
+	return new SingletonIterator(loc, new booleanValue(true));
 }
 
 iterator_t dom_qname::string_value(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(str()));
+	return new SingletonIterator(loc, new stringValue(str()));
 }
 
 iterator_t dom_qname::atomized_value(

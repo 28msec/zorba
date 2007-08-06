@@ -23,7 +23,7 @@ class zorba;
 |	
 |	Computes the effective boolean value of the sequence $arg.
 |_______________________________________________________________________*/
-class fn_boolean_iterator : public basic_iterator
+class fn_boolean_iterator : public BasicIterator
 {
 public:
 	fn_boolean_iterator(yy::location loc, iterator_t);

@@ -22,7 +22,7 @@ namespace xqp {
 iterator_t dom_node::parent(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, (item*)parent_p);
+	return new SingletonIterator(loc, (item*)parent_p);
 }
 
 
@@ -41,29 +41,29 @@ string dom_node::get_document_uri() const
 // XQuery interface
 iterator_t dom_node::string_value(yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(str()));
+	return new SingletonIterator(loc, new stringValue(str()));
 }
 
 iterator_t dom_node::base_uri(yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(get_base_uri()));
+	return new SingletonIterator(loc, new stringValue(get_base_uri()));
 }
 
 iterator_t dom_node::document_uri(yy::location &loc) const
 {
-	return new singleton_iterator(loc, new stringValue(get_document_uri()));
+	return new SingletonIterator(loc, new stringValue(get_document_uri()));
 }
 
 iterator_t dom_node::node_name(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, (item*)get_node_name());
+	return new SingletonIterator(loc, (item*)get_node_name());
 }
 
 iterator_t dom_node::type_name(
 	yy::location &loc) const
 {
-	return new singleton_iterator(loc, (item*)get_type_name());
+	return new SingletonIterator(loc, (item*)get_type_name());
 }
 
 iterator_t dom_node::typed_value(yy::location &loc) const
@@ -247,7 +247,7 @@ void dom_element_node::add_child(
 iterator_t dom_element_node::typed_value(yy::location &loc) const
 {
 	if (value_p) {
-		return new singleton_iterator(loc,value_p);
+		return new SingletonIterator(loc,value_p);
 	} else {
 		return string_value(loc);
 	}
@@ -599,7 +599,7 @@ string dom_text_node::describe() const
 dom_doc_child_iterator::dom_doc_child_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	parent(dn)
 {
 	const dom_document_node* dn_p =
@@ -615,7 +615,7 @@ dom_doc_child_iterator::dom_doc_child_iterator(
 dom_child_iterator::dom_child_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =
@@ -631,7 +631,7 @@ dom_child_iterator::dom_child_iterator(
 dom_attribute_iterator::dom_attribute_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =
@@ -647,7 +647,7 @@ dom_attribute_iterator::dom_attribute_iterator(
 dom_namespace_iterator::dom_namespace_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(loc),
+	BasicIterator(loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =

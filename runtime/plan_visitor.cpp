@@ -222,7 +222,7 @@ cout << indent[depth--] << TRACE << endl;
 		if (it==NULL) break;
 		argv.insert(argv.begin(),it);
 	}
-	rchandle<concat_iterator> cit_h = new concat_iterator(v.get_loc(), argv);
+	rchandle<ConcatIterator> cit_h = new ConcatIterator(v.get_loc(), argv);
 	itstack.push(&*cit_h);
 }
 
@@ -354,35 +354,35 @@ void plan_visitor::end_visit(const literal_expr& v)
 cout << indent[depth--] << TRACE << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
-    iterator_t it = new singleton_iterator(
+    iterator_t it = new SingletonIterator(
 											v.get_loc(),
 											new stringValue(xs_string,v.get_sval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_integer: {
-    iterator_t it = new singleton_iterator(
+    iterator_t it = new SingletonIterator(
 											v.get_loc(),
 											new numericValue(xs_integer,v.get_ival()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_decimal: {
-    iterator_t it = new singleton_iterator(
+    iterator_t it = new SingletonIterator(
 											v.get_loc(),
 											new numericValue(xs_decimal,v.get_decval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_double: {
-    iterator_t it = new singleton_iterator(
+    iterator_t it = new SingletonIterator(
 											v.get_loc(),
 											new numericValue(xs_double,v.get_dval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_bool: {
-    iterator_t it = new singleton_iterator(
+    iterator_t it = new SingletonIterator(
 											v.get_loc(),
 											new booleanValue(v.get_bval()));
     itstack.push(it);

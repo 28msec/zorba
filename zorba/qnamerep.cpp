@@ -90,7 +90,7 @@ iterator_t qnamerep::string_value(
 {
 	ostringstream oss;
 	put(oss);
-	return new singleton_iterator(loc, new stringValue(oss.str()));
+	return new SingletonIterator(loc, new stringValue(oss.str()));
 }
 
 string qnamerep::str() const

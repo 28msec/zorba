@@ -72,7 +72,7 @@ iterator_t op_concatenate::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new concat_iterator(loc,argv);
+	return new ConcatIterator(loc,argv);
 }
 
 bool op_concatenate::validate_args(
