@@ -31,8 +31,7 @@
 using namespace std;
 namespace xqp {
 
-istream* zorba_uri_resolver::file_source::get_input(
-	zorba* zorp)
+istream* zorba_uri_resolver::file_source::get_input()
 {
 	file f(get_uri());
 	if (!f.exists()) {

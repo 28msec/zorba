@@ -57,13 +57,12 @@ fn_codepoints_to_string::fn_codepoints_to_string(
 }
 
 iterator_t fn_codepoints_to_string::operator()(
-	zorba* zorp,
   yy::location loc,
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 			return NULL;
-	return new fn_codepoints_to_string_iterator(zorp, loc, argv[0]);
+	return new fn_codepoints_to_string_iterator(loc, argv[0]);
 }
 
 sequence_type_t fn_codepoints_to_string::type_check(
@@ -97,13 +96,12 @@ fn_string_to_codepoints::fn_string_to_codepoints(
 	}
 
 	iterator_t fn_string_to_codepoints::operator()(
-	zorba* zorp,
 	yy::location loc,
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
-	return new fn_string_to_codepoints_iterator(zorp, loc, argv[0]);
+	return new fn_string_to_codepoints_iterator(loc, argv[0]);
 }
 
 sequence_type_t fn_string_to_codepoints::type_check(

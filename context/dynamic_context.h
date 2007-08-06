@@ -52,14 +52,13 @@ protected:
 	static qnamekey_t current_time_key;
 	static qnamekey_t implicit_timezone_key;
 
-	zorba* zorp;
 	value_factory* vfactory_p;
 	library* lib;
 
 public:
 	static void init(value_factory*);
-	dynamic_context(zorba* _zorp, value_factory* v_p)
-		: zorp(_zorp), vfactory_p(v_p) {}
+	dynamic_context( value_factory* v_p)
+		: vfactory_p(v_p) {}
 	~dynamic_context() {}
 
 public:

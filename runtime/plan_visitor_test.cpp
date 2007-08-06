@@ -30,14 +30,16 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
-	zorba* zorp = new zorba();
-	static_context* sctx_p = new static_context(zorp,NULL);
-	dynamic_context* dctx_p = new dynamic_context(zorp,NULL);
+	zorba::initializeZorbaEngine();
+
+	zorba* zorp = zorba::allocateZorbaForNewThread();//new zorba();
+	static_context* sctx_p = new static_context(NULL);
+	dynamic_context* dctx_p = new dynamic_context(NULL);
 	//add the error manager
 	errors_english	*err_messages = new errors_english;///the english error messages
-	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages, zorp);
+	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages);
 
-	library lib(zorp);
+	library lib;
 	dctx_p->set_library(&lib);
 
 	zorp->set_static_context(sctx_p);
@@ -61,7 +63,7 @@ int main(int argc, char* argv[])
 				cout << "Syntax tree:\n";
 				n_p->put(cout) << endl;
 	
-				normalize_visitor nvs(zorp);
+				normalize_visitor nvs;
 				MainModule* mm_p;
 				QueryBody* qb_p;
 				Expr* ex_p;
@@ -89,10 +91,10 @@ int main(int argc, char* argv[])
 					cout << "e_h==NULL\n";
 					return -1;
 				}
-				e_h->put(zorp,cout) << endl;
+				e_h->put(cout) << endl;
 
 				cout << "Codegen:\n";
-				plan_visitor pvs(zorp);
+				plan_visitor pvs;
 				e_h->accept(pvs);
 				iterator_t it_h = pvs.pop_itstack();
 				cout << endl;
@@ -114,7 +116,7 @@ int main(int argc, char* argv[])
 					if (i_p==NULL){ 
 						break;
 					}
-					i_p->put(zorp,cout) << endl;
+					i_p->put(cout) << endl;
 				}
 				it_h->close();
 			}
@@ -124,5 +126,8 @@ int main(int argc, char* argv[])
 	} catch (...) {
 		cout << "catch all exception\n";
 	}
+
+	zorba::destroyZorbaForCurrentThread();
+	zorba::uninitializeZorbaEngine();
 }
 

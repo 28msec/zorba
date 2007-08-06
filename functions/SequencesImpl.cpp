@@ -88,11 +88,10 @@ bool concat_iterator::done() const
 }
 
 concat_iterator::concat_iterator(
-	zorba* zorp,
 	yy::location loc,
 	const vector<iterator_t>& _argv)
 :
-	basic_iterator(zorp, loc),
+	basic_iterator(loc),
 	argv(_argv),
 	currit_h(NULL),
 	cursor(0)
@@ -208,9 +207,9 @@ void doc_iterator::_open()
 {
 	uri_resolver* urires_p = new zorba_uri_resolver();
 	arg->open();
-	string path = arg->next()->str(zorp);
+	string path = arg->next()->str();
 	rchandle<source> src_h = urires_p->resolve(path);
-	istream* is_p = src_h->get_input(zorp);
+	istream* is_p = src_h->get_input();
 	assert(is_p!=NULL);
 
 	ostringstream oss;
@@ -226,7 +225,7 @@ void doc_iterator::_open()
 	strcpy(buf, bufs.c_str());
 
 	xml_scanner* scanner_p = new xml_scanner();
-	dom_xml_handler* xhandler_p = new dom_xml_handler(zorp,"/",path);
+	dom_xml_handler* xhandler_p = new dom_xml_handler("/",path);
 	scanner_p->scan(buf, n, dynamic_cast<scan_handler*>(xhandler_p));
 	doc_node = dynamic_cast<dom_document_node*>(xhandler_p->context_node());
 
@@ -259,11 +258,10 @@ bool doc_iterator::done() const
 }
 
 doc_iterator::doc_iterator(
-	zorba* zorp,
 	yy::location loc,
 	iterator_t _arg)
 :
-	basic_iterator(zorp, loc),
+	basic_iterator(loc),
 	arg(_arg),
 	doc_node(NULL)
 {

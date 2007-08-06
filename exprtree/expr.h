@@ -62,7 +62,7 @@ public:
 
 public:
 	virtual void accept(expr_visitor&) const = 0;
-	virtual std::ostream& put(zorba*,std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 
 /* (some proposed optimizer interface methods:)
@@ -121,7 +121,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -140,7 +140,7 @@ public:
 
 public:
 	std::string name() const { return m_name; }
-	std::ostream& put(zorba*,std::ostream& os) const { return os << m_name; }
+	std::ostream& put(std::ostream& os) const { return os << m_name; }
 
 };
 
@@ -196,7 +196,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-  std::ostream& put(zorba*,std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
 
 };
 
@@ -272,7 +272,7 @@ public:	// accessors
 	void set_expr(expr_t v) { expr_h = v; }
 
 public:
-	std::ostream& put(zorba*,ostream&) const;
+	std::ostream& put(ostream&) const;
 	
 };
 
@@ -336,7 +336,7 @@ public:	// accessors
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -386,7 +386,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -467,7 +467,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -508,7 +508,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -548,7 +548,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -585,7 +585,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -621,7 +621,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -651,7 +651,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -681,7 +681,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -711,7 +711,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -740,7 +740,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -769,7 +769,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -829,7 +829,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -881,7 +881,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -942,7 +942,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1013,7 +1013,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1082,7 +1082,7 @@ public:
 public:
 	static std::string decode_type(enum literal_type_t t);
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1120,7 +1120,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1155,7 +1155,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1208,7 +1208,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1246,7 +1246,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1272,7 +1272,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1298,7 +1298,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 
@@ -1336,7 +1336,7 @@ public:
 
 public:
 	void accept(expr_visitor&) const;
-	std::ostream& put(zorba*,std::ostream&) const;
+	std::ostream& put(std::ostream&) const;
 
 };
 

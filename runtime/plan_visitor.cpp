@@ -222,13 +222,13 @@ cout << indent[depth--] << TRACE << endl;
 		if (it==NULL) break;
 		argv.insert(argv.begin(),it);
 	}
-	rchandle<concat_iterator> cit_h = new concat_iterator(zorp, v.get_loc(), argv);
+	rchandle<concat_iterator> cit_h = new concat_iterator(v.get_loc(), argv);
 	itstack.push(&*cit_h);
 }
 
 void plan_visitor::end_visit(const var_expr& v)
 {
-	var_iter_t v_h = new var_iterator("x",zorp,v.get_loc());
+	var_iter_t v_h = new var_iterator("x",v.get_loc());
 	itstack.push(&*v_h);
 	timstack.push(&*v_h);
 }
@@ -251,7 +251,7 @@ cout << TRACE << endl;
 // 		if (var==NULL) break;
 		var_iters.push_back(&*var);
 // 	}
-	rchandle<map_iterator> map_iter = new map_iterator(zorp,v.get_loc(),input, expr, var_iters);
+	rchandle<map_iterator> map_iter = new map_iterator(v.get_loc(),input, expr, var_iters);
 	itstack.push(&*map_iter);
 // 	rchandle<map_iterator> m_h = new map_iterator();
 }
@@ -291,7 +291,7 @@ cout << indent[depth--] << TRACE << endl;
 		argv.push_back(it_h);
 	}
 
-	itstack.push(func(zorp,v.get_loc(),argv));
+	itstack.push(func(v.get_loc(),argv));
 }
 
 void plan_visitor::end_visit(const ft_select_expr& v)
@@ -354,35 +354,35 @@ void plan_visitor::end_visit(const literal_expr& v)
 cout << indent[depth--] << TRACE << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
-    iterator_t it = new singleton_iterator(zorp,
+    iterator_t it = new singleton_iterator(
 											v.get_loc(),
 											new stringValue(xs_string,v.get_sval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_integer: {
-    iterator_t it = new singleton_iterator(zorp,
+    iterator_t it = new singleton_iterator(
 											v.get_loc(),
 											new numericValue(xs_integer,v.get_ival()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_decimal: {
-    iterator_t it = new singleton_iterator(zorp,
+    iterator_t it = new singleton_iterator(
 											v.get_loc(),
 											new numericValue(xs_decimal,v.get_decval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_double: {
-    iterator_t it = new singleton_iterator(zorp,
+    iterator_t it = new singleton_iterator(
 											v.get_loc(),
 											new numericValue(xs_double,v.get_dval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_bool: {
-    iterator_t it = new singleton_iterator(zorp,
+    iterator_t it = new singleton_iterator(
 											v.get_loc(),
 											new booleanValue(v.get_bval()));
     itstack.push(it);

@@ -28,13 +28,11 @@ namespace xqp {
 static uint32_t depth = 0;
 
 
-normalize_visitor::normalize_visitor(
-	zorba* _zorp)
-:
-	zorp(_zorp),
-	dctx_p(zorp->get_dynamic_context()),
-	dmgr_h(zorp->get_data_manager()) 
+normalize_visitor::normalize_visitor()
 {
+	zorp = zorba::getZorbaForCurrentThread();
+	dctx_p = zorp->get_dynamic_context();
+	dmgr_h = zorp->get_data_manager();
 }
 
 

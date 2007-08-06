@@ -20,6 +20,8 @@
 #include "errors/Error.h"
 
 #include <stack>
+#include <map>
+#include "pthread.h"
 
 
 namespace xqp {
@@ -94,6 +96,21 @@ public:	// diagnostics
 
 //daniel	errors::errcode get_error() const { return zorba_errno; }
 //daniel	void set_error(errors::errcode err) { zorba_errno = err; }
+
+
+	///functions for accessing global zorba objects for each thread
+protected:
+	static std::map<uint32_t, zorba*>		global_zorbas;
+	static pthread_mutex_t							global_zorbas_mutex;
+public:
+	static void		initializeZorbaEngine();
+	static void		uninitializeZorbaEngine();
+
+
+	static zorba* getZorbaForCurrentThread();
+	
+	static zorba*	allocateZorbaForNewThread();
+	static void		destroyZorbaForCurrentThread();//when ending the thread
 
 };
 

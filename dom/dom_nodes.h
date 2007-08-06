@@ -78,29 +78,29 @@ public:   // internal interface
 	virtual itemid_t id() const { return theID; }
 	virtual itemid_t parentid() const { return parent_p ? parent_p->id() : 0; }
 
-  virtual std::string str(zorba*) const { return ""; }
-	virtual std::string get_base_uri(zorba*) const;
-	virtual std::string get_document_uri(zorba*) const;
-	virtual std::string get_typed_value(zorba*) const { return ""; };
-	virtual const qname* get_node_name(zorba*) const { return 0; }
-	virtual const qname* get_type_name(zorba*) const { return 0; }
-	virtual const node* get_parent(zorba*) const { return 0; }
+  virtual std::string str() const { return ""; }
+	virtual std::string get_base_uri() const;
+	virtual std::string get_document_uri() const;
+	virtual std::string get_typed_value() const { return ""; };
+	virtual const qname* get_node_name() const { return 0; }
+	virtual const qname* get_type_name() const { return 0; }
+	virtual const node* get_parent() const { return 0; }
 
 public:		// XQuery interface
-	virtual iterator_t parent(zorba*, yy::location &loc) const;
-	virtual iterator_t string_value(zorba*, yy::location &loc) const;
-	virtual iterator_t base_uri(zorba*, yy::location &loc) const;
-	virtual iterator_t document_uri(zorba*, yy::location &loc) const;
+	virtual iterator_t parent( yy::location &loc) const;
+	virtual iterator_t string_value( yy::location &loc) const;
+	virtual iterator_t base_uri( yy::location &loc) const;
+	virtual iterator_t document_uri( yy::location &loc) const;
 
-	virtual iterator_t node_name(zorba*, yy::location &loc) const;
-	virtual iterator_t type_name(zorba*, yy::location &loc) const;
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const;
+	virtual iterator_t node_name( yy::location &loc) const;
+	virtual iterator_t type_name( yy::location &loc) const;
+	virtual iterator_t typed_value( yy::location &loc) const;
 
-	virtual iterator_t atomized_value(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t atomized_value( yy::location &loc) const { return 0; }
 
-	virtual iterator_t children(zorba*, yy::location &loc) const { return 0; }
-	virtual iterator_t attributes(zorba*, yy::location &loc) const { return 0; }
-	virtual iterator_t namespace_nodes(zorba*, yy::location &loc) const { return 0; }
+	virtual iterator_t children( yy::location &loc) const { return 0; }
+	virtual iterator_t attributes( yy::location &loc) const { return 0; }
+	virtual iterator_t namespace_nodes( yy::location &loc) const { return 0; }
 
 	virtual bool is_id() const { return false; }
 	virtual bool is_idrefs() const { return false; }
@@ -111,10 +111,10 @@ public:		// XQuery interface
 	virtual bool is_atomic() const { return false; }
 
 public:		// output,serialization
-	virtual std::string toXML() const { return ""; }
-	virtual std::string toXML(zorba*) const = 0;
-	virtual std::ostream& put(zorba*,std::ostream&) const = 0;
-	virtual std::string describe(zorba*) const = 0;
+//	virtual std::string toXML() const { return ""; }
+	virtual std::string toXML() const = 0;
+	virtual std::ostream& put(std::ostream&) const = 0;
+	virtual std::string describe() const = 0;
 
 };
 	
@@ -270,28 +270,28 @@ public:
 
 public:		// internal interface		
 	sequence_type_t type() const { return documentNode; }
-	std::string str(zorba*) const;
-	std::string get_base_uri(zorba*) const;
-	std::string get_document_uri(zorba*) const;
-	std::string get_typed_value(zorba*) const;
-	const qname* get_type_name(zorba*) const;
+	std::string str() const;
+	std::string get_base_uri() const;
+	std::string get_document_uri() const;
+	std::string get_typed_value() const;
+	const qname* get_type_name() const;
 
 	const std::vector<dom_node*>& get_childv() const { return childv; }
 	void add_child(dom_node* dn_p) { childv.push_back(dn_p); }
 
 public:		// XQuery interface
-	iterator_t children(zorba*, yy::location &loc) const;
-	iterator_t namespace_nodes(zorba* z, yy::location &loc) const { return dom_node::namespace_nodes(z,loc); }
+	iterator_t children( yy::location &loc) const;
+	iterator_t namespace_nodes( yy::location &loc) const { return dom_node::namespace_nodes(loc); }
 
-	iterator_t typed_value(zorba* z, yy::location &loc) const { return dom_node::typed_value(z,loc); }
-	iterator_t string_value(zorba* z, yy::location &loc) const { return dom_node::string_value(z,loc); }
-	iterator_t base_uri(zorba* z, yy::location &loc) const { return dom_node::base_uri(z,loc); }
-	iterator_t document_uri(zorba* z, yy::location &loc) const { return dom_node::document_uri(z,loc); }
+	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	iterator_t document_uri( yy::location &loc) const { return dom_node::document_uri(loc); }
 
 public:		// output, serialization
-	std::string toXML(zorba*) const;
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
+	std::string toXML() const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
 
 };
 
@@ -355,10 +355,10 @@ public:
 public:		// internal interface		
 	sequence_type_t type() const { return elementNode; }
 
-	std::string str(zorba*) const;
-	std::string get_typed_value(zorba*) const;
-	const qname* get_node_name(zorba*) const;
-	const qname* get_type_name(zorba*) const;
+	std::string str() const;
+	std::string get_typed_value() const;
+	const qname* get_node_name() const;
+	const qname* get_type_name() const;
 
 	bool is_id() const { return id_b; }
 	bool is_idrefs() const { return idref_b; }
@@ -377,21 +377,21 @@ public:		// internal interface
 	void add_child(dom_node*);
 
 public:		// XQuery interface
-	iterator_t attributes(zorba*, yy::location &loc) const;
-	iterator_t children(zorba*, yy::location &loc) const;
-	iterator_t namespace_nodes(zorba*, yy::location &loc) const;
-	iterator_t typed_value(zorba*, yy::location &loc) const;
+	iterator_t attributes( yy::location &loc) const;
+	iterator_t children( yy::location &loc) const;
+	iterator_t namespace_nodes( yy::location &loc) const;
+	iterator_t typed_value( yy::location &loc) const;
 
-	iterator_t node_name(zorba* z, yy::location &loc) const { return dom_node::node_name(z,loc); }
-	iterator_t type_name(zorba* z, yy::location &loc) const { return dom_node::type_name(z,loc); }
-	iterator_t parent(zorba* z, yy::location &loc) const { return dom_node::parent(z,loc); }
-	iterator_t string_value(zorba* z, yy::location &loc) const { return dom_node::string_value(z,loc); }
-	iterator_t base_uri(zorba* z, yy::location &loc) const { return dom_node::base_uri(z,loc); }
+	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	iterator_t type_name( yy::location &loc) const { return dom_node::type_name(loc); }
+	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, serialization 
-	std::string toXML(zorba*) const;
-	std::ostream& put(zorba*,std::ostream&) const;
-  std::string describe(zorba*) const;
+	std::string toXML() const;
+	std::ostream& put(std::ostream&) const;
+  std::string describe() const;
 
 };
 
@@ -439,27 +439,27 @@ public:
 public:	// internal interface
 	sequence_type_t type() const { return attributeNode; }
 
-	std::string str(zorba*) const;
-	std::string get_typed_value(zorba*) const;
-	const qname* get_node_name(zorba*) const;
-	const qname* get_type_name(zorba*) const;
+	std::string str() const;
+	std::string get_typed_value() const;
+	const qname* get_node_name() const;
+	const qname* get_type_name() const;
 
 	bool is_id() const { return id_b; }
 	bool is_idrefs() const { return idrefs_b; }
 	bool nilled() const { return nilled_b; }
 
 public:	// XQuery interface
-	iterator_t node_name(zorba* z, yy::location &loc) const { return dom_node::node_name(z,loc); }
-	iterator_t type_name(zorba* z, yy::location &loc) const { return dom_node::type_name(z,loc); }
-	iterator_t typed_value(zorba* z, yy::location &loc) const { return dom_node::typed_value(z,loc); }
-	iterator_t parent(zorba* z, yy::location &loc) const { return dom_node::parent(z,loc); }
-	iterator_t string_value(zorba* z, yy::location &loc) const { return dom_node::string_value(z,loc); }
-	iterator_t base_uri(zorba* z, yy::location &loc) const { return dom_node::base_uri(z,loc); }
+	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	iterator_t type_name( yy::location &loc) const { return dom_node::type_name(loc); }
+	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, serialization
-	std::string toXML(zorba*) const;
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
+	std::string toXML() const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
 
 
 };
@@ -492,22 +492,22 @@ public:		// internal interface
 
 	std::string prefix() const { return thePrefix; }
 	std::string uri() const { return theURI; }
-	std::string str(zorba*) const;
-	std::string get_typed_value(zorba*) const;
+	std::string str() const;
+	std::string get_typed_value() const;
 
-	const qname* get_node_name(zorba*) const;
+	const qname* get_node_name() const;
 
 public:		// XQuery interface
-	iterator_t node_name(zorba* z, yy::location &loc) const { return dom_node::node_name(z,loc); }
-	iterator_t typed_value(zorba* z, yy::location &loc) const { return dom_node::typed_value(z,loc); }
-	iterator_t parent(zorba* z, yy::location &loc) const { return dom_node::parent(z,loc); }
-	iterator_t string_value(zorba* z, yy::location &loc) const { return dom_node::string_value(z,loc); }
-	iterator_t base_uri(zorba* z, yy::location &loc) const { return dom_node::base_uri(z,loc); }
+	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, seralization
-	std::string toXML(zorba*) const;
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
+	std::string toXML() const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
 
 
 };
@@ -535,21 +535,21 @@ public:		// internal interface
 
 	std::string target() const { return theTarget; }
 	std::string content() const { return theContent; }
-	std::string str(zorba*) const;
-	std::string get_typed_value(zorba*) const;
-	const qname* get_node_name(zorba*) const;
+	std::string str() const;
+	std::string get_typed_value() const;
+	const qname* get_node_name() const;
 
 public:		// XQuery interface
-	iterator_t string_value(zorba* z, yy::location &loc) const { return dom_node::string_value(z,loc); }
-	iterator_t node_name(zorba* z, yy::location &loc) const { return dom_node::node_name(z,loc); }
-	iterator_t typed_value(zorba* z, yy::location &loc) const { return dom_node::typed_value(z,loc); }
-	iterator_t parent(zorba* z, yy::location &loc) const { return dom_node::parent(z,loc); }
-	iterator_t base_uri(zorba* z, yy::location &loc) const { return dom_node::base_uri(z,loc); }
+	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, serialization
-	std::string toXML(zorba*) const;
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
+	std::string toXML() const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
 
 };
 
@@ -572,20 +572,20 @@ public:
 public:		// internal interface		
 	sequence_type_t type() const { return commentNode; }
 	std::string content() const;
-	std::string str(zorba*) const;
-	std::string get_typed_value(zorba*) const;
+	std::string str() const;
+	std::string get_typed_value() const;
 
 public:		// XQuery interface
-	iterator_t string_value(zorba* z, yy::location &loc) const { return dom_node::string_value(z,loc); }
-	iterator_t node_name(zorba* z, yy::location &loc) const { return dom_node::node_name(z,loc); }
-	iterator_t typed_value(zorba* z, yy::location &loc) const { return dom_node::typed_value(z,loc); }
-	iterator_t parent(zorba* z, yy::location &loc) const { return dom_node::parent(z,loc); }
-	iterator_t base_uri(zorba* z, yy::location &loc) const { return dom_node::base_uri(z,loc); }
+	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:
-	std::string toXML(zorba*) const;
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
+	std::string toXML() const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
 
 };
 
@@ -618,21 +618,21 @@ public:
 public:		// internal interface		
 	sequence_type_t type() const { return textNode; }
 	std::string content() { return theContent; }
-	std::string str(zorba*) const;
-	std::string get_typed_value(zorba*) const;
+	std::string str() const;
+	std::string get_typed_value() const;
 
 public:		// XQuery interface
-	iterator_t string_value(zorba* z, yy::location &loc) const { return dom_node::string_value(z,loc); }
-	iterator_t typed_value(zorba* z, yy::location &loc) const { return dom_node::typed_value(z,loc); }
-	iterator_t atomized_value(zorba* z, yy::location &loc) const { return dom_node::atomized_value(z,loc); }
-	iterator_t parent(zorba* z, yy::location &loc) const { return dom_node::parent(z,loc); }
-	iterator_t base_uri(zorba* z, yy::location &loc) const { return dom_node::base_uri(z,loc); }
-	iterator_t document_uri(zorba* z, yy::location &loc) const { return dom_node::document_uri(z,loc); }
+	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	iterator_t atomized_value( yy::location &loc) const { return dom_node::atomized_value(loc); }
+	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	iterator_t document_uri( yy::location &loc) const { return dom_node::document_uri(loc); }
 
 public:
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string toXML(zorba*) const;
-	std::string describe(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string toXML() const;
+	std::string describe() const;
 
 };
 

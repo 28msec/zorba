@@ -51,7 +51,7 @@ public:
 	~op_concatenate() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc,std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc,std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
@@ -66,7 +66,7 @@ public:
 	~fn_index_of() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
@@ -81,7 +81,7 @@ public:
 	~fn_empty() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
@@ -96,7 +96,7 @@ public:
 	~fn_exists() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
@@ -111,7 +111,7 @@ public:
 	~fn_distinct_values() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
@@ -134,7 +134,7 @@ public:
 	~fn_reverse() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
@@ -149,7 +149,7 @@ public:
 	~fn_subsequence() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
@@ -207,7 +207,7 @@ public:
 
 public:
 	sequence_type_t type_check(signature&) const { return xs_untypedValue; }
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const { return NULL; } 
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const { return NULL; } 
 	bool validate_args(std::vector<iterator_t>&) const { return true; }
 
 };
@@ -221,7 +221,7 @@ public:
 	~fn_min_int() {}
 public:
 	sequence_type_t type_check(signature&) const;
-	iterator_t operator()(zorba*, vector<iterator_t>) const;
+	iterator_t operator()( vector<iterator_t>) const;
 };
 
 class fn_min_float : public function
@@ -231,7 +231,7 @@ public:
 	~fn_min_float() {}
 public:
 	sequence_type_t type_check(signature&) const;
-	iterator_t operator()(zorba*, vector<iterator_t>) const;
+	iterator_t operator()( vector<iterator_t>) const;
 };
 */
 
@@ -260,7 +260,7 @@ public:
 
 public:
 	sequence_type_t type_check(signature&) const;
-	iterator_t operator()(zorba*, yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()( yy::location loc, std::vector<iterator_t>&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };
 
@@ -276,7 +276,6 @@ public:
 |_______________________________________________________________________*/
 
 iterator_t xqp_load(
-	zorba*,
 	const std::string& path,
 	const std::string& baseuri,
 	const std::string& uri);

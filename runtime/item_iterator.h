@@ -40,27 +40,20 @@ class zorba;
 class basic_iterator : public rcobject
 {
 protected:
- 	zorba *zorp;
 	bool open_b;
 	// Line Info for Duff's device
 	int current_line;
 
 	//daniel
+	zorba	*zorp;
 public:
 	yy::location	loc;
 
 public:
 	//daniel basic_iterator() : zorp(NULL), open_b(false) {}
-	basic_iterator(zorba *_zorp, yy::location _loc) : zorp(_zorp), 
-																										open_b(false),
-																										loc(_loc)
-	{}
-	basic_iterator(const basic_iterator& it) : rcobject (), 
-																						zorp(it.zorp), 
-																						open_b(it.open_b),
-																						loc(it.loc)
-	{}
-	virtual ~basic_iterator() {}
+	basic_iterator(yy::location _loc);
+	basic_iterator(const basic_iterator& it);
+	virtual ~basic_iterator();
 
 public:		// inline base logic
 
@@ -121,8 +114,8 @@ protected:
 	bool is_done;
 
 public:
-	singleton_iterator(zorba *zorp, yy::location loc, item* _i_p) : 
-												basic_iterator(zorp, loc),
+	singleton_iterator(yy::location loc, item* _i_p) : 
+												basic_iterator( loc),
 												i_h(_i_p), is_done (false) {}
 	singleton_iterator(const singleton_iterator& it) : basic_iterator (it), i_h(it.i_h),
 																										is_done(it.is_done) 
@@ -154,7 +147,6 @@ public:
 	singleton_iterator& operator=(const singleton_iterator& it)
 		{ i_h = it.i_h; 
 			loc = it.loc;
-			zorp = it.zorp;
 			return *this; }
 
 };
@@ -165,8 +157,8 @@ protected:
 	string s_h;
 	
 public:
-	var_iterator(string s_p, zorba *zorp, yy::location loc) : 
-							singleton_iterator(zorp, loc,NULL), 
+	var_iterator(string s_p, yy::location loc) : 
+							singleton_iterator(loc,NULL), 
 							s_h(s_p){}
 	~var_iterator(){
 		
@@ -216,8 +208,8 @@ private:
 	iterator_t it;
 
 public:
-	ref_iterator(iterator_t _it,zorba *zorp, yy::location loc) : 
-										basic_iterator(zorp,loc),
+	ref_iterator(iterator_t _it,yy::location loc) : 
+										basic_iterator(loc),
 										it(_it) {}
 
 public:
@@ -252,13 +244,12 @@ private:
 
 public:
 	map_iterator(
-		zorba *zorp, 
 		yy::location loc,
 		iterator_t _input,
 		iterator_t _expr,
 		std::vector<var_iter_t> _varv)
 	:
-		basic_iterator(zorp, loc),
+		basic_iterator(loc),
 		theInput(_input),
 		theExpr(_expr),
 		varv(_varv),

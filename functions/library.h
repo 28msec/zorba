@@ -23,7 +23,6 @@ class zorba;
 class library : public rcobject
 {
 protected:
-	zorba* zorp;
 	fxhash64map<const function*> funtab;
 
 public:
@@ -68,7 +67,7 @@ public:
 	static qnamekey_t fn_boolean_key;
 	
 public:
-	library(zorba* zorp);
+	library( );
 	~library();
 	static bool static_init;
 	void init(value_factory*);

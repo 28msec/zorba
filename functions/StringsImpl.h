@@ -46,7 +46,7 @@ private:
 	document_node* doc_node;
 
 public:// ctor,dtor
-	fn_codepoints_to_string_iterator(zorba*, yy::location loc, iterator_t);
+	fn_codepoints_to_string_iterator( yy::location loc, iterator_t);
 	fn_codepoints_to_string_iterator(const fn_codepoints_to_string_iterator&);
 	virtual ~fn_codepoints_to_string_iterator() {}
 
@@ -72,7 +72,7 @@ private:
 	document_node* doc_node;
 
 public:// ctor,dtor
-	fn_string_to_codepoints_iterator(zorba*, yy::location loc, iterator_t);
+	fn_string_to_codepoints_iterator( yy::location loc, iterator_t);
 	fn_string_to_codepoints_iterator(const fn_string_to_codepoints_iterator&);
 	virtual ~fn_string_to_codepoints_iterator() {}
 

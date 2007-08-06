@@ -42,7 +42,6 @@ op_numeric_add::op_numeric_add(
 }
 
 iterator_t op_numeric_add::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -71,7 +70,6 @@ op_numeric_add_int::op_numeric_add_int(
 }
 
 iterator_t op_numeric_add_int::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -117,7 +115,6 @@ op_numeric_subtract::op_numeric_subtract(
 }
 
 iterator_t op_numeric_subtract::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -162,7 +159,6 @@ op_numeric_multiply::op_numeric_multiply(
 }
 
 iterator_t op_numeric_multiply::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -217,7 +213,6 @@ op_numeric_divide::op_numeric_divide(
 }
 
 iterator_t op_numeric_divide::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -274,7 +269,6 @@ op_numeric_integer_divide::op_numeric_integer_divide(
 }
 
 iterator_t op_numeric_integer_divide::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -339,7 +333,6 @@ op_numeric_mod::op_numeric_mod(
 }
 
 iterator_t op_numeric_mod::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -379,7 +372,6 @@ op_numeric_unary_plus::op_numeric_unary_plus(
 }
 
 iterator_t op_numeric_unary_plus::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -424,7 +416,6 @@ op_numeric_unary_minus::op_numeric_unary_minus(
 }
 
 iterator_t op_numeric_unary_minus::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -456,7 +447,7 @@ op_numeric_equal::op_numeric_equal(const signature& sig)
 function(sig)
 {}
 
-iterator_t op_numeric_equal::operator()(zorba* zorp, yy::location loc, vector<iterator_t>& argv) const {
+iterator_t op_numeric_equal::operator()( yy::location loc, vector<iterator_t>& argv) const {
 	if (!validate_args(argv))
 		return NULL;
 	return new op_numeric_equal_iterator(loc, argv[0], argv[1]);
@@ -486,7 +477,7 @@ fn_abs::fn_abs(const signature& sig)
 {   	
 }
 
-iterator_t fn_abs::operator()(zorba* zorp, yy::location loc, vector<iterator_t>& argv) const
+iterator_t fn_abs::operator()( yy::location loc, vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;

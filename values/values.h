@@ -31,8 +31,8 @@ class zorba;
 class object : public rcobject
 {
 public:
-  virtual std::string describe(zorba*) const = 0;
-  virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
+  virtual std::string describe() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
 };
 
 
@@ -44,8 +44,8 @@ public:
 class xquery_exception : public object
 {
 public:
-  virtual std::string describe(zorba*) const = 0;
-  virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
+  virtual std::string describe() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
 };
 */
 
@@ -59,8 +59,8 @@ public:
 class ft_value : public object
 {
 public:
-  virtual std::string describe(zorba*) const = 0;
-  virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
+  virtual std::string describe() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
 };
 
 
@@ -75,13 +75,13 @@ class item : public object
 {
 public:
 	virtual sequence_type_t type() const = 0;
-  virtual std::string describe(zorba*) const = 0;
-  virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
-	virtual std::string str(zorba*) const = 0;
+  virtual std::string describe() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
+	virtual std::string str() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t atomized_value( yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
 
 	virtual bool is_empty() const = 0;
 	virtual bool is_node() const = 0;
@@ -99,14 +99,14 @@ class atomic_value :	virtual public item
 {
 public:		// accessors
 	virtual sequence_type_t type() const = 0;
-  virtual std::string describe(zorba*) const = 0;
-  virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
-	virtual std::string str(zorba*) const = 0;
+  virtual std::string describe() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
+	virtual std::string str() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t effective_boolean_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t atomized_value( yy::location &loc) const = 0;
+	virtual iterator_t effective_boolean_value( yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
 
 	bool is_empty() const = 0;
 	bool is_node() const = 0;

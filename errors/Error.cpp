@@ -9,15 +9,10 @@
 using namespace std;
 namespace xqp {
 
-///static members from ZorbaErrorAlerts
-rchandle<error_messages> ZorbaErrorAlerts::err_messages;
-zorba*	ZorbaErrorAlerts::zorp;
 
-ZorbaErrorAlerts::ZorbaErrorAlerts( class error_messages *_err_messages,
-																	 zorba*	_zorp)
+ZorbaErrorAlerts::ZorbaErrorAlerts( class error_messages *_err_messages)
 {
 	err_messages = _err_messages;
-	zorp = _zorp;
 }
 
 ZorbaErrorAlerts::~ZorbaErrorAlerts()
@@ -35,27 +30,28 @@ void ZorbaErrorAlerts::error_alert(
 														const std::string param2
 													 )
 {
+	zorba*	z = zorba::getZorbaForCurrentThread();
 	if(!ploc)
 	{
-		if(zorp->current_iterator.empty())
+		if(z->current_iterator.empty())
 		{
 			error_alert_withoutlocation(e, errtype, continue_execution, param1, param2);
 			return;
 		}
-		ploc = &zorp->current_iterator.top()->loc;///get location of current iterator
+		ploc = &z->current_iterator.top()->loc;///get location of current iterator
 	}
 
 	std::string err_decoded;
 	std::string errtype_decoded;
 	std::ostringstream strloc;
 
-	err_decoded = err_messages->err_decode(e);
-	errtype_decoded = err_messages->errtype_decode(errtype);
+	err_decoded = z->get_error_manager()->err_messages->err_decode(e);
+	errtype_decoded = z->get_error_manager()->err_messages->errtype_decode(errtype);
 
 	err_decoded += ": ";
 	err_decoded += errtype_decoded;
-	err_messages->ApplyParam(&err_decoded, &param1);
-	err_messages->ApplyParam(&err_decoded, &param2);
+	z->get_error_manager()->err_messages->ApplyParam(&err_decoded, &param1);
+	z->get_error_manager()->err_messages->ApplyParam(&err_decoded, &param2);
 
 	strloc << *ploc;
 
@@ -83,14 +79,15 @@ void ZorbaErrorAlerts::error_alert_withoutlocation(
 {
 	std::string err_decoded;
 	std::string errtype_decoded;
+	zorba	*z = zorba::getZorbaForCurrentThread();
 
-	err_decoded = err_messages->err_decode(e);
-	errtype_decoded = err_messages->errtype_decode(errtype);
+	err_decoded = z->get_error_manager()->err_messages->err_decode(e);
+	errtype_decoded = z->get_error_manager()->err_messages->errtype_decode(errtype);
 
 	err_decoded += ": ";
 	err_decoded += errtype_decoded;
-	err_messages->ApplyParam(&err_decoded, &param1);
-	err_messages->ApplyParam(&err_decoded, &param2);
+	z->get_error_manager()->err_messages->ApplyParam(&err_decoded, &param1);
+	z->get_error_manager()->err_messages->ApplyParam(&err_decoded, &param2);
 
 
 
@@ -113,22 +110,23 @@ void ZorbaErrorAlerts::warning_alert( const error_messages::warning_code warn,
 																		 const string param2
 																		 )
 {
+	zorba	*z = zorba::getZorbaForCurrentThread();
 	if(!ploc)
 	{
-		if(zorp->current_iterator.empty())
+		if(z->current_iterator.empty())
 		{
 			warning_alert_withoutlocation(warn, param1, param2);
 			return;
 		}
-		ploc = &zorp->current_iterator.top()->loc;///get location of current iterator
+		ploc = &z->current_iterator.top()->loc;///get location of current iterator
 	}
 
 	std::string warning_decoded;
 	std::ostringstream strloc;
 
-	warning_decoded = err_messages->warning_decode(warn);
-	err_messages->ApplyParam(&warning_decoded, &param1);
-	err_messages->ApplyParam(&warning_decoded, &param2);
+	warning_decoded = z->get_error_manager()->err_messages->warning_decode(warn);
+	z->get_error_manager()->err_messages->ApplyParam(&warning_decoded, &param1);
+	z->get_error_manager()->err_messages->ApplyParam(&warning_decoded, &param2);
 
 	strloc << *ploc;
 
@@ -144,10 +142,11 @@ void ZorbaErrorAlerts::warning_alert_withoutlocation(
 																		 )
 {
 	std::string warning_decoded;
+	zorba	*z = zorba::getZorbaForCurrentThread();
 
-	warning_decoded = err_messages->warning_decode(warn);
-	err_messages->ApplyParam(&warning_decoded, &param1);
-	err_messages->ApplyParam(&warning_decoded, &param2);
+	warning_decoded = z->get_error_manager()->err_messages->warning_decode(warn);
+	z->get_error_manager()->err_messages->ApplyParam(&warning_decoded, &param1);
+	z->get_error_manager()->err_messages->ApplyParam(&warning_decoded, &param2);
 
 	//... send error to user app
 	cout << "Warning:" << "[somewhere.]" << " : " << warning_decoded << std::endl;
@@ -161,10 +160,11 @@ void ZorbaErrorAlerts::notify_event( const error_messages::NotifyEvent_code noti
 													 )
 {
 	std::string notif_decoded;
+	zorba	*z = zorba::getZorbaForCurrentThread();
 
-	notif_decoded = err_messages->notify_event_decode(notif_event);
-	err_messages->ApplyParam(&notif_decoded, &param1);
-	err_messages->ApplyParam(&notif_decoded, &param2);
+	notif_decoded = z->get_error_manager()->err_messages->notify_event_decode(notif_event);
+	z->get_error_manager()->err_messages->ApplyParam(&notif_decoded, &param1);
+	z->get_error_manager()->err_messages->ApplyParam(&notif_decoded, &param2);
 
 	cout << " --> " << notif_decoded << std::endl;
 
@@ -179,10 +179,11 @@ int ZorbaErrorAlerts::ask_user( const error_messages::AskUserString_code ask_str
 												)
 {
 	std::string ask_user_decoded;
+	zorba	*z = zorba::getZorbaForCurrentThread();
 
-	ask_user_decoded = err_messages->ask_user_decode(ask_string);
-	err_messages->ApplyParam(&ask_user_decoded, &param1);
-	err_messages->ApplyParam(&ask_user_decoded, &param2);
+	ask_user_decoded = z->get_error_manager()->err_messages->ask_user_decode(ask_string);
+	z->get_error_manager()->err_messages->ApplyParam(&ask_user_decoded, &param1);
+	z->get_error_manager()->err_messages->ApplyParam(&ask_user_decoded, &param2);
 
 	cout << "[]Ask User " << ask_user_decoded << "(not implemented)" << endl;
 
@@ -217,10 +218,10 @@ nnnn is a unique numeric code.
 */
 void ZorbaErrorAlerts::user_error (class qname *err_qname,///optional
 													const std::string description,//optional
-													zorba* zorp,
 													const std::vector<class item*> *items)//optional
 {
 	std::string err_decoded;
+	zorba	*z = zorba::getZorbaForCurrentThread();
 
 	if(err_qname)
 	{
@@ -238,37 +239,36 @@ void ZorbaErrorAlerts::user_error (class qname *err_qname,///optional
 			err_num = atoi(err_localname.substr(4,4).c_str());
 			
 
-			err_decoded = err_messages->err_decode((enum error_messages::errcode)err_num);
-			err_messages->ApplyParam(&err_decoded, NULL);
-			err_messages->ApplyParam(&err_decoded, NULL);
+			err_decoded = z->get_error_manager()->err_messages->err_decode((enum error_messages::errcode)err_num);
+			z->get_error_manager()->err_messages->ApplyParam(&err_decoded, NULL);
+			z->get_error_manager()->err_messages->ApplyParam(&err_decoded, NULL);
 
 			///...send err_decoded, description and items to user
 		}
 	}
 
 	cout << "User Error: " << err_decoded << " ( " <<  description << " ) " << endl;
-	DumpItemsAsText(zorp, items);
+	DumpItemsAsText(items);
 
 }
 
-void ZorbaErrorAlerts::user_trace ( zorba* zorp,
+void ZorbaErrorAlerts::user_trace ( 
 																		const std::vector<class item*> *items,
 																		const std::string label)
 {
 	///...send notification message label + items to user
 	cout << "User Trace: " << label << endl;
-	DumpItemsAsText(zorp, items);
+	DumpItemsAsText(items);
 }
 
-void ZorbaErrorAlerts::DumpItemsAsText(zorba* zorp, 
-										 const std::vector<class item*> *items)
+void ZorbaErrorAlerts::DumpItemsAsText( const std::vector<class item*> *items)
 {
 	std::vector<class item*>::const_iterator item_it;
 
 	for ( item_it = items->begin( ) ; item_it != items->end( ) ; item_it++ )
 	{
 		cout	<< " =-= " 
-					<< (*item_it)->describe(zorp) 
+					<< (*item_it)->describe() 
 					<< "[0x" << hex << (void*)(*item_it) << "]";
 	}
 

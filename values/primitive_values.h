@@ -34,16 +34,16 @@ public:
 
 public:
 	long double val() const { return theVal; }
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string str() const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value( yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value( yy::location &loc) const { return NULL; }
+	iterator_t string_value( yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -75,16 +75,16 @@ public:
 	// 6 getters
 
 public:		// accessors
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string str() const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value( yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value( yy::location &loc) const { return NULL; }
+	iterator_t string_value( yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -107,9 +107,9 @@ public:
 
 public: 
 	std::string val() const { return theVal; }
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string str() const;
 
 	stringValue& operator=(const stringValue& v)
 		{ theVal = v.theVal; return *this; }
@@ -117,9 +117,9 @@ public:
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*, yy::location &loc) const;
-	iterator_t effective_boolean_value(zorba*, yy::location &loc) const;
-	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value( yy::location &loc) const;
+	iterator_t effective_boolean_value( yy::location &loc) const;
+	iterator_t string_value( yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -141,16 +141,16 @@ public:
 
 public: 
 	unsigned char* val() const { return theVal; }
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string str() const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value( yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value( yy::location &loc) const { return NULL; }
+	iterator_t string_value( yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
@@ -172,16 +172,16 @@ public:
 
 public:
 	bool val() const { return theVal; }
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string describe(zorba*) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string describe() const;
+	std::string str() const;
 
 public:		// XQuery interface
 	sequence_type_t type() const { return theType; }
 
-	iterator_t atomized_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t effective_boolean_value(zorba*, yy::location &loc) const { return NULL; }
-	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value( yy::location &loc) const { return NULL; }
+	iterator_t effective_boolean_value( yy::location &loc) const { return NULL; }
+	iterator_t string_value( yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }

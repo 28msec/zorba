@@ -20,61 +20,55 @@ namespace xqp {
 
 // XQuery interface
 iterator_t dom_node::parent(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, (item*)parent_p);
+	return new singleton_iterator(loc, (item*)parent_p);
 }
 
 
 // internal interface
-string dom_node::get_base_uri(
-	zorba* zorp) const
+string dom_node::get_base_uri() const
 {
-	return parent_p ? parent_p->get_base_uri(zorp) : "";
+	return parent_p ? parent_p->get_base_uri() : "";
 }
 
-string dom_node::get_document_uri(
-	zorba* zorp) const
+string dom_node::get_document_uri() const
 {
-	return parent_p ? parent_p->get_document_uri(zorp) : "";
+	return parent_p ? parent_p->get_document_uri() : "";
 }
 
 
 // XQuery interface
-iterator_t dom_node::string_value(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_node::string_value(yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(str(zorp)));
+	return new singleton_iterator(loc, new stringValue(str()));
 }
 
-iterator_t dom_node::base_uri(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_node::base_uri(yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(get_base_uri(zorp)));
+	return new singleton_iterator(loc, new stringValue(get_base_uri()));
 }
 
-iterator_t dom_node::document_uri(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_node::document_uri(yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(get_document_uri(zorp)));
+	return new singleton_iterator(loc, new stringValue(get_document_uri()));
 }
 
 iterator_t dom_node::node_name(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, (item*)get_node_name(zorp));
+	return new singleton_iterator(loc, (item*)get_node_name());
 }
 
 iterator_t dom_node::type_name(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, (item*)get_type_name(zorp));
+	return new singleton_iterator(loc, (item*)get_type_name());
 }
 
-iterator_t dom_node::typed_value(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_node::typed_value(yy::location &loc) const
 {
-	return string_value(zorp, loc);
+	return string_value(loc);
 }
 
 
@@ -98,84 +92,75 @@ dom_document_node::dom_document_node(
 {}
 
 // XQuery interface
-iterator_t dom_document_node::children(
-				zorba* zorp, yy::location &loc) const
+iterator_t dom_document_node::children(yy::location &loc) const
 {
 	return new dom_child_iterator(*this, loc);
 }
 
 
 // internal interface
-string dom_document_node::str(
-	zorba* zorp) const 
+string dom_document_node::str() const 
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorp, zorp->GetCurrentLocation());
+	iterator_t it_h = children( zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t dn_h = it_h->next();
-		oss << dn_h->str(zorp);
+		oss << dn_h->str();
 	}
 	it_h->close();
 	return oss.str();
 }
 
-string dom_document_node::get_base_uri(
-	zorba* zorp) const
+string dom_document_node::get_base_uri() const
 {
 	return theBaseURI;
 }
 
-string dom_document_node::get_document_uri(
-	zorba* zorp) const
+string dom_document_node::get_document_uri() const
 {
 	return theDocURI;
 }
 
-string dom_document_node::get_typed_value(
-	zorba* zorp) const
+string dom_document_node::get_typed_value() const
 {
-	return str(zorp);
+	return str();
 }
 
-const qname* dom_document_node::get_type_name(
-	zorba* zorp) const
+const qname* dom_document_node::get_type_name() const
 {
 	return 0;
 }
 
 // output, serialization
 ostream& dom_document_node::put(
-	zorba* zorp,
 	ostream& os) const
 {
-	iterator_t it_h = children(zorp,zorp->GetCurrentLocation());
+	iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t dn_h = it_h->next();
-		os << dn_h->str(zorp);
+		os << dn_h->str();
 	}
 	it_h->close();
 	return os;
 }
 
-string dom_document_node::toXML(
-	zorba* zorp) const
+string dom_document_node::toXML() const
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorp,zorp->GetCurrentLocation());
+	iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t i_h = it_h->next();
 		dom_node* dn_p = dynamic_cast<dom_node*>(&*i_h);
-		oss << dn_p->toXML(zorp);
+		oss << dn_p->toXML();
 	}
 	it_h->close();
 	return oss.str();
 }
 
-string dom_document_node::describe(
-	zorba* zorp) const
+string dom_document_node::describe() const
 {
 	return "doc("+theBaseURI+theDocURI+")";
 }
@@ -211,34 +196,30 @@ dom_element_node::dom_element_node(
 
 
 // internal interface
-std::string dom_element_node::str(
-	zorba* zorp) const
+std::string dom_element_node::str() const
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorp,zorp->GetCurrentLocation());
+	iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
 		item_t dn_h = it_h->next();
-		oss << dn_h->str(zorp);
+		oss << dn_h->str();
 	}
 	it_h->close();
 	return oss.str();
 }
 
-string dom_element_node::get_typed_value(
-	zorba* zorp) const
+string dom_element_node::get_typed_value() const
 {
-	return str(zorp);
+	return str();
 }
 
-const qname* dom_element_node::get_type_name(
-	zorba* zorp) const
+const qname* dom_element_node::get_type_name() const
 {
 	return 0;
 }
 
-const qname* dom_element_node::get_node_name(
-	zorba* zorp) const
+const qname* dom_element_node::get_node_name() const
 {
 	return qname_p;
 }
@@ -263,30 +244,26 @@ void dom_element_node::add_child(
 
 
 // XQuery interface
-iterator_t dom_element_node::typed_value(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_element_node::typed_value(yy::location &loc) const
 {
 	if (value_p) {
-		return new singleton_iterator(zorp,loc,value_p);
+		return new singleton_iterator(loc,value_p);
 	} else {
-		return string_value(zorp,loc);
+		return string_value(loc);
 	}
 }
 
-iterator_t dom_element_node::attributes(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_element_node::attributes(yy::location &loc) const
 {
 	return new dom_attribute_iterator(*this,loc);
 }
 
-iterator_t dom_element_node::children(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_element_node::children(yy::location &loc) const
 {
 	return new dom_child_iterator(*this,loc);
 }
 
-iterator_t dom_element_node::namespace_nodes(
-	zorba* zorp, yy::location &loc) const
+iterator_t dom_element_node::namespace_nodes(yy::location &loc) const
 {
 	return new dom_namespace_iterator(*this,loc);
 }
@@ -294,45 +271,42 @@ iterator_t dom_element_node::namespace_nodes(
 
 // output, serialization
 ostream& dom_element_node::put(
-	zorba* zorp,
 	ostream& os) const
 {
   os << '[' << childv.size() << ']';
 	os << '<';
-	qname_p->put(zorp,os);
+	qname_p->put(os);
 
 	if (nsv.size() + attrv.size() > 0) os << ' ';
 	vector<dom_node*>::const_iterator ns_it = nsv.begin();
 	for (; ns_it!=nsv.end(); ++ns_it) {
-		(*ns_it)->put(zorp,os) << ' ';
+		(*ns_it)->put(os) << ' ';
 	}
 	vector<dom_node*>::const_iterator at_it = attrv.begin();
 	for (; at_it!=attrv.end(); ++at_it) {
-		(*at_it)->put(zorp,os) << ' ';
+		(*at_it)->put(os) << ' ';
 	}
 	os << '>';
 	vector<dom_node*>::const_iterator nd_it = childv.begin();
 	for (; nd_it!=childv.end(); ++nd_it) {
-		(*nd_it)->put(zorp,os);
+		(*nd_it)->put(os);
 	}
 	os << "</";
-	qname_p->put(zorp,os);
+	qname_p->put(os);
 	return os << '>';
 }
 
-string dom_element_node::toXML(
-	zorba* zorp) const
+string dom_element_node::toXML() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string dom_element_node::describe(
-	zorba* zorp) const
+string dom_element_node::describe() const
 {
 	ostringstream oss;
-	get_node_name(zorp)->put(zorp,oss);
+	get_node_name()->put(oss);
 	return oss.str();
 }
 
@@ -365,26 +339,22 @@ dom_attribute_node::dom_attribute_node(
 
 
 // internal interface
-string dom_attribute_node::str(
-	zorba* zorp) const
+string dom_attribute_node::str() const
 {
 	return value;
 }
 
-string dom_attribute_node::get_typed_value(
-	zorba* zorp) const
+string dom_attribute_node::get_typed_value() const
 {
 	return value;
 }
 
-const qname* dom_attribute_node::get_node_name(
-	zorba* zorp) const
+const qname* dom_attribute_node::get_node_name() const
 {
 	return qname_p;
 }
 
-const qname* dom_attribute_node::get_type_name(
-	zorba* zorp) const
+const qname* dom_attribute_node::get_type_name() const
 {
 	return 0;
 }
@@ -392,26 +362,23 @@ const qname* dom_attribute_node::get_type_name(
 
 // output, serialization
 ostream& dom_attribute_node::put(
-	zorba* zorp,
 	ostream& os) const
 {
-	qname_p->put(zorp,os);
+	qname_p->put(os);
 	return os << "=\"" << value << "\"";
 }
 
-string dom_attribute_node::toXML(
-	zorba* zorp) const
+string dom_attribute_node::toXML() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string dom_attribute_node::describe(
-	zorba* zorp) const
+string dom_attribute_node::describe() const
 {
 	ostringstream oss;
-	qname_p->put(zorp,oss);
+	qname_p->put(oss);
 	return "@"+oss.str();
 }
 
@@ -439,20 +406,17 @@ dom_namespace_node::dom_namespace_node(
 
 
 // internal interface
-string dom_namespace_node::str(
-	zorba* zorp) const
+string dom_namespace_node::str() const
 {
 	return theURI;
 }
 
-const qname* dom_namespace_node::get_node_name(
-	zorba* zorp) const
+const qname* dom_namespace_node::get_node_name() const
 {
 	return NULL;
 }
 
-string dom_namespace_node::get_typed_value(
-	zorba* zorp) const
+string dom_namespace_node::get_typed_value() const
 {
 	return "";
 }
@@ -460,24 +424,21 @@ string dom_namespace_node::get_typed_value(
 
 // output, serialization
 std::ostream& dom_namespace_node::put(
-	zorba* zorp,
 	std::ostream& os) const
 {
 	return os << "xmlns:" << thePrefix << "=\"" << theURI << "\"";
 }
 
-string dom_namespace_node::toXML(
-	zorba* zorp) const
+string dom_namespace_node::toXML() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string dom_namespace_node::describe(
-	zorba* zorp) const
+string dom_namespace_node::describe() const
 {
-	return toXML(zorp);
+	return toXML();
 }
 
 
@@ -502,20 +463,17 @@ dom_pi_node::dom_pi_node(
 
 
 // internal interface
-string dom_pi_node::str(
-	zorba* zorp) const 
+string dom_pi_node::str() const 
 {
 	return theContent;
 }
 
-string dom_pi_node::get_typed_value(
-	zorba* zorp) const
+string dom_pi_node::get_typed_value() const
 {
 	return theContent;
 }
 
-const qname* dom_pi_node::get_node_name(
-	zorba* zorp) const
+const qname* dom_pi_node::get_node_name() const
 {
 	return new dom_qname("","",theTarget);
 }
@@ -523,24 +481,21 @@ const qname* dom_pi_node::get_node_name(
 
 // output, serialization
 std::ostream& dom_pi_node::put(
-	zorba* zorp,
 	std::ostream& os) const
 {
 	return os << "<?" << theTarget << ' ' << theContent << "?>";
 }
 
-string dom_pi_node::toXML(
-	zorba* zorp) const
+string dom_pi_node::toXML() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string dom_pi_node::describe(
-	zorba* zorp) const
+string dom_pi_node::describe() const
 {
-	return toXML(zorp);
+	return toXML();
 }
 
 
@@ -564,14 +519,12 @@ dom_comment_node::dom_comment_node(
 
 
 // internal interface
-string dom_comment_node::str(
-	zorba* zorp) const
+string dom_comment_node::str() const
 {
 	return theContent;
 }
 
-string dom_comment_node::get_typed_value(
-	zorba* zorp) const
+string dom_comment_node::get_typed_value() const
 {
 	return theContent;
 }
@@ -579,22 +532,19 @@ string dom_comment_node::get_typed_value(
 
 // output, serialization
 std::ostream& dom_comment_node::put(
-	zorba* zorp,
 	std::ostream& os) const
 {
 	return os << "<!--" << theContent << "-->";
 }
 
-string dom_comment_node::toXML(
-	zorba* zorp) const
+string dom_comment_node::toXML() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string dom_comment_node::describe(
-	zorba* zorp) const
+string dom_comment_node::describe() const
 {
 	return "";
 }
@@ -614,39 +564,34 @@ dom_text_node::dom_text_node(
 
 
 // internal interface
-string dom_text_node::str(
-	zorba* zorp) const
+string dom_text_node::str() const
 {
 	return theContent;
 }
 
-string dom_text_node::get_typed_value(
-	zorba* zorp) const
+string dom_text_node::get_typed_value() const
 {
-	return str(zorp);
+	return str();
 }
 
 
 // output, serialization
 ostream& dom_text_node::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	return os << theContent;
 }
 
-string dom_text_node::toXML(
-	zorba* zorp) const
+string dom_text_node::toXML() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string dom_text_node::describe(
-	zorba* zorp) const
+string dom_text_node::describe() const
 {
-	return toXML(zorp);
+	return toXML();
 }
 
 
@@ -654,7 +599,7 @@ string dom_text_node::describe(
 dom_doc_child_iterator::dom_doc_child_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(NULL,loc),
+	basic_iterator(loc),
 	parent(dn)
 {
 	const dom_document_node* dn_p =
@@ -670,7 +615,7 @@ dom_doc_child_iterator::dom_doc_child_iterator(
 dom_child_iterator::dom_child_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(NULL, loc),
+	basic_iterator(loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =
@@ -686,7 +631,7 @@ dom_child_iterator::dom_child_iterator(
 dom_attribute_iterator::dom_attribute_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(NULL,loc),
+	basic_iterator(loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =
@@ -702,7 +647,7 @@ dom_attribute_iterator::dom_attribute_iterator(
 dom_namespace_iterator::dom_namespace_iterator(
 	const dom_node& dn, yy::location &loc)
 :
-	basic_iterator(NULL,loc),
+	basic_iterator(loc),
 	parent(dn)
 {
 	const dom_element_node* en_p =

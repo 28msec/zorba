@@ -46,7 +46,7 @@ public:
 	std::string get_uri() const { return uri; }
 	void set_uri(std::string _uri) {uri = _uri; }
 
-	virtual std::istream* get_input(zorba*) = 0;
+	virtual std::istream* get_input() = 0;
 
 };
 

@@ -18,7 +18,6 @@ namespace xqp {
 fn_boolean::fn_boolean(const signature& sig):function(sig){}
 
 iterator_t fn_boolean::operator()(
-	zorba* zorp,
 	yy::location loc,
 	vector<iterator_t>& argv) const
 {

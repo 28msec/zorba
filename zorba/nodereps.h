@@ -225,8 +225,8 @@ private:	// ctor,dtor
 	~document_noderep() {}
 
 public:		// output and debugging
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string str() const;
 
 };
 
@@ -280,8 +280,8 @@ private:	//ctor,dtor - lock out
 	~element_noderep() {}
 
 public:		// output and debugging
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string str() const;
 
 };
 
@@ -327,8 +327,8 @@ private:	//ctor,dtor - lock out
   ~attribute_noderep();
 
 public:		// output,debugging
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string str() const;
 
 };
 
@@ -374,8 +374,8 @@ private:	//ctor,dtor - lock out
 	~namespace_noderep() {}
 
 public:		// output, debugging
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string str() const;
 
 };
 
@@ -416,8 +416,8 @@ private:	//ctor,dtor - lock out
 	~pi_noderep() {}
 
 public:		// output, debugging
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string str() const;
 
 };
 
@@ -455,8 +455,8 @@ private:	// lock out default and copy constructors
 	~comment_noderep() {}
 
 public:		// output, debugging
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string str() const;
 
 };
 
@@ -489,15 +489,15 @@ public:		// accessors
 	const char* content() const;
 
 public:		// XQuery interface
-	std::string baseuri(zorba*) const;
+	std::string baseuri() const;
 
 private:	// lock out default and copy constructors
 	text_noderep(const text_noderep& other) : noderep (other) {}
 	~text_noderep() {}
 
 public:		// output/debugging
-	std::ostream& put(zorba*,std::ostream&) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream&) const;
+	std::string str() const;
 
 };
 
@@ -533,7 +533,7 @@ private:	// lock out default and copy constructors
 	~contentRep() {}
 
 public:		// output/debugging
-	std::ostream& put(zorba* zorp, std::ostream& os) const 
+	std::ostream& put(std::ostream& os) const 
 	{
 		return os << str();
 	}
@@ -561,8 +561,8 @@ public:
 	collection_noderep(zorba*,const std::string& uri);
 	
 public:
-	std::string baseuri(zorba*) const;
-	std::string colluri(zorba*) const;
+	std::string baseuri() const;
+	std::string colluri() const;
 	noderep_it children() const;
 
 private:	// lock out default and copy constructors
@@ -570,7 +570,7 @@ private:	// lock out default and copy constructors
 	~collection_noderep() {}
 
 public:		// output,debugging
-	std::ostream& put(zorba*,std::ostream& os) const { return os; }
+	std::ostream& put(std::ostream& os) const { return os; }
 
 };
 
@@ -608,7 +608,7 @@ private:	// lock out default and copy constructors
 	~nsseqrep() {}
 
 public:		// output,debugging
-	std::ostream& put(zorba*,std::ostream& os) const;
+	std::ostream& put(std::ostream& os) const;
 
 };
 

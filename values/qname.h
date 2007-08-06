@@ -27,13 +27,13 @@ public:
 	virtual std::string uri() const = 0;
 
 public:
-	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t atomized_value( yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
 
 public:
 	virtual qnamekey_t qnamekey() const = 0; // XXX provide a default impl(uri,localname)
-	virtual std::string str(zorba*) const = 0;
-  virtual std::ostream& put(zorba*,std::ostream& os) const = 0;
+	virtual std::string str() const = 0;
+  virtual std::ostream& put(std::ostream& os) const = 0;
 
 };
 

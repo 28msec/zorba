@@ -66,16 +66,16 @@ public:		// accessors
 public:		// XQuery interface
 	virtual sequence_type_t node_kind() const = 0;
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t base_uri(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t document_uri(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t type_name(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t parent(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t node_name(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t attributes(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t children(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t namespace_nodes(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
+	virtual iterator_t base_uri( yy::location &loc) const = 0;
+	virtual iterator_t document_uri( yy::location &loc) const = 0;
+	virtual iterator_t type_name( yy::location &loc) const = 0;
+	virtual iterator_t typed_value( yy::location &loc) const = 0;
+	virtual iterator_t parent( yy::location &loc) const = 0;
+	virtual iterator_t node_name( yy::location &loc) const = 0;
+	virtual iterator_t attributes( yy::location &loc) const = 0;
+	virtual iterator_t children( yy::location &loc) const = 0;
+	virtual iterator_t namespace_nodes( yy::location &loc) const = 0;
 
 	virtual bool is_id() const = 0;
 	virtual bool is_idrefs() const = 0;
@@ -124,12 +124,12 @@ public:
 	virtual sequence_type_t node_kind() const
 		{ return documentNode; }
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t base_uri(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t document_uri(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t children(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t namespace_nodes(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
+	virtual iterator_t base_uri( yy::location &loc) const = 0;
+	virtual iterator_t document_uri( yy::location &loc) const = 0;
+	virtual iterator_t typed_value( yy::location &loc) const = 0;
+	virtual iterator_t children( yy::location &loc) const = 0;
+	virtual iterator_t namespace_nodes( yy::location &loc) const = 0;
 
 };
 
@@ -173,15 +173,15 @@ public:
 	virtual sequence_type_t node_kind() const
 		{ return elementNode; }
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t base_uri(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t parent(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t type_name(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t node_name(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t attributes(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t children(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t namespace_nodes(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
+	virtual iterator_t base_uri( yy::location &loc) const = 0;
+	virtual iterator_t parent( yy::location &loc) const = 0;
+	virtual iterator_t type_name( yy::location &loc) const = 0;
+	virtual iterator_t typed_value( yy::location &loc) const = 0;
+	virtual iterator_t node_name( yy::location &loc) const = 0;
+	virtual iterator_t attributes( yy::location &loc) const = 0;
+	virtual iterator_t children( yy::location &loc) const = 0;
+	virtual iterator_t namespace_nodes( yy::location &loc) const = 0;
 
 	virtual bool is_id() const = 0;
 	virtual bool is_idrefs() const = 0;
@@ -215,11 +215,11 @@ public:
 	virtual sequence_type_t node_kind() const
 		{ return attributeNode; }
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t type_name(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t parent(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t node_name(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
+	virtual iterator_t type_name( yy::location &loc) const = 0;
+	virtual iterator_t typed_value( yy::location &loc) const = 0;
+	virtual iterator_t parent( yy::location &loc) const = 0;
+	virtual iterator_t node_name( yy::location &loc) const = 0;
 
 	virtual bool is_id() const = 0;
 	virtual bool is_idrefs() const = 0;
@@ -243,10 +243,10 @@ public:
 	virtual sequence_type_t node_kind() const
 		{ return namespaceNode; }
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;		// URI
-	virtual iterator_t node_name(zorba*, yy::location &loc) const = 0;				// prefix
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;			// URI
-	virtual iterator_t parent(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;		// URI
+	virtual iterator_t node_name( yy::location &loc) const = 0;				// prefix
+	virtual iterator_t typed_value( yy::location &loc) const = 0;			// URI
+	virtual iterator_t parent( yy::location &loc) const = 0;
 	
 };
 
@@ -262,11 +262,11 @@ public:
 	virtual sequence_type_t node_kind() const
 		{ return processingInstructionNode; }
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;	// content
-	virtual iterator_t base_uri(zorba*, yy::location &loc) const = 0;			// parent baseuri
-	virtual iterator_t node_name(zorba*, yy::location &loc) const = 0;			// target
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;		// content
-	virtual iterator_t parent(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;	// content
+	virtual iterator_t base_uri( yy::location &loc) const = 0;			// parent baseuri
+	virtual iterator_t node_name( yy::location &loc) const = 0;			// target
+	virtual iterator_t typed_value( yy::location &loc) const = 0;		// content
+	virtual iterator_t parent( yy::location &loc) const = 0;
 
 };
 
@@ -281,11 +281,11 @@ public:
 	virtual sequence_type_t node_kind() const
 		{ return commentNode; }
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;	// content
-	virtual iterator_t base_uri(zorba*, yy::location &loc) const = 0;			// parent baseuri	
-	virtual iterator_t node_name(zorba*, yy::location &loc) const = 0;			// 
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;		// content
-	virtual iterator_t parent(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;	// content
+	virtual iterator_t base_uri( yy::location &loc) const = 0;			// parent baseuri	
+	virtual iterator_t node_name( yy::location &loc) const = 0;			// 
+	virtual iterator_t typed_value( yy::location &loc) const = 0;		// content
+	virtual iterator_t parent( yy::location &loc) const = 0;
 
 };
 
@@ -310,10 +310,10 @@ public:
 	virtual sequence_type_t node_kind() const
 		{ return textNode; }
 
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;	// content
-	virtual iterator_t base_uri(zorba*, yy::location &loc) const = 0;				// parent baseuri
-	virtual iterator_t typed_value(zorba*, yy::location &loc) const = 0;			// content
-	virtual iterator_t parent(zorba*, yy::location &loc) const = 0;			
+	virtual iterator_t string_value( yy::location &loc) const = 0;	// content
+	virtual iterator_t base_uri( yy::location &loc) const = 0;				// parent baseuri
+	virtual iterator_t typed_value( yy::location &loc) const = 0;			// content
+	virtual iterator_t parent( yy::location &loc) const = 0;			
 
 };
 

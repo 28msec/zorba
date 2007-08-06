@@ -73,8 +73,7 @@ noderep_it document_noderep::children( ) const
 	return new child_noderep_iterator(this, new(rest) noderep());
 } 
 
-string document_noderep::str(
-	zorba* zorp) const
+string document_noderep::str() const
 {
 	ostringstream oss;
 	noderep* n_p = new(rest) noderep();
@@ -86,7 +85,6 @@ string document_noderep::str(
 }
 
 ostream& document_noderep::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	os << "<?xml version=\"1.0\"?>\n";
@@ -98,35 +96,35 @@ ostream& document_noderep::put(
 		case documentNode: {
 			cout << TRACE << " : documentNode" << endl;
 			document_noderep* d_p = new(rep) document_noderep();
-			d_p->put(zorp,os);
+			d_p->put(os);
 			break;
 		}
 		case attributeNode: {
 			cout << TRACE << " : attributeNode" << endl;
 			attribute_noderep* a_p = new(rep) attribute_noderep();
-			a_p->put(zorp,os);
+			a_p->put(os);
 			break;
 		}
 		case elementNode: {
 			cout << TRACE << " : elementNode" << endl;
 			element_noderep* e_p = new(rep) element_noderep();
-			e_p->put(zorp,os);
+			e_p->put(os);
 			break;
 		}
 		case processingInstructionNode: {
 			pi_noderep* pi_p = new(rep) pi_noderep();
-			pi_p->put(zorp,os);
+			pi_p->put(os);
 			break;
 		}
 		case commentNode: {
 			comment_noderep* c_p = new(rep) comment_noderep();
-			c_p->put(zorp,os);
+			c_p->put(os);
 			break;
 		}
 		case textNode: {
 			cout << TRACE << " : textNode" << endl;
 			text_noderep* t_p = new(rep) text_noderep();
-			t_p->put(zorp,os);
+			t_p->put(os);
 			break;
 		}
 		default: {
@@ -142,14 +140,12 @@ ostream& document_noderep::put(
  :  collection nodes                       :
  :.........................................*/
 
-string collection_noderep::baseuri(
-	zorba* zorp) const
+string collection_noderep::baseuri() const
 {
 	return "";
 }
 
-string collection_noderep::colluri(
-	zorba* zorp) const
+string collection_noderep::colluri() const
 {
 	return "";
 }
@@ -185,12 +181,11 @@ element_noderep::element_noderep(
 cout << TRACE << endl;
 }
 
-string element_noderep::str(
-	zorba* zorp) const
+string element_noderep::str() const
 {
 	ostringstream oss;
 	for (noderep_it it = children(); it->done(); ++(*it)) {
-		(**it)->put(zorp,oss);
+		(**it)->put(oss);
 	}
 	return oss.str();
 }
@@ -213,16 +208,15 @@ noderep_it element_noderep::children() const
 }
 
 ostream& element_noderep::put(
-	zorba* zorp,
 	ostream& os) const
 {
   cout << TRACE << " : element_node" << endl;
 
-	data_manager* dmgr_p = zorp->get_data_manager();
+	data_manager* dmgr_p = zorba::getZorbaForCurrentThread()->get_data_manager();
   const qname* qn_p = dmgr_p->get_qname(theQNameID);
 	//d Assert<null_pointer>(qn_p);
 	Assert(qn_p);
-  qn_p->put(zorp,os);
+  qn_p->put(os);
   
 	noderep* n_p = new(rest) noderep();
 	child_const_noderep_iterator it(this,n_p);
@@ -232,35 +226,35 @@ ostream& element_noderep::put(
 		case documentNode: {
 			cout << TRACE << " : documentNode" << endl;
 			document_noderep* d_p = new(rep) document_noderep();
-			d_p->put(zorp,os);
+			d_p->put(os);
 			break;
 		}
 		case attributeNode: {
 			cout << TRACE << " : attributeNode" << endl;
 			attribute_noderep* a_p = new(rep) attribute_noderep();
-			a_p->put(zorp,os);
+			a_p->put(os);
 			break;
 		}
 		case elementNode: {
 			cout << TRACE << " : elementNode" << endl;
 			element_noderep* e_p = new(rep) element_noderep();
-			e_p->put(zorp,os);
+			e_p->put(os);
 			break;
 		}
 		case processingInstructionNode: {
 			pi_noderep* pi_p = new(rep) pi_noderep();
-			pi_p->put(zorp,os);
+			pi_p->put(os);
 			break;
 		}
 		case commentNode: {
 			comment_noderep* c_p = new(rep) comment_noderep();
-			c_p->put(zorp,os);
+			c_p->put(os);
 			break;
 		}
 		case textNode: {
 			cout << TRACE << " : textNode" << endl;
 			text_noderep* t_p = new(rep) text_noderep();
-			t_p->put(zorp,os);
+			t_p->put(os);
 			break;
 		}
 		default: {
@@ -321,20 +315,18 @@ attribute_noderep::attribute_noderep(
 	istore_p->add_text(val);
 }
 
-string attribute_noderep::str(
-	zorba* zorp) const
+string attribute_noderep::str() const
 {
 	contentRep* crep = new(rest) contentRep();
 	return crep->str();
 }
 
 ostream& attribute_noderep::put(
-	zorba* zorp,
 	ostream& os) const
 {
-	data_manager* dmgr_p = zorp->get_data_manager();
+	data_manager* dmgr_p = zorba::getZorbaForCurrentThread()->get_data_manager();
 	const qname* qn_p = dmgr_p->get_qname(theQNameID);
-	qn_p->put(zorp,os);
+	qn_p->put(os);
 	return os << "=\"" << string_value() << "\"";
 }
 
@@ -381,14 +373,12 @@ string namespace_noderep::uri() const
 	return crep->str();
 }
 
-string namespace_noderep::str(
-	zorba*) const
+string namespace_noderep::str() const
 {
 	return uri();
 }
 
 ostream& namespace_noderep::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	return os << "xmlns:" << prefix() << "=\"" << uri() <<"\"";
@@ -415,8 +405,7 @@ pi_noderep::pi_noderep(
 {
 }
 
-string pi_noderep::str(
-	zorba*) const
+string pi_noderep::str() const
 {
 	return content();
 }
@@ -434,7 +423,6 @@ string pi_noderep::content() const
 }
 
 ostream& pi_noderep::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	return os << "<?" << target() <<  ' ' << content() << " ?>";
@@ -469,14 +457,12 @@ string comment_noderep::content() const
 	return crep->str();
 }
 
-string comment_noderep::str(
-	zorba*) const
+string comment_noderep::str() const
 {
 	return content();
 }
 
 ostream& comment_noderep::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	return os << "<!-- " << content() << " -->";
@@ -505,15 +491,13 @@ text_noderep::text_noderep(
 	new(content.length()) contentRep(zorp,content);
 }
 
-string text_noderep::str(
-	zorba*) const
+string text_noderep::str() const
 {
 	contentRep* crep = new(rest) contentRep();
 	return crep->str();
 }
 
 ostream& text_noderep::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	contentRep* crep = new(rest) contentRep();
@@ -546,7 +530,6 @@ cout << TRACE << endl;
 }
 
 ostream& nsseqrep::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	return os;

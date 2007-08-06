@@ -28,12 +28,10 @@ class ZorbaErrorAlerts : public rcobject
 {
 public:
 	///members to be accessed from static member functions
-	static rchandle<error_messages> err_messages;
-	static zorba*	zorp;///the top level object, contains everything in Zorba
+	rchandle<error_messages> err_messages;
 
 public:
-	ZorbaErrorAlerts( class error_messages *_err_messages,
-										zorba*	_zorp);
+	ZorbaErrorAlerts( class error_messages *_err_messages);
 	~ZorbaErrorAlerts();
 
 //	enum Zorba_Alert_Type
@@ -99,15 +97,13 @@ public:
 
 	static void user_error (class qname *err_qname,///optional
 													const std::string description,//optional
-													zorba* zorp,
 													const std::vector<class item*> *items);//optional
 
-	static void user_trace ( zorba* zorp,
-													const std::vector<class item*> *items,
+	static void user_trace ( const std::vector<class item*> *items,
 													const std::string label);
 	
 private:
-	static void DumpItemsAsText(zorba* zorp, 
+	static void DumpItemsAsText( 
 										 const std::vector<class item*> *items);
 };
 

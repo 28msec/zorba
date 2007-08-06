@@ -68,11 +68,10 @@ bool fn_codepoints_to_string_iterator::done() const
 }
 
 fn_codepoints_to_string_iterator::fn_codepoints_to_string_iterator(
-	zorba* zorp,
 	yy::location loc,
 	iterator_t _arg)
 :
-	basic_iterator(zorp, loc),
+	basic_iterator(loc),
 	arg(_arg),
 	doc_node(NULL)
 {
@@ -140,11 +139,10 @@ bool fn_string_to_codepoints_iterator::done() const
 }
 
 fn_string_to_codepoints_iterator::fn_string_to_codepoints_iterator(
-	zorba* zorp,
 	yy::location loc,
 iterator_t _arg)
 :
-basic_iterator(zorp, loc),
+basic_iterator(loc),
 	arg(_arg),
 	doc_node(NULL)
 {

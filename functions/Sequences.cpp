@@ -68,12 +68,11 @@ op_concatenate::op_concatenate(
 }
 
 iterator_t op_concatenate::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new concat_iterator(zorp,loc,argv);
+	return new concat_iterator(loc,argv);
 }
 
 bool op_concatenate::validate_args(
@@ -122,7 +121,6 @@ fn_index_of::fn_index_of(const signature& sig)
 : function(sig) { }
 
 iterator_t fn_index_of::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -134,7 +132,7 @@ iterator_t fn_index_of::operator()(
 		collation = "default_collation"; //v_p->string_value();
 	}
 	else {
-		//static_context* sctx_p = zorp->get_static_context();
+		//static_context* sctx_p = zorba::getZorbaForCurrentThread()->get_static_context();
 		//qname_value* qn_p = (qname_value*)(sctx_p->get_default_collation());
 		collation = "default_collation"; //qn_p->string_value();
 	}
@@ -162,7 +160,6 @@ fn_empty::fn_empty(const signature& sig)
 : function(sig) { }
 
 iterator_t fn_empty::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -188,7 +185,6 @@ fn_exists::fn_exists(const signature& sig)
 : function(sig) { }
 
 iterator_t fn_exists::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -216,7 +212,6 @@ fn_distinct_values::fn_distinct_values(
 	function(sig) { }
 
 iterator_t fn_distinct_values::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -250,7 +245,6 @@ fn_reverse::fn_reverse(const signature& sig)
 : function(sig) { }
 
 iterator_t fn_reverse::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -276,7 +270,6 @@ fn_subsequence::fn_subsequence(const signature& sig)
 : function(sig) { }
 
 iterator_t fn_subsequence::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
@@ -365,12 +358,11 @@ fn_doc_func::fn_doc_func(
 }
 
 iterator_t fn_doc_func::operator()(
-	zorba* zorp,
 	yy::location loc, 
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new doc_iterator(zorp, loc, argv[0]);
+	return new doc_iterator(loc, argv[0]);
 }
   
 bool fn_doc_func::validate_args(

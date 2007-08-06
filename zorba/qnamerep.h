@@ -44,18 +44,18 @@ public:
 
 public: 	// XQuery atomic_value
 	sequence_type_t type() const { return xs_qname; }
-	iterator_t atomized_value(zorba*, yy::location &loc) const;
-	iterator_t effective_boolean_value(zorba*, yy::location &loc) const;
-	iterator_t string_value(zorba*, yy::location &loc) const;
+	iterator_t atomized_value( yy::location &loc) const;
+	iterator_t effective_boolean_value( yy::location &loc) const;
+	iterator_t string_value( yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }
 	bool is_atomic() const { return true; }
 
 public:		// output,debugging
-	std::ostream& put(zorba*,std::ostream& os) const;
-	std::string describe(zorba*) const;
-	std::string str(zorba*) const;
+	std::ostream& put(std::ostream& os) const;
+	std::string describe() const;
+	std::string str() const;
 
 };
 

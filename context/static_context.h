@@ -51,7 +51,6 @@ public:	// types
 	enum preserve_mode_t			 { preserve_ns, no_preserve_ns };
 
 protected:
-	zorba* zorp;
 	value_factory* vf_p;
 
 	static bool static_init;
@@ -70,8 +69,8 @@ protected:
 
 public:
 	static void init(value_factory*);
-	static_context(zorba* _zorp, value_factory* _vf_p)
-		: zorp(_zorp), vf_p(_vf_p) {}
+	static_context( value_factory* _vf_p)
+		: vf_p(_vf_p) {}
 
 	~static_context() {}
 

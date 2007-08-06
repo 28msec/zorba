@@ -20,6 +20,23 @@ namespace xqp {
 
 int iteratorTreeDepth = -1;
 
+basic_iterator::basic_iterator(yy::location _loc) : 
+																	open_b(false),
+																	loc(_loc)
+{
+	zorp = zorba::getZorbaForCurrentThread();
+}
+basic_iterator::basic_iterator(const basic_iterator& it) : rcobject (), 
+																					open_b(it.open_b),
+																					loc(it.loc)
+{
+	zorp = zorba::getZorbaForCurrentThread();
+}
+
+basic_iterator::~basic_iterator()
+{
+}
+
 void basic_iterator::open()
 {
 	assert(!open_b);

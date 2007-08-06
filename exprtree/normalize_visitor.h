@@ -43,7 +43,7 @@ protected:
 	std::stack<expr_t> pstack;	// predicates stack
 
 public:
-	normalize_visitor(zorba*);
+	normalize_visitor();
 	~normalize_visitor() {}
 
 public:

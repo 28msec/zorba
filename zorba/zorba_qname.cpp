@@ -49,47 +49,44 @@ string zorba_qname::uri() const
 }
 
 ostream& zorba_qname::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	os << '[' << uri() << ']' << prefix() << ':' << localname();
 	return os;
 }
 
-string zorba_qname::describe(
-	zorba* zorp) const
+string zorba_qname::describe() const
 {
 	ostringstream oss;
 	oss << "xs_qname(";
-	put(zorp,oss) << ')';
+	put(oss) << ')';
 	return oss.str();
 }
 
-string zorba_qname::str(
-	zorba* zorp) const
+string zorba_qname::str() const
 {
 	ostringstream oss;
 	oss << "xs_qname(";
-	put(zorp,oss) << ')';
+	put(oss) << ')';
 	return oss.str();
 }
 
 iterator_t zorba_qname::atomized_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t zorba_qname::effective_boolean_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t zorba_qname::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc,new stringValue(describe(zorp)));
+	return new singleton_iterator(loc,new stringValue(describe()));
 }
 
 

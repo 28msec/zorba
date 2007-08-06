@@ -35,7 +35,7 @@ public:
 	~fn_boolean() {}
 
 public:
-	iterator_t operator()(zorba*,yy::location loc, std::vector<iterator_t>&) const;
+	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<iterator_t>&) const;
 };

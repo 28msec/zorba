@@ -64,7 +64,6 @@ ostream& _put(
 // numericValue
 // ------------
 ostream& numericValue::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	switch (type()) {
@@ -86,19 +85,17 @@ ostream& numericValue::put(
 	}
 }
 
-string numericValue::describe(
-	zorba* zorp) const
+string numericValue::describe() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string numericValue::str(
-	zorba* zorp) const
+string numericValue::str() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
@@ -112,9 +109,9 @@ numericValue::numericValue(
 }
 
 iterator_t numericValue::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
+	return new singleton_iterator(loc, new stringValue(describe()));
 }
 
 
@@ -138,33 +135,30 @@ timeValue::timeValue(
 }
 
 ostream& timeValue::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	os << "time(";
 	return _put(os,&theVal,theType) << ')';
 }
 
-string timeValue::str(
-	zorba* zorp) const
+string timeValue::str() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string timeValue::describe(
-	zorba* zorp) const
+string timeValue::describe() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
 iterator_t timeValue::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
+	return new singleton_iterator(loc, new stringValue(describe()));
 }
 
 
@@ -189,7 +183,6 @@ stringValue::stringValue(
 }
 
 ostream& stringValue::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	switch (type()) {
@@ -208,36 +201,34 @@ ostream& stringValue::put(
 	}
 }
 
-string stringValue::describe(
-	zorba* zorp) const
+string stringValue::describe() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string stringValue::str(
-	zorba* zorp) const
+string stringValue::str() const
 {
 	return theVal;
 }
 
 iterator_t stringValue::atomized_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, (item*)this);
+	return new singleton_iterator(loc, (item*)this);
 }
 
 iterator_t stringValue::effective_boolean_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t stringValue::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, (item*)this);
+	return new singleton_iterator(loc, (item*)this);
 }
 
 
@@ -262,33 +253,30 @@ binaryValue::~binaryValue()
 }
 
 ostream& binaryValue::put(
-	zorba* zorp,
 	std::ostream& os) const
 {
 	return os;
 	// some printable representation of binary
 }
 
-string binaryValue::str(
-	zorba* zorp) const
+string binaryValue::str() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string binaryValue::describe(
-	zorba* zorp) const
+string binaryValue::describe() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
 iterator_t binaryValue::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
+	return new singleton_iterator(loc, new stringValue(describe()));
 }
 
 
@@ -304,32 +292,29 @@ booleanValue::booleanValue(
 }
 
 ostream& booleanValue::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	return os << "boolean(" << theVal << ')';
 }
 
-string booleanValue::describe(
-	zorba* zorp) const
+string booleanValue::describe() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
-string booleanValue::str(
-	zorba* zorp) const
+string booleanValue::str() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
 iterator_t booleanValue::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(describe(zorp)));
+	return new singleton_iterator(loc, new stringValue(describe()));
 }
 
 

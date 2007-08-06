@@ -20,7 +20,6 @@ namespace xqp {
  :.........................................*/
 
 std::ostream& itemRep::put(
-	zorba* zorp,
 	std::ostream& os) const
 {
 	return os;
@@ -42,7 +41,6 @@ string itemRep::string_value() const
  :.........................................*/
 
 std::ostream& atomic_valueRep::put(
-	zorba* zorp,
 	std::ostream& os) const
 {
 	return os;

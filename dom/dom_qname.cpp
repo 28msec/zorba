@@ -55,7 +55,6 @@ qnamekey_t dom_qname::nodeid() const
 }
 
 ostream& dom_qname::put(
-	zorba* zorp,
 	ostream& os) const
 {
   if (the_uri!="http://nonamespace/") {
@@ -66,8 +65,7 @@ ostream& dom_qname::put(
   }
 }
 
-string dom_qname::describe(
-	zorba* zorp) const
+string dom_qname::describe() const
 {
 	ostringstream oss;
 	if (the_uri!="http://noname") {
@@ -79,30 +77,29 @@ string dom_qname::describe(
 	return oss.str();
 }
 
-string dom_qname::str(
-	zorba* zorp) const
+string dom_qname::str() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 
 iterator_t dom_qname::effective_boolean_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new booleanValue(true));
+	return new singleton_iterator(loc, new booleanValue(true));
 }
 
 iterator_t dom_qname::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return new singleton_iterator(zorp,loc, new stringValue(str(zorp)));
+	return new singleton_iterator(loc, new stringValue(str()));
 }
 
 iterator_t dom_qname::atomized_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
-	return string_value(zorp, loc);
+	return string_value(loc);
 }
 
 } /* namespace xqp */

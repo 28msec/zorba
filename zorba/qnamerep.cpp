@@ -59,47 +59,44 @@ string qnamerep::uri() const
 }
 
 ostream& qnamerep::put(
-	zorba* zorp,
 	ostream& os) const
 {
 	os << '[' << uri() << ']' << prefix() << ':' << localname();
 	return os;
 }
 
-string qnamerep::describe(
-	zorba* zorp) const
+string qnamerep::describe() const
 {
 	ostringstream oss;
 	oss << "xs_qname(";
-	put(zorp,oss) << ')';
+	put(oss) << ')';
 	return oss.str();
 }
 
 iterator_t qnamerep::atomized_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t qnamerep::effective_boolean_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
 	return NULL;
 }
 
 iterator_t qnamerep::string_value(
-	zorba* zorp, yy::location &loc) const
+	yy::location &loc) const
 {
 	ostringstream oss;
-	put(zorp,oss);
-	return new singleton_iterator(zorp,loc, new stringValue(oss.str()));
+	put(oss);
+	return new singleton_iterator(loc, new stringValue(oss.str()));
 }
 
-string qnamerep::str(
-	zorba* zorp) const
+string qnamerep::str() const
 {
 	ostringstream oss;
-	put(zorp,oss);
+	put(oss);
 	return oss.str();
 }
 

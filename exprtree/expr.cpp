@@ -38,7 +38,7 @@ expr::expr(
 {
 }
 
-ostream& expr::put(zorba* zorp,ostream& os) const
+ostream& expr::put( ostream& os) const
 {
 	return os;
 }
@@ -66,7 +66,7 @@ expr_list::~expr_list()
 {
 }
 
-ostream& expr_list::put(zorba* zorp,ostream& os) const
+ostream& expr_list::put( ostream& os) const
 {
 	os << INDENT << "expr_list[\n";
 	list_iterator<expr_t> it = begin();
@@ -77,7 +77,7 @@ ostream& expr_list::put(zorba* zorp,ostream& os) const
 			continue;
 		}
 		//cout << TRACE << ": typeid(*e_h) = " << typeid(*e_h).name() << endl;
-		e_h->put(zorp,os);
+		e_h->put(os);
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -125,16 +125,16 @@ string var_expr::decode_var_kind(
 	}
 }
 
-ostream& var_expr::put(zorba* zorp,ostream& os) const
+ostream& var_expr::put( ostream& os) const
 {
 	os << INDENT << "var_expr[" << decode_var_kind(get_kind());
 	if (varname_h!=NULL) {
 		os << " name=";
-		get_varname()->put(zorp,os);
+		get_varname()->put(os);
 	}
 	if (valexpr_h!=NULL) {
 		os << ", expr=";
-		get_valexpr()->put(zorp,os);
+		get_valexpr()->put(os);
 	}
 	os << ", type=" << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
@@ -170,7 +170,7 @@ forlet_clause::~forlet_clause()
 {
 }
 
-ostream & forlet_clause::put(zorba* zorp,ostream& os) const
+ostream & forlet_clause::put( ostream& os) const
 {
 	os << INDENT << "forlet[";
 	switch (type) {
@@ -180,16 +180,16 @@ ostream & forlet_clause::put(zorba* zorp,ostream& os) const
 	}
 	//d Assert<null_pointer>(var_h!=NULL);
 	Assert(var_h!=NULL);
-	var_h->put(zorp,os);
+	var_h->put(os);
 	if (pos_var_h!=NULL) {
-		os << INDENT << " AT "; pos_var_h->put(zorp,os); UNDENT;
+		os << INDENT << " AT "; pos_var_h->put(os); UNDENT;
 	}
 	if (score_var_h!=NULL) {
-		os << INDENT << " SCORE "; score_var_h->put(zorp,os); UNDENT;
+		os << INDENT << " SCORE "; score_var_h->put(os); UNDENT;
 	}
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os);
+	expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -205,7 +205,7 @@ flwor_expr::~flwor_expr()
 {
 }
 
-ostream& flwor_expr::put(zorba* zorp,ostream& os) const
+ostream& flwor_expr::put( ostream& os) const
 {
 	os << INDENT << "flwor_expr[\n";
 	vector<forletref_t>::const_iterator it = clause_begin();
@@ -213,9 +213,9 @@ ostream& flwor_expr::put(zorba* zorp,ostream& os) const
 		forletref_t fl_h = *it;
 		//d Assert<null_pointer>(fl_h!=NULL);
 		Assert(fl_h!=NULL);
-		fl_h->put(zorp,os);
+		fl_h->put(os);
 	}
-	if (where_h!=NULL) where_h->put(zorp,os);
+	if (where_h!=NULL) where_h->put(os);
 
 	vector<orderspec_t>::const_iterator ord_it = orderspec_begin();
 	for (; ord_it!=orderspec_end(); ++ord_it) {
@@ -228,7 +228,7 @@ ostream& flwor_expr::put(zorba* zorp,ostream& os) const
 		Assert(ord_h!=NULL);
 
 		os << INDENT << "ORDERBY\n";
-		os << e_h->put(zorp,os) << endl;
+		os << e_h->put(os) << endl;
 		UNDENT;
 
 		os << INDENT;
@@ -247,7 +247,7 @@ ostream& flwor_expr::put(zorba* zorp,ostream& os) const
 	}
 	//d Assert<null_pointer>(retval_h!=NULL);
 	Assert(retval_h!=NULL);
-	os << INDENT << "RETURN\n"; retval_h->put(zorp,os); UNDENT;
+	os << INDENT << "RETURN\n"; retval_h->put(os); UNDENT;
 	return os << OUTDENT << "]\n";
 
 }
@@ -285,7 +285,7 @@ quantified_expr::~quantified_expr()
 {
 }
 
-ostream& quantified_expr::put(zorba* zorp,ostream& os) const
+ostream& quantified_expr::put( ostream& os) const
 {
 	os << INDENT << "quantified_expr[";
 	switch (qmode) {
@@ -304,17 +304,17 @@ ostream& quantified_expr::put(zorba* zorp,ostream& os) const
 		//d Assert<null_pointer>(var_h->varname_h!=NULL);
 		Assert(var_h->varname_h!=NULL);
 		os << INDENT;
-		var_h->varname_h->put(zorp,os) << " in ";
+		var_h->varname_h->put(os) << " in ";
 		//d Assert<null_pointer>(var_h->valexpr_h!=NULL);
 		Assert(var_h->valexpr_h!=NULL);
-		var_h->valexpr_h->put(zorp,os) << endl;
+		var_h->valexpr_h->put(os) << endl;
 		UNDENT;
 	}
 
 	os << " SATISFIES\n";
 	//d Assert<null_pointer>(sat_expr_h!=NULL);
 	Assert(sat_expr_h!=NULL);
-	sat_expr_h->put(zorp,os);
+	sat_expr_h->put(os);
 	return os << OUTDENT << "\n]\n";
 }
 
@@ -338,22 +338,22 @@ typeswitch_expr::~typeswitch_expr()
 {
 }
 
-ostream& typeswitch_expr::put(zorba* zorp,ostream& os) const
+ostream& typeswitch_expr::put( ostream& os) const
 {
 	os << INDENT << "typeswitch_expr[\n";
 	//d Assert<null_pointer>(switch_expr_h!=NULL);
 	Assert(switch_expr_h!=NULL);
-	switch_expr_h->put(zorp,os);
+	switch_expr_h->put(os);
 
 	vector<clauseref_t>::const_iterator it = case_clause_hv.begin();
 	for (; it!=case_clause_hv.end(); ++it) {
 		clauseref_t cc_h = *it;
 		os << INDENT << "case: ";
-		if (cc_h->var_h!=NULL) cc_h->var_h->put(zorp,os) << " as ";
+		if (cc_h->var_h!=NULL) cc_h->var_h->put(os) << " as ";
 		os << sequence_type::describe(cc_h->type) << " return ";
 		//d Assert<null_pointer>(cc_h->case_expr_h!=NULL);
 		Assert(cc_h->case_expr_h!=NULL);
-		cc_h->case_expr_h->put(zorp,os) << endl;
+		cc_h->case_expr_h->put(os) << endl;
 		UNDENT;
 	}
 	return os << OUTDENT << "]\n";
@@ -392,18 +392,18 @@ if_expr::~if_expr()
 {
 }
 
-ostream& if_expr::put(zorba* zorp,ostream& os) const
+ostream& if_expr::put( ostream& os) const
 {
 	os << INDENT << "if_expr[\n";
 	//d Assert<null_pointer>(cond_expr_h!=NULL);
 	Assert(cond_expr_h!=NULL);
-	cond_expr_h->put(zorp,os);
+	cond_expr_h->put(os);
 	//d Assert<null_pointer>(then_expr_h!=NULL);
 	Assert(then_expr_h!=NULL);
-	then_expr_h->put(zorp,os);
+	then_expr_h->put(os);
 	//d Assert<null_pointer>(else_expr_h!=NULL);
 	Assert(else_expr_h!=NULL);
-	else_expr_h->put(zorp,os);
+	else_expr_h->put(os);
 	return os << OUTDENT << "\n]\n";
 }
 
@@ -439,19 +439,19 @@ fo_expr::~fo_expr()
 {
 }
 
-ostream& fo_expr::put(zorba* zorp,ostream& os) const
+ostream& fo_expr::put( ostream& os) const
 {
 	os << INDENT << "fo_expr[\n";
 	//d Assert<null_pointer>(func!=NULL);
 	Assert(func!=NULL);
-	os << INDENT << func->get_fname()->str(zorp) << endl;
+	os << INDENT << func->get_fname()->str() << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
 	for (; it!=end(); ++it) {
 		rchandle<expr> e_h = *it;
 		//d Assert<null_pointer>(e_h!=NULL);
 		Assert(e_h!=NULL);
-		e_h->put(zorp,os) << endl;
+		e_h->put(os) << endl;
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -488,17 +488,17 @@ ft_contains_expr::~ft_contains_expr()
 {
 }
 
-ostream& ft_contains_expr::put(zorba* zorp,ostream& os) const
+ostream& ft_contains_expr::put( ostream& os) const
 {
 	os << "ft_contains_expr[\n";
 	//d Assert<null_pointer>(range_h!=NULL);
 	Assert(range_h!=NULL);
-	range_h->put(zorp,os) << endl;
+	range_h->put(os) << endl;
 	//d Assert<null_pointer>(ft_select_h!=NULL);
 	Assert(ft_select_h!=NULL);
 	os << "ft_contains\n";
-	ft_select_h->put(zorp,os) << endl;
-	if (ft_ignore_h!=NULL) ft_ignore_h->put(zorp,os);
+	ft_select_h->put(os) << endl;
+	if (ft_ignore_h!=NULL) ft_ignore_h->put(os);
 	return os << "\n]\n";
 }
 
@@ -527,12 +527,12 @@ instanceof_expr::~instanceof_expr()
 {
 }
 
-ostream& instanceof_expr::put(zorba* zorp,ostream& os) const
+ostream& instanceof_expr::put( ostream& os) const
 {
 	os << INDENT << "instanceof_expr[\n";
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	os << "instance of\n";
 	os << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
@@ -562,12 +562,12 @@ treat_expr::~treat_expr()
 {
 }
 
-ostream& treat_expr::put(zorba* zorp,ostream& os) const
+ostream& treat_expr::put( ostream& os) const
 {
 	os << INDENT << "treat_expr[\n";
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	os << "treat as\n";
 	os << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
@@ -597,12 +597,12 @@ castable_expr::~castable_expr()
 {
 }
 
-ostream& castable_expr::put(zorba* zorp,ostream& os) const
+ostream& castable_expr::put( ostream& os) const
 {
 	os << INDENT << "castable_expr[\n";
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	os << "castable as\n";
 	os << sequence_type::describe(get_type());
 	if (is_optional()) os << "?";
@@ -633,12 +633,12 @@ cast_expr::~cast_expr()
 {
 }
 
-ostream& cast_expr::put(zorba* zorp,ostream& os) const
+ostream& cast_expr::put( ostream& os) const
 {
 	os << INDENT << "cast_expr[\n";
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	os << "cast as\n";
 	os << sequence_type::describe(type);
 	if (is_optional()) os << "?";
@@ -669,13 +669,13 @@ unary_expr::~unary_expr()
 {
 }
 
-ostream& unary_expr::put(zorba* zorp,ostream& os) const
+ostream& unary_expr::put( ostream& os) const
 {
 	os << "unary_expr[";
 	os << (neg_b ? "MINUS\n" : "\n");
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	return os << "]\n";
 }
 
@@ -703,7 +703,7 @@ validate_expr::~validate_expr()
 {
 }
 
-ostream& validate_expr::put(zorba* zorp,ostream& os) const
+ostream& validate_expr::put( ostream& os) const
 {
 	os << INDENT << "validate_expr[";
 	switch (valmode) {
@@ -713,7 +713,7 @@ ostream& validate_expr::put(zorba* zorp,ostream& os) const
 	}
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	return os << OUTDENT << "]\n";
 }
 
@@ -746,7 +746,7 @@ extension_expr::~extension_expr()
 {
 }
 
-ostream& extension_expr::put(zorba* zorp,ostream& os) const
+ostream& extension_expr::put( ostream& os) const
 {
 	os << INDENT << "extension_expr[\n";
 	/*
@@ -767,13 +767,13 @@ ostream& extension_expr::put(zorba* zorp,ostream& os) const
 	Assert(pragma_h!=NULL);
 	//d Assert<null_pointer>(pragma_h->name_h!=NULL);
 	Assert(pragma_h->name_h!=NULL);
-	os << "?"; pragma_h->name_h->put(zorp,os);
+	os << "?"; pragma_h->name_h->put(os);
 	os << " " << pragma_h->content << endl;
 	UNDENT;
 
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	return os << OUTDENT << "]\n";
 }
 
@@ -797,7 +797,7 @@ relpath_expr::~relpath_expr()
 {
 }
 
-ostream& relpath_expr::put(zorba* zorp,ostream& os) const
+ostream& relpath_expr::put( ostream& os) const
 {
 	os << INDENT << "relpath_expr[\n";
 	list_iterator<expr_t> it = begin();
@@ -805,7 +805,7 @@ ostream& relpath_expr::put(zorba* zorp,ostream& os) const
 		expr_t e_h = *it;
 		//d Assert<null_pointer>(e_h!=NULL);
 		Assert(e_h!=NULL);
-		e_h->put(zorp,os);
+		e_h->put(os);
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -834,7 +834,7 @@ match_expr::~match_expr()
 {
 }
 
-ostream& match_expr::put(zorba* zorp,ostream& os) const
+ostream& match_expr::put( ostream& os) const
 {
 	os << INDENT << "match_expr[";
 	switch (test) {
@@ -862,15 +862,15 @@ ostream& match_expr::put(zorba* zorp,ostream& os) const
 	}
 	if (name_h!=NULL) {
   	switch (wild) {
-  	case no_wild: name_h->put(zorp,os); break;
+  	case no_wild: name_h->put(os); break;
   	case all_wild: os << "*"; break;
-  	case prefix_wild: os << "*:"; name_h->put(zorp,os); break;
-  	case name_wild: name_h->put(zorp,os) << ":*"; break;
+  	case prefix_wild: os << "*:"; name_h->put(os); break;
+  	case name_wild: name_h->put(os) << ":*"; break;
   	default: os << "??";
   	}
   }
 	if (typename_h!=NULL) {
-		typename_h->put(zorp,os) << endl;
+		typename_h->put(os) << endl;
 	}
 	os << ")\n";
 	return os << OUTDENT << "]\n";
@@ -897,7 +897,7 @@ axis_step_expr::~axis_step_expr()
 {
 }
 
-ostream& axis_step_expr::put(zorba* zorp,ostream& os) const
+ostream& axis_step_expr::put( ostream& os) const
 {
 	os << INDENT << "axis_step_expr[";
 	switch (axis) {
@@ -918,10 +918,10 @@ ostream& axis_step_expr::put(zorba* zorp,ostream& os) const
 	os << endl;
 
 	if (test_h!=NULL) {
-		test_h->put(zorp,os);
+		test_h->put(os);
   }
 	if (name_h!=NULL) {
-		name_h->put(zorp,os);
+		name_h->put(os);
   }
 	vector<rchandle<expr> >::const_iterator it = pred_hv.begin();
 	vector<rchandle<expr> >::const_iterator en = pred_hv.end();
@@ -929,7 +929,7 @@ ostream& axis_step_expr::put(zorba* zorp,ostream& os) const
 		rchandle<expr> e_h = *it;
 		//d Assert<null_pointer>(e_h!=NULL);
 		Assert(e_h!=NULL);
-		e_h->put(zorp,os);
+		e_h->put(os);
 	}
 	return os << OUTDENT << "]\n";
 }
@@ -1002,7 +1002,7 @@ string literal_expr::decode_type(enum literal_type_t t)
 	}
 }
 
-ostream& literal_expr::put(zorba* zorp,ostream& os) const
+ostream& literal_expr::put( ostream& os) const
 {
 	switch (type) {
 	case lit_string: os << INDENT << "string[" << sval; break;
@@ -1040,7 +1040,7 @@ order_expr::~order_expr()
 {
 }
 
-ostream& order_expr::put(zorba* zorp,ostream& os) const
+ostream& order_expr::put( ostream& os) const
 {
 	os << "order_expr[";
 	switch (type) {
@@ -1050,7 +1050,7 @@ ostream& order_expr::put(zorba* zorp,ostream& os) const
 	}
 	//d Assert<null_pointer>(expr_h!=NULL);
 	Assert(expr_h!=NULL);
-	expr_h->put(zorp,os) << endl;
+	expr_h->put(os) << endl;
 	return os << "]\n";
 }
 
@@ -1080,12 +1080,12 @@ doc_expr::~doc_expr()
 {
 }
 
-ostream& doc_expr::put(zorba* zorp,ostream& os) const
+ostream& doc_expr::put( ostream& os) const
 {
 	os << INDENT << "doc_expr[\n";
 	//d Assert<null_pointer>(docuri_h!=NULL);
 	Assert(docuri_h!=NULL);
-	docuri_h->put(zorp,os);
+	docuri_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1126,16 +1126,16 @@ elem_expr::~elem_expr()
 {
 }
 
-ostream& elem_expr::put(zorba* zorp,ostream& os) const
+ostream& elem_expr::put( ostream& os) const
 {
 	os << INDENT << "elem_expr[<";
 	//d Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	Assert(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(zorp,os) << ">\n";
+		qname_h->put(os) << ">\n";
 	}
 	else {
-		qname_expr_h->put(zorp,os) << ">\n";
+		qname_expr_h->put(os) << ">\n";
 	}
 	vector<nsbinding>::const_iterator it = ns_begin();
 	vector<nsbinding>::const_iterator en = ns_end();
@@ -1147,7 +1147,7 @@ ostream& elem_expr::put(zorba* zorp,ostream& os) const
 	}
 	//d Assert<null_pointer>(content_expr_h!=NULL);
 	Assert(content_expr_h!=NULL);
-	content_expr_h->put(zorp,os);
+	content_expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1188,21 +1188,21 @@ attr_expr::~attr_expr()
 {
 }
 
-ostream& attr_expr::put(zorba* zorp,ostream& os) const
+ostream& attr_expr::put( ostream& os) const
 {
 	os << INDENT << "attr_expr[@";
 	//d Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	Assert(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(zorp,os);
+		qname_h->put(os);
 	}
 	else {
-		qname_expr_h->put(zorp,os);
+		qname_expr_h->put(os);
 	}
 	//d Assert<null_pointer>(val_expr_h!=NULL);
 	Assert(val_expr_h!=NULL);
 	os << "=";
-	val_expr_h->put(zorp,os);
+	val_expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1228,12 +1228,12 @@ text_expr::~text_expr()
 {
 }
 
-ostream& text_expr::put(zorba* zorp,ostream& os) const
+ostream& text_expr::put( ostream& os) const
 {
 	os << INDENT << "text_expr[";
 	//d Assert<null_pointer>(text_expr_h!=NULL);
 	Assert(text_expr_h!=NULL);
-	text_expr_h->put(zorp,os);
+	text_expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1259,12 +1259,12 @@ comment_expr::~comment_expr()
 {
 }
 
-ostream& comment_expr::put(zorba* zorp,ostream& os) const
+ostream& comment_expr::put( ostream& os) const
 {
 	os << INDENT << "comment_expr[";
 	//d Assert<null_pointer>(comment_expr_h!=NULL);
 	Assert(comment_expr_h!=NULL);
-	comment_expr_h->put(zorp,os);
+	comment_expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1305,7 +1305,7 @@ pi_expr::~pi_expr()
 {
 }
 
-ostream& pi_expr::put(zorba* zorp,ostream& os) const
+ostream& pi_expr::put( ostream& os) const
 {
 	os << INDENT << "pi_expr[target=";
 	//d Assert<bad_arg>(target.length()>0 || target_expr_h!=NULL);
@@ -1314,12 +1314,12 @@ ostream& pi_expr::put(zorba* zorp,ostream& os) const
 		os << target;
 	}
 	else {
-		target_expr_h->put(zorp,os);
+		target_expr_h->put(os);
 	}
 	//d Assert<null_pointer>(content_expr_h!=NULL);
 	Assert(content_expr_h!=NULL);
 	os << ", context=";
-	content_expr_h->put(zorp,os);
+	content_expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 

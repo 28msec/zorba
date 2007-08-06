@@ -42,7 +42,7 @@ protected:
 		file_source(const std::string& _path) : source(_path) {}
 		~file_source() {}
 
-		std::istream* get_input(zorba*);
+		std::istream* get_input();
 	};
 
 public:

@@ -32,8 +32,8 @@ public:
 	~zorba_object() {}
 
 public:
-	virtual std::string describe(zorba*) const { return "zorba_object"; }
-	virtual std::ostream& put(zorba*,std::ostream& os) const { return os; }
+	virtual std::string describe() const { return "zorba_object"; }
+	virtual std::ostream& put(std::ostream& os) const { return os; }
 };
 
 
@@ -51,8 +51,8 @@ public:
 	~zorba_exception() {}
 
 public:
-	virtual std::string describe(zorba*) const { return "zorba_exception"; }
-	virtual std::ostream& put(zorba*,std::ostream& os) const { return os; }
+	virtual std::string describe() const { return "zorba_exception"; }
+	virtual std::ostream& put(std::ostream& os) const { return os; }
 };
 */
 
@@ -71,8 +71,8 @@ public:
 	~zorba_ft_value() {}
 
 public:
-	virtual std::string describe(zorba*) const { return "zorba_tf_value"; }
-	virtual std::ostream& put(zorba*,std::ostream& os) const { return os; }
+	virtual std::string describe() const { return "zorba_tf_value"; }
+	virtual std::ostream& put(std::ostream& os) const { return os; }
 };
 
 
@@ -92,11 +92,11 @@ public:
 
 public:		// accessors
 	virtual sequence_type_t type() const = 0;
-  virtual std::string describe(zorba*) const = 0;
+  virtual std::string describe() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t atomized_value( yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }
@@ -119,13 +119,13 @@ public:
 
 public:		// accessors
 	virtual sequence_type_t type() const = 0;
-  virtual std::string describe(zorba*) const = 0;
-  virtual std::string str(zorba*) const = 0;
+  virtual std::string describe() const = 0;
+  virtual std::string str() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t effective_boolean_value(zorba*, yy::location &loc) const = 0;
-	virtual iterator_t string_value(zorba*, yy::location &loc) const = 0;
+	virtual iterator_t atomized_value( yy::location &loc) const = 0;
+	virtual iterator_t effective_boolean_value( yy::location &loc) const = 0;
+	virtual iterator_t string_value( yy::location &loc) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }

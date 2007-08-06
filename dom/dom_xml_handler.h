@@ -94,7 +94,6 @@ protected:  // state
   uint16_t the_entity;									// most recent entity 
 	ostringstream textbuf;								// text accumulator
 	dom_node* the_context_node;
-	zorba* zorp;
 	
 	std::string default_attribute_prefix;
 	std::string default_attribute_uri;
@@ -103,7 +102,6 @@ protected:  // state
 
 public:		// ctor, dtor
 	dom_xml_handler(
-		zorba*,
 		std::string const& baseuri,					// document base URI
 		std::string const& uri);						// document URI
 

@@ -186,13 +186,11 @@ void library::init(
 
 // ctor, dtor
 
-library::library(
-	zorba* _zorp)
+library::library()
 :
-	zorp(_zorp),
 	funtab((float)0.6, 1024)
 {
-	init(&*zorp->get_value_factory());
+	init(&*zorba::getZorbaForCurrentThread()->get_value_factory());
 }
 
 library::~library()

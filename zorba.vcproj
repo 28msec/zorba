@@ -1485,14 +1485,6 @@
 			Filter="h;hpp;hxx;hm;inl"
 			>
 			<File
-				RelativePath="functions\Accessors.h"
-				>
-			</File>
-			<File
-				RelativePath="functions\anyURI.h"
-				>
-			</File>
-			<File
 				RelativePath="util\Assert.h"
 				>
 			</File>
@@ -1506,10 +1498,6 @@
 			</File>
 			<File
 				RelativePath=".\functions\BooleanImpl.h"
-				>
-			</File>
-			<File
-				RelativePath="functions\Casting.h"
 				>
 			</File>
 			<File
@@ -1537,19 +1525,11 @@
 				>
 			</File>
 			<File
-				RelativePath="functions\Constructor.h"
-				>
-			</File>
-			<File
 				RelativePath="runtime\content_handler.h"
 				>
 			</File>
 			<File
 				RelativePath="context\context.h"
-				>
-			</File>
-			<File
-				RelativePath="functions\Context.h"
 				>
 			</File>
 			<File
@@ -1573,15 +1553,11 @@
 				>
 			</File>
 			<File
-				RelativePath="functions\DurationsDatesTimes.h"
+				RelativePath="runtime\dynamic_context.h"
 				>
 			</File>
 			<File
 				RelativePath="context\dynamic_context.h"
-				>
-			</File>
-			<File
-				RelativePath="runtime\dynamic_context.h"
 				>
 			</File>
 			<File
@@ -1645,15 +1621,15 @@
 				>
 			</File>
 			<File
-				RelativePath="parser\indent.h"
-				>
-			</File>
-			<File
 				RelativePath="exprtree\indent.h"
 				>
 			</File>
 			<File
 				RelativePath="runtime\indent.h"
+				>
+			</File>
+			<File
+				RelativePath="parser\indent.h"
 				>
 			</File>
 			<File
@@ -1697,10 +1673,6 @@
 				>
 			</File>
 			<File
-				RelativePath="functions\NOTATION.h"
-				>
-			</File>
-			<File
 				RelativePath="functions\Numerics.h"
 				>
 			</File>
@@ -1733,15 +1705,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\win32\pthread.h"
+				>
+			</File>
+			<File
 				RelativePath="values\qname.h"
 				>
 			</File>
 			<File
 				RelativePath="zorba\qnamerep.h"
-				>
-			</File>
-			<File
-				RelativePath="functions\QNames.h"
 				>
 			</File>
 			<File

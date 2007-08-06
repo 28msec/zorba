@@ -89,7 +89,7 @@ public:		// accessors
 	uint32_t& length() { return theLength; }
 
 public:		// output
-  std::ostream& put(zorba*,std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
   std::string describe() const;
 	std::string string_value() const;
 
@@ -115,7 +115,7 @@ public:
 	atomic_valueRep() {}
 
 public:		// output
-  std::ostream& put(zorba*,std::ostream&) const;
+  std::ostream& put(std::ostream&) const;
   std::string describe() const;
 	std::string string_value() const;
 
