@@ -92,7 +92,7 @@ void BasicIterator::releaseResources() {
 }
 
 item_t BasicIterator::consumeNext(iterator_t& subIterator) {
-	return subIterator->next();
+	return subIterator->produceNext();
 }
 
 void BasicIterator::resetChild(iterator_t& subIterator) {
