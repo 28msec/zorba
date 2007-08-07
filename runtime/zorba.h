@@ -21,8 +21,9 @@
 
 #include <stack>
 #include <map>
-#include "pthread.h"
-
+#ifdef WIN32
+#include "win32/pthread.h"
+#endif
 
 namespace xqp {
 
