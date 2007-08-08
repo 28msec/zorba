@@ -85,23 +85,26 @@ bool op_numeric_binary_iterator::done() const
  * TODO FIXME This is not the GENERIC_ADD_ITERATOR!!!! No type checking is performend! 
  */
 item_t op_numeric_add_iterator::nextImpl(){
-	item_t n0_h = this->consumeNext(arg0);
-
+	item_t n0_h;
+	item_t n1_h;
+	const numericValue* n0;
+	const numericValue* n1;
+	
+	STACK_INIT();
+	n0_h = this->consumeNext(arg0);
 	if(&*n0_h == NULL)
-		return NULL;
-
-	item_t n1_h = this->consumeNext(arg1);
-
+		STACK_PUSH(NULL);
+	n1_h = this->consumeNext(arg1);
 	if(&*n1_h == NULL)
-		return NULL;
-
+		STACK_PUSH(NULL);
 	if (n0_h == NULL || n1_h == NULL) {
-		return NULL;
+		STACK_PUSH(NULL);
 	} else {
-		const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-		const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-		return new numericValue(xs_decimal, n1.val() + n0.val());
+		n0 = dynamic_cast<const numericValue*>(&*n0_h);
+		n1 = dynamic_cast<const numericValue*>(&*n1_h);
+		STACK_PUSH(new numericValue(xs_decimal, n1->val() + n0->val()));
 	}
+	STACK_END();
 }
 // void op_numeric_add_iterator::resetImpl(){
 // 	this->resetChild(this->arg0);
