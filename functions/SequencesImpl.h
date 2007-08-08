@@ -23,6 +23,7 @@
 #include "function.h"
 #include "context/common.h"
 #include "runtime/item_iterator.h"
+#include "runtime/batching.h"
 #include "util/rchandle.h"
 #include "values/nodes.h"
 
@@ -44,7 +45,7 @@ namespace xqp
 
 
 //15.1.2 op:concatenate
-class ConcatIterator : public BasicIterator
+class ConcatIterator : public Batcher<ConcatIterator>
 {
 protected:
 	std::vector<iterator_t> argv;
@@ -52,21 +53,37 @@ protected:
 	uint32_t cursor;
 
 public:
-	void _open();
-	void _close();
 	std::ostream&  _show(std::ostream&) const;
-	item_t _next();
-	bool done() const;
 
-protected:
-	item_t nextImpl_();
-	void resetImpl_();
-	void releaseResourcesImpl_();
+	item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
 
 public:	// ctor,dtor
-	ConcatIterator ( yy::location loc, const std::vector<iterator_t>& );
-	ConcatIterator ( const ConcatIterator& it );
-	~ConcatIterator() {}
+// 	ConcatIterator ( yy::location loc, const std::vector<iterator_t>& );
+// 	ConcatIterator ( const ConcatIterator& it );
+	
+	
+ConcatIterator(
+	yy::location loc,
+	const vector<iterator_t>& _argv)
+:
+	Batcher<ConcatIterator>(loc),
+	argv(_argv),
+	currit_h(NULL),
+	cursor(0)
+{}
+
+ConcatIterator(
+	const ConcatIterator& concat_it)
+:
+	Batcher<ConcatIterator>(concat_it),
+	argv(concat_it.argv),
+	currit_h(concat_it.currit_h),
+	cursor(concat_it.cursor)
+{}
+
+~ConcatIterator() {}
 };
 
 

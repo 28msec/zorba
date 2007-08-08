@@ -54,6 +54,7 @@ bool op_numeric_binary_iterator::done() const
 }
 
 
+
 /*______________________________________________________________________
 |  
 |	6.2.1 op:numeric-add
@@ -70,23 +71,22 @@ bool op_numeric_binary_iterator::done() const
 |	NaN is returned.
 |_______________________________________________________________________*/
 
-op_numeric_add_iterator::op_numeric_add_iterator(
-	yy::location loc, 
-	iterator_t arg0,
-	iterator_t arg1)
-:
-	op_numeric_binary_iterator(loc,arg0,arg1)
-{
-}
+// op_numeric_add_iterator::op_numeric_add_iterator(
+// 	yy::location loc, 
+// 	iterator_t arg0,
+// 	iterator_t arg1)
+// :
+// 	op_numeric_binary_iterator(loc,arg0,arg1)
+// {
+// }
 
-item_t op_numeric_add_iterator::_next()
-{
-	item_t n0_h = arg0->next();
+item_t op_numeric_add_iterator::nextImpl(){
+	item_t n0_h = this->consumeNext(arg0);
 
 	if(&*n0_h == NULL)
 		return NULL;
 
-	item_t n1_h = arg1->next();
+	item_t n1_h = this->consumeNext(arg1);
 
 	if(&*n1_h == NULL)
 		return NULL;
@@ -99,6 +99,56 @@ item_t op_numeric_add_iterator::_next()
 		return new numericValue(xs_decimal, n1.val() + n0.val());
 	}
 }
+// void op_numeric_add_iterator::resetImpl(){
+// 	this->resetChild(this->arg0);
+// 	this->resetChild(this->arg1);
+// }
+void op_numeric_add_iterator::releaseResourcesImpl(){
+	this->releaseChildResources(this->arg0);
+	this->releaseChildResources(this->arg1);
+}
+
+// item_t op_numeric_add_iterator::_next()
+// {
+// 	item_t n0_h = arg0->next();
+// 
+// 	if(&*n0_h == NULL)
+// 		return NULL;
+// 
+// 	item_t n1_h = arg1->next();
+// 
+// 	if(&*n1_h == NULL)
+// 		return NULL;
+// 
+// 	if (n0_h == NULL || n1_h == NULL) {
+// 		return NULL;
+// 	} else {
+// 		const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+// 		const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
+// 		return new numericValue(xs_decimal, n1.val() + n0.val());
+// 	}
+// }
+
+// item_t op_numeric_add_iterator::nextImpl_()
+// {
+// 	item_t n0_h = this->consumeNext(arg0);
+// 
+// 	if(&*n0_h == NULL)
+// 		return NULL;
+// 
+// 	item_t n1_h = this->consumeNext(arg1);
+// 
+// 	if(&*n1_h == NULL)
+// 		return NULL;
+// 
+// 	if (n0_h == NULL || n1_h == NULL) {
+// 		return NULL;
+// 	} else {
+// 		const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
+// 		const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
+// 		return new numericValue(xs_decimal, n1.val() + n0.val());
+// 	}
+// }
 
 std::ostream& op_numeric_add_iterator::_show(std::ostream& os)
 const

@@ -9,16 +9,12 @@
 #ifndef XQP_ITEM_ITERATOR_H
 #define XQP_ITEM_ITERATOR_H
 
-// Definitions for Duff's device
-#define STACK_INIT() switch (current_line) { case 0:
-#define STACK_PUSH(x) do { current_line = __LINE__; return x; case __LINE__:; } while (0)
-#define STACK_END() } return NULL;
-
 #include "context/common.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "parser/location.hh"
 #include "parser/indent.h"
+#include "batching.h"
 
 #include <assert.h>
 #include <iostream>
@@ -36,93 +32,6 @@ class item;
 class node;
 class qname;
 class zorba;
-
-class BasicIterator : public rcobject
-{
-protected:
-	bool open_b;
-	// Line Info for Duff's device
-	int current_line;
-
-	//daniel
-	zorba	*zorp;
-public:
-	yy::location	loc;
-
-public:
-	//daniel BasicIterator() : zorp(NULL), open_b(false) {}
-	BasicIterator(yy::location _loc);
-	BasicIterator(const BasicIterator& it);
-	virtual ~BasicIterator();
-
-public:		// inline base logic
-
-	void open();
-	void close();
-	bool isOpen() const;
-	virtual bool done() const = 0;
-
-	item_t next(); 
-	// Info: Forcing inlining a function in g++: item_t next() __attribute__((always_inline)) {...}
-	
-	/** Produces an output item of the iterator. Implicitly, the first call 
-	 * of 'producNext' initializes the iterator and allocates resources 
-	 * (main memory, file descriptors, etc.). 
-	 */
-	item_t produceNext();
-	
-	/** 
-	 * Restarts the iterator so that the next 'produceNext' call will start 
-	 * again from the beginning (should not release any resources). 
-	 */
-	void reset();
-	
-	/** 
-	 * Releases all resources of the iterator 
-	 */
-	void releaseResources();
-	
-	/** 
-	 * Consumes the next item from one of the child iterators of the iterator. 
-	 */
-	item_t consumeNext(iterator_t& subIterator);
-	
-	/** 
-	 * Resets a child iterator 
-	 */
-	void resetChild(iterator_t& subIterator);
-	
-	/** 
-	 * Releases all resources of a child iterator. 
-	 */
-	void releaseChildResources(iterator_t& subIterator);
-	
-	std::ostream& show(std::ostream&);
-
-protected:	// dispatch to concrete classes
-	virtual void	 _open() = 0;
-	virtual item_t _next() = 0;
-	virtual void	 _close() = 0;
-	
-	/** 
-	 * Produces the next item;  implicitly initializes the iterator and allocates 
-	 * resources (if any) at its first call (or after a releaseResourcesImpl).
-	 */
-	virtual item_t nextImpl_()/* = 0*/;
-	
-	/**
-	 * Resets the iterator so that it restarts from the beginning.
-	 */
-	virtual void resetImpl_()/* = 0*/;
-	
-	/**
-	 * Releases all the resources. 
-	 */
-	virtual void releaseResourcesImpl_()/* = 0*/;
-
-	virtual std::ostream&  _show(std::ostream&) const = 0;
-};
-
 
 
 /*
@@ -151,8 +60,7 @@ public:		// "treat as" operators
 |
 |	literals and for_var bindings
 |______________________________________________________________*/
-
-class SingletonIterator : public BasicIterator
+class SingletonIterator : public Batcher<SingletonIterator>
 {
 protected:
 	rchandle<item> i_h;
@@ -160,22 +68,22 @@ protected:
 
 public:
 	SingletonIterator(yy::location loc, item* _i_p) : 
-												BasicIterator( loc),
+												Batcher<SingletonIterator> (loc),
 												i_h(_i_p), is_done (false) {}
-	SingletonIterator(const SingletonIterator& it) : BasicIterator (it), i_h(it.i_h),
+	SingletonIterator(const SingletonIterator& it) : Batcher<SingletonIterator>(it), i_h(it.i_h),
 																										is_done(it.is_done) 
 																										{}
 	~SingletonIterator() { }
 	
-protected:
-	item_t nextImpl_() {
+public:
+	item_t nextImpl() {
 		bool was_done = is_done; is_done = true;
 		return was_done ? NULL : i_h;
 	}
-	void resetImpl_() {
+	void resetImpl() {
 		this->is_done = false;
 	}
-	void releaseResourcesImpl_(){}
+	void releaseResourcesImpl(){}
 
 public:		// iterator interface
 	void _open() {}

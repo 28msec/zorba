@@ -31,6 +31,29 @@ namespace xqp {
 
 class zorba;
 
+template <class IterType>
+class BinaryBaseIterator : public Batcher<IterType> {
+	
+public:
+	BinaryBaseIterator
+	(yy::location loc, iterator_t arg0_, iterator_t arg1_)
+	:
+	Batcher<IterType>(loc),arg0(arg0_),arg1(arg1_){}
+	
+	~BinaryBaseIterator() {}
+
+	void resetImpl(){
+		this->resetChild(arg0);
+		this->resetChild(arg1);
+	}
+	
+protected:
+	iterator_t arg0;
+	iterator_t arg1;
+
+};
+
+
 
 // binary iterator base class
 
@@ -61,14 +84,37 @@ protected:
 
 // 6.2.1 op:numeric-add
 // --------------------
-class op_numeric_add_iterator : public op_numeric_binary_iterator
+// class op_numeric_add_iterator : public op_numeric_binary_iterator
+// {
+// public:
+// 	op_numeric_add_iterator(yy::location loc, iterator_t, iterator_t);
+// 	~op_numeric_add_iterator() {}
+// 
+// public:	// iterator interface
+// 	item_t _next();
+// // 	item_t nextImpl_();
+// 	std::ostream&  _show(std::ostream&) const;
+// };
+
+class op_numeric_add_iterator : public BinaryBaseIterator<op_numeric_add_iterator>
 {
+/*
+protected:
+	iterator_t arg0;
+	iterator_t arg1;
+*/	
 public:
-	op_numeric_add_iterator(yy::location loc, iterator_t, iterator_t);
+	op_numeric_add_iterator
+	(yy::location loc, iterator_t arg0_, iterator_t arg1_)
+	:
+	BinaryBaseIterator<op_numeric_add_iterator>(loc, arg0_, arg1_){}
 	~op_numeric_add_iterator() {}
 
 public:	// iterator interface
-	item_t _next();
+	item_t nextImpl();
+	//void resetImpl();
+	void releaseResourcesImpl();
+
 	std::ostream&  _show(std::ostream&) const;
 };
 

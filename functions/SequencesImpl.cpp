@@ -37,23 +37,6 @@ qname* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-void ConcatIterator::_open()
-{
-	this->cursor = 0;
-	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
-  for (; iter != this->argv.end(); ++iter) {
-  	(*iter)->open();
-  }
-}
-
-void ConcatIterator::_close()
-{
-	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		(*iter)->close();
-	}
-}
-
 std::ostream& ConcatIterator::_show(std::ostream& os)
 const
 {
@@ -61,35 +44,7 @@ const
 	return os;
 }
 
-item_t ConcatIterator::_next() {
-	item_t item;
-	
-	STACK_INIT();
-	
-	for (; this->cursor < this->argv.size (); this->cursor++) {
-		this->currit_h = this->argv[this->cursor];
-		item = this->currit_h->next();
-		while (item != NULL) {
-			STACK_PUSH (item);
-			item = this->currit_h->next();
-
-		}
-	}
-	
-	STACK_PUSH(NULL);
-	STACK_END();
-}
-
-
-bool ConcatIterator::done() const
-{
-// 	return (currit_h->done() && cursor==argv.size()-1);
-	// This function has to disappear!
-	ZorbaErrorAlerts::error_alert(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED, error_messages::SYSTEM_ERROR,NULL); 
-	return false;
-}
-
-item_t ConcatIterator::nextImpl_() {
+item_t ConcatIterator::nextImpl() {
 	item_t item;
 	
 	STACK_INIT();
@@ -98,11 +53,10 @@ item_t ConcatIterator::nextImpl_() {
 	
 	for (; this->cursor < this->argv.size (); this->cursor++) {
 		this->currit_h = this->argv[this->cursor];
-		item = this->currit_h->produceNext();
+		item = this->consumeNext(this->currit_h);
 		while (item != NULL) {
 			STACK_PUSH (item);
-			item = this->currit_h->produceNext();
-
+			item = this->consumeNext(this->currit_h);
 		}
 	}
 	
@@ -110,40 +64,40 @@ item_t ConcatIterator::nextImpl_() {
 	STACK_END();
 }
 
-void ConcatIterator::resetImpl_() {
+void ConcatIterator::resetImpl() {
 	std::vector<iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter);
 	}
 }
 
-void ConcatIterator::releaseResourcesImpl_() {
+void ConcatIterator::releaseResourcesImpl() {
 	std::vector<iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter);
 	}
 }
 
-ConcatIterator::ConcatIterator(
-	yy::location loc,
-	const vector<iterator_t>& _argv)
-:
-	BasicIterator(loc),
-	argv(_argv),
-	currit_h(NULL),
-	cursor(0)
-{
-}
-
-ConcatIterator::ConcatIterator(
-	const ConcatIterator& concat_it)
-:
-	BasicIterator(concat_it),
-	argv(concat_it.argv),
-	currit_h(concat_it.currit_h),
-	cursor(concat_it.cursor)
-{
-}
+// ConcatIterator::ConcatIterator(
+// 	yy::location loc,
+// 	const vector<iterator_t>& _argv)
+// :
+// 	Batcher<ConcatIterator>(loc),
+// 	argv(_argv),
+// 	currit_h(NULL),
+// 	cursor(0)
+// {
+// }
+// 
+// ConcatIterator::ConcatIterator(
+// 	const ConcatIterator& concat_it)
+// :
+// 	Batcher<ConcatIterator>(concat_it),
+// 	argv(concat_it.argv),
+// 	currit_h(concat_it.currit_h),
+// 	cursor(concat_it.cursor)
+// {
+// }
 
 
 //15.1.3 fn:index-of

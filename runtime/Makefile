@@ -1,5 +1,6 @@
 
 SOURCES			= \
+		batching.cpp \
 		item_iterator.cpp \
 		zorba.cpp \
 		plan_visitor.cpp
@@ -47,6 +48,7 @@ plan_visitor_test	= \
 		../errors/xqp_exception.cpp \
 		../errors/errors.cpp \
 		../errors/Error.cpp \
+		batching.cpp \
 		item_iterator.cpp \
 		plan_visitor.cpp \
 		plan_visitor_test.cpp
