@@ -1,4 +1,0 @@
-INSTALL = /cygdrive/c/xquery_development/zorba
-CXXOPT = -Wall -g -I${INSTALL}
-OPT = -Wall -Wno-uninitialized -g -I${INSTALL}
-LARGEFILES = -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE

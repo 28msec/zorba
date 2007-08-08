@@ -4075,7 +4075,10 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
 	if (!v.begin_visit(*this)) return;
 	//open_name_h->accept(v);
 	//close_name_h->accept(v);
-	attr_list_h->accept(v);
+
+	if( attr_list_h != NULL )
+    	attr_list_h->accept(v);
+
 	dir_content_list_h->accept(v);
 	v.end_visit(*this); 
 }
@@ -4468,7 +4471,10 @@ ostream& DirElemContent::put(ostream& s) const
 void DirElemContent::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	direct_cons_h->accept(v);
+
+	if (direct_cons_h != NULL)
+		direct_cons_h->accept(v);
+
 	v.end_visit(*this); 
 }
 
