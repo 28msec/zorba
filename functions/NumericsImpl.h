@@ -31,6 +31,13 @@ namespace xqp {
 
 class zorba;
 
+
+/**
+ * TODO CommonBase-Classes should be implemented in the Header file, as they make troutble
+ * if you seperate them in .h and .cpp during linking. Any suggestions to fix that are 
+ * welcome.
+ * 
+ */
 template <class IterType>
 class BinaryBaseIterator : public Batcher<IterType> {
 	
@@ -46,6 +53,12 @@ public:
 		this->resetChild(arg0);
 		this->resetChild(arg1);
 	}
+	
+	void releaseResourcesImpl(){
+		this->releaseChildResources(this->arg0);
+		this->releaseChildResources(this->arg1);
+	}
+
 	
 protected:
 	iterator_t arg0;
@@ -96,6 +109,13 @@ protected:
 // 	std::ostream&  _show(std::ostream&) const;
 // };
 
+
+/**
+ * TODO Always add the constructor to the header file, otherwise you have problems during
+ * the linking.
+ * 
+ */
+
 class op_numeric_add_iterator : public BinaryBaseIterator<op_numeric_add_iterator>
 {
 /*
@@ -112,8 +132,6 @@ public:
 
 public:	// iterator interface
 	item_t nextImpl();
-	//void resetImpl();
-	void releaseResourcesImpl();
 
 	std::ostream&  _show(std::ostream&) const;
 };

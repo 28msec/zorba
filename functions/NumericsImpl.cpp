@@ -80,6 +80,10 @@ bool op_numeric_binary_iterator::done() const
 // {
 // }
 
+
+/**
+ * TODO FIXME This is not the GENERIC_ADD_ITERATOR!!!! No type checking is performend! 
+ */
 item_t op_numeric_add_iterator::nextImpl(){
 	item_t n0_h = this->consumeNext(arg0);
 
@@ -103,10 +107,6 @@ item_t op_numeric_add_iterator::nextImpl(){
 // 	this->resetChild(this->arg0);
 // 	this->resetChild(this->arg1);
 // }
-void op_numeric_add_iterator::releaseResourcesImpl(){
-	this->releaseChildResources(this->arg0);
-	this->releaseChildResources(this->arg1);
-}
 
 // item_t op_numeric_add_iterator::_next()
 // {
