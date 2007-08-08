@@ -75,6 +75,8 @@ void static_context::init(
 			vf_p->make_qname(ZORBA_NS,"xqp","preserve-mode")->qnamekey();
 		baseuri_key =
 			vf_p->make_qname(ZORBA_NS,"xqp","baseuri")->qnamekey();
+
+		static_context::static_init = true;
 	}
 }
 

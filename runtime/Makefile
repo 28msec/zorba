@@ -41,6 +41,7 @@ plan_visitor_test	= \
 		../util/URI.cpp \
 		../values/primitive_values.cpp \
 		../zorba/zorba_qname.cpp \
+		../zorba/zorba_value_factory.cpp \
 		../zorba/qnamerep.cpp \
 		zorba.cpp \
 		../errors/xqp_exception.cpp \

@@ -56,6 +56,9 @@ void dynamic_context::init(
 			vfactory_p->make_qname(ZORBA_NS,"xqp","current-time")->qnamekey();
 		implicit_timezone_key =
 			vfactory_p->make_qname(ZORBA_NS,"xqp","implicit-timezone")->qnamekey();
+
+
+		dynamic_context::static_init = true;
 	}
 }
 

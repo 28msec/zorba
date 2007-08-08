@@ -143,7 +143,7 @@ qnamekey_t library::fn_string_to_codepoints_key;
 
 qnamekey_t library::fn_boolean_key;
 
-// static initializer
+// initializer
 
 void library::init(
 	value_factory* vf_p)
@@ -180,6 +180,8 @@ void library::init(
 		
 		put(&fn_boolean_func);
 		fn_boolean_key = fn_boolean_func.get_fname()->qnamekey();
+
+		library::static_init = true;///dont initialize again
 	}
 }
 

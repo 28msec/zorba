@@ -22,6 +22,7 @@
 #include "parser/xquery_driver.h"
 #include "errors/Error.h"
 #include "zorba.h"
+#include "zorba/zorba_value_factory.h"
 
 #include <iostream>
 
@@ -30,11 +31,19 @@ using namespace xqp;
 
 int main(int argc, char* argv[])
 {
+	///application specific
+
 	zorba::initializeZorbaEngine();
+	
+	zorba_value_factory		zorbaValueFactory;
+	static_context::init(&zorbaValueFactory);
+	dynamic_context::init(&zorbaValueFactory);
+
+	///thread specific
 
 	zorba* zorp = zorba::allocateZorbaForNewThread();//new zorba();
-	static_context* sctx_p = new static_context(NULL);
-	dynamic_context* dctx_p = new dynamic_context(NULL);
+	static_context* sctx_p = new static_context(&zorbaValueFactory);//NULL);
+	dynamic_context* dctx_p = new dynamic_context(&zorbaValueFactory);//NULL);
 	//add the error manager
 	errors_english	*err_messages = new errors_english;///the english error messages
 	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages);

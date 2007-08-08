@@ -27,6 +27,7 @@ protected:
 
 public:
 	// Numeric functions
+	//daniel: these serve as constant global keys
 	static qnamekey_t op_add_key;
 	static qnamekey_t op_subtract_key;
   static qnamekey_t op_mul_key;

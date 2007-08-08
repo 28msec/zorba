@@ -43,6 +43,7 @@ public:
 	enum ordering_mode_t	{ ordered, unordered };
 	
 protected:
+	//daniel: these serve as constant global keys
 	static bool static_init;
 	static qnamekey_t namespaces_key;
 	static qnamekey_t default_element_type_ns_key;

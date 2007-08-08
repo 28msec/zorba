@@ -53,6 +53,7 @@ public:	// types
 protected:
 	value_factory* vf_p;
 
+	//daniel: these serve as constant global keys
 	static bool static_init;
 	static qnamekey_t default_function_ns_key;
 	static qnamekey_t default_collation_key;
