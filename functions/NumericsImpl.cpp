@@ -104,6 +104,7 @@ item_t OpNumericAddIterator::nextImpl(){
 		n1 = dynamic_cast<const numericValue*>(&*n1_h);
 		STACK_PUSH(new numericValue(xs_decimal, n1->val() + n0->val()));
 	}
+	STACK_PUSH(NULL);
 	STACK_END();
 }
 // void OpNumericAddIterator::resetImpl(){
