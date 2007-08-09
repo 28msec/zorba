@@ -97,11 +97,11 @@ protected:
 
 // 6.2.1 op:numeric-add
 // --------------------
-// class op_numeric_add_iterator : public op_numeric_binary_iterator
+// class OpNumericAddIterator : public op_numeric_binary_iterator
 // {
 // public:
-// 	op_numeric_add_iterator(yy::location loc, iterator_t, iterator_t);
-// 	~op_numeric_add_iterator() {}
+// 	OpNumericAddIterator(yy::location loc, iterator_t, iterator_t);
+// 	~OpNumericAddIterator() {}
 // 
 // public:	// iterator interface
 // 	item_t _next();
@@ -116,7 +116,7 @@ protected:
  * 
  */
 
-class op_numeric_add_iterator : public BinaryBaseIterator<op_numeric_add_iterator>
+class OpNumericAddIterator : public BinaryBaseIterator<OpNumericAddIterator>
 {
 /*
 protected:
@@ -124,11 +124,11 @@ protected:
 	iterator_t arg1;
 */	
 public:
-	op_numeric_add_iterator
+	OpNumericAddIterator
 	(yy::location loc, iterator_t arg0_, iterator_t arg1_)
 	:
-	BinaryBaseIterator<op_numeric_add_iterator>(loc, arg0_, arg1_){}
-	~op_numeric_add_iterator() {}
+	BinaryBaseIterator<OpNumericAddIterator>(loc, arg0_, arg1_){}
+	~OpNumericAddIterator() {}
 
 public:	// iterator interface
 	item_t nextImpl();

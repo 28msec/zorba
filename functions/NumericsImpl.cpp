@@ -71,7 +71,7 @@ bool op_numeric_binary_iterator::done() const
 |	NaN is returned.
 |_______________________________________________________________________*/
 
-// op_numeric_add_iterator::op_numeric_add_iterator(
+// OpNumericAddIterator::OpNumericAddIterator(
 // 	yy::location loc, 
 // 	iterator_t arg0,
 // 	iterator_t arg1)
@@ -84,7 +84,7 @@ bool op_numeric_binary_iterator::done() const
 /**
  * TODO FIXME This is not the GENERIC_ADD_ITERATOR!!!! No type checking is performend! 
  */
-item_t op_numeric_add_iterator::nextImpl(){
+item_t OpNumericAddIterator::nextImpl(){
 	item_t n0_h;
 	item_t n1_h;
 	const numericValue* n0;
@@ -106,12 +106,12 @@ item_t op_numeric_add_iterator::nextImpl(){
 	}
 	STACK_END();
 }
-// void op_numeric_add_iterator::resetImpl(){
+// void OpNumericAddIterator::resetImpl(){
 // 	this->resetChild(this->arg0);
 // 	this->resetChild(this->arg1);
 // }
 
-// item_t op_numeric_add_iterator::_next()
+// item_t OpNumericAddIterator::_next()
 // {
 // 	item_t n0_h = arg0->next();
 // 
@@ -132,7 +132,7 @@ item_t op_numeric_add_iterator::nextImpl(){
 // 	}
 // }
 
-// item_t op_numeric_add_iterator::nextImpl_()
+// item_t OpNumericAddIterator::nextImpl_()
 // {
 // 	item_t n0_h = this->consumeNext(arg0);
 // 
@@ -153,7 +153,7 @@ item_t op_numeric_add_iterator::nextImpl(){
 // 	}
 // }
 
-std::ostream& op_numeric_add_iterator::_show(std::ostream& os)
+std::ostream& OpNumericAddIterator::_show(std::ostream& os)
 const
 {
 	os << IT_DEPTH << "<info>" << "additional information" << "</info>" << std::endl;

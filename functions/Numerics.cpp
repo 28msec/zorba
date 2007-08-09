@@ -46,7 +46,7 @@ iterator_t op_numeric_add::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new op_numeric_add_iterator(loc, argv[0], argv[1]);
+	return new OpNumericAddIterator(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add::type_check(
@@ -74,7 +74,7 @@ iterator_t op_numeric_add_int::operator()(
 	vector<iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new op_numeric_add_iterator(loc, argv[0], argv[1]);
+	return new OpNumericAddIterator(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add_int::type_check(
