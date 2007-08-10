@@ -24,7 +24,12 @@
 
 #include <string>
 #include <vector>
-#include <sys/types.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
 
 namespace xqp {
 

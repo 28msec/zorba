@@ -4,7 +4,11 @@
 #include <windows.h>
 #include <errno.h>
 #include "time.h"
+#ifndef _WIN32_WCE
 #include <io.h>
+#else
+#include <altcecrt.h>
+#endif
 
 _pthread_t		*head_thread = NULL;///head of thread list
 HANDLE			pthread_hevent = NULL;

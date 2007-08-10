@@ -29,7 +29,11 @@
 using namespace std;
 using namespace xqp;
 
+#ifndef _WIN32_WCE
 int main(int argc, char* argv[])
+#else
+int _tmain(int argc, _TCHAR* argv[])
+#endif
 {
 	///application specific
 
@@ -59,14 +63,32 @@ int main(int argc, char* argv[])
 	try {
 
 		for (++argv; argv[0]; ++argv) {
-			if (*argv == std::string("-p")) {
+#ifndef UNICODE
+			if (*argv == std::string ("-p")) {
 				driver.trace_parsing = true;
 			}
 			else if (*argv == std::string ("-s")) {
 				driver.trace_scanning = true;
 			}
+#else
+			if (!_tcscmp(*argv, _T("-p"))) {
+				driver.trace_parsing = true;
+			}
+			else if (!_tcscmp(*argv, _T("-s"))) {
+				driver.trace_scanning = true;
+			}
+#endif
 			else {
+#ifndef UNICODE
 				driver.parse(*argv);
+#else
+				char	testfile[1024];
+				WideCharToMultiByte(CP_ACP, 0,//or CP_UTF8
+														*argv, -1, 
+														testfile, sizeof(testfile)/sizeof(char),
+														NULL, NULL);
+				driver.parse(testfile);
+#endif
 				parsenode* n_p = driver.get_expr();
 				cout << endl;
 				cout << "Syntax tree:\n";

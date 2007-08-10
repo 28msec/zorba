@@ -30,11 +30,15 @@
 
 #ifdef WIN32
 #include "win32/compatib_defs.h"
+#ifndef _WIN32_WCE
 #include <io.h>
+#endif
 #endif
 
 #include <cstdlib>
+#ifndef _WIN32_WCE
 #include <errno.h>
+#endif
 #include <limits.h>
 #include <iostream>
 #include <string>

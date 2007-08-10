@@ -9,10 +9,16 @@ typedef __int64		int64_t;
 typedef unsigned __int64	uint64_t;
 typedef unsigned short		uint16_t;
 
+#ifdef _WIN32_WCE
+typedef long	off_t;
+#endif
+
+
 #define  strcasecmp		_stricmp
 
 #define		isatty			_isatty
 #define		fileno			_fileno
+
 
 namespace __gnu_cxx{
  

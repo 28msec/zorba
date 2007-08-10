@@ -4,7 +4,8 @@ SOURCES 	= \
 	qnamerep.cpp \
 	nodereps.cpp \
 	zorba_qname.cpp \
-	zorba_nodes.cpp
+	zorba_nodes.cpp \
+	zorba_value_factory.cpp
 
 
 zorba_value_factory_test	= \

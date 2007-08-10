@@ -4,7 +4,9 @@
 #define PTHREAD_PORTING_ON_WINDOWS_14_JUN_2006
 
 //#include <windows.h>
-#include <errno.h>
+#ifndef _WIN32_WCE
+	#include <errno.h>
+#endif
 
 typedef void*(*pthread_start_routine)(void *);
 

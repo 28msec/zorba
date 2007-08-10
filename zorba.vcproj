@@ -247,6 +247,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\runtime\batching.cpp"
+				>
+			</File>
+			<File
 				RelativePath="functions\Binary.cpp"
 				>
 				<FileConfiguration
@@ -1489,6 +1493,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\runtime\batching.h"
+				>
+			</File>
+			<File
 				RelativePath="functions\Binary.h"
 				>
 			</File>
@@ -1553,11 +1561,11 @@
 				>
 			</File>
 			<File
-				RelativePath="runtime\dynamic_context.h"
+				RelativePath="context\dynamic_context.h"
 				>
 			</File>
 			<File
-				RelativePath="context\dynamic_context.h"
+				RelativePath="runtime\dynamic_context.h"
 				>
 			</File>
 			<File
@@ -1621,11 +1629,11 @@
 				>
 			</File>
 			<File
-				RelativePath="exprtree\indent.h"
+				RelativePath="runtime\indent.h"
 				>
 			</File>
 			<File
-				RelativePath="runtime\indent.h"
+				RelativePath="exprtree\indent.h"
 				>
 			</File>
 			<File

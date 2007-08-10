@@ -16,9 +16,14 @@
 #include <sys/mman.h>
 #endif
 
-#include <sys/types.h>
-#include <errno.h>
-#include <fcntl.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+	#include <errno.h>
+	#include <fcntl.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -151,7 +156,6 @@ public:		// memory-mapped only, nops in the non-mm case
 	 ** Rename the backing file.
 	 */
   void rename_backing_file(string const& new_path) throw (xqp_exception);
-
 	/**
 	 ** Return data array pointer.
 	 **
@@ -244,14 +248,12 @@ throw (xqp_exception)
 	if (mmf_p) mmf_p->unmap();
 }
 
-
 template<typename T>
 void fxarray<T>::rename_backing_file(const string& new_path)
 throw (xqp_exception)
 {
 	if (mmf_p) mmf_p->rename_backing_file(new_path);
 }
-
 
 template<typename T>
 void fxarray<T>::destroy()

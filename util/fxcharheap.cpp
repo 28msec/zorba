@@ -10,7 +10,13 @@
 
 #include "fxcharheap.h"
 
-#include <sys/types.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+	#include <errno.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
 
 #ifdef WIN32
 	
@@ -18,7 +24,6 @@
 	#include <sys/mman.h>
 	#include <unistd.h>
 #endif
-#include <errno.h>
 
 #include <string>
 #include <sstream>
@@ -37,7 +42,11 @@ void fxcharheap::ioexception(
 	string const& msg) const
 {
 	ostringstream oss;
+#ifndef _WIN32_WCE
 	oss << msg << " [" << strerror(errno) << ']';
+#else
+	oss << msg;
+#endif
 	//throw xqp_exception(location, oss.str());
 	ZorbaErrorAlerts::error_alert(error_messages::XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
 													error_messages::SYSTEM_ERROR,

@@ -16,7 +16,13 @@
 	#include <windows.h>
 #endif
 
-#include <sys/types.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
+
 #include <string>
 
 #include "../errors/Error.h"

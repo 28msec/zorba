@@ -67,7 +67,7 @@ item_t BasicIterator::next()
 
 item_t BasicIterator::produceNext()
 {
-	
+	return NULL;
 }
 
 void BasicIterator::reset()

@@ -12,7 +12,9 @@
 #define XQP_RWLOCK_H
 
 #include <pthread.h>
-#include <errno.h>
+#ifndef _WIN32_WCE
+	#include <errno.h>
+#endif
 
 /*_____________________________________________________________________
 | 

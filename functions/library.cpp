@@ -210,9 +210,9 @@ void library::put(const function* funp)
 
 const function* library::get(qnamekey_t fun_key)
 {
-#ifdef DEBUG
-	cout << TRACE << " : fun_key = " << fun_key->qnamekey() << endl;
-#endif
+//#ifdef DEBUG
+//	cout << TRACE << " : fun_key = " << fun_key->qnamekey() << endl;
+//#endif
 
 	const function* fun_p = NULL;
 	uint64_t key = fun_key;

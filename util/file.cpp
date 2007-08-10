@@ -11,16 +11,23 @@
 
 #include "file.h"
 
-#include <errno.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+#ifndef _WIN32_WCE
+	#include <errno.h>
+	#include <sys/stat.h>
+	#include <sys/types.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
 #include <time.h>
-#include <sys/stat.h>
 #include <stdio.h>
 
 #ifdef WIN32
+#include <tchar.h>
+#ifndef _WIN32_WCE
 #include <io.h>
 #include <direct.h>
+#endif
 #else
 	#include <sys/param.h>
 	#include <sys/mount.h>
@@ -28,7 +35,9 @@
 	#include <sys/vfs.h>
 #endif
 
+#ifndef _WIN32_WCE
 #include <fcntl.h>
+#endif
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -75,7 +84,7 @@ throw (xqp_exception)
   					(st.st_mode & S_IFLNK)  ? type_link : type_invalid;
 	}
 #else
-	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
+/*	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
   if (::_stat32i64(path.c_str(), &st)) {
     if (errno!=ENOENT) error(__FUNCTION__,"stat failed on "+path);
   } 
@@ -88,7 +97,34 @@ throw (xqp_exception)
   					//(st.st_mode & S_IFLNK)  ? type_link : 
 						type_invalid;
 	}
+*/
+	WIN32_FIND_DATA		findData;
+	HANDLE						hfind;
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
 
+	hfind = FindFirstFile(path_str, &findData);
+	if(hfind == INVALID_HANDLE_VALUE)
+	{
+    error(__FUNCTION__,"file/dir not exist "+path);
+	}
+	else
+	{
+		size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
+		atime	= findData.ftLastAccessTime;
+		mtime	= findData.ftLastWriteTime;
+		type 	=	(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
+						(findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
+  					//(st.st_mode & S_IFLNK)  ? type_link : 
+						type_invalid;
+		FindClose(hfind);
+	}
 #endif
 }
 
@@ -114,7 +150,7 @@ file::file(
   					(st.st_mode & S_IFLNK)  ? type_link : type_invalid;
 	}
 #else
-	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
+/*	struct _stat32i64 st;///time on 32 bits, file size on 64 bits
   if (::_stat32i64(path.c_str(), &st)) {
     if (errno!=ENOENT) 
 			error(__FUNCTION__,"stat failed on "+path);
@@ -133,6 +169,33 @@ file::file(
   					//(st.st_mode & S_IFLNK)  ? type_link : 
 						type_invalid;
 	}
+*/
+	WIN32_FIND_DATA		findData;
+	HANDLE						hfind;
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
+	hfind = FindFirstFile(path_str, &findData);
+	if(hfind == INVALID_HANDLE_VALUE)
+	{
+    error(__FUNCTION__,"file/dir not exist "+path);
+	}
+	else
+	{
+		size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
+		atime	= findData.ftLastAccessTime;
+		mtime	= findData.ftLastWriteTime;
+		type 	=	(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
+						(findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
+  					//(st.st_mode & S_IFLNK)  ? type_link : 
+						type_invalid;
+		FindClose(hfind);
+	}
 
 #endif
 }
@@ -148,6 +211,7 @@ throw (xqp_exception)
 {
   if (type!=type_non_existent) return type;
 
+#ifndef WIN32
 	// call native file system status
 	struct stat st;
   if (::stat(path.c_str(), &st)) {
@@ -164,6 +228,38 @@ throw (xqp_exception)
   								(st.st_mode & S_IFREG ) ? type_file :
   								//(st.st_mode & S_IFLNK)  ? type_link : 
 									type_invalid );
+
+#else
+
+	WIN32_FIND_DATA		findData;
+	HANDLE						hfind;
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
+	hfind = FindFirstFile(path_str, &findData);
+	if(hfind == INVALID_HANDLE_VALUE)
+	{
+    error(__FUNCTION__,"file/dir not exist "+path);
+		return type_non_existent;
+	}
+	else
+	{
+		size = findData.nFileSizeLow + (((int64_t)(findData.nFileSizeHigh))<<32);
+		atime	= findData.ftLastAccessTime;
+		mtime	= findData.ftLastWriteTime;
+		type 	=	(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)  ? type_directory :
+						(findData.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE ) ? type_file :
+  					//(st.st_mode & S_IFLNK)  ? type_link : 
+						type_invalid;
+		FindClose(hfind);
+		return type;
+	}
+#endif	
 }
 
 
@@ -173,13 +269,22 @@ volatile void file::error(
 	string const& msg)
 throw (xqp_exception)
 {
-  std::string err = strerror(errno);
+#ifndef _WIN32_WCE
+	std::string err = strerror(errno);
   errno = 0;
   //daniel throw xqp_exception(location, msg + " ["+err+']');
 	ZorbaErrorAlerts::error_alert(error_messages::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
 													error_messages::SYSTEM_ERROR,
 													NULL,false,
 													msg + " ["+err+']', location);
+#else
+	ostringstream		oss;
+	oss << msg << " [" << GetLastError() << "]";
+	ZorbaErrorAlerts::error_alert(error_messages::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
+													error_messages::SYSTEM_ERROR,
+													NULL,false,
+													oss.str() , location);
+#endif
 }
 
 
@@ -192,10 +297,20 @@ throw (xqp_exception)
   ::close(fd);
   set_filetype(type_file); 
 #else
-	int fd = ::_creat(path.c_str(),_S_IREAD | _S_IWRITE);
-  if (fd < 0) 
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
+	HANDLE fd = CreateFile(path_str,GENERIC_READ | GENERIC_WRITE, 
+											FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+											CREATE_ALWAYS, 0, NULL);
+  if (fd == INVALID_HANDLE_VALUE) 
 		error(__FUNCTION__, "failed to create file "+path);
-	::_close(fd);
+	CloseHandle(fd);
   set_filetype(type_file); 
 #endif
 }
@@ -213,9 +328,18 @@ throw (xqp_exception)
 	}
   set_filetype(file::type_directory);
 #else
-	if (::_mkdir(path.c_str())) {
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
+	if (!CreateDirectory(path_str, NULL))
+	{
 		ostringstream oss;
-		oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: "<<path;
+		oss<<"mkdir failed ["<<GetLastError() << "]"<<"] for: "<<path;
 		cout << oss.str() << endl;	//DEBUG
     error(__FUNCTION__,oss.str());
 	}
@@ -227,9 +351,27 @@ throw (xqp_exception)
 void file::remove(bool ignore)
 throw (xqp_exception)
 {
-  if (::remove(path.c_str()) && !ignore) {
+#ifndef WIN32
+	if (::remove(path.c_str()) && !ignore) {
     error(__FUNCTION__, "failed to remove "+path);
 	}
+#else
+	BOOL	retval = TRUE;
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
+	if(this->type == type_file)
+		retval = DeleteFile(path_str);
+	else if(this->type == type_directory)
+		retval = RemoveDirectory(path_str);
+	if(!retval)
+    error(__FUNCTION__, "failed to remove "+path);
+#endif
   set_filetype(type_non_existent);
 }
 
@@ -241,16 +383,24 @@ throw (xqp_exception)
 	if (::rmdir(path.c_str()) && !ignore) {
     error(__FUNCTION__, "rmdir failed on "+path);
 	}
-  set_filetype(file::type_non_existent);
 #else
-	if (::_rmdir(path.c_str()) && !ignore) {
-    error(__FUNCTION__, "rmdir failed on "+path);
-	}
-  set_filetype(file::type_non_existent);
+	BOOL	retval;
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
 #endif
+	retval = RemoveDirectory(path_str);
+	if(!retval)
+    error(__FUNCTION__, "rmdir failed on "+path);
+#endif
+  set_filetype(file::type_non_existent);
 }
 
-
+#ifndef _WIN32_WCE
 void file::chdir()
 throw (xqp_exception)
 {
@@ -265,20 +415,41 @@ throw (xqp_exception)
 	}
 #endif
 }
-
+#endif
 
 void file::rename(
 	std::string const& newpath)
 throw (xqp_exception)
 {
+#ifndef WIN32
   if (::rename(path.c_str(), newpath.c_str())) {
     ostringstream oss;
     oss << path << " to " << newpath;
     error(__FUNCTION__, "failed to rename: "+oss.str());
   }
   set_path(newpath);
+#else
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+	TCHAR	newpath_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, newpath.c_str(), -1,
+											newpath_str, sizeof(newpath_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+	const char	*newpath_str = newpath.c_str();
+#endif
+	if(!MoveFile(path_str, newpath_str))
+	{
+    ostringstream oss;
+    oss << path << " to " << newpath;
+    error(__FUNCTION__, "failed to rename: "+oss.str());
+	}
+#endif
 }
-
 
 void file::touch()
 throw (xqp_exception)
@@ -351,28 +522,41 @@ throw (xqp_exception)
 {
 #ifndef WIN32
   int fd = open(path.c_str(), O_RDONLY);
-#else
-  int fd = _open(path.c_str(), _O_RDONLY);
-#endif
 	if (fd < 0) {
 		error(__FUNCTION__, "open("+path+") failed ["+strerror(errno)+"]");
 	}
-#ifndef WIN32
   ssize_t n = read(fd, docbuf, maxlen);
-#else
-  __int64 n = _read(fd, docbuf, maxlen);
-#endif
 	if (n<0) {
 		error(__FUNCTION__, "read("+path+") failed ["+strerror(errno)+"]");
   }
-#ifndef WIN32
 	if (close(fd)==-1) {
 		error(__FUNCTION__, "close("+path+") failed ["+strerror(errno)+"]");
   }
 #else
-	if (_close(fd)==-1) {
-		error(__FUNCTION__, "close("+path+") failed ["+strerror(errno)+"]");
-  }
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
+  HANDLE fd = CreateFile(path_str, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+													NULL, OPEN_EXISTING, 0, NULL);
+	if(fd == INVALID_HANDLE_VALUE)
+	{
+		ostringstream		oss;
+		oss << "open(" << path << ") failed [" << GetLastError() << "]";
+		error(__FUNCTION__, oss.str());
+	}
+  DWORD	 n;
+	if(!ReadFile(fd, docbuf, maxlen, &n, NULL))
+	{
+		ostringstream		oss;
+		oss << "read(" << path << ") failed [" << GetLastError() << "]";
+		error(__FUNCTION__, oss.str());
+	}
+	CloseHandle(fd);
 #endif
 	return (int)n;
 }
@@ -422,7 +606,11 @@ throw (xqp_exception)
 	else
 	{
 		win32_dir = INVALID_HANDLE_VALUE;
+#ifdef UNICODE
+		_tcscpy(win32_direntry.cFileName, _T(""));
+#else
 		strcpy(win32_direntry.cFileName, "");
+#endif
 	}
 #endif
 
@@ -467,12 +655,12 @@ void file::dir_iterator::operator++()
 			{				
         FindClose(win32_dir); 
         win32_dir = INVALID_HANDLE_VALUE; 
-				strcpy(win32_direntry.cFileName, "");
+				_tcscpy(win32_direntry.cFileName, _T(""));
         break; 
       }
-			if (strcmp(win32_direntry.cFileName,".") &&
-          strcmp(win32_direntry.cFileName,"..") &&
-          strcmp(win32_direntry.cFileName,"lost+found")) //daniel ??
+			if (_tcscmp(win32_direntry.cFileName,_T(".")) &&
+          _tcscmp(win32_direntry.cFileName,_T("..")) &&
+          _tcscmp(win32_direntry.cFileName,_T("lost+found"))) //daniel ??
 			{
         break;
 			}
@@ -492,7 +680,7 @@ bool operator!=(
 	return true;
 #else
 	if (x.dirpath==y.dirpath) return false;
-	if (!strcmp(x.win32_direntry.cFileName, y.win32_direntry.cFileName)) return false;
+	if (!_tcscmp(x.win32_direntry.cFileName, y.win32_direntry.cFileName)) return false;
 	return true;
 #endif
 }

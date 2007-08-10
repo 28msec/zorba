@@ -11,14 +11,23 @@
 #include "utf8_encoder.h"
 
 #ifdef WIN32
+	#include <windows.h>
+#ifndef _WIN32_WCE
 	#include <io.h>
+#else
+	#include <winbase.h>
+#endif
 	#include "win32/compatib_defs.h"
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <fcntl.h>
+	#include <errno.h>
+#else
+	#include <types.h>
+#endif
 
 #include <iostream>
 
@@ -41,11 +50,11 @@ namespace xqp {
 void utf8_encoder::encode(
 	const char* path)
 {
-  int  fd;
   char* ibuf;
   char* obuf;
 
 #ifndef WIN32
+  int  fd;
   struct stat statbuf;
 
 	fd = open(path, O_RDONLY);
@@ -57,31 +66,45 @@ void utf8_encoder::encode(
 		cerr<<"I/O error: fstat failed"<<endl;
 		return;
 	}
+	off_t sz = statbuf.st_size;
 #else
-  struct _stat statbuf;
+	HANDLE	fd;
 
-	fd = _open(path, O_RDONLY);
-	if (fd < 0) {
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path, -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path;
+#endif
+	fd = CreateFile(path_str, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+								NULL, OPEN_EXISTING, 0, NULL);
+	if(fd == INVALID_HANDLE_VALUE)
+	{
 		cerr<<"I/O error: open failed"<<endl;
 		return;
 	}
-	if (_fstat(fd, &statbuf)<0) {
-		cerr<<"I/O error: fstat failed"<<endl;
-		return;
-	}
+	off_t sz = GetFileSize(fd, NULL);
 #endif
-
-	off_t sz = statbuf.st_size;
 
 	ibuf = new char[sz];
 	obuf = new char[3*sz];
 #ifndef WIN32
 	ssize_t n = read(fd,&ibuf[0],sz);  
 #else
-	int n = _read(fd,&ibuf[0],sz);  
+	//int n = _read(fd,&ibuf[0],sz);  
+	int n = -1;
+	DWORD	nr_read;
+	if(ReadFile(fd, &ibuf[0],sz, &nr_read, NULL))
+		n = (int)nr_read;
 #endif
 	if (n<0) {
+#ifndef _WIN32_WCE
 		cerr<<"I/O error: read failed with error "<<errno<<endl;
+#else
+		cerr<<"I/O error: read failed " << endl;
+#endif
 		delete[] ibuf;
 		delete[] obuf;
 		return;
@@ -114,9 +137,10 @@ void utf8_encoder::encode(
 		cerr<<"I/O error: close failed with error "<<errno<<endl;
 	}
 #else
-	if (_close(fd) < 0) {
-		cerr<<"I/O error: close failed with error "<<errno<<endl;
-	}
+//	if (_close(fd) < 0) {
+//		cerr<<"I/O error: close failed with error "<<errno<<endl;
+//	}
+	CloseHandle(fd);
 #endif
 }
 

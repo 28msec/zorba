@@ -12,14 +12,23 @@
 
 #ifndef WIN32
 	#include <sys/mman.h>
+#elif _WIN32_WCE
+	#include <windows.h>
+	#include <winbase.h>
 #else
+	#include <windows.h>
 	#include <io.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <errno.h>
+	#include <fcntl.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -30,6 +39,7 @@ using namespace std;
 namespace xqp {
 
 
+#ifndef _WIN32_WCE
 #define IOEXCEPTION(s) \
 	{ \
 		ostringstream oerr; \
@@ -39,7 +49,17 @@ namespace xqp {
 													NULL,false,\
 													oerr.str(), __FUNCTION__);\
 	}
-
+#else
+#define IOEXCEPTION(s) \
+	{ \
+		ostringstream oerr; \
+		oerr << s << " [" << GetLastError() << ']'; \
+		ZorbaErrorAlerts::error_alert(error_messages::XQP0013_SYSTEM_MMFILE_IOEXCEPTION,\
+													error_messages::SYSTEM_ERROR,\
+													NULL,false,\
+													oerr.str(), __FUNCTION__);\
+	}
+#endif
 
 mmfile::mmfile(
 	const string& _path,
@@ -102,7 +122,15 @@ cout << "mmfile::ctor: map existing file: \"" << path << "\"\n";
 #else ///for Win32
 	file_mapping = NULL;
 
-	fd = CreateFile(path.c_str(), GENERIC_READ | GENERIC_WRITE, 
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+#endif
+	fd = CreateFile(path_str, GENERIC_READ | GENERIC_WRITE, 
 									FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_ALWAYS,
 									0, NULL);
 	if(fd == INVALID_HANDLE_VALUE)
@@ -199,11 +227,20 @@ throw (xqp_exception)
     unmap();
 #ifndef WIN32
 		close(fd);
+    remove(path.c_str());
 #else
 		if(fd != INVALID_HANDLE_VALUE)
 			CloseHandle(fd);
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
 #endif
-    remove(path.c_str());
+		DeleteFile(path_str);
+#endif
 	} catch (xqp_exception& e) {
 		IOEXCEPTION("remove on: '"+path+"' application exception: "+e.what()+", "+e.get_msg());
   } catch (exception& e) {
@@ -308,16 +345,34 @@ throw (xqp_exception)
 #endif
 }
 
-
 void mmfile::rename_backing_file(const string& new_path)
 throw (xqp_exception)
 {
-  int res = rename(path.c_str(), new_path.c_str());
+#ifndef WIN32
+	int res = rename(path.c_str(), new_path.c_str());
   if (res==-1) {
     IOEXCEPTION("rename failed on '"+path+"'");
   }
-  path = new_path;
+#else
+#ifdef UNICODE
+	TCHAR	path_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, path.c_str(), -1,
+											path_str, sizeof(path_str)/sizeof(TCHAR));
+	TCHAR	newpath_str[1024];
+	MultiByteToWideChar(CP_ACP,/// or CP_UTF8
+											0, new_path.c_str(), -1,
+											newpath_str, sizeof(newpath_str)/sizeof(TCHAR));
+#else
+	const char	*path_str = path.c_str();
+	const char	*newpath_str = new_path.c_str();
+#endif
+	if(!MoveFile(path_str, newpath_str))
+	{
+    IOEXCEPTION("rename failed on '"+path+"'");
+	}
+#endif
+	path = new_path;
 }
-
 
 }  /* namespace xqp */

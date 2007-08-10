@@ -26,19 +26,29 @@ ostream& _put(
 	char buf[1024];
 	size_t n = 0;
 	switch (type) { // XXX add timezones here
-	case xs_dateTime: n = strftime(buf, 1024, "%Y-%m-%dT%X", t); break;
-	case xs_date: n = strftime(buf, 1024, "%Y-%m-%d", t); break;
-	case xs_time: n = strftime(buf, 1024, "%X", t); break;
-	case xs_gYearMonth: n = strftime(buf, 1024, "-%Y-%m", t); break;
-	case xs_gYear: n = strftime(buf, 1024, "-%Y", t); break;
-	case xs_gMonthDay: n = strftime(buf, 1024, "--%m-%d", t); break;
-	case xs_gDay: n = strftime(buf, 1024, "---%d", t); break;
-	case xs_gMonth: n = strftime(buf, 1024, "--%m", t); break;
+	case xs_dateTime: //n = strftime(buf, 1024, "%Y-%m-%dT%X", t); break;
+		n = sprintf(buf, "%d-%d-%d %d:%d:%d", t->tm_year, t->tm_mon, t->tm_mday,
+			t->tm_hour, t->tm_min, t->tm_sec);
+	case xs_date: //n = strftime(buf, 1024, "%Y-%m-%d", t); break;
+		n = sprintf(buf, "%d-%d-%d", t->tm_year, t->tm_mon, t->tm_mday);
+	case xs_time: // = strftime(buf, 1024, "%X", t); break;
+		n = sprintf(buf, "%d:%d:%d",
+			t->tm_hour, t->tm_min, t->tm_sec);
+	case xs_gYearMonth: //n = strftime(buf, 1024, "-%Y-%m", t); break;
+		n = sprintf(buf, "%d-%d", t->tm_year, t->tm_mon);
+	case xs_gYear: //n = strftime(buf, 1024, "-%Y", t); break;
+		n = sprintf(buf, "%d", t->tm_year);
+	case xs_gMonthDay: //n = strftime(buf, 1024, "--%m-%d", t); break;
+		n = sprintf(buf, "%d-%d", t->tm_mon, t->tm_mday);
+	case xs_gDay: //n = strftime(buf, 1024, "---%d", t); break;
+		n = sprintf(buf, "%d", t->tm_mday);
+	case xs_gMonth: //n = strftime(buf, 1024, "--%m", t); break;
+		n = sprintf(buf, "%d", t->tm_mon);
 	default: buf[0] = 0; n = 0;
 	}
 	return os << string(buf,0,n);
 }
-
+/*
 ostream& _put(
 	ostringstream& os,
 	const struct tm* t,
@@ -59,7 +69,7 @@ ostream& _put(
 	}
 	return os << string(buf,0,n);
 }
-
+*/
 
 // numericValue
 // ------------

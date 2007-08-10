@@ -20,10 +20,15 @@
 	#include <unistd.h>
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <errno.h>
+	#include <fcntl.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
 #include <string.h>
 
 #include <memory>

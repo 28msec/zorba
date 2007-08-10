@@ -34,7 +34,14 @@
 #include "../util/rchandle.h"
 
 #include <utility>
-#include <sys/types.h>
+
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
+
 #include <string>
 
 using namespace std;

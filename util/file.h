@@ -11,7 +11,14 @@
 #ifndef XQP_FILE_H
 #define XQP_FILE_H
 
-#include <sys/types.h>
+#ifndef _WIN32_WCE
+	#include <sys/types.h>
+	#include <sys/stat.h>
+	#include <fcntl.h>
+#else
+	#include <windows.h>
+	#include <types.h>
+#endif
 #ifdef WIN32
 #include <Windows.h>
 	#include "win32/compatib_defs.h"
@@ -20,8 +27,6 @@
 	#include <dirent.h>
 #endif
 
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <time.h>
 #include <string>
 
@@ -55,8 +60,13 @@ protected:
 
 private:	// file attributes
   int64_t  size;      		// size in bytes
+#ifndef WIN32
   time_t   atime;     		// most recent access time
   time_t   mtime;     		// most recent mod time
+#else
+	FILETIME	atime;
+	FILETIME	mtime;
+#endif
 #ifndef WIN32
   uint32_t owner;     		// file owner uid
   uint32_t group;     		// file group gid
@@ -112,15 +122,19 @@ public:	// file methods
   void create() throw (xqp_exception);
   void remove(bool ignore) throw (xqp_exception);
   void rename(std::string const& newpath) throw (xqp_exception);
-  void touch() throw (xqp_exception);
+	void touch() throw (xqp_exception);
 
   int64_t get_size() const				{ return size; }
+#ifndef WIN32
   time_t  get_acctime() const			{ return atime; }
   time_t  get_modtime() const			{ return mtime; }
-#ifndef WIN32
 	uint32_t get_ownerid() const		{ return owner; }
   uint32_t get_groupid() const		{ return group; }
   uint32_t get_permissions() const	{ return perms; }
+#else
+  FILETIME  get_acctime() const			{ return atime; }
+  FILETIME  get_modtime() const			{ return mtime; }
+
 #endif
 
 	int readfile(
@@ -145,26 +159,31 @@ public:	// directory methods
   	~dir_iterator();
 	public:	// iterator interface
 		void operator++();
+#ifndef WIN32
 		const char* operator*() { 
-#ifndef WIN32
 			return dirent->d_name; 
-#else
-			return win32_direntry.cFileName;
-#endif
 		}
+#else
+		const TCHAR* operator*() { 
+			return win32_direntry.cFileName;
+		}
+#endif
 	public:	
-		const char* get_name() const { 
 #ifndef WIN32
+		const char* get_name() const { 
 			return dirent?dirent->d_name:0;
 #else
+		const TCHAR* get_name() const { 
 			return (win32_dir != INVALID_HANDLE_VALUE) ? win32_direntry.cFileName : NULL;
-#endif
 		}
+#endif
 	};
 
 	void mkdir() throw (xqp_exception);
 	void rmdir(bool ignore) throw (xqp_exception);
-  void chdir() throw (xqp_exception);
+#ifndef _WIN32_WCE
+	void chdir() throw (xqp_exception);
+#endif
 
   dir_iterator begin();
   dir_iterator end();
