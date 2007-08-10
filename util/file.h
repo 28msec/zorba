@@ -172,6 +172,7 @@ public:	// directory methods
 #ifndef WIN32
 		const char* get_name() const { 
 			return dirent?dirent->d_name:0;
+		}
 #else
 		const TCHAR* get_name() const { 
 			return (win32_dir != INVALID_HANDLE_VALUE) ? win32_direntry.cFileName : NULL;
