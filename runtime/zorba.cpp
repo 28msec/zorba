@@ -24,7 +24,7 @@ namespace xqp {
 /*
 A hash containing global zorba objects for each thread ID
 */
-std::map<uint32_t, zorba*>		zorba::global_zorbas;
+std::map<uint64_t, zorba*>		zorba::global_zorbas;
 pthread_mutex_t								zorba::global_zorbas_mutex;// = PTHREAD_MUTEX_INITIALIZER;
 
 zorba::zorba()
@@ -77,10 +77,10 @@ zorba::uninitializeZorbaEngine()
 zorba* 
 zorba::getZorbaForCurrentThread()
 {
-	std::map<uint32_t, zorba*>::iterator	it_zorba;
+	std::map<uint64_t, zorba*>::iterator	it_zorba;
 
 	pthread_mutex_lock(&global_zorbas_mutex);
-	it_zorba = global_zorbas.find((uint32_t)pthread_self());
+	it_zorba = global_zorbas.find((uint64_t)pthread_self());
 	if(it_zorba == global_zorbas.end())
 	{///not found, big error
 		pthread_mutex_unlock(&global_zorbas_mutex);
@@ -101,7 +101,7 @@ zorba::allocateZorbaForNewThread()
 	new_zorba = new zorba();
 
 	pthread_mutex_lock(&global_zorbas_mutex);
-	global_zorbas[(uint32_t)pthread_self()] = new_zorba;
+	global_zorbas[(uint64_t)pthread_self()] = new_zorba;
 	pthread_mutex_unlock(&global_zorbas_mutex);
 
 	return new_zorba;
@@ -112,7 +112,7 @@ void
 zorba::destroyZorbaForCurrentThread()//when ending the thread
 {
 	pthread_mutex_lock(&global_zorbas_mutex);
-	global_zorbas.erase((uint32_t)pthread_self());
+	global_zorbas.erase((uint64_t)pthread_self());
 	pthread_mutex_unlock(&global_zorbas_mutex);
 }
 

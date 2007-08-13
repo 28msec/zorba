@@ -144,6 +144,7 @@
 				BrowseInformation="1"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
 				DisableSpecificWarnings="4290, 4250"
 				ShowIncludes="false"
@@ -1561,11 +1562,11 @@
 				>
 			</File>
 			<File
-				RelativePath="context\dynamic_context.h"
+				RelativePath="runtime\dynamic_context.h"
 				>
 			</File>
 			<File
-				RelativePath="runtime\dynamic_context.h"
+				RelativePath="context\dynamic_context.h"
 				>
 			</File>
 			<File
@@ -1629,15 +1630,15 @@
 				>
 			</File>
 			<File
-				RelativePath="runtime\indent.h"
-				>
-			</File>
-			<File
 				RelativePath="exprtree\indent.h"
 				>
 			</File>
 			<File
 				RelativePath="parser\indent.h"
+				>
+			</File>
+			<File
+				RelativePath="runtime\indent.h"
 				>
 			</File>
 			<File

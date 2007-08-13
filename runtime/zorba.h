@@ -101,7 +101,7 @@ public:	// diagnostics
 
 	///functions for accessing global zorba objects for each thread
 protected:
-	static std::map<uint32_t, zorba*>		global_zorbas;
+	static std::map<uint64_t, zorba*>		global_zorbas;
 	static pthread_mutex_t							global_zorbas_mutex;
 public:
 	static void		initializeZorbaEngine();
