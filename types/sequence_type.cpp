@@ -38,6 +38,22 @@ bool sequence_type::derives_from(
 	return false;
 }
 
+TypeCode sequence_type::getNumericalOpResultType(TypeCode arg1Type, TypeCode arg2Type){
+		if (arg1Type == arg2Type)
+			return arg1Type;
+		
+		if (arg1Type == xs_double || arg2Type == xs_double)
+			return xs_double;
+		
+		if (arg1Type == xs_float || arg2Type == xs_float) 
+			return xs_float;
+		
+		if (arg1Type == xs_decimal || arg2Type == xs_decimal) 
+			return xs_decimal;
+		
+		return xs_integer;
+	}
+
 std::string sequence_type::describe(
 	TypeCode t)
 {

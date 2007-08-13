@@ -28,7 +28,7 @@ iterator_t fn_boolean::operator()(
 			&loc
 		);
 	}
-	return new fn_boolean_iterator(loc, argv[0]);
+	return new FnBooleanIterator(loc, argv[0]);
 }
 
 sequence_type_t fn_boolean::type_check(

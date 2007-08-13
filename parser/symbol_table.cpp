@@ -69,13 +69,14 @@ off_t symbol_table::put_stringlit(char const* text, uint32_t length)
 	return heap.put(text, 1, length-2);
 }
 
-long long symbol_table::decimalval(char const* text, uint32_t length)
+long double symbol_table::decimalval(char const* text, uint32_t length)
 {
-#ifndef WIN32
-	return strtoll(text, NULL, 10);
-#else
-	return _strtoi64(text, NULL, 10);
-#endif
+	return strtod(text, NULL);
+// #ifndef WIN32
+// 	return strtoll(text, NULL, 10);
+// #else
+// 	return _strtoi64(text, NULL, 10);
+// #endif
 }
 
 double symbol_table::doubleval(char const* text, uint32_t length)

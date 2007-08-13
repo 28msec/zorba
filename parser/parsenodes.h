@@ -3348,7 +3348,6 @@ class NumericLiteral : public exprnode
 |_______________________________________________________________________*/
 {
 public:
-	typedef long long decimal;
 
 protected:
 	enum numeric_type_t type;

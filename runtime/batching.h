@@ -55,7 +55,7 @@ public:		// inline base logic
 	 * of 'producNext' initializes the iterator and allocates resources 
 	 * (main memory, file descriptors, etc.). 
 	 */
-	virtual item_t produceNext()  ;
+	virtual item_t produceNext() ;
 	
 	/** 
 	 * Restarts the iterator so that the next 'produceNext' call will start 
@@ -66,7 +66,7 @@ public:		// inline base logic
 	/** 
 	 * Releases all resources of the iterator 
 	 */
-	virtual void releaseResources() ;
+	virtual void releaseResources();
 	
 	
 	std::ostream& show(std::ostream&);

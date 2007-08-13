@@ -85,7 +85,7 @@ static bool debug = true;
 };
 
 
-/*
+/* 
 **	The two following directives to enable parser tracing and verbose 
 **	error messages. 
 */
@@ -110,7 +110,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
   off_t sval;
 	int ival;
 	double dval;
-	long long decval;
+	long double decval;
 };
 
 
@@ -3232,7 +3232,7 @@ NumericLiteral :
 		DECIMAL_LITERAL
 		{
 			if (debug) cout << "NumericLiteral [decimal]\n";
-			$$ = new NumericLiteral(@$, yylval.decval);
+			$$ = new NumericLiteral(@$, decimal(yylval.decval));
 		}
 	| INTEGER_LITERAL
 		{

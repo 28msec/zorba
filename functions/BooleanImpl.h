@@ -23,22 +23,23 @@ class zorba;
 |	
 |	Computes the effective boolean value of the sequence $arg.
 |_______________________________________________________________________*/
-class fn_boolean_iterator : public BasicIterator
+class FnBooleanIterator : public Batcher<FnBooleanIterator>
 {
-public:
-	fn_boolean_iterator(yy::location loc, iterator_t);
-	virtual ~fn_boolean_iterator() {}
-
-public:	// iterator interface
-	void _open();
-	void _close();
-	std::ostream&  _show(std::ostream&) const;
-	item_t _next();
-	bool done() const;
-
 private:
-	iterator_t arg0;
-	bool donef;
+	iterator_t arg0_;
+// 	bool donef;
+	
+public:
+	FnBooleanIterator(yy::location loc, iterator_t arg0)
+	 :
+	Batcher<FnBooleanIterator>(loc), arg0_(arg0) {}
+	~FnBooleanIterator() {}
+	
+	item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
+
+	std::ostream&  _show(std::ostream&) const;
 };
 
 }

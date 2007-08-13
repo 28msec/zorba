@@ -1048,7 +1048,6 @@ public:
 		lit_double,
 		lit_bool
 	};
-	typedef long long decimal;
 
 protected:
 	enum literal_type_t type;

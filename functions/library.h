@@ -20,6 +20,13 @@ class function;
 class value_factory;
 class zorba;
 
+// template<typename FuncIter>
+// class LibraryFunction {
+// 	iterator_t operator() {
+// 		
+// 	}
+// };
+
 class library : public rcobject
 {
 protected:

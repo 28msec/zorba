@@ -251,7 +251,7 @@ cout << TRACE << endl;
 // 		if (var==NULL) break;
 		var_iters.push_back(&*var);
 // 	}
-	rchandle<map_iterator> map_iter = new map_iterator(v.get_loc(),input, expr, var_iters);
+	rchandle<MapIterator> map_iter = new MapIterator(v.get_loc(),input, expr, var_iters);
 	itstack.push(&*map_iter);
 // 	rchandle<map_iterator> m_h = new map_iterator();
 }
@@ -288,7 +288,8 @@ cout << indent[depth--] << TRACE << endl;
 	while (true) {
 		iterator_t it_h = pop_itstack();
 		if (it_h==NULL) break;
-		argv.push_back(it_h);
+		vector<iterator_t>::iterator begin = argv.begin();
+ 		argv.insert(begin, 1, it_h );
 	}
 
 	itstack.push(func(v.get_loc(),argv));

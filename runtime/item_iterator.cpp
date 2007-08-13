@@ -21,52 +21,49 @@ namespace xqp {
 int iteratorTreeDepth = -1;
 
 
-void map_iterator::_open() {
-	theState = outer;
-	theInput->open();
-}
 
+item_t MapIterator::nextImpl() {
+	item_t item;
+	vector<var_iter_t>::const_iterator itv;
 
-item_t map_iterator::_next() {
-	BasicIterator& input = *theInput;
-	BasicIterator& expr = *theExpr;
-
+	STACK_INIT();
+	
 	while (true) {
-		if (theState==outer) {
-			item_t i_h = input.next();
-			vector<var_iter_t>::const_iterator itv = varv.begin();
-			for (; itv!=varv.end(); ++itv) {
-				(*itv)->bind(i_h);
-			}
-			expr.open();
-			theState = inner;
-		} 
-		if (!expr.done()) {
-			return expr.next();
+		item = this->consumeNext(this->theInput);
+		itv = varv.begin();
+		for (; itv!=varv.end(); ++itv) {
+			(*itv)->bind(item);
 		}
-		expr.close();
-		theState = outer;
+		
+		item = this->consumeNext(this->theExpr);
+		while (item != NULL) {
+			STACK_PUSH(item);
+			item = this->consumeNext(this->theExpr);
+		}
+		
+		this->resetChild(this->theExpr);
 	}
+	
+	STACK_END();
 }
 
-void map_iterator::_close() {
-	theInput->close();
-	if (theState!=outer)
-		theExpr->close();
+void MapIterator::resetImpl() {
+	this->resetChild(this->theInput);
+	this->resetChild(this->theExpr);
 }
 
-std::ostream& map_iterator::_show(std::ostream& os)
+void MapIterator::releaseResourcesImpl() {
+	this->releaseChildResources(this->theInput);
+	this->releaseChildResources(this->theExpr);
+}
+
+std::ostream& MapIterator::_show(std::ostream& os)
 const
 {
 	theInput->show(os);
-	if (theState!=outer)
-		theExpr->show(os);
+	theExpr->show(os);
 	return os;
 } 
-
-bool map_iterator::done() const {
-	return (theInput->done() && (theState==outer || theExpr->done()));
-}
 
 } /* namespace xqp */
 

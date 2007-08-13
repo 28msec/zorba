@@ -50,7 +50,21 @@ public:
 	// Sequence type matching
 	// [http://www.w3.org/TR/xquery/#id-sequencetype-matching]
 	static bool derives_from(TypeCode ta, TypeCode te);
-	
+		
+	/**
+	 * Number conversion rules
+	 *  Subtype propogation: 
+	 *  	INTEGER -> DECIMAL 
+	 *  Type promotion:
+	 *  	DECIMAL -> FLOAT
+	 *  	DECIMAL -> DOUBLE
+	 *  	FLOAT -> DOUBLE 
+	 *   
+	 * @param arg1Type type of the first argument
+	 * @param arg2Type type of the second argument
+	 * @return type of the numerical op result (evaluated expression) 
+	 */
+	static TypeCode getNumericalOpResultType(TypeCode arg1Type, TypeCode arg2Type);
 };
 
 

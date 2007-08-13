@@ -25,34 +25,6 @@ using namespace std;
 namespace xqp {
 
 
-op_numeric_binary_iterator::op_numeric_binary_iterator(
-	yy::location loc, 
-	iterator_t _arg0,
-	iterator_t _arg1)
-:
-	BasicIterator(loc),
-	arg0(_arg0),
-	arg1(_arg1)
-{
-}
-
-void op_numeric_binary_iterator::_open()
-{
-	arg0->open();
-	arg1->open();
-}
-
-void op_numeric_binary_iterator::_close()
-{
-	arg0->close();
-	arg1->close();
-}
-
-bool op_numeric_binary_iterator::done() const
-{
-	return (arg0->done() || arg1->done());
-}
-
 
 
 /*______________________________________________________________________
@@ -81,78 +53,36 @@ bool op_numeric_binary_iterator::done() const
 // }
 
 
-/**
- * TODO FIXME This is not the GENERIC_ADD_ITERATOR!!!! No type checking is performend! 
- */
 item_t OpNumericAddIterator::nextImpl(){
 	item_t n0_h;
 	item_t n1_h;
 	const numericValue* n0;
 	const numericValue* n1;
+	sequence_type_t type0;
+	sequence_type_t type1;
+	sequence_type_t resultType;
 	
 	STACK_INIT();
 	n0_h = this->consumeNext(arg0);
-	if(&*n0_h == NULL)
-		STACK_PUSH(NULL);
-	n1_h = this->consumeNext(arg1);
-	if(&*n1_h == NULL)
-		STACK_PUSH(NULL);
-	if (n0_h == NULL || n1_h == NULL) {
+	if(&*n0_h == NULL) {
 		STACK_PUSH(NULL);
 	} else {
-		n0 = dynamic_cast<const numericValue*>(&*n0_h);
-		n1 = dynamic_cast<const numericValue*>(&*n1_h);
-		STACK_PUSH(new numericValue(xs_decimal, n1->val() + n0->val()));
+		n1_h = this->consumeNext(arg1);
+		if(&*n1_h == NULL) {
+			STACK_PUSH(NULL);
+		} else {
+			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+			type0 = n0->type();
+			type1 = n1->type();
+			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+			STACK_PUSH(new numericValue(resultType, n1->val() + n0->val()));
+			
+			STACK_PUSH(NULL);
+		}
 	}
-	STACK_PUSH(NULL);
 	STACK_END();
 }
-// void OpNumericAddIterator::resetImpl(){
-// 	this->resetChild(this->arg0);
-// 	this->resetChild(this->arg1);
-// }
-
-// item_t OpNumericAddIterator::_next()
-// {
-// 	item_t n0_h = arg0->next();
-// 
-// 	if(&*n0_h == NULL)
-// 		return NULL;
-// 
-// 	item_t n1_h = arg1->next();
-// 
-// 	if(&*n1_h == NULL)
-// 		return NULL;
-// 
-// 	if (n0_h == NULL || n1_h == NULL) {
-// 		return NULL;
-// 	} else {
-// 		const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-// 		const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-// 		return new numericValue(xs_decimal, n1.val() + n0.val());
-// 	}
-// }
-
-// item_t OpNumericAddIterator::nextImpl_()
-// {
-// 	item_t n0_h = this->consumeNext(arg0);
-// 
-// 	if(&*n0_h == NULL)
-// 		return NULL;
-// 
-// 	item_t n1_h = this->consumeNext(arg1);
-// 
-// 	if(&*n1_h == NULL)
-// 		return NULL;
-// 
-// 	if (n0_h == NULL || n1_h == NULL) {
-// 		return NULL;
-// 	} else {
-// 		const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-// 		const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-// 		return new numericValue(xs_decimal, n1.val() + n0.val());
-// 	}
-// }
 
 std::ostream& OpNumericAddIterator::_show(std::ostream& os)
 const
@@ -179,33 +109,38 @@ const
 |	infinity of the appropriate sign is returned.
 |_______________________________________________________________________*/
 
-op_numeric_subtract_iterator::op_numeric_subtract_iterator(
-	yy::location loc, 
-	iterator_t arg0,
-	iterator_t arg1)
-:
-	op_numeric_binary_iterator(loc,arg0,arg1)
+item_t OpNumericSubtractIterator::nextImpl()
 {
+	item_t n0_h;
+	item_t n1_h;
+	const numericValue* n0;
+	const numericValue* n1;
+	sequence_type_t type0;
+	sequence_type_t type1;
+	sequence_type_t resultType;
+	
+	STACK_INIT();
+	n0_h = this->consumeNext(this->arg0);
+	if(&*n0_h == NULL) {
+		STACK_PUSH(NULL);
+	} else {
+		n1_h = this->consumeNext(this->arg1);
+		if(&*n1_h == NULL) {
+			STACK_PUSH(NULL);
+		} else {
+			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+			type0 = n0->type();
+			type1 = n1->type();
+			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+			STACK_PUSH(new numericValue(resultType, n0->val() - n1->val()));
+			STACK_PUSH(NULL);
+		}
+	}
+	STACK_END();
 }
 
-item_t op_numeric_subtract_iterator::_next()
-{
-	item_t n0_h = arg0->next();
-	
-	if(&*n0_h == NULL)
-		return NULL;
-	
-	item_t n1_h = arg1->next();
-	
-	if(&*n1_h == NULL)
-		return NULL;
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-	return new numericValue(xs_decimal, n1.val() - n0.val());
-}
-
-std::ostream& op_numeric_subtract_iterator::_show(std::ostream& os)
+std::ostream& OpNumericSubtractIterator::_show(std::ostream& os)
 const
 {
 	arg1->show(os);
@@ -228,33 +163,39 @@ const
 |	appropriate sign is returned.
 |_______________________________________________________________________*/
 
-op_numeric_multiply_iterator::op_numeric_multiply_iterator(
-	yy::location loc, 
-	iterator_t arg0,
-	iterator_t arg1)
-:
-	op_numeric_binary_iterator(loc,arg0,arg1)
+
+item_t OpNumericMultiplyIterator::nextImpl()
 {
+	item_t n0_h;
+	item_t n1_h;
+	const numericValue* n0;
+	const numericValue* n1;
+	sequence_type_t type0;
+	sequence_type_t type1;
+	sequence_type_t resultType;
+	
+	STACK_INIT();
+	n0_h = this->consumeNext(this->arg0);
+	if(&*n0_h == NULL) {
+		STACK_PUSH(NULL);
+	} else {
+		n1_h = this->consumeNext(this->arg1);
+		if(&*n1_h == NULL) {
+			STACK_PUSH(NULL);
+		} else {
+			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+			type0 = n0->type();
+			type1 = n1->type();
+			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+			STACK_PUSH(new numericValue(resultType, n0->val() * n1->val()));
+			STACK_PUSH(NULL);
+		}
+	}
+	STACK_END();
 }
 
-item_t op_numeric_multiply_iterator::_next()
-{
-	item_t n0_h = arg0->next();
-	
-	if(&*n0_h == NULL)
-		return NULL;
-	
-	item_t n1_h = arg1->next();
-
-	if(&*n1_h == NULL)
-		return NULL;
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-	return new numericValue(xs_decimal, n1.val() * n0.val());
-}
-
-std::ostream& op_numeric_multiply_iterator::_show(std::ostream& os)
+std::ostream& OpNumericMultiplyIterator::_show(std::ostream& os)
 const
 {
 	arg1->show(os);
@@ -287,33 +228,38 @@ const
 |	returns NaN.
 |_______________________________________________________________________*/
 
-op_numeric_divide_iterator::op_numeric_divide_iterator(
-	yy::location loc, 
-	iterator_t arg0,
-	iterator_t arg1)
-:
-	op_numeric_binary_iterator(loc,arg0,arg1)
+item_t OpNumericDivideIterator::nextImpl()
 {
+	item_t n0_h;
+	item_t n1_h;
+	const numericValue* n0;
+	const numericValue* n1;
+	sequence_type_t type0;
+	sequence_type_t type1;
+	sequence_type_t resultType;
+	
+	STACK_INIT();
+	n0_h = this->consumeNext(this->arg0);
+	if(&*n0_h == NULL) {
+		STACK_PUSH(NULL);
+	} else {
+		n1_h = this->consumeNext(this->arg1);
+		if(&*n1_h == NULL) {
+			STACK_PUSH(NULL);
+		} else {
+			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+			type0 = n0->type();
+			type1 = n1->type();
+			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+			STACK_PUSH(new numericValue(resultType, n0->val() / n1->val()));
+			STACK_PUSH(NULL);
+		}
+	}
+	STACK_END();
 }
 
-item_t op_numeric_divide_iterator::_next()
-{
-	item_t n0_h = arg0->next();
-
-	if(&*n0_h == NULL)
-		return NULL;
-
-	item_t n1_h = arg1->next();
-
-	if(&*n1_h == NULL)
-		return NULL;
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-	return new numericValue(xs_decimal, n1.val() / n0.val());
-}
-
-std::ostream& op_numeric_divide_iterator::_show(std::ostream& os)
+std::ostream& OpNumericDivideIterator::_show(std::ostream& os)
 const
 {
 	arg1->show(os);
@@ -348,39 +294,6 @@ const
 |	defined in programming languages such as Java and C++.
 |_______________________________________________________________________*/
 
-op_numeric_integer_divide_iterator::op_numeric_integer_divide_iterator(
-	yy::location loc, 
-	iterator_t arg0,
-	iterator_t arg1)
-:
-	op_numeric_binary_iterator(loc,arg0,arg1)
-{
-}
-
-item_t op_numeric_integer_divide_iterator::_next()
-{
-	item_t n0_h = arg0->next();
-
-	if(&*n0_h == NULL)
-		return NULL;
-
-	item_t n1_h = arg1->next();
-
-	if(&*n1_h == NULL)
-		return NULL;
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-	return new numericValue(xs_decimal, n1.val() / n0.val());
-}
-
-std::ostream& op_numeric_integer_divide_iterator::_show(std::ostream& os)
-const
-{
-	arg1->show(os);
-	arg0->show(os);
-	return os;
-}
 
 /*______________________________________________________________________
 |  
@@ -417,39 +330,44 @@ const
 |			required precision.
 |_______________________________________________________________________*/
 
-op_numeric_mod_iterator::op_numeric_mod_iterator(
-	yy::location loc, 
-	iterator_t arg0,
-	iterator_t arg1)
-:
-	op_numeric_binary_iterator(loc,arg0,arg1)
+item_t OpNumericModIterator::nextImpl()
 {
+	item_t n0_h;
+	item_t n1_h;
+	const numericValue* n0;
+	const numericValue* n1;
+	sequence_type_t type0;
+	sequence_type_t type1;
+	sequence_type_t resultType;
+	
+	STACK_INIT();
+	n0_h = this->consumeNext(this->arg0);
+	if(&*n0_h == NULL) {
+		STACK_PUSH(NULL);
+	} else {
+		n1_h = this->consumeNext(this->arg1);
+		if(&*n1_h == NULL) {
+			STACK_PUSH(NULL);
+		} else {
+			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+			type0 = n0->type();
+			type1 = n1->type();
+			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+			STACK_PUSH(new numericValue(resultType, (long)n0->val() % (long)n1->val()));
+			STACK_PUSH(NULL);
+		}
+	}
+	STACK_END();
 }
 
-item_t op_numeric_mod_iterator::_next()
-{
-	item_t n0_h = arg0->next();
-
-	if(&*n0_h == NULL)
-		return NULL;
-
-	item_t n1_h = arg1->next();
-
-	if(&*n1_h == NULL)
-		return NULL;
-
-	const numericValue& n0 = dynamic_cast<const numericValue&>(*n0_h);
-	const numericValue& n1 = dynamic_cast<const numericValue&>(*n1_h);
-	return new numericValue(xs_decimal, (long)n1.val() % (long)n0.val());
-}
-
-std::ostream& op_numeric_mod_iterator::_show(std::ostream& os)
+std::ostream& OpNumericModIterator::_show(std::ostream& os)
 const
 {
-	os  << IT_INDENT << "<op_numeric_mod_iterator>\n";
+	os  << IT_INDENT << "<OpNumericModIterator>\n";
 	arg1->show(os);
 	arg0->show(os);
-	os << IT_OUTDENT << "</op_numeric_mod_iterator>\n";
+	os << IT_OUTDENT << "</OpNumericModIterator>\n";
 	return os;
 }
 
@@ -480,45 +398,38 @@ const
 |	INF.
 |_______________________________________________________________________*/
 
-op_numeric_unary_minus_iterator::op_numeric_unary_minus_iterator(
-	yy::location loc, 
-	iterator_t _arg0)
-:
-	BasicIterator(loc),
-	arg0(_arg0)
+item_t OpNumericUnaryMinusIterator::nextImpl()
 {
+	item_t n_h;
+	const numericValue* n;
+	
+	STACK_INIT();
+	n_h = this->consumeNext(this->arg0_);
+	if(&*n_h == NULL) {
+		STACK_PUSH(n_h);
+	} else {
+		n = dynamic_cast<const numericValue*>(&*n_h);
+		STACK_PUSH(new numericValue(n->type(), -n->val()));
+	}
+	STACK_PUSH(NULL);
+	STACK_END();
 }
 
-item_t op_numeric_unary_minus_iterator::_next()
+void OpNumericUnaryMinusIterator::resetImpl()
 {
-	item_t n_h = arg0->next();
-	if(&*n_h == NULL)
-		return NULL;
-
-	const numericValue& n = dynamic_cast<const numericValue&>(*n_h);
-	return new numericValue(xs_decimal, -n.val());
+	this->resetChild(this->arg0_);
 }
 
-std::ostream& op_numeric_unary_minus_iterator::_show(std::ostream& os)
+void OpNumericUnaryMinusIterator::releaseResourcesImpl()
+{
+	this->releaseChildResources(this->arg0_);
+}
+
+std::ostream& OpNumericUnaryMinusIterator::_show(std::ostream& os)
 const
 {
-	arg0->show(os);
+	this->arg0_->show(os);
 	return os;
-}
-
-void op_numeric_unary_minus_iterator::_open()
-{
-	arg0->open();
-}
-
-void op_numeric_unary_minus_iterator::_close()
-{
-	arg0->close();
-}
-
-bool op_numeric_unary_minus_iterator::done() const
-{
-	return arg0->done();
 }
 
 
@@ -529,28 +440,28 @@ bool op_numeric_unary_minus_iterator::done() const
 |_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
-op_numeric_equal_iterator::op_numeric_equal_iterator(
-	yy::location loc, 
-	iterator_t arg0,
-	iterator_t arg1)
-:
-	op_numeric_binary_iterator(loc,arg0,arg1)
+item_t OpNumericEqualIterator::nextImpl()
 {
+	const numericValue *n0;
+	const numericValue *n1;
+	
+	STACK_INIT();
+		n0 = dynamic_cast<const numericValue*>(&*arg0->next());
+	if(n0 == NULL) {
+		STACK_PUSH(NULL);
+	} else {
+		n1 = dynamic_cast<const numericValue*>(&*arg1->next());
+		if(n1 == NULL) {
+			STACK_PUSH(NULL);
+		} else {
+			STACK_PUSH(new booleanValue(n1->val() == n0->val()));
+			STACK_PUSH(NULL);
+		}
+	}
+	STACK_END();
 }
 
-item_t op_numeric_equal_iterator::_next()
-{
-	const numericValue* n0 = dynamic_cast<const numericValue*>(&*arg0->next());
-	if(n0 == NULL)
-		return NULL;
-	const numericValue *n1 = dynamic_cast<const numericValue*>(&*arg1->next());
-	if(n1 == NULL)
-		return NULL;
-	return new booleanValue(n1->val() == n0->val());
-
-}
-
-std::ostream& op_numeric_equal_iterator::_show(std::ostream& os)
+std::ostream& OpNumericEqualIterator::_show(std::ostream& os)
 const
 {
 	arg1->show(os);
@@ -558,7 +469,7 @@ const
 	return os;
 }
 		
-// item_t op_numeric_equal_iterator::_next()
+// item_t OpNumericEqualIterator::_next()
 // {
 // 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 // 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
@@ -574,48 +485,35 @@ const
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-fn_abs_iterator::fn_abs_iterator(
-	yy::location loc,
-	iterator_t _arg0)
-:
-	BasicIterator(loc),
-	arg0(_arg0)
-{
+item_t FnAbsIterator::nextImpl() {
+	const numericValue* n0;
+	
+	STACK_INIT();
+	n0 = dynamic_cast<const numericValue*>(&*this->arg0_->next());
+	if(n0 == NULL) {
+		STACK_PUSH(NULL);
+	} else {
+		if (n0->val() >= 0) {
+			STACK_PUSH(new numericValue(xs_decimal, n0->val()));
+		} else {
+			STACK_PUSH(new numericValue(xs_decimal, -n0->val()));
+		}
+		STACK_PUSH(NULL);	
+	}
+	STACK_END();
 }
 
-void fn_abs_iterator::_open()
-{
-	arg0->open();
+void FnAbsIterator::resetImpl() {
+	this->resetChild(this->arg0_);
 }
 
-void fn_abs_iterator::_close()
-{
-	arg0->close();
+void FnAbsIterator::releaseResourcesImpl() {
+	this->releaseChildResources(this->arg0_);
 }
 
-item_t fn_abs_iterator::_next()
-{
-	const numericValue* n0 = dynamic_cast<const numericValue*>(&*arg0->next());
-	if(n0 == NULL)
-		return NULL;
-
-	if (n0->val() >= 0)
-		return new numericValue(xs_decimal, n0->val());
-	else
-		return new numericValue(xs_decimal, -n0->val());
-
-}
-
-std::ostream& fn_abs_iterator::_show(std::ostream& os)
-const
-{
-	arg0->show(os);
+std::ostream& FnAbsIterator::_show(std::ostream& os) const {
+	this->arg0_->show(os);
 	return os;
-}
-
-bool fn_abs_iterator::done() const
-{
-	return arg0->done();
 }
 
 

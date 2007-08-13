@@ -165,25 +165,25 @@ public:
 |	let_var bindings
 |______________________________________________________________*/
 
-class ref_iterator : public BasicIterator
-{
-private:
-	iterator_t it;
-
-public:
-	ref_iterator(iterator_t _it,yy::location loc) : 
-										BasicIterator(loc),
-										it(_it) {}
-
-public:
-	void _open() { it->open();  }
-	item_t _next() { return it->next(); }
-	void _close() { it->close(); }
-	std::ostream&  _show(std::ostream& os) const {return os;}
-	bool done() const { return it->done(); }
-	void bind(iterator_t _it) { it = _it;}
-
-};
+// class RefIterator : public BasicIterator
+// {
+// private:
+// 	iterator_t it;
+// 
+// public:
+// 	RefIterator(iterator_t _it,yy::location loc) : 
+// 										BasicIterator(loc),
+// 										it(_it) {}
+// 
+// public:
+// 	void _open() { it->open();  }
+// 	item_t _next() { return it->next(); }
+// 	void _close() { it->close(); }
+// 	std::ostream&  _show(std::ostream& os) const {return os;}
+// 	bool done() const { return it->done(); }
+// 	void bind(iterator_t _it) { it = _it;}
+// 
+// };
 
 
 
@@ -191,42 +191,42 @@ public:
 |
 |	for $x in  _input_  return  _expr_
 |______________________________________________________________*/
-
-class map_iterator : public BasicIterator
+class MapIterator : public Batcher<MapIterator>
 {
 private:
-	enum state {
-		outer,
-		inner
-	};
+// 	enum state {
+// 		outer,
+// 		inner
+// 	};
 
 	iterator_t theInput;
 	iterator_t theExpr;
 	std::vector<var_iter_t> varv;
-	enum state theState;
+// 	enum state theState;
 
 public:
-	map_iterator(
+	MapIterator(
 		yy::location loc,
 		iterator_t _input,
 		iterator_t _expr,
 		std::vector<var_iter_t> _varv)
 	:
-		BasicIterator(loc),
+		Batcher<MapIterator>(loc),
 		theInput(_input),
 		theExpr(_expr),
-		varv(_varv),
-		theState(outer)
+		varv(_varv)
 	{}
 
-	~map_iterator() {}
+	~MapIterator() {}
 
 public:
-	item_t _next();
-	void _open();
-	void _close();
+	item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
+// 	void _open();
+// 	void _close();
 	std::ostream&  _show(std::ostream& os) const;
-	bool done() const;
+// 	bool done() const;
 
 }; 
 

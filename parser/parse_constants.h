@@ -124,7 +124,7 @@ enum numeric_type_t {
 	num_double
 };
 
-typedef long long decimal;
+typedef long double decimal;
 
 enum common_content_t {
 	cont_entity,
