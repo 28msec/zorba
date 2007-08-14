@@ -22,12 +22,6 @@
 
 namespace xqp {
 
-extern int iteratorTreeDepth;
-
-#define IT_INDENT			indent[++iteratorTreeDepth % 30]
-#define IT_DEPTH			indent[iteratorTreeDepth % 30]
-#define IT_OUTDENT		indent[iteratorTreeDepth-- % 30]
-	
 class item;
 class node;
 class qname;

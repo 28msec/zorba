@@ -219,7 +219,8 @@ void library::init(
 
 		put(&fn_string_to_codepoints_func);
 		fn_string_to_codepoints_key = fn_string_to_codepoints_func.get_fname()->qnamekey();
-		
+
+		// Boolean functions
 		put(&fn_boolean_func);
 		fn_boolean_key = fn_boolean_func.get_fname()->qnamekey();
 

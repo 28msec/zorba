@@ -38,6 +38,10 @@
 //0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
 #define BATCHING_TYPE 0
 
+#define IT_INDENT			indent[++iteratorTreeDepth % 30]
+#define IT_DEPTH			indent[iteratorTreeDepth % 30]
+#define IT_OUTDENT		indent[iteratorTreeDepth-- % 30]
+
 /**
  * This is a dummy class just because of compatibility issues.
  * It can be removed when all the code is cleaned up
@@ -46,6 +50,8 @@
 
 namespace xqp {
 
+	extern int iteratorTreeDepth;
+	
 class OldIterator : public rcobject {
 protected:
 	bool open_b;
