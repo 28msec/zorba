@@ -26,6 +26,9 @@
 using namespace std;
 namespace xqp {
 
+
+// TODO FIXME This library must be changed!! Somehow!!
+
 // clear static initializer state
 bool library::static_init = false;
 
@@ -47,6 +50,39 @@ op_numeric_subtract  op_subtract(
 		xs_decimal					// return type
 	)
 );
+
+op_numeric_multiply op_multiply(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"op","multiply"),
+		xs_decimal,
+		xs_decimal,
+		xs_decimal
+	)
+);
+ 
+op_numeric_divide op_divide(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"op","divide"),
+		xs_decimal,
+		xs_decimal,
+		xs_decimal
+	)
+);
+ 
+// op_numeric_integer_divide
+// 
+op_numeric_mod op_mod(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"op","mod"),
+		xs_decimal,
+		xs_decimal,
+		xs_decimal
+	)
+);
+ 
+// op_numeric_unary_plus
+// 
+// op_numeric_unary_minus
 
 op_numeric_equal op_equal(
 	signature(
@@ -153,11 +189,17 @@ void library::init(
 		// Numeric functions
 		put(&op_add);
 		put(&op_subtract);
+		put(&op_multiply);
+		put(&op_divide);
+		put(&op_mod);
 		put(&op_equal);
 		put(&fn_abs_sig);
 
 		op_add_key = op_add.get_fname()->qnamekey();
 		op_subtract_key = op_subtract.get_fname()->qnamekey();
+		op_mul_key = op_multiply.get_fname()->qnamekey();
+		op_div_key = op_divide.get_fname()->qnamekey();
+		op_mod_key = op_mod.get_fname()->qnamekey();
 		op_val_eq_key = op_equal.get_fname()->qnamekey();
 
 		fn_abs_key = fn_abs_sig.get_fname()->qnamekey();
