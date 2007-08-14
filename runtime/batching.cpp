@@ -4,128 +4,159 @@
 
 namespace xqp {
 
-BasicIterator::BasicIterator(yy::location _loc) : 
-																	loc(_loc)
-{
-  this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
-}
-BasicIterator::BasicIterator(const BasicIterator& it) : rcobject (), 
-																					loc(it.loc)
-{
-  this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
+OldIterator::OldIterator(){
+	
 }
 
-BasicIterator::~BasicIterator()
-{
-}
+OldIterator::~OldIterator() {}
 
-void BasicIterator::open()
-{
+void OldIterator::open() {
 	assert(!open_b);
 	open_b = true;
-	
+
 	// Initialization of the line info for Duff's device.
-	this->current_line = 0;
 	_open();
 }
 
-void BasicIterator::close()
-{
+void OldIterator::close() {
 	assert(open_b);
 	open_b = false;
 	_close();
 }
 
-bool BasicIterator::isOpen() const
-{
+bool OldIterator::isOpen() const {
 	return open_b;
 }
 
-bool BasicIterator::done() const
-{
+bool OldIterator::done() const {
 	return false;
 }
 
-item_t BasicIterator::next()
-{
-	assert(open_b);
-	//daniel: saves the current iterator in zorba object (to keep track of the current iterator)
-	if(zorp)
-	{
-		zorp->current_iterator.push(this);
-		
-		item_t retitem = _next();
-		
-		zorp->current_iterator.pop();
-		return retitem;
-	}
-	else
-		return _next();
+
+/**
+ * This method should be abstract. Only because of compatibility issues we implemented it
+ */
+void BasicIterator::reset() {
+	ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
 }
 
-item_t BasicIterator::produceNext()
-{
-	return NULL;
-}
-
-void BasicIterator::reset()
-{
-	
-}
-
-void BasicIterator::releaseResources()
-{
-	
+void BasicIterator::releaseResources() {
+	ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
 }
 
 
-std::ostream& BasicIterator::show(std::ostream& os)
-{
-	os << IT_INDENT << "<" << typeid(*this).name() << ">" << std::endl;
+//*************************************************
+//*************************************************
+//
+//		NO BATCHING
+//
+//*************************************************
+//*************************************************
+#if BATCHING_TYPE==0
+
+BasicIterator::BasicIterator(yy::location _loc) :
+	loc(_loc){
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
+}
+BasicIterator::BasicIterator(const BasicIterator& it) :
+	loc(it.loc) {
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
+}
+
+BasicIterator::~BasicIterator() {
+}
+
+/**
+ * This method should be abstract. Only because of compatibility issues we implemented it
+ */
+item_t BasicIterator::produceNext() {
+	ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
+}
+
+std::ostream& BasicIterator::show(std::ostream& os) {
+	os << IT_INDENT<< "<"<< typeid(*this).name() << ">"<< std::endl;
 	_show(os);
-	os << IT_OUTDENT << "</" << typeid(*this).name() << ">" << std::endl;
+	os << IT_OUTDENT<< "</"<< typeid(*this).name() << ">"<< std::endl;
 	return os;
 }
 
-// template <class IterType>
-// Batcher<IterType>::Batcher(yy::location _loc) : BasicIterator(_loc) { }
-
-// template <class IterType>
-// Batcher<IterType>::Batcher(const Batcher<IterType>& it) : BasicIterator(it) {}
-
-// template <class IterType>
-// Batcher<IterType>::~Batcher() {}
-/*
-template <class IterType>
-item_t Batcher<IterType>::produceNext() {
-	return static_cast<IterType*>(this)->nextImpl();
+item_t BasicIterator::next() {
+	return produceNext();
 }
 
-template <class IterType>
-void Batcher<IterType>::reset() {
-	static_cast<IterType*>(this)->resetImpl();
+//*************************************************
+//*************************************************
+//
+//		SIMPLE BATCHING
+//
+//*************************************************
+//*************************************************
+#elif BATCHING_TYPE==1
+
+std::ostream& BasicIterator::show(std::ostream& os) {
+	os << IT_INDENT<< "<"<< typeid(*this).name() << ">"<< std::endl;
+	_show(os);
+	os << IT_OUTDENT<< "</"<< typeid(*this).name() << ">"<< std::endl;
+	return os;
 }
 
-template <class IterType>
-void Batcher<IterType>::freeResources() {
-	static_cast<IterType*>(this)->freeResourcesImpl();
+BasicIterator::BasicIterator(yy::location _loc) :
+	loc(_loc), cItem(BATCHSIZE){
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
+}
+BasicIterator::BasicIterator(const BasicIterator& it) :
+	loc(it.loc), cItem(it.cItem) {
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
 }
 
-template <class IterType>
-item_t Batcher<IterType>::consumeNext(iterator_t& subIterator) {
-	return subIterator->produceNext();
+BasicIterator::~BasicIterator() {
+}
+/**
+ * This method should be abstract. Only because of compatibility issues we implemented it
+ */
+void BasicIterator::produceNext() {
+	ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
 }
 
-template <class IterType>
-void Batcher<IterType>::resetChild(iterator_t& subIterator) {
-	subIterator->reset();
+item_t BasicIterator::next() {
+	if (cItem == BATCHSIZE) {
+		produceNext();
+		cItem = 0;
+	}
+	return batch[cItem++];
 }
 
-template <class IterType>
-void Batcher<IterType>::releaseChildResources(iterator_t& subIterator) {
-	subIterator->releaseResources();
-}*/
+
+//*************************************************
+//*************************************************
+//
+//		SUPER BATCHING
+//
+//*************************************************
+//*************************************************
+#elif BATCHING_TYPE==2
+
+#endif 
+
 
 }

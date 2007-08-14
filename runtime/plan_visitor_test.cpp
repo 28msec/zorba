@@ -152,7 +152,7 @@ int _tmain(int argc, _TCHAR* argv[])
 // 				it_h->close();
 					
 				while (true) {
-					item_t i_p = it_h->produceNext();
+					item_t i_p = it_h->next();
 					if (i_p == NULL)
 						break;
 					i_p->put(cout) << endl;
