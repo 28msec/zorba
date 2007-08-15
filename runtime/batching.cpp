@@ -109,6 +109,7 @@ item_t BasicIterator::produceNext() {
 					error_messages::SYSTEM_ERROR,
 					NULL
 				);
+	return NULL;///unreachable
 }
 
 std::ostream& BasicIterator::show(std::ostream& os) {
