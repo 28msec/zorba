@@ -77,7 +77,7 @@ public:
 	void resetImpl() {
 		this->is_done = false;
 	}
-	void releaseResourcesImpl(){}
+	void releaseResourcesImpl(){this->is_done = false;}
 
 public:		// iterator interface
 	void _open() {}

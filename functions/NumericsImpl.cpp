@@ -84,6 +84,16 @@ item_t OpNumericAddIterator::nextImpl(){
 	STACK_END();
 }
 
+void OpNumericAddIterator::resetImpl(){
+	this->resetChild(arg0);
+	this->resetChild(arg1);
+}
+
+void OpNumericAddIterator::releaseResourcesImpl(){
+	this->releaseChildResources(arg0);
+	this->releaseChildResources(arg1);
+}
+
 std::ostream& OpNumericAddIterator::_show(std::ostream& os)
 const
 {

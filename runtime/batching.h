@@ -17,7 +17,7 @@
  *	limitations under the License.
  * ========================================================================
  *
- * @author Tim Kraska (tim.kraska@inf.ethz.ch), David Graf (dgraf@inf.ethz.ch)
+ * @author Tim Kraska (tim.kraska@inf.ethz.ch), David Graf (dagraf@inf.ethz.ch)
  * @file runtime/batching.h
  *
  */
@@ -143,7 +143,9 @@ protected:
 		subIterator->releaseResources();
 	}
 
-	virtual std::ostream& _show(std::ostream&) const = 0;
+	virtual std::ostream& _show(std::ostream& os) {
+		return os;
+	}
 };
 
 template <class IterType>
@@ -166,8 +168,8 @@ public:
 		static_cast<IterType*>(this)->resetImpl();
 	}
 
-	void freeResources() {
-		static_cast<IterType*>(this)->freeResourcesImpl();
+	void releaseResources() {
+		static_cast<IterType*>(this)->releaseResourcesImpl();
 	}
 
 public:
@@ -270,8 +272,9 @@ public:
 		static_cast<IterType*>(this)->resetImpl();
 	}
 
-	void freeResources() {
-		static_cast<IterType*>(this)->freeResourcesImpl();
+	void releaseResources() {
+		this->current_line = 0;
+		static_cast<IterType*>(this)->releaseResourcesImpl();
 	}
 
 public:
