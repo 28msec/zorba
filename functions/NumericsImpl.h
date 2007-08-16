@@ -87,11 +87,6 @@ public:
 
 public:	// iterator interface
 	item_t nextImpl();
-	
-	void releaseResourcesImpl();
-	
-	void resetImpl();
-
 	std::ostream&  _show(std::ostream&) const;
 };
 

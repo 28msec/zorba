@@ -77,21 +77,10 @@ item_t OpNumericAddIterator::nextImpl(){
 			type1 = n1->type();
 			resultType = sequence_type::getNumericalOpResultType(type0, type1);
 			STACK_PUSH(new numericValue(resultType, n1->val() + n0->val()));
-			
 			STACK_PUSH(NULL);
 		}
 	}
 	STACK_END();
-}
-
-void OpNumericAddIterator::resetImpl(){
-	this->resetChild(arg0);
-	this->resetChild(arg1);
-}
-
-void OpNumericAddIterator::releaseResourcesImpl(){
-	this->releaseChildResources(arg0);
-	this->releaseChildResources(arg1);
 }
 
 std::ostream& OpNumericAddIterator::_show(std::ostream& os)

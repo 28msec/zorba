@@ -261,7 +261,7 @@ public:
 	void produceNext() {
 		int i = 0;
 		batch[0] = static_cast<IterType*>(this)->nextImpl();
-		while (i < BATCHSIZE|| batch[i] != NULL) {
+		while (i < BATCHSIZE && batch[i] != NULL) {
 			i++;
 			batch[i] = static_cast<IterType*>(this)->nextImpl();
 		}

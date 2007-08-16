@@ -40,7 +40,10 @@ qname* fn_doc_fname_p;
 std::ostream& ConcatIterator::_show(std::ostream& os)
 const
 {
-	currit_h->show(os);
+	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		(*iter)->show(os);
+	}
 	return os;
 }
 
@@ -51,7 +54,7 @@ item_t ConcatIterator::nextImpl() {
 	
 	this->cursor = 0;
 	
-	for (; this->cursor < this->argv.size (); this->cursor++) {
+	for (; this->cursor < this->argv.size (); this->cursor++) {;
 		this->currit_h = this->argv[this->cursor];
 		item = this->consumeNext(this->currit_h);
 		while (item != NULL) {
