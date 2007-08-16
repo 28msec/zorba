@@ -26,8 +26,8 @@ clean: TARGET=clean
 clean: subdirs
 
 
-plan_visitor_test:
-	$(MAKE) test -C runtime
+exec_query:
+	$(MAKE) test -C testing
 
 
 .PHONY: subdirs $(SUBDIRS)
