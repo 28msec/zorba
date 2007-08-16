@@ -81,27 +81,6 @@ void ConcatIterator::releaseResourcesImpl() {
 	}
 }
 
-// ConcatIterator::ConcatIterator(
-// 	yy::location loc,
-// 	const vector<iterator_t>& _argv)
-// :
-// 	Batcher<ConcatIterator>(loc),
-// 	argv(_argv),
-// 	currit_h(NULL),
-// 	cursor(0)
-// {
-// }
-// 
-// ConcatIterator::ConcatIterator(
-// 	const ConcatIterator& concat_it)
-// :
-// 	Batcher<ConcatIterator>(concat_it),
-// 	argv(concat_it.argv),
-// 	currit_h(concat_it.currit_h),
-// 	cursor(concat_it.cursor)
-// {
-// }
-
 
 //15.1.3 fn:index-of
 
