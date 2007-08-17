@@ -27,7 +27,7 @@ clean: TARGET=clean
 clean: subdirs
 
 
-exec_query:
+query_exec:
 	$(MAKE) test -C testing
 
 
