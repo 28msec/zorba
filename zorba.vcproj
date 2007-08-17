@@ -852,10 +852,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\runtime\plan_visitor_test.cpp"
-				>
-			</File>
-			<File
 				RelativePath="values\primitive_values.cpp"
 				>
 				<FileConfiguration
@@ -917,6 +913,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\testing\query_exec.cpp"
+				>
 			</File>
 			<File
 				RelativePath="util\rwlock.cpp"
@@ -1131,6 +1131,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\testing\timer.cpp"
+				>
 			</File>
 			<File
 				RelativePath="util\tokenbuf.cpp"
@@ -1562,11 +1566,11 @@
 				>
 			</File>
 			<File
-				RelativePath="runtime\dynamic_context.h"
+				RelativePath="context\dynamic_context.h"
 				>
 			</File>
 			<File
-				RelativePath="context\dynamic_context.h"
+				RelativePath="runtime\dynamic_context.h"
 				>
 			</File>
 			<File
@@ -1630,15 +1634,15 @@
 				>
 			</File>
 			<File
-				RelativePath="exprtree\indent.h"
-				>
-			</File>
-			<File
 				RelativePath="parser\indent.h"
 				>
 			</File>
 			<File
 				RelativePath="runtime\indent.h"
+				>
+			</File>
+			<File
+				RelativePath="exprtree\indent.h"
 				>
 			</File>
 			<File
@@ -1803,6 +1807,10 @@
 			</File>
 			<File
 				RelativePath="parser\symbol_table.h"
+				>
+			</File>
+			<File
+				RelativePath=".\testing\timer.h"
 				>
 			</File>
 			<File

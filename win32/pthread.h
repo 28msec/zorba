@@ -80,6 +80,14 @@ struct timespec {
         //int tm_yday;    // days since January 1 - [0,365] 
         //int tm_isdst;   // daylight savings time flag 
         };
+/*
+struct timeval
+{
+	long tv_sec;
+  long tv_usec;
+};
+void gettimeofday(struct timeval *ptime, void *p);
+*/
 
 //int pthread_delay_np( struct timespec *interval );
 

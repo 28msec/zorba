@@ -8,17 +8,23 @@
 #define XQP_TIMER_H
 
 #include <ctime>
+#ifndef WIN32
 #include <sys/time.h>
+#else
+#include <time.h>
+#endif
 
 class Timer
 {
     clock_t startClock;
     clock_t suspendClock;
     clock_t endClock;
+#ifndef WIN32
     double startTime;
     double endTime;
     double suspendTime;
-    bool suspended;
+#endif
+		bool suspended;
     bool running;
 
 public:
@@ -29,8 +35,9 @@ public:
     void resume();
 
     double getClock();
+#ifndef WIN32
     double getTime();
-
+#endif
     // print all information
     void print();
     bool isRunning();

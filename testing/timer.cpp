@@ -7,12 +7,17 @@
 void Timer::start()
 {
     startClock = clock();
+#ifndef WIN32
     struct timeval stime;
     gettimeofday(&stime, NULL);
     startTime=(double)stime.tv_sec+(1.e-6)*stime.tv_usec;
 #ifdef DEBUG
-
     printf("Start time: %lf\n",startTime);
+#endif
+#else//WIN32
+#ifdef DEBUG
+		printf("Start time: %lf\n",(double)startClock/CLOCKS_PER_SEC);
+#endif
 #endif
 
     suspended = false;
@@ -22,25 +27,35 @@ void Timer::start()
 void Timer::end()
 {
     endClock = clock();
+#ifndef WIN32
     struct timeval etime;
     gettimeofday(&etime, NULL);
     endTime=(double)etime.tv_sec+(1.e-6)*etime.tv_usec;
-    running = false;
 #ifdef DEBUG
-
     printf("End time: %lf\n",endTime);
 #endif
+#else///WIN32
+#ifdef DEBUG
+		printf("End time: %lf\n",(double)endClock/CLOCKS_PER_SEC);
+#endif
+#endif
+    running = false;
 }
 
 void Timer::suspend()
 {
     suspendClock = clock();
+#ifndef WIN32
     struct timeval sustime;
     gettimeofday(&sustime,NULL);
     suspendTime = (double)sustime.tv_sec+(1.e-6)*sustime.tv_usec;
 #ifdef DEBUG
-
     printf("Suspend time: %lf\n",suspendTime);
+#endif
+#else
+#ifdef DEBUG
+    printf("Suspend time: %lf\n",(double)suspendClock/CLOCKS_PER_SEC);
+#endif
 #endif
 
     suspended = true;
@@ -48,19 +63,23 @@ void Timer::suspend()
 
 void Timer::resume()
 {
-    startClock = startClock +(clock()-suspendClock);
+		clock_t		resumeClock = clock();
+    startClock = startClock +(resumeClock-suspendClock);
+#ifndef WIN32
     struct timeval sustime;
     gettimeofday(&sustime,NULL);
     double resumeTime = (double)sustime.tv_sec+(1.e-6)*sustime.tv_usec;
 #ifdef DEBUG
-
     printf("Resume time: %lf\n",resumeTime);
 #endif
-
     startTime = startTime +(resumeTime-suspendTime);
 #ifdef DEBUG
-
     printf("New start Time: %lf\n",startTime);
+#endif
+#else//WIN32
+#ifdef DEBUG
+    printf("Resume time: %lf\n",(double)resumeClock/CLOCKS_PER_SEC);
+#endif
 #endif
 
     suspended = false;
@@ -74,6 +93,7 @@ double Timer::getClock()
     return (double)(suspendClock-startClock)/(double) CLOCKS_PER_SEC;
 }
 
+#ifndef WIN32
 double Timer::getTime()
 {
     if (!suspended)
@@ -81,12 +101,14 @@ double Timer::getTime()
 
     return (double)(suspendTime-startTime);
 }
-
+#endif
 
 void Timer::print()
 {
-	std::cout << "Duration (with System Time): " << getTime() << "s" << std::endl;
-	std::cout << "Duration (with CPU Clocks): " << getClock() << "s" << std::endl;
+#ifndef WIN32
+	std::cout << "Duration (with System Time): " << getTime() << " s" << std::endl;
+#endif
+	std::cout << "Duration (with CPU Clocks): " << getClock() << " s" << std::endl;
 }
 
 bool Timer::isRunning()
