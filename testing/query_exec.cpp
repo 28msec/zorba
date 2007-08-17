@@ -1,3 +1,7 @@
+/**
+ * Contains main method to execute a simple query that is passed with the first execution parameter.
+ */
+
 #include "runtime/plan_visitor.h"
 #include "exprtree/normalize_visitor.h"
 #include "parser/xquery_driver.h"

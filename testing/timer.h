@@ -1,15 +1,11 @@
-/*
- *  made by Dongseop Kwon (subby@db.snu.ac.kr), 23/07/2003
+/**
+ * Class to measure execution time based on CPU clocks and system time.
+ * made by Dongseop Kwon (subby@db.snu.ac.kr), 23/07/2003
  */
 
 
-/*
- * utilities for 
- *
- */
-
-#ifndef _UTIL
-#define _UTIL
+#ifndef XQP_TIMER_H
+#define XQP_TIMER_H
 
 #include <ctime>
 #include <sys/time.h>
@@ -39,6 +35,4 @@ public:
     void print();
     bool isRunning();
 };
-
-
 #endif
