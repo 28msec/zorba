@@ -9,6 +9,7 @@ SUBDIRS		= \
 				parser \
 				runtime \
 				store \
+				testing \
 				types \
 				util \
 				values \
