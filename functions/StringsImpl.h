@@ -53,16 +53,14 @@ public:
 		iterator_t _argv)
 	:
 		Batcher<CodepointsToStringIterator>(loc),
-		argv(_argv),
-		cursor(0)
+		argv(_argv)
 	{}
 
 	CodepointsToStringIterator(
 		const CodepointsToStringIterator& cptostr_it)
 	:
 		Batcher<CodepointsToStringIterator>(cptostr_it),
-		argv(cptostr_it.argv),
-		cursor(cptostr_it.cursor)
+		argv(cptostr_it.argv)
 	{}
 
 	~CodepointsToStringIterator() {}
@@ -75,8 +73,7 @@ public:
 
 protected:
 	iterator_t argv;
-	uint32_t cursor;
-
+	char seq[4];
 };
 
 /**
@@ -90,16 +87,14 @@ public:
 		iterator_t _argv)
 	:
 		Batcher<StringToCodepointsIterator>(loc),
-		argv(_argv),
-		cursor(0)
+		argv(_argv)
 	{}
 
 		StringToCodepointsIterator(
 		const StringToCodepointsIterator& strtocp_it)
 	:
 		Batcher<StringToCodepointsIterator>(strtocp_it),
-		argv(strtocp_it.argv),
-		cursor(strtocp_it.cursor)
+		argv(strtocp_it.argv)
 	{}
 
 	~StringToCodepointsIterator() {}
@@ -112,8 +107,6 @@ public:
 
 protected:
 	iterator_t argv;
-	uint32_t cursor;
-
 };
 
 }/*namespace xqp*/

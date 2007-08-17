@@ -29,6 +29,7 @@
 #include "util/tracer.h"
 #include "parser/location.hh"
 #include "parser/indent.h"
+#include "utf8/utf8.h"
 
 #include <assert.h>
 #include <iostream>

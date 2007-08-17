@@ -49,24 +49,30 @@ std::ostream& CodepointsToStringIterator::_show(std::ostream& os) const{
 
 item_t CodepointsToStringIterator::nextImpl(){
 	item_t item;
+	const numericValue* n0;
+	sequence_type_t type0;
 
-	uint8_t * utf8String;
-	
 	STACK_INIT();
 	
-	this->cursor = 0;
+	while(true){
+		item = this->consumeNext(argv);
+		
+		if(&*item == NULL) {
+			STACK_PUSH(NULL);
+		}
+		else {
+			n0 = dynamic_cast<const numericValue*>(&*item);
 
-	item = this->consumeNext(argv);
-	if(&*item == NULL)
-		STACK_PUSH(NULL);
-
-	if(item == NULL){
-		STACK_PUSH(NULL);
+			seq[0] = 0;
+			seq[1] = 0;
+			seq[2] = 0;
+			seq[3] = 0;
+			
+			EncodeUtf8((uint32_t)n0->val(), seq);
+			
+			STACK_PUSH(new stringValue(xs_string, seq));
+		}
 	}
-	else{
-		STACK_PUSH(new stringValue(xs_string, "TEST"));
-	}
-
 	STACK_PUSH(NULL);
 	STACK_END();
 }
@@ -103,8 +109,6 @@ item_t StringToCodepointsIterator::nextImpl(){
 	
 	STACK_INIT();
 	
-	this->cursor = 0;
-
 	item = this->consumeNext(argv);
 	if(&*item == NULL)
 		STACK_PUSH(NULL);
