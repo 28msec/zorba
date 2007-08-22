@@ -28,7 +28,7 @@ class zorba;
 |	Base class for the abstract value hierarchy
 |_______________________________________________________________________*/
 
-class object : public rcobject
+class object : virtual public rcobject
 {
 public:
   virtual std::string describe() const = 0;
