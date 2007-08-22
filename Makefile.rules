@@ -91,7 +91,7 @@ $(BUILD_FOLDER):
 	mkdir -p $(BUILD_FOLDER)
 
 $(BUILD_FOLDER)/%.$(SUFX) : %.cpp
-	$(CXX) -c $(CXXFLAGS) -MMD -MF $(patsubst %.$(SUFX),%.d,$@) -o $@ $<
+	$(CXX) -c $(CXXFLAGS) -MMD -MF $(patsubst %.$(SUFX),%.d,$@) -MT $@ -o $@ $<
 	$(MAKEDEP)
 
 %.cpp: %.l
