@@ -51,13 +51,14 @@ item_t CodepointsToStringIterator::nextImpl(){
 	item_t item;
 	const numericValue* n0;
 	sequence_type_t type0;
-
+	
 	STACK_INIT();
 	
 	while(true){
 		item = this->consumeNext(argv);
 		
 		if(&*item == NULL) {
+			STACK_PUSH(new stringValue(xs_string, res));
 			STACK_PUSH(NULL);
 		}
 		else {
@@ -69,10 +70,11 @@ item_t CodepointsToStringIterator::nextImpl(){
 			seq[3] = 0;
 			
 			EncodeUtf8((uint32_t)n0->val(), seq);
-			
-			STACK_PUSH(new stringValue(xs_string, seq));
+
+			res.append(seq);
 		}
 	}
+	
 	STACK_PUSH(NULL);
 	STACK_END();
 }
@@ -106,20 +108,31 @@ std::ostream& StringToCodepointsIterator::_show(std::ostream& os) const{
 
 item_t StringToCodepointsIterator::nextImpl(){
 	item_t item;
+	const stringValue* n0;
 	
+
 	STACK_INIT();
-	
+
 	item = this->consumeNext(argv);
-	if(&*item == NULL)
-		STACK_PUSH(NULL);
-
-	if(item == NULL){
+	
+	if(&*item == NULL) {
 		STACK_PUSH(NULL);
 	}
-	else{
-		STACK_PUSH(new numericValue(xs_integer, 2));
-	}
+	else
+	{
+		n0 = dynamic_cast<const stringValue*>(&*item);
+		
+		vLength = (n0->val().length()) + 1;
+		v.reserve(vLength);
+		std::strcpy(&v[0], n0->val().c_str());
+		c = &v[0];
 
+		while( --vLength > 0 ){
+			cp = DecodeUtf8(c);
+			STACK_PUSH(new numericValue(xs_long, cp));
+		}
+	}
+	
 	STACK_PUSH(NULL);
 	STACK_END();
 }

@@ -16,6 +16,58 @@ namespace xqp {
 	// Maximum valid value for a Unicode code point
 	const uint32_t CODE_POINT_MAX      = 0x0010ffffu;
 
+
+	/**
+	 * The iterator class adapts the underlying octet iterator to iterate
+	 * over the sequence of code points, rather than raw octets.
+	 */
+	template <typename octet_iterator>
+			class iterator : public std::iterator <std::bidirectional_iterator_tag, uint32_t> {
+		octet_iterator it;
+				public:
+					iterator () {};
+					explicit iterator (const octet_iterator& octet_it): it(octet_it) {}
+			
+					octet_iterator base () const { return it; }
+					uint32_t operator * () const
+					{
+						octet_iterator temp = it;
+						return next(temp);
+					}
+					bool operator == (const iterator& rhs) const
+					{
+						return (it == rhs.it);
+					}
+					bool operator != (const iterator& rhs) const
+					{
+						return !(operator == (rhs));
+					}
+					iterator& operator ++ ()
+					{
+						std::advance(it, sequence_length(it));
+						return *this;
+					}
+					iterator operator ++ (int)
+					{
+						iterator temp = *this;
+						std::advance(it, sequence_length(it));
+						return temp;
+					}
+					iterator& operator -- ()
+					{
+						prior(it);
+						return *this;
+					}
+					iterator operator -- (int)
+					{
+						iterator temp = *this;
+						prior(it);
+						return temp;
+					}
+			}; // class iterator
+	
+	
+	
 	template <typename u16>
 			inline bool is_surrogate(u16 cp)
 	{
@@ -65,6 +117,7 @@ namespace xqp {
 		uint32_t next(octet_iterator& it)
 	{
 		uint32_t cp = mask8(*it);
+
 		typename std::iterator_traits<octet_iterator>::difference_type length = sequence_length(it);
 		switch (length) {
 			case 1:
@@ -147,7 +200,6 @@ namespace xqp {
 	 * Given the iterator to the beginning of the UTF-8 sequence, it returns the code point.
 	 *
 	 * @param it a reference to an iterator pointing to the beginning of an UTF-8 encoded code point.
-	 * @param end end of the UTF-8 sequence to be processed.
 	 * @return the 32 bit representation of the processed UTF-8 code point
 	 * @note After the function returns, @param it is incremented to point to the beginning
 	 * of the next code point
@@ -159,54 +211,7 @@ namespace xqp {
 	}
 
 	
-	/**
-	 * The iterator class adapts the underlying octet iterator to iterate
-	 * over the sequence of code points, rather than raw octets.
-	 */
-	template <typename octet_iterator>
-			class iterator : public std::iterator <std::bidirectional_iterator_tag, uint32_t> {
-		octet_iterator it;
-				public:
-					iterator () {};
-					explicit iterator (const octet_iterator& octet_it): it(octet_it) {}
-			
-					octet_iterator base () const { return it; }
-					uint32_t operator * () const
-					{
-						octet_iterator temp = it;
-						return next(temp);
-					}
-					bool operator == (const iterator& rhs) const
-					{
-						return (it == rhs.it);
-					}
-					bool operator != (const iterator& rhs) const
-					{
-						return !(operator == (rhs));
-					}
-					iterator& operator ++ ()
-					{
-						std::advance(it, sequence_length(it));
-						return *this;
-					}
-					iterator operator ++ (int)
-					{
-						iterator temp = *this;
-						std::advance(it, sequence_length(it));
-						return temp;
-					}
-					iterator& operator -- ()
-					{
-						prior(it);
-						return *this;
-					}
-					iterator operator -- (int)
-					{
-						iterator temp = *this;
-						prior(it);
-						return temp;
-					}
-			}; // class iterator
+
 
 
 }/* namespace xqp */

@@ -73,6 +73,7 @@ public:
 
 protected:
 	iterator_t argv;
+	std::string res;
 	char seq[4];
 };
 
@@ -107,6 +108,10 @@ public:
 
 protected:
 	iterator_t argv;
+	uint32_t cp;
+	std::vector<char> v;
+	char * c;
+	uint16_t vLength;
 };
 
 }/*namespace xqp*/
