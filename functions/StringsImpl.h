@@ -75,7 +75,8 @@ protected:
 	iterator_t argv;
 	std::string res;
 	char seq[4];
-};
+}; /*class CodepointsToStringIterator*/
+
 
 /**
  * 7.2.2 fn:string-to-codepoints
@@ -112,7 +113,60 @@ protected:
 	std::vector<char> v;
 	char * c;
 	uint16_t vLength;
-};
+}; /*class StringToCodepointsIterator*/
+
+
+/**
+ * 7.3.2 fn:compare
+ * --------------------*/
+class CompareIterator : public Batcher<CompareIterator>
+{
+};/*class CompareIterator*/
+
+
+/**
+ * 7.3.3 fn:codepoint-equal
+ * --------------------*/
+class CodepointEqualIterator : public Batcher<CodepointEqualIterator>
+{
+public:
+	CodepointEqualIterator(
+		yy::location loc,
+		iterator_t _argv0,
+		iterator_t _argv1)
+	:
+		Batcher<CodepointEqualIterator>(loc),
+		argv0(_argv0),
+		argv1(_argv1)
+	{}
+
+	CodepointEqualIterator(
+		const CodepointEqualIterator& cpEqual_it)
+	:
+		Batcher<CodepointEqualIterator>(cpEqual_it),
+		argv0(cpEqual_it.argv0),
+		argv1(cpEqual_it.argv1)
+	{}
+
+	~CodepointEqualIterator() {}
+
+public:
+	item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
+	std::ostream&  _show(std::ostream&) const;
+
+protected:
+	iterator_t argv0;
+	iterator_t argv1;
+
+	std::vector<char> v0;
+	std::vector<char> v1;
+	char * c0;
+	char * c1;
+	int16_t vLength;
+	bool finish;
+};/*class CodepointEqualIterator */
 
 }/*namespace xqp*/
 #endif /* XQP_STRINGS_IMPL_H */

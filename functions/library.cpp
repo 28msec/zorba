@@ -117,16 +117,25 @@ fn_doc_func fn_doc(
 fn_codepoints_to_string fn_codepoints_to_string_func(
 	signature(
 		new zorba_qname(XQUERY_FN_NS,"fn","codepoints-to-string"),
-		xs_integer,					// arg[1] type
-		documentNode				// return type
+		xs_integer,					// arg[0] type
+		xs_string						// return type
 	)
 ); 
 
 fn_string_to_codepoints fn_string_to_codepoints_func(
 	signature(
 		new zorba_qname(XQUERY_FN_NS,"fn","string-to-codepoints"),
+		xs_string,					// arg[0] type
+		xs_long							// return type
+	)
+);
+
+fn_codepoint_equal fn_codepoint_equal_func(
+	signature(
+		new zorba_qname(XQUERY_FN_NS,"fn","codepoint-equal"),
+		xs_string,					// arg[0] type
 		xs_string,					// arg[1] type
-		documentNode				// return type
+		xs_boolean					// return type
 	)
 );
 
@@ -176,6 +185,7 @@ qnamekey_t library::fn_doc_key;
 // Strings
 qnamekey_t library::fn_codepoints_to_string_key;
 qnamekey_t library::fn_string_to_codepoints_key;
+qnamekey_t library::fn_codepoint_equal_key;
 
 qnamekey_t library::fn_boolean_key;
 
@@ -219,6 +229,9 @@ void library::init(
 
 		put(&fn_string_to_codepoints_func);
 		fn_string_to_codepoints_key = fn_string_to_codepoints_func.get_fname()->qnamekey();
+
+		put(&fn_codepoint_equal_func);
+		fn_codepoint_equal_key = fn_codepoint_equal_func.get_fname()->qnamekey();
 
 		// Boolean functions
 		put(&fn_boolean_func);

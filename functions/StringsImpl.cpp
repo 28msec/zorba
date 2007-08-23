@@ -109,7 +109,6 @@ std::ostream& StringToCodepointsIterator::_show(std::ostream& os) const{
 item_t StringToCodepointsIterator::nextImpl(){
 	item_t item;
 	const stringValue* n0;
-	
 
 	STACK_INIT();
 
@@ -143,6 +142,110 @@ void StringToCodepointsIterator::resetImpl(){
 
 void StringToCodepointsIterator::releaseResourcesImpl() {
 	this->releaseChildResources(argv);
+}
+
+
+/**
+ *______________________________________________________________________
+ *	7.3.2 fn:compare
+ * fn:compare($comparand1 as xs:string?,
+ * 						$comparand2 as xs:string?) as xs:integer
+ *
+ * fn:compare( 	$comparand1	as xs:string?,
+ * 							$comparand2	as xs:string?,
+ * 							$collation	as xs:string) as xs:integer?
+ *
+ * Summary: Returns -1, 0, or 1, depending on whether the value of
+ * the $comparand1 is respectively less than, equal to, or greater
+ * than the value of $comparand2, according to the rules of
+ * the collation that is used.
+ *
+ * If either argument is the empty sequence, the result is the empty sequence.
+ *_______________________________________________________________________*/
+
+/**
+ *______________________________________________________________________
+ *
+ *	7.3.3 fn:codepoint-equal
+ *
+ *	fn:codepoint-equal( 	$comparand1 	 as xs:string?,
+ *  											$comparand2 	 as xs:string?) as xs:boolean?
+ *
+ *	Summary: Returns true or false depending on whether the value
+ * of $comparand1 is equal to the value of $comparand2, according to
+ * the Unicode code point collation
+ * (http://www.w3.org/2005/xpath-functions/collation/codepoint).
+ *
+ * If either argument is the empty sequence, the result is the empty sequence.
+ * 
+ * Note: This function allows xs:anyURI values to be compared
+ * without having to specify the Unicode code point collation.
+ *_______________________________________________________________________*/
+std::ostream& CodepointEqualIterator::_show(std::ostream& os) const{
+	argv0->show(os);
+	argv1->show(os);
+	return os;
+}
+
+item_t CodepointEqualIterator::nextImpl(){
+	item_t item0;
+	item_t item1;
+	const stringValue* n0;
+	const stringValue* n1;
+
+	STACK_INIT();
+
+	item0 = this->consumeNext(argv0);
+	item1 = this->consumeNext(argv1);
+	finish = false;
+
+	if(&*item0 == NULL || &*item1 == NULL) {
+		STACK_PUSH(NULL);
+	}
+	else
+	{
+		n0 = dynamic_cast<const stringValue*>(&*item0);
+		n1 = dynamic_cast<const stringValue*>(&*item1);
+		
+		vLength = (n0->val().length());
+		
+		if(vLength != n1->val().length())
+			STACK_PUSH(new booleanValue(false));
+		else
+		{
+			v0.reserve(vLength);
+			std::strcpy(&v0[0], n0->val().c_str());
+			c0 = &v0[0];
+			
+			v1.reserve(vLength);
+			std::strcpy(&v1[0], n1->val().c_str());
+			c1 = &v1[0];
+			
+			while( !finish && (vLength > 0) ){
+				if(DecodeUtf8(c0) != DecodeUtf8(c1))
+				{
+					finish = true;
+					STACK_PUSH(new booleanValue(false));
+				}
+				vLength--;
+			}
+
+			if(!finish)
+				STACK_PUSH(new booleanValue(true));
+		}
+	}
+	STACK_PUSH(NULL);
+	STACK_END();
+}
+
+void CodepointEqualIterator::resetImpl(){
+	this->resetChild(argv0);
+	this->resetChild(argv1);
+}
+
+void CodepointEqualIterator::releaseResourcesImpl() {
+	this->releaseChildResources(argv0);
+	this->releaseChildResources(argv1);
 }
 
 } /* namespace xqp */

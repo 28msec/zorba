@@ -71,6 +71,7 @@ public:
 	// String functions
 	static qnamekey_t fn_codepoints_to_string_key;
 	static qnamekey_t fn_string_to_codepoints_key;
+	static qnamekey_t fn_codepoint_equal_key;
 	
 	static qnamekey_t fn_boolean_key;
 	

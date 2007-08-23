@@ -71,15 +71,31 @@ public:
 		bool validate_args(std::vector<iterator_t>&) const;
 };
 
+
+/**
+ * 7.3.2 fn:compare
+ *-----------------------*/
+
+
+/**
+ * 7.3.3 fn:codepoint-equal
+ *-----------------------*/
+	class fn_codepoint_equal: public function
+{
+	public:
+		fn_codepoint_equal(const signature&);
+		~fn_codepoint_equal() {}
+
+	public:
+		iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<iterator_t>&) const;
+};
+
 } /* namespace xqp */
 #endif /* XQP_STRINGS_H */
 
 /*
-7.3 Equality and Comparison of Strings
-7.3.1 Collations
-7.3.2 fn:compare
-7.3.3 fn:codepoint-equal
-
 7.4 Functions on String Values
 7.4.1 fn:concat
 7.4.2 fn:string-join

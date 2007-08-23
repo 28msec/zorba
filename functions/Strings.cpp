@@ -122,4 +122,56 @@ bool fn_string_to_codepoints::validate_args(
 {
 	return (argv.size() == 1);
 }
+
+/**______________________________________________________________________
+ *
+ *	7.3.2 fn:compare
+ *
+ *
+ *_______________________________________________________________________*/
+
+
+/**______________________________________________________________________
+ *
+ *	7.3.3 fn:codepoint-equal
+ *
+ *	Summary: Returns true or false depending on whether the value
+ * of $comparand1 is equal to the value of $comparand2, according to
+ * the Unicode code point collation
+ * (http://www.w3.org/2005/xpath-functions/collation/codepoint).
+ *
+ * If either argument is the empty sequence, the result is the empty sequence.
+ *
+ * Note: This function allows xs:anyURI values to be compared
+ * without having to specify the Unicode code point collation.
+ *_______________________________________________________________________*/
+	
+fn_codepoint_equal::fn_codepoint_equal(
+		const signature& sig)
+	:
+		function(sig)
+{
+}
+
+iterator_t fn_codepoint_equal::operator()(
+	yy::location loc,
+	vector<iterator_t>& argv) const
+{
+	if (!validate_args(argv))
+		return NULL;
+	return new CodepointEqualIterator(loc, argv[0], argv[1]);
+}
+
+sequence_type_t fn_codepoint_equal::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool fn_codepoint_equal::validate_args(
+	vector<iterator_t>& argv) const
+{
+	return (argv.size() == 2);
+}
+
 }/*namespace xqp*/
