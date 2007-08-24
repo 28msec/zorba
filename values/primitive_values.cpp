@@ -14,6 +14,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <stdio.h>
 
 using namespace std;
 namespace xqp {
@@ -121,7 +122,10 @@ numericValue::numericValue(
 iterator_t numericValue::string_value(
 	yy::location &loc) const
 {
-	return new SingletonIterator(loc, new stringValue(describe()));
+	std::string std;
+	std::ostringstream tmp;
+	tmp << this->theVal;
+	return new SingletonIterator(loc, new stringValue(tmp.str()));
 }
 
 
