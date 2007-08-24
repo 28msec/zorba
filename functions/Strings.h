@@ -35,7 +35,7 @@
 
 namespace xqp {
 /**______________________________________________________________________
- *  
+ *
  * 7.2 Functions to Assemble and Disassemble Strings
  *_______________________________________________________________________*/
 
@@ -72,6 +72,10 @@ public:
 };
 
 
+/**______________________________________________________________________
+ *
+ * 7.3 Equality and Comparison of Strings
+ *_______________________________________________________________________*/
 /**
  * 7.3.2 fn:compare
  *-----------------------*/
@@ -80,7 +84,7 @@ public:
 /**
  * 7.3.3 fn:codepoint-equal
  *-----------------------*/
-	class fn_codepoint_equal: public function
+class fn_codepoint_equal: public function
 {
 	public:
 		fn_codepoint_equal(const signature&);
@@ -91,6 +95,27 @@ public:
 		sequence_type_t type_check(signature&) const;
 		bool validate_args(std::vector<iterator_t>&) const;
 };
+
+/**______________________________________________________________________
+ *
+ * 7.4 Functions on String Values
+ *_______________________________________________________________________*/
+
+/**
+ * 7.4.1 fn:concat
+ *-----------------------*/
+class fn_concat: public function
+{
+	public:
+		fn_concat(const signature&);
+		~fn_concat() {}
+
+	public:
+		iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<iterator_t>&) const;
+};
+
 
 } /* namespace xqp */
 #endif /* XQP_STRINGS_H */

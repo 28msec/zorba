@@ -168,5 +168,48 @@ protected:
 	bool finish;
 };/*class CodepointEqualIterator */
 
+/**
+ * 7.4.1 fn:concat
+ * --------------------*/
+class ConcatFnIterator : public Batcher<ConcatFnIterator>
+{
+public:
+	ConcatFnIterator(
+		yy::location loc,
+		const vector<iterator_t>& _argv)
+	:
+	Batcher<ConcatFnIterator>(loc),
+		argv(_argv),
+		currit_h(NULL),
+		cursor(0),
+		res()
+	{}
+
+	ConcatFnIterator(
+		const ConcatFnIterator& concatFn_it)
+	:
+	Batcher<ConcatFnIterator>(concatFn_it),
+		argv(concatFn_it.argv),
+		currit_h(concatFn_it.currit_h),
+		cursor(concatFn_it.cursor),
+		res(concatFn_it.res)
+	{}
+
+		~ConcatFnIterator() {}
+
+public:
+	item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
+	std::ostream&  _show(std::ostream&) const;
+
+protected:
+	std::vector<iterator_t> argv;
+	iterator_t currit_h;
+	uint32_t cursor;
+	std::string res;
+
+}; /*class ConcatFnIterator*/
+
 }/*namespace xqp*/
 #endif /* XQP_STRINGS_IMPL_H */

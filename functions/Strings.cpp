@@ -174,4 +174,49 @@ bool fn_codepoint_equal::validate_args(
 	return (argv.size() == 2);
 }
 
+/**______________________________________________________________________
+ *
+ *	7.4.1 fn:concat
+ *
+ *	Summary: Accepts two or more xs:anyAtomicType arguments and casts
+ * them to xs:string.
+ * 
+ * Returns the xs:string that is the concatenation of the values of its
+ * arguments after conversion.
+ * If any of the arguments is the empty sequence, the argument is treated
+ * as the zero-length string.
+ * If either argument is the empty sequence, the result is the
+ * empty sequence.
+ *
+ * The fn:concat function is specified to allow an two or more arguments
+ * that are concatenated together.
+ *_______________________________________________________________________*/
+
+fn_concat::fn_concat(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t fn_concat::operator()(
+	yy::location loc, 
+	vector<iterator_t>& argv) const
+{
+	if (!validate_args(argv)) return NULL;
+	return new ConcatFnIterator(loc,argv);
+}
+
+bool fn_concat::validate_args(
+	vector<iterator_t>& argv) const
+{
+	return (argv.size() >= 2);
+}
+
+sequence_type_t fn_concat::type_check(
+	signature& sig) const
+{
+	return xs_anyType;
+}
+
 }/*namespace xqp*/

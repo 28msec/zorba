@@ -248,4 +248,84 @@ void CodepointEqualIterator::releaseResourcesImpl() {
 	this->releaseChildResources(argv1);
 }
 
+/**
+ *______________________________________________________________________
+ *
+ *	7.4.1 fn:concat
+ *
+ * fn:concat( 	$arg1 	 as xs:anyAtomicType?,
+ * 							$arg2 	 as xs:anyAtomicType?,
+ * 							...													) as xs:string
+ * 
+ * Summary:
+ * Accepts two or more xs:anyAtomicType arguments and casts them to xs:string.
+ * Returns the xs:string that is the concatenation of the values of its
+ * arguments after conversion.
+ * If any of the arguments is the empty sequence, the argument is treated
+ * as the zero-length string.
+ *
+ * The fn:concat function is specified to allow an two or more arguments
+ * that are concatenated together.
+ *
+ * Note:
+ * Unicode normalization is not automatically applied to the result
+ * of fn:concat. If a normalized result is required, fn:normalize-unicode
+ * can be applied to the xs:string returned by fn:concat.
+ *_______________________________________________________________________*/
+std::ostream& ConcatFnIterator::_show(std::ostream& os)
+		const
+{
+	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		(*iter)->show(os);
+	}
+	return os;
+}
+
+item_t ConcatFnIterator::nextImpl() {
+
+	item_t item;
+	
+	iterator_t currit_str;
+	item_t item_str;
+	const stringValue* n;
+	
+	STACK_INIT();
+	
+	this->cursor = 0;
+	
+	for (; this->cursor < this->argv.size (); this->cursor++) {;
+		this->currit_h = this->argv[this->cursor];
+		item = this->consumeNext(this->currit_h);
+
+		//if the item is not a node => it's a xs:anyAtomicType
+		if((item->type() & NODE_MASK) == NOT_NODE)
+		{
+			currit_str = item->string_value(loc);
+			item_str = this->consumeNext(currit_str);
+			n = dynamic_cast<const stringValue*>(&*item_str);
+			res.append(n->val());
+			//res.append("1");
+		}
+	}
+
+	STACK_PUSH(new stringValue(xs_string, res));
+	STACK_PUSH(NULL);
+	STACK_END();
+}
+
+void ConcatFnIterator::resetImpl() {
+	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		this->resetChild(*iter);
+	}
+}
+
+void ConcatFnIterator::releaseResourcesImpl() {
+	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		this->releaseChildResources(*iter);
+	}
+}
+
 } /* namespace xqp */
