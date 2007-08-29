@@ -301,6 +301,7 @@ item_t ConcatFnIterator::nextImpl() {
 		this->currit_h = this->argv[this->cursor];
 		item = this->consumeNext(this->currit_h);
 
+		//TODO use a more high level function provided by the type system
 		//if the item is not a node => it's a xs:anyAtomicType
 		if((item->type() & NODE_MASK) == NOT_NODE)
 		{
