@@ -43,6 +43,7 @@ query_exec	= \
 		../runtime/batching.cpp \
 		../runtime/item_iterator.cpp \
 		../runtime/plan_visitor.cpp \
+		../utf8/xqpString.cpp \
 		timer.cpp \
 		query_exec.cpp
 

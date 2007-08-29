@@ -116,6 +116,20 @@ class fn_concat: public function
 		bool validate_args(std::vector<iterator_t>&) const;
 };
 
+/**
+ * 7.4.2 fn:string-join
+ *-----------------------*/
+class fn_string_join: public function
+{
+	public:
+		fn_string_join(const signature&);
+		~fn_string_join() {}
+
+	public:
+		iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<iterator_t>&) const;
+};
 
 } /* namespace xqp */
 #endif /* XQP_STRINGS_H */

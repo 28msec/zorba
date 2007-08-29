@@ -211,5 +211,49 @@ protected:
 
 }; /*class ConcatFnIterator*/
 
+
+/**
+ * 7.4.2 fn:string-join
+ * --------------------*/
+class StringJoinIterator : public Batcher<StringJoinIterator>
+{
+public:
+	StringJoinIterator(
+		yy::location loc,
+		const vector<iterator_t>& _argv)
+	:
+		Batcher<StringJoinIterator>(loc),
+		argv(_argv),
+		currit_h(NULL),
+		cursor(0),
+		res()
+	{}
+
+	StringJoinIterator(
+		const StringJoinIterator& stringJoin_it)
+	:
+		Batcher<StringJoinIterator>(stringJoin_it),
+		argv(stringJoin_it.argv),
+		currit_h(stringJoin_it.currit_h),
+		cursor(stringJoin_it.cursor),
+		res(stringJoin_it.res)
+	{}
+
+		~StringJoinIterator() {}
+
+public:
+	item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
+	std::ostream&  _show(std::ostream&) const;
+
+protected:
+	std::vector<iterator_t> argv;
+	iterator_t currit_h;
+	uint32_t cursor;
+	std::string res;
+
+}; /*class StringJoinIterator*/
+
 }/*namespace xqp*/
 #endif /* XQP_STRINGS_IMPL_H */

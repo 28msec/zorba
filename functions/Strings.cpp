@@ -219,4 +219,50 @@ sequence_type_t fn_concat::type_check(
 	return xs_anyType;
 }
 
+
+/**
+ * ______________________________________________________________________
+ *  
+ *	7.4.2 fn:string-join
+ *
+ * Summary: Returns a xs:string created by concatenating the members
+ * of the $arg1 sequence using $arg2 as a separator.
+ * 
+ * If the value of $arg2 is the zero-length string, then the members
+ * of $arg1 are concatenated without a separator.
+ *
+ * If the value of $arg1 is the empty sequence,
+ * the zero-length string is returned.
+ * 
+ *_______________________________________________________________________*/
+
+fn_string_join::fn_string_join(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+iterator_t fn_string_join::operator()(
+  yy::location loc,
+	vector<iterator_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new StringJoinIterator(loc, argv);
+}
+
+sequence_type_t fn_string_join::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool fn_string_join::validate_args(
+	vector<iterator_t>& argv) const
+{
+	return true;
+}
+
+
 }/*namespace xqp*/

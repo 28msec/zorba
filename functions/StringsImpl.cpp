@@ -51,13 +51,16 @@ item_t CodepointsToStringIterator::nextImpl(){
 	item_t item;
 	const numericValue* n0;
 	sequence_type_t type0;
-	
+	//xqpString test;
+
 	STACK_INIT();
 	
 	while(true){
 		item = this->consumeNext(argv);
 		
 		if(&*item == NULL) {
+			//test = (uint)23;
+			//STACK_PUSH(new stringValue(xs_string, test));
 			STACK_PUSH(new stringValue(xs_string, res));
 			STACK_PUSH(NULL);
 		}
@@ -328,4 +331,55 @@ void ConcatFnIterator::releaseResourcesImpl() {
 	}
 }
 
+
+/**
+ *______________________________________________________________________
+ *
+ *	7.4.2 fn:string-join
+ *
+ * fn:string-join($arg1 as xs:string*,
+ * 								$arg2 as xs:string) as xs:string
+ *
+ *
+ *
+ * Summary: Returns a xs:string created by concatenating the members
+ * of the $arg1 sequence using $arg2 as a separator.
+ *
+ * If the value of $arg2 is the zero-length string,
+ * then the members of $arg1 are concatenated without a separator.
+ *
+ * If the value of $arg1 is the empty sequence,
+ * the zero-length string is returned.
+ *_______________________________________________________________________*/
+std::ostream& StringJoinIterator::_show(std::ostream& os)
+		const
+{
+	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		(*iter)->show(os);
+	}
+	return os;
+}
+
+item_t StringJoinIterator::nextImpl() {
+
+	STACK_INIT();
+	STACK_PUSH(new stringValue(xs_string, "result"));
+	STACK_PUSH(NULL);
+	STACK_END();
+}
+
+void StringJoinIterator::resetImpl() {
+	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		this->resetChild(*iter);
+	}
+}
+
+void StringJoinIterator::releaseResourcesImpl() {
+	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		this->releaseChildResources(*iter);
+	}
+}
 } /* namespace xqp */

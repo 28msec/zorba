@@ -1,5 +1,6 @@
 
-SOURCES 	= 
+SOURCES 	= \
+		xqpString.cpp
 
 BINARIES	= 
 
