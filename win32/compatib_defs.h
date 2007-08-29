@@ -4,11 +4,13 @@
 
 #include <iostream>
 
-typedef unsigned long uint32_t;
-typedef __int64		int64_t;
-typedef unsigned __int64	uint64_t;
-typedef unsigned short		uint16_t;
-typedef unsigned char			uint8_t;
+#inculde "stdint.h"
+
+// typedef unsigned long uint32_t;
+// typedef __int64		int64_t;
+// typedef unsigned __int64	uint64_t;
+// typedef unsigned short		uint16_t;
+// typedef unsigned char			uint8_t;
 
 #ifdef _WIN32_WCE
 typedef long	off_t;
