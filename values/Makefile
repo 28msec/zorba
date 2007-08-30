@@ -1,10 +1,15 @@
 
-SOURCES 	= \
-	primitive_values.cpp \
-	ft_options.cpp \
-	ft_values.cpp \
-	update_values.cpp
+# SOURCES 	= \
+# 	atomic_items.cpp \
+# 	ft_options.cpp \
+# 	ft_values.cpp \
+# 	update_values.cpp \
+# 	item.cpp
 
+SOURCES 	= \
+	item.cpp \
+	atomic_items.cpp \
+	basic_item_factory.cpp
 
 primitive_values_test =	\
 	primitive_values.cpp \

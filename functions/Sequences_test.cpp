@@ -27,7 +27,7 @@
 #include "util/tokenbuf.h"
 #include "util/tracer.h"
 #include "errors/xqp_exception.h"
-#include "values/values.h"
+#include "values/item.h"
 #include "zorba/zorba_value_factory.h"
 
 #include <iostream>
@@ -107,16 +107,16 @@ void _doc(
 	value_factory* valfac_p = zorp->get_value_factory();
 	assert(valfac_p!=NULL);
 	rchandle<atomic_value> uri_h = valfac_p->make_xs_string(uri);
-	vector<iterator_t> argv;
+	vector<Iterator_t> argv;
 	argv.push_back(new SingletonIterator(&*uri_h));
 	const function* fn_doc_p = dctx_p->get_function(library::fn_doc_key);
 	assert(fn_doc_p!=NULL);
 	const function& fn_doc = *fn_doc_p;
-	iterator_t iter_h = fn_doc(zorp, argv);
+	Iterator_t iter_h = fn_doc(zorp, argv);
 	if (iter_h==NULL) { cout << "Error: doc returned NULL\n"; return; }
 	iter_h->open();
 	if (iter_h->done()) { cout << "Error: doc returned empty\n"; return; }
-	item_t i_h = iter_h->next();
+	Item_t i_h = iter_h->next();
 	if (i_h->type()!=documentNode) { cout << "Error: non-doc node\n"; return; }
 	cout << "\n======================\n";
 	i_h->put(zorp,cout) << endl;

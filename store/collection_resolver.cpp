@@ -14,7 +14,7 @@
 using namespace std;
 namespace xqp {
 
-iterator_t resolve(
+Iterator_t resolve(
 	static_context*,
 	std::string const& base,
 	std::string const& href)

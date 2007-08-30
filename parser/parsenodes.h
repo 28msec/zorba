@@ -20,7 +20,7 @@
 #include "parse_constants.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "values/values.h"
+#include "values/item.h"
 #include "util/rchandle.h"
 #include "location.hh"
 

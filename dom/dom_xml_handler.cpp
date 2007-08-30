@@ -17,7 +17,7 @@
 #include "util/tokenbuf.h"
 #include "util/tracer.h"
 #include "util/URI.h"
-#include "values/values.h"
+#include "values/item.h"
 
 #include <iostream>
 #include <string>

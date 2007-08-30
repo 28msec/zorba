@@ -36,7 +36,6 @@ namespace xqp {
 typedef rchandle<noderep_iterator> noderep_it;
 
 class element_noderep;
-class qname;
 class zorba;
 
 

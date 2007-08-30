@@ -11,18 +11,18 @@
 #define XQP_LIBRARY_H
 
 #include "context/common.h"
+#include "values/item_factory.h"
 #include "util/fxhashmap.h"
 #include <string>
 
 namespace xqp {
 
 class function;
-class value_factory;
 class zorba;
 
 // template<typename FuncIter>
 // class LibraryFunction {
-// 	iterator_t operator() {
+// 	Iterator_t operator() {
 // 		
 // 	}
 // };
@@ -81,7 +81,7 @@ public:
 	library( );
 	~library();
 	static bool static_init;
-	void init(value_factory*);
+	void init(ItemFactory*);
 
 public:
 	void put(const function*);

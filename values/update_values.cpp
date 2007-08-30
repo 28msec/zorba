@@ -29,7 +29,7 @@ insert_before_value::~insert_before_value()
 {
 }
 
-iterator_t insert_before_value::new_nodes() const
+Iterator_t insert_before_value::new_nodes() const
 {
 	return NULL;
 }
@@ -51,7 +51,7 @@ insert_after_value::~insert_after_value()
 {
 }
 
-iterator_t insert_after_value::new_nodes() const
+Iterator_t insert_after_value::new_nodes() const
 {
 	return NULL;
 }
@@ -73,7 +73,7 @@ insert_into_value::~insert_into_value()
 {
 }
 
-iterator_t insert_into_value::new_nodes() const
+Iterator_t insert_into_value::new_nodes() const
 {
 	return NULL;
 }
@@ -95,7 +95,7 @@ insert_into_as_first_value::~insert_into_as_first_value()
 {
 }
 
-iterator_t insert_into_as_first_value::new_nodes() const
+Iterator_t insert_into_as_first_value::new_nodes() const
 {
 	return NULL;
 }
@@ -117,7 +117,7 @@ insert_into_as_last_value::~insert_into_as_last_value()
 {
 }
 
-iterator_t insert_into_as_last_value::new_nodes() const
+Iterator_t insert_into_as_last_value::new_nodes() const
 {
 	return NULL;
 }
@@ -127,8 +127,8 @@ iterator_t insert_into_as_last_value::new_nodes() const
 // ---------------------
 
 insert_attributes_value::insert_attributes_value(
-	const node* _target_p,
-	const vector<const attribute_node*> & _content_pv)
+	const Item* _target_p,
+	const vector<const Item*> & _content_pv)
 :
 	update_value(_target_p),
 	content_pv(_content_pv)
@@ -139,7 +139,7 @@ insert_attributes_value::~insert_attributes_value()
 {
 }
 
-iterator_t insert_attributes_value::new_nodes() const
+Iterator_t insert_attributes_value::new_nodes() const
 {
 	return NULL;
 }
@@ -149,7 +149,7 @@ iterator_t insert_attributes_value::new_nodes() const
 // ----------
 
 delete_value::delete_value(
-	const node* _target_p)
+	const Item* _target_p)
 :
 	update_value(_target_p)
 {
@@ -164,8 +164,8 @@ delete_value::~delete_value()
 // ----------------
 
 replace_node_value::replace_node_value(
-	const node* _target_p,
-	const vector<const node*> & _content_pv)
+	const Item* _target_p,
+	const vector<const Item*> & _content_pv)
 :
 	update_value(_target_p),
 	content_pv(_content_pv)
@@ -176,7 +176,7 @@ replace_node_value::~replace_node_value()
 {
 }
 
-iterator_t replace_node_value::new_nodes() const
+Iterator_t replace_node_value::new_nodes() const
 {
 	return NULL;
 }
@@ -186,7 +186,7 @@ iterator_t replace_node_value::new_nodes() const
 // -----------------
 
 replace_value_value::replace_value_value(
-	const node* _target_p,
+	const Item* _target_p,
 	const string& _content)
 :
 	update_value(_target_p),
@@ -203,8 +203,8 @@ replace_value_value::~replace_value_value()
 // ---------------------------
 
 replace_element_content_value::replace_element_content_value(
-	const node* _target_p,
-	const text_node* _content)
+	const Item* _target_p,
+	const Item* _content)
 :
 	update_value(_target_p),
 	theContent(_content)
@@ -220,8 +220,8 @@ replace_element_content_value::~replace_element_content_value()
 // --------------------------
 
 rename_value::rename_value(
-	const node* _target_p,
-	const qname* _name_p)
+	const Item* _target_p,
+	const Item* _name_p)
 :
 	update_value(_target_p),
 	theName(_name_p)

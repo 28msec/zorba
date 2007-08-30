@@ -25,7 +25,6 @@
 #include "runtime/item_iterator.h"
 #include "runtime/batching.h"
 #include "util/rchandle.h"
-#include "values/nodes.h"
 
 #include <string>
 #include <vector>
@@ -48,25 +47,25 @@ namespace xqp
 class ConcatIterator : public Batcher<ConcatIterator>
 {
 protected:
-	std::vector<iterator_t> argv;
-	iterator_t currit_h;
+	std::vector<Iterator_t> argv;
+	Iterator_t currit_h;
 	uint32_t cursor;
 
 public:
 	std::ostream&  _show(std::ostream&) const;
 
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 
 public:	// ctor,dtor
-// 	ConcatIterator ( yy::location loc, const std::vector<iterator_t>& );
+// 	ConcatIterator ( yy::location loc, const std::vector<Iterator_t>& );
 // 	ConcatIterator ( const ConcatIterator& it );
 	
 	
 ConcatIterator(
 	yy::location loc,
-	const vector<iterator_t>& _argv)
+	const vector<Iterator_t>& _argv)
 :
 	Batcher<ConcatIterator>(loc),
 	argv(_argv),
@@ -164,21 +163,21 @@ ConcatIterator(
 class doc_iterator : public BasicIterator
 {
 	private:
-		iterator_t arg;
+		Iterator_t arg;
 		document_node* doc_node;
 
 public:
 	void _open();
 	void _close();
 	std::ostream&  _show(std::ostream&) const;
-	item_t _next();
+	Item_t _next();
 	bool done() const;
 
 public:
 	doc_iterator& operator= ( const doc_iterator& it );
 
 public:	// ctor,dtor
-	doc_iterator ( yy::location loc, iterator_t );
+	doc_iterator ( yy::location loc, Iterator_t );
 	doc_iterator ( const doc_iterator& );
 	~doc_iterator() {}
 };

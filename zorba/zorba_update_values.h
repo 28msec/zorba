@@ -10,7 +10,7 @@
 #ifndef XQP_UPDATE_VALUES_H
 #define XQP_UPDATE_VALUES_H
 
-#include "values.h"
+#include "item.h"
 #include "nodes.h"
 #include "../runtime/iterator.h"
 #include "../util/rchandle.h"
@@ -31,7 +31,6 @@
 
 namespace xqp {
 
-class qname;
 
 
 /*______________________________________________________________________
@@ -80,7 +79,7 @@ public:
 	~insert_before_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -108,7 +107,7 @@ public:
 	~insert_after_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -135,7 +134,7 @@ public:
 	~insert_into_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -162,7 +161,7 @@ public:
 	~insert_into_as_first_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -189,7 +188,7 @@ public:
 	~insert_into_as_last_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -201,17 +200,17 @@ public:
 class insert_attributes_value : public update_value
 {
 protected:
-	const std::vector<const attribute_node*>& content_pv;
+	const std::vector<const Item*>& content_pv;
 
 public:
 	insert_attributes_value(
 		const node* target_p,
-		const std::vector<const attribute_node*>& content_pv);
+		const std::vector<const Item*>& content_pv);
 
 	~insert_attributes_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -255,7 +254,7 @@ public:
 	~replace_node_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 

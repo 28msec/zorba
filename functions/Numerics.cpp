@@ -41,9 +41,9 @@ op_numeric_add::op_numeric_add(
 {
 }
 
-iterator_t op_numeric_add::operator()(
+Iterator_t op_numeric_add::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericAddIterator(loc, argv[0], argv[1]);
@@ -56,7 +56,7 @@ sequence_type_t op_numeric_add::type_check(
 }
 
 bool op_numeric_add::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -69,9 +69,9 @@ op_numeric_add_int::op_numeric_add_int(
 {
 }
 
-iterator_t op_numeric_add_int::operator()(
+Iterator_t op_numeric_add_int::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericAddIterator(loc, argv[0], argv[1]);
@@ -84,7 +84,7 @@ sequence_type_t op_numeric_add_int::type_check(
 }
 
 bool op_numeric_add_int::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -114,9 +114,9 @@ op_numeric_subtract::op_numeric_subtract(
 {
 }
 
-iterator_t op_numeric_subtract::operator()(
+Iterator_t op_numeric_subtract::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericSubtractIterator(loc, argv[0], argv[1]);
@@ -129,7 +129,7 @@ sequence_type_t op_numeric_subtract::type_check(
 }
 
 bool op_numeric_subtract::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -158,9 +158,9 @@ op_numeric_multiply::op_numeric_multiply(
 {
 }
 
-iterator_t op_numeric_multiply::operator()(
+Iterator_t op_numeric_multiply::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericMultiplyIterator(loc, argv[0], argv[1]);
@@ -173,7 +173,7 @@ sequence_type_t op_numeric_multiply::type_check(
 }
 
 bool op_numeric_multiply::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -212,9 +212,9 @@ op_numeric_divide::op_numeric_divide(
 {
 }
 
-iterator_t op_numeric_divide::operator()(
+Iterator_t op_numeric_divide::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericDivideIterator(loc, argv[0], argv[1]);
@@ -227,7 +227,7 @@ sequence_type_t op_numeric_divide::type_check(
 }
 
 bool op_numeric_divide::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -268,9 +268,9 @@ op_numeric_integer_divide::op_numeric_integer_divide(
 {
 }
 
-iterator_t op_numeric_integer_divide::operator()(
+Iterator_t op_numeric_integer_divide::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericIntegerDivideIterator(loc, argv[0], argv[1]);
@@ -283,7 +283,7 @@ sequence_type_t op_numeric_integer_divide::type_check(
 }
 
 bool op_numeric_integer_divide::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -332,9 +332,9 @@ op_numeric_mod::op_numeric_mod(
 {
 }
 
-iterator_t op_numeric_mod::operator()(
+Iterator_t op_numeric_mod::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericModIterator(loc, argv[0], argv[1]);
@@ -347,7 +347,7 @@ sequence_type_t op_numeric_mod::type_check(
 }
 
 bool op_numeric_mod::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -371,9 +371,9 @@ op_numeric_unary_plus::op_numeric_unary_plus(
 {
 }
 
-iterator_t op_numeric_unary_plus::operator()(
+Iterator_t op_numeric_unary_plus::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return argv[0];
@@ -386,7 +386,7 @@ sequence_type_t op_numeric_unary_plus::type_check(
 }
 
 bool op_numeric_unary_plus::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==1);
 }
@@ -415,9 +415,9 @@ op_numeric_unary_minus::op_numeric_unary_minus(
 {
 }
 
-iterator_t op_numeric_unary_minus::operator()(
+Iterator_t op_numeric_unary_minus::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericUnaryMinusIterator(loc, argv[0]);
@@ -430,7 +430,7 @@ sequence_type_t op_numeric_unary_minus::type_check(
 }
 
 bool op_numeric_unary_minus::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size()==1);
 }
@@ -447,7 +447,7 @@ op_numeric_equal::op_numeric_equal(const signature& sig)
 function(sig)
 {}
 
-iterator_t op_numeric_equal::operator()( yy::location loc, vector<iterator_t>& argv) const {
+Iterator_t op_numeric_equal::operator()( yy::location loc, vector<Iterator_t>& argv) const {
 	if (!validate_args(argv))
 		return NULL;
 	return new OpNumericEqualIterator(loc, argv[0], argv[1]);
@@ -457,7 +457,7 @@ sequence_type_t op_numeric_equal::type_check(signature& sig) const {
 	return xs_boolean;
 }
 
-bool op_numeric_equal::validate_args(vector<iterator_t>& argv) const {
+bool op_numeric_equal::validate_args(vector<Iterator_t>& argv) const {
 	return (argv.size() == 2);
 }
 
@@ -477,7 +477,7 @@ fn_abs::fn_abs(const signature& sig)
 {   	
 }
 
-iterator_t fn_abs::operator()( yy::location loc, vector<iterator_t>& argv) const
+Iterator_t fn_abs::operator()( yy::location loc, vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
@@ -489,7 +489,7 @@ sequence_type_t fn_abs::type_check(signature& sig) const
 	return xs_decimal;
 }
 
-bool fn_abs::validate_args(vector<iterator_t>& argv) const
+bool fn_abs::validate_args(vector<Iterator_t>& argv) const
 {
 	return (argv.size() == 1);
 }

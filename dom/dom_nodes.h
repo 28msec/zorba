@@ -20,8 +20,7 @@
 #include "dom_qname.h"
 #include "context/common.h"
 #include "context/dynamic_context.h"
-#include "values/nodes.h"
-#include "values/values.h"
+#include "values/item.h"
 #include "runtime/item_iterator.h"
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
@@ -92,20 +91,20 @@ public:   // internal interface
 	virtual const node* get_parent() const { return 0; }
 
 public:		// XQuery interface
-	virtual iterator_t parent( yy::location &loc) const;
-	virtual iterator_t string_value( yy::location &loc) const;
-	virtual iterator_t base_uri( yy::location &loc) const;
-	virtual iterator_t document_uri( yy::location &loc) const;
+	virtual Iterator_t parent( yy::location &loc) const;
+	virtual Iterator_t string_value( yy::location &loc) const;
+	virtual Iterator_t base_uri( yy::location &loc) const;
+	virtual Iterator_t document_uri( yy::location &loc) const;
 
-	virtual iterator_t node_name( yy::location &loc) const;
-	virtual iterator_t type_name( yy::location &loc) const;
-	virtual iterator_t typed_value( yy::location &loc) const;
+	virtual Iterator_t node_name( yy::location &loc) const;
+	virtual Iterator_t type_name( yy::location &loc) const;
+	virtual Iterator_t typed_value( yy::location &loc) const;
 
-	virtual iterator_t atomized_value( yy::location &loc) const { return 0; }
+	virtual Iterator_t atomized_value( yy::location &loc) const { return 0; }
 
-	virtual iterator_t children( yy::location &loc) const { return 0; }
-	virtual iterator_t attributes( yy::location &loc) const { return 0; }
-	virtual iterator_t namespace_nodes( yy::location &loc) const { return 0; }
+	virtual Iterator_t children( yy::location &loc) const { return 0; }
+	virtual Iterator_t attributes( yy::location &loc) const { return 0; }
+	virtual Iterator_t namespace_nodes( yy::location &loc) const { return 0; }
 
 	virtual bool is_id() const { return false; }
 	virtual bool is_idrefs() const { return false; }
@@ -141,11 +140,11 @@ public:
 	void _open() { }
 	void _close() { }
 	std::ostream&  _show(std::ostream& os) const {return os;}
-	item_t _next() { return *(++it); }
+	Item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:
-	item_t operator*() const { return *it; }
+	Item_t operator*() const { return *it; }
 	dom_doc_child_iterator& operator++() { ++it; return *this; }
 
 };
@@ -166,11 +165,11 @@ public:
 	void _open() { }
 	void _close() { }
 	std::ostream&  _show(std::ostream& os) const {return os;}
-	item_t _next() { return *(++it); }
+	Item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:
-	item_t operator*() const { return *it; }
+	Item_t operator*() const { return *it; }
 	dom_child_iterator& operator++() { ++it; return *this; }
 
 };
@@ -191,11 +190,11 @@ public:
 	void _open() { }
 	void _close() { }
 	std::ostream&  _show(std::ostream& os) const {return os;}
-	item_t _next() { return *(++it); }
+	Item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:
-	item_t operator*() const { return *it; }
+	Item_t operator*() const { return *it; }
 	dom_attribute_iterator& operator++() { ++it; return *this; }
 
 };
@@ -216,11 +215,11 @@ public:
 	void _open() { }
 	void _close() { }
 	std::ostream&  _show(std::ostream& os) const {return os;}
-	item_t _next() { return *(++it); }
+	Item_t _next() { return *(++it); }
 	bool done() const { return (it==end); }
 
 public:
-	item_t operator*() const { return *it; }
+	Item_t operator*() const { return *it; }
 	dom_namespace_iterator& operator++() { ++it; return *this; }
 
 };
@@ -285,13 +284,13 @@ public:		// internal interface
 	void add_child(dom_node* dn_p) { childv.push_back(dn_p); }
 
 public:		// XQuery interface
-	iterator_t children( yy::location &loc) const;
-	iterator_t namespace_nodes( yy::location &loc) const { return dom_node::namespace_nodes(loc); }
+	Iterator_t children( yy::location &loc) const;
+	Iterator_t namespace_nodes( yy::location &loc) const { return dom_node::namespace_nodes(loc); }
 
-	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
-	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
-	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
-	iterator_t document_uri( yy::location &loc) const { return dom_node::document_uri(loc); }
+	Iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	Iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	Iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	Iterator_t document_uri( yy::location &loc) const { return dom_node::document_uri(loc); }
 
 public:		// output, serialization
 	std::string toXML() const;
@@ -382,16 +381,16 @@ public:		// internal interface
 	void add_child(dom_node*);
 
 public:		// XQuery interface
-	iterator_t attributes( yy::location &loc) const;
-	iterator_t children( yy::location &loc) const;
-	iterator_t namespace_nodes( yy::location &loc) const;
-	iterator_t typed_value( yy::location &loc) const;
+	Iterator_t attributes( yy::location &loc) const;
+	Iterator_t children( yy::location &loc) const;
+	Iterator_t namespace_nodes( yy::location &loc) const;
+	Iterator_t typed_value( yy::location &loc) const;
 
-	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
-	iterator_t type_name( yy::location &loc) const { return dom_node::type_name(loc); }
-	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
-	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
-	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	Iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	Iterator_t type_name( yy::location &loc) const { return dom_node::type_name(loc); }
+	Iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	Iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	Iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, serialization 
 	std::string toXML() const;
@@ -454,12 +453,12 @@ public:	// internal interface
 	bool nilled() const { return nilled_b; }
 
 public:	// XQuery interface
-	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
-	iterator_t type_name( yy::location &loc) const { return dom_node::type_name(loc); }
-	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
-	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
-	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
-	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	Iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	Iterator_t type_name( yy::location &loc) const { return dom_node::type_name(loc); }
+	Iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	Iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	Iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	Iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, serialization
 	std::string toXML() const;
@@ -503,11 +502,11 @@ public:		// internal interface
 	const qname* get_node_name() const;
 
 public:		// XQuery interface
-	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
-	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
-	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
-	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
-	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	Iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	Iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	Iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	Iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	Iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, seralization
 	std::string toXML() const;
@@ -545,11 +544,11 @@ public:		// internal interface
 	const qname* get_node_name() const;
 
 public:		// XQuery interface
-	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
-	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
-	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
-	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
-	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	Iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	Iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	Iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	Iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	Iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:		// output, serialization
 	std::string toXML() const;
@@ -581,11 +580,11 @@ public:		// internal interface
 	std::string get_typed_value() const;
 
 public:		// XQuery interface
-	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
-	iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
-	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
-	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
-	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	Iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	Iterator_t node_name( yy::location &loc) const { return dom_node::node_name(loc); }
+	Iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	Iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	Iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
 
 public:
 	std::string toXML() const;
@@ -627,12 +626,12 @@ public:		// internal interface
 	std::string get_typed_value() const;
 
 public:		// XQuery interface
-	iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
-	iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
-	iterator_t atomized_value( yy::location &loc) const { return dom_node::atomized_value(loc); }
-	iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
-	iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
-	iterator_t document_uri( yy::location &loc) const { return dom_node::document_uri(loc); }
+	Iterator_t string_value( yy::location &loc) const { return dom_node::string_value(loc); }
+	Iterator_t typed_value( yy::location &loc) const { return dom_node::typed_value(loc); }
+	Iterator_t atomized_value( yy::location &loc) const { return dom_node::atomized_value(loc); }
+	Iterator_t parent( yy::location &loc) const { return dom_node::parent(loc); }
+	Iterator_t base_uri( yy::location &loc) const { return dom_node::base_uri(loc); }
+	Iterator_t document_uri( yy::location &loc) const { return dom_node::document_uri(loc); }
 
 public:
 	std::ostream& put(std::ostream&) const;

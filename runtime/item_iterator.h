@@ -22,10 +22,12 @@
 
 namespace xqp {
 
-class item;
+class Item;
 class node;
-class qname;
 class zorba;
+
+class var_iterator;
+typedef rchandle<var_iterator> var_iter_t;
 
 
 /*
@@ -49,6 +51,8 @@ public:		// "treat as" operators
 
 */
 
+class SingletonIterator;
+typedef rchandle<SingletonIterator> singleton_t;
 
 /*_____________________________________________________________
 |
@@ -57,11 +61,11 @@ public:		// "treat as" operators
 class SingletonIterator : public Batcher<SingletonIterator>
 {
 protected:
-	rchandle<item> i_h;
+	Item_t i_h;
 	bool is_done;
 
 public:
-	SingletonIterator(yy::location loc, item* _i_p) : 
+	SingletonIterator(yy::location loc, Item_t _i_p) : 
 												Batcher<SingletonIterator> (loc),
 												i_h(_i_p), is_done (false) {}
 	SingletonIterator(const SingletonIterator& it) : Batcher<SingletonIterator>(it), i_h(it.i_h),
@@ -70,7 +74,7 @@ public:
 	~SingletonIterator() { }
 	
 public:
-	item_t nextImpl() {
+	Item_t nextImpl() {
 		bool was_done = is_done; is_done = true;
 		return was_done ? NULL : i_h;
 	}
@@ -91,7 +95,7 @@ public:		// iterator interface
 		return os;
 	}
 	
-	item_t _next() {
+	Item_t _next() {
 		bool was_done = is_done; is_done = true;
 		return was_done ? NULL : i_h;
 	}
@@ -122,7 +126,7 @@ public:
 	}
 	
 public:		// variable binding
-	void bind(item_t _i_h) { i_h = _i_h; }
+	void bind(Item_t _i_h) { i_h = _i_h; }
 };
 
 /*
@@ -141,8 +145,8 @@ public:
 public:	// iterator interface
 	void open() {}
 	void close() {}
-	item_t next(uint32_t delta = 1) { done_b = true; return val; }
-	item_t peek() const { return val; }
+	Item_t next(uint32_t delta = 1) { done_b = true; return val; }
+	Item_t peek() const { return val; }
 	bool done() const { return done_b; }
 
 public:
@@ -162,20 +166,20 @@ public:
 // class RefIterator : public BasicIterator
 // {
 // private:
-// 	iterator_t it;
+// 	Iterator_t it;
 // 
 // public:
-// 	RefIterator(iterator_t _it,yy::location loc) : 
+// 	RefIterator(Iterator_t _it,yy::location loc) : 
 // 										BasicIterator(loc),
 // 										it(_it) {}
 // 
 // public:
 // 	void _open() { it->open();  }
-// 	item_t _next() { return it->next(); }
+// 	Item_t _next() { return it->next(); }
 // 	void _close() { it->close(); }
 // 	std::ostream&  _show(std::ostream& os) const {return os;}
 // 	bool done() const { return it->done(); }
-// 	void bind(iterator_t _it) { it = _it;}
+// 	void bind(Iterator_t _it) { it = _it;}
 // 
 // };
 
@@ -193,16 +197,16 @@ private:
 // 		inner
 // 	};
 
-	iterator_t theInput;
-	iterator_t theExpr;
+	Iterator_t theInput;
+	Iterator_t theExpr;
 	std::vector<var_iter_t> varv;
 // 	enum state theState;
 
 public:
 	MapIterator(
 		yy::location loc,
-		iterator_t _input,
-		iterator_t _expr,
+		Iterator_t _input,
+		Iterator_t _expr,
 		std::vector<var_iter_t> _varv)
 	:
 		Batcher<MapIterator>(loc),
@@ -214,7 +218,7 @@ public:
 	~MapIterator() {}
 
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 // 	void _open();

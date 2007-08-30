@@ -7,6 +7,8 @@
  *  Author: Paul Pedersen
  *
  */
+ 
+// TODO move into store/api/fullText
 
 #ifndef XQP_FTOPTIONS_H
 #define XQP_FTOPTIONS_H

@@ -43,7 +43,7 @@ class BinaryBaseIterator : public Batcher<IterType> {
 	
 public:
 	BinaryBaseIterator
-	(yy::location loc, iterator_t arg0_, iterator_t arg1_)
+	(yy::location loc, Iterator_t arg0_, Iterator_t arg1_)
 	:
 	Batcher<IterType>(loc),arg0(arg0_),arg1(arg1_){}
 	
@@ -61,11 +61,23 @@ public:
 
 	
 protected:
-	iterator_t arg0;
-	iterator_t arg1;
+	Iterator_t arg0;
+	Iterator_t arg1;
 
 };
 
+	namespace num_operations {
+		enum Operation {
+			add,
+			subtract,
+			multiply,
+			divide,
+			integerDivide,
+			mod
+		};
+		
+			static Item_t makeOperation(ItemFactory*, Operation, Item_t, Item_t);
+	}
 
 
 /*______________________________________________________________________
@@ -80,13 +92,13 @@ class OpNumericAddIterator : public BinaryBaseIterator<OpNumericAddIterator>
 {
 public:
 	OpNumericAddIterator
-	(yy::location loc, iterator_t iter0, iterator_t iter1)
+	(yy::location loc, Iterator_t iter0, Iterator_t iter1)
 	:
 	BinaryBaseIterator<OpNumericAddIterator>(loc, iter0, iter1){}
 	~OpNumericAddIterator() {}
 
 public:	// iterator interface
-	item_t nextImpl();
+	Item_t nextImpl();
 	std::ostream&  _show(std::ostream&) const;
 };
 
@@ -97,13 +109,13 @@ public:	// iterator interface
 class OpNumericSubtractIterator : public BinaryBaseIterator<OpNumericSubtractIterator>
 {
 public:
-	OpNumericSubtractIterator(yy::location loc, iterator_t iter0, iterator_t iter1)
+	OpNumericSubtractIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
 		:
 	BinaryBaseIterator<OpNumericSubtractIterator>(loc, iter0, iter1){}
 	~OpNumericSubtractIterator() {}
 
 public:	// iterator interface
-	item_t nextImpl();
+	Item_t nextImpl();
 	std::ostream&  _show(std::ostream&) const;
 };
 
@@ -114,13 +126,13 @@ public:	// iterator interface
 class OpNumericMultiplyIterator : public BinaryBaseIterator<OpNumericMultiplyIterator>
 {
 public:
-	OpNumericMultiplyIterator(yy::location loc, iterator_t iter0, iterator_t iter1)
+	OpNumericMultiplyIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
 		:
 	BinaryBaseIterator<OpNumericMultiplyIterator>(loc, iter0, iter1){}
 	~OpNumericMultiplyIterator() { }
 
 public:	// iterator interface
-	item_t nextImpl();
+	Item_t nextImpl();
 	std::ostream&  _show(std::ostream&) const;
 };
 
@@ -130,13 +142,13 @@ public:	// iterator interface
 class OpNumericDivideIterator : public BinaryBaseIterator<OpNumericDivideIterator>
 {
 public:
-	OpNumericDivideIterator(yy::location loc, iterator_t iter0, iterator_t iter1)
+	OpNumericDivideIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
 		:
 	BinaryBaseIterator<OpNumericDivideIterator>(loc, iter0, iter1){}
 	~OpNumericDivideIterator() {}
 
 public:	// iterator interface
-	item_t nextImpl();
+	Item_t nextImpl();
 	std::ostream&  _show(std::ostream&) const;
 };
 
@@ -146,7 +158,7 @@ public:	// iterator interface
 class OpNumericIntegerDivideIterator : public OpNumericDivideIterator
 {
 public:
-	OpNumericIntegerDivideIterator(yy::location loc, iterator_t iter0, iterator_t iter1)
+	OpNumericIntegerDivideIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
 		:
 	OpNumericDivideIterator(loc, iter0, iter1) {}
 };
@@ -157,14 +169,14 @@ public:
 class OpNumericModIterator : public BinaryBaseIterator<OpNumericModIterator>
 {
 public:
-	OpNumericModIterator(yy::location loc, iterator_t iter0, iterator_t iter1)
+	OpNumericModIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
 		:
 	BinaryBaseIterator<OpNumericModIterator>(loc, iter0, iter1) {}
 	~OpNumericModIterator() {}
 
 
 public:	// iterator interface
-	item_t nextImpl();
+	Item_t nextImpl();
 	std::ostream&  _show(std::ostream&) const;
 };
 
@@ -178,16 +190,16 @@ public:	// iterator interface
 class OpNumericUnaryMinusIterator : public Batcher<OpNumericUnaryMinusIterator>
 {
 private:
-	iterator_t arg0_;
+	Iterator_t arg0_;
 	
 public:
-	OpNumericUnaryMinusIterator(yy::location loc, iterator_t iter)
+	OpNumericUnaryMinusIterator(yy::location loc, Iterator_t iter)
 		:
 	Batcher<OpNumericUnaryMinusIterator>(loc), arg0_(iter) {}
 	~OpNumericUnaryMinusIterator() {}
 
 public:	// iterator interface
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
@@ -204,13 +216,13 @@ public:	// iterator interface
 // -------------------------
 class OpNumericEqualIterator : public BinaryBaseIterator<OpNumericModIterator> {
 public:
-	OpNumericEqualIterator(yy::location loc, iterator_t iter1, iterator_t iter2)
+	OpNumericEqualIterator(yy::location loc, Iterator_t iter1, Iterator_t iter2)
 		:
 	BinaryBaseIterator<OpNumericModIterator>(loc, iter1, iter2) {}
 	~OpNumericEqualIterator() {}
 	
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	std::ostream&  _show(std::ostream&) const;
 };
 
@@ -227,16 +239,16 @@ public:
 class FnAbsIterator : public Batcher<FnAbsIterator>
 {
 private:
-	iterator_t arg0_;
+	Iterator_t arg0_;
 	
 public:
-	FnAbsIterator(yy::location loc, iterator_t iter)
+	FnAbsIterator(yy::location loc, Iterator_t iter)
 		:
 	Batcher<FnAbsIterator>(loc), arg0_(iter) {}
 	~FnAbsIterator() {}
 
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;

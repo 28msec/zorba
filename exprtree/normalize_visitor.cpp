@@ -11,13 +11,12 @@
 #include "normalize_visitor.h"
 #include "indent.h"
 
-#include "dom/dom_nodes.h"
+// #include "dom/dom_nodes.h"
 #include "functions/library.h"
 #include "parser/parsenodes.h"
-#include "runtime/zorba.h"
+// #include "runtime/zorba.h"
 #include "util/tracer.h"
-#include "values/nodes.h"
-#include "zorba/zorba_qname.h"
+// #include "zorba/zorba_qname.h"
 
 #include <iostream>
 #include <string>
@@ -157,18 +156,19 @@ cout << indent[++depth] << TRACE << endl;
 bool normalize_visitor::begin_visit(
 	DefaultNamespaceDecl const& v)
 {
-cout << indent[++depth] << TRACE << endl;
-	switch (v.get_mode()) {
-	case ns_element_default: {
-		namespace_node* ns_p = new dom_namespace_node("#elem#",v.get_default_namespace());
-		zorp->get_dynamic_context()->set_default_element_type_namespace(*ns_p);
-		break;
-	}
-	case ns_function_default: {
-		namespace_node* ns_p = new dom_namespace_node("#func#",v.get_default_namespace());
-		zorp->get_static_context()->set_default_function_namespace(ns_p);
-		break;
-	}}
+// TODO adapt to new store
+// cout << indent[++depth] << TRACE << endl;
+// 	switch (v.get_mode()) {
+// 	case ns_element_default: {
+// 		namespace_node* ns_p = new dom_namespace_node("#elem#",v.get_default_namespace());
+// 		zorp->get_dynamic_context()->set_default_element_type_namespace(*ns_p);
+// 		break;
+// 	}
+// 	case ns_function_default: {
+// 		namespace_node* ns_p = new dom_namespace_node("#func#",v.get_default_namespace());
+// 		zorp->get_static_context()->set_default_function_namespace(ns_p);
+// 		break;
+// 	}}
 	return false;
 }
 
@@ -903,7 +903,8 @@ cout << indent[++depth] << TRACE << endl;
 		prefix = ZORBA_PRE;
 	}
 
-	qnamekey_t funkey = zorba_qname(uri,prefix,fname).qnamekey();
+	// TODO Adapt to new store
+	qnamekey_t funkey = 0; // = zorba_qname(uri,prefix,fname).qnamekey();
 	yy::location loc = v.get_location();
 	rchandle<fo_expr> fo_h = new fo_expr(loc);	nodestack.push(NULL);
 

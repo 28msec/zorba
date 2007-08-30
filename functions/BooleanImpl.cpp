@@ -21,12 +21,10 @@ const
 	return os;
 }
 
-item_t FnBooleanIterator::nextImpl()
+Item_t FnBooleanIterator::nextImpl()
 {
-	item_t n_h;
+	Item_t n_h;
 	sequence_type_t type;
-	const numericValue* numVal;
-	const stringValue* strVal;
 	string str;
 	
 	STACK_INIT();
@@ -34,28 +32,26 @@ item_t FnBooleanIterator::nextImpl()
 	n_h = this->consumeNext(this->arg0_);
 	
 	if ( n_h == NULL) {
-		STACK_PUSH (new booleanValue(false));
+		STACK_PUSH (this->zorp->getItemFactory()->createBoolean(false));
 	} else {
-		type = n_h->type();
+		type = n_h->getType();
 	
 		if (int(type & ANY_NODE) > 0) {
-			STACK_PUSH(new booleanValue(true));
+			STACK_PUSH(this->zorp->getItemFactory()->createBoolean(true));
 		} else if (int(type & BOOLEAN_TYPE) > 0) {
 			STACK_PUSH(n_h);
 		} else if (int(type & NUMERIC_TYPE) > 0) {
-			numVal = dynamic_cast<const numericValue*>(&*n_h);
-			if (numVal->val() == 0) {
-				STACK_PUSH(new booleanValue(false));
+			// TODO FIXME this is wrong!!! E.g. an Integer does not support getDecimalValue
+			if (n_h->getDecimalValue() == 0) {
+				STACK_PUSH(this->zorp->getItemFactory()->createBoolean(false));
 			} else {
-				STACK_PUSH(new booleanValue(true));
+				STACK_PUSH(this->zorp->getItemFactory()->createBoolean(true));
 			}
 		} else if (int(type & STRING_TYPE) > 0) {
-			strVal = dynamic_cast<const stringValue*>(&*n_h);
-			str = strVal->val();
-			if (str.size() == 0) {
-				STACK_PUSH(new booleanValue(false));
+			if (n_h->getStringValue().size() == 0) {
+				STACK_PUSH(this->zorp->getItemFactory()->createBoolean(false));
 			} else {
-				STACK_PUSH(new booleanValue(true));
+				STACK_PUSH(this->zorp->getItemFactory()->createBoolean(true));
 			}
 		} else if (int(type & ANY_URI_TYPE) > 0 || int(type & UNTYPED_ATOMIC_TYPE) > 0) {
 			ZorbaErrorAlerts::error_alert(

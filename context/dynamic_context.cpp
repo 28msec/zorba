@@ -39,23 +39,23 @@ qnamekey_t dynamic_context::implicit_timezone_key;
 
 
 void dynamic_context::init(
-	value_factory* vfactory_p)
+	ItemFactory* itemFactory_p)
 {
 	if (!dynamic_context::static_init) {
 		default_element_type_ns_key =
-			vfactory_p->make_qname(ZORBA_NS,"xqp","default-element-type")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","default-element-type")->getQNameKey();
 		context_item_type_key =
-			vfactory_p->make_qname(ZORBA_NS,"xqp","context-item-type")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","context-item-type")->getQNameKey();
 		context_item_key =
-			vfactory_p->make_qname(ZORBA_NS,"xqp","context-item")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","context-item")->getQNameKey();
 		ordering_mode_key =
-			vfactory_p->make_qname(ZORBA_NS,"xqp","ordering-mode")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","ordering-mode")->getQNameKey();
 		namespaces_key =
-			vfactory_p->make_qname(ZORBA_NS,"xqp","namespaces")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","namespaces")->getQNameKey();
 		current_time_key =
-			vfactory_p->make_qname(ZORBA_NS,"xqp","current-time")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","current-time")->getQNameKey();
 		implicit_timezone_key =
-			vfactory_p->make_qname(ZORBA_NS,"xqp","implicit-timezone")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","implicit-timezone")->getQNameKey();
 
 
 		dynamic_context::static_init = true;
@@ -69,28 +69,28 @@ void dynamic_context::init(
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-const namespace_node&
+const Item&
 dynamic_context::default_element_type_namespace() const
 {
-	iterator_t it_h = context_value(default_element_type_ns_key);
+	Iterator_t it_h = context_value(default_element_type_ns_key);
 	it_h->open();
-	item_t i_h = it_h->next();
+	Item_t i_h = it_h->next();
 	it_h->close();
-	return dynamic_cast<const namespace_node&>(*i_h);
+	return dynamic_cast<const Item&>(*i_h);
 }
 
 void dynamic_context::set_default_element_type_namespace(
-	namespace_node& nn_p)
+	Item& nn_p)
 {
-	iterator_t it_h = new SingletonIterator(yy::location(), &nn_p);
+	Iterator_t it_h = new SingletonIterator(yy::location(), &nn_p);
 	keymap.put(default_element_type_ns_key,it_h);
 }
 
-void add_namespace(const namespace_node*)
+void add_namespace(const Item*)
 {
 }
 
-iterator_t dynamic_context::namespaces() const
+Iterator_t dynamic_context::namespaces() const
 {
 	return context_value(namespaces_key);
 }
@@ -102,11 +102,11 @@ sequence_type_t dynamic_context::context_item_type() const
 
 dynamic_context::ordering_mode_t dynamic_context::ordering_mode() const
 {
-	iterator_t it_h = context_value(ordering_mode_key);
+	Iterator_t it_h = context_value(ordering_mode_key);
 	it_h->open();
-	item_t i_h = it_h->next();
+	Item_t i_h = it_h->next();
 	it_h->close();
-	string mode = i_h->str();
+	string mode =i_h->getStringProperty();
 	if (mode=="ordered") return ordered;
 	return unordered;
 }
@@ -121,7 +121,7 @@ void dynamic_context::set_ordering_mode(
 	enum ordering_mode_t v)
 {
 	string mode = (v==ordered?"ordered":"unordered");
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(ordering_mode_key, it_h);
 }
 

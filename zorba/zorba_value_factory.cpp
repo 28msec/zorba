@@ -281,7 +281,7 @@ rchandle<atomic_value> zorba_value_factory::make_xs_unsignedShort(
 
 /*
 atomic_value* zorba_value_factory::cast_as(
-	iterator_t it, 
+	Iterator_t it, 
 	sequence_type_t t)
 {
 	if (it->done()) return NULL;

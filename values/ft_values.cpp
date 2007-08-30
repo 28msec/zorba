@@ -7,6 +7,8 @@
  *  Author: Paul Pedersen
  *
  */
+ 
+// TODO move into store/api/fullText
 
 #include "ft_values.h"
 #include <iostream>

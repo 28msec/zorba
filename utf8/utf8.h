@@ -1,3 +1,6 @@
+#ifndef XQP_UTF8_H
+#define XQP_UTF8_H
+
 #include "errors/errors.h"
 #include "errors/Error.h"
 
@@ -209,9 +212,6 @@ namespace xqp {
 	{
 		return next(it);
 	}
-
-	
-
-
-
 }/* namespace xqp */
+
+#endif /* XQP_UTF8_H */

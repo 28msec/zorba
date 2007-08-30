@@ -22,8 +22,6 @@
  *
  */ 
 
-#include "utf8/utf8.h"
-
 namespace xqp {
 	class xqpString
 	{

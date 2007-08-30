@@ -24,6 +24,7 @@
 
 #include "StringsImpl.h"
 #include "util/tracer.h"
+#include "../utf8/utf8.h"
 #include <iostream>
 
 using namespace std;
@@ -47,9 +48,8 @@ std::ostream& CodepointsToStringIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-item_t CodepointsToStringIterator::nextImpl(){
-	item_t item;
-	const numericValue* n0;
+Item_t CodepointsToStringIterator::nextImpl(){
+	Item_t item;
 	sequence_type_t type0;
 	//xqpString test;
 
@@ -61,23 +61,21 @@ item_t CodepointsToStringIterator::nextImpl(){
 		if(&*item == NULL) {
 			//test = (uint)23;
 			//STACK_PUSH(new stringValue(xs_string, test));
-			STACK_PUSH(new stringValue(xs_string, res));
+			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->res));
 			STACK_PUSH(NULL);
 		}
 		else {
-			n0 = dynamic_cast<const numericValue*>(&*item);
 
 			seq[0] = 0;
 			seq[1] = 0;
 			seq[2] = 0;
 			seq[3] = 0;
 			
-			EncodeUtf8((uint32_t)n0->val(), seq);
+			EncodeUtf8(item->getIntValue(), seq);
 
 			res.append(seq);
 		}
 	}
-	
 	STACK_PUSH(NULL);
 	STACK_END();
 }
@@ -109,9 +107,8 @@ std::ostream& StringToCodepointsIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-item_t StringToCodepointsIterator::nextImpl(){
-	item_t item;
-	const stringValue* n0;
+Item_t StringToCodepointsIterator::nextImpl(){
+	Item_t item;
 
 	STACK_INIT();
 
@@ -122,16 +119,15 @@ item_t StringToCodepointsIterator::nextImpl(){
 	}
 	else
 	{
-		n0 = dynamic_cast<const stringValue*>(&*item);
 		
-		vLength = (n0->val().length()) + 1;
+		vLength = (item->getStringValue().length()) + 1;
 		v.reserve(vLength);
-		std::strcpy(&v[0], n0->val().c_str());
+		std::strcpy(&v[0], item->getStringValue().c_str());
 		c = &v[0];
 
 		while( --vLength > 0 ){
 			cp = DecodeUtf8(c);
-			STACK_PUSH(new numericValue(xs_long, cp));
+			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createLong(cp));
 		}
 	}
 	
@@ -190,11 +186,9 @@ std::ostream& CodepointEqualIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-item_t CodepointEqualIterator::nextImpl(){
-	item_t item0;
-	item_t item1;
-	const stringValue* n0;
-	const stringValue* n1;
+Item_t CodepointEqualIterator::nextImpl(){
+	Item_t item0;
+	Item_t item1;
 
 	STACK_INIT();
 
@@ -207,34 +201,31 @@ item_t CodepointEqualIterator::nextImpl(){
 	}
 	else
 	{
-		n0 = dynamic_cast<const stringValue*>(&*item0);
-		n1 = dynamic_cast<const stringValue*>(&*item1);
+		vLength = (item0->getStringValue().length());
 		
-		vLength = (n0->val().length());
-		
-		if(vLength != n1->val().length())
-			STACK_PUSH(new booleanValue(false));
+		if(vLength != item1->getStringValue().length())
+			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
 		else
 		{
 			v0.reserve(vLength);
-			std::strcpy(&v0[0], n0->val().c_str());
+			std::strcpy(&v0[0], item0->getStringValue().c_str());
 			c0 = &v0[0];
 			
 			v1.reserve(vLength);
-			std::strcpy(&v1[0], n1->val().c_str());
+			std::strcpy(&v1[0], item1->getStringValue().c_str());
 			c1 = &v1[0];
 			
 			while( !finish && (vLength > 0) ){
 				if(DecodeUtf8(c0) != DecodeUtf8(c1))
 				{
 					finish = true;
-					STACK_PUSH(new booleanValue(false));
+					STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
 				}
 				vLength--;
 			}
 
 			if(!finish)
-				STACK_PUSH(new booleanValue(true));
+				STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(true));
 		}
 	}
 	STACK_PUSH(NULL);
@@ -278,20 +269,19 @@ void CodepointEqualIterator::releaseResourcesImpl() {
 std::ostream& ConcatFnIterator::_show(std::ostream& os)
 		const
 {
-	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		(*iter)->show(os);
 	}
 	return os;
 }
 
-item_t ConcatFnIterator::nextImpl() {
+Item_t ConcatFnIterator::nextImpl() {
 
-	item_t item;
+	Item_t item;
 	
-	iterator_t currit_str;
-	item_t item_str;
-	const stringValue* n;
+	Iterator_t currit_str;
+	Item_t item_str;
 	
 	STACK_INIT();
 	
@@ -303,30 +293,30 @@ item_t ConcatFnIterator::nextImpl() {
 
 		//TODO use a more high level function provided by the type system
 		//if the item is not a node => it's a xs:anyAtomicType
-		if((item->type() & NODE_MASK) == NOT_NODE)
-		{
-			currit_str = item->string_value(loc);
-			item_str = this->consumeNext(currit_str);
-			n = dynamic_cast<const stringValue*>(&*item_str);
-			res.append(n->val());
-			//res.append("1");
-		}
+		// TODO FIXME Adapt do new store, item, item_factory interface
+// 		if((item->getType() & NODE_MASK) == NOT_NODE)
+// 		{
+// 			currit_str = item->getStringValue();
+// 			item_str = this->consumeNext(currit_str);
+// 			res.append(n->getStringValue());
+// 			//res.append("1");
+// 		}
 	}
 
-	STACK_PUSH(new stringValue(xs_string, res));
+// 	STACK_PUSH(new stringValue(xs_string, res));
 	STACK_PUSH(NULL);
 	STACK_END();
 }
 
 void ConcatFnIterator::resetImpl() {
-	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter);
 	}
 }
 
 void ConcatFnIterator::releaseResourcesImpl() {
-	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter);
 	}
@@ -355,30 +345,30 @@ void ConcatFnIterator::releaseResourcesImpl() {
 std::ostream& StringJoinIterator::_show(std::ostream& os)
 		const
 {
-	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		(*iter)->show(os);
 	}
 	return os;
 }
 
-item_t StringJoinIterator::nextImpl() {
+Item_t StringJoinIterator::nextImpl() {
 
 	STACK_INIT();
-	STACK_PUSH(new stringValue(xs_string, "result"));
+	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("result"));
 	STACK_PUSH(NULL);
 	STACK_END();
 }
 
 void StringJoinIterator::resetImpl() {
-	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter);
 	}
 }
 
 void StringJoinIterator::releaseResourcesImpl() {
-	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter);
 	}

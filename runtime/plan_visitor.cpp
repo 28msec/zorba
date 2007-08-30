@@ -216,9 +216,9 @@ cout << indent[depth--] << TRACE << endl;
 void plan_visitor::end_visit(const expr_list& v)
 {
 cout << indent[depth--] << TRACE << endl;
-	vector<iterator_t> argv;
+	vector<Iterator_t> argv;
 	while (true) {
-		iterator_t it = pop_itstack();
+		Iterator_t it = pop_itstack();
 		if (it==NULL) break;
 		argv.insert(argv.begin(),it);
 	}
@@ -241,8 +241,8 @@ cout << TRACE << endl;
 void plan_visitor::end_visit(const flwor_expr& v)
 {
 cout << TRACE << endl;
-	iterator_t expr = pop_itstack();
-	iterator_t input = pop_itstack();
+	Iterator_t expr = pop_itstack();
+	Iterator_t input = pop_itstack();
 	std::vector<var_iter_t> var_iters;
 	
 // 	while (true) {
@@ -284,11 +284,11 @@ cout << indent[depth--] << TRACE << endl;
 	assert(func_p!=NULL);
 	const function& func = *func_p;
 
-	vector<iterator_t> argv;
+	vector<Iterator_t> argv;
 	while (true) {
-		iterator_t it_h = pop_itstack();
+		Iterator_t it_h = pop_itstack();
 		if (it_h==NULL) break;
-		vector<iterator_t>::iterator begin = argv.begin();
+		vector<Iterator_t>::iterator begin = argv.begin();
  		argv.insert(begin, 1, it_h );
 	}
 
@@ -352,40 +352,40 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const literal_expr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+	cout << indent[depth--] << TRACE << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
-    iterator_t it = new SingletonIterator(
+    Iterator_t it = new SingletonIterator(
 											v.get_loc(),
-											new stringValue(xs_string,v.get_sval()));
+											zorba::getZorbaForCurrentThread()->getItemFactory()->createString(v.get_sval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_integer: {
-    iterator_t it = new SingletonIterator(
+    Iterator_t it = new SingletonIterator(
 											v.get_loc(),
-											new numericValue(xs_integer,v.get_ival()));
+											zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(v.get_ival()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_decimal: {
-    iterator_t it = new SingletonIterator(
+    Iterator_t it = new SingletonIterator(
 											v.get_loc(),
-											new numericValue(xs_decimal,v.get_decval()));
+											zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(v.get_decval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_double: {
-    iterator_t it = new SingletonIterator(
+    Iterator_t it = new SingletonIterator(
 											v.get_loc(),
-											new numericValue(xs_double,v.get_dval()));
+											zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(v.get_dval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_bool: {
-    iterator_t it = new SingletonIterator(
+    Iterator_t it = new SingletonIterator(
 											v.get_loc(),
-											new booleanValue(v.get_bval()));
+											zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(v.get_bval()));
     itstack.push(it);
     break;
   }}

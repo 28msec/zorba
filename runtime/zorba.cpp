@@ -13,7 +13,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "store/data_manager.h"
-#include "values/value_factory.h"
+#include "values/item_factory.h"
 
 
 
@@ -39,7 +39,7 @@ zorba::zorba()
 
 zorba::zorba(
 	rchandle<data_manager> dataManager,
-	rchandle<value_factory> valueFactory,
+	rchandle<ItemFactory> valueFactory,
 	rchandle<static_context> staticContext,
 	rchandle<dynamic_context> dynamicContext,
 	rchandle<ZorbaErrorAlerts> zorbaAlerts)

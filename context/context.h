@@ -28,10 +28,10 @@
 
 #include "common.h"
 #include "runtime/item_iterator.h"
-#include "values/qname.h"
 #include "util/fxhashmap.h"
 #include "util/rchandle.h"
 #include "errors/Error.h"
+#include "../values/item_factory.h"
 
 namespace xqp {
 
@@ -47,14 +47,14 @@ class context : public rcobject
 {
 protected:
 	rchandle<context> parent_h;
-	fxhash64map<iterator_t> keymap;
+	fxhash64map<Iterator_t> keymap;
 
 public: // context interface
 	rchandle<context> parent() const { return parent_h; }
 
-	iterator_t context_value(qnamekey_t key) const
+	Iterator_t context_value(qnamekey_t key) const
 	{
-		iterator_t it_h;
+		Iterator_t it_h;
 		if (!keymap.get(key, it_h)) return NULL;
 		return it_h;
 	}

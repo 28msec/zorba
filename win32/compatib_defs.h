@@ -1,4 +1,3 @@
-
 #ifndef WIN32_COMPATIBLE_DEFS_WITH_GNU_25_JULY_2007
 #define WIN32_COMPATIBLE_DEFS_WITH_GNU_25_JULY_2007
 
@@ -32,7 +31,7 @@ namespace __gnu_cxx{
    // The _Container parameter exists solely so that different containers
    // using this template can instantiate different types, even if the
    // _Iterator parameter is the same.
-   using std::iterator_traits;
+   using std::Iterator_traits;
    using std::iterator;
    template<typename _Iterator, typename _Container>
      class __normal_iterator
@@ -41,13 +40,13 @@ namespace __gnu_cxx{
        _Iterator _M_current;
  
      public:
-       typedef typename iterator_traits<_Iterator>::iterator_category
+       typedef typename Iterator_traits<_Iterator>::iterator_category
                                                               iterator_category;
-       typedef typename iterator_traits<_Iterator>::value_type  value_type;
-       typedef typename iterator_traits<_Iterator>::difference_type
+       typedef typename Iterator_traits<_Iterator>::value_type  value_type;
+       typedef typename Iterator_traits<_Iterator>::difference_type
                                                               difference_type;
-       typedef typename iterator_traits<_Iterator>::reference reference;
-       typedef typename iterator_traits<_Iterator>::pointer   pointer;
+       typedef typename Iterator_traits<_Iterator>::reference reference;
+       typedef typename Iterator_traits<_Iterator>::pointer   pointer;
  
        typedef _Iterator _Iterator_type;
  

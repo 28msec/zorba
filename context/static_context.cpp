@@ -22,11 +22,9 @@
  *
  */
 
-
 #include "static_context.h"
 #include "common.h"
-#include "values/qname.h"
-#include "values/value_factory.h"
+#include "../values/item_factory.h"
 
 
 using namespace std;
@@ -48,33 +46,34 @@ qnamekey_t static_context::baseuri_key;
 
 
 void static_context::init(
-	value_factory* vf_p)
+	ItemFactory* itemFactory_p)
 {
+	
 	if (!static_context::static_init) {
 		default_function_ns_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","default-function-ns")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","default-function-ns")->getQNameKey();
 		default_collation_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","default-collation")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","default-collation")->getQNameKey();
 		in_scope_schema_types_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","in-scope-schema-types")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","in-scope-schema-types")->getQNameKey();
 		in_scope_element_decls_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","in-scope-element-decls")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","in-scope-element-decls")->getQNameKey();
 		in_scope_attribute_decls_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","in-scope-attribute-decls")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","in-scope-attribute-decls")->getQNameKey();
 		collations_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","collations")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","collations")->getQNameKey();
 		construction_mode_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","construction-mode")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","construction-mode")->getQNameKey();
 		order_empty_mode_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","order-empty-mode")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","order-empty-mode")->getQNameKey();
 		boundary_space_mode_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","boundary-space-mode")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","boundary-space-mode")->getQNameKey();
 		inherit_mode_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","inherit-mode")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","inherit-mode")->getQNameKey();
 		preserve_mode_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","preserve-mode")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","preserve-mode")->getQNameKey();
 		baseuri_key =
-			vf_p->make_qname(ZORBA_NS,"xqp","baseuri")->qnamekey();
+			itemFactory_p->createQName(ZORBA_NS,"xqp","baseuri")->getQNameKey();
 
 		static_context::static_init = true;
 	}
@@ -87,7 +86,7 @@ void static_context::init(
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-iterator_t static_context::default_function_namespace() const
+Iterator_t static_context::default_function_namespace() const
 {
 	return context_value(default_function_ns_key);
 }
@@ -95,26 +94,26 @@ iterator_t static_context::default_function_namespace() const
 void static_context::set_default_function_namespace(
 	const namespace_node* nn_p)
 {
-	iterator_t it_h = new SingletonIterator(yy::location(), (item*)nn_p);
+	Iterator_t it_h = new SingletonIterator(yy::location(), (Item*)nn_p);
 	keymap.put(default_function_ns_key,it_h);
 }
 
-iterator_t static_context::in_scope_schema_types() const
+Iterator_t static_context::in_scope_schema_types() const
 {
 	return context_value(in_scope_schema_types_key);
 }
 
-iterator_t static_context::in_scope_element_decls() const
+Iterator_t static_context::in_scope_element_decls() const
 {
 	return context_value(in_scope_element_decls_key);
 }
 
-iterator_t static_context::in_scope_attribute_decls() const
+Iterator_t static_context::in_scope_attribute_decls() const
 {
 	return context_value(in_scope_attribute_decls_key);
 }
 
-iterator_t static_context::collations() const
+Iterator_t static_context::collations() const
 {
 	return context_value(collations_key);
 }
@@ -122,9 +121,9 @@ iterator_t static_context::collations() const
 static_context::construction_mode_t 
 static_context::construction_mode() const
 {
-	iterator_t it_h = context_value(construction_mode_key);
+	Iterator_t it_h = context_value(construction_mode_key);
 	it_h->open();
-	string mode = it_h->next()->str();
+	string mode = it_h->next()->getStringProperty();
 	it_h->close();
 	if (mode=="preserve") return cons_preserve;
 	return cons_strip;
@@ -133,9 +132,9 @@ static_context::construction_mode() const
 static_context::order_empty_mode_t 
 static_context::order_empty_mode() const
 {
-	iterator_t it_h = context_value(order_empty_mode_key);
+	Iterator_t it_h = context_value(order_empty_mode_key);
 	it_h->open();
-	string mode = it_h->next()->str();
+	string mode = it_h->next()->getStringProperty();
 	it_h->close();
 	if (mode=="empty_greatest") return empty_greatest;
 	return empty_least;
@@ -143,9 +142,9 @@ static_context::order_empty_mode() const
 
 static_context::boundary_space_mode_t static_context::boundary_space_mode() const
 {
-	iterator_t it_h = context_value(boundary_space_mode_key);
+	Iterator_t it_h = context_value(boundary_space_mode_key);
 	it_h->open();
-	string mode = it_h->next()->str();
+	string mode = it_h->next()->getStringProperty();
 	it_h->close();
 	if (mode=="preserve_space") return preserve_space;
 	return strip_space;
@@ -153,9 +152,9 @@ static_context::boundary_space_mode_t static_context::boundary_space_mode() cons
 
 static_context::inherit_mode_t static_context::inherit_mode() const
 {
-	iterator_t it_h = context_value(inherit_mode_key);
+	Iterator_t it_h = context_value(inherit_mode_key);
 	it_h->open();
-	string mode = it_h->next()->str();
+	string mode = it_h->next()->getStringProperty();
 	it_h->close();
 	if (mode=="inherit_ns") return inherit_ns;
 	return no_inherit_ns;
@@ -163,9 +162,9 @@ static_context::inherit_mode_t static_context::inherit_mode() const
 
 static_context::preserve_mode_t static_context::preserve_mode() const
 {
-	iterator_t it_h = context_value(preserve_mode_key);
+	Iterator_t it_h = context_value(preserve_mode_key);
 	it_h->open();
-	string mode = it_h->next()->str();
+	string mode = it_h->next()->getStringProperty();
 	it_h->close();
 	if (mode=="preserve_ns") return preserve_ns;
 	return no_preserve_ns;
@@ -175,7 +174,7 @@ void static_context::set_construction_mode(
 	enum construction_mode_t v)
 {
 	string mode = (v==cons_preserve?"cons_preserve":"cons_strip");
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(construction_mode_key, it_h);
 }
 
@@ -183,7 +182,7 @@ void static_context::set_order_empty_mode(
 	enum order_empty_mode_t v)
 {
 	string mode = (v==empty_greatest?"empty_greatest":"empty_least");
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(order_empty_mode_key, it_h);
 }
 
@@ -191,7 +190,7 @@ void static_context::set_boundary_space_mode(
 	enum boundary_space_mode_t v)
 {
 	string mode = (v==preserve_space?"preserve_space":"strip_space");
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(boundary_space_mode_key, it_h);
 }
 
@@ -199,7 +198,7 @@ void static_context::set_inherit_mode(
 	enum inherit_mode_t v)
 {
 	string mode = (v==inherit_ns?"inherit_ns":"no_inherit_ns");
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(inherit_mode_key, it_h);
 }
 
@@ -207,42 +206,42 @@ void static_context::set_preserve_mode(
 	enum preserve_mode_t v)
 {
 	string mode = (v==preserve_ns?"preserve_ns":"no_preserve_ns");
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(mode));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(preserve_mode_key, it_h);
 }
 
-const qname& static_context::get_default_collation() const
+const QNameItem& static_context::get_default_collation() const
 {
-	iterator_t it_h = context_value(default_collation_key);
+	Iterator_t it_h = context_value(default_collation_key);
 	it_h->open();
-	item_t i_h = it_h->next();
+	Item_t i_h = it_h->next();
 	it_h->close();
-	return dynamic_cast<const qname&>(*i_h);
+	return dynamic_cast<const QNameItem&>(*i_h);
 }
 
 std::string static_context::get_baseuri() const
 {
-	iterator_t it_h = context_value(baseuri_key);
+	Iterator_t it_h = context_value(baseuri_key);
 	it_h->open();
-	item_t i_h = it_h->next();
+	Item_t i_h = it_h->next();
 	it_h->close();
-	return i_h->str();
+	return i_h->getStringProperty();
 }
 
 void static_context::set_default_collation(const string& uri)
 {
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(uri));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(uri));
 	keymap.put(default_collation_key, it_h);
 }
 
 void static_context::set_baseuri(const std::string& uri)
 {
-	iterator_t it_h = new SingletonIterator(yy::location(), new stringValue(uri));
+	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(uri));
 	keymap.put(default_collation_key, it_h);
 }
 
 sequence_type_t static_context::get_function_type(
-	const qname* qname_p) const
+	const Item* qname_p) const
 throw (xqp_exception)
 {
 	//stub

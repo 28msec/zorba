@@ -28,12 +28,13 @@
 #include "common.h"
 #include "context.h"
 #include "errors/Error.h"
+#include "../types/sequence_type.h"
+#include "../values/item.h"
+#include "../values/store.h"
 
 namespace xqp {
 
 class namespace_node;
-class qname;
-class value_factory;
 
 /*______________________________________________________________________
 |  
@@ -51,8 +52,7 @@ public:	// types
 	enum preserve_mode_t			 { preserve_ns, no_preserve_ns };
 
 protected:
-	value_factory* vf_p;
-
+	ItemFactory* itemFactory_p;
 	//daniel: these serve as constant global keys
 	static bool static_init;
 	static qnamekey_t default_function_ns_key;
@@ -69,22 +69,22 @@ protected:
 	static qnamekey_t baseuri_key;
 
 public:
-	static void init(value_factory*);
-	static_context( value_factory* _vf_p)
-		: vf_p(_vf_p) {}
+	static void init(ItemFactory* _itemFactory_p);
+	static_context(ItemFactory* _itemFactory_p)
+		: itemFactory_p(_itemFactory_p) {}
 
 	~static_context() {}
 
 public:
 	// XQuery 1.0 static context
-	iterator_t default_function_namespace() const;
+	Iterator_t default_function_namespace() const;
 	void set_default_function_namespace(const namespace_node*);
 
-  iterator_t namespaces() const;
-	iterator_t in_scope_schema_types() const;
-	iterator_t in_scope_element_decls() const;
-	iterator_t in_scope_attribute_decls() const;
-	iterator_t collations() const;
+  Iterator_t namespaces() const;
+	Iterator_t in_scope_schema_types() const;
+	Iterator_t in_scope_element_decls() const;
+	Iterator_t in_scope_attribute_decls() const;
+	Iterator_t collations() const;
 
 	enum construction_mode_t construction_mode() const;
 	enum order_empty_mode_t order_empty_mode() const;
@@ -98,13 +98,13 @@ public:
 	void set_inherit_mode(enum inherit_mode_t v);
 	void set_preserve_mode(enum preserve_mode_t v);
 
-	const qname& get_default_collation() const;
+	const QNameItem& get_default_collation() const;
 	void set_default_collation(const std::string&);
 
 	std::string get_baseuri() const;
 	void set_baseuri(const std::string&);
 	
-	sequence_type_t get_function_type(const qname*) 
+	sequence_type_t get_function_type(const Item*) 
 		const throw (xqp_exception);
 	sequence_type_t get_document_type(const std::string&) 
 	  const throw (xqp_exception);

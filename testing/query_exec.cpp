@@ -7,8 +7,8 @@
 #include "parser/xquery_driver.h"
 #include "errors/Error.h"
 #include "runtime/zorba.h"
-#include "zorba/zorba_value_factory.h"
 #include "timer.h"
+#include "../values/basic_item_factory.h"
 
 #include <iostream>
 
@@ -27,15 +27,15 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	zorba::initializeZorbaEngine();
 	
-	zorba_value_factory		zorbaValueFactory;
-	static_context::init(&zorbaValueFactory);
-	dynamic_context::init(&zorbaValueFactory);
+	BasicItemFactory basicItemFactory;
+	static_context::init(&basicItemFactory);
+	dynamic_context::init(&basicItemFactory);
 
 	///thread specific
 
 	zorba* zorp = zorba::allocateZorbaForNewThread();//new zorba();
-	static_context* sctx_p = new static_context(&zorbaValueFactory);//NULL);
-	dynamic_context* dctx_p = new dynamic_context(&zorbaValueFactory);//NULL);
+	static_context* sctx_p = new static_context(NULL);//NULL);
+	dynamic_context* dctx_p = new dynamic_context(NULL);//NULL);
 	//add the error manager
 	errors_english	*err_messages = new errors_english;///the english error messages
 	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages);
@@ -46,6 +46,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	zorp->set_static_context(sctx_p);
 	zorp->set_dynamic_context(dctx_p);
 	zorp->set_error_manager(err_manag);//add the error manager
+	zorp->set_value_factory(&basicItemFactory);
 
 	xquery_driver driver(cout);
 	try {
@@ -115,7 +116,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << "Codegen:\n";
 				plan_visitor pvs;
 				e_h->accept(pvs);
-				iterator_t it_h = pvs.pop_itstack();
+				Iterator_t it_h = pvs.pop_itstack();
 				cout << endl;
 
 				//cout << "iterator type = " << typeid(*it_h).name() << endl;
@@ -130,10 +131,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 					
 				while (true) {
-					item_t i_p = it_h->next();
+					Item_t i_p = it_h->next();
 					if (i_p == NULL)
 						break;
-					i_p->put(cout) << endl;
+					cout << i_p->show() << endl;
 				}
 				it_h->releaseResources();
 			}

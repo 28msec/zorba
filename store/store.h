@@ -29,15 +29,15 @@ protected:
 	const context* theContext;
 
 public:		// context-specific
-	iterator_t collection(const std::string&);
-	iterator_t document(const std::string&);
+	Iterator_t collection(const std::string&);
+	Iterator_t document(const std::string&);
 
 	bool add_document(const std::string&, const document_node&);
 	bool remove_document(const std::string&);
 
-	bool add_collection(const std::string&, iterator_t);
+	bool add_collection(const std::string&, Iterator_t);
 	bool remove_collection(const std::string&);
-	bool append_to_collection(const std::string&, iterator_t);
+	bool append_to_collection(const std::string&, Iterator_t);
 
 public:		// index interface
 	noderep* get_noderep(itemid_t) const;

@@ -51,7 +51,7 @@ class collection_resolver
 	 *   transformation fails.  Returning NULL has the same effect 
 	 *   as returning an empty iterator. 
    */
-	iterator_t resolve(
+	Iterator_t resolve(
 		static_context*,
 		std::string const& base,
 		std::string const& href)

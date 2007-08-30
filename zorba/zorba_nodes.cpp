@@ -35,13 +35,13 @@ zorba_document_node::zorba_document_node(
 }
 
 // XQuery interface
-iterator_t zorba_document_node::string_value(
+Iterator_t zorba_document_node::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
-iterator_t zorba_document_node::base_uri(
+Iterator_t zorba_document_node::base_uri(
 	yy::location &loc) const
 {
 	data_manager* dmgr_p = zorba::getZorbaForCurrentThread()->get_data_manager();
@@ -49,7 +49,7 @@ iterator_t zorba_document_node::base_uri(
 	return new SingletonIterator(loc,(item*)qn_p);
 }
 
-iterator_t zorba_document_node::document_uri(
+Iterator_t zorba_document_node::document_uri(
 	yy::location &loc) const
 {
 	data_manager* dmgr_p = zorba::getZorbaForCurrentThread()->get_data_manager();
@@ -57,19 +57,19 @@ iterator_t zorba_document_node::document_uri(
 	return new SingletonIterator(loc,(item*)qn_p);
 }
 
-iterator_t zorba_document_node::children(
+Iterator_t zorba_document_node::children(
 	yy::location &loc) const
 {
 	return new child_iterator(*this,loc);
 }
 
-iterator_t zorba_document_node::typed_value(
+Iterator_t zorba_document_node::typed_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
-iterator_t zorba_document_node::atomized_value(
+Iterator_t zorba_document_node::atomized_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->str()));
@@ -139,13 +139,13 @@ zorba_element_node::zorba_element_node(
 }
 
 // XQuery interface
-iterator_t zorba_element_node::string_value(
+Iterator_t zorba_element_node::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
-iterator_t zorba_element_node::base_uri(
+Iterator_t zorba_element_node::base_uri(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -154,7 +154,7 @@ iterator_t zorba_element_node::base_uri(
 	return n_p->base_uri(loc);
 }
 
-iterator_t zorba_element_node::type_name(
+Iterator_t zorba_element_node::type_name(
 	yy::location &loc) const
 {
 	const qname* qn_p = get_type_name();
@@ -163,7 +163,7 @@ iterator_t zorba_element_node::type_name(
 	return new SingletonIterator(loc,(item*)qn_p);
 }
 
-iterator_t zorba_element_node::node_name(
+Iterator_t zorba_element_node::node_name(
 	yy::location &loc) const
 {
 	const qname* qn_p = get_node_name();
@@ -172,7 +172,7 @@ iterator_t zorba_element_node::node_name(
 	return new SingletonIterator(loc,(item*)qn_p);
 }
 
-iterator_t zorba_element_node::parent(
+Iterator_t zorba_element_node::parent(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -181,31 +181,31 @@ iterator_t zorba_element_node::parent(
 	return new SingletonIterator(loc,(item*)n_p);
 }
 
-iterator_t zorba_element_node::typed_value(
+Iterator_t zorba_element_node::typed_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
 }
 
-iterator_t zorba_element_node::atomized_value(
+Iterator_t zorba_element_node::atomized_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
 }
 
-iterator_t zorba_element_node::attributes(
+Iterator_t zorba_element_node::attributes(
 	yy::location &loc) const
 {
 	return new attribute_iterator(*this,loc);
 }
 
-iterator_t zorba_element_node::children(
+Iterator_t zorba_element_node::children(
 	yy::location &loc) const
 {
 	return new child_iterator(*this,loc);
 }
 
-iterator_t zorba_element_node::namespace_nodes(
+Iterator_t zorba_element_node::namespace_nodes(
 	yy::location &loc) const
 {
 	return new namespace_iterator(*this,loc);
@@ -271,13 +271,13 @@ zorba_attribute_node::zorba_attribute_node(
 }
 
 // XQuery interface
-iterator_t zorba_attribute_node::string_value(
+Iterator_t zorba_attribute_node::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
-iterator_t zorba_attribute_node::base_uri(
+Iterator_t zorba_attribute_node::base_uri(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -286,7 +286,7 @@ iterator_t zorba_attribute_node::base_uri(
 	return n_p->base_uri(loc);
 }
 
-iterator_t zorba_attribute_node::type_name(
+Iterator_t zorba_attribute_node::type_name(
 	yy::location &loc) const
 {
 	const qname* qn_p = get_type_name();
@@ -295,7 +295,7 @@ iterator_t zorba_attribute_node::type_name(
 	return new SingletonIterator(loc,(item*)qn_p);
 }
 
-iterator_t zorba_attribute_node::node_name(
+Iterator_t zorba_attribute_node::node_name(
 	yy::location &loc) const
 {
 	const qname* qn_p = get_node_name();
@@ -304,7 +304,7 @@ iterator_t zorba_attribute_node::node_name(
 	return new SingletonIterator(loc,(item*)qn_p);
 }
 
-iterator_t zorba_attribute_node::parent(
+Iterator_t zorba_attribute_node::parent(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -313,13 +313,13 @@ iterator_t zorba_attribute_node::parent(
 	return new SingletonIterator(loc,(item*)n_p);
 }
 
-iterator_t zorba_attribute_node::typed_value(
+Iterator_t zorba_attribute_node::typed_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
 }
 
-iterator_t zorba_attribute_node::atomized_value(
+Iterator_t zorba_attribute_node::atomized_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
@@ -355,25 +355,25 @@ zorba_namespace_node::zorba_namespace_node(
 }
 
 // XQuery interface
-iterator_t zorba_namespace_node::string_value(
+Iterator_t zorba_namespace_node::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->uri()));
 }
 
-iterator_t zorba_namespace_node::node_name(
+Iterator_t zorba_namespace_node::node_name(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->prefix()));
 }
 
-iterator_t zorba_namespace_node::typed_value(
+Iterator_t zorba_namespace_node::typed_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
 }
 
-iterator_t zorba_namespace_node::atomized_value(
+Iterator_t zorba_namespace_node::atomized_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
@@ -409,25 +409,25 @@ zorba_pi_node::zorba_pi_node(
 }
 
 // XQuery interface
-iterator_t zorba_pi_node::string_value(
+Iterator_t zorba_pi_node::string_value(
 	yy::location &loc) const 
 {
 	return new SingletonIterator(loc,new stringValue(rep->content()));
 }
 
-iterator_t zorba_pi_node::typed_value(
+Iterator_t zorba_pi_node::typed_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
 }
 
-iterator_t zorba_pi_node::atomized_value(
+Iterator_t zorba_pi_node::atomized_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
 }
 
-iterator_t zorba_pi_node::base_uri(
+Iterator_t zorba_pi_node::base_uri(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -436,7 +436,7 @@ iterator_t zorba_pi_node::base_uri(
 	return n_p->base_uri(loc);
 }
 
-iterator_t zorba_pi_node::node_name(
+Iterator_t zorba_pi_node::node_name(
 	yy::location &loc) const
 {
 	const qname* qn_p = get_node_name();
@@ -445,7 +445,7 @@ iterator_t zorba_pi_node::node_name(
 	return new SingletonIterator(loc,(item*)qn_p);
 }
 
-iterator_t zorba_pi_node::parent(
+Iterator_t zorba_pi_node::parent(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -486,13 +486,13 @@ zorba_comment_node::zorba_comment_node(
 }
 
 // XQuery interface
-iterator_t zorba_comment_node::string_value(
+Iterator_t zorba_comment_node::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
-iterator_t zorba_comment_node::base_uri(
+Iterator_t zorba_comment_node::base_uri(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -501,13 +501,13 @@ iterator_t zorba_comment_node::base_uri(
 	return n_p->base_uri(loc);
 }
 
-iterator_t zorba_comment_node::typed_value(
+Iterator_t zorba_comment_node::typed_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,(item*)this);
 }
 
-iterator_t zorba_comment_node::atomized_value(
+Iterator_t zorba_comment_node::atomized_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
@@ -549,13 +549,13 @@ zorba_text_node::zorba_text_node(
 
 
 // XQuery interface
-iterator_t zorba_text_node::string_value(
+Iterator_t zorba_text_node::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(rep->str()));
 }
 
-iterator_t zorba_text_node::base_uri(
+Iterator_t zorba_text_node::base_uri(
 	yy::location &loc) const
 {
 	const node* n_p = get_parent();
@@ -564,13 +564,13 @@ iterator_t zorba_text_node::base_uri(
 	return n_p->base_uri(loc);
 }
 
-iterator_t zorba_text_node::typed_value(
+Iterator_t zorba_text_node::typed_value(
 	yy::location &loc) const
 {
 	return string_value(loc);
 }
 
-iterator_t zorba_text_node::atomized_value(
+Iterator_t zorba_text_node::atomized_value(
 	yy::location &loc) const
 {
 	return string_value(loc);

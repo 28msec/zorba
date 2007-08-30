@@ -12,17 +12,21 @@
 */
 
 #include <string>
+#include <vector>
+
 #include "errors.h"
 #include "xqp_exception.h"
 #include "util/rchandle.h"
 #include "parser/location.hh"
 //#include "runtime/zorba.h"
-#include <vector>
+#include "../values/item.h"
+#include "../values/atomic_items.h"
 
 using namespace std;
 namespace xqp {
 
 class zorba;
+class QNameItem;
 
 class ZorbaErrorAlerts : public rcobject
 {
@@ -95,16 +99,16 @@ public:
 
 
 
-	static void user_error (class qname *err_qname,///optional
+	static void user_error (QNameItem* err_qname,///optional
 													const std::string description,//optional
-													const std::vector<class item*> *items);//optional
+													const std::vector<class Item*> *items);//optional
 
-	static void user_trace ( const std::vector<class item*> *items,
+	static void user_trace ( const std::vector<class Item*> *items,
 													const std::string label);
 	
 private:
 	static void DumpItemsAsText( 
-										 const std::vector<class item*> *items);
+										 const std::vector<class Item*> *items);
 };
 
 }

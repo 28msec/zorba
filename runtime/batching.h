@@ -24,18 +24,18 @@
 #ifndef XQP_BATCHING_H
 #define XQP_BATCHING_H
 
-#include "context/common.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "parser/location.hh"
 #include "parser/indent.h"
+#include "values/item.h"
 
 #include "utf8/xqpString.h"
 
 #include <assert.h>
 #include <iostream>
 
-// Info: Forcing inlining a function in g++: item_t next() __attribute__((always_inline)) {...}
+// Info: Forcing inlining a function in g++: Item_t next() __attribute__((always_inline)) {...}
 
 //0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
 #define BATCHING_TYPE 0
@@ -52,7 +52,16 @@
 
 namespace xqp {
 
-	extern int iteratorTreeDepth;
+class Item;
+typedef rchandle<Item> Item_t;
+
+class BasicIterator;
+class node;
+class zorba;
+
+typedef rchandle<BasicIterator> Iterator_t;
+
+	extern int32_t iteratorTreeDepth;
 	
 class OldIterator : public rcobject {
 protected:
@@ -73,7 +82,7 @@ protected:
 	// dispatch to concrete classes
 	virtual void _open() {
 	}
-	virtual item_t _next() {
+	virtual Item_t _next() {
 		return NULL;
 	}
 	virtual void _close() {
@@ -86,17 +95,12 @@ protected:
 #define STACK_PUSH(x) do { current_line = __LINE__; return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL;
 
-class item;
-class node;
-class qname;
-class zorba;
-
 class BasicIterator : public OldIterator
 {
 protected:
 
 	// Line Info for Duff's device
-	int current_line;
+	int32_t current_line;
 	zorba *zorp;
 public:
 	yy::location loc;
@@ -111,13 +115,13 @@ public:
 	/**
 	 * This is the wrapper which works for any kind of batching
 	 */
-	item_t next();
+	Item_t next();
 
 	/** Produces an output item of the iterator. Implicitly, the first call 
 	 * of 'producNext' initializes the iterator and allocates resources 
 	 * (main memory, file descriptors, etc.). 
 	 */
-	virtual item_t produceNext();
+	virtual Item_t produceNext();
 
 	/** 
 	 * Restarts the iterator so that the next 'produceNext' call will start 
@@ -133,15 +137,15 @@ public:
 	std::ostream& show(std::ostream&);
 
 protected:
-	inline void resetChild(iterator_t& subIterator) {
+	inline void resetChild(Iterator_t& subIterator) {
 		subIterator->reset();
 	}
 
-	inline item_t consumeNext(iterator_t& subIter) {
+	inline Item_t consumeNext(Iterator_t& subIter) {
 		return subIter->produceNext();
 	}
 
-	inline void releaseChildResources(iterator_t& subIterator) {
+	inline void releaseChildResources(Iterator_t& subIterator) {
 		subIterator->releaseResources();
 	}
 
@@ -161,7 +165,7 @@ public:
 	/**
 	 * This method should be abstract. Only because of compatibility issues we implemented it
 	 */
-	item_t produceNext() {
+	Item_t produceNext() {
 		return static_cast<IterType*>(this)->nextImpl();
 	}
 
@@ -175,7 +179,7 @@ public:
 	}
 
 public:
-	inline item_t nextImpl();
+	inline Item_t nextImpl();
 	inline void resetImpl();
 	inline void releaseResourcesImpl();
 };
@@ -188,21 +192,16 @@ public:
 
 #define BATCHSIZE 50
 
-class item;
-class node;
-class qname;
-class zorba;
-
 class BasicIterator : public OldIterator {
 protected:
 	// Line Info for Duff's device
-	int current_line;
+	int32_t current_line;
 	zorba *zorp;
 
 public:
 	yy::location loc;
-	int cItem;
-	item_t batch [BATCHSIZE];
+	int32_t cItem;
+	Item_t batch [BATCHSIZE];
 
 public:
 	//daniel BasicIterator() : zorp(NULL), open_b(false) {}
@@ -226,16 +225,16 @@ public:
 	/**
 	 * This is the wrapper which works for any kind of batching
 	 */
-	item_t next();
+	Item_t next();
 
 	std::ostream& show(std::ostream&);
 
 protected:
-	inline void resetChild(iterator_t& subIterator){
+	inline void resetChild(Iterator_t& subIterator){
 		subIterator->reset();
 	}
 	
-	inline item_t consumeNext(iterator_t& subIter) {
+	inline Item_t consumeNext(Iterator_t& subIter) {
 		if (subIter->cItem == BATCHSIZE) {
 			subIter->produceNext();
 			subIter->cItem = 0;
@@ -243,7 +242,7 @@ protected:
 		return subIter->batch[subIter->cItem++];
 	}
 	
-	inline void releaseChildResources(iterator_t& subIterator){
+	inline void releaseChildResources(Iterator_t& subIterator){
 		subIterator->releaseResources();
 	}
 
@@ -261,7 +260,7 @@ public:
 
 public:
 	void produceNext() {
-		int i = 0;
+		int32_t i = 0;
 		batch[0] = static_cast<IterType*>(this)->nextImpl();
 		while (i < BATCHSIZE && batch[i] != NULL) {
 			i++;
@@ -280,7 +279,7 @@ public:
 	}
 
 public:
-	inline item_t nextImpl();
+	inline Item_t nextImpl();
 	inline void resetImpl();
 	inline void releaseResourcesImpl();
 };

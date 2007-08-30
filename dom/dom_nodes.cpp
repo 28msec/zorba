@@ -19,7 +19,7 @@ namespace xqp {
 // --------
 
 // XQuery interface
-iterator_t dom_node::parent(
+Iterator_t dom_node::parent(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc, (item*)parent_p);
@@ -39,34 +39,34 @@ string dom_node::get_document_uri() const
 
 
 // XQuery interface
-iterator_t dom_node::string_value(yy::location &loc) const
+Iterator_t dom_node::string_value(yy::location &loc) const
 {
 	return new SingletonIterator(loc, new stringValue(str()));
 }
 
-iterator_t dom_node::base_uri(yy::location &loc) const
+Iterator_t dom_node::base_uri(yy::location &loc) const
 {
 	return new SingletonIterator(loc, new stringValue(get_base_uri()));
 }
 
-iterator_t dom_node::document_uri(yy::location &loc) const
+Iterator_t dom_node::document_uri(yy::location &loc) const
 {
 	return new SingletonIterator(loc, new stringValue(get_document_uri()));
 }
 
-iterator_t dom_node::node_name(
+Iterator_t dom_node::node_name(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc, (item*)get_node_name());
 }
 
-iterator_t dom_node::type_name(
+Iterator_t dom_node::type_name(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc, (item*)get_type_name());
 }
 
-iterator_t dom_node::typed_value(yy::location &loc) const
+Iterator_t dom_node::typed_value(yy::location &loc) const
 {
 	return string_value(loc);
 }
@@ -92,7 +92,7 @@ dom_document_node::dom_document_node(
 {}
 
 // XQuery interface
-iterator_t dom_document_node::children(yy::location &loc) const
+Iterator_t dom_document_node::children(yy::location &loc) const
 {
 	return new dom_child_iterator(*this, loc);
 }
@@ -102,10 +102,10 @@ iterator_t dom_document_node::children(yy::location &loc) const
 string dom_document_node::str() const 
 {
 	ostringstream oss;
-	iterator_t it_h = children( zorba::getZorbaForCurrentThread()->GetCurrentLocation());
+	Iterator_t it_h = children( zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
-		item_t dn_h = it_h->next();
+		Item_t dn_h = it_h->next();
 		oss << dn_h->str();
 	}
 	it_h->close();
@@ -136,10 +136,10 @@ const qname* dom_document_node::get_type_name() const
 ostream& dom_document_node::put(
 	ostream& os) const
 {
-	iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
+	Iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
-		item_t dn_h = it_h->next();
+		Item_t dn_h = it_h->next();
 		os << dn_h->str();
 	}
 	it_h->close();
@@ -149,10 +149,10 @@ ostream& dom_document_node::put(
 string dom_document_node::toXML() const
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
+	Iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
-		item_t i_h = it_h->next();
+		Item_t i_h = it_h->next();
 		dom_node* dn_p = dynamic_cast<dom_node*>(&*i_h);
 		oss << dn_p->toXML();
 	}
@@ -199,10 +199,10 @@ dom_element_node::dom_element_node(
 std::string dom_element_node::str() const
 {
 	ostringstream oss;
-	iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
+	Iterator_t it_h = children(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
 	it_h->open();
 	while (!it_h->done()) {
-		item_t dn_h = it_h->next();
+		Item_t dn_h = it_h->next();
 		oss << dn_h->str();
 	}
 	it_h->close();
@@ -244,7 +244,7 @@ void dom_element_node::add_child(
 
 
 // XQuery interface
-iterator_t dom_element_node::typed_value(yy::location &loc) const
+Iterator_t dom_element_node::typed_value(yy::location &loc) const
 {
 	if (value_p) {
 		return new SingletonIterator(loc,value_p);
@@ -253,17 +253,17 @@ iterator_t dom_element_node::typed_value(yy::location &loc) const
 	}
 }
 
-iterator_t dom_element_node::attributes(yy::location &loc) const
+Iterator_t dom_element_node::attributes(yy::location &loc) const
 {
 	return new dom_attribute_iterator(*this,loc);
 }
 
-iterator_t dom_element_node::children(yy::location &loc) const
+Iterator_t dom_element_node::children(yy::location &loc) const
 {
 	return new dom_child_iterator(*this,loc);
 }
 
-iterator_t dom_element_node::namespace_nodes(yy::location &loc) const
+Iterator_t dom_element_node::namespace_nodes(yy::location &loc) const
 {
 	return new dom_namespace_iterator(*this,loc);
 }

@@ -73,19 +73,19 @@ string qnamerep::describe() const
 	return oss.str();
 }
 
-iterator_t qnamerep::atomized_value(
+Iterator_t qnamerep::atomized_value(
 	yy::location &loc) const
 {
 	return NULL;
 }
 
-iterator_t qnamerep::effective_boolean_value(
+Iterator_t qnamerep::effective_boolean_value(
 	yy::location &loc) const
 {
 	return NULL;
 }
 
-iterator_t qnamerep::string_value(
+Iterator_t qnamerep::string_value(
 	yy::location &loc) const
 {
 	ostringstream oss;

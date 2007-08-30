@@ -14,7 +14,7 @@
 #include "context/common.h"
 #include "store/itemstore.h"
 #include "util/hashfun.h"
-#include "values/values.h"
+#include "values/item.h"
 #include "values/xs_primitive_values.h"
 
 using namespace std;
@@ -71,19 +71,19 @@ string zorba_qname::str() const
 	return oss.str();
 }
 
-iterator_t zorba_qname::atomized_value(
+Iterator_t zorba_qname::atomized_value(
 	yy::location &loc) const
 {
 	return NULL;
 }
 
-iterator_t zorba_qname::effective_boolean_value(
+Iterator_t zorba_qname::effective_boolean_value(
 	yy::location &loc) const
 {
 	return NULL;
 }
 
-iterator_t zorba_qname::string_value(
+Iterator_t zorba_qname::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc,new stringValue(describe()));

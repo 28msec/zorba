@@ -216,9 +216,9 @@ YY denotes the error category, using the following encoding:
 nnnn is a unique numeric code.
 
 */
-void ZorbaErrorAlerts::user_error (class qname *err_qname,///optional
+void ZorbaErrorAlerts::user_error (QNameItem* err_qname,///optional
 													const std::string description,//optional
-													const std::vector<class item*> *items)//optional
+													const std::vector<class Item*> *items)//optional
 {
 	std::string err_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
@@ -228,8 +228,8 @@ void ZorbaErrorAlerts::user_error (class qname *err_qname,///optional
 		std::string	err_uri;
 		std::string	err_localname;
 
-		err_uri = err_qname->uri();
-		err_localname = err_qname->localname();
+		err_uri = err_qname->getQNameNamespace();
+		err_localname = err_qname->getQNameLocalName();
 
 		if(err_uri == "http://www.w3.org/2005/xqt-errors")///a standard error
 		{
@@ -253,7 +253,7 @@ void ZorbaErrorAlerts::user_error (class qname *err_qname,///optional
 }
 
 void ZorbaErrorAlerts::user_trace ( 
-																		const std::vector<class item*> *items,
+																		const std::vector<class Item*> *items,
 																		const std::string label)
 {
 	///...send notification message label + items to user
@@ -261,14 +261,14 @@ void ZorbaErrorAlerts::user_trace (
 	DumpItemsAsText(items);
 }
 
-void ZorbaErrorAlerts::DumpItemsAsText( const std::vector<class item*> *items)
+void ZorbaErrorAlerts::DumpItemsAsText( const std::vector<class Item*> *items)
 {
-	std::vector<class item*>::const_iterator item_it;
+	std::vector<class Item*>::const_iterator item_it;
 
 	for ( item_it = items->begin( ) ; item_it != items->end( ) ; item_it++ )
 	{
 		cout	<< " =-= " 
-					<< (*item_it)->describe() 
+					<< (*item_it)->getStringProperty() 
 					<< "[0x" << hex << (void*)(*item_it) << "]";
 	}
 

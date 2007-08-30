@@ -35,9 +35,9 @@ public:
 	~fn_boolean() {}
 
 public:
-	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<iterator_t>&) const;
+	bool validate_args(std::vector<Iterator_t>&) const;
 };
 }
 

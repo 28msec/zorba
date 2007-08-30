@@ -19,7 +19,7 @@ namespace xqp {
 fxhashmap<signature const*> signature::sigmap;
 
 signature::signature(
-	const qname* _qname_p,
+	const Item* _qname_p,
 	sequence_type_t return_type)
 :
 	qname_p(_qname_p)
@@ -28,7 +28,7 @@ signature::signature(
 }
 
 signature::signature(
-	const qname* _qname_p,
+	const Item* _qname_p,
 	sequence_type_t arg1,
 	sequence_type_t return_type)
 :
@@ -39,7 +39,7 @@ signature::signature(
 }
 
 signature::signature(
-	const qname* _qname_p,
+	const Item* _qname_p,
 	sequence_type_t arg1,
 	sequence_type_t arg2,
 	sequence_type_t return_type)
@@ -52,7 +52,7 @@ signature::signature(
 }
 
 signature::signature(
-	const qname* _qname_p,
+	const Item* _qname_p,
 	sequence_type_t arg1,
 	sequence_type_t arg2,
 	sequence_type_t arg3,
@@ -67,7 +67,7 @@ signature::signature(
 }
 
 signature::signature(
-	const qname* _qname_p,
+	const Item* _qname_p,
 	sequence_type_t arg1,
 	sequence_type_t arg2,
 	sequence_type_t arg3,
@@ -84,7 +84,7 @@ signature::signature(
 }
 
 signature::signature(
-	const qname* _qname_p,
+	const Item* _qname_p,
 	const vector<sequence_type_t>& _argv)
 :
 	qname_p(_qname_p),

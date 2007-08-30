@@ -28,7 +28,6 @@
 #include "../errors/Error.h"
 
 namespace xqp {
-
 /*_____________________________________________________________
 |
 |  A raw array of memory-mapped bytes.

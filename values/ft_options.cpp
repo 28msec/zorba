@@ -8,6 +8,8 @@
  *
  */
 
+// TODO move into store/api/fullText
+
 #include "ft_options.h"
 
 using namespace std;

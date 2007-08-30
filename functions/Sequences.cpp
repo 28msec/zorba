@@ -22,16 +22,14 @@
 #include "SequencesImpl.h"
 
 #include "context/static_context.h"
-#include "dom/dom_xml_handler.h"
-#include "dom/dom_nodes.h"
+// #include "dom/dom_xml_handler.h"
+// #include "dom/dom_nodes.h"
 #include "runtime/zorba.h"
 #include "store/scan_handler.h"
 #include "store/xml_scanner.h"
 #include "types/sequence_type.h"
 #include "util/file.h"
 #include "util/tracer.h"
-#include "values/qname.h"
-#include "values/value_factory.h"
 
 #include <iostream>
 
@@ -67,16 +65,16 @@ op_concatenate::op_concatenate(
 {
 }
 
-iterator_t op_concatenate::operator()(
+Iterator_t op_concatenate::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ConcatIterator(loc,argv);
 }
 
 bool op_concatenate::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return true;
 }
@@ -120,9 +118,9 @@ sequence_type_t op_concatenate::type_check(
 fn_index_of::fn_index_of(const signature& sig)
 : function(sig) { }
 
-iterator_t fn_index_of::operator()(
+Iterator_t fn_index_of::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 
@@ -141,7 +139,7 @@ iterator_t fn_index_of::operator()(
 }
 
 bool fn_index_of::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (argv.size()==2 || argv.size()==3) return true;
 	return false;
@@ -159,15 +157,15 @@ sequence_type_t fn_index_of::type_check(
 fn_empty::fn_empty(const signature& sig)
 : function(sig) { }
 
-iterator_t fn_empty::operator()(
+Iterator_t fn_empty::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_empty::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return true;
 }
@@ -184,15 +182,15 @@ sequence_type_t fn_empty::type_check(
 fn_exists::fn_exists(const signature& sig)
 : function(sig) { }
 
-iterator_t fn_exists::operator()(
+Iterator_t fn_exists::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_exists::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return true;
 }
@@ -211,15 +209,15 @@ fn_distinct_values::fn_distinct_values(
 :
 	function(sig) { }
 
-iterator_t fn_distinct_values::operator()(
+Iterator_t fn_distinct_values::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_distinct_values::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return true;
 }
@@ -244,15 +242,15 @@ sequence_type_t fn_distinct_values::type_check(
 fn_reverse::fn_reverse(const signature& sig)
 : function(sig) { }
 
-iterator_t fn_reverse::operator()(
+Iterator_t fn_reverse::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_reverse::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return true;
 }
@@ -269,15 +267,15 @@ sequence_type_t fn_reverse::type_check(
 fn_subsequence::fn_subsequence(const signature& sig)
 : function(sig) { }
 
-iterator_t fn_subsequence::operator()(
+Iterator_t fn_subsequence::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_subsequence::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return true;
 }
@@ -357,16 +355,16 @@ fn_doc_func::fn_doc_func(
 {
 }
 
-iterator_t fn_doc_func::operator()(
+Iterator_t fn_doc_func::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new doc_iterator(loc, argv[0]);
 }
   
 bool fn_doc_func::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (argv.size()!=1) return false;
 	return true;

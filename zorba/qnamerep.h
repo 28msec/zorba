@@ -10,7 +10,7 @@
 #ifndef XQP_QNAMEREP_H
 #define XQP_QNAMEREP_H
 
-#include "values/values.h"
+#include "values/item.h"
 #include "context/common.h"
 #include <string>
 
@@ -44,9 +44,9 @@ public:
 
 public: 	// XQuery atomic_value
 	sequence_type_t type() const { return xs_qname; }
-	iterator_t atomized_value( yy::location &loc) const;
-	iterator_t effective_boolean_value( yy::location &loc) const;
-	iterator_t string_value( yy::location &loc) const;
+	Iterator_t atomized_value( yy::location &loc) const;
+	Iterator_t effective_boolean_value( yy::location &loc) const;
+	Iterator_t string_value( yy::location &loc) const;
 
 	bool is_empty() const { return false; }
 	bool is_node() const { return false; }

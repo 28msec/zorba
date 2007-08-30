@@ -103,7 +103,7 @@ BasicIterator::~BasicIterator() {
 /**
  * This method should be abstract. Only because of compatibility issues we implemented it
  */
-item_t BasicIterator::produceNext() {
+Item_t BasicIterator::produceNext() {
 	ZorbaErrorAlerts::error_alert(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
@@ -119,7 +119,7 @@ std::ostream& BasicIterator::show(std::ostream& os) {
 	return os;
 }
 
-item_t BasicIterator::next() {
+Item_t BasicIterator::next() {
 	return produceNext();
 }
 
@@ -163,7 +163,7 @@ void BasicIterator::produceNext() {
 				);
 }
 
-item_t BasicIterator::next() {
+Item_t BasicIterator::next() {
 	if (cItem == BATCHSIZE) {
 		produceNext();
 		cItem = 0;

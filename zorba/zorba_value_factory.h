@@ -13,8 +13,8 @@
 #include "context/common.h"
 //#include "types/sequence_type.h"
 #include "util/rchandle.h"
-#include "values/values.h"
-#include "values/value_factory.h"
+#include "values/item.h"
+#include "values/item_factory.h"
 
 namespace xqp {
 
@@ -77,7 +77,7 @@ public:
 	rchandle<atomic_value> make_xs_unsignedLong(unsigned long);
 	rchandle<atomic_value> make_xs_unsignedShort(uint16_t);
 
-	//static atomic_value* cast_as(iterator_t,sequence_type_t);
+	//static atomic_value* cast_as(Iterator_t,sequence_type_t);
 
 };
 

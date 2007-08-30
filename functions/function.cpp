@@ -23,9 +23,9 @@ public:
 	~testfun() {}
 
 public:
-	iterator_t operator()(zorba*,vector<iterator_t>&) const { return NULL; }
+	Iterator_t operator()(zorba*,vector<Iterator_t>&) const { return NULL; }
 	sequence_type_t type_check(signature& sig) const { return xs_untypedValue; }
-	bool validate_args(vector<iterator_t>& arglist) const { return true; }
+	bool validate_args(vector<Iterator_t>& arglist) const { return true; }
 
 };
 

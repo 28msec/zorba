@@ -14,7 +14,6 @@
 #include "context/common.h"
 #include "runtime/item_iterator.h"
 #include "runtime/zorba.h"
-#include "values/qname.h"
 #include "util/rchandle.h"
 
 #include <string>
@@ -34,17 +33,17 @@ public:
 
 public:
 	// XQuery signature (name+arity)
-	const qname* get_fname() const { return sig.get_name(); }
+	const Item* get_fname() const { return sig.get_name(); }
 	void set_signature(signature& _sig) { sig = _sig; }
 
 	// codegen: functor specification
-	virtual iterator_t operator()(yy::location loc, std::vector<iterator_t>& argv) const = 0;
+	virtual Iterator_t operator()(yy::location loc, std::vector<Iterator_t>& argv) const = 0;
 
 	// polymorphic type inference
 	virtual sequence_type_t type_check(signature&) const = 0;
 
 	// runtime arg validation: XXX move this out
-	virtual bool validate_args(std::vector<iterator_t>& argv) const = 0;
+	virtual bool validate_args(std::vector<Iterator_t>& argv) const = 0;
 
 };
 

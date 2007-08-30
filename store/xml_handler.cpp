@@ -13,7 +13,7 @@
 #include "../context/common.h"
 #include "../context/context.h"
 #include "../runtime/zorba.h"
-#include "../values/values.h"
+#include "../values/item.h"
 //daniel #include "../errors/xqp_exception.h"
 #include "../util/tokenbuf.h"
 #include "../util/tracer.h"

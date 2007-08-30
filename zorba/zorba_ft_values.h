@@ -10,7 +10,7 @@
 #ifndef XQP_FTVALUES_H
 #define XQP_FTVALUES_H
 
-#include "values.h"
+#include "item.h"
 #include "ft_options.h"
 #include "../util/rchandle.h"
 

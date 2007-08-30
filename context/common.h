@@ -44,6 +44,7 @@
 
 #include <string>
 
+
 using namespace std;
 namespace xqp {
 
@@ -66,21 +67,6 @@ typedef uint32_t offset_t;    // itemstore short offset
 #define XQUERY_PRE		"xqy"
 #define NONAMESPACE		"http://nonamespace/"
 #define NONS_PREFIX		"no-ns"
-
-// item type
-class item;
-typedef rchandle<item> item_t;
-
-// iterator types
-class BasicIterator;
-typedef rchandle<BasicIterator> iterator_t;
-
-class SingletonIterator;
-typedef rchandle<SingletonIterator> singleton_t;
-
-class var_iterator;
-typedef rchandle<var_iterator> var_iter_t;
-
 
 typedef struct qnamekeyref
 {

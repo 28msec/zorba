@@ -10,8 +10,7 @@
 #ifndef XQP_UPDATE_VALUES_H
 #define XQP_UPDATE_VALUES_H
 
-#include "values.h"
-#include "nodes.h"
+#include "item.h"
 #include "runtime/item_iterator.h"
 #include "util/rchandle.h"
 
@@ -31,7 +30,6 @@
 
 namespace xqp {
 
-class qname;
 
 
 /*______________________________________________________________________
@@ -41,7 +39,7 @@ class qname;
 |	[http://http://www.w3.org/TR/xqupdate/]
 |_______________________________________________________________________*/
 
-class update_value :	public object
+class update_value :	virtual public rcobject
 {
 protected:
 	const node* target_p;
@@ -80,7 +78,7 @@ public:
 	~insert_before_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -108,7 +106,7 @@ public:
 	~insert_after_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -135,7 +133,7 @@ public:
 	~insert_into_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -162,7 +160,7 @@ public:
 	~insert_into_as_first_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -189,7 +187,7 @@ public:
 	~insert_into_as_last_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -201,17 +199,17 @@ public:
 class insert_attributes_value : public update_value
 {
 protected:
-	const std::vector<const attribute_node*>& content_pv;
+	const std::vector<const Item*>& content_pv;
 
 public:
 	insert_attributes_value(
-		const node* target_p,
-		const std::vector<const attribute_node*>& content_pv);
+		const Item* target_p,
+		const std::vector<const Item*>& content_pv);
 
 	~insert_attributes_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -224,7 +222,7 @@ class delete_value :	public update_value
 {
 public:
 	delete_value(
-		const node* target_p);
+		const Item* target_p);
 
 	~delete_value();
 
@@ -245,17 +243,17 @@ public:
 class replace_node_value :	public update_value
 {
 protected:
-	const std::vector<const node*>& content_pv;
+	const std::vector<const Item*>& content_pv;
 
 public:
 	replace_node_value(
-		const node* target_p,
-		const std::vector<const node*>& content_pv);
+		const Item* target_p,
+		const std::vector<const Item*>& content_pv);
 
 	~replace_node_value();
 
 public:
-	iterator_t new_nodes() const;
+	Iterator_t new_nodes() const;
 
 };
 
@@ -274,7 +272,7 @@ protected:
 
 public:
 	replace_value_value(
-		const node* target_p,
+		const Item* target_p,
 		const std::string& content);
 
 	~replace_value_value();
@@ -292,17 +290,17 @@ public:
 class replace_element_content_value : public update_value
 {
 protected:
-	const text_node* theContent;
+	const Item* theContent;
 	
 public:
 	replace_element_content_value(
-		const node* target_p,
-		const text_node*);
+		const Item* target_p,
+		const Item*);
 
 	~replace_element_content_value();
 
 public:
-	const text_node* content() const { return theContent; }
+	const Item* content() const { return theContent; }
 
 };
 
@@ -314,12 +312,12 @@ public:
 class rename_value :	public update_value
 {
 protected:
-	const qname* theName;
+	const Item* theName;
 
 public:
 	rename_value(
-		const node* target_p,
-		const qname*);
+		const Item* target_p,
+		const Item*);
 
 	~rename_value();
 

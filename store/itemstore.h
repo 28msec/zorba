@@ -16,7 +16,6 @@
 #include "context/common.h"
 #include "util/fxvector.h"
 #include "util/fxhashmap.h"
-#include "values/primitive_values.h"
 #include "zorba/qnamerep.h"
 
 #include <string>
@@ -103,15 +102,15 @@ public:
 public:		// data manager interface
 
 	// documents
-	iterator_t document(const std::string&);
+	Iterator_t document(const std::string&);
 	bool add_document(const std::string&, const document_node&);
 	bool remove_document(const std::string&);
 
 	// collections
-	iterator_t collection(const std::string&);
-	bool add_collection(const std::string&, iterator_t);
+	Iterator_t collection(const std::string&);
+	bool add_collection(const std::string&, Iterator_t);
 	bool remove_collection(const std::string&);
-	bool append_to_collection(const std::string&, iterator_t);
+	bool append_to_collection(const std::string&, Iterator_t);
 
 	// updates
 	void apply(const update_value*);

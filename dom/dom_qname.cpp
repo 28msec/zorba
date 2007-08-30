@@ -10,7 +10,6 @@
 #include "dom_qname.h"
 #include "runtime/item_iterator.h"
 #include "util/hashfun.h"
-#include "values/primitive_values.h"
 //#include "zorba/valuereps.h"
 
 #include <string>
@@ -84,19 +83,19 @@ string dom_qname::str() const
 	return oss.str();
 }
 
-iterator_t dom_qname::effective_boolean_value(
+Iterator_t dom_qname::effective_boolean_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc, new booleanValue(true));
 }
 
-iterator_t dom_qname::string_value(
+Iterator_t dom_qname::string_value(
 	yy::location &loc) const
 {
 	return new SingletonIterator(loc, new stringValue(str()));
 }
 
-iterator_t dom_qname::atomized_value(
+Iterator_t dom_qname::atomized_value(
 	yy::location &loc) const
 {
 	return string_value(loc);

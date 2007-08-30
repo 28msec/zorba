@@ -16,7 +16,6 @@
 //daniel #include "runtime/errors.h"
 #include "store/data_manager.h"
 #include "util/rchandle.h"
-#include "values/value_factory.h"
 #include "errors/Error.h"
 
 #include <stack>
@@ -34,7 +33,7 @@ class zorba : public rcobject
 {
 protected:
 	rchandle<data_manager> theDataManager;
-	rchandle<value_factory> theValueFactory;  // move to data_manager
+	rchandle<ItemFactory> theValueFactory;  // move to data_manager
 	rchandle<static_context> theStaticContext;
 	rchandle<dynamic_context> theDynamicContext;
 	// requestor identity, for concurrency
@@ -54,7 +53,7 @@ public:
 
 	zorba(
 		rchandle<data_manager>,
-		rchandle<value_factory>,
+		rchandle<ItemFactory>,
 		rchandle<static_context>,
 		rchandle<dynamic_context>,
 		rchandle<ZorbaErrorAlerts>);
@@ -63,21 +62,21 @@ public:
 
 public:
 	data_manager* get_data_manager() const { return &*theDataManager; }
-	value_factory* get_value_factory() const { return &*theValueFactory; }
+	ItemFactory* getItemFactory() const { return &*theValueFactory; }
 	static_context* get_static_context() const { return &*theStaticContext; }
 	dynamic_context* get_dynamic_context() const { return &*theDynamicContext; }
 	//daniel
 	ZorbaErrorAlerts* get_error_manager() const { return &*error_manager; }
 
 	void set_data_manager(data_manager* v) { theDataManager = v; }
-	void set_value_factory(value_factory* v) { theValueFactory = v; }
+	void setItemFactory(ItemFactory* v) { theValueFactory = v; }
 	void set_static_context(static_context* v) { theStaticContext = v; }
 	void set_dynamic_context(dynamic_context* v) { theDynamicContext = v; }
 	//daniel
 	void set_error_manager(ZorbaErrorAlerts *err_manag) { error_manager = err_manag; }
 
 	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
-	void set_value_factory(rchandle<value_factory> v) { theValueFactory = v; }
+	void set_value_factory(rchandle<ItemFactory> v) { theValueFactory = v; }
 	void set_static_context(rchandle<static_context> v) { theStaticContext = v; }
 	void set_dynamic_context(rchandle<dynamic_context> v) { theDynamicContext = v; }
 	//daniel

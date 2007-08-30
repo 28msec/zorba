@@ -14,8 +14,6 @@
 #include "types/sequence_type.h"
 #include "util/fxhashmap.h"
 #include "util/rchandle.h"
-#include "values/qname.h"
-#include "values/nodes.h"
 
 #include <string>
 #include <vector>
@@ -35,39 +33,39 @@ class context;
 class signature : public rcobject
 {
 public:
-	const qname* qname_p;
+	const Item* qname_p;
 	std::vector<sequence_type_t> argv;
 	static fxhashmap<signature const*> sigmap;	// map: fname -> signture
 
 public:
 	signature() {}
-	signature(qname const*,
+	signature(Item const*,
 						sequence_type_t return_type);
-	signature(qname const*,
+	signature(Item const*,
 						sequence_type_t arg1,
 						sequence_type_t return_type);
-	signature(qname const*,
+	signature(Item const*,
 						sequence_type_t arg1,
 						sequence_type_t arg2,
 						sequence_type_t return_type);
-	signature(qname const*,
+	signature(Item const*,
 						sequence_type_t arg1,
 						sequence_type_t arg2,
 						sequence_type_t arg3,
 						sequence_type_t return_type);
-	signature(qname const*,
+	signature(Item const*,
 						sequence_type_t arg1,
 						sequence_type_t arg2,
 						sequence_type_t arg3,
 						sequence_type_t arg4,
 						sequence_type_t return_type);
-	signature(qname const*,
+	signature(Item const*,
 						const std::vector<sequence_type_t>& argv);
 	~signature();
 
 public:
-	qname const* get_name() const { return qname_p; }
-	void set_name(const qname* name) {  qname_p = name; }
+	Item const* get_name() const { return qname_p; }
+	void set_name(const Item* name) {  qname_p = name; }
 	void set_return_type(sequence_type_t t);
 	void add_arg(sequence_type_t t) { argv.push_back(t); }
 	uint32_t arg_count() const { return argv.size() - 1; }

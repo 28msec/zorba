@@ -9,9 +9,9 @@
  */
 
 #include "SequencesImpl.h"
-#include "dom/dom_nodes.h"
-#include "dom/dom_xml_handler.h"
-#include "store/zorba_uri_resolver.h"
+// #include "dom/dom_nodes.h"
+// #include "dom/dom_xml_handler.h"
+// #include "store/zorba_uri_resolver.h"
 #include "store/xml_scanner.h"
 #include "errors/Error.h"
 
@@ -22,8 +22,8 @@ using namespace std;
 namespace xqp {
 
 
-qname* op_concatenate_fname_p;
-qname* fn_doc_fname_p;
+Item* op_concatenate_fname_p;
+Item* fn_doc_fname_p;
   
 
 /*______________________________________________________________________
@@ -40,15 +40,15 @@ qname* fn_doc_fname_p;
 std::ostream& ConcatIterator::_show(std::ostream& os)
 const
 {
-	std::vector<iterator_t>::const_iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		(*iter)->show(os);
 	}
 	return os;
 }
 
-item_t ConcatIterator::nextImpl() {
-	item_t item;
+Item_t ConcatIterator::nextImpl() {
+	Item_t item;
 	
 	STACK_INIT();
 	
@@ -68,14 +68,14 @@ item_t ConcatIterator::nextImpl() {
 }
 
 void ConcatIterator::resetImpl() {
-	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter);
 	}
 }
 
 void ConcatIterator::releaseResourcesImpl() {
-	std::vector<iterator_t>::iterator iter = this->argv.begin();
+	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter);
 	}
@@ -178,40 +178,43 @@ void ConcatIterator::releaseResourcesImpl() {
 
 void doc_iterator::_open()
 {
-	uri_resolver* urires_p = new zorba_uri_resolver();
-	arg->open();
-	string path = arg->next()->str();
-	rchandle<source> src_h = urires_p->resolve(path);
-	istream* is_p = src_h->get_input();
-	assert(is_p!=NULL);
+// 	uri_resolver* urires_p = new zorba_uri_resolver();
+// 	arg->open();
+// 	string path = arg->next()->getStringProperty();
+// 	rchandle<source> src_h = urires_p->resolve(path);
+// 	istream* is_p = src_h->get_input();
+// 	assert(is_p!=NULL);
+// 
+// 	ostringstream oss;
+// 	string line;
+// 	while (!is_p->eof()) {
+// 		getline(*is_p,line);
+// 		oss << line << endl;
+// 	}
+// 	string bufs = oss.str();
+// 	size_t n = bufs.length();
+// 	char *buf;
+// 	buf = (char*)malloc(n+1);
+// 	strcpy(buf, bufs.c_str());
 
-	ostringstream oss;
-	string line;
-	while (!is_p->eof()) {
-		getline(*is_p,line);
-		oss << line << endl;
-	}
-	string bufs = oss.str();
-	size_t n = bufs.length();
-	char *buf;
-	buf = (char*)malloc(n+1);
-	strcpy(buf, bufs.c_str());
-
-	xml_scanner* scanner_p = new xml_scanner();
-	dom_xml_handler* xhandler_p = new dom_xml_handler("/",path);
-	scanner_p->scan(buf, n, dynamic_cast<scan_handler*>(xhandler_p));
-	doc_node = dynamic_cast<dom_document_node*>(xhandler_p->context_node());
-
-	free(buf);
-
-	delete xhandler_p;
+	// TODO adapt to new store
+// 	xml_scanner* scanner_p = new xml_scanner();
+// 	dom_xml_handler* xhandler_p = new dom_xml_handler("/",path);
+// 	scanner_p->scan(buf, n, dynamic_cast<scan_handler*>(xhandler_p));
+// 	doc_node = dynamic_cast<dom_document_node*>(xhandler_p->context_node());
+// 
+// 	free(buf);
+// 
+// 	delete xhandler_p;
 }
   
-item_t doc_iterator::_next()
+Item_t doc_iterator::_next()
 {
-	document_node* result = doc_node;
-	doc_node = NULL;
-	return result;
+	// TODO adapt to new store
+	return NULL;
+// 	document_node* result = doc_node;
+// 	doc_node = NULL;
+// 	return result;
 }
 
 void doc_iterator::_close()
@@ -232,7 +235,7 @@ bool doc_iterator::done() const
 
 doc_iterator::doc_iterator(
 	yy::location loc,
-	iterator_t _arg)
+	Iterator_t _arg)
 :
 	BasicIterator(loc),
 	arg(_arg),

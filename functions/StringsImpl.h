@@ -50,7 +50,7 @@ class CodepointsToStringIterator : public Batcher<CodepointsToStringIterator>
 public:
 	CodepointsToStringIterator(
 		yy::location loc,
-		iterator_t _argv)
+		Iterator_t _argv)
 	:
 		Batcher<CodepointsToStringIterator>(loc),
 		argv(_argv)
@@ -66,13 +66,13 @@ public:
 	~CodepointsToStringIterator() {}
 
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	iterator_t argv;
+	Iterator_t argv;
 	std::string res;
 	char seq[4];
 }; /*class CodepointsToStringIterator*/
@@ -86,7 +86,7 @@ class StringToCodepointsIterator : public Batcher<StringToCodepointsIterator>
 public:
 	StringToCodepointsIterator(
 		yy::location loc,
-		iterator_t _argv)
+		Iterator_t _argv)
 	:
 		Batcher<StringToCodepointsIterator>(loc),
 		argv(_argv)
@@ -102,13 +102,13 @@ public:
 	~StringToCodepointsIterator() {}
 
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	iterator_t argv;
+	Iterator_t argv;
 	uint32_t cp;
 	std::vector<char> v;
 	char * c;
@@ -132,8 +132,8 @@ class CodepointEqualIterator : public Batcher<CodepointEqualIterator>
 public:
 	CodepointEqualIterator(
 		yy::location loc,
-		iterator_t _argv0,
-		iterator_t _argv1)
+		Iterator_t _argv0,
+		Iterator_t _argv1)
 	:
 		Batcher<CodepointEqualIterator>(loc),
 		argv0(_argv0),
@@ -151,14 +151,14 @@ public:
 	~CodepointEqualIterator() {}
 
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	iterator_t argv0;
-	iterator_t argv1;
+	Iterator_t argv0;
+	Iterator_t argv1;
 
 	std::vector<char> v0;
 	std::vector<char> v1;
@@ -176,7 +176,7 @@ class ConcatFnIterator : public Batcher<ConcatFnIterator>
 public:
 	ConcatFnIterator(
 		yy::location loc,
-		const vector<iterator_t>& _argv)
+		const vector<Iterator_t>& _argv)
 	:
 	Batcher<ConcatFnIterator>(loc),
 		argv(_argv),
@@ -198,14 +198,14 @@ public:
 		~ConcatFnIterator() {}
 
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	std::vector<iterator_t> argv;
-	iterator_t currit_h;
+	std::vector<Iterator_t> argv;
+	Iterator_t currit_h;
 	uint32_t cursor;
 	std::string res;
 
@@ -220,7 +220,7 @@ class StringJoinIterator : public Batcher<StringJoinIterator>
 public:
 	StringJoinIterator(
 		yy::location loc,
-		const vector<iterator_t>& _argv)
+		const vector<Iterator_t>& _argv)
 	:
 		Batcher<StringJoinIterator>(loc),
 		argv(_argv),
@@ -242,14 +242,14 @@ public:
 		~StringJoinIterator() {}
 
 public:
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	std::vector<iterator_t> argv;
-	iterator_t currit_h;
+	std::vector<Iterator_t> argv;
+	Iterator_t currit_h;
 	uint32_t cursor;
 	std::string res;
 

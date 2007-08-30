@@ -63,9 +63,9 @@ fn_codepoints_to_string::fn_codepoints_to_string(
 {
 }
 
-iterator_t fn_codepoints_to_string::operator()(
+Iterator_t fn_codepoints_to_string::operator()(
   yy::location loc,
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 			return NULL;
@@ -79,7 +79,7 @@ sequence_type_t fn_codepoints_to_string::type_check(
 }
 
 bool fn_codepoints_to_string::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size() == 1);
 }
@@ -102,9 +102,9 @@ fn_string_to_codepoints::fn_string_to_codepoints(
 	{
 	}
 
-	iterator_t fn_string_to_codepoints::operator()(
+	Iterator_t fn_string_to_codepoints::operator()(
 	yy::location loc,
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
@@ -118,7 +118,7 @@ sequence_type_t fn_string_to_codepoints::type_check(
 }
 
 bool fn_string_to_codepoints::validate_args(
-		vector<iterator_t>& argv) const
+		vector<Iterator_t>& argv) const
 {
 	return (argv.size() == 1);
 }
@@ -153,9 +153,9 @@ fn_codepoint_equal::fn_codepoint_equal(
 {
 }
 
-iterator_t fn_codepoint_equal::operator()(
+Iterator_t fn_codepoint_equal::operator()(
 	yy::location loc,
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
@@ -169,7 +169,7 @@ sequence_type_t fn_codepoint_equal::type_check(
 }
 
 bool fn_codepoint_equal::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size() == 2);
 }
@@ -199,16 +199,16 @@ fn_concat::fn_concat(
 {
 }
 
-iterator_t fn_concat::operator()(
+Iterator_t fn_concat::operator()(
 	yy::location loc, 
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ConcatFnIterator(loc,argv);
 }
 
 bool fn_concat::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return (argv.size() >= 2);
 }
@@ -243,9 +243,9 @@ fn_string_join::fn_string_join(
 {
 }
 
-iterator_t fn_string_join::operator()(
+Iterator_t fn_string_join::operator()(
   yy::location loc,
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 			return NULL;
@@ -259,7 +259,7 @@ sequence_type_t fn_string_join::type_check(
 }
 
 bool fn_string_join::validate_args(
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	return true;
 }

@@ -26,16 +26,16 @@ class zorba;
 class FnBooleanIterator : public Batcher<FnBooleanIterator>
 {
 private:
-	iterator_t arg0_;
+	Iterator_t arg0_;
 // 	bool donef;
 	
 public:
-	FnBooleanIterator(yy::location loc, iterator_t arg0)
+	FnBooleanIterator(yy::location loc, Iterator_t arg0)
 	 :
 	Batcher<FnBooleanIterator>(loc), arg0_(arg0) {}
 	~FnBooleanIterator() {}
 	
-	item_t nextImpl();
+	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
 

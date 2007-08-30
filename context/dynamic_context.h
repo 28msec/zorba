@@ -30,8 +30,7 @@
 #include "functions/library.h"
 #include "util/rchandle.h"
 #include "runtime/item_iterator.h"
-#include "values/nodes.h"
-#include "values/value_factory.h"
+#include "../types/sequence_type.h"
 
 namespace xqp {
 
@@ -53,18 +52,18 @@ protected:
 	static qnamekey_t current_time_key;
 	static qnamekey_t implicit_timezone_key;
 
-	value_factory* vfactory_p;
+	ItemFactory* itemFactory_p;
 	library* lib;
 
 public:
-	static void init(value_factory*);
-	dynamic_context( value_factory* v_p)
-		: vfactory_p(v_p) {}
+	static void init(ItemFactory*);
+	dynamic_context(ItemFactory* v_p)
+		: itemFactory_p(v_p) {}
 	~dynamic_context() {}
 
 public:
 	// return the value of a variable by QName
-	iterator_t var_value(const qname*) const;
+	Iterator_t var_value(const Item*) const;
 
 	// set/get the function library
 	void set_library(library* _lib) { lib = _lib; }
@@ -72,20 +71,20 @@ public:
 
 public:
 	// XQuery 1.0 dynamic context 
-	item_t context_item() const;
+	Item_t context_item() const;
 
 	sequence_type_t context_item_type() const;
 	uint32_t context_position() const;
 	uint32_t context_size() const;
 
-	void set_context_item(item_t);
+	void set_context_item(Item_t);
 	void set_context_item_type(sequence_type_t );
 
-	iterator_t namespaces() const;
-	void add_namespace(namespace_node&);
+	Iterator_t namespaces() const;
+	void add_namespace(Item&);
 
-	const namespace_node& default_element_type_namespace() const;
-	void set_default_element_type_namespace(namespace_node&);
+	const Item& default_element_type_namespace() const;
+	void set_default_element_type_namespace(Item&);
 
 	enum ordering_mode_t ordering_mode() const;
 	void set_ordering_mode(enum ordering_mode_t v);

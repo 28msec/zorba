@@ -9,21 +9,19 @@
 #include "item_iterator.h"
 #include "util/Assert.h"
 #include "errors/Error.h"
-#include "values/values.h"
-#include "values/nodes.h"
-#include "values/qname.h"
+#include "values/item.h"
 #include "runtime/zorba.h"
 #include "exprtree/expr.h"
 
 using namespace std;
 namespace xqp {
 
-int iteratorTreeDepth = -1;
+int32_t iteratorTreeDepth = -1;
 
 
 
-item_t MapIterator::nextImpl() {
-	item_t item;
+Item_t MapIterator::nextImpl() {
+	Item_t item;
 	vector<var_iter_t>::const_iterator itv;
 
 	STACK_INIT();

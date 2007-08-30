@@ -19,7 +19,7 @@
 #include "runtime/zorba.h"
 #include "types/sequence_type.h"
 #include "util/tracer.h"
-#include "zorba/zorba_qname.h"
+// #include "zorba/zorba_qname.h"
 
 #include <iostream>
 
@@ -32,10 +32,12 @@ namespace xqp {
 // clear static initializer state
 bool library::static_init = false;
 
+// TODO adapt to new store
+
 // Numerics
 op_numeric_add  op_add(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","add"),
+		new QNameItem(XQUERY_FN_NS,"op","add"),
 		xs_decimal,					// arg[1] type
 		xs_decimal,					// arg[2] type
 		xs_decimal					// return type
@@ -44,7 +46,7 @@ op_numeric_add  op_add(
 
 op_numeric_subtract  op_subtract(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","subtract"),
+		new QNameItem(XQUERY_FN_NS,"op","subtract"),
 		xs_decimal,					// arg[1] type
 		xs_decimal,					// arg[2] type
 		xs_decimal					// return type
@@ -53,7 +55,7 @@ op_numeric_subtract  op_subtract(
 
 op_numeric_multiply op_multiply(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","multiply"),
+		new QNameItem(XQUERY_FN_NS,"op","multiply"),
 		xs_decimal,
 		xs_decimal,
 		xs_decimal
@@ -62,7 +64,7 @@ op_numeric_multiply op_multiply(
  
 op_numeric_divide op_divide(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","divide"),
+		new QNameItem(XQUERY_FN_NS,"op","divide"),
 		xs_decimal,
 		xs_decimal,
 		xs_decimal
@@ -73,7 +75,7 @@ op_numeric_divide op_divide(
 // 
 op_numeric_mod op_mod(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","mod"),
+		new QNameItem(XQUERY_FN_NS,"op","mod"),
 		xs_decimal,
 		xs_decimal,
 		xs_decimal
@@ -86,7 +88,7 @@ op_numeric_mod op_mod(
 
 op_numeric_equal op_equal(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"op","equal"),
+		new QNameItem(XQUERY_FN_NS,"op","equal"),
 		xs_decimal,
 		xs_decimal,
 		xs_boolean
@@ -96,7 +98,7 @@ op_numeric_equal op_equal(
 
 fn_abs fn_abs_sig(
 	signature(
-		new zorba_qname(XQUERY_FN_NS, "fn", "abs"),
+		new QNameItem(XQUERY_FN_NS, "fn", "abs"),
 		xs_decimal,
 		xs_decimal
 	)
@@ -105,7 +107,7 @@ fn_abs fn_abs_sig(
 // Sequences
 fn_doc_func fn_doc(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","doc"),
+		new QNameItem(XQUERY_FN_NS,"fn","doc"),
 		xs_string,					// arg[1] type
 		documentNode				// return type
 	)
@@ -116,7 +118,7 @@ fn_doc_func fn_doc(
 
 fn_codepoints_to_string fn_codepoints_to_string_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","codepoints-to-string"),
+		new QNameItem(XQUERY_FN_NS,"fn","codepoints-to-string"),
 		xs_integer,					// arg[0] type
 		xs_string						// return type
 	)
@@ -124,7 +126,7 @@ fn_codepoints_to_string fn_codepoints_to_string_func(
 
 fn_string_to_codepoints fn_string_to_codepoints_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","string-to-codepoints"),
+		new QNameItem(XQUERY_FN_NS,"fn","string-to-codepoints"),
 		xs_string,					// arg[0] type
 		xs_long							// return type
 	)
@@ -132,7 +134,7 @@ fn_string_to_codepoints fn_string_to_codepoints_func(
 
 fn_codepoint_equal fn_codepoint_equal_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","codepoint-equal"),
+		new QNameItem(XQUERY_FN_NS,"fn","codepoint-equal"),
 		xs_string,					// arg[0] type
 		xs_string,					// arg[1] type
 		xs_boolean					// return type
@@ -141,7 +143,7 @@ fn_codepoint_equal fn_codepoint_equal_func(
 
 fn_concat fn_concat_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","concat"),
+		new QNameItem(XQUERY_FN_NS,"fn","concat"),
 		xs_anyType,					// args type
 		xs_boolean					// return type
 	)
@@ -149,7 +151,7 @@ fn_concat fn_concat_func(
 
 fn_string_join fn_string_join_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","string-join"),
+		new QNameItem(XQUERY_FN_NS,"fn","string-join"),
 		xs_string,					// arg[0] type
 		xs_string,					// arg[1] type
 		xs_string						// return type
@@ -158,7 +160,7 @@ fn_string_join fn_string_join_func(
 
 fn_boolean fn_boolean_func(
 	signature(
-		new zorba_qname(XQUERY_FN_NS,"fn","boolean"),
+		new QNameItem(XQUERY_FN_NS,"fn","boolean"),
 		xs_anyType,
 		xs_boolean
 	)
@@ -211,7 +213,7 @@ qnamekey_t library::fn_boolean_key;
 // initializer
 
 void library::init(
-	value_factory* vf_p)
+	ItemFactory* vf_p)
 {
 	if (!library::static_init) {
   	
@@ -224,22 +226,22 @@ void library::init(
 		put(&op_equal);
 		put(&fn_abs_sig);
 
-		op_add_key = op_add.get_fname()->qnamekey();
-		op_subtract_key = op_subtract.get_fname()->qnamekey();
-		op_mul_key = op_multiply.get_fname()->qnamekey();
-		op_div_key = op_divide.get_fname()->qnamekey();
-		op_mod_key = op_mod.get_fname()->qnamekey();
-		op_val_eq_key = op_equal.get_fname()->qnamekey();
+		op_add_key = op_add.get_fname()->getQNameKey();
+		op_subtract_key = op_subtract.get_fname()->getQNameKey();
+		op_mul_key = op_multiply.get_fname()->getQNameKey();
+		op_div_key = op_divide.get_fname()->getQNameKey();
+		op_mod_key = op_mod.get_fname()->getQNameKey();
+		op_val_eq_key = op_equal.get_fname()->getQNameKey();
 
-		fn_abs_key = fn_abs_sig.get_fname()->qnamekey();
+		fn_abs_key = fn_abs_sig.get_fname()->getQNameKey();
 
 		
 		// Sequences functions
 		put(&fn_doc);
 
 		
-		fn_doc_key = fn_doc.get_fname()->qnamekey();
-//		cout << TRACE << " : fn_doc_key = " << fn_doc_key << endl;
+		fn_doc_key = fn_doc.get_fname()->getQNameKey();
+		cout << TRACE << " : fn_doc_key = " << fn_doc_key << endl;
 		
 
 		// String functions
@@ -249,15 +251,15 @@ void library::init(
 		put(&fn_concat_func);
 		put(&fn_string_join_func);
 		
-		fn_codepoints_to_string_key = fn_codepoints_to_string_func.get_fname()->qnamekey();
-		fn_string_to_codepoints_key = fn_string_to_codepoints_func.get_fname()->qnamekey();
-		fn_codepoint_equal_key = fn_codepoint_equal_func.get_fname()->qnamekey();
-		fn_concat_key = fn_concat_func.get_fname()->qnamekey();
-		fn_string_join_key = fn_string_join_func.get_fname()->qnamekey();
+		fn_codepoints_to_string_key = fn_codepoints_to_string_func.get_fname()->getQNameKey();
+		fn_string_to_codepoints_key = fn_string_to_codepoints_func.get_fname()->getQNameKey();
+		fn_codepoint_equal_key = fn_codepoint_equal_func.get_fname()->getQNameKey();
+		fn_concat_key = fn_concat_func.get_fname()->getQNameKey();
+		fn_string_join_key = fn_string_join_func.get_fname()->getQNameKey();
 
 		// Boolean functions
 		put(&fn_boolean_func);
-		fn_boolean_key = fn_boolean_func.get_fname()->qnamekey();
+		fn_boolean_key = fn_boolean_func.get_fname()->getQNameKey();
 
 		library::static_init = true;///don't initialize again
 	}
@@ -270,7 +272,7 @@ library::library()
 :
 	funtab((float)0.6, 1024)
 {
-	init(&*zorba::getZorbaForCurrentThread()->get_value_factory());
+	init(&*zorba::getZorbaForCurrentThread()->getItemFactory());
 }
 
 library::~library()
@@ -282,7 +284,7 @@ library::~library()
 
 void library::put(const function* funp)
 {
-	qnamekey_t fun_key = funp->get_fname()->qnamekey();
+	qnamekey_t fun_key = funp->get_fname()->getQNameKey();
 	funtab.put(fun_key, funp);
 }
 

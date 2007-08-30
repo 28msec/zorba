@@ -7,11 +7,13 @@
  *  Author: Paul Pedersen
  *
  */
+ 
+// TODO move into store/api/fullText
 
 #ifndef XQP_FT_SELECTION_H
 #define XQP_FT_SELECTION_H
 
-#include "values.h"
+#include "item.h"
 
 
 /*______________________________________________________________________

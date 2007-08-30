@@ -17,9 +17,9 @@ namespace xqp {
 |_______________________________________________________________________*/
 fn_boolean::fn_boolean(const signature& sig):function(sig){}
 
-iterator_t fn_boolean::operator()(
+Iterator_t fn_boolean::operator()(
 	yy::location loc,
-	vector<iterator_t>& argv) const
+	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) {
 		ZorbaErrorAlerts::error_alert(
@@ -36,7 +36,7 @@ sequence_type_t fn_boolean::type_check(
 	return xs_boolean;
 }
 
-bool fn_boolean::validate_args(vector<iterator_t>& argv) const {
+bool fn_boolean::validate_args(vector<Iterator_t>& argv) const {
 	return (argv.size() == 1);
 }
 

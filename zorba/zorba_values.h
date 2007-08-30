@@ -12,7 +12,7 @@
 
 #include "../types/sequence_type.h"
 #include "../util/rchandle.h"
-#include "../values/values.h"
+#include "../values/item.h"
 
 #include <string>
  
@@ -25,7 +25,7 @@ class zorba;
 |  Base class for the zorba value hierarchy
 |_______________________________________________________________________*/
 
-class zorba_object : public object
+class zorba_object : virtual public object
 {
 public:
 	zorba_object() {}
@@ -95,8 +95,8 @@ public:		// accessors
   virtual std::string describe() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value( yy::location &loc) const = 0;
-	virtual iterator_t string_value( yy::location &loc) const = 0;
+	virtual Iterator_t atomized_value( yy::location &loc) const = 0;
+	virtual Iterator_t string_value( yy::location &loc) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }
@@ -123,9 +123,9 @@ public:		// accessors
   virtual std::string str() const = 0;
 
 public:		// XQuery interface
-	virtual iterator_t atomized_value( yy::location &loc) const = 0;
-	virtual iterator_t effective_boolean_value( yy::location &loc) const = 0;
-	virtual iterator_t string_value( yy::location &loc) const = 0;
+	virtual Iterator_t atomized_value( yy::location &loc) const = 0;
+	virtual Iterator_t effective_boolean_value( yy::location &loc) const = 0;
+	virtual Iterator_t string_value( yy::location &loc) const = 0;
 
 	virtual bool is_empty() const { return false; }
 	virtual bool is_node() const { return false; }

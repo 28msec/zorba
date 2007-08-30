@@ -165,7 +165,7 @@ itemstore::~itemstore() { }
 
 // data manager interface
 // ----------------------
-iterator_t itemstore::document(
+Iterator_t itemstore::document(
 	const string& uri)
 {
 	return NULL;
@@ -184,7 +184,7 @@ bool itemstore::remove_document(
 	return false;
 }
 
-iterator_t itemstore::collection(
+Iterator_t itemstore::collection(
 	const string& uri)
 {
 	return NULL;
@@ -192,7 +192,7 @@ iterator_t itemstore::collection(
 
 bool itemstore::add_collection(
 	const string& uri,
-	iterator_t it)
+	Iterator_t it)
 {
 	return false;
 }
@@ -205,7 +205,7 @@ bool itemstore::remove_collection(
 
 bool itemstore::append_to_collection(
 	const string& uri,
-	iterator_t it)
+	Iterator_t it)
 {
 	return false;
 }

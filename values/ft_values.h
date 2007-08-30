@@ -6,11 +6,13 @@
  *  Author: John Cowan,Paul Pedersen
  *
  */
+ 
+// TODO move into store/api/fullText
 
 #ifndef XQP_FTVALUES_H
 #define XQP_FTVALUES_H
 
-#include "values.h"
+#include "item.h"
 #include "ft_options.h"
 #include "../util/rchandle.h"
 
@@ -19,6 +21,17 @@
 #include <vector>
 
 namespace xqp {
+
+
+/*______________________________________________________________________
+|  
+|	'ft_value' encapsulates an xquery full-text search constraint.
+|	Refer to "XQuery 1.0 and XPath 2.0 Full-Text"
+|	[http://www.w3.org/TR/xquery-full-text/]
+|_______________________________________________________________________*/
+
+class ft_value : virtual public rcobject { };
+
 
 class ft_or_value : public ft_value
 {

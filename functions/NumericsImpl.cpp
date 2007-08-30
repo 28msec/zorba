@@ -24,7 +24,102 @@
 using namespace std;
 namespace xqp {
 
-
+	/* begin class BinaryBaseIterator */
+	
+	namespace num_operations {
+		static Item_t makeOperation(ItemFactory* itemFactory, Operation operation, Item_t item0, Item_t item1) {
+			Item_t resultItem;
+			
+			switch (item0->getType()) {
+			case xs_integer:
+				switch (item1->getType()) {
+				case xs_integer:
+					switch (operation) {
+					case num_operations::add:
+						resultItem = itemFactory->createInteger(item0->getIntValue() + item1->getIntValue());
+						break;
+					case num_operations::subtract:
+						resultItem = itemFactory->createInteger(item0->getIntValue() - item1->getIntValue());
+						break;
+					default:
+						break;
+					}
+					break;
+				case xs_float:
+					resultItem = itemFactory->createFloat(item0->getIntValue() + item1->getFloatValue());
+					break;
+				case xs_double:
+					resultItem = itemFactory->createDouble(item0->getIntValue() + item1->getDoubleValue());
+					break;
+				case xs_decimal:
+					resultItem = itemFactory->createDecimal(item0->getIntValue() + item1->getDecimalValue());
+					break;
+				default:
+					break;
+			}
+			break;
+			case xs_float:
+				switch (item1->getType()) {
+					case xs_integer:
+						resultItem = itemFactory->createFloat(item0->getFloatValue() + item1->getIntValue());
+						break;
+					case xs_float:
+						resultItem = itemFactory->createFloat(item0->getFloatValue() + item1->getFloatValue());
+						break;
+					case xs_double:
+						resultItem = itemFactory->createDouble(item0->getFloatValue() + item1->getDoubleValue());
+						break;
+					case xs_decimal:
+						resultItem = itemFactory->createDecimal(item0->getFloatValue() + item1->getDecimalValue());
+						break;
+					default:
+						break;
+				}
+				break;
+			case xs_double:
+				switch (item1->getType()) {
+					case xs_integer:
+						resultItem = itemFactory->createDouble(item0->getDoubleValue() + item1->getIntValue());
+						break;
+					case xs_float:
+						resultItem = itemFactory->createDouble(item0->getDoubleValue() + item1->getFloatValue());
+						break;
+					case xs_double:
+						resultItem = itemFactory->createDouble(item0->getDoubleValue() + item1->getDoubleValue());
+						break;
+					case xs_decimal:
+						resultItem = itemFactory->createDecimal(item0->getDoubleValue() + item1->getDecimalValue());
+						break;
+					default:
+						break;
+				}
+				break;
+			case xs_decimal:
+				switch (item1->getType()) {
+					case xs_integer:
+						resultItem = itemFactory->createDecimal(item0->getDecimalValue() + item1->getIntValue());
+						break;
+					case xs_float:
+						resultItem = itemFactory->createDecimal(item0->getDecimalValue() + item1->getFloatValue());
+						break;
+					case xs_double:
+						resultItem = itemFactory->createDecimal(item0->getDecimalValue() + item1->getDoubleValue());
+						break;
+					case xs_decimal:
+						resultItem = itemFactory->createDecimal(item0->getDecimalValue() + item1->getDecimalValue());
+						break;
+					default:
+						break;
+				}
+			default:
+				break;
+			}
+			
+			return resultItem;
+		}
+	}
+	
+	/* end class BinaryBaseIterator */
 
 
 /*______________________________________________________________________
@@ -45,38 +140,36 @@ namespace xqp {
 
 // OpNumericAddIterator::OpNumericAddIterator(
 // 	yy::location loc, 
-// 	iterator_t arg0,
-// 	iterator_t arg1)
+// 	Iterator_t arg0,
+// 	Iterator_t arg1)
 // :
 // 	op_numeric_binary_iterator(loc,arg0,arg1)
 // {
 // }
 
 
-item_t OpNumericAddIterator::nextImpl(){
-	item_t n0_h;
-	item_t n1_h;
-	const numericValue* n0;
-	const numericValue* n1;
+Item_t OpNumericAddIterator::nextImpl(){
+	Item_t n0;
+	Item_t n1;
 	sequence_type_t type0;
 	sequence_type_t type1;
-	sequence_type_t resultType;
+	Item_t resultItem;
+	ItemFactory* itemFactory;
 	
 	STACK_INIT();
-	n0_h = this->consumeNext(arg0);
-	if(&*n0_h == NULL) {
+	n0 = this->consumeNext(arg0);
+	if(n0 == NULL) {
 		STACK_PUSH(NULL);
 	} else {
-		n1_h = this->consumeNext(arg1);
-		if(&*n1_h == NULL) {
+		n1 = this->consumeNext(arg1);
+		if(n1 == NULL) {
 			STACK_PUSH(NULL);
 		} else {
-			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-			type0 = n0->type();
-			type1 = n1->type();
-			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-			STACK_PUSH(new numericValue(resultType, n1->val() + n0->val()));
+			type0 = n0->getType();
+			type1 = n1->getType();
+			itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
+			resultItem = num_operations::makeOperation(itemFactory, num_operations::add, n0, n1);
+			STACK_PUSH(resultItem);
 			STACK_PUSH(NULL);
 		}
 	}
@@ -108,31 +201,29 @@ const
 |	infinity of the appropriate sign is returned.
 |_______________________________________________________________________*/
 
-item_t OpNumericSubtractIterator::nextImpl()
+Item_t OpNumericSubtractIterator::nextImpl()
 {
-	item_t n0_h;
-	item_t n1_h;
-	const numericValue* n0;
-	const numericValue* n1;
+	Item_t n0;
+	Item_t n1;
 	sequence_type_t type0;
 	sequence_type_t type1;
-	sequence_type_t resultType;
+	Item_t resultItem;
+	ItemFactory* itemFactory;
 	
 	STACK_INIT();
-	n0_h = this->consumeNext(this->arg0);
-	if(&*n0_h == NULL) {
+	n0 = this->consumeNext(arg0);
+	if(n0 == NULL) {
 		STACK_PUSH(NULL);
 	} else {
-		n1_h = this->consumeNext(this->arg1);
-		if(&*n1_h == NULL) {
+		n1 = this->consumeNext(arg1);
+		if(n1 == NULL) {
 			STACK_PUSH(NULL);
 		} else {
-			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-			type0 = n0->type();
-			type1 = n1->type();
-			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-			STACK_PUSH(new numericValue(resultType, n0->val() - n1->val()));
+			type0 = n0->getType();
+			type1 = n1->getType();
+			itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
+			resultItem = num_operations::makeOperation(itemFactory, num_operations::subtract, n0, n1);
+			STACK_PUSH(resultItem);
 			STACK_PUSH(NULL);
 		}
 	}
@@ -163,34 +254,32 @@ const
 |_______________________________________________________________________*/
 
 
-item_t OpNumericMultiplyIterator::nextImpl()
+Item_t OpNumericMultiplyIterator::nextImpl()
 {
-	item_t n0_h;
-	item_t n1_h;
-	const numericValue* n0;
-	const numericValue* n1;
+	Item_t n0;
+	Item_t n1;
 	sequence_type_t type0;
 	sequence_type_t type1;
 	sequence_type_t resultType;
 	
 	STACK_INIT();
-	n0_h = this->consumeNext(this->arg0);
-	if(&*n0_h == NULL) {
-		STACK_PUSH(NULL);
-	} else {
-		n1_h = this->consumeNext(this->arg1);
-		if(&*n1_h == NULL) {
-			STACK_PUSH(NULL);
-		} else {
-			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-			type0 = n0->type();
-			type1 = n1->type();
-			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-			STACK_PUSH(new numericValue(resultType, n0->val() * n1->val()));
-			STACK_PUSH(NULL);
-		}
-	}
+// 	n0_h = this->consumeNext(this->arg0);
+// 	if(&*n0_h == NULL) {
+// 		STACK_PUSH(NULL);
+// 	} else {
+// 		n1_h = this->consumeNext(this->arg1);
+// 		if(&*n1_h == NULL) {
+// 			STACK_PUSH(NULL);
+// 		} else {
+// 			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+// 			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+// 			type0 = n0->type();
+// 			type1 = n1->type();
+// 			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+// 			STACK_PUSH(new numericValue(resultType, n0->val() * n1->val()));
+// 			STACK_PUSH(NULL);
+// 		}
+// 	}
 	STACK_END();
 }
 
@@ -227,34 +316,32 @@ const
 |	returns NaN.
 |_______________________________________________________________________*/
 
-item_t OpNumericDivideIterator::nextImpl()
+Item_t OpNumericDivideIterator::nextImpl()
 {
-	item_t n0_h;
-	item_t n1_h;
-	const numericValue* n0;
-	const numericValue* n1;
+	Item_t n0;
+	Item_t n1;
 	sequence_type_t type0;
 	sequence_type_t type1;
 	sequence_type_t resultType;
 	
 	STACK_INIT();
-	n0_h = this->consumeNext(this->arg0);
-	if(&*n0_h == NULL) {
-		STACK_PUSH(NULL);
-	} else {
-		n1_h = this->consumeNext(this->arg1);
-		if(&*n1_h == NULL) {
-			STACK_PUSH(NULL);
-		} else {
-			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-			type0 = n0->type();
-			type1 = n1->type();
-			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-			STACK_PUSH(new numericValue(resultType, n0->val() / n1->val()));
-			STACK_PUSH(NULL);
-		}
-	}
+// 	n0_h = this->consumeNext(this->arg0);
+// 	if(&*n0_h == NULL) {
+// 		STACK_PUSH(NULL);
+// 	} else {
+// 		n1_h = this->consumeNext(this->arg1);
+// 		if(&*n1_h == NULL) {
+// 			STACK_PUSH(NULL);
+// 		} else {
+// 			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+// 			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+// 			type0 = n0->type();
+// 			type1 = n1->type();
+// 			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+// 			STACK_PUSH(new numericValue(resultType, n0->val() / n1->val()));
+// 			STACK_PUSH(NULL);
+// 		}
+// 	}
 	STACK_END();
 }
 
@@ -329,34 +416,32 @@ const
 |			required precision.
 |_______________________________________________________________________*/
 
-item_t OpNumericModIterator::nextImpl()
+Item_t OpNumericModIterator::nextImpl()
 {
-	item_t n0_h;
-	item_t n1_h;
-	const numericValue* n0;
-	const numericValue* n1;
+	Item_t n0;
+	Item_t n1;
 	sequence_type_t type0;
 	sequence_type_t type1;
 	sequence_type_t resultType;
 	
 	STACK_INIT();
-	n0_h = this->consumeNext(this->arg0);
-	if(&*n0_h == NULL) {
-		STACK_PUSH(NULL);
-	} else {
-		n1_h = this->consumeNext(this->arg1);
-		if(&*n1_h == NULL) {
-			STACK_PUSH(NULL);
-		} else {
-			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-			type0 = n0->type();
-			type1 = n1->type();
-			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-			STACK_PUSH(new numericValue(resultType, (long)n0->val() % (long)n1->val()));
-			STACK_PUSH(NULL);
-		}
-	}
+// 	n0_h = this->consumeNext(this->arg0);
+// 	if(&*n0_h == NULL) {
+// 		STACK_PUSH(NULL);
+// 	} else {
+// 		n1_h = this->consumeNext(this->arg1);
+// 		if(&*n1_h == NULL) {
+// 			STACK_PUSH(NULL);
+// 		} else {
+// 			n0 = dynamic_cast<const numericValue*>(&*n0_h);
+// 			n1 = dynamic_cast<const numericValue*>(&*n1_h);
+// 			type0 = n0->type();
+// 			type1 = n1->type();
+// 			resultType = sequence_type::getNumericalOpResultType(type0, type1);
+// 			STACK_PUSH(new numericValue(resultType, (long)n0->val() % (long)n1->val()));
+// 			STACK_PUSH(NULL);
+// 		}
+// 	}
 	STACK_END();
 }
 
@@ -397,20 +482,20 @@ const
 |	INF.
 |_______________________________________________________________________*/
 
-item_t OpNumericUnaryMinusIterator::nextImpl()
+Item_t OpNumericUnaryMinusIterator::nextImpl()
 {
-	item_t n_h;
-	const numericValue* n;
+	Item_t n;
+// 	const numericValue* n;
 	
 	STACK_INIT();
-	n_h = this->consumeNext(this->arg0_);
-	if(&*n_h == NULL) {
-		STACK_PUSH(n_h);
-	} else {
-		n = dynamic_cast<const numericValue*>(&*n_h);
-		STACK_PUSH(new numericValue(n->type(), -n->val()));
-	}
-	STACK_PUSH(NULL);
+// 	n_h = this->consumeNext(this->arg0_);
+// 	if(&*n_h == NULL) {
+// 		STACK_PUSH(n_h);
+// 	} else {
+// 		n = dynamic_cast<const numericValue*>(&*n_h);
+// 		STACK_PUSH(new numericValue(n->type(), -n->val()));
+// 	}
+// 	STACK_PUSH(NULL);
 	STACK_END();
 }
 
@@ -439,24 +524,24 @@ const
 |_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
-item_t OpNumericEqualIterator::nextImpl()
+Item_t OpNumericEqualIterator::nextImpl()
 {
-	const numericValue *n0;
-	const numericValue *n1;
+// 	const numericValue *n0;
+// 	const numericValue *n1;
 	
 	STACK_INIT();
-		n0 = dynamic_cast<const numericValue*>(&*arg0->next());
-	if(n0 == NULL) {
-		STACK_PUSH(NULL);
-	} else {
-		n1 = dynamic_cast<const numericValue*>(&*arg1->next());
-		if(n1 == NULL) {
-			STACK_PUSH(NULL);
-		} else {
-			STACK_PUSH(new booleanValue(n1->val() == n0->val()));
-			STACK_PUSH(NULL);
-		}
-	}
+// 		n0 = dynamic_cast<const numericValue*>(&*arg0->next());
+// 	if(n0 == NULL) {
+// 		STACK_PUSH(NULL);
+// 	} else {
+// 		n1 = dynamic_cast<const numericValue*>(&*arg1->next());
+// 		if(n1 == NULL) {
+// 			STACK_PUSH(NULL);
+// 		} else {
+// 			STACK_PUSH(new booleanValue(n1->val() == n0->val()));
+// 			STACK_PUSH(NULL);
+// 		}
+// 	}
 	STACK_END();
 }
 
@@ -468,7 +553,7 @@ const
 	return os;
 }
 		
-// item_t OpNumericEqualIterator::_next()
+// Item_t OpNumericEqualIterator::_next()
 // {
 // 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
 // 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
@@ -484,21 +569,21 @@ const
 |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-item_t FnAbsIterator::nextImpl() {
-	const numericValue* n0;
+Item_t FnAbsIterator::nextImpl() {
+// 	const numericValue* n0;
 	
 	STACK_INIT();
-	n0 = dynamic_cast<const numericValue*>(&*this->arg0_->next());
-	if(n0 == NULL) {
-		STACK_PUSH(NULL);
-	} else {
-		if (n0->val() >= 0) {
-			STACK_PUSH(new numericValue(xs_decimal, n0->val()));
-		} else {
-			STACK_PUSH(new numericValue(xs_decimal, -n0->val()));
-		}
-		STACK_PUSH(NULL);	
-	}
+// // // // 	n0 = dynamic_cast<const numericValue*>(&*this->arg0_->next());
+// // // // 	if(n0 == NULL) {
+// // // // 		STACK_PUSH(NULL);
+// // // // 	} else {
+// // // // 		if (n0->val() >= 0) {
+// // // // 			STACK_PUSH(new numericValue(xs_decimal, n0->val()));
+// // // // 		} else {
+// // // // 			STACK_PUSH(new numericValue(xs_decimal, -n0->val()));
+// // // // 		}
+// // // // 		STACK_PUSH(NULL);	
+// // // // 	}
 	STACK_END();
 }
 

@@ -50,9 +50,9 @@ public:
 	~fn_codepoints_to_string() {}
 
 public:
-	iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<iterator_t>&) const;
+	bool validate_args(std::vector<Iterator_t>&) const;
 };
 	
 
@@ -66,9 +66,9 @@ public:
 		~fn_string_to_codepoints() {}
 
 	public:
-		iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+		Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<iterator_t>&) const;
+		bool validate_args(std::vector<Iterator_t>&) const;
 };
 
 
@@ -91,9 +91,9 @@ class fn_codepoint_equal: public function
 		~fn_codepoint_equal() {}
 
 	public:
-		iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+		Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<iterator_t>&) const;
+		bool validate_args(std::vector<Iterator_t>&) const;
 };
 
 /**______________________________________________________________________
@@ -111,9 +111,9 @@ class fn_concat: public function
 		~fn_concat() {}
 
 	public:
-		iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+		Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<iterator_t>&) const;
+		bool validate_args(std::vector<Iterator_t>&) const;
 };
 
 /**
@@ -126,9 +126,9 @@ class fn_string_join: public function
 		~fn_string_join() {}
 
 	public:
-		iterator_t operator()(yy::location loc, std::vector<iterator_t>&) const;
+		Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<iterator_t>&) const;
+		bool validate_args(std::vector<Iterator_t>&) const;
 };
 
 } /* namespace xqp */

@@ -14,8 +14,7 @@
 
 #include "context/common.h"
 #include "runtime/item_iterator.h"
-#include "values/values.h"
-#include "values/qname.h"
+#include "values/item.h"
 
 #include <string>
 
@@ -53,9 +52,9 @@ public:		// internal interface
 
 public:		// XQuery interface
 	sequence_type_t type() const { return xs_qname; }
-	iterator_t atomized_value( yy::location &loc) const;
-	iterator_t string_value( yy::location &loc) const;
-	iterator_t effective_boolean_value( yy::location &loc) const;
+	Iterator_t atomized_value( yy::location &loc) const;
+	Iterator_t string_value( yy::location &loc) const;
+	Iterator_t effective_boolean_value( yy::location &loc) const;
 
 public:		// output,debugging
 	std::ostream& put(std::ostream& os) const;
