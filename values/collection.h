@@ -51,6 +51,7 @@ namespace xqp
 		virtual void deleteFromCollection(int32_t position) = 0;
 		
 		/** Returns the URI of the collection
+			* @return URI
 			*/
 		virtual Item_t getURI() = 0;
 	}; /* class Collection */

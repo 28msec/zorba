@@ -26,6 +26,7 @@ namespace xqp
 	public:
 		virtual ~Store(){}
 		
+		/*-------------------------------------- Zorba Engine Internal ------------------------------------*/
 		/**
 			* Creates a new TempSeq. The instance can be used, e.g. for variable bindings
 			* @param iterator The source for the XMDInstance
@@ -121,12 +122,7 @@ namespace xqp
 		virtual Iterator_t distinctNodeStable(Iterator_t) = 0;
 		
 		
-		/* ------------------------ Methods to handle persistent data ------------------------------------*/
-		
-// 		streaming , not updatable, lazy - Normal XQuery
-// 		updatable(materialized), lazy - XQuery Update
-// 		updatable(materialized), eager - XQueryP
-		
+		/* ------------------------ Collection Management ------------------------------------*/
 		
 		/** Returns an XDM instance which is saved in the store 
 			* (corresponds to the opening of a connection to a database)
@@ -152,6 +148,8 @@ namespace xqp
 		
 	}; /* class Store */
 	
+	
+	/* ----------------------------- Versioning ------------------------------ */
 	/**
 		* Requester
 		*/
