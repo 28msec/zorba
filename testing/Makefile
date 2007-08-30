@@ -82,6 +82,7 @@ query_exec	= \
 		../runtime/item_iterator.cpp \
 		../runtime/plan_visitor.cpp \
 		../values/basic_item_factory.cpp \
+		../utf8/xqpString.cpp \
 		timer.cpp \
 		query_exec.cpp
 

@@ -88,14 +88,67 @@ namespace xqp {
 			xqpString& operator+=(char c);
 		//! @}
 
-			inline	operator std::string() const{
-				return string_;
+		//! @name xqpString::operator==()
+		//! @{
+			inline bool operator==(const xqpString& src){
+				return (compare(src) == 0);
 			}
-			
+
+			inline bool operator==(const char* src){
+				return (compare(src) == 0);
+			}
+		//!@}
+
+		//! @name xqpString::operator!=()
+		//! @{
+			inline bool operator!=(const xqpString& src){
+				return (compare(src) != 0);
+			}
+
+			inline bool operator!=(const char* src){
+				return (compare(src) != 0);
+			}
+		//!@}
+
+		//! @name Compare
+		//! @{
+			int compare(const xqpString& src)	const;
+			int compare(const char* src)	const;
+		//! @}
+
+			inline	operator std::string() const{
+				return utf8String;
+			}
 		private:
-			std::string string_;
+			std::string utf8String;
 	};
+
+	//! @name xqpString::stream I/O operators
+	//! @{
+	std::istream& operator>>(std::istream& is, xqpString& utf8_src);
+	std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src);
+	//!@}
 	
+	//! @name xqpString::concatenation operator+()
+	//! @{
+	inline xqpString operator+(const xqpString& lsrc, const xqpString& rsrc){
+		xqpString tmp (lsrc);
+		tmp += rsrc;
+		return tmp;
+	}
+
+	inline xqpString operator+(const xqpString& lsrc, const char* rsrc){
+		xqpString tmp (lsrc);
+		tmp += rsrc;
+		return tmp;
+	}
+
+	inline xqpString operator+(const char* lsrc, const xqpString& rsrc){
+		xqpString tmp (lsrc);
+		tmp += rsrc;
+		return tmp;
+	}
+	//! @}
 }/* namespace xqp */
 
 #endif

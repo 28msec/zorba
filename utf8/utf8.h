@@ -212,6 +212,13 @@ namespace xqp {
 	{
 		return next(it);
 	}
+
+	
+	template <typename octet_iterator>
+			int32_t Utf8_Compare(octet_iterator& it1, octet_iterator& it2)
+	{
+		return next(it1);
+	}
 }/* namespace xqp */
 
 #endif /* XQP_UTF8_H */
