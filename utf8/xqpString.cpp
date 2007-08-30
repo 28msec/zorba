@@ -64,7 +64,7 @@ namespace xqp {
 		return *this;
 	}
 	
-	xqpString& xqpString::operator=(uint cp){
+	xqpString& xqpString::operator=(uint32_t cp){
 		string_.reserve(4);
 		char seq[4] = {0,0,0,0};
 		EncodeUtf8(cp, seq);
@@ -88,7 +88,7 @@ namespace xqp {
 		return *this;
 	}
 
-	xqpString& xqpString::operator+=(uint cp){
+	xqpString& xqpString::operator+=(uint32_t cp){
 		string_.reserve(4);
 		char seq[4] = {0,0,0,0};
 		EncodeUtf8(cp, seq);

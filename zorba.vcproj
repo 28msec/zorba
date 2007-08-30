@@ -1199,6 +1199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\utf8\xqpString.cpp"
+				>
+			</File>
+			<File
 				RelativePath="parser\xquery_driver.cpp"
 				>
 				<FileConfiguration

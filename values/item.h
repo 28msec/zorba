@@ -10,10 +10,6 @@
 /* TODO
 - Implementation of xqp_string
 */
-
-#ifndef XQP_ITEM_H
-#define XQP_ITEM_H
-
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
 #include "types/representations.h"
@@ -24,6 +20,10 @@
 #include <sstream>
 #include <string>
 #include <vector>
+
+#ifndef XQP_ITEM_H
+#define XQP_ITEM_H
+
 
 namespace xqp {
 

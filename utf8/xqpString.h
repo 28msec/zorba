@@ -21,6 +21,15 @@
  * @file utf8/xqpString.h
  *
  */ 
+#ifndef XQP_STRING_UTF8_STRING_REPRESENTATION_30_AUG_2007
+#define XQP_STRING_UTF8_STRING_REPRESENTATION_30_AUG_2007
+
+#ifdef WIN32
+#include "win32/compatib_defs.h"
+#endif
+
+#include <stdlib.h>
+#include "utf8.h"
 
 namespace xqp {
 	class xqpString
@@ -88,3 +97,5 @@ namespace xqp {
 	};
 	
 }/* namespace xqp */
+
+#endif
