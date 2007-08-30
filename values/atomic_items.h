@@ -73,7 +73,6 @@ namespace xqp
 		public:
 			DecimalItem ( long double value );
 			long double getDecimalValue() const;
-			long double getNumericValue() const;
 
 			sequence_type_t getType( ) const;
 			Item_t getAtomizationValue( ) const;
@@ -88,26 +87,29 @@ namespace xqp
 			int value_;
 
 		public:
-			virtual ~IntItem(){}
 			IntItem ( int value );
 			int32_t getIntValue() const;
-			long double getNumericValue() const;
 
-			virtual sequence_type_t getType( ) const;
-			virtual Item_t getAtomizationValue( ) const;
+			sequence_type_t getType( ) const;
+			Item_t getAtomizationValue( ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty() const;
 			
-			virtual xqp_string show() const;
+			xqp_string show() const;
 	}; /* class IntItem */
 	
-	class IntegerItem : public IntItem
+	class IntegerItem : public AtomicItem
 	{
+		protected:
+			long long value_;
 		public:
-			IntegerItem( int value );
-		
+			IntegerItem( long long value );
+			long long getIntegerValue() const;
+			
 			sequence_type_t getType() const;
-			virtual Item_t getAtomizationValue( ) const;
+			Item_t getAtomizationValue( ) const;
+			Item_t getEBV( ) const;
+			xqp_string getStringProperty() const;
 			
 			xqp_string show() const;
 	}; /* class IntegerItem */

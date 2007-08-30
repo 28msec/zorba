@@ -115,11 +115,6 @@ namespace xqp
 	{
 		return this->value_;
 	}
-	
-	long double DecimalItem::getNumericValue() const
-	{
-		return this->value_;
-	}
 
 	sequence_type_t DecimalItem::getType() const
 	{
@@ -153,11 +148,6 @@ namespace xqp
 		return this->value_;
 	}
 	
-	long double IntItem::getNumericValue() const
-	{
-		return this->value_;
-	}
-	
 	sequence_type_t IntItem::getType() const
 	{
 		return xs_int;
@@ -187,7 +177,12 @@ namespace xqp
 	/* end class IntItem */
 	
 	/* start class IntegerItem */
-	IntegerItem::IntegerItem ( int value ) :IntItem ( value ) {}
+	IntegerItem::IntegerItem ( long long value ) :value_ ( value ) {}
+	
+	long long IntegerItem::getIntegerValue() const
+	{
+		return this->value_;
+	}
 	
 	sequence_type_t IntegerItem::getType() const
 	{
@@ -197,6 +192,19 @@ namespace xqp
 	Item_t IntegerItem::getAtomizationValue() const
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(this->value_);
+	}
+	
+	Item_t IntegerItem::getEBV() const
+	{
+		bool b = (this->value_ == 0);
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean( b );
+	}
+	
+	xqp_string IntegerItem::getStringProperty() const
+	{
+		std::ostringstream tmp;
+		tmp << this->value_;
+		return xqp_string(tmp.str());
 	}
 	
 	xqp_string IntegerItem::show() const {

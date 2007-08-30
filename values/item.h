@@ -134,17 +134,17 @@ public:
 		return 0;
 	}
 	
-	/** Acessor for all numeric data types to return the numeric value
-		*/
-	virtual long double getNumericValue() const {
-		this->showError();
-		return 0;
-	}
-	
-	/** Accessor for xs:integer, xs:int, xs:negativeInteger
+	/** Accessor for xs:int
 		*/
 	virtual int32_t getIntValue() const { 
 		this->showError(); 
+		return 0;
+	}
+	
+	/** Accessor for xs:integer, xs:negativeInteger
+		*/
+	virtual long long getIntegerValue() const {
+		this->showError();
 		return 0;
 	}
 	

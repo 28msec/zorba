@@ -26,7 +26,7 @@ namespace xqp
 	{
 		return new DecimalItem ( value );
 	}
-	Item_t BasicItemFactory::createInteger ( int32_t value )
+	Item_t BasicItemFactory::createInteger ( long long value )
 	{
 		return new IntegerItem ( value );
 	}

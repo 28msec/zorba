@@ -22,7 +22,7 @@ namespace xqp
 			Item_t createBase64Binary ( xqp_base64Binary value );
 			Item_t createBoolean ( bool value );
 			Item_t createDecimal ( long double value );
-			Item_t createInteger ( int32_t value );
+			Item_t createInteger ( long long value );
 			Item_t createLong ( long value );
 			Item_t createInt ( int32_t value );
 			Item_t createShort ( short value );

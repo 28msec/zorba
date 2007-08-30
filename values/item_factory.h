@@ -67,7 +67,7 @@ namespace xqp
 			  * @param value
 
 			  */
-			virtual Item_t createInteger ( int32_t value ) = 0;
+			virtual Item_t createInteger ( long long value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#long]
