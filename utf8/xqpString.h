@@ -64,7 +64,7 @@ namespace xqp {
 			/**
 			 * @param cp Codepoint
 			 */
-			xqpString& operator=(uint cp);
+			xqpString& operator=(uint32_t cp);
 			xqpString& operator=(char c);
 		//! @}
 			
@@ -75,7 +75,7 @@ namespace xqp {
 			/**
 			 * @param cp Codepoint
 			 */
-			xqpString& operator+=(uint cp);
+			xqpString& operator+=(uint32_t cp);
 			xqpString& operator+=(char c);
 		//! @}
 

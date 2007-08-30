@@ -3,13 +3,14 @@
 
 #include <iostream>
 
-#inculde "stdint.h"
+#include "stdint.h"
 
 // typedef unsigned long uint32_t;
 // typedef __int64		int64_t;
 // typedef unsigned __int64	uint64_t;
 // typedef unsigned short		uint16_t;
 // typedef unsigned char			uint8_t;
+// typedef short int					int16_t;
 
 #ifdef _WIN32_WCE
 typedef long	off_t;
@@ -31,7 +32,7 @@ namespace __gnu_cxx{
    // The _Container parameter exists solely so that different containers
    // using this template can instantiate different types, even if the
    // _Iterator parameter is the same.
-   using std::Iterator_traits;
+   using std::iterator_traits;
    using std::iterator;
    template<typename _Iterator, typename _Container>
      class __normal_iterator
@@ -40,13 +41,13 @@ namespace __gnu_cxx{
        _Iterator _M_current;
  
      public:
-       typedef typename Iterator_traits<_Iterator>::iterator_category
+       typedef typename iterator_traits<_Iterator>::iterator_category
                                                               iterator_category;
-       typedef typename Iterator_traits<_Iterator>::value_type  value_type;
-       typedef typename Iterator_traits<_Iterator>::difference_type
+       typedef typename iterator_traits<_Iterator>::value_type  value_type;
+       typedef typename iterator_traits<_Iterator>::difference_type
                                                               difference_type;
-       typedef typename Iterator_traits<_Iterator>::reference reference;
-       typedef typename Iterator_traits<_Iterator>::pointer   pointer;
+       typedef typename iterator_traits<_Iterator>::reference reference;
+       typedef typename iterator_traits<_Iterator>::pointer   pointer;
  
        typedef _Iterator _Iterator_type;
  

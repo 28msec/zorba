@@ -32,6 +32,10 @@
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
 
+#ifdef WIN32
+#include "win32/compatib_defs.h"
+#endif
+
 namespace xqp {
 
 class zorba;

@@ -248,6 +248,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\values\atomic_items.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\values\basic_item_factory.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\runtime\batching.cpp"
 				>
 			</File>
@@ -362,90 +370,6 @@
 			</File>
 			<File
 				RelativePath="functions\Context.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="dom\dom_namepool.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="dom\dom_nodes.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="dom\dom_qname.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="dom\dom_xml_handler.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -621,28 +545,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="runtime\item_iterator.cpp"
+				RelativePath=".\values\item.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="store\itemstore.cpp"
+				RelativePath="runtime\item_iterator.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -832,48 +739,6 @@
 			</File>
 			<File
 				RelativePath="runtime\plan_visitor.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="values\primitive_values.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="zorba\qnamerep.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1221,27 +1086,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="values\update_values.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="util\URI.cpp"
 				>
 				<FileConfiguration
@@ -1285,27 +1129,6 @@
 			</File>
 			<File
 				RelativePath="util\utf8_encoder.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="zorba\valuereps.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1426,49 +1249,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="zorba\zorba_qname.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="store\zorba_uri_resolver.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="zorba\zorba_value_factory.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -1498,6 +1279,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\values\atomic_items.h"
+				>
+			</File>
+			<File
+				RelativePath=".\values\basic_item_factory.h"
+				>
+			</File>
+			<File
 				RelativePath=".\runtime\batching.h"
 				>
 			</File>
@@ -1523,6 +1312,10 @@
 			</File>
 			<File
 				RelativePath="store\collation_resolver.h"
+				>
+			</File>
+			<File
+				RelativePath=".\values\collection.h"
 				>
 			</File>
 			<File
@@ -1566,11 +1359,11 @@
 				>
 			</File>
 			<File
-				RelativePath="context\dynamic_context.h"
+				RelativePath="runtime\dynamic_context.h"
 				>
 			</File>
 			<File
-				RelativePath="runtime\dynamic_context.h"
+				RelativePath="context\dynamic_context.h"
 				>
 			</File>
 			<File
@@ -1634,10 +1427,6 @@
 				>
 			</File>
 			<File
-				RelativePath="parser\indent.h"
-				>
-			</File>
-			<File
 				RelativePath="runtime\indent.h"
 				>
 			</File>
@@ -1646,11 +1435,15 @@
 				>
 			</File>
 			<File
-				RelativePath="runtime\item_iterator.h"
+				RelativePath="parser\indent.h"
 				>
 			</File>
 			<File
-				RelativePath="values\itemid.h"
+				RelativePath=".\values\item.h"
+				>
+			</File>
+			<File
+				RelativePath="runtime\item_iterator.h"
 				>
 			</File>
 			<File
@@ -1678,10 +1471,6 @@
 				>
 			</File>
 			<File
-				RelativePath="values\nodes.h"
-				>
-			</File>
-			<File
 				RelativePath="exprtree\normalize_visitor.h"
 				>
 			</File>
@@ -1706,6 +1495,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\values\pending_update_list.h"
+				>
+			</File>
+			<File
 				RelativePath="runtime\plan_visitor.h"
 				>
 			</File>
@@ -1714,15 +1507,7 @@
 				>
 			</File>
 			<File
-				RelativePath="values\primitive_values.h"
-				>
-			</File>
-			<File
 				RelativePath=".\win32\pthread.h"
-				>
-			</File>
-			<File
-				RelativePath="values\qname.h"
 				>
 			</File>
 			<File
@@ -1786,6 +1571,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\win32\stdint.h"
+				>
+			</File>
+			<File
+				RelativePath=".\values\store.h"
+				>
+			</File>
+			<File
 				RelativePath="store\store.h"
 				>
 			</File>
@@ -1807,6 +1600,10 @@
 			</File>
 			<File
 				RelativePath="parser\symbol_table.h"
+				>
+			</File>
+			<File
+				RelativePath=".\values\temp_seq.h"
 				>
 			</File>
 			<File
@@ -1854,19 +1651,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\utf8\utf8.h"
+				>
+			</File>
+			<File
 				RelativePath="util\utf8_encoder.h"
 				>
 			</File>
 			<File
-				RelativePath="values\value_factory.h"
-				>
-			</File>
-			<File
 				RelativePath="zorba\valuereps.h"
-				>
-			</File>
-			<File
-				RelativePath="values\values.h"
 				>
 			</File>
 			<File
@@ -1882,15 +1675,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\utf8\xqpString.h"
+				>
+			</File>
+			<File
 				RelativePath="parser\xquery_driver.h"
 				>
 			</File>
 			<File
 				RelativePath="parser\xquery_parser.tab.h"
-				>
-			</File>
-			<File
-				RelativePath="values\xs_primitive_values.h"
 				>
 			</File>
 			<File
