@@ -43,6 +43,8 @@ namespace xqp
 			Item_t getAtomizationValue( ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty( ) const;
+			
+			static qnamekey_t createQNameKey(xqp_string _namespace, xqp_string prefix, xqp_string localName);
 	};  /* class QNameItem */
 
 	class StringItem : public AtomicItem
@@ -58,6 +60,7 @@ namespace xqp
 			Item_t getAtomizationValue( ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty( ) const;
+			xqp_string show() const;
 	}; /* class StringItem */
 
 
@@ -106,7 +109,7 @@ namespace xqp
 			sequence_type_t getType() const;
 			virtual Item_t getAtomizationValue( ) const;
 			
-			virtual xqp_string show() const;
+			xqp_string show() const;
 	}; /* class IntegerItem */
 	
 	class BooleanItem : public AtomicItem

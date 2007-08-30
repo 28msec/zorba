@@ -280,9 +280,6 @@ Item_t ConcatFnIterator::nextImpl() {
 
 	Item_t item;
 	
-	Iterator_t currit_str;
-	Item_t item_str;
-	
 	STACK_INIT();
 	
 	this->cursor = 0;
@@ -293,17 +290,14 @@ Item_t ConcatFnIterator::nextImpl() {
 
 		//TODO use a more high level function provided by the type system
 		//if the item is not a node => it's a xs:anyAtomicType
-		// TODO FIXME Adapt do new store, item, item_factory interface
-// 		if((item->getType() & NODE_MASK) == NOT_NODE)
-// 		{
-// 			currit_str = item->getStringValue();
-// 			item_str = this->consumeNext(currit_str);
-// 			res.append(n->getStringValue());
-// 			//res.append("1");
-// 		}
+		if((item->getType() & NODE_MASK) == NOT_NODE)
+		{
+			res.append(item->getStringProperty());
+			//res.append("1");
+		}
 	}
 
-// 	STACK_PUSH(new stringValue(xs_string, res));
+	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->res));
 	STACK_PUSH(NULL);
 	STACK_END();
 }

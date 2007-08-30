@@ -46,7 +46,7 @@ namespace xqp
 	
 	qnamekey_t QNameItem::getQNameKey( ) const
 	{
-		return hashfun::h64(this->strPrefix_,hashfun::h64(this->strLocal_,hashfun::h64(this->strNamespace_)));
+		return QNameItem::createQNameKey(this->strNamespace_, this->strPrefix_, this->strLocal_);
 	}
 
 	sequence_type_t QNameItem::getType( ) const
@@ -66,6 +66,10 @@ namespace xqp
 	xqp_string QNameItem::getStringProperty( ) const
 	{
 		return this->strPrefix_ != "" ? this->strPrefix_ + ":" + this->strLocal_ : this->strLocal_;
+	}
+	
+	qnamekey_t QNameItem::createQNameKey(xqp_string _namespace, xqp_string prefix, xqp_string localName) {
+		return hashfun::h64(prefix,hashfun::h64(localName,hashfun::h64(_namespace)));
 	}
 	/* end class QNameItem */
 
@@ -96,6 +100,11 @@ namespace xqp
 	xqp_string StringItem::getStringProperty() const
 	{
 		return this->strValue_;
+	}
+	
+	xqp_string StringItem::show() const
+	{
+		return "xs:string(" + this->strValue_ + ")";
 	}
 	/* end class StringItem */
 

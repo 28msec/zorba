@@ -80,7 +80,9 @@ namespace xqp
 	Item_t BasicItemFactory::createNonPositiveInteger ( int32_t value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createPositiveInteger ( uint32_t value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createString ( xqp_string value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createString ( xqp_string value ) { 
+		return new StringItem ( value ); 
+	}
 	Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createTime ( short hour, short minute, short second, short timeZone ) { return Item_t ( NULL ); }

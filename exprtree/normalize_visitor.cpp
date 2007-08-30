@@ -11,12 +11,11 @@
 #include "normalize_visitor.h"
 #include "indent.h"
 
-// #include "dom/dom_nodes.h"
 #include "functions/library.h"
 #include "parser/parsenodes.h"
-// #include "runtime/zorba.h"
 #include "util/tracer.h"
-// #include "zorba/zorba_qname.h"
+#include "../values/atomic_items.h"
+
 
 #include <iostream>
 #include <string>
@@ -903,8 +902,7 @@ cout << indent[++depth] << TRACE << endl;
 		prefix = ZORBA_PRE;
 	}
 
-	// TODO Adapt to new store
-	qnamekey_t funkey = 0; // = zorba_qname(uri,prefix,fname).qnamekey();
+	qnamekey_t funkey = QNameItem::createQNameKey(uri,prefix,fname);
 	yy::location loc = v.get_location();
 	rchandle<fo_expr> fo_h = new fo_expr(loc);	nodestack.push(NULL);
 
