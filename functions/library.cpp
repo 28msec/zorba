@@ -20,6 +20,8 @@
 #include "types/sequence_type.h"
 #include "util/tracer.h"
 // #include "zorba/zorba_qname.h"
+#include "../values/item.h"
+#include "../values/atomic_items.h"
 
 #include <iostream>
 

@@ -4,7 +4,7 @@
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *  Author: David Graf, Donald Kossmann, Tim Kraska
- *
+ *`
  */
 
 #include "basic_item_factory.h"
@@ -26,12 +26,12 @@ namespace xqp
 	{
 		return new DecimalItem ( value );
 	}
-	Item_t BasicItemFactory::createInteger ( int value )
+	Item_t BasicItemFactory::createInteger ( int32_t value )
 	{
 		return new IntegerItem ( value );
 	}
 	Item_t BasicItemFactory::createLong ( long value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createInt ( int value )
+	Item_t BasicItemFactory::createInt ( int32_t value )
 	{
 		return new IntItem ( value );
 	}
@@ -75,11 +75,11 @@ namespace xqp
 	Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createNOTATION ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createName ( const xqp_string& value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createNegativeInteger ( int value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createNonNegativeInteger ( int value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createNonPositiveInteger ( int value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNegativeInteger ( int32_t value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNonNegativeInteger ( int32_t value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNonPositiveInteger ( int32_t value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createPositiveInteger ( unsigned int value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createPositiveInteger ( uint32_t value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createString ( xqp_string value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }

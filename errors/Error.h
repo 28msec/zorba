@@ -19,8 +19,8 @@
 #include "util/rchandle.h"
 #include "parser/location.hh"
 //#include "runtime/zorba.h"
-#include "../values/item.h"
-#include "../values/atomic_items.h"
+//#include "../values/item.h"
+//#include "../values/atomic_items.h"
 
 using namespace std;
 namespace xqp {

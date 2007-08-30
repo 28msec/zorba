@@ -125,6 +125,11 @@ protected:
  * --------------------*/
 class CompareIterator : public Batcher<CompareIterator>
 {
+	CompareIterator(
+		yy::location loc)
+	:
+		Batcher<CompareIterator>(loc)
+	{}
 };/*class CompareIterator*/
 
 

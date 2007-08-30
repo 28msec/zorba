@@ -87,7 +87,7 @@ namespace xqp
 		public:
 			virtual ~IntItem(){}
 			IntItem ( int value );
-			int getIntValue() const;
+			int32_t getIntValue() const;
 			long double getNumericValue() const;
 
 			virtual sequence_type_t getType( ) const;

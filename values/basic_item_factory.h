@@ -22,9 +22,9 @@ namespace xqp
 			Item_t createBase64Binary ( xqp_base64Binary value );
 			Item_t createBoolean ( bool value );
 			Item_t createDecimal ( long double value );
-			Item_t createInteger ( int value );
+			Item_t createInteger ( int32_t value );
 			Item_t createLong ( long value );
-			Item_t createInt ( int value );
+			Item_t createInt ( int32_t value );
 			Item_t createShort ( short value );
 			Item_t createByte ( char value );
 			Item_t createDate ( short year, short month, short day );
@@ -65,11 +65,11 @@ namespace xqp
 			Item_t createNMTOKENS ( const xqp_string& value );
 			Item_t createNOTATION ( const xqp_string& value );
 			Item_t createName ( const xqp_string& value );
-			Item_t createNegativeInteger ( int value );
-			Item_t createNonNegativeInteger ( int value );
-			Item_t createNonPositiveInteger ( int value );
+			Item_t createNegativeInteger ( int32_t value );
+			Item_t createNonNegativeInteger ( int32_t value );
+			Item_t createNonPositiveInteger ( int32_t value );
 			Item_t createNormalizedString ( const xqp_string& value );
-			Item_t createPositiveInteger ( unsigned int value );
+			Item_t createPositiveInteger ( uint32_t value );
 			Item_t createString ( xqp_string value );
 			Item_t createTime ( const xqp_string& value );
 			Item_t createTime ( short hour, short minute, short second );

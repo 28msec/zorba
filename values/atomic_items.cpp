@@ -1,4 +1,4 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
+	/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
  *
@@ -139,7 +139,7 @@ namespace xqp
 	/* start class IntItem */
 	IntItem::IntItem ( int value ) :value_ ( value ) {}
 	
-	int IntItem::getIntValue() const
+	int32_t IntItem::getIntValue() const
 	{
 		return this->value_;
 	}

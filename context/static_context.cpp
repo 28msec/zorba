@@ -24,6 +24,8 @@
 
 #include "static_context.h"
 #include "common.h"
+#include "../values/item.h"
+#include "../values/atomic_items.h"
 #include "../values/item_factory.h"
 
 
