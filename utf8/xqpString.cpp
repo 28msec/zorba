@@ -190,4 +190,17 @@ namespace xqp {
 	xqpString::size_type xqpString::bytes() const{
 		return utf8String.size();
 	}
+
+	bool xqpString::empty() const{
+		return utf8String.empty();
+	}
+
+	void xqpString::reserve(xqpString::size_type size){
+		utf8String.reserve(size);
+	}
+
+	//xqpString::Clear
+	void xqpString::clear(){
+		utf8String.erase();
+	}
 }/* namespace xqp */

@@ -121,12 +121,12 @@ namespace xqp {
 		//! @name xqpString::Length
 		//! @{
 			/**
-			 * @return the number of unicode characters encoded as UTF-8 (without the null termination)
+			 * @return the number of unicode characters (without the null termination)
 			 */
 			size_type length() const;
 
 			/**
-			 * @return the number of unicode characters encoded as UTF-8 (without the null termination)
+			 * @return the number of unicode characters (without the null termination)
 			 */
 			size_type size() const;
 
@@ -134,6 +134,20 @@ namespace xqp {
 			 * @return the number of bytes (without the null termination)
 			 */
 			size_type bytes() const;
+
+			/**
+			 * @return true is the xqpString is empty
+			 */
+			bool empty()  const;
+
+			/**
+			 *	Sets the capacity of the string to at least size
+			 */
+			void reserve(size_type size=0);
+		//! @}
+		//! @name xqpString::Clear
+		//! @{
+			void clear();
 		//! @}
 			
 			inline	operator std::string() const{
