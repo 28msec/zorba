@@ -23,6 +23,18 @@ namespace xqp
 	public:
 		virtual ~Collection(){}
 		
+		/**
+		 * Reads the whole Collection from beginning to end; it is allowed to have several 
+		 * concurrent iterators on the same Collection.
+		 * 
+		 * @param idsNeeded whether the returned items contain ids, e.g. for sorting
+		 * @return Iterator which iterates over the complete Collection
+		 * 
+		 * Ids == false is likely to be faster. 'idsNeeded' should only be set to true if clients wants to 
+		 * sort or compare the items or sub-items generated from the returned iterator.
+		 */
+		virtual Iterator_t getIterator(bool idsNeeded) = 0;
+		
 		/** Inserts data into the collection
 		  *
 			* @param item to insert
