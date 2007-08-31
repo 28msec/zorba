@@ -36,23 +36,23 @@ namespace xqp {
 				case xs_integer:
 					switch (operation) {
 					case num_operations::add:
-						resultItem = itemFactory->createInteger(item0->getIntValue() + item1->getIntValue());
+						resultItem = itemFactory->createInteger(item0->getIntegerValue() + item1->getIntegerValue());
 						break;
 					case num_operations::subtract:
-						resultItem = itemFactory->createInteger(item0->getIntValue() - item1->getIntValue());
+						resultItem = itemFactory->createInteger(item0->getIntegerValue() - item1->getIntegerValue());
 						break;
 					default:
 						break;
 					}
 					break;
 				case xs_float:
-					resultItem = itemFactory->createFloat(item0->getIntValue() + item1->getFloatValue());
+					resultItem = itemFactory->createFloat(item0->getIntegerValue() + item1->getFloatValue());
 					break;
 				case xs_double:
-					resultItem = itemFactory->createDouble(item0->getIntValue() + item1->getDoubleValue());
+					resultItem = itemFactory->createDouble(item0->getIntegerValue() + item1->getDoubleValue());
 					break;
 				case xs_decimal:
-					resultItem = itemFactory->createDecimal(item0->getIntValue() + item1->getDecimalValue());
+					resultItem = itemFactory->createDecimal(item0->getIntegerValue() + item1->getDecimalValue());
 					break;
 				default:
 					break;
@@ -61,7 +61,7 @@ namespace xqp {
 			case xs_float:
 				switch (item1->getType()) {
 					case xs_integer:
-						resultItem = itemFactory->createFloat(item0->getFloatValue() + item1->getIntValue());
+						resultItem = itemFactory->createFloat(item0->getFloatValue() + item1->getIntegerValue());
 						break;
 					case xs_float:
 						resultItem = itemFactory->createFloat(item0->getFloatValue() + item1->getFloatValue());
@@ -79,7 +79,7 @@ namespace xqp {
 			case xs_double:
 				switch (item1->getType()) {
 					case xs_integer:
-						resultItem = itemFactory->createDouble(item0->getDoubleValue() + item1->getIntValue());
+						resultItem = itemFactory->createDouble(item0->getDoubleValue() + item1->getIntegerValue());
 						break;
 					case xs_float:
 						resultItem = itemFactory->createDouble(item0->getDoubleValue() + item1->getFloatValue());
@@ -97,7 +97,7 @@ namespace xqp {
 			case xs_decimal:
 				switch (item1->getType()) {
 					case xs_integer:
-						resultItem = itemFactory->createDecimal(item0->getDecimalValue() + item1->getIntValue());
+						resultItem = itemFactory->createDecimal(item0->getDecimalValue() + item1->getIntegerValue());
 						break;
 					case xs_float:
 						resultItem = itemFactory->createDecimal(item0->getDecimalValue() + item1->getFloatValue());
