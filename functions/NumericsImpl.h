@@ -80,6 +80,20 @@ protected:
 	}
 
 
+// class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator>
+// {
+// public:
+// 	ArithmeticIterator (yy::location loc, Iterator_t iter0, Iterator_t iter1)
+// 		:
+// 	BinaryBaseIteratory<ArithmeticIterator>(loc, iter0, iter1) {}
+// 	~ArithmeticIterator() {}
+// 	
+// 	Item_t nextImpl();
+// 
+// private:
+// 	Item_t upCast(sequence_type_t, Item_t);
+// }; /* class ArithmeticIterator */
+
 /*______________________________________________________________________
 |  
 | 6.2 Operators on Numeric Values

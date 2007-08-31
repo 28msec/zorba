@@ -1,7 +1,7 @@
-SUBDIRS		= \
-				api \
-				native
+SOURCES 	= \
+	item.cpp \
+	atomic_items.cpp
 
 # Include global Makefile rules
-ROOT_PATH		= ..
+ROOT_PATH		= ../..
 include $(ROOT_PATH)/Makefile.rules

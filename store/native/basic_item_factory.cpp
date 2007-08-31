@@ -8,7 +8,7 @@
  */
 
 #include "basic_item_factory.h"
-#include "../values/atomic_items.h"
+#include "../api/atomic_items.h"
 
 namespace xqp
 {

@@ -21,7 +21,7 @@
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "errors/Error.h"
-#include "values/item.h"
+#include "../store/api/item.h"
 #include "indent.h"
 
 using namespace std;

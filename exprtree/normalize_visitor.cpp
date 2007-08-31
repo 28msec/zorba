@@ -14,7 +14,7 @@
 #include "functions/library.h"
 #include "parser/parsenodes.h"
 #include "util/tracer.h"
-#include "../values/atomic_items.h"
+#include "../store/api/atomic_items.h"
 
 
 #include <iostream>
@@ -30,7 +30,7 @@ normalize_visitor::normalize_visitor()
 {
 	zorp = zorba::getZorbaForCurrentThread();
 	dctx_p = zorp->get_dynamic_context();
-	dmgr_h = zorp->get_data_manager();
+// 	dmgr_h = zorp->get_data_manager();
 }
 
 

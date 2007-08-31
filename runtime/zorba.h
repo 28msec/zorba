@@ -14,7 +14,6 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 //daniel #include "runtime/errors.h"
-#include "store/data_manager.h"
 #include "util/rchandle.h"
 #include "errors/Error.h"
 
@@ -32,7 +31,7 @@ class BasicIterator;
 class zorba : public rcobject
 {
 protected:
-	rchandle<data_manager> theDataManager;
+// 	rchandle<data_manager> theDataManager;
 	rchandle<ItemFactory> theValueFactory;  // move to data_manager
 	rchandle<static_context> theStaticContext;
 	rchandle<dynamic_context> theDynamicContext;
@@ -52,7 +51,7 @@ public:
 	zorba();
 
 	zorba(
-		rchandle<data_manager>,
+// 		rchandle<data_manager>,
 		rchandle<ItemFactory>,
 		rchandle<static_context>,
 		rchandle<dynamic_context>,
@@ -61,21 +60,21 @@ public:
 	~zorba() {}
 
 public:
-	data_manager* get_data_manager() const { return &*theDataManager; }
+// 	data_manager* get_data_manager() const { return &*theDataManager; }
 	ItemFactory* getItemFactory() const { return &*theValueFactory; }
 	static_context* get_static_context() const { return &*theStaticContext; }
 	dynamic_context* get_dynamic_context() const { return &*theDynamicContext; }
 	//daniel
 	ZorbaErrorAlerts* get_error_manager() const { return &*error_manager; }
 
-	void set_data_manager(data_manager* v) { theDataManager = v; }
+// 	void set_data_manager(data_manager* v) { theDataManager = v; }
 	void setItemFactory(ItemFactory* v) { theValueFactory = v; }
 	void set_static_context(static_context* v) { theStaticContext = v; }
 	void set_dynamic_context(dynamic_context* v) { theDynamicContext = v; }
 	//daniel
 	void set_error_manager(ZorbaErrorAlerts *err_manag) { error_manager = err_manag; }
 
-	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
+// 	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
 	void set_value_factory(rchandle<ItemFactory> v) { theValueFactory = v; }
 	void set_static_context(rchandle<static_context> v) { theStaticContext = v; }
 	void set_dynamic_context(rchandle<dynamic_context> v) { theDynamicContext = v; }

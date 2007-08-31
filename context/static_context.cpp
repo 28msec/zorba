@@ -24,9 +24,9 @@
 
 #include "static_context.h"
 #include "common.h"
-#include "../values/item.h"
-#include "../values/atomic_items.h"
-#include "../values/item_factory.h"
+#include "../store/api/item.h"
+#include "../store/api/atomic_items.h"
+#include "../store/api/item_factory.h"
 
 
 using namespace std;

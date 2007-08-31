@@ -26,7 +26,7 @@ SUBDIRS		= \
 				testing \
 				types \
 				util \
-				values
+				store
 
 
 all: TARGET=all

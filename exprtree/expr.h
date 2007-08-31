@@ -36,7 +36,7 @@
 #include "util/list.h"
 #include "util/rchandle.h"
 #include "values/ft_options.h"
-#include "values/item.h"
+#include "../store/api/item.h"
 
 namespace xqp {
 

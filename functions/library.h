@@ -11,7 +11,7 @@
 #define XQP_LIBRARY_H
 
 #include "context/common.h"
-#include "values/item_factory.h"
+#include "../store/api/item_factory.h"
 #include "util/fxhashmap.h"
 #include <string>
 

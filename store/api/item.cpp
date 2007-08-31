@@ -9,8 +9,8 @@
 
 #include "item.h"
 
-#include "../errors/errors.h"
-#include "../errors/Error.h"
+#include "../../errors/errors.h"
+#include "../../errors/Error.h"
 
 namespace xqp
 {

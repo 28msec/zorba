@@ -9,7 +9,7 @@
 #include "item_iterator.h"
 #include "util/Assert.h"
 #include "errors/Error.h"
-#include "values/item.h"
+#include "../store/api/item.h"
 #include "runtime/zorba.h"
 #include "exprtree/expr.h"
 

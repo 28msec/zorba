@@ -121,6 +121,46 @@ namespace xqp {
 	
 	/* end class BinaryBaseIterator */
 
+// 	/* begin class ArithmeticIterator */
+// 	Item_t ArithmeticIterator::nextImpl()
+// 	{
+// 		Item_t n0;
+// 		Item_t n1;
+// 		sequence_type_t type0;
+// 		sequence_type_t type1;
+// 		sequence_type_t resultType;
+// 		
+// 		STACK_INIT();
+// 		n0 = this->consumeNext(this->arg0);
+// 		if(n0 == NULL) {
+// 			STACK_PUSH(NULL);
+// 		} else {
+// 			n1 = this->consumeNext(this->arg1);
+// 			if (n1 == NULL) {
+// 				STACK_PUSH(NULL);
+// 			} else {
+// 				n0 = n0->getAtomizationValue();
+// 				n1 = n1->getAtomizationValue();
+// 				type0 = n0->getType();
+// 				type1 = n1->getType();
+// 				resultType = sequence_type::getNumericalOpResultType(type0, type1);
+// 				
+// 			}
+// 		}
+// 		STACK_END();
+// 	}
+// 	
+// 	Item_t ArithmeticIterator::upCast(sequence_type_t type, Item_t item)
+// 	{
+// 		if (value->getType() == type) {
+// 			return item;
+// 		} else {
+// 			switch(type) {
+// 			case 
+// 			}
+// 		}
+// 	}
+// 	/* end class ArithmeticIterator */
 
 /*______________________________________________________________________
 |  

@@ -73,15 +73,15 @@ query_exec	= \
 		../util/tokenbuf.cpp \
 		../util/URI.cpp \
 		../runtime/zorba.cpp \
-		../values/item.cpp \
-		../values/atomic_items.cpp \
+		../store/api/item.cpp \
+		../store/api/atomic_items.cpp \
 		../errors/xqp_exception.cpp \
 		../errors/errors.cpp \
 		../errors/Error.cpp \
 		../runtime/batching.cpp \
 		../runtime/item_iterator.cpp \
 		../runtime/plan_visitor.cpp \
-		../values/basic_item_factory.cpp \
+		../store/native/basic_item_factory.cpp \
 		../utf8/xqpString.cpp \
 		timer.cpp \
 		query_exec.cpp

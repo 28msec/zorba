@@ -13,7 +13,7 @@
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
 #include "types/representations.h"
-#include "../runtime/batching.h"
+#include "../../runtime/batching.h"
 
 
 #include <iostream>

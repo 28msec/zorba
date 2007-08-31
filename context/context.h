@@ -31,7 +31,7 @@
 #include "util/fxhashmap.h"
 #include "util/rchandle.h"
 #include "errors/Error.h"
-#include "../values/item_factory.h"
+#include "../store/api/item_factory.h"
 
 namespace xqp {
 

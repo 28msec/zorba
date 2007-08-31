@@ -12,8 +12,8 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "store/data_manager.h"
-#include "values/item_factory.h"
+// #include "store/data_manager.h"
+#include "../store/api/item_factory.h"
 
 
 
@@ -29,7 +29,7 @@ pthread_mutex_t								zorba::global_zorbas_mutex;// = PTHREAD_MUTEX_INITIALIZER
 
 zorba::zorba()
 :
-	theDataManager(NULL),
+// 	theDataManager(NULL),
 	theValueFactory(NULL),
 	theStaticContext(NULL),
 	theDynamicContext(NULL),
@@ -38,13 +38,13 @@ zorba::zorba()
 }
 
 zorba::zorba(
-	rchandle<data_manager> dataManager,
+// 	rchandle<data_manager> dataManager,
 	rchandle<ItemFactory> valueFactory,
 	rchandle<static_context> staticContext,
 	rchandle<dynamic_context> dynamicContext,
 	rchandle<ZorbaErrorAlerts> zorbaAlerts)
 :
-	theDataManager(dataManager),
+// 	theDataManager(dataManager),
 	theValueFactory(valueFactory),
 	theStaticContext(staticContext),
 	theDynamicContext(dynamicContext),

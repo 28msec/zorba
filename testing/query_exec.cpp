@@ -8,7 +8,7 @@
 #include "errors/Error.h"
 #include "runtime/zorba.h"
 #include "timer.h"
-#include "../values/basic_item_factory.h"
+#include "../store/native/basic_item_factory.h"
 
 #include <iostream>
 

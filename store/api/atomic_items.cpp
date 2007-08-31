@@ -7,8 +7,8 @@
  *
  */
 
-#include "../values/atomic_items.h"
-#include "../runtime/zorba.h"
+#include "atomic_items.h"
+#include "../../runtime/zorba.h"
 #include "util/hashfun.h"
 
 namespace xqp

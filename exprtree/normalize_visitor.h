@@ -13,7 +13,7 @@
 
 #include "parsenode_visitor.h"
 #include "expr.h"
-#include "store/data_manager.h"
+// #include "store/data_manager.h"
 
 #include <stack>
 
@@ -36,7 +36,7 @@ public:
 protected:
 	zorba* zorp;
 	dynamic_context* dctx_p;
-	rchandle<data_manager> dmgr_h;
+// 	rchandle<data_manager> dmgr_h;
 
 	std::stack<expr_t> nodestack;
 	std::stack<expr_t> argstack;

@@ -164,7 +164,7 @@ class doc_iterator : public BasicIterator
 {
 	private:
 		Iterator_t arg;
-		document_node* doc_node;
+		Item_t doc_node;
 
 public:
 	void _open();

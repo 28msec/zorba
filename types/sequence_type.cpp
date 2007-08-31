@@ -38,21 +38,40 @@ bool sequence_type::derives_from(
 	return false;
 }
 
-TypeCode sequence_type::getNumericalOpResultType(TypeCode arg1Type, TypeCode arg2Type){
-		if (arg1Type == arg2Type)
-			return arg1Type;
+// TODO To be extended
+TypeCode sequence_type::getNumericalOpResultType(TypeCode type0, TypeCode type1){
+// 	// Zorba does not contain the type xs:anySimpleType
+// 	if (/* type0 == xs_anySimpleType || */ type0 == xs_untypedAtomicValue)
+// 		type0 = xs_double;
+// 	if (/* type1 == xs_anySimpleType || */ type1 == xs_untypedAtomicValue)
+// 		type1 = xs_double;
+// 		
+// 	if (type0 & NUMERIC_TYPE == 0 || type1 & NUMERIC_TYPE)
+	
+	
+		if (type0 == type1)
+			return type0;
 		
-		if (arg1Type == xs_double || arg2Type == xs_double)
+		if (type0 == xs_double || type1 == xs_double)
 			return xs_double;
 		
-		if (arg1Type == xs_float || arg2Type == xs_float) 
+		if (type0 == xs_float || type1 == xs_float) 
 			return xs_float;
 		
-		if (arg1Type == xs_decimal || arg2Type == xs_decimal) 
+		if (type0 == xs_decimal || type1 == xs_decimal) 
 			return xs_decimal;
 		
 		return xs_integer;
 	}
+
+// TODO To be extended, error detection needed if upcast not possible
+// Item_t sequence_type::upCastToNumericType(TypeCode type, Item_t item) {
+// 	if (item->getType() == type)
+// 		return item;
+// 	
+// 	ItemFactory* itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
+// 	
+// }
 
 std::string sequence_type::describe(
 	TypeCode t)

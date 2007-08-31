@@ -29,8 +29,8 @@
 #include "context.h"
 #include "errors/Error.h"
 #include "../types/sequence_type.h"
-#include "../values/item.h"
-#include "../values/store.h"
+#include "../store/api/item.h"
+#include "../store/api/store.h"
 
 namespace xqp {
 

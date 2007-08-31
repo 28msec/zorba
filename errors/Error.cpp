@@ -5,8 +5,8 @@
 #include <iomanip>
 #include <stdlib.h>
 #include "runtime/zorba.h"
-#include "../values/item.h"
-#include "../values/atomic_items.h"
+#include "../store/api/item.h"
+#include "../store/api/atomic_items.h"
 
 using namespace std;
 namespace xqp {

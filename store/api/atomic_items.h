@@ -12,7 +12,7 @@
 #ifndef XQP_ATOMIC_ITEMS_H
 #define XQP_ATOMIC_ITEMS_H
 
-#include "../values/item.h"
+#include "item.h"
 
 namespace xqp
 {
