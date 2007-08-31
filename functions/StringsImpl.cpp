@@ -71,7 +71,7 @@ Item_t CodepointsToStringIterator::nextImpl(){
 			seq[2] = 0;
 			seq[3] = 0;
 			
-			EncodeUtf8(item->getIntValue(), seq);
+			UTF8Encode(item->getIntValue(), seq);
 
 			res.append(seq);
 		}
@@ -126,7 +126,7 @@ Item_t StringToCodepointsIterator::nextImpl(){
 		c = &v[0];
 
 		while( --vLength > 0 ){
-			cp = DecodeUtf8(c);
+			cp = UTF8Decode(c);
 			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createLong(cp));
 		}
 	}
@@ -216,7 +216,7 @@ Item_t CodepointEqualIterator::nextImpl(){
 			c1 = &v1[0];
 			
 			while( !finish && (vLength > 0) ){
-				if(DecodeUtf8(c0) != DecodeUtf8(c1))
+				if(UTF8Decode(c0) != UTF8Decode(c1))
 				{
 					finish = true;
 					STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));

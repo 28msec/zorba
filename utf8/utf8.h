@@ -159,7 +159,17 @@ namespace xqp {
 		octet_iterator temp = it;
 		return next(temp);
 	}
-	
+
+	template <typename octet_iterator>
+		typename std::iterator_traits<octet_iterator>::difference_type
+		UTF8Distance (octet_iterator first, octet_iterator last)
+	{
+		typename std::iterator_traits<octet_iterator>::difference_type dist;
+		for (dist = 0; first < last; ++dist)
+			next(first);
+		return dist;
+	}
+			
 	/**
 	 * Encodes a 32 bit code point as a UTF-8 sequence of octets
 	 * 
@@ -168,7 +178,7 @@ namespace xqp {
 	 * @return an iterator pointing to the place after the newly appended sequence
 	 */
 	template <typename octet_iterator>
-			octet_iterator EncodeUtf8(uint32_t cp, octet_iterator result)
+			octet_iterator UTF8Encode(uint32_t cp, octet_iterator result)
 	{
 		if (!is_code_point_valid(cp))
 				ZorbaErrorAlerts::error_alert(
@@ -208,16 +218,9 @@ namespace xqp {
 	 * of the next code point
 	 */
 	template <typename octet_iterator>
-			uint32_t DecodeUtf8(octet_iterator& it)
+			uint32_t UTF8Decode(octet_iterator& it)
 	{
 		return next(it);
-	}
-
-	
-	template <typename octet_iterator>
-			int32_t Utf8_Compare(octet_iterator& it1, octet_iterator& it2)
-	{
-		return next(it1);
 	}
 }/* namespace xqp */
 

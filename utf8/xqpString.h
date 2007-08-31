@@ -35,6 +35,8 @@ namespace xqp {
 	class xqpString
 	{
 		public:
+			typedef std::string::size_type	size_type;
+			
 		//! @name constructor/destructor
 		//! @{
 			/**
@@ -51,7 +53,7 @@ namespace xqp {
 
 			/**
 			 * Construct a xqpString given a std::string
-			 * @param src A source std::string containing UTF-8 encoded string
+			 * @param src A source std::string containin ASCII characters
 			 */
 			xqpString(const std::string& src);
 
@@ -110,12 +112,30 @@ namespace xqp {
 			}
 		//!@}
 
-		//! @name Compare
+		//! @name xqpString::Compare
 		//! @{
 			int compare(const xqpString& src)	const;
 			int compare(const char* src)	const;
 		//! @}
 
+		//! @name xqpString::Length
+		//! @{
+			/**
+			 * @return the number of unicode characters encoded as UTF-8 (without the null termination)
+			 */
+			size_type length() const;
+
+			/**
+			 * @return the number of unicode characters encoded as UTF-8 (without the null termination)
+			 */
+			size_type size() const;
+
+			/**
+			 * @return the number of bytes (without the null termination)
+			 */
+			size_type bytes() const;
+		//! @}
+			
 			inline	operator std::string() const{
 				return utf8String;
 			}

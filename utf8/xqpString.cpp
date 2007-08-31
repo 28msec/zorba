@@ -67,7 +67,7 @@ namespace xqp {
 	xqpString& xqpString::operator=(uint32_t cp){
 		utf8String.reserve(4);
 		char seq[4] = {0,0,0,0};
-		EncodeUtf8(cp, seq);
+		UTF8Encode(cp, seq);
 		utf8String = seq;
 		return *this;
 	}
@@ -91,7 +91,7 @@ namespace xqp {
 	xqpString& xqpString::operator+=(uint32_t cp){
 		utf8String.reserve(4);
 		char seq[4] = {0,0,0,0};
-		EncodeUtf8(cp, seq);
+		UTF8Encode(cp, seq);
 		utf8String += seq;
 		return *this;
 	}
@@ -105,26 +105,89 @@ namespace xqp {
 	std::istream& operator>>(std::istream& is, xqpString& utf8_src){
 		std::string buffer;
 		is >> buffer;
-		//TODO call constructor for a non UTF-8 encoded string
+		//TODO is there a need to perform charset conversion to/from the current locale ?!?!
 		utf8_src = buffer;
 		return is;
 	}
 
 	std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src){
-		//TODO convert from utf8 encoded string to normal string !?
+		//TODO is there a need to perform charset conversion to/from the current locale ?!?!
 		os << utf8_src;
 		return os;
 	}
 
 	//xqpString::compare
 	int32_t xqpString::compare(const xqpString& src)	const{
-		//TODO call a function from utf8.h that does a utf8 comparison...
-		return utf8String.compare(src.utf8String);
+		//TODO optimize the code here
+		std::vector<char> v0;
+		std::vector<char> v1;
+		char * c0;
+		char * c1;
+		int16_t vLength;
+		uint32_t cp0, cp1;
+		
+		vLength = bytes();
+		if (vLength > src.bytes())
+			vLength = src.bytes();
+
+		v0.reserve(bytes());
+		std::strcpy(&v0[0], utf8String.c_str());
+		c0 = &v0[0];
+
+		v1.reserve(src.bytes());
+		std::strcpy(&v1[0], src.utf8String.c_str());
+		c1 = &v1[0];
+
+		while( vLength > 0 ){
+			cp0 = UTF8Decode(c0);
+			cp1 = UTF8Decode(c1);
+
+			if(cp0 < cp1)
+				return -1;
+			else if(cp0 > cp1)
+				return 1;
+
+			vLength--;
+		}
+
+		if(bytes() == src.bytes())
+			return 0;
+		else if(bytes() < src.bytes())
+			return -1;
+		else
+			return 1;
 	}
-	
+
 	int32_t xqpString::compare(const char* src)	const{
-		//TODO call a function from utf8.h that does a utf8 comparison...
-		return utf8String.compare(src);
+		//TODO optimize the code here
+		xqpString tmp(src);
+		return compare(tmp);
 	}
-	
+
+	//xqpString::Length
+	xqpString::size_type xqpString::size() const{
+		std::vector<char> v;
+		char * c;
+
+		v.reserve(bytes());
+		std::strcpy(&v[0], utf8String.c_str());
+		c = &v[0];
+		
+		return UTF8Distance(c, c + utf8String.size());
+	}
+
+	xqpString::size_type xqpString::length() const{
+		std::vector<char> v;
+		char * c;
+
+		v.reserve(bytes());
+		std::strcpy(&v[0], utf8String.c_str());
+		c = &v[0];
+		
+		return UTF8Distance(c, c + utf8String.size());
+	}
+
+	xqpString::size_type xqpString::bytes() const{
+		return utf8String.size();
+	}
 }/* namespace xqp */
