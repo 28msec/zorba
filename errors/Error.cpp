@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include "runtime/zorba.h"
 #include "../store/api/item.h"
-#include "../store/api/atomic_items.h"
 
 using namespace std;
 namespace xqp {
@@ -218,7 +217,7 @@ YY denotes the error category, using the following encoding:
 nnnn is a unique numeric code.
 
 */
-void ZorbaErrorAlerts::user_error (QNameItem* err_qname,///optional
+void ZorbaErrorAlerts::user_error (Item* err_qname,///optional
 													const std::string description,//optional
 													const std::vector<class Item*> *items)//optional
 {

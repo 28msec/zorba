@@ -26,7 +26,8 @@ SUBDIRS		= \
 				testing \
 				types \
 				util \
-				store
+				store/api \
+				store/native
 
 
 all: TARGET=all

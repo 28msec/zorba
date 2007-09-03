@@ -47,9 +47,13 @@ public:
 	// Return a string representation of this sequence_type
 	static std::string describe(TypeCode);
 
-	// Sequence type matching
-	// [http://www.w3.org/TR/xquery/#id-sequencetype-matching]
-	static bool derives_from(TypeCode ta, TypeCode te);
+	/** Sequence type matching
+		* [http://www.w3.org/TR/xquery/#id-sequencetype-matching]
+		*
+		* @param derivedType
+		* @param type
+		*/
+	static bool derives_from(TypeCode derivedType, TypeCode type);
 		
 	/**
 	 * Number conversion rules

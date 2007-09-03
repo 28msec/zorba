@@ -33,24 +33,18 @@ enum sequence_type::occurs_t sequence_type::get_occurs(
 }
 
 bool sequence_type::derives_from(
-	TypeCode ta, TypeCode te)
+	TypeCode subtype, TypeCode type)
 {
-	return false;
+	return (type & !subtype) > 0;
 }
 
 // TODO To be extended
-TypeCode sequence_type::getNumericalOpResultType(TypeCode type0, TypeCode type1){
-// 	// Zorba does not contain the type xs:anySimpleType
-// 	if (/* type0 == xs_anySimpleType || */ type0 == xs_untypedAtomicValue)
-// 		type0 = xs_double;
-// 	if (/* type1 == xs_anySimpleType || */ type1 == xs_untypedAtomicValue)
-// 		type1 = xs_double;
-// 		
-// 	if (type0 & NUMERIC_TYPE == 0 || type1 & NUMERIC_TYPE)
-	
-	
+TypeCode sequence_type::getNumericalOpResultType(TypeCode type0, TypeCode type1) {
 		if (type0 == type1)
 			return type0;
+			
+		if (type0 == xs_untypedAtomicValue || type1 == xs_untypedAtomicValue)
+			return xs_double;
 		
 		if (type0 == xs_double || type1 == xs_double)
 			return xs_double;

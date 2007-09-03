@@ -1,6 +1,5 @@
 SOURCES 	= \
-	item.cpp \
-	atomic_items.cpp
+	item.cpp
 
 # Include global Makefile rules
 ROOT_PATH		= ../..

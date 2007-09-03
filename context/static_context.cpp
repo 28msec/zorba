@@ -25,7 +25,6 @@
 #include "static_context.h"
 #include "common.h"
 #include "../store/api/item.h"
-#include "../store/api/atomic_items.h"
 #include "../store/api/item_factory.h"
 
 
@@ -212,13 +211,13 @@ void static_context::set_preserve_mode(
 	keymap.put(preserve_mode_key, it_h);
 }
 
-const QNameItem& static_context::get_default_collation() const
+const Item& static_context::get_default_collation() const
 {
 	Iterator_t it_h = context_value(default_collation_key);
 	it_h->open();
 	Item_t i_h = it_h->next();
 	it_h->close();
-	return dynamic_cast<const QNameItem&>(*i_h);
+	return *i_h;
 }
 
 std::string static_context::get_baseuri() const

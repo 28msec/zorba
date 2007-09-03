@@ -9,7 +9,7 @@
 
 #include "atomic_items.h"
 #include "../../runtime/zorba.h"
-#include "util/hashfun.h"
+#include "../api/item.h"
 
 namespace xqp
 {
@@ -25,10 +25,10 @@ namespace xqp
 	/* end class AtomicItem */
 
 	/* start class QNameItem */
-	QNameItem::QNameItem
-	( std::string namspace, std::string prefix, std::string local ) :strNamespace_ ( namspace ),strPrefix_ ( prefix ),strLocal_ ( local )
-	{}
-
+	QNameItem::QNameItem(xqp_string _namespace, xqp_string prefix, xqp_string localname)
+		:
+	strNamespace_(_namespace), strPrefix_(prefix), strLocal_(localname) {}
+	
 	xqp_string QNameItem::getQNameNamespace() const
 	{
 		return this->strNamespace_;
@@ -46,7 +46,7 @@ namespace xqp
 	
 	qnamekey_t QNameItem::getQNameKey( ) const
 	{
-		return QNameItem::createQNameKey(this->strNamespace_, this->strPrefix_, this->strLocal_);
+		return Item::createQNameKey(this->strNamespace_, this->strPrefix_, this->strLocal_);
 	}
 
 	sequence_type_t QNameItem::getType( ) const
@@ -66,10 +66,6 @@ namespace xqp
 	xqp_string QNameItem::getStringProperty( ) const
 	{
 		return this->strPrefix_ != "" ? this->strPrefix_ + ":" + this->strLocal_ : this->strLocal_;
-	}
-	
-	qnamekey_t QNameItem::createQNameKey(xqp_string _namespace, xqp_string prefix, xqp_string localName) {
-		return hashfun::h64(prefix,hashfun::h64(localName,hashfun::h64(_namespace)));
 	}
 	/* end class QNameItem */
 
@@ -148,6 +144,16 @@ namespace xqp
 		return this->value_;
 	}
 	
+	long long IntItem::getIntegerValue() const
+	{
+		return static_cast<long long>(this->value_);
+	}
+	
+	long double IntItem::getDecimalValue() const
+	{
+		return static_cast<long double>(this->value_);
+	}
+	
 	sequence_type_t IntItem::getType() const
 	{
 		return xs_int;
@@ -182,6 +188,11 @@ namespace xqp
 	long long IntegerItem::getIntegerValue() const
 	{
 		return this->value_;
+	}
+	
+	long double IntegerItem::getDecimalValue() const
+	{
+		return static_cast<long double>(this->value_);
 	}
 	
 	sequence_type_t IntegerItem::getType() const

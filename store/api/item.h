@@ -127,7 +127,8 @@ public:
 		return false;
 	}
 	
-	/** Accessor for xs:decimal
+	/** Accessor for xs:decimal, xs:(nonPositive | negative | nonNegativeInteger | positive)integer, 
+		* xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
 		*/
 	virtual long double getDecimalValue() const {
 		this->showError();
@@ -141,7 +142,8 @@ public:
 		return 0;
 	}
 	
-	/** Accessor for xs:integer, xs:negativeInteger
+	/** Accessor for xs:(nonPositive | negative | nonNegativeInteger | positive)integer, 
+		* xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
 		*/
 	virtual long long getIntegerValue() const {
 		this->showError();
@@ -287,6 +289,8 @@ public:
 		this->showError();
 		return 0;
 	}
+	
+	static qnamekey_t createQNameKey(xqp_string _namespace, xqp_string prefix, xqp_string localName);
 
 	/* -------------------  Methods for Nodes ------------------------------------- */
 

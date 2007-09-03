@@ -11,10 +11,12 @@
 
 #include "../../errors/errors.h"
 #include "../../errors/Error.h"
+#include "util/hashfun.h"
 
 namespace xqp
 {
 
+	/* begin class Item */
 	void Item::showError() const
 	{
 		ZorbaErrorAlerts::error_alert (
@@ -27,4 +29,9 @@ namespace xqp
 	xqp_string Item::show() const {
 		return  std::string(typeid(*this).name()) + ": 'show' not implemented!";
 	}
+	
+	qnamekey_t Item::createQNameKey(xqp_string _namespace, xqp_string prefix, xqp_string localName) {
+		return hashfun::h64(prefix,hashfun::h64(localName,hashfun::h64(_namespace)));
+	}
+	/* end class Item */
 }

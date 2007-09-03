@@ -14,7 +14,7 @@
 #include "functions/library.h"
 #include "parser/parsenodes.h"
 #include "util/tracer.h"
-#include "../store/api/atomic_items.h"
+#include "../store/api/item.h"
 
 
 #include <iostream>
@@ -902,7 +902,7 @@ cout << indent[++depth] << TRACE << endl;
 		prefix = ZORBA_PRE;
 	}
 
-	qnamekey_t funkey = QNameItem::createQNameKey(uri,prefix,fname);
+	qnamekey_t funkey = Item::createQNameKey(uri,prefix,fname);
 	yy::location loc = v.get_location();
 	rchandle<fo_expr> fo_h = new fo_expr(loc);	nodestack.push(NULL);
 

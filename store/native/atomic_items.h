@@ -12,7 +12,7 @@
 #ifndef XQP_ATOMIC_ITEMS_H
 #define XQP_ATOMIC_ITEMS_H
 
-#include "item.h"
+#include "../api/item.h"
 
 namespace xqp
 {
@@ -43,8 +43,6 @@ namespace xqp
 			Item_t getAtomizationValue( ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty( ) const;
-			
-			static qnamekey_t createQNameKey(xqp_string _namespace, xqp_string prefix, xqp_string localName);
 	};  /* class QNameItem */
 
 	class StringItem : public AtomicItem
@@ -89,6 +87,8 @@ namespace xqp
 		public:
 			IntItem ( int value );
 			int32_t getIntValue() const;
+			long long getIntegerValue() const;
+			long double getDecimalValue() const;
 
 			sequence_type_t getType( ) const;
 			Item_t getAtomizationValue( ) const;
@@ -105,6 +105,7 @@ namespace xqp
 		public:
 			IntegerItem( long long value );
 			long long getIntegerValue() const;
+			long double getDecimalValue() const;
 			
 			sequence_type_t getType() const;
 			Item_t getAtomizationValue( ) const;

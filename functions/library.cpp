@@ -21,7 +21,7 @@
 #include "util/tracer.h"
 // #include "zorba/zorba_qname.h"
 #include "../store/api/item.h"
-#include "../store/api/atomic_items.h"
+#include "../store/native/atomic_items.h"
 
 #include <iostream>
 

@@ -98,7 +98,7 @@ public:
 	void set_inherit_mode(enum inherit_mode_t v);
 	void set_preserve_mode(enum preserve_mode_t v);
 
-	const QNameItem& get_default_collation() const;
+	const Item& get_default_collation() const;
 	void set_default_collation(const std::string&);
 
 	std::string get_baseuri() const;

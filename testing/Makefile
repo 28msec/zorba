@@ -74,7 +74,7 @@ query_exec	= \
 		../util/URI.cpp \
 		../runtime/zorba.cpp \
 		../store/api/item.cpp \
-		../store/api/atomic_items.cpp \
+		../store/native/atomic_items.cpp \
 		../errors/xqp_exception.cpp \
 		../errors/errors.cpp \
 		../errors/Error.cpp \

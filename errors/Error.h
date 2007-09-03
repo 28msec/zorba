@@ -26,7 +26,7 @@ using namespace std;
 namespace xqp {
 
 class zorba;
-class QNameItem;
+class Item;
 
 class ZorbaErrorAlerts : public rcobject
 {
@@ -99,7 +99,7 @@ public:
 
 
 
-	static void user_error (QNameItem* err_qname,///optional
+	static void user_error (Item* err_qname,///optional
 													const std::string description,//optional
 													const std::vector<class Item*> *items);//optional
 

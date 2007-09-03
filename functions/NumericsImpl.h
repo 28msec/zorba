@@ -27,47 +27,53 @@
 #include "util/rchandle.h"
 
 
-namespace xqp {
+namespace xqp
+{
 
-class zorba;
+	class zorba;
 
 
-/**
- * TODO CommonBase-Classes should be implemented in the Header file, as they make troutble
- * if you seperate them in .h and .cpp during linking. Any suggestions to fix that are 
- * welcome.
- * 
- */
-template <class IterType>
-class BinaryBaseIterator : public Batcher<IterType> {
-	
-public:
-	BinaryBaseIterator
-	(yy::location loc, Iterator_t arg0_, Iterator_t arg1_)
-	:
-	Batcher<IterType>(loc),arg0(arg0_),arg1(arg1_){}
-	
-	~BinaryBaseIterator() {}
+	/**
+	 * TODO CommonBase-Classes should be implemented in the Header file, as they make troutble
+	 * if you seperate them in .h and .cpp during linking. Any suggestions to fix that are
+	 * welcome.
+	 *
+	 */
+	template <class IterType>
+	class BinaryBaseIterator : public Batcher<IterType>
+	{
 
-	void resetImpl(){
-		this->resetChild(arg0);
-		this->resetChild(arg1);
-	}
-	
-	void releaseResourcesImpl(){
-		this->releaseChildResources(this->arg0);
-		this->releaseChildResources(this->arg1);
-	}
+		public:
+			BinaryBaseIterator
+			( yy::location loc, Iterator_t arg0_, Iterator_t arg1_ )
+					:
+					Batcher<IterType> ( loc ),arg0 ( arg0_ ),arg1 ( arg1_ ) {}
 
-	
-protected:
-	Iterator_t arg0;
-	Iterator_t arg1;
+			~BinaryBaseIterator() {}
 
-};
+			void resetImpl()
+			{
+				this->resetChild ( arg0 );
+				this->resetChild ( arg1 );
+			}
 
-	namespace num_operations {
-		enum Operation {
+			void releaseResourcesImpl()
+			{
+				this->releaseChildResources ( this->arg0 );
+				this->releaseChildResources ( this->arg1 );
+			}
+
+
+		protected:
+			Iterator_t arg0;
+			Iterator_t arg1;
+
+	};
+
+	namespace num_operations
+	{
+		enum Operation
+		{
 			add,
 			subtract,
 			multiply,
@@ -75,124 +81,137 @@ protected:
 			integerDivide,
 			mod
 		};
-		
-			static Item_t makeOperation(ItemFactory*, Operation, Item_t, Item_t);
+
+		static Item_t makeOperation ( ItemFactory*, Operation, Item_t, Item_t );
 	}
+	
+class AddOperations {
+	static Item_t opDouble(Item_t, Item_t);
+	static Item_t opFloat(Item_t, Item_t);
+	static Item_t opDecimal(Item_t, Item_t);
+	static Item_t opInteger(Item_t, Item_t);
+};
 
+/**
+	* Generic Iterator for Arithmetic Operations
+	*/
+template < typename Operations >
+class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations> >
+{
+private:
+	// FIXME This attribute should not be necessary!
+	int current_line;
+public:
+	ArithmeticIterator (yy::location loc, Iterator_t iter0, Iterator_t iter1)
+		:
+	BinaryBaseIterator<ArithmeticIterator>(loc, iter0, iter1) {}
+	~ArithmeticIterator() {}
 
-// class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator>
-// {
-// public:
-// 	ArithmeticIterator (yy::location loc, Iterator_t iter0, Iterator_t iter1)
-// 		:
-// 	BinaryBaseIteratory<ArithmeticIterator>(loc, iter0, iter1) {}
-// 	~ArithmeticIterator() {}
-// 	
-// 	Item_t nextImpl();
-// 
-// private:
-// 	Item_t upCast(sequence_type_t, Item_t);
-// }; /* class ArithmeticIterator */
+	Item_t nextImpl();
 
-/*______________________________________________________________________
-|  
-| 6.2 Operators on Numeric Values
-|_______________________________________________________________________*/
+private:
+	Item_t numericCast(sequence_type_t, Item_t);
+}; /* class ArithmeticIterator */
+
+	/*______________________________________________________________________
+	|
+	| 6.2 Operators on Numeric Values
+	|_______________________________________________________________________*/
 
 // 6.2.1 op:numeric-add
 // --------------------
 
-class OpNumericAddIterator : public BinaryBaseIterator<OpNumericAddIterator>
-{
-public:
-	OpNumericAddIterator
-	(yy::location loc, Iterator_t iter0, Iterator_t iter1)
-	:
-	BinaryBaseIterator<OpNumericAddIterator>(loc, iter0, iter1){}
-	~OpNumericAddIterator() {}
+	class OpNumericAddIterator : public BinaryBaseIterator<OpNumericAddIterator>
+	{
+		public:
+			OpNumericAddIterator
+			( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+					:
+					BinaryBaseIterator<OpNumericAddIterator> ( loc, iter0, iter1 ) {}
+			~OpNumericAddIterator() {}
 
-public:	// iterator interface
-	Item_t nextImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+		public:	// iterator interface
+			Item_t nextImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 
 
 // 6.2.2 op:numeric-subtract
 // -------------------------
-class OpNumericSubtractIterator : public BinaryBaseIterator<OpNumericSubtractIterator>
-{
-public:
-	OpNumericSubtractIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
-		:
-	BinaryBaseIterator<OpNumericSubtractIterator>(loc, iter0, iter1){}
-	~OpNumericSubtractIterator() {}
+	class OpNumericSubtractIterator : public BinaryBaseIterator<OpNumericSubtractIterator>
+	{
+		public:
+			OpNumericSubtractIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+					:
+					BinaryBaseIterator<OpNumericSubtractIterator> ( loc, iter0, iter1 ) {}
+			~OpNumericSubtractIterator() {}
 
-public:	// iterator interface
-	Item_t nextImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+		public:	// iterator interface
+			Item_t nextImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 
 
 // 6.2.3 op:numeric-multiply
 // -------------------------
-class OpNumericMultiplyIterator : public BinaryBaseIterator<OpNumericMultiplyIterator>
-{
-public:
-	OpNumericMultiplyIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
-		:
-	BinaryBaseIterator<OpNumericMultiplyIterator>(loc, iter0, iter1){}
-	~OpNumericMultiplyIterator() { }
+	class OpNumericMultiplyIterator : public BinaryBaseIterator<OpNumericMultiplyIterator>
+	{
+		public:
+			OpNumericMultiplyIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+					:
+					BinaryBaseIterator<OpNumericMultiplyIterator> ( loc, iter0, iter1 ) {}
+			~OpNumericMultiplyIterator() { }
 
-public:	// iterator interface
-	Item_t nextImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+		public:	// iterator interface
+			Item_t nextImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 
 // 6.2.4 op:numeric-divide
 // -----------------------
-class OpNumericDivideIterator : public BinaryBaseIterator<OpNumericDivideIterator>
-{
-public:
-	OpNumericDivideIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
-		:
-	BinaryBaseIterator<OpNumericDivideIterator>(loc, iter0, iter1){}
-	~OpNumericDivideIterator() {}
+	class OpNumericDivideIterator : public BinaryBaseIterator<OpNumericDivideIterator>
+	{
+		public:
+			OpNumericDivideIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+					:
+					BinaryBaseIterator<OpNumericDivideIterator> ( loc, iter0, iter1 ) {}
+			~OpNumericDivideIterator() {}
 
-public:	// iterator interface
-	Item_t nextImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+		public:	// iterator interface
+			Item_t nextImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 
 // 6.2.5 op:numeric-integer-divide
 // -------------------------------
-class OpNumericIntegerDivideIterator : public OpNumericDivideIterator
-{
-public:
-	OpNumericIntegerDivideIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
-		:
-	OpNumericDivideIterator(loc, iter0, iter1) {}
-};
+	class OpNumericIntegerDivideIterator : public OpNumericDivideIterator
+	{
+		public:
+			OpNumericIntegerDivideIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+					:
+					OpNumericDivideIterator ( loc, iter0, iter1 ) {}
+	};
 
 
 // 6.2.6 op:numeric-mod
 // --------------------
-class OpNumericModIterator : public BinaryBaseIterator<OpNumericModIterator>
-{
-public:
-	OpNumericModIterator(yy::location loc, Iterator_t iter0, Iterator_t iter1)
-		:
-	BinaryBaseIterator<OpNumericModIterator>(loc, iter0, iter1) {}
-	~OpNumericModIterator() {}
+	class OpNumericModIterator : public BinaryBaseIterator<OpNumericModIterator>
+	{
+		public:
+			OpNumericModIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+					:
+					BinaryBaseIterator<OpNumericModIterator> ( loc, iter0, iter1 ) {}
+			~OpNumericModIterator() {}
 
 
-public:	// iterator interface
-	Item_t nextImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+		public:	// iterator interface
+			Item_t nextImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 
 // 6.2.7 op:numeric-unary-plus
@@ -201,72 +220,73 @@ public:	// iterator interface
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
-class OpNumericUnaryMinusIterator : public Batcher<OpNumericUnaryMinusIterator>
-{
-private:
-	Iterator_t arg0_;
-	
-public:
-	OpNumericUnaryMinusIterator(yy::location loc, Iterator_t iter)
-		:
-	Batcher<OpNumericUnaryMinusIterator>(loc), arg0_(iter) {}
-	~OpNumericUnaryMinusIterator() {}
+	class OpNumericUnaryMinusIterator : public Batcher<OpNumericUnaryMinusIterator>
+	{
+		private:
+			Iterator_t arg0_;
 
-public:	// iterator interface
-	Item_t nextImpl();
-	void resetImpl();
-	void releaseResourcesImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+		public:
+			OpNumericUnaryMinusIterator ( yy::location loc, Iterator_t iter )
+					:
+					Batcher<OpNumericUnaryMinusIterator> ( loc ), arg0_ ( iter ) {}
+			~OpNumericUnaryMinusIterator() {}
+
+		public:	// iterator interface
+			Item_t nextImpl();
+			void resetImpl();
+			void releaseResourcesImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 
 
-/*______________________________________________________________________
-|  
-| 6.3 Comparison Operators on Numeric Values
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| 6.3 Comparison Operators on Numeric Values
+	|_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
 // -------------------------
-class OpNumericEqualIterator : public BinaryBaseIterator<OpNumericModIterator> {
-public:
-	OpNumericEqualIterator(yy::location loc, Iterator_t iter1, Iterator_t iter2)
-		:
-	BinaryBaseIterator<OpNumericModIterator>(loc, iter1, iter2) {}
-	~OpNumericEqualIterator() {}
-	
-public:
-	Item_t nextImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+	class OpNumericEqualIterator : public BinaryBaseIterator<OpNumericModIterator>
+	{
+		public:
+			OpNumericEqualIterator ( yy::location loc, Iterator_t iter1, Iterator_t iter2 )
+					:
+					BinaryBaseIterator<OpNumericModIterator> ( loc, iter1, iter2 ) {}
+			~OpNumericEqualIterator() {}
+
+		public:
+			Item_t nextImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 // 6.3.2 op:numeric-less-than
 // 6.3.3 op:numeric-greater-than
 
 
-/*______________________________________________________________________
-|  
-| 6.4 Functions on Numeric Values
-|_______________________________________________________________________*/
+	/*______________________________________________________________________
+	|
+	| 6.4 Functions on Numeric Values
+	|_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-class FnAbsIterator : public Batcher<FnAbsIterator>
-{
-private:
-	Iterator_t arg0_;
-	
-public:
-	FnAbsIterator(yy::location loc, Iterator_t iter)
-		:
-	Batcher<FnAbsIterator>(loc), arg0_(iter) {}
-	~FnAbsIterator() {}
+	class FnAbsIterator : public Batcher<FnAbsIterator>
+	{
+		private:
+			Iterator_t arg0_;
 
-public:
-	Item_t nextImpl();
-	void resetImpl();
-	void releaseResourcesImpl();
-	std::ostream&  _show(std::ostream&) const;
-};
+		public:
+			FnAbsIterator ( yy::location loc, Iterator_t iter )
+					:
+					Batcher<FnAbsIterator> ( loc ), arg0_ ( iter ) {}
+			~FnAbsIterator() {}
+
+		public:
+			Item_t nextImpl();
+			void resetImpl();
+			void releaseResourcesImpl();
+			std::ostream&  _show ( std::ostream& ) const;
+	};
 
 // 6.4.2 fn:ceiling
 // 6.4.3 fn:floor
