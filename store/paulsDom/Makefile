@@ -1,0 +1,29 @@
+
+SOURCES 	= dom_qname.cpp dom_nodes.cpp dom_namepool.cpp dom_xml_handler.cpp
+
+dom_xml_handler_test = \
+		../runtime/errors.cpp \
+		../runtime/item_iterator.cpp \
+		../runtime/zorba.cpp \
+		../store/itemstore.cpp \
+		../store/scan_handler.cpp \
+		../store/xml_scanner.cpp \
+		../util/file.cpp \
+		../util/mmfile.cpp \
+		../util/fxcharheap.cpp \
+		../util/xqp_exception.cpp \
+		../zorba/qnamerep.cpp \
+		../values/primitive_values.cpp \
+		dom_qname.cpp \
+		dom_namepool.cpp \
+		dom_nodes.cpp \
+		dom_xml_handler.cpp \
+		dom_xml_handler_test.cpp
+
+
+BINARIES	= dom_xml_handler_test
+
+
+# Include global Makefile rules
+ROOT_PATH	= ..
+include $(ROOT_PATH)/Makefile.rules
