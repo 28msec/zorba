@@ -60,12 +60,8 @@ namespace xqp
 	}
 	
 	bool QNameItem::equals(Item_t item) const {
-		if (item->getType() != xs_qname) {
-			return false;
-		} else {
-			return (item->getQNameNamespace() == this->strNamespace_
-							&& item->getQNameLocalName() == this->strLocal_);
-		}
+		return (item->getQNameNamespace() == this->strNamespace_
+						&& item->getQNameLocalName() == this->strLocal_);
 	}
 	
 	Item_t QNameItem::getEBV( ) const
@@ -108,11 +104,7 @@ namespace xqp
 	}
 	
 	bool StringItem::equals(Item_t item) const {
-		if (item->getType() != xs_string) {
-			return false;
-		} else {
-			return item->getStringValue() == this->strValue_;
-		}
+		return item->getStringValue() == this->strValue_;
 	}
 
 	Item_t StringItem::getEBV() const
@@ -150,9 +142,8 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(this->value_);
 	}
 	
-	// TODO implementation
 	bool DecimalItem::equals(Item_t item) const {
-		return false;
+		return item->getDecimalValue() == this->value_;
 	}
 
 	Item_t DecimalItem::getEBV() const
@@ -202,9 +193,8 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInt(this->value_);
 	}
 	
-	// TODO implementation
 	bool IntItem::equals(Item_t item) const {
-		return false;
+		return item->getIntValue() == this->value_;
 	}
 	
 	Item_t IntItem::getEBV() const
@@ -248,9 +238,8 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(this->value_);
 	}
 	
-	// TODO implementation
 	bool IntegerItem::equals(Item_t item) const {
-		return false;
+		return item->getIntegerValue() == this->value_;
 	}
 	
 	Item_t IntegerItem::getEBV() const
@@ -289,9 +278,8 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(this->value_);
 	}
 	
-	// TODO implementation
 	bool BooleanItem::equals(Item_t item) const {
-		return false;
+		return item->getBooleanValue() == this->value_;
 	}
 	
 	Item_t BooleanItem::getEBV() const
