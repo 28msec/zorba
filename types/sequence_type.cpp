@@ -3,7 +3,7 @@
  *  $Id: sequence_type.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Authors: John Cowan, Paul Pedersen
+ *  Authors: David Graf
  *
  */
 
@@ -35,14 +35,10 @@ enum sequence_type::occurs_t sequence_type::get_occurs(
 bool sequence_type::derives_from(
 	TypeCode subtype, TypeCode type)
 {
-	return (type & !subtype) > 0;
+	return (type & !subtype) == 0;
 }
 
-// TODO To be extended
 TypeCode sequence_type::getNumericalOpResultType(TypeCode type0, TypeCode type1) {
-		if (type0 == type1)
-			return type0;
-			
 		if (type0 == xs_untypedAtomicValue || type1 == xs_untypedAtomicValue)
 			return xs_double;
 		
@@ -58,14 +54,6 @@ TypeCode sequence_type::getNumericalOpResultType(TypeCode type0, TypeCode type1)
 		return xs_integer;
 	}
 
-// TODO To be extended, error detection needed if upcast not possible
-// Item_t sequence_type::upCastToNumericType(TypeCode type, Item_t item) {
-// 	if (item->getType() == type)
-// 		return item;
-// 	
-// 	ItemFactory* itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
-// 	
-// }
 
 std::string sequence_type::describe(
 	TypeCode t)

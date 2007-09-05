@@ -1,136 +1,23 @@
-/**
- * @file NumericsImpl.cpp
- * @author Paul Pedersen (pcp071098@yahoo.com)
- * @copyright 2006-2007 FLWOR Foundation (flworfound.org)
+/* *- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  $Id: NumericsImpl.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *  Authors: David Graf
  *
  */
 
+#include <iostream>
+#include <cmath>
+
 #include "NumericsImpl.h"
 #include "util/tracer.h"
-#include <iostream>
-#include <limits>
+#include "types/casting.h"
+#include "errors/Error.h"
 
 using namespace std;
 namespace xqp
 {
-
-	/* begin class BinaryBaseIterator */
-
-	namespace num_operations
-	{
-		static Item_t makeOperation ( ItemFactory* itemFactory, Operation operation, Item_t item0, Item_t item1 )
-		{
-			Item_t resultItem;
-
-			switch ( item0->getType() )
-			{
-				case xs_integer:
-					switch ( item1->getType() )
-					{
-						case xs_integer:
-							switch ( operation )
-							{
-								case num_operations::add:
-									resultItem = itemFactory->createInteger ( item0->getIntegerValue() + item1->getIntegerValue() );
-									break;
-								case num_operations::subtract:
-									resultItem = itemFactory->createInteger ( item0->getIntegerValue() - item1->getIntegerValue() );
-									break;
-								default:
-									break;
-							}
-							break;
-						case xs_float:
-							resultItem = itemFactory->createFloat ( item0->getIntegerValue() + item1->getFloatValue() );
-							break;
-						case xs_double:
-							resultItem = itemFactory->createDouble ( item0->getIntegerValue() + item1->getDoubleValue() );
-							break;
-						case xs_decimal:
-							resultItem = itemFactory->createDecimal ( item0->getIntegerValue() + item1->getDecimalValue() );
-							break;
-						default:
-							break;
-					}
-					break;
-				case xs_float:
-					switch ( item1->getType() )
-					{
-						case xs_integer:
-							resultItem = itemFactory->createFloat ( item0->getFloatValue() + item1->getIntegerValue() );
-							break;
-						case xs_float:
-							resultItem = itemFactory->createFloat ( item0->getFloatValue() + item1->getFloatValue() );
-							break;
-						case xs_double:
-							resultItem = itemFactory->createDouble ( item0->getFloatValue() + item1->getDoubleValue() );
-							break;
-						case xs_decimal:
-							resultItem = itemFactory->createDecimal ( item0->getFloatValue() + item1->getDecimalValue() );
-							break;
-						default:
-							break;
-					}
-					break;
-				case xs_double:
-					switch ( item1->getType() )
-					{
-						case xs_integer:
-							resultItem = itemFactory->createDouble ( item0->getDoubleValue() + item1->getIntegerValue() );
-							break;
-						case xs_float:
-							resultItem = itemFactory->createDouble ( item0->getDoubleValue() + item1->getFloatValue() );
-							break;
-						case xs_double:
-							resultItem = itemFactory->createDouble ( item0->getDoubleValue() + item1->getDoubleValue() );
-							break;
-						case xs_decimal:
-							resultItem = itemFactory->createDecimal ( item0->getDoubleValue() + item1->getDecimalValue() );
-							break;
-						default:
-							break;
-					}
-					break;
-				case xs_decimal:
-					switch ( item1->getType() )
-					{
-						case xs_integer:
-							resultItem = itemFactory->createDecimal ( item0->getDecimalValue() + item1->getIntegerValue() );
-							break;
-						case xs_float:
-							resultItem = itemFactory->createDecimal ( item0->getDecimalValue() + item1->getFloatValue() );
-							break;
-						case xs_double:
-							resultItem = itemFactory->createDecimal ( item0->getDecimalValue() + item1->getDoubleValue() );
-							break;
-						case xs_decimal:
-							resultItem = itemFactory->createDecimal ( item0->getDecimalValue() + item1->getDecimalValue() );
-							break;
-						default:
-							break;
-					}
-				default:
-					break;
-			}
-
-			return resultItem;
-		}
-	}
-
-	/* end class BinaryBaseIterator */
-
 	/* begin class AddOperations */
 	Item_t AddOperations::opDouble ( Item_t i0, Item_t i1 )
 	{
@@ -148,10 +35,228 @@ namespace xqp
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
 	}
-	/*end class AddOperations */
+	
+	template class ArithmeticIterator<AddOperations>;
+	/* end class AddOperations */
+	
+	/* start class SubtractOperations */
+	Item_t SubtractOperations::opDouble(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(i0->getDoubleValue() - i1->getDoubleValue());
+	}
+	
+	Item_t SubtractOperations::opFloat(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
+	}
+	
+	Item_t SubtractOperations::opDecimal(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
+	}
+	
+	Item_t SubtractOperations::opInteger(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
+	}
+	
+	template class ArithmeticIterator<SubtractOperations>;
+	/* end class SubtractOperations */
+	
+	/* start class MultiplyOperations */
+	Item_t MultiplyOperations::opDouble(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(i0->getDoubleValue() * i1->getDoubleValue());
+	}
+	
+	Item_t MultiplyOperations::opFloat(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
+	}
+	
+	Item_t MultiplyOperations::opDecimal(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
+	}
+	
+	Item_t MultiplyOperations::opInteger(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
+	}
+	
+	template class ArithmeticIterator<MultiplyOperations>;
+	/* end class MultiplyOperations */
+	
+	/* start class DivideOperations */
+	Item_t DivideOperations::opDouble(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble( i0->getDoubleValue() / i1->getDoubleValue() );
+	}
+	
+	Item_t DivideOperations::opFloat(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
+	}
+	
+	Item_t DivideOperations::opDecimal(Item_t i0, Item_t i1)
+	{
+		long double ld0 = i0->getDecimalValue();
+		long double ld1 = i1->getDecimalValue();
+		if (ld1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Division by zero (decimals)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( ld0 / ld1 );
+	}
+	
+	Item_t DivideOperations::opInteger(Item_t i0, Item_t i1)
+	{
+		long long ll0 = i0->getIntegerValue();
+		long long ll1 = i1->getIntegerValue();
+		if (ll1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Division by zero (integers)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( ll0 / ll1 );
+	}
+	
+	template class ArithmeticIterator<DivideOperations>;
+	/* end class DivideOperations */
+	
+	/* start class IntegerDivideOperations */
+	Item_t IntegerDivideOperations::opDouble(Item_t i0, Item_t i1)
+	{
+		double d0 = i0->getDoubleValue();
+		double d1 = i1->getDoubleValue();
+		if (d1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Integer Division by zero (integers)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+			static_cast<long long>( d0 / d1 ) 
+		);
+	}
+	
+	Item_t IntegerDivideOperations::opFloat(Item_t i0, Item_t i1)
+	{
+		float f0 = i0->getFloatValue();
+		float f1 = i1->getFloatValue();
+		if (f1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Integer Division by zero (integers)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+			static_cast<long long>(f0 / f1) 
+		);
+	}
+	
+	Item_t IntegerDivideOperations::opDecimal(Item_t i0, Item_t i1)
+	{
+		long double ld0 = i0->getDecimalValue();
+		long double ld1 = i1->getDecimalValue();
+		if (ld1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Integer Division by zero (integers)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+			static_cast<long long>(ld0 / ld1) 
+		);
+	}
+	
+	Item_t IntegerDivideOperations::opInteger(Item_t i0, Item_t i1)
+	{
+		long long ll0 = i0->getIntegerValue();
+		long long ll1 = i1->getIntegerValue();
+		if (ll1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Integer Division by zero (integers)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+			ll0 / ll0
+		);
+	}
+	
+	template class ArithmeticIterator<IntegerDivideOperations>;
+	/* end class IntegerDivideOperations */
+	
+	/* start class ModOperations */
+	Item_t ModOperations::opDouble(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(fmod(i0->getDoubleValue(), i1->getDoubleValue()));
+	}
+	
+	Item_t ModOperations::opFloat(Item_t i0, Item_t i1)
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat(fmod(i0->getFloatValue(), i1->getFloatValue()));
+	}
+	
+	Item_t ModOperations::opDecimal(Item_t i0, Item_t i1)
+	{
+		long double ld0 = i0->getDecimalValue();
+		long double ld1 = i1->getDecimalValue();
+		if (ld1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Modulo by zero (decimals)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(fmod(ld0, ld1));
+	}
+	
+	Item_t ModOperations::opInteger(Item_t i0, Item_t i1)
+	{
+		long long ll0 = i0->getIntegerValue();
+		long long ll1 = i1->getIntegerValue();
+		if (ll1 == 0) {
+			ZorbaErrorAlerts::error_alert (
+				error_messages::FOAR0001_Division_by_zero,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Modulo by zero (integers)!"
+			);
+		}
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(ll0 % ll1);
+	}
+	
+	template class ArithmeticIterator<ModOperations>;
+	/* end class ModOperations */
 
 	/* begin class ArithmeticIterator */
-	template<typename Operations>
+	template< class Operations>
 	Item_t ArithmeticIterator<Operations>::nextImpl()
 	{
 		Item_t n0;
@@ -162,111 +267,50 @@ namespace xqp
 
 		STACK_INIT();
 		n0 = this->consumeNext ( this->arg0 );
-		if ( n0 == NULL )
-		{
-			STACK_PUSH ( NULL );
-		}
-		else
+		if ( n0 != NULL )
 		{
 			n1 = this->consumeNext ( this->arg1 );
-			if ( n1 == NULL )
-			{
-				STACK_PUSH ( NULL );
-			}
-			else
+			if ( n1 != NULL )
 			{
 				n0 = n0->getAtomizationValue();
 				n1 = n1->getAtomizationValue();
 				type0 = n0->getType();
 				type1 = n1->getType();
 				resultType = sequence_type::getNumericalOpResultType ( type0, type1 );
-				n0 = this->numericCast ( resultType, n0 );
-				n1 = this->numericCast ( resultType, n1 );
+				this->genericCast->setTarget(resultType);
+				n0 = this->genericCast->cast(n0);
+				n1 = this->genericCast->cast(n1);
+				switch(resultType)
+				{
+				case xs_double:
+					STACK_PUSH(Operations::opDouble(n0, n1));
+					break;
+				case xs_float:
+					STACK_PUSH(Operations::opFloat(n0, n1));
+					break;
+				case xs_decimal:
+					STACK_PUSH(Operations::opDecimal(n0, n1));
+					break;
+				case xs_integer:
+					STACK_PUSH(Operations::opInteger(n0, n1));
+					break;
+				default:
+					break;
+				}
 			}
 		}
+		STACK_PUSH(NULL);
 		STACK_END();
 	}
-
-	template<typename Operations>
-	Item_t ArithmeticIterator<Operations>::numericCast ( sequence_type_t type, Item_t item )
-	{
-		Item_t result;
-		sequence_type_t itemType = item->getType();
-		ItemFactory* itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
-		if ( sequence_type::derives_from ( type, itemType ) )
-			return item;
-
-		switch ( type )
-		{
-			case xs_double:
-				double doubleVal;
-				if ( itemType == xs_float )
-				{
-					doubleVal = static_cast<double> ( item->getFloatValue() );
-				}
-				else if ( itemType == xs_untypedAtomicValue )
-				{
-					doubleVal = atof ( item->getStringValue().c_str() );
-				}
-				else if ( sequence_type::derives_from ( itemType, xs_decimal ) )
-				{
-					double doubleVal = static_cast<double> ( item->getDecimalValue() );
-				}
-				else
-				{
-					ZorbaErrorAlerts::error_alert (
-					    error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-					    error_messages::RUNTIME_ERROR,
-					    false,
-					    "Numeric casting of double type"
-					);
-				}
-				// TODO check if throwing error when infinity happens
-// 				if ( doubleValue == std::numeric_limits<double>::infinity() )
-// 				{
-// 					ZorbaErrorAlerts::error_alert (
-// 					    error_messages::FOAR0002_Numeric_operation_overflow_underflow,
-// 					    error_messages::RUNTIME_ERROR,
-// 					    false,
-// 					    "Overflow during convertion of decimal to double"
-// 					);
-// 				}
-// 				if ( doubleValue == -std::numeric_limits<double>::infinity() )
-// 				{
-// 					ZorbaErrorAlerts::error_alert (
-// 					    error_messages::FOAR0002_Numeric_operation_overflow_underflow,
-// 					    error_messages::RUNTIME_ERROR,
-// 					    false,
-// 					    "Underflow during convertion of decimal to double"
-// 					);
-// 				}
-				result = itemFactory->createDouble ( doubleVal );
-				break;
-			case xs_float:
-				if ( sequence_type::derives_from ( itemType, xs_decimal ) )
-				{
-					result = itemFactory->createFloat ( static_cast<float> ( item->getDecimalValue() ) );
-				}
-				else
-				{
-					ZorbaErrorAlerts::error_alert (
-					    error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-					    error_messages::RUNTIME_ERROR,
-					    false,
-					    "Numeric casting of a non numeric type"
-					);
-				}
-				break;
-			default:
-				ZorbaErrorAlerts::error_alert (
-				    error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-				    error_messages::RUNTIME_ERROR,
-				    false,
-				    "Wrong target type for a numeric cast defined"
-				);
-				break;
-		}
-		return result;
+	
+	template< class Operations>
+	void ArithmeticIterator<Operations>::constructor() {
+		this->genericCast = new GenericCast();
+	}
+	
+	template<class Operations>
+	void ArithmeticIterator<Operations>::deconstructor() {
+		delete this->genericCast;
 	}
 	/* end class ArithmeticIterator */
 
@@ -286,59 +330,6 @@ namespace xqp
 	|	NaN is returned.
 	|_______________________________________________________________________*/
 
-// OpNumericAddIterator::OpNumericAddIterator(
-// 	yy::location loc,
-// 	Iterator_t arg0,
-// 	Iterator_t arg1)
-// :
-// 	op_numeric_binary_iterator(loc,arg0,arg1)
-// {
-// }
-
-
-	Item_t OpNumericAddIterator::nextImpl()
-	{
-		Item_t n0;
-		Item_t n1;
-		sequence_type_t type0;
-		sequence_type_t type1;
-		Item_t resultItem;
-		ItemFactory* itemFactory;
-
-		STACK_INIT();
-		n0 = this->consumeNext ( arg0 );
-		if ( n0 == NULL )
-		{
-			STACK_PUSH ( NULL );
-		}
-		else
-		{
-			n1 = this->consumeNext ( arg1 );
-			if ( n1 == NULL )
-			{
-				STACK_PUSH ( NULL );
-			}
-			else
-			{
-				type0 = n0->getType();
-				type1 = n1->getType();
-				itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
-				resultItem = num_operations::makeOperation ( itemFactory, num_operations::add, n0, n1 );
-				STACK_PUSH ( resultItem );
-				STACK_PUSH ( NULL );
-			}
-		}
-		STACK_END();
-	}
-
-	std::ostream& OpNumericAddIterator::_show ( std::ostream& os )
-	const
-	{
-		os << IT_DEPTH << "<info>" << "additional information" << "</info>" << std::endl;
-		arg1->show ( os );
-		arg0->show ( os );
-		return os;
-	}
 
 	/*______________________________________________________________________
 	|
@@ -356,48 +347,6 @@ namespace xqp
 	|	infinity of the appropriate sign is returned.
 	|_______________________________________________________________________*/
 
-	Item_t OpNumericSubtractIterator::nextImpl()
-	{
-		Item_t n0;
-		Item_t n1;
-		sequence_type_t type0;
-		sequence_type_t type1;
-		Item_t resultItem;
-		ItemFactory* itemFactory;
-
-		STACK_INIT();
-		n0 = this->consumeNext ( arg0 );
-		if ( n0 == NULL )
-		{
-			STACK_PUSH ( NULL );
-		}
-		else
-		{
-			n1 = this->consumeNext ( arg1 );
-			if ( n1 == NULL )
-			{
-				STACK_PUSH ( NULL );
-			}
-			else
-			{
-				type0 = n0->getType();
-				type1 = n1->getType();
-				itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
-				resultItem = num_operations::makeOperation ( itemFactory, num_operations::subtract, n0, n1 );
-				STACK_PUSH ( resultItem );
-				STACK_PUSH ( NULL );
-			}
-		}
-		STACK_END();
-	}
-
-	std::ostream& OpNumericSubtractIterator::_show ( std::ostream& os )
-	const
-	{
-		arg1->show ( os );
-		arg0->show ( os );
-		return os;
-	}
 
 	/*______________________________________________________________________
 	|
@@ -414,43 +363,6 @@ namespace xqp
 	|	appropriate sign is returned.
 	|_______________________________________________________________________*/
 
-
-	Item_t OpNumericMultiplyIterator::nextImpl()
-	{
-		Item_t n0;
-		Item_t n1;
-		sequence_type_t type0;
-		sequence_type_t type1;
-		sequence_type_t resultType;
-
-		STACK_INIT();
-// 	n0_h = this->consumeNext(this->arg0);
-// 	if(&*n0_h == NULL) {
-// 		STACK_PUSH(NULL);
-// 	} else {
-// 		n1_h = this->consumeNext(this->arg1);
-// 		if(&*n1_h == NULL) {
-// 			STACK_PUSH(NULL);
-// 		} else {
-// 			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-// 			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-// 			type0 = n0->type();
-// 			type1 = n1->type();
-// 			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-// 			STACK_PUSH(new numericValue(resultType, n0->val() * n1->val()));
-// 			STACK_PUSH(NULL);
-// 		}
-// 	}
-		STACK_END();
-	}
-
-	std::ostream& OpNumericMultiplyIterator::_show ( std::ostream& os )
-	const
-	{
-		arg1->show ( os );
-		arg0->show ( os );
-		return os;
-	}
 
 	/*______________________________________________________________________
 	|
@@ -477,42 +389,6 @@ namespace xqp
 	|	returns NaN.
 	|_______________________________________________________________________*/
 
-	Item_t OpNumericDivideIterator::nextImpl()
-	{
-		Item_t n0;
-		Item_t n1;
-		sequence_type_t type0;
-		sequence_type_t type1;
-		sequence_type_t resultType;
-
-		STACK_INIT();
-// 	n0_h = this->consumeNext(this->arg0);
-// 	if(&*n0_h == NULL) {
-// 		STACK_PUSH(NULL);
-// 	} else {
-// 		n1_h = this->consumeNext(this->arg1);
-// 		if(&*n1_h == NULL) {
-// 			STACK_PUSH(NULL);
-// 		} else {
-// 			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-// 			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-// 			type0 = n0->type();
-// 			type1 = n1->type();
-// 			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-// 			STACK_PUSH(new numericValue(resultType, n0->val() / n1->val()));
-// 			STACK_PUSH(NULL);
-// 		}
-// 	}
-		STACK_END();
-	}
-
-	std::ostream& OpNumericDivideIterator::_show ( std::ostream& os )
-	const
-	{
-		arg1->show ( os );
-		arg0->show ( os );
-		return os;
-	}
 
 	/*______________________________________________________________________
 	|
@@ -576,45 +452,6 @@ namespace xqp
 	|			division i.e. additional digits are truncated, not rounded to the
 	|			required precision.
 	|_______________________________________________________________________*/
-
-	Item_t OpNumericModIterator::nextImpl()
-	{
-		Item_t n0;
-		Item_t n1;
-		sequence_type_t type0;
-		sequence_type_t type1;
-		sequence_type_t resultType;
-
-		STACK_INIT();
-// 	n0_h = this->consumeNext(this->arg0);
-// 	if(&*n0_h == NULL) {
-// 		STACK_PUSH(NULL);
-// 	} else {
-// 		n1_h = this->consumeNext(this->arg1);
-// 		if(&*n1_h == NULL) {
-// 			STACK_PUSH(NULL);
-// 		} else {
-// 			n0 = dynamic_cast<const numericValue*>(&*n0_h);
-// 			n1 = dynamic_cast<const numericValue*>(&*n1_h);
-// 			type0 = n0->type();
-// 			type1 = n1->type();
-// 			resultType = sequence_type::getNumericalOpResultType(type0, type1);
-// 			STACK_PUSH(new numericValue(resultType, (long)n0->val() % (long)n1->val()));
-// 			STACK_PUSH(NULL);
-// 		}
-// 	}
-		STACK_END();
-	}
-
-	std::ostream& OpNumericModIterator::_show ( std::ostream& os )
-	const
-	{
-		os  << IT_INDENT << "<OpNumericModIterator>\n";
-		arg1->show ( os );
-		arg0->show ( os );
-		os << IT_OUTDENT << "</OpNumericModIterator>\n";
-		return os;
-	}
 
 	/*______________________________________________________________________
 	|

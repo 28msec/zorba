@@ -31,6 +31,7 @@ namespace xqp
 {
 
 	class zorba;
+	class GenericCast;
 
 
 	/**
@@ -70,48 +71,95 @@ namespace xqp
 
 	};
 
-	namespace num_operations
+	/** Operations for Add
+		*/
+	class AddOperations
 	{
-		enum Operation
-		{
-			add,
-			subtract,
-			multiply,
-			divide,
-			integerDivide,
-			mod
-		};
-
-		static Item_t makeOperation ( ItemFactory*, Operation, Item_t, Item_t );
-	}
+		public:
+			static Item_t opDouble ( Item_t, Item_t );
+			static Item_t opFloat ( Item_t, Item_t );
+			static Item_t opDecimal ( Item_t, Item_t );
+			static Item_t opInteger ( Item_t, Item_t );
+	};
 	
-class AddOperations {
-	static Item_t opDouble(Item_t, Item_t);
-	static Item_t opFloat(Item_t, Item_t);
-	static Item_t opDecimal(Item_t, Item_t);
-	static Item_t opInteger(Item_t, Item_t);
-};
+	/** Operations for Subtract
+		*/
+	class SubtractOperations
+	{
+		public:
+			static Item_t opDouble ( Item_t, Item_t );
+			static Item_t opFloat ( Item_t, Item_t );
+			static Item_t opDecimal ( Item_t, Item_t );
+			static Item_t opInteger ( Item_t, Item_t );
+	};
+	
+	/** Operations for Multiply
+		*/
+	class MultiplyOperations
+	{
+		public:
+			static Item_t opDouble ( Item_t, Item_t );
+			static Item_t opFloat ( Item_t, Item_t );
+			static Item_t opDecimal ( Item_t, Item_t );
+			static Item_t opInteger ( Item_t, Item_t );
+	};
+	
+	/** Operations for Division
+		*/
+	class DivideOperations
+	{
+		public:
+			static Item_t opDouble ( Item_t, Item_t );
+			static Item_t opFloat ( Item_t, Item_t );
+			static Item_t opDecimal ( Item_t, Item_t );
+			static Item_t opInteger ( Item_t, Item_t );
+	};
+	
+	/** Operations for Integer Division
+		*/
+	class IntegerDivideOperations
+	{
+		public:
+			static Item_t opDouble ( Item_t, Item_t );
+			static Item_t opFloat ( Item_t, Item_t );
+			static Item_t opDecimal ( Item_t, Item_t );
+			static Item_t opInteger ( Item_t, Item_t );
+	};
+	
+	/** Operations for Mod
+		*/
+	class ModOperations
+	{
+		public:
+			static Item_t opDouble ( Item_t, Item_t );
+			static Item_t opFloat ( Item_t, Item_t );
+			static Item_t opDecimal ( Item_t, Item_t );
+			static Item_t opInteger ( Item_t, Item_t );
+	};
 
-/**
-	* Generic Iterator for Arithmetic Operations
-	*/
-template < typename Operations >
-class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations> >
-{
-private:
-	// FIXME This attribute should not be necessary!
-	int current_line;
-public:
-	ArithmeticIterator (yy::location loc, Iterator_t iter0, Iterator_t iter1)
-		:
-	BinaryBaseIterator<ArithmeticIterator>(loc, iter0, iter1) {}
-	~ArithmeticIterator() {}
 
-	Item_t nextImpl();
+	/**
+		* Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
+		*/
+	template < typename Operations >
+	class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations> >
+	{
+		private:
+			GenericCast* genericCast;
+		public:
+			ArithmeticIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+					:
+			BinaryBaseIterator<ArithmeticIterator<Operations> > ( loc, iter0, iter1 ) {
+				this->constructor();
+			}
+			~ArithmeticIterator(){}
 
-private:
-	Item_t numericCast(sequence_type_t, Item_t);
-}; /* class ArithmeticIterator */
+			Item_t nextImpl();
+			
+		private:
+			void constructor();
+			void deconstructor();
+	}; /* class ArithmeticIterator */
 
 	/*______________________________________________________________________
 	|
@@ -121,97 +169,27 @@ private:
 // 6.2.1 op:numeric-add
 // --------------------
 
-	class OpNumericAddIterator : public BinaryBaseIterator<OpNumericAddIterator>
-	{
-		public:
-			OpNumericAddIterator
-			( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
-					:
-					BinaryBaseIterator<OpNumericAddIterator> ( loc, iter0, iter1 ) {}
-			~OpNumericAddIterator() {}
-
-		public:	// iterator interface
-			Item_t nextImpl();
-			std::ostream&  _show ( std::ostream& ) const;
-	};
-
 
 
 // 6.2.2 op:numeric-subtract
 // -------------------------
-	class OpNumericSubtractIterator : public BinaryBaseIterator<OpNumericSubtractIterator>
-	{
-		public:
-			OpNumericSubtractIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
-					:
-					BinaryBaseIterator<OpNumericSubtractIterator> ( loc, iter0, iter1 ) {}
-			~OpNumericSubtractIterator() {}
-
-		public:	// iterator interface
-			Item_t nextImpl();
-			std::ostream&  _show ( std::ostream& ) const;
-	};
 
 
 
 // 6.2.3 op:numeric-multiply
 // -------------------------
-	class OpNumericMultiplyIterator : public BinaryBaseIterator<OpNumericMultiplyIterator>
-	{
-		public:
-			OpNumericMultiplyIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
-					:
-					BinaryBaseIterator<OpNumericMultiplyIterator> ( loc, iter0, iter1 ) {}
-			~OpNumericMultiplyIterator() { }
-
-		public:	// iterator interface
-			Item_t nextImpl();
-			std::ostream&  _show ( std::ostream& ) const;
-	};
 
 
 // 6.2.4 op:numeric-divide
 // -----------------------
-	class OpNumericDivideIterator : public BinaryBaseIterator<OpNumericDivideIterator>
-	{
-		public:
-			OpNumericDivideIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
-					:
-					BinaryBaseIterator<OpNumericDivideIterator> ( loc, iter0, iter1 ) {}
-			~OpNumericDivideIterator() {}
-
-		public:	// iterator interface
-			Item_t nextImpl();
-			std::ostream&  _show ( std::ostream& ) const;
-	};
 
 
 // 6.2.5 op:numeric-integer-divide
 // -------------------------------
-	class OpNumericIntegerDivideIterator : public OpNumericDivideIterator
-	{
-		public:
-			OpNumericIntegerDivideIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
-					:
-					OpNumericDivideIterator ( loc, iter0, iter1 ) {}
-	};
 
 
 // 6.2.6 op:numeric-mod
 // --------------------
-	class OpNumericModIterator : public BinaryBaseIterator<OpNumericModIterator>
-	{
-		public:
-			OpNumericModIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
-					:
-					BinaryBaseIterator<OpNumericModIterator> ( loc, iter0, iter1 ) {}
-			~OpNumericModIterator() {}
-
-
-		public:	// iterator interface
-			Item_t nextImpl();
-			std::ostream&  _show ( std::ostream& ) const;
-	};
 
 
 // 6.2.7 op:numeric-unary-plus
@@ -247,12 +225,12 @@ private:
 
 // 6.3.1 op:numeric-equal
 // -------------------------
-	class OpNumericEqualIterator : public BinaryBaseIterator<OpNumericModIterator>
+	class OpNumericEqualIterator : public BinaryBaseIterator<OpNumericEqualIterator>
 	{
 		public:
 			OpNumericEqualIterator ( yy::location loc, Iterator_t iter1, Iterator_t iter2 )
 					:
-					BinaryBaseIterator<OpNumericModIterator> ( loc, iter1, iter2 ) {}
+					BinaryBaseIterator<OpNumericEqualIterator> ( loc, iter1, iter2 ) {}
 			~OpNumericEqualIterator() {}
 
 		public:

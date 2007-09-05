@@ -58,6 +58,12 @@ namespace xqp
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createQName(this->strNamespace_, this->strPrefix_, this->strLocal_);
 	}
+	
+	// TODO implementation
+	bool QNameItem::equals(Item_t item) const {
+		return false;
+	}
+	
 	Item_t QNameItem::getEBV( ) const
 	{
 		// TODO Throw correct Error because EBV for QName is not defined
@@ -66,6 +72,10 @@ namespace xqp
 	xqp_string QNameItem::getStringProperty( ) const
 	{
 		return this->strPrefix_ != "" ? this->strPrefix_ + ":" + this->strLocal_ : this->strLocal_;
+	}
+	xqp_string QNameItem::show() const
+	{
+		return "xs:qname(" + this->strNamespace_ + "," + this->strPrefix_ + "," + this->strLocal_ + ")";
 	}
 	/* end class QNameItem */
 
@@ -85,6 +95,11 @@ namespace xqp
 	Item_t StringItem::getAtomizationValue() const
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->strValue_);
+	}
+	
+	// TODO implementation
+	bool StringItem::equals(Item_t item) const {
+		return false;
 	}
 
 	Item_t StringItem::getEBV() const
@@ -121,6 +136,11 @@ namespace xqp
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(this->value_);
 	}
+	
+	// TODO implementation
+	bool DecimalItem::equals(Item_t item) const {
+		return false;
+	}
 
 	Item_t DecimalItem::getEBV() const
 	{
@@ -133,6 +153,11 @@ namespace xqp
 		std::ostringstream tmp;
 		tmp << this->value_;
 		return xqp_string ( tmp.str() );
+	}
+	
+	xqp_string DecimalItem::show() const
+	{
+		return "xs:decimal(" + this->getStringProperty() + ")";
 	}
 	/* end class DecimalItem */
 
@@ -162,6 +187,11 @@ namespace xqp
 	Item_t IntItem::getAtomizationValue() const
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInt(this->value_);
+	}
+	
+	// TODO implementation
+	bool IntItem::equals(Item_t item) const {
+		return false;
 	}
 	
 	Item_t IntItem::getEBV() const
@@ -205,6 +235,11 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(this->value_);
 	}
 	
+	// TODO implementation
+	bool IntegerItem::equals(Item_t item) const {
+		return false;
+	}
+	
 	Item_t IntegerItem::getEBV() const
 	{
 		bool b = (this->value_ == 0);
@@ -241,6 +276,11 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(this->value_);
 	}
 	
+	// TODO implementation
+	bool BooleanItem::equals(Item_t item) const {
+		return false;
+	}
+	
 	Item_t BooleanItem::getEBV() const
 	{
 		return this->getAtomizationValue();
@@ -252,6 +292,11 @@ namespace xqp
 			return "true";
 		else
 			return "false";
+	}
+	
+	xqp_string BooleanItem::show() const
+	{
+		return "xs:boolean(" + this->getStringProperty() + ")";
 	}
 	/* end class BooleanItem */
 

@@ -66,6 +66,15 @@ public:
 	virtual Item_t getAtomizationValue( ) const = 0;
 	
 	/**
+	 *  Compares (by value) two items. All comparisons must be done by this
+	 *  method. A store may carry out pooling and implement the value comparison
+	 *  using "pointer identity".
+	 * 
+	 *  @return  true, if the two items are the "same"
+	 */	
+	virtual bool equals(Item_t ) const = 0;
+	
+	/**
 	 *  Computes the Effective Boolean Value for that item as specified in the
 	 *  XQuery Functions & Operators specification (Section 15.1.1).
 	 * 

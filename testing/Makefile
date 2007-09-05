@@ -83,6 +83,7 @@ query_exec	= \
 		../runtime/plan_visitor.cpp \
 		../store/native/basic_item_factory.cpp \
 		../utf8/xqpString.cpp \
+		../types/casting.cpp \
 		timer.cpp \
 		query_exec.cpp
 

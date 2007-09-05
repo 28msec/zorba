@@ -46,7 +46,8 @@ Iterator_t op_numeric_add::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericAddIterator(loc, argv[0], argv[1]);
+	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
+// 	return new OpNumericAddIterator(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add::type_check(
@@ -74,7 +75,8 @@ Iterator_t op_numeric_add_int::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericAddIterator(loc, argv[0], argv[1]);
+	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
+// 	return new OpNumericAddIterator(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add_int::type_check(
@@ -119,7 +121,7 @@ Iterator_t op_numeric_subtract::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericSubtractIterator(loc, argv[0], argv[1]);
+	return new ArithmeticIterator<SubtractOperations>(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_subtract::type_check(
@@ -163,7 +165,7 @@ Iterator_t op_numeric_multiply::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericMultiplyIterator(loc, argv[0], argv[1]);
+	return new ArithmeticIterator<MultiplyOperations>(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_multiply::type_check(
@@ -217,7 +219,7 @@ Iterator_t op_numeric_divide::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericDivideIterator(loc, argv[0], argv[1]);
+	return new ArithmeticIterator<DivideOperations>(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_divide::type_check(
@@ -273,7 +275,7 @@ Iterator_t op_numeric_integer_divide::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericIntegerDivideIterator(loc, argv[0], argv[1]);
+	return new ArithmeticIterator<IntegerDivideOperations>(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_integer_divide::type_check(
@@ -337,7 +339,7 @@ Iterator_t op_numeric_mod::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericModIterator(loc, argv[0], argv[1]);
+	return new ArithmeticIterator<ModOperations>(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_mod::type_check(

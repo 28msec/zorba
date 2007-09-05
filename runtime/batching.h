@@ -91,8 +91,8 @@ protected:
 
 #if BATCHING_TYPE==0
 
-#define STACK_INIT() switch (current_line) { case 0:
-#define STACK_PUSH(x) do { current_line = __LINE__; return x; case __LINE__:; } while (0)
+#define STACK_INIT() switch (this->current_line) { case 0:
+#define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL;
 
 class BasicIterator : public OldIterator
@@ -186,8 +186,8 @@ public:
 
 #elif BATCHING_TYPE==1
 
-#define STACK_INIT() switch (current_line) { case 0:
-#define STACK_PUSH(x) do { current_line = __LINE__; return x; case __LINE__:; } while (0)
+#define STACK_INIT() switch (this->current_line) { case 0:
+#define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL;
 
 #define BATCHSIZE 50
