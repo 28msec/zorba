@@ -59,14 +59,24 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createQName(this->strNamespace_, this->strPrefix_, this->strLocal_);
 	}
 	
-	// TODO implementation
 	bool QNameItem::equals(Item_t item) const {
-		return false;
+		if (item->getType() != xs_qname) {
+			return false;
+		} else {
+			return (item->getQNameNamespace() == this->strNamespace_
+							&& item->getQNameLocalName() == this->strLocal_);
+		}
 	}
 	
 	Item_t QNameItem::getEBV( ) const
 	{
-		// TODO Throw correct Error because EBV for QName is not defined
+		ZorbaErrorAlerts::error_alert (
+				error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
+				error_messages::RUNTIME_ERROR,
+				NULL,
+				false,
+				"Effective Boolean Value is not defined for QName!"
+			);
 		return NULL;
 	}
 	xqp_string QNameItem::getStringProperty( ) const
@@ -97,9 +107,12 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->strValue_);
 	}
 	
-	// TODO implementation
 	bool StringItem::equals(Item_t item) const {
-		return false;
+		if (item->getType() != xs_string) {
+			return false;
+		} else {
+			return item->getStringValue() == this->strValue_;
+		}
 	}
 
 	Item_t StringItem::getEBV() const
@@ -137,9 +150,12 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(this->value_);
 	}
 	
-	// TODO implementation
 	bool DecimalItem::equals(Item_t item) const {
-		return false;
+		if (item->getType() != xs_decimal) {
+			return false;
+		} else {
+			return this-> 
+		}
 	}
 
 	Item_t DecimalItem::getEBV() const
