@@ -150,12 +150,9 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(this->value_);
 	}
 	
+	// TODO implementation
 	bool DecimalItem::equals(Item_t item) const {
-		if (item->getType() != xs_decimal) {
-			return false;
-		} else {
-			return this-> 
-		}
+		return false;
 	}
 
 	Item_t DecimalItem::getEBV() const
