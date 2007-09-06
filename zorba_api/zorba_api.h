@@ -6,6 +6,7 @@
 
 
 #include "errors/errors.h"
+#include "store/api/item.h"
 
 using namespace std;
 
@@ -152,6 +153,16 @@ public:
 	void		ConstructFromXML( istream &is, bool is_binary_form);///or binary form is detected automatically
 };
 
+///QName is an item
+class Zorba_QName : public Zorba_ItemPtr
+{
+};
+
+///Xml Doc is an item
+class Zorba_XmlDocument : public Zorba_ItemPtr
+{
+};
+
 ///the sequence/array of items
 /*
 ///maybe we should derive this class from vector<Zorba_ItemPtr>
@@ -173,8 +184,8 @@ public:
 };
 */
 
-class Zorba_Items : public std::vector<Zorba_ItemPtr>,
-										public basic_iterator///is also an iterator to serve as a var value
+class Zorba_Items : public std::vector<Zorba_ItemPtr>
+										//public BasicIterator///is also an iterator to serve as a var value
 {
 public:
 	///sort items by their id
@@ -187,7 +198,7 @@ public:
 
 /////////////////////Item stream generator/////////////////////////
 
-class Zorba_ItemStream : public basic_iterator
+class Zorba_ItemStream : public BasicIterator
 {
 public:
 	///URI points to a file or internet resource
@@ -237,7 +248,8 @@ public:
 
 		SAX_ELEMENT_START,
 		SAX_ELEMENT_END,
-		SAX_TEXT
+		SAX_TEXT,
+		SAX_COMMENT
 	};
 	///item must be a node item
 	bool		InitReader( Item *item );
@@ -257,30 +269,53 @@ public:
 ////////////////////////////Context (static for compile, dynamic for execution) /////////
 class Zorba_XQueryBinary;
 
+///the user can define its function for comparing strings 
+///return -1, 0, 1 for less, equal, bigger
+typedef (int)(user_collation)(uint32_t codepoint1, uint32_t codepoint2);
+
 /// the Static Context
 /// this class represents only the part that is the interface to the user
 class Zorba_StaticContext
 {
 public:
 
-	///nothing here yet
+	void		SetXPath1_0CompatibMode( bool mode );///true for XPath1.0 only, false for XPath2.0
+	void		AddNamespace( std::string prefix, std::string URI );
+	void		SetDefaultElementAndTypeNamespace( std::string URI );
+	void		SetDefaultFunctionNamespace( std::string URI );
+	void		SetContextItemStaticType( sequence_type_t		type );
+	void		AddCollation( std::string URI, std::string available_collation );//if URI is empty then it sets the default collation
+	void		SetCustomCollation( user_collation *fn_collation);
+	void		SetConstructionMode( enum construction_mode );
+	void		SetOrderingMode( enum ordering_mode );
+	void		SetDefaultOrderForEmptySequences( enum ordering_mode );
+	void		SetBoundarySpacePolicy( enum boundary_space_policy );
+	void		SetCopyNamespacesMode( bool preserve, bool inherit );
+	void		SetBaseURI( std::string baseURI );
+	//statically known documents (types)
+	void		AddDocumentType( std::string URI, sequence_type_t doc_type );
+	void		AddCollectionType( std::string URI, sequence_type_t		collection_type );///if URI is empty then it refers to default collection type
 };
 
 ///dynamic context used for executing xqueries
 ///Attention is needed here: this object can be used for executing multiple xqueries
-///but some parts cannot be shared between xqueries
+///but some parts cannot be shared between xqueries (between threads)
 ///so they are defined actually in Zorba_XQueryBinary
 class Zorba_DynamicContext
 {
 public:
-	///set a var with an iterator (singleton iterator for single item)
-	///context item has a predefined name, empty name ""
-	///return true for success
-	bool		SetVariable( Zorba_QName varname, Zorba_ItemPtr &item );
-	bool		SetVariable( Zorba_QName varname, Zorba_Items	&item_seq);
+		
+	///set custom date time
+	bool			SetCustomDateTime( Zorba_ItemPtr datetime_item);
+	bool			SetImplicitTimezone( int tz );
 
-
-	///and other dynamic context setup
+	///register documents available through fn:doc() in xquery
+	bool			RegisterAvailableDocument(std::string docURI,
+																			Zorba_XmlDocument doc);
+	///register collections available through fn:collection() in xquery
+	///default collection has empty URI ""
+	bool			RegisterAvailableCollection(std::string collectionURI,
+																			Zorba_Items *collection);
 };
 
 
@@ -300,21 +335,30 @@ public:
 										Zorba_XQueryBinary &result_binary);///the result
 };
 
-///this class provides also interface to its dynamic context
-//One Zorba_XQueryBinary can be used only in one thread 
-//(and probably only in the thread that created it)
-class Zorba_XQueryBinary : public Zorba_DynamicContext
+
+class Zorba_XQueryBinary : 
 {
 public:
+	///the contexts are copied into internal contexts
+	//Zorba_StaticContext		*internal_static_context;///the binary maintains its own static context
+	Zorba_DynamicContext	*internal_dynamic_context;///user can change dyn context directly here
+
+public:
 	//more functions for dynamic context set up (specific only to this binary object)
+	///set a var with an iterator (singleton iterator for single item)
+	///context item has a predefined name, empty name "" (applies only for setting with item)
+	///return true for success
+	bool		SetVariable( Zorba_QName varname, Zorba_ItemPtr &item );
+	bool		SetVariable( Zorba_QName varname, Zorba_Items	&item_seq);
 	//setup the var with an infinite stream of items that implements the iterator contract
 	bool		SetVariable( Zorba_QName varname, Zorba_ItemStream	&item_generator);
 	//when executing, the XQueryBinary generator cannot be used by other threads
 	bool		SetVariable( Zorba_QName varname, Zorba_XQueryBinary	&item_generator);
+	bool		DeleteVariable( Zorba_QName varname );
 
 
 
-	///duplicate other object, without the dynamic context
+	///duplicate other object, without the dynamic context (or maybe with it?)
 	///this is usefull for multithreading
 	///carefull that the other binary might be in execution state: do not clone its internal state
 	bool		Clone( Zorba_XQueryBinary &source_binary);
