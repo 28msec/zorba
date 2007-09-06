@@ -55,6 +55,8 @@ public:
 		*/
 	static bool derives_from(TypeCode derivedType, TypeCode type);
 		
+	static bool isNumeric(TypeCode);
+	
 	/**
 	 * Number conversion rules
 	 *  Subtype propogation: 
@@ -69,6 +71,23 @@ public:
 	 * @return type of the numerical op result (evaluated expression) 
 	 */
 	static TypeCode getNumericalOpResultType(TypeCode arg1Type, TypeCode arg2Type);
+	
+	/**
+	 * 
+	 * @param type
+	 * @return xs:decimal for all its subtypes
+	 *				 xs:string for all its subtypes
+	 *				 else type
+	 */
+	static TypeCode getTypeSubstituted(TypeCode type);
+	
+	/**
+	 *
+	 * @param type0 
+	 * @param type1 
+	 * @return true if the two passed types are comparable, else false
+	 */
+	static bool comparable(TypeCode type0, TypeCode type1);
 };
 
 

@@ -10,6 +10,7 @@
 
 #include "Numerics.h"
 #include "NumericsImpl.h"
+#include "BooleanImpl.h"
 #include <iostream>
 
 using namespace std;
@@ -47,7 +48,6 @@ Iterator_t op_numeric_add::operator()(
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
-// 	return new OpNumericAddIterator(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add::type_check(
@@ -76,7 +76,6 @@ Iterator_t op_numeric_add_int::operator()(
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
-// 	return new OpNumericAddIterator(loc, argv[0], argv[1]);
 }
 
 sequence_type_t op_numeric_add_int::type_check(
@@ -452,7 +451,7 @@ function(sig)
 Iterator_t op_numeric_equal::operator()( yy::location loc, vector<Iterator_t>& argv) const {
 	if (!validate_args(argv))
 		return NULL;
-	return new OpNumericEqualIterator(loc, argv[0], argv[1]);
+ 	return new CompareIterator(loc, argv[0], argv[1], CompareIterator::VALUE_EQUAL);
 }
 
 sequence_type_t op_numeric_equal::type_check(signature& sig) const {

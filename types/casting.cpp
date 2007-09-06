@@ -96,7 +96,7 @@ namespace xqp
 				    error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
 				    error_messages::RUNTIME_ERROR,
 				    false,
-				    "Item cannot be parsed to the declared type!"
+				    "Item cannot be casted to the declared type!"
 				);
 				break;
 		}

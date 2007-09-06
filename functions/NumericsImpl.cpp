@@ -19,19 +19,19 @@ using namespace std;
 namespace xqp
 {
 	/* begin class AddOperations */
-	Item_t AddOperations::opDouble ( Item_t i0, Item_t i1 )
+	Item_t AddOperations::opDouble (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble ( i0->getDoubleValue() + i1->getDoubleValue() );
 	}
-	Item_t AddOperations::opFloat ( Item_t i0, Item_t i1 )
+	Item_t AddOperations::opFloat (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() + i1->getFloatValue() );
 	}
-	Item_t AddOperations::opDecimal ( Item_t i0, Item_t i1 )
+	Item_t AddOperations::opDecimal (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() + i1->getDecimalValue() );
 	}
-	Item_t AddOperations::opInteger ( Item_t i0, Item_t i1 )
+	Item_t AddOperations::opInteger (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
 	}
@@ -40,22 +40,22 @@ namespace xqp
 	/* end class AddOperations */
 	
 	/* start class SubtractOperations */
-	Item_t SubtractOperations::opDouble(Item_t i0, Item_t i1)
+	Item_t SubtractOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(i0->getDoubleValue() - i1->getDoubleValue());
 	}
 	
-	Item_t SubtractOperations::opFloat(Item_t i0, Item_t i1)
+	Item_t SubtractOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
 	}
 	
-	Item_t SubtractOperations::opDecimal(Item_t i0, Item_t i1)
+	Item_t SubtractOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
 	}
 	
-	Item_t SubtractOperations::opInteger(Item_t i0, Item_t i1)
+	Item_t SubtractOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
 	}
@@ -64,22 +64,22 @@ namespace xqp
 	/* end class SubtractOperations */
 	
 	/* start class MultiplyOperations */
-	Item_t MultiplyOperations::opDouble(Item_t i0, Item_t i1)
+	Item_t MultiplyOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(i0->getDoubleValue() * i1->getDoubleValue());
 	}
 	
-	Item_t MultiplyOperations::opFloat(Item_t i0, Item_t i1)
+	Item_t MultiplyOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
 	}
 	
-	Item_t MultiplyOperations::opDecimal(Item_t i0, Item_t i1)
+	Item_t MultiplyOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
 	}
 	
-	Item_t MultiplyOperations::opInteger(Item_t i0, Item_t i1)
+	Item_t MultiplyOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
 	}
@@ -88,17 +88,17 @@ namespace xqp
 	/* end class MultiplyOperations */
 	
 	/* start class DivideOperations */
-	Item_t DivideOperations::opDouble(Item_t i0, Item_t i1)
+	Item_t DivideOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble( i0->getDoubleValue() / i1->getDoubleValue() );
 	}
 	
-	Item_t DivideOperations::opFloat(Item_t i0, Item_t i1)
+	Item_t DivideOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
 	}
 	
-	Item_t DivideOperations::opDecimal(Item_t i0, Item_t i1)
+	Item_t DivideOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		long double ld0 = i0->getDecimalValue();
 		long double ld1 = i1->getDecimalValue();
@@ -106,7 +106,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Division by zero (decimals)!"
 			);
@@ -114,7 +114,7 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( ld0 / ld1 );
 	}
 	
-	Item_t DivideOperations::opInteger(Item_t i0, Item_t i1)
+	Item_t DivideOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		long long ll0 = i0->getIntegerValue();
 		long long ll1 = i1->getIntegerValue();
@@ -122,7 +122,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Division by zero (integers)!"
 			);
@@ -134,7 +134,7 @@ namespace xqp
 	/* end class DivideOperations */
 	
 	/* start class IntegerDivideOperations */
-	Item_t IntegerDivideOperations::opDouble(Item_t i0, Item_t i1)
+	Item_t IntegerDivideOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		double d0 = i0->getDoubleValue();
 		double d1 = i1->getDoubleValue();
@@ -142,7 +142,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Integer Division by zero (integers)!"
 			);
@@ -152,7 +152,7 @@ namespace xqp
 		);
 	}
 	
-	Item_t IntegerDivideOperations::opFloat(Item_t i0, Item_t i1)
+	Item_t IntegerDivideOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		float f0 = i0->getFloatValue();
 		float f1 = i1->getFloatValue();
@@ -160,7 +160,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Integer Division by zero (integers)!"
 			);
@@ -170,7 +170,7 @@ namespace xqp
 		);
 	}
 	
-	Item_t IntegerDivideOperations::opDecimal(Item_t i0, Item_t i1)
+	Item_t IntegerDivideOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		long double ld0 = i0->getDecimalValue();
 		long double ld1 = i1->getDecimalValue();
@@ -178,7 +178,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Integer Division by zero (integers)!"
 			);
@@ -188,7 +188,7 @@ namespace xqp
 		);
 	}
 	
-	Item_t IntegerDivideOperations::opInteger(Item_t i0, Item_t i1)
+	Item_t IntegerDivideOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		long long ll0 = i0->getIntegerValue();
 		long long ll1 = i1->getIntegerValue();
@@ -196,7 +196,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Integer Division by zero (integers)!"
 			);
@@ -210,17 +210,17 @@ namespace xqp
 	/* end class IntegerDivideOperations */
 	
 	/* start class ModOperations */
-	Item_t ModOperations::opDouble(Item_t i0, Item_t i1)
+	Item_t ModOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(fmod(i0->getDoubleValue(), i1->getDoubleValue()));
 	}
 	
-	Item_t ModOperations::opFloat(Item_t i0, Item_t i1)
+	Item_t ModOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat(fmod(i0->getFloatValue(), i1->getFloatValue()));
 	}
 	
-	Item_t ModOperations::opDecimal(Item_t i0, Item_t i1)
+	Item_t ModOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		long double ld0 = i0->getDecimalValue();
 		long double ld1 = i1->getDecimalValue();
@@ -228,7 +228,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Modulo by zero (decimals)!"
 			);
@@ -236,7 +236,7 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(fmod(ld0, ld1));
 	}
 	
-	Item_t ModOperations::opInteger(Item_t i0, Item_t i1)
+	Item_t ModOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
 	{
 		long long ll0 = i0->getIntegerValue();
 		long long ll1 = i1->getIntegerValue();
@@ -244,7 +244,7 @@ namespace xqp
 			ZorbaErrorAlerts::error_alert (
 				error_messages::FOAR0001_Division_by_zero,
 				error_messages::RUNTIME_ERROR,
-				NULL,
+				loc,
 				false,
 				"Modulo by zero (integers)!"
 			);
@@ -261,9 +261,9 @@ namespace xqp
 	{
 		Item_t n0;
 		Item_t n1;
-		sequence_type_t type0;
-		sequence_type_t type1;
-		sequence_type_t resultType;
+		TypeCode type0;
+		TypeCode type1;
+		TypeCode resultType;
 
 		STACK_INIT();
 		n0 = this->consumeNext ( this->arg0 );
@@ -283,16 +283,16 @@ namespace xqp
 				switch(resultType)
 				{
 				case xs_double:
-					STACK_PUSH(Operations::opDouble(n0, n1));
+					STACK_PUSH(Operations::opDouble(&this->loc, n0, n1));
 					break;
 				case xs_float:
-					STACK_PUSH(Operations::opFloat(n0, n1));
+					STACK_PUSH(Operations::opFloat(&this->loc,n0, n1));
 					break;
 				case xs_decimal:
-					STACK_PUSH(Operations::opDecimal(n0, n1));
+					STACK_PUSH(Operations::opDecimal(&this->loc,n0, n1));
 					break;
 				case xs_integer:
-					STACK_PUSH(Operations::opInteger(n0, n1));
+					STACK_PUSH(Operations::opInteger(&this->loc,n0, n1));
 					break;
 				default:
 					break;
@@ -480,20 +480,11 @@ namespace xqp
 	|	INF.
 	|_______________________________________________________________________*/
 
+	// TODO implementation
 	Item_t OpNumericUnaryMinusIterator::nextImpl()
 	{
-		Item_t n;
-// 	const numericValue* n;
-
 		STACK_INIT();
-// 	n_h = this->consumeNext(this->arg0_);
-// 	if(&*n_h == NULL) {
-// 		STACK_PUSH(n_h);
-// 	} else {
-// 		n = dynamic_cast<const numericValue*>(&*n_h);
-// 		STACK_PUSH(new numericValue(n->type(), -n->val()));
-// 	}
-// 	STACK_PUSH(NULL);
+
 		STACK_END();
 	}
 
@@ -522,43 +513,7 @@ namespace xqp
 	|_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
-	Item_t OpNumericEqualIterator::nextImpl()
-	{
-// 	const numericValue *n0;
-// 	const numericValue *n1;
 
-		STACK_INIT();
-// 		n0 = dynamic_cast<const numericValue*>(&*arg0->next());
-// 	if(n0 == NULL) {
-// 		STACK_PUSH(NULL);
-// 	} else {
-// 		n1 = dynamic_cast<const numericValue*>(&*arg1->next());
-// 		if(n1 == NULL) {
-// 			STACK_PUSH(NULL);
-// 		} else {
-// 			STACK_PUSH(new booleanValue(n1->val() == n0->val()));
-// 			STACK_PUSH(NULL);
-// 		}
-// 	}
-		STACK_END();
-	}
-
-	std::ostream& OpNumericEqualIterator::_show ( std::ostream& os )
-	const
-	{
-		arg1->show ( os );
-		arg0->show ( os );
-		return os;
-	}
-
-// Item_t OpNumericEqualIterator::_next()
-// {
-// 	const numericValue& n0 = dynamic_cast<const numericValue&>(*arg0->next());
-// 	const numericValue& n1 = dynamic_cast<const numericValue&>(*arg1->next());
-// 	return new booleanValue(n1.val() == n0.val());
-// }
-// 6.3.2 op:numeric-less-than
-// 6.3.3 op:numeric-greater-than
 
 
 	/*______________________________________________________________________
@@ -567,22 +522,11 @@ namespace xqp
 	|_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
+	// TODO Implementation
 	Item_t FnAbsIterator::nextImpl()
 	{
-// 	const numericValue* n0;
-
 		STACK_INIT();
-// // // // 	n0 = dynamic_cast<const numericValue*>(&*this->arg0_->next());
-// // // // 	if(n0 == NULL) {
-// // // // 		STACK_PUSH(NULL);
-// // // // 	} else {
-// // // // 		if (n0->val() >= 0) {
-// // // // 			STACK_PUSH(new numericValue(xs_decimal, n0->val()));
-// // // // 		} else {
-// // // // 			STACK_PUSH(new numericValue(xs_decimal, -n0->val()));
-// // // // 		}
-// // // // 		STACK_PUSH(NULL);
-// // // // 	}
+
 		STACK_END();
 	}
 

@@ -76,10 +76,10 @@ namespace xqp
 	class AddOperations
 	{
 		public:
-			static Item_t opDouble ( Item_t, Item_t );
-			static Item_t opFloat ( Item_t, Item_t );
-			static Item_t opDecimal ( Item_t, Item_t );
-			static Item_t opInteger ( Item_t, Item_t );
+			static Item_t opDouble (const yy::location* , Item_t, Item_t );
+			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
 	};
 	
 	/** Operations for Subtract
@@ -87,10 +87,10 @@ namespace xqp
 	class SubtractOperations
 	{
 		public:
-			static Item_t opDouble ( Item_t, Item_t );
-			static Item_t opFloat ( Item_t, Item_t );
-			static Item_t opDecimal ( Item_t, Item_t );
-			static Item_t opInteger ( Item_t, Item_t );
+			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
 	};
 	
 	/** Operations for Multiply
@@ -98,10 +98,10 @@ namespace xqp
 	class MultiplyOperations
 	{
 		public:
-			static Item_t opDouble ( Item_t, Item_t );
-			static Item_t opFloat ( Item_t, Item_t );
-			static Item_t opDecimal ( Item_t, Item_t );
-			static Item_t opInteger ( Item_t, Item_t );
+			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
 	};
 	
 	/** Operations for Division
@@ -109,10 +109,10 @@ namespace xqp
 	class DivideOperations
 	{
 		public:
-			static Item_t opDouble ( Item_t, Item_t );
-			static Item_t opFloat ( Item_t, Item_t );
-			static Item_t opDecimal ( Item_t, Item_t );
-			static Item_t opInteger ( Item_t, Item_t );
+			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
 	};
 	
 	/** Operations for Integer Division
@@ -120,10 +120,10 @@ namespace xqp
 	class IntegerDivideOperations
 	{
 		public:
-			static Item_t opDouble ( Item_t, Item_t );
-			static Item_t opFloat ( Item_t, Item_t );
-			static Item_t opDecimal ( Item_t, Item_t );
-			static Item_t opInteger ( Item_t, Item_t );
+			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
 	};
 	
 	/** Operations for Mod
@@ -131,10 +131,10 @@ namespace xqp
 	class ModOperations
 	{
 		public:
-			static Item_t opDouble ( Item_t, Item_t );
-			static Item_t opFloat ( Item_t, Item_t );
-			static Item_t opDecimal ( Item_t, Item_t );
-			static Item_t opInteger ( Item_t, Item_t );
+			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
 	};
 
 
@@ -225,18 +225,7 @@ namespace xqp
 
 // 6.3.1 op:numeric-equal
 // -------------------------
-	class OpNumericEqualIterator : public BinaryBaseIterator<OpNumericEqualIterator>
-	{
-		public:
-			OpNumericEqualIterator ( yy::location loc, Iterator_t iter1, Iterator_t iter2 )
-					:
-					BinaryBaseIterator<OpNumericEqualIterator> ( loc, iter1, iter2 ) {}
-			~OpNumericEqualIterator() {}
 
-		public:
-			Item_t nextImpl();
-			std::ostream&  _show ( std::ostream& ) const;
-	};
 
 // 6.3.2 op:numeric-less-than
 // 6.3.3 op:numeric-greater-than
