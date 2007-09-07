@@ -76,7 +76,16 @@ namespace xqp
 			void resetImpl();
 			void releaseResourcesImpl();
 			
-			static int atomicCompare(Item_t, Item_t);
+			/**
+			 * Atomic comparison of the two passed (atomic) items.
+			 *
+			 * @param item0 atomic item
+			 * @param item1 atomic item
+			 * @return -1 if item0 smaller item1
+			 *					0 if item0 equal item1 
+			 *					1 if item0 greater item1
+			 */
+			static int atomicCompare(Item_t item0, Item_t item1);
 			
 		private:
 			void constructor();

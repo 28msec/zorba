@@ -64,6 +64,7 @@ typedef uint32_t offset_t;    // itemstore short offset
 #define ZORBA_NS			"http://www.zorba.org/"
 #define ZORBA_PRE			"zor"
 #define XQUERY_FN_NS	"http://www.w3.org/2005/xpath-functions"
+#define XQUERY_OP_NS	"http://www.w3.org/2005/xpath-functions"
 #define XQUERY_PRE		"xqy"
 #define NONAMESPACE		"http://nonamespace/"
 #define NONS_PREFIX		"no-ns"

@@ -479,12 +479,14 @@ namespace xqp
 	|	0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns
 	|	INF.
 	|_______________________________________________________________________*/
-
+	
 	// TODO implementation
 	Item_t OpNumericUnaryMinusIterator::nextImpl()
 	{
+		Item_t item;
 		STACK_INIT();
 
+		STACK_PUSH( NULL );
 		STACK_END();
 	}
 
@@ -526,7 +528,8 @@ namespace xqp
 	Item_t FnAbsIterator::nextImpl()
 	{
 		STACK_INIT();
-
+		
+		STACK_PUSH(NULL);
 		STACK_END();
 	}
 

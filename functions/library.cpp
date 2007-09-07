@@ -115,6 +115,16 @@ fn_doc_func fn_doc(
 	)
 );
 
+// Comparisons
+op_greater op_greater_func(
+	signature(
+		new QNameItem(XQUERY_OP_NS,"op","greater"),
+		xs_anyType,
+		xs_anyType,
+		xs_boolean
+	)
+);
+
 
 // Strings
 
@@ -244,6 +254,10 @@ void library::init(
 		
 		fn_doc_key = fn_doc.get_fname()->getQNameKey();
 		cout << TRACE << " : fn_doc_key = " << fn_doc_key << endl;
+		
+		// Comparison functions
+		put(&op_greater_func);
+		op_gt_key = op_greater_func.get_fname()->getQNameKey();
 		
 
 		// String functions

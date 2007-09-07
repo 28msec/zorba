@@ -23,6 +23,16 @@ namespace xqp {
 // 9.2.1 op:boolean-equal
 // 9.2.2 op:boolean-less-than
 // 9.2.3 op:boolean-greater-than
+class op_greater : public function
+{
+public:
+	op_greater(const signature&);
+	~op_greater() {}
+
+	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<Iterator_t>&) const;
+};
 // 9.3 Functions on Boolean Values
 // 9.3.1 fn:not
 // 
