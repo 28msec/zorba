@@ -6,14 +6,14 @@
 #ifndef XQP_BOOLEAN_H
 #define XQP_BOOLEAN_H
 
+#include <vector>
+
 #include "context/common.h"
 #include "functions/function.h"
-#include "runtime/item_iterator.h"
-#include "types/sequence_type.h"
-#include "util/rchandle.h"
-#include "errors/Error.h"
-
-#include <vector>
+// #include "runtime/item_iterator.h"
+// #include "types/sequence_type.h"
+// #include "util/rchandle.h"
+// #include "errors/Error.h"
 
 namespace xqp {
 // 9.1 Additional Boolean Constructor Functions

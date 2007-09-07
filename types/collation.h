@@ -10,7 +10,6 @@
 #define XQP_COLLATION_H
 
 #include <string>
-#include "../util/rchandle.h"
 
 namespace xqp {
 

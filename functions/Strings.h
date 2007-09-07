@@ -27,9 +27,6 @@
 
 #include "context/common.h"
 #include "functions/function.h"
-#include "runtime/item_iterator.h"
-#include "util/rchandle.h"
-#include "errors/Error.h"
 
 #include <vector>
 

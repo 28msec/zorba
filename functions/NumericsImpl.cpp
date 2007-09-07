@@ -14,6 +14,7 @@
 #include "util/tracer.h"
 #include "types/casting.h"
 #include "errors/Error.h"
+#include "runtime/zorba.h"
 
 using namespace std;
 namespace xqp

@@ -10,13 +10,23 @@
 #ifndef XQP_STORE_H
 #define XQP_STORE_H
 
+#include <string>
+
 namespace xqp
 {
-	class Collection_t;
-	class TempSeq_t;
-	class PUL_t;
+
+	template <class Object> class rchandle;
+	
+	typedef rchandle<class BasicIterator> Iterator_t;
+	typedef rchandle<class Item> Item_t;
+	typedef rchandle<class Collection> Collection_t;
+	typedef rchandle<class TempSeq> TempSeq_t;
+	typedef rchandle<class PUL> PUL_t;
 	class Timetravel;
 	class Requester;
+	
+	// TODO must be replaced by self implemented string
+	typedef std::string xqp_string;
 	
 
 	/** Manages XDM Instances 
@@ -138,7 +148,13 @@ namespace xqp
 		  * @return handle object of the newly created collection
 		  * @throws CollectionAlreadyExistsException If a collection with the passed uri already exists in the store.
 		  */
-		virtual Collection_t createCollection(Item_t uri = NULL) = 0;
+		virtual Collection_t createCollection(Item_t uri) = 0;
+		
+		/** Creates a collection in the store (without given URI).
+		  * 
+		  * @return handle object of the newly created collection
+		  */
+		virtual Collection_t createCollection() = 0;
 		
 		/** Deletes a collection.
 			*

@@ -14,6 +14,7 @@
 #include "functions/SequencesImpl.h"
 #include "runtime/item_iterator.h"
 #include "util/tracer.h"
+#include "functions/function.h"
 
 #include <iostream>
 #include <vector>

@@ -20,14 +20,11 @@
 #ifndef XQP_SEQUENCES_IMPL_H
 #define XQP_SEQUENCES_IMPL_H
 
-#include "function.h"
-#include "context/common.h"
-#include "runtime/item_iterator.h"
-#include "runtime/batching.h"
-#include "util/rchandle.h"
-
 #include <string>
 #include <vector>
+
+#include "context/common.h"
+#include "runtime/batching.h"
 
 namespace xqp
 {

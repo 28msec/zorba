@@ -14,8 +14,8 @@
 #include "win32/compatib_defs.h"
 #endif
 
-#include "../../util/rchandle.h"
-#include "../../types/representations.h"
+#include "util/rchandle.h"
+#include "types/representations.h"
 
 namespace xqp
 {

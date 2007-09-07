@@ -26,11 +26,8 @@
 #define XQP_STRINGS_IMPL_H
 
 #include "context/common.h"
-#include "functions/function.h"
-#include "runtime/item_iterator.h"
 #include "runtime/batching.h"
 #include "types/sequence_type.h"
-#include "util/rchandle.h"
 
 #ifdef WIN32
 #include "win32/compatib_defs.h"

@@ -10,16 +10,17 @@
 #ifndef XQP_FUNCTION_H
 #define XQP_FUNCTION_H
 
-#include "signature.h"
-#include "context/common.h"
-#include "runtime/item_iterator.h"
-#include "runtime/zorba.h"
-#include "util/rchandle.h"
-
 #include <string>
 #include <vector>
+
+#include "signature.h"
+#include "context/common.h"
  
 namespace xqp {
+
+template <class Object> class rchandle;
+
+typedef rchandle<class BasicIterator> Iterator_t;
 
 class function : public rcobject
 {

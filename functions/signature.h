@@ -10,13 +10,12 @@
 #ifndef XQP_SIGNATURE_H
 #define XQP_SIGNATURE_H
 
+#include <string>
+#include <vector>
+
 #include "context/common.h"
 #include "types/sequence_type.h"
 #include "util/fxhashmap.h"
-#include "util/rchandle.h"
-
-#include <string>
-#include <vector>
 
 namespace xqp {
 

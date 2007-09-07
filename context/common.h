@@ -31,8 +31,6 @@
 	#include "win32/compatib_defs.h"
 #endif
 
-#include "../util/rchandle.h"
-
 #include <utility>
 
 #ifndef _WIN32_WCE

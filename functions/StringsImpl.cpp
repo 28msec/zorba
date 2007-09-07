@@ -22,10 +22,12 @@
  *
  */
 
+#include <iostream>
+
 #include "StringsImpl.h"
 #include "util/tracer.h"
 #include "../utf8/utf8.h"
-#include <iostream>
+#include "runtime/zorba.h"
 
 using namespace std;
 namespace xqp {

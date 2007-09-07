@@ -21,6 +21,7 @@
 #define XQP_ERRORS_H
 
 #include <string>
+
 #include "util/rchandle.h"
 
 namespace xqp {

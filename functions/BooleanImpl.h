@@ -9,7 +9,6 @@
 #include "context/common.h"
 #include "types/sequence_type.h"
 #include "runtime/batching.h"
-#include "util/rchandle.h"
 
 namespace xqp
 {

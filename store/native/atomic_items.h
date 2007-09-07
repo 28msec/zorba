@@ -7,7 +7,6 @@
  *
  */
 
-// TODO move into store/nativeStore
 
 #ifndef XQP_ATOMIC_ITEMS_H
 #define XQP_ATOMIC_ITEMS_H
@@ -142,4 +141,4 @@ namespace xqp
 	}; /* class BooleanItem */
 
 } /* namespace xqp */
-#endif /* XQP_VALUES_H */
+#endif /* XQP_ATOMIC_ITEMS_H */

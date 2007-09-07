@@ -368,6 +368,7 @@ namespace xqp
 		    false,
 		    "Not possible to compare the two passed values!"
 		);
+		return -2;
 	}
 
 	void CompareIterator::constructor()
