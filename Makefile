@@ -1,20 +1,3 @@
-
-# SUBDIRS		= \
-# 				context \
-# 				dom \
-# 				errors \
-# 				exprtree \
-# 				functions \
-# 				listeners \
-# 				parser \
-# 				runtime \
-# 				store \
-# 				testing \
-# 				types \
-# 				util \
-# 				values \
-# 				zorba
-				
 SUBDIRS		= \
 				context \
 				errors \

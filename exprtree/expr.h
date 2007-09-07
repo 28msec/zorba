@@ -25,21 +25,15 @@
 #include <string>
 #include <vector>
 
-#include "context/static_context.h"
-#include "functions/function.h"
-#include "runtime/expr_visitor.h"
-#include "runtime/item_iterator.h"
-#include "parser/location.hh"
-#include "parser/parse_constants.h"
 #include "parser/parsenodes.h"
 #include "types/sequence_type.h"
 #include "util/list.h"
 #include "util/rchandle.h"
-#include "values/ft_options.h"
-#include "../store/api/item.h"
+#include "store/api/fullText/ft_options.h"
 
 namespace xqp {
 
+class expr_visitor;
 /*______________________________________________________________________
 |  
 |	base class for the expression tree node hierarchy

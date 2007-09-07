@@ -14,7 +14,8 @@
 #include "functions/library.h"
 #include "parser/parsenodes.h"
 #include "util/tracer.h"
-#include "../store/api/item.h"
+#include "store/api/item.h"
+#include "runtime/zorba.h"
 
 
 #include <iostream>

@@ -16,7 +16,7 @@
 #include "util/Assert.h"
 #include "util/tracer.h"
 #include "errors/Error.h"
-//#include "values/qname.h"
+#include "runtime/expr_visitor.h"
 
 #include <iostream>
 #include <string>

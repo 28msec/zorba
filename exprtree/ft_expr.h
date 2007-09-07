@@ -22,6 +22,7 @@ namespace xqp {
 /////////////////////////////////////////////////////////////////////////
 
 class ft_or_expr;
+class ft_options;
 
 //[344] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTSelection]
 class ft_expr : public expr
