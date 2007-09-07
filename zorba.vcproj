@@ -306,6 +306,28 @@
 				>
 			</File>
 			<File
+				RelativePath=".\types\casting.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						ObjectFile="$(IntDir)\$(InputName)1.obj"
+						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="functions\Casting.cpp"
 				>
 				<FileConfiguration
@@ -1118,6 +1140,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\types\casting.h"
+				>
+			</File>
+			<File
 				RelativePath="types\collation.h"
 				>
 			</File>
@@ -1226,7 +1252,7 @@
 				>
 			</File>
 			<File
-				RelativePath="parser\indent.h"
+				RelativePath="runtime\indent.h"
 				>
 			</File>
 			<File
@@ -1234,7 +1260,7 @@
 				>
 			</File>
 			<File
-				RelativePath="runtime\indent.h"
+				RelativePath="parser\indent.h"
 				>
 			</File>
 			<File

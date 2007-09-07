@@ -395,3 +395,184 @@ public:
 
 #endif
 
+
+/*
+		Use cases:
+
+		Iterating through results. The XML is a file on disk.
+		One thread executing.
+
+		
+		std::string		query = "/book[@nr_pages > 100]";
+
+		///load the xml file
+		Zorba_XmlDocument		source_xml;///actually an item in disguise
+		ifstream						xml_file;
+		xml_file.open("books.xml");
+		///construct completely into memory
+		source_xml.ConstructFromXML( xml_file, !IN_BINARY_FORM);
+		xml_file.close();///no more need for the file
+
+		//compile the xquery
+		Zorba_XQueryCompiler		xq_compiler;
+		Zorba_XQueryBinary			xqbin;
+
+		if(!xq_compiler(query, NULL, //no static context defined
+										&xqbin))
+		{
+			///....error
+			goto DisplayErrorsAndExit;
+		}
+		
+		///set the context item into dynamic context of the binary
+		if(!xqbin.SetVariable( Zorba_QName("", "") ///var prefix and name empty
+												&source_xml))
+		{
+			///....error
+			goto DisplayErrorsAndExit;
+		}
+
+		////execute step by step
+		if(!xqbin.StartExecution( NULL ))///no external dynamic context provided
+		{
+			///....error
+			goto DisplayErrorsAndExit;
+		}
+		
+		///iterate through the results
+		Zorba_ItemPtr		it;
+		while(it=xqbin.GetNextItem() && (*it))
+		{
+			///do something with the book item
+			///....
+		}
+
+		xqbin.CloseExecution();
+
+		///thats all
+		return 0;
+
+DisplayErrorsAndExit:
+		///process the errors
+		Zorba_AlertsManager		err_manag = Zorba_getAlertsManagerForCurrentThread();
+
+		std::list<Zorba_AlertMessage>::iterator		it;
+
+		for(it = err_manag.begin; it<err_manag.end(); it++)
+		{
+			//"it" is of type Zorba_AlertMessage
+			switch((*it).alert_type)
+			{
+			case	ERROR_ALERT:
+					cout << "Err" << (*it).err_code << ":" << (*it).err_loc.module_name << ":" << (*it).err_loc.line << " : ";
+					break;
+			case	WARNING_ALERT:
+					cout << "Warning" << (*it).warn_code << ":" << (*it).warn_loc.module_name << ":" << (*it).warn_loc.line << " : ";
+					break;
+			case	NOTIFICATION_ALERT:
+					//no special info here
+					break;
+			case	FEEDBACK_REQUEST_ALERT:
+					///not implemented
+					break;
+
+			case	USER_ERROR_ALERT://fn:error
+					cout << "User Err " << (*it).err_name.prefix << ":"<<(*it).err_name.name << " : ";
+					break;
+			case	USER_TRACE_ALERT://fn:trace
+					break;
+			};
+
+			///display the message
+			cout << (*it).alert_description;
+
+			//display the item list if exists
+			Zorba_Items		*after_items = NULL;
+			switch((*it).alert_type)
+			{
+			case	USER_ERROR_ALERT://fn:error
+					after_items = &(*it).items_error;
+					break;
+			case	USER_TRACE_ALERT://fn:trace
+					after_items = &(*it).items_trace;
+					break;
+			};
+			if(after_items)
+			{
+				ostringstream		oss;
+				for(int i=0;i<after_items->size();i++)
+				{
+					after_items[i].SerializeAsXml( oss, !IN_BINARY_FORM );
+					cout << endl << endl;
+					cout << oss.c_str();
+					oss.clear();
+				}
+			}
+
+			cout << endl;
+		}
+
+		return -1;
+
+*/
+
+
+/*
+			Other use case.
+			Use xml input data from database. Database is viewed as a collection of xmls.
+			Retrieve all data at once.
+
+		std::string		query = "<results> 
+													{fn:collection("file://books.local.xmldb")/book[@nr_pages > 100]} 
+													</results>";
+
+		///init the xml db (the details should be in store.h api)
+		Zorba_XmlDatabase		source_xmldb;///offers also Zorba_Items interface
+		source_xmldb.opendb("c:\xmldb\books.zdb");///the physical location
+
+		///set up a generic dynamic context
+		Zorba_DynamicContext		dyn_ctx;
+		if(!dyn_ctx.RegisterAvailableCollection("file://books.local.xmldb",///some URI
+																			&Zorba_XmlDatabase))
+		{
+			///....error
+			goto DisplayErrorsAndExit;
+		}
+
+		//compile the xquery
+		Zorba_XQueryCompiler		xq_compiler;
+		Zorba_XQueryBinary			xqbin;
+
+		if(!xq_compiler(query, NULL, //no static context defined
+										&xqbin))
+		{
+			///....error
+			goto DisplayErrorsAndExit;
+		}
+		
+		////execute step by step
+		Zorba_Items		result;
+		if(!xqbin.Execute( &dyn_ctx, &result ))
+		{
+			///....error
+			goto DisplayErrorsAndExit;
+		}
+		
+		///result should contain only one item
+		if(result.size() < 1)
+		{
+			///....error
+			goto DisplayErrorsAndExit;
+		}
+
+		///save the result into a xml file
+		ofstream		result_xml_file("selected_books.xml");
+		result[0]->SerializeAsXml( result_xml_file, !IN_BINARY_FORM);
+		result_xml_file.close();
+
+		///thats all
+
+DisplayErrorsAndExit:
+//   .....
+
+*/
