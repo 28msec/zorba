@@ -1575,8 +1575,10 @@ ostream& VarGetsDecl::put(ostream& s) const
 void VarGetsDecl::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	typedecl_h->accept(v);
-	ftscorevar_h->accept(v);
+	if (typedecl_h != 0)
+          typedecl_h->accept(v);
+        if (ftscorevar_h != 0)
+          ftscorevar_h->accept(v);
 	valexpr_h->accept(v);
 	v.end_visit(*this); 
 }
