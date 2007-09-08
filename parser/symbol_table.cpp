@@ -94,7 +94,7 @@ std::string symbol_table::get(off_t id)
 	uint32_t n = heap.get_length0(id);
 	char *buf;
 	buf = (char*)malloc(n+1);
-	heap.get0(id, buf, 0, n);
+	heap.get0(id, buf, 0, n+1);
 	std::string retstr = string(buf, 0, n);
 	free(buf);
 	return retstr;

@@ -234,8 +234,9 @@ throw (xqp_exception)
 {
   try {
     uint32_t len = strlen(&data[id]);
-    if (maxlen < len+1) len = maxlen-1;
-    memcpy(&buf[output_offset], &data[id], len+1);  // include the trailing 0
+    if (len > (maxlen - 1)) len = maxlen-1;
+    memcpy(&buf[output_offset], &data[id], len);
+    buf [output_offset + len] = 0;
   } catch (...) {
     ioexception(_SOURCE,"exception in memcpy"); 
   }
