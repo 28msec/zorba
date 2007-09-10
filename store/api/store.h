@@ -84,7 +84,7 @@ namespace xqp
 			* @param timetravel
 			* @throws NotSupportedException Throws an exception if the store does not support branching or versioning
 			*/
-		virtual Item_t getFixedReference(Item_t, Requester requester, Timetravel timetravel);
+		virtual Item_t getFixedReference(Item_t, Requester requester, Timetravel timetravel) = 0;
 		
 		/**
 			* Returns Item which is identified by a reference
@@ -92,7 +92,7 @@ namespace xqp
 			* @param uri Has to be an xs:URI item
 			* @returns referenced item if it exists, otherwise NULL
 			*/
-		Item_t getNodeByReference(Item_t);
+		virtual Item_t getNodeByReference(Item_t) = 0;
 		
 		/** Returns Item wich is identified by a referenced, dependent on a requester
 			* (defines branch) and a timetravel (defines version)
@@ -105,7 +105,7 @@ namespace xqp
 			* @throws IllegalReferenceException Throws an exception if the reference is fixed.
 			*
 			*/
-		Item_t getNodeByReference(Item_t, Requester requester, Timetravel timetravel);
+		virtual Item_t getNodeByReference(Item_t, Requester requester, Timetravel timetravel) = 0;
 		
 		/* ------------------------------------- Node Id Management ------------------------------------*/
 		

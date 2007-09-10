@@ -10,15 +10,19 @@
 #ifndef XQP_COLLECTION_H
 #define XQP_COLLECTION_H
 
+#include <iostream>
+
+#include "runtime/batching.h"
+
 namespace xqp 
 {
-	class Item;
-	typedef rchandle<Item> Item_t;
-	class BasicIterator;
-	typedef rchandle<BasicIterator> Iterator_t;
+	template <class Object> class rchandle;
+	
+	typedef rchandle<class Item> Item_t;
+	typedef rchandle<class BasicIterator> Iterator_t;
 
 
-	class Collection
+	class Collection : public rcobject
 	{
 	public:
 		virtual ~Collection(){}
@@ -54,7 +58,7 @@ namespace xqp
 		  * @param stream which streams the data to insert (e.g. from a file)
 		  * @param position Where to insert the item. Default -1, which means it is attached to the end.
 		  */
-		virtual void addToCollection(iostream& stream, int32_t position = -1) = 0;
+		virtual void addToCollection(std::iostream& stream, int32_t position = -1) = 0;
 		
 		/** Deletes an item of the collection.
 			*

@@ -9,17 +9,23 @@
 #ifndef XQP_TEMP_SEQ_H
 #define XQP_TEMP_SEQ_H
 
+#include <vector>
+
 namespace xqp {
-	class Item;
-	typedef rchandle<Item> Item_t;
+
 	typedef std::string xqp_string;
-	class BasicIterator;
-	typedef rchandle<BasicIterator> Iterator_t;
+	
+	template <class Object> class rchandle;
+	
+	typedef rchandle<class Item> Item_t;
+	typedef rchandle<class BasicIterator> Iterator_t;
+	
+	class var_iterator;
 
  	/** XQuery Data Model Instance: Logically, implements a "vector&lt;Item_t&gt;"
 	 * Used internally to materialize temporary query results
 	 */
-	class TempSeq
+	class TempSeq : public rcobject
 	{  
 	public:
 		virtual ~TempSeq(){}
@@ -53,7 +59,7 @@ namespace xqp {
 			* @param var variables which have to be bound for every item
 			* @return Iterator
 			*/
-		virtual Iterator_t getIterator(int32_t startPos, Iterator_t function, vector<var_iterator> var, bool streaming = false) = 0;
+		virtual Iterator_t getIterator(int32_t startPos, Iterator_t function, const std::vector<var_iterator>& var, bool streaming = false) = 0;
 				
 		
 		/** Info: Tim's territory. Do not touch for the moment!
@@ -63,7 +69,7 @@ namespace xqp {
 			* @param positions Positions to return
 			* @return Iterator
 			*/
-		virtual Iterator_t getIterator(int32_t positions[], bool streaming = false) = 0;
+		virtual Iterator_t getIterator(const std::vector<int32_t>& positions, bool streaming = false) = 0;
 		
 	 /** Info: Tim's territory. Do not touch for the moment!
 		 *
@@ -105,14 +111,14 @@ namespace xqp {
 		 *
 		 * @param positions
 		 */
-		virtual void purgeItem(vector<int32_t>* positions) = 0;
+		virtual void purgeItem(const std::vector<int32_t>& positions) = 0;
 		
 	/** Info: Tim's territory. Do not touch for the moment!
 		*
 		* This optimizations gives the store a hint that the caller will never ask for an iterator again,
 		* which might contain this item. 
 		*/
-		virtual void purgeItem(int32_t*) = 0;
+		virtual void purgeItem(int32_t position) = 0;
 		
 	}; /* class XDMInstance */
 } /* namespace xqp */
