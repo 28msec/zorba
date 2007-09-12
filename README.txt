@@ -25,31 +25,54 @@ reimplemetation occurs.
 Building zorba
 --------------
 
-2007.03.14
+2007.09.12
 
-build.sh
-  Manually created make, using simple 'Makefile.local'
-  scripts. A lot easier to use during initial development.
-  Use this script for now, until autoconf gets adopted/debugged.
+The currently employed makefiles system can be used as described
+below. 
 
-The root directory is
-  $INSTALL/zorba/xquery.
+To do a build, you need to run:
 
-Not yet available:
-[
-setup.sh
-  makes symbolic links needed by configure:
-    install-sh, depcomp, missing
-  
-rebuild_autoconf
-  Generates a file 'aclocal.m4' that contains macros for automake.
-  Automake reads 'configure.ac' and the top-level 'Makefile.am', 
-  interprets them, and for each 'Makefile.am' produces a 'Makefile.in'.
-  Lastly, autoconf builds the 'configure' script.
-  
-configure
-  Generated script that creates Makefiles
-]
+	make
+
+in the root folder. This will compile all the objects currently in 
+the project. As the makefiles are granular, with a file per 
+folder, and you can run make in any of them. This will build the 
+objects in that particular folder.
+        
+The current test application -- query_exec -- can be compiled with:
+
+	make query_exec
+
+in the root folder, or
+	
+	make test
+
+in the testing folder.  
+    
+
+Each Makefile in a folder has two variables: SOURCES and BINARIES. 
+If you create a new .cpp file and want it compiled, add it to 
+SOURCES.
+
+	SOURCES = .... my_source.cpp
+
+If you want an executable to be created, list it dependencies:
+
+	my_test = my_test.cpp ../dom/dom_nodes.cpp ../dom/dom_qname.cpp etc
+
+then add my_test to BINARIES
+
+	BINARIES = ... my_test
+
+The executable will be built when you'll invoke make with the "test" 
+target.
+
+	make test
+
+The intermediary files can be deleted with:
+
+	make clean
+
 
   
 Known bugs

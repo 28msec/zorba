@@ -117,13 +117,13 @@ namespace xqp {
 	}
 
 	//xqpString::compare
-	int32_t xqpString::compare(const xqpString& src)	const{
+	int xqpString::compare(const xqpString& src)	const{
 		//TODO optimize the code here
 		std::vector<char> v0;
 		std::vector<char> v1;
 		char * c0;
 		char * c1;
-		int16_t vLength;
+		size_type vLength;
 		uint32_t cp0, cp1;
 		
 		vLength = bytes();
@@ -158,7 +158,7 @@ namespace xqp {
 			return 1;
 	}
 
-	int32_t xqpString::compare(const char* src)	const{
+	int xqpString::compare(const char* src)	const{
 		//TODO optimize the code here
 		xqpString tmp(src);
 		return compare(tmp);

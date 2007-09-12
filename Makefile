@@ -1,3 +1,4 @@
+
 SUBDIRS		= \
 				context \
 				errors \
@@ -8,29 +9,14 @@ SUBDIRS		= \
 				runtime \
 				testing \
 				types \
+				utf8 \
 				util \
-				store/api \
-				store/native
+				store
 
-
-all: TARGET=all
-all: subdirs
-
-
-test: TARGET=test
-test: subdirs
-
-clean: TARGET=clean
-clean: subdirs
+# Include global Makefile rules
+ROOT_PATH		= .
+include $(ROOT_PATH)/Makefile.rules
 
 
 query_exec:
 	$(MAKE) test -C testing
-
-
-.PHONY: subdirs $(SUBDIRS)
-
-subdirs: $(SUBDIRS)
-
-$(SUBDIRS):
-	$(MAKE) $(TARGET) -C $@
