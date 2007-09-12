@@ -368,7 +368,8 @@ public:
 	///retrieve all the items at once
 	//return true for success; see the error list if insuccess
 	bool		Execute(  Zorba_DynamicContext *pdynamic_context,///can be NULL
-										Zorba_Items &result_items///the result
+										Zorba_Items &result_items,///the result
+										int		max_items = -1 ///default -1, get all items; x, return only x items
 										);
 	///to be called from another thread while executing
 	void		CancelExecution();
@@ -399,7 +400,7 @@ public:
 /*
 		Use cases:
 
-		Iterating through results. The XML is a file on disk.
+		Query a XML and iterate through results. The XML is a file on disk.
 		One thread executing.
 
 		
@@ -574,5 +575,93 @@ DisplayErrorsAndExit:
 
 DisplayErrorsAndExit:
 //   .....
+
+*/
+
+/*
+
+		Using multiple threads. Cloning the xquery binary.
+		Reading results in pages of 20 results (this is a common case for accessing a database through web).
+
+	
+		Thread 1																									Thread2
+
+	Zorba_InitializeZorbaEngine();
+
+
+	///compile a query
+	Zorba_XQueryCompiler		xq_compiler;
+	Zorba_XQueryBinary			xqbin;
+	std::string		query = "/book[@nr_pages > 100]";
+
+	///set up the store
+	Zorba_XmlDatabase		source_xmldb;
+	source_xmldb.opendb("c:\xmldb\books.zdb");
+
+	///set up a generic dynamic context
+	Zorba_DynamicContext		dyn_ctx;
+	if(!dyn_ctx.RegisterAvailableCollection
+									("file://books.local.xmldb",
+									&Zorba_XmlDatabase))
+	{
+		///....error
+		goto DisplayErrorsAndExit;
+	}
+
+	///compile the xquery
+	if(!xq_compiler(query, NULL, 
+									&xqbin))
+	{
+		///....error
+		goto DisplayErrorsAndExit;
+	}	
+
+	
+
+																												Thread2
+
+																							////these are worker threads
+																							// to initialize the engine for each thread
+																							Zorba_InitThread();
+																							Zorba_XQueryBinary		xqbin2;
+
+																							///clone the previously compiled xquery
+																							///to be used in this thread
+																							if(!xqbin2.Clone(xqbin))
+																							{
+																								///....error
+																								goto DisplayErrorsAndExit2;
+																							}
+
+																							Zorba_Items		result;
+																							if(!xqbin2.Execute( &dyn_ctx, &result,
+																																	100))///retrieve only 100 results
+																							{
+																								///....error
+																								goto DisplayErrorsAndExit2;
+																							}
+																							
+																							if(result.size() < 1)
+																							{
+																								///....error
+																								goto DisplayErrorsAndExit2;
+																							}
+
+																							///now Zorba_Items are independent of xqbin2
+
+																							///a user defined function to format HTML output
+																							display20Items( &result, 0, 20);
+																							Zorba_CloseThread();//when ending the thread
+
+
+
+
+					Thread 3
+
+		///user called for another 20 items
+
+		Zorba_InitThread();
+		display20Items( &result, x, 20);
+		Zorba_CloseThread();//when ending the thread
 
 */
