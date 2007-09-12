@@ -25,19 +25,19 @@ namespace xqp
 
 		public:
 			SimpleTempSeq ( Iterator_t iterator );
-			~SimpleTempSeq();
+			virtual ~SimpleTempSeq();
 
-			Iterator_t getIterator();
-			Iterator_t getIterator ( int32_t startPos, int32_t endPos, bool streaming = false );
-			Iterator_t getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& var, bool streaming = false );
-			Iterator_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
-			Iterator_t getIterator ( Iterator_t positions, bool streaming = false );
-			Item_t getItem ( int32_t position );
-			void purge();
-			void purgeUpTo ( int32_t upTo );
-			void purgeItem ( const std::vector<int32_t>& positions );
-			void purgeItem ( int32_t position );
-			bool empty();
+			virtual Iterator_t getIterator();
+			virtual Iterator_t getIterator ( int32_t startPos, int32_t endPos, bool streaming = false );
+			virtual Iterator_t getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& var, bool streaming = false );
+			virtual Iterator_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
+			virtual Iterator_t getIterator ( Iterator_t positions, bool streaming = false );
+			virtual Item_t getItem ( int32_t position );
+			virtual void purge();
+			virtual void purgeUpTo ( int32_t upTo );
+			virtual void purgeItem ( const std::vector<int32_t>& positions );
+			virtual void purgeItem ( int32_t position );
+			virtual bool empty();
 
 		class Iterator : public Batcher<Iterator>
 			{

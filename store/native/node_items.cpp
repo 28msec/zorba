@@ -14,6 +14,7 @@ namespace xqp
 	/* start class Node */
 	Node::Node ( const Item_t& parent_arg ) : parent_p ( &*parent_arg ) {}
 	Node::Node() : parent_p ( NULL ) {}
+	Node::~Node() {}
 
 	bool Node::isNode() const
 	{
@@ -68,6 +69,7 @@ namespace xqp
 	{
 		this->children = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( children );
 	}
+	DocumentNode::~DocumentNode(){}
 
 	Item_t DocumentNode::getAtomizationValue() const
 	{
@@ -155,6 +157,8 @@ namespace xqp
 			attributes ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( attributes_arg ) ),
 			namespaces ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( namespaces_arg ) )
 	{ }
+	
+	ElementNode::~ElementNode(){}
 
 	Item_t ElementNode::getAtomizationValue() const
 	{
@@ -254,6 +258,8 @@ namespace xqp
 			bIsId ( bIsId_arg ),
 			bIsIdrefs ( bIsIdrefs_arg )
 	{}
+	
+	AttributeNode::~AttributeNode(){}
 
 	Item_t AttributeNode::getAtomizationValue() const
 	{
@@ -302,6 +308,7 @@ namespace xqp
 			Node ( parent ), prefix ( prefix_arg ), uri ( uri_arg )
 	{ }
 	NamespaceNode::NamespaceNode ( xqp_string prefix_arg, xqp_string uri_arg ) : prefix ( prefix_arg ), uri ( uri_arg ) { }
+	NamespaceNode::~NamespaceNode(){}
 
 	Item_t NamespaceNode::getAtomizationValue() const
 	{
@@ -343,6 +350,8 @@ namespace xqp
 	PiNode::PiNode ( xqp_string& target_arg, xqp_string& uri_arg, xqp_string& baseUri_arg )
 			:
 			target ( target_arg ), content ( uri_arg ), baseUri ( baseUri_arg ) { }
+	
+	PiNode::~PiNode(){}
 
 	Item_t PiNode::getAtomizationValue() const
 	{
@@ -384,6 +393,7 @@ namespace xqp
 	/* start class CommentNode */
 	CommentNode::CommentNode ( const Item_t& parent, xqp_string& content_arg ) : Node ( parent ), content ( content_arg ) {}
 	CommentNode::CommentNode ( xqp_string& content_arg ) : content ( content_arg ) {}
+	CommentNode::~CommentNode(){}
 
 	Item_t CommentNode::getAtomizationValue() const
 	{
@@ -415,6 +425,7 @@ namespace xqp
 	/* start class TextNode */
 	TextNode::TextNode ( const Item_t& parent, xqp_string& content_arg ) : Node ( parent ), content ( content_arg ) {}
 	TextNode::TextNode ( xqp_string& content_arg ) : content ( content_arg ) {}
+	TextNode::~TextNode(){}
 
 	TypeCode TextNode::getType() const
 	{

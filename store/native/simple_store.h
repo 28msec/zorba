@@ -27,23 +27,23 @@ namespace xqp
 		public:
 		public:
 			SimpleStore();
-			~SimpleStore();
+			virtual ~SimpleStore();
 
-			TempSeq_t createTempSeq ( Iterator_t&, bool lazy = true );
-			void setGarbageCollectionStrategy ( const xqp_string& garbageCollectionStrategy );
-			void apply ( PUL_t pendingUpdateList );
-			void apply ( PUL_t pendingUpdateList, Requester requester );
-			Item_t getReference ( Item_t );
-			Item_t getFixedReference ( Item_t, Requester requester, Timetravel timetravel );
-			Item_t getNodeByReference ( Item_t );
-			Item_t getNodeByReference ( Item_t, Requester requester, Timetravel timetravel );
-			int32_t compare ( Item_t item1, Item_t item2 );
-			Iterator_t sort ( Iterator_t iterator, bool ascendent, bool duplicateElemination );
-			Iterator_t distinctNodeStable ( Iterator_t );
-			Collection_t getCollection ( Item_t uri );
-			Collection_t createCollection ( Item_t uri );
-			Collection_t createCollection();
-			void deleteCollection ( Item_t uri );
+			virtual TempSeq_t createTempSeq ( Iterator_t&, bool lazy = true );
+			virtual void setGarbageCollectionStrategy ( const xqp_string& garbageCollectionStrategy );
+			virtual void apply ( PUL_t pendingUpdateList );
+			virtual void apply ( PUL_t pendingUpdateList, Requester requester );
+			virtual Item_t getReference ( Item_t );
+			virtual Item_t getFixedReference ( Item_t, Requester requester, Timetravel timetravel );
+			virtual Item_t getNodeByReference ( Item_t );
+			virtual Item_t getNodeByReference ( Item_t, Requester requester, Timetravel timetravel );
+			virtual int32_t compare ( Item_t item1, Item_t item2 );
+			virtual Iterator_t sort ( Iterator_t iterator, bool ascendent, bool duplicateElemination );
+			virtual Iterator_t distinctNodeStable ( Iterator_t );
+			virtual Collection_t getCollection ( Item_t uri );
+			virtual Collection_t createCollection ( Item_t uri );
+			virtual Collection_t createCollection();
+			virtual void deleteCollection ( Item_t uri );
 
 	}; /* class SimpleStore */
 

@@ -218,6 +218,7 @@ namespace xqp
 				{
 					case xs_string:
 					case xs_untypedAtomicValue:
+					case xs_anyType:
 					case xs_anyURI:
 						return item0->getStringValue().compare ( item1->getStringValue() );
 						break;

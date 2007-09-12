@@ -14,6 +14,7 @@
 namespace xqp
 {
 	/* start class AtomicItem */
+	AtomicItem::~AtomicItem() {}
 	bool AtomicItem::isNode() const
 	{
 		return false;
@@ -24,7 +25,7 @@ namespace xqp
 	}
 	Iterator_t AtomicItem::getTypedValue() const
 	{
-		return new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
+		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue() );
 	}
 	/* end class AtomicItem */
 
@@ -32,7 +33,7 @@ namespace xqp
 	QNameItem::QNameItem ( xqp_string _namespace, xqp_string prefix, xqp_string localname )
 			:
 			strNamespace_ ( _namespace ), strPrefix_ ( prefix ), strLocal_ ( localname ) {}
-
+	QNameItem::~QNameItem() {}
 	xqp_string QNameItem::getNamespace() const
 	{
 		return this->strNamespace_;
@@ -91,41 +92,41 @@ namespace xqp
 	/* end class QNameItem */
 
 	/* start class UntypedAtomicItem */
-	UntypedAtomicItem::UntypedAtomicItem( xqp_string value ) : strValue_ ( value ) {}
-	
+	UntypedAtomicItem::UntypedAtomicItem ( xqp_string value ) : strValue_ ( value ) {}
+
 	UntypedAtomicItem::~UntypedAtomicItem() {}
-	
+
 	xqp_string UntypedAtomicItem::getStringValue() const
 	{
 		return this->strValue_;
 	}
-	
+
 	TypeCode UntypedAtomicItem::getType() const
 	{
 		return xs_untypedAtomicValue;
 	}
-	
+
 	Item_t UntypedAtomicItem::getAtomizationValue() const
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->strValue_ );
 	}
-	
+
 	bool UntypedAtomicItem::equals ( Item_t item ) const
 	{
 		return item->getStringValue() == this->strValue_;
 	}
-	
+
 	Item_t UntypedAtomicItem::getEBV() const
 	{
 		bool b = ! ( this->strValue_ == "" );
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
 	}
-	
+
 	xqp_string UntypedAtomicItem::getStringProperty() const
 	{
 		return this->strValue_;
 	}
-	
+
 	xqp_string UntypedAtomicItem::show() const
 	{
 		return "xs:untypedAtomic(" + this->strValue_ + ")";
@@ -134,8 +135,8 @@ namespace xqp
 
 	/* start class StringItem */
 	StringItem::StringItem ( xqp_string value ) : UntypedAtomicItem ( value ) {}
-	
-	StringItem::~StringItem(){}
+
+	StringItem::~StringItem() {}
 
 	TypeCode StringItem::getType() const
 	{
@@ -160,7 +161,7 @@ namespace xqp
 
 	/* start class DecimalItem */
 	DecimalItem::DecimalItem ( long double value ) :value_ ( value ) {}
-
+	DecimalItem::~DecimalItem() {}
 	long double DecimalItem::getDecimalValue() const
 	{
 		return this->value_;
@@ -202,6 +203,7 @@ namespace xqp
 
 	/* start class IntItem */
 	IntItem::IntItem ( int value ) :value_ ( value ) {}
+	IntItem::~IntItem() {}
 
 	int32_t IntItem::getIntValue() const
 	{
@@ -254,6 +256,7 @@ namespace xqp
 
 	/* start class IntegerItem */
 	IntegerItem::IntegerItem ( long long value ) :value_ ( value ) {}
+	IntegerItem::~IntegerItem() {}
 
 	long long IntegerItem::getIntegerValue() const
 	{
@@ -301,6 +304,7 @@ namespace xqp
 
 	/* start class BooleanItem */
 	BooleanItem::BooleanItem ( bool value ) :value_ ( value ) {}
+	BooleanItem::~BooleanItem() {}
 
 	bool BooleanItem::getBooleanValue() const
 	{

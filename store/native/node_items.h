@@ -31,15 +31,16 @@ namespace xqp
 		public:
 			explicit Node ( const Item_t& parent_arg );
 			Node();
+			virtual ~Node();
 
-			bool isNode() const;
-			bool isAtomic() const;
-			Item_t getEBV() const;
+			virtual bool isNode() const;
+			virtual bool isAtomic() const;
+			virtual Item_t getEBV() const;
 			virtual bool equal ( Item_t ) const;
 
 			// Must be overwritten from every node implementation when zorba is schema-aware
 			virtual TypeCode getType() const;
-			Item_t getParent() const;
+			virtual Item_t getParent() const;
 			virtual xqp_string getBaseURI() const;
 			virtual xqp_string getDocumentURI() const;
 	}; /* class Node */
@@ -54,15 +55,16 @@ namespace xqp
 
 		public:
 			DocumentNode ( const xqp_string& baseURI, const xqp_string& documentURI, Iterator_t& children );
+			virtual ~DocumentNode();
 
-			Item_t getAtomizationValue() const;
-			xqp_string getStringProperty() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual xqp_string getStringProperty() const;
 
-			TypeCode getNodeKind() const;
-			xqp_string getBaseURI() const;
-			Iterator_t getChildren() const;
-			xqp_string getDocumentURI() const;
-			Iterator_t getTypedValue() const;
+			virtual TypeCode getNodeKind() const;
+			virtual xqp_string getBaseURI() const;
+			virtual Iterator_t getChildren() const;
+			virtual xqp_string getDocumentURI() const;
+			virtual Iterator_t getTypedValue() const;
 
 			// Used when zorba supports DTD
 // 		xqp_string getUnparsedEntityPublicId() const;
@@ -100,18 +102,20 @@ namespace xqp
 			    bool copy,
 			    bool newTypes
 			);
+			
+			virtual ~ElementNode();
 
-			Item_t getAtomizationValue() const;
-			xqp_string getStringProperty() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual xqp_string getStringProperty() const;
 
-			TypeCode getNodeKind() const;
-			Iterator_t getAttributes() const;
-			Iterator_t getChildren() const;
-			std::set<std::pair<xqp_string, xqp_string> > getNamespaceBindings() const;
-			Iterator_t getNamespaceNodes() const;
-			bool getNilled() const;
-			Item_t getNodeName() const;
-			Iterator_t getTypedValue() const;
+			virtual TypeCode getNodeKind() const;
+			virtual Iterator_t getAttributes() const;
+			virtual Iterator_t getChildren() const;
+			virtual std::set<std::pair<xqp_string, xqp_string> > getNamespaceBindings() const;
+			virtual Iterator_t getNamespaceNodes() const;
+			virtual bool getNilled() const;
+			virtual Item_t getNodeName() const;
+			virtual Iterator_t getTypedValue() const;
 			// Not implemented till types are supported
 // 		Item_t getTypeName() const;
 	}; /* class ElementNode */
@@ -137,16 +141,18 @@ namespace xqp
 			    bool bIsId,
 			    bool bIsIdrefs
 			);
+			
+			virtual ~AttributeNode();
 
-			Item_t getAtomizationValue() const;
-			xqp_string getStringProperty() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual xqp_string getStringProperty() const;
 
-			TypeCode getNodeKind() const;
-			xqp_string getStringValue() const;
-			bool isId() const;
-			bool isIdrefs() const;
-			Item_t getNodeName() const;
-			Iterator_t getTypedValue() const;
+			virtual TypeCode getNodeKind() const;
+			virtual xqp_string getStringValue() const;
+			virtual bool isId() const;
+			virtual bool isIdrefs() const;
+			virtual Item_t getNodeName() const;
+			virtual Iterator_t getTypedValue() const;
 			// Not implemented till types are supported
 // 		Item_t getTypeName() const;
 	}; /* class AttributeNode */
@@ -160,14 +166,15 @@ namespace xqp
 		public:
 			NamespaceNode ( const Item_t& parent, xqp_string& prefix, xqp_string& uri );
 			NamespaceNode ( xqp_string prefix, xqp_string uri );
+			virtual ~NamespaceNode();
 
-			Item_t getAtomizationValue() const;
-			xqp_string getStringProperty() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual xqp_string getStringProperty() const;
 
-			TypeCode getNodeKind() const;
-			Iterator_t getTypedValue() const;
-			xqp_string getNamespace() const;
-			xqp_string getPrefix() const;
+			virtual TypeCode getNodeKind() const;
+			virtual Iterator_t getTypedValue() const;
+			virtual xqp_string getNamespace() const;
+			virtual xqp_string getPrefix() const;
 	}; /* class NamespaceNode */
 
 	class PiNode : public Node
@@ -180,16 +187,17 @@ namespace xqp
 		public:
 			PiNode ( const Item_t& parent, xqp_string& target, xqp_string& content, xqp_string& baseUri );
 			PiNode ( xqp_string& target, xqp_string& content, xqp_string& baseUri );
+			virtual ~PiNode();
 
-			Item_t getAtomizationValue() const;
-			xqp_string getStringProperty() const;
-			xqp_string getBaseURI() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual xqp_string getStringProperty() const;
+			virtual xqp_string getBaseURI() const;
 
-			TypeCode getNodeKind() const;
-			Iterator_t getTypedValue() const;
-			xqp_string getTarget() const;
-			xqp_string getContent() const;
-			xqp_string getStringValue() const;
+			virtual TypeCode getNodeKind() const;
+			virtual Iterator_t getTypedValue() const;
+			virtual xqp_string getTarget() const;
+			virtual xqp_string getContent() const;
+			virtual xqp_string getStringValue() const;
 	}; /* class PiNode */
 
 	class CommentNode : public Node
@@ -200,13 +208,14 @@ namespace xqp
 		public:
 			CommentNode ( const Item_t& parent, xqp_string& content );
 			CommentNode ( xqp_string& content );
+			virtual ~CommentNode();
 
-			Item_t getAtomizationValue() const;
-			xqp_string getStringProperty() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual xqp_string getStringProperty() const;
 
-			TypeCode getNodeKind() const;
-			Iterator_t getTypedValue() const;
-			xqp_string getStringValue() const;
+			virtual TypeCode getNodeKind() const;
+			virtual Iterator_t getTypedValue() const;
+			virtual xqp_string getStringValue() const;
 	}; /* class CommentNode */
 
 	class TextNode : public Node
@@ -217,14 +226,15 @@ namespace xqp
 		public:
 			TextNode ( const Item_t& parent, xqp_string& content );
 			TextNode ( xqp_string& content );
+			virtual ~TextNode();
 
-			TypeCode getType() const;
-			Item_t getAtomizationValue() const;
-			xqp_string getStringProperty() const;
+			virtual TypeCode getType() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual xqp_string getStringProperty() const;
 
-			TypeCode getNodeKind() const;
-			Iterator_t getTypedValue() const;
-			xqp_string getStringValue() const;
+			virtual TypeCode getNodeKind() const;
+			virtual Iterator_t getTypedValue() const;
+			virtual xqp_string getStringValue() const;
 	}; /* class TextNode */
 
 } /* namespace xqp */

@@ -47,7 +47,7 @@ public:
 	rchandle<ft_options> get_ft_options() const { return ft_opt_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 };
 
@@ -83,7 +83,7 @@ public:
 		{ return ft_and_expr_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 };
 
@@ -119,7 +119,7 @@ public:
 		{ return ft_mildnot_expr_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 };
 
@@ -155,7 +155,7 @@ public:
 		{ return ft_unary_expr_hv.end(); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 };
 
@@ -186,7 +186,7 @@ public:
 		{ return anyall_opt; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 };
 
@@ -228,7 +228,7 @@ public:
 	rchandle<ft_expr> get_selection() const { return selection_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 };
 
@@ -260,7 +260,7 @@ public:
 		{ return not_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	virtual std::ostream& put(std::ostream&) const;
 
 };
 

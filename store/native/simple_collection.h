@@ -15,14 +15,14 @@ namespace xqp
 	{
 		public:
 			SimpleCollection();
-			~SimpleCollection();
+			virtual ~SimpleCollection();
 
-			Iterator_t getIterator ( bool isNeeded );
-			void addToCollection(Item_t item, int32_t position = -1);
-			void addToCollection(Iterator_t& items, int32_t position = -1);
-			void addToCollection(std::iostream& stream, int32_t position = -1);
-			void deleteFromCollection ( int32_t position );
-			Item_t getURI();
+			virtual Iterator_t getIterator ( bool isNeeded );
+			virtual void addToCollection(Item_t item, int32_t position = -1);
+			virtual void addToCollection(Iterator_t& items, int32_t position = -1);
+			virtual void addToCollection(std::iostream& stream, int32_t position = -1);
+			virtual void deleteFromCollection ( int32_t position );
+			virtual Item_t getURI();
 	}; /* class SimpleCollection */
 } /* namespace xqp */
 

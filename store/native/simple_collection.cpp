@@ -27,10 +27,10 @@ namespace xqp
 	void SimpleCollection::addToCollection ( Item_t item, int32_t position )
 	{
 	}
-	void SimpleCollection::addToCollection(Iterator_t& items, int32_t position)
+	void SimpleCollection::addToCollection ( Iterator_t& items, int32_t position )
 	{
 	}
-	void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
+	void SimpleCollection::addToCollection ( std::iostream& stream, int32_t position )
 	{
 	}
 	void SimpleCollection::deleteFromCollection ( int32_t position )

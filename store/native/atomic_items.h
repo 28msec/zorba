@@ -19,11 +19,12 @@ namespace xqp
 
 	class AtomicItem : public Item
 	{
-	public:
+		public:
+			virtual ~AtomicItem();
 			bool isNode() const;
 			bool isAtomic() const;
-			
-			Iterator_t getTypedValue() const;
+
+			virtual Iterator_t getTypedValue() const;
 	}; /* class AtomicItem */
 
 	class QNameItem : public AtomicItem
@@ -35,21 +36,22 @@ namespace xqp
 
 		public:
 			QNameItem ( xqp_string, xqp_string, xqp_string );
+			virtual ~QNameItem();
 
-			xqp_string getNamespace() const;
-			xqp_string getPrefix() const;
-			xqp_string getLocalName() const;
-			qnamekey_t getQNameKey( ) const;
+			virtual xqp_string getNamespace() const;
+			virtual xqp_string getPrefix() const;
+			virtual xqp_string getLocalName() const;
+			virtual qnamekey_t getQNameKey( ) const;
 
-			sequence_type_t getType( ) const;
-			Item_t getAtomizationValue( ) const;
-			bool equals ( Item_t ) const;
-			Item_t getEBV( ) const;
-			xqp_string getStringProperty( ) const;
+			virtual TypeCode getType( ) const;
+			virtual Item_t getAtomizationValue( ) const;
+			virtual bool equals ( Item_t ) const;
+			virtual Item_t getEBV( ) const;
+			virtual xqp_string getStringProperty( ) const;
 
-			xqp_string show() const;
+			virtual xqp_string show() const;
 	};  /* class QNameItem */
-	
+
 	class UntypedAtomicItem : public AtomicItem
 	{
 		protected:
@@ -58,13 +60,13 @@ namespace xqp
 		public:
 			UntypedAtomicItem ( xqp_string value );
 			virtual ~UntypedAtomicItem();
-			xqp_string getStringValue() const;
+			virtual xqp_string getStringValue() const;
 
 			virtual sequence_type_t getType( ) const;
 			virtual Item_t getAtomizationValue( ) const;
 			virtual bool equals ( Item_t ) const;
-			Item_t getEBV( ) const;
-			xqp_string getStringProperty( ) const;
+			virtual Item_t getEBV( ) const;
+			virtual xqp_string getStringProperty( ) const;
 
 			virtual xqp_string show() const;
 	}; /* class UntypedAtomicItem */
@@ -75,11 +77,11 @@ namespace xqp
 			StringItem ( xqp_string value );
 			virtual ~StringItem();
 
-			sequence_type_t getType( ) const;
-			Item_t getAtomizationValue( ) const;
-			bool equals ( Item_t ) const;
+			virtual TypeCode getType( ) const;
+			virtual Item_t getAtomizationValue( ) const;
+			virtual bool equals ( Item_t ) const;
 
-			xqp_string show() const;
+			virtual xqp_string show() const;
 	}; /* class StringItem */
 
 
@@ -90,15 +92,16 @@ namespace xqp
 
 		public:
 			DecimalItem ( long double value );
-			long double getDecimalValue() const;
+			virtual ~DecimalItem();
+			virtual long double getDecimalValue() const;
 
-			sequence_type_t getType( ) const;
-			Item_t getAtomizationValue( ) const;
-			bool equals ( Item_t ) const;
-			Item_t getEBV( ) const;
-			xqp_string getStringProperty( ) const;
+			virtual TypeCode getType( ) const;
+			virtual Item_t getAtomizationValue( ) const;
+			virtual bool equals ( Item_t ) const;
+			virtual Item_t getEBV( ) const;
+			virtual xqp_string getStringProperty( ) const;
 
-			xqp_string show() const;
+			virtual xqp_string show() const;
 	}; /* class DecimalItem */
 
 	class IntItem : public AtomicItem
@@ -108,17 +111,18 @@ namespace xqp
 
 		public:
 			IntItem ( int value );
-			int32_t getIntValue() const;
-			long long getIntegerValue() const;
-			long double getDecimalValue() const;
+			virtual ~IntItem();
+			virtual int32_t getIntValue() const;
+			virtual long long getIntegerValue() const;
+			virtual long double getDecimalValue() const;
 
-			sequence_type_t getType( ) const;
-			Item_t getAtomizationValue( ) const;
-			bool equals ( Item_t ) const;
-			Item_t getEBV( ) const;
-			xqp_string getStringProperty() const;
+			virtual TypeCode getType( ) const;
+			virtual Item_t getAtomizationValue( ) const;
+			virtual bool equals ( Item_t ) const;
+			virtual Item_t getEBV( ) const;
+			virtual xqp_string getStringProperty() const;
 
-			xqp_string show() const;
+			virtual xqp_string show() const;
 	}; /* class IntItem */
 
 	class IntegerItem : public AtomicItem
@@ -127,16 +131,17 @@ namespace xqp
 			long long value_;
 		public:
 			IntegerItem ( long long value );
-			long long getIntegerValue() const;
-			long double getDecimalValue() const;
+			virtual ~IntegerItem();
+			virtual long long getIntegerValue() const;
+			virtual long double getDecimalValue() const;
 
-			sequence_type_t getType() const;
-			Item_t getAtomizationValue( ) const;
-			bool equals ( Item_t ) const;
-			Item_t getEBV( ) const;
-			xqp_string getStringProperty() const;
+			virtual TypeCode getType() const;
+			virtual Item_t getAtomizationValue( ) const;
+			virtual bool equals ( Item_t ) const;
+			virtual Item_t getEBV( ) const;
+			virtual xqp_string getStringProperty() const;
 
-			xqp_string show() const;
+			virtual xqp_string show() const;
 	}; /* class IntegerItem */
 
 	class BooleanItem : public AtomicItem
@@ -146,15 +151,16 @@ namespace xqp
 
 		public:
 			BooleanItem ( bool value );
-			bool getBooleanValue() const;
+			virtual ~BooleanItem();
+			virtual bool getBooleanValue() const;
 
-			sequence_type_t getType() const;
-			Item_t getAtomizationValue() const;
-			bool equals ( Item_t ) const;
-			Item_t getEBV( ) const;
-			xqp_string getStringProperty() const;
+			virtual TypeCode getType() const;
+			virtual Item_t getAtomizationValue() const;
+			virtual bool equals ( Item_t ) const;
+			virtual Item_t getEBV( ) const;
+			virtual xqp_string getStringProperty() const;
 
-			xqp_string show() const;
+			virtual xqp_string show() const;
 	}; /* class BooleanItem */
 
 } /* namespace xqp */

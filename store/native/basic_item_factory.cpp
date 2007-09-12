@@ -12,6 +12,8 @@
 
 namespace xqp
 {
+	BasicItemFactory::~BasicItemFactory(){}
+
 	Item_t BasicItemFactory::createUntypedAtomic( const xqp_string& value)
 	{
 		return new UntypedAtomicItem(value);

@@ -48,7 +48,7 @@ namespace xqp
 
 	TypeCode sequence_type::getNumericalOpResultType ( TypeCode type0, TypeCode type1 )
 	{
-		if ( type0 == xs_untypedAtomicValue || type1 == xs_untypedAtomicValue )
+		if ( type0 == xs_untypedAtomicValue || type0 == xs_anyType || type1 == xs_untypedAtomicValue || type1 == xs_anyType )
 			return xs_double;
 
 		if ( type0 == xs_double || type1 == xs_double )
@@ -78,9 +78,9 @@ namespace xqp
 		if (type0 == type1) 
 			return true;
 		
-		if ((type0 == xs_string || type0 == xs_untypedAtomicValue || type0 == xs_anyURI 
+		if ((type0 == xs_string || type0 == xs_anyType || type0 == xs_untypedAtomicValue || type0 == xs_anyURI 
 				|| type0 == xs_untypedValue)
-			&& (type1 == xs_string || type1 == xs_untypedAtomicValue || type1 == xs_anyURI 
+			&& (type1 == xs_string || type1 == xs_anyType || type1 == xs_untypedAtomicValue || type1 == xs_anyURI 
 				|| type1 == xs_untypedValue)) {
 			return true;
 		}

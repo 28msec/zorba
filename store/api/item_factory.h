@@ -20,11 +20,11 @@
 
 namespace xqp
 {
-	class Item;
-	typedef rchandle<Item> Item_t;
 	typedef std::string xqp_string;
-	class BasicIterator;
-	typedef rchandle<BasicIterator> Iterator_t;
+	template <class Object> class rchandle;
+
+	typedef rchandle<class Item> Item_t;
+	typedef rchandle<class BasicIterator> Iterator_t;
 	
 	class ItemFactory : public rcobject
 	{
