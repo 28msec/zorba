@@ -21,10 +21,10 @@ namespace xqp {
 
 /*______________________________________________________________________
 |  
-|	By convention argv[0] = return type
-|	              argv[1] = first input argument type
-|	              argv[2] = second input argument type
-|	               ...     =  ...                         
+|	By convention, argv[0]    = first input argument type
+|	               argv[1]    = second input argument type
+|	                ...       =  ...  
+|                argv[last] = return type                      
 |_______________________________________________________________________*/
 
 class context;
