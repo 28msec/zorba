@@ -31,7 +31,7 @@ namespace xqp
 
 	/** Manages XDM Instances 
 		*/
-	class Store
+	class Store : public rcobject
 	{
 	public:
 		virtual ~Store(){}

@@ -37,7 +37,7 @@ ft_expr::~ft_expr()
 {
 }
 
-ostream& ft_expr::put(ostream& os,context * ctx_p) const
+ostream& ft_expr::put(ostream& os) const
 {
 	return os << "ft_expr[]\n";
 }
@@ -57,7 +57,7 @@ ft_or_expr::~ft_or_expr()
 {
 }
 
-ostream& ft_or_expr::put(ostream& os,context * ctx_p) const
+ostream& ft_or_expr::put(ostream& os) const
 {
 	return os << "ft_or_expr[]\n";
 }
@@ -77,7 +77,7 @@ ft_and_expr::~ft_and_expr()
 {
 }
 
-ostream& ft_and_expr::put(ostream& os,context * ctx_p) const
+ostream& ft_and_expr::put(ostream& os) const
 {
 	return os << "ft_and_expr[]\n";
 }
@@ -97,7 +97,7 @@ ft_mildnot_expr::~ft_mildnot_expr()
 {
 }
 
-ostream& ft_mildnot_expr::put(ostream& os,context * ctx_p) const
+ostream& ft_mildnot_expr::put(ostream& os) const
 {
 	return os << "ft_mildnot_expr[]\n";
 }
@@ -121,7 +121,7 @@ ft_unarynot_expr::~ft_unarynot_expr()
 {
 }
 
-ostream& ft_unarynot_expr::put(ostream& os,context * ctx_p) const
+ostream& ft_unarynot_expr::put(ostream& os) const
 {
 	return os << "ft_unarynot_expr[]\n";
 }
@@ -158,7 +158,7 @@ ft_words_selection_expr::~ft_words_selection_expr()
 {
 }
 
-ostream& ft_words_selection_expr::put(ostream& os,context * ctx_p) const
+ostream& ft_words_selection_expr::put(ostream& os) const
 {
 	return os << "ft_words_selection_expr[]\n";
 }
@@ -182,7 +182,7 @@ ft_words_expr::~ft_words_expr()
 {
 }
 
-ostream& ft_words_expr::put(ostream& os,context * ctx_p) const
+ostream& ft_words_expr::put(ostream& os) const
 {
 	return os << "ft_words_expr[]\n";
 }

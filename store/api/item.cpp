@@ -15,6 +15,7 @@
 
 namespace xqp
 {
+	Item::~Item(){}
 
 	/* begin class Item */
 	void Item::showError() const

@@ -31,6 +31,7 @@ zorba::zorba()
 :
 // 	theDataManager(NULL),
 	theValueFactory(NULL),
+	theStore(NULL),
 	theStaticContext(NULL),
 	theDynamicContext(NULL),
 	error_manager(NULL)
@@ -40,12 +41,14 @@ zorba::zorba()
 zorba::zorba(
 // 	rchandle<data_manager> dataManager,
 	rchandle<ItemFactory> valueFactory,
+	rchandle<Store> store,
 	rchandle<static_context> staticContext,
 	rchandle<dynamic_context> dynamicContext,
 	rchandle<ZorbaErrorAlerts> zorbaAlerts)
 :
 // 	theDataManager(dataManager),
 	theValueFactory(valueFactory),
+	theStore(store),
 	theStaticContext(staticContext),
 	theDynamicContext(dynamicContext),
 	error_manager(zorbaAlerts)

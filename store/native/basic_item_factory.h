@@ -3,7 +3,7 @@
  *  $Id: basic_item_factory.h,v 1.1 2007/08/28 09:54:59 $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf, Donald Kossmann, Tim Kraska
+ *  Author: David Graf (david.graf@28msec.com), Donald Kossmann, Tim Kraska
  *
  */
 
@@ -17,6 +17,7 @@ namespace xqp
 	class BasicItemFactory : public ItemFactory
 	{
 		public:
+			Item_t createUntypedAtomic( const xqp_string& value);
 			Item_t createQName ( xqp_string namespace_p, xqp_string prefix, xqp_string localName );
 			Item_t createAnyURI ( const xqp_string& value );
 			Item_t createBase64Binary ( xqp_base64Binary value );
@@ -87,22 +88,24 @@ namespace xqp
 			);
 			Item_t createElementNode (
 			    const Item_t& name,
-			    const Item_t& type,
-			    Iterator_t children,
-			    Iterator_t attributes,
+			    TypeCode type,
+			    Iterator_t& children,
+			    Iterator_t& attributes,
+			    Iterator_t& namespaces,
 			    bool copy,
 			    bool newTypes,
 			    bool createId = false
 			);
+
 			Item_t createDocumentNode (
 			    xqp_string baseURI,
 			    xqp_string docURI,
-			    Iterator_t children,
+			    Iterator_t& children,
 			    bool createId = false
 			);
 			Item_t createAttributeNode (
 			    const Item_t& name,
-			    const Item_t& type,
+			    TypeCode type,
 			    const Item_t& lexicalValue,
 			    const Item_t& typedValue,
 			    bool createId = false

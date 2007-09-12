@@ -229,8 +229,8 @@ void ZorbaErrorAlerts::user_error (Item* err_qname,///optional
 		std::string	err_uri;
 		std::string	err_localname;
 
-		err_uri = err_qname->getQNameNamespace();
-		err_localname = err_qname->getQNameLocalName();
+		err_uri = err_qname->getNamespace();
+		err_localname = err_qname->getLocalName();
 
 		if(err_uri == "http://www.w3.org/2005/xqt-errors")///a standard error
 		{

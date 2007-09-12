@@ -3,7 +3,7 @@
  *  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf, Donald Kossmann, Tim Kraska
+ *  Author: David Graf (david.graf@28msec.com), Donald Kossmann, Tim Kraska
  *
  */
 
@@ -19,8 +19,11 @@ namespace xqp
 
 	class AtomicItem : public Item
 	{
+	public:
 			bool isNode() const;
 			bool isAtomic() const;
+			
+			Iterator_t getTypedValue() const;
 	}; /* class AtomicItem */
 
 	class QNameItem : public AtomicItem
@@ -33,35 +36,49 @@ namespace xqp
 		public:
 			QNameItem ( xqp_string, xqp_string, xqp_string );
 
-			xqp_string getQNameNamespace() const;
-			xqp_string getQNamePrefix() const;
-			xqp_string getQNameLocalName() const;
+			xqp_string getNamespace() const;
+			xqp_string getPrefix() const;
+			xqp_string getLocalName() const;
 			qnamekey_t getQNameKey( ) const;
 
 			sequence_type_t getType( ) const;
 			Item_t getAtomizationValue( ) const;
-			bool equals(Item_t ) const;
+			bool equals ( Item_t ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty( ) const;
-			
+
 			xqp_string show() const;
 	};  /* class QNameItem */
-
-	class StringItem : public AtomicItem
+	
+	class UntypedAtomicItem : public AtomicItem
 	{
-		private:
+		protected:
 			xqp_string strValue_;
 
 		public:
-			StringItem ( xqp_string value );
+			UntypedAtomicItem ( xqp_string value );
+			virtual ~UntypedAtomicItem();
 			xqp_string getStringValue() const;
+
+			virtual sequence_type_t getType( ) const;
+			virtual Item_t getAtomizationValue( ) const;
+			virtual bool equals ( Item_t ) const;
+			Item_t getEBV( ) const;
+			xqp_string getStringProperty( ) const;
+
+			virtual xqp_string show() const;
+	}; /* class UntypedAtomicItem */
+
+	class StringItem : public UntypedAtomicItem
+	{
+		public:
+			StringItem ( xqp_string value );
+			virtual ~StringItem();
 
 			sequence_type_t getType( ) const;
 			Item_t getAtomizationValue( ) const;
-			bool equals(Item_t ) const;
-			Item_t getEBV( ) const;
-			xqp_string getStringProperty( ) const;
-			
+			bool equals ( Item_t ) const;
+
 			xqp_string show() const;
 	}; /* class StringItem */
 
@@ -77,10 +94,10 @@ namespace xqp
 
 			sequence_type_t getType( ) const;
 			Item_t getAtomizationValue( ) const;
-			bool equals(Item_t ) const;
+			bool equals ( Item_t ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty( ) const;
-			
+
 			xqp_string show() const;
 	}; /* class DecimalItem */
 
@@ -97,46 +114,46 @@ namespace xqp
 
 			sequence_type_t getType( ) const;
 			Item_t getAtomizationValue( ) const;
-			bool equals(Item_t ) const;
+			bool equals ( Item_t ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty() const;
-			
+
 			xqp_string show() const;
 	}; /* class IntItem */
-	
+
 	class IntegerItem : public AtomicItem
 	{
 		protected:
 			long long value_;
 		public:
-			IntegerItem( long long value );
+			IntegerItem ( long long value );
 			long long getIntegerValue() const;
 			long double getDecimalValue() const;
-			
+
 			sequence_type_t getType() const;
 			Item_t getAtomizationValue( ) const;
-			bool equals(Item_t ) const;
+			bool equals ( Item_t ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty() const;
-			
+
 			xqp_string show() const;
 	}; /* class IntegerItem */
-	
+
 	class BooleanItem : public AtomicItem
 	{
 		private:
 			bool value_;
-			
+
 		public:
 			BooleanItem ( bool value );
 			bool getBooleanValue() const;
-			
+
 			sequence_type_t getType() const;
 			Item_t getAtomizationValue() const;
-			bool equals(Item_t ) const;
+			bool equals ( Item_t ) const;
 			Item_t getEBV( ) const;
 			xqp_string getStringProperty() const;
-			
+
 			xqp_string show() const;
 	}; /* class BooleanItem */
 

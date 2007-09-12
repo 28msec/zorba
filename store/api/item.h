@@ -7,9 +7,6 @@
  *
  */
  
-/* TODO
-- Implementation of xqp_string
-*/
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
 #include "types/representations.h"
@@ -20,6 +17,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <set>
+
 
 #ifndef XQP_ITEM_H
 #define XQP_ITEM_H
@@ -27,7 +26,6 @@
 
 namespace xqp {
 
-typedef TypeCode sequence_type_t;
 typedef uint64_t qnamekey_t;
 class Item;
 typedef rchandle<Item> Item_t;
@@ -49,11 +47,12 @@ private:
 	void showError() const;
 	
 public:
+	~Item();
 	/* -------------------   General Methods for Items ------------------------------ */
 	/**
 	 *  @return  (dynamic) XQuery type of the item
 	 */
-	virtual sequence_type_t getType( ) const = 0;
+	virtual TypeCode getType( ) const = 0;
 	
 	/**
 	 *  Carries out Atomization on the item. Although atomization can be carried
@@ -326,7 +325,7 @@ public:
 		* processing instruction node, comment node, text node
 	 	*  @return  uri?
 	 	*/ 		 
-	virtual Item_t getBaseURI() const { 
+	virtual xqp_string getBaseURI() const { 
 		this->showError();
 		return NULL;
 	}
@@ -342,12 +341,12 @@ public:
 	/** Accessor for document node
 	 *  @return  uri?
 	 */ 	
-	virtual Item_t getDocumentURI() const { 
+	virtual xqp_string getDocumentURI() const { 
 		this->showError();
 		return NULL;
 	}
 	
-	/** Accessor for element node, attribute node
+	/** Accessor for attribute node
 	  * @return isId: Used for attribute items (defines the attribute an id?)
 	  */
 	virtual bool isId() const {
@@ -355,7 +354,7 @@ public:
 		return false;
 	}
 	
-	/** Accessor for element node, attribute node
+	/** Accessor for attribute node
 	  * @return isIdrefs Used for attribute (defines the attribute an idref?))
 	  */
 	virtual bool isIdrefs() const {
@@ -364,11 +363,12 @@ public:
 	}
 
 	/** Accessor for element node
-	 *  @return  node*
+	 *  @return  returns prefix namespace pairs
 	 */   
-	virtual Iterator_t getNamespaceBindings() const { 
+	virtual std::set<std::pair<std::string, std::string> > getNamespaceBindings() const { 
 		this->showError();
-		return NULL;
+		std::set<std::pair<std::string, std::string> > set;
+		return set;
 	}
 
 	/** Accessor for element node
@@ -382,21 +382,21 @@ public:
 	/** Accessor for element node
 	 *  @return  boolean?
 	 */
-	virtual Item_t getNilled() const { 
+	virtual bool getNilled() const { 
 		this->showError();
-		return NULL;
+		return false;
 	}
 
 	/** Accessor for document node, element node, attribute node, namespace node, 
 	 *	processing instruction node, comment node, text node
-	 *  @return  string
+	 *  @return  TypeCode of the current node
 	 */
-	virtual Item_t getNodeKind() const { 
+	virtual TypeCode getNodeKind() const { 
 		this->showError();
-		return NULL;
+		return xs_anyType;
 	}
 
-	/** Accessor for element node, attribute node, namespace node, processing instruction node
+	/** Accessor for element node, attribute node
 	 *  @return qname?
 	 */
 	virtual Item_t getNodeName() const { 
@@ -433,18 +433,18 @@ public:
 		return NULL;
 	}
 	
-		/** Accessor for xs:qname
+		/** Accessor for xs:qname, namespace node
 			* @return namespace uri
 			*/
-	virtual xqp_string getQNameNamespace() const {
+	virtual xqp_string getNamespace() const {
 		this->showError();
 		return NULL;
 	}
 	
-	/** Accessor for xs:qname
+	/** Accessor for xs:qname, namespace node
 		* @return namespace prefix
 		*/
-	virtual xqp_string getQNamePrefix() const {
+	virtual xqp_string getPrefix() const {
 		this->showError();
 		return NULL;
 	}
@@ -452,7 +452,7 @@ public:
 	/** Accessor for xs:qname
 		* @return namespace local name
 		*/
-	virtual xqp_string getQNameLocalName() const {
+	virtual xqp_string getLocalName() const {
 		this->showError();
 		return NULL;
 	}
@@ -468,7 +468,16 @@ public:
 	/** Accessor for document node
 		* @return unparsed entity system id
 		*/
-	virtual xqp_string getUnparsedEntitySystemid() const {
+	virtual xqp_string getUnparsedEntitySystemId() const {
+		this->showError();
+		return NULL;
+	}
+	
+	/**
+	 *  Accessor for processing instruction node
+	 * @return target of the PI
+	 */
+	virtual xqp_string getTarget() const {
 		this->showError();
 		return NULL;
 	}

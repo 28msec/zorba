@@ -108,7 +108,7 @@ public:
 public:
 	BasicIterator(yy::location _loc);
 	BasicIterator(const BasicIterator& it);
-	~BasicIterator();
+	virtual ~BasicIterator();
 
 public:
 
@@ -149,7 +149,7 @@ protected:
 		subIterator->releaseResources();
 	}
 
-	virtual std::ostream& _show(std::ostream& os) {
+	virtual std::ostream& _show(std::ostream& os) const {
 		return os;
 	}
 };

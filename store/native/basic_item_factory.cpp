@@ -3,7 +3,7 @@
  *  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf, Donald Kossmann, Tim Kraska
+ *  Author: David Graf (david.graf@28msec.com), Donald Kossmann, Tim Kraska
  *`
  */
 
@@ -12,6 +12,11 @@
 
 namespace xqp
 {
+	Item_t BasicItemFactory::createUntypedAtomic( const xqp_string& value)
+	{
+		return new UntypedAtomicItem(value);
+	}
+	
 	Item_t BasicItemFactory::createQName ( xqp_string namespace_p, xqp_string prefix, xqp_string localName )
 	{
 		return new QNameItem ( namespace_p, prefix, localName );
@@ -80,8 +85,9 @@ namespace xqp
 	Item_t BasicItemFactory::createNonPositiveInteger ( int32_t value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createPositiveInteger ( uint32_t value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createString ( xqp_string value ) { 
-		return new StringItem ( value ); 
+	Item_t BasicItemFactory::createString ( xqp_string value )
+	{
+		return new StringItem ( value );
 	}
 	Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }
@@ -94,21 +100,22 @@ namespace xqp
 	Item_t BasicItemFactory::createDocumentNode (
 	    xqp_string baseURI,
 	    xqp_string docURI,
-	    Iterator_t children,
+	    Iterator_t& children,
 	    bool createId
 	) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createElementNode (
 	    const Item_t& name,
-	    const Item_t& type,
-	    Iterator_t children,
-	    Iterator_t attributes,
+	    TypeCode type,
+	    Iterator_t& children,
+	    Iterator_t& attributes,
+	    Iterator_t& namespaces,
 	    bool copy,
 	    bool newTypes,
 	    bool createId
 	) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createAttributeNode (
 	    const Item_t& name,
-	    const Item_t& type,
+	    TypeCode type,
 	    const Item_t& lexicalValue,
 	    const Item_t& typedValue,
 	    bool createId

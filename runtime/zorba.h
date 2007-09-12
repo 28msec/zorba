@@ -33,6 +33,7 @@ class zorba : public rcobject
 protected:
 // 	rchandle<data_manager> theDataManager;
 	rchandle<ItemFactory> theValueFactory;  // move to data_manager
+	rchandle<Store> theStore;
 	rchandle<static_context> theStaticContext;
 	rchandle<dynamic_context> theDynamicContext;
 	// requestor identity, for concurrency
@@ -53,6 +54,7 @@ public:
 	zorba(
 // 		rchandle<data_manager>,
 		rchandle<ItemFactory>,
+		rchandle<Store>,
 		rchandle<static_context>,
 		rchandle<dynamic_context>,
 		rchandle<ZorbaErrorAlerts>);
@@ -62,6 +64,7 @@ public:
 public:
 // 	data_manager* get_data_manager() const { return &*theDataManager; }
 	ItemFactory* getItemFactory() const { return &*theValueFactory; }
+	Store* getStore() const { return &*theStore; }
 	static_context* get_static_context() const { return &*theStaticContext; }
 	dynamic_context* get_dynamic_context() const { return &*theDynamicContext; }
 	//daniel

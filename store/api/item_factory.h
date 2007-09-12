@@ -16,6 +16,7 @@
 
 #include "util/rchandle.h"
 #include "types/representations.h"
+#include "types/typecodes.h"
 
 namespace xqp
 {
@@ -31,6 +32,12 @@ namespace xqp
 			virtual ~ItemFactory() {}
 
 		public:
+			
+			/**
+			 * @param value string value of the untyped atomic
+			 */
+			virtual Item_t createUntypedAtomic( const xqp_string& value) = 0;
+			
 			/**
 			* @param namespace namespace of the qname
 			* @param prefix prefix of the qname
@@ -399,7 +406,7 @@ namespace xqp
 			virtual Item_t createDocumentNode (
 			    xqp_string baseURI,
 			    xqp_string docURI,
-			    Iterator_t children,
+			    Iterator_t& children,
 			    bool createId = false
 			) = 0;
 
@@ -407,16 +414,18 @@ namespace xqp
 			  * @param name QName which contains the name of the element
 			  * @param type QName which contains the type of the element
 			  * @param children Content of the element
-			  * @param attributes Attribute of the element
+			  * @param attributes Attributes of the element
+			  * @param namespaces Namespace definitions of this element
 			  * @param copy Should the children of the element be copied? (for element construction)
-			  * @param newTypes
+			  * @param newTypes Have the children to be checked agains the type of the parent?
 			  * @param createId Does the created item need an ID (default == false)?
 			  */
 			virtual Item_t createElementNode (
 			    const Item_t& name,
-			    const Item_t& type,
-			    Iterator_t children,
-			    Iterator_t attributes,
+			    TypeCode type,
+			    Iterator_t& children,
+			    Iterator_t& attributes,
+			    Iterator_t& namespaces,
 			    bool copy,
 			    bool newTypes,
 			    bool createId = false
@@ -433,7 +442,7 @@ namespace xqp
 			  */
 			virtual Item_t createAttributeNode (
 			    const Item_t& name,
-			    const Item_t& type,
+			    TypeCode type,
 			    const Item_t& lexicalValue,
 			    const Item_t& typedValue,
 			    bool createId = false

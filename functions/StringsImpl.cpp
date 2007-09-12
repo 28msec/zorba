@@ -205,7 +205,7 @@ Item_t CodepointEqualIterator::nextImpl(){
 	{
 		vLength = (item0->getStringValue().length());
 		
-		if(vLength != item1->getStringValue().length())
+		if(int32_t(vLength) != int32_t(item1->getStringValue().length()))
 			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
 		else
 		{

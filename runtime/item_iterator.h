@@ -54,6 +54,21 @@ public:		// "treat as" operators
 class SingletonIterator;
 typedef rchandle<SingletonIterator> singleton_t;
 
+/** Class represents an empty sequence.
+	*/
+class EmptyIterator : public Batcher<EmptyIterator> {
+public:
+	EmptyIterator(yy::location loc) : Batcher<EmptyIterator>(loc) {}
+	EmptyIterator(const EmptyIterator& it) : Batcher<EmptyIterator>(it) {}
+	~EmptyIterator() {}
+	
+	Item_t nextImpl() {
+		return NULL;
+	}
+	void resetImpl() { }
+	void releaseResourcesImpl(){ }
+}; /* class EmptyIterator */
+
 /*_____________________________________________________________
 |
 |	literals and for_var bindings

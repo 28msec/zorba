@@ -32,6 +32,8 @@ OldIterator::OldIterator(){
 	
 }
 
+OldIterator::OldIterator(const OldIterator& it):rcobject(it){}
+
 OldIterator::~OldIterator() {}
 
 void OldIterator::open() {
@@ -92,6 +94,7 @@ BasicIterator::BasicIterator(yy::location _loc) :
 	zorp = zorba::getZorbaForCurrentThread();
 }
 BasicIterator::BasicIterator(const BasicIterator& it) :
+	OldIterator(it),
 	loc(it.loc) {
 	this->current_line = 0;
 	zorp = zorba::getZorbaForCurrentThread();

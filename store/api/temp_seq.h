@@ -120,6 +120,12 @@ namespace xqp {
 		*/
 		virtual void purgeItem(int32_t position) = 0;
 		
+		
+		/**
+		 * @return Does this TempSeq save an empty sequence? 
+		 */
+		virtual bool empty() = 0;
+		
 	}; /* class XDMInstance */
 } /* namespace xqp */
 
