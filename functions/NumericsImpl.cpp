@@ -36,8 +36,6 @@ namespace xqp
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
 	}
-	
-	template class ArithmeticIterator<AddOperations>;
 	/* end class AddOperations */
 	
 	/* start class SubtractOperations */
@@ -60,8 +58,6 @@ namespace xqp
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
 	}
-	
-	template class ArithmeticIterator<SubtractOperations>;
 	/* end class SubtractOperations */
 	
 	/* start class MultiplyOperations */
@@ -84,8 +80,6 @@ namespace xqp
 	{
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
 	}
-	
-	template class ArithmeticIterator<MultiplyOperations>;
 	/* end class MultiplyOperations */
 	
 	/* start class DivideOperations */
@@ -130,8 +124,6 @@ namespace xqp
 		}
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( ll0 / ll1 );
 	}
-	
-	template class ArithmeticIterator<DivideOperations>;
 	/* end class DivideOperations */
 	
 	/* start class IntegerDivideOperations */
@@ -206,8 +198,6 @@ namespace xqp
 			ll0 / ll0
 		);
 	}
-	
-	template class ArithmeticIterator<IntegerDivideOperations>;
 	/* end class IntegerDivideOperations */
 	
 	/* start class ModOperations */
@@ -252,8 +242,6 @@ namespace xqp
 		}
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(ll0 % ll1);
 	}
-	
-	template class ArithmeticIterator<ModOperations>;
 	/* end class ModOperations */
 
 	/* begin class ArithmeticIterator */
@@ -313,6 +301,14 @@ namespace xqp
 	void ArithmeticIterator<Operations>::deconstructor() {
 		delete this->genericCast;
 	}
+	
+	/* instantiate ArithmeticIterator for all types */
+	template class ArithmeticIterator<AddOperations>;
+	template class ArithmeticIterator<SubtractOperations>;
+	template class ArithmeticIterator<MultiplyOperations>;
+	template class ArithmeticIterator<DivideOperations>;
+	template class ArithmeticIterator<IntegerDivideOperations>;
+	template class ArithmeticIterator<ModOperations>;
 	/* end class ArithmeticIterator */
 
 	/*______________________________________________________________________
