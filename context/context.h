@@ -50,6 +50,7 @@ protected:
 	fxhash64map<Iterator_t> keymap;
 
 public: // context interface
+  context (context *_parent = NULL) : parent_h (_parent) {}
 	rchandle<context> parent() const { return parent_h; }
 
 	Iterator_t context_value(qnamekey_t key) const

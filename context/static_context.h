@@ -67,11 +67,11 @@ protected:
 	static qnamekey_t inherit_mode_key;
 	static qnamekey_t preserve_mode_key;
 	static qnamekey_t baseuri_key;
-
+  
 public:
 	static void init(ItemFactory* _itemFactory_p);
-	static_context(ItemFactory* _itemFactory_p)
-		: itemFactory_p(_itemFactory_p) {}
+  static_context(ItemFactory* _itemFactory_p, static_context *_parent = NULL)
+		: context (_parent), itemFactory_p(_itemFactory_p) {}
 
 	~static_context() {}
 
