@@ -119,11 +119,12 @@ fxhashmap_test	= \
 
 
 
-BINARIES	= tokenbuf_test rwlock_test hashfun_test hashmap_test \
-	list_test logger_test rchandle_test sorter_test URI_test \
-	utf8_encoder_test file_test mmfile_test fxarray_test \
-	fxvector_test fxcharheap_test fxhashmap_test 
+#BINARIES	= tokenbuf_test rwlock_test hashfun_test hashmap_test \
+#	list_test logger_test rchandle_test sorter_test URI_test \
+#	utf8_encoder_test file_test mmfile_test fxarray_test \
+#	fxvector_test fxcharheap_test fxhashmap_test 
 
+BINARIES 	=
 
 # Include global Makefile rules
 ROOT_PATH	= ..

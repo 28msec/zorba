@@ -5,7 +5,7 @@ SOURCES		=
 trace_handler = \
 	trace_handler.cpp
 
-BINARIES	= trace_handler error_handler
+#BINARIES	= trace_handler error_handler
 
 
 # Include global Makefile rules

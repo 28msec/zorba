@@ -15,7 +15,8 @@ xquery_test	= \
 		xquery_test.cpp
 
 
-BINARIES	= xquery_test
+#BINARIES	= xquery_test
+BINARIES	= 
 
 
 # Include global Makefile rules

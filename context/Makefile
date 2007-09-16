@@ -17,7 +17,8 @@ context_test	= \
 		context_test.cpp
 #		../native_impl/nodestore.cpp \
 
-BINARIES		= context_test
+#BINARIES		= context_test
+BINARIES		= 
 
 
 # Include global Makefile rules

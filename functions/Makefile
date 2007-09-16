@@ -85,7 +85,8 @@ library_test	= \
 		library_test.cpp
 
 
-BINARIES		= function_test Sequences_test Numerics_test library_test 
+#BINARIES		= function_test Sequences_test Numerics_test library_test 
+BINARIES		= 
 
 
 # Include global Makefile rules

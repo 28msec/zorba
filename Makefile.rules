@@ -7,20 +7,27 @@ include $(ROOT_PATH)/Makefile.conf
 
 DEPENDENCIES	=
 
-DF		= $(BUILD_FOLDER)/$(*F)
+DF				= $(BUILD_FOLDER)/$(*F)
 
-EXES		= $(patsubst %,$(BUILD_FOLDER)/%,$(notdir $(BINARIES)))
+EXES			= $(patsubst %,$(BUILD_FOLDER)/%,$(notdir $(BINARIES)))
 
-MAKE_OBJS	= $(foreach target,$(1),$(dir $(target))$(BUILD_FOLDER)/$(notdir $(basename $(target))).$(SUFX))
+MAKE_OBJS		= $(foreach target,$(1),$(dir $(target))$(BUILD_FOLDER)/$(notdir $(basename $(target))).$(SUFX))
 
-PARENT_FOLDER	= $(notdir $(subst /$(BUILD_FOLDER)/,,$(dir $(abspath $(1)))))
+PATH_FROM_ROOT	= $(abspath $(subst $(abspath $(dir $(abspath $(1)))../$(ROOT_PATH)),,$(dir $(abspath $(1))))..)
+PATH_PREFIX		= $(subst /,\/,$(call PATH_FROM_ROOT,$(1)))
 
+define MAKEDEP
+	@sed -e "s/ \([^ \n\t]\+\):/ $$\(ROOT_PATH\)$(call PATH_PREFIX,$(DF))\/\1:/g" \
+	     \
+	     -e "s/ \([^ $$\n\t\\]\+\) / $$\(ROOT_PATH\)$(call PATH_PREFIX,$(DF))\/\1 /g" \
+		 -e "s/ \([^ $$\n\t\\]\+\) / $$\(ROOT_PATH\)$(call PATH_PREFIX,$(DF))\/\1 /g" \
+		 -e "s/ \([^ $$\n\t\\]\+\)$$/ $$\(ROOT_PATH\)$(call PATH_PREFIX,$(DF))\/\1 /g" \
+		 \
+		 -e "s/[^ $$\n\t\/\.]\+\/\.\.\///g" \
+		 -e "s/[^ $$\n\t\/\.]\+\/\.\.\///g" \
+		 -e "s/[^ $$\n\t\/\.]\+\/\.\.\///g" \
+		 < $(DF).d > $(DF).P
 
-define MAKEDEP	
-	@sed -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
-		 -e "s/ \([^/ \n\t\\]\+\) / ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
-		 -e "s/ \([^/ \n\t\\]\+\)$$/ ..\/$(call PARENT_FOLDER,$(DF))\/\1 /g" \
-		 -e "s/\($(BUILD_FOLDER)\/[^/ \n\t\\]\+\):/\1 ..\/$(call PARENT_FOLDER,$(DF))\/\1:/g" < $(DF).d > $(DF).P
 	@rm -f $(DF).d
 endef
 
