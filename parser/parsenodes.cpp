@@ -4081,7 +4081,8 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
 	if( attr_list_h != NULL )
     	attr_list_h->accept(v);
 
-	dir_content_list_h->accept(v);
+	if (dir_content_list_h != NULL)
+		dir_content_list_h->accept(v);
 	v.end_visit(*this); 
 }
 

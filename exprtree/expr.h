@@ -124,17 +124,31 @@ class qname_expr : public rcobject
 {
 protected:
 	yy::location m_loc;
-	std::string m_name;
+	std::string m_prefix;
+	std::string m_local;
 
 public:
-	qname_expr(yy::location const& loc, std::string const& name)
-		: m_loc(loc), m_name(name) {}
-	qname_expr(std::string const& name) : m_name(name) {}
+	qname_expr(yy::location const& loc, std::string const& prefix, std::string const& local)
+		:
+	m_loc(loc), m_prefix(prefix), m_local(local) {}
+	
+	qname_expr(yy::location const& loc, std::string const& name);
+	
+	qname_expr(std::string const& local, std::string const& prefix) 
+		: 
+	m_prefix(prefix), m_local(local){}
+	
+	qname_expr(std::string const& name);
+	
 	~qname_expr() {}
+	
+	static std::pair<std::string, std::string> generatePrefixLocal(std::string const& qname);
 
 public:
-	std::string name() const { return m_name; }
-	std::ostream& put(std::ostream& os) const { return os << m_name; }
+	std::string name() const { return m_prefix == "" ? m_local : m_prefix + ":" + m_local ; }
+	std::string prefix() const { return m_prefix; }
+	std::string local() const { return m_local; }
+	std::ostream& put(std::ostream& os) const { return os << this->name(); }
 
 };
 
@@ -1127,7 +1141,6 @@ public:
 |_______________________________________________________________________*/
 
 
-
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 class doc_expr : public expr
 /*______________________________________________________________________
@@ -1252,16 +1265,16 @@ class text_expr : public expr
 |_______________________________________________________________________*/
 {
 protected:
-	expr_t text_expr_h;
+	std::string text;
 
 public:
 	text_expr(
 		yy::location const&,
-		expr_t);
+		std::string);
 	~text_expr();
 
 public:
-	expr_t get_text_expr() const { return text_expr_h; }
+	std::string get_text() const { return this->text; }
 
 public:
 	void accept(expr_visitor&) const;

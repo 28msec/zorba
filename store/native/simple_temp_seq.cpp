@@ -19,6 +19,7 @@ namespace xqp
 		while ( curItem != NULL )
 		{
 			this->items.push_back ( curItem );
+			curItem = iterator->next();
 		}
 	}
 	SimpleTempSeq::~SimpleTempSeq()

@@ -134,7 +134,7 @@ namespace xqp
 	/* end class UntypedAtomicItem */
 
 	/* start class StringItem */
-	StringItem::StringItem ( xqp_string value ) : UntypedAtomicItem ( value ) {}
+	StringItem::StringItem ( const xqp_string& value ) : UntypedAtomicItem ( value ) {}
 
 	StringItem::~StringItem() {}
 

@@ -12,6 +12,8 @@
 
 #include <string>
 
+#include "../../types/representations.h"
+
 namespace xqp
 {
 
@@ -24,9 +26,6 @@ namespace xqp
 	typedef rchandle<class PUL> PUL_t;
 	class Timetravel;
 	class Requester;
-	
-	// TODO must be replaced by self implemented string
-	typedef std::string xqp_string;
 	
 
 	/** Manages XDM Instances 

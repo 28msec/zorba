@@ -176,7 +176,7 @@ cout << TRACE  << endl;
 
 bool plan_visitor::begin_visit(const elem_expr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
@@ -188,7 +188,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const text_expr& v)
 {
-cout << TRACE << endl;
+cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
@@ -404,7 +404,14 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const elem_expr& v)
 {
-cout << TRACE << endl;
+cout << indent[--depth] << TRACE << endl;
+	Iterator_t contentIter = NULL;
+	if (v.get_content_expr() != NULL)
+		contentIter = pop_itstack();
+	rchandle<qname_expr> qname = v.get_qname();
+	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
+	Iterator_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter);
+	itstack.push(iter);
 }
 
 void plan_visitor::end_visit(const attr_expr& v)
@@ -414,7 +421,10 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const text_expr& v)
 {
-cout << TRACE << endl;
+cout << indent[--depth] << TRACE << endl;
+	Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(v.get_text());
+	Iterator_t text = new SingletonIterator(v.get_loc(), item);
+	itstack.push(text);
 }
 
 void plan_visitor::end_visit(const comment_expr& v)

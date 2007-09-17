@@ -12,6 +12,7 @@
 #define XQP_ATOMIC_ITEMS_H
 
 #include "../api/item.h"
+#include "../../types/representations.h"
 
 namespace xqp
 {
@@ -74,7 +75,7 @@ namespace xqp
 	class StringItem : public UntypedAtomicItem
 	{
 		public:
-			StringItem ( xqp_string value );
+			StringItem ( const xqp_string& value );
 			virtual ~StringItem();
 
 			virtual TypeCode getType( ) const;

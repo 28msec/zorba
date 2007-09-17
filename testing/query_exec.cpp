@@ -9,6 +9,7 @@
 #include "runtime/zorba.h"
 #include "timer.h"
 #include "../store/native/basic_item_factory.h"
+#include "../store/native/simple_store.h"
 
 #include <iostream>
 
@@ -27,6 +28,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	zorba::initializeZorbaEngine();
 	
+	SimpleStore simpleStore;
 	BasicItemFactory basicItemFactory;
 	static_context::init(&basicItemFactory);
 	dynamic_context::init(&basicItemFactory);
@@ -46,7 +48,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	zorp->set_static_context(sctx_p);
 	zorp->set_dynamic_context(dctx_p);
 	zorp->set_error_manager(err_manag);//add the error manager
-	zorp->set_value_factory(&basicItemFactory);
+	zorp->setItemFactory(&basicItemFactory);
+	zorp->setStore(&simpleStore);
 
 	xquery_driver driver(cout);
 	try {

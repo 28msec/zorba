@@ -95,6 +95,36 @@ void expr_list::accept(
 	v.end_visit(*this);
 }
 
+/* begin class qname_expr */
+qname_expr::qname_expr(yy::location const& loc, std::string const& qname)
+	:
+m_loc(loc) {
+	std::pair<std::string, std::string> prefixLocal = qname_expr::generatePrefixLocal(qname);
+	this->m_prefix = prefixLocal.first;
+	this->m_local = prefixLocal.second;
+}
+
+qname_expr::qname_expr(std::string const& qname)
+{
+	std::pair<std::string, std::string> prefixLocal = qname_expr::generatePrefixLocal(qname);
+	this->m_prefix = prefixLocal.first;
+	this->m_local = prefixLocal.second;
+}
+
+std::pair<std::string, std::string> qname_expr::generatePrefixLocal(std::string const& qname) {
+	std::pair<std::string, std::string> val;
+	string::size_type n = qname.find(':');
+	if (n != string::npos) {
+		val.second = qname.substr(n+1);
+		val.first = qname.substr(0, n);
+	} else {
+		val.second = qname;
+		val.first = "";
+	}
+	return val;
+}
+/* end class qname_expr */
+
 
 // [33a]
 
@@ -1063,8 +1093,6 @@ void order_expr::accept(
 
 // [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
 
-
-
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 
 doc_expr::doc_expr(
@@ -1146,14 +1174,18 @@ ostream& elem_expr::put( ostream& os) const
 		os << INDENT << "xmlns:" << ncname << "=\"" << nsuri << "\"\n"; UNDENT;
 	}
 	//d Assert<null_pointer>(content_expr_h!=NULL);
-	Assert(content_expr_h!=NULL);
-	content_expr_h->put(os);
+	if (content_expr_h != NULL )
+		content_expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
 
 void elem_expr::accept(
 	expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
+	if (this->content_expr_h != NULL)
+		this->content_expr_h->accept(v);
+	v.end_visit(*this);
 }
 
 
@@ -1217,10 +1249,10 @@ void attr_expr::accept(
 
 text_expr::text_expr(
 	yy::location const& loc,
-	rchandle<expr> _text_expr_h)
+	std::string text_arg)
 :
 	expr(loc),
-	text_expr_h(_text_expr_h)
+	text(text_arg)
 {
 }
 
@@ -1232,14 +1264,17 @@ ostream& text_expr::put( ostream& os) const
 {
 	os << INDENT << "text_expr[";
 	//d Assert<null_pointer>(text_expr_h!=NULL);
-	Assert(text_expr_h!=NULL);
-	text_expr_h->put(os);
+// 	Assert(text_expr_h!=NULL);
+// 	text_expr_h->put(os);
+	os << INDENT << "text=" << this->text << "\n";
 	return os << OUTDENT << "]\n";
 }
 
 void text_expr::accept(
 	expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
+	v.end_visit(*this);
 }
 
 

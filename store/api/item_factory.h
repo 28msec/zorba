@@ -20,7 +20,6 @@
 
 namespace xqp
 {
-	typedef std::string xqp_string;
 	template <class Object> class rchandle;
 
 	typedef rchandle<class Item> Item_t;
@@ -61,44 +60,44 @@ namespace xqp
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]
 			  * @param value
 			  */
-			virtual Item_t createBoolean ( bool value) = 0;
+			virtual Item_t createBoolean ( xqp_boolean value) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#decimal]
 			  * @param value
 			  */
-			virtual Item_t createDecimal ( long double value) = 0;
+			virtual Item_t createDecimal ( xqp_decimal value) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#integer]
 			  * @param value
 
 			  */
-			virtual Item_t createInteger ( long long value ) = 0;
+			virtual Item_t createInteger ( xqp_integer value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#long]
 			  * @param value
 			  */
-			virtual Item_t createLong ( long value ) = 0;
+			virtual Item_t createLong ( xqp_long value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#int]
 			  * @param value
 			  */
-			virtual Item_t createInt ( int32_t value ) = 0;
+			virtual Item_t createInt ( xqp_int value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#short]
 	  		* @param value
 			  */
-			virtual Item_t createShort ( short value ) = 0;
+			virtual Item_t createShort ( xqp_short value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#byte]
 			  * @param value
 			  */
-			virtual Item_t createByte ( char value ) = 0;
+			virtual Item_t createByte ( xqp_byte value ) = 0;
 
 			/**
 			  * @param year
@@ -155,7 +154,7 @@ namespace xqp
 			/**
 				* @param value double value
 				*/
-			virtual Item_t createDouble ( double value ) = 0;
+			virtual Item_t createDouble ( xqp_double value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]
@@ -190,7 +189,7 @@ namespace xqp
 			/**
 				* @param value
 				*/
-			virtual Item_t createFloat ( float value ) = 0;
+			virtual Item_t createFloat ( xqp_float value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#gDay]
@@ -313,19 +312,19 @@ namespace xqp
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#negativeInteger]
 			  * @param value
 			  */
-			virtual Item_t createNegativeInteger ( int32_t value ) = 0;
+			virtual Item_t createNegativeInteger ( xqp_negativeInteger value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#nonNegativeInteger]
 			  * @param value
 			  */
-			virtual Item_t createNonNegativeInteger ( int32_t value ) = 0;
+			virtual Item_t createNonNegativeInteger ( xqp_nonNegativeInteger value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#nonPositiveInteger]
 			  * @param value
 			  */
-			virtual Item_t createNonPositiveInteger ( int32_t value ) = 0;
+			virtual Item_t createNonPositiveInteger ( xqp_nonPositiveInteger value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#normalizedString]
@@ -337,13 +336,13 @@ namespace xqp
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#positiveInteger]
 			  * @param value
 			  */
-			virtual Item_t createPositiveInteger ( uint32_t value ) = 0;
+			virtual Item_t createPositiveInteger ( xqp_positiveInteger value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
 			  * @param value string representation of the value
 			  */
-			virtual Item_t createString ( xqp_string value ) = 0;
+			virtual Item_t createString ( const xqp_string& value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
@@ -376,25 +375,25 @@ namespace xqp
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
 			  * @param value
 			  */
-			virtual Item_t createUnsignedByte ( unsigned char value ) = 0;
+			virtual Item_t createUnsignedByte ( xqp_unsignedByte value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
 			  * @param value
 			  */
-			virtual Item_t createUnsignedInt ( unsigned int value ) = 0;
+			virtual Item_t createUnsignedInt ( xqp_unsignedInt value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
 			  * @param value
 			  */
-			virtual Item_t createUnsignedLong ( unsigned long value ) = 0;
+			virtual Item_t createUnsignedLong ( xqp_unsignedLong value ) = 0;
 
 			/**
 			  * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
 			  * @param value
 			  */
-			virtual Item_t createUnsignedShort ( uint16_t value ) = 0;
+			virtual Item_t createUnsignedShort ( xqp_unsignedShort value ) = 0;
 
 			/**
 			  * @param baseUri The base URI of the document.

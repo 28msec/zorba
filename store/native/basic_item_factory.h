@@ -67,20 +67,20 @@ namespace xqp
 			virtual Item_t createNMTOKENS ( const xqp_string& value );
 			virtual Item_t createNOTATION ( const xqp_string& value );
 			virtual Item_t createName ( const xqp_string& value );
-			virtual Item_t createNegativeInteger ( int32_t value );
-			virtual Item_t createNonNegativeInteger ( int32_t value );
-			virtual Item_t createNonPositiveInteger ( int32_t value );
+			virtual Item_t createNegativeInteger ( xqp_negativeInteger value );
+			virtual Item_t createNonNegativeInteger ( xqp_nonNegativeInteger value );
+			virtual Item_t createNonPositiveInteger ( xqp_nonPositiveInteger value );
 			virtual Item_t createNormalizedString ( const xqp_string& value );
-			virtual Item_t createPositiveInteger ( uint32_t value );
-			virtual Item_t createString ( xqp_string value );
+			virtual Item_t createPositiveInteger ( xqp_positiveInteger value );
+			virtual Item_t createString ( const xqp_string& value );
 			virtual Item_t createTime ( const xqp_string& value );
 			virtual Item_t createTime ( short hour, short minute, short second );
 			virtual Item_t createTime ( short hour, short minute, short second, short timeZone );
 			virtual Item_t createToken ( const xqp_string& value );
-			virtual Item_t createUnsignedByte ( unsigned char value );
-			virtual Item_t createUnsignedInt ( unsigned int value );
-			virtual Item_t createUnsignedLong ( unsigned long value );
-			virtual Item_t createUnsignedShort ( uint16_t value );
+			virtual Item_t createUnsignedByte ( xqp_unsignedByte value );
+			virtual Item_t createUnsignedInt ( xqp_unsignedInt value );
+			virtual Item_t createUnsignedLong ( xqp_unsignedLong value );
+			virtual Item_t createUnsignedShort ( xqp_unsignedShort value );
 			virtual Item_t createDocumentNode (
 			    xqp_string baseURI,
 			    xqp_string docURI,

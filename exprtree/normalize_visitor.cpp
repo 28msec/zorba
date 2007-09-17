@@ -209,7 +209,7 @@ cout << indent[++depth] << TRACE << endl;
 		rchandle<QName> elem_h = e_h->get_elem();
 		if (elem_h!=NULL) {
 			m_h->set_name(new qname_expr(v.get_location(),
-																		elem_h->get_qname()));
+																		elem_h->get_prefix(), elem_h->get_localname()));
 		}
 		rchandle<TypeName> type_h = e_h->get_type();
 		if (type_h!=NULL) {
@@ -1534,6 +1534,13 @@ void normalize_visitor::end_visit(const DirAttributeValue& v)
 void normalize_visitor::end_visit(const DirElemContentList& v)
 {
  cout << indent[depth--] <<TRACE << endl;
+	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
+	while (true) {
+		expr_t e_h = pop_nodestack();
+		if (e_h==NULL) break;
+		expr_list_t->add(e_h);
+	}
+	nodestack.push(&*expr_list_t);
 }
 
 void normalize_visitor::end_visit(const DocumentTest& v)
@@ -2173,11 +2180,33 @@ cout << indent[depth--] << TRACE << endl;
 void normalize_visitor::end_visit(const DirElemConstructor& v)
 {
 cout << indent[depth--] << TRACE << endl;
+	if (v.get_dir_content_list() == NULL) {
+		expr_t content = NULL;
+		rchandle<qname_expr> name = new qname_expr(v.get_location(), v.get_elem_name()->get_qname());
+		rchandle<elem_expr> elem_t = new elem_expr(v.get_location(), name, content);
+		nodestack.push(&*elem_t);
+	} else {
+		expr_t content = pop_nodestack();
+		rchandle<qname_expr> name = new qname_expr(v.get_location(), v.get_elem_name()->get_qname());
+		rchandle<elem_expr> elem_t = new elem_expr(v.get_location(), name, content);
+		nodestack.push(&*elem_t);
+	}
 }
 
 void normalize_visitor::end_visit(const DirElemContent& v)
 {
 cout << indent[depth--] << TRACE << endl;
+	if (v.get_direct_cons() != NULL) {
+		// nothing to be done, the content expression is already on the stack
+	} else if (v.get_cdata() != NULL) {
+		
+	} else if (v.get_common_content() != NULL) {
+	
+	} else {
+		std::string content = v.get_elem_content();
+		rchandle<text_expr> text_t = new text_expr(v.get_location(), content);
+		nodestack.push(&*text_t);
+	}
 }
 
 void normalize_visitor::end_visit(const DirPIConstructor& v)

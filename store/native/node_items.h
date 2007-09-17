@@ -20,8 +20,6 @@ namespace xqp
 	typedef rchandle<class Item> Item_t;
 	typedef rchandle<class TempSeq> TempSeq_t;
 
-	typedef std::string xqp_string;
-
 	class Node : public Item
 	{
 		protected:
@@ -36,7 +34,7 @@ namespace xqp
 			virtual bool isNode() const;
 			virtual bool isAtomic() const;
 			virtual Item_t getEBV() const;
-			virtual bool equal ( Item_t ) const;
+			virtual bool equals ( Item_t ) const;
 
 			// Must be overwritten from every node implementation when zorba is schema-aware
 			virtual TypeCode getType() const;
@@ -54,7 +52,7 @@ namespace xqp
 			TempSeq_t children;
 
 		public:
-			DocumentNode ( const xqp_string& baseURI, const xqp_string& documentURI, Iterator_t& children );
+			DocumentNode ( const xqp_string& baseURI, const xqp_string& documentURI, TempSeq_t& children );
 			virtual ~DocumentNode();
 
 			virtual Item_t getAtomizationValue() const;
@@ -86,9 +84,9 @@ namespace xqp
 			    const Item_t& parent,
 			    const Item_t& name,
 			    TypeCode type,
-			    Iterator_t& children,
-			    Iterator_t& attributes,
-			    Iterator_t& namespaces,
+			    TempSeq_t& children,
+			    TempSeq_t& attributes,
+			    TempSeq_t& namespaces,
 			    bool copy,
 			    bool newTypes
 			);
@@ -96,9 +94,9 @@ namespace xqp
 			ElementNode (
 			    const Item_t& name,
 			    TypeCode type,
-			    Iterator_t& children,
-			    Iterator_t& attributes,
-			    Iterator_t& namespaces,
+			    TempSeq_t& children,
+			    TempSeq_t& attributes,
+			    TempSeq_t& namespaces,
 			    bool copy,
 			    bool newTypes
 			);
@@ -118,6 +116,7 @@ namespace xqp
 			virtual Iterator_t getTypedValue() const;
 			// Not implemented till types are supported
 // 		Item_t getTypeName() const;
+			virtual xqp_string show() const;
 	}; /* class ElementNode */
 
 	class AttributeNode : public Node
@@ -196,7 +195,6 @@ namespace xqp
 			virtual TypeCode getNodeKind() const;
 			virtual Iterator_t getTypedValue() const;
 			virtual xqp_string getTarget() const;
-			virtual xqp_string getContent() const;
 			virtual xqp_string getStringValue() const;
 	}; /* class PiNode */
 
@@ -225,7 +223,7 @@ namespace xqp
 
 		public:
 			TextNode ( const Item_t& parent, xqp_string& content );
-			TextNode ( xqp_string& content );
+			TextNode ( const xqp_string& content );
 			virtual ~TextNode();
 
 			virtual TypeCode getType() const;
@@ -235,6 +233,8 @@ namespace xqp
 			virtual TypeCode getNodeKind() const;
 			virtual Iterator_t getTypedValue() const;
 			virtual xqp_string getStringValue() const;
+			
+			virtual xqp_string show() const;
 	}; /* class TextNode */
 
 } /* namespace xqp */

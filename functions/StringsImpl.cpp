@@ -116,11 +116,7 @@ Item_t StringToCodepointsIterator::nextImpl(){
 
 	item = this->consumeNext(argv);
 	
-	if(&*item == NULL) {
-		STACK_PUSH(NULL);
-	}
-	else
-	{
+	if(&*item != NULL) {
 		
 		vLength = (item->getStringValue().length()) + 1;
 		v.reserve(vLength);
@@ -129,7 +125,7 @@ Item_t StringToCodepointsIterator::nextImpl(){
 
 		while( --vLength > 0 ){
 			cp = UTF8Decode(c);
-			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createLong(cp));
+			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(cp));
 		}
 	}
 	

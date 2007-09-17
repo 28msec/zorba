@@ -149,6 +149,8 @@ namespace xqp {
 		//! @{
 			void clear();
 		//! @}
+		
+			const char* c_str();
 			
 			inline	operator std::string() const{
 				return utf8String;

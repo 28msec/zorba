@@ -31,7 +31,7 @@ namespace xqp
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( true );
 	}
 
-	bool Node::equal ( Item_t item ) const
+	bool Node::equals ( Item_t item ) const
 	{
 		ZorbaErrorAlerts::error_alert (
 		    error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
@@ -65,10 +65,8 @@ namespace xqp
 	/* end class Node */
 
 	/* start class DocumentNode */
-	DocumentNode::DocumentNode ( const xqp_string& baseURI_arg, const xqp_string& docURI_arg, Iterator_t& children ) : baseURI ( baseURI_arg ), docURI ( docURI_arg )
-	{
-		this->children = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( children );
-	}
+	DocumentNode::DocumentNode ( const xqp_string& baseURI_arg, const xqp_string& docURI_arg, TempSeq_t& children_arg ) : baseURI ( baseURI_arg ), docURI ( docURI_arg ), children( children_arg)
+	{	}
 	DocumentNode::~DocumentNode(){}
 
 	Item_t DocumentNode::getAtomizationValue() const
@@ -126,9 +124,9 @@ namespace xqp
 	    const Item_t& parent,
 	    const Item_t& name_arg,
 	    TypeCode type_arg,
-	    Iterator_t& children_arg,
-	    Iterator_t& attributes_arg,
-	    Iterator_t& namespaces_arg,
+	    TempSeq_t& children_arg,
+	    TempSeq_t& attributes_arg,
+	    TempSeq_t& namespaces_arg,
 	    bool copy,
 	    bool newTypes
 	)
@@ -136,26 +134,32 @@ namespace xqp
 			Node ( parent ),
 			name ( name_arg ),
 			type ( type_arg ),
+			children(children_arg),
+			attributes(attributes_arg),
+			namespaces(namespaces_arg)/*,
 			children ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( children_arg ) ),
 			attributes ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( attributes_arg ) ),
-			namespaces ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( namespaces_arg ) )
+			namespaces ( namespaces_arg == NULL ? NULL : zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( namespaces_arg ) )*/
 	{ }
 
 	ElementNode::ElementNode (
 	    const Item_t& name_arg,
 	    TypeCode type_arg,
-	    Iterator_t& children_arg,
-	    Iterator_t& attributes_arg,
-	    Iterator_t& namespaces_arg,
+	    TempSeq_t& children_arg,
+	    TempSeq_t& attributes_arg,
+	    TempSeq_t& namespaces_arg,
 	    bool copy,
 	    bool newTypes
 	)
 			:
 			name ( name_arg ),
 			type ( type_arg ),
+			children(children_arg),
+			attributes(attributes_arg),
+			namespaces(namespaces_arg)/*,
 			children ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( children_arg ) ),
 			attributes ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( attributes_arg ) ),
-			namespaces ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( namespaces_arg ) )
+			namespaces ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( namespaces_arg ) )*/
 	{ }
 	
 	ElementNode::~ElementNode(){}
@@ -238,6 +242,22 @@ namespace xqp
 		xqp_string str = this->getStringProperty();
 		Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( str );
 		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+	}
+	
+	xqp_string ElementNode::show() const
+	{
+		xqp_string str;
+		str =  "<" + this->name->getLocalName() + ">";
+		if (this->children != NULL) {
+			Iterator_t iter = this->children->getIterator();
+			Item_t item = iter->next();
+			while (item != NULL) {
+				str += item->show();
+				item = iter->next();
+			}
+		}
+		str += "</" + this->name->getLocalName() + ">";
+		return str;
 	}
 	/* end class ElementNode */
 
@@ -424,7 +444,7 @@ namespace xqp
 
 	/* start class TextNode */
 	TextNode::TextNode ( const Item_t& parent, xqp_string& content_arg ) : Node ( parent ), content ( content_arg ) {}
-	TextNode::TextNode ( xqp_string& content_arg ) : content ( content_arg ) {}
+	TextNode::TextNode ( const xqp_string& content_arg ) : content ( content_arg ) {}
 	TextNode::~TextNode(){}
 
 	TypeCode TextNode::getType() const
@@ -454,6 +474,11 @@ namespace xqp
 	}
 
 	xqp_string TextNode::getStringValue() const
+	{
+		return this->content;
+	}
+	
+	xqp_string TextNode::show() const
 	{
 		return this->content;
 	}

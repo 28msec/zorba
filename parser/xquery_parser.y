@@ -3453,6 +3453,15 @@ DirElemConstructor :
 								dynamic_cast<DirAttributeList*>($3), 
 								NULL);
 		}
+	| START_TAG  QNAME  TAG_END  START_TAG_END  QNAME  TAG_END
+		{
+			if (debug) cout << "DirElemConstructor [<qname></qname>]\n";
+			$$ = new DirElemConstructor(@$,
+								new QName(@$,driver.symtab.get((off_t)$2)),
+								new QName(@$,driver.symtab.get((off_t)$5)),
+								NULL,
+								NULL);
+		}
 	|	START_TAG  QNAME  TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
 		{
 			if (debug) cout << "DirElemConstructor [<qname>content</qname>]\n";
@@ -3461,6 +3470,15 @@ DirElemConstructor :
 								new QName(@$,driver.symtab.get((off_t)$6)),
 								NULL,
 								dynamic_cast<DirElemContentList*>($4));
+		}
+	| START_TAG  QNAME  DirAttributeList TAG_END  START_TAG_END  QNAME TAG_END
+		{
+			if (debug) cout << "DirElemConstructor [<qname attrlist></qname>]\n";
+			$$ = new DirElemConstructor(@$,
+								new QName(@$,driver.symtab.get((off_t)$2)),
+								new QName(@$,driver.symtab.get((off_t)$6)),
+								dynamic_cast<DirAttributeList*>($3),
+								NULL);
 		}
 	|	START_TAG  QNAME  DirAttributeList TAG_END  DirElemContentList  START_TAG_END  QNAME  TAG_END 
 		{
@@ -3478,7 +3496,7 @@ DirElemConstructor :
 // [94a] DirElemContentList
 // ------------------------
 DirElemContentList :
-		DirElemContent
+	DirElemContent
 		{
 			if (debug) cout << "DirElemContentList [single]\n";
 			DirElemContentList* elem_content_list_p = new DirElemContentList(@$);

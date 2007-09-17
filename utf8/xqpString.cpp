@@ -203,4 +203,8 @@ namespace xqp {
 	void xqpString::clear(){
 		utf8String.erase();
 	}
+	
+	const char* xqpString::c_str() {
+		return utf8String.c_str();
+	}
 }/* namespace xqp */

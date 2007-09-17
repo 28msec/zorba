@@ -29,13 +29,9 @@
 using namespace std;
 namespace xqp {
 
-
-// TODO FIXME This library must be changed!! Somehow!!
-
 // clear static initializer state
 bool library::static_init = false;
 
-// TODO adapt to new store
 
   class initializer;
   static list<const initializer *> initializers;

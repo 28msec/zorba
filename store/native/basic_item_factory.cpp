@@ -9,6 +9,9 @@
 
 #include "basic_item_factory.h"
 #include "atomic_items.h"
+#include "node_items.h"
+#include "../../runtime/zorba.h"
+#include "../api/temp_seq.h"
 
 namespace xqp
 {
@@ -82,12 +85,12 @@ namespace xqp
 	Item_t BasicItemFactory::createNMTOKENS ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createNOTATION ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createName ( const xqp_string& value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createNegativeInteger ( int32_t value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createNonNegativeInteger ( int32_t value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createNonPositiveInteger ( int32_t value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNegativeInteger ( xqp_negativeInteger value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNonNegativeInteger ( xqp_nonNegativeInteger value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createNonPositiveInteger ( xqp_nonPositiveInteger value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createNormalizedString ( const xqp_string& value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createPositiveInteger ( uint32_t value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createString ( xqp_string value )
+	Item_t BasicItemFactory::createPositiveInteger ( xqp_positiveInteger value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createString ( const xqp_string& value )
 	{
 		return new StringItem ( value );
 	}
@@ -95,10 +98,10 @@ namespace xqp
 	Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createTime ( short hour, short minute, short second, short timeZone ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createToken ( const xqp_string& value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createUnsignedByte ( unsigned char value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createUnsignedInt ( unsigned int value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createUnsignedLong ( unsigned long value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createUnsignedShort ( uint16_t value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createUnsignedByte ( xqp_unsignedByte value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createUnsignedInt ( xqp_unsignedInt value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createUnsignedLong ( xqp_unsignedLong value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createUnsignedShort ( xqp_unsignedShort value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createDocumentNode (
 	    xqp_string baseURI,
 	    xqp_string docURI,
@@ -114,7 +117,25 @@ namespace xqp
 	    bool copy,
 	    bool newTypes,
 	    bool createId
-	) { return Item_t ( NULL ); }
+	) 
+	{ 
+		Store* store = zorba::getZorbaForCurrentThread()->getStore();
+		TempSeq_t seqChildren = NULL;
+		if (children != NULL)
+			seqChildren = store->createTempSeq ( children );
+		TempSeq_t seqAttributes = NULL;
+		TempSeq_t seqNamespaces = NULL;
+		Item_t item = new ElementNode(
+			name,
+			type,
+			seqChildren,
+			seqAttributes,
+			seqNamespaces,
+			copy,
+			newTypes
+		); 
+		return item;
+	}
 	Item_t BasicItemFactory::createAttributeNode (
 	    const Item_t& name,
 	    TypeCode type,
@@ -125,7 +146,11 @@ namespace xqp
 	Item_t BasicItemFactory::createTextNode (
 	    const xqp_string& value,
 	    bool createId
-	) { return Item_t ( NULL ); }
+	) 
+	{
+		Item_t item = new TextNode(value);
+		return item;
+	}
 	Item_t BasicItemFactory::createNamespaceNode (
 	    const xqp_string& prefix,
 	    const xqp_string& name,

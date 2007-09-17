@@ -72,13 +72,13 @@ public:
 
 // 	void set_data_manager(data_manager* v) { theDataManager = v; }
 	void setItemFactory(ItemFactory* v) { theValueFactory = v; }
+	void setStore(Store* s){theStore = s; }
 	void set_static_context(static_context* v) { theStaticContext = v; }
 	void set_dynamic_context(dynamic_context* v) { theDynamicContext = v; }
 	//daniel
 	void set_error_manager(ZorbaErrorAlerts *err_manag) { error_manager = err_manag; }
 
 // 	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
-	void set_value_factory(rchandle<ItemFactory> v) { theValueFactory = v; }
 	void set_static_context(rchandle<static_context> v) { theStaticContext = v; }
 	void set_dynamic_context(rchandle<dynamic_context> v) { theDynamicContext = v; }
 	//daniel
