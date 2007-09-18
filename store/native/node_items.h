@@ -122,21 +122,21 @@ namespace xqp
 	class AttributeNode : public Node
 	{
 		private:
-			Item_t name;
-			TypeCode type;
-			Item_t lexicalValue;
-			Item_t typedValue;
+			const Item_t name;
+			const TypeCode type;
+			const Item_t lexicalValue;
+			const Item_t typedValue;
 
 			bool bIsId;
 			bool bIsIdrefs;
 
 		public:
 			AttributeNode (
-			    const Item_t& parent,
+// 			    const Item_t& parent,
 			    const Item_t& name,
 			    const TypeCode type,
-			    Item_t& lexicalValue,
-			    Item_t& typedValue,
+			    const Item_t& lexicalValue,
+			    const Item_t& typedValue,
 			    bool bIsId,
 			    bool bIsIdrefs
 			);
@@ -154,6 +154,7 @@ namespace xqp
 			virtual Iterator_t getTypedValue() const;
 			// Not implemented till types are supported
 // 		Item_t getTypeName() const;
+			virtual xqp_string show() const;
 	}; /* class AttributeNode */
 
 	class NamespaceNode : public Node

@@ -4242,7 +4242,10 @@ ostream& DirAttributeValue::put(ostream& s) const
 void DirAttributeValue::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	quot_attr_content_h->accept(v);
+	if (this->quot_attr_content_h != NULL)
+		this->quot_attr_content_h->accept(v);
+	if (this->apos_attr_content_h != NULL)
+		this-> apos_attr_content_h->accept(v);
 	v.end_visit(*this); 
 }
 
@@ -4368,6 +4371,8 @@ ostream& QuoteAttrValueContent::put(ostream& s) const
 void QuoteAttrValueContent::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
+	if (this->common_content_h != NULL)
+		this->common_content_h->accept(v);
 	v.end_visit(*this); 
 }
 
@@ -4546,6 +4551,8 @@ ostream& CommonContent::put(ostream& s) const
 void CommonContent::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
+	if (this->expr_h != NULL)
+		this->expr_h->accept(v);
 	v.end_visit(*this); 
 }
 

@@ -263,16 +263,16 @@ namespace xqp
 
 	/* start class AttributeNode */
 	AttributeNode::AttributeNode (
-	    const Item_t& parent,
+// 	    const Item_t& parent,
 	    const Item_t& name_arg,
-	    TypeCode type_arg,
-	    Item_t& lexicalValue_arg,
-	    Item_t& typedValue_arg,
+	    const TypeCode type_arg,
+	    const Item_t& lexicalValue_arg,
+	    const Item_t& typedValue_arg,
 	    bool bIsId_arg,
 	    bool bIsIdrefs_arg
 	)
 			:
-			Node ( parent ),
+// 			Node ( parent ),
 			name ( name_arg ),
 			type ( type_arg ),
 			bIsId ( bIsId_arg ),
@@ -319,6 +319,11 @@ namespace xqp
 	Iterator_t AttributeNode::getTypedValue() const
 	{
 		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->typedValue );
+	}
+	
+	xqp_string AttributeNode::show() const
+	{
+		return "attributenode";
 	}
 	/* end class AttributeNode */
 
@@ -449,7 +454,7 @@ namespace xqp
 
 	TypeCode TextNode::getType() const
 	{
-		return xs_anyType;
+		return xs_untypedAtomicValue;
 	}
 
 	Item_t TextNode::getAtomizationValue() const

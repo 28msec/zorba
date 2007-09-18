@@ -142,7 +142,18 @@ namespace xqp
 	    const Item_t& lexicalValue,
 	    const Item_t& typedValue,
 	    bool createId
-	) { return Item_t ( NULL ); }
+	) 
+	{ 
+		Item_t item = new AttributeNode(
+				name,
+				type,
+				lexicalValue,
+				typedValue,
+				false,
+				false
+			);
+		return item;
+	}
 	Item_t BasicItemFactory::createTextNode (
 	    const xqp_string& value,
 	    bool createId

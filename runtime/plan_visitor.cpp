@@ -168,13 +168,20 @@ cout << TRACE << endl;
 	return true;
 }
 
+bool plan_visitor::begin_visit(const elem_expr& v)
+{
+cout << indent[++depth] << TRACE << endl;
+	return true;
+}
+
+
 bool plan_visitor::begin_visit(const doc_expr& v)
 {
 cout << TRACE  << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const elem_expr& v)
+bool plan_visitor::begin_visit(const compElem_expr& v)
 {
 cout << indent[++depth] << TRACE << endl;
 	return true;
@@ -397,26 +404,44 @@ void plan_visitor::end_visit(const order_expr& v)
 cout << TRACE << endl;
 }
 
+void plan_visitor::end_visit(const elem_expr& v)
+{
+cout << indent[--depth] << TRACE << endl;
+	Iterator_t contentIter = NULL;
+	Iterator_t attrIter = NULL;
+	if (v.get_attrs_expr() != NULL)
+		attrIter = pop_itstack();
+	if (v.get_content_expr() != NULL)
+		contentIter = pop_itstack();
+	rchandle<qname_expr> qname = v.get_qname();
+	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
+	Iterator_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
+	itstack.push(iter);
+}
+
 void plan_visitor::end_visit(const doc_expr& v)
 {
 cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const elem_expr& v)
+void plan_visitor::end_visit(const compElem_expr& v)
 {
 cout << indent[--depth] << TRACE << endl;
-	Iterator_t contentIter = NULL;
-	if (v.get_content_expr() != NULL)
-		contentIter = pop_itstack();
-	rchandle<qname_expr> qname = v.get_qname();
-	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
-	Iterator_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter);
-	itstack.push(iter);
 }
 
 void plan_visitor::end_visit(const attr_expr& v)
 {
 cout << TRACE << endl;
+	// TODO dynamic qname
+	rchandle<qname_expr> qname = v.get_qname();
+	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
+	Iterator_t valueIter;
+	if (v.get_val_expr() != NULL)
+		valueIter = pop_itstack();
+	else
+		valueIter = new EmptyIterator(v.get_loc());
+	Iterator_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
+	itstack.push(&*attrIter);
 }
 
 void plan_visitor::end_visit(const text_expr& v)

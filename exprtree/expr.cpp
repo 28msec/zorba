@@ -1093,6 +1093,41 @@ void order_expr::accept(
 
 // [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
 
+// [96] [http://www.w3.org/TR/xquery/#doc-exquery-DirElemConstructor]
+elem_expr::elem_expr(
+	yy::location const& loc,
+	rchandle<qname_expr> _qname_h,
+	expr_t _attrs_expr_h,
+	expr_t _content_expr_h)
+:
+	expr(loc),
+	qname_h(_qname_h),
+	attrs_expr_h(_attrs_expr_h),
+	content_expr_h(_content_expr_h)
+{}
+elem_expr::~elem_expr(){}
+
+void elem_expr::accept(expr_visitor& v) const
+{
+	if (!v.begin_visit(*this)) return;
+	if (this->attrs_expr_h != NULL)
+		this->attrs_expr_h->accept(v);
+	if (this->content_expr_h != NULL)
+		this->content_expr_h->accept(v);
+	v.end_visit(*this);
+}
+
+std::ostream& elem_expr::put(std::ostream& os) const
+{
+	os << INDENT << "elem_expr[";
+	qname_h->put(os);
+	if (attrs_expr_h != NULL)
+		attrs_expr_h->put(os);
+	if (content_expr_h != NULL)
+		content_expr_h->put(os);
+	return os << OUTDENT << "]\n";
+}
+
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 
 doc_expr::doc_expr(
@@ -1126,7 +1161,7 @@ void doc_expr::accept(
 
 // [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
 
-elem_expr::elem_expr(
+compElem_expr::compElem_expr(
 	yy::location const& loc,
 	rchandle<qname_expr> _qname_h,
 	rchandle<expr> _content_expr_h)
@@ -1138,7 +1173,7 @@ elem_expr::elem_expr(
 {
 }
 
-elem_expr::elem_expr(
+compElem_expr::compElem_expr(
 	yy::location const& loc,
 	rchandle<expr> _qname_expr_h,
 	rchandle<expr> _content_expr_h)
@@ -1150,13 +1185,13 @@ elem_expr::elem_expr(
 {
 }
 
-elem_expr::~elem_expr()
+compElem_expr::~compElem_expr()
 {
 }
 
-ostream& elem_expr::put( ostream& os) const
+ostream& compElem_expr::put( ostream& os) const
 {
-	os << INDENT << "elem_expr[<";
+	os << INDENT << "compElem_expr[<";
 	//d Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	Assert(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
@@ -1179,7 +1214,7 @@ ostream& elem_expr::put( ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-void elem_expr::accept(
+void compElem_expr::accept(
 	expr_visitor& v) const
 {
 	if (!v.begin_visit(*this)) return;
@@ -1241,6 +1276,10 @@ ostream& attr_expr::put( ostream& os) const
 void attr_expr::accept(
 	expr_visitor& v) const
 {
+	if (this->qname_expr_h != NULL)
+		this->qname_expr_h->accept(v);
+	if (this->val_expr_h != NULL)
+		this->val_expr_h->accept(v);
 }
 
 

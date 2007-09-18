@@ -1141,6 +1141,33 @@ public:
 |_______________________________________________________________________*/
 
 
+// [96] [http://www.w3.org/TR/xquery/#doc-xquery-DirElemConstructor]
+class elem_expr : public expr
+{
+	// TODO namespace bindings
+protected:
+	rchandle<qname_expr> qname_h;
+	expr_t attrs_expr_h;
+	expr_t content_expr_h;
+	
+public:
+	elem_expr(
+		yy::location const&,
+		rchandle<qname_expr>,
+		expr_t,
+		expr_t);
+	~elem_expr();
+	
+	rchandle<qname_expr> get_qname() const { return qname_h; }
+	expr_t get_content_expr() const { return content_expr_h; }
+	expr_t get_attrs_expr() const { return attrs_expr_h; }
+	
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&) const;
+};
+
+
+
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
 class doc_expr : public expr
 /*______________________________________________________________________
@@ -1168,7 +1195,7 @@ public:
 
 
 // [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
-class elem_expr : public expr
+class compElem_expr : public expr
 /*______________________________________________________________________
 |	::= ELEMENT_QNAME_LBRACE  RBRACE
 |			|	ELEMENT_QNAME_LBRACE  ContentExpr  RBRACE
@@ -1186,15 +1213,15 @@ protected:
 	std::vector<nsbinding> nsb_v;
 
 public:
-	elem_expr(
+	compElem_expr(
 		yy::location const&,
 		rchandle<qname_expr>,
 		expr_t);
-	elem_expr(
+	compElem_expr(
 		yy::location const&,
 		expr_t,
 		expr_t);
-	~elem_expr();
+	~compElem_expr();
 
 public:
 	rchandle<qname_expr> get_qname() const { return qname_h; }

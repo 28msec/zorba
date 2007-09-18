@@ -412,6 +412,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
 %type <node> AposAttrContentList
+%type <node> Opt_AposAttrContentList
 %type <node> AposAttrValueContent
 %type <node> ArgList
 %type <node> AtomicType
@@ -474,6 +475,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> QVarInDeclList
 %type <node> QuoteAttrValueContent
 %type <node> QuoteAttrContentList
+%type <node> Opt_QuoteAttrContentList
 %type <node> ReverseAxis
 %type <node> ReverseStep
 %type <node> SIND_Decl
@@ -3551,13 +3553,13 @@ DirAttr :
 // [96] DirAttributeValue
 // ----------------------
 DirAttributeValue :
-		QUOTE  QuoteAttrContentList  QUOTE
+		QUOTE  Opt_QuoteAttrContentList  QUOTE
 		{
 			if (debug) cout << "DirAttributeValue [quote]\n";
 			$$ = new DirAttributeValue(@$,
 								dynamic_cast<QuoteAttrContentList*>($2));
 		}
-	|	APOS  AposAttrContentList  APOS 	/* ws: explicitXQ */
+	|	APOS  Opt_AposAttrContentList  APOS 	/* ws: explicitXQ */
 		{
 			if (debug) cout << "DirAttributeValue [apos]\n";
 			$$ = new DirAttributeValue(@$,
@@ -3568,7 +3570,19 @@ DirAttributeValue :
 
 // [96a] QuoteAttrContentList
 // --------------------------
-QuoteAttrContentList :
+Opt_QuoteAttrContentList :
+		/* empty */
+		{
+			if (debug) cout << "QuoteAttrContentList[empty]\n";
+			$$ = new QuoteAttrContentList(@$);
+		}
+	|	QuoteAttrContentList
+		{
+			$$ = $1;
+		}
+	;
+
+QuoteAttrContentList :	
 		ESCAPE_QUOTE
 		{
 			if (debug) cout << "QuoteAttrContentList [""]\n";
@@ -3605,6 +3619,18 @@ QuoteAttrContentList :
 
 // [96b] AposAttrContentList
 // -------------------------
+Opt_AposAttrContentList :
+		/* empty */
+		{
+			if (debug) cout << "AposAttrContentList ['']\n";
+			$$ = new AposAttrContentList(@$);
+		}
+	|	AposAttrContentList
+		{
+			$$ = $1;
+		}
+	;
+
 AposAttrContentList :
 		ESCAPE_APOS
 		{

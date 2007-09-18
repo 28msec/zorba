@@ -68,7 +68,7 @@ cout << indent[++depth] << TRACE << endl;
 bool normalize_visitor::begin_visit(const AposAttrContentList& v)
 {
 cout << indent[++depth] << TRACE << endl;
-	nodestack.push(NULL);
+// 	nodestack.push(NULL);
 	return true;
 }
 
@@ -175,6 +175,8 @@ bool normalize_visitor::begin_visit(
 bool normalize_visitor::begin_visit(const DirAttr& v)
 {
 cout << indent[++depth] << TRACE << endl;
+	// boundary is needed because the value of an attribute might be empty
+	nodestack.push(NULL);
 	return true;
 }
 
@@ -485,7 +487,6 @@ cout << indent[++depth] << TRACE << endl;
 bool normalize_visitor::begin_visit(const QuoteAttrContentList& v)
 {
 cout << indent[++depth] << TRACE << endl;
-	nodestack.push(NULL);
 	return true;
 }
 
@@ -1403,7 +1404,8 @@ void normalize_visitor::end_visit(const AposAttrContentList& v)
 
 void normalize_visitor::end_visit(const AposAttrValueContent& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+cout << indent[depth--] <<TRACE << endl;
+	
 }
 
 // FIXME The use of an argstack is not correct because of function calls like 'func1(a,func2(b,c),d)'! The arguments must be saved on the normal stack and not on a special one!
@@ -1519,16 +1521,32 @@ void normalize_visitor::end_visit(const DefaultNamespaceDecl& v)
 void normalize_visitor::end_visit(const DirAttr& v)
 {
  cout << indent[depth--] <<TRACE << endl;
+ 	expr_t attrValue = pop_nodestack();
+ 	if (attrValue != NULL) {
+ 		// delete boundary
+ 		nodestack.pop();
+ 	}
+ 	rchandle<qname_expr> name = new qname_expr(v.get_location(), v.get_atname()->get_prefix(), v.get_atname()->get_localname());
+ 	rchandle<attr_expr> attr_expr_t = new attr_expr(v.get_location(), name, attrValue);
+ 	nodestack.push(&*attr_expr_t);
 }
 
 void normalize_visitor::end_visit(const DirAttributeList& v)
 {
  cout << indent[depth--] <<TRACE << endl;
+ 	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
+ 	while(true) {
+ 		expr_t e_h = pop_nodestack();
+ 		if (e_h == NULL) break;
+ 		expr_list_t->add(e_h);
+ 	}
+ 	nodestack.push(&*expr_list_t);
 }
 
 void normalize_visitor::end_visit(const DirAttributeValue& v)
 {
  cout << indent[depth--] <<TRACE << endl;
+ 
 }
 
 void normalize_visitor::end_visit(const DirElemContentList& v)
@@ -1891,11 +1909,20 @@ cout << indent[depth--] << TRACE << endl;
 void normalize_visitor::end_visit(const QuoteAttrValueContent& v)
 {
 cout << indent[depth--] << TRACE << endl;
+	if (v.get_common_content() == NULL) {
+		std::string content = v.get_quot_atcontent();
+		rchandle<text_expr> text_t = new text_expr(v.get_location(), content);
+		nodestack.push(&*text_t);
+	}
+	// nothing to be done becaus when common content != NULL, 
+	// because the corresponding expr is already on the stack
+	
 }
 
 void normalize_visitor::end_visit(const QuoteAttrContentList& v)
 {
 cout << indent[depth--] << TRACE << endl;
+	// nothing to be done because this list contains never more than one value
 }
 
 void normalize_visitor::end_visit(const ReverseAxis& v)
@@ -2180,17 +2207,15 @@ cout << indent[depth--] << TRACE << endl;
 void normalize_visitor::end_visit(const DirElemConstructor& v)
 {
 cout << indent[depth--] << TRACE << endl;
-	if (v.get_dir_content_list() == NULL) {
-		expr_t content = NULL;
-		rchandle<qname_expr> name = new qname_expr(v.get_location(), v.get_elem_name()->get_qname());
-		rchandle<elem_expr> elem_t = new elem_expr(v.get_location(), name, content);
-		nodestack.push(&*elem_t);
-	} else {
-		expr_t content = pop_nodestack();
-		rchandle<qname_expr> name = new qname_expr(v.get_location(), v.get_elem_name()->get_qname());
-		rchandle<elem_expr> elem_t = new elem_expr(v.get_location(), name, content);
-		nodestack.push(&*elem_t);
-	}
+	expr_t attributes = NULL;
+	expr_t content = NULL;
+	if (v.get_attr_list() != NULL)
+		attributes = pop_nodestack();
+	if (v.get_dir_content_list() != NULL)
+		content = pop_nodestack();
+	rchandle<qname_expr> name = new qname_expr(v.get_location(), v.get_elem_name()->get_prefix(), v.get_elem_name()->get_localname());
+	rchandle<elem_expr> elem_t = new elem_expr(v.get_location(), name, attributes, content);
+	nodestack.push(&*elem_t);
 }
 
 void normalize_visitor::end_visit(const DirElemContent& v)

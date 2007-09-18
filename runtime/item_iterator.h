@@ -243,21 +243,44 @@ public:
 
 };
 
-class ElementIterator : public Batcher<ElementIterator>
-{
-private:
-	Item_t qname;
-	Iterator_t children;
-	Iterator_t attributes;
-	Iterator_t namespaceBindings;
-
-public:
-	ElementIterator(const yy::location& loc, const Item_t& qname_arg, const Iterator_t& children_arg);
-
-	Item_t nextImpl();
-	void resetImpl();
-	void releaseResourcesImpl();
-}; /* class ElementIterator */
+	class ElementIterator : public Batcher<ElementIterator>
+	{
+	private:
+		Item_t qname;
+		Iterator_t children;
+		Iterator_t attributes;
+		Iterator_t namespaceBindings;
+	
+	public:
+		ElementIterator(
+			const yy::location& loc, 
+			const Item_t& qname_arg,
+			const Iterator_t& children_arg,
+			const Iterator_t& attributes_arg
+		);
+	
+		Item_t nextImpl();
+		void resetImpl();
+		void releaseResourcesImpl();
+	}; /* class ElementIterator */
+	
+	class AttributeIterator : public Batcher<AttributeIterator>
+	{
+	private:
+		Item_t qname;
+		Iterator_t value;
+		
+	public:
+		AttributeIterator(
+			const yy::location& loc,
+			const Item_t& qname_arg,
+			const Iterator_t& value_arg
+		);
+		
+		Item_t nextImpl();
+		void resetImpl();
+		void releaseResourcesImpl();
+	}; /* class AttributeIterator */
 
 
 }	/* namespace xqp */

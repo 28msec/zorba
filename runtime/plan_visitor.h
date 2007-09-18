@@ -78,8 +78,9 @@ public:
 	bool begin_visit(axis_step_expr const&);
 	bool begin_visit(literal_expr const&);
 	bool begin_visit(order_expr const&);
-	bool begin_visit(doc_expr const&);
 	bool begin_visit(elem_expr const&);
+	bool begin_visit(doc_expr const&);
+	bool begin_visit(compElem_expr const&);
 	bool begin_visit(attr_expr const&);
 	bool begin_visit(text_expr const&);
 	bool begin_visit(comment_expr const&);
@@ -112,8 +113,9 @@ public:
 	void end_visit(axis_step_expr const&);
 	void end_visit(literal_expr const&);
 	void end_visit(order_expr const&);
-	void end_visit(doc_expr const&);
 	void end_visit(elem_expr const&);
+	void end_visit(doc_expr const&);
+	void end_visit(compElem_expr const&);
 	void end_visit(attr_expr const&);
 	void end_visit(text_expr const&);
 	void end_visit(comment_expr const&);
