@@ -4,6 +4,8 @@
 
 #include "runtime/plan_visitor.h"
 #include "exprtree/normalize_visitor.h"
+#include "exprtree/parsenode_print_xml_visitor.h"
+#include "exprtree/parsenode_print_dot_visitor.h"
 #include "parser/xquery_driver.h"
 #include "errors/Error.h"
 #include "runtime/zorba.h"
@@ -83,6 +85,13 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 				parsenode* n_p = driver.get_expr();
 				cout << endl;
+				
+				ParseNodePrintXMLVisitor lPrintXMLVisitor(cout);
+                lPrintXMLVisitor.print(n_p);
+				
+                ParseNodePrintDOTVisitor lPrintDOTVisitor(cout);
+                lPrintDOTVisitor.print(n_p);
+				
 				cout << "Syntax tree:\n";
 				n_p->put(cout) << endl;
 	
@@ -144,9 +153,10 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 	} catch (xqp_exception & e) {
 		cout << "ZORBA EXCEPTION: " << e.get_msg() << " - " << e.what() << endl;
-	} catch (...) {
-		cout << "RUNTIME EXCEPTION CATCHED!\n";
-	}
+	} 
+	// catch (exception &e) {
+	//         cout << "RUNTIME EXCEPTION CATCHED! " << e.what() << std::endl;
+	//     }
 
 	zorba::destroyZorbaForCurrentThread();
 	zorba::uninitializeZorbaEngine();

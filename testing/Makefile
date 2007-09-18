@@ -51,6 +51,8 @@ query_exec	= \
 		../context/dynamic_context.cpp \
 		../exprtree/expr.cpp \
 		../exprtree/normalize_visitor.cpp \
+		../exprtree/parsenode_print_xml_visitor.cpp \
+		../exprtree/parsenode_print_dot_visitor.cpp \
 		../functions/library.cpp \
 		../functions/Boolean.cpp \
 		../functions/BooleanImpl.cpp \
