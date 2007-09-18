@@ -14,6 +14,7 @@
 #include "../store/native/simple_store.h"
 
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 using namespace xqp;
@@ -86,11 +87,17 @@ int _tmain(int argc, _TCHAR* argv[])
 				parsenode* n_p = driver.get_expr();
 				cout << endl;
 				
-				ParseNodePrintXMLVisitor lPrintXMLVisitor(cout);
-                lPrintXMLVisitor.print(n_p);
-				
-                ParseNodePrintDOTVisitor lPrintDOTVisitor(cout);
-                lPrintDOTVisitor.print(n_p);
+				{
+                    std::ofstream lXMLOutFile("query.xml");
+                    ParseNodePrintXMLVisitor lPrintXMLVisitor(lXMLOutFile);
+                    lPrintXMLVisitor.print(n_p);
+                }    
+
+                {
+                    std::ofstream lDOTOutFile("query.dot");				
+                    ParseNodePrintDOTVisitor lPrintDOTVisitor(lDOTOutFile);
+                    lPrintDOTVisitor.print(n_p);
+				}
 				
 				cout << "Syntax tree:\n";
 				n_p->put(cout) << endl;
