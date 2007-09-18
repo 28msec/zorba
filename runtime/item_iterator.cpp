@@ -124,19 +124,43 @@ namespace xqp
 	Item_t
 	AttributeIterator::nextImpl() {
 		Item_t item;
-		Item_t itemValue;
+		Item_t itemCur;
+		Item_t itemFirst;
+		Item_t itemLexical;
+		Item_t itemTyped;
+		xqp_string lexicalString;
+		bool concatenation = false;
 		
 		STACK_INIT();
-		// TODO concatenation
-		if (this->value != NULL)
-			itemValue = this->consumeNext(this->value);
-		else
-			itemValue = NULL;
+		if (this->value != NULL) {
+			itemFirst = this->consumeNext(this->value);
+			lexicalString = itemFirst->getStringProperty();
+			
+			// handle condatenation
+			itemCur = this->consumeNext(this->value);
+			while (itemCur != NULL) {
+				concatenation = true;
+				lexicalString += itemCur->getStringProperty();
+				itemCur = this->consumeNext(this->value);
+			}
+			
+			itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic(lexicalString);
+			if (concatenation) {
+				itemTyped = itemLexical;
+			} else {
+				itemTyped = itemFirst;
+			}
+		
+		} else {
+			itemLexical = NULL;
+			itemTyped = NULL;
+		}
+		
 		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createAttributeNode(
 				this->qname,
 				xs_anyType,
-				itemValue,
-				itemValue
+				itemLexical,
+				itemTyped
 			);
 		STACK_PUSH(item);
 		STACK_PUSH(NULL);

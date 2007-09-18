@@ -1276,10 +1276,12 @@ ostream& attr_expr::put( ostream& os) const
 void attr_expr::accept(
 	expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
 	if (this->qname_expr_h != NULL)
 		this->qname_expr_h->accept(v);
 	if (this->val_expr_h != NULL)
 		this->val_expr_h->accept(v);
+	v.end_visit(*this);
 }
 
 

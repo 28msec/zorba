@@ -247,7 +247,18 @@ namespace xqp
 	xqp_string ElementNode::show() const
 	{
 		xqp_string str;
-		str =  "<" + this->name->getLocalName() + ">";
+		
+		str =  "<" + this->name->getLocalName();
+		
+		if (this->attributes != NULL) {
+			Iterator_t iter = this->attributes->getIterator();
+			Item_t item = iter->next();
+			while (item != NULL) {
+				str += " " + item->show();
+				item = iter->next();
+			}
+		}
+		str += ">";
 		if (this->children != NULL) {
 			Iterator_t iter = this->children->getIterator();
 			Item_t item = iter->next();
@@ -256,7 +267,7 @@ namespace xqp
 				item = iter->next();
 			}
 		}
-		str += "</" + this->name->getLocalName() + ">";
+		str += "</" + this->name->getStringProperty() + ">";
 		return str;
 	}
 	/* end class ElementNode */
@@ -275,6 +286,8 @@ namespace xqp
 // 			Node ( parent ),
 			name ( name_arg ),
 			type ( type_arg ),
+			lexicalValue ( lexicalValue_arg ),
+			typedValue ( typedValue_arg ),
 			bIsId ( bIsId_arg ),
 			bIsIdrefs ( bIsIdrefs_arg )
 	{}
@@ -323,7 +336,7 @@ namespace xqp
 	
 	xqp_string AttributeNode::show() const
 	{
-		return "attributenode";
+		return this->name->getStringProperty() + "=\"" + (this->lexicalValue != NULL ? this->lexicalValue->show() : "") + "\"";
 	}
 	/* end class AttributeNode */
 

@@ -4489,6 +4489,11 @@ void DirElemContent::accept(parsenode_visitor& v) const
 	if (direct_cons_h != NULL)
 		direct_cons_h->accept(v);
 
+	if (cdata_h != NULL)
+		cdata_h->accept(v);
+		
+	if (common_content_h != NULL)
+		common_content_h->accept(v);
 	v.end_visit(*this); 
 }
 

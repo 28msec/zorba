@@ -121,10 +121,13 @@ namespace xqp
 	{ 
 		Store* store = zorba::getZorbaForCurrentThread()->getStore();
 		TempSeq_t seqChildren = NULL;
-		if (children != NULL)
-			seqChildren = store->createTempSeq ( children );
 		TempSeq_t seqAttributes = NULL;
 		TempSeq_t seqNamespaces = NULL;
+		
+		if (children != NULL)
+			seqChildren = store->createTempSeq ( children );
+		if (attributes != NULL)
+			seqAttributes = store->createTempSeq ( attributes );
 		Item_t item = new ElementNode(
 			name,
 			type,
