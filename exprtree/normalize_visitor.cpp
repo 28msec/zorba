@@ -248,11 +248,11 @@ cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(const ForLetClause& v)
-{
-cout << indent[++depth] << TRACE << endl;
-	return true;
-}
+// bool normalize_visitor::begin_visit(const ForLetClause& v)
+// {
+// cout << indent[++depth] << TRACE << endl;
+//  return true;
+// }
 
 bool normalize_visitor::begin_visit(const ForLetClauseList& v)
 {
@@ -862,11 +862,11 @@ cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
-bool normalize_visitor::begin_visit(const ExprSingle& v)
-{
-cout << indent[++depth] << TRACE << endl;
-	return true;
-}
+// bool normalize_visitor::begin_visit(const ExprSingle& v)
+// {
+// cout << indent[++depth] << TRACE << endl;
+//  return true;
+// }
 
 bool normalize_visitor::begin_visit(const ExtensionExpr& v)
 {
@@ -1649,10 +1649,10 @@ cout << indent[depth--] <<TRACE << endl;
 
 }
 
-void normalize_visitor::end_visit(const ForLetClause& v)
-{
- cout << indent[depth--] <<TRACE << endl;
-}
+// void normalize_visitor::end_visit(const ForLetClause& v)
+// {
+//  cout << indent[depth--] <<TRACE << endl;
+// }
 
 void normalize_visitor::end_visit(const ForLetClauseList& v)
 {
@@ -2261,10 +2261,10 @@ void normalize_visitor::end_visit(const Expr& v)
 	}
 }
 
-void normalize_visitor::end_visit(const ExprSingle& v)
-{
-cout << indent[depth--] << TRACE << endl;
-}
+// void normalize_visitor::end_visit(const ExprSingle& v)
+// {
+// cout << indent[depth--] << TRACE << endl;
+// }
 
 void normalize_visitor::end_visit(const ExtensionExpr& v)
 {

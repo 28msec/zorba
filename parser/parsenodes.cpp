@@ -152,7 +152,8 @@ ostream& MainModule::put(ostream& s) const
 void MainModule::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	prolog_h->accept(v);
+	if (prolog_h != NULL)
+	    prolog_h->accept(v);
 	query_body_h->accept(v);
 	v.end_visit(*this); 
 }
@@ -1201,6 +1202,11 @@ void Expr::accept(parsenode_visitor& v) const
 		e_p->accept(v);
 	}
 	v.end_visit(*this); 
+}
+
+int Expr::numberOfChildren() const
+{
+    return expr_hv.size();
 }
 
 

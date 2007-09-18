@@ -3,7 +3,9 @@ SOURCES 	= \
 	expr.cpp \
 	update_expr.cpp \
 	ft_expr.cpp \
-	normalize_visitor.cpp
+	normalize_visitor.cpp \
+	parsenode_print_xml_visitor.cpp \
+	parsenode_print_dot_visitor.cpp
 
 expr_test	= \
 		../context/context.cpp \

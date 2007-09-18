@@ -94,7 +94,7 @@ public:
 	bool begin_visit(ElementTest const&);
 	bool begin_visit(EmptyOrderDecl const&);
 	bool begin_visit(ForClause const&);
-	bool begin_visit(ForLetClause const&);
+    // bool begin_visit(ForLetClause const&);
 	bool begin_visit(ForLetClauseList const&);
 	bool begin_visit(ForwardAxis const&);
 	bool begin_visit(ForwardStep const&);
@@ -179,7 +179,7 @@ public:
 	bool begin_visit(DirPIConstructor const&);
 	bool begin_visit(EnclosedExpr const&);
 	bool begin_visit(Expr const&);
-	bool begin_visit(ExprSingle const&);
+    // bool begin_visit(ExprSingle const&);
 	bool begin_visit(ExtensionExpr const&);
 	bool begin_visit(FLWORExpr const&);
 	bool begin_visit(FilterExpr const&);
@@ -283,7 +283,7 @@ public:
 	void end_visit(ElementTest const&);
 	void end_visit(EmptyOrderDecl const&);
 	void end_visit(ForClause const&);
-	void end_visit(ForLetClause const&);
+    // void end_visit(ForLetClause const&);
 	void end_visit(ForLetClauseList const&);
 	void end_visit(ForwardAxis const&);
 	void end_visit(ForwardStep const&);
@@ -368,7 +368,7 @@ public:
 	void end_visit(DirPIConstructor const&);
 	void end_visit(EnclosedExpr const&);
 	void end_visit(Expr const&);
-	void end_visit(ExprSingle const&);
+    // void end_visit(ExprSingle const&);
 	void end_visit(ExtensionExpr const&);
 	void end_visit(FLWORExpr const&);
 	void end_visit(FilterExpr const&);

@@ -39,6 +39,8 @@ class parsenode : public rcobject
 protected:
 	yy::location loc;
 
+    friend class ParseNodePrintXMLVisitor;
+
 public:
 	parsenode(const yy::location& _loc) : loc(_loc) { }
   virtual ~parsenode() {}
@@ -303,6 +305,8 @@ class VersionDecl : public parsenode
 protected:
 	std::string version;
 	std::string encoding;
+
+    friend class ParseNodePrintXMLVisitor;
 
 public:
 	VersionDecl(
@@ -1242,6 +1246,7 @@ public:
 public:
 	void push_back(rchandle<exprnode> expr_h) { expr_hv.push_back(expr_h); }
 	rchandle<exprnode> operator[](int i) const { return expr_hv[i]; }
+    int  numberOfChildren() const;
 
 public:
 	std::ostream& put(std::ostream&) const;
