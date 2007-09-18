@@ -29,6 +29,7 @@ protected:
 
 public:
     ParseNodePrintXMLVisitor(std::ostream &);
+    void print(parsenode*);
 
 public:
     /*..........................................

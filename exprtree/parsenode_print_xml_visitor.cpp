@@ -13,6 +13,16 @@ ParseNodePrintXMLVisitor::ParseNodePrintXMLVisitor(std::ostream &aStream)
 {
 }
 
+void
+ParseNodePrintXMLVisitor::print(parsenode* p) 
+{
+    os << "<?xml version='1.0'>" << std::endl;
+    os << "<ParseNodeTree>" << std::endl;
+    p->accept(*this);
+    os << "</ParseNodeTree>" << std::endl;
+}
+
+
  
 bool
 ParseNodePrintXMLVisitor::begin_visit(const parsenode &n)
