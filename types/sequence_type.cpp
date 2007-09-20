@@ -38,12 +38,17 @@ namespace xqp
 	bool sequence_type::derives_from (
 	    TypeCode subtype, TypeCode type )
 	{
-		return ( type & !subtype ) == 0;
+		int startType = type >> TYPE_SHIFT;
+		int startSubtype = subtype >> TYPE_SHIFT;
+		int mask = SUB_MASK | SUB2_MASK | SUB3_MASK | SUB4_MASK | SUB5_MASK | SUB6_MASK;
+		int effType = type & mask;
+		int effSubtype = subtype & mask;
+		return (startType == startSubtype) && !(effType && ~effSubtype);
 	}
 
 	bool sequence_type::isNumeric ( TypeCode type )
 	{
-		return sequence_type::derives_from ( type, xs_decimal ) || type == xs_double || type == xs_float;
+		return (type & ISNUMERIC_MASK > 0);
 	}
 
 	TypeCode sequence_type::getNumericalOpResultType ( TypeCode type0, TypeCode type1 )

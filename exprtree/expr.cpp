@@ -440,6 +440,11 @@ ostream& if_expr::put( ostream& os) const
 void if_expr::accept(
 	expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
+	this->cond_expr_h->accept(v);
+	this->then_expr_h->accept(v);
+	this->else_expr_h->accept(v);
+	v.end_visit(*this);
 }
 
 

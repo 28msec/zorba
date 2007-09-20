@@ -281,6 +281,14 @@ public:
 		void resetImpl();
 		void releaseResourcesImpl();
 	}; /* class AttributeIterator */
+	
+	class IfThenElseIterator : public Batcher<IfThenElseIterator>
+	{
+	private:
+		
+	public:
+		
+	};
 
 
 }	/* namespace xqp */

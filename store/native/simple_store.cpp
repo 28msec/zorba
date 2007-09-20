@@ -85,6 +85,9 @@ namespace xqp
 	{
 
 	}
+	Item_t SimpleStore::createURI() {
+		return Item_t( NULL );
+	}
 	/* end class SimpleStore */
 
 } /* namespace xqp */

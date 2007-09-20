@@ -44,6 +44,7 @@ namespace xqp
 			virtual Collection_t createCollection ( Item_t uri );
 			virtual Collection_t createCollection();
 			virtual void deleteCollection ( Item_t uri );
+			virtual Item_t createURI();
 
 	}; /* class SimpleStore */
 

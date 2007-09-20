@@ -161,6 +161,13 @@ namespace xqp
 		  */
 		virtual void deleteCollection(Item_t uri) = 0;
 		
+		/**
+		 * Creates a new unique URI which can be used as an ID for a collection.
+		 *
+		 * @return URI
+		 */
+		virtual Item_t createURI() = 0;
+		
 	}; /* class Store */
 	
 	

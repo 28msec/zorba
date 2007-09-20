@@ -25,11 +25,14 @@ namespace xqp
 		return os;
 	}
 
+
+	// TODO korrekte effective boolean value Implementierung
 	Item_t FnBooleanIterator::nextImpl()
 	{
 		Item_t item;
-		sequence_type_t type;
 		string str;
+		TypeCode type;
+		bool b;
 
 		STACK_INIT();
 
@@ -37,11 +40,43 @@ namespace xqp
 
 		if ( item == NULL )
 		{
+			// empty sequence => false
 			STACK_PUSH ( this->zorp->getItemFactory()->createBoolean ( false ) );
+		}
+		else if ( item->isNode() )
+		{
+			// node => true
+			STACK_PUSH ( this->zorp->getItemFactory()->createBoolean ( true ) );
 		}
 		else
 		{
-			STACK_PUSH(item->getEBV());
+			type = item->getType();
+			if (
+			    ( this->consumeNext ( this-> arg0_ ) == NULL )
+			    &&
+			    ( type == xs_boolean
+			      || sequence_type::derives_from ( type, xs_string )
+			      || sequence_type::derives_from ( type, xs_anyURI )
+			      || sequence_type::derives_from ( type, xs_untypedAtomicValue )
+			      || sequence_type::isNumeric ( type )
+			    )
+			)
+			{
+				// atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
+				// => effective boolean value is defined in the items
+				STACK_PUSH ( item->getEBV() );
+			}
+			else
+			{
+				// else error => fn:boolean not defined
+				ZorbaErrorAlerts::error_alert (
+				    error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
+				    error_messages::RUNTIME_ERROR,
+				    &loc,
+				    false,
+				    "Wrong arguments in fn:boolean function!"
+				);
+			}
 		}
 
 		STACK_PUSH ( NULL );

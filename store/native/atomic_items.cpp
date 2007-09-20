@@ -184,7 +184,7 @@ namespace xqp
 
 	Item_t DecimalItem::getEBV() const
 	{
-		bool b = ( this->value_ == 0 );
+		bool b = ( this->value_ != 0 );
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
 	}
 
@@ -237,7 +237,7 @@ namespace xqp
 
 	Item_t IntItem::getEBV() const
 	{
-		bool b = ( this->value_ == 0 );
+		bool b = ( this->value_ != 0 );
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
 	}
 
@@ -285,7 +285,7 @@ namespace xqp
 
 	Item_t IntegerItem::getEBV() const
 	{
-		bool b = ( this->value_ == 0 );
+		bool b = ( this->value_ != 0 );
 		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
 	}
 
