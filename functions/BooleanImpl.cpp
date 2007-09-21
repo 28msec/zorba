@@ -18,41 +18,36 @@ namespace xqp
 	|
 	|	Computes the effective boolean value of the sequence $arg.
 	|_______________________________________________________________________*/
-	std::ostream& FnBooleanIterator::_show ( std::ostream& os )
-	const
+	std::ostream& 
+	FnBooleanIterator::_show ( std::ostream& os ) const
 	{
 		this->arg0_->show ( os );
 		return os;
 	}
 
-
-	// TODO korrekte effective boolean value Implementierung
-	Item_t FnBooleanIterator::nextImpl()
-	{
+	Item_t 
+	FnBooleanIterator::effectiveBooleanValue(const yy::location& loc, Iterator_t& iter) {
 		Item_t item;
-		string str;
 		TypeCode type;
-		bool b;
-
-		STACK_INIT();
-
-		item = this->consumeNext ( this->arg0_ );
+		Item_t result;
+		
+		item = iter->next();
 
 		if ( item == NULL )
 		{
 			// empty sequence => false
-			STACK_PUSH ( this->zorp->getItemFactory()->createBoolean ( false ) );
+			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( false );
 		}
 		else if ( item->isNode() )
 		{
 			// node => true
-			STACK_PUSH ( this->zorp->getItemFactory()->createBoolean ( true ) );
+			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( true );
 		}
 		else
 		{
 			type = item->getType();
 			if (
-			    ( this->consumeNext ( this-> arg0_ ) == NULL )
+			    ( iter->next() == NULL )
 			    &&
 			    ( type == xs_boolean
 			      || sequence_type::derives_from ( type, xs_string )
@@ -64,7 +59,7 @@ namespace xqp
 			{
 				// atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
 				// => effective boolean value is defined in the items
-				STACK_PUSH ( item->getEBV() );
+				result = item->getEBV();
 			}
 			else
 			{
@@ -78,20 +73,31 @@ namespace xqp
 				);
 			}
 		}
+		
+		return result;
+	}
 
+	Item_t 
+	FnBooleanIterator::nextImpl()
+	{
+		STACK_INIT();
+		STACK_PUSH( FnBooleanIterator::effectiveBooleanValue(this->loc, this->arg0_ ));
 		STACK_PUSH ( NULL );
 		STACK_END();
 	}
 
-	void FnBooleanIterator::resetImpl()
+	void 
+	FnBooleanIterator::resetImpl()
 	{
 		this->resetChild ( this->arg0_ );
 	}
 
-	void FnBooleanIterator::releaseResourcesImpl()
+	void 
+	FnBooleanIterator::releaseResourcesImpl()
 	{
 		this->releaseChildResources ( this->arg0_ );
 	}
+	/* end class FnBooleanIterator */
 
 	/* begin class ComparisonIterator */
 	Item_t CompareIterator::nextImpl()
@@ -253,7 +259,7 @@ namespace xqp
 				{
 					case xs_string:
 					case xs_untypedAtomicValue:
-					case xs_anyType:
+// 					case xs_anySimpleType:
 					case xs_anyURI:
 						return item0->getStringValue().compare ( item1->getStringValue() );
 						break;

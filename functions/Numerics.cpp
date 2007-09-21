@@ -443,25 +443,6 @@ bool op_numeric_unary_minus::validate_args(
 |_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
-op_numeric_equal::op_numeric_equal(const signature& sig)
-:
-function(sig)
-{}
-
-Iterator_t op_numeric_equal::operator()( yy::location loc, vector<Iterator_t>& argv) const {
-	if (!validate_args(argv))
-		return NULL;
- 	return new CompareIterator(loc, argv[0], argv[1], CompareIterator::VALUE_EQUAL);
-}
-
-sequence_type_t op_numeric_equal::type_check(signature& sig) const {
-	return xs_boolean;
-}
-
-bool op_numeric_equal::validate_args(vector<Iterator_t>& argv) const {
-	return (argv.size() == 2);
-}
-
 // 6.3.2 op:numeric-less-than
 // 6.3.3 op:numeric-greater-than
 

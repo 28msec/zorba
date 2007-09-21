@@ -2306,9 +2306,9 @@ cout << indent[depth--] << TRACE << ": FunctionCall"
 void normalize_visitor::end_visit(const IfExpr& v)
 {
 cout << indent[depth--] << TRACE << endl;
-	expr_t c_h = nodestack.top(); nodestack.pop();
-	expr_t t_h = nodestack.top(); nodestack.pop();
 	expr_t e_h = nodestack.top(); nodestack.pop();
+	expr_t t_h = nodestack.top(); nodestack.pop();
+	expr_t c_h = nodestack.top(); nodestack.pop();
 	rchandle<if_expr> if_h = new if_expr(v.get_location(),c_h,t_h,e_h);
 	nodestack.push(&*if_h);
 }

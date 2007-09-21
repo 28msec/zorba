@@ -164,17 +164,6 @@ public:
 
 // 6.3.1 op:numeric-equal
 //-----------------------
-class op_numeric_equal : public function {
-public:
-	op_numeric_equal(const signature&);
-	~op_numeric_equal() {}
-	
-public:
-	Iterator_t operator()( yy::location loc, std::vector<Iterator_t>&) const;
-	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
-};
-
 // 6.3.2 op:numeric-less-than
 // 6.3.3 op:numeric-greater-than
 

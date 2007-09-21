@@ -27,13 +27,21 @@ namespace xqp
 	{
 		private:
 			Iterator_t arg0_;
-// 	bool donef;
 
 		public:
 			FnBooleanIterator ( yy::location loc, Iterator_t arg0 )
 					:
 					Batcher<FnBooleanIterator> ( loc ), arg0_ ( arg0 ) {}
 			~FnBooleanIterator() {}
+
+			/**
+			 * Static function which computes the effective boolean value of a passed iterator.
+			 *
+			 * @param loc location of the iterator which invokes this function
+			 * @param iterator
+			 * @return effective boolean value
+			 */
+			static Item_t effectiveBooleanValue ( const yy::location& loc, Iterator_t&);
 
 			Item_t nextImpl();
 			void resetImpl();
@@ -48,7 +56,7 @@ namespace xqp
 	class CompareIterator : public Batcher<CompareIterator>
 	{
 		public:
-			enum CompareTypes{
+			enum CompareType{
 				VALUE_EQUAL, GENERAL_EQUAL, NODE_EQUAL,
 				VALUE_NOT_EQUAL, GENERAL_NOT_EQUAL, NODE_NOT_EQUAL,
 				VALUE_LESS, GENERAL_LESS,
@@ -62,10 +70,10 @@ namespace xqp
 			Iterator_t iter1;
 			
 			GenericCast* genericCast;
-			CompareTypes compareType;
+			CompareType compareType;
 
 		public:
-			CompareIterator ( yy::location loc, Iterator_t arg0, Iterator_t arg1, CompareTypes argCompType )
+			CompareIterator ( yy::location loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType )
 					:
 					Batcher<CompareIterator> ( loc ), iter0 ( arg0 ), iter1 ( arg1 ), compareType(argCompType) {}
 

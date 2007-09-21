@@ -255,8 +255,8 @@ public:
 		ElementIterator(
 			const yy::location& loc, 
 			const Item_t& qname_arg,
-			const Iterator_t& children_arg,
-			const Iterator_t& attributes_arg
+			Iterator_t& children_arg,
+			Iterator_t& attributes_arg
 		);
 	
 		Item_t nextImpl();
@@ -274,7 +274,7 @@ public:
 		AttributeIterator(
 			const yy::location& loc,
 			const Item_t& qname_arg,
-			const Iterator_t& value_arg
+			Iterator_t& value_arg
 		);
 		
 		Item_t nextImpl();
@@ -285,10 +285,38 @@ public:
 	class IfThenElseIterator : public Batcher<IfThenElseIterator>
 	{
 	private:
+		Iterator_t iterCond;
+		Iterator_t iterThen;
+		Iterator_t iterElse;
+		bool condIsBooleanIter;
+		
+		// helping member so save the active iterator (then or else)
+		Iterator_t iterActive;
 		
 	public:
+		/**
+		 * Constructor
+		 * @param loc location
+		 * @param iterCond_arg represents condition
+		 * @param iterThen_arg represents then expression
+		 * @param iterElse_arg represents else expression
+		 * @param condIsBooleanIter Optional flag. If true => condition is already an iterator 
+		 * 															which return true or false => the conditional value
+		 *															does not have to be evaluated with the effective
+		 *															boolean value function
+		 */
+		IfThenElseIterator(
+			const yy::location& loc,
+			Iterator_t& iterCond_arg,
+			Iterator_t& iterThen_arg,
+			Iterator_t& iterElse_arg,
+			bool condIsBooleanIter_arg = false
+		);
 		
-	};
+		Item_t nextImpl();
+		void resetImpl();
+		void releaseResourcesImpl();
+	}; /* class IfThenElseIterator */
 
 
 }	/* namespace xqp */

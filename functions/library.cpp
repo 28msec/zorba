@@ -57,7 +57,6 @@ bool library::static_init = false;
   // Numerics
     
   // op_numeric_unary_plus
-  // 
   // op_numeric_unary_minus
     
   DECL (op_add, op_numeric_add,
@@ -76,30 +75,84 @@ bool library::static_init = false;
         (new QNameItem (XQUERY_FN_NS,"op","mod"),
          xs_decimal, xs_decimal, xs_decimal));
 
-  DECL (op_val_eq, op_numeric_equal,
-        (new QNameItem(XQUERY_FN_NS,"op","equal"),
-         xs_decimal, xs_decimal,
-         xs_boolean));
-
   DECL (fn_abs, fn_abs,
         (new QNameItem(XQUERY_FN_NS, "fn", "abs"),
          xs_decimal,
          xs_decimal));
+  // end Numerics
 
   // Sequences
   DECL (fn_doc, fn_doc_func,
         (new QNameItem(XQUERY_FN_NS,"fn","doc"),
          xs_string,
          documentNode));
+  // end Sequences
 
-  // Comparisons
+  // Generic Comparison;
+  DECL (op_eq, op_equal,
+        (new QNameItem(XQUERY_OP_NS,"op","equal"),
+         xs_anyType, xs_anyType,
+         xs_boolean));
+         
+  DECL (op_ne, op_not_equal,
+        (new QNameItem(XQUERY_OP_NS,"op","not-equal"),
+         xs_anyType, xs_anyType,
+         xs_boolean));
+  
   DECL (op_gt, op_greater,
         (new QNameItem(XQUERY_OP_NS,"op","greater"),
          xs_anyType, xs_anyType,
          xs_boolean));
+         
+  DECL (op_ge, op_greater_equal,
+        (new QNameItem(XQUERY_OP_NS,"op","greater-equal"),
+         xs_anyType, xs_anyType,
+         xs_boolean));
+
+   DECL (op_lt, op_less,
+        (new QNameItem(XQUERY_OP_NS,"op","less"),
+         xs_anyType, xs_anyType,
+         xs_boolean));
+         
+   DECL (op_le, op_less_equal,
+        (new QNameItem(XQUERY_OP_NS,"op","less-equal"),
+         xs_anyType, xs_anyType,
+         xs_boolean));
+   // end Generic Comparison
+   
+  // Value Comparison
+	DECL (op_val_eq, op_value_equal,
+        (new QNameItem(XQUERY_FN_NS,"op","value-equal"),
+         xs_anyType, xs_anyType,
+         xs_boolean));
+      
+	DECL (op_val_ne, op_value_not_equal,
+				(new QNameItem(XQUERY_FN_NS,"op","value-not-equal"),
+				xs_anyType, xs_anyType,
+				xs_boolean));
+				
+	DECL (op_val_gt, op_value_greater,
+				(new QNameItem(XQUERY_FN_NS,"op","value-greater"),
+				xs_anyType, xs_anyType,
+				xs_boolean));
+				
+	DECL (op_val_ge, op_value_greater_equal,
+				(new QNameItem(XQUERY_FN_NS,"op","value-greater-equal"),
+				xs_anyType, xs_anyType,
+				xs_boolean));
+				
+	DECL (op_val_lt, op_value_less,
+				(new QNameItem(XQUERY_FN_NS,"op","value-less"),
+				xs_anyType, xs_anyType,
+				xs_boolean));
+				
+	DECL (op_val_le, op_value_less_equal,
+				(new QNameItem(XQUERY_FN_NS,"op","value-less-equal"),
+				xs_anyType, xs_anyType,
+				xs_boolean));
+  // end Value Comparison
 
   // Strings
-
   DECL (fn_codepoints_to_string, fn_codepoints_to_string,
         (new QNameItem(XQUERY_FN_NS,"fn","codepoints-to-string"),
          xs_integer,
@@ -129,22 +182,12 @@ bool library::static_init = false;
         (new QNameItem(XQUERY_FN_NS,"fn","boolean"),
          xs_anyType,
          xs_boolean));
-
+	// end Strings
 // TODO
 
 qnamekey_t library::op_idiv_key;
 
 // Comparison operators
-qnamekey_t library::op_eq_key;
-qnamekey_t library::op_ne_key;
-qnamekey_t library::op_lt_key;
-qnamekey_t library::op_le_key;
-qnamekey_t library::op_ge_key;
-qnamekey_t library::op_val_ne_key;
-qnamekey_t library::op_val_lt_key;
-qnamekey_t library::op_val_le_key;
-qnamekey_t library::op_val_gt_key;
-qnamekey_t library::op_val_ge_key;
 qnamekey_t library::op_is_key;
 qnamekey_t library::op_precedes_key;
 qnamekey_t library::op_follows_key;

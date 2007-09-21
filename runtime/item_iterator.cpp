@@ -12,6 +12,7 @@
 #include "../store/api/item.h"
 #include "runtime/zorba.h"
 #include "exprtree/expr.h"
+#include "../functions/BooleanImpl.h"
 
 using namespace std;
 namespace xqp
@@ -69,60 +70,64 @@ namespace xqp
 		theExpr->show ( os );
 		return os;
 	}
-	
+
 	/* begin class ElementIterator */
-	ElementIterator::ElementIterator(
-		const yy::location& loc,
-		const Item_t& qname_arg,
-		const Iterator_t& children_arg,
-		const Iterator_t& attributes_arg)
-	:
-		Batcher<ElementIterator>(loc), qname(qname_arg), children(children_arg), attributes(attributes_arg){}
-	
-	Item_t 
-	ElementIterator::nextImpl() {
+	ElementIterator::ElementIterator (
+	    const yy::location& loc,
+	    const Item_t& qname_arg,
+	    Iterator_t& children_arg,
+	    Iterator_t& attributes_arg )
+			:
+			Batcher<ElementIterator> ( loc ), qname ( qname_arg ), children ( children_arg ), attributes ( attributes_arg ) {}
+
+	Item_t
+	ElementIterator::nextImpl()
+	{
 		Item_t item;
-		
+
 		STACK_INIT();
-		
-		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode(
-				this->qname,
-				xs_anyType,
-				this->children,
-				this->attributes,
-				this->namespaceBindings,
-				false,
-				false
-			);
-		STACK_PUSH(item);
-		
+
+		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
+		           this->qname,
+		           xs_anyType,
+		           this->children,
+		           this->attributes,
+		           this->namespaceBindings,
+		           false,
+		           false
+		       );
+		STACK_PUSH ( item );
+
 		STACK_PUSH ( NULL );
 		STACK_END();
 	}
-	
-	void 
-	ElementIterator::resetImpl() {
-		if (this->children != NULL)
-			this->resetChild(this->children);
+
+	void
+	ElementIterator::resetImpl()
+	{
+		if ( this->children != NULL )
+			this->resetChild ( this->children );
 	}
-	
-	void 
-	ElementIterator::releaseResourcesImpl() {
-		if (this->children != NULL)
-			this->releaseChildResources(this->children);
+
+	void
+	ElementIterator::releaseResourcesImpl()
+	{
+		if ( this->children != NULL )
+			this->releaseChildResources ( this->children );
 	}
 	/* end class ElementIterator */
-	
+
 	/* begin class AttributeIterator */
-	AttributeIterator::AttributeIterator(
-		const yy::location& loc,
-		const Item_t& qname_arg,
-		const Iterator_t& value_arg)
-	:
-		Batcher<AttributeIterator>(loc), qname(qname_arg), value(value_arg) {}
-	
+	AttributeIterator::AttributeIterator (
+	    const yy::location& loc,
+	    const Item_t& qname_arg,
+	    Iterator_t& value_arg )
+			:
+			Batcher<AttributeIterator> ( loc ), qname ( qname_arg ), value ( value_arg ) {}
+
 	Item_t
-	AttributeIterator::nextImpl() {
+	AttributeIterator::nextImpl()
+	{
 		Item_t item;
 		Item_t itemCur;
 		Item_t itemFirst;
@@ -130,55 +135,117 @@ namespace xqp
 		Item_t itemTyped;
 		xqp_string lexicalString;
 		bool concatenation = false;
-		
+
 		STACK_INIT();
-		if (this->value != NULL) {
-			itemFirst = this->consumeNext(this->value);
+		if ( this->value != NULL )
+		{
+			itemFirst = this->consumeNext ( this->value );
 			lexicalString = itemFirst->getStringProperty();
-			
+
 			// handle condatenation
-			itemCur = this->consumeNext(this->value);
-			while (itemCur != NULL) {
+			itemCur = this->consumeNext ( this->value );
+			while ( itemCur != NULL )
+			{
 				concatenation = true;
 				lexicalString += itemCur->getStringProperty();
-				itemCur = this->consumeNext(this->value);
+				itemCur = this->consumeNext ( this->value );
 			}
-			
-			itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic(lexicalString);
-			if (concatenation) {
+
+			itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( lexicalString );
+			if ( concatenation )
+			{
 				itemTyped = itemLexical;
-			} else {
+			}
+			else
+			{
 				itemTyped = itemFirst;
 			}
-		
-		} else {
+
+		}
+		else
+		{
 			itemLexical = NULL;
 			itemTyped = NULL;
 		}
-		
-		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createAttributeNode(
-				this->qname,
-				xs_anyType,
-				itemLexical,
-				itemTyped
-			);
-		STACK_PUSH(item);
-		STACK_PUSH(NULL);
+
+		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createAttributeNode (
+		           this->qname,
+		           xs_anyType,
+		           itemLexical,
+		           itemTyped
+		       );
+		STACK_PUSH ( item );
+		STACK_PUSH ( NULL );
 		STACK_END();
 	}
-	
-	void 
-	AttributeIterator::resetImpl() {
-		if (this->value != NULL)
-			this->resetChild(this->value);
+
+	void
+	AttributeIterator::resetImpl()
+	{
+		if ( this->value != NULL )
+			this->resetChild ( this->value );
 	}
-	
-	void 
-	AttributeIterator::releaseResourcesImpl() {
-		if (this->value != NULL)
-			this->releaseChildResources(this->value);
+
+	void
+	AttributeIterator::releaseResourcesImpl()
+	{
+		if ( this->value != NULL )
+			this->releaseChildResources ( this->value );
 	}
 	/* end class AttributeIterator */
+
+	/* start class IfThenElseIterator */
+	IfThenElseIterator::IfThenElseIterator (
+	    const yy::location& loc,
+	    Iterator_t& iterCond_arg,
+	    Iterator_t& iterThen_arg,
+	    Iterator_t& iterElse_arg,
+	    bool condIsBooleanIter_arg
+	) : Batcher<IfThenElseIterator> ( loc ), iterCond ( iterCond_arg ), iterThen ( iterThen_arg ),
+			iterElse ( iterElse_arg ), condIsBooleanIter ( condIsBooleanIter_arg )
+	{}
+
+	Item_t
+	IfThenElseIterator::nextImpl()
+	{
+		Item_t condResult;
+
+		STACK_INIT();
+
+		if ( this->condIsBooleanIter )
+			condResult = this->consumeNext ( this->iterCond );
+		else
+			condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc, this->iterCond );
+
+		if ( condResult->getBooleanValue() )
+			this->iterActive = this->iterThen;
+		else
+			this->iterActive = this->iterElse;
+
+		while ( true )
+		{
+			STACK_PUSH ( this->consumeNext ( this->iterActive ) );
+		}
+
+		STACK_END();
+	}
+
+	void
+	IfThenElseIterator::resetImpl()
+	{
+		this->resetChild ( this->iterCond );
+		this->resetChild ( this->iterThen );
+		this->resetChild ( this->iterElse );
+	}
+
+	void
+	IfThenElseIterator::releaseResourcesImpl()
+	{
+		this->releaseChildResources ( this->iterCond );
+		this->releaseChildResources ( this->iterThen );
+		this->releaseChildResources ( this->iterElse );
+	}
+	/* end class IfThenElseIterator */
 
 } /* namespace xqp */
 

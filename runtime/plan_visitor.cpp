@@ -282,6 +282,11 @@ cout << TRACE << endl;
 void plan_visitor::end_visit(const if_expr& v)
 {
 cout << TRACE << endl;
+	Iterator_t iterElse = pop_itstack();
+	Iterator_t iterThen = pop_itstack();
+	Iterator_t iterCond = pop_itstack();
+	Iterator_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
+	itstack.push(&*iterIfThenElse);
 }
 
 void plan_visitor::end_visit(const fo_expr& v)
