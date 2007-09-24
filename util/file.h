@@ -12,19 +12,19 @@
 #define XQP_FILE_H
 
 #ifndef _WIN32_WCE
-	#include <sys/types.h>
-	#include <sys/stat.h>
-	#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #else
-	#include <windows.h>
-	#include <types.h>
+#include <windows.h>
+#include <types.h>
 #endif
+
 #ifdef WIN32
 #include <Windows.h>
-	#include "win32/compatib_defs.h"
+#include "win32/compatib_defs.h"
 #else
-	#include <sys/vfs.h>
-	#include <dirent.h>
+#include <dirent.h>
 #endif
 
 #include <time.h>

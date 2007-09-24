@@ -12,12 +12,12 @@
 #include "file.h"
 
 #ifndef _WIN32_WCE
-	#include <errno.h>
-	#include <sys/stat.h>
-	#include <sys/types.h>
+#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #else
-	#include <windows.h>
-	#include <types.h>
+#include <windows.h>
+#include <types.h>
 #endif
 #include <time.h>
 #include <stdio.h>
@@ -29,10 +29,14 @@
 #include <direct.h>
 #endif
 #else
-	#include <sys/param.h>
-	#include <sys/mount.h>
-	#include <unistd.h>
-	#include <sys/vfs.h>
+#include <sys/param.h>
+#include <unistd.h>
+#endif
+
+#ifndef __APPLE_CC__
+#include <sys/vfs.h>
+#else
+#include <sys/mount.h>
 #endif
 
 #ifndef _WIN32_WCE
