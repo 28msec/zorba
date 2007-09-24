@@ -38,6 +38,22 @@ in the root folder. This will compile all the objects currently in
 the project. As the makefiles are granular, with a file per 
 folder, and you can run make in any of them. This will build the 
 objects in that particular folder.
+
+---- Begin: Note for Mac OS Users ----
+Note that GNU make > 3.81 is needed in order to build Zorba.
+With Mac OS Tiger only GNU make 3.80 is shipped.
+The easiest way to install a newer make version is to use
+Darwin Ports (http://darwinports.com/). Therefore, you
+should use the Darwin Ports installer and
+immediately after finishing the installation run "sudo port -d selfupdate".
+If this was successfull you can simply install make
+by typing "sudo port install gmake". This command
+will install the latest make version and all its
+dependencies. This will take a while. Finally, you can start building Zorba by
+typing "gmake" in the Zorba root folder. For the rest of this manual,
+you should always use gmake if make is used.
+---- End: Note for Mac OS Users ----
+
         
 The current test application -- query_exec -- can be compiled with:
 
