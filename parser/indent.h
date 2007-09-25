@@ -14,7 +14,7 @@
 namespace xqp {
 
 // printing
-static char* indent[] = {
+static const char* indent[] = {
 	"",
 	"  ",
 	"    ",

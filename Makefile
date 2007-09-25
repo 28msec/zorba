@@ -11,6 +11,7 @@ SUBDIRS		= \
 				types \
 				utf8 \
 				util \
+				serialization \
 				store
 
 # Include global Makefile rules

@@ -138,6 +138,9 @@ public:
 		FORX0003_Regular_expression_matches_zero_length_string,
 		FORX0004_Invalid_replacement_string,
 		FOTY0012_Argument_node_does_not_have_a_typed_value,
+
+		// Serialization errors
+		SENR0001_Item_is_attribute_or_namespace_node,
  
 
 		// ZORBA errors
