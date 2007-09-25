@@ -63,6 +63,8 @@ query_exec	= \
 		../functions/Strings.cpp \
 		../functions/StringsImpl.cpp \
 		../functions/signature.cpp \
+		../functions/Accessors.cpp \
+		../functions/AccessorsImpl.cpp \
 		../parser/parsenodes.cpp \
 		../parser/xquery_parser.cpp \
 		../parser/xquery_scanner.cpp \

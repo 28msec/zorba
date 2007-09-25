@@ -41,7 +41,7 @@ namespace xqp
 	// TODO do be extended!!
 	Item_t GenericCast::cast(Item_t item) {
 		Item_t result;
-		sequence_type_t itemType = item->getType();
+		TypeCode itemType = item->getType();
 		ItemFactory* itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
 		if ( sequence_type::derives_from ( this->targetType, itemType ) )
 			return item;
@@ -50,13 +50,13 @@ namespace xqp
 		{
 			case xs_double:
 				double doubleVal;
-				if ( itemType == xs_float )
+				if ( sequence_type::derives_from ( itemType, xs_float ) )
 				{
 					doubleVal = static_cast<double> ( item->getFloatValue() );
 				}
 				else if ( sequence_type::derives_from ( itemType, xs_decimal ) )
 				{
-					double doubleVal = static_cast<double> ( item->getDecimalValue() );
+					doubleVal = static_cast<double> ( item->getDecimalValue() );
 				}
 				else
 				{
@@ -90,6 +90,9 @@ namespace xqp
 					    "Numeric casting of a non numeric type"
 					);
 				}
+				break;
+			case xs_string:
+				result = itemFactory->createString( item->getStringProperty() );
 				break;
 			default:
 				ZorbaErrorAlerts::error_alert (

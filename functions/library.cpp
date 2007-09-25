@@ -10,6 +10,7 @@
 #include "function.h"
 #include "signature.h"
 
+#include "Accessors.h"
 #include "Numerics.h"
 #include "Sequences.h"
 #include "Strings.h"
@@ -53,6 +54,12 @@ bool library::static_init = false;
   qnamekey_t library::key##_key;                                        \
   type key##_tmp_obj (signature sig);                                   \
   initializer key##_tmp_init (key##_tmp_obj, library::key##_key)
+  
+  // Accessors
+  DECL (fn_data, fn_data_func,
+  			(new QNameItem (XQUERY_FN_NS, "fn", "data"),
+  			xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
+  // end Accessors
   
   // Numerics
     

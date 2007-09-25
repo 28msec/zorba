@@ -57,14 +57,20 @@ namespace xqp
 	) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createDateTime ( const Item_t&, const Item_t& ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createDouble ( double value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createDouble ( double value ) 
+	{ 
+		return new DoubleItem( value ); 
+	}
 	Item_t BasicItemFactory::createDuration ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createDuration (
 	    short years, short months, short days, short hours, short minutes, short seconds
 	) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createENTITIES ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createENTITY ( const xqp_string& value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createFloat ( float value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createFloat ( float value ) 
+	{ 
+		return new FloatItem( value ); 
+	}
 	Item_t BasicItemFactory::createGDay ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createGDay ( short day ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createGMonth ( const xqp_string& value ) { return Item_t ( NULL ); }

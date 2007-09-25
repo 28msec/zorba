@@ -141,6 +141,16 @@ namespace xqp
 			    bool bIsIdrefs
 			);
 			
+			AttributeNode (
+			    const Item_t& parent,
+			    const Item_t& name,
+			    const TypeCode type,
+			    const Item_t& lexicalValue,
+			    const Item_t& typedValue,
+			    bool bIsId,
+			    bool bIsIdrefs
+			);
+			
 			virtual ~AttributeNode();
 
 			virtual Item_t getAtomizationValue() const;

@@ -68,46 +68,6 @@ namespace xqp
 		return xs_integer;
 	}
 
-	TypeCode sequence_type::getTypeSubstituted ( TypeCode type )
-	{
-		if ( sequence_type::derives_from ( type, xs_decimal ) )
-			return xs_decimal;
-		else if ( sequence_type::derives_from ( type,xs_string ) )
-			return xs_string;
-		else
-			return type;
-	}
-
-	bool sequence_type::comparable(TypeCode type0, TypeCode type1)
-	{
-		if (type0 == type1) 
-			return true;
-		
-		if ((type0 == xs_string /*|| type0 == xs_anySimpleType*/ || type0 == xs_untypedAtomicValue || type0 == xs_anyURI 
-				|| type0 == xs_untypedValue)
-			&& (type1 == xs_string /*|| type1 == xs_anySimpleType*/ || type1 == xs_untypedAtomicValue || type1 == xs_anyURI 
-				|| type1 == xs_untypedValue)) {
-			return true;
-		}
-		
-		/*
-		Duration types can be partially compared:
-		xs:duration + other types => depending on values in xs:duration
-		xs:dayTime + xs:yearMonth => if both are 0
-		=> in any case, the comparison could work
-		*/
-		if ((type0 == xs_duration || type0 == xs_dayTimeDuration || type0 == xs_yearMonthDuration)
-				&& (type1 == xs_duration || type1 == xs_dayTimeDuration || type1 == xs_yearMonthDuration)) {
-			return true;
-		}
-		
-		if (sequence_type::isNumeric(type0) && sequence_type::isNumeric(type1))
-			return true;
-			
-			
-		return false;
-	}
-
 	std::string sequence_type::describe (
 	    TypeCode t )
 	{

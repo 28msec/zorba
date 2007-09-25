@@ -25,59 +25,87 @@ namespace xqp
 	SimpleTempSeq::~SimpleTempSeq()
 	{	}
 
-	Iterator_t SimpleTempSeq::getIterator()
+	Iterator_t 
+	SimpleTempSeq::getIterator()
 	{
 		return new SimpleTempSeq::Iterator ( this->loc, &this->items );
 	}
-	Iterator_t SimpleTempSeq::getIterator ( int32_t startPos, int32_t endPos, bool streaming )
+	
+	Iterator_t 
+	SimpleTempSeq::getIterator ( int32_t startPos, int32_t endPos, bool streaming )
 	{
 		return rchandle<BasicIterator> ( NULL );
 	}
-	Iterator_t SimpleTempSeq::getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& vars, bool streaming )
+	
+	Iterator_t 
+	SimpleTempSeq::getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& vars, bool streaming )
 	{
 		return rchandle<BasicIterator> ( NULL );
 	}
-	Iterator_t SimpleTempSeq::getIterator ( const std::vector<int32_t>& positions, bool streaming )
+	
+	Iterator_t 
+	SimpleTempSeq::getIterator ( const std::vector<int32_t>& positions, bool streaming )
 	{
 		return rchandle<BasicIterator> ( NULL );
 	}
-	Iterator_t SimpleTempSeq::getIterator ( Iterator_t positions, bool streaming )
+	
+	Iterator_t 
+	SimpleTempSeq::getIterator ( Iterator_t positions, bool streaming )
 	{
 		return rchandle<BasicIterator> ( NULL );
 	}
-	Item_t SimpleTempSeq::getItem ( int32_t position )
+	
+	Item_t 
+	SimpleTempSeq::getItem ( int32_t position )
 	{
-		if ( int32_t ( this->items.size() ) > position )
+		if ( this->containsItem( position ))
 		{
-			return this->items[position];
+			return this->items[position - 1];
 		}
 		else
 		{
 			return NULL;
 		}
 	}
-	void SimpleTempSeq::purge()
+	
+	bool
+	SimpleTempSeq::containsItem ( int32_t position)
+	{
+		return int32_t ( this->items.size() ) >= position;
+	}
+	
+	void 
+	SimpleTempSeq::purge()
 	{
 
 	}
-	void SimpleTempSeq::purgeUpTo ( int32_t upTo )
+	
+	void 
+	SimpleTempSeq::purgeUpTo ( int32_t upTo )
 	{
 
 	}
-	void SimpleTempSeq::purgeItem ( const std::vector<int32_t>& positions )
+	
+	void 
+	SimpleTempSeq::purgeItem ( const std::vector<int32_t>& positions )
 	{
 
 	}
-	void SimpleTempSeq::purgeItem ( int32_t position )
+	
+	void 
+	SimpleTempSeq::purgeItem ( int32_t position )
 	{
 
 	}
-	bool SimpleTempSeq::empty()
+	
+	bool 
+	SimpleTempSeq::empty()
 	{
 		return this->items.size() == 0;
 	}
 
-	Item_t SimpleTempSeq::Iterator::nextImpl()
+	Item_t 
+	SimpleTempSeq::Iterator::nextImpl()
 	{
 		this->curPos++;
 		switch ( this->borderType )
@@ -98,7 +126,8 @@ namespace xqp
 		return NULL;
 	}
 
-	void SimpleTempSeq::Iterator::resetImpl()
+	void 
+	SimpleTempSeq::Iterator::resetImpl()
 	{
 		switch ( this->borderType )
 		{
@@ -112,7 +141,8 @@ namespace xqp
 		}
 	}
 
-	void SimpleTempSeq::Iterator::releaseResourcesImpl()
+	void 
+	SimpleTempSeq::Iterator::releaseResourcesImpl()
 	{
 	}
 

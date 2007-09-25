@@ -33,6 +33,9 @@ protected:
 	fxhash64map<const function*> funtab;
 
 public:
+	// Accessor functions
+	static qnamekey_t fn_data_key;
+
 	// Numeric functions
 	//daniel: these serve as constant global keys
 	static qnamekey_t op_add_key;

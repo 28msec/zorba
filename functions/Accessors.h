@@ -1,6 +1,29 @@
-2.1 fn:node-name
-2.2 fn:nilled
-2.3 fn:string
-2.4 fn:data
-2.5 fn:base-uri
-2.6 fn:document-uri
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
+ *
+ *  $Id: collection.h,v 1.1 2007/08/27 07:07:59 $
+ *
+ *	Copyright 2006-2007 FLWOR Foundation.
+ *  Author: David Graf
+ *
+ */
+
+#ifndef XQP_ACCESSORS_H
+#define XQP_ACCESSORS_H
+
+#include "context/common.h"
+#include "functions/function.h"
+
+namespace xqp {
+	class fn_data_func : public function
+	{
+		public:
+			fn_data_func ( const signature& );
+			~fn_data_func() {}
+
+		public:
+			Iterator_t operator() ( yy::location loc, std::vector<Iterator_t>& ) const;
+			TypeCode type_check ( signature& ) const;
+			bool validate_args ( std::vector<Iterator_t>& ) const;
+	};
+} /* namespace xqp */
+#endif /* XQP_ACCESSORS_H */

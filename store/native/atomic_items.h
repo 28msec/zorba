@@ -145,6 +145,41 @@ namespace xqp
 			virtual xqp_string show() const;
 	}; /* class IntegerItem */
 
+	class DoubleItem : public AtomicItem
+	{
+	protected:
+		double value;
+	public:
+		DoubleItem ( double value_arg );
+		virtual ~DoubleItem();
+		virtual double getDoubleValue() const;
+		
+		virtual TypeCode getType() const;
+		virtual Item_t getAtomizationValue( ) const;
+		virtual bool equals ( Item_t ) const;
+		virtual Item_t getEBV( ) const;
+		virtual xqp_string getStringProperty() const;
+
+		virtual xqp_string show() const;
+	}; /* class DoubleItem */
+	
+	class FloatItem : public AtomicItem
+	{
+		float value;
+	public:
+		FloatItem ( float value_arg );
+		virtual ~FloatItem();
+		virtual float getFloatValue() const;
+		
+		virtual TypeCode getType() const;
+		virtual Item_t getAtomizationValue( ) const;
+		virtual bool equals ( Item_t ) const;
+		virtual Item_t getEBV( ) const;
+		virtual xqp_string getStringProperty() const;
+
+		virtual xqp_string show() const;
+	}; /* class FlaotItem */
+	
 	class BooleanItem : public AtomicItem
 	{
 		private:

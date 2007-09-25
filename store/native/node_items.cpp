@@ -274,7 +274,6 @@ namespace xqp
 
 	/* start class AttributeNode */
 	AttributeNode::AttributeNode (
-// 	    const Item_t& parent,
 	    const Item_t& name_arg,
 	    const TypeCode type_arg,
 	    const Item_t& lexicalValue_arg,
@@ -283,7 +282,25 @@ namespace xqp
 	    bool bIsIdrefs_arg
 	)
 			:
-// 			Node ( parent ),
+			name ( name_arg ),
+			type ( type_arg ),
+			lexicalValue ( lexicalValue_arg ),
+			typedValue ( typedValue_arg ),
+			bIsId ( bIsId_arg ),
+			bIsIdrefs ( bIsIdrefs_arg )
+	{}
+	
+	AttributeNode::AttributeNode (
+	    const Item_t& parent,
+	    const Item_t& name_arg,
+	    const TypeCode type_arg,
+	    const Item_t& lexicalValue_arg,
+	    const Item_t& typedValue_arg,
+	    bool bIsId_arg,
+	    bool bIsIdrefs_arg
+	)
+			:
+			Node ( parent ),
 			name ( name_arg ),
 			type ( type_arg ),
 			lexicalValue ( lexicalValue_arg ),

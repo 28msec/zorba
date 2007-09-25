@@ -83,10 +83,19 @@ namespace xqp {
 		/**
 		 * Gets an item at a certain position.
 		 *
-		 * @param position
+		 * @param position (first position in XQuery is 1 and not 0!)
 		 * @return item
 		 */
 		virtual Item_t getItem(int32_t position) = 0;
+		
+		
+		/**
+		 * Returns true if the item at the passed position is available.
+		 *
+		 * @param position 
+		 * @return 
+		 */
+		virtual bool containsItem(int32_t position) = 0;
 		
 		/**
 		 * purge() allows the store to do proper garbage collection. If e.g. a let 

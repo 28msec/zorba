@@ -33,6 +33,7 @@ namespace xqp
 			virtual Iterator_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
 			virtual Iterator_t getIterator ( Iterator_t positions, bool streaming = false );
 			virtual Item_t getItem ( int32_t position );
+			virtual bool containsItem( int32_t position );
 			virtual void purge();
 			virtual void purgeUpTo ( int32_t upTo );
 			virtual void purgeItem ( const std::vector<int32_t>& positions );

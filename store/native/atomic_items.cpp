@@ -54,7 +54,7 @@ namespace xqp
 		return Item::createQNameKey ( this->strNamespace_, this->strPrefix_, this->strLocal_ );
 	}
 
-	sequence_type_t QNameItem::getType( ) const
+	TypeCode QNameItem::getType( ) const
 	{
 		return xs_qname;
 	}
@@ -167,7 +167,7 @@ namespace xqp
 		return this->value_;
 	}
 
-	sequence_type_t DecimalItem::getType() const
+	TypeCode DecimalItem::getType() const
 	{
 		return xs_decimal;
 	}
@@ -220,7 +220,7 @@ namespace xqp
 		return static_cast<long double> ( this->value_ );
 	}
 
-	sequence_type_t IntItem::getType() const
+	TypeCode IntItem::getType() const
 	{
 		return xs_int;
 	}
@@ -268,7 +268,7 @@ namespace xqp
 		return static_cast<long double> ( this->value_ );
 	}
 
-	sequence_type_t IntegerItem::getType() const
+	TypeCode IntegerItem::getType() const
 	{
 		return xs_integer;
 	}
@@ -301,6 +301,92 @@ namespace xqp
 		return "xs:integer(" + this->getStringProperty() + ")";
 	}
 	/* end class IntegerItem */
+	
+	/* start class DoubleItem */
+	DoubleItem::DoubleItem ( double value_arg ) :value ( value_arg ) {}
+	DoubleItem::~DoubleItem() {}
+
+	double DoubleItem::getDoubleValue() const
+	{
+		return this->value;
+	}
+
+	TypeCode DoubleItem::getType() const
+	{
+		return xs_double;
+	}
+
+	Item_t DoubleItem::getAtomizationValue() const
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble ( this->value );
+	}
+
+	bool DoubleItem::equals ( Item_t item ) const
+	{
+		return item->getDoubleValue() == this->value;
+	}
+
+	Item_t DoubleItem::getEBV() const
+	{
+		bool b = ( this->value != 0 );
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+	}
+
+	xqp_string DoubleItem::getStringProperty() const
+	{
+		std::ostringstream tmp;
+		tmp << this->value;
+		return xqp_string ( tmp.str() );
+	}
+
+	xqp_string DoubleItem::show() const
+	{
+		return "xs:double(" + this->getStringProperty() + ")";
+	}
+	/* end class DoubleItem */
+	
+	/* start class FloatItem */
+	FloatItem::FloatItem( float value_arg ) :value ( value_arg ) {}
+	FloatItem::~FloatItem() {}
+
+	float FloatItem::getFloatValue() const
+	{
+		return this->value;
+	}
+
+	TypeCode FloatItem::getType() const
+	{
+		return xs_double;
+	}
+
+	Item_t FloatItem::getAtomizationValue() const
+	{
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( this->value );
+	}
+
+	bool FloatItem::equals ( Item_t item ) const
+	{
+		return item->getFloatValue() == this->value;
+	}
+
+	Item_t FloatItem::getEBV() const
+	{
+		bool b = ( this->value != 0 );
+		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+	}
+
+	xqp_string FloatItem::getStringProperty() const
+	{
+		std::ostringstream tmp;
+		tmp << this->value;
+		return xqp_string ( tmp.str() );
+	}
+
+	xqp_string FloatItem::show() const
+	{
+		return "xs:float(" + this->getStringProperty() + ")";
+	}
+	/* end class FloatItem */
 
 	/* start class BooleanItem */
 	BooleanItem::BooleanItem ( bool value ) :value_ ( value ) {}
@@ -311,7 +397,7 @@ namespace xqp
 		return this->value_;
 	}
 
-	sequence_type_t BooleanItem::getType() const
+	TypeCode BooleanItem::getType() const
 	{
 		return xs_boolean;
 	}
