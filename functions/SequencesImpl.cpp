@@ -63,7 +63,6 @@ Item_t ConcatIterator::nextImpl() {
 		}
 	}
 	
-	STACK_PUSH(NULL);
 	STACK_END();
 }
 

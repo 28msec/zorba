@@ -77,8 +77,8 @@ namespace xqp
 	    const Item_t& qname_arg,
 	    Iterator_t& children_arg,
 	    Iterator_t& attributes_arg )
-			:
-			Batcher<ElementIterator> ( loc ), qname ( qname_arg ), children ( children_arg ), attributes ( attributes_arg ) {}
+		:
+		Batcher<ElementIterator> ( loc ), qname ( qname_arg ), children ( children_arg ), attributes ( attributes_arg ) {}
 
 	Item_t
 	ElementIterator::nextImpl()
@@ -97,8 +97,7 @@ namespace xqp
 		           false
 		       );
 		STACK_PUSH ( item );
-
-		STACK_PUSH ( NULL );
+		
 		STACK_END();
 	}
 
@@ -175,7 +174,6 @@ namespace xqp
 		           itemTyped
 		       );
 		STACK_PUSH ( item );
-		STACK_PUSH ( NULL );
 		STACK_END();
 	}
 

@@ -30,7 +30,6 @@ namespace xqp {
 				STACK_PUSH( item );
 			}
 		}
-		STACK_PUSH( NULL );
 		STACK_END();
 	}
 	

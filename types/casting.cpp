@@ -43,6 +43,7 @@ namespace xqp
 		Item_t result;
 		TypeCode itemType = item->getType();
 		ItemFactory* itemFactory = zorba::getZorbaForCurrentThread()->getItemFactory();
+		
 		if ( sequence_type::derives_from ( this->targetType, itemType ) )
 			return item;
 

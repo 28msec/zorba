@@ -85,7 +85,6 @@ namespace xqp
 	{
 		STACK_INIT();
 		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, this->arg0_ ) );
-		STACK_PUSH ( NULL );
 		STACK_END();
 	}
 
@@ -171,7 +170,6 @@ namespace xqp
 			);
 		} /* if node comparison */
 		
-		STACK_PUSH ( NULL );
 		STACK_END();
 	}
 

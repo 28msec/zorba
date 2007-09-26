@@ -288,7 +288,6 @@ namespace xqp
 				}
 			}
 		}
-		STACK_PUSH(NULL);
 		STACK_END();
 	}
 	
@@ -483,7 +482,6 @@ namespace xqp
 		Item_t item;
 		STACK_INIT();
 
-		STACK_PUSH( NULL );
 		STACK_END();
 	}
 
@@ -526,7 +524,6 @@ namespace xqp
 	{
 		STACK_INIT();
 		
-		STACK_PUSH(NULL);
 		STACK_END();
 	}
 

@@ -43,7 +43,7 @@ namespace xqp
 		int mask = SUB_MASK | SUB2_MASK | SUB3_MASK | SUB4_MASK | SUB5_MASK | SUB6_MASK;
 		int effType = type & mask;
 		int effSubtype = subtype & mask;
-		return (startType == startSubtype) && !(effType && ~effSubtype);
+		return (startType == startSubtype) && !(effType & ~effSubtype);
 	}
 
 	bool sequence_type::isNumeric ( TypeCode type )
