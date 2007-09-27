@@ -8,7 +8,6 @@
  */
 
 #include "plan_visitor.h"
-#include "indent.h"
 
 #include "exprtree/expr.h"
 #include "functions/SequencesImpl.h"
@@ -30,19 +29,20 @@ static uint32_t depth = 0;
  :.........................................*/
 bool plan_visitor::begin_visit(const expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool plan_visitor::begin_visit(const enclosed_expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
+
 	return true;
 }
 
 bool plan_visitor::begin_visit(const expr_list& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	itstack.push(NULL);
 	return true;
 }
@@ -91,7 +91,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const fo_expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	itstack.push(NULL);
 	return true;
 }
@@ -164,7 +164,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const literal_expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
@@ -176,7 +176,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const elem_expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
@@ -189,7 +189,7 @@ cout << TRACE  << endl;
 
 bool plan_visitor::begin_visit(const compElem_expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
@@ -201,7 +201,7 @@ cout << TRACE << endl;
 
 bool plan_visitor::begin_visit(const text_expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
@@ -224,12 +224,12 @@ cout << TRACE << endl;
  :.........................................*/
 void plan_visitor::end_visit(const expr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const enclosed_expr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	Iterator_t content = pop_itstack();
 	Iterator_t enclosed = new EnclosedIterator(v.get_loc(), content);
 	itstack.push(&*enclosed);
@@ -237,7 +237,7 @@ cout << indent[depth--] << TRACE << endl;
 
 void plan_visitor::end_visit(const expr_list& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	vector<Iterator_t> argv;
 	while (true) {
 		Iterator_t it = pop_itstack();
@@ -305,7 +305,7 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const fo_expr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 
 	const function* func_p = v.get_func();
 	assert(func_p!=NULL);
@@ -379,7 +379,7 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const literal_expr& v)
 {
-	cout << indent[depth--] << TRACE << endl;
+	cout << std::string(depth--, ' ') << TRACE << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
     Iterator_t it = new SingletonIterator(
@@ -425,7 +425,7 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const elem_expr& v)
 {
-cout << indent[--depth] << TRACE << endl;
+cout << std::string(--depth, ' ') << TRACE << endl;
 	Iterator_t contentIter = NULL;
 	Iterator_t attrIter = NULL;
 	if (v.get_attrs_expr() != NULL)
@@ -448,7 +448,7 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const compElem_expr& v)
 {
-cout << indent[--depth] << TRACE << endl;
+cout << std::string(--depth, ' ') << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const attr_expr& v)
@@ -466,7 +466,7 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(const text_expr& v)
 {
-cout << indent[--depth] << TRACE << endl;
+cout << std::string(--depth, ' ') << TRACE << endl;
 	Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(v.get_text());
 	Iterator_t text = new SingletonIterator(v.get_loc(), item);
 	itstack.push(text);

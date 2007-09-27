@@ -13,7 +13,6 @@
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "parser/location.hh"
-#include "parser/indent.h"
 #include "batching.h"
 
 #include <assert.h>

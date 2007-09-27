@@ -10,7 +10,6 @@
 
 #include "expr.h"
 #include "functions/function.h"
-#include "parser/indent.h"
 #include "parser/parse_constants.h"
 #include "parser/parsenodes.h"
 #include "util/Assert.h"
@@ -26,10 +25,10 @@ using namespace std;
 namespace xqp {
   
 int printdepth0 = 0;
-#define DENT		indent[printdepth0 % 30]
-#define INDENT	indent[++printdepth0 % 30]
-#define OUTDENT	indent[printdepth0-- % 30]
-#define UNDENT	printdepth0--
+#define DENT		std::string(printdepth0, ' ')
+#define INDENT	    std::string(++printdepth0, ' ')
+#define OUTDENT	    std::string(printdepth0--, ' ')
+#define UNDENT	    printdepth0--
 
 expr::expr(
 	yy::location const& _loc)

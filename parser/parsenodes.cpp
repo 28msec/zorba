@@ -22,7 +22,6 @@
 #include "util/tracer.h"
 #include "errors/Error.h"
 #include "../store/api/item.h"
-#include "indent.h"
 
 using namespace std;
 namespace xqp {
@@ -30,9 +29,9 @@ namespace xqp {
 int printdepth = 0;
 ostringstream	__oss;
 
-#define INDENT		indent[++printdepth % 30]
-#define OUTDENT		indent[printdepth-- % 30]
-#define UNDENT		printdepth--
+#define INDENT	    std::string(++printdepth, ' ')
+#define OUTDENT	    std::string(printdepth--, ' ')
+#define UNDENT	    printdepth--
 
 /*
 ostream& parsenode::put(ostream& s) const

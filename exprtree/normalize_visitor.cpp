@@ -9,7 +9,6 @@
  */
 
 #include "normalize_visitor.h"
-#include "indent.h"
 
 #include "functions/library.h"
 #include "parser/parsenodes.h"
@@ -42,112 +41,112 @@ normalize_visitor::normalize_visitor()
 
 bool normalize_visitor::begin_visit(const parsenode& v)
 {
-cout<< indent[++depth] << TRACE << endl;
+cout<< std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const exprnode& v)
 {
-cout<< indent[++depth] << TRACE << endl;
+cout<< std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const AbbrevForwardStep& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const AnyKindTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const AposAttrContentList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 // 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const AposAttrValueContent& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ArgList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const AtomicType& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const AttributeTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const BaseURIDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	zorp->get_static_context()->set_baseuri(v.get_base_uri());
 	return false;
 }
 
 bool normalize_visitor::begin_visit(const BoundarySpaceDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	zorp->get_static_context()->set_boundary_space_mode(v.get_boundary_space_mode());
 	return false;
 }
 
 bool normalize_visitor::begin_visit(const CaseClause& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CaseClauseList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CommentTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ConstructionDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	zorp->get_static_context()->set_construction_mode(v.get_mode());
 	return false;
 }
 
 bool normalize_visitor::begin_visit(const CopyNamespacesDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(DefaultCollationDecl const& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	string uri = v.get_collation();
 	zorp->get_static_context()->set_default_collation(uri);
 	return false;
@@ -157,7 +156,7 @@ bool normalize_visitor::begin_visit(
 	DefaultNamespaceDecl const& v)
 {
 // TODO adapt to new store
-// cout << indent[++depth] << TRACE << endl;
+// cout << std::string(++depth, ' ') << TRACE << endl;
 // 	switch (v.get_mode()) {
 // 	case ns_element_default: {
 // 		namespace_node* ns_p = new dom_namespace_node("#elem#",v.get_default_namespace());
@@ -174,7 +173,7 @@ bool normalize_visitor::begin_visit(
 
 bool normalize_visitor::begin_visit(const DirAttr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	// boundary is needed because the value of an attribute might be empty
 	nodestack.push(NULL);
 	return true;
@@ -182,27 +181,27 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const DirAttributeList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const DirAttributeValue& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const DirElemContentList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const DocumentTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::doc_test);
 
@@ -229,188 +228,188 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const ElementTest& v)
 {
-	cout << indent[++depth] << TRACE << endl;
+	cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const EmptyOrderDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	zorp->get_static_context()->set_order_empty_mode(v.get_mode());
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ForClause& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 // bool normalize_visitor::begin_visit(const ForLetClause& v)
 // {
-// cout << indent[++depth] << TRACE << endl;
+// cout << std::string(++depth, ' ') << TRACE << endl;
 //  return true;
 // }
 
 bool normalize_visitor::begin_visit(const ForLetClauseList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 // 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ForwardAxis& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ForwardStep& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FunctionDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const GeneralComp& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ItemType& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const LetClause& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const LibraryModule& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const MainModule & v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const Module& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ModuleDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ModuleImport& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const NameTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const NamespaceDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	// add namespace def to context
 	return false;
 }
 
 bool normalize_visitor::begin_visit(const NodeComp& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OccurrenceIndicator& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OptionDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderByClause& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderCollationSpec& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderDirSpec& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderEmptySpec& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderModifier& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderSpec& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderSpecList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderingModeDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
 	return false;
 }
 
 bool normalize_visitor::begin_visit(const PITest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::pi_test);
 
@@ -422,97 +421,97 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const Param& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ParamList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const PositionalVar& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const Pragma& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const PragmaList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const PredicateList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const Prolog& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const QVarInDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const QVarInDeclList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const QuoteAttrValueContent& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const QuoteAttrContentList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ReverseAxis& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ReverseStep& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const SIND_DeclList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const SchemaAttributeTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::xs_attr_test);
 
@@ -527,7 +526,7 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const SchemaElementTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->set_test(match_expr::xs_elem_test);
 
@@ -542,120 +541,120 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const SchemaImport& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const SchemaPrefix& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const SequenceType& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const SignList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const SingleType& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const TextTest& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const TypeDeclaration& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const TypeName& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const URILiteralList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ValueComp& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VarDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VarGetsDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VarGetsDeclList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VarInDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VarInDeclList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 // 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VersionDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VFO_DeclList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const WhereClause& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const Wildcard& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
@@ -664,7 +663,7 @@ cout << indent[++depth] << TRACE << endl;
 /* expressions */
 bool normalize_visitor::begin_visit(const AdditiveExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
 	switch (v.get_add_op()) {
 	case op_plus:
@@ -680,13 +679,13 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const AndExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const AxisStep& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<axis_step_expr> aexpr_h =
 		new axis_step_expr(v.get_location());
 	nodestack.push(&*aexpr_h);
@@ -695,31 +694,31 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const CDataSection& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CastExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CastableExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CommonContent& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ComparisonExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
 
 	if (v.get_gencomp()!=NULL) {
@@ -786,98 +785,98 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const CompAttrConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CompCommentConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CompDocConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CompElemConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CompPIConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const CompTextConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ContextItemExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const DirCommentConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const DirElemConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const DirElemContent& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const DirPIConstructor& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const EnclosedExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const Expr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 // bool normalize_visitor::begin_visit(const ExprSingle& v)
 // {
-// cout << indent[++depth] << TRACE << endl;
+// cout << std::string(++depth, ' ') << TRACE << endl;
 //  return true;
 // }
 
 bool normalize_visitor::begin_visit(const ExtensionExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FLWORExpr& v)
 {
-	cout << indent[++depth] << TRACE << endl;
+	cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
 	nodestack.push(&*flwor);
 	return true;
@@ -885,13 +884,13 @@ bool normalize_visitor::begin_visit(const FLWORExpr& v)
 
 bool normalize_visitor::begin_visit(const FilterExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FunctionCall& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<QName> qn_h = v.get_fname();
 	string uri;
 	string prefix = qn_h->get_prefix();
@@ -916,20 +915,20 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const IfExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	// nothing to do here
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const InstanceofExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const IntersectExceptExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
 
 	switch (v.get_intex_op()) {
@@ -946,7 +945,7 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const MultiplicativeExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
 	switch (v.get_mult_op()) {
 	case op_mul:
@@ -968,85 +967,85 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const NumericLiteral& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const OrderedExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ParenthesizedExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const PathExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const QuantifiedExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const QueryBody& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const RangeExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const RelativePathExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const StringLiteral& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const TreatExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const TypeswitchExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const UnaryExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const UnionExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
 	fo_h->set_func(dctx_p->get_function(library::op_union_key));
 	nodestack.push(&*fo_h);
@@ -1055,19 +1054,19 @@ cout << indent[++depth] << TRACE << endl;
 
 bool normalize_visitor::begin_visit(const UnorderedExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ValidateExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VarRef& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
@@ -1076,43 +1075,43 @@ cout << indent[++depth] << TRACE << endl;
 /* update-related */
 bool normalize_visitor::begin_visit(const DeleteExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const InsertExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const RenameExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const ReplaceExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const RevalidationDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const TransformExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const VarNameList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
@@ -1122,233 +1121,233 @@ cout << indent[++depth] << TRACE << endl;
 /* full-text-related */
 bool normalize_visitor::begin_visit(const FTAnd& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTAnyallOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTBigUnit& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTCaseOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTContainsExpr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTContent& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTDiacriticsOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTDistance& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTIgnoreOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTInclExclStringLiteral& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTInclExclStringLiteralList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTLanguageOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTMatchOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTMatchOptionProximityList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTMildnot& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTOptionDecl& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTOr& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTOrderedIndicator& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTProximity& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTRange& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTRefOrList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTScope& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTScoreVar& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTSelection& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTStemOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTStopwordOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTStringLiteralList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTThesaurusID& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTThesaurusList& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTThesaurusOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTTimes& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTUnaryNot& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTUnit& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTWildcardOption& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTWindow& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTWords& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTWordsSelection& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 bool normalize_visitor::begin_visit(const FTWordsValue& v)
 {
-cout << indent[++depth] << TRACE << endl;
+cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
@@ -1359,17 +1358,17 @@ cout << indent[++depth] << TRACE << endl;
 
 void normalize_visitor::end_visit(const parsenode& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const exprnode& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const AbbrevForwardStep& v)
 {
-cout << indent[depth--] << TRACE << ": AbbrevForwardStep\n";
+cout << std::string(depth--, ' ') << TRACE << ": AbbrevForwardStep\n";
 	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (aexpr_h==NULL) {
@@ -1386,7 +1385,7 @@ cout << indent[depth--] << TRACE << ": AbbrevForwardStep\n";
 
 void normalize_visitor::end_visit(const AnyKindTest& v)
 {
-cout << indent[depth--]<<TRACE<<": AnyKindTest()\n";
+cout << std::string(depth--, ' ')<<TRACE<<": AnyKindTest()\n";
 	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h==NULL) {
@@ -1400,19 +1399,19 @@ cout << indent[depth--]<<TRACE<<": AnyKindTest()\n";
 
 void normalize_visitor::end_visit(const AposAttrContentList& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const AposAttrValueContent& v)
 {
-cout << indent[depth--] <<TRACE << endl;
+cout << std::string(depth--, ' ') <<TRACE << endl;
 	
 }
 
 // FIXME The use of an argstack is not correct because of function calls like 'func1(a,func2(b,c),d)'! The arguments must be saved on the normal stack and not on a special one!
 void normalize_visitor::end_visit(const ArgList& v)
 {
-cout << indent[depth--] << TRACE << ": ArgList" << endl;
+cout << std::string(depth--, ' ') << TRACE << ": ArgList" << endl;
 	clear_argstack();
 	while (true) {
 		expr_t e_h = pop_nodestack();
@@ -1423,12 +1422,12 @@ cout << indent[depth--] << TRACE << ": ArgList" << endl;
 
 void normalize_visitor::end_visit(const AtomicType& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const AttributeTest& v)
 {
-cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_attr()->put(cout)<<")\n";
+cout << std::string(depth--, ' ')<<TRACE<<": ElementTest("; v.get_attr()->put(cout)<<")\n";
 
 	/*
 	 * find axis step expression on top of stack
@@ -1436,7 +1435,7 @@ cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_attr()->put(cout)<<")\n"
 	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
@@ -1467,31 +1466,31 @@ cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_attr()->put(cout)<<")\n"
 
 void normalize_visitor::end_visit(const BaseURIDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const BoundarySpaceDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CaseClause& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CaseClauseList& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CommentTest& v)
 {
-cout << indent[depth--]<<TRACE<<": CommentTest()\n";
+cout << std::string(depth--, ' ')<<TRACE<<": CommentTest()\n";
 	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
@@ -1501,27 +1500,27 @@ cout << indent[depth--]<<TRACE<<": CommentTest()\n";
 
 void normalize_visitor::end_visit(const ConstructionDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CopyNamespacesDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const DefaultCollationDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const DefaultNamespaceDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const DirAttr& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
  	expr_t attrValue = pop_nodestack();
  	if (attrValue != NULL) {
  		// delete boundary
@@ -1534,7 +1533,7 @@ void normalize_visitor::end_visit(const DirAttr& v)
 
 void normalize_visitor::end_visit(const DirAttributeList& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
  	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
  	while(true) {
  		expr_t e_h = pop_nodestack();
@@ -1546,13 +1545,13 @@ void normalize_visitor::end_visit(const DirAttributeList& v)
 
 void normalize_visitor::end_visit(const DirAttributeValue& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
  
 }
 
 void normalize_visitor::end_visit(const DirElemContentList& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
 	while (true) {
 		expr_t e_h = pop_nodestack();
@@ -1564,12 +1563,12 @@ void normalize_visitor::end_visit(const DirElemContentList& v)
 
 void normalize_visitor::end_visit(const DocumentTest& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ElementTest& v)
 {
-cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n";
+cout << std::string(depth--, ' ')<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n";
 
 	/*
 	 * find axis step expression on top of stack
@@ -1577,7 +1576,7 @@ cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n"
 	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
@@ -1611,12 +1610,12 @@ cout << indent[depth--]<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n"
 
 void normalize_visitor::end_visit(const EmptyOrderDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ForClause& v)
 {
-cout << indent[depth--] <<TRACE << endl;
+cout << std::string(depth--, ' ') <<TRACE << endl;
 	int size = v.get_vardecl_list()->size();
 	vector<expr_t> exprs;
 	while (true) {
@@ -1627,7 +1626,7 @@ cout << indent[depth--] <<TRACE << endl;
 	
 	rchandle<flwor_expr> flwor_h = dynamic_cast<flwor_expr*>(&*nodestack.top());
 	if (flwor_h == NULL) {
-		 cout << indent[depth] <<TRACE << ": expecting flwor_expr on top of stack" << endl;
+		 cout << std::string(depth, ' ') <<TRACE << ": expecting flwor_expr on top of stack" << endl;
 	}
 
 	for (int i = 0; i < size; i++) {
@@ -1652,21 +1651,21 @@ cout << indent[depth--] <<TRACE << endl;
 
 // void normalize_visitor::end_visit(const ForLetClause& v)
 // {
-//  cout << indent[depth--] <<TRACE << endl;
+//  cout << std::string(depth--, ' ') <<TRACE << endl;
 // }
 
 void normalize_visitor::end_visit(const ForLetClauseList& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ForwardAxis& v)
 {
-cout << indent[depth--] << TRACE << ": ForwardAxis" << endl;
+cout << std::string(depth--, ' ') << TRACE << ": ForwardAxis" << endl;
 	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (aexpr_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	switch (v.get_axis()) {
@@ -1703,64 +1702,64 @@ cout << indent[depth--] << TRACE << ": ForwardAxis" << endl;
 
 void normalize_visitor::end_visit(const ForwardStep& v)
 {
-cout << indent[depth--] << TRACE << ": ForwardStep\n";
+cout << std::string(depth--, ' ') << TRACE << ": ForwardStep\n";
 }
 
 void normalize_visitor::end_visit(const FunctionDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const GeneralComp& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ItemType& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const LetClause& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const LibraryModule& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const MainModule & v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const Module& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ModuleDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ModuleImport& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const NameTest& v)
 {
-cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
+cout << std::string(depth--, ' ')<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
 	/*
 	 * find axis step on top of stack
 	 */
 	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
@@ -1793,97 +1792,97 @@ cout << indent[depth--]<<TRACE<<": NameTest("; v.get_qname()->put(cout)<<")\n";
 
 void normalize_visitor::end_visit(const NamespaceDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const NodeComp& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OccurrenceIndicator& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OptionDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderByClause& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderCollationSpec& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderDirSpec& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderEmptySpec& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderModifier& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderSpec& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderSpecList& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderingModeDecl& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const PITest& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const Param& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ParamList& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const PositionalVar& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const Pragma& v)
 {
- cout << indent[depth--] <<TRACE << endl;
+ cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const PragmaList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const PredicateList& v)
 {
-cout << indent[depth--] << TRACE << ": PredicateList" << endl;
+cout << std::string(depth--, ' ') << TRACE << ": PredicateList" << endl;
 	clear_pstack();
 	while (true) {
 		expr_t e_h = pop_nodestack();
@@ -1894,22 +1893,22 @@ cout << indent[depth--] << TRACE << ": PredicateList" << endl;
 
 void normalize_visitor::end_visit(const Prolog& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const QVarInDecl& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const QVarInDeclList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const QuoteAttrValueContent& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	if (v.get_common_content() == NULL) {
 		std::string content = v.get_quot_atcontent();
 		rchandle<text_expr> text_t = new text_expr(v.get_location(), content);
@@ -1922,7 +1921,7 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const QuoteAttrContentList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
  	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
  	while(true) {
  		expr_t e_h = pop_nodestack();
@@ -1934,11 +1933,11 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const ReverseAxis& v)
 {
-cout << indent[depth--] << TRACE << ": ReverseAxis" << endl;
+cout << std::string(depth--, ' ') << TRACE << ": ReverseAxis" << endl;
 	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (aexpr_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	switch (v.get_axis()) {
@@ -1967,56 +1966,56 @@ cout << indent[depth--] << TRACE << ": ReverseAxis" << endl;
 
 void normalize_visitor::end_visit(const ReverseStep& v)
 {
-cout << indent[depth--] << TRACE << ": ReverseStep" << endl;
+cout << std::string(depth--, ' ') << TRACE << ": ReverseStep" << endl;
 }
 
 void normalize_visitor::end_visit(const SIND_DeclList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const SchemaAttributeTest& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const SchemaElementTest& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const SchemaImport& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const SchemaPrefix& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const SequenceType& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const SignList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const SingleType& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const TextTest& v)
 {
-cout << indent[depth--]<<TRACE<<": TextTest()\n";
+cout << std::string(depth--, ' ')<<TRACE<<": TextTest()\n";
 	rchandle<axis_step_expr> ase_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h==NULL) {
-		cout << indent[depth--] << TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << std::string(depth--, ' ') << TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
@@ -2026,67 +2025,67 @@ cout << indent[depth--]<<TRACE<<": TextTest()\n";
 
 void normalize_visitor::end_visit(const TypeDeclaration& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const TypeName& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const URILiteralList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ValueComp& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VarDecl& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VarGetsDecl& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VarGetsDeclList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VarInDecl& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VarInDeclList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VersionDecl& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VFO_DeclList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const WhereClause& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const Wildcard& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
@@ -2095,7 +2094,7 @@ cout << indent[depth--] << TRACE << endl;
 /* expressions */
 void normalize_visitor::end_visit(const AdditiveExpr& v)
 {
-cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
+cout << std::string(depth--, ' ') << TRACE << ": AdditiveExpr\n";
 
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
 	Assert(nodestack.size()>=3,"stack underflow");
@@ -2103,8 +2102,8 @@ cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << indent[depth--] <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
@@ -2112,17 +2111,17 @@ cout << indent[depth--] << TRACE << ": AdditiveExpr\n";
 
 void normalize_visitor::end_visit(const AndExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const AxisStep& v)
 {
-cout << indent[depth--] << TRACE << ": AxisStep\n";
+cout << std::string(depth--, ' ') << TRACE << ": AxisStep\n";
 	rchandle<axis_step_expr> aexpr_h =
 		dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (aexpr_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
-		 cout << indent[depth--] <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	while (!pstack.empty()) {
 		expr_t e_h = pstack.top();
@@ -2133,27 +2132,27 @@ cout << indent[depth--] << TRACE << ": AxisStep\n";
 
 void normalize_visitor::end_visit(const CDataSection& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CastExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CastableExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CommonContent& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ComparisonExpr& v)
 {
-cout << indent[depth--] << TRACE << ": ComparisonExpr\n";
+cout << std::string(depth--, ' ') << TRACE << ": ComparisonExpr\n";
 
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
 	Assert(nodestack.size()>=3,"stack underflow");
@@ -2161,8 +2160,8 @@ cout << indent[depth--] << TRACE << ": ComparisonExpr\n";
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << indent[depth--] <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
@@ -2170,37 +2169,37 @@ cout << indent[depth--] << TRACE << ": ComparisonExpr\n";
 
 void normalize_visitor::end_visit(const CompAttrConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CompCommentConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CompDocConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CompElemConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CompPIConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const CompTextConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ContextItemExpr& v)
 {
-cout << indent[depth--] << TRACE << ": ContextItemExpr" << endl;
+cout << std::string(depth--, ' ') << TRACE << ": ContextItemExpr" << endl;
 	rchandle<var_expr> v_h = new var_expr(v.get_location());
 	v_h->set_kind(var_expr::context_var);
 	nodestack.push(&*v_h);
@@ -2208,12 +2207,12 @@ cout << indent[depth--] << TRACE << ": ContextItemExpr" << endl;
 
 void normalize_visitor::end_visit(const DirCommentConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const DirElemConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t attributes = NULL;
 	expr_t content = NULL;
 	if (v.get_attr_list() != NULL)
@@ -2227,7 +2226,7 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const DirElemContent& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	if (v.get_direct_cons() != NULL) {
 		// nothing to be done, the content expression is already on the stack
 	} else if (v.get_cdata() != NULL) {
@@ -2243,12 +2242,12 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const DirPIConstructor& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const EnclosedExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t expr_h = pop_nodestack();
 	expr_t enclosedExpr = new enclosed_expr(v.get_location(), expr_h);
 	nodestack.push(&*enclosedExpr);
@@ -2273,33 +2272,33 @@ void normalize_visitor::end_visit(const Expr& v)
 
 // void normalize_visitor::end_visit(const ExprSingle& v)
 // {
-// cout << indent[depth--] << TRACE << endl;
+// cout << std::string(depth--, ' ') << TRACE << endl;
 // }
 
 void normalize_visitor::end_visit(const ExtensionExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FLWORExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t returnExpr = pop_nodestack();
 	rchandle<flwor_expr> flwor_h = dynamic_cast<flwor_expr*>(&*nodestack.top());
 	if (flwor_h == NULL) {
-		 cout << indent[depth] <<TRACE << ": expecting flwor_expr on top of stack" << endl;
+		 cout << std::string(depth, ' ') <<TRACE << ": expecting flwor_expr on top of stack" << endl;
 	}
 	flwor_h->set_retval(returnExpr);
 }
 
 void normalize_visitor::end_visit(const FilterExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FunctionCall& v)
 {
-cout << indent[depth--] << TRACE << ": FunctionCall" 
+cout << std::string(depth--, ' ') << TRACE << ": FunctionCall" 
 			<< " : argstack.size() = " << argstack.size() << endl;
 
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
@@ -2315,7 +2314,7 @@ cout << indent[depth--] << TRACE << ": FunctionCall"
 
 void normalize_visitor::end_visit(const IfExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t e_h = nodestack.top(); nodestack.pop();
 	expr_t t_h = nodestack.top(); nodestack.pop();
 	expr_t c_h = nodestack.top(); nodestack.pop();
@@ -2325,12 +2324,12 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const InstanceofExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const IntersectExceptExpr& v)
 {
-cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
+cout << std::string(depth--, ' ') << TRACE << ": IntersectExceptExpr\n";
 
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
 	Assert(nodestack.size()>=3,"stack underflow");
@@ -2338,8 +2337,8 @@ cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << indent[depth--] <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
@@ -2347,7 +2346,7 @@ cout << indent[depth--] << TRACE << ": IntersectExceptExpr\n";
 
 void normalize_visitor::end_visit(const MultiplicativeExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
 	Assert(nodestack.size()>=3,"stack underflow");
@@ -2355,8 +2354,8 @@ cout << indent[depth--] << TRACE << endl;
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << indent[depth--] <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
@@ -2364,7 +2363,7 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const NumericLiteral& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	switch (v.get_type()) {
 	case num_integer: {
 		nodestack.push(new literal_expr(v.get_location(), v.get_int()));
@@ -2383,42 +2382,42 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const OrExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const OrderedExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ParenthesizedExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const PathExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const QuantifiedExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const QueryBody& v)
 {
-cout  << indent[depth--] << TRACE << endl;
+cout  << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const RangeExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const RelativePathExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t e0_h = pop_nodestack();		// b
 	expr_t e1_h = pop_nodestack();		// a
 
@@ -2444,18 +2443,18 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const StringLiteral& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	nodestack.push(new literal_expr(v.get_location(),v.get_strval()));
 }
 
 void normalize_visitor::end_visit(const TreatExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const TypeswitchExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	case_clause * cc_p;
 	expr_t e_h;
 	rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
@@ -2484,12 +2483,12 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const UnaryExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const UnionExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
 	Assert(nodestack.size()>=3,"stack underflow");
@@ -2497,8 +2496,8 @@ cout << indent[depth--] << TRACE << endl;
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
-		 cout << indent[depth--] <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << indent[depth--] <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
@@ -2506,17 +2505,17 @@ cout << indent[depth--] << TRACE << endl;
 
 void normalize_visitor::end_visit(const UnorderedExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ValidateExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VarRef& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
 	//ve_h->set_varname(new QName(v.get_varname()));
 	nodestack.push(&*ve_h);
@@ -2527,37 +2526,37 @@ cout << indent[depth--] << TRACE << endl;
 /* update-related */
 void normalize_visitor::end_visit(const DeleteExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const InsertExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const RenameExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ReplaceExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const RevalidationDecl& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const TransformExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const VarNameList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
@@ -2565,192 +2564,192 @@ cout << indent[depth--] << TRACE << endl;
 /* full-text-related */
 void normalize_visitor::end_visit(const FTAnd& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTAnyallOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTBigUnit& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTCaseOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTContainsExpr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTContent& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTDiacriticsOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTDistance& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTIgnoreOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTInclExclStringLiteral& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTInclExclStringLiteralList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTLanguageOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTMatchOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTMatchOptionProximityList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTMildnot& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTOptionDecl& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTOr& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTOrderedIndicator& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTProximity& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTRange& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTRefOrList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTScope& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTScoreVar& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTSelection& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTStemOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTStopwordOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTStringLiteralList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTThesaurusID& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTThesaurusList& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTThesaurusOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTTimes& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTUnaryNot& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTUnit& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTWildcardOption& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTWindow& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTWords& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTWordsSelection& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const FTWordsValue& v)
 {
-cout << indent[depth--] << TRACE << endl;
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 } /* namespace xqp */

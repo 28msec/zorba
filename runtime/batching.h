@@ -27,7 +27,6 @@
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "parser/location.hh"
-#include "parser/indent.h"
 #include "store/api/item.h"
 
 #include "utf8/xqpString.h"
@@ -40,9 +39,9 @@
 //0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
 #define BATCHING_TYPE 0
 
-#define IT_INDENT			indent[++iteratorTreeDepth % 30]
-#define IT_DEPTH			indent[iteratorTreeDepth % 30]
-#define IT_OUTDENT		indent[iteratorTreeDepth-- % 30]
+#define IT_INDENT			std::string(++iteratorTreeDepth, ' ')
+#define IT_DEPTH			std::string(iteratorTreeDepth, ' ')
+#define IT_OUTDENT		    std::string(iteratorTreeDepth--, ' ')
 
 /**
  * This is a dummy class just because of compatibility issues.
