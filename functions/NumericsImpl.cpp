@@ -246,6 +246,20 @@ namespace xqp
 
 	/* begin class ArithmeticIterator */
 	template< class Operations>
+	ArithmeticIterator<Operations>::ArithmeticIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+	:
+		BinaryBaseIterator<ArithmeticIterator<Operations> > ( loc, iter0, iter1 )
+	{
+		this->genericCast = new GenericCast();
+	}
+	
+	template< class Operations>
+	ArithmeticIterator<Operations>::~ArithmeticIterator()
+	{
+		delete this->genericCast;
+	}
+	
+	template< class Operations>
 	Item_t ArithmeticIterator<Operations>::nextImpl()
 	{
 		Item_t n0;
@@ -289,16 +303,6 @@ namespace xqp
 			}
 		}
 		STACK_END();
-	}
-	
-	template< class Operations>
-	void ArithmeticIterator<Operations>::constructor() {
-		this->genericCast = new GenericCast();
-	}
-	
-	template<class Operations>
-	void ArithmeticIterator<Operations>::deconstructor() {
-		delete this->genericCast;
 	}
 	
 	/* instantiate ArithmeticIterator for all types */

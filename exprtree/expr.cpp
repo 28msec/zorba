@@ -52,6 +52,28 @@ ostream& expr::put( ostream& os) const
 //                                                                     //
 /////////////////////////////////////////////////////////////////////////
 
+// [29]
+enclosed_expr::enclosed_expr(yy::location const&, expr_t const& content_arg)
+:
+	expr(loc), content(content_arg)
+{}
+enclosed_expr::~enclosed_expr(){}
+
+ostream& enclosed_expr::put( ostream& os) const
+{
+	os << INDENT << "enclosed_expr[\n";
+	content->put(os);
+
+	return os << OUTDENT << "]\n";
+}
+
+void enclosed_expr::accept(
+	expr_visitor& v) const
+{
+	if (!v.begin_visit(*this)) return;
+	content->accept(v);
+	v.end_visit(*this);
+}
 
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
 
@@ -1271,10 +1293,12 @@ ostream& attr_expr::put( ostream& os) const
 	else {
 		qname_expr_h->put(os);
 	}
-	//d Assert<null_pointer>(val_expr_h!=NULL);
-	Assert(val_expr_h!=NULL);
-	os << "=";
-	val_expr_h->put(os);
+	
+	if (val_expr_h != NULL)
+	{
+		os << "=";
+		val_expr_h->put(os);
+	}
 	return os << OUTDENT << "]\n";
 }
 

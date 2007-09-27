@@ -71,12 +71,8 @@ namespace xqp
 			CompareType compareType;
 
 		public:
-			CompareIterator ( yy::location loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType )
-			:
-				Batcher<CompareIterator> ( loc ), compareType(argCompType) 
-			{
-				this->constructor(arg0, arg1);
-			}
+			CompareIterator ( yy::location loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType );
+			~CompareIterator();
 
 			Item_t nextImpl();
 			void resetImpl();
@@ -126,8 +122,6 @@ namespace xqp
 			 * @return 
 			 */
 			bool generalComparison(Item_t item0, Item_t item_1);
-			void constructor(Iterator_t& arg0, Iterator_t& arg1);
-			void deconstructor();
 	}; /* class CompareIterator */
 
 }

@@ -71,6 +71,121 @@ namespace xqp
 		return os;
 	}
 
+	/* begin class FilterIterator */
+	FilterIterator::FilterIterator(
+			const yy::location& loc,
+			Iterator_t& content_arg
+		)
+	:
+		Batcher<FilterIterator>(loc), content(content_arg){}
+
+	FilterIterator::~FilterIterator(){}
+	
+	void 
+	FilterIterator::resetImpl()
+	{
+		this->resetChild( this->content );
+	}
+	
+	void 
+	FilterIterator::releaseResourcesImpl()
+	{
+		this->releaseChildResources( this->content );
+	}
+	/* end class FilterIterator */
+	
+	/* begin class EnclosedIterator */
+	EnclosedIterator::EnclosedIterator(
+			const yy::location& loc,
+			Iterator_t& content_arg
+		)
+	:
+		FilterIterator(loc, content_arg){}
+
+		
+	Item_t 
+	EnclosedIterator::nextImpl()
+	{
+		STACK_INIT();
+		this->str = "";
+		while (true)
+		{
+			this->item = this->consumeNext( this->content );
+			if (this->item == NULL)
+			{
+				if (this->str != "")
+				{
+					STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(str) );
+					this->str = "";
+				}
+				break;
+			}
+			else if (this->item->isNode()) 
+			{
+				if (this->str != "")
+				{
+					STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(str) );
+					this->str = "";
+				}
+				STACK_PUSH(this->item);
+			}
+			else if (this->str == "")
+			{
+				this->str = this->item->getStringProperty();
+			}
+			else
+			{
+				this->str += " " + this->item->getStringProperty();
+			}
+		}
+		STACK_END();
+	}
+	/* end class EnclosedIterator */
+
+	/* begin class ElementContentIterator */
+	ElementContentIterator::ElementContentIterator(
+			const yy::location& loc,
+			Iterator_t& content_arg
+		)
+	:
+		FilterIterator(loc, content_arg){}
+
+		
+	Item_t 
+	ElementContentIterator::nextImpl()
+	{
+		STACK_INIT();
+		this->str = "";
+		while (true)
+		{
+			this->item = this->consumeNext( this->content );
+			if (this->item == NULL)
+			{
+				if (this->str != "")
+				{
+					STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(this->str));
+					this->str = "";
+				}
+				break;
+			}
+			else if (this->item->isNode() && (this->item->getNodeKind() == textNode)) 
+			{
+				this->str += this->item->getStringProperty();
+			}
+			else 
+			{
+				if (this->str != "")
+				{
+					STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(str) );
+					this->str = "";
+				}
+				STACK_PUSH(this->item);
+			}
+		}
+		STACK_END();
+	}
+	/* end class ElementContentIterator */
+
 	/* begin class ElementIterator */
 	ElementIterator::ElementIterator (
 	    const yy::location& loc,
@@ -141,7 +256,7 @@ namespace xqp
 			itemFirst = this->consumeNext ( this->value );
 			lexicalString = itemFirst->getStringProperty();
 
-			// handle condatenation
+			// handle concatenation
 			itemCur = this->consumeNext ( this->value );
 			while ( itemCur != NULL )
 			{

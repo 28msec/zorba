@@ -144,18 +144,10 @@ namespace xqp
 		private:
 			GenericCast* genericCast;
 		public:
-			ArithmeticIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
-					:
-			BinaryBaseIterator<ArithmeticIterator<Operations> > ( loc, iter0, iter1 ) {
-				this->constructor();
-			}
-			~ArithmeticIterator(){}
+			ArithmeticIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 );
+			~ArithmeticIterator();
 
 			Item_t nextImpl();
-			
-		private:
-			void constructor();
-			void deconstructor();
 	}; /* class ArithmeticIterator */
 
 	/*______________________________________________________________________

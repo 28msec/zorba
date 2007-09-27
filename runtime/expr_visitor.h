@@ -22,6 +22,7 @@ namespace xqp
 
 class context;
 class expr;
+class enclosed_expr;
 class expr_list;
 class var_expr;
 class order_modifier;
@@ -66,6 +67,7 @@ public:
  	:  begin visit                            :
  	:.........................................*/
 	virtual bool begin_visit(expr const&) = 0;
+	virtual bool begin_visit(enclosed_expr const&) = 0;
 	virtual bool begin_visit(expr_list const&) = 0;
 	virtual bool begin_visit(var_expr const&) = 0;
 	virtual bool begin_visit(order_modifier const&) = 0;
@@ -101,6 +103,7 @@ public:
  	:  end visit                              :
  	:.........................................*/
 	virtual void end_visit(expr const&) = 0;
+	virtual void end_visit(enclosed_expr const&) = 0;
 	virtual void end_visit(expr_list const&) = 0;
 	virtual void end_visit(var_expr const&) = 0;
 	virtual void end_visit(order_modifier const&) = 0;

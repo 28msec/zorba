@@ -487,6 +487,7 @@ cout << indent[++depth] << TRACE << endl;
 bool normalize_visitor::begin_visit(const QuoteAttrContentList& v)
 {
 cout << indent[++depth] << TRACE << endl;
+	nodestack.push(NULL);
 	return true;
 }
 
@@ -1922,7 +1923,13 @@ cout << indent[depth--] << TRACE << endl;
 void normalize_visitor::end_visit(const QuoteAttrContentList& v)
 {
 cout << indent[depth--] << TRACE << endl;
-	// nothing to be done because this list contains never more than one value
+ 	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
+ 	while(true) {
+ 		expr_t e_h = pop_nodestack();
+ 		if (e_h == NULL) break;
+ 		expr_list_t->add(e_h);
+ 	}
+ 	nodestack.push(&*expr_list_t);
 }
 
 void normalize_visitor::end_visit(const ReverseAxis& v)
@@ -2242,6 +2249,9 @@ cout << indent[depth--] << TRACE << endl;
 void normalize_visitor::end_visit(const EnclosedExpr& v)
 {
 cout << indent[depth--] << TRACE << endl;
+	expr_t expr_h = pop_nodestack();
+	expr_t enclosedExpr = new enclosed_expr(v.get_location(), expr_h);
+	nodestack.push(&*enclosedExpr);
 }
 
 void normalize_visitor::end_visit(const Expr& v)

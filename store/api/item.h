@@ -298,6 +298,14 @@ public:
 		return 0;
 	}
 	
+	/**
+	 * Computes the Hash of a QName
+	 *
+	 * @param _namespace 
+	 * @param prefix 
+	 * @param localName 
+	 * @return 
+	 */
 	static qnamekey_t createQNameKey(xqp_string _namespace, xqp_string prefix, xqp_string localName);
 
 	/* -------------------  Methods for Nodes ------------------------------------- */

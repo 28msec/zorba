@@ -34,6 +34,12 @@ cout << indent[++depth] << TRACE << endl;
 	return true;
 }
 
+bool plan_visitor::begin_visit(const enclosed_expr& v)
+{
+cout << indent[++depth] << TRACE << endl;
+	return true;
+}
+
 bool plan_visitor::begin_visit(const expr_list& v)
 {
 cout << indent[++depth] << TRACE << endl;
@@ -219,6 +225,14 @@ cout << TRACE << endl;
 void plan_visitor::end_visit(const expr& v)
 {
 cout << indent[depth--] << TRACE << endl;
+}
+
+void plan_visitor::end_visit(const enclosed_expr& v)
+{
+cout << indent[depth--] << TRACE << endl;
+	Iterator_t content = pop_itstack();
+	Iterator_t enclosed = new EnclosedIterator(v.get_loc(), content);
+	itstack.push(&*enclosed);
 }
 
 void plan_visitor::end_visit(const expr_list& v)
@@ -417,7 +431,10 @@ cout << indent[--depth] << TRACE << endl;
 	if (v.get_attrs_expr() != NULL)
 		attrIter = pop_itstack();
 	if (v.get_content_expr() != NULL)
+	{
 		contentIter = pop_itstack();
+		contentIter = new ElementContentIterator(v.get_loc(), contentIter);
+	}
 	rchandle<qname_expr> qname = v.get_qname();
 	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
 	Iterator_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
@@ -440,11 +457,9 @@ cout << TRACE << endl;
 	// TODO dynamic qname
 	rchandle<qname_expr> qname = v.get_qname();
 	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
-	Iterator_t valueIter;
+	Iterator_t valueIter = NULL;
 	if (v.get_val_expr() != NULL)
 		valueIter = pop_itstack();
-	else
-		valueIter = new EmptyIterator(v.get_loc());
 	Iterator_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
 	itstack.push(&*attrIter);
 }

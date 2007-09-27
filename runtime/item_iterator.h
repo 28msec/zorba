@@ -243,6 +243,61 @@ public:
 
 };
 
+	/**
+	 * class which can be used as superclass for an iterator 
+	 * which does the filtering of the resulting items of one iterator.
+	 */	
+	class FilterIterator : public Batcher<FilterIterator>
+	{
+	protected:
+		Iterator_t content;
+		
+	public:
+		FilterIterator(
+			const yy::location& loc,
+			Iterator_t& iter_arg
+		);
+		virtual ~FilterIterator();
+		
+		virtual Item_t nextImpl() = 0;
+		void resetImpl();
+		void releaseResourcesImpl();
+	}; /* class FilterIterator */
+	
+	/**
+	 	* Used to make the casting and concatenation of 
+	 	* atomic values in the sequences of an enclosed expression.
+	 	*/
+	class EnclosedIterator : public FilterIterator
+	{
+	private:
+		xqp_string str;
+		Item_t item;
+		
+	public:
+		EnclosedIterator(
+			const yy::location& loc,
+			Iterator_t& iter_arg
+		);
+		Item_t nextImpl();
+	}; /* class EnclosedIterator */
+	
+	/** Used to make e.g. the concatenation of text nodes
+		* in the content of an element constructor.
+		*/
+	class ElementContentIterator : public FilterIterator
+	{
+	private:
+		xqp_string str;
+		Item_t item;
+	public:
+		ElementContentIterator(
+			const yy::location& loc,
+			Iterator_t& iter_arg
+		);
+		Item_t nextImpl();
+	}; /* class TextNodeConnector */
+
 	class ElementIterator : public Batcher<ElementIterator>
 	{
 	private:

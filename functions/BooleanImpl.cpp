@@ -102,6 +102,20 @@ namespace xqp
 	/* end class FnBooleanIterator */
 
 	/* begin class ComparisonIterator */
+	CompareIterator::CompareIterator ( yy::location loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType )
+	:
+		Batcher<CompareIterator> ( loc ), compareType(argCompType) 
+	{
+		this->genericCast = new GenericCast();
+		this->iter0 = new FnDataIterator ( loc, arg0 );
+		this->iter1 = new FnDataIterator ( loc, arg1 );
+	}
+	
+	CompareIterator::~CompareIterator()
+	{
+		delete this->genericCast;
+	}
+	
 	Item_t
 	CompareIterator::nextImpl()
 	{
@@ -491,20 +505,6 @@ namespace xqp
 		// TODO comparisons for all types
 
 		return ret;
-	}
-
-	void
-	CompareIterator::constructor ( Iterator_t& arg0, Iterator_t& arg1 )
-	{
-		this->genericCast = new GenericCast();
-		this->iter0 = new FnDataIterator ( loc, arg0 );
-		this->iter1 = new FnDataIterator ( loc, arg1 );
-	}
-
-	void
-	CompareIterator::deconstructor()
-	{
-		delete this->genericCast;
 	}
 	/* end class ComparisonIterator */
 
