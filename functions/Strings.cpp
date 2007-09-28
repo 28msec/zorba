@@ -64,7 +64,7 @@ fn_codepoints_to_string::fn_codepoints_to_string(
 }
 
 Iterator_t fn_codepoints_to_string::operator()(
-  yy::location loc,
+  const yy::location& loc,
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
@@ -103,7 +103,7 @@ fn_string_to_codepoints::fn_string_to_codepoints(
 	}
 
 	Iterator_t fn_string_to_codepoints::operator()(
-	yy::location loc,
+	const yy::location& loc,
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
@@ -154,7 +154,7 @@ fn_codepoint_equal::fn_codepoint_equal(
 }
 
 Iterator_t fn_codepoint_equal::operator()(
-	yy::location loc,
+	const yy::location& loc,
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
@@ -200,7 +200,7 @@ fn_concat::fn_concat(
 }
 
 Iterator_t fn_concat::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -244,7 +244,7 @@ fn_string_join::fn_string_join(
 }
 
 Iterator_t fn_string_join::operator()(
-  yy::location loc,
+  const yy::location& loc,
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))

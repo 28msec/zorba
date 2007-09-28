@@ -80,7 +80,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 bool normalize_visitor::begin_visit(const ArgList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
+// 	nodestack.push(NULL);
 	return true;
 }
 
@@ -680,6 +680,9 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 bool normalize_visitor::begin_visit(const AndExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
+	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	fo_h->set_func(dctx_p->get_function(library::op_and_key));
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -906,10 +909,11 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 	qnamekey_t funkey = Item::createQNameKey(uri,prefix,fname);
 	yy::location loc = v.get_location();
-	rchandle<fo_expr> fo_h = new fo_expr(loc);	nodestack.push(NULL);
+	rchandle<fo_expr> fo_h = new fo_expr(loc);
 
 	fo_h->set_func(dctx_p->get_function(funkey));
 	nodestack.push(&*fo_h);
+	nodestack.push(NULL);
 	return true;
 }
 
@@ -974,6 +978,9 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 bool normalize_visitor::begin_visit(const OrExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
+		rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	fo_h->set_func(dctx_p->get_function(library::op_or_key));
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -1040,6 +1047,12 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 bool normalize_visitor::begin_visit(const UnaryExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
+	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	if (v.get_signlist()->get_sign())
+		fo_h->set_func(dctx_p->get_function(library::op_unary_plus_key));
+	else
+		fo_h->set_func(dctx_p->get_function(library::op_unary_minus_key));
+	nodestack.push(&*fo_h);
 	return true;
 }
 
@@ -1412,12 +1425,12 @@ cout << std::string(depth--, ' ') <<TRACE << endl;
 void normalize_visitor::end_visit(const ArgList& v)
 {
 cout << std::string(depth--, ' ') << TRACE << ": ArgList" << endl;
-	clear_argstack();
-	while (true) {
-		expr_t e_h = pop_nodestack();
-		if (e_h==NULL) break;
-		argstack.push(e_h);
-	}
+// 	clear_argstack();
+// 	while (true) {
+// 		expr_t e_h = pop_nodestack();
+// 		if (e_h==NULL) break;
+// 		argstack.push(e_h);
+// 	}
 }
 
 void normalize_visitor::end_visit(const AtomicType& v)
@@ -2098,8 +2111,8 @@ cout << std::string(depth--, ' ') << TRACE << ": AdditiveExpr\n";
 
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
 	Assert(nodestack.size()>=3,"stack underflow");
-	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
-	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
+	rchandle<expr> e1_h = pop_nodestack();
+	rchandle<expr> e2_h = pop_nodestack();
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
 		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
@@ -2112,6 +2125,16 @@ cout << std::string(depth--, ' ') << TRACE << ": AdditiveExpr\n";
 void normalize_visitor::end_visit(const AndExpr& v)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
+	Assert(nodestack.size()>=3,"stack underflow");
+	rchandle<expr> e1_h = pop_nodestack();
+	rchandle<expr> e2_h = pop_nodestack();
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	fo_h->add(e2_h);
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(const AxisStep& v)
@@ -2156,8 +2179,8 @@ cout << std::string(depth--, ' ') << TRACE << ": ComparisonExpr\n";
 
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
 	Assert(nodestack.size()>=3,"stack underflow");
-	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
-	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
+	rchandle<expr> e1_h = pop_nodestack();
+	rchandle<expr> e2_h = pop_nodestack();;
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h==NULL) {
 		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
@@ -2298,17 +2321,21 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 
 void normalize_visitor::end_visit(const FunctionCall& v)
 {
-cout << std::string(depth--, ' ') << TRACE << ": FunctionCall" 
-			<< " : argstack.size() = " << argstack.size() << endl;
-
+cout << std::string(depth--, ' ') << TRACE << endl;
+	std::vector<expr_t> arguments;
+	while (true) {
+		expr_t e_h = pop_nodestack();
+		if (e_h == NULL)
+			break;
+		arguments.push_back(e_h);
+	}
+	
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
-	if (fo_h==NULL) return;
-	while (!argstack.empty()) {
-		expr_t e_h = argstack.top();
-		argstack.pop();
-		if (e_h==NULL) continue;
-		// >>add type promotion wrappers here<<
-		fo_h->add(e_h);
+	if (fo_h == NULL) return;
+	
+	std::vector<expr_t>::const_iterator iter = arguments.begin();
+	for(; iter != arguments.end(); ++iter) {
+		fo_h->add(*iter);
 	}
 }
 
@@ -2383,6 +2410,16 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 void normalize_visitor::end_visit(const OrExpr& v)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
+	Assert(nodestack.size()>=3,"stack underflow");
+	rchandle<expr> e1_h = pop_nodestack();
+	rchandle<expr> e2_h = pop_nodestack();
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	fo_h->add(e2_h);
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(const OrderedExpr& v)
@@ -2484,6 +2521,15 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 void normalize_visitor::end_visit(const UnaryExpr& v)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
+
+	Assert(nodestack.size()>=2,"stack underflow");
+	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
+	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
+	if (fo_h==NULL) {
+		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
+		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+	fo_h->add(e1_h);
 }
 
 void normalize_visitor::end_visit(const UnionExpr& v)

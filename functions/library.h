@@ -44,6 +44,8 @@ public:
   static qnamekey_t op_div_key;
   static qnamekey_t op_idiv_key;
   static qnamekey_t op_mod_key;
+  static qnamekey_t op_unary_minus_key;
+  static qnamekey_t op_unary_plus_key;
 
 	static qnamekey_t fn_abs_key;
 
@@ -78,7 +80,15 @@ public:
 	static qnamekey_t fn_concat_key;
 	static qnamekey_t fn_string_join_key;
 	
+	// Boolean functions
+	static qnamekey_t fn_true_key;
+	static qnamekey_t fn_false_key;
 	static qnamekey_t fn_boolean_key;
+	static qnamekey_t fn_not_key;
+	
+	// Logic operators
+	static qnamekey_t op_and_key;
+	static qnamekey_t op_or_key;
 	
 public:
 	library( );

@@ -32,6 +32,9 @@ namespace xqp
 {
 	typedef rchandle<class Item> Item_t;
 	
+	/**
+	 * Class which implements casting of items.
+	 */
 	class GenericCast
 	{
 		private:
@@ -39,7 +42,18 @@ namespace xqp
 		public:
 			GenericCast();
 			~GenericCast() {}
+			
+			/**
+			 * Sets the target types of the following casts
+			 * @param targetType 
+			 */
 			void setTarget ( TypeCode targetType );
+			
+			/**
+			 * Executes the casting of the passed item
+			 * @param item 
+			 * @return resutling item
+			 */
 			Item_t cast ( Item_t item );
 	}; /* class GenericCast */
 

@@ -39,7 +39,7 @@ protected:
 // 	rchandle<data_manager> dmgr_h;
 
 	std::stack<expr_t> nodestack;
-	std::stack<expr_t> argstack;
+// 	std::stack<expr_t> argstack;
 	std::stack<expr_t> pstack;	// predicates stack
 
 public:
@@ -54,10 +54,10 @@ public:
 		nodestack.pop();
 		return e_h;
 	}
-	void clear_argstack()
-	{
-		while (!argstack.empty()) argstack.pop();
-	}
+// 	void clear_argstack()
+// 	{
+// 		while (!argstack.empty()) argstack.pop();
+// 	}
 	void clear_pstack()
 	{
 		while (!pstack.empty()) pstack.pop();

@@ -70,7 +70,7 @@ public:
 	 * @param arg2Type type of the second argument
 	 * @return type of the numerical op result (evaluated expression) 
 	 */
-	static TypeCode getNumericalOpResultType(TypeCode arg1Type, TypeCode arg2Type);
+	static TypeCode getNumericalOpResultType(TypeCode arg0Type, TypeCode arg1Type);
 };
 
 

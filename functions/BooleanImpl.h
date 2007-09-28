@@ -27,21 +27,21 @@ namespace xqp
 	{
 		private:
 			Iterator_t arg0_;
+			bool negate;
 
 		public:
-			FnBooleanIterator ( const yy::location& loc, Iterator_t& arg0 )
-					:
-					Batcher<FnBooleanIterator> ( loc ), arg0_ ( arg0 ) {}
-			~FnBooleanIterator() {}
+			FnBooleanIterator ( const yy::location& loc, Iterator_t& arg0, bool negate_arg = false );
+			~FnBooleanIterator();
 
 			/**
 			 * Static function which computes the effective boolean value of a passed iterator.
 			 *
 			 * @param loc location of the iterator which invokes this function
 			 * @param iterator
+			 * @param negate optinal parameter which negates the effective boolean value (default == false)
 			 * @return effective boolean value
 			 */
-			static Item_t effectiveBooleanValue ( const yy::location& loc, Iterator_t&);
+			static Item_t effectiveBooleanValue ( const yy::location& loc, Iterator_t&, bool negate = false);
 
 			Item_t nextImpl();
 			void resetImpl();
@@ -50,6 +50,27 @@ namespace xqp
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 	
+	class LogicIterator : public Batcher<LogicIterator>
+	{
+	public:
+		enum LogicType {
+			AND, OR
+		};
+		
+		private:
+			Iterator_t iterLeft;
+			Iterator_t iterRight;
+			
+			LogicType logicType;
+			
+		public:
+			LogicIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, LogicType lt);
+			~LogicIterator();
+			
+			Item_t nextImpl();
+			void resetImpl();
+			void releaseResourcesImpl();
+	}; /* class LogicIterator */
 	
 	class CompareIterator : public Batcher<CompareIterator>
 	{
@@ -71,7 +92,7 @@ namespace xqp
 			CompareType compareType;
 
 		public:
-			CompareIterator ( yy::location loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType );
+			CompareIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType );
 			~CompareIterator();
 
 			Item_t nextImpl();

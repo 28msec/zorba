@@ -21,7 +21,7 @@ namespace xqp {
 			~fn_data_func() {}
 
 		public:
-			Iterator_t operator() ( yy::location loc, std::vector<Iterator_t>& ) const;
+			Iterator_t operator() ( const yy::location& loc, std::vector<Iterator_t>& ) const;
 			TypeCode type_check ( signature& ) const;
 			bool validate_args ( std::vector<Iterator_t>& ) const;
 	};

@@ -66,7 +66,7 @@ op_concatenate::op_concatenate(
 }
 
 Iterator_t op_concatenate::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -119,7 +119,7 @@ fn_index_of::fn_index_of(const signature& sig)
 : function(sig) { }
 
 Iterator_t fn_index_of::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -158,7 +158,7 @@ fn_empty::fn_empty(const signature& sig)
 : function(sig) { }
 
 Iterator_t fn_empty::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	return NULL;
@@ -183,7 +183,7 @@ fn_exists::fn_exists(const signature& sig)
 : function(sig) { }
 
 Iterator_t fn_exists::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	return NULL;
@@ -210,7 +210,7 @@ fn_distinct_values::fn_distinct_values(
 	function(sig) { }
 
 Iterator_t fn_distinct_values::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	return NULL;
@@ -243,7 +243,7 @@ fn_reverse::fn_reverse(const signature& sig)
 : function(sig) { }
 
 Iterator_t fn_reverse::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	return NULL;
@@ -268,7 +268,7 @@ fn_subsequence::fn_subsequence(const signature& sig)
 : function(sig) { }
 
 Iterator_t fn_subsequence::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	return NULL;
@@ -356,7 +356,7 @@ fn_doc_func::fn_doc_func(
 }
 
 Iterator_t fn_doc_func::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;

@@ -264,6 +264,7 @@ namespace xqp
 	{
 		Item_t n0;
 		Item_t n1;
+		Item_t res;
 		TypeCode type0;
 		TypeCode type1;
 		TypeCode resultType;
@@ -286,20 +287,30 @@ namespace xqp
 				switch(resultType)
 				{
 				case xs_double:
-					STACK_PUSH(Operations::opDouble(&this->loc, n0, n1));
+					res = Operations::opDouble(&this->loc, n0, n1);
 					break;
 				case xs_float:
-					STACK_PUSH(Operations::opFloat(&this->loc,n0, n1));
+					res = Operations::opFloat(&this->loc,n0, n1);
 					break;
 				case xs_decimal:
-					STACK_PUSH(Operations::opDecimal(&this->loc,n0, n1));
+					res = Operations::opDecimal(&this->loc,n0, n1);
 					break;
 				case xs_integer:
-					STACK_PUSH(Operations::opInteger(&this->loc,n0, n1));
+					res = Operations::opInteger(&this->loc,n0, n1);
 					break;
 				default:
 					break;
 				}
+				
+				if (this->consumeNext ( this->arg0 ) != NULL || this->consumeNext ( this->arg1) != NULL)
+					ZorbaErrorAlerts::error_alert (
+						error_messages::XPTY0004_STATIC_TYPE_ERROR,
+						error_messages::STATIC_ERROR,
+						NULL,
+						false,
+						"Arithmetic operation has a sequences greater than one as an operator!"
+					);
+				STACK_PUSH( res );
 			}
 		}
 		STACK_END();
@@ -479,30 +490,89 @@ namespace xqp
 	|	0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns
 	|	INF.
 	|_______________________________________________________________________*/
+	OpNumericUnaryIterator::OpNumericUnaryIterator ( yy::location loc, Iterator_t iter, bool plus_arg)
+	:
+		Batcher<OpNumericUnaryIterator> ( loc ), arg0 ( iter ), plus( plus_arg )
+	{
+		this->genericCast = new GenericCast();
+	}
+		
+	OpNumericUnaryIterator::~OpNumericUnaryIterator() 
+	{
+		delete this->genericCast;
+	}
 	
-	// TODO implementation
-	Item_t OpNumericUnaryMinusIterator::nextImpl()
+	Item_t OpNumericUnaryIterator::nextImpl()
 	{
 		Item_t item;
+		Item_t res;
+		int32_t mul;
+		TypeCode type;
+		
 		STACK_INIT();
-
+		item = this->consumeNext ( this->arg0 );
+		if ( item != NULL )
+		{
+			item = item->getAtomizationValue();
+			if (sequence_type::derives_from(item->getType(), xs_untypedAtomicValue))
+			{
+				this->genericCast->setTarget(xs_double);
+				item = this->genericCast->cast(item);
+			}
+			
+			type = item->getType();
+			if (this->plus)
+				mul = 1;
+			else
+				mul = -1;
+			
+			// TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
+			if (sequence_type::derives_from(type, xs_double))
+				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble (mul * item->getDoubleValue() );
+			else if (sequence_type::derives_from(type, xs_float))
+				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat(mul * item->getFloatValue() );
+			else if (sequence_type::derives_from(type, xs_decimal))
+				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(mul * item->getDecimalValue() );
+			else if (sequence_type::derives_from(type, xs_integer))
+				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(mul * item->getIntegerValue() );
+			else
+			{
+				ZorbaErrorAlerts::error_alert (
+					error_messages::XPTY0004_STATIC_TYPE_ERROR,
+					error_messages::STATIC_ERROR,
+					NULL,
+					false,
+					"Wrong operator type for an unary arithmetic operation!"
+				);
+			}
+			
+			if (this->consumeNext ( this->arg0 ) != NULL)
+				ZorbaErrorAlerts::error_alert (
+					error_messages::XPTY0004_STATIC_TYPE_ERROR,
+					error_messages::STATIC_ERROR,
+					NULL,
+					false,
+					"Arithmetic operation has a sequences greater than one as an operator!"
+				);
+			STACK_PUSH( res );
+		}
 		STACK_END();
 	}
 
-	void OpNumericUnaryMinusIterator::resetImpl()
+	void OpNumericUnaryIterator::resetImpl()
 	{
-		this->resetChild ( this->arg0_ );
+		this->resetChild ( this->arg0 );
 	}
 
-	void OpNumericUnaryMinusIterator::releaseResourcesImpl()
+	void OpNumericUnaryIterator::releaseResourcesImpl()
 	{
-		this->releaseChildResources ( this->arg0_ );
+		this->releaseChildResources ( this->arg0 );
 	}
 
-	std::ostream& OpNumericUnaryMinusIterator::_show ( std::ostream& os )
+	std::ostream& OpNumericUnaryIterator::_show ( std::ostream& os )
 	const
 	{
-		this->arg0_->show ( os );
+		this->arg0->show ( os );
 		return os;
 	}
 
@@ -523,27 +593,106 @@ namespace xqp
 	|_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-	// TODO Implementation
+	FnAbsIterator::FnAbsIterator ( yy::location loc, Iterator_t iter )
+	:
+		Batcher<FnAbsIterator> ( loc ), arg0 ( iter ) 
+	{
+		this->genericCast = new GenericCast();
+	}
+	
+	FnAbsIterator::~FnAbsIterator() 
+	{
+		delete this->genericCast;
+	}
+
 	Item_t FnAbsIterator::nextImpl()
 	{
-		STACK_INIT();
+		Item_t item;
+		Item_t res;
+		TypeCode type;
 		
+		STACK_INIT();
+		item = this->consumeNext ( this->arg0 );
+		if ( item != NULL )
+		{
+			item = item->getAtomizationValue();
+			if (sequence_type::derives_from(item->getType(), xs_untypedAtomicValue))
+			{
+				this->genericCast->setTarget(xs_double);
+				item = this->genericCast->cast(item);
+			}
+			
+			type = item->getType();
+			
+			if (sequence_type::derives_from(type, xs_double))
+				if (item->getDoubleValue() >= 0 )
+					if (type == xs_double)
+						res = item;
+					else
+						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble (item->getDoubleValue() );
+				else
+					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble (-item->getDoubleValue() );
+			else if (sequence_type::derives_from(type, xs_float))
+				if (item->getFloatValue() >= 0 )
+					if (type == xs_float)
+						res = item;
+					else
+						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat (item->getFloatValue() );
+				else
+					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat (-item->getFloatValue() );
+			else if (sequence_type::derives_from(type, xs_decimal))
+				if (item->getDecimalValue() >= 0 )
+					if (type == xs_decimal)
+						res = item;
+					else
+						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal (item->getDecimalValue() );
+				else
+					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal (-item->getDecimalValue() );
+			else if (sequence_type::derives_from(type, xs_integer))
+				if (item->getIntegerValue() >= 0 )
+					if (type == xs_integer)
+						res = item;
+					else
+						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger (item->getIntegerValue() );
+				else
+					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger (-item->getIntegerValue() );
+			else
+			{
+				ZorbaErrorAlerts::error_alert (
+					error_messages::XPTY0004_STATIC_TYPE_ERROR,
+					error_messages::STATIC_ERROR,
+					NULL,
+					false,
+					"Wrong operator type for an abs operation!"
+				);
+			}
+			
+			if (this->consumeNext ( this->arg0 ) != NULL)
+				ZorbaErrorAlerts::error_alert (
+					error_messages::XPTY0004_STATIC_TYPE_ERROR,
+					error_messages::STATIC_ERROR,
+					NULL,
+					false,
+					"Abs operation has a sequences greater than one as an operator!"
+				);
+			STACK_PUSH( res );
+		}
 		STACK_END();
 	}
 
 	void FnAbsIterator::resetImpl()
 	{
-		this->resetChild ( this->arg0_ );
+		this->resetChild ( this->arg0 );
 	}
 
 	void FnAbsIterator::releaseResourcesImpl()
 	{
-		this->releaseChildResources ( this->arg0_ );
+		this->releaseChildResources ( this->arg0 );
 	}
 
 	std::ostream& FnAbsIterator::_show ( std::ostream& os ) const
 	{
-		this->arg0_->show ( os );
+		this->arg0->show ( os );
 		return os;
 	}
 

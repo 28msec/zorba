@@ -20,6 +20,12 @@ namespace xqp
 	|
 	|	Computes the effective boolean value of the sequence $arg.
 	|_______________________________________________________________________*/
+	FnBooleanIterator::FnBooleanIterator ( const yy::location& loc, Iterator_t& arg0, bool negate_arg )
+	:
+		Batcher<FnBooleanIterator> ( loc ), arg0_ ( arg0 ), negate ( negate_arg ) {}
+		
+	FnBooleanIterator::~FnBooleanIterator() {}
+			
 	std::ostream&
 	FnBooleanIterator::_show ( std::ostream& os ) const
 	{
@@ -28,7 +34,7 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, Iterator_t& iter )
+	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, Iterator_t& iter, bool negate )
 	{
 		Item_t item;
 		TypeCode type;
@@ -39,12 +45,12 @@ namespace xqp
 		if ( item == NULL )
 		{
 			// empty sequence => false
-			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( false );
+			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( negate ^ false );
 		}
 		else if ( item->isNode() )
 		{
 			// node => true
-			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( true );
+			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( negate ^ true );
 		}
 		else
 		{
@@ -63,6 +69,8 @@ namespace xqp
 				// atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
 				// => effective boolean value is defined in the items
 				result = item->getEBV();
+				if (negate)
+					result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( negate ^ result->getBooleanValue() );
 			}
 			else
 			{
@@ -82,9 +90,9 @@ namespace xqp
 
 	Item_t
 	FnBooleanIterator::nextImpl()
-	{
+	{	
 		STACK_INIT();
-		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, this->arg0_ ) );
+		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, this->arg0_, this->negate ) );
 		STACK_END();
 	}
 
@@ -100,9 +108,51 @@ namespace xqp
 		this->releaseChildResources ( this->arg0_ );
 	}
 	/* end class FnBooleanIterator */
+	
+	/* begin class LogicIterator */
+	LogicIterator::LogicIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, LogicType lt)
+	:
+		Batcher<LogicIterator> ( loc), iterLeft(arg0), iterRight(arg1), logicType(lt) {}
+	LogicIterator::~LogicIterator(){}
+			
+	Item_t 
+	LogicIterator::nextImpl()
+	{
+		bool bRes;
+		
+		STACK_INIT();
+		switch(this->logicType)
+		{
+		case AND:
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterLeft)->getBooleanValue() 
+							&& FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterRight)->getBooleanValue();
+			break;
+		case OR:
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterLeft)->getBooleanValue() 
+							|| FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterRight)->getBooleanValue();;
+			break;
+		}
+		STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(bRes));
+		STACK_END();
+	}
+	
+	void 
+	LogicIterator::resetImpl()
+	{
+		this->resetChild( this->iterLeft );
+		this->resetChild( this->iterRight );
+	}
+	
+	void 
+	LogicIterator::releaseResourcesImpl()
+	{
+		this->releaseChildResources( this->iterLeft );
+		this->releaseChildResources( this->iterRight );
+	}
+	/* end class LogicIterator */
 
 	/* begin class ComparisonIterator */
-	CompareIterator::CompareIterator ( yy::location loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType )
+	CompareIterator::CompareIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType )
 	:
 		Batcher<CompareIterator> ( loc ), compareType(argCompType) 
 	{

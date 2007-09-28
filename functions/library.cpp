@@ -55,6 +55,7 @@ bool library::static_init = false;
   type key##_tmp_obj (signature sig);                                   \
   initializer key##_tmp_init (key##_tmp_obj, library::key##_key)
   
+  
   // Accessors
   DECL (fn_data, fn_data_func,
   			(new QNameItem (XQUERY_FN_NS, "fn", "data"),
@@ -62,25 +63,33 @@ bool library::static_init = false;
   // end Accessors
   
   // Numerics
-    
-  // op_numeric_unary_plus
-  // op_numeric_unary_minus
-    
+ 	// TODO The parameter and return types of the numeric functions are not correct.
+ 	// e.g. it is possible to add two untyped atomics or the parameters can be element nodes
+ 	// which contain a number.
   DECL (op_add, op_numeric_add,
-        (new QNameItem (XQUERY_FN_NS,"op","add"),
+        (new QNameItem (XQUERY_OP_NS,"op","add"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_subtract, op_numeric_subtract,
-        (new QNameItem (XQUERY_FN_NS,"op","subtract"),
+        (new QNameItem (XQUERY_OP_NS,"op","subtract"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_mul, op_numeric_multiply,
-        (new QNameItem (XQUERY_FN_NS,"op","multiply"),
+        (new QNameItem (XQUERY_OP_NS,"op","multiply"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_div, op_numeric_divide,
-        (new QNameItem (XQUERY_FN_NS,"op","divide"),
+        (new QNameItem (XQUERY_OP_NS,"op","divide"),
+         xs_decimal, xs_decimal, xs_decimal));
+  DECL (op_idiv, op_numeric_integer_divide,
+        (new QNameItem (XQUERY_OP_NS,"op","integer-divide"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_mod, op_numeric_mod,
-        (new QNameItem (XQUERY_FN_NS,"op","mod"),
+        (new QNameItem (XQUERY_OP_NS,"op","mod"),
          xs_decimal, xs_decimal, xs_decimal));
+  DECL (op_unary_minus, op_numeric_unary_minus, 
+  			(new QNameItem (XQUERY_OP_NS,"op","unary-minus"),
+  			xs_decimal, xs_decimal));
+  DECL (op_unary_plus, op_numeric_unary_plus, 
+  			(new QNameItem (XQUERY_OP_NS,"op","unary-plus"),
+  			xs_decimal, xs_decimal));
 
   DECL (fn_abs, fn_abs,
         (new QNameItem(XQUERY_FN_NS, "fn", "abs"),
@@ -184,15 +193,42 @@ bool library::static_init = false;
         (new QNameItem(XQUERY_FN_NS,"fn","string-join"),
          xs_string, xs_string,
          xs_string));
+  // end Strings
 
+	// start Boolean
+	DECL (fn_true, fn_true,
+        (new QNameItem(XQUERY_FN_NS,"fn","true"),
+         xs_boolean));
+  
+  DECL (fn_false, fn_false,
+        (new QNameItem(XQUERY_FN_NS,"fn","false"),
+         xs_boolean));
+  
   DECL (fn_boolean, fn_boolean,
         (new QNameItem(XQUERY_FN_NS,"fn","boolean"),
          xs_anyType,
          xs_boolean));
-	// end Strings
+  
+  DECL (fn_not, fn_not,
+  			(new QNameItem(XQUERY_FN_NS,"fn","not"),
+  			xs_anyType,
+  			xs_boolean));
+	// end Boolean
+	
+	// start Logic
+	DECL (op_and, op_and,
+			(new QNameItem(XQUERY_OP_NS,"op","and"),
+			xs_anyType,
+			xs_boolean));
+			
+	DECL (op_or, op_or,
+			(new QNameItem(XQUERY_OP_NS,"op","or"),
+			xs_anyType,
+			xs_boolean));
+	// end Logic
+	
 // TODO
 
-qnamekey_t library::op_idiv_key;
 
 // Comparison operators
 qnamekey_t library::op_is_key;

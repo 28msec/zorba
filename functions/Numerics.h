@@ -37,7 +37,7 @@ public:
 	~op_numeric_add() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -49,7 +49,7 @@ public:
 	~op_numeric_add_int() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location&, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -64,7 +64,7 @@ public:
 	~op_numeric_subtract() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -79,7 +79,7 @@ public:
 	~op_numeric_multiply() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -94,7 +94,7 @@ public:
 	~op_numeric_divide() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -108,7 +108,7 @@ public:
 	~op_numeric_integer_divide() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -122,7 +122,7 @@ public:
 	~op_numeric_mod() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -136,7 +136,7 @@ public:
 	~op_numeric_unary_plus() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -150,7 +150,7 @@ public:
 	~op_numeric_unary_minus() {}
 
 public:
-	Iterator_t operator()(yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };
@@ -181,7 +181,7 @@ public:
 	~fn_abs() {}
 
 public:
-	Iterator_t operator()( yy::location loc, std::vector<Iterator_t>&) const;
+	Iterator_t operator()( const yy::location& loc, std::vector<Iterator_t>&) const;
 	sequence_type_t type_check(signature&) const;
 	bool validate_args(std::vector<Iterator_t>&) const;
 };

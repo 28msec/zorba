@@ -53,16 +53,19 @@ namespace xqp
 
 	TypeCode sequence_type::getNumericalOpResultType ( TypeCode type0, TypeCode type1 )
 	{
-		if ( type0 == xs_untypedAtomicValue /*|| type0 == xs_anySimpleType*/ || type1 == xs_untypedAtomicValue /*|| type1 == xs_anySimpleType*/ )
+		if ( derives_from(type0, xs_untypedAtomicValue) 
+					/*|| derives_from(type0, xs_anySimpleType)*/ 
+					|| derives_from(type1, xs_untypedAtomicValue) 
+					/*|| type1 == xs_anySimpleType*/ )
 			return xs_double;
 
-		if ( type0 == xs_double || type1 == xs_double )
+		if ( derives_from(type0, xs_double) || derives_from(type1, xs_double) )
 			return xs_double;
 
-		if ( type0 == xs_float || type1 == xs_float )
+		if ( derives_from(type0, xs_float) || derives_from(type1, xs_float) )
 			return xs_float;
 
-		if ( type0 == xs_decimal || type1 == xs_decimal )
+		if ( derives_from(type0, xs_decimal) || derives_from(type1, xs_decimal) )
 			return xs_decimal;
 
 		return xs_integer;

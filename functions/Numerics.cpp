@@ -43,7 +43,7 @@ op_numeric_add::op_numeric_add(
 }
 
 Iterator_t op_numeric_add::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -71,7 +71,7 @@ op_numeric_add_int::op_numeric_add_int(
 }
 
 Iterator_t op_numeric_add_int::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -116,7 +116,7 @@ op_numeric_subtract::op_numeric_subtract(
 }
 
 Iterator_t op_numeric_subtract::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -160,7 +160,7 @@ op_numeric_multiply::op_numeric_multiply(
 }
 
 Iterator_t op_numeric_multiply::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -214,7 +214,7 @@ op_numeric_divide::op_numeric_divide(
 }
 
 Iterator_t op_numeric_divide::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -270,7 +270,7 @@ op_numeric_integer_divide::op_numeric_integer_divide(
 }
 
 Iterator_t op_numeric_integer_divide::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -334,7 +334,7 @@ op_numeric_mod::op_numeric_mod(
 }
 
 Iterator_t op_numeric_mod::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
@@ -373,11 +373,11 @@ op_numeric_unary_plus::op_numeric_unary_plus(
 }
 
 Iterator_t op_numeric_unary_plus::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return argv[0];
+	return new OpNumericUnaryIterator(loc, argv[0], true);
 }
 
 sequence_type_t op_numeric_unary_plus::type_check(
@@ -417,11 +417,11 @@ op_numeric_unary_minus::op_numeric_unary_minus(
 }
 
 Iterator_t op_numeric_unary_minus::operator()(
-	yy::location loc, 
+	const yy::location& loc, 
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new OpNumericUnaryMinusIterator(loc, argv[0]);
+	return new OpNumericUnaryIterator(loc, argv[0], false);
 }
 
 sequence_type_t op_numeric_unary_minus::type_check(
@@ -459,7 +459,7 @@ fn_abs::fn_abs(const signature& sig)
 {   	
 }
 
-Iterator_t fn_abs::operator()( yy::location loc, vector<Iterator_t>& argv) const
+Iterator_t fn_abs::operator()( const yy::location& loc, vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;

@@ -16,7 +16,7 @@ namespace xqp {
 
 	Iterator_t
 	fn_data_func::operator() (
-	    yy::location loc,
+	    const yy::location& loc,
 	    vector<Iterator_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )

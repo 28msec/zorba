@@ -3855,7 +3855,8 @@ ostream& ParenthesizedExpr::put(ostream& s) const
 void ParenthesizedExpr::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	expr_h->accept(v);
+	if (expr_h != NULL)
+		expr_h->accept(v);
 	v.end_visit(*this); 
 }
 
@@ -3989,7 +3990,8 @@ void FunctionCall::accept(parsenode_visitor& v) const
 { 
 	if (!v.begin_visit(*this)) return;
 	//fname_h->accept(v);
-	arg_list_h->accept(v);
+	if (arg_list_h != NULL)
+		arg_list_h->accept(v);
 	v.end_visit(*this); 
 }
 

@@ -5,6 +5,8 @@
 
 #include "Boolean.h"
 #include "BooleanImpl.h"
+#include "../runtime/item_iterator.h"
+#include "../runtime/zorba.h"
 
 namespace xqp
 {
@@ -14,7 +16,7 @@ namespace xqp
 		: function ( sig ) {}
 
 	Iterator_t
-	GenericOpComparison::operator() ( yy::location loc, vector<Iterator_t>& argv ) const
+	GenericOpComparison::operator() ( const yy::location& loc, vector<Iterator_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -43,7 +45,7 @@ namespace xqp
 	/* begin class op_equal */
 	op_equal::op_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_EQUAL );
 	}
@@ -52,7 +54,7 @@ namespace xqp
 	/* begin class op_not_equal */
 	op_not_equal::op_not_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_not_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_not_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_NOT_EQUAL );
 	}
@@ -61,7 +63,7 @@ namespace xqp
 	/* begin class op_greater */
 	op_greater::op_greater( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_greater::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_greater::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_GREATER );
 	}
@@ -70,7 +72,7 @@ namespace xqp
 	/* begin class op_greater_equal */
 	op_greater_equal::op_greater_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_greater_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_greater_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_GREATER_EQUAL );
 	}
@@ -79,7 +81,7 @@ namespace xqp
 	/* begin class op_less */
 	op_less::op_less( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_less::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_less::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_LESS );
 	}
@@ -88,7 +90,7 @@ namespace xqp
 	/* begin class op_less_equal */
 	op_less_equal::op_less_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_less_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_less_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_LESS_EQUAL );
 	}
@@ -97,7 +99,7 @@ namespace xqp
 		/* begin class op_value_equal */
 	op_value_equal::op_value_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_value_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_value_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_EQUAL );
 	}
@@ -106,7 +108,7 @@ namespace xqp
 	/* begin class op_value_not_equal */
 	op_value_not_equal::op_value_not_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_value_not_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_value_not_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_NOT_EQUAL );
 	}
@@ -115,7 +117,7 @@ namespace xqp
 	/* begin class op_value_greater */
 	op_value_greater::op_value_greater( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_value_greater::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_value_greater::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_GREATER );
 	}
@@ -124,7 +126,7 @@ namespace xqp
 	/* begin class op_value_greater_equal */
 	op_value_greater_equal::op_value_greater_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_value_greater_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_value_greater_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_GREATER_EQUAL );
 	}
@@ -133,7 +135,7 @@ namespace xqp
 	/* begin class op_value_less */
 	op_value_less::op_value_less( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_value_less::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_value_less::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_LESS );
 	}
@@ -142,24 +144,183 @@ namespace xqp
 	/* begin class op_value_less_equal */
 	op_value_less_equal::op_value_less_equal( const signature& sig) : GenericOpComparison(sig) {}
 	Iterator_t 
-	op_value_less_equal::createIterator ( yy::location loc, std::vector<Iterator_t>& argv ) const
+	op_value_less_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_LESS_EQUAL );
 	}
 	/* end class op_value_less_equal */
+	
+	/* start class op_and */
+	op_and::op_and ( const signature& sig ) : function ( sig ) {}
 
-	/*______________________________________________________________________
-	|
-	|	15.1.1 fn:boolean
-	|	fn:boolean($arg as item()*) as xs:boolean
-	|
-	|	Computes the effective boolean value of the sequence $arg.
-	|_______________________________________________________________________*/
+	Iterator_t
+	op_and::operator() (
+	    const yy::location& loc,
+	    vector<Iterator_t>& argv ) const
+	{
+		if ( !validate_args ( argv ) )
+		{
+			ZorbaErrorAlerts::error_alert (
+			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+			    error_messages::STATIC_ERROR,
+			    &loc
+			);
+		}
+		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
+	}
+
+	TypeCode
+	op_and::type_check (
+	    signature& sig ) const
+	{
+		return xs_boolean;
+	}
+
+	bool
+	op_and::validate_args ( vector<Iterator_t>& argv ) const
+	{
+		return ( argv.size() == 2 );
+	}
+	/* end class op_and */
+	
+	/*start class op_or */
+	op_or::op_or ( const signature& sig ) : function ( sig ) {}
+
+	Iterator_t
+	op_or::operator() (
+	    const yy::location& loc,
+	    vector<Iterator_t>& argv ) const
+	{
+		if ( !validate_args ( argv ) )
+		{
+			ZorbaErrorAlerts::error_alert (
+			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+			    error_messages::STATIC_ERROR,
+			    &loc
+			);
+		}
+		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
+	}
+
+	TypeCode
+	op_or::type_check (
+	    signature& sig ) const
+	{
+		return xs_boolean;
+	}
+
+	bool
+	op_or::validate_args ( vector<Iterator_t>& argv ) const
+	{
+		return ( argv.size() == 2 );
+	}
+	/* end class op_or */
+
+	/* start class fn_true */
+	fn_true::fn_true ( const signature& sig ) :function ( sig ) {}
+
+	Iterator_t
+	fn_true::operator() (
+	    const yy::location& loc,
+	    vector<Iterator_t>& argv ) const
+	{
+		if ( !validate_args ( argv ) )
+		{
+			ZorbaErrorAlerts::error_alert (
+			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+			    error_messages::STATIC_ERROR,
+			    &loc
+			);
+		}
+		return new SingletonIterator ( loc, zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(true) );
+	}
+
+	TypeCode
+	fn_true::type_check (
+	    signature& sig ) const
+	{
+		return xs_boolean;
+	}
+
+	bool
+	fn_true::validate_args ( vector<Iterator_t>& argv ) const
+	{
+		return ( argv.size() == 0 );
+	}
+	/* end class fn_true */
+	
+	/* start class fn_false */
+	fn_false::fn_false ( const signature& sig ) :function ( sig ) {}
+
+	Iterator_t
+	fn_false::operator() (
+	    const yy::location& loc,
+	    vector<Iterator_t>& argv ) const
+	{
+		if ( !validate_args ( argv ) )
+		{
+			ZorbaErrorAlerts::error_alert (
+			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+			    error_messages::STATIC_ERROR,
+			    &loc
+			);
+		}
+		return new SingletonIterator ( loc, zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false) );
+	}
+
+	TypeCode
+	fn_false::type_check (
+	    signature& sig ) const
+	{
+		return xs_boolean;
+	}
+
+	bool
+	fn_false::validate_args ( vector<Iterator_t>& argv ) const
+	{
+		return ( argv.size() == 0 );
+	}	
+	/* end class fn_false */
+	
+	/* begin class fn_not */
+	fn_not::fn_not ( const signature& sig ) :function ( sig ) {}
+
+	Iterator_t
+	fn_not::operator() (
+	    const yy::location& loc,
+	    vector<Iterator_t>& argv ) const
+	{
+		if ( !validate_args ( argv ) )
+		{
+			ZorbaErrorAlerts::error_alert (
+			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+			    error_messages::STATIC_ERROR,
+			    &loc
+			);
+		}
+		return new FnBooleanIterator(loc, argv[0], true );
+	}
+
+	TypeCode
+	fn_not::type_check (
+	    signature& sig ) const
+	{
+		return xs_boolean;
+	}
+
+	bool
+	fn_not::validate_args ( vector<Iterator_t>& argv ) const
+	{
+		return ( argv.size() == 1 );
+	}	
+	/* end class fn_not */
+
+	/* start class fn_boolean */
 	fn_boolean::fn_boolean ( const signature& sig ) :function ( sig ) {}
 
 	Iterator_t
 	fn_boolean::operator() (
-	    yy::location loc,
+	    const yy::location& loc,
 	    vector<Iterator_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
@@ -185,5 +346,5 @@ namespace xqp
 	{
 		return ( argv.size() == 1 );
 	}
-
+	/* end class fn_boolean */
 }

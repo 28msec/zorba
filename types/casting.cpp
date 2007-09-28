@@ -64,10 +64,10 @@ namespace xqp
 					const char* pStart = item->getStringValue().c_str();
 					char* pEnd;
 					doubleVal = strtod ( pStart, &pEnd );
-					if (pStart == pEnd) {
+					if (*pEnd != '\0') {
 						ZorbaErrorAlerts::error_alert (
-					    error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-					    error_messages::RUNTIME_ERROR,
+					    error_messages::FORG0001_Invalid_value_for_cast_constructor,
+					    error_messages::STATIC_ERROR,
 					    NULL,
 					    false,
 					    "Cannot convert \"" + item->getStringValue() + "\" to a double!"
@@ -84,8 +84,8 @@ namespace xqp
 				else
 				{
 					ZorbaErrorAlerts::error_alert (
-					    error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-					    error_messages::RUNTIME_ERROR,
+					    error_messages::FORG0001_Invalid_value_for_cast_constructor,
+					    error_messages::STATIC_ERROR,
 					    NULL,
 					    false,
 					    "Numeric casting of a non numeric type"
@@ -97,8 +97,8 @@ namespace xqp
 				break;
 			default:
 				ZorbaErrorAlerts::error_alert (
-				    error_messages::XPST0080_STATIC_BAD_CAST_EXPR,
-				    error_messages::RUNTIME_ERROR,
+				    error_messages::FORG0001_Invalid_value_for_cast_constructor,
+				    error_messages::STATIC_ERROR,
 				    false,
 				    "Item cannot be casted to the declared type!"
 				);

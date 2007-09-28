@@ -187,16 +187,16 @@ namespace xqp
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
-	class OpNumericUnaryMinusIterator : public Batcher<OpNumericUnaryMinusIterator>
+	class OpNumericUnaryIterator : public Batcher<OpNumericUnaryIterator>
 	{
 		private:
-			Iterator_t arg0_;
+			Iterator_t arg0;
+			GenericCast* genericCast;
+			bool plus;
 
 		public:
-			OpNumericUnaryMinusIterator ( yy::location loc, Iterator_t iter )
-					:
-					Batcher<OpNumericUnaryMinusIterator> ( loc ), arg0_ ( iter ) {}
-			~OpNumericUnaryMinusIterator() {}
+			OpNumericUnaryIterator ( yy::location loc, Iterator_t iter, bool plus_arg);
+			~OpNumericUnaryIterator();
 
 		public:	// iterator interface
 			Item_t nextImpl();
@@ -229,13 +229,12 @@ namespace xqp
 	class FnAbsIterator : public Batcher<FnAbsIterator>
 	{
 		private:
-			Iterator_t arg0_;
+			Iterator_t arg0;
+			GenericCast* genericCast;
 
 		public:
-			FnAbsIterator ( yy::location loc, Iterator_t iter )
-					:
-					Batcher<FnAbsIterator> ( loc ), arg0_ ( iter ) {}
-			~FnAbsIterator() {}
+			FnAbsIterator ( yy::location loc, Iterator_t iter );
+			~FnAbsIterator();
 
 		public:
 			Item_t nextImpl();

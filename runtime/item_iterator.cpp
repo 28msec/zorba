@@ -251,9 +251,8 @@ namespace xqp
 		bool concatenation = false;
 
 		STACK_INIT();
-		if ( this->value != NULL )
+		if ( this->value != NULL && (itemFirst = this->consumeNext(this->value)) != NULL )
 		{
-			itemFirst = this->consumeNext ( this->value );
 			lexicalString = itemFirst->getStringProperty();
 
 			// handle concatenation

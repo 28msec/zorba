@@ -38,7 +38,7 @@ public:
 	void set_signature(signature& _sig) { sig = _sig; }
 
 	// codegen: functor specification
-	virtual Iterator_t operator()(yy::location loc, std::vector<Iterator_t>& argv) const = 0;
+	virtual Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>& argv) const = 0;
 
 	// polymorphic type inference
 	virtual sequence_type_t type_check(signature&) const = 0;
