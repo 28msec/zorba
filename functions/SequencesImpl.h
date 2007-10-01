@@ -49,37 +49,20 @@ protected:
 	uint32_t cursor;
 
 public:
+	ConcatIterator(
+	yy::location loc,
+	const vector<Iterator_t>& _argv);
+	
+	ConcatIterator(
+	const ConcatIterator& concat_it);
+	
+	~ConcatIterator();
+
 	std::ostream&  _show(std::ostream&) const;
 
 	Item_t nextImpl();
 	void resetImpl();
 	void releaseResourcesImpl();
-
-public:	// ctor,dtor
-// 	ConcatIterator ( yy::location loc, const std::vector<Iterator_t>& );
-// 	ConcatIterator ( const ConcatIterator& it );
-	
-	
-ConcatIterator(
-	yy::location loc,
-	const vector<Iterator_t>& _argv)
-:
-	Batcher<ConcatIterator>(loc),
-	argv(_argv),
-	currit_h(NULL),
-	cursor(0)
-{}
-
-ConcatIterator(
-	const ConcatIterator& concat_it)
-:
-	Batcher<ConcatIterator>(concat_it),
-	argv(concat_it.argv),
-	currit_h(concat_it.currit_h),
-	cursor(concat_it.cursor)
-{}
-
-~ConcatIterator() {}
 };
 
 

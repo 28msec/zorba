@@ -37,7 +37,29 @@ Item* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-std::ostream& ConcatIterator::_show(std::ostream& os)
+ConcatIterator::ConcatIterator(
+	yy::location loc,
+	const vector<Iterator_t>& _argv)
+:
+	Batcher<ConcatIterator>(loc),
+	argv(_argv),
+	currit_h(NULL),
+	cursor(0)
+{}
+
+ConcatIterator::ConcatIterator(
+	const ConcatIterator& concat_it)
+:
+	Batcher<ConcatIterator>(concat_it),
+	argv(concat_it.argv),
+	currit_h(concat_it.currit_h),
+	cursor(concat_it.cursor)
+{}
+
+ConcatIterator::~ConcatIterator(){}
+
+std::ostream& 
+ConcatIterator::_show(std::ostream& os)
 const
 {
 	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
@@ -47,7 +69,8 @@ const
 	return os;
 }
 
-Item_t ConcatIterator::nextImpl() {
+Item_t 
+ConcatIterator::nextImpl() {
 	Item_t item;
 	
 	STACK_INIT();
@@ -66,14 +89,16 @@ Item_t ConcatIterator::nextImpl() {
 	STACK_END();
 }
 
-void ConcatIterator::resetImpl() {
+void 
+ConcatIterator::resetImpl() {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter);
 	}
 }
 
-void ConcatIterator::releaseResourcesImpl() {
+void 
+ConcatIterator::releaseResourcesImpl() {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter);

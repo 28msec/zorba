@@ -156,7 +156,7 @@ protected:
 template <class IterType>
 class Batcher: public BasicIterator {
 public:
-	Batcher(const Batcher<IterType>&);
+	Batcher(const Batcher<IterType>& b) : BasicIterator(b) {}
 	Batcher(yy::location _loc) : BasicIterator(_loc) {}
 	~Batcher() {}
 
