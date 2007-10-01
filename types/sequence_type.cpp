@@ -65,7 +65,7 @@ namespace xqp
 		if ( derives_from(type0, xs_float) || derives_from(type1, xs_float) )
 			return xs_float;
 
-		if ( derives_from(type0, xs_decimal) || derives_from(type1, xs_decimal) )
+		if ( ( derives_from(type0, xs_decimal) && !derives_from(type0, xs_integer)) || (derives_from(type1, xs_decimal) && !derives_from(type1, xs_integer ) ) )
 			return xs_decimal;
 
 		return xs_integer;
