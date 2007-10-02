@@ -891,25 +891,18 @@ public:
 	~relpath_expr();
 
 public:
-	void add_back(expr_t step_h)
-		{ step_hv.push_back(step_h); }
-	void add_front(expr_t step_h)
-		{ step_hv.push_front(step_h); }
-	uint32_t size() const
-		{ return step_hv.size(); }
+	void add_back(expr_t step_h)        { step_hv.push_back(step_h); }
+	void add_front(expr_t step_h)       { step_hv.push_front(step_h); }
+	uint32_t size() const               { return step_hv.size(); }
 
-	list_iterator<expr_t> begin() const
-		{ return step_hv.begin(); }
-	list_iterator<expr_t> end() const
-		{ return step_hv.end(); }
+	list_iterator<expr_t> begin() const { return step_hv.begin(); }
+	list_iterator<expr_t> end() const   { return step_hv.end(); }
 
-	expr_t& operator[](int n)
-		{ return step_hv[n]; }
+	expr_t& operator[](int n)           { return step_hv[n]; }
 
 public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
-
 };
 
 

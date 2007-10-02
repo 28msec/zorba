@@ -233,6 +233,49 @@ bool normalize_visitor::begin_visit(const ElementTest& v)
 	return true;
 }
 
+
+void normalize_visitor::end_visit(const ElementTest& v)
+{
+  cout << std::string(depth--, ' ')<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n";
+
+	/*
+	 * find axis step expression on top of stack
+	 */
+	rchandle<axis_step_expr> ase_h = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase_h == NULL) {
+    cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	}
+
+	/*
+	 * construct the element match
+	 */
+	rchandle<match_expr> m_h = new match_expr(v.get_location());
+	m_h->set_test(match_expr::elem_test);
+
+	rchandle<QName> elem_h = v.get_elem();
+	if (elem_h != NULL) {
+		m_h->set_name(new qname_expr(v.get_location(), elem_h->get_qname()));
+	}
+
+	rchandle<TypeName> type_h = v.get_type();
+	if (type_h != NULL) {
+		m_h->set_typename(new qname_expr(v.get_location(), type_h->get_name()->get_qname()));
+	}
+
+	bool optional_b =  v.get_optional_bit();
+	if (optional_b) {
+		// XXX missing member variable for this
+	}
+
+	/*
+	 * add the match expression
+	 */
+	ase_h->set_test(m_h);
+
+}
+
+
 bool normalize_visitor::begin_visit(const EmptyOrderDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
@@ -996,11 +1039,19 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
+
 bool normalize_visitor::begin_visit(const PathExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
+
+
+void normalize_visitor::end_visit(const PathExpr& v)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
 
 bool normalize_visitor::begin_visit(const QuantifiedExpr& v)
 {
@@ -1020,11 +1071,43 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
+
 bool normalize_visitor::begin_visit(const RelativePathExpr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
+
+
+void normalize_visitor::end_visit(const RelativePathExpr& v)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+
+	expr_t e0_h = pop_nodestack();		// b
+	expr_t e1_h = pop_nodestack();		// a
+
+	rchandle<relpath_expr> rp_h = dynamic_cast<relpath_expr*>(&*e0_h);
+	if (rp_h == NULL)
+  {
+		rp_h = new relpath_expr(v.get_location());
+		rp_h->add_front(e0_h);
+	}
+
+	// check for 'a//b'
+	if (v.get_step_type() == st_slashslash)
+  {
+		rchandle<axis_step_expr> ase_h = new axis_step_expr(v.get_location());
+		rchandle<match_expr> m_h = new match_expr(v.get_location());
+		m_h->set_test(match_expr::anykind_test);
+		ase_h->set_axis(axis_step_expr::descendant_or_self);
+		ase_h->set_test(m_h);
+		rp_h->add_front(&*ase_h);
+	}
+
+	rp_h->add_front(e1_h);
+	nodestack.push(&*rp_h);
+}
+
 
 bool normalize_visitor::begin_visit(const StringLiteral& v)
 {
@@ -1440,7 +1523,7 @@ void normalize_visitor::end_visit(const AtomicType& v)
 
 void normalize_visitor::end_visit(const AttributeTest& v)
 {
-cout << std::string(depth--, ' ')<<TRACE<<": ElementTest("; v.get_attr()->put(cout)<<")\n";
+  cout << std::string(depth--, ' ')<<TRACE<<": AttributeTest("; v.get_attr()->put(cout)<<")\n";
 
 	/*
 	 * find axis step expression on top of stack
@@ -1579,47 +1662,6 @@ void normalize_visitor::end_visit(const DocumentTest& v)
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void normalize_visitor::end_visit(const ElementTest& v)
-{
-cout << std::string(depth--, ' ')<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n";
-
-	/*
-	 * find axis step expression on top of stack
-	 */
-	rchandle<axis_step_expr> ase_h =
-		dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	if (ase_h==NULL) {
-		 cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
-		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-	}
-
-	/*
-	 * construct the element match
-	 */
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->set_test(match_expr::elem_test);
-
-	rchandle<QName> elem_h = v.get_elem();
-	if (elem_h!=NULL) {
-		m_h->set_name(new qname_expr(v.get_location(),
-																	elem_h->get_qname()));
-	}
-	rchandle<TypeName> type_h = v.get_type();
-	if (type_h!=NULL) {
-		m_h->set_typename(new qname_expr(v.get_location(),
-																			type_h->get_name()->get_qname()));
-	}
-	bool optional_b =  v.get_optional_bit();
-	if (optional_b) {
-		// XXX missing member variable for this
-	}
-
-	/*
-	 * add the match expression
-	 */
-	ase_h->set_test(m_h);
-
-}
 
 void normalize_visitor::end_visit(const EmptyOrderDecl& v)
 {
@@ -2432,10 +2474,6 @@ void normalize_visitor::end_visit(const ParenthesizedExpr& v)
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(const PathExpr& v)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
 
 void normalize_visitor::end_visit(const QuantifiedExpr& v)
 {
@@ -2452,31 +2490,6 @@ void normalize_visitor::end_visit(const RangeExpr& v)
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void normalize_visitor::end_visit(const RelativePathExpr& v)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-	expr_t e0_h = pop_nodestack();		// b
-	expr_t e1_h = pop_nodestack();		// a
-
-	rchandle<relpath_expr> rp_h = dynamic_cast<relpath_expr*>(&*e0_h);
-	if (rp_h==NULL) {
-		rp_h = new relpath_expr(v.get_location());
-		rp_h->add_front(e0_h);
-	}
-
-	// check for 'a//b'
-	if (v.get_step_type()==st_slashslash) {
-		rchandle<axis_step_expr> ase_h = new axis_step_expr(v.get_location());
-		rchandle<match_expr> m_h = new match_expr(v.get_location());
-		m_h->set_test(match_expr::anykind_test);
-		ase_h->set_axis(axis_step_expr::descendant_or_self);
-		ase_h->set_test(m_h);
-		rp_h->add_front(&*ase_h);
-	}
-
-	rp_h->add_front(e1_h);
-	nodestack.push(&*rp_h);
-}
 
 void normalize_visitor::end_visit(const StringLiteral& v)
 {
