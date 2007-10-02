@@ -94,6 +94,16 @@ protected:
 #define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL;
 
+
+/*******************************************************************************
+
+ Methods produceNext(), reset(), and releaseResources() raise errors. The
+ actual implementations of these methors are given by each instance of the
+ Batcher template class below.
+
+ Method next() just calls produceNext().
+
+********************************************************************************/
 class BasicIterator : public OldIterator
 {
 protected:
@@ -112,11 +122,12 @@ public:
 public:
 
 	/**
-	 * This is the wrapper which works for any kind of batching
+	 * This is the wrapper which works for any kind of batching.
 	 */
 	Item_t next();
 
-	/** Produces an output item of the iterator. Implicitly, the first call 
+	/** 
+   * Produces an output item of the iterator. Implicitly, the first call 
 	 * of 'producNext' initializes the iterator and allocates resources 
 	 * (main memory, file descriptors, etc.). 
 	 */
@@ -156,7 +167,7 @@ protected:
 template <class IterType>
 class Batcher: public BasicIterator {
 public:
-	Batcher(const Batcher<IterType>& b) : BasicIterator(b) {}
+	Batcher(const Batcher<IterType>&);
 	Batcher(yy::location _loc) : BasicIterator(_loc) {}
 	~Batcher() {}
 

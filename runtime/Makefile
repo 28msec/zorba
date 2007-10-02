@@ -1,6 +1,7 @@
 SOURCES			= \
 		batching.cpp \
 		item_iterator.cpp \
+    path_iterators.cpp \
 		zorba.cpp \
 		plan_visitor.cpp
 
