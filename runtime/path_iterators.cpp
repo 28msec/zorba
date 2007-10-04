@@ -26,6 +26,13 @@
 #include "store/api/item.h"
 #include "path_iterators.h"
 
+
+#define MYTRACE(msg) \
+{\
+  cout << __PRETTY_FUNCTION__ << ":" << __LINE__ << "  " << msg << endl; \
+}
+
+
 namespace xqp
 {
 
@@ -35,32 +42,39 @@ namespace xqp
 ********************************************************************************/
 Item_t NameTestIterator::nextImpl()
 {
-  Item_t contextNode;
-
-  do
+  while (true)
   {
-    contextNode = theInput->next();
-#ifdef DEBUG
-    theContextNode = contextNode;
-#endif
+    theContextNode = consumeNext(theInput);
+    if (theContextNode == NULL)
+      return NULL;
 
     switch (theWildKind)
     {
-    case no_wild:
-      if (theQName->equals(contextNode->getNodeName()))
-        return contextNode;
+    case match_no_wild:
+    {
+      if (theQName->equals(theContextNode->getNodeName()))
+        return theContextNode;
 
-    case all_wild:
-      return contextNode;
+      break;
+    }
+    case match_all_wild:
+    {
+      return theContextNode;
+    }
+    case match_prefix_wild:
+    {
+      if (theQName->getLocalName() == theContextNode->getNodeName()->getLocalName())
+        return theContextNode;
 
-    case prefix_wild:
-      if (theQName->getLocalName() == contextNode->getNodeName()->getLocalName())
-        return contextNode;
+      break;
+    }
+    case match_name_wild:
+    {
+      if (theQName->getNamespace() == theContextNode->getNodeName()->getPrefix())
+        return theContextNode;
 
-    case name_wild:
-      if (theQName->getNamespace() == contextNode->getNodeName()->getPrefix())
-        return contextNode;
-
+      break;
+    }
     default:
       ZorbaErrorAlerts::error_alert(
          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
@@ -70,7 +84,6 @@ Item_t NameTestIterator::nextImpl()
          "Unknown name test kind");
     }
   }
-  while (contextNode != NULL);
 
   return NULL;
 }
@@ -79,9 +92,6 @@ Item_t NameTestIterator::nextImpl()
 void NameTestIterator::resetImpl()
 {
   resetChild(theInput);
-#ifdef DEBUG
-  theContextNode = NULL;
-#endif
 }
 
 
@@ -89,20 +99,21 @@ void NameTestIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
   theQName = NULL;
-#ifdef DEBUG
   theContextNode = NULL;
-#endif
 }
 
 
 std::ostream& NameTestIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
-#endif
-  os << "qnmae: " << theQName->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
+
+  if (theQName != NULL)
+    os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
+  else
+    os << IT_DEPTH << " " << "qname: *" << endl;
+
   theInput->show(os);
   return os;
 }
@@ -111,42 +122,39 @@ std::ostream& NameTestIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SelfIterator::nextImpl()
+Item_t SelfAxisIterator::nextImpl()
 {
-#ifdef DEBUG
-  theContextNode = theInput->next();
+  do
+  {
+    theContextNode = consumeNext(theInput);
+  }
+  while (theContextNode != NULL &&
+         thePrincipalNodeKind &&
+         theContextNode->getNodeKind() != elementNode);
+
   return theContextNode;
-#else
-  return theInput->next();
-#endif
 }
 
 
-void SelfIterator::resetImpl()
+void SelfAxisIterator::resetImpl()
 {
   resetChild(theInput);
-#ifdef DEBUG
-  theContextNode = NULL;
-#endif
 }
 
 
-void SelfIterator::releaseResourcesImpl()
+void SelfAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
-#ifdef DEBUG
   theContextNode = NULL;
-#endif
 }
 
 
-std::ostream& SelfIterator::_show(std::ostream& os)	const
+std::ostream& SelfAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
-#endif
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
+
   theInput->show(os);
   return os;
 }
@@ -155,9 +163,8 @@ std::ostream& SelfIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AttributeIterator::nextImpl()
+Item_t AttributeAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t attr;
 
   STACK_INIT();
@@ -166,18 +173,15 @@ Item_t AttributeIterator::nextImpl()
   {
     do
     {
-      contextNode = theInput->next();
-#ifdef DEBUG
-      theContextNode = contextNode;
-#endif
-      if (contextNode == NULL)
+      theContextNode = consumeNext(theInput);
+      if (theContextNode == NULL)
         return NULL;
     }
-    while (contextNode->getNodeKind() != elementNode);
+    while (theContextNode->getNodeKind() != elementNode);
 
-    theAttributes = contextNode->getAttributes();
+    theAttributes = theContextNode->getAttributes();
 
-    attr = theAttributes->next();
+    attr = consumeNext(theAttributes);
 
     while (attr != NULL)
     {
@@ -185,7 +189,7 @@ Item_t AttributeIterator::nextImpl()
       theCurrentAttr = attr;
 #endif
       STACK_PUSH(attr);
-      attr = theAttributes->next();
+      attr = consumeNext(theAttributes);
     }
   }
 
@@ -193,38 +197,38 @@ Item_t AttributeIterator::nextImpl()
 }
 
 
-void AttributeIterator::resetImpl()
+void AttributeAxisIterator::resetImpl()
 {
   resetChild(theInput);
 #ifdef DEBUG
-  theContextNode = NULL;
   theCurrentAttr = NULL;
 #endif
 }
 
 
-void AttributeIterator::releaseResourcesImpl()
+void AttributeAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
   theAttributes = NULL;
-#ifdef DEBUG
   theContextNode = NULL;
+#ifdef DEBUG
   theCurrentAttr = NULL;
 #endif
 }
 
 
-std::ostream& AttributeIterator::_show(std::ostream& os)	const
+std::ostream& AttributeAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "current attr: "<< std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "current attr: "<< std::endl;
   if (theCurrentAttr != NULL)
-    os << theCurrentAttr->show() << std::endl;
+    os << IT_DEPTH << " " << theCurrentAttr->show() << std::endl;
 #endif
+
   theAttributes->show(os);
   theInput->show(os);
   return os;
@@ -234,55 +238,57 @@ std::ostream& AttributeIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ParentIterator::nextImpl()
+Item_t ParentAxisIterator::nextImpl()
 {
-  Item_t contextNode = consumeNext(theInput);
-#ifdef DEBUG
-    theContextNode = contextNode;
-#endif
+  Item_t parent;
 
-  if (contextNode == NULL)
-    return NULL;
+  do
+  {
+    theContextNode = consumeNext(theInput);
+    if (theContextNode == NULL)
+      return NULL;
+
+    parent = theContextNode->getParent();
+  }
+  while (parent != NULL &&
+         thePrincipalNodeKind && parent->getNodeKind() != elementNode);
 
 #ifdef DEBUG
-  theParent = contextNode->getParent();
-  return theParent;
-#else
-  return contextNode->getParent();
+  theParent = parent;
 #endif
+  return parent;
 }
 
 
-void ParentIterator::resetImpl()
+void ParentAxisIterator::resetImpl()
 {
   resetChild(theInput);
 #ifdef DEBUG
-  theContextNode = NULL;
   theParent = NULL;
 #endif
 }
 
 
-void ParentIterator::releaseResourcesImpl()
+void ParentAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
-#ifdef DEBUG
   theContextNode = NULL;
+#ifdef DEBUG
   theParent = NULL;
 #endif
 }
 
 
-std::ostream& ParentIterator::_show(std::ostream& os)	const
+std::ostream& ParentAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "parent node: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "parent node: " << std::endl;
   if (theParent != NULL)
-    os << theParent->show() << std::endl;
+    os << IT_DEPTH << " " << theParent->show() << std::endl;
 #endif
   theInput->show(os);
   return os;
@@ -292,27 +298,25 @@ std::ostream& ParentIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorIterator::nextImpl()
+Item_t AncestorAxisIterator::nextImpl()
 {
-  Item_t contextNode;
-
   STACK_INIT();
 
   while (true)
   {
-    contextNode = consumeNext(theInput);
-#ifdef DEBUG
-    theContextNode = contextNode;
-#endif
-
-    if (contextNode == NULL)
+    theContextNode = consumeNext(theInput);
+    if (theContextNode == NULL)
       return NULL;
 
-    theCurrentAnc = contextNode->getParent();
+    theCurrentAnc = theContextNode->getParent();
 
     while (theCurrentAnc != NULL)
     {
-      STACK_PUSH(theCurrentAnc);
+      if (!thePrincipalNodeKind || theCurrentAnc->getNodeKind() == elementNode)
+      {
+        STACK_PUSH(theCurrentAnc);
+      }
+
       theCurrentAnc = theCurrentAnc->getParent();
     }
   }
@@ -321,36 +325,30 @@ Item_t AncestorIterator::nextImpl()
 }
 
 
-void AncestorIterator::resetImpl()
+void AncestorAxisIterator::resetImpl()
 {
   resetChild(theInput);
-#ifdef DEBUG
-  theContextNode = NULL;
-#endif
 }
 
 
-void AncestorIterator::releaseResourcesImpl()
+void AncestorAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
   theCurrentAnc = NULL;
-#ifdef DEBUG
   theContextNode = NULL;
-#endif
 }
 
 
-std::ostream& AncestorIterator::_show(std::ostream& os)	const
+std::ostream& AncestorAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "ancestor node: " << std::endl;
+  os << IT_DEPTH << " " << "ancestor node: " << std::endl;
   if (theCurrentAnc != NULL)
-    os << theCurrentAnc->show() << std::endl;
-#endif
+    os << IT_DEPTH << " " << theCurrentAnc->show() << std::endl;
+
   theInput->show(os);
   return os;
 }
@@ -359,27 +357,25 @@ std::ostream& AncestorIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorSelfIterator::nextImpl()
+Item_t AncestorSelfAxisIterator::nextImpl()
 {
-  Item_t contextNode;
-
   STACK_INIT();
 
   while (true)
   {
-    contextNode = consumeNext(theInput);
-#ifdef DEBUG
-    theContextNode = contextNode;
-#endif
-
-    if (contextNode == NULL)
+    theContextNode = consumeNext(theInput);
+    if (theContextNode == NULL)
       return NULL;
 
-    theCurrentAnc = contextNode;
+    theCurrentAnc = theContextNode;
 
     while (theCurrentAnc != NULL)
     {
-      STACK_PUSH(theCurrentAnc);
+      if (!thePrincipalNodeKind || theCurrentAnc->getNodeKind() == elementNode)
+      {
+        STACK_PUSH(theCurrentAnc);
+      }
+
       theCurrentAnc = theCurrentAnc->getParent();
     }
   }
@@ -388,36 +384,30 @@ Item_t AncestorSelfIterator::nextImpl()
 }
 
 
-void AncestorSelfIterator::resetImpl()
+void AncestorSelfAxisIterator::resetImpl()
 {
   resetChild(theInput);
-#ifdef DEBUG
-  theContextNode = NULL;
-#endif
 }
 
 
-void AncestorSelfIterator::releaseResourcesImpl()
+void AncestorSelfAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
   theCurrentAnc = NULL;
-#ifdef DEBUG
   theContextNode = NULL;
-#endif
 }
 
 
-std::ostream& AncestorSelfIterator::_show(std::ostream& os)	const
+std::ostream& AncestorSelfAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "ancestor node: " << std::endl;
+  os << IT_DEPTH << " " << "ancestor node: " << std::endl;
   if (theCurrentAnc != NULL)
-    os << theCurrentAnc->show() << std::endl;
-#endif
+    os << IT_DEPTH << " " << theCurrentAnc->show() << std::endl;
+
   theInput->show(os);
   return os;
 }
@@ -426,9 +416,8 @@ std::ostream& AncestorSelfIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t RSiblingIterator::nextImpl()
+Item_t RSiblingAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t parent;
   Item_t sibling;
 
@@ -438,33 +427,32 @@ Item_t RSiblingIterator::nextImpl()
   {
     do
     {
-      contextNode = consumeNext(theInput);
-#ifdef DEBUG
-      theContextNode = contextNode;
-#endif
-    
-      if (contextNode == NULL)
+      theContextNode = consumeNext(theInput);
+      if (theContextNode == NULL)
         return NULL;
     }
-    while (contextNode->getNodeKind() != attributeNode);
+    while (theContextNode->getNodeKind() == attributeNode);
 
-    parent = contextNode->getParent();
+    parent = theContextNode->getParent();
 
     if (parent == NULL)
       return NULL;
 
     theChildren = parent->getChildren();
 
-    while (theChildren->next() != contextNode) ;
+    while (theChildren->next() != theContextNode) ;
 
     sibling = theChildren->next();
 
     while (sibling != NULL)
     {
+      if (!thePrincipalNodeKind || sibling->getNodeKind() == elementNode)
+      {
 #ifdef DEBUG
-      theRSibling = sibling;
+        theRSibling = sibling;
 #endif
-      STACK_PUSH(sibling);
+        STACK_PUSH(sibling);
+      }
 
       sibling = theChildren->next();
     }
@@ -474,37 +462,36 @@ Item_t RSiblingIterator::nextImpl()
 }
 
 
-void RSiblingIterator::resetImpl()
+void RSiblingAxisIterator::resetImpl()
 {
   resetChild(theInput);
 #ifdef DEBUG
-  theContextNode = NULL;
   theRSibling = NULL;
 #endif
 }
 
 
-void RSiblingIterator::releaseResourcesImpl()
+void RSiblingAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
   theChildren = NULL; 
-#ifdef DEBUG
   theContextNode = NULL;
+#ifdef DEBUG
   theRSibling = NULL;
 #endif
 }
 
 
-std::ostream& RSiblingIterator::_show(std::ostream& os)	const
+std::ostream& RSiblingAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "rsibling node: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "rsibling node: " << std::endl;
   if (theRSibling != NULL)
-    os << theRSibling->show() << std::endl;
+    os << IT_DEPTH << " " << theRSibling->show() << std::endl;
 #endif
   theInput->show(os);
   return os;
@@ -514,9 +501,8 @@ std::ostream& RSiblingIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t LSiblingIterator::nextImpl()
+Item_t LSiblingAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t parent;
   Item_t sibling;
 
@@ -526,17 +512,13 @@ Item_t LSiblingIterator::nextImpl()
   {
     do
     {
-      contextNode = consumeNext(theInput);
-#ifdef DEBUG
-      theContextNode = contextNode;
-#endif
-
-      if (contextNode == NULL)
+      theContextNode = consumeNext(theInput);
+      if (theContextNode == NULL)
         return NULL;
     }
-    while (contextNode->getNodeKind() != attributeNode);
+    while (theContextNode->getNodeKind() == attributeNode);
 
-    parent = contextNode->getParent();
+    parent = theContextNode->getParent();
 
     if (parent == NULL)
       return NULL;
@@ -545,12 +527,15 @@ Item_t LSiblingIterator::nextImpl()
 
     sibling = theChildren->next();
 
-    while (sibling != contextNode)
+    while (sibling != theContextNode)
     {
+      if (!thePrincipalNodeKind || sibling->getNodeKind() == elementNode)
+      {
 #ifdef DEBUG
-      theLSibling = sibling;
+        theLSibling = sibling;
 #endif
-      STACK_PUSH(sibling);
+        STACK_PUSH(sibling);
+      }
 
       sibling = theChildren->next();
     }
@@ -560,37 +545,36 @@ Item_t LSiblingIterator::nextImpl()
 }
 
 
-void LSiblingIterator::resetImpl()
+void LSiblingAxisIterator::resetImpl()
 {
   resetChild(theInput);
 #ifdef DEBUG
-  theContextNode = NULL;
   theLSibling = NULL;
 #endif
 }
 
 
-void LSiblingIterator::releaseResourcesImpl()
+void LSiblingAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
   theChildren = NULL;
-#ifdef DEBUG
   theContextNode = NULL;
+#ifdef DEBUG
   theLSibling = NULL;
 #endif
 }
 
 
-std::ostream& LSiblingIterator::_show(std::ostream& os)	const
+std::ostream& LSiblingAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "lsibling node: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "lsibling node: " << std::endl;
   if (theLSibling != NULL)
-    os << theLSibling->show() << std::endl;
+    os << IT_DEPTH << " " << theLSibling->show() << std::endl;
 #endif
   theInput->show(os);
   return os;
@@ -600,9 +584,8 @@ std::ostream& LSiblingIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ChildIterator::nextImpl()
+Item_t ChildAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t child;
 
   STACK_INIT();
@@ -611,29 +594,37 @@ Item_t ChildIterator::nextImpl()
   {
     do
     {
-      contextNode = theInput->next();
-#ifdef DEBUG
-      theContextNode = contextNode;
-#endif
-
-      if (contextNode == NULL)
+      theContextNode = consumeNext(theInput);
+      if (theContextNode == NULL)
         return NULL;
     }
-    while (contextNode->getNodeKind() != elementNode &&
-           contextNode->getNodeKind() != documentNode);
+    while (theContextNode->getNodeKind() != elementNode &&
+           theContextNode->getNodeKind() != documentNode);
 
-    theChildren = contextNode->getChildren();
+    theChildren = theContextNode->getChildren();
 
-    child = theChildren->next();
+    child = consumeNext(theChildren);
 
     while (child != NULL)
     {
+      /*
+      cout << "ite = " << this << " node = " << &*child
+           << " is node child = " << child->isNode();
+      if (child->isNode())
+        cout << " node kind = "
+             << sequence_type::describe(child->getNodeKind()) << endl;
+      else
+        cout << endl;
+      */
+      if (!thePrincipalNodeKind || child->getNodeKind() == elementNode)
+      {
 #ifdef DEBUG
-      theCurrentChild = child;
+        theCurrentChild = child;
 #endif
-      STACK_PUSH(child);
+        STACK_PUSH(child);
+      }
 
-      child = theChildren->next();
+      child = consumeNext(theChildren);
     }
   }
 
@@ -641,37 +632,36 @@ Item_t ChildIterator::nextImpl()
 }
 
 
-void ChildIterator::resetImpl()
+void ChildAxisIterator::resetImpl()
 {
   resetChild(theInput);
 #ifdef DEBUG
-  theContextNode = NULL;
   theCurrentCild = NULL;
 #endif
 }
 
 
-void ChildIterator::releaseResourcesImpl()
+void ChildAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
   theChildren = NULL; 
-#ifdef DEBUG
   theContextNode = NULL;
+#ifdef DEBUG
   theCurrentChild = NULL;
 #endif
 }
 
 
-std::ostream& ChildIterator::_show(std::ostream& os)	const
+std::ostream& ChildAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "current child: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "current child: " << std::endl;
   if (theCurrentChild != NULL)
-    os << theCurrentChild->show() << std::endl;
+    os << IT_DEPTH << " " << theCurrentChild->show() << std::endl;
 #endif
   theInput->show(os);
   return os;
@@ -681,9 +671,8 @@ std::ostream& ChildIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DescendantIterator::nextImpl()
+Item_t DescendantAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t desc;
   Iterator_t children;
 
@@ -693,20 +682,18 @@ Item_t DescendantIterator::nextImpl()
   {
     do
     {
-      contextNode = theInput->next();
-#ifdef DEBUG
-      theContextNode = contextNode;
-#endif
-
-      if (contextNode == NULL)
+      theContextNode = theInput->next();
+      if (theContextNode == NULL)
         return NULL;
     }
-    while (contextNode->getNodeKind() != elementNode &&
-           contextNode->getNodeKind() != documentNode);
+    while (theContextNode->getNodeKind() != elementNode &&
+           theContextNode->getNodeKind() != documentNode);
 
-    children = contextNode->getChildren();
+    MYTRACE("iter = " << this << " ctxNode = [" << &*theContextNode << " " << theContextNode->getNodeName()->show() << "]");
 
-    theCurrentPath.push(std::pair<Item_t, Iterator_t>(contextNode, children));
+    children = theContextNode->getChildren();
+
+    theCurrentPath.push(std::pair<Item_t, Iterator_t>(theContextNode, children));
     
     desc = children->next();
 
@@ -715,10 +702,13 @@ Item_t DescendantIterator::nextImpl()
       if (desc->getNodeKind() == elementNode)
         theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
+      if (!thePrincipalNodeKind || desc->getNodeKind() == elementNode)
+      {
 #ifdef DEBUG
-      theCurrentDesc = desc;
+        theCurrentDesc = desc;
 #endif
-      STACK_PUSH(desc);
+        STACK_PUSH(desc);
+      }
 
       // The next descendant is the next child of the node N that is currently
       // at the top of the path stack. If N has no children or all of its
@@ -741,7 +731,7 @@ Item_t DescendantIterator::nextImpl()
 }
 
 
-void DescendantIterator::resetImpl()
+void DescendantAxisIterator::resetImpl()
 {
   resetChild(theInput);
 
@@ -750,13 +740,12 @@ void DescendantIterator::resetImpl()
     theCurrentPath.pop();
   }
 #ifdef DEBUG
-  theContextNode = NULL;
   theCurrentDesc = NULL;
 #endif
 }
 
 
-void DescendantIterator::releaseResourcesImpl()
+void DescendantAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
 
@@ -764,23 +753,25 @@ void DescendantIterator::releaseResourcesImpl()
   {
     theCurrentPath.pop();
   }
-#ifdef DEBUG
+
   theContextNode = NULL;
+
+#ifdef DEBUG
   theCurrentDesc = NULL;
 #endif
 }
 
 
-std::ostream& DescendantIterator::_show(std::ostream& os)	const
+std::ostream& DescendantAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "current descendant: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "current descendant: " << std::endl;
   if (theCurrentDesc != NULL)
-    os << theCurrentDesc->show() << std::endl;
+    os << IT_DEPTH << " " << theCurrentDesc->show() << std::endl;
 #endif
   theInput->show(os);
   return os;
@@ -790,9 +781,8 @@ std::ostream& DescendantIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DescendantSelfIterator::nextImpl()
+Item_t DescendantSelfAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t desc;
 
   STACK_INIT();
@@ -801,29 +791,28 @@ Item_t DescendantSelfIterator::nextImpl()
   {
     do
     {
-      contextNode = consumeNext(theInput);
-#ifdef DEBUG
-      theContextNode = contextNode;
-#endif
-
-      if (contextNode == NULL)
+      theContextNode = consumeNext(theInput);
+      if (theContextNode == NULL)
         return NULL;
     }
-    while (contextNode->getNodeKind() != elementNode &&
-           contextNode->getNodeKind() != documentNode);
+    while (theContextNode->getNodeKind() != elementNode &&
+           theContextNode->getNodeKind() != documentNode);
 
-    desc = contextNode;
+    desc = theContextNode;
 
     while (desc != NULL)
     {
       if (desc->getNodeKind() == elementNode ||
-          contextNode->getNodeKind() == documentNode)
+          theContextNode->getNodeKind() == documentNode)
         theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
+      if (!thePrincipalNodeKind || desc->getNodeKind() == elementNode)
+      {
 #ifdef DEBUG
-      theCurrentDesc = desc;
+        theCurrentDesc = desc;
 #endif
-      STACK_PUSH(desc);
+        STACK_PUSH(desc);
+      }
 
       // The next descendant is the next child of the node N that is currently
       // at the top of the path stack. If N has no children or all of its
@@ -846,7 +835,7 @@ Item_t DescendantSelfIterator::nextImpl()
 }
 
 
-void DescendantSelfIterator::resetImpl()
+void DescendantSelfAxisIterator::resetImpl()
 {
   resetChild(theInput);
 
@@ -855,13 +844,12 @@ void DescendantSelfIterator::resetImpl()
     theCurrentPath.pop();
   }
 #ifdef DEBUG
-  theContextNode = NULL;
   theCurrentDesc = NULL;
 #endif
 }
 
 
-void DescendantSelfIterator::releaseResourcesImpl()
+void DescendantSelfAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
 
@@ -869,23 +857,25 @@ void DescendantSelfIterator::releaseResourcesImpl()
   {
     theCurrentPath.pop();
   }
-#ifdef DEBUG
+
   theContextNode = NULL;
+
+#ifdef DEBUG
   theCurrentDesc = NULL;
 #endif
 }
 
 
-std::ostream& DescendantSelfIterator::_show(std::ostream& os)	const
+std::ostream& DescendantSelfAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "current descendant: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "current descendant: " << std::endl;
   if (theCurrentDesc != NULL)
-    os << theCurrentDesc->show() << std::endl;
+    os << IT_DEPTH << " " << theCurrentDesc->show() << std::endl;
 #endif
   theInput->show(os);
   return os;
@@ -895,9 +885,8 @@ std::ostream& DescendantSelfIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t PrecedingIterator::nextImpl()
+Item_t PrecedingAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t ancestor;
   Item_t desc;
   Iterator_t children;
@@ -906,16 +895,12 @@ Item_t PrecedingIterator::nextImpl()
 
   while (true)
   {
-    contextNode = consumeNext(theInput);
-#ifdef DEBUG
-    theContextNode = contextNode;
-#endif
-
-    if (contextNode == NULL)
+    theContextNode = consumeNext(theInput);
+    if (theContextNode == NULL)
       return NULL;
 
     // Collect the context node and its ancestors
-    ancestor = contextNode;
+    ancestor = theContextNode;
     theAncestorPath.push(ancestor);
 
     while (ancestor != NULL)
@@ -944,10 +929,13 @@ Item_t PrecedingIterator::nextImpl()
         if (desc->getNodeKind() == elementNode)
           theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
+        if (!thePrincipalNodeKind || desc->getNodeKind() == elementNode)
+        {
 #ifdef DEBUG
-        theCurrentPrec = desc;
+          theCurrentPrec = desc;
 #endif
-        STACK_PUSH(desc);
+          STACK_PUSH(desc);
+        }
 
         desc = theCurrentPath.top().second->next();
 
@@ -969,7 +957,7 @@ Item_t PrecedingIterator::nextImpl()
 }
 
 
-void PrecedingIterator::resetImpl()
+void PrecedingAxisIterator::resetImpl()
 {
   resetChild(theInput);
 
@@ -980,13 +968,12 @@ void PrecedingIterator::resetImpl()
     theAncestorPath.pop();
 
 #ifdef DEBUG
-  theContextNode = NULL;
   theCurrentPrec = NULL;
 #endif
 }
 
 
-void PrecedingIterator::releaseResourcesImpl()
+void PrecedingAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
 
@@ -996,23 +983,24 @@ void PrecedingIterator::releaseResourcesImpl()
   while (!theAncestorPath.empty())
     theAncestorPath.pop();
 
-#ifdef DEBUG
   theContextNode = NULL;
+
+#ifdef DEBUG
   theCurrentPrec = NULL;
 #endif
 }
 
 
-std::ostream& PrecedingIterator::_show(std::ostream& os)	const
+std::ostream& PrecedingAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "preceding node: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "preceding node: " << std::endl;
   if (theCurrentPrec != NULL)
-    os << theCurrentPrec->show() << std::endl;
+    os << IT_DEPTH << " " << theCurrentPrec->show() << std::endl;
 #endif
   theInput->show(os);
   return os;
@@ -1022,9 +1010,8 @@ std::ostream& PrecedingIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t FollowingIterator::nextImpl()
+Item_t FollowingAxisIterator::nextImpl()
 {
-  Item_t contextNode;
   Item_t ancestor;
   Item_t following;
   Iterator_t children;
@@ -1033,16 +1020,12 @@ Item_t FollowingIterator::nextImpl()
 
   while (true)
   {
-    contextNode = consumeNext(theInput);
-#ifdef DEBUG
-    theContextNode = contextNode;
-#endif
-
-    if (contextNode == NULL)
+    theContextNode = consumeNext(theInput);
+    if (theContextNode == NULL)
       return NULL;
 
     // Collect the context node and its ancestors
-    ancestor = contextNode;
+    ancestor = theContextNode;
     theAncestorPath.push(ancestor);
 
     while (ancestor != NULL)
@@ -1077,10 +1060,13 @@ Item_t FollowingIterator::nextImpl()
         if (following->getNodeKind() == elementNode)
           theCurrentPath.push(std::pair<Item_t, Iterator_t>(following, following->getChildren()));
 
+        if (!thePrincipalNodeKind || following->getNodeKind() == elementNode)
+        {
 #ifdef DEBUG
-        theCurrentFollowing = following;
+          theCurrentFollowing = following;
 #endif
-        STACK_PUSH(following);
+          STACK_PUSH(following);
+        }
 
         following = theCurrentPath.top().second->next();
 
@@ -1101,7 +1087,7 @@ Item_t FollowingIterator::nextImpl()
 }
 
 
-void FollowingIterator::resetImpl()
+void FollowingAxisIterator::resetImpl()
 {
   resetChild(theInput);
 
@@ -1111,14 +1097,15 @@ void FollowingIterator::resetImpl()
   while (!theAncestorPath.empty())
     theAncestorPath.pop();
 
-#ifdef DEBUG
   theContextNode = NULL;
+
+#ifdef DEBUG
   theCurrentPrec = NULL;
 #endif
 }
 
 
-void FollowingIterator::releaseResourcesImpl()
+void FollowingAxisIterator::releaseResourcesImpl()
 {
   releaseChildResources(theInput);
 
@@ -1128,23 +1115,24 @@ void FollowingIterator::releaseResourcesImpl()
   while (!theAncestorPath.empty())
     theAncestorPath.pop();
 
-#ifdef DEBUG
   theContextNode = NULL;
+
+#ifdef DEBUG
   theCurrentPrec = NULL;
 #endif
 }
 
 
-std::ostream& FollowingIterator::_show(std::ostream& os)	const
+std::ostream& FollowingAxisIterator::_show(std::ostream& os)	const
 {
-#ifdef DEBUG
-  os << "context node: " << std::endl;
+  os << IT_DEPTH << " " << "context node: " << std::endl;
   if (theContextNode != NULL)
-    os << theContextNode->show() << std::endl;
+    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
 
-  os << "following node: " << std::endl;
+#ifdef DEBUG
+  os << IT_DEPTH << " " << "following node: " << std::endl;
   if (theCurrentFollowing != NULL)
-    os << theCurrentFollowing->show() << std::endl;
+    os << IT_DEPTH << " " << theCurrentFollowing->show() << std::endl;
 #endif
   theInput->show(os);
   return os;

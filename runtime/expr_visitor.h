@@ -43,6 +43,7 @@ class validate_expr;
 class extension_expr;
 class relpath_expr;
 class axis_step_expr;
+class match_expr;
 class primary_expr;
 class literal_expr;
 class order_expr;
@@ -88,6 +89,7 @@ public:
 	virtual bool begin_visit(extension_expr const&) = 0;
 	virtual bool begin_visit(relpath_expr const&) = 0;
 	virtual bool begin_visit(axis_step_expr const&) = 0;
+	virtual bool begin_visit(match_expr const&) = 0;
 	virtual bool begin_visit(literal_expr const&) = 0;
 	virtual bool begin_visit(order_expr const&) = 0;
 	virtual bool begin_visit(elem_expr const&) = 0;
@@ -124,6 +126,7 @@ public:
 	virtual void end_visit(extension_expr const&) = 0;
 	virtual void end_visit(relpath_expr const&) = 0;
 	virtual void end_visit(axis_step_expr const&) = 0;
+  virtual bool end_visit(match_expr const&) = 0;
 	virtual void end_visit(literal_expr const&) = 0;
 	virtual void end_visit(order_expr const&) = 0;
 	virtual void end_visit(elem_expr const&) = 0;

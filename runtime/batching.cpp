@@ -115,16 +115,20 @@ Item_t BasicIterator::produceNext() {
 	return NULL;///unreachable
 }
 
-std::ostream& BasicIterator::show(std::ostream& os) {
-	os << IT_INDENT<< "<"<< typeid(*this).name() << ">"<< std::endl;
+
+std::ostream& BasicIterator::show(std::ostream& os)
+{
+	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
 	_show(os);
-	os << IT_OUTDENT<< "</"<< typeid(*this).name() << ">"<< std::endl;
+	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
 	return os;
 }
+
 
 Item_t BasicIterator::next() {
 	return produceNext();
 }
+
 
 //*************************************************
 //*************************************************
@@ -135,10 +139,11 @@ Item_t BasicIterator::next() {
 //*************************************************
 #elif BATCHING_TYPE==1
 
-std::ostream& BasicIterator::show(std::ostream& os) {
-	os << IT_INDENT<< "<"<< typeid(*this).name() << ">"<< std::endl;
+std::ostream& BasicIterator::show(std::ostream& os)
+{
+	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
 	_show(os);
-	os << IT_OUTDENT<< "</"<< typeid(*this).name() << ">"<< std::endl;
+	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
 	return os;
 }
 

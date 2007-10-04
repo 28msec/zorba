@@ -36,13 +36,13 @@
 #include "xquery_parser.tab.h"
 
 /* User implementation prologue.  */
-#line 122 "xquery_parser.y"
+#line 122 "../parser/xquery_parser.y"
 
 #include "xquery_driver.h"
 
 
 /* Line 317 of lalr1.cc.  */
-#line 46 "xquery_parser.tab.c"
+#line 46 "../parser/xquery_parser.tab.c"
 
 #ifndef YY_
 # if YYENABLE_NLS
@@ -273,12 +273,12 @@ namespace yy
 
 
     /* User initialization code.  */
-    #line 83 "xquery_parser.y"
+    #line 83 "../parser/xquery_parser.y"
 {
   yylloc.begin.filename = yylloc.end.filename = &driver.file;
 }
   /* Line 547 of yacc.c.  */
-#line 282 "xquery_parser.tab.c"
+#line 282 "../parser/xquery_parser.tab.c"
     /* Initialize the stacks.  The initial state will be pushed in
        yynewstate, since the latter expects the semantical and the
        location values to have been already stored, initialize these
@@ -394,7 +394,7 @@ namespace yy
     switch (yyn)
       {
 	  case 2:
-#line 721 "xquery_parser.y"
+#line 721 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Module [main]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -403,42 +403,42 @@ namespace yy
     break;
 
   case 3:
-#line 727 "xquery_parser.y"
+#line 727 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Module [version.main]\n";
 		;}
     break;
 
   case 4:
-#line 731 "xquery_parser.y"
+#line 731 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Module [library]\n";
 		;}
     break;
 
   case 5:
-#line 735 "xquery_parser.y"
+#line 735 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Module [version.library]\n";
 		;}
     break;
 
   case 6:
-#line 745 "xquery_parser.y"
+#line 745 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VersionDecl [version]\n";
 		;}
     break;
 
   case 7:
-#line 749 "xquery_parser.y"
+#line 749 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VersionDecl [version.encoding]\n";
 		;}
     break;
 
   case 8:
-#line 759 "xquery_parser.y"
+#line 759 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "MainModule [prolog.querybody]\n";
 			(yyval.node) = new MainModule((yyloc),
@@ -448,7 +448,7 @@ namespace yy
     break;
 
   case 9:
-#line 767 "xquery_parser.y"
+#line 767 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "MainModule [querybody]\n";
 			(yyval.node) = new MainModule((yyloc),
@@ -458,7 +458,7 @@ namespace yy
     break;
 
   case 10:
-#line 780 "xquery_parser.y"
+#line 780 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "LibraryModule [ ]\n";
 			(yyval.node) = new LibraryModule((yyloc),
@@ -468,7 +468,7 @@ namespace yy
     break;
 
   case 11:
-#line 793 "xquery_parser.y"
+#line 793 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ModuleDecl [ ]\n";
 			(yyval.node) = new ModuleDecl((yyloc),
@@ -478,7 +478,7 @@ namespace yy
     break;
 
   case 12:
-#line 806 "xquery_parser.y"
+#line 806 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Prolog [sind]\n";
 			(yyval.node) = new Prolog((yyloc),
@@ -488,7 +488,7 @@ namespace yy
     break;
 
   case 13:
-#line 813 "xquery_parser.y"
+#line 813 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Prolog [vfo]\n";
 			(yyval.node) = new Prolog((yyloc),
@@ -498,7 +498,7 @@ namespace yy
     break;
 
   case 14:
-#line 820 "xquery_parser.y"
+#line 820 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Prolog [sind.vfo]\n";
 			(yyval.node) = new Prolog((yyloc),
@@ -508,7 +508,7 @@ namespace yy
     break;
 
   case 15:
-#line 833 "xquery_parser.y"
+#line 833 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SIND_DeclList [single]\n";
 			SIND_DeclList* sindList_p = new SIND_DeclList((yyloc));
@@ -518,7 +518,7 @@ namespace yy
     break;
 
   case 16:
-#line 840 "xquery_parser.y"
+#line 840 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SIND_DeclList [list]\n";
 			SIND_DeclList* sindList_p = static_cast<SIND_DeclList*>((yysemantic_stack_[(3) - (1)].node));
@@ -530,7 +530,7 @@ namespace yy
     break;
 
   case 17:
-#line 855 "xquery_parser.y"
+#line 855 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VFO_DeclList [single]\n";
 			VFO_DeclList* vfoList_p = new VFO_DeclList((yyloc));
@@ -540,7 +540,7 @@ namespace yy
     break;
 
   case 18:
-#line 862 "xquery_parser.y"
+#line 862 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VFO_DeclList [list]\n";
 			VFO_DeclList* vfoList_p = dynamic_cast<VFO_DeclList*>((yysemantic_stack_[(3) - (1)].node));
@@ -552,7 +552,7 @@ namespace yy
     break;
 
   case 19:
-#line 877 "xquery_parser.y"
+#line 877 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SIND_Decl [setter]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -560,7 +560,7 @@ namespace yy
     break;
 
   case 20:
-#line 882 "xquery_parser.y"
+#line 882 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SIND_Decl [import]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -568,7 +568,7 @@ namespace yy
     break;
 
   case 21:
-#line 887 "xquery_parser.y"
+#line 887 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SIND_Decl [namespace]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -576,7 +576,7 @@ namespace yy
     break;
 
   case 22:
-#line 892 "xquery_parser.y"
+#line 892 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SIND_Decl [default namespace]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -584,7 +584,7 @@ namespace yy
     break;
 
   case 23:
-#line 902 "xquery_parser.y"
+#line 902 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VFO_Decl [var]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -592,7 +592,7 @@ namespace yy
     break;
 
   case 24:
-#line 907 "xquery_parser.y"
+#line 907 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VFO_Decl [function]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -600,7 +600,7 @@ namespace yy
     break;
 
   case 25:
-#line 912 "xquery_parser.y"
+#line 912 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VFO_Decl [option]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -608,7 +608,7 @@ namespace yy
     break;
 
   case 26:
-#line 919 "xquery_parser.y"
+#line 919 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VFO_Decl [ftoption]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -616,7 +616,7 @@ namespace yy
     break;
 
   case 27:
-#line 930 "xquery_parser.y"
+#line 930 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [boundary space]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -624,7 +624,7 @@ namespace yy
     break;
 
   case 28:
-#line 935 "xquery_parser.y"
+#line 935 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [default collation]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -632,7 +632,7 @@ namespace yy
     break;
 
   case 29:
-#line 940 "xquery_parser.y"
+#line 940 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [base uri]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -640,7 +640,7 @@ namespace yy
     break;
 
   case 30:
-#line 945 "xquery_parser.y"
+#line 945 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [construction]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -648,7 +648,7 @@ namespace yy
     break;
 
   case 31:
-#line 950 "xquery_parser.y"
+#line 950 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [ordering mode]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -656,7 +656,7 @@ namespace yy
     break;
 
   case 32:
-#line 955 "xquery_parser.y"
+#line 955 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [empty order]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -664,7 +664,7 @@ namespace yy
     break;
 
   case 33:
-#line 960 "xquery_parser.y"
+#line 960 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [copy namespaces]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -672,7 +672,7 @@ namespace yy
     break;
 
   case 34:
-#line 967 "xquery_parser.y"
+#line 967 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Setter [revalidation]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -680,7 +680,7 @@ namespace yy
     break;
 
   case 35:
-#line 978 "xquery_parser.y"
+#line 978 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Import [schema]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -688,7 +688,7 @@ namespace yy
     break;
 
   case 36:
-#line 983 "xquery_parser.y"
+#line 983 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Import [module]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -696,7 +696,7 @@ namespace yy
     break;
 
   case 37:
-#line 999 "xquery_parser.y"
+#line 999 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NamespaceDecl [ ]\n";
 			(yyval.node) = new NamespaceDecl((yyloc),
@@ -706,7 +706,7 @@ namespace yy
     break;
 
   case 38:
-#line 1012 "xquery_parser.y"
+#line 1012 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "BoundarySpaceDecl [preserve]\n";
 			(yyval.node) = new BoundarySpaceDecl((yyloc),
@@ -715,7 +715,7 @@ namespace yy
     break;
 
   case 39:
-#line 1018 "xquery_parser.y"
+#line 1018 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "BoundarySpaceDecl [strip]\n";
 			(yyval.node) = new BoundarySpaceDecl((yyloc),
@@ -724,7 +724,7 @@ namespace yy
     break;
 
   case 40:
-#line 1030 "xquery_parser.y"
+#line 1030 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DefaultNamespaceDecl [element]\n";
 			(yyval.node) = new DefaultNamespaceDecl((yyloc),
@@ -734,7 +734,7 @@ namespace yy
     break;
 
   case 41:
-#line 1037 "xquery_parser.y"
+#line 1037 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DefaultNamespaceDecl [function]\n";
 			(yyval.node) = new DefaultNamespaceDecl((yyloc),
@@ -744,7 +744,7 @@ namespace yy
     break;
 
   case 42:
-#line 1050 "xquery_parser.y"
+#line 1050 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OptionDecl [ ]\n";
 			(yyval.node) = new OptionDecl((yyloc),
@@ -754,7 +754,7 @@ namespace yy
     break;
 
   case 43:
-#line 1064 "xquery_parser.y"
+#line 1064 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTOptionDecl [ ]\n";
 			(yyval.node) = new FTOptionDecl((yyloc),
@@ -763,7 +763,7 @@ namespace yy
     break;
 
   case 44:
-#line 1076 "xquery_parser.y"
+#line 1076 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderingDecl [ordered]\n";
 			(yyval.node) = new OrderingModeDecl((yyloc),
@@ -772,7 +772,7 @@ namespace yy
     break;
 
   case 45:
-#line 1082 "xquery_parser.y"
+#line 1082 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderingDecl [unordered]\n";
 			(yyval.node) = new OrderingModeDecl((yyloc),
@@ -781,7 +781,7 @@ namespace yy
     break;
 
   case 46:
-#line 1095 "xquery_parser.y"
+#line 1095 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "EmptyOrderDecl [empty greatest]\n";
 			(yyval.node) = new EmptyOrderDecl((yyloc),
@@ -790,7 +790,7 @@ namespace yy
     break;
 
   case 47:
-#line 1101 "xquery_parser.y"
+#line 1101 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "EmptyOrderDecl [empty least]\n";
 			(yyval.node) = new EmptyOrderDecl((yyloc),
@@ -799,7 +799,7 @@ namespace yy
     break;
 
   case 48:
-#line 1113 "xquery_parser.y"
+#line 1113 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
@@ -809,7 +809,7 @@ namespace yy
     break;
 
   case 49:
-#line 1120 "xquery_parser.y"
+#line 1120 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
@@ -819,7 +819,7 @@ namespace yy
     break;
 
   case 50:
-#line 1127 "xquery_parser.y"
+#line 1127 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
@@ -829,7 +829,7 @@ namespace yy
     break;
 
   case 51:
-#line 1134 "xquery_parser.y"
+#line 1134 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
@@ -839,7 +839,7 @@ namespace yy
     break;
 
   case 52:
-#line 1154 "xquery_parser.y"
+#line 1154 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DefaultCollationMode [ ]\n";
 			(yyval.node) = new DefaultCollationDecl((yyloc),
@@ -848,7 +848,7 @@ namespace yy
     break;
 
   case 53:
-#line 1166 "xquery_parser.y"
+#line 1166 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "BaseURIDecl [ ]\n";
 			(yyval.node) = new BaseURIDecl((yyloc),
@@ -857,7 +857,7 @@ namespace yy
     break;
 
   case 54:
-#line 1178 "xquery_parser.y"
+#line 1178 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaImport [uri]\n";
 			(yyval.node) = new SchemaImport((yyloc),
@@ -868,7 +868,7 @@ namespace yy
     break;
 
   case 55:
-#line 1186 "xquery_parser.y"
+#line 1186 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaImport [prefix.uri]\n";
 			(yyval.node) = new SchemaImport((yyloc),
@@ -879,7 +879,7 @@ namespace yy
     break;
 
   case 56:
-#line 1194 "xquery_parser.y"
+#line 1194 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaImport [uri.urilist]\n";
 			(yyval.node) = new SchemaImport((yyloc),
@@ -890,7 +890,7 @@ namespace yy
     break;
 
   case 57:
-#line 1202 "xquery_parser.y"
+#line 1202 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaImport [prefix.uri.aturi]\n";
 			(yyval.node) = new SchemaImport((yyloc),
@@ -901,7 +901,7 @@ namespace yy
     break;
 
   case 58:
-#line 1216 "xquery_parser.y"
+#line 1216 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "URILiteralList [single]\n";
 			URILiteralList* uri_list_p = new URILiteralList((yyloc));
@@ -911,7 +911,7 @@ namespace yy
     break;
 
   case 59:
-#line 1223 "xquery_parser.y"
+#line 1223 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "URILiteralList [list]\n";
 			URILiteralList* uri_list_p = dynamic_cast<URILiteralList*>((yysemantic_stack_[(3) - (1)].node));
@@ -923,7 +923,7 @@ namespace yy
     break;
 
   case 60:
-#line 1239 "xquery_parser.y"
+#line 1239 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaPrefix [namespace]\n";
 			(yyval.node) = new SchemaPrefix((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
@@ -931,7 +931,7 @@ namespace yy
     break;
 
   case 61:
-#line 1244 "xquery_parser.y"
+#line 1244 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaPrefix [default element]\n";
 			(yyval.node) = new SchemaPrefix((yyloc), true);
@@ -939,7 +939,7 @@ namespace yy
     break;
 
   case 62:
-#line 1255 "xquery_parser.y"
+#line 1255 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ModuleImport [uri]\n";
 			(yyval.node) = new ModuleImport((yyloc),
@@ -949,7 +949,7 @@ namespace yy
     break;
 
   case 63:
-#line 1262 "xquery_parser.y"
+#line 1262 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ModuleImport [namespace.uri]\n";
 			(yyval.node) = new ModuleImport((yyloc),
@@ -960,7 +960,7 @@ namespace yy
     break;
 
   case 64:
-#line 1270 "xquery_parser.y"
+#line 1270 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ModuleImport [uri.at_uri.list]\n";
 			(yyval.node) = new ModuleImport((yyloc),
@@ -970,7 +970,7 @@ namespace yy
     break;
 
   case 65:
-#line 1277 "xquery_parser.y"
+#line 1277 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ModuleImport [namespace.uri.at_uri.list]\n";
 			(yyval.node) = new ModuleImport((yyloc),
@@ -981,7 +981,7 @@ namespace yy
     break;
 
   case 66:
-#line 1292 "xquery_parser.y"
+#line 1292 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarDecl [expr]\n";
 			(yyval.node) = new VarDecl((yyloc),
@@ -992,7 +992,7 @@ namespace yy
     break;
 
   case 67:
-#line 1300 "xquery_parser.y"
+#line 1300 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarDecl [external]\n";
 			(yyval.node) = new VarDecl((yyloc),
@@ -1003,7 +1003,7 @@ namespace yy
     break;
 
   case 68:
-#line 1308 "xquery_parser.y"
+#line 1308 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarDecl [type.expr]\n";
 			(yyval.node) = new VarDecl((yyloc),
@@ -1014,7 +1014,7 @@ namespace yy
     break;
 
   case 69:
-#line 1316 "xquery_parser.y"
+#line 1316 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarDecl [type.external]\n";
 			(yyval.node) = new VarDecl((yyloc),
@@ -1025,7 +1025,7 @@ namespace yy
     break;
 
   case 70:
-#line 1330 "xquery_parser.y"
+#line 1330 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ConstructionDecl [preserve]\n";
 			(yyval.node) = new ConstructionDecl((yyloc),
@@ -1034,7 +1034,7 @@ namespace yy
     break;
 
   case 71:
-#line 1336 "xquery_parser.y"
+#line 1336 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ConstructionDecl [strip]\n";
 			(yyval.node) = new ConstructionDecl((yyloc),
@@ -1043,7 +1043,7 @@ namespace yy
     break;
 
   case 72:
-#line 1348 "xquery_parser.y"
+#line 1348 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1054,7 +1054,7 @@ namespace yy
     break;
 
   case 73:
-#line 1356 "xquery_parser.y"
+#line 1356 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1066,7 +1066,7 @@ namespace yy
     break;
 
   case 74:
-#line 1365 "xquery_parser.y"
+#line 1365 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [paramlist.external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1078,7 +1078,7 @@ namespace yy
     break;
 
   case 75:
-#line 1374 "xquery_parser.y"
+#line 1374 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [paramlist.expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1091,7 +1091,7 @@ namespace yy
     break;
 
   case 76:
-#line 1384 "xquery_parser.y"
+#line 1384 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [as_type.external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1104,7 +1104,7 @@ namespace yy
     break;
 
   case 77:
-#line 1394 "xquery_parser.y"
+#line 1394 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [as_type.expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1117,7 +1117,7 @@ namespace yy
     break;
 
   case 78:
-#line 1404 "xquery_parser.y"
+#line 1404 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [paramlist.as_type.external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1130,7 +1130,7 @@ namespace yy
     break;
 
   case 79:
-#line 1414 "xquery_parser.y"
+#line 1414 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [paramlist.as_type.expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1143,7 +1143,7 @@ namespace yy
     break;
 
   case 80:
-#line 1424 "xquery_parser.y"
+#line 1424 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1154,7 +1154,7 @@ namespace yy
     break;
 
   case 81:
-#line 1432 "xquery_parser.y"
+#line 1432 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1166,7 +1166,7 @@ namespace yy
     break;
 
   case 82:
-#line 1441 "xquery_parser.y"
+#line 1441 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) paramlist.external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1178,7 +1178,7 @@ namespace yy
     break;
 
   case 83:
-#line 1450 "xquery_parser.y"
+#line 1450 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) paramlist.expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1191,7 +1191,7 @@ namespace yy
     break;
 
   case 84:
-#line 1460 "xquery_parser.y"
+#line 1460 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) as_type.external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1204,7 +1204,7 @@ namespace yy
     break;
 
   case 85:
-#line 1470 "xquery_parser.y"
+#line 1470 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) as_type.expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1217,7 +1217,7 @@ namespace yy
     break;
 
   case 86:
-#line 1480 "xquery_parser.y"
+#line 1480 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.external]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1230,7 +1230,7 @@ namespace yy
     break;
 
   case 87:
-#line 1490 "xquery_parser.y"
+#line 1490 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionDecl [(update) paramlist.as_type.expr]\n";
 			(yyval.node) = new FunctionDecl((yyloc),
@@ -1243,7 +1243,7 @@ namespace yy
     break;
 
   case 88:
-#line 1506 "xquery_parser.y"
+#line 1506 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ParamList [single]\n";
 			ParamList* plist_p = new ParamList((yyloc));
@@ -1255,7 +1255,7 @@ namespace yy
     break;
 
   case 89:
-#line 1515 "xquery_parser.y"
+#line 1515 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ParamList [list]\n";
 			ParamList* plist_p = dynamic_cast<ParamList*>((yysemantic_stack_[(3) - (1)].node));
@@ -1267,7 +1267,7 @@ namespace yy
     break;
 
   case 90:
-#line 1530 "xquery_parser.y"
+#line 1530 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Param [varname]\n";
 			(yyval.node) = new Param((yyloc),
@@ -1277,7 +1277,7 @@ namespace yy
     break;
 
   case 91:
-#line 1537 "xquery_parser.y"
+#line 1537 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Param [varname.type]\n";
 			(yyval.node) = new Param((yyloc),
@@ -1287,7 +1287,7 @@ namespace yy
     break;
 
   case 92:
-#line 1550 "xquery_parser.y"
+#line 1550 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "EnclosedExpr [ ]\n";
 			(yyval.expr) = new EnclosedExpr((yyloc),
@@ -1296,7 +1296,7 @@ namespace yy
     break;
 
   case 93:
-#line 1562 "xquery_parser.y"
+#line 1562 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QueryBody [expr]\n";
 			(yyval.expr) = new QueryBody((yyloc),
@@ -1305,7 +1305,7 @@ namespace yy
     break;
 
   case 94:
-#line 1574 "xquery_parser.y"
+#line 1574 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Expr [single]\n";
 			Expr* expr_p = new Expr((yyloc));
@@ -1315,7 +1315,7 @@ namespace yy
     break;
 
   case 95:
-#line 1581 "xquery_parser.y"
+#line 1581 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Expr [expr.single]\n";
 			Expr* expr_p = dynamic_cast<Expr*>((yysemantic_stack_[(3) - (1)].expr));
@@ -1325,7 +1325,7 @@ namespace yy
     break;
 
   case 96:
-#line 1594 "xquery_parser.y"
+#line 1594 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [FLWORExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1333,7 +1333,7 @@ namespace yy
     break;
 
   case 97:
-#line 1599 "xquery_parser.y"
+#line 1599 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [QuantifiedExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1341,7 +1341,7 @@ namespace yy
     break;
 
   case 98:
-#line 1604 "xquery_parser.y"
+#line 1604 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [TypeswitchExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1349,7 +1349,7 @@ namespace yy
     break;
 
   case 99:
-#line 1609 "xquery_parser.y"
+#line 1609 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [IfExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1357,7 +1357,7 @@ namespace yy
     break;
 
   case 100:
-#line 1614 "xquery_parser.y"
+#line 1614 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [OrExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1365,7 +1365,7 @@ namespace yy
     break;
 
   case 101:
-#line 1621 "xquery_parser.y"
+#line 1621 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [InsertExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1373,7 +1373,7 @@ namespace yy
     break;
 
   case 102:
-#line 1626 "xquery_parser.y"
+#line 1626 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [DeleteExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1381,7 +1381,7 @@ namespace yy
     break;
 
   case 103:
-#line 1631 "xquery_parser.y"
+#line 1631 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [RenameExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1389,7 +1389,7 @@ namespace yy
     break;
 
   case 104:
-#line 1636 "xquery_parser.y"
+#line 1636 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [ReplaceExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1397,7 +1397,7 @@ namespace yy
     break;
 
   case 105:
-#line 1641 "xquery_parser.y"
+#line 1641 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExprSingle [TransformExpr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -1405,7 +1405,7 @@ namespace yy
     break;
 
   case 106:
-#line 1652 "xquery_parser.y"
+#line 1652 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FLWORExpr [return]\n";
 			(yyval.expr) = new FLWORExpr((yyloc),
@@ -1416,7 +1416,7 @@ namespace yy
     break;
 
   case 107:
-#line 1660 "xquery_parser.y"
+#line 1660 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FLWORExpr [where.return]\n";
 			cout << "ExprSingle typeid = " << typeid(*(yysemantic_stack_[(4) - (4)].expr)).name() << endl;
@@ -1429,7 +1429,7 @@ namespace yy
     break;
 
   case 108:
-#line 1670 "xquery_parser.y"
+#line 1670 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FLWORExpr [orderby.return]\n";
 			(yyval.expr) = new FLWORExpr((yyloc),
@@ -1441,7 +1441,7 @@ namespace yy
     break;
 
   case 109:
-#line 1679 "xquery_parser.y"
+#line 1679 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FLWORExpr [where.orderby.return]\n";
 			(yyval.expr) = new FLWORExpr((yyloc),
@@ -1453,7 +1453,7 @@ namespace yy
     break;
 
   case 110:
-#line 1694 "xquery_parser.y"
+#line 1694 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForLetClauseList [single]\n";
 			ForLetClauseList* flc_list_p = new ForLetClauseList((yyloc));
@@ -1463,7 +1463,7 @@ namespace yy
     break;
 
   case 111:
-#line 1701 "xquery_parser.y"
+#line 1701 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForLetClauseList [list]\n";
 			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>((yysemantic_stack_[(2) - (1)].node));
@@ -1473,7 +1473,7 @@ namespace yy
     break;
 
   case 112:
-#line 1714 "xquery_parser.y"
+#line 1714 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForLetClause [for]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -1481,7 +1481,7 @@ namespace yy
     break;
 
   case 113:
-#line 1719 "xquery_parser.y"
+#line 1719 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForLetClause [let]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -1489,7 +1489,7 @@ namespace yy
     break;
 
   case 114:
-#line 1730 "xquery_parser.y"
+#line 1730 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForClause [ ]\n";
 			(yyval.node) = new ForClause((yyloc),
@@ -1498,7 +1498,7 @@ namespace yy
     break;
 
   case 115:
-#line 1742 "xquery_parser.y"
+#line 1742 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDeclList [single]\n";
 			VarInDeclList* vardecl_list_p = new VarInDeclList((yyloc));
@@ -1508,7 +1508,7 @@ namespace yy
     break;
 
   case 116:
-#line 1749 "xquery_parser.y"
+#line 1749 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDeclList [list]\n";
 			VarInDeclList* vardecl_list_p = dynamic_cast<VarInDeclList*>((yysemantic_stack_[(4) - (1)].node));
@@ -1520,7 +1520,7 @@ namespace yy
     break;
 
   case 117:
-#line 1764 "xquery_parser.y"
+#line 1764 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1531,7 +1531,7 @@ namespace yy
     break;
 
   case 118:
-#line 1772 "xquery_parser.y"
+#line 1772 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [type.in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1543,7 +1543,7 @@ namespace yy
     break;
 
   case 119:
-#line 1781 "xquery_parser.y"
+#line 1781 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [posvar.in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1556,7 +1556,7 @@ namespace yy
     break;
 
   case 120:
-#line 1791 "xquery_parser.y"
+#line 1791 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [type.posvar.in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1569,7 +1569,7 @@ namespace yy
     break;
 
   case 121:
-#line 1802 "xquery_parser.y"
+#line 1802 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [scorevar.in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1581,7 +1581,7 @@ namespace yy
     break;
 
   case 122:
-#line 1811 "xquery_parser.y"
+#line 1811 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [type.scorevar.in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1594,7 +1594,7 @@ namespace yy
     break;
 
   case 123:
-#line 1821 "xquery_parser.y"
+#line 1821 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [posvar.scorevar.in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1607,7 +1607,7 @@ namespace yy
     break;
 
   case 124:
-#line 1831 "xquery_parser.y"
+#line 1831 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarInDecl [type.posvar.scorevar.in]\n";
 			(yyval.node) = new VarInDecl((yyloc),
@@ -1620,7 +1620,7 @@ namespace yy
     break;
 
   case 125:
-#line 1847 "xquery_parser.y"
+#line 1847 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PositionalVar [ ]\n";
 			(yyval.node) = new PositionalVar((yyloc),
@@ -1629,7 +1629,7 @@ namespace yy
     break;
 
   case 126:
-#line 1860 "xquery_parser.y"
+#line 1860 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTScoreVar [ ]\n";
 			(yyval.node) = new FTScoreVar((yyloc),
@@ -1638,7 +1638,7 @@ namespace yy
     break;
 
   case 127:
-#line 1872 "xquery_parser.y"
+#line 1872 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "LetClause [ ]\n";
 			(yyval.node) = new LetClause((yyloc),
@@ -1648,7 +1648,7 @@ namespace yy
     break;
 
   case 128:
-#line 1885 "xquery_parser.y"
+#line 1885 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarGetsDeclList [single]\n";
 			VarGetsDeclList* vgdl_p = new VarGetsDeclList((yyloc));
@@ -1658,7 +1658,7 @@ namespace yy
     break;
 
   case 129:
-#line 1892 "xquery_parser.y"
+#line 1892 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarGetsDeclList [list.single]\n";
 			VarGetsDeclList* vgdl_p = dynamic_cast<VarGetsDeclList*>((yysemantic_stack_[(4) - (1)].node));
@@ -1670,7 +1670,7 @@ namespace yy
     break;
 
   case 130:
-#line 1907 "xquery_parser.y"
+#line 1907 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarGetsDecl [gets]\n";
 			(yyval.node) = new VarGetsDecl((yyloc),
@@ -1682,7 +1682,7 @@ namespace yy
     break;
 
   case 131:
-#line 1916 "xquery_parser.y"
+#line 1916 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarGetsDecl [type.gets]\n";
 			(yyval.node) = new VarGetsDecl((yyloc),
@@ -1694,7 +1694,7 @@ namespace yy
     break;
 
   case 132:
-#line 1926 "xquery_parser.y"
+#line 1926 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarGetsDecl [scorevar.gets]\n";
 			(yyval.node) = new VarGetsDecl((yyloc),
@@ -1706,7 +1706,7 @@ namespace yy
     break;
 
   case 133:
-#line 1935 "xquery_parser.y"
+#line 1935 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarGetsDecl [type.scorevar.gets]\n";
 			(yyval.node) = new VarGetsDecl((yyloc),
@@ -1718,7 +1718,7 @@ namespace yy
     break;
 
   case 134:
-#line 1951 "xquery_parser.y"
+#line 1951 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "WhereClause [ ]\n";
 			(yyval.node) = new WhereClause((yyloc),
@@ -1727,7 +1727,7 @@ namespace yy
     break;
 
   case 135:
-#line 1963 "xquery_parser.y"
+#line 1963 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderByClause [ ]\n";
 			(yyval.node) = new OrderByClause((yyloc),
@@ -1736,7 +1736,7 @@ namespace yy
     break;
 
   case 136:
-#line 1969 "xquery_parser.y"
+#line 1969 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderByClause [stable]\n";
 			(yyval.node) = new OrderByClause((yyloc),
@@ -1746,7 +1746,7 @@ namespace yy
     break;
 
   case 137:
-#line 1982 "xquery_parser.y"
+#line 1982 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderSpecList [single]\n";
 			OrderSpecList* osl_p = new OrderSpecList((yyloc));
@@ -1756,7 +1756,7 @@ namespace yy
     break;
 
   case 138:
-#line 1989 "xquery_parser.y"
+#line 1989 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderSpecList [list]\n";
 			OrderSpecList* osl_p = dynamic_cast<OrderSpecList*>((yysemantic_stack_[(3) - (1)].node));
@@ -1768,7 +1768,7 @@ namespace yy
     break;
 
   case 139:
-#line 2004 "xquery_parser.y"
+#line 2004 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderSpec [single]\n";
 			(yyval.node) = new OrderSpec((yyloc),
@@ -1778,7 +1778,7 @@ namespace yy
     break;
 
   case 140:
-#line 2011 "xquery_parser.y"
+#line 2011 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderSpec [single.modifier]\n";
 			(yyval.node) = new OrderSpec((yyloc),
@@ -1788,7 +1788,7 @@ namespace yy
     break;
 
   case 141:
-#line 2024 "xquery_parser.y"
+#line 2024 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderModifier [dir]\n";
 			(yyval.node) = new OrderModifier((yyloc),
@@ -1799,7 +1799,7 @@ namespace yy
     break;
 
   case 142:
-#line 2032 "xquery_parser.y"
+#line 2032 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderModifier [empty]\n";
 			(yyval.node) = new OrderModifier((yyloc),
@@ -1810,7 +1810,7 @@ namespace yy
     break;
 
   case 143:
-#line 2040 "xquery_parser.y"
+#line 2040 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderModifier [collation]\n";
 			(yyval.node) = new OrderModifier((yyloc),
@@ -1821,7 +1821,7 @@ namespace yy
     break;
 
   case 144:
-#line 2048 "xquery_parser.y"
+#line 2048 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderModifier [dir.empty]\n";
 			(yyval.node) = new OrderModifier((yyloc),
@@ -1832,7 +1832,7 @@ namespace yy
     break;
 
   case 145:
-#line 2056 "xquery_parser.y"
+#line 2056 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderModifier [dir.collation]\n";
 			(yyval.node) = new OrderModifier((yyloc),
@@ -1843,7 +1843,7 @@ namespace yy
     break;
 
   case 146:
-#line 2064 "xquery_parser.y"
+#line 2064 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderModifier [empty.collation]\n";
 			(yyval.node) = new OrderModifier((yyloc),
@@ -1854,7 +1854,7 @@ namespace yy
     break;
 
   case 147:
-#line 2072 "xquery_parser.y"
+#line 2072 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderModifier [dir.empty.collation]\n";
 			(yyval.node) = new OrderModifier((yyloc),
@@ -1865,7 +1865,7 @@ namespace yy
     break;
 
   case 148:
-#line 2086 "xquery_parser.y"
+#line 2086 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderDirSpec [ascending]\n";
 			(yyval.node) = new OrderDirSpec((yyloc), dir_ascending);
@@ -1873,7 +1873,7 @@ namespace yy
     break;
 
   case 149:
-#line 2091 "xquery_parser.y"
+#line 2091 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderDirSpec [descending]\n";
 			(yyval.node) = new OrderDirSpec((yyloc), dir_descending);
@@ -1881,7 +1881,7 @@ namespace yy
     break;
 
   case 150:
-#line 2102 "xquery_parser.y"
+#line 2102 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderEmptySpec [greatest]\n";
 			(yyval.node) = new OrderEmptySpec((yyloc),
@@ -1890,7 +1890,7 @@ namespace yy
     break;
 
   case 151:
-#line 2108 "xquery_parser.y"
+#line 2108 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderEmptySpec [least]\n";
 			(yyval.node) = new OrderEmptySpec((yyloc),
@@ -1899,7 +1899,7 @@ namespace yy
     break;
 
   case 152:
-#line 2120 "xquery_parser.y"
+#line 2120 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderCollationSpec [ ]\n";
 			(yyval.node) = new OrderCollationSpec((yyloc),
@@ -1908,7 +1908,7 @@ namespace yy
     break;
 
   case 153:
-#line 2132 "xquery_parser.y"
+#line 2132 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuantifiedExpr [some]\n";
 			(yyval.expr) = new QuantifiedExpr((yyloc),
@@ -1919,7 +1919,7 @@ namespace yy
     break;
 
   case 154:
-#line 2140 "xquery_parser.y"
+#line 2140 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuantifiedExpr [every]\n";
 			(yyval.expr) = new QuantifiedExpr((yyloc),
@@ -1930,7 +1930,7 @@ namespace yy
     break;
 
   case 155:
-#line 2154 "xquery_parser.y"
+#line 2154 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QVarInDeclList [single]\n";
 			QVarInDeclList* qvid_list_p = new QVarInDeclList((yyloc));
@@ -1941,7 +1941,7 @@ namespace yy
     break;
 
   case 156:
-#line 2162 "xquery_parser.y"
+#line 2162 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QVarInDeclList [list]\n";
 			QVarInDeclList* qvid_list_p = dynamic_cast<QVarInDeclList*>((yysemantic_stack_[(3) - (1)].node));
@@ -1953,7 +1953,7 @@ namespace yy
     break;
 
   case 157:
-#line 2177 "xquery_parser.y"
+#line 2177 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QVarInDecl [in]\n";
 			(yyval.node) = new QVarInDecl((yyloc),
@@ -1963,7 +1963,7 @@ namespace yy
     break;
 
   case 158:
-#line 2184 "xquery_parser.y"
+#line 2184 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QVarInDecl [type.in]\n";
 			(yyval.node) = new QVarInDecl((yyloc),
@@ -1974,7 +1974,7 @@ namespace yy
     break;
 
   case 159:
-#line 2198 "xquery_parser.y"
+#line 2198 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeswitchExpr [cases.default.return]\n";
 			(yyval.expr) = new TypeswitchExpr((yyloc),
@@ -1985,7 +1985,7 @@ namespace yy
     break;
 
   case 160:
-#line 2206 "xquery_parser.y"
+#line 2206 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeswitchExpr [cases.default.varname.return]\n";
 			(yyval.expr) = new TypeswitchExpr((yyloc),
@@ -1997,7 +1997,7 @@ namespace yy
     break;
 
   case 161:
-#line 2221 "xquery_parser.y"
+#line 2221 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CaseClauseList [single]\n";
 			CaseClauseList* cc_list_p = new CaseClauseList((yyloc));
@@ -2007,7 +2007,7 @@ namespace yy
     break;
 
   case 162:
-#line 2228 "xquery_parser.y"
+#line 2228 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CaseClauseList [list]\n";
 			CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>((yysemantic_stack_[(2) - (1)].node));
@@ -2017,7 +2017,7 @@ namespace yy
     break;
 
   case 163:
-#line 2241 "xquery_parser.y"
+#line 2241 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CaseClause [case.return]\n";
 			(yyval.node) = new CaseClause((yyloc),
@@ -2027,7 +2027,7 @@ namespace yy
     break;
 
   case 164:
-#line 2248 "xquery_parser.y"
+#line 2248 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CaseClause [case.as.return]\n";
 			(yyval.node) = new CaseClause((yyloc),
@@ -2038,7 +2038,7 @@ namespace yy
     break;
 
   case 165:
-#line 2262 "xquery_parser.y"
+#line 2262 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "IfExpr [ ]\n";
 			(yyval.expr) = new IfExpr((yyloc),
@@ -2047,7 +2047,7 @@ namespace yy
     break;
 
   case 166:
-#line 2274 "xquery_parser.y"
+#line 2274 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrExpr [and]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2055,7 +2055,7 @@ namespace yy
     break;
 
   case 167:
-#line 2279 "xquery_parser.y"
+#line 2279 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrExpr [or.and]\n";
 			(yyval.expr) = new OrExpr((yyloc),
@@ -2064,7 +2064,7 @@ namespace yy
     break;
 
   case 168:
-#line 2291 "xquery_parser.y"
+#line 2291 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AndExpr [comp]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2072,7 +2072,7 @@ namespace yy
     break;
 
   case 169:
-#line 2296 "xquery_parser.y"
+#line 2296 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AndExpr [and.comp]\n";
 			(yyval.expr) = new AndExpr((yyloc),
@@ -2081,7 +2081,7 @@ namespace yy
     break;
 
   case 170:
-#line 2316 "xquery_parser.y"
+#line 2316 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ComparisonExpr [ftcontains]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2089,7 +2089,7 @@ namespace yy
     break;
 
   case 171:
-#line 2321 "xquery_parser.y"
+#line 2321 "../parser/xquery_parser.y"
     {
 			/*  ::=  "eq" | "ne" | "lt" | "le" | "gt" | "ge" */
 			if (debug) cout << "ComparisonExpr [ftcontains.valcomp.ftcontains]\n";
@@ -2101,7 +2101,7 @@ namespace yy
     break;
 
   case 172:
-#line 2330 "xquery_parser.y"
+#line 2330 "../parser/xquery_parser.y"
     {
 			/* ::=  "=" | "!=" | "<" | "<=" | ">" | ">=" */
 			if (debug) cout << "ComparisonExpr [ftcontains.gencomp.ftcontains]\n";
@@ -2113,7 +2113,7 @@ namespace yy
     break;
 
   case 173:
-#line 2339 "xquery_parser.y"
+#line 2339 "../parser/xquery_parser.y"
     {
 			/*  ::=  "is" | "<<" | ">>" */
 			if (debug) cout << "ComparisonExpr [ftcontains.nodecomp.ftcontains]\n";
@@ -2125,7 +2125,7 @@ namespace yy
     break;
 
   case 174:
-#line 2354 "xquery_parser.y"
+#line 2354 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContainsExpr [range]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2133,7 +2133,7 @@ namespace yy
     break;
 
   case 175:
-#line 2359 "xquery_parser.y"
+#line 2359 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContainsExpr [range.ftselect]\n";
 			(yyval.expr) = new FTContainsExpr((yyloc),
@@ -2144,7 +2144,7 @@ namespace yy
     break;
 
   case 176:
-#line 2367 "xquery_parser.y"
+#line 2367 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContainsExpr [range.ftselect.ftignore]\n";
 			(yyval.expr) = new FTContainsExpr((yyloc),
@@ -2155,7 +2155,7 @@ namespace yy
     break;
 
   case 177:
-#line 2381 "xquery_parser.y"
+#line 2381 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "RangeExpr [add]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2163,7 +2163,7 @@ namespace yy
     break;
 
   case 178:
-#line 2386 "xquery_parser.y"
+#line 2386 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "RangeExpr [add.to.add]\n";
 			(yyval.expr) = new RangeExpr((yyloc),
@@ -2172,7 +2172,7 @@ namespace yy
     break;
 
   case 179:
-#line 2398 "xquery_parser.y"
+#line 2398 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AdditiveExpr [mult]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2180,7 +2180,7 @@ namespace yy
     break;
 
   case 180:
-#line 2403 "xquery_parser.y"
+#line 2403 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AdditiveExpr [mult+mult]\n";
 			(yyval.expr) = new AdditiveExpr((yyloc), op_plus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2188,7 +2188,7 @@ namespace yy
     break;
 
   case 181:
-#line 2408 "xquery_parser.y"
+#line 2408 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AdditiveExpr [mult-mult]\n";
 			(yyval.expr) = new AdditiveExpr((yyloc), op_minus, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2196,14 +2196,14 @@ namespace yy
     break;
 
   case 182:
-#line 2419 "xquery_parser.y"
+#line 2419 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "MultiplicativeExpr [union]\n";
 		;}
     break;
 
   case 183:
-#line 2423 "xquery_parser.y"
+#line 2423 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "MultiplicativeExpr [mult*union]\n";
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_mul, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2211,7 +2211,7 @@ namespace yy
     break;
 
   case 184:
-#line 2428 "xquery_parser.y"
+#line 2428 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "MultiplicativeExpr [mult.div.union]\n";
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_div, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2219,7 +2219,7 @@ namespace yy
     break;
 
   case 185:
-#line 2433 "xquery_parser.y"
+#line 2433 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "MultiplicativeExpr [mult.idiv.union]\n";
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_idiv, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2227,7 +2227,7 @@ namespace yy
     break;
 
   case 186:
-#line 2438 "xquery_parser.y"
+#line 2438 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "MultiplicativeExpr [mult.mod.union]\n";
 			(yyval.expr) = new MultiplicativeExpr((yyloc), op_mod, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2235,7 +2235,7 @@ namespace yy
     break;
 
   case 187:
-#line 2449 "xquery_parser.y"
+#line 2449 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "UnionExpr [interexcept]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2243,7 +2243,7 @@ namespace yy
     break;
 
   case 188:
-#line 2454 "xquery_parser.y"
+#line 2454 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "UnionExpr [union.union.interexcept]\n";
 			(yyval.expr) = new UnionExpr((yyloc),
@@ -2252,7 +2252,7 @@ namespace yy
     break;
 
   case 189:
-#line 2460 "xquery_parser.y"
+#line 2460 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "UnionExpr [union|interexcept]\n";
 			(yyval.expr) = new UnionExpr((yyloc),
@@ -2261,7 +2261,7 @@ namespace yy
     break;
 
   case 190:
-#line 2472 "xquery_parser.y"
+#line 2472 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "IntersectExceptExpr [instanceof]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2269,7 +2269,7 @@ namespace yy
     break;
 
   case 191:
-#line 2477 "xquery_parser.y"
+#line 2477 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "IntersectExceptExpr [interexcept.inter.instanceof]\n";
 			(yyval.expr) = new IntersectExceptExpr((yyloc), op_intersect, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2277,7 +2277,7 @@ namespace yy
     break;
 
   case 192:
-#line 2482 "xquery_parser.y"
+#line 2482 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "IntersectExceptExpr [interexcept.except.instanceof]\n";
 			(yyval.expr) = new IntersectExceptExpr((yyloc), op_except, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2285,7 +2285,7 @@ namespace yy
     break;
 
   case 193:
-#line 2493 "xquery_parser.y"
+#line 2493 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "InstanceofExpr [treat]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2293,7 +2293,7 @@ namespace yy
     break;
 
   case 194:
-#line 2498 "xquery_parser.y"
+#line 2498 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "InstanceofExpr [treat.seqtype]\n";
 			(yyval.expr) = new InstanceofExpr((yyloc),
@@ -2303,7 +2303,7 @@ namespace yy
     break;
 
   case 195:
-#line 2511 "xquery_parser.y"
+#line 2511 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TreatExpr [castable]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2311,7 +2311,7 @@ namespace yy
     break;
 
   case 196:
-#line 2516 "xquery_parser.y"
+#line 2516 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TreatExpr [castable.seqtype]\n";
 			(yyval.expr) = new TreatExpr((yyloc),
@@ -2321,7 +2321,7 @@ namespace yy
     break;
 
   case 197:
-#line 2529 "xquery_parser.y"
+#line 2529 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CastableExpr [cast]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2329,7 +2329,7 @@ namespace yy
     break;
 
   case 198:
-#line 2534 "xquery_parser.y"
+#line 2534 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CastableExpr [cast.singletype]\n";
 			(yyval.expr) = new CastableExpr((yyloc),
@@ -2339,7 +2339,7 @@ namespace yy
     break;
 
   case 199:
-#line 2547 "xquery_parser.y"
+#line 2547 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CastExpr [unary]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2347,7 +2347,7 @@ namespace yy
     break;
 
   case 200:
-#line 2552 "xquery_parser.y"
+#line 2552 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CastExpr [unary.singletype]\n";
 			(yyval.expr) = new CastExpr((yyloc),
@@ -2357,7 +2357,7 @@ namespace yy
     break;
 
   case 201:
-#line 2565 "xquery_parser.y"
+#line 2565 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "UnaryExpr [value]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2365,7 +2365,7 @@ namespace yy
     break;
 
   case 202:
-#line 2570 "xquery_parser.y"
+#line 2570 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "UnaryExpr [signlist.value]\n";
 			(yyval.expr) = new UnaryExpr((yyloc),
@@ -2375,7 +2375,7 @@ namespace yy
     break;
 
   case 203:
-#line 2583 "xquery_parser.y"
+#line 2583 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SignList [+]\n";
 			(yyval.node) = new SignList((yyloc), true);
@@ -2383,7 +2383,7 @@ namespace yy
     break;
 
   case 204:
-#line 2588 "xquery_parser.y"
+#line 2588 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SignList [-]\n";
 			(yyval.node) = new SignList((yyloc), false);
@@ -2391,7 +2391,7 @@ namespace yy
     break;
 
   case 205:
-#line 2593 "xquery_parser.y"
+#line 2593 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SignList [signlist.+]\n";
 			(yyval.node) = (yysemantic_stack_[(2) - (1)].node);
@@ -2399,7 +2399,7 @@ namespace yy
     break;
 
   case 206:
-#line 2598 "xquery_parser.y"
+#line 2598 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SignList [signlist.-]\n";
 			SignList* slist_p = dynamic_cast<SignList*>((yysemantic_stack_[(2) - (1)].node));
@@ -2409,7 +2409,7 @@ namespace yy
     break;
 
   case 207:
-#line 2611 "xquery_parser.y"
+#line 2611 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueExpr [validate]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2417,7 +2417,7 @@ namespace yy
     break;
 
   case 208:
-#line 2616 "xquery_parser.y"
+#line 2616 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueExpr [path]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2425,7 +2425,7 @@ namespace yy
     break;
 
   case 209:
-#line 2621 "xquery_parser.y"
+#line 2621 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueExpr [extension]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2433,7 +2433,7 @@ namespace yy
     break;
 
   case 210:
-#line 2633 "xquery_parser.y"
+#line 2633 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "GeneralComp [=]\n";
 			(yyval.node) = new GeneralComp((yyloc), op_eq);
@@ -2441,7 +2441,7 @@ namespace yy
     break;
 
   case 211:
-#line 2638 "xquery_parser.y"
+#line 2638 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "GeneralComp [!=]\n";
 			(yyval.node) = new GeneralComp((yyloc), op_ne);
@@ -2449,7 +2449,7 @@ namespace yy
     break;
 
   case 212:
-#line 2643 "xquery_parser.y"
+#line 2643 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "GeneralComp [<]\n";
 			(yyval.node) = new GeneralComp((yyloc), op_lt);
@@ -2457,7 +2457,7 @@ namespace yy
     break;
 
   case 213:
-#line 2648 "xquery_parser.y"
+#line 2648 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "GeneralComp [<=]\n";
 			(yyval.node) = new GeneralComp((yyloc), op_le);
@@ -2465,7 +2465,7 @@ namespace yy
     break;
 
   case 214:
-#line 2653 "xquery_parser.y"
+#line 2653 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "GeneralComp [>]\n";
 			(yyval.node) = new GeneralComp((yyloc), op_gt);
@@ -2473,7 +2473,7 @@ namespace yy
     break;
 
   case 215:
-#line 2658 "xquery_parser.y"
+#line 2658 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "GeneralComp [>=]\n";
 			(yyval.node) = new GeneralComp((yyloc), op_ge);
@@ -2481,7 +2481,7 @@ namespace yy
     break;
 
   case 216:
-#line 2669 "xquery_parser.y"
+#line 2669 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueComp [eq]\n";
 			(yyval.node) = new ValueComp((yyloc), op_val_eq);
@@ -2489,7 +2489,7 @@ namespace yy
     break;
 
   case 217:
-#line 2674 "xquery_parser.y"
+#line 2674 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueComp [ne]\n";
 			(yyval.node) = new ValueComp((yyloc), op_val_ne);
@@ -2497,7 +2497,7 @@ namespace yy
     break;
 
   case 218:
-#line 2679 "xquery_parser.y"
+#line 2679 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueComp [lt]\n";
 			(yyval.node) = new ValueComp((yyloc), op_val_lt);
@@ -2505,7 +2505,7 @@ namespace yy
     break;
 
   case 219:
-#line 2684 "xquery_parser.y"
+#line 2684 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueComp [le]\n";
 			(yyval.node) = new ValueComp((yyloc), op_val_le);
@@ -2513,7 +2513,7 @@ namespace yy
     break;
 
   case 220:
-#line 2689 "xquery_parser.y"
+#line 2689 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueComp [gt]\n";
 			(yyval.node) = new ValueComp((yyloc), op_val_gt);
@@ -2521,7 +2521,7 @@ namespace yy
     break;
 
   case 221:
-#line 2694 "xquery_parser.y"
+#line 2694 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValueComp [ge]\n";
 			(yyval.node) = new ValueComp((yyloc), op_val_ge);
@@ -2529,7 +2529,7 @@ namespace yy
     break;
 
   case 222:
-#line 2705 "xquery_parser.y"
+#line 2705 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NodeComp [is]\n";
 			(yyval.node) = new NodeComp((yyloc), op_is);
@@ -2537,7 +2537,7 @@ namespace yy
     break;
 
   case 223:
-#line 2710 "xquery_parser.y"
+#line 2710 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NodeComp [<<]\n";
 			(yyval.node) = new NodeComp((yyloc), op_precedes);
@@ -2545,7 +2545,7 @@ namespace yy
     break;
 
   case 224:
-#line 2715 "xquery_parser.y"
+#line 2715 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NodeComp [>>]\n";
 			(yyval.node) = new NodeComp((yyloc), op_follows);
@@ -2553,7 +2553,7 @@ namespace yy
     break;
 
   case 225:
-#line 2727 "xquery_parser.y"
+#line 2727 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValidateExpr [expr]\n";
 			(yyval.expr) = new ValidateExpr((yyloc), "strict", (yysemantic_stack_[(3) - (2)].expr));
@@ -2561,7 +2561,7 @@ namespace yy
     break;
 
   case 226:
-#line 2732 "xquery_parser.y"
+#line 2732 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ValidateExpr [mode.expr]\n";
 			(yyval.expr) = new ValidateExpr((yyloc),
@@ -2571,7 +2571,7 @@ namespace yy
     break;
 
   case 227:
-#line 2745 "xquery_parser.y"
+#line 2745 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExtensionExpr [pragmalist]\n";
 			(yyval.expr) = new ExtensionExpr((yyloc),
@@ -2581,7 +2581,7 @@ namespace yy
     break;
 
   case 228:
-#line 2752 "xquery_parser.y"
+#line 2752 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ExtensionExpr [pragmalist.expr]\n";
 			(yyval.expr) = new ExtensionExpr((yyloc),
@@ -2591,7 +2591,7 @@ namespace yy
     break;
 
   case 229:
-#line 2765 "xquery_parser.y"
+#line 2765 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PragmaList [single]\n";
 			PragmaList* pragma_list_p = new PragmaList((yyloc));
@@ -2601,7 +2601,7 @@ namespace yy
     break;
 
   case 230:
-#line 2772 "xquery_parser.y"
+#line 2772 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PragmaList [list]\n";
 			PragmaList* pragma_list_p = dynamic_cast<PragmaList*>((yysemantic_stack_[(2) - (1)].node));
@@ -2613,7 +2613,7 @@ namespace yy
     break;
 
   case 231:
-#line 2787 "xquery_parser.y"
+#line 2787 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Pragma [ ]\n";
 			(yyval.node) = new Pragma((yyloc),
@@ -2624,7 +2624,7 @@ namespace yy
     break;
 
   case 232:
-#line 2831 "xquery_parser.y"
+#line 2831 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PathExpr [/]\n";
 			(yyval.expr) = new PathExpr((yyloc), path_leading_lone_slash, NULL);
@@ -2632,7 +2632,7 @@ namespace yy
     break;
 
   case 233:
-#line 2836 "xquery_parser.y"
+#line 2836 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PathExpr [/relative]\n";
 			(yyval.expr) = new PathExpr((yyloc), path_leading_slash, (yysemantic_stack_[(2) - (2)].expr));
@@ -2640,7 +2640,7 @@ namespace yy
     break;
 
   case 234:
-#line 2841 "xquery_parser.y"
+#line 2841 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PathExpr [//relative]\n";
 			(yyval.expr) = new PathExpr((yyloc), path_leading_slashslash, (yysemantic_stack_[(2) - (2)].expr));
@@ -2648,7 +2648,7 @@ namespace yy
     break;
 
   case 235:
-#line 2846 "xquery_parser.y"
+#line 2846 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PathExpr [relative]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2656,7 +2656,7 @@ namespace yy
     break;
 
   case 236:
-#line 2857 "xquery_parser.y"
+#line 2857 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "RelativePathExpr [step]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);						
@@ -2664,7 +2664,7 @@ namespace yy
     break;
 
   case 237:
-#line 2862 "xquery_parser.y"
+#line 2862 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "RelativePathExpr [step/relative]\n";
 			(yyval.expr) = new RelativePathExpr((yyloc), st_slash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2672,7 +2672,7 @@ namespace yy
     break;
 
   case 238:
-#line 2867 "xquery_parser.y"
+#line 2867 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "RelativePathExpr [step//relative]\n";
 			(yyval.expr) = new RelativePathExpr((yyloc), st_slashslash, (yysemantic_stack_[(3) - (1)].expr), (yysemantic_stack_[(3) - (3)].expr));
@@ -2680,7 +2680,7 @@ namespace yy
     break;
 
   case 239:
-#line 2878 "xquery_parser.y"
+#line 2878 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "StepExpr [axis]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2688,7 +2688,7 @@ namespace yy
     break;
 
   case 240:
-#line 2883 "xquery_parser.y"
+#line 2883 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "StepExpr [filter]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2696,7 +2696,7 @@ namespace yy
     break;
 
   case 241:
-#line 2894 "xquery_parser.y"
+#line 2894 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [forward]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2706,7 +2706,7 @@ namespace yy
     break;
 
   case 242:
-#line 2901 "xquery_parser.y"
+#line 2901 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [forward.predlist]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2716,7 +2716,7 @@ namespace yy
     break;
 
   case 243:
-#line 2908 "xquery_parser.y"
+#line 2908 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [reverse]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2726,7 +2726,7 @@ namespace yy
     break;
 
   case 244:
-#line 2915 "xquery_parser.y"
+#line 2915 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AxisStep [reverse.predlist]\n";
 			(yyval.expr) = new AxisStep((yyloc),
@@ -2736,7 +2736,7 @@ namespace yy
     break;
 
   case 245:
-#line 2928 "xquery_parser.y"
+#line 2928 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardStep [nodetest]\n";
 			(yyval.node) = new ForwardStep((yyloc),
@@ -2746,7 +2746,7 @@ namespace yy
     break;
 
   case 246:
-#line 2935 "xquery_parser.y"
+#line 2935 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardStep [abbrev]\n";
 			(yyval.node) = new ForwardStep((yyloc),
@@ -2755,7 +2755,7 @@ namespace yy
     break;
 
   case 247:
-#line 2947 "xquery_parser.y"
+#line 2947 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [child]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_child);
@@ -2763,7 +2763,7 @@ namespace yy
     break;
 
   case 248:
-#line 2952 "xquery_parser.y"
+#line 2952 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [descendant]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_descendant);
@@ -2771,7 +2771,7 @@ namespace yy
     break;
 
   case 249:
-#line 2957 "xquery_parser.y"
+#line 2957 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [attribute]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_attribute);
@@ -2779,7 +2779,7 @@ namespace yy
     break;
 
   case 250:
-#line 2962 "xquery_parser.y"
+#line 2962 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [self]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_self);
@@ -2787,7 +2787,7 @@ namespace yy
     break;
 
   case 251:
-#line 2967 "xquery_parser.y"
+#line 2967 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [descendant_or_self]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_descendant_or_self);
@@ -2795,7 +2795,7 @@ namespace yy
     break;
 
   case 252:
-#line 2972 "xquery_parser.y"
+#line 2972 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [following_sibling]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_following_sibling);
@@ -2803,7 +2803,7 @@ namespace yy
     break;
 
   case 253:
-#line 2977 "xquery_parser.y"
+#line 2977 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ForwardAxis [following]\n";
 			(yyval.node) = new ForwardAxis((yyloc), axis_following);
@@ -2811,7 +2811,7 @@ namespace yy
     break;
 
   case 254:
-#line 2988 "xquery_parser.y"
+#line 2988 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AbbrevForwardStep [nodetest]\n";
 			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(1) - (1)].node));
@@ -2819,7 +2819,7 @@ namespace yy
     break;
 
   case 255:
-#line 2993 "xquery_parser.y"
+#line 2993 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AbbrevForwardStep [@ nodetest]\n";
 			(yyval.node) = new AbbrevForwardStep((yyloc), (yysemantic_stack_[(2) - (2)].node), true);
@@ -2827,7 +2827,7 @@ namespace yy
     break;
 
   case 256:
-#line 3004 "xquery_parser.y"
+#line 3004 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseStep [nodetest]\n";
 			(yyval.node) = new ReverseStep((yyloc),
@@ -2837,7 +2837,7 @@ namespace yy
     break;
 
   case 257:
-#line 3011 "xquery_parser.y"
+#line 3011 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseStep [..]\n";
 			ReverseAxis* rev_p = new ReverseAxis((yyloc), axis_parent);
@@ -2847,7 +2847,7 @@ namespace yy
     break;
 
   case 258:
-#line 3024 "xquery_parser.y"
+#line 3024 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [parent]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_parent);
@@ -2855,7 +2855,7 @@ namespace yy
     break;
 
   case 259:
-#line 3029 "xquery_parser.y"
+#line 3029 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [ancestor]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor);
@@ -2863,7 +2863,7 @@ namespace yy
     break;
 
   case 260:
-#line 3034 "xquery_parser.y"
+#line 3034 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [preceding_sibling]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_preceding_sibling);
@@ -2871,7 +2871,7 @@ namespace yy
     break;
 
   case 261:
-#line 3039 "xquery_parser.y"
+#line 3039 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [preceding]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_preceding);
@@ -2879,7 +2879,7 @@ namespace yy
     break;
 
   case 262:
-#line 3044 "xquery_parser.y"
+#line 3044 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReverseAxis [ancestor_or_self]\n";
 			(yyval.node) = new ReverseAxis((yyloc), axis_ancestor_or_self);
@@ -2887,7 +2887,7 @@ namespace yy
     break;
 
   case 263:
-#line 3060 "xquery_parser.y"
+#line 3060 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NodeTest [kindtest]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -2895,7 +2895,7 @@ namespace yy
     break;
 
   case 264:
-#line 3065 "xquery_parser.y"
+#line 3065 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NodeTest [nametest]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -2903,55 +2903,56 @@ namespace yy
     break;
 
   case 265:
-#line 3076 "xquery_parser.y"
+#line 3076 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NameTest [qname]\n";
-			(yyval.node) = new NameTest((yyloc),
-								new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
+			(yyval.node) = new NameTest((yyloc), new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))));
 		;}
     break;
 
   case 266:
-#line 3082 "xquery_parser.y"
+#line 3081 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NameTest [wildcard]\n";
-			(yyval.node) = new NameTest((yyloc),
-								dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
+			(yyval.node) = new NameTest((yyloc), dynamic_cast<Wildcard*>((yysemantic_stack_[(1) - (1)].node)));
 		;}
     break;
 
   case 267:
-#line 3094 "xquery_parser.y"
+#line 3092 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Wildcard [*]\n";
 			(yyval.node) = new Wildcard((yyloc),
-									new QName((yyloc),""),
-									wild_all);
+                        "",
+                        "",
+                        wild_all);
 		;}
     break;
 
   case 268:
-#line 3101 "xquery_parser.y"
+#line 3100 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Wildcard [pref:*]\n";
 			(yyval.node) = new Wildcard((yyloc),
-									new QName((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval))),
-									wild_elem);
+                        driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
+                        "",
+                        wild_elem);
 		;}
     break;
 
   case 269:
-#line 3108 "xquery_parser.y"
+#line 3108 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Wildcard [*:qname]\n";
 			(yyval.node) = new Wildcard((yyloc),
-									new QName((yyloc),""),
-									wild_prefix);
+                        "",
+                        driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)),
+                        wild_prefix);
 		;}
     break;
 
   case 270:
-#line 3121 "xquery_parser.y"
+#line 3122 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FilterExpr [primary]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -2959,7 +2960,7 @@ namespace yy
     break;
 
   case 271:
-#line 3126 "xquery_parser.y"
+#line 3127 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FilterExpr [primary.predlist]\n";
 			(yyval.expr) = new FilterExpr((yyloc),
@@ -2969,7 +2970,7 @@ namespace yy
     break;
 
   case 272:
-#line 3139 "xquery_parser.y"
+#line 3140 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PredicateList [single]\n";
 			PredicateList* pred_list_p = new PredicateList((yyloc));
@@ -2979,7 +2980,7 @@ namespace yy
     break;
 
   case 273:
-#line 3146 "xquery_parser.y"
+#line 3147 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PredicateList [list]\n";
 			PredicateList* pred_list_p = dynamic_cast<PredicateList*>((yysemantic_stack_[(2) - (1)].node));
@@ -2991,7 +2992,7 @@ namespace yy
     break;
 
   case 274:
-#line 3161 "xquery_parser.y"
+#line 3162 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Predicate [ ]\n";
 			(yyval.expr) = (yysemantic_stack_[(3) - (2)].expr);
@@ -2999,7 +3000,7 @@ namespace yy
     break;
 
   case 275:
-#line 3173 "xquery_parser.y"
+#line 3174 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [literal]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3007,7 +3008,7 @@ namespace yy
     break;
 
   case 276:
-#line 3178 "xquery_parser.y"
+#line 3179 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [varref]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3015,7 +3016,7 @@ namespace yy
     break;
 
   case 277:
-#line 3183 "xquery_parser.y"
+#line 3184 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [paren]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3023,7 +3024,7 @@ namespace yy
     break;
 
   case 278:
-#line 3188 "xquery_parser.y"
+#line 3189 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [context_item]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3031,7 +3032,7 @@ namespace yy
     break;
 
   case 279:
-#line 3193 "xquery_parser.y"
+#line 3194 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [funcall]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3039,7 +3040,7 @@ namespace yy
     break;
 
   case 280:
-#line 3198 "xquery_parser.y"
+#line 3199 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [cons]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3047,7 +3048,7 @@ namespace yy
     break;
 
   case 281:
-#line 3203 "xquery_parser.y"
+#line 3204 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [ordered]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3055,7 +3056,7 @@ namespace yy
     break;
 
   case 282:
-#line 3208 "xquery_parser.y"
+#line 3209 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PrimaryExpr [unordered]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3063,7 +3064,7 @@ namespace yy
     break;
 
   case 283:
-#line 3219 "xquery_parser.y"
+#line 3220 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Literal [numeric]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3071,7 +3072,7 @@ namespace yy
     break;
 
   case 284:
-#line 3224 "xquery_parser.y"
+#line 3225 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Literal [string]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3079,7 +3080,7 @@ namespace yy
     break;
 
   case 285:
-#line 3235 "xquery_parser.y"
+#line 3236 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NumericLiteral [decimal]\n";
 			(yyval.expr) = new NumericLiteral((yyloc), decimal(yylval.decval));
@@ -3087,7 +3088,7 @@ namespace yy
     break;
 
   case 286:
-#line 3240 "xquery_parser.y"
+#line 3241 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NumericLiteral [int]\n";
 			(yyval.expr) = new NumericLiteral((yyloc), yylval.ival);
@@ -3095,7 +3096,7 @@ namespace yy
     break;
 
   case 287:
-#line 3245 "xquery_parser.y"
+#line 3246 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "NumericLiteral [double]\n";
 			(yyval.expr) = new NumericLiteral((yyloc), yylval.dval);
@@ -3103,7 +3104,7 @@ namespace yy
     break;
 
   case 288:
-#line 3256 "xquery_parser.y"
+#line 3257 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarRef [ ]\n";
 			(yyval.expr) = new VarRef((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(2) - (2)].sval)));
@@ -3111,7 +3112,7 @@ namespace yy
     break;
 
   case 289:
-#line 3267 "xquery_parser.y"
+#line 3268 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ParenthesizedExpr [()]\n";
 			(yyval.expr) = new ParenthesizedExpr((yyloc), NULL);
@@ -3119,7 +3120,7 @@ namespace yy
     break;
 
   case 290:
-#line 3272 "xquery_parser.y"
+#line 3273 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ParenthesizedExpr [(expr)]\n";
 			(yyval.expr) = new ParenthesizedExpr((yyloc),
@@ -3128,7 +3129,7 @@ namespace yy
     break;
 
   case 291:
-#line 3284 "xquery_parser.y"
+#line 3285 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ContextItemExpr [.]\n";
 			(yyval.expr) = new ContextItemExpr((yyloc));
@@ -3136,7 +3137,7 @@ namespace yy
     break;
 
   case 292:
-#line 3295 "xquery_parser.y"
+#line 3296 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OrderedExpr [expr]\n";
 			(yyval.expr) = new OrderedExpr((yyloc),
@@ -3145,7 +3146,7 @@ namespace yy
     break;
 
   case 293:
-#line 3307 "xquery_parser.y"
+#line 3308 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "UnorderedExpr [expr]\n";
 			(yyval.expr) = new UnorderedExpr((yyloc),
@@ -3154,7 +3155,7 @@ namespace yy
     break;
 
   case 294:
-#line 3364 "xquery_parser.y"
+#line 3365 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionCall [ ]\n";
 			(yyval.expr) = new FunctionCall((yyloc),
@@ -3164,7 +3165,7 @@ namespace yy
     break;
 
   case 295:
-#line 3371 "xquery_parser.y"
+#line 3372 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FunctionCall [arglist]\n";
 			(yyval.expr) = new FunctionCall((yyloc),
@@ -3174,7 +3175,7 @@ namespace yy
     break;
 
   case 296:
-#line 3384 "xquery_parser.y"
+#line 3385 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ArgList [single]\n";
 			ArgList* a_list_p = new ArgList((yyloc)); 
@@ -3184,7 +3185,7 @@ namespace yy
     break;
 
   case 297:
-#line 3391 "xquery_parser.y"
+#line 3392 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ArgList [list]\n";
 			ArgList* a_list_p = dynamic_cast<ArgList*>((yysemantic_stack_[(3) - (1)].node));
@@ -3194,7 +3195,7 @@ namespace yy
     break;
 
   case 298:
-#line 3404 "xquery_parser.y"
+#line 3405 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Constructor [direct]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3202,7 +3203,7 @@ namespace yy
     break;
 
   case 299:
-#line 3409 "xquery_parser.y"
+#line 3410 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "Constructor [computed]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3210,7 +3211,7 @@ namespace yy
     break;
 
   case 300:
-#line 3420 "xquery_parser.y"
+#line 3421 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirectConstructor [element]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3218,7 +3219,7 @@ namespace yy
     break;
 
   case 301:
-#line 3425 "xquery_parser.y"
+#line 3426 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirectConstructor [comment]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3226,7 +3227,7 @@ namespace yy
     break;
 
   case 302:
-#line 3430 "xquery_parser.y"
+#line 3431 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirectConstructor [pi]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3234,7 +3235,7 @@ namespace yy
     break;
 
   case 303:
-#line 3441 "xquery_parser.y"
+#line 3442 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname/> ]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3246,7 +3247,7 @@ namespace yy
     break;
 
   case 304:
-#line 3450 "xquery_parser.y"
+#line 3451 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname attrlist/> ]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3258,7 +3259,7 @@ namespace yy
     break;
 
   case 305:
-#line 3459 "xquery_parser.y"
+#line 3460 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname></qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3270,7 +3271,7 @@ namespace yy
     break;
 
   case 306:
-#line 3468 "xquery_parser.y"
+#line 3469 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname>content</qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3282,7 +3283,7 @@ namespace yy
     break;
 
   case 307:
-#line 3477 "xquery_parser.y"
+#line 3478 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname attrlist></qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3294,7 +3295,7 @@ namespace yy
     break;
 
   case 308:
-#line 3486 "xquery_parser.y"
+#line 3487 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemConstructor [<qname attrlist>content</qname>]\n";
 			(yyval.expr) = new DirElemConstructor((yyloc),
@@ -3306,7 +3307,7 @@ namespace yy
     break;
 
   case 309:
-#line 3502 "xquery_parser.y"
+#line 3503 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContentList [single]\n";
 			DirElemContentList* elem_content_list_p = new DirElemContentList((yyloc));
@@ -3316,7 +3317,7 @@ namespace yy
     break;
 
   case 310:
-#line 3509 "xquery_parser.y"
+#line 3510 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContentList [list]\n";
 			DirElemContentList* elem_content_list_p = dynamic_cast<DirElemContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3326,7 +3327,7 @@ namespace yy
     break;
 
   case 311:
-#line 3522 "xquery_parser.y"
+#line 3523 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeList [single]\n";
 			DirAttributeList* at_list_p = new DirAttributeList((yyloc));
@@ -3336,7 +3337,7 @@ namespace yy
     break;
 
   case 312:
-#line 3529 "xquery_parser.y"
+#line 3530 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeList [list]\n";
 			DirAttributeList* at_list_p = dynamic_cast<DirAttributeList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3348,7 +3349,7 @@ namespace yy
     break;
 
   case 313:
-#line 3544 "xquery_parser.y"
+#line 3545 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttr [ ]\n";
 			(yyval.node) = new DirAttr((yyloc),
@@ -3358,7 +3359,7 @@ namespace yy
     break;
 
   case 314:
-#line 3557 "xquery_parser.y"
+#line 3558 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeValue [quote]\n";
 			(yyval.node) = new DirAttributeValue((yyloc),
@@ -3367,7 +3368,7 @@ namespace yy
     break;
 
   case 315:
-#line 3563 "xquery_parser.y"
+#line 3564 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirAttributeValue [apos]\n";
 			(yyval.node) = new DirAttributeValue((yyloc),
@@ -3376,7 +3377,7 @@ namespace yy
     break;
 
   case 316:
-#line 3575 "xquery_parser.y"
+#line 3576 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList[empty]\n";
 			(yyval.node) = new QuoteAttrContentList((yyloc));
@@ -3384,14 +3385,14 @@ namespace yy
     break;
 
   case 317:
-#line 3580 "xquery_parser.y"
+#line 3581 "../parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 318:
-#line 3587 "xquery_parser.y"
+#line 3588 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [""]\n";
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
@@ -3401,7 +3402,7 @@ namespace yy
     break;
 
   case 319:
-#line 3594 "xquery_parser.y"
+#line 3595 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [single]\n";
 			QuoteAttrContentList* qo_list_p = new QuoteAttrContentList((yyloc));
@@ -3411,7 +3412,7 @@ namespace yy
     break;
 
   case 320:
-#line 3601 "xquery_parser.y"
+#line 3602 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [list ""]\n";
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3423,7 +3424,7 @@ namespace yy
     break;
 
   case 321:
-#line 3610 "xquery_parser.y"
+#line 3611 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrContentList [list]\n";
 			QuoteAttrContentList* qo_list_p = dynamic_cast<QuoteAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3434,7 +3435,7 @@ namespace yy
     break;
 
   case 322:
-#line 3624 "xquery_parser.y"
+#line 3625 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList ['']\n";
 			(yyval.node) = new AposAttrContentList((yyloc));
@@ -3442,14 +3443,14 @@ namespace yy
     break;
 
   case 323:
-#line 3629 "xquery_parser.y"
+#line 3630 "../parser/xquery_parser.y"
     {
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
 		;}
     break;
 
   case 324:
-#line 3636 "xquery_parser.y"
+#line 3637 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList ['']\n";
 			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
@@ -3459,7 +3460,7 @@ namespace yy
     break;
 
   case 325:
-#line 3643 "xquery_parser.y"
+#line 3644 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList [single]\n";
 			AposAttrContentList* at_list_p = new AposAttrContentList((yyloc));
@@ -3469,7 +3470,7 @@ namespace yy
     break;
 
   case 326:
-#line 3650 "xquery_parser.y"
+#line 3651 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList [list.'']\n";
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3481,7 +3482,7 @@ namespace yy
     break;
 
   case 327:
-#line 3659 "xquery_parser.y"
+#line 3660 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrContentList [list.single]\n";
 			AposAttrContentList* at_list_p = dynamic_cast<AposAttrContentList*>((yysemantic_stack_[(2) - (1)].node));
@@ -3493,7 +3494,7 @@ namespace yy
     break;
 
   case 328:
-#line 3674 "xquery_parser.y"
+#line 3675 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrValueContent [quote_attr_content]\n";
 			(yyval.node) = new QuoteAttrValueContent((yyloc),
@@ -3502,7 +3503,7 @@ namespace yy
     break;
 
   case 329:
-#line 3680 "xquery_parser.y"
+#line 3681 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "QuoteAttrValueContent [common_content]\n";
 			(yyval.node) = new QuoteAttrValueContent((yyloc),
@@ -3511,7 +3512,7 @@ namespace yy
     break;
 
   case 330:
-#line 3692 "xquery_parser.y"
+#line 3693 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrValueContent [apos_attr_content]\n";
 			(yyval.node) = new AposAttrValueContent((yyloc),
@@ -3520,7 +3521,7 @@ namespace yy
     break;
 
   case 331:
-#line 3698 "xquery_parser.y"
+#line 3699 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AposAttrValueContent [common_content]\n";
 			(yyval.node) = new AposAttrValueContent((yyloc),
@@ -3529,7 +3530,7 @@ namespace yy
     break;
 
   case 332:
-#line 3710 "xquery_parser.y"
+#line 3711 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [cons]\n";
 			(yyval.expr) = new DirElemContent((yyloc),
@@ -3538,7 +3539,7 @@ namespace yy
     break;
 
   case 333:
-#line 3716 "xquery_parser.y"
+#line 3717 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [elem_content]\n";
 			(yyval.expr) = new DirElemContent((yyloc),
@@ -3547,7 +3548,7 @@ namespace yy
     break;
 
   case 334:
-#line 3722 "xquery_parser.y"
+#line 3723 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [cdata]\n";
 			rchandle<CDataSection> cdata_h = dynamic_cast<CDataSection*>((yysemantic_stack_[(1) - (1)].expr));
@@ -3557,7 +3558,7 @@ namespace yy
     break;
 
   case 335:
-#line 3729 "xquery_parser.y"
+#line 3730 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirElemContent [common_content]\n";
 			rchandle<CommonContent> cont_h = dynamic_cast<CommonContent*>((yysemantic_stack_[(1) - (1)].expr));
@@ -3567,7 +3568,7 @@ namespace yy
     break;
 
   case 336:
-#line 3742 "xquery_parser.y"
+#line 3743 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [entity_ref]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3577,7 +3578,7 @@ namespace yy
     break;
 
   case 337:
-#line 3749 "xquery_parser.y"
+#line 3750 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [char_ref]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3587,7 +3588,7 @@ namespace yy
     break;
 
   case 338:
-#line 3756 "xquery_parser.y"
+#line 3757 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [{{]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3596,7 +3597,7 @@ namespace yy
     break;
 
   case 339:
-#line 3762 "xquery_parser.y"
+#line 3763 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [}}]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3605,7 +3606,7 @@ namespace yy
     break;
 
   case 340:
-#line 3768 "xquery_parser.y"
+#line 3769 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CommonContent [expr]\n";
 			(yyval.expr) = new CommonContent((yyloc),
@@ -3614,7 +3615,7 @@ namespace yy
     break;
 
   case 341:
-#line 3780 "xquery_parser.y"
+#line 3781 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirCommentConstructor [ ]\n";
 			(yyval.expr) = new DirCommentConstructor((yyloc),
@@ -3623,7 +3624,7 @@ namespace yy
     break;
 
   case 342:
-#line 3797 "xquery_parser.y"
+#line 3798 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirPIConstructor [target]\n";
 			(yyval.expr) = new DirPIConstructor((yyloc),
@@ -3632,7 +3633,7 @@ namespace yy
     break;
 
   case 343:
-#line 3803 "xquery_parser.y"
+#line 3804 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DirPIConstructor [target.charlit]\n";
 			(yyval.expr) = new DirPIConstructor((yyloc),
@@ -3642,7 +3643,7 @@ namespace yy
     break;
 
   case 344:
-#line 3821 "xquery_parser.y"
+#line 3822 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CDataSection [ ]\n";
 			(yyval.expr) = new CDataSection((yyloc),driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
@@ -3650,7 +3651,7 @@ namespace yy
     break;
 
   case 345:
-#line 3837 "xquery_parser.y"
+#line 3838 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [doc]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3658,7 +3659,7 @@ namespace yy
     break;
 
   case 346:
-#line 3842 "xquery_parser.y"
+#line 3843 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [elem]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3666,7 +3667,7 @@ namespace yy
     break;
 
   case 347:
-#line 3847 "xquery_parser.y"
+#line 3848 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [attr]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3674,7 +3675,7 @@ namespace yy
     break;
 
   case 348:
-#line 3852 "xquery_parser.y"
+#line 3853 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [text]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3682,7 +3683,7 @@ namespace yy
     break;
 
   case 349:
-#line 3857 "xquery_parser.y"
+#line 3858 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [comment]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3690,7 +3691,7 @@ namespace yy
     break;
 
   case 350:
-#line 3862 "xquery_parser.y"
+#line 3863 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ComputedConstructor [pi]\n";
 			(yyval.expr) = (yysemantic_stack_[(1) - (1)].expr);
@@ -3698,7 +3699,7 @@ namespace yy
     break;
 
   case 351:
-#line 3873 "xquery_parser.y"
+#line 3874 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompDocConstructor [ ]\n";
 			(yyval.expr) = new CompDocConstructor((yyloc),
@@ -3707,7 +3708,7 @@ namespace yy
     break;
 
   case 352:
-#line 3885 "xquery_parser.y"
+#line 3886 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [ ]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3717,7 +3718,7 @@ namespace yy
     break;
 
   case 353:
-#line 3892 "xquery_parser.y"
+#line 3893 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [content]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3727,7 +3728,7 @@ namespace yy
     break;
 
   case 354:
-#line 3899 "xquery_parser.y"
+#line 3900 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [name]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3736,7 +3737,7 @@ namespace yy
     break;
 
   case 355:
-#line 3905 "xquery_parser.y"
+#line 3906 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompElemConstructor [name.content]\n";
 			(yyval.expr) = new CompElemConstructor((yyloc),
@@ -3745,7 +3746,7 @@ namespace yy
     break;
 
   case 356:
-#line 3929 "xquery_parser.y"
+#line 3930 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [ ]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3755,7 +3756,7 @@ namespace yy
     break;
 
   case 357:
-#line 3936 "xquery_parser.y"
+#line 3937 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [val]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3765,7 +3766,7 @@ namespace yy
     break;
 
   case 358:
-#line 3943 "xquery_parser.y"
+#line 3944 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [name]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3774,7 +3775,7 @@ namespace yy
     break;
 
   case 359:
-#line 3949 "xquery_parser.y"
+#line 3950 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompAttrConstructor [name.val]\n";
 			(yyval.expr) = new CompAttrConstructor((yyloc),
@@ -3783,7 +3784,7 @@ namespace yy
     break;
 
   case 360:
-#line 3961 "xquery_parser.y"
+#line 3962 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompTextConstructor [content]\n";
 			(yyval.expr) = new CompTextConstructor((yyloc),
@@ -3792,7 +3793,7 @@ namespace yy
     break;
 
   case 361:
-#line 3973 "xquery_parser.y"
+#line 3974 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompCommentConstructor [content]\n";
 			(yyval.expr) = new CompCommentConstructor((yyloc),
@@ -3801,7 +3802,7 @@ namespace yy
     break;
 
   case 362:
-#line 3985 "xquery_parser.y"
+#line 3986 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [ ]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3811,7 +3812,7 @@ namespace yy
     break;
 
   case 363:
-#line 3992 "xquery_parser.y"
+#line 3993 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [content]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3821,7 +3822,7 @@ namespace yy
     break;
 
   case 364:
-#line 3999 "xquery_parser.y"
+#line 4000 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [target]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3830,7 +3831,7 @@ namespace yy
     break;
 
   case 365:
-#line 4005 "xquery_parser.y"
+#line 4006 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CompPIConstructor [target.content]\n";
 			(yyval.expr) = new CompPIConstructor((yyloc),
@@ -3839,7 +3840,7 @@ namespace yy
     break;
 
   case 366:
-#line 4017 "xquery_parser.y"
+#line 4018 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SingleType [atomic]\n";
 			(yyval.node) = new SingleType((yyloc),
@@ -3849,7 +3850,7 @@ namespace yy
     break;
 
   case 367:
-#line 4024 "xquery_parser.y"
+#line 4025 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SingleType [atomic ?]\n";
 			(yyval.node) = new SingleType((yyloc),
@@ -3859,7 +3860,7 @@ namespace yy
     break;
 
   case 368:
-#line 4037 "xquery_parser.y"
+#line 4038 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeDeclaration [as seqtype]\n";
 			(yyval.node) = new TypeDeclaration((yyloc),
@@ -3868,7 +3869,7 @@ namespace yy
     break;
 
   case 369:
-#line 4049 "xquery_parser.y"
+#line 4050 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [type]\n";
 			(yyval.node) = new SequenceType((yyloc),
@@ -3878,7 +3879,7 @@ namespace yy
     break;
 
   case 370:
-#line 4056 "xquery_parser.y"
+#line 4057 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [type.occurs]\n";
 			(yyval.node) = new SequenceType((yyloc),
@@ -3888,7 +3889,7 @@ namespace yy
     break;
 
   case 371:
-#line 4063 "xquery_parser.y"
+#line 4064 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [void]\n";
 			(yyval.node) = new SequenceType((yyloc), NULL, NULL);
@@ -3896,7 +3897,7 @@ namespace yy
     break;
 
   case 372:
-#line 4101 "xquery_parser.y"
+#line 4102 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OccurrenceIndicator [?]\n";
 			(yyval.node) = new OccurrenceIndicator((yyloc),
@@ -3905,7 +3906,7 @@ namespace yy
     break;
 
   case 373:
-#line 4107 "xquery_parser.y"
+#line 4108 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OccurrenceIndicator [*]\n";
 			(yyval.node) = new OccurrenceIndicator((yyloc),
@@ -3914,7 +3915,7 @@ namespace yy
     break;
 
   case 374:
-#line 4113 "xquery_parser.y"
+#line 4114 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "OccurrenceIndicator [+]\n";
 			(yyval.node) = new OccurrenceIndicator((yyloc),
@@ -3923,7 +3924,7 @@ namespace yy
     break;
 
   case 375:
-#line 4125 "xquery_parser.y"
+#line 4126 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [atomic]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3931,7 +3932,7 @@ namespace yy
     break;
 
   case 376:
-#line 4130 "xquery_parser.y"
+#line 4131 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [kind]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3939,7 +3940,7 @@ namespace yy
     break;
 
   case 377:
-#line 4135 "xquery_parser.y"
+#line 4136 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ItemType [item]\n";
 			(yyval.node) = new ItemType((yyloc),true);
@@ -3947,7 +3948,7 @@ namespace yy
     break;
 
   case 378:
-#line 4146 "xquery_parser.y"
+#line 4147 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AtomicType [qname]\n";
 			(yyval.node) = new AtomicType((yyloc),
@@ -3956,7 +3957,7 @@ namespace yy
     break;
 
   case 379:
-#line 4158 "xquery_parser.y"
+#line 4159 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [doc]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3964,7 +3965,7 @@ namespace yy
     break;
 
   case 380:
-#line 4163 "xquery_parser.y"
+#line 4164 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [elem]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3972,7 +3973,7 @@ namespace yy
     break;
 
   case 381:
-#line 4168 "xquery_parser.y"
+#line 4169 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [attr]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3980,7 +3981,7 @@ namespace yy
     break;
 
   case 382:
-#line 4173 "xquery_parser.y"
+#line 4174 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [schema_elem]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3988,7 +3989,7 @@ namespace yy
     break;
 
   case 383:
-#line 4178 "xquery_parser.y"
+#line 4179 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [schema_attr]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -3996,7 +3997,7 @@ namespace yy
     break;
 
   case 384:
-#line 4183 "xquery_parser.y"
+#line 4184 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [pi]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4004,7 +4005,7 @@ namespace yy
     break;
 
   case 385:
-#line 4188 "xquery_parser.y"
+#line 4189 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [comment]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4012,7 +4013,7 @@ namespace yy
     break;
 
   case 386:
-#line 4193 "xquery_parser.y"
+#line 4194 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [text]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4020,7 +4021,7 @@ namespace yy
     break;
 
   case 387:
-#line 4198 "xquery_parser.y"
+#line 4199 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "KindTest [any]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4028,7 +4029,7 @@ namespace yy
     break;
 
   case 388:
-#line 4209 "xquery_parser.y"
+#line 4210 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AnyKindTest [ ]\n";
 			(yyval.node) = new AnyKindTest((yyloc));
@@ -4036,7 +4037,7 @@ namespace yy
     break;
 
   case 389:
-#line 4220 "xquery_parser.y"
+#line 4221 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DocumentTest [ ]\n";
 			(yyval.node) = new DocumentTest((yyloc));
@@ -4044,7 +4045,7 @@ namespace yy
     break;
 
   case 390:
-#line 4225 "xquery_parser.y"
+#line 4226 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DocumentTest [elem]\n";
 			(yyval.node) = new DocumentTest((yyloc),
@@ -4053,7 +4054,7 @@ namespace yy
     break;
 
   case 391:
-#line 4231 "xquery_parser.y"
+#line 4232 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DocumentTest [schema_elem]\n";
 			(yyval.node) = new DocumentTest((yyloc),
@@ -4062,7 +4063,7 @@ namespace yy
     break;
 
   case 392:
-#line 4243 "xquery_parser.y"
+#line 4244 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TextTest [ ]\n";
 			(yyval.node) = new TextTest((yyloc));
@@ -4070,7 +4071,7 @@ namespace yy
     break;
 
   case 393:
-#line 4254 "xquery_parser.y"
+#line 4255 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "CommentTest [ ]\n";
 			(yyval.node) = new CommentTest((yyloc));
@@ -4078,7 +4079,7 @@ namespace yy
     break;
 
   case 394:
-#line 4265 "xquery_parser.y"
+#line 4266 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PITest [ ]\n";
 			(yyval.node) = new PITest((yyloc), "", "");
@@ -4086,7 +4087,7 @@ namespace yy
     break;
 
   case 395:
-#line 4270 "xquery_parser.y"
+#line 4271 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PITest [ncname]\n";
 			(yyval.node) = new PITest((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)), "");
@@ -4094,7 +4095,7 @@ namespace yy
     break;
 
   case 396:
-#line 4275 "xquery_parser.y"
+#line 4276 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "PITest [stringlit]\n";
 			(yyval.node) = new PITest((yyloc), "", driver.symtab.get((off_t)(yysemantic_stack_[(3) - (2)].sval)));
@@ -4102,7 +4103,7 @@ namespace yy
     break;
 
   case 397:
-#line 4286 "xquery_parser.y"
+#line 4287 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [ ]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4112,7 +4113,7 @@ namespace yy
     break;
 
   case 398:
-#line 4293 "xquery_parser.y"
+#line 4294 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [name]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4122,7 +4123,7 @@ namespace yy
     break;
 
   case 399:
-#line 4300 "xquery_parser.y"
+#line 4301 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [name.type]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4132,7 +4133,7 @@ namespace yy
     break;
 
   case 400:
-#line 4307 "xquery_parser.y"
+#line 4308 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [*]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4142,7 +4143,7 @@ namespace yy
     break;
 
   case 401:
-#line 4314 "xquery_parser.y"
+#line 4315 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "AttributeTest [*.type]\n";
 			(yyval.node) = new AttributeTest((yyloc),
@@ -4152,7 +4153,7 @@ namespace yy
     break;
 
   case 402:
-#line 4327 "xquery_parser.y"
+#line 4328 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaAttributeTest [ ]\n";
 			(yyval.node) = new SchemaAttributeTest((yyloc),
@@ -4161,7 +4162,7 @@ namespace yy
     break;
 
   case 403:
-#line 4339 "xquery_parser.y"
+#line 4340 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [ ]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4171,7 +4172,7 @@ namespace yy
     break;
 
   case 404:
-#line 4346 "xquery_parser.y"
+#line 4347 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [name]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4181,7 +4182,7 @@ namespace yy
     break;
 
   case 405:
-#line 4353 "xquery_parser.y"
+#line 4354 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [name.type]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4191,7 +4192,7 @@ namespace yy
     break;
 
   case 406:
-#line 4360 "xquery_parser.y"
+#line 4361 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [*]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4202,7 +4203,7 @@ namespace yy
     break;
 
   case 407:
-#line 4368 "xquery_parser.y"
+#line 4369 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ElementTest [*.type]\n";
 			(yyval.node) = new ElementTest((yyloc),
@@ -4213,7 +4214,7 @@ namespace yy
     break;
 
   case 408:
-#line 4382 "xquery_parser.y"
+#line 4383 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "SchemaElementTest [ ]\n";
 			(yyval.node) = new SchemaElementTest((yyloc),
@@ -4222,7 +4223,7 @@ namespace yy
     break;
 
   case 409:
-#line 4404 "xquery_parser.y"
+#line 4405 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeName [name]\n";
 			(yyval.node) = new TypeName((yyloc),
@@ -4231,7 +4232,7 @@ namespace yy
     break;
 
   case 410:
-#line 4410 "xquery_parser.y"
+#line 4411 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TypeName [name?]\n";
 			(yyval.node) = new TypeName((yyloc),
@@ -4241,7 +4242,7 @@ namespace yy
     break;
 
   case 411:
-#line 4431 "xquery_parser.y"
+#line 4432 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "StringLiteral [ ]\n";
 			(yyval.expr) = new StringLiteral((yyloc), driver.symtab.get((off_t)(yysemantic_stack_[(1) - (1)].sval)));
@@ -4249,301 +4250,301 @@ namespace yy
     break;
 
   case 412:
-#line 4471 "xquery_parser.y"
+#line 4472 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "RevalidationDecl [ ]\n";
 		;}
     break;
 
   case 413:
-#line 4481 "xquery_parser.y"
+#line 4482 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr]\n";
 		;}
     break;
 
   case 414:
-#line 4485 "xquery_parser.y"
+#line 4486 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.as_first]\n";
 		;}
     break;
 
   case 415:
-#line 4489 "xquery_parser.y"
+#line 4490 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.as_last]\n";
 		;}
     break;
 
   case 416:
-#line 4493 "xquery_parser.y"
+#line 4494 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.after]\n";
 		;}
     break;
 
   case 417:
-#line 4497 "xquery_parser.y"
+#line 4498 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "InsertExpr [expr.before]\n";
 		;}
     break;
 
   case 418:
-#line 4507 "xquery_parser.y"
+#line 4508 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "DeleteExpr [expr]\n";
 		;}
     break;
 
   case 419:
-#line 4517 "xquery_parser.y"
+#line 4518 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReplaceExpr [expr.expr]\n";
 		;}
     break;
 
   case 420:
-#line 4521 "xquery_parser.y"
+#line 4522 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "ReplaceExpr [value.expr]\n";
 		;}
     break;
 
   case 421:
-#line 4531 "xquery_parser.y"
+#line 4532 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "RenameExpr [expr.expr]\n";
 		;}
     break;
 
   case 422:
-#line 4556 "xquery_parser.y"
+#line 4557 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "TransformExpr [ ]\n";
 		;}
     break;
 
   case 423:
-#line 4566 "xquery_parser.y"
+#line 4567 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarNameList [single]\n";
 		;}
     break;
 
   case 424:
-#line 4570 "xquery_parser.y"
+#line 4571 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "VarNameList [list]\n";
 		;}
     break;
 
   case 425:
-#line 4588 "xquery_parser.y"
+#line 4589 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or]\n";
 		;}
     break;
 
   case 426:
-#line 4592 "xquery_parser.y"
+#line 4593 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or.match_proximity]\n";
 		;}
     break;
 
   case 427:
-#line 4596 "xquery_parser.y"
+#line 4597 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or.weight_range]\n";
 		;}
     break;
 
   case 428:
-#line 4600 "xquery_parser.y"
+#line 4601 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTSelection [or.match_proximity.weight_range]\n";
 		;}
     break;
 
   case 429:
-#line 4610 "xquery_parser.y"
+#line 4611 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [option_single]\n";
 		;}
     break;
 
   case 430:
-#line 4614 "xquery_parser.y"
+#line 4615 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [proximity_single]\n";
 		;}
     break;
 
   case 431:
-#line 4618 "xquery_parser.y"
+#line 4619 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [option_list]\n";
 		;}
     break;
 
   case 432:
-#line 4622 "xquery_parser.y"
+#line 4623 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOptionProximityList [proximity_list]\n";
 		;}
     break;
 
   case 433:
-#line 4632 "xquery_parser.y"
+#line 4633 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTOr [and]\n";
 		;}
     break;
 
   case 434:
-#line 4636 "xquery_parser.y"
+#line 4637 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTOr [or.and]\n";
 		;}
     break;
 
   case 435:
-#line 4646 "xquery_parser.y"
+#line 4647 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnd [mild_not]\n";
 		;}
     break;
 
   case 436:
-#line 4650 "xquery_parser.y"
+#line 4651 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnd [and.mild_not]\n";
 		;}
     break;
 
   case 437:
-#line 4660 "xquery_parser.y"
+#line 4661 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMildNot [unary_not]\n";
 		;}
     break;
 
   case 438:
-#line 4664 "xquery_parser.y"
+#line 4665 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMildNot [mild_not.unary_not]\n";
 		;}
     break;
 
   case 439:
-#line 4674 "xquery_parser.y"
+#line 4675 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnaryNot [words]\n";
 		;}
     break;
 
   case 440:
-#line 4678 "xquery_parser.y"
+#line 4679 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnaryNot [not.words]\n";
 		;}
     break;
 
   case 441:
-#line 4688 "xquery_parser.y"
+#line 4689 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsSelection [words]\n";
 		;}
     break;
 
   case 442:
-#line 4692 "xquery_parser.y"
+#line 4693 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsSelection [words.times]\n";
 		;}
     break;
 
   case 443:
-#line 4696 "xquery_parser.y"
+#line 4697 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsSelection [selection]\n";
 		;}
     break;
 
   case 444:
-#line 4706 "xquery_parser.y"
+#line 4707 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWords [value]\n";
 		;}
     break;
 
   case 445:
-#line 4710 "xquery_parser.y"
+#line 4711 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWords [value.any_all_option]\n";
 		;}
     break;
 
   case 446:
-#line 4720 "xquery_parser.y"
+#line 4721 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsValue [literal]\n";
 		;}
     break;
 
   case 447:
-#line 4724 "xquery_parser.y"
+#line 4725 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWordsValue [expr]\n";
 		;}
     break;
 
   case 448:
-#line 4734 "xquery_parser.y"
+#line 4735 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [order]\n";
 		;}
     break;
 
   case 449:
-#line 4738 "xquery_parser.y"
+#line 4739 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [window]\n";
 		;}
     break;
 
   case 450:
-#line 4742 "xquery_parser.y"
+#line 4743 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [distance]\n";
 		;}
     break;
 
   case 451:
-#line 4746 "xquery_parser.y"
+#line 4747 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [scope]\n";
 		;}
     break;
 
   case 452:
-#line 4750 "xquery_parser.y"
+#line 4751 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTProximity [content]\n";
 		;}
     break;
 
   case 453:
-#line 4760 "xquery_parser.y"
+#line 4761 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTOrderedIndicator [ ]\n";
 		;}
     break;
 
   case 454:
-#line 4770 "xquery_parser.y"
+#line 4771 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [case]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4551,7 +4552,7 @@ namespace yy
     break;
 
   case 455:
-#line 4775 "xquery_parser.y"
+#line 4776 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [diacritics]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4559,7 +4560,7 @@ namespace yy
     break;
 
   case 456:
-#line 4780 "xquery_parser.y"
+#line 4781 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [stem]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4567,7 +4568,7 @@ namespace yy
     break;
 
   case 457:
-#line 4785 "xquery_parser.y"
+#line 4786 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [thesaurus]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4575,7 +4576,7 @@ namespace yy
     break;
 
   case 458:
-#line 4790 "xquery_parser.y"
+#line 4791 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [stopword]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4583,7 +4584,7 @@ namespace yy
     break;
 
   case 459:
-#line 4795 "xquery_parser.y"
+#line 4796 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [language]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4591,7 +4592,7 @@ namespace yy
     break;
 
   case 460:
-#line 4800 "xquery_parser.y"
+#line 4801 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTMatchOption [wildcard]\n";
 			(yyval.node) = (yysemantic_stack_[(1) - (1)].node);
@@ -4599,434 +4600,434 @@ namespace yy
     break;
 
   case 461:
-#line 4811 "xquery_parser.y"
+#line 4812 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [lower]\n";
 		;}
     break;
 
   case 462:
-#line 4815 "xquery_parser.y"
+#line 4816 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [upper]\n";
 		;}
     break;
 
   case 463:
-#line 4819 "xquery_parser.y"
+#line 4820 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [sensitive]\n";
 		;}
     break;
 
   case 464:
-#line 4823 "xquery_parser.y"
+#line 4824 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTCaseOption [insensitive]\n";
 		;}
     break;
 
   case 465:
-#line 4833 "xquery_parser.y"
+#line 4834 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [with]\n";
 		;}
     break;
 
   case 466:
-#line 4837 "xquery_parser.y"
+#line 4838 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [without]\n";
 		;}
     break;
 
   case 467:
-#line 4841 "xquery_parser.y"
+#line 4842 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [sensitive]\n";
 		;}
     break;
 
   case 468:
-#line 4845 "xquery_parser.y"
+#line 4846 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDiacriticsOption [insensitive]\n";
 		;}
     break;
 
   case 469:
-#line 4855 "xquery_parser.y"
+#line 4856 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStemOption [with]\n";
 		;}
     break;
 
   case 470:
-#line 4859 "xquery_parser.y"
+#line 4860 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStemOption [without]\n";
 		;}
     break;
 
   case 471:
-#line 4869 "xquery_parser.y"
+#line 4870 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [id]\n";
 		;}
     break;
 
   case 472:
-#line 4873 "xquery_parser.y"
+#line 4874 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [default]\n";
 		;}
     break;
 
   case 473:
-#line 4877 "xquery_parser.y"
+#line 4878 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(id)]\n";
 		;}
     break;
 
   case 474:
-#line 4881 "xquery_parser.y"
+#line 4882 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(id,id,..)]\n";
 		;}
     break;
 
   case 475:
-#line 4885 "xquery_parser.y"
+#line 4886 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(default)]\n";
 		;}
     break;
 
   case 476:
-#line 4889 "xquery_parser.y"
+#line 4890 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [(default,id,id,..)]\n";
 		;}
     break;
 
   case 477:
-#line 4893 "xquery_parser.y"
+#line 4894 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusOption [without]\n";
 		;}
     break;
 
   case 478:
-#line 4903 "xquery_parser.y"
+#line 4904 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusList [single]\n";
 		;}
     break;
 
   case 479:
-#line 4907 "xquery_parser.y"
+#line 4908 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusList [list]\n";
 		;}
     break;
 
   case 480:
-#line 4917 "xquery_parser.y"
+#line 4918 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name]\n";
 		;}
     break;
 
   case 481:
-#line 4921 "xquery_parser.y"
+#line 4922 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name.rel]\n";
 		;}
     break;
 
   case 482:
-#line 4925 "xquery_parser.y"
+#line 4926 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name.range]\n";
 		;}
     break;
 
   case 483:
-#line 4929 "xquery_parser.y"
+#line 4930 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTThesaurusID [name.rel.range]\n";
 		;}
     break;
 
   case 484:
-#line 4939 "xquery_parser.y"
+#line 4940 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [list]\n";
 		;}
     break;
 
   case 485:
-#line 4943 "xquery_parser.y"
+#line 4944 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [list.incl_excl]\n";
 		;}
     break;
 
   case 486:
-#line 4947 "xquery_parser.y"
+#line 4948 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [default]\n";
 		;}
     break;
 
   case 487:
-#line 4951 "xquery_parser.y"
+#line 4952 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [default.incl_excl]\n";
 		;}
     break;
 
   case 488:
-#line 4955 "xquery_parser.y"
+#line 4956 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStopwordOption [without]\n";
 		;}
     break;
 
   case 489:
-#line 4965 "xquery_parser.y"
+#line 4966 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteralList [.]\n";
 		;}
     break;
 
   case 490:
-#line 4969 "xquery_parser.y"
+#line 4970 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteralList [*]\n";
 		;}
     break;
 
   case 491:
-#line 4979 "xquery_parser.y"
+#line 4980 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRefOrList [.]\n";
 		;}
     break;
 
   case 492:
-#line 4983 "xquery_parser.y"
+#line 4984 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRefOrList [(*)]\n";
 		;}
     break;
 
   case 493:
-#line 4993 "xquery_parser.y"
+#line 4994 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStringLiteralList [.]\n";
 		;}
     break;
 
   case 494:
-#line 4997 "xquery_parser.y"
+#line 4998 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTStringLiteralList [*]\n";
 		;}
     break;
 
   case 495:
-#line 5007 "xquery_parser.y"
+#line 5008 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteral [union]\n";
 		;}
     break;
 
   case 496:
-#line 5011 "xquery_parser.y"
+#line 5012 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTInclExclStringLiteral [except]\n";
 		;}
     break;
 
   case 497:
-#line 5021 "xquery_parser.y"
+#line 5022 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTLanguageOption [ ]\n";
 		;}
     break;
 
   case 498:
-#line 5031 "xquery_parser.y"
+#line 5032 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWildcardOption [with]\n";
 		;}
     break;
 
   case 499:
-#line 5035 "xquery_parser.y"
+#line 5036 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWildcardOption [without]\n";
 		;}
     break;
 
   case 500:
-#line 5045 "xquery_parser.y"
+#line 5046 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContent [start]\n";
 		;}
     break;
 
   case 501:
-#line 5049 "xquery_parser.y"
+#line 5050 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContent [end]\n";
 		;}
     break;
 
   case 502:
-#line 5053 "xquery_parser.y"
+#line 5054 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTContent [entire]\n";
 		;}
     break;
 
   case 503:
-#line 5063 "xquery_parser.y"
+#line 5064 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [any]\n";
 		;}
     break;
 
   case 504:
-#line 5067 "xquery_parser.y"
+#line 5068 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [any_word]\n";
 		;}
     break;
 
   case 505:
-#line 5071 "xquery_parser.y"
+#line 5072 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [all]\n";
 		;}
     break;
 
   case 506:
-#line 5075 "xquery_parser.y"
+#line 5076 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [all_words]\n";
 		;}
     break;
 
   case 507:
-#line 5079 "xquery_parser.y"
+#line 5080 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTAnyallOption [phrase]\n";
 		;}
     break;
 
   case 508:
-#line 5089 "xquery_parser.y"
+#line 5090 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [exactly]\n";
 		;}
     break;
 
   case 509:
-#line 5093 "xquery_parser.y"
+#line 5094 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [at_least]\n";
 		;}
     break;
 
   case 510:
-#line 5097 "xquery_parser.y"
+#line 5098 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [at_most]\n";
 		;}
     break;
 
   case 511:
-#line 5101 "xquery_parser.y"
+#line 5102 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTRange [range]\n";
 		;}
     break;
 
   case 512:
-#line 5111 "xquery_parser.y"
+#line 5112 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTDistance [ ]\n";
 		;}
     break;
 
   case 513:
-#line 5121 "xquery_parser.y"
+#line 5122 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTWindow [ ]\n";
 		;}
     break;
 
   case 514:
-#line 5131 "xquery_parser.y"
+#line 5132 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTTimes [ ]\n";
 		;}
     break;
 
   case 515:
-#line 5141 "xquery_parser.y"
+#line 5142 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTTimes [same]\n";
 		;}
     break;
 
   case 516:
-#line 5145 "xquery_parser.y"
+#line 5146 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTTimes [different]\n";
 		;}
     break;
 
   case 517:
-#line 5155 "xquery_parser.y"
+#line 5156 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnit [words]\n";
 		;}
     break;
 
   case 518:
-#line 5159 "xquery_parser.y"
+#line 5160 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnit [sentences]\n";
 		;}
     break;
 
   case 519:
-#line 5163 "xquery_parser.y"
+#line 5164 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTUnit [paragraph]\n";
 		;}
     break;
 
   case 520:
-#line 5173 "xquery_parser.y"
+#line 5174 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTBigUnit [sentence]\n";
 		;}
     break;
 
   case 521:
-#line 5177 "xquery_parser.y"
+#line 5178 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTBigUnit [paragraph]\n";
 		;}
     break;
 
   case 522:
-#line 5187 "xquery_parser.y"
+#line 5188 "../parser/xquery_parser.y"
     {
 			if (debug) cout << "FTIgnoreOption [ ]\n";
 		;}
@@ -5034,7 +5035,7 @@ namespace yy
 
 
     /* Line 675 of lalr1.cc.  */
-#line 5038 "xquery_parser.tab.c"
+#line 5039 "../parser/xquery_parser.tab.c"
 	default: break;
       }
     YY_SYMBOL_PRINT ("-> $$ =", yyr1_[yyn], &yyval, &yyloc);
@@ -6919,33 +6920,33 @@ namespace yy
     2771,  2786,  2830,  2835,  2840,  2845,  2856,  2861,  2866,  2877,
     2882,  2893,  2900,  2907,  2914,  2927,  2934,  2946,  2951,  2956,
     2961,  2966,  2971,  2976,  2987,  2992,  3003,  3010,  3023,  3028,
-    3033,  3038,  3043,  3059,  3064,  3075,  3081,  3093,  3100,  3107,
-    3120,  3125,  3138,  3145,  3160,  3172,  3177,  3182,  3187,  3192,
-    3197,  3202,  3207,  3218,  3223,  3234,  3239,  3244,  3255,  3266,
-    3271,  3283,  3294,  3306,  3363,  3370,  3383,  3390,  3403,  3408,
-    3419,  3424,  3429,  3440,  3449,  3458,  3467,  3476,  3485,  3501,
-    3508,  3521,  3528,  3543,  3556,  3562,  3575,  3579,  3586,  3593,
-    3600,  3609,  3624,  3628,  3635,  3642,  3649,  3658,  3673,  3679,
-    3691,  3697,  3709,  3715,  3721,  3728,  3741,  3748,  3755,  3761,
-    3767,  3779,  3796,  3802,  3820,  3836,  3841,  3846,  3851,  3856,
-    3861,  3872,  3884,  3891,  3898,  3904,  3928,  3935,  3942,  3948,
-    3960,  3972,  3984,  3991,  3998,  4004,  4016,  4023,  4036,  4048,
-    4055,  4062,  4100,  4106,  4112,  4124,  4129,  4134,  4145,  4157,
-    4162,  4167,  4172,  4177,  4182,  4187,  4192,  4197,  4208,  4219,
-    4224,  4230,  4242,  4253,  4264,  4269,  4274,  4285,  4292,  4299,
-    4306,  4313,  4326,  4338,  4345,  4352,  4359,  4367,  4381,  4403,
-    4409,  4430,  4470,  4480,  4484,  4488,  4492,  4496,  4506,  4516,
-    4520,  4530,  4555,  4565,  4569,  4587,  4591,  4595,  4599,  4609,
-    4613,  4617,  4621,  4631,  4635,  4645,  4649,  4659,  4663,  4673,
-    4677,  4687,  4691,  4695,  4705,  4709,  4719,  4723,  4733,  4737,
-    4741,  4745,  4749,  4759,  4769,  4774,  4779,  4784,  4789,  4794,
-    4799,  4810,  4814,  4818,  4822,  4832,  4836,  4840,  4844,  4854,
-    4858,  4868,  4872,  4876,  4880,  4884,  4888,  4892,  4902,  4906,
-    4916,  4920,  4924,  4928,  4938,  4942,  4946,  4950,  4954,  4964,
-    4968,  4978,  4982,  4992,  4996,  5006,  5010,  5020,  5030,  5034,
-    5044,  5048,  5052,  5062,  5066,  5070,  5074,  5078,  5088,  5092,
-    5096,  5100,  5110,  5120,  5130,  5140,  5144,  5154,  5158,  5162,
-    5172,  5176,  5186
+    3033,  3038,  3043,  3059,  3064,  3075,  3080,  3091,  3099,  3107,
+    3121,  3126,  3139,  3146,  3161,  3173,  3178,  3183,  3188,  3193,
+    3198,  3203,  3208,  3219,  3224,  3235,  3240,  3245,  3256,  3267,
+    3272,  3284,  3295,  3307,  3364,  3371,  3384,  3391,  3404,  3409,
+    3420,  3425,  3430,  3441,  3450,  3459,  3468,  3477,  3486,  3502,
+    3509,  3522,  3529,  3544,  3557,  3563,  3576,  3580,  3587,  3594,
+    3601,  3610,  3625,  3629,  3636,  3643,  3650,  3659,  3674,  3680,
+    3692,  3698,  3710,  3716,  3722,  3729,  3742,  3749,  3756,  3762,
+    3768,  3780,  3797,  3803,  3821,  3837,  3842,  3847,  3852,  3857,
+    3862,  3873,  3885,  3892,  3899,  3905,  3929,  3936,  3943,  3949,
+    3961,  3973,  3985,  3992,  3999,  4005,  4017,  4024,  4037,  4049,
+    4056,  4063,  4101,  4107,  4113,  4125,  4130,  4135,  4146,  4158,
+    4163,  4168,  4173,  4178,  4183,  4188,  4193,  4198,  4209,  4220,
+    4225,  4231,  4243,  4254,  4265,  4270,  4275,  4286,  4293,  4300,
+    4307,  4314,  4327,  4339,  4346,  4353,  4360,  4368,  4382,  4404,
+    4410,  4431,  4471,  4481,  4485,  4489,  4493,  4497,  4507,  4517,
+    4521,  4531,  4556,  4566,  4570,  4588,  4592,  4596,  4600,  4610,
+    4614,  4618,  4622,  4632,  4636,  4646,  4650,  4660,  4664,  4674,
+    4678,  4688,  4692,  4696,  4706,  4710,  4720,  4724,  4734,  4738,
+    4742,  4746,  4750,  4760,  4770,  4775,  4780,  4785,  4790,  4795,
+    4800,  4811,  4815,  4819,  4823,  4833,  4837,  4841,  4845,  4855,
+    4859,  4869,  4873,  4877,  4881,  4885,  4889,  4893,  4903,  4907,
+    4917,  4921,  4925,  4929,  4939,  4943,  4947,  4951,  4955,  4965,
+    4969,  4979,  4983,  4993,  4997,  5007,  5011,  5021,  5031,  5035,
+    5045,  5049,  5053,  5063,  5067,  5071,  5075,  5079,  5089,  5093,
+    5097,  5101,  5111,  5121,  5131,  5141,  5145,  5155,  5159,  5163,
+    5173,  5177,  5187
   };
 
   // Print the state stack on the debug stream.
@@ -7059,7 +7060,7 @@ namespace yy
 
 } // namespace yy
 
-#line 5194 "xquery_parser.y"
+#line 5195 "../parser/xquery_parser.y"
 
 
 

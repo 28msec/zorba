@@ -3183,22 +3183,29 @@ void Pragma::accept(parsenode_visitor& v) const
 
 
 
-// [68] PathExpr
-// -------------
+/*******************************************************************************
+
+  [68] PathExpr	::= LEADING_LONE_SLASH |
+                    SLASH  RelativePathExpr |
+                    SLASH_SLASH  RelativePathExpr |
+                    RelativePathExpr
+********************************************************************************/
 PathExpr::PathExpr(
 	const yy::location& _loc,
 	enum pathtype_t _type,
 	rchandle<exprnode> _relpath_expr_h)
-:
+  :
 	exprnode(_loc),
 	type(_type),
 	relpath_expr_h(_relpath_expr_h)
 {
 }
 
+
 PathExpr::~PathExpr()
 {
 }
+
 
 ostream& PathExpr::put(ostream& s) const
 {
@@ -3214,7 +3221,6 @@ ostream& PathExpr::put(ostream& s) const
 	return s << OUTDENT << "]\n";
 }
 
-//-PathExpr::
 
 void PathExpr::accept(parsenode_visitor& v) const 
 { 
@@ -3224,15 +3230,19 @@ void PathExpr::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [69] RelativePathExpr
-// ---------------------
+	[69] RelativePathExpr ::= StepExpr |
+                            StepExpr  SLASH  RelativePathExpr |
+                            StepExpr  SLASH_SLASH  RelativePathExpr 
+
+********************************************************************************/
 RelativePathExpr::RelativePathExpr(
 	const yy::location& _loc,
 	enum steptype_t _step_type,
 	rchandle<exprnode> _step_expr_h,
 	rchandle<exprnode> _relpath_expr_h)
-:
+  :
 	exprnode(_loc),
 	step_type(_step_type),
 	step_expr_h(_step_expr_h),
@@ -3240,9 +3250,11 @@ RelativePathExpr::RelativePathExpr(
 {
 }
 
+
 RelativePathExpr::~RelativePathExpr()
 {
 }
+
 
 ostream& RelativePathExpr::put(ostream& s) const
 {
@@ -3261,7 +3273,6 @@ ostream& RelativePathExpr::put(ostream& s) const
 	return s << OUTDENT << "]\n";
 }
 
-//-RelativePathExpr::
 
 void RelativePathExpr::accept(parsenode_visitor& v) const 
 { 
@@ -3272,19 +3283,23 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [70] StepExpr
-// -------------
+[70] StepExpr ::= AxisStep  |  FilterExpr
+
+********************************************************************************/
 
 
+/*******************************************************************************
 
-// [71] AxisStep
-// -------------
+ [71] AxisStep ::= (ForwardStep | ReverseStep)  PredicateList?
+
+********************************************************************************/
 AxisStep::AxisStep(
-	const yy::location& _loc,
-	rchandle<ForwardStep> _forward_step_h,
-	rchandle<PredicateList> _predicate_list_h)
-:
+	  const yy::location& _loc,
+    rchandle<ForwardStep> _forward_step_h,
+    rchandle<PredicateList> _predicate_list_h)
+  :
 	exprnode(_loc),
 	forward_step_h(_forward_step_h),
 	reverse_step_h(NULL),
@@ -3292,11 +3307,12 @@ AxisStep::AxisStep(
 {
 }
 
+
 AxisStep::AxisStep(
-	const yy::location& _loc,
-	rchandle<ReverseStep> _reverse_step_h,
-	rchandle<PredicateList> _predicate_list_h)
-:
+	  const yy::location& _loc,
+	  rchandle<ReverseStep> _reverse_step_h,
+	  rchandle<PredicateList> _predicate_list_h)
+  :
 	exprnode(_loc),
 	forward_step_h(NULL),
 	reverse_step_h(_reverse_step_h),
@@ -3304,9 +3320,11 @@ AxisStep::AxisStep(
 {
 }
 
+
 AxisStep::~AxisStep()
 {
 }
+
 
 ostream& AxisStep::put(ostream& os) const
 {
@@ -3317,7 +3335,6 @@ ostream& AxisStep::put(ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-//-AxisStep::
 
 void AxisStep::accept(parsenode_visitor& v) const 
 { 
@@ -3329,14 +3346,16 @@ void AxisStep::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [72] ForwardStep
-// ----------------
+   [72] ForwardStep	::= ForwardAxis  NodeTest | AbbrevForwardStep
+
+********************************************************************************/
 ForwardStep::ForwardStep(
-	const yy::location& _loc,
-	rchandle<ForwardAxis> _forward_axis_h,
-	rchandle<parsenode> _node_test_h)
-:
+    const yy::location& _loc,
+    rchandle<ForwardAxis> _forward_axis_h,
+    rchandle<parsenode> _node_test_h)
+  :
 	parsenode(_loc),
 	forward_axis_h(_forward_axis_h),
 	node_test_h(_node_test_h),
@@ -3344,10 +3363,11 @@ ForwardStep::ForwardStep(
 {
 }
 
+
 ForwardStep::ForwardStep(
-	const yy::location& _loc,
-	rchandle<AbbrevForwardStep> _abbrev_step_h)
-:
+    const yy::location& _loc,
+    rchandle<AbbrevForwardStep> _abbrev_step_h)
+  :
 	parsenode(_loc),
 	forward_axis_h(NULL),
 	node_test_h(NULL),
@@ -3355,9 +3375,11 @@ ForwardStep::ForwardStep(
 {
 }
 
+
 ForwardStep::~ForwardStep()
 {
 }
+
 
 ostream& ForwardStep::put(ostream& os) const
 {
@@ -3368,7 +3390,6 @@ ostream& ForwardStep::put(ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-//-ForwardStep::
 
 void ForwardStep::accept(parsenode_visitor& v) const 
 { 
@@ -3381,20 +3402,25 @@ void ForwardStep::accept(parsenode_visitor& v) const
 
 
 
-// [73] ForwardAxis
-// ----------------
+/*******************************************************************************
+
+  [73] ForwardAxis ::= CHILD_AXIS	| ....
+
+********************************************************************************/
 ForwardAxis::ForwardAxis(
-	const yy::location& _loc,
-	enum forward_axis_t _axis)
-:
+    const yy::location& _loc,
+    enum forward_axis_t _axis)
+  :
 	parsenode(_loc),
 	axis(_axis)
 {
 }
 
+
 ForwardAxis::~ForwardAxis()
 {
 }
+
 
 ostream& ForwardAxis::put(ostream& os) const
 {
@@ -3412,7 +3438,6 @@ ostream& ForwardAxis::put(ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-//-ForwardAxis::
 
 void ForwardAxis::accept(parsenode_visitor& v) const 
 { 
@@ -3421,33 +3446,38 @@ void ForwardAxis::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [74] AbbrevForwardStep
-// ----------------------
+  [74] AbbrevForwardStep ::= NodeTest |	AT_SIGN  NodeTest
+
+********************************************************************************/
 AbbrevForwardStep::AbbrevForwardStep(
-	const yy::location& _loc,
-	rchandle<parsenode> _node_test_h,
-	bool _attr_b)
-:
+    const yy::location& _loc,
+    rchandle<parsenode> _node_test_h,
+    bool _attr_b)
+  :
 	parsenode(_loc),
 	node_test_h(_node_test_h),
 	attr_b(_attr_b)
 {
 }
 
+
 AbbrevForwardStep::AbbrevForwardStep(
-	const yy::location& _loc,
-	rchandle<parsenode> _node_test_h)
-:
+    const yy::location& _loc,
+    rchandle<parsenode> _node_test_h)
+  :
 	parsenode(_loc),
 	node_test_h(_node_test_h),
 	attr_b(false)
 {
 }
 
+
 AbbrevForwardStep::~AbbrevForwardStep()
 {
 }
+
 
 ostream& AbbrevForwardStep::put(ostream& os) const
 {
@@ -3457,7 +3487,6 @@ ostream& AbbrevForwardStep::put(ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-//-AbbrevForwardStep::
 
 void AbbrevForwardStep::accept(parsenode_visitor& v) const 
 { 
@@ -3467,33 +3496,38 @@ void AbbrevForwardStep::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [75] ReverseStep
-// ----------------
+  [75] ReverseStep ::= ReverseAxis  NodeTest |	DOT_DOT
+
+********************************************************************************/
 ReverseStep::ReverseStep(
-	const yy::location& _loc,
-	rchandle<ReverseAxis> _axis_h,
-	rchandle<parsenode> _node_test_h)
-:
+    const yy::location& _loc,
+    rchandle<ReverseAxis> _axis_h,
+    rchandle<parsenode> _node_test_h)
+  :
 	parsenode(_loc),
 	axis_h(_axis_h),
 	node_test_h(_node_test_h)
 {
 }
 
+
 ReverseStep::ReverseStep(
-	const yy::location& _loc,
-	rchandle<ReverseAxis> _axis_h)
-:
+    const yy::location& _loc,
+    rchandle<ReverseAxis> _axis_h)
+  :
 	parsenode(_loc),
 	axis_h(_axis_h),
 	node_test_h(NULL)
 {
 }
 
+
 ReverseStep::~ReverseStep()
 {
 }
+
 
 ostream& ReverseStep::put(ostream& os) const
 {
@@ -3503,7 +3537,6 @@ ostream& ReverseStep::put(ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-//-ReverseStep::
 
 void ReverseStep::accept(parsenode_visitor& v) const 
 { 
@@ -3514,21 +3547,25 @@ void ReverseStep::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [76] ReverseAxis
-// ----------------
+ [76] ReverseAxis ::= PARENT_AXIS | ....
+
+********************************************************************************/
 ReverseAxis::ReverseAxis(
-	const yy::location& _loc,
-	enum reverse_axis_t _axis)
-:
+    const yy::location& _loc,
+    enum reverse_axis_t _axis)
+  :
 	parsenode(_loc),
 	axis(_axis)
 {
 }
 
+
 ReverseAxis::~ReverseAxis()
 {
 }
+
 
 ostream& ReverseAxis::put(ostream& s) const
 {
@@ -3544,7 +3581,6 @@ ostream& ReverseAxis::put(ostream& s) const
 	return s << OUTDENT << "]\n";
 }
 
-//-ReverseAxis::
 
 void ReverseAxis::accept(parsenode_visitor& v) const 
 { 
@@ -3553,93 +3589,102 @@ void ReverseAxis::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [77] AbbrevReverseStep
-// ----------------------
-/* folded into [74] */
+  [77] AbbrevReverseStep ::= folded into [75]
 
-// [78] NodeTest
-// -------------
+********************************************************************************/
 
 
+/*******************************************************************************
 
-// [79] NameTest
-// -------------
-NameTest::NameTest(
-	const yy::location& _loc,
-	rchandle<QName> _qname_h)
-:
-	parsenode(_loc),
-	qname_h(_qname_h),
-	wild_h(NULL)
+  [78] NodeTest	::= KindTest | NameTest
+
+********************************************************************************/
+
+
+/*******************************************************************************
+
+  [79] NameTest ::= QNAME | Wildcard
+
+********************************************************************************/
+NameTest::NameTest(const yy::location& loc, rchandle<QName> qname)
+  :
+  parsenode(loc),
+  theQName(qname),
+  theWildcard(NULL)
 {
 }
 
-NameTest::NameTest(
-	const yy::location& _loc,
-	rchandle<Wildcard> _wild_h)
-:
-	parsenode(_loc),
-	qname_h(NULL),
-	wild_h(_wild_h)
+
+NameTest::NameTest(const yy::location& loc, rchandle<Wildcard> wild)
+  :
+  parsenode(loc),
+  theQName(NULL),
+  theWildcard(wild)
 {
 }
+
 
 NameTest::~NameTest()
 {
 }
 
+
 ostream& NameTest::put(ostream& os) const
 {
 	os << INDENT << "NameTest[";
-	if (qname_h!=NULL) qname_h->put(os);
-	if (wild_h!=NULL) wild_h->put(os);
+	if (theQName != NULL) theQName->put(os);
+	if (theWildcard != NULL) theWildcard->put(os);
 	os << "]\n"; UNDENT;
 	return os;
 }
 
-//-NameTest::
 
 void NameTest::accept(parsenode_visitor& v) const 
 { 
 	if (!v.begin_visit(*this)) return;
-	//if (qname_h!=NULL) qname_h->accept(v);
-	if (wild_h!=NULL) wild_h->accept(v);
 	v.end_visit(*this); 
 }
 
 
+/*******************************************************************************
 
-// [80] Wildcard
-// -------------
+  [80] Wildcard ::= STAR | ELEM_WILDCARD | PREFIX_WILDCARD 
+
+********************************************************************************/
 Wildcard::Wildcard(
-	const yy::location& _loc,
-	rchandle<QName> _qname_h,
-	enum wildcard_t _type)
-:
-	parsenode(_loc),
-	type(_type),
-	qname_h(_qname_h)
+	const yy::location& loc,
+  const xqp_string& prefix,
+  const xqp_string& lname,
+	enum wildcard_t kind)
+  :
+	parsenode(loc),
+	theKind(kind),
+	thePrefix(prefix),
+  theLocalName(lname)
 {
 }
-	
+
+
 Wildcard::~Wildcard()
 {
 }
 
+
 ostream& Wildcard::put(ostream& os) const
 {
 	os << "Wildcard[ ";
-	switch(type) {
+	switch(theKind)
+  {
 	case wild_all:		os << "* ]"; break;
-	case wild_prefix:	os << "*:" << qname_h->get_localname() << " ]"; break;
-	case wild_elem:		os << qname_h->get_prefix() << ":* ]"; break;
+	case wild_prefix:	os << "*:" << theLocalName << " ]"; break;
+	case wild_elem:		os << thePrefix << ":* ]"; break;
 	default: os << "???";
 	}
 	UNDENT; return os;
 }
 
-//-Wildcard::
 
 void Wildcard::accept(parsenode_visitor& v) const 
 { 
@@ -5639,13 +5684,13 @@ QName::~QName()
 string QName::get_localname() const
 {
 	string::size_type n = qname.find(':');
-	return (n!=string::npos ? qname.substr(n+1) : qname);
+	return (n != string::npos ? qname.substr(n+1) : qname);
 }
 
 string QName::get_prefix() const
 {
 	string::size_type n = qname.find(':');
-	return (n!=string::npos ? qname.substr(0,n) : "");
+	return (n != string::npos ? qname.substr(0,n) : "");
 }
 
 ostream& QName::put(ostream& s) const

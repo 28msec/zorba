@@ -85,6 +85,7 @@ query_exec	= \
 		../errors/Error.cpp \
 		../runtime/batching.cpp \
 		../runtime/item_iterator.cpp \
+		../runtime/path_iterators.cpp \
 		../runtime/plan_visitor.cpp \
 		../store/native/basic_item_factory.cpp \
 		../store/native/simple_store.cpp \

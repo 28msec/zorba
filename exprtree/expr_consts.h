@@ -27,28 +27,46 @@
 
 namespace xqp {
 
+
+enum axis_kind_t
+{
+  axis_kind_self,
+  axis_kind_child,
+  axis_kind_parent,
+  axis_kind_descendant,
+  axis_kind_descendant_or_self,
+  axis_kind_ancestor,
+  axis_kind_ancestor_or_self,
+  axis_kind_following_sibling,
+  axis_kind_following,
+  axis_kind_preceding_sibling,
+  axis_kind_preceding,
+  axis_kind_attribute
+};
+
+
 enum match_test_t
 {
-  no_test,
-  name_test,
-  doc_test,
-  elem_test,
-  attr_test,
-  xs_elem_test,
-  xs_attr_test,
-  pi_test,
-  comment_test,
-  text_test,
-  anykind_test
+  match_no_test,
+  match_name_test,
+  match_doc_test,
+  match_elem_test,
+  match_attr_test,
+  match_xs_elem_test,
+  match_xs_attr_test,
+  match_pi_test,
+  match_comment_test,
+  match_text_test,
+  match_anykind_test
 };
 
 
 enum match_wild_t
 {
-  no_wild,
-  all_wild,
-  prefix_wild,
-  name_wild
+  match_no_wild,
+  match_all_wild,
+  match_prefix_wild,
+  match_name_wild
 };
 
 

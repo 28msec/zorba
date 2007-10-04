@@ -2856,37 +2856,37 @@ public:
 /* folded into [65] */
 
 
-/*
-* Constraint: leading-lone-slash
-*
-* A single slash may appear either as a complete path expression or as the first
-* part of a path expression in which it is followed by a RelativePathExpr, which
-* can take the form of a NameTest ("*" or a QName). In contexts where operators
-* like "*", "union", etc., can occur, parsers may have difficulty distinguishing
-* operators from NameTests. For example, without lookahead the first part of the
-* expression "/ * 5", for example is easily taken to be a complete expression,
-* "/ *", which has a very different interpretation (the child nodes of "/").
-* 
-* To reduce the need for lookahead, therefore, if the token immediately following
-* a slash is "*" or a keyword, then the slash must be the beginning, but not the
-* entirety, of a PathExpr (and the following token must be a NameTest, not an
-* operator).
-* 
-* A single slash may be used as the left-hand argument of an operator by
-* parenthesizing it: (/) * 5. The expression 5 * /, on the other hand, is legal
-* without parentheses.
-*/
 
-// [67] PathExpr
-// -------------
+/*******************************************************************************
+
+  [68] PathExpr	::= LEADING_LONE_SLASH |
+                    SLASH  RelativePathExpr |
+                    SLASH_SLASH  RelativePathExpr |
+                    RelativePathExpr	 								 gn:leading-lone-slashXQ
+
+  Note: no PathExpr node is generated for the 4th alternative production.
+
+  Constraint: leading-lone-slash
+
+  A single slash may appear either as a complete path expression or as the first
+  part of a path expression in which it is followed by a RelativePathExpr, which
+  can take the form of a NameTest ("*" or a QName). In contexts where operators
+  like "*", "union", etc., can occur, parsers may have difficulty distinguishing
+  operators from NameTests. For example, without lookahead the first part of the
+  expression "/ * 5", for example is easily taken to be a complete expression,
+  "/ *", which has a very different interpretation (the child nodes of "/").
+ 
+  To reduce the need for lookahead, therefore, if the token immediately following
+  a slash is "*" or a keyword, then the slash must be the beginning, but not the
+  entirety, of a PathExpr (and the following token must be a NameTest, not an
+  operator).
+ 
+  A single slash may be used as the left-hand argument of an operator by
+  parenthesizing it: (/) * 5. The expression 5 * /, on the other hand, is legal
+  without parentheses.
+
+********************************************************************************/
 class PathExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= LEADING_LONE_SLASH
-|			|	SLASH  RelativePathExpr
-|			|	SLASH_SLASH  RelativePathExpr
-|			|	RelativePathExpr	 								 gn:leading-lone-slashXQ
-|_______________________________________________________________________*/
 {
 protected:
 	enum pathtype_t type;
@@ -2911,16 +2911,16 @@ public:
 };
 
 
+/*******************************************************************************
 
-// [68] RelativePathExpr
-// ---------------------
+	[69] RelativePathExpr ::= StepExpr |
+                            StepExpr  SLASH  RelativePathExpr |
+                            StepExpr  SLASH_SLASH  RelativePathExpr 
+
+  Note: no RelativePathExpr node is generated for the 1st alternative production.
+
+********************************************************************************/
 class RelativePathExpr : public exprnode
-/*______________________________________________________________________
-|
-|	::= StepExpr
-|			| StepExpr  SLASH  RelativePathExpr
-|			| StepExpr  SLASH_SLASH  RelativePathExpr 
-|_______________________________________________________________________*/
 {
 protected:
 	enum steptype_t step_type;
@@ -2948,21 +2948,19 @@ public:
 };
 
 
+/*******************************************************************************
 
-// [69] StepExpr
-/*______________________________________________________________________
-|	::= AxisStep  |  FilterExpr
-|_______________________________________________________________________*/
+[70] StepExpr ::= AxisStep  |  FilterExpr
+
+********************************************************************************/
 
 
+/*******************************************************************************
 
-// [70] AxisStep
-// -------------
+ [71] AxisStep ::= (ForwardStep | ReverseStep)  PredicateList?
+
+********************************************************************************/
 class AxisStep : public exprnode
-/*______________________________________________________________________
-|
-|	::= (ForwardStep | ReverseStep)  PredicateList?
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<ForwardStep> forward_step_h;
@@ -2994,15 +2992,12 @@ public:
 };
 
 
+/*******************************************************************************
 
-// [71] ForwardStep
-// ----------------
+   [72] ForwardStep	::= ForwardAxis  NodeTest | AbbrevForwardStep
+
+********************************************************************************/
 class ForwardStep : public parsenode
-/*______________________________________________________________________
-|
-|	::= ForwardAxis  NodeTest
-|			|	AbbrevForwardStep
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<ForwardAxis> forward_axis_h;
@@ -3029,24 +3024,21 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [72] ForwardAxis
-// ----------------
+  [73] ForwardAxis ::= CHILD_AXIS	|
+                       DESCENDANT_AXIS |
+                       ATTRIBUTE_AXIS |
+                       SELF_AXIS |
+                       DESCENDANT_OR_SELF_AXIS |
+                       FOLLOWING_SIBLING_AXIS |
+                       FOLLOWING_AXIS
+
+********************************************************************************/
 class ForwardAxis : public parsenode
-/*______________________________________________________________________
-|
-|	::= CHILD_AXIS
-|			| DESCENDANT_AXIS
-|			| ATTRIBUTE_AXIS
-|			| SELF_AXIS
-|			| DESCENDANT_OR_SELF_AXIS
-|			| FOLLOWING_SIBLING_AXIS
-|			| FOLLOWING_AXIS
-|_______________________________________________________________________*/
 {
 protected:
 	enum forward_axis_t axis;
@@ -3064,19 +3056,15 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [73] AbbrevForwardStep
-// ----------------------
+  [74] AbbrevForwardStep ::= NodeTest |	AT_SIGN  NodeTest
+
+********************************************************************************/
 class AbbrevForwardStep : public parsenode
-/*______________________________________________________________________
-|
-|	::= NodeTest
-|			|	AT_SIGN  NodeTest
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<parsenode> node_test_h;
@@ -3101,19 +3089,15 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [74] ReverseStep
-// ----------------
+  [75] ReverseStep ::= ReverseAxis  NodeTest |	DOT_DOT
+
+********************************************************************************/
 class ReverseStep : public parsenode
-/*______________________________________________________________________
-|
-|	::= ReverseAxis  NodeTest
-|			|	DOT_DOT
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<ReverseAxis> axis_h;
@@ -3138,22 +3122,19 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [75] ReverseAxis
-// ----------------
+ [76] ReverseAxis ::= PARENT_AXIS |
+                      ANCESTOR_AXIS |
+                      PRECEDING_SIBLING_AXIS |
+                      PRECEDING_AXIS |
+                      ANCESTOR_OR_SELF_AXIS
+
+********************************************************************************/
 class ReverseAxis : public parsenode
-/*______________________________________________________________________
-|
-|	::= PARENT_AXIS
-|			| ANCESTOR_AXIS
-|			| PRECEDING_SIBLING_AXIS
-|			| PRECEDING_AXIS
-|			| ANCESTOR_OR_SELF_AXIS
-|_______________________________________________________________________*/
 {
 protected:
 	enum reverse_axis_t axis;
@@ -3171,93 +3152,91 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [76] AbbrevReverseStep
-// ----------------------
-/* folded into [74] */
+  [77] AbbrevReverseStep ::= folded into [75]
 
-
-// [77] NodeTest
-/*______________________________________________________________________
-|	::= KindTest | NameTest
-|_______________________________________________________________________*/
- 
+********************************************************************************/
 
 
-// [78] NameTest
-// -------------
+/*******************************************************************************
+
+  [78] NodeTest	::= KindTest | NameTest
+
+********************************************************************************/
+
+
+/*******************************************************************************
+
+  [79] NameTest	::= QNAME | Wildcard
+
+  qname_h and wild_h cannot both be non-NULL
+
+********************************************************************************/
 class NameTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME | Wildcard
-|_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> qname_h;
-	rchandle<Wildcard> wild_h;
+	rchandle<QName>    theQName;
+	rchandle<Wildcard> theWildcard;
 
 public:
-	NameTest(
-		const yy::location&,
-		rchandle<QName>);
+	NameTest(const yy::location& l, rchandle<QName> n);
 
-	NameTest(
-		const yy::location&,
-		rchandle<Wildcard>);
+	NameTest(const yy::location& l, rchandle<Wildcard> w);
 
 	~NameTest();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
-	rchandle<Wildcard> get_wild() const { return wild_h; }
+	rchandle<QName> getQName() const { return theQName; }
+  rchandle<Wildcard> getWildcard() const { return theWildcard; }
 
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [79] Wildcard
-// -------------
+  [80] Wildcard	::= STAR |
+                    ELEM_WILDCARD |
+                    PREFIX_WILDCARD    ws:explicitXQ
+
+  At least one of thePrefix and theLocalName will be the empty string.
+
+********************************************************************************/
 class Wildcard : public parsenode
-/*______________________________________________________________________
-|
-|	::= STAR
-|			|	ELEM_WILDCARD
-|			|	PREFIX_WILDCARD    ws:explicitXQ
-|_______________________________________________________________________*/
 {
 protected:
-	enum wildcard_t type;
-	rchandle<QName> qname_h;
+	enum wildcard_t theKind;
+	xqp_string      thePrefix;
+  xqp_string      theLocalName;
 	
 public:
 	Wildcard(
-		const yy::location&,
-		rchandle<QName>,
-		enum wildcard_t);
+		const yy::location& loc,
+    const xqp_string& prefix,
+    const xqp_string& lname,
+		enum wildcard_t type);
 
 	~Wildcard();
 
 public:
-	enum wildcard_t get_type() const { return type; }
-	rchandle<QName> get_qname() const { return qname_h; }
+	enum wildcard_t getKind() const        { return theKind; }
+	const xqp_string& getPrefix() const    { return thePrefix; }
+	const xqp_string& getLocalName() const { return theLocalName; }
 
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
 
-// [80] FilterExpr
+// [81] FilterExpr
 // ---------------
 class FilterExpr : public exprnode
 /*______________________________________________________________________
@@ -4917,29 +4896,34 @@ public:
 
 
 
-/* lexical rules, see xquery.l */
-/* --------------------------- */
-// [143] PITarget
-// [144] VarName
-// [145] ValidationMode
-// [146] Digits
-// [147] PredefinedEntityRef
-// [148] CharRef
-// [149] EscapeQuot
-// [150] EscapeApos
-// [151] ElementContentChar
-// [152] QuotAttrContentChar
-// [153] AposAttrContentChar
-// [154] Comment
-// [155] CommentContents
+/*******************************************************************************
+  lexical rules, see xquery.l
 
-// [156] QName
-// -----------
+  [143] PITarget
+  [144] VarName
+  [145] ValidationMode
+  [146] Digits
+  [147] PredefinedEntityRef
+  [148] CharRef
+  [149] EscapeQuot
+  [150] EscapeApos
+  [151] ElementContentChar
+  [152] QuotAttrContentChar
+  [153] AposAttrContentChar
+  [154] Comment
+  [155] CommentContents
+
+  [156] QName
+
+
+  ::=  QNAME
+
+  The "qname" data member is either (a) the empty string, or (b) a single NCName,
+  or (c) NCName1:NCName2. In cases (a) and (b), get_prefix() returns the empty
+  string, and get_localname() returns "qname".
+
+********************************************************************************/
 class QName : public exprnode
-/*______________________________________________________________________
-|
-|	::=  QNAME
-|_______________________________________________________________________*/
 {
 protected:
 	std::string qname;
@@ -4966,7 +4950,6 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
@@ -4975,8 +4958,6 @@ public:
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
-
-
 
 
 

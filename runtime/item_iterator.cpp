@@ -200,7 +200,7 @@ namespace xqp
 	{
 		Item_t item;
 
-		STACK_INIT();
+ 		STACK_INIT();
 
 		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
 		           this->qname,
@@ -211,6 +211,7 @@ namespace xqp
 		           false,
 		           false
 		       );
+
 		STACK_PUSH ( item );
 		
 		STACK_END();

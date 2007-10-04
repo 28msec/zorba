@@ -29,11 +29,16 @@
 #include "types/sequence_type.h"
 #include "util/list.h"
 #include "util/rchandle.h"
+#include "exprtree/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
+#include "utf8/xqpString.h"
 
 namespace xqp {
 
+class match_expr;
 class expr_visitor;
+
+
 /*______________________________________________________________________
 |  
 |	base class for the expression tree node hierarchy
@@ -139,27 +144,34 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class qname_expr : public rcobject
 {
 protected:
-	yy::location m_loc;
-	std::string m_prefix;
-	std::string m_local;
+  yy::location m_loc;
+  std::string m_prefix;
+  std::string m_local;
 
 public:
-	qname_expr(yy::location const& loc, std::string const& prefix, std::string const& local)
-		:
-	m_loc(loc), m_prefix(prefix), m_local(local) {}
+  qname_expr(yy::location const& loc, std::string const& prefix, std::string const& local)
+    :
+    m_loc(loc), m_prefix(prefix), m_local(local) {}
 	
-	qname_expr(yy::location const& loc, std::string const& name);
-	
-	qname_expr(std::string const& local, std::string const& prefix) 
+  qname_expr(std::string const& local, std::string const& prefix) 
 		: 
-	m_prefix(prefix), m_local(local){}
+	  m_prefix(prefix), m_local(local) {}
+
+  /*
+   * The "name" param is either a single NCName or NCName:NCName. If it is a
+   * single NCName, then m_prefix is set to "", and m_local is set to "name". 
+   */
+  qname_expr(yy::location const& loc, std::string const& name);
 	
-	qname_expr(std::string const& name);
+  qname_expr(std::string const& name);
 	
-	~qname_expr() {}
+  ~qname_expr() {}
 	
 	static std::pair<std::string, std::string> generatePrefixLocal(std::string const& qname);
 
@@ -168,7 +180,6 @@ public:
 	std::string prefix() const { return m_prefix; }
 	std::string local() const { return m_local; }
 	std::ostream& put(std::ostream& os) const { return os << this->name(); }
-
 };
 
 
@@ -857,48 +868,47 @@ public:
 public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
-
 };
 
 
 
-// [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
+/*******************************************************************************
 
-// p:l == (match "p:l" (children $dot))
-// p1:l1/p2:l2 == (for ( ($x (match "p1:l1" (children $dot))) )
-//                     (match "p2:l2" (children $x)))
-// 
+  [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
 
-// XXX remove this, replace with primitive_path_expr
+  Formal Semantics [http://www.w3.org/TR/xquery-semantics]:
+		/    == fn:root(self::node())
+		/A   == fn:root(self::node())/A
+		//A  == fn:root(self::node())/descendant-or-self::node()/A
+	  A//B == A/descendant-or-self::node()/B
+  This implies that all path expressions are relative path expressions. So a
+  relative path is defined as follows:
 
+ RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
+
+  p:l == (match "p:l" (children $dot))
+  p1:l1/p2:l2 == (for ( ($x (match "p1:l1" (children $dot))) )
+                     (match "p2:l2" (children $x)))
+
+********************************************************************************/
 class relpath_expr : public expr
-/*______________________________________________________________________
-|	::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
-|
-|	Formal Semantics [http://www.w3.org/TR/xquery-semantics]:
-|		/    == fn:root(self::node())
-|		/A   == fn:root(self::node())/A
-|		//A  == fn:root(self::node())/descendant-or-self::node()/A
-|	  A//B == A/descendant-or-self::node()/B
-| implies that all path expressions are relative path expressions.
-|_______________________________________________________________________*/
 {
 protected:
-	list<expr_t> step_hv;
+	list<expr_t> theSteps;
 
 public:
 	relpath_expr(yy::location const&);
 	~relpath_expr();
 
 public:
-	void add_back(expr_t step_h)        { step_hv.push_back(step_h); }
-	void add_front(expr_t step_h)       { step_hv.push_front(step_h); }
-	uint32_t size() const               { return step_hv.size(); }
+	void add_back(expr_t step)          { theSteps.push_back(step); }
+	void add_front(expr_t step)         { theSteps.push_front(step); }
+	uint32_t size() const               { return theSteps.size(); }
 
-	list_iterator<expr_t> begin() const { return step_hv.begin(); }
-	list_iterator<expr_t> end() const   { return step_hv.end(); }
+	list_iterator<expr_t> begin() const { return theSteps.begin(); }
+	list_iterator<expr_t> end() const   { return theSteps.end(); }
 
-	expr_t& operator[](int n)           { return step_hv[n]; }
+	expr_t& operator[](int n)           { return theSteps[n]; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -906,135 +916,103 @@ public:
 };
 
 
-// [123] KindTest 
-/*______________________________________________________________________
-|	KindTest ::= DocumentTest | ElementTest | AttributeTest
-|								| SchemaElementTest | SchemaAttributeTest
-|								| PITest | CommentTest | TextTest | AnyKindTest
-|_______________________________________________________________________*/
-class match_expr : public expr
-{
-public:
-	enum test_t {
-		no_test,
-		name_test,
-		doc_test,
-		elem_test,
-		attr_test,
-		xs_elem_test,
-		xs_attr_test,
-		pi_test,
-		comment_test,
-		text_test,
-		anykind_test
-	};
+/*******************************************************************************
 
-	enum wild_t {
-		no_wild,
-		all_wild,
-		prefix_wild,
-		name_wild
-	};
+  [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
 
-protected:
-	test_t test;
-	test_t docnode_test;
-	wild_t wild;
-	rchandle<qname_expr> name_h;
-	rchandle<qname_expr> typename_h;
+  StepExpr ::= AxisStep  |  FilterExpr
 
-public:
-	match_expr(yy::location const&);
-	~match_expr();
-
-public:
-	test_t get_test() const { return test; }
-	test_t get_docnode_test() const { return docnode_test; }
-	wild_t get_wild() const { return wild; }
-	rchandle<qname_expr> get_name() const { return name_h; }
-	rchandle<qname_expr> get_typename() const { return typename_h; }
-
-	void set_test(enum test_t v) { test = v; }
-	void set_docnode_test(enum test_t v) { docnode_test = v; }
-	void set_wild(enum wild_t v) { wild = v; }
-	void set_name(rchandle<qname_expr> v_h) { name_h = v_h; }
-	void set_typename(rchandle<qname_expr> v_h) { typename_h = v_h; }
-
-public:
-	void accept(expr_visitor&) const;
-	std::ostream& put(std::ostream&) const;
-
-};
+********************************************************************************/
 
 
+/*******************************************************************************
 
+  [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
 
-// [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
-/*______________________________________________________________________
-|	StepExpr ::= AxisStep  |  FilterExpr
-|_______________________________________________________________________*/
+	AxisStep ::= Axis NodeTest Predicate*
 
-
-// XXX Add: primitive_path_expr - for $x/a/b/c/d/e
-
-// [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
-
-// XXX Move this to fo_expr: one function for each axis.
-
+********************************************************************************/
 class axis_step_expr : public expr
-/*______________________________________________________________________
-|	::= Axis NodeTest Predicate*
-|_______________________________________________________________________*/
 {
-public:
-	enum axis_t {
-		self,
-		child,
-		parent,
-		descendant,
-		descendant_or_self,
-		ancestor,
-		ancestor_or_self,
-		following_sibling,
-		following,
-		preceding_sibling,
-		preceding,
-		attribute
-	};
-
 protected:
-	axis_t axis;
-	rchandle<match_expr> test_h;
-	rchandle<qname_expr> name_h;
-	rchandle<qname_expr> typename_h;
-	std::vector<expr_t> pred_hv;
+  axis_kind_t          theAxis;
+	rchandle<match_expr> theNodeTest;
+	std::vector<expr_t>  thePreds;
 
 public:
 	axis_step_expr(yy::location const&);
 	~axis_step_expr();
 
 public:
-	axis_t get_axis() const { return axis; }
-	void set_axis(axis_t v) { axis = v; }
+	axis_kind_t getAxis() const          { return theAxis; }
+	void setAxis(axis_kind_t v)          { theAxis = v; }
 
-	rchandle<match_expr> get_test() const { return test_h; }
-	void set_test(rchandle<match_expr> v) { test_h = v; }
+	rchandle<match_expr> getTest() const { return theNodeTest; }
+	void setTest(rchandle<match_expr> v) { theNodeTest = v; }
 
 public:
-	void add_pred(expr_t e_h) { pred_hv.push_back(e_h); }
-	uint32_t size() const { return pred_hv.size(); }
-	expr_t & operator[](int i) { return pred_hv[i]; }
-	expr_t const& operator[](int i) const { return pred_hv[i]; }
+	void addPred(expr_t e)                { thePreds.push_back(e); }
+	uint32_t numPreds() const             { return thePreds.size(); }
+	expr_t & operator[](int i)            { return thePreds[i]; }
+	expr_t const& operator[](int i) const { return thePreds[i]; }
 
-	std::vector<expr_t>::const_iterator begin() const
-		{ return pred_hv.begin(); }
-	std::vector<expr_t>::const_iterator end() const
-		{ return pred_hv.end(); }
+	std::vector<expr_t>::const_iterator begin() const { return thePreds.begin(); }
+	std::vector<expr_t>::const_iterator end() const   { return thePreds.end(); }
 
 public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
+};
 
+
+/*******************************************************************************
+
+  [78] NodeTest ::= KindTest | NameTest
+
+  [79] NameTest ::= QName | Wildcard
+  [80] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
+
+  [123] KindTest ::= DocumentTest | ElementTest | AttributeTest |
+								     SchemaElementTest | SchemaAttributeTest |
+								     PITest | CommentTest | TextTest | AnyKindTest
+
+********************************************************************************/
+class match_expr : public expr
+{
+protected:
+	match_test_t  theTestKind;
+	match_test_t  theDocTestKind;
+
+	match_wild_t  theWildKind;
+  xqp_string    theWildName;
+
+	rchandle<qname_expr> theQName;
+	rchandle<qname_expr> theTypeName;
+
+public:
+	match_expr(yy::location const&);
+	~match_expr();
+
+public:
+	match_test_t getTestKind() const         { return theTestKind; }
+	match_test_t getDocTestKind() const      { return theDocTestKind; }
+
+	match_wild_t getWildKind() const         { return theWildKind; }
+  const xqp_string& getWildName() const    { return theWildName; }
+
+	rchandle<qname_expr> getQName() const    { return theQName; }
+	rchandle<qname_expr> getTypeName() const { return theTypeName; }
+
+	void setTestKind(enum match_test_t v)    { theTestKind = v; }
+	void setDocTestKind(enum match_test_t v) { theDocTestKind = v; }
+	void setWildKind(enum match_wild_t v)    { theWildKind = v; }
+	void setWildName(const xqp_string& v)    { theWildName = v; } 
+	void setQName(rchandle<qname_expr> v)    { theQName = v; }
+	void setTypeName(rchandle<qname_expr> v) { theTypeName = v; }
+
+public:
+	void accept(expr_visitor&) const;
+	std::ostream& put(std::ostream&) const;
 };
 
 

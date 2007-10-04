@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "xquery_parser.y"
+#line 30 "../parser/xquery_parser.y"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
@@ -86,7 +86,7 @@ static bool debug = true;
 
 
 /* Line 35 of lalr1.cc.  */
-#line 90 "xquery_parser.tab.h"
+#line 90 "../parser/xquery_parser.tab.h"
 
 #include "location.hh"
 
@@ -137,7 +137,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 107 "xquery_parser.y"
+#line 107 "../parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -147,7 +147,7 @@ namespace yy
 	long double decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 151 "xquery_parser.tab.h"
+#line 151 "../parser/xquery_parser.tab.h"
 	;
 #else
     typedef YYSTYPE semantic_type;

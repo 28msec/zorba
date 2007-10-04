@@ -3075,14 +3075,12 @@ NameTest :
 		QNAME
 		{
 			if (debug) cout << "NameTest [qname]\n";
-			$$ = new NameTest(@$,
-								new QName(@$,driver.symtab.get((off_t)$1)));
+			$$ = new NameTest(@$, new QName(@$,driver.symtab.get((off_t)$1)));
 		}
 	|	Wildcard
 		{
 			if (debug) cout << "NameTest [wildcard]\n";
-			$$ = new NameTest(@$,
-								dynamic_cast<Wildcard*>($1));
+			$$ = new NameTest(@$, dynamic_cast<Wildcard*>($1));
 		}
 	;
 
@@ -3094,22 +3092,25 @@ Wildcard :
 		{
 			if (debug) cout << "Wildcard [*]\n";
 			$$ = new Wildcard(@$,
-									new QName(@$,""),
-									wild_all);
+                        "",
+                        "",
+                        wild_all);
 		}
 	|	ELEM_WILDCARD
 		{
 			if (debug) cout << "Wildcard [pref:*]\n";
 			$$ = new Wildcard(@$,
-									new QName(@$,driver.symtab.get((off_t)$1)),
-									wild_elem);
+                        driver.symtab.get((off_t)$1),
+                        "",
+                        wild_elem);
 		}
 	|	PREFIX_WILDCARD   /* ws: explicitXQ */
 		{
 			if (debug) cout << "Wildcard [*:qname]\n";
 			$$ = new Wildcard(@$,
-									new QName(@$,""),
-									wild_prefix);
+                        "",
+                        driver.symtab.get((off_t)$1),
+                        wild_prefix);
 		}
 	;
 

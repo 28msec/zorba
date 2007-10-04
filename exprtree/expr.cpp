@@ -119,7 +119,8 @@ void expr_list::accept(
 /* begin class qname_expr */
 qname_expr::qname_expr(yy::location const& loc, std::string const& qname)
 	:
-m_loc(loc) {
+  m_loc(loc)
+{
 	std::pair<std::string, std::string> prefixLocal = qname_expr::generatePrefixLocal(qname);
 	this->m_prefix = prefixLocal.first;
 	this->m_local = prefixLocal.second;
@@ -132,13 +133,20 @@ qname_expr::qname_expr(std::string const& qname)
 	this->m_local = prefixLocal.second;
 }
 
-std::pair<std::string, std::string> qname_expr::generatePrefixLocal(std::string const& qname) {
+
+std::pair<std::string, std::string> qname_expr::generatePrefixLocal(std::string const& qname)
+{
 	std::pair<std::string, std::string> val;
+
 	string::size_type n = qname.find(':');
-	if (n != string::npos) {
+
+	if (n != string::npos)
+  {
 		val.second = qname.substr(n+1);
 		val.first = qname.substr(0, n);
-	} else {
+	}
+  else
+  {
 		val.second = qname;
 		val.first = "";
 	}
@@ -503,7 +511,8 @@ ostream& fo_expr::put( ostream& os) const
 	os << INDENT << func->get_fname()->getStringProperty() << endl;
 
 	vector<rchandle<expr> >::const_iterator it = begin();
-	for (; it!=end(); ++it) {
+	for (; it != end(); ++it)
+  {
 		rchandle<expr> e_h = *it;
 		//d Assert<null_pointer>(e_h!=NULL);
 		Assert(e_h!=NULL);
@@ -839,160 +848,221 @@ void extension_expr::accept(
 }
 
 
+/*******************************************************************************
 
-// [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
+ [69] [http://www.w3.org/TR/xquery/#prod-xquery-RelativePathExpr]
 
-relpath_expr::relpath_expr(
-	yy::location const& loc)
-:
-	expr(loc)
+  RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
+
+********************************************************************************/
+relpath_expr::relpath_expr(yy::location const& loc)
+  :
+  expr(loc)
 {
 }
+
 
 relpath_expr::~relpath_expr()
 {
 }
 
+
 ostream& relpath_expr::put( ostream& os) const
 {
 	os << INDENT << "relpath_expr[\n";
 	list_iterator<expr_t> it = begin();
-	for (; it!=end(); ++it) {
-		expr_t e_h = *it;
-		//d Assert<null_pointer>(e_h!=NULL);
-		Assert(e_h!=NULL);
-		e_h->put(os);
+	for (; it != end(); ++it)
+  {
+		expr_t expr = *it;
+		Assert(expr != NULL);
+		expr->put(os);
 	}
 	return os << OUTDENT << "]\n";
 }
 
-void relpath_expr::accept(
-	expr_visitor& v) const
+
+void relpath_expr::accept(expr_visitor& v) const
 {
-}
+	if (!v.begin_visit(*this)) return;
 
-
-
-// match_epxr
-// [123] [http://www.w3.org/TR/xquery/#prod-xquery-KindTest]
-
-match_expr::match_expr(
-	yy::location const& loc)
-:
-	expr(loc),
-	wild(no_wild),
-	name_h(NULL),
-	typename_h(NULL)
-{
-}
-
-match_expr::~match_expr()
-{
-}
-
-ostream& match_expr::put( ostream& os) const
-{
-	os << INDENT << "match_expr[";
-	switch (test) {
-	case no_test:   os << "no_test("; break;
-	case name_test: os << "name_test("; break;
-	case doc_test: {
-		os << "doc_test(";
-		switch (docnode_test) {
-		case no_test:   os << "no_test("; break;
-		case elem_test: os << "element("; break;
-		case attr_test: os << "attribute("; break;
-		default: os << "(??";
-		}
-		break;
+	list_iterator<expr_t> it = begin();
+	for (; it != end(); ++it)
+  {
+		expr_t expr = *it;
+		Assert(expr != NULL);
+		expr->accept(v);
 	}
-	case elem_test:			os << "element("; break;
-	case attr_test:			os << "attribute("; break;
-	case xs_elem_test:	os << "schema-element("; break;
-	case xs_attr_test:	os << "schema-element("; break;
-	case pi_test:				os << "pi("; break;
-	case comment_test:	os << "comment("; break;
-	case text_test:			os << "text("; break;
-	case anykind_test:	os << "anykind("; break;
-	default: os << "(??";
-	}
-	if (name_h!=NULL) {
-  	switch (wild) {
-  	case no_wild: name_h->put(os); break;
-  	case all_wild: os << "*"; break;
-  	case prefix_wild: os << "*:"; name_h->put(os); break;
-  	case name_wild: name_h->put(os) << ":*"; break;
-  	default: os << "??";
-  	}
-  }
-	if (typename_h!=NULL) {
-		typename_h->put(os) << endl;
-	}
-	os << ")\n";
-	return os << OUTDENT << "]\n";
-}
 
-void match_expr::accept(
-	expr_visitor& v) const
-{
+	v.end_visit(*this);
 }
 
 
+/*******************************************************************************
 
-// [70] [http://www.w3.org/TR/xquery/#prod-xquery-StepExpr]
-// [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
+  [71] [http://www.w3.org/TR/xquery/#prod-xquery-AxisStep]
 
-axis_step_expr::axis_step_expr(
-	yy::location const& loc)
-:
+	AxisStep ::= Axis NodeTest Predicate*
+
+********************************************************************************/
+axis_step_expr::axis_step_expr(yy::location const& loc)
+  :
 	expr(loc)
 {
 }
+
 
 axis_step_expr::~axis_step_expr()
 {
 }
 
-ostream& axis_step_expr::put( ostream& os) const
+
+ostream& axis_step_expr::put(ostream& os) const
 {
 	os << INDENT << "axis_step_expr[";
-	switch (axis) {
-	case self:								os << "self::"; break;
-	case child:								os << "child::"; break;
-	case parent:							os << "parent::"; break;
-	case descendant:					os << "descendant::"; break;
-	case descendant_or_self:	os << "descendant-or-self::"; break;
-	case ancestor:						os << "ancestor::"; break;
-	case ancestor_or_self:		os << "ancestor-or-self::"; break;
-	case following_sibling:		os << "following-sibling::"; break;
-	case following:						os << "following::"; break;
-	case preceding_sibling:		os << "preceding-sibling::"; break;
-	case preceding:						os << "preceding::"; break;
-	case attribute:						os << "attribute::"; break;
+	switch (theAxis)
+  {
+	case axis_kind_self:								os << "self::"; break;
+	case axis_kind_child:								os << "child::"; break;
+	case axis_kind_parent:							os << "parent::"; break;
+	case axis_kind_descendant:					os << "descendant::"; break;
+	case axis_kind_descendant_or_self:	os << "descendant-or-self::"; break;
+	case axis_kind_ancestor:						os << "ancestor::"; break;
+	case axis_kind_ancestor_or_self:		os << "ancestor-or-self::"; break;
+	case axis_kind_following_sibling:		os << "following-sibling::"; break;
+	case axis_kind_following:						os << "following::"; break;
+	case axis_kind_preceding_sibling:		os << "preceding-sibling::"; break;
+	case axis_kind_preceding:						os << "preceding::"; break;
+	case axis_kind_attribute:						os << "attribute::"; break;
 	default: os << "??";
 	}
 	os << endl;
 
-	if (test_h!=NULL) {
-		test_h->put(os);
-  }
-	if (name_h!=NULL) {
-		name_h->put(os);
-  }
-	vector<rchandle<expr> >::const_iterator it = pred_hv.begin();
-	vector<rchandle<expr> >::const_iterator en = pred_hv.end();
-	for (; it!=en; ++it) {
-		rchandle<expr> e_h = *it;
+	if (theNodeTest != NULL)
+    theNodeTest->put(os);
+
+	vector<rchandle<expr> >::const_iterator it = thePreds.begin();
+	vector<rchandle<expr> >::const_iterator en = thePreds.end();
+	for (; it != en; ++it)
+  {
+		rchandle<expr> e = *it;
 		//d Assert<null_pointer>(e_h!=NULL);
-		Assert(e_h!=NULL);
-		e_h->put(os);
+		Assert(e != NULL);
+		e->put(os);
 	}
 	return os << OUTDENT << "]\n";
 }
 
-void axis_step_expr::accept(
-	expr_visitor& v) const
+
+void axis_step_expr::accept(expr_visitor& v) const
 {
+	if (!v.begin_visit(*this)) return;
+
+  theNodeTest->accept(v);
+
+  if (numPreds() > 0)
+  {
+    ZorbaErrorAlerts::error_alert(
+       error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+       error_messages::SYSTEM_ERROR,
+       NULL,
+       false,
+       "Path expressions with predicates are not implemented");
+  }
+
+	v.end_visit(*this);
+}
+
+
+/*******************************************************************************
+
+  [78] NodeTest ::= KindTest | NameTest
+
+  [79] NameTest ::= QName | Wildcard
+  [80] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
+
+  [123] KindTest ::= DocumentTest | ElementTest | AttributeTest |
+								     SchemaElementTest | SchemaAttributeTest |
+								     PITest | CommentTest | TextTest | AnyKindTest
+
+********************************************************************************/
+match_expr::match_expr(yy::location const& loc)
+  :
+	expr(loc),
+	theWildKind(match_no_wild),
+	theQName(NULL),
+	theTypeName(NULL)
+{
+}
+
+
+match_expr::~match_expr()
+{
+}
+
+
+ostream& match_expr::put(ostream& os) const
+{
+	os << INDENT << "match_expr[";
+	switch (theTestKind)
+  {
+	case match_no_test:   os << "no_test("; break;
+	case match_name_test: os << "name_test("; break;
+	case match_doc_test:
+  {
+		os << "doc_test(";
+		switch (theDocTestKind)
+    {
+		case match_no_test:   os << "no_test("; break;
+		case match_elem_test: os << "element("; break;
+		case match_attr_test: os << "attribute("; break;
+		default: os << "(??";
+		}
+		break;
+	}
+	case match_elem_test:			os << "element("; break;
+	case match_attr_test:			os << "attribute("; break;
+	case match_xs_elem_test:	os << "schema-element("; break;
+	case match_xs_attr_test:	os << "schema-element("; break;
+	case match_pi_test:				os << "pi("; break;
+	case match_comment_test:	os << "comment("; break;
+	case match_text_test:			os << "text("; break;
+	case match_anykind_test:	os << "node("; break;
+	default: os << "(??";
+	}
+
+  switch (theWildKind)
+  {
+  	case match_no_wild:
+      if (theQName != NULL)
+        theQName->put(os);
+      break;
+  	case match_all_wild:
+      os << "*";
+      break;
+  	case match_prefix_wild:
+      os << "*:" << theWildName;
+      break;
+  	case match_name_wild:
+      os << theWildName << ":*";
+      break;
+  	default:
+      os << "??";
+  }
+
+	if (theTypeName != NULL)
+  {
+		theTypeName->put(os) << endl;
+	}
+
+	os << ")";
+	return os << "]\n";
+}
+
+
+void match_expr::accept(expr_visitor& v) const
+{
+	if (!v.begin_visit(*this)) return;
+	v.end_visit(*this);
 }
 
 
