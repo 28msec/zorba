@@ -15,23 +15,47 @@
 #include "runtime/batching.h"
 
 namespace xqp {
-	class FnDataIterator : public Batcher<FnDataIterator>
-	{
-	private:
-		Iterator_t argument;
+
+class FnDataIterator : public Batcher<FnDataIterator>
+{
+private:
+  Iterator_t argument;
 		
-		// used to save the current typed value in the nextImpl method
-		Iterator_t curTypedValue;
+  // used to save the current typed value in the nextImpl method
+  Iterator_t curTypedValue;
 	
-	public:
-		FnDataIterator ( const yy::location& loc, Iterator_t& arg0 )
+public:
+  FnDataIterator ( const yy::location& loc, Iterator_t& arg0 )
 		:
 		Batcher<FnDataIterator> ( loc ), argument(arg0) {}
-		~FnDataIterator() {}
+    ~FnDataIterator() {}
 		
-		Item_t nextImpl();
-		void resetImpl();
-		void releaseResourcesImpl();
-	}; /* class FnDateIterator */
+  Item_t nextImpl();
+  void resetImpl();
+  void releaseResourcesImpl();
+}; /* class FnDateIterator */
+
+
+
+class FnRootIterator : public Batcher<FnRootIterator>
+{
+private:
+  Iterator_t theInput;
+		
+public:
+  FnRootIterator(const yy::location& loc, Iterator_t& input)
+		:
+		Batcher<FnRootIterator>(loc), theInput(input) {}
+    ~FnRootIterator() {}
+		
+  Item_t nextImpl();
+  void resetImpl();
+  void releaseResourcesImpl();
+
+  std::ostream& _show(std::ostream& os)	const;
+};
+
+
+
 } /* namespace xqp */
 #endif /* XQP_ACCESSORS_IMPL_H */

@@ -59,7 +59,10 @@ bool library::static_init = false;
   // Accessors
   DECL (fn_data, fn_data_func,
   			(new QNameItem (XQUERY_FN_NS, "fn", "data"),
-  			xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
+  			 xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
+
+  DECL (fn_root, fn_root_func,
+  			(new QNameItem(XQUERY_FN_NS, "fn", "root"), anyNodeOpt, anyNodeOpt));
   // end Accessors
   
   // Numerics

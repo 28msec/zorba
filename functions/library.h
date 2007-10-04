@@ -35,6 +35,7 @@ protected:
 public:
 	// Accessor functions
 	static qnamekey_t fn_data_key;
+  static qnamekey_t fn_root_key;
 
 	// Numeric functions
 	//daniel: these serve as constant global keys

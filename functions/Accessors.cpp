@@ -12,36 +12,79 @@
 
 namespace xqp {
 
-	fn_data_func::fn_data_func ( const signature& sig ) :function ( sig ) {}
+fn_data_func::fn_data_func ( const signature& sig ) : function ( sig ) {}
 
-	Iterator_t
-	fn_data_func::operator() (
-	    const yy::location& loc,
-	    vector<Iterator_t>& argv ) const
+Iterator_t
+fn_data_func::operator() (
+    const yy::location& loc,
+    vector<Iterator_t>& argv ) const
+{
+  if ( !validate_args ( argv ) )
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
-		return new FnDataIterator ( loc, argv[0] );
-	}
+    ZorbaErrorAlerts::error_alert (
+		   error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+       error_messages::STATIC_ERROR,
+       &loc
+		);
+  }
+  return new FnDataIterator ( loc, argv[0] );
+}
 
-	TypeCode
-	fn_data_func::type_check (
-	    signature& sig ) const
-	{
+
+TypeCode
+fn_data_func::type_check (
+	  signature& sig ) const
+{
 // 		return xs_anySimpleTypeSeq;
-		return xs_anyTypeSeq;
-	}
+  return xs_anyTypeSeq;
+}
 
-	bool
-	fn_data_func::validate_args ( vector<Iterator_t>& argv ) const
+
+bool
+fn_data_func::validate_args ( vector<Iterator_t>& argv ) const
+{
+  return ( argv.size() == 1 );
+}
+
+
+
+/*******************************************************************************
+  
+********************************************************************************/
+fn_root_func::fn_root_func(const signature& sig) : function (sig)
+{
+}
+
+
+Iterator_t fn_root_func::operator() (
+    const yy::location& loc,
+    vector<Iterator_t>& argv) const
+{
+  if (!validate_args(argv))
 	{
-		return ( argv.size() == 1 );
-	}
+    ZorbaErrorAlerts::error_alert(
+		   error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+       error_messages::STATIC_ERROR,
+       &loc
+		);
+  }
+
+  return new FnRootIterator(loc, argv[0]);
+}
+
+
+TypeCode fn_root_func::type_check(signature& sig) const
+{
+  return anyNodeOpt;
+}
+
+
+bool fn_root_func::validate_args(vector<Iterator_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+
+
 	
 } /* namespace xqp */

@@ -19,16 +19,17 @@
 
 namespace xqp {
 
-/*______________________________________________________________________
-|  
-|	By convention, argv[0]    = first input argument type
-|	               argv[1]    = second input argument type
-|	                ...       =  ...  
-|                argv[last] = return type                      
-|_______________________________________________________________________*/
-
 class context;
 
+
+/*******************************************************************************
+  
+  By convention, argv[0]    = return type
+	               argv[1]    = first input argument type
+                 argv[2]    = second input argument type
+	                ...       =  ...  
+
+********************************************************************************/
 class signature : public rcobject
 {
 public:
@@ -63,17 +64,17 @@ public:
 	~signature();
 
 public:
-	Item const* get_name() const { return qname_p; }
-	void set_name(const Item* name) {  qname_p = name; }
-	void set_return_type(sequence_type_t t);
-	void add_arg(sequence_type_t t) { argv.push_back(t); }
-	uint32_t arg_count() const { return argv.size() - 1; }
+	Item const* get_name() const                   { return qname_p; }
+	void set_name(const Item* name)                { qname_p = name; }
+	void add_arg(sequence_type_t t)                { argv.push_back(t); }
+	uint32_t arg_count() const                     { return argv.size() - 1; }
 
 	sequence_type_t const& operator[](int i) const { return argv[i]; }
-	sequence_type_t & operator[](int i) { return argv[i]; }
-	sequence_type_t const& return_type() const { return argv[0]; }
-	sequence_type_t & return_type() { return argv[0]; }
+	sequence_type_t & operator[](int i)            { return argv[i]; }
+	sequence_type_t const& return_type() const     { return argv[0]; }
+	sequence_type_t & return_type()                { return argv[0]; }
 
+	void set_return_type(sequence_type_t t);
 };
 
 } /* namespace xqp */

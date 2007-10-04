@@ -14,6 +14,7 @@
 #include "functions/function.h"
 
 namespace xqp {
+
 	class fn_data_func : public function
 	{
 		public:
@@ -25,5 +26,20 @@ namespace xqp {
 			TypeCode type_check ( signature& ) const;
 			bool validate_args ( std::vector<Iterator_t>& ) const;
 	};
+
+
+  class fn_root_func : public function
+	{
+		public:
+			fn_root_func(const signature& s);
+			~fn_root_func() {}
+
+		public:
+			Iterator_t operator() (const yy::location& loc, std::vector<Iterator_t>& ) const;
+			TypeCode type_check(signature& s) const;
+			bool validate_args(std::vector<Iterator_t>& ) const;
+	};
+
 } /* namespace xqp */
+
 #endif /* XQP_ACCESSORS_H */
