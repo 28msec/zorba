@@ -33,7 +33,9 @@ namespace xqp
 	QNameItem::QNameItem ( xqp_string _namespace, xqp_string prefix, xqp_string localname )
 			:
 			strNamespace_ ( _namespace ), strPrefix_ ( prefix ), strLocal_ ( localname ) {}
+
 	QNameItem::~QNameItem() {}
+
 	xqp_string QNameItem::getNamespace() const
 	{
 		return this->strNamespace_;

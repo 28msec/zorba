@@ -112,15 +112,15 @@ namespace xqp
 		{
 			case none:
 				if ( this->curPos < int32_t ( this->items->size() ) )
-					return ( *this->items ) [this->curPos];
+					return ( *(this->items) ) [this->curPos];
 				break;
 			case startEnd:
 				if ( this->curPos < this->endPos )
-					return ( *this->items ) [this->curPos];
+					return ( *(this->items) ) [this->curPos];
 				break;
 			case specificPositions:
 				if ( this->curPos < int32_t ( this->positions.size() ) )
-					return ( *this->items ) [this->positions[this->curPos]];
+					return ( *(this->items) ) [this->positions[this->curPos]];
 				break;
 		}
 		return NULL;
