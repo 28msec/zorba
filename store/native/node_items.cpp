@@ -100,7 +100,9 @@ namespace xqp
 
 	Iterator_t DocumentNode::getChildren() const
 	{
-		return this->children->getIterator();
+		return (this->children == NULL ?
+            new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation()) :
+            this->children->getIterator());
 	}
 
 	xqp_string DocumentNode::getDocumentURI() const
@@ -190,12 +192,16 @@ namespace xqp
 
 	Iterator_t ElementNode::getAttributes() const
 	{
-		return this->attributes->getIterator();
+		return (this->attributes == NULL ? 
+            new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation()) :
+            this->attributes->getIterator());
 	}
 
 	Iterator_t ElementNode::getChildren() const
 	{
-		return this->children->getIterator();
+		return (this->children == NULL ?
+            new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation()) :
+            this->children->getIterator());
 	}
 
 	std::set<std::pair<std::string, std::string> > ElementNode::getNamespaceBindings() const
