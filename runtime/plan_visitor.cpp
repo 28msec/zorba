@@ -383,10 +383,9 @@ bool plan_visitor::begin_visit(const match_expr& v)
 }
 
 
-bool plan_visitor::end_visit(const match_expr& v)
+void plan_visitor::end_visit(const match_expr& v)
 {
   cout << TRACE << endl;
-	return true;
 }
 
 

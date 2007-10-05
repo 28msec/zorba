@@ -126,7 +126,7 @@ public:
 	virtual void end_visit(extension_expr const&) = 0;
 	virtual void end_visit(relpath_expr const&) = 0;
 	virtual void end_visit(axis_step_expr const&) = 0;
-  virtual bool end_visit(match_expr const&) = 0;
+  virtual void end_visit(match_expr const&) = 0;
 	virtual void end_visit(literal_expr const&) = 0;
 	virtual void end_visit(order_expr const&) = 0;
 	virtual void end_visit(elem_expr const&) = 0;
