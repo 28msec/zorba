@@ -204,15 +204,15 @@ namespace xqp
             this->children->getIterator());
 	}
 
-	std::set<std::pair<std::string, std::string> > ElementNode::getNamespaceBindings() const
+	std::set<std::pair<xqp_string, xqp_string> > ElementNode::getNamespaceBindings() const
 	{
-		std::set<std::pair<std::string, std::string> > bindings;
+		std::set<std::pair<xqp_string, xqp_string> > bindings;
 		Iterator_t iter = this->namespaces->getIterator();
 		Item_t item = iter->next();
 
 		while ( item != NULL )
 		{
-			bindings.insert ( pair<std::string,std::string> ( item->getPrefix(), item->getNamespace() ) );
+			bindings.insert ( pair<xqp_string,xqp_string> ( item->getPrefix(), item->getNamespace() ) );
 			item = iter->next();
 		}
 		return bindings;

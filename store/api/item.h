@@ -373,9 +373,9 @@ public:
 	/** Accessor for element node
 	 *  @return  returns prefix namespace pairs
 	 */   
-	virtual std::set<std::pair<std::string, std::string> > getNamespaceBindings() const { 
+	virtual std::set<std::pair<xqp_string, xqp_string> > getNamespaceBindings() const {
 		this->showError();
-		std::set<std::pair<std::string, std::string> > set;
+		std::set<std::pair<xqp_string, xqp_string> > set;
 		return set;
 	}
 
