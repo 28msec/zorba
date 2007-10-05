@@ -440,9 +440,9 @@ Item_t RSiblingAxisIterator::nextImpl()
 
     theChildren = parent->getChildren();
 
-    while (theChildren->next() != theContextNode) ;
+    while (consumeNext(theChildren) != theContextNode) ;
 
-    sibling = theChildren->next();
+    sibling = consumeNext(theChildren);
 
     while (sibling != NULL)
     {
@@ -454,7 +454,7 @@ Item_t RSiblingAxisIterator::nextImpl()
         STACK_PUSH(sibling);
       }
 
-      sibling = theChildren->next();
+      sibling = consumeNext(theChildren);
     }
   }
 
@@ -525,7 +525,7 @@ Item_t LSiblingAxisIterator::nextImpl()
 
     theChildren = parent->getChildren();
 
-    sibling = theChildren->next();
+    sibling = consumeNext(theChildren);
 
     while (sibling != theContextNode)
     {
@@ -537,7 +537,7 @@ Item_t LSiblingAxisIterator::nextImpl()
         STACK_PUSH(sibling);
       }
 
-      sibling = theChildren->next();
+      sibling = consumeNext(theChildren);
     }
   }
 
@@ -682,7 +682,7 @@ Item_t DescendantAxisIterator::nextImpl()
   {
     do
     {
-      theContextNode = theInput->next();
+      theContextNode = consumeNext(theInput);
       if (theContextNode == NULL)
         return NULL;
     }
@@ -695,7 +695,7 @@ Item_t DescendantAxisIterator::nextImpl()
 
     theCurrentPath.push(std::pair<Item_t, Iterator_t>(theContextNode, children));
     
-    desc = children->next();
+    desc = consumeNext(children);
 
     while (desc != NULL)
     {
@@ -714,13 +714,13 @@ Item_t DescendantAxisIterator::nextImpl()
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = theCurrentPath.top().second->next();
+      desc = consumeNext(theCurrentPath.top().second);
 
       while (desc == NULL)
       {
         theCurrentPath.pop();
         if (!theCurrentPath.empty())
-          desc = theCurrentPath.top().second->next();
+          desc = consumeNext(theCurrentPath.top().second);
         else
           break;
       }
@@ -818,13 +818,13 @@ Item_t DescendantSelfAxisIterator::nextImpl()
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = theCurrentPath.top().second->next();
+      desc = consumeNext(theCurrentPath.top().second);
 
       while (desc == NULL)
       {
         theCurrentPath.pop();
         if (!theCurrentPath.empty())
-          desc = theCurrentPath.top().second->next();
+          desc = consumeNext(theCurrentPath.top().second);
         else
           break;
       }
@@ -922,7 +922,7 @@ Item_t PrecedingAxisIterator::nextImpl()
 
       theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
     
-      desc = children->next();
+      desc = consumeNext(children);
 
       while (desc != theAncestorPath.top())
       {
@@ -937,13 +937,13 @@ Item_t PrecedingAxisIterator::nextImpl()
           STACK_PUSH(desc);
         }
 
-        desc = theCurrentPath.top().second->next();
+        desc = consumeNext(theCurrentPath.top().second);
 
         while (desc == NULL)
         {
           theCurrentPath.pop();
           Assert(!theCurrentPath.empty());
-          desc = theCurrentPath.top().second->next();
+          desc = consumeNext(theCurrentPath.top().second);
         }
       }
 
@@ -1049,11 +1049,11 @@ Item_t FollowingAxisIterator::nextImpl()
 
       do
       {
-        following = children->next();
+        following = consumeNext(children);
       }
       while (following != theAncestorPath.top());
 
-      following = children->next();
+      following = consumeNext(children);
 
       while (following != NULL)
       {
@@ -1068,13 +1068,13 @@ Item_t FollowingAxisIterator::nextImpl()
           STACK_PUSH(following);
         }
 
-        following = theCurrentPath.top().second->next();
+        following = consumeNext(theCurrentPath.top().second);
 
         while (following == NULL)
         {
           theCurrentPath.pop();
           Assert(!theCurrentPath.empty());
-          following = theCurrentPath.top().second->next();
+          following = consumeNext(theCurrentPath.top().second);
         }
       }
 

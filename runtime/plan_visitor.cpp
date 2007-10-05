@@ -43,46 +43,88 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 bool plan_visitor::begin_visit(const expr_list& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	itstack.push(NULL);
 	return true;
 }
 
 bool plan_visitor::begin_visit(const var_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 	return true;
 }
 
 bool plan_visitor::begin_visit(const order_modifier& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 	return true;
 }
+
 
 bool plan_visitor::begin_visit(const flwor_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 	return true;
 }
+
+
+void plan_visitor::end_visit(const flwor_expr& v)
+{
+  cout << TRACE << endl;
+	Iterator_t expr = pop_itstack();
+	Iterator_t input = pop_itstack();
+	std::vector<var_iter_t> var_iters;
+	
+// 	while (true) {
+	
+		var_iter_t var = timstack.top(); timstack.pop();
+// 		if (var==NULL) break;
+		var_iters.push_back(&*var);
+// 	}
+	rchandle<MapIterator> map_iter = new MapIterator(v.get_loc(),input, expr, var_iters);
+	itstack.push(&*map_iter);
+// 	rchandle<map_iterator> m_h = new map_iterator();
+}
+
 
 bool plan_visitor::begin_visit(const quantified_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 	return true;
 }
+
+
+void plan_visitor::end_visit(const quantified_expr& v)
+{
+  cout << TRACE << endl;
+}
+
 
 bool plan_visitor::begin_visit(const case_clause& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 	return true;
 }
 
+
+void plan_visitor::end_visit(const case_clause& v)
+{
+  cout << TRACE << endl;
+}
+
+
 bool plan_visitor::begin_visit(const typeswitch_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 	return true;
 }
+
+
+void plan_visitor::end_visit(const typeswitch_expr& v)
+{
+  cout << TRACE << endl;
+}
+
 
 bool plan_visitor::begin_visit(const if_expr& v)
 {
@@ -90,12 +132,48 @@ cout << TRACE << endl;
 	return true;
 }
 
+
+void plan_visitor::end_visit(const if_expr& v)
+{
+  cout << TRACE << endl;
+	Iterator_t iterElse = pop_itstack();
+	Iterator_t iterThen = pop_itstack();
+	Iterator_t iterCond = pop_itstack();
+	Iterator_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
+	itstack.push(&*iterIfThenElse);
+}
+
+
 bool plan_visitor::begin_visit(const fo_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	itstack.push(NULL);
 	return true;
 }
+
+
+void plan_visitor::end_visit(const fo_expr& v)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+
+	const function* func_p = v.get_func();
+	assert(func_p != NULL);
+	const function& func = *func_p;
+
+	vector<Iterator_t> argv;
+	while (true)
+  {
+		Iterator_t it_h = pop_itstack();
+		if (it_h == NULL)
+      break;
+
+		vector<Iterator_t>::iterator begin = argv.begin();
+ 		argv.insert(begin, 1, it_h );
+	}
+
+	itstack.push(func(v.get_loc(), argv));
+}
+
 
 bool plan_visitor::begin_visit(const ft_select_expr& v)
 {
@@ -361,6 +439,14 @@ bool plan_visitor::begin_visit(const match_expr& v)
 
     break;
   }
+  case match_elem_test:
+  {
+    if (v.getTypeName() == NULL)
+    {
+
+    }
+    break;
+  }
   case match_anykind_test:
   {
     matchIte = new NameTestIterator(v.get_loc(), input, qname, match_all_wild);
@@ -489,73 +575,6 @@ void plan_visitor::end_visit(const var_expr& v)
 void plan_visitor::end_visit(const order_modifier& v)
 {
 cout << TRACE << endl;
-}
-
-void plan_visitor::end_visit(const flwor_expr& v)
-{
-cout << TRACE << endl;
-	Iterator_t expr = pop_itstack();
-	Iterator_t input = pop_itstack();
-	std::vector<var_iter_t> var_iters;
-	
-// 	while (true) {
-	
-		var_iter_t var = timstack.top(); timstack.pop();
-// 		if (var==NULL) break;
-		var_iters.push_back(&*var);
-// 	}
-	rchandle<MapIterator> map_iter = new MapIterator(v.get_loc(),input, expr, var_iters);
-	itstack.push(&*map_iter);
-// 	rchandle<map_iterator> m_h = new map_iterator();
-}
-
-void plan_visitor::end_visit(const quantified_expr& v)
-{
-cout << TRACE << endl;
-}
-
-void plan_visitor::end_visit(const case_clause& v)
-{
-cout << TRACE << endl;
-}
-
-void plan_visitor::end_visit(const typeswitch_expr& v)
-{
-cout << TRACE << endl;
-}
-
-
-void plan_visitor::end_visit(const if_expr& v)
-{
-cout << TRACE << endl;
-	Iterator_t iterElse = pop_itstack();
-	Iterator_t iterThen = pop_itstack();
-	Iterator_t iterCond = pop_itstack();
-	Iterator_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
-	itstack.push(&*iterIfThenElse);
-}
-
-
-void plan_visitor::end_visit(const fo_expr& v)
-{
-  cout << std::string(depth--, ' ') << TRACE << endl;
-
-	const function* func_p = v.get_func();
-	assert(func_p != NULL);
-	const function& func = *func_p;
-
-	vector<Iterator_t> argv;
-	while (true)
-  {
-		Iterator_t it_h = pop_itstack();
-		if (it_h == NULL)
-      break;
-
-		vector<Iterator_t>::iterator begin = argv.begin();
- 		argv.insert(begin, 1, it_h );
-	}
-
-	itstack.push(func(v.get_loc(), argv));
 }
 
 
