@@ -33,10 +33,12 @@
 #include <unistd.h>
 #endif
 
+#ifndef WIN32
 #ifndef __APPLE_CC__
 #include <sys/vfs.h>
 #else
 #include <sys/mount.h>
+#endif
 #endif
 
 #ifndef _WIN32_WCE
