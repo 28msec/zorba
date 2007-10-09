@@ -1,9 +1,7 @@
-
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseBison.cmake)
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseFlex.cmake)
 
 SET(PARSER_SRCS
-  parsenodes.cpp
   symbol_table.cpp
   xquery_driver.cpp
   xquery_test.cpp)
