@@ -22,8 +22,8 @@
  *
  */
 
-#include "serializer.h"
-#include "../runtime/zorba.h"
+#include "api/serializer.h"
+#include "util/zorba.h"
 #include "store/native/basic_item_factory.h"
 #include "types/sequence_type.h"
 

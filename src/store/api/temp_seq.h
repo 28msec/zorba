@@ -13,7 +13,7 @@
 
 namespace xqp {
 
-	//typedef std::string xqp_string;
+//	typedef std::string xqp_string;
 	
 	template <class Object> class rchandle;
 	

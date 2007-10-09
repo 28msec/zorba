@@ -1,0 +1,5 @@
+ADD_SUBDIRECTORY(parser)
+ADD_SUBDIRECTORY(parsetree)
+ADD_SUBDIRECTORY(translator)
+ADD_SUBDIRECTORY(codegen)
+ADD_SUBDIRECTORY(expression)
