@@ -1,0 +1,45 @@
+/**
+ * Class to measure execution time based on CPU clocks and system time.
+ * made by Dongseop Kwon (subby@db.snu.ac.kr), 23/07/2003
+ */
+
+
+#ifndef XQP_TIMER_H
+#define XQP_TIMER_H
+
+#include <ctime>
+#ifndef WIN32
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
+
+class Timer
+{
+    clock_t startClock;
+    clock_t suspendClock;
+    clock_t endClock;
+#ifndef WIN32
+    double startTime;
+    double endTime;
+    double suspendTime;
+#endif
+		bool suspended;
+    bool running;
+
+public:
+    // timer routines
+    void start();
+    void end();
+    void suspend();
+    void resume();
+
+    double getClock();
+#ifndef WIN32
+    double getTime();
+#endif
+    // print all information
+    void print();
+    bool isRunning();
+};
+#endif
