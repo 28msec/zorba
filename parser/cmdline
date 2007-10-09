@@ -1,4 +1,0 @@
-while read c; do
-	echo $c >test.xqy;
-	Build/xquery_test test.xqy
-done
