@@ -25,7 +25,7 @@
 #ifndef XQP_DYNAMIC_CONTEXT_H
 #define XQP_DYNAMIC_CONTEXT_H
 
-#include "zorba/common.h"
+#include "context/common.h"
 #include "context/context.h"
 #include "functions/library.h"
 #include "util/rchandle.h"

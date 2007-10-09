@@ -12,8 +12,8 @@
 #include "context/common.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
-#include "parser/location.hh"
-#include "batching.h"
+#include "compiler/parser/location.hh"
+#include "runtime/core/batching.h"
 
 #include <assert.h>
 #include <iostream>
