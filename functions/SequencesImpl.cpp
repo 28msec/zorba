@@ -59,7 +59,7 @@ const
 }
 
 Item_t 
-ConcatIterator::nextImpl(int8_t* stateBlock) {
+ConcatIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 	Item_t item;
 	
 	ConcatIteratorState* state;
@@ -77,7 +77,7 @@ ConcatIterator::nextImpl(int8_t* stateBlock) {
 }
 
 void 
-ConcatIterator::resetImpl(int8_t* stateBlock) {
+ConcatIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
 	ConcatIteratorState* state;
 	GET_STATE(ConcatIteratorState, state, stateBlock);
 	state->reset();
@@ -89,7 +89,7 @@ ConcatIterator::resetImpl(int8_t* stateBlock) {
 }
 
 void 
-ConcatIterator::releaseResourcesImpl(int8_t* stateBlock) {
+ConcatIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter, stateBlock);

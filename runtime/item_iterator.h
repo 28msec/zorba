@@ -61,11 +61,11 @@ public:
 	EmptyIterator(const EmptyIterator& it) : Batcher<EmptyIterator>(it) {}
 	~EmptyIterator() {}
 	
-	Item_t nextImpl(int8_t* stateBlock) {
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock) {
 		return NULL;
 	}
-	void resetImpl(int8_t* stateBlock) { }
-	void releaseResourcesImpl(int8_t* stateBlock){ }
+	void resetImpl(IteratorTreeStateBlock& stateBlock) { }
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock){ }
 }; /* class EmptyIterator */
 
 /*_____________________________________________________________
@@ -82,9 +82,9 @@ public:
 	~SingletonIterator();
 	
 public:
-	Item_t nextImpl(int8_t* stateBlock);
-	void resetImpl(int8_t* stateBlock);
-	void releaseResourcesImpl(int8_t* stateBlock);
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	void resetImpl(IteratorTreeStateBlock& stateBlock);
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	
 	std::ostream&  _show(std::ostream& os)	const;
 
@@ -199,9 +199,9 @@ public:
 	~MapIterator() {}
 
 public:
-	Item_t nextImpl(int8_t* stateBlock);
-	void resetImpl(int8_t* stateBlock);
-	void releaseResourcesImpl(int8_t* stateBlock);
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	void resetImpl(IteratorTreeStateBlock& stateBlock);
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 // 	void _open();
 // 	void _close();
 	std::ostream&  _show(std::ostream& os) const;
@@ -225,9 +225,9 @@ public:
 		);
 		virtual ~FilterIterator();
 		
-		virtual Item_t nextImpl(int8_t* stateBlock) = 0;
-		void resetImpl(int8_t* stateBlock);
-		void releaseResourcesImpl(int8_t* stateBlock);
+		virtual Item_t nextImpl(IteratorTreeStateBlock& stateBlock) = 0;
+		void resetImpl(IteratorTreeStateBlock& stateBlock);
+		void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	}; /* class FilterIterator */
 	
 	/**
@@ -245,7 +245,7 @@ public:
 			const yy::location& loc,
 			Iterator_t& iter_arg
 		);
-		Item_t nextImpl(int8_t* stateBlock);
+		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
 	}; /* class EnclosedIterator */
 	
 	/** Used to make e.g. the concatenation of text nodes
@@ -261,7 +261,7 @@ public:
 			const yy::location& loc,
 			Iterator_t& iter_arg
 		);
-		Item_t nextImpl(int8_t* stateBlock);
+		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
 	}; /* class TextNodeConnector */
 
 	class ElementIterator : public Batcher<ElementIterator>
@@ -280,9 +280,9 @@ public:
 			Iterator_t& attributes_arg
 		);
 	
-		Item_t nextImpl(int8_t* stateBlock);
-		void resetImpl(int8_t* stateBlock);
-		void releaseResourcesImpl(int8_t* stateBlock);
+		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+		void resetImpl(IteratorTreeStateBlock& stateBlock);
+		void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	}; /* class ElementIterator */
 	
 	class AttributeIterator : public Batcher<AttributeIterator>
@@ -298,9 +298,9 @@ public:
 			Iterator_t& value_arg
 		);
 		
-		Item_t nextImpl(int8_t* stateBlock);
-		void resetImpl(int8_t* stateBlock);
-		void releaseResourcesImpl(int8_t* stateBlock);
+		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+		void resetImpl(IteratorTreeStateBlock& stateBlock);
+		void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	}; /* class AttributeIterator */
 	
 	class IfThenElseIterator : public Batcher<IfThenElseIterator>
@@ -334,9 +334,9 @@ public:
 			bool condIsBooleanIter_arg = false
 		);
 		
-		Item_t nextImpl(int8_t* stateBlock);
-		void resetImpl(int8_t* stateBlock);
-		void releaseResourcesImpl(int8_t* stateBlock);
+		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+		void resetImpl(IteratorTreeStateBlock& stateBlock);
+		void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	}; /* class IfThenElseIterator */
 
 

@@ -14,7 +14,7 @@ namespace xqp {
 	
 	template <class IterType>
 	void 
-	UnaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+	UnaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		BasicIterator::BasicIteratorState* state;
 		GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
@@ -25,7 +25,7 @@ namespace xqp {
 
 	template <class IterType>
 	void 
-	UnaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+	UnaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->iter, stateBlock );
 	}
@@ -66,7 +66,7 @@ namespace xqp {
 
 	template <class IterType>
 	void 
-	BinaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+	BinaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		BasicIterator::BasicIteratorState* state;
 		GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
@@ -78,7 +78,7 @@ namespace xqp {
 
 	template <class IterType>
 	void 
-	BinaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+	BinaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->iter0, stateBlock );
 		this->releaseChildResources ( this->iter1, stateBlock );
@@ -122,7 +122,7 @@ namespace xqp {
 
 	template <class IterType>
 	void 
-	NaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+	NaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		BasicIterator::BasicIteratorState* state;
 		GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
@@ -136,7 +136,7 @@ namespace xqp {
 
 	template <class IterType>
 	void 
-	BinaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+	BinaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		std::vector<Iterator_t>::iterator iter = this->iters.begin();
 		for(; iter != this->iters.end(); ++iter) {

@@ -43,26 +43,7 @@
 #define IT_DEPTH			std::string(iteratorTreeDepth, ' ')
 #define IT_OUTDENT		    std::string(iteratorTreeDepth--, ' ')
 
-/**
- * This is a dummy class just because of compatibility issues.
- * It can be removed when all the code is cleaned up
- * 
- */
-
-namespace xqp {
-
-class Item;
-typedef rchandle<Item> Item_t;
-
-class BasicIterator;
-class node;
-class zorba;
-
-typedef rchandle<BasicIterator> Iterator_t;
-
-extern int32_t iteratorTreeDepth;
-	
-// TODO This Macros have to be deleted
+// TODO These Macros have to be deleted
 #define STACK_INIT() switch (this->current_line) { case 0:
 #define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL;
@@ -83,7 +64,28 @@ extern int32_t iteratorTreeDepth;
 #define STACK_PUSH2(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
 #define STACK_END2() } return NULL
 #define GET_STATE(stateType, stateObject, stateBlock) \
-	stateObject = reinterpret_cast<stateType*>(stateBlock + this->stateOffset)
+	stateObject = reinterpret_cast<stateType*>(stateBlock.block + this->stateOffset)
+
+namespace xqp {
+
+class Item;
+typedef rchandle<Item> Item_t;
+
+class BasicIterator;
+class node;
+class zorba;
+
+typedef rchandle<BasicIterator> Iterator_t;
+
+extern int32_t iteratorTreeDepth;
+
+class IteratorTreeStateBlock
+{
+public:
+	int8_t* block;
+
+	IteratorTreeStateBlock(int32_t blockSize);
+};
 
 /** Base class of all iterators.
 	*/
@@ -122,7 +124,7 @@ public:
 	 *
 	 * TODO must be pure virtual
 	 */
-	virtual Item_t produceNext(int8_t* stateBlock);
+	virtual Item_t produceNext(IteratorTreeStateBlock& stateBlock);
 
 	/** 
 	 * Restarts the iterator so that the next 'produceNext' call will start 
@@ -132,7 +134,7 @@ public:
 	 *
 	 * TODO must be pure virtual
 	 */
-	virtual void reset(int8_t* stateBlock);
+	virtual void reset(IteratorTreeStateBlock& stateBlock);
 
 	/** 
 	 * Releases all resources of the iterator  
@@ -141,7 +143,7 @@ public:
 	 * 
 	 * TODO must be pure virtual
 	 */
-	virtual void releaseResources(int8_t* stateBlock);
+	virtual void releaseResources(IteratorTreeStateBlock& stateBlock);
 
 	std::ostream& show(std::ostream&);
 	
@@ -170,15 +172,32 @@ protected:
 	private:
 		int32_t duffsLine;
 	public:
+		/** Initializes State Object for the current iterator.
+			* All sub-states have it invoke the init resources of their parent 
+			* to guarantee correct initialization.
+			*/
 		void init();
+
+		/** Resets State Object for the current iterator.
+			* All sub-states have it invoke the release reset of their parent 
+			* to guarantee correct reset handling.
+			*/
 		void reset();
+
+		/* Release resources is not needed in BasicIterator but might be need
+		 * from Iterators. If so, they must be implemented there and invoked from
+		 * releaseResourcesImpl from the corresponding iterator. If a state is a
+		 * sub-class of a state which contains releaseResources, it has to 
+		 * implement releaseResources too and has to invoke releaseResources
+		 * from the parent.
+		 */
 		
 		void setDuffsLine(int32_t);
 		int32_t getDuffsLine();
 	};
 
 protected:
-	inline void resetChild(Iterator_t& subIterator, int8_t* stateBlock) {
+	inline void resetChild(Iterator_t& subIterator, IteratorTreeStateBlock& stateBlock) {
 		subIterator->reset(stateBlock);
 	}
 
@@ -191,12 +210,12 @@ protected:
 		return subIter->batch[subIter->cItem++];
 	}
 #else
-	inline Item_t consumeNext(Iterator_t& subIter, int8_t* stateBlock) {
+	inline Item_t consumeNext(Iterator_t& subIter, IteratorTreeStateBlock& stateBlock) {
 		return subIter->produceNext(stateBlock);
 	}
 #endif
 
-	inline void releaseChildResources(Iterator_t& subIterator, int8_t* stateBlock) {
+	inline void releaseChildResources(Iterator_t& subIterator, IteratorTreeStateBlock& stateBlock) {
 		subIterator->releaseResources(stateBlock);
 	}
 
@@ -224,24 +243,24 @@ public:
 		}
 	}
 #else
-	Item_t produceNext(int8_t* stateBlock) {
+	Item_t produceNext(IteratorTreeStateBlock& stateBlock) {
 		return static_cast<IterType*>(this)->nextImpl(stateBlock);
 	}
 #endif
 
-	void reset(int8_t* stateBlock) {
+	void reset(IteratorTreeStateBlock& stateBlock) {
 		this->current_line = 0;
 		static_cast<IterType*>(this)->resetImpl(stateBlock);
 	}
 
-	void releaseResources(int8_t* stateBlock) {
+	void releaseResources(IteratorTreeStateBlock& stateBlock) {
 		static_cast<IterType*>(this)->releaseResourcesImpl(stateBlock);
 	}
 
 public:
-	inline Item_t nextImpl(int8_t* stateBlock);
-	inline void resetImpl(int8_t* stateBlock);
-	inline void releaseResourcesImpl(int8_t* stateBlock);
+	inline Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	inline void resetImpl(IteratorTreeStateBlock& stateBlock);
+	inline void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 };
 
 
@@ -251,7 +270,7 @@ public:
 class IteratorWrapper {
 private:
 	Iterator_t iterator;
-	int8_t* stateBlock;
+	IteratorTreeStateBlock* stateBlock;
 	
 public:
 	/** Concsturctor
@@ -262,6 +281,7 @@ public:
 	
 	/** Returns the next item of the root iterator
 		* @return item
+		* FIXME must be adapted to batching
 		*/
 	Item_t next();
 };

@@ -68,9 +68,9 @@ public:
   ~KindTestIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -103,9 +103,9 @@ public:
   ~NameTestIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -152,9 +152,9 @@ public:
   ~SelfAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -183,9 +183,9 @@ public:
   ~AttributeAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -213,9 +213,9 @@ public:
   ~ParentAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -241,9 +241,9 @@ public:
   ~AncestorAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -269,9 +269,9 @@ public:
   ~AncestorSelfAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -300,9 +300,9 @@ public:
   ~RSiblingAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -331,9 +331,9 @@ public:
   ~LSiblingAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -362,9 +362,9 @@ public:
   ~ChildAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -392,9 +392,9 @@ public:
   ~DescendantAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -422,9 +422,9 @@ public:
   ~DescendantSelfAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -453,9 +453,9 @@ public:
   ~PrecedingAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -484,9 +484,9 @@ public:
   ~FollowingAxisIterator() {}
 
 public:
-  Item_t nextImpl(int8_t* stateBlock);
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };

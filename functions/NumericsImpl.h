@@ -43,8 +43,8 @@ namespace xqp
 
 			virtual ~BinaryBaseIterator();
 
-			void resetImpl(int8_t* stateBlock);
-			void releaseResourcesImpl(int8_t* stateBlock);
+			void resetImpl(IteratorTreeStateBlock& stateBlock);
+			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
 			virtual int32_t getStackSize();
 			virtual int32_t getStackSizeOfSubtree();
@@ -130,7 +130,7 @@ namespace xqp
 			ArithmeticIterator ( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 );
 			~ArithmeticIterator();
 
-			Item_t nextImpl(int8_t* stateBlock);
+			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
 	}; /* class ArithmeticIterator */
 
 	/*______________________________________________________________________
@@ -182,9 +182,9 @@ namespace xqp
 			~OpNumericUnaryIterator();
 
 		public:	// iterator interface
-			Item_t nextImpl(int8_t* stateBlock);
-			void resetImpl(int8_t* stateBlock);
-			void releaseResourcesImpl(int8_t* stateBlock);
+			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+			void resetImpl(IteratorTreeStateBlock& stateBlock);
+			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 
@@ -220,9 +220,9 @@ namespace xqp
 			~FnAbsIterator();
 
 		public:
-			Item_t nextImpl(int8_t* stateBlock);
-			void resetImpl(int8_t* stateBlock);
-			void releaseResourcesImpl(int8_t* stateBlock);
+			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+			void resetImpl(IteratorTreeStateBlock& stateBlock);
+			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 

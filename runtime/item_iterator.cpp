@@ -30,7 +30,7 @@ namespace xqp
 	SingletonIterator::~SingletonIterator() {}
 	
 	Item_t 
-	SingletonIterator::nextImpl(int8_t* stateBlock) {
+	SingletonIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 		BasicIterator::BasicIteratorState* state;
 		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
 		STACK_PUSH2(i_h, state);
@@ -38,13 +38,13 @@ namespace xqp
 	}
 	
 	void 
-	SingletonIterator::resetImpl(int8_t* stateBlock) {
+	SingletonIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
 		BasicIterator::BasicIteratorState* state;
 		state->reset();
 	}
 	
 	void 
-	SingletonIterator::releaseResourcesImpl(int8_t* stateBlock)
+	SingletonIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{}
 	
 	std::ostream& 
@@ -70,7 +70,7 @@ namespace xqp
 	}
 	/* end class SingletonIterator */
 
-	Item_t MapIterator::nextImpl(int8_t* stateBlock)
+	Item_t MapIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t item;
 		vector<var_iter_t>::const_iterator itv;
@@ -99,13 +99,13 @@ namespace xqp
 		STACK_END();
 	}
 
-	void MapIterator::resetImpl(int8_t* stateBlock)
+	void MapIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild ( this->theInput, stateBlock );
 		this->resetChild ( this->theExpr, stateBlock );
 	}
 
-	void MapIterator::releaseResourcesImpl(int8_t* stateBlock)
+	void MapIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->theInput, stateBlock );
 		this->releaseChildResources ( this->theExpr, stateBlock );
@@ -130,13 +130,13 @@ namespace xqp
 	FilterIterator::~FilterIterator(){}
 	
 	void 
-	FilterIterator::resetImpl(int8_t* stateBlock)
+	FilterIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild( this->content, stateBlock );
 	}
 	
 	void 
-	FilterIterator::releaseResourcesImpl(int8_t* stateBlock)
+	FilterIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources( this->content, stateBlock );
 	}
@@ -152,7 +152,7 @@ namespace xqp
 
 		
 	Item_t 
-	EnclosedIterator::nextImpl(int8_t* stateBlock)
+	EnclosedIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		STACK_INIT();
 		this->str = "";
@@ -200,7 +200,7 @@ namespace xqp
 
 		
 	Item_t 
-	ElementContentIterator::nextImpl(int8_t* stateBlock)
+	ElementContentIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		STACK_INIT();
 		this->str = "";
@@ -244,7 +244,7 @@ namespace xqp
 		Batcher<ElementIterator> ( loc ), qname ( qname_arg ), children ( children_arg ), attributes ( attributes_arg ) {}
 
 	Item_t
-	ElementIterator::nextImpl(int8_t* stateBlock)
+	ElementIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t item;
 
@@ -266,14 +266,14 @@ namespace xqp
 	}
 
 	void
-	ElementIterator::resetImpl(int8_t* stateBlock)
+	ElementIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		if ( this->children != NULL )
 			this->resetChild ( this->children, stateBlock );
 	}
 
 	void
-	ElementIterator::releaseResourcesImpl(int8_t* stateBlock)
+	ElementIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		if ( this->children != NULL )
 			this->releaseChildResources ( this->children, stateBlock );
@@ -289,7 +289,7 @@ namespace xqp
 			Batcher<AttributeIterator> ( loc ), qname ( qname_arg ), value ( value_arg ) {}
 
 	Item_t
-	AttributeIterator::nextImpl(int8_t* stateBlock)
+	AttributeIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t item;
 		Item_t itemCur;
@@ -341,14 +341,14 @@ namespace xqp
 	}
 
 	void
-	AttributeIterator::resetImpl(int8_t* stateBlock)
+	AttributeIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		if ( this->value != NULL )
 			this->resetChild ( this->value, stateBlock );
 	}
 
 	void
-	AttributeIterator::releaseResourcesImpl(int8_t* stateBlock)
+	AttributeIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		if ( this->value != NULL )
 			this->releaseChildResources ( this->value, stateBlock );
@@ -367,7 +367,7 @@ namespace xqp
 	{}
 
 	Item_t
-	IfThenElseIterator::nextImpl(int8_t* stateBlock)
+	IfThenElseIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t condResult;
 
@@ -392,7 +392,7 @@ namespace xqp
 	}
 
 	void
-	IfThenElseIterator::resetImpl(int8_t* stateBlock)
+	IfThenElseIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild ( this->iterCond, stateBlock );
 		this->resetChild ( this->iterThen, stateBlock );
@@ -400,7 +400,7 @@ namespace xqp
 	}
 
 	void
-	IfThenElseIterator::releaseResourcesImpl(int8_t* stateBlock)
+	IfThenElseIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->iterCond, stateBlock );
 		this->releaseChildResources ( this->iterThen, stateBlock );

@@ -34,7 +34,7 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, int8_t* stateBlock, Iterator_t& iter, bool negate )
+	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, IteratorTreeStateBlock& stateBlock, Iterator_t& iter, bool negate )
 	{
 		Item_t item;
 		TypeCode type;
@@ -91,7 +91,7 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::nextImpl(int8_t* stateBlock)
+	FnBooleanIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{	
 		STACK_INIT();
 		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, stateBlock, this->arg0_, this->negate ) );
@@ -99,13 +99,13 @@ namespace xqp
 	}
 
 	void
-	FnBooleanIterator::resetImpl(int8_t* stateBlock)
+	FnBooleanIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild ( this->arg0_, stateBlock );
 	}
 
 	void
-	FnBooleanIterator::releaseResourcesImpl(int8_t* stateBlock)
+	FnBooleanIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->arg0_, stateBlock);
 	}
@@ -118,7 +118,7 @@ namespace xqp
 	LogicIterator::~LogicIterator(){}
 			
 	Item_t 
-	LogicIterator::nextImpl(int8_t* stateBlock)
+	LogicIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		bool bRes;
 		
@@ -139,14 +139,14 @@ namespace xqp
 	}
 	
 	void 
-	LogicIterator::resetImpl(int8_t* stateBlock)
+	LogicIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild( this->iterLeft, stateBlock );
 		this->resetChild( this->iterRight, stateBlock );
 	}
 	
 	void 
-	LogicIterator::releaseResourcesImpl(int8_t* stateBlock)
+	LogicIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources( this->iterLeft, stateBlock );
 		this->releaseChildResources( this->iterRight, stateBlock );
@@ -169,7 +169,7 @@ namespace xqp
 	}
 	
 	Item_t
-	CompareIterator::nextImpl(int8_t* stateBlock)
+	CompareIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t item0;
 		Item_t item1;
@@ -240,14 +240,14 @@ namespace xqp
 	}
 
 	void
-	CompareIterator::resetImpl(int8_t* stateBlock)
+	CompareIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild ( this->iter0, stateBlock );
 		this->resetChild ( this->iter1, stateBlock );
 	}
 
 	void
-	CompareIterator::releaseResourcesImpl(int8_t* stateBlock)
+	CompareIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->iter0, stateBlock );
 		this->releaseChildResources ( this->iter1, stateBlock );

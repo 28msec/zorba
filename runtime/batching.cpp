@@ -28,7 +28,32 @@
 
 namespace xqp {
 
-Item_t BasicIterator::produceNext(int8_t* stateBlock) {
+/* begin IteratorTreeStateBlock */
+IteratorTreeStateBlock::IteratorTreeStateBlock(int32_t blockSize) 
+: block(new int8_t[blockSize]) 
+{
+	memset(this->block, 0, blockSize);
+}
+/* end IteratorTreeStateBlock */
+
+/* begin class BasicIterator */
+BasicIterator::BasicIterator(yy::location _loc) :
+	loc(_loc){
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
+}
+
+BasicIterator::BasicIterator(const BasicIterator& it) :
+	rcobject(it),
+	loc(it.loc) {
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
+}
+
+BasicIterator::~BasicIterator() {
+}
+
+Item_t BasicIterator::produceNext(IteratorTreeStateBlock& stateBlock) {
 	ZorbaErrorAlerts::error_alert(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
@@ -38,7 +63,7 @@ Item_t BasicIterator::produceNext(int8_t* stateBlock) {
 }
 
 void 
-BasicIterator::reset(int8_t* stateBlock) {
+BasicIterator::reset(IteratorTreeStateBlock& stateBlock) {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -47,7 +72,7 @@ BasicIterator::reset(int8_t* stateBlock) {
 }
 
 void 
-BasicIterator::releaseResources(int8_t* stateBlock) {
+BasicIterator::releaseResources(IteratorTreeStateBlock& stateBlock) {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -85,23 +110,6 @@ BasicIterator::setOffset(int32_t& offset) {
 }
 
 
-BasicIterator::BasicIterator(yy::location _loc) :
-	loc(_loc){
-	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
-}
-
-BasicIterator::BasicIterator(const BasicIterator& it) :
-	rcobject(it),
-	loc(it.loc) {
-	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
-}
-
-BasicIterator::~BasicIterator() {
-}
-
-
 std::ostream& BasicIterator::show(std::ostream& os)
 {
 	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
@@ -109,8 +117,9 @@ std::ostream& BasicIterator::show(std::ostream& os)
 	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
 	return os;
 }
+/* end class BasicIterator */
 
-
+/* begin class IteratorWrapper */
 void
 BasicIterator::BasicIteratorState::init() {
 	this->duffsLine = 0;
@@ -134,19 +143,19 @@ BasicIterator::BasicIteratorState::getDuffsLine() {
 
 IteratorWrapper::IteratorWrapper(Iterator_t& iter) : iterator(iter) {
 	int32_t stackSize = this->iterator->getStackSizeOfSubtree();
-	this->stateBlock = new int8_t[stackSize];
-	memset(this->stateBlock, 0, stackSize);
+	this->stateBlock = new IteratorTreeStateBlock(stackSize);
 	int32_t offset = 0;
 	this->iterator->setOffset(offset);
 }
 
 IteratorWrapper::~IteratorWrapper() {
-	this->iterator->releaseResources(this->stateBlock);
+	this->iterator->releaseResources(*this->stateBlock);
+	delete this->stateBlock;
 }
 
 Item_t
 IteratorWrapper::next() {
-	return this->iterator->produceNext(this->stateBlock);
+	return this->iterator->produceNext(*this->stateBlock);
 }
-
+/* end class IteratorWrapper */
 }

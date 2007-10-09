@@ -106,7 +106,7 @@ namespace xqp
 	}
 
 	Item_t 
-	SimpleTempSeq::Iterator::nextImpl(int8_t* stateBlock)
+	SimpleTempSeq::Iterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->curPos++;
 		switch ( this->borderType )
@@ -128,7 +128,7 @@ namespace xqp
 	}
 
 	void 
-	SimpleTempSeq::Iterator::resetImpl(int8_t* stateBlock)
+	SimpleTempSeq::Iterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		switch ( this->borderType )
 		{
@@ -143,7 +143,7 @@ namespace xqp
 	}
 
 	void 
-	SimpleTempSeq::Iterator::releaseResourcesImpl(int8_t* stateBlock)
+	SimpleTempSeq::Iterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 	}
 

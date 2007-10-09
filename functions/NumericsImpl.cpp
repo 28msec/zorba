@@ -31,7 +31,7 @@ namespace xqp
 
 	template <class IterType>
 	void 
-	BinaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+	BinaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		BasicIterator::BasicIteratorState* state;
 		GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
@@ -43,7 +43,7 @@ namespace xqp
 
 	template <class IterType>
 	void 
-	BinaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+	BinaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->iter0, stateBlock );
 		this->releaseChildResources ( this->iter1, stateBlock );
@@ -316,7 +316,7 @@ namespace xqp
 	}
 	
 	template< class Operations>
-	Item_t ArithmeticIterator<Operations>::nextImpl(int8_t* stateBlock)
+	Item_t ArithmeticIterator<Operations>::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t n0;
 		Item_t n1;
@@ -559,7 +559,7 @@ namespace xqp
 		delete this->genericCast;
 	}
 	
-	Item_t OpNumericUnaryIterator::nextImpl(int8_t* stateBlock)
+	Item_t OpNumericUnaryIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t item;
 		Item_t res;
@@ -616,12 +616,12 @@ namespace xqp
 		STACK_END();
 	}
 
-	void OpNumericUnaryIterator::resetImpl(int8_t* stateBlock)
+	void OpNumericUnaryIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild ( this->arg0, stateBlock );
 	}
 
-	void OpNumericUnaryIterator::releaseResourcesImpl(int8_t* stateBlock)
+	void OpNumericUnaryIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->arg0, stateBlock );
 	}
@@ -662,7 +662,7 @@ namespace xqp
 		delete this->genericCast;
 	}
 
-	Item_t FnAbsIterator::nextImpl(int8_t* stateBlock)
+	Item_t FnAbsIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		Item_t item;
 		Item_t res;
@@ -737,12 +737,12 @@ namespace xqp
 		STACK_END();
 	}
 
-	void FnAbsIterator::resetImpl(int8_t* stateBlock)
+	void FnAbsIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->resetChild ( this->arg0, stateBlock );
 	}
 
-	void FnAbsIterator::releaseResourcesImpl(int8_t* stateBlock)
+	void FnAbsIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 	{
 		this->releaseChildResources ( this->arg0, stateBlock );
 	}

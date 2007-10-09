@@ -41,7 +41,7 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t KindTestIterator::nextImpl(int8_t* stateBlock)
+Item_t KindTestIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t contextNode;
 
@@ -184,13 +184,13 @@ Item_t KindTestIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void KindTestIterator::resetImpl(int8_t* stateBlock)
+void KindTestIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 }
 
 
-void KindTestIterator::releaseResourcesImpl(int8_t* stateBlock)
+void KindTestIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theQName = NULL;
@@ -222,7 +222,7 @@ std::ostream& KindTestIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t NameTestIterator::nextImpl(int8_t* stateBlock)
+Item_t NameTestIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t contextNode;
 
@@ -273,13 +273,13 @@ Item_t NameTestIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void NameTestIterator::resetImpl(int8_t* stateBlock)
+void NameTestIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 }
 
 
-void NameTestIterator::releaseResourcesImpl(int8_t* stateBlock)
+void NameTestIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theQName = NULL;
@@ -301,7 +301,7 @@ std::ostream& NameTestIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SelfAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t SelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   do
   {
@@ -325,13 +325,13 @@ Item_t SelfAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void SelfAxisIterator::resetImpl(int8_t* stateBlock)
+void SelfAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 }
 
 
-void SelfAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void SelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theContextNode = NULL;
@@ -352,7 +352,7 @@ std::ostream& SelfAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AttributeAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t AttributeAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t attr;
 
@@ -396,7 +396,7 @@ Item_t AttributeAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void AttributeAxisIterator::resetImpl(int8_t* stateBlock)
+void AttributeAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 #ifdef DEBUG
@@ -405,7 +405,7 @@ void AttributeAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void AttributeAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void AttributeAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theAttributes = NULL;
@@ -437,7 +437,7 @@ std::ostream& AttributeAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ParentAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t ParentAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t parent;
 
@@ -469,7 +469,7 @@ Item_t ParentAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void ParentAxisIterator::resetImpl(int8_t* stateBlock)
+void ParentAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 #ifdef DEBUG
@@ -478,7 +478,7 @@ void ParentAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void ParentAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void ParentAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theContextNode = NULL;
@@ -507,7 +507,7 @@ std::ostream& ParentAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t AncestorAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   STACK_INIT();
 
@@ -544,13 +544,13 @@ Item_t AncestorAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void AncestorAxisIterator::resetImpl(int8_t* stateBlock)
+void AncestorAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 }
 
 
-void AncestorAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void AncestorAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theCurrentAnc = NULL;
@@ -576,7 +576,7 @@ std::ostream& AncestorAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorSelfAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t AncestorSelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   STACK_INIT();
 
@@ -613,13 +613,13 @@ Item_t AncestorSelfAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void AncestorSelfAxisIterator::resetImpl(int8_t* stateBlock)
+void AncestorSelfAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 }
 
 
-void AncestorSelfAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void AncestorSelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theCurrentAnc = NULL;
@@ -645,7 +645,7 @@ std::ostream& AncestorSelfAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t RSiblingAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t RSiblingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t parent;
   Item_t sibling;
@@ -701,7 +701,7 @@ Item_t RSiblingAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void RSiblingAxisIterator::resetImpl(int8_t* stateBlock)
+void RSiblingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 #ifdef DEBUG
@@ -710,7 +710,7 @@ void RSiblingAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void RSiblingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void RSiblingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theChildren = NULL; 
@@ -740,7 +740,7 @@ std::ostream& RSiblingAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t LSiblingAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t LSiblingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t parent;
   Item_t sibling;
@@ -794,7 +794,7 @@ Item_t LSiblingAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void LSiblingAxisIterator::resetImpl(int8_t* stateBlock)
+void LSiblingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 #ifdef DEBUG
@@ -803,7 +803,7 @@ void LSiblingAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void LSiblingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void LSiblingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theChildren = NULL;
@@ -833,7 +833,7 @@ std::ostream& LSiblingAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ChildAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t ChildAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t child;
 
@@ -891,7 +891,7 @@ Item_t ChildAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void ChildAxisIterator::resetImpl(int8_t* stateBlock)
+void ChildAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 #ifdef DEBUG
@@ -900,7 +900,7 @@ void ChildAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void ChildAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void ChildAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theChildren = NULL; 
@@ -930,7 +930,7 @@ std::ostream& ChildAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DescendantAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t DescendantAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t desc;
   Iterator_t children;
@@ -1000,7 +1000,7 @@ Item_t DescendantAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void DescendantAxisIterator::resetImpl(int8_t* stateBlock)
+void DescendantAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 
@@ -1014,7 +1014,7 @@ void DescendantAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void DescendantAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void DescendantAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
 
@@ -1050,7 +1050,7 @@ std::ostream& DescendantAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DescendantSelfAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t DescendantSelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t desc;
 
@@ -1114,7 +1114,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void DescendantSelfAxisIterator::resetImpl(int8_t* stateBlock)
+void DescendantSelfAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 
@@ -1128,7 +1128,7 @@ void DescendantSelfAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void DescendantSelfAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void DescendantSelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
 
@@ -1164,7 +1164,7 @@ std::ostream& DescendantSelfAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t PrecedingAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t PrecedingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t ancestor;
   Item_t desc;
@@ -1246,7 +1246,7 @@ Item_t PrecedingAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void PrecedingAxisIterator::resetImpl(int8_t* stateBlock)
+void PrecedingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 
@@ -1262,7 +1262,7 @@ void PrecedingAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void PrecedingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void PrecedingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
 
@@ -1299,7 +1299,7 @@ std::ostream& PrecedingAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t FollowingAxisIterator::nextImpl(int8_t* stateBlock)
+Item_t FollowingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t ancestor;
   Item_t following;
@@ -1386,7 +1386,7 @@ Item_t FollowingAxisIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void FollowingAxisIterator::resetImpl(int8_t* stateBlock)
+void FollowingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 
@@ -1404,7 +1404,7 @@ void FollowingAxisIterator::resetImpl(int8_t* stateBlock)
 }
 
 
-void FollowingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
+void FollowingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
 

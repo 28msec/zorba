@@ -14,8 +14,8 @@ namespace xqp {
 				( const yy::location& loc, Iterator_t& arg);
 			virtual ~UnaryBaseIterator();
 
-			void resetImpl(int8_t* stateBlock);
-			void releaseResourcesImpl(int8_t* stateBlock);
+			void resetImpl(IteratorTreeStateBlock& stateBlock);
+			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
 			virtual int32_t getStackSize();
 			virtual int32_t getStackSizeOfSubtree();
@@ -34,8 +34,8 @@ namespace xqp {
 				( const yy::location& loc, Iterator_t& arg0, Iterator_t& arg1 );
 			virtual ~BinaryBaseIterator();
 
-			void resetImpl(int8_t* stateBlock);
-			void releaseResourcesImpl(int8_t* stateBlock);
+			void resetImpl(IteratorTreeStateBlock& stateBlock);
+			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
 			virtual int32_t getStackSize();
 			virtual int32_t getStackSizeOfSubtree();
@@ -53,8 +53,8 @@ namespace xqp {
 				( const yy::location loc, Iterator_t arg0, Iterator_t arg1 );
 			virtual ~NaryBaseIterator();
 
-			void resetImpl(int8_t* stateBlock);
-			void releaseResourcesImpl(int8_t* stateBlock);
+			void resetImpl(IteratorTreeStateBlock& stateBlock);
+			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
 			virtual int32_t getStackSize();
 			virtual int32_t getStackSizeOfSubtree();

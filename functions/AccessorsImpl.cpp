@@ -12,7 +12,7 @@
 namespace xqp {
 
 Item_t
-FnDataIterator::nextImpl(int8_t* stateBlock)
+FnDataIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t item;
   Iterator_t iter;
@@ -35,19 +35,19 @@ FnDataIterator::nextImpl(int8_t* stateBlock)
 }
 	
 void
-FnDataIterator::resetImpl(int8_t* stateBlock)
+FnDataIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   this->resetChild( this->argument, stateBlock );
 }
 	
 void
-FnDataIterator::releaseResourcesImpl(int8_t* stateBlock)
+FnDataIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   this->releaseChildResources( this->argument, stateBlock );
 }
 
 
-Item_t FnRootIterator::nextImpl(int8_t* stateBlock)
+Item_t FnRootIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t contextNode;
   Item_t parentNode;
@@ -82,13 +82,13 @@ Item_t FnRootIterator::nextImpl(int8_t* stateBlock)
 }
 
 
-void FnRootIterator::resetImpl(int8_t* stateBlock)
+void FnRootIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   resetChild(theInput, stateBlock);
 }
 
 	
-void FnRootIterator::releaseResourcesImpl(int8_t* stateBlock)
+void FnRootIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
 }

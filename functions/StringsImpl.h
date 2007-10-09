@@ -67,9 +67,9 @@ public:
 	~CodepointsToStringIterator() {}
 
 public:
-	Item_t nextImpl(int8_t* stateBlock);
-	void resetImpl(int8_t* stateBlock);
-	void releaseResourcesImpl(int8_t* stateBlock);
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	void resetImpl(IteratorTreeStateBlock& stateBlock);
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -103,9 +103,9 @@ public:
 	~StringToCodepointsIterator() {}
 
 public:
-	Item_t nextImpl(int8_t* stateBlock);
-	void resetImpl(int8_t* stateBlock);
-	void releaseResourcesImpl(int8_t* stateBlock);
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	void resetImpl(IteratorTreeStateBlock& stateBlock);
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -149,9 +149,9 @@ public:
 	~CodepointEqualIterator() {}
 
 public:
-	Item_t nextImpl(int8_t* stateBlock);
-	void resetImpl(int8_t* stateBlock);
-	void releaseResourcesImpl(int8_t* stateBlock);
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	void resetImpl(IteratorTreeStateBlock& stateBlock);
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -196,9 +196,9 @@ public:
 		~ConcatFnIterator() {}
 
 public:
-	Item_t nextImpl(int8_t* stateBlock);
-	void resetImpl(int8_t* stateBlock);
-	void releaseResourcesImpl(int8_t* stateBlock);
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	void resetImpl(IteratorTreeStateBlock& stateBlock);
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -240,9 +240,9 @@ public:
 		~StringJoinIterator() {}
 
 public:
-	Item_t nextImpl(int8_t* stateBlock);
-	void resetImpl(int8_t* stateBlock);
-	void releaseResourcesImpl(int8_t* stateBlock);
+	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	void resetImpl(IteratorTreeStateBlock& stateBlock);
+	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:

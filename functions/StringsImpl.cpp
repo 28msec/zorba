@@ -50,7 +50,7 @@ std::ostream& CodepointsToStringIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-Item_t CodepointsToStringIterator::nextImpl(int8_t* stateBlock){
+Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	Item_t item;
 	sequence_type_t type0;
 	//xqpString test;
@@ -82,11 +82,11 @@ Item_t CodepointsToStringIterator::nextImpl(int8_t* stateBlock){
 	STACK_END();
 }
 
-void CodepointsToStringIterator::resetImpl(int8_t* stateBlock){
+void CodepointsToStringIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
 		this->resetChild(argv, stateBlock);
 }
 
-void CodepointsToStringIterator::releaseResourcesImpl(int8_t* stateBlock) {
+void CodepointsToStringIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
 		this->releaseChildResources(argv, stateBlock);
 }
 
@@ -109,7 +109,7 @@ std::ostream& StringToCodepointsIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-Item_t StringToCodepointsIterator::nextImpl(int8_t* stateBlock){
+Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	Item_t item;
 
 	STACK_INIT();
@@ -133,11 +133,11 @@ Item_t StringToCodepointsIterator::nextImpl(int8_t* stateBlock){
 	STACK_END();
 }
 
-void StringToCodepointsIterator::resetImpl(int8_t* stateBlock){
+void StringToCodepointsIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
 	this->resetChild(argv, stateBlock);
 }
 
-void StringToCodepointsIterator::releaseResourcesImpl(int8_t* stateBlock) {
+void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
 	this->releaseChildResources(argv, stateBlock);
 }
 
@@ -184,7 +184,7 @@ std::ostream& CodepointEqualIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-Item_t CodepointEqualIterator::nextImpl(int8_t* stateBlock){
+Item_t CodepointEqualIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	Item_t item0;
 	Item_t item1;
 
@@ -230,12 +230,12 @@ Item_t CodepointEqualIterator::nextImpl(int8_t* stateBlock){
 	STACK_END();
 }
 
-void CodepointEqualIterator::resetImpl(int8_t* stateBlock){
+void CodepointEqualIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
 	this->resetChild(argv0, stateBlock);
 	this->resetChild(argv1, stateBlock);
 }
 
-void CodepointEqualIterator::releaseResourcesImpl(int8_t* stateBlock) {
+void CodepointEqualIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
 	this->releaseChildResources(argv0, stateBlock);
 	this->releaseChildResources(argv1, stateBlock);
 }
@@ -274,7 +274,7 @@ std::ostream& ConcatFnIterator::_show(std::ostream& os)
 	return os;
 }
 
-Item_t ConcatFnIterator::nextImpl(int8_t* stateBlock) {
+Item_t ConcatFnIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 
 	Item_t item;
 	
@@ -300,14 +300,14 @@ Item_t ConcatFnIterator::nextImpl(int8_t* stateBlock) {
 	STACK_END();
 }
 
-void ConcatFnIterator::resetImpl(int8_t* stateBlock) {
+void ConcatFnIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter, stateBlock);
 	}
 }
 
-void ConcatFnIterator::releaseResourcesImpl(int8_t* stateBlock) {
+void ConcatFnIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter, stateBlock);
@@ -344,7 +344,7 @@ std::ostream& StringJoinIterator::_show(std::ostream& os)
 	return os;
 }
 
-Item_t StringJoinIterator::nextImpl(int8_t* stateBlock) {
+Item_t StringJoinIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 
 	STACK_INIT();
 	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("result"));
@@ -352,14 +352,14 @@ Item_t StringJoinIterator::nextImpl(int8_t* stateBlock) {
 	STACK_END();
 }
 
-void StringJoinIterator::resetImpl(int8_t* stateBlock) {
+void StringJoinIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter, stateBlock);
 	}
 }
 
-void StringJoinIterator::releaseResourcesImpl(int8_t* stateBlock) {
+void StringJoinIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter, stateBlock);

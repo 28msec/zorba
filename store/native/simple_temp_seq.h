@@ -73,9 +73,9 @@ namespace xqp
 
 					~Iterator() {}
 
-					Item_t nextImpl(int8_t* stateBlock);
-					void resetImpl(int8_t* stateBlock);
-					void releaseResourcesImpl(int8_t* stateBlock);
+					Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+					void resetImpl(IteratorTreeStateBlock& stateBlock);
+					void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			};
 
 	}; /* class SimpleTempSeq */
