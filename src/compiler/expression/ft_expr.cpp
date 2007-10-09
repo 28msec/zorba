@@ -7,7 +7,7 @@
  *
  */
 
-#include "ft_expr.h"
+#include "compiler/expression/ft_expr.h"
 
 using namespace std;
 namespace xqp {

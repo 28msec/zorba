@@ -23,9 +23,9 @@
  */
 
 
-#include "utf8/xqpString.h"
+#include "util/utf8/xqpString.h"
 #include "types/sequence_type_mgr.h"
-#include "store/native/atomic_items.h"
+#include "store/naive/atomic_items.h"
 
 
 namespace xqp {

@@ -2,16 +2,16 @@
  * Contains main method to execute a simple query that is passed with the first execution parameter.
  */
 
-#include "runtime/plan_visitor.h"
-#include "exprtree/normalize_visitor.h"
-#include "exprtree/parsenode_print_xml_visitor.h"
-#include "exprtree/parsenode_print_dot_visitor.h"
-#include "parser/xquery_driver.h"
+#include "compiler/codegen/plan_visitor.h"
+#include "compiler/translator/normalize_visitor.h"
+#include "compiler/expression/parsenode_print_xml_visitor.h"
+#include "compiler/expression/parsenode_print_dot_visitor.h"
+#include "compiler/parser/xquery_driver.h"
 #include "errors/Error.h"
 #include "runtime/zorba.h"
 #include "timer.h"
-#include "../store/native/basic_item_factory.h"
-#include "../store/native/simple_store.h"
+#include "store/naive/basic_item_factory.h"
+#include "store/naive/simple_store.h"
 
 #include <iostream>
 #include <fstream>

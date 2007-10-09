@@ -43,9 +43,9 @@
 #include <iostream>
 #include <string>
 
-#include "symbol_table.h"
-#include "xquery_driver.h"
-#include "xquery_parser.tab.h"
+#include "compiler/parser/symbol_table.h"
+#include "compiler/parser/xquery_driver.h"
+#include "compiler/parser/xquery_parser.tab.h"
 
 /*
 	Work around an incompatibility in flex (at least versions

@@ -8,14 +8,14 @@
  *
  */
 
-#include "expr.h"
+#include "compiler/expression/expr.h"
 #include "functions/function.h"
-#include "parser/parse_constants.h"
-#include "parser/parsenodes.h"
+#include "compiler/parser/parse_constants.h"
+#include "compiler/parsetree/parsenodes.h"
 #include "util/Assert.h"
 #include "util/tracer.h"
 #include "errors/Error.h"
-#include "runtime/expr_visitor.h"
+#include "runtime/expression/expr_visitor.h"
 
 #include <iostream>
 #include <string>

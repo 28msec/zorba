@@ -10,7 +10,7 @@
 #ifndef XQP_REPRESENTATIONS_H
 #define XQP_REPRESENTATIONS_H
 
-#include "../utf8/xqpString.h"
+#include "util/utf8/xqpString.h"
 
 namespace xqp {
 

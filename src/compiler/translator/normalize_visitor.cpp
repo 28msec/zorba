@@ -8,13 +8,13 @@
  *
  */
 
-#include "normalize_visitor.h"
+#include "compiler/translator/normalize_visitor.h"
 
 #include "functions/library.h"
-#include "parser/parsenodes.h"
+#include "compiler/parsetree/parsenodes.h"
 #include "util/tracer.h"
 #include "store/api/item.h"
-#include "runtime/zorba.h"
+#include "util/zorba.h"
 
 
 #include <iostream>

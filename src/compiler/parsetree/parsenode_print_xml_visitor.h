@@ -1,7 +1,7 @@
 #ifndef XQP_PARSENODE_PRINT_XML_VISITOR_H
 #define XQP_PARSENODE_PRINT_XML_VISITOR_H
 
-#include "parsenode_visitor.h"
+#include "compiler/parsetree/parsenode_visitor.h"
 
 #include <iostream>
 #include <ostream>

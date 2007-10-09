@@ -11,8 +11,8 @@
 #ifndef XQP_NORMALIZE_VISITOR_H
 #define XQP_NORMALIZE_VISITOR_H
 
-#include "parsenode_visitor.h"
-#include "expr.h"
+#include "compiler/parsetree/parsenode_visitor.h"
+#include "compiler/expression/expr.h"
 // #include "store/data_manager.h"
 
 #include <stack>

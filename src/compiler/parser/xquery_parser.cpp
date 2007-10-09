@@ -33,16 +33,16 @@
    version 2.2 of Bison.  */
 
 
-#include "xquery_parser.tab.h"
+#include "compiler/parser/xquery_parser.tab.h"
 
 /* User implementation prologue.  */
-#line 122 "xquery_parser.y"
+#line 122 "compiler/parser/xquery_parser.y"
 
-#include "xquery_driver.h"
+#include "compiler/parser/xquery_driver.h"
 
 
 /* Line 317 of lalr1.cc.  */
-#line 46 "xquery_parser.tab.c"
+#line 46 "compiler/parser/xquery_parser.tab.c"
 
 #ifndef YY_
 # if YYENABLE_NLS

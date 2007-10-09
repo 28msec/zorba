@@ -33,7 +33,7 @@
 #endif
 
 #ifdef WIN32
-#include "win32/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #ifndef _WIN32_WCE
 #include <io.h>
 #endif
@@ -46,8 +46,8 @@
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "parsenodes.h"
-#include "parse_constants.h"
+#include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/parse_constants.h"
 
 
 using namespace std;
@@ -120,7 +120,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 **	driver. 
 */
 %{
-#include "xquery_driver.h"
+#include "compiler/parser/xquery_driver.h"
 %}
 
 

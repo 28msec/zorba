@@ -10,9 +10,9 @@
 #ifndef XQP_PLAN_VISITOR_H
 #define XQP_PLAN_VISITOR_H
 
-#include "expr_visitor.h"
-#include "item_iterator.h"
-#include "runtime/zorba.h"
+#include "compiler/expression/expr_visitor.h"
+#include "runtime/core/item_iterator.h"
+#include "util/zorba.h"
 #include "util/rchandle.h"
 
 #include <stack>

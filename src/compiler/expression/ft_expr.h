@@ -10,7 +10,7 @@
 #ifndef XQP_FTEXPR_H
 #define XQP_FTEXPR_H
 
-#include "expr.h"
+#include "compiler/expression/expr.h"
 
 namespace xqp {
 

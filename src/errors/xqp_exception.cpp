@@ -8,7 +8,7 @@
  *
  */
 
-#include "xqp_exception.h"
+#include "errors/xqp_exception.h"
 
 #include <sstream>
 #include <typeinfo>

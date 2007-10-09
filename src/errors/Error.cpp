@@ -1,11 +1,11 @@
 
 
-#include "Error.h"
+#include "erros/Error.h"
 #include <iostream>
 #include <iomanip>
 #include <stdlib.h>
 #include "runtime/zorba.h"
-#include "../store/api/item.h"
+#include "store/api/item.h"
 
 using namespace std;
 namespace xqp {

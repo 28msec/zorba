@@ -7,8 +7,8 @@
  *
  */
 
-#include "sequence_type.h"
-#include "../util/tracer.h"
+#include "types/sequence_type.h"
+#include "util/tracer.h"
 
 #include <string>
 #include <iostream>

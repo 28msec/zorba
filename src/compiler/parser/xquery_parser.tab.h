@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "xquery_parser.y"
+#line 30 "compiler/parser/xquery_parser.y"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)

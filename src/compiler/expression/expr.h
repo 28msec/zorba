@@ -25,13 +25,13 @@
 #include <string>
 #include <vector>
 
-#include "parser/parsenodes.h"
+#include "compiler/parsetree/parsenodes.h"
 #include "types/sequence_type.h"
 #include "util/list.h"
 #include "util/rchandle.h"
-#include "exprtree/expr_consts.h"
+#include "compiler/exppression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
-#include "utf8/xqpString.h"
+#include "util/utf8/xqpString.h"
 
 namespace xqp {
 

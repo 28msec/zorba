@@ -15,7 +15,7 @@
 #ifndef WIN32
 #include <stdint.h>
 #else
-	#include "win32/compatib_defs.h"
+	#include "util/win32/compatib_defs.h"
 #endif
 
 namespace xqp {

@@ -26,12 +26,12 @@
 #ifndef XQP_CONTEXT_H
 #define XQP_CONTEXT_H
 
-#include "common.h"
-#include "runtime/item_iterator.h"
-#include "util/fxhashmap.h"
+#include "context/common.h"
+#include "runtime/core/item_iterator.h"
+#include "util/fx/fxhashmap.h"
 #include "util/rchandle.h"
 #include "errors/Error.h"
-#include "../store/api/item_factory.h"
+#include "store/api/item_factory.h"
 
 namespace xqp {
 

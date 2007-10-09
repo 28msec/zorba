@@ -1,4 +1,4 @@
 // This is just for compiling typecodes.h; use gcc -c only.
-# include "typecodes.h"
+# include "types/typecodes.h"
 int main() {
 	}

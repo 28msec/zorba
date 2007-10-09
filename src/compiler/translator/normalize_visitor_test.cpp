@@ -7,8 +7,8 @@
  *
  */
 
-#include "normalize_visitor.h"
-#include "parser/xquery_driver.h"
+#include "compiler/translator/normalize_visitor.h"
+#include "compiler/parser/xquery_driver.h"
 #include <iostream>
 
 using namespace std;

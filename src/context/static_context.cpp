@@ -22,10 +22,10 @@
  *
  */
 
-#include "static_context.h"
-#include "common.h"
-#include "../store/api/item.h"
-#include "../store/api/item_factory.h"
+#include "context/static_context.h"
+#include "zorba/common.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
 
 
 using namespace std;

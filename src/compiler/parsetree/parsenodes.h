@@ -17,12 +17,12 @@
 #include <vector>
 #include <assert.h>
 
-#include "parse_constants.h"
+#include "compiler/parser/parse_constants.h"
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "../store/api/item.h"
+#include "store/api/item.h"
 #include "util/rchandle.h"
-#include "location.hh"
+#include "compiler/parser/location.hh"
 
 namespace xqp {
 

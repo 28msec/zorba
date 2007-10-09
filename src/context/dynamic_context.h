@@ -25,12 +25,12 @@
 #ifndef XQP_DYNAMIC_CONTEXT_H
 #define XQP_DYNAMIC_CONTEXT_H
 
-#include "common.h"
-#include "context.h"
+#include "zorba/common.h"
+#include "context/context.h"
 #include "functions/library.h"
 #include "util/rchandle.h"
-#include "runtime/item_iterator.h"
-#include "../types/sequence_type.h"
+#include "runtime/core/item_iterator.h"
+#include "types/sequence_type.h"
 
 namespace xqp {
 

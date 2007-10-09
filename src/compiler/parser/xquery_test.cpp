@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-#include "xquery_driver.h"
+#include "compiler/parser/xquery_driver.h"
 #include <iostream>
      
 int main (int argc, char *argv[])

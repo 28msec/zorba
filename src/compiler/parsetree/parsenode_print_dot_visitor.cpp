@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-#include "../parser/parsenodes.h"
+#include "compiler/parsetree/parsenodes.h"
 
 namespace xqp {
 

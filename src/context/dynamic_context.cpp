@@ -22,8 +22,8 @@
  *
  */
 
-#include "dynamic_context.h"
-#include "runtime/item_iterator.h"
+#include "context/dynamic_context.h"
+#include "runtime/core/item_iterator.h"
 
 using namespace std;
 namespace xqp {

@@ -10,7 +10,7 @@
 #ifndef XQP_UPDATE_EXPR_H
 #define XQP_UPDATE_EXPR_H
 
-#include "expr.h"
+#include "compiler/expression/expr.h"
 
 #include <iostream>
 

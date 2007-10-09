@@ -7,14 +7,14 @@
  *	Author: Paul Pedersen
  */
 
-#include "expr.h"
-#include "../context/context.h"
-#include "../functions/signature.h"
-#include "../functions/function.h"
-#include "../parser/location.hh"
-#include "../parser/symbol_table.h"
-#include "../types/sequence_type.h"
-#include "../errors/xqp_exception.h"
+#include "compiler/expression/expr.h"
+#include "context/context.h"
+#include "functions/signature.h"
+#include "functions/function.h"
+#include "compiler/parser/location.hh"
+#include "compiler/parser/symbol_table.h"
+#include "types/sequence_type.h"
+#include "errors/xqp_exception.h"
 
 #include <iostream>
 

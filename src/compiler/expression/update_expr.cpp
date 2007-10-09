@@ -7,7 +7,7 @@
  *
  */
 
-#include "update_expr.h"
+#include "compiler/expression/update_expr.h"
 
 using namespace std;
 namespace xqp {

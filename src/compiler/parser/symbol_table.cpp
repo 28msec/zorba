@@ -5,8 +5,8 @@
  *	Copyright 2006-2007 FLWOR Foundation.
  */
 
-#include "symbol_table.h"
-#include "util/fxcharheap.h"
+#include "compiler/parser/symbol_table.h"
+#include "util/fx/fxcharheap.h"
 
 #include <stdlib.h>
 #include <string>

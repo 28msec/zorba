@@ -1,8 +1,8 @@
-#include "parsenode_print_xml_visitor.h"
+#include "compiler/parsetree/parsenode_print_xml_visitor.h"
 
 #include <ostream>
 
-#include "../parser/parsenodes.h"
+#include "compiler/parsetree/parsenodes.h"
 
 namespace xqp {
 

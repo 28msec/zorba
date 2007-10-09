@@ -42,7 +42,7 @@
 
 # include <iostream>
 # include <string>
-# include "position.hh"
+# include "compiler/parser/position.hh"
 
 namespace yy
 {

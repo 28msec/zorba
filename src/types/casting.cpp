@@ -23,10 +23,10 @@
  */
 
 #include "casting.h"
-#include "../types/sequence_type.h"
-#include "../store/api/item.h"
-#include "../store/api/item_factory.h"
-#include "../runtime/zorba.h"
+#include "types/sequence_type.h"
+#include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "util/zorba.h"
 
 namespace xqp
 {

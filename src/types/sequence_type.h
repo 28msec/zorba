@@ -10,8 +10,8 @@
 #ifndef XQP_SEQUENCE_TYPE_H
 #define XQP_SEQUENCE_TYPE_H
 
-#include "typecodes.h"
-#include "../context/common.h"
+#include "types/typecodes.h"
+#include "context/common.h"
 
 #include <string>
 

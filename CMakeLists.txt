@@ -22,6 +22,10 @@ INCLUDE(cmake_modules/FindICU.cmake)
 # some compiler flags that should always be used in order to force a good programming style
 ADD_DEFINITIONS(-Wall -Wno-uninitialized -W -Wno-unused -Wpointer-arith -Woverloaded-virtual -Winline)
 
+
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+
 ##############################################################################################################
 # do platform checks
 IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)

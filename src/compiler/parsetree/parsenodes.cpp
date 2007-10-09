@@ -6,8 +6,8 @@
  *
  */
 
-#include "parsenodes.h"
-#include "parse_constants.h"
+#include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/parse_constants.h"
 
 #include <iostream>
 #include <sstream>
@@ -17,11 +17,11 @@
 #include <vector>
 #include <assert.h>
 
-#include "exprtree/parsenode_visitor.h"
+#include "compiler/parsetree/parsenode_visitor.h"
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "errors/Error.h"
-#include "../store/api/item.h"
+#include "store/api/item.h"
 
 using namespace std;
 namespace xqp {

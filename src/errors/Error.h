@@ -14,8 +14,8 @@
 #include <string>
 #include <vector>
 
-#include "errors.h"
-#include "xqp_exception.h"
+#include "errors/errors.h"
+#include "errors/xqp_exception.h"
 #include "util/rchandle.h"
 #include "compiler/parser/location.hh"
 //#include "runtime/zorba.h"
