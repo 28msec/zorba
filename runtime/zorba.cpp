@@ -12,7 +12,6 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-// #include "store/data_manager.h"
 #include "../store/api/item_factory.h"
 
 
@@ -26,9 +25,9 @@ std::map<uint64_t, zorba*>		zorba::global_zorbas;
 pthread_mutex_t								zorba::global_zorbas_mutex;// = PTHREAD_MUTEX_INITIALIZER;
 
 zorba::zorba()
-:
-// 	theDataManager(NULL),
+  :
 	theValueFactory(NULL),
+  theSequenceTypeManager(NULL),
 	theStore(NULL),
 	theStaticContext(NULL),
 	theDynamicContext(NULL),
@@ -36,22 +35,24 @@ zorba::zorba()
 {
 }
 
+
 zorba::zorba(
-// 	rchandle<data_manager> dataManager,
 	rchandle<ItemFactory> valueFactory,
+  rchandle<SequenceTypeManager> seqMgr,
 	rchandle<Store> store,
 	rchandle<static_context> staticContext,
 	rchandle<dynamic_context> dynamicContext,
 	rchandle<ZorbaErrorAlerts> zorbaAlerts)
-:
-// 	theDataManager(dataManager),
+  :
 	theValueFactory(valueFactory),
+  theSequenceTypeManager(seqMgr),
 	theStore(store),
 	theStaticContext(staticContext),
 	theDynamicContext(dynamicContext),
 	error_manager(zorbaAlerts)
 {
 }
+
 
 yy::location& zorba::GetCurrentLocation()//from top iterator
 {
@@ -62,18 +63,19 @@ yy::location& zorba::GetCurrentLocation()//from top iterator
 }
 
 
-
 void		
 zorba::initializeZorbaEngine()
 {
 	pthread_mutex_init(&global_zorbas_mutex, NULL);
 }
 
+
 void		
 zorba::uninitializeZorbaEngine()
 {
 	pthread_mutex_destroy(&global_zorbas_mutex);
 }
+
 
 zorba* 
 zorba::getZorbaForCurrentThread()
@@ -93,6 +95,7 @@ zorba::getZorbaForCurrentThread()
 		return (*it_zorba).second;
 	}
 }
+
 
 zorba*		
 zorba::allocateZorbaForNewThread()
