@@ -1,7 +1,0 @@
-#!/bin/bash -f
-for d in `cat dirlist`; do
-	echo ""
-	echo "- " $d " -"
-	$1 $d;
-done;
-
