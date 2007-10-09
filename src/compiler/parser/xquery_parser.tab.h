@@ -68,8 +68,8 @@ namespace yy
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "parsenodes.h"
-#include "parse_constants.h"
+#include "compiler/parsetree/parsenodes.h"
+#include "compiler/parser/parse_constants.h"
 
 
 using namespace std;

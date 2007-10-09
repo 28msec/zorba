@@ -10,7 +10,7 @@
 #include "plan_visitor.h"
 
 #include "compiler/expression/expr.h"
-#include "runtime/functions/sequences/SequencesImpl.h"
+#include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/paths/path_iterators.h"
 #include "util/tracer.h"

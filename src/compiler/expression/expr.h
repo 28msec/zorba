@@ -29,7 +29,7 @@
 #include "types/sequence_type.h"
 #include "util/list.h"
 #include "util/rchandle.h"
-#include "compiler/exppression/expr_consts.h"
+#include "compiler/expression/expr_consts.h"
 #include "store/api/fullText/ft_options.h"
 #include "util/utf8/xqpString.h"
 

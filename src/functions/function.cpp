@@ -29,11 +29,3 @@ public:
 };
 
 
-int main(int argc, char* argv[])
-{
-	qname* fname_p = new zorba_qname(0,"prefix","localname");
-	cout << "fname = "; fname_p->put(NULL,cout) << endl;
-	signature sig(fname_p,xs_string);
-	testfun f(sig);
-}
-

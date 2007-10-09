@@ -15,7 +15,7 @@
 #include "util/Assert.h"
 #include "util/tracer.h"
 #include "errors/Error.h"
-#include "runtime/expression/expr_visitor.h"
+#include "compiler/expression/expr_visitor.h"
 
 #include <iostream>
 #include <string>

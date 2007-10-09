@@ -8,7 +8,7 @@
 
 #include "context/common.h"
 #include "types/sequence_type.h"
-#include "runtime/batching.h"
+#include "runtime/core/batching.h"
 
 namespace xqp
 {

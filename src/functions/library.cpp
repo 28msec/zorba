@@ -24,7 +24,7 @@
 #include "util/tracer.h"
 #include "util/list.h"
 #include "store/api/item.h"
-#include "store/native/atomic_items.h"
+#include "store/naive/atomic_items.h"
 
 using namespace std;
 namespace xqp {

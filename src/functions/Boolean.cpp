@@ -3,10 +3,10 @@
  *  Authors: Tim Kraska, David Graf
  */
 
-#include "Boolean.h"
-#include "BooleanImpl.h"
-#include "../runtime/item_iterator.h"
-#include "../runtime/zorba.h"
+#include "functions/Boolean.h"
+#include "runtime/booleans/BooleanImpl.h"
+#include "runtime/core/item_iterator.h"
+#include "util/zorba.h"
 
 namespace xqp
 {

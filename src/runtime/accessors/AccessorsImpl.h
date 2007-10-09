@@ -12,7 +12,7 @@
 
 #include "context/common.h"
 #include "functions/function.h"
-#include "runtime/batching.h"
+#include "runtime/core/batching.h"
 
 namespace xqp {
 

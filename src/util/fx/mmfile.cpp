@@ -8,7 +8,7 @@
  *
  */
 
-#include "util/mmfile.h"
+#include "util/fx/mmfile.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>
@@ -33,7 +33,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "../errors/Error.h"
+#include "errors/Error.h"
 
 using namespace std;
 namespace xqp {

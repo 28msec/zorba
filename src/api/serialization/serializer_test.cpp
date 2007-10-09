@@ -24,10 +24,10 @@
 
 
 
-#include "serializer.h"
+#include "api/serialization/serializer.h"
 #include "store/api/item.h"
 #include "util/list.h"
-#include "store/native/basic_item_factory.h"
+#include "store/naive/basic_item_factory.h"
 
 using namespace xqp;
 

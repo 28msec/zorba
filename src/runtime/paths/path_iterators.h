@@ -28,7 +28,7 @@
 #include <stack>
 
 #include "util/rchandle.h"
-#include "exprtree/expr_consts.h"
+#include "compiler/expression/expr_consts.h"
 #include "runtime/core/batching.h"
 
 

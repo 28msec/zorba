@@ -12,9 +12,9 @@
 
 #include <vector>
 
-#include "item.h"
-#include "runtime/item_iterator.h"
-#include "util/rchandle.h>
+#include "store/api/item.h"
+#include "runtime/core/item_iterator.h"
+#include "util/rchandle.h"
 
 /*______________________________________________________________________
 |  

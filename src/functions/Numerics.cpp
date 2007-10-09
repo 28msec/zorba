@@ -11,8 +11,8 @@
 #include <iostream>
 
 #include "functions/Numerics.h"
-#include "functions/NumericsImpl.h"
-#include "functions/BooleanImpl.h"
+#include "runtime/numerics/NumericsImpl.h"
+#include "runtime/booleans/BooleanImpl.h"
 
 using namespace std;
 namespace xqp {

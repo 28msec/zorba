@@ -23,7 +23,7 @@
  */
 
 #include "context/static_context.h"
-#include "zorba/common.h"
+#include "context/common.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 

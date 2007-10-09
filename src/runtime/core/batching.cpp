@@ -18,13 +18,13 @@
  * ========================================================================
  *
  * @author Tim Kraska (tim.kraska@inf.ethz.ch), David Graf (dagraf@inf.ethz.ch)
- * @file runtime/batching.h
+ * @file runtime/core/batching.h
  *
  */
 
 #include "runtime/core/batching.h"
 
-#include "runtime/zorba.h"
+#include "util/zorba.h"
 
 namespace xqp {
 

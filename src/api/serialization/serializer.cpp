@@ -22,9 +22,9 @@
  *
  */
 
-#include "api/serializer.h"
+#include "api/serialization/serializer.h"
 #include "util/zorba.h"
-#include "store/native/basic_item_factory.h"
+#include "store/naive/basic_item_factory.h"
 #include "types/sequence_type.h"
 
 

@@ -1,5 +1,6 @@
 SET(API_SRCS
-    serialization/serialization.cpp)
+    serialization/serializer.cpp)
     
 
 ADD_LIBRARY(api ${API_SRCS})
+

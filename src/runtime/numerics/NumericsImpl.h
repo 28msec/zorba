@@ -21,7 +21,7 @@
 #define XQP_NUMERICS_IMPL_H
 
 #include "context/common.h"
-#include "runtime/batching.h"
+#include "runtime/core/batching.h"
 
 
 namespace xqp

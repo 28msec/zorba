@@ -18,7 +18,7 @@
  * ========================================================================
  *
  * @author Tim Kraska (tim.kraska@inf.ethz.ch), David Graf (dagraf@inf.ethz.ch)
- * @file runtime/batching.h
+ * @file runtime/core/batching.h
  *
  */
 #ifndef XQP_BATCHING_H

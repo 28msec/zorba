@@ -6,6 +6,11 @@
  *  Author: David Graf, Donald Kossmann, Tim Kraska
  *
  */
+ 
+#include "types/sequence_type.h"
+#include "util/rchandle.h"
+#include "types/representations.h"
+#include "../../runtime/core/batching.h"
 
 
 #include <iostream>
@@ -14,10 +19,6 @@
 #include <vector>
 #include <set>
 
-#include "types/sequence_type.h"
-#include "util/rchandle.h"
-#include "types/representations.h"
-#include "runtime/core/batching.h"
 
 #ifndef XQP_ITEM_H
 #define XQP_ITEM_H
