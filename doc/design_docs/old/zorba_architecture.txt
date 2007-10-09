@@ -1,0 +1,1045 @@
+
+
+                       Zorba Architecture
+                       ------------------
+                         April 26, 2007
+                          Revision 1.0
+
+                        Dana Florescu
+                        Donald Kossmann
+                        John Cowan
+                        Paul Pedersen
+                        Tim Kraska
+
+
+
+
+
+
+
+
+Table of Contents
+-----------------
+
+    - Introduction
+    - Data Architecture
+    - Type System
+    - Context
+    - Runtime
+    - Data Manager
+    - XML Parser
+    - XQuery Parser
+    - Normalization
+    - Optimization
+    - Query Plan
+    - Functions
+    - External interface
+    - Web interface
+
+
+
+
+
+
+
+
+Introduction
+------------
+
+The zorba architecture is a collaborative effort of the FLWOR 
+foundation.  Participants in the design have been: Dana Florescu, 
+Donald Kossmann, John Cowan, and Paul Pedersen. (add anyone else
+you think belongs here..)
+
+Zorba follows the following specifications:
+
+  XQuery 1.0: An XML Query Language       
+    [http://www.w3.org/TR/xquery/]
+  XQuery 1.0 and XPath 2.0 Data Model (XDM)
+    [http://www.w3.org/TR/xpath-datamodel/]
+  XML Schema 1.1 Part 2: Datatypes        
+    [http://www.w3.org/TR/xmlschema11-2/]
+  XQuery 1.0 and XPath 2.0 Formal Semantics
+    [http://www.w3.org/TR/xquery-semantics/]
+  XQuery 1.0 and XPath 2.0 Functions and Operators
+    [http://www.w3.org/TR/xpath-functions/]
+  XQuery Update Facility                   
+    [http://www.w3.org/TR/xqupdate/]
+  XQuery 1.0 and XPath 2.0 Full-Text       
+    [http://www.w3.org/TR/xquery-full-text/]
+
+
+The objective of the zorba project is to create an open-source XQueryP 
+system suitable for embedding in a wide range of application contexts 
+including: browsers, PDAs, major database storage systems, network 
+routers, and online data distribution and hosting services. 
+
+
+
+
+
+
+
+
+Data Architecture
+-----------------
+
+Zorba adopts a three-tier architecture consisting of
+
+  1. abstract nodes and qnames 
+  2. peer nodes and qnames
+  3. representation nodes and qnames
+
+The peer node classes provide a bridge between the abstract interface 
+and concrete representation classes.   For example, when developing
+a Mozilla embedded DOM implementation, a set of zorba_mozilla_dom_node
+peer classes are needed that implement the node interface, and
+point to (and delegate to) concrete Mozilla Dom instances.
+
+
+          ___________________
+         |                   |
+         |      node         |    abstract base class (ABC)
+         |___________________|
+                  ^
+                  |is-a
+          ___________________
+         |                   |
+         |    zorba_node     |    peer class
+         |___________________|
+                  |
+                  |has-a
+          ________v__________
+         |                   |
+         |     noderep       |    representation class
+         |___________________|
+
+
+The purpose of this design is to decouple the competing constraints 
+imposed by the need for a flexible abstraction versus the need for an 
+efficient implementation.  Without the peer class layer, either the 
+abstraction would be constrained directly by the implementation, or 
+vice versa.  The peer class inplements the abstract interface and 
+delegates to the representation class. 
+
+This design has to be used carefully in C++, because it produces
+the 'dreaded diamond' inheritance diagrams, (e.g.): 
+
+
+                    item
+                    /  \
+                   /    \
+                  /      \
+                node    zorba_item
+                /  \      /    
+               /    \    /
+              /      \  /
+          element   zorba_node 
+              \       /
+               \     /
+                \   /
+               zorba_element
+
+
+Multiple inheritance in C++ can produce ambiguities. The compiler 
+complains about ambiguity even in cases where the base classes have no 
+member elements; they still have hidden data, namely the virtual 
+function table.  We cure this disease by declaring 'virtual' 
+inheritance.   This tells the compiler to inherit only one copy of 
+base class attributes, (e.g.):
+
+                    item
+                    /  \
+                   v    v : public virtual
+                  /      \
+                node    zorba_item
+                /  \      /    
+               v    v    /
+              /      \  /
+          element   zorba_node 
+              \       /
+               \     /
+                \   /
+               zorba_element
+
+
+This pattern requires intercepting the common base class immediately. 
+Since 'zorba_node' inherits from 'item' via both 'node' and 
+'zorba_item', we need to declare both of these public virtual.   
+Likewise, since 'zorba_element' inherits from 'node' via both 
+'element' and 'zorba_node' we need to make both of these public 
+virtual as well. 
+
+
+For exmple, 
+
+    // zorba abstract element node (file 'values/nodes.h')
+    class element_node : public virtual node
+    {
+    public:
+      virtual sequence_type_t node_kind() { return elementNode; }
+
+      virtual iterator_t string_value(zorba*) const = 0;
+      virtual iterator_t base_uri(zorba*) const = 0;
+      virtual iterator_t document_uri(zorba*) const = 0;
+      virtual iterator_t parent(zorba*) const = 0;
+      virtual iterator_t node_name(zorba*) const = 0;
+      virtual iterator_t attributes(zorba*) const = 0;
+      virtual iterator_t children(zorba*) const = 0;
+      virtual iterator_t namespace_nodes(zorba*) const = 0;
+      virtual iterator_t typed_value(zorba*) const = 0;
+  
+      virtual bool is_id() const = 0;
+      virtual bool is_idrefs() const = 0;
+      virtual bool nilled() const = 0;
+    };
+
+
+Declaring pure virtual methods ' = 0' enables runtime type inference 
+and approximates the declaration of a Java 'interface'.  In C++ this 
+is a class with no instances and no implemetations.  Subclasses MUST 
+implement the methods explicitly. 
+
+We pass the dynamic context to the methods returning iterators so that 
+they can callback method 'set_context_item'. We prefer passing C++ 
+references as opposed to pointers because references cannot be null. 
+
+
+Peer Classes
+------------
+The zorba native peer class is declared as:
+
+    class zorba_node : public zorba_item, public virtual node
+    {
+      ..
+    };
+  
+    // zorba native element node peer (file 'zorba/zorba_nodes.h')
+    class zorba_element_node : public zorba_node, public element_node
+    {
+    protected:
+      element_noderep* rep;
+    
+    public:
+      zorba_element_node(element_noderep*);
+      zorba_element_node(const zorba_element_node&);
+      ~zorba_element_node() {}
+    
+    public:  // XDM interface
+      iterator_t string_value(zorba*) const;
+      iterator_t base_uri(zorba*) const;
+      iterator_t document_uri(zorba*);
+      iterator_t node_name(zorba*) const;
+      iterator_t type_name(zorba*) const;
+      iterator_t attributes(zorba*) const;
+      iterator_t children(zorba*) const;
+      iterator_t namespace_nodes(zorba*) const;
+      iterator_t typed_value(zorba*) const;
+    
+      bool is_id() const;
+      bool is_idrefs() const;
+      bool nilled() const;
+    
+    public:  // output and debugging
+      std::ostream& put(std::ostream&) const;
+      std::string describe() const;
+    };
+  
+
+Implementers need to provide peer classes to act as wrappers for
+specific target XML storage systems.  The zorba native peer classes
+contain pointers to the zorba native linear node storage.
+
+We return a default empty sequence for each of the base class 
+iterators, and we return false for each of the base class predicates. 
+
+
+Representation Classes
+----------------------
+The bottom layer of the data architecture consists of representation
+classes for the nodes. For example, the zorba native representation
+class for element nodes is declared as:
+
+
+    // linear storage node representation (file 'zorba/nodereps.h')
+    class element_noderep : public noderep
+    {
+      friend class child_noderep_iterator;
+      friend class attribute_noderep_iterator;
+    
+    protected:
+      itemid_t theQNameID;      // element QName
+      itemid_t theTypeID;        // type QName
+      itemid_t theNSID;          // in-scope namespaces
+      uint32_t theNodeOffset;    // offset to first node
+      char rest[0];
+      /*
+        attr[0]
+        ...
+        attr[m-1]
+        node[0]      <- theNodeOffset
+        ...
+        node[n-1]
+      */
+    
+    public:
+      element_noderep() {}
+      element_noderep(zorba*, itemid_t qnameid);
+    
+    public:    // accessors
+      itemid_t qnameID() const { return theQNameID; };
+      itemid_t typeID() const { return theTypeID; }
+      itemid_t nsID const { return theNSID; }
+    
+    public:    // storage interface
+      void* operator new(size_t n, void* p) { return p; }
+      void* operator new(size_t n, const void* p) { return (void*)p; }
+      void* operator new(size_t n, size_t m) { return new char[n+m]; }
+      void  operator delete(void*) {}
+    
+    public:    // XQuery sub-interface
+      std::string string_value() const;
+      noderep_it attributes() const;
+      noderep_it children() const;
+    
+    private:  //ctor,dtor - lock out
+      element_noderep(const element_noderep&) {}
+      ~element_noderep() {}
+    
+    public:    // output and debugging
+      std::ostream& put(zorba*,std::ostream&) const;
+    
+    };
+
+
+
+A primitive implementation can collapse the representation layer into 
+the peer layer.  For example, a simple stand-alone DOM implementation 
+suitable for testing purposes inlines the representation directly 
+using C++ data structures: 
+
+
+    // inlined DOM peer+representation (file 'dom/dom_nodes.h')
+    class dom_element_node : public dom_node, virtual public element_node
+    {
+    protected:
+      dom_qname* qname_p;
+      atomic_value* value_p;
+      std::vector<dom_node*> nsv;
+      std::vector<dom_node*> attrv;
+      std::vector<dom_node*> childv;
+      bool id_b;
+      bool idref_b;
+      bool nilled_b;
+    
+    public:
+      void add_namespace(dom_namespace_node*);
+      void add_attribute(dom_attribute_node*);
+      void add_child(dom_node*);
+    
+    public:
+      dom_element_node(dom_qname*, atomic_value*);
+      dom_element_node(const dom_element_node&);
+      ~dom_element_node() {}
+    
+    public:  // XQuery interface
+      std::string string_value() const;
+      std::string base_uri() const;
+      std::string document_uri() const;
+    
+      const node* parent() const;
+      rchandle<qname> node_name() const;
+      rchandle<qname> type_name() const;
+    
+      iterator_t attributes(dynamic_context*) const;
+      iterator_t children(dynamic_context*) const;
+      iterator_t namespace_nodes(dynamic_context*) const;
+      iterator_t atomized_value(dynamic_context*) const;
+      iterator_t typed_value(dynamic_context*) const;
+    
+      bool is_empty() const { return false; }
+      bool is_node() const { return true; }
+      bool is_atomic() const { return false; }
+      bool is_id() const { return id_b; }
+      bool is_idref() const { return idref_b; }
+      bool nilled() const { return false; }
+    
+    public:  // output and debugging
+      std::ostream& put(std::ostream&) const;
+      std::string toXML() const;
+      std::string describe() const;
+    };
+  
+
+At the top level, the system makes no distinctions between different 
+node flavors, so that native nodes and DOM nodes peers can be freely 
+mixed.  NOdes of different flavors are created using the appropriate 
+node factory class. 
+
+
+
+
+
+
+
+
+Type System
+-----------
+
+Zorba encodes the XQuery type system using 31 bits.
+The bit fields are defined as follows:
+
+    // zorba type encoding (file 'types/typecodes.h')
+    object_types[28:30]
+    arity[26:27]
+    node_types[22:25]
+    numeric_flag[21]
+    primitive_type[16:20]
+    primitive_sub1[14:15]
+    primitive_sub2[12:13]
+    primitive_sub3[10:11]
+    primitive_sub4[9]
+    primitive_sub5[7:8]
+    primitive_sub6[6]
+    reptype[0:5]
+
+
+For example, the following fragment of the XML Schema primitive
+type hierarchy:
+
+  xs:decimal 
+    xs:integer 
+      xs:nonPositiveInteger 
+        xs:negativeInteger 
+
+will be encoded as:
+
+         node type     numeric flag
+                  \   /
+          000 00 0000 1 00011 00 00 00 0 00 0 001001
+
+          000 00 0000 1 00011 01 00 00 0 00 0 001001
+
+          000 00 0000 1 00011 01 01 00 0 00 0 001001
+
+          000 00 0000 1 00011 01 01 01 0 00 0 001001
+              \/        \___________________/ \____/
+             arity       primitive type bits    rep
+
+Subtype comparison reduces to numeric inequality of the primitive 
+type bits. 
+
+Zorba1.0 does not support Schema complex type validation or subtype 
+inference.  It does maintain a typecode for Schema complex types. 
+
+
+
+
+
+
+
+
+Context
+-------
+
+The zorba context consist of a table of key-value pairs. Context 
+objects can be assembled into a parent-directed tree. Keys are are 
+qnames.  Values are iterators.  The context consists of XDM instances 
+and some type information.  In order to support the type information 
+within the context, we extend the type system to include the 'type' 
+type. 
+
+    // zorba basic context (file 'context/context.h')
+    class context : public rcobject
+    {
+    protected:  // state
+      rchandle<context> parent_h;
+      fxhash64map<iterator_t> keymap;
+    
+    public:      // key-value interface
+      rchandle<context> parent() const { return parent_h; }
+      iterator_t context_value(qnamekey_t key) const;
+    
+    };
+
+
+Zorba includes two subclasses of 'context'
+
+  
+   - zorba XQuery static context (file 'context/static_context.h')
+    supports the specified keys:
+    
+      default_function_ns_key;
+      default_collation_key;
+      in_scope_schema_types_key;
+      in_scope_element_decls_key;
+      in_scope_attribute_decls_key;
+      collations_key;
+      construction_mode_key;
+      order_empty_mode_key;
+      boundary_space_mode_key;
+      inherit_mode_key;
+      preserve_mode_key;
+      baseuri_key;
+
+
+  - zorba XQuery dynamic context (file 'context/dynamic_context.h')
+    supports the specified keys:
+
+      namespaces_key;
+      default_element_type_ns_key;
+      context_item_key;
+      context_item_type_key;
+      ordering_mode_key;
+      current_time_key;
+      implicit_timezone_key;
+
+
+
+
+
+
+
+Runtime
+-------
+
+The 'zorba' object encapsulates the runtime. The runtime environment 
+consists of a static context, a dymamic context and the storage 
+interface. 
+
+
+  // zorba runtime (file 'runtime/zorba.h')
+  class zorba : public rcobject
+  {
+  protected:
+    rchandle<store> store_h;                      // storage interface
+    rchandle<static_context> static_context_h;    // static context
+    rchandle<dynamic_context> dynamic_context_h;  // dynamic context
+  
+  public:
+    zorba();
+    ~zorba() {}
+
+  public:
+    store* get_store() const;
+    static_context* get_static_context() const;
+    dynamic_context* get_dynamic_context() const;
+  
+    void set_store(store& v);
+    void set_static_context(static_context& v);
+    void set_dynamic_context(dynamic_context& v);
+
+  };
+
+
+The zorba query evaluation data flow consists of steps:
+ 
+          ___________________
+         |                   |
+         |   query source    |
+         |___________________|
+                  |
+                  | <parse>
+                  |
+          ________v__________
+         |                   |
+         |    syntax tree    |
+         |___________________|
+                  |
+                  |
+                  | <normalize>
+                  |      __________
+                  |     |          |
+          ________v_____v____      |
+         |                   |     | <optimize>
+         |  expression tree  |     |
+         |___________________|     |
+                  |     |          |
+                  |     |__________|
+                  |
+                  | <code gen>
+                  |
+          ________v__________
+         |                   |
+         |   iterator plan   |
+         |___________________|
+                  |
+                  | <evaluate>
+                  |
+          ________v__________
+         |                   |
+         |   XDM instance    |
+         |___________________|
+                  |
+                  | <serialize>
+                  |
+          ________v__________
+         |                   |
+         |    XML output     |
+         |___________________|
+
+
+
+
+
+
+
+
+Data Manager
+------------
+
+The zorba data manager interface specifies the methods for interacting 
+with the external environment.   It contains methods that are used to
+implement the F&O 'Functions and Operators that Generate Sequences'.
+
+
+    class data_manager: public rcobject
+    {
+    public:     // sequence generators
+      virtual iterator_t collection(const std::string&) = 0;
+      virtual iterator_t document(const std::string&) = 0;
+
+      virtual void add_document(const std::string&, const document_node&) = 0;
+      virtual void remove_document(const std::string&) = 0;
+      virtual void add_collection(const std::string&, iterator_t) = 0;
+      virtual void remove_collection(const std::string&) = 0;
+      virtual void append_to_collection(const std::string&, iterator_t) = 0;
+    
+    public:    // index interface
+      virtual node* get_node(itemid_t) const = 0;
+      virtual qname* get_qname(itemid_t) = 0;
+      virtual xs_stringValue* get_uri(itemid_t) = 0;
+    
+    public:    // update interface
+      virtual void apply(const update_value*) = 0;
+      // start_transaction(), end_transaction(), roll_back() go here
+    
+    };
+
+
+
+
+
+
+
+
+XML Parser
+----------
+
+Zorba includes an 'expat' XML parser implementation. It is wrapped in 
+a SAX implementation so that other SAX-compatible parsers can easily 
+be adapted instead.  (There is no standard SAX for C++, so exact 
+compatibility cannot be achieved.) This parser is used to convert 
+textual XML documents to native node format. 
+
+We will also be using the standard libcurl library to retrieve 
+remotely storted XML documents. 
+
+
+
+
+XQuery Parser
+-------------
+
+Zorba uses a flex-bison scanner-parser system to parse
+XQuery into a syntax tree.  The parser includes productions
+from three specified grammars, as well as additional productions
+for XQueryP.   The specified grammars appear in:
+
+  XQuery 1.0: An XML Query Language       
+    [http://www.w3.org/TR/xquery/]
+  XQuery Update Facility                   
+    [http://www.w3.org/TR/xqupdate/]
+  XQuery 1.0 and XPath 2.0 Full-Text       
+    [http://www.w3.org/TR/xquery-full-text/]
+
+
+The XQueryP additions are described in ...
+
+
+The parse tree consists of heap-allocated parse nodes:
+
+  // zorba syntax tree (file 'parser/parsenodes.h')
+  class parsenode : public rcobject
+  {
+  protected:
+    yy::location loc;  // source code line number
+  
+  public:
+    parsenode(yy::location const& _loc) : loc(_loc) { }
+    ~parsenode() { }
+  
+  public:
+    yy::location get_location() const { return loc; }
+    virtual std::ostream& put(std::ostream&) const;
+    virtual void accept(parsenode_visitor&) const = 0;
+  
+  };
+
+Zorba uses a 'visitor' design pattern to collect the methods used in 
+transforming a parse tree into an expression tree.  The alternative 
+would be to have methods for each transformation appear in every parse 
+node class. 
+
+The main advantage of the visitor pattern is that it separates 
+algorithms from object structure. A practical result of this 
+separation is the ability to add new operations to existing object 
+structures without modifying those structures.   The pattern is 
+controversial, but the consensus holds that 'visitor' applies in the 
+case where the object hiearchy is static but the set of operations 
+needs to be flexible.  That is exactly the situation with XQuery, 
+since the grammars are now standardized, but the set of rewrite 
+normalizations and optimizations needs to be flexible. 
+
+The idea is to use a structure of element classes, each of which has 
+an accept method that takes a visitor object as an argument. Visitor 
+is an interface that has a visit() method for each element class. The 
+accept() method of an element class calls back the visit() method for 
+its class.  In simple terms, the accept() methods control the 
+navigation generically, and the visit() methods implement specific 
+algorithms applied and acucmulated during the traversal. Separate 
+concrete visitor classes can then be written that perform some 
+particular operations.  See, for example, 
+[http://en.wikipedia.org/wiki/Visitor_pattern] 
+
+The normalization visitor is described in the next section.
+
+
+
+Normalization
+-------------
+
+Normalizations specified by the XQuery semantics document
+XQuery 1.0 and XPath 2.0 Formal Semantics
+[http://www.w3.org/TR/xquery-semantics/]
+are implemented by a 
+
+    class normalize_visitor : public parsenode_visitor
+    {
+    public:
+      typedef rchandle<expr> exprref;
+    
+    protected:
+      zorba* zorp;
+      std::stack<exprref> nodestack;
+      std::stack<exprref> argstack;
+      std::stack<exprref> pstack;
+      fxcharheap sheap;
+    
+    public:
+      normalize_visitor(zorba*);
+      ~normalize_visitor() {}
+    
+    public:
+      exprref pop_nodestack();
+      void clear_argstack();
+      void clear_pstack();
+    
+    public:
+     /*..........................................
+       :  begin visit                            :
+       :.........................................*/
+      bool begin_visit(parsenode const&);
+      bool begin_visit(AbbrevForwardStep const&);
+      bool begin_visit(AnyKindTest const&);
+      bool begin_visit(AposAttrContentList const&);
+      bool begin_visit(AposAttrValueContent const&);
+      bool begin_visit(ArgList const&);
+      bool begin_visit(AtomicType const&);
+      ...
+    
+     /*..........................................
+       :  end visit                              :
+       :.........................................*/
+      void end_visit(parsenode const&);
+      void end_visit(AbbrevForwardStep const&);
+      void end_visit(AnyKindTest const&);
+      void end_visit(AposAttrContentList const&);
+      void end_visit(AposAttrValueContent const&);
+      void end_visit(ArgList const&);
+      void end_visit(AtomicType const&);
+      ...
+    };
+
+
+For example, the XQuery grammar specifies an AxisStep expression as: 
+
+    [71] AxisStep ::= (ReverseStep | ForwardStep) PredicateList
+    [82] PredicateList ::= Predicate*
+    [83] Predicate ::= "[" Expr "]"
+
+
+and the XQuery semantics document specifies that:
+
+    [Expr]_Predicates
+        ==
+    typeswitch ([Expr]_Expr)
+      case $v as fs:numeric return op:numeric-equal($v, $fs:position)
+      default $v return fn:boolean($v)
+
+
+When normalizing the predicates of an AxisStep, the visitor must 
+push corresponding positional predicates onto the visitor stack. 
+All the predicate expressions can then be popped off the visitor
+stack by  normalize_visitor::end_visit(AxisStep&).
+
+
+
+
+Optimization
+------------
+
+Like normalization, the zorba rewrite optimizer consists of
+a family of expr_visitor classes which implement begin/end_visit
+methods for each of the zorba expression tree nodes.
+
+
+
+
+Query Plan
+----------
+
+The zorba expression tree is compiled into an execution plan
+which consists of a compositon of iterators.  Evaluation is
+kept as lazy as possible within the constraints of the XQueryP
+semantics.  The types 'item_t' and 'iterator_t' are declared as
+  
+  // item handle
+  class item;
+  typedef rchandle<item> item_t;
+
+  // iterator handle
+  class item_iterator;
+  typedef rchandle<item_iterator> iterator_t;
+
+
+where 'rchandle' is a smart pointer template class which does 
+reference-counted heap memory management:
+
+    class rcobject
+    {
+    private:
+      int refCount;
+    
+    public:  // ctor,dtor
+      rcobject();
+      rcobject(const rcobject& rhs);
+      virtual ~rcobject();
+    
+    public:  // refcounting
+      void addReference() { ++refCount; }
+      void removeReference() { if (--refCount == 0) delete this; }
+      int get_refCount() const { return refCount; }
+    
+    public:  // operator overloading
+      rcobject& operator=(const rcobject&) { return *this; }
+    
+    };
+    
+    template<class T>
+    class rchandle
+    {
+    private:
+      T *p;        // dumb pointer this object emulates
+      void init(); // common initialization
+    
+    public:  // ctor, dtor
+      rchandle(T* realPtr = 0);
+      rchandle(rchandle const& rhs);
+      ~rchandle();
+    
+    public:  // operator overloading
+      rchandle& operator=(rchandle const& rhs);
+      T* operator->() const; 
+      T& operator*() const;  
+      bool operator==(rchandle const& h) const;
+      bool operator!=(rchandle const& h) const;
+      bool operator==(T const* pp) const;
+      bool operator!=(T const* pp) const;
+    
+    }; 
+
+
+The iterator interface:
+
+    class item_iterator : public rcobject
+    {
+    protected:
+      dynamic_context* dctx_p;
+    
+    public:
+      item_iterator() : dctx_p(NULL) {}
+      item_iterator(dynamic_context* _dctx_p) : dctx_p(_dctx_p) {}
+      item_iterator(const item_iterator& it) : dctx_p(it.dctx_p) {}
+      virtual ~item_iterator() {}
+    
+    public:  // iterator interface
+      virtual void open() = 0;
+      virtual void close() = 0;
+      virtual item_t next(uint32_t delta = 1) = 0;
+      virtual item_t peek() const = 0;
+      virtual bool done() const = 0;
+			virtual iterator_t clone() = 0;
+    
+    public:  // C++ interface
+      virtual item_t operator*() const = 0;
+      virtual item_iterator& operator++() = 0;
+      virtual item_iterator& operator=(const item_iterator&) = 0;
+    };
+
+The methods open/close are used to acquire and release resources used 
+by the iterator when it runs.   An iterator can be allocated and 
+passed around before being run. 
+
+The 'delta' argument to 'next' is used to advance the iterator by any 
+number of steps >= 1 in the forward direction only. 
+
+We include the minimal C++ iterator interface redundantly because it 
+gives us access to existing abstract libraries of C++ iterator-based 
+algorithms. 
+
+
+
+
+
+
+Functions
+---------
+
+Zorba functions are declared as 'functor' objects which overload
+operator() - the function call syntax in C++.
+
+    class function : public rcobject
+    {
+    protected:
+      signature sig;
+      
+    public:
+      function(const signature& _sig) : sig(_sig) {}
+      virtual ~function() {}
+    
+    public:
+      // XQuery signature (name+arity)
+      const qname* get_fname() const { return sig.get_name(); }
+    
+      // functor specification
+      virtual iterator_t operator()(zorba*,std::vector<iterator_t>& argv) = 0;
+    
+      // XQuery polymorphic type inference
+      virtual sequence_type_t type_check(signature&) = 0;
+    
+      // XQuery runtime arg validation
+      virtual bool validate_args(std::vector<iterator_t>& argv) = 0;
+    
+    };
+
+
+Zorba maintains a static table mapping QName -> function object pointer.
+A specific function, (e.g.) 
+
+    op:concatenate($seq1 as item()*, $seq2 as item()*) as item()*
+
+
+can be implemented as follows:
+
+    // op:concatenate functor declaration(file 'functions/Sequences.h')
+    class op_concatenate : public function
+    {
+    public:
+       op_concatenate(const signature&);
+      ~op_concatenate() {}
+   
+    public:
+       iterator_t operator()(zorba*,std::vector<iterator_t>&);
+       sequence_type_t type_check(signature&);
+       bool validate_args(std::vector<iterator_t>&);
+    };
+
+
+    // op:concatenate functor definition (file 'functions/Sequences.cpp')
+    iterator_t op_concatenate::operator()(zorba* zorp, vector<iterator_t>& argv)
+    {
+      if (!validate_args(argv)) return NULL;
+      return new concat_iterator(zorp->get_dynamic_context(),argv);
+    }
+
+
+    // op:concatenate implementation (file 'functions/SequencesImpl.h')
+    class concat_iterator : public funcall_iterator
+    {
+    protected:  // state
+      iterator_t currit;
+      iterator_t theNext;
+      bool first_b;
+    
+    public:      // general iterator interface  
+      void open();
+      void close();
+      item_t next(uint32_t delta = 1);
+      item_t peek() const;
+      bool done() const;
+			iterator_t clone();
+    
+    public:      // C++ iterator interface
+      item_t operator*() const;
+      concat_iterator& operator++();
+      concat_iterator& operator=(const concat_iterator& it);
+    
+    public:      // ctor,dtor
+      concat_iterator(dynamic_context*, iterator_t, iterator_t);
+      concat_iterator(const concat_iterator& it);
+      ~concat_iterator() {}
+    
+    };
+
+
+
+
+
+
+
+
+External interface
+------------------
+
+    // zorba external interface (file 'runtime/zorba_api.h')
+    class compiled_query
+    {
+    private:
+      expr* theExpr;
+    };
+    
+    // compile XQueryP from some source
+    rchandle<compiled_query> compile(zorba*, xquery_source&);
+
+    // evaluate a compiled the expression, return a plan
+    iterator_t evaluate(zorba*, rchandle<compiled_query>);
+
+    // serialize the plan iterator to an XML output stream
+    rchandle<xml_ostream> serialize(iterator_t);
+
+
+
+
+
+
+
+
+Web interface
+-------------
+
+Zorba includes an Apache module which is very basic.   There is a 
+dynamically linked C++ library which exposes a single C-callable 
+gateway called 'handle_request'.   The Apache request_rec is handed 
+through the C gateway, and then processed by the zorba library to 
+produce serialized output in a given buffer. Serialized zorba output
+gets copied to the Apache output stream, the buffer deallocated, and 
+mod_xpq returns. 
+
+The Apache XQuery module is registered as '/xqp'.  Pages containing 
+server-side XQuery can be evaluated and the resulting 'return' output 
+displayed in the browser using URLs of the form: 
+
+    http://www.myhost:port/xqp/query.xqp?q=query_string&s=trace_flag
+
+
