@@ -28,7 +28,13 @@
 #include "win32/compatib_defs.h"
 #endif
 
+#include <iostream>
 #include <stdlib.h>
+
+#include <unicode/utypes.h>
+#include <unicode/coll.h>
+#include <unicode/ustring.h>
+
 #include "utf8.h"
 
 namespace xqp {
@@ -92,30 +98,44 @@ namespace xqp {
 
 		//! @name xqpString::operator==()
 		//! @{
-			inline bool operator==(const xqpString& src){
+			inline bool operator==(const xqpString& src) const{
 				return (compare(src) == 0);
 			}
 
-			inline bool operator==(const char* src){
+			inline bool operator==(const char* src) const{
 				return (compare(src) == 0);
 			}
 		//!@}
 
 		//! @name xqpString::operator!=()
 		//! @{
-			inline bool operator!=(const xqpString& src){
+			inline bool operator!=(const xqpString& src) const{
 				return (compare(src) != 0);
 			}
 
-			inline bool operator!=(const char* src){
+			inline bool operator!=(const char* src) const{
 				return (compare(src) != 0);
 			}
 		//!@}
 
+		//! @name xqpString::operator<()
+		//!@{
+
+			inline bool operator<(const xqpString& src) const {
+				return compare(src) == -1; }
+
+		//!@}
+
+		//! @name xqpString::operator>()
+		//!@{
+			inline bool operator>(const xqpString& src) const {
+				return compare(src) == 1; }
+		//!@}
+
 		//! @name xqpString::Compare
 		//! @{
-			int compare(const xqpString& src)	const;
-			int compare(const char* src)	const;
+			int compare(const xqpString& src) const;
+			int compare(const char* src) const;
 		//! @}
 
 		//! @name xqpString::Length
@@ -150,19 +170,29 @@ namespace xqp {
 			void clear();
 		//! @}
 		
-			const char* c_str();
+			const char* c_str() const;
 			
 			inline	operator std::string() const{
 				return utf8String;
 			}
-		private:
-			std::string utf8String;
+		public:
+			std::string        utf8String;
+private:
+			/**
+			*Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
+			*/
+			UnicodeString getUnicodeString(const xqpString& in) const;
+			/**
+			*Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
+			*/
+			xqpString getXqpString(UnicodeString in);
+
 	};
 
 	//! @name xqpString::stream I/O operators
 	//! @{
-	std::istream& operator>>(std::istream& is, xqpString& utf8_src);
-	std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src);
+	std::istream& operator>>(std::istream& is, xqp::xqpString& utf8_src);
+	std::ostream& operator<<(std::ostream& os, const xqp::xqpString& utf8_src);
 	//!@}
 	
 	//! @name xqpString::concatenation operator+()

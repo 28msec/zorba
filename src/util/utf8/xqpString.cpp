@@ -112,53 +112,44 @@ namespace xqp {
 
 	std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src){
 		//TODO is there a need to perform charset conversion to/from the current locale ?!?!
-		os << utf8_src;
+		os << utf8_src.utf8String;
 		return os;
 	}
 
 	//xqpString::compare
-	int xqpString::compare(const xqpString& src)	const{
-		//TODO optimize the code here
-		std::vector<char> v0;
-		std::vector<char> v1;
-		char * c0;
-		char * c1;
-		size_type vLength;
-		uint32_t cp0, cp1;
-		
-		vLength = bytes();
-		if (vLength > src.bytes())
-			vLength = src.bytes();
+	int xqpString::compare(const xqpString& src) const{
+		//create the collator object
+		UErrorCode status = U_ZERO_ERROR;
 
-		v0.reserve(bytes());
-		std::strcpy(&v0[0], utf8String.c_str());
-		c0 = &v0[0];
-
-		v1.reserve(src.bytes());
-		std::strcpy(&v1[0], src.utf8String.c_str());
-		c1 = &v1[0];
-
-		while( vLength > 0 ){
-			cp0 = UTF8Decode(c0);
-			cp1 = UTF8Decode(c1);
-
-			if(cp0 < cp1)
-				return -1;
-			else if(cp0 > cp1)
-				return 1;
-
-			vLength--;
+		//TODO make the collator a global object
+		//NOTE By passing "root" as a locale parameter the root locale is used.
+		//Root locale implements the UCA rules
+		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
+		Collator *coll = Collator::createInstance(Locale("root"), status);
+	
+		if(U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
 		}
 
-		if(bytes() == src.bytes())
-			return 0;
-		else if(bytes() < src.bytes())
-			return -1;
-		else
-			return 1;
-	}
+		//set level 1 comparison for the collator
+		coll->setStrength(Collator::PRIMARY);
 
-	int xqpString::compare(const char* src)	const{
+		Collator::EComparisonResult result = Collator::EQUAL;
+
+		//compare the 2 strings
+		result = coll->compare(getUnicodeString(utf8String), getUnicodeString(src));
+
+		//close the collator
+		delete coll;
+
+		return result;
+}
+
+	int xqpString::compare(const char* src) const{
 		//TODO optimize the code here
 		xqpString tmp(src);
 		return compare(tmp);
@@ -204,7 +195,35 @@ namespace xqp {
 		utf8String.erase();
 	}
 	
-	const char* xqpString::c_str() {
+	const char* xqpString::c_str() const{
 		return utf8String.c_str();
 	}
+
+	// Private methods
+	UnicodeString xqpString::getUnicodeString(const xqpString& in) const{
+		UnicodeString ret;
+		UErrorCode status = U_ZERO_ERROR;
+		int32_t len = in.bytes();
+		UChar* buffer = ret.getBuffer(len);
+
+		u_strFromUTF8(buffer, ret.getCapacity(), &len, in.c_str(), len, &status);
+
+		ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
+
+		if(U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
+		}
+
+		return ret;
+	}
+
+	xqpString getXqpString(UnicodeString in){
+		//TODO implement it
+		return xqpString();
+	}
+
 }/* namespace xqp */
