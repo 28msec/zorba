@@ -45,24 +45,36 @@ class ConcatIterator : public Batcher<ConcatIterator>
 {
 protected:
 	std::vector<Iterator_t> argv;
-	Iterator_t currit_h;
-	uint32_t cursor;
 
 public:
 	ConcatIterator(
 	yy::location loc,
 	const vector<Iterator_t>& _argv);
 	
-	ConcatIterator(
-	const ConcatIterator& concat_it);
-	
 	~ConcatIterator();
 
+	Item_t nextImpl(int8_t* stateBlock);
+	void resetImpl(int8_t* stateBlock);
+	void releaseResourcesImpl(int8_t* stateBlock);
+	
 	std::ostream&  _show(std::ostream&) const;
-
-	Item_t nextImpl();
-	void resetImpl();
-	void releaseResourcesImpl();
+	
+	virtual int32_t getStackSize();
+	virtual int32_t getStackSizeOfSubtree();
+	virtual void setOffset(int32_t& offset);
+	
+protected:
+	class ConcatIteratorState : public BasicIteratorState {
+	private:	
+		int32_t curIter;
+	
+	public:
+		void init();
+		void reset();
+		
+		void incCurIter();
+		int32_t getCurIter();
+	};
 };
 
 

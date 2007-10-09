@@ -42,18 +42,7 @@ ConcatIterator::ConcatIterator(
 	const vector<Iterator_t>& _argv)
 :
 	Batcher<ConcatIterator>(loc),
-	argv(_argv),
-	currit_h(NULL),
-	cursor(0)
-{}
-
-ConcatIterator::ConcatIterator(
-	const ConcatIterator& concat_it)
-:
-	Batcher<ConcatIterator>(concat_it),
-	argv(concat_it.argv),
-	currit_h(concat_it.currit_h),
-	cursor(concat_it.cursor)
+	argv(_argv)
 {}
 
 ConcatIterator::~ConcatIterator(){}
@@ -70,39 +59,91 @@ const
 }
 
 Item_t 
-ConcatIterator::nextImpl() {
+ConcatIterator::nextImpl(int8_t* stateBlock) {
 	Item_t item;
 	
-	STACK_INIT();
+	ConcatIteratorState* state;
+	STACK_INIT2(ConcatIteratorState, state, stateBlock);
 	
-	this->cursor = 0;
-	
-	for (; this->cursor < this->argv.size (); this->cursor++) {;
-		this->currit_h = this->argv[this->cursor];
-		item = this->consumeNext(this->currit_h);
+	for (; state->getCurIter() < int32_t(this->argv.size()); state->incCurIter()) {;
+		item = this->consumeNext(this->argv[state->getCurIter()], stateBlock);
 		while (item != NULL) {
-			STACK_PUSH (item);
-			item = this->consumeNext(this->currit_h);
+			STACK_PUSH2 (item, state);
+			item = this->consumeNext(this->argv[state->getCurIter()], stateBlock);
 		}
 	}
 	
-	STACK_END();
+	STACK_END2();
 }
 
 void 
-ConcatIterator::resetImpl() {
+ConcatIterator::resetImpl(int8_t* stateBlock) {
+	ConcatIteratorState* state;
+	GET_STATE(ConcatIteratorState, state, stateBlock);
+	state->reset();
+	
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter);
+		this->resetChild(*iter, stateBlock);
 	}
 }
 
 void 
-ConcatIterator::releaseResourcesImpl() {
+ConcatIterator::releaseResourcesImpl(int8_t* stateBlock) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter);
+		this->releaseChildResources(*iter, stateBlock);
 	}
+}
+
+int32_t
+ConcatIterator::getStackSize() {
+	return sizeof(ConcatIteratorState);
+}
+
+int32_t
+ConcatIterator::getStackSizeOfSubtree() {
+	int32_t size = 0;
+	
+	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		size += (*iter)->getStackSizeOfSubtree();
+	}
+	
+	return this->getStackSize() + size;
+}
+
+void
+ConcatIterator::setOffset(int32_t& offset) {
+	this->stateOffset = offset;
+	offset += this->getStackSize();
+	
+	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	for(; iter != this->argv.end(); ++iter) {
+		(*iter)->setOffset(offset);
+	}
+}
+
+void
+ConcatIterator::ConcatIteratorState::init() {
+	BasicIterator::BasicIteratorState::init();
+	this->curIter = 0;
+}
+
+void
+ConcatIterator::ConcatIteratorState::reset() {
+	BasicIterator::BasicIteratorState::reset();
+	this->curIter = 0;
+}
+
+void
+ConcatIterator::ConcatIteratorState::incCurIter() {
+	this->curIter++;
+}
+
+int32_t
+ConcatIterator::ConcatIteratorState::getCurIter() {
+	return this->curIter;
 }
 
 

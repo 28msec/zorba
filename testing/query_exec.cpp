@@ -149,13 +149,14 @@ int _tmain(int argc, _TCHAR* argv[])
 					return -1;
 				}
 				
+				IteratorWrapper iw(it_h);
+				
 				while (true) {
-					Item_t i_p = it_h->next();
+					Item_t i_p = iw.next();
 					if (i_p == NULL)
 						break;
 					cout << i_p->show() << endl;
 				}
-				it_h->releaseResources();
 			}
 		}
 	} catch (xqp_exception & e) {

@@ -15,11 +15,12 @@ namespace xqp
 	SimpleTempSeq::SimpleTempSeq ( Iterator_t iterator )
 	{
 		this->loc = iterator->loc;
-		Item_t curItem = iterator->next();
+		IteratorWrapper iw(iterator);
+		Item_t curItem = iw.next();
 		while ( curItem != NULL )
 		{
 			this->items.push_back ( curItem );
-			curItem = iterator->next();
+			curItem = iw.next();
 		}
 	}
 	SimpleTempSeq::~SimpleTempSeq()
@@ -105,7 +106,7 @@ namespace xqp
 	}
 
 	Item_t 
-	SimpleTempSeq::Iterator::nextImpl()
+	SimpleTempSeq::Iterator::nextImpl(int8_t* stateBlock)
 	{
 		this->curPos++;
 		switch ( this->borderType )
@@ -127,7 +128,7 @@ namespace xqp
 	}
 
 	void 
-	SimpleTempSeq::Iterator::resetImpl()
+	SimpleTempSeq::Iterator::resetImpl(int8_t* stateBlock)
 	{
 		switch ( this->borderType )
 		{
@@ -142,7 +143,7 @@ namespace xqp
 	}
 
 	void 
-	SimpleTempSeq::Iterator::releaseResourcesImpl()
+	SimpleTempSeq::Iterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
 	}
 

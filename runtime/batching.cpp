@@ -28,85 +28,7 @@
 
 namespace xqp {
 
-OldIterator::OldIterator(){
-	
-}
-
-OldIterator::OldIterator(const OldIterator& it):rcobject(it){}
-
-OldIterator::~OldIterator() {}
-
-void OldIterator::open() {
-	assert(!open_b);
-	open_b = true;
-
-	// Initialization of the line info for Duff's device.
-	_open();
-}
-
-void OldIterator::close() {
-	assert(open_b);
-	open_b = false;
-	_close();
-}
-
-bool OldIterator::isOpen() const {
-	return open_b;
-}
-
-bool OldIterator::done() const {
-	return false;
-}
-
-
-/**
- * This method should be abstract. Only because of compatibility issues we implemented it
- */
-void BasicIterator::reset() {
-	ZorbaErrorAlerts::error_alert(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
-}
-
-void BasicIterator::releaseResources() {
-	ZorbaErrorAlerts::error_alert(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
-}
-
-
-//*************************************************
-//*************************************************
-//
-//		NO BATCHING
-//
-//*************************************************
-//*************************************************
-#if BATCHING_TYPE==0
-
-BasicIterator::BasicIterator(yy::location _loc) :
-	loc(_loc){
-	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
-}
-BasicIterator::BasicIterator(const BasicIterator& it) :
-	OldIterator(it),
-	loc(it.loc) {
-	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
-}
-
-BasicIterator::~BasicIterator() {
-}
-
-/**
- * This method should be abstract. Only because of compatibility issues we implemented it
- */
-Item_t BasicIterator::produceNext() {
+Item_t BasicIterator::produceNext(int8_t* stateBlock) {
 	ZorbaErrorAlerts::error_alert(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
@@ -115,81 +37,114 @@ Item_t BasicIterator::produceNext() {
 	return NULL;///unreachable
 }
 
-
-std::ostream& BasicIterator::show(std::ostream& os)
-{
-	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
-	_show(os);
-	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
-	return os;
+void 
+BasicIterator::reset(int8_t* stateBlock) {
+	ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
 }
 
-
-Item_t BasicIterator::next() {
-	return produceNext();
+void 
+BasicIterator::releaseResources(int8_t* stateBlock) {
+	ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
 }
 
-
-//*************************************************
-//*************************************************
-//
-//		SIMPLE BATCHING
-//
-//*************************************************
-//*************************************************
-#elif BATCHING_TYPE==1
-
-std::ostream& BasicIterator::show(std::ostream& os)
-{
-	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
-	_show(os);
-	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
-	return os;
+int32_t
+BasicIterator::getStackSize() {
+	ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
+	return 0;
 }
+
+int32_t
+BasicIterator::getStackSizeOfSubtree() {
+	ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
+	return 0;
+}
+
+void
+BasicIterator::setOffset(int32_t& offset) {
+	ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
+}
+
+void
+BasicIterator::BasicIteratorState::init() {
+	this->duffsLine = 0;
+}
+
+void
+BasicIterator::BasicIteratorState::reset() {
+	this->duffsLine = 0;
+}
+
+void
+BasicIterator::BasicIteratorState::setDuffsLine(int32_t value) {
+	this->duffsLine = value;
+}
+
+int32_t
+BasicIterator::BasicIteratorState::getDuffsLine() {
+	return this->duffsLine;
+}
+
 
 BasicIterator::BasicIterator(yy::location _loc) :
-	loc(_loc), cItem(BATCHSIZE){
+	loc(_loc){
 	this->current_line = 0;
 	zorp = zorba::getZorbaForCurrentThread();
 }
 BasicIterator::BasicIterator(const BasicIterator& it) :
-	loc(it.loc), cItem(it.cItem) {
+	rcobject(it),
+	loc(it.loc) {
 	this->current_line = 0;
 	zorp = zorba::getZorbaForCurrentThread();
 }
 
 BasicIterator::~BasicIterator() {
 }
-/**
- * This method should be abstract. Only because of compatibility issues we implemented it
- */
-void BasicIterator::produceNext() {
-	ZorbaErrorAlerts::error_alert(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-}
 
-Item_t BasicIterator::next() {
-	if (cItem == BATCHSIZE) {
-		produceNext();
-		cItem = 0;
-	}
-	return batch[cItem++];
+
+std::ostream& BasicIterator::show(std::ostream& os)
+{
+	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
+	_show(os);
+	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
+	return os;
 }
 
 
-//*************************************************
-//*************************************************
-//
-//		SUPER BATCHING
-//
-//*************************************************
-//*************************************************
-#elif BATCHING_TYPE==2
+IteratorWrapper::IteratorWrapper(Iterator_t& iter) : iterator(iter) {
+	int32_t stackSize = this->iterator->getStackSizeOfSubtree();
+	this->stateBlock = new int8_t[stackSize];
+	memset(this->stateBlock, 0, stackSize);
+	int32_t offset = 0;
+	this->iterator->setOffset(offset);
+}
 
-#endif 
+IteratorWrapper::~IteratorWrapper() {
+	this->iterator->releaseResources(this->stateBlock);
+}
 
+Item_t
+IteratorWrapper::next() {
+	return this->iterator->produceNext(this->stateBlock);
+}
 
 }

@@ -30,42 +30,25 @@ namespace xqp
 	class zorba;
 	class GenericCast;
 
-
-	/**
-	 * TODO CommonBase-Classes should be implemented in the Header file, as they make troutble
-	 * if you seperate them in .h and .cpp during linking. Any suggestions to fix that are
-	 * welcome.
-	 *
-	 */
 	template <class IterType>
 	class BinaryBaseIterator : public Batcher<IterType>
 	{
-
+		protected:
+			Iterator_t iter0;
+			Iterator_t iter1;
+			
 		public:
 			BinaryBaseIterator
-			( yy::location loc, Iterator_t arg0_, Iterator_t arg1_ )
-					:
-					Batcher<IterType> ( loc ),arg0 ( arg0_ ),arg1 ( arg1_ ) {}
+				( const yy::location& loc, Iterator_t& arg0_, Iterator_t& arg1_ );
 
-			~BinaryBaseIterator() {}
+			virtual ~BinaryBaseIterator();
 
-			void resetImpl()
-			{
-				this->resetChild ( arg0 );
-				this->resetChild ( arg1 );
-			}
-
-			void releaseResourcesImpl()
-			{
-				this->releaseChildResources ( this->arg0 );
-				this->releaseChildResources ( this->arg1 );
-			}
-
-
-		protected:
-			Iterator_t arg0;
-			Iterator_t arg1;
-
+			void resetImpl(int8_t* stateBlock);
+			void releaseResourcesImpl(int8_t* stateBlock);
+			
+			virtual int32_t getStackSize();
+			virtual int32_t getStackSizeOfSubtree();
+			virtual void setOffset(int32_t& offset);
 	};
 
 	/** Operations for Add
@@ -144,10 +127,10 @@ namespace xqp
 		private:
 			GenericCast* genericCast;
 		public:
-			ArithmeticIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 );
+			ArithmeticIterator ( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 );
 			~ArithmeticIterator();
 
-			Item_t nextImpl();
+			Item_t nextImpl(int8_t* stateBlock);
 	}; /* class ArithmeticIterator */
 
 	/*______________________________________________________________________
@@ -199,9 +182,9 @@ namespace xqp
 			~OpNumericUnaryIterator();
 
 		public:	// iterator interface
-			Item_t nextImpl();
-			void resetImpl();
-			void releaseResourcesImpl();
+			Item_t nextImpl(int8_t* stateBlock);
+			void resetImpl(int8_t* stateBlock);
+			void releaseResourcesImpl(int8_t* stateBlock);
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 
@@ -237,9 +220,9 @@ namespace xqp
 			~FnAbsIterator();
 
 		public:
-			Item_t nextImpl();
-			void resetImpl();
-			void releaseResourcesImpl();
+			Item_t nextImpl(int8_t* stateBlock);
+			void resetImpl(int8_t* stateBlock);
+			void releaseResourcesImpl(int8_t* stateBlock);
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 

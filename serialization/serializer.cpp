@@ -158,11 +158,12 @@ void serializer::normalize_sequence(list_type& items, list_type& out)
 			(*it)->getNodeKind() == documentNode )
 		{
 			Iterator_t children = (*it)->getChildren();
-			Item_t child = children->next();
+			IteratorWrapper iw(children);
+			Item_t child = iw.next();
 			while (child != NULL)
 			{
 				s5.push_back(child);
-				child = children->next();
+				child = iw.next();
 			}
 		}
 		else
@@ -254,7 +255,8 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth)
 
 	// emit attributes first
 	Iterator_t it = item->getChildren();
-	Item_t child = it->next();
+	IteratorWrapper iw(it);
+	Item_t child = iw.next();
 	while (child!= NULL)
 	{
 		if (child->getNodeKind() == attributeNode)
@@ -266,12 +268,13 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth)
 			children_count++;
 		}
     
-    	child = it->next();
+    	child = iw.next();
 	}
 
 	// output all the other nodes
 	it = item->getChildren();
-	child = it->next();
+	IteratorWrapper iw2(it);
+	child = iw.next();
 	while (child!= NULL)
 	{
 		if (child->getNodeKind() != attributeNode)
@@ -283,7 +286,7 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth)
 			children_count++;
 		}
     
-    	child = it->next();
+    	child = iw.next();
 	}
 
 	return children_count;

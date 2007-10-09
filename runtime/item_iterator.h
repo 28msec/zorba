@@ -61,11 +61,11 @@ public:
 	EmptyIterator(const EmptyIterator& it) : Batcher<EmptyIterator>(it) {}
 	~EmptyIterator() {}
 	
-	Item_t nextImpl() {
+	Item_t nextImpl(int8_t* stateBlock) {
 		return NULL;
 	}
-	void resetImpl() { }
-	void releaseResourcesImpl(){ }
+	void resetImpl(int8_t* stateBlock) { }
+	void releaseResourcesImpl(int8_t* stateBlock){ }
 }; /* class EmptyIterator */
 
 /*_____________________________________________________________
@@ -76,54 +76,21 @@ class SingletonIterator : public Batcher<SingletonIterator>
 {
 protected:
 	Item_t i_h;
-	bool is_done;
 
 public:
-	SingletonIterator(yy::location loc, Item_t _i_p) : 
-												Batcher<SingletonIterator> (loc),
-												i_h(_i_p), is_done (false) {}
-	SingletonIterator(const SingletonIterator& it) : Batcher<SingletonIterator>(it), i_h(it.i_h),
-																										is_done(it.is_done) 
-																										{}
-	~SingletonIterator() { }
+	SingletonIterator(yy::location loc, Item_t _i_p);
+	~SingletonIterator();
 	
 public:
-	Item_t nextImpl() {
-		bool was_done = is_done; is_done = true;
-		return was_done ? NULL : i_h;
-	}
-	void resetImpl() {
-		this->is_done = false;
-	}
-	void releaseResourcesImpl(){this->is_done = false;}
-
-public:		// iterator interface
-	void _open() {}
-
-	void _close() {
-		this->is_done = false;
-	}
+	Item_t nextImpl(int8_t* stateBlock);
+	void resetImpl(int8_t* stateBlock);
+	void releaseResourcesImpl(int8_t* stateBlock);
 	
-	std::ostream&  _show(std::ostream& os)	const
-	{
-		return os;
-	}
-	
-	Item_t _next() {
-		bool was_done = is_done; is_done = true;
-		return was_done ? NULL : i_h;
-	}
+	std::ostream&  _show(std::ostream& os)	const;
 
-	
-	
-	bool done() const { return is_done; }
-
-public:
-	SingletonIterator& operator=(const SingletonIterator& it)
-		{ i_h = it.i_h; 
-			loc = it.loc;
-			return *this; }
-
+	virtual int32_t getStackSize();
+	virtual int32_t getStackSizeOfSubtree();
+	virtual void setOffset(int32_t& offset);
 };
 
 // FIXME No expressions in iterators!!
@@ -232,9 +199,9 @@ public:
 	~MapIterator() {}
 
 public:
-	Item_t nextImpl();
-	void resetImpl();
-	void releaseResourcesImpl();
+	Item_t nextImpl(int8_t* stateBlock);
+	void resetImpl(int8_t* stateBlock);
+	void releaseResourcesImpl(int8_t* stateBlock);
 // 	void _open();
 // 	void _close();
 	std::ostream&  _show(std::ostream& os) const;
@@ -258,9 +225,9 @@ public:
 		);
 		virtual ~FilterIterator();
 		
-		virtual Item_t nextImpl() = 0;
-		void resetImpl();
-		void releaseResourcesImpl();
+		virtual Item_t nextImpl(int8_t* stateBlock) = 0;
+		void resetImpl(int8_t* stateBlock);
+		void releaseResourcesImpl(int8_t* stateBlock);
 	}; /* class FilterIterator */
 	
 	/**
@@ -278,7 +245,7 @@ public:
 			const yy::location& loc,
 			Iterator_t& iter_arg
 		);
-		Item_t nextImpl();
+		Item_t nextImpl(int8_t* stateBlock);
 	}; /* class EnclosedIterator */
 	
 	/** Used to make e.g. the concatenation of text nodes
@@ -294,7 +261,7 @@ public:
 			const yy::location& loc,
 			Iterator_t& iter_arg
 		);
-		Item_t nextImpl();
+		Item_t nextImpl(int8_t* stateBlock);
 	}; /* class TextNodeConnector */
 
 	class ElementIterator : public Batcher<ElementIterator>
@@ -313,9 +280,9 @@ public:
 			Iterator_t& attributes_arg
 		);
 	
-		Item_t nextImpl();
-		void resetImpl();
-		void releaseResourcesImpl();
+		Item_t nextImpl(int8_t* stateBlock);
+		void resetImpl(int8_t* stateBlock);
+		void releaseResourcesImpl(int8_t* stateBlock);
 	}; /* class ElementIterator */
 	
 	class AttributeIterator : public Batcher<AttributeIterator>
@@ -331,9 +298,9 @@ public:
 			Iterator_t& value_arg
 		);
 		
-		Item_t nextImpl();
-		void resetImpl();
-		void releaseResourcesImpl();
+		Item_t nextImpl(int8_t* stateBlock);
+		void resetImpl(int8_t* stateBlock);
+		void releaseResourcesImpl(int8_t* stateBlock);
 	}; /* class AttributeIterator */
 	
 	class IfThenElseIterator : public Batcher<IfThenElseIterator>
@@ -367,9 +334,9 @@ public:
 			bool condIsBooleanIter_arg = false
 		);
 		
-		Item_t nextImpl();
-		void resetImpl();
-		void releaseResourcesImpl();
+		Item_t nextImpl(int8_t* stateBlock);
+		void resetImpl(int8_t* stateBlock);
+		void releaseResourcesImpl(int8_t* stateBlock);
 	}; /* class IfThenElseIterator */
 
 

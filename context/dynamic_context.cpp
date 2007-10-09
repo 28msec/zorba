@@ -73,9 +73,8 @@ const Item&
 dynamic_context::default_element_type_namespace() const
 {
 	Iterator_t it_h = context_value(default_element_type_ns_key);
-	it_h->open();
-	Item_t i_h = it_h->next();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	Item_t i_h = iw.next();
 	return dynamic_cast<const Item&>(*i_h);
 }
 
@@ -103,9 +102,8 @@ sequence_type_t dynamic_context::context_item_type() const
 dynamic_context::ordering_mode_t dynamic_context::ordering_mode() const
 {
 	Iterator_t it_h = context_value(ordering_mode_key);
-	it_h->open();
-	Item_t i_h = it_h->next();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	Item_t i_h = iw.next();
 	string mode =i_h->getStringProperty();
 	if (mode=="ordered") return ordered;
 	return unordered;

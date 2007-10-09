@@ -60,59 +60,51 @@ class zorba;
 
 typedef rchandle<BasicIterator> Iterator_t;
 
-	extern int32_t iteratorTreeDepth;
+extern int32_t iteratorTreeDepth;
 	
-class OldIterator : public rcobject {
-protected:
-	bool open_b;
-
-public:
-
-	OldIterator();
-	OldIterator(const OldIterator& it);
-	~OldIterator();
-
-	void open();
-	void close();
-	bool isOpen() const;
-	virtual bool done() const;
-
-protected:
-	// dispatch to concrete classes
-	virtual void _open() {
-	}
-	virtual Item_t _next() {
-		return NULL;
-	}
-	virtual void _close() {
-	}
-};
-
-#if BATCHING_TYPE==0
-
+// TODO This Macros have to be deleted
 #define STACK_INIT() switch (this->current_line) { case 0:
 #define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL;
 
+/** Macros to automate Duff's Device and separation of code and execution 
+	* STACK_INIT:	- initializes Duff's Device and gets the state of the
+	*								current iterator from the state block
+	* STACK_PUSH: - returns the passed item and saves the current position
+	*								of the next functions
+	* STACK_END:	- ends the execution of the next function
+	* GET_STATE:	- specific function to load the state of the current iterator
+	*								from the state block
+	*/
+#define STACK_INIT2(stateType, stateObject, stateBlock) \
+	GET_STATE(stateType, stateObject, stateBlock); \
+	switch (stateObject->getDuffsLine()) { case 0: \
+	stateObject->init()
+#define STACK_PUSH2(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
+#define STACK_END2() } return NULL
+#define GET_STATE(stateType, stateObject, stateBlock) \
+	stateObject = reinterpret_cast<stateType*>(stateBlock + this->stateOffset)
 
-/*******************************************************************************
-
- Methods produceNext(), reset(), and releaseResources() raise errors. The
- actual implementations of these methors are given by each instance of the
- Batcher template class below.
-
- Method next() just calls produceNext().
-
-********************************************************************************/
-class BasicIterator : public OldIterator
+/** Base class of all iterators.
+	*/
+class BasicIterator : public rcobject
 {
 protected:
-
-	// Line Info for Duff's device
+	/** offset of the state of the current iterator */
+	int32_t stateOffset;
+	
+	// TODO must be deleted. Is saved in state object.
 	int32_t current_line;
+	
+	// TODO what's that for?
 	zorba *zorp;
 public:
 	yy::location loc;
+	
+#if BATCHING_TYPE == 1	
+	int32_t cItem;
+	Item_t batch [BATCHSIZE];
+#endif
 
 public:
 	BasicIterator(yy::location _loc);
@@ -121,42 +113,91 @@ public:
 
 public:
 
-	/**
-	 * This is the wrapper which works for any kind of batching.
-	 */
-	Item_t next();
-
 	/** 
    * Produces an output item of the iterator. Implicitly, the first call 
 	 * of 'producNext' initializes the iterator and allocates resources 
 	 * (main memory, file descriptors, etc.). 
+	 *
+	 * @param stateBLock
+	 *
+	 * TODO must be pure virtual
 	 */
-	virtual Item_t produceNext();
+	virtual Item_t produceNext(int8_t* stateBlock);
 
 	/** 
 	 * Restarts the iterator so that the next 'produceNext' call will start 
-	 * again from the beginning (should not release any resources). 
+	 * again from the beginning (should not release any resources).  
+	 *
+	 * @param stateBLock
+	 *
+	 * TODO must be pure virtual
 	 */
-	virtual void reset();
+	virtual void reset(int8_t* stateBlock);
 
 	/** 
-	 * Releases all resources of the iterator 
+	 * Releases all resources of the iterator  
+	 *
+	 * @param stateBLock
+	 * 
+	 * TODO must be pure virtual
 	 */
-	virtual void releaseResources();
+	virtual void releaseResources(int8_t* stateBlock);
 
 	std::ostream& show(std::ostream&);
+	
+	/** Returns the size of the state which must be save for the current iterator
+		* on the state block
+		*
+		* TODO must be pure virtual
+		*/
+	virtual int32_t getStackSize();
+	
+	/** Returns the size of the state for the current iterator 
+		* and all its sub-iterators.
+		*
+		* TODO must be pure virtual
+		*/
+	virtual int32_t getStackSizeOfSubtree();
+	
+	/** Sets the offset where the state of the iterator will be saved
+		* on the state stack.
+		*/
+	virtual void setOffset(int32_t& offset);
 
 protected:
-	inline void resetChild(Iterator_t& subIterator) {
-		subIterator->reset();
+	/** Root object of all iterator states */
+	class BasicIteratorState {
+	private:
+		int32_t duffsLine;
+	public:
+		void init();
+		void reset();
+		
+		void setDuffsLine(int32_t);
+		int32_t getDuffsLine();
+	};
+
+protected:
+	inline void resetChild(Iterator_t& subIterator, int8_t* stateBlock) {
+		subIterator->reset(stateBlock);
 	}
 
+#if BATCHING_TYPE == 1	
 	inline Item_t consumeNext(Iterator_t& subIter) {
-		return subIter->produceNext();
+		if (subIter->cItem == BATCHSIZE) {
+			subIter->produceNext();
+			subIter->cItem = 0;
+		}
+		return subIter->batch[subIter->cItem++];
 	}
+#else
+	inline Item_t consumeNext(Iterator_t& subIter, int8_t* stateBlock) {
+		return subIter->produceNext(stateBlock);
+	}
+#endif
 
-	inline void releaseChildResources(Iterator_t& subIterator) {
-		subIterator->releaseResources();
+	inline void releaseChildResources(Iterator_t& subIterator, int8_t* stateBlock) {
+		subIterator->releaseResources(stateBlock);
 	}
 
 	virtual std::ostream& _show(std::ostream& os) const {
@@ -172,103 +213,7 @@ public:
 	~Batcher() {}
 
 public:
-	/**
-	 * This method should be abstract. Only because of compatibility issues we implemented it
-	 */
-	Item_t produceNext() {
-		return static_cast<IterType*>(this)->nextImpl();
-	}
-
-	void reset() {
-		this->current_line = 0;
-		static_cast<IterType*>(this)->resetImpl();
-	}
-
-	void releaseResources() {
-		static_cast<IterType*>(this)->releaseResourcesImpl();
-	}
-
-public:
-	inline Item_t nextImpl();
-	inline void resetImpl();
-	inline void releaseResourcesImpl();
-};
-
-#elif BATCHING_TYPE==1
-
-#define STACK_INIT() switch (this->current_line) { case 0:
-#define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
-#define STACK_END() } return NULL;
-
-#define BATCHSIZE 50
-
-class BasicIterator : public OldIterator {
-protected:
-	// Line Info for Duff's device
-	int32_t current_line;
-	zorba *zorp;
-
-public:
-	yy::location loc;
-	int32_t cItem;
-	Item_t batch [BATCHSIZE];
-
-public:
-	//daniel BasicIterator() : zorp(NULL), open_b(false) {}
-	BasicIterator(yy::location _loc);
-	BasicIterator(const BasicIterator& it);
-	~BasicIterator();
-
-public:
-	// inline base logic
-
-
-	/**
-	 * This method should be abstract. Only because of compatibility issues we implemented it
-	 */
-	virtual void produceNext();
-
-	virtual void reset();
-
-	virtual void releaseResources();
-
-	/**
-	 * This is the wrapper which works for any kind of batching
-	 */
-	Item_t next();
-
-	std::ostream& show(std::ostream&);
-
-protected:
-	inline void resetChild(Iterator_t& subIterator){
-		subIterator->reset();
-	}
-	
-	inline Item_t consumeNext(Iterator_t& subIter) {
-		if (subIter->cItem == BATCHSIZE) {
-			subIter->produceNext();
-			subIter->cItem = 0;
-		}
-		return subIter->batch[subIter->cItem++];
-	}
-	
-	inline void releaseChildResources(Iterator_t& subIterator){
-		subIterator->releaseResources();
-	}
-
-	virtual std::ostream& _show(std::ostream&) const = 0;
-};
-
-template<class IterType> class Batcher : public BasicIterator {
-public:
-	Batcher(const Batcher<IterType>&);
-	Batcher(yy::location _loc) :
-		BasicIterator(_loc) {
-	}
-	~Batcher() {
-	}
-
-public:
+#if BATCHING_TYPE == 1	
 	void produceNext() {
 		int32_t i = 0;
 		batch[0] = static_cast<IterType*>(this)->nextImpl();
@@ -277,26 +222,50 @@ public:
 			batch[i] = static_cast<IterType*>(this)->nextImpl();
 		}
 	}
+#else
+	Item_t produceNext(int8_t* stateBlock) {
+		return static_cast<IterType*>(this)->nextImpl(stateBlock);
+	}
+#endif
 
-	void reset() {
+	void reset(int8_t* stateBlock) {
 		this->current_line = 0;
-		static_cast<IterType*>(this)->resetImpl();
+		static_cast<IterType*>(this)->resetImpl(stateBlock);
 	}
 
-	void releaseResources() {
-		this->current_line = 0;
-		static_cast<IterType*>(this)->releaseResourcesImpl();
+	void releaseResources(int8_t* stateBlock) {
+		static_cast<IterType*>(this)->releaseResourcesImpl(stateBlock);
 	}
 
 public:
-	inline Item_t nextImpl();
-	inline void resetImpl();
-	inline void releaseResourcesImpl();
+	inline Item_t nextImpl(int8_t* stateBlock);
+	inline void resetImpl(int8_t* stateBlock);
+	inline void releaseResourcesImpl(int8_t* stateBlock);
 };
 
-#endif //Batching Selection end
+
+/** Wrapper to hide functionality like separation of code and execution, 
+	* garabage collection, etc. during evaluation of an iterator tree
+	*/
+class IteratorWrapper {
+private:
+	Iterator_t iterator;
+	int8_t* stateBlock;
+	
+public:
+	/** Concsturctor
+		* @param iter root of evaluated iterator tree
+		*/
+	IteratorWrapper(Iterator_t& iter);
+	~IteratorWrapper();
+	
+	/** Returns the next item of the root iterator
+		* @return item
+		*/
+	Item_t next();
+};
 
 } /* namespace xqp */
 
-#endif	/* XQP_ITEM_ITERATOR_H */
+#endif	/* XQP_BATCHING_H */
 

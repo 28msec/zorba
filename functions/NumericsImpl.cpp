@@ -19,6 +19,61 @@
 using namespace std;
 namespace xqp
 {
+	/* begin class BinaryBaseIterator */
+	template <class IterType>
+	BinaryBaseIterator<IterType>::BinaryBaseIterator
+		( const yy::location& loc, Iterator_t& arg0, Iterator_t& arg1 )
+	:
+		Batcher<IterType> ( loc ),iter0 ( arg0 ),iter1 ( arg1 ) {}
+
+	template <class IterType>
+	BinaryBaseIterator<IterType>::~BinaryBaseIterator() {}
+
+	template <class IterType>
+	void 
+	BinaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+	{
+		BasicIterator::BasicIteratorState* state;
+		GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
+		state->reset();
+		
+		this->resetChild ( iter0, stateBlock );
+		this->resetChild ( iter1, stateBlock );
+	}
+
+	template <class IterType>
+	void 
+	BinaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+	{
+		this->releaseChildResources ( this->iter0, stateBlock );
+		this->releaseChildResources ( this->iter1, stateBlock );
+	}
+
+	template <class IterType>
+	int32_t
+	BinaryBaseIterator<IterType>::getStackSize() {
+		return sizeof(BasicIterator::BasicIteratorState);
+	}
+	
+	template <class IterType>
+	int32_t
+	BinaryBaseIterator<IterType>::getStackSizeOfSubtree() {
+		return this->iter0->getStackSizeOfSubtree()
+						+ this->iter1->getStackSizeOfSubtree()
+						+ this->getStackSize();
+	}
+	
+	template <class IterType>
+	void
+	BinaryBaseIterator<IterType>::setOffset(int32_t& offset) {
+		this->stateOffset = offset;
+		offset += this->getStackSize();
+		
+		this->iter0->setOffset(offset);
+		this->iter1->setOffset(offset);
+	}
+	/* end class BinaryBaseIterator */
+
 	/* begin class AddOperations */
 	Item_t AddOperations::opDouble (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
@@ -246,7 +301,8 @@ namespace xqp
 
 	/* begin class ArithmeticIterator */
 	template< class Operations>
-	ArithmeticIterator<Operations>::ArithmeticIterator ( yy::location loc, Iterator_t iter0, Iterator_t iter1 )
+	ArithmeticIterator<Operations>::ArithmeticIterator 
+		( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 )
 	:
 		BinaryBaseIterator<ArithmeticIterator<Operations> > ( loc, iter0, iter1 )
 	{
@@ -260,7 +316,7 @@ namespace xqp
 	}
 	
 	template< class Operations>
-	Item_t ArithmeticIterator<Operations>::nextImpl()
+	Item_t ArithmeticIterator<Operations>::nextImpl(int8_t* stateBlock)
 	{
 		Item_t n0;
 		Item_t n1;
@@ -269,11 +325,12 @@ namespace xqp
 		TypeCode type1;
 		TypeCode resultType;
 
-		STACK_INIT();
-		n0 = this->consumeNext ( this->arg0 );
+		BasicIterator::BasicIteratorState* state;
+		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+		n0 = this->consumeNext ( this->iter0, stateBlock );
 		if ( n0 != NULL )
 		{
-			n1 = this->consumeNext ( this->arg1 );
+			n1 = this->consumeNext ( this->iter1, stateBlock );
 			if ( n1 != NULL )
 			{
 				n0 = n0->getAtomizationValue();
@@ -302,7 +359,7 @@ namespace xqp
 					break;
 				}
 				
-				if (this->consumeNext ( this->arg0 ) != NULL || this->consumeNext ( this->arg1) != NULL)
+				if (this->consumeNext ( this->iter0, stateBlock ) != NULL || this->consumeNext ( this->iter1, stateBlock) != NULL)
 					ZorbaErrorAlerts::error_alert (
 						error_messages::XPTY0004_STATIC_TYPE_ERROR,
 						error_messages::STATIC_ERROR,
@@ -310,10 +367,10 @@ namespace xqp
 						false,
 						"Arithmetic operation has a sequences greater than one as an operator!"
 					);
-				STACK_PUSH( res );
+				STACK_PUSH2( res, state );
 			}
 		}
-		STACK_END();
+		STACK_END2();
 	}
 	
 	/* instantiate ArithmeticIterator for all types */
@@ -502,7 +559,7 @@ namespace xqp
 		delete this->genericCast;
 	}
 	
-	Item_t OpNumericUnaryIterator::nextImpl()
+	Item_t OpNumericUnaryIterator::nextImpl(int8_t* stateBlock)
 	{
 		Item_t item;
 		Item_t res;
@@ -510,7 +567,7 @@ namespace xqp
 		TypeCode type;
 		
 		STACK_INIT();
-		item = this->consumeNext ( this->arg0 );
+		item = this->consumeNext ( this->arg0, stateBlock );
 		if ( item != NULL )
 		{
 			item = item->getAtomizationValue();
@@ -546,7 +603,7 @@ namespace xqp
 				);
 			}
 			
-			if (this->consumeNext ( this->arg0 ) != NULL)
+			if (this->consumeNext ( this->arg0, stateBlock ) != NULL)
 				ZorbaErrorAlerts::error_alert (
 					error_messages::XPTY0004_STATIC_TYPE_ERROR,
 					error_messages::STATIC_ERROR,
@@ -559,14 +616,14 @@ namespace xqp
 		STACK_END();
 	}
 
-	void OpNumericUnaryIterator::resetImpl()
+	void OpNumericUnaryIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild ( this->arg0 );
+		this->resetChild ( this->arg0, stateBlock );
 	}
 
-	void OpNumericUnaryIterator::releaseResourcesImpl()
+	void OpNumericUnaryIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources ( this->arg0 );
+		this->releaseChildResources ( this->arg0, stateBlock );
 	}
 
 	std::ostream& OpNumericUnaryIterator::_show ( std::ostream& os )
@@ -605,14 +662,14 @@ namespace xqp
 		delete this->genericCast;
 	}
 
-	Item_t FnAbsIterator::nextImpl()
+	Item_t FnAbsIterator::nextImpl(int8_t* stateBlock)
 	{
 		Item_t item;
 		Item_t res;
 		TypeCode type;
 		
 		STACK_INIT();
-		item = this->consumeNext ( this->arg0 );
+		item = this->consumeNext ( this->arg0, stateBlock );
 		if ( item != NULL )
 		{
 			item = item->getAtomizationValue();
@@ -667,7 +724,7 @@ namespace xqp
 				);
 			}
 			
-			if (this->consumeNext ( this->arg0 ) != NULL)
+			if (this->consumeNext ( this->arg0, stateBlock ) != NULL)
 				ZorbaErrorAlerts::error_alert (
 					error_messages::XPTY0004_STATIC_TYPE_ERROR,
 					error_messages::STATIC_ERROR,
@@ -680,14 +737,14 @@ namespace xqp
 		STACK_END();
 	}
 
-	void FnAbsIterator::resetImpl()
+	void FnAbsIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild ( this->arg0 );
+		this->resetChild ( this->arg0, stateBlock );
 	}
 
-	void FnAbsIterator::releaseResourcesImpl()
+	void FnAbsIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources ( this->arg0 );
+		this->releaseChildResources ( this->arg0, stateBlock );
 	}
 
 	std::ostream& FnAbsIterator::_show ( std::ostream& os ) const

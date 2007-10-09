@@ -79,11 +79,12 @@ namespace xqp
 	{
 		ostringstream oss;
 		Iterator_t it = this->getChildren();
-		Item_t item = it->next();
+		IteratorWrapper iw(it);
+		Item_t item = iw.next();
 		while ( item != NULL )
 		{
 			oss << item->getStringProperty();
-			item = it->next();
+			item = iw.next();
 		}
 		return oss.str();
 	}
@@ -176,11 +177,12 @@ namespace xqp
 	{
 		ostringstream oss;
 		Iterator_t it = this->getChildren();
-		Item_t item = it->next();
+		IteratorWrapper iw(it);
+		Item_t item = iw.next();
 		while ( item != NULL )
 		{
 			oss << item->getStringProperty();
-			item = it->next();
+			item = iw.next();
 		}
 		return oss.str();
 	}
@@ -208,12 +210,13 @@ namespace xqp
 	{
 		std::set<std::pair<xqp_string, xqp_string> > bindings;
 		Iterator_t iter = this->namespaces->getIterator();
-		Item_t item = iter->next();
+		IteratorWrapper iw(iter);
+		Item_t item = iw.next();
 
 		while ( item != NULL )
 		{
 			bindings.insert ( pair<xqp_string,xqp_string> ( item->getPrefix(), item->getNamespace() ) );
-			item = iter->next();
+			item = iw.next();
 		}
 		return bindings;
 	}
@@ -226,12 +229,13 @@ namespace xqp
 	bool ElementNode::getNilled() const
 	{
 		Iterator_t iter = this->children->getIterator();
-		Item_t item = iter->next();
+		IteratorWrapper iw(iter);
+		Item_t item = iw.next();
 		while ( item != NULL )
 		{
 			if ( item->isNode() && ( item->getNodeKind() == elementNode || item->getNodeKind() == textNode ) )
 				return false;
-			item = iter->next();
+			item = iw.next();
 		}
 		return true;
 	}
@@ -258,19 +262,21 @@ namespace xqp
 		
 		if (this->attributes != NULL) {
 			Iterator_t iter = this->attributes->getIterator();
-			Item_t item = iter->next();
+			IteratorWrapper iw(iter);
+			Item_t item = iw.next();
 			while (item != NULL) {
 				str += " " + item->show();
-				item = iter->next();
+				item = iw.next();
 			}
 		}
 		str += ">";
 		if (this->children != NULL) {
 			Iterator_t iter = this->children->getIterator();
-			Item_t item = iter->next();
+			IteratorWrapper iw(iter);
+			Item_t item = iw.next();
 			while (item != NULL) {
 				str += item->show();
-				item = iter->next();
+				item = iw.next();
 			}
 		}
 		str += "</" + this->name->getStringProperty() + ">";

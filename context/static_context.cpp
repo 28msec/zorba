@@ -123,9 +123,8 @@ static_context::construction_mode_t
 static_context::construction_mode() const
 {
 	Iterator_t it_h = context_value(construction_mode_key);
-	it_h->open();
-	string mode = it_h->next()->getStringProperty();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	string mode = iw.next()->getStringProperty();
 	if (mode=="preserve") return cons_preserve;
 	return cons_strip;
 }
@@ -134,9 +133,8 @@ static_context::order_empty_mode_t
 static_context::order_empty_mode() const
 {
 	Iterator_t it_h = context_value(order_empty_mode_key);
-	it_h->open();
-	string mode = it_h->next()->getStringProperty();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	string mode = iw.next()->getStringProperty();
 	if (mode=="empty_greatest") return empty_greatest;
 	return empty_least;
 }
@@ -144,9 +142,8 @@ static_context::order_empty_mode() const
 static_context::boundary_space_mode_t static_context::boundary_space_mode() const
 {
 	Iterator_t it_h = context_value(boundary_space_mode_key);
-	it_h->open();
-	string mode = it_h->next()->getStringProperty();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	string mode = iw.next()->getStringProperty();
 	if (mode=="preserve_space") return preserve_space;
 	return strip_space;
 }
@@ -154,9 +151,8 @@ static_context::boundary_space_mode_t static_context::boundary_space_mode() cons
 static_context::inherit_mode_t static_context::inherit_mode() const
 {
 	Iterator_t it_h = context_value(inherit_mode_key);
-	it_h->open();
-	string mode = it_h->next()->getStringProperty();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	string mode = iw.next()->getStringProperty();
 	if (mode=="inherit_ns") return inherit_ns;
 	return no_inherit_ns;
 }
@@ -164,9 +160,8 @@ static_context::inherit_mode_t static_context::inherit_mode() const
 static_context::preserve_mode_t static_context::preserve_mode() const
 {
 	Iterator_t it_h = context_value(preserve_mode_key);
-	it_h->open();
-	string mode = it_h->next()->getStringProperty();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	string mode = iw.next()->getStringProperty();
 	if (mode=="preserve_ns") return preserve_ns;
 	return no_preserve_ns;
 }
@@ -214,18 +209,16 @@ void static_context::set_preserve_mode(
 const Item& static_context::get_default_collation() const
 {
 	Iterator_t it_h = context_value(default_collation_key);
-	it_h->open();
-	Item_t i_h = it_h->next();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	Item_t i_h = iw.next();
 	return *i_h;
 }
 
 std::string static_context::get_baseuri() const
 {
 	Iterator_t it_h = context_value(baseuri_key);
-	it_h->open();
-	Item_t i_h = it_h->next();
-	it_h->close();
+	IteratorWrapper iw(it_h);
+	Item_t i_h = iw.next();
 	return i_h->getStringProperty();
 }
 

@@ -37,15 +37,16 @@ namespace xqp
 			 * Static function which computes the effective boolean value of a passed iterator.
 			 *
 			 * @param loc location of the iterator which invokes this function
+			 * @param stateBlock
 			 * @param iterator
 			 * @param negate optinal parameter which negates the effective boolean value (default == false)
 			 * @return effective boolean value
 			 */
-			static Item_t effectiveBooleanValue ( const yy::location& loc, Iterator_t&, bool negate = false);
+			static Item_t effectiveBooleanValue ( const yy::location& loc, int8_t* stateBlock, Iterator_t&, bool negate = false);
 
-			Item_t nextImpl();
-			void resetImpl();
-			void releaseResourcesImpl();
+			Item_t nextImpl(int8_t* stateBlock);
+			void resetImpl(int8_t* stateBlock);
+			void releaseResourcesImpl(int8_t* stateBlock);
 
 			std::ostream&  _show ( std::ostream& ) const;
 	};
@@ -67,9 +68,9 @@ namespace xqp
 			LogicIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, LogicType lt);
 			~LogicIterator();
 			
-			Item_t nextImpl();
-			void resetImpl();
-			void releaseResourcesImpl();
+			Item_t nextImpl(int8_t* stateBlock);
+			void resetImpl(int8_t* stateBlock);
+			void releaseResourcesImpl(int8_t* stateBlock);
 	}; /* class LogicIterator */
 	
 	class CompareIterator : public Batcher<CompareIterator>
@@ -95,9 +96,9 @@ namespace xqp
 			CompareIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType );
 			~CompareIterator();
 
-			Item_t nextImpl();
-			void resetImpl();
-			void releaseResourcesImpl();
+			Item_t nextImpl(int8_t* stateBlock);
+			void resetImpl(int8_t* stateBlock);
+			void releaseResourcesImpl(int8_t* stateBlock);
 			
 			bool isValueComparison();
 			bool isGeneralComparison();

@@ -30,9 +30,9 @@ public:
 		Batcher<FnDataIterator> ( loc ), argument(arg0) {}
     ~FnDataIterator() {}
 		
-  Item_t nextImpl();
-  void resetImpl();
-  void releaseResourcesImpl();
+  Item_t nextImpl(int8_t* stateBlock);
+  void resetImpl(int8_t* stateBlock);
+  void releaseResourcesImpl(int8_t* stateBlock);
 }; /* class FnDateIterator */
 
 
@@ -48,9 +48,9 @@ public:
 		Batcher<FnRootIterator>(loc), theInput(input) {}
     ~FnRootIterator() {}
 		
-  Item_t nextImpl();
-  void resetImpl();
-  void releaseResourcesImpl();
+  Item_t nextImpl(int8_t* stateBlock);
+  void resetImpl(int8_t* stateBlock);
+  void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os)	const;
 };

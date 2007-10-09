@@ -40,11 +40,11 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t NameTestIterator::nextImpl()
+Item_t NameTestIterator::nextImpl(int8_t* stateBlock)
 {
   while (true)
   {
-    theContextNode = consumeNext(theInput);
+    theContextNode = consumeNext(theInput, stateBlock);
     if (theContextNode == NULL)
       return NULL;
 
@@ -89,15 +89,15 @@ Item_t NameTestIterator::nextImpl()
 }
 
 
-void NameTestIterator::resetImpl()
+void NameTestIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 }
 
 
-void NameTestIterator::releaseResourcesImpl()
+void NameTestIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theQName = NULL;
   theContextNode = NULL;
 }
@@ -122,11 +122,11 @@ std::ostream& NameTestIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t SelfAxisIterator::nextImpl()
+Item_t SelfAxisIterator::nextImpl(int8_t* stateBlock)
 {
   do
   {
-    theContextNode = consumeNext(theInput);
+    theContextNode = consumeNext(theInput, stateBlock);
   }
   while (theContextNode != NULL &&
          thePrincipalNodeKind &&
@@ -136,15 +136,15 @@ Item_t SelfAxisIterator::nextImpl()
 }
 
 
-void SelfAxisIterator::resetImpl()
+void SelfAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 }
 
 
-void SelfAxisIterator::releaseResourcesImpl()
+void SelfAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theContextNode = NULL;
 }
 
@@ -163,7 +163,7 @@ std::ostream& SelfAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AttributeAxisIterator::nextImpl()
+Item_t AttributeAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t attr;
 
@@ -173,7 +173,7 @@ Item_t AttributeAxisIterator::nextImpl()
   {
     do
     {
-      theContextNode = consumeNext(theInput);
+      theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
     }
@@ -181,7 +181,7 @@ Item_t AttributeAxisIterator::nextImpl()
 
     theAttributes = theContextNode->getAttributes();
 
-    attr = consumeNext(theAttributes);
+    attr = consumeNext(theAttributes, stateBlock);
 
     while (attr != NULL)
     {
@@ -189,7 +189,7 @@ Item_t AttributeAxisIterator::nextImpl()
       theCurrentAttr = attr;
 #endif
       STACK_PUSH(attr);
-      attr = consumeNext(theAttributes);
+      attr = consumeNext(theAttributes, stateBlock);
     }
   }
 
@@ -197,18 +197,18 @@ Item_t AttributeAxisIterator::nextImpl()
 }
 
 
-void AttributeAxisIterator::resetImpl()
+void AttributeAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 #ifdef DEBUG
   theCurrentAttr = NULL;
 #endif
 }
 
 
-void AttributeAxisIterator::releaseResourcesImpl()
+void AttributeAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theAttributes = NULL;
   theContextNode = NULL;
 #ifdef DEBUG
@@ -238,13 +238,13 @@ std::ostream& AttributeAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ParentAxisIterator::nextImpl()
+Item_t ParentAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t parent;
 
   do
   {
-    theContextNode = consumeNext(theInput);
+    theContextNode = consumeNext(theInput, stateBlock);
     if (theContextNode == NULL)
       return NULL;
 
@@ -260,18 +260,18 @@ Item_t ParentAxisIterator::nextImpl()
 }
 
 
-void ParentAxisIterator::resetImpl()
+void ParentAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 #ifdef DEBUG
   theParent = NULL;
 #endif
 }
 
 
-void ParentAxisIterator::releaseResourcesImpl()
+void ParentAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theContextNode = NULL;
 #ifdef DEBUG
   theParent = NULL;
@@ -298,13 +298,13 @@ std::ostream& ParentAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorAxisIterator::nextImpl()
+Item_t AncestorAxisIterator::nextImpl(int8_t* stateBlock)
 {
   STACK_INIT();
 
   while (true)
   {
-    theContextNode = consumeNext(theInput);
+    theContextNode = consumeNext(theInput, stateBlock);
     if (theContextNode == NULL)
       return NULL;
 
@@ -325,15 +325,15 @@ Item_t AncestorAxisIterator::nextImpl()
 }
 
 
-void AncestorAxisIterator::resetImpl()
+void AncestorAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 }
 
 
-void AncestorAxisIterator::releaseResourcesImpl()
+void AncestorAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theCurrentAnc = NULL;
   theContextNode = NULL;
 }
@@ -357,13 +357,13 @@ std::ostream& AncestorAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t AncestorSelfAxisIterator::nextImpl()
+Item_t AncestorSelfAxisIterator::nextImpl(int8_t* stateBlock)
 {
   STACK_INIT();
 
   while (true)
   {
-    theContextNode = consumeNext(theInput);
+    theContextNode = consumeNext(theInput, stateBlock);
     if (theContextNode == NULL)
       return NULL;
 
@@ -384,15 +384,15 @@ Item_t AncestorSelfAxisIterator::nextImpl()
 }
 
 
-void AncestorSelfAxisIterator::resetImpl()
+void AncestorSelfAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 }
 
 
-void AncestorSelfAxisIterator::releaseResourcesImpl()
+void AncestorSelfAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theCurrentAnc = NULL;
   theContextNode = NULL;
 }
@@ -416,7 +416,7 @@ std::ostream& AncestorSelfAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t RSiblingAxisIterator::nextImpl()
+Item_t RSiblingAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t parent;
   Item_t sibling;
@@ -427,7 +427,7 @@ Item_t RSiblingAxisIterator::nextImpl()
   {
     do
     {
-      theContextNode = consumeNext(theInput);
+      theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
     }
@@ -440,9 +440,9 @@ Item_t RSiblingAxisIterator::nextImpl()
 
     theChildren = parent->getChildren();
 
-    while (consumeNext(theChildren) != theContextNode) ;
+    while (consumeNext(theChildren, stateBlock) != theContextNode) ;
 
-    sibling = consumeNext(theChildren);
+    sibling = consumeNext(theChildren, stateBlock);
 
     while (sibling != NULL)
     {
@@ -454,7 +454,7 @@ Item_t RSiblingAxisIterator::nextImpl()
         STACK_PUSH(sibling);
       }
 
-      sibling = consumeNext(theChildren);
+      sibling = consumeNext(theChildren, stateBlock);
     }
   }
 
@@ -462,18 +462,18 @@ Item_t RSiblingAxisIterator::nextImpl()
 }
 
 
-void RSiblingAxisIterator::resetImpl()
+void RSiblingAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 #ifdef DEBUG
   theRSibling = NULL;
 #endif
 }
 
 
-void RSiblingAxisIterator::releaseResourcesImpl()
+void RSiblingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theChildren = NULL; 
   theContextNode = NULL;
 #ifdef DEBUG
@@ -501,7 +501,7 @@ std::ostream& RSiblingAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t LSiblingAxisIterator::nextImpl()
+Item_t LSiblingAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t parent;
   Item_t sibling;
@@ -512,7 +512,7 @@ Item_t LSiblingAxisIterator::nextImpl()
   {
     do
     {
-      theContextNode = consumeNext(theInput);
+      theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
     }
@@ -525,7 +525,7 @@ Item_t LSiblingAxisIterator::nextImpl()
 
     theChildren = parent->getChildren();
 
-    sibling = consumeNext(theChildren);
+    sibling = consumeNext(theChildren, stateBlock);
 
     while (sibling != theContextNode)
     {
@@ -537,7 +537,7 @@ Item_t LSiblingAxisIterator::nextImpl()
         STACK_PUSH(sibling);
       }
 
-      sibling = consumeNext(theChildren);
+      sibling = consumeNext(theChildren, stateBlock);
     }
   }
 
@@ -545,18 +545,18 @@ Item_t LSiblingAxisIterator::nextImpl()
 }
 
 
-void LSiblingAxisIterator::resetImpl()
+void LSiblingAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 #ifdef DEBUG
   theLSibling = NULL;
 #endif
 }
 
 
-void LSiblingAxisIterator::releaseResourcesImpl()
+void LSiblingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theChildren = NULL;
   theContextNode = NULL;
 #ifdef DEBUG
@@ -584,7 +584,7 @@ std::ostream& LSiblingAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t ChildAxisIterator::nextImpl()
+Item_t ChildAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t child;
 
@@ -594,7 +594,7 @@ Item_t ChildAxisIterator::nextImpl()
   {
     do
     {
-      theContextNode = consumeNext(theInput);
+      theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
     }
@@ -603,7 +603,7 @@ Item_t ChildAxisIterator::nextImpl()
 
     theChildren = theContextNode->getChildren();
 
-    child = consumeNext(theChildren);
+    child = consumeNext(theChildren, stateBlock);
 
     while (child != NULL)
     {
@@ -624,7 +624,7 @@ Item_t ChildAxisIterator::nextImpl()
         STACK_PUSH(child);
       }
 
-      child = consumeNext(theChildren);
+      child = consumeNext(theChildren, stateBlock);
     }
   }
 
@@ -632,18 +632,18 @@ Item_t ChildAxisIterator::nextImpl()
 }
 
 
-void ChildAxisIterator::resetImpl()
+void ChildAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 #ifdef DEBUG
   theCurrentCild = NULL;
 #endif
 }
 
 
-void ChildAxisIterator::releaseResourcesImpl()
+void ChildAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
   theChildren = NULL; 
   theContextNode = NULL;
 #ifdef DEBUG
@@ -671,7 +671,7 @@ std::ostream& ChildAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DescendantAxisIterator::nextImpl()
+Item_t DescendantAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t desc;
   Iterator_t children;
@@ -682,7 +682,7 @@ Item_t DescendantAxisIterator::nextImpl()
   {
     do
     {
-      theContextNode = consumeNext(theInput);
+      theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
     }
@@ -695,7 +695,7 @@ Item_t DescendantAxisIterator::nextImpl()
 
     theCurrentPath.push(std::pair<Item_t, Iterator_t>(theContextNode, children));
     
-    desc = consumeNext(children);
+    desc = consumeNext(children, stateBlock);
 
     while (desc != NULL)
     {
@@ -714,13 +714,13 @@ Item_t DescendantAxisIterator::nextImpl()
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = consumeNext(theCurrentPath.top().second);
+      desc = consumeNext(theCurrentPath.top().second, stateBlock);
 
       while (desc == NULL)
       {
         theCurrentPath.pop();
         if (!theCurrentPath.empty())
-          desc = consumeNext(theCurrentPath.top().second);
+          desc = consumeNext(theCurrentPath.top().second, stateBlock);
         else
           break;
       }
@@ -731,9 +731,9 @@ Item_t DescendantAxisIterator::nextImpl()
 }
 
 
-void DescendantAxisIterator::resetImpl()
+void DescendantAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
   {
@@ -745,9 +745,9 @@ void DescendantAxisIterator::resetImpl()
 }
 
 
-void DescendantAxisIterator::releaseResourcesImpl()
+void DescendantAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
   {
@@ -781,7 +781,7 @@ std::ostream& DescendantAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t DescendantSelfAxisIterator::nextImpl()
+Item_t DescendantSelfAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t desc;
 
@@ -791,7 +791,7 @@ Item_t DescendantSelfAxisIterator::nextImpl()
   {
     do
     {
-      theContextNode = consumeNext(theInput);
+      theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
     }
@@ -818,13 +818,13 @@ Item_t DescendantSelfAxisIterator::nextImpl()
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = consumeNext(theCurrentPath.top().second);
+      desc = consumeNext(theCurrentPath.top().second, stateBlock);
 
       while (desc == NULL)
       {
         theCurrentPath.pop();
         if (!theCurrentPath.empty())
-          desc = consumeNext(theCurrentPath.top().second);
+          desc = consumeNext(theCurrentPath.top().second, stateBlock);
         else
           break;
       }
@@ -835,9 +835,9 @@ Item_t DescendantSelfAxisIterator::nextImpl()
 }
 
 
-void DescendantSelfAxisIterator::resetImpl()
+void DescendantSelfAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
   {
@@ -849,9 +849,9 @@ void DescendantSelfAxisIterator::resetImpl()
 }
 
 
-void DescendantSelfAxisIterator::releaseResourcesImpl()
+void DescendantSelfAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
   {
@@ -885,7 +885,7 @@ std::ostream& DescendantSelfAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t PrecedingAxisIterator::nextImpl()
+Item_t PrecedingAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t ancestor;
   Item_t desc;
@@ -895,7 +895,7 @@ Item_t PrecedingAxisIterator::nextImpl()
 
   while (true)
   {
-    theContextNode = consumeNext(theInput);
+    theContextNode = consumeNext(theInput, stateBlock);
     if (theContextNode == NULL)
       return NULL;
 
@@ -922,7 +922,7 @@ Item_t PrecedingAxisIterator::nextImpl()
 
       theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
     
-      desc = consumeNext(children);
+      desc = consumeNext(children, stateBlock);
 
       while (desc != theAncestorPath.top())
       {
@@ -937,13 +937,13 @@ Item_t PrecedingAxisIterator::nextImpl()
           STACK_PUSH(desc);
         }
 
-        desc = consumeNext(theCurrentPath.top().second);
+        desc = consumeNext(theCurrentPath.top().second, stateBlock);
 
         while (desc == NULL)
         {
           theCurrentPath.pop();
           Assert(!theCurrentPath.empty());
-          desc = consumeNext(theCurrentPath.top().second);
+          desc = consumeNext(theCurrentPath.top().second, stateBlock);
         }
       }
 
@@ -957,9 +957,9 @@ Item_t PrecedingAxisIterator::nextImpl()
 }
 
 
-void PrecedingAxisIterator::resetImpl()
+void PrecedingAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
     theCurrentPath.pop();
@@ -973,9 +973,9 @@ void PrecedingAxisIterator::resetImpl()
 }
 
 
-void PrecedingAxisIterator::releaseResourcesImpl()
+void PrecedingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
     theCurrentPath.pop();
@@ -1010,7 +1010,7 @@ std::ostream& PrecedingAxisIterator::_show(std::ostream& os)	const
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t FollowingAxisIterator::nextImpl()
+Item_t FollowingAxisIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t ancestor;
   Item_t following;
@@ -1020,7 +1020,7 @@ Item_t FollowingAxisIterator::nextImpl()
 
   while (true)
   {
-    theContextNode = consumeNext(theInput);
+    theContextNode = consumeNext(theInput, stateBlock);
     if (theContextNode == NULL)
       return NULL;
 
@@ -1049,11 +1049,11 @@ Item_t FollowingAxisIterator::nextImpl()
 
       do
       {
-        following = consumeNext(children);
+        following = consumeNext(children, stateBlock);
       }
       while (following != theAncestorPath.top());
 
-      following = consumeNext(children);
+      following = consumeNext(children, stateBlock);
 
       while (following != NULL)
       {
@@ -1068,13 +1068,13 @@ Item_t FollowingAxisIterator::nextImpl()
           STACK_PUSH(following);
         }
 
-        following = consumeNext(theCurrentPath.top().second);
+        following = consumeNext(theCurrentPath.top().second, stateBlock);
 
         while (following == NULL)
         {
           theCurrentPath.pop();
           Assert(!theCurrentPath.empty());
-          following = consumeNext(theCurrentPath.top().second);
+          following = consumeNext(theCurrentPath.top().second, stateBlock);
         }
       }
 
@@ -1087,9 +1087,9 @@ Item_t FollowingAxisIterator::nextImpl()
 }
 
 
-void FollowingAxisIterator::resetImpl()
+void FollowingAxisIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
     theCurrentPath.pop();
@@ -1105,9 +1105,9 @@ void FollowingAxisIterator::resetImpl()
 }
 
 
-void FollowingAxisIterator::releaseResourcesImpl()
+void FollowingAxisIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
 
   while (!theCurrentPath.empty())
     theCurrentPath.pop();

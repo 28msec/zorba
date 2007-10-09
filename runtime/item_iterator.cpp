@@ -20,9 +20,57 @@ namespace xqp
 
 	int32_t iteratorTreeDepth = -1;
 
+	/* begin class SingletonIterator */
+	SingletonIterator::SingletonIterator
+		(yy::location loc, Item_t _i_p) 
+	: 
+		Batcher<SingletonIterator> (loc), i_h(_i_p) 
+	{}
 
+	SingletonIterator::~SingletonIterator() {}
+	
+	Item_t 
+	SingletonIterator::nextImpl(int8_t* stateBlock) {
+		BasicIterator::BasicIteratorState* state;
+		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+		STACK_PUSH2(i_h, state);
+		STACK_END2();
+	}
+	
+	void 
+	SingletonIterator::resetImpl(int8_t* stateBlock) {
+		BasicIterator::BasicIteratorState* state;
+		state->reset();
+	}
+	
+	void 
+	SingletonIterator::releaseResourcesImpl(int8_t* stateBlock)
+	{}
+	
+	std::ostream& 
+	SingletonIterator::_show(std::ostream& os)	const
+	{
+		return os;
+	}
+	
+	int32_t
+	SingletonIterator::getStackSize() {
+		return sizeof(BasicIterator::BasicIteratorState);
+	}
+	
+	int32_t
+	SingletonIterator::getStackSizeOfSubtree() {
+		return this->getStackSize();
+	}
+	
+	void
+	SingletonIterator::setOffset(int32_t& offset) {
+		this->stateOffset = offset;
+		offset += this->getStackSize();
+	}
+	/* end class SingletonIterator */
 
-	Item_t MapIterator::nextImpl()
+	Item_t MapIterator::nextImpl(int8_t* stateBlock)
 	{
 		Item_t item;
 		vector<var_iter_t>::const_iterator itv;
@@ -31,36 +79,36 @@ namespace xqp
 
 		while ( true )
 		{
-			item = this->consumeNext ( this->theInput );
+			item = this->consumeNext ( this->theInput, stateBlock );
 			itv = varv.begin();
 			for ( ; itv!=varv.end(); ++itv )
 			{
 				( *itv )->bind ( item );
 			}
 
-			item = this->consumeNext ( this->theExpr );
+			item = this->consumeNext ( this->theExpr, stateBlock );
 			while ( item != NULL )
 			{
 				STACK_PUSH ( item );
-				item = this->consumeNext ( this->theExpr );
+				item = this->consumeNext ( this->theExpr, stateBlock );
 			}
 
-			this->resetChild ( this->theExpr );
+			this->resetChild ( this->theExpr, stateBlock );
 		}
 
 		STACK_END();
 	}
 
-	void MapIterator::resetImpl()
+	void MapIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild ( this->theInput );
-		this->resetChild ( this->theExpr );
+		this->resetChild ( this->theInput, stateBlock );
+		this->resetChild ( this->theExpr, stateBlock );
 	}
 
-	void MapIterator::releaseResourcesImpl()
+	void MapIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources ( this->theInput );
-		this->releaseChildResources ( this->theExpr );
+		this->releaseChildResources ( this->theInput, stateBlock );
+		this->releaseChildResources ( this->theExpr, stateBlock );
 	}
 
 	std::ostream& MapIterator::_show ( std::ostream& os )
@@ -82,15 +130,15 @@ namespace xqp
 	FilterIterator::~FilterIterator(){}
 	
 	void 
-	FilterIterator::resetImpl()
+	FilterIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild( this->content );
+		this->resetChild( this->content, stateBlock );
 	}
 	
 	void 
-	FilterIterator::releaseResourcesImpl()
+	FilterIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources( this->content );
+		this->releaseChildResources( this->content, stateBlock );
 	}
 	/* end class FilterIterator */
 	
@@ -104,13 +152,13 @@ namespace xqp
 
 		
 	Item_t 
-	EnclosedIterator::nextImpl()
+	EnclosedIterator::nextImpl(int8_t* stateBlock)
 	{
 		STACK_INIT();
 		this->str = "";
 		while (true)
 		{
-			this->item = this->consumeNext( this->content );
+			this->item = this->consumeNext( this->content, stateBlock );
 			if (this->item == NULL)
 			{
 				if (this->str != "")
@@ -152,13 +200,13 @@ namespace xqp
 
 		
 	Item_t 
-	ElementContentIterator::nextImpl()
+	ElementContentIterator::nextImpl(int8_t* stateBlock)
 	{
 		STACK_INIT();
 		this->str = "";
 		while (true)
 		{
-			this->item = this->consumeNext( this->content );
+			this->item = this->consumeNext( this->content, stateBlock );
 			if (this->item == NULL)
 			{
 				if (this->str != "")
@@ -196,7 +244,7 @@ namespace xqp
 		Batcher<ElementIterator> ( loc ), qname ( qname_arg ), children ( children_arg ), attributes ( attributes_arg ) {}
 
 	Item_t
-	ElementIterator::nextImpl()
+	ElementIterator::nextImpl(int8_t* stateBlock)
 	{
 		Item_t item;
 
@@ -218,17 +266,17 @@ namespace xqp
 	}
 
 	void
-	ElementIterator::resetImpl()
+	ElementIterator::resetImpl(int8_t* stateBlock)
 	{
 		if ( this->children != NULL )
-			this->resetChild ( this->children );
+			this->resetChild ( this->children, stateBlock );
 	}
 
 	void
-	ElementIterator::releaseResourcesImpl()
+	ElementIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
 		if ( this->children != NULL )
-			this->releaseChildResources ( this->children );
+			this->releaseChildResources ( this->children, stateBlock );
 	}
 	/* end class ElementIterator */
 
@@ -241,7 +289,7 @@ namespace xqp
 			Batcher<AttributeIterator> ( loc ), qname ( qname_arg ), value ( value_arg ) {}
 
 	Item_t
-	AttributeIterator::nextImpl()
+	AttributeIterator::nextImpl(int8_t* stateBlock)
 	{
 		Item_t item;
 		Item_t itemCur;
@@ -252,17 +300,17 @@ namespace xqp
 		bool concatenation = false;
 
 		STACK_INIT();
-		if ( this->value != NULL && (itemFirst = this->consumeNext(this->value)) != NULL )
+		if ( this->value != NULL && (itemFirst = this->consumeNext(this->value, stateBlock)) != NULL )
 		{
 			lexicalString = itemFirst->getStringProperty();
 
 			// handle concatenation
-			itemCur = this->consumeNext ( this->value );
+			itemCur = this->consumeNext ( this->value, stateBlock );
 			while ( itemCur != NULL )
 			{
 				concatenation = true;
 				lexicalString += itemCur->getStringProperty();
-				itemCur = this->consumeNext ( this->value );
+				itemCur = this->consumeNext ( this->value, stateBlock );
 			}
 
 			itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( lexicalString );
@@ -293,17 +341,17 @@ namespace xqp
 	}
 
 	void
-	AttributeIterator::resetImpl()
+	AttributeIterator::resetImpl(int8_t* stateBlock)
 	{
 		if ( this->value != NULL )
-			this->resetChild ( this->value );
+			this->resetChild ( this->value, stateBlock );
 	}
 
 	void
-	AttributeIterator::releaseResourcesImpl()
+	AttributeIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
 		if ( this->value != NULL )
-			this->releaseChildResources ( this->value );
+			this->releaseChildResources ( this->value, stateBlock );
 	}
 	/* end class AttributeIterator */
 
@@ -319,16 +367,16 @@ namespace xqp
 	{}
 
 	Item_t
-	IfThenElseIterator::nextImpl()
+	IfThenElseIterator::nextImpl(int8_t* stateBlock)
 	{
 		Item_t condResult;
 
 		STACK_INIT();
 
 		if ( this->condIsBooleanIter )
-			condResult = this->consumeNext ( this->iterCond );
+			condResult = this->consumeNext ( this->iterCond, stateBlock );
 		else
-			condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc, this->iterCond );
+			condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc, stateBlock, this->iterCond );
 
 		if ( condResult->getBooleanValue() )
 			this->iterActive = this->iterThen;
@@ -337,26 +385,26 @@ namespace xqp
 
 		while ( true )
 		{
-			STACK_PUSH ( this->consumeNext ( this->iterActive ) );
+			STACK_PUSH ( this->consumeNext ( this->iterActive, stateBlock ) );
 		}
 
 		STACK_END();
 	}
 
 	void
-	IfThenElseIterator::resetImpl()
+	IfThenElseIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild ( this->iterCond );
-		this->resetChild ( this->iterThen );
-		this->resetChild ( this->iterElse );
+		this->resetChild ( this->iterCond, stateBlock );
+		this->resetChild ( this->iterThen, stateBlock );
+		this->resetChild ( this->iterElse, stateBlock );
 	}
 
 	void
-	IfThenElseIterator::releaseResourcesImpl()
+	IfThenElseIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources ( this->iterCond );
-		this->releaseChildResources ( this->iterThen );
-		this->releaseChildResources ( this->iterElse );
+		this->releaseChildResources ( this->iterCond, stateBlock );
+		this->releaseChildResources ( this->iterThen, stateBlock );
+		this->releaseChildResources ( this->iterElse, stateBlock );
 	}
 	/* end class IfThenElseIterator */
 

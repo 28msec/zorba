@@ -34,13 +34,14 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, Iterator_t& iter, bool negate )
+	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, int8_t* stateBlock, Iterator_t& iter, bool negate )
 	{
 		Item_t item;
 		TypeCode type;
 		Item_t result;
 
-		item = iter->next();
+		// TODO produceNext must be replaced to allow batching
+		item = iter->produceNext(stateBlock);
 
 		if ( item == NULL )
 		{
@@ -56,7 +57,8 @@ namespace xqp
 		{
 			type = item->getType();
 			if (
-			    ( iter->next() == NULL )
+					// TODO produceNext must be replaced to allow batching
+			    ( iter->produceNext(stateBlock) == NULL )
 			    &&
 			    ( type == xs_boolean
 			      || sequence_type::derives_from ( type, xs_string )
@@ -89,23 +91,23 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::nextImpl()
+	FnBooleanIterator::nextImpl(int8_t* stateBlock)
 	{	
 		STACK_INIT();
-		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, this->arg0_, this->negate ) );
+		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, stateBlock, this->arg0_, this->negate ) );
 		STACK_END();
 	}
 
 	void
-	FnBooleanIterator::resetImpl()
+	FnBooleanIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild ( this->arg0_ );
+		this->resetChild ( this->arg0_, stateBlock );
 	}
 
 	void
-	FnBooleanIterator::releaseResourcesImpl()
+	FnBooleanIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources ( this->arg0_ );
+		this->releaseChildResources ( this->arg0_, stateBlock);
 	}
 	/* end class FnBooleanIterator */
 	
@@ -116,7 +118,7 @@ namespace xqp
 	LogicIterator::~LogicIterator(){}
 			
 	Item_t 
-	LogicIterator::nextImpl()
+	LogicIterator::nextImpl(int8_t* stateBlock)
 	{
 		bool bRes;
 		
@@ -124,12 +126,12 @@ namespace xqp
 		switch(this->logicType)
 		{
 		case AND:
-			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterLeft)->getBooleanValue() 
-							&& FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterRight)->getBooleanValue();
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterLeft)->getBooleanValue() 
+							&& FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterRight)->getBooleanValue();
 			break;
 		case OR:
-			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterLeft)->getBooleanValue() 
-							|| FnBooleanIterator::effectiveBooleanValue(this->loc, this->iterRight)->getBooleanValue();;
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterLeft)->getBooleanValue() 
+							|| FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterRight)->getBooleanValue();;
 			break;
 		}
 		STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(bRes));
@@ -137,17 +139,17 @@ namespace xqp
 	}
 	
 	void 
-	LogicIterator::resetImpl()
+	LogicIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild( this->iterLeft );
-		this->resetChild( this->iterRight );
+		this->resetChild( this->iterLeft, stateBlock );
+		this->resetChild( this->iterRight, stateBlock );
 	}
 	
 	void 
-	LogicIterator::releaseResourcesImpl()
+	LogicIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources( this->iterLeft );
-		this->releaseChildResources( this->iterRight );
+		this->releaseChildResources( this->iterLeft, stateBlock );
+		this->releaseChildResources( this->iterRight, stateBlock );
 	}
 	/* end class LogicIterator */
 
@@ -167,7 +169,7 @@ namespace xqp
 	}
 	
 	Item_t
-	CompareIterator::nextImpl()
+	CompareIterator::nextImpl(int8_t* stateBlock)
 	{
 		Item_t item0;
 		Item_t item1;
@@ -207,11 +209,11 @@ namespace xqp
 		} /* if general comparison */
 		else if (this->isValueComparison())
 		{
-			if (( (item0 = this->consumeNext(this->iter0)) != NULL ) 
-						&& ((item1 = this->consumeNext(this->iter1))!=NULL))
+			if (( (item0 = this->consumeNext(this->iter0, stateBlock)) != NULL ) 
+						&& ((item1 = this->consumeNext(this->iter1, stateBlock))!=NULL))
 			{
 				STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean( CompareIterator::valueComparison(item0, item1) ) );
-				if (this->consumeNext(this->iter0) != NULL || this->consumeNext(this->iter1) != NULL)
+				if (this->consumeNext(this->iter0, stateBlock) != NULL || this->consumeNext(this->iter1, stateBlock) != NULL)
 				{
 					ZorbaErrorAlerts::error_alert (
 						error_messages::FOCH0004_Collation_does_not_support_collation_units,
@@ -238,17 +240,17 @@ namespace xqp
 	}
 
 	void
-	CompareIterator::resetImpl()
+	CompareIterator::resetImpl(int8_t* stateBlock)
 	{
-		this->resetChild ( this->iter0 );
-		this->resetChild ( this->iter1 );
+		this->resetChild ( this->iter0, stateBlock );
+		this->resetChild ( this->iter1, stateBlock );
 	}
 
 	void
-	CompareIterator::releaseResourcesImpl()
+	CompareIterator::releaseResourcesImpl(int8_t* stateBlock)
 	{
-		this->releaseChildResources ( this->iter0 );
-		this->releaseChildResources ( this->iter1 );
+		this->releaseChildResources ( this->iter0, stateBlock );
+		this->releaseChildResources ( this->iter1, stateBlock );
 	}
 	
 	bool 

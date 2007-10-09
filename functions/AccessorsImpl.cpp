@@ -12,20 +12,20 @@
 namespace xqp {
 
 Item_t
-FnDataIterator::nextImpl()
+FnDataIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t item;
   Iterator_t iter;
 		
   STACK_INIT();
   while (true) {
-    item = this->consumeNext( this->argument );
+    item = this->consumeNext( this->argument, stateBlock );
     if (item == NULL)
       break;
     this->curTypedValue = item->getTypedValue();
 			
     while (true) {
-      item = this->consumeNext( this->curTypedValue );
+      item = this->consumeNext( this->curTypedValue, stateBlock );
       if (item == NULL)
         break;
       STACK_PUSH( item );
@@ -35,26 +35,26 @@ FnDataIterator::nextImpl()
 }
 	
 void
-FnDataIterator::resetImpl()
+FnDataIterator::resetImpl(int8_t* stateBlock)
 {
-  this->resetChild( this->argument );
+  this->resetChild( this->argument, stateBlock );
 }
 	
 void
-FnDataIterator::releaseResourcesImpl()
+FnDataIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  this->releaseChildResources( this->argument );
+  this->releaseChildResources( this->argument, stateBlock );
 }
 
 
-Item_t FnRootIterator::nextImpl()
+Item_t FnRootIterator::nextImpl(int8_t* stateBlock)
 {
   Item_t contextNode;
   Item_t parentNode;
 
   STACK_INIT();
 
-  contextNode = consumeNext(theInput);
+  contextNode = consumeNext(theInput, stateBlock);
 
   if (contextNode == NULL)
     return NULL;
@@ -82,15 +82,15 @@ Item_t FnRootIterator::nextImpl()
 }
 
 
-void FnRootIterator::resetImpl()
+void FnRootIterator::resetImpl(int8_t* stateBlock)
 {
-  resetChild(theInput);
+  resetChild(theInput, stateBlock);
 }
 
 	
-void FnRootIterator::releaseResourcesImpl()
+void FnRootIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
-  releaseChildResources(theInput);
+  releaseChildResources(theInput, stateBlock);
 }
 
 
