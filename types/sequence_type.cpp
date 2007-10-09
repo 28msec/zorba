@@ -313,6 +313,5 @@ namespace xqp
 		}
 	}
 
-
 }	/* namespace xqp */
 

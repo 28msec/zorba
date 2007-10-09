@@ -74,7 +74,6 @@ public:
 };
 
 
-
 } /* namespace xqp */
 #endif /* XQP_SEQUENCE_TYPE_H */
 

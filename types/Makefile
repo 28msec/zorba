@@ -1,5 +1,6 @@
 
 SOURCES 	= sequence_type.cpp \
+            sequence_type_mgr.cpp \
 						casting.cpp
 
 BINARIES	= 
