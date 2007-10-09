@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include "../errors/Error.h"
+#include "errors/Error.h"
 
 namespace xqp {
 /*_____________________________________________________________

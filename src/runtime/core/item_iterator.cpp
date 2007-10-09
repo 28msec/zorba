@@ -54,19 +54,19 @@ namespace xqp
 	}
 	
 	int32_t
-	SingletonIterator::getStackSize() {
+	SingletonIterator::getStateSize() {
 		return sizeof(BasicIterator::BasicIteratorState);
 	}
 	
 	int32_t
-	SingletonIterator::getStackSizeOfSubtree() {
-		return this->getStackSize();
+	SingletonIterator::getStateSizeOfSubtree() {
+		return this->getStateSize();
 	}
 	
 	void
 	SingletonIterator::setOffset(int32_t& offset) {
 		this->stateOffset = offset;
-		offset += this->getStackSize();
+		offset += this->getStateSize();
 	}
 	/* end class SingletonIterator */
 

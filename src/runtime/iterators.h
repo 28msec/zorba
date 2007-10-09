@@ -17,8 +17,8 @@ namespace xqp {
 			void resetImpl(IteratorTreeStateBlock& stateBlock);
 			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
-			virtual int32_t getStackSize();
-			virtual int32_t getStackSizeOfSubtree();
+			virtual int32_t getStateSize();
+			virtual int32_t getStateSizeOfSubtree();
 			virtual void setOffset(int32_t& offset);
 	}; /* class UnaryBaseIterator */
 	
@@ -37,8 +37,8 @@ namespace xqp {
 			void resetImpl(IteratorTreeStateBlock& stateBlock);
 			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
-			virtual int32_t getStackSize();
-			virtual int32_t getStackSizeOfSubtree();
+			virtual int32_t getStateSize();
+			virtual int32_t getStateSizeOfSubtree();
 			virtual void setOffset(int32_t& offset);
 	}; /* class BinaryBaseIterator */
 	
@@ -56,8 +56,8 @@ namespace xqp {
 			void resetImpl(IteratorTreeStateBlock& stateBlock);
 			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
-			virtual int32_t getStackSize();
-			virtual int32_t getStackSizeOfSubtree();
+			virtual int32_t getStateSize();
+			virtual int32_t getStateSizeOfSubtree();
 			virtual void setOffset(int32_t& offset);
 	}; /* class BinaryBaseIterator */
 } /* namespace xqp */

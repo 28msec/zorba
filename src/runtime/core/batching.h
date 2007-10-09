@@ -152,14 +152,14 @@ public:
 		*
 		* TODO must be pure virtual
 		*/
-	virtual int32_t getStackSize();
+	virtual int32_t getStateSize();
 	
 	/** Returns the size of the state for the current iterator 
 		* and all its sub-iterators.
 		*
 		* TODO must be pure virtual
 		*/
-	virtual int32_t getStackSizeOfSubtree();
+	virtual int32_t getStateSizeOfSubtree();
 	
 	/** Sets the offset where the state of the iterator will be saved
 		* on the state stack.

@@ -81,7 +81,7 @@ BasicIterator::releaseResources(IteratorTreeStateBlock& stateBlock) {
 }
 
 int32_t
-BasicIterator::getStackSize() {
+BasicIterator::getStateSize() {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -91,7 +91,7 @@ BasicIterator::getStackSize() {
 }
 
 int32_t
-BasicIterator::getStackSizeOfSubtree() {
+BasicIterator::getStateSizeOfSubtree() {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -142,7 +142,7 @@ BasicIterator::BasicIteratorState::getDuffsLine() {
 
 
 IteratorWrapper::IteratorWrapper(Iterator_t& iter) : iterator(iter) {
-	int32_t stackSize = this->iterator->getStackSizeOfSubtree();
+	int32_t stackSize = this->iterator->getStateSizeOfSubtree();
 	this->stateBlock = new IteratorTreeStateBlock(stackSize);
 	int32_t offset = 0;
 	this->iterator->setOffset(offset);

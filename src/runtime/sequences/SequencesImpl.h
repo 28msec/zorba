@@ -59,8 +59,8 @@ public:
 	
 	std::ostream&  _show(std::ostream&) const;
 	
-	virtual int32_t getStackSize();
-	virtual int32_t getStackSizeOfSubtree();
+	virtual int32_t getStateSize();
+	virtual int32_t getStateSizeOfSubtree();
 	virtual void setOffset(int32_t& offset);
 	
 protected:

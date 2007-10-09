@@ -32,22 +32,22 @@ namespace xqp {
 
 	template <class IterType>
 	int32_t
-	UnaryBaseIterator<IterType>::getStackSize() {
+	UnaryBaseIterator<IterType>::getStateSize() {
 		return sizeof(BasicIterator::BasicIteratorState);
 	}
 	
 	template <class IterType>
 	int32_t
-	UnaryBaseIterator<IterType>::getStackSizeOfSubtree() {
-		return this->iter->getStackSizeOfSubtree()
-						+ this->getStackSize();
+	UnaryBaseIterator<IterType>::getStateSizeOfSubtree() {
+		return this->iter->getStateSizeOfSubtree()
+						+ this->getStateSize();
 	}
 	
 	template <class IterType>
 	void
 	UnaryBaseIterator<IterType>::setOffset(int32_t& offset) {
 		this->stateOffset = offset;
-		offset += this->getStackSize();
+		offset += this->getStateSize();
 		
 		this->iter->setOffset(offset);
 	}
@@ -86,23 +86,23 @@ namespace xqp {
 
 	template <class IterType>
 	int32_t
-	BinaryBaseIterator<IterType>::getStackSize() {
+	BinaryBaseIterator<IterType>::getStateSize() {
 		return sizeof(BasicIterator::BasicIteratorState);
 	}
 	
 	template <class IterType>
 	int32_t
-	BinaryBaseIterator<IterType>::getStackSizeOfSubtree() {
-		return this->iter0->getStackSizeOfSubtree()
-						+ this->iter1->getStackSizeOfSubtree()
-						+ this->getStackSize();
+	BinaryBaseIterator<IterType>::getStateSizeOfSubtree() {
+		return this->iter0->getStateSizeOfSubtree()
+						+ this->iter1->getStateSizeOfSubtree()
+						+ this->getStateSize();
 	}
 	
 	template <class IterType>
 	void
 	BinaryBaseIterator<IterType>::setOffset(int32_t& offset) {
 		this->stateOffset = offset;
-		offset += this->getStackSize();
+		offset += this->getStateSize();
 		
 		this->iter0->setOffset(offset);
 		this->iter1->setOffset(offset);
@@ -146,28 +146,28 @@ namespace xqp {
 
 	template <class IterType>
 	int32_t
-	BinaryBaseIterator<IterType>::getStackSize() {
+	BinaryBaseIterator<IterType>::getStateSize() {
 		return sizeof(BasicIterator::BasicIteratorState);
 	}
 	
 	template <class IterType>
 	int32_t
-	BinaryBaseIterator<IterType>::getStackSizeOfSubtree() {
+	BinaryBaseIterator<IterType>::getStateSizeOfSubtree() {
 		int32_t size = 0;
 	
 		std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
 		for(; iter != this->iters.end(); ++iter) {
-			size += (*iter)->getStackSizeOfSubtree();
+			size += (*iter)->getStateSizeOfSubtree();
 		}
 		
-		return this->getStackSize() + size;
+		return this->getStateSize() + size;
 	}
 	
 	template <class IterType>
 	void
 	BinaryBaseIterator<IterType>::setOffset(int32_t& offset) {
 		this->stateOffset = offset;
-		offset += this->getStackSize();
+		offset += this->getStateSize();
 		
 		std::vector<Iterator_t>::iterator iter = this->argv.begin();
 		for(; iter != this->iters.end(); ++iter) {

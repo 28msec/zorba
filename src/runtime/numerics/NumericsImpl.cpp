@@ -51,23 +51,23 @@ namespace xqp
 
 	template <class IterType>
 	int32_t
-	BinaryBaseIterator<IterType>::getStackSize() {
+	BinaryBaseIterator<IterType>::getStateSize() {
 		return sizeof(BasicIterator::BasicIteratorState);
 	}
 	
 	template <class IterType>
 	int32_t
-	BinaryBaseIterator<IterType>::getStackSizeOfSubtree() {
-		return this->iter0->getStackSizeOfSubtree()
-						+ this->iter1->getStackSizeOfSubtree()
-						+ this->getStackSize();
+	BinaryBaseIterator<IterType>::getStateSizeOfSubtree() {
+		return this->iter0->getStateSizeOfSubtree()
+						+ this->iter1->getStateSizeOfSubtree()
+						+ this->getStateSize();
 	}
 	
 	template <class IterType>
 	void
 	BinaryBaseIterator<IterType>::setOffset(int32_t& offset) {
 		this->stateOffset = offset;
-		offset += this->getStackSize();
+		offset += this->getStateSize();
 		
 		this->iter0->setOffset(offset);
 		this->iter1->setOffset(offset);

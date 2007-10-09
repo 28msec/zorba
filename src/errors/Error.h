@@ -17,7 +17,7 @@
 #include "errors.h"
 #include "xqp_exception.h"
 #include "util/rchandle.h"
-#include "parser/location.hh"
+#include "compiler/parser/location.hh"
 //#include "runtime/zorba.h"
 //#include "../values/item.h"
 //#include "../values/atomic_items.h"

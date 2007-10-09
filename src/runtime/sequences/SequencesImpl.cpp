@@ -97,26 +97,26 @@ ConcatIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
 }
 
 int32_t
-ConcatIterator::getStackSize() {
+ConcatIterator::getStateSize() {
 	return sizeof(ConcatIteratorState);
 }
 
 int32_t
-ConcatIterator::getStackSizeOfSubtree() {
+ConcatIterator::getStateSizeOfSubtree() {
 	int32_t size = 0;
 	
 	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		size += (*iter)->getStackSizeOfSubtree();
+		size += (*iter)->getStateSizeOfSubtree();
 	}
 	
-	return this->getStackSize() + size;
+	return this->getStateSize() + size;
 }
 
 void
 ConcatIterator::setOffset(int32_t& offset) {
 	this->stateOffset = offset;
-	offset += this->getStackSize();
+	offset += this->getStateSize();
 	
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
