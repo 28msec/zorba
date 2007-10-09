@@ -71,6 +71,7 @@ query_exec	= \
 		../parser/symbol_table.cpp \
 		../parser/xquery_driver.cpp \
 		../types/sequence_type.cpp \
+		../types/sequence_type_mgr.cpp \
 		../util/file.cpp \
 		../util/fxcharheap.cpp \
 		../util/mmfile.cpp \
