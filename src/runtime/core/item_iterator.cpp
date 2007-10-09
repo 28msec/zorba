@@ -6,13 +6,13 @@
  *
  */
 
-#include "item_iterator.h"
+#include "runtime/core/item_iterator.h"
 #include "util/Assert.h"
 #include "errors/Error.h"
-#include "../store/api/item.h"
-#include "runtime/zorba.h"
-#include "exprtree/expr.h"
-#include "../functions/BooleanImpl.h"
+#include "store/api/item.h"
+#include "util/zorba.h"
+#include "compiler/expression/expr.h"
+#include "runtime/booleans/BooleanImpl.h"
 
 using namespace std;
 namespace xqp

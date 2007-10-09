@@ -7,7 +7,7 @@
  *
  */
 
-#include "AccessorsImpl.h"
+#include "runtime/accessors/AccessorsImpl.h"
 
 namespace xqp {
 

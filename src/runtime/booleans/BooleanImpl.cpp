@@ -3,12 +3,12 @@
  *  Authors: Tim Kraska, David Graf
  */
 
-#include "BooleanImpl.h"
-#include "../types/casting.h"
-#include "../runtime/zorba.h"
-#include "../errors/Error.h"
-#include "../functions/AccessorsImpl.h"
-#include "../store/api/temp_seq.h"
+#include "runtime/booleans/BooleanImpl.h"
+#include "types/casting.h"
+#include "util/zorba.h"
+#include "errors/Error.h"
+#include "runtime/accessors//AccessorsImpl.h"
+#include "store/api/temp_seq.h"
 
 namespace xqp
 {

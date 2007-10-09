@@ -26,10 +26,10 @@
 
 #include "util/rchandle.h"
 #include "util/tracer.h"
-#include "parser/location.hh"
+#include "compiler/parser/location.hh"
 #include "store/api/item.h"
 
-#include "utf8/xqpString.h"
+#include "util/utf8/xqpString.h"
 
 #include <assert.h>
 #include <iostream>

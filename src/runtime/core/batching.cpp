@@ -22,7 +22,7 @@
  *
  */
 
-#include "batching.h"
+#include "runtime/core/batching.h"
 
 #include "runtime/zorba.h"
 

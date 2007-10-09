@@ -10,11 +10,11 @@
 #include <iostream>
 #include <cmath>
 
-#include "NumericsImpl.h"
+#include "runtime/numerics/NumericsImpl.h"
 #include "util/tracer.h"
 #include "types/casting.h"
 #include "errors/Error.h"
-#include "runtime/zorba.h"
+#include "util/zorba.h"
 
 using namespace std;
 namespace xqp
