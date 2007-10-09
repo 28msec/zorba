@@ -38,11 +38,51 @@ namespace xqp {
 /*******************************************************************************
 
 ********************************************************************************/
+class KindTestIterator : public Batcher<KindTestIterator>
+{
+private:
+  Iterator_t   theInput;
+  Item_t       theQName;
+  Item_t       theTypeName;
+  match_test_t theTestKind;
+  bool         theNilledAllowed;
+
+public:
+  KindTestIterator(
+        yy::location loc,
+        Iterator_t input,
+        Item_t qname,
+        Item_t tname,
+        match_test_t kind,
+        bool nilled = false)
+    :
+    Batcher<KindTestIterator>(loc),
+    theInput(input),
+    theQName(qname),
+    theTypeName(tname),
+    theTestKind(kind),
+    theNilledAllowed(nilled)
+  {
+  }
+
+  ~KindTestIterator() {}
+
+public:
+  Item_t nextImpl(int8_t* stateBlock);
+  void resetImpl(int8_t* stateBlock);
+  void releaseResourcesImpl(int8_t* stateBlock);
+
+  std::ostream& _show(std::ostream& os) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class NameTestIterator : public Batcher<NameTestIterator>
 {
 private:
   Iterator_t   theInput;
-  Item_t       theContextNode;
   Item_t       theQName;
   match_wild_t theWildKind;
 
@@ -74,19 +114,38 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class SelfAxisIterator : public Batcher<SelfAxisIterator>
+class AxisIterator
 {
-private:
+protected:
   Iterator_t  theInput;
   Item_t      theContextNode;
-  bool        thePrincipalNodeKind;
+  TypeCode    theNodeKind;
 
+public:
+  AxisIterator(Iterator_t input)
+    :
+    theInput(input),
+    theNodeKind(anyNode)
+  {
+  }
+
+  virtual ~AxisIterator() {}
+
+  void setNodeKind(TypeCode k) { theNodeKind = k; }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class SelfAxisIterator : public Batcher<SelfAxisIterator>,
+                         public AxisIterator
+{
 public:
   SelfAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<SelfAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -98,20 +157,17 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class AttributeAxisIterator : public Batcher<AttributeAxisIterator>
+class AttributeAxisIterator : public Batcher<AttributeAxisIterator>,
+                              public AxisIterator
 {
 private:
-  Iterator_t  theInput;
   Iterator_t  theAttributes;
-  Item_t      theContextNode;
 #ifdef DEBUG
   Item_t      theCurrentAttr;
 #endif
@@ -120,7 +176,7 @@ public:
   AttributeAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<AttributeAxisIterator>(loc),
-    theInput(input)
+    AxisIterator(input)
   {
   }
 
@@ -138,22 +194,19 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ParentAxisIterator : public Batcher<ParentAxisIterator>
+class ParentAxisIterator : public Batcher<ParentAxisIterator>,
+                           public AxisIterator
 {
 private:
-  Iterator_t  theInput;
-  Item_t      theContextNode;
-  bool        thePrincipalNodeKind;
 #ifdef DEBUG
-  Item_t      theParent;
+  Item_t  theParent;
 #endif
 
 public:
   ParentAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<ParentAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -165,28 +218,23 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class AncestorAxisIterator : public Batcher<AncestorAxisIterator>
+class AncestorAxisIterator : public Batcher<AncestorAxisIterator>,
+                             public AxisIterator
 {
 private:
-  Iterator_t  theInput;
-  Item_t      theContextNode;
-  Item_t      theCurrentAnc;
-  bool        thePrincipalNodeKind;
+  Item_t  theCurrentAnc;
 
 public:
   AncestorAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<AncestorAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -198,28 +246,23 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class AncestorSelfAxisIterator : public Batcher<AncestorSelfAxisIterator>
+class AncestorSelfAxisIterator : public Batcher<AncestorSelfAxisIterator>,
+                                 public AxisIterator
 {
 private:
-  Iterator_t  theInput;
-  Item_t      theContextNode;
-  Item_t      theCurrentAnc;
-  bool        thePrincipalNodeKind;
+  Item_t  theCurrentAnc;
 
 public:
   AncestorSelfAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<AncestorSelfAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -231,21 +274,17 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class RSiblingAxisIterator : public Batcher<RSiblingAxisIterator>
+class RSiblingAxisIterator : public Batcher<RSiblingAxisIterator>,
+                             public AxisIterator
 {
 private:
-  Iterator_t  theInput;
   Iterator_t  theChildren;
-  Item_t      theContextNode;
-  bool        thePrincipalNodeKind;
 #ifdef DEBUG
   Item_t      theRSibling;
 #endif
@@ -254,8 +293,7 @@ public:
   RSiblingAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<RSiblingAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -267,21 +305,17 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class LSiblingAxisIterator : public Batcher<LSiblingAxisIterator>
+class LSiblingAxisIterator : public Batcher<LSiblingAxisIterator>,
+                             public AxisIterator
 {
 private:
-  Iterator_t  theInput;
   Iterator_t  theChildren;
-  Item_t      theContextNode;
-  bool        thePrincipalNodeKind;
 #ifdef DEBUG
   Item_t      theLSibling;
 #endif
@@ -290,8 +324,7 @@ public:
   LSiblingAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<LSiblingAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -303,21 +336,17 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class ChildAxisIterator : public Batcher<ChildAxisIterator>
+class ChildAxisIterator : public Batcher<ChildAxisIterator>,
+                          public AxisIterator
 {
 private:
-  Iterator_t  theInput;
   Iterator_t  theChildren;
-  Item_t      theContextNode;
-  bool        thePrincipalNodeKind;
 #ifdef DEBUG
   Item_t      theCurrentChild;
 #endif
@@ -326,8 +355,7 @@ public:
   ChildAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<ChildAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -339,21 +367,17 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class DescendantAxisIterator : public Batcher<DescendantAxisIterator>
+class DescendantAxisIterator : public Batcher<DescendantAxisIterator>,
+                               public AxisIterator
 {
 private:
-  Iterator_t                                 theInput;
-  Item_t                                     theContextNode;
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  bool                                       thePrincipalNodeKind;
 #ifdef DEBUG
   Item_t                                     theCurrentDesc;
 #endif
@@ -361,8 +385,7 @@ public:
   DescendantAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<DescendantAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -374,21 +397,17 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class DescendantSelfAxisIterator : public Batcher<DescendantSelfAxisIterator>
+class DescendantSelfAxisIterator : public Batcher<DescendantSelfAxisIterator>,
+                                   public AxisIterator
 {
 private:
-  Iterator_t                                 theInput;
-  Item_t                                     theContextNode;
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  bool                                       thePrincipalNodeKind;
 #ifdef DEBUG
   Item_t                                     theCurrentDesc;
 #endif
@@ -396,8 +415,7 @@ public:
   DescendantSelfAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<DescendantSelfAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -409,22 +427,18 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class PrecedingAxisIterator : public Batcher<PrecedingAxisIterator>
+class PrecedingAxisIterator : public Batcher<PrecedingAxisIterator>,
+                              public AxisIterator
 {
 private:
-  Iterator_t                                 theInput;
-  Item_t                                     theContextNode;
   std::stack<Item_t>                         theAncestorPath;
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  bool                                       thePrincipalNodeKind;
 #ifdef DEBUG
   Item_t                                     theCurrentPrec;
 #endif
@@ -432,8 +446,7 @@ public:
   PrecedingAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<PrecedingAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -445,22 +458,18 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class FollowingAxisIterator : public Batcher<FollowingAxisIterator>
+class FollowingAxisIterator : public Batcher<FollowingAxisIterator>,
+                              public AxisIterator
 {
 private:
-  Iterator_t                                 theInput;
-  Item_t                                     theContextNode;
   std::stack<Item_t>                         theAncestorPath;
   std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-  bool                                       thePrincipalNodeKind;
 #ifdef DEBUG
   Item_t                                     theCurrentFollowing;
 #endif
@@ -468,8 +477,7 @@ public:
   FollowingAxisIterator(yy::location loc, Iterator_t input)
     :
     Batcher<FollowingAxisIterator>(loc),
-    theInput(input),
-    thePrincipalNodeKind(false)
+    AxisIterator(input)
   {
   }
 
@@ -481,8 +489,6 @@ public:
   void releaseResourcesImpl(int8_t* stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
-
-  void setPrincipalNodeKind(bool v) { thePrincipalNodeKind = v; }
 };
 
 

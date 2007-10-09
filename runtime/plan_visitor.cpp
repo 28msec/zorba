@@ -251,6 +251,8 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
 {
   cout << TRACE << endl;
 
+  bool result = true;
+
   Iterator_t input = pop_itstack();
 
   // TODO ??? In this case the input should be the context node
@@ -259,123 +261,80 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
     input = new var_iterator("context_node", v.get_loc());
   }
 
+  Iterator_t axisIte;
+
   switch (v.getAxis())
   {
   case axis_kind_self:
   {
-    SelfAxisIterator* axisIte = new SelfAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new SelfAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_child:
   {
-    ChildAxisIterator* axisIte = new ChildAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new ChildAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_parent:
   {
-    ParentAxisIterator* axisIte = new ParentAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new ParentAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_descendant:
   {
-    DescendantAxisIterator* axisIte = new DescendantAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new DescendantAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_descendant_or_self:
   {
-    DescendantSelfAxisIterator* axisIte = new DescendantSelfAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new DescendantSelfAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_ancestor:
   {
-    AncestorAxisIterator* axisIte = new AncestorAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new AncestorAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_ancestor_or_self:
   {
-    AncestorSelfAxisIterator* axisIte = new AncestorSelfAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new AncestorSelfAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_following_sibling:
   {
-    RSiblingAxisIterator* axisIte = new RSiblingAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new RSiblingAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_following:
   {
-    FollowingAxisIterator* axisIte = new FollowingAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new FollowingAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_preceding_sibling:
   {
-    LSiblingAxisIterator* axisIte = new LSiblingAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new LSiblingAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_preceding:
   {
-    PrecedingAxisIterator* axisIte = new PrecedingAxisIterator(v.get_loc(), input);
-
-    if (v.getTest()->getTestKind() == match_name_test)
-      axisIte->setPrincipalNodeKind(true);
-
-    itstack.push(axisIte);
+    axisIte = new PrecedingAxisIterator(v.get_loc(), input);
     break;
   }
   case axis_kind_attribute:
   {
-    AttributeAxisIterator* axisIte = new AttributeAxisIterator(v.get_loc(), input);
+    if (v.getTest()->getTestKind() == match_name_test ||
+        v.getTest()->getTestKind() == match_attr_test ||
+        v.getTest()->getTestKind() == match_xs_attr_test ||
+        v.getTest()->getTestKind() == match_anykind_test)
+    {
+      axisIte = new AttributeAxisIterator(v.get_loc(), input);
+    }
+    else
+    {
+      axisIte = new EmptyIterator(v.get_loc());
+      result = false;
+    }
 
-    itstack.push(axisIte);
     break;
   }
   default:
@@ -390,7 +349,9 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
   }
   }
 
-  return true;
+  itstack.push(axisIte);
+
+  return result;
 }
 
 
@@ -408,62 +369,70 @@ bool plan_visitor::begin_visit(const match_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
-  Iterator_t input = pop_itstack();
+  Iterator_t axisIte = pop_itstack();
+  AxisIterator* axisItep = dynamic_cast<AxisIterator*>(&*axisIte);
+  Assert(axisItep != NULL);
 
   Iterator_t matchIte;
   Item_t qname;
+  Item_t tname;
 
-  switch (v.getTestKind())
+  if (v.getTestKind() == match_name_test)
   {
-  case match_name_test:
-  {
+    // Note: the attribute axis iterator does not do any filtering based on
+    // the node kind, so it is ok to set the principal node kind to elementNode
+    // in all cases.
+    axisItep->setNodeKind(elementNode);
+
     match_wild_t wildKind = v.getWildKind();
 
     if (wildKind == match_no_wild)
     {
       qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
               createQName("", v.getQName()->prefix(), v.getQName()->local());
+
+      matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
     else if (wildKind == match_prefix_wild)
     {
       qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
               createQName("", "wildcard", v.getWildName());
+
+      matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
     else if (wildKind == match_name_wild)
     {
       qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
               createQName("", v.getWildName(), "wildcard");
+
+      matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
-
-    matchIte = new NameTestIterator(v.get_loc(), input, qname, wildKind);
-
-    break;
-  }
-  case match_elem_test:
-  {
-    if (v.getTypeName() == NULL)
+    else
     {
-
+      matchIte = axisIte;
     }
-    break;
   }
-  case match_anykind_test:
+  else
   {
-    matchIte = new NameTestIterator(v.get_loc(), input, qname, match_all_wild);
-    break;
-  }
-  default:
-  {
-    ZorbaErrorAlerts::error_alert(
-         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-         error_messages::SYSTEM_ERROR,
-         NULL,
-         false,
-         "Unknown node test kind");
-  }
+    axisItep->setNodeKind(v.getNodeKind());
+
+    if (v.getQName() != NULL)
+    {
+      qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
+              createQName("", v.getQName()->prefix(), v.getQName()->local());
+    }
+
+    if (v.getTypeName() != NULL)
+    {
+      tname = zorba::getZorbaForCurrentThread()->getItemFactory()->
+              createQName("", v.getTypeName()->prefix(), v.getTypeName()->local());
+    }
+
+    matchIte = new KindTestIterator(v.get_loc(), axisIte, qname, tname,
+                                    v.getTestKind(), v.getNilledAllowed());
   }
 
-  itstack.push(&*matchIte);
+  itstack.push(matchIte);
 
 	return true;
 }

@@ -145,7 +145,7 @@ public:
 
 	std::ostream& show(std::ostream&);
 	
-	/** Returns the size of the state which must be save for the current iterator
+	/** Returns the size of the state which must be saved for the current iterator
 		* on the state block
 		*
 		* TODO must be pure virtual
@@ -204,6 +204,7 @@ protected:
 		return os;
 	}
 };
+
 
 template <class IterType>
 class Batcher: public BasicIterator {

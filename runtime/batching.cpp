@@ -84,6 +84,33 @@ BasicIterator::setOffset(int32_t& offset) {
 					);
 }
 
+
+BasicIterator::BasicIterator(yy::location _loc) :
+	loc(_loc){
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
+}
+
+BasicIterator::BasicIterator(const BasicIterator& it) :
+	rcobject(it),
+	loc(it.loc) {
+	this->current_line = 0;
+	zorp = zorba::getZorbaForCurrentThread();
+}
+
+BasicIterator::~BasicIterator() {
+}
+
+
+std::ostream& BasicIterator::show(std::ostream& os)
+{
+	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
+	_show(os);
+	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
+	return os;
+}
+
+
 void
 BasicIterator::BasicIteratorState::init() {
 	this->duffsLine = 0;
@@ -102,31 +129,6 @@ BasicIterator::BasicIteratorState::setDuffsLine(int32_t value) {
 int32_t
 BasicIterator::BasicIteratorState::getDuffsLine() {
 	return this->duffsLine;
-}
-
-
-BasicIterator::BasicIterator(yy::location _loc) :
-	loc(_loc){
-	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
-}
-BasicIterator::BasicIterator(const BasicIterator& it) :
-	rcobject(it),
-	loc(it.loc) {
-	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
-}
-
-BasicIterator::~BasicIterator() {
-}
-
-
-std::ostream& BasicIterator::show(std::ostream& os)
-{
-	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
-	_show(os);
-	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
-	return os;
 }
 
 

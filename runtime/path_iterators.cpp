@@ -23,9 +23,10 @@
  */
 
 #include "util/Assert.h"
+#include "types/sequence_type_mgr.h"
+#include "runtime/path_iterators.h"
+#include "runtime/zorba.h"
 #include "store/api/item.h"
-#include "path_iterators.h"
-
 
 #define MYTRACE(msg) \
 {\
@@ -40,38 +41,221 @@ namespace xqp
 /*******************************************************************************
 
 ********************************************************************************/
+Item_t KindTestIterator::nextImpl(int8_t* stateBlock)
+{
+  Item_t contextNode;
+
+  bool skip = false;
+
+  do
+  {
+    contextNode = consumeNext(theInput, stateBlock);
+    if (contextNode == NULL)
+      return NULL;
+
+    if (!contextNode->isNode())
+    {
+      skip = true;
+      continue;
+    }
+
+    switch (theTestKind)
+    {
+    case match_doc_test:
+    {
+      break;
+    }
+    case match_elem_test:
+    {
+      if (contextNode->getNodeKind() != elementNode)
+      {
+        skip = true;
+        break;
+      }
+
+      if (theQName != NULL && !theQName->equals(contextNode->getNodeName()))
+      {
+        skip = true;
+        break;
+      }
+
+      if (theTypeName != NULL)
+      {
+        TypeCode etype = zorba::getZorbaForCurrentThread()->getSequenceTypeManager()->
+                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
+        TypeCode atype = contextNode->getType();
+
+        if ((atype != etype && !sequence_type::derives_from(atype, etype)) ||
+            (theNilledAllowed == false && contextNode->getNilled() == true))
+          skip = true;
+      }
+
+      break;
+    }
+    case match_attr_test:
+    {
+      if (contextNode->getNodeKind() != attributeNode)
+      {
+        skip = true;
+        break;
+      }
+
+      if (theQName != NULL && !theQName->equals(contextNode->getNodeName()))
+      {
+        skip = true;
+        break;
+      }
+
+      if (theTypeName != NULL)
+      {
+        TypeCode etype = zorba::getZorbaForCurrentThread()->getSequenceTypeManager()->
+                         getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
+        TypeCode atype = contextNode->getType();
+
+        if (atype != etype && !sequence_type::derives_from(atype, etype))
+          skip = true;
+      }
+
+      break;
+    }
+    case match_xs_elem_test:
+    {
+      if (contextNode->getNodeKind() != elementNode)
+      {
+        skip = true;
+        break;
+      }
+
+      break;
+    }
+    case match_xs_attr_test:
+    {
+      if (contextNode->getNodeKind() != attributeNode)
+      {
+        skip = true;
+        break;
+      }
+
+      break;
+    }
+    case match_pi_test:
+    {
+      if (contextNode->getNodeKind() != processingInstructionNode)
+      {
+        skip = true;
+        break;
+      }
+
+      if (theQName != NULL  && theQName->getLocalName() != contextNode->getTarget())
+        skip = true;
+
+      break;
+    }
+    case match_comment_test:
+    {
+      if (contextNode->getNodeKind() != commentNode)
+        skip = true;
+
+      break;
+    }
+    case match_text_test:
+    {
+      if (contextNode->getNodeKind() != textNode)
+        skip = true;
+
+      break;
+    }
+    case match_anykind_test:
+    {
+      break;
+    }
+    default:
+      ZorbaErrorAlerts::error_alert(
+         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+         error_messages::SYSTEM_ERROR,
+         NULL,
+         false,
+         "Unknown kind test kind");
+    }
+  }
+  while (skip);
+
+  return contextNode;
+}
+
+
+void KindTestIterator::resetImpl(int8_t* stateBlock)
+{
+  resetChild(theInput, stateBlock);
+}
+
+
+void KindTestIterator::releaseResourcesImpl(int8_t* stateBlock)
+{
+  releaseChildResources(theInput, stateBlock);
+  theQName = NULL;
+  theTypeName = NULL;
+}
+
+
+std::ostream& KindTestIterator::_show(std::ostream& os)	const
+{
+  os << IT_DEPTH << " " << "test kind: " << theTestKind << std::endl;
+
+  if (theQName != NULL)
+    os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
+  else
+    os << IT_DEPTH << " " << "qname: *" << endl;
+
+  if (theTypeName != NULL)
+    os << IT_DEPTH << " " << "typename: " << theTypeName->show() << std::endl;
+  else
+    os << IT_DEPTH << " " << "typename: *" << endl;
+
+  os << IT_DEPTH << " " << "nill allowed: " << theNilledAllowed << std::endl;
+
+  theInput->show(os);
+  return os;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 Item_t NameTestIterator::nextImpl(int8_t* stateBlock)
 {
+  Item_t contextNode;
+
   while (true)
   {
-    theContextNode = consumeNext(theInput, stateBlock);
-    if (theContextNode == NULL)
+    contextNode = consumeNext(theInput, stateBlock);
+    if (contextNode == NULL)
       return NULL;
 
     switch (theWildKind)
     {
     case match_no_wild:
     {
-      if (theQName->equals(theContextNode->getNodeName()))
-        return theContextNode;
+      if (theQName->equals(contextNode->getNodeName()))
+        return contextNode;
 
       break;
     }
     case match_all_wild:
     {
-      return theContextNode;
+      return contextNode;
     }
     case match_prefix_wild:
     {
-      if (theQName->getLocalName() == theContextNode->getNodeName()->getLocalName())
-        return theContextNode;
+      if (theQName->getLocalName() == contextNode->getNodeName()->getLocalName())
+        return contextNode;
 
       break;
     }
     case match_name_wild:
     {
-      if (theQName->getNamespace() == theContextNode->getNodeName()->getPrefix())
-        return theContextNode;
+      if (theQName->getNamespace() == contextNode->getNodeName()->getPrefix())
+        return contextNode;
 
       break;
     }
@@ -99,16 +283,11 @@ void NameTestIterator::releaseResourcesImpl(int8_t* stateBlock)
 {
   releaseChildResources(theInput, stateBlock);
   theQName = NULL;
-  theContextNode = NULL;
 }
 
 
 std::ostream& NameTestIterator::_show(std::ostream& os)	const
 {
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
   if (theQName != NULL)
     os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
   else
@@ -127,10 +306,20 @@ Item_t SelfAxisIterator::nextImpl(int8_t* stateBlock)
   do
   {
     theContextNode = consumeNext(theInput, stateBlock);
+    if (theContextNode == NULL)
+      return NULL;
+
+    if (!theContextNode->isNode())
+    {
+      ZorbaErrorAlerts::error_alert(
+         error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+         error_messages::RUNTIME_ERROR,
+         NULL,
+         false,
+         "The context item of an axis step is not a node");
+    }
   }
-  while (theContextNode != NULL &&
-         thePrincipalNodeKind &&
-         theContextNode->getNodeKind() != elementNode);
+  while (theNodeKind != anyNode && theContextNode->getNodeKind() != theNodeKind);
 
   return theContextNode;
 }
@@ -176,6 +365,16 @@ Item_t AttributeAxisIterator::nextImpl(int8_t* stateBlock)
       theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
+
+      if (!theContextNode->isNode())
+      {
+        ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+      }
     }
     while (theContextNode->getNodeKind() != elementNode);
 
@@ -248,10 +447,20 @@ Item_t ParentAxisIterator::nextImpl(int8_t* stateBlock)
     if (theContextNode == NULL)
       return NULL;
 
+    if (!theContextNode->isNode())
+    {
+      ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+    }
+
     parent = theContextNode->getParent();
   }
   while (parent != NULL &&
-         thePrincipalNodeKind && parent->getNodeKind() != elementNode);
+         theNodeKind != anyNode && parent->getNodeKind() != theNodeKind);
 
 #ifdef DEBUG
   theParent = parent;
@@ -308,11 +517,21 @@ Item_t AncestorAxisIterator::nextImpl(int8_t* stateBlock)
     if (theContextNode == NULL)
       return NULL;
 
+    if (!theContextNode->isNode())
+    {
+      ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+    }
+
     theCurrentAnc = theContextNode->getParent();
 
     while (theCurrentAnc != NULL)
     {
-      if (!thePrincipalNodeKind || theCurrentAnc->getNodeKind() == elementNode)
+      if (theNodeKind == anyNode || theCurrentAnc->getNodeKind() == theNodeKind)
       {
         STACK_PUSH(theCurrentAnc);
       }
@@ -367,11 +586,21 @@ Item_t AncestorSelfAxisIterator::nextImpl(int8_t* stateBlock)
     if (theContextNode == NULL)
       return NULL;
 
+    if (!theContextNode->isNode())
+    {
+      ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+    }
+
     theCurrentAnc = theContextNode;
 
     while (theCurrentAnc != NULL)
     {
-      if (!thePrincipalNodeKind || theCurrentAnc->getNodeKind() == elementNode)
+      if (theNodeKind == anyNode || theCurrentAnc->getNodeKind() == theNodeKind)
       {
         STACK_PUSH(theCurrentAnc);
       }
@@ -430,6 +659,16 @@ Item_t RSiblingAxisIterator::nextImpl(int8_t* stateBlock)
       theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
+
+      if (!theContextNode->isNode())
+      {
+        ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+      }
     }
     while (theContextNode->getNodeKind() == attributeNode);
 
@@ -446,7 +685,7 @@ Item_t RSiblingAxisIterator::nextImpl(int8_t* stateBlock)
 
     while (sibling != NULL)
     {
-      if (!thePrincipalNodeKind || sibling->getNodeKind() == elementNode)
+      if (theNodeKind == anyNode || sibling->getNodeKind() == theNodeKind)
       {
 #ifdef DEBUG
         theRSibling = sibling;
@@ -515,6 +754,16 @@ Item_t LSiblingAxisIterator::nextImpl(int8_t* stateBlock)
       theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
+
+      if (!theContextNode->isNode())
+      {
+        ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+      }
     }
     while (theContextNode->getNodeKind() == attributeNode);
 
@@ -529,7 +778,7 @@ Item_t LSiblingAxisIterator::nextImpl(int8_t* stateBlock)
 
     while (sibling != theContextNode)
     {
-      if (!thePrincipalNodeKind || sibling->getNodeKind() == elementNode)
+      if (theNodeKind == anyNode || sibling->getNodeKind() == theNodeKind)
       {
 #ifdef DEBUG
         theLSibling = sibling;
@@ -597,6 +846,16 @@ Item_t ChildAxisIterator::nextImpl(int8_t* stateBlock)
       theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
+
+      if (!theContextNode->isNode())
+      {
+        ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+      }
     }
     while (theContextNode->getNodeKind() != elementNode &&
            theContextNode->getNodeKind() != documentNode);
@@ -616,7 +875,7 @@ Item_t ChildAxisIterator::nextImpl(int8_t* stateBlock)
       else
         cout << endl;
       */
-      if (!thePrincipalNodeKind || child->getNodeKind() == elementNode)
+      if (theNodeKind == anyNode || child->getNodeKind() == theNodeKind)
       {
 #ifdef DEBUG
         theCurrentChild = child;
@@ -685,11 +944,21 @@ Item_t DescendantAxisIterator::nextImpl(int8_t* stateBlock)
       theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
+
+      if (!theContextNode->isNode())
+      {
+        ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+      }
     }
     while (theContextNode->getNodeKind() != elementNode &&
            theContextNode->getNodeKind() != documentNode);
 
-    MYTRACE("iter = " << this << " ctxNode = [" << &*theContextNode << " " << theContextNode->getNodeName()->show() << "]");
+    //MYTRACE("iter = " << this << " ctxNode = [" << &*theContextNode << " " << theContextNode->getNodeName()->show() << "]");
 
     children = theContextNode->getChildren();
 
@@ -702,7 +971,7 @@ Item_t DescendantAxisIterator::nextImpl(int8_t* stateBlock)
       if (desc->getNodeKind() == elementNode)
         theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
-      if (!thePrincipalNodeKind || desc->getNodeKind() == elementNode)
+      if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
 #ifdef DEBUG
         theCurrentDesc = desc;
@@ -794,6 +1063,16 @@ Item_t DescendantSelfAxisIterator::nextImpl(int8_t* stateBlock)
       theContextNode = consumeNext(theInput, stateBlock);
       if (theContextNode == NULL)
         return NULL;
+
+      if (!theContextNode->isNode())
+      {
+        ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+      }
     }
     while (theContextNode->getNodeKind() != elementNode &&
            theContextNode->getNodeKind() != documentNode);
@@ -806,7 +1085,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(int8_t* stateBlock)
           theContextNode->getNodeKind() == documentNode)
         theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
-      if (!thePrincipalNodeKind || desc->getNodeKind() == elementNode)
+      if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
 #ifdef DEBUG
         theCurrentDesc = desc;
@@ -899,6 +1178,16 @@ Item_t PrecedingAxisIterator::nextImpl(int8_t* stateBlock)
     if (theContextNode == NULL)
       return NULL;
 
+    if (!theContextNode->isNode())
+    {
+      ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+    }
+
     // Collect the context node and its ancestors
     ancestor = theContextNode;
     theAncestorPath.push(ancestor);
@@ -929,7 +1218,7 @@ Item_t PrecedingAxisIterator::nextImpl(int8_t* stateBlock)
         if (desc->getNodeKind() == elementNode)
           theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
-        if (!thePrincipalNodeKind || desc->getNodeKind() == elementNode)
+        if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
         {
 #ifdef DEBUG
           theCurrentPrec = desc;
@@ -1024,6 +1313,16 @@ Item_t FollowingAxisIterator::nextImpl(int8_t* stateBlock)
     if (theContextNode == NULL)
       return NULL;
 
+    if (!theContextNode->isNode())
+    {
+      ZorbaErrorAlerts::error_alert(
+           error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
+           error_messages::RUNTIME_ERROR,
+           NULL,
+           false,
+           "The context item of an axis step is not a node");
+    }
+
     // Collect the context node and its ancestors
     ancestor = theContextNode;
     theAncestorPath.push(ancestor);
@@ -1060,7 +1359,7 @@ Item_t FollowingAxisIterator::nextImpl(int8_t* stateBlock)
         if (following->getNodeKind() == elementNode)
           theCurrentPath.push(std::pair<Item_t, Iterator_t>(following, following->getChildren()));
 
-        if (!thePrincipalNodeKind || following->getNodeKind() == elementNode)
+        if (theNodeKind == anyNode || following->getNodeKind() == theNodeKind)
         {
 #ifdef DEBUG
           theCurrentFollowing = following;
