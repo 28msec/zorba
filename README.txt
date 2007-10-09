@@ -30,64 +30,49 @@ Building zorba
 The currently employed makefiles system can be used as described
 below. 
 
-To do a build, you need to run:
+In order to build zorba, you need the following software installed:
 
-	make
+- The International Components for Unicode (ICU) version >= 3.6
+  (see http://www.icu-project.org/index.html)
+	- development headers
+	- library
+- CMake Cross-platform Make
+- Of course, a C++ compiler, the stl, etc.
+- GNU Make, XCode, Visual Studio, or KDevelop.
 
-in the root folder. This will compile all the objects currently in 
-the project. As the makefiles are granular, with a file per 
-folder, and you can run make in any of them. This will build the 
-objects in that particular folder.
+To do a build:
+
+1. Check out zorba (in the following, this directory will be called source directory)
+2. Create a new directory (e.g. build) which is called build directory in the following.
+3. Change into the build directory.
+
+For compiling with GNU make
+4. Type "cmake <name of source directory>"
+5. Type "make"
+
+For compiling with XCode
+4. Type "cmake -G Xcode <name of source directory>"
+5. Open the file zorba.xcodeproj with XCode and compile
+
+For compiling with KDevelop:
+4. Type "cmake -G KDevelop3 <name of source directory>"
+5. Open the file zorba.kdevelop with KDevelop and compile
+
 
 ---- Begin: Note for Mac OS Users ----
-Note that GNU make > 3.81 is needed in order to build Zorba.
-With Mac OS Tiger only GNU make 3.80 is shipped.
-The easiest way to install a newer make version is to use
+The easiest way to install CMake is to use
 Darwin Ports (http://darwinports.com/). Therefore, you
 should use the Darwin Ports installer and
 immediately after finishing the installation run "sudo port -d selfupdate".
 If this was successfull you can simply install make
-by typing "sudo port install gmake". This command
-will install the latest make version and all its
-dependencies. This will take a while. Finally, you can start building Zorba by
-typing "gmake" in the Zorba root folder. For the rest of this manual,
-you should always use gmake if make is used.
+by typing "sudo port install cmake. This command
+will install the latest CMake version and all its
+dependencies. 
 ---- End: Note for Mac OS Users ----
 
         
-The current test application -- query_exec -- can be compiled with:
-
-	make query_exec
-
-in the root folder, or
-	
-	make test
-
-in the testing folder.  
-    
-
-Each Makefile in a folder has two variables: SOURCES and BINARIES. 
-If you create a new .cpp file and want it compiled, add it to 
-SOURCES.
-
-	SOURCES = .... my_source.cpp
-
-If you want an executable to be created, list it dependencies:
-
-	my_test = my_test.cpp ../dom/dom_nodes.cpp ../dom/dom_qname.cpp etc
-
-then add my_test to BINARIES
-
-	BINARIES = ... my_test
-
-The executable will be built when you'll invoke make with the "test" 
-target.
-
-	make test
-
-The intermediary files can be deleted with:
-
-	make clean
+If you want to add new .cpp or .h files, just edit the CMakeFiles.txt file
+in the directory you put the new files.
 
 
   
