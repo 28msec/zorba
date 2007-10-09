@@ -8,7 +8,7 @@
  *
  */
 
-#include "fxcharheap.h"
+#include "util/fx/fxcharheap.h"
 
 #ifndef _WIN32_WCE
 	#include <sys/types.h>
