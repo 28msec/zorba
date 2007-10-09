@@ -34,7 +34,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY
 
 # for the moment, we include everything
 # however, we should move the headers (at least the library headers) into a separate directory
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ${ICU_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIR})
 
 # Tell CMake to process the sub-directories
 add_subdirectory(src)

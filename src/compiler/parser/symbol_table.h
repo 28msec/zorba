@@ -8,7 +8,7 @@
 #ifndef XQP_SYMBOL_TABLE_H
 #define XQP_SYMBOL_TABLE_H
 
-#include "util/fxcharheap.h"
+#include "util/fx/fxcharheap.h"
 #ifndef _WIN32_WCE
 	#include <sys/types.h>
 #else
