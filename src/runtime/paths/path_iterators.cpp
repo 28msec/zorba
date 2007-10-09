@@ -24,8 +24,8 @@
 
 #include "util/Assert.h"
 #include "types/sequence_type_mgr.h"
-#include "runtime/path_iterators.h"
-#include "runtime/zorba.h"
+#include "runtime/paths/path_iterators.h"
+#include "util/zorba.h"
 #include "store/api/item.h"
 
 #define MYTRACE(msg) \

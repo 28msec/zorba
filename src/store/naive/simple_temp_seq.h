@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "store/api/temp_seq.h"
-#include "runtime/batching.h"
+#include "runtime/core/batching.h"
 
 namespace xqp
 {

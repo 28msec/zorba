@@ -18,20 +18,16 @@
  *
  */
 
-#include "Sequences.h"
-#include "library.h"
+#include <iostream>
+#include <typeinfo>
+
+#include "functions/Sequences.h"
+#include "functions/library.h"
 
 #include "context/common.h"
-#include "dom/dom_nodes.h"
-#include "store/itemstore.h"
 #include "util/tokenbuf.h"
 #include "util/tracer.h"
 #include "errors/xqp_exception.h"
-#include "values/item.h"
-#include "zorba/zorba_value_factory.h"
-
-#include <iostream>
-#include <typeinfo>
 
 
 using namespace std;

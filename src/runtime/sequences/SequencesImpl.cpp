@@ -8,15 +8,11 @@
  *
  */
 
-#include "SequencesImpl.h"
-// #include "dom/dom_nodes.h"
-// #include "dom/dom_xml_handler.h"
-// #include "store/zorba_uri_resolver.h"
-// #include "store/xml_scanner.h"
-#include "errors/Error.h"
-
 #include <string>
 #include <vector>
+
+#include "runtime/sequences/SequencesImpl.h"
+#include "errors/Error.h"
 
 using namespace std;
 namespace xqp {

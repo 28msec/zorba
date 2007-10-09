@@ -4,9 +4,9 @@
  *
  */
 
-#include "node_items.h"
+#include "store/naive/node_items.h"
 #include "store/api/temp_seq.h"
-#include "runtime/zorba.h"
+#include "util/zorba.h"
 
 namespace xqp
 {

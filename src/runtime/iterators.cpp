@@ -1,4 +1,4 @@
-#include "iterators.h"
+#include "runtime/iterators.h"
 
 namespace xqp {
 	/* begin class UnaryBaseIterator */

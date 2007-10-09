@@ -4,8 +4,7 @@
  *
  */
 #include "util/rchandle.h"
-
-#include "simple_collection.h"
+#include "store/naive/simple_collection.h"
 
 namespace xqp
 {

@@ -9,13 +9,13 @@
 #ifndef XQP_NUMERICS_H
 #define XQP_NUMERICS_H
 
+#include <vector>
+
 #include "context/common.h"
 #include "functions/function.h"
-#include "runtime/item_iterator.h"
+#include "runtime/core/item_iterator.h"
 #include "types/sequence_type.h"
 #include "util/rchandle.h"
-
-#include <vector>
 
 namespace xqp {
 

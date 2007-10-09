@@ -10,10 +10,11 @@
 #ifndef XQP_LIBRARY_H
 #define XQP_LIBRARY_H
 
-#include "context/common.h"
-#include "../store/api/item_factory.h"
-#include "util/fxhashmap.h"
 #include <string>
+
+#include "context/common.h"
+#include "store/api/item_factory.h"
+#include "util/fx/fxhashmap.h"
 
 namespace xqp {
 

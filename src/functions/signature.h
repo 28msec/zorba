@@ -15,7 +15,7 @@
 
 #include "context/common.h"
 #include "types/sequence_type.h"
-#include "util/fxhashmap.h"
+#include "util/fx/fxhashmap.h"
 
 namespace xqp {
 

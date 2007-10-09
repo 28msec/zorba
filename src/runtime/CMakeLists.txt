@@ -7,7 +7,7 @@ SET(RUNTIME_SRCS
     dateTime/DurationsDatesTimes.cpp
     paths/path_iterators.cpp
     core/batching.cpp
-    iterators.cpp
+#    iterators.cpp
     sequences/SequencesImpl.cpp)
 
 ADD_LIBRARY(runtime ${RUNTIME_SRCS})

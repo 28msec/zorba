@@ -25,10 +25,10 @@
 #ifndef XQP_STRINGS_H
 #define XQP_STRINGS_H
 
+#include <vector>
+
 #include "context/common.h"
 #include "functions/function.h"
-
-#include <vector>
 
 namespace xqp {
 /**______________________________________________________________________

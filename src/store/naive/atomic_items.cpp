@@ -7,9 +7,9 @@
 *
 */
 
-#include "atomic_items.h"
-#include "../../runtime/zorba.h"
-#include "../api/item.h"
+#include "store/naive/atomic_items.h"
+#include "util/zorba.h"
+#include "store/api/item.h"
 
 namespace xqp
 {

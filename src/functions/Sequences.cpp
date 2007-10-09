@@ -18,20 +18,16 @@
  *
  */
 
-#include "Sequences.h"
-#include "SequencesImpl.h"
+#include "functions/Sequences.h"
+#include "runtime/sequences/SequencesImpl.h"
+
+#include <iostream>
 
 #include "context/static_context.h"
-// #include "dom/dom_xml_handler.h"
-// #include "dom/dom_nodes.h"
-#include "runtime/zorba.h"
-// #include "store/scan_handler.h"
-// #include "store/xml_scanner.h"
+#include "util/zorba.h"
 #include "types/sequence_type.h"
 #include "util/file.h"
 #include "util/tracer.h"
-
-#include <iostream>
 
 using namespace std;
 namespace xqp {

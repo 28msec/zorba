@@ -8,10 +8,11 @@
  *
  */
 
-#include "Numerics.h"
-#include "NumericsImpl.h"
-#include "BooleanImpl.h"
 #include <iostream>
+
+#include "functions/Numerics.h"
+#include "functions/NumericsImpl.h"
+#include "functions/BooleanImpl.h"
 
 using namespace std;
 namespace xqp {

@@ -23,7 +23,7 @@
 #include <string>
 #include <vector>
 
-#include "function.h"
+#include "functions/function.h"
 
 namespace xqp {
 

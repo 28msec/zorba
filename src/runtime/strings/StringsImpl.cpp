@@ -24,12 +24,12 @@
 
 #include <iostream>
 
-#include "StringsImpl.h"
+#include "runtime/strings/StringsImpl.h"
 #include "util/tracer.h"
 #include "types/casting.h"
 #include "errors/Error.h"
-#include "../utf8/utf8.h"
-#include "runtime/zorba.h"
+#include "util/utf8/utf8.h"
+#include "util/zorba.h"
 
 using namespace std;
 namespace xqp {

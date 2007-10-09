@@ -8,7 +8,7 @@
  */
 
 #include "update_values.h"
-#include "runtime/item_iterator.h"
+#include "runtime/core/item_iterator.h"
 
 using namespace std;
 namespace xqp {

@@ -6,9 +6,9 @@
 
 #include "util/rchandle.h"
 
-#include "simple_store.h"
-#include "simple_temp_seq.h"
-#include "simple_collection.h"
+#include "store/naive/simple_store.h"
+#include "store/naive/simple_temp_seq.h"
+#include "store/naive/simple_collection.h"
 
 namespace xqp
 {

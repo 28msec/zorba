@@ -10,12 +10,11 @@
 #ifndef XQP_UPDATE_VALUES_H
 #define XQP_UPDATE_VALUES_H
 
-#include "item.h"
-#include "runtime/item_iterator.h"
-#include "util/rchandle.h"
-
 #include <vector>
 
+#include "item.h"
+#include "runtime/item_iterator.h"
+#include "util/rchandle.h>
 
 /*______________________________________________________________________
 |  

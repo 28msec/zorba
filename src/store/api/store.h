@@ -12,7 +12,7 @@
 
 #include <string>
 
-#include "../../types/representations.h"
+#include "types/representations.h"
 
 namespace xqp
 {

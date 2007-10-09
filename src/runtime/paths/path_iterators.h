@@ -25,11 +25,11 @@
 #ifndef XQP_PATH_ITERATORS_H
 #define XQP_PATH_ITERATORS_H
 
+#include <stack>
 
 #include "util/rchandle.h"
 #include "exprtree/expr_consts.h"
-#include "batching.h"
-#include <stack>
+#include "runtime/core/batching.h"
 
 
 namespace xqp {

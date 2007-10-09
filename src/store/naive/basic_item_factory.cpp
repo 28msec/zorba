@@ -7,11 +7,11 @@
  *`
  */
 
-#include "basic_item_factory.h"
-#include "atomic_items.h"
-#include "node_items.h"
-#include "../../runtime/zorba.h"
-#include "../api/temp_seq.h"
+#include "store/naive/basic_item_factory.h"
+#include "store/naive/atomic_items.h"
+#include "store/naive/node_items.h"
+#include "util/zorba.h"
+#include "store/api/temp_seq.h"
 
 namespace xqp
 {

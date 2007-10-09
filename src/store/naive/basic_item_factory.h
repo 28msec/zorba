@@ -10,7 +10,7 @@
 #ifndef XQP_BASIC_ITEM_FACTORY_H
 #define XQP_BASIC_ITEM_FACTORY_H
 
-#include "../api/item_factory.h"
+#include "store/api/item_factory.h"
 
 namespace xqp
 {

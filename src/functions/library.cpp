@@ -6,26 +6,25 @@
  *  Author: John Cowan,Paul Pedersen
  */
 
-#include "library.h"
-#include "function.h"
-#include "signature.h"
+#include <iostream>
 
-#include "Accessors.h"
-#include "Numerics.h"
-#include "Sequences.h"
-#include "Strings.h"
-#include "Boolean.h"
+#include "functions/library.h"
+#include "functions/function.h"
+#include "functions/signature.h"
+
+#include "functions/Accessors.h"
+#include "functions/Numerics.h"
+#include "functions/Sequences.h"
+#include "functions/Strings.h"
+#include "functions/Boolean.h"
 
 #include "context/common.h"
-#include "runtime/zorba.h"
+#include "util/zorba.h"
 #include "types/sequence_type.h"
 #include "util/tracer.h"
 #include "util/list.h"
-// #include "zorba/zorba_qname.h"
-#include "../store/api/item.h"
-#include "../store/native/atomic_items.h"
-
-#include <iostream>
+#include "store/api/item.h"
+#include "store/native/atomic_items.h"
 
 using namespace std;
 namespace xqp {

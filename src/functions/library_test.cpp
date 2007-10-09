@@ -7,7 +7,7 @@
  *
  */
 
-#include "library.h"
+#include "functions/library.h"
 #include "functions/Numerics.h"
 
 using namespace std;

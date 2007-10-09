@@ -7,10 +7,9 @@
  *
  */
 
-#include "function.h"
-#include "signature.h"
-#include "runtime/zorba.h"
-#include "zorba/zorba_qname.h"
+#include "functions/function.h"
+#include "functions/signature.h"
+#include "util/zorba.h"
 #include "types/sequence_type.h"
 
 using namespace std;

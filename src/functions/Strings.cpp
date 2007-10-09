@@ -22,9 +22,10 @@
  *
  */
 
-#include "Strings.h"
-#include "StringsImpl.h"
 #include <iostream>
+
+#include "functions/Strings.h"
+#include "runtime/strings/StringsImpl.h"
 
 using namespace std;
 namespace xqp {

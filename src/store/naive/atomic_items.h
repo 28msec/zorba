@@ -11,8 +11,8 @@
 #ifndef XQP_ATOMIC_ITEMS_H
 #define XQP_ATOMIC_ITEMS_H
 
-#include "../api/item.h"
-#include "../../types/representations.h"
+#include "store/api/item.h"
+#include "types/representations.h"
 
 namespace xqp
 {

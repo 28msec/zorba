@@ -26,10 +26,10 @@
 #define XQP_STRINGS_IMPL_H
 
 #include "context/common.h"
-#include "runtime/batching.h"
+#include "runtime/core/batching.h"
 
 #ifdef WIN32
-#include "win32/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #endif
 
 namespace xqp {

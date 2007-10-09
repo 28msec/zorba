@@ -10,10 +10,6 @@
 
 #include "context/common.h"
 #include "functions/function.h"
-// #include "runtime/item_iterator.h"
-// #include "types/sequence_type.h"
-// #include "util/rchandle.h"
-// #include "errors/Error.h"
 
 namespace xqp
 {
