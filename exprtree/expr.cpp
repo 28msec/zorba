@@ -990,7 +990,8 @@ match_expr::match_expr(yy::location const& loc)
 	expr(loc),
 	theWildKind(match_no_wild),
 	theQName(NULL),
-	theTypeName(NULL)
+	theTypeName(NULL),
+  theNilledAllowed(false)
 {
 }
 
@@ -1065,6 +1066,43 @@ void match_expr::accept(expr_visitor& v) const
 	v.end_visit(*this);
 }
 
+
+TypeCode match_expr::getNodeKind() const
+{
+  switch (theTestKind)
+  {
+  case match_name_test:
+    return elementNode;
+  case match_doc_test:
+    return elementNode;
+  case match_elem_test:
+    return elementNode;
+  case match_attr_test:
+    return attributeNode;
+  case match_xs_elem_test:
+    return elementNode;
+  case match_xs_attr_test:
+    return attributeNode;
+  case match_pi_test:
+    return processingInstructionNode;
+  case match_text_test:
+    return textNode;
+  case match_comment_test:
+    return commentNode;
+  case match_anykind_test:
+    return anyNode;
+  default:
+  {
+    ZorbaErrorAlerts::error_alert(
+         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+         error_messages::SYSTEM_ERROR,
+         NULL,
+         false,
+         "Unknown node test kind");
+  }
+  }
+  return anyNode;
+}
 
 
 // [84] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]

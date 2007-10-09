@@ -939,16 +939,16 @@ bool normalize_visitor::begin_visit(const AnyKindTest& v)
 void normalize_visitor::end_visit(const AnyKindTest& v)
 {
   cout << std::string(depth--, ' ')<<TRACE<<": AnyKindTest()\n";
-	rchandle<axis_step_expr> ase_h = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	if (ase_h == NULL)
+	rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase == NULL)
   {
 		cout << TRACE << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->setTestKind(match_anykind_test);
-	ase_h->setTest(m_h);
+	rchandle<match_expr> me = new match_expr(v.get_location());
+	me->setTestKind(match_anykind_test);
+	ase->setTest(me);
 }
 
 
@@ -962,19 +962,19 @@ bool normalize_visitor::begin_visit(const DocumentTest& v)
 	rchandle<ElementTest> e_h = v.get_elem_test();
 	if (e_h != NULL)
   {
-		rchandle<QName> elem_h = e_h->get_elem();
+		rchandle<QName> elem_h = e_h->getElementName();
 		if (elem_h != NULL)
     {
 			m_h->setQName(new qname_expr(v.get_location(),
                                    elem_h->get_prefix(), elem_h->get_localname()));
 		}
-		rchandle<TypeName> type_h = e_h->get_type();
+		rchandle<TypeName> type_h = e_h->getTypeName();
 		if (type_h != NULL)
     {
 			m_h->setTypeName(new qname_expr(v.get_location(),
                                       type_h->get_name()->get_qname()));
 		}
-		bool optional_b =  e_h->get_optional_bit();
+		bool optional_b =  e_h->isNilledAllowed();
 		if (optional_b)
     {
 			// XXX missing member variable for this
@@ -1000,51 +1000,42 @@ bool normalize_visitor::begin_visit(const ElementTest& v)
 
 void normalize_visitor::end_visit(const ElementTest& v)
 {
-  cout << std::string(depth--, ' ')<<TRACE<<": ElementTest("; v.get_elem()->put(cout)<<")\n";
+  cout << std::string(depth--, ' ')<<TRACE<<": ElementTest(";
+  v.getElementName()->put(cout)<<")\n";
 
-	/*
-	 * find axis step expression on top of stack
-	 */
-	rchandle<axis_step_expr> ase_h = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-	if (ase_h == NULL)
+	// find axis step expression on top of stack
+	rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
+	if (ase == NULL)
   {
-    cout << std::string(depth--, ' ') <<TRACE << ": expecting axis_step_expr on top of stack" << endl;
+    cout << std::string(depth--, ' ') << TRACE
+         << ": expecting axis_step_expr on top of stack" << endl;
 		cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
 	}
 
-	/*
-	 * construct the element match
-	 */
-	rchandle<match_expr> m_h = new match_expr(v.get_location());
-	m_h->setTestKind(match_elem_test);
+	// construct the element match
+	rchandle<match_expr> me = new match_expr(v.get_location());
+	me->setTestKind(match_elem_test);
 
-	rchandle<QName> elem_h = v.get_elem();
-	if (elem_h != NULL) {
-		m_h->setQName(new qname_expr(v.get_location(), elem_h->get_qname()));
-	}
+	rchandle<QName> ename = v.getElementName();
+	if (ename != NULL)
+		me->setQName(new qname_expr(v.get_location(), ename->get_qname()));
 
-	rchandle<TypeName> type_h = v.get_type();
-	if (type_h != NULL) {
-		m_h->setTypeName(new qname_expr(v.get_location(), type_h->get_name()->get_qname()));
-	}
+	rchandle<TypeName> tname = v.getTypeName();
+	if (tname != NULL)
+		me->setTypeName(new qname_expr(v.get_location(), tname->get_name()->get_qname()));
 
-	bool optional_b =  v.get_optional_bit();
-	if (optional_b) {
-		// XXX missing member variable for this
-	}
+	bool nilled =  v.isNilledAllowed();
+	if (nilled)
+    me->setNilledAllowed(true);
 
-	/*
-	 * add the match expression
-	 */
-	ase_h->setTest(m_h);
-
+	// add the match expression
+	ase->setTest(me);
 }
 
 
 bool normalize_visitor::begin_visit(const AttributeTest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
-	// no action needed here
 	return true;
 }
 
@@ -1053,9 +1044,7 @@ void normalize_visitor::end_visit(const AttributeTest& v)
 {
   cout << std::string(depth--, ' ')<<TRACE<<": AttributeTest("; v.get_attr()->put(cout)<<")\n";
 
-	/*
-	 * find axis step expression on top of stack
-	 */
+	// find axis step expression on top of stack
 	rchandle<axis_step_expr> ase_h = dynamic_cast<axis_step_expr*>(&*nodestack.top());
 	if (ase_h == NULL)
   {

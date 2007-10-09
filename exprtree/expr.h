@@ -900,7 +900,6 @@ public:
 	relpath_expr(yy::location const&);
 	~relpath_expr();
 
-public:
 	void add_back(expr_t step)          { theSteps.push_back(step); }
 	void add_front(expr_t step)         { theSteps.push_front(step); }
 	uint32_t size() const               { return theSteps.size(); }
@@ -910,7 +909,6 @@ public:
 
 	expr_t& operator[](int n)           { return theSteps[n]; }
 
-public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
 };
@@ -950,7 +948,6 @@ public:
 	rchandle<match_expr> getTest() const { return theNodeTest; }
 	void setTest(rchandle<match_expr> v) { theNodeTest = v; }
 
-public:
 	void addPred(expr_t e)                { thePreds.push_back(e); }
 	uint32_t numPreds() const             { return thePreds.size(); }
 	expr_t & operator[](int i)            { return thePreds[i]; }
@@ -959,7 +956,6 @@ public:
 	std::vector<expr_t>::const_iterator begin() const { return thePreds.begin(); }
 	std::vector<expr_t>::const_iterator end() const   { return thePreds.end(); }
 
-public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
 };
@@ -988,31 +984,33 @@ protected:
 
 	rchandle<qname_expr> theQName;
 	rchandle<qname_expr> theTypeName;
+  bool                 theNilledAllowed;
 
 public:
 	match_expr(yy::location const&);
 	~match_expr();
 
-public:
 	match_test_t getTestKind() const         { return theTestKind; }
 	match_test_t getDocTestKind() const      { return theDocTestKind; }
+	void setTestKind(enum match_test_t v)    { theTestKind = v; }
+	void setDocTestKind(enum match_test_t v) { theDocTestKind = v; }
 
 	match_wild_t getWildKind() const         { return theWildKind; }
   const xqp_string& getWildName() const    { return theWildName; }
+	void setWildKind(enum match_wild_t v)    { theWildKind = v; }
+	void setWildName(const xqp_string& v)    { theWildName = v; } 
 
 	rchandle<qname_expr> getQName() const    { return theQName; }
 	rchandle<qname_expr> getTypeName() const { return theTypeName; }
-
-	void setTestKind(enum match_test_t v)    { theTestKind = v; }
-	void setDocTestKind(enum match_test_t v) { theDocTestKind = v; }
-	void setWildKind(enum match_wild_t v)    { theWildKind = v; }
-	void setWildName(const xqp_string& v)    { theWildName = v; } 
+  bool getNilledAllowed() const            { return theNilledAllowed; }
 	void setQName(rchandle<qname_expr> v)    { theQName = v; }
 	void setTypeName(rchandle<qname_expr> v) { theTypeName = v; }
+  void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
-public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
+
+  TypeCode getNodeKind() const;
 };
 
 
