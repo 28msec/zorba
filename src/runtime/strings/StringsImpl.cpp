@@ -26,6 +26,8 @@
 
 #include "StringsImpl.h"
 #include "util/tracer.h"
+#include "types/casting.h"
+#include "errors/Error.h"
 #include "../utf8/utf8.h"
 #include "runtime/zorba.h"
 
@@ -50,44 +52,42 @@ std::ostream& CodepointsToStringIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
+Item_t CodepointsToStringIterator::nextImpl(){
 	Item_t item;
 	sequence_type_t type0;
-	//xqpString test;
 
 	STACK_INIT();
 	
 	while(true){
-		item = this->consumeNext(argv, stateBlock);
+		item = this->consumeNext(argv);
 		
 		if(&*item == NULL) {
-			//test = (uint)23;
-			//STACK_PUSH(new stringValue(xs_string, test));
 			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->res));
-			STACK_PUSH(NULL);
 		}
 		else {
+//			item = item->getAtomizationValue();
+	//		this->genericCast->setTarget(xs_double);
+		//	item = this->genericCast->cast(item);
 
 			seq[0] = 0;
 			seq[1] = 0;
 			seq[2] = 0;
 			seq[3] = 0;
-			
-			UTF8Encode(item->getIntValue(), seq);
 
+			tt=item->getIntValue();
+			UTF8Encode( tt, seq);
 			res.append(seq);
 		}
 	}
-	STACK_PUSH(NULL);
 	STACK_END();
 }
 
-void CodepointsToStringIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
-		this->resetChild(argv, stateBlock);
+void CodepointsToStringIterator::resetImpl(){
+		this->resetChild(argv);
 }
 
-void CodepointsToStringIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
-		this->releaseChildResources(argv, stateBlock);
+void CodepointsToStringIterator::releaseResourcesImpl() {
+		this->releaseChildResources(argv);
 }
 
 
@@ -109,12 +109,12 @@ std::ostream& StringToCodepointsIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
+Item_t StringToCodepointsIterator::nextImpl(){
 	Item_t item;
 
 	STACK_INIT();
 
-	item = this->consumeNext(argv, stateBlock);
+	item = this->consumeNext(argv);
 	
 	if(&*item != NULL) {
 		
@@ -129,16 +129,15 @@ Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 		}
 	}
 	
-	STACK_PUSH(NULL);
 	STACK_END();
 }
 
-void StringToCodepointsIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
-	this->resetChild(argv, stateBlock);
+void StringToCodepointsIterator::resetImpl(){
+	this->resetChild(argv);
 }
 
-void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
-	this->releaseChildResources(argv, stateBlock);
+void StringToCodepointsIterator::releaseResourcesImpl() {
+	this->releaseChildResources(argv);
 }
 
 
@@ -166,7 +165,7 @@ void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& st
  *	7.3.3 fn:codepoint-equal
  *
  *	fn:codepoint-equal( 	$comparand1 	 as xs:string?,
- *  											$comparand2 	 as xs:string?) as xs:boolean?
+ *  															$comparand2 	 as xs:string?) as xs:boolean?
  *
  *	Summary: Returns true or false depending on whether the value
  * of $comparand1 is equal to the value of $comparand2, according to
@@ -184,60 +183,34 @@ std::ostream& CodepointEqualIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-Item_t CodepointEqualIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
+Item_t CodepointEqualIterator::nextImpl(){
 	Item_t item0;
 	Item_t item1;
 
 	STACK_INIT();
 
-	item0 = this->consumeNext(argv0, stateBlock);
-	item1 = this->consumeNext(argv1, stateBlock);
-	finish = false;
+	item0 = this->consumeNext(argv0);
+	item1 = this->consumeNext(argv1);
 
-	if(&*item0 == NULL || &*item1 == NULL) {
-		STACK_PUSH(NULL);
-	}
-	else
-	{
-		vLength = (item0->getStringValue().length());
-		
-		if(int32_t(vLength) != int32_t(item1->getStringValue().length()))
-			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
-		else
-		{
-			v0.reserve(vLength);
-			std::strcpy(&v0[0], item0->getStringValue().c_str());
-			c0 = &v0[0];
-			
-			v1.reserve(vLength);
-			std::strcpy(&v1[0], item1->getStringValue().c_str());
-			c1 = &v1[0];
-			
-			while( !finish && (vLength > 0) ){
-				if(UTF8Decode(c0) != UTF8Decode(c1))
-				{
-					finish = true;
-					STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
-				}
-				vLength--;
-			}
-
-			if(!finish)
+	if(&*item0 != NULL && &*item1 != NULL) {
+			//TODO replacing the typedef xqp_string to point to xqpString instead of std::string will make this call correct
+			res = (item0->getStringValue()).compare(item1->getStringValue());
+			if(res == 0)
 				STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(true));
-		}
+			else
+				STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
 	}
-	STACK_PUSH(NULL);
 	STACK_END();
 }
 
-void CodepointEqualIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
-	this->resetChild(argv0, stateBlock);
-	this->resetChild(argv1, stateBlock);
+void CodepointEqualIterator::resetImpl() {
+	this->resetChild(argv0);
+	this->resetChild(argv1);
 }
 
-void CodepointEqualIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
-	this->releaseChildResources(argv0, stateBlock);
-	this->releaseChildResources(argv1, stateBlock);
+void CodepointEqualIterator::releaseResourcesImpl() {
+	this->releaseChildResources(argv0);
+	this->releaseChildResources(argv1);
 }
 
 /**
@@ -246,7 +219,7 @@ void CodepointEqualIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateB
  *	7.4.1 fn:concat
  *
  * fn:concat( 	$arg1 	 as xs:anyAtomicType?,
- * 							$arg2 	 as xs:anyAtomicType?,
+ * 									$arg2 	 as xs:anyAtomicType?,
  * 							...													) as xs:string
  * 
  * Summary:
@@ -274,7 +247,7 @@ std::ostream& ConcatFnIterator::_show(std::ostream& os)
 	return os;
 }
 
-Item_t ConcatFnIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+Item_t ConcatFnIterator::nextImpl() {
 
 	Item_t item;
 	
@@ -284,33 +257,30 @@ Item_t ConcatFnIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 	
 	for (; this->cursor < this->argv.size (); this->cursor++) {;
 		this->currit_h = this->argv[this->cursor];
-		item = this->consumeNext(this->currit_h, stateBlock);
+		item = this->consumeNext(this->currit_h);
 
 		//TODO use a more high level function provided by the type system
 		//if the item is not a node => it's a xs:anyAtomicType
-		if((item->getType() & NODE_MASK) == NOT_NODE)
-		{
+		if((item->getType() & NODE_MASK) == NOT_NODE) {
 			res.append(item->getStringProperty());
-			//res.append("1");
 		}
 	}
 
 	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->res));
-	STACK_PUSH(NULL);
 	STACK_END();
 }
 
-void ConcatFnIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
+void ConcatFnIterator::resetImpl() {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter, stateBlock);
+		this->resetChild(*iter);
 	}
 }
 
-void ConcatFnIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
+void ConcatFnIterator::releaseResourcesImpl() {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter, stateBlock);
+		this->releaseChildResources(*iter);
 	}
 }
 
@@ -344,25 +314,24 @@ std::ostream& StringJoinIterator::_show(std::ostream& os)
 	return os;
 }
 
-Item_t StringJoinIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+Item_t StringJoinIterator::nextImpl() {
 
 	STACK_INIT();
 	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("result"));
-	STACK_PUSH(NULL);
 	STACK_END();
 }
 
-void StringJoinIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
+void StringJoinIterator::resetImpl() {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter, stateBlock);
+		this->resetChild(*iter);
 	}
 }
 
-void StringJoinIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
+void StringJoinIterator::releaseResourcesImpl() {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter, stateBlock);
+		this->releaseChildResources(*iter);
 	}
 }
 } /* namespace xqp */

@@ -27,7 +27,6 @@
 
 #include "context/common.h"
 #include "runtime/batching.h"
-#include "types/sequence_type.h"
 
 #ifdef WIN32
 #include "win32/compatib_defs.h"
@@ -36,7 +35,7 @@
 namespace xqp {
 
 class zorba;
-
+class GenericCast;
 
 /**______________________________________________________________________
  *
@@ -67,15 +66,20 @@ public:
 	~CodepointsToStringIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
+
+private:
+	GenericCast* genericCast;
 
 protected:
 	Iterator_t argv;
 	std::string res;
 	char seq[4];
+	uint32_t tt;
+	
 }; /*class CodepointsToStringIterator*/
 
 
@@ -103,9 +107,9 @@ public:
 	~StringToCodepointsIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -149,21 +153,16 @@ public:
 	~CodepointEqualIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
 	Iterator_t argv0;
 	Iterator_t argv1;
 
-	std::vector<char> v0;
-	std::vector<char> v1;
-	char * c0;
-	char * c1;
-	int16_t vLength;
-	bool finish;
+	int16_t res;
 };/*class CodepointEqualIterator */
 
 /**
@@ -196,9 +195,9 @@ public:
 		~ConcatFnIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -240,9 +239,9 @@ public:
 		~StringJoinIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl();
+	void resetImpl();
+	void releaseResourcesImpl();
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
