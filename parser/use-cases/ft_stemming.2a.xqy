@@ -1,5 +1,0 @@
-doc("http://bstore1.example.com/full-text.xml")
-/books/book[count(.//content ftcontains (("usable" with stemming) 
-&& "testing" phrase) || (("use" with stemming) 
-&& "testing" phrase))>0]/(@number|./metadata/title/text()
-|./content)
