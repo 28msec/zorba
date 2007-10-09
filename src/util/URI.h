@@ -24,7 +24,7 @@
 |		 
 |_______________________________________________________________________*/
 
-#include "hashfun.h"
+#include "util/hashfun.h"
 
 #include <string>
 #include <vector>

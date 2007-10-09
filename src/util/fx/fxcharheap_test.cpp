@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "errors/xqp_exception.h"
-#include "tokenbuf.h"
+#include "util/tokenbuf.h"
 
 using namespace std;
 using namespace xqp;

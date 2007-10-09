@@ -21,7 +21,7 @@
  *
  */ 
 
-#include "xqpString.h"
+#include "util/utf8/xqpString.h"
 
 namespace xqp {
 

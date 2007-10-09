@@ -6,7 +6,7 @@
  *
  */
 
-#include "tokenbuf.h"
+#include "util/tokenbuf.h"
 
 using namespace std;
 namespace xqp {

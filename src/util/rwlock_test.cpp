@@ -6,7 +6,7 @@
  *
  */
 
-#include "rwlock.h"
+#include "util/rwlock.h"
 
 #include <iostream>
 #include <sstream>

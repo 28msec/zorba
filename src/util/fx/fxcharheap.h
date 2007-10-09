@@ -11,9 +11,9 @@
 #ifndef XQP_FXCHARHEAP_H
 #define XQP_FXCHARHEAP_H
 
-#include "fxarray.h"
-#include "rchandle.h"
-#include "../errors/Error.h"
+#include "util/fxarray.h"
+#include "util/rchandle.h"
+#include "errors/Error.h"
 
 #include <string>
 #ifndef _WIN32_WCE

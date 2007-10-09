@@ -11,13 +11,7 @@
 #ifndef XQP_FXHASHMAP_H
 #define XQP_FXHASHMAP_H
 
-#include "Assert.h"
-#include "fxcharheap.h"
-#include "fxarray.h"
-#include "fxvector.h"
-#include "hashfun.h"
-#include "rchandle.h"
-#include "errors/Error.h"
+
 #include <sstream>
 
 #include <stddef.h>
@@ -31,6 +25,14 @@
 #include <iostream>
 #include <string>
 
+
+#include "util/Assert.h"
+#include "util/fx/fxcharheap.h"
+#include "util/fx/fxarray.h"
+#include "util/fx/fxvector.h"
+#include "util/hashfun.h"
+#include "util/rchandle.h"
+#include "errors/Error.h"
 
 using namespace std;
 namespace xqp {

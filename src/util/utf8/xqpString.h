@@ -25,7 +25,7 @@
 #define XQP_STRING_UTF8_STRING_REPRESENTATION_30_AUG_2007
 
 #ifdef WIN32
-#include "win32/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #endif
 
 #include <iostream>
@@ -35,7 +35,7 @@
 #include <unicode/coll.h>
 #include <unicode/ustring.h>
 
-#include "utf8.h"
+#include "util/utf8/utf8.h"
 
 namespace xqp {
 	class xqpString

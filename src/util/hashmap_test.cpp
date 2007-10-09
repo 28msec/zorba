@@ -7,7 +7,7 @@
  *
  */
 
-#include "hashmap.h"
+#include "util/hashmap.h"
 
 #include <stdlib.h>
 #include <fstream>
@@ -15,7 +15,7 @@
 #include <string>
 
 #include "errors/xqp_exception.h"
-#include "tokenbuf.h"
+#include "util/tokenbuf.h"
 
 using namespace std;
 using namespace xqp;

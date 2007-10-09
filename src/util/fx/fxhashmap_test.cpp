@@ -8,11 +8,13 @@
  *
  */
 
-#include "fxhashmap.h"
-#include "tokenbuf.h"
-#include "errors/xqp_exception.h"
 #include <iostream>
 #include <fstream>
+
+#include "util/fx/fxhashmap.h"
+#include "util/tokenbuf.h"
+#include "errors/xqp_exception.h"
+
 
 using namespace std;
 using namespace xqp;

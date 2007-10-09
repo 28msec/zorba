@@ -6,7 +6,7 @@
  *
  */
 
-#include "URI.h"
+#include "util/URI.h"
 
 #include <stdio.h>
 #include <iostream>

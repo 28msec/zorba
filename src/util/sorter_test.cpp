@@ -6,7 +6,7 @@
  *
  */
 
-#include "sorter.h"
+#include "util/sorter.h"
 
 #include <iostream>
 

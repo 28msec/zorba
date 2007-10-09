@@ -7,7 +7,7 @@
  *
  */
 
-#include "hashfun.h"
+#include "util/hashfun.h"
 
 #include <iostream>
 #include <string>

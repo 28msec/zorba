@@ -30,8 +30,8 @@
 #include <time.h>
 #include <string>
 
-#include "../errors/Error.h"
-#include "rchandle.h"
+#include "errors/Error.h"
+#include "util/rchandle.h"
 
 namespace xqp {
 

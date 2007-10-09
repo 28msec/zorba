@@ -10,10 +10,10 @@
 #ifndef XQP_FXVECTOR_H
 #define XQP_FXVECTOR_H
 
-#include "mmfile.h"
-#include "rchandle.h"
-#include "tracer.h"
-#include "../errors/Error.h"
+#include "util/fx/mmfile.h"
+#include "util/rchandle.h"
+#include "util/tracer.h"
+#include "errors/Error.h"
 
 #ifndef WIN32
 	#include <sys/mman.h>

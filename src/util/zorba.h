@@ -20,7 +20,7 @@
 #include <stack>
 #include <map>
 #ifdef WIN32
-#include "win32/pthread.h"
+#include "util/win32/pthread.h"
 #endif
 
 namespace xqp {

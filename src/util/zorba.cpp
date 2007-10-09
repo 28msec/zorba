@@ -8,11 +8,11 @@
  */
 #include <map>
 
-#include "zorba.h"
+#include "util/zorba.h"
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "../store/api/item_factory.h"
+#include "store/api/item_factory.h"
 
 
 using namespace std;

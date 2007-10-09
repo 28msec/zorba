@@ -29,8 +29,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "file.h"
-#include "../errors/Error.h"
+#include "util/file.h"
+#include "errors/Error.h"
 
 using namespace std;
 namespace xqp {

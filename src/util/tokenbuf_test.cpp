@@ -8,7 +8,7 @@
  *
  */
 
-#include "tokenbuf.h"
+#include "util/tokenbuf.h"
 
 #include <string.h>
 #include <iostream>
@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "errors/xqp_exception.h"
-#include "file.h"
+#include "util/file.h"
 
 using namespace std;
 using namespace xqp;

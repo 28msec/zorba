@@ -10,7 +10,7 @@
 #ifndef XQP_LIST_H
 #define XQP_LIST_H
 
-#include "../errors/Error.h"
+#include "errors/Error.h"
 
 namespace xqp {
 

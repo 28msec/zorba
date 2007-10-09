@@ -9,7 +9,7 @@
   ported to windows
  */
 
-#include "file.h"
+#include "util/file.h"
 
 #ifndef _WIN32_WCE
 #include <errno.h>
@@ -48,7 +48,7 @@
 #include <sstream>
 #include <string>
 
-#include "../errors/Error.h"
+#include "errors/Error.h"
 
 
 using namespace std;

@@ -28,8 +28,8 @@
 #include <sstream>
 #include <iostream>
 
-#include "mmfile.h"
-#include "../errors/Error.h"
+#include "util/fx/mmfile.h"
+#include "errors/Error.h"
 
 using namespace std;
 namespace xqp {

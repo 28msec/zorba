@@ -22,10 +22,10 @@
 #include <vector>
 #include <iostream>
 
-#include "hashfun.h"
-#include "rchandle.h"
-#include "rwlock.h"
-#include "../errors/Error.h"
+#include "util/hashfun.h"
+#include "util/rchandle.h"
+#include "util/rwlock.h"
+#include "errors/Error.h"
 
 
 using namespace std;
