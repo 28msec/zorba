@@ -4408,15 +4408,12 @@ public:
 };
 
 
-// [117] SequenceType
-// ------------------
+/*******************************************************************************
+
+  [119] SequenceType ::= ItemType OccurrenceIndicator? | "empty-sequence" "(" ")"
+
+********************************************************************************/
 class SequenceType : public parsenode
-/*______________________________________________________________________
-|
-|	::= ItemType
-|			|	ItemType OccurrenceIndicator
-|			|	VOID_TEST
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<ItemType> itemtype_h;
@@ -4438,17 +4435,15 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [118] OccurrenceIndicator
-// -------------------------
+/*******************************************************************************
+
+  [120] OccurrenceIndicator ::= HOOK | STAR | PLUS   gn:occurrence-indicatorsXQ
+
+********************************************************************************/
 class OccurrenceIndicator : public parsenode
-/*______________________________________________________________________
-|
-|	::= HOOK | STAR | PLUS   gn:occurrence-indicatorsXQ
-|_______________________________________________________________________*/
 {
 protected:
 	enum occurrence_t type;
@@ -4466,17 +4461,15 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [119] ItemType
-// --------------
+/*******************************************************************************
+
+  [121] ItemType ::= AtomicType | KindTest | ITEM_TEST
+
+********************************************************************************/
 class ItemType : public parsenode
-/*______________________________________________________________________
-|
-|	::= AtomicType | KindTest | ITEM_TEST
-|_______________________________________________________________________*/
 {
 protected:
 	bool item_test_b;
@@ -4496,17 +4489,15 @@ public:
 public:
 	virtual std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [120] AtomicType
-// ----------------
+/*******************************************************************************
+
+  [122] AtomicType ::= QNAME
+
+********************************************************************************/
 class AtomicType : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<QName> qname_h;
@@ -4524,34 +4515,30 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [121] KindTest
-// --------------
-/*______________________________________________________________________
-|
-|	::= DocumentTest
-|			| ElementTest
-|			| AttributeTest
-|			| SchemaElementTest
-|			| SchemaAttributeTest
-|			| PITest
-|			| CommentTest
-|			| TextTest
-|			| AnyKindTest
-|_______________________________________________________________________*/
+/*******************************************************************************
+
+  [123] KindTest ::= DocumentTest |
+                     ElementTest |
+                     AttributeTest |
+                     SchemaElementTest |
+                     SchemaAttributeTest |
+                     PITest |
+                     CommentTest |
+                     TextTest |
+                     AnyKindTest
+
+********************************************************************************/
 
 
+/*******************************************************************************
 
-// [122] AnyKindTest
-// -----------------
+  [124] AnyKindTest ::= NODE_LPAR  RPAR
+
+********************************************************************************/
 class AnyKindTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= NODE_LPAR  RPAR
-|_______________________________________________________________________*/
 {
 public:
 	AnyKindTest(const yy::location&);
@@ -4560,19 +4547,17 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
- 
 
-// [123] DocumentTest
-// ------------------
+
+/*******************************************************************************
+
+  [125] DocumentTest ::= DOCUMENT_NODE_LPAR  RPAR |
+                         DOCUMENT_NODE_LPAR  ElementTest  RPAR |
+                         DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
+
+********************************************************************************/
 class DocumentTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= DOCUMENT_NODE_LPAR  RPAR
-|			|	DOCUMENT_NODE_LPAR  ElementTest  RPAR
-|			|	DOCUMENT_NODE_LPAR  SchemaElementTest  RPAR
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<ElementTest> elem_test_h;
@@ -4600,17 +4585,15 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [124] TextTest
-// --------------
+/*******************************************************************************
+
+  [126] TextTest ::= TEXT_LPAR  RPAR 
+
+********************************************************************************/
 class TextTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= TEXT_LPAR  RPAR 
-|_______________________________________________________________________*/
 {
 public:
 	TextTest(const yy::location&);
@@ -4619,11 +4602,10 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
-// [125] CommentTest
+// [127] CommentTest
 // -----------------
 class CommentTest : public parsenode
 /*______________________________________________________________________
@@ -4642,7 +4624,7 @@ public:
 };
  
 
-// [126] PITest
+// [128] PITest
 // ------------
 class PITest : public parsenode
 /*______________________________________________________________________
@@ -4675,7 +4657,7 @@ public:
 };
 
 
-// [127] AttributeTest
+// [129] AttributeTest
 // -------------------
 class AttributeTest : public parsenode
 /*______________________________________________________________________
@@ -4738,46 +4720,39 @@ public:
 };
 
 
-// [131] ElementTest
-// -----------------
+/*******************************************************************************
+
+  [133] ElementTest ::= ELEMENT_LPAR  RPAR |
+                        ELEMENT_LPAR  ElementNameOrWildcard  RPAR |
+                        ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR |
+                        ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
+
+********************************************************************************/
 class ElementTest : public parsenode
-/*______________________________________________________________________
-|
-|	::= ELEMENT_LPAR  RPAR
-|			|	ELEMENT_LPAR  ElementNameOrWildcard  RPAR
-|			|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR
-|			|	ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
-|_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> elem_h;
-	rchandle<TypeName> type_h;
-	bool optional_b;
+	rchandle<QName>    theElementName;
+	rchandle<TypeName> theTypeName;
+	bool               theNilledAllowed;
 
 public:
 	ElementTest(
-		const yy::location&,
-		rchandle<QName>,
-		rchandle<TypeName>);
-
-	ElementTest(
-		const yy::location&,
-		rchandle<QName>,
-		rchandle<TypeName>,
-		bool optional_bit);
+		const yy::location& l,
+		rchandle<QName> qn,
+		rchandle<TypeName> tn,
+    bool na = false);
 
 	~ElementTest();
 
 public:
-	rchandle<QName> get_elem() const { return elem_h; }
-	rchandle<TypeName> get_type() const { return type_h; }
-	bool is_wild() const { return elem_h==NULL; }
-	bool get_optional_bit() const { return optional_b; }
+	rchandle<QName> getElementName() const { return theElementName; }
+	rchandle<TypeName> getTypeName() const { return theTypeName; }
+	bool isWildcard() const                { return theElementName == NULL; }
+	bool isNilledAllowed() const           { return theNilledAllowed; }
 
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 

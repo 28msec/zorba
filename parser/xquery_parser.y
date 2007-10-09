@@ -4357,6 +4357,13 @@ ElementTest :
 									new QName(@$,driver.symtab.get((off_t)$2)),
 									dynamic_cast<TypeName*>($4));
 		}
+	|	ELEMENT_LPAR  QNAME  COMMA  TypeName HOOK RPAR
+		{
+			if (debug) cout << "ElementTest [name.type]\n";
+			$$ = new ElementTest(@$,
+									new QName(@$,driver.symtab.get((off_t)$2)),
+									dynamic_cast<TypeName*>($4));
+		}
 	|	ELEMENT_LPAR  STAR  RPAR
 		{
 			if (debug) cout << "ElementTest [*]\n";
@@ -4366,6 +4373,14 @@ ElementTest :
 									true);
 		}
 	|	ELEMENT_LPAR  STAR  COMMA  TypeName  RPAR
+		{
+			if (debug) cout << "ElementTest [*.type]\n";
+			$$ = new ElementTest(@$,
+									NULL,
+									dynamic_cast<TypeName*>($4),
+									true);
+		}
+	|	ELEMENT_LPAR  STAR  COMMA  TypeName HOOK RPAR
 		{
 			if (debug) cout << "ElementTest [*.type]\n";
 			$$ = new ElementTest(@$,

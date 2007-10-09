@@ -5448,31 +5448,24 @@ void SchemaAttributeTest::accept(parsenode_visitor& v) const
 }
 
 
+/*******************************************************************************
 
-// [133] ElementTest
-// -----------------
-ElementTest::ElementTest(
-	const yy::location& _loc,
-	rchandle<QName> _elem_h,
-	rchandle<TypeName> _type_h)
-:
-	parsenode(_loc),
-	elem_h(_elem_h),
-	type_h(_type_h),
-	optional_b(false)
-{
-}
+  [133] ElementTest ::= ELEMENT_LPAR  RPAR |
+                        ELEMENT_LPAR  ElementNameOrWildcard  RPAR |
+                        ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  RPAR |
+                        ELEMENT_LPAR  ElementNameOrWildcard  COMMA  TypeName  HOOK  RPAR
 
+********************************************************************************/
 ElementTest::ElementTest(
-	const yy::location& _loc,
-	rchandle<QName> _elem_h,
-	rchandle<TypeName> _type_h,
-	bool _b)
-:
-	parsenode(_loc),
-	elem_h(_elem_h),
-	type_h(_type_h),
-	optional_b(_b)
+		const yy::location& loc,
+		rchandle<QName> ename,
+		rchandle<TypeName> tname,
+    bool na)
+  :
+	parsenode(loc),
+	theElementName(ename),
+	theTypeName(tname),
+	theNilledAllowed(na)
 {
 }
 
@@ -5483,16 +5476,24 @@ ElementTest::~ElementTest()
 ostream& ElementTest::put(ostream& os) const
 {
 	os << INDENT << "ElementTest[\n";
-	if (elem_h!=NULL) elem_h->put(os); else os << '*';
-	if (type_h!=NULL) {
+
+	if (theElementName != NULL)
+    theElementName->put(os);
+  else
+    os << '*';
+
+	if (theTypeName != NULL)
+  {
 		os << ", ";
-		type_h->put(os);
+		theTypeName->put(os);
 	}
-	if (optional_b) os << "?";
+
+	if (theNilledAllowed)
+    os << "?";
+
 	return os << OUTDENT << "]\n";
 }
 
-//-ElementTest::
 
 void ElementTest::accept(parsenode_visitor& v) const 
 { 
