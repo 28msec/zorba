@@ -24,6 +24,10 @@ ADD_DEFINITIONS(-Wall -Wno-uninitialized -W -Wno-unused -Wpointer-arith -Woverlo
 
 
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
+
+
 
 
 ##############################################################################################################
@@ -40,6 +44,6 @@ ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIR})
 
 # Tell CMake to process the sub-directories
-ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(include)
+ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)

@@ -2,6 +2,9 @@
  * Contains main method to execute a simple query that is passed with the first execution parameter.
  */
 
+#include "zorba/common.h"
+
+
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/translator/normalize_visitor.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
