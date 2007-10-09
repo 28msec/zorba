@@ -66,7 +66,7 @@ Item_t FnRootIterator::nextImpl(int8_t* stateBlock)
          error_messages::RUNTIME_ERROR,
          NULL,
          false,
-         "Unknown name test kind");
+         "The argument of the fn:root function is not a node");
   }
 
   parentNode = contextNode->getParent();
