@@ -30,7 +30,7 @@ ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 
 INCLUDE (CheckIncludeFiles)
 CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h;unicode/utypes.h;unicode/coll.h;unicode/ustring.h" HAVE_SYS_MOUNT_H)
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+#CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 # for the moment, we include everything
 # however, we should move the headers (at least the library headers) into a separate directory
