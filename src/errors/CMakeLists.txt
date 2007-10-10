@@ -3,4 +3,4 @@ SET(ERRORS_SRCS
    errors.cpp 
    xqp_exception.cpp)
 
-ADD_LIBRARY(errors SHARED ${ERRORS_SRCS})
+ADD_LIBRARY(errors ${ERRORS_SRCS})

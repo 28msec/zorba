@@ -10,4 +10,4 @@ SET(RUNTIME_SRCS
     iterators.cpp
     sequences/SequencesImpl.cpp)
 
-ADD_LIBRARY(runtime SHARED ${RUNTIME_SRCS})
+ADD_LIBRARY(runtime ${RUNTIME_SRCS})
