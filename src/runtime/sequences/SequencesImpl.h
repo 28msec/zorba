@@ -26,6 +26,8 @@
 #include "context/common.h"
 #include "runtime/core/batching.h"
 
+#include "util/logging/logging.hh"
+
 namespace xqp
 {
 
@@ -43,6 +45,7 @@ namespace xqp
 //15.1.2 op:concatenate
 class ConcatIterator : public Batcher<ConcatIterator>
 {
+	DECLARE_LOGGER;
 protected:
 	std::vector<Iterator_t> argv;
 

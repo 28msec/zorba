@@ -33,13 +33,17 @@ Item* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
+DEFINE_LOGGER(ConcatIterator);
+
 ConcatIterator::ConcatIterator(
 	yy::location loc,
 	const vector<Iterator_t>& _argv)
 :
 	Batcher<ConcatIterator>(loc),
 	argv(_argv)
-{}
+{
+	LOG_DEBUG("Hoi David");
+}
 
 ConcatIterator::~ConcatIterator(){}
 
