@@ -3,6 +3,9 @@
 #
 PROJECT(zorba)
 
+# Uncomment the next line to output make commands
+# SET(CMAKE_VERBOSE_MAKEFILE ON)
+
 # prohibit in-source-builds
 IF (${CMAKE_BINARY_DIR} STREQUAL ${CMAKE_SOURCE_DIR})
     MESSAGE(STATUS "In-source-builds are not allowed")
@@ -26,8 +29,7 @@ ADD_DEFINITIONS(-Wall -Wno-uninitialized -W -Wno-unused -Wpointer-arith -Woverlo
 INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
-
-
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_BINARY_DIR}/src)
 
 
 ##############################################################################################################
