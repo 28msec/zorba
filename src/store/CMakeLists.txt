@@ -8,4 +8,4 @@ SET(STORE_SRCS
     naive/simple_store.cpp)
 #    update/update_values.cpp)
 
-ADD_LIBRARY(store ${STORE_SRCS})
+ADD_LIBRARY(store SHARED ${STORE_SRCS})
