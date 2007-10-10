@@ -1,0 +1,4 @@
+#!/bin/bash
+valgrind --log-file-exactly=valgrind.log $ZORBA x.xq &> /dev/null
+if grep " 0 errors " valgrind.log >& /dev/null; then echo NO_ERRORS; else echo ERRORS; fi
+rm -f valgrind.log

@@ -71,12 +71,12 @@ cd $SNAPSHOT
 
 $ROOT/process_test_results
 
-diff -qr test_results/acceptance $ROOT/testing/test_results/acceptance | grep -v '^Only in' | cut -f2 -d' ' | xargs -r -l1 dirname | xargs -r -l1 $ROOT/report_acceptance_failure $TESTS >>acceptance_failures.xmlfrag
+diff -qr test_results/acceptance $ROOT/testing/test_results/acceptance | grep -v '^Only in' | cut -f2 -d' ' | xargs -r -l1 dirname | xargs -r -l1 $ROOT/report_acceptance_failure $TESTS >acceptance_failures.xmlfrag
 test -s acceptance_failures.xmlfrag || export ACCEPTANCE_FAILURES=y
 echo '<failures>' >acceptance_failures.xml
 cat acceptance_failures.xmlfrag >>acceptance_failures.xml
-rm acceptance_failures.xmlfrag
 echo '</failures>' >>acceptance_failures.xml
+rm acceptance_failures.xmlfrag
 
 }
 
