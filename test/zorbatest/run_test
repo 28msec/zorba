@@ -1,0 +1,13 @@
+#!/bin/sh
+
+TEST=$1
+DIR=`dirname $TEST`
+echo Running test $TEST
+cd $DIR
+mkdir -p $SNAPSHOT/test_results/$DIR
+TMP=`mktemp -t`
+OUT=$SNAPSHOT/test_results/$DIR/result.txt
+./`basename $TEST` >$TMP
+{ if test $? -eq 0; then echo SUCCESS; else echo FAILURE; fi; } > $OUT
+cat $TMP >>$OUT
+rm -f $TMP

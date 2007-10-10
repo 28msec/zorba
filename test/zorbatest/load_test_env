@@ -1,0 +1,1 @@
+export ZORBA=$ROOT/build/test/query_exec

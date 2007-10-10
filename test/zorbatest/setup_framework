@@ -1,0 +1,6 @@
+#!/bin/bash
+echo Saxon location:
+read sax
+echo '#!/bin/sh' >xquery
+echo 'exec java -cp '`find $sax -name *.jar | tr '\n' :`.' net.sf.saxon.Query $*' >>xquery
+chmod u+x xquery
