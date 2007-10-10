@@ -45,7 +45,7 @@
 
 #include "compiler/parser/symbol_table.h"
 #include "compiler/parser/xquery_driver.h"
-#include "compiler/parser/xquery_parser.tab.h"
+#include "compiler/parser/xquery_parser.hpp"
 
 /*
 	Work around an incompatibility in flex (at least versions

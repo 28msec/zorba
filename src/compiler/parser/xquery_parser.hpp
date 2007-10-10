@@ -86,7 +86,7 @@ static bool debug = true;
 
 
 /* Line 35 of lalr1.cc.  */
-#line 90 "xquery_parser.tab.h"
+#line 90 "xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -147,7 +147,7 @@ namespace yy
 	long double decval;
 }
 /* Line 35 of lalr1.cc.  */
-#line 151 "xquery_parser.tab.h"
+#line 151 "xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

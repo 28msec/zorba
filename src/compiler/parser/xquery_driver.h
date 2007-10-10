@@ -24,7 +24,7 @@
 #include <ostream>
 
 #include "compiler/parser/symbol_table.h"
-#include "compiler/parser/xquery_parser.tab.h"
+#include "compiler/parser/xquery_parser.hpp"
 
 using namespace yy;
 

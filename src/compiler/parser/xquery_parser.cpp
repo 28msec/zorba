@@ -33,7 +33,7 @@
    version 2.2 of Bison.  */
 
 
-#include "compiler/parser/xquery_parser.tab.h"
+#include "compiler/parser/xquery_parser.hpp"
 
 /* User implementation prologue.  */
 #line 122 "compiler/parser/xquery_parser.y"

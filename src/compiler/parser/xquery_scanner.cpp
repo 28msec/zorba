@@ -2908,7 +2908,7 @@ char *yytext;
 
 #include "symbol_table.h"
 #include "xquery_driver.h"
-#include "xquery_parser.tab.h"
+#include "xquery_parser.hpp"
 
 /*
 	Work around an incompatibility in flex (at least versions

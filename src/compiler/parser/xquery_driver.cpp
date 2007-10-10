@@ -18,7 +18,7 @@
  */
 
 #include "compiler/parser/xquery_driver.h"
-#include "compiler/parser/xquery_parser.tab.h"
+#include "compiler/parser/xquery_parser.hpp"
 
 using namespace std;
 namespace xqp {
