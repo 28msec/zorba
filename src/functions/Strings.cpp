@@ -130,7 +130,33 @@ bool fn_string_to_codepoints::validate_args(
  *
  *
  *_______________________________________________________________________*/
+fn_compare_str::fn_compare_str(
+	const signature& sig)
+:
+	function(sig)
+{
+}
 
+Iterator_t fn_compare_str::operator()(
+  const yy::location& loc,
+	vector<Iterator_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new CompareStrIterator(loc, argv[0], argv[1]);
+}
+
+sequence_type_t fn_compare_str::type_check(
+	signature& sig) const
+{
+	return xs_integer;
+}
+
+bool fn_compare_str::validate_args(
+	vector<Iterator_t>& argv) const
+{
+	return (argv.size() >= 1);
+}
 
 /**______________________________________________________________________
  *

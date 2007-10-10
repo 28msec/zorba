@@ -1,20 +1,7 @@
 /**
- *
  * @copyright
  * ========================================================================
- *	Copyright 2007 FLWOR Foundation
- *
- *	Licensed under the Apache License, Version 2.0 (the "License");
- *	you may not use this file except in compliance with the License.
- *	You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- *	Unless required by applicable law or agreed to in writing, software
- *	distributed under the License is distributed on an "AS IS" BASIS,
- *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *	See the License for the specific language governing permissions and
- *	limitations under the License.
+ *	Copyright 2006-2007 FLWOR Foundation
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -26,12 +13,13 @@
 
 #include "runtime/strings/StringsImpl.h"
 #include "util/tracer.h"
-#include "util/utf8/utf8.h"
+#include "types/casting.h"
+#include "errors/Error.h"
 #include "util/zorba.h"
+#include "util/utf8/utf8.h"
 
 using namespace std;
 namespace xqp {
-
 /**
  *______________________________________________________________________
  *
@@ -141,7 +129,6 @@ void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& st
 	this->releaseChildResources(argv, stateBlock);
 }
 
-
 /**
  *______________________________________________________________________
  *	7.3.2 fn:compare
@@ -159,6 +146,32 @@ void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& st
  *
  * If either argument is the empty sequence, the result is the empty sequence.
  *_______________________________________________________________________*/
+
+/* begin class CompareStrIterator */
+
+	CompareStrIterator::CompareStrIterator
+		( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 )
+	:
+		BinaryBaseIterator<CompareStrIterator>( loc, iter0, iter1 )
+	{
+		this->genericCast = new GenericCast();
+	}
+
+CompareStrIterator::~CompareStrIterator()
+{
+	delete this->genericCast;
+}
+
+Item_t 
+CompareStrIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+// TODO add implementation here
+		BasicIterator::BasicIteratorState* state;
+
+		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+
+		STACK_END2();
+}
+/* end class CompareStrIterator */
 
 /**
  *______________________________________________________________________

@@ -76,7 +76,17 @@ public:
 /**
  * 7.3.2 fn:compare
  *-----------------------*/
+class fn_compare_str: public function
+{
+	public:
+		fn_compare_str(const signature&);
+		~fn_compare_str() {}
 
+	public:
+		Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<Iterator_t>&) const;
+};
 
 /**
  * 7.3.3 fn:codepoint-equal
