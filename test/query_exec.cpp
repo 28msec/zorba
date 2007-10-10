@@ -15,6 +15,7 @@
 #include "timer.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/simple_store.h"
+#include "util/logging/logging.hh"
 
 #include <iostream>
 #include <fstream>
@@ -28,6 +29,8 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
+	xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
+	
 	Timer timer;
 	timer.start();
 	///application specific

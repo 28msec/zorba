@@ -42,7 +42,7 @@ ConcatIterator::ConcatIterator(
 	Batcher<ConcatIterator>(loc),
 	argv(_argv)
 {
-	LOG_DEBUG("Hoi David");
+	LOG_DEBUG("Test output");
 }
 
 ConcatIterator::~ConcatIterator(){}
