@@ -76,11 +76,11 @@ public:
 /**
  * 7.3.2 fn:compare
  *-----------------------*/
-class fn_compare_str: public function
+class fn_string_compare: public function
 {
 	public:
-		fn_compare_str(const signature&);
-		~fn_compare_str() {}
+		fn_string_compare(const signature&);
+		~fn_string_compare() {}
 
 	public:
 		Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;

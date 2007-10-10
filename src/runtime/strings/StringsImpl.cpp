@@ -133,11 +133,11 @@ void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& st
  *______________________________________________________________________
  *	7.3.2 fn:compare
  * fn:compare($comparand1 as xs:string?,
- * 						$comparand2 as xs:string?) as xs:integer
+ * 									$comparand2 as xs:string?) as xs:integer
  *
  * fn:compare( 	$comparand1	as xs:string?,
- * 							$comparand2	as xs:string?,
- * 							$collation	as xs:string) as xs:integer?
+ * 										$comparand2	as xs:string?,
+ * 										$collation	as xs:string) as xs:integer?
  *
  * Summary: Returns -1, 0, or 1, depending on whether the value of
  * the $comparand1 is respectively less than, equal to, or greater
@@ -150,24 +150,43 @@ void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& st
 /* begin class CompareStrIterator */
 
 	CompareStrIterator::CompareStrIterator
-		( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 )
+		( const yy::location& loc, std::vector<Iterator_t>& args )
 	:
-		BinaryBaseIterator<CompareStrIterator>( loc, iter0, iter1 )
-	{
-		this->genericCast = new GenericCast();
-	}
+		NaryBaseIterator<CompareStrIterator>( loc, args )
+{}
 
 CompareStrIterator::~CompareStrIterator()
-{
-	delete this->genericCast;
-}
+{}
 
 Item_t 
 CompareStrIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
-// TODO add implementation here
-		BasicIterator::BasicIteratorState* state;
+		Item_t n0;
+		Item_t n1;
+		Item_t n2;
+		Item_t res;
 
+		BasicIterator::BasicIteratorState* state;
 		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+
+		n0 = consumeNext ( theChildren[0], stateBlock );
+		if ( n0 != NULL )	{
+			n1 = consumeNext ( theChildren[1], stateBlock );
+			if ( n1 != NULL )	{
+				n0 = n0->getAtomizationValue();
+				n1 = n1->getAtomizationValue();
+				n2 = consumeNext ( theChildren[2], stateBlock );
+				if ( n2 != NULL )	{
+					//TODO check if lowercase two-letter or three-letter ISO-639 code is a correct value for $collation
+					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
+									n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue().c_str()));
+				}
+				else{
+					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
+									n0->getStringValue().compare(n1->getStringValue()));
+				}
+				STACK_PUSH2( res, state );
+			}
+		}
 
 		STACK_END2();
 }

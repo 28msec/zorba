@@ -110,11 +110,9 @@ protected:
  * --------------------*/
 /* begin class CompareStrIterator */
 
-class CompareStrIterator: public BinaryBaseIterator<CompareStrIterator> {
-	private:
-		GenericCast* genericCast;
+class CompareStrIterator: public NaryBaseIterator<CompareStrIterator> {
 	public:
-		CompareStrIterator ( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 );
+		CompareStrIterator ( const yy::location& loc, std::vector<Iterator_t>& args );
 		~CompareStrIterator();
 
 		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);

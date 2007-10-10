@@ -149,6 +149,34 @@ namespace xqp {
 		return result;
 }
 
+	int xqpString::compare(const xqpString& src, const char * loc) const{
+		//create the collator object
+		UErrorCode status = U_ZERO_ERROR;
+
+		Collator *coll = Collator::createInstance(Locale(loc), status);
+	
+		if(U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
+		}
+
+		//set level 1 comparison for the collator
+		coll->setStrength(Collator::PRIMARY);
+
+		Collator::EComparisonResult result = Collator::EQUAL;
+
+		//compare the 2 strings
+		result = coll->compare(getUnicodeString(utf8String), getUnicodeString(src));
+
+		//close the collator
+		delete coll;
+
+		return result;
+}
+
 	int xqpString::compare(const char* src) const{
 		//TODO optimize the code here
 		xqpString tmp(src);

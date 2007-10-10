@@ -135,6 +135,12 @@ namespace xqp {
 		//! @name xqpString::Compare
 		//! @{
 			int compare(const xqpString& src) const;
+
+				/**
+			 * Compare 2 strings based on a specific collation for a locale.
+			 * @param loc locale as lowercase two-letter or three-letter ISO-639 code.
+			 */
+			int compare(const xqpString& src, const char * loc) const;
 			int compare(const char* src) const;
 		//! @}
 

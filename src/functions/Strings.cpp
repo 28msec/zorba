@@ -121,7 +121,7 @@ sequence_type_t fn_string_to_codepoints::type_check(
 bool fn_string_to_codepoints::validate_args(
 		vector<Iterator_t>& argv) const
 {
-	return (argv.size() == 1);
+	return ((argv.size() == 2) || (argv.size() == 3));
 }
 
 /**______________________________________________________________________
@@ -130,29 +130,29 @@ bool fn_string_to_codepoints::validate_args(
  *
  *
  *_______________________________________________________________________*/
-fn_compare_str::fn_compare_str(
+fn_string_compare::fn_string_compare(
 	const signature& sig)
 :
 	function(sig)
 {
 }
 
-Iterator_t fn_compare_str::operator()(
+Iterator_t fn_string_compare::operator()(
   const yy::location& loc,
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv))
 			return NULL;
-	return new CompareStrIterator(loc, argv[0], argv[1]);
+	return new CompareStrIterator(loc, argv);
 }
 
-sequence_type_t fn_compare_str::type_check(
+sequence_type_t fn_string_compare::type_check(
 	signature& sig) const
 {
 	return xs_integer;
 }
 
-bool fn_compare_str::validate_args(
+bool fn_string_compare::validate_args(
 	vector<Iterator_t>& argv) const
 {
 	return (argv.size() >= 1);

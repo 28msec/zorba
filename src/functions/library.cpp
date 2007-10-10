@@ -195,6 +195,12 @@ bool library::static_init = false;
         (new QNameItem(XQUERY_FN_NS,"fn","string-join"),
          xs_string, xs_string,
          xs_string));
+
+  DECL (fn_string_compare, fn_string_compare,
+        (new QNameItem(XQUERY_FN_NS,"fn","compare"),
+         xs_string, xs_string, xs_string,
+         xs_integer));
+
   // end Strings
 
 	// start Boolean
