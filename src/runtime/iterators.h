@@ -39,11 +39,11 @@ class UnaryBaseIterator : public Batcher<IterType>
   UnaryBaseIterator(const yy::location& loc, Iterator_t& arg);
   virtual ~UnaryBaseIterator();
 
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
-  virtual int32_t getStackSize();
-  virtual int32_t getStackSizeOfSubtree();
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(int32_t& offset);
 }; /* class UnaryBaseIterator */
 
@@ -59,11 +59,11 @@ class BinaryBaseIterator : public Batcher<IterType>
   BinaryBaseIterator(const yy::location& loc, Iterator_t& arg0, Iterator_t& arg1);
   virtual ~BinaryBaseIterator();
 
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
-  virtual int32_t getStackSize();
-  virtual int32_t getStackSizeOfSubtree();
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(int32_t& offset);
 }; /* class BinaryBaseIterator */
 	
@@ -78,11 +78,11 @@ class NaryBaseIterator : public Batcher<IterType>
   NaryBaseIterator(const yy::location& loc, std::vector<Iterator_t>& args);
   virtual ~NaryBaseIterator();
 
-  void resetImpl(int8_t* stateBlock);
-  void releaseResourcesImpl(int8_t* stateBlock);
+  void resetImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 			
-  virtual int32_t getStackSize();
-  virtual int32_t getStackSizeOfSubtree();
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(int32_t& offset);
 }; /* class BinaryBaseIterator */
 
@@ -105,7 +105,7 @@ UnaryBaseIterator<IterType>::~UnaryBaseIterator()
 	
 template <class IterType>
 void 
-UnaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+UnaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   BasicIterator::BasicIteratorState* state;
   GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
@@ -117,7 +117,7 @@ UnaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
 
 template <class IterType>
 void 
-UnaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+UnaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   this->releaseChildResources ( theChild, stateBlock );
 }
@@ -125,7 +125,7 @@ UnaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
 
 template <class IterType>
 int32_t
-UnaryBaseIterator<IterType>::getStackSize()
+UnaryBaseIterator<IterType>::getStateSize()
 {
   return sizeof(BasicIterator::BasicIteratorState);
 }
@@ -133,9 +133,9 @@ UnaryBaseIterator<IterType>::getStackSize()
 	
 template <class IterType>
 int32_t
-UnaryBaseIterator<IterType>::getStackSizeOfSubtree()
+UnaryBaseIterator<IterType>::getStateSizeOfSubtree()
 {
-  return theChild->getStackSizeOfSubtree() + getStackSize();
+  return theChild->getStateSizeOfSubtree() + getStateSize();
 }
 
 	
@@ -144,7 +144,7 @@ void
 UnaryBaseIterator<IterType>::setOffset(int32_t& offset)
 {
   this->stateOffset = offset;
-  offset += getStackSize();
+  offset += getStateSize();
 	
   theChild->setOffset(offset);
 }
@@ -171,7 +171,7 @@ BinaryBaseIterator<IterType>::~BinaryBaseIterator()
 
 template <class IterType>
 void 
-BinaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+BinaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   BasicIterator::BasicIteratorState* state;
   GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
@@ -184,7 +184,7 @@ BinaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
 
 template <class IterType>
 void 
-BinaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+BinaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   this->releaseChildResources ( theChild0, stateBlock );
   this->releaseChildResources ( theChild1, stateBlock );
@@ -193,7 +193,7 @@ BinaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
 
 template <class IterType>
 int32_t
-BinaryBaseIterator<IterType>::getStackSize()
+BinaryBaseIterator<IterType>::getStateSize()
 {
   return sizeof(BasicIterator::BasicIteratorState);
 }
@@ -201,11 +201,11 @@ BinaryBaseIterator<IterType>::getStackSize()
 	
 template <class IterType>
 int32_t
-BinaryBaseIterator<IterType>::getStackSizeOfSubtree()
+BinaryBaseIterator<IterType>::getStateSizeOfSubtree()
 {
-  return theChild0->getStackSizeOfSubtree()
-       + theChild1->getStackSizeOfSubtree()
-       + this->getStackSize();
+  return theChild0->getStateSizeOfSubtree()
+       + theChild1->getStateSizeOfSubtree()
+       + this->getStateSize();
 }
 
 	
@@ -214,7 +214,7 @@ void
 BinaryBaseIterator<IterType>::setOffset(int32_t& offset)
 {
   this->stateOffset = offset;
-  offset += this->getStackSize();
+  offset += this->getStateSize();
 		
   theChild0->setOffset(offset);
   theChild1->setOffset(offset);
@@ -241,7 +241,7 @@ NaryBaseIterator<IterType>::~NaryBaseIterator()
 
 template <class IterType>
 void 
-NaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
+NaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
   BasicIterator::BasicIteratorState* state;
   GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
@@ -256,7 +256,7 @@ NaryBaseIterator<IterType>::resetImpl(int8_t* stateBlock)
 
 template <class IterType>
 void 
-NaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
+NaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
   std::vector<Iterator_t>::iterator iter = theChildren.begin();
   for(; iter != theChildren.end(); ++iter) {
@@ -267,7 +267,7 @@ NaryBaseIterator<IterType>::releaseResourcesImpl(int8_t* stateBlock)
   
 template <class IterType>
 int32_t
-NaryBaseIterator<IterType>::getStackSize()
+NaryBaseIterator<IterType>::getStateSize()
 {
   return sizeof(BasicIterator::BasicIteratorState);
 }
@@ -275,16 +275,16 @@ NaryBaseIterator<IterType>::getStackSize()
 	
 template <class IterType>
 int32_t
-NaryBaseIterator<IterType>::getStackSizeOfSubtree()
+NaryBaseIterator<IterType>::getStateSizeOfSubtree()
 {
   int32_t size = 0;
 	
   std::vector<Iterator_t>::const_iterator iter = theChildren.begin();
   for(; iter != theChildren.end(); ++iter) {
-    size += (*iter)->getStackSizeOfSubtree();
+    size += (*iter)->getStateSizeOfSubtree();
   }
 	
-  return this->getStackSize() + size;
+  return this->getStateSize() + size;
 }
 
 	
@@ -293,7 +293,7 @@ void
 NaryBaseIterator<IterType>::setOffset(int32_t& offset)
 {
   this->stateOffset = offset;
-  offset += this->getStackSize();
+  offset += this->getStateSize();
 	
   std::vector<Iterator_t>::iterator iter = theChildren.begin();
   for(; iter != theChildren.end(); ++iter) {

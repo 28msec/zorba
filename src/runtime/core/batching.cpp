@@ -34,6 +34,11 @@ IteratorTreeStateBlock::IteratorTreeStateBlock(int32_t blockSize)
 {
 	memset(this->block, 0, blockSize);
 }
+
+IteratorTreeStateBlock::~IteratorTreeStateBlock()
+{
+	delete block;
+}
 /* end IteratorTreeStateBlock */
 
 /* begin class BasicIterator */

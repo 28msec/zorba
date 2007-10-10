@@ -85,6 +85,7 @@ public:
 	int8_t* block;
 
 	IteratorTreeStateBlock(int32_t blockSize);
+	~IteratorTreeStateBlock();
 };
 
 /** Base class of all iterators.

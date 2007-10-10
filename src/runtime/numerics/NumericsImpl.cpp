@@ -19,61 +19,6 @@
 using namespace std;
 namespace xqp
 {
-	/* begin class BinaryBaseIterator */
-	template <class IterType>
-	BinaryBaseIterator<IterType>::BinaryBaseIterator
-		( const yy::location& loc, Iterator_t& arg0, Iterator_t& arg1 )
-	:
-		Batcher<IterType> ( loc ),iter0 ( arg0 ),iter1 ( arg1 ) {}
-
-	template <class IterType>
-	BinaryBaseIterator<IterType>::~BinaryBaseIterator() {}
-
-	template <class IterType>
-	void 
-	BinaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		BasicIterator::BasicIteratorState* state;
-		GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
-		state->reset();
-		
-		this->resetChild ( iter0, stateBlock );
-		this->resetChild ( iter1, stateBlock );
-	}
-
-	template <class IterType>
-	void 
-	BinaryBaseIterator<IterType>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		this->releaseChildResources ( this->iter0, stateBlock );
-		this->releaseChildResources ( this->iter1, stateBlock );
-	}
-
-	template <class IterType>
-	int32_t
-	BinaryBaseIterator<IterType>::getStateSize() {
-		return sizeof(BasicIterator::BasicIteratorState);
-	}
-	
-	template <class IterType>
-	int32_t
-	BinaryBaseIterator<IterType>::getStateSizeOfSubtree() {
-		return this->iter0->getStateSizeOfSubtree()
-						+ this->iter1->getStateSizeOfSubtree()
-						+ this->getStateSize();
-	}
-	
-	template <class IterType>
-	void
-	BinaryBaseIterator<IterType>::setOffset(int32_t& offset) {
-		this->stateOffset = offset;
-		offset += this->getStateSize();
-		
-		this->iter0->setOffset(offset);
-		this->iter1->setOffset(offset);
-	}
-	/* end class BinaryBaseIterator */
-
 	/* begin class AddOperations */
 	Item_t AddOperations::opDouble (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
@@ -327,10 +272,10 @@ namespace xqp
 
 		BasicIterator::BasicIteratorState* state;
 		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
-		n0 = this->consumeNext ( this->iter0, stateBlock );
+		n0 = this->consumeNext ( this->theChild0, stateBlock );
 		if ( n0 != NULL )
 		{
-			n1 = this->consumeNext ( this->iter1, stateBlock );
+			n1 = this->consumeNext ( this->theChild1, stateBlock );
 			if ( n1 != NULL )
 			{
 				n0 = n0->getAtomizationValue();
@@ -359,7 +304,7 @@ namespace xqp
 					break;
 				}
 				
-				if (this->consumeNext ( this->iter0, stateBlock ) != NULL || this->consumeNext ( this->iter1, stateBlock) != NULL)
+				if (this->consumeNext ( this->theChild0, stateBlock ) != NULL || this->consumeNext ( this->theChild1, stateBlock) != NULL)
 					ZorbaErrorAlerts::error_alert (
 						error_messages::XPTY0004_STATIC_TYPE_ERROR,
 						error_messages::STATIC_ERROR,

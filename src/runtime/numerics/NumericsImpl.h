@@ -22,6 +22,7 @@
 
 #include "context/common.h"
 #include "runtime/core/batching.h"
+#include "runtime/iterators.h"
 
 
 namespace xqp
@@ -29,27 +30,6 @@ namespace xqp
 
 	class zorba;
 	class GenericCast;
-
-	template <class IterType>
-	class BinaryBaseIterator : public Batcher<IterType>
-	{
-		protected:
-			Iterator_t iter0;
-			Iterator_t iter1;
-			
-		public:
-			BinaryBaseIterator
-				( const yy::location& loc, Iterator_t& arg0_, Iterator_t& arg1_ );
-
-			virtual ~BinaryBaseIterator();
-
-			void resetImpl(IteratorTreeStateBlock& stateBlock);
-			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
-			
-			virtual int32_t getStateSize();
-			virtual int32_t getStateSizeOfSubtree();
-			virtual void setOffset(int32_t& offset);
-	};
 
 	/** Operations for Add
 		*/
@@ -117,7 +97,6 @@ namespace xqp
 			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
 	};
 
-
 	/**
 		* Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
 		*/
@@ -127,10 +106,10 @@ namespace xqp
 		private:
 			GenericCast* genericCast;
 		public:
-			ArithmeticIterator ( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 );
+			ArithmeticIterator ( const yy::location&, Iterator_t&, Iterator_t& );
 			~ArithmeticIterator();
 
-			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+			Item_t nextImpl(IteratorTreeStateBlock&);
 	}; /* class ArithmeticIterator */
 
 	/*______________________________________________________________________
