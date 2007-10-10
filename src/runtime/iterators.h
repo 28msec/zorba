@@ -24,7 +24,7 @@
 #ifndef XQP_ITERATORS_H
 #define XQP_ITERATORS_H
 
-#include "runtime/batching.h"
+#include "runtime/core/batching.h"
 
 
 namespace xqp {
