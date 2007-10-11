@@ -8,7 +8,7 @@
  */
 
 #include "plan_visitor.h"
-
+ 	
 #include "compiler/expression/expr.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/item_iterator.h"
@@ -18,6 +18,7 @@
 
 #include <iostream>
 #include <vector>
+
 
 using namespace std;
 namespace xqp 
@@ -30,16 +31,32 @@ static uint32_t depth = 0;
  :.........................................*/
 bool plan_visitor::begin_visit(const expr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
+
+
+void plan_visitor::end_visit(const expr& v)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
 
 bool plan_visitor::begin_visit(const enclosed_expr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
-
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
+
+
+void plan_visitor::end_visit(const enclosed_expr& v)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+	Iterator_t content = pop_itstack();
+	Iterator_t enclosed = new EnclosedIterator(v.get_loc(), content);
+	itstack.push(&*enclosed);
+}
+
 
 bool plan_visitor::begin_visit(const expr_list& v)
 {
@@ -47,6 +64,21 @@ bool plan_visitor::begin_visit(const expr_list& v)
 	itstack.push(NULL);
 	return true;
 }
+
+
+void plan_visitor::end_visit(const expr_list& v)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+	vector<Iterator_t> argv;
+	while (true) {
+		Iterator_t it = pop_itstack();
+		if (it==NULL) break;
+		argv.insert(argv.begin(),it);
+	}
+	rchandle<ConcatIterator> cit_h = new ConcatIterator(v.get_loc(), argv);
+	itstack.push(&*cit_h);
+}
+
 
 bool plan_visitor::begin_visit(const var_expr& v)
 {
@@ -370,7 +402,7 @@ bool plan_visitor::begin_visit(const match_expr& v)
   cout << std::string(++depth, ' ') << TRACE << endl;
 
   Iterator_t axisIte = pop_itstack();
-  AxisIterator* axisItep = dynamic_cast<AxisIterator*>(&*axisIte);
+  AxisIteratorHelper* axisItep = dynamic_cast<AxisIteratorHelper*>(&*axisIte);
   Assert(axisItep != NULL);
 
   Iterator_t matchIte;
@@ -448,6 +480,134 @@ void plan_visitor::end_visit(const match_expr& v)
 
 
 ********************************************************************************/
+bool plan_visitor::begin_visit(const doc_expr& v)
+{
+  cout << TRACE  << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(const doc_expr& v)
+{
+  cout << TRACE << endl;
+}
+
+
+bool plan_visitor::begin_visit(const elem_expr& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(const elem_expr& v)
+{
+  cout << std::string(--depth, ' ') << TRACE << endl;
+	Iterator_t contentIter = NULL;
+	Iterator_t attrIter = NULL;
+
+	if (v.get_attrs_expr() != NULL)
+		attrIter = pop_itstack();
+
+	if (v.get_content_expr() != NULL)
+	{
+		contentIter = pop_itstack();
+		contentIter = new ElementContentIterator(v.get_loc(), contentIter);
+	}
+
+	rchandle<qname_expr> qname = v.get_qname();
+	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->
+                     createQName("", qname->prefix(), qname->local());
+
+	Iterator_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
+
+	itstack.push(iter);
+}
+
+
+bool plan_visitor::begin_visit(const compElem_expr& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(const compElem_expr& v)
+{
+  cout << std::string(--depth, ' ') << TRACE << endl;
+}
+
+
+bool plan_visitor::begin_visit(const attr_expr& v)
+{
+  cout << TRACE << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(const attr_expr& v)
+{
+  cout << TRACE << endl;
+
+	// TODO dynamic qname
+	rchandle<qname_expr> qname = v.get_qname();
+	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->
+                     createQName("", qname->prefix(), qname->local());
+
+	Iterator_t valueIter = NULL;
+	if (v.get_val_expr() != NULL)
+		valueIter = pop_itstack();
+
+	Iterator_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
+
+	itstack.push(&*attrIter);
+}
+
+
+bool plan_visitor::begin_visit(const text_expr& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(const text_expr& v)
+{
+  cout << std::string(--depth, ' ') << TRACE << endl;
+	Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(v.get_text());
+	Iterator_t text = new SingletonIterator(v.get_loc(), item);
+	itstack.push(text);
+}
+
+
+bool plan_visitor::begin_visit(const comment_expr& v)
+{
+  cout << TRACE << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(const comment_expr& v)
+{
+  cout << TRACE << endl;
+}
+
+
+bool plan_visitor::begin_visit(const pi_expr& v)
+{
+  cout << TRACE << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(const pi_expr& v)
+{
+  cout << TRACE << endl;
+}
+
+
+
+
 bool plan_visitor::begin_visit(const literal_expr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
@@ -460,80 +620,10 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const elem_expr& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return true;
-}
-
-
-bool plan_visitor::begin_visit(const doc_expr& v)
-{
-cout << TRACE  << endl;
-	return true;
-}
-
-bool plan_visitor::begin_visit(const compElem_expr& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return true;
-}
-
-bool plan_visitor::begin_visit(const attr_expr& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool plan_visitor::begin_visit(const text_expr& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return true;
-}
-
-bool plan_visitor::begin_visit(const comment_expr& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-bool plan_visitor::begin_visit(const pi_expr& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
-
 
 /*..........................................
  :  end visit                              :
  :.........................................*/
-void plan_visitor::end_visit(const expr& v)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void plan_visitor::end_visit(const enclosed_expr& v)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-	Iterator_t content = pop_itstack();
-	Iterator_t enclosed = new EnclosedIterator(v.get_loc(), content);
-	itstack.push(&*enclosed);
-}
-
-void plan_visitor::end_visit(const expr_list& v)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-	vector<Iterator_t> argv;
-	while (true) {
-		Iterator_t it = pop_itstack();
-		if (it==NULL) break;
-		argv.insert(argv.begin(),it);
-	}
-	rchandle<ConcatIterator> cit_h = new ConcatIterator(v.get_loc(), argv);
-	itstack.push(&*cit_h);
-}
-
 void plan_visitor::end_visit(const var_expr& v)
 {
 	var_iter_t v_h = new var_iterator("x",v.get_loc());
@@ -543,53 +633,53 @@ void plan_visitor::end_visit(const var_expr& v)
 
 void plan_visitor::end_visit(const order_modifier& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 
 void plan_visitor::end_visit(const ft_select_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const ft_contains_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const instanceof_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const treat_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const castable_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const cast_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const unary_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const validate_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 void plan_visitor::end_visit(const extension_expr& v)
 {
-cout << TRACE << endl;
+  cout << TRACE << endl;
 }
 
 
@@ -639,64 +729,6 @@ void plan_visitor::end_visit(const order_expr& v)
 cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const elem_expr& v)
-{
-cout << std::string(--depth, ' ') << TRACE << endl;
-	Iterator_t contentIter = NULL;
-	Iterator_t attrIter = NULL;
-	if (v.get_attrs_expr() != NULL)
-		attrIter = pop_itstack();
-	if (v.get_content_expr() != NULL)
-	{
-		contentIter = pop_itstack();
-		contentIter = new ElementContentIterator(v.get_loc(), contentIter);
-	}
-	rchandle<qname_expr> qname = v.get_qname();
-	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
-	Iterator_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
-	itstack.push(iter);
-}
-
-void plan_visitor::end_visit(const doc_expr& v)
-{
-cout << TRACE << endl;
-}
-
-void plan_visitor::end_visit(const compElem_expr& v)
-{
-cout << std::string(--depth, ' ') << TRACE << endl;
-}
-
-void plan_visitor::end_visit(const attr_expr& v)
-{
-cout << TRACE << endl;
-	// TODO dynamic qname
-	rchandle<qname_expr> qname = v.get_qname();
-	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->createQName("", qname->prefix(), qname->local());
-	Iterator_t valueIter = NULL;
-	if (v.get_val_expr() != NULL)
-		valueIter = pop_itstack();
-	Iterator_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
-	itstack.push(&*attrIter);
-}
-
-void plan_visitor::end_visit(const text_expr& v)
-{
-cout << std::string(--depth, ' ') << TRACE << endl;
-	Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(v.get_text());
-	Iterator_t text = new SingletonIterator(v.get_loc(), item);
-	itstack.push(text);
-}
-
-void plan_visitor::end_visit(const comment_expr& v)
-{
-cout << TRACE << endl;
-}
-
-void plan_visitor::end_visit(const pi_expr& v)
-{
-cout << TRACE << endl;
-}
 
 
 } /* namespace xqp */
