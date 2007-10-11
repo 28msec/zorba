@@ -492,7 +492,7 @@ namespace xqp
 	|	0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns
 	|	INF.
 	|_______________________________________________________________________*/
-	OpNumericUnaryIterator::OpNumericUnaryIterator ( yy::location loc, Iterator_t iter, bool plus_arg)
+	OpNumericUnaryIterator::OpNumericUnaryIterator ( const yy::location& loc, Iterator_t& iter, bool plus_arg)
 	:
 		Batcher<OpNumericUnaryIterator> ( loc ), arg0 ( iter ), plus( plus_arg )
 	{
@@ -595,7 +595,7 @@ namespace xqp
 	|_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-	FnAbsIterator::FnAbsIterator ( yy::location loc, Iterator_t iter )
+	FnAbsIterator::FnAbsIterator ( const yy::location& loc, Iterator_t& iter )
 	:
 		Batcher<FnAbsIterator> ( loc ), arg0 ( iter ) 
 	{
@@ -704,7 +704,70 @@ namespace xqp
 // 6.4.4 fn:round
 // 6.4.5 fn:round-half-to-even
 
-
+	ZorNumGen::ZorNumGen ( const yy::location& loc) : Batcher<ZorNumGen>(loc) {}
+	ZorNumGen::~ZorNumGen() {}
+	
+	Item_t 
+	ZorNumGen::nextImpl(IteratorTreeStateBlock& stateBlock) {
+		ZorNumGenState* state;
+		GET_STATE(ZorNumGenState, state, stateBlock);
+		
+		STACK_INIT2(ZorNumGenState, state, stateBlock);
+		while (state->getCurNumber() < 100) {
+			STACK_PUSH2(
+				zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(state->getCurNumber()),
+				state);
+			state->setCurNumber(state->getCurNumber() + 1);
+		}
+		STACK_END2();
+	}
+	
+	void 
+	ZorNumGen::resetImpl(IteratorTreeStateBlock& stateBlock) {
+		ZorNumGenState* state;
+		GET_STATE(ZorNumGenState, state, stateBlock);
+		state->reset();
+	}
+	
+	void 
+	ZorNumGen::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
+	}
+	 
+	int32_t 
+	ZorNumGen::getStateSize() {
+		return sizeof(ZorNumGenState);
+	} 
+	
+	int32_t 
+	ZorNumGen::getStateSizeOfSubtree() {
+		return getStateSize();
+	}
+	 
+	void 
+	ZorNumGen::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
+		this->stateOffset = offset;
+		offset += getStateSize();
+	}
+	
+	void
+	ZorNumGen::ZorNumGenState::init() {
+		this->curNumber = 0;
+	}
+	
+	void
+	ZorNumGen::ZorNumGenState::reset() {
+		this->curNumber = 0;
+	}
+	
+	int32_t 
+	ZorNumGen::ZorNumGenState::getCurNumber() {
+		return this->curNumber;
+	}
+	
+	void 
+	ZorNumGen::ZorNumGenState::setCurNumber(int32_t value) {
+		this->curNumber = value;
+	}
 
 } /* namespace xqp */
 

@@ -156,7 +156,7 @@ namespace xqp
 			bool plus;
 
 		public:
-			OpNumericUnaryIterator ( yy::location loc, Iterator_t iter, bool plus_arg);
+			OpNumericUnaryIterator ( const yy::location& loc, Iterator_t& iter, bool plus_arg);
 			~OpNumericUnaryIterator();
 
 		public:	// iterator interface
@@ -194,7 +194,7 @@ namespace xqp
 			GenericCast* genericCast;
 
 		public:
-			FnAbsIterator ( yy::location loc, Iterator_t iter );
+			FnAbsIterator ( const yy::location& loc, Iterator_t& iter );
 			~FnAbsIterator();
 
 		public:
@@ -209,6 +209,36 @@ namespace xqp
 // 6.4.4 fn:round
 // 6.4.5 fn:round-half-to-even
 
+	
+	/**
+	 * Helper Iterator to produce a defined amount of integer items
+	 */
+	class ZorNumGen : public Batcher<ZorNumGen>
+	{
+	public:
+		ZorNumGen ( const yy::location& loc);
+		~ZorNumGen();
+		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+		void resetImpl(IteratorTreeStateBlock& stateBlock);
+		void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+		
+		virtual int32_t getStateSize();
+		virtual int32_t getStateSizeOfSubtree();
+		virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+		
+	protected:
+		class ZorNumGenState : public BasicIteratorState
+		{
+		private:
+			int32_t curNumber;
+		public:
+			void init();
+			void reset();
+			
+			int32_t getCurNumber();
+			void setCurNumber(int32_t);
+		};
+	};
 
 }	/* namespace xqp */
 #endif	/* XQP_NUMERICS_H */

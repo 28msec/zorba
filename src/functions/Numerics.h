@@ -191,6 +191,21 @@ public:
 // 6.4.4 fn:round
 // 6.4.5 fn:round-half-to-even
 
+// Zorba specific functions:
+/**
+ * Function to produce a fixed amount of integer for testing purposes.
+ */
+class zor_numgen : public function
+{
+public:
+	zor_numgen(const signature&);
+	~zor_numgen() {}
+	
+public:
+	Iterator_t operator()( const yy::location& loc, std::vector<Iterator_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<Iterator_t>&) const;
+};
 
 }	/* namespace xqp */
 #endif	/* XQP_NUMERICS_H */

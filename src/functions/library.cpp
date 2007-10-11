@@ -235,6 +235,12 @@ bool library::static_init = false;
 			xs_boolean));
 	// end Logic
 	
+	// begin zorba functions
+	DECL (zor_numgen, zor_numgen,
+			(new QNameItem(ZORBA_NS,ZORBA_PRE, "numgen"),
+			xs_decimal));
+	// end zorba functions
+	
 // TODO
 
 

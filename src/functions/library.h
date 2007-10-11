@@ -93,6 +93,9 @@ public:
 	static qnamekey_t op_and_key;
 	static qnamekey_t op_or_key;
 	
+	// Zorba Function
+	static qnamekey_t zor_numgen_key;
+	
 public:
 	library( );
 	~library();

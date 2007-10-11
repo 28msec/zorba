@@ -483,7 +483,28 @@ bool fn_abs::validate_args(vector<Iterator_t>& argv) const
 // 6.4.5 fn:round-half-to-even
 
 
+zor_numgen::zor_numgen(const signature& sig)
+:
+	function(sig)
+{   	
+}
 
+Iterator_t zor_numgen::operator()( const yy::location& loc, vector<Iterator_t>& argv) const
+{
+	if (!validate_args(argv))
+		return NULL;
+	return new ZorNumGen(loc);
+}
+
+sequence_type_t zor_numgen::type_check(signature& sig) const
+{
+	return xs_decimal;
+}
+
+bool zor_numgen::validate_args(vector<Iterator_t>& argv) const
+{
+	return (argv.size() == 0);
+}
   
 } /* namespace xqp */
 
