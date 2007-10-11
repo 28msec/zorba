@@ -17,6 +17,7 @@
 find_path(
 	ICU_INCLUDE_DIR
 	NAMES unicode/utypes.h
+	PATHS ${CMAKE_SOURCE_DIR}/include/icu include/icu
 	DOC "Include directory for the ICU library")
 mark_as_advanced(ICU_INCLUDE_DIR)
 
@@ -24,6 +25,7 @@ mark_as_advanced(ICU_INCLUDE_DIR)
 find_library(
 	ICU_LIBRARY
 	NAMES icuuc cygicuuc cygicuuc32 cygicuuc38
+	PATHS ${CMAKE_SOURCE_DIR}/lib
 	DOC "Libraries to link against for the common parts of ICU")
 mark_as_advanced(ICU_LIBRARY)
 
@@ -44,6 +46,7 @@ if(ICU_INCLUDE_DIR AND ICU_LIBRARY)
 	find_library(
 		ICU_I18N_LIBRARY
 		NAMES icuin icui18n cygicuin cygicuin32 cygicuin38
+		PATHS ${CMAKE_SOURCE_DIR}/lib
 		DOC "Libraries to link against for ICU internationalization")
 	mark_as_advanced(ICU_I18N_LIBRARY)
 	if (ICU_I18N_LIBRARY)
@@ -57,16 +60,17 @@ if(ICU_INCLUDE_DIR AND ICU_LIBRARY)
 	endif (ICU_I18N_LIBRARY)
 
 	# On cygwin, the data library is called icudt
-	if (CYGWIN)
+	if (CYGWIN OR MSVC)
 		SET (ICU_DATA_NAMES icudt cygicudt cygicudt38)
-	else (CYGWIN)
+	else (CYGWIN OR MSVC)
 		SET (ICU_DATA_NAMES icudata)
-	endif (CYGWIN)
+	endif (CYGWIN OR MSVC)
 
 	# Look for ICU data library
 	find_library(
 		ICU_DATA_LIBRARY
 		NAMES ${ICU_DATA_NAMES}
+		PATHS ${CMAKE_SOURCE_DIR}/lib
 		DOC "icudata library")
 	mark_as_advanced(ICU_DATA_LIBRARY)
 	if (ICU_DATA_LIBRARY)

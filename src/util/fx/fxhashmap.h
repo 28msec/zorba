@@ -19,7 +19,7 @@
 #ifndef WIN32
 	#include <strings.h>
 #else
-	#include "win32/compatib_defs.h"
+	#include "util/win32/compatib_defs.h"
 #endif
 
 #include <iostream>

@@ -12,7 +12,7 @@
 #define XQP_MMFILE_H
 
 #ifdef WIN32
-	#include "win32/compatib_defs.h"
+	#include "util/win32/compatib_defs.h"
 	#include <windows.h>
 #endif
 

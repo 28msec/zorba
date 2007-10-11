@@ -13,5 +13,10 @@ SET(UTIL_SRCS
     zorba.cpp
 #    file_test.cpp
     rwlock.cpp)
+
+IF (MSVC)
+	SET(UTIL_SRCS win32/win_pthread.cpp ${UTIL_SRCS})
+ENDIF (MSVC)
     
+
 ADD_LIBRARY(util ${UTIL_SRCS})

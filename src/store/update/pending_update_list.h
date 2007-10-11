@@ -16,7 +16,8 @@ namespace xqp
 		* Pending Update List
 		* TODO move into seperate h-file (no API!!)
 		*/
-	class PUL {
+	class PUL : public rcobject 
+	{
 		// TODO PUL interface
 	}; /* class PUL */
 	

@@ -13,6 +13,7 @@
 #include <string>
 
 #include "types/representations.h"
+#include "store/update/pending_update_list.h"
 
 namespace xqp
 {

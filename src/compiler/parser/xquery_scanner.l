@@ -29,7 +29,7 @@
 #endif
 
 #ifdef WIN32
-#include "win32/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #ifndef _WIN32_WCE
 #include <io.h>
 #endif

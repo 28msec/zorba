@@ -11,7 +11,7 @@
 #define XQP_ITEM_FACTORY_H
 
 #ifdef WIN32
-#include "win32/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #endif
 
 #include "util/rchandle.h"

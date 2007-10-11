@@ -9,6 +9,10 @@
 #ifndef XQP_TEMP_SEQ_H
 #define XQP_TEMP_SEQ_H
 
+#ifdef WIN32
+#include "util/win32/compatib_defs.h"
+#endif
+
 #include <vector>
 
 namespace xqp {

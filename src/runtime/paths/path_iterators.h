@@ -170,6 +170,9 @@ public:
 
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
 
+  // Manually instantiated here, as MSVC does not do it
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock); 
+
   std::ostream& _show(std::ostream& os) const;
 };
 
@@ -225,7 +228,10 @@ public:
   ~ParentAxisIterator() {}
 
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-
+ 
+  // Manually instantiated here, as MSVC does not do it
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock); 
+  
   std::ostream& _show(std::ostream& os) const;
 };
 

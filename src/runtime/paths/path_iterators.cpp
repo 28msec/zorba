@@ -332,6 +332,10 @@ std::ostream& SelfAxisIterator::_show(std::ostream& os)	const
   return os;
 }
 
+void SelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+  AxisIterator<SelfAxisIterator>::releaseResourcesImpl(stateBlock);
+}                                   
 
 /*******************************************************************************
 
@@ -458,6 +462,11 @@ std::ostream& ParentAxisIterator::_show(std::ostream& os)	const
   return os;
 }
 
+void ParentAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+  AxisIterator<ParentAxisIterator>::releaseResourcesImpl(stateBlock);
+}
+   
 
 /*******************************************************************************
 
