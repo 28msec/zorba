@@ -11,7 +11,7 @@ SET(UTIL_SRCS
     file.cpp
     tokenbuf.cpp
     zorba.cpp
-    file_test.cpp
+#    file_test.cpp
     rwlock.cpp)
     
 ADD_LIBRARY(util ${UTIL_SRCS})

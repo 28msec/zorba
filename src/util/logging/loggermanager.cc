@@ -225,7 +225,7 @@ std::string LoggerManager::getLoggerConfig() {
 }
 
 bool LoggerManager::isValidLogger(const std::string& LoggerName) const {
-	for(uint i=0;i<LoggerName.length();i++) {
+	for(unsigned int i=0;i<LoggerName.length();i++) {
 		char c = LoggerName[i];
 		if(!isValidChar(c))
 			return false;
