@@ -356,7 +356,9 @@ Iterator_t fn_doc_func::operator()(
 	vector<Iterator_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new doc_iterator(loc, argv[0]);
+	// TODO correct implementation of doc iterator
+// 	return new doc_iterator(loc, argv[0]);
+	return NULL;
 }
   
 bool fn_doc_func::validate_args(

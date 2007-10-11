@@ -64,7 +64,7 @@ namespace xqp
 	}
 	
 	void
-	SingletonIterator::setOffset(int32_t& offset) {
+	SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
 		this->stateOffset = offset;
 		offset += this->getStateSize();
 	}

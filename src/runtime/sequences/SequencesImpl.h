@@ -45,7 +45,7 @@ namespace xqp
 //15.1.2 op:concatenate
 class ConcatIterator : public Batcher<ConcatIterator>
 {
-	DECLARE_LOGGER;
+// 	DECLARE_LOGGER;
 protected:
 	std::vector<Iterator_t> argv;
 
@@ -64,7 +64,7 @@ public:
 	
 	virtual int32_t getStateSize();
 	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(int32_t& offset);
+	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 	
 protected:
 	class ConcatIteratorState : public BasicIteratorState {
@@ -155,27 +155,7 @@ protected:
 
 
 //15.5.4 fn:doc
-class doc_iterator : public BasicIterator
-{
-	private:
-		Iterator_t arg;
-		Item_t doc_node;
 
-public:
-	void _open();
-	void _close();
-	std::ostream&  _show(std::ostream&) const;
-	Item_t _next();
-	bool done() const;
-
-public:
-	doc_iterator& operator= ( const doc_iterator& it );
-
-public:	// ctor,dtor
-	doc_iterator ( yy::location loc, Iterator_t );
-	doc_iterator ( const doc_iterator& );
-	~doc_iterator() {}
-};
 
 
 //15.5.5 fn:doc-available

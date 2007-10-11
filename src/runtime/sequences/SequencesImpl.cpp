@@ -33,7 +33,7 @@ Item* fn_doc_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-DEFINE_LOGGER(ConcatIterator);
+// DEFINE_LOGGER(ConcatIterator);
 
 ConcatIterator::ConcatIterator(
 	yy::location loc,
@@ -42,7 +42,7 @@ ConcatIterator::ConcatIterator(
 	Batcher<ConcatIterator>(loc),
 	argv(_argv)
 {
-	LOG_DEBUG("Test output");
+// 	LOG_DEBUG("Hallo");
 }
 
 ConcatIterator::~ConcatIterator(){}
@@ -114,13 +114,13 @@ ConcatIterator::getStateSizeOfSubtree() {
 }
 
 void
-ConcatIterator::setOffset(int32_t& offset) {
+ConcatIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
 	this->stateOffset = offset;
 	offset += this->getStateSize();
 	
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		(*iter)->setOffset(offset);
+		(*iter)->setOffset(stateBlock, offset);
 	}
 }
 
@@ -241,90 +241,6 @@ ConcatIterator::ConcatIteratorState::getCurIter() {
 |	If $uri is the empty sequence, the result is an empty sequence.
 |_______________________________________________________________________*/
 
-void doc_iterator::_open()
-{
-// 	uri_resolver* urires_p = new zorba_uri_resolver();
-// 	arg->open();
-// 	string path = arg->next()->getStringProperty();
-// 	rchandle<source> src_h = urires_p->resolve(path);
-// 	istream* is_p = src_h->get_input();
-// 	assert(is_p!=NULL);
-// 
-// 	ostringstream oss;
-// 	string line;
-// 	while (!is_p->eof()) {
-// 		getline(*is_p,line);
-// 		oss << line << endl;
-// 	}
-// 	string bufs = oss.str();
-// 	size_t n = bufs.length();
-// 	char *buf;
-// 	buf = (char*)malloc(n+1);
-// 	strcpy(buf, bufs.c_str());
-
-	// TODO adapt to new store
-// 	xml_scanner* scanner_p = new xml_scanner();
-// 	dom_xml_handler* xhandler_p = new dom_xml_handler("/",path);
-// 	scanner_p->scan(buf, n, dynamic_cast<scan_handler*>(xhandler_p));
-// 	doc_node = dynamic_cast<dom_document_node*>(xhandler_p->context_node());
-// 
-// 	free(buf);
-// 
-// 	delete xhandler_p;
-}
-  
-Item_t doc_iterator::_next()
-{
-	// TODO adapt to new store
-	return NULL;
-// 	document_node* result = doc_node;
-// 	doc_node = NULL;
-// 	return result;
-}
-
-void doc_iterator::_close()
-{
-}
-
-std::ostream& doc_iterator::_show(std::ostream& os)
-const
-{
-	arg->show(os);
-	return os;
-}
-
-bool doc_iterator::done() const
-{
-	return doc_node == NULL;
-}
-
-doc_iterator::doc_iterator(
-	yy::location loc,
-	Iterator_t _arg)
-:
-	BasicIterator(loc),
-	arg(_arg),
-	doc_node(NULL)
-{
-}
-
-doc_iterator::doc_iterator(
-	const doc_iterator& it)
-:
-	BasicIterator(it),
-	arg(it.arg),
-	doc_node(it.doc_node)
-{
-}
-
-doc_iterator& doc_iterator::operator=(
-	const doc_iterator& it)
-{
-	zorp = it.zorp;
-	arg = it.arg;
-	doc_node = it.doc_node;
-	return *this;
-}
 
 
 

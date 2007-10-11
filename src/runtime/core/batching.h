@@ -165,7 +165,7 @@ public:
 	/** Sets the offset where the state of the iterator will be saved
 		* on the state stack.
 		*/
-	virtual void setOffset(int32_t& offset);
+	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 
 protected:
 	/** Root object of all iterator states */

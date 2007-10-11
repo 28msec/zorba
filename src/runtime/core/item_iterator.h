@@ -90,7 +90,7 @@ public:
 
 	virtual int32_t getStateSize();
 	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(int32_t& offset);
+	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 };
 
 // FIXME No expressions in iterators!!

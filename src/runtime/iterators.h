@@ -44,7 +44,7 @@ class UnaryBaseIterator : public Batcher<IterType>
 			
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(int32_t& offset);
+  virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 }; /* class UnaryBaseIterator */
 
 	
@@ -64,7 +64,7 @@ class BinaryBaseIterator : public Batcher<IterType>
 			
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(int32_t& offset);
+  virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 }; /* class BinaryBaseIterator */
 	
 
@@ -83,7 +83,7 @@ class NaryBaseIterator : public Batcher<IterType>
 			
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(int32_t& offset);
+  virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 }; /* class BinaryBaseIterator */
 
 
@@ -141,12 +141,12 @@ UnaryBaseIterator<IterType>::getStateSizeOfSubtree()
 	
 template <class IterType>
 void
-UnaryBaseIterator<IterType>::setOffset(int32_t& offset)
+UnaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
 {
   this->stateOffset = offset;
   offset += getStateSize();
 	
-  theChild->setOffset(offset);
+  theChild->setOffset(stateBlock, offset);
 }
 /* end class UnaryBaseIterator */
 
@@ -211,13 +211,13 @@ BinaryBaseIterator<IterType>::getStateSizeOfSubtree()
 	
 template <class IterType>
 void
-BinaryBaseIterator<IterType>::setOffset(int32_t& offset)
+BinaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();
 		
-  theChild0->setOffset(offset);
-  theChild1->setOffset(offset);
+  theChild0->setOffset(stateBlock, offset);
+  theChild1->setOffset(stateBlock, offset);
 }
 /* end class BinaryBaseIterator */
 
@@ -290,14 +290,14 @@ NaryBaseIterator<IterType>::getStateSizeOfSubtree()
 	
 template <class IterType>
 void
-NaryBaseIterator<IterType>::setOffset(int32_t& offset)
+NaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();
 	
   std::vector<Iterator_t>::iterator iter = theChildren.begin();
   for(; iter != theChildren.end(); ++iter) {
-    (*iter)->setOffset(offset);
+    (*iter)->setOffset(stateBlock, offset);
   }
 }
 /* end class NaryBaseIterator */

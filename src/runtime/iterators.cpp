@@ -57,12 +57,12 @@ namespace xqp {
 // 	
 // template <class IterType>
 // void
-// UnaryBaseIterator<IterType>::setOffset(int32_t& offset)
+// UnaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
 // {
 //   this->stateOffset = offset;
 //   offset += getStackSize();
 // 	
-//   theChild->setOffset(offset);
+//   theChild->setOffset(stateBlock, offset);
 // }
 // /* end class UnaryBaseIterator */
 // 
@@ -127,13 +127,13 @@ namespace xqp {
 // 	
 // template <class IterType>
 // void
-// BinaryBaseIterator<IterType>::setOffset(int32_t& offset)
+// BinaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
 // {
 //   this->stateOffset = offset;
 //   offset += this->getStackSize();
 // 		
-//   theChild0->setOffset(offset);
-//   theChild1->setOffset(offset);
+//   theChild0->setOffset(stateBlock, offset);
+//   theChild1->setOffset(stateBlock, offset);
 // }
 // /* end class BinaryBaseIterator */
 // 
@@ -206,14 +206,14 @@ namespace xqp {
 // 	
 // template <class IterType>
 // void
-// NaryBaseIterator<IterType>::setOffset(int32_t& offset)
+// NaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
 // {
 //   this->stateOffset = offset;
 //   offset += this->getStackSize();
 // 	
 //   std::vector<Iterator_t>::iterator iter = theChildren.begin();
 //   for(; iter != theChildren.end(); ++iter) {
-//     (*iter)->setOffset(offset);
+//     (*iter)->setOffset(stateBlock, offset);
 //   }
 // }
 // /* end class NaryBaseIterator */
