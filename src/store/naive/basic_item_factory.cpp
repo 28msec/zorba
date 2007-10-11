@@ -108,13 +108,20 @@ namespace xqp
 	Item_t BasicItemFactory::createUnsignedInt ( xqp_unsignedInt value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createUnsignedLong ( xqp_unsignedLong value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createUnsignedShort ( xqp_unsignedShort value ) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createDocumentNode (
+
+
+Item_t BasicItemFactory::createDocumentNode (
 	    xqp_string baseURI,
 	    xqp_string docURI,
 	    Iterator_t& children,
 	    bool createId
-	) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createElementNode (
+)
+{
+  return Item_t ( NULL );
+}
+
+
+Item_t BasicItemFactory::createElementNode (
 	    const Item_t& name,
 	    TypeCode type,
 	    Iterator_t& children,
@@ -123,37 +130,39 @@ namespace xqp
 	    bool copy,
 	    bool newTypes,
 	    bool createId
-	) 
-	{ 
-		Store* store = zorba::getZorbaForCurrentThread()->getStore();
-		TempSeq_t seqChildren = NULL;
-		TempSeq_t seqAttributes = NULL;
-		TempSeq_t seqNamespaces = NULL;
+) 
+{ 
+  Store* store = zorba::getZorbaForCurrentThread()->getStore();
+  TempSeq_t seqChildren = NULL;
+  TempSeq_t seqAttributes = NULL;
+  TempSeq_t seqNamespaces = NULL;
 		
-		if (children != NULL)
-			seqChildren = store->createTempSeq ( children );
-		if (attributes != NULL)
-			seqAttributes = store->createTempSeq ( attributes );
-		Item_t item = new ElementNode(
-			name,
-			type,
-			seqChildren,
-			seqAttributes,
-			seqNamespaces,
-			copy,
-			newTypes
-		); 
-		return item;
-	}
-	Item_t BasicItemFactory::createAttributeNode (
+  if (children != NULL)
+    seqChildren = store->createTempSeq ( children );
+ 
+ if (attributes != NULL)
+    seqAttributes = store->createTempSeq ( attributes );
+
+  Item_t item = new ElementNode(name,
+                                type,
+                                seqChildren,
+                                seqAttributes,
+                                seqNamespaces,
+                                copy,
+                                newTypes); 
+  return item;
+}
+
+
+Item_t BasicItemFactory::createAttributeNode (
 	    const Item_t& name,
 	    TypeCode type,
 	    const Item_t& lexicalValue,
 	    const Item_t& typedValue,
 	    bool createId
-	) 
-	{ 
-		Item_t item = new AttributeNode(
+) 
+{ 
+  Item_t item = new AttributeNode(
 				name,
 				type,
 				lexicalValue,
@@ -161,8 +170,9 @@ namespace xqp
 				false,
 				false
 			);
-		return item;
-	}
+  return item;
+}
+
 	Item_t BasicItemFactory::createTextNode (
 	    const xqp_string& value,
 	    bool createId
