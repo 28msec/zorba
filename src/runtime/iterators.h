@@ -45,6 +45,8 @@ class UnaryBaseIterator : public Batcher<IterType>
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+
+  std::ostream& _show(std::ostream& os) const;
 }; /* class UnaryBaseIterator */
 
 	
@@ -107,11 +109,11 @@ template <class IterType>
 void 
 UnaryBaseIterator<IterType>::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
+  this->resetChild ( theChild, stateBlock );
+
   BasicIterator::BasicIteratorState* state;
   GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
   state->reset();
-		
-  this->resetChild ( theChild, stateBlock );
 }
 
 
@@ -141,12 +143,23 @@ UnaryBaseIterator<IterType>::getStateSizeOfSubtree()
 	
 template <class IterType>
 void
-UnaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+UnaryBaseIterator<IterType>::setOffset(
+     IteratorTreeStateBlock& stateBlock,
+     int32_t& offset)
 {
   this->stateOffset = offset;
   offset += getStateSize();
 	
   theChild->setOffset(stateBlock, offset);
+}
+
+
+template <class IterType>
+std::ostream&
+UnaryBaseIterator<IterType>::_show(std::ostream& os) const
+{
+  theChild->show(os);
+  return os;
 }
 /* end class UnaryBaseIterator */
 
@@ -211,7 +224,9 @@ BinaryBaseIterator<IterType>::getStateSizeOfSubtree()
 	
 template <class IterType>
 void
-BinaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+BinaryBaseIterator<IterType>::setOffset(
+    IteratorTreeStateBlock& stateBlock,
+    int32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();
@@ -290,7 +305,9 @@ NaryBaseIterator<IterType>::getStateSizeOfSubtree()
 	
 template <class IterType>
 void
-NaryBaseIterator<IterType>::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+NaryBaseIterator<IterType>::setOffset(
+    IteratorTreeStateBlock& stateBlock,
+    int32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();

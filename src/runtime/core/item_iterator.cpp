@@ -18,342 +18,490 @@ using namespace std;
 namespace xqp
 {
 
-	int32_t iteratorTreeDepth = -1;
+int32_t iteratorTreeDepth = -1;
 
-	/* begin class SingletonIterator */
-	SingletonIterator::SingletonIterator
-		(yy::location loc, Item_t _i_p) 
+/* begin class SingletonIterator */
+SingletonIterator::SingletonIterator(yy::location loc, Item_t _i_p) 
 	: 
-		Batcher<SingletonIterator> (loc), i_h(_i_p) 
-	{}
+  Batcher<SingletonIterator> (loc), i_h(_i_p) 
+{
+}
 
-	SingletonIterator::~SingletonIterator() {}
+
+SingletonIterator::~SingletonIterator()
+{
+}
+
 	
-	Item_t 
-	SingletonIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
-		BasicIterator::BasicIteratorState* state;
-		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
-		STACK_PUSH2(i_h, state);
-		STACK_END2();
-	}
+Item_t 
+SingletonIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+  BasicIterator::BasicIteratorState* state;
+  STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+  STACK_PUSH2(i_h, state);
+  STACK_END2();
+}
+
 	
-	void 
-	SingletonIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
-		BasicIterator::BasicIteratorState* state;
-		state->reset();
-	}
+void 
+SingletonIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
+  BasicIterator::BasicIteratorState* state;
+  state->reset();
+}
 	
-	void 
-	SingletonIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-	{}
+
+void 
+SingletonIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+}
 	
-	std::ostream& 
-	SingletonIterator::_show(std::ostream& os)	const
+
+std::ostream& 
+SingletonIterator::_show(std::ostream& os)	const
+{
+	return os;
+}
+
+	
+int32_t
+SingletonIterator::getStateSize() {
+  return sizeof(BasicIterator::BasicIteratorState);
+}
+
+	
+int32_t
+SingletonIterator::getStateSizeOfSubtree() {
+  return this->getStateSize();
+}
+
+	
+void
+SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+}
+/* end class SingletonIterator */
+
+
+Item_t MapIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+{
+  Item_t item;
+  vector<var_iter_t>::const_iterator itv;
+
+  STACK_INIT();
+
+  while ( true )
 	{
-		return os;
-	}
-	
-	int32_t
-	SingletonIterator::getStateSize() {
-		return sizeof(BasicIterator::BasicIteratorState);
-	}
-	
-	int32_t
-	SingletonIterator::getStateSizeOfSubtree() {
-		return this->getStateSize();
-	}
-	
-	void
-	SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
-		this->stateOffset = offset;
-		offset += this->getStateSize();
-	}
-	/* end class SingletonIterator */
-
-	Item_t MapIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		Item_t item;
-		vector<var_iter_t>::const_iterator itv;
-
-		STACK_INIT();
-
-		while ( true )
+    item = this->consumeNext ( this->theInput, stateBlock );
+    itv = varv.begin();
+    for ( ; itv!=varv.end(); ++itv )
 		{
-			item = this->consumeNext ( this->theInput, stateBlock );
-			itv = varv.begin();
-			for ( ; itv!=varv.end(); ++itv )
-			{
-				( *itv )->bind ( item );
-			}
+      ( *itv )->bind ( item );
+    }
 
-			item = this->consumeNext ( this->theExpr, stateBlock );
-			while ( item != NULL )
-			{
-				STACK_PUSH ( item );
-				item = this->consumeNext ( this->theExpr, stateBlock );
-			}
+		item = this->consumeNext ( this->theExpr, stateBlock );
+    while ( item != NULL )
+    {
+      STACK_PUSH ( item );
+      item = this->consumeNext ( this->theExpr, stateBlock );
+    }
 
-			this->resetChild ( this->theExpr, stateBlock );
-		}
+    this->resetChild ( this->theExpr, stateBlock );
+  }
+  
+  STACK_END();
+}
 
-		STACK_END();
-	}
+void MapIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+{
+  this->resetChild ( this->theInput, stateBlock );
+  this->resetChild ( this->theExpr, stateBlock );
+}
 
-	void MapIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		this->resetChild ( this->theInput, stateBlock );
-		this->resetChild ( this->theExpr, stateBlock );
-	}
+void MapIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+  this->releaseChildResources ( this->theInput, stateBlock );
+  this->releaseChildResources ( this->theExpr, stateBlock );
+}
 
-	void MapIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		this->releaseChildResources ( this->theInput, stateBlock );
-		this->releaseChildResources ( this->theExpr, stateBlock );
-	}
+std::ostream& MapIterator::_show ( std::ostream& os )	const
+{
+  theInput->show ( os );
+  theExpr->show ( os );
+  return os;
+}
 
-	std::ostream& MapIterator::_show ( std::ostream& os )
-	const
-	{
-		theInput->show ( os );
-		theExpr->show ( os );
-		return os;
-	}
 
-	/* begin class FilterIterator */
-	FilterIterator::FilterIterator(
-			const yy::location& loc,
-			Iterator_t& content_arg
-		)
+/* begin class EnclosedIterator */
+EnclosedIterator::EnclosedIterator(
+    const yy::location& loc,
+    Iterator_t& childIter)
 	:
-		Batcher<FilterIterator>(loc), content(content_arg){}
-
-	FilterIterator::~FilterIterator(){}
-	
-	void 
-	FilterIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		this->resetChild( this->content, stateBlock );
-	}
-	
-	void 
-	FilterIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		this->releaseChildResources( this->content, stateBlock );
-	}
-	/* end class FilterIterator */
-	
-	/* begin class EnclosedIterator */
-	EnclosedIterator::EnclosedIterator(
-			const yy::location& loc,
-			Iterator_t& content_arg
-		)
-	:
-		FilterIterator(loc, content_arg){}
+  UnaryBaseIterator<EnclosedIterator>(loc, childIter)
+{
+}
 
 		
-	Item_t 
-	EnclosedIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		STACK_INIT();
-		this->str = "";
-		while (true)
-		{
-			this->item = this->consumeNext( this->content, stateBlock );
-			if (this->item == NULL)
-			{
-				if (this->str != "")
-				{
-					STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(str) );
-					this->str = "";
-				}
-				break;
-			}
-			else if (this->item->isNode()) 
-			{
-				if (this->str != "")
-				{
-					STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(str) );
-					this->str = "";
-				}
-				STACK_PUSH(this->item);
-			}
-			else if (this->str == "")
-			{
-				this->str = this->item->getStringProperty();
-			}
-			else
-			{
-				this->str += " " + this->item->getStringProperty();
-			}
-		}
-		STACK_END();
-	}
-	/* end class EnclosedIterator */
+Item_t 
+EnclosedIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+{
+  EnclosedState* state;
+  STACK_INIT2(EnclosedState, state, stateBlock);
 
-	/* begin class ElementContentIterator */
-	ElementContentIterator::ElementContentIterator(
-			const yy::location& loc,
-			Iterator_t& content_arg
-		)
+  while (true)
+  {
+    state->theContextItem = consumeNext(theChild, stateBlock);
+    if (state->theContextItem == NULL)
+    {
+      if (state->theString != "")
+      {
+        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        state->theString = "";
+      }
+      break;
+    }
+    else if (state->theContextItem->isNode()) 
+		{
+      if (state->theString != "")
+			{
+        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        state->theString = "";
+      }
+      STACK_PUSH2(state->theContextItem, state);
+    }
+    else if (state->theString == "")
+		{
+      state->theString = state->theContextItem->getStringProperty();
+    }
+    else
+		{
+      state->theString += " " + state->theContextItem->getStringProperty();
+    }
+  }
+  STACK_END2();
+}
+
+
+void 
+EnclosedIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+{
+  UnaryBaseIterator<EnclosedIterator>::resetImpl(stateBlock);
+
+  EnclosedState* state;
+  GET_STATE(EnclosedState, state, stateBlock);
+  state->theString = "";
+}
+
+	
+void 
+EnclosedIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+  UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl(stateBlock);
+
+  EnclosedState* state;
+  GET_STATE(EnclosedState, state, stateBlock);
+  state->theContextItem = NULL;
+  state->theString.clear();
+}
+
+
+void EnclosedIterator::setOffset(
+    IteratorTreeStateBlock& stateBlock,
+    int32_t& offset)
+{
+  UnaryBaseIterator<EnclosedIterator>::setOffset(stateBlock, offset);
+
+  EnclosedState* state = new (stateBlock.block + stateOffset) EnclosedState;
+}
+
+
+void EnclosedIterator::EnclosedState::init()
+{
+  BasicIterator::BasicIteratorState::init();
+  theString = "";
+}
+
+/* end class EnclosedIterator */
+
+
+/* begin class ElementContentIterator */
+ElementContentIterator::ElementContentIterator(
+    const yy::location& loc,
+    Iterator_t& childIter)
 	:
-		FilterIterator(loc, content_arg){}
+  UnaryBaseIterator<ElementContentIterator>(loc, childIter)
+{
+}
 
 		
-	Item_t 
-	ElementContentIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+Item_t 
+ElementContentIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+{
+  ElementContentState* state;
+  STACK_INIT2(ElementContentState, state, stateBlock);
+
+  while (true)
 	{
-		STACK_INIT();
-		this->str = "";
-		while (true)
+    state->theContextItem = this->consumeNext(theChild, stateBlock );
+    if (state->theContextItem == NULL)
 		{
-			this->item = this->consumeNext( this->content, stateBlock );
-			if (this->item == NULL)
+      if (state->theString != "")
 			{
-				if (this->str != "")
-				{
-					STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(this->str));
-					this->str = "";
-				}
-				break;
-			}
-			else if (this->item->isNode() && (this->item->getNodeKind() == textNode)) 
+        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        state->theString = "";
+      }
+      break;
+    }
+    else if (state->theContextItem->isNode() && (state->theContextItem->getNodeKind() == textNode)) 
+		{
+      state->theString += state->theContextItem->getStringProperty();
+    }
+    else 
+		{
+      if (state->theString != "")
 			{
-				this->str += this->item->getStringProperty();
-			}
-			else 
-			{
-				if (this->str != "")
-				{
-					STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(str) );
-					this->str = "";
-				}
-				STACK_PUSH(this->item);
-			}
-		}
-		STACK_END();
-	}
-	/* end class ElementContentIterator */
+        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        state->theString = "";
+      }
+      STACK_PUSH2(state->theContextItem, state);
+    }
+  }
+  STACK_END2();
+}
 
-	/* begin class ElementIterator */
-	ElementIterator::ElementIterator (
-	    const yy::location& loc,
-	    const Item_t& qname_arg,
-	    Iterator_t& children_arg,
-	    Iterator_t& attributes_arg )
-		:
-		Batcher<ElementIterator> ( loc ), qname ( qname_arg ), children ( children_arg ), attributes ( attributes_arg ) {}
 
-	Item_t
-	ElementIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		Item_t item;
+void 
+ElementContentIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+{
+  UnaryBaseIterator<ElementContentIterator>::resetImpl(stateBlock);
 
- 		STACK_INIT();
+  ElementContentState* state;
+  GET_STATE(ElementContentState, state, stateBlock);
+  state->theString = "";
+}
 
-		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
-		           this->qname,
+	
+void 
+ElementContentIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+  UnaryBaseIterator<ElementContentIterator>::releaseResourcesImpl(stateBlock);
+
+  ElementContentState* state;
+  GET_STATE(ElementContentState, state, stateBlock);
+  state->theContextItem = NULL;
+  state->theString.clear();
+}
+
+
+void ElementContentIterator::setOffset(
+    IteratorTreeStateBlock& stateBlock,
+    int32_t& offset)
+{
+  UnaryBaseIterator<ElementContentIterator>::setOffset(stateBlock, offset);
+
+  ElementContentState* state = new (stateBlock.block + stateOffset) ElementContentState;
+}
+
+
+void ElementContentIterator::ElementContentState::init()
+{
+  BasicIterator::BasicIteratorState::init();
+  theString = "";
+}
+/* end class ElementContentIterator */
+
+
+/* begin class ElementIterator */
+ElementIterator::ElementIterator (
+    const yy::location& loc,
+    const Item_t& qname,
+    Iterator_t& children,
+    Iterator_t& attributes)
+  :
+  Batcher<ElementIterator> ( loc ),
+  theQName ( qname ),
+  theChildren ( children ),
+  theAttributes ( attributes )
+{
+}
+
+
+Item_t
+ElementIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+{
+  Item_t item;
+
+  BasicIteratorState* state;
+  STACK_INIT2(BasicIteratorState, state, stateBlock);
+
+  item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
+		           theQName,
 		           xs_anyType,
-		           this->children,
-		           this->attributes,
-		           this->namespaceBindings,
+		           theChildren,
+		           theAttributes,
+		           theNamespaceBindings,
 		           false,
 		           false
 		       );
 
-		STACK_PUSH ( item );
+  STACK_PUSH2(item, state);
 		
-		STACK_END();
-	}
+  STACK_END2();
+}
 
-	void
-	ElementIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+
+void
+ElementIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+{
+  if ( theChildren != NULL )
+    resetChild(theChildren, stateBlock);
+
+  if (theAttributes != NULL)
+    resetChild(theAttributes, stateBlock);
+
+  BasicIterator::BasicIteratorState* state;
+  GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
+  state->reset();
+}
+
+
+void
+ElementIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+  if (theChildren != NULL)
+    releaseChildResources(theChildren, stateBlock);
+
+  if (theAttributes != NULL)
+    releaseChildResources(theAttributes, stateBlock);
+}
+
+
+std::ostream&
+ElementIterator::_show(std::ostream& os) const
+{
+  os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
+
+  if (theAttributes != NULL)
+    theAttributes->show(os);
+
+  if (theChildren != NULL)
+    theChildren->show(os);
+
+  return os;
+}
+
+
+int32_t
+ElementIterator::getStateSize()
+{
+  return sizeof(BasicIterator::BasicIteratorState);
+}
+
+	
+int32_t
+ElementIterator::getStateSizeOfSubtree()
+{
+  int32_t size = 0;
+
+  if (theChildren != NULL)
+    size += theChildren->getStateSizeOfSubtree();
+
+  if (theAttributes != NULL)
+    size += theAttributes->getStateSizeOfSubtree();
+
+  if (theNamespaceBindings != NULL)
+    size += theNamespaceBindings->getStateSizeOfSubtree();
+
+  return this->getStateSize() + size;
+}
+
+	
+void
+ElementIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+
+  if (theChildren != NULL)
+    theChildren->setOffset(stateBlock, offset);
+
+  if (theAttributes != NULL)
+    theAttributes->setOffset(stateBlock, offset);
+
+  if (theNamespaceBindings != NULL)
+    theNamespaceBindings->setOffset(stateBlock, offset);
+}
+/* end class ElementIterator */
+
+
+/* begin class AttributeIterator */
+AttributeIterator::AttributeIterator (
+    const yy::location& loc,
+    const Item_t& qname,
+    Iterator_t& value)
+  :
+  UnaryBaseIterator<AttributeIterator>( loc, value ),
+  theQName(qname)
+{
+}
+
+
+Item_t
+AttributeIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+{
+  Item_t item;
+  Item_t itemCur;
+  Item_t itemFirst;
+  Item_t itemLexical;
+  Item_t itemTyped;
+  xqp_string lexicalString;
+  bool concatenation = false;
+
+  BasicIteratorState* state;
+  STACK_INIT2(BasicIteratorState, state, stateBlock);
+
+  if ((itemFirst = consumeNext(theChild, stateBlock)) != NULL )
 	{
-		if ( this->children != NULL )
-			this->resetChild ( this->children, stateBlock );
-	}
+    lexicalString = itemFirst->getStringProperty();
 
-	void
-	ElementIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		if ( this->children != NULL )
-			this->releaseChildResources ( this->children, stateBlock );
-	}
-	/* end class ElementIterator */
-
-	/* begin class AttributeIterator */
-	AttributeIterator::AttributeIterator (
-	    const yy::location& loc,
-	    const Item_t& qname_arg,
-	    Iterator_t& value_arg )
-			:
-			Batcher<AttributeIterator> ( loc ), qname ( qname_arg ), value ( value_arg ) {}
-
-	Item_t
-	AttributeIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		Item_t item;
-		Item_t itemCur;
-		Item_t itemFirst;
-		Item_t itemLexical;
-		Item_t itemTyped;
-		xqp_string lexicalString;
-		bool concatenation = false;
-
-		STACK_INIT();
-		if ( this->value != NULL && (itemFirst = this->consumeNext(this->value, stateBlock)) != NULL )
+    // handle concatenation
+    itemCur = consumeNext ( theChild, stateBlock );
+    while ( itemCur != NULL )
 		{
-			lexicalString = itemFirst->getStringProperty();
+      concatenation = true;
+      lexicalString += itemCur->getStringProperty();
+      itemCur = consumeNext ( theChild, stateBlock );
+    }
 
-			// handle concatenation
-			itemCur = this->consumeNext ( this->value, stateBlock );
-			while ( itemCur != NULL )
-			{
-				concatenation = true;
-				lexicalString += itemCur->getStringProperty();
-				itemCur = this->consumeNext ( this->value, stateBlock );
-			}
-
-			itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( lexicalString );
-			if ( concatenation )
-			{
-				itemTyped = itemLexical;
-			}
-			else
-			{
-				itemTyped = itemFirst;
-			}
-
-		}
-		else
+    itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->
+                  createUntypedAtomic ( lexicalString );
+    if ( concatenation )
 		{
-			itemLexical = NULL;
-			itemTyped = NULL;
-		}
+      itemTyped = itemLexical;
+    }
+    else
+		{
+      itemTyped = itemFirst;
+    }
+  }
+  else
+	{
+    itemLexical = NULL;
+    itemTyped = NULL;
+  }
 
-		item = zorba::getZorbaForCurrentThread()->getItemFactory()->createAttributeNode (
-		           this->qname,
+  item = zorba::getZorbaForCurrentThread()->getItemFactory()->createAttributeNode (
+		           theQName,
 		           xs_anyType,
 		           itemLexical,
 		           itemTyped
 		       );
-		STACK_PUSH ( item );
-		STACK_END();
-	}
 
-	void
-	AttributeIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		if ( this->value != NULL )
-			this->resetChild ( this->value, stateBlock );
-	}
+  STACK_PUSH2(item, state);
+  STACK_END2();
+}
+/* end class AttributeIterator */
 
-	void
-	AttributeIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-	{
-		if ( this->value != NULL )
-			this->releaseChildResources ( this->value, stateBlock );
-	}
-	/* end class AttributeIterator */
 
 	/* start class IfThenElseIterator */
 	IfThenElseIterator::IfThenElseIterator (

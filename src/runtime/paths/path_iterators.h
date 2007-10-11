@@ -25,12 +25,13 @@
 #ifndef XQP_PATH_ITERATORS_H
 #define XQP_PATH_ITERATORS_H
 
-#include <stack>
 
 #include "util/rchandle.h"
+#include "util/logging/logging.hh"
 #include "compiler/expression/expr_consts.h"
 #include "runtime/core/batching.h"
-
+#include "runtime/iterators.h"
+#include <stack>
 
 namespace xqp {
 
@@ -38,10 +39,9 @@ namespace xqp {
 /*******************************************************************************
 
 ********************************************************************************/
-class KindTestIterator : public Batcher<KindTestIterator>
+class KindTestIterator : public UnaryBaseIterator<KindTestIterator>
 {
 private:
-  Iterator_t   theInput;
   Item_t       theQName;
   Item_t       theTypeName;
   match_test_t theTestKind;
@@ -56,8 +56,7 @@ public:
         match_test_t kind,
         bool nilled = false)
     :
-    Batcher<KindTestIterator>(loc),
-    theInput(input),
+    UnaryBaseIterator<KindTestIterator>(loc, input),
     theQName(qname),
     theTypeName(tname),
     theTestKind(kind),
@@ -69,8 +68,6 @@ public:
 
 public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -79,10 +76,9 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class NameTestIterator : public Batcher<NameTestIterator>
+class NameTestIterator : public UnaryBaseIterator<NameTestIterator>
 {
 private:
-  Iterator_t   theInput;
   Item_t       theQName;
   match_wild_t theWildKind;
 
@@ -93,8 +89,7 @@ public:
         Item_t qname,
         match_wild_t kind)
     :
-    Batcher<NameTestIterator>(loc),
-    theInput(input),
+    UnaryBaseIterator<NameTestIterator>(loc, input),
     theQName(qname),
     theWildKind(kind)
   {
@@ -104,8 +99,6 @@ public:
 
 public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -114,47 +107,68 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AxisIterator
+class AxisIteratorHelper
 {
 protected:
-  Iterator_t  theInput;
-  Item_t      theContextNode;
-  TypeCode    theNodeKind;
+  TypeCode theNodeKind ;
 
 public:
-  AxisIterator(Iterator_t input)
+ AxisIteratorHelper() : theNodeKind(anyNode) { }
+
+  virtual ~AxisIteratorHelper() {}
+
+  void setNodeKind(TypeCode k) { theNodeKind = k; }
+};
+
+/*******************************************************************************
+
+********************************************************************************/
+template <class AxisIter>
+class AxisIterator : public UnaryBaseIterator<AxisIter>,
+                     public AxisIteratorHelper
+{
+protected:
+  class AxisState : public BasicIterator::BasicIteratorState
+  {
+  public:
+    Item_t     theContextNode;   
+  };
+
+public:
+  AxisIterator(yy::location loc, Iterator_t input)
     :
-    theInput(input),
-    theNodeKind(anyNode)
+    UnaryBaseIterator<AxisIter>(loc, input)
   {
   }
 
   virtual ~AxisIterator() {}
 
-  void setNodeKind(TypeCode k) { theNodeKind = k; }
+  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(AxisState); }
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class SelfAxisIterator : public Batcher<SelfAxisIterator>,
-                         public AxisIterator
+class SelfAxisIterator : public AxisIterator<SelfAxisIterator>
 {
+protected:
+  class SelfAxisState : public AxisState
+  {
+  };
+
 public:
   SelfAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<SelfAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<SelfAxisIterator>(loc, input)
   {
   }
 
   ~SelfAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -163,29 +177,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AttributeAxisIterator : public Batcher<AttributeAxisIterator>,
-                              public AxisIterator
+class AttributeAxisIterator : public AxisIterator<AttributeAxisIterator>
 {
-private:
-  Iterator_t  theAttributes;
-#ifdef DEBUG
-  Item_t      theCurrentAttr;
-#endif
+protected:
+  class AttributeAxisState : public AxisState
+  {
+  public:
+    Iterator_t  theAttributes;
+  };
 
 public:
   AttributeAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<AttributeAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<AttributeAxisIterator>(loc, input)
   {
   }
 
   ~AttributeAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(AttributeAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -194,28 +208,23 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ParentAxisIterator : public Batcher<ParentAxisIterator>,
-                           public AxisIterator
+class ParentAxisIterator : public AxisIterator<ParentAxisIterator>
 {
-private:
-#ifdef DEBUG
-  Item_t  theParent;
-#endif
+protected:
+  class ParentAxisState : public AxisState
+  {
+  };
 
 public:
   ParentAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<ParentAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<ParentAxisIterator>(loc, input)
   {
   }
 
   ~ParentAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -224,26 +233,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AncestorAxisIterator : public Batcher<AncestorAxisIterator>,
-                             public AxisIterator
+class AncestorAxisIterator : public AxisIterator<AncestorAxisIterator>
 {
-private:
-  Item_t  theCurrentAnc;
+protected:
+  class AncestorAxisState : public AxisState
+  {
+  public:
+    Item_t  theCurrentAnc;
+  };
 
 public:
   AncestorAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<AncestorAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<AncestorAxisIterator>(loc, input)
   {
   }
 
   ~AncestorAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(AncestorAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -252,26 +263,28 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AncestorSelfAxisIterator : public Batcher<AncestorSelfAxisIterator>,
-                                 public AxisIterator
+class AncestorSelfAxisIterator : public AxisIterator<AncestorSelfAxisIterator>
 {
-private:
-  Item_t  theCurrentAnc;
+protected:
+  class AncestorSelfAxisState : public AxisState
+  {
+  public:
+    Item_t  theCurrentAnc;
+  };
 
 public:
   AncestorSelfAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<AncestorSelfAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<AncestorSelfAxisIterator>(loc, input)
   {
   }
 
   ~AncestorSelfAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(AncestorSelfAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -280,29 +293,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class RSiblingAxisIterator : public Batcher<RSiblingAxisIterator>,
-                             public AxisIterator
+class RSiblingAxisIterator : public AxisIterator<RSiblingAxisIterator>
 {
-private:
-  Iterator_t  theChildren;
-#ifdef DEBUG
-  Item_t      theRSibling;
-#endif
+protected:
+  class RSiblingAxisState : public AxisState
+  {
+  public:
+    Iterator_t  theChildren;
+  };
 
 public:
   RSiblingAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<RSiblingAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<RSiblingAxisIterator>(loc, input)
   {
   }
 
   ~RSiblingAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(RSiblingAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -311,29 +324,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class LSiblingAxisIterator : public Batcher<LSiblingAxisIterator>,
-                             public AxisIterator
+class LSiblingAxisIterator : public AxisIterator<LSiblingAxisIterator>
 {
-private:
-  Iterator_t  theChildren;
-#ifdef DEBUG
-  Item_t      theLSibling;
-#endif
+protected:
+  class LSiblingAxisState : public AxisState
+  {
+  public:
+    Iterator_t  theChildren;
+  };
 
 public:
   LSiblingAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<LSiblingAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<LSiblingAxisIterator>(loc, input)
   {
   }
 
   ~LSiblingAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(LSiblingAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -342,29 +355,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ChildAxisIterator : public Batcher<ChildAxisIterator>,
-                          public AxisIterator
+class ChildAxisIterator : public AxisIterator<ChildAxisIterator>
 {
-private:
-  Iterator_t  theChildren;
-#ifdef DEBUG
-  Item_t      theCurrentChild;
-#endif
+protected:
+  class ChildAxisState : public AxisState
+  {
+  public:
+    Iterator_t  theChildren;
+  };
 
 public:
   ChildAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<ChildAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<ChildAxisIterator>(loc, input)
   {
   }
 
   ~ChildAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(ChildAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -373,28 +386,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class DescendantAxisIterator : public Batcher<DescendantAxisIterator>,
-                               public AxisIterator
+class DescendantAxisIterator : public AxisIterator<DescendantAxisIterator>
 {
-private:
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-#ifdef DEBUG
-  Item_t                                     theCurrentDesc;
-#endif
+protected:
+  class DescendantAxisState : public AxisState
+  {
+  public:
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  };
+
 public:
   DescendantAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<DescendantAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<DescendantAxisIterator>(loc, input)
   {
   }
 
   ~DescendantAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(DescendantAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -403,28 +417,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class DescendantSelfAxisIterator : public Batcher<DescendantSelfAxisIterator>,
-                                   public AxisIterator
+class DescendantSelfAxisIterator : public AxisIterator<DescendantSelfAxisIterator>
 {
-private:
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-#ifdef DEBUG
-  Item_t                                     theCurrentDesc;
-#endif
+protected:
+  class DescendantSelfAxisState : public AxisState
+  {
+  public:
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  };
+
 public:
   DescendantSelfAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<DescendantSelfAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<DescendantSelfAxisIterator>(loc, input)
   {
   }
 
   ~DescendantSelfAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(DescendantSelfAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -433,29 +448,30 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class PrecedingAxisIterator : public Batcher<PrecedingAxisIterator>,
-                              public AxisIterator
+class PrecedingAxisIterator : public AxisIterator<PrecedingAxisIterator>
 {
-private:
-  std::stack<Item_t>                         theAncestorPath;
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-#ifdef DEBUG
-  Item_t                                     theCurrentPrec;
-#endif
+protected:
+  class PrecedingAxisState : public AxisState
+  {
+  public:
+    std::stack<Item_t>                         theAncestorPath;
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  };
+
 public:
   PrecedingAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<PrecedingAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<PrecedingAxisIterator>(loc, input)
   {
   }
 
   ~PrecedingAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(PrecedingAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -464,29 +480,29 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class FollowingAxisIterator : public Batcher<FollowingAxisIterator>,
-                              public AxisIterator
+class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator>
 {
-private:
-  std::stack<Item_t>                         theAncestorPath;
-  std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
-#ifdef DEBUG
-  Item_t                                     theCurrentFollowing;
-#endif
+  class FollowingAxisState : public AxisState
+  {
+  public:
+    std::stack<Item_t>                         theAncestorPath;
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
+  };
+
 public:
   FollowingAxisIterator(yy::location loc, Iterator_t input)
     :
-    Batcher<FollowingAxisIterator>(loc),
-    AxisIterator(input)
+    AxisIterator<FollowingAxisIterator>(loc, input)
   {
   }
 
   ~FollowingAxisIterator() {}
 
-public:
   Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
   void resetImpl(IteratorTreeStateBlock& stateBlock);
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+
+  int32_t getStateSize() { return sizeof(FollowingAxisState); }
 
   std::ostream& _show(std::ostream& os) const;
 };

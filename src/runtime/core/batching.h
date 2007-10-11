@@ -88,7 +88,9 @@ public:
 	~IteratorTreeStateBlock();
 };
 
-/** Base class of all iterators.
+
+/**
+  * Base class of all iterators.
 	*/
 class BasicIterator : public rcobject
 {
@@ -164,6 +166,8 @@ public:
 	
 	/** Sets the offset where the state of the iterator will be saved
 		* on the state stack.
+    *
+		* TODO must be pure virtual
 		*/
 	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 

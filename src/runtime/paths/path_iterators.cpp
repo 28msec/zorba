@@ -23,6 +23,9 @@
  */
 
 #include "util/Assert.h"
+#include "util/logging/logger.hh"
+#include "util/logging/loggerconfig.hh"
+#include "util/logging/loggermanager.hh"
 #include "types/sequence_type_mgr.h"
 #include "runtime/paths/path_iterators.h"
 #include "util/zorba.h"
@@ -34,9 +37,9 @@
 }
 
 
+
 namespace xqp
 {
-
 
 /*******************************************************************************
 
@@ -49,7 +52,7 @@ Item_t KindTestIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 
   do
   {
-    contextNode = consumeNext(theInput, stateBlock);
+    contextNode = consumeNext(theChild, stateBlock);
     if (contextNode == NULL)
       return NULL;
 
@@ -184,20 +187,6 @@ Item_t KindTestIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 }
 
 
-void KindTestIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-{
-  resetChild(theInput, stateBlock);
-}
-
-
-void KindTestIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-{
-  releaseChildResources(theInput, stateBlock);
-  theQName = NULL;
-  theTypeName = NULL;
-}
-
-
 std::ostream& KindTestIterator::_show(std::ostream& os)	const
 {
   os << IT_DEPTH << " " << "test kind: " << theTestKind << std::endl;
@@ -214,7 +203,7 @@ std::ostream& KindTestIterator::_show(std::ostream& os)	const
 
   os << IT_DEPTH << " " << "nill allowed: " << theNilledAllowed << std::endl;
 
-  theInput->show(os);
+  theChild->show(os);
   return os;
 }
 
@@ -228,7 +217,7 @@ Item_t NameTestIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 
   while (true)
   {
-    contextNode = consumeNext(theInput, stateBlock);
+    contextNode = consumeNext(theChild, stateBlock);
     if (contextNode == NULL)
       return NULL;
 
@@ -273,19 +262,6 @@ Item_t NameTestIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 }
 
 
-void NameTestIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-{
-  resetChild(theInput, stateBlock);
-}
-
-
-void NameTestIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-{
-  releaseChildResources(theInput, stateBlock);
-  theQName = NULL;
-}
-
-
 std::ostream& NameTestIterator::_show(std::ostream& os)	const
 {
   if (theQName != NULL)
@@ -293,8 +269,22 @@ std::ostream& NameTestIterator::_show(std::ostream& os)	const
   else
     os << IT_DEPTH << " " << "qname: *" << endl;
 
-  theInput->show(os);
+  theChild->show(os);
   return os;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+template <class AxisIter>
+void AxisIterator<AxisIter>::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+{
+  UnaryBaseIterator<AxisIter>::releaseResourcesImpl(stateBlock);
+
+  AxisState* state;
+  GET_STATE(AxisState, state, stateBlock);
+  state->theContextNode = NULL;
 }
 
 
@@ -303,13 +293,16 @@ std::ostream& NameTestIterator::_show(std::ostream& os)	const
 ********************************************************************************/
 Item_t SelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
+  SelfAxisState* state;
+  GET_STATE(SelfAxisState, state, stateBlock);
+
   do
   {
-    theContextNode = consumeNext(theInput, stateBlock);
-    if (theContextNode == NULL)
+    state->theContextNode = consumeNext(theChild, stateBlock);
+    if (state->theContextNode == NULL)
       return NULL;
 
-    if (!theContextNode->isNode())
+    if (!state->theContextNode->isNode())
     {
       ZorbaErrorAlerts::error_alert(
          error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -319,32 +312,23 @@ Item_t SelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
          "The context item of an axis step is not a node");
     }
   }
-  while (theNodeKind != anyNode && theContextNode->getNodeKind() != theNodeKind);
+  while (theNodeKind != anyNode && state->theContextNode->getNodeKind() != theNodeKind);
 
-  return theContextNode;
-}
-
-
-void SelfAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-{
-  resetChild(theInput, stateBlock);
-}
-
-
-void SelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-{
-  releaseChildResources(theInput, stateBlock);
-  theContextNode = NULL;
+  return state->theContextNode;
 }
 
 
 std::ostream& SelfAxisIterator::_show(std::ostream& os)	const
 {
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
+  /*
+  SelfAxisState* state;
+  GET_STATE(SelfAxisState, state, stateBlock);
 
-  theInput->show(os);
+  os << IT_DEPTH << " " << "context node: " << std::endl;
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -356,17 +340,18 @@ Item_t AttributeAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t attr;
 
-  STACK_INIT();
+  AttributeAxisState* state;
+  STACK_INIT2(AttributeAxisState, state, stateBlock);
 
   while (true)
   {
     do
     {
-      theContextNode = consumeNext(theInput, stateBlock);
-      if (theContextNode == NULL)
+      state->theContextNode = consumeNext(theChild, stateBlock);
+      if (state->theContextNode == NULL)
         return NULL;
 
-      if (!theContextNode->isNode())
+      if (!state->theContextNode->isNode())
       {
         ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -376,60 +361,53 @@ Item_t AttributeAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
       }
     }
-    while (theContextNode->getNodeKind() != elementNode);
+    while (state->theContextNode->getNodeKind() != elementNode);
 
-    theAttributes = theContextNode->getAttributes();
+    state->theAttributes = state->theContextNode->getAttributes();
 
-    attr = consumeNext(theAttributes, stateBlock);
+    attr = consumeNext(state->theAttributes, stateBlock);
 
     while (attr != NULL)
     {
-#ifdef DEBUG
-      theCurrentAttr = attr;
-#endif
-      STACK_PUSH(attr);
-      attr = consumeNext(theAttributes, stateBlock);
+      STACK_PUSH2(attr, state);
+      attr = consumeNext(state->theAttributes, stateBlock);
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void AttributeAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
-#ifdef DEBUG
-  theCurrentAttr = NULL;
-#endif
+  AxisIterator<AttributeAxisIterator>::resetImpl(stateBlock);
+
+  AttributeAxisState* state;
+  GET_STATE(AttributeAxisState, state, stateBlock); 
+  state->theAttributes->reset(stateBlock);
 }
 
 
 void AttributeAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
-  theAttributes = NULL;
-  theContextNode = NULL;
-#ifdef DEBUG
-  theCurrentAttr = NULL;
-#endif
+  AxisIterator<AttributeAxisIterator>::releaseResourcesImpl(stateBlock);
+
+  AttributeAxisState* state;
+  GET_STATE(AttributeAxisState, state, stateBlock); 
+  state->theAttributes = NULL;
 }
 
 
 std::ostream& AttributeAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
 
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "current attr: "<< std::endl;
-  if (theCurrentAttr != NULL)
-    os << IT_DEPTH << " " << theCurrentAttr->show() << std::endl;
-#endif
-
-  theAttributes->show(os);
-  theInput->show(os);
+  // theAttributes->show(os);
+  theChild->show(os);
   return os;
 }
 
@@ -441,13 +419,16 @@ Item_t ParentAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t parent;
 
+  ParentAxisState* state;
+  GET_STATE(ParentAxisState, state, stateBlock); 
+
   do
   {
-    theContextNode = consumeNext(theInput, stateBlock);
-    if (theContextNode == NULL)
+    state->theContextNode = consumeNext(theChild, stateBlock);
+    if (state->theContextNode == NULL)
       return NULL;
 
-    if (!theContextNode->isNode())
+    if (!state->theContextNode->isNode())
     {
       ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -457,49 +438,23 @@ Item_t ParentAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
     }
 
-    parent = theContextNode->getParent();
+    parent = state->theContextNode->getParent();
   }
   while (parent != NULL &&
          theNodeKind != anyNode && parent->getNodeKind() != theNodeKind);
 
-#ifdef DEBUG
-  theParent = parent;
-#endif
   return parent;
-}
-
-
-void ParentAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-{
-  resetChild(theInput, stateBlock);
-#ifdef DEBUG
-  theParent = NULL;
-#endif
-}
-
-
-void ParentAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-{
-  releaseChildResources(theInput, stateBlock);
-  theContextNode = NULL;
-#ifdef DEBUG
-  theParent = NULL;
-#endif
 }
 
 
 std::ostream& ParentAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "parent node: " << std::endl;
-  if (theParent != NULL)
-    os << IT_DEPTH << " " << theParent->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -509,15 +464,16 @@ std::ostream& ParentAxisIterator::_show(std::ostream& os)	const
 ********************************************************************************/
 Item_t AncestorAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
-  STACK_INIT();
+  AncestorAxisState* state;
+  STACK_INIT2(AncestorAxisState, state, stateBlock);
 
   while (true)
   {
-    theContextNode = consumeNext(theInput, stateBlock);
-    if (theContextNode == NULL)
+    state->theContextNode = consumeNext(theChild, stateBlock);
+    if (state->theContextNode == NULL)
       return NULL;
 
-    if (!theContextNode->isNode())
+    if (!state->theContextNode->isNode())
     {
       ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -527,48 +483,46 @@ Item_t AncestorAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
     }
 
-    theCurrentAnc = theContextNode->getParent();
+    state->theCurrentAnc = state->theContextNode->getParent();
 
-    while (theCurrentAnc != NULL)
+    while (state->theCurrentAnc != NULL)
     {
-      if (theNodeKind == anyNode || theCurrentAnc->getNodeKind() == theNodeKind)
+      if (theNodeKind == anyNode ||
+          state->theCurrentAnc->getNodeKind() == theNodeKind)
       {
-        STACK_PUSH(theCurrentAnc);
+        STACK_PUSH2(state->theCurrentAnc, state);
       }
 
-      theCurrentAnc = theCurrentAnc->getParent();
+      state->theCurrentAnc = state->theCurrentAnc->getParent();
     }
   }
 
-  STACK_END();
-}
-
-
-void AncestorAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-{
-  resetChild(theInput, stateBlock);
+  STACK_END2();
 }
 
 
 void AncestorAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
-  theCurrentAnc = NULL;
-  theContextNode = NULL;
+  AxisIterator<AncestorAxisIterator>::releaseResourcesImpl(stateBlock);
+
+  AncestorAxisState* state;
+  GET_STATE(AncestorAxisState, state, stateBlock); 
+  state->theCurrentAnc = NULL;
 }
 
 
 std::ostream& AncestorAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
 
   os << IT_DEPTH << " " << "ancestor node: " << std::endl;
   if (theCurrentAnc != NULL)
     os << IT_DEPTH << " " << theCurrentAnc->show() << std::endl;
-
-  theInput->show(os);
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -578,15 +532,16 @@ std::ostream& AncestorAxisIterator::_show(std::ostream& os)	const
 ********************************************************************************/
 Item_t AncestorSelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
-  STACK_INIT();
+  AncestorSelfAxisState* state;
+  STACK_INIT2(AncestorSelfAxisState, state, stateBlock);
 
   while (true)
   {
-    theContextNode = consumeNext(theInput, stateBlock);
-    if (theContextNode == NULL)
+    state->theContextNode = consumeNext(theChild, stateBlock);
+    if (state->theContextNode == NULL)
       return NULL;
 
-    if (!theContextNode->isNode())
+    if (!state->theContextNode->isNode())
     {
       ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -596,48 +551,46 @@ Item_t AncestorSelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
     }
 
-    theCurrentAnc = theContextNode;
+    state->theCurrentAnc = state->theContextNode;
 
-    while (theCurrentAnc != NULL)
+    while (state->theCurrentAnc != NULL)
     {
-      if (theNodeKind == anyNode || theCurrentAnc->getNodeKind() == theNodeKind)
+      if (theNodeKind == anyNode ||
+          state->theCurrentAnc->getNodeKind() == theNodeKind)
       {
-        STACK_PUSH(theCurrentAnc);
+        STACK_PUSH2(state->theCurrentAnc, state);
       }
 
-      theCurrentAnc = theCurrentAnc->getParent();
+      state->theCurrentAnc = state->theCurrentAnc->getParent();
     }
   }
 
-  STACK_END();
-}
-
-
-void AncestorSelfAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-{
-  resetChild(theInput, stateBlock);
+  STACK_END2();
 }
 
 
 void AncestorSelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
-  theCurrentAnc = NULL;
-  theContextNode = NULL;
+  AxisIterator<AncestorSelfAxisIterator>::releaseResourcesImpl(stateBlock);
+
+  AncestorSelfAxisState* state;
+  GET_STATE(AncestorSelfAxisState, state, stateBlock); 
+  state->theCurrentAnc = NULL;
 }
 
 
 std::ostream& AncestorSelfAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
 
   os << IT_DEPTH << " " << "ancestor node: " << std::endl;
   if (theCurrentAnc != NULL)
     os << IT_DEPTH << " " << theCurrentAnc->show() << std::endl;
-
-  theInput->show(os);
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -650,17 +603,18 @@ Item_t RSiblingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
   Item_t parent;
   Item_t sibling;
 
-  STACK_INIT();
+  RSiblingAxisState* state;
+  STACK_INIT2(RSiblingAxisState, state, stateBlock);
 
   while (true)
   {
     do
     {
-      theContextNode = consumeNext(theInput, stateBlock);
-      if (theContextNode == NULL)
+      state->theContextNode = consumeNext(theChild, stateBlock);
+      if (state->theContextNode == NULL)
         return NULL;
 
-      if (!theContextNode->isNode())
+      if (!state->theContextNode->isNode())
       {
         ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -670,69 +624,62 @@ Item_t RSiblingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
       }
     }
-    while (theContextNode->getNodeKind() == attributeNode);
+    while (state->theContextNode->getNodeKind() == attributeNode);
 
-    parent = theContextNode->getParent();
+    parent = state->theContextNode->getParent();
 
     if (parent == NULL)
       return NULL;
 
-    theChildren = parent->getChildren();
+    state->theChildren = parent->getChildren();
 
-    while (consumeNext(theChildren, stateBlock) != theContextNode) ;
+    while (consumeNext(state->theChildren, stateBlock) != state->theContextNode) ;
 
-    sibling = consumeNext(theChildren, stateBlock);
+    sibling = consumeNext(state->theChildren, stateBlock);
 
     while (sibling != NULL)
     {
       if (theNodeKind == anyNode || sibling->getNodeKind() == theNodeKind)
       {
-#ifdef DEBUG
-        theRSibling = sibling;
-#endif
-        STACK_PUSH(sibling);
+        STACK_PUSH2(sibling, state);
       }
 
-      sibling = consumeNext(theChildren, stateBlock);
+      sibling = consumeNext(state->theChildren, stateBlock);
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void RSiblingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
-#ifdef DEBUG
-  theRSibling = NULL;
-#endif
+  AxisIterator<RSiblingAxisIterator>::resetImpl(stateBlock);
+
+  RSiblingAxisState* state;
+  GET_STATE(RSiblingAxisState, state, stateBlock); 
+  state->theChildren->reset(stateBlock); 
 }
 
 
 void RSiblingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
-  theChildren = NULL; 
-  theContextNode = NULL;
-#ifdef DEBUG
-  theRSibling = NULL;
-#endif
+  AxisIterator<RSiblingAxisIterator>::releaseResourcesImpl(stateBlock);
+
+  RSiblingAxisState* state;
+  GET_STATE(RSiblingAxisState, state, stateBlock); 
+  state->theChildren = NULL; 
 }
 
 
 std::ostream& RSiblingAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "rsibling node: " << std::endl;
-  if (theRSibling != NULL)
-    os << IT_DEPTH << " " << theRSibling->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -745,17 +692,18 @@ Item_t LSiblingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
   Item_t parent;
   Item_t sibling;
 
-  STACK_INIT();
+  LSiblingAxisState* state;
+  STACK_INIT2(LSiblingAxisState, state, stateBlock);
 
   while (true)
   {
     do
     {
-      theContextNode = consumeNext(theInput, stateBlock);
-      if (theContextNode == NULL)
+      state->theContextNode = consumeNext(theChild, stateBlock);
+      if (state->theContextNode == NULL)
         return NULL;
 
-      if (!theContextNode->isNode())
+      if (!state->theContextNode->isNode())
       {
         ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -765,67 +713,63 @@ Item_t LSiblingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
       }
     }
-    while (theContextNode->getNodeKind() == attributeNode);
+    while (state->theContextNode->getNodeKind() == attributeNode);
 
-    parent = theContextNode->getParent();
+    parent = state->theContextNode->getParent();
 
     if (parent == NULL)
       return NULL;
 
-    theChildren = parent->getChildren();
+    state->theChildren = parent->getChildren();
 
-    sibling = consumeNext(theChildren, stateBlock);
+    sibling = consumeNext(state->theChildren, stateBlock);
 
-    while (sibling != theContextNode)
+    while (sibling != state->theContextNode)
     {
       if (theNodeKind == anyNode || sibling->getNodeKind() == theNodeKind)
       {
 #ifdef DEBUG
         theLSibling = sibling;
 #endif
-        STACK_PUSH(sibling);
+        STACK_PUSH2(sibling, state);
       }
 
-      sibling = consumeNext(theChildren, stateBlock);
+      sibling = consumeNext(state->theChildren, stateBlock);
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void LSiblingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
-#ifdef DEBUG
-  theLSibling = NULL;
-#endif
+  AxisIterator<LSiblingAxisIterator>::resetImpl(stateBlock);
+
+  LSiblingAxisState* state;
+  GET_STATE(LSiblingAxisState, state, stateBlock); 
+  state->theChildren->reset(stateBlock);
 }
 
 
 void LSiblingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
-  theChildren = NULL;
-  theContextNode = NULL;
-#ifdef DEBUG
-  theLSibling = NULL;
-#endif
+  AxisIterator<LSiblingAxisIterator>::releaseResourcesImpl(stateBlock);
+
+  LSiblingAxisState* state;
+  GET_STATE(LSiblingAxisState, state, stateBlock); 
+  state->theChildren = NULL; 
 }
 
 
 std::ostream& LSiblingAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "lsibling node: " << std::endl;
-  if (theLSibling != NULL)
-    os << IT_DEPTH << " " << theLSibling->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -837,17 +781,18 @@ Item_t ChildAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t child;
 
-  STACK_INIT();
+  ChildAxisState* state;
+  STACK_INIT2(ChildAxisState, state, stateBlock);
 
   while (true)
   {
     do
     {
-      theContextNode = consumeNext(theInput, stateBlock);
-      if (theContextNode == NULL)
+      state->theContextNode = consumeNext(theChild, stateBlock);
+      if (state->theContextNode == NULL)
         return NULL;
 
-      if (!theContextNode->isNode())
+      if (!state->theContextNode->isNode())
       {
         ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -857,12 +802,12 @@ Item_t ChildAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
       }
     }
-    while (theContextNode->getNodeKind() != elementNode &&
-           theContextNode->getNodeKind() != documentNode);
+    while (state->theContextNode->getNodeKind() != elementNode &&
+           state->theContextNode->getNodeKind() != documentNode);
 
-    theChildren = theContextNode->getChildren();
+    state->theChildren = state->theContextNode->getChildren();
 
-    child = consumeNext(theChildren, stateBlock);
+    child = consumeNext(state->theChildren, stateBlock);
 
     while (child != NULL)
     {
@@ -877,52 +822,45 @@ Item_t ChildAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
       */
       if (theNodeKind == anyNode || child->getNodeKind() == theNodeKind)
       {
-#ifdef DEBUG
-        theCurrentChild = child;
-#endif
-        STACK_PUSH(child);
+        STACK_PUSH2(child, state);
       }
 
-      child = consumeNext(theChildren, stateBlock);
+      child = consumeNext(state->theChildren, stateBlock);
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void ChildAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
-#ifdef DEBUG
-  theCurrentCild = NULL;
-#endif
+  AxisIterator<ChildAxisIterator>::resetImpl(stateBlock);
+
+  ChildAxisState* state;
+  GET_STATE(ChildAxisState, state, stateBlock); 
+  state->theChildren->reset(stateBlock);
 }
 
 
 void ChildAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
-  theChildren = NULL; 
-  theContextNode = NULL;
-#ifdef DEBUG
-  theCurrentChild = NULL;
-#endif
+  AxisIterator<ChildAxisIterator>::releaseResourcesImpl(stateBlock);
+
+  ChildAxisState* state;
+  GET_STATE(ChildAxisState, state, stateBlock); 
+  state->theChildren = NULL;
 }
 
 
 std::ostream& ChildAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "current child: " << std::endl;
-  if (theCurrentChild != NULL)
-    os << IT_DEPTH << " " << theCurrentChild->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -935,17 +873,18 @@ Item_t DescendantAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
   Item_t desc;
   Iterator_t children;
 
-  STACK_INIT();
+  DescendantAxisState* state;
+  STACK_INIT2(DescendantAxisState, state, stateBlock);
 
   while (true)
   {
     do
     {
-      theContextNode = consumeNext(theInput, stateBlock);
-      if (theContextNode == NULL)
+      state->theContextNode = consumeNext(theChild, stateBlock);
+      if (state->theContextNode == NULL)
         return NULL;
 
-      if (!theContextNode->isNode())
+      if (!state->theContextNode->isNode())
       {
         ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -955,94 +894,86 @@ Item_t DescendantAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
       }
     }
-    while (theContextNode->getNodeKind() != elementNode &&
-           theContextNode->getNodeKind() != documentNode);
+    while (state->theContextNode->getNodeKind() != elementNode &&
+           state->theContextNode->getNodeKind() != documentNode);
 
-    //MYTRACE("iter = " << this << " ctxNode = [" << &*theContextNode << " " << theContextNode->getNodeName()->show() << "]");
+    //MYTRACE("iter = " << this << " ctxNode = [" << &*state->theContextNode << " " << state->theContextNode->getNodeName()->show() << "]");
 
-    children = theContextNode->getChildren();
+    children = state->theContextNode->getChildren();
 
-    theCurrentPath.push(std::pair<Item_t, Iterator_t>(theContextNode, children));
+    state->theCurrentPath.push(
+              std::pair<Item_t, Iterator_t>(state->theContextNode, children));
     
     desc = consumeNext(children, stateBlock);
 
     while (desc != NULL)
     {
       if (desc->getNodeKind() == elementNode)
-        theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+        state->theCurrentPath.push(
+                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
       if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
-#ifdef DEBUG
-        theCurrentDesc = desc;
-#endif
-        STACK_PUSH(desc);
+        STACK_PUSH2(desc, state);
       }
 
       // The next descendant is the next child of the node N that is currently
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = consumeNext(theCurrentPath.top().second, stateBlock);
+      desc = consumeNext(state->theCurrentPath.top().second, stateBlock);
 
       while (desc == NULL)
       {
-        theCurrentPath.pop();
-        if (!theCurrentPath.empty())
-          desc = consumeNext(theCurrentPath.top().second, stateBlock);
+        state->theCurrentPath.pop();
+        if (!state->theCurrentPath.empty())
+          desc = consumeNext(state->theCurrentPath.top().second, stateBlock);
         else
           break;
       }
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void DescendantAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
+  AxisIterator<DescendantAxisIterator>::resetImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
+  DescendantAxisState* state;
+  GET_STATE(DescendantAxisState, state, stateBlock); 
+
+  while (!state->theCurrentPath.empty())
   {
-    theCurrentPath.pop();
+    state->theCurrentPath.pop();
   }
-#ifdef DEBUG
-  theCurrentDesc = NULL;
-#endif
 }
 
 
 void DescendantAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
+  AxisIterator<DescendantAxisIterator>::releaseResourcesImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
+  DescendantAxisState* state;
+  GET_STATE(DescendantAxisState, state, stateBlock); 
+
+  while (!state->theCurrentPath.empty())
   {
-    theCurrentPath.pop();
+    state->theCurrentPath.pop();
   }
-
-  theContextNode = NULL;
-
-#ifdef DEBUG
-  theCurrentDesc = NULL;
-#endif
 }
 
 
 std::ostream& DescendantAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "current descendant: " << std::endl;
-  if (theCurrentDesc != NULL)
-    os << IT_DEPTH << " " << theCurrentDesc->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -1054,17 +985,18 @@ Item_t DescendantSelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 {
   Item_t desc;
 
-  STACK_INIT();
+  DescendantSelfAxisState* state;
+  STACK_INIT2(DescendantSelfAxisState, state, stateBlock);
 
   while (true)
   {
     do
     {
-      theContextNode = consumeNext(theInput, stateBlock);
-      if (theContextNode == NULL)
+      state->theContextNode = consumeNext(theChild, stateBlock);
+      if (state->theContextNode == NULL)
         return NULL;
 
-      if (!theContextNode->isNode())
+      if (!state->theContextNode->isNode())
       {
         ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -1074,89 +1006,80 @@ Item_t DescendantSelfAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
            "The context item of an axis step is not a node");
       }
     }
-    while (theContextNode->getNodeKind() != elementNode &&
-           theContextNode->getNodeKind() != documentNode);
+    while (state->theContextNode->getNodeKind() != elementNode &&
+           state->theContextNode->getNodeKind() != documentNode);
 
-    desc = theContextNode;
+    desc = state->theContextNode;
 
     while (desc != NULL)
     {
       if (desc->getNodeKind() == elementNode ||
-          theContextNode->getNodeKind() == documentNode)
-        theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+          state->theContextNode->getNodeKind() == documentNode)
+        state->theCurrentPath.push(
+                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
       if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
-#ifdef DEBUG
-        theCurrentDesc = desc;
-#endif
-        STACK_PUSH(desc);
+        STACK_PUSH2(desc, state);
       }
 
       // The next descendant is the next child of the node N that is currently
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = consumeNext(theCurrentPath.top().second, stateBlock);
+      desc = consumeNext(state->theCurrentPath.top().second, stateBlock);
 
       while (desc == NULL)
       {
-        theCurrentPath.pop();
-        if (!theCurrentPath.empty())
-          desc = consumeNext(theCurrentPath.top().second, stateBlock);
+        state->theCurrentPath.pop();
+        if (!state->theCurrentPath.empty())
+          desc = consumeNext(state->theCurrentPath.top().second, stateBlock);
         else
           break;
       }
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void DescendantSelfAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
+  AxisIterator<DescendantSelfAxisIterator>::resetImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
+  DescendantSelfAxisState* state;
+  GET_STATE(DescendantSelfAxisState, state, stateBlock); 
+
+  while (!state->theCurrentPath.empty())
   {
-    theCurrentPath.pop();
+    state->theCurrentPath.pop();
   }
-#ifdef DEBUG
-  theCurrentDesc = NULL;
-#endif
 }
 
 
 void DescendantSelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
+  AxisIterator<DescendantSelfAxisIterator>::releaseResourcesImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
+  DescendantSelfAxisState* state;
+  GET_STATE(DescendantSelfAxisState, state, stateBlock);
+
+  while (!state->theCurrentPath.empty())
   {
-    theCurrentPath.pop();
+    state->theCurrentPath.pop();
   }
-
-  theContextNode = NULL;
-
-#ifdef DEBUG
-  theCurrentDesc = NULL;
-#endif
 }
 
 
 std::ostream& DescendantSelfAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "current descendant: " << std::endl;
-  if (theCurrentDesc != NULL)
-    os << IT_DEPTH << " " << theCurrentDesc->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -1170,15 +1093,16 @@ Item_t PrecedingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
   Item_t desc;
   Iterator_t children;
 
-  STACK_INIT();
+  PrecedingAxisState* state;
+  STACK_INIT2(PrecedingAxisState, state, stateBlock);
 
   while (true)
   {
-    theContextNode = consumeNext(theInput, stateBlock);
-    if (theContextNode == NULL)
+    state->theContextNode = consumeNext(theChild, stateBlock);
+    if (state->theContextNode == NULL)
       return NULL;
 
-    if (!theContextNode->isNode())
+    if (!state->theContextNode->isNode())
     {
       ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -1189,109 +1113,99 @@ Item_t PrecedingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
     }
 
     // Collect the context node and its ancestors
-    ancestor = theContextNode;
-    theAncestorPath.push(ancestor);
+    ancestor = state->theContextNode;
+    state->theAncestorPath.push(ancestor);
 
     while (ancestor != NULL)
     {
-      theAncestorPath.push(ancestor);
+      state->theAncestorPath.push(ancestor);
       ancestor = ancestor->getParent();
     }
 
     // For each ancestor N (starting from the top) return its descendants,
     // up to the point where the next ancestor M is reached (M is a child
     // of N). Then repeat the process with the subtree rooted at M. 
-    while (theAncestorPath.size() > 1)
+    while (state->theAncestorPath.size() > 1)
     {
-      ancestor = theAncestorPath.top();
+      ancestor = state->theAncestorPath.top();
 
-      theAncestorPath.pop();
+      state->theAncestorPath.pop();
 
       children = ancestor->getChildren();
 
-      theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
     
       desc = consumeNext(children, stateBlock);
 
-      while (desc != theAncestorPath.top())
+      while (desc != state->theAncestorPath.top())
       {
         if (desc->getNodeKind() == elementNode)
-          theCurrentPath.push(std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+          state->theCurrentPath.push(
+                    std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
         if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
         {
-#ifdef DEBUG
-          theCurrentPrec = desc;
-#endif
-          STACK_PUSH(desc);
+          STACK_PUSH2(desc, state);
         }
 
-        desc = consumeNext(theCurrentPath.top().second, stateBlock);
+        desc = consumeNext(state->theCurrentPath.top().second, stateBlock);
 
         while (desc == NULL)
         {
-          theCurrentPath.pop();
-          Assert(!theCurrentPath.empty());
-          desc = consumeNext(theCurrentPath.top().second, stateBlock);
+          state->theCurrentPath.pop();
+          Assert(!state->theCurrentPath.empty());
+          desc = consumeNext(state->theCurrentPath.top().second, stateBlock);
         }
       }
 
-      theCurrentPath.pop();
-      theCurrentPath.pop();
-      Assert(theCurrentPath.empty());
+      state->theCurrentPath.pop();
+      state->theCurrentPath.pop();
+      Assert(state->theCurrentPath.empty());
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void PrecedingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
+  AxisIterator<PrecedingAxisIterator>::resetImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
-    theCurrentPath.pop();
+  PrecedingAxisState* state;
+  GET_STATE(PrecedingAxisState, state, stateBlock); 
 
-  while (!theAncestorPath.empty())
-    theAncestorPath.pop();
+  while (!state->theCurrentPath.empty())
+    state->theCurrentPath.pop();
 
-#ifdef DEBUG
-  theCurrentPrec = NULL;
-#endif
+  while (!state->theAncestorPath.empty())
+    state->theAncestorPath.pop();
 }
 
 
 void PrecedingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
+  AxisIterator<PrecedingAxisIterator>::releaseResourcesImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
-    theCurrentPath.pop();
+  PrecedingAxisState* state;
+  GET_STATE(PrecedingAxisState, state, stateBlock); 
 
-  while (!theAncestorPath.empty())
-    theAncestorPath.pop();
+  while (!state->theCurrentPath.empty())
+    state->theCurrentPath.pop();
 
-  theContextNode = NULL;
-
-#ifdef DEBUG
-  theCurrentPrec = NULL;
-#endif
+  while (!state->theAncestorPath.empty())
+    state->theAncestorPath.pop();
 }
 
 
 std::ostream& PrecedingAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "preceding node: " << std::endl;
-  if (theCurrentPrec != NULL)
-    os << IT_DEPTH << " " << theCurrentPrec->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
@@ -1305,15 +1219,16 @@ Item_t FollowingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
   Item_t following;
   Iterator_t children;
 
-  STACK_INIT();
+  FollowingAxisState* state;
+  STACK_INIT2(FollowingAxisState, state, stateBlock);
 
   while (true)
   {
-    theContextNode = consumeNext(theInput, stateBlock);
-    if (theContextNode == NULL)
+    state->theContextNode = consumeNext(theChild, stateBlock);
+    if (state->theContextNode == NULL)
       return NULL;
 
-    if (!theContextNode->isNode())
+    if (!state->theContextNode->isNode())
     {
       ZorbaErrorAlerts::error_alert(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
@@ -1324,116 +1239,108 @@ Item_t FollowingAxisIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
     }
 
     // Collect the context node and its ancestors
-    ancestor = theContextNode;
-    theAncestorPath.push(ancestor);
+    ancestor = state->theContextNode;
+    state->theAncestorPath.push(ancestor);
 
     while (ancestor != NULL)
     {
-      theAncestorPath.push(ancestor);
+      state->theAncestorPath.push(ancestor);
       ancestor = ancestor->getParent();
     }
 
     // For each ancestor N (starting from the top) return its descendants,
     // starting from the rsibling of next ancestor M (M is a child of N).
     // Then repeat the process with the subtree rooted at M. 
-    while (theAncestorPath.size() > 1)
+    while (state->theAncestorPath.size() > 1)
     {
-      ancestor = theAncestorPath.top();
+      ancestor = state->theAncestorPath.top();
 
-      theAncestorPath.pop();
+      state->theAncestorPath.pop();
 
       children = ancestor->getChildren();
 
-      theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
 
       do
       {
         following = consumeNext(children, stateBlock);
       }
-      while (following != theAncestorPath.top());
+      while (following != state->theAncestorPath.top());
 
       following = consumeNext(children, stateBlock);
 
       while (following != NULL)
       {
         if (following->getNodeKind() == elementNode)
-          theCurrentPath.push(std::pair<Item_t, Iterator_t>(following, following->getChildren()));
+          state->theCurrentPath.push(
+                 std::pair<Item_t, Iterator_t>(following, following->getChildren()));
 
         if (theNodeKind == anyNode || following->getNodeKind() == theNodeKind)
         {
-#ifdef DEBUG
-          theCurrentFollowing = following;
-#endif
-          STACK_PUSH(following);
+          STACK_PUSH2(following, state);
         }
 
-        following = consumeNext(theCurrentPath.top().second, stateBlock);
+        following = consumeNext(state->theCurrentPath.top().second, stateBlock);
 
         while (following == NULL)
         {
-          theCurrentPath.pop();
-          Assert(!theCurrentPath.empty());
-          following = consumeNext(theCurrentPath.top().second, stateBlock);
+          state->theCurrentPath.pop();
+          Assert(!state->theCurrentPath.empty());
+          following = consumeNext(state->theCurrentPath.top().second, stateBlock);
         }
       }
 
-      theCurrentPath.pop();
-      Assert(theCurrentPath.empty());
+      state->theCurrentPath.pop();
+      Assert(state->theCurrentPath.empty());
     }
   }
 
-  STACK_END();
+  STACK_END2();
 }
 
 
 void FollowingAxisIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
 {
-  resetChild(theInput, stateBlock);
+  AxisIterator<FollowingAxisIterator>::resetImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
-    theCurrentPath.pop();
+  FollowingAxisState* state;
+  GET_STATE(FollowingAxisState, state, stateBlock);
 
-  while (!theAncestorPath.empty())
-    theAncestorPath.pop();
+  while (!state->theCurrentPath.empty())
+    state->theCurrentPath.pop();
 
-  theContextNode = NULL;
+  while (!state->theAncestorPath.empty())
+    state->theAncestorPath.pop();
 
-#ifdef DEBUG
-  theCurrentPrec = NULL;
-#endif
+  state->theContextNode = NULL;
 }
 
 
 void FollowingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
 {
-  releaseChildResources(theInput, stateBlock);
+  AxisIterator<FollowingAxisIterator>::releaseResourcesImpl(stateBlock);
 
-  while (!theCurrentPath.empty())
-    theCurrentPath.pop();
+  FollowingAxisState* state;
+  GET_STATE(FollowingAxisState, state, stateBlock);
 
-  while (!theAncestorPath.empty())
-    theAncestorPath.pop();
+  while (!state->theCurrentPath.empty())
+    state->theCurrentPath.pop();
 
-  theContextNode = NULL;
+  while (!state->theAncestorPath.empty())
+    state->theAncestorPath.pop();
 
-#ifdef DEBUG
-  theCurrentPrec = NULL;
-#endif
+  state->theContextNode = NULL;
 }
 
 
 std::ostream& FollowingAxisIterator::_show(std::ostream& os)	const
 {
+  /*
   os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (theContextNode != NULL)
-    os << IT_DEPTH << " " << theContextNode->show() << std::endl;
-
-#ifdef DEBUG
-  os << IT_DEPTH << " " << "following node: " << std::endl;
-  if (theCurrentFollowing != NULL)
-    os << IT_DEPTH << " " << theCurrentFollowing->show() << std::endl;
-#endif
-  theInput->show(os);
+  if (state->theContextNode != NULL)
+    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
+  */
+  theChild->show(os);
   return os;
 }
 
