@@ -146,21 +146,26 @@ BasicIterator::BasicIteratorState::getDuffsLine() {
 }
 
 
-IteratorWrapper::IteratorWrapper(Iterator_t& iter) : iterator(iter) {
-	int32_t stackSize = this->iterator->getStateSizeOfSubtree();
-	this->stateBlock = new IteratorTreeStateBlock(stackSize);
-	int32_t offset = 0;
-	this->iterator->setOffset(*this->stateBlock, offset);
+IteratorWrapper::IteratorWrapper(Iterator_t& aIter) : theAlienBlock(false), theIterator(aIter) {
+	int32_t lStackSize = theIterator->getStateSizeOfSubtree();
+	theStateBlock = new IteratorTreeStateBlock(lStackSize);
+	int32_t lOffset = 0;
+	theIterator->setOffset(*theStateBlock, lOffset);
 }
 
+IteratorWrapper::IteratorWrapper(Iterator_t& aIter, IteratorTreeStateBlock& aStateBlock) 
+: theAlienBlock(true), theIterator(aIter), theStateBlock(&aStateBlock) {}
+
 IteratorWrapper::~IteratorWrapper() {
-	this->iterator->releaseResources(*this->stateBlock);
-	delete this->stateBlock;
+	if (!theAlienBlock) {
+		theIterator->releaseResources(*theStateBlock);
+		delete theStateBlock;
+	}
 }
 
 Item_t
 IteratorWrapper::next() {
-	return this->iterator->produceNext(*this->stateBlock);
+	return theIterator->produceNext(*theStateBlock);
 }
 /* end class IteratorWrapper */
 }

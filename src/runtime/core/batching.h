@@ -270,18 +270,40 @@ public:
 
 
 /** Wrapper to hide functionality like separation of code and execution, 
-	* garabage collection, etc. during evaluation of an iterator tree
-	*/
+ * garabage collection, etc. during evaluation of an iterator tree.
+ * 
+ * This Wrapper can also be used to collect the items of an iterator is
+ * belongs alread to another IteratorWrapper, resp. which belongs already
+ * to a state block.
+ */
 class IteratorWrapper {
 private:
-	Iterator_t iterator;
-	IteratorTreeStateBlock* stateBlock;
+	bool theAlienBlock;
+	Iterator_t theIterator;
+	IteratorTreeStateBlock* theStateBlock;
 	
 public:
-	/** Concsturctor
-		* @param iter root of evaluated iterator tree
-		*/
+	/** 
+	 * Constructor for IteratorWrapper which is used to generate the results
+	 * of a root operator.
+	 * 
+	 * @param iter root of evaluated iterator tree
+	 */
 	IteratorWrapper(Iterator_t& iter);
+	
+	/**
+	 * Constructor for IteratorWrapper which is used to generate the results
+	 * of an iterator which is not root => the state block handling, garbage
+	 * collection, etc. is already made by another IteratorWrapper.
+	 * 
+	 * @param iter 
+	 * @param stateBlock 
+	 */
+	IteratorWrapper(Iterator_t& iter, IteratorTreeStateBlock& stateBlock);
+	
+	/**
+	 * Deconstructor.
+	 */
 	~IteratorWrapper();
 	
 	/** Returns the next item of the root iterator
