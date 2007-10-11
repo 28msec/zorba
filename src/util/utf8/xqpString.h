@@ -136,10 +136,12 @@ namespace xqp {
 		//! @{
 			int compare(const xqpString& src) const;
 
-				/**
-			 * Compare 2 strings based on a specific collation for a locale.
-			 * @param loc locale as lowercase two-letter or three-letter ISO-639 code.
-			 */
+		/**
+			* Compare 2 strings based on a specific collation for a locale.
+			*	@param loc locale as lowercase two-letter or three-letter ISO-639 code. In ICU4C one can also send something like "de_ch".
+			* http://www.loc.gov/standards/iso639-2/ has a list of language codes (de stands for German language)
+			* http://www.iso.org/iso/en/prods-services/iso3166ma/index.html a list of countries (ch stands for Switzerland)
+			*/
 			int compare(const xqpString& src, const char * loc) const;
 			int compare(const char* src) const;
 		//! @}
