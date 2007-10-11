@@ -8,4 +8,4 @@ TARGET_LINK_LIBRARIES(query_exec zorba)
 
 IF (NOT MSVC)
 	TARGET_LINK_LIBRARIES(query_exec pthread)
-ENDIF (MSVC)
+ENDIF (NOT MSVC)
