@@ -13,7 +13,7 @@ my $expected_dir=shift;
 my $test_name=shift;
 
 my $f1="$test_name/result.txt";
-my $f2="$expected_dir/$test_name/result.txt";
+my $f2="$expected_dir/test_results/$test_name/result.txt";
 
 my ($code1, $text1) = parse_test_file ($f1);
 my ($code2, $text2) = parse_test_file ($f2);

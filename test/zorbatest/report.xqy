@@ -21,9 +21,9 @@ td, th {{ border: solid black 1px; padding: 0.5em; }}
 <table summary="Acceptance failures">
 <tr><th rowspan="2">Test name</th><th colspan="2">Actual</th><th colspan="2">Expected</th></tr>
 <tr><th>Code</th><th>Message</th><th>Code</th><th>Message</th></tr>
-{ for $f in $failures return
+{ for $f in $failures let $name := fn:data ($f/@test) return
 <tr>
-<td>{fn:data ($f/@test)}</td>
+<td><a href="test_results/{$name}/">{$name}</a></td>
 <td>{$f/code/actual}</td><td>{$f/text/actual}</td>
 <td>{$f/code/expected}</td><td>{$f/text/expected}</td>
 </tr>
@@ -34,11 +34,22 @@ else <p>All tests passed.</p>
 }
 
 <h2>About this report</h2>
-<p>This report was created on { $now } for Zorba revision { $rev }. The last report was created on { $lastdate } for revision { $lastrev }. Since then, the following authors have committed changes: { fn:distinct-values ($svnLog//author) }.</p>
+
+<p>This report was created on { $now } for Zorba revision { $rev }.
+{ if ($lastdate) then
+<span>The <a href="../{ $lastdate }">last report</a> was created on { 
+$lastdate } for revision { $lastrev }.
+Since then, the following authors have committed changes: { fn:distinct-values ($svnLog//author) }.
+</span>
+else () }
+</p>
+
+{ if ($lastdate) then
 <table summary="changes">
 <tr><th>Author</th><th>Date</th><th>Message</th></tr>
 { for $entry in $svnLog//logentry return <tr><td>{$entry/author}</td><td>{$entry/date}</td><td>{$entry/msg}</td></tr> }
 </table>
+else () }
 
 </body>
 </html>

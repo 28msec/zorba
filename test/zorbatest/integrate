@@ -7,7 +7,7 @@ export ROOT=`pwd`
 export NOW=`date +%F-%T`
 
 test -d snapshots || mkdir snapshots
-export LASTDATE=`ls -r snapshots 2>/dev/null | head -1`
+export LASTDATE=`ls -r snapshots/*-*-*-*:*:* 2>/dev/null | head -1`
 if test $LASTDATE; then
     LASTREV=`cat snapshots/$LASTDATE/rev`
     echo Last date $LASTDATE, revision $LASTREV
@@ -24,7 +24,7 @@ if test "x$MODE" = "xlocal"; then
   export SRC=$ROOT/../..
 else
   export SRC=$ROOT/src
-  export REV=`svn update $SRC | perl -ne 'if (/revision ([0-9]+)/) { print $1; }' | tail -1 | cut -f4 -d' '`
+  export REV=`svn update $SRC | perl -ne 'if (/revision ([0-9]+)/) { print $1; }'`
   if test -z $REV; then echo Could not update sources; exit 1; fi
   if test "x$REV" = "x$LASTREV"; then echo No changes, exiting; exit; fi
 fi
@@ -35,13 +35,14 @@ fi
 
 echo Building for snapshot $NOW, revision $REV
 
-if test "$LASTREV" != "x" -a "x$REV" != "xlocal"; then
+rm -f svn_log.xml
+if test "x$LASTREV" != "x" -a "x$REV" != "xlocal"; then
     svn log --xml $SRC -r$LASTREV:$REV >svn_log.xml
 fi
-test -f svn_log.xml || echo '<?xml version="1.0" encoding="UTF-8"?><log />' >svn_log.xml
+test -f svn_log.xml -a -s svn_log.xml || echo '<?xml version="1.0" encoding="UTF-8"?><log />' >svn_log.xml
 
 
-rm -rf build
+#rm -rf build
 test -d build || mkdir build
 cd build
 $ROOT/compile > $ROOT/build_log.txt 2>&1 || { cd $ROOT; ./on_build_failure; exit 1; }
@@ -71,8 +72,10 @@ cd $SNAPSHOT
 
 $ROOT/process_test_results
 
-diff -qr test_results/acceptance $ROOT/testing/test_results/acceptance | grep -v '^Only in' | cut -f2 -d' ' | xargs -r -l1 dirname | xargs -r -l1 $ROOT/report_acceptance_failure $TESTS >acceptance_failures.xmlfrag
-test -s acceptance_failures.xmlfrag || export ACCEPTANCE_FAILURES=y
+cd test_results
+diff -qr acceptance $TESTS/test_results/acceptance | grep -v '^Only in' | cut -f2 -d' ' | xargs -r -l1 dirname | xargs -r -l1 $ROOT/report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag
+cd ..
+test -s acceptance_failures.xmlfrag && export ACCEPTANCE_FAILURES=y
 echo '<failures>' >acceptance_failures.xml
 cat acceptance_failures.xmlfrag >>acceptance_failures.xml
 echo '</failures>' >>acceptance_failures.xml
@@ -82,15 +85,17 @@ rm acceptance_failures.xmlfrag
 
 if test -d $TESTS; then do_tests; fi
 cp $ROOT/report.xqy .
-$ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV >report.html
+$ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV >index.html
 
 if test $ACCEPTANCE_FAILURES; then
-  echo Some acceptance tests failed, see $PWD/report.html
+  echo Some acceptance tests failed, see $PWD/index.html
 else
   echo All acceptance tests passed
 fi
 
-#if test "x$MODE" != "xlocal"; then
-#  echo "Please see attached report." | mutt -s "Zorba integration report" -a report.html `cat $ROOT/success_email.txt`
-#fi
+if test "x$MODE" != "xlocal"; then
+   rm -f $ROOT/snapshots/latest
+   ln -s $ROOT/snapshots/$NOW $ROOT/snapshots/latest
+#  echo "Please see attached report." | mutt -s "Zorba integration report" -a index.html `cat $ROOT/success_email.txt`
+fi
 
