@@ -177,7 +177,13 @@ public:
 	void resetImpl(IteratorTreeStateBlock& stateBlock);
 	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
+	
+	virtual int32_t getStateSize();
+	virtual int32_t getStateSizeOfSubtree();
+	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	
 	std::ostream&  _show(std::ostream& os) const;
+
 };
 
 

@@ -69,7 +69,6 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 bool normalize_visitor::begin_visit(const ArgList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
-// 	nodestack.push(NULL);
 	return true;
 }
 
@@ -1885,16 +1884,9 @@ cout << std::string(depth--, ' ') <<TRACE << endl;
 	
 }
 
-// FIXME The use of an argstack is not correct because of function calls like 'func1(a,func2(b,c),d)'! The arguments must be saved on the normal stack and not on a special one!
 void normalize_visitor::end_visit(const ArgList& v)
 {
 cout << std::string(depth--, ' ') << TRACE << ": ArgList" << endl;
-// 	clear_argstack();
-// 	while (true) {
-// 		expr_t e_h = pop_nodestack();
-// 		if (e_h==NULL) break;
-// 		argstack.push(e_h);
-// 	}
 }
 
 void normalize_visitor::end_visit(const AtomicType& v)
@@ -2665,7 +2657,8 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
-	//ve_h->set_varname(new QName(v.get_default_varname()));
+	rchandle<qname_expr> qname = new qname_expr(v.get_default_varname());
+	ve_h->set_varname(qname);
 	tse_h->set_default_varname(ve_h);
 
 	//d Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
@@ -2731,7 +2724,8 @@ void normalize_visitor::end_visit(const VarRef& v)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<var_expr> ve_h = new var_expr(v.get_location());
-	//ve_h->set_varname(new QName(v.get_varname()));
+	rchandle<qname_expr> qname = new qname_expr(v.get_varname());
+	ve_h->set_varname(qname);
 	nodestack.push(&*ve_h);
 }
 

@@ -32,21 +32,20 @@ SingletonIterator::~SingletonIterator()
 {
 }
 
+	Item_t 
+	SingletonIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+		BasicIteratorState* state;
+		STACK_INIT2(BasicIteratorState, state, stateBlock);
+		STACK_PUSH2(i_h, state);
+		STACK_END2();
+	}
 	
-Item_t 
-SingletonIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
-  BasicIterator::BasicIteratorState* state;
-  STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
-  STACK_PUSH2(i_h, state);
-  STACK_END2();
-}
-
-	
-void 
-SingletonIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
-  BasicIterator::BasicIteratorState* state;
-  state->reset();
-}
+	void 
+	SingletonIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
+		BasicIterator::BasicIteratorState* state;
+		GET_STATE(BasicIteratorState, state, stateBlock);
+		state->reset();
+	}
 	
 
 void 
@@ -82,55 +81,84 @@ SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset
 }
 /* end class SingletonIterator */
 
-
-Item_t MapIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
-{
-  Item_t item;
-  vector<var_iter_t>::const_iterator itv;
-
-  STACK_INIT();
-
-  while ( true )
+	/* begin class MapIterator */
+	Item_t
+	MapIterator::nextImpl ( IteratorTreeStateBlock& stateBlock )
 	{
-    item = this->consumeNext ( this->theInput, stateBlock );
-    itv = varv.begin();
-    for ( ; itv!=varv.end(); ++itv )
+		Item_t item;
+		vector<var_iter_t>::const_iterator itv;
+		BasicIteratorState *state;
+		STACK_INIT2 ( BasicIteratorState, state, stateBlock );
+	
+	
+		while ( true )
 		{
-      ( *itv )->bind ( item );
-    }
+			item = this->consumeNext ( this->theInput, stateBlock );
+			if ( item == NULL )
+				break;
+			itv = varv.begin();
+			for ( ; itv!=varv.end(); ++itv )
+			{
+				( *itv )->bind ( item );
+			}
+	
+			item = this->consumeNext ( this->theExpr, stateBlock );
+			while ( item != NULL )
+			{
+				STACK_PUSH2 ( item, state );
+				item = this->consumeNext ( this->theExpr, stateBlock );
+			}
+	
+			this->resetChild ( this->theExpr, stateBlock );
+		}
+		STACK_END2();
+	}
 
-		item = this->consumeNext ( this->theExpr, stateBlock );
-    while ( item != NULL )
-    {
-      STACK_PUSH ( item );
-      item = this->consumeNext ( this->theExpr, stateBlock );
-    }
+	void 
+	MapIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	{
+		this->resetChild ( this->theInput, stateBlock );
+		this->resetChild ( this->theExpr, stateBlock );
+	}
 
-    this->resetChild ( this->theExpr, stateBlock );
-  }
-  
-  STACK_END();
-}
+	void 
+	MapIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	{
+		this->releaseChildResources ( this->theInput, stateBlock );
+		this->releaseChildResources ( this->theExpr, stateBlock );
+	}
+	
+	int32_t
+	MapIterator::getStateSize()
+	{
+		return sizeof(BasicIteratorState);
+	}
+	
+	int32_t
+	MapIterator::getStateSizeOfSubtree()
+	{
+		return theInput->getStateSizeOfSubtree() 
+				+ theExpr->getStateSizeOfSubtree() 
+				+ this->getStateSize();
+	}
+	
+	void MapIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
+		this->stateOffset = offset;
+		offset += this->getStateSize();
+		
+		theInput->setOffset(stateBlock, offset);
+		theExpr->setOffset(stateBlock, offset);
+	}
 
-void MapIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
-{
-  this->resetChild ( this->theInput, stateBlock );
-  this->resetChild ( this->theExpr, stateBlock );
-}
-
-void MapIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
-{
-  this->releaseChildResources ( this->theInput, stateBlock );
-  this->releaseChildResources ( this->theExpr, stateBlock );
-}
-
-std::ostream& MapIterator::_show ( std::ostream& os )	const
-{
-  theInput->show ( os );
-  theExpr->show ( os );
-  return os;
-}
-
+	std::ostream& 
+	MapIterator::_show ( std::ostream& os )
+	const
+	{
+		theInput->show ( os );
+		theExpr->show ( os );
+		return os;
+	}
+	/* end class MapIterator */
 
 /* begin class EnclosedIterator */
 EnclosedIterator::EnclosedIterator(
