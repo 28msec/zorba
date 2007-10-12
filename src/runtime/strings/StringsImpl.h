@@ -37,50 +37,33 @@ class GenericCast;
 /* begin class CodepointsToStringIterator */
 class CodepointsToStringIterator : public UnaryBaseIterator<CodepointsToStringIterator>{
 public:
-	public:
-		CodepointsToStringIterator ( const yy::location& loc, Iterator_t& arg );
-		~CodepointsToStringIterator();
+		CodepointsToStringIterator ( const yy::location& loc, Iterator_t& arg )
+	:
+		UnaryBaseIterator<CodepointsToStringIterator>( loc, arg ){};
 
+		~CodepointsToStringIterator(){};
+public:
 		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
 };
-/* begin class CodepointsToStringIterator */
+/* end class CodepointsToStringIterator */
+
 
 /**
  * 7.2.2 fn:string-to-codepoints
  * --------------------*/
-class StringToCodepointsIterator : public Batcher<StringToCodepointsIterator>
+/*begin class StringToCodepointsIterator*/
+class StringToCodepointsIterator : public UnaryBaseIterator<StringToCodepointsIterator>
 {
 public:
-	StringToCodepointsIterator(
-		yy::location loc,
-		Iterator_t _argv)
+		StringToCodepointsIterator ( const yy::location& loc, Iterator_t& arg )
 	:
-		Batcher<StringToCodepointsIterator>(loc),
-		argv(_argv)
-	{}
+		UnaryBaseIterator<StringToCodepointsIterator>( loc, arg ){};
 
-		StringToCodepointsIterator(
-		const StringToCodepointsIterator& strtocp_it)
-	:
-		Batcher<StringToCodepointsIterator>(strtocp_it),
-		argv(strtocp_it.argv)
-	{}
-
-	~StringToCodepointsIterator() {}
+	~StringToCodepointsIterator() {};
 
 public:
 	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
-	std::ostream&  _show(std::ostream&) const;
-
-protected:
-	Iterator_t argv;
-	uint32_t cp;
-	std::vector<char> v;
-	char * c;
-	uint16_t vLength;
-}; /*class StringToCodepointsIterator*/
+}; /*end class StringToCodepointsIterator*/
 
 /**
  * 7.3.2 fn:compare

@@ -33,15 +33,6 @@ namespace xqp {
  *an error is raised [err:FOCH0001] ("Code point not valid.").
  *_______________________________________________________________________*/
 /* begin class CodepointsToStringIterator */
-CodepointsToStringIterator::CodepointsToStringIterator
-		( const yy::location& loc, Iterator_t& arg )
-	:
-		UnaryBaseIterator<CodepointsToStringIterator>( loc, arg )
-{}
-
-CodepointsToStringIterator::~CodepointsToStringIterator()
-{}
-
 Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	Item_t item;
 	Item_t resItem;
@@ -78,21 +69,20 @@ Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
  *If $arg is a zero-length string or the empty sequence,
  *the empty sequence is returned.
  *_______________________________________________________________________*/
-
-std::ostream& StringToCodepointsIterator::_show(std::ostream& os) const{
-	argv->show(os);
-	return os;
-}
-
+/* begin class StringToCodepointsIterator */
 Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
+/*
+	uint32_t cp;
+	std::vector<char> v;
+	char * c;
+	uint16_t vLength;
 	Item_t item;
 
-	STACK_INIT();
+	BasicIterator::BasicIteratorState* state;
+	STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
 
-	item = this->consumeNext(argv, stateBlock);
-	
-	if(&*item != NULL) {
-		
+	item = consumeNext ( theChild, stateBlock );
+	if ( item != NULL ){
 		vLength = (item->getStringValue().length()) + 1;
 		v.reserve(vLength);
 		std::strcpy(&v[0], item->getStringValue().c_str());
@@ -100,21 +90,16 @@ Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 
 		while( --vLength > 0 ){
 			cp = UTF8Decode(c);
-			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(cp));
+			STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(cp), state);
 		}
 	}
-	
-	STACK_PUSH(NULL);
-	STACK_END();
+	STACK_END2();
+*/
+	BasicIterator::BasicIteratorState* state;
+	STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+	STACK_END2();
 }
-
-void StringToCodepointsIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
-	this->resetChild(argv, stateBlock);
-}
-
-void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
-	this->releaseChildResources(argv, stateBlock);
-}
+/* end class StringToCodepointsIterator */
 
 /**
  *______________________________________________________________________

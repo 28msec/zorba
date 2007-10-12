@@ -179,7 +179,7 @@ bool library::static_init = false;
   DECL (fn_string_to_codepoints, fn_string_to_codepoints,
         (new QNameItem(XQUERY_FN_NS,"fn","string-to-codepoints"),
          xs_string,
-         xs_long));
+         xs_integer));
 
   DECL (fn_codepoint_equal, fn_codepoint_equal,
         (new QNameItem(XQUERY_FN_NS,"fn","codepoint-equal"),

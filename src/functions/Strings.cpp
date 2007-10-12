@@ -82,7 +82,7 @@ sequence_type_t fn_codepoints_to_string::type_check(
 bool fn_codepoints_to_string::validate_args(
 	vector<Iterator_t>& argv) const
 {
-	return (argv.size() == 1);
+	return true;
 }
 
 	
@@ -121,7 +121,7 @@ sequence_type_t fn_string_to_codepoints::type_check(
 bool fn_string_to_codepoints::validate_args(
 		vector<Iterator_t>& argv) const
 {
-	return ((argv.size() == 2) || (argv.size() == 3));
+	return true;
 }
 
 /**______________________________________________________________________
@@ -155,7 +155,7 @@ sequence_type_t fn_string_compare::type_check(
 bool fn_string_compare::validate_args(
 	vector<Iterator_t>& argv) const
 {
-	return (argv.size() >= 1);
+	return ((argv.size() == 2) || (argv.size() == 3));
 }
 
 /**______________________________________________________________________
