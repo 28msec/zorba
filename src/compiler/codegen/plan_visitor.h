@@ -32,9 +32,9 @@ public:
 	typedef rchandle<expr> expr_h_t;
 
 protected:
-	std::stack<Iterator_t> itstack;
+	std::stack<PlanIter_t> itstack;
 	// FIXME wrong for expressions like 'func1(a,b,func2(c,d),e)'
-	std::stack<Iterator_t> argstack;
+	std::stack<PlanIter_t> argstack;
 	std::stack<var_iter_t> timstack;
 
 public:
@@ -42,10 +42,10 @@ public:
 	~plan_visitor() {}
 
 public:
-	Iterator_t pop_itstack()
+	PlanIter_t pop_itstack()
 	{
 		if (itstack.empty()) return NULL;
-		Iterator_t it = itstack.top();
+		PlanIter_t it = itstack.top();
 		itstack.pop();
 		return it;
 	}

@@ -163,7 +163,7 @@ SingletonIterator::setOffset(PlanState& planState, int32_t& offset)
 /* begin class EnclosedIterator */
 EnclosedIterator::EnclosedIterator(
     const yy::location& loc,
-    Iterator_t& childIter)
+    PlanIter_t& childIter)
 	:
   UnaryBaseIterator<EnclosedIterator>(loc, childIter)
 {
@@ -255,7 +255,7 @@ void EnclosedIterator::EnclosedState::init()
 /* begin class ElementContentIterator */
 ElementContentIterator::ElementContentIterator(
     const yy::location& loc,
-    Iterator_t& childIter)
+    PlanIter_t& childIter)
 	:
   UnaryBaseIterator<ElementContentIterator>(loc, childIter)
 {
@@ -343,8 +343,8 @@ void ElementContentIterator::ElementContentState::init()
 ElementIterator::ElementIterator (
     const yy::location& loc,
     const Item_t& qname,
-    Iterator_t& children,
-    Iterator_t& attributes)
+    PlanIter_t& children,
+    PlanIter_t& attributes)
   :
   Batcher<ElementIterator> ( loc ),
   theQName ( qname ),
@@ -466,7 +466,7 @@ ElementIterator::setOffset(PlanState& planState, int32_t& offset)
 AttributeIterator::AttributeIterator (
     const yy::location& loc,
     const Item_t& qname,
-    Iterator_t& value)
+    PlanIter_t& value)
   :
   UnaryBaseIterator<AttributeIterator>( loc, value ),
   theQName(qname)
@@ -534,9 +534,9 @@ AttributeIterator::nextImpl(PlanState& planState)
 	/* start class IfThenElseIterator */
 	IfThenElseIterator::IfThenElseIterator (
 	    const yy::location& loc,
-	    Iterator_t& iterCond_arg,
-	    Iterator_t& iterThen_arg,
-	    Iterator_t& iterElse_arg,
+	    PlanIter_t& iterCond_arg,
+	    PlanIter_t& iterThen_arg,
+	    PlanIter_t& iterElse_arg,
 	    bool condIsBooleanIter_arg
 	) : Batcher<IfThenElseIterator> ( loc ), iterCond ( iterCond_arg ), iterThen ( iterThen_arg ),
 			iterElse ( iterElse_arg ), condIsBooleanIter ( condIsBooleanIter_arg )

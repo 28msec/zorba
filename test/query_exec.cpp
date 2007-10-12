@@ -141,7 +141,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << "Codegen:\n";
 				plan_visitor pvs;
 				e_h->accept(pvs);
-				Iterator_t it_h = pvs.pop_itstack();
+				PlanIter_t it_h = pvs.pop_itstack();
 				cout << endl;
 
 				//cout << "iterator type = " << typeid(*it_h).name() << endl;

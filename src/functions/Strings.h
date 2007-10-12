@@ -47,9 +47,9 @@ public:
 	~fn_codepoints_to_string() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 	
 
@@ -63,9 +63,9 @@ public:
 		~fn_string_to_codepoints() {}
 
 	public:
-		Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<Iterator_t>&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -83,9 +83,9 @@ class fn_string_compare: public function
 		~fn_string_compare() {}
 
 	public:
-		Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<Iterator_t>&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 /**
@@ -98,9 +98,9 @@ class fn_codepoint_equal: public function
 		~fn_codepoint_equal() {}
 
 	public:
-		Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<Iterator_t>&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 /**______________________________________________________________________
@@ -118,9 +118,9 @@ class fn_concat: public function
 		~fn_concat() {}
 
 	public:
-		Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<Iterator_t>&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 /**
@@ -133,9 +133,9 @@ class fn_string_join: public function
 		~fn_string_join() {}
 
 	public:
-		Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 		sequence_type_t type_check(signature&) const;
-		bool validate_args(std::vector<Iterator_t>&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 } /* namespace xqp */

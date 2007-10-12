@@ -19,10 +19,10 @@ namespace xqp
 	class NaryBaseIterator : public Batcher<IterType>
 	{
 		protected:
-			std::vector<Iterator_t> theChildren;
+			std::vector<PlanIter_t> theChildren;
 
 		public:
-			NaryBaseIterator ( const yy::location& loc, std::vector<Iterator_t>& args );
+			NaryBaseIterator ( const yy::location& loc, std::vector<PlanIter_t>& args );
 			virtual ~NaryBaseIterator();
 
 			void resetImpl ( PlanState& planState );
@@ -37,7 +37,7 @@ namespace xqp
 	template <class IterType>
 	NaryBaseIterator<IterType>::NaryBaseIterator (
 	    const yy::location& loc,
-	    std::vector<Iterator_t>& args )
+	    std::vector<PlanIter_t>& args )
 			:
 			Batcher<IterType> ( loc ), theChildren ( args )
 	{
@@ -58,7 +58,7 @@ namespace xqp
 		GET_STATE ( PlanIterator::PlanIteratorState, state, planState );
 		state->reset();
 
-		std::vector<Iterator_t>::iterator iter = theChildren.begin();
+		std::vector<PlanIter_t>::iterator iter = theChildren.begin();
 		for ( ; iter != theChildren.end(); ++iter )
 		{
 			this->resetChild ( *iter, planState );
@@ -70,7 +70,7 @@ namespace xqp
 	void
 	NaryBaseIterator<IterType>::releaseResourcesImpl ( PlanState& planState )
 	{
-		std::vector<Iterator_t>::iterator iter = theChildren.begin();
+		std::vector<PlanIter_t>::iterator iter = theChildren.begin();
 		for ( ; iter != theChildren.end(); ++iter )
 		{
 			this->releaseChildResources ( *iter, planState );
@@ -92,7 +92,7 @@ namespace xqp
 	{
 		int32_t size = 0;
 
-		std::vector<Iterator_t>::const_iterator iter = theChildren.begin();
+		std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
 		for ( ; iter != theChildren.end(); ++iter )
 		{
 			size += ( *iter )->getStateSizeOfSubtree();
@@ -111,7 +111,7 @@ namespace xqp
 		this->stateOffset = offset;
 		offset += this->getStateSize();
 
-		std::vector<Iterator_t>::iterator iter = theChildren.begin();
+		std::vector<PlanIter_t>::iterator iter = theChildren.begin();
 		for ( ; iter != theChildren.end(); ++iter )
 		{
 			( *iter )->setOffset ( planState, offset );

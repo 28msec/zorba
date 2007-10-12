@@ -8,7 +8,7 @@
 
 namespace xqp
 {
-	typedef rchandle<PlanIterator> Iterator_t;
+	typedef rchandle<PlanIterator> PlanIter_t;
 
 	SimpleCollection::SimpleCollection()
 	{
@@ -19,14 +19,14 @@ namespace xqp
 
 	}
 
-	Iterator_t SimpleCollection::getIterator ( bool isNeeded )
+	PlanIter_t SimpleCollection::getIterator ( bool isNeeded )
 	{
 		return rchandle<PlanIterator> ( NULL );
 	}
 	void SimpleCollection::addToCollection ( Item_t item, int32_t position )
 	{
 	}
-	void SimpleCollection::addToCollection ( Iterator_t& items, int32_t position )
+	void SimpleCollection::addToCollection ( PlanIter_t& items, int32_t position )
 	{
 	}
 	void SimpleCollection::addToCollection ( std::iostream& stream, int32_t position )

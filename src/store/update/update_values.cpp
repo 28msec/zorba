@@ -29,7 +29,7 @@ insert_before_value::~insert_before_value()
 {
 }
 
-Iterator_t insert_before_value::new_nodes() const
+PlanIter_t insert_before_value::new_nodes() const
 {
 	return NULL;
 }
@@ -51,7 +51,7 @@ insert_after_value::~insert_after_value()
 {
 }
 
-Iterator_t insert_after_value::new_nodes() const
+PlanIter_t insert_after_value::new_nodes() const
 {
 	return NULL;
 }
@@ -73,7 +73,7 @@ insert_into_value::~insert_into_value()
 {
 }
 
-Iterator_t insert_into_value::new_nodes() const
+PlanIter_t insert_into_value::new_nodes() const
 {
 	return NULL;
 }
@@ -95,7 +95,7 @@ insert_into_as_first_value::~insert_into_as_first_value()
 {
 }
 
-Iterator_t insert_into_as_first_value::new_nodes() const
+PlanIter_t insert_into_as_first_value::new_nodes() const
 {
 	return NULL;
 }
@@ -117,7 +117,7 @@ insert_into_as_last_value::~insert_into_as_last_value()
 {
 }
 
-Iterator_t insert_into_as_last_value::new_nodes() const
+PlanIter_t insert_into_as_last_value::new_nodes() const
 {
 	return NULL;
 }
@@ -139,7 +139,7 @@ insert_attributes_value::~insert_attributes_value()
 {
 }
 
-Iterator_t insert_attributes_value::new_nodes() const
+PlanIter_t insert_attributes_value::new_nodes() const
 {
 	return NULL;
 }
@@ -176,7 +176,7 @@ replace_node_value::~replace_node_value()
 {
 }
 
-Iterator_t replace_node_value::new_nodes() const
+PlanIter_t replace_node_value::new_nodes() const
 {
 	return NULL;
 }

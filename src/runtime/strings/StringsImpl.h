@@ -38,7 +38,7 @@ class GenericCast;
 /* begin class CodepointsToStringIterator */
 class CodepointsToStringIterator : public UnaryBaseIterator<CodepointsToStringIterator>{
 public:
-		CodepointsToStringIterator ( const yy::location& loc, Iterator_t& arg )
+		CodepointsToStringIterator ( const yy::location& loc, PlanIter_t& arg )
 	:
 		UnaryBaseIterator<CodepointsToStringIterator>( loc, arg ){};
 
@@ -56,7 +56,7 @@ public:
 class StringToCodepointsIterator : public UnaryBaseIterator<StringToCodepointsIterator>
 {
 public:
-		StringToCodepointsIterator ( const yy::location& loc, Iterator_t& arg )
+		StringToCodepointsIterator ( const yy::location& loc, PlanIter_t& arg )
 	:
 		UnaryBaseIterator<StringToCodepointsIterator>( loc, arg ){};
 
@@ -73,7 +73,7 @@ public:
 
 class CompareStrIterator: public NaryBaseIterator<CompareStrIterator> {
 	public:
-		CompareStrIterator ( const yy::location& loc, std::vector<Iterator_t>& args );
+		CompareStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args );
 		~CompareStrIterator();
 
 		Item_t nextImpl(PlanState& planState);
@@ -89,8 +89,8 @@ class CodepointEqualIterator : public Batcher<CodepointEqualIterator>
 public:
 	CodepointEqualIterator(
 		yy::location loc,
-		Iterator_t _argv0,
-		Iterator_t _argv1)
+		PlanIter_t _argv0,
+		PlanIter_t _argv1)
 	:
 		Batcher<CodepointEqualIterator>(loc),
 		argv0(_argv0),
@@ -114,8 +114,8 @@ public:
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	Iterator_t argv0;
-	Iterator_t argv1;
+	PlanIter_t argv0;
+	PlanIter_t argv1;
 
 	std::vector<char> v0;
 	std::vector<char> v1;
@@ -133,7 +133,7 @@ class ConcatFnIterator : public Batcher<ConcatFnIterator>
 public:
 	ConcatFnIterator(
 		yy::location loc,
-		const vector<Iterator_t>& _argv)
+		const vector<PlanIter_t>& _argv)
 	:
 	Batcher<ConcatFnIterator>(loc),
 		argv(_argv),
@@ -161,8 +161,8 @@ public:
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	std::vector<Iterator_t> argv;
-	Iterator_t currit_h;
+	std::vector<PlanIter_t> argv;
+	PlanIter_t currit_h;
 	uint32_t cursor;
 	std::string res;
 
@@ -177,7 +177,7 @@ class StringJoinIterator : public Batcher<StringJoinIterator>
 public:
 	StringJoinIterator(
 		yy::location loc,
-		const vector<Iterator_t>& _argv)
+		const vector<PlanIter_t>& _argv)
 	:
 		Batcher<StringJoinIterator>(loc),
 		argv(_argv),
@@ -205,8 +205,8 @@ public:
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
-	std::vector<Iterator_t> argv;
-	Iterator_t currit_h;
+	std::vector<PlanIter_t> argv;
+	PlanIter_t currit_h;
 	uint32_t cursor;
 	std::string res;
 

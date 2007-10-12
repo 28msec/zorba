@@ -29,7 +29,7 @@ namespace xqp
 	class Item;
 	typedef rchandle<Item> Item_t;
 	class PlanIterator;
-	typedef rchandle<PlanIterator> Iterator_t;
+	typedef rchandle<PlanIterator> PlanIter_t;
 	/*______________________________________________________________________
 	|
 	|	'item' - top of the XQuery value hierarchy,
@@ -349,7 +349,7 @@ namespace xqp
 			/** Accessor for element node
 			 	*  @return  attribute*
 			 	*/
-			virtual Iterator_t getAttributes() const
+			virtual PlanIter_t getAttributes() const
 			{
 				this->showError();
 				return NULL;
@@ -368,7 +368,7 @@ namespace xqp
 			/** Accessor for document node, element node
 			 	*  @return  node*
 			 	*/
-			virtual Iterator_t getChildren() const
+			virtual PlanIter_t getChildren() const
 			{
 				this->showError();
 				return NULL;
@@ -414,7 +414,7 @@ namespace xqp
 			/** Accessor for element node
 			 *  @return  node*
 			 */
-			virtual Iterator_t getNamespaceNodes() const
+			virtual PlanIter_t getNamespaceNodes() const
 			{
 				this->showError();
 				return NULL;
@@ -463,7 +463,7 @@ namespace xqp
 				*
 			  * @return typedValue?
 			  */
-			virtual Iterator_t getTypedValue() const
+			virtual PlanIter_t getTypedValue() const
 			{
 				this->showError();
 				return NULL;

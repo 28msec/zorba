@@ -49,7 +49,7 @@ namespace __gnu_cxx{
        typedef typename iterator_traits<_Iterator>::reference reference;
        typedef typename iterator_traits<_Iterator>::pointer   pointer;
  
-       typedef _Iterator _Iterator_type;
+       typedef _Iterator _PlanIter_type;
  
        __normal_iterator() : _M_current(_Iterator()) { }
  

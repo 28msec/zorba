@@ -20,7 +20,7 @@ namespace xqp {
 
 template <class Object> class rchandle;
 
-typedef rchandle<class PlanIterator> Iterator_t;
+typedef rchandle<class PlanIterator> PlanIter_t;
 
 class function : public rcobject
 {
@@ -38,13 +38,13 @@ public:
 	void set_signature(signature& _sig) { sig = _sig; }
 
 	// codegen: functor specification
-	virtual Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>& argv) const = 0;
+	virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const = 0;
 
 	// polymorphic type inference
 	virtual sequence_type_t type_check(signature&) const = 0;
 
 	// runtime arg validation: XXX move this out
-	virtual bool validate_args(std::vector<Iterator_t>& argv) const = 0;
+	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;
 
 };
 

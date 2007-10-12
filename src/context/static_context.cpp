@@ -87,7 +87,7 @@ void static_context::init(
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
-Iterator_t static_context::default_function_namespace() const
+PlanIter_t static_context::default_function_namespace() const
 {
 	return context_value(default_function_ns_key);
 }
@@ -95,26 +95,26 @@ Iterator_t static_context::default_function_namespace() const
 void static_context::set_default_function_namespace(
 	const namespace_node* nn_p)
 {
-	Iterator_t it_h = new SingletonIterator(yy::location(), (Item*)nn_p);
+	PlanIter_t it_h = new SingletonIterator(yy::location(), (Item*)nn_p);
 	keymap.put(default_function_ns_key,it_h);
 }
 
-Iterator_t static_context::in_scope_schema_types() const
+PlanIter_t static_context::in_scope_schema_types() const
 {
 	return context_value(in_scope_schema_types_key);
 }
 
-Iterator_t static_context::in_scope_element_decls() const
+PlanIter_t static_context::in_scope_element_decls() const
 {
 	return context_value(in_scope_element_decls_key);
 }
 
-Iterator_t static_context::in_scope_attribute_decls() const
+PlanIter_t static_context::in_scope_attribute_decls() const
 {
 	return context_value(in_scope_attribute_decls_key);
 }
 
-Iterator_t static_context::collations() const
+PlanIter_t static_context::collations() const
 {
 	return context_value(collations_key);
 }
@@ -122,7 +122,7 @@ Iterator_t static_context::collations() const
 static_context::construction_mode_t 
 static_context::construction_mode() const
 {
-	Iterator_t it_h = context_value(construction_mode_key);
+	PlanIter_t it_h = context_value(construction_mode_key);
 	IteratorWrapper iw(it_h);
 	string mode = iw.next()->getStringProperty();
 	if (mode=="preserve") return cons_preserve;
@@ -132,7 +132,7 @@ static_context::construction_mode() const
 static_context::order_empty_mode_t 
 static_context::order_empty_mode() const
 {
-	Iterator_t it_h = context_value(order_empty_mode_key);
+	PlanIter_t it_h = context_value(order_empty_mode_key);
 	IteratorWrapper iw(it_h);
 	string mode = iw.next()->getStringProperty();
 	if (mode=="empty_greatest") return empty_greatest;
@@ -141,7 +141,7 @@ static_context::order_empty_mode() const
 
 static_context::boundary_space_mode_t static_context::boundary_space_mode() const
 {
-	Iterator_t it_h = context_value(boundary_space_mode_key);
+	PlanIter_t it_h = context_value(boundary_space_mode_key);
 	IteratorWrapper iw(it_h);
 	string mode = iw.next()->getStringProperty();
 	if (mode=="preserve_space") return preserve_space;
@@ -150,7 +150,7 @@ static_context::boundary_space_mode_t static_context::boundary_space_mode() cons
 
 static_context::inherit_mode_t static_context::inherit_mode() const
 {
-	Iterator_t it_h = context_value(inherit_mode_key);
+	PlanIter_t it_h = context_value(inherit_mode_key);
 	IteratorWrapper iw(it_h);
 	string mode = iw.next()->getStringProperty();
 	if (mode=="inherit_ns") return inherit_ns;
@@ -159,7 +159,7 @@ static_context::inherit_mode_t static_context::inherit_mode() const
 
 static_context::preserve_mode_t static_context::preserve_mode() const
 {
-	Iterator_t it_h = context_value(preserve_mode_key);
+	PlanIter_t it_h = context_value(preserve_mode_key);
 	IteratorWrapper iw(it_h);
 	string mode = iw.next()->getStringProperty();
 	if (mode=="preserve_ns") return preserve_ns;
@@ -170,7 +170,7 @@ void static_context::set_construction_mode(
 	enum construction_mode_t v)
 {
 	string mode = (v==cons_preserve?"cons_preserve":"cons_strip");
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(construction_mode_key, it_h);
 }
 
@@ -178,7 +178,7 @@ void static_context::set_order_empty_mode(
 	enum order_empty_mode_t v)
 {
 	string mode = (v==empty_greatest?"empty_greatest":"empty_least");
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(order_empty_mode_key, it_h);
 }
 
@@ -186,7 +186,7 @@ void static_context::set_boundary_space_mode(
 	enum boundary_space_mode_t v)
 {
 	string mode = (v==preserve_space?"preserve_space":"strip_space");
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(boundary_space_mode_key, it_h);
 }
 
@@ -194,7 +194,7 @@ void static_context::set_inherit_mode(
 	enum inherit_mode_t v)
 {
 	string mode = (v==inherit_ns?"inherit_ns":"no_inherit_ns");
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(inherit_mode_key, it_h);
 }
 
@@ -202,13 +202,13 @@ void static_context::set_preserve_mode(
 	enum preserve_mode_t v)
 {
 	string mode = (v==preserve_ns?"preserve_ns":"no_preserve_ns");
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(preserve_mode_key, it_h);
 }
 
 const Item& static_context::get_default_collation() const
 {
-	Iterator_t it_h = context_value(default_collation_key);
+	PlanIter_t it_h = context_value(default_collation_key);
 	IteratorWrapper iw(it_h);
 	Item_t i_h = iw.next();
 	return *i_h;
@@ -216,7 +216,7 @@ const Item& static_context::get_default_collation() const
 
 std::string static_context::get_baseuri() const
 {
-	Iterator_t it_h = context_value(baseuri_key);
+	PlanIter_t it_h = context_value(baseuri_key);
 	IteratorWrapper iw(it_h);
 	Item_t i_h = iw.next();
 	return i_h->getStringProperty();
@@ -224,13 +224,13 @@ std::string static_context::get_baseuri() const
 
 void static_context::set_default_collation(const string& uri)
 {
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(uri));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(uri));
 	keymap.put(default_collation_key, it_h);
 }
 
 void static_context::set_baseuri(const std::string& uri)
 {
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(uri));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(uri));
 	keymap.put(default_collation_key, it_h);
 }
 

@@ -14,10 +14,10 @@ namespace xqp {
 
 fn_data_func::fn_data_func ( const signature& sig ) : function ( sig ) {}
 
-Iterator_t
+PlanIter_t
 fn_data_func::operator() (
     const yy::location& loc,
-    vector<Iterator_t>& argv ) const
+    vector<PlanIter_t>& argv ) const
 {
   if ( !validate_args ( argv ) )
 	{
@@ -41,7 +41,7 @@ fn_data_func::type_check (
 
 
 bool
-fn_data_func::validate_args ( vector<Iterator_t>& argv ) const
+fn_data_func::validate_args ( vector<PlanIter_t>& argv ) const
 {
   return ( argv.size() == 1 );
 }
@@ -56,9 +56,9 @@ fn_root_func::fn_root_func(const signature& sig) : function (sig)
 }
 
 
-Iterator_t fn_root_func::operator() (
+PlanIter_t fn_root_func::operator() (
     const yy::location& loc,
-    vector<Iterator_t>& argv) const
+    vector<PlanIter_t>& argv) const
 {
   if (!validate_args(argv))
 	{
@@ -79,7 +79,7 @@ TypeCode fn_root_func::type_check(signature& sig) const
 }
 
 
-bool fn_root_func::validate_args(vector<Iterator_t>& argv) const
+bool fn_root_func::validate_args(vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 1);
 }

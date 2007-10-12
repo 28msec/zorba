@@ -122,7 +122,7 @@ Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
 /* begin class CompareStrIterator */
 
 CompareStrIterator::CompareStrIterator
-		( const yy::location& loc, std::vector<Iterator_t>& args )
+		( const yy::location& loc, std::vector<PlanIter_t>& args )
 	:
 		NaryBaseIterator<CompareStrIterator>( loc, args )
 {}
@@ -271,7 +271,7 @@ void CodepointEqualIterator::releaseResourcesImpl(PlanState& planState) {
 std::ostream& ConcatFnIterator::_show(std::ostream& os)
 		const
 {
-	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		(*iter)->show(os);
 	}
@@ -305,14 +305,14 @@ Item_t ConcatFnIterator::nextImpl(PlanState& planState) {
 }
 
 void ConcatFnIterator::resetImpl(PlanState& planState) {
-	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter, planState);
 	}
 }
 
 void ConcatFnIterator::releaseResourcesImpl(PlanState& planState) {
-	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter, planState);
 	}
@@ -341,7 +341,7 @@ void ConcatFnIterator::releaseResourcesImpl(PlanState& planState) {
 std::ostream& StringJoinIterator::_show(std::ostream& os)
 		const
 {
-	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		(*iter)->show(os);
 	}
@@ -357,14 +357,14 @@ Item_t StringJoinIterator::nextImpl(PlanState& planState) {
 }
 
 void StringJoinIterator::resetImpl(PlanState& planState) {
-	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter, planState);
 	}
 }
 
 void StringJoinIterator::releaseResourcesImpl(PlanState& planState) {
-	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter, planState);
 	}

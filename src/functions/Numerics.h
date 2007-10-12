@@ -37,9 +37,9 @@ public:
 	~op_numeric_add() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 class op_numeric_add_int : public function
@@ -49,9 +49,9 @@ public:
 	~op_numeric_add_int() {}
 
 public:
-	Iterator_t operator()(const yy::location&, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location&, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -64,9 +64,9 @@ public:
 	~op_numeric_subtract() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -79,9 +79,9 @@ public:
 	~op_numeric_multiply() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -94,9 +94,9 @@ public:
 	~op_numeric_divide() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.2.5 op:numeric-integer-divide
@@ -108,9 +108,9 @@ public:
 	~op_numeric_integer_divide() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.2.6 op:numeric-mod
@@ -122,9 +122,9 @@ public:
 	~op_numeric_mod() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.2.7 op:numeric-unary-plus
@@ -136,9 +136,9 @@ public:
 	~op_numeric_unary_plus() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.2.8 op:numeric-unary-minus
@@ -150,9 +150,9 @@ public:
 	~op_numeric_unary_minus() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -181,9 +181,9 @@ public:
 	~fn_abs() {}
 
 public:
-	Iterator_t operator()( const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 // 6.4.2 fn:ceiling
@@ -202,9 +202,9 @@ public:
 	~zor_numgen() {}
 	
 public:
-	Iterator_t operator()( const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 }	/* namespace xqp */

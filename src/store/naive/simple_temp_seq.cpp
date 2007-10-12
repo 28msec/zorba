@@ -10,9 +10,9 @@
 
 namespace xqp
 {
-	typedef rchandle<PlanIterator> Iterator_t;
+	typedef rchandle<PlanIterator> PlanIter_t;
 
-	SimpleTempSeq::SimpleTempSeq ( Iterator_t iterator )
+	SimpleTempSeq::SimpleTempSeq ( PlanIter_t iterator )
 	{
 		this->loc = iterator->loc;
 		IteratorWrapper iw(iterator);
@@ -26,32 +26,32 @@ namespace xqp
 	SimpleTempSeq::~SimpleTempSeq()
 	{	}
 
-	Iterator_t 
+	PlanIter_t 
 	SimpleTempSeq::getIterator()
 	{
 		return new SimpleTempSeq::Iterator ( this->loc, &this->items );
 	}
 	
-	Iterator_t 
+	PlanIter_t 
 	SimpleTempSeq::getIterator ( int32_t startPos, int32_t endPos, bool streaming )
 	{
 		return rchandle<PlanIterator> ( NULL );
 	}
 	
-	Iterator_t 
-	SimpleTempSeq::getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& vars, bool streaming )
+	PlanIter_t 
+	SimpleTempSeq::getIterator ( int32_t startPos, PlanIter_t function, const std::vector<var_iterator>& vars, bool streaming )
 	{
 		return rchandle<PlanIterator> ( NULL );
 	}
 	
-	Iterator_t 
+	PlanIter_t 
 	SimpleTempSeq::getIterator ( const std::vector<int32_t>& positions, bool streaming )
 	{
 		return rchandle<PlanIterator> ( NULL );
 	}
 	
-	Iterator_t 
-	SimpleTempSeq::getIterator ( Iterator_t positions, bool streaming )
+	PlanIter_t 
+	SimpleTempSeq::getIterator ( PlanIter_t positions, bool streaming )
 	{
 		return rchandle<PlanIterator> ( NULL );
 	}

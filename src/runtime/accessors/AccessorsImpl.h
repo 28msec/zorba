@@ -19,13 +19,13 @@ namespace xqp {
 class FnDataIterator : public Batcher<FnDataIterator>
 {
 private:
-  Iterator_t argument;
+  PlanIter_t argument;
 		
   // used to save the current typed value in the nextImpl method
-  Iterator_t curTypedValue;
+  PlanIter_t curTypedValue;
 	
 public:
-  FnDataIterator ( const yy::location& loc, Iterator_t& arg0 )
+  FnDataIterator ( const yy::location& loc, PlanIter_t& arg0 )
 		:
 		Batcher<FnDataIterator> ( loc ), argument(arg0) {}
     ~FnDataIterator() {}
@@ -40,10 +40,10 @@ public:
 class FnRootIterator : public Batcher<FnRootIterator>
 {
 private:
-  Iterator_t theInput;
+  PlanIter_t theInput;
 		
 public:
-  FnRootIterator(const yy::location& loc, Iterator_t& input)
+  FnRootIterator(const yy::location& loc, PlanIter_t& input)
 		:
 		Batcher<FnRootIterator>(loc), theInput(input) {}
     ~FnRootIterator() {}

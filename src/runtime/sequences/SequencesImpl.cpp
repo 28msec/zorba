@@ -37,7 +37,7 @@ Item* fn_doc_fname_p;
 
 ConcatIterator::ConcatIterator(
 	yy::location loc,
-	const vector<Iterator_t>& _argv)
+	const vector<PlanIter_t>& _argv)
 :
 	Batcher<ConcatIterator>(loc),
 	argv(_argv)
@@ -51,7 +51,7 @@ std::ostream&
 ConcatIterator::_show(std::ostream& os)
 const
 {
-	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		(*iter)->show(os);
 	}
@@ -82,7 +82,7 @@ ConcatIterator::resetImpl(PlanState& planState) {
 	GET_STATE(ConcatIteratorState, state, planState);
 	state->reset();
 	
-	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->resetChild(*iter, planState);
 	}
@@ -90,7 +90,7 @@ ConcatIterator::resetImpl(PlanState& planState) {
 
 void 
 ConcatIterator::releaseResourcesImpl(PlanState& planState) {
-	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		this->releaseChildResources(*iter, planState);
 	}
@@ -105,7 +105,7 @@ int32_t
 ConcatIterator::getStateSizeOfSubtree() {
 	int32_t size = 0;
 	
-	std::vector<Iterator_t>::const_iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		size += (*iter)->getStateSizeOfSubtree();
 	}
@@ -118,7 +118,7 @@ ConcatIterator::setOffset(PlanState& planState, int32_t& offset) {
 	this->stateOffset = offset;
 	offset += this->getStateSize();
 	
-	std::vector<Iterator_t>::iterator iter = this->argv.begin();
+	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
 		(*iter)->setOffset(planState, offset);
 	}

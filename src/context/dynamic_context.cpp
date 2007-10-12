@@ -72,7 +72,7 @@ void dynamic_context::init(
 const Item&
 dynamic_context::default_element_type_namespace() const
 {
-	Iterator_t it_h = context_value(default_element_type_ns_key);
+	PlanIter_t it_h = context_value(default_element_type_ns_key);
 	IteratorWrapper iw(it_h);
 	Item_t i_h = iw.next();
 	return dynamic_cast<const Item&>(*i_h);
@@ -81,7 +81,7 @@ dynamic_context::default_element_type_namespace() const
 void dynamic_context::set_default_element_type_namespace(
 	Item& nn_p)
 {
-	Iterator_t it_h = new SingletonIterator(yy::location(), &nn_p);
+	PlanIter_t it_h = new SingletonIterator(yy::location(), &nn_p);
 	keymap.put(default_element_type_ns_key,it_h);
 }
 
@@ -89,7 +89,7 @@ void add_namespace(const Item*)
 {
 }
 
-Iterator_t dynamic_context::namespaces() const
+PlanIter_t dynamic_context::namespaces() const
 {
 	return context_value(namespaces_key);
 }
@@ -101,7 +101,7 @@ sequence_type_t dynamic_context::context_item_type() const
 
 dynamic_context::ordering_mode_t dynamic_context::ordering_mode() const
 {
-	Iterator_t it_h = context_value(ordering_mode_key);
+	PlanIter_t it_h = context_value(ordering_mode_key);
 	IteratorWrapper iw(it_h);
 	Item_t i_h = iw.next();
 	string mode =i_h->getStringProperty();
@@ -119,7 +119,7 @@ void dynamic_context::set_ordering_mode(
 	enum ordering_mode_t v)
 {
 	string mode = (v==ordered?"ordered":"unordered");
-	Iterator_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
+	PlanIter_t it_h = new SingletonIterator(yy::location(), this->itemFactory_p->createString(mode));
 	keymap.put(ordering_mode_key, it_h);
 }
 

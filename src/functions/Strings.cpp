@@ -64,9 +64,9 @@ fn_codepoints_to_string::fn_codepoints_to_string(
 {
 }
 
-Iterator_t fn_codepoints_to_string::operator()(
+PlanIter_t fn_codepoints_to_string::operator()(
   const yy::location& loc,
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv))
 			return NULL;
@@ -80,7 +80,7 @@ sequence_type_t fn_codepoints_to_string::type_check(
 }
 
 bool fn_codepoints_to_string::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -103,9 +103,9 @@ fn_string_to_codepoints::fn_string_to_codepoints(
 	{
 	}
 
-	Iterator_t fn_string_to_codepoints::operator()(
+	PlanIter_t fn_string_to_codepoints::operator()(
 	const yy::location& loc,
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
@@ -119,7 +119,7 @@ sequence_type_t fn_string_to_codepoints::type_check(
 }
 
 bool fn_string_to_codepoints::validate_args(
-		vector<Iterator_t>& argv) const
+		vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -137,9 +137,9 @@ fn_string_compare::fn_string_compare(
 {
 }
 
-Iterator_t fn_string_compare::operator()(
+PlanIter_t fn_string_compare::operator()(
   const yy::location& loc,
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv))
 			return NULL;
@@ -153,7 +153,7 @@ sequence_type_t fn_string_compare::type_check(
 }
 
 bool fn_string_compare::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return ((argv.size() == 2) || (argv.size() == 3));
 }
@@ -180,9 +180,9 @@ fn_codepoint_equal::fn_codepoint_equal(
 {
 }
 
-Iterator_t fn_codepoint_equal::operator()(
+PlanIter_t fn_codepoint_equal::operator()(
 	const yy::location& loc,
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
@@ -196,7 +196,7 @@ sequence_type_t fn_codepoint_equal::type_check(
 }
 
 bool fn_codepoint_equal::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size() == 2);
 }
@@ -226,16 +226,16 @@ fn_concat::fn_concat(
 {
 }
 
-Iterator_t fn_concat::operator()(
+PlanIter_t fn_concat::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ConcatFnIterator(loc,argv);
 }
 
 bool fn_concat::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size() >= 2);
 }
@@ -270,9 +270,9 @@ fn_string_join::fn_string_join(
 {
 }
 
-Iterator_t fn_string_join::operator()(
+PlanIter_t fn_string_join::operator()(
   const yy::location& loc,
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv))
 			return NULL;
@@ -286,7 +286,7 @@ sequence_type_t fn_string_join::type_check(
 }
 
 bool fn_string_join::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }

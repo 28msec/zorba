@@ -60,9 +60,9 @@ namespace xqp
 
 			virtual TypeCode getNodeKind() const;
 			virtual xqp_string getBaseURI() const;
-			virtual Iterator_t getChildren() const;
+			virtual PlanIter_t getChildren() const;
 			virtual xqp_string getDocumentURI() const;
-			virtual Iterator_t getTypedValue() const;
+			virtual PlanIter_t getTypedValue() const;
 
 			// Used when zorba supports DTD
 // 		xqp_string getUnparsedEntityPublicId() const;
@@ -107,13 +107,13 @@ namespace xqp
 			virtual xqp_string getStringProperty() const;
 
 			virtual TypeCode getNodeKind() const;
-			virtual Iterator_t getAttributes() const;
-			virtual Iterator_t getChildren() const;
+			virtual PlanIter_t getAttributes() const;
+			virtual PlanIter_t getChildren() const;
 			virtual std::set<std::pair<xqp_string, xqp_string> > getNamespaceBindings() const;
-			virtual Iterator_t getNamespaceNodes() const;
+			virtual PlanIter_t getNamespaceNodes() const;
 			virtual bool getNilled() const;
 			virtual Item_t getNodeName() const;
-			virtual Iterator_t getTypedValue() const;
+			virtual PlanIter_t getTypedValue() const;
 			// Not implemented till types are supported
 // 		Item_t getTypeName() const;
 			virtual xqp_string show() const;
@@ -161,7 +161,7 @@ namespace xqp
 			virtual bool isId() const;
 			virtual bool isIdrefs() const;
 			virtual Item_t getNodeName() const;
-			virtual Iterator_t getTypedValue() const;
+			virtual PlanIter_t getTypedValue() const;
 			// Not implemented till types are supported
 // 		Item_t getTypeName() const;
 			virtual xqp_string show() const;
@@ -182,7 +182,7 @@ namespace xqp
 			virtual xqp_string getStringProperty() const;
 
 			virtual TypeCode getNodeKind() const;
-			virtual Iterator_t getTypedValue() const;
+			virtual PlanIter_t getTypedValue() const;
 			virtual xqp_string getNamespace() const;
 			virtual xqp_string getPrefix() const;
 	}; /* class NamespaceNode */
@@ -204,7 +204,7 @@ namespace xqp
 			virtual xqp_string getBaseURI() const;
 
 			virtual TypeCode getNodeKind() const;
-			virtual Iterator_t getTypedValue() const;
+			virtual PlanIter_t getTypedValue() const;
 			virtual xqp_string getTarget() const;
 			virtual xqp_string getStringValue() const;
 	}; /* class PiNode */
@@ -223,7 +223,7 @@ namespace xqp
 			virtual xqp_string getStringProperty() const;
 
 			virtual TypeCode getNodeKind() const;
-			virtual Iterator_t getTypedValue() const;
+			virtual PlanIter_t getTypedValue() const;
 			virtual xqp_string getStringValue() const;
 	}; /* class CommentNode */
 
@@ -242,7 +242,7 @@ namespace xqp
 			virtual xqp_string getStringProperty() const;
 
 			virtual TypeCode getNodeKind() const;
-			virtual Iterator_t getTypedValue() const;
+			virtual PlanIter_t getTypedValue() const;
 			virtual xqp_string getStringValue() const;
 			
 			virtual xqp_string show() const;

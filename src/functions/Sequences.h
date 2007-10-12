@@ -47,9 +47,9 @@ public:
 	~op_concatenate() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc,std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc,std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -62,9 +62,9 @@ public:
 	~fn_index_of() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -77,9 +77,9 @@ public:
 	~fn_empty() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -92,9 +92,9 @@ public:
 	~fn_exists() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -107,9 +107,9 @@ public:
 	~fn_distinct_values() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -130,9 +130,9 @@ public:
 	~fn_reverse() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -145,9 +145,9 @@ public:
 	~fn_subsequence() {}
 
 public:
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const;
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
 	sequence_type_t type_check(signature&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -203,8 +203,8 @@ public:
 
 public:
 	sequence_type_t type_check(signature&) const { return xs_untypedValue; }
-	Iterator_t operator()(const yy::location& loc, std::vector<Iterator_t>&) const { return NULL; } 
-	bool validate_args(std::vector<Iterator_t>&) const { return true; }
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const { return NULL; } 
+	bool validate_args(std::vector<PlanIter_t>&) const { return true; }
 
 };
 
@@ -217,7 +217,7 @@ public:
 	~fn_min_int() {}
 public:
 	sequence_type_t type_check(signature&) const;
-	Iterator_t operator()( vector<Iterator_t>) const;
+	PlanIter_t operator()( vector<PlanIter_t>) const;
 };
 
 class fn_min_float : public function
@@ -227,7 +227,7 @@ public:
 	~fn_min_float() {}
 public:
 	sequence_type_t type_check(signature&) const;
-	Iterator_t operator()( vector<Iterator_t>) const;
+	PlanIter_t operator()( vector<PlanIter_t>) const;
 };
 */
 
@@ -256,8 +256,8 @@ public:
 
 public:
 	sequence_type_t type_check(signature&) const;
-	Iterator_t operator()( const yy::location& loc, std::vector<Iterator_t>&) const;
-	bool validate_args(std::vector<Iterator_t>&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 
@@ -271,7 +271,7 @@ public:
 | Extensions
 |_______________________________________________________________________*/
 
-Iterator_t xqp_load(
+PlanIter_t xqp_load(
 	const std::string& path,
 	const std::string& baseuri,
 	const std::string& uri);

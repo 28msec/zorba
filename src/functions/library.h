@@ -23,7 +23,7 @@ class zorba;
 
 // template<typename FuncIter>
 // class LibraryFunction {
-// 	Iterator_t operator() {
+// 	PlanIter_t operator() {
 // 		
 // 	}
 // };

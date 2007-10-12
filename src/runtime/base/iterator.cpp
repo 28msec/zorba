@@ -146,14 +146,14 @@ PlanIterator::PlanIteratorState::getDuffsLine() {
 }
 
 
-IteratorWrapper::IteratorWrapper(Iterator_t& aIter) : theAlienBlock(false), theIterator(aIter) {
+IteratorWrapper::IteratorWrapper(PlanIter_t& aIter) : theAlienBlock(false), theIterator(aIter) {
 	int32_t lStackSize = theIterator->getStateSizeOfSubtree();
 	theStateBlock = new PlanState(lStackSize);
 	int32_t lOffset = 0;
 	theIterator->setOffset(*theStateBlock, lOffset);
 }
 
-IteratorWrapper::IteratorWrapper(Iterator_t& aIter, PlanState& aStateBlock) 
+IteratorWrapper::IteratorWrapper(PlanIter_t& aIter, PlanState& aStateBlock) 
 : theAlienBlock(true), theIterator(aIter), theStateBlock(&aStateBlock) {}
 
 IteratorWrapper::~IteratorWrapper() {

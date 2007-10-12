@@ -52,8 +52,8 @@ bool plan_visitor::begin_visit(const enclosed_expr& v)
 void plan_visitor::end_visit(const enclosed_expr& v)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
-	Iterator_t content = pop_itstack();
-	Iterator_t enclosed = new EnclosedIterator(v.get_loc(), content);
+	PlanIter_t content = pop_itstack();
+	PlanIter_t enclosed = new EnclosedIterator(v.get_loc(), content);
 	itstack.push(&*enclosed);
 }
 
@@ -69,9 +69,9 @@ bool plan_visitor::begin_visit(const expr_list& v)
 void plan_visitor::end_visit(const expr_list& v)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
-	vector<Iterator_t> argv;
+	vector<PlanIter_t> argv;
 	while (true) {
-		Iterator_t it = pop_itstack();
+		PlanIter_t it = pop_itstack();
 		if (it==NULL) break;
 		argv.insert(argv.begin(),it);
 	}
@@ -103,8 +103,8 @@ bool plan_visitor::begin_visit(const flwor_expr& v)
 void plan_visitor::end_visit(const flwor_expr& v)
 {
   cout << TRACE << endl;
-	Iterator_t expr = pop_itstack();
-	Iterator_t input = pop_itstack();
+	PlanIter_t expr = pop_itstack();
+	PlanIter_t input = pop_itstack();
 	std::vector<var_iter_t> var_iters;
 	
 // 	while (true) {
@@ -168,10 +168,10 @@ cout << TRACE << endl;
 void plan_visitor::end_visit(const if_expr& v)
 {
   cout << TRACE << endl;
-	Iterator_t iterElse = pop_itstack();
-	Iterator_t iterThen = pop_itstack();
-	Iterator_t iterCond = pop_itstack();
-	Iterator_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
+	PlanIter_t iterElse = pop_itstack();
+	PlanIter_t iterThen = pop_itstack();
+	PlanIter_t iterCond = pop_itstack();
+	PlanIter_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
 	itstack.push(&*iterIfThenElse);
 }
 
@@ -192,14 +192,14 @@ void plan_visitor::end_visit(const fo_expr& v)
 	assert(func_p != NULL);
 	const function& func = *func_p;
 
-	vector<Iterator_t> argv;
+	vector<PlanIter_t> argv;
 	while (true)
   {
-		Iterator_t it_h = pop_itstack();
+		PlanIter_t it_h = pop_itstack();
 		if (it_h == NULL)
       break;
 
-		vector<Iterator_t>::iterator begin = argv.begin();
+		vector<PlanIter_t>::iterator begin = argv.begin();
  		argv.insert(begin, 1, it_h );
 	}
 
@@ -285,7 +285,7 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
 
   bool result = true;
 
-  Iterator_t input = pop_itstack();
+  PlanIter_t input = pop_itstack();
 
   // TODO ??? In this case the input should be the context node
   if (input == NULL)
@@ -293,7 +293,7 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
     input = new var_iterator("context_node", v.get_loc());
   }
 
-  Iterator_t axisIte;
+  PlanIter_t axisIte;
 
   switch (v.getAxis())
   {
@@ -401,11 +401,11 @@ bool plan_visitor::begin_visit(const match_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
-  Iterator_t axisIte = pop_itstack();
+  PlanIter_t axisIte = pop_itstack();
   AxisIteratorHelper* axisItep = dynamic_cast<AxisIteratorHelper*>(&*axisIte);
   Assert(axisItep != NULL);
 
-  Iterator_t matchIte;
+  PlanIter_t matchIte;
   Item_t qname;
   Item_t tname;
 
@@ -503,8 +503,8 @@ bool plan_visitor::begin_visit(const elem_expr& v)
 void plan_visitor::end_visit(const elem_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
-	Iterator_t contentIter = NULL;
-	Iterator_t attrIter = NULL;
+	PlanIter_t contentIter = NULL;
+	PlanIter_t attrIter = NULL;
 
 	if (v.get_attrs_expr() != NULL)
 		attrIter = pop_itstack();
@@ -519,7 +519,7 @@ void plan_visitor::end_visit(const elem_expr& v)
 	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->
                      createQName("", qname->prefix(), qname->local());
 
-	Iterator_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
+	PlanIter_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
 
 	itstack.push(iter);
 }
@@ -554,11 +554,11 @@ void plan_visitor::end_visit(const attr_expr& v)
 	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->
                      createQName("", qname->prefix(), qname->local());
 
-	Iterator_t valueIter = NULL;
+	PlanIter_t valueIter = NULL;
 	if (v.get_val_expr() != NULL)
 		valueIter = pop_itstack();
 
-	Iterator_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
+	PlanIter_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
 
 	itstack.push(&*attrIter);
 }
@@ -575,7 +575,7 @@ void plan_visitor::end_visit(const text_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
 	Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(v.get_text());
-	Iterator_t text = new SingletonIterator(v.get_loc(), item);
+	PlanIter_t text = new SingletonIterator(v.get_loc(), item);
 	itstack.push(text);
 }
 
@@ -688,35 +688,35 @@ void plan_visitor::end_visit(const literal_expr& v)
 	cout << std::string(depth--, ' ') << TRACE << endl;
   switch (v.get_type()) {
   case literal_expr::lit_string: {
-    Iterator_t it = new SingletonIterator(
+    PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
 											zorba::getZorbaForCurrentThread()->getItemFactory()->createString(v.get_sval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_integer: {
-    Iterator_t it = new SingletonIterator(
+    PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
 											zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(v.get_ival()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_decimal: {
-    Iterator_t it = new SingletonIterator(
+    PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
 											zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(v.get_decval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_double: {
-    Iterator_t it = new SingletonIterator(
+    PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
 											zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(v.get_dval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_bool: {
-    Iterator_t it = new SingletonIterator(
+    PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
 											zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(v.get_bval()));
     itstack.push(it);

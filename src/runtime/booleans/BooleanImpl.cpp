@@ -20,7 +20,7 @@ namespace xqp
 	|
 	|	Computes the effective boolean value of the sequence $arg.
 	|_______________________________________________________________________*/
-	FnBooleanIterator::FnBooleanIterator ( const yy::location& loc, Iterator_t& arg0, bool negate_arg )
+	FnBooleanIterator::FnBooleanIterator ( const yy::location& loc, PlanIter_t& arg0, bool negate_arg )
 	:
 		Batcher<FnBooleanIterator> ( loc ), arg0_ ( arg0 ), negate ( negate_arg ) {}
 		
@@ -34,7 +34,7 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, Iterator_t& iter, bool negate )
+	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t& iter, bool negate )
 	{
 		Item_t item;
 		TypeCode type;
@@ -112,7 +112,7 @@ namespace xqp
 	/* end class FnBooleanIterator */
 	
 	/* begin class LogicIterator */
-	LogicIterator::LogicIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, LogicType lt)
+	LogicIterator::LogicIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, LogicType lt)
 	:
 		Batcher<LogicIterator> ( loc), iterLeft(arg0), iterRight(arg1), logicType(lt) {}
 	LogicIterator::~LogicIterator(){}
@@ -154,7 +154,7 @@ namespace xqp
 	/* end class LogicIterator */
 
 	/* begin class ComparisonIterator */
-	CompareIterator::CompareIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType )
+	CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, CompareType argCompType )
 	:
 		Batcher<CompareIterator> ( loc ), compareType(argCompType) 
 	{

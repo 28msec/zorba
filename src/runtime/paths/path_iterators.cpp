@@ -880,7 +880,7 @@ std::ostream& ChildAxisIterator::_show(std::ostream& os)	const
 Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t desc;
-  Iterator_t children;
+  PlanIter_t children;
 
   DescendantAxisState* state;
   STACK_INIT2(DescendantAxisState, state, planState);
@@ -911,7 +911,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
     children = state->theContextNode->getChildren();
 
     state->theCurrentPath.push(
-              std::pair<Item_t, Iterator_t>(state->theContextNode, children));
+              std::pair<Item_t, PlanIter_t>(state->theContextNode, children));
     
     desc = consumeNext(children, planState);
 
@@ -919,7 +919,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
     {
       if (desc->getNodeKind() == elementNode)
         state->theCurrentPath.push(
-                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+                  std::pair<Item_t, PlanIter_t>(desc, desc->getChildren()));
 
       if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
@@ -1033,7 +1033,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
       if (desc->getNodeKind() == elementNode ||
           state->theContextNode->getNodeKind() == documentNode)
         state->theCurrentPath.push(
-                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+                  std::pair<Item_t, PlanIter_t>(desc, desc->getChildren()));
 
       if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
@@ -1116,7 +1116,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t ancestor;
   Item_t desc;
-  Iterator_t children;
+  PlanIter_t children;
 
   PrecedingAxisState* state;
   STACK_INIT2(PrecedingAxisState, state, planState);
@@ -1158,7 +1158,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 
       children = ancestor->getChildren();
 
-      state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<Item_t, PlanIter_t>(ancestor, children));
     
       desc = consumeNext(children, planState);
 
@@ -1166,7 +1166,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
       {
         if (desc->getNodeKind() == elementNode)
           state->theCurrentPath.push(
-                    std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+                    std::pair<Item_t, PlanIter_t>(desc, desc->getChildren()));
 
         if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
         {
@@ -1250,7 +1250,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t ancestor;
   Item_t following;
-  Iterator_t children;
+  PlanIter_t children;
 
   FollowingAxisState* state;
   STACK_INIT2(FollowingAxisState, state, planState);
@@ -1292,7 +1292,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 
       children = ancestor->getChildren();
 
-      state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<Item_t, PlanIter_t>(ancestor, children));
 
       do
       {
@@ -1306,7 +1306,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
       {
         if (following->getNodeKind() == elementNode)
           state->theCurrentPath.push(
-                 std::pair<Item_t, Iterator_t>(following, following->getChildren()));
+                 std::pair<Item_t, PlanIter_t>(following, following->getChildren()));
 
         if (theNodeKind == anyNode || following->getNodeKind() == theNodeKind)
         {

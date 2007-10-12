@@ -24,7 +24,7 @@ namespace xqp
 
 	}
 
-	TempSeq_t SimpleStore::createTempSeq ( Iterator_t& iterator, bool lazy )
+	TempSeq_t SimpleStore::createTempSeq ( PlanIter_t& iterator, bool lazy )
 	{
 		TempSeq_t tempSeq = new SimpleTempSeq ( iterator );
 		return tempSeq;
@@ -61,11 +61,11 @@ namespace xqp
 	{
 		return 2;
 	}
-	Iterator_t SimpleStore::sort ( Iterator_t iterator, bool ascendent, bool duplicateElemination )
+	PlanIter_t SimpleStore::sort ( PlanIter_t iterator, bool ascendent, bool duplicateElemination )
 	{
 		return rchandle<PlanIterator> ( NULL );
 	}
-	Iterator_t SimpleStore::distinctNodeStable ( Iterator_t )
+	PlanIter_t SimpleStore::distinctNodeStable ( PlanIter_t )
 	{
 		return rchandle<PlanIterator> ( NULL );
 	}

@@ -19,10 +19,10 @@ namespace xqp
 	class UnaryBaseIterator : public Batcher<IterType>
 	{
 		protected:
-			Iterator_t theChild;
+			PlanIter_t theChild;
 
 		public:
-			UnaryBaseIterator ( const yy::location& loc, Iterator_t& arg );
+			UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg );
 			virtual ~UnaryBaseIterator();
 
 			void resetImpl ( PlanState& planState );
@@ -37,7 +37,7 @@ namespace xqp
 
 	/* begin class UnaryBaseIterator */
 	template <class IterType>
-	UnaryBaseIterator<IterType>::UnaryBaseIterator ( const yy::location& loc, Iterator_t& arg )
+	UnaryBaseIterator<IterType>::UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg )
 			:
 			Batcher<IterType> ( loc ), theChild ( arg )
 	{

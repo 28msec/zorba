@@ -77,7 +77,7 @@ public:
 	~insert_before_value();
 
 public:
-	Iterator_t new_nodes() const;
+	PlanIter_t new_nodes() const;
 
 };
 
@@ -105,7 +105,7 @@ public:
 	~insert_after_value();
 
 public:
-	Iterator_t new_nodes() const;
+	PlanIter_t new_nodes() const;
 
 };
 
@@ -132,7 +132,7 @@ public:
 	~insert_into_value();
 
 public:
-	Iterator_t new_nodes() const;
+	PlanIter_t new_nodes() const;
 
 };
 
@@ -159,7 +159,7 @@ public:
 	~insert_into_as_first_value();
 
 public:
-	Iterator_t new_nodes() const;
+	PlanIter_t new_nodes() const;
 
 };
 
@@ -186,7 +186,7 @@ public:
 	~insert_into_as_last_value();
 
 public:
-	Iterator_t new_nodes() const;
+	PlanIter_t new_nodes() const;
 
 };
 
@@ -208,7 +208,7 @@ public:
 	~insert_attributes_value();
 
 public:
-	Iterator_t new_nodes() const;
+	PlanIter_t new_nodes() const;
 
 };
 
@@ -252,7 +252,7 @@ public:
 	~replace_node_value();
 
 public:
-	Iterator_t new_nodes() const;
+	PlanIter_t new_nodes() const;
 
 };
 

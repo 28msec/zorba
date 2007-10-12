@@ -19,11 +19,11 @@ namespace xqp
 	class BinaryBaseIterator : public Batcher<IterType>
 	{
 		protected:
-			Iterator_t theChild0;
-			Iterator_t theChild1;
+			PlanIter_t theChild0;
+			PlanIter_t theChild1;
 
 		public:
-			BinaryBaseIterator ( const yy::location& loc, Iterator_t& arg0, Iterator_t& arg1 );
+			BinaryBaseIterator ( const yy::location& loc, PlanIter_t& arg0, PlanIter_t& arg1 );
 			virtual ~BinaryBaseIterator();
 
 			void resetImpl ( PlanState& planState );
@@ -38,8 +38,8 @@ namespace xqp
 	template <class IterType>
 	BinaryBaseIterator<IterType>::BinaryBaseIterator (
 	    const yy::location& loc,
-	    Iterator_t& arg0,
-	    Iterator_t& arg1 )
+	    PlanIter_t& arg0,
+	    PlanIter_t& arg1 )
 			:
 			Batcher<IterType> ( loc ), theChild0 ( arg0 ), theChild1 ( arg1 )
 	{

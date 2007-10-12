@@ -121,10 +121,10 @@ public:		// variable binding
 // class RefIterator : public PlanIterator
 // {
 // private:
-// 	Iterator_t it;
+// 	PlanIter_t it;
 // 
 // public:
-// 	RefIterator(Iterator_t _it,yy::location loc) : 
+// 	RefIterator(PlanIter_t _it,yy::location loc) : 
 // 										PlanIterator(loc),
 // 										it(_it) {}
 // 
@@ -134,7 +134,7 @@ public:		// variable binding
 // 	void _close() { it->close(); }
 // 	std::ostream&  _show(std::ostream& os) const {return os;}
 // 	bool done() const { return it->done(); }
-// 	void bind(Iterator_t _it) { it = _it;}
+// 	void bind(PlanIter_t _it) { it = _it;}
 // 
 // };
 
@@ -152,16 +152,16 @@ private:
 // 		inner
 // 	};
 
-	Iterator_t theInput;
-	Iterator_t theExpr;
+	PlanIter_t theInput;
+	PlanIter_t theExpr;
 	std::vector<var_iter_t> varv;
 // 	enum state theState;
 
 public:
 	MapIterator(
 		yy::location loc,
-		Iterator_t _input,
-		Iterator_t _expr,
+		PlanIter_t _input,
+		PlanIter_t _expr,
 		std::vector<var_iter_t> _varv)
 	:
 		Batcher<MapIterator>(loc),
@@ -204,7 +204,7 @@ protected:
   };
 
 public:
-  EnclosedIterator(const yy::location& loc, Iterator_t& childIter);
+  EnclosedIterator(const yy::location& loc, PlanIter_t& childIter);
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
@@ -233,7 +233,7 @@ protected:
   };
 
 public:
-  ElementContentIterator(const yy::location& loc, Iterator_t& childIter);
+  ElementContentIterator(const yy::location& loc, PlanIter_t& childIter);
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
@@ -249,16 +249,16 @@ class ElementIterator : public Batcher<ElementIterator>
 {
 private:
   Item_t theQName;
-  Iterator_t theChildren;
-  Iterator_t theAttributes;
-  Iterator_t theNamespaceBindings;
+  PlanIter_t theChildren;
+  PlanIter_t theAttributes;
+  PlanIter_t theNamespaceBindings;
 	
 public:
   ElementIterator(
         const yy::location& loc, 
         const Item_t& qname,
-        Iterator_t& children,
-        Iterator_t& attributes);
+        PlanIter_t& children,
+        PlanIter_t& attributes);
 	
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
@@ -281,7 +281,7 @@ public:
   AttributeIterator(
         const yy::location& loc,
         const Item_t& qname,
-        Iterator_t& value);
+        PlanIter_t& value);
 		
   Item_t nextImpl(PlanState& planState);
 }; /* class AttributeIterator */
@@ -290,13 +290,13 @@ public:
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {
 private:
-  Iterator_t iterCond;
-  Iterator_t iterThen;
-  Iterator_t iterElse;
+  PlanIter_t iterCond;
+  PlanIter_t iterThen;
+  PlanIter_t iterElse;
   bool condIsBooleanIter;
 		
   // helping member so save the active iterator (then or else)
-  Iterator_t iterActive;
+  PlanIter_t iterActive;
 		
 public:
   /**
@@ -312,9 +312,9 @@ public:
    */
   IfThenElseIterator(
         const yy::location& loc,
-        Iterator_t& iterCond_arg,
-        Iterator_t& iterThen_arg,
-        Iterator_t& iterElse_arg,
+        PlanIter_t& iterCond_arg,
+        PlanIter_t& iterThen_arg,
+        PlanIter_t& iterElse_arg,
         bool condIsBooleanIter_arg = false);
 		
   Item_t nextImpl(PlanState& planState);

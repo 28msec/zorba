@@ -43,9 +43,9 @@ op_numeric_add::op_numeric_add(
 {
 }
 
-Iterator_t op_numeric_add::operator()(
+PlanIter_t op_numeric_add::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
@@ -58,7 +58,7 @@ sequence_type_t op_numeric_add::type_check(
 }
 
 bool op_numeric_add::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -71,9 +71,9 @@ op_numeric_add_int::op_numeric_add_int(
 {
 }
 
-Iterator_t op_numeric_add_int::operator()(
+PlanIter_t op_numeric_add_int::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
@@ -86,7 +86,7 @@ sequence_type_t op_numeric_add_int::type_check(
 }
 
 bool op_numeric_add_int::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -116,9 +116,9 @@ op_numeric_subtract::op_numeric_subtract(
 {
 }
 
-Iterator_t op_numeric_subtract::operator()(
+PlanIter_t op_numeric_subtract::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<SubtractOperations>(loc, argv[0], argv[1]);
@@ -131,7 +131,7 @@ sequence_type_t op_numeric_subtract::type_check(
 }
 
 bool op_numeric_subtract::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -160,9 +160,9 @@ op_numeric_multiply::op_numeric_multiply(
 {
 }
 
-Iterator_t op_numeric_multiply::operator()(
+PlanIter_t op_numeric_multiply::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<MultiplyOperations>(loc, argv[0], argv[1]);
@@ -175,7 +175,7 @@ sequence_type_t op_numeric_multiply::type_check(
 }
 
 bool op_numeric_multiply::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -214,9 +214,9 @@ op_numeric_divide::op_numeric_divide(
 {
 }
 
-Iterator_t op_numeric_divide::operator()(
+PlanIter_t op_numeric_divide::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<DivideOperations>(loc, argv[0], argv[1]);
@@ -229,7 +229,7 @@ sequence_type_t op_numeric_divide::type_check(
 }
 
 bool op_numeric_divide::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -270,9 +270,9 @@ op_numeric_integer_divide::op_numeric_integer_divide(
 {
 }
 
-Iterator_t op_numeric_integer_divide::operator()(
+PlanIter_t op_numeric_integer_divide::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<IntegerDivideOperations>(loc, argv[0], argv[1]);
@@ -285,7 +285,7 @@ sequence_type_t op_numeric_integer_divide::type_check(
 }
 
 bool op_numeric_integer_divide::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -334,9 +334,9 @@ op_numeric_mod::op_numeric_mod(
 {
 }
 
-Iterator_t op_numeric_mod::operator()(
+PlanIter_t op_numeric_mod::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ArithmeticIterator<ModOperations>(loc, argv[0], argv[1]);
@@ -349,7 +349,7 @@ sequence_type_t op_numeric_mod::type_check(
 }
 
 bool op_numeric_mod::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==2);
 }
@@ -373,9 +373,9 @@ op_numeric_unary_plus::op_numeric_unary_plus(
 {
 }
 
-Iterator_t op_numeric_unary_plus::operator()(
+PlanIter_t op_numeric_unary_plus::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericUnaryIterator(loc, argv[0], true);
@@ -388,7 +388,7 @@ sequence_type_t op_numeric_unary_plus::type_check(
 }
 
 bool op_numeric_unary_plus::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==1);
 }
@@ -417,9 +417,9 @@ op_numeric_unary_minus::op_numeric_unary_minus(
 {
 }
 
-Iterator_t op_numeric_unary_minus::operator()(
+PlanIter_t op_numeric_unary_minus::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new OpNumericUnaryIterator(loc, argv[0], false);
@@ -432,7 +432,7 @@ sequence_type_t op_numeric_unary_minus::type_check(
 }
 
 bool op_numeric_unary_minus::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return (argv.size()==1);
 }
@@ -460,7 +460,7 @@ fn_abs::fn_abs(const signature& sig)
 {   	
 }
 
-Iterator_t fn_abs::operator()( const yy::location& loc, vector<Iterator_t>& argv) const
+PlanIter_t fn_abs::operator()( const yy::location& loc, vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
@@ -472,7 +472,7 @@ sequence_type_t fn_abs::type_check(signature& sig) const
 	return xs_decimal;
 }
 
-bool fn_abs::validate_args(vector<Iterator_t>& argv) const
+bool fn_abs::validate_args(vector<PlanIter_t>& argv) const
 {
 	return (argv.size() == 1);
 }
@@ -489,7 +489,7 @@ zor_numgen::zor_numgen(const signature& sig)
 {   	
 }
 
-Iterator_t zor_numgen::operator()( const yy::location& loc, vector<Iterator_t>& argv) const
+PlanIter_t zor_numgen::operator()( const yy::location& loc, vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv))
 		return NULL;
@@ -501,7 +501,7 @@ sequence_type_t zor_numgen::type_check(signature& sig) const
 	return xs_decimal;
 }
 
-bool zor_numgen::validate_args(vector<Iterator_t>& argv) const
+bool zor_numgen::validate_args(vector<PlanIter_t>& argv) const
 {
 	return (argv.size() == 0);
 }

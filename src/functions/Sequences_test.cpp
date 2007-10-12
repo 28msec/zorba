@@ -103,12 +103,12 @@ void _doc(
 	value_factory* valfac_p = zorp->get_value_factory();
 	assert(valfac_p!=NULL);
 	rchandle<atomic_value> uri_h = valfac_p->make_xs_string(uri);
-	vector<Iterator_t> argv;
+	vector<PlanIter_t> argv;
 	argv.push_back(new SingletonIterator(&*uri_h));
 	const function* fn_doc_p = dctx_p->get_function(library::fn_doc_key);
 	assert(fn_doc_p!=NULL);
 	const function& fn_doc = *fn_doc_p;
-	Iterator_t iter_h = fn_doc(zorp, argv);
+	PlanIter_t iter_h = fn_doc(zorp, argv);
 	if (iter_h==NULL) { cout << "Error: doc returned NULL\n"; return; }
 	iter_h->open();
 	if (iter_h->done()) { cout << "Error: doc returned empty\n"; return; }

@@ -15,8 +15,8 @@ namespace xqp
 	GenericOpComparison::GenericOpComparison ( const signature& sig) 
 		: function ( sig ) {}
 
-	Iterator_t
-	GenericOpComparison::operator() ( const yy::location& loc, vector<Iterator_t>& argv ) const
+	PlanIter_t
+	GenericOpComparison::operator() ( const yy::location& loc, vector<PlanIter_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -36,7 +36,7 @@ namespace xqp
 	}
 
 	bool
-	GenericOpComparison::validate_args ( vector<Iterator_t>& argv ) const
+	GenericOpComparison::validate_args ( vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -44,8 +44,8 @@ namespace xqp
 	
 	/* begin class op_equal */
 	op_equal::op_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_EQUAL );
 	}
@@ -53,8 +53,8 @@ namespace xqp
 	
 	/* begin class op_not_equal */
 	op_not_equal::op_not_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_not_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_not_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_NOT_EQUAL );
 	}
@@ -62,8 +62,8 @@ namespace xqp
 	
 	/* begin class op_greater */
 	op_greater::op_greater( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_greater::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_greater::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_GREATER );
 	}
@@ -71,8 +71,8 @@ namespace xqp
 	
 	/* begin class op_greater_equal */
 	op_greater_equal::op_greater_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_greater_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_greater_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_GREATER_EQUAL );
 	}
@@ -80,8 +80,8 @@ namespace xqp
 	
 	/* begin class op_less */
 	op_less::op_less( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_less::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_less::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_LESS );
 	}
@@ -89,8 +89,8 @@ namespace xqp
 	
 	/* begin class op_less_equal */
 	op_less_equal::op_less_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_less_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_less_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::GENERAL_LESS_EQUAL );
 	}
@@ -98,8 +98,8 @@ namespace xqp
 
 		/* begin class op_value_equal */
 	op_value_equal::op_value_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_value_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_value_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_EQUAL );
 	}
@@ -107,8 +107,8 @@ namespace xqp
 	
 	/* begin class op_value_not_equal */
 	op_value_not_equal::op_value_not_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_value_not_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_value_not_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_NOT_EQUAL );
 	}
@@ -116,8 +116,8 @@ namespace xqp
 	
 	/* begin class op_value_greater */
 	op_value_greater::op_value_greater( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_value_greater::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_value_greater::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_GREATER );
 	}
@@ -125,8 +125,8 @@ namespace xqp
 	
 	/* begin class op_value_greater_equal */
 	op_value_greater_equal::op_value_greater_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_value_greater_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_value_greater_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_GREATER_EQUAL );
 	}
@@ -134,8 +134,8 @@ namespace xqp
 	
 	/* begin class op_value_less */
 	op_value_less::op_value_less( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_value_less::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_value_less::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_LESS );
 	}
@@ -143,8 +143,8 @@ namespace xqp
 	
 	/* begin class op_value_less_equal */
 	op_value_less_equal::op_value_less_equal( const signature& sig) : GenericOpComparison(sig) {}
-	Iterator_t 
-	op_value_less_equal::createIterator ( const yy::location& loc, std::vector<Iterator_t>& argv ) const
+	PlanIter_t 
+	op_value_less_equal::createIterator ( const yy::location& loc, std::vector<PlanIter_t>& argv ) const
 	{
 		return new CompareIterator ( loc, argv[0], argv[1], CompareIterator::VALUE_LESS_EQUAL );
 	}
@@ -153,10 +153,10 @@ namespace xqp
 	/* start class op_and */
 	op_and::op_and ( const signature& sig ) : function ( sig ) {}
 
-	Iterator_t
+	PlanIter_t
 	op_and::operator() (
 	    const yy::location& loc,
-	    vector<Iterator_t>& argv ) const
+	    vector<PlanIter_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -177,7 +177,7 @@ namespace xqp
 	}
 
 	bool
-	op_and::validate_args ( vector<Iterator_t>& argv ) const
+	op_and::validate_args ( vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -186,10 +186,10 @@ namespace xqp
 	/*start class op_or */
 	op_or::op_or ( const signature& sig ) : function ( sig ) {}
 
-	Iterator_t
+	PlanIter_t
 	op_or::operator() (
 	    const yy::location& loc,
-	    vector<Iterator_t>& argv ) const
+	    vector<PlanIter_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -210,7 +210,7 @@ namespace xqp
 	}
 
 	bool
-	op_or::validate_args ( vector<Iterator_t>& argv ) const
+	op_or::validate_args ( vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 2 );
 	}
@@ -219,10 +219,10 @@ namespace xqp
 	/* start class fn_true */
 	fn_true::fn_true ( const signature& sig ) :function ( sig ) {}
 
-	Iterator_t
+	PlanIter_t
 	fn_true::operator() (
 	    const yy::location& loc,
-	    vector<Iterator_t>& argv ) const
+	    vector<PlanIter_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -243,7 +243,7 @@ namespace xqp
 	}
 
 	bool
-	fn_true::validate_args ( vector<Iterator_t>& argv ) const
+	fn_true::validate_args ( vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 0 );
 	}
@@ -252,10 +252,10 @@ namespace xqp
 	/* start class fn_false */
 	fn_false::fn_false ( const signature& sig ) :function ( sig ) {}
 
-	Iterator_t
+	PlanIter_t
 	fn_false::operator() (
 	    const yy::location& loc,
-	    vector<Iterator_t>& argv ) const
+	    vector<PlanIter_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -276,7 +276,7 @@ namespace xqp
 	}
 
 	bool
-	fn_false::validate_args ( vector<Iterator_t>& argv ) const
+	fn_false::validate_args ( vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 0 );
 	}	
@@ -285,10 +285,10 @@ namespace xqp
 	/* begin class fn_not */
 	fn_not::fn_not ( const signature& sig ) :function ( sig ) {}
 
-	Iterator_t
+	PlanIter_t
 	fn_not::operator() (
 	    const yy::location& loc,
-	    vector<Iterator_t>& argv ) const
+	    vector<PlanIter_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -309,7 +309,7 @@ namespace xqp
 	}
 
 	bool
-	fn_not::validate_args ( vector<Iterator_t>& argv ) const
+	fn_not::validate_args ( vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 1 );
 	}	
@@ -318,10 +318,10 @@ namespace xqp
 	/* start class fn_boolean */
 	fn_boolean::fn_boolean ( const signature& sig ) :function ( sig ) {}
 
-	Iterator_t
+	PlanIter_t
 	fn_boolean::operator() (
 	    const yy::location& loc,
-	    vector<Iterator_t>& argv ) const
+	    vector<PlanIter_t>& argv ) const
 	{
 		if ( !validate_args ( argv ) )
 		{
@@ -342,7 +342,7 @@ namespace xqp
 	}
 
 	bool
-	fn_boolean::validate_args ( vector<Iterator_t>& argv ) const
+	fn_boolean::validate_args ( vector<PlanIter_t>& argv ) const
 	{
 		return ( argv.size() == 1 );
 	}

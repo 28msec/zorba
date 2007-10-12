@@ -61,16 +61,16 @@ op_concatenate::op_concatenate(
 {
 }
 
-Iterator_t op_concatenate::operator()(
+PlanIter_t op_concatenate::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	return new ConcatIterator(loc,argv);
 }
 
 bool op_concatenate::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -114,9 +114,9 @@ sequence_type_t op_concatenate::type_check(
 fn_index_of::fn_index_of(const signature& sig)
 : function(sig) { }
 
-Iterator_t fn_index_of::operator()(
+PlanIter_t fn_index_of::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 
@@ -135,7 +135,7 @@ Iterator_t fn_index_of::operator()(
 }
 
 bool fn_index_of::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (argv.size()==2 || argv.size()==3) return true;
 	return false;
@@ -153,15 +153,15 @@ sequence_type_t fn_index_of::type_check(
 fn_empty::fn_empty(const signature& sig)
 : function(sig) { }
 
-Iterator_t fn_empty::operator()(
+PlanIter_t fn_empty::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_empty::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -178,15 +178,15 @@ sequence_type_t fn_empty::type_check(
 fn_exists::fn_exists(const signature& sig)
 : function(sig) { }
 
-Iterator_t fn_exists::operator()(
+PlanIter_t fn_exists::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_exists::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -205,15 +205,15 @@ fn_distinct_values::fn_distinct_values(
 :
 	function(sig) { }
 
-Iterator_t fn_distinct_values::operator()(
+PlanIter_t fn_distinct_values::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_distinct_values::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -238,15 +238,15 @@ sequence_type_t fn_distinct_values::type_check(
 fn_reverse::fn_reverse(const signature& sig)
 : function(sig) { }
 
-Iterator_t fn_reverse::operator()(
+PlanIter_t fn_reverse::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_reverse::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -263,15 +263,15 @@ sequence_type_t fn_reverse::type_check(
 fn_subsequence::fn_subsequence(const signature& sig)
 : function(sig) { }
 
-Iterator_t fn_subsequence::operator()(
+PlanIter_t fn_subsequence::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return NULL;
 }
 
 bool fn_subsequence::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
@@ -351,9 +351,9 @@ fn_doc_func::fn_doc_func(
 {
 }
 
-Iterator_t fn_doc_func::operator()(
+PlanIter_t fn_doc_func::operator()(
 	const yy::location& loc, 
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
 	// TODO correct implementation of doc iterator
@@ -362,7 +362,7 @@ Iterator_t fn_doc_func::operator()(
 }
   
 bool fn_doc_func::validate_args(
-	vector<Iterator_t>& argv) const
+	vector<PlanIter_t>& argv) const
 {
 	if (argv.size()!=1) return false;
 	return true;

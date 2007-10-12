@@ -13,7 +13,7 @@ namespace xqp
 {
 	template <class Object> class rchandle;
 
-	typedef rchandle<class PlanIterator> Iterator_t;
+	typedef rchandle<class PlanIterator> PlanIter_t;
 	typedef rchandle<class Item> Item_t;
 	typedef rchandle<class Collection> Collection_t;
 	typedef rchandle<class TempSeq> TempSeq_t;
@@ -29,7 +29,7 @@ namespace xqp
 			SimpleStore();
 			virtual ~SimpleStore();
 
-			virtual TempSeq_t createTempSeq ( Iterator_t&, bool lazy = true );
+			virtual TempSeq_t createTempSeq ( PlanIter_t&, bool lazy = true );
 			virtual void setGarbageCollectionStrategy ( const xqp_string& garbageCollectionStrategy );
 			virtual void apply ( PUL_t pendingUpdateList );
 			virtual void apply ( PUL_t pendingUpdateList, Requester requester );
@@ -38,8 +38,8 @@ namespace xqp
 			virtual Item_t getNodeByReference ( Item_t );
 			virtual Item_t getNodeByReference ( Item_t, Requester requester, Timetravel timetravel );
 			virtual int32_t compare ( Item_t item1, Item_t item2 );
-			virtual Iterator_t sort ( Iterator_t iterator, bool ascendent, bool duplicateElemination );
-			virtual Iterator_t distinctNodeStable ( Iterator_t );
+			virtual PlanIter_t sort ( PlanIter_t iterator, bool ascendent, bool duplicateElemination );
+			virtual PlanIter_t distinctNodeStable ( PlanIter_t );
 			virtual Collection_t getCollection ( Item_t uri );
 			virtual Collection_t createCollection ( Item_t uri );
 			virtual Collection_t createCollection();

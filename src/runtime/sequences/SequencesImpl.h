@@ -47,12 +47,12 @@ class ConcatIterator : public Batcher<ConcatIterator>
 {
 // 	DECLARE_LOGGER;
 protected:
-	std::vector<Iterator_t> argv;
+	std::vector<PlanIter_t> argv;
 
 public:
 	ConcatIterator(
 	yy::location loc,
-	const vector<Iterator_t>& _argv);
+	const vector<PlanIter_t>& _argv);
 	
 	~ConcatIterator();
 

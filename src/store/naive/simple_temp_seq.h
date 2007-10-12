@@ -24,14 +24,14 @@ namespace xqp
 			yy::location loc;
 
 		public:
-			SimpleTempSeq ( Iterator_t iterator );
+			SimpleTempSeq ( PlanIter_t iterator );
 			virtual ~SimpleTempSeq();
 
-			virtual Iterator_t getIterator();
-			virtual Iterator_t getIterator ( int32_t startPos, int32_t endPos, bool streaming = false );
-			virtual Iterator_t getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& var, bool streaming = false );
-			virtual Iterator_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
-			virtual Iterator_t getIterator ( Iterator_t positions, bool streaming = false );
+			virtual PlanIter_t getIterator();
+			virtual PlanIter_t getIterator ( int32_t startPos, int32_t endPos, bool streaming = false );
+			virtual PlanIter_t getIterator ( int32_t startPos, PlanIter_t function, const std::vector<var_iterator>& var, bool streaming = false );
+			virtual PlanIter_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
+			virtual PlanIter_t getIterator ( PlanIter_t positions, bool streaming = false );
 			virtual Item_t getItem ( int32_t position );
 			virtual bool containsItem( int32_t position );
 			virtual void purge();

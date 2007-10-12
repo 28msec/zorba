@@ -63,7 +63,7 @@ public:
 
 public:
 	// return the value of a variable by QName
-	Iterator_t var_value(const Item*) const;
+	PlanIter_t var_value(const Item*) const;
 
 	// set/get the function library
 	void set_library(library* _lib) { lib = _lib; }
@@ -80,7 +80,7 @@ public:
 	void set_context_item(Item_t);
 	void set_context_item_type(sequence_type_t );
 
-	Iterator_t namespaces() const;
+	PlanIter_t namespaces() const;
 	void add_namespace(Item&);
 
 	const Item& default_element_type_namespace() const;

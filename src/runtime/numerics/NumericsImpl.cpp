@@ -247,7 +247,7 @@ namespace xqp
 	/* begin class ArithmeticIterator */
 	template< class Operations>
 	ArithmeticIterator<Operations>::ArithmeticIterator 
-		( const yy::location& loc, Iterator_t& iter0, Iterator_t& iter1 )
+		( const yy::location& loc, PlanIter_t& iter0, PlanIter_t& iter1 )
 	:
 		BinaryBaseIterator<ArithmeticIterator<Operations> > ( loc, iter0, iter1 )
 	{
@@ -492,7 +492,7 @@ namespace xqp
 	|	0.0E0 returns -0.0E0 and vice versa. INF returns -INF. -INF returns
 	|	INF.
 	|_______________________________________________________________________*/
-	OpNumericUnaryIterator::OpNumericUnaryIterator ( const yy::location& loc, Iterator_t& iter, bool plus_arg)
+	OpNumericUnaryIterator::OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& iter, bool plus_arg)
 	:
 		Batcher<OpNumericUnaryIterator> ( loc ), arg0 ( iter ), plus( plus_arg )
 	{
@@ -595,7 +595,7 @@ namespace xqp
 	|_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-	FnAbsIterator::FnAbsIterator ( const yy::location& loc, Iterator_t& iter )
+	FnAbsIterator::FnAbsIterator ( const yy::location& loc, PlanIter_t& iter )
 	:
 		Batcher<FnAbsIterator> ( loc ), arg0 ( iter ) 
 	{

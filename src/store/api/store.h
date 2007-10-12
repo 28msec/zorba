@@ -20,7 +20,7 @@ namespace xqp
 
 	template <class Object> class rchandle;
 	
-	typedef rchandle<class PlanIterator> Iterator_t;
+	typedef rchandle<class PlanIterator> PlanIter_t;
 	typedef rchandle<class Item> Item_t;
 	typedef rchandle<class Collection> Collection_t;
 	typedef rchandle<class TempSeq> TempSeq_t;
@@ -42,7 +42,7 @@ namespace xqp
 			* @param iterator The source for the XMDInstance
 			* @param lazy			Hint for the store. If possible a XMDInstance should be evaluated lazily. For XQueryP it might be necassary to set this to false. 
 			*/
-		virtual TempSeq_t createTempSeq(Iterator_t&, bool lazy = true) = 0;
+		virtual TempSeq_t createTempSeq(PlanIter_t&, bool lazy = true) = 0;
 		
 		/**
 			* Possibility to change the Garbage Collection strategy of the store.
@@ -124,12 +124,12 @@ namespace xqp
 			* @param duplicate duplicate elemination should be applied
 			* @return iterator which produces the sorted items
 			*/
-		virtual Iterator_t sort(Iterator_t iterator, bool ascendent, bool duplicateElemination) = 0;
+		virtual PlanIter_t sort(PlanIter_t iterator, bool ascendent, bool duplicateElemination) = 0;
 		
 		/** Eliminates the duplicates in collection of items which is produced by the passed iterator
 			* @param iterator
 			*/
-		virtual Iterator_t distinctNodeStable(Iterator_t) = 0;
+		virtual PlanIter_t distinctNodeStable(PlanIter_t) = 0;
 		
 		
 		/* ------------------------ Collection Management ------------------------------------*/

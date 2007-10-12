@@ -113,7 +113,7 @@ namespace xqp
 Item_t BasicItemFactory::createDocumentNode (
 	    xqp_string baseURI,
 	    xqp_string docURI,
-	    Iterator_t& children,
+	    PlanIter_t& children,
 	    bool createId
 )
 {
@@ -124,9 +124,9 @@ Item_t BasicItemFactory::createDocumentNode (
 Item_t BasicItemFactory::createElementNode (
 	    const Item_t& name,
 	    TypeCode type,
-	    Iterator_t& children,
-	    Iterator_t& attributes,
-	    Iterator_t& namespaces,
+	    PlanIter_t& children,
+	    PlanIter_t& attributes,
+	    PlanIter_t& namespaces,
 	    bool copy,
 	    bool newTypes,
 	    bool createId

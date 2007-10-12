@@ -75,7 +75,7 @@ class PlanIterator;
 class node;
 class zorba;
 
-typedef rchandle<PlanIterator> Iterator_t;
+typedef rchandle<PlanIterator> PlanIter_t;
 
 extern int32_t iteratorTreeDepth;
 
@@ -202,12 +202,12 @@ protected:
 	};
 
 protected:
-	inline void resetChild(Iterator_t& subIterator, PlanState& planState) {
+	inline void resetChild(PlanIter_t& subIterator, PlanState& planState) {
 		subIterator->reset(planState);
 	}
 
 #if BATCHING_TYPE == 1	
-	inline Item_t consumeNext(Iterator_t& subIter, PlanState& planState) {
+	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState) {
 		if (subIter->cItem == BATCHSIZE) {
 			subIter->produceNext(planState);
 			subIter->cItem = 0;
@@ -215,12 +215,12 @@ protected:
 		return subIter->batch[subIter->cItem++];
 	}
 #else
-	inline Item_t consumeNext(Iterator_t& subIter, PlanState& planState) {
+	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState) {
 		return subIter->produceNext(planState);
 	}
 #endif
 
-	inline void releaseChildResources(Iterator_t& subIterator, PlanState& planState) {
+	inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState) {
 		subIterator->releaseResources(planState);
 	}
 
@@ -279,7 +279,7 @@ public:
 class IteratorWrapper {
 private:
 	bool theAlienBlock;
-	Iterator_t theIterator;
+	PlanIter_t theIterator;
 	PlanState* theStateBlock;
 	
 public:
@@ -289,7 +289,7 @@ public:
 	 * 
 	 * @param iter root of evaluated iterator tree
 	 */
-	IteratorWrapper(Iterator_t& iter);
+	IteratorWrapper(PlanIter_t& iter);
 	
 	/**
 	 * Constructor for IteratorWrapper which is used to generate the results
@@ -299,7 +299,7 @@ public:
 	 * @param iter 
 	 * @param planState 
 	 */
-	IteratorWrapper(Iterator_t& iter, PlanState& planState);
+	IteratorWrapper(PlanIter_t& iter, PlanState& planState);
 	
 	/**
 	 * Deconstructor.

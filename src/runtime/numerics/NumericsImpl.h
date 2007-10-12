@@ -105,7 +105,7 @@ namespace xqp
 		private:
 			GenericCast* genericCast;
 		public:
-			ArithmeticIterator ( const yy::location&, Iterator_t&, Iterator_t& );
+			ArithmeticIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
 			~ArithmeticIterator();
 
 			Item_t nextImpl(PlanState&);
@@ -151,12 +151,12 @@ namespace xqp
 	class OpNumericUnaryIterator : public Batcher<OpNumericUnaryIterator>
 	{
 		private:
-			Iterator_t arg0;
+			PlanIter_t arg0;
 			GenericCast* genericCast;
 			bool plus;
 
 		public:
-			OpNumericUnaryIterator ( const yy::location& loc, Iterator_t& iter, bool plus_arg);
+			OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& iter, bool plus_arg);
 			~OpNumericUnaryIterator();
 
 		public:	// iterator interface
@@ -190,11 +190,11 @@ namespace xqp
 	class FnAbsIterator : public Batcher<FnAbsIterator>
 	{
 		private:
-			Iterator_t arg0;
+			PlanIter_t arg0;
 			GenericCast* genericCast;
 
 		public:
-			FnAbsIterator ( const yy::location& loc, Iterator_t& iter );
+			FnAbsIterator ( const yy::location& loc, PlanIter_t& iter );
 			~FnAbsIterator();
 
 		public:

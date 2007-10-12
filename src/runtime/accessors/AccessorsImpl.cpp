@@ -15,7 +15,7 @@ Item_t
 FnDataIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
-  Iterator_t iter;
+  PlanIter_t iter;
 		
   STACK_INIT();
   while (true) {

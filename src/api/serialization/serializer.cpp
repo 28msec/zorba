@@ -157,7 +157,7 @@ void serializer::normalize_sequence(list_type& items, list_type& out)
 			&&
 			(*it)->getNodeKind() == documentNode )
 		{
-			Iterator_t children = (*it)->getChildren();
+			PlanIter_t children = (*it)->getChildren();
 			IteratorWrapper iw(children);
 			Item_t child = iw.next();
 			while (child != NULL)
@@ -254,7 +254,7 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth)
 	unsigned int children_count = 0;
 
 	// emit attributes first
-	Iterator_t it = item->getChildren();
+	PlanIter_t it = item->getChildren();
 	IteratorWrapper iw(it);
 	Item_t child = iw.next();
 	while (child!= NULL)

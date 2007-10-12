@@ -26,11 +26,11 @@ namespace xqp
 	class FnBooleanIterator : public Batcher<FnBooleanIterator>
 	{
 		private:
-			Iterator_t arg0_;
+			PlanIter_t arg0_;
 			bool negate;
 
 		public:
-			FnBooleanIterator ( const yy::location& loc, Iterator_t& arg0, bool negate_arg = false );
+			FnBooleanIterator ( const yy::location& loc, PlanIter_t& arg0, bool negate_arg = false );
 			~FnBooleanIterator();
 
 			/**
@@ -42,7 +42,7 @@ namespace xqp
 			 * @param negate optinal parameter which negates the effective boolean value (default == false)
 			 * @return effective boolean value
 			 */
-			static Item_t effectiveBooleanValue ( const yy::location& loc, PlanState& planState, Iterator_t&, bool negate = false);
+			static Item_t effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t&, bool negate = false);
 
 			Item_t nextImpl(PlanState& planState);
 			void resetImpl(PlanState& planState);
@@ -59,13 +59,13 @@ namespace xqp
 		};
 		
 		private:
-			Iterator_t iterLeft;
-			Iterator_t iterRight;
+			PlanIter_t iterLeft;
+			PlanIter_t iterRight;
 			
 			LogicType logicType;
 			
 		public:
-			LogicIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, LogicType lt);
+			LogicIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, LogicType lt);
 			~LogicIterator();
 			
 			Item_t nextImpl(PlanState& planState);
@@ -86,14 +86,14 @@ namespace xqp
 			};
 			
 		private:
-			Iterator_t iter0;
-			Iterator_t iter1;
+			PlanIter_t iter0;
+			PlanIter_t iter1;
 			
 			GenericCast* genericCast;
 			CompareType compareType;
 
 		public:
-			CompareIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType );
+			CompareIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, CompareType argCompType );
 			~CompareIterator();
 
 			Item_t nextImpl(PlanState& planState);
