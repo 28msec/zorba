@@ -36,8 +36,6 @@ class GenericCast;
  * -------------------- */
 /* begin class CodepointsToStringIterator */
 class CodepointsToStringIterator : public UnaryBaseIterator<CodepointsToStringIterator>{
-private:
-	xqp_string resStr;
 public:
 	public:
 		CodepointsToStringIterator ( const yy::location& loc, Iterator_t& arg );

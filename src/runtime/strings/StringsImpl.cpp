@@ -45,24 +45,25 @@ CodepointsToStringIterator::~CodepointsToStringIterator()
 Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	Item_t item;
 	Item_t resItem;
+	xqp_string resStr;
 
 	BasicIterator::BasicIteratorState* state;
 	STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
 
 	while(true){
 		item = consumeNext ( theChild, stateBlock );
-		if ( &*item != NULL )	{
+		if ( item != NULL ){
 			item = item->getAtomizationValue();
 			resStr += (uint32_t)item->getIntegerValue();
 		}
 		else{
 			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
 			STACK_PUSH2( resItem, state );
+			break;
 		}
 	}
 	STACK_END2();
 }
-
 /* end class CodepointsToStringIterator */
 
 /**
