@@ -26,7 +26,7 @@
 namespace xqp {
 
 class ZorbaErrorAlerts;
-class BasicIterator;
+class PlanIterator;
 
 
 class zorba : public rcobject
@@ -50,7 +50,7 @@ public:
 	///keep a track of the current parse node or expr node (at compile time)
 	//std::stack<const parsenode*>		current_parsenode;
 	///keep a track of the current iterator executed (at execution time)
-	std::stack<const BasicIterator*>	current_iterator;
+	std::stack<const PlanIterator*>	current_iterator;
 	yy::location	null_loc;
 	///end daniel
 

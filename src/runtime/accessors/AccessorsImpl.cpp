@@ -12,20 +12,20 @@
 namespace xqp {
 
 Item_t
-FnDataIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+FnDataIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
   Iterator_t iter;
 		
   STACK_INIT();
   while (true) {
-    item = this->consumeNext( this->argument, stateBlock );
+    item = this->consumeNext( this->argument, planState );
     if (item == NULL)
       break;
     this->curTypedValue = item->getTypedValue();
 			
     while (true) {
-      item = this->consumeNext( this->curTypedValue, stateBlock );
+      item = this->consumeNext( this->curTypedValue, planState );
       if (item == NULL)
         break;
       STACK_PUSH( item );
@@ -35,26 +35,26 @@ FnDataIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 }
 	
 void
-FnDataIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+FnDataIterator::resetImpl(PlanState& planState)
 {
-  this->resetChild( this->argument, stateBlock );
+  this->resetChild( this->argument, planState );
 }
 	
 void
-FnDataIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+FnDataIterator::releaseResourcesImpl(PlanState& planState)
 {
-  this->releaseChildResources( this->argument, stateBlock );
+  this->releaseChildResources( this->argument, planState );
 }
 
 
-Item_t FnRootIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+Item_t FnRootIterator::nextImpl(PlanState& planState)
 {
   Item_t contextNode;
   Item_t parentNode;
 
   STACK_INIT();
 
-  contextNode = consumeNext(theInput, stateBlock);
+  contextNode = consumeNext(theInput, planState);
 
   if (contextNode == NULL)
     return NULL;
@@ -82,15 +82,15 @@ Item_t FnRootIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 }
 
 
-void FnRootIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+void FnRootIterator::resetImpl(PlanState& planState)
 {
-  resetChild(theInput, stateBlock);
+  resetChild(theInput, planState);
 }
 
 	
-void FnRootIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+void FnRootIterator::releaseResourcesImpl(PlanState& planState)
 {
-  releaseChildResources(theInput, stateBlock);
+  releaseChildResources(theInput, planState);
 }
 
 

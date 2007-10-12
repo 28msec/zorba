@@ -12,14 +12,14 @@
 
 #include <iostream>
 
-#include "runtime/core/batching.h"
+#include "runtime/base/iterator.h"
 
 namespace xqp 
 {
 	template <class Object> class rchandle;
 	
 	typedef rchandle<class Item> Item_t;
-	typedef rchandle<class BasicIterator> Iterator_t;
+	typedef rchandle<class PlanIterator> Iterator_t;
 
 
 	class Collection : public rcobject

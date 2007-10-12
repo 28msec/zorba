@@ -23,7 +23,7 @@ namespace xqp
 	template <class Object> class rchandle;
 
 	typedef rchandle<class Item> Item_t;
-	typedef rchandle<class BasicIterator> Iterator_t;
+	typedef rchandle<class PlanIterator> Iterator_t;
 	
 	class ItemFactory : public rcobject
 	{

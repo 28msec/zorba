@@ -59,17 +59,17 @@ const
 }
 
 Item_t 
-ConcatIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+ConcatIterator::nextImpl(PlanState& planState) {
 	Item_t item;
 	
 	ConcatIteratorState* state;
-	STACK_INIT2(ConcatIteratorState, state, stateBlock);
+	STACK_INIT2(ConcatIteratorState, state, planState);
 	
 	for (; state->getCurIter() < int32_t(this->argv.size()); state->incCurIter()) {;
-		item = this->consumeNext(this->argv[state->getCurIter()], stateBlock);
+		item = this->consumeNext(this->argv[state->getCurIter()], planState);
 		while (item != NULL) {
 			STACK_PUSH2 (item, state);
-			item = this->consumeNext(this->argv[state->getCurIter()], stateBlock);
+			item = this->consumeNext(this->argv[state->getCurIter()], planState);
 		}
 	}
 	
@@ -77,22 +77,22 @@ ConcatIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 }
 
 void 
-ConcatIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
+ConcatIterator::resetImpl(PlanState& planState) {
 	ConcatIteratorState* state;
-	GET_STATE(ConcatIteratorState, state, stateBlock);
+	GET_STATE(ConcatIteratorState, state, planState);
 	state->reset();
 	
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter, stateBlock);
+		this->resetChild(*iter, planState);
 	}
 }
 
 void 
-ConcatIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
+ConcatIterator::releaseResourcesImpl(PlanState& planState) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter, stateBlock);
+		this->releaseChildResources(*iter, planState);
 	}
 }
 
@@ -114,25 +114,25 @@ ConcatIterator::getStateSizeOfSubtree() {
 }
 
 void
-ConcatIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
+ConcatIterator::setOffset(PlanState& planState, int32_t& offset) {
 	this->stateOffset = offset;
 	offset += this->getStateSize();
 	
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		(*iter)->setOffset(stateBlock, offset);
+		(*iter)->setOffset(planState, offset);
 	}
 }
 
 void
 ConcatIterator::ConcatIteratorState::init() {
-	BasicIterator::BasicIteratorState::init();
+	PlanIterator::PlanIteratorState::init();
 	this->curIter = 0;
 }
 
 void
 ConcatIterator::ConcatIteratorState::reset() {
-	BasicIterator::BasicIteratorState::reset();
+	PlanIterator::PlanIteratorState::reset();
 	this->curIter = 0;
 }
 

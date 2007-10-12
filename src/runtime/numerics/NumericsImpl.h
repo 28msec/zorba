@@ -21,8 +21,8 @@
 #define XQP_NUMERICS_IMPL_H
 
 #include "context/common.h"
-#include "runtime/iterators.h"
-
+#include "runtime/base/iterator.h"
+#include "runtime/base/binarybase.h"
 
 namespace xqp
 {
@@ -108,7 +108,7 @@ namespace xqp
 			ArithmeticIterator ( const yy::location&, Iterator_t&, Iterator_t& );
 			~ArithmeticIterator();
 
-			Item_t nextImpl(IteratorTreeStateBlock&);
+			Item_t nextImpl(PlanState&);
 	}; /* class ArithmeticIterator */
 
 	/*______________________________________________________________________
@@ -160,9 +160,9 @@ namespace xqp
 			~OpNumericUnaryIterator();
 
 		public:	// iterator interface
-			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-			void resetImpl(IteratorTreeStateBlock& stateBlock);
-			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+			Item_t nextImpl(PlanState& planState);
+			void resetImpl(PlanState& planState);
+			void releaseResourcesImpl(PlanState& planState);
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 
@@ -198,9 +198,9 @@ namespace xqp
 			~FnAbsIterator();
 
 		public:
-			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-			void resetImpl(IteratorTreeStateBlock& stateBlock);
-			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+			Item_t nextImpl(PlanState& planState);
+			void resetImpl(PlanState& planState);
+			void releaseResourcesImpl(PlanState& planState);
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 
@@ -218,16 +218,16 @@ namespace xqp
 	public:
 		ZorNumGen ( const yy::location& loc);
 		~ZorNumGen();
-		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-		void resetImpl(IteratorTreeStateBlock& stateBlock);
-		void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+		Item_t nextImpl(PlanState& planState);
+		void resetImpl(PlanState& planState);
+		void releaseResourcesImpl(PlanState& planState);
 		
 		virtual int32_t getStateSize();
 		virtual int32_t getStateSizeOfSubtree();
-		virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+		virtual void setOffset(PlanState& planState, int32_t& offset);
 		
 	protected:
-		class ZorNumGenState : public BasicIteratorState
+		class ZorNumGenState : public PlanIteratorState
 		{
 		private:
 			int32_t curNumber;

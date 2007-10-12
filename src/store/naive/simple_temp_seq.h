@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "store/api/temp_seq.h"
-#include "runtime/core/batching.h"
+#include "runtime/base/iterator.h"
 
 namespace xqp
 {
@@ -73,9 +73,9 @@ namespace xqp
 
 					~Iterator() {}
 
-					Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-					void resetImpl(IteratorTreeStateBlock& stateBlock);
-					void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+					Item_t nextImpl(PlanState& planState);
+					void resetImpl(PlanState& planState);
+					void releaseResourcesImpl(PlanState& planState);
 			};
 
 	}; /* class SimpleTempSeq */

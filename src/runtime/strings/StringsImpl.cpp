@@ -33,16 +33,16 @@ namespace xqp {
  *an error is raised [err:FOCH0001] ("Code point not valid.").
  *_______________________________________________________________________*/
 /* begin class CodepointsToStringIterator */
-Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
+Item_t CodepointsToStringIterator::nextImpl(PlanState& planState){
 	Item_t item;
 	Item_t resItem;
 	xqp_string resStr;
 
-	BasicIterator::BasicIteratorState* state;
-	STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
 	while(true){
-		item = consumeNext ( theChild, stateBlock );
+		item = consumeNext ( theChild, planState );
 		if ( item != NULL ){
 			item = item->getAtomizationValue();
 			resStr += (uint32_t)item->getIntegerValue();
@@ -70,7 +70,7 @@ Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
  *the empty sequence is returned.
  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
-Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
+Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
 /*
 	uint32_t cp;
 	std::vector<char> v;
@@ -78,10 +78,10 @@ Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	uint16_t vLength;
 	Item_t item;
 
-	BasicIterator::BasicIteratorState* state;
-	STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
-	item = consumeNext ( theChild, stateBlock );
+	item = consumeNext ( theChild, planState );
 	if ( item != NULL ){
 		vLength = (item->getStringValue().length()) + 1;
 		v.reserve(vLength);
@@ -95,8 +95,8 @@ Item_t StringToCodepointsIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	}
 	STACK_END2();
 */
-	BasicIterator::BasicIteratorState* state;
-	STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 	STACK_END2();
 }
 /* end class StringToCodepointsIterator */
@@ -131,22 +131,22 @@ CompareStrIterator::~CompareStrIterator()
 {}
 
 Item_t 
-CompareStrIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+CompareStrIterator::nextImpl(PlanState& planState) {
 		Item_t n0;
 		Item_t n1;
 		Item_t n2;
 		Item_t res;
 
-		BasicIterator::BasicIteratorState* state;
-		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+		PlanIterator::PlanIteratorState* state;
+		STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
-		n0 = consumeNext ( theChildren[0], stateBlock );
+		n0 = consumeNext ( theChildren[0], planState );
 		if ( n0 != NULL )	{
-			n1 = consumeNext ( theChildren[1], stateBlock );
+			n1 = consumeNext ( theChildren[1], planState );
 			if ( n1 != NULL )	{
 				n0 = n0->getAtomizationValue();
 				n1 = n1->getAtomizationValue();
-				n2 = consumeNext ( theChildren[2], stateBlock );
+				n2 = consumeNext ( theChildren[2], planState );
 				if ( n2 != NULL )	{
 					//TODO check if lowercase two-letter or three-letter ISO-639 code is a correct value for $collation
 					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
@@ -188,14 +188,14 @@ std::ostream& CodepointEqualIterator::_show(std::ostream& os) const{
 	return os;
 }
 
-Item_t CodepointEqualIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
+Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
 	Item_t item0;
 	Item_t item1;
 
 	STACK_INIT();
 
-	item0 = this->consumeNext(argv0, stateBlock);
-	item1 = this->consumeNext(argv1, stateBlock);
+	item0 = this->consumeNext(argv0, planState);
+	item1 = this->consumeNext(argv1, planState);
 	finish = false;
 
 	if(&*item0 == NULL || &*item1 == NULL) {
@@ -234,14 +234,14 @@ Item_t CodepointEqualIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	STACK_END();
 }
 
-void CodepointEqualIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
-	this->resetChild(argv0, stateBlock);
-	this->resetChild(argv1, stateBlock);
+void CodepointEqualIterator::resetImpl(PlanState& planState){
+	this->resetChild(argv0, planState);
+	this->resetChild(argv1, planState);
 }
 
-void CodepointEqualIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
-	this->releaseChildResources(argv0, stateBlock);
-	this->releaseChildResources(argv1, stateBlock);
+void CodepointEqualIterator::releaseResourcesImpl(PlanState& planState) {
+	this->releaseChildResources(argv0, planState);
+	this->releaseChildResources(argv1, planState);
 }
 
 /**
@@ -278,7 +278,7 @@ std::ostream& ConcatFnIterator::_show(std::ostream& os)
 	return os;
 }
 
-Item_t ConcatFnIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+Item_t ConcatFnIterator::nextImpl(PlanState& planState) {
 
 	Item_t item;
 	
@@ -288,7 +288,7 @@ Item_t ConcatFnIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 	
 	for (; this->cursor < this->argv.size (); this->cursor++) {;
 		this->currit_h = this->argv[this->cursor];
-		item = this->consumeNext(this->currit_h, stateBlock);
+		item = this->consumeNext(this->currit_h, planState);
 
 		//TODO use a more high level function provided by the type system
 		//if the item is not a node => it's a xs:anyAtomicType
@@ -304,17 +304,17 @@ Item_t ConcatFnIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 	STACK_END();
 }
 
-void ConcatFnIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
+void ConcatFnIterator::resetImpl(PlanState& planState) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter, stateBlock);
+		this->resetChild(*iter, planState);
 	}
 }
 
-void ConcatFnIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
+void ConcatFnIterator::releaseResourcesImpl(PlanState& planState) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter, stateBlock);
+		this->releaseChildResources(*iter, planState);
 	}
 }
 
@@ -348,7 +348,7 @@ std::ostream& StringJoinIterator::_show(std::ostream& os)
 	return os;
 }
 
-Item_t StringJoinIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
+Item_t StringJoinIterator::nextImpl(PlanState& planState) {
 
 	STACK_INIT();
 	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("result"));
@@ -356,17 +356,17 @@ Item_t StringJoinIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
 	STACK_END();
 }
 
-void StringJoinIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
+void StringJoinIterator::resetImpl(PlanState& planState) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter, stateBlock);
+		this->resetChild(*iter, planState);
 	}
 }
 
-void StringJoinIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
+void StringJoinIterator::releaseResourcesImpl(PlanState& planState) {
 	std::vector<Iterator_t>::iterator iter = this->argv.begin();
 	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter, stateBlock);
+		this->releaseChildResources(*iter, planState);
 	}
 }
 } /* namespace xqp */

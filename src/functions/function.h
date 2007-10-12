@@ -20,7 +20,7 @@ namespace xqp {
 
 template <class Object> class rchandle;
 
-typedef rchandle<class BasicIterator> Iterator_t;
+typedef rchandle<class PlanIterator> Iterator_t;
 
 class function : public rcobject
 {

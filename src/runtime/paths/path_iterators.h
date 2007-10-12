@@ -29,8 +29,8 @@
 #include "util/rchandle.h"
 #include "util/logging/logging.hh"
 #include "compiler/expression/expr_consts.h"
-#include "runtime/core/batching.h"
-#include "runtime/iterators.h"
+#include "runtime/base/iterator.h"
+#include "runtime/base/unarybase.h"
 #include <stack>
 
 namespace xqp {
@@ -67,7 +67,7 @@ public:
   ~KindTestIterator() {}
 
 public:
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -98,7 +98,7 @@ public:
   ~NameTestIterator() {}
 
 public:
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -129,7 +129,7 @@ class AxisIterator : public UnaryBaseIterator<AxisIter>,
                      public AxisIteratorHelper
 {
 protected:
-  class AxisState : public BasicIterator::BasicIteratorState
+  class AxisState : public PlanIterator::PlanIteratorState
   {
   public:
     Item_t     theContextNode;   
@@ -144,7 +144,7 @@ public:
 
   virtual ~AxisIterator() {}
 
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(AxisState); }
 };
@@ -169,10 +169,10 @@ public:
 
   ~SelfAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
 
   // Manually instantiated here, as MSVC does not do it
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock); 
+  void releaseResourcesImpl(PlanState& planState); 
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -199,9 +199,9 @@ public:
 
   ~AttributeAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(AttributeAxisState); }
 
@@ -228,10 +228,10 @@ public:
 
   ~ParentAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
  
   // Manually instantiated here, as MSVC does not do it
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock); 
+  void releaseResourcesImpl(PlanState& planState); 
   
   std::ostream& _show(std::ostream& os) const;
 };
@@ -258,8 +258,8 @@ public:
 
   ~AncestorAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(AncestorAxisState); }
 
@@ -288,8 +288,8 @@ public:
 
   ~AncestorSelfAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(AncestorSelfAxisState); }
 
@@ -318,9 +318,9 @@ public:
 
   ~RSiblingAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(RSiblingAxisState); }
 
@@ -349,9 +349,9 @@ public:
 
   ~LSiblingAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(LSiblingAxisState); }
 
@@ -380,9 +380,9 @@ public:
 
   ~ChildAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(ChildAxisState); }
 
@@ -411,13 +411,13 @@ public:
 
   ~DescendantAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(DescendantAxisState); }
 
-  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	void setOffset(PlanState& planState, int32_t& offset);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -444,13 +444,13 @@ public:
 
   ~DescendantSelfAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(DescendantSelfAxisState); }
 
-  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	void setOffset(PlanState& planState, int32_t& offset);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -478,13 +478,13 @@ public:
 
   ~PrecedingAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(PrecedingAxisState); }
 
-  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	void setOffset(PlanState& planState, int32_t& offset);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -511,13 +511,13 @@ public:
 
   ~FollowingAxisIterator() {}
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(FollowingAxisState); }
 
-  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	void setOffset(PlanState& planState, int32_t& offset);
 
   std::ostream& _show(std::ostream& os) const;
 };

@@ -185,7 +185,7 @@ public:
 */
 
 class Zorba_Items : public std::vector<Zorba_ItemPtr>
-										//public BasicIterator///is also an iterator to serve as a var value
+										//public PlanIterator///is also an iterator to serve as a var value
 {
 public:
 	///sort items by their id
@@ -198,7 +198,7 @@ public:
 
 /////////////////////Item stream generator/////////////////////////
 
-class Zorba_ItemStream : public BasicIterator
+class Zorba_ItemStream : public PlanIterator
 {
 public:
 	///URI points to a file or internet resource

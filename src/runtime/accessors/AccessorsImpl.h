@@ -12,7 +12,7 @@
 
 #include "context/common.h"
 #include "functions/function.h"
-#include "runtime/core/batching.h"
+#include "runtime/base/iterator.h"
 
 namespace xqp {
 
@@ -30,9 +30,9 @@ public:
 		Batcher<FnDataIterator> ( loc ), argument(arg0) {}
     ~FnDataIterator() {}
 		
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 }; /* class FnDateIterator */
 
 
@@ -48,9 +48,9 @@ public:
 		Batcher<FnRootIterator>(loc), theInput(input) {}
     ~FnRootIterator() {}
 		
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   std::ostream& _show(std::ostream& os)	const;
 };

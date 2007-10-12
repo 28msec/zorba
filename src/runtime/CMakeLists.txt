@@ -6,8 +6,7 @@ SET(RUNTIME_SRCS
     booleans/BooleanImpl.cpp
     dateTime/DurationsDatesTimes.cpp
     paths/path_iterators.cpp
-    core/batching.cpp
-    iterators.cpp
+    base/iterator.cpp
     sequences/SequencesImpl.cpp)
 
 ADD_LIBRARY(runtime ${RUNTIME_SRCS})

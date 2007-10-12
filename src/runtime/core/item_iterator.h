@@ -13,8 +13,8 @@
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "compiler/parser/location.hh"
-#include "runtime/core/batching.h"
-#include "runtime/iterators.h"
+#include "runtime/base/iterator.h"
+#include "runtime/base/unarybase.h"
 
 #include <assert.h>
 #include <iostream>
@@ -63,9 +63,9 @@ public:
 	EmptyIterator(const EmptyIterator& it) : Batcher<EmptyIterator>(it) {}
 	~EmptyIterator() {}
 	
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock) { return NULL; }
-	void resetImpl(IteratorTreeStateBlock& stateBlock)  { }
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock){ }
+	Item_t nextImpl(PlanState& planState) { return NULL; }
+	void resetImpl(PlanState& planState)  { }
+	void releaseResourcesImpl(PlanState& planState){ }
 }; /* class EmptyIterator */
 
 
@@ -83,15 +83,15 @@ public:
 	~SingletonIterator();
 	
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl(PlanState& planState);
+	void resetImpl(PlanState& planState);
+	void releaseResourcesImpl(PlanState& planState);
 	
 	std::ostream&  _show(std::ostream& os)	const;
 
 	virtual int32_t getStateSize();
 	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	virtual void setOffset(PlanState& planState, int32_t& offset);
 };
 
 // FIXME No expressions in iterators!!
@@ -118,14 +118,14 @@ public:		// variable binding
 |	let_var bindings
 |______________________________________________________________*/
 
-// class RefIterator : public BasicIterator
+// class RefIterator : public PlanIterator
 // {
 // private:
 // 	Iterator_t it;
 // 
 // public:
 // 	RefIterator(Iterator_t _it,yy::location loc) : 
-// 										BasicIterator(loc),
+// 										PlanIterator(loc),
 // 										it(_it) {}
 // 
 // public:
@@ -173,14 +173,14 @@ public:
 	~MapIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl(PlanState& planState);
+	void resetImpl(PlanState& planState);
+	void releaseResourcesImpl(PlanState& planState);
 
 	
 	virtual int32_t getStateSize();
 	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	virtual void setOffset(PlanState& planState, int32_t& offset);
 	
 	std::ostream&  _show(std::ostream& os) const;
 
@@ -194,7 +194,7 @@ public:
 class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator>
 {
 protected:
-  class EnclosedState : public BasicIteratorState
+  class EnclosedState : public PlanIteratorState
   {
   public:
     xqp_string theString;
@@ -206,13 +206,13 @@ protected:
 public:
   EnclosedIterator(const yy::location& loc, Iterator_t& childIter);
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(EnclosedState); }
 
-  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+  void setOffset(PlanState& planState, int32_t& offset);
 }; /* class EnclosedIterator */
 
 	
@@ -223,7 +223,7 @@ public:
 class ElementContentIterator : public UnaryBaseIterator<ElementContentIterator>
 {
 protected:
-  class ElementContentState : public BasicIteratorState
+  class ElementContentState : public PlanIteratorState
   {
   public:
     xqp_string theString;
@@ -235,13 +235,13 @@ protected:
 public:
   ElementContentIterator(const yy::location& loc, Iterator_t& childIter);
 
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
   int32_t getStateSize() { return sizeof(ElementContentState); }
 
-  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+  void setOffset(PlanState& planState, int32_t& offset);
 }; /* class TextNodeConnector */
 
 
@@ -260,15 +260,15 @@ public:
         Iterator_t& children,
         Iterator_t& attributes);
 	
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
 	std::ostream& _show(std::ostream& os) const;
 
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+  virtual void setOffset(PlanState& planState, int32_t& offset);
 }; /* class ElementIterator */
 	
 
@@ -283,7 +283,7 @@ public:
         const Item_t& qname,
         Iterator_t& value);
 		
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
 }; /* class AttributeIterator */
 	
 
@@ -317,9 +317,9 @@ public:
         Iterator_t& iterElse_arg,
         bool condIsBooleanIter_arg = false);
 		
-  Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-  void resetImpl(IteratorTreeStateBlock& stateBlock);
-  void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 }; /* class IfThenElseIterator */
 
 

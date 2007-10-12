@@ -33,23 +33,23 @@ SingletonIterator::~SingletonIterator()
 }
 
 	Item_t 
-	SingletonIterator::nextImpl(IteratorTreeStateBlock& stateBlock) {
-		BasicIteratorState* state;
-		STACK_INIT2(BasicIteratorState, state, stateBlock);
+	SingletonIterator::nextImpl(PlanState& planState) {
+		PlanIteratorState* state;
+		STACK_INIT2(PlanIteratorState, state, planState);
 		STACK_PUSH2(i_h, state);
 		STACK_END2();
 	}
 	
 	void 
-	SingletonIterator::resetImpl(IteratorTreeStateBlock& stateBlock) {
-		BasicIterator::BasicIteratorState* state;
-		GET_STATE(BasicIteratorState, state, stateBlock);
+	SingletonIterator::resetImpl(PlanState& planState) {
+		PlanIterator::PlanIteratorState* state;
+		GET_STATE(PlanIteratorState, state, planState);
 		state->reset();
 	}
 	
 
 void 
-SingletonIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+SingletonIterator::releaseResourcesImpl(PlanState& planState)
 {
 }
 	
@@ -63,7 +63,7 @@ SingletonIterator::_show(std::ostream& os)	const
 	
 int32_t
 SingletonIterator::getStateSize() {
-  return sizeof(BasicIterator::BasicIteratorState);
+  return sizeof(PlanIterator::PlanIteratorState);
 }
 
 	
@@ -74,7 +74,7 @@ SingletonIterator::getStateSizeOfSubtree() {
 
 	
 void
-SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+SingletonIterator::setOffset(PlanState& planState, int32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();
@@ -83,17 +83,17 @@ SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset
 
 	/* begin class MapIterator */
 	Item_t
-	MapIterator::nextImpl ( IteratorTreeStateBlock& stateBlock )
+	MapIterator::nextImpl ( PlanState& planState )
 	{
 		Item_t item;
 		vector<var_iter_t>::const_iterator itv;
-		BasicIteratorState *state;
-		STACK_INIT2 ( BasicIteratorState, state, stateBlock );
+		PlanIteratorState *state;
+		STACK_INIT2 ( PlanIteratorState, state, planState );
 	
 	
 		while ( true )
 		{
-			item = this->consumeNext ( this->theInput, stateBlock );
+			item = this->consumeNext ( this->theInput, planState );
 			if ( item == NULL )
 				break;
 			itv = varv.begin();
@@ -102,36 +102,36 @@ SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset
 				( *itv )->bind ( item );
 			}
 	
-			item = this->consumeNext ( this->theExpr, stateBlock );
+			item = this->consumeNext ( this->theExpr, planState );
 			while ( item != NULL )
 			{
 				STACK_PUSH2 ( item, state );
-				item = this->consumeNext ( this->theExpr, stateBlock );
+				item = this->consumeNext ( this->theExpr, planState );
 			}
 	
-			this->resetChild ( this->theExpr, stateBlock );
+			this->resetChild ( this->theExpr, planState );
 		}
 		STACK_END2();
 	}
 
 	void 
-	MapIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	MapIterator::resetImpl(PlanState& planState)
 	{
-		this->resetChild ( this->theInput, stateBlock );
-		this->resetChild ( this->theExpr, stateBlock );
+		this->resetChild ( this->theInput, planState );
+		this->resetChild ( this->theExpr, planState );
 	}
 
 	void 
-	MapIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	MapIterator::releaseResourcesImpl(PlanState& planState)
 	{
-		this->releaseChildResources ( this->theInput, stateBlock );
-		this->releaseChildResources ( this->theExpr, stateBlock );
+		this->releaseChildResources ( this->theInput, planState );
+		this->releaseChildResources ( this->theExpr, planState );
 	}
 	
 	int32_t
 	MapIterator::getStateSize()
 	{
-		return sizeof(BasicIteratorState);
+		return sizeof(PlanIteratorState);
 	}
 	
 	int32_t
@@ -142,12 +142,12 @@ SingletonIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset
 				+ this->getStateSize();
 	}
 	
-	void MapIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
+	void MapIterator::setOffset(PlanState& planState, int32_t& offset) {
 		this->stateOffset = offset;
 		offset += this->getStateSize();
 		
-		theInput->setOffset(stateBlock, offset);
-		theExpr->setOffset(stateBlock, offset);
+		theInput->setOffset(planState, offset);
+		theExpr->setOffset(planState, offset);
 	}
 
 	std::ostream& 
@@ -171,14 +171,14 @@ EnclosedIterator::EnclosedIterator(
 
 		
 Item_t 
-EnclosedIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+EnclosedIterator::nextImpl(PlanState& planState)
 {
   EnclosedState* state;
-  STACK_INIT2(EnclosedState, state, stateBlock);
+  STACK_INIT2(EnclosedState, state, planState);
 
   while (true)
   {
-    state->theContextItem = consumeNext(theChild, stateBlock);
+    state->theContextItem = consumeNext(theChild, planState);
     if (state->theContextItem == NULL)
     {
       if (state->theString != "")
@@ -211,41 +211,41 @@ EnclosedIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 
 
 void 
-EnclosedIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+EnclosedIterator::resetImpl(PlanState& planState)
 {
-  UnaryBaseIterator<EnclosedIterator>::resetImpl(stateBlock);
+  UnaryBaseIterator<EnclosedIterator>::resetImpl(planState);
 
   EnclosedState* state;
-  GET_STATE(EnclosedState, state, stateBlock);
+  GET_STATE(EnclosedState, state, planState);
   state->theString = "";
 }
 
 	
 void 
-EnclosedIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+EnclosedIterator::releaseResourcesImpl(PlanState& planState)
 {
-  UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl(stateBlock);
+  UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl(planState);
 
   EnclosedState* state;
-  GET_STATE(EnclosedState, state, stateBlock);
+  GET_STATE(EnclosedState, state, planState);
   state->theContextItem = NULL;
   state->theString.clear();
 }
 
 
 void EnclosedIterator::setOffset(
-    IteratorTreeStateBlock& stateBlock,
+    PlanState& planState,
     int32_t& offset)
 {
-  UnaryBaseIterator<EnclosedIterator>::setOffset(stateBlock, offset);
+  UnaryBaseIterator<EnclosedIterator>::setOffset(planState, offset);
 
-  EnclosedState* state = new (stateBlock.block + stateOffset) EnclosedState;
+  EnclosedState* state = new (planState.block + stateOffset) EnclosedState;
 }
 
 
 void EnclosedIterator::EnclosedState::init()
 {
-  BasicIterator::BasicIteratorState::init();
+  PlanIterator::PlanIteratorState::init();
   theString = "";
 }
 
@@ -263,14 +263,14 @@ ElementContentIterator::ElementContentIterator(
 
 		
 Item_t 
-ElementContentIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+ElementContentIterator::nextImpl(PlanState& planState)
 {
   ElementContentState* state;
-  STACK_INIT2(ElementContentState, state, stateBlock);
+  STACK_INIT2(ElementContentState, state, planState);
 
   while (true)
 	{
-    state->theContextItem = this->consumeNext(theChild, stateBlock );
+    state->theContextItem = this->consumeNext(theChild, planState );
     if (state->theContextItem == NULL)
 		{
       if (state->theString != "")
@@ -299,41 +299,41 @@ ElementContentIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 
 
 void 
-ElementContentIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+ElementContentIterator::resetImpl(PlanState& planState)
 {
-  UnaryBaseIterator<ElementContentIterator>::resetImpl(stateBlock);
+  UnaryBaseIterator<ElementContentIterator>::resetImpl(planState);
 
   ElementContentState* state;
-  GET_STATE(ElementContentState, state, stateBlock);
+  GET_STATE(ElementContentState, state, planState);
   state->theString = "";
 }
 
 	
 void 
-ElementContentIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+ElementContentIterator::releaseResourcesImpl(PlanState& planState)
 {
-  UnaryBaseIterator<ElementContentIterator>::releaseResourcesImpl(stateBlock);
+  UnaryBaseIterator<ElementContentIterator>::releaseResourcesImpl(planState);
 
   ElementContentState* state;
-  GET_STATE(ElementContentState, state, stateBlock);
+  GET_STATE(ElementContentState, state, planState);
   state->theContextItem = NULL;
   state->theString.clear();
 }
 
 
 void ElementContentIterator::setOffset(
-    IteratorTreeStateBlock& stateBlock,
+    PlanState& planState,
     int32_t& offset)
 {
-  UnaryBaseIterator<ElementContentIterator>::setOffset(stateBlock, offset);
+  UnaryBaseIterator<ElementContentIterator>::setOffset(planState, offset);
 
-  ElementContentState* state = new (stateBlock.block + stateOffset) ElementContentState;
+  ElementContentState* state = new (planState.block + stateOffset) ElementContentState;
 }
 
 
 void ElementContentIterator::ElementContentState::init()
 {
-  BasicIterator::BasicIteratorState::init();
+  PlanIterator::PlanIteratorState::init();
   theString = "";
 }
 /* end class ElementContentIterator */
@@ -355,12 +355,12 @@ ElementIterator::ElementIterator (
 
 
 Item_t
-ElementIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+ElementIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
 
-  BasicIteratorState* state;
-  STACK_INIT2(BasicIteratorState, state, stateBlock);
+  PlanIteratorState* state;
+  STACK_INIT2(PlanIteratorState, state, planState);
 
   item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
 		           theQName,
@@ -379,28 +379,28 @@ ElementIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 
 
 void
-ElementIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+ElementIterator::resetImpl(PlanState& planState)
 {
   if ( theChildren != NULL )
-    resetChild(theChildren, stateBlock);
+    resetChild(theChildren, planState);
 
   if (theAttributes != NULL)
-    resetChild(theAttributes, stateBlock);
+    resetChild(theAttributes, planState);
 
-  BasicIterator::BasicIteratorState* state;
-  GET_STATE(BasicIterator::BasicIteratorState, state, stateBlock);
+  PlanIterator::PlanIteratorState* state;
+  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
   state->reset();
 }
 
 
 void
-ElementIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+ElementIterator::releaseResourcesImpl(PlanState& planState)
 {
   if (theChildren != NULL)
-    releaseChildResources(theChildren, stateBlock);
+    releaseChildResources(theChildren, planState);
 
   if (theAttributes != NULL)
-    releaseChildResources(theAttributes, stateBlock);
+    releaseChildResources(theAttributes, planState);
 }
 
 
@@ -422,7 +422,7 @@ ElementIterator::_show(std::ostream& os) const
 int32_t
 ElementIterator::getStateSize()
 {
-  return sizeof(BasicIterator::BasicIteratorState);
+  return sizeof(PlanIterator::PlanIteratorState);
 }
 
 	
@@ -445,19 +445,19 @@ ElementIterator::getStateSizeOfSubtree()
 
 	
 void
-ElementIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+ElementIterator::setOffset(PlanState& planState, int32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();
 
   if (theChildren != NULL)
-    theChildren->setOffset(stateBlock, offset);
+    theChildren->setOffset(planState, offset);
 
   if (theAttributes != NULL)
-    theAttributes->setOffset(stateBlock, offset);
+    theAttributes->setOffset(planState, offset);
 
   if (theNamespaceBindings != NULL)
-    theNamespaceBindings->setOffset(stateBlock, offset);
+    theNamespaceBindings->setOffset(planState, offset);
 }
 /* end class ElementIterator */
 
@@ -475,7 +475,7 @@ AttributeIterator::AttributeIterator (
 
 
 Item_t
-AttributeIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+AttributeIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
   Item_t itemCur;
@@ -485,20 +485,20 @@ AttributeIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
   xqp_string lexicalString;
   bool concatenation = false;
 
-  BasicIteratorState* state;
-  STACK_INIT2(BasicIteratorState, state, stateBlock);
+  PlanIteratorState* state;
+  STACK_INIT2(PlanIteratorState, state, planState);
 
-  if ((itemFirst = consumeNext(theChild, stateBlock)) != NULL )
+  if ((itemFirst = consumeNext(theChild, planState)) != NULL )
 	{
     lexicalString = itemFirst->getStringProperty();
 
     // handle concatenation
-    itemCur = consumeNext ( theChild, stateBlock );
+    itemCur = consumeNext ( theChild, planState );
     while ( itemCur != NULL )
 		{
       concatenation = true;
       lexicalString += itemCur->getStringProperty();
-      itemCur = consumeNext ( theChild, stateBlock );
+      itemCur = consumeNext ( theChild, planState );
     }
 
     itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->
@@ -543,16 +543,16 @@ AttributeIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 	{}
 
 	Item_t
-	IfThenElseIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+	IfThenElseIterator::nextImpl(PlanState& planState)
 	{
 		Item_t condResult;
 
 		STACK_INIT();
 
 		if ( this->condIsBooleanIter )
-			condResult = this->consumeNext ( this->iterCond, stateBlock );
+			condResult = this->consumeNext ( this->iterCond, planState );
 		else
-			condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc, stateBlock, this->iterCond );
+			condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc, planState, this->iterCond );
 
 		if ( condResult->getBooleanValue() )
 			this->iterActive = this->iterThen;
@@ -561,26 +561,26 @@ AttributeIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
 
 		while ( true )
 		{
-			STACK_PUSH ( this->consumeNext ( this->iterActive, stateBlock ) );
+			STACK_PUSH ( this->consumeNext ( this->iterActive, planState ) );
 		}
 
 		STACK_END();
 	}
 
 	void
-	IfThenElseIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	IfThenElseIterator::resetImpl(PlanState& planState)
 	{
-		this->resetChild ( this->iterCond, stateBlock );
-		this->resetChild ( this->iterThen, stateBlock );
-		this->resetChild ( this->iterElse, stateBlock );
+		this->resetChild ( this->iterCond, planState );
+		this->resetChild ( this->iterThen, planState );
+		this->resetChild ( this->iterElse, planState );
 	}
 
 	void
-	IfThenElseIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	IfThenElseIterator::releaseResourcesImpl(PlanState& planState)
 	{
-		this->releaseChildResources ( this->iterCond, stateBlock );
-		this->releaseChildResources ( this->iterThen, stateBlock );
-		this->releaseChildResources ( this->iterElse, stateBlock );
+		this->releaseChildResources ( this->iterCond, planState );
+		this->releaseChildResources ( this->iterThen, planState );
+		this->releaseChildResources ( this->iterElse, planState );
 	}
 	/* end class IfThenElseIterator */
 

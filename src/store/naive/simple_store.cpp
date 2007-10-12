@@ -63,11 +63,11 @@ namespace xqp
 	}
 	Iterator_t SimpleStore::sort ( Iterator_t iterator, bool ascendent, bool duplicateElemination )
 	{
-		return rchandle<BasicIterator> ( NULL );
+		return rchandle<PlanIterator> ( NULL );
 	}
 	Iterator_t SimpleStore::distinctNodeStable ( Iterator_t )
 	{
-		return rchandle<BasicIterator> ( NULL );
+		return rchandle<PlanIterator> ( NULL );
 	}
 	Collection_t SimpleStore::getCollection ( Item_t uri )
 	{

@@ -24,7 +24,7 @@
 #include <vector>
 
 #include "context/common.h"
-#include "runtime/core/batching.h"
+#include "runtime/base/iterator.h"
 
 #include "util/logging/logging.hh"
 
@@ -56,18 +56,18 @@ public:
 	
 	~ConcatIterator();
 
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl(PlanState& planState);
+	void resetImpl(PlanState& planState);
+	void releaseResourcesImpl(PlanState& planState);
 	
 	std::ostream&  _show(std::ostream&) const;
 	
 	virtual int32_t getStateSize();
 	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	virtual void setOffset(PlanState& planState, int32_t& offset);
 	
 protected:
-	class ConcatIteratorState : public BasicIteratorState {
+	class ConcatIteratorState : public PlanIteratorState {
 	private:	
 		int32_t curIter;
 	

@@ -261,7 +261,7 @@ namespace xqp
 	}
 	
 	template< class Operations>
-	Item_t ArithmeticIterator<Operations>::nextImpl(IteratorTreeStateBlock& stateBlock)
+	Item_t ArithmeticIterator<Operations>::nextImpl(PlanState& planState)
 	{
 		Item_t n0;
 		Item_t n1;
@@ -270,12 +270,12 @@ namespace xqp
 		TypeCode type1;
 		TypeCode resultType;
 
-		BasicIterator::BasicIteratorState* state;
-		STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
-		n0 = this->consumeNext ( this->theChild0, stateBlock );
+		PlanIterator::PlanIteratorState* state;
+		STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+		n0 = this->consumeNext ( this->theChild0, planState );
 		if ( n0 != NULL )
 		{
-			n1 = this->consumeNext ( this->theChild1, stateBlock );
+			n1 = this->consumeNext ( this->theChild1, planState );
 			if ( n1 != NULL )
 			{
 				n0 = n0->getAtomizationValue();
@@ -304,7 +304,7 @@ namespace xqp
 					break;
 				}
 				
-				if (this->consumeNext ( this->theChild0, stateBlock ) != NULL || this->consumeNext ( this->theChild1, stateBlock) != NULL)
+				if (this->consumeNext ( this->theChild0, planState ) != NULL || this->consumeNext ( this->theChild1, planState) != NULL)
 					ZorbaErrorAlerts::error_alert (
 						error_messages::XPTY0004_STATIC_TYPE_ERROR,
 						error_messages::STATIC_ERROR,
@@ -504,7 +504,7 @@ namespace xqp
 		delete this->genericCast;
 	}
 	
-	Item_t OpNumericUnaryIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+	Item_t OpNumericUnaryIterator::nextImpl(PlanState& planState)
 	{
 		Item_t item;
 		Item_t res;
@@ -512,7 +512,7 @@ namespace xqp
 		TypeCode type;
 		
 		STACK_INIT();
-		item = this->consumeNext ( this->arg0, stateBlock );
+		item = this->consumeNext ( this->arg0, planState );
 		if ( item != NULL )
 		{
 			item = item->getAtomizationValue();
@@ -548,7 +548,7 @@ namespace xqp
 				);
 			}
 			
-			if (this->consumeNext ( this->arg0, stateBlock ) != NULL)
+			if (this->consumeNext ( this->arg0, planState ) != NULL)
 				ZorbaErrorAlerts::error_alert (
 					error_messages::XPTY0004_STATIC_TYPE_ERROR,
 					error_messages::STATIC_ERROR,
@@ -561,14 +561,14 @@ namespace xqp
 		STACK_END();
 	}
 
-	void OpNumericUnaryIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	void OpNumericUnaryIterator::resetImpl(PlanState& planState)
 	{
-		this->resetChild ( this->arg0, stateBlock );
+		this->resetChild ( this->arg0, planState );
 	}
 
-	void OpNumericUnaryIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	void OpNumericUnaryIterator::releaseResourcesImpl(PlanState& planState)
 	{
-		this->releaseChildResources ( this->arg0, stateBlock );
+		this->releaseChildResources ( this->arg0, planState );
 	}
 
 	std::ostream& OpNumericUnaryIterator::_show ( std::ostream& os )
@@ -607,14 +607,14 @@ namespace xqp
 		delete this->genericCast;
 	}
 
-	Item_t FnAbsIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+	Item_t FnAbsIterator::nextImpl(PlanState& planState)
 	{
 		Item_t item;
 		Item_t res;
 		TypeCode type;
 		
 		STACK_INIT();
-		item = this->consumeNext ( this->arg0, stateBlock );
+		item = this->consumeNext ( this->arg0, planState );
 		if ( item != NULL )
 		{
 			item = item->getAtomizationValue();
@@ -669,7 +669,7 @@ namespace xqp
 				);
 			}
 			
-			if (this->consumeNext ( this->arg0, stateBlock ) != NULL)
+			if (this->consumeNext ( this->arg0, planState ) != NULL)
 				ZorbaErrorAlerts::error_alert (
 					error_messages::XPTY0004_STATIC_TYPE_ERROR,
 					error_messages::STATIC_ERROR,
@@ -682,14 +682,14 @@ namespace xqp
 		STACK_END();
 	}
 
-	void FnAbsIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	void FnAbsIterator::resetImpl(PlanState& planState)
 	{
-		this->resetChild ( this->arg0, stateBlock );
+		this->resetChild ( this->arg0, planState );
 	}
 
-	void FnAbsIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	void FnAbsIterator::releaseResourcesImpl(PlanState& planState)
 	{
-		this->releaseChildResources ( this->arg0, stateBlock );
+		this->releaseChildResources ( this->arg0, planState );
 	}
 
 	std::ostream& FnAbsIterator::_show ( std::ostream& os ) const
@@ -708,11 +708,11 @@ namespace xqp
 	ZorNumGen::~ZorNumGen() {}
 	
 	Item_t 
-	ZorNumGen::nextImpl(IteratorTreeStateBlock& stateBlock) {
+	ZorNumGen::nextImpl(PlanState& planState) {
 		ZorNumGenState* state;
-		GET_STATE(ZorNumGenState, state, stateBlock);
+		GET_STATE(ZorNumGenState, state, planState);
 		
-		STACK_INIT2(ZorNumGenState, state, stateBlock);
+		STACK_INIT2(ZorNumGenState, state, planState);
 		while (state->getCurNumber() < 100) {
 			STACK_PUSH2(
 				zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(state->getCurNumber()),
@@ -723,14 +723,14 @@ namespace xqp
 	}
 	
 	void 
-	ZorNumGen::resetImpl(IteratorTreeStateBlock& stateBlock) {
+	ZorNumGen::resetImpl(PlanState& planState) {
 		ZorNumGenState* state;
-		GET_STATE(ZorNumGenState, state, stateBlock);
+		GET_STATE(ZorNumGenState, state, planState);
 		state->reset();
 	}
 	
 	void 
-	ZorNumGen::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
+	ZorNumGen::releaseResourcesImpl(PlanState& planState) {
 	}
 	 
 	int32_t 
@@ -744,7 +744,7 @@ namespace xqp
 	}
 	 
 	void 
-	ZorNumGen::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
+	ZorNumGen::setOffset(PlanState& planState, int32_t& offset) {
 		this->stateOffset = offset;
 		offset += getStateSize();
 	}

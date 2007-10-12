@@ -21,8 +21,8 @@
  * @file runtime/core/batching.h
  *
  */
-#ifndef XQP_BATCHING_H
-#define XQP_BATCHING_H
+#ifndef XQP_ITERATOR_H
+#define XQP_ITERATOR_H
 
 #include "util/rchandle.h"
 #include "util/tracer.h"
@@ -57,42 +57,42 @@
 	* GET_STATE:	- specific function to load the state of the current iterator
 	*								from the state block
 	*/
-#define STACK_INIT2(stateType, stateObject, stateBlock) \
-	GET_STATE(stateType, stateObject, stateBlock); \
+#define STACK_INIT2(stateType, stateObject, planState) \
+	GET_STATE(stateType, stateObject, planState); \
 	switch (stateObject->getDuffsLine()) { case 0: \
 	stateObject->init()
 #define STACK_PUSH2(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
 #define STACK_END2() } return NULL
-#define GET_STATE(stateType, stateObject, stateBlock) \
-	stateObject = reinterpret_cast<stateType*>(stateBlock.block + this->stateOffset)
+#define GET_STATE(stateType, stateObject, planState) \
+	stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
 
 namespace xqp {
 
 class Item;
 typedef rchandle<Item> Item_t;
 
-class BasicIterator;
+class PlanIterator;
 class node;
 class zorba;
 
-typedef rchandle<BasicIterator> Iterator_t;
+typedef rchandle<PlanIterator> Iterator_t;
 
 extern int32_t iteratorTreeDepth;
 
-class IteratorTreeStateBlock
+class PlanState
 {
 public:
 	int8_t* block;
 
-	IteratorTreeStateBlock(int32_t blockSize);
-	~IteratorTreeStateBlock();
+	PlanState(int32_t blockSize);
+	~PlanState();
 };
 
 
 /**
   * Base class of all iterators.
 	*/
-class BasicIterator : public rcobject
+class PlanIterator : public rcobject
 {
 protected:
 	/** offset of the state of the current iterator */
@@ -112,9 +112,9 @@ public:
 #endif
 
 public:
-	BasicIterator(yy::location _loc);
-	BasicIterator(const BasicIterator& it);
-	virtual ~BasicIterator();
+	PlanIterator(yy::location _loc);
+	PlanIterator(const PlanIterator& it);
+	virtual ~PlanIterator();
 
 public:
 
@@ -127,7 +127,7 @@ public:
 	 *
 	 * TODO must be pure virtual
 	 */
-	virtual Item_t produceNext(IteratorTreeStateBlock& stateBlock);
+	virtual Item_t produceNext(PlanState& planState);
 
 	/** 
 	 * Restarts the iterator so that the next 'produceNext' call will start 
@@ -137,7 +137,7 @@ public:
 	 *
 	 * TODO must be pure virtual
 	 */
-	virtual void reset(IteratorTreeStateBlock& stateBlock);
+	virtual void reset(PlanState& planState);
 
 	/** 
 	 * Releases all resources of the iterator  
@@ -146,7 +146,7 @@ public:
 	 * 
 	 * TODO must be pure virtual
 	 */
-	virtual void releaseResources(IteratorTreeStateBlock& stateBlock);
+	virtual void releaseResources(PlanState& planState);
 
 	std::ostream& show(std::ostream&);
 	
@@ -169,11 +169,11 @@ public:
     *
 		* TODO must be pure virtual
 		*/
-	virtual void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+	virtual void setOffset(PlanState& planState, int32_t& offset);
 
 protected:
 	/** Root object of all iterator states */
-	class BasicIteratorState {
+	class PlanIteratorState {
 	private:
 		int32_t duffsLine;
 	public:
@@ -189,7 +189,7 @@ protected:
 			*/
 		void reset();
 
-		/* Release resources is not needed in BasicIterator but might be need
+		/* Release resources is not needed in PlanIterator but might be need
 		 * from Iterators. If so, they must be implemented there and invoked from
 		 * releaseResourcesImpl from the corresponding iterator. If a state is a
 		 * sub-class of a state which contains releaseResources, it has to 
@@ -202,26 +202,26 @@ protected:
 	};
 
 protected:
-	inline void resetChild(Iterator_t& subIterator, IteratorTreeStateBlock& stateBlock) {
-		subIterator->reset(stateBlock);
+	inline void resetChild(Iterator_t& subIterator, PlanState& planState) {
+		subIterator->reset(planState);
 	}
 
 #if BATCHING_TYPE == 1	
-	inline Item_t consumeNext(Iterator_t& subIter) {
+	inline Item_t consumeNext(Iterator_t& subIter, PlanState& planState) {
 		if (subIter->cItem == BATCHSIZE) {
-			subIter->produceNext();
+			subIter->produceNext(planState);
 			subIter->cItem = 0;
 		}
 		return subIter->batch[subIter->cItem++];
 	}
 #else
-	inline Item_t consumeNext(Iterator_t& subIter, IteratorTreeStateBlock& stateBlock) {
-		return subIter->produceNext(stateBlock);
+	inline Item_t consumeNext(Iterator_t& subIter, PlanState& planState) {
+		return subIter->produceNext(planState);
 	}
 #endif
 
-	inline void releaseChildResources(Iterator_t& subIterator, IteratorTreeStateBlock& stateBlock) {
-		subIterator->releaseResources(stateBlock);
+	inline void releaseChildResources(Iterator_t& subIterator, PlanState& planState) {
+		subIterator->releaseResources(planState);
 	}
 
 	virtual std::ostream& _show(std::ostream& os) const {
@@ -231,10 +231,10 @@ protected:
 
 
 template <class IterType>
-class Batcher: public BasicIterator {
+class Batcher: public PlanIterator {
 public:
-	Batcher(const Batcher<IterType>& b)  : BasicIterator(b) {}
-	Batcher(yy::location _loc) : BasicIterator(_loc) {}
+	Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
+	Batcher(yy::location _loc) : PlanIterator(_loc) {}
 	~Batcher() {}
 
 public:
@@ -248,24 +248,24 @@ public:
 		}
 	}
 #else
-	Item_t produceNext(IteratorTreeStateBlock& stateBlock) {
-		return static_cast<IterType*>(this)->nextImpl(stateBlock);
+	Item_t produceNext(PlanState& planState) {
+		return static_cast<IterType*>(this)->nextImpl(planState);
 	}
 #endif
 
-	void reset(IteratorTreeStateBlock& stateBlock) {
+	void reset(PlanState& planState) {
 		this->current_line = 0;
-		static_cast<IterType*>(this)->resetImpl(stateBlock);
+		static_cast<IterType*>(this)->resetImpl(planState);
 	}
 
-	void releaseResources(IteratorTreeStateBlock& stateBlock) {
-		static_cast<IterType*>(this)->releaseResourcesImpl(stateBlock);
+	void releaseResources(PlanState& planState) {
+		static_cast<IterType*>(this)->releaseResourcesImpl(planState);
 	}
 
 public:
-	inline Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	inline void resetImpl(IteratorTreeStateBlock& stateBlock);
-	inline void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	inline Item_t nextImpl(PlanState& planState);
+	inline void resetImpl(PlanState& planState);
+	inline void releaseResourcesImpl(PlanState& planState);
 };
 
 
@@ -280,7 +280,7 @@ class IteratorWrapper {
 private:
 	bool theAlienBlock;
 	Iterator_t theIterator;
-	IteratorTreeStateBlock* theStateBlock;
+	PlanState* theStateBlock;
 	
 public:
 	/** 
@@ -297,9 +297,9 @@ public:
 	 * collection, etc. is already made by another IteratorWrapper.
 	 * 
 	 * @param iter 
-	 * @param stateBlock 
+	 * @param planState 
 	 */
-	IteratorWrapper(Iterator_t& iter, IteratorTreeStateBlock& stateBlock);
+	IteratorWrapper(Iterator_t& iter, PlanState& planState);
 	
 	/**
 	 * Deconstructor.
@@ -315,5 +315,5 @@ public:
 
 } /* namespace xqp */
 
-#endif	/* XQP_BATCHING_H */
+#endif	/* XQP_ITERATOR_H */
 

@@ -10,7 +10,7 @@
 
 namespace xqp
 {
-	typedef rchandle<BasicIterator> Iterator_t;
+	typedef rchandle<PlanIterator> Iterator_t;
 
 	SimpleTempSeq::SimpleTempSeq ( Iterator_t iterator )
 	{
@@ -35,25 +35,25 @@ namespace xqp
 	Iterator_t 
 	SimpleTempSeq::getIterator ( int32_t startPos, int32_t endPos, bool streaming )
 	{
-		return rchandle<BasicIterator> ( NULL );
+		return rchandle<PlanIterator> ( NULL );
 	}
 	
 	Iterator_t 
 	SimpleTempSeq::getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& vars, bool streaming )
 	{
-		return rchandle<BasicIterator> ( NULL );
+		return rchandle<PlanIterator> ( NULL );
 	}
 	
 	Iterator_t 
 	SimpleTempSeq::getIterator ( const std::vector<int32_t>& positions, bool streaming )
 	{
-		return rchandle<BasicIterator> ( NULL );
+		return rchandle<PlanIterator> ( NULL );
 	}
 	
 	Iterator_t 
 	SimpleTempSeq::getIterator ( Iterator_t positions, bool streaming )
 	{
-		return rchandle<BasicIterator> ( NULL );
+		return rchandle<PlanIterator> ( NULL );
 	}
 	
 	Item_t 
@@ -106,7 +106,7 @@ namespace xqp
 	}
 
 	Item_t 
-	SimpleTempSeq::Iterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+	SimpleTempSeq::Iterator::nextImpl(PlanState& planState)
 	{
 		this->curPos++;
 		switch ( this->borderType )
@@ -128,7 +128,7 @@ namespace xqp
 	}
 
 	void 
-	SimpleTempSeq::Iterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	SimpleTempSeq::Iterator::resetImpl(PlanState& planState)
 	{
 		switch ( this->borderType )
 		{
@@ -143,7 +143,7 @@ namespace xqp
 	}
 
 	void 
-	SimpleTempSeq::Iterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	SimpleTempSeq::Iterator::releaseResourcesImpl(PlanState& planState)
 	{
 	}
 

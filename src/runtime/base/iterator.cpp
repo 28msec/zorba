@@ -22,43 +22,43 @@
  *
  */
 
-#include "runtime/core/batching.h"
+#include "runtime/base/iterator.h"
 
 #include "util/zorba.h"
 
 namespace xqp {
 
-/* begin IteratorTreeStateBlock */
-IteratorTreeStateBlock::IteratorTreeStateBlock(int32_t blockSize) 
+/* begin PlanState */
+PlanState::PlanState(int32_t blockSize) 
 : block(new int8_t[blockSize]) 
 {
 	memset(this->block, 0, blockSize);
 }
 
-IteratorTreeStateBlock::~IteratorTreeStateBlock()
+PlanState::~PlanState()
 {
 	delete block;
 }
-/* end IteratorTreeStateBlock */
+/* end PlanState */
 
-/* begin class BasicIterator */
-BasicIterator::BasicIterator(yy::location _loc) :
+/* begin class PlanIterator */
+PlanIterator::PlanIterator(yy::location _loc) :
 	loc(_loc){
 	this->current_line = 0;
 	zorp = zorba::getZorbaForCurrentThread();
 }
 
-BasicIterator::BasicIterator(const BasicIterator& it) :
+PlanIterator::PlanIterator(const PlanIterator& it) :
 	rcobject(it),
 	loc(it.loc) {
 	this->current_line = 0;
 	zorp = zorba::getZorbaForCurrentThread();
 }
 
-BasicIterator::~BasicIterator() {
+PlanIterator::~PlanIterator() {
 }
 
-Item_t BasicIterator::produceNext(IteratorTreeStateBlock& stateBlock) {
+Item_t PlanIterator::produceNext(PlanState& planState) {
 	ZorbaErrorAlerts::error_alert(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
@@ -68,7 +68,7 @@ Item_t BasicIterator::produceNext(IteratorTreeStateBlock& stateBlock) {
 }
 
 void 
-BasicIterator::reset(IteratorTreeStateBlock& stateBlock) {
+PlanIterator::reset(PlanState& planState) {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -77,7 +77,7 @@ BasicIterator::reset(IteratorTreeStateBlock& stateBlock) {
 }
 
 void 
-BasicIterator::releaseResources(IteratorTreeStateBlock& stateBlock) {
+PlanIterator::releaseResources(PlanState& planState) {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -86,7 +86,7 @@ BasicIterator::releaseResources(IteratorTreeStateBlock& stateBlock) {
 }
 
 int32_t
-BasicIterator::getStateSize() {
+PlanIterator::getStateSize() {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -96,7 +96,7 @@ BasicIterator::getStateSize() {
 }
 
 int32_t
-BasicIterator::getStateSizeOfSubtree() {
+PlanIterator::getStateSizeOfSubtree() {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -106,7 +106,7 @@ BasicIterator::getStateSizeOfSubtree() {
 }
 
 void
-BasicIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
+PlanIterator::setOffset(PlanState& planState, int32_t& offset) {
 	ZorbaErrorAlerts::error_alert(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
@@ -115,45 +115,45 @@ BasicIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset) {
 }
 
 
-std::ostream& BasicIterator::show(std::ostream& os)
+std::ostream& PlanIterator::show(std::ostream& os)
 {
 	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
 	_show(os);
 	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
 	return os;
 }
-/* end class BasicIterator */
+/* end class PlanIterator */
 
 /* begin class IteratorWrapper */
 void
-BasicIterator::BasicIteratorState::init() {
+PlanIterator::PlanIteratorState::init() {
 	this->duffsLine = 0;
 }
 
 void
-BasicIterator::BasicIteratorState::reset() {
+PlanIterator::PlanIteratorState::reset() {
 	this->duffsLine = 0;
 }
 
 void
-BasicIterator::BasicIteratorState::setDuffsLine(int32_t value) {
+PlanIterator::PlanIteratorState::setDuffsLine(int32_t value) {
 	this->duffsLine = value;
 }
 
 int32_t
-BasicIterator::BasicIteratorState::getDuffsLine() {
+PlanIterator::PlanIteratorState::getDuffsLine() {
 	return this->duffsLine;
 }
 
 
 IteratorWrapper::IteratorWrapper(Iterator_t& aIter) : theAlienBlock(false), theIterator(aIter) {
 	int32_t lStackSize = theIterator->getStateSizeOfSubtree();
-	theStateBlock = new IteratorTreeStateBlock(lStackSize);
+	theStateBlock = new PlanState(lStackSize);
 	int32_t lOffset = 0;
 	theIterator->setOffset(*theStateBlock, lOffset);
 }
 
-IteratorWrapper::IteratorWrapper(Iterator_t& aIter, IteratorTreeStateBlock& aStateBlock) 
+IteratorWrapper::IteratorWrapper(Iterator_t& aIter, PlanState& aStateBlock) 
 : theAlienBlock(true), theIterator(aIter), theStateBlock(&aStateBlock) {}
 
 IteratorWrapper::~IteratorWrapper() {

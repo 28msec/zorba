@@ -34,14 +34,14 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, IteratorTreeStateBlock& stateBlock, Iterator_t& iter, bool negate )
+	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, Iterator_t& iter, bool negate )
 	{
 		Item_t item;
 		TypeCode type;
 		Item_t result;
 
 		// TODO produceNext must be replaced to allow batching
-		item = iter->produceNext(stateBlock);
+		item = iter->produceNext(planState);
 
 		if ( item == NULL )
 		{
@@ -58,7 +58,7 @@ namespace xqp
 			type = item->getType();
 			if (
 					// TODO produceNext must be replaced to allow batching
-			    ( iter->produceNext(stateBlock) == NULL )
+			    ( iter->produceNext(planState) == NULL )
 			    &&
 			    ( type == xs_boolean
 			      || sequence_type::derives_from ( type, xs_string )
@@ -91,23 +91,23 @@ namespace xqp
 	}
 
 	Item_t
-	FnBooleanIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+	FnBooleanIterator::nextImpl(PlanState& planState)
 	{	
 		STACK_INIT();
-		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, stateBlock, this->arg0_, this->negate ) );
+		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, planState, this->arg0_, this->negate ) );
 		STACK_END();
 	}
 
 	void
-	FnBooleanIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	FnBooleanIterator::resetImpl(PlanState& planState)
 	{
-		this->resetChild ( this->arg0_, stateBlock );
+		this->resetChild ( this->arg0_, planState );
 	}
 
 	void
-	FnBooleanIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	FnBooleanIterator::releaseResourcesImpl(PlanState& planState)
 	{
-		this->releaseChildResources ( this->arg0_, stateBlock);
+		this->releaseChildResources ( this->arg0_, planState);
 	}
 	/* end class FnBooleanIterator */
 	
@@ -118,7 +118,7 @@ namespace xqp
 	LogicIterator::~LogicIterator(){}
 			
 	Item_t 
-	LogicIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+	LogicIterator::nextImpl(PlanState& planState)
 	{
 		bool bRes;
 		
@@ -126,12 +126,12 @@ namespace xqp
 		switch(this->logicType)
 		{
 		case AND:
-			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterLeft)->getBooleanValue() 
-							&& FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterRight)->getBooleanValue();
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterLeft)->getBooleanValue() 
+							&& FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterRight)->getBooleanValue();
 			break;
 		case OR:
-			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterLeft)->getBooleanValue() 
-							|| FnBooleanIterator::effectiveBooleanValue(this->loc, stateBlock, this->iterRight)->getBooleanValue();;
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterLeft)->getBooleanValue() 
+							|| FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterRight)->getBooleanValue();;
 			break;
 		}
 		STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(bRes));
@@ -139,17 +139,17 @@ namespace xqp
 	}
 	
 	void 
-	LogicIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	LogicIterator::resetImpl(PlanState& planState)
 	{
-		this->resetChild( this->iterLeft, stateBlock );
-		this->resetChild( this->iterRight, stateBlock );
+		this->resetChild( this->iterLeft, planState );
+		this->resetChild( this->iterRight, planState );
 	}
 	
 	void 
-	LogicIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	LogicIterator::releaseResourcesImpl(PlanState& planState)
 	{
-		this->releaseChildResources( this->iterLeft, stateBlock );
-		this->releaseChildResources( this->iterRight, stateBlock );
+		this->releaseChildResources( this->iterLeft, planState );
+		this->releaseChildResources( this->iterRight, planState );
 	}
 	/* end class LogicIterator */
 
@@ -169,7 +169,7 @@ namespace xqp
 	}
 	
 	Item_t
-	CompareIterator::nextImpl(IteratorTreeStateBlock& stateBlock)
+	CompareIterator::nextImpl(PlanState& planState)
 	{
 		Item_t item0;
 		Item_t item1;
@@ -209,11 +209,11 @@ namespace xqp
 		} /* if general comparison */
 		else if (this->isValueComparison())
 		{
-			if (( (item0 = this->consumeNext(this->iter0, stateBlock)) != NULL ) 
-						&& ((item1 = this->consumeNext(this->iter1, stateBlock))!=NULL))
+			if (( (item0 = this->consumeNext(this->iter0, planState)) != NULL ) 
+						&& ((item1 = this->consumeNext(this->iter1, planState))!=NULL))
 			{
 				STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean( CompareIterator::valueComparison(item0, item1) ) );
-				if (this->consumeNext(this->iter0, stateBlock) != NULL || this->consumeNext(this->iter1, stateBlock) != NULL)
+				if (this->consumeNext(this->iter0, planState) != NULL || this->consumeNext(this->iter1, planState) != NULL)
 				{
 					ZorbaErrorAlerts::error_alert (
 						error_messages::FOCH0004_Collation_does_not_support_collation_units,
@@ -240,17 +240,17 @@ namespace xqp
 	}
 
 	void
-	CompareIterator::resetImpl(IteratorTreeStateBlock& stateBlock)
+	CompareIterator::resetImpl(PlanState& planState)
 	{
-		this->resetChild ( this->iter0, stateBlock );
-		this->resetChild ( this->iter1, stateBlock );
+		this->resetChild ( this->iter0, planState );
+		this->resetChild ( this->iter1, planState );
 	}
 
 	void
-	CompareIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock)
+	CompareIterator::releaseResourcesImpl(PlanState& planState)
 	{
-		this->releaseChildResources ( this->iter0, stateBlock );
-		this->releaseChildResources ( this->iter1, stateBlock );
+		this->releaseChildResources ( this->iter0, planState );
+		this->releaseChildResources ( this->iter1, planState );
 	}
 	
 	bool 

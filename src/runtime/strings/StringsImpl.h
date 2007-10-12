@@ -13,8 +13,9 @@
 #define XQP_STRINGS_IMPL_H
 
 #include "context/common.h"
-#include "runtime/core/batching.h"
-#include "runtime/iterators.h"
+#include "runtime/base/iterator.h"
+#include "runtime/base/unarybase.h"
+#include "runtime/base/narybase.h"
 // #include "types/sequence_type.h"
 
 #ifdef WIN32
@@ -43,7 +44,7 @@ public:
 
 		~CodepointsToStringIterator(){};
 public:
-		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+		Item_t nextImpl(PlanState& planState);
 };
 /* end class CodepointsToStringIterator */
 
@@ -62,7 +63,7 @@ public:
 	~StringToCodepointsIterator() {};
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl(PlanState& planState);
 }; /*end class StringToCodepointsIterator*/
 
 /**
@@ -75,7 +76,7 @@ class CompareStrIterator: public NaryBaseIterator<CompareStrIterator> {
 		CompareStrIterator ( const yy::location& loc, std::vector<Iterator_t>& args );
 		~CompareStrIterator();
 
-		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+		Item_t nextImpl(PlanState& planState);
 };
 
 /* end class CompareStrIterator */
@@ -107,9 +108,9 @@ public:
 	~CodepointEqualIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl(PlanState& planState);
+	void resetImpl(PlanState& planState);
+	void releaseResourcesImpl(PlanState& planState);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -154,9 +155,9 @@ public:
 		~ConcatFnIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl(PlanState& planState);
+	void resetImpl(PlanState& planState);
+	void releaseResourcesImpl(PlanState& planState);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:
@@ -198,9 +199,9 @@ public:
 		~StringJoinIterator() {}
 
 public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+	Item_t nextImpl(PlanState& planState);
+	void resetImpl(PlanState& planState);
+	void releaseResourcesImpl(PlanState& planState);
 	std::ostream&  _show(std::ostream&) const;
 
 protected:

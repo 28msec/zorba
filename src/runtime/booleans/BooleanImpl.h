@@ -8,7 +8,7 @@
 
 #include "context/common.h"
 #include "types/sequence_type.h"
-#include "runtime/core/batching.h"
+#include "runtime/base/iterator.h"
 
 namespace xqp
 {
@@ -37,16 +37,16 @@ namespace xqp
 			 * Static function which computes the effective boolean value of a passed iterator.
 			 *
 			 * @param loc location of the iterator which invokes this function
-			 * @param stateBlock
+			 * @param planState
 			 * @param iterator
 			 * @param negate optinal parameter which negates the effective boolean value (default == false)
 			 * @return effective boolean value
 			 */
-			static Item_t effectiveBooleanValue ( const yy::location& loc, IteratorTreeStateBlock& stateBlock, Iterator_t&, bool negate = false);
+			static Item_t effectiveBooleanValue ( const yy::location& loc, PlanState& planState, Iterator_t&, bool negate = false);
 
-			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-			void resetImpl(IteratorTreeStateBlock& stateBlock);
-			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+			Item_t nextImpl(PlanState& planState);
+			void resetImpl(PlanState& planState);
+			void releaseResourcesImpl(PlanState& planState);
 
 			std::ostream&  _show ( std::ostream& ) const;
 	};
@@ -68,9 +68,9 @@ namespace xqp
 			LogicIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, LogicType lt);
 			~LogicIterator();
 			
-			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-			void resetImpl(IteratorTreeStateBlock& stateBlock);
-			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+			Item_t nextImpl(PlanState& planState);
+			void resetImpl(PlanState& planState);
+			void releaseResourcesImpl(PlanState& planState);
 	}; /* class LogicIterator */
 	
 	class CompareIterator : public Batcher<CompareIterator>
@@ -96,9 +96,9 @@ namespace xqp
 			CompareIterator ( const yy::location& loc, Iterator_t arg0, Iterator_t arg1, CompareType argCompType );
 			~CompareIterator();
 
-			Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-			void resetImpl(IteratorTreeStateBlock& stateBlock);
-			void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
+			Item_t nextImpl(PlanState& planState);
+			void resetImpl(PlanState& planState);
+			void releaseResourcesImpl(PlanState& planState);
 			
 			bool isValueComparison();
 			bool isGeneralComparison();
