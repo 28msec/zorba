@@ -222,7 +222,13 @@ namespace xqp {
 	void xqpString::clear(){
 		utf8String.erase();
 	}
-	
+
+	//
+	std::vector<int> xqpString::getCodepoints(const char* src){
+	std::vector<int> tt;
+	return tt;
+	}
+
 	const char* xqpString::c_str() const{
 		return utf8String.c_str();
 	}

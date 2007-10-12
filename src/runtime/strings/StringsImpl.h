@@ -14,9 +14,10 @@
 
 #include "context/common.h"
 #include "runtime/base/iterator.h"
+#include "runtime/base/binarybase.h"
 #include "runtime/base/unarybase.h"
 #include "runtime/base/narybase.h"
-// #include "types/sequence_type.h"
+
 
 #ifdef WIN32
 #include "util/win32/compatib_defs.h"
@@ -58,12 +59,11 @@ class StringToCodepointsIterator : public UnaryBaseIterator<StringToCodepointsIt
 public:
 		StringToCodepointsIterator ( const yy::location& loc, PlanIter_t& arg )
 	:
-		UnaryBaseIterator<StringToCodepointsIterator>( loc, arg ){};
+		UnaryBaseIterator<StringToCodepointsIterator>( loc, arg ){}
 
 	~StringToCodepointsIterator() {};
-
 public:
-	Item_t nextImpl(PlanState& planState);
+		Item_t nextImpl(PlanState& planState);
 }; /*end class StringToCodepointsIterator*/
 
 /**
@@ -72,10 +72,13 @@ public:
 /* begin class CompareStrIterator */
 
 class CompareStrIterator: public NaryBaseIterator<CompareStrIterator> {
-	public:
-		CompareStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args );
-		~CompareStrIterator();
+public:
+		CompareStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+	:
+		NaryBaseIterator<CompareStrIterator>( loc, args ){}
 
+		~CompareStrIterator() {};
+public:
 		Item_t nextImpl(PlanState& planState);
 };
 
@@ -84,46 +87,17 @@ class CompareStrIterator: public NaryBaseIterator<CompareStrIterator> {
 /**
  * 7.3.3 fn:codepoint-equal
  * --------------------*/
-class CodepointEqualIterator : public Batcher<CodepointEqualIterator>
-{
+/*begin class CodepointEqualIterator */
+class CodepointEqualIterator : public BinaryBaseIterator<CodepointEqualIterator>{
 public:
-	CodepointEqualIterator(
-		yy::location loc,
-		PlanIter_t _argv0,
-		PlanIter_t _argv1)
+	CodepointEqualIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
 	:
-		Batcher<CodepointEqualIterator>(loc),
-		argv0(_argv0),
-		argv1(_argv1)
-	{}
+	BinaryBaseIterator<CodepointEqualIterator>(loc, arg0, arg1){}
 
-	CodepointEqualIterator(
-		const CodepointEqualIterator& cpEqual_it)
-	:
-		Batcher<CodepointEqualIterator>(cpEqual_it),
-		argv0(cpEqual_it.argv0),
-		argv1(cpEqual_it.argv1)
-	{}
-
-	~CodepointEqualIterator() {}
-
+	~CodepointEqualIterator() {};
 public:
-	Item_t nextImpl(PlanState& planState);
-	void resetImpl(PlanState& planState);
-	void releaseResourcesImpl(PlanState& planState);
-	std::ostream&  _show(std::ostream&) const;
-
-protected:
-	PlanIter_t argv0;
-	PlanIter_t argv1;
-
-	std::vector<char> v0;
-	std::vector<char> v1;
-	char * c0;
-	char * c1;
-	int16_t vLength;
-	bool finish;
-};/*class CodepointEqualIterator */
+		Item_t nextImpl(PlanState& planState);
+};/*end class CodepointEqualIterator */
 
 /**
  * 7.4.1 fn:concat

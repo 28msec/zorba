@@ -120,17 +120,7 @@ Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
  *_______________________________________________________________________*/
 
 /* begin class CompareStrIterator */
-
-CompareStrIterator::CompareStrIterator
-		( const yy::location& loc, std::vector<PlanIter_t>& args )
-	:
-		NaryBaseIterator<CompareStrIterator>( loc, args )
-{}
-
-CompareStrIterator::~CompareStrIterator()
-{}
-
-Item_t 
+Item_t
 CompareStrIterator::nextImpl(PlanState& planState) {
 		Item_t n0;
 		Item_t n1;
@@ -147,10 +137,12 @@ CompareStrIterator::nextImpl(PlanState& planState) {
 				n0 = n0->getAtomizationValue();
 				n1 = n1->getAtomizationValue();
 				n2 = consumeNext ( theChildren[2], planState );
-				if ( n2 != NULL )	{
-					//TODO check if lowercase two-letter or three-letter ISO-639 code is a correct value for $collation
-					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
-									n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue().c_str()));
+				if(theChildren.size() == 3)	{
+					if ( n2 != NULL )	{
+						//TODO solve track issue no.26
+						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
+										n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue().c_str()));
+					}
 				}
 				else{
 					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
@@ -182,68 +174,27 @@ CompareStrIterator::nextImpl(PlanState& planState) {
  * Note: This function allows xs:anyURI values to be compared
  * without having to specify the Unicode code point collation.
  *_______________________________________________________________________*/
-std::ostream& CodepointEqualIterator::_show(std::ostream& os) const{
-	argv0->show(os);
-	argv1->show(os);
-	return os;
-}
-
 Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
-	Item_t item0;
-	Item_t item1;
+		Item_t item0;
+		Item_t item1;
+		Item_t res;
 
-	STACK_INIT();
+		PlanIterator::PlanIteratorState* state;
+		STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
-	item0 = this->consumeNext(argv0, planState);
-	item1 = this->consumeNext(argv1, planState);
-	finish = false;
-
-	if(&*item0 == NULL || &*item1 == NULL) {
-		STACK_PUSH(NULL);
-	}
-	else
-	{
-		vLength = (item0->getStringValue().length());
-		
-		if(int32_t(vLength) != int32_t(item1->getStringValue().length()))
-			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
-		else
-		{
-			v0.reserve(vLength);
-			std::strcpy(&v0[0], item0->getStringValue().c_str());
-			c0 = &v0[0];
-			
-			v1.reserve(vLength);
-			std::strcpy(&v1[0], item1->getStringValue().c_str());
-			c1 = &v1[0];
-			
-			while( !finish && (vLength > 0) ){
-				if(UTF8Decode(c0) != UTF8Decode(c1))
-				{
-					finish = true;
-					STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false));
-				}
-				vLength--;
+		item0 = consumeNext ( theChild0, planState );
+		if ( item0 != NULL )	{
+			item1 = consumeNext ( theChild1, planState );
+			if ( item1 != NULL )	{
+				item0 = item0->getAtomizationValue();
+				item1 = item1->getAtomizationValue();
+				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(
+									item0->getStringValue() == item1->getStringValue());
+				STACK_PUSH2( res, state );
 			}
-
-			if(!finish)
-				STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(true));
 		}
-	}
-	STACK_PUSH(NULL);
-	STACK_END();
+		STACK_END2();
 }
-
-void CodepointEqualIterator::resetImpl(PlanState& planState){
-	this->resetChild(argv0, planState);
-	this->resetChild(argv1, planState);
-}
-
-void CodepointEqualIterator::releaseResourcesImpl(PlanState& planState) {
-	this->releaseChildResources(argv0, planState);
-	this->releaseChildResources(argv1, planState);
-}
-
 /**
  *______________________________________________________________________
  *

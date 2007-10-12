@@ -55,14 +55,12 @@ namespace xqp {
 			 * @param src A source UTF-8 encoded string
 			 */
 			xqpString(const xqpString& src);
-			
 
 			/**
 			 * Construct a xqpString given a std::string
 			 * @param src A source std::string containin ASCII characters
 			 */
 			xqpString(const std::string& src);
-
 
 			/**
 			 * Construct a xqpString as a copy of a C string.
@@ -173,10 +171,16 @@ namespace xqp {
 			 */
 			void reserve(size_type size=0);
 		//! @}
+
 		//! @name xqpString::Clear
 		//! @{
 			void clear();
 		//! @}
+
+		//! @name xqpString::Codepointsize()
+		//!@{
+			std::vector<int> getCodepoints(const char* src);
+		//!@}
 		
 			const char* c_str() const;
 			
