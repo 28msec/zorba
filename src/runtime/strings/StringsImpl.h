@@ -34,38 +34,18 @@ class GenericCast;
  /**
  * 7.2.1 fn:codepoints-to-string
  * -------------------- */
-class CodepointsToStringIterator : public Batcher<CodepointsToStringIterator>
-{
+/* begin class CodepointsToStringIterator */
+class CodepointsToStringIterator : public UnaryBaseIterator<CodepointsToStringIterator>{
+private:
+	xqp_string resStr;
 public:
-	CodepointsToStringIterator(
-		yy::location loc,
-		Iterator_t _argv)
-	:
-		Batcher<CodepointsToStringIterator>(loc),
-		argv(_argv)
-	{}
+	public:
+		CodepointsToStringIterator ( const yy::location& loc, Iterator_t& arg );
+		~CodepointsToStringIterator();
 
-	CodepointsToStringIterator(
-		const CodepointsToStringIterator& cptostr_it)
-	:
-		Batcher<CodepointsToStringIterator>(cptostr_it),
-		argv(cptostr_it.argv)
-	{}
-
-	~CodepointsToStringIterator() {}
-
-public:
-	Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
-	void resetImpl(IteratorTreeStateBlock& stateBlock);
-	void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
-	std::ostream&  _show(std::ostream&) const;
-
-protected:
-	Iterator_t argv;
-	std::string res;
-	char seq[4];
-}; /*class CodepointsToStringIterator*/
-
+		Item_t nextImpl(IteratorTreeStateBlock& stateBlock);
+};
+/* begin class CodepointsToStringIterator */
 
 /**
  * 7.2.2 fn:string-to-codepoints
@@ -103,7 +83,6 @@ protected:
 	char * c;
 	uint16_t vLength;
 }; /*class StringToCodepointsIterator*/
-
 
 /**
  * 7.3.2 fn:compare

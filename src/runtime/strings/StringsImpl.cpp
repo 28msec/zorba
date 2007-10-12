@@ -32,52 +32,38 @@ namespace xqp {
  *If any of the code points in $arg is not a legal XML character,
  *an error is raised [err:FOCH0001] ("Code point not valid.").
  *_______________________________________________________________________*/
-	
-std::ostream& CodepointsToStringIterator::_show(std::ostream& os) const{
-	argv->show(os);
-	return os;
-}
+/* begin class CodepointsToStringIterator */
+CodepointsToStringIterator::CodepointsToStringIterator
+		( const yy::location& loc, Iterator_t& arg )
+	:
+		UnaryBaseIterator<CodepointsToStringIterator>( loc, arg )
+{}
+
+CodepointsToStringIterator::~CodepointsToStringIterator()
+{}
 
 Item_t CodepointsToStringIterator::nextImpl(IteratorTreeStateBlock& stateBlock){
 	Item_t item;
-	sequence_type_t type0;
-	//xqpString test;
+	Item_t resItem;
 
-	STACK_INIT();
-	
+	BasicIterator::BasicIteratorState* state;
+	STACK_INIT2(BasicIterator::BasicIteratorState, state, stateBlock);
+
 	while(true){
-		item = this->consumeNext(argv, stateBlock);
-		
-		if(&*item == NULL) {
-			//test = (uint)23;
-			//STACK_PUSH(new stringValue(xs_string, test));
-			STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->res));
-			STACK_PUSH(NULL);
+		item = consumeNext ( theChild, stateBlock );
+		if ( &*item != NULL )	{
+			item = item->getAtomizationValue();
+			resStr += (uint32_t)item->getIntegerValue();
 		}
-		else {
-
-			seq[0] = 0;
-			seq[1] = 0;
-			seq[2] = 0;
-			seq[3] = 0;
-			
-			UTF8Encode(item->getIntValue(), seq);
-
-			res.append(seq);
+		else{
+			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
+			STACK_PUSH2( resItem, state );
 		}
 	}
-	STACK_PUSH(NULL);
-	STACK_END();
+	STACK_END2();
 }
 
-void CodepointsToStringIterator::resetImpl(IteratorTreeStateBlock& stateBlock){
-		this->resetChild(argv, stateBlock);
-}
-
-void CodepointsToStringIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBlock) {
-		this->releaseChildResources(argv, stateBlock);
-}
-
+/* end class CodepointsToStringIterator */
 
 /**
  *______________________________________________________________________
@@ -149,7 +135,7 @@ void StringToCodepointsIterator::releaseResourcesImpl(IteratorTreeStateBlock& st
 
 /* begin class CompareStrIterator */
 
-	CompareStrIterator::CompareStrIterator
+CompareStrIterator::CompareStrIterator
 		( const yy::location& loc, std::vector<Iterator_t>& args )
 	:
 		NaryBaseIterator<CompareStrIterator>( loc, args )
