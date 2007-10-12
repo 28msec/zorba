@@ -975,6 +975,14 @@ void DescendantAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateB
 }
 
 
+void DescendantAxisIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+{
+  AxisIterator<DescendantAxisIterator>::setOffset(stateBlock, offset);
+
+  DescendantAxisState* state = new (stateBlock.block + stateOffset) DescendantAxisState;
+}
+
+
 std::ostream& DescendantAxisIterator::_show(std::ostream& os)	const
 {
   /*
@@ -1078,6 +1086,14 @@ void DescendantSelfAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& st
   {
     state->theCurrentPath.pop();
   }
+}
+
+
+void DescendantSelfAxisIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+{
+  AxisIterator<DescendantSelfAxisIterator>::setOffset(stateBlock, offset);
+
+  DescendantSelfAxisState* state = new (stateBlock.block + stateOffset) DescendantSelfAxisState;
 }
 
 
@@ -1204,6 +1220,14 @@ void PrecedingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBl
 
   while (!state->theAncestorPath.empty())
     state->theAncestorPath.pop();
+}
+
+
+void PrecedingAxisIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+{
+  AxisIterator<PrecedingAxisIterator>::setOffset(stateBlock, offset);
+
+  PrecedingAxisState* state = new (stateBlock.block + stateOffset) PrecedingAxisState;
 }
 
 
@@ -1339,6 +1363,14 @@ void FollowingAxisIterator::releaseResourcesImpl(IteratorTreeStateBlock& stateBl
     state->theAncestorPath.pop();
 
   state->theContextNode = NULL;
+}
+
+
+void FollowingAxisIterator::setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset)
+{
+  AxisIterator<FollowingAxisIterator>::setOffset(stateBlock, offset);
+
+  FollowingAxisState* state = new (stateBlock.block + stateOffset) FollowingAxisState;
 }
 
 

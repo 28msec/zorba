@@ -110,15 +110,16 @@ public:
 class AxisIteratorHelper
 {
 protected:
-  TypeCode theNodeKind ;
+  TypeCode theNodeKind;
 
 public:
- AxisIteratorHelper() : theNodeKind(anyNode) { }
+  AxisIteratorHelper() : theNodeKind(anyNode) { }
 
   virtual ~AxisIteratorHelper() {}
 
   void setNodeKind(TypeCode k) { theNodeKind = k; }
 };
+
 
 /*******************************************************************************
 
@@ -416,6 +417,8 @@ public:
 
   int32_t getStateSize() { return sizeof(DescendantAxisState); }
 
+  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+
   std::ostream& _show(std::ostream& os) const;
 };
 
@@ -446,6 +449,8 @@ public:
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   int32_t getStateSize() { return sizeof(DescendantSelfAxisState); }
+
+  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 
   std::ostream& _show(std::ostream& os) const;
 };
@@ -479,6 +484,8 @@ public:
 
   int32_t getStateSize() { return sizeof(PrecedingAxisState); }
 
+  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
+
   std::ostream& _show(std::ostream& os) const;
 };
 
@@ -509,6 +516,8 @@ public:
   void releaseResourcesImpl(IteratorTreeStateBlock& stateBlock);
 
   int32_t getStateSize() { return sizeof(FollowingAxisState); }
+
+  void setOffset(IteratorTreeStateBlock& stateBlock, int32_t& offset);
 
   std::ostream& _show(std::ostream& os) const;
 };
