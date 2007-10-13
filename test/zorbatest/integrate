@@ -1,13 +1,22 @@
 #!/bin/sh
 
-export MODE=$1
+export CLEAN_BUILD=1
+while test $# -gt 0; do
+case $1 in
+--no-clean) export CLEAN_BUILD="" ;;
+local) MODE=local ;;
+server) MODE=server ;;
+esac
+shift
+done
+
 test $MODE || MODE=local
 
 export ROOT=`pwd`
 export NOW=`date +%F-%T`
 
 test -d snapshots || mkdir snapshots
-export LASTDATE=`ls -r snapshots/*-*-*-*:*:* 2>/dev/null | head -1`
+export LASTDATE=`cd snapshots; ls -rd *-*-*-*:*:* 2>/dev/null | head -1`
 if test $LASTDATE; then
     LASTREV=`cat snapshots/$LASTDATE/rev`
     echo Last date $LASTDATE, revision $LASTREV
@@ -42,7 +51,8 @@ fi
 test -f svn_log.xml -a -s svn_log.xml || echo '<?xml version="1.0" encoding="UTF-8"?><log />' >svn_log.xml
 
 
-#rm -rf build
+if test $CLEAN_BUILD; then rm -rf build; fi
+
 test -d build || mkdir build
 cd build
 $ROOT/compile > $ROOT/build_log.txt 2>&1 || { cd $ROOT; ./on_build_failure; exit 1; }
