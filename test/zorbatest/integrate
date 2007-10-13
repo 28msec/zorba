@@ -4,13 +4,14 @@ export CLEAN_BUILD=1
 while test $# -gt 0; do
 case $1 in
 --no-clean) export CLEAN_BUILD="" ;;
-local) MODE=local ;;
-server) MODE=server ;;
+local) TEST_MODE=local ;;
+server) TEST_MODE=server ;;
 esac
 shift
 done
 
-test $MODE || MODE=local
+test $TEST_MODE || TEST_MODE=local
+export TEST_MODE
 
 export ROOT=`pwd`
 export NOW=`date +%F-%T`
@@ -27,7 +28,7 @@ export TESTS=$ROOT/testing
 # Check out sources
 #
 
-if test "x$MODE" = "xlocal"; then
+if test "x$TEST_MODE" = "xlocal"; then
   export REV="local"
   TMPDIR=`mktemp -d`
   export SRC=$ROOT/../..
@@ -103,9 +104,10 @@ else
   echo All acceptance tests passed
 fi
 
-if test "x$MODE" != "xlocal"; then
-   rm -f $ROOT/snapshots/latest
-   ln -s $ROOT/snapshots/$NOW $ROOT/snapshots/latest
+rm -f $ROOT/snapshots/latest
+ln -s $ROOT/snapshots/$NOW $ROOT/snapshots/latest
+
+#if test "x$TEST_MODE" != "xlocal"; then
 #  echo "Please see attached report." | mutt -s "Zorba integration report" -a index.html `cat $ROOT/success_email.txt`
-fi
+#fi
 

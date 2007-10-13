@@ -1,6 +1,8 @@
 #!/bin/sh
 
+. $ROOT/load_test_env
+
+rm -f $ZORBA
 cmake $SRC
 make
-. $ROOT/load_test_env
 test -f $ZORBA || exit 1
