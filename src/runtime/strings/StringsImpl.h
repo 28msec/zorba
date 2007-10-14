@@ -64,13 +64,13 @@ public:
 	~StringToCodepointsIterator() {};
 public:
 		Item_t nextImpl(PlanState& planState);
-}; /*end class StringToCodepointsIterator*/
+};
+/*end class StringToCodepointsIterator*/
 
 /**
  * 7.3.2 fn:compare
  * --------------------*/
 /* begin class CompareStrIterator */
-
 class CompareStrIterator: public NaryBaseIterator<CompareStrIterator> {
 public:
 		CompareStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
@@ -81,7 +81,6 @@ public:
 public:
 		Item_t nextImpl(PlanState& planState);
 };
-
 /* end class CompareStrIterator */
 
 /**
@@ -97,94 +96,41 @@ public:
 	~CodepointEqualIterator() {};
 public:
 		Item_t nextImpl(PlanState& planState);
-};/*end class CodepointEqualIterator */
+};
+/*end class CodepointEqualIterator */
 
 /**
  * 7.4.1 fn:concat
  * --------------------*/
-class ConcatFnIterator : public Batcher<ConcatFnIterator>
-{
+/*begin class ConcatStrIterator */
+class ConcatStrIterator: public NaryBaseIterator<ConcatStrIterator> {
 public:
-	ConcatFnIterator(
-		yy::location loc,
-		const vector<PlanIter_t>& _argv)
+		ConcatStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
 	:
-	Batcher<ConcatFnIterator>(loc),
-		argv(_argv),
-		currit_h(NULL),
-		cursor(0),
-		res()
-	{}
+		NaryBaseIterator<ConcatStrIterator>( loc, args ){}
 
-	ConcatFnIterator(
-		const ConcatFnIterator& concatFn_it)
-	:
-	Batcher<ConcatFnIterator>(concatFn_it),
-		argv(concatFn_it.argv),
-		currit_h(concatFn_it.currit_h),
-		cursor(concatFn_it.cursor),
-		res(concatFn_it.res)
-	{}
-
-		~ConcatFnIterator() {}
-
+		~ConcatStrIterator() {};
 public:
-	Item_t nextImpl(PlanState& planState);
-	void resetImpl(PlanState& planState);
-	void releaseResourcesImpl(PlanState& planState);
-	std::ostream&  _show(std::ostream&) const;
-
-protected:
-	std::vector<PlanIter_t> argv;
-	PlanIter_t currit_h;
-	uint32_t cursor;
-	std::string res;
-
-}; /*class ConcatFnIterator*/
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class ConcatStrIterator */
 
 
 /**
  * 7.4.2 fn:string-join
  * --------------------*/
-class StringJoinIterator : public Batcher<StringJoinIterator>
-{
+/*begin class StringJoinIterator*/
+class StringJoinIterator : public BinaryBaseIterator<StringJoinIterator>{
 public:
-	StringJoinIterator(
-		yy::location loc,
-		const vector<PlanIter_t>& _argv)
+	StringJoinIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
 	:
-		Batcher<StringJoinIterator>(loc),
-		argv(_argv),
-		currit_h(NULL),
-		cursor(0),
-		res()
-	{}
+	BinaryBaseIterator<StringJoinIterator>(loc, arg0, arg1){}
 
-	StringJoinIterator(
-		const StringJoinIterator& stringJoin_it)
-	:
-		Batcher<StringJoinIterator>(stringJoin_it),
-		argv(stringJoin_it.argv),
-		currit_h(stringJoin_it.currit_h),
-		cursor(stringJoin_it.cursor),
-		res(stringJoin_it.res)
-	{}
-
-		~StringJoinIterator() {}
-
+	~StringJoinIterator() {};
 public:
-	Item_t nextImpl(PlanState& planState);
-	void resetImpl(PlanState& planState);
-	void releaseResourcesImpl(PlanState& planState);
-	std::ostream&  _show(std::ostream&) const;
-
-protected:
-	std::vector<PlanIter_t> argv;
-	PlanIter_t currit_h;
-	uint32_t cursor;
-	std::string res;
-
-}; /*class StringJoinIterator*/
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class StringJoinIterator*/
 
 }/*namespace xqp*/
 #endif /* XQP_STRINGS_IMPL_H */

@@ -72,25 +72,22 @@ Item_t CodepointsToStringIterator::nextImpl(PlanState& planState){
 /* begin class StringToCodepointsIterator */
 Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
 /*
-	uint32_t cp;
-	std::vector<char> v;
-	char * c;
-	uint16_t vLength;
 	Item_t item;
+	Item_t resItem;
+	xqp_string inputStr;
+	std::vector<int> resVector;
+	std::vector<int>::iterator iter;
 
 	PlanIterator::PlanIteratorState* state;
 	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
 	item = consumeNext ( theChild, planState );
 	if ( item != NULL ){
-		vLength = (item->getStringValue().length()) + 1;
-		v.reserve(vLength);
-		std::strcpy(&v[0], item->getStringValue().c_str());
-		c = &v[0];
-
-		while( --vLength > 0 ){
-			cp = UTF8Decode(c);
-			STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(cp), state);
+		inputStr = item->getStringValue();
+		resVector = inputStr.getCodepoints();
+		for(iter = resVector.begin(); iter != resVector.end(); iter++){
+			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(*iter);
+			STACK_PUSH2( resItem, state );
 		}
 	}
 	STACK_END2();
@@ -122,37 +119,37 @@ Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
 /* begin class CompareStrIterator */
 Item_t
 CompareStrIterator::nextImpl(PlanState& planState) {
-		Item_t n0;
-		Item_t n1;
-		Item_t n2;
-		Item_t res;
+	Item_t n0;
+	Item_t n1;
+	Item_t n2;
+	Item_t res;
 
-		PlanIterator::PlanIteratorState* state;
-		STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
-		n0 = consumeNext ( theChildren[0], planState );
-		if ( n0 != NULL )	{
-			n1 = consumeNext ( theChildren[1], planState );
-			if ( n1 != NULL )	{
-				n0 = n0->getAtomizationValue();
-				n1 = n1->getAtomizationValue();
-				n2 = consumeNext ( theChildren[2], planState );
-				if(theChildren.size() == 3)	{
-					if ( n2 != NULL )	{
-						//TODO solve track issue no.26
-						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
-										n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue().c_str()));
-					}
-				}
-				else{
+	n0 = consumeNext ( theChildren[0], planState );
+	if ( n0 != NULL )	{
+		n1 = consumeNext ( theChildren[1], planState );
+		if ( n1 != NULL )	{
+			n0 = n0->getAtomizationValue();
+			n1 = n1->getAtomizationValue();
+			n2 = consumeNext ( theChildren[2], planState );
+			if(theChildren.size() == 3)	{
+				if ( n2 != NULL )	{
+					//TODO solve track issue no.26
 					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
-									n0->getStringValue().compare(n1->getStringValue()));
+									n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue().c_str()));
 				}
-				STACK_PUSH2( res, state );
 			}
+			else{
+				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
+								n0->getStringValue().compare(n1->getStringValue()));
+			}
+			STACK_PUSH2( res, state );
 		}
+	}
 
-		STACK_END2();
+	STACK_END2();
 }
 /* end class CompareStrIterator */
 
@@ -174,6 +171,7 @@ CompareStrIterator::nextImpl(PlanState& planState) {
  * Note: This function allows xs:anyURI values to be compared
  * without having to specify the Unicode code point collation.
  *_______________________________________________________________________*/
+/* begin class CodepointEqualIterator */
 Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
 		Item_t item0;
 		Item_t item1;
@@ -195,14 +193,15 @@ Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
 		}
 		STACK_END2();
 }
+/* end class CodepointEqualIterator */
 /**
  *______________________________________________________________________
  *
  *	7.4.1 fn:concat
  *
  * fn:concat( 	$arg1 	 as xs:anyAtomicType?,
- * 							$arg2 	 as xs:anyAtomicType?,
- * 							...													) as xs:string
+ * 									$arg2 	 as xs:anyAtomicType?,
+ * 									...																					) as xs:string
  * 
  * Summary:
  * Accepts two or more xs:anyAtomicType arguments and casts them to xs:string.
@@ -219,56 +218,38 @@ Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
  * of fn:concat. If a normalized result is required, fn:normalize-unicode
  * can be applied to the xs:string returned by fn:concat.
  *_______________________________________________________________________*/
-std::ostream& ConcatFnIterator::_show(std::ostream& os)
-		const
-{
-	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		(*iter)->show(os);
-	}
-	return os;
-}
+/* begin class ConcatStrIterator */
+Item_t ConcatStrIterator::nextImpl(PlanState& planState) {
+	//TODO this function is not implemented for a variable number of arguments
+	Item_t item0;
+	Item_t item1;
+	Item_t res;
+	xqp_string s0,s1;
+	int argsNo = theChildren.size();
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
-Item_t ConcatFnIterator::nextImpl(PlanState& planState) {
-
-	Item_t item;
-	
-	STACK_INIT();
-	
-	this->cursor = 0;
-	
-	for (; this->cursor < this->argv.size (); this->cursor++) {;
-		this->currit_h = this->argv[this->cursor];
-		item = this->consumeNext(this->currit_h, planState);
-
-		//TODO use a more high level function provided by the type system
-		//if the item is not a node => it's a xs:anyAtomicType
-		if((item->getType() & NODE_MASK) == NOT_NODE)
-		{
-			res.append(item->getStringProperty());
-			//res.append("1");
+	if(argsNo >= 1){
+		item0 = consumeNext ( theChildren[0], planState );
+		if(argsNo ==1){
+			STACK_PUSH2( item0, state );
+		}
+		else{
+			item1 = consumeNext ( theChildren[1], planState );
+			s0 = item0->getStringValue();
+			s1 = item1->getStringValue();
+			//TODO ask about this error
+			//Details: fn:concat("0","1")
+			//theChildren[0] atomic value is 1 and
+			//theChildren[1] atomic value is 0
+			res = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(
+							item0->getStringValue() += item1->getStringValue());
+			STACK_PUSH2( res, state );
 		}
 	}
-
-	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString(this->res));
-	STACK_PUSH(NULL);
-	STACK_END();
+	STACK_END2();
 }
-
-void ConcatFnIterator::resetImpl(PlanState& planState) {
-	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter, planState);
-	}
-}
-
-void ConcatFnIterator::releaseResourcesImpl(PlanState& planState) {
-	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter, planState);
-	}
-}
-
+/* end class ConcatStrIterator */
 
 /**
  *______________________________________________________________________
@@ -276,9 +257,7 @@ void ConcatFnIterator::releaseResourcesImpl(PlanState& planState) {
  *	7.4.2 fn:string-join
  *
  * fn:string-join($arg1 as xs:string*,
- * 								$arg2 as xs:string) as xs:string
- *
- *
+ * 										$arg2 as xs:string) as xs:string
  *
  * Summary: Returns a xs:string created by concatenating the members
  * of the $arg1 sequence using $arg2 as a separator.
@@ -289,35 +268,32 @@ void ConcatFnIterator::releaseResourcesImpl(PlanState& planState) {
  * If the value of $arg1 is the empty sequence,
  * the zero-length string is returned.
  *_______________________________________________________________________*/
-std::ostream& StringJoinIterator::_show(std::ostream& os)
-		const
-{
-	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		(*iter)->show(os);
-	}
-	return os;
-}
-
+/* begin class StringJoinIterator */
 Item_t StringJoinIterator::nextImpl(PlanState& planState) {
+	Item_t item;
+	Item_t resItem;
+	xqp_string resStr;
+	xqp_string separator;
 
-	STACK_INIT();
-	STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("result"));
-	STACK_PUSH(NULL);
-	STACK_END();
-}
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
-void StringJoinIterator::resetImpl(PlanState& planState) {
-	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		this->resetChild(*iter, planState);
+//TODO this is not correct:
+//Step 1: find the separator based on the type (item not sequence)
+//step 2: concatenate the items whithin the sequence using separator as "glue"
+	while(true){
+		item = consumeNext ( gettheChild, planState );
+		if ( item != NULL ){
+			item = item->getAtomizationValue();
+			resStr += item->getStringValue();
+		}
+		else{
+			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
+			STACK_PUSH2( resItem, state );
+			break;
+		}
 	}
+	STACK_END2();
 }
-
-void StringJoinIterator::releaseResourcesImpl(PlanState& planState) {
-	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		this->releaseChildResources(*iter, planState);
-	}
-}
+/* end class StringJoinIterator */
 } /* namespace xqp */

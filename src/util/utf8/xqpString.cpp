@@ -224,9 +224,22 @@ namespace xqp {
 	}
 
 	//
-	std::vector<int> xqpString::getCodepoints(const char* src){
-	std::vector<int> tt;
-	return tt;
+	std::vector<int> xqpString::getCodepoints(){
+		std::vector<int> tt;
+	
+		std::vector<char> v;
+		char * c;
+		uint16_t vLength;
+	
+		vLength = bytes() + 1;
+		v.reserve(vLength);
+		std::strcpy(&v[0], utf8String.c_str());
+		c = &v[0];
+	
+		while( --vLength > 0 ){
+			tt.push_back(UTF8Decode(c));
+		}
+		return tt;
 	}
 
 	const char* xqpString::c_str() const{

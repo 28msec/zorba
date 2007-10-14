@@ -177,9 +177,9 @@ namespace xqp {
 			void clear();
 		//! @}
 
-		//! @name xqpString::Codepointsize()
+		//! @name xqpString::getCodepoints()
 		//!@{
-			std::vector<int> getCodepoints(const char* src);
+			std::vector<int> getCodepoints();
 		//!@}
 		
 			const char* c_str() const;

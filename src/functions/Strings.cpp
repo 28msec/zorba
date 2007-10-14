@@ -1,20 +1,7 @@
 /**
- *
  * @copyright
  * ========================================================================
  *	Copyright 2007 FLWOR Foundation
- *
- *	Licensed under the Apache License, Version 2.0 (the "License");
- *	you may not use this file except in compliance with the License.
- *	You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- *	Unless required by applicable law or agreed to in writing, software
- *	distributed under the License is distributed on an "AS IS" BASIS,
- *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *	See the License for the specific language governing permissions and
- *	limitations under the License.
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -231,13 +218,15 @@ PlanIter_t fn_concat::operator()(
 	vector<PlanIter_t>& argv) const
 {
 	if (!validate_args(argv)) return NULL;
-	return new ConcatFnIterator(loc,argv);
+	return new ConcatStrIterator(loc,argv);
 }
 
 bool fn_concat::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	return (argv.size() >= 2);
+		//TODO check if the types ogf the iterators are xs:anyAtomicType something like
+		//if((_argv[0]->getType() & NODE_MASK) == NOT_NODE)
+	return true;
 }
 
 sequence_type_t fn_concat::type_check(
@@ -276,7 +265,7 @@ PlanIter_t fn_string_join::operator()(
 {
 	if (!validate_args(argv))
 			return NULL;
-	return new StringJoinIterator(loc, argv);
+	return new StringJoinIterator(loc, argv[0], argv[1]);
 }
 
 sequence_type_t fn_string_join::type_check(
@@ -288,7 +277,7 @@ sequence_type_t fn_string_join::type_check(
 bool fn_string_join::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	return true;
+		return (argv.size() == 2);
 }
 
 
