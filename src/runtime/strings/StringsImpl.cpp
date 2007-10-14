@@ -282,7 +282,7 @@ Item_t StringJoinIterator::nextImpl(PlanState& planState) {
 //Step 1: find the separator based on the type (item not sequence)
 //step 2: concatenate the items whithin the sequence using separator as "glue"
 	while(true){
-		item = consumeNext ( gettheChild, planState );
+		item = consumeNext ( theChild0, planState );
 		if ( item != NULL ){
 			item = item->getAtomizationValue();
 			resStr += item->getStringValue();

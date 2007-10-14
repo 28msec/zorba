@@ -2522,8 +2522,8 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
 	if (fo_h == NULL) return;
 	
-	std::vector<expr_t>::const_iterator iter = arguments.begin();
-	for(; iter != arguments.end(); ++iter) {
+	std::vector<expr_t>::const_reverse_iterator iter = arguments.rbegin();
+	for(; iter != arguments.rend(); ++iter) {
 		fo_h->add(*iter);
 	}
 }
