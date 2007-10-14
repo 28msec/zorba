@@ -8,7 +8,6 @@
  */
 
 #include "types/sequence_type.h"
-#include "util/rchandle.h"
 #include "types/representations.h"
 #include "runtime/base/iterator.h"
 
@@ -26,10 +25,24 @@
 
 namespace xqp
 {
-	class Item;
-	typedef rchandle<Item> Item_t;
-	class PlanIterator;
-	typedef rchandle<PlanIterator> PlanIter_t;
+	template <class Object> class rchandle;
+	
+	typedef rchandle<class Item> Item_t;
+	typedef rchandle<class Iterator> Iterator_t;
+	
+	/**
+	 * General iterator interface. Used to program iterators which return a
+	 * sequence of items, wrapped into a rchandle object for garbage collection
+	 */
+	class Iterator : public rcobject
+	{
+		public:
+			virtual ~Iterator() {}
+			virtual Item_t next() = 0;
+			virtual void reset() = 0;
+	};
+	
+	
 	/*______________________________________________________________________
 	|
 	|	'item' - top of the XQuery value hierarchy,
@@ -349,7 +362,7 @@ namespace xqp
 			/** Accessor for element node
 			 	*  @return  attribute*
 			 	*/
-			virtual PlanIter_t getAttributes() const
+			virtual Iterator_t getAttributes() const
 			{
 				this->showError();
 				return NULL;
@@ -368,7 +381,7 @@ namespace xqp
 			/** Accessor for document node, element node
 			 	*  @return  node*
 			 	*/
-			virtual PlanIter_t getChildren() const
+			virtual Iterator_t getChildren() const
 			{
 				this->showError();
 				return NULL;
@@ -414,7 +427,7 @@ namespace xqp
 			/** Accessor for element node
 			 *  @return  node*
 			 */
-			virtual PlanIter_t getNamespaceNodes() const
+			virtual Iterator_t getNamespaceNodes() const
 			{
 				this->showError();
 				return NULL;
@@ -463,7 +476,7 @@ namespace xqp
 				*
 			  * @return typedValue?
 			  */
-			virtual PlanIter_t getTypedValue() const
+			virtual Iterator_t getTypedValue() const
 			{
 				this->showError();
 				return NULL;

@@ -22,7 +22,7 @@ namespace xqp {
 	template <class Object> class rchandle;
 	
 	typedef rchandle<class Item> Item_t;
-	typedef rchandle<class PlanIterator> PlanIter_t;
+	typedef rchandle<class Iterator> Iterator_t;
 	
 	class var_iterator;
 
@@ -41,7 +41,7 @@ namespace xqp {
 		 * @return Iterator which iterates over the complete TempSeq
 		 * 
 		 */
-		virtual PlanIter_t getIterator() = 0;
+		virtual Iterator_t getIterator() = 0;
 		
 		/**
 		 * Returns an iterator which reads just a part of the underlying TempSeq
@@ -50,7 +50,7 @@ namespace xqp {
 		 * @param endPos The last item which the iterator returns 
 		 * @return Iterator
 		 */
-		virtual PlanIter_t getIterator(int32_t startPos, int32_t endPos, bool streaming = false) = 0;
+		virtual Iterator_t getIterator(int32_t startPos, int32_t endPos, bool streaming = false) = 0;
 		
 		/** Info: Tim's territory. Do not touch for the moment!
 			*
@@ -63,7 +63,7 @@ namespace xqp {
 			* @param var variables which have to be bound for every item
 			* @return Iterator
 			*/
-		virtual PlanIter_t getIterator(int32_t startPos, PlanIter_t function, const std::vector<var_iterator>& var, bool streaming = false) = 0;
+		virtual Iterator_t getIterator(int32_t startPos, Iterator_t function, const std::vector<var_iterator>& var, bool streaming = false) = 0;
 				
 		
 		/** Info: Tim's territory. Do not touch for the moment!
@@ -73,7 +73,7 @@ namespace xqp {
 			* @param positions Positions to return
 			* @return Iterator
 			*/
-		virtual PlanIter_t getIterator(const std::vector<int32_t>& positions, bool streaming = false) = 0;
+		virtual Iterator_t getIterator(const std::vector<int32_t>& positions, bool streaming = false) = 0;
 		
 	 /** Info: Tim's territory. Do not touch for the moment!
 		 *
@@ -82,7 +82,7 @@ namespace xqp {
 		 * @param positions An iterator which only returns int32_t numbers or null. 
 		 *									Each int32_t value corresponds to a position in the XDMInstance. 
 		 */
-		virtual PlanIter_t getIterator(PlanIter_t positions, bool streaming = false) = 0;
+		virtual Iterator_t getIterator(Iterator_t positions, bool streaming = false) = 0;
 		
 		/**
 		 * Gets an item at a certain position.

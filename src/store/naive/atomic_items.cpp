@@ -23,9 +23,10 @@ namespace xqp
 	{
 		return true;
 	}
-	PlanIter_t AtomicItem::getTypedValue() const
+	Iterator_t AtomicItem::getTypedValue() const
 	{
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue() );
+		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue() );
+		return new PlanIterWrapper(planIter);
 	}
 	/* end class AtomicItem */
 

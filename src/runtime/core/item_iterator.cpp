@@ -358,16 +358,22 @@ Item_t
 ElementIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
+	Iterator_t lIter0;
+	Iterator_t lIter1;
+	Iterator_t lIter2;
 
   PlanIteratorState* state;
   STACK_INIT2(PlanIteratorState, state, planState);
 
+	lIter0 = new PlanIterWrapper(theChildren, planState);
+	lIter1 = new PlanIterWrapper(theAttributes, planState);
+	lIter2 = new PlanIterWrapper(theNamespaceBindings, planState);
   item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
 		           theQName,
 		           xs_anyType,
-		           theChildren,
-		           theAttributes,
-		           theNamespaceBindings,
+		           lIter0,
+		           lIter1,
+		           lIter2,
 		           false,
 		           false
 		       );

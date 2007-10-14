@@ -84,15 +84,15 @@ namespace xqp
 			virtual Item_t createDocumentNode (
 			    xqp_string baseURI,
 			    xqp_string docURI,
-			    PlanIter_t& children,
+			    Iterator_t& children,
 			    bool createId = false
 			);
 			virtual Item_t createElementNode (
 			    const Item_t& name,
 			    TypeCode type,
-			    PlanIter_t& children,
-			    PlanIter_t& attributes,
-			    PlanIter_t& namespaces,
+			    Iterator_t& children,
+			    Iterator_t& attributes,
+			    Iterator_t& namespaces,
 			    bool copy,
 			    bool newTypes,
 			    bool createId = false

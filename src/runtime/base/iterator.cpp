@@ -122,9 +122,7 @@ std::ostream& PlanIterator::show(std::ostream& os)
 	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
 	return os;
 }
-/* end class PlanIterator */
 
-/* begin class IteratorWrapper */
 void
 PlanIterator::PlanIteratorState::init() {
 	this->duffsLine = 0;
@@ -144,19 +142,20 @@ int32_t
 PlanIterator::PlanIteratorState::getDuffsLine() {
 	return this->duffsLine;
 }
+/* end class PlanIterator */
 
-
-IteratorWrapper::IteratorWrapper(PlanIter_t& aIter) : theAlienBlock(false), theIterator(aIter) {
+/* begin class IteratorWrapper */
+PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter) : theAlienBlock(false), theIterator(aIter) {
 	int32_t lStackSize = theIterator->getStateSizeOfSubtree();
 	theStateBlock = new PlanState(lStackSize);
 	int32_t lOffset = 0;
 	theIterator->setOffset(*theStateBlock, lOffset);
 }
 
-IteratorWrapper::IteratorWrapper(PlanIter_t& aIter, PlanState& aStateBlock) 
+PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter, PlanState& aStateBlock) 
 : theAlienBlock(true), theIterator(aIter), theStateBlock(&aStateBlock) {}
 
-IteratorWrapper::~IteratorWrapper() {
+PlanIterWrapper::~PlanIterWrapper() {
 	if (!theAlienBlock) {
 		theIterator->releaseResources(*theStateBlock);
 		delete theStateBlock;
@@ -164,8 +163,13 @@ IteratorWrapper::~IteratorWrapper() {
 }
 
 Item_t
-IteratorWrapper::next() {
+PlanIterWrapper::next() {
 	return theIterator->produceNext(*theStateBlock);
+}
+
+void
+PlanIterWrapper::reset() {
+	theIterator->reset(*theStateBlock);
 }
 /* end class IteratorWrapper */
 }

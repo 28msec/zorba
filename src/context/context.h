@@ -47,15 +47,15 @@ class context : public rcobject
 {
 protected:
 	rchandle<context> parent_h;
-	fxhash64map<PlanIter_t> keymap;
+	fxhash64map<Iterator_t> keymap;
 
 public: // context interface
   context (context *_parent = NULL) : parent_h (_parent) {}
 	rchandle<context> parent() const { return parent_h; }
 
-	PlanIter_t context_value(qnamekey_t key) const
+	Iterator_t context_value(qnamekey_t key) const
 	{
-		PlanIter_t it_h;
+		Iterator_t it_h;
 		if (!keymap.get(key, it_h)) return NULL;
 		return it_h;
 	}

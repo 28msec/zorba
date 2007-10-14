@@ -155,7 +155,7 @@ int _tmain(int argc, _TCHAR* argv[])
 					return -1;
 				}
 				
-				IteratorWrapper iw(it_h);
+				PlanIterWrapper iw(it_h);
 				
 				while (true) {
 					Item_t i_p = iw.next();

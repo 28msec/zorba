@@ -25,7 +25,7 @@ namespace xqp
 			bool isNode() const;
 			bool isAtomic() const;
 
-			virtual PlanIter_t getTypedValue() const;
+			virtual Iterator_t getTypedValue() const;
 	}; /* class AtomicItem */
 
 	class QNameItem : public AtomicItem

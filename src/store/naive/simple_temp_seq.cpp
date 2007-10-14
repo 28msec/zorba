@@ -10,50 +10,46 @@
 
 namespace xqp
 {
-	typedef rchandle<PlanIterator> PlanIter_t;
-
-	SimpleTempSeq::SimpleTempSeq ( PlanIter_t iterator )
+	SimpleTempSeq::SimpleTempSeq ( Iterator_t iterator )
 	{
-		this->loc = iterator->loc;
-		IteratorWrapper iw(iterator);
-		Item_t curItem = iw.next();
+		Item_t curItem = iterator->next();
 		while ( curItem != NULL )
 		{
 			this->items.push_back ( curItem );
-			curItem = iw.next();
+			curItem = iterator->next();
 		}
 	}
 	SimpleTempSeq::~SimpleTempSeq()
 	{	}
 
-	PlanIter_t 
+	Iterator_t 
 	SimpleTempSeq::getIterator()
 	{
-		return new SimpleTempSeq::Iterator ( this->loc, &this->items );
+		return new SimpleTempSeqIter ( &this->items );
 	}
 	
-	PlanIter_t 
+	Iterator_t 
 	SimpleTempSeq::getIterator ( int32_t startPos, int32_t endPos, bool streaming )
 	{
-		return rchandle<PlanIterator> ( NULL );
+		return Iterator_t ( NULL );
 	}
 	
-	PlanIter_t 
-	SimpleTempSeq::getIterator ( int32_t startPos, PlanIter_t function, const std::vector<var_iterator>& vars, bool streaming )
+	Iterator_t 
+	SimpleTempSeq::getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& vars, bool streaming )
 	{
-		return rchandle<PlanIterator> ( NULL );
+		return Iterator_t ( NULL );
 	}
 	
-	PlanIter_t 
+	Iterator_t 
 	SimpleTempSeq::getIterator ( const std::vector<int32_t>& positions, bool streaming )
 	{
-		return rchandle<PlanIterator> ( NULL );
+		return Iterator_t ( NULL );
 	}
 	
-	PlanIter_t 
-	SimpleTempSeq::getIterator ( PlanIter_t positions, bool streaming )
+	Iterator_t 
+	SimpleTempSeq::getIterator ( Iterator_t positions, bool streaming )
 	{
-		return rchandle<PlanIterator> ( NULL );
+		return Iterator_t ( NULL );
 	}
 	
 	Item_t 
@@ -104,9 +100,23 @@ namespace xqp
 	{
 		return this->items.size() == 0;
 	}
+	
+	SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter (const std::vector<Item_t>* items_arg )
+	:
+		items ( items_arg ), borderType ( none ), curPos ( -1 ) {}
+
+	SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter( const std::vector<Item_t>* items_arg, int startPos_arg, int endPos_arg )
+	:
+		items ( items_arg ), borderType ( startEnd ), curPos ( startPos_arg - 2 ), startPos ( startPos_arg ), endPos ( endPos_arg ) {}
+
+	SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter (const std::vector<Item_t>* items_arg, const std::vector<int32_t>& positions_arg )
+	:
+		items ( items_arg ), borderType ( specificPositions ), curPos ( -1 ), positions ( positions_arg ) {}
+
+	SimpleTempSeq::SimpleTempSeqIter::~SimpleTempSeqIter() {}
 
 	Item_t 
-	SimpleTempSeq::Iterator::nextImpl(PlanState& planState)
+	SimpleTempSeq::SimpleTempSeqIter::next()
 	{
 		this->curPos++;
 		switch ( this->borderType )
@@ -128,7 +138,7 @@ namespace xqp
 	}
 
 	void 
-	SimpleTempSeq::Iterator::resetImpl(PlanState& planState)
+	SimpleTempSeq::SimpleTempSeqIter::reset()
 	{
 		switch ( this->borderType )
 		{
@@ -140,11 +150,6 @@ namespace xqp
 				this->curPos = -1;
 				break;
 		}
-	}
-
-	void 
-	SimpleTempSeq::Iterator::releaseResourcesImpl(PlanState& planState)
-	{
 	}
 
 } /* namespace xqp */

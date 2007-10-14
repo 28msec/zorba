@@ -80,7 +80,7 @@ public:
 	void set_context_item(Item_t);
 	void set_context_item_type(sequence_type_t );
 
-	PlanIter_t namespaces() const;
+	Iterator_t namespaces() const;
 	void add_namespace(Item&);
 
 	const Item& default_element_type_namespace() const;

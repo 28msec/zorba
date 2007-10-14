@@ -22,7 +22,7 @@ private:
   PlanIter_t argument;
 		
   // used to save the current typed value in the nextImpl method
-  PlanIter_t curTypedValue;
+  Iterator_t curTypedValue;
 	
 public:
   FnDataIterator ( const yy::location& loc, PlanIter_t& arg0 )

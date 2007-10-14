@@ -21,17 +21,16 @@ namespace xqp
 	{
 		private:
 			std::vector<Item_t> items;
-			yy::location loc;
 
 		public:
-			SimpleTempSeq ( PlanIter_t iterator );
+			SimpleTempSeq ( Iterator_t iterator );
 			virtual ~SimpleTempSeq();
 
-			virtual PlanIter_t getIterator();
-			virtual PlanIter_t getIterator ( int32_t startPos, int32_t endPos, bool streaming = false );
-			virtual PlanIter_t getIterator ( int32_t startPos, PlanIter_t function, const std::vector<var_iterator>& var, bool streaming = false );
-			virtual PlanIter_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
-			virtual PlanIter_t getIterator ( PlanIter_t positions, bool streaming = false );
+			virtual Iterator_t getIterator();
+			virtual Iterator_t getIterator ( int32_t startPos, int32_t endPos, bool streaming = false );
+			virtual Iterator_t getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& var, bool streaming = false );
+			virtual Iterator_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
+			virtual Iterator_t getIterator ( Iterator_t positions, bool streaming = false );
 			virtual Item_t getItem ( int32_t position );
 			virtual bool containsItem( int32_t position );
 			virtual void purge();
@@ -40,7 +39,7 @@ namespace xqp
 			virtual void purgeItem ( int32_t position );
 			virtual bool empty();
 
-		class Iterator : public Batcher<Iterator>
+		class SimpleTempSeqIter : public Iterator
 			{
 				private:
 					enum BorderType
@@ -59,23 +58,13 @@ namespace xqp
 					std::vector<int32_t> positions;
 
 				public:
-					Iterator ( yy::location& loc, const std::vector<Item_t>* items_arg )
-							:
-							Batcher<Iterator> ( loc ), items ( items_arg ), borderType ( none ), curPos ( -1 ) {}
+					SimpleTempSeqIter (const std::vector<Item_t>* items_arg );
+					SimpleTempSeqIter( const std::vector<Item_t>* items_arg, int startPos_arg, int endPos_arg );
+					SimpleTempSeqIter (const std::vector<Item_t>* items_arg, const std::vector<int32_t>& positions_arg );
+					~SimpleTempSeqIter();
 
-					Iterator ( yy::location& loc, const std::vector<Item_t>* items_arg, int startPos_arg, int endPos_arg )
-							:
-							Batcher<Iterator> ( loc ), items ( items_arg ), borderType ( startEnd ), curPos ( startPos_arg - 2 ), startPos ( startPos_arg ), endPos ( endPos_arg ) {}
-
-					Iterator ( yy::location& loc, const std::vector<Item_t>* items_arg, const std::vector<int32_t>& positions_arg )
-							:
-							Batcher<Iterator> ( loc ), items ( items_arg ), borderType ( specificPositions ), curPos ( -1 ), positions ( positions_arg ) {}
-
-					~Iterator() {}
-
-					Item_t nextImpl(PlanState& planState);
-					void resetImpl(PlanState& planState);
-					void releaseResourcesImpl(PlanState& planState);
+					Item_t next();
+					void reset();
 			};
 
 	}; /* class SimpleTempSeq */

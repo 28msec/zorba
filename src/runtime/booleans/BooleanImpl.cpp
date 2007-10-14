@@ -173,6 +173,8 @@ namespace xqp
 	{
 		Item_t item0;
 		Item_t item1;
+		Iterator_t lIter0;
+		Iterator_t lIter1;
 		TypeCode type0;
 		TypeCode type1;
 		TypeCode resultType;
@@ -189,8 +191,10 @@ namespace xqp
 		if (this->isGeneralComparison())
 		{
 			// TODO Optimizations for >, >=, < and <=
-			temp0 = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq(this->iter0);
-			temp1 = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq(this->iter1);
+			lIter0 = new PlanIterWrapper(this->iter0, planState);
+			lIter1 = new PlanIterWrapper(this->iter1, planState);
+			temp0 = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq(lIter0);
+			temp1 = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq(lIter1);
 			i0 = 1;
 			found = false;
 			while (!found && temp0->containsItem(i0))

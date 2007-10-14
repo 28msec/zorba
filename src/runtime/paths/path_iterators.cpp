@@ -369,12 +369,12 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
 
     state->theAttributes = state->theContextNode->getAttributes();
 
-    attr = consumeNext(state->theAttributes, planState);
+    attr = state->theAttributes->next();
 
     while (attr != NULL)
     {
       STACK_PUSH2(attr, state);
-      attr = consumeNext(state->theAttributes, planState);
+      attr = state->theAttributes->next();
     }
   }
 
@@ -388,7 +388,7 @@ void AttributeAxisIterator::resetImpl(PlanState& planState)
 
   AttributeAxisState* state;
   GET_STATE(AttributeAxisState, state, planState); 
-  state->theAttributes->reset(planState);
+  state->theAttributes->reset();
 }
 
 
@@ -642,9 +642,9 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
 
     state->theChildren = parent->getChildren();
 
-    while (consumeNext(state->theChildren, planState) != state->theContextNode) ;
+    while (state->theChildren->next() != state->theContextNode) ;
 
-    sibling = consumeNext(state->theChildren, planState);
+    sibling = state->theChildren->next();
 
     while (sibling != NULL)
     {
@@ -653,7 +653,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
         STACK_PUSH2(sibling, state);
       }
 
-      sibling = consumeNext(state->theChildren, planState);
+      sibling = state->theChildren->next();
     }
   }
 
@@ -667,7 +667,7 @@ void RSiblingAxisIterator::resetImpl(PlanState& planState)
 
   RSiblingAxisState* state;
   GET_STATE(RSiblingAxisState, state, planState); 
-  state->theChildren->reset(planState); 
+  state->theChildren->reset(); 
 }
 
 
@@ -731,7 +731,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
 
     state->theChildren = parent->getChildren();
 
-    sibling = consumeNext(state->theChildren, planState);
+    sibling = state->theChildren->next();
 
     while (sibling != state->theContextNode)
     {
@@ -743,7 +743,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
         STACK_PUSH2(sibling, state);
       }
 
-      sibling = consumeNext(state->theChildren, planState);
+      sibling = state->theChildren->next();
     }
   }
 
@@ -757,7 +757,7 @@ void LSiblingAxisIterator::resetImpl(PlanState& planState)
 
   LSiblingAxisState* state;
   GET_STATE(LSiblingAxisState, state, planState); 
-  state->theChildren->reset(planState);
+  state->theChildren->reset();
 }
 
 
@@ -816,7 +816,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
 
     state->theChildren = state->theContextNode->getChildren();
 
-    child = consumeNext(state->theChildren, planState);
+    child = state->theChildren->next();
 
     while (child != NULL)
     {
@@ -834,7 +834,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
         STACK_PUSH2(child, state);
       }
 
-      child = consumeNext(state->theChildren, planState);
+      child = state->theChildren->next();
     }
   }
 
@@ -848,7 +848,7 @@ void ChildAxisIterator::resetImpl(PlanState& planState)
 
   ChildAxisState* state;
   GET_STATE(ChildAxisState, state, planState); 
-  state->theChildren->reset(planState);
+  state->theChildren->reset();
 }
 
 
@@ -880,7 +880,7 @@ std::ostream& ChildAxisIterator::_show(std::ostream& os)	const
 Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t desc;
-  PlanIter_t children;
+  Iterator_t children;
 
   DescendantAxisState* state;
   STACK_INIT2(DescendantAxisState, state, planState);
@@ -911,15 +911,15 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
     children = state->theContextNode->getChildren();
 
     state->theCurrentPath.push(
-              std::pair<Item_t, PlanIter_t>(state->theContextNode, children));
+              std::pair<Item_t, Iterator_t>(state->theContextNode, children));
     
-    desc = consumeNext(children, planState);
+    desc = children->next();
 
     while (desc != NULL)
     {
       if (desc->getNodeKind() == elementNode)
         state->theCurrentPath.push(
-                  std::pair<Item_t, PlanIter_t>(desc, desc->getChildren()));
+                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
       if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
@@ -930,13 +930,13 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = consumeNext(state->theCurrentPath.top().second, planState);
+      desc = state->theCurrentPath.top().second->next();
 
       while (desc == NULL)
       {
         state->theCurrentPath.pop();
         if (!state->theCurrentPath.empty())
-          desc = consumeNext(state->theCurrentPath.top().second, planState);
+          desc = state->theCurrentPath.top().second->next();
         else
           break;
       }
@@ -1033,7 +1033,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
       if (desc->getNodeKind() == elementNode ||
           state->theContextNode->getNodeKind() == documentNode)
         state->theCurrentPath.push(
-                  std::pair<Item_t, PlanIter_t>(desc, desc->getChildren()));
+                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
       if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
@@ -1044,13 +1044,13 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
       // at the top of the path stack. If N has no children or all of its
       // children have been processed already, N is removed from the stack
       // and the process is repeated.
-      desc = consumeNext(state->theCurrentPath.top().second, planState);
+      desc = state->theCurrentPath.top().second->next();
 
       while (desc == NULL)
       {
         state->theCurrentPath.pop();
         if (!state->theCurrentPath.empty())
-          desc = consumeNext(state->theCurrentPath.top().second, planState);
+          desc = state->theCurrentPath.top().second->next();
         else
           break;
       }
@@ -1116,7 +1116,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t ancestor;
   Item_t desc;
-  PlanIter_t children;
+  Iterator_t children;
 
   PrecedingAxisState* state;
   STACK_INIT2(PrecedingAxisState, state, planState);
@@ -1158,28 +1158,28 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 
       children = ancestor->getChildren();
 
-      state->theCurrentPath.push(std::pair<Item_t, PlanIter_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
     
-      desc = consumeNext(children, planState);
+      desc = children->next();
 
       while (desc != state->theAncestorPath.top())
       {
         if (desc->getNodeKind() == elementNode)
           state->theCurrentPath.push(
-                    std::pair<Item_t, PlanIter_t>(desc, desc->getChildren()));
+                    std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
 
         if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
         {
           STACK_PUSH2(desc, state);
         }
 
-        desc = consumeNext(state->theCurrentPath.top().second, planState);
+        desc = state->theCurrentPath.top().second->next();
 
         while (desc == NULL)
         {
           state->theCurrentPath.pop();
           Assert(!state->theCurrentPath.empty());
-          desc = consumeNext(state->theCurrentPath.top().second, planState);
+          desc = state->theCurrentPath.top().second->next();
         }
       }
 
@@ -1250,7 +1250,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 {
   Item_t ancestor;
   Item_t following;
-  PlanIter_t children;
+  Iterator_t children;
 
   FollowingAxisState* state;
   STACK_INIT2(FollowingAxisState, state, planState);
@@ -1292,34 +1292,34 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 
       children = ancestor->getChildren();
 
-      state->theCurrentPath.push(std::pair<Item_t, PlanIter_t>(ancestor, children));
+      state->theCurrentPath.push(std::pair<Item_t, Iterator_t>(ancestor, children));
 
       do
       {
-        following = consumeNext(children, planState);
+        following = children->next();
       }
       while (following != state->theAncestorPath.top());
 
-      following = consumeNext(children, planState);
+      following = children->next();
 
       while (following != NULL)
       {
         if (following->getNodeKind() == elementNode)
           state->theCurrentPath.push(
-                 std::pair<Item_t, PlanIter_t>(following, following->getChildren()));
+                 std::pair<Item_t, Iterator_t>(following, following->getChildren()));
 
         if (theNodeKind == anyNode || following->getNodeKind() == theNodeKind)
         {
           STACK_PUSH2(following, state);
         }
 
-        following = consumeNext(state->theCurrentPath.top().second, planState);
+        following = state->theCurrentPath.top().second->next();
 
         while (following == NULL)
         {
           state->theCurrentPath.pop();
           Assert(!state->theCurrentPath.empty());
-          following = consumeNext(state->theCurrentPath.top().second, planState);
+          following = state->theCurrentPath.top().second->next();
         }
       }
 

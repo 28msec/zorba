@@ -49,7 +49,7 @@ private:
 
 public:
   KindTestIterator(
-        yy::location loc,
+				const yy::location& loc,
         PlanIter_t input,
         Item_t qname,
         Item_t tname,
@@ -84,7 +84,7 @@ private:
 
 public:
   NameTestIterator(
-        yy::location loc,
+				const yy::location& loc,
         PlanIter_t input,
         Item_t qname,
         match_wild_t kind)
@@ -136,7 +136,7 @@ protected:
   };
 
 public:
-  AxisIterator(yy::location loc, PlanIter_t input)
+	AxisIterator(const yy::location& loc, PlanIter_t input)
     :
     UnaryBaseIterator<AxisIter>(loc, input)
   {
@@ -161,7 +161,7 @@ protected:
   };
 
 public:
-  SelfAxisIterator(yy::location loc, PlanIter_t input)
+	SelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<SelfAxisIterator>(loc, input)
   {
@@ -187,11 +187,11 @@ protected:
   class AttributeAxisState : public AxisState
   {
   public:
-    PlanIter_t  theAttributes;
+    Iterator_t  theAttributes;
   };
 
 public:
-  AttributeAxisIterator(yy::location loc, PlanIter_t input)
+	AttributeAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<AttributeAxisIterator>(loc, input)
   {
@@ -220,7 +220,7 @@ protected:
   };
 
 public:
-  ParentAxisIterator(yy::location loc, PlanIter_t input)
+	ParentAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<ParentAxisIterator>(loc, input)
   {
@@ -250,7 +250,7 @@ protected:
   };
 
 public:
-  AncestorAxisIterator(yy::location loc, PlanIter_t input)
+	AncestorAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<AncestorAxisIterator>(loc, input)
   {
@@ -280,7 +280,7 @@ protected:
   };
 
 public:
-  AncestorSelfAxisIterator(yy::location loc, PlanIter_t input)
+	AncestorSelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<AncestorSelfAxisIterator>(loc, input)
   {
@@ -306,11 +306,11 @@ protected:
   class RSiblingAxisState : public AxisState
   {
   public:
-    PlanIter_t  theChildren;
+    Iterator_t  theChildren;
   };
 
 public:
-  RSiblingAxisIterator(yy::location loc, PlanIter_t input)
+  RSiblingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<RSiblingAxisIterator>(loc, input)
   {
@@ -337,11 +337,11 @@ protected:
   class LSiblingAxisState : public AxisState
   {
   public:
-    PlanIter_t  theChildren;
+    Iterator_t  theChildren;
   };
 
 public:
-  LSiblingAxisIterator(yy::location loc, PlanIter_t input)
+  LSiblingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<LSiblingAxisIterator>(loc, input)
   {
@@ -368,11 +368,11 @@ protected:
   class ChildAxisState : public AxisState
   {
   public:
-    PlanIter_t  theChildren;
+    Iterator_t  theChildren;
   };
 
 public:
-  ChildAxisIterator(yy::location loc, PlanIter_t input)
+  ChildAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<ChildAxisIterator>(loc, input)
   {
@@ -399,11 +399,11 @@ protected:
   class DescendantAxisState : public AxisState
   {
   public:
-    std::stack<std::pair<Item_t, PlanIter_t> > theCurrentPath;
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
   };
 
 public:
-  DescendantAxisIterator(yy::location loc, PlanIter_t input)
+  DescendantAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<DescendantAxisIterator>(loc, input)
   {
@@ -432,11 +432,11 @@ protected:
   class DescendantSelfAxisState : public AxisState
   {
   public:
-    std::stack<std::pair<Item_t, PlanIter_t> > theCurrentPath;
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
   };
 
 public:
-  DescendantSelfAxisIterator(yy::location loc, PlanIter_t input)
+  DescendantSelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<DescendantSelfAxisIterator>(loc, input)
   {
@@ -466,11 +466,11 @@ protected:
   {
   public:
     std::stack<Item_t>                         theAncestorPath;
-    std::stack<std::pair<Item_t, PlanIter_t> > theCurrentPath;
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
   };
 
 public:
-  PrecedingAxisIterator(yy::location loc, PlanIter_t input)
+  PrecedingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<PrecedingAxisIterator>(loc, input)
   {
@@ -499,11 +499,11 @@ class FollowingAxisIterator : public AxisIterator<FollowingAxisIterator>
   {
   public:
     std::stack<Item_t>                         theAncestorPath;
-    std::stack<std::pair<Item_t, PlanIter_t> > theCurrentPath;
+    std::stack<std::pair<Item_t, Iterator_t> > theCurrentPath;
   };
 
 public:
-  FollowingAxisIterator(yy::location loc, PlanIter_t input)
+  FollowingAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<FollowingAxisIterator>(loc, input)
   {

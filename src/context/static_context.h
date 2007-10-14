@@ -77,14 +77,14 @@ public:
 
 public:
 	// XQuery 1.0 static context
-	PlanIter_t default_function_namespace() const;
+	Iterator_t default_function_namespace() const;
 	void set_default_function_namespace(const namespace_node*);
 
-  PlanIter_t namespaces() const;
-	PlanIter_t in_scope_schema_types() const;
-	PlanIter_t in_scope_element_decls() const;
-	PlanIter_t in_scope_attribute_decls() const;
-	PlanIter_t collations() const;
+  Iterator_t namespaces() const;
+	Iterator_t in_scope_schema_types() const;
+	Iterator_t in_scope_element_decls() const;
+	Iterator_t in_scope_attribute_decls() const;
+	Iterator_t collations() const;
 
 	enum construction_mode_t construction_mode() const;
 	enum order_empty_mode_t order_empty_mode() const;

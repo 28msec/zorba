@@ -78,13 +78,12 @@ namespace xqp
 	xqp_string DocumentNode::getStringProperty() const
 	{
 		ostringstream oss;
-		PlanIter_t it = this->getChildren();
-		IteratorWrapper iw(it);
-		Item_t item = iw.next();
+		Iterator_t it = this->getChildren();
+		Item_t item = it->next();
 		while ( item != NULL )
 		{
 			oss << item->getStringProperty();
-			item = iw.next();
+			item = it->next();
 		}
 		return oss.str();
 	}
@@ -99,11 +98,14 @@ namespace xqp
 		return this->baseURI;
 	}
 
-	PlanIter_t DocumentNode::getChildren() const
+	Iterator_t DocumentNode::getChildren() const
 	{
-		return (this->children == NULL ?
-            new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation()) :
-            this->children->getIterator());
+		if (this->children == NULL) {
+			PlanIter_t planIter = new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
+			return new PlanIterWrapper(planIter);
+		} else {
+    	return this->children->getIterator();
+		}
 	}
 
 	xqp_string DocumentNode::getDocumentURI() const
@@ -111,13 +113,17 @@ namespace xqp
 		return this->docURI;
 	}
 
-	PlanIter_t DocumentNode::getTypedValue() const
+	Iterator_t DocumentNode::getTypedValue() const
 	{
-		if ( this->children->empty() )
-			return new EmptyIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation() );
-		xqp_string str = this->getStringProperty();
-		Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( str );
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		PlanIter_t ret;
+		if ( this->children->empty() ) {
+			ret = new EmptyIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation() );
+		} else {
+			xqp_string str = this->getStringProperty();
+			Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( str );
+			ret = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		}
+		return new PlanIterWrapper(ret);
 	}
 	/* end class DocumentNode */
 
@@ -176,13 +182,12 @@ namespace xqp
 	xqp_string ElementNode::getStringProperty() const
 	{
 		ostringstream oss;
-		PlanIter_t it = this->getChildren();
-		IteratorWrapper iw(it);
-		Item_t item = iw.next();
+		Iterator_t it = this->getChildren();
+		Item_t item = it->next();
 		while ( item != NULL )
 		{
 			oss << item->getStringProperty();
-			item = iw.next();
+			item = it->next();
 		}
 		return oss.str();
 	}
@@ -192,50 +197,54 @@ namespace xqp
 		return elementNode;
 	}
 
-	PlanIter_t ElementNode::getAttributes() const
+	Iterator_t ElementNode::getAttributes() const
 	{
-		return (this->attributes == NULL ? 
-            new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation()) :
-            this->attributes->getIterator());
+		if (this->attributes == NULL) {
+    	PlanIter_t planIter = new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
+			return new PlanIterWrapper(planIter);
+		} else {
+      return this->attributes->getIterator();
+		}
 	}
 
-	PlanIter_t ElementNode::getChildren() const
+	Iterator_t ElementNode::getChildren() const
 	{
-		return (this->children == NULL ?
-            new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation()) :
-            this->children->getIterator());
+		if (this->children == NULL) {
+			PlanIter_t planIter = new EmptyIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation());
+			return new PlanIterWrapper(planIter);
+		} else {
+      return this->children->getIterator();
+		}
 	}
 
 	std::set<std::pair<xqp_string, xqp_string> > ElementNode::getNamespaceBindings() const
 	{
 		std::set<std::pair<xqp_string, xqp_string> > bindings;
-		PlanIter_t iter = this->namespaces->getIterator();
-		IteratorWrapper iw(iter);
-		Item_t item = iw.next();
+		Iterator_t iter = this->namespaces->getIterator();
+		Item_t item = iter->next();
 
 		while ( item != NULL )
 		{
 			bindings.insert ( pair<xqp_string,xqp_string> ( item->getPrefix(), item->getNamespace() ) );
-			item = iw.next();
+			item = iter->next();
 		}
 		return bindings;
 	}
 
-	PlanIter_t ElementNode::getNamespaceNodes() const
+	Iterator_t ElementNode::getNamespaceNodes() const
 	{
 		return this->namespaces->getIterator();
 	}
 
 	bool ElementNode::getNilled() const
 	{
-		PlanIter_t iter = this->children->getIterator();
-		IteratorWrapper iw(iter);
-		Item_t item = iw.next();
+		Iterator_t iter = this->children->getIterator();
+		Item_t item = iter->next();
 		while ( item != NULL )
 		{
 			if ( item->isNode() && ( item->getNodeKind() == elementNode || item->getNodeKind() == textNode ) )
 				return false;
-			item = iw.next();
+			item = iter->next();
 		}
 		return true;
 	}
@@ -245,13 +254,17 @@ namespace xqp
 		return this->name;
 	}
 
-	PlanIter_t ElementNode::getTypedValue() const
+	Iterator_t ElementNode::getTypedValue() const
 	{
-		if ( this->children->empty() )
-			return new EmptyIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation() );
-		xqp_string str = this->getStringProperty();
-		Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( str );
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		PlanIter_t ret;
+		if ( this->children->empty() ) {
+			ret = new EmptyIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation() );
+		} else {
+			xqp_string str = this->getStringProperty();
+			Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( str );
+			ret = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		}
+		return new PlanIterWrapper(ret);
 	}
 	
 	xqp_string ElementNode::show() const
@@ -261,22 +274,20 @@ namespace xqp
 		str =  "<" + this->name->getLocalName();
 		
 		if (this->attributes != NULL) {
-			PlanIter_t iter = this->attributes->getIterator();
-			IteratorWrapper iw(iter);
-			Item_t item = iw.next();
+			Iterator_t iter = this->attributes->getIterator();
+			Item_t item = iter->next();
 			while (item != NULL) {
 				str += " " + item->show();
-				item = iw.next();
+				item = iter->next();
 			}
 		}
 		str += ">";
 		if (this->children != NULL) {
-			PlanIter_t iter = this->children->getIterator();
-			IteratorWrapper iw(iter);
-			Item_t item = iw.next();
+			Iterator_t iter = this->children->getIterator();
+			Item_t item = iter->next();
 			while (item != NULL) {
 				str += item->show();
-				item = iw.next();
+				item = iter->next();
 			}
 		}
 		str += "</" + this->name->getStringProperty() + ">";
@@ -358,9 +369,10 @@ namespace xqp
 		return this->name;
 	}
 
-	PlanIter_t AttributeNode::getTypedValue() const
+	Iterator_t AttributeNode::getTypedValue() const
 	{
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->typedValue );
+		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->typedValue );
+		return new PlanIterWrapper(planIter);
 	}
 	
 	xqp_string AttributeNode::show() const
@@ -392,10 +404,11 @@ namespace xqp
 		return namespaceNode;
 	}
 
-	PlanIter_t NamespaceNode::getTypedValue() const
+	Iterator_t NamespaceNode::getTypedValue() const
 	{
 		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createString ( this->uri );
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		return new PlanIterWrapper(planIter);
 	}
 
 	xqp_string NamespaceNode::getNamespace() const
@@ -440,10 +453,11 @@ namespace xqp
 		return processingInstructionNode;
 	}
 
-	PlanIter_t PiNode::getTypedValue() const
+	Iterator_t PiNode::getTypedValue() const
 	{
 		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createString ( this->content );
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		return new PlanIterWrapper(planIter);
 	}
 
 	xqp_string PiNode::getTarget() const
@@ -477,10 +491,11 @@ namespace xqp
 		return commentNode;
 	}
 
-	PlanIter_t CommentNode::getTypedValue() const
+	Iterator_t CommentNode::getTypedValue() const
 	{
 		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createString ( this->content );
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		return new PlanIterWrapper(planIter);
 	}
 
 	xqp_string CommentNode::getStringValue() const
@@ -514,10 +529,11 @@ namespace xqp
 		return textNode;
 	}
 
-	PlanIter_t TextNode::getTypedValue() const
+	Iterator_t TextNode::getTypedValue() const
 	{
 		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->content );
-		return new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
+		return new PlanIterWrapper(planIter);
 	}
 
 	xqp_string TextNode::getStringValue() const

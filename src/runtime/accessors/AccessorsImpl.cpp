@@ -25,7 +25,7 @@ FnDataIterator::nextImpl(PlanState& planState)
     this->curTypedValue = item->getTypedValue();
 			
     while (true) {
-      item = this->consumeNext( this->curTypedValue, planState );
+      item = this->curTypedValue->next();
       if (item == NULL)
         break;
       STACK_PUSH( item );

@@ -276,7 +276,7 @@ public:
  * belongs alread to another IteratorWrapper, resp. which belongs already
  * to a state block.
  */
-class IteratorWrapper {
+class PlanIterWrapper : public Iterator {
 private:
 	bool theAlienBlock;
 	PlanIter_t theIterator;
@@ -289,28 +289,33 @@ public:
 	 * 
 	 * @param iter root of evaluated iterator tree
 	 */
-	IteratorWrapper(PlanIter_t& iter);
+	PlanIterWrapper(PlanIter_t& iter);
 	
 	/**
 	 * Constructor for IteratorWrapper which is used to generate the results
 	 * of an iterator which is not root => the state block handling, garbage
 	 * collection, etc. is already made by another IteratorWrapper.
-	 * 
+	 * it_h
 	 * @param iter 
 	 * @param planState 
 	 */
-	IteratorWrapper(PlanIter_t& iter, PlanState& planState);
+	PlanIterWrapper(PlanIter_t& iter, PlanState& planState);
 	
 	/**
 	 * Deconstructor.
 	 */
-	~IteratorWrapper();
+	~PlanIterWrapper();
 	
-	/** Returns the next item of the root iterator
+	/** Returns the next item of the PlanIter
 		* @return item
 		* FIXME must be adapted to batching
 		*/
 	Item_t next();
+	
+	/**
+	 * Resets the contining PlanIter
+	 */
+	void reset();
 };
 
 } /* namespace xqp */
