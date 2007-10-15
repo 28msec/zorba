@@ -220,27 +220,26 @@ Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
  *_______________________________________________________________________*/
 /* begin class ConcatStrIterator */
 Item_t ConcatStrIterator::nextImpl(PlanState& planState) {
-	/*
 	Item_t item;
 	Item_t resItem;
 	xqp_string resStr;
+	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
 
-	int argsNo = theChildren.size();*/
+	int argsNo = theChildren.size();
 	PlanIterator::PlanIteratorState* state;
 	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-/*
-	while(true){
-		item = consumeNext ( theChildren, planState );
-		if ( item != NULL ){
+
+	for(; iter !=  theChildren.end(); iter ++ ){
+		item = consumeNext (*iter, planState );
 			item = item->getAtomizationValue();
 			resStr += item->getStringValue();
-		}
-		else{
-			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
-			STACK_PUSH2( resItem, state );
-			break;
-		}
-	}*/
+	}
+
+	if(theChildren.size()>0){
+		resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
+		STACK_PUSH2( resItem, state );
+	}
+
 	STACK_END2();
 }
 /* end class ConcatStrIterator */
