@@ -89,7 +89,7 @@ cd $SNAPSHOT
 $ROOT/process_test_results
 
 cd test_results
-diff -qr acceptance $TESTS/test_results/acceptance | ./report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag
+diff -qr acceptance $TESTS/test_results/acceptance | $ROOT/report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag
 cd ..
 test -s acceptance_failures.xmlfrag && export ACCEPTANCE_FAILURES=y
 echo '<failures>' >acceptance_failures.xml

@@ -4,7 +4,8 @@ use File::Basename;
 
 sub parse_test_file {
   my ($fname) = @_;
-  open (my $fh1, $fname) or die ("$f1 not found");
+  my $fh1;
+  open ($fh1, $fname) or die ("$fname not found");
   my $code=chomp $fh1;
   my $text = do { local ($/); <$fh1>; };
 
@@ -26,7 +27,7 @@ sub report_failure {
 
 my $test_dir = shift;
 while (<>) {
-    if (/^Only in ([^:])+:/) {
+    if (/^Files ([^ ]+) /) {
         report_failure ($test_dir, dirname $1);
     }
 }
