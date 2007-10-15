@@ -271,19 +271,36 @@ Item_t StringJoinIterator::nextImpl(PlanState& planState) {
 	PlanIterator::PlanIteratorState* state;
 	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
 
-//TODO this is not correct:
-//Step 1: find the separator based on the type (item not sequence)
-//step 2: concatenate the items whithin the sequence using separator as "glue"
-	while(true){
-		item = consumeNext ( theChild0, planState );
-		if ( item != NULL ){
-			item = item->getAtomizationValue();
-			resStr += item->getStringValue();
+	item = consumeNext(theChild1, planState);
+	separator = item->getStringValue();
+
+	if(separator == ""){
+		while(true){
+			item = consumeNext ( theChild0, planState );
+			if ( item != NULL ){
+				item = item->getAtomizationValue();
+				resStr += item->getStringValue();
+			}
+			else{
+				resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
+				STACK_PUSH2( resItem, state );
+				break;
+			}
 		}
-		else{
-			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
-			STACK_PUSH2( resItem, state );
-			break;
+	}
+	else{
+			while(true){
+			item = consumeNext ( theChild0, planState );
+			if ( item != NULL ){
+				item = item->getAtomizationValue();
+				resStr += item->getStringValue();
+				resStr += separator;
+			}
+			else{
+				resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
+				STACK_PUSH2( resItem, state );
+				break;
+			}
 		}
 	}
 	STACK_END2();
