@@ -80,7 +80,7 @@ do_tests () {
 
 . $ROOT/load_test_env
 
-cp -a $TESTS/tests .
+(cd $TESTS; tar cf - tests) | tar xf -
 cd tests
 find . -name fixture -exec $ROOT/run_fixture {} \;
 find . -name run -exec $ROOT/run_test {} \;
