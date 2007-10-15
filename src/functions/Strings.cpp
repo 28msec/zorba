@@ -277,7 +277,7 @@ sequence_type_t fn_string_join::type_check(
 bool fn_string_join::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-		return (argv.size() == 2);
+		return (argv.size() == 1 || argv.size() == 2);
 }
 
 
