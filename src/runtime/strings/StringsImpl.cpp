@@ -220,33 +220,27 @@ Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
  *_______________________________________________________________________*/
 /* begin class ConcatStrIterator */
 Item_t ConcatStrIterator::nextImpl(PlanState& planState) {
-	//TODO this function is not implemented for a variable number of arguments
-	Item_t item0;
-	Item_t item1;
-	Item_t res;
-	xqp_string s0,s1;
-	int argsNo = theChildren.size();
+	/*
+	Item_t item;
+	Item_t resItem;
+	xqp_string resStr;
+
+	int argsNo = theChildren.size();*/
 	PlanIterator::PlanIteratorState* state;
 	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-
-	if(argsNo >= 1){
-		item0 = consumeNext ( theChildren[0], planState );
-		if(argsNo ==1){
-			STACK_PUSH2( item0, state );
+/*
+	while(true){
+		item = consumeNext ( theChildren, planState );
+		if ( item != NULL ){
+			item = item->getAtomizationValue();
+			resStr += item->getStringValue();
 		}
 		else{
-			item1 = consumeNext ( theChildren[1], planState );
-			s0 = item0->getStringValue();
-			s1 = item1->getStringValue();
-			//TODO ask about this error
-			//Details: fn:concat("0","1")
-			//theChildren[0] atomic value is 1 and
-			//theChildren[1] atomic value is 0
-			res = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(
-							item0->getStringValue() += item1->getStringValue());
-			STACK_PUSH2( res, state );
+			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr);
+			STACK_PUSH2( resItem, state );
+			break;
 		}
-	}
+	}*/
 	STACK_END2();
 }
 /* end class ConcatStrIterator */
