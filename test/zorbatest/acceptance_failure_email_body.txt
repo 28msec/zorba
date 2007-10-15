@@ -1,0 +1,12 @@
+Hello from the Zorba test server.
+
+One or more acceptance tests are now failing. You are one of the people
+who committed changes since the last test run, so there is a chance that
+one of your modifications broke something. Please review the attached
+report.
+
+Automated regards,
+The Zorba Test Server
+https://fifthelement.inf.ethz.ch/zorba-test
+
+P.S. Here's the list of people affected by this report:

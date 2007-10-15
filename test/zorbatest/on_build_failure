@@ -1,5 +1,5 @@
 #!/bin/sh
-echo Build failed
+echo Build failed, see build_log.txt
 if test "x$TEST_MODE" != "xlocal"; then
-	echo "The Zorba build is broken at revision $REV; see attached build log." | mutt -s "Zorba build broken" -a build_log.txt `cat $ROOT/error_email.txt`
+	echo "The Zorba build is broken at revision $REV; see attached build log." | mutt -x -s "Zorba build broken" -a build_log.txt `cat $ROOT/error_email.txt`
 fi
