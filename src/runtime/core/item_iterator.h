@@ -68,7 +68,9 @@ public:
 	void releaseResourcesImpl(PlanState& planState){ }
 
 	virtual int32_t getStateSize() { return 0; }
-	virtual int32_t getStateSizeOfSubtree() { return 0; }
+	virtual int32_t getStateSizeOfSubtree() { 
+		return 0; 
+}
 	virtual void setOffset(PlanState& planState, int32_t& offset);
 }; /* class EmptyIterator */
 

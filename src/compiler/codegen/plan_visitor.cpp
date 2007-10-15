@@ -41,6 +41,18 @@ void plan_visitor::end_visit(const expr& v)
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
+bool plan_visitor::begin_visit(const empty_expr& v)
+{
+	cout << std::string(++depth, ' ') << TRACE << endl;
+	return true;
+}
+
+void plan_visitor::end_visit(const empty_expr& v)
+{
+	cout << std::string(depth--, ' ') << TRACE << endl;
+	PlanIter_t iter = new EmptyIterator(v.get_loc());
+	itstack.push(iter);
+}
 
 bool plan_visitor::begin_visit(const enclosed_expr& v)
 {

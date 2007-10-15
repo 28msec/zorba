@@ -848,6 +848,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 bool normalize_visitor::begin_visit(const ParenthesizedExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
+	nodestack.push(NULL);
 	return true;
 }
 
@@ -2620,6 +2621,14 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 void normalize_visitor::end_visit(const ParenthesizedExpr& v)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
+	expr_t expr = pop_nodestack();
+	if (expr != NULL) {
+		pop_nodestack();
+		nodestack.push(expr);
+	} else {
+		expr = new empty_expr(v.get_location());
+		nodestack.push(expr);
+	}
 }
 
 

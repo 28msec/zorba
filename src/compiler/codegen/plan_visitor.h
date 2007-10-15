@@ -56,6 +56,7 @@ public:
  	:  begin visit                            :
  	:.........................................*/
 	bool begin_visit(expr const&);
+	bool begin_visit(empty_expr const&);
 	bool begin_visit(enclosed_expr const&);
 	bool begin_visit(expr_list const&);
 	bool begin_visit(var_expr const&);
@@ -93,6 +94,7 @@ public:
  	:  end visit                              :
  	:.........................................*/
 	void end_visit(expr const&);
+	void end_visit(empty_expr const&);
 	void end_visit(enclosed_expr const&);
 	void end_visit(expr_list const&);
 	void end_visit(var_expr const&);

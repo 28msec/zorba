@@ -42,7 +42,19 @@ ostream& expr::put( ostream& os) const
 	return os;
 }
 
-
+empty_expr::empty_expr(yy::location const& loc) : expr(loc) {}
+empty_expr::~empty_expr() {}
+ostream& 
+empty_expr::put( ostream& os) const
+{
+	return os << INDENT << "enclosed_expr[]\n";
+}
+void 
+empty_expr::accept(expr_visitor& v) const
+{
+	if (!v.begin_visit(*this)) return;
+	v.end_visit(*this);
+}
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -52,7 +64,7 @@ ostream& expr::put( ostream& os) const
 /////////////////////////////////////////////////////////////////////////
 
 // [29]
-enclosed_expr::enclosed_expr(yy::location const&, expr_t const& content_arg)
+enclosed_expr::enclosed_expr(yy::location const& loc, expr_t const& content_arg)
 :
 	expr(loc), content(content_arg)
 {}

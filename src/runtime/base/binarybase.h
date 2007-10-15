@@ -86,6 +86,7 @@ namespace xqp
 	int32_t
 	BinaryBaseIterator<IterType>::getStateSizeOfSubtree()
 	{
+		int32_t i;
 		return theChild0->getStateSizeOfSubtree()
 		       + theChild1->getStateSizeOfSubtree()
 		       + this->getStateSize();
