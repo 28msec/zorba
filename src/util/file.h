@@ -27,6 +27,14 @@
 #include <dirent.h>
 #endif
 
+// MS Visual Studio does not fully support throw(), and issues a warning
+#ifndef _MSC_VER
+#define THROW_XQP_EXCEPTION		throw(xqp_exception)
+#else
+#define THROW_XQP_EXCEPTION		
+#endif
+
+
 #include <time.h>
 #include <string>
 
@@ -91,15 +99,15 @@ private:	// volume attributes
 #endif
 
 public:
-  file(std::string const& pathname) throw (xqp_exception);
-  file(std::string const& rootpath, std::string const& name) throw (xqp_exception);
+  file(std::string const& pathname) THROW_XQP_EXCEPTION;
+  file(std::string const& rootpath, std::string const& name) THROW_XQP_EXCEPTION;
   ~file();
 
 public:	// common methods
   void set_path(std::string const& _path ) { path = _path; }
   void set_filetype(enum filetype _type ) { type = _type ; }
   std::string const& get_path() const { return path; }
-  enum filetype get_filetype() throw (xqp_exception);
+  enum filetype get_filetype() THROW_XQP_EXCEPTION;
 
   bool is_directory() const { return (type==type_directory); }  
   bool is_file() const { return (type==type_file); }  
@@ -108,7 +116,7 @@ public:	// common methods
 
   bool is_invalid() const { return (type==type_invalid); }  
   bool exists() const { return (type!=type_non_existent && type!=type_invalid); }  
-  static volatile void error(std::string const& location, std::string const& msg) throw (xqp_exception);
+  static volatile void error(std::string const& location, std::string const& msg) THROW_XQP_EXCEPTION;
   static void sync() { 
 #ifndef WIN32
 		::sync(); 
@@ -119,10 +127,10 @@ public:	// common methods
 
 
 public:	// file methods
-  void create() throw (xqp_exception);
-  void remove(bool ignore) throw (xqp_exception);
-  void rename(std::string const& newpath) throw (xqp_exception);
-	void touch() throw (xqp_exception);
+  void create() THROW_XQP_EXCEPTION;
+  void remove(bool ignore) THROW_XQP_EXCEPTION;
+  void rename(std::string const& newpath) THROW_XQP_EXCEPTION;
+	void touch() THROW_XQP_EXCEPTION;
 
   int64_t get_size() const				{ return size; }
 #ifndef WIN32
@@ -139,7 +147,7 @@ public:	// file methods
 
 	int readfile(
 		char* docbuf,
-		uint32_t maxlen) throw (xqp_exception);
+		uint32_t maxlen) THROW_XQP_EXCEPTION;
 
 public:	// directory methods
 	class dir_iterator : public rcobject
@@ -155,7 +163,7 @@ public:	// directory methods
 		WIN32_FIND_DATA		win32_direntry;
 #endif
 	public:
-  	dir_iterator(const std::string& path, bool end_iterator = false) throw (xqp_exception);
+  	dir_iterator(const std::string& path, bool end_iterator = false) THROW_XQP_EXCEPTION;
   	~dir_iterator();
 	public:	// iterator interface
 		void operator++();
@@ -180,10 +188,10 @@ public:	// directory methods
 #endif
 	};
 
-	void mkdir() throw (xqp_exception);
-	void rmdir(bool ignore) throw (xqp_exception);
+	void mkdir() THROW_XQP_EXCEPTION;
+	void rmdir(bool ignore) THROW_XQP_EXCEPTION;
 #ifndef _WIN32_WCE
-	void chdir() throw (xqp_exception);
+	void chdir() THROW_XQP_EXCEPTION;
 #endif
 
   dir_iterator begin();
@@ -208,7 +216,7 @@ public:	// volume methods
 	bool is_empty() const { return (size == (int64_t)0); }
 
 #ifndef WIN32
-  void do_statfs(std::string const& path) throw (xqp_exception);
+  void do_statfs(std::string const& path) THROW_XQP_EXCEPTION;
 #endif
 };
 

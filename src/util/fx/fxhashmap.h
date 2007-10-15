@@ -22,6 +22,13 @@
 	#include "util/win32/compatib_defs.h"
 #endif
 
+// MS Visual Studio does not fully support throw(), and issues a warning
+#ifndef _MSC_VER
+#define THROW_XQP_EXCEPTION		throw(xqp_exception)
+#else
+#define THROW_XQP_EXCEPTION		
+#endif
+
 #include <iostream>
 #include <string>
 
@@ -115,15 +122,15 @@ public:
 
 	// add (key,val) entry to map, true on match
 	bool put(const string& key, V val)
-	throw (xqp_exception);//throw (bad_arg);
+	THROW_XQP_EXCEPTION;
 
 	// add (key,val) entry to map, true on match
 	bool put(const char* key, V val)
-	throw (xqp_exception);//throw (bad_arg);
+	THROW_XQP_EXCEPTION;
 
 	// add (key,val) entry to map, return offset
 	off_t put0(const char* key, V val)
-	throw (xqp_exception);//throw (bad_arg);
+	THROW_XQP_EXCEPTION;
 
 	// the hash functions
 	uint32_t h(const char*) const;
@@ -399,7 +406,7 @@ inline bool fxhashmap<V>::get(const char* key, V& result) const
 // Return true <=> key matched.
 template<class V>
 inline bool fxhashmap<V>::put(const string& key, V val)
-throw (xqp_exception)//throw (bad_arg)
+THROW_XQP_EXCEPTION
 {
 	uint32_t n = key.length();
 	if (n > MAX_KEYLEN) {
@@ -434,7 +441,7 @@ throw (xqp_exception)//throw (bad_arg)
 // Return true <=> key matched.
 template<class V>
 inline bool fxhashmap<V>::put(const char* key, V val) 
-throw (xqp_exception) //throw (bad_arg)
+THROW_XQP_EXCEPTION
 {
 	uint32_t n = strlen(key);
 	if (n > MAX_KEYLEN) {
@@ -469,7 +476,7 @@ throw (xqp_exception) //throw (bad_arg)
 // Return key heap offset.
 template<class V>
 inline off_t fxhashmap<V>::put0(const char* key, V val) 
-throw (xqp_exception)//throw (bad_arg)
+THROW_XQP_EXCEPTION
 {
 	uint32_t n = strlen(key);
 	if (n > MAX_KEYLEN) {

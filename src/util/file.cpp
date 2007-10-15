@@ -71,7 +71,7 @@ static const char *FS_NAMES[] = {
 
 
 file::file(const std::string& _path)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 :
 	path(_path),
   type(type_non_existent)
@@ -137,7 +137,7 @@ throw (xqp_exception)
 
 file::file(
 	std::string const& base,
-	std::string const& name) throw (xqp_exception)
+	std::string const& name) THROW_XQP_EXCEPTION
 :
 	path(base+"/"+name),
   type(type_non_existent)
@@ -213,7 +213,7 @@ file::~file()
 
 
 enum file::filetype file::get_filetype( )
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
   if (type!=type_non_existent) return type;
 
@@ -273,7 +273,7 @@ throw (xqp_exception)
 volatile void file::error(
 	string const& location,
 	string const& msg)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef _WIN32_WCE
 	std::string err = strerror(errno);
@@ -295,7 +295,7 @@ throw (xqp_exception)
 
 
 void file::create()
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
   int fd = ::creat(path.c_str(),0666);
@@ -323,7 +323,7 @@ throw (xqp_exception)
 
 
 void file::mkdir()
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
 	if (::mkdir(path.c_str(),0777)) {
@@ -355,7 +355,7 @@ throw (xqp_exception)
 
 
 void file::remove(bool ignore)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
 	if (::remove(path.c_str()) && !ignore) {
@@ -383,7 +383,7 @@ throw (xqp_exception)
 
 
 void file::rmdir(bool ignore)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
 	if (::rmdir(path.c_str()) && !ignore) {
@@ -408,7 +408,7 @@ throw (xqp_exception)
 
 #ifndef _WIN32_WCE
 void file::chdir()
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
   if (!is_directory()) return;
 #ifndef WIN32
@@ -425,7 +425,7 @@ throw (xqp_exception)
 
 void file::rename(
 	std::string const& newpath)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
   if (::rename(path.c_str(), newpath.c_str())) {
@@ -458,7 +458,7 @@ throw (xqp_exception)
 }
 
 void file::touch()
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
   int fd = 0;
@@ -491,7 +491,7 @@ throw (xqp_exception)
 #ifndef WIN32
 void file::do_statfs(
 	std::string const& path)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
   struct statfs buf;
   if (statfs(path.c_str(),&buf))
@@ -524,7 +524,7 @@ throw (xqp_exception)
 int file::readfile(
 	char* docbuf,
 	uint32_t maxlen)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
   int fd = open(path.c_str(), O_RDONLY);
@@ -586,7 +586,7 @@ file::dir_iterator file::end()
 file::dir_iterator::dir_iterator(
 	string const& path,
 	bool end_iterator)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 :
 	dirpath(path)
 #ifndef WIN32

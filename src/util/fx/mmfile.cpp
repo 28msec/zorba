@@ -221,7 +221,7 @@ mmfile::~mmfile()
 
 
 void mmfile::destroy()
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 	try {
     unmap();
@@ -258,7 +258,7 @@ void mmfile::fill(char initval)
 
 
 void mmfile::expand(bool init)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 	// release current map
   unmap();
@@ -321,7 +321,7 @@ throw (xqp_exception)
 
 
 void mmfile::unmap()
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
   //if (msync(data, eofoff, 0)==-1) {
@@ -346,7 +346,7 @@ throw (xqp_exception)
 }
 
 void mmfile::rename_backing_file(const string& new_path)
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 #ifndef WIN32
 	int res = rename(path.c_str(), new_path.c_str());

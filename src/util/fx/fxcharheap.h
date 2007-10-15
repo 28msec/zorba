@@ -23,6 +23,14 @@
 	#include <types.h>
 #endif
 
+// MS Visual Studio does not fully support throw(), and issues a warning
+#ifndef _MSC_VER
+#define THROW_XQP_EXCEPTION		throw(xqp_exception)
+#else
+#define THROW_XQP_EXCEPTION		
+#endif
+
+
 namespace xqp {
 
 #define DEFAULT_SIZE 4096
@@ -86,19 +94,19 @@ public:  //heap interface
     char * buf,							// output: output buffer
     uint32_t offset,				// input: buffer starting offset
     uint32_t maxlen) const	// input: maximum output size, truncate
-	throw (xqp_exception);
+	THROW_XQP_EXCEPTION;
 
   void get0(
     long id,								// input: heap offset
     char * buf,							// output: output buffer
     uint32_t offset,				// input: buffer starting offset
     uint32_t maxlen) const	// input: maximum output size, truncate
-	throw (xqp_exception);
+	THROW_XQP_EXCEPTION;
 
 	// convenience method: return a string 
 	std::string gets(
 		off_t id)
-	throw (xqp_exception);
+	THROW_XQP_EXCEPTION;
 
 	/**
 	 ** Return a pointer to the NULL-delimited string at a given offset
@@ -116,11 +124,11 @@ public:  //heap interface
     char const* buf,				// input: string
     uint32_t offset,				// input: starting offset
     uint32_t len)						// input: string length
-	throw (xqp_exception);
+	THROW_XQP_EXCEPTION;
 
 	// convenience methods
-	off_t put(char const*) throw (xqp_exception);
-	off_t put(const std::string &) throw (xqp_exception);
+	off_t put(char const*) THROW_XQP_EXCEPTION;
+	off_t put(const std::string &) THROW_XQP_EXCEPTION;
 
 	/**
    **	Replace a block of characters in place.
@@ -130,7 +138,7 @@ public:  //heap interface
     char const* buf,        // input: string
     uint32_t offset,				// input: starting offset
     uint32_t len)						// input: string length
-	throw (xqp_exception);
+	THROW_XQP_EXCEPTION;
 
 	/**
    **	Return the length of the string at offset 'id'.

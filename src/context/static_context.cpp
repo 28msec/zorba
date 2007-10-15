@@ -27,6 +27,12 @@
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
 
+// MS Visual Studio does not fully support throw(), and issues a warning
+#ifndef _MSC_VER
+#define THROW_XQP_EXCEPTION		throw(xqp_exception)
+#else
+#define THROW_XQP_EXCEPTION		
+#endif
 
 using namespace std;
 namespace xqp {
@@ -237,7 +243,7 @@ void static_context::set_baseuri(const std::string& uri)
 
 sequence_type_t static_context::get_function_type(
 	const Item* qname_p) const
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 	//stub
 	return xs_anyType;
@@ -245,7 +251,7 @@ throw (xqp_exception)
 
 sequence_type_t static_context::get_document_type(
 	const std::string& doctype) const
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 	//stub
 	return xs_anyType;
@@ -253,7 +259,7 @@ throw (xqp_exception)
 
 sequence_type_t static_context::get_collection_type(
 	const std::string& colltype) const
-throw (xqp_exception)
+THROW_XQP_EXCEPTION
 {
 	//stub
 	return xs_anyType;
