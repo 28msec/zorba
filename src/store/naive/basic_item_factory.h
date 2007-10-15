@@ -90,9 +90,9 @@ namespace xqp
 			virtual Item_t createElementNode (
 			    const Item_t& name,
 			    TypeCode type,
-			    Iterator_t& children,
-			    Iterator_t& attributes,
-			    Iterator_t& namespaces,
+			    TempSeq_t& children,
+			    TempSeq_t& attributes,
+			    TempSeq_t& namespaces,
 			    bool copy,
 			    bool newTypes,
 			    bool createId = false

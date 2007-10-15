@@ -111,43 +111,30 @@ namespace xqp
 
 
 Item_t BasicItemFactory::createDocumentNode (
-	    xqp_string baseURI,
-	    xqp_string docURI,
-	    Iterator_t& children,
-	    bool createId
-)
+    xqp_string baseURI,
+    xqp_string docURI,
+    Iterator_t& children,
+    bool createId )
 {
   return Item_t ( NULL );
 }
 
 
 Item_t BasicItemFactory::createElementNode (
-	    const Item_t& name,
-	    TypeCode type,
-	    Iterator_t& children,
-	    Iterator_t& attributes,
-	    Iterator_t& namespaces,
-	    bool copy,
-	    bool newTypes,
-	    bool createId
-) 
+    const Item_t& name,
+    TypeCode type,
+    TempSeq_t& children,
+    TempSeq_t& attributes,
+    TempSeq_t& namespaces,
+    bool copy,
+    bool newTypes,
+    bool createId ) 
 { 
-  Store* store = zorba::getZorbaForCurrentThread()->getStore();
-  TempSeq_t seqChildren = NULL;
-  TempSeq_t seqAttributes = NULL;
-  TempSeq_t seqNamespaces = NULL;
-		
-  if (children != NULL)
-    seqChildren = store->createTempSeq ( children );
- 
- if (attributes != NULL)
-    seqAttributes = store->createTempSeq ( attributes );
-
   Item_t item = new ElementNode(name,
                                 type,
-                                seqChildren,
-                                seqAttributes,
-                                seqNamespaces,
+                                children,
+                                attributes,
+                                namespaces,
                                 copy,
                                 newTypes); 
   return item;
@@ -155,45 +142,55 @@ Item_t BasicItemFactory::createElementNode (
 
 
 Item_t BasicItemFactory::createAttributeNode (
-	    const Item_t& name,
-	    TypeCode type,
-	    const Item_t& lexicalValue,
-	    const Item_t& typedValue,
-	    bool createId
-) 
+    const Item_t& name,
+    TypeCode type,
+    const Item_t& lexicalValue,
+    const Item_t& typedValue,
+    bool createId ) 
 { 
-  Item_t item = new AttributeNode(
-				name,
-				type,
-				lexicalValue,
-				typedValue,
-				false,
-				false
-			);
+  Item_t item = new AttributeNode(name,
+                                  type,
+                                  lexicalValue,
+                                  typedValue,
+                                  false,
+                                  false);
   return item;
 }
 
-	Item_t BasicItemFactory::createTextNode (
-	    const xqp_string& value,
-	    bool createId
-	) 
-	{
-		Item_t item = new TextNode(value);
-		return item;
-	}
-	Item_t BasicItemFactory::createNamespaceNode (
-	    const xqp_string& prefix,
-	    const xqp_string& name,
-	    bool createId
-	) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createCommentNode (
-	    const xqp_string& comment,
-	    bool createId
-	) { return Item_t ( NULL ); }
-	Item_t BasicItemFactory::createPiNode (
-	    const Item_t& name,
-	    const xqp_string& content,
-	    const xqp_string& baseUri,
-	    bool createId
-	) { return Item_t ( NULL ); }
+
+Item_t BasicItemFactory::createTextNode (
+    const xqp_string& value,
+    bool createId ) 
+{
+  Item_t item = new TextNode(value);
+  return item;
+}
+
+
+Item_t BasicItemFactory::createNamespaceNode (
+    const xqp_string& prefix,
+    const xqp_string& name,
+    bool createId )
+{
+  return Item_t ( NULL );
+}
+
+
+Item_t BasicItemFactory::createCommentNode (
+    const xqp_string& comment,
+    bool createId	)
+{
+  return Item_t ( NULL );
+}
+
+
+Item_t BasicItemFactory::createPiNode (
+    const Item_t& name,
+    const xqp_string& content,
+    const xqp_string& baseUri,
+    bool createId	)
+{
+  return Item_t ( NULL );
+}
+
 } /* namespace xqp */

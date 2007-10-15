@@ -145,11 +145,9 @@ namespace xqp
 			type ( type_arg ),
 			children(children_arg),
 			attributes(attributes_arg),
-			namespaces(namespaces_arg)/*,
-			children ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( children_arg ) ),
-			attributes ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( attributes_arg ) ),
-			namespaces ( namespaces_arg == NULL ? NULL : zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( namespaces_arg ) )*/
-	{ }
+			namespaces(namespaces_arg)
+  {
+  }
 
 	ElementNode::ElementNode (
 	    const Item_t& name_arg,
@@ -165,13 +163,13 @@ namespace xqp
 			type ( type_arg ),
 			children(children_arg),
 			attributes(attributes_arg),
-			namespaces(namespaces_arg)/*,
-			children ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( children_arg ) ),
-			attributes ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( attributes_arg ) ),
-			namespaces ( zorba::getZorbaForCurrentThread()->getStore()->createTempSeq ( namespaces_arg ) )*/
-	{ }
+			namespaces(namespaces_arg)
+  {
+  }
 	
-	ElementNode::~ElementNode(){}
+	ElementNode::~ElementNode()
+  {
+  }
 
 	Item_t ElementNode::getAtomizationValue() const
 	{

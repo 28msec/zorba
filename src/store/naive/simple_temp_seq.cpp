@@ -19,8 +19,10 @@ namespace xqp
 			curItem = iterator->next();
 		}
 	}
+
 	SimpleTempSeq::~SimpleTempSeq()
-	{	}
+	{
+	}
 
 	Iterator_t 
 	SimpleTempSeq::getIterator()
