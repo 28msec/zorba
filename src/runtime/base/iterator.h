@@ -79,6 +79,12 @@ typedef rchandle<PlanIterator> PlanIter_t;
 
 extern int32_t iteratorTreeDepth;
 
+
+/**
+ * Class to represent state that is shared by all plan iterators. The class
+ * also contains a pointer to the memory block that stores the local state
+ * of each individual plan iterator.
+ */
 class PlanState
 {
 public:
@@ -90,7 +96,7 @@ public:
 
 
 /**
-  * Base class of all iterators.
+  * Base class of all plan iterators.
 	*/
 class PlanIterator : public rcobject
 {
@@ -148,8 +154,6 @@ public:
 	 */
 	virtual void releaseResources(PlanState& planState);
 
-	std::ostream& show(std::ostream&);
-	
 	/** Returns the size of the state which must be saved for the current iterator
 		* on the state block
 		*
@@ -171,9 +175,12 @@ public:
 		*/
 	virtual void setOffset(PlanState& planState, int32_t& offset);
 
+	std::ostream& show(std::ostream&);
+
 protected:
 	/** Root object of all iterator states */
-	class PlanIteratorState {
+	class PlanIteratorState
+  {
 	private:
 		int32_t duffsLine;
 	public:
@@ -202,12 +209,10 @@ protected:
 	};
 
 protected:
-	inline void resetChild(PlanIter_t& subIterator, PlanState& planState) {
-		subIterator->reset(planState);
-	}
 
 #if BATCHING_TYPE == 1	
-	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState) {
+	inline static Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  {
 		if (subIter->cItem == BATCHSIZE) {
 			subIter->produceNext(planState);
 			subIter->cItem = 0;
@@ -215,23 +220,35 @@ protected:
 		return subIter->batch[subIter->cItem++];
 	}
 #else
-	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState) {
+	inline static Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  {
 		return subIter->produceNext(planState);
 	}
 #endif
 
-	inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState) {
+  inline void resetChild(PlanIter_t& subIterator, PlanState& planState)
+  {
+		subIterator->reset(planState);
+	}
+
+	inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState)
+  {
 		subIterator->releaseResources(planState);
 	}
 
-	virtual std::ostream& _show(std::ostream& os) const {
+	virtual std::ostream& _show(std::ostream& os) const
+  {
 		return os;
 	}
 };
 
 
+/**
+ * Class to implement batching
+ */
 template <class IterType>
-class Batcher: public PlanIterator {
+class Batcher: public PlanIterator
+{
 public:
 	Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
 	Batcher(yy::location _loc) : PlanIterator(_loc) {}
@@ -239,7 +256,8 @@ public:
 
 public:
 #if BATCHING_TYPE == 1	
-	void produceNext() {
+	void produceNext() 
+  {
 		int32_t i = 0;
 		batch[0] = static_cast<IterType*>(this)->nextImpl();
 		while (i < BATCHSIZE && batch[i] != NULL) {
@@ -248,17 +266,20 @@ public:
 		}
 	}
 #else
-	Item_t produceNext(PlanState& planState) {
+	Item_t produceNext(PlanState& planState)
+  {
 		return static_cast<IterType*>(this)->nextImpl(planState);
 	}
 #endif
 
-	void reset(PlanState& planState) {
+	void reset(PlanState& planState)
+  {
 		this->current_line = 0;
 		static_cast<IterType*>(this)->resetImpl(planState);
 	}
 
-	void releaseResources(PlanState& planState) {
+	void releaseResources(PlanState& planState)
+  {
 		static_cast<IterType*>(this)->releaseResourcesImpl(planState);
 	}
 
@@ -269,14 +290,16 @@ public:
 };
 
 
-/** Wrapper to hide functionality like separation of code and execution, 
+/**
+ * Wrapper to hide functionality like separation of code and execution, 
  * garabage collection, etc. during evaluation of an iterator tree.
  * 
  * This Wrapper can also be used to collect the items of an iterator is
- * belongs alread to another IteratorWrapper, resp. which belongs already
+ * belongs already to another IteratorWrapper, resp. which belongs already
  * to a state block.
  */
-class PlanIterWrapper : public Iterator {
+class PlanIterWrapper : public Iterator
+{
 private:
 	bool theAlienBlock;
 	PlanIter_t theIterator;
@@ -295,7 +318,7 @@ public:
 	 * Constructor for IteratorWrapper which is used to generate the results
 	 * of an iterator which is not root => the state block handling, garbage
 	 * collection, etc. is already made by another IteratorWrapper.
-	 * it_h
+	 * 
 	 * @param iter 
 	 * @param planState 
 	 */
@@ -306,10 +329,10 @@ public:
 	 */
 	~PlanIterWrapper();
 	
-	/** Returns the next item of the PlanIter
-		* @return item
-		* FIXME must be adapted to batching
-		*/
+	/**
+   * Returns the next item of the PlanIter
+   * @return item
+   */
 	Item_t next();
 	
 	/**

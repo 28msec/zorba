@@ -66,6 +66,10 @@ public:
 	Item_t nextImpl(PlanState& planState) { return NULL; }
 	void resetImpl(PlanState& planState)  { }
 	void releaseResourcesImpl(PlanState& planState){ }
+
+	virtual int32_t getStateSize() { return 0; }
+	virtual int32_t getStateSizeOfSubtree() { return 0; }
+	virtual void setOffset(PlanState& planState, int32_t& offset);
 }; /* class EmptyIterator */
 
 
@@ -93,6 +97,7 @@ public:
 	virtual int32_t getStateSizeOfSubtree();
 	virtual void setOffset(PlanState& planState, int32_t& offset);
 };
+
 
 // FIXME No expressions in iterators!!
 class var_iterator : public SingletonIterator

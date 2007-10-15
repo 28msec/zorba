@@ -144,32 +144,54 @@ PlanIterator::PlanIteratorState::getDuffsLine() {
 }
 /* end class PlanIterator */
 
+
 /* begin class IteratorWrapper */
-PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter) : theAlienBlock(false), theIterator(aIter) {
+PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter)
+  :
+  theAlienBlock(false),
+  theIterator(aIter)
+{
 	int32_t lStackSize = theIterator->getStateSizeOfSubtree();
 	theStateBlock = new PlanState(lStackSize);
 	int32_t lOffset = 0;
 	theIterator->setOffset(*theStateBlock, lOffset);
 }
 
-PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter, PlanState& aStateBlock) 
-: theAlienBlock(true), theIterator(aIter), theStateBlock(&aStateBlock) {}
 
-PlanIterWrapper::~PlanIterWrapper() {
+PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter, PlanState& aStateBlock) 
+  :
+  theAlienBlock(true),
+  theIterator(aIter),
+  theStateBlock(&aStateBlock)
+{
+}
+
+
+PlanIterWrapper::~PlanIterWrapper()
+{
 	if (!theAlienBlock) {
 		theIterator->releaseResources(*theStateBlock);
 		delete theStateBlock;
 	}
 }
 
+
 Item_t
-PlanIterWrapper::next() {
+PlanIterWrapper::next()
+{
+#if BATCHING_TYPE == 1
+  return theIterator->consumeNext(theIterator, *theStateBlock);
+#else
 	return theIterator->produceNext(*theStateBlock);
+#endif
 }
 
+
 void
-PlanIterWrapper::reset() {
+PlanIterWrapper::reset()
+{
 	theIterator->reset(*theStateBlock);
 }
 /* end class IteratorWrapper */
+
 }

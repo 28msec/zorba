@@ -8,9 +8,10 @@
 
 #include "runtime/core/item_iterator.h"
 #include "util/Assert.h"
+#include "util/zorba.h"
 #include "errors/Error.h"
 #include "store/api/item.h"
-#include "util/zorba.h"
+#include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
 #include "runtime/booleans/BooleanImpl.h"
 
@@ -19,6 +20,17 @@ namespace xqp
 {
 
 int32_t iteratorTreeDepth = -1;
+
+
+/* begin class EmptyIterator */
+void
+EmptyIterator::setOffset(PlanState& planState, int32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+}
+/* end class EmptyIterator */
+
 
 /* begin class SingletonIterator */
 SingletonIterator::SingletonIterator(yy::location loc, Item_t _i_p) 
@@ -32,20 +44,24 @@ SingletonIterator::~SingletonIterator()
 {
 }
 
-	Item_t 
-	SingletonIterator::nextImpl(PlanState& planState) {
-		PlanIteratorState* state;
-		STACK_INIT2(PlanIteratorState, state, planState);
-		STACK_PUSH2(i_h, state);
-		STACK_END2();
-	}
+
+Item_t 
+SingletonIterator::nextImpl(PlanState& planState)
+{
+  PlanIteratorState* state;
+  STACK_INIT2(PlanIteratorState, state, planState);
+  STACK_PUSH2(i_h, state);
+  STACK_END2();
+}
+
 	
-	void 
-	SingletonIterator::resetImpl(PlanState& planState) {
-		PlanIterator::PlanIteratorState* state;
-		GET_STATE(PlanIteratorState, state, planState);
-		state->reset();
-	}
+void 
+SingletonIterator::resetImpl(PlanState& planState)
+{
+  PlanIterator::PlanIteratorState* state;
+  GET_STATE(PlanIteratorState, state, planState);
+  state->reset();
+}
 	
 
 void 
@@ -62,13 +78,15 @@ SingletonIterator::_show(std::ostream& os)	const
 
 	
 int32_t
-SingletonIterator::getStateSize() {
+SingletonIterator::getStateSize()
+{
   return sizeof(PlanIterator::PlanIteratorState);
 }
 
 	
 int32_t
-SingletonIterator::getStateSizeOfSubtree() {
+SingletonIterator::getStateSizeOfSubtree()
+{
   return this->getStateSize();
 }
 
@@ -80,6 +98,7 @@ SingletonIterator::setOffset(PlanState& planState, int32_t& offset)
   offset += this->getStateSize();
 }
 /* end class SingletonIterator */
+
 
 	/* begin class MapIterator */
 	Item_t
@@ -358,25 +377,44 @@ Item_t
 ElementIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
+
+  Store* store = zorba::getZorbaForCurrentThread()->getStore();
+  TempSeq_t seqChildren = NULL;
+  TempSeq_t seqAttributes = NULL;
+  TempSeq_t seqNamespaces = NULL;
 	Iterator_t lIter0;
 	Iterator_t lIter1;
 	Iterator_t lIter2;
 
   PlanIteratorState* state;
   STACK_INIT2(PlanIteratorState, state, planState);
+		
+  if (theChildren != NULL)
+  {
+    lIter0 = new PlanIterWrapper(theChildren, planState);
+    seqChildren = store->createTempSeq ( lIter0 );
+  }
 
-	lIter0 = new PlanIterWrapper(theChildren, planState);
-	lIter1 = new PlanIterWrapper(theAttributes, planState);
-	lIter2 = new PlanIterWrapper(theNamespaceBindings, planState);
+  if (theAttributes != NULL)
+  {
+    lIter1 = new PlanIterWrapper(theAttributes, planState);
+    seqAttributes = store->createTempSeq ( lIter1 );
+  }
+
+  if (theNamespaceBindings != NULL)
+  {
+    lIter2 = new PlanIterWrapper(theNamespaceBindings, planState); 
+    seqNamespaces = store->createTempSeq ( lIter2 );
+  }
+
   item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
 		           theQName,
 		           xs_anyType,
-		           lIter0,
-		           lIter1,
-		           lIter2,
+		           seqChildren,
+		           seqAttributes,
+		           seqNamespaces,
 		           false,
-		           false
-		       );
+		           false );
 
   STACK_PUSH2(item, state);
 		
