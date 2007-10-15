@@ -105,6 +105,8 @@ $ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV >i
 
 if test $ACCEPTANCE_FAILURES; then
   echo Some acceptance tests failed, see $PWD/index.html
+  export COMMITTERS=`echo '//span [@id="committers"]' | $ROOT/xquery -s index.html - | cut -f 2- -d'>' | cut -f1 -d'<'`
+  echo Committers: $COMMITTERS
 else
   echo All acceptance tests passed
 fi
@@ -112,7 +114,7 @@ fi
 rm -f $ROOT/snapshots/latest
 ln -s $ROOT/snapshots/$NOW $ROOT/snapshots/latest
 
-#if test "x$TEST_MODE" != "xlocal"; then
-#  echo "Please see attached report." | mutt -s "Zorba integration report" -a index.html `cat $ROOT/success_email.txt`
-#fi
-
+if test "x$TEST_MODE" != "xlocal" -a "x$ACCEPTANCE_FAILURES" != "x"; then
+  echo Sending e-mail to committers.
+  echo $COMMITTERS | mutt -i $ROOT/acceptance_failure_email_body.txt -s "Zorba testing: acceptance failures" -a index.html $COMMITTERS
+fi

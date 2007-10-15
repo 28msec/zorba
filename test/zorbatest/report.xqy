@@ -8,6 +8,7 @@ declare variable $lastdate external;
 <html>
 <head>
 <title>Integration report for Zorba revision { $rev }</title>
+<base href="https://fifthelement.inf.ethz.ch/zorba-test/snapshots/{$now}/" />
 <style>
 table {{ border-collapse: collapse; }}
 td, th {{ border: solid black 1px; padding: 0.5em; }}
@@ -37,9 +38,11 @@ else <p>All tests passed.</p>
 
 <p>This report was created on { $now } for Zorba revision { $rev }.
 { if ($lastdate) then
-<span>The <a href="../{ $lastdate }">last report</a> was created on { 
+<span>
+The <a href="../{ $lastdate }">last report</a> was created on { 
 $lastdate } for revision { $lastrev }.
-Since then, the following authors have committed changes: { fn:distinct-values ($svnLog//author) }.
+Since then, the following authors have committed changes:
+<span id="committers">{ fn:distinct-values ($svnLog//author) }</span>.
 </span>
 else () }
 </p>
@@ -47,7 +50,7 @@ else () }
 { if ($lastdate) then
 <table summary="changes">
 <tr><th>Author</th><th>Date</th><th>Message</th></tr>
-{ for $entry in $svnLog//logentry return <tr><td>{$entry/author}</td><td>{$entry/date}</td><td>{$entry/msg}</td></tr> }
+{ for $entry in $svnLog//logentry return <tr><td class="author">{$entry/author/text()}</td><td>{$entry/date/text()}</td><td>{$entry/msg/text()}</td></tr> }
 </table>
 else () }
 
