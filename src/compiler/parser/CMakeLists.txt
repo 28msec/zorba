@@ -2,9 +2,10 @@ INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseBison.cmake)
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseFlex.cmake)
 
 SET(PARSER_SRCS
-  symbol_table.cpp
-  xquery_driver.cpp
-  xquery_test.cpp)
+    symbol_table.cpp
+    xquery_driver.cpp)
+    
+SET(PARSER_BUILD_SRCS)
 
 SET (BISON_REQUIRED_MAJOR "2")
 SET (BISON_REQUIRED_MINOR "3")
@@ -29,8 +30,8 @@ ENDIF (NOT BISON_EXECUTABLE)
 # Bison setup for the parser
 IF (GENERATE_BISON_FILES)
 	SET(BISON_GENERATE_DEFINES TRUE)
-	BISON_FILE(xquery_parser.y)
-	SET(PARSER_SRCS ${PARSER_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/xquery_parser.cpp)
+	BISON_FILE(compiler/parser/xquery_parser.y)
+	LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_CURRENT_BINARY_DIR}/compiler/parser/xquery_parser.cpp)
 ELSE (GENERATE_BISON_FILES)
 	IF (BISON_EXECUTABLE)
 		MESSAGE(STATUS "Warning: GNU Bison's version " ${BISON_MAJOR_VERSION} "." ${BISON_MINOR_VERSION} " is less than required (" ${BISON_REQUIRED_MAJOR} "." ${BISON_REQUIRED_MINOR} ") -- the parser will not be regenerated")
@@ -38,7 +39,7 @@ ELSE (GENERATE_BISON_FILES)
 	ELSE (BISON_EXECUTABLE)
 		MESSAGE("-- Warning: GNU Bison not available -- the parser will not be regenerated")
 	ENDIF (BISON_EXECUTABLE)
-	SET(PARSER_SRCS ${PARSER_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/xquery_parser.cpp)
+	LIST(APPEND PARSER_SRCS xquery_parser.cpp)
 	INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR}/src)
 ENDIF (GENERATE_BISON_FILES)
 
@@ -46,12 +47,10 @@ ENDIF (GENERATE_BISON_FILES)
 # Flex setup for the scanner
 IF (FLEX_EXECUTABLE)
 	SET(FLEX_PREFIX_OUTPUTS TRUE)
-	FLEX_FILE(xquery_scanner.l)
-	SET(PARSER_SRCS ${PARSER_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/xquery_scanner.cpp)
+	FLEX_FILE(compiler/parser/xquery_scanner.l)
+	LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_CURRENT_BINARY_DIR}/compiler/parser/xquery_scanner.cpp)
 ELSE (FLEX_EXECUTABLE)
 	MESSAGE("-- Warning: GNU Flex not available -- the scanner will not be regenerated")
-	SET(PARSER_SRCS ${PARSER_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/xquery_scanner.cpp)
+	LIST(APPEND PARSER_SRCS xquery_scanner.cpp)
 	INCLUDE_DIRECTORIES(BEFORE ${CMAKE_BINARY_DIR})
 ENDIF (FLEX_EXECUTABLE)
-
-ADD_LIBRARY(parser ${PARSER_SRCS})

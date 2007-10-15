@@ -9,4 +9,3 @@ SET(RUNTIME_SRCS
     base/iterator.cpp
     sequences/SequencesImpl.cpp)
 
-ADD_LIBRARY(runtime ${RUNTIME_SRCS})

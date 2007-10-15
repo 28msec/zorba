@@ -3,4 +3,4 @@ SET(CONTEXT_SRCS
     static_context.cpp)
     
 
-ADD_LIBRARY(context ${CONTEXT_SRCS})
+
