@@ -1,22 +1,22 @@
 #!/bin/sh
 
 export CLEAN_BUILD=1
+export REV=""
+export ROOT=`pwd`
+export TEST_MODE="local"
+export NOW=`date +%F-%T`
+
 while test $# -gt 0; do
 case $1 in
 --no-clean) export CLEAN_BUILD="" ;;
+--rev) REV=$2; shift ;;
 local) TEST_MODE=local ;;
 server) TEST_MODE=server ;;
 esac
 shift
 done
 
-test $TEST_MODE || TEST_MODE=local
-export TEST_MODE
-
-export ROOT=`pwd`
-export NOW=`date +%F-%T`
-
-test -d snapshots || mkdir snapshots
+mkdir -p snapshots
 export LASTDATE=`cd snapshots; ls -rd *-*-*-*:*:* 2>/dev/null | head -1`
 if test $LASTDATE; then
     LASTREV=`cat snapshots/$LASTDATE/rev`
@@ -28,21 +28,26 @@ export TESTS=$ROOT/testing
 # Check out sources
 #
 
+update_src () {
+local NEWREV;
+
 if test "x$TEST_MODE" = "xlocal"; then
   export REV="local"
-  TMPDIR=`mktemp -d`
   export SRC=$ROOT/../..
 else
   export SRC=$ROOT/src
-  export REV=`svn update $SRC | perl -ne 'if (/revision ([0-9]+)/) { print $1; }'`
+  NEWREV=`svn update -r $1 $SRC | perl -ne 'if (/ revision ([0-9]+)\./) { print $1; }'`
+  REV=$NEWREV
   if test -z $REV; then echo Could not update sources; exit 1; fi
   if test "x$REV" = "x$LASTREV"; then echo No changes, exiting; exit; fi
 fi
+}
 
 #
 # Compile
 #
 
+update_src `if test -z $REV; then echo HEAD; else echo $REV; fi`
 echo Building for snapshot $NOW, revision $REV
 
 rm -f svn_log.xml
@@ -54,7 +59,7 @@ test -f svn_log.xml -a -s svn_log.xml || echo '<?xml version="1.0" encoding="UTF
 
 if test $CLEAN_BUILD; then rm -rf build; fi
 
-test -d build || mkdir build
+mkdir -p build
 cd build
 $ROOT/compile > $ROOT/build_log.txt 2>&1 || { cd $ROOT; ./on_build_failure; exit 1; }
 cd $ROOT
@@ -84,7 +89,7 @@ cd $SNAPSHOT
 $ROOT/process_test_results
 
 cd test_results
-diff -qr acceptance $TESTS/test_results/acceptance | grep -v '^Only in' | cut -f2 -d' ' | xargs -r -l1 dirname | xargs -r -l1 $ROOT/report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag
+diff -qr acceptance $TESTS/test_results/acceptance | ./report_acceptance_failure $TESTS >../acceptance_failures.xmlfrag
 cd ..
 test -s acceptance_failures.xmlfrag && export ACCEPTANCE_FAILURES=y
 echo '<failures>' >acceptance_failures.xml

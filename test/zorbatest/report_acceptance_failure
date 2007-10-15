@@ -1,4 +1,6 @@
 #!/usr/bin/perl
+use strict;
+use File::Basename;
 
 sub parse_test_file {
   my ($fname) = @_;
@@ -9,13 +11,22 @@ sub parse_test_file {
  return ($code, $text);
 }
 
-my $expected_dir=shift;
-my $test_name=shift;
+sub report_failure {
+    my $expected_dir=shift;
+    my $test_name=shift;
+    
+    my $f1="$test_name/result.txt";
+    my $f2="$expected_dir/test_results/$test_name/result.txt";
+    
+    my ($code1, $text1) = parse_test_file ($f1);
+    my ($code2, $text2) = parse_test_file ($f2);
+    
+    print ("<failure test='$test_name'><code><actual>$code1</actual><expected>$code2</expected></code><text><actual>$text1</actual><expected>$text2</expected></text></failure>\n");
+}
 
-my $f1="$test_name/result.txt";
-my $f2="$expected_dir/test_results/$test_name/result.txt";
-
-my ($code1, $text1) = parse_test_file ($f1);
-my ($code2, $text2) = parse_test_file ($f2);
-
-print ("<failure test='$test_name'><code><actual>$code1</actual><expected>$code2</expected></code><text><actual>$text1</actual><expected>$text2</expected></text></failure>\n");
+my $test_dir = shift;
+while (<>) {
+    if (/^Only in ([^:])+:/) {
+        report_failure ($test_dir, dirname $1);
+    }
+}

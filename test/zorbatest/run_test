@@ -5,7 +5,7 @@ DIR=`dirname $TEST`
 echo Running test $TEST
 cd $DIR
 mkdir -p $SNAPSHOT/test_results/$DIR
-TMP=`mktemp -t`
+TMP=`mktemp -t /tmp`
 OUTDIR=$SNAPSHOT/test_results/$DIR
 OUT=$OUTDIR/result.txt
 ./`basename $TEST` >$TMP
