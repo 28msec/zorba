@@ -4,6 +4,7 @@
  *
  */
 
+#include "runtime/core/item_iterator.h"
 #include "store/naive/node_items.h"
 #include "store/api/temp_seq.h"
 #include "util/zorba.h"

@@ -7,6 +7,7 @@
 *
 */
 
+#include "runtime/core/item_iterator.h"
 #include "store/naive/atomic_items.h"
 #include "util/zorba.h"
 #include "store/api/item.h"
