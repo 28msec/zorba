@@ -24,8 +24,8 @@ td, th {{ border: solid black 1px; padding: 0.5em; }}
 { for $f in $failures let $name := fn:data ($f/@test) return
 <tr>
 <td><a href="test_results/{$name}/">{$name}</a></td>
-<td>{$f/code/actual}</td><td>{$f/text/actual}</td>
-<td>{$f/code/expected}</td><td>{$f/text/expected}</td>
+<td>{$f/code/actual/text()}</td><td>{$f/text/actual/text()}</td>
+<td>{$f/code/expected/text()}</td><td>{$f/text/expected/text()}</td>
 </tr>
 }
 </table>
