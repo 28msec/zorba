@@ -108,22 +108,25 @@ StringToCodepointsIterator::getStateSize() {
 
 int32_t
 StringToCodepointsIterator::getStateSizeOfSubtree() {
-	return this->getStateSize();
+	return this->getStateSize() + theChild->getStateSizeOfSubtree();
 }
 
 void
 StringToCodepointsIterator::setOffset(PlanState& planState, int32_t& offset) {
 	this->stateOffset = offset;
 	offset += getStateSize();
+	theChild->setOffset(planState, offset);
 }
 
 void
 StringToCodepointsIterator::StringToCodepointsState::init() {
+	PlanIterator::PlanIteratorState::init();
 	this->curNumber = 0;
 }
 
 void
 StringToCodepointsIterator::StringToCodepointsState::reset() {
+	PlanIterator::PlanIteratorState::reset();
 	this->curNumber = 0;
 }
 
