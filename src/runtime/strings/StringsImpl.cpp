@@ -370,4 +370,44 @@ StringJoinIterator::nextImpl(PlanState& planState) {
 	STACK_END2();
 }
 /* end class StringJoinIterator */
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.4.4 fn:string-length
+	*
+	*fn:string-length() as xs:integer
+	*fn:string-length($arg as xs:string?) as xs:integer
+	*
+	*Summary: Returns an xs:integer equal to the length
+	*in characters of the value of $arg.
+	*
+	*If the value of $arg is the empty sequence, the xs:integer 0 is returned.
+	*If no argument is supplied, $arg defaults to the string value
+	*(calculated using fn:string()) of the context item (.).
+	*If no argument is supplied or if the argument is the context item and
+	*the context item is undefined an error is raised:[err:XPDY0002].
+	*_______________________________________________________________________*/
+/* begin class StringLengthIterator */
+Item_t
+StringLengthIterator::nextImpl(PlanState& planState) {
+	Item_t item;
+
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+
+	item = consumeNext (theChild, planState);
+	if ( item != NULL )	{
+		STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
+														item->getStringValue().length()),
+														state);
+	}
+	else{
+		STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(
+														0),
+														state);
+	}
+	STACK_END2();
+}
+/* end class StringLengthIterator */
 } /* namespace xqp */

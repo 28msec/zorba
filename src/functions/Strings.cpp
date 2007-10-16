@@ -17,33 +17,10 @@
 using namespace std;
 namespace xqp {
 
-/**
- * ______________________________________________________________________
- *  
- *	7.2.1 fn:codepoints-to-string
- *	
- *	The term "code point"/"codepoint" (also known as "character number" or
- *"code position") means a non-negative integer that represents a
- *character in some encoding.
- *[The Unicode Standard](http://www.w3.org/TR/xpath-functions/#Unicode4),
- *defines code points that range from #x0000 to #x10FFFF inclusive and
- *may include code points that have not yet been assigned to characters.
- *
- *	In functions that involve character counting such as fn:substring,
- *fn:string-length and fn:translate, what is counted is the number of
- *XML characters in the string (or equivalently, the number of Unicode
- *code points). Some implementations may represent a code point above
- *xFFFF using two 16-bit values known as a surrogate. A surrogate counts
- *as one character, not two.
- *
- *	fn:codepoints-to-string($arg as xs:integer*) as xs:string
- *
- *	Summary:Creates an xs:string from a sequence of code points.
- *Returns the zero-length string if $arg is the empty sequence.
- *If any of the code points in $arg is not a legal XML character,
- *an error is raised [err:FOCH0001] ("Code point not valid.").
- *_______________________________________________________________________*/
-
+/*
+ * 7.2.1 fn:codepoints-to-string
+ * --------------------*/
+/*begin class fn_codepoints_to_string*/
 fn_codepoints_to_string::fn_codepoints_to_string(
 	const signature& sig)
 :
@@ -51,7 +28,8 @@ fn_codepoints_to_string::fn_codepoints_to_string(
 {
 }
 
-PlanIter_t fn_codepoints_to_string::operator()(
+PlanIter_t
+fn_codepoints_to_string::operator()(
   const yy::location& loc,
 	vector<PlanIter_t>& argv) const
 {
@@ -60,29 +38,25 @@ PlanIter_t fn_codepoints_to_string::operator()(
 	return new CodepointsToStringIterator(loc, argv[0]);
 }
 
-sequence_type_t fn_codepoints_to_string::type_check(
+sequence_type_t
+fn_codepoints_to_string::type_check(
 	signature& sig) const
 {
 	return xs_integer;
 }
 
-bool fn_codepoints_to_string::validate_args(
+bool
+fn_codepoints_to_string::validate_args(
 	vector<PlanIter_t>& argv) const
 {
 	return true;
 }
-
+/*end class fn_codepoints_to_string*/
 	
-/**______________________________________________________________________
- *
- *	7.2.1 fn:string-to-codepoints
- *
- *	Summary: Returns the sequence of code points that constitute an
- *xs:string.
- *If $arg is a zero-length string or the empty sequence,
- *the empty sequence is returned.
- *_______________________________________________________________________*/
-	
+/*
+ * 7.2.2 fn:string-to-codepoints
+ * --------------------*/
+/*begin class fn_string_to_codepoints*/
 fn_string_to_codepoints::fn_string_to_codepoints(
 	const signature& sig)
 :
@@ -90,7 +64,8 @@ fn_string_to_codepoints::fn_string_to_codepoints(
 	{
 	}
 
-	PlanIter_t fn_string_to_codepoints::operator()(
+PlanIter_t
+fn_string_to_codepoints::operator()(
 	const yy::location& loc,
 	vector<PlanIter_t>& argv) const
 {
@@ -99,24 +74,25 @@ fn_string_to_codepoints::fn_string_to_codepoints(
 	return new StringToCodepointsIterator(loc, argv[0]);
 }
 
-sequence_type_t fn_string_to_codepoints::type_check(
+sequence_type_t
+fn_string_to_codepoints::type_check(
 	signature& sig) const
 {
 	return xs_string;
 }
 
-bool fn_string_to_codepoints::validate_args(
+bool
+fn_string_to_codepoints::validate_args(
 		vector<PlanIter_t>& argv) const
 {
 	return true;
 }
+/*end class fn_string_to_codepoints*/
 
-/**______________________________________________________________________
- *
- *	7.3.2 fn:compare
- *
- *
- *_______________________________________________________________________*/
+/*
+ * 7.3.2 fn:compare
+ * --------------------*/
+/*begin class fn_string_compare*/
 fn_string_compare::fn_string_compare(
 	const signature& sig)
 :
@@ -124,7 +100,8 @@ fn_string_compare::fn_string_compare(
 {
 }
 
-PlanIter_t fn_string_compare::operator()(
+PlanIter_t
+fn_string_compare::operator()(
   const yy::location& loc,
 	vector<PlanIter_t>& argv) const
 {
@@ -133,33 +110,25 @@ PlanIter_t fn_string_compare::operator()(
 	return new CompareStrIterator(loc, argv);
 }
 
-sequence_type_t fn_string_compare::type_check(
+sequence_type_t
+fn_string_compare::type_check(
 	signature& sig) const
 {
 	return xs_integer;
 }
 
-bool fn_string_compare::validate_args(
+bool
+fn_string_compare::validate_args(
 	vector<PlanIter_t>& argv) const
 {
 	return ((argv.size() == 2) || (argv.size() == 3));
 }
+/*end class fn_string_compare*/
 
-/**______________________________________________________________________
- *
- *	7.3.3 fn:codepoint-equal
- *
- *	Summary: Returns true or false depending on whether the value
- * of $comparand1 is equal to the value of $comparand2, according to
- * the Unicode code point collation
- * (http://www.w3.org/2005/xpath-functions/collation/codepoint).
- *
- * If either argument is the empty sequence, the result is the empty sequence.
- *
- * Note: This function allows xs:anyURI values to be compared
- * without having to specify the Unicode code point collation.
- *_______________________________________________________________________*/
-	
+/*
+ * 7.3.3 fn:codepoint-equal
+ * --------------------*/
+/*begin class fn_codepoint_equal*/
 fn_codepoint_equal::fn_codepoint_equal(
 		const signature& sig)
 	:
@@ -167,7 +136,8 @@ fn_codepoint_equal::fn_codepoint_equal(
 {
 }
 
-PlanIter_t fn_codepoint_equal::operator()(
+PlanIter_t
+fn_codepoint_equal::operator()(
 	const yy::location& loc,
 	vector<PlanIter_t>& argv) const
 {
@@ -176,36 +146,25 @@ PlanIter_t fn_codepoint_equal::operator()(
 	return new CodepointEqualIterator(loc, argv[0], argv[1]);
 }
 
-sequence_type_t fn_codepoint_equal::type_check(
+sequence_type_t
+fn_codepoint_equal::type_check(
 	signature& sig) const
 {
 	return xs_string;
 }
 
-bool fn_codepoint_equal::validate_args(
+bool
+fn_codepoint_equal::validate_args(
 	vector<PlanIter_t>& argv) const
 {
 	return (argv.size() == 2);
 }
+/*end class fn_codepoint_equal*/
 
-/**______________________________________________________________________
- *
- *	7.4.1 fn:concat
- *
- *	Summary: Accepts two or more xs:anyAtomicType arguments and casts
- * them to xs:string.
- * 
- * Returns the xs:string that is the concatenation of the values of its
- * arguments after conversion.
- * If any of the arguments is the empty sequence, the argument is treated
- * as the zero-length string.
- * If either argument is the empty sequence, the result is the
- * empty sequence.
- *
- * The fn:concat function is specified to allow an two or more arguments
- * that are concatenated together.
- *_______________________________________________________________________*/
-
+/*
+ * 7.4.1 fn:string-concat
+ * --------------------*/
+/*begin class fn_concat*/
 fn_concat::fn_concat(
 	const signature& sig)
 :
@@ -213,7 +172,8 @@ fn_concat::fn_concat(
 {
 }
 
-PlanIter_t fn_concat::operator()(
+PlanIter_t
+fn_concat::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
@@ -221,7 +181,8 @@ PlanIter_t fn_concat::operator()(
 	return new ConcatStrIterator(loc,argv);
 }
 
-bool fn_concat::validate_args(
+bool
+fn_concat::validate_args(
 	vector<PlanIter_t>& argv) const
 {
 		//TODO check if the types ogf the iterators are xs:anyAtomicType something like
@@ -229,29 +190,18 @@ bool fn_concat::validate_args(
 	return true;
 }
 
-sequence_type_t fn_concat::type_check(
+sequence_type_t
+fn_concat::type_check(
 	signature& sig) const
 {
 	return xs_anyType;
 }
+/*end class fn_concat*/
 
-
-/**
- * ______________________________________________________________________
- *  
- *	7.4.2 fn:string-join
- *
- * Summary: Returns a xs:string created by concatenating the members
- * of the $arg1 sequence using $arg2 as a separator.
- * 
- * If the value of $arg2 is the zero-length string, then the members
- * of $arg1 are concatenated without a separator.
- *
- * If the value of $arg1 is the empty sequence,
- * the zero-length string is returned.
- * 
- *_______________________________________________________________________*/
-
+/*
+ * 7.4.2 fn:string-join
+ * --------------------*/
+/*begin class fn_string_join*/
 fn_string_join::fn_string_join(
 	const signature& sig)
 :
@@ -259,7 +209,8 @@ fn_string_join::fn_string_join(
 {
 }
 
-PlanIter_t fn_string_join::operator()(
+PlanIter_t
+fn_string_join::operator()(
   const yy::location& loc,
 	vector<PlanIter_t>& argv) const
 {
@@ -268,17 +219,55 @@ PlanIter_t fn_string_join::operator()(
 	return new StringJoinIterator(loc, argv[0], argv[1]);
 }
 
-sequence_type_t fn_string_join::type_check(
+sequence_type_t
+fn_string_join::type_check(
 	signature& sig) const
 {
 	return xs_string;
 }
 
-bool fn_string_join::validate_args(
+bool
+fn_string_join::validate_args(
 	vector<PlanIter_t>& argv) const
 {
 		return (argv.size() == 1 || argv.size() == 2);
 }
+/*end class fn_string_join*/
 
+/*
+ * 7.4.4 fn:string-length
+ * --------------------*/
+/*begin class fn_string_length*/
+fn_string_length::fn_string_length(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_string_length::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new StringLengthIterator(loc, argv[0]);
+}
+
+sequence_type_t
+fn_string_length::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_string_length::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size() == 1);
+}
+/*end class fn_string_length*/
 
 }/*namespace xqp*/

@@ -201,6 +201,10 @@ bool library::static_init = false;
          xs_string, xs_string, xs_string,
          xs_integer));
 
+  DECL (fn_string_length, fn_string_length,
+        (new QNameItem(XQUERY_FN_NS,"fn","string-length"),
+         xs_string,
+         xs_integer));
   // end Strings
 
 	// start Boolean

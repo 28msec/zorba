@@ -155,5 +155,20 @@ public:
 };
 /*end class StringJoinIterator*/
 
+/**
+ * 7.4.4 fn:string-length
+ * --------------------*/
+/*begin class StringLengthIterator*/
+class StringLengthIterator : public UnaryBaseIterator<StringLengthIterator>{
+public:
+	StringLengthIterator(const yy::location loc,  PlanIter_t& arg0)
+	:
+	UnaryBaseIterator<StringLengthIterator>(loc, arg0){}
+
+	~StringLengthIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class StringLengthIterator*/
 }/*namespace xqp*/
 #endif /* XQP_STRINGS_IMPL_H */
