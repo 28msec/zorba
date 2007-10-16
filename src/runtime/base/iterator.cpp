@@ -29,15 +29,15 @@
 namespace xqp {
 
 /* begin PlanState */
-PlanState::PlanState(int32_t blockSize) 
-: block(new int8_t[blockSize]) 
+PlanState::PlanState(int32_t blockSize)
 {
+	this->block = new int8_t[blockSize];
 	memset(this->block, 0, blockSize);
 }
 
 PlanState::~PlanState()
 {
-	delete block;
+	delete[] block;
 }
 /* end PlanState */
 
