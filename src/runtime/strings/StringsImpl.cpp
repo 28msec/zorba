@@ -67,11 +67,11 @@ Item_t CodepointsToStringIterator::nextImpl(PlanState& planState){
  *the empty sequence is returned.
  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
-Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
+	Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
 	Item_t item;
 	Item_t resItem;
 	xqp_string inputStr;
-	std::vector<int> resVector;
+//	std::vector<int> resVector;
 
 	StringToCodepointsState* state;
 	STACK_INIT2(StringToCodepointsState, state, planState);
@@ -79,10 +79,10 @@ Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
 	item = consumeNext ( theChild, planState );
 	if ( item != NULL ){
 		inputStr = item->getStringValue();
-		resVector = inputStr.getCodepoints();
+//		resVector. = inputStr.getCodepoints();
 
-		while (state->getCurNumber() < resVector.size()) {
-			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(resVector[state->getCurNumber()]);
+		while (state->getCurNumber() <10){//< resVector.size()) {
+			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(1);//resVector[state->getCurNumber()]);
 			STACK_PUSH2( resItem, state );
 			state->setCurNumber(state->getCurNumber() + 1);
 		}
