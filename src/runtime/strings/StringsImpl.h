@@ -64,6 +64,25 @@ public:
 	~StringToCodepointsIterator() {};
 public:
 		Item_t nextImpl(PlanState& planState);
+		void resetImpl(PlanState& planState);
+		void releaseResourcesImpl(PlanState& planState);
+
+		virtual int32_t getStateSize();
+		virtual int32_t getStateSizeOfSubtree();
+		virtual void setOffset(PlanState& planState, int32_t& offset);
+
+protected:
+	class StringToCodepointsState : public PlanIteratorState
+	{
+	private:
+		uint32_t curNumber;
+	public:
+		void init();
+		void reset();
+
+		uint32_t getCurNumber();
+		void setCurNumber(uint32_t);
+	};
 };
 /*end class StringToCodepointsIterator*/
 

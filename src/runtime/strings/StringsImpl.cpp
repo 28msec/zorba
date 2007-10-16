@@ -12,9 +12,6 @@
 #include <iostream>
 
 #include "runtime/strings/StringsImpl.h"
-#include "util/tracer.h"
-#include "types/casting.h"
-#include "errors/Error.h"
 #include "util/zorba.h"
 #include "util/utf8/utf8.h"
 
@@ -71,30 +68,73 @@ Item_t CodepointsToStringIterator::nextImpl(PlanState& planState){
  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
 Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
-/*
 	Item_t item;
 	Item_t resItem;
 	xqp_string inputStr;
 	std::vector<int> resVector;
-	std::vector<int>::iterator iter;
 
-	PlanIterator::PlanIteratorState* state;
-	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	StringToCodepointsState* state;
+	STACK_INIT2(StringToCodepointsState, state, planState);
 
 	item = consumeNext ( theChild, planState );
 	if ( item != NULL ){
 		inputStr = item->getStringValue();
 		resVector = inputStr.getCodepoints();
-		for(iter = resVector.begin(); iter != resVector.end(); iter++){
-			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(*iter);
+
+		while (state->getCurNumber() < resVector.size()) {
+			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(resVector[state->getCurNumber()]);
 			STACK_PUSH2( resItem, state );
+			state->setCurNumber(state->getCurNumber() + 1);
 		}
 	}
 	STACK_END2();
-*/
-	PlanIterator::PlanIteratorState* state;
-	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-	STACK_END2();
+}
+
+void
+StringToCodepointsIterator::resetImpl(PlanState& planState) {
+	StringToCodepointsState* state;
+	GET_STATE(StringToCodepointsState, state, planState);
+	state->reset();
+}
+
+void
+StringToCodepointsIterator::releaseResourcesImpl(PlanState& planState) {
+}
+
+int32_t
+StringToCodepointsIterator::getStateSize() {
+	return sizeof(StringToCodepointsState);
+}
+
+int32_t
+StringToCodepointsIterator::getStateSizeOfSubtree() {
+	return this->getStateSize();
+}
+
+void
+StringToCodepointsIterator::setOffset(PlanState& planState, int32_t& offset) {
+	this->stateOffset = offset;
+	offset += getStateSize();
+}
+
+void
+StringToCodepointsIterator::StringToCodepointsState::init() {
+	this->curNumber = 0;
+}
+
+void
+StringToCodepointsIterator::StringToCodepointsState::reset() {
+	this->curNumber = 0;
+}
+
+uint32_t
+StringToCodepointsIterator::StringToCodepointsState::getCurNumber() {
+	return this->curNumber;
+}
+
+void
+StringToCodepointsIterator::StringToCodepointsState::setCurNumber(uint32_t value) {
+	this->curNumber = value;
 }
 /* end class StringToCodepointsIterator */
 
