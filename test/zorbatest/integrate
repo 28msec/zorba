@@ -5,6 +5,7 @@ export REV=""
 export ROOT=`pwd`
 export TEST_MODE="local"
 export NOW=`date +%F-%T`
+export EMAIL='"Zorba Testing" <dmuresa@D.ETHZ.CH>'
 
 while test $# -gt 0; do
 case $1 in
@@ -116,5 +117,5 @@ ln -s $ROOT/snapshots/$NOW $ROOT/snapshots/latest
 
 if test "x$TEST_MODE" != "xlocal" -a "x$ACCEPTANCE_FAILURES" != "x"; then
   echo Sending e-mail to committers.
-  echo $COMMITTERS | mutt -i $ROOT/acceptance_failure_email_body.txt -s "Zorba testing: acceptance failures" -a index.html $COMMITTERS
+  echo $COMMITTERS | mutt -i $ROOT/acceptance_failure_email_body.txt -s "Zorba testing: acceptance failures" -a index.html `cat $ROOT/error_email.txt` 
 fi
