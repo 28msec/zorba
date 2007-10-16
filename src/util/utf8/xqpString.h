@@ -3,26 +3,14 @@
  * @copyright
  * ========================================================================
  *	Copyright 2007 FLWOR Foundation
- *
- *	Licensed under the Apache License, Version 2.0 (the "License");
- *	you may not use this file except in compliance with the License.
- *	You may obtain a copy of the License at
- *
- *		http://www.apache.org/licenses/LICENSE-2.0
- *
- *	Unless required by applicable law or agreed to in writing, software
- *	distributed under the License is distributed on an "AS IS" BASIS,
- *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *	See the License for the specific language governing permissions and
- *	limitations under the License.
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
  * @file utf8/xqpString.h
  *
  */ 
-#ifndef XQP_STRING_UTF8_STRING_REPRESENTATION_30_AUG_2007
-#define XQP_STRING_UTF8_STRING_REPRESENTATION_30_AUG_2007
+#ifndef XQP_STRING
+#define XQP_STRING
 
 #ifdef WIN32
 #include "util/win32/compatib_defs.h"
@@ -177,9 +165,9 @@ namespace xqp {
 			void clear();
 		//! @}
 
-		//! @name xqpString::getCodepoints()
+		//! @name xqpString::Codepoints()
 		//!@{
-			std::vector<int> getCodepoints();
+			std::vector<uint32_t> getCodepoints();
 		//!@}
 		
 			const char* c_str() const;

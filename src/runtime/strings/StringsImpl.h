@@ -75,13 +75,17 @@ protected:
 	class StringToCodepointsState : public PlanIteratorState
 	{
 	private:
-		uint32_t curNumber;
+		std::vector<uint32_t> resVector;
+		uint32_t iter;
 	public:
 		void init();
 		void reset();
 
-		uint32_t getCurNumber();
-		void setCurNumber(uint32_t);
+		void setIterator(uint32_t);
+		void setVector(std::vector<uint32_t> vect);
+		uint32_t getItem(uint32_t iter);
+		uint32_t getVectSize();
+		uint32_t getIterator();
 	};
 };
 /*end class StringToCodepointsIterator*/

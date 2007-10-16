@@ -30,7 +30,8 @@ namespace xqp {
  *an error is raised [err:FOCH0001] ("Code point not valid.").
  *_______________________________________________________________________*/
 /* begin class CodepointsToStringIterator */
-Item_t CodepointsToStringIterator::nextImpl(PlanState& planState){
+Item_t
+CodepointsToStringIterator::nextImpl(PlanState& planState){
 	Item_t item;
 	Item_t resItem;
 	xqp_string resStr;
@@ -61,17 +62,17 @@ Item_t CodepointsToStringIterator::nextImpl(PlanState& planState){
  *
  *	fn:string-to-codepoints($arg as xs:string?) as xs:integer*
  *
- *	Summary: Returns the sequence of code points that constitute an
- *xs:string.
+ *	Summary: Returns the sequence of code points that constitute an xs:string.
  *If $arg is a zero-length string or the empty sequence,
  *the empty sequence is returned.
  *_______________________________________________________________________*/
 /* begin class StringToCodepointsIterator */
-	Item_t StringToCodepointsIterator::nextImpl(PlanState& planState){
+	Item_t
+StringToCodepointsIterator::nextImpl(PlanState& planState){
+	// TODO Optimization for large strings: large strings mean that a large integer vector should be store in the state that is not good.
 	Item_t item;
 	Item_t resItem;
 	xqp_string inputStr;
-//	std::vector<int> resVector;
 
 	StringToCodepointsState* state;
 	STACK_INIT2(StringToCodepointsState, state, planState);
@@ -79,12 +80,12 @@ Item_t CodepointsToStringIterator::nextImpl(PlanState& planState){
 	item = consumeNext ( theChild, planState );
 	if ( item != NULL ){
 		inputStr = item->getStringValue();
-//		resVector. = inputStr.getCodepoints();
-
-		while (state->getCurNumber() <10){//< resVector.size()) {
-			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(1);//resVector[state->getCurNumber()]);
+		state->setVector(inputStr.getCodepoints());
+		
+		while (state->getIterator() < state->getVectSize()){
+			resItem = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger( state->getItem( state->getIterator() ) );
 			STACK_PUSH2( resItem, state );
-			state->setCurNumber(state->getCurNumber() + 1);
+			state->setIterator( state->getIterator() + 1 );
 		}
 	}
 	STACK_END2();
@@ -121,23 +122,40 @@ StringToCodepointsIterator::setOffset(PlanState& planState, int32_t& offset) {
 void
 StringToCodepointsIterator::StringToCodepointsState::init() {
 	PlanIterator::PlanIteratorState::init();
-	this->curNumber = 0;
+	iter= 0;
+	resVector.clear();
 }
 
 void
 StringToCodepointsIterator::StringToCodepointsState::reset() {
 	PlanIterator::PlanIteratorState::reset();
-	this->curNumber = 0;
-}
-
-uint32_t
-StringToCodepointsIterator::StringToCodepointsState::getCurNumber() {
-	return this->curNumber;
+	iter = 0;
+	resVector.clear();
 }
 
 void
-StringToCodepointsIterator::StringToCodepointsState::setCurNumber(uint32_t value) {
-	this->curNumber = value;
+StringToCodepointsIterator::StringToCodepointsState::setIterator(uint32_t value) {
+	iter = value;
+}
+
+uint32_t
+StringToCodepointsIterator::StringToCodepointsState::getIterator() {
+	return iter;
+}
+
+void
+StringToCodepointsIterator::StringToCodepointsState::setVector(std::vector<uint32_t> vect) {
+	resVector = vect;
+}
+
+uint32_t
+StringToCodepointsIterator::StringToCodepointsState::getItem(uint32_t iter) {
+	return resVector[iter];
+}
+
+uint32_t
+StringToCodepointsIterator::StringToCodepointsState::getVectSize(){
+	return resVector.size();
 }
 /* end class StringToCodepointsIterator */
 
@@ -158,7 +176,6 @@ StringToCodepointsIterator::StringToCodepointsState::setCurNumber(uint32_t value
  *
  * If either argument is the empty sequence, the result is the empty sequence.
  *_______________________________________________________________________*/
-
 /* begin class CompareStrIterator */
 Item_t
 CompareStrIterator::nextImpl(PlanState& planState) {
@@ -202,7 +219,7 @@ CompareStrIterator::nextImpl(PlanState& planState) {
  *	7.3.3 fn:codepoint-equal
  *
  *	fn:codepoint-equal( 	$comparand1 	 as xs:string?,
- *  											$comparand2 	 as xs:string?) as xs:boolean?
+ *  															$comparand2 	 as xs:string?) as xs:boolean?
  *
  *	Summary: Returns true or false depending on whether the value
  * of $comparand1 is equal to the value of $comparand2, according to
@@ -215,7 +232,8 @@ CompareStrIterator::nextImpl(PlanState& planState) {
  * without having to specify the Unicode code point collation.
  *_______________________________________________________________________*/
 /* begin class CodepointEqualIterator */
-Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
+Item_t
+CodepointEqualIterator::nextImpl(PlanState& planState){
 		Item_t item0;
 		Item_t item1;
 		Item_t res;
@@ -237,6 +255,7 @@ Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
 		STACK_END2();
 }
 /* end class CodepointEqualIterator */
+
 /**
  *______________________________________________________________________
  *
@@ -262,7 +281,8 @@ Item_t CodepointEqualIterator::nextImpl(PlanState& planState){
  * can be applied to the xs:string returned by fn:concat.
  *_______________________________________________________________________*/
 /* begin class ConcatStrIterator */
-Item_t ConcatStrIterator::nextImpl(PlanState& planState) {
+Item_t
+ConcatStrIterator::nextImpl(PlanState& planState) {
 	Item_t item;
 	Item_t resItem;
 	xqp_string resStr;
@@ -305,7 +325,8 @@ Item_t ConcatStrIterator::nextImpl(PlanState& planState) {
  * the zero-length string is returned.
  *_______________________________________________________________________*/
 /* begin class StringJoinIterator */
-Item_t StringJoinIterator::nextImpl(PlanState& planState) {
+Item_t
+StringJoinIterator::nextImpl(PlanState& planState) {
 	Item_t item;
 	Item_t resItem;
 	xqp_string resStr;
