@@ -14,6 +14,9 @@
 #include <time.h>
 #endif
 
+#include <iostream>
+
+
 class Timer
 {
     clock_t startClock;
@@ -39,7 +42,7 @@ public:
     double getTime();
 #endif
     // print all information
-    void print();
+    std::ostream& print(std::ostream& os);
     bool isRunning();
 };
 #endif

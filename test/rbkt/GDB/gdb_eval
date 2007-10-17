@@ -1,0 +1,7 @@
+
+exec-file /home/markos/zorba/xquery/Build/test/query_exec
+symbol-file /home/markos/zorba/xquery/Build/test/query_exec
+
+set args /home/markos/zorba/xquery/test/Queries/path4.xqp
+
+set print pretty on

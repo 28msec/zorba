@@ -30,9 +30,10 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
 	xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
+
+  bool useResultFile = false;
+  std::ofstream* resultFile = NULL;
 	
-	Timer timer;
-	timer.start();
 	///application specific
 
 	zorba::initializeZorbaEngine();
@@ -43,6 +44,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	dynamic_context::init(&basicItemFactory);
 
 	///thread specific
+
+	Timer timer;
+	timer.start();
 
 	zorba* zorp = zorba::allocateZorbaForNewThread();//new zorba();
 	static_context* sctx_p = new static_context(NULL);//NULL);
@@ -71,12 +75,18 @@ int _tmain(int argc, _TCHAR* argv[])
 			else if (*argv == std::string ("-s")) {
 				driver.trace_scanning = true;
 			}
+			else if (*argv == std::string ("-o")) {
+				useResultFile = true;
+			}
 #else
 			if (!_tcscmp(*argv, _T("-p"))) {
 				driver.trace_parsing = true;
 			}
 			else if (!_tcscmp(*argv, _T("-s"))) {
 				driver.trace_scanning = true;
+			}
+			else if (!_tcscmp(*argv, _T("-o"))) {
+				useResultFile = true;
 			}
 #endif
 			else {
@@ -144,8 +154,6 @@ int _tmain(int argc, _TCHAR* argv[])
 				PlanIter_t it_h = pvs.pop_itstack();
 				cout << endl;
 
-				//cout << "iterator type = " << typeid(*it_h).name() << endl;
-
 				cout << "Iterator tree:" << std::endl;
  				it_h->show(cout);
 
@@ -154,14 +162,26 @@ int _tmain(int argc, _TCHAR* argv[])
 					cout << "it_h==NULL\n";
 					return -1;
 				}
-				
-				PlanIterWrapper iw(it_h);
+
+        if (useResultFile)
+        {
+          std::string resultFileName = *argv;
+          resultFileName += ".res";
+          resultFile = new ofstream(resultFileName.c_str());
+          *resultFile << "Iterator run:" << std::endl << std::endl;
+        }
+
+ 				PlanIterWrapper iw(it_h);
 				
 				while (true) {
 					Item_t i_p = iw.next();
 					if (i_p == NULL)
 						break;
-					cout << i_p->show() << endl;
+
+          if (resultFile != NULL)
+            *resultFile << i_p->show() << endl;
+          else
+            cout << i_p->show() << endl;
 				}
 			}
 		}
@@ -176,5 +196,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	zorba::uninitializeZorbaEngine();
 	
 	timer.end();
-	timer.print();
+
+  if (resultFile != NULL)
+  {
+    *resultFile << std::endl;
+    timer.print(*resultFile);
+  }
+  else
+    timer.print(cout);
 }

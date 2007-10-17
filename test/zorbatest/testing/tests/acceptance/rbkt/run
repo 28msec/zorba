@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export zorbaRoot=$SRC
+
+#echo "zorbaRoot = $zorbaRoot"
+
+$zorbaRoot/test/rbkt/Scripts/rbkt.sh > /dev/null
+
+echo
+cat rbkt_summary.txt
+echo
+
+rm -f rbkt_summary.txt > /dev/null

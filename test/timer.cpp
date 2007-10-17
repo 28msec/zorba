@@ -103,12 +103,14 @@ double Timer::getTime()
 }
 #endif
 
-void Timer::print()
+std::ostream& Timer::print(std::ostream& os)
 {
 #ifndef WIN32
-	std::cout << "Duration (with System Time): " << getTime() << " s" << std::endl;
+	os << "Duration (with System Time): " << getTime() << " s" << std::endl;
 #endif
-	std::cout << "Duration (with CPU Clocks): " << getClock() << " s" << std::endl;
+	os << "Duration (with CPU Clocks): " << getClock() << " s" << std::endl;
+
+  return os;
 }
 
 bool Timer::isRunning()
