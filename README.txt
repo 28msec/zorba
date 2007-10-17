@@ -70,6 +70,19 @@ will install the latest CMake version and all its
 dependencies. 
 ---- End: Note for Mac OS Users ----
 
+
+---- Note for Windows Usrers ----
+To pass the paths to the ICU's include and library folders, the following cmake variables 
+can be used:
+
+ICU_INCLUDE_DIR - for includes 
+ICU_LIBRARY_DIR - for libraries
+
+An example would be:
+  
+  cmake -D ICU_INCLUDE_DIR=c:\icu\include -D ICU_LIBRARY_DIR=c:\icu\lib c:\path\to\zorba
+
+----
         
 If you want to add new .cpp or .h files, just edit the CMakeFiles.txt file
 in the directory you put the new files.

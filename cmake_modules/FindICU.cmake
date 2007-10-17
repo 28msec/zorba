@@ -15,17 +15,17 @@
 
 # Look for the header file.
 find_path(
-	ICU_INCLUDE_DIR
+	ICU_INCLUDE
 	NAMES unicode/utypes.h
-	PATHS ${CMAKE_SOURCE_DIR}/include/icu include/icu
+	PATHS ${ICU_INCLUDE_DIR}
 	DOC "Include directory for the ICU library")
-mark_as_advanced(ICU_INCLUDE_DIR)
+mark_as_advanced(ICU_INCLUDE)
 
 # Look for the library.
 find_library(
 	ICU_LIBRARY
 	NAMES icuuc cygicuuc cygicuuc32 cygicuuc38
-	PATHS ${CMAKE_SOURCE_DIR}/lib
+	PATHS ${ICU_LIBRARY_DIR}
 	DOC "Libraries to link against for the common parts of ICU")
 mark_as_advanced(ICU_LIBRARY)
 
@@ -37,16 +37,16 @@ endif (ICU_LIBRARY)
 
 
 # Copy the results to the output variables.
-if(ICU_INCLUDE_DIR AND ICU_LIBRARY)
+if(ICU_INCLUDE AND ICU_LIBRARY)
 	set(ICU_FOUND 1)
 	set(ICU_LIBRARIES ${ICU_LIBRARY})
-	set(ICU_INCLUDE_DIRS ${ICU_INCLUDE_DIR})
+	set(ICU_INCLUDE_DIRS ${ICU_INCLUDE})
 
 	# Look for the ICU internationalization libraries
 	find_library(
 		ICU_I18N_LIBRARY
 		NAMES icuin icui18n cygicuin cygicuin32 cygicuin38
-		PATHS ${CMAKE_SOURCE_DIR}/lib
+		PATHS ${ICU_LIBRARY_DIR}
 		DOC "Libraries to link against for ICU internationalization")
 	mark_as_advanced(ICU_I18N_LIBRARY)
 	if (ICU_I18N_LIBRARY)
@@ -70,7 +70,7 @@ if(ICU_INCLUDE_DIR AND ICU_LIBRARY)
 	find_library(
 		ICU_DATA_LIBRARY
 		NAMES ${ICU_DATA_NAMES}
-		PATHS ${CMAKE_SOURCE_DIR}/lib
+		PATHS ${ICU_LIBRARY_DIR}
 		DOC "icudata library")
 	mark_as_advanced(ICU_DATA_LIBRARY)
 	if (ICU_DATA_LIBRARY)
@@ -83,7 +83,7 @@ if(ICU_INCLUDE_DIR AND ICU_LIBRARY)
 		SET(ICU_DATA_LIBRARIES)
 	endif (ICU_DATA_LIBRARY)
 	
-else(ICU_INCLUDE_DIR AND ICU_LIBRARY)
+else(ICU_INCLUDE AND ICU_LIBRARY)
   set(ICU_FOUND 0)
   set(ICU_I18N_FOUND 0)
   set(ICU_DATA_FOUND 0)
@@ -91,4 +91,4 @@ else(ICU_INCLUDE_DIR AND ICU_LIBRARY)
   set(ICU_I18N_LIBRARIES)
   set(ICU_DATA_LIBRARIES)
   set(ICU_INCLUDE_DIRS)
-endif(ICU_INCLUDE_DIR AND ICU_LIBRARY)
+endif(ICU_INCLUDE AND ICU_LIBRARY)
