@@ -1,12 +1,16 @@
 #!/bin/sh
 
-export CLEAN_BUILD=1
-export REV=""
-export ROOT=`pwd`
-export TEST_MODE="local"
+export ROOT=`pwd`          # Always zorbatest
 export NOW=`date +%F-%T`
-export EMAIL='"Zorba Testing" <dmuresa@D.ETHZ.CH>'
 
+
+#
+# Process command line arguments
+#
+
+export CLEAN_BUILD=1
+export TEST_MODE="local"
+export REV=""
 while test $# -gt 0; do
 case $1 in
 --no-clean) export CLEAN_BUILD="" ;;
@@ -17,13 +21,23 @@ esac
 shift
 done
 
+
+#
+# Prepare
+#
+
+latest_snapshot () {
+  (cd $ROOT/snapshots; ls -rd *-*-*-*:*:* 2>/dev/null | head -1)
+}
+
 mkdir -p snapshots
-export LASTDATE=`cd snapshots; ls -rd *-*-*-*:*:* 2>/dev/null | head -1`
+export LASTDATE=`latest_snapshot`
 if test $LASTDATE; then
     LASTREV=`cat snapshots/$LASTDATE/rev`
     echo Last date $LASTDATE, revision $LASTREV
 fi
 export TESTS=$ROOT/testing
+
 
 #
 # Check out sources
@@ -44,10 +58,6 @@ else
 fi
 }
 
-#
-# Compile
-#
-
 update_src `if test -z $REV; then echo HEAD; else echo $REV; fi`
 echo Building for snapshot $NOW, revision $REV
 
@@ -57,6 +67,10 @@ if test "x$LASTREV" != "x" -a "x$REV" != "xlocal"; then
 fi
 test -f svn_log.xml -a -s svn_log.xml || echo '<?xml version="1.0" encoding="UTF-8"?><log />' >svn_log.xml
 
+
+#
+# Compile
+#
 
 if test $CLEAN_BUILD; then rm -rf build; fi
 
@@ -73,6 +87,7 @@ echo $REV >rev; echo $NOW >timestamp
 touch BUILD_OK
 mv -f $ROOT/build_log.txt $ROOT/svn_log.xml .
 
+
 #
 # Test
 #
@@ -86,6 +101,11 @@ cd tests
 find . -name fixture -exec $ROOT/run_fixture {} \;
 find . -name run -exec $ROOT/run_test {} \;
 cd $SNAPSHOT
+
+
+#
+# Process test results
+#
 
 $ROOT/process_test_results
 
@@ -107,13 +127,13 @@ $ROOT/xquery report.xqy now=$NOW rev=$REV lastdate=$LASTDATE lastrev=$LASTREV >i
 if test $ACCEPTANCE_FAILURES; then
   echo Some acceptance tests failed, see $PWD/index.html
   export COMMITTERS=`echo '//span [@id="committers"]' | $ROOT/xquery -s index.html - | cut -f 2- -d'>' | cut -f1 -d'<'`
-  echo Committers: $COMMITTERS
+  test "x$TEST_MODE" != "xlocal" && echo Committers: $COMMITTERS
 else
   echo All acceptance tests passed
 fi
 
 rm -f $ROOT/snapshots/latest
-ln -s $ROOT/snapshots/$NOW $ROOT/snapshots/latest
+ln -s $ROOT/snapshots/`latest_snapshot` $ROOT/snapshots/latest
 
 if test "x$TEST_MODE" != "xlocal" -a "x$ACCEPTANCE_FAILURES" != "x"; then
   echo Sending e-mail to committers.
