@@ -1,7 +1,7 @@
 /**
  * @copyright
  * ========================================================================
- *	Copyright 2006-2007 FLWOR Foundation
+ *	Copyright FLWOR Foundation
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -28,12 +28,12 @@ namespace xqp {
 class zorba;
 class GenericCast;
 
-/**______________________________________________________________________
+/*______________________________________________________________________
  *
  * 7.2 Functions to Assemble and Disassemble Strings
  *_______________________________________________________________________*/
 
- /**
+ /*
  * 7.2.1 fn:codepoints-to-string
  * -------------------- */
 /* begin class CodepointsToStringIterator */
@@ -50,7 +50,7 @@ public:
 /* end class CodepointsToStringIterator */
 
 
-/**
+/*
  * 7.2.2 fn:string-to-codepoints
  * --------------------*/
 /*begin class StringToCodepointsIterator*/
@@ -90,7 +90,7 @@ protected:
 };
 /*end class StringToCodepointsIterator*/
 
-/**
+/*
  * 7.3.2 fn:compare
  * --------------------*/
 /* begin class CompareStrIterator */
@@ -106,7 +106,7 @@ public:
 };
 /* end class CompareStrIterator */
 
-/**
+/*
  * 7.3.3 fn:codepoint-equal
  * --------------------*/
 /*begin class CodepointEqualIterator */
@@ -122,7 +122,7 @@ public:
 };
 /*end class CodepointEqualIterator */
 
-/**
+/*
  * 7.4.1 fn:concat
  * --------------------*/
 /*begin class ConcatStrIterator */
@@ -139,7 +139,7 @@ public:
 /*end class ConcatStrIterator */
 
 
-/**
+/*
  * 7.4.2 fn:string-join
  * --------------------*/
 /*begin class StringJoinIterator*/
@@ -155,7 +155,7 @@ public:
 };
 /*end class StringJoinIterator*/
 
-/**
+/*
  * 7.4.4 fn:string-length
  * --------------------*/
 /*begin class StringLengthIterator*/
@@ -170,5 +170,90 @@ public:
 		Item_t nextImpl(PlanState& planState);
 };
 /*end class StringLengthIterator*/
+
+/*______________________________________________________________________
+ *
+ * 7.5 Functions Based on Substring Matching
+ *_______________________________________________________________________*/
+
+ /*
+ * 7.5.1 fn:contains
+ * -------------------- */
+/*begin class ContainsIterator*/
+class ContainsIterator: public NaryBaseIterator<ContainsIterator> {
+public:
+		ContainsIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+	:
+		NaryBaseIterator<ContainsIterator>( loc, args ){}
+
+		~ContainsIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class ContainsIterator*/
+
+ /*
+ * 7.5.2 fn:starts-with
+ * -------------------- */
+/*begin class StartsWithIterator*/
+class StartsWithIterator: public NaryBaseIterator<StartsWithIterator> {
+public:
+		StartsWithIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+	:
+		NaryBaseIterator<StartsWithIterator>( loc, args ){}
+
+		~StartsWithIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class StartsWithIterator*/
+
+ /*
+ * 7.5.3 fn:ends-with
+ * -------------------- */
+/*begin class EndsWithIterator*/
+class EndsWithIterator: public NaryBaseIterator<EndsWithIterator> {
+public:
+		EndsWithIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+	:
+		NaryBaseIterator<EndsWithIterator>( loc, args ){}
+
+		~EndsWithIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class EndsWithIterator*/
+
+ /*
+ * 7.5.4 fn:substring-before
+ * -------------------- */
+/*begin class SubstringBeforeIterator*/
+class SubstringBeforeIterator: public NaryBaseIterator<SubstringBeforeIterator> {
+public:
+		SubstringBeforeIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+	:
+		NaryBaseIterator<SubstringBeforeIterator>( loc, args ){}
+
+		~SubstringBeforeIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class SubstringBeforeIterator*/
+
+ /*
+ * 7.5.5 fn:substring-after
+ * -------------------- */
+/*begin class SubstringAfterIterator*/
+class SubstringAfterIterator: public NaryBaseIterator<SubstringAfterIterator> {
+public:
+		SubstringAfterIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+	:
+		NaryBaseIterator<SubstringAfterIterator>( loc, args ){}
+
+		~SubstringAfterIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class SubstringAfterIterator*/
 }/*namespace xqp*/
 #endif /* XQP_STRINGS_IMPL_H */

@@ -1,7 +1,7 @@
 /**
  * @copyright
  * ========================================================================
- *	Copyright 2007 FLWOR Foundation
+ *	Copyright FLWOR Foundation
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -18,12 +18,12 @@
 #include "functions/function.h"
 
 namespace xqp {
-/**______________________________________________________________________
+/*______________________________________________________________________
  *
  * 7.2 Functions to Assemble and Disassemble Strings
  *_______________________________________________________________________*/
 
-/**
+/*
  * 7.2.1 fn:codepoints-to-string
  *-----------------------*/
 	
@@ -40,7 +40,7 @@ public:
 };
 	
 
-/**
+/*
  * 7.2.2 fn:string-to-codepoints
  *-----------------------*/
 	class fn_string_to_codepoints: public function
@@ -56,11 +56,11 @@ public:
 };
 
 
-/**______________________________________________________________________
+/*______________________________________________________________________
  *
  * 7.3 Equality and Comparison of Strings
  *_______________________________________________________________________*/
-/**
+/*
  * 7.3.2 fn:compare
  *-----------------------*/
 class fn_string_compare: public function
@@ -75,7 +75,7 @@ class fn_string_compare: public function
 		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-/**
+/*
  * 7.3.3 fn:codepoint-equal
  *-----------------------*/
 class fn_codepoint_equal: public function
@@ -90,12 +90,12 @@ class fn_codepoint_equal: public function
 		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-/**______________________________________________________________________
+/*______________________________________________________________________
  *
  * 7.4 Functions on String Values
  *_______________________________________________________________________*/
 
-/**
+/*
  * 7.4.1 fn:concat
  *-----------------------*/
 class fn_concat: public function
@@ -110,7 +110,7 @@ class fn_concat: public function
 		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-/**
+/*
  * 7.4.2 fn:string-join
  *-----------------------*/
 class fn_string_join: public function
@@ -125,7 +125,7 @@ class fn_string_join: public function
 		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-/**
+/*
  * 7.4.4 fn:string-length
  * --------------------*/
 class fn_string_length: public function
@@ -133,6 +133,85 @@ class fn_string_length: public function
 	public:
 		fn_string_length(const signature&);
 		~fn_string_length() {}
+
+	public:
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*______________________________________________________________________
+ *
+ * 7.5 Functions Based on Substring Matching
+ *_______________________________________________________________________*/
+/*
+ * 7.5.1 fn:contains
+ *-----------------------*/
+class fn_contains: public function
+{
+	public:
+		fn_contains(const signature&);
+		~fn_contains() {}
+
+	public:
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.5.2 fn:starts-with
+ *-----------------------*/
+class fn_starts_with: public function
+{
+	public:
+		fn_starts_with(const signature&);
+		~fn_starts_with() {}
+
+	public:
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.5.3 fn:ends-with
+ *-----------------------*/
+class fn_ends_with: public function
+{
+	public:
+		fn_ends_with(const signature&);
+		~fn_ends_with() {}
+
+	public:
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.5.4 fn:substring-before
+ *-----------------------*/
+class fn_substring_before: public function
+{
+	public:
+		fn_substring_before(const signature&);
+		~fn_substring_before() {}
+
+	public:
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.5.5 fn:substring-after
+ *-----------------------*/
+class fn_substring_after: public function
+{
+	public:
+		fn_substring_after(const signature&);
+		~fn_substring_after() {}
 
 	public:
 		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -157,13 +236,6 @@ class fn_string_length: public function
 7.4.10 fn:encode-for-uri
 7.4.11 fn:iri-to-uri
 7.4.12 fn:escape-html-uri
-
-7.5 Functions Based on Substring Matching
-7.5.1 fn:contains
-7.5.2 fn:starts-with
-7.5.3 fn:ends-with
-7.5.4 fn:substring-before
-7.5.5 fn:substring-after
 
 7.6 String Functions that Use Pattern Matching
 7.6.1 Regular Expression Syntax

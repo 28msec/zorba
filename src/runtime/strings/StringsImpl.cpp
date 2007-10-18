@@ -1,7 +1,7 @@
 /**
  * @copyright
  * ========================================================================
- *	Copyright 2006-2007 FLWOR Foundation
+ *	Copyright FLWOR Foundation
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -410,4 +410,174 @@ StringLengthIterator::nextImpl(PlanState& planState) {
 	STACK_END2();
 }
 /* end class StringLengthIterator */
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.5.1 fn:contains
+	*
+	*fn:contains(	$arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean
+	*fn:contains( 	$arg1 	 as xs:string?,
+	*										$arg2 	 as xs:string?,
+	*										$collation 	 as xs:string) as xs:boolean
+	*
+	*Summary: Returns an xs:boolean indicating whether or not
+	*the value of $arg1 contains (at the beginning, at the end,
+	*or anywhere within) at least one sequence of collation units
+	*that provides a minimal match to the collation units in the
+	*value of $arg2, according to the collation that is used.
+	*
+	*Notes:If the value of $arg1 or $arg2 is the empty sequence,
+	*or contains only ignorable collation units, it is interpreted as the zero-length string.
+	*If the value of $arg2 is the zero-length string, then the function returns true.
+	*If the value of $arg1 is the zero-length string, the function returns false.
+	*If the specified collation does not support collation units
+	*an error ·may· be raised [err:FOCH0004].
+	*_______________________________________________________________________*/
+/* begin class ContainsIterator */
+Item_t
+ContainsIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false), state );
+	STACK_END2();
+}
+/*end class ContainsIterator*/
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.5.2 fn:starts-with
+	*
+	*fn:starts-with(	$arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean
+	*fn:starts-with( 	$arg1 	 as xs:string?,
+	*											$arg2 	 as xs:string?,
+	*											$collation 	 as xs:string) as xs:boolean
+	*
+	*Summary: Returns an xs:boolean indicating
+	*whether or not the value of $arg1 starts with a sequence
+	*of collation units that provides a minimal match to
+	*the collation units of $arg2 according to the collation that is used.
+	*
+	*Notes:If the value of $arg1 or $arg2 is the empty sequence,or contains
+	*only ignorable collation units, it is interpreted as the zero-length string.
+	*If the value of $arg2 is the zero-length string, then the function
+	*returns true. If the value of $arg1 is the zero-length string and the value
+	*of $arg2 is not the zero-length string, then the function returns false.
+	*If the specified collation does not support collation units
+	*an error ·may· be raised [err:FOCH0004].
+	*_______________________________________________________________________*/
+/*begin class StartsWithIterator*/
+Item_t
+StartsWithIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false), state );
+	STACK_END2();
+}
+/*end class StartsWithIterator*/
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.5.3 fn:ends-with
+	*
+	*fn:ends-with(	$arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean
+	*fn:ends-with( 	$arg1 	 as xs:string?,
+	*											$arg2 	 as xs:string?,
+	*											$collation 	 as xs:string) as xs:boolean
+	*
+	*Summary: Returns an xs:boolean indicating whether or not
+	*the value of $arg1 ends with a sequence of collation units
+	*that provides a minimal match to the collation units of $arg2
+	*according to the collation that is used.
+	*
+	*Notes:If the value of $arg1 or $arg2 is the empty sequence,
+	*or contains only ignorable collation units, it is interpreted as
+	*the zero-length string.
+	*If the value of $arg2 is the zero-length string, then the function
+	*returns true. If the value of $arg1 is the zero-length string and
+	*the value of $arg2 is not the zero-length string, then the function returns false.
+	*If the specified collation does not support collation
+	*units an error ·may· be raised [err:FOCH0004].
+	*_______________________________________________________________________*/
+/*begin class EndsWithIterator*/
+Item_t
+EndsWithIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false), state );
+	STACK_END2();
+}
+/*end class EndsWithIterator*/
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.5.4 fn:substring-before
+	*
+	*fn:substring-before(	$arg1 as xs:string?, $arg2 as xs:string?) as xs:string
+	*fn:substring-before( 	$arg1 	 as xs:string?,
+	*																$arg2 	 as xs:string?,
+	*																$collation 	 as xs:string) as xs:string
+	*
+	*Summary: Returns the substring of the value of
+	*$arg1 that precedes in the value of $arg1 the first occurrence
+	*of a sequence of collation units that provides a minimal match
+	*to the collation units of $arg2 according to the collation that is used.
+	*
+	*Notes:If the value of $arg1 or $arg2 is the empty sequence,
+	*or contains only ignorable collation units, it is interpreted
+	*as the zero-length string.
+	*If the value of $arg2 is the zero-length string, then the function
+	*returns the zero-length string.
+	*If the value of $arg1 does not contain a string that is equal to
+	*the value of $arg2, then the function returns the zero-length string.
+	*If the specified collation does not support collation units
+	*an error ·may· be raised [err:FOCH0004].
+	*_______________________________________________________________________*/
+/*begin class SubstringBeforeIterator*/
+Item_t
+SubstringBeforeIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString("not implemented"), state );
+	STACK_END2();
+}
+/*end class SubstringBeforeIterator*/
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.5.5 fn:substring-after
+	*
+	*fn:substring-after(		$arg1 as xs:string?, $arg2 as xs:string?) as xs:string
+	*fn:substring-after( 	$arg1 	 as xs:string?,
+	*															$arg2 	 as xs:string?,
+	*															$collation 	 as xs:string) as xs:string
+	*
+	*Summary: Returns the substring of the value of $arg1
+	*that follows in the value of $arg1 the first occurrence of a
+	*sequence of collation units that provides a minimal match to
+	*the collation units of $arg2 according to the collation that is used.
+	*
+	*Notes: If the value of $arg1 or $arg2 is the empty sequence,
+	*or contains only ignorable collation units, it is interpreted
+	*as the zero-length string.
+	*If the value of $arg2 is the zero-length string, then the function
+	*returns the value of $arg1.
+	*If the value of $arg1 does not contain a string that is equal to
+	*the value of $arg2, then the function returns the zero-length string.
+	*If the specified collation does not support collation units
+	*an error ·may· be raised [err:FOCH0004].
+	*_______________________________________________________________________*/
+/*begin class SubstringAfterIterator*/
+Item_t
+SubstringAfterIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString("not implemented"), state );
+	STACK_END2();
+}
+/*end class SubstringAfterIterator*/
 } /* namespace xqp */

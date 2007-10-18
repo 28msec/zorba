@@ -1,7 +1,7 @@
 /**
  * @copyright
  * ========================================================================
- *	Copyright 2007 FLWOR Foundation
+ *	Copyright FLWOR Foundation
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -270,4 +270,188 @@ fn_string_length::validate_args(
 }
 /*end class fn_string_length*/
 
+/*
+ * 7.5.1 fn:contains
+ * --------------------*/
+/*begin class fn_contains*/
+fn_contains::fn_contains(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_contains::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+
+	return new ContainsIterator(loc, argv);
+}
+
+sequence_type_t
+fn_contains::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_contains::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size() == 2 || argv.size() == 3);
+}
+/*end class fn_contains*/
+
+/*
+ * 7.5.2 fn:starts-with
+ * --------------------*/
+/*begin class fn_starts_with*/
+fn_starts_with::fn_starts_with(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_starts_with::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+
+	return new StartsWithIterator(loc, argv);
+}
+
+sequence_type_t
+fn_starts_with::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_starts_with::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size() == 2 || argv.size() == 3);
+}
+/*end class fn_starts_with*/
+
+/*
+ * 7.5.3 fn:ends-with
+ * --------------------*/
+/*begin class fn_ends_with*/
+fn_ends_with::fn_ends_with(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_ends_with::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+
+	return new EndsWithIterator(loc, argv);
+}
+
+sequence_type_t
+fn_ends_with::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_ends_with::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size() == 2 || argv.size() == 3);
+}
+/*end class fn_ends_with*/
+
+/*
+ * 7.5.4 fn:substring-before
+ * --------------------*/
+/*begin class fn_substring_before*/
+fn_substring_before::fn_substring_before(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_substring_before::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+
+	return new SubstringBeforeIterator(loc, argv);
+}
+
+sequence_type_t
+fn_substring_before::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_substring_before::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size() == 2 || argv.size() == 3);
+}
+/*end class fn_substring_before*/
+
+/*
+ * 7.5.5 fn:substring-after
+ * --------------------*/
+/*begin class fn_substring_after*/
+fn_substring_after::fn_substring_after(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_substring_after::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+
+	return new SubstringAfterIterator(loc, argv);
+}
+
+sequence_type_t
+fn_substring_after::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_substring_after::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size() == 2 || argv.size() == 3);
+}
+/*end class fn_substring_after*/
 }/*namespace xqp*/

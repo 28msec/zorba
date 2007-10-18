@@ -205,6 +205,31 @@ bool library::static_init = false;
         (new QNameItem(XQUERY_FN_NS,"fn","string-length"),
          xs_string,
          xs_integer));
+
+  DECL (fn_contains, fn_contains,
+        (new QNameItem(XQUERY_FN_NS,"fn","contains"),
+          xs_string, xs_string, xs_string,
+          xs_boolean));
+
+  DECL (fn_starts_with, fn_starts_with,
+        (new QNameItem(XQUERY_FN_NS,"fn","starts-with"),
+          xs_string, xs_string, xs_string,
+          xs_boolean));
+
+  DECL (fn_ends_with, fn_ends_with,
+        (new QNameItem(XQUERY_FN_NS,"fn","ends-with"),
+          xs_string, xs_string, xs_string,
+          xs_boolean));
+
+  DECL (fn_substring_before, fn_substring_before,
+        (new QNameItem(XQUERY_FN_NS,"fn","substring-before"),
+          xs_string, xs_string, xs_string,
+          xs_string));
+
+  DECL (fn_substring_after, fn_substring_after,
+        (new QNameItem(XQUERY_FN_NS,"fn","substring-after"),
+          xs_string, xs_string, xs_string,
+          xs_string));
   // end Strings
 
 	// start Boolean

@@ -83,6 +83,11 @@ public:
 	static qnamekey_t fn_string_join_key;
 	static qnamekey_t fn_string_compare_key;
 	static qnamekey_t fn_string_length_key;
+	static qnamekey_t fn_contains_key;
+	static qnamekey_t fn_starts_with_key;
+	static qnamekey_t fn_ends_with_key;
+	static qnamekey_t fn_substring_before_key;
+	static qnamekey_t fn_substring_after_key;
 
 	// Boolean functions
 	static qnamekey_t fn_true_key;
