@@ -217,20 +217,16 @@ public:
 	};
 
   rchandle<qname_expr> varname_h;
-  expr_t valexpr_h;
 	var_kind kind;
   sequence_type_t type;
 
 public:
-  var_expr(yy::location const&);
-  ~var_expr();
+  var_expr(yy::location const& loc) : expr (loc), type (xs_untypedValue) {}  // TODO
+  ~var_expr() {}
 
 public:
   rchandle<qname_expr> get_varname() const { return varname_h; }
   void set_varname(rchandle<qname_expr> q_h) { varname_h = q_h; }
-
-  expr_t get_valexpr() const { return valexpr_h; }
-  void set_valexpr(expr_t e_h) { valexpr_h = e_h; }
 
 	var_kind get_kind() const { return kind; }
 	void set_kind(var_kind k) { kind = k; }
@@ -1375,3 +1371,8 @@ public:
 }	/* namespace xqp */
 #endif	/*  XQP_EXPR_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

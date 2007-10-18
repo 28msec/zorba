@@ -1694,14 +1694,14 @@ ForLetClauseList :
 		{
 			if (debug) cout << "ForLetClauseList [single]\n";
 			ForLetClauseList* flc_list_p = new ForLetClauseList(@$);
-			flc_list_p->push_back($1);
+			flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ($1));
 			$$ = flc_list_p;
 		}
 	|	ForLetClauseList  ForLetClause
 		{
 			if (debug) cout << "ForLetClauseList [list]\n";
 			ForLetClauseList* flc_list_p = dynamic_cast<ForLetClauseList*>($1);
-			if (flc_list_p) flc_list_p->push_back($2);
+			if (flc_list_p) flc_list_p->push_back(dynamic_cast<ForOrLetClause *> ($2));
 			$$ = $1;
 		}
 	;

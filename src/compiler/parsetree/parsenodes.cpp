@@ -1,4 +1,4 @@
-/* -*- mode:: c++ indent-tabs-mode: nil -*-
+/* -*- mode: c++; indent-tabs-mode: nil -*-
  *
  *  $Id:: parsenodes.cpp,v 1.1.1.1 2006/11/06 08:42:18 Paul Pedersen Exp $
  *
@@ -32,6 +32,9 @@ ostringstream	__oss;
 #define INDENT	    std::string(++printdepth, ' ')
 #define OUTDENT	    std::string(printdepth--, ' ')
 #define UNDENT	    printdepth--
+
+#define BEGIN_VISITOR() void *visitor_state; if (NULL == (visitor_state = v.begin_visit (*this))) return
+#define END_VISITOR() v.end_visit (*this, visitor_state)
 
 /*
 ostream& parsenode::put(ostream& s) const
@@ -71,8 +74,8 @@ ostream& Module::put(ostream& os) const
 
 void Module::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -103,8 +106,8 @@ ostream& VersionDecl::put(ostream& os) const
 
 void VersionDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -150,11 +153,11 @@ ostream& MainModule::put(ostream& s) const
 
 void MainModule::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (prolog_h != NULL)
 	    prolog_h->accept(v);
 	query_body_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -191,10 +194,10 @@ ostream& LibraryModule::put(ostream& s) const
 
 void LibraryModule::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	decl_h->accept(v);
 	prolog_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -229,8 +232,8 @@ ostream& ModuleDecl::put(ostream& s) const
 
 void ModuleDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -266,10 +269,10 @@ ostream& Prolog::put(ostream& s) const
 
 void Prolog::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	sind_list_h->accept(v);
 	vfo_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -299,7 +302,7 @@ ostream& SIND_DeclList::put(ostream& s) const
 
 void SIND_DeclList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
 	for (; it!=sind_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -307,7 +310,7 @@ void SIND_DeclList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -337,7 +340,7 @@ ostream& VFO_DeclList::put(ostream& s) const
 
 void VFO_DeclList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<parsenode> >::const_reverse_iterator it = vfo_hv.rbegin();
 	for (; it!=vfo_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -345,7 +348,7 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -392,8 +395,8 @@ ostream& NamespaceDecl::put(ostream& s) const
 
 void NamespaceDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -428,8 +431,8 @@ ostream& BoundarySpaceDecl::put(ostream& s) const
 
 void BoundarySpaceDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -466,8 +469,8 @@ ostream& DefaultNamespaceDecl::put(ostream& s) const
 
 void DefaultNamespaceDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -501,9 +504,9 @@ ostream& OptionDecl::put(ostream& s) const
 
 void OptionDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//qname_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -534,9 +537,9 @@ ostream& FTOptionDecl::put(ostream& s) const
 
 void FTOptionDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	match_option_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -571,8 +574,8 @@ ostream& OrderingModeDecl::put(ostream& s) const
 
 void OrderingModeDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -607,8 +610,8 @@ ostream& EmptyOrderDecl::put(ostream& s) const
 
 void EmptyOrderDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -649,8 +652,8 @@ ostream& CopyNamespacesDecl::put(ostream& s) const
 
 void CopyNamespacesDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -689,8 +692,8 @@ ostream& DefaultCollationDecl::put(ostream& s) const
 
 void DefaultCollationDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -721,8 +724,8 @@ ostream& BaseURIDecl::put(ostream& s) const
 
 void BaseURIDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -759,10 +762,10 @@ ostream& SchemaImport::put(ostream& s) const
 
 void SchemaImport::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	prefix_h->accept(v);
 	at_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -793,12 +796,12 @@ ostream& URILiteralList::put(ostream& s) const
 
 void URILiteralList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<string>::const_reverse_iterator it = uri_v.rbegin();
 	for (; it!=uri_v.rend(); ++it) {
 		// ..do something useful
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -841,8 +844,8 @@ ostream& SchemaPrefix::put(ostream& s) const
 
 void SchemaPrefix::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -889,9 +892,9 @@ ostream& ModuleImport::put(ostream& s) const
 
 void ModuleImport::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	uri_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -928,10 +931,10 @@ ostream& VarDecl::put(ostream& s) const
 
 void VarDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	typedecl_h->accept(v);
 	initexpr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -966,8 +969,8 @@ ostream& ConstructionDecl::put(ostream& os) const
 
 void ConstructionDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -1016,12 +1019,12 @@ ostream& FunctionDecl::put(ostream& s) const
 
 void FunctionDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//name_h->accept(v);
 	paramlist_h->accept(v);
 	return_type_h->accept(v);
 	body_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1052,7 +1055,7 @@ ostream& ParamList::put(ostream& s) const
 
 void ParamList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<Param> >::const_reverse_iterator it = param_hv.rbegin();
 	for (; it!=param_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -1060,7 +1063,7 @@ void ParamList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1094,9 +1097,9 @@ ostream& Param::put(ostream& s) const
 
 void Param::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	typedecl_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1127,9 +1130,9 @@ ostream& EnclosedExpr::put(ostream& s) const
 
 void EnclosedExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1160,9 +1163,9 @@ ostream& QueryBody::put(ostream& s) const
 
 void QueryBody::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1192,7 +1195,7 @@ ostream& Expr::put(ostream& s) const
 
 void Expr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
 	for (; it!=expr_hv.rend(); ++it) {
 		exprnode* e_p = &**it;
@@ -1200,7 +1203,7 @@ void Expr::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 int Expr::numberOfChildren() const
@@ -1257,7 +1260,7 @@ ostream& FLWORExpr::put(ostream& s) const
 
 void FLWORExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	forlet_list_h->accept(v);
 	if (where_h != NULL) {
 		where_h->accept(v);
@@ -1266,7 +1269,7 @@ void FLWORExpr::accept(parsenode_visitor& v) const
 		orderby_h->accept(v);
 	}
 	return_val_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1287,7 +1290,7 @@ ForLetClauseList::~ForLetClauseList()
 ostream& ForLetClauseList::put(ostream& s) const
 {
 	s << INDENT << "ForLetClauseList[\n";
-	vector<rchandle<parsenode> >::const_iterator it = forlet_hv.begin();
+	vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
 	for (; it!=forlet_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
 	return s << OUTDENT << "]\n";
 }
@@ -1296,20 +1299,20 @@ ostream& ForLetClauseList::put(ostream& s) const
 
 void ForLetClauseList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	vector<rchandle<parsenode> >::const_reverse_iterator it = forlet_hv.rbegin();
+	BEGIN_VISITOR ();
+	vector<rchandle<ForOrLetClause> >::const_reverse_iterator it = forlet_hv.rbegin();
 	for (; it!=forlet_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
 		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
 
-// [33b] ForLetClause
+// [33b] ForOrLetClause
 // ------------------
 
 
@@ -1320,7 +1323,7 @@ ForClause::ForClause(
 	const yy::location& _loc,
 	rchandle<VarInDeclList> _vardecl_list_h)
 :
-	parsenode(_loc),
+	ForOrLetClause(_loc),
 	vardecl_list_h(_vardecl_list_h)
 {
 }
@@ -1340,11 +1343,12 @@ ostream& ForClause::put(ostream& s) const
 
 void ForClause::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vardecl_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
+int ForClause::get_decl_count () const { return vardecl_list_h->size (); }
 
 
 // [34a] VarInDeclList
@@ -1372,7 +1376,7 @@ ostream& VarInDeclList::put(ostream& s) const
 
 void VarInDeclList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<VarInDecl> >::const_reverse_iterator it = vardecl_hv.rbegin();
 	for (; it!=vardecl_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -1380,7 +1384,7 @@ void VarInDeclList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1423,7 +1427,7 @@ ostream& VarInDecl::put(ostream& s) const
 
 void VarInDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (typedecl_h != NULL) {
 		typedecl_h->accept(v);
 	}
@@ -1436,7 +1440,7 @@ void VarInDecl::accept(parsenode_visitor& v) const
 	if (valexpr_h != NULL) {
 		valexpr_h->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1467,8 +1471,8 @@ ostream& PositionalVar::put(ostream& s) const
 
 void PositionalVar::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -1479,7 +1483,7 @@ LetClause::LetClause(
 	const yy::location& _loc,
 	rchandle<VarGetsDeclList> _vardecl_list_h)
 :
-	parsenode(_loc),
+	ForOrLetClause(_loc),
 	vardecl_list_h(_vardecl_list_h)
 {
 }
@@ -1499,11 +1503,12 @@ ostream& LetClause::put(ostream& s) const
 
 void LetClause::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vardecl_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
+int LetClause::get_decl_count () const { return vardecl_list_h->size (); }
 
 
 // [36a] VarGetsDeclList
@@ -1531,7 +1536,7 @@ ostream& VarGetsDeclList::put(ostream& s) const
 
 void VarGetsDeclList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<VarGetsDecl> >::const_reverse_iterator it = vardecl_hv.rbegin();
 	for (; it!=vardecl_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -1539,7 +1544,7 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1579,13 +1584,13 @@ ostream& VarGetsDecl::put(ostream& s) const
 
 void VarGetsDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (typedecl_h != 0)
           typedecl_h->accept(v);
         if (ftscorevar_h != 0)
           ftscorevar_h->accept(v);
 	valexpr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1616,8 +1621,8 @@ ostream& FTScoreVar::put(ostream& s) const
 
 void FTScoreVar::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -1648,9 +1653,9 @@ ostream& WhereClause::put(ostream& s) const
 
 void WhereClause::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	predicate_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1694,9 +1699,9 @@ ostream& OrderByClause::put(ostream& s) const
 
 void OrderByClause::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	spec_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1726,7 +1731,7 @@ ostream& OrderSpecList::put(ostream& s) const
 
 void OrderSpecList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
 	for (; it!=spec_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -1734,7 +1739,7 @@ void OrderSpecList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1768,10 +1773,10 @@ ostream& OrderSpec::put(ostream& s) const
 
 void OrderSpec::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	spec_h->accept(v);
 	modifier_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1808,11 +1813,11 @@ ostream& OrderModifier::put(ostream& s) const
 
 void OrderModifier::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	dir_spec_h->accept(v);
 	empty_spec_h->accept(v);
 	collation_spec_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1847,8 +1852,8 @@ ostream& OrderDirSpec::put(ostream& s) const
 
 void OrderDirSpec::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -1883,8 +1888,8 @@ ostream& OrderEmptySpec::put(ostream& s) const
 
 void OrderEmptySpec::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -1915,8 +1920,8 @@ ostream& OrderCollationSpec::put(ostream& s) const
 
 void OrderCollationSpec::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -1957,10 +1962,10 @@ ostream& QuantifiedExpr::put(ostream& s) const
 
 void QuantifiedExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	decl_list_h->accept(v);
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -1990,7 +1995,7 @@ ostream& QVarInDeclList::put(ostream& s) const
 
 void QVarInDeclList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<QVarInDecl> >::const_reverse_iterator it = qvar_decl_hv.rbegin();
 	for (; it!=qvar_decl_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -1998,7 +2003,7 @@ void QVarInDeclList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2047,9 +2052,9 @@ ostream& QVarInDecl::put(ostream& s) const
 
 void QVarInDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	val_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2110,7 +2115,7 @@ ostream& TypeswitchExpr::put(ostream& os) const
 
 void TypeswitchExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	switch_expr_h->accept(v);
 	clause_list_h->accept(v);
 	default_clause_h->accept(v);
@@ -2132,7 +2137,7 @@ void TypeswitchExpr::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2170,7 +2175,7 @@ ostream& CaseClauseList::put(ostream& os) const
 
 void CaseClauseList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
 	for (; it!=clause_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -2178,7 +2183,7 @@ void CaseClauseList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2233,10 +2238,10 @@ ostream& CaseClause::put(ostream& os) const
 
 void CaseClause::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	type_h->accept(v);
 	val_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2273,11 +2278,11 @@ ostream& IfExpr::put(ostream& s) const
 
 void IfExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	cond_expr_h->accept(v);
 	then_expr_h->accept(v);
 	else_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2311,10 +2316,10 @@ ostream& OrExpr::put(ostream& s) const
 
 void OrExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	or_expr_h->accept(v);
 	and_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2348,10 +2353,10 @@ ostream& AndExpr::put(ostream& s) const
 
 void AndExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	and_expr_h->accept(v);
 	comp_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2422,10 +2427,10 @@ ostream& ComparisonExpr::put(ostream& s) const
 
 void ComparisonExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	left_h->accept(v);
 	right_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2462,11 +2467,11 @@ ostream& FTContainsExpr::put(ostream& s) const
 
 void FTContainsExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	range_expr_h->accept(v);
 	ftselect_h->accept(v);
 	ftignore_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2501,10 +2506,10 @@ ostream& RangeExpr::put(ostream& s) const
 
 void RangeExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	from_expr_h->accept(v);
 	to_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2547,10 +2552,10 @@ ostream& AdditiveExpr::put(ostream& os) const
 
 void AdditiveExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	add_expr_h->accept(v);
 	mult_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2593,10 +2598,10 @@ ostream& MultiplicativeExpr::put(ostream& s) const
 
 void MultiplicativeExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	mult_expr_h->accept(v);
 	union_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2630,10 +2635,10 @@ ostream& UnionExpr::put(ostream& s) const
 
 void UnionExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	union_expr_h->accept(v);
 	intex_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2674,10 +2679,10 @@ ostream& IntersectExceptExpr::put(ostream& s) const
 
 void IntersectExceptExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	intex_expr_h->accept(v);
 	instof_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2711,10 +2716,10 @@ ostream& InstanceofExpr::put(ostream& s) const
 
 void InstanceofExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	treat_expr_h->accept(v);
 	seqtype_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2748,10 +2753,10 @@ ostream& TreatExpr::put(ostream& s) const
 
 void TreatExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	castable_expr_h->accept(v);
 	seqtype_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2785,10 +2790,10 @@ ostream& CastableExpr::put(ostream& s) const
 
 void CastableExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	cast_expr_h->accept(v);
 	singletype_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2822,10 +2827,10 @@ ostream& CastExpr::put(ostream& s) const
 
 void CastExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	unary_expr_h->accept(v);
 	singletype_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2859,10 +2864,10 @@ ostream& UnaryExpr::put(ostream& s) const
 
 void UnaryExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	signlist_h->accept(v);
 	value_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -2893,8 +2898,8 @@ ostream& SignList::put(ostream& s) const
 
 void SignList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -2939,8 +2944,8 @@ ostream& GeneralComp::put(ostream& s) const
 
 void GeneralComp::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -2981,8 +2986,8 @@ ostream& ValueComp::put(ostream& s) const
 
 void ValueComp::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3020,8 +3025,8 @@ ostream& NodeComp::put(ostream& s) const
 
 void NodeComp::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3059,9 +3064,9 @@ ostream& ValidateExpr::put(ostream& s) const
 
 void ValidateExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3095,10 +3100,10 @@ ostream& ExtensionExpr::put(ostream& s) const
 
 void ExtensionExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	pragma_list_h->accept(v);
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3128,7 +3133,7 @@ ostream& PragmaList::put(ostream& s) const
 
 void PragmaList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
 	for (; it!=pragma_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -3136,7 +3141,7 @@ void PragmaList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3170,9 +3175,9 @@ ostream& Pragma::put(ostream& s) const
 
 void Pragma::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//name->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3224,9 +3229,9 @@ ostream& PathExpr::put(ostream& s) const
 
 void PathExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	relpath_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3276,10 +3281,10 @@ ostream& RelativePathExpr::put(ostream& s) const
 
 void RelativePathExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	step_expr_h->accept(v);
 	relpath_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3338,11 +3343,11 @@ ostream& AxisStep::put(ostream& os) const
 
 void AxisStep::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (forward_step_h!=NULL) forward_step_h->accept(v);
 	if (reverse_step_h!=NULL) reverse_step_h->accept(v);
 	if (predicate_list_h!=NULL) predicate_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3393,11 +3398,11 @@ ostream& ForwardStep::put(ostream& os) const
 
 void ForwardStep::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (forward_axis_h!=NULL) forward_axis_h->accept(v);
 	if (node_test_h!=NULL) node_test_h->accept(v);
 	if (abbrev_step_h!=NULL) abbrev_step_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3441,8 +3446,8 @@ ostream& ForwardAxis::put(ostream& os) const
 
 void ForwardAxis::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3490,9 +3495,9 @@ ostream& AbbrevForwardStep::put(ostream& os) const
 
 void AbbrevForwardStep::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (node_test_h!=NULL) node_test_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3540,10 +3545,10 @@ ostream& ReverseStep::put(ostream& os) const
 
 void ReverseStep::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (axis_h!=NULL) axis_h->accept(v);
 	if (node_test_h!=NULL) node_test_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3584,8 +3589,8 @@ ostream& ReverseAxis::put(ostream& s) const
 
 void ReverseAxis::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3643,8 +3648,8 @@ ostream& NameTest::put(ostream& os) const
 
 void NameTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3688,8 +3693,8 @@ ostream& Wildcard::put(ostream& os) const
 
 void Wildcard::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3723,10 +3728,10 @@ ostream& FilterExpr::put(ostream& s) const
 
 void FilterExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	primary_h->accept(v);
 	pred_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3756,7 +3761,7 @@ ostream& PredicateList::put(ostream& s) const
 
 void PredicateList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
 	for (; it!=pred_hv.rend(); ++it) {
 		exprnode* e_p = &**it;
@@ -3764,7 +3769,7 @@ void PredicateList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3833,8 +3838,8 @@ ostream& NumericLiteral::put(ostream& s) const
 
 void NumericLiteral::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3864,8 +3869,8 @@ ostream& VarRef::put(ostream& s) const
 
 void VarRef::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3899,10 +3904,10 @@ ostream& ParenthesizedExpr::put(ostream& s) const
 
 void ParenthesizedExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (expr_h != NULL)
 		expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3930,8 +3935,8 @@ ostream& ContextItemExpr::put(ostream& s) const
 
 void ContextItemExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -3963,9 +3968,9 @@ ostream& OrderedExpr::put(ostream& s) const
 
 void OrderedExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -3996,9 +4001,9 @@ ostream& UnorderedExpr::put(ostream& s) const
 
 void UnorderedExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4033,11 +4038,11 @@ ostream& FunctionCall::put(ostream& os) const
 
 void FunctionCall::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//fname_h->accept(v);
 	if (arg_list_h != NULL)
 		arg_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4067,7 +4072,7 @@ ostream& ArgList::put(ostream& s) const
 
 void ArgList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
 	for (; it!=arg_hv.end(); ++it) {
 		exprnode* e_p = &**it;
@@ -4075,7 +4080,7 @@ void ArgList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4126,7 +4131,7 @@ ostream& DirElemConstructor::put(ostream& s) const
 
 void DirElemConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//open_name_h->accept(v);
 	//close_name_h->accept(v);
 
@@ -4135,7 +4140,7 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
 
 	if (dir_content_list_h != NULL)
 		dir_content_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4165,7 +4170,7 @@ ostream& DirElemContentList::put(ostream& s) const
 
 void DirElemContentList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<exprnode> >::const_reverse_iterator it = dir_content_hv.rbegin();
 	for (; it!=dir_content_hv.rend(); ++it) {
 		exprnode* e_p = &**it;
@@ -4173,7 +4178,7 @@ void DirElemContentList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4203,7 +4208,7 @@ ostream& DirAttributeList::put(ostream& s) const
 
 void DirAttributeList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<DirAttr> >::const_reverse_iterator it = dir_attr_hv.rbegin();
 	for (; it!=dir_attr_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -4211,7 +4216,7 @@ void DirAttributeList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4247,10 +4252,10 @@ ostream& DirAttr::put(ostream& s) const
 
 void DirAttr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//atname_h->accept(v);
 	dir_atval_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4293,12 +4298,12 @@ ostream& DirAttributeValue::put(ostream& s) const
 
 void DirAttributeValue::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (this->quot_attr_content_h != NULL)
 		this->quot_attr_content_h->accept(v);
 	if (this->apos_attr_content_h != NULL)
 		this-> apos_attr_content_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4330,7 +4335,7 @@ ostream& QuoteAttrContentList::put(ostream& s) const
 
 void QuoteAttrContentList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
 		quot_atval_content_hv.rbegin();
 	for (; it!=quot_atval_content_hv.rend(); ++it) {
@@ -4339,7 +4344,7 @@ void QuoteAttrContentList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4370,7 +4375,7 @@ ostream& AposAttrContentList::put(ostream& s) const
 
 void AposAttrContentList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
 		apos_atval_content_hv.rbegin();
 	for (; it!=apos_atval_content_hv.rend(); ++it) {
@@ -4379,7 +4384,7 @@ void AposAttrContentList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4422,10 +4427,10 @@ ostream& QuoteAttrValueContent::put(ostream& s) const
 
 void QuoteAttrValueContent::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (this->common_content_h != NULL)
 		this->common_content_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4468,8 +4473,8 @@ ostream& AposAttrValueContent::put(ostream& s) const
 
 void AposAttrValueContent::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -4530,7 +4535,7 @@ ostream& DirElemContent::put(ostream& s) const
 
 void DirElemContent::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 
 	if (direct_cons_h != NULL)
 		direct_cons_h->accept(v);
@@ -4540,7 +4545,7 @@ void DirElemContent::accept(parsenode_visitor& v) const
 		
 	if (common_content_h != NULL)
 		common_content_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4607,10 +4612,10 @@ ostream& CommonContent::put(ostream& s) const
 
 void CommonContent::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	if (this->expr_h != NULL)
 		this->expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4641,8 +4646,8 @@ ostream& DirCommentConstructor::put(ostream& s) const
 
 void DirCommentConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -4692,8 +4697,8 @@ ostream& DirPIConstructor::put(ostream& s) const
 
 void DirPIConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -4730,8 +4735,8 @@ ostream& CDataSection::put(ostream& s) const
 
 void CDataSection::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -4773,9 +4778,9 @@ ostream& CompDocConstructor::put(ostream& s) const
 
 void CompDocConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4811,10 +4816,10 @@ ostream& CompElemConstructor::put(ostream& s) const
 
 void CompElemConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//qname_h->accept(v);
 	content_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4855,10 +4860,10 @@ ostream& CompAttrConstructor::put(ostream& s) const
 
 void CompAttrConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//qname_h->accept(v);
 	val_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4889,9 +4894,9 @@ ostream& CompTextConstructor::put(ostream& s) const
 
 void CompTextConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	text_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4922,9 +4927,9 @@ ostream& CompCommentConstructor::put(ostream& s) const
 
 void CompCommentConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	comment_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -4972,9 +4977,9 @@ ostream& CompPIConstructor::put(ostream& s) const
 
 void CompPIConstructor::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	content_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5008,9 +5013,9 @@ ostream& SingleType::put(ostream& s) const
 
 void SingleType::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	atomic_type_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5041,9 +5046,9 @@ ostream& TypeDeclaration::put(ostream& os) const
 
 void TypeDeclaration::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	seqtype_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5077,10 +5082,10 @@ ostream& SequenceType::put(ostream& os) const
 
 void SequenceType::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	itemtype_h->accept(v);
 	occur_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5116,8 +5121,8 @@ ostream& OccurrenceIndicator::put(ostream& s) const
 
 void OccurrenceIndicator::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5156,8 +5161,8 @@ ostream& ItemType::put(ostream& s) const
 
 void ItemType::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5188,9 +5193,9 @@ ostream& AtomicType::put(ostream& s) const
 
 void AtomicType::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//qname_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5223,8 +5228,8 @@ ostream& AnyKindTest::put(ostream& s) const
 
 void AnyKindTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5276,8 +5281,8 @@ ostream& DocumentTest::put(ostream& s) const
 
 void DocumentTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5305,8 +5310,8 @@ ostream& TextTest::put(ostream& s) const
 
 void TextTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5334,8 +5339,8 @@ ostream& CommentTest::put(ostream& s) const
 
 void CommentTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
  
@@ -5369,8 +5374,8 @@ ostream& PITest::put(ostream& s) const
 
 void PITest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5407,8 +5412,8 @@ ostream& AttributeTest::put(ostream& os) const
 
 void AttributeTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5442,9 +5447,9 @@ ostream& SchemaAttributeTest::put(ostream& os) const
 
 void SchemaAttributeTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//if (attr_h!=NULL) attr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5497,8 +5502,8 @@ ostream& ElementTest::put(ostream& os) const
 
 void ElementTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5529,9 +5534,9 @@ ostream& SchemaElementTest::put(ostream& os) const
 
 void SchemaElementTest::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//if (elem_h!=NULL) elem_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5586,9 +5591,9 @@ ostream& TypeName::put(ostream& os) const
 
 void TypeName::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//if (qname_h!=NULL) qname_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5628,8 +5633,8 @@ ostream& StringLiteral::put(ostream& s) const
 
 void StringLiteral::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5703,8 +5708,8 @@ ostream& QName::put(ostream& s) const
 
 void QName::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5744,9 +5749,9 @@ ostream& RevalidationDecl::put(ostream& s) const
 
 void RevalidationDecl::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	//qname_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5780,8 +5785,8 @@ ostream& InsertExpr::put(ostream& s) const
 
 void InsertExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -5812,9 +5817,9 @@ ostream& DeleteExpr::put(ostream& s) const
 
 void DeleteExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	target_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5848,10 +5853,10 @@ ostream& ReplaceExpr::put(ostream& s) const
 
 void ReplaceExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	source_expr_h->accept(v);
 	target_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5885,10 +5890,10 @@ ostream& RenameExpr::put(ostream& s) const
 
 void RenameExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	source_expr_h->accept(v);
 	target_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5939,11 +5944,11 @@ ostream& TransformExpr::put(ostream& s) const
 
 void TransformExpr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	varname_list_h->accept(v);
 	source_expr_h->accept(v);
 	target_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -5973,7 +5978,7 @@ ostream& VarNameList::put(ostream& s) const
 
 void VarNameList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
 	for (; it!=varbinding_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -5981,7 +5986,7 @@ void VarNameList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6015,9 +6020,9 @@ ostream& VarBinding::put(ostream& s) const
 
 void VarBinding::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	val_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6064,11 +6069,11 @@ ostream& FTSelection::put(ostream& s) const
 
 void FTSelection::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	ftor_h->accept(v);
 	option_list_h->accept(v);
 	weight_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6099,7 +6104,7 @@ ostream& FTMatchOptionProximityList::put(ostream& s) const
 
 void FTMatchOptionProximityList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<FTMatchOptionProximity> >::const_reverse_iterator it =
 		opt_prox_hv.rbegin();
 	for (; it!=opt_prox_hv.rend(); ++it) {
@@ -6108,7 +6113,7 @@ void FTMatchOptionProximityList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6160,9 +6165,9 @@ ostream& FTMatchOptionProximity::put(ostream& s) const
 
 void FTMatchOptionProximity::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	opt_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6196,10 +6201,10 @@ ostream& FTOr::put(ostream& s) const
 
 void FTOr::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	ftor_h->accept(v);
 	ftand_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6233,10 +6238,10 @@ ostream& FTAnd::put(ostream& s) const
 
 void FTAnd::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	ftand_h->accept(v);
 	ftmild_not_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6270,10 +6275,10 @@ ostream& FTMildnot::put(ostream& s) const
 
 void FTMildnot::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	ftmild_not_h->accept(v);
 	ftunary_not_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6307,9 +6312,9 @@ ostream& FTUnaryNot::put(ostream& s) const
 
 void FTUnaryNot::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	words_selection_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6343,11 +6348,11 @@ ostream& FTWordsSelection::put(ostream& s) const
 
 void FTWordsSelection::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	words_h->accept(v);
 	times_h->accept(v);
 	selection_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6379,10 +6384,10 @@ ostream& FTWords::put(ostream& s) const
 
 void FTWords::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	words_val_h->accept(v);
 	any_all_option_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6414,10 +6419,10 @@ ostream& FTWordsValue::put(ostream& s) const
 
 void FTWordsValue::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	lit_h->accept(v);
 	expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6445,8 +6450,8 @@ ostream& FTProximity::put(ostream& s) const
 
 void FTProximity::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6474,8 +6479,8 @@ ostream& FTOrderedIndicator::put(ostream& s) const
 
 void FTOrderedIndicator::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6503,8 +6508,8 @@ ostream& FTMatchOption::put(ostream& s) const
 
 void FTMatchOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6534,8 +6539,8 @@ ostream& FTCaseOption::put(ostream& s) const
 
 void FTCaseOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6565,8 +6570,8 @@ ostream& FTDiacriticsOption::put(ostream& s) const
 
 void FTDiacriticsOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6596,8 +6601,8 @@ ostream& FTStemOption::put(ostream& s) const
 
 void FTStemOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6634,10 +6639,10 @@ ostream& FTThesaurusOption::put(ostream& s) const
 
 void FTThesaurusOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	thesaurusid_h->accept(v);
 	thesaurus_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6668,7 +6673,7 @@ ostream& FTThesaurusList::put(ostream& s) const
 
 void FTThesaurusList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<FTThesaurusID> >::const_reverse_iterator it = thesaurus_hv.rbegin();
 	for (; it!=thesaurus_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
@@ -6676,7 +6681,7 @@ void FTThesaurusList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6710,9 +6715,9 @@ ostream& FTThesaurusID::put(ostream& s) const
 
 void FTThesaurusID::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	levels_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6746,10 +6751,10 @@ ostream& FTStopwordOption::put(ostream& s) const
 
 void FTStopwordOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	refor_list_h->accept(v);
 	incl_excl_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6781,7 +6786,7 @@ ostream& FTInclExclStringLiteralList::put(ostream& s) const
 
 void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<rchandle<FTInclExclStringLiteral> >::const_reverse_iterator it =
 		incl_excl_lit_hv.rbegin();
 	for (; it!=incl_excl_lit_hv.rend(); ++it) {
@@ -6790,7 +6795,7 @@ void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const
 		Assert(e_p!=NULL,LOCATION);
 		e_p->accept(v);
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6822,9 +6827,9 @@ ostream& FTRefOrList::put(ostream& s) const
 
 void FTRefOrList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	stringlit_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6855,12 +6860,12 @@ ostream& FTStringLiteralList::put(ostream& s) const
 
 void FTStringLiteralList::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	vector<string>::const_reverse_iterator it = strlit_v.rbegin();
 	for (; it!=strlit_v.rend(); ++it) {
 		// ..do something useful..
 	}
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6892,9 +6897,9 @@ ostream& FTInclExclStringLiteral::put(ostream& s) const
 
 void FTInclExclStringLiteral::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	ref_or_list_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -6924,8 +6929,8 @@ ostream& FTLanguageOption::put(ostream& s) const
 
 void FTLanguageOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6955,8 +6960,8 @@ ostream& FTWildcardOption::put(ostream& s) const
 
 void FTWildcardOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -6986,8 +6991,8 @@ ostream& FTContent::put(ostream& s) const
 
 void FTContent::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -7017,8 +7022,8 @@ ostream& FTAnyallOption::put(ostream& s) const
 
 void FTAnyallOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -7050,10 +7055,10 @@ ostream& FTRange::put(ostream& s) const
 
 void FTRange::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	src_expr_h->accept(v);
 	dst_expr_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -7085,10 +7090,10 @@ ostream& FTDistance::put(ostream& s) const
 
 void FTDistance::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	dist_h->accept(v);
 	unit_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -7120,10 +7125,10 @@ ostream& FTWindow::put(ostream& s) const
 
 void FTWindow::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	window_h->accept(v);
 	unit_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -7153,9 +7158,9 @@ ostream& FTTimes::put(ostream& s) const
 
 void FTTimes::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	range_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 
@@ -7185,8 +7190,8 @@ ostream& FTScope::put(ostream& s) const
 
 void FTScope::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -7216,8 +7221,8 @@ ostream& FTUnit::put(ostream& s) const
 
 void FTUnit::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -7247,8 +7252,8 @@ ostream& FTBigUnit::put(ostream& s) const
 
 void FTBigUnit::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this); 
+	BEGIN_VISITOR ();
+	END_VISITOR ();
 }
 
 
@@ -7278,9 +7283,9 @@ ostream& FTIgnoreOption::put(ostream& s) const
 
 void FTIgnoreOption::accept(parsenode_visitor& v) const 
 { 
-	if (!v.begin_visit(*this)) return;
+	BEGIN_VISITOR ();
 	union_h->accept(v);
-	v.end_visit(*this); 
+	END_VISITOR ();
 }
 
 

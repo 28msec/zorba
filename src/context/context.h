@@ -27,15 +27,14 @@
 #define XQP_CONTEXT_H
 
 #include "context/common.h"
-#include "runtime/core/item_iterator.h"
 #include "util/fx/fxhashmap.h"
 #include "util/rchandle.h"
 #include "errors/Error.h"
-#include "store/api/item_factory.h"
 
 namespace xqp {
 
-class zorba;
+  class zorba;
+  class expr;
 
 /*______________________________________________________________________
 |  
@@ -46,23 +45,56 @@ class zorba;
 class context : public rcobject
 {
 protected:
-	rchandle<context> parent_h;
-	fxhash64map<Iterator_t> keymap;
+  typedef union { 
+    expr *exprValue;
+    int intValue;
+    bool boolValue;
+  } ctx_value_t;
+  
+protected:
+	context *parent;
+	fxhashmap<ctx_value_t> keymap;
+	fxhashmap<string> str_keymap;
 
 public: // context interface
-  context (context *_parent = NULL) : parent_h (_parent) {}
-	rchandle<context> parent() const { return parent_h; }
+  context (context *_parent = NULL) : parent (_parent) {}
+	context *get_parent() const { return parent; }
 
-	Iterator_t context_value(qnamekey_t key) const
+	template<class V> V context_value(const fxhashmap<V> &keymap, string key, bool *found) const
 	{
-		Iterator_t it_h;
-		if (!keymap.get(key, it_h)) return NULL;
-		return it_h;
+    V val;
+		if (keymap.get(key, val)) {
+      *found = true;
+      return val;
+    } else
+      if (parent != NULL)
+        return parent->context_value (keymap, key, found);
+      else {
+        *found = false;
+        return val;
+      }
 	}
+
+  expr *lookup_expr (string key) const {
+    bool found;
+    ctx_value_t e = context_value (keymap, key, &found);
+    return found ? e.exprValue : NULL;
+  }
+
+  void bind_var (string name, expr *e) {
+    ctx_value_t v = { e };
+    keymap.put (name, v);
+  }
 
 };
 
 
 }	/* namespace xqp */
+
 #endif /*	XQP_CONTEXT_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

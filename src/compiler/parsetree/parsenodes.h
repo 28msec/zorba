@@ -178,6 +178,7 @@ class FTWords;
 class FTWordsSelection;
 class FTWordsValue;
 class FilterExpr;
+class ForOrLetClause;
 class ForClause;
 class ForLetClauseList;
 class ForwardAxis;
@@ -1310,20 +1311,21 @@ public:
 class ForLetClauseList : public parsenode
 /*______________________________________________________________________
 |
-|	::= ForLetClause
-|			|	ForLetClause  ForLetClauseList
+|	::= ForOrLetClause
+|			|	ForOrLetClause  ForLetClauseList
 |_______________________________________________________________________*/
 {
 protected:
-	std::vector<rchandle<parsenode> > forlet_hv;
+	std::vector<rchandle<ForOrLetClause> > forlet_hv;
 
 public:
 	ForLetClauseList(const yy::location&);
 	~ForLetClauseList();
 
 public:
-	void push_back(rchandle<parsenode> forlet_h) { forlet_hv.push_back(forlet_h); }
-	rchandle<parsenode> operator[](int i) const { return forlet_hv[i]; }
+	void push_back(rchandle<ForOrLetClause> forlet_h) { forlet_hv.push_back(forlet_h); }
+	rchandle<ForOrLetClause> operator[](int i) const { return forlet_hv[i]; }
+  int size () const { return forlet_hv.size (); }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1332,15 +1334,22 @@ public:
 };
 
 
-// [33b] ForLetClause
+// [33b] ForOrLetClause
 /*______________________________________________________________________
 |	::= ForClause | LetClause
 |_______________________________________________________________________*/
 
+class ForOrLetClause : public parsenode {
+public:
+  ForOrLetClause (const yy::location& _loc) : parsenode (loc) {}
+  typedef enum { for_clause, let_clause } for_or_let_t;
+  virtual for_or_let_t for_or_let () const = 0;
+  virtual int get_decl_count () const = 0;
+};
 
 // [34] ForClause
 // --------------
-class ForClause : public parsenode
+class ForClause : public ForOrLetClause
 /*______________________________________________________________________
 |
 |	::= FOR_DOLLAR  VarInDeclList
@@ -1362,6 +1371,10 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
+
+public:
+  for_or_let_t for_or_let () const { return for_clause; }
+  int get_decl_count () const;
 };
 
 
@@ -1410,7 +1423,7 @@ class VarInDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	std::string varname;
+	std::string varname;  // TODO: qname
 	rchandle<TypeDeclaration> typedecl_h;
 	rchandle<PositionalVar> posvar_h;
 	rchandle<FTScoreVar> ftscorevar_h;
@@ -1471,7 +1484,7 @@ public:
 
 // [36] LetClause
 // --------------
-class LetClause : public parsenode
+class LetClause : public ForOrLetClause
 /*______________________________________________________________________
 |
 |	::= LET_DOLLAR VarGetsDeclList
@@ -1494,6 +1507,9 @@ public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
+public:
+  for_or_let_t for_or_let () const { return let_clause; }
+  int get_decl_count () const;
 };
 
 
@@ -1521,6 +1537,8 @@ public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
+public:
+  int size () const { return vardecl_hv.size (); }
 };
 
 

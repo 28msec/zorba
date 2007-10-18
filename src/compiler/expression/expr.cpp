@@ -169,17 +169,6 @@ std::pair<std::string, std::string> qname_expr::generatePrefixLocal(std::string 
 
 // [33a]
 
-var_expr::var_expr(
-	yy::location const& loc)
-:
-	expr(loc)
-{
-}
-
-var_expr::~var_expr()
-{
-}
-
 string var_expr::decode_var_kind(
 	enum var_kind k)
 {
@@ -202,10 +191,6 @@ ostream& var_expr::put( ostream& os) const
 	if (varname_h!=NULL) {
 		os << " name=";
 		get_varname()->put(os);
-	}
-	if (valexpr_h!=NULL) {
-		os << ", expr=";
-		get_valexpr()->put(os);
 	}
 	os << ", type=" << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
@@ -376,9 +361,6 @@ ostream& quantified_expr::put( ostream& os) const
 		Assert(var_h->varname_h!=NULL);
 		os << INDENT;
 		var_h->varname_h->put(os) << " in ";
-		//d Assert<null_pointer>(var_h->valexpr_h!=NULL);
-		Assert(var_h->valexpr_h!=NULL);
-		var_h->valexpr_h->put(os) << endl;
 		UNDENT;
 	}
 

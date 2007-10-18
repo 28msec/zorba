@@ -125,3 +125,8 @@ typedef struct elempair
 } /* namespace xqp */
 #endif /* XQP_COMMON_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

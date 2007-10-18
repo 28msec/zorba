@@ -40,8 +40,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	
 	SimpleStore simpleStore;
 	BasicItemFactory basicItemFactory;
-	static_context::init(&basicItemFactory);
-	dynamic_context::init(&basicItemFactory);
+	static_context::init();
+	dynamic_context::init();
 
 	///thread specific
 
@@ -49,8 +49,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	timer.start();
 
 	zorba* zorp = zorba::allocateZorbaForNewThread();//new zorba();
-	static_context* sctx_p = new static_context(NULL);//NULL);
-	dynamic_context* dctx_p = new dynamic_context(NULL);//NULL);
+	static_context* sctx_p = new static_context();
+	dynamic_context* dctx_p = new dynamic_context();
 	//add the error manager
 	errors_english	*err_messages = new errors_english;///the english error messages
 	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages);

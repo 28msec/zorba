@@ -97,6 +97,11 @@ public:	// ctor, dtor
   rchandle(rchandle const& rhs);
   ~rchandle();
 
+public:
+  T *get_ptr () const { return p; }
+  template <class otherT> rchandle<otherT> cast () const
+  { return rchandle<otherT> (static_cast<otherT *> (p)); }
+
 public:	// operator overloading
   rchandle& operator=(rchandle const& rhs);
   T* operator->() const; 

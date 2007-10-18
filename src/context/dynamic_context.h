@@ -27,9 +27,9 @@
 
 #include "context/common.h"
 #include "context/context.h"
+#include "context/context_impl.h"
 #include "functions/library.h"
 #include "util/rchandle.h"
-#include "runtime/core/item_iterator.h"
 #include "types/sequence_type.h"
 
 namespace xqp {
@@ -39,32 +39,20 @@ class itemstore;
 class dynamic_context : public context
 {
 public:
-	enum ordering_mode_t	{ ordered, unordered };
+	typedef enum { ordered, unordered } ordering_mode_t;
 	
 protected:
 	//daniel: these serve as constant global keys
 	static bool static_init;
-	static qnamekey_t namespaces_key;
-	static qnamekey_t default_element_type_ns_key;
-	static qnamekey_t context_item_key;
-	static qnamekey_t context_item_type_key;
-	static qnamekey_t ordering_mode_key;
-	static qnamekey_t current_time_key;
-	static qnamekey_t implicit_timezone_key;
 
-	ItemFactory* itemFactory_p;
 	library* lib;
 
 public:
-	static void init(ItemFactory*);
-	dynamic_context(ItemFactory* v_p)
-		: itemFactory_p(v_p) {}
+	static void init();
+	dynamic_context() {}
 	~dynamic_context() {}
 
 public:
-	// return the value of a variable by QName
-	PlanIter_t var_value(const Item*) const;
-
 	// set/get the function library
 	void set_library(library* _lib) { lib = _lib; }
 	library* get_library() const { return lib; }
@@ -80,14 +68,18 @@ public:
 	void set_context_item(Item_t);
 	void set_context_item_type(sequence_type_t );
 
-	Iterator_t namespaces() const;
-	void add_namespace(Item&);
+  #if 0
+  // return the value of a variable by QName
+	PlanIter_t var_value(const Item*) const;
 
 	const Item& default_element_type_namespace() const;
 	void set_default_element_type_namespace(Item&);
+	PlanIter_t namespaces() const;
+	void add_namespace(Item&);
+  #endif
 
-	enum ordering_mode_t ordering_mode() const;
-	void set_ordering_mode(enum ordering_mode_t v);
+	ordering_mode_t ordering_mode() const;
+	void set_ordering_mode(ordering_mode_t v);
 
 	const function* get_function(qnamekey_t key) { return lib->get(key); }
 
@@ -97,3 +89,8 @@ public:
 }	/* namespace xqp */
 #endif /*	XQP_DYNAMIC_CONTEXT_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
