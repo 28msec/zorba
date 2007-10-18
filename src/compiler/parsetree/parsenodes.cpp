@@ -1300,8 +1300,8 @@ ostream& ForLetClauseList::put(ostream& s) const
 void ForLetClauseList::accept(parsenode_visitor& v) const 
 { 
 	BEGIN_VISITOR ();
-	vector<rchandle<ForOrLetClause> >::const_reverse_iterator it = forlet_hv.rbegin();
-	for (; it!=forlet_hv.rend(); ++it) {
+	vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
+	for (; it!=forlet_hv.end(); ++it) {
 		parsenode* e_p = &**it;
 		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
 		Assert(e_p!=NULL,LOCATION);
