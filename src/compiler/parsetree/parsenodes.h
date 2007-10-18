@@ -1341,7 +1341,7 @@ public:
 
 class ForOrLetClause : public parsenode {
 public:
-  ForOrLetClause (const yy::location& _loc) : parsenode (loc) {}
+  ForOrLetClause (const yy::location& _loc) : parsenode (_loc) {}
   typedef enum { for_clause, let_clause } for_or_let_t;
   virtual for_or_let_t for_or_let () const = 0;
   virtual int get_decl_count () const = 0;
