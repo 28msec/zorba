@@ -68,8 +68,8 @@ public:
 	static void init();
   static_context()
 		: context (NULL) {}
-  static_context (static_context &_parent)
-    : context (&_parent) {}
+  static_context (static_context *_parent)
+    : context (_parent) {}
 
 	~static_context() {}
 

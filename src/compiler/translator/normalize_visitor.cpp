@@ -212,10 +212,10 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
       int size = forclause->get_vardecl_list()->size();
       
       for (j = 0; j < size; j++) {
+        exprs.push_back(pop_nodestack ());
         rchandle<var_expr> ve = pop_nodestack ().cast<var_expr> ();
         ve->set_kind (var_expr::for_var);
         vars.push_back (ve);
-        exprs.push_back(pop_nodestack ());
         pop_scope ();
       }
 
@@ -561,18 +561,18 @@ void *normalize_visitor::begin_visit(const VarInDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   push_scope ();
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const VarInDecl& v, void *visit_state)
-{
-  cout << std::string(depth--, ' ') << TRACE << endl;
   var_expr *evar = new var_expr (v.get_location ());
   string varname = v.get_varname ();
   // TODO: qname
   evar->set_varname (new qname_expr (v.get_location (), "", varname));
   sctx_p->bind_var (varname, evar);
   nodestack.push (evar);
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const VarInDecl& v, void *visit_state)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void *normalize_visitor::begin_visit(const VarInDeclList& v)
@@ -1642,6 +1642,14 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
+void normalize_visitor::end_visit(const VarRef& v, void *visit_state)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+	var_expr *e = static_cast<var_expr *> (sctx_p->lookup_expr (v.get_varname ()));
+  if (e == NULL)
+    cout << "Variable " << v.get_varname () << " not found!\n";
+	nodestack.push (rchandle<expr> (e));
+}
 
 
 /* update-related */
@@ -2716,15 +2724,6 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 void normalize_visitor::end_visit(const ValidateExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(const VarRef& v, void *visit_state)
-{
-  cout << std::string(depth--, ' ') << TRACE << endl;
-	var_expr *e = static_cast<var_expr *> (sctx_p->lookup_expr (v.get_varname ()));
-  if (e == NULL)
-    cout << "Variable " << v.get_varname () << " not found!\n";
-	nodestack.push (rchandle<expr> (e));
 }
 
 

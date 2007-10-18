@@ -47,11 +47,11 @@ void static_context::init()
 	}
 }
   
-  DECL_PARAM2 (static_context, construction_mode)
-  DECL_PARAM2 (static_context, order_empty_mode)
-  DECL_PARAM2 (static_context, boundary_space_mode)
-  DECL_PARAM2 (static_context, inherit_mode)
-  DECL_PARAM2 (static_context, preserve_mode)
+  DECL_ENUM_PARAM (static_context, construction_mode)
+  DECL_ENUM_PARAM (static_context, order_empty_mode)
+  DECL_ENUM_PARAM (static_context, boundary_space_mode)
+  DECL_ENUM_PARAM (static_context, inherit_mode)
+  DECL_ENUM_PARAM (static_context, preserve_mode)
 
   DECL_STR_PARAM (static_context, baseuri)
   DECL_STR_PARAM (static_context, default_collation)

@@ -65,7 +65,7 @@ public:
 	}
 
   void push_scope ()
-  { sctx_p = new static_context (*sctx_p); }
+  { sctx_p = new static_context (sctx_p); }
   void pop_scope (int n = 1)
   { 
     while (n-- > 0) {

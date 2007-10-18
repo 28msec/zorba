@@ -50,7 +50,7 @@ sequence_type_t dynamic_context::context_item_type() const
 	return xs_anyType; //stub
 }
 
-DECL_PARAM2 (dynamic_context, ordering_mode)
+DECL_ENUM_PARAM (dynamic_context, ordering_mode)
 
 void dynamic_context::set_context_item_type(
 	sequence_type_t v)

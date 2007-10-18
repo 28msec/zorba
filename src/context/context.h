@@ -56,29 +56,26 @@ protected:
 	fxhashmap<ctx_value_t> keymap;
 	fxhashmap<string> str_keymap;
 
+  bool lookup_once (string key, string &val) const
+  { return str_keymap.get (key, val); }
+  bool lookup_once (string key, ctx_value_t &val) const
+  { return keymap.get (key, val); }
+
 public: // context interface
   context (context *_parent = NULL) : parent (_parent) {}
 	context *get_parent() const { return parent; }
 
-	template<class V> V context_value(const fxhashmap<V> &keymap, string key, bool *found) const
+	template<class V> bool context_value(string key, V &val) const
 	{
-    V val;
-		if (keymap.get(key, val)) {
-      *found = true;
-      return val;
-    } else
-      if (parent != NULL)
-        return parent->context_value (keymap, key, found);
-      else {
-        *found = false;
-        return val;
-      }
+		if (lookup_once (key, val))
+        return true;
+    else
+      return parent == NULL ? false : parent->context_value (key, val);
 	}
 
   expr *lookup_expr (string key) const {
-    bool found;
-    ctx_value_t e = context_value (keymap, key, &found);
-    return found ? e.exprValue : NULL;
+    ctx_value_t val;
+    return context_value (key, val) ? val.exprValue : NULL;
   }
 
   void bind_var (string name, expr *e) {
