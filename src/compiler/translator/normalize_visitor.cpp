@@ -204,13 +204,13 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
   ForLetClauseList *clauses = v.get_forlet_list ().get_ptr ();
   for (i = 0; i < clauses->size (); i++) {
     ForOrLetClause *clause = (*clauses) [i].get_ptr ();
+    vector<rchandle <var_expr> > vars;
+    vector<rchandle <expr> > exprs;
+    int size = clause->get_decl_count ();
+
     if (clause->for_or_let () == ForOrLetClause::for_clause) {
       ForClause *forclause = static_cast<ForClause *> (clause);
-      vector<rchandle <var_expr> > vars;
-      vector<rchandle <expr> > exprs;
-      
-      int size = forclause->get_vardecl_list()->size();
-      
+
       for (j = 0; j < size; j++) {
         exprs.push_back(pop_nodestack ());
         rchandle<var_expr> ve = pop_nodestack ().cast<var_expr> ();
@@ -221,6 +221,21 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
 
       for (j = size - 1; j >= 0; j--) {
         forlet_clause *flc = new forlet_clause (forlet_clause::for_clause, vars [j], NULL, NULL, exprs [j]);
+        flwor->add (rchandle<forlet_clause> (flc));
+      }
+    } else {
+      LetClause *letclause = static_cast<LetClause *> (clause);
+      
+      for (j = 0; j < size; j++) {
+        exprs.push_back(pop_nodestack ());
+        rchandle<var_expr> ve = pop_nodestack ().cast<var_expr> ();
+        ve->set_kind (var_expr::let_var);
+        vars.push_back (ve);
+        pop_scope ();
+      }
+
+      for (j = size - 1; j >= 0; j--) {
+        forlet_clause *flc = new forlet_clause (forlet_clause::let_clause, vars [j], NULL, NULL, exprs [j]);
         flwor->add (rchandle<forlet_clause> (flc));
       }
     }
@@ -281,6 +296,75 @@ void *normalize_visitor::begin_visit(const OrderByClause& v)
 void normalize_visitor::end_visit(const OrderByClause& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
+}
+
+void *normalize_visitor::begin_visit(const VarDecl& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const VarDecl& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *normalize_visitor::begin_visit(const VarGetsDecl& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+  push_scope ();
+  var_expr *evar = new var_expr (v.get_location ());
+  string varname = v.get_varname ();
+  // TODO: qname
+  evar->set_varname (new qname_expr (v.get_location (), "", varname));
+  sctx_p->bind_var (varname, evar);
+  nodestack.push (evar);
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const VarGetsDecl& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *normalize_visitor::begin_visit(const VarGetsDeclList& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const VarGetsDeclList& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *normalize_visitor::begin_visit(const VarInDecl& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+  push_scope ();
+  var_expr *evar = new var_expr (v.get_location ());
+  string varname = v.get_varname ();
+  // TODO: qname
+  evar->set_varname (new qname_expr (v.get_location (), "", varname));
+  sctx_p->bind_var (varname, evar);
+  nodestack.push (evar);
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const VarInDecl& v, void *visit_state)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *normalize_visitor::begin_visit(const VarInDeclList& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const VarInDeclList& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
@@ -535,50 +619,6 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 void *normalize_visitor::begin_visit(const ValueComp& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void *normalize_visitor::begin_visit(const VarDecl& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void *normalize_visitor::begin_visit(const VarGetsDecl& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void *normalize_visitor::begin_visit(const VarGetsDeclList& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
-	return no_state;
-}
-
-void *normalize_visitor::begin_visit(const VarInDecl& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-  push_scope ();
-  var_expr *evar = new var_expr (v.get_location ());
-  string varname = v.get_varname ();
-  // TODO: qname
-  evar->set_varname (new qname_expr (v.get_location (), "", varname));
-  sctx_p->bind_var (varname, evar);
-  nodestack.push (evar);
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const VarInDecl& v, void *visit_state)
-{
-  cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const VarInDeclList& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-// 	nodestack.push(NULL);
 	return no_state;
 }
 
@@ -2281,26 +2321,6 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void normalize_visitor::end_visit(const ValueComp& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(const VarDecl& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(const VarGetsDecl& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(const VarGetsDeclList& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void normalize_visitor::end_visit(const VarInDeclList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
