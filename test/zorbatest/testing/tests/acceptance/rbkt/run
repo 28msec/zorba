@@ -1,10 +1,10 @@
 #!/bin/bash
 
-export zorbaRoot=$SRC
+export zorbaRepos=$SRC
 
 #echo "zorbaRoot = $zorbaRoot"
 
-$zorbaRoot/test/rbkt/Scripts/rbkt.sh > /dev/null
+$zorbaRepos/test/rbkt/Scripts/rbkt.sh > /dev/null
 
 echo
 cat rbkt_summary.txt
