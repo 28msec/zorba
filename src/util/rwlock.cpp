@@ -8,7 +8,12 @@
 
 #include "util/rwlock.h"
 
+#ifndef WIN32
 #include <pthread.h>
+#else
+#include "util/win32/pthread.h"
+#endif
+
 #include <iostream>
 #include <sstream>
 #include <string>

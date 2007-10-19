@@ -24,8 +24,6 @@ INCLUDE(cmake_modules/FindICU.cmake)
 
 # some compiler flags that should always be used in order to force a good programming style
 IF (MSVC)
-	# included for <pthreads.h> substitute
-	INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/src/util/win32)	
 ELSE (MSVC)
 	ADD_DEFINITIONS(-Wall -Wno-uninitialized -W -Wno-unused -Wpointer-arith -Woverloaded-virtual -Winline)
 ENDIF (MSVC)
