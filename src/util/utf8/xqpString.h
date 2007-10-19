@@ -174,18 +174,31 @@ namespace xqp {
 		//! @{
 			/**
 			*Locate in this the first occurrence in the range [0, length) of the characters in pattern using the "Default collation".
-			*	@param pattern the text to search for.
+			*	@param pattern The text to search for.
 			*	@return The offset into this of the start of pattern, or -1 if not found.
 			*/
-			int16_t indexOf(const xqpString& pattern) ;
+			int16_t indexOf(const xqpString& pattern);
 
 			/**
 			*Locate in this the first occurrence in the range [0, length) of the characters in pattern using the a collation created using the provided locale.
-			*	@param pattern the text to search for.
+			*	@param pattern The text to search for.
 			*	@param loc The locale ID for which to open a collator.
 			*	@return The offset into this of the start of pattern, or -1 if not found.
 			*/
 			int16_t indexOf(const xqpString& pattern, const char * loc);
+
+			/**
+			*Determine if this ends with the characters in pattern in the range [0, length).
+			*	@param pattern The text to search for.
+			*/
+			bool endsWith(const xqpString& pattern);
+
+			/**
+			*Determine if this ends with the characters in pattern in the range [0, length).
+			*	@param pattern The text to search for.
+			*	@param loc The locale ID for which to open a collator.
+			*/
+			bool endsWith(const xqpString& pattern, const char * loc);
 		//!@}
 			const char* c_str() const;
 			
