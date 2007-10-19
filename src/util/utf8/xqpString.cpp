@@ -372,11 +372,6 @@ namespace xqp {
 			return( pos + pattern.length() == length() );
 		}
 
-		ZorbaErrorAlerts::error_alert(
-				error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-				error_messages::SYSTEM_ERROR,
-				NULL
-			);
 		//close the collator
 		delete coll;
 		return false;
@@ -413,11 +408,6 @@ namespace xqp {
 			return( pos + pattern.length() == length() );
 		}
 
-		ZorbaErrorAlerts::error_alert(
-				error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-				error_messages::SYSTEM_ERROR,
-				NULL
-			);
 		return false;
 	}
 
