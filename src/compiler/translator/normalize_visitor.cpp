@@ -202,7 +202,9 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
   flwor->set_retval (pop_nodestack ());
 
   ForLetClauseList *clauses = v.get_forlet_list ().get_ptr ();
-  for (i = 0; i < clauses->size (); i++) {
+  vector <forlet_clause *> eclauses;
+
+  for (i = clauses->size () - 1; i >= 0; i--) {
     ForOrLetClause *clause = (*clauses) [i].get_ptr ();
     vector<rchandle <var_expr> > vars;
     vector<rchandle <expr> > exprs;
@@ -219,9 +221,9 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
         pop_scope ();
       }
 
-      for (j = size - 1; j >= 0; j--) {
+      for (j = 0; j < size; j++) {
         forlet_clause *flc = new forlet_clause (forlet_clause::for_clause, vars [j], NULL, NULL, exprs [j]);
-        flwor->add (rchandle<forlet_clause> (flc));
+        eclauses.push_back (flc);
       }
     } else {
       LetClause *letclause = static_cast<LetClause *> (clause);
@@ -234,12 +236,15 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
         pop_scope ();
       }
 
-      for (j = size - 1; j >= 0; j--) {
+      for (j = 0; j < size; j++) {
         forlet_clause *flc = new forlet_clause (forlet_clause::let_clause, vars [j], NULL, NULL, exprs [j]);
-        flwor->add (rchandle<forlet_clause> (flc));
+        eclauses.push_back (flc);
       }
     }
   }
+  
+  for (i = eclauses.size () - 1; i >= 0; i--)
+    flwor->add (rchandle<forlet_clause> (eclauses [i]));
   nodestack.push (rchandle<expr> (flwor));
 }
 

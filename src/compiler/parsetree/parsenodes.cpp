@@ -1537,8 +1537,8 @@ ostream& VarGetsDeclList::put(ostream& s) const
 void VarGetsDeclList::accept(parsenode_visitor& v) const 
 { 
 	BEGIN_VISITOR ();
-	vector<rchandle<VarGetsDecl> >::const_reverse_iterator it = vardecl_hv.rbegin();
-	for (; it!=vardecl_hv.rend(); ++it) {
+	vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
+	for (; it!=vardecl_hv.end(); ++it) {
 		parsenode* e_p = &**it;
 		//d Assert<null_pointer>(e_p!=NULL,LOCATION);
 		Assert(e_p!=NULL,LOCATION);
