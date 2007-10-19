@@ -1,8 +1,26 @@
 #!/bin/bash
 
-export zorbaRepos=$SRC
+if [ ! ${zorbaRepos} ]; then
 
-#echo "zorbaRoot = $zorbaRoot"
+  if [ ! ${SRC} ]; then
+    echo "ERROR: SRC variable is not set"
+    exit 1
+  fi
+
+  export zorbaRepos=$SRC
+fi
+
+
+if [ ! ${zorbaExce} ]; then
+
+  if [ ! ${ZORBA} ]; then
+    echo "ERROR: ZORBA variable is not set"
+    exit 1
+  fi
+
+  export zorbaExec=$ZORBA
+fi
+
 
 $zorbaRepos/test/rbkt/Scripts/rbkt.sh > /dev/null
 
@@ -11,3 +29,5 @@ cat rbkt_summary.txt
 echo
 
 rm -f rbkt_summary.txt > /dev/null
+rm -f query.xml > /dev/null
+rm -f query.dot > /dev/null

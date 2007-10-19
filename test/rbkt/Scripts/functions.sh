@@ -92,7 +92,7 @@ function run_query
 
   local queryFile="$1"
 
-  local EXE=${binPath}/query_exec
+  local EXE=${zorbaExec}
 
   if [ ! -e "${EXE}" ]; then
     echo "ERROR 1 run_query: binary executable ${EXE} not found"

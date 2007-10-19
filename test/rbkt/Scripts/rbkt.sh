@@ -4,7 +4,7 @@ error=0
 
 #
 # The environment variable zorbaRepos must be defined. It should point to a
-# directory containing a zorba repository (e.g., /home/markos/zorba/xquery) 
+# directory containing a zorba source repository (e.g., /home/markos/zorba/xquery) 
 #
 if [ ! ${zorbaRepos} ]; then
    echo "ERROR 1 rbkt.sh: zorbaRepos environment variable is not set"
@@ -13,9 +13,13 @@ fi
 
 
 #
-# Directory containing the query_exec binary.
+# The environment variable zorbaExe must be defined. It must be set to the
+# full pathname of the query_exec executable
 #
-binPath=${zorbaRepos}/Build/test
+if [ ! ${zorbaExec} ]; then
+   echo "ERROR 1 rbkt.sh: zorbaExec environment variable is not set"
+   exit 1
+fi
 
 #
 # testRootDir is the root directory of the test environment. It contains the
