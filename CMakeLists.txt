@@ -47,7 +47,7 @@ ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 
 # for the moment, we include everything
 # however, we should move the headers (at least the library headers) into a separate directory
-INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 
 # Tell CMake to process the sub-directories
 ADD_SUBDIRECTORY(include)
