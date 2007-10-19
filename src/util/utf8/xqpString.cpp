@@ -1,7 +1,7 @@
 /**
  * @copyright
  * ========================================================================
- *	Copyright 2007 FLWOR Foundation
+ *	Copyright FLWOR Foundation
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -228,6 +228,95 @@ namespace xqp {
 			tt.push_back(UTF8Decode(c));
 		}
 		return tt;
+	}
+
+	//xqpString::Substring matching/ string search
+	int16_t xqpString::indexOf(const xqpString& pattern){
+		//create the collator object
+		UErrorCode status = U_ZERO_ERROR;
+
+		//TODO make the collator a global object
+		//NOTE By passing "root" as a locale parameter the root locale is used.
+		//Root locale implements the UCA rules
+		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
+		Collator *coll = Collator::createInstance(Locale("root"), status);
+	
+		if(U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
+		}
+		//set level 1 comparison for the collator
+		coll->setStrength(Collator::PRIMARY);
+
+		StringSearch search(getUnicodeString(pattern), getUnicodeString(utf8String), (RuleBasedCollator *)coll, NULL, status);
+
+		if(U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
+			//close the collator
+			delete coll;
+
+			return -1;
+		}
+
+		for(int16_t pos = search.first(status);
+		U_SUCCESS(status) && pos != USEARCH_DONE;
+		pos = search.next(status)) {
+			//close the collator
+			delete coll;
+
+			return pos;
+		}
+		if (U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
+			//close the collator
+			delete coll;
+			return -1;
+		}
+		//close the collator
+		delete coll;
+		return -1;
+	}
+
+	int16_t xqpString::indexOf(const xqpString& pattern, const char * loc){
+		UErrorCode status = U_ZERO_ERROR;
+
+		//A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
+		StringSearch search(getUnicodeString(pattern), getUnicodeString(utf8String), Locale(loc), NULL, status);
+
+		if(U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
+			return -1;
+		}
+
+		for(int16_t pos = search.first(status);
+		U_SUCCESS(status) && pos != USEARCH_DONE;
+		pos = search.next(status)) {
+			return pos;
+		}
+		if (U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+					error_messages::SYSTEM_ERROR,
+					NULL
+				);
+			return -1;
+		}
+		return -1;
 	}
 
 	const char* xqpString::c_str() const{
