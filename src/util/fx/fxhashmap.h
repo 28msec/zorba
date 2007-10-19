@@ -296,7 +296,8 @@ inline bool fxhashmap<V>::find(
 	const string& key,
 	uint32_t& hval) const
 {
-	char keybuf[key.length()+1];
+	char* keybuf;
+	keybuf = (char*) malloc((key.length()+1) * sizeof(char));
 	strcpy(keybuf,key.c_str());
 	uint32_t h0 = h(key);
 	bool result = false;
@@ -313,6 +314,7 @@ inline bool fxhashmap<V>::find(
 		h0 = (h0 + 1) % dir->size();			// collision
 	}
 	hval = h0;
+	free(keybuf);
 	return result;
 }
 
