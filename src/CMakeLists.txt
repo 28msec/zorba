@@ -2,11 +2,13 @@ SET(ZORBA_SRCS)
 
 INCLUDE (api/CMakeLists.txt)
 FOREACH (SRCS ${API_SRCS})
+    SOURCE_GROUP(api FILES api /${SRCS})
     LIST(APPEND ZORBA_SRCS api/${SRCS})
 ENDFOREACH (SRCS)
 
 INCLUDE (compiler/CMakeLists.txt)
 FOREACH (SRCS ${COMPILER_SRCS})
+    SOURCE_GROUP(compiler FILES compiler/${SRCS})
     LIST(APPEND ZORBA_SRCS compiler/${SRCS})
 ENDFOREACH (SRCS)
 
@@ -17,44 +19,50 @@ ENDFOREACH (SRCS)
 
 INCLUDE (context/CMakeLists.txt)
 FOREACH (SRCS ${CONTEXT_SRCS})
+    SOURCE_GROUP(context FILES context/${SRCS})
     LIST(APPEND ZORBA_SRCS context/${SRCS})
 ENDFOREACH (SRCS)
 
 
 INCLUDE (errors/CMakeLists.txt)
 FOREACH (SRCS ${ERRORS_SRCS})
+    SOURCE_GROUP(errors FILES errors/${SRCS})
     LIST(APPEND ZORBA_SRCS errors/${SRCS})
 ENDFOREACH (SRCS)
 
 
 INCLUDE (functions/CMakeLists.txt)
 FOREACH (SRCS ${FUNCTIONS_SRCS})
+    SOURCE_GROUP(functions FILES functions/${SRCS})
     LIST(APPEND ZORBA_SRCS functions/${SRCS})
 ENDFOREACH (SRCS)
 
 
 INCLUDE (runtime/CMakeLists.txt)
 FOREACH (SRCS ${RUNTIME_SRCS})
+    SOURCE_GROUP(runtime FILES runtime/${SRCS})
     LIST(APPEND ZORBA_SRCS runtime/${SRCS})
 ENDFOREACH (SRCS)
 
 
 INCLUDE (store/CMakeLists.txt)
 FOREACH (SRCS ${STORE_SRCS})
+    SOURCE_GROUP(store FILES store/${SRCS})
     LIST(APPEND ZORBA_SRCS store/${SRCS})
 ENDFOREACH (SRCS)
 
 
 INCLUDE (types/CMakeLists.txt)
 FOREACH (SRCS ${TYPES_SRCS})
+    SOURCE_GROUP(types FILES types/${SRCS})
     LIST(APPEND ZORBA_SRCS types/${SRCS})
 ENDFOREACH (SRCS)
 
 INCLUDE (util/CMakeLists.txt)
 FOREACH (SRCS ${UTIL_SRCS})
+    SOURCE_GROUP(util FILES util/${SRCS})
     LIST(APPEND ZORBA_SRCS util/${SRCS})
 ENDFOREACH (SRCS)
-
 
 IF (MSVC)
 	ADD_LIBRARY(zorba ${ZORBA_SRCS})
