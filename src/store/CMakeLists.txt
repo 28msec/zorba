@@ -7,3 +7,6 @@ SET(STORE_SRCS
     naive/node_items.cpp
     naive/simple_store.cpp)
 
+HEADER_GROUP_SUBFOLDER(api)
+HEADER_GROUP_SUBFOLDER(naive)
+HEADER_GROUP_SUBFOLDER(update)
