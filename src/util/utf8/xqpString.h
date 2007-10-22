@@ -177,7 +177,7 @@ namespace xqp {
 			*	@param pattern The text to search for.
 			*	@return The offset into this of the start of pattern, or -1 if not found.
 			*/
-			int16_t indexOf(const xqpString& pattern);
+			int32_t indexOf(const xqpString& pattern);
 
 			/**
 			*Locate in this the first occurrence in the range [0, length) of the characters in pattern using the a collation created using the provided locale.
@@ -185,8 +185,23 @@ namespace xqp {
 			*	@param loc The locale ID for which to open a collator.
 			*	@return The offset into this of the start of pattern, or -1 if not found.
 			*/
-			int16_t indexOf(const xqpString& pattern, const char * loc);
+			int32_t indexOf(const xqpString& pattern, const char * loc);
 
+			/**
+			*Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
+			*	@param pattern The text to search for.
+			*	@return The offset into this of the start of pattern, or -1 if not found.
+			*/
+			int32_t lastIndexOf(const xqpString& pattern);
+
+			/**
+			*Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
+			*	@param pattern The text to search for.
+			*	@param loc The locale ID for which to open a collator.
+			*	@return The offset into this of the start of pattern, or -1 if not found.
+			*/
+			int32_t lastIndexOf(const xqpString& pattern, const char * loc);
+			
 			/**
 			*Determine if this ends with the characters in pattern in the range [0, length).
 			*	@param pattern The text to search for.
@@ -199,6 +214,12 @@ namespace xqp {
 			*	@param loc The locale ID for which to open a collator.
 			*/
 			bool endsWith(const xqpString& pattern, const char * loc);
+
+			/**
+			*Returns a substring of the current string, starting at index, and length characters long.
+			*/
+			xqpString substr(size_type index, size_type length);
+
 		//!@}
 			const char* c_str() const;
 			

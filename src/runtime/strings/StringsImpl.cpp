@@ -635,9 +635,42 @@ EndsWithIterator::nextImpl(PlanState& planState) {
 /*begin class SubstringBeforeIterator*/
 Item_t
 SubstringBeforeIterator::nextImpl(PlanState& planState) {
+	Item_t item0;
+	Item_t item1;
+	Item_t itemColl;
+	xqp_string resStr;
+	int32_t index;
+
 	PlanIterator::PlanIteratorState* state;
 	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-	STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString("not implemented"), state );
+
+	if(theChildren.size() == 2 || theChildren.size()==3){
+		item0 = consumeNext ( theChildren[0], planState );
+		if ( item0 != NULL ){
+			item1 = consumeNext( theChildren[1], planState );
+			if( item1 != NULL ){
+				if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0){
+					STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr), state );
+				}
+				else{
+					if( theChildren.size() == 2 ){
+						index = item0->getStringValue().indexOf(item1->getStringValue());
+					}
+					else{ //theChildren.size() ==3
+						itemColl = consumeNext ( theChildren[2], planState );
+						if ( itemColl != NULL ){
+							//TODO solve track issue no.26
+							index = item0->getStringValue().indexOf(item1->getStringValue(), itemColl->getStringValue().c_str());
+						}
+					}
+					if(index != -1){
+						resStr = item0->getStringValue().substr(0,index);
+					}
+					STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr), state );
+				}
+			}
+		}
+	}
 	STACK_END2();
 }
 /*end class SubstringBeforeIterator*/
@@ -670,9 +703,45 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
 /*begin class SubstringAfterIterator*/
 Item_t
 SubstringAfterIterator::nextImpl(PlanState& planState) {
+	Item_t item0;
+	Item_t item1;
+	Item_t itemColl;
+	xqp_string resStr;
+	int32_t startPos;
+
 	PlanIterator::PlanIteratorState* state;
 	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-	STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString("not implemented"), state );
+
+	if(theChildren.size() == 2 || theChildren.size()==3){
+		item0 = consumeNext ( theChildren[0], planState );
+		if ( item0 != NULL ){
+			item1 = consumeNext( theChildren[1], planState );
+			if( item1 != NULL ){
+				if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0){
+					STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr), state );
+				}
+				else{
+					if( theChildren.size() == 2 ){
+						startPos = item0->getStringValue().lastIndexOf(item1->getStringValue());
+					}
+					else{ //theChildren.size() ==3
+						itemColl = consumeNext ( theChildren[2], planState );
+						if ( itemColl != NULL ){
+							//TODO solve track issue no.26
+							startPos = item0->getStringValue().lastIndexOf(item1->getStringValue(),
+																																								itemColl->getStringValue().c_str());
+						}
+					}
+					if(startPos != -1){
+						startPos += item1->getStringValue().length();
+						resStr = item0->getStringValue().substr( startPos,
+																																			item0->getStringValue().length() - startPos);
+					}
+					STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr), state );
+				}
+			}
+		}
+	}
 	STACK_END2();
 }
 /*end class SubstringAfterIterator*/
