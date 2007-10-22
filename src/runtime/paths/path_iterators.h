@@ -45,6 +45,7 @@ private:
   Item_t       theQName;
   Item_t       theTypeName;
   match_test_t theTestKind;
+  match_test_t theDocTestKind;
   bool         theNilledAllowed;
 
 public:
@@ -54,12 +55,14 @@ public:
         Item_t qname,
         Item_t tname,
         match_test_t kind,
+        match_test_t docTestKind,
         bool nilled = false)
     :
     UnaryBaseIterator<KindTestIterator>(loc, input),
     theQName(qname),
     theTypeName(tname),
     theTestKind(kind),
+    theDocTestKind(docTestKind),
     theNilledAllowed(nilled)
   {
   }

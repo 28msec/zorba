@@ -66,6 +66,38 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
     {
     case match_doc_test:
     {
+      if (contextNode->getNodeKind() != documentNode)
+      {
+        skip = true;
+        break;
+      }
+
+      Iterator_t children = contextNode->getChildren();
+      Item_t child = children->next();
+      match_test_t elemTest = match_no_test;
+
+      while (child != NULL)
+      {
+        if (child->getNodeKind() == elementNode)
+        {
+          if (elemTest != match_no_test)
+          {
+            skip = true;
+            break;
+          }
+          else
+          {
+            elemTest = theDocTestKind;
+          }
+        }
+        child = children->next();
+      }
+
+      if (elemTest == match_elem_test)
+        goto doctest1;
+      else if (elemTest == match_xs_elem_test)
+        goto doctest2;
+
       break;
     }
     case match_elem_test:
@@ -76,6 +108,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
         break;
       }
 
+doctest1:
       if (theQName != NULL && !theQName->equals(contextNode->getNodeName()))
       {
         skip = true;
@@ -129,6 +162,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
         break;
       }
 
+doctest2:
       break;
     }
     case match_xs_attr_test:
