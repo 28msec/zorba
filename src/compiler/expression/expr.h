@@ -192,17 +192,12 @@ public:
 };
 
 
+/******************************************************************************
+
+  var_expr represents a variable reference within any kind of expression.
+
+*******************************************************************************/
 class var_expr : public expr
-/*______________________________________________________________________
-| ::= VARNAME  ("in"|":=")  ExprSingle
-|     | VARNAME  TypeDeclaration  ("in"|":=")  ExprSingle
-|     | VARNAME  PositionalVar  "in"  ExprSingle
-|     | VARNAME  TypeDeclaration  PositionalVar  "in"  ExprSingle
-|     | VARNAME  FTScoreVar  ("in"|":=")  ExprSingle
-|     | VARNAME  TypeDeclaration  FTScoreVar  ("in"|":=")  ExprSingle
-|     | VARNAME  PositionalVar  FTScoreVar  "in"  ExprSingle
-|     | VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  "in"  ExprSingle
-|_______________________________________________________________________*/
 {
 public:
 	enum var_kind {
@@ -240,7 +235,6 @@ public:
 public:
 	void accept(expr_visitor&) const;
   std::ostream& put(std::ostream&) const;
-
 };
 
 
@@ -271,11 +265,23 @@ public:
 };
 
 
-// [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
+/******************************************************************************
 
+  [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
+
+   ::= VARNAME  ("in"|":=")  ExprSingle
+     | VARNAME  TypeDeclaration  ("in"|":=")  ExprSingle
+     | VARNAME  PositionalVar  "in"  ExprSingle
+     | VARNAME  TypeDeclaration  PositionalVar  "in"  ExprSingle
+     | VARNAME  FTScoreVar  ("in"|":=")  ExprSingle
+     | VARNAME  TypeDeclaration  FTScoreVar  ("in"|":=")  ExprSingle
+     | VARNAME  PositionalVar  FTScoreVar  "in"  ExprSingle
+     | VARNAME  TypeDeclaration  PositionalVar  FTScoreVar  "in"  ExprSingle
+
+********************************************************************************/
 class forlet_clause : public rcobject
 {
-public:	// types
+public:
 	enum forlet_t {
 		for_clause,
 		let_clause

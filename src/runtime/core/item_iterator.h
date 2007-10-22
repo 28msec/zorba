@@ -147,10 +147,11 @@ public:		// variable binding
 
 
 
-/*_____________________________________________________________
-|
-|	for $x in  _input_  return  _expr_
-|______________________________________________________________*/
+/*******************************************************************************
+
+	for $x in  _input_  return  _expr_
+
+********************************************************************************/
 class MapIterator : public Batcher<MapIterator>
 {
 private:
@@ -161,20 +162,20 @@ private:
 
 	PlanIter_t theInput;
 	PlanIter_t theExpr;
-	std::vector<var_iter_t> varv;
+	std::vector<var_iter_t> theVarRefs; // all references of $x inside theExpr
 // 	enum state theState;
 
 public:
 	MapIterator(
 		yy::location loc,
-		PlanIter_t _input,
-		PlanIter_t _expr,
-		std::vector<var_iter_t> _varv)
+		PlanIter_t input,
+		PlanIter_t expr,
+		std::vector<var_iter_t> varv)
 	:
 		Batcher<MapIterator>(loc),
-		theInput(_input),
-		theExpr(_expr),
-		varv(_varv)
+		theInput(input),
+		theExpr(expr),
+		theVarRefs(varv)
 	{}
 
 	~MapIterator() {}
@@ -190,7 +191,6 @@ public:
 	virtual void setOffset(PlanState& planState, int32_t& offset);
 	
 	std::ostream&  _show(std::ostream& os) const;
-
 };
 
 

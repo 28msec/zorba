@@ -100,84 +100,91 @@ SingletonIterator::setOffset(PlanState& planState, int32_t& offset)
 /* end class SingletonIterator */
 
 
-	/* begin class MapIterator */
-	Item_t
-	MapIterator::nextImpl ( PlanState& planState )
+/* begin class MapIterator */
+Item_t
+MapIterator::nextImpl ( PlanState& planState )
+{
+  Item_t item;
+  vector<var_iter_t>::const_iterator itv;
+  PlanIteratorState *state;
+  STACK_INIT2 ( PlanIteratorState, state, planState );
+	
+  while ( true )
 	{
-		Item_t item;
-		vector<var_iter_t>::const_iterator itv;
-		PlanIteratorState *state;
-		STACK_INIT2 ( PlanIteratorState, state, planState );
-	
-	
-		while ( true )
+    item = this->consumeNext ( this->theInput, planState );
+    if ( item == NULL )
+      break;
+
+    itv = theVarRefs.begin();
+    for ( ; itv != theVarRefs.end(); ++itv )
 		{
-			item = this->consumeNext ( this->theInput, planState );
-			if ( item == NULL )
-				break;
-			itv = varv.begin();
-			for ( ; itv!=varv.end(); ++itv )
-			{
-				( *itv )->bind ( item );
-			}
+      ( *itv )->bind ( item );
+    }
+    
+    item = this->consumeNext ( this->theExpr, planState );
+    while ( item != NULL )
+		{
+      STACK_PUSH2 ( item, state );
+      item = this->consumeNext ( this->theExpr, planState );
+    }
 	
-			item = this->consumeNext ( this->theExpr, planState );
-			while ( item != NULL )
-			{
-				STACK_PUSH2 ( item, state );
-				item = this->consumeNext ( this->theExpr, planState );
-			}
-	
-			this->resetChild ( this->theExpr, planState );
-		}
-		STACK_END2();
-	}
+    this->resetChild ( this->theExpr, planState );
+  }
+  STACK_END2();
+}
 
-	void 
-	MapIterator::resetImpl(PlanState& planState)
-	{
-		this->resetChild ( this->theInput, planState );
-		this->resetChild ( this->theExpr, planState );
-	}
 
-	void 
-	MapIterator::releaseResourcesImpl(PlanState& planState)
-	{
-		this->releaseChildResources ( this->theInput, planState );
-		this->releaseChildResources ( this->theExpr, planState );
-	}
+void 
+MapIterator::resetImpl(PlanState& planState)
+{
+  this->resetChild ( this->theInput, planState );
+  this->resetChild ( this->theExpr, planState );
+}
+
+
+void 
+MapIterator::releaseResourcesImpl(PlanState& planState)
+{
+  this->releaseChildResources ( this->theInput, planState );
+  this->releaseChildResources ( this->theExpr, planState );
+}
+
 	
-	int32_t
-	MapIterator::getStateSize()
-	{
-		return sizeof(PlanIteratorState);
-	}
-	
-	int32_t
-	MapIterator::getStateSizeOfSubtree()
-	{
-		return theInput->getStateSizeOfSubtree() 
+int32_t
+MapIterator::getStateSize()
+{
+  return sizeof(PlanIteratorState);
+}
+
+
+int32_t
+MapIterator::getStateSizeOfSubtree()
+{
+  return theInput->getStateSizeOfSubtree() 
 				+ theExpr->getStateSizeOfSubtree() 
 				+ this->getStateSize();
-	}
-	
-	void MapIterator::setOffset(PlanState& planState, int32_t& offset) {
-		this->stateOffset = offset;
-		offset += this->getStateSize();
-		
-		theInput->setOffset(planState, offset);
-		theExpr->setOffset(planState, offset);
-	}
+}
 
-	std::ostream& 
-	MapIterator::_show ( std::ostream& os )
-	const
-	{
-		theInput->show ( os );
-		theExpr->show ( os );
-		return os;
-	}
-	/* end class MapIterator */
+	
+void MapIterator::setOffset(PlanState& planState, int32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+	
+  theInput->setOffset(planState, offset);
+  theExpr->setOffset(planState, offset);
+}
+
+
+std::ostream& 
+MapIterator::_show ( std::ostream& os )	const
+{
+  theInput->show ( os );
+  theExpr->show ( os );
+  return os;
+}
+/* end class MapIterator */
+
 
 /* begin class EnclosedIterator */
 EnclosedIterator::EnclosedIterator(
