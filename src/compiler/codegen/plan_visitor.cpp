@@ -98,6 +98,15 @@ bool plan_visitor::begin_visit(const var_expr& v)
 	return true;
 }
 
+
+void plan_visitor::end_visit(const var_expr& v)
+{
+	var_iter_t v_h = new var_iterator("x",v.get_loc());
+	itstack.push(&*v_h);
+	timstack.push(&*v_h);
+}
+
+
 bool plan_visitor::begin_visit(const order_modifier& v)
 {
   cout << TRACE << endl;
@@ -473,7 +482,8 @@ bool plan_visitor::begin_visit(const match_expr& v)
     }
 
     matchIte = new KindTestIterator(v.get_loc(), axisIte, qname, tname,
-                                    v.getTestKind(), v.getNilledAllowed());
+                                    v.getTestKind(), v.getDocTestKind(),
+                                    v.getNilledAllowed());
   }
 
   itstack.push(matchIte);
@@ -636,13 +646,6 @@ cout << TRACE << endl;
 /*..........................................
  :  end visit                              :
  :.........................................*/
-void plan_visitor::end_visit(const var_expr& v)
-{
-	var_iter_t v_h = new var_iterator("x",v.get_loc());
-	itstack.push(&*v_h);
-	timstack.push(&*v_h);
-}
-
 void plan_visitor::end_visit(const order_modifier& v)
 {
   cout << TRACE << endl;
