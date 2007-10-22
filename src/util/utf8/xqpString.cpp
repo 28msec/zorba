@@ -422,7 +422,8 @@ namespace xqp {
 	}
 
 	xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length){
-		char target[length*4 + 1];
+		char* target;
+		target = new char[length*4 + 1];
 		UnicodeString str = getUnicodeString( utf8String );
 		int32_t size =  sizeof(target);
 
@@ -430,6 +431,8 @@ namespace xqp {
 		target[targetsize] = 0; /* NULL termination */
 
 		UnicodeString ret(target);
+
+		delete target;
 		return getXqpString(ret);
 	}
 
@@ -461,7 +464,8 @@ namespace xqp {
 	}
 
 	xqpString xqpString::getXqpString(UnicodeString in){
-		char target[in.getCapacity() + 1];
+		char* target;
+		target = new char[in.getCapacity() + 1];
 		int32_t destLength;
 		UErrorCode status = U_ZERO_ERROR;
 
@@ -477,6 +481,7 @@ namespace xqp {
 					);
 		}
 		xqpString ret(&target[0]);
+		delete target;
 		return ret;
 	}
 
