@@ -8,10 +8,16 @@
 
 //#include "errors/errors.h"
 #include "store/api/item.h"
+//#include "store/api/store.h"
 #include "errors/errors.h"
 #include "types/typecodes.h"
 #include "util/rchandle.h"
-#include "store/api/item.h"
+
+///from ICU
+//#include <unicode/utypes.h>
+#include <unicode/coll.h>
+//#include <unicode/ustring.h>
+
 #include <list>
 
 //using namespace std;
@@ -27,6 +33,7 @@ namespace xqp {
 ////////////////////////////////Error handling interface //////////////////
 typedef rchandle<Item> Item_t;
 class ItemFactory;
+class Store;
 
 
 class Zorba_QName
@@ -136,7 +143,8 @@ typedef int user_collation(uint32_t codepoint1, uint32_t codepoint2);
 class XQueryResult : public rcobject
 {
 public:
-	Item_t		next();
+	virtual ~XQueryResult();
+	virtual Item_t		next();
 };
 
 /// the Static Context
@@ -145,22 +153,22 @@ class StaticQueryContext
 {
 public:
 
-	void		SetXPath1_0CompatibMode( bool mode );///true for XPath1.0 only, false for XPath2.0
-	void		AddNamespace( std::string prefix, std::string URI );
-	void		SetDefaultElementAndTypeNamespace( std::string URI );
-	void		SetDefaultFunctionNamespace( std::string URI );
-	void		SetContextItemStaticType( enum TypeCode		type );
-	void		AddCollation( std::string URI, std::string available_collation );//if URI is empty then it sets the default collation
-	void		SetCustomCollation( user_collation *fn_collation);
-	void		SetConstructionMode( enum construction_mode );
-	void		SetOrderingMode( enum ordering_mode );
-	void		SetDefaultOrderForEmptySequences( enum ordering_mode );
-	void		SetBoundarySpacePolicy( enum boundary_space_policy );
-	void		SetCopyNamespacesMode( bool preserve, bool inherit );
-	void		SetBaseURI( std::string baseURI );
+	virtual void		SetXPath1_0CompatibMode( bool mode );///true for XPath1.0 only, false for XPath2.0
+	virtual void		AddNamespace( std::string prefix, std::string URI );
+	virtual void		SetDefaultElementAndTypeNamespace( std::string URI );
+	virtual void		SetDefaultFunctionNamespace( std::string URI );
+	virtual void		SetContextItemStaticType( enum TypeCode		type );
+	virtual void		AddCollation( std::string URI, std::string available_collation );//if URI is empty then it sets the default collation
+	virtual void		SetCustomCollation( user_collation *fn_collation);
+	virtual void		SetConstructionMode( enum construction_mode );
+	virtual void		SetOrderingMode( enum ordering_mode );
+	virtual void		SetDefaultOrderForEmptySequences( enum ordering_mode );
+	virtual void		SetBoundarySpacePolicy( enum boundary_space_policy );
+	virtual void		SetCopyNamespacesMode( bool preserve, bool inherit );
+	virtual void		SetBaseURI( std::string baseURI );
 	//statically known documents (types)
-	void		AddDocumentType( std::string URI, TypeCode doc_type );
-	void		AddCollectionType( std::string URI, TypeCode		collection_type );///if URI is empty then it refers to default collection type
+	virtual void		AddDocumentType( std::string URI, TypeCode doc_type );
+	virtual void		AddCollectionType( std::string URI, TypeCode		collection_type );///if URI is empty then it refers to default collection type
 };
 
 class DynamicQueryContext : public rcobject
@@ -170,17 +178,17 @@ class DynamicQueryContext : public rcobject
 
 
 	///following is the input data; this is not duplicable between executions
-	bool		SetVariable( Zorba_QName varname, XQueryResult *item_iter );
-	bool		SetVariable( Zorba_QName varname, Item_t &item );
-	bool		DeleteVariable( Zorba_QName varname );
+	virtual bool		SetVariable( Zorba_QName varname, XQueryResult *item_iter );
+	virtual bool		SetVariable( Zorba_QName varname, Item_t &item );
+	virtual bool		DeleteVariable( Zorba_QName varname );
 
 
 	///register documents available through fn:doc() in xquery
-	bool			RegisterAvailableDocument(xqp_string docURI,
+	virtual bool			RegisterAvailableDocument(xqp_string docURI,
 																			xqp_string store_docURI);
 	///register collections available through fn:collection() in xquery
 	///default collection has empty URI ""
-	bool			RegisterAvailableCollection(xqp_string collectionURI,
+	virtual bool			RegisterAvailableCollection(xqp_string collectionURI,
 																			xqp_string store_collectionURI);
 };
 
@@ -192,7 +200,7 @@ class XQuery : public rcobject
 		friend class XQueryPtr;
 protected:
     XQuery( );
-    ~XQuery();
+    virtual ~XQuery();
 
 public:
 
@@ -202,21 +210,21 @@ public:
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    bool compile(StaticQueryContext* = 0, bool routing_mode = false);
+    virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false);
 
     // execute the query and compile it if necessary
-		//daniel: return true for success
+		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-    XQueryResult* execute( DynamicQueryContext* = 0);
+    virtual XQueryResult* execute( DynamicQueryContext* = 0);
 
-    bool isCompiled();
+    virtual bool isCompiled();
 
     // clone the query (can be compiled or not compiled)
    // QueryPtr clone();
 
 		//daniel: isn't the Query more suitable to serialize itself?
-		bool   serializeQuery(ostream &os);
+		virtual bool   serializeQuery(ostream &os);
 
 public:
     // getters/setters for Static- and DynamicQueryContext
@@ -224,7 +232,7 @@ public:
 
     // Matthias: don't call it internal
     // there is no need to distinguish interal and external
-		StaticQueryContext* getInternalStaticContext();
+		virtual StaticQueryContext* getInternalStaticContext();
  //   DynamicQueryContextPtr getInternalDynamicContext();
 
 		//daniel: get the variables out of the dynamic context class
@@ -248,13 +256,19 @@ public:
 class ZorbaFactory
 {
 public:
-	ZorbaFactory(ItemFactory*);
+	ZorbaFactory(ItemFactory*, Store*);
 	~ZorbaFactory();
 
-	void InitThread();
+	void InitThread(//ItemFactory *item_factory,
+									error_messages *em = NULL,
+									char *collator_name = "root",
+									::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY
+									);
 	void UninitThread();
 
   XQuery* createQuery(xqp_string aQueryString);
+
+	void		destroyQuery( XQuery *query );
 
 };
 
@@ -268,272 +282,3 @@ public:
 
 #endif
 
-
-/*
-		Use cases:
-
-		Query a XML and iterate through results. The XML is a file on disk.
-		One thread executing.
-
-		
-		std::string		query = "/book[@nr_pages > 100]";
-
-		///load the xml file
-		Zorba_XmlDocument		source_xml;///actually an item in disguise
-		ifstream						xml_file;
-		xml_file.open("books.xml");
-		///construct completely into memory
-		source_xml.ConstructFromXML( xml_file, !IN_BINARY_FORM);
-		xml_file.close();///no more need for the file
-
-		//compile the xquery
-		Zorba_XQueryCompiler		xq_compiler;
-		Zorba_XQueryBinary			xqbin;
-
-		if(!xq_compiler(query, NULL, //no static context defined
-										&xqbin))
-		{
-			///....error
-			goto DisplayErrorsAndExit;
-		}
-		
-		///set the context item into dynamic context of the binary
-		if(!xqbin.SetVariable( Zorba_QName("", "") ///var prefix and name empty
-												&source_xml))
-		{
-			///....error
-			goto DisplayErrorsAndExit;
-		}
-
-		////execute step by step
-		if(!xqbin.StartExecution( NULL ))///no external dynamic context provided
-		{
-			///....error
-			goto DisplayErrorsAndExit;
-		}
-		
-		///iterate through the results
-		Zorba_ItemPtr		it;
-		while(it=xqbin.GetNextItem() && (*it))
-		{
-			///do something with the book item
-			///....
-		}
-
-		xqbin.CloseExecution();
-
-		///thats all
-		return 0;
-
-DisplayErrorsAndExit:
-		///process the errors
-		Zorba_AlertsManager		err_manag = Zorba_getAlertsManagerForCurrentThread();
-
-		std::list<Zorba_AlertMessage>::iterator		it;
-
-		for(it = err_manag.begin; it<err_manag.end(); it++)
-		{
-			//"it" is of type Zorba_AlertMessage
-			switch((*it).alert_type)
-			{
-			case	ERROR_ALERT:
-					cout << "Err" << (*it).err_code << ":" << (*it).err_loc.module_name << ":" << (*it).err_loc.line << " : ";
-					break;
-			case	WARNING_ALERT:
-					cout << "Warning" << (*it).warn_code << ":" << (*it).warn_loc.module_name << ":" << (*it).warn_loc.line << " : ";
-					break;
-			case	NOTIFICATION_ALERT:
-					//no special info here
-					break;
-			case	FEEDBACK_REQUEST_ALERT:
-					///not implemented
-					break;
-
-			case	USER_ERROR_ALERT://fn:error
-					cout << "User Err " << (*it).err_name.prefix << ":"<<(*it).err_name.name << " : ";
-					break;
-			case	USER_TRACE_ALERT://fn:trace
-					break;
-			};
-
-			///display the message
-			cout << (*it).alert_description;
-
-			//display the item list if exists
-			Zorba_Items		*after_items = NULL;
-			switch((*it).alert_type)
-			{
-			case	USER_ERROR_ALERT://fn:error
-					after_items = &(*it).items_error;
-					break;
-			case	USER_TRACE_ALERT://fn:trace
-					after_items = &(*it).items_trace;
-					break;
-			};
-			if(after_items)
-			{
-				ostringstream		oss;
-				for(int i=0;i<after_items->size();i++)
-				{
-					after_items[i].SerializeAsXml( oss, !IN_BINARY_FORM );
-					cout << endl << endl;
-					cout << oss.c_str();
-					oss.clear();
-				}
-			}
-
-			cout << endl;
-		}
-
-		return -1;
-
-*/
-
-
-/*
-			Other use case.
-			Use xml input data from database. Database is viewed as a collection of xmls.
-			Retrieve all data at once.
-
-		std::string		query = "<results> 
-													{fn:collection("file://books.local.xmldb")/book[@nr_pages > 100]} 
-													</results>";
-
-		///init the xml db (the details should be in store.h api)
-		Zorba_XmlDatabase		source_xmldb;///offers also Zorba_Items interface
-		source_xmldb.opendb("c:\xmldb\books.zdb");///the physical location
-
-		///set up a generic dynamic context
-		Zorba_DynamicContext		dyn_ctx;
-		if(!dyn_ctx.RegisterAvailableCollection("file://books.local.xmldb",///some URI
-																			&Zorba_XmlDatabase))
-		{
-			///....error
-			goto DisplayErrorsAndExit;
-		}
-
-		//compile the xquery
-		Zorba_XQueryCompiler		xq_compiler;
-		Zorba_XQueryBinary			xqbin;
-
-		if(!xq_compiler(query, NULL, //no static context defined
-										&xqbin))
-		{
-			///....error
-			goto DisplayErrorsAndExit;
-		}
-		
-		////execute step by step
-		Zorba_Items		result;
-		if(!xqbin.Execute( &dyn_ctx, &result ))
-		{
-			///....error
-			goto DisplayErrorsAndExit;
-		}
-		
-		///result should contain only one item
-		if(result.size() < 1)
-		{
-			///....error
-			goto DisplayErrorsAndExit;
-		}
-
-		///save the result into a xml file
-		ofstream		result_xml_file("selected_books.xml");
-		result[0]->SerializeAsXml( result_xml_file, !IN_BINARY_FORM);
-		result_xml_file.close();
-
-		///thats all
-
-DisplayErrorsAndExit:
-//   .....
-
-*/
-
-/*
-
-		Using multiple threads. Cloning the xquery binary.
-		Reading results in pages of 20 results (this is a common case for accessing a database through web).
-
-	
-		Thread 1																									Thread2
-
-	Zorba_InitializeZorbaEngine();
-
-
-	///compile a query
-	Zorba_XQueryCompiler		xq_compiler;
-	Zorba_XQueryBinary			xqbin;
-	std::string		query = "/book[@nr_pages > 100]";
-
-	///set up the store
-	Zorba_XmlDatabase		source_xmldb;
-	source_xmldb.opendb("c:\xmldb\books.zdb");
-
-	///set up a generic dynamic context
-	Zorba_DynamicContext		dyn_ctx;
-	if(!dyn_ctx.RegisterAvailableCollection
-									("file://books.local.xmldb",
-									&Zorba_XmlDatabase))
-	{
-		///....error
-		goto DisplayErrorsAndExit;
-	}
-
-	///compile the xquery
-	if(!xq_compiler(query, NULL, 
-									&xqbin))
-	{
-		///....error
-		goto DisplayErrorsAndExit;
-	}	
-
-	
-
-																												Thread2
-
-																							////these are worker threads
-																							// to initialize the engine for each thread
-																							Zorba_InitThread();
-																							Zorba_XQueryBinary		xqbin2;
-
-																							///clone the previously compiled xquery
-																							///to be used in this thread
-																							if(!xqbin2.Clone(xqbin))
-																							{
-																								///....error
-																								goto DisplayErrorsAndExit2;
-																							}
-
-																							Zorba_Items		result;
-																							if(!xqbin2.Execute( &dyn_ctx, &result,
-																																	100))///retrieve only 100 results
-																							{
-																								///....error
-																								goto DisplayErrorsAndExit2;
-																							}
-																							
-																							if(result.size() < 1)
-																							{
-																								///....error
-																								goto DisplayErrorsAndExit2;
-																							}
-
-																							///now Zorba_Items are independent of xqbin2
-
-																							///a user defined function to format HTML output
-																							display20Items( &result, 0, 20);
-																							Zorba_CloseThread();//when ending the thread
-
-
-
-
-					Thread 3
-
-		///user called for another 20 items
-
-		Zorba_InitThread();
-		display20Items( &result, x, 20);
-		Zorba_CloseThread();//when ending the thread
-
-*/
