@@ -5,12 +5,13 @@
 #define ZORBA_XQUERY_BINARY_FOR_EXTERNAL_API_24_SEP_2007
 
 #include "zorba_api.h"
+#include "context/static_context.h"
 
 ///Implement the objects for the Zorba external C++ API
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 namespace xqp{
-
+/*
 class Zorba_DynamicContext : public DynamicQueryContext
 {
 private:
@@ -20,20 +21,21 @@ private:
 class Zorba_StaticQueryContext : public StaticQueryContext
 {
 };
+*/
 
-class IteratorTreeStateBlock;
+class PlanState;
 
 class Zorba_XQueryResult : public XQueryResult
 {
 public:
-	Item_t		next();
+	virtual Item_t		next();
 
 public:
-	Iterator_t		it_result;
+	PlanIter_t		it_result;
 	///state objects for the iterator tree
 	///this is the state block created by Zorba_XQueryBinary when doing execution
 	///increments its ref count; when Zorba_Result ends its life, will decrement the ref count for state block
-	IteratorTreeStateBlock		*state_block;
+	PlanState		*state_block;
 };
 
 
@@ -41,6 +43,7 @@ class Zorba_XQueryBinary : public XQuery
 {
     friend class ZorbaFactory;
 		friend class XQueryPtr;
+		friend class zorba;
 public:
     Zorba_XQueryBinary(xqp_string );
     virtual ~Zorba_XQueryBinary();
@@ -52,14 +55,15 @@ private:
 
 //	Zorba_AlertsManager		m_error_manager;
 
-	Iterator_t		top_iterator;
+	PlanIter_t		top_iterator;
 
 //	zorba			*thread_specific_zorba;
-	
-	StaticQueryContext		static_context;
+
+	static_context		internal_static_context;
 public:
 //	yy::location		current_loc;
 
+	int32_t			lStateSize;
 public:
 
 
@@ -68,29 +72,29 @@ public:
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    bool compile(StaticQueryContext* = 0, bool routing_mode = false);
+    virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false);
 
     // execute the query and compile it if necessary
-		//daniel: return true for success
+		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-    bool execute(XQueryResult *result, DynamicQueryContext* = 0);
+    virtual XQueryResult* execute( DynamicQueryContext* = 0);
 
-    bool isCompiled();
+    virtual bool isCompiled();
 
     // clone the query (can be compiled or not compiled)
 		//daniel: not cloning, but duplicating the state block
     //Query* clone();
 
-		bool   serializeQuery(ostream &os);
+		virtual bool   serializeQuery(ostream &os);
 
 public:
     // getters/setters for Static- and DynamicQueryContext
     // a default static and dynamiccontext is always availabe
 
     // Matthias: don't call it internal
-    // there is no need to distinguish interal and external
-		StaticQueryContext* getInternalStaticContext();
+    // there is no need to distinguish internal and external
+		virtual StaticQueryContext* getInternalStaticContext();
 //    DynamicQueryContextPtr getInternalDynamicContext();
 
 		//daniel: get the variables out of the dynamic context class

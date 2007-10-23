@@ -3,15 +3,16 @@
 #include "errors/Error.h"
 #include "xquerybinary.h"
 
-#include "runtime/plan_visitor.h"
-#include "exprtree/normalize_visitor.h"
-#include "exprtree/parsenode_print_xml_visitor.h"
-#include "exprtree/parsenode_print_dot_visitor.h"
-#include "parser/xquery_driver.h"
-#include "runtime/zorba.h"
-#include "testing/timer.h"
-#include "../store/native/basic_item_factory.h"
-#include "../store/native/simple_store.h"
+#include "compiler/codegen/plan_visitor.h"
+#include "compiler/translator/normalize_visitor.h"
+#include "compiler/parsetree/parsenode_print_xml_visitor.h"
+#include "compiler/parsetree/parsenode_print_dot_visitor.h"
+#include "compiler/parser/xquery_driver.h"
+#include "util/zorba.h"
+#include "store/naive/basic_item_factory.h"
+#include "store/naive/simple_store.h"
+
+#include "../test/timer.h"
 
 #include <iostream>
 #include <fstream>
@@ -25,6 +26,7 @@ Zorba_XQueryBinary::Zorba_XQueryBinary( xqp_string query_text ) :
 {
 	is_compiled = false;
 	top_iterator = NULL;
+	lStateSize = 0;
 }
 
 //Zorba_XQueryBinary::Zorba_XQueryBinary()
@@ -72,8 +74,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 		return false;
 	}
 	
-	top_iterator = NULL;
-
 	///NOW COMPILE
 	xquery_driver driver(cout);///for debug, send log text on cout
 
@@ -185,9 +185,12 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	top_iterator->show(cout);
 
 
-
-
-
+	///compute the offsets for each iterator into the state block
+	lStateSize = top_iterator->getStateSizeOfSubtree();
+	PlanState		*stateBlock = new PlanState(lStateSize);
+	int32_t lOffset = 0;
+	top_iterator->setOffset(*stateBlock, lOffset);
+	delete stateBlock;
 
 	is_compiled = true;
 
@@ -197,7 +200,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	return true;
 }
 
-bool Zorba_XQueryBinary::execute(XQueryResult *result, DynamicQueryContext* dctx)
+XQueryResult* Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 {
 	///init thread
 	//check if thread is inited, if not do automatic init
@@ -217,13 +220,13 @@ bool Zorba_XQueryBinary::execute(XQueryResult *result, DynamicQueryContext* dctx
 																	true///continue execution
 																	);
 		thread_specific_zorba->current_xquery = NULL;
-		return false;
+		return NULL;
 	}
 
 
-	Zorba_XQueryResult		*zorba_result = static_cast<Zorba_XQueryResult*>(result);
+	Zorba_XQueryResult		*zorba_result = new Zorba_XQueryResult;
 	zorba_result->it_result = top_iterator;
-	zorba_result->state_block = new IteratorTreeStateBlock;
+	zorba_result->state_block = new PlanState(lStateSize);
 	zorba_result->state_block->zorp = thread_specific_zorba;
 	zorba_result->state_block->xqbinary = this;
 	///and construct the state block of state objects...
@@ -234,7 +237,7 @@ bool Zorba_XQueryBinary::execute(XQueryResult *result, DynamicQueryContext* dctx
 	thread_specific_zorba->current_xquery = NULL;
 //	RegisterCurrentXQueryForCurrentThread( NULL );
 
-	return true;
+	return zorba_result;
 }
 
 bool Zorba_XQueryBinary::isCompiled()
@@ -250,6 +253,17 @@ bool Zorba_XQueryBinary::isCompiled()
 bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 {
 	return false;
+}
+
+
+/*
+	next() should be called in the same thread where the xquery was executed
+*/
+Item_t Zorba_XQueryResult::next()
+{
+	state_block->zorp->current_xquery = state_block->xqbinary;
+
+	return it_result->produceNext( *state_block );
 }
 
 }///end namespace xqp
