@@ -22,6 +22,7 @@
 #include <unicode/coll.h>
 #include <unicode/ustring.h>
 #include <unicode/stsearch.h>
+#include <unicode/ucnv.h>
 
 #include "util/utf8/utf8.h"
 
@@ -34,7 +35,7 @@ namespace xqp {
 		//! @name constructor/destructor
 		//! @{
 			/**
-			 * Construct an empty stdString
+			 * Construct an empty xqpString
 				*/
 			xqpString();
 
@@ -232,11 +233,11 @@ private:
 			/**
 			*Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
 			*/
-			UnicodeString getUnicodeString(const xqpString& in) const;
+			UnicodeString getUnicodeString(const xqpString& source) const;
 			/**
 			*Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
 			*/
-			xqpString getXqpString(UnicodeString in);
+			xqpString getXqpString(UnicodeString source);
 
 	};
 

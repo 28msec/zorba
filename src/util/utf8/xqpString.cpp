@@ -423,17 +423,17 @@ namespace xqp {
 
 	xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length){
 		char* target;
-		target = new char[length*4 + 1];
+		target = new char[length*4 + 1]; //will hold UTF-8 encoded characters
 		UnicodeString str = getUnicodeString( utf8String );
 		int32_t size =  sizeof(target);
 
-		int32_t targetsize = str.extract(index, length, target, size, "");
+		int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
 		target[targetsize] = 0; /* NULL termination */
 
-		UnicodeString ret(target);
+		xqpString ret(&target[0]);
 
 		delete target;
-		return getXqpString(ret);
+		return ret;
 	}
 
 
@@ -442,13 +442,13 @@ namespace xqp {
 	}
 
 	// Private methods
-	UnicodeString xqpString::getUnicodeString(const xqpString& in) const{
+	UnicodeString xqpString::getUnicodeString(const xqpString& source) const{
 		UnicodeString ret;
 		UErrorCode status = U_ZERO_ERROR;
-		int32_t len = in.bytes();
+		int32_t len = source.bytes();
 		UChar* buffer = ret.getBuffer(len);
 
-		u_strFromUTF8(buffer, ret.getCapacity(), &len, in.c_str(), len, &status);
+		u_strFromUTF8(buffer, ret.getCapacity(), &len, source.c_str(), len, &status);
 
 		ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
 
@@ -463,15 +463,14 @@ namespace xqp {
 		return ret;
 	}
 
-	xqpString xqpString::getXqpString(UnicodeString in){
+	xqpString xqpString::getXqpString(UnicodeString source){
 		char* target;
-		target = new char[in.getCapacity() + 1];
-		int32_t destLength;
+		int32_t targetLen = source.getCapacity()*4 + 1;
+		target = new char[targetLen];
 		UErrorCode status = U_ZERO_ERROR;
 
-		u_strToUTF8(&target[0], in.getCapacity(), &destLength, in.getBuffer(), in.length(), &status);
-
-		in.releaseBuffer(U_SUCCESS(status) ? destLength : 0);
+		//open a convertor to UTF-8
+		UConverter *conv = ucnv_open("utf-8", &status);
 
 		if(U_FAILURE(status)) {
 			ZorbaErrorAlerts::error_alert(
@@ -479,10 +478,29 @@ namespace xqp {
 						error_messages::SYSTEM_ERROR,
 						NULL
 					);
+
+			delete target;
+			return "";
 		}
+
+		//Convert from UTF-16 to UTF-8
+		ucnv_fromUChars (conv, target, targetLen, source.getBuffer( source.length() ), source.length(), &status);
+		//close the converter
+		ucnv_close(conv);
+
+		if(U_FAILURE(status)) {
+			ZorbaErrorAlerts::error_alert(
+						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
+
+			delete target;
+			return "";
+		}
+
 		xqpString ret(&target[0]);
 		delete target;
 		return ret;
-	}
-
+}
 }/* namespace xqp */
