@@ -11,6 +11,7 @@
 
 #include "util/utf8/xqpString.h"
 
+using namespace std;
 namespace xqp {
 
 	xqpString::xqpString()
@@ -173,24 +174,12 @@ namespace xqp {
 
 	//xqpString::Length
 	xqpString::size_type xqpString::size() const{
-		std::vector<char> v;
-		char * c;
-
-		v.reserve(bytes());
-		std::strcpy(&v[0], utf8String.c_str());
-		c = &v[0];
-		
+		const char* c = utf8String.c_str();
 		return UTF8Distance(c, c + utf8String.size());
 	}
 
 	xqpString::size_type xqpString::length() const{
-		std::vector<char> v;
-		char * c;
-
-		v.reserve(bytes());
-		std::strcpy(&v[0], utf8String.c_str());
-		c = &v[0];
-		
+		const char* c = utf8String.c_str();
 		return UTF8Distance(c, c + utf8String.size());
 	}
 
@@ -214,16 +203,10 @@ namespace xqp {
 	//xpqString::Codepoint
 	std::vector<uint32_t> xqpString::getCodepoints(){
 		std::vector<uint32_t> tt;
-	
-		std::vector<char> v;
-		char * c;
 		uint16_t vLength;
 	
 		vLength = length() + 1;
-		v.reserve(bytes());
-		std::strcpy(&v[0], utf8String.c_str());
-		c = &v[0];
-	
+		const char* c = utf8String.c_str();
 		while( --vLength > 0 ){
 			tt.push_back(UTF8Decode(c));
 		}
@@ -435,7 +418,22 @@ namespace xqp {
 		delete target;
 		return ret;
 	}
+ 
+	xqpString xqpString::substr(distance_type index){
+		if(index >= (int32_t)length()){
+			index = length();
+		}
+		else if(index < 0){
+			xqpString ret(utf8String);
+			return ret;
+		}
 
+		const char * d = utf8String.c_str();
+		advance(d, index);
+
+		xqpString ret(d);
+		return ret;
+	}
 
 	const char* xqpString::c_str() const{
 		return utf8String.c_str();

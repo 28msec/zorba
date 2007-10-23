@@ -31,7 +31,7 @@ namespace xqp {
 	{
 		public:
 			typedef std::string::size_type	size_type;
-			
+			typedef ptrdiff_t distance_type;
 		//! @name constructor/destructor
 		//! @{
 			/**
@@ -220,6 +220,12 @@ namespace xqp {
 			*Returns a substring of the current string, starting at index, and length characters long.
 			*/
 			xqpString substr(size_type index, size_type length);
+
+			/**
+				*Returns a substring of the currents string starting at index and continues untill the NULL termination.
+				*Doesn't use ICU4C
+				*/
+			xqpString substr(distance_type index);
 
 		//!@}
 			const char* c_str() const;

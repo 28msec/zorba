@@ -173,6 +173,13 @@ namespace xqp {
 		return dist;
 	}
 
+	template <typename octet_iterator, typename distance_type>
+		void advance (octet_iterator& it, distance_type n)
+		{
+				for (distance_type i = 0; i < n; ++i)
+						next(it);
+		}
+
 	/**
 	 * Encodes a 32 bit code point as a UTF-8 sequence of octets
 	 * 
