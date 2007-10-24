@@ -644,26 +644,13 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 /* expressions */
 void *normalize_visitor::begin_visit(const AdditiveExpr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
-	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
-	switch (v.get_add_op()) {
-	case op_plus:
-		fo_h->set_func(dctx_p->get_function(library::op_add_key));
-		break;
-	case op_minus:
-		fo_h->set_func(dctx_p->get_function(library::op_subtract_key));
-		break;
-	}
-	nodestack.push(&*fo_h);
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void *normalize_visitor::begin_visit(const AndExpr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
-	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(dctx_p->get_function(library::op_and_key));
-	nodestack.push(&*fo_h);
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
@@ -833,8 +820,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 void *normalize_visitor::begin_visit(const Expr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
@@ -898,7 +884,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 void *normalize_visitor::begin_visit(const IntersectExceptExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
-	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	fo_expr *fo_h = new fo_expr(v.get_location());
 
 	switch (v.get_intex_op()) {
 	case op_intersect:
@@ -908,29 +894,13 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 		fo_h->set_func(dctx_p->get_function(library::op_except_key));
 		break;
 	}
-	nodestack.push(&*fo_h);
+	nodestack.push(fo_h);
 	return no_state;
 }
 
 void *normalize_visitor::begin_visit(const MultiplicativeExpr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
-	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
-	switch (v.get_mult_op()) {
-	case op_mul:
-		fo_h->set_func(dctx_p->get_function(library::op_mul_key));
-		break;
-	case op_div:
-		fo_h->set_func(dctx_p->get_function(library::op_div_key));
-		break;
-	case op_idiv:
-		fo_h->set_func(dctx_p->get_function(library::op_idiv_key));
-		break;
-	case op_mod:
-		fo_h->set_func(dctx_p->get_function(library::op_mod_key));
-		break;
-	}
-	nodestack.push(&*fo_h);
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
@@ -942,10 +912,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 void *normalize_visitor::begin_visit(const OrExpr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
-		rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(dctx_p->get_function(library::op_or_key));
-	nodestack.push(&*fo_h);
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
@@ -1651,21 +1618,21 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 void *normalize_visitor::begin_visit(const UnaryExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
-	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	fo_expr *fo_h = new fo_expr(v.get_location());
 	if (v.get_signlist()->get_sign())
 		fo_h->set_func(dctx_p->get_function(library::op_unary_plus_key));
 	else
 		fo_h->set_func(dctx_p->get_function(library::op_unary_minus_key));
-	nodestack.push(&*fo_h);
+	nodestack.push(fo_h);
 	return no_state;
 }
 
 void *normalize_visitor::begin_visit(const UnionExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
-	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+	fo_expr *fo_h = new fo_expr(v.get_location());
 	fo_h->set_func(dctx_p->get_function(library::op_union_key));
-	nodestack.push(&*fo_h);
+	nodestack.push(fo_h);
 	return no_state;
 }
 
@@ -2344,34 +2311,35 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 /* expressions */
 void normalize_visitor::end_visit(const AdditiveExpr& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << ": AdditiveExpr\n";
-
-	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
-	Assert(nodestack.size()>=3,"stack underflow");
+  cout << std::string(depth--, ' ') << TRACE << ": AdditiveExpr\n";
+	Assert(nodestack.size()>=2,"stack underflow");
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
-	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
-	if (fo_h==NULL) {
-		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	fo_expr *fo_h = new fo_expr(v.get_location());
+	switch (v.get_add_op()) {
+	case op_plus:
+		fo_h->set_func(dctx_p->get_function(library::op_add_key));
+		break;
+	case op_minus:
+		fo_h->set_func(dctx_p->get_function(library::op_subtract_key));
+		break;
 	}
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
+  nodestack.push (fo_h);
 }
 
 void normalize_visitor::end_visit(const AndExpr& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
-	Assert(nodestack.size()>=3,"stack underflow");
+  cout << std::string(depth--, ' ') << TRACE << endl;
+	Assert(nodestack.size()>=2,"stack underflow");
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
-	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
-	if (fo_h==NULL) {
-		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-	}
+	fo_expr *fo_h = new fo_expr(v.get_location());
+	fo_h->set_func(dctx_p->get_function(library::op_and_key));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
+  nodestack.push (fo_h);
 }
 
 
@@ -2501,9 +2469,8 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 void normalize_visitor::end_visit(const Expr& v, void *visit_state)
 {
 	rchandle<expr_list> elist_h = new expr_list(v.get_location());
-	while (true) {	
+  for (int i = 0; i < v.numberOfChildren (); i++) {
 		expr_t e_h = pop_nodestack();
-		if (e_h==NULL) break;
 		elist_h->add(e_h);
 	}
 	if (elist_h->size()==1) {
@@ -2585,19 +2552,29 @@ cout << std::string(depth--, ' ') << TRACE << ": IntersectExceptExpr\n";
 
 void normalize_visitor::end_visit(const MultiplicativeExpr& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
-
+  cout << std::string(depth--, ' ') << TRACE << endl;
 	//d Assert<normalize_error>(nodestack.size()>=3,"stack underflow");
-	Assert(nodestack.size()>=3,"stack underflow");
+	Assert(nodestack.size()>=2,"stack underflow");
 	rchandle<expr> e1_h = nodestack.top(); nodestack.pop();
 	rchandle<expr> e2_h = nodestack.top(); nodestack.pop();
-	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
-	if (fo_h==NULL) {
-		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+	fo_expr *fo_h = new fo_expr(v.get_location());
+	switch (v.get_mult_op()) {
+	case op_mul:
+		fo_h->set_func(dctx_p->get_function(library::op_mul_key));
+		break;
+	case op_div:
+		fo_h->set_func(dctx_p->get_function(library::op_div_key));
+		break;
+	case op_idiv:
+		fo_h->set_func(dctx_p->get_function(library::op_idiv_key));
+		break;
+	case op_mod:
+		fo_h->set_func(dctx_p->get_function(library::op_mod_key));
+		break;
 	}
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
+  nodestack.push (fo_h);
 }
 
 void normalize_visitor::end_visit(const NumericLiteral& v, void *visit_state)
@@ -2622,16 +2599,14 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 void normalize_visitor::end_visit(const OrExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
-	Assert(nodestack.size()>=3,"stack underflow");
+	Assert(nodestack.size()>=2,"stack underflow");
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
-	rchandle<fo_expr> fo_h = dynamic_cast<fo_expr*>(&*nodestack.top());
-	if (fo_h==NULL) {
-		 cout << std::string(depth--, ' ') <<TRACE << ": expecting fo_expr on top of stack" << endl;
-		 cout << std::string(depth--, ' ') <<TRACE << ": typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-	}
+  fo_expr *fo_h = new fo_expr(v.get_location());
+	fo_h->set_func(dctx_p->get_function(library::op_or_key));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
+  nodestack.push (fo_h);
 }
 
 void normalize_visitor::end_visit(const OrderedExpr& v, void *visit_state)
