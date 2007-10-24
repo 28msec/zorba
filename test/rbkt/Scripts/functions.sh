@@ -99,7 +99,7 @@ function run_query
     exit 17
   fi
 
-  ${EXE} -o "${queryFile}"
+  ${EXE} -o "${queryFile}.res" "${queryFile}"
   error=$?
   if [ ${error} != 0 ]; then
     echo "ERROR 2 run_query: ${EXE} $1 failed with error code ${error}"

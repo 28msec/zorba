@@ -31,7 +31,8 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
-  bool useResultFile = false;
+  bool useResultFile = false, inline_query = false;
+  std::string resultFileName;
   std::ofstream* resultFile = NULL;
 	
 	///application specific
@@ -67,39 +68,41 @@ int _tmain(int argc, _TCHAR* argv[])
 	xquery_driver driver(cout);
 	try {
 
-		for (++argv; argv[0]; ++argv) {
-#ifndef UNICODE
-			if (*argv == std::string ("-p")) {
-				driver.trace_parsing = true;
-			}
-			else if (*argv == std::string ("-s")) {
-				driver.trace_scanning = true;
-			}
-			else if (*argv == std::string ("-o")) {
-				useResultFile = true;
-			}
+#ifdef UNICODE
+#define TEST_ARGV_FLAG( str ) (_tcscmp(*argv, _T(str)) == 0)
 #else
-			if (!_tcscmp(*argv, _T("-p"))) {
-				driver.trace_parsing = true;
-			}
-			else if (!_tcscmp(*argv, _T("-s"))) {
-				driver.trace_scanning = true;
-			}
-			else if (!_tcscmp(*argv, _T("-o"))) {
-				useResultFile = true;
-			}
+#define TEST_ARGV_FLAG( str ) (*argv == std::string (str))
 #endif
-			else {
+
+		for (++argv; argv[0]; ++argv) {
+			if (TEST_ARGV_FLAG ("-p")) {
+				driver.trace_parsing = true;
+			} else if (TEST_ARGV_FLAG ("-s")) {
+				driver.trace_scanning = true;
+			} else if (TEST_ARGV_FLAG ("-o")) {
+				useResultFile = true;
+        resultFileName = *++argv;
+      } else if (TEST_ARGV_FLAG ("-e")) {
+        inline_query = true;
+			} else {
+        const char *fname = *argv;
 #ifndef UNICODE
-				driver.parse(*argv);
+        if (inline_query) {
+          fname = "zorba_query.tmp";
+          ofstream qf (fname);
+          qf << *argv;
+        }
 #else
+        assert (! inline_query);
 				char	testfile[1024];
-				WideCharToMultiByte(CP_ACP, 0,//or CP_UTF8
+				WideCharToMultiByte(CP_ACP, 0, // or CP_UTF8
 														*argv, -1, 
 														testfile, sizeof(testfile)/sizeof(char),
 														NULL, NULL);
-				driver.parse(testfile);
+        fname = testfile;
 #endif
+        cout << "Parsing " << fname << endl;
+        driver.parse(fname);
 				parsenode* n_p = driver.get_expr();
 				cout << endl;
 				
@@ -165,8 +168,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
         if (useResultFile)
         {
-          std::string resultFileName = *argv;
-          resultFileName += ".res";
           resultFile = new ofstream(resultFileName.c_str());
           *resultFile << "Iterator run:" << std::endl << std::endl;
         }
