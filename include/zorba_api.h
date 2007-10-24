@@ -75,14 +75,13 @@ class Zorba_AlertMessage
 		{	
 			error_messages::errcode			error_code;
 			error_messages::error_type	error_type;
-			Zorba_ErrorLocation err_loc;///may contain no location (zero values)
 			bool is_fatal;
 		};
 		///for warnings
 		struct
 		{
 			error_messages::warning_code			warning_code;
-			Zorba_ErrorLocation warn_loc;///may contain no location (zero values)
+		//	Zorba_ErrorLocation warn_loc;///may contain no location (zero values)
 		};
 		///for notifications
 		struct
@@ -107,6 +106,8 @@ class Zorba_AlertMessage
 			const Zorba_Items items_trace;
 		};
 	};
+
+	Zorba_ErrorLocation loc;///may contain no location (zero values)
 
 	///the user readable description; can be in other languages than english
 	std::string		alert_description;
@@ -143,8 +144,8 @@ typedef int user_collation(uint32_t codepoint1, uint32_t codepoint2);
 class XQueryResult : public rcobject
 {
 public:
-	virtual ~XQueryResult();
-	virtual Item_t		next();
+	virtual ~XQueryResult() {};
+	virtual Item_t		next() = 0;
 };
 
 /// the Static Context
@@ -152,23 +153,24 @@ public:
 class StaticQueryContext
 {
 public:
-
-	virtual void		SetXPath1_0CompatibMode( bool mode );///true for XPath1.0 only, false for XPath2.0
-	virtual void		AddNamespace( std::string prefix, std::string URI );
-	virtual void		SetDefaultElementAndTypeNamespace( std::string URI );
-	virtual void		SetDefaultFunctionNamespace( std::string URI );
-	virtual void		SetContextItemStaticType( enum TypeCode		type );
-	virtual void		AddCollation( std::string URI, std::string available_collation );//if URI is empty then it sets the default collation
-	virtual void		SetCustomCollation( user_collation *fn_collation);
-	virtual void		SetConstructionMode( enum construction_mode );
-	virtual void		SetOrderingMode( enum ordering_mode );
-	virtual void		SetDefaultOrderForEmptySequences( enum ordering_mode );
-	virtual void		SetBoundarySpacePolicy( enum boundary_space_policy );
-	virtual void		SetCopyNamespacesMode( bool preserve, bool inherit );
-	virtual void		SetBaseURI( std::string baseURI );
+/*
+	virtual void		SetXPath1_0CompatibMode( bool mode ) = 0;///true for XPath1.0 only, false for XPath2.0
+	virtual void		AddNamespace( std::string prefix, std::string URI ) = 0;
+	virtual void		SetDefaultElementAndTypeNamespace( std::string URI ) = 0;
+	virtual void		SetDefaultFunctionNamespace( std::string URI ) = 0;
+	virtual void		SetContextItemStaticType( enum TypeCode		type ) = 0;
+	virtual void		AddCollation( std::string URI, std::string available_collation ) = 0;//if URI is empty then it sets the default collation
+	virtual void		SetCustomCollation( user_collation *fn_collation) = 0;
+	virtual void		SetConstructionMode( enum construction_mode ) = 0;
+	virtual void		SetOrderingMode( enum ordering_mode ) = 0;
+	virtual void		SetDefaultOrderForEmptySequences( enum ordering_mode ) = 0;
+	virtual void		SetBoundarySpacePolicy( enum boundary_space_policy ) = 0;
+	virtual void		SetCopyNamespacesMode( bool preserve, bool inherit ) = 0;
+	virtual void		SetBaseURI( std::string baseURI ) = 0;
 	//statically known documents (types)
-	virtual void		AddDocumentType( std::string URI, TypeCode doc_type );
-	virtual void		AddCollectionType( std::string URI, TypeCode		collection_type );///if URI is empty then it refers to default collection type
+	virtual void		AddDocumentType( std::string URI, TypeCode doc_type ) = 0;
+	virtual void		AddCollectionType( std::string URI, TypeCode		collection_type ) = 0;///if URI is empty then it refers to default collection type
+*/
 };
 
 class DynamicQueryContext : public rcobject
@@ -178,18 +180,18 @@ class DynamicQueryContext : public rcobject
 
 
 	///following is the input data; this is not duplicable between executions
-	virtual bool		SetVariable( Zorba_QName varname, XQueryResult *item_iter );
-	virtual bool		SetVariable( Zorba_QName varname, Item_t &item );
-	virtual bool		DeleteVariable( Zorba_QName varname );
+	virtual bool		SetVariable( Zorba_QName varname, XQueryResult *item_iter ) = 0;
+	virtual bool		SetVariable( Zorba_QName varname, Item_t &item ) = 0;
+	virtual bool		DeleteVariable( Zorba_QName varname ) = 0;
 
 
 	///register documents available through fn:doc() in xquery
 	virtual bool			RegisterAvailableDocument(xqp_string docURI,
-																			xqp_string store_docURI);
+																			xqp_string store_docURI) = 0;
 	///register collections available through fn:collection() in xquery
 	///default collection has empty URI ""
 	virtual bool			RegisterAvailableCollection(xqp_string collectionURI,
-																			xqp_string store_collectionURI);
+																			xqp_string store_collectionURI) = 0;
 };
 
 
@@ -199,8 +201,8 @@ class XQuery : public rcobject
 {
 		friend class XQueryPtr;
 protected:
-    XQuery( );
-    virtual ~XQuery();
+    //XQuery( );
+		virtual ~XQuery() {};
 
 public:
 
@@ -210,21 +212,21 @@ public:
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false);
+    virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false) = 0;
 
     // execute the query and compile it if necessary
 		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-    virtual XQueryResult* execute( DynamicQueryContext* = 0);
+    virtual XQueryResult* execute( DynamicQueryContext* = 0) = 0;
 
-    virtual bool isCompiled();
+    virtual bool isCompiled() = 0;
 
     // clone the query (can be compiled or not compiled)
    // QueryPtr clone();
 
 		//daniel: isn't the Query more suitable to serialize itself?
-		virtual bool   serializeQuery(ostream &os);
+		virtual bool   serializeQuery(ostream &os) = 0;
 
 public:
     // getters/setters for Static- and DynamicQueryContext
@@ -232,7 +234,7 @@ public:
 
     // Matthias: don't call it internal
     // there is no need to distinguish interal and external
-		virtual StaticQueryContext* getInternalStaticContext();
+		virtual StaticQueryContext* getInternalStaticContext() = 0;
  //   DynamicQueryContextPtr getInternalDynamicContext();
 
 		//daniel: get the variables out of the dynamic context class
