@@ -404,8 +404,6 @@ SubstringIterator::nextImpl(PlanState& planState) {
 	Item_t item1;
 	Item_t item2;
 	xqpString resStr;
-	double tt;
-	TypeCode type1;
 
 	PlanIterator::PlanIteratorState* state;
 	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
@@ -418,17 +416,15 @@ SubstringIterator::nextImpl(PlanState& planState) {
 			}
 			else{
 				item1 = consumeNext( theChildren[1], planState );
-				if( item1 != NULL ){
+				if( item1 != NULL ){//note: The first character of a string is located at position 1, not position 0.
 					if( theChildren.size() == 2 ){
-// 						item1 = item1->getAtomizationValue();
-						type1 = item1->getType();
-// 						tt = item1->getDoubleValue();
-						resStr = item0->getStringValue().substr((int32_t)round(1.2/*(item1->getDoubleValue()*/)-1);
+						resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1);
 					}
 					else{ //theChildren.size() ==3
 						item2 = consumeNext ( theChildren[2], planState );
 						if ( item2 != NULL ){
-							resStr = "3";
+							resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1,
+																																				 (int32_t)round(item2->getDecimalValue()));
 						}
 					}
 					STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr), state );

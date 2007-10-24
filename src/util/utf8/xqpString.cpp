@@ -406,9 +406,9 @@ namespace xqp {
 
 	xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length){
 		char* target;
-		target = new char[length*4 + 1]; //will hold UTF-8 encoded characters
+		int32_t size =  length*4 + 1;
+		target = new char[size]; //will hold UTF-8 encoded characters
 		UnicodeString str = getUnicodeString( utf8String );
-		int32_t size =  sizeof(target);
 
 		int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
 		target[targetsize] = 0; /* NULL termination */
