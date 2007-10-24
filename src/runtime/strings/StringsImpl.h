@@ -26,7 +26,6 @@
 namespace xqp {
 
 class zorba;
-class GenericCast;
 
 /*______________________________________________________________________
  *
@@ -90,6 +89,11 @@ protected:
 };
 /*end class StringToCodepointsIterator*/
 
+/*______________________________________________________________________
+ *
+ * 7.3 Equality and Comparison of Strings
+ *_______________________________________________________________________*/
+
 /*
  * 7.3.2 fn:compare
  * --------------------*/
@@ -121,6 +125,11 @@ public:
 		Item_t nextImpl(PlanState& planState);
 };
 /*end class CodepointEqualIterator */
+
+/*______________________________________________________________________
+ *
+ * 7.4 Functions on String Values
+ *_______________________________________________________________________*/
 
 /*
  * 7.4.1 fn:concat
@@ -154,6 +163,22 @@ public:
 		Item_t nextImpl(PlanState& planState);
 };
 /*end class StringJoinIterator*/
+
+/*
+ * 7.4.3 fn:substring
+ * --------------------*/
+/*begin class SubstringIterator*/
+class SubstringIterator : public NaryBaseIterator<SubstringIterator>{
+public:
+	SubstringIterator( const yy::location loc, std::vector<PlanIter_t>& args )
+	:
+	NaryBaseIterator<SubstringIterator>( loc, args ){}
+
+	~SubstringIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class SubstringIterator*/
 
 /*
  * 7.4.4 fn:string-length

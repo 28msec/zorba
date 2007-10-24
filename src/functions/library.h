@@ -82,6 +82,7 @@ public:
 	static qnamekey_t fn_concat_key;
 	static qnamekey_t fn_string_join_key;
 	static qnamekey_t fn_string_compare_key;
+	static qnamekey_t fn_substring_key;
 	static qnamekey_t fn_string_length_key;
 	static qnamekey_t fn_contains_key;
 	static qnamekey_t fn_starts_with_key;

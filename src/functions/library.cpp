@@ -196,6 +196,11 @@ bool library::static_init = false;
          xs_string, xs_string,
          xs_string));
 
+  DECL (fn_substring, fn_substring,
+        (new QNameItem(XQUERY_FN_NS,"fn","substring"),
+         xs_string, xs_double, xs_double,
+         xs_string));
+
   DECL (fn_string_compare, fn_string_compare,
         (new QNameItem(XQUERY_FN_NS,"fn","compare"),
          xs_string, xs_string, xs_string,

@@ -235,6 +235,42 @@ fn_string_join::validate_args(
 /*end class fn_string_join*/
 
 /*
+ * 7.4.3 fn:substring
+ * --------------------*/
+/*begin class fn_codepoints_to_string*/
+fn_substring::fn_substring(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_substring::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new SubstringIterator(loc, argv);
+}
+
+sequence_type_t
+fn_substring::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_substring::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+	return (argv.size()==2 || argv.size()==3);
+}
+/*end class fn_codepoints_to_string*/
+
+/*
  * 7.4.4 fn:string-length
  * --------------------*/
 /*begin class fn_string_length*/

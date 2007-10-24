@@ -10,7 +10,7 @@
  */
 
 #include <iostream>
-
+#include <math.h>
 #include "runtime/strings/StringsImpl.h"
 #include "util/zorba.h"
 #include "util/utf8/utf8.h"
@@ -370,6 +370,75 @@ StringJoinIterator::nextImpl(PlanState& planState) {
 	STACK_END2();
 }
 /* end class StringJoinIterator */
+
+/**
+ *______________________________________________________________________
+ *
+ *	7.4.3 fn:substring
+ *
+ *fn:substring( 	$sourceString 	 as xs:string?,
+ *										$startingLoc 	 as xs:double) as xs:string
+ *fn:substring( 	$sourceString 	 as xs:string?,
+ *										$startingLoc 	 as xs:double,
+ *										$length 	 as xs:double) as xs:string
+ *
+ *Summary: Returns the portion of the value of $sourceString beginning
+ *at the position indicated by the value of $startingLoc and continuing for
+ *the number of characters indicated by the value of $length.
+ *The characters returned do not extend beyond $sourceString.
+ *If $startingLoc is zero or negative, only those characters in positions
+ *greater than zero are returned.
+ *
+ *More specifically, the three argument version of the function returns
+ *the characters in $sourceString whose position $p obeys:
+ *fn:round($startingLoc) <= p \< fn:round($startingLoc) + fn:round($length)
+ *If the value of $sourceString is the empty sequence, the zero-length string is returned.
+ *
+ *Note:
+ *The first character of a string is located at position 1, not position 0.
+ *_______________________________________________________________________*/
+/* begin class SubstringIterator */
+Item_t
+SubstringIterator::nextImpl(PlanState& planState) {
+	Item_t item0;
+	Item_t item1;
+	Item_t item2;
+	xqpString resStr;
+	double tt;
+	TypeCode type1;
+
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+
+	if(theChildren.size() == 2 || theChildren.size()==3){
+		item0 = consumeNext ( theChildren[0], planState );
+		if ( item0 != NULL ){
+			if(item0->getStringValue().length() == 0){
+				STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr), state );
+			}
+			else{
+				item1 = consumeNext( theChildren[1], planState );
+				if( item1 != NULL ){
+					if( theChildren.size() == 2 ){
+// 						item1 = item1->getAtomizationValue();
+						type1 = item1->getType();
+// 						tt = item1->getDoubleValue();
+						resStr = item0->getStringValue().substr((int32_t)round(1.2/*(item1->getDoubleValue()*/)-1);
+					}
+					else{ //theChildren.size() ==3
+						item2 = consumeNext ( theChildren[2], planState );
+						if ( item2 != NULL ){
+							resStr = "3";
+						}
+					}
+					STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr), state );
+				}
+			}
+		}
+	}
+	STACK_END2();
+}
+/* end class SubstringIterator */
 
 	/**
 	*______________________________________________________________________

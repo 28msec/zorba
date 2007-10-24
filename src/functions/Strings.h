@@ -126,6 +126,21 @@ class fn_string_join: public function
 };
 
 /*
+ * 7.4.3 fn:substring
+ *-----------------------*/
+class fn_substring: public function
+{
+	public:
+		fn_substring(const signature&);
+		~fn_substring() {}
+
+	public:
+		PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+		sequence_type_t type_check(signature&) const;
+		bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
  * 7.4.4 fn:string-length
  * --------------------*/
 class fn_string_length: public function
