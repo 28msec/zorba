@@ -141,6 +141,7 @@ public:
 
 		// Serialization errors
 		SENR0001_Item_is_attribute_or_namespace_node,
+  		SEPM0016_Invalid_parameter_value,
  
 
 		// ZORBA errors

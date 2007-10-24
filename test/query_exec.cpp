@@ -17,6 +17,8 @@
 #include "store/naive/simple_store.h"
 #include "util/logging/logging.hh"
 
+#include "api/serialization/serializer.h"
+
 #include <iostream>
 #include <fstream>
 
@@ -171,7 +173,6 @@ int _tmain(int argc, _TCHAR* argv[])
           resultFile = new ofstream(resultFileName.c_str());
           *resultFile << "Iterator run:" << std::endl << std::endl;
         }
-
  				PlanIterWrapper iw(it_h);
 				
 				while (true) {
@@ -180,9 +181,16 @@ int _tmain(int argc, _TCHAR* argv[])
 						break;
 
           if (resultFile != NULL)
-            *resultFile << i_p->show() << endl;
+		  {
+            // *resultFile << i_p->show() << endl;
+			serializer* ser = new serializer();
+			ser->serialize_as_xml(it_h, *resultFile);
+			*resultFile << endl;
+		  }
           else
             cout << i_p->show() << endl;
+		  
+		  				  
 				}
 			}
 		}

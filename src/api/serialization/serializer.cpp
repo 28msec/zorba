@@ -27,16 +27,26 @@
 #include "store/naive/basic_item_factory.h"
 #include "types/sequence_type.h"
 
+#include "string.h"
 
 namespace xqp {
 
 
 const xqp_string serializer::END_OF_LINE = "\n";
 
+void serializer::reset()
+{
+	state = INITIAL_STATE;
+	version = "1.0";	
+	indent = PARAMETER_VALUE_NO;
+	standalone = PARAMETER_VALUE_OMIT;
+	omit_xml_declaration = PARAMETER_VALUE_NO;
+	byte_order_mark = PARAMETER_VALUE_NO;
+}
+
 serializer::serializer()
 {
-	version = "1.0";
-	indent = 0;
+	reset();	
 }
 
 serializer::~serializer()
@@ -46,7 +56,44 @@ serializer::~serializer()
 void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 {
 	// TODO: add handled parameters translation
-
+	if (parameter_name == "standalone")
+	{
+		if (value == "yes")
+			standalone = PARAMETER_VALUE_YES;
+		else if (value == "no")
+			standalone = PARAMETER_VALUE_NO;
+		else if (value == "omit")
+			standalone = PARAMETER_VALUE_OMIT;
+		else
+			ZorbaErrorAlerts::error_alert(
+				error_messages::SEPM0016_Invalid_parameter_value,
+				error_messages::SYSTEM_ERROR,
+				NULL);
+	}
+	else if (parameter_name == "omit-xml-declaration")
+	{
+		if (value == "yes")
+			omit_xml_declaration = PARAMETER_VALUE_YES;
+		else if (value == "no")
+			omit_xml_declaration = PARAMETER_VALUE_NO;		
+		else
+			ZorbaErrorAlerts::error_alert(
+				error_messages::SEPM0016_Invalid_parameter_value,
+				error_messages::SYSTEM_ERROR,
+   				NULL);
+	}
+	else if (parameter_name == "byte-order-mark")
+	{
+		if (value == "yes")
+			byte_order_mark = PARAMETER_VALUE_YES;
+		else if (value == "no")
+			byte_order_mark = PARAMETER_VALUE_NO;
+		else
+			ZorbaErrorAlerts::error_alert(
+				error_messages::SEPM0016_Invalid_parameter_value,
+				error_messages::SYSTEM_ERROR,
+				NULL);
+	}
 }
 
 void serializer::list_copy(list_type& dest, list_type& src)
@@ -238,8 +285,59 @@ void serializer::normalize_sequence(list_type& items, list_type& out)
 
 void serializer::emit_expanded_string(xqp_string str, ostream& os)
 {
-	// TODO: quote characters 
-	os << str;
+	const char* chars = str.c_str();
+	int is_quote;
+	
+	for (unsigned int i=0; i<str.bytes(); i++, chars++ )
+	{
+		switch (*chars)
+		{
+		case '<':
+			os << "&lt;";
+			break;
+		case '>':
+			os << "&gt;";
+			break;
+			
+		case '"':
+			os << "&quot;";
+			break;
+			
+		case '&':
+			is_quote = 0;
+			for (unsigned int j=1; j<str.bytes()-i; j++)
+			{
+				if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z') 
+					||
+					(*(chars+j) >= 'A' && *(chars+j) <= 'Z')
+					||
+					(*(chars+j) >= '0' && *(chars+j) <= '9')
+					||
+					(*(chars+j) == '#')))
+				{
+					break;				
+				}
+				
+				if (*(chars+j) == ';' 
+					&&
+					(j>1))
+				{
+					is_quote = 1;
+					break;				
+				}
+			}
+			
+			if (is_quote)
+				os << *chars;
+			else
+				os << "&amp;";
+			break;
+			
+		default:
+			os << *chars;
+			break;
+		}
+	}	
 }
 
 void serializer::emit_indentation(int depth, ostream& os)
@@ -250,39 +348,64 @@ void serializer::emit_indentation(int depth, ostream& os)
 
 unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth)
 {
+	Iterator_t it;
+	Item_t child;
 	unsigned int children_count = 0;
 
-	// emit attributes first
-	Iterator_t it = item->getChildren();
-	Item_t child = it->next();
-	while (child!= NULL)
+	// emit namespace declarations
+	it = item->getChildren();
+	child = it->next();
+	while (child != NULL )
 	{
-		if (child->getNodeKind() == attributeNode)
+		if (child->getNodeKind() == namespaceNode )
 		{
-			if (children_count == 0)
-				os << ">";
-
 			emit_node(child, os, depth);
-			children_count++;
-		}
-    
+			children_count++;			
+		}		
+		
+		child = it->next();
+	}
+	
+	/* TODO: uncomment when this will be implemented in the Item store
+	it = item->getNamespaceNodes();
+	child = it->next();
+	while (child != NULL )
+	{
+		if (child->getNodeKind() == namespaceNode )
+		{
+			emit_node(child, os, depth);
+			children_count++;			
+		}		
+		
+		child = it->next();
+	}
+	*/ 
+	
+	// emit attributes 
+	it = item->getAttributes();
+	child = it->next();
+	while (child!= NULL)
+	{		
+		emit_node(child, os, depth);
+		children_count++;		
     	child = it->next();
 	}
-
+	
 	// output all the other nodes
 	it = item->getChildren();
 	child = it->next();
 	while (child!= NULL)
 	{
-		if (child->getNodeKind() != attributeNode)
+		if (child->getNodeKind() != attributeNode
+		   &&
+		   child->getNodeKind() != namespaceNode)
 		{
-			if (children_count == 0)
-				os << ">";
+			os << ">";
 
 			emit_node(child, os, depth);
 			children_count++;
 		}
-    
+
     	child = it->next();
 	}
 
@@ -293,23 +416,8 @@ void serializer::emit_node(Item_t item, ostream& os, int depth)
 {
 	if( item->getNodeKind() == documentNode )
 	{
-		if (indent)
-			emit_indentation(depth, os);
-		os << "<" << item->getDocumentURI();
-		
-		unsigned int children_count = emit_node_children(item, os, depth+1);
-
-		if (children_count > 0)
-		{
-			if (indent)
-				emit_indentation(depth, os);
-        	os << "</" << item->getDocumentURI() << ">";
-		}
-		else
-			os << "/>";
-
-		if (indent)
-			os << serializer::END_OF_LINE;
+		state = DOCUMENT_STARTED;
+		emit_node_children(item, os, depth+1);
 	}
 	else if (item->getNodeKind() == elementNode)
 	{
@@ -319,12 +427,8 @@ void serializer::emit_node(Item_t item, ostream& os, int depth)
 
 		unsigned int children_count = emit_node_children(item, os, depth);
 
-		if (children_count > 0)
-		{
-			if (indent)
-				emit_indentation(depth, os);
-			os << "</" << item->getNodeName()->getStringProperty();
-		}
+		if (children_count > 0)		
+			os << "</" << item->getNodeName()->getStringProperty() << ">";
 		else
 			os << "/>";
 
@@ -339,15 +443,90 @@ void serializer::emit_node(Item_t item, ostream& os, int depth)
 	}
 	else if (item->getNodeKind() == namespaceNode)
 	{
-
+		os << " " << item->getNodeName()->getStringProperty() << "=\"";
+		emit_expanded_string(item->getStringValue(), os);
+		os << "\"";
 	}
 	else if (item->getNodeKind() == textNode)
-	{
+	{		
 		emit_expanded_string(item->getStringValue(), os);
+	}
+	else 
+	{
+		os << "node of type: " << item->getNodeKind();
+		
 	}
 }
 
-void serializer::serialize_as_xml(list_type& items, ostream& os)
+void serializer::validate_parameters(void)
+{
+	if (omit_xml_declaration == PARAMETER_VALUE_YES)
+	{		
+		if (standalone != PARAMETER_VALUE_OMIT
+			/*||
+			(version != "1.0" && doctype_system is specified*/ )
+		{
+			// throw SEPM0009
+		}
+	}
+}
+
+void serializer::serialize_as_xml(PlanIter_t iter, ostream& os)
+{
+	PlanIterWrapper iw(iter);
+	Item_t item;
+	
+	validate_parameters();
+	
+	os << "\n--- Serialization ---------------\n";
+	
+	if (byte_order_mark == PARAMETER_VALUE_YES)
+	{
+		// TODO: output BOM depending on given encoding
+		xqpString temp;
+		temp = (uint32_t)0xFEFF;
+		os << temp;
+	}
+	
+	if (omit_xml_declaration == PARAMETER_VALUE_NO)
+	{
+		os << "<?xml version=\"" << version << "\" encoding=\"UTF-8\"";
+		if (standalone != PARAMETER_VALUE_OMIT)
+		{
+			os << "standalone=\"";
+			
+			if (standalone == PARAMETER_VALUE_YES)
+				os << "yes";
+			else
+				os << "no";
+			
+			os << "\"";
+		}	
+		os << "?>";
+		
+		if (indent)
+			os << END_OF_LINE;
+	}
+
+	item = iw.next();	
+	while (item != NULL )
+	{
+		if (item->isAtomic())
+		{
+			emit_expanded_string(item->getStringValue(), os);
+		}
+		else
+		{
+			emit_node(item, os, 0);
+		}
+
+		item = iw.next();
+	}
+	
+	os << "\n--- end -------------------------\n";
+}
+
+void serializer::serialize_as_xml2(list_type& items, ostream& os)
 {
 	list_type s;
 

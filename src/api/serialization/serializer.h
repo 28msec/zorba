@@ -17,7 +17,7 @@
  *	limitations under the License.
  * ========================================================================
  *
- * @author Nicolae Brinza (nbrinza@ipdevel.ro)
+ * @author Nicolae Brinza (nicolae.brinza@ipdevel.ro)
  * @file serialization/serializer.h
  *
  */
@@ -47,7 +47,8 @@ public:
 	 *  Serializes the given sequence of items to the
 	 *  output stream.
 	 */
-	void serialize_as_xml(list_type& items, ostream& os);
+	void serialize_as_xml2(list_type& items, ostream& os);
+	void serialize_as_xml(PlanIter_t iter, ostream& os);
 
 	/**
 	 *  Set the serializer's parameters. The list of handled 
@@ -56,29 +57,43 @@ public:
 	void set_parameter(xqp_string parameter_name, xqp_string value);
 
 
-public:
+protected:
 	// Serialization parameters
-	short int byte_order_mark; 			// TODO: yes/no
+	short int byte_order_mark; 			// "yes" or "no", implemented
 	short int cdata_section_elements; 	// TODO: list of expanded QNames
 	xqp_string doctype_public;
 	xqp_string doctype_system;
-	xqp_string encoding;
+	xqp_string encoding;				// TODO
 	short int escape_uri_attributes;	// TODO: yes/no
 	short int include_content_type;		// TODO: yes/no
 	xqp_string media_type;
 	void* method;						// TODO: an expanded QName
 	xqp_string normalization_form;		// TODO:
-	short int omit_xml_declaration;		// TODO: yes/no
-	short int standalone;				// TODO: yes/no/omit
+	short int omit_xml_declaration;		// "yes" or "no", implemented
+	short int standalone;				// implemented, TODO: add some validity checks
 	short int undeclare_prefixes;		// TODO: yes/no
 	void* use_character_maps;			// TODO: list of pairs
 	xqp_string version;
-	short int indent;					// true or false
+	short int indent;					// "yes" or "no", implement
 	
 protected: 	
 	static const xqp_string	END_OF_LINE;
+	enum {
+		INITIAL_STATE,
+  		DOCUMENT_STARTED,
+		PREVIOUS_NODE_WAS_TEXT		
+	} state;
+	
+	typedef enum {
+		PARAMETER_VALUE_NO,
+  		PARAMETER_VALUE_YES,
+		PARAMETER_VALUE_OMIT		
+	} PARAMETER_VALUE_TYPE;
 
+	void reset();	
 	void list_copy(list_type& dest, list_type& src);
+	
+	void validate_parameters();
 
 	/**
 	 *  Normalizes the given sequence of items, as per XSLT 2.0 and 
