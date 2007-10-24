@@ -196,6 +196,86 @@ public:
 };
 /*end class StringLengthIterator*/
 
+/*
+ * 7.4.5 fn:normalize-space
+ * --------------------*/
+/*begin class NormalizeSpaceIterator*/
+class NormalizeSpaceIterator : public UnaryBaseIterator<NormalizeSpaceIterator>{
+public:
+	NormalizeSpaceIterator(const yy::location loc,  PlanIter_t& arg0)
+	:
+	UnaryBaseIterator<NormalizeSpaceIterator>(loc, arg0){}
+
+	~NormalizeSpaceIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class NormalizeSpaceIterator*/
+
+/*
+ * 7.4.6 fn:normalize-unicode
+ * --------------------*/
+/*begin class NormalizeUnicodeIterator*/
+class NormalizeUnicodeIterator : public BinaryBaseIterator<NormalizeUnicodeIterator>{
+public:
+	NormalizeUnicodeIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+	:
+	BinaryBaseIterator<NormalizeUnicodeIterator>(loc, arg0, arg1){}
+
+	~NormalizeUnicodeIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class NormalizeUnicodeIterator*/
+
+/*
+ * 7.4.7 fn:upper-case
+ * --------------------*/
+/*begin class UpperCaseIterator*/
+class UpperCaseIterator : public UnaryBaseIterator<UpperCaseIterator>{
+public:
+	UpperCaseIterator(const yy::location loc,  PlanIter_t& arg0)
+	:
+	UnaryBaseIterator<UpperCaseIterator>(loc, arg0){}
+
+	~UpperCaseIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class UpperCaseIterator*/
+
+/*
+ * 7.4.8 fn:lower-case
+ * --------------------*/
+/*begin class LowerCaseIterator*/
+class LowerCaseIterator : public UnaryBaseIterator<LowerCaseIterator>{
+public:
+	LowerCaseIterator(const yy::location loc,  PlanIter_t& arg0)
+	:
+	UnaryBaseIterator<LowerCaseIterator>(loc, arg0){}
+
+	~LowerCaseIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class LowerCaseIterator*/
+
+ /*
+ * 7.4.9 fn:translate
+ * -------------------- */
+/*begin class TranslateIterator*/
+class TranslateIterator: public NaryBaseIterator<TranslateIterator> {
+public:
+		TranslateIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+	:
+		NaryBaseIterator<TranslateIterator>( loc, args ){}
+
+		~TranslateIterator() {};
+public:
+		Item_t nextImpl(PlanState& planState);
+};
+/*end class TranslateIterator*/
+
 /*______________________________________________________________________
  *
  * 7.5 Functions Based on Substring Matching

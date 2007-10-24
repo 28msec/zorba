@@ -307,6 +307,189 @@ fn_string_length::validate_args(
 /*end class fn_string_length*/
 
 /*
+ * 7.4.5 fn:normalize-space
+ * --------------------*/
+/*begin class fn_normalize_space*/
+fn_normalize_space::fn_normalize_space(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_normalize_space::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new NormalizeSpaceIterator(loc, argv[0]);
+}
+
+sequence_type_t
+fn_normalize_space::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_normalize_space::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size() == 1);
+}
+/*end class fn_normalize_space*/
+
+/*
+ * 7.4.6 fn:normalize-unicode
+ * --------------------*/
+/*begin class fn_normalize_unicode*/
+fn_normalize_unicode::fn_normalize_unicode(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_normalize_unicode::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new NormalizeUnicodeIterator(loc, argv[0], argv[1]);
+}
+
+sequence_type_t
+fn_normalize_unicode::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_normalize_unicode::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return ((argv.size()==1) || (argv.size()==2));
+}
+/*end class fn_normalize_unicode*/
+
+
+/*
+ * 7.4.7 fn:upper-case
+ * --------------------*/
+/*begin class fn_upper_case*/
+fn_upper_case::fn_upper_case(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_upper_case::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new UpperCaseIterator(loc, argv[0]);
+}
+
+sequence_type_t
+fn_upper_case::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_upper_case::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size()==1);
+}
+/*end class fn_upper_case*/
+
+
+/*
+ * 7.4.8 fn:lower-case
+ * --------------------*/
+/*begin class fn_lower_case*/
+fn_lower_case::fn_lower_case(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_lower_case::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new LowerCaseIterator(loc, argv[0]);
+}
+
+sequence_type_t
+fn_lower_case::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_lower_case::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size()==1);
+}
+/*end class fn_lower_case*/
+
+
+/*
+ * 7.4.9 fn:translate
+ * --------------------*/
+/*begin class fn_translate*/
+fn_translate::fn_translate(
+	const signature& sig)
+:
+	function(sig)
+{
+}
+
+PlanIter_t
+fn_translate::operator()(
+  const yy::location& loc,
+	vector<PlanIter_t>& argv) const
+{
+	if (!validate_args(argv))
+			return NULL;
+	return new TranslateIterator(loc, argv);
+}
+
+sequence_type_t
+fn_translate::type_check(
+	signature& sig) const
+{
+	return xs_string;
+}
+
+bool
+fn_translate::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+		return (argv.size()==3);
+}
+/*end class fn_translate*/
+
+/*
  * 7.5.1 fn:contains
  * --------------------*/
 /*begin class fn_contains*/

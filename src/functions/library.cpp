@@ -201,6 +201,31 @@ bool library::static_init = false;
          xs_string, xs_double, xs_double,
          xs_string));
 
+  DECL (fn_normalize_space, fn_normalize_space,
+        (new QNameItem(XQUERY_FN_NS,"fn","normalize-space"),
+         xs_string,
+         xs_string));
+
+  DECL (fn_normalize_unicode, fn_normalize_unicode,
+        (new QNameItem(XQUERY_FN_NS,"fn","normalize-unicode"),
+         xs_string, xs_string,
+         xs_string));
+
+  DECL (fn_upper_case, fn_upper_case,
+        (new QNameItem(XQUERY_FN_NS,"fn","upper-case"),
+         xs_string,
+         xs_string));
+
+  DECL (fn_lower_case, fn_lower_case,
+        (new QNameItem(XQUERY_FN_NS,"fn","lower-case"),
+         xs_string,
+         xs_string));
+
+  DECL (fn_translate, fn_translate,
+        (new QNameItem(XQUERY_FN_NS,"fn","translate"),
+         xs_string, xs_string, xs_string,
+         xs_string));
+
   DECL (fn_string_compare, fn_string_compare,
         (new QNameItem(XQUERY_FN_NS,"fn","compare"),
          xs_string, xs_string, xs_string,

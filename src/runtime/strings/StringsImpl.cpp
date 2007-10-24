@@ -479,6 +479,151 @@ StringLengthIterator::nextImpl(PlanState& planState) {
 	/**
 	*______________________________________________________________________
 	*
+	*	7.4.5 fn:normalize-space
+	*
+	*fn:normalize-space() as xs:string
+	*fn:normalize-space($arg as xs:string?) as xs:string
+	*
+	*Summary: Returns the value of $arg with whitespace normalized by
+	*stripping leading and trailing whitespace and replacing sequences
+	*of one or more than one whitespace character with a single space, #x20.
+	*_______________________________________________________________________*/
+/* begin class NormalizeSpaceIterator */
+Item_t
+NormalizeSpaceIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("NormalizeSpace: Not yet implemented."),state);
+	STACK_END2();
+}
+/* end class NormalizeSpaceIterator */
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.4.6 fn:normalize-unicode
+	*
+	*fn:normalize-unicode(	$arg as xs:string?) as xs:string
+	*fn:normalize-unicode( 	$arg 	 as xs:string?,
+	*																	$normalizationForm 	 as xs:string) as xs:string
+	*
+	*Summary: Returns the value of $arg normalized according to the
+	*normalization criteria for a normalization form identified by the value
+	*of $normalizationForm. The effective value of the $normalizationForm
+	*is computed by removing leading and trailing blanks, if present,
+	*and converting to upper case.
+	*
+	*If the value of $arg is the empty sequence, returns the zero-length string.
+	*
+	*If the $normalizationForm is absent, as in the first format above,
+	*it shall be assumed to be "NFC"
+	*
+	*Conforming implementations ·must· support normalization form "NFC" and ·may·
+	*support normalization forms "NFD", "NFKC", "NFKD", "FULLY-NORMALIZED".
+	*_______________________________________________________________________*/
+/* begin class NormalizeUnicodeIterator */
+Item_t
+NormalizeUnicodeIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("NormalizeUnicode: Not yet implemented."),state);
+	STACK_END2();
+}
+/* end class NormalizeUnicodeIterator */
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.4.7 fn:upper-case
+	*
+	*fn:upper-case($arg as xs:string?) as xs:string
+	*
+	*Summary: Returns the value of $arg after translating every character
+	*to its upper-case correspondent as defined in the appropriate case
+	*mappings section in the Unicode standard.
+	*For versions of Unicode beginning with the 2.1.8 update,
+	*only locale-insensitive case mappings should be applied. Every lower-case
+	*character that does not have an upper-case correspondent, as well as every
+	*upper-case character, is included in the returned value in its original form.
+	*
+	*If the value of $arg is the empty sequence, the zero-length string is returned.
+	*_______________________________________________________________________*/
+/* begin class UpperCaseIterator */
+Item_t
+UpperCaseIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("UpperCase: Not yet implemented."),state);
+	STACK_END2();
+}
+/* end class UpperCaseIterator */
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.4.8 fn:lower-case
+	*
+	*fn:lower-case($arg as xs:string?) as xs:string
+	*
+	*Summary: Returns the value of $arg after translating every character
+	*to its lower-case correspondent as defined in the appropriate case
+	*mappings section in the Unicode standard.For versions of Unicode
+	*beginning with the 2.1.8 update, only locale-insensitive case mappings
+	*should be applied.
+	*Every upper-case character that does not have a lower-case correspondent,
+	*as well as every lower-case character, is included in the returned value in
+	*its original form.
+	*If the value of $arg is the empty sequence, the zero-length string is returned.
+	*_______________________________________________________________________*/
+/* begin class LowerCaseIterator */
+Item_t
+LowerCaseIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("LowerCase: Not yet implemented."),state);
+	STACK_END2();
+}
+/* end class LowerCaseIterator */
+
+	/**
+	*______________________________________________________________________
+	*
+	*	7.4.9 fn:translate
+	*
+	*fn:translate( 	$arg 	 as xs:string?,
+	*										$mapString 	 as xs:string,
+	*										$transString 	 as xs:string) as xs:string
+	*
+	*Summary: Returns the value of $arg modified so that every character
+	*in the value of $arg that occurs at some position N in the value of
+	*$mapString has been replaced by the character that occurs at
+	*position N in the value of $transString.
+	*If the value of $arg is the empty sequence, the zero-length string is returned.
+	*Every character in the value of $arg that does not appear
+	*in the value of $mapString is unchanged.
+	*
+	*Every character in the value of $arg that appears at some position M
+	*in the value of $mapString, where the value of $transString is less
+	*than M characters in length, is omitted from the returned value.
+	*If $mapString is the zero-length string $arg is returned.
+	*
+	*If a character occurs more than once in $mapString, then the first occurrence
+	*determines the replacement character. If $transString is longer than $mapString,
+	*the excess characters are ignored.
+	*_______________________________________________________________________*/
+/* begin class TranslateIterator */
+Item_t
+TranslateIterator::nextImpl(PlanState& planState) {
+	PlanIterator::PlanIteratorState* state;
+	STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
+	STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createString("Translate: Not yet implemented."),state);
+	STACK_END2();
+}
+/* end class TranslateIterator */
+
+	/**
+	*______________________________________________________________________
+	*
 	*	7.5.1 fn:contains
 	*
 	*fn:contains(	$arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean

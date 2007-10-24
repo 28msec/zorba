@@ -155,6 +155,86 @@ class fn_string_length: public function
 		bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+/*
+ * 7.4.5 fn:normalize-space
+ *-----------------------*/
+	
+class fn_normalize_space: public function
+{
+public:
+	fn_normalize_space(const signature&);
+	~fn_normalize_space() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.4.6 fn:normalize-unicode
+ *-----------------------*/
+	
+class fn_normalize_unicode: public function
+{
+public:
+	fn_normalize_unicode(const signature&);
+	~fn_normalize_unicode() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.4.7 fn:upper-case
+ *-----------------------*/
+	
+class fn_upper_case: public function
+{
+public:
+	fn_upper_case(const signature&);
+	~fn_upper_case() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.4.8 fn:lower-case
+ *-----------------------*/
+	
+class fn_lower_case: public function
+{
+public:
+	fn_lower_case(const signature&);
+	~fn_lower_case() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.4.9 fn:translate
+ *-----------------------*/
+	
+class fn_translate: public function
+{
+public:
+	fn_translate(const signature&);
+	~fn_translate() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	sequence_type_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
 /*______________________________________________________________________
  *
  * 7.5 Functions Based on Substring Matching
