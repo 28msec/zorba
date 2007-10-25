@@ -42,16 +42,24 @@
 using namespace std;
 namespace xqp {
 
-bool static_context::static_init = false;
+  static char *ns_initializers [] = {
+    "fn", XQUERY_FN_NS,
+    "xml", "http://www.w3.org/XML/1998/namespace",
+    "xs", "http://www.w3.org/2001/XMLSchema",
+    "xsi", "http://www.w3.org/2001/XMLSchema-instance",
+    "local", "http://www.w3.org/2005/xquery-local-functions",
+    NULL, NULL
+  };
 
+  static_context *static_context::root_static_context = 
+    new static_context (ns_initializers);
 
-void static_context::init()
-{
-	
-	if (!static_context::static_init) {
-		static_context::static_init = true;
-	}
-}
+  static_context::static_context (char **init_ns) {
+    for (char **p = init_ns; *p != NULL; p += 2)
+      bind_ns (p [0], p [1]);
+  }
+
+  void static_context::init () {}
   
   DECL_ENUM_PARAM (static_context, construction_mode)
   DECL_ENUM_PARAM (static_context, order_empty_mode)

@@ -62,14 +62,10 @@ protected:
   bool lookup_once (string key, ctx_value_t &val) const
   { return keymap.get (key, val); }
 
-public: // context interface
-  context (context *_parent = NULL) : parent (_parent) {}
-	context *get_parent() const { return parent; }
-
 	template<class V> bool context_value(string key, V &val) const
 	{
 		if (lookup_once (key, val))
-        return true;
+      return true;
     else
       return parent == NULL ? false : parent->context_value (key, val);
 	}
@@ -87,6 +83,9 @@ public: // context interface
     str_keymap.put (key, v);
   }
 
+public:
+  context (context *_parent = NULL) : parent (_parent) {}
+	context *get_parent() const { return parent; }
 };
 
 

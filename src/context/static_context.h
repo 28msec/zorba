@@ -61,21 +61,21 @@ public:	// types
 	typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
 
 protected:
-	static bool static_init;
+  static static_context *root_static_context;
   std::string expand_qname (std::string default_ns, std::string prefix, std::string local) const;
   std::string expand_qname (std::string default_ns, std::string qname) const;
   
 public:
 	static void init();
   static_context()
-		: context (NULL) {}
+		: context (root_static_context) {}
   static_context (static_context *_parent)
     : context (_parent) {}
+  static_context (char **init_ns);
 
 	~static_context() {}
 
 public:
-	// XQuery 1.0 static context
   std::string default_function_namespace() const;
 	void set_default_function_namespace(std::string);
   std::string default_elem_type_ns () const;
