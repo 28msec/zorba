@@ -351,6 +351,7 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth)
 	Iterator_t it;
 	Item_t child;
 	unsigned int children_count = 0;
+	bool closed_parent_tag = 0;
 
 	// emit namespace declarations
 	it = item->getChildren();
@@ -400,7 +401,12 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth)
 		   &&
 		   child->getNodeKind() != namespaceNode)
 		{
-			os << ">";
+			
+			if (!closed_parent_tag)
+			{
+				os << ">";
+				closed_parent_tag = 1;
+			}
 
 			emit_node(child, os, depth);
 			children_count++;
