@@ -2,7 +2,7 @@
  *
  *  $Id: fxcharheap.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *
  *  Author: Paul Pedersen
  *
@@ -11,18 +11,18 @@
 #include "util/fx/fxcharheap.h"
 
 #ifndef _WIN32_WCE
-	#include <sys/types.h>
-	#include <errno.h>
+  #include <sys/types.h>
+  #include <errno.h>
 #else
-	#include <windows.h>
-	#include <types.h>
+  #include <windows.h>
+  #include <types.h>
 #endif
 
 #ifdef WIN32
-	
+  
 #else
-	#include <sys/mman.h>
-	#include <unistd.h>
+  #include <sys/mman.h>
+  #include <unistd.h>
 #endif
 
 #include <string>
@@ -38,20 +38,21 @@ namespace xqp {
 #define _SOURCE  __FUNCTION__
 
 void fxcharheap::ioexception(
-	string const& location,
-	string const& msg) const
+  string const& location,
+  string const& msg) const
 {
-	ostringstream oss;
+  ostringstream oss;
 #ifndef _WIN32_WCE
-	oss << msg << " [" << strerror(errno) << ']';
+  oss << msg << " [" << strerror(errno) << ']';
 #else
-	oss << msg;
+  oss << msg;
 #endif
-	//throw xqp_exception(location, oss.str());
-	ZorbaErrorAlerts::error_alert(error_messages::XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
-													error_messages::SYSTEM_ERROR,
-													NULL,false,
-													oss.str(), location);
+  //throw xqp_exception(location, oss.str());
+  ZorbaErrorAlerts::error_alert(
+             error_messages::XQP0012_SYSTEM_FXCHARHEAP_IOEXCEPTION,
+             error_messages::SYSTEM_ERROR,
+             NULL,false,
+             oss.str(), location);
 }
 
 
@@ -72,38 +73,38 @@ void fxcharheap::ioexception(
 
 // memory-mapped heap
 fxcharheap::fxcharheap(
-	string const& path,
-	uint32_t initial_size)
-:
-	fxary_p(new fxarray<char>(path, initial_size+sizeof(off_t)))
+    string const& path,
+    uint32_t initial_size)
+  :
+  fxary_p(new fxarray<char>(path, initial_size+sizeof(off_t)))
 {
-	bool init_offset = file(path).get_size()>0;
-	init(init_offset);
+  bool init_offset = file(path).get_size()>0;
+  init(init_offset);
 }
 
 
 // in-memory heap
 fxcharheap::fxcharheap(
-	uint32_t initial_size)
+  uint32_t initial_size)
 :
-	fxary_p(new fxarray<char>(initial_size+sizeof(off_t)))
+  fxary_p(new fxarray<char>(initial_size+sizeof(off_t)))
 {
-	init(true);
+  init(true);
 }
 
 
 // common initialization
 void fxcharheap::init(bool init_offset)
 {
-	data = fxary_p->get_data();
-	offset_p = reinterpret_cast<off_t*>(data);
-	if (init_offset) *offset_p = sizeof(off_t);
+  data = fxary_p->get_data();
+  offset_p = reinterpret_cast<off_t*>(data);
+  if (init_offset) *offset_p = sizeof(off_t);
 }
 
 
 fxcharheap::~fxcharheap()
 {
-	if (fxary_p) delete fxary_p;
+  if (fxary_p) delete fxary_p;
 }
 
 
@@ -121,7 +122,7 @@ fxcharheap::~fxcharheap()
 */
 fxcharheap::fxcharheap_iterator fxcharheap::begin()
 {
-	return fxcharheap_iterator(this);
+  return fxcharheap_iterator(this);
 }
 
 
@@ -136,32 +137,32 @@ fxcharheap::fxcharheap_iterator fxcharheap::begin()
 */
 fxcharheap::fxcharheap_iterator fxcharheap::end()
 {
-	return fxcharheap_iterator(this,END);
+  return fxcharheap_iterator(this,END);
 }
 
 
 void fxcharheap::dump_heap() const
 {
-	char * tmp = new char[(uint32_t)size()];
-	memcpy(tmp, &data[sizeof(off_t)], (size_t)size());
-	for (uint32_t i=0; i<size(); ++i) {
-		if (tmp[i]==0) tmp[i] = '#';
-	}
-	tmp[size()] = 0;
-	cout << "heap[" << size() <<"] = \n" << tmp << endl;
+  char * tmp = new char[(uint32_t)size()];
+  memcpy(tmp, &data[sizeof(off_t)], (size_t)size());
+  for (uint32_t i=0; i<size(); ++i) {
+    if (tmp[i]==0) tmp[i] = '#';
+  }
+  tmp[size()] = 0;
+  cout << "heap[" << size() <<"] = \n" << tmp << endl;
 }
 
 
-off_t fxcharheap::put(		// return the target offset
-  const char* buf,				// input: string
-  uint32_t start_offset,	// input: starting offset
-  uint32_t len)						// input: length 
+off_t fxcharheap::put(    // return the target offset
+  const char* buf,        // input: string
+  uint32_t start_offset,  // input: starting offset
+  uint32_t len)           // input: length 
 THROW_XQP_EXCEPTION
 {
   off_t id  = *offset_p;
 
   try {
-  	while (id+len+1 > fxary_p->get_eofoff()) expand();
+    while (id+len+1 > fxary_p->get_eofoff()) expand();
     memcpy(&data[id], &buf[start_offset], len);
     data[id+len] = 0;
   } catch (...) {
@@ -176,43 +177,43 @@ THROW_XQP_EXCEPTION
 off_t fxcharheap::put(char const* buf)
 THROW_XQP_EXCEPTION
 {
-	uint32_t n = strlen(buf);
-	return put(buf, 0, n);
+  uint32_t n = strlen(buf);
+  return put(buf, 0, n);
 }
 
 
 off_t fxcharheap::put(const string& s)
 THROW_XQP_EXCEPTION
 {
-	return put(s.c_str());
+  return put(s.c_str());
 }
 
 
 void fxcharheap::replace(
-	off_t id,								// input: heap offset
-  const char* buf,				// input: string
-  uint32_t start_offset,	// input: starting offset
-  uint32_t len)						// input: length
+  off_t id,               // input: heap offset
+  const char* buf,        // input: string
+  uint32_t start_offset,  // input: starting offset
+  uint32_t len)           // input: length
 THROW_XQP_EXCEPTION
 {
   // check if we have enough room
-	if (strlen(&data[id]) < len) {
-		ioexception(_SOURCE,"insufficient space for replace");
-	}
+  if (strlen(&data[id]) < len) {
+    ioexception(_SOURCE,"insufficient space for replace");
+  }
   try {
     memcpy(&data[id], &buf[start_offset], len);
     data[id+len] = 0;
   } catch (...) {
-		ioexception(_SOURCE,"exception in memcpy");
+    ioexception(_SOURCE,"exception in memcpy");
   }
 }
 
 
 void fxcharheap::get(
-  off_t id,             	// input: heap offset
-  char* buf,		        	// output: buffer
+  off_t id,               // input: heap offset
+  char* buf,              // output: buffer
   uint32_t output_offset, // input: output buffer offset
-  uint32_t maxlen) const	// input: maximum output size, truncate 
+  uint32_t maxlen) const  // input: maximum output size, truncate 
 THROW_XQP_EXCEPTION
 {
   try {
@@ -226,10 +227,10 @@ THROW_XQP_EXCEPTION
 
 
 void fxcharheap::get0(
-  long  id,             	// input: heap offset
-  char* buf,		        	// output: buffer
+  long  id,               // input: heap offset
+  char* buf,              // output: buffer
   uint32_t output_offset, // input: output buffer offset
-  uint32_t maxlen) const	// input: maximum output size, truncate 
+  uint32_t maxlen) const  // input: maximum output size, truncate 
 THROW_XQP_EXCEPTION
 {
   try {
@@ -246,10 +247,10 @@ THROW_XQP_EXCEPTION
 string fxcharheap::gets(off_t id)
 THROW_XQP_EXCEPTION
 {
-	uint32_t n = get_length(id);
-	char * buf = new char[n+1];
-	get(id, buf, 0, n);
-	return string(buf,0,n);
+  uint32_t n = get_length(id);
+  char * buf = new char[n+1];
+  get(id, buf, 0, n);
+  return string(buf,0,n);
 }
 
 
@@ -273,8 +274,8 @@ uint32_t fxcharheap::get_length0(long id) const
 
 void fxcharheap::expand()
 {
-	fxary_p->expand();
-	init();
+  fxary_p->expand();
+  init();
 }
 
 
@@ -282,14 +283,14 @@ void fxcharheap::expand()
 // iterator implementations
 
 fxcharheap::fxcharheap_iterator::fxcharheap_iterator(
-	fxcharheap * ch_p,
-	bool end) 
+  fxcharheap * ch_p,
+  bool end) 
 :
-	_begin(end ? &ch_p->data[sizeof(off_t)] + ch_p->size() : &ch_p->data[sizeof(off_t)]),
-	_end(&ch_p->data[sizeof(off_t)] + ch_p->size()),
-	parent(ch_p)
+  _begin(end ? &ch_p->data[sizeof(off_t)] + ch_p->size() : &ch_p->data[sizeof(off_t)]),
+  _end(&ch_p->data[sizeof(off_t)] + ch_p->size()),
+  parent(ch_p)
 {
-	current = (char*)_begin;
+  current = (char*)_begin;
 }
 
 
@@ -300,25 +301,25 @@ fxcharheap::fxcharheap_iterator::~fxcharheap_iterator()
 
 char const* fxcharheap::fxcharheap_iterator::operator++()
 {
-	uint32_t len = strlen(current);
-	char const* result = current;
-	current += (len+1);
-	return result;
+  uint32_t len = strlen(current);
+  char const* result = current;
+  current += (len+1);
+  return result;
 }
 
 
 char const* fxcharheap::fxcharheap_iterator::operator*() const
 {
-	return current;
+  return current;
 }
 
 
 bool operator!=(fxcharheap::fxcharheap_iterator const& x,
                 fxcharheap::fxcharheap_iterator const& y)
 {
-	if (x.parent!=y.parent) return true;
-	if (x.current!=y.current) return true;
-	return false;
+  if (x.parent!=y.parent) return true;
+  if (x.current!=y.current) return true;
+  return false;
 }
 
 
