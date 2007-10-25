@@ -35,6 +35,7 @@ ostringstream	__oss;
 
 #define BEGIN_VISITOR() void *visitor_state; if (NULL == (visitor_state = v.begin_visit (*this))) return
 #define END_VISITOR() v.end_visit (*this, visitor_state)
+#define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
 
 /*
 ostream& parsenode::put(ostream& s) const
@@ -270,8 +271,8 @@ ostream& Prolog::put(ostream& s) const
 void Prolog::accept(parsenode_visitor& v) const 
 { 
 	BEGIN_VISITOR ();
-	sind_list_h->accept(v);
-	vfo_list_h->accept(v);
+	ACCEPT (sind_list_h);
+	ACCEPT (vfo_list_h);
 	END_VISITOR ();
 }
 

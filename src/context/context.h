@@ -50,6 +50,7 @@ protected:
     int intValue;
     bool boolValue;
   } ctx_value_t;
+  typedef std::string (* str_param_t) ();
   
 protected:
 	context *parent;
@@ -78,9 +79,12 @@ public: // context interface
     return context_value (key, val) ? val.exprValue : NULL;
   }
 
-  void bind_var (string name, expr *e) {
+  void bind_expr (string key, expr *e) {
     ctx_value_t v = { e };
-    keymap.put (name, v);
+    keymap.put (key, v);
+  }
+  void bind_str  (string key, string v) {
+    str_keymap.put (key, v);
   }
 
 };

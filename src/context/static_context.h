@@ -61,8 +61,9 @@ public:	// types
 	typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
 
 protected:
-	//daniel: these serve as constant global keys
 	static bool static_init;
+  std::string expand_qname (std::string default_ns, std::string prefix, std::string local) const;
+  std::string expand_qname (std::string default_ns, std::string qname) const;
   
 public:
 	static void init();
@@ -77,6 +78,24 @@ public:
 	// XQuery 1.0 static context
   std::string default_function_namespace() const;
 	void set_default_function_namespace(std::string);
+  std::string default_elem_type_ns () const;
+  void set_default_elem_type_ns (std::string);
+
+  std::string lookup_ns (std::string prefix) const;
+  void bind_ns (std::string prefix, std::string ns);
+
+  expr *lookup_var (std::string prefix, std::string local) const {
+    return lookup_expr ("var:" + expand_qname ("", prefix, local));
+  }
+  expr *lookup_var (std::string varname) const {
+    return lookup_expr ("var:" + expand_qname ("", varname));
+  }
+  void bind_var (std::string prefix, std::string local, expr *expr) {
+    bind_expr ("var:" + expand_qname ("", prefix, local), expr);
+  }
+  void bind_var (std::string varname, expr *expr) {
+    bind_expr ("var:" + expand_qname ("", varname), expr);
+  }
 
   #if 0
   PlanIter_t namespaces() const;

@@ -146,7 +146,15 @@ void *normalize_visitor::begin_visit(
 // 		sctx_p->set_default_function_namespace(ns_p);
 // 		break;
 // 	}}
-	return NULL;
+  switch (v.get_mode()) {
+  case ns_element_default:
+    sctx_p->set_default_elem_type_ns (v.get_default_namespace ());
+    break;
+  case ns_function_default:
+    sctx_p->set_default_function_namespace (v.get_default_namespace ());
+    break;
+  }
+  return NULL;
 }
 
 void *normalize_visitor::begin_visit(const DirAttr& v)
@@ -423,9 +431,9 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 void *normalize_visitor::begin_visit(const NamespaceDecl& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
-	// add namespace def to context
-	return NULL;
+  cout << std::string(++depth, ' ') << TRACE << endl;
+  sctx_p->bind_ns (v.get_prefix (), v.get_uri ());
+  return NULL;
 }
 
 void *normalize_visitor::begin_visit(const NodeComp& v)
@@ -1657,9 +1665,10 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 void normalize_visitor::end_visit(const VarRef& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
-	var_expr *e = static_cast<var_expr *> (sctx_p->lookup_expr (v.get_varname ()));
+	var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
     cout << "Variable " << v.get_varname () << " not found!\n";
+  Assert (e != NULL);
 	nodestack.push (rchandle<expr> (e));
 }
 

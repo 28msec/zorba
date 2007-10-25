@@ -22,6 +22,12 @@
  *
  */
 
+/*______________________________________________________________________
+|  
+|	XQuery 1.0 context
+|	[http://www.w3.org/TR/xquery/#id-xq-context-components]
+|_______________________________________________________________________*/
+
 #include "context/static_context.h"
 #include "context/common.h"
 #include "store/api/item.h"
@@ -56,18 +62,34 @@ void static_context::init()
   DECL_STR_PARAM (static_context, baseuri)
   DECL_STR_PARAM (static_context, default_collation)
   DECL_STR_PARAM (static_context, default_function_namespace)
+  DECL_STR_PARAM (static_context, default_elem_type_ns)
 
-/*______________________________________________________________________
-|  
-|	XQuery 1.0 context
-|	[http://www.w3.org/TR/xquery/#id-xq-context-components]
-|_______________________________________________________________________*/
+  string static_context::lookup_ns (string prefix) const {
+    string ns;
+    Assert (context_value ("ns:" + prefix, ns));
+    return ns;
+  }
+  void static_context::bind_ns (string prefix, string ns) {
+    bind_str ("ns:" + prefix, ns);
+  }
+
+  string static_context::expand_qname (string default_ns, string prefix, string local) const {
+    return prefix.empty () ?
+      (local + ":" + default_ns) :
+      (local + ":" + lookup_ns (prefix));
+  }
+  string static_context::expand_qname (string default_ns, string qname) const {
+    string::size_type n = qname.find(':');
+    return (n == string::npos) ?
+      expand_qname (default_ns, "", qname) :
+      expand_qname (default_ns, qname.substr (0, n), qname.substr (n+1));
+  }
 
 sequence_type_t static_context::get_function_type(
 	const Item* qname_p) const
 THROW_XQP_EXCEPTION
 {
-	//stub
+	// TODO
 	return xs_anyType;
 }
 
@@ -75,7 +97,7 @@ sequence_type_t static_context::get_document_type(
 	const string& doctype) const
 THROW_XQP_EXCEPTION
 {
-	//stub
+	// TODO
 	return xs_anyType;
 }
 
@@ -83,7 +105,7 @@ sequence_type_t static_context::get_collection_type(
 	const string& colltype) const
 THROW_XQP_EXCEPTION
 {
-	//stub
+	// TODO
 	return xs_anyType;
 }
 

@@ -142,7 +142,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 
 				cout << "Expression tree:\n";
-				ex_p->accept(nvs);
+				mm_p->accept(nvs);
 				rchandle<expr> e_h = nvs.pop_nodestack();
 
 				cout << endl;
