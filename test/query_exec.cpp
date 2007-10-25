@@ -171,7 +171,7 @@ int _tmain(int argc, _TCHAR* argv[])
         if (useResultFile)
         {
           resultFile = new ofstream(resultFileName.c_str());
-          *resultFile << "Iterator run:" << std::endl << std::endl;
+          // *resultFile << "Iterator run:" << std::endl << std::endl;
         }
  				PlanIterWrapper iw(it_h);
 				
@@ -184,7 +184,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		  {
             // *resultFile << i_p->show() << endl;
 			serializer* ser = new serializer();
-			ser->serialize_as_xml(it_h, *resultFile);
+			ser->serialize(it_h, *resultFile);
 			*resultFile << endl;
 		  }
           else
@@ -208,8 +208,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (resultFile != NULL)
   {
-    *resultFile << std::endl;
-    timer.print(*resultFile);
+    //*resultFile << std::endl;
+    //timer.print(*resultFile);
   }
   else
     timer.print(cout);

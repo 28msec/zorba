@@ -46,9 +46,8 @@ public:
 	/**
 	 *  Serializes the given sequence of items to the
 	 *  output stream.
-	 */
-	void serialize_as_xml2(list_type& items, ostream& os);
-	void serialize_as_xml(PlanIter_t iter, ostream& os);
+	 */	
+	void serialize(PlanIter_t iter, ostream& os);
 
 	/**
 	 *  Set the serializer's parameters. The list of handled 
@@ -64,11 +63,11 @@ protected:
 	xqp_string doctype_public;
 	xqp_string doctype_system;
 	xqp_string encoding;				// TODO
-	short int escape_uri_attributes;	// TODO: yes/no
+	short int escape_uri_attributes;	// TODO: yes/no requires unicode normalization
 	short int include_content_type;		// TODO: yes/no
 	xqp_string media_type;
-	void* method;						// TODO: an expanded QName
-	xqp_string normalization_form;		// TODO:
+	short int method;					// an expanded QName: "xml", "html"
+	xqp_string normalization_form;		// TODO:   requires unicode normalization
 	short int omit_xml_declaration;		// "yes" or "no", implemented
 	short int standalone;				// implemented, TODO: add some validity checks
 	short int undeclare_prefixes;		// TODO: yes/no
@@ -87,7 +86,9 @@ protected:
 	typedef enum {
 		PARAMETER_VALUE_NO,
   		PARAMETER_VALUE_YES,
-		PARAMETER_VALUE_OMIT		
+		PARAMETER_VALUE_OMIT,
+		PARAMETER_VALUE_XML,
+		PARAMETER_VALUE_HTML
 	} PARAMETER_VALUE_TYPE;
 
 	void reset();	
@@ -121,7 +122,7 @@ protected:
 	 * 
 	 *  @return  the number of node's children
 	 */	
-	unsigned int emit_node_children(Item_t item, ostream& os, int depth);
+	unsigned int emit_node_children(Item_t item, ostream& os, int depth, bool perform_escaping);
 
 	void emit_indentation(int depth, ostream& os);
 };
