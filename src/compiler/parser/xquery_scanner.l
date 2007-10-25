@@ -156,7 +156,7 @@ URILiteral						{StringLiteral}
 	|______________________________________________________________________*/
 Char									[\x09\x0A\x0D\x20-\xFD]
 NonHyphenChar					[\x09\x0D\x0A\x20-\x2C\x2E-\xFD]
-XMLCommentChar				({NonHyphenChar}*)|(-{NonHyphenChar}*)
+XMLCommentChar				({NonHyphenChar}*)|(-{NonHyphenChar}+)
 NonRParChar						[\x09\x0D\x0A\x20-\x28\x2A-\xFD]
 NonColonChar					[\x09\x0D\x0A\x20-\x39\x3B-\xFD]
 CommentContent				({NonColonChar}*)|(:{NonRParChar}{NonColonChar}*)

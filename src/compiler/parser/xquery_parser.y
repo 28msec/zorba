@@ -328,7 +328,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token VBAR												"'|'"
 %token VOID_TEST									"'void()'"
 %token WHERE											"'where'"
-%token XML_COMMENT_BEGIN					"'<!'"
+%token XML_COMMENT_BEGIN					"'<!--'"
 %token XML_COMMENT_END						"'-->'"
 %token XQUERY_VERSION							"'<XQuery Version>'"
 
@@ -3777,7 +3777,7 @@ CommonContent :
 // [101] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor :
-		XML_COMMENT_BEGIN  EXPR_COMMENT_LITERAL  XML_COMMENT_END 	/* ws: explicitXQ */
+		XML_COMMENT_BEGIN  XML_COMMENT_LITERAL  XML_COMMENT_END 	/* ws: explicitXQ */
 		{
 			if (debug) cout << "DirCommentConstructor [ ]\n";
 			$$ = new DirCommentConstructor(@$,
