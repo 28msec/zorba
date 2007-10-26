@@ -253,7 +253,7 @@ public:
 //	Zorba_AlertsManager*		getAlertsManager();
 };    
 
-
+typedef rchandle<XQuery>	XQuery_t;
 
 class ZorbaFactory
 {
@@ -268,9 +268,9 @@ public:
 									);
 	void UninitThread();
 
-  XQuery* createQuery(xqp_string aQueryString);
+  XQuery_t createQuery(const char* aQueryString);
 
-	void		destroyQuery( XQuery *query );
+//	void		destroyQuery( XQuery *query );
 
 };
 
