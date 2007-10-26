@@ -1,11 +1,11 @@
-SET(QUERY_EXEC_SRCS timer.cpp 
-    query_exec.cpp)
+SET(API_TEST_SRCS timer.cpp 
+    apitest.cpp)
 
-ADD_EXECUTABLE(query_exec ${QUERY_EXEC_SRCS})
+ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
 
-TARGET_LINK_LIBRARIES(query_exec zorba)
+TARGET_LINK_LIBRARIES(apitest zorba)
 
 
 IF (NOT MSVC)
-	TARGET_LINK_LIBRARIES(query_exec pthread)
+	TARGET_LINK_LIBRARIES(apitest pthread) 
 ENDIF (NOT MSVC)
