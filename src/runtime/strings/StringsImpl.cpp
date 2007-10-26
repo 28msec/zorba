@@ -194,8 +194,8 @@ CompareStrIterator::nextImpl(PlanState& planState) {
 		if ( n1 != NULL )	{
 			n0 = n0->getAtomizationValue();
 			n1 = n1->getAtomizationValue();
-			n2 = consumeNext ( theChildren[2], planState );
 			if(theChildren.size() == 3)	{
+				n2 = consumeNext ( theChildren[2], planState );
 				if ( n2 != NULL )	{
 					//TODO solve track issue no.26
 					res = zorba::getItemFactory()->createInteger(
