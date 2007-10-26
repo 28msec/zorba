@@ -34,6 +34,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
   bool useResultFile = false, inline_query = false;
+  bool useSerializer = false;
   std::string resultFileName;
   std::ofstream* resultFile = NULL;
 	
@@ -80,6 +81,8 @@ int _tmain(int argc, _TCHAR* argv[])
 				driver.trace_parsing = true;
 			} else if (TEST_ARGV_FLAG ("-s")) {
 				driver.trace_scanning = true;
+			} else if (TEST_ARGV_FLAG ("-r")) {
+				useSerializer = true;			
 			} else if (TEST_ARGV_FLAG ("-o")) {
 				useResultFile = true;
         resultFileName = *++argv;
@@ -181,9 +184,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
           if (resultFile != NULL)
 		  {
-            // *resultFile << i_p->show() << endl;
-			serializer* ser = new serializer();
-			ser->serialize(it_h, *resultFile);
+		  	if (useSerializer)
+			{
+				serializer* ser = new serializer();
+				ser->serialize(it_h, *resultFile);			
+			}
+			else
+            	*resultFile << i_p->show() << endl;
+			
 			*resultFile << endl;
 		  }
           else

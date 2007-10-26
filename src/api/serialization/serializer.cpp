@@ -305,7 +305,7 @@ void serializer::emit_node(Item_t item, ostream& os, int depth)
 	{		
 		emit_expanded_string(item->getStringValue(), os);
 	}
-	else 
+	else
 	{
 		os << "node of type: " << item->getNodeKind();
 		
