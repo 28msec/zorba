@@ -86,8 +86,8 @@ namespace xqp {
     bind_str ("ns:" + prefix, ns);
   }
 
-  function *static_context::lookup_builtin_fn (string local) const {
-    return lookup_func ("fn:" + make_expanded_qname (XQUERY_FN_NS, local));
+  function *static_context::lookup_builtin_fn (string local) {
+    return root_static_context ()->lookup_func ("fn:" + make_expanded_qname (XQUERY_FN_NS, local));
   }
   string static_context::expand_qname (string default_ns, string prefix, string local) const {
     return make_expanded_qname

@@ -105,7 +105,7 @@ public:
   function *lookup_fn (std::string prefix, std::string local) const {
     return lookup_func ("fn:" + expand_qname (default_function_namespace (), prefix, local));
   }
-  function *lookup_builtin_fn (std::string local) const;
+  static function *lookup_builtin_fn (std::string local);
   void bind_fn (std::string prefix, std::string local, function *f) {
     bind_func ("fn:" + expand_qname (default_function_namespace (), prefix, local), f);
   }
