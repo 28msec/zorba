@@ -34,7 +34,7 @@ bool library::static_init = false;
 
 
   static string get_qname (const function &f) {
-    QNameItem *name = static_cast<const QNameItem *> (f.get_fname ());
+    const QNameItem *name = static_cast<const QNameItem *> (f.get_fname ());
     return name->getPrefix () + ":" + name->getLocalName ();
   }
   
@@ -46,7 +46,7 @@ bool library::static_init = false;
       static_context::root_static_context ()->                          \
         bind_fn (get_qname (type##_obj), & type##_obj);                 \
     }                                                                   \
-  } type##_init_obj;
+  } type##_init_obj
   
   
   // Accessors
