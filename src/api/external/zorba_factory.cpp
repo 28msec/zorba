@@ -10,10 +10,7 @@ namespace xqp{
 ZorbaFactory::ZorbaFactory(ItemFactory *item_factory,
 													Store *theStore)
 {
-	zorba::itemFactory = item_factory;
-	zorba::theStore = theStore;
-
-	zorba::initializeZorbaEngine();//item_factory);
+	zorba::initializeZorbaEngine(item_factory, theStore);
 
 }
 
@@ -47,14 +44,14 @@ void ZorbaFactory::UninitThread()
 	zorba::destroyZorbaForCurrentThread();
 }
 
-XQuery* ZorbaFactory::createQuery(xqp_string aQueryString)
+XQuery_t ZorbaFactory::createQuery(const char* aQueryString)
 {
 	return new Zorba_XQueryBinary( aQueryString );
 }
-
+/*
 void		ZorbaFactory::destroyQuery( XQuery *query )
 {
 	query->removeReference();
 }
-
+*/
 }//end namespace xqp

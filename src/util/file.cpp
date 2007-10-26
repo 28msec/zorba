@@ -279,14 +279,14 @@ THROW_XQP_EXCEPTION
 	std::string err = strerror(errno);
   errno = 0;
   //daniel throw xqp_exception(location, msg + " ["+err+']');
-	ZorbaErrorAlerts::error_alert(error_messages::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
+	ZORBA_ERROR_ALERT(error_messages::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
 													error_messages::SYSTEM_ERROR,
 													NULL,false,
 													msg + " ["+err+']', location);
 #else
 	ostringstream		oss;
 	oss << msg << " [" << GetLastError() << "]";
-	ZorbaErrorAlerts::error_alert(error_messages::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
+	ZORBA_ERROR_ALERT(error_messages::XQP0011_SYSTEM_FILE_ERROR_IN_FUNCTION,
 													error_messages::SYSTEM_ERROR,
 													NULL,false,
 													oss.str() , location);

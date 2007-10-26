@@ -14,28 +14,34 @@
 #include <string>
 #include <vector>
 
-#include "errors/errors.h"
-#include "errors/xqp_exception.h"
+#include "errors.h"
+#include "xqp_exception.h"
 #include "util/rchandle.h"
 #include "compiler/parser/location.hh"
 //#include "runtime/zorba.h"
 //#include "../values/item.h"
 //#include "../values/atomic_items.h"
+//#include "zorba_api.h"
 
 using namespace std;
+
+
 namespace xqp {
 
 class zorba;
 class Item;
+class Zorba_AlertsManager;
 
 class ZorbaErrorAlerts : public rcobject
 {
 public:
 	///members to be accessed from static member functions
 	rchandle<error_messages> err_messages;
+private:
+	Zorba_AlertsManager				*errmanager_api;
 
 public:
-	ZorbaErrorAlerts( class error_messages *_err_messages);
+	ZorbaErrorAlerts( );
 	~ZorbaErrorAlerts();
 
 //	enum Zorba_Alert_Type
@@ -48,7 +54,10 @@ public:
 //	};
 
 public:
-	static void error_alert( const error_messages::errcode,///one of predefined error messages in errors.h
+	static void error_alert( 
+													//	const char *file,
+													//	const int line,
+														const error_messages::errcode,///one of predefined error messages in errors.h
 														error_messages::error_type,
 														const yy::location *ploc = NULL, ///if NULL location will be taken from current iterator from zorba object
 														bool continue_execution = false, ///recoverable (continue execution) ? fatal (throw error)?
@@ -56,6 +65,8 @@ public:
 														const string param2 = ""
 													 );
 	static void error_alert_withoutlocation( 
+												//	const char *file,
+												//	const int line,
 													const error_messages::errcode,///one of predefined error messages in errors.h
 													error_messages::error_type,
 													bool continue_execution = false, ///recoverable (continue execution) ? fatal (throw error)?
@@ -63,21 +74,29 @@ public:
 													const string param2 = ""
 													 );
 
-	static void warning_alert( const error_messages::warning_code,
+	static void warning_alert( 
+													//	const char *file,
+													//	const int line,
+														const error_messages::warning_code,
 														const yy::location *ploc = NULL,///if NULL location will be taken from current iterator from zorba object
 														const string param1 = "",
 														const string param2 = ""
 													 );
 	static void warning_alert_withoutlocation( 
+													//	const char *file,
+													//	const int line,
 														const error_messages::warning_code,
 														const string param1 = "",
 														const string param2 = ""
 													 );
 
-	static void notify_event( const error_messages::NotifyEvent_code notif_event,
+	static void notify_event( 
+													//	const char *file,
+													//	const int line,
+														const error_messages::NotifyEvent_code notif_event,
 													//	const yy::location loc, 
-													 const string param1 = "",
-													 const string param2 = ""
+														const string param1 = "",
+														const string param2 = ""
 													 );
 
 //	static void notify_event( const std::string notif_string,
@@ -110,6 +129,27 @@ private:
 	static void DumpItemsAsText( 
 										 const std::vector<class Item*> *items);
 };
+
+
+
+////define some macros to catch the __FILE__ and __LINE__ where the error is fired
+
+#define		ZORBA_ERROR_ALERT				\
+				cout << __FILE__ << "[" << __LINE__ << "]:" << endl; \
+				ZorbaErrorAlerts::error_alert
+/*#define		error_alert_withoutlocation( errcode,error_type,continue_execution, param1,param2)		\
+				error_alert_withoutlocation_fl(__FILE__, __LINE__,errcode,error_type,continue_execution, param1,param2)
+*/
+#define		ZORBA_WARNING_ALERT		\
+				cout << __FILE__ << "[" << __LINE__ << "]:" << endl; \
+				ZorbaErrorAlerts::warning_alert
+/*#define		warning_alert_withoutlocation( warncode,ploc, param1,param2)		\
+				warning_alert_without_location_fl(__FILE__, __LINE__,warncode,ploc, param1,param2)
+*/
+#define		ZORBA_NOTIFY_EVENT		\
+				cout << __FILE__ << "[" << __LINE__ << "]:" << endl; \
+				ZorbaErrorAlerts::notify_event
+
 
 }
 

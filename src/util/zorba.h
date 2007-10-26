@@ -1,48 +1,48 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: zorba.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan,Paul Pedersen
- *
- */
+///Created: Daniel Turcanu @ IPDevel 
 
 #ifndef XQP_ZORBA_H
 #define XQP_ZORBA_H
 
-#include "context/common.h"
-#include "context/static_context.h"
-#include "context/dynamic_context.h"
-#include "types/sequence_type_mgr.h"
+//#include "context/common.h"
+//#include "context/static_context.h"
+//#include "context/dynamic_context.h"
+//daniel #include "runtime/errors.h"
 #include "store/api/item_factory.h"
 #include "util/rchandle.h"
 #include "errors/Error.h"
+//#include "types/representations.h
+
+#include "types/sequence_type_mgr.h"
+
+#include <unicode/utypes.h>
+#include <unicode/coll.h>
+#include <unicode/ustring.h>
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
+#include "functions/library.h"
+
+//#include "zorba_api/xquerybinary.h"
 
 #include <stack>
 #include <map>
 #ifdef WIN32
-#include "util/win32/pthread.h"
+#include <windows.h>
+#include "win32/pthread.h"
 #endif
 
 namespace xqp {
 
 class ZorbaErrorAlerts;
-class PlanIterator;
-
-
+class BasicIterator;
+/*daniel: it's time for revolution
 class zorba : public rcobject
 {
 protected:
-  // global zorba objects for each thread
-	static std::map<uint64_t, zorba*>		global_zorbas;
-	static pthread_mutex_t							global_zorbas_mutex;
-
-protected:
-	rchandle<ItemFactory>         theValueFactory;
-  rchandle<SequenceTypeManager> theSequenceTypeManager;
-	rchandle<Store>               theStore;
-	rchandle<static_context>      theStaticContext;
-	rchandle<dynamic_context>     theDynamicContext;
+// 	rchandle<data_manager> theDataManager;
+	rchandle<ItemFactory> theValueFactory;  // move to data_manager
+	rchandle<Store> theStore;
+	rchandle<static_context> theStaticContext;
+	rchandle<dynamic_context> theDynamicContext;
 	// requestor identity, for concurrency
 
 	//daniel
@@ -51,7 +51,7 @@ public:
 	///keep a track of the current parse node or expr node (at compile time)
 	//std::stack<const parsenode*>		current_parsenode;
 	///keep a track of the current iterator executed (at execution time)
-	std::stack<const PlanIterator*>	current_iterator;
+	std::stack<const BasicIterator*>	current_iterator;
 	yy::location	null_loc;
 	///end daniel
 
@@ -59,8 +59,8 @@ public:
 	zorba();
 
 	zorba(
+// 		rchandle<data_manager>,
 		rchandle<ItemFactory>,
-    rchandle<SequenceTypeManager>,
 		rchandle<Store>,
 		rchandle<static_context>,
 		rchandle<dynamic_context>,
@@ -69,27 +69,27 @@ public:
 	~zorba() {}
 
 public:
+// 	data_manager* get_data_manager() const { return &*theDataManager; }
 	ItemFactory* getItemFactory() const { return &*theValueFactory; }
-  SequenceTypeManager* getSequenceTypeManager() const { return &*theSequenceTypeManager; }
 	Store* getStore() const { return &*theStore; }
 	static_context* get_static_context() const { return &*theStaticContext; }
 	dynamic_context* get_dynamic_context() const { return &*theDynamicContext; }
 	//daniel
 	ZorbaErrorAlerts* get_error_manager() const { return &*error_manager; }
 
+// 	void set_data_manager(data_manager* v) { theDataManager = v; }
 	void setItemFactory(ItemFactory* v) { theValueFactory = v; }
-  void setSequenceTypeManager(rchandle<SequenceTypeManager> mgr) { theSequenceTypeManager = mgr; }
 	void setStore(Store* s){theStore = s; }
 	void set_static_context(static_context* v) { theStaticContext = v; }
 	void set_dynamic_context(dynamic_context* v) { theDynamicContext = v; }
 	//daniel
 	void set_error_manager(ZorbaErrorAlerts *err_manag) { error_manager = err_manag; }
 
+// 	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
 	void set_static_context(rchandle<static_context> v) { theStaticContext = v; }
 	void set_dynamic_context(rchandle<dynamic_context> v) { theDynamicContext = v; }
 	//daniel
 	void set_error_manager(rchandle<ZorbaErrorAlerts> err_manag) { error_manager = err_manag; }
-
 	yy::location& GetCurrentLocation();//from top iterator
 
 public:	// diagnostics
@@ -108,6 +108,9 @@ public:	// diagnostics
 
 
 	///functions for accessing global zorba objects for each thread
+protected:
+	static std::map<uint64_t, zorba*>		global_zorbas;
+	static pthread_mutex_t							global_zorbas_mutex;
 public:
 	static void		initializeZorbaEngine();
 	static void		uninitializeZorbaEngine();
@@ -119,7 +122,94 @@ public:
 	static void		destroyZorbaForCurrentThread();//when ending the thread
 
 };
+*/
+class ItemFactory;
+class Zorba_XQueryBinary;
+class PlanIterator;
+class error_messages;
+class Store;
+class static_context;
 
+//class Collator;
+
+///Thread Local Storage: this object is global specific to each thread
+class zorba
+{
+	friend class ZorbaFactory;
+public:
+	static SequenceTypeManager		theSequenceTypeManager;///a global var
+	static rchandle<ItemFactory>	itemFactory;///global per application
+	static rchandle<Store>				theStore;
+//	static rchandle<library>			theFunctionLibrary;
+
+protected:
+	std::string		coll_string;
+	::Collator::ECollationStrength		coll_strength;
+	::Collator			*coll;///object used in unicode string processing (using ICU)
+
+	yy::location	null_loc;
+
+public:///things specific for each thread
+	Zorba_XQueryBinary								*current_xquery;//current xquery executed for this thread
+	std::stack<const PlanIterator*>	current_iterator;
+
+	ZorbaErrorAlerts		m_error_manager;
+
+
+	///functions for accessing global zorba objects for each thread
+protected:
+	zorba();
+	~zorba();
+
+
+public:
+	ZorbaErrorAlerts* getErrorManager() { return &m_error_manager; }
+	static SequenceTypeManager* getSequenceTypeManager();
+	::Collator				*getCollator();
+	yy::location& GetCurrentLocation();//from top iterator
+	static ItemFactory		*getItemFactory();
+	static Store* getStore();
+	
+	static_context* get_static_context();///of the current xquery
+//	library*				get_library();
+
+
+
+protected:
+
+#ifdef WIN32
+	static DWORD		tls_key;
+#elif defined ZORBA_FOR_ONE_THREAD_ONLY
+#elif defined ZORBA_USE_PTHREAD_LIBRARY
+	static pthread_key_t		tls_key;
+	void static zorba_tls_destructor( void *tls_data);
+#elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
+	static thread_specific_ptr<zorba>			tls_key;
+#else
+	static std::map<uint64_t, zorba*>		global_zorbas;
+	static pthread_mutex_t							global_zorbas_mutex;
+#endif
+
+protected:
+	static void initializeZorbaEngine_internal(ItemFactory *itemFactory,
+																					 Store *store);
+//	static void initializeThread_internal(zorba *new_zorba, 
+//																			error_messages *em,
+//																			char *collator_name,///="root"
+//																			::Collator::ECollationStrength collator_strength);//=Collator::PRIMARY
+	static void uninitializeZorbaEngine_internal();
+public:
+	static void		initializeZorbaEngine(ItemFactory *itemFactory,
+																					 Store *store);
+	static void		uninitializeZorbaEngine();
+
+
+	static zorba* getZorbaForCurrentThread();
+	
+	static zorba*	allocateZorbaForNewThread();
+	static void		destroyZorbaForCurrentThread();//when ending the thread
+
+};
 
 }	/* namespace xqp */
 #endif /*	XQP_ZORBA_H */

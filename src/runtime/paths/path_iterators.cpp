@@ -117,7 +117,7 @@ doctest1:
 
       if (theTypeName != NULL)
       {
-        TypeCode etype = zorba::getZorbaForCurrentThread()->getSequenceTypeManager()->
+        TypeCode etype = zorba::getSequenceTypeManager()->
                          getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
         TypeCode atype = contextNode->getType();
 
@@ -144,7 +144,7 @@ doctest1:
 
       if (theTypeName != NULL)
       {
-        TypeCode etype = zorba::getZorbaForCurrentThread()->getSequenceTypeManager()->
+        TypeCode etype = zorba::getSequenceTypeManager()->
                          getTypecode(reinterpret_cast<QNameItem*>(&*theTypeName));
         TypeCode atype = contextNode->getType();
 
@@ -207,7 +207,7 @@ doctest2:
       break;
     }
     default:
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
          error_messages::SYSTEM_ERROR,
          NULL,
@@ -283,7 +283,7 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
       break;
     }
     default:
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
          error_messages::SYSTEM_ERROR,
          NULL,
@@ -338,7 +338,7 @@ Item_t SelfAxisIterator::nextImpl(PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
          error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
          error_messages::RUNTIME_ERROR,
          NULL,
@@ -391,7 +391,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZorbaErrorAlerts::error_alert(
+        ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -468,7 +468,7 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -518,7 +518,7 @@ Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -586,7 +586,7 @@ Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -659,7 +659,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZorbaErrorAlerts::error_alert(
+        ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -748,7 +748,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZorbaErrorAlerts::error_alert(
+        ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -837,7 +837,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZorbaErrorAlerts::error_alert(
+        ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -929,7 +929,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZorbaErrorAlerts::error_alert(
+        ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -1049,7 +1049,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
 
       if (!state->theContextNode->isNode())
       {
-        ZorbaErrorAlerts::error_alert(
+        ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -1163,7 +1163,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,
@@ -1297,7 +1297,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 
     if (!state->theContextNode->isNode())
     {
-      ZorbaErrorAlerts::error_alert(
+      ZORBA_ERROR_ALERT(
            error_messages::XPTY0020_TYPE_CONTEXT_NOT_A_NODE,
            error_messages::RUNTIME_ERROR,
            NULL,

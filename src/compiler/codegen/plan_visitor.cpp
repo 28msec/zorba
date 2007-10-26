@@ -392,7 +392,7 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
   }
   default:
   {
-    ZorbaErrorAlerts::error_alert(
+    ZORBA_ERROR_ALERT(
        error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
        error_messages::SYSTEM_ERROR,
        NULL,
@@ -441,21 +441,21 @@ bool plan_visitor::begin_visit(const match_expr& v)
 
     if (wildKind == match_no_wild)
     {
-      qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
+      qname = zorba::getItemFactory()->
               createQName("", v.getQName()->prefix(), v.getQName()->local());
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
     else if (wildKind == match_prefix_wild)
     {
-      qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
+      qname = zorba::getItemFactory()->
               createQName("", "wildcard", v.getWildName());
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
     else if (wildKind == match_name_wild)
     {
-      qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
+      qname = zorba::getItemFactory()->
               createQName("", v.getWildName(), "wildcard");
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
@@ -471,13 +471,13 @@ bool plan_visitor::begin_visit(const match_expr& v)
 
     if (v.getQName() != NULL)
     {
-      qname = zorba::getZorbaForCurrentThread()->getItemFactory()->
+      qname = zorba::getItemFactory()->
               createQName("", v.getQName()->prefix(), v.getQName()->local());
     }
 
     if (v.getTypeName() != NULL)
     {
-      tname = zorba::getZorbaForCurrentThread()->getItemFactory()->
+      tname = zorba::getItemFactory()->
               createQName("", v.getTypeName()->prefix(), v.getTypeName()->local());
     }
 
@@ -538,7 +538,7 @@ void plan_visitor::end_visit(const elem_expr& v)
 	}
 
 	rchandle<qname_expr> qname = v.get_qname();
-	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->
+	Item_t itemQName = zorba::getItemFactory()->
                      createQName("", qname->prefix(), qname->local());
 
 	PlanIter_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
@@ -573,7 +573,7 @@ void plan_visitor::end_visit(const attr_expr& v)
 
 	// TODO dynamic qname
 	rchandle<qname_expr> qname = v.get_qname();
-	Item_t itemQName = zorba::getZorbaForCurrentThread()->getItemFactory()->
+	Item_t itemQName = zorba::getItemFactory()->
                      createQName("", qname->prefix(), qname->local());
 
 	PlanIter_t valueIter = NULL;
@@ -596,7 +596,7 @@ bool plan_visitor::begin_visit(const text_expr& v)
 void plan_visitor::end_visit(const text_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
-	Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(v.get_text());
+	Item_t item = zorba::getItemFactory()->createTextNode(v.get_text());
 	PlanIter_t text = new SingletonIterator(v.get_loc(), item);
 	itstack.push(text);
 }
@@ -705,35 +705,35 @@ void plan_visitor::end_visit(const literal_expr& v)
   case literal_expr::lit_string: {
     PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
-											zorba::getZorbaForCurrentThread()->getItemFactory()->createString(v.get_sval()));
+											zorba::getItemFactory()->createString(v.get_sval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_integer: {
     PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
-											zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(v.get_ival()));
+											zorba::getItemFactory()->createInteger(v.get_ival()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_decimal: {
     PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
-											zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(v.get_decval()));
+											zorba::getItemFactory()->createDecimal(v.get_decval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_double: {
     PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
-											zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(v.get_dval()));
+											zorba::getItemFactory()->createDouble(v.get_dval()));
     itstack.push(it);
     break;
   }
   case literal_expr::lit_bool: {
     PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
-											zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(v.get_bval()));
+											zorba::getItemFactory()->createBoolean(v.get_bval()));
     itstack.push(it);
     break;
   }}

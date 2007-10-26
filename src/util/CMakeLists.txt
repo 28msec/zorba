@@ -9,7 +9,8 @@ SET(UTIL_SRCS
     file.cpp
     tokenbuf.cpp
     zorba.cpp
-    rwlock.cpp)
+    rwlock.cpp
+    math_helper.cpp)
 
 IF (MSVC)
 	LIST(APPEND UTIL_SRCS win32/win_pthread.cpp)

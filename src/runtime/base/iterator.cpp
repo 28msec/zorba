@@ -33,6 +33,10 @@ PlanState::PlanState(int32_t blockSize)
 {
 	this->block = new int8_t[blockSize];
 	memset(this->block, 0, blockSize);
+	this->blockSize = blockSize;
+
+	///this zorp now gets specific for each iterator state object
+	zorp = zorba::getZorbaForCurrentThread();
 }
 
 PlanState::~PlanState()
@@ -45,21 +49,21 @@ PlanState::~PlanState()
 PlanIterator::PlanIterator(yy::location _loc) :
 	loc(_loc){
 	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
+	//zorp = zorba::getZorbaForCurrentThread();
 }
 
 PlanIterator::PlanIterator(const PlanIterator& it) :
 	rcobject(it),
 	loc(it.loc) {
 	this->current_line = 0;
-	zorp = zorba::getZorbaForCurrentThread();
+	//zorp = zorba::getZorbaForCurrentThread();
 }
 
 PlanIterator::~PlanIterator() {
 }
 
 Item_t PlanIterator::produceNext(PlanState& planState) {
-	ZorbaErrorAlerts::error_alert(
+	ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -69,7 +73,7 @@ Item_t PlanIterator::produceNext(PlanState& planState) {
 
 void 
 PlanIterator::reset(PlanState& planState) {
-	ZorbaErrorAlerts::error_alert(
+	ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL
@@ -78,7 +82,7 @@ PlanIterator::reset(PlanState& planState) {
 
 void 
 PlanIterator::releaseResources(PlanState& planState) {
-	ZorbaErrorAlerts::error_alert(
+	ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL
@@ -87,7 +91,7 @@ PlanIterator::releaseResources(PlanState& planState) {
 
 int32_t
 PlanIterator::getStateSize() {
-	ZorbaErrorAlerts::error_alert(
+	ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL
@@ -97,7 +101,7 @@ PlanIterator::getStateSize() {
 
 int32_t
 PlanIterator::getStateSizeOfSubtree() {
-	ZorbaErrorAlerts::error_alert(
+	ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL
@@ -107,7 +111,7 @@ PlanIterator::getStateSizeOfSubtree() {
 
 void
 PlanIterator::setOffset(PlanState& planState, int32_t& offset) {
-	ZorbaErrorAlerts::error_alert(
+	ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL

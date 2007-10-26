@@ -31,6 +31,8 @@
 
 #include "util/utf8/xqpString.h"
 
+#include "util/zorba.h"
+
 #include <assert.h>
 #include <iostream>
 
@@ -77,8 +79,9 @@ class zorba;
 
 typedef rchandle<PlanIterator> PlanIter_t;
 
-extern int32_t iteratorTreeDepth;
+class Zorba_XQueryBinary;
 
+extern int32_t iteratorTreeDepth;
 
 /**
  * Class to represent state that is shared by all plan iterators. The class
@@ -90,8 +93,16 @@ class PlanState
 public:
 	int8_t* block;
 
+	int32_t		blockSize;
+
+	// TODO what's that for?
+	//daniel: it provides quick access to thread specific storage; one important thing there is the error manager
+	zorba *zorp;
+	Zorba_XQueryBinary		*xqbinary;
+
 	PlanState(int32_t blockSize);
 	~PlanState();
+
 };
 
 
@@ -107,8 +118,6 @@ protected:
 	// TODO must be deleted. Is saved in state object.
 	int32_t current_line;
 	
-	// TODO what's that for?
-	zorba *zorp;
 public:
 	yy::location loc;
 	
@@ -256,19 +265,30 @@ public:
 
 public:
 #if BATCHING_TYPE == 1	
-	void produceNext() 
+	void produceNext(PlanState& planState) 
   {
+		planState.zorp->current_iterator.push(this);
+
 		int32_t i = 0;
 		batch[0] = static_cast<IterType*>(this)->nextImpl();
 		while (i < BATCHSIZE && batch[i] != NULL) {
 			i++;
 			batch[i] = static_cast<IterType*>(this)->nextImpl();
 		}
+
+		planState.zorp->current_iterator.pop();
 	}
 #else
 	Item_t produceNext(PlanState& planState)
   {
-		return static_cast<IterType*>(this)->nextImpl(planState);
+		///daniel: save the current iterator executed
+		Item_t	it;
+		planState.zorp->current_iterator.push(this);
+
+		it = static_cast<IterType*>(this)->nextImpl(planState);
+	
+		planState.zorp->current_iterator.pop();
+		return it;
 	}
 #endif
 

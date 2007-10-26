@@ -19,6 +19,7 @@
 #include "functions/Boolean.h"
 
 #include "context/common.h"
+#include "context/static_context.h"
 #include "util/zorba.h"
 #include "types/sequence_type.h"
 #include "util/tracer.h"

@@ -46,14 +46,17 @@ YY_DECL;
 
 namespace xqp {
 
+extern  bool g_trace_scanning;
+extern  bool g_trace_parsing;
+
 /**
 ** Conducting the whole scanning and parsing of xquery.
 */
 class xquery_driver
 {
 public:	// state
-  bool trace_scanning;
-  bool trace_parsing;
+//  bool trace_scanning;
+//  bool trace_parsing;
   std::string file;
 	xqp::symbol_table symtab;
 	std::ostream& os;
@@ -66,10 +69,10 @@ public:
   virtual ~xquery_driver();
   
 public: // manipulators
-  void set_trace_scanning() { trace_scanning = true; }
-  void set_trace_parsing() { trace_parsing = true; }
-  bool get_trace_scanning() const { return trace_scanning; }
-  bool get_trace_parsing() const { return trace_parsing; }
+//  void set_trace_scanning() { trace_scanning = true; }
+//  void set_trace_parsing() { trace_parsing = true; }
+//  bool get_trace_scanning() const { return trace_scanning; }
+//  bool get_trace_parsing() const { return trace_parsing; }
 	int get_debug() const { return debug; }
 	void set_debug(int d) { debug = d; }
   std::string get_file() const { return file; }
@@ -90,6 +93,11 @@ public:
 	**	Parse the contents of a file
 	*/
   void parse(const std::string& fname);
+
+	/*
+		Parse directly the content of a string
+	*/
+	void parse_string( const char *query_string);
 
 	/**
 	**	For pure handling of parse errors, instead of simply dumping them on

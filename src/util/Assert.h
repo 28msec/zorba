@@ -26,7 +26,7 @@ inline void Assert(bool assertion)
 	if (!assertion) 
 	{
 		//daniel throw X();
-		ZorbaErrorAlerts::error_alert(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
+		ZORBA_ERROR_ALERT(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
 														error_messages::SYSTEM_ERROR);
 	}
 }
@@ -37,7 +37,7 @@ inline void Assert(bool assertion, const std::string& location)
 	if (!assertion) 
 	{
 	//daniel	throw X(location);
-		ZorbaErrorAlerts::error_alert(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
+		ZORBA_ERROR_ALERT(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
 														error_messages::SYSTEM_ERROR,
 														NULL, false,
 														location);

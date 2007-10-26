@@ -955,7 +955,7 @@ void axis_step_expr::accept(expr_visitor& v) const
 
   if (numPreds() > 0)
   {
-    ZorbaErrorAlerts::error_alert(
+    ZORBA_ERROR_ALERT(
        error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
        error_messages::SYSTEM_ERROR,
        NULL,
@@ -1087,7 +1087,7 @@ TypeCode match_expr::getNodeKind() const
     return anyNode;
   default:
   {
-    ZorbaErrorAlerts::error_alert(
+    ZORBA_ERROR_ALERT(
          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
          error_messages::SYSTEM_ERROR,
          NULL,

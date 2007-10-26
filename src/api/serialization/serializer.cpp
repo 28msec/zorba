@@ -26,6 +26,7 @@
 #include "util/zorba.h"
 #include "store/naive/basic_item_factory.h"
 #include "types/sequence_type.h"
+#include "zorba_api.h"
 
 #include "string.h"
 
@@ -67,10 +68,12 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 		else if (value == "omit")
 			standalone = PARAMETER_VALUE_OMIT;
 		else
-			ZorbaErrorAlerts::error_alert(
+		{
+			ZORBA_ERROR_ALERT(
 				error_messages::SEPM0016_Invalid_parameter_value,
 				error_messages::SYSTEM_ERROR,
 				NULL);
+		}
 	}
 	else if (parameter_name == "omit-xml-declaration")
 	{
@@ -79,10 +82,12 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 		else if (value == "no")
 			omit_xml_declaration = PARAMETER_VALUE_NO;		
 		else
-			ZorbaErrorAlerts::error_alert(
+		{
+			ZORBA_ERROR_ALERT(
 				error_messages::SEPM0016_Invalid_parameter_value,
 				error_messages::SYSTEM_ERROR,
    				NULL);
+		}
 	}
 	else if (parameter_name == "byte-order-mark")
 	{
@@ -91,10 +96,12 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 		else if (value == "no")
 			byte_order_mark = PARAMETER_VALUE_NO;
 		else
-			ZorbaErrorAlerts::error_alert(
+		{
+			ZORBA_ERROR_ALERT(
 				error_messages::SEPM0016_Invalid_parameter_value,
 				error_messages::SYSTEM_ERROR,
 				NULL);
+		}
 	}
 	else if (parameter_name == "undeclare-prefixes")
 	{
@@ -103,10 +110,12 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 		else if (value == "no")
 			undeclare_prefixes = PARAMETER_VALUE_NO;
 		else
-			ZorbaErrorAlerts::error_alert(
+		{
+			ZORBA_ERROR_ALERT(
 				error_messages::SEPM0016_Invalid_parameter_value,
 				error_messages::SYSTEM_ERROR,
 				NULL);
+		}
 	}
 	else if (parameter_name == "method")
 	{
@@ -115,10 +124,12 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 		else if (value == "html")
 			method = PARAMETER_VALUE_HTML;
 		else
-			ZorbaErrorAlerts::error_alert(
+		{
+			ZORBA_ERROR_ALERT(
 			error_messages::SEPM0016_Invalid_parameter_value,
 			error_messages::SYSTEM_ERROR,
 			NULL);
+		}
 	}
 }
 
@@ -335,9 +346,10 @@ void serializer::validate_parameters(void)
 	}
 }
 
-void serializer::serialize(PlanIter_t iter, ostream& os)
+//daniel void serializer::serialize_as_xml(PlanIter_t iter, ostream& os)
+void serializer::serialize(XQueryResult *result, ostream& os)
 {
-	PlanIterWrapper iw(iter);
+//daniel	PlanIterWrapper iw(iter);
 	Item_t item;
 	
 	validate_parameters();
@@ -372,7 +384,8 @@ void serializer::serialize(PlanIter_t iter, ostream& os)
 			os << END_OF_LINE;
 	}
 
-	item = iw.next();	
+	//daniel item = iw.next();	
+	item = result->next();
 	while (item != NULL )
 	{
 		if (item->isAtomic())
@@ -385,7 +398,7 @@ void serializer::serialize(PlanIter_t iter, ostream& os)
 				||
 				item->getNodeKind() == namespaceNode)
 			{
-				ZorbaErrorAlerts::error_alert(
+				ZORBA_ERROR_ALERT(
 					error_messages::SENR0001_Item_is_attribute_or_namespace_node,
 					error_messages::SYSTEM_ERROR,
 					NULL);
@@ -394,7 +407,8 @@ void serializer::serialize(PlanIter_t iter, ostream& os)
 				emit_node(item, os, 0);
 		}
 
-		item = iw.next();
+		//daniel item = iw.next();
+		item = result->next();
 	}
 	
 	// os << "\n--- end -------------------------\n";

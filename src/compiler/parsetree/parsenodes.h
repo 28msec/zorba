@@ -710,17 +710,17 @@ class OrderingModeDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	dynamic_context::ordering_mode_t mode;
+	static_context::ordering_mode_t mode;
 		
 public:
 	OrderingModeDecl(
 		const yy::location&,
-		dynamic_context::ordering_mode_t);
+		static_context::ordering_mode_t);
 
 	~OrderingModeDecl();
 	
 public:
-	dynamic_context::ordering_mode_t get_mode() const { return mode; }
+	static_context::ordering_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;

@@ -209,7 +209,7 @@ EnclosedIterator::nextImpl(PlanState& planState)
     {
       if (state->theString != "")
       {
-        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString), state);
         state->theString = "";
       }
       break;
@@ -218,7 +218,7 @@ EnclosedIterator::nextImpl(PlanState& planState)
 		{
       if (state->theString != "")
 			{
-        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString), state);
         state->theString = "";
       }
       STACK_PUSH2(state->theContextItem, state);
@@ -301,7 +301,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
 		{
       if (state->theString != "")
 			{
-        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString), state);
         state->theString = "";
       }
       break;
@@ -314,7 +314,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
 		{
       if (state->theString != "")
 			{
-        STACK_PUSH2(zorba::getZorbaForCurrentThread()->getItemFactory()->createTextNode(state->theString), state);
+        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString), state);
         state->theString = "";
       }
       STACK_PUSH2(state->theContextItem, state);
@@ -385,7 +385,7 @@ ElementIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
 
-  Store* store = zorba::getZorbaForCurrentThread()->getStore();
+  Store* store = zorba::getStore();
   TempSeq_t seqChildren = NULL;
   TempSeq_t seqAttributes = NULL;
   TempSeq_t seqNamespaces = NULL;
@@ -414,7 +414,7 @@ ElementIterator::nextImpl(PlanState& planState)
     seqNamespaces = store->createTempSeq ( lIter2 );
   }
 
-  item = zorba::getZorbaForCurrentThread()->getItemFactory()->createElementNode (
+  item = zorba::getItemFactory()->createElementNode (
 		           theQName,
 		           xs_anyType,
 		           seqChildren,
@@ -552,7 +552,7 @@ AttributeIterator::nextImpl(PlanState& planState)
       itemCur = consumeNext ( theChild, planState );
     }
 
-    itemLexical = zorba::getZorbaForCurrentThread()->getItemFactory()->
+    itemLexical = zorba::getItemFactory()->
                   createUntypedAtomic ( lexicalString );
     if ( concatenation )
 		{
@@ -569,7 +569,7 @@ AttributeIterator::nextImpl(PlanState& planState)
     itemTyped = NULL;
   }
 
-  item = zorba::getZorbaForCurrentThread()->getItemFactory()->createAttributeNode (
+  item = zorba::getItemFactory()->createAttributeNode (
 		           theQName,
 		           xs_anyType,
 		           itemLexical,

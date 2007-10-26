@@ -36,7 +36,7 @@ public:
 protected:
 	zorba* zorp;
   static_context *sctx_p;
-	dynamic_context* dctx_p;
+//daniel	dynamic_context* dctx_p;
 // 	rchandle<data_manager> dmgr_h;
 
 	std::stack<expr_t> nodestack;

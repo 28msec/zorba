@@ -232,7 +232,7 @@ namespace xqp
 			    &loc
 			);
 		}
-		return new SingletonIterator ( loc, zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(true) );
+		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(true) );
 	}
 
 	TypeCode
@@ -265,7 +265,7 @@ namespace xqp
 			    &loc
 			);
 		}
-		return new SingletonIterator ( loc, zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(false) );
+		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(false) );
 	}
 
 	TypeCode

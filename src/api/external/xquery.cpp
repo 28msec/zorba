@@ -12,7 +12,7 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/simple_store.h"
 
-#include "../test/timer.h"
+//#include "../../test/timer.h"
 
 #include <iostream>
 #include <fstream>
@@ -21,12 +21,14 @@ using namespace std;
 namespace xqp {
 
 
-Zorba_XQueryBinary::Zorba_XQueryBinary( xqp_string query_text ) :
+Zorba_XQueryBinary::Zorba_XQueryBinary( const char* query_text ) :
 	m_query_text (query_text)
 {
 	is_compiled = false;
 	top_iterator = NULL;
 	lStateSize = 0;
+
+	//addReference();
 }
 
 //Zorba_XQueryBinary::Zorba_XQueryBinary()
@@ -42,7 +44,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	
 	if(is_compiled)
 	{
-		ZorbaErrorAlerts::error_alert(error_messages::API0004_XQUERY_ALREADY_COMPILED,
+		ZORBA_ERROR_ALERT(error_messages::API0004_XQUERY_ALREADY_COMPILED,
 																	error_messages::STATIC_ERROR,
 																	NULL,
 																	true///continue execution
@@ -62,9 +64,10 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	///reset the error list from error manager
 //	m_error_manager.clear();///delete all alerts from list
 
-	if(m_query_text.empty())
+	//if(m_query_text.empty())
+	if(!m_query_text[0])
 	{
-		ZorbaErrorAlerts::error_alert(error_messages::API0001_XQUERY_STRING_IS_EMPTY,
+		ZORBA_ERROR_ALERT(error_messages::API0001_XQUERY_STRING_IS_EMPTY,
 																	error_messages::STATIC_ERROR,
 																	NULL,
 																	true///continue execution
@@ -78,7 +81,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	xquery_driver driver(cout);///for debug, send log text on cout
 
 	///build up the expression tree
-	driver.parse(m_query_text);
+	driver.parse_string(m_query_text);
 
 	parsenode* n_p = driver.get_expr();
 	cout << endl;
@@ -107,7 +110,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
 	{
 		cout << "Parse error: expecting MainModule\n";
-		ZorbaErrorAlerts::error_alert(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 																	error_messages::SYSTEM_ERROR,
 																	NULL,
 																	true///continue execution
@@ -119,7 +122,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
 	{
 		cout << "Parse error: expecting MainModule->QueryBody\n";
-		ZorbaErrorAlerts::error_alert(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 																	error_messages::SYSTEM_ERROR,
 																	NULL,
 																	true///continue execution
@@ -131,7 +134,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
 	{
 		cout << "Parse error: expecting MainModule->QueryBody->Expr\n";
-		ZorbaErrorAlerts::error_alert(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 																	error_messages::SYSTEM_ERROR,
 																	NULL,
 																	true///continue execution
@@ -142,7 +145,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	}
 
 	cout << "Expression tree:\n";
-	ex_p->accept(nvs);
+	mm_p->accept(nvs);
 	rchandle<expr> e_h = nvs.pop_nodestack();
 
 	cout << endl;
@@ -150,7 +153,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	if (e_h==NULL) {
 		cout << "e_h==NULL\n";
 		thread_specific_zorba->current_xquery = NULL;
-		ZorbaErrorAlerts::error_alert(error_messages::API0002_COMPILE_FAILED,
+		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED,
 																	error_messages::STATIC_ERROR,
 																	NULL,
 																	true///continue execution
@@ -167,11 +170,14 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	top_iterator = pvs.pop_itstack();
 	cout << endl;
 
+	cout << "Iterator tree:" << std::endl;
+	top_iterator->show(cout);
+	
 	//cout << "iterator type = " << typeid(*it_h).name() << endl;
 	cout << "\nIterator run:\n";
 	if (top_iterator==NULL) {
 		cout << "it_h==NULL\n";
-		ZorbaErrorAlerts::error_alert(error_messages::API0002_COMPILE_FAILED,
+		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED,
 																	error_messages::STATIC_ERROR,
 																	NULL,
 																	true///continue execution
@@ -181,8 +187,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 		return false;
 	}
 
-	cout << "Iterator tree:" << std::endl;
-	top_iterator->show(cout);
 
 
 	///compute the offsets for each iterator into the state block
@@ -214,7 +218,7 @@ XQueryResult* Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 	if(!is_compiled)
 	{
 		cout << "not compiled" << endl;
-		ZorbaErrorAlerts::error_alert(error_messages::API0003_XQUERY_NOT_COMPILED,
+		ZORBA_ERROR_ALERT(error_messages::API0003_XQUERY_NOT_COMPILED,
 																	error_messages::RUNTIME_ERROR,
 																	NULL,
 																	true///continue execution
@@ -249,12 +253,21 @@ bool Zorba_XQueryBinary::isCompiled()
 //{
 //}
 
+StaticQueryContext* Zorba_XQueryBinary::getInternalStaticContext()
+{
+	return NULL;//&internal_static_context;
+}
+
 
 bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 {
 	return false;
 }
 
+
+Zorba_XQueryResult::~Zorba_XQueryResult()
+{
+}
 
 /*
 	next() should be called in the same thread where the xquery was executed

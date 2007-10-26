@@ -767,7 +767,7 @@ namespace yy
     {
 			if (debug) cout << "OrderingDecl [ordered]\n";
 			(yyval.node) = new OrderingModeDecl((yyloc),
-								dynamic_context::ordered);
+								static_context::ordered);
 		;}
     break;
 
@@ -776,7 +776,7 @@ namespace yy
     {
 			if (debug) cout << "OrderingDecl [unordered]\n";
 			(yyval.node) = new OrderingModeDecl((yyloc),
-								dynamic_context::unordered);
+								static_context::unordered);
 		;}
     break;
 

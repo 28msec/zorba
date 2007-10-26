@@ -23,7 +23,7 @@
 #ifdef __cplusplus
 
 #include <stdlib.h>
-#include <unistd.h>
+//daniel #include <unistd.h>
 
 /* Use prototypes in function declarations. */
 #define YY_USE_PROTOS
@@ -2892,7 +2892,7 @@ char *yytext;
 #endif
 
 #ifdef WIN32
-#include "win32/compatib_defs.h"
+#include "util/win32/compatib_defs.h"
 #ifndef _WIN32_WCE
 #include <io.h>
 #endif
@@ -8466,7 +8466,7 @@ namespace xqp {
 
 void xquery_driver::scan_begin()
 {
-  yy_flex_debug = trace_scanning;
+  yy_flex_debug = g_trace_scanning;
   if (!(yyin = fopen(file.c_str (), "r"))) {
     error (std::string("cannot open ") + file);
   }
@@ -8477,6 +8477,17 @@ void xquery_driver::scan_end()
   fclose(yyin);
 }
 
+}
+
+void xquery_driver::parse_string( const char *query_string)
+{
+	YY_BUFFER_STATE str_buffer = yy_scan_string(query_string);
+
+	yy::xquery_parser parser(*this);
+	parser.set_debug_level(g_trace_parsing);
+	parser.parse();
+
+	yy_delete_buffer(str_buffer); /* free up memory */
 }
 
 

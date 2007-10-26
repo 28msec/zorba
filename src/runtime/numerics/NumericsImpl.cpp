@@ -22,75 +22,75 @@ namespace xqp
 	/* begin class AddOperations */
 	Item_t AddOperations::opDouble (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble ( i0->getDoubleValue() + i1->getDoubleValue() );
+		return zorba::getItemFactory()->createDouble ( i0->getDoubleValue() + i1->getDoubleValue() );
 	}
 	Item_t AddOperations::opFloat (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() + i1->getFloatValue() );
+		return zorba::getItemFactory()->createFloat ( i0->getFloatValue() + i1->getFloatValue() );
 	}
 	Item_t AddOperations::opDecimal (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() + i1->getDecimalValue() );
+		return zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() + i1->getDecimalValue() );
 	}
 	Item_t AddOperations::opInteger (const yy::location* loc,  Item_t i0, Item_t i1 )
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
+		return zorba::getItemFactory()->createInteger ( i0->getIntegerValue() + i1->getIntegerValue() );
 	}
 	/* end class AddOperations */
 	
 	/* start class SubtractOperations */
 	Item_t SubtractOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(i0->getDoubleValue() - i1->getDoubleValue());
+		return zorba::getItemFactory()->createDouble(i0->getDoubleValue() - i1->getDoubleValue());
 	}
 	
 	Item_t SubtractOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
+		return zorba::getItemFactory()->createFloat ( i0->getFloatValue() - i1->getFloatValue() );
 	}
 	
 	Item_t SubtractOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
+		return zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() - i1->getDecimalValue() );
 	}
 	
 	Item_t SubtractOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
+		return zorba::getItemFactory()->createInteger ( i0->getIntegerValue() - i1->getIntegerValue() );
 	}
 	/* end class SubtractOperations */
 	
 	/* start class MultiplyOperations */
 	Item_t MultiplyOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(i0->getDoubleValue() * i1->getDoubleValue());
+		return zorba::getItemFactory()->createDouble(i0->getDoubleValue() * i1->getDoubleValue());
 	}
 	
 	Item_t MultiplyOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
+		return zorba::getItemFactory()->createFloat ( i0->getFloatValue() * i1->getFloatValue() );
 	}
 	
 	Item_t MultiplyOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
+		return zorba::getItemFactory()->createDecimal ( i0->getDecimalValue() * i1->getDecimalValue() );
 	}
 	
 	Item_t MultiplyOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
+		return zorba::getItemFactory()->createInteger ( i0->getIntegerValue() * i1->getIntegerValue() );
 	}
 	/* end class MultiplyOperations */
 	
 	/* start class DivideOperations */
 	Item_t DivideOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble( i0->getDoubleValue() / i1->getDoubleValue() );
+		return zorba::getItemFactory()->createDouble( i0->getDoubleValue() / i1->getDoubleValue() );
 	}
 	
 	Item_t DivideOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
+		return zorba::getItemFactory()->createFloat ( i0->getFloatValue() / i1->getFloatValue() );
 	}
 	
 	Item_t DivideOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
@@ -106,7 +106,7 @@ namespace xqp
 				"Division by zero (decimals)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( ld0 / ld1 );
+		return zorba::getItemFactory()->createDecimal ( ld0 / ld1 );
 	}
 	
 	Item_t DivideOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
@@ -122,7 +122,7 @@ namespace xqp
 				"Division by zero (integers)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( ll0 / ll1 );
+		return zorba::getItemFactory()->createInteger ( ll0 / ll1 );
 	}
 	/* end class DivideOperations */
 	
@@ -140,7 +140,7 @@ namespace xqp
 				"Integer Division by zero (integers)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+		return zorba::getItemFactory()->createInteger ( 
 			static_cast<long long>( d0 / d1 ) 
 		);
 	}
@@ -158,7 +158,7 @@ namespace xqp
 				"Integer Division by zero (integers)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+		return zorba::getItemFactory()->createInteger ( 
 			static_cast<long long>(f0 / f1) 
 		);
 	}
@@ -176,7 +176,7 @@ namespace xqp
 				"Integer Division by zero (integers)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+		return zorba::getItemFactory()->createInteger ( 
 			static_cast<long long>(ld0 / ld1) 
 		);
 	}
@@ -194,7 +194,7 @@ namespace xqp
 				"Integer Division by zero (integers)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( 
+		return zorba::getItemFactory()->createInteger ( 
 			ll0 / ll0
 		);
 	}
@@ -203,12 +203,12 @@ namespace xqp
 	/* start class ModOperations */
 	Item_t ModOperations::opDouble(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble(fmod(i0->getDoubleValue(), i1->getDoubleValue()));
+		return zorba::getItemFactory()->createDouble(fmod(i0->getDoubleValue(), i1->getDoubleValue()));
 	}
 	
 	Item_t ModOperations::opFloat(const yy::location* loc, Item_t i0, Item_t i1)
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat(fmod(i0->getFloatValue(), i1->getFloatValue()));
+		return zorba::getItemFactory()->createFloat(fmod(i0->getFloatValue(), i1->getFloatValue()));
 	}
 	
 	Item_t ModOperations::opDecimal(const yy::location* loc, Item_t i0, Item_t i1)
@@ -224,7 +224,7 @@ namespace xqp
 				"Modulo by zero (decimals)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(fmod(ld0, ld1));
+		return zorba::getItemFactory()->createDecimal(fmod(ld0, ld1));
 	}
 	
 	Item_t ModOperations::opInteger(const yy::location* loc, Item_t i0, Item_t i1)
@@ -240,7 +240,7 @@ namespace xqp
 				"Modulo by zero (integers)!"
 			);
 		}
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(ll0 % ll1);
+		return zorba::getItemFactory()->createInteger(ll0 % ll1);
 	}
 	/* end class ModOperations */
 
@@ -530,13 +530,13 @@ namespace xqp
 			
 			// TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
 			if (sequence_type::derives_from(type, xs_double))
-				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble (mul * item->getDoubleValue() );
+				res = zorba::getItemFactory()->createDouble (mul * item->getDoubleValue() );
 			else if (sequence_type::derives_from(type, xs_float))
-				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat(mul * item->getFloatValue() );
+				res = zorba::getItemFactory()->createFloat(mul * item->getFloatValue() );
 			else if (sequence_type::derives_from(type, xs_decimal))
-				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal(mul * item->getDecimalValue() );
+				res = zorba::getItemFactory()->createDecimal(mul * item->getDecimalValue() );
 			else if (sequence_type::derives_from(type, xs_integer))
-				res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(mul * item->getIntegerValue() );
+				res = zorba::getItemFactory()->createInteger(mul * item->getIntegerValue() );
 			else
 			{
 				ZorbaErrorAlerts::error_alert (
@@ -631,33 +631,33 @@ namespace xqp
 					if (type == xs_double)
 						res = item;
 					else
-						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble (item->getDoubleValue() );
+						res = zorba::getItemFactory()->createDouble (item->getDoubleValue() );
 				else
-					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble (-item->getDoubleValue() );
+					res = zorba::getItemFactory()->createDouble (-item->getDoubleValue() );
 			else if (sequence_type::derives_from(type, xs_float))
 				if (item->getFloatValue() >= 0 )
 					if (type == xs_float)
 						res = item;
 					else
-						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat (item->getFloatValue() );
+						res = zorba::getItemFactory()->createFloat (item->getFloatValue() );
 				else
-					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat (-item->getFloatValue() );
+					res = zorba::getItemFactory()->createFloat (-item->getFloatValue() );
 			else if (sequence_type::derives_from(type, xs_decimal))
 				if (item->getDecimalValue() >= 0 )
 					if (type == xs_decimal)
 						res = item;
 					else
-						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal (item->getDecimalValue() );
+						res = zorba::getItemFactory()->createDecimal (item->getDecimalValue() );
 				else
-					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal (-item->getDecimalValue() );
+					res = zorba::getItemFactory()->createDecimal (-item->getDecimalValue() );
 			else if (sequence_type::derives_from(type, xs_integer))
 				if (item->getIntegerValue() >= 0 )
 					if (type == xs_integer)
 						res = item;
 					else
-						res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger (item->getIntegerValue() );
+						res = zorba::getItemFactory()->createInteger (item->getIntegerValue() );
 				else
-					res = zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger (-item->getIntegerValue() );
+					res = zorba::getItemFactory()->createInteger (-item->getIntegerValue() );
 			else
 			{
 				ZorbaErrorAlerts::error_alert (
@@ -715,7 +715,7 @@ namespace xqp
 		STACK_INIT2(ZorNumGenState, state, planState);
 		while (state->getCurNumber() < 100) {
 			STACK_PUSH2(
-				zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger(state->getCurNumber()),
+				zorba::getItemFactory()->createInteger(state->getCurNumber()),
 				state);
 			state->setCurNumber(state->getCurNumber() + 1);
 		}

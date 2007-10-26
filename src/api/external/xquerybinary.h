@@ -29,6 +29,7 @@ class Zorba_XQueryResult : public XQueryResult
 {
 public:
 	virtual Item_t		next();
+	virtual ~Zorba_XQueryResult();
 
 public:
 	PlanIter_t		it_result;
@@ -45,12 +46,12 @@ class Zorba_XQueryBinary : public XQuery
 		friend class XQueryPtr;
 		friend class zorba;
 public:
-    Zorba_XQueryBinary(xqp_string );
+    Zorba_XQueryBinary(const char* );
     virtual ~Zorba_XQueryBinary();
 
 
 private:
-	xqp_string m_query_text;
+	const char* m_query_text;
 	bool		is_compiled;
 
 //	Zorba_AlertsManager		m_error_manager;

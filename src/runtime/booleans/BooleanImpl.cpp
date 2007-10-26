@@ -46,12 +46,12 @@ namespace xqp
 		if ( item == NULL )
 		{
 			// empty sequence => false
-			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( negate ^ false );
+			result = zorba::getItemFactory()->createBoolean ( negate ^ false );
 		}
 		else if ( item->isNode() )
 		{
 			// node => true
-			result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( negate ^ true );
+			result = zorba::getItemFactory()->createBoolean ( negate ^ true );
 		}
 		else
 		{
@@ -72,7 +72,7 @@ namespace xqp
 				// => effective boolean value is defined in the items
 				result = item->getEBV();
 				if (negate)
-					result = zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( negate ^ result->getBooleanValue() );
+					result = zorba::getItemFactory()->createBoolean ( negate ^ result->getBooleanValue() );
 			}
 			else
 			{
@@ -134,7 +134,7 @@ namespace xqp
 							|| FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterRight)->getBooleanValue();;
 			break;
 		}
-		STACK_PUSH(zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean(bRes));
+		STACK_PUSH(zorba::getItemFactory()->createBoolean(bRes));
 		STACK_END();
 	}
 	
@@ -193,8 +193,8 @@ namespace xqp
 			// TODO Optimizations for >, >=, < and <=
 			lIter0 = new PlanIterWrapper(this->iter0, planState);
 			lIter1 = new PlanIterWrapper(this->iter1, planState);
-			temp0 = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq(lIter0);
-			temp1 = zorba::getZorbaForCurrentThread()->getStore()->createTempSeq(lIter1);
+			temp0 = zorba::getStore()->createTempSeq(lIter0);
+			temp1 = zorba::getStore()->createTempSeq(lIter1);
 			i0 = 1;
 			found = false;
 			while (!found && temp0->containsItem(i0))
@@ -209,14 +209,14 @@ namespace xqp
 				i0++;
 			}
 
-			STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean( found ) );
+			STACK_PUSH( zorba::getItemFactory()->createBoolean( found ) );
 		} /* if general comparison */
 		else if (this->isValueComparison())
 		{
 			if (( (item0 = this->consumeNext(this->iter0, planState)) != NULL ) 
 						&& ((item1 = this->consumeNext(this->iter1, planState))!=NULL))
 			{
-				STACK_PUSH( zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean( CompareIterator::valueComparison(item0, item1) ) );
+				STACK_PUSH( zorba::getItemFactory()->createBoolean( CompareIterator::valueComparison(item0, item1) ) );
 				if (this->consumeNext(this->iter0, planState) != NULL || this->consumeNext(this->iter1, planState) != NULL)
 				{
 					ZorbaErrorAlerts::error_alert (

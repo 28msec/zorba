@@ -114,10 +114,10 @@ namespace xqp {
 		//NOTE By passing "root" as a locale parameter the root locale is used.
 		//Root locale implements the UCA rules
 		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-		Collator *coll = Collator::createInstance(Locale("root"), status);
+		::Collator *coll = ::Collator::createInstance(Locale("root"), status);
 	
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -125,9 +125,9 @@ namespace xqp {
 		}
 
 		//set level 1 comparison for the collator
-		coll->setStrength(Collator::PRIMARY);
+		coll->setStrength(::Collator::PRIMARY);
 
-		Collator::EComparisonResult result = Collator::EQUAL;
+		Collator::EComparisonResult result = ::Collator::EQUAL;
 
 		//compare the 2 strings
 		result = coll->compare(getUnicodeString(utf8String), getUnicodeString(src));
@@ -142,10 +142,10 @@ namespace xqp {
 		//create the collator object
 		UErrorCode status = U_ZERO_ERROR;
 
-		Collator *coll = Collator::createInstance(Locale(loc), status);
+		::Collator *coll = ::Collator::createInstance(Locale(loc), status);
 	
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -153,9 +153,9 @@ namespace xqp {
 		}
 
 		//set level 1 comparison for the collator
-		coll->setStrength(Collator::PRIMARY);
+		coll->setStrength(::Collator::PRIMARY);
 
-		Collator::EComparisonResult result = Collator::EQUAL;
+		::Collator::EComparisonResult result = ::Collator::EQUAL;
 
 		//compare the 2 strings
 		result = coll->compare(getUnicodeString(utf8String), getUnicodeString(src));
@@ -222,22 +222,22 @@ namespace xqp {
 		//NOTE By passing "root" as a locale parameter the root locale is used.
 		//Root locale implements the UCA rules
 		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-		Collator *coll = Collator::createInstance(Locale("root"), status);
+		::Collator *coll = ::Collator::createInstance(Locale("root"), status);
 	
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
 				);
 		}
 		//set level 1 comparison for the collator
-		coll->setStrength(Collator::PRIMARY);
+		coll->setStrength(::Collator::PRIMARY);
 
 		StringSearch search(getUnicodeString(pattern), getUnicodeString(utf8String), (RuleBasedCollator *)coll, NULL, status);
 
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -257,7 +257,7 @@ namespace xqp {
 			return pos;
 		}
 		if (U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -278,7 +278,7 @@ namespace xqp {
 		StringSearch search(getUnicodeString(pattern), getUnicodeString(utf8String), Locale(loc), NULL, status);
 
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -292,7 +292,7 @@ namespace xqp {
 			return pos;
 		}
 		if (U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -310,22 +310,22 @@ namespace xqp {
 		//NOTE By passing "root" as a locale parameter the root locale is used.
 		//Root locale implements the UCA rules
 		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-		Collator *coll = Collator::createInstance(Locale("root"), status);
+		::Collator *coll = ::Collator::createInstance(Locale("root"), status);
 	
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
 				);
 		}
 		//set level 1 comparison for the collator
-		coll->setStrength(Collator::PRIMARY);
+		coll->setStrength(::Collator::PRIMARY);
 
 		StringSearch search(getUnicodeString(pattern), getUnicodeString(utf8String), (RuleBasedCollator *)coll, NULL, status);
 
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -338,7 +338,7 @@ namespace xqp {
 
 		int32_t pos = search.last(status);
 		if (U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -368,7 +368,7 @@ namespace xqp {
 		StringSearch search(getUnicodeString(pattern), getUnicodeString(utf8String), Locale(loc), NULL, status);
 
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -378,7 +378,7 @@ namespace xqp {
 
 		int32_t pos = search.last(status);
 		if (U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 					error_messages::SYSTEM_ERROR,
 					NULL
@@ -417,6 +417,7 @@ namespace xqp {
 
 		delete target;
 		return ret;
+
 	}
  
 	xqpString xqpString::substr(distance_type index){
@@ -451,7 +452,7 @@ namespace xqp {
 		ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
 
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL
@@ -471,7 +472,7 @@ namespace xqp {
 		UConverter *conv = ucnv_open("utf-8", &status);
 
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL
@@ -487,7 +488,7 @@ namespace xqp {
 		ucnv_close(conv);
 
 		if(U_FAILURE(status)) {
-			ZorbaErrorAlerts::error_alert(
+			ZORBA_ERROR_ALERT(
 						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 						error_messages::SYSTEM_ERROR,
 						NULL

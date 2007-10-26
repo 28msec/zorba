@@ -34,7 +34,7 @@ static void *no_state = (void *) new int;
 normalize_visitor::normalize_visitor()
 {
 	zorp = zorba::getZorbaForCurrentThread();
-	dctx_p = zorp->get_dynamic_context();
+//daniel	dctx_p = zorp->get_dynamic_context();
 // 	dmgr_h = zorp->get_data_manager();
   sctx_p = zorp->get_static_context();
 }
@@ -497,7 +497,8 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 void *normalize_visitor::begin_visit(const OrderingModeDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
-	zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
+//daniel	zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
+	sctx_p->set_ordering_mode(v.get_mode());
 	return NULL;
 }
 

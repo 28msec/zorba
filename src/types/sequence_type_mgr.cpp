@@ -109,7 +109,7 @@ TypeCode SequenceTypeManager::getTypecode(const QNameItem* qname) const
   }
   else
   {
-    ZorbaErrorAlerts::error_alert(
+    ZORBA_ERROR_ALERT(
          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
          error_messages::SYSTEM_ERROR,
          NULL,

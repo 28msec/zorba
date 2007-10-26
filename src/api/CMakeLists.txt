@@ -1,4 +1,6 @@
 SET(API_SRCS
     serialization/serializer.cpp)
 
+ADD_SRC_SUBFOLDER(API_SRCS external EXTERNAL_API_SRCS)
+
 HEADER_GROUP_SUBFOLDER(API_SRCS external)

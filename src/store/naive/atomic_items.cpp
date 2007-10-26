@@ -65,7 +65,7 @@ namespace xqp
 
 	Item_t QNameItem::getAtomizationValue( ) const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createQName ( this->strNamespace_, this->strPrefix_, this->strLocal_ );
+		return zorba::getItemFactory()->createQName ( this->strNamespace_, this->strPrefix_, this->strLocal_ );
 	}
 
 	bool QNameItem::equals ( Item_t item ) const
@@ -112,7 +112,7 @@ namespace xqp
 
 	Item_t UntypedAtomicItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->strValue_ );
+		return zorba::getItemFactory()->createUntypedAtomic ( this->strValue_ );
 	}
 
 	bool UntypedAtomicItem::equals ( Item_t item ) const
@@ -123,7 +123,7 @@ namespace xqp
 	Item_t UntypedAtomicItem::getEBV() const
 	{
 		bool b = ! ( this->strValue_ == "" );
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
 	xqp_string UntypedAtomicItem::getStringProperty() const
@@ -149,7 +149,7 @@ namespace xqp
 
 	Item_t StringItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createString ( this->strValue_ );
+		return zorba::getItemFactory()->createString ( this->strValue_ );
 	}
 
 	bool StringItem::equals ( Item_t item ) const
@@ -178,7 +178,7 @@ namespace xqp
 
 	Item_t DecimalItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDecimal ( this->value_ );
+		return zorba::getItemFactory()->createDecimal ( this->value_ );
 	}
 
 	bool DecimalItem::equals ( Item_t item ) const
@@ -189,7 +189,7 @@ namespace xqp
 	Item_t DecimalItem::getEBV() const
 	{
 		bool b = ( this->value_ != 0 );
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
 	xqp_string DecimalItem::getStringProperty() const
@@ -231,7 +231,7 @@ namespace xqp
 
 	Item_t IntItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInt ( this->value_ );
+		return zorba::getItemFactory()->createInt ( this->value_ );
 	}
 
 	bool IntItem::equals ( Item_t item ) const
@@ -242,7 +242,7 @@ namespace xqp
 	Item_t IntItem::getEBV() const
 	{
 		bool b = ( this->value_ != 0 );
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
 	xqp_string IntItem::getStringProperty() const
@@ -279,7 +279,7 @@ namespace xqp
 
 	Item_t IntegerItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createInteger ( this->value_ );
+		return zorba::getItemFactory()->createInteger ( this->value_ );
 	}
 
 	bool IntegerItem::equals ( Item_t item ) const
@@ -290,7 +290,7 @@ namespace xqp
 	Item_t IntegerItem::getEBV() const
 	{
 		bool b = ( this->value_ != 0 );
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
 	xqp_string IntegerItem::getStringProperty() const
@@ -322,7 +322,7 @@ namespace xqp
 
 	Item_t DoubleItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createDouble ( this->value );
+		return zorba::getItemFactory()->createDouble ( this->value );
 	}
 
 	bool DoubleItem::equals ( Item_t item ) const
@@ -333,7 +333,7 @@ namespace xqp
 	Item_t DoubleItem::getEBV() const
 	{
 		bool b = ( this->value != 0 );
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
 	xqp_string DoubleItem::getStringProperty() const
@@ -365,7 +365,7 @@ namespace xqp
 
 	Item_t FloatItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createFloat ( this->value );
+		return zorba::getItemFactory()->createFloat ( this->value );
 	}
 
 	bool FloatItem::equals ( Item_t item ) const
@@ -376,7 +376,7 @@ namespace xqp
 	Item_t FloatItem::getEBV() const
 	{
 		bool b = ( this->value != 0 );
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( b );
+		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
 	xqp_string FloatItem::getStringProperty() const
@@ -408,7 +408,7 @@ namespace xqp
 
 	Item_t BooleanItem::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( this->value_ );
+		return zorba::getItemFactory()->createBoolean ( this->value_ );
 	}
 
 	bool BooleanItem::equals ( Item_t item ) const

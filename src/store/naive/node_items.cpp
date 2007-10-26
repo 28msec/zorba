@@ -29,7 +29,7 @@ namespace xqp
 
 	Item_t Node::getEBV() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createBoolean ( true );
+		return zorba::getItemFactory()->createBoolean ( true );
 	}
 
 	bool Node::equals ( Item_t item ) const
@@ -73,7 +73,7 @@ namespace xqp
 	Item_t DocumentNode::getAtomizationValue() const
 	{
 		const xqp_string& value = this->getStringProperty();
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( value );
+		return zorba::getItemFactory()->createUntypedAtomic ( value );
 	}
 
 	xqp_string DocumentNode::getStringProperty() const
@@ -121,7 +121,7 @@ namespace xqp
 			ret = new EmptyIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation() );
 		} else {
 			xqp_string str = this->getStringProperty();
-			Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( str );
+			Item_t item = zorba::getItemFactory()->createUntypedAtomic ( str );
 			ret = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
 		}
 		return new PlanIterWrapper(ret);
@@ -175,7 +175,7 @@ namespace xqp
 	Item_t ElementNode::getAtomizationValue() const
 	{
 		const xqp_string& value = this->getStringProperty();
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( value );
+		return zorba::getItemFactory()->createUntypedAtomic ( value );
 	}
 
 	xqp_string ElementNode::getStringProperty() const
@@ -260,7 +260,7 @@ namespace xqp
 			ret = new EmptyIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation() );
 		} else {
 			xqp_string str = this->getStringProperty();
-			Item_t item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( str );
+			Item_t item = zorba::getItemFactory()->createUntypedAtomic ( str );
 			ret = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
 		}
 		return new PlanIterWrapper(ret);
@@ -390,7 +390,7 @@ namespace xqp
 
 	Item_t NamespaceNode::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->getStringProperty() );
+		return zorba::getItemFactory()->createUntypedAtomic ( this->getStringProperty() );
 	}
 
 	xqp_string NamespaceNode::getStringProperty() const
@@ -405,7 +405,7 @@ namespace xqp
 
 	Iterator_t NamespaceNode::getTypedValue() const
 	{
-		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createString ( this->uri );
+		const Item_t& item = zorba::getItemFactory()->createString ( this->uri );
 		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
 		return new PlanIterWrapper(planIter);
 	}
@@ -434,7 +434,7 @@ namespace xqp
 
 	Item_t PiNode::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->content );
+		return zorba::getItemFactory()->createUntypedAtomic ( this->content );
 	}
 
 	xqp_string PiNode::getStringProperty() const
@@ -454,7 +454,7 @@ namespace xqp
 
 	Iterator_t PiNode::getTypedValue() const
 	{
-		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createString ( this->content );
+		const Item_t& item = zorba::getItemFactory()->createString ( this->content );
 		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
 		return new PlanIterWrapper(planIter);
 	}
@@ -477,7 +477,7 @@ namespace xqp
 
 	Item_t CommentNode::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->content );
+		return zorba::getItemFactory()->createUntypedAtomic ( this->content );
 	}
 
 	xqp_string CommentNode::getStringProperty() const
@@ -492,7 +492,7 @@ namespace xqp
 
 	Iterator_t CommentNode::getTypedValue() const
 	{
-		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createString ( this->content );
+		const Item_t& item = zorba::getItemFactory()->createString ( this->content );
 		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
 		return new PlanIterWrapper(planIter);
 	}
@@ -515,7 +515,7 @@ namespace xqp
 
 	Item_t TextNode::getAtomizationValue() const
 	{
-		return zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->content );
+		return zorba::getItemFactory()->createUntypedAtomic ( this->content );
 	}
 
 	xqp_string TextNode::getStringProperty() const
@@ -530,7 +530,7 @@ namespace xqp
 
 	Iterator_t TextNode::getTypedValue() const
 	{
-		const Item_t& item = zorba::getZorbaForCurrentThread()->getItemFactory()->createUntypedAtomic ( this->content );
+		const Item_t& item = zorba::getItemFactory()->createUntypedAtomic ( this->content );
 		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), item );
 		return new PlanIterWrapper(planIter);
 	}

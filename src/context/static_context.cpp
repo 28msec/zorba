@@ -77,6 +77,7 @@ namespace xqp {
   DECL_STR_PARAM (static_context, default_function_namespace)
   DECL_STR_PARAM (static_context, default_elem_type_ns)
 
+	DECL_ENUM_PARAM (static_context, ordering_mode)
   string static_context::lookup_ns (string prefix) const {
     string ns;
     Assert (context_value ("ns:" + prefix, ns));

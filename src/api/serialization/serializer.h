@@ -34,6 +34,8 @@
 namespace xqp
 {
 
+class XQueryResult;
+
 class serializer : public rcobject
 {
 public:
@@ -47,7 +49,7 @@ public:
 	 *  Serializes the given sequence of items to the
 	 *  output stream.
 	 */	
-	void serialize(PlanIter_t iter, ostream& os);
+	void serialize(XQueryResult *result, ostream& os);
 
 	/**
 	 *  Set the serializer's parameters. The list of handled 

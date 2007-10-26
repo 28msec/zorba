@@ -61,7 +61,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
 
   if (!contextNode->isNode())
   {
-    ZorbaErrorAlerts::error_alert(
+    ZORBA_ERROR_ALERT(
          error_messages::XPTY0004_STATIC_TYPE_ERROR,
          error_messages::RUNTIME_ERROR,
          NULL,

@@ -549,7 +549,7 @@ void FTOptionDecl::accept(parsenode_visitor& v) const
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
 	const yy::location& _loc,
-	dynamic_context::ordering_mode_t _mode)
+	static_context::ordering_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -564,8 +564,8 @@ ostream& OrderingModeDecl::put(ostream& s) const
 {
 	s << INDENT << "OrderingModeDecl[";
 	switch (mode) {
-	case dynamic_context::ordered: s << "ordered"; break;
-	case dynamic_context::unordered: s << "unordered"; break;
+	case static_context::ordered: s << "ordered"; break;
+	case static_context::unordered: s << "unordered"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";

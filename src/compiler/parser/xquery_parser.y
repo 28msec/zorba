@@ -1076,13 +1076,13 @@ OrderingModeDecl :
 		{
 			if (debug) cout << "OrderingDecl [ordered]\n";
 			$$ = new OrderingModeDecl(@$,
-								dynamic_context::ordered);
+								static_context::ordered);
 		}
 	| DECLARE_ORDERING  UNORDERED
 		{
 			if (debug) cout << "OrderingDecl [unordered]\n";
 			$$ = new OrderingModeDecl(@$,
-								dynamic_context::unordered);
+								static_context::unordered);
 		}
 	;
 

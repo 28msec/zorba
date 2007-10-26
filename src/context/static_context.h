@@ -33,6 +33,8 @@
 #include "../store/api/item.h"
 #include "../store/api/store.h"
 
+#include "zorba_api.h"
+
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
 #define THROW_XQP_EXCEPTION		throw(xqp_exception)
@@ -52,6 +54,7 @@ class namespace_node;
 |_______________________________________________________________________*/
 
 class static_context : public context
+												//public StaticQueryContext ///implement also the API interface
 {
 public:	// types
 	typedef enum { cons_preserve, cons_strip } construction_mode_t;
@@ -59,6 +62,8 @@ public:	// types
 	typedef enum { preserve_space, strip_space } boundary_space_mode_t;
 	typedef enum { inherit_ns, no_inherit_ns } inherit_mode_t;
 	typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
+
+	typedef enum { ordered, unordered } ordering_mode_t;
 
 protected:
   static const char *default_ns_initializers [];
@@ -146,6 +151,9 @@ public:
 	sequence_type_t get_collection_type(const std::string&) 
 	  const THROW_XQP_EXCEPTION;
 	
+	ordering_mode_t ordering_mode() const;
+	void set_ordering_mode(ordering_mode_t v);
+
 };
 
 

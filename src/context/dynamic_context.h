@@ -39,9 +39,11 @@ class itemstore;
 
 class dynamic_context : public context
 {
+	/*daniel: this belongs to static context
 public:
 	typedef enum { ordered, unordered } ordering_mode_t;
-	
+	*/
+
 protected:
 	//daniel: these serve as constant global keys
 	static bool static_init;
@@ -72,8 +74,14 @@ public:
 	void add_namespace(Item&);
   #endif
 
+	/*daniel: this belongs to static context
 	ordering_mode_t ordering_mode() const;
 	void set_ordering_mode(ordering_mode_t v);
+	*/
+
+//daniel: get the function directly from library object
+//	const function* get_function(qnamekey_t key) { return lib->get(key); }
+
 };
 
 

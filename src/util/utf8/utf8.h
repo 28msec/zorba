@@ -190,13 +190,14 @@ namespace xqp {
 	template <typename octet_iterator>
 			octet_iterator UTF8Encode(uint32_t cp, octet_iterator result){
 		if (!is_code_point_valid(cp))
-				ZorbaErrorAlerts::error_alert(
+		{
+				ZORBA_ERROR_ALERT(
 					error_messages::FOCH0001_Code_point_not_valid,
 					error_messages::RUNTIME_ERROR,
 					NULL,
 					true
 				);
-
+		}
 		if (cp < 0x80)                        // one octet
 			*(result++) = static_cast<uint8_t>(cp);
 		else if (cp < 0x800) {                // two octets
