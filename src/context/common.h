@@ -59,9 +59,9 @@ typedef uint64_t qnamekey_t;	// QName hash key
 typedef uint32_t offset_t;    // itemstore short offset
 
 // namespaces
-#define ZORBA_NS			"http://www.zorba.org/"
-#define ZORBA_PRE			"zor"
 #define XQUERY_FN_NS	"http://www.w3.org/2005/xpath-functions"
+#define ZORBA_NS			XQUERY_FN_NS
+#define ZORBA_PRE			"fn"
 #define XQUERY_OP_NS	"http://www.w3.org/2005/xpath-functions"
 #define XQUERY_PRE		"xqy"
 #define NONAMESPACE		"http://nonamespace/"

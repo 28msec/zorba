@@ -33,26 +33,21 @@ namespace xqp {
 bool library::static_init = false;
 
 
-  class initializer;
-  static list<const initializer *> initializers;
-
-  class initializer {
-    const function &f;
-    qnamekey_t &k;
-
-  public:
-    initializer (const function &f_, qnamekey_t &k_) : f (f_), k (k_)
-    { initializers.push_front (this); }
-    const function &run () const {
-      k = f.get_fname()->getQNameKey();
-      return f;
-    }
-  };
-
+  static string get_qname (const function &f) {
+    QNameItem *name = static_cast<const QNameItem *> (f.get_fname ());
+    return name->getPrefix () + ":" + name->getLocalName ();
+  }
+  
 #define DECL( key, type, sig )                                          \
-  qnamekey_t library::key##_key;                                        \
-  type key##_tmp_obj (signature sig);                                   \
-  initializer key##_tmp_init (key##_tmp_obj, library::key##_key)
+  type type##_obj (signature sig);                                      \
+  class type##_init_class {                                             \
+  public:                                                               \
+    type##_init_class () {                                              \
+      static_context::root_static_context ()->                          \
+        bind_fn (get_qname (type##_obj), & type##_obj);              \
+    }                                                                   \
+  } type##_init_obj;                                                    \
+  string library::key##_key = get_qname (type##_obj);
   
   
   // Accessors
@@ -296,7 +291,7 @@ bool library::static_init = false;
 	
 	// begin zorba functions
 	DECL (zor_numgen, zor_numgen,
-			(new QNameItem(ZORBA_NS,ZORBA_PRE, "numgen"),
+			(new QNameItem(XQUERY_FN_NS,"fn", "zorba:numgen"),
 			xs_decimal));
 	// end zorba functions
 	
@@ -304,16 +299,16 @@ bool library::static_init = false;
 
 
 // Comparison operators
-qnamekey_t library::op_is_key;
-qnamekey_t library::op_precedes_key;
-qnamekey_t library::op_follows_key;
+std::string library::op_is_key;
+std::string library::op_precedes_key;
+std::string library::op_follows_key;
 
 
 // Sequences
-qnamekey_t library::op_concatenate_key;
-qnamekey_t library::op_union_key;
-qnamekey_t library::op_intersect_key;
-qnamekey_t library::op_except_key;
+std::string library::op_concatenate_key;
+std::string library::op_union_key;
+std::string library::op_intersect_key;
+std::string library::op_except_key;
 
 // initializer
 
@@ -322,11 +317,7 @@ void library::init(
 {
   
 	if (!library::static_init) {
-    while (initializers.size () > 0) {
-      const function &f = initializers.pop_front ()->run ();
-      put (& f);
-    }
-    static_init = true; //don't initialize again
+    static_init = true;
 	}
 }
 
@@ -342,30 +333,6 @@ library::library()
 
 library::~library()
 {
-}
-
-
-// map interface
-
-void library::put(const function* funp)
-{
-	qnamekey_t fun_key = funp->get_fname()->getQNameKey();
-	funtab.put(fun_key, funp);
-}
-
-const function* library::get(qnamekey_t fun_key)
-{
-//#ifdef DEBUG
-//	cout << TRACE << " : fun_key = " << fun_key->qnamekey() << endl;
-//#endif
-
-	const function* fun_p = NULL;
-	uint64_t key = fun_key;
-	if (!funtab.get(key, fun_p)) {
-		cout << TRACE << "function not found!\n";
-		return NULL;
-	}
-	return fun_p;
 }
 
 } /* namespace xqp */

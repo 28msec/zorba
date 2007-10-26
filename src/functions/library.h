@@ -35,89 +35,84 @@ protected:
 
 public:
 	// Accessor functions
-	static qnamekey_t fn_data_key;
-  static qnamekey_t fn_root_key;
+	static std::string fn_data_key;
+  static std::string fn_root_key;
 
 	// Numeric functions
 	//daniel: these serve as constant global keys
-	static qnamekey_t op_add_key;
-	static qnamekey_t op_subtract_key;
-  static qnamekey_t op_mul_key;
-  static qnamekey_t op_div_key;
-  static qnamekey_t op_idiv_key;
-  static qnamekey_t op_mod_key;
-  static qnamekey_t op_unary_minus_key;
-  static qnamekey_t op_unary_plus_key;
+	static std::string op_add_key;
+	static std::string op_subtract_key;
+  static std::string op_mul_key;
+  static std::string op_div_key;
+  static std::string op_idiv_key;
+  static std::string op_mod_key;
+  static std::string op_unary_minus_key;
+  static std::string op_unary_plus_key;
 
-	static qnamekey_t fn_abs_key;
+	static std::string fn_abs_key;
 
 	// comparison operators
-	static qnamekey_t op_eq_key;
-	static qnamekey_t op_ne_key;
-	static qnamekey_t op_lt_key;
-	static qnamekey_t op_le_key;
-	static qnamekey_t op_gt_key;
-	static qnamekey_t op_ge_key;
-	static qnamekey_t op_val_eq_key;
-	static qnamekey_t op_val_ne_key;
-	static qnamekey_t op_val_lt_key;
-	static qnamekey_t op_val_le_key;
-	static qnamekey_t op_val_gt_key;
-	static qnamekey_t op_val_ge_key;
-	static qnamekey_t op_is_key;
-	static qnamekey_t op_precedes_key;
-	static qnamekey_t op_follows_key;
+	static std::string op_eq_key;
+	static std::string op_ne_key;
+	static std::string op_lt_key;
+	static std::string op_le_key;
+	static std::string op_gt_key;
+	static std::string op_ge_key;
+	static std::string op_val_eq_key;
+	static std::string op_val_ne_key;
+	static std::string op_val_lt_key;
+	static std::string op_val_le_key;
+	static std::string op_val_gt_key;
+	static std::string op_val_ge_key;
+	static std::string op_is_key;
+	static std::string op_precedes_key;
+	static std::string op_follows_key;
 
 	// Sequence functions
-	static qnamekey_t op_concatenate_key;
-	static qnamekey_t op_union_key;
-	static qnamekey_t op_intersect_key;
-	static qnamekey_t op_except_key;
-	static qnamekey_t fn_doc_key;
+	static std::string op_concatenate_key;
+	static std::string op_union_key;
+	static std::string op_intersect_key;
+	static std::string op_except_key;
+	static std::string fn_doc_key;
 
 	// String functions
-	static qnamekey_t fn_codepoints_to_string_key;
-	static qnamekey_t fn_string_to_codepoints_key;
-	static qnamekey_t fn_codepoint_equal_key;
-	static qnamekey_t fn_concat_key;
-	static qnamekey_t fn_string_join_key;
-	static qnamekey_t fn_string_compare_key;
-	static qnamekey_t fn_substring_key;
-	static qnamekey_t fn_normalize_space_key;
-	static qnamekey_t fn_normalize_unicode_key;
-	static qnamekey_t fn_upper_case_key;
-	static qnamekey_t fn_lower_case_key;
-	static qnamekey_t fn_translate_key;
-	static qnamekey_t fn_string_length_key;
-	static qnamekey_t fn_contains_key;
-	static qnamekey_t fn_starts_with_key;
-	static qnamekey_t fn_ends_with_key;
-	static qnamekey_t fn_substring_before_key;
-	static qnamekey_t fn_substring_after_key;
+	static std::string fn_codepoints_to_string_key;
+	static std::string fn_string_to_codepoints_key;
+	static std::string fn_codepoint_equal_key;
+	static std::string fn_concat_key;
+	static std::string fn_string_join_key;
+	static std::string fn_string_compare_key;
+	static std::string fn_substring_key;
+	static std::string fn_normalize_space_key;
+	static std::string fn_normalize_unicode_key;
+	static std::string fn_upper_case_key;
+	static std::string fn_lower_case_key;
+	static std::string fn_translate_key;
+	static std::string fn_string_length_key;
+	static std::string fn_contains_key;
+	static std::string fn_starts_with_key;
+	static std::string fn_ends_with_key;
+	static std::string fn_substring_before_key;
+	static std::string fn_substring_after_key;
 
 	// Boolean functions
-	static qnamekey_t fn_true_key;
-	static qnamekey_t fn_false_key;
-	static qnamekey_t fn_boolean_key;
-	static qnamekey_t fn_not_key;
+	static std::string fn_true_key;
+	static std::string fn_false_key;
+	static std::string fn_boolean_key;
+	static std::string fn_not_key;
 	
 	// Logic operators
-	static qnamekey_t op_and_key;
-	static qnamekey_t op_or_key;
+	static std::string op_and_key;
+	static std::string op_or_key;
 	
 	// Zorba Function
-	static qnamekey_t zor_numgen_key;
+	static std::string zor_numgen_key;
 	
 public:
 	library( );
 	~library();
 	static bool static_init;
 	void init(ItemFactory*);
-
-public:
-	void put(const function*);
-	const function* get(qnamekey_t);
-
 };
 
 } /* namespace xqp */

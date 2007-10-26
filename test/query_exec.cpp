@@ -59,7 +59,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	ZorbaErrorAlerts	*err_manag = new ZorbaErrorAlerts(err_messages);
 
 	library lib;
-	dctx_p->set_library(&lib);
 
 	zorp->set_static_context(sctx_p);
 	zorp->set_dynamic_context(dctx_p);

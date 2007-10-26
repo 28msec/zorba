@@ -42,8 +42,9 @@
 using namespace std;
 namespace xqp {
 
-  static char *ns_initializers [] = {
+  const char *static_context::default_ns_initializers [] = {
     "fn", XQUERY_FN_NS,
+    "op", XQUERY_OP_NS,
     "xml", "http://www.w3.org/XML/1998/namespace",
     "xs", "http://www.w3.org/2001/XMLSchema",
     "xsi", "http://www.w3.org/2001/XMLSchema-instance",
@@ -51,15 +52,20 @@ namespace xqp {
     NULL, NULL
   };
 
-  static_context *static_context::root_static_context = 
-    new static_context (ns_initializers);
-
-  static_context::static_context (char **init_ns) {
-    for (char **p = init_ns; *p != NULL; p += 2)
+  static_context *static_context::root_static_context () {
+    static static_context *p = new static_context (default_ns_initializers);
+    return p;
+  }
+  
+  static_context::static_context (const char **p) {
+    for (; *p != NULL; p += 2)
       bind_ns (p [0], p [1]);
+    set_default_function_namespace (lookup_ns ("fn"));
+    set_default_elem_type_ns ("");
   }
 
-  void static_context::init () {}
+  void static_context::init () {
+  }
   
   DECL_ENUM_PARAM (static_context, construction_mode)
   DECL_ENUM_PARAM (static_context, order_empty_mode)

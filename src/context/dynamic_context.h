@@ -45,17 +45,10 @@ protected:
 	//daniel: these serve as constant global keys
 	static bool static_init;
 
-	library* lib;
-
 public:
 	static void init();
 	dynamic_context() {}
 	~dynamic_context() {}
-
-public:
-	// set/get the function library
-	void set_library(library* _lib) { lib = _lib; }
-	library* get_library() const { return lib; }
 
 public:
 	// XQuery 1.0 dynamic context 
@@ -80,9 +73,6 @@ public:
 
 	ordering_mode_t ordering_mode() const;
 	void set_ordering_mode(ordering_mode_t v);
-
-	const function* get_function(qnamekey_t key) { return lib->get(key); }
-
 };
 
 

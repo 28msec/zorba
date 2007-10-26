@@ -61,19 +61,21 @@ public:	// types
 	typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
 
 protected:
-  static static_context *root_static_context;
+  static const char *default_ns_initializers [];
+  static_context (const char **);
   std::string expand_qname (std::string default_ns, std::string prefix, std::string local) const;
   std::string expand_qname (std::string default_ns, std::string qname) const;
   
 public:
 	static void init();
   static_context()
-		: context (root_static_context) {}
+		: context (root_static_context ()) {}
   static_context (static_context *_parent)
     : context (_parent) {}
-  static_context (char **init_ns);
 
 	~static_context() {}
+
+  static static_context *root_static_context ();
 
 public:
   std::string default_function_namespace() const;
@@ -95,6 +97,19 @@ public:
   }
   void bind_var (std::string varname, expr *expr) {
     bind_expr ("var:" + expand_qname ("", varname), expr);
+  }
+
+  function *lookup_fn (std::string prefix, std::string local) const {
+    return lookup_func ("fn:" + expand_qname (default_function_namespace (), prefix, local));
+  }
+  function *lookup_fn (std::string fname) const {
+    return lookup_func ("fn:" + expand_qname (default_function_namespace (), fname));
+  }
+  void bind_fn (std::string prefix, std::string local, function *f) {
+    bind_func ("fn:" + expand_qname (default_function_namespace (), prefix, local), f);
+  }
+  void bind_fn (std::string fname, function *f) {
+    bind_func ("fn:" + expand_qname (default_function_namespace (), fname), f);
   }
 
   #if 0

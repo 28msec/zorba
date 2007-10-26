@@ -35,6 +35,7 @@ namespace xqp {
 
   class zorba;
   class expr;
+  class function;
 
 /*______________________________________________________________________
 |  
@@ -47,6 +48,7 @@ class context : public rcobject
 protected:
   typedef union { 
     expr *exprValue;
+    function *functionValue;
     int intValue;
     bool boolValue;
   } ctx_value_t;
@@ -74,9 +76,18 @@ protected:
     ctx_value_t val;
     return context_value (key, val) ? val.exprValue : NULL;
   }
+  function *lookup_func (string key) const {
+    ctx_value_t val;
+    return context_value (key, val) ? val.functionValue : NULL;
+  }
 
   void bind_expr (string key, expr *e) {
     ctx_value_t v = { e };
+    keymap.put (key, v);
+  }
+  void bind_func (string key, function *f) {
+    ctx_value_t v;
+    v.functionValue = f;
     keymap.put (key, v);
   }
   void bind_str  (string key, string v) {

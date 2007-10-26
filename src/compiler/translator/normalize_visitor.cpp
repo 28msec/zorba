@@ -28,6 +28,9 @@ static uint32_t depth = 0;
 
 static void *no_state = (void *) new int;
 
+#define LOOKUP_FN( key ) static_cast<function *> (sctx_p->lookup_fn (key))
+#define LOOKUP_FN2( pfx, local ) static_cast<function *> (sctx_p->lookup_fn (pfx, local))
+
 normalize_visitor::normalize_visitor()
 {
 	zorp = zorba::getZorbaForCurrentThread();
@@ -695,57 +698,57 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 	if (v.get_gencomp()!=NULL) {
 		switch (v.get_gencomp()->get_type()) {
 		case op_eq:
-			fo_h->set_func(dctx_p->get_function(library::op_eq_key));
+			fo_h->set_func(LOOKUP_FN(library::op_eq_key));
 			break;
 		case op_ne:
-			fo_h->set_func(dctx_p->get_function(library::op_ne_key));
+			fo_h->set_func(LOOKUP_FN(library::op_ne_key));
 			break;
 		case op_lt:
-			fo_h->set_func(dctx_p->get_function(library::op_lt_key));
+			fo_h->set_func(LOOKUP_FN(library::op_lt_key));
 			break;
 		case op_le:
-			fo_h->set_func(dctx_p->get_function(library::op_le_key));
+			fo_h->set_func(LOOKUP_FN(library::op_le_key));
 			break;
 		case op_gt:
-			fo_h->set_func(dctx_p->get_function(library::op_gt_key));
+			fo_h->set_func(LOOKUP_FN(library::op_gt_key));
 			break;
 		case op_ge:
-			fo_h->set_func(dctx_p->get_function(library::op_ge_key));
+			fo_h->set_func(LOOKUP_FN(library::op_ge_key));
 			break;
 		}
 	}
 	else if (v.get_valcomp()!=NULL) {
 		switch (v.get_valcomp()->get_type()) {
 		case op_val_eq:
-			fo_h->set_func(dctx_p->get_function(library::op_val_eq_key));
+			fo_h->set_func(LOOKUP_FN(library::op_val_eq_key));
 			break;
 		case op_val_ne:
-			fo_h->set_func(dctx_p->get_function(library::op_val_ne_key));
+			fo_h->set_func(LOOKUP_FN(library::op_val_ne_key));
 			break;
 		case op_val_lt:
-			fo_h->set_func(dctx_p->get_function(library::op_val_lt_key));
+			fo_h->set_func(LOOKUP_FN(library::op_val_lt_key));
 			break;
 		case op_val_le:
-			fo_h->set_func(dctx_p->get_function(library::op_val_le_key));
+			fo_h->set_func(LOOKUP_FN(library::op_val_le_key));
 			break;
 		case op_val_gt:
-			fo_h->set_func(dctx_p->get_function(library::op_val_gt_key));
+			fo_h->set_func(LOOKUP_FN(library::op_val_gt_key));
 			break;
 		case op_val_ge:
-			fo_h->set_func(dctx_p->get_function(library::op_val_ge_key));
+			fo_h->set_func(LOOKUP_FN(library::op_val_ge_key));
 			break;
 		}
 	}
 	else if (v.get_nodecomp()!=NULL) {
 		switch (v.get_nodecomp()->get_type()) {
 		case op_is:
-			fo_h->set_func(dctx_p->get_function(library::op_is_key));
+			fo_h->set_func(LOOKUP_FN(library::op_is_key));
 			break;
 		case op_precedes:
-			fo_h->set_func(dctx_p->get_function(library::op_precedes_key));
+			fo_h->set_func(LOOKUP_FN(library::op_precedes_key));
 			break;
 		case op_follows:
-			fo_h->set_func(dctx_p->get_function(library::op_follows_key));
+			fo_h->set_func(LOOKUP_FN(library::op_follows_key));
 			break;
 		}
 	}
@@ -858,19 +861,10 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 	string prefix = qn_h->get_prefix();
 	string fname = qn_h->get_localname();
 
-	if (prefix=="fn" || prefix=="op") {
-		uri = XQUERY_FN_NS;
-	}
-	else {
-		uri = ZORBA_NS;
-		prefix = ZORBA_PRE;
-	}
-
-	qnamekey_t funkey = Item::createQNameKey(uri,prefix,fname);
 	yy::location loc = v.get_location();
 	rchandle<fo_expr> fo_h = new fo_expr(loc);
 
-	fo_h->set_func(dctx_p->get_function(funkey));
+	fo_h->set_func(LOOKUP_FN2(prefix, fname));
 	nodestack.push(&*fo_h);
 	nodestack.push(NULL);
 	return no_state;
@@ -896,10 +890,10 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 	switch (v.get_intex_op()) {
 	case op_intersect:
-		fo_h->set_func(dctx_p->get_function(library::op_intersect_key));
+		fo_h->set_func(LOOKUP_FN(library::op_intersect_key));
 		break;
 	case op_except:
-		fo_h->set_func(dctx_p->get_function(library::op_except_key));
+		fo_h->set_func(LOOKUP_FN(library::op_except_key));
 		break;
 	}
 	nodestack.push(fo_h);
@@ -1316,7 +1310,7 @@ void normalize_visitor::end_visit(const PathExpr& v, void *visit_state)
   ase->setTest(me);
  
   rchandle<fo_expr> fo = new fo_expr(v.get_location());
-  fo->set_func(dctx_p->get_function(library::fn_root_key));
+  fo->set_func(LOOKUP_FN(library::fn_root_key));
   fo->add(&*ase);
 
   if (v.get_type() == path_leading_lone_slash)
@@ -1628,9 +1622,9 @@ void *normalize_visitor::begin_visit(const UnaryExpr& v)
 cout << std::string(++depth, ' ') << TRACE << endl;
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	if (v.get_signlist()->get_sign())
-		fo_h->set_func(dctx_p->get_function(library::op_unary_plus_key));
+		fo_h->set_func(LOOKUP_FN(library::op_unary_plus_key));
 	else
-		fo_h->set_func(dctx_p->get_function(library::op_unary_minus_key));
+		fo_h->set_func(LOOKUP_FN(library::op_unary_minus_key));
 	nodestack.push(fo_h);
 	return no_state;
 }
@@ -1639,7 +1633,7 @@ void *normalize_visitor::begin_visit(const UnionExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(dctx_p->get_function(library::op_union_key));
+	fo_h->set_func(LOOKUP_FN(library::op_union_key));
 	nodestack.push(fo_h);
 	return no_state;
 }
@@ -2327,10 +2321,10 @@ void normalize_visitor::end_visit(const AdditiveExpr& v, void *visit_state)
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	switch (v.get_add_op()) {
 	case op_plus:
-		fo_h->set_func(dctx_p->get_function(library::op_add_key));
+		fo_h->set_func(LOOKUP_FN(library::op_add_key));
 		break;
 	case op_minus:
-		fo_h->set_func(dctx_p->get_function(library::op_subtract_key));
+		fo_h->set_func(LOOKUP_FN(library::op_subtract_key));
 		break;
 	}
 	fo_h->add(e2_h);
@@ -2345,7 +2339,7 @@ void normalize_visitor::end_visit(const AndExpr& v, void *visit_state)
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
 	fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(dctx_p->get_function(library::op_and_key));
+	fo_h->set_func(LOOKUP_FN(library::op_and_key));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -2569,16 +2563,16 @@ void normalize_visitor::end_visit(const MultiplicativeExpr& v, void *visit_state
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	switch (v.get_mult_op()) {
 	case op_mul:
-		fo_h->set_func(dctx_p->get_function(library::op_mul_key));
+		fo_h->set_func(LOOKUP_FN(library::op_mul_key));
 		break;
 	case op_div:
-		fo_h->set_func(dctx_p->get_function(library::op_div_key));
+		fo_h->set_func(LOOKUP_FN(library::op_div_key));
 		break;
 	case op_idiv:
-		fo_h->set_func(dctx_p->get_function(library::op_idiv_key));
+		fo_h->set_func(LOOKUP_FN(library::op_idiv_key));
 		break;
 	case op_mod:
-		fo_h->set_func(dctx_p->get_function(library::op_mod_key));
+		fo_h->set_func(LOOKUP_FN(library::op_mod_key));
 		break;
 	}
 	fo_h->add(e2_h);
@@ -2612,7 +2606,7 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
   fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(dctx_p->get_function(library::op_or_key));
+	fo_h->set_func(LOOKUP_FN(library::op_or_key));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
   nodestack.push (fo_h);
