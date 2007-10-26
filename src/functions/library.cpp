@@ -44,10 +44,9 @@ bool library::static_init = false;
   public:                                                               \
     type##_init_class () {                                              \
       static_context::root_static_context ()->                          \
-        bind_fn (get_qname (type##_obj), & type##_obj);              \
+        bind_fn (get_qname (type##_obj), & type##_obj);                 \
     }                                                                   \
-  } type##_init_obj;                                                    \
-  string library::key##_key = get_qname (type##_obj);
+  } type##_init_obj;
   
   
   // Accessors
@@ -297,19 +296,6 @@ bool library::static_init = false;
 	
 // TODO
 
-
-// Comparison operators
-std::string library::op_is_key;
-std::string library::op_precedes_key;
-std::string library::op_follows_key;
-
-
-// Sequences
-std::string library::op_concatenate_key;
-std::string library::op_union_key;
-std::string library::op_intersect_key;
-std::string library::op_except_key;
-
 // initializer
 
 void library::init(
@@ -325,8 +311,6 @@ void library::init(
 // ctor, dtor
 
 library::library()
-:
-	funtab((float)0.6, 1024)
 {
 	init(&*zorba::getZorbaForCurrentThread()->getItemFactory());
 }

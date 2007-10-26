@@ -78,7 +78,8 @@ protected:
   }
   function *lookup_func (string key) const {
     ctx_value_t val;
-    return context_value (key, val) ? val.functionValue : NULL;
+    Assert (context_value (key, val));
+    return val.functionValue;
   }
 
   void bind_expr (string key, expr *e) {
