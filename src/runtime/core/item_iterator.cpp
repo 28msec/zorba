@@ -633,6 +633,47 @@ AttributeIterator::nextImpl(PlanState& planState)
 		this->releaseChildResources ( this->iterThen, planState );
 		this->releaseChildResources ( this->iterElse, planState );
 	}
+	
+	
+	FLWORIterator::ForLetClause::ForLetClause(std::vector<var_iterator> forVars){};
+	FLWORIterator::ForLetClause::ForLetClause(std::vector<ref_iter_t> letVars,  
+			bool needsMaterialization){}
+	
+	FLWORIterator::OrderSpec::OrderSpec(PlanIter_t orderByIter, 
+			bool empty_least, 
+			bool descending){}
+			
+	FLWORIterator::OrderByClause::OrderByClause(std::vector<FLWORIterator::OrderSpec> orderSpecs, 
+			bool stable){}
+	
+	FLWORIterator::FLWORIterator(const yy::location& loc, 
+	  		  std::vector<FLWORIterator::ForLetClause> forLetClauses, 
+	  		  PlanIter_t& whereClause, 
+	  		  FLWORIterator::OrderByClause* orderByClause,  
+	  		  PlanIter_t& returnClause, 
+	  		  bool whereClauseReturnsBooleanPlus): Batcher<FLWORIterator> ( loc ){ }
+			  
+			  
+	Item_t 
+	FLWORIterator::nextImpl(PlanState& planState){ return NULL;}
+	
+	void 
+	FLWORIterator::resetImpl(PlanState& planState){}
+	
+    void 
+    FLWORIterator::releaseResourcesImpl(PlanState& planState){}
+    
+    int32_t 
+    FLWORIterator::getStateSize(){return 0;}
+    
+    int32_t 
+    FLWORIterator::getStateSizeOfSubtree(){return 0;}
+    
+    void 
+    FLWORIterator::setOffset(PlanState& planState, int32_t& offset){}
+    
+    
+			    
 	/* end class IfThenElseIterator */
 
 } /* namespace xqp */

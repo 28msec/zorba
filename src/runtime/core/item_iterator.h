@@ -29,6 +29,9 @@ class zorba;
 class var_iterator;
 typedef rchandle<var_iterator> var_iter_t;
 
+class RefIterator;
+typedef rchandle<RefIterator> ref_iter_t;
+
 
 /*
 public:		// "treat as" operators
@@ -53,6 +56,7 @@ public:		// "treat as" operators
 
 class SingletonIterator;
 typedef rchandle<SingletonIterator> singleton_t;
+
 
 /** Class represents an empty sequence.
 	*/
@@ -101,7 +105,6 @@ public:
 };
 
 
-// FIXME No expressions in iterators!!
 class var_iterator : public SingletonIterator
 {
 protected:
@@ -118,6 +121,31 @@ public:
 public:		// variable binding
 	void bind(Item_t _i_h) { i_h = _i_h; }
 };
+
+/**
+ * If a variable can hold more than one item, use this ref-holder
+ * 
+ */
+class RefIterator : public Batcher<RefIterator>
+{
+private:
+	PlanIter_t it;
+	
+	
+public:
+	RefIterator(string s_p, yy::location loc);
+	~RefIterator();
+	
+public:		// variable binding
+	void bind(PlanIter_t _it) { it = _it;}
+	Item_t nextImpl(PlanState& planState);
+	void resetImpl(PlanState& planState);
+    void releaseResourcesImpl(PlanState& planState);
+	virtual int32_t getStateSize();
+	virtual int32_t getStateSizeOfSubtree();
+	virtual void setOffset(PlanState& planState, int32_t& offset);
+};
+
 
 
 /*_____________________________________________________________
@@ -329,6 +357,91 @@ public:
   void releaseResourcesImpl(PlanState& planState);
 }; /* class IfThenElseIterator */
 
+class FLWORIterator : public Batcher<FLWORIterator>
+{
+	
+public:
+	class ForLetClause{ //Combines FOR and LET to avoid dynamic casts
+	  private:
+		   enum ForLetType {FOR, LET};
+	  
+	  private:
+		   ForLetType type;
+		   std::vector<var_iterator> forVars;
+		   std::vector<ref_iter_t> letVars;
+		   bool needsMaterialization; 
+		   
+	  public:
+		  /**
+	   * Creates a new ForClause
+	   * 
+	   */
+	  ForLetClause(std::vector<var_iterator> forVars);
+	  
+	  /**
+	   * Creates a new LetClause
+	   * needsMaterialization indicates if it is necassary to materialize the LET-Binding:
+	   * E.g. "let $x := (1,2,3) return ($x, $x)" needs materialization. 
+	   * but "let $x := (1,2,3) return if(test()) then $x else $x" doesn't
+	  */
+	  ForLetClause(std::vector<ref_iter_t> letVars,  bool needsMaterialization);
+	}; 
+
+	  /**
+	   * See http://www.w3.org/TR/xquery/#id-orderby-return
+	   * Collation are skipped so far! We do that later...
+	   */
+	  class OrderSpec {
+	  private:
+	     PlanIter_t orderByIter;
+	     bool empty_least;
+	     bool descending;
+	  public:
+		  OrderSpec(PlanIter_t orderByIter, bool empty_least, bool descending);
+	  };
+	  
+	  /**
+	   * See http://www.w3.org/TR/xquery/#id-orderby-return
+	   */
+	  class OrderByClause{
+	  private:
+	     vector<OrderSpec> orderSpecs;
+	     bool stable;
+	  public:
+		  OrderByClause(std::vector<OrderSpec> orderSpecs, bool stable);
+	  };
+	
+private:
+  std::vector<FLWORIterator::ForLetClause> forLetClauses; //
+  PlanIter_t whereClause; //can be null
+  FLWORIterator::OrderByClause* orderByClause;  //can be null
+  PlanIter_t returnClause;
+	
+public:
+	/**
+	   * Constructor
+	   * @param loc location
+	   * @param forLetClauses For and Lets: Attention the order matters!
+	   * @param whereClause The where-clause iterator. Can be null
+	   * @param orderByClause The order by expressions. Can be null
+	   * @param returnClause The return expressions
+	   * @param whereClauseReturnsBooleanPlus Optional flag. 
+	   * 	If true => The iterator has to return xs:boolean+
+	   */ 
+  FLWORIterator(const yy::location& loc, 
+  		  std::vector<FLWORIterator::ForLetClause> forLetClauses, 
+  		  PlanIter_t& whereClause, 
+  		  FLWORIterator::OrderByClause* orderByClause,  
+  		  PlanIter_t& returnClause, 
+  		  bool whereClauseReturnsBooleanPlus = false);
+
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
+  virtual void setOffset(PlanState& planState, int32_t& offset);
+};
 
 }	/* namespace xqp */
 #endif	/* XQP_ITEM_ITERATOR_H */
