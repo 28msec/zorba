@@ -28,8 +28,8 @@ static uint32_t depth = 0;
 
 static void *no_state = (void *) new int;
 
-#define LOOKUP_FN( key ) static_cast<function *> (sctx_p->lookup_fn (key))
 #define LOOKUP_FN2( pfx, local ) static_cast<function *> (sctx_p->lookup_fn (pfx, local))
+#define LOOKUP_OP( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local))
 
 normalize_visitor::normalize_visitor()
 {
@@ -698,57 +698,57 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 	if (v.get_gencomp()!=NULL) {
 		switch (v.get_gencomp()->get_type()) {
 		case op_eq:
-			fo_h->set_func(LOOKUP_FN2("op", "equal"));
+			fo_h->set_func(LOOKUP_OP ("equal"));
 			break;
 		case op_ne:
-			fo_h->set_func(LOOKUP_FN2("op", "not-equal"));
+			fo_h->set_func(LOOKUP_OP ("not-equal"));
 			break;
 		case op_lt:
-			fo_h->set_func(LOOKUP_FN2("op", "less"));
+			fo_h->set_func(LOOKUP_OP ("less"));
 			break;
 		case op_le:
-			fo_h->set_func(LOOKUP_FN2("op", "less-equal"));
+			fo_h->set_func(LOOKUP_OP ("less-equal"));
 			break;
 		case op_gt:
-			fo_h->set_func(LOOKUP_FN2("op", "greater"));
+			fo_h->set_func(LOOKUP_OP ("greater"));
 			break;
 		case op_ge:
-			fo_h->set_func(LOOKUP_FN2("op", "greater-equal"));
+			fo_h->set_func(LOOKUP_OP ("greater-equal"));
 			break;
 		}
 	}
 	else if (v.get_valcomp()!=NULL) {
 		switch (v.get_valcomp()->get_type()) {
 		case op_val_eq:
-			fo_h->set_func(LOOKUP_FN2("op", "value-equal"));
+			fo_h->set_func(LOOKUP_OP ("value-equal"));
 			break;
 		case op_val_ne:
-			fo_h->set_func(LOOKUP_FN2("op", "value-not-equal"));
+			fo_h->set_func(LOOKUP_OP ("value-not-equal"));
 			break;
 		case op_val_lt:
-			fo_h->set_func(LOOKUP_FN2("op", "value-less"));
+			fo_h->set_func(LOOKUP_OP ("value-less"));
 			break;
 		case op_val_le:
-			fo_h->set_func(LOOKUP_FN2("op", "value-less-equal"));
+			fo_h->set_func(LOOKUP_OP ("value-less-equal"));
 			break;
 		case op_val_gt:
-			fo_h->set_func(LOOKUP_FN2("op", "value-greater"));
+			fo_h->set_func(LOOKUP_OP ("value-greater"));
 			break;
 		case op_val_ge:
-			fo_h->set_func(LOOKUP_FN2("op", "value-greater-equal"));
+			fo_h->set_func(LOOKUP_OP ("value-greater-equal"));
 			break;
 		}
 	}
 	else if (v.get_nodecomp()!=NULL) {
 		switch (v.get_nodecomp()->get_type()) {
 		case op_is:
-			fo_h->set_func(LOOKUP_FN2("op", "is"));
+			fo_h->set_func(LOOKUP_OP ("is"));
 			break;
 		case op_precedes:
-			fo_h->set_func(LOOKUP_FN2("op", "precedes"));
+			fo_h->set_func(LOOKUP_OP ("precedes"));
 			break;
 		case op_follows:
-			fo_h->set_func(LOOKUP_FN2("op", "follows"));
+			fo_h->set_func(LOOKUP_OP ("follows"));
 			break;
 		}
 	}
@@ -890,10 +890,10 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 	switch (v.get_intex_op()) {
 	case op_intersect:
-		fo_h->set_func(LOOKUP_FN2("op", "intersect"));
+		fo_h->set_func(LOOKUP_OP ("intersect"));
 		break;
 	case op_except:
-		fo_h->set_func(LOOKUP_FN2("op", "except"));
+		fo_h->set_func(LOOKUP_OP ("except"));
 		break;
 	}
 	nodestack.push(fo_h);
@@ -1622,9 +1622,9 @@ void *normalize_visitor::begin_visit(const UnaryExpr& v)
 cout << std::string(++depth, ' ') << TRACE << endl;
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	if (v.get_signlist()->get_sign())
-		fo_h->set_func(LOOKUP_FN2("op", "unary-plus"));
+		fo_h->set_func(LOOKUP_OP ("unary-plus"));
 	else
-		fo_h->set_func(LOOKUP_FN2("op", "unary-minus"));
+		fo_h->set_func(LOOKUP_OP ("unary-minus"));
 	nodestack.push(fo_h);
 	return no_state;
 }
@@ -1633,7 +1633,7 @@ void *normalize_visitor::begin_visit(const UnionExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_FN2("op", "union"));
+	fo_h->set_func(LOOKUP_OP ("union"));
 	nodestack.push(fo_h);
 	return no_state;
 }
@@ -2321,10 +2321,10 @@ void normalize_visitor::end_visit(const AdditiveExpr& v, void *visit_state)
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	switch (v.get_add_op()) {
 	case op_plus:
-		fo_h->set_func(LOOKUP_FN2("op", "add"));
+		fo_h->set_func(LOOKUP_OP ("add"));
 		break;
 	case op_minus:
-		fo_h->set_func(LOOKUP_FN2("op", "subtract"));
+		fo_h->set_func(LOOKUP_OP ("subtract"));
 		break;
 	}
 	fo_h->add(e2_h);
@@ -2339,7 +2339,7 @@ void normalize_visitor::end_visit(const AndExpr& v, void *visit_state)
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
 	fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_FN2("op", "and"));
+	fo_h->set_func(LOOKUP_OP ("and"));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -2563,16 +2563,16 @@ void normalize_visitor::end_visit(const MultiplicativeExpr& v, void *visit_state
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	switch (v.get_mult_op()) {
 	case op_mul:
-		fo_h->set_func(LOOKUP_FN2("op", "multiply"));
+		fo_h->set_func(LOOKUP_OP ("multiply"));
 		break;
 	case op_div:
-		fo_h->set_func(LOOKUP_FN2("op", "divide"));
+		fo_h->set_func(LOOKUP_OP ("divide"));
 		break;
 	case op_idiv:
-		fo_h->set_func(LOOKUP_FN2("op", "integer-divide"));
+		fo_h->set_func(LOOKUP_OP ("integer-divide"));
 		break;
 	case op_mod:
-		fo_h->set_func(LOOKUP_FN2("op", "mod"));
+		fo_h->set_func(LOOKUP_OP ("mod"));
 		break;
 	}
 	fo_h->add(e2_h);
@@ -2606,7 +2606,7 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
   fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_FN2("op", "or"));
+	fo_h->set_func(LOOKUP_OP ("or"));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
   nodestack.push (fo_h);

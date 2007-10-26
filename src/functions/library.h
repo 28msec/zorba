@@ -13,29 +13,12 @@
 #include <string>
 
 #include "context/common.h"
-#include "store/api/item_factory.h"
 #include "util/fx/fxhashmap.h"
 
 namespace xqp {
 
 class function;
 class zorba;
-
-// template<typename FuncIter>
-// class LibraryFunction {
-// 	PlanIter_t operator() {
-// 		
-// 	}
-// };
-
-class library : public rcobject
-{
-public:
-	library( );
-	~library();
-	static bool static_init;
-	void init(ItemFactory*);
-};
 
 } /* namespace xqp */
 #endif /* XQP_LIBRARY_H */

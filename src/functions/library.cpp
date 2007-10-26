@@ -30,8 +30,6 @@ using namespace std;
 namespace xqp {
 
 // clear static initializer state
-bool library::static_init = false;
-
 
   static string get_qname (const function &f) {
     const QNameItem *name = static_cast<const QNameItem *> (f.get_fname ());
@@ -63,28 +61,28 @@ bool library::static_init = false;
  	// e.g. it is possible to add two untyped atomics or the parameters can be element nodes
  	// which contain a number.
   DECL (op_numeric_add,
-        (new QNameItem (XQUERY_OP_NS,"op","add"),
+        (new QNameItem (XQUERY_OP_NS,"fn", ":add"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_subtract,
-        (new QNameItem (XQUERY_OP_NS,"op","subtract"),
+        (new QNameItem (XQUERY_OP_NS,"fn", ":subtract"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_multiply,
-        (new QNameItem (XQUERY_OP_NS,"op","multiply"),
+        (new QNameItem (XQUERY_OP_NS,"fn", ":multiply"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_divide,
-        (new QNameItem (XQUERY_OP_NS,"op","divide"),
+        (new QNameItem (XQUERY_OP_NS,"fn", ":divide"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_integer_divide,
-        (new QNameItem (XQUERY_OP_NS,"op","integer-divide"),
+        (new QNameItem (XQUERY_OP_NS,"fn", ":integer-divide"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_mod,
-        (new QNameItem (XQUERY_OP_NS,"op","mod"),
+        (new QNameItem (XQUERY_OP_NS,"fn", ":mod"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_unary_minus, 
-  			(new QNameItem (XQUERY_OP_NS,"op","unary-minus"),
+  			(new QNameItem (XQUERY_OP_NS,"fn", ":unary-minus"),
   			xs_decimal, xs_decimal));
   DECL (op_numeric_unary_plus, 
-  			(new QNameItem (XQUERY_OP_NS,"op","unary-plus"),
+  			(new QNameItem (XQUERY_OP_NS,"fn", ":unary-plus"),
   			xs_decimal, xs_decimal));
 
   DECL (fn_abs,
@@ -102,64 +100,64 @@ bool library::static_init = false;
 
   // Generic Comparison;
   DECL (op_equal,
-        (new QNameItem(XQUERY_OP_NS,"op","equal"),
+        (new QNameItem(XQUERY_OP_NS,"fn", ":equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
          
   DECL (op_not_equal,
-        (new QNameItem(XQUERY_OP_NS,"op","not-equal"),
+        (new QNameItem(XQUERY_OP_NS,"fn", ":not-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
   
   DECL (op_greater,
-        (new QNameItem(XQUERY_OP_NS,"op","greater"),
+        (new QNameItem(XQUERY_OP_NS,"fn", ":greater"),
          xs_anyType, xs_anyType,
          xs_boolean));
          
   DECL (op_greater_equal,
-        (new QNameItem(XQUERY_OP_NS,"op","greater-equal"),
+        (new QNameItem(XQUERY_OP_NS,"fn", ":greater-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
    DECL (op_less,
-        (new QNameItem(XQUERY_OP_NS,"op","less"),
+        (new QNameItem(XQUERY_OP_NS,"fn", ":less"),
          xs_anyType, xs_anyType,
          xs_boolean));
          
    DECL (op_less_equal,
-        (new QNameItem(XQUERY_OP_NS,"op","less-equal"),
+        (new QNameItem(XQUERY_OP_NS,"fn", ":less-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
    // end Generic Comparison
    
   // Value Comparison
 	DECL (op_value_equal,
-        (new QNameItem(XQUERY_FN_NS,"op","value-equal"),
+        (new QNameItem(XQUERY_FN_NS,"fn", ":value-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
       
 	DECL (op_value_not_equal,
-				(new QNameItem(XQUERY_FN_NS,"op","value-not-equal"),
+				(new QNameItem(XQUERY_FN_NS,"fn", ":value-not-equal"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
 	DECL (op_value_greater,
-				(new QNameItem(XQUERY_FN_NS,"op","value-greater"),
+				(new QNameItem(XQUERY_FN_NS,"fn", ":value-greater"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
 	DECL (op_value_greater_equal,
-				(new QNameItem(XQUERY_FN_NS,"op","value-greater-equal"),
+				(new QNameItem(XQUERY_FN_NS,"fn", ":value-greater-equal"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
 	DECL (op_value_less,
-				(new QNameItem(XQUERY_FN_NS,"op","value-less"),
+				(new QNameItem(XQUERY_FN_NS,"fn", ":value-less"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
 	DECL (op_value_less_equal,
-				(new QNameItem(XQUERY_FN_NS,"op","value-less-equal"),
+				(new QNameItem(XQUERY_FN_NS,"fn", ":value-less-equal"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
   // end Value Comparison
@@ -278,12 +276,12 @@ bool library::static_init = false;
 	
 	// start Logic
 	DECL (op_and,
-			(new QNameItem(XQUERY_OP_NS,"op","and"),
+			(new QNameItem(XQUERY_OP_NS,"fn", ":and"),
 			xs_anyType,
 			xs_boolean));
 			
 	DECL (op_or,
-			(new QNameItem(XQUERY_OP_NS,"op","or"),
+			(new QNameItem(XQUERY_OP_NS,"fn", ":or"),
 			xs_anyType,
 			xs_boolean));
 	// end Logic
@@ -294,29 +292,4 @@ bool library::static_init = false;
 			xs_decimal));
 	// end zorba functions
 	
-// TODO
-
-// initializer
-
-void library::init(
-	ItemFactory* vf_p)
-{
-  
-	if (!library::static_init) {
-    static_init = true;
-	}
-}
-
-
-// ctor, dtor
-
-library::library()
-{
-	init(&*zorba::getZorbaForCurrentThread()->getItemFactory());
-}
-
-library::~library()
-{
-}
-
 } /* namespace xqp */

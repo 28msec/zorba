@@ -44,7 +44,6 @@ namespace xqp {
 
   const char *static_context::default_ns_initializers [] = {
     "fn", XQUERY_FN_NS,
-    "op", XQUERY_OP_NS,
     "xml", "http://www.w3.org/XML/1998/namespace",
     "xs", "http://www.w3.org/2001/XMLSchema",
     "xsi", "http://www.w3.org/2001/XMLSchema-instance",
@@ -87,10 +86,12 @@ namespace xqp {
     bind_str ("ns:" + prefix, ns);
   }
 
+  function *static_context::lookup_builtin_fn (string local) const {
+    return lookup_func ("fn:" + make_expanded_qname (XQUERY_FN_NS, local));
+  }
   string static_context::expand_qname (string default_ns, string prefix, string local) const {
-    return prefix.empty () ?
-      (local + ":" + default_ns) :
-      (local + ":" + lookup_ns (prefix));
+    return make_expanded_qname
+      (prefix.empty () ? default_ns : lookup_ns (prefix), local);
   }
   string static_context::expand_qname (string default_ns, string qname) const {
     string::size_type n = qname.find(':');

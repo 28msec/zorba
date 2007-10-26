@@ -63,6 +63,9 @@ public:	// types
 protected:
   static const char *default_ns_initializers [];
   static_context (const char **);
+  static std::string make_expanded_qname (std::string ns, std::string local) {
+    return local + ":" + ns;
+  }
   std::string expand_qname (std::string default_ns, std::string prefix, std::string local) const;
   std::string expand_qname (std::string default_ns, std::string qname) const;
   
@@ -102,6 +105,7 @@ public:
   function *lookup_fn (std::string prefix, std::string local) const {
     return lookup_func ("fn:" + expand_qname (default_function_namespace (), prefix, local));
   }
+  function *lookup_builtin_fn (std::string local) const;
   void bind_fn (std::string prefix, std::string local, function *f) {
     bind_func ("fn:" + expand_qname (default_function_namespace (), prefix, local), f);
   }
