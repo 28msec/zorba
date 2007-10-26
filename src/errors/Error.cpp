@@ -53,13 +53,9 @@ void ZorbaErrorAlerts::error_alert(
 
 	err_decoded += ": ";
 	err_decoded += errtype_decoded;
-	z->getErrorManager()->err_messages->ApplyParam(&err_decoded, &param1);
-	z->getErrorManager()->err_messages->ApplyParam(&err_decoded, &param2);
+	z->getErrorManager()->err_messages->ApplyParams(&err_decoded, &param1, &param2);
 
 	strloc << *ploc;
-
-
-//	cout << file << "[" << line << "]:" << endl;
 
 	if(!continue_execution)
 	{
@@ -94,23 +90,21 @@ void ZorbaErrorAlerts::error_alert_withoutlocation(
 
 	err_decoded += ": ";
 	err_decoded += errtype_decoded;
-	z->getErrorManager()->err_messages->ApplyParam(&err_decoded, &param1);
-	z->getErrorManager()->err_messages->ApplyParam(&err_decoded, &param2);
+	z->getErrorManager()->err_messages->ApplyParams(&err_decoded, &param1, &param2);
 
-
-//	cout << file << "[" << line << "]:" << endl;
+  //	cout << file << "[" << line << "]:" << endl;
 
 	if(!continue_execution)
 	{
-		cout << "Fatal Error:" << "[somewhere.]" << " : " << err_decoded << std::endl;
+		cout << "Fatal Error:" << "[somewhere]" << " : " << err_decoded << std::endl;
 abort ();
-		throw xqp_exception("[somewhere.]", err_decoded);
+		throw xqp_exception("[somewhere]", err_decoded);
 	}
 	else
 	{
 		//... send error to user app
 
-		cout << "Error:" << "[somewhere.]" << " : " << err_decoded << std::endl;
+		cout << "Error:" << "[somewhere]" << " : " << err_decoded << std::endl;
 	}
 }
 
@@ -138,12 +132,11 @@ void ZorbaErrorAlerts::warning_alert(
 	std::ostringstream strloc;
 
 	warning_decoded = z->getErrorManager()->err_messages->warning_decode(warn);
-	z->getErrorManager()->err_messages->ApplyParam(&warning_decoded, &param1);
-	z->getErrorManager()->err_messages->ApplyParam(&warning_decoded, &param2);
+	z->getErrorManager()->err_messages->ApplyParams(&warning_decoded, &param1, &param2);
 
 	strloc << *ploc;
 
-//	cout << file << "[" << line << "]:" << endl;
+  //	cout << file << "[" << line << "]:" << endl;
 
 	//... send error to user app
 	cout << "Warning:" << strloc << " : " << warning_decoded << std::endl;
@@ -162,13 +155,12 @@ void ZorbaErrorAlerts::warning_alert_withoutlocation(
 	zorba	*z = zorba::getZorbaForCurrentThread();
 
 	warning_decoded = z->getErrorManager()->err_messages->warning_decode(warn);
-	z->getErrorManager()->err_messages->ApplyParam(&warning_decoded, &param1);
-	z->getErrorManager()->err_messages->ApplyParam(&warning_decoded, &param2);
+	z->getErrorManager()->err_messages->ApplyParams(&warning_decoded, &param1, &param2);
 
-//	cout << file << "[" << line << "]:" << endl;
+  //	cout << file << "[" << line << "]:" << endl;
 
 	//... send error to user app
-	cout << "Warning:" << "[somewhere.]" << " : " << warning_decoded << std::endl;
+	cout << "Warning:" << "[somewhere]" << " : " << warning_decoded << std::endl;
 
 }
 
@@ -185,10 +177,9 @@ void ZorbaErrorAlerts::notify_event(
 	zorba	*z = zorba::getZorbaForCurrentThread();
 
 	notif_decoded = z->getErrorManager()->err_messages->notify_event_decode(notif_event);
-	z->getErrorManager()->err_messages->ApplyParam(&notif_decoded, &param1);
-	z->getErrorManager()->err_messages->ApplyParam(&notif_decoded, &param2);
+	z->getErrorManager()->err_messages->ApplyParams(&notif_decoded, &param1, &param2);
 
-//	cout << file << "[" << line << "]:" << endl;
+  //	cout << file << "[" << line << "]:" << endl;
 
 	cout << " --> " << notif_decoded << std::endl;
 
@@ -206,8 +197,7 @@ int ZorbaErrorAlerts::ask_user( const error_messages::AskUserString_code ask_str
 	zorba	*z = zorba::getZorbaForCurrentThread();
 
 	ask_user_decoded = z->getErrorManager()->err_messages->ask_user_decode(ask_string);
-	z->getErrorManager()->err_messages->ApplyParam(&ask_user_decoded, &param1);
-	z->getErrorManager()->err_messages->ApplyParam(&ask_user_decoded, &param2);
+	z->getErrorManager()->err_messages->ApplyParams(&ask_user_decoded, &param1, &param2);
 
 	cout << "[]Ask User " << ask_user_decoded << "(not implemented)" << endl;
 
@@ -264,8 +254,7 @@ void ZorbaErrorAlerts::user_error (Item* err_qname,///optional
 			
 
 			err_decoded = z->getErrorManager()->err_messages->err_decode((enum error_messages::errcode)err_num);
-			z->getErrorManager()->err_messages->ApplyParam(&err_decoded, NULL);
-			z->getErrorManager()->err_messages->ApplyParam(&err_decoded, NULL);
+			z->getErrorManager()->err_messages->ApplyParams(&err_decoded, NULL, NULL);
 
 			///...send err_decoded, description and items to user
 		}

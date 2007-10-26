@@ -28,6 +28,7 @@ namespace xqp {
 
 string errors_english::err_decode(enum errcode e)
 {
+#define TRIVIAL_ERR( e ) case e: return #e
 	switch (e) {
 	case XPST0001_STATIC_CONTEXT_COMPONENT_MISSING:
 		return "XPST0001_STATIC_CONTEXT_COMPONENT_MISSING";
@@ -173,6 +174,9 @@ string errors_english::err_decode(enum errcode e)
 		return "XQP0002_DYNAMIC_ILLEGAL_NODE_CHILD";
 	case XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND:
 		return "XQP0003_DYNAMIC_TARGET_NAMESPACE_NOT_FOUND";
+  case XQP0005_SYSTEM_ASSERT_FAILED:
+    return "Assertion `/s' failed in /s";
+  TRIVIAL_ERR (XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED);
 	default: return "??";
 	}
 
@@ -211,29 +215,28 @@ std::string errors_english::ask_user_options_decode(enum AskUserStringOptions_co
 	return "";
 }
 
-//void errors::err(enum errcode e)
-//{
-//	throw xqp_exception(decode(e));
-//}
-
-/*find next place for param in err_decoded
-Put the param in that place
-
-A place for param looks like "/s"
-*/
-void error_messages::ApplyParam(string *err_decoded, const string *param1)
+/* Finds next place for param in err_decoded, and puts the param in that place.
+ * A place for param looks like "/s".
+ */
+string::size_type error_messages::ApplyParam(string *err_decoded, const string *param1, string::size_type start)
 {
-	std::string::size_type		off;
+	std::string::size_type off;
+  const static string empty;
 
-	off = err_decoded->find_first_of("/s");
+	off = err_decoded->find ("/s", start);
 
-	if(off == std::string::npos)
-		return;///just ignore
+	if (off == string::npos)
+		return err_decoded->length ();
 
-	err_decoded->replace(off, 2, *param1);
+  if (param1 == NULL) param1 = &empty;
+	err_decoded->replace (off, 2, *param1);
+  return off + param1->length ();
 }
 
-
+void error_messages::ApplyParams(string *err_decoded, const string *param1, const string *param2) {
+  string::size_type off = ApplyParam (err_decoded, param1, 0);
+  ApplyParam (err_decoded, param2, off);
+}
 
 errors_string_table::errors_string_table( std::string file_name )
 {

@@ -15,35 +15,21 @@
 
 namespace xqp {
 
-/*_________________________________________________
-|                                                  |
-|  See: Stroustrup, Third Ed., Section 24.3.7.2.   |
-|__________________________________________________*/
-
-//template<class X, class A>
-inline void Assert(bool assertion)
+inline void ZorbaAssert(bool assertion, const char *where, const char *what)
 {
-	if (!assertion) 
-	{
-		//daniel throw X();
-		ZORBA_ERROR_ALERT(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
-														error_messages::SYSTEM_ERROR);
+	if (!assertion) {
+    ZorbaErrorAlerts::error_alert
+      (error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
+       error_messages::SYSTEM_ERROR,
+       NULL, false,
+       what, where);
 	}
 }
 
-//template<class X, class A>
-inline void Assert(bool assertion, const std::string& location)
-{
-	if (!assertion) 
-	{
-	//daniel	throw X(location);
-		ZORBA_ERROR_ALERT(error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
-														error_messages::SYSTEM_ERROR,
-														NULL, false,
-														location);
-	}
-}
-
+#define __Assert_aux3( line ) #line
+#define __Assert_aux2( line ) __Assert_aux3( line )
+#define __Assert_aux1( cond, line ) ZorbaAssert (cond, __FILE__ ":" __Assert_aux2 (line), #cond)
+#define Assert( cond ) __Assert_aux1 (cond, __LINE__)
 
 }	/* namespace xqp */
 #endif	/* XQP_ASSERT_H */

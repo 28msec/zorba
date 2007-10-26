@@ -206,7 +206,8 @@ public:
 
 	virtual std::string errtype_decode(enum error_type errtype) = 0;
 
-	void ApplyParam(std::string *err_decoded, const std::string *param1);
+  std::string::size_type ApplyParam(std::string *err_decoded, const std::string *param1, std::string::size_type);
+	void ApplyParams(std::string *err_decoded, const std::string *param1, const std::string *param2);
 
 	/*
 	bool is_static_err(enum errcode);
@@ -247,3 +248,8 @@ public:
 } /* namespace xqp */
 #endif /* XQP_ERRORS_H */
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
