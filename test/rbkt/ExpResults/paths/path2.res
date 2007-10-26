@@ -1,5 +1,3 @@
-Iterator run:
-
 <b>1 2</b>
 
 Duration (with System Time): 0.271701 s
