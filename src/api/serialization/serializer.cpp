@@ -303,9 +303,19 @@ void serializer::emit_node(Item_t item, ostream& os, int depth)
 	}
 	else if (item->getNodeKind() == textNode)
 	{		
-		emit_expanded_string(item->getStringValue(), os);
+		emit_expanded_string(item->getStringProperty(), os);
 	}
-	else
+	/*
+	else if (item->getNodeKind() == commentNode )
+	{
+		
+	}
+	else if (item->getNodeKind() == piNode )
+	{
+	
+	}
+	*/
+	else 
 	{
 		os << "node of type: " << item->getNodeKind();
 		
@@ -367,7 +377,7 @@ void serializer::serialize(PlanIter_t iter, ostream& os)
 	{
 		if (item->isAtomic())
 		{
-			emit_expanded_string(item->getStringValue(), os);
+			emit_expanded_string(item->getStringProperty(), os);
 		}
 		else
 		{
