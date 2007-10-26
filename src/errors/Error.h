@@ -38,11 +38,11 @@ public:
 	///members to be accessed from static member functions
 	rchandle<error_messages> err_messages;
 private:
-	Zorba_AlertsManager				*errmanager_api;
+	rchandle<Zorba_AlertsManager> errmanager_api;
 
 public:
-	ZorbaErrorAlerts( );
-	~ZorbaErrorAlerts();
+	ZorbaErrorAlerts ();
+	~ZorbaErrorAlerts ();
 
 //	enum Zorba_Alert_Type
 //	{
@@ -154,3 +154,10 @@ private:
 }
 
 #endif
+
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

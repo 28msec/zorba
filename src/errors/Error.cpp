@@ -1,5 +1,3 @@
-
-
 #include "Error.h"
 #include <iostream>
 #include <iomanip>
@@ -21,8 +19,6 @@ ZorbaErrorAlerts::ZorbaErrorAlerts( )//class error_messages *_err_messages)
 
 ZorbaErrorAlerts::~ZorbaErrorAlerts()
 {
-	(*err_messages).removeReference();
-	errmanager_api->removeReference();
 }
 
 
@@ -68,6 +64,7 @@ void ZorbaErrorAlerts::error_alert(
 	if(!continue_execution)
 	{
 		cout << "Fatal Error:" << strloc << " : " << err_decoded << std::endl;
+abort ();
 		throw xqp_exception(strloc.str(), err_decoded);
 	}
 	else
@@ -106,6 +103,7 @@ void ZorbaErrorAlerts::error_alert_withoutlocation(
 	if(!continue_execution)
 	{
 		cout << "Fatal Error:" << "[somewhere.]" << " : " << err_decoded << std::endl;
+abort ();
 		throw xqp_exception("[somewhere.]", err_decoded);
 	}
 	else
@@ -302,5 +300,3 @@ void ZorbaErrorAlerts::DumpItemsAsText( const std::vector<class Item*> *items)
 }
 
 }
-
-
