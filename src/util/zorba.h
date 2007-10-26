@@ -14,6 +14,7 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "types/sequence_type_mgr.h"
+#include "store/api/item_factory.h"
 #include "util/rchandle.h"
 #include "errors/Error.h"
 

@@ -29,6 +29,7 @@
 #include "context/context.h"
 #include "context/context_impl.h"
 #include "functions/library.h"
+#include "store/api/item.h"
 #include "util/rchandle.h"
 #include "types/sequence_type.h"
 
