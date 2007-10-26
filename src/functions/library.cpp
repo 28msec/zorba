@@ -38,7 +38,7 @@ bool library::static_init = false;
     return name->getPrefix () + ":" + name->getLocalName ();
   }
   
-#define DECL( key, type, sig )                                          \
+#define DECL( type, sig )                                               \
   type type##_obj (signature sig);                                      \
   class type##_init_class {                                             \
   public:                                                               \
@@ -50,11 +50,11 @@ bool library::static_init = false;
   
   
   // Accessors
-  DECL (fn_data, fn_data_func,
+  DECL (fn_data_func,
   			(new QNameItem (XQUERY_FN_NS, "fn", "data"),
   			 xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
 
-  DECL (fn_root, fn_root_func,
+  DECL (fn_root_func,
   			(new QNameItem(XQUERY_FN_NS, "fn", "root"), anyNodeOpt, anyNodeOpt));
   // end Accessors
   
@@ -62,234 +62,234 @@ bool library::static_init = false;
  	// TODO The parameter and return types of the numeric functions are not correct.
  	// e.g. it is possible to add two untyped atomics or the parameters can be element nodes
  	// which contain a number.
-  DECL (op_add, op_numeric_add,
+  DECL (op_numeric_add,
         (new QNameItem (XQUERY_OP_NS,"op","add"),
          xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_subtract, op_numeric_subtract,
+  DECL (op_numeric_subtract,
         (new QNameItem (XQUERY_OP_NS,"op","subtract"),
          xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_mul, op_numeric_multiply,
+  DECL (op_numeric_multiply,
         (new QNameItem (XQUERY_OP_NS,"op","multiply"),
          xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_div, op_numeric_divide,
+  DECL (op_numeric_divide,
         (new QNameItem (XQUERY_OP_NS,"op","divide"),
          xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_idiv, op_numeric_integer_divide,
+  DECL (op_numeric_integer_divide,
         (new QNameItem (XQUERY_OP_NS,"op","integer-divide"),
          xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_mod, op_numeric_mod,
+  DECL (op_numeric_mod,
         (new QNameItem (XQUERY_OP_NS,"op","mod"),
          xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_unary_minus, op_numeric_unary_minus, 
+  DECL (op_numeric_unary_minus, 
   			(new QNameItem (XQUERY_OP_NS,"op","unary-minus"),
   			xs_decimal, xs_decimal));
-  DECL (op_unary_plus, op_numeric_unary_plus, 
+  DECL (op_numeric_unary_plus, 
   			(new QNameItem (XQUERY_OP_NS,"op","unary-plus"),
   			xs_decimal, xs_decimal));
 
-  DECL (fn_abs, fn_abs,
+  DECL (fn_abs,
         (new QNameItem(XQUERY_FN_NS, "fn", "abs"),
          xs_decimal,
          xs_decimal));
   // end Numerics
 
   // Sequences
-  DECL (fn_doc, fn_doc_func,
+  DECL (fn_doc_func,
         (new QNameItem(XQUERY_FN_NS,"fn","doc"),
          xs_string,
          documentNode));
   // end Sequences
 
   // Generic Comparison;
-  DECL (op_eq, op_equal,
+  DECL (op_equal,
         (new QNameItem(XQUERY_OP_NS,"op","equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
          
-  DECL (op_ne, op_not_equal,
+  DECL (op_not_equal,
         (new QNameItem(XQUERY_OP_NS,"op","not-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
   
-  DECL (op_gt, op_greater,
+  DECL (op_greater,
         (new QNameItem(XQUERY_OP_NS,"op","greater"),
          xs_anyType, xs_anyType,
          xs_boolean));
          
-  DECL (op_ge, op_greater_equal,
+  DECL (op_greater_equal,
         (new QNameItem(XQUERY_OP_NS,"op","greater-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
-   DECL (op_lt, op_less,
+   DECL (op_less,
         (new QNameItem(XQUERY_OP_NS,"op","less"),
          xs_anyType, xs_anyType,
          xs_boolean));
          
-   DECL (op_le, op_less_equal,
+   DECL (op_less_equal,
         (new QNameItem(XQUERY_OP_NS,"op","less-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
    // end Generic Comparison
    
   // Value Comparison
-	DECL (op_val_eq, op_value_equal,
+	DECL (op_value_equal,
         (new QNameItem(XQUERY_FN_NS,"op","value-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
       
-	DECL (op_val_ne, op_value_not_equal,
+	DECL (op_value_not_equal,
 				(new QNameItem(XQUERY_FN_NS,"op","value-not-equal"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
-	DECL (op_val_gt, op_value_greater,
+	DECL (op_value_greater,
 				(new QNameItem(XQUERY_FN_NS,"op","value-greater"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
-	DECL (op_val_ge, op_value_greater_equal,
+	DECL (op_value_greater_equal,
 				(new QNameItem(XQUERY_FN_NS,"op","value-greater-equal"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
-	DECL (op_val_lt, op_value_less,
+	DECL (op_value_less,
 				(new QNameItem(XQUERY_FN_NS,"op","value-less"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
 				
-	DECL (op_val_le, op_value_less_equal,
+	DECL (op_value_less_equal,
 				(new QNameItem(XQUERY_FN_NS,"op","value-less-equal"),
 				xs_anyType, xs_anyType,
 				xs_boolean));
   // end Value Comparison
 
   // Strings
-  DECL (fn_codepoints_to_string, fn_codepoints_to_string,
+  DECL (fn_codepoints_to_string,
         (new QNameItem(XQUERY_FN_NS,"fn","codepoints-to-string"),
          xs_integer,
          xs_string));
 
-  DECL (fn_string_to_codepoints, fn_string_to_codepoints,
+  DECL (fn_string_to_codepoints,
         (new QNameItem(XQUERY_FN_NS,"fn","string-to-codepoints"),
          xs_string,
          xs_integer));
 
-  DECL (fn_codepoint_equal, fn_codepoint_equal,
+  DECL (fn_codepoint_equal,
         (new QNameItem(XQUERY_FN_NS,"fn","codepoint-equal"),
          xs_string, xs_string,
          xs_boolean));
 
-  DECL (fn_concat, fn_concat,
+  DECL (fn_concat,
         (new QNameItem(XQUERY_FN_NS,"fn","concat"),
          xs_anyType,
          xs_boolean));
 
-  DECL (fn_string_join, fn_string_join,
+  DECL (fn_string_join,
         (new QNameItem(XQUERY_FN_NS,"fn","string-join"),
          xs_string, xs_string,
          xs_string));
 
-  DECL (fn_substring, fn_substring,
+  DECL (fn_substring,
         (new QNameItem(XQUERY_FN_NS,"fn","substring"),
          xs_string, xs_double, xs_double,
          xs_string));
 
-  DECL (fn_normalize_space, fn_normalize_space,
+  DECL (fn_normalize_space,
         (new QNameItem(XQUERY_FN_NS,"fn","normalize-space"),
          xs_string,
          xs_string));
 
-  DECL (fn_normalize_unicode, fn_normalize_unicode,
+  DECL (fn_normalize_unicode,
         (new QNameItem(XQUERY_FN_NS,"fn","normalize-unicode"),
          xs_string, xs_string,
          xs_string));
 
-  DECL (fn_upper_case, fn_upper_case,
+  DECL (fn_upper_case,
         (new QNameItem(XQUERY_FN_NS,"fn","upper-case"),
          xs_string,
          xs_string));
 
-  DECL (fn_lower_case, fn_lower_case,
+  DECL (fn_lower_case,
         (new QNameItem(XQUERY_FN_NS,"fn","lower-case"),
          xs_string,
          xs_string));
 
-  DECL (fn_translate, fn_translate,
+  DECL (fn_translate,
         (new QNameItem(XQUERY_FN_NS,"fn","translate"),
          xs_string, xs_string, xs_string,
          xs_string));
 
-  DECL (fn_string_compare, fn_string_compare,
+  DECL (fn_string_compare,
         (new QNameItem(XQUERY_FN_NS,"fn","compare"),
          xs_string, xs_string, xs_string,
          xs_integer));
 
-  DECL (fn_string_length, fn_string_length,
+  DECL (fn_string_length,
         (new QNameItem(XQUERY_FN_NS,"fn","string-length"),
          xs_string,
          xs_integer));
 
-  DECL (fn_contains, fn_contains,
+  DECL (fn_contains,
         (new QNameItem(XQUERY_FN_NS,"fn","contains"),
           xs_string, xs_string, xs_string,
           xs_boolean));
 
-  DECL (fn_starts_with, fn_starts_with,
+  DECL (fn_starts_with,
         (new QNameItem(XQUERY_FN_NS,"fn","starts-with"),
           xs_string, xs_string, xs_string,
           xs_boolean));
 
-  DECL (fn_ends_with, fn_ends_with,
+  DECL (fn_ends_with,
         (new QNameItem(XQUERY_FN_NS,"fn","ends-with"),
           xs_string, xs_string, xs_string,
           xs_boolean));
 
-  DECL (fn_substring_before, fn_substring_before,
+  DECL (fn_substring_before,
         (new QNameItem(XQUERY_FN_NS,"fn","substring-before"),
           xs_string, xs_string, xs_string,
           xs_string));
 
-  DECL (fn_substring_after, fn_substring_after,
+  DECL (fn_substring_after,
         (new QNameItem(XQUERY_FN_NS,"fn","substring-after"),
           xs_string, xs_string, xs_string,
           xs_string));
   // end Strings
 
 	// start Boolean
-	DECL (fn_true, fn_true,
+	DECL (fn_true,
         (new QNameItem(XQUERY_FN_NS,"fn","true"),
          xs_boolean));
   
-  DECL (fn_false, fn_false,
+  DECL (fn_false,
         (new QNameItem(XQUERY_FN_NS,"fn","false"),
          xs_boolean));
   
-  DECL (fn_boolean, fn_boolean,
+  DECL (fn_boolean,
         (new QNameItem(XQUERY_FN_NS,"fn","boolean"),
          xs_anyType,
          xs_boolean));
   
-  DECL (fn_not, fn_not,
+  DECL (fn_not,
   			(new QNameItem(XQUERY_FN_NS,"fn","not"),
   			xs_anyType,
   			xs_boolean));
 	// end Boolean
 	
 	// start Logic
-	DECL (op_and, op_and,
+	DECL (op_and,
 			(new QNameItem(XQUERY_OP_NS,"op","and"),
 			xs_anyType,
 			xs_boolean));
 			
-	DECL (op_or, op_or,
+	DECL (op_or,
 			(new QNameItem(XQUERY_OP_NS,"op","or"),
 			xs_anyType,
 			xs_boolean));
 	// end Logic
 	
 	// begin zorba functions
-	DECL (zor_numgen, zor_numgen,
+	DECL (zor_numgen,
 			(new QNameItem(XQUERY_FN_NS,"fn", "zorba:numgen"),
 			xs_decimal));
 	// end zorba functions
