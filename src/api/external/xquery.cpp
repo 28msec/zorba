@@ -267,6 +267,7 @@ bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 
 Zorba_XQueryResult::~Zorba_XQueryResult()
 {
+  delete state_block;
 }
 
 /*
