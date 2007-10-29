@@ -39,8 +39,9 @@ using namespace yy;
 		yy::xquery_parser::token_type                      \
 		yylex (	yy::xquery_parser::semantic_type* yylval,  \
 						yy::xquery_parser::location_type* yylloc,  \
-						xquery_driver& driver)
-
+						xquery_driver& driver,                     \
+            void* yyscanner)
+            
 // ... and declare it for the parser's sake.
 YY_DECL;
 
@@ -86,16 +87,18 @@ public:
 	**	have two members function to open and close the scanning phase. 
 	**	members. 
 	*/
+  /*
   void scan_begin();
   void scan_end();
-
+  */
+  
 	/**
 	**	Parse the contents of a file
 	*/
   void parse(const std::string& fname);
 
-	/*
-		Parse directly the content of a string
+	/**
+	**	Parse directly the content of a string
 	*/
 	void parse_string( const char *query_string);
 

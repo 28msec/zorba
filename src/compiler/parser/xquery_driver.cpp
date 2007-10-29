@@ -44,17 +44,6 @@ xquery_driver::xquery_driver(
 xquery_driver::~xquery_driver()
 {
 }
-     
-void xquery_driver::parse(
-	string const& fname)
-{
-	file = fname;
-	scan_begin();
-	yy::xquery_parser parser(*this);
-	parser.set_debug_level(g_trace_parsing);
-	parser.parse();
-	scan_end();
-}
 
 void xquery_driver::error(
 	yy::location const& l,

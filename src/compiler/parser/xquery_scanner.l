@@ -54,7 +54,7 @@
 	<http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=333231>.
 */
 #undef yywrap
-#define yywrap() 1
+#define yywrap(yyscanner) 1
      
 /*
 	By default yylex returns int, we use token_type.
@@ -77,6 +77,9 @@
 %option batch
 %option debug
 %option stack
+%option reentrant
+/* %option bison-bridge
+%option bison-locations */
 
 
 	/* known expensive option */
@@ -247,14 +250,14 @@ typedef yy::xquery_parser::token token;
 	/* ---------------- */
 "validate"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::VALIDATE_LBRACE;
 }
 
 "validate"{SP}{ValidationMode} {
 	yylval->sval = driver.symtab.put(yytext+9, yyleng-9);
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::VALIDATE_MODE;
 }
 
@@ -264,57 +267,57 @@ typedef yy::xquery_parser::token token;
 
 "element"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::ELEMENT_LBRACE;
 }
 
 "attribute"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::ATTRIBUTE_LBRACE;
 }
 
 "attribute"{SP}{QName}{S}"{" {
 	yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-10);
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::ATTRIBUTE_QNAME_LBRACE;
 }
 
 "element"{SP}{QName}{S}"{" {
 	yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-8);
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::ELEMENT_QNAME_LBRACE;
 }
 
 "document"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::DOCUMENT_LBRACE;
 }
 
 "text"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::TEXT_LBRACE;
 }
 
 "processing-instruction"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::PI_LBRACE;
 }
 
 "processing-instruction"{SP}NCName{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::PI_NCNAME_LBRACE;
 }
 
 "comment"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::COMMENT_LBRACE;
 }
 
@@ -328,19 +331,19 @@ typedef yy::xquery_parser::token token;
 
 "{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
 }
 
 "ordered"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::ORDERED_LBRACE;
 }
 
 "unordered"{S}"{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::UNORDERED_LBRACE;
 }
 
@@ -362,49 +365,49 @@ typedef yy::xquery_parser::token token;
 	/* ---------------------- */
 "element"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::DOCUMENT_NODE_LPAR;
 }
 
@@ -413,7 +416,7 @@ typedef yy::xquery_parser::token token;
 	/* --------------------------- */
 "processing-instruction"{S}"(" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI);
+	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI, yyscanner);
 	return token::PROCESSING_INSTRUCTION;
 }
 
@@ -664,7 +667,7 @@ typedef yy::xquery_parser::token token;
 	/* ------------------------- */
 "<!--" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_XML_COMMENT);
+	yy_push_state( /*and goto*/ MODE_XML_COMMENT, yyscanner);
 	return token::XML_COMMENT_BEGIN;
 }
 
@@ -673,7 +676,7 @@ typedef yy::xquery_parser::token token;
 	/* ------------------------------------ */
 "<?" {	
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_PROCESSING_INSTRUCTION);
+	yy_push_state( /*and goto*/ MODE_PROCESSING_INSTRUCTION, yyscanner);
 	return token::PI_BEGIN;
 }
 
@@ -682,7 +685,7 @@ typedef yy::xquery_parser::token token;
 	/* --------------------------- */
 "<![CDATA[" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_CDATA_SECTION);
+	yy_push_state( /*and goto*/ MODE_CDATA_SECTION, yyscanner);
 	return token::CDATA_BEGIN;
 }
 
@@ -691,7 +694,7 @@ typedef yy::xquery_parser::token token;
 	/* ----------------------- */
 "<" { 	
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ MODE_START_TAG);
+	yy_push_state( /*and goto*/ MODE_START_TAG, yyscanner);
 	return token::START_TAG;
 }
 
@@ -707,7 +710,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 
@@ -755,7 +758,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state */
 	/* ------------------ */
 "}" { 	
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::RBRACE;
 }
 
@@ -1014,7 +1017,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to INITIAL */
 	/* --------------------- */
 "{" {
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
 }
 ";" {
@@ -1345,7 +1348,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 
@@ -1360,7 +1363,7 @@ typedef yy::xquery_parser::token token;
 	/* restore previous state on closing brace */
 	/* --------------------------------------- */
 "}" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::RBRACE;
 }
 
@@ -1633,7 +1636,7 @@ typedef yy::xquery_parser::token token;
 <MODE_NAMESPACEDECL>{
 
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 ";" {
@@ -1730,7 +1733,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 
@@ -1787,7 +1790,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 {CatchAll} {
@@ -1820,7 +1823,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 {CatchAll} {
@@ -1866,56 +1869,56 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 	/* transition to KINDTEST */
 	/* ---------------------- */
 "element"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ELEMENT_LPAR;
 }
 
 "attribute"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ATTRIBUTE_LPAR;
 }
 
 "schema-element"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::SCHEMA_ELEMENT_LPAR;
 }
 
 "schema-attribute"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::SCHEMA_ATTRIBUTE_LPAR;
 }
 
 "comment"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::COMMENT_LPAR;
 }
 
 "text"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::TEXT_LPAR;
 }
 
 "node"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::NODE_LPAR;
 }
 
 "document-node"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::DOCUMENT_NODE_LPAR;
 }
 
@@ -1923,7 +1926,7 @@ typedef yy::xquery_parser::token token;
 	/* --------------------------- */
 "processing-instruction"{S}"(" {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
-	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI);
+	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI, yyscanner);
 	return token::PI_LPAR;
 }
 
@@ -2219,7 +2222,7 @@ typedef yy::xquery_parser::token token;
 	/* --------------------- */
 "{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
 }
 
@@ -2239,13 +2242,13 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 	/* pop previous state on close paren */
 	/* --------------------------------- */
 ")" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::RPAR;
 }
 
@@ -2253,13 +2256,13 @@ typedef yy::xquery_parser::token token;
 	/* ----------------- */
 "element"{S}"(" {
 	BEGIN MODE_KINDTEST;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::ELEMENT_LPAR;
 }
 
 "schema-element"{S}"(" {
 	BEGIN MODE_KINDTEST;
-	yy_push_state( /*and goto*/ MODE_KINDTEST);
+	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
 	return token::SCHEMA_ELEMENT_LPAR;
 }
 
@@ -2286,7 +2289,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state on close paren */
 	/* --------------------------------- */
 ")" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::RPAR;
 }
 
@@ -2294,7 +2297,7 @@ typedef yy::xquery_parser::token token;
 	/* -------------------------- */
 
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 	/* maintain KINDTESTFORPI */
@@ -2330,7 +2333,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state */
 	/* ------------------ */
 ")" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::RPAR;
 }
 
@@ -2345,14 +2348,14 @@ typedef yy::xquery_parser::token token;
 	/* --------------------- */
 "{" {
 	BEGIN MODE_OPERATOR;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
 }
 
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 	/* maintain CLOSE_KINDTEST */
@@ -2407,7 +2410,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 	/* anything else: push back, goto OPERATOR */
@@ -2537,7 +2540,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 {CatchAll} {
@@ -2593,7 +2596,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state on exit */
 	/* -------------------------- */
 "/>" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::EMPTY_TAG_END;
 }
 
@@ -2643,35 +2646,35 @@ typedef yy::xquery_parser::token token;
 	/* transition to INITIAL */
 	/* --------------------- */
 "{" {
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
 }
 
 	/* transition to EXPR_COMMENT */
 	/* -------------------------- */
 "<!--" {
-	yy_push_state( /*and goto*/ MODE_XML_COMMENT);
+	yy_push_state( /*and goto*/ MODE_XML_COMMENT, yyscanner);
 	return token::XML_COMMENT_BEGIN;
 }
 
 	/* transition to PROCESSING_INSTRUCTION */
 	/* ------------------------------------ */
 "<?" {
-	yy_push_state( /*and goto*/ MODE_PROCESSING_INSTRUCTION);
+	yy_push_state( /*and goto*/ MODE_PROCESSING_INSTRUCTION, yyscanner);
 	return token::PI_BEGIN;
 }
 
 	/* transition to CDATA_SECTION */
 	/* --------------------------- */
 "<![CDATA[" {
-	yy_push_state( /*and goto*/ MODE_CDATA_SECTION);
+	yy_push_state( /*and goto*/ MODE_CDATA_SECTION, yyscanner);
 	return token::CDATA_BEGIN;
 }
 
 	/* transition to START_TAG */
 	/* ----------------------- */
 "<" {
-	yy_push_state( /*and goto*/ MODE_START_TAG);
+	yy_push_state( /*and goto*/ MODE_START_TAG, yyscanner);
 	return token::START_TAG;
 }
 
@@ -2724,7 +2727,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state on exit */
 	/* -------------------------- */
 ">" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::TAG_END;
 }
 
@@ -2763,7 +2766,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state on exit */
 	/* -------------------------- */
 "-->" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::XML_COMMENT_END;
 }
 
@@ -2793,13 +2796,13 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state */
 	/* ------------------ */
 ":)" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 }
 
 	/* maintain EXPR_COMMENT */
 	/* --------------------- */
 "(:" {
-	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT);
+	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 
 {CommentContent} {
@@ -2831,7 +2834,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state on exit */
 	/* -------------------------- */
 "?>" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::PI_END;
 }
 
@@ -2861,7 +2864,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state on exit */
 	/* -------------------------- */
 "?>" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::PI_BEGIN;
 }
 
@@ -2890,7 +2893,7 @@ typedef yy::xquery_parser::token token;
 	/* pop previous state on exit */
 	/* -------------------------- */
 "]]>" {
-	yy_pop_state();
+	yy_pop_state(yyscanner);
 	return token::CDATA_END;
 }
 
@@ -2932,7 +2935,7 @@ typedef yy::xquery_parser::token token;
 	/* transition to INITIAL */
 	/* --------------------- */
 "{" {
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
 }
 
@@ -2991,7 +2994,7 @@ typedef yy::xquery_parser::token token;
 	/* --------------------- */
 "{" {
 	BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
-	yy_push_state( /*and goto*/ INITIAL);
+	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
 }
 
@@ -3033,36 +3036,50 @@ PredefinedEntityRef {
 	on the scanner's data, it is simpler to implement them in this file. 
 */
 namespace xqp {
-
-void xquery_driver::scan_begin()
-{
-  yy_flex_debug = g_trace_scanning;
-  if (!(yyin = fopen(file.c_str (), "r"))) {
-    error (std::string("cannot open ") + file);
-  }
-}
-
-void xquery_driver::scan_end()
-{
-  fclose(yyin);
-}
-
+  
 void xquery_driver::parse_string( const char *query_string)
-{
-	YY_BUFFER_STATE str_buffer = yy_scan_string(query_string);
-
-	yy::xquery_parser parser(*this);
+{  
+  yyscan_t scanner;
+  yylex_init(&scanner);
+  
+	YY_BUFFER_STATE str_buffer = yy_scan_string(query_string, scanner);
+	
+  yy::xquery_parser parser(*this, scanner);
 	parser.set_debug_level(g_trace_parsing);
 	parser.parse();
 
-	yy_delete_buffer(str_buffer); /* free up memory */
+	yy_delete_buffer(str_buffer, scanner); /* free up memory */
+  yylex_destroy(scanner);
+}
+
+void xquery_driver::parse(string const& fname)
+{    
+  yyscan_t scanner;
+  yylex_init(&scanner);
+  
+  struct yyguts_t * yyg = (struct yyguts_t*)scanner;
+  
+  yy_flex_debug = g_trace_scanning;
+  
+  if (!(yyin = fopen(fname.c_str (), "r"))) {
+    error (std::string("cannot open ") + file);
+  }
+  
+  yy::xquery_parser parser(*this, scanner);
+  parser.set_debug_level(g_trace_parsing);
+  parser.parse();
+  
+  fclose(yyin);  
+  yylex_destroy(&scanner);
 }
 
 }
 
 
-std::string start_state()
-{
+std::string start_state(yyscan_t* yyscanner)
+{  
+  struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
+  
 	switch (YY_START) {
 	case INITIAL: return "INITIAL";
 	case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
@@ -3093,7 +3110,7 @@ std::string start_state()
 	case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
 	case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
 	default: return "Something's drastically wrong here, unrecognized start state!\n";
-	}
+	}  
 }
 
 /*

@@ -263,7 +263,7 @@ public:
 
 	void InitThread(//ItemFactory *item_factory,
 									error_messages *em = NULL,
-									char *collator_name = "root",
+									const char *collator_name = "root",
 									::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY
 									);
 	void UninitThread();

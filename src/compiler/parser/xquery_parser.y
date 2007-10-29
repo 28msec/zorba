@@ -63,13 +63,17 @@ static bool debug = true;
 
 %}
 
+%pure-parser
+
 /*
 **	The driver is passed by reference to the parser and to the scanner. 
 **	This provides a simple but effective pure interface, not relying on 
 **	global variables. 
 */
 %parse-param { xquery_driver& driver }
-%lex-param   { xquery_driver& driver }
+%parse-param { void* yyscanner }
+%lex-param   { xquery_driver& driver } 
+%lex-param   { void* yyscanner }
 
 
 /*
@@ -5210,7 +5214,6 @@ FTIgnoreOption :
 %%
 
 
-
 /*
 	The error member function registers the errors to the driver.
 */
@@ -5221,7 +5224,6 @@ void yy::xquery_parser::error(
 {
   driver.error(loc, msg);
 }
-
 
 
 /*
