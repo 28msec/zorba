@@ -78,11 +78,23 @@ int _tmain(int argc, _TCHAR* argv[])
 				}
 #endif
 				if(!inline_query)
-				{
+				{          
 					///read the file
 					std::ifstream	qfile(fname);
 					//istringstream		iss;
-					qfile >> query_text;
+          
+          string temp;
+          query_text = "";
+          
+          // warning: this method of reading a file will trim the 
+          // whitespace at the end of lines
+					while (qfile >> temp)
+          {
+            if (query_text != "")
+              query_text += "\n";
+            
+            query_text += temp;
+          }
 				}
 			}
 		}
