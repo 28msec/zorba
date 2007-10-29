@@ -129,7 +129,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		if (useResultFile)
 		{
 			resultFile = new ofstream(resultFileName.c_str());
-			*resultFile << "Iterator run:" << std::endl << std::endl;
+			//*resultFile << "Iterator run:" << std::endl << std::endl;
 		}
 
 		Item_t		it;
