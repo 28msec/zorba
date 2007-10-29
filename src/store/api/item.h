@@ -552,6 +552,81 @@ namespace xqp
 				*/
 			virtual xqp_string show() const;
 	};   /* Item */
+  
+  class AtomicItem : public Item
+  {
+    public:
+      virtual ~AtomicItem();
+      bool isNode() const;
+      bool isAtomic() const;
+
+      virtual Iterator_t getTypedValue() const;
+  }; /* class AtomicItem */
+  
+  class NodeItem : public Item
+  {
+    protected:
+      // Pointer to avoid cyclic smart pointers
+      Item* theParent;
+
+    public:
+      explicit NodeItem(const Item_t& aParent);
+      NodeItem();
+      virtual ~NodeItem();
+
+      virtual bool isNode() const;
+      virtual bool isAtomic() const;
+      virtual Item_t getEBV() const;
+      virtual bool equals ( Item_t ) const;
+
+      // Must be overwritten from every node implementation when zorba is schema-aware
+      virtual TypeCode getType() const;
+      virtual Item_t getParent() const;
+      virtual xqp_string getBaseURI() const;
+      virtual xqp_string getDocumentURI() const;
+  }; /* class Node */
+
+  class QNameItem : public AtomicItem {};
+  class UntypedAtomicItem : public AtomicItem {};
+  class StringItem : public UntypedAtomicItem {};
+  class DecimalItem : public AtomicItem {};
+  class IntItem : public AtomicItem {};
+  class IntegerItem : public AtomicItem {};
+  class DoubleItem : public AtomicItem {};
+  class FloatItem : public AtomicItem {};
+  class BooleanItem : public AtomicItem {};
+  
+  class DocumentNode : public NodeItem {};
+  class ElementNode : public NodeItem {
+    public:
+      ElementNode(){}
+      ElementNode(const Item_t& aParent) : NodeItem(aParent) {}
+  };
+  class AttributeNode : public NodeItem {
+    public:
+      AttributeNode(){}
+      AttributeNode(const Item_t& aParent) : NodeItem(aParent) {}
+  };
+  class NamespaceNode : public NodeItem {
+    public:
+      NamespaceNode(){}
+      NamespaceNode(const Item_t& aParent) : NodeItem(aParent) {}
+  };
+  class PiNode : public NodeItem {
+    public:
+      PiNode(){}
+      PiNode(const Item_t& aParent) : NodeItem(aParent) {}
+  };
+  class CommentNode : public NodeItem {
+    public:
+      CommentNode(){}
+      CommentNode(const Item_t& aParent) : NodeItem(aParent) {}
+  };
+  class TextNode : public NodeItem {
+    public:
+      TextNode(){}
+      TextNode(const Item_t& aParent) : NodeItem(aParent) {}
+  };
 
 } /* namespace xqp */
 #endif /* XQP_VALUES_H */

@@ -7,74 +7,57 @@
 *
 */
 
-#include "runtime/core/item_iterator.h"
+
 #include "store/naive/atomic_items.h"
 #include "util/zorba.h"
 #include "store/api/item.h"
 
 namespace xqp
 {
-	/* start class AtomicItem */
-	AtomicItem::~AtomicItem() {}
-	bool AtomicItem::isNode() const
-	{
-		return false;
-	}
-	bool AtomicItem::isAtomic() const
-	{
-		return true;
-	}
-	Iterator_t AtomicItem::getTypedValue() const
-	{
-		PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue() );
-		return new PlanIterWrapper(planIter);
-	}
-	/* end class AtomicItem */
-
 	/* start class QNameItem */
-	QNameItem::QNameItem ( xqp_string _namespace, xqp_string prefix, xqp_string localname )
+  QNameItemNaive::QNameItemNaive ( xqp_string _namespace, xqp_string prefix, xqp_string localname )
 			:
 			strNamespace_ ( _namespace ), strPrefix_ ( prefix ), strLocal_ ( localname ) {}
 
-	QNameItem::~QNameItem() {}
+  QNameItemNaive::~QNameItemNaive() {}
 
-	xqp_string QNameItem::getNamespace() const
+  xqp_string QNameItemNaive::getNamespace() const
 	{
 		return this->strNamespace_;
 	}
 
-	xqp_string QNameItem::getPrefix() const
+  xqp_string QNameItemNaive::getPrefix() const
 	{
 		return this->strPrefix_;
 	}
 
-	xqp_string QNameItem::getLocalName() const
+  xqp_string QNameItemNaive::getLocalName() const
 	{
 		return this->strLocal_;
 	}
 
-	qnamekey_t QNameItem::getQNameKey( ) const
+  qnamekey_t QNameItemNaive::getQNameKey( ) const
 	{
 		return Item::createQNameKey ( this->strNamespace_, this->strPrefix_, this->strLocal_ );
 	}
 
-	TypeCode QNameItem::getType( ) const
+  TypeCode QNameItemNaive::getType( ) const
 	{
 		return xs_qname;
 	}
 
-	Item_t QNameItem::getAtomizationValue( ) const
+  Item_t QNameItemNaive::getAtomizationValue( ) const
 	{
 		return zorba::getItemFactory()->createQName ( this->strNamespace_, this->strPrefix_, this->strLocal_ );
 	}
 
-	bool QNameItem::equals ( Item_t item ) const
+  bool QNameItemNaive::equals ( Item_t item ) const
 	{
 		return ( item->getNamespace() == this->strNamespace_
 		         && item->getLocalName() == this->strLocal_ );
 	}
 
-	Item_t QNameItem::getEBV( ) const
+  Item_t QNameItemNaive::getEBV( ) const
 	{
 		ZorbaErrorAlerts::error_alert (
 		    error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
@@ -85,343 +68,359 @@ namespace xqp
 		);
 		return NULL;
 	}
-	xqp_string QNameItem::getStringProperty( ) const
+  xqp_string QNameItemNaive::getStringProperty( ) const
 	{
 		return this->strPrefix_ != "" ? this->strPrefix_ + ":" + this->strLocal_ : this->strLocal_;
 	}
-	xqp_string QNameItem::show() const
+  xqp_string QNameItemNaive::show() const
 	{
 		return "xs:qname(" + this->strNamespace_ + "," + this->strPrefix_ + "," + this->strLocal_ + ")";
 	}
 	/* end class QNameItem */
 
 	/* start class UntypedAtomicItem */
-	UntypedAtomicItem::UntypedAtomicItem ( xqp_string value ) : strValue_ ( value ) {}
+  UntypedAtomicItemNaive::UntypedAtomicItemNaive ( xqp_string value ) : strValue_ ( value ) {}
 
-	UntypedAtomicItem::~UntypedAtomicItem() {}
+  UntypedAtomicItemNaive::~UntypedAtomicItemNaive() {}
 
-	xqp_string UntypedAtomicItem::getStringValue() const
+  xqp_string UntypedAtomicItemNaive::getStringValue() const
 	{
 		return this->strValue_;
 	}
 
-	TypeCode UntypedAtomicItem::getType() const
+  TypeCode UntypedAtomicItemNaive::getType() const
 	{
 		return xs_untypedAtomicValue;
 	}
 
-	Item_t UntypedAtomicItem::getAtomizationValue() const
+  Item_t UntypedAtomicItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createUntypedAtomic ( this->strValue_ );
 	}
 
-	bool UntypedAtomicItem::equals ( Item_t item ) const
+  bool UntypedAtomicItemNaive::equals ( Item_t item ) const
 	{
 		return item->getStringValue() == this->strValue_;
 	}
 
-	Item_t UntypedAtomicItem::getEBV() const
+  Item_t UntypedAtomicItemNaive::getEBV() const
 	{
 		bool b = ! ( this->strValue_ == "" );
 		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
-	xqp_string UntypedAtomicItem::getStringProperty() const
+  xqp_string UntypedAtomicItemNaive::getStringProperty() const
 	{
 		return this->strValue_;
 	}
 
-	xqp_string UntypedAtomicItem::show() const
+  xqp_string UntypedAtomicItemNaive::show() const
 	{
 		return "xs:untypedAtomic(" + this->strValue_ + ")";
 	}
 	/* end class UntypedAtomicItem */
 
 	/* start class StringItem */
-	StringItem::StringItem ( const xqp_string& value ) : UntypedAtomicItem ( value ) {}
+  StringItemNaive::StringItemNaive ( const xqp_string& value ) : strValue_ ( value ) {}
 
-	StringItem::~StringItem() {}
+  StringItemNaive::~StringItemNaive() {}
+  
+  xqp_string StringItemNaive::getStringValue() const
+  {
+    return this->strValue_;
+  }
 
-	TypeCode StringItem::getType() const
+  TypeCode StringItemNaive::getType() const
 	{
 		return xs_string;
 	}
 
-	Item_t StringItem::getAtomizationValue() const
+  Item_t StringItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createString ( this->strValue_ );
 	}
 
-	bool StringItem::equals ( Item_t item ) const
+  bool StringItemNaive::equals ( Item_t item ) const
 	{
 		return item->getStringValue() == this->strValue_;
 	}
+  
+  Item_t StringItemNaive::getEBV() const
+  {
+    bool b = ! ( this->strValue_ == "" );
+    return zorba::getItemFactory()->createBoolean ( b );
+  }
 
-	xqp_string StringItem::show() const
+  xqp_string StringItemNaive::getStringProperty() const
+  {
+    return this->strValue_;
+  }
+
+  xqp_string StringItemNaive::show() const
 	{
 		return "xs:string(" + this->strValue_ + ")";
 	}
 	/* end class StringItem */
 
 	/* start class DecimalItem */
-	DecimalItem::DecimalItem ( long double value ) :value_ ( value ) {}
-	DecimalItem::~DecimalItem() {}
-	long double DecimalItem::getDecimalValue() const
+  DecimalItemNaive::DecimalItemNaive ( long double value ) :value_ ( value ) {}
+  DecimalItemNaive::~DecimalItemNaive() {}
+  long double DecimalItemNaive::getDecimalValue() const
 	{
 		return this->value_;
 	}
 
-	TypeCode DecimalItem::getType() const
+  TypeCode DecimalItemNaive::getType() const
 	{
 		return xs_decimal;
 	}
 
-	Item_t DecimalItem::getAtomizationValue() const
+  Item_t DecimalItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createDecimal ( this->value_ );
 	}
 
-	bool DecimalItem::equals ( Item_t item ) const
+  bool DecimalItemNaive::equals ( Item_t item ) const
 	{
 		return item->getDecimalValue() == this->value_;
 	}
 
-	Item_t DecimalItem::getEBV() const
+  Item_t DecimalItemNaive::getEBV() const
 	{
 		bool b = ( this->value_ != 0 );
 		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
-	xqp_string DecimalItem::getStringProperty() const
+  xqp_string DecimalItemNaive::getStringProperty() const
 	{
 		std::ostringstream tmp;
 		tmp << this->value_;
 		return xqp_string ( tmp.str() );
 	}
 
-	xqp_string DecimalItem::show() const
+  xqp_string DecimalItemNaive::show() const
 	{
 		return "xs:decimal(" + this->getStringProperty() + ")";
 	}
 	/* end class DecimalItem */
 
 	/* start class IntItem */
-	IntItem::IntItem ( int value ) :value_ ( value ) {}
-	IntItem::~IntItem() {}
+	IntItemNaive::IntItemNaive ( int value ) :value_ ( value ) {}
+	IntItemNaive::~IntItemNaive() {}
 
-	int32_t IntItem::getIntValue() const
+  int32_t IntItemNaive::getIntValue() const
 	{
 		return this->value_;
 	}
 
-	long long IntItem::getIntegerValue() const
+  long long IntItemNaive::getIntegerValue() const
 	{
 		return static_cast<long long> ( this->value_ );
 	}
 
-	long double IntItem::getDecimalValue() const
+  long double IntItemNaive::getDecimalValue() const
 	{
 		return static_cast<long double> ( this->value_ );
 	}
 
-	TypeCode IntItem::getType() const
+  TypeCode IntItemNaive::getType() const
 	{
 		return xs_int;
 	}
 
-	Item_t IntItem::getAtomizationValue() const
+  Item_t IntItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createInt ( this->value_ );
 	}
 
-	bool IntItem::equals ( Item_t item ) const
+  bool IntItemNaive::equals ( Item_t item ) const
 	{
 		return item->getIntValue() == this->value_;
 	}
 
-	Item_t IntItem::getEBV() const
+  Item_t IntItemNaive::getEBV() const
 	{
 		bool b = ( this->value_ != 0 );
 		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
-	xqp_string IntItem::getStringProperty() const
+  xqp_string IntItemNaive::getStringProperty() const
 	{
 		std::ostringstream tmp;
 		tmp << this->value_;
 		return xqp_string ( tmp.str() );
 	}
 
-	xqp_string IntItem::show() const
+  xqp_string IntItemNaive::show() const
 	{
 		return "xs:int(" + this->getStringProperty() + ")";
 	}
 	/* end class IntItem */
 
 	/* start class IntegerItem */
-	IntegerItem::IntegerItem ( long long value ) :value_ ( value ) {}
-	IntegerItem::~IntegerItem() {}
+  IntegerItemNaive::IntegerItemNaive ( long long value ) :value_ ( value ) {}
+  IntegerItemNaive::~IntegerItemNaive() {}
 
-	long long IntegerItem::getIntegerValue() const
+	long long IntegerItemNaive::getIntegerValue() const
 	{
 		return this->value_;
 	}
 
-	long double IntegerItem::getDecimalValue() const
+  long double IntegerItemNaive::getDecimalValue() const
 	{
 		return static_cast<long double> ( this->value_ );
 	}
 
-	TypeCode IntegerItem::getType() const
+  TypeCode IntegerItemNaive::getType() const
 	{
 		return xs_integer;
 	}
 
-	Item_t IntegerItem::getAtomizationValue() const
+  Item_t IntegerItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createInteger ( this->value_ );
 	}
 
-	bool IntegerItem::equals ( Item_t item ) const
+  bool IntegerItemNaive::equals ( Item_t item ) const
 	{
 		return item->getIntegerValue() == this->value_;
 	}
 
-	Item_t IntegerItem::getEBV() const
+  Item_t IntegerItemNaive::getEBV() const
 	{
 		bool b = ( this->value_ != 0 );
 		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
-	xqp_string IntegerItem::getStringProperty() const
+  xqp_string IntegerItemNaive::getStringProperty() const
 	{
 		std::ostringstream tmp;
 		tmp << this->value_;
 		return xqp_string ( tmp.str() );
 	}
 
-	xqp_string IntegerItem::show() const
+  xqp_string IntegerItemNaive::show() const
 	{
 		return "xs:integer(" + this->getStringProperty() + ")";
 	}
 	/* end class IntegerItem */
 	
 	/* start class DoubleItem */
-	DoubleItem::DoubleItem ( double value_arg ) :value ( value_arg ) {}
-	DoubleItem::~DoubleItem() {}
+  DoubleItemNaive::DoubleItemNaive ( double value_arg ) :value ( value_arg ) {}
+  DoubleItemNaive::~DoubleItemNaive() {}
 
-	double DoubleItem::getDoubleValue() const
+  double DoubleItemNaive::getDoubleValue() const
 	{
 		return this->value;
 	}
 
-	TypeCode DoubleItem::getType() const
+  TypeCode DoubleItemNaive::getType() const
 	{
 		return xs_double;
 	}
 
-	Item_t DoubleItem::getAtomizationValue() const
+  Item_t DoubleItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createDouble ( this->value );
 	}
 
-	bool DoubleItem::equals ( Item_t item ) const
+  bool DoubleItemNaive::equals ( Item_t item ) const
 	{
 		return item->getDoubleValue() == this->value;
 	}
 
-	Item_t DoubleItem::getEBV() const
+  Item_t DoubleItemNaive::getEBV() const
 	{
 		bool b = ( this->value != 0 );
 		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
-	xqp_string DoubleItem::getStringProperty() const
+  xqp_string DoubleItemNaive::getStringProperty() const
 	{
 		std::ostringstream tmp;
 		tmp << this->value;
 		return xqp_string ( tmp.str() );
 	}
 
-	xqp_string DoubleItem::show() const
+  xqp_string DoubleItemNaive::show() const
 	{
 		return "xs:double(" + this->getStringProperty() + ")";
 	}
 	/* end class DoubleItem */
 	
 	/* start class FloatItem */
-	FloatItem::FloatItem( float value_arg ) :value ( value_arg ) {}
-	FloatItem::~FloatItem() {}
+  FloatItemNaive::FloatItemNaive( float value_arg ) :value ( value_arg ) {}
+  FloatItemNaive::~FloatItemNaive() {}
 
-	float FloatItem::getFloatValue() const
+  float FloatItemNaive::getFloatValue() const
 	{
 		return this->value;
 	}
 
-	TypeCode FloatItem::getType() const
+  TypeCode FloatItemNaive::getType() const
 	{
 		return xs_double;
 	}
 
-	Item_t FloatItem::getAtomizationValue() const
+  Item_t FloatItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createFloat ( this->value );
 	}
 
-	bool FloatItem::equals ( Item_t item ) const
+  bool FloatItemNaive::equals ( Item_t item ) const
 	{
 		return item->getFloatValue() == this->value;
 	}
 
-	Item_t FloatItem::getEBV() const
+  Item_t FloatItemNaive::getEBV() const
 	{
 		bool b = ( this->value != 0 );
 		return zorba::getItemFactory()->createBoolean ( b );
 	}
 
-	xqp_string FloatItem::getStringProperty() const
+  xqp_string FloatItemNaive::getStringProperty() const
 	{
 		std::ostringstream tmp;
 		tmp << this->value;
 		return xqp_string ( tmp.str() );
 	}
 
-	xqp_string FloatItem::show() const
+  xqp_string FloatItemNaive::show() const
 	{
 		return "xs:float(" + this->getStringProperty() + ")";
 	}
 	/* end class FloatItem */
 
 	/* start class BooleanItem */
-	BooleanItem::BooleanItem ( bool value ) :value_ ( value ) {}
-	BooleanItem::~BooleanItem() {}
+  BooleanItemNaive::BooleanItemNaive ( bool value ) :value_ ( value ) {}
+  BooleanItemNaive::~BooleanItemNaive() {}
 
-	bool BooleanItem::getBooleanValue() const
+  bool BooleanItemNaive::getBooleanValue() const
 	{
 		return this->value_;
 	}
 
-	TypeCode BooleanItem::getType() const
+  TypeCode BooleanItemNaive::getType() const
 	{
 		return xs_boolean;
 	}
 
-	Item_t BooleanItem::getAtomizationValue() const
+  Item_t BooleanItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createBoolean ( this->value_ );
 	}
 
-	bool BooleanItem::equals ( Item_t item ) const
+  bool BooleanItemNaive::equals ( Item_t item ) const
 	{
 		return item->getBooleanValue() == this->value_;
 	}
 
-	Item_t BooleanItem::getEBV() const
+  Item_t BooleanItemNaive::getEBV() const
 	{
 		return this->getAtomizationValue();
 	}
 
-	xqp_string BooleanItem::getStringProperty() const
+  xqp_string BooleanItemNaive::getStringProperty() const
 	{
 		if ( this->value_ )
 			return "true";
@@ -429,7 +428,7 @@ namespace xqp
 			return "false";
 	}
 
-	xqp_string BooleanItem::show() const
+  xqp_string BooleanItemNaive::show() const
 	{
 		return "xs:boolean(" + this->getStringProperty() + ")";
 	}

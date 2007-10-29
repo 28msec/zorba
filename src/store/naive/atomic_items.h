@@ -18,17 +18,7 @@ namespace xqp
 {
 	typedef uint64_t qnamekey_t;
 
-	class AtomicItem : public Item
-	{
-		public:
-			virtual ~AtomicItem();
-			bool isNode() const;
-			bool isAtomic() const;
-
-			virtual Iterator_t getTypedValue() const;
-	}; /* class AtomicItem */
-
-	class QNameItem : public AtomicItem
+	class QNameItemNaive : public QNameItem
 	{
 		private:
 			xqp_string strNamespace_;
@@ -36,8 +26,8 @@ namespace xqp
 			xqp_string strLocal_;
 
 		public:
-			QNameItem ( xqp_string, xqp_string, xqp_string );
-			virtual ~QNameItem();
+			QNameItemNaive ( xqp_string, xqp_string, xqp_string );
+			virtual ~QNameItemNaive();
 
 			virtual xqp_string getNamespace() const;
 			virtual xqp_string getPrefix() const;
@@ -53,14 +43,14 @@ namespace xqp
 			virtual xqp_string show() const;
 	};  /* class QNameItem */
 
-	class UntypedAtomicItem : public AtomicItem
+  class UntypedAtomicItemNaive : public UntypedAtomicItem
 	{
-		protected:
+		private:
 			xqp_string strValue_;
 
 		public:
-			UntypedAtomicItem ( xqp_string value );
-			virtual ~UntypedAtomicItem();
+			UntypedAtomicItemNaive ( xqp_string value );
+			virtual ~UntypedAtomicItemNaive();
 			virtual xqp_string getStringValue() const;
 
 			virtual sequence_type_t getType( ) const;
@@ -72,28 +62,33 @@ namespace xqp
 			virtual xqp_string show() const;
 	}; /* class UntypedAtomicItem */
 
-	class StringItem : public UntypedAtomicItem
+  class StringItemNaive : public StringItem
 	{
+    protected:
+      xqp_string strValue_;
 		public:
-			StringItem ( const xqp_string& value );
-			virtual ~StringItem();
+			StringItemNaive ( const xqp_string& value );
+			virtual ~StringItemNaive();
+      virtual xqp_string getStringValue() const;
 
 			virtual TypeCode getType( ) const;
 			virtual Item_t getAtomizationValue( ) const;
 			virtual bool equals ( Item_t ) const;
+      virtual Item_t getEBV( ) const;
+      virtual xqp_string getStringProperty( ) const;
 
 			virtual xqp_string show() const;
 	}; /* class StringItem */
 
 
-	class DecimalItem : public AtomicItem
+  class DecimalItemNaive : public DecimalItem
 	{
 		private:
 			long double value_;
 
 		public:
-			DecimalItem ( long double value );
-			virtual ~DecimalItem();
+			DecimalItemNaive ( long double value );
+			virtual ~DecimalItemNaive();
 			virtual long double getDecimalValue() const;
 
 			virtual TypeCode getType( ) const;
@@ -105,14 +100,14 @@ namespace xqp
 			virtual xqp_string show() const;
 	}; /* class DecimalItem */
 
-	class IntItem : public AtomicItem
+  class IntItemNaive : public IntItem
 	{
 		protected:
 			int value_;
 
 		public:
-			IntItem ( int value );
-			virtual ~IntItem();
+			IntItemNaive ( int value );
+			virtual ~IntItemNaive();
 			virtual int32_t getIntValue() const;
 			virtual long long getIntegerValue() const;
 			virtual long double getDecimalValue() const;
@@ -126,13 +121,13 @@ namespace xqp
 			virtual xqp_string show() const;
 	}; /* class IntItem */
 
-	class IntegerItem : public AtomicItem
+	class IntegerItemNaive : public IntegerItem
 	{
 		protected:
 			long long value_;
 		public:
-			IntegerItem ( long long value );
-			virtual ~IntegerItem();
+			IntegerItemNaive ( long long value );
+			virtual ~IntegerItemNaive();
 			virtual long long getIntegerValue() const;
 			virtual long double getDecimalValue() const;
 
@@ -145,13 +140,13 @@ namespace xqp
 			virtual xqp_string show() const;
 	}; /* class IntegerItem */
 
-	class DoubleItem : public AtomicItem
+  class DoubleItemNaive : public DoubleItem
 	{
 	protected:
 		double value;
 	public:
-		DoubleItem ( double value_arg );
-		virtual ~DoubleItem();
+		DoubleItemNaive ( double value_arg );
+		virtual ~DoubleItemNaive();
 		virtual double getDoubleValue() const;
 		
 		virtual TypeCode getType() const;
@@ -163,12 +158,12 @@ namespace xqp
 		virtual xqp_string show() const;
 	}; /* class DoubleItem */
 	
-	class FloatItem : public AtomicItem
+	class FloatItemNaive : public FloatItem
 	{
 		float value;
 	public:
-		FloatItem ( float value_arg );
-		virtual ~FloatItem();
+		FloatItemNaive ( float value_arg );
+		virtual ~FloatItemNaive();
 		virtual float getFloatValue() const;
 		
 		virtual TypeCode getType() const;
@@ -180,14 +175,14 @@ namespace xqp
 		virtual xqp_string show() const;
 	}; /* class FlaotItem */
 	
-	class BooleanItem : public AtomicItem
+	class BooleanItemNaive : public BooleanItem
 	{
 		private:
 			bool value_;
 
 		public:
-			BooleanItem ( bool value );
-			virtual ~BooleanItem();
+			BooleanItemNaive ( bool value );
+			virtual ~BooleanItemNaive();
 			virtual bool getBooleanValue() const;
 
 			virtual TypeCode getType() const;

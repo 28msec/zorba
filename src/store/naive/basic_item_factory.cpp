@@ -19,31 +19,31 @@ namespace xqp
 
 	Item_t BasicItemFactory::createUntypedAtomic( const xqp_string& value)
 	{
-		return new UntypedAtomicItem(value);
+		return new UntypedAtomicItemNaive(value);
 	}
 	
 	Item_t BasicItemFactory::createQName ( xqp_string namespace_p, xqp_string prefix, xqp_string localName )
 	{
-		return new QNameItem ( namespace_p, prefix, localName );
+    return new QNameItemNaive ( namespace_p, prefix, localName );
 	}
 	Item_t BasicItemFactory::createAnyURI ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createBase64Binary ( xqp_base64Binary value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createBoolean ( bool value )
 	{
-		return new BooleanItem ( value );
+    return new BooleanItemNaive ( value );
 	}
 	Item_t BasicItemFactory::createDecimal ( long double value )
 	{
-		return new DecimalItem ( value );
+    return new DecimalItemNaive ( value );
 	}
 	Item_t BasicItemFactory::createInteger ( long long value )
 	{
-		return new IntegerItem ( value );
+    return new IntegerItemNaive ( value );
 	}
 	Item_t BasicItemFactory::createLong ( long value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createInt ( int32_t value )
 	{
-		return new IntItem ( value );
+    return new IntItemNaive ( value );
 	}
 	Item_t BasicItemFactory::createShort ( short value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createByte ( char value ) { return Item_t ( NULL ); }
@@ -59,7 +59,7 @@ namespace xqp
 	Item_t BasicItemFactory::createDateTime ( const Item_t&, const Item_t& ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createDouble ( double value ) 
 	{ 
-		return new DoubleItem( value ); 
+    return new DoubleItemNaive( value ); 
 	}
 	Item_t BasicItemFactory::createDuration ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createDuration (
@@ -69,7 +69,7 @@ namespace xqp
 	Item_t BasicItemFactory::createENTITY ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createFloat ( float value ) 
 	{ 
-		return new FloatItem( value ); 
+    return new FloatItemNaive( value ); 
 	}
 	Item_t BasicItemFactory::createGDay ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createGDay ( short day ) { return Item_t ( NULL ); }
@@ -98,7 +98,7 @@ namespace xqp
 	Item_t BasicItemFactory::createPositiveInteger ( xqp_positiveInteger value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createString ( const xqp_string& value )
 	{
-		return new StringItem ( value );
+    return new StringItemNaive ( value );
 	}
 	Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 	Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }
@@ -130,7 +130,7 @@ Item_t BasicItemFactory::createElementNode (
     bool newTypes,
     bool createId ) 
 { 
-  Item_t item = new ElementNode(name,
+  Item_t item = new ElementNodeNaive(name,
                                 type,
                                 children,
                                 attributes,
@@ -148,7 +148,7 @@ Item_t BasicItemFactory::createAttributeNode (
     const Item_t& typedValue,
     bool createId ) 
 { 
-  Item_t item = new AttributeNode(name,
+  Item_t item = new AttributeNodeNaive(name,
                                   type,
                                   lexicalValue,
                                   typedValue,
@@ -162,7 +162,7 @@ Item_t BasicItemFactory::createTextNode (
     const xqp_string& value,
     bool createId ) 
 {
-  Item_t item = new TextNode(value);
+  Item_t item = new TextNodeNaive(value);
   return item;
 }
 

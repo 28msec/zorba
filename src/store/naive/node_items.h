@@ -20,30 +20,7 @@ namespace xqp
 	typedef rchandle<class Item> Item_t;
 	typedef rchandle<class TempSeq> TempSeq_t;
 
-	class Node : public Item
-	{
-		protected:
-			// Pointer to avoid cyclic smart pointers
-			Item* parent_p;
-
-		public:
-			explicit Node ( const Item_t& parent_arg );
-			Node();
-			virtual ~Node();
-
-			virtual bool isNode() const;
-			virtual bool isAtomic() const;
-			virtual Item_t getEBV() const;
-			virtual bool equals ( Item_t ) const;
-
-			// Must be overwritten from every node implementation when zorba is schema-aware
-			virtual TypeCode getType() const;
-			virtual Item_t getParent() const;
-			virtual xqp_string getBaseURI() const;
-			virtual xqp_string getDocumentURI() const;
-	}; /* class Node */
-
-	class DocumentNode : public Node
+  class DocumentNodeNaive : public DocumentNode
 	{
 		private:
 			xqp_string baseURI;
@@ -52,8 +29,8 @@ namespace xqp
 			TempSeq_t children;
 
 		public:
-			DocumentNode ( const xqp_string& baseURI, const xqp_string& documentURI, TempSeq_t& children );
-			virtual ~DocumentNode();
+			DocumentNodeNaive ( const xqp_string& baseURI, const xqp_string& documentURI, TempSeq_t& children );
+			virtual ~DocumentNodeNaive();
 
 			virtual Item_t getAtomizationValue() const;
 			virtual xqp_string getStringProperty() const;
@@ -69,7 +46,7 @@ namespace xqp
 // 		xqp_string getunparsedEntitySystemId() const;
 	}; /* class DocumentNode */
 
-	class ElementNode : public Node
+	class ElementNodeNaive : public ElementNode
 	{
 		private:
 			Item_t name;
@@ -80,7 +57,7 @@ namespace xqp
 			TempSeq_t namespaces;
 
 		public:
-			ElementNode (
+      ElementNodeNaive (
 			    const Item_t& parent,
 			    const Item_t& name,
 			    TypeCode type,
@@ -91,7 +68,7 @@ namespace xqp
 			    bool newTypes
 			);
 
-			ElementNode (
+      ElementNodeNaive (
 			    const Item_t& name,
 			    TypeCode type,
 			    TempSeq_t& children,
@@ -101,7 +78,7 @@ namespace xqp
 			    bool newTypes
 			);
 			
-			virtual ~ElementNode();
+			virtual ~ElementNodeNaive();
 
 			virtual Item_t getAtomizationValue() const;
 			virtual xqp_string getStringProperty() const;
@@ -119,7 +96,7 @@ namespace xqp
 			virtual xqp_string show() const;
 	}; /* class ElementNode */
 
-	class AttributeNode : public Node
+  class AttributeNodeNaive : public AttributeNode
 	{
 		private:
 			const Item_t name;
@@ -131,7 +108,7 @@ namespace xqp
 			bool bIsIdrefs;
 
 		public:
-			AttributeNode (
+			AttributeNodeNaive (
 // 			    const Item_t& parent,
 			    const Item_t& name,
 			    const TypeCode type,
@@ -141,7 +118,7 @@ namespace xqp
 			    bool bIsIdrefs
 			);
 			
-			AttributeNode (
+      AttributeNodeNaive (
 			    const Item_t& parent,
 			    const Item_t& name,
 			    const TypeCode type,
@@ -151,7 +128,7 @@ namespace xqp
 			    bool bIsIdrefs
 			);
 			
-			virtual ~AttributeNode();
+      virtual ~AttributeNodeNaive();
 
 			virtual Item_t getAtomizationValue() const;
 			virtual xqp_string getStringProperty() const;
@@ -167,16 +144,16 @@ namespace xqp
 			virtual xqp_string show() const;
 	}; /* class AttributeNode */
 
-	class NamespaceNode : public Node
+  class NamespaceNodeNaive : public NamespaceNode
 	{
 		private:
 			xqp_string prefix;
 			xqp_string uri;
 
 		public:
-			NamespaceNode ( const Item_t& parent, xqp_string& prefix, xqp_string& uri );
-			NamespaceNode ( xqp_string prefix, xqp_string uri );
-			virtual ~NamespaceNode();
+      NamespaceNodeNaive ( const Item_t& parent, xqp_string& prefix, xqp_string& uri );
+      NamespaceNodeNaive ( xqp_string prefix, xqp_string uri );
+      virtual ~NamespaceNodeNaive();
 
 			virtual Item_t getAtomizationValue() const;
 			virtual xqp_string getStringProperty() const;
@@ -187,7 +164,7 @@ namespace xqp
 			virtual xqp_string getPrefix() const;
 	}; /* class NamespaceNode */
 
-	class PiNode : public Node
+  class PiNodeNaive : public PiNode
 	{
 		private:
 			xqp_string target;
@@ -195,9 +172,9 @@ namespace xqp
 			xqp_string baseUri;
 
 		public:
-			PiNode ( const Item_t& parent, xqp_string& target, xqp_string& content, xqp_string& baseUri );
-			PiNode ( xqp_string& target, xqp_string& content, xqp_string& baseUri );
-			virtual ~PiNode();
+      PiNodeNaive ( const Item_t& parent, xqp_string& target, xqp_string& content, xqp_string& baseUri );
+      PiNodeNaive ( xqp_string& target, xqp_string& content, xqp_string& baseUri );
+      virtual ~PiNodeNaive();
 
 			virtual Item_t getAtomizationValue() const;
 			virtual xqp_string getStringProperty() const;
@@ -209,15 +186,15 @@ namespace xqp
 			virtual xqp_string getStringValue() const;
 	}; /* class PiNode */
 
-	class CommentNode : public Node
+  class CommentNodeNaive : public CommentNode
 	{
 		private:
 			xqp_string content;
 
 		public:
-			CommentNode ( const Item_t& parent, xqp_string& content );
-			CommentNode ( xqp_string& content );
-			virtual ~CommentNode();
+      CommentNodeNaive ( const Item_t& parent, xqp_string& content );
+      CommentNodeNaive ( xqp_string& content );
+      virtual ~CommentNodeNaive();
 
 			virtual Item_t getAtomizationValue() const;
 			virtual xqp_string getStringProperty() const;
@@ -227,15 +204,15 @@ namespace xqp
 			virtual xqp_string getStringValue() const;
 	}; /* class CommentNode */
 
-	class TextNode : public Node
+  class TextNodeNaive : public TextNode
 	{
 		private:
 			xqp_string content;
 
 		public:
-			TextNode ( const Item_t& parent, xqp_string& content );
-			TextNode ( const xqp_string& content );
-			virtual ~TextNode();
+      TextNodeNaive ( const Item_t& parent, xqp_string& content );
+      TextNodeNaive ( const xqp_string& content );
+      virtual ~TextNodeNaive();
 
 			virtual TypeCode getType() const;
 			virtual Item_t getAtomizationValue() const;

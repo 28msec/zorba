@@ -1,5 +1,6 @@
 SET(API_TEST_SRCS timer.cpp 
-    apitest.cpp)
+    apitest.cpp
+)
 
 ADD_EXECUTABLE(apitest ${API_TEST_SRCS})
 

@@ -50,11 +50,11 @@ namespace xqp {
 
   // Accessors
   DECL (fn_data_func,
-         (new QNameItem (XQUERY_FN_NS, "fn", "data"),
+         (new QNameItemNaive (XQUERY_FN_NS, "fn", "data"),
           xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
 
   DECL (fn_root_func,
-          (new QNameItem(XQUERY_FN_NS, "fn", "root"), anyNodeOpt, anyNodeOpt));
+          (new QNameItemNaive(XQUERY_FN_NS, "fn", "root"), anyNodeOpt, anyNodeOpt));
   // end Accessors
 
   // Numerics
@@ -62,234 +62,234 @@ namespace xqp {
   // e.g. it is possible to add two untyped atomics or the parameters can be element nodes
   // which contain a number.
   DECL (op_numeric_add,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":add"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":add"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_subtract,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":subtract"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":subtract"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_multiply,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":multiply"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":multiply"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_divide,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":divide"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":divide"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_integer_divide,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":integer-divide"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":integer-divide"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_mod,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":mod"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":mod"),
          xs_decimal, xs_decimal, xs_decimal));
   DECL (op_numeric_unary_minus,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":unary-minus"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":unary-minus"),
         xs_decimal, xs_decimal));
   DECL (op_numeric_unary_plus,
-        (new QNameItem (XQUERY_OP_NS,"fn", ":unary-plus"),
+        (new QNameItemNaive (XQUERY_OP_NS,"fn", ":unary-plus"),
         xs_decimal, xs_decimal));
 
   DECL (fn_abs,
-        (new QNameItem(XQUERY_FN_NS, "fn", "abs"),
+        (new QNameItemNaive(XQUERY_FN_NS, "fn", "abs"),
          xs_decimal,
          xs_decimal));
   // end Numerics
 
   // Sequences
   DECL (fn_doc_func,
-        (new QNameItem(XQUERY_FN_NS,"fn","doc"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","doc"),
          xs_string,
          documentNode));
   // end Sequences
 
   // Generic Comparison;
   DECL (op_equal,
-        (new QNameItem(XQUERY_OP_NS,"fn", ":equal"),
+        (new QNameItemNaive(XQUERY_OP_NS,"fn", ":equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
   DECL (op_not_equal,
-        (new QNameItem(XQUERY_OP_NS,"fn", ":not-equal"),
+        (new QNameItemNaive(XQUERY_OP_NS,"fn", ":not-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
   DECL (op_greater,
-        (new QNameItem(XQUERY_OP_NS,"fn", ":greater"),
+        (new QNameItemNaive(XQUERY_OP_NS,"fn", ":greater"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
   DECL (op_greater_equal,
-        (new QNameItem(XQUERY_OP_NS,"fn", ":greater-equal"),
+        (new QNameItemNaive(XQUERY_OP_NS,"fn", ":greater-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
    DECL (op_less,
-        (new QNameItem(XQUERY_OP_NS,"fn", ":less"),
+        (new QNameItemNaive(XQUERY_OP_NS,"fn", ":less"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
    DECL (op_less_equal,
-        (new QNameItem(XQUERY_OP_NS,"fn", ":less-equal"),
+        (new QNameItemNaive(XQUERY_OP_NS,"fn", ":less-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
    // end Generic Comparison
 
   // Value Comparison
    DECL (op_value_equal,
-        (new QNameItem(XQUERY_FN_NS,"fn", ":value-equal"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn", ":value-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
 
    DECL (op_value_not_equal,
-            (new QNameItem(XQUERY_FN_NS,"fn", ":value-not-equal"),
+            (new QNameItemNaive(XQUERY_FN_NS,"fn", ":value-not-equal"),
             xs_anyType, xs_anyType,
             xs_boolean));
 
    DECL (op_value_greater,
-            (new QNameItem(XQUERY_FN_NS,"fn", ":value-greater"),
+            (new QNameItemNaive(XQUERY_FN_NS,"fn", ":value-greater"),
             xs_anyType, xs_anyType,
             xs_boolean));
 
    DECL (op_value_greater_equal,
-            (new QNameItem(XQUERY_FN_NS,"fn", ":value-greater-equal"),
+            (new QNameItemNaive(XQUERY_FN_NS,"fn", ":value-greater-equal"),
             xs_anyType, xs_anyType,
             xs_boolean));
 
    DECL (op_value_less,
-            (new QNameItem(XQUERY_FN_NS,"fn", ":value-less"),
+            (new QNameItemNaive(XQUERY_FN_NS,"fn", ":value-less"),
             xs_anyType, xs_anyType,
             xs_boolean));
 
    DECL (op_value_less_equal,
-            (new QNameItem(XQUERY_FN_NS,"fn", ":value-less-equal"),
+            (new QNameItemNaive(XQUERY_FN_NS,"fn", ":value-less-equal"),
             xs_anyType, xs_anyType,
             xs_boolean));
   // end Value Comparison
 
   // Strings
   DECL (fn_codepoints_to_string,
-        (new QNameItem(XQUERY_FN_NS,"fn","codepoints-to-string"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","codepoints-to-string"),
          xs_integer,
          xs_string));
 
   DECL (fn_string_to_codepoints,
-        (new QNameItem(XQUERY_FN_NS,"fn","string-to-codepoints"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","string-to-codepoints"),
          xs_string,
          xs_integer));
 
   DECL (fn_codepoint_equal,
-        (new QNameItem(XQUERY_FN_NS,"fn","codepoint-equal"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","codepoint-equal"),
          xs_string, xs_string,
          xs_boolean));
 
   DECL (fn_concat,
-        (new QNameItem(XQUERY_FN_NS,"fn","concat"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","concat"),
          xs_anyType,
          xs_boolean));
 
   DECL (fn_string_join,
-        (new QNameItem(XQUERY_FN_NS,"fn","string-join"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","string-join"),
          xs_string, xs_string,
          xs_string));
 
   DECL (fn_substring,
-        (new QNameItem(XQUERY_FN_NS,"fn","substring"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","substring"),
          xs_string, xs_double, xs_double,
          xs_string));
 
   DECL (fn_normalize_space,
-        (new QNameItem(XQUERY_FN_NS,"fn","normalize-space"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","normalize-space"),
          xs_string,
          xs_string));
 
   DECL (fn_normalize_unicode,
-        (new QNameItem(XQUERY_FN_NS,"fn","normalize-unicode"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","normalize-unicode"),
          xs_string, xs_string,
          xs_string));
 
   DECL (fn_upper_case,
-        (new QNameItem(XQUERY_FN_NS,"fn","upper-case"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","upper-case"),
          xs_string,
          xs_string));
 
   DECL (fn_lower_case,
-        (new QNameItem(XQUERY_FN_NS,"fn","lower-case"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","lower-case"),
          xs_string,
          xs_string));
 
   DECL (fn_translate,
-        (new QNameItem(XQUERY_FN_NS,"fn","translate"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","translate"),
          xs_string, xs_string, xs_string,
          xs_string));
 
   DECL (fn_string_compare,
-        (new QNameItem(XQUERY_FN_NS,"fn","compare"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","compare"),
          xs_string, xs_string, xs_string,
          xs_integer));
 
   DECL (fn_string_length,
-        (new QNameItem(XQUERY_FN_NS,"fn","string-length"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","string-length"),
          xs_string,
          xs_integer));
 
   DECL (fn_contains,
-        (new QNameItem(XQUERY_FN_NS,"fn","contains"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","contains"),
           xs_string, xs_string, xs_string,
           xs_boolean));
 
   DECL (fn_starts_with,
-        (new QNameItem(XQUERY_FN_NS,"fn","starts-with"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","starts-with"),
           xs_string, xs_string, xs_string,
           xs_boolean));
 
   DECL (fn_ends_with,
-        (new QNameItem(XQUERY_FN_NS,"fn","ends-with"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","ends-with"),
           xs_string, xs_string, xs_string,
           xs_boolean));
 
   DECL (fn_substring_before,
-        (new QNameItem(XQUERY_FN_NS,"fn","substring-before"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","substring-before"),
           xs_string, xs_string, xs_string,
           xs_string));
 
   DECL (fn_substring_after,
-        (new QNameItem(XQUERY_FN_NS,"fn","substring-after"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","substring-after"),
           xs_string, xs_string, xs_string,
           xs_string));
   // end Strings
 
    // start Boolean
    DECL (fn_true,
-        (new QNameItem(XQUERY_FN_NS,"fn","true"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","true"),
          xs_boolean));
 
   DECL (fn_false,
-        (new QNameItem(XQUERY_FN_NS,"fn","false"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","false"),
          xs_boolean));
 
   DECL (fn_boolean,
-        (new QNameItem(XQUERY_FN_NS,"fn","boolean"),
+        (new QNameItemNaive(XQUERY_FN_NS,"fn","boolean"),
          xs_anyType,
          xs_boolean));
 
   DECL (fn_not,
-      (new QNameItem(XQUERY_FN_NS,"fn","not"),
+      (new QNameItemNaive(XQUERY_FN_NS,"fn","not"),
       xs_anyType,
       xs_boolean));
    // end Boolean
 
    // start Logic
    DECL (op_and,
-         (new QNameItem(XQUERY_OP_NS,"fn", ":and"),
+         (new QNameItemNaive(XQUERY_OP_NS,"fn", ":and"),
          xs_anyType,
          xs_boolean));
 
    DECL (op_or,
-         (new QNameItem(XQUERY_OP_NS,"fn", ":or"),
+         (new QNameItemNaive(XQUERY_OP_NS,"fn", ":or"),
          xs_anyType,
          xs_boolean));
    // end Logic
 
    // begin zorba functions
    DECL (zor_numgen,
-         (new QNameItem(XQUERY_FN_NS,"fn", "zorba:numgen"),
+         (new QNameItemNaive(XQUERY_FN_NS,"fn", "zorba:numgen"),
          xs_decimal));
    // end zorba functions
 } /* namespace xqp */
