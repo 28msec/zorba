@@ -1,7 +1,7 @@
 /**
  * @copyright
  * ========================================================================
- *	Copyright FLWOR Foundation
+ *  Copyright FLWOR Foundation
  * ========================================================================
  *
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
@@ -9,490 +9,490 @@
  * @author Dan Muresan (dan.muresan@ipdevel.ro)
  * @file utf8/xqpString.cpp
  *
- */ 
+ */
 
 #include "util/utf8/xqpString.h"
 
 using namespace std;
 namespace xqp {
 
-	xqpString::xqpString()
-	:
-		utf8String()
-	{}
+  xqpString::xqpString()
+  :
+    utf8String()
+  {}
 
-	xqpString::xqpString(const std::string& src){
-		utf8String = new xqpString_t(src);
-	}
+  xqpString::xqpString(const std::string& src){
+    utf8String = new xqpString_t(src);
+  }
 
-	xqpString::xqpString(const char* src){
-		utf8String = new xqpString_t(src);
-	}
+  xqpString::xqpString(const char* src){
+    utf8String = new xqpString_t(src);
+  }
 
-	xqpString::~xqpString()
-	{}
+  xqpString::~xqpString()
+  {}
 
-	xqpString& xqpString::operator=(const std::string& src){
-		utf8String = new xqpString_t(src);
-		return *this;
-	}
-	
-	xqpString& xqpString::operator=(const char* src){
-		utf8String = new xqpString_t(src);
-		return *this;
-	}
-	
-	xqpString& xqpString::operator=(uint32_t cp){
-		utf8String->reserve(4);
-		char seq[4] = {0,0,0,0};
-		UTF8Encode(cp, seq);
-		utf8String = new xqpString_t(seq);
-		return *this;
-	}
-	
-	xqpString& xqpString::operator=(char c){
-		utf8String = new xqpString_t(&c);
-		return *this;
-	}
-	
-	//xqpString::operator+=()
-	xqpString& xqpString::operator+=(const xqpString& src){
-		xqpString_t* temp = new xqpString_t(*utf8String);
-		*temp += src;
-		utf8String = temp;
-		return *this;
-	}
+  xqpString& xqpString::operator=(const std::string& src){
+    utf8String = new xqpString_t(src);
+    return *this;
+  }
 
-	xqpString& xqpString::operator+=(const char* src){
-		xqpString_t* temp = new xqpString_t(*utf8String);
-		*temp += src;
-		utf8String = temp;
-		return *this;
-	}
+  xqpString& xqpString::operator=(const char* src){
+    utf8String = new xqpString_t(src);
+    return *this;
+  }
 
-	xqpString& xqpString::operator+=(uint32_t cp){
-		utf8String->reserve(4);
-		char seq[4] = {0,0,0,0};
-		UTF8Encode(cp, seq);
-		utf8String = new xqpString_t(*utf8String+seq);
-		return *this;
-	}
+  xqpString& xqpString::operator=(uint32_t cp){
+    utf8String->reserve(4);
+    char seq[4] = {0,0,0,0};
+    UTF8Encode(cp, seq);
+    utf8String = new xqpString_t(seq);
+    return *this;
+  }
 
-	xqpString& xqpString::operator+=(char c){
-		utf8String = new xqpString_t(*utf8String+c);
-		return *this;
-	}
+  xqpString& xqpString::operator=(char c){
+    utf8String = new xqpString_t(&c);
+    return *this;
+  }
 
-	//xqpString::stream I/O operators
-	std::istream& operator>>(std::istream& is, xqpString& utf8_src){
-		std::string buffer;
-		is >> buffer;
-		//TODO is there a need to perform charset conversion to/from the current locale ?!?!
-		utf8_src = buffer;
-		return is;
-	}
+  //xqpString::operator+=()
+  xqpString& xqpString::operator+=(const xqpString& src){
+    xqpString_t* temp = new xqpString_t(*utf8String);
+    *temp += src;
+    utf8String = temp;
+    return *this;
+  }
 
-	std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src){
-		//TODO is there a need to perform charset conversion to/from the current locale ?!?!
-		os << *utf8_src.utf8String;
-		return os;
-	}
+  xqpString& xqpString::operator+=(const char* src){
+    xqpString_t* temp = new xqpString_t(*utf8String);
+    *temp += src;
+    utf8String = temp;
+    return *this;
+  }
 
-	//xqpString::compare
-	int xqpString::compare(const xqpString& src) const{
-		//create the collator object
-		UErrorCode status = U_ZERO_ERROR;
+  xqpString& xqpString::operator+=(uint32_t cp){
+    utf8String->reserve(4);
+    char seq[4] = {0,0,0,0};
+    UTF8Encode(cp, seq);
+    utf8String = new xqpString_t(*utf8String+seq);
+    return *this;
+  }
 
-		//TODO make the collator a global object
-		//NOTE By passing "root" as a locale parameter the root locale is used.
-		//Root locale implements the UCA rules
-		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-		::Collator *coll = ::Collator::createInstance(Locale("root"), status);
-	
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-		}
+  xqpString& xqpString::operator+=(char c){
+    utf8String = new xqpString_t(*utf8String+c);
+    return *this;
+  }
 
-		//set level 1 comparison for the collator
-		coll->setStrength(::Collator::PRIMARY);
+  //xqpString::stream I/O operators
+  std::istream& operator>>(std::istream& is, xqpString& utf8_src){
+    std::string buffer;
+    is >> buffer;
+    //TODO is there a need to perform charset conversion to/from the current locale ?!?!
+    utf8_src = buffer;
+    return is;
+  }
 
-		Collator::EComparisonResult result = ::Collator::EQUAL;
+  std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src){
+    //TODO is there a need to perform charset conversion to/from the current locale ?!?!
+    os << *utf8_src.utf8String;
+    return os;
+  }
 
-		//compare the 2 strings
-		result = coll->compare(getUnicodeString(*utf8String), getUnicodeString(src));
+  //xqpString::compare
+  int xqpString::compare(const xqpString& src) const{
+    //create the collator object
+    UErrorCode status = U_ZERO_ERROR;
 
-		//close the collator
-		delete coll;
+    //TODO make the collator a global object
+    //NOTE By passing "root" as a locale parameter the root locale is used.
+    //Root locale implements the UCA rules
+    //(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
+    ::Collator *coll = ::Collator::createInstance(Locale("root"), status);
 
-		return result;
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+    }
+
+    //set level 1 comparison for the collator
+    coll->setStrength(::Collator::PRIMARY);
+
+    Collator::EComparisonResult result = ::Collator::EQUAL;
+
+    //compare the 2 strings
+    result = coll->compare(getUnicodeString(*utf8String), getUnicodeString(src));
+
+    //close the collator
+    delete coll;
+
+    return result;
 }
 
-	int xqpString::compare(const xqpString& src, const char * loc) const{
-		//create the collator object
-		UErrorCode status = U_ZERO_ERROR;
+  int xqpString::compare(const xqpString& src, const char * loc) const{
+    //create the collator object
+    UErrorCode status = U_ZERO_ERROR;
 
-		::Collator *coll = ::Collator::createInstance(Locale(loc), status);
-	
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-		}
+    ::Collator *coll = ::Collator::createInstance(Locale(loc), status);
 
-		//set level 1 comparison for the collator
-		coll->setStrength(::Collator::PRIMARY);
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+    }
 
-		::Collator::EComparisonResult result = ::Collator::EQUAL;
+    //set level 1 comparison for the collator
+    coll->setStrength(::Collator::PRIMARY);
 
-		//compare the 2 strings
-		result = coll->compare(getUnicodeString(*utf8String), getUnicodeString(src));
+    ::Collator::EComparisonResult result = ::Collator::EQUAL;
 
-		//close the collator
-		delete coll;
+    //compare the 2 strings
+    result = coll->compare(getUnicodeString(*utf8String), getUnicodeString(src));
 
-		return result;
+    //close the collator
+    delete coll;
+
+    return result;
 }
 
-	int xqpString::compare(const char* src) const{
-		//TODO optimize the code here
-		xqpString tmp(src);
-		return compare(tmp);
-	}
+  int xqpString::compare(const char* src) const{
+    //TODO optimize the code here
+    xqpString tmp(src);
+    return compare(tmp);
+  }
 
-	//xqpString::Length
-	xqpString::size_type xqpString::size() const{
-		const char* c = utf8String->c_str();
-		return UTF8Distance(c, c + utf8String->size());
-	}
+  //xqpString::Length
+  xqpString::size_type xqpString::size() const{
+    const char* c = utf8String->c_str();
+    return UTF8Distance(c, c + utf8String->size());
+  }
 
-	xqpString::size_type xqpString::length() const{
-		const char* c = utf8String->c_str();
-		return UTF8Distance(c, c + utf8String->size());
-	}
+  xqpString::size_type xqpString::length() const{
+    const char* c = utf8String->c_str();
+    return UTF8Distance(c, c + utf8String->size());
+  }
 
-	xqpString::size_type xqpString::bytes() const{
-		return utf8String->size();
-	}
+  xqpString::size_type xqpString::bytes() const{
+    return utf8String->size();
+  }
 
-	bool xqpString::empty() const{
-		return utf8String->empty();
-	}
+  bool xqpString::empty() const{
+    return utf8String->empty();
+  }
 
-	void xqpString::reserve(xqpString::size_type size){
-		utf8String->reserve(size);
-	}
+  void xqpString::reserve(xqpString::size_type size){
+    utf8String->reserve(size);
+  }
 
-	//xqpString::Clear
-	void xqpString::clear(){
-		utf8String->erase();
-	}
+  //xqpString::Clear
+  void xqpString::clear(){
+    utf8String->erase();
+  }
 
-	//xpqString::Codepoint
-	std::vector<uint32_t> xqpString::getCodepoints(){
-		std::vector<uint32_t> tt;
-		uint16_t vLength;
-	
-		vLength = length() + 1;
-		const char* c = utf8String->c_str();
-		while( --vLength > 0 ){
-			tt.push_back(UTF8Decode(c));
-		}
-		return tt;
-	}
+  //xpqString::Codepoint
+  std::vector<uint32_t> xqpString::getCodepoints(){
+    std::vector<uint32_t> tt;
+    uint16_t vLength;
 
-	//xqpString::Substring matching/ string search
-	int32_t xqpString::indexOf(const xqpString& pattern){
-		//create the collator object
-		UErrorCode status = U_ZERO_ERROR;
+    vLength = length() + 1;
+    const char* c = utf8String->c_str();
+    while( --vLength > 0 ){
+      tt.push_back(UTF8Decode(c));
+    }
+    return tt;
+  }
 
-		//TODO make the collator a global object
-		//NOTE By passing "root" as a locale parameter the root locale is used.
-		//Root locale implements the UCA rules
-		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-		::Collator *coll = ::Collator::createInstance(Locale("root"), status);
-	
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-		}
-		//set level 1 comparison for the collator
-		coll->setStrength(::Collator::PRIMARY);
+  //xqpString::Substring matching/ string search
+  int32_t xqpString::indexOf(const xqpString& pattern){
+    //create the collator object
+    UErrorCode status = U_ZERO_ERROR;
 
-		StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
+    //TODO make the collator a global object
+    //NOTE By passing "root" as a locale parameter the root locale is used.
+    //Root locale implements the UCA rules
+    //(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
+    ::Collator *coll = ::Collator::createInstance(Locale("root"), status);
 
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			//close the collator
-			delete coll;
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+    }
+    //set level 1 comparison for the collator
+    coll->setStrength(::Collator::PRIMARY);
 
-			return -1;
-		}
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
 
-		for(int16_t pos = search.first(status);
-		U_SUCCESS(status) && pos != USEARCH_DONE;
-		pos = search.next(status)) {
-			//close the collator
-			delete coll;
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      //close the collator
+      delete coll;
 
-			return pos;
-		}
-		if (U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			//close the collator
-			delete coll;
-			return -1;
-		}
-		//close the collator
-		delete coll;
-		return -1;
-	}
+      return -1;
+    }
 
-	int32_t xqpString::indexOf(const xqpString& pattern, const char * loc){
-		UErrorCode status = U_ZERO_ERROR;
+    for(int16_t pos = search.first(status);
+    U_SUCCESS(status) && pos != USEARCH_DONE;
+    pos = search.next(status)) {
+      //close the collator
+      delete coll;
 
-		//A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
-		StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), Locale(loc), NULL, status);
+      return pos;
+    }
+    if (U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      //close the collator
+      delete coll;
+      return -1;
+    }
+    //close the collator
+    delete coll;
+    return -1;
+  }
 
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			return -1;
-		}
+  int32_t xqpString::indexOf(const xqpString& pattern, const char * loc){
+    UErrorCode status = U_ZERO_ERROR;
 
-		for(int16_t pos = search.first(status);
-		U_SUCCESS(status) && pos != USEARCH_DONE;
-		pos = search.next(status)) {
-			return pos;
-		}
-		if (U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			return -1;
-		}
-		return -1;
-	}
+    //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), Locale(loc), NULL, status);
 
-	int32_t xqpString::lastIndexOf(const xqpString& pattern){
-		//create the collator object
-		UErrorCode status = U_ZERO_ERROR;
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      return -1;
+    }
 
-		//TODO make the collator a global object
-		//NOTE By passing "root" as a locale parameter the root locale is used.
-		//Root locale implements the UCA rules
-		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-		::Collator *coll = ::Collator::createInstance(Locale("root"), status);
-	
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-		}
-		//set level 1 comparison for the collator
-		coll->setStrength(::Collator::PRIMARY);
+    for(int16_t pos = search.first(status);
+    U_SUCCESS(status) && pos != USEARCH_DONE;
+    pos = search.next(status)) {
+      return pos;
+    }
+    if (U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      return -1;
+    }
+    return -1;
+  }
 
-		StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
+  int32_t xqpString::lastIndexOf(const xqpString& pattern){
+    //create the collator object
+    UErrorCode status = U_ZERO_ERROR;
 
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			//close the collator
-			delete coll;
+    //TODO make the collator a global object
+    //NOTE By passing "root" as a locale parameter the root locale is used.
+    //Root locale implements the UCA rules
+    //(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
+    ::Collator *coll = ::Collator::createInstance(Locale("root"), status);
 
-			return -1;
-		}
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+    }
+    //set level 1 comparison for the collator
+    coll->setStrength(::Collator::PRIMARY);
 
-		int32_t pos = search.last(status);
-		if (U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			//close the collator
-			delete coll;
-			return -1;
-		}
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
 
-		if(U_SUCCESS(status) && pos != USEARCH_DONE){
-			//close the collator
-			delete coll;
-			//TODO check if this condition is enough
-			return pos;
-		}
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      //close the collator
+      delete coll;
 
-		//close the collator
-		delete coll;
-		return -1;
-	}
+      return -1;
+    }
 
-	int32_t xqpString::lastIndexOf(const xqpString& pattern, const char * loc){
-		//create the collator object
-		UErrorCode status = U_ZERO_ERROR;
+    int32_t pos = search.last(status);
+    if (U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      //close the collator
+      delete coll;
+      return -1;
+    }
 
-		//A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
-		StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), Locale(loc), NULL, status);
+    if(U_SUCCESS(status) && pos != USEARCH_DONE){
+      //close the collator
+      delete coll;
+      //TODO check if this condition is enough
+      return pos;
+    }
 
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			return -1;
-		}
+    //close the collator
+    delete coll;
+    return -1;
+  }
 
-		int32_t pos = search.last(status);
-		if (U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			return -1;
-		}
+  int32_t xqpString::lastIndexOf(const xqpString& pattern, const char * loc){
+    //create the collator object
+    UErrorCode status = U_ZERO_ERROR;
 
-		if(U_SUCCESS(status) && pos != USEARCH_DONE){
-			//TODO check if this condition is enough
-			return pos;
-		}
+    //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), Locale(loc), NULL, status);
 
-		return -1;
-	}
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      return -1;
+    }
 
-	bool xqpString::endsWith(const xqpString& pattern){
-		//TODO check if this condition is enough
-		return( lastIndexOf(pattern) + pattern.length() == length() );
-	}
+    int32_t pos = search.last(status);
+    if (U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+        );
+      return -1;
+    }
 
-	bool xqpString::endsWith(const xqpString& pattern, const char * loc){
-		//TODO check if this condition is enough
-		return( lastIndexOf(pattern, loc) + pattern.length() == length() );
-	}
+    if(U_SUCCESS(status) && pos != USEARCH_DONE){
+      //TODO check if this condition is enough
+      return pos;
+    }
 
-	xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length){
-		char* target;
-		int32_t size =  length*4 + 1;
-		target = new char[size]; //will hold UTF-8 encoded characters
-		UnicodeString str = getUnicodeString( *utf8String );
+    return -1;
+  }
 
-		int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
-		target[targetsize] = 0; /* NULL termination */
+  bool xqpString::endsWith(const xqpString& pattern){
+    //TODO check if this condition is enough
+    return( lastIndexOf(pattern) + pattern.length() == length() );
+  }
 
-		xqpString ret(&target[0]);
+  bool xqpString::endsWith(const xqpString& pattern, const char * loc){
+    //TODO check if this condition is enough
+    return( lastIndexOf(pattern, loc) + pattern.length() == length() );
+  }
 
-		delete target;
-		return ret;
+  xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length){
+    char* target;
+    int32_t size =  length*4 + 1;
+    target = new char[size]; //will hold UTF-8 encoded characters
+    UnicodeString str = getUnicodeString( *utf8String );
 
-	}
- 
-	xqpString xqpString::substr(distance_type index){
-		if(index >= (int32_t)length()){
-			index = length();
-		}
-		else if(index < 0){
-			xqpString ret(*utf8String);
-			return ret;
-		}
+    int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
+    target[targetsize] = 0; /* NULL termination */
 
-		const char * d = utf8String->c_str();
-		advance(d, index);
+    xqpString ret(&target[0]);
 
-		xqpString ret(d);
-		return ret;
-	}
+    delete target;
+    return ret;
 
-	const char* xqpString::c_str() const{
-		return utf8String->c_str();
-	}
+  }
 
-	// Private methods
-	UnicodeString xqpString::getUnicodeString(const xqpString& source) const{
-		UnicodeString ret;
-		UErrorCode status = U_ZERO_ERROR;
-		int32_t len = source.bytes();
-		UChar* buffer = ret.getBuffer(len);
+  xqpString xqpString::substr(distance_type index){
+    if(index >= (int32_t)length()){
+      index = length();
+    }
+    else if(index < 0){
+      xqpString ret(*utf8String);
+      return ret;
+    }
 
-		u_strFromUTF8(buffer, ret.getCapacity(), &len, source.c_str(), len, &status);
+    const char * d = utf8String->c_str();
+    advance(d, index);
 
-		ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
+    xqpString ret(d);
+    return ret;
+  }
 
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
-		}
+  const char* xqpString::c_str() const{
+    return utf8String->c_str();
+  }
 
-		return ret;
-	}
+  // Private methods
+  UnicodeString xqpString::getUnicodeString(const xqpString& source) const{
+    UnicodeString ret;
+    UErrorCode status = U_ZERO_ERROR;
+    int32_t len = source.bytes();
+    UChar* buffer = ret.getBuffer(len);
 
-	xqpString xqpString::getXqpString(UnicodeString source){
-		char* target;
-		int32_t targetLen = source.getCapacity()*4 + 1;
-		target = new char[targetLen];
-		UErrorCode status = U_ZERO_ERROR;
+    u_strFromUTF8(buffer, ret.getCapacity(), &len, source.c_str(), len, &status);
 
-		//open a convertor to UTF-8
-		UConverter *conv = ucnv_open("utf-8", &status);
+    ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
 
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::SYSTEM_ERROR,
+            NULL
+          );
+    }
 
-			delete target;
-			return "";
-		}
+    return ret;
+  }
 
-		//Convert from UTF-16 to UTF-8
-		ucnv_fromUChars (conv, target, targetLen, source.getBuffer( source.length() ), source.length(), &status);
-		//close the converter
-		ucnv_close(conv);
+  xqpString xqpString::getXqpString(UnicodeString source){
+    char* target;
+    int32_t targetLen = source.getCapacity()*4 + 1;
+    target = new char[targetLen];
+    UErrorCode status = U_ZERO_ERROR;
 
-		if(U_FAILURE(status)) {
-			ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
+    //open a convertor to UTF-8
+    UConverter *conv = ucnv_open("utf-8", &status);
 
-			delete target;
-			return "";
-		}
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::SYSTEM_ERROR,
+            NULL
+          );
 
-		xqpString ret(&target[0]);
-		delete target;
-		return ret;
+      delete target;
+      return "";
+    }
+
+    //Convert from UTF-16 to UTF-8
+    ucnv_fromUChars (conv, target, targetLen, source.getBuffer( source.length() ), source.length(), &status);
+    //close the converter
+    ucnv_close(conv);
+
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::SYSTEM_ERROR,
+            NULL
+          );
+
+      delete target;
+      return "";
+    }
+
+    xqpString ret(&target[0]);
+    delete target;
+    return ret;
 }
 }/* namespace xqp */

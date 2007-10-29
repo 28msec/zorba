@@ -2,7 +2,7 @@
  *
  *  $Id: library.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *   Copyright 2006-2007 FLWOR Foundation.
  *  Author: John Cowan,Paul Pedersen
  */
 
@@ -36,7 +36,7 @@ namespace xqp {
     const QNameItem *name = static_cast<const QNameItem *> (f.get_fname ());
     return name->getPrefix () + ":" + name->getLocalName ();
   }
-  
+
 #define DECL( type, sig )                                               \
   type type##_obj (signature sig);                                      \
   class type##_init_class {                                             \
@@ -46,21 +46,21 @@ namespace xqp {
         bind_fn (get_qname (type##_obj), & type##_obj);                 \
     }                                                                   \
   } type##_init_obj
-  
-  
+
+
   // Accessors
   DECL (fn_data_func,
-  			(new QNameItem (XQUERY_FN_NS, "fn", "data"),
-  			 xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
+         (new QNameItem (XQUERY_FN_NS, "fn", "data"),
+          xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
 
   DECL (fn_root_func,
-  			(new QNameItem(XQUERY_FN_NS, "fn", "root"), anyNodeOpt, anyNodeOpt));
+          (new QNameItem(XQUERY_FN_NS, "fn", "root"), anyNodeOpt, anyNodeOpt));
   // end Accessors
-  
+
   // Numerics
- 	// TODO The parameter and return types of the numeric functions are not correct.
- 	// e.g. it is possible to add two untyped atomics or the parameters can be element nodes
- 	// which contain a number.
+  // TODO The parameter and return types of the numeric functions are not correct.
+  // e.g. it is possible to add two untyped atomics or the parameters can be element nodes
+  // which contain a number.
   DECL (op_numeric_add,
         (new QNameItem (XQUERY_OP_NS,"fn", ":add"),
          xs_decimal, xs_decimal, xs_decimal));
@@ -79,12 +79,12 @@ namespace xqp {
   DECL (op_numeric_mod,
         (new QNameItem (XQUERY_OP_NS,"fn", ":mod"),
          xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_numeric_unary_minus, 
-  			(new QNameItem (XQUERY_OP_NS,"fn", ":unary-minus"),
-  			xs_decimal, xs_decimal));
-  DECL (op_numeric_unary_plus, 
-  			(new QNameItem (XQUERY_OP_NS,"fn", ":unary-plus"),
-  			xs_decimal, xs_decimal));
+  DECL (op_numeric_unary_minus,
+        (new QNameItem (XQUERY_OP_NS,"fn", ":unary-minus"),
+        xs_decimal, xs_decimal));
+  DECL (op_numeric_unary_plus,
+        (new QNameItem (XQUERY_OP_NS,"fn", ":unary-plus"),
+        xs_decimal, xs_decimal));
 
   DECL (fn_abs,
         (new QNameItem(XQUERY_FN_NS, "fn", "abs"),
@@ -104,17 +104,17 @@ namespace xqp {
         (new QNameItem(XQUERY_OP_NS,"fn", ":equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
-         
+
   DECL (op_not_equal,
         (new QNameItem(XQUERY_OP_NS,"fn", ":not-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
-  
+
   DECL (op_greater,
         (new QNameItem(XQUERY_OP_NS,"fn", ":greater"),
          xs_anyType, xs_anyType,
          xs_boolean));
-         
+
   DECL (op_greater_equal,
         (new QNameItem(XQUERY_OP_NS,"fn", ":greater-equal"),
          xs_anyType, xs_anyType,
@@ -124,43 +124,43 @@ namespace xqp {
         (new QNameItem(XQUERY_OP_NS,"fn", ":less"),
          xs_anyType, xs_anyType,
          xs_boolean));
-         
+
    DECL (op_less_equal,
         (new QNameItem(XQUERY_OP_NS,"fn", ":less-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
    // end Generic Comparison
-   
+
   // Value Comparison
-	DECL (op_value_equal,
+   DECL (op_value_equal,
         (new QNameItem(XQUERY_FN_NS,"fn", ":value-equal"),
          xs_anyType, xs_anyType,
          xs_boolean));
-      
-	DECL (op_value_not_equal,
-				(new QNameItem(XQUERY_FN_NS,"fn", ":value-not-equal"),
-				xs_anyType, xs_anyType,
-				xs_boolean));
-				
-	DECL (op_value_greater,
-				(new QNameItem(XQUERY_FN_NS,"fn", ":value-greater"),
-				xs_anyType, xs_anyType,
-				xs_boolean));
-				
-	DECL (op_value_greater_equal,
-				(new QNameItem(XQUERY_FN_NS,"fn", ":value-greater-equal"),
-				xs_anyType, xs_anyType,
-				xs_boolean));
-				
-	DECL (op_value_less,
-				(new QNameItem(XQUERY_FN_NS,"fn", ":value-less"),
-				xs_anyType, xs_anyType,
-				xs_boolean));
-				
-	DECL (op_value_less_equal,
-				(new QNameItem(XQUERY_FN_NS,"fn", ":value-less-equal"),
-				xs_anyType, xs_anyType,
-				xs_boolean));
+
+   DECL (op_value_not_equal,
+            (new QNameItem(XQUERY_FN_NS,"fn", ":value-not-equal"),
+            xs_anyType, xs_anyType,
+            xs_boolean));
+
+   DECL (op_value_greater,
+            (new QNameItem(XQUERY_FN_NS,"fn", ":value-greater"),
+            xs_anyType, xs_anyType,
+            xs_boolean));
+
+   DECL (op_value_greater_equal,
+            (new QNameItem(XQUERY_FN_NS,"fn", ":value-greater-equal"),
+            xs_anyType, xs_anyType,
+            xs_boolean));
+
+   DECL (op_value_less,
+            (new QNameItem(XQUERY_FN_NS,"fn", ":value-less"),
+            xs_anyType, xs_anyType,
+            xs_boolean));
+
+   DECL (op_value_less_equal,
+            (new QNameItem(XQUERY_FN_NS,"fn", ":value-less-equal"),
+            xs_anyType, xs_anyType,
+            xs_boolean));
   // end Value Comparison
 
   // Strings
@@ -255,42 +255,41 @@ namespace xqp {
           xs_string));
   // end Strings
 
-	// start Boolean
-	DECL (fn_true,
+   // start Boolean
+   DECL (fn_true,
         (new QNameItem(XQUERY_FN_NS,"fn","true"),
          xs_boolean));
-  
+
   DECL (fn_false,
         (new QNameItem(XQUERY_FN_NS,"fn","false"),
          xs_boolean));
-  
+
   DECL (fn_boolean,
         (new QNameItem(XQUERY_FN_NS,"fn","boolean"),
          xs_anyType,
          xs_boolean));
-  
+
   DECL (fn_not,
-  			(new QNameItem(XQUERY_FN_NS,"fn","not"),
-  			xs_anyType,
-  			xs_boolean));
-	// end Boolean
-	
-	// start Logic
-	DECL (op_and,
-			(new QNameItem(XQUERY_OP_NS,"fn", ":and"),
-			xs_anyType,
-			xs_boolean));
-			
-	DECL (op_or,
-			(new QNameItem(XQUERY_OP_NS,"fn", ":or"),
-			xs_anyType,
-			xs_boolean));
-	// end Logic
-	
-	// begin zorba functions
-	DECL (zor_numgen,
-			(new QNameItem(XQUERY_FN_NS,"fn", "zorba:numgen"),
-			xs_decimal));
-	// end zorba functions
-	
+      (new QNameItem(XQUERY_FN_NS,"fn","not"),
+      xs_anyType,
+      xs_boolean));
+   // end Boolean
+
+   // start Logic
+   DECL (op_and,
+         (new QNameItem(XQUERY_OP_NS,"fn", ":and"),
+         xs_anyType,
+         xs_boolean));
+
+   DECL (op_or,
+         (new QNameItem(XQUERY_OP_NS,"fn", ":or"),
+         xs_anyType,
+         xs_boolean));
+   // end Logic
+
+   // begin zorba functions
+   DECL (zor_numgen,
+         (new QNameItem(XQUERY_FN_NS,"fn", "zorba:numgen"),
+         xs_decimal));
+   // end zorba functions
 } /* namespace xqp */
