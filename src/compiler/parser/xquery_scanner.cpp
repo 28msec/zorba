@@ -2912,7 +2912,7 @@ static yyconst flex_int16_t yy_rule_linenum[481] =
 	<http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=333231>.
 */
 #undef yywrap
-#define yywrap(nothing) 1
+#define yywrap(yyscanner) 1
      
 /*
 	By default yylex returns int, we use token_type.

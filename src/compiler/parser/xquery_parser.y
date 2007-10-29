@@ -495,6 +495,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> TextTest
 %type <node> TypeDeclaration
 %type <node> TypeName
+%type <node> TypeName_WITH_HOOK
 %type <node> URILiteralList
 %type <node> ValueComp
 %type <node> VarDecl
@@ -4361,7 +4362,7 @@ ElementTest :
 									new QName(@$,driver.symtab.get((off_t)$2)),
 									dynamic_cast<TypeName*>($4));
 		}
-	|	ELEMENT_LPAR  QNAME  COMMA  TypeName HOOK RPAR
+	|	ELEMENT_LPAR  QNAME  COMMA  TypeName_WITH_HOOK RPAR
 		{
 			if (debug) cout << "ElementTest [name.type]\n";
 			$$ = new ElementTest(@$,
@@ -4384,7 +4385,7 @@ ElementTest :
 									dynamic_cast<TypeName*>($4),
 									true);
 		}
-	|	ELEMENT_LPAR  STAR  COMMA  TypeName HOOK RPAR
+	|	ELEMENT_LPAR  STAR  COMMA  TypeName_WITH_HOOK RPAR
 		{
 			if (debug) cout << "ElementTest [*.type]\n";
 			$$ = new ElementTest(@$,
@@ -4425,8 +4426,10 @@ TypeName :
 			if (debug) cout << "TypeName [name]\n";
 			$$ = new TypeName(@$,
 								new QName(@$,driver.symtab.get((off_t)$1)));
-		}
-	| QNAME  HOOK
+		};
+    
+TypeName_WITH_HOOK :
+	  QNAME  HOOK
 		{
 			if (debug) cout << "TypeName [name?]\n";
 			$$ = new TypeName(@$,
