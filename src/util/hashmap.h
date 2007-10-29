@@ -362,26 +362,19 @@ inline void hashmap<V>::resize()
 template<class V>
 inline bool hashmap<V>::find(const string& key, uint32_t& index) const
 {
-	char *keybuf;
-	keybuf = (char*)malloc(key.length()+1);
-	strcpy(keybuf,key.c_str());
 	uint32_t h0 = h(key);
 	bool result = false;
 	while (true) {
 		int x = tab[h0];
 		if (x==-1) break;
 		const entry& e = v[x];
-		//char *buf;
-		//buf = (char*)malloc(e.key.length()+1);
-		//strcpy(buf,e.key.c_str());
-		if (strcasecmp(e.key.c_str(),keybuf)==0) { result = true; 
-																			//free(buf);
-																			break; }
+		if (strcasecmp(e.key.c_str(), key.c_str ())==0) {
+      result = true; 
+      break;
+    }
 		h0 = (h0 + 1) % tsz;
-		//free(buf);
 	}
 	index = h0;
-	free(keybuf);
 	return result;
 }
 
@@ -397,8 +390,6 @@ inline bool hashmap<V>::find( const char* key, uint32_t& index) const
 		int x = tab[h0];
 		if (x==-1) break;
 		const entry& e = v[x];
-		//char buf[e.key.length()+1];
-		//strcpy(buf,e.key.c_str());
 		if (strcasecmp(e.key.c_str(),key)==0) { result = true; break; }
 		h0 = (h0 + 1) % tsz;
 	}

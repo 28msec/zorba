@@ -296,25 +296,21 @@ inline bool fxhashmap<V>::find(
   const string& key,
   uint32_t& hval) const
 {
-  char* keybuf;
-  keybuf = (char*) malloc((key.length()+1) * sizeof(char));
-  strcpy(keybuf,key.c_str());
   uint32_t h0 = h(key);
   bool result = false;
   while (true) {
     int x = (*dir)[h0];
     if (x==-1) { hval = h0; break; }  // -1 => empty
     entry& e = (*vp)[x];              // (id,val)
-    char buf[MAX_KEYLEN+1];
-    hp->get(e.key,buf,0,MAX_KEYLEN);  // string(id)
-    if (strcasecmp(buf,keybuf)==0) {
+    char buf [MAX_KEYLEN+1];
+    hp->get (e.key, buf, 0, MAX_KEYLEN);  // string(id)
+    if (strcasecmp (buf, key.c_str ())==0) {
       result = true;
       break;
     }
     h0 = (h0 + 1) % dir->size();      // collision
   }
   hval = h0;
-  free(keybuf);
   return result;
 }
 
@@ -342,7 +338,7 @@ inline bool fxhashmap<V>::find(
     entry& e = (*vp)[x];              // (id,val) 
     char buf[MAX_KEYLEN+1];
     hp->get(e.key,buf,0,MAX_KEYLEN);  // string(id)
-    if (strcasecmp(buf,key)==0) {
+    if (strcasecmp(buf, key)==0) {
       result = true;
       break;
     }
@@ -358,8 +354,6 @@ inline bool fxhashmap<V>::find(
 template<class V>
 inline bool fxhashmap<V>::find_heap(const string& key, off_t& heap_offset) const
 {
-  char keybuf[key.length()+1];
-  strcpy(keybuf,key.c_str());
   uint32_t h0 = h(key);
   bool result = false;
   off_t offset = 0;
@@ -370,7 +364,7 @@ inline bool fxhashmap<V>::find_heap(const string& key, off_t& heap_offset) const
     char buf[MAX_KEYLEN+1];
     offset = e.key;
     hp->get(offset,buf,0,MAX_KEYLEN);    // string(id)
-    if (strcasecmp(buf,keybuf)==0) { result = true; break; }
+    if (strcasecmp (buf, key.c_str ())==0) { result = true; break; }
     h0 = (h0 + 1) % dir->size();  // collision
   }
   heap_offset = offset;

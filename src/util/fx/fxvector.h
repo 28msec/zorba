@@ -453,10 +453,7 @@ template<typename T>
 char * fxvector<T>::raw_copy(
 	string const& s)
 {
-	uint32_t n = s.length()+1;
-	char buf[n];
-	strcpy(buf,s.c_str());
-	return raw_copy(buf,n);
+	return raw_copy(s.c_str (), s.length () + 1);
 }
 
 template<typename T>
