@@ -187,15 +187,6 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 		return false;
 	}
 
-
-
-	///compute the offsets for each iterator into the state block
-	lStateSize = top_iterator->getStateSizeOfSubtree();
-	PlanState		*stateBlock = new PlanState(lStateSize);
-	int32_t lOffset = 0;
-	top_iterator->setOffset(*stateBlock, lOffset);
-	delete stateBlock;
-
 	is_compiled = true;
 
 	//UnregisterCurrentXQueryForCurrentThread( this );
@@ -227,10 +218,15 @@ XQueryResult* Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 		return NULL;
 	}
 
+	///compute the offsets for each iterator into the state block
+	lStateSize = top_iterator->getStateSizeOfSubtree();
+	PlanState* stateBlock = new PlanState(lStateSize);
+	int32_t lOffset = 0;
+	top_iterator->setOffset(*stateBlock, lOffset);
 
-	Zorba_XQueryResult		*zorba_result = new Zorba_XQueryResult;
+	Zorba_XQueryResult* zorba_result = new Zorba_XQueryResult;
 	zorba_result->it_result = top_iterator;
-	zorba_result->state_block = new PlanState(lStateSize);
+	zorba_result->state_block = stateBlock;
 	zorba_result->state_block->zorp = thread_specific_zorba;
 	zorba_result->state_block->xqbinary = this;
 	///and construct the state block of state objects...
