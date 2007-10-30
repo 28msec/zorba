@@ -166,6 +166,7 @@ void plan_visitor::end_visit(const flwor_expr& v)
   PlanIter_t where = NULL;
   FLWORIterator *iter =
     new FLWORIterator ((const yy::location &) v.get_loc (), clauses, where, (FLWORIterator::OrderByClause *) NULL, ret, false);
+  itstack.push (iter);
 }
 
 
