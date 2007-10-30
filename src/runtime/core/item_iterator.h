@@ -109,11 +109,13 @@ class var_iterator : public SingletonIterator
 {
 protected:
 	string s_h;
+  const void *origin;  ///< origin expr, used as a kind of ID
 	
 public:
-	var_iterator(string s_p, yy::location loc) : 
+	var_iterator(string s_p, yy::location loc, const void *origin_) : 
 							SingletonIterator(loc,NULL), 
-							s_h(s_p){}
+							s_h(s_p), origin (origin_)
+  {}
 	~var_iterator(){
 		
 	}
@@ -130,20 +132,22 @@ class RefIterator : public Batcher<RefIterator>
 {
 private:
 	PlanIter_t it;
-	
+	const void *origin;  ///< like origin in var_iterator
 	
 public:
-	RefIterator(string s_p, yy::location loc);
-	~RefIterator();
+	RefIterator(string s_p, yy::location loc, const void *origin_)
+    : Batcher<RefIterator> (loc), origin (origin_)
+  {}
+	~RefIterator() {}  // TODO
 	
 public:		// variable binding
 	void bind(PlanIter_t _it) { it = _it;}
-	Item_t nextImpl(PlanState& planState);
-	void resetImpl(PlanState& planState);
-    void releaseResourcesImpl(PlanState& planState);
-	virtual int32_t getStateSize();
-	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(PlanState& planState, int32_t& offset);
+	Item_t nextImpl(PlanState& planState) { return NULL; }  // TODO
+	void resetImpl(PlanState& planState) {}  // TODO
+  void releaseResourcesImpl(PlanState& planState) {}  // TODO
+	virtual int32_t getStateSize() { return 0; }  // TODO
+	virtual int32_t getStateSizeOfSubtree() { return 0; }  // TODO
+	virtual void setOffset(PlanState& planState, int32_t& offset) {}  // TODO
 };
 
 
@@ -432,8 +436,8 @@ public:
 	   * 	If true => The iterator has to return xs:boolean+
 	   */ 
   FLWORIterator(const yy::location& loc, 
-  		  std::vector<FLWORIterator::ForLetClause> forLetClauses, 
-  		  PlanIter_t& whereClause, 
+  		  std::vector<FLWORIterator::ForLetClause> &forLetClauses,
+  		  PlanIter_t& whereClause,
   		  FLWORIterator::OrderByClause* orderByClause,  
   		  PlanIter_t& returnClause, 
   		  bool whereClauseReturnsBooleanPlus = false);

@@ -647,7 +647,7 @@ AttributeIterator::nextImpl(PlanState& planState)
 			bool stable){}
 	
 	FLWORIterator::FLWORIterator(const yy::location& loc, 
-	  		  std::vector<FLWORIterator::ForLetClause> forLetClauses, 
+	  		  std::vector<FLWORIterator::ForLetClause> &forLetClauses,
 	  		  PlanIter_t& whereClause, 
 	  		  FLWORIterator::OrderByClause* orderByClause,  
 	  		  PlanIter_t& returnClause, 

@@ -30,12 +30,16 @@ class plan_visitor : public expr_visitor
 {
 public:
 	typedef rchandle<expr> expr_h_t;
+  typedef rchandle<var_iterator> var_iter_t;
+  typedef rchandle<RefIterator> ref_iter_t;
 
 protected:
 	std::stack<PlanIter_t> itstack;
 	// FIXME wrong for expressions like 'func1(a,b,func2(c,d),e)'
 	std::stack<PlanIter_t> argstack;
 	std::stack<var_iter_t> timstack;
+  fxhash64map<std::vector<var_iter_t> *> fvar_iter_map;
+  fxhash64map<std::vector<ref_iter_t> *> lvar_iter_map;
 
 public:
 	plan_visitor( ) {}

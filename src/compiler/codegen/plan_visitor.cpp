@@ -87,8 +87,8 @@ void plan_visitor::end_visit(const expr_list& v)
 		if (it==NULL) break;
 		argv.insert(argv.begin(),it);
 	}
-	rchandle<ConcatIterator> cit_h = new ConcatIterator(v.get_loc(), argv);
-	itstack.push(&*cit_h);
+	ConcatIterator *cit_h = new ConcatIterator(v.get_loc(), argv);
+	itstack.push(cit_h);
 }
 
 
@@ -101,9 +101,21 @@ bool plan_visitor::begin_visit(const var_expr& v)
 
 void plan_visitor::end_visit(const var_expr& v)
 {
-	var_iter_t v_h = new var_iterator("x",v.get_loc());
-	itstack.push(&*v_h);
-	timstack.push(&*v_h);
+  if (v.kind == var_expr::for_var) {
+    var_iterator *v_p = new var_iterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
+    vector<var_iter_t> *map;
+    
+    Assert (fvar_iter_map.get ((uint64_t) &v, map));
+    map->push_back (v_p);
+    itstack.push(v_p);
+  } else if (v.kind == var_expr::let_var) {
+    RefIterator *v_p = new RefIterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
+    vector<ref_iter_t> *map;
+    
+    Assert (lvar_iter_map.get ((uint64_t) &v, map));
+    map->push_back (v_p);
+    itstack.push(v_p);
+  }
 }
 
 
@@ -117,6 +129,16 @@ bool plan_visitor::begin_visit(const order_modifier& v)
 bool plan_visitor::begin_visit(const flwor_expr& v)
 {
   cout << TRACE << endl;
+  for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
+       it != v.clause_end();
+       ++it) {
+    rchandle<var_expr> vh = (*it)->var_h;
+    uint64_t k = (uint64_t) &*vh;
+    if (vh->kind == var_expr::for_var)
+      fvar_iter_map.put (k, new vector<var_iter_t>(2));
+    else if (vh->kind == var_expr::let_var)
+      lvar_iter_map.put (k, new vector<ref_iter_t>(2));
+  }
 	return true;
 }
 
@@ -124,19 +146,26 @@ bool plan_visitor::begin_visit(const flwor_expr& v)
 void plan_visitor::end_visit(const flwor_expr& v)
 {
   cout << TRACE << endl;
-	PlanIter_t expr = pop_itstack();
-	PlanIter_t input = pop_itstack();
-	std::vector<var_iter_t> var_iters;
-	
-// 	while (true) {
-	
-		var_iter_t var = timstack.top(); timstack.pop();
-// 		if (var==NULL) break;
-		var_iters.push_back(&*var);
-// 	}
-	rchandle<MapIterator> map_iter = new MapIterator(v.get_loc(),input, expr, var_iters);
-	itstack.push(&*map_iter);
-// 	rchandle<map_iterator> m_h = new map_iterator();
+  PlanIter_t ret = pop_itstack ();
+  vector<FLWORIterator::ForLetClause> clauses;
+  for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
+       it != v.clause_end();
+       ++it) {
+    if ((*it)->type == forlet_clause::for_clause) {
+      vector<var_iter_t> *var_iters;
+      Assert (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
+      PlanIter_t input = pop_itstack ();
+      clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input));
+    } else if ((*it)->type == forlet_clause::let_clause) {
+      vector<ref_iter_t> *var_iters;
+      Assert (lvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
+      PlanIter_t input = pop_itstack ();
+      clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input, true));
+    }
+  }
+  PlanIter_t where = NULL;
+  FLWORIterator *iter =
+    new FLWORIterator ((const yy::location &) v.get_loc (), clauses, where, (FLWORIterator::OrderByClause *) NULL, ret, false);
 }
 
 
@@ -311,7 +340,7 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
   // TODO ??? In this case the input should be the context node
   if (input == NULL)
   {
-    input = new var_iterator("context_node", v.get_loc());
+    input = new var_iterator("context_node", v.get_loc(), &v);
   }
 
   PlanIter_t axisIte;
