@@ -78,8 +78,7 @@
 %option debug
 %option stack
 %option reentrant
-/* %option bison-bridge
-%option bison-locations */
+%option nounistd
 
 
 	/* known expensive option */

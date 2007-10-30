@@ -143,18 +143,40 @@ void serializer::list_copy(list_type& dest, list_type& src)
 	}
 }
 
-void serializer::emit_expanded_string(xqp_string str, ostream& os)
+void serializer::emit_expanded_string(xqp_string str, ostream& os, bool emit_attribute_value = false)
 {
 	const char* chars = str.c_str();
 	int is_quote;
+  int skip = 0;
 	
 	for (unsigned int i=0; i<str.bytes(); i++, chars++ )
-	{
+	{       
+    // TODO: this is for UTF-8 !
+    if ((unsigned char)*chars < 0x80)
+      skip = 0;      
+    else if ((*chars >> 5) == 0x6)
+      skip = 2;
+    else if ((*chars >> 4) == 0xe)
+      skip = 3;
+    else if ((*chars >> 3) == 0x1e)
+      skip = 4;
+       
+    if (skip)
+    {
+      skip--;
+      os << *chars;
+      continue;
+    }
+    
 		switch (*chars)
 		{
 		case '<':
-			os << "&lt;";
+      if (method == PARAMETER_VALUE_HTML && emit_attribute_value)
+        os << *chars;
+      else
+        os << "&lt;";             
 			break;
+      
 		case '>':
 			os << "&gt;";
 			break;
@@ -303,7 +325,7 @@ void serializer::emit_node(Item_t item, ostream& os, int depth)
 	else if (item->getNodeKind() == attributeNode )
 	{
 		os << " " << item->getNodeName()->getStringProperty() << "=\"";
-		emit_expanded_string(item->getStringValue(), os);
+		emit_expanded_string(item->getStringValue(), os, true);
 		os << "\"";
 	}
 	else if (item->getNodeKind() == namespaceNode)
@@ -390,7 +412,10 @@ void serializer::serialize(XQueryResult *result, ostream& os)
 	{
 		if (item->isAtomic())
 		{
-			emit_expanded_string(item->getStringProperty(), os);
+      if (state == PREVIOUS_ITEM_WAS_TEXT )
+        os << " ";
+			emit_expanded_string(item->getStringProperty(), os);      
+      state = PREVIOUS_ITEM_WAS_TEXT;
 		}
 		else
 		{
@@ -405,6 +430,8 @@ void serializer::serialize(XQueryResult *result, ostream& os)
 			}
 			else
 				emit_node(item, os, 0);
+      
+      state = PREVIOUS_ITEM_WAS_NODE;
 		}
 
 		//daniel item = iw.next();

@@ -81,13 +81,14 @@ protected:
 	static const xqp_string	END_OF_LINE;
 	enum {
 		INITIAL_STATE,
-  		DOCUMENT_STARTED,
-		PREVIOUS_NODE_WAS_TEXT		
+    DOCUMENT_STARTED,
+		PREVIOUS_ITEM_WAS_TEXT,
+    PREVIOUS_ITEM_WAS_NODE
 	} state;
 	
 	typedef enum {
 		PARAMETER_VALUE_NO,
-  		PARAMETER_VALUE_YES,
+    PARAMETER_VALUE_YES,
 		PARAMETER_VALUE_OMIT,
 		PARAMETER_VALUE_XML,
 		PARAMETER_VALUE_HTML
@@ -116,7 +117,7 @@ protected:
 	 *  Serializes the given string, performing character expansion
 	 *  if necessary.
 	 */   
-	void emit_expanded_string(xqp_string, ostream& os);
+	void emit_expanded_string(xqp_string, ostream& os, bool emit_attribute_value);
 
 	/**
 	 *  Serializes the children of the given node, without
