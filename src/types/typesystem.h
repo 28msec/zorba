@@ -222,6 +222,9 @@ class TypeFactory {
         rchandle<QNameItem> qname,
         TypeSystem::quantifier_t quantifier) = 0;
 
+    virtual TypeSystem::xqtref_t create_node_type(
+        rchandle<NodeTest> nodetest,
+        TypeSystem::quantifier_t quantifier) = 0;
 };
 
 class BasicTypeFactory : public TypeFactory {
@@ -237,6 +240,10 @@ class BasicTypeFactory : public TypeFactory {
 
     virtual TypeSystem::xqtref_t create_atomic_type(
         rchandle<QNameItem> qname,
+        TypeSystem::quantifier_t quantifier);
+
+    virtual TypeSystem::xqtref_t create_node_type(
+        rchandle<NodeTest> nodetest,
         TypeSystem::quantifier_t quantifier);
 };
 
@@ -269,7 +276,8 @@ class AtomicXQType : public XQType {
     AtomicTypeConstants::type_code_t m_type_code;
 
   protected:
-    virtual type_kind_t type_kind() {
+    virtual type_kind_t type_kind()
+    {
       return ATOMIC_TYPE_KIND;
     }
 
@@ -282,7 +290,18 @@ class AtomicXQType : public XQType {
 
 class NodeXQType : public XQType {
   private:
+    rchandle<NodeTest> m_nodetest;
 
+  protected:
+    virtual type_kind_t type_kind()
+    {
+      return NODE_TYPE_KIND;
+    }
+
+    NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier) : XQType(quantifier), m_nodetest(nodetest) { }
+
+    friend class TypeSystem;
+    friend class BasicTypeFactory;
 };
 
 }

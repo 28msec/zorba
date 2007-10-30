@@ -1,4 +1,5 @@
 #include "store/naive/atomic_items.h"
+#include "util/test_types.h"
 #include "typesystem.h"
 
 using namespace xqp;
@@ -144,5 +145,10 @@ TypeSystem::xqtref_t BasicTypeFactory::create_atomic_type(AtomicTypeConstants::t
 TypeSystem::xqtref_t BasicTypeFactory::create_atomic_type(rchandle<QNameItem> qname, TypeSystem::quantifier_t quantifier)
 {
   return TypeSystem::xqtref_t(new AtomicXQType(AtomicTypeConstants::XS_STRING, quantifier));
+}
+
+TypeSystem::xqtref_t BasicTypeFactory::create_node_type(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier)
+{
+  return new NodeXQType(nodetest, quantifier);
 }
 /* vim:set ts=2 sw=2: */
