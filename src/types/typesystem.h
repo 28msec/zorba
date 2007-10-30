@@ -17,74 +17,98 @@ class NameTest;
 class AtomicTypeConstants {
   public:
     typedef enum {
-      XS_STRING = 0,
-      XS_BOOLEAN,
-      XS_FLOAT,
-      XS_DECIMAL,
-      XS_DOUBLE,
+      XS_ANY_ATOMIC = 0,
+      XS_STRING,
+      XS_NORMALIZED_STRING,
+      XS_TOKEN,
+      XS_LANGUAGE,
+      XS_NMTOKEN,
+      XS_NAME,
+      XS_NCNAME,
+      XS_ID,
+      XS_IDREF,
+      XS_ENTITY,
+      XS_UNTYPED_ATOMIC,
+      XS_DATETIME,
+      XS_DATE,
+      XS_TIME,
       XS_DURATION,
       XS_DT_DURATION,
       XS_YM_DURATION,
-      XS_DATETIME,
-      XS_TIME,
-      XS_DATE,
-      XS_GYEAR_MONTH,
-      XS_GYEAR,
-      XS_GMONTH_DAY,
-      XS_GDAY,
-      XS_GMONTH,
-      XS_HEXBINARY,
+      XS_FLOAT,
+      XS_DOUBLE,
+      XS_DECIMAL,
       XS_INTEGER,
+      XS_NON_POSITIVE_INTEGER,
+      XS_NEGATIVE_INTEGER,
       XS_LONG,
       XS_INT,
       XS_SHORT,
       XS_BYTE,
-      XS_NON_NEG_INTEGER,
+      XS_NON_NEGATIVE_INTEGER,
       XS_UNSIGNED_LONG,
       XS_UNSIGNED_INT,
       XS_UNSIGNED_SHORT,
       XS_UNSIGNED_BYTE,
       XS_POSITIVE_INTEGER,
+      XS_GYEAR_MONTH,
+      XS_GYEAR,
+      XS_GMONTH_DAY,
+      XS_GDAY,
+      XS_GMONTH,
+      XS_BOOLEAN,
       XS_BASE64BINARY,
+      XS_HEXBINARY,
       XS_ANY_URI,
       XS_QNAME,
       XS_NOTATION,
-      XS_UNTYPED_ATOMIC
     } type_code_t;
 
+    const static rchandle<QNameItem> XS_ANY_ATOMIC_QNAME;
     const static rchandle<QNameItem> XS_STRING_QNAME;
-    const static rchandle<QNameItem> XS_BOOLEAN_QNAME;
-    const static rchandle<QNameItem> XS_FLOAT_QNAME;
-    const static rchandle<QNameItem> XS_DECIMAL_QNAME;
-    const static rchandle<QNameItem> XS_DOUBLE_QNAME;
+    const static rchandle<QNameItem> XS_NORMALIZED_STRING_QNAME;
+    const static rchandle<QNameItem> XS_TOKEN_QNAME;
+    const static rchandle<QNameItem> XS_LANGUAGE_QNAME;
+    const static rchandle<QNameItem> XS_NMTOKEN_QNAME;
+    const static rchandle<QNameItem> XS_NAME_QNAME;
+    const static rchandle<QNameItem> XS_NCNAME_QNAME;
+    const static rchandle<QNameItem> XS_ID_QNAME;
+    const static rchandle<QNameItem> XS_IDREF_QNAME;
+    const static rchandle<QNameItem> XS_ENTITY_QNAME;
+    const static rchandle<QNameItem> XS_UNTYPED_ATOMIC_QNAME;
+    const static rchandle<QNameItem> XS_DATETIME_QNAME;
+    const static rchandle<QNameItem> XS_DATE_QNAME;
+    const static rchandle<QNameItem> XS_TIME_QNAME;
     const static rchandle<QNameItem> XS_DURATION_QNAME;
     const static rchandle<QNameItem> XS_DT_DURATION_QNAME;
     const static rchandle<QNameItem> XS_YM_DURATION_QNAME;
-    const static rchandle<QNameItem> XS_DATETIME_QNAME;
-    const static rchandle<QNameItem> XS_TIME_QNAME;
-    const static rchandle<QNameItem> XS_DATE_QNAME;
-    const static rchandle<QNameItem> XS_GYEAR_MONTH_QNAME;
-    const static rchandle<QNameItem> XS_GYEAR_QNAME;
-    const static rchandle<QNameItem> XS_GMONTH_DAY_QNAME;
-    const static rchandle<QNameItem> XS_GDAY_QNAME;
-    const static rchandle<QNameItem> XS_GMONTH_QNAME;
-    const static rchandle<QNameItem> XS_HEXBINARY_QNAME;
+    const static rchandle<QNameItem> XS_FLOAT_QNAME;
+    const static rchandle<QNameItem> XS_DOUBLE_QNAME;
+    const static rchandle<QNameItem> XS_DECIMAL_QNAME;
     const static rchandle<QNameItem> XS_INTEGER_QNAME;
+    const static rchandle<QNameItem> XS_NON_POSITIVE_INTEGER_QNAME;
+    const static rchandle<QNameItem> XS_NEGATIVE_INTEGER_QNAME;
     const static rchandle<QNameItem> XS_LONG_QNAME;
     const static rchandle<QNameItem> XS_INT_QNAME;
     const static rchandle<QNameItem> XS_SHORT_QNAME;
     const static rchandle<QNameItem> XS_BYTE_QNAME;
-    const static rchandle<QNameItem> XS_NON_NEG_INTEGER_QNAME;
+    const static rchandle<QNameItem> XS_NON_NEGATIVE_INTEGER_QNAME;
     const static rchandle<QNameItem> XS_UNSIGNED_LONG_QNAME;
     const static rchandle<QNameItem> XS_UNSIGNED_INT_QNAME;
     const static rchandle<QNameItem> XS_UNSIGNED_SHORT_QNAME;
     const static rchandle<QNameItem> XS_UNSIGNED_BYTE_QNAME;
     const static rchandle<QNameItem> XS_POSITIVE_INTEGER_QNAME;
+    const static rchandle<QNameItem> XS_GYEAR_MONTH_QNAME;
+    const static rchandle<QNameItem> XS_GYEAR_QNAME;
+    const static rchandle<QNameItem> XS_GMONTH_DAY_QNAME;
+    const static rchandle<QNameItem> XS_GDAY_QNAME;
+    const static rchandle<QNameItem> XS_GMONTH_QNAME;
+    const static rchandle<QNameItem> XS_BOOLEAN_QNAME;
     const static rchandle<QNameItem> XS_BASE64BINARY_QNAME;
+    const static rchandle<QNameItem> XS_HEXBINARY_QNAME;
     const static rchandle<QNameItem> XS_ANY_URI_QNAME;
     const static rchandle<QNameItem> XS_QNAME_QNAME;
     const static rchandle<QNameItem> XS_NOTATION_QNAME;
-    const static rchandle<QNameItem> XS_UNTYPED_ATOMIC_QNAME;
 
   private:
     AtomicTypeConstants() {}
@@ -104,44 +128,56 @@ class TypeSystem {
     typedef rchandle<XQType> xqtref_t;
     typedef const rchandle<XQType> cxqtref_t;
 
+    static cxqtref_t ANY_ATOMIC_TYPE;
     static cxqtref_t STRING_TYPE;
-    static cxqtref_t BOOLEAN_TYPE;
-    static cxqtref_t FLOAT_TYPE;
-    static cxqtref_t DECIMAL_TYPE;
-    static cxqtref_t DOUBLE_TYPE;
+    static cxqtref_t NORMALIZED_STRING_TYPE;
+    static cxqtref_t TOKEN_TYPE;
+    static cxqtref_t LANGUAGE_TYPE;
+    static cxqtref_t NMTOKEN_TYPE;
+    static cxqtref_t NAME_TYPE;
+    static cxqtref_t NCNAME_TYPE;
+    static cxqtref_t ID_TYPE;
+    static cxqtref_t IDREF_TYPE;
+    static cxqtref_t ENTITY_TYPE;
+    static cxqtref_t UNTYPED_ATOMIC_TYPE;
+    static cxqtref_t DATETIME_TYPE;
+    static cxqtref_t DATE_TYPE;
+    static cxqtref_t TIME_TYPE;
     static cxqtref_t DURATION_TYPE;
     static cxqtref_t DT_DURATION_TYPE;
     static cxqtref_t YM_DURATION_TYPE;
-    static cxqtref_t DATETIME_TYPE;
-    static cxqtref_t TIME_TYPE;
-    static cxqtref_t DATE_TYPE;
-    static cxqtref_t GYEAR_MONTH_TYPE;
-    static cxqtref_t GYEAR_TYPE;
-    static cxqtref_t GMONTH_DAY_TYPE;
-    static cxqtref_t GDAY_TYPE;
-    static cxqtref_t GMONTH_TYPE;
-    static cxqtref_t HEXBINARY_TYPE;
+    static cxqtref_t FLOAT_TYPE;
+    static cxqtref_t DOUBLE_TYPE;
+    static cxqtref_t DECIMAL_TYPE;
     static cxqtref_t INTEGER_TYPE;
+    static cxqtref_t NON_POSITIVE_INTEGER_TYPE;
+    static cxqtref_t NEGATIVE_INTEGER_TYPE;
     static cxqtref_t LONG_TYPE;
     static cxqtref_t INT_TYPE;
     static cxqtref_t SHORT_TYPE;
     static cxqtref_t BYTE_TYPE;
-    static cxqtref_t NON_NEG_INTEGER_TYPE;
+    static cxqtref_t NON_NEGATIVE_INTEGER_TYPE;
     static cxqtref_t UNSIGNED_LONG_TYPE;
     static cxqtref_t UNSIGNED_INT_TYPE;
     static cxqtref_t UNSIGNED_SHORT_TYPE;
     static cxqtref_t UNSIGNED_BYTE_TYPE;
     static cxqtref_t POSITIVE_INTEGER_TYPE;
+    static cxqtref_t GYEAR_MONTH_TYPE;
+    static cxqtref_t GYEAR_TYPE;
+    static cxqtref_t GMONTH_DAY_TYPE;
+    static cxqtref_t GDAY_TYPE;
+    static cxqtref_t GMONTH_TYPE;
+    static cxqtref_t BOOLEAN_TYPE;
     static cxqtref_t BASE64BINARY_TYPE;
+    static cxqtref_t HEXBINARY_TYPE;
     static cxqtref_t ANY_URI_TYPE;
     static cxqtref_t QNAME_TYPE;
     static cxqtref_t NOTATION_TYPE;
-    static cxqtref_t UNTYPED_ATOMIC_TYPE;
 
     /*
      * Returns the quantifier of the argument.
      */
-    static quantifier_t quantifier(const XQType *type);
+    static quantifier_t quantifier(const XQType& type);
 
     /*
      * Returns true iff _type1_ is equal to _type2_ including the quantifier,
@@ -207,6 +243,9 @@ class TypeSystem {
     // Cannot derive from TypeSystem.
     TypeSystem() {}
     ~TypeSystem() {}
+
+    static const bool ATOMIC_SUBTYPE_MATRIX[45][45];
+    static const bool QUANT_SUBTYPE_MATRIX[5][5];
 };
 
 class TypeFactory {
@@ -264,19 +303,17 @@ class XQType : virtual public rcobject {
     XQType(TypeSystem::quantifier_t quantifier)
       : m_quantifier(quantifier) { }
     virtual ~XQType() { }
-    virtual type_kind_t type_kind() = 0;
+    virtual type_kind_t type_kind() const = 0;
 
     friend class TypeSystem;
 };
 
 class AtomicXQType : public XQType {
   private:
-    static const bool SUBTYPE_MATRIX[19][19];
-
     AtomicTypeConstants::type_code_t m_type_code;
 
   protected:
-    virtual type_kind_t type_kind()
+    virtual type_kind_t type_kind() const
     {
       return ATOMIC_TYPE_KIND;
     }
@@ -293,7 +330,7 @@ class NodeXQType : public XQType {
     rchandle<NodeTest> m_nodetest;
 
   protected:
-    virtual type_kind_t type_kind()
+    virtual type_kind_t type_kind() const
     {
       return NODE_TYPE_KIND;
     }
