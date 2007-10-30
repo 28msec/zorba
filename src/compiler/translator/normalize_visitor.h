@@ -50,7 +50,7 @@ public:
 public:
 	expr_t pop_nodestack()
 	{
-		if (nodestack.empty()) return NULL;
+		Assert (! nodestack.empty());
 		rchandle<expr> e_h = nodestack.top();
 		nodestack.pop();
 		return e_h;
