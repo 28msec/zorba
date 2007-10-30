@@ -211,6 +211,10 @@ private:
     */
     xqpString getXqpString(UnicodeString source);
 
+    /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
+    */
+    wchar_t * getWCS(const xqpString& source) const;
+
   };
 
   // xqpString::stream I/O operators

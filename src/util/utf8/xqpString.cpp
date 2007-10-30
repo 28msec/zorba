@@ -12,6 +12,7 @@
  */
 
 #include "util/utf8/xqpString.h"
+#include "util/zorba.h"
 
 using namespace std;
 namespace xqp {
@@ -100,41 +101,26 @@ namespace xqp {
 
   //xqpString::compare
   int xqpString::compare(const xqpString& src) const{
-    //create the collator object
+
+    wchar_t* rr = getWCS(src);
+    
     UErrorCode status = U_ZERO_ERROR;
 
-    //TODO make the collator a global object
-    //NOTE By passing "root" as a locale parameter the root locale is used.
-    //Root locale implements the UCA rules
-    //(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-    ::Collator *coll = ::Collator::createInstance(Locale("root"), status);
-
-    if(U_FAILURE(status)) {
-      ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
-          NULL
-        );
-    }
-
-    //set level 1 comparison for the collator
-    coll->setStrength(::Collator::PRIMARY);
+    //get the collator for the default collation
+    Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
 
     Collator::EComparisonResult result = ::Collator::EQUAL;
 
     //compare the 2 strings
     result = coll->compare(getUnicodeString(*utf8String), getUnicodeString(src));
 
-    //close the collator
-    delete coll;
-
     return result;
 }
 
   int xqpString::compare(const xqpString& src, const char * loc) const{
-    //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
+    //create the collator object
     ::Collator *coll = ::Collator::createInstance(Locale(loc), status);
 
     if(U_FAILURE(status)) {
@@ -211,21 +197,8 @@ namespace xqp {
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
-    //TODO make the collator a global object
-    //NOTE By passing "root" as a locale parameter the root locale is used.
-    //Root locale implements the UCA rules
-    //(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-    ::Collator *coll = ::Collator::createInstance(Locale("root"), status);
-
-    if(U_FAILURE(status)) {
-      ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
-          NULL
-        );
-    }
-    //set level 1 comparison for the collator
-    coll->setStrength(::Collator::PRIMARY);
+    //get the collator for the default collation
+    Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
 
@@ -235,18 +208,12 @@ namespace xqp {
           error_messages::SYSTEM_ERROR,
           NULL
         );
-      //close the collator
-      delete coll;
-
       return -1;
     }
 
     for(int16_t pos = search.first(status);
     U_SUCCESS(status) && pos != USEARCH_DONE;
     pos = search.next(status)) {
-      //close the collator
-      delete coll;
-
       return pos;
     }
     if (U_FAILURE(status)) {
@@ -255,12 +222,8 @@ namespace xqp {
           error_messages::SYSTEM_ERROR,
           NULL
         );
-      //close the collator
-      delete coll;
       return -1;
     }
-    //close the collator
-    delete coll;
     return -1;
   }
 
@@ -299,21 +262,8 @@ namespace xqp {
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
-    //TODO make the collator a global object
-    //NOTE By passing "root" as a locale parameter the root locale is used.
-    //Root locale implements the UCA rules
-    //(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-    ::Collator *coll = ::Collator::createInstance(Locale("root"), status);
-
-    if(U_FAILURE(status)) {
-      ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
-          NULL
-        );
-    }
-    //set level 1 comparison for the collator
-    coll->setStrength(::Collator::PRIMARY);
+    //get the collator for the default collation
+    Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
 
@@ -323,9 +273,6 @@ namespace xqp {
           error_messages::SYSTEM_ERROR,
           NULL
         );
-      //close the collator
-      delete coll;
-
       return -1;
     }
 
@@ -336,25 +283,18 @@ namespace xqp {
           error_messages::SYSTEM_ERROR,
           NULL
         );
-      //close the collator
-      delete coll;
       return -1;
     }
 
     if(U_SUCCESS(status) && pos != USEARCH_DONE){
-      //close the collator
-      delete coll;
       //TODO check if this condition is enough
       return pos;
     }
 
-    //close the collator
-    delete coll;
     return -1;
   }
 
   int32_t xqpString::lastIndexOf(const xqpString& pattern, const char * loc){
-    //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
     //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
@@ -495,4 +435,27 @@ namespace xqp {
     delete target;
     return ret;
 }
+
+  wchar_t * xqpString::getWCS(const xqpString& source) const{
+    int32_t destCapacity =  source.length()*2 + 1;
+    wchar_t destWCS[destCapacity];
+    int32_t destLen;
+
+    UnicodeString unicodeStr = getUnicodeString(source);
+    int32_t srcLen = unicodeStr.length();
+    UChar* srcBuf = unicodeStr.getBuffer(srcLen);
+    UErrorCode status = U_ZERO_ERROR;
+
+    wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
+
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::SYSTEM_ERROR,
+            NULL
+          );
+    }
+
+    return ret;
+  }
 }/* namespace xqp */
