@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
 
 #include <unicode/utypes.h>
 #include <unicode/coll.h>
@@ -27,7 +28,8 @@
 #include <unicode/stsearch.h>
 #include <unicode/ucnv.h>
 
-#include "util/utf8/utf8.h"
+#include "util/rchandle.h"
+
 using namespace std;
 namespace xqp {
 

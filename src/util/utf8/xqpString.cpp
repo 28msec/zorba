@@ -12,6 +12,7 @@
  */
 
 #include "util/utf8/xqpString.h"
+#include "util/utf8/utf8.h"
 #include "util/zorba.h"
 
 using namespace std;
