@@ -436,7 +436,8 @@ namespace xqp {
 
   wchar_t * xqpString::getWCS(const xqpString& source) const{
     int32_t destCapacity =  source.length()*2 + 1;
-    wchar_t destWCS[destCapacity];
+    wchar_t* destWCS;
+    destWCS = new wchar_t[destCapacity];
     int32_t destLen;
 
     UnicodeString unicodeStr = getUnicodeString(source);
