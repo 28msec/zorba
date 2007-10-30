@@ -101,9 +101,6 @@ namespace xqp {
 
   //xqpString::compare
   int xqpString::compare(const xqpString& src) const{
-
-    wchar_t* rr = getWCS(src);
-    
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation
