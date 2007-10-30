@@ -16,65 +16,40 @@
 
 namespace xqp {
 
-/*______________________________________________________________________
-|  
-|  Base class for reference counted objects
-|
-|  Any class wishing to take advantage of automatic reference counting
-|  must inherit from this class.
-|
-|  rcobject encapsulates the reference count, as well as functions
-|  for incrementing and decrementing the count. It also contains code
-|  for destroying a value when it is no longer in use, i.e., when its
-|  reference count becomes 0.  Finally, it contains a field that keeps
-|  track of whether this value is shareable, and it provides functions
-|  to query this value and set it to false.  There is no need for a
-|  function to set the shareability field to true, because all values
-|  are shareable by default.  Once an object has been tagged unshareable,
-|  there is no way to make it shareable again.
-|_______________________________________________________________________*/
+/*******************************************************************************
+  
+  Base class for reference counted objects
 
+  Any class wishing to take advantage of automatic reference counting
+  must inherit from this class.
+
+  rcobject encapsulates the reference count, as well as functions
+  for incrementing and decrementing the count. It also contains code
+  for destroying a value when it is no longer in use, i.e., when its
+  reference count becomes 0.
+********************************************************************************/
 class rcobject
 {
 private:
   int refCount;
 
-public:	// ctor,dtor
-  rcobject();
-  rcobject(const rcobject& rhs);
-  virtual ~rcobject();
+public:
+  rcobject() :	refCount(0) { }
 
-public:	// refcounting
-  void addReference() {
-  	++(this->refCount); 
-  }
-  void removeReference() { 
-  	if (--refCount == 0) {
-  		delete this; 
-  	}
-  }
+  rcobject(const rcobject& rhs) : 	refCount(0) { }
 
-public:	// sharing
+  virtual ~rcobject() { }
+
+  virtual void free()      { delete this; }
+
 	int get_refCount() const { return refCount; }
 
-public:	// operator overloading
+  void addReference()      { ++(this->refCount); }
+
+  void removeReference()   { if (--refCount == 0) this->free(); }
+
 	rcobject& operator=(const rcobject&) { return *this; }
-
 };
-
-inline rcobject::rcobject()
-:	refCount(0)
-{
-}
-
-inline rcobject::rcobject(const rcobject& o)
-:	refCount(0)
-{
-}
-
-inline rcobject::~rcobject() 
-{
-}
 
 
 /*__________________________________________________________________________  
