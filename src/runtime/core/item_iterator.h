@@ -367,8 +367,10 @@ public:
 	  
 	  private:
 		   ForLetType type;
-		   std::vector<var_iterator> forVars;
+		   std::vector<var_iter_t> forVars;
+		   std::vector<var_iter_t> posVars;
 		   std::vector<ref_iter_t> letVars;
+		   PlanIter_t input;
 		   bool needsMaterialization; 
 		   
 	  public:
@@ -376,7 +378,8 @@ public:
 	   * Creates a new ForClause
 	   * 
 	   */
-	  ForLetClause(std::vector<var_iterator> forVars);
+	  ForLetClause(std::vector<var_iter_t> forVars, PlanIter_t& input);
+	  ForLetClause(std::vector<var_iter_t> forVars, std::vector<var_iter_t> posVars, PlanIter_t& input);
 	  
 	  /**
 	   * Creates a new LetClause
@@ -384,7 +387,7 @@ public:
 	   * E.g. "let $x := (1,2,3) return ($x, $x)" needs materialization. 
 	   * but "let $x := (1,2,3) return if(test()) then $x else $x" doesn't
 	  */
-	  ForLetClause(std::vector<ref_iter_t> letVars,  bool needsMaterialization);
+	  ForLetClause(std::vector<ref_iter_t> letVars, PlanIter_t& input,bool needsMaterialization);
 	}; 
 
 	  /**

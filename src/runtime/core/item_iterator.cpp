@@ -634,11 +634,11 @@ AttributeIterator::nextImpl(PlanState& planState)
 		this->releaseChildResources ( this->iterElse, planState );
 	}
 	
-	
-	FLWORIterator::ForLetClause::ForLetClause(std::vector<var_iterator> forVars){};
-	FLWORIterator::ForLetClause::ForLetClause(std::vector<ref_iter_t> letVars,  
-			bool needsMaterialization){}
-	
+	FLWORIterator::ForLetClause::ForLetClause(std::vector<var_iter_t> forVars, PlanIter_t& input){}
+	FLWORIterator::ForLetClause::ForLetClause(std::vector<var_iter_t> forVars, std::vector<var_iter_t> posVars, PlanIter_t& input){}
+
+	FLWORIterator::ForLetClause::ForLetClause(std::vector<ref_iter_t> letVars, PlanIter_t& input,bool needsMaterialization){}
+		
 	FLWORIterator::OrderSpec::OrderSpec(PlanIter_t orderByIter, 
 			bool empty_least, 
 			bool descending){}
