@@ -11,7 +11,6 @@
 
 namespace xqp
 {
-
 	/*______________________________________________________________________
 	|
 	|	The mapping of basic schema types to C++ language types.
@@ -74,4 +73,4 @@ namespace xqp
 
 } /* namespace xqp */
 #endif /* XQP_REPRESENTATIONS_H */
-
+/* vim:set ts=2 sw=2: */

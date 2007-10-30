@@ -1,0 +1,54 @@
+#ifndef XQP_TEST_TYPES_H
+#define XQP_TEST_TYPES_H
+
+#include "util/rchandle.h"
+#include "util/utf8/xqpString.h"
+
+namespace xqp {
+
+class QNameItem;
+
+class NameTest : virtual public rcobject {
+  public:
+    typedef enum {
+      CONSTANT,
+      CONSTANT_WILDCARD,
+      WILDCARD_CONSTANT,
+      WILDCARD
+    } kind_t;
+
+    NameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local);
+    NameTest(rchandle<QNameItem> qname);
+    
+    rchandle<xqpString_t> get_uri();
+    rchandle<xqpString_t> get_local();
+  private:
+    kind_t m_kind;
+    rchandle<xqpString_t> m_uri;
+    rchandle<xqpString_t> m_local;
+};
+
+class NodeTest : virtual public rcobject {
+  public:
+    typedef enum {
+      ATTRIBUTE,
+      COMMENT,
+      DOCUMENT,
+      ELEMENT,
+      PI,
+      TEXT
+    } kind_t;
+
+    NodeTest(kind_t kind);
+    NodeTest(kind_t kind, rchandle<NameTest> name_test);
+    kind_t get_kind();
+    rchandle<NameTest> get_nametest();
+  private:
+    kind_t m_kind;
+    rchandle<NameTest> m_name_test;
+};
+
+}
+
+#endif /* XQP_TEST_TYPES_H */
+/* vim:set ts=2 sw=2: */
