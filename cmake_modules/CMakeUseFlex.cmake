@@ -4,6 +4,10 @@
 #  FLEX_FILE - parse a file with flex
 #  FLEX_PREFIX_OUTPUTS - Set to true to make FLEX_FILE produce outputs of
 #                        ${filename}.cpp, not lex.yy.c . Passes -P to flex.
+#  FLEX_MAJOR_VERSION  
+#  FLEX_MINOR_VERSION
+#  FLEX_REVISION_VERSION - Return the flex version
+#
 
 IF(NOT DEFINED FLEX_PREFIX_OUTPUTS)
   SET(FLEX_PREFIX_OUTPUTS FALSE)
@@ -13,7 +17,23 @@ IF(NOT FLEX_EXECUTABLE)
   MESSAGE(STATUS "Looking for flex")
   FIND_PROGRAM(FLEX_EXECUTABLE flex)
   IF(FLEX_EXECUTABLE)
-    MESSAGE(STATUS "Looking for flex -- ${FLEX_EXECUTABLE}")
+    EXEC_PROGRAM(
+            ${FLEX_EXECUTABLE}
+            ARGS --version
+            OUTPUT_VARIABLE FLEX_VERSION)
+
+    # Extract major and minor versions
+    STRING (REGEX REPLACE "[^0-9]*([0-9]+)..*" "\\1" FLEX_MAJOR_VERSION_TMP ${FLEX_VERSION})
+    STRING (REGEX REPLACE "[^0-9]*[0-9]+\\.([0-9]+).*" "\\1" FLEX_MINOR_VERSION_TMP ${FLEX_VERSION})
+	STRING (REGEX REPLACE "[^0-9]*[0-9]+\\.[0-9]+\\.([0-9]+[a-z]*).*" "\\1" FLEX_REVISION_VERSION_TMP ${FLEX_VERSION})	
+    MESSAGE(STATUS "Found flex -- ${FLEX_EXECUTABLE}, version: " ${FLEX_MAJOR_VERSION_TMP} "." ${FLEX_MINOR_VERSION_TMP} "." ${FLEX_REVISION_VERSION_TMP})
+    SET (FLEX_MAJOR_VERSION ${FLEX_MAJOR_VERSION_TMP} CACHE STRING "The flex major version")
+    SET (FLEX_MINOR_VERSION ${FLEX_MINOR_VERSION_TMP} CACHE STRING "The flex minor version")
+	SET (FLEX_REVISION_VERSION ${FLEX_REVISION_VERSION_TMP} CACHE STRING "The flex revision version")
+  ELSE (FLEX_EXECUTABLE)
+    SET (FLEX_MAJOR_VERSION "0")
+    SET (FLEX_MINOR_VERSION "0")
+	SET (FLEX_REVISION_VERSION "0")
   ENDIF(FLEX_EXECUTABLE)
 ENDIF(NOT FLEX_EXECUTABLE)
 
