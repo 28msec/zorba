@@ -19,9 +19,9 @@ using namespace std;
 namespace xqp {
 
   xqpString::xqpString()
-  :
-    utf8String()
-  {}
+  {
+    utf8String = new xqpString_t("");
+  }
 
   xqpString::xqpString(const std::string& src){
     utf8String = new xqpString_t(src);
