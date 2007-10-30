@@ -6,7 +6,7 @@ using namespace xqp;
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
 
-#define XSQN(local) new QNameItem(XS_URI, XS_PREFIX, local)
+#define XSQN(local) new QNameItemNaive(XS_URI, XS_PREFIX, local)
 
 const rchandle<QNameItem> AtomicTypeConstants::XS_STRING_QNAME = XSQN("string");
 const rchandle<QNameItem> AtomicTypeConstants::XS_BOOLEAN_QNAME = XSQN("boolean");
