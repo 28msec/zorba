@@ -7,25 +7,27 @@
 
 namespace xqp{
 
-ZorbaFactory::ZorbaFactory(ItemFactory *item_factory,
-													Store *theStore)
+ZorbaFactory::ZorbaFactory(
+    ItemFactory *item_factory,
+    Store *theStore)
 {
 	zorba::initializeZorbaEngine(item_factory, theStore);
-
 }
+
 
 ZorbaFactory::~ZorbaFactory()
 {
 	zorba::uninitializeZorbaEngine();
 }
 
-void ZorbaFactory::InitThread(//ItemFactory *item_factory,
-												 error_messages *em,//=NULL
-													const char *collator_name,// = "root",
-													::Collator::ECollationStrength collator_strength)// = Collator::PRIMARY)
+
+void ZorbaFactory::InitThread(
+    error_messages *em,//=NULL
+    const char *collator_name,// = "root",
+    ::Collator::ECollationStrength collator_strength)// = Collator::PRIMARY)
 {
-	zorba* zorp = zorba::allocateZorbaForNewThread();
-	//zorp->itemFactory = item_factory;
+	zorba* zorp = zorba::allocateZorbaForCurrentThread();
+
 	if(!em)
 	{
 		errors_english	*err_messages = new errors_english;///the english error messages
@@ -36,13 +38,14 @@ void ZorbaFactory::InitThread(//ItemFactory *item_factory,
 
 	zorp->coll_string = collator_name;
 	zorp->coll_strength = collator_strength;
-
 }
+
 
 void ZorbaFactory::UninitThread()
 {
 	zorba::destroyZorbaForCurrentThread();
 }
+
 
 XQuery_t ZorbaFactory::createQuery(const char* aQueryString)
 {
