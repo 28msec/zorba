@@ -28,6 +28,8 @@ namespace xqp
 	template <class Object> class rchandle;
 	
 	typedef rchandle<class Item> Item_t;
+  typedef rchandle<class QNameItem> QNameItem_t;
+
 	typedef rchandle<class Iterator> Iterator_t;
 	
 	/**
@@ -455,7 +457,7 @@ namespace xqp
 			/** Accessor for element node, attribute node
 			 *  @return qname?
 			 */
-			virtual Item_t getNodeName() const
+			virtual QNameItem_t getNodeName() const
 			{
 				this->showError();
 				return NULL;

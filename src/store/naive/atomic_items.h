@@ -16,32 +16,10 @@
 
 namespace xqp
 {
-	typedef uint64_t qnamekey_t;
-
-	class QNameItemNaive : public QNameItem
-	{
-		private:
-			xqp_string strNamespace_;
-			xqp_string strPrefix_;
-			xqp_string strLocal_;
-
-		public:
-			QNameItemNaive ( xqp_string, xqp_string, xqp_string );
-			virtual ~QNameItemNaive();
-
-			virtual xqp_string getNamespace() const;
-			virtual xqp_string getPrefix() const;
-			virtual xqp_string getLocalName() const;
-			virtual qnamekey_t getQNameKey( ) const;
-
-			virtual TypeCode getType( ) const;
-			virtual Item_t getAtomizationValue( ) const;
-			virtual bool equals ( Item_t ) const;
-			virtual Item_t getEBV( ) const;
-			virtual xqp_string getStringProperty( ) const;
-
-			virtual xqp_string show() const;
-	};  /* class QNameItem */
+  // moved to store/naive/qname_pool.h
+	//class QNameItemNaive : public QNameItem
+	//{
+	//};
 
   class UntypedAtomicItemNaive : public UntypedAtomicItem
 	{

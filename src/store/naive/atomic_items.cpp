@@ -14,69 +14,6 @@
 
 namespace xqp
 {
-	/* start class QNameItem */
-  QNameItemNaive::QNameItemNaive ( xqp_string _namespace, xqp_string prefix, xqp_string localname )
-			:
-			strNamespace_ ( _namespace ), strPrefix_ ( prefix ), strLocal_ ( localname ) {}
-
-  QNameItemNaive::~QNameItemNaive() {}
-
-  xqp_string QNameItemNaive::getNamespace() const
-	{
-		return this->strNamespace_;
-	}
-
-  xqp_string QNameItemNaive::getPrefix() const
-	{
-		return this->strPrefix_;
-	}
-
-  xqp_string QNameItemNaive::getLocalName() const
-	{
-		return this->strLocal_;
-	}
-
-  qnamekey_t QNameItemNaive::getQNameKey( ) const
-	{
-		return Item::createQNameKey ( this->strNamespace_, this->strPrefix_, this->strLocal_ );
-	}
-
-  TypeCode QNameItemNaive::getType( ) const
-	{
-		return xs_qname;
-	}
-
-  Item_t QNameItemNaive::getAtomizationValue( ) const
-	{
-		return zorba::getItemFactory()->createQName ( this->strNamespace_, this->strPrefix_, this->strLocal_ );
-	}
-
-  bool QNameItemNaive::equals ( Item_t item ) const
-	{
-		return ( item->getNamespace() == this->strNamespace_
-		         && item->getLocalName() == this->strLocal_ );
-	}
-
-  Item_t QNameItemNaive::getEBV( ) const
-	{
-		ZorbaErrorAlerts::error_alert (
-		    error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
-		    error_messages::RUNTIME_ERROR,
-		    NULL,
-		    false,
-		    "Effective Boolean Value is not defined for QName!"
-		);
-		return NULL;
-	}
-  xqp_string QNameItemNaive::getStringProperty( ) const
-	{
-		return this->strPrefix_ != "" ? this->strPrefix_ + ":" + this->strLocal_ : this->strLocal_;
-	}
-  xqp_string QNameItemNaive::show() const
-	{
-		return "xs:qname(" + this->strNamespace_ + "," + this->strPrefix_ + "," + this->strLocal_ + ")";
-	}
-	/* end class QNameItem */
 
 	/* start class UntypedAtomicItem */
   UntypedAtomicItemNaive::UntypedAtomicItemNaive ( xqp_string value ) : strValue_ ( value ) {}
