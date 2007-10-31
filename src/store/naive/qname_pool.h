@@ -12,7 +12,7 @@ class QNamePool;
 /*******************************************************************************
 
 ********************************************************************************/
-class QNameItemNaive : public QNameItem
+class QNameImpl : public QNameItem
 {
   friend class QNamePool;
 
@@ -33,13 +33,13 @@ public:
   static void setQNamePool(QNamePool* p);
 
 public:
-  QNameItemNaive() : thePosition(0), theNextFree(0), thePrevFree(0) {}
+  QNameImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
 
-  QNameItemNaive(const xqp_string& ns, const xqp_string& pre, const xqp_string& ln);
+  QNameImpl(const xqp_string& ns, const xqp_string& pre, const xqp_string& ln);
  
-  QNameItemNaive(const char* ns, const char* pre, const char* ln);
+  QNameImpl(const char* ns, const char* pre, const char* ln);
 
-  virtual ~QNameItemNaive() { }
+  virtual ~QNameImpl() { }
 
   void free();
 
@@ -63,7 +63,7 @@ public:
 
 /*******************************************************************************
 
-  theCache       : An array of QNameItem slots that is managed as a cache. This
+  theCache       : An array of QName slots that is managed as a cache. This
                    means that slots that are not used are placed in a free list.
                    When a new qname is inserted in the cache, a slot is taken
                    from the free list and the qname currently in that slot is
@@ -85,7 +85,7 @@ public:
   theNumQnames   : The total number of qnames stored in the pool.
 
   theHashTab     : A hash table mapping qnames (i.e. triplets of strings) to
-                   QNameItem slots.
+                   QName slots.
   theHashTabSize : The number of hash buckets in theHashTab. 
   theLoadFactor  :
 ********************************************************************************/
@@ -96,8 +96,8 @@ protected:
   class HashEntry
   {
   public:
-    QNameItemNaive  * theQName;
-    HashEntry       * theNext;
+    QNameImpl  * theQName;
+    HashEntry  * theNext;
 
     HashEntry() : theQName(NULL), theNext(NULL) { }
 
@@ -111,27 +111,27 @@ public:
   static const float DEFAULT_LOAD_FACTOR = 0.6;
 
 protected:
-  QNameItemNaive*                theCache;
-  ulong                          theCacheSize;
-  ulong                          theFirstFree;
-  ulong                          theNumFree;
+  QNameImpl*                theCache;
+  ulong                     theCacheSize;
+  ulong                     theFirstFree;
+  ulong                     theNumFree;
 
-  //std::vector<QNameItemNaive *>  theOverflow;
+  //std::vector<QNameImpl *> theOverflow;
 
-  ulong                          theNumQNames;
+  ulong                     theNumQNames;
 
-  std::vector<HashEntry>         theHashTab;
-  ulong                          theHashTabSize;
-  float                          theLoadFactor;
+  std::vector<HashEntry>    theHashTab;
+  ulong                     theHashTabSize;
+  float                     theLoadFactor;
 
 public:
   QNamePool(ulong size);
 
   ~QNamePool();
 
-  QNameItemNaive* insert(const char* ns, const char* pre, const char* ln);
+  QNameImpl* insert(const char* ns, const char* pre, const char* ln);
 
-  void remove(QNameItemNaive* qn);
+  void remove(QNameImpl* qn);
 
   HashEntry* hash(const char* ns, const char* pre, const char* ln);
   void unhash(const char* ns, const char* pre, const char* ln);
