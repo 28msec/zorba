@@ -12,14 +12,14 @@
 
 #include <iostream>
 
-#include "runtime/base/iterator.h"
+#include "store/api/item.h"
 
 namespace xqp 
 {
 	template <class Object> class rchandle;
 	
 	typedef rchandle<class Item> Item_t;
-	typedef rchandle<class PlanIterator> PlanIter_t;
+	typedef rchandle<class Iterator> Iterator_t;
 
 
 	class Collection : public rcobject
@@ -37,7 +37,7 @@ namespace xqp
 		 * Ids == false is likely to be faster. 'idsNeeded' should only be set to true if clients wants to 
 		 * sort or compare the items or sub-items generated from the returned iterator.
 		 */
-		virtual PlanIter_t getIterator(bool idsNeeded) = 0;
+		virtual Iterator_t getIterator(bool idsNeeded) = 0;
 		
 		/** Inserts data into the collection
 		  *
@@ -51,7 +51,7 @@ namespace xqp
 		  * @param iterator which produces the items to insert
 		  * @param position Where to insert the item. Default -1, which means it is attached to the end.
 		  */
-		virtual void addToCollection(PlanIter_t& items, int32_t position = -1) = 0;
+		virtual void addToCollection(Iterator_t& items, int32_t position = -1) = 0;
 
 		/** Inserts data into the collection
 		  * TODO loading from SAX & DOM
