@@ -8,8 +8,6 @@
 #include "context/common.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-// #include "store/data_manager.h"
-//#include "../store/api/item_factory.h"
 #include "api/external/xquerybinary.h"
 
 
@@ -32,168 +30,45 @@ using namespace std;
 namespace xqp {
 
 SequenceTypeManager		zorba::theSequenceTypeManager;///a global var
-rchandle<ItemFactory>	zorba::itemFactory;///global per application
-rchandle<Store>				zorba::theStore;
-//rchandle<library>			zorba::theFunctionLibrary;
-
-/*
-A hash containing global zorba objects for each thread ID
-*/
-/*daniel: change the zorba object
-std::map<uint64_t, zorba*>		zorba::global_zorbas;
-pthread_mutex_t								zorba::global_zorbas_mutex;// = PTHREAD_MUTEX_INITIALIZER;
-
-zorba::zorba()
-:
-// 	theDataManager(NULL),
-	theValueFactory(NULL),
-	theStore(NULL),
-	theStaticContext(NULL),
-	theDynamicContext(NULL),
-	error_manager(NULL)
-{
-}
-
-zorba::zorba(
-// 	rchandle<data_manager> dataManager,
-	rchandle<ItemFactory> valueFactory,
-	rchandle<Store> store,
-	rchandle<static_context> staticContext,
-	rchandle<dynamic_context> dynamicContext,
-	rchandle<ZorbaErrorAlerts> zorbaAlerts)
-:
-// 	theDataManager(dataManager),
-	theValueFactory(valueFactory),
-	theStore(store),
-	theStaticContext(staticContext),
-	theDynamicContext(dynamicContext),
-	error_manager(zorbaAlerts)
-{
-}
-
-yy::location& zorba::GetCurrentLocation()//from top iterator
-{
-	if(current_iterator.empty())
-		return null_loc;///no current location information
-	else
-		return (yy::location&)(current_iterator.top()->loc);
-}
+ItemFactory*	zorba::itemFactory;///global per application
+Store*				zorba::theStore;
 
 
-
-void		
-zorba::initializeZorbaEngine()
-{
-	pthread_mutex_init(&global_zorbas_mutex, NULL);
-}
-
-void		
-zorba::uninitializeZorbaEngine()
-{
-	pthread_mutex_destroy(&global_zorbas_mutex);
-}
-
-zorba* 
-zorba::getZorbaForCurrentThread()
-{
-	std::map<uint64_t, zorba*>::iterator	it_zorba;
-
-	pthread_mutex_lock(&global_zorbas_mutex);
-	it_zorba = global_zorbas.find((uint64_t)(uintptr_t)pthread_self());
-	if(it_zorba == global_zorbas.end())
-	{///not found, big error
-		pthread_mutex_unlock(&global_zorbas_mutex);
-		return NULL;
-	}
-	else
-	{
-		pthread_mutex_unlock(&global_zorbas_mutex);
-		return (*it_zorba).second;
-	}
-}
-
-zorba*		
-zorba::allocateZorbaForNewThread()
-{
-	zorba*	new_zorba;
-
-	new_zorba = new zorba();
-
-	pthread_mutex_lock(&global_zorbas_mutex);
-	global_zorbas[(uint64_t)(uintptr_t)pthread_self()] = new_zorba;
-	pthread_mutex_unlock(&global_zorbas_mutex);
-
-	return new_zorba;
-}
-
-
-void		
-zorba::destroyZorbaForCurrentThread()//when ending the thread
-{
-	pthread_mutex_lock(&global_zorbas_mutex);
-	global_zorbas.erase((uint64_t)(uintptr_t)pthread_self());
-	pthread_mutex_unlock(&global_zorbas_mutex);
-}
-*/
 
 zorba::zorba()
 {
 	coll = NULL;
 	current_xquery = NULL;
 }
+
+
 zorba::~zorba()
 {
 	if(coll)
 		delete coll;
 }
 
+
 ///some common functions for TLS
 
-void zorba::initializeZorbaEngine_internal(ItemFactory *item_factory,
-																					 Store *store)
+void zorba::initializeZorbaEngine_internal(
+    ItemFactory *item_factory,
+    Store *store)
 {
-	static_context::init();//itemFactory);
-	dynamic_context::init();//itemFactory);
+	static_context::init();
+	dynamic_context::init();
 
 	zorba::itemFactory = item_factory;
 	zorba::theStore = store;
-
-//	zorba::theFunctionLibrary = new library;
-	//theFunctionLibrary->init(itemFactory);
-
 }
+
 
 void zorba::uninitializeZorbaEngine_internal()
 {
-//	theFunctionLibrary->removeReference();
-//	theFunctionLibrary = NULL;
-//	theStore->removeReference();
 	theStore = NULL;
-//	itemFactory->removeReference();
 	itemFactory = NULL;
 }
 
-/*
-void zorba::initializeThread_internal(zorba *new_zorba, 
-																			ItemFactory *itfactory,
-																			error_messages *em,
-																			char *collator_name,///="root"
-																			::Collator::ECollationStrength collator_strength);//=Collator::PRIMARY
-																			)
-{
-	new_zorba->item_factory = itfactory;
-	if(!em)
-	{
-		errors_english	*err_messages = new errors_english;///the english error messages
-		new_zorba->m_error_manager.err_messages = err_messages;
-	}
-	else
-			new_zorba->m_error_manager.err_messages = em;
-	
-	coll_string = collator_name;
-	coll_strength = collator_strength;
-}
-*/
 
 ::Collator	*zorba::getCollator()
 {
@@ -270,8 +145,7 @@ DWORD		zorba::tls_key = 0;
 
 
 void		
-zorba::initializeZorbaEngine(ItemFactory *itemFactory,
-															Store *store)
+zorba::initializeZorbaEngine(ItemFactory *itemFactory, Store *store)
 {
 	zorba::tls_key = TlsAlloc();
 
@@ -295,7 +169,7 @@ zorba::getZorbaForCurrentThread()
 }
 
 zorba*		
-zorba::allocateZorbaForNewThread()
+zorba::allocateZorbaForCurrentThread()
 {
 	zorba*	new_zorba;
 
@@ -349,7 +223,7 @@ zorba::getZorbaForCurrentThread()
 }
 
 zorba*		
-zorba::allocateZorbaForNewThread()
+zorba::allocateZorbaForCurrentThread()
 {
 	return &g_zorba;
 }
@@ -359,8 +233,6 @@ void
 zorba::destroyZorbaForCurrentThread()//when ending the thread
 {
 }
-
-
 
 
 
@@ -400,7 +272,7 @@ zorba::getZorbaForCurrentThread()
 }
 
 zorba*		
-zorba::allocateZorbaForNewThread()
+zorba::allocateZorbaForCurrentThread()
 {
 	zorba*	new_zorba;
 
@@ -429,8 +301,7 @@ zorba::destroyZorbaForCurrentThread()//when ending the thread
 thread_specific_ptr<zorba>			zorba::tls_key;
 
 void		
-zorba::initializeZorbaEngine(ItemFactory *itemFactory,
-																					 Store *store)
+zorba::initializeZorbaEngine(ItemFactory *itemFactory, Store *store)
 {
 	initializeZorbaEngine_internal( itemFactory, store );
 }
@@ -448,7 +319,7 @@ zorba::getZorbaForCurrentThread()
 }
 
 zorba*		
-zorba::allocateZorbaForNewThread()
+zorba::allocateZorbaForCurrentThread()
 {
 	zorba*	new_zorba;
 
@@ -465,8 +336,6 @@ zorba::destroyZorbaForCurrentThread()//when ending the thread
 {
 	zorba::tls_key.release();
 }
-
-
 
 
 #else
@@ -511,7 +380,7 @@ zorba::getZorbaForCurrentThread()
 }
 
 zorba*		
-zorba::allocateZorbaForNewThread()
+zorba::allocateZorbaForCurrentThread()
 {
 	zorba*	new_zorba;
 

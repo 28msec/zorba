@@ -21,8 +21,6 @@
 #include "store/api/store.h"
 #include "functions/library.h"
 
-//#include "zorba_api/xquerybinary.h"
-
 #include <stack>
 #include <map>
 #ifdef WIN32
@@ -34,95 +32,6 @@ namespace xqp {
 
 class ZorbaErrorAlerts;
 class BasicIterator;
-/*daniel: it's time for revolution
-class zorba : public rcobject
-{
-protected:
-// 	rchandle<data_manager> theDataManager;
-	rchandle<ItemFactory> theValueFactory;  // move to data_manager
-	rchandle<Store> theStore;
-	rchandle<static_context> theStaticContext;
-	rchandle<dynamic_context> theDynamicContext;
-	// requestor identity, for concurrency
-
-	//daniel
-	rchandle<ZorbaErrorAlerts>	error_manager;
-public:
-	///keep a track of the current parse node or expr node (at compile time)
-	//std::stack<const parsenode*>		current_parsenode;
-	///keep a track of the current iterator executed (at execution time)
-	std::stack<const BasicIterator*>	current_iterator;
-	yy::location	null_loc;
-	///end daniel
-
-public:
-	zorba();
-
-	zorba(
-// 		rchandle<data_manager>,
-		rchandle<ItemFactory>,
-		rchandle<Store>,
-		rchandle<static_context>,
-		rchandle<dynamic_context>,
-		rchandle<ZorbaErrorAlerts>);
-
-	~zorba() {}
-
-public:
-// 	data_manager* get_data_manager() const { return &*theDataManager; }
-	ItemFactory* getItemFactory() const { return &*theValueFactory; }
-	Store* getStore() const { return &*theStore; }
-	static_context* get_static_context() const { return &*theStaticContext; }
-	dynamic_context* get_dynamic_context() const { return &*theDynamicContext; }
-	//daniel
-	ZorbaErrorAlerts* get_error_manager() const { return &*error_manager; }
-
-// 	void set_data_manager(data_manager* v) { theDataManager = v; }
-	void setItemFactory(ItemFactory* v) { theValueFactory = v; }
-	void setStore(Store* s){theStore = s; }
-	void set_static_context(static_context* v) { theStaticContext = v; }
-	void set_dynamic_context(dynamic_context* v) { theDynamicContext = v; }
-	//daniel
-	void set_error_manager(ZorbaErrorAlerts *err_manag) { error_manager = err_manag; }
-
-// 	void set_data_manager(rchandle<data_manager> v) { theDataManager = v; }
-	void set_static_context(rchandle<static_context> v) { theStaticContext = v; }
-	void set_dynamic_context(rchandle<dynamic_context> v) { theDynamicContext = v; }
-	//daniel
-	void set_error_manager(rchandle<ZorbaErrorAlerts> err_manag) { error_manager = err_manag; }
-	yy::location& GetCurrentLocation();//from top iterator
-
-public:	// diagnostics
-  enum diagnostic_flag_t {
-    trace_functions   = 1,
-    trace_timing      = 2,
-    trace_all         = 4
-  };
-	
-  uint32_t lineno;
-  uint32_t charpos;
-//daniel	errors::errcode zorba_errno;
-
-//daniel	errors::errcode get_error() const { return zorba_errno; }
-//daniel	void set_error(errors::errcode err) { zorba_errno = err; }
-
-
-	///functions for accessing global zorba objects for each thread
-protected:
-	static std::map<uint64_t, zorba*>		global_zorbas;
-	static pthread_mutex_t							global_zorbas_mutex;
-public:
-	static void		initializeZorbaEngine();
-	static void		uninitializeZorbaEngine();
-
-
-	static zorba* getZorbaForCurrentThread();
-	
-	static zorba*	allocateZorbaForNewThread();
-	static void		destroyZorbaForCurrentThread();//when ending the thread
-
-};
-*/
 class ItemFactory;
 class Zorba_XQueryBinary;
 class PlanIterator;
@@ -138,9 +47,8 @@ class zorba
 	friend class ZorbaFactory;
 public:
 	static SequenceTypeManager		theSequenceTypeManager;///a global var
-	static rchandle<ItemFactory>	itemFactory;///global per application
-	static rchandle<Store>				theStore;
-//	static rchandle<library>			theFunctionLibrary;
+	static ItemFactory*	itemFactory;///global per application
+	static Store*				theStore;
 
 protected:
 	std::string		coll_string;
@@ -173,8 +81,6 @@ public:
 	static_context* get_static_context();///of the current xquery
 //	library*				get_library();
 
-
-
 protected:
 
 #ifdef WIN32
@@ -203,10 +109,9 @@ public:
 																					 Store *store);
 	static void		uninitializeZorbaEngine();
 
-
 	static zorba* getZorbaForCurrentThread();
 	
-	static zorba*	allocateZorbaForNewThread();
+	static zorba*	allocateZorbaForCurrentThread();
 	static void		destroyZorbaForCurrentThread();//when ending the thread
 
 };
