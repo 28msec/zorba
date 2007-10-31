@@ -28,7 +28,8 @@ typedef rchandle<class QNameItem> QNameItem_t;
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 	
-class ItemFactory : public rcobject
+
+class ItemFactory
 {
 public:
   virtual ~ItemFactory() {}
