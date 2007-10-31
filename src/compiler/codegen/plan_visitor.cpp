@@ -457,8 +457,8 @@ bool plan_visitor::begin_visit(const match_expr& v)
   Assert(axisItep != NULL);
 
   PlanIter_t matchIte;
-  Item_t qname;
-  Item_t tname;
+  QNameItem_t qname;
+  QNameItem_t tname;
 
   if (v.getTestKind() == match_name_test)
   {
@@ -568,8 +568,8 @@ void plan_visitor::end_visit(const elem_expr& v)
 	}
 
 	rchandle<qname_expr> qname = v.get_qname();
-	Item_t itemQName = zorba::getItemFactory()->
-                     createQName("", qname->prefix(), qname->local());
+  QNameItem_t itemQName = zorba::getItemFactory()->
+                          createQName("", qname->prefix(), qname->local());
 
 	PlanIter_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
 
@@ -603,8 +603,8 @@ void plan_visitor::end_visit(const attr_expr& v)
 
 	// TODO dynamic qname
 	rchandle<qname_expr> qname = v.get_qname();
-	Item_t itemQName = zorba::getItemFactory()->
-                     createQName("", qname->prefix(), qname->local());
+	QNameItem_t itemQName = zorba::getItemFactory()->
+                         createQName("", qname->prefix(), qname->local());
 
 	PlanIter_t valueIter = NULL;
 	if (v.get_val_expr() != NULL)
