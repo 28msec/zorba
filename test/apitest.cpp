@@ -105,15 +105,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	SimpleStore simpleStore;
 	ZorbaFactory	zorba_factory(&basicItemFactory, &simpleStore);
 	
-	///some workarounds until we have a store factory
-	basicItemFactory.addReference();
-	simpleStore.addReference();
-
 	///thread specific
 
 	zorba_factory.InitThread();
-
-
 
 	XQuery_t		query;
 	query = zorba_factory.createQuery(query_text.c_str());
@@ -136,7 +130,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	 	if (useSerializer)
 		{
-			// *resultFile << i_p->show() << endl;
 			serializer* ser = new serializer();
 			ser->serialize(result, *resultFile);
 			*resultFile << endl;
