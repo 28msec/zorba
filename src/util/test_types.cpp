@@ -3,7 +3,7 @@
 
 using namespace xqp;
 
-NameTest::NameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local)
+NodeNameTest::NodeNameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local)
     : m_uri(uri),
     m_local(local)
 {
@@ -17,19 +17,19 @@ NameTest::NameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local)
     }
 }
 
-NameTest::NameTest(rchandle<QNameItem> qname)
+NodeNameTest::NodeNameTest(rchandle<QNameItem> qname)
   : m_kind(CONSTANT),
   m_uri(qname->getNamespace().utf8String),
   m_local(qname->getLocalName().utf8String)
 {
 }
 
-rchandle<xqpString_t> NameTest::get_uri()
+rchandle<xqpString_t> NodeNameTest::get_uri()
 {
   return m_uri;
 }
 
-rchandle<xqpString_t> NameTest::get_local()
+rchandle<xqpString_t> NodeNameTest::get_local()
 {
   return m_local;
 }
@@ -38,7 +38,7 @@ NodeTest::NodeTest(NodeTest::kind_t kind) : m_kind(kind)
 {
 }
 
-NodeTest::NodeTest(NodeTest::kind_t kind, rchandle<NameTest> name_test)
+NodeTest::NodeTest(NodeTest::kind_t kind, rchandle<NodeNameTest> name_test)
   : m_kind(kind),
   m_name_test(name_test)
 {
@@ -49,7 +49,7 @@ NodeTest::kind_t NodeTest::get_kind()
   return m_kind;
 }
 
-rchandle<NameTest> NodeTest::get_nametest()
+rchandle<NodeNameTest> NodeTest::get_nametest()
 {
   return m_name_test;
 }

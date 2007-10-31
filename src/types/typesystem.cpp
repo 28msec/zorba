@@ -228,6 +228,11 @@ TypeSystem::xqtref_t TypeSystem::prime_type(TypeFactory& type_factory, const XQT
   return TypeSystem::xqtref_t(0);
 }
 
+rchandle<NodeNameTest> TypeSystem::get_nametest(const XQType& type)
+{
+  return rchandle<NodeNameTest>(0);
+}
+
 BasicTypeFactory& BasicTypeFactory::get_instance() {
   static BasicTypeFactory *_m_instance = new BasicTypeFactory();
 

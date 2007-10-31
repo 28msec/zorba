@@ -9,7 +9,7 @@ class XQType;
 class AtomicXQType;
 class TypeFactory;
 class QNameItem;
-class NameTest;
+class NodeNameTest;
 
 /*
  * Atomic type constants
@@ -234,9 +234,9 @@ class TypeSystem {
     static xqtref_t prime_type(TypeFactory& type_factory, const XQType& type);
 
     /*
-     * Returns the NameTest for the given type, if one exists.
+     * Returns the NodeNameTest for the given type, if one exists.
      */
-    static rchandle<NameTest> get_nametest(const XQType& type);
+    static rchandle<NodeNameTest> get_nametest(const XQType& type);
 
   private:
     // Cannot instantiate the type system.

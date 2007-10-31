@@ -8,7 +8,7 @@ namespace xqp {
 
 class QNameItem;
 
-class NameTest : virtual public rcobject {
+class NodeNameTest : virtual public rcobject {
   public:
     typedef enum {
       CONSTANT,
@@ -17,8 +17,8 @@ class NameTest : virtual public rcobject {
       WILDCARD
     } kind_t;
 
-    NameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local);
-    NameTest(rchandle<QNameItem> qname);
+    NodeNameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local);
+    NodeNameTest(rchandle<QNameItem> qname);
     
     rchandle<xqpString_t> get_uri();
     rchandle<xqpString_t> get_local();
@@ -40,12 +40,12 @@ class NodeTest : virtual public rcobject {
     } kind_t;
 
     NodeTest(kind_t kind);
-    NodeTest(kind_t kind, rchandle<NameTest> name_test);
+    NodeTest(kind_t kind, rchandle<NodeNameTest> name_test);
     kind_t get_kind();
-    rchandle<NameTest> get_nametest();
+    rchandle<NodeNameTest> get_nametest();
   private:
     kind_t m_kind;
-    rchandle<NameTest> m_name_test;
+    rchandle<NodeNameTest> m_name_test;
 };
 
 }
