@@ -92,11 +92,11 @@
  If ExpResults/foo/q.res does not exist, rbkt.sh prints a warning and reports
  that Q has failed.
 
- To create a new bucket, say boo, create a boo subdir under both Queries and
+ To create a new bucket, say foo, create a foo subdir under both Queries and
  ExpResults.
 
- To add a new query, say Q, in bucket boo, add file q.xq under Queries/boo
- and q.res under ExpResults/boo. 
+ To add a new query, say Q, in bucket foo, add file q.xq under Queries/foo
+ and q.res under ExpResults/foo. 
 
 
  Usage
@@ -115,13 +115,21 @@
     Actually, I define zorbaRepos in my .bash_profile, so that I don't have to
     do it all the time.
 
- 2. Run rbkt.sh in one of the following 3 ways
+ 2. Define the zorbaExec env variable, setting it to the full pathname of the
+    apitest executable. For example:
+
+    $ export zorbaExec=/home/markos/zorba/xquery/test/apitest
+
+    Actually, I define zorbaExec in my .bash_profile, so that I don't have to
+    do it all the time.
+
+ 3. Run rbkt.sh in one of the following 3 ways
 
     $ ./rbkt.sh             // run all buckets 
     $ ./rbkt -b foo         // run bucket foo
     $ ./rbkt -b foo -q boo  // run query boo (stored in file boo.xq) in bucket foo
 
- 3. The above assumes that you run rbkt.sh from rbkt/Scripts. But you can also
+ 4. The above assumes that you run rbkt.sh from rbkt/Scripts. But you can also
     run it from any other directory; you just have to specify the full pathname
     (relative or absolute) to rbkt.sh
 
