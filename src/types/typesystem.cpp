@@ -7,6 +7,7 @@ using namespace xqp;
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
 
+#if 0
 #define XSQNDECL(var, local) const rchandle<QNameItem> AtomicTypeConstants::var = new QNameItemNaive(XS_URI, XS_PREFIX, local)
 
 XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
@@ -54,6 +55,7 @@ XSQNDECL(XS_HEXBINARY_QNAME, "hexBinary");
 XSQNDECL(XS_ANY_URI_QNAME, "anyURI");
 XSQNDECL(XS_QNAME_QNAME, "QName");
 XSQNDECL(XS_NOTATION_QNAME, "notation");
+#endif
 
 #define T true
 #define F false

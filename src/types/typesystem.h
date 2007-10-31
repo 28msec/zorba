@@ -64,6 +64,7 @@ class AtomicTypeConstants {
       XS_NOTATION,
     } type_code_t;
 
+#if 0
     const static rchandle<QNameItem> XS_ANY_ATOMIC_QNAME;
     const static rchandle<QNameItem> XS_STRING_QNAME;
     const static rchandle<QNameItem> XS_NORMALIZED_STRING_QNAME;
@@ -109,6 +110,7 @@ class AtomicTypeConstants {
     const static rchandle<QNameItem> XS_ANY_URI_QNAME;
     const static rchandle<QNameItem> XS_QNAME_QNAME;
     const static rchandle<QNameItem> XS_NOTATION_QNAME;
+#endif
 
   private:
     AtomicTypeConstants() {}
