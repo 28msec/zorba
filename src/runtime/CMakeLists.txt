@@ -1,6 +1,7 @@
 SET(RUNTIME_SRCS
     accessors/AccessorsImpl.cpp
     core/item_iterator.cpp
+    core/constructors.cpp
     numerics/NumericsImpl.cpp
     strings/StringsImpl.cpp
     booleans/BooleanImpl.cpp

@@ -26,7 +26,11 @@
 
 #include "util/zorba.h"
 
-namespace xqp {
+namespace xqp
+{
+
+int32_t iteratorTreeDepth = -1;
+
 
 /* begin PlanState */
 PlanState::PlanState(int32_t blockSize)

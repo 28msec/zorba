@@ -281,13 +281,25 @@ public:
   int32_t getStateSize() { return sizeof(ElementContentState); }
 
   void setOffset(PlanState& planState, int32_t& offset);
-}; /* class TextNodeConnector */
+};
 
 
+/*******************************************************************************
+
+  ElementIterator computes a direct element constructor.
+
+  theQName      : The qname of the node (ns, pre, local)
+  theChildren   : The iterator that produces the child nodes of the new node.
+                  Normally, this will be an ElementContentIterator, followed
+                  by a ConcatIterator.
+  theAttributes : The iterator that produces the attributes of the new node.
+  theNamespaceBindings :
+
+********************************************************************************/
 class ElementIterator : public Batcher<ElementIterator>
 {
 private:
-  Item_t theQName;
+  QNameItem_t theQName;
   PlanIter_t theChildren;
   PlanIter_t theAttributes;
   PlanIter_t theNamespaceBindings;
@@ -295,7 +307,7 @@ private:
 public:
   ElementIterator(
         const yy::location& loc, 
-        const Item_t& qname,
+        const QNameItem_t& qname,
         PlanIter_t& children,
         PlanIter_t& attributes);
 	
@@ -314,12 +326,12 @@ public:
 class AttributeIterator : public UnaryBaseIterator<AttributeIterator>
 {
 private:
-  Item_t theQName;
+  QNameItem_t theQName;
 		
 public:
   AttributeIterator(
         const yy::location& loc,
-        const Item_t& qname,
+        const QNameItem_t& qname,
         PlanIter_t& value);
 		
   Item_t nextImpl(PlanState& planState);
@@ -360,6 +372,7 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 }; /* class IfThenElseIterator */
+
 
 class FLWORIterator : public Batcher<FLWORIterator>
 {
