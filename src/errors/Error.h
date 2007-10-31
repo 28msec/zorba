@@ -37,8 +37,6 @@ class ZorbaErrorAlerts : public rcobject
 public:
 	///members to be accessed from static member functions
 	rchandle<error_messages> err_messages;
-private:
-	rchandle<Zorba_AlertsManager> errmanager_api;
 
 public:
 	ZorbaErrorAlerts ();
@@ -54,50 +52,60 @@ public:
 //	};
 
 public:
-	static void error_alert( 
-													//	const char *file,
-													//	const int line,
-														const error_messages::errcode,///one of predefined error messages in errors.h
-														error_messages::error_type,
-														const yy::location *ploc = NULL, ///if NULL location will be taken from current iterator from zorba object
-														bool continue_execution = false, ///recoverable (continue execution) ? fatal (throw error)?
-														const string param1 = "",
-														const string param2 = ""
-													 );
-	static void error_alert_withoutlocation( 
-												//	const char *file,
-												//	const int line,
-													const error_messages::errcode,///one of predefined error messages in errors.h
-													error_messages::error_type,
-													bool continue_execution = false, ///recoverable (continue execution) ? fatal (throw error)?
-													const string param1 = "",
-													const string param2 = ""
-													 );
+  /**
+   *  @param ecode One of predefined error codes in errors.h
+   *  @param etype One of predefined error types in errors.h
+   *  @param loc   If NULL location will be taken from current iterator from zorba object
+   *  @param continue_execution If true, the error is recoverable and execution can continue; otherwise the error is fatal and an exception is thrown.
+   *
+   */
+	static void error_alert(
+        // const char *file,
+        // const int line,
+        const error_messages::errcode ecode,
+        error_messages::error_type etype,
+        const yy::location *ploc = NULL,
+        bool continue_execution = false,
+        const string param1 = "",
+        const string param2 = "");
 
-	static void warning_alert( 
-													//	const char *file,
-													//	const int line,
-														const error_messages::warning_code,
-														const yy::location *ploc = NULL,///if NULL location will be taken from current iterator from zorba object
-														const string param1 = "",
-														const string param2 = ""
-													 );
-	static void warning_alert_withoutlocation( 
-													//	const char *file,
-													//	const int line,
-														const error_messages::warning_code,
-														const string param1 = "",
-														const string param2 = ""
-													 );
+  /**
+   *  @param ecode One of predefined error codes in errors.h
+   *  @param etype One of predefined error types in errors.h
+   *  @param continue_execution If true, the error is recoverable and execution can continue; otherwise the error is fatal and an exception is thrown.
+   *
+   */
+	static void error_alert_withoutlocation(
+        // const char *file,
+        // const int line,
+        const error_messages::errcode,
+        error_messages::error_type,
+        bool continue_execution = false,
+        const string param1 = "",
+        const string param2 = "");
 
-	static void notify_event( 
-													//	const char *file,
-													//	const int line,
-														const error_messages::NotifyEvent_code notif_event,
-													//	const yy::location loc, 
-														const string param1 = "",
-														const string param2 = ""
-													 );
+	static void warning_alert(
+        // const char *file,
+        // const int line,
+        const error_messages::warning_code,
+        const yy::location *ploc = NULL,
+        const string param1 = "",
+        const string param2 = "");
+
+	static void warning_alert_withoutlocation(
+        // const char *file,
+        // const int line,
+        const error_messages::warning_code,
+        const string param1 = "",
+        const string param2 = "");
+
+	static void notify_event(
+        // const char *file,
+        // const int line,
+        const error_messages::NotifyEvent_code notif_event,
+        //	const yy::location loc,
+        const string param1 = "",
+        const string param2 = "");
 
 //	static void notify_event( const std::string notif_string,
 //													 const string param1,
@@ -105,11 +113,11 @@ public:
 //													 );
 
 	///return the index of the option chosen by user
-	static int ask_user( const error_messages::AskUserString_code ask_string,
-												const error_messages::AskUserStringOptions_code ask_string_options,
-												const string param1 = "",
-												const string param2 = ""
-												);
+	static int ask_user(
+        const error_messages::AskUserString_code ask_string,
+        const error_messages::AskUserStringOptions_code ask_string_options,
+        const string param1 = "",
+        const string param2 = "");
 
 //	static void ask_user( const std::string ask_string,
 //												const string param1,
@@ -118,31 +126,35 @@ public:
 
 
 
-	static void user_error (Item* err_qname,///optional
-													const std::string description,//optional
-													const std::vector<class Item*> *items);//optional
+	static void user_error (
+        Item* err_qname,///optional
+        const std::string description,//optional
+        const std::vector<class Item*> *items);//optional
 
-	static void user_trace ( const std::vector<class Item*> *items,
-													const std::string label);
-	
+	static void user_trace(
+        const std::vector<class Item*> *items,
+        const std::string label);
+
 private:
-	static void DumpItemsAsText( 
-										 const std::vector<class Item*> *items);
+	static void DumpItemsAsText(const std::vector<class Item*> *items);
 };
 
 
 
 ////define some macros to catch the __FILE__ and __LINE__ where the error is fired
 
-#define		ZORBA_ERROR_ALERT				\
-				cout << __FILE__ << "[" << __LINE__ << "]:" << endl; \
-				ZorbaErrorAlerts::error_alert
+#define ZORBA_ERROR_ALERT				\
+    cout << __FILE__ << "[" << __LINE__ << "]:" << endl; \
+    ZorbaErrorAlerts::error_alert
+
 /*#define		error_alert_withoutlocation( errcode,error_type,continue_execution, param1,param2)		\
 				error_alert_withoutlocation_fl(__FILE__, __LINE__,errcode,error_type,continue_execution, param1,param2)
 */
-#define		ZORBA_WARNING_ALERT		\
-				cout << __FILE__ << "[" << __LINE__ << "]:" << endl; \
-				ZorbaErrorAlerts::warning_alert
+
+#define ZORBA_WARNING_ALERT		\
+    cout << __FILE__ << "[" << __LINE__ << "]:" << endl; \
+    ZorbaErrorAlerts::warning_alert
+
 /*#define		warning_alert_withoutlocation( warncode,ploc, param1,param2)		\
 				warning_alert_without_location_fl(__FILE__, __LINE__,warncode,ploc, param1,param2)
 */

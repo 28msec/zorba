@@ -218,7 +218,10 @@ std::string errors_english::ask_user_options_decode(enum AskUserStringOptions_co
 /* Finds next place for param in err_decoded, and puts the param in that place.
  * A place for param looks like "/s".
  */
-string::size_type error_messages::ApplyParam(string *err_decoded, const string *param1, string::size_type start)
+string::size_type error_messages::ApplyParam(
+    string *err_decoded,
+    const string *param1,
+    string::size_type start)
 {
 	std::string::size_type off;
   const static string empty;
@@ -229,11 +232,16 @@ string::size_type error_messages::ApplyParam(string *err_decoded, const string *
 		return err_decoded->length ();
 
   if (param1 == NULL) param1 = &empty;
+
 	err_decoded->replace (off, 2, *param1);
   return off + param1->length ();
 }
 
-void error_messages::ApplyParams(string *err_decoded, const string *param1, const string *param2) {
+void error_messages::ApplyParams(
+    string *err_decoded,
+    const string *param1,
+    const string *param2)
+{
   string::size_type off = ApplyParam (err_decoded, param1, 0);
   ApplyParam (err_decoded, param2, off);
 }

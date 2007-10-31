@@ -177,19 +177,23 @@ public:
 		USER_ERROR
 	};
 
-		enum warning_code {
-		};
+  enum warning_code
+  {
+  };
 
-		enum NotifyEvent_code{
-		};
+  enum NotifyEvent_code
+  {
+  };
 
-		enum AskUserString_code{
-		};
+  enum AskUserString_code
+  {
+  };
 
-		enum AskUserStringOptions_code{
-			YES_NO,  //"Yes/NO"
-			OK_CANCEL, //"OK/Cancel"
-		};
+  enum AskUserStringOptions_code
+  {
+    YES_NO,  //"Yes/NO"
+    OK_CANCEL, //"OK/Cancel"
+  };
 
 //?	enum alert_initiator
 //	{
@@ -206,8 +210,15 @@ public:
 
 	virtual std::string errtype_decode(enum error_type errtype) = 0;
 
-  std::string::size_type ApplyParam(std::string *err_decoded, const std::string *param1, std::string::size_type);
-	void ApplyParams(std::string *err_decoded, const std::string *param1, const std::string *param2);
+  std::string::size_type ApplyParam(
+        std::string *err_decoded,
+        const std::string *param1,
+        std::string::size_type);
+
+	void ApplyParams(
+        std::string *err_decoded,
+        const std::string *param1,
+        const std::string *param2);
 
 	/*
 	bool is_static_err(enum errcode);

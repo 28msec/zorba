@@ -11,10 +11,10 @@ using namespace std;
 namespace xqp {
 
 
-ZorbaErrorAlerts::ZorbaErrorAlerts( )//class error_messages *_err_messages)
+ZorbaErrorAlerts::ZorbaErrorAlerts( )
 {
 //	err_messages = _err_messages;
-	errmanager_api = new Zorba_AlertsManager;
+//	errmanager_api = new Zorba_AlertsManager;
 }
 
 ZorbaErrorAlerts::~ZorbaErrorAlerts()
@@ -23,15 +23,14 @@ ZorbaErrorAlerts::~ZorbaErrorAlerts()
 
 
 void ZorbaErrorAlerts::error_alert( 
-												//		const char *file,
-												//		const int line,
-														const error_messages::errcode e,///one of predefined error messages in errors.h
-														error_messages::error_type errtype,
-														const yy::location *ploc, 
-														bool continue_execution, ///recoverable (continue execution) ? fatal (throw error)?
-														const std::string param1,
-														const std::string param2
-													 )
+    // const char *file,
+    // const int line,
+    const error_messages::errcode e,
+    error_messages::error_type errtype,
+    const yy::location *ploc, 
+    bool continue_execution,
+    const std::string param1,
+    const std::string param2)
 {
 	zorba*	z = zorba::getZorbaForCurrentThread();
 	if(!ploc)
@@ -72,14 +71,13 @@ abort ();
 }
 
 void ZorbaErrorAlerts::error_alert_withoutlocation( 
-													//	const char *file,
-													//	const int line,
-														const error_messages::errcode e,///one of predefined error messages in errors.h
-														error_messages::error_type errtype,
-														bool continue_execution, ///recoverable (continue execution) ? fatal (throw error)?
-														const std::string param1,
-														const std::string param2
-													 )
+    //	const char *file,
+    //	const int line,
+    const error_messages::errcode e,
+    error_messages::error_type errtype,
+    bool continue_execution,
+    const std::string param1,
+    const std::string param2)
 {
 	std::string err_decoded;
 	std::string errtype_decoded;
@@ -109,13 +107,12 @@ abort ();
 }
 
 void ZorbaErrorAlerts::warning_alert( 
-																		//	const char *file,
-																		//	const int line,
-																			const error_messages::warning_code warn,
-																			const yy::location *ploc, 
-																			const string param1,
-																			const string param2
-																		 )
+    // const char *file,
+    // const int line,
+    const error_messages::warning_code warn,
+    const yy::location *ploc, 
+    const string param1,
+    const string param2)
 {
 	zorba	*z = zorba::getZorbaForCurrentThread();
 	if(!ploc)
@@ -144,12 +141,11 @@ void ZorbaErrorAlerts::warning_alert(
 }
 
 void ZorbaErrorAlerts::warning_alert_withoutlocation( 
-																	//	const char *file,
-																	//	const int line,
-																		const error_messages::warning_code warn,
-																		const string param1,
-																		const string param2
-																		 )
+    // const char *file,
+    // const int line,
+    const error_messages::warning_code warn,
+    const string param1,
+    const string param2)
 {
 	std::string warning_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
@@ -161,17 +157,16 @@ void ZorbaErrorAlerts::warning_alert_withoutlocation(
 
 	//... send error to user app
 	cout << "Warning:" << "[somewhere]" << " : " << warning_decoded << std::endl;
-
 }
 
+
 void ZorbaErrorAlerts::notify_event( 
-													//	const char *file,
-													//	const int line,
-														const error_messages::NotifyEvent_code notif_event,
-													//	const yy::location loc, 
-														const string param1,
-														const string param2
-													 )
+    // const char *file,
+    // const int line,
+    const error_messages::NotifyEvent_code notif_event,
+    //	const yy::location loc, 
+    const string param1,
+    const string param2)
 {
 	std::string notif_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
@@ -182,16 +177,15 @@ void ZorbaErrorAlerts::notify_event(
   //	cout << file << "[" << line << "]:" << endl;
 
 	cout << " --> " << notif_decoded << std::endl;
-
 }
 
 
-	///return the index of the option chosen by user
-int ZorbaErrorAlerts::ask_user( const error_messages::AskUserString_code ask_string,
-												const error_messages::AskUserStringOptions_code ask_string_options,
-												const string param1,
-												const string param2
-												)
+//return the index of the option chosen by user
+int ZorbaErrorAlerts::ask_user(
+    const error_messages::AskUserString_code ask_string,
+    const error_messages::AskUserStringOptions_code ask_string_options,
+    const string param1,
+    const string param2)
 {
 	std::string ask_user_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
@@ -230,9 +224,10 @@ YY denotes the error category, using the following encoding:
 nnnn is a unique numeric code.
 
 */
-void ZorbaErrorAlerts::user_error (Item* err_qname,///optional
-													const std::string description,//optional
-													const std::vector<class Item*> *items)//optional
+void ZorbaErrorAlerts::user_error(
+    Item* err_qname,///optional
+    const std::string description,//optional
+    const std::vector<class Item*> *items)//optional
 {
 	std::string err_decoded;
 	zorba	*z = zorba::getZorbaForCurrentThread();
@@ -265,14 +260,16 @@ void ZorbaErrorAlerts::user_error (Item* err_qname,///optional
 
 }
 
+
 void ZorbaErrorAlerts::user_trace ( 
-																		const std::vector<class Item*> *items,
-																		const std::string label)
+    const std::vector<class Item*> *items,
+    const std::string label)
 {
 	///...send notification message label + items to user
 	cout << "User Trace: " << label << endl;
 	DumpItemsAsText(items);
 }
+
 
 void ZorbaErrorAlerts::DumpItemsAsText( const std::vector<class Item*> *items)
 {
