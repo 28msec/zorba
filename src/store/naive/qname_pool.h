@@ -107,25 +107,25 @@ protected:
   };
 
 public:
-  static const ulong MAX_CACHE_SIZE = 65536;
-  static const float DEFAULT_LOAD_FACTOR = 0.6;
+  static const xqp_unsignedLong MAX_CACHE_SIZE = 65536;
+  static const float DEFAULT_LOAD_FACTOR;// = 0.6;//daniel: to compile on windows
 
 protected:
   QNameImpl*                theCache;
-  ulong                     theCacheSize;
-  ulong                     theFirstFree;
-  ulong                     theNumFree;
+  xqp_unsignedLong                     theCacheSize;
+  xqp_unsignedLong                     theFirstFree;
+  xqp_unsignedLong                     theNumFree;
 
   //std::vector<QNameImpl *> theOverflow;
 
-  ulong                     theNumQNames;
+  xqp_unsignedLong                     theNumQNames;
 
   std::vector<HashEntry>    theHashTab;
-  ulong                     theHashTabSize;
+  xqp_unsignedLong          theHashTabSize;
   float                     theLoadFactor;
 
 public:
-  QNamePool(ulong size);
+  QNamePool(xqp_unsignedLong size);
 
   ~QNamePool();
 

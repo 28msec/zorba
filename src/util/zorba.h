@@ -7,9 +7,9 @@
 //#include "context/static_context.h"
 //#include "context/dynamic_context.h"
 //daniel #include "runtime/errors.h"
-#include "store/api/item_factory.h"
+//#include "store/api/item_factory.h"
 #include "util/rchandle.h"
-#include "errors/Error.h"
+//#include "errors/Error_impl.h"
 //#include "types/representations.h
 
 #include "types/sequence_type_mgr.h"
@@ -30,14 +30,17 @@
 
 namespace xqp {
 
-class ZorbaErrorAlerts;
-class BasicIterator;
+//class ZorbaErrorAlerts;
+//class BasicIterator;
+
 class ItemFactory;
 class Zorba_XQueryBinary;
 class PlanIterator;
 class error_messages;
 class Store;
 class static_context;
+class ZorbaErrorAlertsImpl;
+class Zorba_XQueryResult;
 
 //class Collator;
 
@@ -59,9 +62,11 @@ protected:
 
 public:///things specific for each thread
 	Zorba_XQueryBinary								*current_xquery;//current xquery executed for this thread
+	Zorba_XQueryResult								*current_xqueryresult;
 	std::stack<const PlanIterator*>	current_iterator;
 
-	ZorbaErrorAlerts		m_error_manager;
+protected:
+	ZorbaErrorAlertsImpl*		m_error_manager;
 
 
 	///functions for accessing global zorba objects for each thread
@@ -71,7 +76,7 @@ protected:
 
 
 public:
-	ZorbaErrorAlerts* getErrorManager() { return &m_error_manager; }
+	ZorbaErrorAlertsImpl* getErrorManager();
 	static SequenceTypeManager* getSequenceTypeManager();
 	::Collator				*getCollator();
 	yy::location& GetCurrentLocation();//from top iterator

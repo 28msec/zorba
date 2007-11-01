@@ -28,8 +28,11 @@ class PlanState;
 class Zorba_XQueryResult : public XQueryResult
 {
 public:
-	virtual Item_t		next();
+	Zorba_XQueryResult();
 	virtual ~Zorba_XQueryResult();
+	virtual Item_t		next();
+	virtual void setAlertsParam(void *alert_callback_param);
+	virtual ostream& serializeXML( ostream& os );
 
 public:
 	PlanIter_t		it_result;
@@ -37,6 +40,8 @@ public:
 	///this is the state block created by Zorba_XQueryBinary when doing execution
 	///increments its ref count; when Zorba_Result ends its life, will decrement the ref count for state block
 	PlanState		*state_block;
+
+	void			*alert_callback_param;
 };
 
 
@@ -65,6 +70,12 @@ public:
 //	yy::location		current_loc;
 
 	int32_t			lStateSize;
+
+	///for error processing: register a callback function
+//public:
+//	alert_callback	*xquery_registered_callback;
+//	void						*xquery_registered_param;
+
 public:
 
 
@@ -73,15 +84,16 @@ public:
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false);
+    bool compile(StaticQueryContext* = 0, bool routing_mode = false);
 
-    // execute the query and compile it if necessary
+    // execute the query 
 		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-    virtual XQueryResult* execute( DynamicQueryContext* = 0);
+		//alert_callback_param is the param to be passed to the error callback function when executing next()
+    virtual XQueryResult_t execute( DynamicQueryContext* = 0);
 
-    virtual bool isCompiled();
+    //virtual bool isCompiled();
 
     // clone the query (can be compiled or not compiled)
 		//daniel: not cloning, but duplicating the state block
@@ -112,6 +124,8 @@ public:
 	///you can set a callback function into the error manager
 	///when executing the Query returns false, you can get the list of errors from the error manager
 //	Zorba_AlertsManager*		getAlertsManager();
+	//virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
+	//																		void *param);
 };    
 
 }//end namespace xqp

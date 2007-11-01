@@ -9,7 +9,7 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 #include "api/external/xquerybinary.h"
-
+#include "errors/Error_impl.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -39,6 +39,9 @@ zorba::zorba()
 {
 	coll = NULL;
 	current_xquery = NULL;
+	current_xqueryresult = NULL;
+
+	m_error_manager = new ZorbaErrorAlertsImpl;
 }
 
 
@@ -46,6 +49,8 @@ zorba::~zorba()
 {
 	if(coll)
 		delete coll;
+
+	delete m_error_manager;
 }
 
 
@@ -127,6 +132,11 @@ static_context* zorba::get_static_context()///of the current xquery
 	if(!current_xquery)
 		return NULL;
 	return &current_xquery->internal_static_context;
+}
+
+ZorbaErrorAlertsImpl* zorba::getErrorManager()
+{ 
+	return m_error_manager;
 }
 
 //library*	zorba::get_library()

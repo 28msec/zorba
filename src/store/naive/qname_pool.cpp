@@ -6,6 +6,8 @@ namespace xqp
 {
 
 QNamePool* QNameImpl::theQNamePool = NULL;
+//const xqp_unsignedLong QNamePool::MAX_CACHE_SIZE = 65536;
+const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
 
 
 
@@ -19,7 +21,7 @@ QNamePool* QNameImpl::theQNamePool = NULL;
 /*******************************************************************************
 
 ********************************************************************************/
-QNamePool::QNamePool(ulong size) 
+QNamePool::QNamePool(xqp_unsignedLong size) 
   :
   theCache(new QNameImpl[size]),
   theCacheSize(size),
@@ -30,7 +32,7 @@ QNamePool::QNamePool(ulong size)
   theLoadFactor(DEFAULT_LOAD_FACTOR)
 {
   // Put all the preallocated slots in the free list of the cahce.
-  for (ulong i = 1; i < size - 1; i++)
+  for (xqp_unsignedLong i = 1; i < size - 1; i++)
   {
     theCache[i].theNextFree = i + 1;
     theCache[i].thePrevFree = i - 1;
@@ -57,15 +59,15 @@ QNamePool::QNamePool(ulong size)
 QNamePool::~QNamePool() 
 {
 #if 0
-  ulong n = theOverflow.size();
-  for (ulong i = 0; i < n; i++)
+  xqp_unsignedLong n = theOverflow.size();
+  for (xqp_unsignedLong i = 0; i < n; i++)
   {
     if (theOverflow[i] != NULL)
       delete theOverflow[i];
   }
 #else
-  ulong n = theHashTab.size();
-  for (ulong i = 0; i < n; i++)
+  xqp_unsignedLong n = theHashTab.size();
+  for (xqp_unsignedLong i = 0; i < n; i++)
   {
     if (theHashTab[i].theQName != NULL && theHashTab[i].theQName->isOverflow())
       ::delete theHashTab[i].theQName;
@@ -193,12 +195,12 @@ void QNamePool::remove(QNameImpl* qn)
 QNamePool::HashEntry*
 QNamePool::hash(const char* ns, const char* pre, const char* ln)
 {
-  ulong len;
+  xqp_unsignedLong len;
   HashEntry* entry;
   HashEntry* lastentry;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
+  xqp_unsignedLong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
   entry = &theHashTab[ hval % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new qname.
@@ -273,12 +275,12 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
 ********************************************************************************/
 void QNamePool::unhash(const char* ns, const char* pre, const char* ln)
 {
-  ulong len;
+  xqp_unsignedLong len;
   HashEntry* entry;
   HashEntry* preventry = NULL;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
+  xqp_unsignedLong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
   entry = &theHashTab[ hval % theHashTabSize];
 
   // If the hash bucket is empty, the qname is not in the hash table.
@@ -353,7 +355,7 @@ void QNamePool::resizeHashTab()
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  ulong oldsize = oldTab.size();
+  xqp_unsignedLong oldsize = oldTab.size();
 
   theHashTabSize <<= 1;
 
@@ -366,11 +368,11 @@ void QNamePool::resizeHashTab()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (ulong i = 0; i < oldsize; i++)
+  for (xqp_unsignedLong i = 0; i < oldsize; i++)
   {
     QNameImpl* qn = oldTab[i].theQName;
 
-    ulong h = hashfun::h32(qn->thePrefix.c_str(),
+    xqp_unsignedLong h = hashfun::h32(qn->thePrefix.c_str(),
                            hashfun::h32(qn->theLocal.c_str(),
                                         hashfun::h32(qn->theNamespace.c_str())));
     entry = &theHashTab[h % theHashTabSize];

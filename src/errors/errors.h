@@ -228,6 +228,8 @@ public:
 
 };
 
+//typedef rchandle<error_messages>		error_messages_t;
+
 class errors_english : public error_messages
 {
 public:

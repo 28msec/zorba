@@ -9,8 +9,10 @@
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "compiler/parser/xquery_driver.h"
 #include "util/zorba.h"
-#include "store/naive/basic_item_factory.h"
-#include "store/naive/simple_store.h"
+//#include "store/naive/basic_item_factory.h"
+//#include "store/naive/simple_store.h"
+
+#include "api/serialization/serializer.h"
 
 //#include "../../test/timer.h"
 
@@ -29,6 +31,8 @@ Zorba_XQueryBinary::Zorba_XQueryBinary( const char* query_text ) :
 	lStateSize = 0;
 
 	//addReference();
+//	xquery_registered_callback = NULL;
+//	xquery_registered_param = NULL;
 }
 
 //Zorba_XQueryBinary::Zorba_XQueryBinary()
@@ -41,7 +45,13 @@ Zorba_XQueryBinary::~Zorba_XQueryBinary()
 
 bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 {
+	zorba	*thread_specific_zorba;
+
+	thread_specific_zorba = zorba::getZorbaForCurrentThread();
+	thread_specific_zorba->current_xquery = this;
 	
+	try{
+
 	if(is_compiled)
 	{
 		ZORBA_ERROR_ALERT(error_messages::API0004_XQUERY_ALREADY_COMPILED,
@@ -49,17 +59,10 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 																	NULL,
 																	true///continue execution
 																	);
+		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
 
-	///init thread
-	//check if thread is inited, if not do automatic init
-	///and register this xquery as the current xquery executed/compiling in this current thread
-	zorba	*thread_specific_zorba;
-
-	thread_specific_zorba = zorba::getZorbaForCurrentThread();
-	thread_specific_zorba->current_xquery = this;
-//	RegisterCurrentXQueryForCurrentThread( this );
 
 	///reset the error list from error manager
 //	m_error_manager.clear();///delete all alerts from list
@@ -152,12 +155,12 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 
 	if (e_h==NULL) {
 		cout << "e_h==NULL\n";
-		thread_specific_zorba->current_xquery = NULL;
 		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED,
 																	error_messages::STATIC_ERROR,
 																	NULL,
 																	true///continue execution
 																	);
+		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
 	e_h->put(cout) << endl;
@@ -189,13 +192,25 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 
 	is_compiled = true;
 
+	}
+	catch(xqp_exception &)
+	{
+		thread_specific_zorba->current_xquery = NULL;
+		return false;
+	}
+	catch(...)
+	{
+		thread_specific_zorba->current_xquery = NULL;
+		throw;
+	}
+
 	//UnregisterCurrentXQueryForCurrentThread( this );
 	thread_specific_zorba->current_xquery = NULL;
 
 	return true;
 }
 
-XQueryResult* Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
+XQueryResult_t Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 {
 	///init thread
 	//check if thread is inited, if not do automatic init
@@ -205,6 +220,8 @@ XQueryResult* Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 	thread_specific_zorba = zorba::getZorbaForCurrentThread();
 	thread_specific_zorba->current_xquery = this;
 //	RegisterCurrentXQueryForCurrentThread( this );
+
+	try{
 	
 	if(!is_compiled)
 	{
@@ -219,31 +236,42 @@ XQueryResult* Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 	}
 
 	///compute the offsets for each iterator into the state block
-	lStateSize = top_iterator->getStateSizeOfSubtree();
+	lStateSize = top_iterator->getStateSizeOfSubtree();//daniel: is this needed at every execution?
 	PlanState* stateBlock = new PlanState(lStateSize);
 	int32_t lOffset = 0;
 	top_iterator->setOffset(*stateBlock, lOffset);
 
-	Zorba_XQueryResult* zorba_result = new Zorba_XQueryResult;
+	Zorba_XQueryResult* zorba_result = new Zorba_XQueryResult();
 	zorba_result->it_result = top_iterator;
 	zorba_result->state_block = stateBlock;
 	zorba_result->state_block->zorp = thread_specific_zorba;
 	zorba_result->state_block->xqbinary = this;
 	///and construct the state block of state objects...
 
-
-
-
 	thread_specific_zorba->current_xquery = NULL;
 //	RegisterCurrentXQueryForCurrentThread( NULL );
 
 	return zorba_result;
+	}
+	catch(xqp_exception &)
+	{
+		thread_specific_zorba->current_xquery = NULL;
+		return NULL;
+	}
+	catch(...)
+	{
+		thread_specific_zorba->current_xquery = NULL;
+		throw;
+	}
+	
+	return NULL;
+
 }
 
-bool Zorba_XQueryBinary::isCompiled()
-{
-	return is_compiled;
-}
+//bool Zorba_XQueryBinary::isCompiled()
+//{
+//	return is_compiled;
+//}
 
 //QueryPtr Zorba_XQueryBinary::clone()
 //{
@@ -260,20 +288,70 @@ bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 	return false;
 }
 
+/*
+	Register the callback for the thread specific error manager
+*/
+/*
+void Zorba_XQueryBinary::RegisterAlertCallback(alert_callback	*user_alert_callback,
+																								void *param)
+{
+	xquery_registered_callback = user_alert_callback;
+	xquery_registered_param = param;
+}
+*/
+
+Zorba_XQueryResult::Zorba_XQueryResult()
+{
+}
 
 Zorba_XQueryResult::~Zorba_XQueryResult()
 {
   delete state_block;
 }
 
+void Zorba_XQueryResult::setAlertsParam(void *alert_callback_param)
+{
+	this->alert_callback_param = alert_callback_param;
+}
+
 /*
-	next() should be called in the same thread where the xquery was executed
+	next() should be called in the same thread where the xquery was called execute()
 */
 Item_t Zorba_XQueryResult::next()
 {
 	state_block->zorp->current_xquery = state_block->xqbinary;
+	state_block->zorp->current_xqueryresult = this;
 
-	return it_result->produceNext( *state_block );
+	try{
+
+	Item_t it = it_result->produceNext( *state_block );
+
+	state_block->zorp->current_xquery = NULL;
+	state_block->zorp->current_xqueryresult = NULL;
+
+	return it;
+	}
+	catch(xqp_exception &)
+	{
+		state_block->zorp->current_xquery = NULL;
+		state_block->zorp->current_xqueryresult = NULL;
+		return NULL;
+	}
+	catch(...)
+	{
+		state_block->zorp->current_xquery = NULL;
+		state_block->zorp->current_xqueryresult = NULL;
+		throw;
+	}
+
+	return NULL;
+}
+
+ostream& Zorba_XQueryResult::serializeXML( ostream& os )
+{
+	serializer ser;
+	ser.serialize(this, os);
+	return os;
 }
 
 }///end namespace xqp

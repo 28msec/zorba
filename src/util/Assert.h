@@ -11,25 +11,24 @@
 #define XQP_ASSERT_H
 
 #include <string>
-#include "errors/Error.h"
+//#include "errors/Error.h"
 
 namespace xqp {
 
-inline void ZorbaAssert(bool assertion, const char *where, const char *what)
-{
-	if (!assertion) {
-    ZorbaErrorAlerts::error_alert
-      (error_messages::XQP0005_SYSTEM_ASSERT_FAILED,
-       error_messages::SYSTEM_ERROR,
-       NULL, false,
-       what, where);
-	}
-}
+#ifdef _DEBUG
+
+void ZorbaAssert(bool assertion, const char *where, const char *what);
 
 #define __Assert_aux3( line ) #line
 #define __Assert_aux2( line ) __Assert_aux3( line )
 #define __Assert_aux1( cond, line ) ZorbaAssert (cond, __FILE__ ":" __Assert_aux2 (line), #cond)
 #define Assert( cond ) __Assert_aux1 (cond, __LINE__)
+
+#else //#ifdef _DEBUG
+
+#define Assert( cond )			cond
+
+#endif //#ifdef _DEBUG
 
 }	/* namespace xqp */
 #endif	/* XQP_ASSERT_H */

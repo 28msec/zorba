@@ -9,16 +9,15 @@
 //#include "errors/errors.h"
 #include "store/api/item.h"
 //#include "store/api/store.h"
-#include "errors/errors.h"
 #include "types/typecodes.h"
 #include "util/rchandle.h"
+#include "error_api.h"
 
 ///from ICU
 //#include <unicode/utypes.h>
 #include <unicode/coll.h>
 //#include <unicode/ustring.h>
 
-#include <list>
 
 //using namespace std;
 
@@ -36,104 +35,6 @@ class ItemFactory;
 class Store;
 
 
-class Zorba_QName
-{
-};
-
-class Zorba_Items
-{
-};
-
-struct Zorba_ErrorLocation
-{
-	std::string		module_name;///empty if is main module
-
-	const char *filename;
-	const unsigned int line;
-	const unsigned int column;
-};
-
-class Zorba_AlertMessage
-{
-	typedef enum Zorba_AlertType
-	{
-		ERROR_ALERT,
-		WARNING_ALERT,
-		NOTIFICATION_ALERT,
-		FEEDBACK_REQUEST_ALERT,
-
-		USER_ERROR_ALERT,//fn:error
-		USER_TRACE_ALERT//fn:trace
-	};
-	
-	Zorba_AlertType		alert_type;
-
-	union
-	{
-		///for errors
-		struct
-		{	
-			error_messages::errcode			error_code;
-			error_messages::error_type	error_type;
-			bool is_fatal;
-		};
-		///for warnings
-		struct
-		{
-			error_messages::warning_code			warning_code;
-		//	Zorba_ErrorLocation warn_loc;///may contain no location (zero values)
-		};
-		///for notifications
-		struct
-		{
-			error_messages::NotifyEvent_code	notif_code;
-		};
-		///for user interaction
-		struct
-		{
-			error_messages::AskUserString_code ask_string;
-			error_messages::AskUserStringOptions_code ask_string_options;
-		};
-		///for user fn:error()
-		struct
-		{
-			Zorba_QName		err_name;
-			const Zorba_Items items_error;
-		};
-		///for user fn:trace()
-		struct
-		{
-			const Zorba_Items items_trace;
-		};
-	};
-
-	Zorba_ErrorLocation loc;///may contain no location (zero values)
-
-	///the user readable description; can be in other languages than english
-	std::string		alert_description;
-
-	time_t			time_of_alert;
-};
-
-
-//typedef	std::list<Zorba_AlertMessage>	Zorba_AlertList;
-
-///user might choose to receive the alerts through callback functions
-typedef int alert_callback(Zorba_AlertMessage *alert_mess);
-
-class Zorba_AlertsManager : public std::list<Zorba_AlertMessage>, public rcobject
-{
-	alert_callback	*registered_callback;
-public:
-	///register function to be called when error/warning/alert happens
-	///if callback function is NULL, then alerts are put in list
-	int RegisterAlertCallback(alert_callback	*user_alert_callback);
-};
-
-///alerts manager is a thread-specific global object
-///each thread has its own error manager
-Zorba_AlertsManager		*Zorba_getAlertsManagerForCurrentThread();
-
 
 
 
@@ -146,7 +47,11 @@ class XQueryResult : public rcobject
 public:
 	virtual ~XQueryResult() {};
 	virtual Item_t		next() = 0;
+	virtual void setAlertsParam(void *alert_callback_param) = 0;
+	virtual ostream& serializeXML( ostream& os ) = 0;
 };
+
+typedef rchandle<XQueryResult>		XQueryResult_t;
 
 /// the Static Context
 /// this class represents only the part that is the interface to the user
@@ -180,9 +85,9 @@ class DynamicQueryContext : public rcobject
 
 
 	///following is the input data; this is not duplicable between executions
-	virtual bool		SetVariable( Zorba_QName varname, XQueryResult *item_iter ) = 0;
-	virtual bool		SetVariable( Zorba_QName varname, Item_t &item ) = 0;
-	virtual bool		DeleteVariable( Zorba_QName varname ) = 0;
+	virtual bool		SetVariable( Zorba_QName *varname, XQueryResult *item_iter ) = 0;
+	virtual bool		SetVariable( Zorba_QName *varname, Item_t &item ) = 0;
+	virtual bool		DeleteVariable( Zorba_QName *varname ) = 0;
 
 
 	///register documents available through fn:doc() in xquery
@@ -199,9 +104,8 @@ class DynamicQueryContext : public rcobject
 
 class XQuery : public rcobject
 {
-		friend class XQueryPtr;
-protected:
     //XQuery( );
+public:
 		virtual ~XQuery() {};
 
 public:
@@ -212,15 +116,16 @@ public:
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false) = 0;
+    //virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false) = 0;
 
-    // execute the query and compile it if necessary
+    // execute the query 
 		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-    virtual XQueryResult* execute( DynamicQueryContext* = 0) = 0;
+		//alert_callback_param is the param to be passed to the error callback function when executing next()
+    virtual XQueryResult_t execute( DynamicQueryContext* = 0) = 0;
 
-    virtual bool isCompiled() = 0;
+    //virtual bool isCompiled() = 0;
 
     // clone the query (can be compiled or not compiled)
    // QueryPtr clone();
@@ -251,28 +156,40 @@ public:
 	///you can set a callback function into the error manager
 	///when executing the Query returns false, you can get the list of errors from the error manager
 //	Zorba_AlertsManager*		getAlertsManager();
+
+	//register a callback specific to this xquery object
+	//	virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
+	//																		void *param) = 0;
 };    
 
 typedef rchandle<XQuery>	XQuery_t;
 
+//class ZorbaFactory;
+//typedef rchandle<ZorbaFactory>		ZorbaFactory_t;
+
 class ZorbaFactory
 {
+private:
+	ZorbaFactory();
 public:
-	ZorbaFactory(ItemFactory*, Store*);
-	~ZorbaFactory();
+	static ZorbaFactory& instance();
+	static void		shutdownZorbaEngine();
 
-	void InitThread(//ItemFactory *item_factory,
+	void InitThread(
 									error_messages *em = NULL,
 									const char *collator_name = "root",
 									::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY
 									);
 	void UninitThread();
 
-  XQuery_t createQuery(const char* aQueryString);
+  XQuery_t createQuery(const char* aQueryString,
+											StaticQueryContext* = 0, 
+											bool routing_mode = false);
 
-//	void		destroyQuery( XQuery *query );
-
+	Zorba_AlertsManager&		getAlertsManagerForCurrentThread();
 };
+
+
 
 }//end namespace xqp
 
