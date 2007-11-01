@@ -1,7 +1,16 @@
 #!/bin/bash
-if valgrind --log-file-exactly=valgrind.log $ZORBA x.xq &> /dev/null && grep " 0 errors " valgrind.log >& /dev/null; then
+
+if which valgrind >/dev/null; then
+  VALGRIND='valgrind --log-file-exactly=valgrind.log'
+else
+  VALGRIND=""
+  echo "Valgrind not present. 0 errors " >valgrind.log
+fi
+
+if $VALGRIND $ZORBA x.xq &> /dev/null && grep " 0 errors " valgrind.log >& /dev/null; then
   echo NO_ERRORS
 else
   echo ERRORS
 fi
+
 test -f valgrind.log && chmod a+r valgrind.log
