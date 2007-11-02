@@ -33,6 +33,7 @@ public:
 	virtual Item_t		next();
 	virtual void setAlertsParam(void *alert_callback_param);
 	virtual ostream& serializeXML( ostream& os );
+	virtual bool isError();
 
 public:
 	PlanIter_t		it_result;
@@ -42,6 +43,7 @@ public:
 	PlanState		*state_block;
 
 	void			*alert_callback_param;
+	bool			is_error;
 };
 
 

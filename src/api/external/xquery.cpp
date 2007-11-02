@@ -302,6 +302,7 @@ void Zorba_XQueryBinary::RegisterAlertCallback(alert_callback	*user_alert_callba
 
 Zorba_XQueryResult::Zorba_XQueryResult()
 {
+	is_error = false;
 }
 
 Zorba_XQueryResult::~Zorba_XQueryResult()
@@ -333,6 +334,7 @@ Item_t Zorba_XQueryResult::next()
 	}
 	catch(xqp_exception &)
 	{
+		is_error = true;
 		state_block->zorp->current_xquery = NULL;
 		state_block->zorp->current_xqueryresult = NULL;
 		return NULL;
@@ -352,6 +354,11 @@ ostream& Zorba_XQueryResult::serializeXML( ostream& os )
 	serializer ser;
 	ser.serialize(this, os);
 	return os;
+}
+
+bool Zorba_XQueryResult::isError()
+{
+	return is_error;
 }
 
 }///end namespace xqp

@@ -49,6 +49,7 @@ public:
 	virtual Item_t		next() = 0;
 	virtual void setAlertsParam(void *alert_callback_param) = 0;
 	virtual ostream& serializeXML( ostream& os ) = 0;
+	virtual bool isError() = 0;
 };
 
 typedef rchandle<XQueryResult>		XQueryResult_t;

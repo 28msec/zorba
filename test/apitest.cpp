@@ -269,7 +269,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	errmanager.RegisterAlertCallback(apitest_alert_callback, (void*)101);
 
-
 	XQuery_t		query;
 	XQueryResult_t		result = NULL;
 	Item_t		it;
@@ -324,6 +323,10 @@ int _tmain(int argc, _TCHAR* argv[])
 				cout << it->show() << endl;
 		}
 	}
+	if(result->isError())
+	{
+		goto DisplayErrorsAndExit;
+	}
 
 	//delete result;
 	//delete query;
@@ -347,6 +350,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	return 0;
 
 DisplayErrorsAndExit:
+	cerr << endl << "Display all error list now:" << endl;
+
 	DisplayErrorListForCurrentThread();
 
 	zorba_factory.UninitThread();

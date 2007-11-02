@@ -80,7 +80,7 @@ void ZorbaErrorAlerts::error_alert(
 	if(!continue_execution)
 	{
 	//	cout << "Fatal Error:" << strloc << " : " << err_decoded << std::endl;
-abort ();
+//abort ();
 		throw xqp_exception("",//strloc.str(), 
 												err_decoded);
 	}
