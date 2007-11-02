@@ -35,6 +35,7 @@ namespace xqp
 {
 
 class XQueryResult;
+class serializer;
 
 class serializer : public rcobject
 {
@@ -60,31 +61,25 @@ public:
 
 protected:
 	// Serialization parameters
-	short int byte_order_mark; 			// "yes" or "no", implemented
-	short int cdata_section_elements; 	// TODO: list of expanded QNames
+	short int byte_order_mark;         // "yes" or "no", implemented
+	short int cdata_section_elements;  // TODO: list of expanded QNames
 	xqp_string doctype_public;
 	xqp_string doctype_system;
-	xqp_string encoding;				// TODO
-	short int escape_uri_attributes;	// TODO: yes/no requires unicode normalization
-	short int include_content_type;		// TODO: yes/no
-	xqp_string media_type;
-	short int method;					// an expanded QName: "xml", "html"
-	xqp_string normalization_form;		// TODO:   requires unicode normalization
-	short int omit_xml_declaration;		// "yes" or "no", implemented
-	short int standalone;				// implemented, TODO: add some validity checks
-	short int undeclare_prefixes;		// TODO: yes/no
-	void* use_character_maps;			// TODO: list of pairs
-	xqp_string version;
-	short int indent;					// "yes" or "no", implement
+	xqp_string encoding;               // TODO: support UTF-16 & other?
+	short int escape_uri_attributes;   // TODO: yes/no requires unicode normalization
+	short int include_content_type;    // yes/no, implemented
+	xqp_string media_type;             // string, implemented
+	short int method;                  // an expanded QName: "xml", "html"
+	xqp_string normalization_form;     // TODO:   requires unicode normalization
+	short int omit_xml_declaration;    // "yes" or "no", implemented
+	short int standalone;              // implemented, TODO: add some validity checks
+	short int undeclare_prefixes;      // TODO: yes/no, not clear
+	void* use_character_maps;          // TODO: list of pairs
+	xqp_string version;                // "1.0"
+	short int indent;                  // "yes" or "no", implement
 	
 protected: 	
 	static const xqp_string	END_OF_LINE;
-	enum {
-		INITIAL_STATE,
-    DOCUMENT_STARTED,
-		PREVIOUS_ITEM_WAS_TEXT,
-    PREVIOUS_ITEM_WAS_NODE
-	} state;
 	
 	typedef enum {
 		PARAMETER_VALUE_NO,
@@ -99,35 +94,70 @@ protected:
 	
 	void validate_parameters();
 
-	/**
-	 *  Normalizes the given sequence of items, as per XSLT 2.0 and 
-	 *  XQuery 1.0 Serialization rules, section 2.
-	 * 
-	 *  @return  result of the normalization
-	 */	
-	void normalize_sequence(list_type& items, list_type& out);
-	
-	/**
-	 *  The root function that performs the serialization
-	 *  of a normalized sequence.
-	 */
-	void emit_node(Item_t item, ostream& os, int depth);
-	
-	/**
-	 *  Serializes the given string, performing character expansion
-	 *  if necessary.
-	 */   
-	void emit_expanded_string(xqp_string, ostream& os, bool emit_attribute_value);
+  
+  class emitter
+  {
+  public:
+    emitter(serializer& the_serializer, ostream& output_stream);
+    
+    virtual void emit_declaration();
+    virtual void emit_declaration_end();
+    
+    /**
+     *  The root function that performs the serialization
+     *  of a normalized sequence.
+     */
+    virtual void emit_node(Item_t item, int depth, Item_t element_parent = NULL);
+    
+    /**
+     *  Serializes the given string, performing character expansion
+     *  if necessary.
+     */   
+    virtual void emit_expanded_string(xqp_string, bool emit_attribute_value);
+    
+    /**
+     *  Serializes the children of the given node, without
+     *  the node itself.
+     * 
+     *  @return  the number of node's children
+     */ 
+    virtual unsigned int emit_node_children(Item_t item, int depth, bool perform_escaping);
+    
+    //virtual unsigned int emit_node_namespaces(Item_t item, int depth);
+    //virtual unsigned int emit_node_attributes(Item_t item, int depth, bool perform_escaping);
+    //virtual unsigned int emit 
+    
+    virtual void emit_item(Item_t item);
 
-	/**
-	 *  Serializes the children of the given node, without
-	 *  the node itself.
-	 * 
-	 *  @return  the number of node's children
-	 */	
-	unsigned int emit_node_children(Item_t item, ostream& os, int depth, bool perform_escaping);
+    virtual void emit_indentation(int depth);
+  
+  protected:
+    serializer& ser;
+    ostream& os;
+    
+    enum {
+      INVALID_ITEM,   
+      PREVIOUS_ITEM_WAS_TEXT,
+      PREVIOUS_ITEM_WAS_NODE
+    } previous_item;
+  };
+  
+  class xml_emitter : public emitter
+  {
+  public:
+    xml_emitter(serializer& the_serializer, ostream& output_stream);
+    virtual void emit_declaration();    
+  };
 
-	void emit_indentation(int depth, ostream& os);
+  class html_emitter : public emitter
+  {
+  public:
+    html_emitter(serializer& the_serializer, ostream& output_stream);
+    virtual void emit_declaration();
+    virtual void emit_declaration_end();   
+    virtual void emit_node(Item_t item, int depth, Item_t element_parent = NULL); 
+  };
+  
 };
 
 } // namespace xqp

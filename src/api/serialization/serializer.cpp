@@ -32,118 +32,32 @@
 
 namespace xqp {
 
+  
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Default emitter
 
-const xqp_string serializer::END_OF_LINE = "\n";
-
-void serializer::reset()
-{
-	state = INITIAL_STATE;
-	version = "1.0";	
-	indent = PARAMETER_VALUE_NO;
-	standalone = PARAMETER_VALUE_OMIT;
-	omit_xml_declaration = PARAMETER_VALUE_NO;
-	byte_order_mark = PARAMETER_VALUE_NO;
-	undeclare_prefixes = PARAMETER_VALUE_NO;
-	method = PARAMETER_VALUE_XML;
+serializer::emitter::emitter(serializer& the_serializer, ostream& output_stream)
+  : ser(the_serializer), os(output_stream), previous_item(INVALID_ITEM)
+{  
 }
 
-serializer::serializer()
+void serializer::emitter::emit_declaration()
 {
-	reset();	
+  if (ser.byte_order_mark == PARAMETER_VALUE_YES )
+  {
+    // TODO: output BOM depending on given encoding
+    xqpString temp;
+    temp = ( uint32_t ) 0xFEFF;
+    os << temp;
+  }
 }
 
-serializer::~serializer()
+void serializer::emitter::emit_declaration_end()
 {
 }
 
-void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
-{
-	// TODO: add handled parameters translation
-	if (parameter_name == "standalone")
-	{
-		if (value == "yes")
-			standalone = PARAMETER_VALUE_YES;
-		else if (value == "no")
-			standalone = PARAMETER_VALUE_NO;
-		else if (value == "omit")
-			standalone = PARAMETER_VALUE_OMIT;
-		else
-		{
-			ZORBA_ERROR_ALERT(
-				error_messages::SEPM0016_Invalid_parameter_value,
-				error_messages::SYSTEM_ERROR,
-				NULL);
-		}
-	}
-	else if (parameter_name == "omit-xml-declaration")
-	{
-		if (value == "yes")
-			omit_xml_declaration = PARAMETER_VALUE_YES;
-		else if (value == "no")
-			omit_xml_declaration = PARAMETER_VALUE_NO;		
-		else
-		{
-			ZORBA_ERROR_ALERT(
-				error_messages::SEPM0016_Invalid_parameter_value,
-				error_messages::SYSTEM_ERROR,
-   				NULL);
-		}
-	}
-	else if (parameter_name == "byte-order-mark")
-	{
-		if (value == "yes")
-			byte_order_mark = PARAMETER_VALUE_YES;
-		else if (value == "no")
-			byte_order_mark = PARAMETER_VALUE_NO;
-		else
-		{
-			ZORBA_ERROR_ALERT(
-				error_messages::SEPM0016_Invalid_parameter_value,
-				error_messages::SYSTEM_ERROR,
-				NULL);
-		}
-	}
-	else if (parameter_name == "undeclare-prefixes")
-	{
-		if (value == "yes")
-			undeclare_prefixes = PARAMETER_VALUE_YES;
-		else if (value == "no")
-			undeclare_prefixes = PARAMETER_VALUE_NO;
-		else
-		{
-			ZORBA_ERROR_ALERT(
-				error_messages::SEPM0016_Invalid_parameter_value,
-				error_messages::SYSTEM_ERROR,
-				NULL);
-		}
-	}
-	else if (parameter_name == "method")
-	{
-		if (value == "xml")
-			method = PARAMETER_VALUE_XML;
-		else if (value == "html")
-			method = PARAMETER_VALUE_HTML;
-		else
-		{
-			ZORBA_ERROR_ALERT(
-			error_messages::SEPM0016_Invalid_parameter_value,
-			error_messages::SYSTEM_ERROR,
-			NULL);
-		}
-	}
-}
-
-void serializer::list_copy(list_type& dest, list_type& src)
-{
-	list_iterator<Item_t> it = src.begin();
-
-	for ( ; it != src.end(); ++it)
-	{
-		dest.push_back(*it);
-	}
-}
-
-void serializer::emit_expanded_string(xqp_string str, ostream& os, bool emit_attribute_value = false)
+// emit_attribute_value is set to true if the string expansion is performed on a value of an attribute
+void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribute_value = false)
 {
 	const char* chars = str.c_str();
 	int is_quote;
@@ -171,7 +85,10 @@ void serializer::emit_expanded_string(xqp_string str, ostream& os, bool emit_att
 		switch (*chars)
 		{
 		case '<':
-      if (method == PARAMETER_VALUE_HTML && emit_attribute_value)
+      /*
+        The HTML output method MUST NOT escape "<" characters occurring in attribute values.
+      */
+      if (ser.method == PARAMETER_VALUE_HTML && emit_attribute_value)
         os << *chars;
       else
         os << "&lt;";             
@@ -186,34 +103,51 @@ void serializer::emit_expanded_string(xqp_string str, ostream& os, bool emit_att
 			break;
 			
 		case '&':
-			is_quote = 0;
-			for (unsigned int j=1; j<str.bytes()-i; j++)
-			{
-				if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z') 
-					||
-					(*(chars+j) >= 'A' && *(chars+j) <= 'Z')
-					||
-					(*(chars+j) >= '0' && *(chars+j) <= '9')
-					||
-					(*(chars+j) == '#')))
-				{
-					break;				
-				}
+      /*
+        The HTML output method MUST NOT escape a & character occurring in an attribute value 
+        immediately followed by a { character (see Section B.7.1 of the HTML Recommendation [HTML]).
+      */      
+      if (ser.method == PARAMETER_VALUE_HTML && emit_attribute_value)
+      {
+        if (str.bytes()-i >= 1
+            &&
+            (*(chars+1) == '{'))
+          os << *chars;
+        else
+          os << "&amp;";
+      }
+      else
+      {      
+        is_quote = 0;
+        for (unsigned int j=1; j<str.bytes()-i; j++)
+        {
+				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'z') 
+            ||
+            (*(chars+j) >= 'A' && *(chars+j) <= 'Z')
+            ||
+            (*(chars+j) >= '0' && *(chars+j) <= '9')
+            ||
+            (*(chars+j) == '#')))
+				  {
+            break;				
+				  }
 				
-				if (*(chars+j) == ';' 
-					&&
-					(j>1))
-				{
-					is_quote = 1;
-					break;				
-				}
-			}
+				  if (*(chars+j) == ';' 
+            &&
+            (j>1))
+		  		{
+            is_quote = 1;
+            break;				
+				  }
+			 }
 			
-			if (is_quote)
-				os << *chars;
-			else
-				os << "&amp;";
-			break;
+			 if (is_quote)
+			   os << *chars;
+			 else
+				  os << "&amp;";
+      }
+      
+      break;      
 			
 		default:
 			os << *chars;
@@ -222,13 +156,13 @@ void serializer::emit_expanded_string(xqp_string str, ostream& os, bool emit_att
 	}	
 }
 
-void serializer::emit_indentation(int depth, ostream& os)
+void serializer::emitter::emit_indentation(int depth)
 {
 	for (int i=0; i<depth; i++)
 		os << "  ";
 }
 
-unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth, bool perform_escaping = true)
+unsigned int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform_escaping = true)
 {
 	Iterator_t it;
 	Item_t child;
@@ -242,14 +176,14 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth,
 	{
 		if (child->getNodeKind() == namespaceNode )
 		{
-			emit_node(child, os, depth);
+			emit_node(child, depth);
 			children_count++;			
 		}		
 		
 		child = it->next();
 	}
 	
-	/* TODO: uncomment when this will be implemented in the Item store
+	/* TODO: uncomment when this will be implemented in the Item store 
 	it = item->getNamespaceNodes();
 	child = it->next();
 	while (child != NULL )
@@ -262,14 +196,14 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth,
 		
 		child = it->next();
 	}
-	*/ 
-	
+  */
+		
 	// emit attributes 
 	it = item->getAttributes();
 	child = it->next();
 	while (child!= NULL)
 	{		
-		emit_node(child, os, depth);
+		emit_node(child, depth);
 		children_count++;		
     	child = it->next();
 	}
@@ -289,156 +223,490 @@ unsigned int serializer::emit_node_children(Item_t item, ostream& os, int depth,
 				closed_parent_tag = 1;
 			}
 
-			emit_node(child, os, depth);
+			emit_node(child, depth, item);
 			children_count++;
 		}
 
-    	child = it->next();
+    child = it->next();
 	}
 
 	return children_count;
 }
 
-void serializer::emit_node(Item_t item, ostream& os, int depth)
+void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_parent /* = NULL */)
 {
 	if( item->getNodeKind() == documentNode )
-	{
-		state = DOCUMENT_STARTED;
-		emit_node_children(item, os, depth+1);
+	{		
+		emit_node_children(item, depth+1);    
 	}
 	else if (item->getNodeKind() == elementNode)
 	{
-		if (indent)
-			emit_indentation(depth, os);
+    if (ser.indent)
+			emit_indentation(depth);
 		os << "<" << item->getNodeName()->getStringProperty();
 
-		unsigned int children_count = emit_node_children(item, os, depth);
+		unsigned int children_count = emit_node_children(item, depth);
 
 		if (children_count > 0)		
 			os << "</" << item->getNodeName()->getStringProperty() << ">";
 		else
 			os << "/>";
 
-		if (indent)
+    if (ser.indent)
 			os << serializer::END_OF_LINE;
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == attributeNode )
 	{
 		os << " " << item->getNodeName()->getStringProperty() << "=\"";
-		emit_expanded_string(item->getStringValue(), os, true);
+		emit_expanded_string(item->getStringValue(), true);
 		os << "\"";
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == namespaceNode)
 	{
 		os << " " << item->getNodeName()->getStringProperty() << "=\"";
-		emit_expanded_string(item->getStringValue(), os);
+		emit_expanded_string(item->getStringValue());
 		os << "\"";
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == textNode)
 	{		
-		emit_expanded_string(item->getStringProperty(), os);
+    if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+      os << " ";    
+		emit_expanded_string(item->getStringProperty());
+    previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
 	/*
 	else if (item->getNodeKind() == commentNode )
 	{
 		
+    state = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == piNode )
 	{
-	
+    state = PREVIOUS_ITEM_WAS_NODE;
 	}
 	*/
 	else 
 	{
-		os << "node of type: " << item->getNodeKind();
-		
+		os << "node of type: " << item->getNodeKind();		
 	}
+}
+
+void serializer::emitter::emit_item(Item_t item)
+{
+  if (item->isAtomic())
+  {
+    if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
+      os << " ";
+    emit_expanded_string(item->getStringProperty());
+    previous_item = PREVIOUS_ITEM_WAS_TEXT;
+  }
+  else
+  {
+    if (item->getNodeKind() == attributeNode
+        ||
+        item->getNodeKind() == namespaceNode)
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SENR0001_Item_is_attribute_or_namespace_node,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+    else        
+      emit_node(item, 0);
+  }  
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// XML emitter
+serializer::xml_emitter::xml_emitter(serializer& the_serializer, ostream& output_stream)
+  : emitter(the_serializer, output_stream)
+{   
+}
+
+void serializer::xml_emitter::emit_declaration()
+{
+  emitter::emit_declaration();
+
+  if (ser.omit_xml_declaration == PARAMETER_VALUE_NO )
+  {
+    os << "<?xml version=\"" << ser.version << "\" encoding=\"" << ser.encoding << "\"";
+    if ( ser.standalone != PARAMETER_VALUE_OMIT )
+    {
+      os << "standalone=\"";
+
+      if ( ser.standalone == PARAMETER_VALUE_YES )
+        os << "yes";
+      else
+        os << "no";
+
+      os << "\"";
+    }
+    os << "?>";
+
+    if ( ser.indent )
+      os << END_OF_LINE;
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// HTML emitter
+
+serializer::html_emitter::html_emitter(serializer& the_serializer, ostream& output_stream)
+  : emitter(the_serializer, output_stream)
+{   
+}
+
+void serializer::html_emitter::emit_declaration()
+{
+  emitter::emit_declaration();
+     
+  os << "<html>";
+  if (ser.indent)
+    os << END_OF_LINE;
+}
+
+void serializer::html_emitter::emit_declaration_end()
+{
+  os << "</html>";  
+}
+
+// returns true if there is a META element, as a child of a HEAD element,
+// with an attribute "http-equiv" with value "content-type"
+int is_content_type_meta(Item_t item, Item_t element_parent)
+{
+  Item_t child;
+  
+  if (element_parent == NULL)
+    return 0;
+  
+  // TODO: should find a function to compare strings ignore case
+  if ((element_parent->getNodeName()->getStringProperty() == "HEAD"
+      ||
+      element_parent->getNodeName()->getStringProperty() == "head")
+      &&
+      (item->getNodeName()->getStringProperty() == "META"
+      ||
+      item->getNodeName()->getStringProperty() == "meta"))
+  {    
+    // iterate through attributes
+    Iterator_t it = item->getAttributes();
+    Item_t child = it->next();
+    while (child!= NULL)
+    { 
+      if (child->getNodeName()->getStringProperty() == "http-equiv"
+          &&
+          child->getStringValue() == "content-type")
+        return 1;        
+      
+      child = it->next();
+    }    
+  }
+  
+  return 0;
+}
+
+int is_html_empty_element(Item_t item)
+{
+  // TODO: case should be ignored
+  if (item->getNodeName()->getStringProperty() == "area"
+      ||
+      item->getNodeName()->getStringProperty() == "base"
+      ||
+      item->getNodeName()->getStringProperty() == "basefont"
+      ||
+      item->getNodeName()->getStringProperty() == "br"
+      ||
+      item->getNodeName()->getStringProperty() == "col"
+      ||
+      item->getNodeName()->getStringProperty() == "frame"
+      ||
+      item->getNodeName()->getStringProperty() == "hr"
+      ||
+      item->getNodeName()->getStringProperty() == "img"
+      ||
+      item->getNodeName()->getStringProperty() == "input"
+      ||
+      item->getNodeName()->getStringProperty() == "isindex"
+      ||
+      item->getNodeName()->getStringProperty() == "link"
+      ||
+      item->getNodeName()->getStringProperty() == "meta"
+      ||
+      item->getNodeName()->getStringProperty() == "param")
+    return 1;
+  else
+    return 0;
+}
+
+void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_parent)
+{
+  if (item->getNodeKind() == elementNode)
+  {
+    unsigned int children_count = 0;
+    
+    /*
+      If a meta element has been added to the head element as described above, then any existing 
+      meta element child of the head element having an http-equiv attribute with the value "Content-Type" 
+      MUST be discarded.
+    */
+    if (ser.include_content_type == PARAMETER_VALUE_YES 
+        &&
+        element_parent != NULL
+        &&
+        is_content_type_meta(item, element_parent))
+    {
+      // do not emit this element
+      return;      
+    }        
+    
+    if (ser.indent)
+      emit_indentation(depth);
+    os << "<" << item->getNodeName()->getStringProperty();
+    
+    /*
+      If there is a head element, and the include-content-type parameter has the value yes, the 
+      HTML output method MUST add a meta element as the first child element of the head element 
+      specifying the character encoding actually used.
+    */
+    // TODO: ignore case
+    if (ser.include_content_type == PARAMETER_VALUE_YES
+        &&
+        (item->getNodeName()->getStringProperty() == "HEAD"
+         ||
+         item->getNodeName()->getStringProperty() == "head"))
+    {
+      os << "/>";
+      if (ser.indent)
+        os << serializer::END_OF_LINE;
+      if (ser.indent)
+        emit_indentation(depth+1);
+      os << "<meta http-equiv=\"content-type\" content=\"" << ser.media_type << "; charset=" << ser.encoding << "\">";
+      if (ser.indent)
+        os << serializer::END_OF_LINE;
+      children_count++;      
+    }
+
+    children_count += emit_node_children(item, depth);
+        
+    if (children_count > 0)   
+      os << "</" << item->getNodeName()->getStringProperty() << ">";
+    else
+    {
+      /* 
+        The HTML output method MUST NOT output an end-tag for empty elements. For HTML 4.0, the 
+        empty elements are area, base, basefont, br, col, frame, hr, img, input, isindex, link, 
+        meta and param. For example, an element written as <br/> or <br></br> in an XSLT stylesheet 
+        MUST be output as <br>.
+      */
+      if (is_html_empty_element(item) && ser.version == "4.0")
+        os << ">";      
+      else
+        os << "/>";
+    }
+    
+    if (ser.indent)
+      os << serializer::END_OF_LINE;
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
+  }
+  else if (item->getNodeKind() == textNode)
+  {
+    /*
+      The HTML output method MUST NOT perform escaping for the content of the script and style elements.
+    */
+    // TODO: ignore case
+    if (item->getNodeName()->getStringProperty() == "script"
+       ||
+        item->getNodeName()->getStringProperty() == "style")
+    {
+      if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+        os << " ";    
+      os << item->getStringProperty();  // no character expansion
+      previous_item = PREVIOUS_ITEM_WAS_TEXT;
+    }
+    else
+      emitter::emit_node(item, depth);
+  }
+  else
+    emitter::emit_node(item, depth);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Serializer
+
+const xqp_string serializer::END_OF_LINE = "\n";
+
+void serializer::reset()
+{ 
+  version = "1.0";  
+  indent = PARAMETER_VALUE_NO;
+  standalone = PARAMETER_VALUE_OMIT;
+  omit_xml_declaration = PARAMETER_VALUE_NO;
+  byte_order_mark = PARAMETER_VALUE_NO;
+  undeclare_prefixes = PARAMETER_VALUE_NO;
+  method = PARAMETER_VALUE_XML;
+  include_content_type = PARAMETER_VALUE_NO;
+  media_type = "";  
+  encoding = "UTF-8";  
+}
+
+serializer::serializer()
+{
+  reset();  
+}
+
+serializer::~serializer()
+{
+}
+
+void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
+{
+  // TODO: add handled parameters translation
+  if (parameter_name == "standalone")
+  {
+    if (value == "yes")
+      standalone = PARAMETER_VALUE_YES;
+    else if (value == "no")
+      standalone = PARAMETER_VALUE_NO;
+    else if (value == "omit")
+      standalone = PARAMETER_VALUE_OMIT;
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
+  else if (parameter_name == "omit-xml-declaration")
+  {
+    if (value == "yes")
+      omit_xml_declaration = PARAMETER_VALUE_YES;
+    else if (value == "no")
+      omit_xml_declaration = PARAMETER_VALUE_NO;    
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
+  else if (parameter_name == "byte-order-mark")
+  {
+    if (value == "yes")
+      byte_order_mark = PARAMETER_VALUE_YES;
+    else if (value == "no")
+      byte_order_mark = PARAMETER_VALUE_NO;
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
+  else if (parameter_name == "undeclare-prefixes")
+  {
+    if (value == "yes")
+      undeclare_prefixes = PARAMETER_VALUE_YES;
+    else if (value == "no")
+      undeclare_prefixes = PARAMETER_VALUE_NO;
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
+  else if (parameter_name == "method")
+  {
+    if (value == "xml")
+      method = PARAMETER_VALUE_XML;
+    else if (value == "html")
+      method = PARAMETER_VALUE_HTML;
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
+  else if (parameter_name == "include-content-type")
+  {
+    if (value == "yes")
+      include_content_type = PARAMETER_VALUE_YES;
+    else if (value == "no")
+      include_content_type = PARAMETER_VALUE_NO;
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
+  else if (parameter_name == "media-type")
+  {
+    media_type = value;    
+  }
+}
+
+void serializer::list_copy(list_type& dest, list_type& src)
+{
+  list_iterator<Item_t> it = src.begin();
+
+  for ( ; it != src.end(); ++it)
+  {
+    dest.push_back(*it);
+  }
 }
 
 void serializer::validate_parameters(void)
 {
-	if (omit_xml_declaration == PARAMETER_VALUE_YES)
-	{		
-		if (standalone != PARAMETER_VALUE_OMIT
-			/*||
-			(version != "1.0" && doctype_system is specified*/ )
-		{
-			// throw SEPM0009
-		}
-	}
+  if (omit_xml_declaration == PARAMETER_VALUE_YES)
+  {   
+    if (standalone != PARAMETER_VALUE_OMIT
+      /*||
+        (version != "1.0" && doctype_system is specified*/ )
+    {
+      // throw SEPM0009
+    }
+  }
 }
 
-//daniel void serializer::serialize_as_xml(PlanIter_t iter, ostream& os)
 void serializer::serialize(XQueryResult *result, ostream& os)
 {
-//daniel	PlanIterWrapper iw(iter);
-	Item_t item;
-	
-	validate_parameters();
-	
-	// os << "\n--- Serialization ---------------\n";
-	
-	if (byte_order_mark == PARAMETER_VALUE_YES)
-	{
-		// TODO: output BOM depending on given encoding
-		xqpString temp;
-		temp = (uint32_t)0xFEFF;
-		os << temp;
-	}
-	
-	if (omit_xml_declaration == PARAMETER_VALUE_NO)
-	{
-		os << "<?xml version=\"" << version << "\" encoding=\"UTF-8\"";
-		if (standalone != PARAMETER_VALUE_OMIT)
-		{
-			os << "standalone=\"";
-			
-			if (standalone == PARAMETER_VALUE_YES)
-				os << "yes";
-			else
-				os << "no";
-			
-			os << "\"";
-		}	
-		os << "?>";
-		
-		if (indent)
-			os << END_OF_LINE;
-	}
+  emitter* e;
+	validate_parameters();  
+    
+  if (method == PARAMETER_VALUE_XML)
+    e = new xml_emitter(*this, os);
+  else if (method == PARAMETER_VALUE_HTML)
+    e = new html_emitter(*this, os);
+  else
+  {
+    ZORBA_ERROR_ALERT(
+                      error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                      error_messages::SYSTEM_ERROR,
+                      NULL);
+  }
+  
+  e->emit_declaration();
 
-	//daniel item = iw.next();	
-	item = result->next();
+	Item_t item = result->next();
 	while (item != NULL )
 	{
-		if (item->isAtomic())
-		{
-      if (state == PREVIOUS_ITEM_WAS_TEXT )
-        os << " ";
-			emit_expanded_string(item->getStringProperty(), os);      
-      state = PREVIOUS_ITEM_WAS_TEXT;
-		}
-		else
-		{
-			if (item->getNodeKind() == attributeNode
-				||
-				item->getNodeKind() == namespaceNode)
-			{
-				ZORBA_ERROR_ALERT(
-					error_messages::SENR0001_Item_is_attribute_or_namespace_node,
-					error_messages::SYSTEM_ERROR,
-					NULL);
-			}
-			else
-				emit_node(item, os, 0);
-      
-      state = PREVIOUS_ITEM_WAS_NODE;
-		}
-
-		//daniel item = iw.next();
+    e->emit_item(item);
 		item = result->next();
 	}
-	
-	// os << "\n--- end -------------------------\n";
+  
+  e->emit_declaration_end();
+  delete e;
 }
 
 } // namespace xqp
