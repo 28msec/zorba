@@ -31,7 +31,7 @@ namespace xqp {
 
 ////////////////////////////////Error handling interface //////////////////
 typedef rchandle<Item> Item_t;
-class ItemFactory;
+
 class Store;
 
 
