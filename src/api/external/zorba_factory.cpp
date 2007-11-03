@@ -13,18 +13,10 @@
 namespace xqp{
 
 ///temporary stuff
-BasicItemFactory g_basicItemFactory;
 SimpleStore g_simpleStore;
-
-ItemFactory* ZorbaStore_getItemFactory()
-{
-//	g_basicItemFactory.addReference();
-	return &g_basicItemFactory;
-}
 
 Store* ZorbaStore_getStore()
 {
-//	g_simpleStore.addReference();
 	return &g_simpleStore;
 }
 
@@ -38,8 +30,7 @@ ZorbaFactory&	ZorbaFactory::instance()
 	if(!g_ZorbaFactory)
 	{
 		g_ZorbaFactory = new ZorbaFactory;
-		zorba::initializeZorbaEngine( ZorbaStore_getItemFactory(),
-																	ZorbaStore_getStore());
+		zorba::initializeZorbaEngine(ZorbaStore_getStore());
 	}
 	return *g_ZorbaFactory;
 }
