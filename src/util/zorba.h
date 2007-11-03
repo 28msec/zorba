@@ -49,24 +49,23 @@ class zorba
 {
 	friend class ZorbaFactory;
 public:
-	static SequenceTypeManager		theSequenceTypeManager;///a global var
-	static ItemFactory*	itemFactory;///global per application
+	static SequenceTypeManager theSequenceTypeManager;///a global var
 	static Store*				theStore;
 
 protected:
-	std::string		coll_string;
-	::Collator::ECollationStrength		coll_strength;
-	::Collator			*coll;///object used in unicode string processing (using ICU)
+	std::string           coll_string;
+	::Collator::ECollationStrength coll_strength;
+	::Collator           *coll;///object used in unicode string processing (using ICU)
 
-	yy::location	null_loc;
-
+	yy::location	        null_loc;
+ 
 public:///things specific for each thread
-	Zorba_XQueryBinary								*current_xquery;//current xquery executed for this thread
+	Zorba_XQueryBinary                *current_xquery;//current xquery executed for this thread
 	Zorba_XQueryResult								*current_xqueryresult;
 	std::stack<const PlanIterator*>	current_iterator;
 
 protected:
-	ZorbaErrorAlertsImpl*		m_error_manager;
+	ZorbaErrorAlertsImpl*		  m_error_manager;
 
 
 	///functions for accessing global zorba objects for each thread
@@ -78,11 +77,13 @@ protected:
 public:
 	ZorbaErrorAlertsImpl* getErrorManager();
 	static SequenceTypeManager* getSequenceTypeManager();
-	::Collator				*getCollator();
+	::Collator* getCollator();
 	yy::location& GetCurrentLocation();//from top iterator
-	static ItemFactory		*getItemFactory();
-	static Store* getStore();
 	
+  static ItemFactory* getItemFactory() { return &theStore->getItemFactory(); }
+
+  static Store* getStore() { return theStore; }
+
 	static_context* get_static_context();///of the current xquery
 //	library*				get_library();
 
@@ -93,7 +94,7 @@ protected:
 #elif defined ZORBA_FOR_ONE_THREAD_ONLY
 #elif defined ZORBA_USE_PTHREAD_LIBRARY
 	static pthread_key_t		tls_key;
-	void static zorba_tls_destructor( void *tls_data);
+	void static zorba_tls_destructor(void *tls_data);
 #elif defined ZORBA_USE_BOOST_THREAD_LIBRARY
 	static thread_specific_ptr<zorba>			tls_key;
 #else
@@ -102,16 +103,14 @@ protected:
 #endif
 
 protected:
-	static void initializeZorbaEngine_internal(ItemFactory *itemFactory,
-																					 Store *store);
+	static void initializeZorbaEngine_internal(Store *store);
 //	static void initializeThread_internal(zorba *new_zorba, 
 //																			error_messages *em,
 //																			char *collator_name,///="root"
 //																			::Collator::ECollationStrength collator_strength);//=Collator::PRIMARY
 	static void uninitializeZorbaEngine_internal();
 public:
-	static void		initializeZorbaEngine(ItemFactory *itemFactory,
-																					 Store *store);
+	static void		initializeZorbaEngine(Store *store);
 	static void		uninitializeZorbaEngine();
 
 	static zorba* getZorbaForCurrentThread();
