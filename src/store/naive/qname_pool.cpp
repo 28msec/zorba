@@ -6,7 +6,7 @@ namespace xqp
 {
 
 QNamePool* QNameImpl::theQNamePool = NULL;
-//const xqp_unsignedLong QNamePool::MAX_CACHE_SIZE = 65536;
+
 const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
 
 
@@ -32,15 +32,16 @@ QNamePool::QNamePool(xqp_unsignedLong size)
   theLoadFactor(DEFAULT_LOAD_FACTOR)
 {
   // Put all the preallocated slots in the free list of the cahce.
-  for (xqp_unsignedLong i = 1; i < size - 1; i++)
+  QNameImpl* qn = &theCache[1];
+  QNameImpl* last = qn + size - 1;
+
+  for (xqp_unsignedLong i = 1; qn < last; qn++, i++)
   {
-    theCache[i].theNextFree = i + 1;
-    theCache[i].thePrevFree = i - 1;
-    theCache[i].thePosition = i;
+    qn->theNextFree = i + 1;
+    qn->thePrevFree = i - 1;
+    qn->thePosition = i;
   }
-  theCache[size-1].theNextFree = 0;
-  theCache[size-1].thePrevFree = size - 2;
-  theCache[size-1].thePosition = size - 1;
+  qn->theNextFree = 0;
 
   // Allocate the hash table. Its initial size is double the size of theCache,
   // plus an inital 32 overflow entries.
@@ -200,7 +201,9 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
   HashEntry* lastentry;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  xqp_unsignedLong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
+  xqp_unsignedLong hval = hashfun::h32(pre,
+                                       hashfun::h32(ln,
+                                                    hashfun::h32(ns))) % theHashTabSize;
   entry = &theHashTab[ hval % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new qname.
@@ -280,7 +283,9 @@ void QNamePool::unhash(const char* ns, const char* pre, const char* ln)
   HashEntry* preventry = NULL;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  xqp_unsignedLong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
+  xqp_unsignedLong hval = hashfun::h32(pre,
+                                       hashfun::h32(ln,
+                                                    hashfun::h32(ns))) % theHashTabSize;
   entry = &theHashTab[ hval % theHashTabSize];
 
   // If the hash bucket is empty, the qname is not in the hash table.
