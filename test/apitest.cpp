@@ -253,10 +253,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	///now start the zorba engine
 
-//	BasicItemFactory basicItemFactory;
-//	SimpleStore simpleStore;
-//	ZorbaFactory	zorba_factory(&basicItemFactory, &simpleStore);
-	
 	ZorbaFactory&		zorba_factory = ZorbaFactory::instance();
 
 	///thread specific
