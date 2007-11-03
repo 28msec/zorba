@@ -427,15 +427,6 @@ namespace xqp
 			}
 
 			/** Accessor for element node
-			 *  @return  node*
-			 */
-			virtual Iterator_t getNamespaceNodes() const
-			{
-				this->showError();
-				return NULL;
-			}
-
-			/** Accessor for element node
 			 *  @return  boolean?
 			 */
 			virtual xqp_boolean getNilled() const

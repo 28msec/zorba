@@ -99,7 +99,6 @@ class ElementNodeNaive : public ElementNode
   virtual Iterator_t getAttributes() const;
   virtual Iterator_t getChildren() const;
   virtual std::set<std::pair<xqp_string, xqp_string> > getNamespaceBindings() const;
-  virtual Iterator_t getNamespaceNodes() const;
   virtual bool getNilled() const;
   virtual QNameItem_t getNodeName() const;
   virtual Iterator_t getTypedValue() const;

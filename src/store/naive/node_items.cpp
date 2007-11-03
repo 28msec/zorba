@@ -219,12 +219,6 @@ std::set<std::pair<xqp_string, xqp_string> > ElementNodeNaive::getNamespaceBindi
 }
 
 
-Iterator_t ElementNodeNaive::getNamespaceNodes() const
-{
-  return this->namespaces->getIterator();
-}
-
-
 bool ElementNodeNaive::getNilled() const
 {
   Iterator_t iter = this->children->getIterator();
