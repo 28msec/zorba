@@ -101,7 +101,7 @@ protected:
 
     HashEntry() : theQName(NULL), theNext(NULL) { }
 
-    ~HashEntry() { theQName = NULL; theNext = NULL; }
+    ~HashEntry() { }
 
     bool isFree() const { return theQName == NULL; } 
   };
@@ -112,13 +112,13 @@ public:
 
 protected:
   QNameImpl*                theCache;
-  xqp_unsignedLong                     theCacheSize;
-  xqp_unsignedLong                     theFirstFree;
-  xqp_unsignedLong                     theNumFree;
+  xqp_unsignedLong          theCacheSize;
+  xqp_unsignedLong          theFirstFree;
+  xqp_unsignedLong          theNumFree;
 
   //std::vector<QNameImpl *> theOverflow;
 
-  xqp_unsignedLong                     theNumQNames;
+  xqp_unsignedLong          theNumQNames;
 
   std::vector<HashEntry>    theHashTab;
   xqp_unsignedLong          theHashTabSize;
@@ -133,6 +133,7 @@ public:
 
   void remove(QNameImpl* qn);
 
+protected:
   HashEntry* hash(const char* ns, const char* pre, const char* ln);
   void unhash(const char* ns, const char* pre, const char* ln);
   void resizeHashTab();
