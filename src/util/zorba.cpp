@@ -30,7 +30,6 @@ using namespace std;
 namespace xqp {
 
 SequenceTypeManager		zorba::theSequenceTypeManager;///a global var
-ItemFactory*	zorba::itemFactory;///global per application
 Store*				zorba::theStore;
 
 
@@ -56,14 +55,11 @@ zorba::~zorba()
 
 ///some common functions for TLS
 
-void zorba::initializeZorbaEngine_internal(
-    ItemFactory *item_factory,
-    Store *store)
+void zorba::initializeZorbaEngine_internal(Store *store)
 {
 	static_context::init();
 	dynamic_context::init();
 
-	zorba::itemFactory = item_factory;
 	zorba::theStore = store;
 }
 
@@ -71,7 +67,6 @@ void zorba::initializeZorbaEngine_internal(
 void zorba::uninitializeZorbaEngine_internal()
 {
 	theStore = NULL;
-	itemFactory = NULL;
 }
 
 
@@ -112,15 +107,6 @@ yy::location& zorba::GetCurrentLocation()//from top iterator
 		return (yy::location&)(current_iterator.top()->loc);
 }
 
-ItemFactory* zorba::getItemFactory()
-{
-	return &*itemFactory;
-}
-
-Store* zorba::getStore()
-{
-	return &*theStore;
-}
 
 SequenceTypeManager* zorba::getSequenceTypeManager()
 {
@@ -155,11 +141,11 @@ DWORD		zorba::tls_key = 0;
 
 
 void		
-zorba::initializeZorbaEngine(ItemFactory *itemFactory, Store *store)
+zorba::initializeZorbaEngine(Store *store)
 {
 	zorba::tls_key = TlsAlloc();
 
-	initializeZorbaEngine_internal( itemFactory, store );
+	initializeZorbaEngine_internal(store);
 
 }
 
@@ -214,10 +200,9 @@ zorba		g_zorba;
 
 
 void		
-zorba::initializeZorbaEngine(ItemFactory *itemFactory,
-																					 Store *store)
+zorba::initializeZorbaEngine(Store *store)
 {
-	initializeZorbaEngine_internal( itemFactory, store );
+	initializeZorbaEngine_internal(store);
 }
 
 void		
@@ -261,11 +246,10 @@ zorba::zorba_tls_destructor( void *tls_data)
 }
 
 void		
-zorba::initializeZorbaEngine(ItemFactory *itemFactory,
-														 Store *store)
+zorba::initializeZorbaEngine(Store *store)
 {
 	pthread_key_create( &zorba::tls_key, zorba_tls_destructor);
-	initializeZorbaEngine_internal( itemFactory, store );
+	initializeZorbaEngine_internal(store);
 }
 
 void		
@@ -311,9 +295,9 @@ zorba::destroyZorbaForCurrentThread()//when ending the thread
 thread_specific_ptr<zorba>			zorba::tls_key;
 
 void		
-zorba::initializeZorbaEngine(ItemFactory *itemFactory, Store *store)
+zorba::initializeZorbaEngine(Store *store)
 {
-	initializeZorbaEngine_internal( itemFactory, store );
+	initializeZorbaEngine_internal(store);
 }
 
 void		
@@ -356,11 +340,10 @@ std::map<uint64_t, zorba*>		zorba::global_zorbas;
 pthread_mutex_t								zorba::global_zorbas_mutex;// = PTHREAD_MUTEX_INITIALIZER;
 
 void		
-zorba::initializeZorbaEngine(ItemFactory *itemFactory,
-															Store *store)
+zorba::initializeZorbaEngine(Store *store)
 {
 	pthread_mutex_init(&global_zorbas_mutex, NULL);
-	initializeZorbaEngine_internal( itemFactory, store );
+	initializeZorbaEngine_internal(store);
 }
 
 void		
