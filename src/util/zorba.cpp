@@ -55,12 +55,12 @@ zorba::~zorba()
 
 ///some common functions for TLS
 
-void zorba::initializeZorbaEngine_internal(Store *store)
+void zorba::initializeZorbaEngine_internal(Store& store)
 {
 	static_context::init();
 	dynamic_context::init();
 
-	zorba::theStore = store;
+	zorba::theStore = &store;
 }
 
 
@@ -141,7 +141,7 @@ DWORD		zorba::tls_key = 0;
 
 
 void		
-zorba::initializeZorbaEngine(Store *store)
+zorba::initializeZorbaEngine(Store& store)
 {
 	zorba::tls_key = TlsAlloc();
 
@@ -200,7 +200,7 @@ zorba		g_zorba;
 
 
 void		
-zorba::initializeZorbaEngine(Store *store)
+zorba::initializeZorbaEngine(Store& store)
 {
 	initializeZorbaEngine_internal(store);
 }
@@ -246,7 +246,7 @@ zorba::zorba_tls_destructor( void *tls_data)
 }
 
 void		
-zorba::initializeZorbaEngine(Store *store)
+zorba::initializeZorbaEngine(Store& store)
 {
 	pthread_key_create( &zorba::tls_key, zorba_tls_destructor);
 	initializeZorbaEngine_internal(store);
@@ -295,7 +295,7 @@ zorba::destroyZorbaForCurrentThread()//when ending the thread
 thread_specific_ptr<zorba>			zorba::tls_key;
 
 void		
-zorba::initializeZorbaEngine(Store *store)
+zorba::initializeZorbaEngine(Store& store)
 {
 	initializeZorbaEngine_internal(store);
 }
@@ -340,7 +340,7 @@ std::map<uint64_t, zorba*>		zorba::global_zorbas;
 pthread_mutex_t								zorba::global_zorbas_mutex;// = PTHREAD_MUTEX_INITIALIZER;
 
 void		
-zorba::initializeZorbaEngine(Store *store)
+zorba::initializeZorbaEngine(Store& store)
 {
 	pthread_mutex_init(&global_zorbas_mutex, NULL);
 	initializeZorbaEngine_internal(store);

@@ -103,14 +103,14 @@ protected:
 #endif
 
 protected:
-	static void initializeZorbaEngine_internal(Store *store);
+	static void initializeZorbaEngine_internal(Store& store);
 //	static void initializeThread_internal(zorba *new_zorba, 
 //																			error_messages *em,
 //																			char *collator_name,///="root"
 //																			::Collator::ECollationStrength collator_strength);//=Collator::PRIMARY
 	static void uninitializeZorbaEngine_internal();
 public:
-	static void		initializeZorbaEngine(Store *store);
+	static void		initializeZorbaEngine(Store& store);
 	static void		uninitializeZorbaEngine();
 
 	static zorba* getZorbaForCurrentThread();
