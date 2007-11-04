@@ -1,6 +1,5 @@
 ///Created: Daniel Turcanu @ IPDevel 
 
-#include "util/singleton.h"
 #include "zorba_api.h"
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
