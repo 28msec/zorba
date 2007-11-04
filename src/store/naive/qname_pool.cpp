@@ -41,7 +41,7 @@ QNamePool::QNamePool(xqp_unsignedLong size)
     qn->thePrevFree = i - 1;
     qn->thePosition = i;
   }
-  qn->theNextFree = 0;
+  (--qn)->theNextFree = 0;
 
   // Allocate the hash table. Its initial size is double the size of theCache,
   // plus an inital 32 overflow entries.
