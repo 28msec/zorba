@@ -33,7 +33,7 @@ void DisplayFnUserTrace(const Zorba_FnTraceMessage *fn_trace);
 
 void DisplayErrorListForCurrentThread()
 {
-	ZorbaFactory&		zorba_factory = ZorbaFactory::instance();
+	ZorbaFactory&		zorba_factory = ZorbaFactory::getInstance();
 
 	Zorba_AlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
@@ -253,7 +253,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	///now start the zorba engine
 
-	ZorbaFactory&		zorba_factory = ZorbaFactory::instance();
+	ZorbaFactory& zorba_factory = ZorbaFactory::getInstance();
 
 	///thread specific
 
