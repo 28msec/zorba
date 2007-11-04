@@ -1,7 +1,9 @@
 ///Created: Daniel Turcanu @ IPDevel 
 
+#include "util/singleton.h"
 #include "zorba_api.h"
 #include "store/api/item_factory.h"
+#include "store/api/store.h"
 #include "xquerybinary.h"
 #include "util/zorba.h"
 #include "errors/Error_impl.h"
@@ -12,27 +14,23 @@
 
 namespace xqp{
 
-///temporary stuff
-SimpleStore g_simpleStore;
-
-Store* ZorbaStore_getStore()
-{
-	return &g_simpleStore;
-}
-
-////end temporary
 
 ZorbaFactory	*g_ZorbaFactory = NULL;
 
 
-ZorbaFactory&	ZorbaFactory::instance()
+ZorbaFactory&	ZorbaFactory::getInstance()
 {
 	if(!g_ZorbaFactory)
 	{
 		g_ZorbaFactory = new ZorbaFactory;
-		zorba::initializeZorbaEngine(ZorbaStore_getStore());
+		zorba::initializeZorbaEngine(Store::getInstance());
 	}
 	return *g_ZorbaFactory;
+}
+
+ItemFactory& ZorbaFactory::getItemFactory()
+{
+  return Store::getInstance().getItemFactory();
 }
 
 void ZorbaFactory::shutdownZorbaEngine()

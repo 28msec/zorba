@@ -99,7 +99,9 @@ protected:
   {
   public:
     emitter(serializer& the_serializer, ostream& output_stream);
-    
+
+    virtual ~emitter() { }
+
     virtual void emit_declaration();
     virtual void emit_declaration_end();
     
