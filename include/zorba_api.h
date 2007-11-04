@@ -79,6 +79,7 @@ public:
 */
 };
 
+
 class DynamicQueryContext : public rcobject
 {
 	int			current_date_time;
@@ -86,17 +87,17 @@ class DynamicQueryContext : public rcobject
 
 
 	///following is the input data; this is not duplicable between executions
-	virtual bool		SetVariable( Zorba_QName *varname, XQueryResult *item_iter ) = 0;
-	virtual bool		SetVariable( Zorba_QName *varname, Item_t &item ) = 0;
-	virtual bool		DeleteVariable( Zorba_QName *varname ) = 0;
+	virtual bool SetVariable( Zorba_QName *varname, XQueryResult *item_iter ) = 0;
+	virtual bool SetVariable( Zorba_QName *varname, Item_t &item ) = 0;
+	virtual bool DeleteVariable( Zorba_QName *varname ) = 0;
 
 
 	///register documents available through fn:doc() in xquery
-	virtual bool			RegisterAvailableDocument(xqp_string docURI,
+	virtual bool RegisterAvailableDocument(xqp_string docURI,
 																			xqp_string store_docURI) = 0;
 	///register collections available through fn:collection() in xquery
 	///default collection has empty URI ""
-	virtual bool			RegisterAvailableCollection(xqp_string collectionURI,
+	virtual bool RegisterAvailableCollection(xqp_string collectionURI,
 																			xqp_string store_collectionURI) = 0;
 };
 
@@ -166,39 +167,36 @@ public:
 typedef rchandle<XQuery>	XQuery_t;
 
 //class ZorbaFactory;
-//typedef rchandle<ZorbaFactory>		ZorbaFactory_t;
 
 class ZorbaFactory
 {
 private:
 	ZorbaFactory();
+
 public:
-	static ZorbaFactory& instance();
-	static void		shutdownZorbaEngine();
+	static ZorbaFactory& getInstance();
+
+	static void shutdownZorbaEngine();
+
+  static ItemFactory& getItemFactory();
 
 	void InitThread(
-									error_messages *em = NULL,
-									const char *collator_name = "root",
-									::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY
-									);
+        error_messages *em = NULL,
+        const char *collator_name = "root",
+        ::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY);
+
 	void UninitThread();
 
-  XQuery_t createQuery(const char* aQueryString,
-											StaticQueryContext* = 0, 
-											bool routing_mode = false);
+  XQuery_t createQuery(
+        const char* aQueryString,
+        StaticQueryContext* = 0, 
+        bool routing_mode = false);
 
-	Zorba_AlertsManager&		getAlertsManagerForCurrentThread();
+	Zorba_AlertsManager& getAlertsManagerForCurrentThread();
 };
 
 
 
 }//end namespace xqp
 
-
-
-
-
-
-
 #endif
-
