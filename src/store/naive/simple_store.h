@@ -25,12 +25,19 @@ class Requester;
 
 class SimpleStore : public Store
 {
+  friend class Store;
+
 protected:
   BasicItemFactory  theItemFactory;
 
-public:
+private:
   SimpleStore();
   virtual ~SimpleStore();
+
+public:
+  void init() { }
+
+  void deinit() { }
 
   virtual ItemFactory& getItemFactory() { return theItemFactory; }
 

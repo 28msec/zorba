@@ -20,12 +20,17 @@ template <class Object> class rchandle;
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 
+typedef rchandle<class NamespaceBindings> NamespaceBindings_t;
+
 
 class NamespaceBindings : public rcobject
 {
  private:
-  std::set<std::pair<xqp_string, xqp_string> >   theBindings;
-  NamespaceBindings                            * theParentSet;
+  std::vector<std::pair<xqp_string, xqp_string> >  theBindings;
+  NamespaceBindings_t                              theParentSet;
+
+  bool                                             theMore;
+  Iterator_t                                       theBindingsIter;
 };
 
 
@@ -63,12 +68,12 @@ class DocumentNodeNaive : public DocumentNode
 class ElementNodeNaive : public ElementNode
 {
  private:
-  QNameItem_t name;
-  TypeCode type;
+  QNameItem_t          name;
+  TypeCode             type;
 
-  TempSeq_t children;
-  TempSeq_t attributes;
-  TempSeq_t namespaces;
+  TempSeq_t            theChildren;
+  TempSeq_t            theAttributes;
+  TempSeq_t  theNamespaceBindings;
 
  public:
   ElementNodeNaive (
@@ -162,8 +167,8 @@ class NamespaceNodeNaive : public NamespaceNode
   xqp_string uri;
 
  public:
-  NamespaceNodeNaive ( const Item_t& parent, xqp_string& prefix, xqp_string& uri );
-  NamespaceNodeNaive ( xqp_string prefix, xqp_string uri );
+  NamespaceNodeNaive(const Item_t& parent, xqp_string& prefix, xqp_string& uri);
+  NamespaceNodeNaive(xqp_string prefix, xqp_string uri);
   virtual ~NamespaceNodeNaive();
 
   virtual Item_t getAtomizationValue() const;

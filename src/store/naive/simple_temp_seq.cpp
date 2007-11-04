@@ -15,7 +15,7 @@ namespace xqp
 		Item_t curItem = iterator->next();
 		while ( curItem != NULL )
 		{
-			this->items.push_back ( curItem );
+			theItems.push_back ( curItem );
 			curItem = iterator->next();
 		}
 	}
@@ -27,7 +27,7 @@ namespace xqp
 	Iterator_t 
 	SimpleTempSeq::getIterator()
 	{
-		return new SimpleTempSeqIter ( &this->items );
+		return new SimpleTempSeqIter ( &theItems );
 	}
 	
 	Iterator_t 
@@ -59,7 +59,7 @@ namespace xqp
 	{
 		if ( this->containsItem( position ))
 		{
-			return this->items[position - 1];
+			return theItems[position - 1];
 		}
 		else
 		{
@@ -70,7 +70,7 @@ namespace xqp
 	bool
 	SimpleTempSeq::containsItem ( int32_t position)
 	{
-		return int32_t ( this->items.size() ) >= position;
+		return int32_t ( theItems.size() ) >= position;
 	}
 	
 	void 
@@ -100,40 +100,68 @@ namespace xqp
 	bool 
 	SimpleTempSeq::empty()
 	{
-		return this->items.size() == 0;
+		return theItems.size() == 0;
 	}
+
 	
-	SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter (const std::vector<Item_t>* items_arg )
+SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
+    const std::vector<Item_t>* items)
 	:
-		items ( items_arg ), borderType ( none ), curPos ( -1 ) {}
+  theItems(items),
+  theBorderType(none),
+  theCurPos(-1)
+{
+}
 
-	SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter( const std::vector<Item_t>* items_arg, int startPos_arg, int endPos_arg )
+
+SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
+    const std::vector<Item_t>* items,
+    int startPos,
+    int endPos)
 	:
-		items ( items_arg ), borderType ( startEnd ), curPos ( startPos_arg - 2 ), startPos ( startPos_arg ), endPos ( endPos_arg ) {}
+		theItems(items),
+    theBorderType(startEnd),
+    theCurPos(startPos - 2),
+    theStartPos(startPos),
+    theEndPos(endPos)
+{
+}
 
-	SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter (const std::vector<Item_t>* items_arg, const std::vector<int32_t>& positions_arg )
+
+SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
+    const std::vector<Item_t>* items,
+    const std::vector<int32_t>& positions)
 	:
-		items ( items_arg ), borderType ( specificPositions ), curPos ( -1 ), positions ( positions_arg ) {}
+		theItems(items),
+    theBorderType(specificPositions),
+    theCurPos(-1),
+    thePositions(positions)
+{
+}
 
-	SimpleTempSeq::SimpleTempSeqIter::~SimpleTempSeqIter() {}
 
-	Item_t 
-	SimpleTempSeq::SimpleTempSeqIter::next()
-	{
-		this->curPos++;
-		switch ( this->borderType )
+SimpleTempSeq::SimpleTempSeqIter::~SimpleTempSeqIter()
+{
+}
+
+
+Item_t 
+SimpleTempSeq::SimpleTempSeqIter::next()
+{
+		theCurPos++;
+		switch (theBorderType)
 		{
 			case none:
-				if ( this->curPos < int32_t ( this->items->size() ) )
-					return ( *(this->items) ) [this->curPos];
+				if ( theCurPos < int32_t ( theItems->size() ) )
+					return ( *(theItems) ) [theCurPos];
 				break;
 			case startEnd:
-				if ( this->curPos < this->endPos )
-					return ( *(this->items) ) [this->curPos];
+				if ( theCurPos < theEndPos )
+					return ( *(theItems) ) [theCurPos];
 				break;
 			case specificPositions:
-				if ( this->curPos < int32_t ( this->positions.size() ) )
-					return ( *(this->items) ) [this->positions[this->curPos]];
+				if ( theCurPos < int32_t ( thePositions.size() ) )
+					return ( *(theItems) ) [thePositions[theCurPos]];
 				break;
 		}
 		return NULL;
@@ -142,14 +170,14 @@ namespace xqp
 	void 
 	SimpleTempSeq::SimpleTempSeqIter::reset()
 	{
-		switch ( this->borderType )
+		switch (theBorderType)
 		{
 			case startEnd:
-				this->curPos = this->startPos - 2;
+				theCurPos = theStartPos - 2;
 				break;
 			case none:
 			case specificPositions:
-				this->curPos = -1;
+				theCurPos = -1;
 				break;
 		}
 	}

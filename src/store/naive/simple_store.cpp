@@ -29,6 +29,7 @@ SimpleStore::SimpleStore()
 ********************************************************************************/
 SimpleStore::~SimpleStore()
 {
+  deinit();
 }
 
 

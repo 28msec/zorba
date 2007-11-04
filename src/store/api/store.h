@@ -37,9 +37,22 @@ class Requester;
 class Store
 {
 public:
-  virtual ~Store(){}
-	
+  static Store& getInstance();
+
+public:
+  virtual ~Store() { }
+
   /*---------------------------- Zorba Engine Internal ----------------------------*/
+
+  /**
+   * Initialize the store.
+   */
+  virtual void init() = 0;
+
+  /**
+   * Deinitialize the store.
+   */
+  virtual void deinit() = 0;
 
   /**
    *  Get the item factory used by this store.
@@ -60,7 +73,7 @@ public:
    * Possibility to change the Garbage Collection strategy of the store.
    * @param garbageCollectionStrategy
    */
-  virtual void setGarbageCollectionStrategy(const xqp_string& garbageCollectionStrategy) = 0;
+  virtual void setGarbageCollectionStrategy(const xqp_string& strategy) = 0;
 		
   /**
    * Applies a pending update list on this store
@@ -78,7 +91,7 @@ public:
    */
   virtual void apply(PUL_t pendingUpdateList, Requester requester) = 0;
 		
-  /* ------------------------------------- Reference Management ------------------------------------*/
+  /* -------------------------- Reference Management --------------------------*/
 		
   /** 
    * Computes the URI of the passed item.
@@ -119,7 +132,7 @@ public:
    */
   virtual Item_t getNodeByReference(Item_t, Requester requester, Timetravel timetravel) = 0;
 		
-  /* ------------------------------------- Node Id Management ------------------------------------*/
+  /* --------------------------- Node Id Management ---------------------------*/
 		
   /** Compares two items, based on their id.
    * @param item1
@@ -144,7 +157,7 @@ public:
   virtual Iterator_t distinctNodeStable(Iterator_t) = 0;
 	
 		
-  /* ------------------------ Collection Management ------------------------------------*/
+  /* ------------------------ Collection Management ---------------------------*/
 		
   /** Returns an XDM instance which is saved in the store 
    * (corresponds to the opening of a connection to a database)

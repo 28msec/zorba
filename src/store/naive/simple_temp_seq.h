@@ -15,59 +15,81 @@
 namespace xqp
 {
 
-	/** Very simple implementation of Temp Sequence. It saves the resulting items of an iterator eager in a vector.
-		*/
-	class SimpleTempSeq : public TempSeq
+/**
+ * Very simple implementation of Temp Sequence. It saves the resulting items
+ * of an iterator eager in a vector.
+ */
+class SimpleTempSeq : public TempSeq
+{
+ private:
+  std::vector<Item_t> theItems;
+
+ public:
+  SimpleTempSeq(Iterator_t iterator);
+
+ SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
+
+  virtual ~SimpleTempSeq();
+
+  virtual Iterator_t getIterator();
+
+  virtual Iterator_t getIterator(
+        int32_t startPos,
+        int32_t endPos,
+        bool streaming = false);
+
+  virtual Iterator_t getIterator(
+        int32_t startPos,
+        Iterator_t function,
+        const std::vector<var_iterator>& var,
+        bool streaming = false );
+
+  virtual Iterator_t getIterator(
+        const std::vector<int32_t>& positions,
+        bool streaming = false);
+
+  virtual Iterator_t getIterator(
+        Iterator_t positions,
+        bool streaming = false);
+
+  virtual Item_t getItem ( int32_t position );
+  virtual bool containsItem( int32_t position );
+
+  virtual void purge();
+  virtual void purgeUpTo(int32_t upTo );
+  virtual void purgeItem(const std::vector<int32_t>& positions );
+  virtual void purgeItem(int32_t position );
+  virtual bool empty();
+
+  class SimpleTempSeqIter : public Iterator
 	{
-		private:
-			std::vector<Item_t> items;
+  private:
+    enum BorderType
+    {
+      none,
+      startEnd,
+      specificPositions
+    };
 
-		public:
-			SimpleTempSeq ( Iterator_t iterator );
-			virtual ~SimpleTempSeq();
+    const std::vector<Item_t>* theItems;
+    BorderType                 theBorderType;
 
-			virtual Iterator_t getIterator();
-			virtual Iterator_t getIterator ( int32_t startPos, int32_t endPos, bool streaming = false );
-			virtual Iterator_t getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& var, bool streaming = false );
-			virtual Iterator_t getIterator ( const std::vector<int32_t>& positions, bool streaming = false );
-			virtual Iterator_t getIterator ( Iterator_t positions, bool streaming = false );
-			virtual Item_t getItem ( int32_t position );
-			virtual bool containsItem( int32_t position );
-			virtual void purge();
-			virtual void purgeUpTo ( int32_t upTo );
-			virtual void purgeItem ( const std::vector<int32_t>& positions );
-			virtual void purgeItem ( int32_t position );
-			virtual bool empty();
+    int32_t                    theCurPos;
+    int32_t                    theStartPos;
+    int32_t                    theEndPos;
+    std::vector<int32_t>       thePositions;
+    
+  public:
+    SimpleTempSeqIter(const std::vector<Item_t>* items);
+    SimpleTempSeqIter(const std::vector<Item_t>* items, int startPos, int endPos);
+    SimpleTempSeqIter(const std::vector<Item_t>* items, const std::vector<int32_t>& positions);
+    ~SimpleTempSeqIter();
 
-		class SimpleTempSeqIter : public Iterator
-			{
-				private:
-					enum BorderType
-					{
-						none,
-						startEnd,
-						specificPositions
-					};
+    Item_t next();
+    void reset();
+  };
 
-					const std::vector<Item_t>* items;
-					BorderType borderType;
-
-					int32_t curPos;
-					int32_t startPos;
-					int32_t endPos;
-					std::vector<int32_t> positions;
-
-				public:
-					SimpleTempSeqIter (const std::vector<Item_t>* items_arg );
-					SimpleTempSeqIter( const std::vector<Item_t>* items_arg, int startPos_arg, int endPos_arg );
-					SimpleTempSeqIter (const std::vector<Item_t>* items_arg, const std::vector<int32_t>& positions_arg );
-					~SimpleTempSeqIter();
-
-					Item_t next();
-					void reset();
-			};
-
-	}; /* class SimpleTempSeq */
+}; /* class SimpleTempSeq */
 
 } /* namespace xqp */
 
