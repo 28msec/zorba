@@ -1,3 +1,5 @@
+
+#include "zorba_api.h"
 #include "store/naive/atomic_items.h"
 #include "util/test_types.h"
 #include "typesystem.h"
@@ -71,8 +73,11 @@ TypeSystem::TypeSystem()
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
 
-#if 0
-#define XSQNDECL(var, local) rchandle<QNameItem> var = new QNameItemNaive(XS_URI, XS_PREFIX, local)
+#if 1
+#define XSQNDECL(var, local)                               \
+        rchandle<QNameItem> var =                          \
+            ZorbaFactory::getInstance().getItemFactory().  \
+            createQName(XS_URI, XS_PREFIX, local)
 #else
 #define XSQNDECL(var, local)
 #endif
