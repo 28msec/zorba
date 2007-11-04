@@ -379,10 +379,10 @@ class FLWORIterator : public Batcher<FLWORIterator>
 	
 public:
 	class ForLetClause{ //Combines FOR and LET to avoid dynamic casts
-	  private:
-		   enum ForLetType {FOR, LET};
+    friend class FLWORIterator;
 	  
-	  private:
+	  protected:
+      enum ForLetType {FOR, LET};   
 		   ForLetType type;
 		   std::vector<var_iter_t> forVars;
 		   std::vector<var_iter_t> posVars;
@@ -397,6 +397,10 @@ public:
 	   */
 	  ForLetClause(std::vector<var_iter_t> forVars, PlanIter_t& input);
 	  ForLetClause(std::vector<var_iter_t> forVars, std::vector<var_iter_t> posVars, PlanIter_t& input);
+   
+  public:
+    
+    std::ostream& show(  std::ostream& os) const;
 	  
 	  /**
 	   * Creates a new LetClause
@@ -436,7 +440,21 @@ private:
   PlanIter_t whereClause; //can be null
   FLWORIterator::OrderByClause* orderByClause;  //can be null
   PlanIter_t returnClause;
-	
+  bool whereClauseReturnsBooleanPlus;    
+  const int bindingsNb;
+  //State
+  int* varBindingState;
+  
+protected:
+    class ElementContentState : public PlanIteratorState
+    {
+      public:
+        xqp_string theString;
+        Item_t     theContextItem;
+
+        void init();
+    };   
+  
 public:
 	/**
 	   * Constructor
@@ -461,6 +479,10 @@ public:
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(PlanState& planState, int32_t& offset);
+  std::ostream& _show ( std::ostream& os ) const;
+  
+private:
+	bool bindVariable(int varNb, PlanState& planState);
 };
 
 }	/* namespace xqp */
