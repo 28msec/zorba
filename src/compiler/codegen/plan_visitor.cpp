@@ -148,18 +148,22 @@ void plan_visitor::end_visit(const flwor_expr& v)
   cout << TRACE << endl;
   PlanIter_t ret = pop_itstack ();
   vector<FLWORIterator::ForLetClause> clauses;
+  stack<PlanIter_t> inputs;
+  for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
+       it != v.clause_end();
+       ++it)
+    inputs.push (pop_itstack ());
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
        it != v.clause_end();
        ++it) {
+    PlanIter_t input = inputs.top (); inputs.pop ();
     if ((*it)->type == forlet_clause::for_clause) {
       vector<var_iter_t> *var_iters;
       Assert (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
-      PlanIter_t input = pop_itstack ();
       clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input));
     } else if ((*it)->type == forlet_clause::let_clause) {
       vector<ref_iter_t> *var_iters;
       Assert (lvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
-      PlanIter_t input = pop_itstack ();
       clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input, true));
     }
   }
