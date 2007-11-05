@@ -27,7 +27,8 @@ typedef rchandle<class QNameItem> QNameItem_t;
 
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class TempSeq> TempSeq_t;
-	
+
+typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
 
 class ItemFactory
 {
@@ -432,9 +433,10 @@ public:
   virtual Item_t createElementNode (
 			    const QNameItem_t& name,
 			    TypeCode type,
-			    TempSeq_t& children,
-			    TempSeq_t& attributes,
-			    TempSeq_t& namespaces,
+			    TempSeq_t& seqChildren,
+			    TempSeq_t& seqAttributes,
+			    TempSeq_t& seqUris,
+          const NamespaceBindings& nsBindings,
 			    bool copy,
 			    bool newTypes,
 			    bool createId = false

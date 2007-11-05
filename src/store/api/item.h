@@ -31,7 +31,9 @@ namespace xqp
   typedef rchandle<class QNameItem> QNameItem_t;
 
 	typedef rchandle<class Iterator> Iterator_t;
-	
+
+  typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
+
 	/**
 	 * General iterator interface. Used to program iterators which return a
 	 * sequence of items, wrapped into a rchandle object for garbage collection
@@ -419,11 +421,11 @@ namespace xqp
 			/** Accessor for element node
 			 *  @return  returns prefix namespace pairs
 			 */
-			virtual std::set<std::pair<xqp_string, xqp_string> > getNamespaceBindings() const
+			virtual NamespaceBindings getNamespaceBindings() const
 			{
 				this->showError();
-				std::set<std::pair<xqp_string, xqp_string> > set;
-				return set;
+				std::vector<std::pair<xqp_string, xqp_string> > vec;
+				return vec;
 			}
 
 			/** Accessor for element node
