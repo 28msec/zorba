@@ -71,17 +71,24 @@ public:
 extern const char*		g_error_in_file;
 extern int						g_error_at_line;
 
-#define		ZORBA_ERROR_ALERT				\
-				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
-				ZorbaErrorAlerts::error_alert
+//#define		ZORBA_ERROR_ALERT				\
+//				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
+//				ZorbaErrorAlerts::error_alert
 
-#define		ZORBA_WARNING_ALERT		\
-				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
-				ZorbaErrorAlerts::warning_alert
+#define ZORBA_ERROR_ALERT(...) do { \
+    g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
+    ZorbaErrorAlerts::error_alert(__VA_ARGS__); \
+} while(0)
 
-#define		ZORBA_NOTIFY_EVENT		\
+#define		ZORBA_WARNING_ALERT(...) do { \
 				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
-				ZorbaErrorAlerts::notify_event
+				ZorbaErrorAlerts::warning_alert(__VA_ARGS__); \
+} while(0)
+
+#define		ZORBA_NOTIFY_EVENT(...) do { \
+				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
+				ZorbaErrorAlerts::notify_event(__VA_ARGS__); \
+} while(0)
 
 
 #else ///ifdef _DEBUG
