@@ -24,22 +24,27 @@ class zorba;
 
   ElementIterator computes a direct element constructor.
 
-  theQName      : The qname of the node (ns, pre, local)
-  theChildren   : The iterator that produces the child nodes of the new node.
-                  Normally, this will be an ElementContentIterator, followed
-                  by a ConcatIterator.
-  theAttributes : The iterator that produces the attributes of the new node.
-  theNamespaceBindings :
+  theQName          : The qname of the node (ns, pre, local)
+  theChildrenIter   : The iterator that produces the child nodes of the new node.
+                      This will ALWAYS be an ElementContentIterator, usually
+                      followed by a ConcatIterator.
+  theAttributesIter : The iterator that produces the attributes of the new node.
+  theNamespacesIter : This is to be used in the future, when it will be possible
+                      to have namespace declarations whose URI is not constant.
+  theNsBindings     : The (prefix, nsURI) pairs corrsponding to namespace
+                      declarations that appear in the opening tag of the
+                      element, and whose URI part is a contant. 
 
 ********************************************************************************/
 class ElementIterator : public Batcher<ElementIterator>
 {
 private:
-  QNameItem_t theQName;
-  PlanIter_t  theChildren;
-  PlanIter_t  theAttributes;
-  PlanIter_t  theNamespaceBindings;
-	
+  QNameItem_t       theQName;
+  PlanIter_t        theChildrenIter;
+  PlanIter_t        theAttributesIter;
+  PlanIter_t        theNamespacesIter;
+	std::vector<std::pair<xqpString, xqpString> > theNsBindings;
+
 public:
   ElementIterator(
         const yy::location& loc, 

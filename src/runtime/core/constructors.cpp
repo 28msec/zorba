@@ -11,6 +11,166 @@ using namespace std;
 namespace xqp
 {
 
+
+/*******************************************************************************
+
+********************************************************************************/
+ElementIterator::ElementIterator (
+    const yy::location& loc,
+    const QNameItem_t& qname,
+    PlanIter_t& children,
+    PlanIter_t& attributes)
+  :
+  Batcher<ElementIterator>(loc),
+  theQName(qname),
+  theChildrenIter(children),
+  theAttributesIter(attributes)
+{
+}
+
+
+Item_t
+ElementIterator::nextImpl(PlanState& planState)
+{
+  Item_t item;
+
+  Store* store = zorba::getStore();
+  TempSeq_t seqChildren;
+  TempSeq_t seqAttributes;
+  TempSeq_t seqNamespaces;
+	Iterator_t lIter0;
+	Iterator_t lIter1;
+	Iterator_t lIter2;
+
+  PlanIteratorState* state;
+  STACK_INIT2(PlanIteratorState, state, planState);
+		
+  if (theChildrenIter != NULL)
+  {
+    lIter0 = new PlanIterWrapper(theChildrenIter, planState);
+    seqChildren = store->createTempSeq(lIter0);
+  }
+
+  if (theAttributesIter != NULL)
+  {
+    lIter1 = new PlanIterWrapper(theAttributesIter, planState);
+    seqAttributes = store->createTempSeq(lIter1);
+  }
+
+  if (theNamespacesIter != NULL)
+  {
+    lIter2 = new PlanIterWrapper(theNamespacesIter, planState); 
+    seqNamespaces = store->createTempSeq(lIter2);
+  }
+
+  item = zorba::getItemFactory()->createElementNode(
+		           theQName,
+		           xs_anyType,
+		           seqChildren,
+		           seqAttributes,
+               seqNamespaces,
+               theNsBindings,
+		           false,
+		           false );
+
+  STACK_PUSH2(item, state);
+		
+  STACK_END2();
+}
+
+
+void
+ElementIterator::resetImpl(PlanState& planState)
+{
+  if ( theChildrenIter != NULL )
+    resetChild(theChildrenIter, planState);
+
+  if (theAttributesIter != NULL)
+    resetChild(theAttributesIter, planState);
+
+  if (theNamespacesIter != NULL)
+    resetChild(theNamespacesIter, planState);
+
+  PlanIterator::PlanIteratorState* state;
+  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  state->reset();
+}
+
+
+void
+ElementIterator::releaseResourcesImpl(PlanState& planState)
+{
+  if (theChildrenIter != NULL)
+    releaseChildResources(theChildrenIter, planState);
+
+  if (theAttributesIter != NULL)
+    releaseChildResources(theAttributesIter, planState);
+
+  if (theNamespacesIter != NULL)
+    releaseChildResources(theNamespacesIter, planState);
+}
+
+
+std::ostream&
+ElementIterator::_show(std::ostream& os) const
+{
+  os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
+
+  if (theAttributesIter != NULL)
+    theAttributesIter->show(os);
+
+  if (theChildrenIter != NULL)
+    theChildrenIter->show(os);
+
+  return os;
+}
+
+
+int32_t
+ElementIterator::getStateSize()
+{
+  return sizeof(PlanIterator::PlanIteratorState);
+}
+
+	
+int32_t
+ElementIterator::getStateSizeOfSubtree()
+{
+  int32_t size = 0;
+
+  if (theChildrenIter != NULL)
+    size += theChildrenIter->getStateSizeOfSubtree();
+
+  if (theAttributesIter != NULL)
+    size += theAttributesIter->getStateSizeOfSubtree();
+
+  if (theNamespacesIter != NULL)
+    size += theNamespacesIter->getStateSizeOfSubtree();
+
+  return this->getStateSize() + size;
+}
+
+	
+void
+ElementIterator::setOffset(PlanState& planState, int32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+
+  if (theChildrenIter != NULL)
+    theChildrenIter->setOffset(planState, offset);
+
+  if (theAttributesIter != NULL)
+    theAttributesIter->setOffset(planState, offset);
+
+  if (theNamespacesIter != NULL)
+    theNamespacesIter->setOffset(planState, offset);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 ElementContentIterator::ElementContentIterator(
     const yy::location& loc,
     PlanIter_t& childIter)
@@ -38,7 +198,8 @@ ElementContentIterator::nextImpl(PlanState& planState)
       }
       break;
     }
-    else if (state->theContextItem->isNode() && (state->theContextItem->getNodeKind() == textNode)) 
+    else if (state->theContextItem->isNode() &&
+             state->theContextItem->getNodeKind() == textNode) 
 		{
       state->theString += state->theContextItem->getStringProperty();
     }
@@ -94,158 +255,11 @@ void ElementContentIterator::ElementContentState::init()
   PlanIterator::PlanIteratorState::init();
   theString = "";
 }
-/* end class ElementContentIterator */
 
 
-/* begin class ElementIterator */
-ElementIterator::ElementIterator (
-    const yy::location& loc,
-    const QNameItem_t& qname,
-    PlanIter_t& children,
-    PlanIter_t& attributes)
-  :
-  Batcher<ElementIterator> ( loc ),
-  theQName ( qname ),
-  theChildren ( children ),
-  theAttributes ( attributes )
-{
-}
+/*******************************************************************************
 
-
-Item_t
-ElementIterator::nextImpl(PlanState& planState)
-{
-  Item_t item;
-
-  Store* store = zorba::getStore();
-  TempSeq_t seqChildren = NULL;
-  TempSeq_t seqAttributes = NULL;
-  TempSeq_t seqNamespaces = NULL;
-	Iterator_t lIter0;
-	Iterator_t lIter1;
-	Iterator_t lIter2;
-
-  PlanIteratorState* state;
-  STACK_INIT2(PlanIteratorState, state, planState);
-		
-  if (theChildren != NULL)
-  {
-    lIter0 = new PlanIterWrapper(theChildren, planState);
-    seqChildren = store->createTempSeq ( lIter0 );
-  }
-
-  if (theAttributes != NULL)
-  {
-    lIter1 = new PlanIterWrapper(theAttributes, planState);
-    seqAttributes = store->createTempSeq ( lIter1 );
-  }
-
-  if (theNamespaceBindings != NULL)
-  {
-    lIter2 = new PlanIterWrapper(theNamespaceBindings, planState); 
-    seqNamespaces = store->createTempSeq ( lIter2 );
-  }
-
-  item = zorba::getItemFactory()->createElementNode(
-		           theQName,
-		           xs_anyType,
-		           seqChildren,
-		           seqAttributes,
-		           seqNamespaces,
-		           false,
-		           false );
-
-  STACK_PUSH2(item, state);
-		
-  STACK_END2();
-}
-
-
-void
-ElementIterator::resetImpl(PlanState& planState)
-{
-  if ( theChildren != NULL )
-    resetChild(theChildren, planState);
-
-  if (theAttributes != NULL)
-    resetChild(theAttributes, planState);
-
-  PlanIterator::PlanIteratorState* state;
-  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
-  state->reset();
-}
-
-
-void
-ElementIterator::releaseResourcesImpl(PlanState& planState)
-{
-  if (theChildren != NULL)
-    releaseChildResources(theChildren, planState);
-
-  if (theAttributes != NULL)
-    releaseChildResources(theAttributes, planState);
-}
-
-
-std::ostream&
-ElementIterator::_show(std::ostream& os) const
-{
-  os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
-
-  if (theAttributes != NULL)
-    theAttributes->show(os);
-
-  if (theChildren != NULL)
-    theChildren->show(os);
-
-  return os;
-}
-
-
-int32_t
-ElementIterator::getStateSize()
-{
-  return sizeof(PlanIterator::PlanIteratorState);
-}
-
-	
-int32_t
-ElementIterator::getStateSizeOfSubtree()
-{
-  int32_t size = 0;
-
-  if (theChildren != NULL)
-    size += theChildren->getStateSizeOfSubtree();
-
-  if (theAttributes != NULL)
-    size += theAttributes->getStateSizeOfSubtree();
-
-  if (theNamespaceBindings != NULL)
-    size += theNamespaceBindings->getStateSizeOfSubtree();
-
-  return this->getStateSize() + size;
-}
-
-	
-void
-ElementIterator::setOffset(PlanState& planState, int32_t& offset)
-{
-  this->stateOffset = offset;
-  offset += this->getStateSize();
-
-  if (theChildren != NULL)
-    theChildren->setOffset(planState, offset);
-
-  if (theAttributes != NULL)
-    theAttributes->setOffset(planState, offset);
-
-  if (theNamespaceBindings != NULL)
-    theNamespaceBindings->setOffset(planState, offset);
-}
-
-
-
-
+********************************************************************************/
 AttributeIterator::AttributeIterator(
     const yy::location& loc,
     const QNameItem_t& qname,
