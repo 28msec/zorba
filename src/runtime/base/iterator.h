@@ -220,7 +220,7 @@ protected:
 protected:
 
 #if BATCHING_TYPE == 1	
-	inline static Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
   {
 		if (subIter->cItem == BATCHSIZE) {
 			subIter->produceNext(planState);
@@ -229,7 +229,7 @@ protected:
 		return subIter->batch[subIter->cItem++];
 	}
 #else
-	inline static Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
   {
 		return subIter->produceNext(planState);
 	}
