@@ -111,18 +111,19 @@ ElementNodeNaive::ElementNodeNaive (
     const Item_t& parent,
     const QNameItem_t& name,
     TypeCode type,
-    TempSeq_t& children,
-    TempSeq_t& attributes,
-    TempSeq_t& namespaces,
+    TempSeq_t& seqChildren,
+    TempSeq_t& seqAttributes,
+    TempSeq_t& seqNsUris,
+    const NamespaceBindings& nsBindings,
     bool copy,
     bool newTypes)
   :
   ElementNode(parent),
-  name(name),
-  type(type),
-  theChildren(children),
-  theAttributes(attributes),
-  theNamespaceBindings(namespaces)
+  theName(name),
+  theType(type),
+  theChildren(seqChildren),
+  theAttributes(seqAttributes),
+  theNsUris(seqNsUris)
 {
 }
 
@@ -130,17 +131,18 @@ ElementNodeNaive::ElementNodeNaive (
 ElementNodeNaive::ElementNodeNaive (
     const QNameItem_t& name,
     TypeCode type,
-    TempSeq_t& children,
-    TempSeq_t& attributes,
-    TempSeq_t& namespaces,
+    TempSeq_t& seqChildren,
+    TempSeq_t& seqAttributes,
+    TempSeq_t& seqNsUris,
+    const NamespaceBindings& nsBindings,
     bool copy,
     bool newTypes)
   :
-  name(name),
-  type(type),
-  theChildren(children),
-  theAttributes(attributes),
-  theNamespaceBindings(namespaces)
+  theName(name),
+  theType(type),
+  theChildren(seqChildren),
+  theAttributes(seqAttributes),
+  theNsUris(seqNsUris)
 {
 }
 
@@ -205,10 +207,10 @@ Iterator_t ElementNodeNaive::getChildren() const
 }
 
 
-std::set<std::pair<xqp_string, xqp_string> >
-ElementNodeNaive::getNamespaceBindings() const
+NamespaceBindings ElementNodeNaive::getNamespaceBindings() const
 {
-  std::set<std::pair<xqp_string, xqp_string> > bindings;
+  std::vector<std::pair<xqp_string, xqp_string> > bindings;
+  /*
   Iterator_t iter = theNamespaceBindings->getIterator();
   Item_t item = iter->next();
   
@@ -218,6 +220,7 @@ ElementNodeNaive::getNamespaceBindings() const
                                                  item->getNamespace() ) );
     item = iter->next();
   }
+  */
   return bindings;
 }
 
@@ -238,7 +241,7 @@ bool ElementNodeNaive::getNilled() const
 
 QNameItem_t ElementNodeNaive::getNodeName() const
 {
-  return this->name;
+  return theName;
 }
 
 
@@ -263,7 +266,7 @@ xqp_string ElementNodeNaive::show() const
 {
   xqp_string str;
 
-  str =  "<" + this->name->getLocalName();
+  str =  "<" + theName->getLocalName();
 
   if ( theAttributes != NULL )
   {
@@ -286,7 +289,7 @@ xqp_string ElementNodeNaive::show() const
       item = iter->next();
     }
   }
-  str += "</" + this->name->getStringProperty() + ">";
+  str += "</" + theName->getStringProperty() + ">";
   return str;
 }
 

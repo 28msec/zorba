@@ -207,41 +207,46 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Ite
 
 	Item_t BasicItemFactory::createUnsignedLong ( xqp_unsignedLong value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createUnsignedShort ( xqp_unsignedShort value ) { return Item_t ( NULL ); }
-
-
-Item_t BasicItemFactory::createDocumentNode (
-    xqp_string baseURI,
-    xqp_string docURI,
-    Iterator_t& children,
-    bool createId )
+Item_t BasicItemFactory::createUnsignedShort(xqp_unsignedShort value)
 {
   return Item_t ( NULL );
 }
 
 
-Item_t BasicItemFactory::createElementNode (
+Item_t BasicItemFactory::createDocumentNode(
+    xqp_string baseURI,
+    xqp_string docURI,
+    Iterator_t& children,
+    bool createId)
+{
+  return Item_t ( NULL );
+}
+
+
+Item_t BasicItemFactory::createElementNode(
     const QNameItem_t& name,
     TypeCode type,
     TempSeq_t& children,
     TempSeq_t& attributes,
-    TempSeq_t& namespaces,
+    TempSeq_t& nsUris,
+    const NamespaceBindings& nsBindings, 
     bool copy,
     bool newTypes,
-    bool createId ) 
+    bool createId)
 { 
   Item_t item = new ElementNodeNaive(name,
-                                type,
-                                children,
-                                attributes,
-                                namespaces,
-                                copy,
-                                newTypes); 
+                                     type,
+                                     children,
+                                     attributes,
+                                     nsUris,
+                                     nsBindings,
+                                     copy,
+                                     newTypes); 
   return item;
 }
 
 
-Item_t BasicItemFactory::createAttributeNode (
+Item_t BasicItemFactory::createAttributeNode(
     const QNameItem_t& name,
     TypeCode type,
     const Item_t& lexicalValue,
@@ -249,16 +254,16 @@ Item_t BasicItemFactory::createAttributeNode (
     bool createId ) 
 { 
   Item_t item = new AttributeNodeNaive(name,
-                                  type,
-                                  lexicalValue,
-                                  typedValue,
-                                  false,
-                                  false);
+                                       type,
+                                       lexicalValue,
+                                       typedValue,
+                                       false,
+                                       false);
   return item;
 }
 
 
-Item_t BasicItemFactory::createTextNode (
+Item_t BasicItemFactory::createTextNode(
     const xqp_string& value,
     bool createId ) 
 {

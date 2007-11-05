@@ -20,17 +20,17 @@ template <class Object> class rchandle;
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 
-typedef rchandle<class NamespaceBindings> NamespaceBindings_t;
+typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 
-class NamespaceBindings : public rcobject
+class NsBindingsContext : public rcobject
 {
  private:
-  std::vector<std::pair<xqp_string, xqp_string> >  theBindings;
-  NamespaceBindings_t                              theParentSet;
+  NamespaceBindings    theBindings;
+  NsBindingsContext_t  theParentContext;
 
-  bool                                             theMore;
-  Iterator_t                                       theBindingsIter;
+public:
+  NsBindingsContext(const NamespaceBindings& bindings);
 };
 
 
@@ -68,30 +68,32 @@ class DocumentNodeNaive : public DocumentNode
 class ElementNodeNaive : public ElementNode
 {
  private:
-  QNameItem_t          name;
-  TypeCode             type;
-
+  QNameItem_t          theName;
+  TypeCode             theType;
   TempSeq_t            theChildren;
   TempSeq_t            theAttributes;
-  TempSeq_t  theNamespaceBindings;
+  TempSeq_t            theNsUris;
+  NsBindingsContext_t  theNsBindings;
 
  public:
   ElementNodeNaive (
         const Item_t& parent,
         const QNameItem_t& name,
         TypeCode type,
-        TempSeq_t& children,
-        TempSeq_t& attributes,
-        TempSeq_t& namespaces,
+        TempSeq_t& seqChildren,
+        TempSeq_t& seqAttributes,
+        TempSeq_t& seqNsUris,
+        const NamespaceBindings& nsBindings,
         bool copy,
         bool newTypes);
 
   ElementNodeNaive(
 			  const QNameItem_t& name,
         TypeCode type,
-        TempSeq_t& children,
-        TempSeq_t& attributes,
-        TempSeq_t& namespaces,
+        TempSeq_t& seqChildren,
+        TempSeq_t& seqAttributes,
+        TempSeq_t& seqNsUris,
+        const NamespaceBindings& nsBindings,
         bool copy,
         bool newTypes);
 			
@@ -103,7 +105,7 @@ class ElementNodeNaive : public ElementNode
   virtual TypeCode getNodeKind() const;
   virtual Iterator_t getAttributes() const;
   virtual Iterator_t getChildren() const;
-  virtual std::set<std::pair<xqp_string, xqp_string> > getNamespaceBindings() const;
+  virtual NamespaceBindings getNamespaceBindings() const;
   virtual bool getNilled() const;
   virtual QNameItem_t getNodeName() const;
   virtual Iterator_t getTypedValue() const;

@@ -10,98 +10,118 @@
 
 namespace xqp
 {
-	SimpleTempSeq::SimpleTempSeq ( Iterator_t iterator )
-	{
-		Item_t curItem = iterator->next();
-		while ( curItem != NULL )
-		{
-			theItems.push_back ( curItem );
-			curItem = iterator->next();
-		}
-	}
 
-	SimpleTempSeq::~SimpleTempSeq()
+SimpleTempSeq::SimpleTempSeq(Iterator_t iterator)
+{
+  Item_t curItem = iterator->next();
+  while ( curItem != NULL )
 	{
-	}
+    theItems.push_back ( curItem );
+    curItem = iterator->next();
+  }
+}
 
-	Iterator_t 
-	SimpleTempSeq::getIterator()
-	{
-		return new SimpleTempSeqIter ( &theItems );
-	}
-	
-	Iterator_t 
-	SimpleTempSeq::getIterator ( int32_t startPos, int32_t endPos, bool streaming )
-	{
-		return Iterator_t ( NULL );
-	}
-	
-	Iterator_t 
-	SimpleTempSeq::getIterator ( int32_t startPos, Iterator_t function, const std::vector<var_iterator>& vars, bool streaming )
-	{
-		return Iterator_t ( NULL );
-	}
-	
-	Iterator_t 
-	SimpleTempSeq::getIterator ( const std::vector<int32_t>& positions, bool streaming )
-	{
-		return Iterator_t ( NULL );
-	}
-	
-	Iterator_t 
-	SimpleTempSeq::getIterator ( Iterator_t positions, bool streaming )
-	{
-		return Iterator_t ( NULL );
-	}
-	
-	Item_t 
-	SimpleTempSeq::getItem ( int32_t position )
-	{
-		if ( this->containsItem( position ))
-		{
-			return theItems[position - 1];
-		}
-		else
-		{
-			return NULL;
-		}
-	}
-	
-	bool
-	SimpleTempSeq::containsItem ( int32_t position)
-	{
-		return int32_t ( theItems.size() ) >= position;
-	}
-	
-	void 
-	SimpleTempSeq::purge()
-	{
 
-	}
-	
-	void 
-	SimpleTempSeq::purgeUpTo ( int32_t upTo )
-	{
+SimpleTempSeq::~SimpleTempSeq()
+{
+}
 
-	}
-	
-	void 
-	SimpleTempSeq::purgeItem ( const std::vector<int32_t>& positions )
-	{
 
-	}
-	
-	void 
-	SimpleTempSeq::purgeItem ( int32_t position )
-	{
+Iterator_t 
+SimpleTempSeq::getIterator()
+{
+  return new SimpleTempSeqIter ( &theItems );
+}
 
-	}
 	
-	bool 
-	SimpleTempSeq::empty()
+Iterator_t 
+SimpleTempSeq::getIterator(
+    int32_t startPos,
+    int32_t endPos,
+    bool streaming )
+{
+  return Iterator_t ( NULL );
+}
+
+	
+Iterator_t 
+SimpleTempSeq::getIterator(
+    int32_t startPos,
+    Iterator_t function,
+    const std::vector<var_iterator>& vars,
+    bool streaming)
+{
+  return Iterator_t ( NULL );
+}
+
+	
+Iterator_t 
+SimpleTempSeq::getIterator(
+    const std::vector<int32_t>& positions,
+    bool streaming )
+{
+  return Iterator_t ( NULL );
+}
+
+	
+Iterator_t 
+SimpleTempSeq::getIterator ( Iterator_t positions, bool streaming )
+{
+  return Iterator_t ( NULL );
+}
+
+	
+Item_t 
+SimpleTempSeq::getItem ( int32_t position )
+{
+  if ( this->containsItem( position ))
 	{
-		return theItems.size() == 0;
-	}
+    return theItems[position - 1];
+  }
+  else
+	{
+    return NULL;
+  }
+}
+	
+
+bool
+SimpleTempSeq::containsItem ( int32_t position)
+{
+  return int32_t ( theItems.size() ) >= position;
+}
+  
+
+void 
+SimpleTempSeq::purge()
+{
+
+}
+	
+void 
+SimpleTempSeq::purgeUpTo ( int32_t upTo )
+{
+
+}
+
+	
+void 
+SimpleTempSeq::purgeItem ( const std::vector<int32_t>& positions )
+{
+
+}
+	
+void 
+SimpleTempSeq::purgeItem ( int32_t position )
+{
+
+}
+	
+bool 
+SimpleTempSeq::empty()
+{
+  return theItems.size() == 0;
+}
 
 	
 SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
@@ -167,19 +187,19 @@ SimpleTempSeq::SimpleTempSeqIter::next()
 		return NULL;
 	}
 
-	void 
-	SimpleTempSeq::SimpleTempSeqIter::reset()
+void 
+SimpleTempSeq::SimpleTempSeqIter::reset()
+{
+  switch (theBorderType)
 	{
-		switch (theBorderType)
-		{
-			case startEnd:
-				theCurPos = theStartPos - 2;
-				break;
-			case none:
-			case specificPositions:
-				theCurPos = -1;
-				break;
-		}
-	}
+  case startEnd:
+    theCurPos = theStartPos - 2;
+    break;
+  case none:
+  case specificPositions:
+    theCurPos = -1;
+    break;
+  }
+}
 
 } /* namespace xqp */

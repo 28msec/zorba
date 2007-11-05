@@ -154,7 +154,8 @@ public:
         TypeCode type,
         TempSeq_t& children,
         TempSeq_t& attributes,
-        TempSeq_t& namespaces,
+        TempSeq_t& nsUris,
+        const NamespaceBindings& nsBindings,
         bool copy,
         bool newTypes,
         bool createId = false);
