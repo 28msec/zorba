@@ -20,8 +20,11 @@ class NodeNameTest : virtual public rcobject {
     NodeNameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local);
     NodeNameTest(rchandle<QNameItem> qname);
     
-    rchandle<xqpString_t> get_uri();
-    rchandle<xqpString_t> get_local();
+    rchandle<xqpString_t> get_uri() const;
+    rchandle<xqpString_t> get_local() const;
+
+    bool operator ==(const NodeNameTest& other) const;
+    bool is_subname_of(const NodeNameTest& other) const;
   private:
     kind_t m_kind;
     rchandle<xqpString_t> m_uri;
@@ -35,6 +38,7 @@ class NodeTest : virtual public rcobject {
       COMMENT,
       DOCUMENT,
       ELEMENT,
+      NODE,
       PI,
       TEXT
     } kind_t;
@@ -43,6 +47,9 @@ class NodeTest : virtual public rcobject {
     NodeTest(kind_t kind, rchandle<NodeNameTest> name_test);
     kind_t get_kind();
     rchandle<NodeNameTest> get_nametest();
+
+    bool is_sub_nodetest_of(const NodeTest& other) const;
+    bool operator ==(const NodeTest& other) const;
   private:
     kind_t m_kind;
     rchandle<NodeNameTest> m_name_test;

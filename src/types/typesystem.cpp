@@ -73,14 +73,10 @@ TypeSystem::TypeSystem()
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
 
-#if 1
 #define XSQNDECL(var, local)                               \
         rchandle<QNameItem> var =                          \
             ZorbaFactory::getInstance().getItemFactory().  \
             createQName(XS_URI, XS_PREFIX, local)
-#else
-#define XSQNDECL(var, local)
-#endif
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
   XSQNDECL(XS_STRING_QNAME, "string");
@@ -203,12 +199,15 @@ bool TypeSystem::is_equal(const XQType& type1, const XQType& type2) const
       return a1.m_type_code == a2.m_type_code;
     }
     case XQType::NODE_TYPE_KIND:
-      // TODO
-      break;
+    {
+      const NodeXQType& n1 = static_cast<const NodeXQType&>(type1);
+      const NodeXQType& n2 = static_cast<const NodeXQType&>(type2);
+      return *n1.m_nodetest == *n2.m_nodetest;
+    }
     default:
       break;
   }
-  return false;
+  return true;
 }
 
 bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) const
@@ -216,11 +215,96 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
   if (!QUANT_SUBTYPE_MATRIX[subtype.m_quantifier][supertype.m_quantifier]) {
     return false;
   }
-  if (subtype.type_kind() == XQType::ATOMIC_TYPE_KIND
-    && supertype.type_kind() == XQType::ATOMIC_TYPE_KIND) {
-      const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
-      const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
-      return ATOMIC_SUBTYPE_MATRIX[a1.m_type_code][a2.m_type_code];
+  switch(supertype.type_kind()) {
+    case XQType::ATOMIC_TYPE_KIND:
+      switch(subtype.type_kind()) {
+        case XQType::ATOMIC_TYPE_KIND:
+        {
+          const AtomicXQType& a1 = static_cast<const AtomicXQType&>(subtype);
+          const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
+          return ATOMIC_SUBTYPE_MATRIX[a1.m_type_code][a2.m_type_code];
+        }
+        case XQType::NODE_TYPE_KIND:
+        case XQType::ANY_TYPE_KIND:
+        case XQType::ITEM_KIND:
+        case XQType::ANY_SIMPLE_TYPE_KIND:
+        case XQType::UNTYPED_KIND:
+          return false;
+      }
+      break;
+
+    case XQType::NODE_TYPE_KIND:
+      switch(subtype.type_kind()) {
+        case XQType::NODE_TYPE_KIND:
+        {
+          const NodeXQType& n1 = static_cast<const NodeXQType&>(subtype);
+          const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
+          return n1.m_nodetest->is_sub_nodetest_of(*n2.m_nodetest);
+        }
+        case XQType::ATOMIC_TYPE_KIND:
+        case XQType::ANY_TYPE_KIND:
+        case XQType::ITEM_KIND:
+        case XQType::ANY_SIMPLE_TYPE_KIND:
+        case XQType::UNTYPED_KIND:
+          return false;
+      }
+      break;
+
+    case XQType::ANY_TYPE_KIND:
+      switch(subtype.type_kind()) {
+        case XQType::ATOMIC_TYPE_KIND:
+        case XQType::NODE_TYPE_KIND:
+        case XQType::ANY_TYPE_KIND:
+        case XQType::ANY_SIMPLE_TYPE_KIND:
+        case XQType::UNTYPED_KIND:
+          return true;
+
+        case XQType::ITEM_KIND:
+          return false;
+      }
+      break;
+
+    case XQType::ITEM_KIND:
+      switch(subtype.type_kind()) {
+        case XQType::ATOMIC_TYPE_KIND:
+        case XQType::NODE_TYPE_KIND:
+        case XQType::ITEM_KIND:
+          return true;
+
+        case XQType::ANY_TYPE_KIND:
+        case XQType::ANY_SIMPLE_TYPE_KIND:
+        case XQType::UNTYPED_KIND:
+          return false;
+      }
+      break;
+
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+      switch(subtype.type_kind()) {
+        case XQType::ATOMIC_TYPE_KIND:
+        case XQType::ANY_SIMPLE_TYPE_KIND:
+          return true;
+
+        case XQType::NODE_TYPE_KIND:
+        case XQType::ANY_TYPE_KIND:
+        case XQType::ITEM_KIND:
+        case XQType::UNTYPED_KIND:
+          return false;
+      }
+      break;
+
+    case XQType::UNTYPED_KIND:
+      switch(subtype.type_kind()) {
+        case XQType::UNTYPED_KIND:
+          return true;
+
+        case XQType::ATOMIC_TYPE_KIND:
+        case XQType::NODE_TYPE_KIND:
+        case XQType::ANY_TYPE_KIND:
+        case XQType::ITEM_KIND:
+        case XQType::ANY_SIMPLE_TYPE_KIND:
+          return false;
+      }
+      break;
   }
   return false;
 }

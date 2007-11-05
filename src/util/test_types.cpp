@@ -24,14 +24,25 @@ NodeNameTest::NodeNameTest(rchandle<QNameItem> qname)
 {
 }
 
-rchandle<xqpString_t> NodeNameTest::get_uri()
+rchandle<xqpString_t> NodeNameTest::get_uri() const
 {
   return m_uri;
 }
 
-rchandle<xqpString_t> NodeNameTest::get_local()
+rchandle<xqpString_t> NodeNameTest::get_local() const
 {
   return m_local;
+}
+
+bool NodeNameTest::is_subname_of(const NodeNameTest& other) const
+{
+  return (((*other.m_uri) == "*" || (*other.m_uri) == (*m_uri))
+    && ((*other.m_local) == "*" || (*other.m_local) == (*m_local)));
+}
+
+bool NodeNameTest::operator ==(const NodeNameTest& other) const
+{
+  return *other.m_uri == *m_uri && *other.m_local == *m_local;
 }
 
 NodeTest::NodeTest(NodeTest::kind_t kind) : m_kind(kind)
@@ -52,6 +63,23 @@ NodeTest::kind_t NodeTest::get_kind()
 rchandle<NodeNameTest> NodeTest::get_nametest()
 {
   return m_name_test;
+}
+
+bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
+{
+  return other.m_kind == NODE
+    || (other.m_kind == m_kind
+      && (other.m_name_test.get_ptr() == 0
+        || (m_name_test.get_ptr() != 0 && m_name_test->is_subname_of(*other.m_name_test))));
+}
+
+bool NodeTest::operator ==(const NodeTest& other) const
+{
+  return other.m_kind == m_kind
+    && (
+      (other.m_name_test.get_ptr() == 0 && m_name_test.get_ptr() == 0)
+        || (other.m_name_test.get_ptr() != 0 && m_name_test.get_ptr() != 0
+          && *other.m_name_test == *m_name_test));
 }
 
 /* vim:set ts=2 sw=2: */
