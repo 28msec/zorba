@@ -71,10 +71,6 @@ public:
 extern const char*		g_error_in_file;
 extern int						g_error_at_line;
 
-//#define		ZORBA_ERROR_ALERT				\
-//				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
-//				ZorbaErrorAlerts::error_alert
-
 #define ZORBA_ERROR_ALERT(...) do { \
     g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
     ZorbaErrorAlerts::error_alert(__VA_ARGS__); \
