@@ -135,9 +135,9 @@ bool plan_visitor::begin_visit(const flwor_expr& v)
     rchandle<var_expr> vh = (*it)->var_h;
     uint64_t k = (uint64_t) &*vh;
     if (vh->kind == var_expr::for_var)
-      fvar_iter_map.put (k, new vector<var_iter_t>(2));
+      fvar_iter_map.put (k, new vector<var_iter_t>());
     else if (vh->kind == var_expr::let_var)
-      lvar_iter_map.put (k, new vector<ref_iter_t>(2));
+      lvar_iter_map.put (k, new vector<ref_iter_t>());
   }
 	return true;
 }
@@ -165,7 +165,7 @@ void plan_visitor::end_visit(const flwor_expr& v)
   }
   PlanIter_t where = NULL;
   FLWORIterator *iter =
-    new FLWORIterator ((const yy::location &) v.get_loc (), clauses, where, (FLWORIterator::OrderByClause *) NULL, ret, false);
+    new FLWORIterator (v.get_loc (), clauses, where, (FLWORIterator::OrderByClause *) NULL, ret, false);
   itstack.push (iter);
 }
 
