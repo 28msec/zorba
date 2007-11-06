@@ -177,7 +177,7 @@ string errors_english::err_decode(enum errcode e)
   case XQP0005_SYSTEM_ASSERT_FAILED:
     return "Assertion `/s' failed in /s";
   TRIVIAL_ERR (XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED);
-	default: return "??";
+	default: return "<Unknown errcode> /s /s";
 	}
 
 } 
@@ -200,8 +200,13 @@ std::string errors_english::warning_decode(enum warning_code)
 	return "?";
 }
 
-std::string errors_english::notify_event_decode(enum NotifyEvent_code)
+std::string errors_english::notify_event_decode(enum NotifyEvent_code n)
 {
+	switch(n)
+	{
+	case NOTIF_EXECUTION_STEP:
+		return "Notify execution step: /s /s";
+	}
 	return "?";
 }
 

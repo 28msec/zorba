@@ -440,6 +440,10 @@ void ZorbaErrorAlertsImpl::RegisterAlertCallback(alert_callback	*user_alert_call
 {
 	thread_registered_callback = user_alert_callback;
 	thread_registered_param = param;
+	
+	ZORBA_NOTIFY_EVENT_OSS(error_messages::NOTIF_EXECUTION_STEP,
+		"RegisterAlertCallback with param " << std::hex << param, "");
+
 }
 
 error_messages&	ZorbaErrorAlertsImpl::getErrMessages()

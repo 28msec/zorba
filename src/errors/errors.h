@@ -183,6 +183,7 @@ public:
 
   enum NotifyEvent_code
   {
+		NOTIF_EXECUTION_STEP
   };
 
   enum AskUserString_code
