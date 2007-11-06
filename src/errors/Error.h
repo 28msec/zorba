@@ -72,31 +72,75 @@ extern const char*		g_error_in_file;
 extern int						g_error_at_line;
 
 #define ZORBA_ERROR_ALERT(...) do { \
-    g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
-    ZorbaErrorAlerts::error_alert(__VA_ARGS__); \
+			g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
+			ZorbaErrorAlerts::error_alert(__VA_ARGS__); \
 } while(0)
+
+#define ZORBA_ERROR_ALERT_OSS(e, errtype, ploc, ce, msg1, msg2) { \
+			g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
+			std::ostringstream os1, os2; \
+			os1 << msg1; \
+			os2 << msg2; \
+			ZorbaErrorAlerts::error_alert(e, errtype, ploc, ce, os1.str(), os2.str()); \
+}
 
 #define		ZORBA_WARNING_ALERT(...) do { \
-				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
-				ZorbaErrorAlerts::warning_alert(__VA_ARGS__); \
+			g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
+			ZorbaErrorAlerts::warning_alert(__VA_ARGS__); \
 } while(0)
+
+#define ZORBA_WARNING_ALERT_OSS(w, ploc, msg1, msg2) { \
+			g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
+			std::ostringstream os1, os2; \
+			os1 << msg1; \
+			os2 << msg2; \
+			ZorbaErrorAlerts::warning_alert(w, ploc, os1.str(), os2.str()); \
+}
 
 #define		ZORBA_NOTIFY_EVENT(...) do { \
-				g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
-				ZorbaErrorAlerts::notify_event(__VA_ARGS__); \
+			g_error_in_file = __FILE__;  g_error_at_line = __LINE__; \
+			ZorbaErrorAlerts::notify_event(__VA_ARGS__); \
 } while(0)
 
+#define ZORBA_NOTIFY_EVENT_OSS(notif_event, msg1, msg2) { \
+			g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
+			std::ostringstream os1, os2; \
+			os1 << msg1; \
+			os2 << msg2; \
+			ZorbaErrorAlerts::notify_event(notif_event, os1.str(), os2.str()); \
+}
 
 #else ///ifdef _DEBUG
 
-#define		ZORBA_ERROR_ALERT				\
-				ZorbaErrorAlerts::error_alert
+#define		ZORBA_ERROR_ALERT(...)				\
+				ZorbaErrorAlerts::error_alert(__VA_ARGS__)
 
-#define		ZORBA_WARNING_ALERT		\
-				ZorbaErrorAlerts::warning_alert
+#define ZORBA_ERROR_ALERT_OSS(e, errtype, ploc, ce, msg1, msg2) { \
+			std::ostringstream os1, os2; \
+			os1 << msg1; \
+			os2 << msg2; \
+			ZorbaErrorAlerts::error_alert(e, errtype, ploc, ce, os1.c_str(), os2.c_str()); \
+}
 
-#define		ZORBA_NOTIFY_EVENT		\
-				ZorbaErrorAlerts::notify_event
+#define		ZORBA_WARNING_ALERT(...)		\
+				ZorbaErrorAlerts::warning_alert(__VA_ARGS__)
+
+#define ZORBA_WARNING_ALERT_OSS(w, ploc, msg1, msg2) { \
+			std::ostringstream os1, os2; \
+			os1 << msg1; \
+			os2 << msg2; \
+			ZorbaErrorAlerts::warning_alert(w, ploc, os1.c_str(), os2.c_str()); \
+}
+
+#define		ZORBA_NOTIFY_EVENT(...)		\
+				ZorbaErrorAlerts::notify_event(__VA_ARGS__)
+
+#define ZORBA_NOTIFY_EVENT_OSS(notif_event, msg1, msg2) { \
+			std::ostringstream os1, os2; \
+			os1 << msg1; \
+			os2 << msg2; \
+			ZorbaErrorAlerts::notify_event(notif_event, os1.c_str(), os2.c_str()); \
+}
 
 
 #endif ///ifdef _DEBUG
