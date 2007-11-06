@@ -235,6 +235,12 @@ int _tmain(int argc, _TCHAR* argv[])
 					std::ifstream	qfile(fname);
 					//istringstream		iss;
           
+					if(!qfile.is_open())
+					{
+						///couldn't open file, display error and exit
+						cerr << "Error opening xquery file <" << fname << ">" << endl;
+						return -1;
+					}
           string temp;
           query_text = "";
           
