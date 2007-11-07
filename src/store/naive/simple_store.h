@@ -41,7 +41,9 @@ public:
 
   virtual ItemFactory& getItemFactory() { return theItemFactory; }
 
-  virtual TempSeq_t createTempSeq(Iterator_t&, bool lazy = true);
+  virtual TempSeq_t createTempSeq();
+  virtual TempSeq_t createTempSeq(Iterator_t iterator, bool lazy = true);
+
   virtual void setGarbageCollectionStrategy(const xqp_string& strategy);
   virtual void apply(PUL_t pendingUpdateList);
   virtual void apply(PUL_t pendingUpdateList, Requester requester);

@@ -41,11 +41,22 @@ SimpleStore::~SimpleStore()
                   evaluated lazily. For XQueryP it might be necassary to set
                   this to false.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(Iterator_t& iterator, bool lazy)
+TempSeq_t SimpleStore::createTempSeq(Iterator_t iterator, bool lazy)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq ( iterator );
+  TempSeq_t tempSeq = new SimpleTempSeq(iterator, lazy);
   return tempSeq;
 }
+
+
+/*******************************************************************************
+  Creates an empty TempSeq.
+********************************************************************************/
+TempSeq_t SimpleStore::createTempSeq()
+{
+  TempSeq_t tempSeq = new SimpleTempSeq();
+  return tempSeq;
+}
+
 
 /*******************************************************************************
   Possibility to change the Garbage Collection strategy of the store.
@@ -149,6 +160,7 @@ int32_t SimpleStore::compare(Item_t item1, Item_t item2)
   return 2;
 }
 
+
 /*******************************************************************************
   Sorts the items of the passed iterator
 
@@ -162,6 +174,7 @@ Iterator_t SimpleStore::sort(Iterator_t iterator, bool ascendent, bool duplicate
   return rchandle<Iterator> ( NULL );
 }
 
+
 /*******************************************************************************
   Eliminates the duplicates in collection of items which is produced by the
   passed iterator
@@ -172,6 +185,7 @@ Iterator_t SimpleStore::distinctNodeStable(Iterator_t)
 {
   return rchandle<Iterator> ( NULL );
 }
+
 
 /*******************************************************************************
   Returns an XDM instance which is saved in the store (corresponds to the
@@ -186,6 +200,7 @@ Collection_t SimpleStore::getCollection(Item_t uri)
   return rchandle<Collection> ( NULL );
 }
 
+
 /*******************************************************************************
   Creates a collection in the store.
 
@@ -199,6 +214,7 @@ Collection_t SimpleStore::createCollection(Item_t uri)
   return rchandle<Collection> ( NULL );
 }
 
+
 /*******************************************************************************
   Creates a collection in the store (without given URI).
 
@@ -208,6 +224,7 @@ Collection_t SimpleStore::createCollection()
 {
   return rchandle<Collection> ( NULL );
 }
+
 
 /*******************************************************************************
   Deletes a collection.

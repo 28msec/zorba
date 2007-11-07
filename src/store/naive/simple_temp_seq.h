@@ -21,13 +21,15 @@ namespace xqp
  */
 class SimpleTempSeq : public TempSeq
 {
- private:
+private:
   std::vector<Item_t> theItems;
 
- public:
-  SimpleTempSeq(Iterator_t iterator);
+public:
+  SimpleTempSeq() { }
 
- SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
+  SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
+
+  SimpleTempSeq(Iterator_t iter, bool lazy = true);
 
   virtual ~SimpleTempSeq();
 
@@ -52,8 +54,8 @@ class SimpleTempSeq : public TempSeq
         Iterator_t positions,
         bool streaming = false);
 
-  virtual Item_t getItem ( int32_t position );
-  virtual bool containsItem( int32_t position );
+  virtual Item_t getItem(int32_t position);
+  virtual bool containsItem(int32_t position);
 
   virtual void purge();
   virtual void purgeUpTo(int32_t upTo );
