@@ -3585,33 +3585,25 @@ public:
 };
 
 
+/*******************************************************************************
 
-// [92] Constructor
-/*______________________________________________________________________
-|
-|	::= DirectConstructor |	ComputedConstructor
-|_______________________________________________________________________*/
+  [92] Constructor ::= DirectConstructor |	ComputedConstructor
 
-// [93] DirectConstructor
-/*______________________________________________________________________
-|
-|	::= DirElemConstructor
-|			|	DirCommentConstructor
-|			|	DirPIConstructor
-|_______________________________________________________________________*/
+  [93] DirectConstructor ::= DirElemConstructor |
+                             DirCommentConstructor |
+                            DirPIConstructor
+
+********************************************************************************/
 
 
+/*******************************************************************************
 
-// [94] DirElemConstructor
-// -----------------------
+  [94] DirElemConstructor ::= LT QNAME DirAttributeList SGT  ws:explicitXQ
+                            | LT QNAME DirAttributeList GT DirElemContentList
+                              LTS QNAME GT               ws:explicitXQ,  gn:ltXQ
+
+********************************************************************************/
 class DirElemConstructor : public exprnode
-/*______________________________________________________________________
-|
-|	::= LT  QNAME  DirAttributeList SGT
-|					 ws:explicitXQ
-|			|	LT  QNAME  DirAttributeList GT  DirElemContentList  LTS  QNAME  GT
-|					 ws:explicitXQ,  gn:ltXQ
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<QName> elem_name_h;
@@ -3640,15 +3632,13 @@ public:
 };
 
 
+/*******************************************************************************
 
-// [94a] DirElemContentList
-// ------------------------
+  [94a] DirElemContentList ::= DirElemContent |
+                               DirElemContentList DirElemContent
+
+********************************************************************************/
 class DirElemContentList : public parsenode
-/*______________________________________________________________________
-|
-|	::= DirElemContent
-|			|	DirElemContentList  DirElemContent
-|_______________________________________________________________________*/
 {
 protected:
 	std::vector<rchandle<exprnode> > dir_content_hv;
@@ -3670,253 +3660,15 @@ public:
 };
 
 
+/*******************************************************************************
 
-// [95] DirAttributeList
-// ---------------------
-class DirAttributeList : public parsenode
-/*______________________________________________________________________
-|
-|	::= DirAttr
-|			|	DirAttributeList  DirAttr
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<DirAttr> > dir_attr_hv;
+  [99] DirElemContent ::= DirectConstructor |
+                          ELEMENT_CONTENT |
+                          CDataSection |
+                          CommonContent
 
-public:
-	DirAttributeList(const yy::location&);
-	~DirAttributeList();
-
-public:
-	void push_back(rchandle<DirAttr> dir_attr_h)
-		{ dir_attr_hv.push_back(dir_attr_h); }
-	rchandle<DirAttr> operator[](int i)
-		{ return dir_attr_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [95a] DirAttr
-// -------------
-class DirAttr : public parsenode
-/*______________________________________________________________________
-|
-|	::= QNAME  EQUALS  DirAttributeValue 	 ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QName> atname_h;
-	rchandle<DirAttributeValue> dir_atval_h;
-	
-public:
-	DirAttr(
-		const yy::location&,
-		rchandle<QName>,
-		rchandle<DirAttributeValue>);
-
-	~DirAttr();
-
-public:
-	rchandle<QName> get_atname() const { return atname_h; }
-	rchandle<DirAttributeValue> get_dir_atval() const { return dir_atval_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [96] DirAttributeValue
-// ----------------------
-class DirAttributeValue : public parsenode
-/*______________________________________________________________________
-|
-|	::= QUOTE  QuoteAttrContentList  QUOTE
-|			|	APOS  AposAttrContentList  APOS 	 ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	rchandle<QuoteAttrContentList> quot_attr_content_h;
-	rchandle<AposAttrContentList> apos_attr_content_h;
-
-public:
-	DirAttributeValue(
-		const yy::location&,
-		rchandle<QuoteAttrContentList>);
-
-	DirAttributeValue(
-		const yy::location&,
-		rchandle<AposAttrContentList>);
-
-	~DirAttributeValue();
-
-public:
-	rchandle<QuoteAttrContentList> get_quot_attr_content() const
-		{ return quot_attr_content_h; }
-	rchandle<AposAttrContentList> get_apos_attr_content() const
-		{ return apos_attr_content_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [96a] QuoteAttrContentList
-// --------------------------
-class QuoteAttrContentList : public parsenode
-/*______________________________________________________________________
-|
-|	::= ESCAPE_QUOTE
-|			|	QuoteAttrValueContent
-|			|	QuoteAttrContentList  ESCAPE_QUOTE
-|			|	QuoteAttrContentList  QuoteAttrValueContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
-	
-public:
-	QuoteAttrContentList(const yy::location&);
-	~QuoteAttrContentList();
-
-public:
-	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
-		{ quot_atval_content_hv.push_back(quot_atval_content_h); }
-	rchandle<QuoteAttrValueContent> operator[](int i) const
-		{ return quot_atval_content_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [96b] AposAttrContentList
-// -------------------------
-class AposAttrContentList : public parsenode
-/*______________________________________________________________________
-|
-|	::= ESCAPE_APOS
-|			|	AposAttrValueContent
-|			|	AposAttrContentList  ESCAPE_APOS
-|			|	AposAttrContentList  AposAttrValueContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
-	
-public:
-	AposAttrContentList(const yy::location&);
-	~AposAttrContentList();
-
-public:
-	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
-		{ apos_atval_content_hv.push_back(apos_atval_content_h); }
-	rchandle<AposAttrValueContent> operator[](int i) const
-		{ return apos_atval_content_hv[i]; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [97] QuotAttrValueContent
-// -------------------------
-class QuoteAttrValueContent : public parsenode
-/*______________________________________________________________________
-|
-|	::= QUOTE_ATTR_CONTENT
-|			|	CommonContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::string quot_atcontent;
-	rchandle<CommonContent> common_content_h;
-
-public:
-	QuoteAttrValueContent(
-		const yy::location&,
-		std::string quot_atcontent);
-
-	QuoteAttrValueContent(
-		const yy::location&,
-		rchandle<CommonContent>);
-
-	~QuoteAttrValueContent();
-
-public:
-	std::string get_quot_atcontent() const { return quot_atcontent; }
-	rchandle<CommonContent> get_common_content() const { return common_content_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [98] AposAttrValueContent
-// -------------------------
-class AposAttrValueContent : public parsenode
-/*______________________________________________________________________
-|
-|	::= APOS_ATTR_CONTENT
-|			|	CommonContent
-|_______________________________________________________________________*/
-{
-protected:
-	std::string apos_atcontent;
-	rchandle<CommonContent> common_content_h;
-
-public:
-	AposAttrValueContent(
-		const yy::location&,
-		std::string apos_atcontent);
-
-	AposAttrValueContent(
-		const yy::location&,
-		rchandle<CommonContent>);
-
-	~AposAttrValueContent();
-
-public:
-	std::string get_apos_atcontent() const { return apos_atcontent; }
-	rchandle<CommonContent> get_common_content() const { return common_content_h; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [99] DirElemContent
-// -------------------
+********************************************************************************/
 class DirElemContent : public exprnode
-/*______________________________________________________________________
-|
-|	::= DirectConstructor
-|			|	ELEMENT_CONTENT
-|			|	CDataSection
-|			|	CommonContent
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<exprnode> direct_cons_h;
@@ -3956,22 +3708,19 @@ public:
 public:
 	std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
-
 };
 
 
+/*******************************************************************************
 
-// [100] CommonContent
-// -------------------
+  [100] CommonContent ::= ENTITY_REF |
+                          CHAR_REF_LITERAL |
+                          DOUBLE_LBRACE |
+                          DOUBLE_RBRACE |
+                          EnclosedExpr
+
+********************************************************************************/
 class CommonContent : public exprnode
-/*______________________________________________________________________
-|
-|	::= ENTITY_REF
-|			|	CHAR_REF_LITERAL
-|			|	DOUBLE_LBRACE
-|			|	DOUBLE_RBRACE
-|			|	EnclosedExpr
-|_______________________________________________________________________*/
 {
 protected:
 	enum common_content_t type;
@@ -4006,7 +3755,271 @@ public:
 };
 
 
+/*******************************************************************************
 
+  [105] CDataSection ::= CDATA_BEGIN  CHAR_LITERAL  CDATA_END 	ws:explicitXQ
+
+********************************************************************************/
+class CDataSection : public exprnode
+{
+protected:
+	std::string cdata_content;
+
+public:
+	CDataSection(
+		const yy::location&,
+		std::string cdata_content);
+
+	~CDataSection();
+
+public:
+	std::string get_cdata_content() const { return cdata_content; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+/*******************************************************************************
+
+ [106] CDataSectionContents  (lexical rule)
+
+********************************************************************************/
+
+
+/*******************************************************************************
+
+********************************************************************************/
+// [95] DirAttributeList
+// ---------------------
+class DirAttributeList : public parsenode
+/*______________________________________________________________________
+|
+|	::= DirAttr
+|			|	DirAttributeList  DirAttr
+|_______________________________________________________________________*/
+{
+protected:
+	std::vector<rchandle<DirAttr> > dir_attr_hv;
+
+public:
+	DirAttributeList(const yy::location&);
+	~DirAttributeList();
+
+public:
+	void push_back(rchandle<DirAttr> dir_attr_h)
+		{ dir_attr_hv.push_back(dir_attr_h); }
+	rchandle<DirAttr> operator[](int i)
+		{ return dir_attr_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+// [95a] DirAttr
+// -------------
+class DirAttr : public parsenode
+/*______________________________________________________________________
+|
+|	::= QNAME  EQUALS  DirAttributeValue 	 ws:explicitXQ
+|_______________________________________________________________________*/
+{
+protected:
+	rchandle<QName> atname_h;
+	rchandle<DirAttributeValue> dir_atval_h;
+	
+public:
+	DirAttr(
+		const yy::location&,
+		rchandle<QName>,
+		rchandle<DirAttributeValue>);
+
+	~DirAttr();
+
+public:
+	rchandle<QName> get_atname() const { return atname_h; }
+	rchandle<DirAttributeValue> get_dir_atval() const { return dir_atval_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+/******************************************************************************
+
+  [98] DirAttributeValue ::= QUOTE QuoteAttrContentList QUOTE |
+                             APOS AposAttrContentList APOS       ws:explicitXQ
+
+*******************************************************************************/
+class DirAttributeValue : public parsenode
+{
+protected:
+	rchandle<QuoteAttrContentList> quot_attr_content_h;
+	rchandle<AposAttrContentList> apos_attr_content_h;
+
+public:
+	DirAttributeValue(
+		const yy::location&,
+		rchandle<QuoteAttrContentList>);
+
+	DirAttributeValue(
+		const yy::location&,
+		rchandle<AposAttrContentList>);
+
+	~DirAttributeValue();
+
+public:
+	rchandle<QuoteAttrContentList> get_quot_attr_content() const
+		{ return quot_attr_content_h; }
+	rchandle<AposAttrContentList> get_apos_attr_content() const
+		{ return apos_attr_content_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+/******************************************************************************
+
+  [98a] QuoteAttrContentList ::= ESCAPE_QUOTE |
+                                 QuoteAttrValueContent |
+                                 QuoteAttrContentList  ESCAPE_QUOTE |
+                                 QuoteAttrContentList  QuoteAttrValueContent
+
+********************************************************************************/
+class QuoteAttrContentList : public parsenode
+{
+protected:
+	std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
+	
+public:
+	QuoteAttrContentList(const yy::location&);
+	~QuoteAttrContentList();
+
+public:
+	void push_back(rchandle<QuoteAttrValueContent> quot_atval_content_h)
+		{ quot_atval_content_hv.push_back(quot_atval_content_h); }
+	rchandle<QuoteAttrValueContent> operator[](int i) const
+		{ return quot_atval_content_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+/*******************************************************************************
+
+  [98b] AposAttrContentList ::= ESCAPE_APOS |
+                                AposAttrValueContent |
+                                AposAttrContentList  ESCAPE_APOS |
+                                AposAttrContentList  AposAttrValueContent
+
+********************************************************************************/
+class AposAttrContentList : public parsenode
+{
+protected:
+	std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
+	
+public:
+	AposAttrContentList(const yy::location&);
+	~AposAttrContentList();
+
+public:
+	void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
+		{ apos_atval_content_hv.push_back(apos_atval_content_h); }
+	rchandle<AposAttrValueContent> operator[](int i) const
+		{ return apos_atval_content_hv[i]; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+/*******************************************************************************
+
+  [99] QuotAttrValueContent ::= QUOTE_ATTR_CONTENT | CommonContent
+
+********************************************************************************/
+class QuoteAttrValueContent : public parsenode
+{
+protected:
+	std::string quot_atcontent;
+	rchandle<CommonContent> common_content_h;
+
+public:
+	QuoteAttrValueContent(
+		const yy::location&,
+		std::string quot_atcontent);
+
+	QuoteAttrValueContent(
+		const yy::location&,
+		rchandle<CommonContent>);
+
+	~QuoteAttrValueContent();
+
+public:
+	std::string get_quot_atcontent() const { return quot_atcontent; }
+	rchandle<CommonContent> get_common_content() const { return common_content_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+
+  [100] AposAttrValueContent ::= APOS_ATTR_CONTENT | CommonContent
+
+********************************************************************************/
+class AposAttrValueContent : public parsenode
+{
+protected:
+	std::string apos_atcontent;
+	rchandle<CommonContent> common_content_h;
+
+public:
+	AposAttrValueContent(
+		const yy::location&,
+		std::string apos_atcontent);
+
+	AposAttrValueContent(
+		const yy::location&,
+		rchandle<CommonContent>);
+
+	~AposAttrValueContent();
+
+public:
+	std::string get_apos_atcontent() const { return apos_atcontent; }
+	rchandle<CommonContent> get_common_content() const { return common_content_h; }
+
+public:
+	std::ostream& put(std::ostream&) const;
+	void accept(parsenode_visitor&) const;
+
+};
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
 // [101] DirCommentConstructor
 // ---------------------------
 class DirCommentConstructor : public exprnode
@@ -4041,7 +4054,9 @@ public:
 /* lexical rule */
 
 
+/*******************************************************************************
 
+********************************************************************************/
 // [103] DirPIConstructor
 // ----------------------
 class DirPIConstructor : public exprnode
@@ -4085,41 +4100,9 @@ public:
 
 
 
-// [105] CDataSection
-// ------------------
-class CDataSection : public exprnode
-/*______________________________________________________________________
-|
-|	::= CDATA_BEGIN  CHAR_LITERAL  CDATA_END 	 ws:explicitXQ
-|_______________________________________________________________________*/
-{
-protected:
-	std::string cdata_content;
+/*******************************************************************************
 
-public:
-	CDataSection(
-		const yy::location&,
-		std::string cdata_content);
-
-	~CDataSection();
-
-public:
-	std::string get_cdata_content() const { return cdata_content; }
-
-public:
-	std::ostream& put(std::ostream&) const;
-	void accept(parsenode_visitor&) const;
-
-};
-
-
-
-// [106] CDataSectionContents
-// --------------------------
-/* lexical rule */
-
-
-
+********************************************************************************/
 // [107] ComputedConstructor
 // -------------------------
 /*______________________________________________________________________

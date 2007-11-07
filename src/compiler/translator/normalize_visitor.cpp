@@ -225,6 +225,28 @@ void normalize_visitor::end_visit(const EmptyOrderDecl& v, void *visit_state)
 
 /*******************************************************************************
 
+   Enclosed Expr
+   Used in direct element/attribute constructors and in function definition.
+
+********************************************************************************/
+void *normalize_visitor::begin_visit(const EnclosedExpr& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const EnclosedExpr& v, void *visit_state)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+
+	expr_t expr_h = pop_nodestack();
+	expr_t enclosedExpr = new enclosed_expr(v.get_location(), expr_h);
+	nodestack.push(&*enclosedExpr);
+}
+
+
+/*******************************************************************************
+
   Direct Node Construction
 
 ********************************************************************************/
@@ -302,7 +324,10 @@ void normalize_visitor::end_visit(const DirElemContentList& v, void *visit_state
       break;
 		expr_list_t->add(e_h);
 	}
-	nodestack.push(&*expr_list_t);
+  if (expr_list_t->size() == 1)
+    nodestack.push(*expr_list_t->begin());
+  else
+    nodestack.push(&*expr_list_t);
 }
 
 
@@ -418,6 +443,7 @@ void normalize_visitor::end_visit(const DirAttributeValue& v, void *visit_state)
 void *normalize_visitor::begin_visit(const QuoteAttrContentList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
+
 	nodestack.push(NULL);
 	return no_state;
 }
@@ -427,6 +453,7 @@ void normalize_visitor::end_visit(const QuoteAttrContentList& v, void *visit_sta
   cout << std::string(depth--, ' ') << TRACE << endl;
 
  	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
+  expr_t e_h;
  	while(true)
   {
  		expr_t e_h = pop_nodestack();
@@ -434,7 +461,11 @@ void normalize_visitor::end_visit(const QuoteAttrContentList& v, void *visit_sta
       break;
  		expr_list_t->add(e_h);
  	}
- 	nodestack.push(&*expr_list_t);
+
+  if (expr_list_t->size() == 1)
+    nodestack.push(*expr_list_t->begin());
+  else
+    nodestack.push(&*expr_list_t);
 }
 
 
@@ -447,7 +478,7 @@ void *normalize_visitor::begin_visit(const QuoteAttrValueContent& v)
 void normalize_visitor::end_visit(const QuoteAttrValueContent& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
-
+ 
 	if (v.get_common_content() == NULL)
   {
 		std::string content = v.get_quot_atcontent();
@@ -456,7 +487,6 @@ void normalize_visitor::end_visit(const QuoteAttrValueContent& v, void *visit_st
 	}
 	// nothing to be done because when common content != NULL, 
 	// the corresponding expr is already on the stack
-	
 }
 
 
@@ -484,6 +514,18 @@ void normalize_visitor::end_visit(const AposAttrValueContent& v, void *visit_sta
 }
 
 
+void *normalize_visitor::begin_visit(const CommonContent& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void normalize_visitor::end_visit(const CommonContent& v, void *visit_state)
+{
+  cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
 /*******************************************************************************
 
   Computed Node Construction
@@ -492,68 +534,68 @@ void normalize_visitor::end_visit(const AposAttrValueContent& v, void *visit_sta
 
 void *normalize_visitor::begin_visit(const CompDocConstructor& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void normalize_visitor::end_visit(const CompDocConstructor& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void *normalize_visitor::begin_visit(const CompElemConstructor& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void normalize_visitor::end_visit(const CompElemConstructor& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void *normalize_visitor::begin_visit(const CompAttrConstructor& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void normalize_visitor::end_visit(const CompAttrConstructor& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void *normalize_visitor::begin_visit(const CompCommentConstructor& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void normalize_visitor::end_visit(const CompCommentConstructor& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void *normalize_visitor::begin_visit(const CompPIConstructor& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void normalize_visitor::end_visit(const CompPIConstructor& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 void *normalize_visitor::begin_visit(const CompTextConstructor& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void normalize_visitor::end_visit(const CompTextConstructor& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
@@ -1315,18 +1357,6 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const CommonContent& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const CommonContent& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
 void *normalize_visitor::begin_visit(const ComparisonExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
@@ -1416,21 +1446,6 @@ cout << std::string(depth--, ' ') << TRACE << ": ContextItemExpr" << endl;
 	rchandle<var_expr> v_h = new var_expr(v.get_location());
 	v_h->set_kind(var_expr::context_var);
 	nodestack.push(&*v_h);
-}
-
-
-void *normalize_visitor::begin_visit(const EnclosedExpr& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const EnclosedExpr& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-	expr_t expr_h = pop_nodestack();
-	expr_t enclosedExpr = new enclosed_expr(v.get_location(), expr_h);
-	nodestack.push(&*enclosedExpr);
 }
 
 

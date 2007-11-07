@@ -1245,15 +1245,19 @@ public:
 };
 
 
+/******************************************************************************
 
-// [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
+  DirAttConstructor ::= QNAME EQUALS DirAttributeValue
+
+  // [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
+
+	CompAttConstructor ::= ATTRIBUTE  QNAME  LBRACE  RBRACE |
+                         ATTRIBUTE  QNAME  LBRACE  Expr  RBRACE |
+                         ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  RBRACE |
+                         ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
+
+********************************************************************************/
 class attr_expr : public expr
-/*______________________________________________________________________
-|	::= ATTRIBUTE  QNAME  LBRACE  RBRACE
-|			|	ATTRIBUTE  QNAME  LBRACE  Expr  RBRACE
-|			|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  RBRACE
-|			|	ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
 {
 protected:
 	rchandle<qname_expr> qname_h;
@@ -1262,13 +1266,15 @@ protected:
 
 public:
 	attr_expr(
-		yy::location const&,
-		rchandle<qname_expr>,
-		expr_t);
+		yy::location const& loc,
+		rchandle<qname_expr> qn,
+		expr_t val_expr);
+
 	attr_expr(
-		yy::location const&,
-		expr_t,
-		expr_t);
+		yy::location const& loc,
+		expr_t qn_expr,
+		expr_t val_expr);
+
 	~attr_expr();
 
 public:
