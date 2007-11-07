@@ -124,6 +124,15 @@ namespace xqp {
     */
     int compare(const xqpString& src, const char * loc) const;
     int compare(const char* src) const;
+    /** Returns true if the strings are equal based on a byte-by-byte comparison.
+    * It assumes that both strings are already normalized.
+    */
+    bool byteEqual(const xqpString& src) const;
+
+    /** Returns true if the hash of the strings are equal and if the strings are byteEqual.
+    * It assumes that both strings are already normalized.
+    */
+    bool hashEqual(const xqpString& src) const;
 
     // xqpString::Length
     /** @return the number of unicode characters (without the null termination)
@@ -199,6 +208,10 @@ namespace xqp {
     inline  operator std::string() const{
       return *theStrStore;
     }
+
+    /** djb2 Hash function
+      */
+    uint32_t hash() const;
 private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
@@ -212,7 +225,7 @@ private:
     */
     wchar_t * getWCS(const xqpString& source) const;
 
-  /**Sets the capacity of the string to at least size
+    /**Sets the capacity of the string to at least size
     */
     void reserve(size_type size=0);
 

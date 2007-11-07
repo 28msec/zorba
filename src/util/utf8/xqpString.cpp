@@ -149,6 +149,20 @@ namespace xqp {
     return compare(tmp);
   }
 
+  bool xqpString::byteEqual(const xqpString& src) const{
+    uint32_t len0 = bytes();
+    uint32_t len1 = src.bytes();
+    if( len0 == len1 &&
+        memcmp(c_str(), src.c_str(), len0) == 0)
+       return true;
+    return false;
+  }
+  
+  bool xqpString::hashEqual(const xqpString& src) const{
+    if(hash()==src.hash() && byteEqual(src))
+      return true;
+    return false;
+  }
   //xqpString::Length
   xqpString::size_type xqpString::size() const{
     const char* c = theStrStore->c_str();
@@ -371,6 +385,15 @@ namespace xqp {
     return theStrStore->c_str();
   }
 
+  uint32_t xqpString::hash() const{
+    uint32_t hash = 5381;
+    int c;
+    const char *str = c_str();
+    while (c = *str++) {
+      hash = ((hash << 5) + hash) + c; // hash*33 + c
+    }
+    return hash;
+  }
   // Private methods
   UnicodeString xqpString::getUnicodeString(const xqpString& source) const{
     UnicodeString ret;
