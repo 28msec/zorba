@@ -38,29 +38,29 @@ ElementIterator::nextImpl(PlanState& planState)
   TempSeq_t seqChildren;
   TempSeq_t seqAttributes;
   TempSeq_t seqNamespaces;
-	Iterator_t lIter0;
-	Iterator_t lIter1;
-	Iterator_t lIter2;
+	Iterator_t cwrapper;
+	Iterator_t awrapper;
+	Iterator_t nwrapper;
 
   PlanIteratorState* state;
   STACK_INIT2(PlanIteratorState, state, planState);
 		
   if (theChildrenIter != NULL)
   {
-    lIter0 = new PlanIterWrapper(theChildrenIter, planState);
-    seqChildren = store->createTempSeq(lIter0);
+    cwrapper = new PlanIterWrapper(theChildrenIter, planState);
+    seqChildren = store->createTempSeq(cwrapper);
   }
 
   if (theAttributesIter != NULL)
   {
-    lIter1 = new PlanIterWrapper(theAttributesIter, planState);
-    seqAttributes = store->createTempSeq(lIter1);
+    awrapper = new PlanIterWrapper(theAttributesIter, planState);
+    seqAttributes = store->createTempSeq(awrapper);
   }
 
   if (theNamespacesIter != NULL)
   {
-    lIter2 = new PlanIterWrapper(theNamespacesIter, planState); 
-    seqNamespaces = store->createTempSeq(lIter2);
+    nwrapper = new PlanIterWrapper(theNamespacesIter, planState); 
+    seqNamespaces = store->createTempSeq(nwrapper);
   }
 
   item = zorba::getItemFactory()->createElementNode(
@@ -71,7 +71,7 @@ ElementIterator::nextImpl(PlanState& planState)
                seqNamespaces,
                theNsBindings,
 		           false,
-		           false );
+		           false);
 
   STACK_PUSH2(item, state);
 		

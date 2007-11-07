@@ -66,7 +66,7 @@ public:
 
 /*******************************************************************************
   Used to make e.g. the concatenation of adjacent text nodes in the content 
-  sequence of an element constructor. Normally, the child of this iterator
+  sequence of an element constructor. Usually, the child of this iterator
   will be a ConcatIterator that computes the content sequence from its various
   components.
 ********************************************************************************/

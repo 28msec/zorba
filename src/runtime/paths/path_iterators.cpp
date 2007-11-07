@@ -940,7 +940,8 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
     while (state->theContextNode->getNodeKind() != elementNode &&
            state->theContextNode->getNodeKind() != documentNode);
 
-    //MYTRACE("iter = " << this << " ctxNode = [" << &*state->theContextNode << " " << state->theContextNode->getNodeName()->show() << "]");
+    //MYTRACE("iter = " << this << " ctxNode = [" << &*state->theContextNode
+    //        << " " << state->theContextNode->getNodeName()->show() << "]");
 
     children = state->theContextNode->getChildren();
 
@@ -957,6 +958,9 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
 
       if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
       {
+        //MYTRACE("iter = " << this << " desc = [" << &*desc << " "
+        //        << desc->getNodeName()->show() << "]");
+
         STACK_PUSH2(desc, state);
       }
 
