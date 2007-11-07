@@ -558,6 +558,16 @@ namespace xqp
       virtual Iterator_t getTypedValue() const;
   }; /* class AtomicItem */
   
+  class QNameItem : public AtomicItem {};
+  class UntypedAtomicItem : public AtomicItem {};
+  class StringItem : public UntypedAtomicItem {};
+  class DecimalItem : public AtomicItem {};
+  class IntItem : public AtomicItem {};
+  class IntegerItem : public AtomicItem {};
+  class DoubleItem : public AtomicItem {};
+  class FloatItem : public AtomicItem {};
+  class BooleanItem : public AtomicItem {};
+
   class NodeItem : public Item
   {
     protected:
@@ -581,47 +591,39 @@ namespace xqp
       virtual xqp_string getDocumentURI() const;
   }; /* class Node */
 
-  class QNameItem : public AtomicItem {};
-  class UntypedAtomicItem : public AtomicItem {};
-  class StringItem : public UntypedAtomicItem {};
-  class DecimalItem : public AtomicItem {};
-  class IntItem : public AtomicItem {};
-  class IntegerItem : public AtomicItem {};
-  class DoubleItem : public AtomicItem {};
-  class FloatItem : public AtomicItem {};
-  class BooleanItem : public AtomicItem {};
-  
+#if 0
   class DocumentNode : public NodeItem {};
+
   class ElementNode : public NodeItem {
     public:
       ElementNode(){}
       ElementNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
+
   class AttributeNode : public NodeItem {
     public:
       AttributeNode(){}
       AttributeNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
-  class NamespaceNode : public NodeItem {
-    public:
-      NamespaceNode(){}
-      NamespaceNode(const Item_t& aParent) : NodeItem(aParent) {}
-  };
+
   class PiNode : public NodeItem {
     public:
       PiNode(){}
       PiNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
+
   class CommentNode : public NodeItem {
     public:
       CommentNode(){}
       CommentNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
+
   class TextNode : public NodeItem {
     public:
       TextNode(){}
       TextNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
+#endif
 
 } /* namespace xqp */
 #endif /* XQP_VALUES_H */

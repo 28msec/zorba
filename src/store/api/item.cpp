@@ -49,63 +49,83 @@ namespace xqp
   {
     return true;
   }
-  Iterator_t AtomicItem::getTypedValue() const
-  {
-    PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue() );
-    return new PlanIterWrapper ( planIter );
-  }
-  /* end class AtomicItem */
 
-  /* begin class Node */
-  NodeItem::NodeItem(const Item_t& aParent) : theParent(&*aParent) {}
-  NodeItem::NodeItem() : theParent(0) {}
-  NodeItem::~NodeItem() {}
+Iterator_t AtomicItem::getTypedValue() const
+{
+  PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue() );
+  return new PlanIterWrapper ( planIter );
+}
+/* end class AtomicItem */
 
-  bool NodeItem::isNode() const
-  {
-    return true;
-  }
 
-  bool NodeItem::isAtomic() const
-  {
-    return false;
-  }
+/*******************************************************************************
 
-  Item_t NodeItem::getEBV() const
-  {
-    return zorba::getItemFactory()->createBoolean ( true );
-  }
+********************************************************************************/
+NodeItem::NodeItem(const Item_t& aParent) : theParent(&*aParent)
+{
+}
 
-  bool NodeItem::equals ( Item_t item ) const
-  {
-    ZorbaErrorAlerts::error_alert (
+
+NodeItem::NodeItem() : theParent(0)
+{
+}
+
+
+NodeItem::~NodeItem()
+{
+}
+
+
+bool NodeItem::isNode() const
+{
+  return true;
+}
+
+
+bool NodeItem::isAtomic() const
+{
+  return false;
+}
+
+
+Item_t NodeItem::getEBV() const
+{
+  return zorba::getItemFactory()->createBoolean ( true );
+}
+
+
+bool NodeItem::equals ( Item_t item ) const
+{
+  ZorbaErrorAlerts::error_alert (
         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
         error_messages::SYSTEM_ERROR,
         NULL,
         true,
         "Equal function for node items not implemented!"
     );
-    return false;
-  }
+  return false;
+}
 
-  TypeCode NodeItem::getType() const
-  {
-    return xs_anyType;
-  }
 
-  Item_t NodeItem::getParent() const
-  {
-    return this->theParent;
-  }
+TypeCode NodeItem::getType() const
+{
+  return xs_anyType;
+}
 
-  xqp_string NodeItem::getBaseURI() const
-  {
-    return this->theParent ? this->theParent->getBaseURI() : "";
-  }
 
-  xqp_string NodeItem::getDocumentURI() const
-  {
-    return this->theParent ? this->theParent->getDocumentURI() : "";
-  }
-  /* end class Node */
+Item_t NodeItem::getParent() const
+{
+  return theParent;
+}
+
+xqp_string NodeItem::getBaseURI() const
+{
+  return theParent ? theParent->getBaseURI() : "";
+}
+
+xqp_string NodeItem::getDocumentURI() const
+{
+  return theParent ? theParent->getDocumentURI() : "";
+}
+
 }
