@@ -17,18 +17,18 @@ class NodeNameTest : virtual public rcobject {
       WILDCARD
     } kind_t;
 
-    NodeNameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local);
+    NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local);
     NodeNameTest(rchandle<QNameItem> qname);
     
-    rchandle<xqpString_t> get_uri() const;
-    rchandle<xqpString_t> get_local() const;
+    rchandle<xqpStringStore> get_uri() const;
+    rchandle<xqpStringStore> get_local() const;
 
     bool operator ==(const NodeNameTest& other) const;
     bool is_subname_of(const NodeNameTest& other) const;
   private:
     kind_t m_kind;
-    rchandle<xqpString_t> m_uri;
-    rchandle<xqpString_t> m_local;
+    rchandle<xqpStringStore> m_uri;
+    rchandle<xqpStringStore> m_local;
 };
 
 class NodeTest : virtual public rcobject {

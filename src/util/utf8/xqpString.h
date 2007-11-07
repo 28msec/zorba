@@ -33,19 +33,18 @@
 using namespace std;
 namespace xqp {
 
-  class xqpString_t : public rcobject, public string  {
+  class xqpStringStore : public rcobject, public string  {
   public:
-    xqpString_t (const xqpString_t &other) : rcobject (other), string (other) {}
-    xqpString_t (const std::string& other) : string(other) {}
+    xqpStringStore (const xqpStringStore &other) : rcobject (other), string (other) {}
+    xqpStringStore (const std::string& other) : string(other) {}
   };
 
   class xqpString
   {
   public:
-    typedef rchandle<xqpString_t> xqpString_h;
+    rchandle<xqpStringStore> theStrStore;
     typedef std::string::size_type  size_type;
     typedef ptrdiff_t distance_type;
-    xqpString_h utf8String;
     //constructor/destructor
     /**Construct an empty xqpString
     */
@@ -56,7 +55,7 @@ namespace xqp {
     */
     xqpString (const xqpString &other)
     :
-    utf8String (other.utf8String) {}
+    theStrStore (other.theStrStore) {}
 
     /**Construct a xqpString given a std::string
     * @param src A source std::string containin ASCII characters
@@ -71,7 +70,7 @@ namespace xqp {
     ~xqpString();
 
     //xqpString::operator=()
-    xqpString&operator=(const xqpString& src) { utf8String = src.utf8String; return *this;}
+    xqpString&operator=(const xqpString& src) { theStrStore = src.theStrStore; return *this;}
     xqpString& operator=(const std::string& src);
     xqpString& operator=(const char* src);
     /**@param cp Codepoint
@@ -202,7 +201,7 @@ namespace xqp {
     const char* c_str() const;
 
     inline  operator std::string() const{
-      return *utf8String;
+      return *theStrStore;
     }
 private:
 

@@ -3,12 +3,12 @@
 
 using namespace xqp;
 
-NodeNameTest::NodeNameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> local)
+NodeNameTest::NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local)
     : m_uri(uri),
     m_local(local)
 {
-    const xqpString_t *urip = uri.get_ptr();
-    const xqpString_t *localp = local.get_ptr();
+    const xqpStringStore *urip = uri.get_ptr();
+    const xqpStringStore *localp = local.get_ptr();
 
     if (urip) {
         m_kind = localp ? CONSTANT : CONSTANT_WILDCARD;
@@ -19,17 +19,17 @@ NodeNameTest::NodeNameTest(rchandle<xqpString_t> uri, rchandle<xqpString_t> loca
 
 NodeNameTest::NodeNameTest(rchandle<QNameItem> qname)
   : m_kind(CONSTANT),
-  m_uri(qname->getNamespace().utf8String),
-  m_local(qname->getLocalName().utf8String)
+  m_uri(qname->getNamespace().theStrStore),
+  m_local(qname->getLocalName().theStrStore)
 {
 }
 
-rchandle<xqpString_t> NodeNameTest::get_uri() const
+rchandle<xqpStringStore> NodeNameTest::get_uri() const
 {
   return m_uri;
 }
 
-rchandle<xqpString_t> NodeNameTest::get_local() const
+rchandle<xqpStringStore> NodeNameTest::get_local() const
 {
   return m_local;
 }

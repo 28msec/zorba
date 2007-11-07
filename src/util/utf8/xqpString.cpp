@@ -20,68 +20,68 @@ namespace xqp {
 
   xqpString::xqpString()
   {
-    utf8String = new xqpString_t("");
+    theStrStore = new xqpStringStore("");
   }
 
   xqpString::xqpString(const std::string& src){
-    utf8String = new xqpString_t(src);
+    theStrStore = new xqpStringStore(src);
   }
 
   xqpString::xqpString(const char* src){
-    utf8String = new xqpString_t(src);
+    theStrStore = new xqpStringStore(src);
   }
 
   xqpString::~xqpString()
   {}
 
   xqpString& xqpString::operator=(const std::string& src){
-    utf8String = new xqpString_t(src);
+    theStrStore = new xqpStringStore(src);
     return *this;
   }
 
   xqpString& xqpString::operator=(const char* src){
-    utf8String = new xqpString_t(src);
+    theStrStore = new xqpStringStore(src);
     return *this;
   }
 
   xqpString& xqpString::operator=(uint32_t cp){
-    utf8String->reserve(4);
+    theStrStore->reserve(4);
     char seq[4] = {0,0,0,0};
     UTF8Encode(cp, seq);
-    utf8String = new xqpString_t(seq);
+    theStrStore = new xqpStringStore(seq);
     return *this;
   }
 
   xqpString& xqpString::operator=(char c){
-    utf8String = new xqpString_t(&c);
+    theStrStore = new xqpStringStore(&c);
     return *this;
   }
 
   //xqpString::operator+=()
   xqpString& xqpString::operator+=(const xqpString& src){
-    xqpString_t* temp = new xqpString_t(*utf8String);
+    xqpStringStore* temp = new xqpStringStore(*theStrStore);
     *temp += src;
-    utf8String = temp;
+    theStrStore = temp;
     return *this;
   }
 
   xqpString& xqpString::operator+=(const char* src){
-    xqpString_t* temp = new xqpString_t(*utf8String);
+    xqpStringStore* temp = new xqpStringStore(*theStrStore);
     *temp += src;
-    utf8String = temp;
+    theStrStore = temp;
     return *this;
   }
 
   xqpString& xqpString::operator+=(uint32_t cp){
-    utf8String->reserve(4);
+    theStrStore->reserve(4);
     char seq[4] = {0,0,0,0};
     UTF8Encode(cp, seq);
-    utf8String = new xqpString_t(*utf8String+seq);
+    theStrStore = new xqpStringStore(*theStrStore+seq);
     return *this;
   }
 
   xqpString& xqpString::operator+=(char c){
-    utf8String = new xqpString_t(*utf8String+c);
+    theStrStore = new xqpStringStore(*theStrStore+c);
     return *this;
   }
 
@@ -96,7 +96,7 @@ namespace xqp {
 
   std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src){
     //TODO is there a need to perform charset conversion to/from the current locale ?!?!
-    os << *utf8_src.utf8String;
+    os << *utf8_src.theStrStore;
     return os;
   }
 
@@ -110,7 +110,7 @@ namespace xqp {
     Collator::EComparisonResult result = ::Collator::EQUAL;
 
     //compare the 2 strings
-    result = coll->compare(getUnicodeString(*utf8String), getUnicodeString(src));
+    result = coll->compare(getUnicodeString(*theStrStore), getUnicodeString(src));
 
     return result;
 }
@@ -135,7 +135,7 @@ namespace xqp {
     ::Collator::EComparisonResult result = ::Collator::EQUAL;
 
     //compare the 2 strings
-    result = coll->compare(getUnicodeString(*utf8String), getUnicodeString(src));
+    result = coll->compare(getUnicodeString(*theStrStore), getUnicodeString(src));
 
     //close the collator
     delete coll;
@@ -151,30 +151,30 @@ namespace xqp {
 
   //xqpString::Length
   xqpString::size_type xqpString::size() const{
-    const char* c = utf8String->c_str();
-    return UTF8Distance(c, c + utf8String->size());
+    const char* c = theStrStore->c_str();
+    return UTF8Distance(c, c + theStrStore->size());
   }
 
   xqpString::size_type xqpString::length() const{
-    const char* c = utf8String->c_str();
-    return UTF8Distance(c, c + utf8String->size());
+    const char* c = theStrStore->c_str();
+    return UTF8Distance(c, c + theStrStore->size());
   }
 
   xqpString::size_type xqpString::bytes() const{
-    return utf8String->size();
+    return theStrStore->size();
   }
 
   bool xqpString::empty() const{
-    return utf8String->empty();
+    return theStrStore->empty();
   }
 
   void xqpString::reserve(xqpString::size_type size){
-    utf8String->reserve(size);
+    theStrStore->reserve(size);
   }
 
   //xqpString::Clear
   void xqpString::clear(){
-    utf8String->erase();
+    theStrStore->erase();
   }
 
   //xpqString::Codepoint
@@ -183,7 +183,7 @@ namespace xqp {
     uint16_t vLength;
 
     vLength = length() + 1;
-    const char* c = utf8String->c_str();
+    const char* c = theStrStore->c_str();
     while( --vLength > 0 ){
       tt.push_back(UTF8Decode(c));
     }
@@ -198,7 +198,7 @@ namespace xqp {
     //get the collator for the default collation
     Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
 
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
 
     if(U_FAILURE(status)) {
       ZORBA_ERROR_ALERT(
@@ -229,7 +229,7 @@ namespace xqp {
     UErrorCode status = U_ZERO_ERROR;
 
     //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), Locale(loc), NULL, status);
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), Locale(loc), NULL, status);
 
     if(U_FAILURE(status)) {
       ZORBA_ERROR_ALERT(
@@ -263,7 +263,7 @@ namespace xqp {
     //get the collator for the default collation
     Collator *coll = zorba::getZorbaForCurrentThread()->getCollator();
 
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), (RuleBasedCollator *)coll, NULL, status);
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
 
     if(U_FAILURE(status)) {
       ZORBA_ERROR_ALERT(
@@ -296,7 +296,7 @@ namespace xqp {
     UErrorCode status = U_ZERO_ERROR;
 
     //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*utf8String), Locale(loc), NULL, status);
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), Locale(loc), NULL, status);
 
     if(U_FAILURE(status)) {
       ZORBA_ERROR_ALERT(
@@ -339,7 +339,7 @@ namespace xqp {
     char* target;
     int32_t size =  length*4 + 1;
     target = new char[size]; //will hold UTF-8 encoded characters
-    UnicodeString str = getUnicodeString( *utf8String );
+    UnicodeString str = getUnicodeString( *theStrStore );
 
     int32_t targetsize = str.extract(index, length, target, size, "UTF-8");
     target[targetsize] = 0; /* NULL termination */
@@ -356,11 +356,11 @@ namespace xqp {
       index = length();
     }
     else if(index < 0){
-      xqpString ret(*utf8String);
+      xqpString ret(*theStrStore);
       return ret;
     }
 
-    const char * d = utf8String->c_str();
+    const char * d = theStrStore->c_str();
     advance(d, index);
 
     xqpString ret(d);
@@ -368,7 +368,7 @@ namespace xqp {
   }
 
   const char* xqpString::c_str() const{
-    return utf8String->c_str();
+    return theStrStore->c_str();
   }
 
   // Private methods
