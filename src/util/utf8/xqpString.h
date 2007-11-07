@@ -142,10 +142,6 @@ namespace xqp {
     */
     bool empty()  const;
 
-    /**Sets the capacity of the string to at least size
-    */
-    void reserve(size_type size=0);
-
     // xqpString::Clear
     void clear();
 
@@ -215,6 +211,10 @@ private:
     /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
     */
     wchar_t * getWCS(const xqpString& source) const;
+
+  /**Sets the capacity of the string to at least size
+    */
+    void reserve(size_type size=0);
 
   };
 
