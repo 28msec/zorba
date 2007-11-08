@@ -319,6 +319,7 @@ Item_t FLWORIterator::nextImpl(PlanState& planState) {
 			curItem = this->consumeNext(returnClause, planState);
 			if(curItem == NULL){
 				curVar = bindingsNb - 1;
+				this->resetChild(returnClause, planState);
 				break;
 			}else{
 				STACK_PUSH2(curItem, state);
@@ -339,9 +340,9 @@ bool FLWORIterator::bindVariable(int varNb, PlanState& planState) {
 			if (lItem == NULL) {
 				return false;
 			}
-			varBindingState[varNb]++;
+			++varBindingState[varNb];
 			std::vector<var_iter_t>::iterator forIter;
-			std::cerr << "problem" << lForLetClause.forVars.size() << std::endl;
+			std::cerr << "FOR_Bindings:" << lForLetClause.forVars.size() << std::endl;
 			for (forIter = lForLetClause.forVars.begin(); forIter
 					!= lForLetClause.forVars.end(); forIter++) {
 				var_iter_t variable = (*forIter);
@@ -352,16 +353,19 @@ bool FLWORIterator::bindVariable(int varNb, PlanState& planState) {
 		}
 	case ForLetClause::LET :
 		{
+			//return false if the Var-Variable was already bound
 			if (varBindingState[varNb] == 1) {
 				return false;
 			}
+			std::cerr << "LET_Bindings:" << lForLetClause.forVars.size() << std::endl;
 			std::vector<ref_iter_t>::iterator letIter;
+			Iterator_t iterWrapper = new PlanIterWrapper(lForLetClause.input, planState);
 			for (letIter = lForLetClause.letVars.begin(); letIter
 					!= lForLetClause.letVars.end(); letIter++) {
-				(*letIter)->bind(lForLetClause.input);
-				ref_iter_t letVariable = (*letIter);
-				letVariable->bind(lForLetClause.input);
+				(*letIter)->bind(iterWrapper);
+				
 			}
+			++varBindingState[varNb];
 			return true;
 		}
 	default:

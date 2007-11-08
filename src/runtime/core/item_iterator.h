@@ -131,7 +131,7 @@ public:		// variable binding
 class RefIterator : public Batcher<RefIterator>
 {
 private:
-	PlanIter_t it;
+	Iterator_t it;
 	const void *origin;  ///< like origin in var_iterator
 	
 public:
@@ -141,10 +141,10 @@ public:
 	~RefIterator() {}  // TODO
 	
 public:		// variable binding
-	void bind(PlanIter_t _it) { it = _it;}
-	Item_t nextImpl(PlanState& planState) { return NULL; }  // TODO
-	void resetImpl(PlanState& planState) {}  // TODO
-  void releaseResourcesImpl(PlanState& planState) {}  // TODO
+	void bind(Iterator_t _it) { it = _it;}
+	Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
+	void resetImpl(PlanState& planState) { it->reset(); }  // TODO
+	void releaseResourcesImpl(PlanState& planState) {  }  // TODO
 	virtual int32_t getStateSize() { return 0; }  // TODO
 	virtual int32_t getStateSizeOfSubtree() { return 0; }  // TODO
 	virtual void setOffset(PlanState& planState, int32_t& offset) {}  // TODO

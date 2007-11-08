@@ -359,6 +359,8 @@ public:
 	 * Resets the contining PlanIter
 	 */
 	void reset();
+	
+	//TODO addReleaseResources!
 };
 
 } /* namespace xqp */
