@@ -404,6 +404,11 @@ int32_t FLWORIterator::getStateSizeOfSubtree() {
 void FLWORIterator::setOffset(PlanState& planState, int32_t& offset) {
 	  this->stateOffset = offset;
 	  offset += this->getStateSize();
+    
+    std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
+    for (iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++) {
+      iter->input->setOffset(planState, offset);
+    }
 
 	  returnClause->setOffset(planState, offset);
 	 	  
