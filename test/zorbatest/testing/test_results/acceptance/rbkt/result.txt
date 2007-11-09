@@ -16,6 +16,18 @@ SUCCESS : -bucket paths -query path3
 SUCCESS : -bucket paths -query path4
 
 
-rbkt.sh : total number of queries   = 5
+SUCCESS : -bucket paths -query path5
+
+
+SUCCESS : -bucket paths -query path6
+
+
+SUCCESS : -bucket paths -query path7
+
+
+SUCCESS : -bucket paths -query path8
+
+
+rbkt.sh : total number of queries   = 9
 rbkt.sh : number of failed queries  = 0
 
