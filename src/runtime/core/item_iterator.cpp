@@ -288,6 +288,7 @@ FLWORIterator::FLWORIterator(const yy::location& loc,
 			returnClause(aReturnClause),
 			whereClauseReturnsBooleanPlus(aWhereClauseReturnsBooleanPlus),
 			bindingsNb(aForLetClauses.size()) {
+	store = zorba::getStore();
 }
 
 Item_t FLWORIterator::nextImpl(PlanState& planState) {
@@ -306,6 +307,7 @@ Item_t FLWORIterator::nextImpl(PlanState& planState) {
 			if(bindVariable(curVar, planState)){
 				curVar++;
 			}else{
+				resetInput(curVar, planState);
 				curVar--;
 				//FINISHED
 				if(curVar == -1){
@@ -331,6 +333,13 @@ stop:
 	STACK_END2();
 }
 
+void FLWORIterator::resetInput(int varNb, PlanState& planState){
+	FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
+	this->resetChild(lForLetClause.input, planState);
+	varBindingState[varNb] = 0;
+}
+
+
 bool FLWORIterator::bindVariable(int varNb, PlanState& planState) {
 	FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
 	switch (lForLetClause.type) {
@@ -342,7 +351,6 @@ bool FLWORIterator::bindVariable(int varNb, PlanState& planState) {
 			}
 			++varBindingState[varNb];
 			std::vector<var_iter_t>::iterator forIter;
-			std::cerr << "FOR_Bindings:" << lForLetClause.forVars.size() << std::endl;
 			for (forIter = lForLetClause.forVars.begin(); forIter
 					!= lForLetClause.forVars.end(); forIter++) {
 				var_iter_t variable = (*forIter);
@@ -357,13 +365,18 @@ bool FLWORIterator::bindVariable(int varNb, PlanState& planState) {
 			if (varBindingState[varNb] == 1) {
 				return false;
 			}
-			std::cerr << "LET_Bindings:" << lForLetClause.forVars.size() << std::endl;
-			std::vector<ref_iter_t>::iterator letIter;
 			Iterator_t iterWrapper = new PlanIterWrapper(lForLetClause.input, planState);
-			for (letIter = lForLetClause.letVars.begin(); letIter
-					!= lForLetClause.letVars.end(); letIter++) {
-				(*letIter)->bind(iterWrapper);
-				
+			if(lForLetClause.needsMaterialization){
+				TempSeq_t tmpSeq = store->createTempSeq(iterWrapper);
+				for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
+						!= lForLetClause.letVars.end(); letIter++) {
+					(*letIter)->bind(tmpSeq->getIterator());
+				}			
+			}else{
+				for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
+						!= lForLetClause.letVars.end(); letIter++) {
+					(*letIter)->bind(iterWrapper);
+				}
 			}
 			++varBindingState[varNb];
 			return true;

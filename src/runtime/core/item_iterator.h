@@ -361,6 +361,7 @@ private:
   const int bindingsNb;
   //State
   int* varBindingState;
+  Store* store;
   
 protected:
     class ElementContentState : public PlanIteratorState
@@ -399,6 +400,7 @@ public:
   std::ostream& _show ( std::ostream& os ) const;
   
 private:
+	void resetInput(int varNb, PlanState& planState);
 	bool bindVariable(int varNb, PlanState& planState);
 };
 
