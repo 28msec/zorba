@@ -19,6 +19,8 @@ namespace xqp
  * Very simple implementation of Temp Sequence. It saves the resulting items
  * of an iterator eager in a vector.
  */
+typedef rchandle<class SimpleTempSeq> SimpleTempSeq_t;
+
 class SimpleTempSeq : public TempSeq
 {
 private:
@@ -27,7 +29,7 @@ private:
 public:
   SimpleTempSeq() { }
 
-  SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
+//   SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
 
   SimpleTempSeq(Iterator_t iter, bool lazy = true);
 
@@ -62,6 +64,9 @@ public:
   virtual void purgeItem(const std::vector<int32_t>& positions );
   virtual void purgeItem(int32_t position );
   virtual bool empty();
+  
+  Item_t operator[](int32_t aIndex);
+  int32_t getSize();
 
   class SimpleTempSeqIter : public Iterator
 	{
@@ -73,7 +78,7 @@ public:
       specificPositions
     };
 
-    const std::vector<Item_t>* theItems;
+    SimpleTempSeq_t            theTempSeq;
     BorderType                 theBorderType;
 
     int32_t                    theCurPos;
@@ -82,10 +87,10 @@ public:
     std::vector<int32_t>       thePositions;
     
   public:
-    SimpleTempSeqIter(const std::vector<Item_t>* items);
-    SimpleTempSeqIter(const std::vector<Item_t>* items, int startPos, int endPos);
-    SimpleTempSeqIter(const std::vector<Item_t>* items, const std::vector<int32_t>& positions);
-    ~SimpleTempSeqIter();
+    SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
+    SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, int startPos, int endPos);
+    SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<int32_t>& positions);
+    virtual ~SimpleTempSeqIter();
 
     Item_t next();
     void reset();

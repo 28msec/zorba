@@ -41,7 +41,7 @@ SimpleTempSeq::~SimpleTempSeq()
 ********************************************************************************/
 Iterator_t SimpleTempSeq::getIterator()
 {
-  return new SimpleTempSeqIter(&theItems);
+  return new SimpleTempSeqIter(this);
 }
 
 
@@ -160,26 +160,34 @@ bool SimpleTempSeq::empty()
   return theItems.size() == 0;
 }
 
+Item_t SimpleTempSeq::operator[](int32_t aIndex) {
+  return theItems[aIndex];
+}
+
+int32_t SimpleTempSeq::getSize() {
+  return theItems.size();
+}
+
 
 /*******************************************************************************
 
 ********************************************************************************/	
 SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
-    const std::vector<Item_t>* items)
+    SimpleTempSeq_t aTempSeq)
 	:
-  theItems(items),
-  theBorderType(none),
-  theCurPos(-1)
+    theTempSeq(aTempSeq),
+    theBorderType(none),
+    theCurPos(-1)
 {
 }
 
 
 SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
-    const std::vector<Item_t>* items,
+    SimpleTempSeq_t aTempSeq,
     int startPos,
     int endPos)
 	:
-		theItems(items),
+		theTempSeq(aTempSeq),
     theBorderType(startEnd),
     theCurPos(startPos - 2),
     theStartPos(startPos),
@@ -189,10 +197,10 @@ SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
 
 
 SimpleTempSeq::SimpleTempSeqIter::SimpleTempSeqIter(
-    const std::vector<Item_t>* items,
+    SimpleTempSeq_t aTempSeq,
     const std::vector<int32_t>& positions)
 	:
-		theItems(items),
+		theTempSeq(aTempSeq),
     theBorderType(specificPositions),
     theCurPos(-1),
     thePositions(positions)
@@ -211,16 +219,17 @@ Item_t SimpleTempSeq::SimpleTempSeqIter::next()
   switch (theBorderType)
 	{
   case none:
-    if ( theCurPos < int32_t ( theItems->size() ) )
-      return ( *(theItems) ) [theCurPos];
+    if ( theCurPos < theTempSeq->getSize() ) {
+      return (*theTempSeq)[theCurPos];
+    }
     break;
   case startEnd:
     if ( theCurPos < theEndPos )
-      return ( *(theItems) ) [theCurPos];
+      return  (*theTempSeq)[theCurPos];
     break;
   case specificPositions:
     if ( theCurPos < int32_t ( thePositions.size() ) )
-      return ( *(theItems) ) [thePositions[theCurPos]];
+      return  (*theTempSeq)[thePositions[theCurPos]];
     break;
   }
   return NULL;
