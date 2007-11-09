@@ -350,11 +350,17 @@ bool FLWORIterator::bindVariable(int varNb, PlanState& planState) {
 				return false;
 			}
 			++varBindingState[varNb];
-			std::vector<var_iter_t>::iterator forIter;
-			for (forIter = lForLetClause.forVars.begin(); forIter
+			for (std::vector<var_iter_t>::iterator forIter = lForLetClause.forVars.begin(); forIter
 					!= lForLetClause.forVars.end(); forIter++) {
 				var_iter_t variable = (*forIter);
 				variable->bind(lItem);
+			}
+			if(!lForLetClause.posVars.empty()){
+				Item_t posItem = zorba::getItemFactory()->createInteger (varBindingState[varNb]);
+				for (std::vector<var_iter_t>::iterator posIter = lForLetClause.posVars.begin(); posIter != lForLetClause.posVars.end(); posIter++) {
+					var_iter_t variable = (*posIter);
+					variable->bind(posItem);
+				}
 			}
 			//TODO Pos Bindings
 			return true;
