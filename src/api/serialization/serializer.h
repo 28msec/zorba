@@ -121,9 +121,9 @@ protected:
      *  Serializes the children of the given node, without
      *  the node itself.
      * 
-     *  @return  the number of node's children
+     *  @return  returns 1 if the functions has closed parent's tag with ">"
      */ 
-    virtual unsigned int emit_node_children(Item_t item, int depth, bool perform_escaping);
+    virtual int emit_node_children(Item_t item, int depth, bool perform_escaping);
     
     //virtual unsigned int emit_node_namespaces(Item_t item, int depth);
     //virtual unsigned int emit_node_attributes(Item_t item, int depth, bool perform_escaping);

@@ -162,11 +162,10 @@ void serializer::emitter::emit_indentation(int depth)
 		os << "  ";
 }
 
-unsigned int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform_escaping = true)
+int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform_escaping = true)
 {
 	Iterator_t it;
-	Item_t child;
-	unsigned int children_count = 0;
+	Item_t child;	
 	int closed_parent_tag = 0;
 
 	// emit namespace declarations
@@ -174,11 +173,8 @@ unsigned int serializer::emitter::emit_node_children(Item_t item, int depth, boo
 	child = it->next();
 	while (child != NULL )
 	{
-		if (child->getNodeKind() == namespaceNode )
-		{
+		if (child->getNodeKind() == namespaceNode )		
 			emit_node(child, depth);
-			children_count++;			
-		}		
 		
 		child = it->next();
 	}
@@ -203,9 +199,8 @@ unsigned int serializer::emitter::emit_node_children(Item_t item, int depth, boo
 	child = it->next();
 	while (child!= NULL)
 	{		
-		emit_node(child, depth);
-		children_count++;		
-    	child = it->next();
+    emit_node(child, depth);		
+    child = it->next();
 	}
 	
 	// output all the other nodes
@@ -217,20 +212,19 @@ unsigned int serializer::emitter::emit_node_children(Item_t item, int depth, boo
 		   &&
 		   child->getNodeKind() != namespaceNode)
 		{
-			if (!closed_parent_tag)
+			if (closed_parent_tag == 0)
 			{
 				os << ">";
 				closed_parent_tag = 1;
 			}
 
-			emit_node(child, depth, item);
-			children_count++;
+			emit_node(child, depth, item);			
 		}
 
     child = it->next();
 	}
 
-	return children_count;
+	return closed_parent_tag;
 }
 
 void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_parent /* = NULL */)
@@ -245,15 +239,15 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 			emit_indentation(depth);
 		os << "<" << item->getNodeName()->getStringProperty();
 
-		unsigned int children_count = emit_node_children(item, depth);
+		int closed_parent_tag = emit_node_children(item, depth);
 
-		if (children_count > 0)		
+		if (closed_parent_tag)		
 			os << "</" << item->getNodeName()->getStringProperty() << ">";
 		else
 			os << "/>";
 
     if (ser.indent)
-			os << serializer::END_OF_LINE;
+			os << ser.END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == attributeNode )
@@ -277,12 +271,18 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 		emit_expanded_string(item->getStringProperty());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
-	/*
 	else if (item->getNodeKind() == commentNode )
 	{
-		
-    state = PREVIOUS_ITEM_WAS_NODE;
+    if (ser.indent)
+      emit_indentation(depth);
+    
+    os << "<--" << item->getStringProperty() << "-->";
+    
+    if (ser.indent)
+      os << ser.END_OF_LINE;		
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
+  /*
 	else if (item->getNodeKind() == piNode )
 	{
     state = PREVIOUS_ITEM_WAS_NODE;
@@ -445,7 +445,7 @@ void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_
 {
   if (item->getNodeKind() == elementNode)
   {
-    unsigned int children_count = 0;
+    unsigned closed_parent_tag = 0;
     
     /*
       If a meta element has been added to the head element as described above, then any existing 
@@ -480,18 +480,18 @@ void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_
     {
       os << "/>";
       if (ser.indent)
-        os << serializer::END_OF_LINE;
+        os << ser.END_OF_LINE;
       if (ser.indent)
         emit_indentation(depth+1);
       os << "<meta http-equiv=\"content-type\" content=\"" << ser.media_type << "; charset=" << ser.encoding << "\">";
       if (ser.indent)
-        os << serializer::END_OF_LINE;
-      children_count++;      
+        os << ser.END_OF_LINE;
+      closed_parent_tag = 1;
     }
 
-    children_count += emit_node_children(item, depth);
+    closed_parent_tag |= emit_node_children(item, depth);
         
-    if (children_count > 0)   
+    if (closed_parent_tag)   
       os << "</" << item->getNodeName()->getStringProperty() << ">";
     else
     {
@@ -553,7 +553,7 @@ void serializer::reset()
 }
 
 serializer::serializer()
-{
+{  
   reset();  
 }
 
@@ -653,16 +653,6 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   else if (parameter_name == "media-type")
   {
     media_type = value;    
-  }
-}
-
-void serializer::list_copy(list_type& dest, list_type& src)
-{
-  list_iterator<Item_t> it = src.begin();
-
-  for ( ; it != src.end(); ++it)
-  {
-    dest.push_back(*it);
   }
 }
 
