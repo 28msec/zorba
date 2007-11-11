@@ -231,28 +231,27 @@ int _tmain(int argc, _TCHAR* argv[])
 #endif
 				if(!inline_query)
 				{          
-					///read the file
+					// read the file
 					std::ifstream	qfile(fname);
-					//istringstream		iss;
           
 					if(!qfile.is_open())
 					{
-						///couldn't open file, display error and exit
+						// couldn't open file, display error and exit
 						cerr << "Error opening xquery file <" << fname << ">" << endl;
 						return -1;
 					}
           string temp;
           query_text = "";
           
-          // warning: this method of reading a file will trim the 
+          // warning: this method of reading a file might trim the 
           // whitespace at the end of lines
-					while (qfile >> temp)
+					while (getline(qfile, temp))
           {
             if (query_text != "")
               query_text += "\n";
             
             query_text += temp;
-          }
+          }          
 				}
 			}
 		}

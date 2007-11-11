@@ -494,7 +494,7 @@ CommentNodeNaive::CommentNodeNaive(const Item_t& parent, xqp_string& content_arg
 {
 }
 
-CommentNodeNaive::CommentNodeNaive(xqp_string& content_arg) : content(content_arg)
+CommentNodeNaive::CommentNodeNaive(const xqp_string& content_arg) : content(content_arg)
 {
 }
 
@@ -530,6 +530,10 @@ xqp_string CommentNodeNaive::getStringValue() const
   return this->content;
 }
 
+xqp_string CommentNodeNaive::show() const
+{
+  return "<!--" + this->content + "-->";
+}
 
 /*******************************************************************************
 
