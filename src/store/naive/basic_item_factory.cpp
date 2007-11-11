@@ -285,7 +285,8 @@ Item_t BasicItemFactory::createCommentNode (
     const xqp_string& comment,
     bool createId	)
 {
-  return Item_t ( NULL );
+  Item_t item = new CommentNodeNaive(comment);
+  return item;
 }
 
 

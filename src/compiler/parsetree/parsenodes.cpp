@@ -4629,7 +4629,7 @@ DirCommentConstructor::DirCommentConstructor(
 :
 	exprnode(_loc),
 	comment(_comment)
-{
+{  
 }
 
 DirCommentConstructor::~DirCommentConstructor()
@@ -4639,7 +4639,7 @@ DirCommentConstructor::~DirCommentConstructor()
 ostream& DirCommentConstructor::put(ostream& s) const
 {
 	s << INDENT << "DirCommentConstructor[";
-	s << "comment=" << comment << endl;
+	s << "comment=" << comment;
 	return s << OUTDENT << "]\n";
 }
 

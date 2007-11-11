@@ -326,4 +326,109 @@ AttributeIterator::nextImpl(PlanState& planState)
   STACK_END2();
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+CommentIterator::CommentIterator (
+    const yy::location& loc,
+    PlanIter_t& expression)
+  :
+  Batcher<CommentIterator>(loc),
+  theExpressionIter(expression)
+{
+}
+
+Item_t CommentIterator::nextImpl(PlanState& planState)
+{
+  Item_t item, child;
+  xqp_string content = "";
+
+  Store* store = zorba::getStore();
+  TempSeq_t seqExpression;  
+	Iterator_t ewrapper;
+
+  PlanIteratorState* state;
+  STACK_INIT2(PlanIteratorState, state, planState);
+		
+  if (theExpressionIter != NULL)
+  {
+    /*
+    ewrapper = new PlanIterWrapper(theExpressionIter, planState);
+    seqExpression = store->createTempSeq(ewrapper);
+    */
+    // TODO: put a while() to handle expressions        
+    child = consumeNext( theExpressionIter, planState);    
+    if (child != NULL)
+      content = child->getStringValue(); // TODO: maybe getStringProperty()?
+  }
+
+  item = zorba::getItemFactory()->createCommentNode(
+		           content,
+		           false);
+
+  STACK_PUSH2(item, state);
+		
+  STACK_END2();
+}
+
+
+void
+CommentIterator::resetImpl(PlanState& planState)
+{
+  if ( theExpressionIter != NULL )
+    resetChild(theExpressionIter, planState);
+
+  PlanIterator::PlanIteratorState* state;
+  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  state->reset();
+}
+
+
+void
+CommentIterator::releaseResourcesImpl(PlanState& planState)
+{
+  if (theExpressionIter != NULL)
+    releaseChildResources(theExpressionIter, planState);
+}
+
+
+std::ostream&
+CommentIterator::_show(std::ostream& os) const
+{  
+  if (theExpressionIter != NULL)
+    theExpressionIter->show(os);
+ 
+  return os;
+}
+
+
+int32_t
+CommentIterator::getStateSize()
+{
+  return sizeof(PlanIterator::PlanIteratorState);
+}
+
+	
+int32_t
+CommentIterator::getStateSizeOfSubtree()
+{
+  int32_t size = 0;
+  
+  if (theExpressionIter != NULL)
+    size += theExpressionIter->getStateSizeOfSubtree();
+
+  return this->getStateSize() + size;
+}
+
+	
+void
+CommentIterator::setOffset(PlanState& planState, int32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+
+  if (theExpressionIter != NULL)
+    theExpressionIter->setOffset(planState, offset);
+}
+
 }

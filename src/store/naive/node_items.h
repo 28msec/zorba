@@ -228,7 +228,7 @@ class CommentNodeNaive : public NodeNaive
 
  public:
   CommentNodeNaive ( const Item_t& parent, xqp_string& content );
-  CommentNodeNaive ( xqp_string& content );
+  CommentNodeNaive ( const xqp_string& content );
   virtual ~CommentNodeNaive();
 
   virtual Item_t getAtomizationValue() const;
@@ -237,6 +237,7 @@ class CommentNodeNaive : public NodeNaive
   virtual TypeCode getNodeKind() const;
   virtual Iterator_t getTypedValue() const;
   virtual xqp_string getStringValue() const;
+  virtual xqp_string show() const;
 };
 
 

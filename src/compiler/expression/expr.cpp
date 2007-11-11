@@ -1477,6 +1477,10 @@ ostream& comment_expr::put( ostream& os) const
 void comment_expr::accept(
 	expr_visitor& v) const
 {
+  if (!v.begin_visit(*this)) return;  
+  if (this->comment_expr_h != NULL)
+    this->comment_expr_h->accept(v);  
+  v.end_visit(*this);
 }
 
 

@@ -4039,7 +4039,7 @@ public:
 	~DirCommentConstructor();
 
 public:
-	std::string get_comment() const { return comment; }
+  std::string get_comment() const { return comment; }
 
 public:
 	std::ostream& put(std::ostream&) const;

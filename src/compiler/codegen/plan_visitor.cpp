@@ -645,8 +645,19 @@ bool plan_visitor::begin_visit(const comment_expr& v)
 
 
 void plan_visitor::end_visit(const comment_expr& v)
-{
+{  
   cout << TRACE << endl;
+  PlanIter_t contentIter = NULL;
+  
+  if (v.get_comment_expr() != NULL )
+  {
+    
+    contentIter = pop_itstack();
+    // TODO: handle comment expressions    
+  }
+  
+  PlanIter_t iter = new CommentIterator(v.get_loc(), contentIter);
+  itstack.push(iter);  
 }
 
 

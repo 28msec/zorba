@@ -260,6 +260,12 @@ void *normalize_visitor::begin_visit(const DirCommentConstructor& v)
 void normalize_visitor::end_visit(const DirCommentConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
+    
+  std::string content = v.get_comment();
+  
+  rchandle<expr> expr_h = new text_expr(v.get_location(), content);    
+  rchandle<comment_expr> comment_h = new comment_expr(v.get_location(), expr_h);
+  nodestack.push(&*comment_h);
 }
 
 void *normalize_visitor::begin_visit(const DirPIConstructor& v)
@@ -1457,6 +1463,8 @@ void *normalize_visitor::begin_visit(const Expr& v)
 
 void normalize_visitor::end_visit(const Expr& v, void *visit_state)
 {
+  cout << std::string(depth--, ' ') << TRACE << endl;
+  
 	rchandle<expr_list> elist_h = new expr_list(v.get_location());
   for (int i = 0; i < v.numberOfChildren (); i++) {
 		expr_t e_h = pop_nodestack();

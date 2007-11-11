@@ -113,6 +113,34 @@ public:
 };
 
 
+/*******************************************************************************
+
+  CommentIterator constructs a comment element.
+
+  theExpressionIter : The iterator that produces the content of the comment. It
+                      could be a simple text iterator, or a full expression.
+
+********************************************************************************/
+
+class CommentIterator : public Batcher<CommentIterator>
+{
+  PlanIter_t        theExpressionIter;
+
+public:
+  CommentIterator(
+        const yy::location& loc,         
+        PlanIter_t& expression);
+	
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+
+  std::ostream& _show(std::ostream& os) const;
+
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
+  virtual void setOffset(PlanState& planState, int32_t& offset);
+};
+
 }	/* namespace xqp */
 #endif	/* XQP_CONSTRUCTORS_H */
-
