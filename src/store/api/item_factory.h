@@ -393,19 +393,19 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
    * @param value
    */
-  virtual Item_t createUnsignedInt ( xqp_unsignedInt value ) = 0;
+  virtual Item_t createUnsignedInt ( xqp_uint value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
    * @param value
    */
-  virtual Item_t createUnsignedLong ( xqp_unsignedLong value ) = 0;
+  virtual Item_t createUnsignedLong ( xqp_ulong value ) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
    * @param value
    */
-  virtual Item_t createUnsignedShort ( xqp_unsignedShort value ) = 0;
+  virtual Item_t createUnsignedShort ( xqp_ushort value ) = 0;
 
   /**
    * @param baseUri The base URI of the document.

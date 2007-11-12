@@ -19,7 +19,7 @@ const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
 /*******************************************************************************
 
 ********************************************************************************/
-QNamePool::QNamePool(xqp_unsignedLong size) 
+QNamePool::QNamePool(xqp_ulong size) 
   :
   theCache(new QNameItemImpl[size]),
   theCacheSize(size),
@@ -33,7 +33,7 @@ QNamePool::QNamePool(xqp_unsignedLong size)
   QNameItemImpl* qn = &theCache[1];
   QNameItemImpl* last = qn + size - 1;
 
-  for (xqp_unsignedLong i = 1; qn < last; qn++, i++)
+  for (xqp_ulong i = 1; qn < last; qn++, i++)
   {
     qn->theNextFree = i + 1;
     qn->thePrevFree = i - 1;
@@ -57,21 +57,15 @@ QNamePool::QNamePool(xqp_unsignedLong size)
 ********************************************************************************/
 QNamePool::~QNamePool() 
 {
-#if 0
-  xqp_unsignedLong n = theOverflow.size();
-  for (xqp_unsignedLong i = 0; i < n; i++)
+  xqp_ulong n = theHashTab.size();
+  for (xqp_ulong i = 0; i < n; i++)
   {
-    if (theOverflow[i] != NULL)
-      delete theOverflow[i];
+    if (theHashTab[i].theQNameSlot != NULL &&
+        theHashTab[i].theQNameSlot->isOverflow())
+    {
+      delete theHashTab[i].theQNameSlot;
+    }
   }
-#else
-  xqp_unsignedLong n = theHashTab.size();
-  for (xqp_unsignedLong i = 0; i < n; i++)
-  {
-    if (theHashTab[i].theQName != NULL && theHashTab[i].theQName->isOverflow())
-      ::delete theHashTab[i].theQName;
-  }
-#endif
 
   if (theCache != NULL)
   {
@@ -90,65 +84,48 @@ QNameItemImpl* QNamePool::insert(
     const char* ln)
 {
   QNameItemImpl* qn;
+  bool found;
 
-  HashEntry* entry = hash(ns, pre, ln);
+  HashEntry* entry = hashInsert(ns, pre, ln,
+                                strlen(ns), strlen(pre), strlen(ln),
+                                found);
 
-  // If the qname is already in the pool, return a ptr to its containing slot.
-  // If the slot is in the free list of the cache, it is first removed from
-  // that list.  
-  if (entry->theQName != NULL)
+  qn = cacheInsert(entry);
+
+  if (!found)
   {
-    qn = entry->theQName;
-
-    if (qn->isInCache())
-    {
-      if (qn->theNextFree != 0)
-        theCache[qn->theNextFree].thePrevFree = qn->thePrevFree;
-
-      if (qn->thePrevFree != 0)
-      {
-        theCache[qn->thePrevFree].theNextFree = qn->theNextFree;
-      }
-      else if (theFirstFree == qn->thePosition)
-      {
-        theFirstFree = qn->theNextFree;
-      }
-
-      qn->theNextFree = qn->thePrevFree = 0;
-      theNumFree--;
-    }
-
-    return qn;
+    qn->theNamespace = new xqpStringStore(ns);
+    qn->thePrefix = new xqpStringStore(pre);
+    qn->theLocal = new xqpStringStore(ln);
   }
 
-  // The qname is not in the pool.
-  // Use the 1st slot from the free list of the cache to store the new qname.
-  // The qname was is currently in that slot is removed from the cache.
-  if (theFirstFree != 0)
+  return qn;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+QNameItemImpl* QNamePool::insert(
+    const xqpStringStore& ns,
+    const xqpStringStore& pre,
+    const xqpStringStore& ln)
+{
+  QNameItemImpl* qn;
+  bool found;
+
+  HashEntry* entry = hashInsert(ns.c_str(), pre.c_str(), ln.c_str(),
+                                ns.bytes(), pre.bytes(), ln.bytes(),
+                                found);
+
+  qn = cacheInsert(entry);
+
+  if (!found)
   {
-    qn = &theCache[theFirstFree];
-    entry->theQName = qn;
-
-    theFirstFree = qn->theNextFree;
-    theCache[theFirstFree].thePrevFree = 0;
-
-    if (!qn->theLocal.empty())
-      unhash(qn->theNamespace.c_str(), qn->thePrefix.c_str(), qn->theLocal.c_str());
-
-    qn->theNextFree = qn->thePrevFree = 0;
-    qn->theNamespace = ns;
-    qn->thePrefix = pre;
-    qn->theLocal = ln;
-
-    theNumFree--;
-
-    return qn;
+    qn->theNamespace = const_cast<xqpStringStore*>(&ns);
+    qn->thePrefix = const_cast<xqpStringStore*>(&pre);
+    qn->theLocal = const_cast<xqpStringStore*>(&ln);
   }
 
-  // The cache was full, so allocate a QNameItem from the heap.
-  qn = new QNameItemImpl(ns, pre, ln);
-  //theOverflow.push_back(qn);
-  entry->theQName = qn;
   return qn;
 }
 
@@ -156,34 +133,62 @@ QNameItemImpl* QNamePool::insert(
 /*******************************************************************************
 
 ********************************************************************************/
-void QNamePool::remove(QNameItemImpl* qn)
+QNameItemImpl* QNamePool::cacheInsert(HashEntry* entry)
 {
-  if (qn->getRefCount() > 0)
-    return;
+  QNameItemImpl* qnslot;
 
-  if (qn->isInCache())
+  // If the qname is already in the pool, return a ptr to its containing slot.
+  // If the slot is in the free list of the cache, it is first removed from
+  // that list.  
+  if (entry->theQNameSlot != NULL)
   {
-    qn->theNextFree = theFirstFree;
-    theCache[theFirstFree].thePrevFree = qn->thePosition;
-    theFirstFree = qn->thePosition;
-    theNumFree++;
+    qnslot = entry->theQNameSlot;
+
+    if (qnslot->isInCache())
+    {
+      if (qnslot->theNextFree != 0)
+        theCache[qnslot->theNextFree].thePrevFree = qnslot->thePrevFree;
+
+      if (qnslot->thePrevFree != 0)
+      {
+        theCache[qnslot->thePrevFree].theNextFree = qnslot->theNextFree;
+      }
+      else if (theFirstFree == qnslot->thePosition)
+      {
+        theFirstFree = qnslot->theNextFree;
+      }
+
+      qnslot->theNextFree = qnslot->thePrevFree = 0;
+      theNumFree--;
+    }
+
+    return qnslot;
   }
-  else
+
+  // The qname is not in the pool.
+  // Use the 1st slot from the free list of the cache to store the new qname.
+  // The qname is currently in that slot is removed from the cache.
+  if (theFirstFree != 0)
   {
-    // If all the pointers to QNameItems were smart pointers, we could leave
-    // qn in the pool, and let the pool garbage-collect it later (if it still
-    // unused). If however QNameItems may be referenced by regular pointers as
-    // well, then qn must be removed from the pool and really deleted
-    unhash(qn->getNamespace().c_str(),
-           qn->getPrefix().c_str(),
-           qn->getLocalName().c_str());
+    qnslot = &theCache[theFirstFree];
+    entry->theQNameSlot = qnslot;
 
-    //std::vector<QNameItemImpl *>::iterator it;
-    //it = theOverflow.begin() + qn->thePosition;
-    //theOverflow.erase(it);
+    theFirstFree = qnslot->theNextFree;
+    theCache[theFirstFree].thePrevFree = 0;
 
-    ::delete qn;
+    if (qnslot->theLocal != NULL)
+      hashRemove(qnslot->theNamespace, qnslot->thePrefix, qnslot->theLocal);
+
+    qnslot->theNextFree = qnslot->thePrevFree = 0;
+
+    theNumFree--;
+    return qnslot;
   }
+
+  // The cache was full, so allocate a QNameItem from the heap.
+  qnslot = new QNameItemImpl();
+  entry->theQNameSlot = qnslot;
+  return qnslot;
 }
 
 
@@ -191,21 +196,27 @@ void QNamePool::remove(QNameItemImpl* qn)
   Check if the given qname is already in the pool, and if so, return its hash
   entry. If not, allocate a new hash entry for it, and return it to the caller.
 ********************************************************************************/
-QNamePool::HashEntry*
-QNamePool::hash(const char* ns, const char* pre, const char* ln)
+QNamePool::HashEntry* QNamePool::hashInsert(
+    const char* ns,
+    const char* pre,
+    const char* ln,
+    xqp_ulong   nslen,
+    xqp_ulong   prelen,
+    xqp_ulong   lnlen,
+    bool&       found)
 {
-  xqp_unsignedLong len;
+  xqp_ulong len;
   HashEntry* entry;
   HashEntry* lastentry;
 
+  found = false;
+
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  xqp_unsignedLong hval = hashfun::h32(pre,
-                                       hashfun::h32(ln,
-                                                    hashfun::h32(ns))) % theHashTabSize;
-  entry = &theHashTab[ hval % theHashTabSize];
+  xqp_ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns)));
+  entry = &theHashTab[hval % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new qname.
-  if (entry->isFree())
+  if (entry->theQNameSlot == NULL)
   {
     theNumQNames++;
     return entry;
@@ -214,33 +225,18 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
   // Search the hash bucket looking for the given qname.
   while (entry != NULL)
   {
-    QNameItemImpl* qn = entry->theQName;
+    QNameItemImpl* qnslot = entry->theQNameSlot;
 
-    len = qn->theLocal.bytes();
-    if (len != strlen(ln) || memcmp(qn->theLocal.c_str(), ln, len) != 0)
+    if (qnslot->theLocal->byteEqual(ln, lnlen) &&
+        qnslot->theNamespace->byteEqual(ns, nslen) &&
+        qnslot->thePrefix->byteEqual(pre, prelen))
     {
-      lastentry = entry;
-      entry =  entry->theNext;
-      continue;
+      found = true;
+      return entry;
     }
 
-    len = qn->theNamespace.bytes();
-    if (len != strlen(ns) || memcmp(qn->theNamespace.c_str(), ns, len) != 0)
-    {
-      lastentry = entry;
-      entry =  entry->theNext;
-      continue;
-    }
-    
-    len = qn->thePrefix.bytes();
-    if (len != strlen(pre) || memcmp(qn->thePrefix.c_str(), pre, len) != 0)
-    {
-      lastentry = entry;
-      entry =  entry->theNext;
-      continue;
-    }
-
-    return entry;
+    lastentry = entry;
+    entry =  entry->theNext;
   }
 
   // The qname was not found.
@@ -254,7 +250,7 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
     hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
     entry = &theHashTab[ hval % theHashTabSize];
 
-    if (entry->isFree())
+    if (entry->theQNameSlot == NULL)
       return entry;
 
     while (entry != NULL)
@@ -285,51 +281,64 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
 
 
 /*******************************************************************************
+
+********************************************************************************/
+void QNamePool::remove(QNameItemImpl* qn)
+{
+  if (qn->getRefCount() > 0)
+    return;
+
+  if (qn->isInCache())
+  {
+    qn->theNextFree = theFirstFree;
+    theCache[theFirstFree].thePrevFree = qn->thePosition;
+    theFirstFree = qn->thePosition;
+    theNumFree++;
+  }
+  else
+  {
+    // If all the pointers to QNameItems were smart pointers, we could leave
+    // qn in the pool, and let the pool garbage-collect it later (if it still
+    // unused). If however QNameItems may be referenced by regular pointers as
+    // well, then qn must be removed from the pool and really deleted
+    hashRemove(qn->theNamespace, qn->thePrefix, qn->theLocal);
+    delete qn;
+  }
+}
+
+
+/*******************************************************************************
   Remove the given qname from the hash table, if it is found there.
 ********************************************************************************/
-void QNamePool::unhash(const char* ns, const char* pre, const char* ln)
+void QNamePool::hashRemove(
+   const xqpStringStore_t& ns,
+   const xqpStringStore_t& pre,
+   const xqpStringStore_t& ln)
 {
-  xqp_unsignedLong len;
   HashEntry* entry;
   HashEntry* preventry = NULL;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  xqp_unsignedLong hval = hashfun::h32(pre,
-                                       hashfun::h32(ln,
-                                                    hashfun::h32(ns))) % theHashTabSize;
-  entry = &theHashTab[ hval % theHashTabSize];
+  xqp_ulong hval = hashfun::h32(pre->c_str(),
+                                hashfun::h32(ln->c_str(),
+                                             hashfun::h32(ns->c_str())));
+  entry = &theHashTab[hval % theHashTabSize];
 
   // If the hash bucket is empty, the qname is not in the hash table.
-  if (entry->isFree())
+  if (entry->theQNameSlot == NULL)
     return;
 
   // Search the hash bucket looking for the given qname.
   while (entry != NULL)
   {
-    QNameItemImpl* qn = entry->theQName;
+    QNameItemImpl* qnslot = entry->theQNameSlot;
 
-    len = qn->theLocal.bytes();
-    if (len != strlen(ln) || memcmp(qn->theLocal.c_str(), ln, len) != 0)
+    if (!qnslot->theLocal->byteEqual(*ln) ||
+        !qnslot->theNamespace->byteEqual(*ns) ||
+        !qnslot->thePrefix->byteEqual(*pre))
     {
       preventry = entry;
       entry =  entry->theNext;
-      continue;
-    }
-
-    len = qn->theNamespace.bytes();
-    if (len != strlen(ns) || memcmp(qn->theNamespace.c_str(), ns, len) != 0)
-    {
-      preventry = entry;
-      entry =  entry->theNext;
-      continue;
-    }
-    
-    len = qn->thePrefix.bytes();
-    if (len != strlen(pre) || memcmp(qn->thePrefix.c_str(), pre, len) != 0)
-    {
-      preventry = entry;
-      entry =  entry->theNext;
-      continue;
     }
 
     // Found the qname in the current entry. Must remove the entry from the
@@ -337,7 +346,7 @@ void QNamePool::unhash(const char* ns, const char* pre, const char* ln)
     if (preventry != NULL)
     {
       preventry->theNext = entry->theNext;
-      entry->theQName = NULL;
+      entry->theQNameSlot = NULL;
       entry->theNext = theHashTab[theHashTabSize].theNext;
       theHashTab[theHashTabSize].theNext = entry;
     }
@@ -345,13 +354,13 @@ void QNamePool::unhash(const char* ns, const char* pre, const char* ln)
     {
       HashEntry* nextentry = entry->theNext;
       *entry = *nextentry;
-      nextentry->theQName = NULL;
+      nextentry->theQNameSlot = NULL;
       nextentry->theNext = theHashTab[theHashTabSize].theNext;
       theHashTab[theHashTabSize].theNext = nextentry;
     }
     else
     {
-      entry->theQName = NULL;
+      entry->theQNameSlot = NULL;
     }
 
     theNumQNames--;
@@ -371,7 +380,7 @@ void QNamePool::resizeHashTab()
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  xqp_unsignedLong oldsize = oldTab.size();
+  xqp_ulong oldsize = oldTab.size();
 
   theHashTabSize <<= 1;
 
@@ -384,16 +393,16 @@ void QNamePool::resizeHashTab()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (xqp_unsignedLong i = 0; i < oldsize; i++)
+  for (xqp_ulong i = 0; i < oldsize; i++)
   {
-    QNameItemImpl* qn = oldTab[i].theQName;
+    QNameItemImpl* qn = oldTab[i].theQNameSlot;
 
-    xqp_unsignedLong h = hashfun::h32(qn->thePrefix.c_str(),
-                           hashfun::h32(qn->theLocal.c_str(),
-                                        hashfun::h32(qn->theNamespace.c_str())));
+    xqp_ulong h = hashfun::h32(qn->thePrefix->c_str(),
+                             hashfun::h32(qn->theLocal->c_str(),
+                                          hashfun::h32(qn->theNamespace->c_str())));
     entry = &theHashTab[h % theHashTabSize];
 
-    if (!entry->isFree())
+    if (entry->theQNameSlot != NULL)
     {
       // Go to the last entry of the current bucket
       HashEntry* lastentry = entry;
@@ -417,7 +426,7 @@ void QNamePool::resizeHashTab()
       }
     }
 
-    entry->theQName = qn;
+    entry->theQNameSlot = qn;
   }
 }
 
@@ -431,13 +440,13 @@ void QNamePool::resizeHashTab()
 
 
 QNameItemImpl::QNameItemImpl(
-    const xqp_string& ns,
-    const xqp_string& pre,
-    const xqp_string& local)
+    const xqpStringStore_t& ns,
+    const xqpStringStore_t& pre,
+    const xqpStringStore_t& ln)
   :
   theNamespace(ns),
-  thePrefix (pre),
-  theLocal(local),
+  thePrefix(pre),
+  theLocal(ln),
   theNextFree(0),
   thePrevFree(0)
 {
@@ -449,9 +458,9 @@ QNameItemImpl::QNameItemImpl(
     const char* pre,
     const char* local)
   :
-  theNamespace(ns),
-  thePrefix (pre),
-  theLocal(local),
+  theNamespace(new xqpStringStore(ns)),
+  thePrefix(new xqpStringStore(pre)),
+  theLocal(new xqpStringStore(local)),
   theNextFree(0),
   thePrevFree(0)
 {
@@ -466,21 +475,25 @@ void QNameItemImpl::free()
 
 Item_t QNameItemImpl::getAtomizationValue( ) const
 {
-  return zorba::getItemFactory()->createQName(theNamespace, thePrefix, theLocal).get_ptr();
+  return zorba::getItemFactory()->createQName(getNamespace(),
+                                              getPrefix(),
+                                              getLocalName()).get_ptr();
 }
 
 
 uint32_t QNameItemImpl::hash() const
 {
-  return Item::createQNameKey(theNamespace, thePrefix, theLocal);
+  return hashfun::h32(*thePrefix,
+                      hashfun::h32(*theLocal,
+                                   hashfun::h32(*theNamespace)));
 }
 
 
 bool QNameItemImpl::equals(Item_t item) const
 {
   return (this == item.get_ptr() ||
-          (item->getNamespace() == theNamespace &&
-           item->getLocalName() == theLocal));
+          (theNamespace->byteEqual(item->getNamespace().getStore()) &&
+           theLocal->byteEqual(item->getLocalName().getStore())));
 }
 
 
@@ -498,13 +511,13 @@ Item_t QNameItemImpl::getEBV( ) const
 
 xqp_string QNameItemImpl::getStringProperty( ) const
 {
-  return thePrefix != "" ? thePrefix + ":" + theLocal : theLocal;
+  return *thePrefix != "" ? *thePrefix + ":" + *theLocal : *theLocal;
 }
 
 
 xqp_string QNameItemImpl::show() const
 {
-  return "xs:qname(" + theNamespace + "," + thePrefix + "," + theLocal + ")";
+  return "xs:qname(" + *theNamespace + "," + *thePrefix + "," + *theLocal + ")";
 }
 
 }

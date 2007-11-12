@@ -142,11 +142,11 @@ public:
 
   virtual Item_t createUnsignedByte ( xqp_unsignedByte value );
 
-  virtual Item_t createUnsignedInt ( xqp_unsignedInt value );
+  virtual Item_t createUnsignedInt ( xqp_uint value );
 
-  virtual Item_t createUnsignedLong ( xqp_unsignedLong value );
+  virtual Item_t createUnsignedLong ( xqp_ulong value );
 
-  virtual Item_t createUnsignedShort ( xqp_unsignedShort value );
+  virtual Item_t createUnsignedShort ( xqp_ushort value );
 
   virtual Item_t createDocumentNode (
         xqp_string baseURI,

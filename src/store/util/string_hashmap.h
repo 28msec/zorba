@@ -31,29 +31,35 @@ protected:
 
     HashEntry() : theString(NULL), theNext(NULL) { }
 
-    ~HashEntry() { }
+    ~HashEntry()
+    {
+
+    }
   };
 
 public:
-  static const xqp_unsignedLong DEFAULT_MAP_SIZE = 128;
+  static const xqp_ulong DEFAULT_MAP_SIZE = 128;
   static const float DEFAULT_LOAD_FACTOR = 0.6;
 
 protected:
-  xqp_unsignedLong          theNumEntries;
+  xqp_ulong               theNumEntries;
 
-  std::vector<HashEntry>    theHashTab;
-  xqp_unsignedLong          theHashTabSize;
-  float                     theLoadFactor;
+  std::vector<HashEntry>  theHashTab;
+  xqp_ulong               theHashTabSize;
+  float                   theLoadFactor;
 
 public:
-  StringHashMap(xqp_unsignedLong size);
+  StringHashMap(xqp_ulong size);
 
   ~StringHashMap() { }
 
   bool insert(const xqp_string& str, const V& value);
-  void remove(const xqp_string& str);
+  bool remove(const xqp_string& str);
 
-  bool find(const xqp_string& str, V& value);
+  bool find(const xqp_string& str) const;
+  bool get(const xqp_string& str, V& value) const;
+
+  void clear();
 
 protected:
   void expand();
@@ -64,7 +70,7 @@ protected:
 
 ********************************************************************************/
 template <class V>
-StringHashMap<V>::StringHashMap(xqp_unsignedLong size) 
+StringHashMap<V>::StringHashMap(xqp_ulong size) 
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -86,7 +92,7 @@ StringHashMap<V>::StringHashMap(xqp_unsignedLong size)
   value with the new given value and return true. If not make a copy of the
   string and the value and place the new pair in the map. Then, return false.
 ********************************************************************************/
-template <class V)
+template <class V>
 bool StringHashMap<V>::insert(const xqp_string& str, const V& value)
 {
   HashEntry* entry;
@@ -125,7 +131,7 @@ bool StringHashMap<V>::insert(const xqp_string& str, const V& value)
   {
     expand();
 
-    entry = &theHashTab[uri.hash() % theHashTabSize];
+    entry = &theHashTab[str.hash() % theHashTabSize];
 
     if (entry->theString == NULL)
     {
@@ -179,6 +185,22 @@ bool StringHashMap<V>::remove(const xqp_string& str)
 
   if (entry->theString->byteEqual(str.getStore()))
   {
+    if (entry->theNext == NULL)
+    {
+      entry->theString = NULL;
+      entry->theValue.~V();
+      theNumEntries--;
+    }
+    else
+    {
+      HashEntry* nextEntry = entry->theNext;
+      *entry = *nextEntry;
+      nextEntry->theString = NULL;
+      nextEntry->theValue.~V();
+      nextEntry->theNext =  theHashTab[theHashTabSize].theNext;
+      theHashTab[theHashTabSize].theNext = nextEntry;
+    }
+
     theNumEntries--;
     return true;
   }
@@ -192,14 +214,14 @@ bool StringHashMap<V>::remove(const xqp_string& str)
     {
       prevEntry->theNext = entry->theNext;
       entry->theString = NULL;
-      ~(entry->theValue)();
+      entry->theValue.~V();
       entry->theNext = theHashTab[theHashTabSize].theNext;
       theHashTab[theHashTabSize].theNext = entry;
       theNumEntries--;
       return true;
     }
 
-    lastentry = entry;
+    prevEntry = entry;
     entry =  entry->theNext;
   }
 
@@ -211,9 +233,9 @@ bool StringHashMap<V>::remove(const xqp_string& str)
   Return true if the given string is already in the pool; otherwise return false.
 ********************************************************************************/
 template <class V>
-bool StringHashMap<V>::find(const xqp_string& str, V& value)
+bool StringHashMap<V>::find(const xqp_string& str) const
 {
-  HashEntry* entry;
+  const HashEntry* entry;
 
   entry = &theHashTab[str.hash() % theHashTabSize];
 
@@ -222,8 +244,37 @@ bool StringHashMap<V>::find(const xqp_string& str, V& value)
 
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str))
+    if (entry->theString->byteEqual(str.getStore()))
       return true;
+
+    entry = entry->theNext;
+  }
+
+  return false;
+}
+
+
+/*******************************************************************************
+  If the given string is already in the pool, return true and the value
+   associated with the string; otherwise return false.
+********************************************************************************/
+template <class V>
+bool StringHashMap<V>::get(const xqp_string& str, V& value) const
+{
+  const HashEntry* entry;
+
+  entry = &theHashTab[str.hash() % theHashTabSize];
+
+  if (entry->theString == NULL)
+    return false;
+
+  while (entry != NULL)
+  {
+    if (entry->theString->byteEqual(str.getStore()))
+    {
+      value = entry->theValue;
+      return true;
+    }
 
     entry = entry->theNext;
   }
@@ -243,7 +294,7 @@ void StringHashMap<V>::expand()
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  xqp_unsignedLong oldsize = oldTab.size();
+  xqp_ulong oldsize = oldTab.size();
 
   theHashTabSize <<= 1;
 
@@ -256,13 +307,11 @@ void StringHashMap<V>::expand()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (xqp_unsignedLong i = 0; i < oldsize; i++)
+  for (xqp_ulong i = 0; i < oldsize; i++)
   {
-    xqp_string* uri = oldTab[i].theString;
+    entry = &theHashTab[oldTab[i].theString->hash() % theHashTabSize];
 
-    entry = &theHashTab[uri->hash() % theHashTabSize];
-
-    if (!entry->isFree())
+    if (entry->theString != NULL)
     {
       // Go to the last entry of the current bucket
       HashEntry* lastentry = entry;
@@ -286,10 +335,32 @@ void StringHashMap<V>::expand()
       }
     }
 
-    entry->theString = uri;
+    *entry = oldTab[i];
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+template <class V>
+void StringHashMap<V>::clear()
+{
+  HashEntry* entry;
+
+  xqp_ulong n = theHashTab.size();
+
+  for (xqp_ulong i = 0; i < n; i++)
+  {
+    entry = &theHashTab[i];
+
+    if (entry->theString != NULL)
+    {
+      entry->theString = NULL;
+      entry->theValue.~V();
+    }
   }
 }
 
 }
-
 #endif

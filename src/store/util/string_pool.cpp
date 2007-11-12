@@ -6,14 +6,14 @@
 namespace xqp
 {
 
-const xqp_unsignedLong StringPool::DEFAULT_POOL_SIZE = 1024;
+const xqp_ulong StringPool::DEFAULT_POOL_SIZE = 1024;
 const float StringPool::DEFAULT_LOAD_FACTOR = 0.6;
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-StringPool::StringPool(xqp_unsignedLong size) 
+StringPool::StringPool(xqp_ulong size) 
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -36,8 +36,8 @@ StringPool::StringPool(xqp_unsignedLong size)
 StringPool::~StringPool() 
 {
 #ifndef NDEBUG
-  xqp_unsignedLong n = theHashTab.size();
-  for (xqp_unsignedLong i = 0; i < n; i++)
+  xqp_ulong n = theHashTab.size();
+  for (xqp_ulong i = 0; i < n; i++)
   {
     if (theHashTab[i].theString != NULL &&
         theHashTab[i].theString->getRefCount() != 1)
@@ -235,7 +235,7 @@ void StringPool::expandHashTab()
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  xqp_unsignedLong oldsize = oldTab.size();
+  xqp_ulong oldsize = oldTab.size();
 
   theHashTabSize <<= 1;
 
@@ -248,7 +248,7 @@ void StringPool::expandHashTab()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (xqp_unsignedLong i = 0; i < oldsize; i++)
+  for (xqp_ulong i = 0; i < oldsize; i++)
   {
     xqpStringStore_t str = oldTab[i].theString;
 
@@ -292,9 +292,9 @@ void StringPool::garbageCollect()
 
   HashEntry* freeList = NULL;
 
-  xqp_unsignedLong size = theHashTabSize;
+  xqp_ulong size = theHashTabSize;
 
-  for (xqp_unsignedLong i = 0; i < size; i++)
+  for (xqp_ulong i = 0; i < size; i++)
   {
     entry = &theHashTab[i];
 

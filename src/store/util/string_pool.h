@@ -32,22 +32,22 @@ protected:
 
     HashEntry() : theString(NULL), theNext(NULL) { }
 
-    ~HashEntry() { }
+    ~HashEntry() { theString = NULL; }
   };
 
 public:
-  static const xqp_unsignedLong DEFAULT_POOL_SIZE;
+  static const xqp_ulong DEFAULT_POOL_SIZE;
   static const float DEFAULT_LOAD_FACTOR;
 
 protected:
-  xqp_unsignedLong          theNumEntries;
+  xqp_ulong               theNumEntries;
 
-  std::vector<HashEntry>    theHashTab;
-  xqp_unsignedLong          theHashTabSize;
-  float                     theLoadFactor;
+  std::vector<HashEntry>  theHashTab;
+  xqp_ulong               theHashTabSize;
+  float                   theLoadFactor;
 
 public:
-  StringPool(xqp_unsignedLong size = DEFAULT_POOL_SIZE);
+  StringPool(xqp_ulong size = DEFAULT_POOL_SIZE);
 
   ~StringPool();
 

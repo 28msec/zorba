@@ -44,7 +44,7 @@ QNameItem_t BasicItemFactory::createQName(
     const xqp_string& pre,
     const xqp_string& local)
 {
-  return theQNamePool->insert(ns.c_str(), pre.c_str(), local.c_str());
+  return theQNamePool->insert(ns.getStore(), pre.getStore(), local.getStore());
 }
 
 
@@ -198,11 +198,11 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Ite
 
 	Item_t BasicItemFactory::createUnsignedByte ( xqp_unsignedByte value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createUnsignedInt ( xqp_unsignedInt value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createUnsignedInt ( xqp_uint value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createUnsignedLong ( xqp_unsignedLong value ) { return Item_t ( NULL ); }
+	Item_t BasicItemFactory::createUnsignedLong ( xqp_ulong value ) { return Item_t ( NULL ); }
 
-Item_t BasicItemFactory::createUnsignedShort(xqp_unsignedShort value)
+Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
 {
   return Item_t ( NULL );
 }

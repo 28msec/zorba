@@ -7,10 +7,9 @@
 #ifndef XQP_SIMPLE_STORE_H
 #define XQP_SIMPLE_STORE_H
 
-#include <map>
-
 #include "store/api/store.h"
 #include "store/util/string_pool.h"
+#include "store/util/string_hashmap.h"
 #include "store/naive/basic_item_factory.h"
 
 namespace xqp
@@ -22,6 +21,8 @@ class XmlLoader;
 class Timetravel;
 class Requester;
 
+template <class V> class StringHashMap;
+
 template <class Object> class rchandle;
 
 typedef rchandle<class Iterator> Iterator_t;
@@ -31,16 +32,17 @@ typedef rchandle<class Collection> Collection_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 typedef rchandle<class PUL> PUL_t;
 
-typedef std::map<AnyUriItem_t, Collection_t> Collections;
+typedef StringHashMap<Collection_t> Collections;
 
-typedef StringPool  UriPool;
 
 class SimpleStore : public Store
 {
   friend class Store;
+ 
+  typedef StringPool  UriPool;
 
 protected:
-  static xqp_unsignedLong theUriCounter;
+  static xqp_ulong theUriCounter;
 
 protected:
   UriPool           * theUriPool;

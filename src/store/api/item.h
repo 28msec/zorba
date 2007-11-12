@@ -144,7 +144,7 @@ namespace xqp
     virtual xqp_string getStringValue() const
     {
       this->showError();
-      return NULL;
+      return "";
     }
 
 
@@ -328,7 +328,7 @@ namespace xqp
 
 			/** Accessor for xs:unsignedLong
 				*/
-			virtual xqp_unsignedLong getUnsignedLongValue() const
+			virtual xqp_ulong getUnsignedLongValue() const
 			{
 				this->showError();
 				return 0;
@@ -336,21 +336,11 @@ namespace xqp
 
 			/** Accessor for xs:unsignedShort
 				*/
-			virtual xqp_unsignedShort getUnsignedShortValue() const
+			virtual xqp_ushort getUnsignedShortValue() const
 			{
 				this->showError();
 				return 0;
 			}
-
-			/**
-			 * Computes the Hash of a QName
-			 *
-			 * @param _namespace
-			 * @param prefix
-			 * @param localName
-			 * @return
-			 */
-			static qnamekey_t createQNameKey ( xqp_string _namespace, xqp_string prefix, xqp_string localName );
 
 			/* -------------------  Methods for Nodes ------------------------------------- */
 
@@ -381,7 +371,7 @@ namespace xqp
 			virtual xqp_string getBaseURI() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/** Accessor for document node, element node
@@ -399,7 +389,7 @@ namespace xqp
 			virtual xqp_string getDocumentURI() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/** Accessor for attribute node
@@ -496,7 +486,7 @@ namespace xqp
 			virtual xqp_string getNamespace() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/** Accessor for xs:qname, namespace node
@@ -505,7 +495,7 @@ namespace xqp
 			virtual xqp_string getPrefix() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/** Accessor for xs:qname
@@ -514,7 +504,7 @@ namespace xqp
 			virtual xqp_string getLocalName() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/** Accessor for document node
@@ -523,7 +513,7 @@ namespace xqp
 			virtual xqp_string getUnparsedEntityPublicId() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/** Accessor for document node
@@ -532,7 +522,7 @@ namespace xqp
 			virtual xqp_string getUnparsedEntitySystemId() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/**
@@ -542,7 +532,7 @@ namespace xqp
 			virtual xqp_string getTarget() const
 			{
 				this->showError();
-				return NULL;
+				return "";
 			}
 
 			/** Method to print to content of the Item

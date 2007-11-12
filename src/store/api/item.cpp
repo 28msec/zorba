@@ -32,19 +32,16 @@ namespace xqp
   {
     return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
   }
-
-  qnamekey_t Item::createQNameKey ( xqp_string _namespace, xqp_string prefix, xqp_string localName )
-  {
-    return hashfun::h64 ( prefix,hashfun::h64 ( localName,hashfun::h64 ( _namespace ) ) );
-  }
   /* end class Item */
 
   /* begin class AtomicItem */
   AtomicItem::~AtomicItem() {}
+
   bool AtomicItem::isNode() const
   {
     return false;
   }
+
   bool AtomicItem::isAtomic() const
   {
     return true;

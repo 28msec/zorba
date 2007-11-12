@@ -13,7 +13,6 @@
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/qname_pool.h"
-#include "store/util/string_pool.h"
 #include "store/naive/simple_loader.h"
 #include "store/naive/basic_item_factory.h"
 
@@ -22,7 +21,7 @@ namespace xqp
 
 typedef rchandle<TempSeq> TempSeq_t;
 
-xqp_unsignedLong SimpleStore::theUriCounter = 0;
+xqp_ulong SimpleStore::theUriCounter = 0;
 
 
 /*******************************************************************************
@@ -33,6 +32,7 @@ SimpleStore::SimpleStore()
   theUriPool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theUriPool, theQNamePool)),
+  theCollections(StringHashMap<Collection_t>::DEFAULT_MAP_SIZE),
   theXmlLoader(NULL)
 {
 }
@@ -43,6 +43,8 @@ SimpleStore::SimpleStore()
 ********************************************************************************/
 SimpleStore::~SimpleStore()
 {
+  theCollections.clear();
+
   if (theItemFactory != NULL)
   {
     delete theItemFactory;
@@ -105,28 +107,26 @@ Item_t SimpleStore::createURI()
 /*******************************************************************************
   Creates a collection in the store.
 
-  @param URI The URI of the collection to create.
+  @param URI The URI (given as a string) of the collection to create.
   @return handle object of the newly created collection
   @throws UriInUseException If the passed uri already exists in the store.
 ********************************************************************************/
 Collection_t SimpleStore::createCollection(const xqp_string& uri)
 {
-  bool found = theUriPool->insert(uri);
-
-  if (found)
+  if (theCollections.find(uri))
   {
     ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_URI_IN_USE,
                           error_messages::USER_ERROR,
                           NULL,
                           true,
-                          uri, "")
+                          uri, "");
   }
 
   AnyUriItem_t uriItem = theItemFactory->createAnyURI(uri);
 
-  SimpleCollection* collection = new SimpleCollection(uriItem);
+  Collection_t collection(new SimpleCollection(uriItem));
 
-  theCollections[uriItem] = collection;
+  theCollections.insert(uri, collection);
 
   return collection;
 }
@@ -135,28 +135,26 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
 /*******************************************************************************
   Creates a collection in the store.
 
-  @param URI The URI of the collection to create.
+  @param URI The URI (given as an Item_t) of the collection to create.
   @return handle object of the newly created collection
   @throws UriInUseException If the passed uri already exists in the store.
 ********************************************************************************/
 Collection_t SimpleStore::createCollection(Item_t uri)
 {
-  bool found = theUriPool->insert(uri->getStringValue());
-
-  if (found)
+  if (theCollections.find(uri->getStringValue()))
   {
     ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_URI_IN_USE,
                           error_messages::USER_ERROR,
                           NULL,
                           true,
-                          uri->getStringValue(), "")
+                          uri->getStringValue(), "");
   }
 
   AnyUriItem_t uriItem = dynamic_cast<AnyUriItem*>(uri.get_ptr());
 
-  SimpleCollection* collection = new SimpleCollection(uriItem);
+  Collection_t collection(new SimpleCollection(uriItem));
 
-  theCollections[uriItem] = collection;
+  theCollections.insert(uri->getStringValue(), collection);
 
   return collection;
 }
@@ -185,10 +183,9 @@ Collection_t SimpleStore::createCollection()
 ********************************************************************************/
 Collection_t SimpleStore::getCollection(Item_t uri)
 {
-  if (theUriPool->find(uri->getStringValue()) == false)
-    return NULL;
-
-  return theCollections[dynamic_cast<AnyUriItem*>(uri.get_ptr())];
+  Collection_t collection;
+  bool found = theCollections.get(uri->getStringValue(), collection);
+  return (found ? collection : NULL);
 }
 
 
@@ -199,7 +196,7 @@ Collection_t SimpleStore::getCollection(Item_t uri)
 ********************************************************************************/
 void SimpleStore::deleteCollection(Item_t uri)
 {
-  theCollections.erase(dynamic_cast<AnyUriItem*>(uri.get_ptr()));
+  theCollections.remove(uri->getStringValue());
 }
 
 
