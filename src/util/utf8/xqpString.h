@@ -31,20 +31,38 @@
 #include "util/rchandle.h"
 
 using namespace std;
+
 namespace xqp {
 
-  class xqpStringStore : public rcobject, public string  {
+  class xqpStringStore : public rcobject, public string
+  {
   public:
-    xqpStringStore (const xqpStringStore &other) : rcobject (other), string (other) {}
+    xqpStringStore(const xqpStringStore &other) : rcobject(other), string(other) {}
     xqpStringStore (const std::string& other) : string(other) {}
+
+    std::string::size_type bytes() const { return size(); }
+
+    /**
+     * djb2 Hash function
+     */
+    uint32_t hash() const;
+
+    static uint32_t hash(const char* str);
+
+    bool byteEqual(const xqpStringStore& src) const;
+    bool byteEqual(const char* src, uint32_t srcLen) const;
+
+    bool hashEqual(const xqpStringStore& src) const;
   };
 
   class xqpString
   {
   public:
     rchandle<xqpStringStore> theStrStore;
+
     typedef std::string::size_type  size_type;
     typedef ptrdiff_t distance_type;
+
     //constructor/destructor
     /**Construct an empty xqpString
     */
@@ -53,9 +71,7 @@ namespace xqp {
     /**Construct a xqpString as a copy of another xqpString
     * @param src A source UTF-8 encoded string
     */
-    xqpString (const xqpString &other)
-    :
-    theStrStore (other.theStrStore) {}
+    xqpString (const xqpString &other) : theStrStore(other.theStrStore) {}
 
     /**Construct a xqpString given a std::string
     * @param src A source std::string containin ASCII characters
@@ -69,8 +85,14 @@ namespace xqp {
 
     ~xqpString();
 
+    xqpStringStore& getStore() const { return *(theStrStore.get_ptr()); }
+
     //xqpString::operator=()
-    xqpString&operator=(const xqpString& src) { theStrStore = src.theStrStore; return *this;}
+    xqpString&operator=(const xqpString& src)
+    {
+      theStrStore = src.theStrStore;
+      return *this;
+    }
     xqpString& operator=(const std::string& src);
     xqpString& operator=(const char* src);
     /**@param cp Codepoint
@@ -124,15 +146,37 @@ namespace xqp {
     */
     int compare(const xqpString& src, const char * loc) const;
     int compare(const char* src) const;
-    /** Returns true if the strings are equal based on a byte-by-byte comparison.
-    * It assumes that both strings are already normalized.
-    */
-    bool byteEqual(const xqpString& src) const;
 
-    /** Returns true if the hash of the strings are equal and if the strings are byteEqual.
-    * It assumes that both strings are already normalized.
-    */
-    bool hashEqual(const xqpString& src) const;
+    /**
+     * Returns true if the strings are equal based on a byte-by-byte comparison.
+     * It assumes that both strings are already normalized.
+     */
+    bool byteEqual(const xqpString& src) const
+    {
+      if (theStrStore.get_ptr() == src.theStrStore.get_ptr())
+        return true;
+
+      return theStrStore->byteEqual(src.getStore());
+    }
+
+    bool byteEqual(const char* src, uint32_t srcLen) const
+    {
+      return theStrStore->byteEqual(src, srcLen);
+    }
+
+    /**
+     * Returns true if the hash of the strings are equal and if the strings
+     * are byteEqual. It assumes that both strings are already normalized.
+     */
+    bool hashEqual(const xqpString& src) const
+    {
+      if (theStrStore.get_ptr() == src.theStrStore.get_ptr())
+        return true;
+
+      return theStrStore->hashEqual(src.getStore());
+    }
+
+    uint32_t hash() const { return theStrStore->hash(); }
 
     // xqpString::Length
     /** @return the number of unicode characters (without the null termination)
@@ -143,9 +187,10 @@ namespace xqp {
     */
     size_type size() const;
 
-    /** @return the number of bytes (without the null termination)
-    */
-    size_type bytes() const;
+    /**
+     * @return the number of bytes (without the null termination)
+     */
+    size_type bytes() const { return theStrStore->bytes(); }
 
     /** @return true is the xqpString is empty
     */
@@ -209,9 +254,6 @@ namespace xqp {
       return *theStrStore;
     }
 
-    /** djb2 Hash function
-      */
-    uint32_t hash() const;
 private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
@@ -253,6 +295,7 @@ private:
     tmp += rsrc;
     return tmp;
   }
+
 }/* namespace xqp */
 
 #endif

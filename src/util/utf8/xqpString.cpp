@@ -16,7 +16,58 @@
 #include "util/zorba.h"
 
 using namespace std;
-namespace xqp {
+
+namespace xqp
+{
+  uint32_t xqpStringStore::hash() const
+  {
+    uint32_t hash = 5381;
+    int c;
+    const char *str = c_str();
+    while ((c = *str++))
+    {
+      hash = ((hash << 5) + hash) + c; // hash*33 + c
+    }
+    return hash;
+  }
+
+  uint32_t xqpStringStore::hash(const char* str)
+  {
+    uint32_t hash = 5381;
+    int c;
+    while ((c = *str++))
+    {
+      hash = ((hash << 5) + hash) + c; // hash*33 + c
+    }
+    return hash;
+  }
+
+  bool xqpStringStore::byteEqual(const xqpStringStore& src) const
+  {
+    uint32_t len = bytes();
+
+    if( len == src.bytes() && memcmp(c_str(), src.c_str(), len) == 0)
+       return true;
+
+    return false;
+  }
+
+  bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
+  {
+    if( bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
+      return true;
+
+    return false;
+  }
+
+  bool xqpStringStore::hashEqual(const xqpStringStore& src) const
+  {
+    if(hash() == src.hash() && byteEqual(src))
+      return true;
+
+    return false;
+  }
+
 
   xqpString::xqpString()
   {
@@ -149,20 +200,6 @@ namespace xqp {
     return compare(tmp);
   }
 
-  bool xqpString::byteEqual(const xqpString& src) const{
-    uint32_t len0 = bytes();
-    uint32_t len1 = src.bytes();
-    if( len0 == len1 &&
-        memcmp(c_str(), src.c_str(), len0) == 0)
-       return true;
-    return false;
-  }
-  
-  bool xqpString::hashEqual(const xqpString& src) const{
-    if(hash()==src.hash() && byteEqual(src))
-      return true;
-    return false;
-  }
   //xqpString::Length
   xqpString::size_type xqpString::size() const{
     const char* c = theStrStore->c_str();
@@ -172,10 +209,6 @@ namespace xqp {
   xqpString::size_type xqpString::length() const{
     const char* c = theStrStore->c_str();
     return UTF8Distance(c, c + theStrStore->size());
-  }
-
-  xqpString::size_type xqpString::bytes() const{
-    return theStrStore->size();
   }
 
   bool xqpString::empty() const{
@@ -385,15 +418,7 @@ namespace xqp {
     return theStrStore->c_str();
   }
 
-  uint32_t xqpString::hash() const{
-    uint32_t hash = 5381;
-    int c;
-    const char *str = c_str();
-    while ((c = *str++)) {
-      hash = ((hash << 5) + hash) + c; // hash*33 + c
-    }
-    return hash;
-  }
+
   // Private methods
   UnicodeString xqpString::getUnicodeString(const xqpString& source) const{
     UnicodeString ret;
