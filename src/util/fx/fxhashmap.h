@@ -129,7 +129,7 @@ public:
   THROW_XQP_EXCEPTION;
 
   // add (key,val) entry to map, return offset
-  off_t put0(const char* key, V val)
+  bool put(const char* key, V val, off_t& heapOffset)
   THROW_XQP_EXCEPTION;
 
   // the hash functions
@@ -405,18 +405,13 @@ inline bool fxhashmap<V>::put(const string& key, V val)
 THROW_XQP_EXCEPTION
 {
   uint32_t n = key.length();
-  if (n > MAX_KEYLEN) {
-    //daniel throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
-    ostringstream  ostr1;
-    ostringstream  ostr2;
-
-    ostr1 << n;
-    ostr2 << MAX_KEYLEN;
-    ZORBA_ERROR_ALERT(
+  if (n > MAX_KEYLEN)
+  {
+    ZORBA_ERROR_ALERT_OSS(
           error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
           error_messages::SYSTEM_ERROR,
           NULL, false,///dont continue execution, stop here
-          ostr1.str(), ostr2.str());///param1 and param2 for error message
+          n, MAX_KEYLEN);
   }
   if (sz > dsz*ld) resize();
   uint32_t h0;
@@ -471,34 +466,37 @@ THROW_XQP_EXCEPTION
 // Store a new (key.val) pair in the map.
 // Return key heap offset.
 template<class V>
-inline off_t fxhashmap<V>::put0(const char* key, V val) 
+inline bool fxhashmap<V>::put(const char* key, V val, off_t& heapOffset) 
 THROW_XQP_EXCEPTION
 {
   uint32_t n = strlen(key);
-  if (n > MAX_KEYLEN) {
-    //throw bad_arg(__FUNCTION__, "key exceeds MAX_KEYLEN");
-    ostringstream  ostr1;
-    ostringstream  ostr2;
 
-    ostr1 << n;
-    ostr2 << MAX_KEYLEN;
+  if (n > MAX_KEYLEN)
+  {
     ZORBA_ERROR_ALERT(
            error_messages::XQP0006_SYSTEM_HASH_ERROR_KEYLEN_EXCEEDS_MAXKEYLEN,
            error_messages::SYSTEM_ERROR,
-           NULL, false,///dont continue execution, stop here
-           ostr1.str(), ostr2.str());///param1 and param2 for error message
+           NULL, false,
+           n, MAX_KEYLEN);
   }
+
   if (sz > dsz*ld) resize();
+
   uint32_t h0;
-  if (find(key,h0)) {
+  if (find(key, h0))
+  {
     entry* e = &((*vp)[(*dir)[h0]]); 
     e->val = val;
-    return e->key;
-  } else {
+    heapOffset = e->key;
+    return true;
+  }
+  else
+  {
     off_t id = hp->put(key, 0, n);
     vp->push_back(entry(id,val));
     (*dir)[h0] = sz++;
-    return id;
+    heapOffset = id;
+    return false;
   }
 }
 
