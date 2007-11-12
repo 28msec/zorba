@@ -13,7 +13,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/constructors.h"
-#include "runtime/paths/path_iterators.h"
+#include "runtime/core/path_iterators.h"
 #include "util/tracer.h"
 #include "functions/function.h"
 
