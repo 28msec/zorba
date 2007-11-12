@@ -99,7 +99,12 @@ template<class T>
 inline rchandle<T>::rchandle(rchandle const& rhs) : p(rhs.p) { init(); }
 
 template<class T>
-inline rchandle<T>::~rchandle() { if (p) p->removeReference(); } 
+inline rchandle<T>::~rchandle() 
+{
+  if (p)
+    p->removeReference(); 
+  p = 0;
+} 
 
 template<class T>
 inline T* rchandle<T>::operator->() const { return p; } 

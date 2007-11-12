@@ -71,7 +71,12 @@ namespace xqp {
     /**Construct a xqpString as a copy of another xqpString
     * @param src A source UTF-8 encoded string
     */
-    xqpString (const xqpString &other) : theStrStore(other.theStrStore) {}
+    xqpString(const xqpString &other) : theStrStore(other.theStrStore) {}
+
+    /**Construct a xqpString as a wrapper of an existing xqpStringStore
+    * @param src A source UTF-8 encoded string
+    */
+    xqpString(xqpStringStore* other) : theStrStore(other) {}
 
     /**Construct a xqpString given a std::string
     * @param src A source std::string containin ASCII characters

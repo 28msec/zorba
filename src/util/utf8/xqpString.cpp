@@ -44,6 +44,9 @@ namespace xqp
 
   bool xqpStringStore::byteEqual(const xqpStringStore& src) const
   {
+    if (this == &src)
+      return true;
+
     uint32_t len = bytes();
 
     if( len == src.bytes() && memcmp(c_str(), src.c_str(), len) == 0)

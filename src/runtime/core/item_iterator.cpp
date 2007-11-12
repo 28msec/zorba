@@ -298,7 +298,7 @@ Item_t FLWORIterator::nextImpl(PlanState& planState) {
 	Item_t curItem;	
 	STACK_INIT2(PlanIteratorState, state, planState);
 	varBindingState = new int[forLetClauses.size()];
-	for (xqp_unsignedInt i = 0; i < forLetClauses.size(); i++) {
+	for (xqp_uint i = 0; i < forLetClauses.size(); i++) {
 		varBindingState[i] = 0;
 	}
 	while (true) {
