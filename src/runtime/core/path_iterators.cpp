@@ -27,7 +27,7 @@
 #include "util/logging/loggerconfig.hh"
 #include "util/logging/loggermanager.hh"
 #include "types/sequence_type_mgr.h"
-#include "runtime/paths/path_iterators.h"
+#include "runtime/core/path_iterators.h"
 #include "util/zorba.h"
 #include "store/api/item.h"
 
