@@ -160,7 +160,7 @@ QNameImpl* QNamePool::insert(
 ********************************************************************************/
 void QNamePool::remove(QNameImpl* qn)
 {
-  if (qn->get_refCount() > 0)
+  if (qn->getRefCount() > 0)
     return;
 
   if (qn->isInCache())
