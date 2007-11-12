@@ -177,6 +177,10 @@ string errors_english::err_decode(enum errcode e)
   case XQP0005_SYSTEM_ASSERT_FAILED:
     return "Assertion `/s' failed in /s";
   TRIVIAL_ERR (XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED);
+  case API0005_COLLECTION_URI_IN_USE:
+    return "A collection with URI `/s' cannot be created because the URI is already in use";
+  case API0006_COLLECTION_NOT_FOUND:
+    return "A collection with URI `/s' does not exist in the store";
 	default: return "<Unknown errcode> /s /s";
 	}
 
