@@ -15,97 +15,172 @@
 namespace xqp
 {
 
-	/* start class UntypedAtomicItem */
-  UntypedAtomicItemNaive::UntypedAtomicItemNaive ( xqp_string value ) : strValue_ ( value ) {}
+/*******************************************************************************
+  class UntypedAtomicItem
+********************************************************************************/
+UntypedAtomicItemNaive::UntypedAtomicItemNaive(xqp_string value) : strValue_ (value)
+{
+}
 
-  UntypedAtomicItemNaive::~UntypedAtomicItemNaive() {}
+UntypedAtomicItemNaive::~UntypedAtomicItemNaive()
+{
+}
 
-  xqp_string UntypedAtomicItemNaive::getStringValue() const
-	{
-		return this->strValue_;
-	}
+xqp_string UntypedAtomicItemNaive::getStringValue() const
+{
+  return this->strValue_;
+}
 
-  TypeCode UntypedAtomicItemNaive::getType() const
-	{
-		return xs_untypedAtomicValue;
-	}
+TypeCode UntypedAtomicItemNaive::getType() const
+{
+  return xs_untypedAtomicValue;
+}
 
-  Item_t UntypedAtomicItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createUntypedAtomic ( this->strValue_ );
-	}
+Item_t UntypedAtomicItemNaive::getAtomizationValue() const
+{
+  return zorba::getItemFactory()->createUntypedAtomic ( this->strValue_ );
+}
 
-  bool UntypedAtomicItemNaive::equals ( Item_t item ) const
-	{
-		return item->getStringValue() == this->strValue_;
-	}
+uint32_t UntypedAtomicItemNaive::hash() const
+{
+  return this->strValue_.hash();
+}
 
-  Item_t UntypedAtomicItemNaive::getEBV() const
-	{
-		bool b = ! ( this->strValue_ == "" );
-		return zorba::getItemFactory()->createBoolean ( b );
-	}
+bool UntypedAtomicItemNaive::equals ( Item_t item ) const
+{
+  return item->getStringValue() == this->strValue_;
+}
 
-  xqp_string UntypedAtomicItemNaive::getStringProperty() const
-	{
-		return this->strValue_;
-	}
+Item_t UntypedAtomicItemNaive::getEBV() const
+{
+  bool b = ! ( this->strValue_ == "" );
+  return zorba::getItemFactory()->createBoolean ( b );
+}
 
-  xqp_string UntypedAtomicItemNaive::show() const
-	{
-		return "xs:untypedAtomic(" + this->strValue_ + ")";
-	}
-	/* end class UntypedAtomicItem */
+xqp_string UntypedAtomicItemNaive::getStringProperty() const
+{
+  return this->strValue_;
+}
 
-	/* start class StringItem */
-  StringItemNaive::StringItemNaive ( const xqp_string& value ) : strValue_ ( value ) {}
+xqp_string UntypedAtomicItemNaive::show() const
+{
+  return "xs:untypedAtomic(" + this->strValue_ + ")";
+}
 
-  StringItemNaive::~StringItemNaive() {}
+
+/*******************************************************************************
+  class StingItem
+********************************************************************************/
+StringItemNaive::StringItemNaive ( const xqp_string& value ) : strValue_ ( value ) {}
+
+StringItemNaive::~StringItemNaive() {}
   
-  xqp_string StringItemNaive::getStringValue() const
-  {
-    return this->strValue_;
-  }
+xqp_string StringItemNaive::getStringValue() const
+{
+  return this->strValue_;
+}
 
-  TypeCode StringItemNaive::getType() const
-	{
-		return xs_string;
-	}
+TypeCode StringItemNaive::getType() const
+{
+  return xs_string;
+}
 
-  Item_t StringItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createString ( this->strValue_ );
-	}
+Item_t StringItemNaive::getAtomizationValue() const
+{
+  return zorba::getItemFactory()->createString ( this->strValue_ );
+}
 
-  bool StringItemNaive::equals ( Item_t item ) const
-	{
-		return item->getStringValue() == this->strValue_;
-	}
+uint32_t StringItemNaive::hash() const
+{
+  return this->strValue_.hash();
+}
+
+bool StringItemNaive::equals ( Item_t item ) const
+{
+  return item->getStringValue() == this->strValue_;
+}
   
-  Item_t StringItemNaive::getEBV() const
-  {
-    bool b = ! ( this->strValue_ == "" );
-    return zorba::getItemFactory()->createBoolean ( b );
-  }
+Item_t StringItemNaive::getEBV() const
+{
+  bool b = ! ( this->strValue_ == "" );
+  return zorba::getItemFactory()->createBoolean ( b );
+}
 
-  xqp_string StringItemNaive::getStringProperty() const
-  {
-    return this->strValue_;
-  }
+xqp_string StringItemNaive::getStringProperty() const
+{
+  return this->strValue_;
+}
 
-  xqp_string StringItemNaive::show() const
-	{
-		return "xs:string(" + this->strValue_ + ")";
-	}
-	/* end class StringItem */
+xqp_string StringItemNaive::show() const
+{
+  return "xs:string(" + this->strValue_ + ")";
+}
 
-	/* start class DecimalItem */
-  DecimalItemNaive::DecimalItemNaive ( long double value ) :value_ ( value ) {}
-  DecimalItemNaive::~DecimalItemNaive() {}
-  long double DecimalItemNaive::getDecimalValue() const
-	{
-		return this->value_;
-	}
+
+/*******************************************************************************
+  class AnyUriItem
+********************************************************************************/
+AnyUriItemImpl::AnyUriItemImpl(const xqp_string& value) : theValue(value)
+{
+}
+  
+AnyUriItemImpl::~AnyUriItemImpl()
+{
+}
+  
+xqp_string AnyUriItemImpl::getStringValue() const
+{
+  return theValue;
+}
+
+TypeCode AnyUriItemImpl::getType() const
+{
+	return xs_anyURI;
+}
+
+Item_t AnyUriItemImpl::getAtomizationValue() const
+{
+  return zorba::getItemFactory()->createAnyURI(theValue).get_ptr();
+}
+
+uint32_t AnyUriItemImpl::hash() const
+{
+  return theValue.hash();
+}
+
+bool AnyUriItemImpl::equals ( Item_t item ) const
+{
+  return item->getStringValue() == theValue;
+}
+  
+Item_t AnyUriItemImpl::getEBV() const
+{
+  bool b = ! (theValue == "");
+  return zorba::getItemFactory()->createBoolean(b);
+}
+
+xqp_string AnyUriItemImpl::getStringProperty() const
+{
+  return theValue;
+} 
+
+xqp_string AnyUriItemImpl::show() const
+{
+  return "xs:anyUri(" + theValue + ")";
+}
+
+
+/*******************************************************************************
+  class DecimalItem
+********************************************************************************/
+DecimalItemNaive::DecimalItemNaive ( long double value ) :value_ ( value ) {}
+
+DecimalItemNaive::~DecimalItemNaive() {}
+
+long double DecimalItemNaive::getDecimalValue() const
+{
+  return this->value_;
+}
 
   TypeCode DecimalItemNaive::getType() const
 	{
@@ -115,6 +190,12 @@ namespace xqp
   Item_t DecimalItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createDecimal ( this->value_ );
+	}
+
+  uint32_t DecimalItemNaive::hash() const
+	{
+    Assert(0);
+    return 0;
 	}
 
   bool DecimalItemNaive::equals ( Item_t item ) const
@@ -170,6 +251,12 @@ namespace xqp
 		return zorba::getItemFactory()->createInt ( this->value_ );
 	}
 
+  uint32_t IntItemNaive::hash() const
+	{
+    Assert(0);
+    return 0;
+	}
+
   bool IntItemNaive::equals ( Item_t item ) const
 	{
 		return item->getIntValue() == this->value_;
@@ -218,6 +305,12 @@ namespace xqp
 		return zorba::getItemFactory()->createInteger ( this->value_ );
 	}
 
+  uint32_t IntegerItemNaive::hash() const
+	{
+    Assert(0);
+    return 0;
+	}
+
   bool IntegerItemNaive::equals ( Item_t item ) const
 	{
 		return item->getIntegerValue() == this->value_;
@@ -259,6 +352,12 @@ namespace xqp
   Item_t DoubleItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createDouble ( this->value );
+	}
+
+  uint32_t DoubleItemNaive::hash() const
+	{
+    Assert(0);
+    return 0;
 	}
 
   bool DoubleItemNaive::equals ( Item_t item ) const
@@ -304,6 +403,12 @@ namespace xqp
 		return zorba::getItemFactory()->createFloat ( this->value );
 	}
 
+  uint32_t FloatItemNaive::hash() const
+	{
+    Assert(0);
+    return 0;
+	}
+
   bool FloatItemNaive::equals ( Item_t item ) const
 	{
 		return item->getFloatValue() == this->value;
@@ -330,6 +435,7 @@ namespace xqp
 
 	/* start class BooleanItem */
   BooleanItemNaive::BooleanItemNaive ( bool value ) :value_ ( value ) {}
+
   BooleanItemNaive::~BooleanItemNaive() {}
 
   bool BooleanItemNaive::getBooleanValue() const
@@ -345,6 +451,12 @@ namespace xqp
   Item_t BooleanItemNaive::getAtomizationValue() const
 	{
 		return zorba::getItemFactory()->createBoolean ( this->value_ );
+	}
+
+  uint32_t BooleanItemNaive::hash() const
+	{
+    Assert(0);
+    return 0;
 	}
 
   bool BooleanItemNaive::equals ( Item_t item ) const

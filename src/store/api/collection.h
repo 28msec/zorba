@@ -61,15 +61,16 @@ namespace xqp
 		virtual void addToCollection(std::iostream& stream, int32_t position = -1) = 0;
 		
 		/** Deletes an item of the collection.
-			*
-		  * @param position of the items which will be deleted
-		  */
+     *
+     * @param position of the items which will be deleted
+     */
 		virtual void deleteFromCollection(int32_t position) = 0;
 		
-		/** Returns the URI of the collection
-			* @return URI
-			*/
-		virtual Item_t getURI() = 0;
+		/**
+     * Returns the URI of the collection
+     * @return URI
+     */
+		virtual AnyUriItem_t getURI() = 0;
 	}; /* class Collection */
 } /* namespace xqp */
 #endif /* XQP_COLLECTION_H */

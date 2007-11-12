@@ -29,6 +29,7 @@ namespace xqp
 	
 	typedef rchandle<class Item> Item_t;
   typedef rchandle<class QNameItem> QNameItem_t;
+  typedef rchandle<class AnyUriItem> AnyUriItem_t;
 
 	typedef rchandle<class Iterator> Iterator_t;
 
@@ -56,103 +57,112 @@ namespace xqp
 
 	class Item : virtual public rcobject
 	{
-		private:
-			/** Method is used by methods in this class which are not allowed to be invoked.
-				* They must be overwritten in specific item implementation.
-			 	*/
-			void showError() const;
+  private:
+    /**
+     * Method is used by methods in this class which are not allowed to be invoked.
+     * They must be overwritten in specific item implementation.
+     */
+    void showError() const;
 
-		public:
-			~Item();
-			/* -------------------   General Methods for Items ------------------------------ */
-			/**
-			 *  @return  (dynamic) XQuery type of the item
-			 */
-			virtual TypeCode getType( ) const = 0;
+  public:
+    ~Item();
 
-			/**
-			 *  Carries out Atomization on the item. Although atomization can be carried
-			 *  out in a generic way, atomization is pushed down to the item level for
-			 *  performance reasons. Atomization is defined in the XQuery data model
-			 *  specification (Section 2.6.4).
-			 *
-			 *  @return  result of atomization
-			 */
-			virtual Item_t getAtomizationValue( ) const = 0;
+    /* -------------------   General Methods for Items ------------------------------ */
+    /**
+     *  @return  (dynamic) XQuery type of the item
+     */
+    virtual TypeCode getType( ) const = 0;
 
-			/**
-			 *  Compares (by value) two items. All comparisons must be done by this
-			 *  method. A store may carry out pooling and implement the value comparison
-			 *  using "pointer identity".
-			 *
-			 *  @return  true, if the two items are the "same"
-			 */
-			virtual xqp_boolean equals ( Item_t ) const = 0;
+    /**
+     *  Carries out Atomization on the item. Although atomization can be carried
+     *  out in a generic way, atomization is pushed down to the item level for
+     *  performance reasons. Atomization is defined in the XQuery data model
+     *  specification (Section 2.6.4).
+     *
+     *  @return  result of atomization
+     */
+    virtual Item_t getAtomizationValue( ) const = 0;
 
-			/**
-			 *  Computes the Effective Boolean Value for that item as specified in the
-			 *  XQuery Functions & Operators specification (Section 15.1.1).
-			 *
-			 *  @return  result of Effective Boolean Value
-			 */
-			virtual Item_t getEBV( ) const = 0;
+    /**
+     * Get a hash value computed from the value of this item.
+     *
+     * @return The hash value
+     */
+    virtual uint32_t hash() const = 0;
 
-			/**
-			 *  @return  string value of the item as defined in XQuery data model
-			 *           specification (Section 2.6.5).
-			 */
-			virtual xqp_string getStringProperty( ) const = 0;
+    /**
+     *  Compares (by value) two items. All comparisons must be done by this
+     *  method. A store may carry out pooling and implement the value comparison
+     *  using "pointer identity".
+     *
+     *  @return  true, if the two items are the "same"
+     */
+    virtual xqp_boolean equals ( Item_t ) const = 0;
 
-			/**
-			 *  @return  "true" if the item is a node; false if the item is an atomic value
-			 */
-			virtual xqp_boolean isNode() const = 0;
+    /**
+     *  Computes the Effective Boolean Value for that item as specified in the
+     *  XQuery Functions & Operators specification (Section 15.1.1).
+     *
+     *  @return  result of Effective Boolean Value
+     */
+    virtual Item_t getEBV( ) const = 0;
 
-			/**
-			 *  @return  "true" if the item is an atomic value; false if the item is a node
-			 */
-			virtual xqp_boolean isAtomic() const = 0;
+    /**
+     *  @return  string value of the item as defined in XQuery data model
+     *           specification (Section 2.6.5).
+     */
+    virtual xqp_string getStringProperty( ) const = 0;
 
-
-			/* -------------------  Methods for AtomicValues ------------------------------ */
-			/**
-			 *  getXValue functions:
-			 *  @return  value of type X
-			 *
-			 *  Assuming that the item is an AtomicValue of a particular kind X, return the value
-			 *  of the item. Implementations of X, e.g., a specific DoubleValue implementation, will override
-			 *  its specific getXValue method (i.e., getDoubleValue) and not change any of the other methods.
-			 *  Implementations of the seven kinds of nodes should not override the definition of these
-			 *  methods.
-			 */
-
-			/** Accessor for xs:anyUri, xs:ENTITY, xs:ID, xs:IDREF, xs:language, xs:NCName, xs:NMTOKEN,
-				* xs:NOTATION, xs:Name, xs:nonPositiveInteger, xs:normalizedString, xs:string, xs:token,
-				* doucment node, element node, attribute node, namespace node, processing instruction node,
-				* comment node, text node
-				*/
-			virtual xqp_string getStringValue() const
-			{
-				this->showError();
-				return NULL;
-			}
+    /**
+     *  @return  "true" if the item is a node; false if the item is an atomic value
+     */
+    virtual xqp_boolean isNode() const = 0;
+    
+    /**
+     *  @return  "true" if the item is an atomic value; false if the item is a node
+     */
+    virtual xqp_boolean isAtomic() const = 0;
 
 
-			/** Accessor for xs:base64Binary
-				*/
-			virtual xqp_base64Binary getBase64Binary() const
-			{
-				this->showError();
-				return NULL;
-			}
+    /* -------------------  Methods for AtomicValues ------------------------------ */
+    /**
+     *  getXValue functions:
+     *  @return  value of type X
+     *
+     *  Assuming that the item is an AtomicValue of a particular kind X, return the value
+     *  of the item. Implementations of X, e.g., a specific DoubleValue implementation, will override
+     *  its specific getXValue method (i.e., getDoubleValue) and not change any of the other methods.
+     *  Implementations of the seven kinds of nodes should not override the definition of these
+     *  methods.
+     */
+    
+    /** Accessor for xs:anyUri, xs:ENTITY, xs:ID, xs:IDREF, xs:language, xs:NCName, xs:NMTOKEN,
+     * xs:NOTATION, xs:Name, xs:nonPositiveInteger, xs:normalizedString, xs:string, xs:token,
+     * doucment node, element node, attribute node, namespace node, processing instruction node,
+     * comment node, text node
+     */
+    virtual xqp_string getStringValue() const
+    {
+      this->showError();
+      return NULL;
+    }
 
-			/** Accessor for xs:boolean
-				*/
-			virtual xqp_boolean getBooleanValue() const
-			{
-				this->showError();
-				return false;
-			}
+
+    /** Accessor for xs:base64Binary
+     */
+    virtual xqp_base64Binary getBase64Binary() const
+    {
+      this->showError();
+      return NULL;
+    }
+
+    /** Accessor for xs:boolean
+     */
+    virtual xqp_boolean getBooleanValue() const
+    {
+      this->showError();
+      return false;
+    }
 
 			/** Accessor for xs:decimal, xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
 				* xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
@@ -327,14 +337,6 @@ namespace xqp
 			/** Accessor for xs:unsignedShort
 				*/
 			virtual xqp_unsignedShort getUnsignedShortValue() const
-			{
-				this->showError();
-				return 0;
-			}
-
-			/** Accessor for xs:qname
-				*/
-			virtual qnamekey_t getQNameKey() const
 			{
 				this->showError();
 				return 0;
@@ -561,6 +563,7 @@ namespace xqp
   class QNameItem : public AtomicItem {};
   class UntypedAtomicItem : public AtomicItem {};
   class StringItem : public UntypedAtomicItem {};
+  class AnyUriItem : public UntypedAtomicItem {};
   class DecimalItem : public AtomicItem {};
   class IntItem : public AtomicItem {};
   class IntegerItem : public AtomicItem {};
@@ -570,58 +573,64 @@ namespace xqp
 
   class NodeItem : public Item
   {
-    protected:
-      // Pointer to avoid cyclic smart pointers
-      Item* theParent;
+  protected:
+    // Pointer to avoid cyclic smart pointers
+    Item* theParent;
 
-    public:
-      explicit NodeItem(const Item_t& aParent);
-      NodeItem();
-      virtual ~NodeItem();
+  public:
+    explicit NodeItem(const Item_t& aParent);
+    NodeItem();
+    virtual ~NodeItem();
 
-      virtual bool isNode() const;
-      virtual bool isAtomic() const;
-      virtual Item_t getEBV() const;
-      virtual bool equals ( Item_t ) const;
+    virtual bool isNode() const;
+    virtual bool isAtomic() const;
+    virtual Item_t getEBV() const;
+    virtual uint32_t hash() const;
+    virtual bool equals ( Item_t ) const;
 
-      // Must be overwritten from every node implementation when zorba is schema-aware
-      virtual TypeCode getType() const;
-      virtual Item_t getParent() const;
-      virtual xqp_string getBaseURI() const;
-      virtual xqp_string getDocumentURI() const;
+    // Must be overwritten from every node implementation when zorba is schema-aware
+    virtual TypeCode getType() const;
+    virtual Item_t getParent() const;
+    virtual xqp_string getBaseURI() const;
+    virtual xqp_string getDocumentURI() const;
   }; /* class Node */
 
 #if 0
   class DocumentNode : public NodeItem {};
 
-  class ElementNode : public NodeItem {
-    public:
-      ElementNode(){}
-      ElementNode(const Item_t& aParent) : NodeItem(aParent) {}
+  class ElementNode : public NodeItem
+  {
+  public:
+    ElementNode(){}
+    ElementNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
 
-  class AttributeNode : public NodeItem {
-    public:
-      AttributeNode(){}
-      AttributeNode(const Item_t& aParent) : NodeItem(aParent) {}
+  class AttributeNode : public NodeItem
+  {
+  public:
+    AttributeNode(){}
+    AttributeNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
 
-  class PiNode : public NodeItem {
-    public:
-      PiNode(){}
-      PiNode(const Item_t& aParent) : NodeItem(aParent) {}
+  class PiNode : public NodeItem
+  {
+  public:
+    PiNode(){}
+    PiNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
 
-  class CommentNode : public NodeItem {
-    public:
-      CommentNode(){}
-      CommentNode(const Item_t& aParent) : NodeItem(aParent) {}
+  class CommentNode : public NodeItem
+  {
+  public:
+    CommentNode(){}
+    CommentNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
 
-  class TextNode : public NodeItem {
-    public:
-      TextNode(){}
-      TextNode(const Item_t& aParent) : NodeItem(aParent) {}
+  class TextNode : public NodeItem
+  {
+  public:
+    TextNode(){}
+    TextNode(const Item_t& aParent) : NodeItem(aParent) {}
   };
 #endif
 

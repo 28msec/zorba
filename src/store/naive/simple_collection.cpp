@@ -5,6 +5,8 @@
  */
 #include "util/rchandle.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/simple_loader.h"
+#include "store/naive/simple_store.h"
 #include "store/naive/node_items.h"
 
 namespace xqp
@@ -15,17 +17,18 @@ typedef rchandle<Iterator> Iterator_t;
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::SimpleCollection()
+SimpleCollection::SimpleCollection(const AnyUriItem_t& uri)
+  :
+  theUri(uri)
 {
-  
 }
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 SimpleCollection::~SimpleCollection()
 {
-
 }
 
 
@@ -40,7 +43,7 @@ SimpleCollection::~SimpleCollection()
   if clients wants to sort or compare the items or sub-items generated from the
   returned iterator.
 ********************************************************************************/
-Iterator_t SimpleCollection::getIterator ( bool idsNeeded )
+Iterator_t SimpleCollection::getIterator(bool idsNeeded)
 {
   return rchandle<Iterator> ( NULL );
 }
@@ -53,7 +56,7 @@ Iterator_t SimpleCollection::getIterator ( bool idsNeeded )
   IN position: Where to insert the item. Default -1, which means it is attached
                to the end. 
 ********************************************************************************/
-void SimpleCollection::addToCollection ( Item_t item, int32_t position )
+void SimpleCollection::addToCollection(Item_t item, int32_t position)
 {
 }
 
@@ -65,9 +68,10 @@ void SimpleCollection::addToCollection ( Item_t item, int32_t position )
   IN position: Where to insert the item. Default -1, which means it is
                attached to the end.
 ********************************************************************************/
-void SimpleCollection::addToCollection ( Iterator_t& items, int32_t position )
+void SimpleCollection::addToCollection(Iterator_t& items, int32_t position)
 {
 }
+
 
 /*******************************************************************************
   Inserts data into the collection
@@ -77,29 +81,35 @@ void SimpleCollection::addToCollection ( Iterator_t& items, int32_t position )
 	IN position: Where to insert the item. Default -1, which means it is
                attached to the end.
 ********************************************************************************/
-void SimpleCollection::addToCollection ( std::iostream& stream, int32_t position )
+void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
 {
+  XmlLoader& loader = reinterpret_cast<SimpleStore*>(&Store::getInstance())->
+                      getXmlLoader();
+
+  Node_t root = loader.loadXml(stream);
+
+  if (position < 0)
+  {
+    theNodes.push_back(root);
+  }
+  else
+  {
+    if (uint32_t(position) >= theNodes.size())
+      theNodes.resize(position);
+
+    theNodes[position] = root;
+  }
 }
+
 
 /*******************************************************************************
   Deletes an item of the collection.
 
   IN position: of the items which will be deleted
 ********************************************************************************/
-void SimpleCollection::deleteFromCollection ( int32_t position )
+void SimpleCollection::deleteFromCollection(int32_t position)
 {
 
-}
-
-
-/*******************************************************************************
-  Returns the URI of the collection
-
-  RET uri
-********************************************************************************/
-Item_t SimpleCollection::getURI()
-{
-  return rchandle<Item> ( NULL );
 }
 
 } /* namespace xqp */

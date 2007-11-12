@@ -2,7 +2,7 @@
 #define XQP_QNAME_POOL_H
 
 #include "store/api/item.h"
-//#include "store/naive/atomic_items.h"
+
 
 namespace xqp
 {
@@ -12,12 +12,9 @@ class QNamePool;
 /*******************************************************************************
 
 ********************************************************************************/
-class QNameImpl : public QNameItem
+class QNameItemImpl : public QNameItem
 {
   friend class QNamePool;
-
-private:
-  static QNamePool* theQNamePool;
 
 private:
   xqp_string theNamespace;
@@ -29,17 +26,13 @@ private:
   uint16_t   thePrevFree;
 
 public:
-  static QNamePool* getQNamePool()        { return theQNamePool; }
-  static void setQNamePool(QNamePool* p);
+  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
 
-public:
-  QNameImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
-
-  QNameImpl(const xqp_string& ns, const xqp_string& pre, const xqp_string& ln);
+  QNameItemImpl(const xqp_string& ns, const xqp_string& pre, const xqp_string& ln);
  
-  QNameImpl(const char* ns, const char* pre, const char* ln);
+  QNameItemImpl(const char* ns, const char* pre, const char* ln);
 
-  virtual ~QNameImpl() { }
+  virtual ~QNameItemImpl() { }
 
   void free();
 
@@ -49,10 +42,10 @@ public:
   virtual xqp_string getNamespace() const { return theNamespace; }
   virtual xqp_string getPrefix() const    { return thePrefix; }
   virtual xqp_string getLocalName() const { return theLocal; }
-  virtual qnamekey_t getQNameKey( ) const;
 
   virtual TypeCode getType( ) const       { return xs_qname; }
   virtual Item_t getAtomizationValue( ) const;
+  virtual uint32_t hash() const;
   virtual bool equals ( Item_t ) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string getStringProperty( ) const;
@@ -77,11 +70,6 @@ public:
                    the free list.
   theNumFree     : Number of free slots in theCache.
 
-  theOverflow    : If theCache is full and a new qname must be inserted, a
-                   QNameItem is allocated in the heap and a pointer to it is
-                   placed in theOverflow vector. So, theOverflow is a vector of
-                   overflow slots. 
-
   theNumQnames   : The total number of qnames stored in the pool.
 
   theHashTab     : A hash table mapping qnames (i.e. triplets of strings) to
@@ -96,8 +84,8 @@ protected:
   class HashEntry
   {
   public:
-    QNameImpl  * theQName;
-    HashEntry  * theNext;
+    QNameItemImpl  * theQName;
+    HashEntry      * theNext;
 
     HashEntry() : theQName(NULL), theNext(NULL) { }
 
@@ -111,12 +99,10 @@ public:
   static const float DEFAULT_LOAD_FACTOR;// = 0.6;//daniel: to compile on windows
 
 protected:
-  QNameImpl*                theCache;
+  QNameItemImpl*            theCache;
   xqp_unsignedLong          theCacheSize;
   xqp_unsignedLong          theFirstFree;
   xqp_unsignedLong          theNumFree;
-
-  //std::vector<QNameImpl *> theOverflow;
 
   xqp_unsignedLong          theNumQNames;
 
@@ -129,9 +115,9 @@ public:
 
   ~QNamePool();
 
-  QNameImpl* insert(const char* ns, const char* pre, const char* ln);
+  QNameItemImpl* insert(const char* ns, const char* pre, const char* ln);
 
-  void remove(QNameImpl* qn);
+  void remove(QNameItemImpl* qn);
 
 protected:
   HashEntry* hash(const char* ns, const char* pre, const char* ln);

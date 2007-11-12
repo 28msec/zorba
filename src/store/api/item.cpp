@@ -93,6 +93,11 @@ Item_t NodeItem::getEBV() const
   return zorba::getItemFactory()->createBoolean ( true );
 }
 
+uint32_t NodeItem::hash() const
+{
+  Assert(0);
+  return 0;
+}
 
 bool NodeItem::equals ( Item_t item ) const
 {

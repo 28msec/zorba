@@ -1,14 +1,12 @@
 
 #include "util/zorba.h"
 #include "store/naive/qname_pool.h"
+#include "store/naive/simple_store.h"
 
 namespace xqp
 {
 
-QNamePool* QNameImpl::theQNamePool = NULL;
-
 const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
-
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -23,7 +21,7 @@ const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
 ********************************************************************************/
 QNamePool::QNamePool(xqp_unsignedLong size) 
   :
-  theCache(new QNameImpl[size]),
+  theCache(new QNameItemImpl[size]),
   theCacheSize(size),
   theFirstFree(1),
   theNumFree(size - 1),
@@ -32,8 +30,8 @@ QNamePool::QNamePool(xqp_unsignedLong size)
   theLoadFactor(DEFAULT_LOAD_FACTOR)
 {
   // Put all the preallocated slots in the free list of the cahce.
-  QNameImpl* qn = &theCache[1];
-  QNameImpl* last = qn + size - 1;
+  QNameItemImpl* qn = &theCache[1];
+  QNameItemImpl* last = qn + size - 1;
 
   for (xqp_unsignedLong i = 1; qn < last; qn++, i++)
   {
@@ -86,12 +84,12 @@ QNamePool::~QNamePool()
 /*******************************************************************************
 
 ********************************************************************************/
-QNameImpl* QNamePool::insert(
+QNameItemImpl* QNamePool::insert(
     const char* ns,
     const char* pre,
     const char* ln)
 {
-  QNameImpl* qn;
+  QNameItemImpl* qn;
 
   HashEntry* entry = hash(ns, pre, ln);
 
@@ -148,7 +146,7 @@ QNameImpl* QNamePool::insert(
   }
 
   // The cache was full, so allocate a QNameItem from the heap.
-  qn = new QNameImpl(ns, pre, ln);
+  qn = new QNameItemImpl(ns, pre, ln);
   //theOverflow.push_back(qn);
   entry->theQName = qn;
   return qn;
@@ -158,7 +156,7 @@ QNameImpl* QNamePool::insert(
 /*******************************************************************************
 
 ********************************************************************************/
-void QNamePool::remove(QNameImpl* qn)
+void QNamePool::remove(QNameItemImpl* qn)
 {
   if (qn->getRefCount() > 0)
     return;
@@ -180,7 +178,7 @@ void QNamePool::remove(QNameImpl* qn)
            qn->getPrefix().c_str(),
            qn->getLocalName().c_str());
 
-    //std::vector<QNameImpl *>::iterator it;
+    //std::vector<QNameItemImpl *>::iterator it;
     //it = theOverflow.begin() + qn->thePosition;
     //theOverflow.erase(it);
 
@@ -216,7 +214,7 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
   // Search the hash bucket looking for the given qname.
   while (entry != NULL)
   {
-    QNameImpl* qn = entry->theQName;
+    QNameItemImpl* qn = entry->theQName;
 
     len = qn->theLocal.bytes();
     if (len != strlen(ln) || memcmp(qn->theLocal.c_str(), ln, len) != 0)
@@ -246,10 +244,25 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
   }
 
   // The qname was not found.
+  theNumQNames++;
 
   // Double the size of hash table if it is more than 60% full. 
   if (theNumQNames > theHashTabSize * theLoadFactor)
+  {
     resizeHashTab();
+
+    hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
+    entry = &theHashTab[ hval % theHashTabSize];
+
+    if (entry->isFree())
+      return entry;
+
+    while (entry != NULL)
+    {
+      lastentry = entry;
+      entry =  entry->theNext;
+    }
+  }
 
   // Get an entry from the free list in the overflow section of the hash teble
   // If no free entry exists, a new entry is appended into the hash table. 
@@ -266,8 +279,6 @@ QNamePool::hash(const char* ns, const char* pre, const char* ln)
     lastentry->theNext = entry;
     entry->theNext = NULL;
   }
-
-  theNumQNames++;
 
   return entry;
 }
@@ -295,7 +306,7 @@ void QNamePool::unhash(const char* ns, const char* pre, const char* ln)
   // Search the hash bucket looking for the given qname.
   while (entry != NULL)
   {
-    QNameImpl* qn = entry->theQName;
+    QNameItemImpl* qn = entry->theQName;
 
     len = qn->theLocal.bytes();
     if (len != strlen(ln) || memcmp(qn->theLocal.c_str(), ln, len) != 0)
@@ -375,7 +386,7 @@ void QNamePool::resizeHashTab()
   // Now rehash every entry
   for (xqp_unsignedLong i = 0; i < oldsize; i++)
   {
-    QNameImpl* qn = oldTab[i].theQName;
+    QNameItemImpl* qn = oldTab[i].theQName;
 
     xqp_unsignedLong h = hashfun::h32(qn->thePrefix.c_str(),
                            hashfun::h32(qn->theLocal.c_str(),
@@ -419,7 +430,7 @@ void QNamePool::resizeHashTab()
 /////////////////////////////////////////////////////////////////////////////////
 
 
-QNameImpl::QNameImpl(
+QNameItemImpl::QNameItemImpl(
     const xqp_string& ns,
     const xqp_string& pre,
     const xqp_string& local)
@@ -433,7 +444,7 @@ QNameImpl::QNameImpl(
 }
 
 
-QNameImpl::QNameImpl(
+QNameItemImpl::QNameItemImpl(
     const char* ns,
     const char* pre,
     const char* local)
@@ -447,31 +458,25 @@ QNameImpl::QNameImpl(
 }
 
 
-void QNameImpl::setQNamePool(QNamePool* p)
+void QNameItemImpl::free()
 {
-  theQNamePool = p;
+  reinterpret_cast<SimpleStore*>(&Store::getInstance())->getQNamePool().remove(this);
 }
 
 
-void QNameImpl::free()
-{
-  getQNamePool()->remove(this);
-}
-
-
-qnamekey_t QNameImpl::getQNameKey( ) const
-{
-  return Item::createQNameKey(theNamespace, thePrefix, theLocal);
-}
-
-
-Item_t QNameImpl::getAtomizationValue( ) const
+Item_t QNameItemImpl::getAtomizationValue( ) const
 {
   return zorba::getItemFactory()->createQName(theNamespace, thePrefix, theLocal).get_ptr();
 }
 
 
-bool QNameImpl::equals(Item_t item) const
+uint32_t QNameItemImpl::hash() const
+{
+  return Item::createQNameKey(theNamespace, thePrefix, theLocal);
+}
+
+
+bool QNameItemImpl::equals(Item_t item) const
 {
   return (this == item.get_ptr() ||
           (item->getNamespace() == theNamespace &&
@@ -479,7 +484,7 @@ bool QNameImpl::equals(Item_t item) const
 }
 
 
-Item_t QNameImpl::getEBV( ) const
+Item_t QNameItemImpl::getEBV( ) const
 {
   ZorbaErrorAlerts::error_alert (
         error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
@@ -491,13 +496,13 @@ Item_t QNameImpl::getEBV( ) const
 }
 
 
-xqp_string QNameImpl::getStringProperty( ) const
+xqp_string QNameItemImpl::getStringProperty( ) const
 {
   return thePrefix != "" ? thePrefix + ":" + theLocal : theLocal;
 }
 
 
-xqp_string QNameImpl::show() const
+xqp_string QNameItemImpl::show() const
 {
   return "xs:qname(" + theNamespace + "," + thePrefix + "," + theLocal + ")";
 }

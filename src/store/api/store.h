@@ -24,6 +24,8 @@ template <class Object> class rchandle;
 	
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class Item> Item_t;
+typedef rchandle<class AnyUriItem> AnyUriItem_t;
+
 typedef rchandle<class Collection> Collection_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 typedef rchandle<class PUL> PUL_t;
@@ -45,19 +47,9 @@ public:
   /*---------------------------- Zorba Engine Internal ----------------------------*/
 
   /**
-   * Initialize the store.
-   */
-  virtual void init() = 0;
-
-  /**
-   * Deinitialize the store.
-   */
-  virtual void deinit() = 0;
-
-  /**
    *  Get the item factory used by this store.
    */
-  virtual ItemFactory& getItemFactory() = 0;
+  virtual ItemFactory& getItemFactory() const = 0;
 
   /**
    * Creates a new TempSeq. The instance can be used, e.g. for variable bindings.
@@ -158,7 +150,36 @@ public:
 	
 		
   /* ------------------------ Collection Management ---------------------------*/
-		
+
+  /**
+   * Creates a new unique URI which can be used as an ID for a collection.
+   *
+   * @return URI
+   */
+  virtual Item_t createURI() = 0;
+	
+  /** Creates a collection in the store.
+   * 
+   * @param URI The URI of the collection to create.
+   * @return handle object of the newly created collection
+   * @throws UriInUseException If the passed uri already exists in the store.
+   */
+  virtual Collection_t createCollection(const xqp_string& uri) = 0;
+
+  /** Creates a collection in the store.
+   * 
+   * @param URI The URI of the collection to create.
+   * @return handle object of the newly created collection
+   * @throws UriInUseException If the passed uri already exists in the store.
+   */
+  virtual Collection_t createCollection(Item_t uri) = 0;
+
+  /** Creates a collection in the store (without given URI).
+   * 
+   * @return handle object of the newly created collection
+   */
+  virtual Collection_t createCollection() = 0;
+	
   /** Returns an XDM instance which is saved in the store 
    * (corresponds to the opening of a connection to a database)
    *
@@ -167,32 +188,11 @@ public:
    */
   virtual Collection_t getCollection(Item_t uri) = 0;
 		
-  /** Creates a collection in the store.
-   * 
-   * @param URI The URI of the collection to create.
-   * @return handle object of the newly created collection
-   * @throws CollectionAlreadyExistsException If a collection with the passed uri already exists in the store.
-   */
-  virtual Collection_t createCollection(Item_t uri) = 0;
-		
-  /** Creates a collection in the store (without given URI).
-   * 
-   * @return handle object of the newly created collection
-   */
-  virtual Collection_t createCollection() = 0;
-		
   /** Deletes a collection.
    *
    * @param URI to identify the collection to delete.
    */
   virtual void deleteCollection(Item_t uri) = 0;
-		
-  /**
-   * Creates a new unique URI which can be used as an ID for a collection.
-   *
-   * @return URI
-   */
-  virtual Item_t createURI() = 0;
 		
 }; /* class Store */
 	

@@ -7,46 +7,75 @@
 #ifndef XQP_SIMPLE_STORE_H
 #define XQP_SIMPLE_STORE_H
 
+#include <map>
+
 #include "store/api/store.h"
+#include "store/util/string_pool.h"
 #include "store/naive/basic_item_factory.h"
 
 namespace xqp
 {
+
+class QNamePool;
+class StringPool;
+class XmlLoader;
+class Timetravel;
+class Requester;
+
 template <class Object> class rchandle;
 
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class Item> Item_t;
+typedef rchandle<class AnyUriItem> AnyUriItem_t;
 typedef rchandle<class Collection> Collection_t;
 typedef rchandle<class TempSeq> TempSeq_t;
 typedef rchandle<class PUL> PUL_t;
 
-class Timetravel;
-class Requester;
+typedef std::map<AnyUriItem_t, Collection_t> Collections;
+
+typedef StringPool  UriPool;
 
 class SimpleStore : public Store
 {
   friend class Store;
 
 protected:
-  BasicItemFactory  theItemFactory;
+  static xqp_unsignedLong theUriCounter;
+
+protected:
+  UriPool           * theUriPool;
+  QNamePool         * theQNamePool;
+
+  BasicItemFactory  * theItemFactory;
+
+  Collections         theCollections;
+
+  XmlLoader         * theXmlLoader;
 
 private:
   SimpleStore();
+
   virtual ~SimpleStore();
 
 public:
-  void init() { }
+  ItemFactory& getItemFactory() const { return *theItemFactory; }
 
-  void deinit() { }
+  UriPool& getUriPool() const         { return *theUriPool; }
+  QNamePool& getQNamePool() const     { return *theQNamePool; }
 
-  virtual ItemFactory& getItemFactory() { return theItemFactory; }
+  XmlLoader& getXmlLoader();
+
+  virtual void setGarbageCollectionStrategy(const xqp_string& strategy);
+
+  virtual Item_t createURI();
+  virtual Collection_t createCollection(const xqp_string& uri);
+  virtual Collection_t createCollection(Item_t uri);
+  virtual Collection_t createCollection();
+  virtual Collection_t getCollection(Item_t uri);
+  virtual void deleteCollection(Item_t uri);
 
   virtual TempSeq_t createTempSeq();
   virtual TempSeq_t createTempSeq(Iterator_t iterator, bool lazy = true);
-
-  virtual void setGarbageCollectionStrategy(const xqp_string& strategy);
-  virtual void apply(PUL_t pendingUpdateList);
-  virtual void apply(PUL_t pendingUpdateList, Requester requester);
 
   virtual Item_t getReference(Item_t);
   virtual Item_t getFixedReference(Item_t, Requester requester, Timetravel timetravel);
@@ -57,13 +86,9 @@ public:
   virtual Iterator_t sort(Iterator_t iterator, bool ascendent, bool duplicateElemination);
   virtual Iterator_t distinctNodeStable(Iterator_t);
 
-  virtual Collection_t getCollection(Item_t uri);
-  virtual Collection_t createCollection(Item_t uri);
-  virtual Collection_t createCollection();
-  virtual void deleteCollection(Item_t uri);
-  virtual Item_t createURI();
-  
-}; /* class SimpleStore */
+  virtual void apply(PUL_t pendingUpdateList);
+  virtual void apply(PUL_t pendingUpdateList, Requester requester);
+};
 
 } /* namespace xqp */
 

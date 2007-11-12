@@ -1,9 +1,8 @@
 
 #include <stdio.h>
 #include <memory.h>
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
 #include <string>
+#include <libxml/xmlmemory.h>
 
 #include "store/naive/simple_loader.h"
 #include "store/naive/node_items.h"
@@ -18,13 +17,44 @@ XmlLoader::XmlLoader()
   LIBXML_TEST_VERSION
 
   // See http://xmlsoft.org/html/libxml-tree.html#xmlSAXHandler
-  xmlSAXHandler saxHandler; 
-  memset( &saxHandler, 0, sizeof(saxHandler) );
-  saxHandler.initialized = XML_SAX2_MAGIC;
-  saxHandler.startElementNs = &XmlLoader::startElementNs;
-  saxHandler.endElementNs = &XmlLoader::endElementNs;
-  saxHandler.warning = &XmlLoader::warning;
-  saxHandler.error = &XmlLoader::error;
+  memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
+  theSaxHandler.initialized = XML_SAX2_MAGIC;
+  theSaxHandler.startElementNs = &XmlLoader::startElementNs;
+  theSaxHandler.endElementNs = &XmlLoader::endElementNs;
+  theSaxHandler.warning = &XmlLoader::warning;
+  theSaxHandler.error = &XmlLoader::error;
+}
+
+
+XmlLoader::~XmlLoader()
+{
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Node_t XmlLoader::loadXml(std::iostream& stream)
+{
+  std::ostringstream docStr;
+  docStr << stream;
+
+  int result = xmlSAXUserParseMemory(&theSaxHandler,
+                                     this,
+                                     docStr.str().c_str(),
+                                     int(docStr.str().size()));
+
+  Node_t resultNode = theRootNode;
+  theRootNode = NULL;
+  //thePath.clear();
+
+  if ( result != 0 )
+  {
+    printf("Failed to parse document.\n" );
+    return NULL;
+  }
+
+  return resultNode;
 }
 
 
@@ -79,7 +109,7 @@ void XmlLoader::startElementNs(
 
     std::string value( (const char *)valueBegin, (const char *)valueEnd );
 
-    printf( "  %sattribute: localname='%s', prefix='%s', uri=(%p)'%s', value='%s'\n",
+    printf("  %sattribute: localname='%s', prefix='%s', uri=(%p)'%s', value='%s'\n",
             indexAttribute >= (nb_attributes - nb_defaulted) ? "defaulted " : "",
             localname,
             prefix,

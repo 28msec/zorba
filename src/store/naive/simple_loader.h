@@ -3,7 +3,10 @@
 #define XQP_SIMPLE_LOADER_H
 
 #include <stack>
+#include <libxml/parser.h>
 #include <libxml/xmlstring.h>
+
+#include "store/api/item.h"
 
 namespace xqp
 {
@@ -19,6 +22,9 @@ typedef rchandle<class NodeItem> Node_t;
 class XmlLoader
 {
 protected:
+  xmlSAXHandler       theSaxHandler;
+
+  Node_t              theRootNode;
   std::stack<Node_t>  thePath;
 
 public:
@@ -46,9 +52,9 @@ public:
 public:
   XmlLoader();
 
-  ~XmlLoader() { }
+  ~XmlLoader();
 
-  Item_t loadXml(std::iostream& stream);
+  Node_t loadXml(std::iostream& stream);
 };
 
 } /* namespace xqp */

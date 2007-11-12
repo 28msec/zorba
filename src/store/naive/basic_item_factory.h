@@ -6,54 +6,59 @@
  *  Author: David Graf (david.graf@28msec.com), Donald Kossmann, Tim Kraska
  *
  */
-
 #ifndef XQP_BASIC_ITEM_FACTORY_H
 #define XQP_BASIC_ITEM_FACTORY_H
 
 #include "store/api/item_factory.h"
-#include "store/naive/qname_pool.h"
+
 
 namespace xqp
 {
+class StringPool;
+class QNamePool;
+
+typedef StringPool UriPool;
+
 
 class BasicItemFactory : public ItemFactory
 {
 protected:
+  UriPool    * theUriPool;
   QNamePool  * theQNamePool;
 
 public:
-  BasicItemFactory();
+  BasicItemFactory(UriPool* uriPool, QNamePool* qnPool);
 
   virtual ~BasicItemFactory();
 
   virtual Item_t createUntypedAtomic(const xqp_string& value);
 
-  virtual rchandle<QNameItem> createQName(
+  virtual QNameItem_t createQName(
         const xqp_string& ns,
         const xqp_string& pre,
         const xqp_string& local);
 
-  virtual Item_t createAnyURI(const xqp_string& value );
+  virtual AnyUriItem_t createAnyURI(const xqp_string& value);
   
-  virtual Item_t createBase64Binary(xqp_base64Binary value );
+  virtual Item_t createBase64Binary(xqp_base64Binary value);
 
-  virtual Item_t createBoolean(bool value );
+  virtual Item_t createBoolean(bool value);
 
-  virtual Item_t createDecimal(long double value );
+  virtual Item_t createDecimal(long double value);
 
-  virtual Item_t createInteger(long long value );
+  virtual Item_t createInteger(long long value);
 
   virtual Item_t createLong(long value);
 
-  virtual Item_t createInt(int32_t value );
+  virtual Item_t createInt(int32_t value);
 
-  virtual Item_t createShort(short value );
+  virtual Item_t createShort(short value);
 
-  virtual Item_t createByte(char value );
+  virtual Item_t createByte(char value);
 
-  virtual Item_t createDate(short year, short month, short day );
+  virtual Item_t createDate(short year, short month, short day);
 
-  virtual Item_t createDate(const xqp_string& value );
+  virtual Item_t createDate(const xqp_string& value);
 
   virtual Item_t createDateTime(short year, short month, short day, short hour, short minute, short second);
 

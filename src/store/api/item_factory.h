@@ -24,6 +24,7 @@ template <class Object> class rchandle;
 
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class QNameItem> QNameItem_t;
+typedef rchandle<class AnyUriItem> AnyUriItem_t;
 
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class TempSeq> TempSeq_t;
@@ -47,7 +48,7 @@ public:
    * @param prefix prefix of the qname
    * @param localName local name of the qname
    */
-  virtual rchandle<QNameItem> createQName(
+  virtual QNameItem_t createQName(
         const xqp_string& namespace_p,
         const xqp_string& prefix,
         const xqp_string& localName) = 0;
@@ -56,7 +57,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    */
-  virtual Item_t createAnyURI ( const xqp_string& value) = 0;
+  virtual AnyUriItem_t createAnyURI(const xqp_string& value) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]

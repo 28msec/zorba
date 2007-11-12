@@ -7,49 +7,29 @@
  *`
  */
 
+#include "util/zorba.h"
+#include "store/api/temp_seq.h"
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
-#include "util/zorba.h"
-#include "store/api/temp_seq.h"
+#include "store/naive/qname_pool.h"
+#include "store/util/string_pool.h"
 
 namespace xqp
 {
 
-BasicItemFactory::BasicItemFactory()
+BasicItemFactory::BasicItemFactory(UriPool* uriPool, QNamePool* qnPool)
   :
-  theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE))
+  theUriPool(uriPool),
+  theQNamePool(qnPool)
 {
-  // Set the global QNamePool pointer to the pool allocated by the store
-  if (QNameImpl::getQNamePool() != NULL)
-  {
-    ZORBA_ERROR_ALERT(
-         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-         error_messages::SYSTEM_ERROR,
-         NULL,
-         false,
-         "The QNamePool has already been allocated");
-  }
-  QNameImpl::setQNamePool(theQNamePool);
 }
 
 
 BasicItemFactory::~BasicItemFactory()
 {
-  if (theQNamePool != NULL)
-  {
-    delete theQNamePool;
-    theQNamePool = NULL;
-  }
-}
-
-
-rchandle<QNameItem> BasicItemFactory::createQName(
-    const xqp_string& ns,
-    const xqp_string& pre,
-    const xqp_string& local)
-{
-  return theQNamePool->insert(ns.c_str(), pre.c_str(), local.c_str());
+  theQNamePool = NULL;
+  theUriPool = NULL;
 }
 
 
@@ -58,7 +38,22 @@ Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
   return new UntypedAtomicItemNaive(value);
 }
 
-Item_t BasicItemFactory::createAnyURI ( const xqp_string& value ) { return Item_t ( NULL ); }
+
+QNameItem_t BasicItemFactory::createQName(
+    const xqp_string& ns,
+    const xqp_string& pre,
+    const xqp_string& local)
+{
+  return theQNamePool->insert(ns.c_str(), pre.c_str(), local.c_str());
+}
+
+
+AnyUriItem_t BasicItemFactory::createAnyURI(const xqp_string& value)
+{
+  theUriPool->insert(value);
+  return new AnyUriItemImpl(value);
+}
+
 
 Item_t BasicItemFactory::createBase64Binary ( xqp_base64Binary value ) { return Item_t ( NULL ); }
 

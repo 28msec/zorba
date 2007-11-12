@@ -4,22 +4,36 @@
  *
  */
 
+#include <iostream>
+
 #include "util/rchandle.h"
 
+#include "errors/Error.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/qname_pool.h"
+#include "store/util/string_pool.h"
+#include "store/naive/simple_loader.h"
+#include "store/naive/basic_item_factory.h"
 
 namespace xqp
 {
 
 typedef rchandle<TempSeq> TempSeq_t;
 
+xqp_unsignedLong SimpleStore::theUriCounter = 0;
+
 
 /*******************************************************************************
 
 ********************************************************************************/
 SimpleStore::SimpleStore()
+  :
+  theUriPool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
+  theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
+  theItemFactory(new BasicItemFactory(theUriPool, theQNamePool)),
+  theXmlLoader(NULL)
 {
 }
 
@@ -29,7 +43,163 @@ SimpleStore::SimpleStore()
 ********************************************************************************/
 SimpleStore::~SimpleStore()
 {
-  deinit();
+  if (theItemFactory != NULL)
+  {
+    delete theItemFactory;
+    theItemFactory = NULL;
+  }
+
+  if (theQNamePool != NULL)
+  {
+    delete theQNamePool;
+    theQNamePool = NULL;
+  }
+
+  if (theUriPool != NULL)
+  {
+    delete theUriPool;
+    theUriPool = NULL;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+XmlLoader& SimpleStore::getXmlLoader()
+{
+  if (theXmlLoader == NULL)
+    theXmlLoader = new XmlLoader();
+
+  return *theXmlLoader;
+}
+
+
+/*******************************************************************************
+  Possibility to change the Garbage Collection strategy of the store.
+
+  @param garbageCollectionStrategy
+********************************************************************************/
+void SimpleStore::setGarbageCollectionStrategy(const xqp_string& strategy)
+{
+
+}
+
+
+/*******************************************************************************
+  Creates a new unique URI which can be used as an ID for a collection.
+
+  @return URI
+********************************************************************************/
+Item_t SimpleStore::createURI()
+{
+  std::ostringstream uristream;
+  uristream << "zorba://internalURI" << SimpleStore::theUriCounter++;
+
+  xqp_string uri(uristream.str());
+
+  return theItemFactory->createAnyURI(uri).get_ptr();
+}
+
+
+/*******************************************************************************
+  Creates a collection in the store.
+
+  @param URI The URI of the collection to create.
+  @return handle object of the newly created collection
+  @throws UriInUseException If the passed uri already exists in the store.
+********************************************************************************/
+Collection_t SimpleStore::createCollection(const xqp_string& uri)
+{
+  bool found = theUriPool->insert(uri);
+
+  if (found)
+  {
+    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_URI_IN_USE,
+                          error_messages::USER_ERROR,
+                          NULL,
+                          true,
+                          uri, "")
+  }
+
+  AnyUriItem_t uriItem = theItemFactory->createAnyURI(uri);
+
+  SimpleCollection* collection = new SimpleCollection(uriItem);
+
+  theCollections[uriItem] = collection;
+
+  return collection;
+}
+
+
+/*******************************************************************************
+  Creates a collection in the store.
+
+  @param URI The URI of the collection to create.
+  @return handle object of the newly created collection
+  @throws UriInUseException If the passed uri already exists in the store.
+********************************************************************************/
+Collection_t SimpleStore::createCollection(Item_t uri)
+{
+  bool found = theUriPool->insert(uri->getStringValue());
+
+  if (found)
+  {
+    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_URI_IN_USE,
+                          error_messages::USER_ERROR,
+                          NULL,
+                          true,
+                          uri->getStringValue(), "")
+  }
+
+  AnyUriItem_t uriItem = dynamic_cast<AnyUriItem*>(uri.get_ptr());
+
+  SimpleCollection* collection = new SimpleCollection(uriItem);
+
+  theCollections[uriItem] = collection;
+
+  return collection;
+}
+
+
+/*******************************************************************************
+  Creates a collection in the store (without given URI).
+
+  @return handle object of the newly created collection
+********************************************************************************/
+Collection_t SimpleStore::createCollection()
+{
+  Item_t uri = createURI();
+
+  return createCollection(uri);
+}
+
+
+/*******************************************************************************
+  Returns an XDM instance which is saved in the store (corresponds to the
+  opening of a connection to a database)
+
+  @param URI of the colleciton
+  @return handle object of the collection. Returns NULL if the collection does
+          not exist
+********************************************************************************/
+Collection_t SimpleStore::getCollection(Item_t uri)
+{
+  if (theUriPool->find(uri->getStringValue()) == false)
+    return NULL;
+
+  return theCollections[dynamic_cast<AnyUriItem*>(uri.get_ptr())];
+}
+
+
+/*******************************************************************************
+  Deletes a collection.
+
+  @param URI to identify the collection to delete.
+********************************************************************************/
+void SimpleStore::deleteCollection(Item_t uri)
+{
+  theCollections.erase(dynamic_cast<AnyUriItem*>(uri.get_ptr()));
 }
 
 
@@ -59,16 +229,6 @@ TempSeq_t SimpleStore::createTempSeq()
 
 
 /*******************************************************************************
-  Possibility to change the Garbage Collection strategy of the store.
-
-  @param garbageCollectionStrategy
-********************************************************************************/
-void SimpleStore::setGarbageCollectionStrategy(const xqp_string& strategy)
-{
-
-}
-
-/*******************************************************************************
   Applies a pending update list on this store
 
   @param pendingUpdateList
@@ -77,6 +237,7 @@ void SimpleStore::apply(PUL_t pendingUpdateList)
 {
 
 }
+
 
 /*******************************************************************************
   Applies the pending update list on the specified branch. Potentially, 
@@ -92,6 +253,7 @@ void SimpleStore::apply(PUL_t pendingUpdateList, Requester requester)
 
 }
 
+
 /*******************************************************************************
   Computes the URI of the passed item.
 
@@ -100,8 +262,9 @@ void SimpleStore::apply(PUL_t pendingUpdateList, Requester requester)
 ********************************************************************************/
 Item_t SimpleStore::getReference(Item_t)
 {
-  return rchandle<Item> ( NULL );
+  return rchandle<Item>(NULL);
 }
+
 
 /*******************************************************************************
   Returns a fixed reference of an item, dependent on a requester (defines branch)
@@ -113,10 +276,14 @@ Item_t SimpleStore::getReference(Item_t)
   @throws NotSupportedException Throws an exception if the store does not
           support branching or versioning
 ********************************************************************************/
-Item_t SimpleStore::getFixedReference(Item_t, Requester requester, Timetravel timetravel)
+Item_t SimpleStore::getFixedReference(
+    Item_t,
+    Requester requester,
+    Timetravel timetravel)
 {
   return rchandle<Item> ( NULL );
 }
+
 
 /*******************************************************************************
   Returns Item which is identified by a reference
@@ -128,6 +295,7 @@ Item_t SimpleStore::getNodeByReference(Item_t)
 {
   return rchandle<Item> ( NULL );
 }
+
 
 /*******************************************************************************
   Returns Item wich is identified by a referenced, dependent on a requester
@@ -141,10 +309,14 @@ Item_t SimpleStore::getNodeByReference(Item_t)
           support branching or versioning
   @throws IllegalReferenceException Throws an exception if the reference is fixed.
 ********************************************************************************/
-Item_t SimpleStore::getNodeByReference(Item_t, Requester requester, Timetravel timetravel)
+Item_t SimpleStore::getNodeByReference(
+    Item_t,
+    Requester requester,
+    Timetravel timetravel)
 {
   return rchandle<Item> ( NULL );
 }
+
 
 /*******************************************************************************
   Compares two items, based on their id.
@@ -186,65 +358,6 @@ Iterator_t SimpleStore::distinctNodeStable(Iterator_t)
   return rchandle<Iterator> ( NULL );
 }
 
-
-/*******************************************************************************
-  Returns an XDM instance which is saved in the store (corresponds to the
-  opening of a connection to a database)
-
-  @param URI of the colleciton
-  @return handle object of the collection. Returns NULL if the collection does
-          not exist
-********************************************************************************/
-Collection_t SimpleStore::getCollection(Item_t uri)
-{
-  return rchandle<Collection> ( NULL );
-}
-
-
-/*******************************************************************************
-  Creates a collection in the store.
-
-  @param URI The URI of the collection to create.
-  @return handle object of the newly created collection
-  @throws CollectionAlreadyExistsException If a collection with the passed uri
-          already exists in the store.
-********************************************************************************/
-Collection_t SimpleStore::createCollection(Item_t uri)
-{
-  return rchandle<Collection> ( NULL );
-}
-
-
-/*******************************************************************************
-  Creates a collection in the store (without given URI).
-
-  @return handle object of the newly created collection
-********************************************************************************/
-Collection_t SimpleStore::createCollection()
-{
-  return rchandle<Collection> ( NULL );
-}
-
-
-/*******************************************************************************
-  Deletes a collection.
-
-  @param URI to identify the collection to delete.
-********************************************************************************/
-void SimpleStore::deleteCollection(Item_t uri)
-{
-
-}
-
-/*******************************************************************************
-  Creates a new unique URI which can be used as an ID for a collection.
-
-  @return URI
-********************************************************************************/
-Item_t SimpleStore::createURI()
-{
-  return Item_t( NULL );
-}
 /* end class SimpleStore */
 
 } /* namespace xqp */
