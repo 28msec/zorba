@@ -42,7 +42,7 @@ public:
 
   virtual void free()      { delete this; }
 
-	int get_refCount() const { return refCount; }
+	int getRefCount() const  { return refCount; }
 
   void addReference()      { ++(this->refCount); }
 
@@ -85,11 +85,12 @@ public:	// operator overloading
 	bool operator!=(rchandle const& h) const;
 	bool operator==(T const* pp) const;
 	bool operator!=(T const* pp) const;
+  int  operator<(const rchandle& h) const;
 
 public:
 	std::string debug() const;
-
 }; 
+
 
 template<class T>
 inline rchandle<T>::rchandle(T* realPtr) : p(realPtr) { init(); }
@@ -117,6 +118,9 @@ inline bool rchandle<T>::operator==(T const* pp) const { return p==pp; }
 
 template<class T>
 inline bool rchandle<T>::operator!=(T const* pp) const { return p!=pp; }
+
+template<class T>
+int rchandle<T>::operator<(const rchandle& h) const { return p < h.p; }
 
 template<class T>
 inline void rchandle<T>::init()
