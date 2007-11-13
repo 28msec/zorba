@@ -39,7 +39,6 @@ protected:
 
 public:
   static const xqp_ulong DEFAULT_MAP_SIZE = 128;
-  static const float DEFAULT_LOAD_FACTOR = 0.6;
 
 protected:
   xqp_ulong               theNumEntries;
@@ -49,7 +48,7 @@ protected:
   float                   theLoadFactor;
 
 public:
-  StringHashMap(xqp_ulong size);
+  StringHashMap(ulong size, float loadFactor);
 
   ~StringHashMap() { }
 
@@ -70,11 +69,11 @@ protected:
 
 ********************************************************************************/
 template <class V>
-StringHashMap<V>::StringHashMap(xqp_ulong size) 
+  StringHashMap<V>::StringHashMap(ulong size, float loadFactor) 
   :
   theNumEntries(0),
   theHashTabSize(size),
-  theLoadFactor(DEFAULT_LOAD_FACTOR)
+  theLoadFactor(loadFactor)
 {
   // Allocate the hash table. Its initial size is the given size, plus an inital
   // 32 overflow entries. Then, format the overflow area of theHashTab as a list

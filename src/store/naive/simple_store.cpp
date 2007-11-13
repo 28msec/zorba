@@ -21,7 +21,10 @@ namespace xqp
 
 typedef rchandle<TempSeq> TempSeq_t;
 
-xqp_ulong SimpleStore::theUriCounter = 0;
+const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6;
+const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
+
+ulong SimpleStore::theUriCounter = 0;
 
 
 /*******************************************************************************
@@ -32,7 +35,8 @@ SimpleStore::SimpleStore()
   theUriPool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theUriPool, theQNamePool)),
-  theCollections(StringHashMap<Collection_t>::DEFAULT_MAP_SIZE),
+  theCollections(DEFAULT_COLLECTION_MAP_SIZE,
+                 DEFAULT_HASH_LOAD_FACTOR),
   theXmlLoader(NULL)
 {
 }
