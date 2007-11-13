@@ -26,7 +26,6 @@
 #include "util/logging/logger.hh"
 #include "util/logging/loggerconfig.hh"
 #include "util/logging/loggermanager.hh"
-#include "types/sequence_type_mgr.h"
 #include "runtime/core/path_iterators.h"
 #include "util/zorba.h"
 #include "store/api/item.h"
@@ -66,7 +65,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
     {
     case match_doc_test:
     {
-      if (contextNode->getNodeKind() != documentNode)
+      if (contextNode->getNodeKind() != StoreConsts::documentNode)
       {
         skip = true;
         break;
@@ -78,7 +77,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
 
       while (child != NULL)
       {
-        if (child->getNodeKind() == elementNode)
+        if (child->getNodeKind() == StoreConsts::elementNode)
         {
           if (elemTest != match_no_test)
           {
@@ -102,7 +101,7 @@ Item_t KindTestIterator::nextImpl(PlanState& planState)
     }
     case match_elem_test:
     {
-      if (contextNode->getNodeKind() != elementNode)
+      if (contextNode->getNodeKind() != StoreConsts::elementNode)
       {
         skip = true;
         break;
@@ -114,7 +113,7 @@ doctest1:
         skip = true;
         break;
       }
-
+      /*
       if (theTypeName != NULL)
       {
         TypeCode etype = zorba::getSequenceTypeManager()->
@@ -125,12 +124,12 @@ doctest1:
             (theNilledAllowed == false && contextNode->getNilled() == true))
           skip = true;
       }
-
+      */
       break;
     }
     case match_attr_test:
     {
-      if (contextNode->getNodeKind() != attributeNode)
+      if (contextNode->getNodeKind() != StoreConsts::attributeNode)
       {
         skip = true;
         break;
@@ -141,7 +140,7 @@ doctest1:
         skip = true;
         break;
       }
-
+      /*
       if (theTypeName != NULL)
       {
         TypeCode etype = zorba::getSequenceTypeManager()->
@@ -151,12 +150,12 @@ doctest1:
         if (atype != etype && !sequence_type::derives_from(atype, etype))
           skip = true;
       }
-
+      */
       break;
     }
     case match_xs_elem_test:
     {
-      if (contextNode->getNodeKind() != elementNode)
+      if (contextNode->getNodeKind() != StoreConsts::elementNode)
       {
         skip = true;
         break;
@@ -167,7 +166,7 @@ doctest2:
     }
     case match_xs_attr_test:
     {
-      if (contextNode->getNodeKind() != attributeNode)
+      if (contextNode->getNodeKind() != StoreConsts::attributeNode)
       {
         skip = true;
         break;
@@ -177,7 +176,7 @@ doctest2:
     }
     case match_pi_test:
     {
-      if (contextNode->getNodeKind() != processingInstructionNode)
+      if (contextNode->getNodeKind() != StoreConsts::piNode)
       {
         skip = true;
         break;
@@ -190,14 +189,14 @@ doctest2:
     }
     case match_comment_test:
     {
-      if (contextNode->getNodeKind() != commentNode)
+      if (contextNode->getNodeKind() != StoreConsts::commentNode)
         skip = true;
 
       break;
     }
     case match_text_test:
     {
-      if (contextNode->getNodeKind() != textNode)
+      if (contextNode->getNodeKind() != StoreConsts::textNode)
         skip = true;
 
       break;
@@ -346,7 +345,8 @@ Item_t SelfAxisIterator::nextImpl(PlanState& planState)
          "The context item of an axis step is not a node");
     }
   }
-  while (theNodeKind != anyNode && state->theContextNode->getNodeKind() != theNodeKind);
+  while (theNodeKind != StoreConsts::anyNode &&
+         state->theContextNode->getNodeKind() != theNodeKind);
 
   return state->theContextNode;
 }
@@ -399,7 +399,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
            "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() != elementNode);
+    while (state->theContextNode->getNodeKind() != StoreConsts::elementNode);
 
     state->theAttributes = state->theContextNode->getAttributes();
 
@@ -479,7 +479,8 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
     parent = state->theContextNode->getParent();
   }
   while (parent != NULL &&
-         theNodeKind != anyNode && parent->getNodeKind() != theNodeKind);
+         theNodeKind != StoreConsts::anyNode &&
+         parent->getNodeKind() != theNodeKind);
 
   return parent;
 }
@@ -530,7 +531,7 @@ Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
 
     while (state->theCurrentAnc != NULL)
     {
-      if (theNodeKind == anyNode ||
+      if (theNodeKind == StoreConsts::anyNode ||
           state->theCurrentAnc->getNodeKind() == theNodeKind)
       {
         STACK_PUSH2(state->theCurrentAnc, state);
@@ -598,7 +599,7 @@ Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
 
     while (state->theCurrentAnc != NULL)
     {
-      if (theNodeKind == anyNode ||
+      if (theNodeKind == StoreConsts::anyNode ||
           state->theCurrentAnc->getNodeKind() == theNodeKind)
       {
         STACK_PUSH2(state->theCurrentAnc, state);
@@ -667,7 +668,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
            "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() == attributeNode);
+    while (state->theContextNode->getNodeKind() == StoreConsts::attributeNode);
 
     parent = state->theContextNode->getParent();
 
@@ -682,7 +683,8 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
 
     while (sibling != NULL)
     {
-      if (theNodeKind == anyNode || sibling->getNodeKind() == theNodeKind)
+      if (theNodeKind == StoreConsts::anyNode ||
+          sibling->getNodeKind() == theNodeKind)
       {
         STACK_PUSH2(sibling, state);
       }
@@ -756,7 +758,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
            "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() == attributeNode);
+    while (state->theContextNode->getNodeKind() == StoreConsts::attributeNode);
 
     parent = state->theContextNode->getParent();
 
@@ -769,7 +771,8 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
 
     while (sibling != state->theContextNode)
     {
-      if (theNodeKind == anyNode || sibling->getNodeKind() == theNodeKind)
+      if (theNodeKind == StoreConsts::anyNode ||
+          sibling->getNodeKind() == theNodeKind)
       {
 #ifdef DEBUG
         theLSibling = sibling;
@@ -845,8 +848,8 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
            "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() != elementNode &&
-           state->theContextNode->getNodeKind() != documentNode);
+    while (state->theContextNode->getNodeKind() != StoreConsts::elementNode &&
+           state->theContextNode->getNodeKind() != StoreConsts::documentNode);
 
     state->theChildren = state->theContextNode->getChildren();
 
@@ -863,7 +866,8 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
       else
         cout << endl;
       */
-      if (theNodeKind == anyNode || child->getNodeKind() == theNodeKind)
+      if (theNodeKind == StoreConsts::anyNode ||
+          child->getNodeKind() == theNodeKind)
       {
         STACK_PUSH2(child, state);
       }
@@ -937,26 +941,29 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
            "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() != elementNode &&
-           state->theContextNode->getNodeKind() != documentNode);
+    while (state->theContextNode->getNodeKind() != StoreConsts::elementNode &&
+           state->theContextNode->getNodeKind() != StoreConsts::documentNode);
 
     //MYTRACE("iter = " << this << " ctxNode = [" << &*state->theContextNode
     //        << " " << state->theContextNode->getNodeName()->show() << "]");
 
     children = state->theContextNode->getChildren();
 
-    state->theCurrentPath.push(
-              std::pair<Item_t, Iterator_t>(state->theContextNode, children));
+    state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
+                              (state->theContextNode, children));
     
     desc = children->next();
 
     while (desc != NULL)
     {
-      if (desc->getNodeKind() == elementNode)
-        state->theCurrentPath.push(
-                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+      if (desc->getNodeKind() == StoreConsts::elementNode)
+      {
+        state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
+                                  (desc, desc->getChildren()));
+      }
 
-      if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
+      if (theNodeKind == StoreConsts::anyNode ||
+          desc->getNodeKind() == theNodeKind)
       {
         //MYTRACE("iter = " << this << " desc = [" << &*desc << " "
         //        << desc->getNodeName()->show() << "]");
@@ -1061,19 +1068,22 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
            "The context item of an axis step is not a node");
       }
     }
-    while (state->theContextNode->getNodeKind() != elementNode &&
-           state->theContextNode->getNodeKind() != documentNode);
+    while (state->theContextNode->getNodeKind() != StoreConsts::elementNode &&
+           state->theContextNode->getNodeKind() != StoreConsts::documentNode);
 
     desc = state->theContextNode;
 
     while (desc != NULL)
     {
-      if (desc->getNodeKind() == elementNode ||
-          state->theContextNode->getNodeKind() == documentNode)
-        state->theCurrentPath.push(
-                  std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+      if (desc->getNodeKind() == StoreConsts::elementNode ||
+          state->theContextNode->getNodeKind() == StoreConsts::documentNode)
+      {
+        state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
+                                  (desc, desc->getChildren()));
+      }
 
-      if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
+      if (theNodeKind == StoreConsts::anyNode ||
+          desc->getNodeKind() == theNodeKind)
       {
         STACK_PUSH2(desc, state);
       }
@@ -1202,11 +1212,14 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
 
       while (desc != state->theAncestorPath.top())
       {
-        if (desc->getNodeKind() == elementNode)
-          state->theCurrentPath.push(
-                    std::pair<Item_t, Iterator_t>(desc, desc->getChildren()));
+        if (desc->getNodeKind() == StoreConsts::elementNode)
+        {
+          state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
+                                    (desc, desc->getChildren()));
+        }
 
-        if (theNodeKind == anyNode || desc->getNodeKind() == theNodeKind)
+        if (theNodeKind == StoreConsts::anyNode ||
+            desc->getNodeKind() == theNodeKind)
         {
           STACK_PUSH2(desc, state);
         }
@@ -1342,11 +1355,14 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
 
       while (following != NULL)
       {
-        if (following->getNodeKind() == elementNode)
-          state->theCurrentPath.push(
-                 std::pair<Item_t, Iterator_t>(following, following->getChildren()));
+        if (following->getNodeKind() == StoreConsts::elementNode)
+        {
+          state->theCurrentPath.push(std::pair<Item_t, Iterator_t>
+                                    (following, following->getChildren()));
+        }
 
-        if (theNodeKind == anyNode || following->getNodeKind() == theNodeKind)
+        if (theNodeKind == StoreConsts::anyNode ||
+            following->getNodeKind() == theNodeKind)
         {
           STACK_PUSH2(following, state);
         }

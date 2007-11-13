@@ -52,7 +52,7 @@ public:
   ~StringPool();
 
   bool insert(const char* str, xqpStringStore_t& outStr);
-  bool insert(const xqp_string& str);
+  bool insert(const xqpStringStore& str);
 
   bool find(const xqp_string& str);
 

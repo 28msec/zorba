@@ -13,7 +13,6 @@
 #include "functions/function.h"
 #include "compiler/parser/location.hh"
 #include "compiler/parser/symbol_table.h"
-#include "types/sequence_type.h"
 #include "errors/xqp_exception.h"
 
 #include <iostream>

@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 
+#include "system/globalenv.h"
 #include "functions/function.h"
 
 namespace xqp {
@@ -48,7 +49,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc,std::vector<PlanIter_t>&) const;
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -63,7 +64,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -78,7 +79,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -93,7 +94,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -108,7 +109,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -131,7 +132,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -146,7 +147,7 @@ public:
 
 public:
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
@@ -202,7 +203,7 @@ public:
 	~fn_min() {}
 
 public:
-	sequence_type_t type_check(signature&) const { return xs_untypedValue; }
+	TypeSystem::xqtref_t type_check(signature&) const { return GENV_TYPESYSTEM.UNTYPED_TYPE; }
 	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const { return NULL; } 
 	bool validate_args(std::vector<PlanIter_t>&) const { return true; }
 
@@ -216,7 +217,7 @@ public:
 	fn_min_int(const signature&);
 	~fn_min_int() {}
 public:
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	PlanIter_t operator()( vector<PlanIter_t>) const;
 };
 
@@ -226,7 +227,7 @@ public:
 	fn_min_float(const signature&);
 	~fn_min_float() {}
 public:
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	PlanIter_t operator()( vector<PlanIter_t>) const;
 };
 */
@@ -255,7 +256,7 @@ public:
 	~fn_doc_func() {}
 
 public:
-	sequence_type_t type_check(signature&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
 	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };

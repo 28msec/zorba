@@ -109,9 +109,10 @@ bool NodeItem::equals ( Item_t item ) const
 }
 
 
-TypeCode NodeItem::getType() const
+QNameItem_t NodeItem::getType() const
 {
-  return xs_anyType;
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "anyType");
 }
 
 

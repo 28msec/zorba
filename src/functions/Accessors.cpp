@@ -7,6 +7,7 @@
  *
  */
 
+#include "system/globalenv.h"
 #include "functions/Accessors.h"
 #include "runtime/accessors/AccessorsImpl.h"
 
@@ -31,12 +32,12 @@ fn_data_func::operator() (
 }
 
 
-TypeCode
+TypeSystem::xqtref_t
 fn_data_func::type_check (
 	  signature& sig ) const
 {
 // 		return xs_anySimpleTypeSeq;
-  return xs_anyTypeSeq;
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -73,9 +74,9 @@ PlanIter_t fn_root_func::operator() (
 }
 
 
-TypeCode fn_root_func::type_check(signature& sig) const
+TypeSystem::xqtref_t fn_root_func::type_check(signature& sig) const
 {
-  return anyNodeOpt;
+  return GENV_TYPESYSTEM.ITEM_TYPE_QUESTION;
 }
 
 

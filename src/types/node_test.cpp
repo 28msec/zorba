@@ -1,5 +1,5 @@
 #include "store/naive/atomic_items.h"
-#include "test_types.h"
+#include "node_test.h"
 
 using namespace xqp;
 
@@ -45,17 +45,17 @@ bool NodeNameTest::operator ==(const NodeNameTest& other) const
   return *other.m_uri == *m_uri && *other.m_local == *m_local;
 }
 
-NodeTest::NodeTest(NodeTest::kind_t kind) : m_kind(kind)
+NodeTest::NodeTest(StoreConsts::NodeKind_t kind) : m_kind(kind)
 {
 }
 
-NodeTest::NodeTest(NodeTest::kind_t kind, rchandle<NodeNameTest> name_test)
+NodeTest::NodeTest(StoreConsts::NodeKind_t kind, rchandle<NodeNameTest> name_test)
   : m_kind(kind),
   m_name_test(name_test)
 {
 }
 
-NodeTest::kind_t NodeTest::get_kind()
+StoreConsts::NodeKind_t NodeTest::get_kind()
 {
   return m_kind;
 }
@@ -67,7 +67,7 @@ rchandle<NodeNameTest> NodeTest::get_nametest()
 
 bool NodeTest::is_sub_nodetest_of(const NodeTest& other) const
 {
-  return other.m_kind == NODE
+  return other.m_kind == StoreConsts::anyNode
     || (other.m_kind == m_kind
       && (other.m_name_test.get_ptr() == 0
         || (m_name_test.get_ptr() != 0 && m_name_test->is_subname_of(*other.m_name_test))));

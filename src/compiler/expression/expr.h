@@ -25,8 +25,9 @@
 #include <string>
 #include <vector>
 
+#include "system/globalenv.h"
 #include "compiler/parsetree/parsenodes.h"
-#include "types/sequence_type.h"
+#include "types/typesystem.h"
 #include "util/list.h"
 #include "util/rchandle.h"
 #include "compiler/expression/expr_consts.h"
@@ -160,11 +161,14 @@ class qname_expr : public rcobject
 {
 protected:
   yy::location m_loc;
-  std::string m_prefix;
-  std::string m_local;
+  std::string  m_prefix;
+  std::string  m_local;
 
 public:
-  qname_expr(yy::location const& loc, std::string const& prefix, std::string const& local)
+  qname_expr(
+        yy::location const& loc,
+        std::string const& prefix,
+        std::string const& local)
     :
     m_loc(loc), m_prefix(prefix), m_local(local) {}
 	
@@ -213,10 +217,10 @@ public:
 
   rchandle<qname_expr> varname_h;
 	var_kind kind;
-  sequence_type_t type;
+    TypeSystem::xqtref_t type;
 
 public:
-  var_expr(yy::location const& loc) : expr (loc), type (xs_untypedValue) {}  // TODO
+  var_expr(yy::location const& loc) : expr (loc), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
   ~var_expr() {}
 
 public:
@@ -226,8 +230,8 @@ public:
 	var_kind get_kind() const { return kind; }
 	void set_kind(var_kind k) { kind = k; }
 
-  sequence_type_t get_type() const { return type; }
-  void set_type(sequence_type_t t) { type = t; }
+  TypeSystem::xqtref_t get_type() const { return type; }
+  void set_type(TypeSystem::xqtref_t t) { type = t; }
 
 public:
 	static std::string decode_var_kind(enum var_kind);
@@ -451,10 +455,10 @@ public:
 public:
 	varref_t var_h;
 	expr_t case_expr_h;
-	sequence_type_t type;
+	TypeSystem::xqtref_t type;
 
 public:
-	case_clause() : var_h(NULL), case_expr_h(NULL), type(xs_untypedValue) { }
+	case_clause() : var_h(NULL), case_expr_h(NULL), type(GENV_TYPESYSTEM.UNTYPED_TYPE) { }
 	~case_clause() {}
 
 };
@@ -654,19 +658,19 @@ class instanceof_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	sequence_type_t type;
+	TypeSystem::xqtref_t type;
 
 public:
 	instanceof_expr(
 		yy::location const&,
 		expr_t,
-		sequence_type_t);
+		TypeSystem::xqtref_t);
 
 	~instanceof_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
-	sequence_type_t get_type() const { return type; }
+	TypeSystem::xqtref_t get_type() const { return type; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -684,19 +688,19 @@ class treat_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	sequence_type_t type;
+	TypeSystem::xqtref_t type;
 
 public:
 	treat_expr(
 		yy::location const&,
 		expr_t,
-		sequence_type_t);
+		TypeSystem::xqtref_t);
 
 	~treat_expr();
 
 public:
 	expr_t get_expr() const { return expr_h; }
-	sequence_type_t get_type() const { return type; }
+	TypeSystem::xqtref_t get_type() const { return type; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -714,19 +718,19 @@ class castable_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	sequence_type_t type;
+	TypeSystem::xqtref_t type;
 
 public:
 	castable_expr(
 		yy::location const&,
 		expr_t,
-		sequence_type_t);
+		TypeSystem::xqtref_t);
 	~castable_expr();
 
 public:
 	expr_t get_cast_expr() const { return expr_h; }
-	sequence_type_t get_type() const { return type; }
-	bool is_optional() const { return (type&ARITY_MASK)==OPT_ITEM_ARITY; }
+	TypeSystem::xqtref_t get_type() const { return type; }
+	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeSystem::QUANT_QUESTION; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -744,19 +748,19 @@ class cast_expr : public expr
 {
 protected:
 	expr_t expr_h;
-	sequence_type_t type;
+	TypeSystem::xqtref_t type;
 
 public:
 	cast_expr(
 		yy::location const&,
 		expr_t,
-		sequence_type_t);
+		TypeSystem::xqtref_t);
 	~cast_expr();
 
 public:
 	expr_t get_unary_expr() const { return expr_h; }
-	sequence_type_t get_type() const { return type; }
-	bool is_optional() const { return (type&ARITY_MASK)==OPT_ITEM_ARITY; }
+	TypeSystem::xqtref_t get_type() const { return type; }
+	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeSystem::QUANT_QUESTION; }
 
 public:
 	void accept(expr_visitor&) const;
@@ -1021,7 +1025,7 @@ public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
 
-  TypeCode getNodeKind() const;
+  StoreConsts::NodeKind_t getNodeKind() const;
 };
 
 

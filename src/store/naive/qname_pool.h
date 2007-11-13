@@ -6,60 +6,9 @@
 
 namespace xqp
 {
-class QNamePool;
+  class QNameItemImpl;
 
 typedef rchandle<class xqpStringStore> xqpStringStore_t;
-
-/*******************************************************************************
-
-********************************************************************************/
-class QNameItemImpl : public QNameItem
-{
-  friend class QNamePool;
-
-private:
-  xqpStringStore_t  theNamespace;
-  xqpStringStore_t  thePrefix;
-  xqpStringStore_t  theLocal;
-
-  uint16_t          thePosition;
-  uint16_t          theNextFree;
-  uint16_t          thePrevFree;
-
-public:
-  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
-
-  QNameItemImpl(
-        const xqpStringStore_t& ns,
-        const xqpStringStore_t& pre,
-        const xqpStringStore_t& ln);
- 
-  QNameItemImpl(
-        const char* ns,
-        const char* pre,
-        const char* ln);
-
-  virtual ~QNameItemImpl() { }
-
-  void free();
-
-  bool isInCache() const                  { return thePosition != 0; }
-  bool isOverflow() const                 { return thePosition == 0; }
-
-  virtual xqp_string getNamespace() const { return theNamespace.get_ptr(); }
-  virtual xqp_string getPrefix() const    { return thePrefix.get_ptr(); }
-  virtual xqp_string getLocalName() const { return theLocal.get_ptr(); }
-
-  virtual TypeCode getType() const        { return xs_qname; }
-  virtual Item_t getAtomizationValue() const;
-  virtual uint32_t hash() const;
-  virtual bool equals(Item_t) const;
-  virtual Item_t getEBV() const;
-  virtual xqp_string getStringProperty() const;
-
-  virtual xqp_string show() const;
-};
-
 
 /*******************************************************************************
 

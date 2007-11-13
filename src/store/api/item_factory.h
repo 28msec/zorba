@@ -16,7 +16,7 @@
 
 #include "util/rchandle.h"
 #include "types/representations.h"
-#include "types/typecodes.h"
+
 
 namespace xqp
 {
@@ -41,7 +41,7 @@ public:
   /**
    * @param value string value of the untyped atomic
    */
-  virtual Item_t createUntypedAtomic( const xqp_string& value) = 0;
+  virtual Item_t createUntypedAtomic(const xqp_string& value) = 0;
 			
   /**
    * @param namespace namespace of the qname
@@ -49,27 +49,34 @@ public:
    * @param localName local name of the qname
    */
   virtual QNameItem_t createQName(
-        const xqp_string& namespace_p,
-        const xqp_string& prefix,
-        const xqp_string& localName) = 0;
+        const xqpStringStore& namespace_p,
+        const xqpStringStore& prefix,
+        const xqpStringStore& localName) = 0;
 
+  virtual QNameItem_t createQName(
+        const char* ns,
+        const char* pre,
+        const char* ln) = 0;
+    
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    */
-  virtual AnyUriItem_t createAnyURI(const xqp_string& value) = 0;
+  virtual AnyUriItem_t createAnyURI(const xqpStringStore& value) = 0;
+
+  virtual AnyUriItem_t createAnyURI(const char* value) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
    * @param value)?
    */
-  virtual Item_t createBase64Binary ( xqp_base64Binary value) = 0;
+  virtual Item_t createBase64Binary(xqp_base64Binary value) = 0;
   
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#bool]
    * @param value
    */
-  virtual Item_t createBoolean ( xqp_boolean value) = 0;
+  virtual Item_t createBoolean(xqp_boolean value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#decimal]
@@ -393,19 +400,19 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
    * @param value
    */
-  virtual Item_t createUnsignedInt ( xqp_uint value ) = 0;
+  virtual Item_t createUnsignedInt(xqp_uint value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedLong]
    * @param value
    */
-  virtual Item_t createUnsignedLong ( xqp_ulong value ) = 0;
+  virtual Item_t createUnsignedLong(xqp_ulong value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedShort]
    * @param value
    */
-  virtual Item_t createUnsignedShort ( xqp_ushort value ) = 0;
+  virtual Item_t createUnsignedShort(xqp_unsignedShort value) = 0;
 
   /**
    * @param baseUri The base URI of the document.
@@ -433,7 +440,7 @@ public:
    */
   virtual Item_t createElementNode (
 			    const QNameItem_t& name,
-			    TypeCode type,
+			    const QNameItem_t& type,
 			    TempSeq_t& seqChildren,
 			    TempSeq_t& seqAttributes,
 			    TempSeq_t& seqUris,
@@ -454,7 +461,7 @@ public:
    */
   virtual Item_t createAttributeNode (
 			    const QNameItem_t& name,
-			    TypeCode type,
+			    const QNameItem_t& type,
 			    const Item_t& lexicalValue,
 			    const Item_t& typedValue,
 			    bool createId = false

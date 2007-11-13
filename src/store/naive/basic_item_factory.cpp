@@ -40,22 +40,42 @@ Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
 
 
 QNameItem_t BasicItemFactory::createQName(
-    const xqp_string& ns,
-    const xqp_string& pre,
-    const xqp_string& local)
+    const xqpStringStore& ns,
+    const xqpStringStore& pre,
+    const xqpStringStore& local)
 {
-  return theQNamePool->insert(ns.getStore(), pre.getStore(), local.getStore());
+  return theQNamePool->insert(ns, pre, local);
 }
 
 
-AnyUriItem_t BasicItemFactory::createAnyURI(const xqp_string& value)
+QNameItem_t BasicItemFactory::createQName(
+    const char* ns,
+    const char* pre,
+    const char* ln)
+{
+  return theQNamePool->insert(ns, pre, ln);
+}
+
+
+AnyUriItem_t BasicItemFactory::createAnyURI(const xqpStringStore& value)
 {
   theUriPool->insert(value);
   return new AnyUriItemImpl(value);
 }
 
 
-Item_t BasicItemFactory::createBase64Binary ( xqp_base64Binary value ) { return Item_t ( NULL ); }
+AnyUriItem_t BasicItemFactory::createAnyURI(const char* value)
+{
+  xqpStringStore_t str;
+  theUriPool->insert(value, str);
+  return new AnyUriItemImpl(*str);
+}
+
+
+Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary value)
+{
+  return Item_t ( NULL );
+}
 
 Item_t BasicItemFactory::createBoolean ( bool value )
 {
@@ -202,7 +222,7 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Ite
 
 	Item_t BasicItemFactory::createUnsignedLong ( xqp_ulong value ) { return Item_t ( NULL ); }
 
-Item_t BasicItemFactory::createUnsignedShort(xqp_ushort value)
+Item_t BasicItemFactory::createUnsignedShort(xqp_unsignedShort value)
 {
   return Item_t ( NULL );
 }
@@ -220,7 +240,7 @@ Item_t BasicItemFactory::createDocumentNode(
 
 Item_t BasicItemFactory::createElementNode(
     const QNameItem_t& name,
-    TypeCode type,
+    const QNameItem_t& type,
     TempSeq_t& children,
     TempSeq_t& attributes,
     TempSeq_t& nsUris,
@@ -243,7 +263,7 @@ Item_t BasicItemFactory::createElementNode(
 
 Item_t BasicItemFactory::createAttributeNode(
     const QNameItem_t& name,
-    TypeCode type,
+    const QNameItem_t& type,
     const Item_t& lexicalValue,
     const Item_t& typedValue,
     bool createId ) 

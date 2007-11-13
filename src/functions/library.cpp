@@ -8,6 +8,7 @@
 
 #include <iostream>
 
+#include "system/globalenv.h"
 #include "functions/library.h"
 #include "functions/function.h"
 #include "functions/signature.h"
@@ -21,7 +22,6 @@
 #include "context/common.h"
 #include "context/static_context.h"
 #include "util/zorba.h"
-#include "types/sequence_type.h"
 #include "util/tracer.h"
 #include "util/list.h"
 #include "store/api/item.h"
@@ -33,10 +33,12 @@ namespace xqp {
 
 // clear static initializer state
 
-  static string get_qname (const function &f) {
-    const QNameItem *name = static_cast<const QNameItem *> (f.get_fname ());
-    return name->getPrefix () + ":" + name->getLocalName ();
-  }
+static string get_qname(const function &f)
+{
+  QNameItem_t name = f.get_fname();
+  return name->getPrefix() + ":" + name->getLocalName();
+}
+
 
 #define DECL( type, sig )                                               \
   type type##_obj (signature sig);                                      \
@@ -49,248 +51,304 @@ namespace xqp {
   } type##_init_obj
 
 
-  // Accessors
-  DECL (fn_data_func,
-         (new QNameItemImpl (XQUERY_FN_NS, "fn", "data"),
-          xs_anyTypeSeq, xs_anyTypeSeq/*, xs_anySimpleTypeSeq*/));
+#define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
-  DECL (fn_root_func,
-          (new QNameItemImpl(XQUERY_FN_NS, "fn", "root"), anyNodeOpt, anyNodeOpt));
-  // end Accessors
+// Accessors
+DECL(fn_data_func,
+     (ITEM_FACTORY.createQName (XQUERY_FN_NS, "fn", "data"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-  // Numerics
-  // TODO The parameter and return types of the numeric functions are not correct.
-  // e.g. it is possible to add two untyped atomics or the parameters can be element nodes
-  // which contain a number.
-  DECL (op_numeric_add,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":add"),
-         xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_numeric_subtract,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":subtract"),
-         xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_numeric_multiply,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":multiply"),
-         xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_numeric_divide,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":divide"),
-         xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_numeric_integer_divide,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":integer-divide"),
-         xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_numeric_mod,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":mod"),
-         xs_decimal, xs_decimal, xs_decimal));
-  DECL (op_numeric_unary_minus,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":unary-minus"),
-        xs_decimal, xs_decimal));
-  DECL (op_numeric_unary_plus,
-        (new QNameItemImpl (XQUERY_OP_NS,"fn", ":unary-plus"),
-        xs_decimal, xs_decimal));
+DECL(fn_root_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "root"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+// end Accessors
 
-  DECL (fn_abs,
-        (new QNameItemImpl(XQUERY_FN_NS, "fn", "abs"),
-         xs_decimal,
-         xs_decimal));
-  // end Numerics
+// Numerics
+// TODO The parameter and return types of the numeric functions are not correct.
+// e.g. it is possible to add two untyped atomics or the parameters can be element nodes
+// which contain a number.
+DECL(op_numeric_add,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":add"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-  // Sequences
-  DECL (fn_doc_func,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","doc"),
-         xs_string,
-         documentNode));
-  // end Sequences
+DECL(op_numeric_subtract,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":subtract"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-  // Generic Comparison;
-  DECL (op_equal,
-        (new QNameItemImpl(XQUERY_OP_NS,"fn", ":equal"),
-         xs_anyType, xs_anyType,
-         xs_boolean));
+DECL(op_numeric_multiply,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":multiply"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-  DECL (op_not_equal,
-        (new QNameItemImpl(XQUERY_OP_NS,"fn", ":not-equal"),
-         xs_anyType, xs_anyType,
-         xs_boolean));
+DECL(op_numeric_divide,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":divide"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-  DECL (op_greater,
-        (new QNameItemImpl(XQUERY_OP_NS,"fn", ":greater"),
-         xs_anyType, xs_anyType,
-         xs_boolean));
+DECL(op_numeric_integer_divide,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":integer-divide"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-  DECL (op_greater_equal,
-        (new QNameItemImpl(XQUERY_OP_NS,"fn", ":greater-equal"),
-         xs_anyType, xs_anyType,
-         xs_boolean));
+DECL(op_numeric_mod,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":mod"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-   DECL (op_less,
-        (new QNameItemImpl(XQUERY_OP_NS,"fn", ":less"),
-         xs_anyType, xs_anyType,
-         xs_boolean));
+DECL(op_numeric_unary_minus,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":unary-minus"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-   DECL (op_less_equal,
-        (new QNameItemImpl(XQUERY_OP_NS,"fn", ":less-equal"),
-         xs_anyType, xs_anyType,
-         xs_boolean));
-   // end Generic Comparison
+DECL(op_numeric_unary_plus,
+     (ITEM_FACTORY.createQName (XQUERY_OP_NS,"fn", ":unary-plus"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 
-  // Value Comparison
-   DECL (op_value_equal,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn", ":value-equal"),
-         xs_anyType, xs_anyType,
-         xs_boolean));
+DECL(fn_abs,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "abs"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+// end Numerics
 
-   DECL (op_value_not_equal,
-            (new QNameItemImpl(XQUERY_FN_NS,"fn", ":value-not-equal"),
-            xs_anyType, xs_anyType,
-            xs_boolean));
+// Sequences
+DECL(fn_doc_func,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","doc"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+// end Sequences
 
-   DECL (op_value_greater,
-            (new QNameItemImpl(XQUERY_FN_NS,"fn", ":value-greater"),
-            xs_anyType, xs_anyType,
-            xs_boolean));
+// Generic Comparison;
+DECL(op_equal,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-   DECL (op_value_greater_equal,
-            (new QNameItemImpl(XQUERY_FN_NS,"fn", ":value-greater-equal"),
-            xs_anyType, xs_anyType,
-            xs_boolean));
+DECL(op_not_equal,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":not-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-   DECL (op_value_less,
-            (new QNameItemImpl(XQUERY_FN_NS,"fn", ":value-less"),
-            xs_anyType, xs_anyType,
-            xs_boolean));
+DECL(op_greater,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":greater"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-   DECL (op_value_less_equal,
-            (new QNameItemImpl(XQUERY_FN_NS,"fn", ":value-less-equal"),
-            xs_anyType, xs_anyType,
-            xs_boolean));
-  // end Value Comparison
+DECL(op_greater_equal,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":greater-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  // Strings
-  DECL (fn_codepoints_to_string,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","codepoints-to-string"),
-         xs_integer,
-         xs_string));
+DECL(op_less,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":less"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_string_to_codepoints,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","string-to-codepoints"),
-         xs_string,
-         xs_integer));
+DECL(op_less_equal,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":less-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+// end Generic Comparison
 
-  DECL (fn_codepoint_equal,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","codepoint-equal"),
-         xs_string, xs_string,
-         xs_boolean));
+// Value Comparison
+DECL(op_value_equal,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_concat,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","concat"),
-         xs_anyType,
-         xs_boolean));
+DECL(op_value_not_equal,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-not-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_string_join,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","string-join"),
-         xs_string, xs_string,
-         xs_string));
+DECL(op_value_greater,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-greater"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_substring,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","substring"),
-         xs_string, xs_double, xs_double,
-         xs_string));
+DECL(op_value_greater_equal,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-greater-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_normalize_space,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","normalize-space"),
-         xs_string,
-         xs_string));
+DECL(op_value_less,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-less"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_normalize_unicode,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","normalize-unicode"),
-         xs_string, xs_string,
-         xs_string));
+DECL(op_value_less_equal,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", ":value-less-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+// end Value Comparison
 
-  DECL (fn_upper_case,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","upper-case"),
-         xs_string,
-         xs_string));
+// Strings
+DECL(fn_codepoints_to_string,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","codepoints-to-string"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-  DECL (fn_lower_case,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","lower-case"),
-         xs_string,
-         xs_string));
+DECL(fn_string_to_codepoints,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-to-codepoints"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
-  DECL (fn_translate,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","translate"),
-         xs_string, xs_string, xs_string,
-         xs_string));
+DECL(fn_codepoint_equal,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","codepoint-equal"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_string_compare,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","compare"),
-         xs_string, xs_string, xs_string,
-         xs_integer));
+DECL(fn_concat,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","concat"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-  DECL (fn_string_length,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","string-length"),
-         xs_string,
-         xs_integer));
+DECL(fn_string_join,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-join"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-  DECL (fn_contains,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","contains"),
-          xs_string, xs_string, xs_string,
-          xs_boolean));
+DECL(fn_substring,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-  DECL (fn_starts_with,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","starts-with"),
-          xs_string, xs_string, xs_string,
-          xs_boolean));
+DECL(fn_normalize_space,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","normalize-space"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-  DECL (fn_ends_with,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","ends-with"),
-          xs_string, xs_string, xs_string,
-          xs_boolean));
+DECL(fn_normalize_unicode,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","normalize-unicode"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-  DECL (fn_substring_before,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","substring-before"),
-          xs_string, xs_string, xs_string,
-          xs_string));
+DECL(fn_upper_case,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","upper-case"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-  DECL (fn_substring_after,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","substring-after"),
-          xs_string, xs_string, xs_string,
-          xs_string));
-  // end Strings
+DECL(fn_lower_case,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","lower-case"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-   // start Boolean
-   DECL (fn_true,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","true"),
-         xs_boolean));
+DECL(fn_translate,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","translate"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
-  DECL (fn_false,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","false"),
-         xs_boolean));
+DECL(fn_string_compare,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","compare"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
-  DECL (fn_boolean,
-        (new QNameItemImpl(XQUERY_FN_NS,"fn","boolean"),
-         xs_anyType,
-         xs_boolean));
+DECL(fn_string_length,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","string-length"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 
-  DECL (fn_not,
-      (new QNameItemImpl(XQUERY_FN_NS,"fn","not"),
-      xs_anyType,
-      xs_boolean));
-   // end Boolean
+DECL(fn_contains,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","contains"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-   // start Logic
-   DECL (op_and,
-         (new QNameItemImpl(XQUERY_OP_NS,"fn", ":and"),
-         xs_anyType,
-         xs_boolean));
+DECL(fn_starts_with,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","starts-with"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-   DECL (op_or,
-         (new QNameItemImpl(XQUERY_OP_NS,"fn", ":or"),
-         xs_anyType,
-         xs_boolean));
-   // end Logic
+DECL(fn_ends_with,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","ends-with"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
-   // begin zorba functions
-   DECL (zor_numgen,
-         (new QNameItemImpl(XQUERY_FN_NS,"fn", "zorba:numgen"),
-         xs_decimal));
-   // end zorba functions
+DECL(fn_substring_before,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-before"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(fn_substring_after,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","substring-after"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+// end Strings
+
+// start Boolean
+DECL(fn_true,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","true"),
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(fn_false,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","false"),
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(fn_boolean,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","boolean"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(fn_not,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","not"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+// end Boolean
+
+// start Logic
+DECL(op_and,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":and"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+DECL(op_or,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":or"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+// end Logic
+
+// begin zorba functions
+DECL(zor_numgen,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+// end zorba functions
+
 } /* namespace xqp */

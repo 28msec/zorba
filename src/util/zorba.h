@@ -12,8 +12,6 @@
 //#include "errors/Error_impl.h"
 //#include "types/representations.h
 
-#include "types/sequence_type_mgr.h"
-
 #include <unicode/utypes.h>
 #include <unicode/coll.h>
 #include <unicode/ustring.h>
@@ -49,7 +47,6 @@ class zorba
 {
 	friend class ZorbaFactory;
 public:
-	static SequenceTypeManager theSequenceTypeManager;///a global var
 	static Store*				theStore;
 
 protected:
@@ -76,7 +73,6 @@ protected:
 
 public:
 	ZorbaErrorAlertsImpl* getErrorManager();
-	static SequenceTypeManager* getSequenceTypeManager();
 	::Collator* getCollator();
 	yy::location& GetCurrentLocation();//from top iterator
 	

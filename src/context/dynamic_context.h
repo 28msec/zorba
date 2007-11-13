@@ -31,7 +31,7 @@
 #include "functions/library.h"
 #include "store/api/item.h"
 #include "util/rchandle.h"
-#include "types/sequence_type.h"
+#include "types/typesystem.h"
 
 namespace xqp {
 
@@ -57,12 +57,12 @@ public:
 	// XQuery 1.0 dynamic context 
 	Item_t context_item() const;
 
-	sequence_type_t context_item_type() const;
+	TypeSystem::xqtref_t context_item_type() const;
 	uint32_t context_position() const;
 	uint32_t context_size() const;
 
 	void set_context_item(Item_t);
-	void set_context_item_type(sequence_type_t );
+	void set_context_item_type(TypeSystem::xqtref_t );
 
   #if 0
   // return the value of a variable by QName

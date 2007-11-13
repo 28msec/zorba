@@ -2,6 +2,8 @@
 #include "util/Assert.h"
 #include "util/zorba.h"
 #include "errors/Error.h"
+#include "system/globalenv.h"
+#include "types/typesystem.h"
 #include "store/api/item.h"
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
@@ -65,7 +67,7 @@ ElementIterator::nextImpl(PlanState& planState)
 
   item = zorba::getItemFactory()->createElementNode(
 		           theQName,
-		           xs_anyType,
+		           GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
 		           seqChildren,
 		           seqAttributes,
                seqNamespaces,
@@ -199,7 +201,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
       break;
     }
     else if (state->theContextItem->isNode() &&
-             state->theContextItem->getNodeKind() == textNode) 
+             state->theContextItem->getNodeKind() == StoreConsts::textNode) 
 		{
       state->theString += state->theContextItem->getStringProperty();
     }
@@ -317,7 +319,7 @@ AttributeIterator::nextImpl(PlanState& planState)
 
   item = zorba::getItemFactory()->createAttributeNode (
 		           theQName,
-		           xs_anyType,
+		           GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
 		           itemLexical,
 		           itemTyped
 		       );

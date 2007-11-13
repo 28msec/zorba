@@ -10,6 +10,7 @@
 
 #include <iostream>
 
+#include "system/globalenv.h"
 #include "functions/Numerics.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -51,10 +52,10 @@ PlanIter_t op_numeric_add::operator()(
 	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
 }
 
-sequence_type_t op_numeric_add::type_check(
+TypeSystem::xqtref_t op_numeric_add::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_add::validate_args(
@@ -79,10 +80,10 @@ PlanIter_t op_numeric_add_int::operator()(
 	return new ArithmeticIterator<AddOperations>(loc, argv[0], argv[1]);
 }
 
-sequence_type_t op_numeric_add_int::type_check(
+TypeSystem::xqtref_t op_numeric_add_int::type_check(
 	signature& sig) const
 {
-	return xs_integer;
+	return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
 }
 
 bool op_numeric_add_int::validate_args(
@@ -124,10 +125,10 @@ PlanIter_t op_numeric_subtract::operator()(
 	return new ArithmeticIterator<SubtractOperations>(loc, argv[0], argv[1]);
 }
 
-sequence_type_t op_numeric_subtract::type_check(
+TypeSystem::xqtref_t op_numeric_subtract::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_subtract::validate_args(
@@ -168,10 +169,10 @@ PlanIter_t op_numeric_multiply::operator()(
 	return new ArithmeticIterator<MultiplyOperations>(loc, argv[0], argv[1]);
 }
 
-sequence_type_t op_numeric_multiply::type_check(
+TypeSystem::xqtref_t op_numeric_multiply::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_multiply::validate_args(
@@ -222,10 +223,10 @@ PlanIter_t op_numeric_divide::operator()(
 	return new ArithmeticIterator<DivideOperations>(loc, argv[0], argv[1]);
 }
 
-sequence_type_t op_numeric_divide::type_check(
+TypeSystem::xqtref_t op_numeric_divide::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_divide::validate_args(
@@ -278,10 +279,10 @@ PlanIter_t op_numeric_integer_divide::operator()(
 	return new ArithmeticIterator<IntegerDivideOperations>(loc, argv[0], argv[1]);
 }
 
-sequence_type_t op_numeric_integer_divide::type_check(
+TypeSystem::xqtref_t op_numeric_integer_divide::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_integer_divide::validate_args(
@@ -342,10 +343,10 @@ PlanIter_t op_numeric_mod::operator()(
 	return new ArithmeticIterator<ModOperations>(loc, argv[0], argv[1]);
 }
 
-sequence_type_t op_numeric_mod::type_check(
+TypeSystem::xqtref_t op_numeric_mod::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_mod::validate_args(
@@ -381,10 +382,10 @@ PlanIter_t op_numeric_unary_plus::operator()(
 	return new OpNumericUnaryIterator(loc, argv[0], true);
 }
 
-sequence_type_t op_numeric_unary_plus::type_check(
+TypeSystem::xqtref_t op_numeric_unary_plus::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_unary_plus::validate_args(
@@ -425,10 +426,10 @@ PlanIter_t op_numeric_unary_minus::operator()(
 	return new OpNumericUnaryIterator(loc, argv[0], false);
 }
 
-sequence_type_t op_numeric_unary_minus::type_check(
+TypeSystem::xqtref_t op_numeric_unary_minus::type_check(
 	signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool op_numeric_unary_minus::validate_args(
@@ -467,9 +468,9 @@ PlanIter_t fn_abs::operator()( const yy::location& loc, vector<PlanIter_t>& argv
 	return new FnAbsIterator(loc, argv[0]);
 }
 
-sequence_type_t fn_abs::type_check(signature& sig) const
+TypeSystem::xqtref_t fn_abs::type_check(signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool fn_abs::validate_args(vector<PlanIter_t>& argv) const
@@ -496,9 +497,9 @@ PlanIter_t zor_numgen::operator()( const yy::location& loc, vector<PlanIter_t>& 
 	return new ZorNumGen(loc);
 }
 
-sequence_type_t zor_numgen::type_check(signature& sig) const
+TypeSystem::xqtref_t zor_numgen::type_check(signature& sig) const
 {
-	return xs_decimal;
+	return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
 }
 
 bool zor_numgen::validate_args(vector<PlanIter_t>& argv) const

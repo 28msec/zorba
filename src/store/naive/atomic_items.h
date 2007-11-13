@@ -7,40 +7,101 @@
  *
  */
 
-
 #ifndef XQP_ATOMIC_ITEMS_H
 #define XQP_ATOMIC_ITEMS_H
 
+#include "util/rchandle.h"
 #include "store/api/item.h"
-#include "types/representations.h"
 
 namespace xqp
 {
-  /*
-	class QNameItemNaive : public QNameItem
-	{
-    // moved to store/naive/qname_pool.h
-	};
-  */
 
-  class UntypedAtomicItemNaive : public UntypedAtomicItem
-	{
-  private:
-    xqp_string strValue_;
+/*******************************************************************************
+  class QNameItem
+********************************************************************************/
+class QNameItemImpl : public QNameItem
+{
+  friend class QNamePool;
 
-  public:
-    UntypedAtomicItemNaive ( xqp_string value );
-    virtual ~UntypedAtomicItemNaive();
-    virtual xqp_string getStringValue() const;
+private:
+  xqpStringStore_t  theNamespace;
+  xqpStringStore_t  thePrefix;
+  xqpStringStore_t  theLocal;
 
-    virtual sequence_type_t getType( ) const;
-    virtual Item_t getAtomizationValue( ) const;
-    virtual uint32_t hash() const;
-    virtual bool equals ( Item_t ) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty( ) const;
-    virtual xqp_string show() const;
-	}; /* class UntypedAtomicItem */
+  uint16_t          thePosition;
+  uint16_t          theNextFree;
+  uint16_t          thePrevFree;
+
+private:
+  QNameItemImpl() : thePosition(0), theNextFree(0), thePrevFree(0) {}
+ 
+  virtual ~QNameItemImpl() { }
+
+  void free();
+
+  bool isInCache() const                  { return thePosition != 0; }
+  bool isOverflow() const                 { return thePosition == 0; }
+
+ public:
+  virtual xqp_string getNamespace() const { return theNamespace; }
+  virtual xqp_string getPrefix() const    { return thePrefix; }
+  virtual xqp_string getLocalName() const { return theLocal; }
+
+  virtual QNameItem_t getType() const;
+  virtual Item_t getAtomizationValue() const;
+  virtual uint32_t hash() const;
+  virtual bool equals(Item_t) const;
+  virtual Item_t getEBV() const;
+  virtual xqp_string getStringProperty() const;
+
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class AnyUriItem
+********************************************************************************/
+class AnyUriItemImpl : public AnyUriItem
+{
+protected:
+  xqpStringStore_t theValue;
+
+public:
+  AnyUriItemImpl(const xqpStringStore& value);
+  virtual ~AnyUriItemImpl();
+
+  virtual xqp_string getStringValue() const;
+  virtual QNameItem_t getType( ) const;
+  virtual Item_t getAtomizationValue( ) const;
+  virtual uint32_t hash() const;
+  virtual bool equals (Item_t) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty( ) const;
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class AnyUriItem
+********************************************************************************/
+class UntypedAtomicItemNaive : public UntypedAtomicItem
+{
+private:
+  xqp_string strValue_;
+
+public:
+  UntypedAtomicItemNaive(xqp_string value);
+  virtual ~UntypedAtomicItemNaive();
+  virtual xqp_string getStringValue() const;
+
+  virtual QNameItem_t getType( ) const;
+  virtual Item_t getAtomizationValue( ) const;
+  virtual uint32_t hash() const;
+  virtual bool equals ( Item_t ) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty( ) const;
+  virtual xqp_string show() const;
+};
 
 
   class StringItemNaive : public StringItem
@@ -48,11 +109,11 @@ namespace xqp
   protected:
     xqp_string strValue_;
   public:
-    StringItemNaive ( const xqp_string& value );
+    StringItemNaive(const xqp_string& value);
     virtual ~StringItemNaive();
 
     virtual xqp_string getStringValue() const;
-    virtual TypeCode getType( ) const;
+    virtual QNameItem_t getType( ) const;
     virtual Item_t getAtomizationValue( ) const;
     virtual uint32_t hash() const;
     virtual bool equals ( Item_t ) const;
@@ -61,24 +122,6 @@ namespace xqp
     virtual xqp_string show() const;
 	}; /* class StringItem */
 
-
-  class AnyUriItemImpl : public AnyUriItem
-	{
-  protected:
-    xqp_string theValue;
-  public:
-    AnyUriItemImpl(const xqp_string& value);
-    virtual ~AnyUriItemImpl();
-
-    virtual xqp_string getStringValue() const;
-    virtual TypeCode getType( ) const;
-    virtual Item_t getAtomizationValue( ) const;
-    virtual uint32_t hash() const;
-    virtual bool equals (Item_t) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty( ) const;
-    virtual xqp_string show() const;
-	}; /* class AnyUriItem */
 
 
   class DecimalItemNaive : public DecimalItem
@@ -91,7 +134,7 @@ namespace xqp
     virtual ~DecimalItemNaive();
     virtual long double getDecimalValue() const;
 
-    virtual TypeCode getType( ) const;
+    virtual QNameItem_t getType( ) const;
     virtual Item_t getAtomizationValue( ) const;
     virtual uint32_t hash() const;
     virtual bool equals ( Item_t ) const;
@@ -113,7 +156,7 @@ namespace xqp
     virtual long long getIntegerValue() const;
     virtual long double getDecimalValue() const;
     
-    virtual TypeCode getType( ) const;
+    virtual QNameItem_t getType( ) const;
     virtual Item_t getAtomizationValue( ) const;
     virtual uint32_t hash() const;
     virtual bool equals ( Item_t ) const;
@@ -133,7 +176,7 @@ namespace xqp
     virtual long long getIntegerValue() const;
     virtual long double getDecimalValue() const;
 
-    virtual TypeCode getType() const;
+    virtual QNameItem_t getType() const;
     virtual Item_t getAtomizationValue( ) const;
     virtual uint32_t hash() const;
     virtual bool equals ( Item_t ) const;
@@ -152,7 +195,7 @@ namespace xqp
 		virtual ~DoubleItemNaive();
 		virtual double getDoubleValue() const;
 		
-		virtual TypeCode getType() const;
+		virtual QNameItem_t getType() const;
 		virtual Item_t getAtomizationValue( ) const;
     virtual uint32_t hash() const;
 		virtual bool equals ( Item_t ) const;
@@ -170,7 +213,7 @@ namespace xqp
 		virtual ~FloatItemNaive();
 		virtual float getFloatValue() const;
 		
-		virtual TypeCode getType() const;
+		virtual QNameItem_t getType() const;
 		virtual Item_t getAtomizationValue( ) const;
     virtual uint32_t hash() const;
 		virtual bool equals ( Item_t ) const;
@@ -190,7 +233,7 @@ namespace xqp
     virtual ~BooleanItemNaive();
     virtual bool getBooleanValue() const;
 
-    virtual TypeCode getType() const;
+    virtual QNameItem_t getType() const;
     virtual Item_t getAtomizationValue() const;
     virtual uint32_t hash() const;
     virtual bool equals ( Item_t ) const;

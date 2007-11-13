@@ -3,6 +3,7 @@
  *  Authors: Tim Kraska, David Graf
  */
 
+#include "system/globalenv.h"
 #include "functions/Boolean.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/item_iterator.h"
@@ -29,10 +30,10 @@ namespace xqp
 		return this->createIterator(loc, argv);
 	}
 
-	TypeCode
+	TypeSystem::xqtref_t
 	GenericOpComparison::type_check ( signature& sig ) const
 	{
-		return xs_boolean;
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
 
 	bool
@@ -169,11 +170,11 @@ namespace xqp
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
 	}
 
-	TypeCode
+	TypeSystem::xqtref_t
 	op_and::type_check (
 	    signature& sig ) const
 	{
-		return xs_boolean;
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
 
 	bool
@@ -202,11 +203,11 @@ namespace xqp
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
 	}
 
-	TypeCode
+	TypeSystem::xqtref_t
 	op_or::type_check (
 	    signature& sig ) const
 	{
-		return xs_boolean;
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
 
 	bool
@@ -235,11 +236,11 @@ namespace xqp
 		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(true) );
 	}
 
-	TypeCode
+	TypeSystem::xqtref_t
 	fn_true::type_check (
 	    signature& sig ) const
 	{
-		return xs_boolean;
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
 
 	bool
@@ -268,11 +269,11 @@ namespace xqp
 		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(false) );
 	}
 
-	TypeCode
+	TypeSystem::xqtref_t
 	fn_false::type_check (
 	    signature& sig ) const
 	{
-		return xs_boolean;
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
 
 	bool
@@ -301,11 +302,11 @@ namespace xqp
 		return new FnBooleanIterator(loc, argv[0], true );
 	}
 
-	TypeCode
+	TypeSystem::xqtref_t
 	fn_not::type_check (
 	    signature& sig ) const
 	{
-		return xs_boolean;
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
 
 	bool
@@ -334,11 +335,11 @@ namespace xqp
 		return new FnBooleanIterator ( loc, argv[0] );
 	}
 
-	TypeCode
+	TypeSystem::xqtref_t
 	fn_boolean::type_check (
 	    signature& sig ) const
 	{
-		return xs_boolean;
+		return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 	}
 
 	bool

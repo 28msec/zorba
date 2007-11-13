@@ -26,7 +26,7 @@
 #define XQP_CASTING_H
 
 #include "util/rchandle.h"
-#include "types/sequence_type.h"
+#include "types/typesystem.h"
 
 namespace xqp
 {
@@ -38,7 +38,7 @@ namespace xqp
 	class GenericCast
 	{
 		private:
-			TypeCode targetType;
+            TypeSystem::xqtref_t targetType;
 		public:
 			GenericCast();
 			~GenericCast() {}
@@ -47,7 +47,7 @@ namespace xqp
 			 * Sets the target types of the following casts
 			 * @param targetType 
 			 */
-			void setTarget ( TypeCode targetType );
+			void setTarget ( TypeSystem::xqtref_t& targetType );
 			
 			/**
 			 * Executes the casting of the passed item

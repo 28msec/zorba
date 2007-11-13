@@ -98,9 +98,7 @@ Item_t SimpleStore::createURI()
   std::ostringstream uristream;
   uristream << "zorba://internalURI" << SimpleStore::theUriCounter++;
 
-  xqp_string uri(uristream.str());
-
-  return theItemFactory->createAnyURI(uri).get_ptr();
+  return theItemFactory->createAnyURI(uristream.str().c_str()).get_ptr();
 }
 
 
@@ -122,7 +120,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
                           uri, "");
   }
 
-  AnyUriItem_t uriItem = theItemFactory->createAnyURI(uri);
+  AnyUriItem_t uriItem = theItemFactory->createAnyURI(uri.getStore());
 
   Collection_t collection(new SimpleCollection(uriItem));
 

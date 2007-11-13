@@ -127,7 +127,7 @@ bool StringPool::insert(const char* str, xqpStringStore_t& outStr)
   and place the copy in the pool. Return true if the string was already in the
   pool, and false otherwise.
 ********************************************************************************/
-bool StringPool::insert(const xqp_string& str)
+bool StringPool::insert(const xqpStringStore& str)
 {
   HashEntry* entry;
   HashEntry* lastentry;
@@ -139,14 +139,14 @@ bool StringPool::insert(const xqp_string& str)
   if (entry->theString == NULL)
   {
     theNumEntries++;
-    entry->theString = &str.getStore();
+    entry->theString = const_cast<xqpStringStore*>(&str);
     return false;
   }
 
   // Search the hash bucket looking for the given string.
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str.getStore()))
+    if (entry->theString->byteEqual(str))
       return true;
 
     lastentry = entry;
@@ -169,7 +169,7 @@ bool StringPool::insert(const xqp_string& str)
 
     if (entry->theString == NULL)
     {
-      entry->theString = &str.getStore();
+      entry->theString = const_cast<xqpStringStore*>(&str);
       return false;
     }
 
@@ -196,7 +196,7 @@ bool StringPool::insert(const xqp_string& str)
     entry->theNext = NULL;
   }
 
-  entry->theString = &str.getStore();
+  entry->theString = const_cast<xqpStringStore*>(&str);
   return false;
 }
 

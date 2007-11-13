@@ -58,9 +58,9 @@ xqp_string DocumentNodeNaive::getStringProperty() const
 }
 
 
-TypeCode DocumentNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t DocumentNodeNaive::getNodeKind() const
 {
-  return documentNode;
+  return StoreConsts::documentNode;
 }
 
 
@@ -114,7 +114,7 @@ Iterator_t DocumentNodeNaive::getTypedValue() const
 ElementNodeNaive::ElementNodeNaive (
     const Item_t& parent,
     const QNameItem_t& name,
-    TypeCode type,
+    const QNameItem_t& type,
     TempSeq_t& seqChildren,
     TempSeq_t& seqAttributes,
     TempSeq_t& seqNsUris,
@@ -141,7 +141,7 @@ ElementNodeNaive::ElementNodeNaive (
 
 ElementNodeNaive::ElementNodeNaive(
     const QNameItem_t& name,
-    TypeCode type,
+    const QNameItem_t& type,
     TempSeq_t& seqChildren,
     TempSeq_t& seqAttributes,
     TempSeq_t& seqNsUris,
@@ -188,9 +188,9 @@ xqp_string ElementNodeNaive::getStringProperty() const
 }
 
 
-TypeCode ElementNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t ElementNodeNaive::getNodeKind() const
 {
-  return elementNode;
+  return StoreConsts::elementNode;
 }
 
 
@@ -247,7 +247,8 @@ bool ElementNodeNaive::getNilled() const
   while ( item != NULL )
   {
     if (item->isNode() && 
-        (item->getNodeKind() == elementNode || item->getNodeKind() == textNode))
+        (item->getNodeKind() == StoreConsts::elementNode ||
+         item->getNodeKind() == StoreConsts::textNode))
       return false;
 
     item = iter->next();
@@ -317,7 +318,7 @@ xqp_string ElementNodeNaive::show() const
 
 AttributeNodeNaive::AttributeNodeNaive(
     const QNameItem_t& name,
-    const TypeCode type,
+    const QNameItem_t& type,
     const Item_t& lexicalValue,
     const Item_t& typedValue,
     bool isId,
@@ -336,7 +337,7 @@ AttributeNodeNaive::AttributeNodeNaive(
 AttributeNodeNaive::AttributeNodeNaive(
     const Item_t& parent,
     const QNameItem_t& name,
-    const TypeCode type,
+    const QNameItem_t& type,
     const Item_t& lexicalValue,
     const Item_t& typedValue,
     bool isId,
@@ -369,9 +370,9 @@ xqp_string AttributeNodeNaive::getStringProperty() const
 }
 
 
-TypeCode AttributeNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t AttributeNodeNaive::getNodeKind() const
 {
-  return attributeNode;
+  return StoreConsts::attributeNode;
 }
 
 
@@ -458,9 +459,9 @@ xqp_string PiNodeNaive::getBaseURI() const
   return this->baseUri;
 }
 
-TypeCode PiNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t PiNodeNaive::getNodeKind() const
 {
-  return processingInstructionNode;
+  return StoreConsts::piNode;
 }
 
 
@@ -513,9 +514,9 @@ xqp_string CommentNodeNaive::getStringProperty() const
   return this->content;
 }
 
-TypeCode CommentNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t CommentNodeNaive::getNodeKind() const
 {
-  return commentNode;
+  return StoreConsts::commentNode;
 }
 
 Iterator_t CommentNodeNaive::getTypedValue() const
@@ -554,9 +555,10 @@ TextNodeNaive::TextNodeNaive(const xqp_string& content_arg) : content(content_ar
 TextNodeNaive::~TextNodeNaive() {}
 
 
-TypeCode TextNodeNaive::getType() const
+QNameItem_t TextNodeNaive::getType() const
 {
-  return xs_untypedAtomicValue;
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "untypedAtomic");
 }
 
 
@@ -572,9 +574,9 @@ xqp_string TextNodeNaive::getStringProperty() const
 }
 
 
-TypeCode TextNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t TextNodeNaive::getNodeKind() const
 {
-  return textNode;
+  return StoreConsts::textNode;
 }
 
 
@@ -611,16 +613,16 @@ Item_t ChildrenIterator::next()
   if (!item->isNode())
     return item;
 
-  Assert(item->getNodeKind() != documentNode);
+  Assert(item->getNodeKind() != StoreConsts::documentNode);
 
   if (item->getParent() == NULL)
   {
     static_cast<NodeNaive*>(item.get_ptr())->setParent(theParentNode.get_ptr());
 
-    if (item->getNodeKind() == elementNode &&
-        theParentNode->getNodeKind() != documentNode)
+    if (item->getNodeKind() == StoreConsts::elementNode &&
+        theParentNode->getNodeKind() != StoreConsts::documentNode)
     {
-      Assert(theParentNode->getNodeKind() == elementNode);
+      Assert(theParentNode->getNodeKind() == StoreConsts::elementNode);
 
       ElementNodeNaive* child = static_cast<ElementNodeNaive*>(item.get_ptr());
 

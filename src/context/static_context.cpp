@@ -28,6 +28,8 @@
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
+#include <assert.h>
+#include "system/globalenv.h"
 #include "context/static_context.h"
 #include "context/common.h"
 #include "store/api/item.h"
@@ -101,28 +103,28 @@ namespace xqp {
       expand_qname (default_ns, qname.substr (0, n), qname.substr (n+1));
   }
 
-sequence_type_t static_context::get_function_type(
+TypeSystem::xqtref_t static_context::get_function_type(
 	const Item* qname_p) const
 THROW_XQP_EXCEPTION
 {
 	// TODO
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-sequence_type_t static_context::get_document_type(
+TypeSystem::xqtref_t static_context::get_document_type(
 	const string& doctype) const
 THROW_XQP_EXCEPTION
 {
 	// TODO
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
-sequence_type_t static_context::get_collection_type(
+TypeSystem::xqtref_t static_context::get_collection_type(
 	const string& colltype) const
 THROW_XQP_EXCEPTION
 {
 	// TODO
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 

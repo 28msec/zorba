@@ -25,7 +25,6 @@
 #include "api/serialization/serializer.h"
 #include "util/zorba.h"
 #include "store/naive/basic_item_factory.h"
-#include "types/sequence_type.h"
 #include "zorba_api.h"
 
 #include "string.h"
@@ -173,8 +172,8 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
 	child = it->next();
 	while (child != NULL )
 	{
-		if (child->getNodeKind() == namespaceNode )		
-			emit_node(child, depth);
+		//if (child->getNodeKind() == Item::namespaceNode )		
+		//	emit_node(child, depth);
 		
 		child = it->next();
 	}
@@ -208,18 +207,13 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
 	child = it->next();
 	while (child!= NULL)
 	{
-		if (child->getNodeKind() != attributeNode
-		   &&
-		   child->getNodeKind() != namespaceNode)
+    if (closed_parent_tag == 0)
 		{
-			if (closed_parent_tag == 0)
-			{
-				os << ">";
-				closed_parent_tag = 1;
-			}
+      os << ">";
+      closed_parent_tag = 1;
+    }
 
-			emit_node(child, depth, item);			
-		}
+    emit_node(child, depth, item);			
 
     child = it->next();
 	}
@@ -229,11 +223,11 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
 
 void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_parent /* = NULL */)
 {
-	if( item->getNodeKind() == documentNode )
+	if( item->getNodeKind() == StoreConsts::documentNode )
 	{		
 		emit_node_children(item, depth+1);    
 	}
-	else if (item->getNodeKind() == elementNode)
+	else if (item->getNodeKind() == StoreConsts::elementNode)
 	{
     if (ser.indent)
 			emit_indentation(depth);
@@ -250,13 +244,14 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 			os << ser.END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-	else if (item->getNodeKind() == attributeNode )
+	else if (item->getNodeKind() == StoreConsts::attributeNode )
 	{
 		os << " " << item->getNodeName()->getStringProperty() << "=\"";
 		emit_expanded_string(item->getStringValue(), true);
 		os << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
+  /*
 	else if (item->getNodeKind() == namespaceNode)
 	{
 		os << " " << item->getNodeName()->getStringProperty() << "=\"";
@@ -264,14 +259,15 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 		os << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
-	else if (item->getNodeKind() == textNode)
+  */
+	else if (item->getNodeKind() == StoreConsts::textNode)
 	{		
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
       os << " ";    
 		emit_expanded_string(item->getStringProperty());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
-	else if (item->getNodeKind() == commentNode )
+	else if (item->getNodeKind() == StoreConsts::commentNode)
 	{
     if (ser.indent)
       emit_indentation(depth);
@@ -305,9 +301,9 @@ void serializer::emitter::emit_item(Item_t item)
   }
   else
   {
-    if (item->getNodeKind() == attributeNode
-        ||
-        item->getNodeKind() == namespaceNode)
+    if (item->getNodeKind() == StoreConsts::attributeNode)
+      //||
+      //  item->getNodeKind() == namespaceNode)
     {
       ZORBA_ERROR_ALERT(
                         error_messages::SENR0001_Item_is_attribute_or_namespace_node,
@@ -443,7 +439,7 @@ int is_html_empty_element(Item_t item)
 
 void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_parent)
 {
-  if (item->getNodeKind() == elementNode)
+  if (item->getNodeKind() == StoreConsts::elementNode)
   {
     unsigned closed_parent_tag = 0;
     
@@ -511,7 +507,7 @@ void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_
       os << serializer::END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
-  else if (item->getNodeKind() == textNode)
+  else if (item->getNodeKind() == StoreConsts::textNode)
   {
     /*
       The HTML output method MUST NOT perform escaping for the content of the script and style elements.

@@ -1,14 +1,20 @@
 #ifndef XQP_TYPESYSTEM_H
 #define XQP_TYPESYSTEM_H
 
+#include <map>
+#include <assert.h>
+#include "store/api/item.h"
 #include "util/rchandle.h"
 
 namespace xqp {
 
 class XQType;
 class AtomicXQType;
-class QNameItem;
+class NodeTest;
 class NodeNameTest;
+class NodeTest;
+
+typedef rchandle<class QNameItem> QNameItem_t;
 
 /*
  * Interface used by other parts of zorba to ask questions about types.
@@ -69,8 +75,7 @@ class TypeSystem {
       ATOMIC_TYPE_CODE_LIST_SIZE // Used to indicate the size of the list.
     } atomic_type_code_t;
 
-    TypeSystem();
-    ~TypeSystem() {}
+    ~TypeSystem();
 
     typedef rchandle<XQType> xqtref_t;
 
@@ -108,6 +113,17 @@ class TypeSystem {
     bool is_simple(const XQType& type) const;
 
     /*
+     * Returns true is the given type is a numeric type.
+     */
+    bool is_numeric(const XQType& type) const;
+
+    /*
+     * Returns the atomic_type_code_t for the given type.
+     * The input type MUST be atomic.
+     */
+    atomic_type_code_t get_atomic_type_code(const XQType& type) const;
+
+    /*
      * Computes the union type (type1 | type2), of the two types.
      * The output _u_ of this call satisfies the following invariant.
      *      is_subtype(_type1_, _u_) == true && is_subtype(_type2_, _u_) == true
@@ -133,14 +149,21 @@ class TypeSystem {
     xqtref_t prime_type(const XQType& type) const;
 
     /*
+     * Returns the type to be used for arithmetic ops.
+     */
+    xqtref_t arithmetic_type(const XQType& type1, const XQType& type2) const;
+
+    /*
      * Returns the NodeNameTest for the given type, if one exists.
      */
     rchandle<NodeNameTest> get_nametest(const XQType& type) const;
 
     /* Factory Methods */
+    xqtref_t create_type(QNameItem_t qname, quantifier_t quantifier) const;
+
     xqtref_t create_atomic_type(atomic_type_code_t type_code, quantifier_t quantifier) const;
 
-    xqtref_t create_atomic_type(rchandle<QNameItem> qname, quantifier_t quantifier) const;
+    xqtref_t create_atomic_type(QNameItem_t qname, quantifier_t quantifier) const;
 
     xqtref_t create_node_type(rchandle<NodeTest> nodetest, quantifier_t quantifier) const;
 
@@ -152,10 +175,10 @@ class TypeSystem {
 
     xqtref_t create_untyped_type() const;
 
-  private:
+    QNameItem_t XS_ANY_TYPE_QNAME;
 
 #define ATOMIC_DECL(basename) \
-    rchandle<QNameItem> XS_##basename##_QNAME; \
+    QNameItem_t XS_##basename##_QNAME; \
     TypeSystem::xqtref_t basename##_TYPE_ONE;\
     TypeSystem::xqtref_t basename##_TYPE_QUESTION; \
     TypeSystem::xqtref_t basename##_TYPE_STAR; \
@@ -209,17 +232,28 @@ class TypeSystem {
 #undef ATOMIC_DECL
 
     TypeSystem::xqtref_t ANY_TYPE;
+
     TypeSystem::xqtref_t ANY_SIMPLE_TYPE;
+
     TypeSystem::xqtref_t UNTYPED_TYPE;
+
     TypeSystem::xqtref_t ITEM_TYPE_ONE;
     TypeSystem::xqtref_t ITEM_TYPE_QUESTION;
     TypeSystem::xqtref_t ITEM_TYPE_STAR;
     TypeSystem::xqtref_t ITEM_TYPE_PLUS;
 
+  private:
+
     TypeSystem::xqtref_t *m_atomic_typecode_map[ATOMIC_TYPE_CODE_LIST_SIZE][QUANTIFIER_LIST_SIZE];
+    typedef std::map<QNameItem_t, atomic_type_code_t> qnametype_map_t;
+    qnametype_map_t m_atomic_qnametype_map;
 
     static const bool ATOMIC_SUBTYPE_MATRIX[ATOMIC_TYPE_CODE_LIST_SIZE][ATOMIC_TYPE_CODE_LIST_SIZE];
     static const bool QUANT_SUBTYPE_MATRIX[QUANTIFIER_LIST_SIZE][QUANTIFIER_LIST_SIZE];
+
+    TypeSystem();
+
+    friend class GlobalEnvironment;
 };
 
 /*
@@ -276,7 +310,7 @@ class NodeXQType : public XQType {
       return NODE_TYPE_KIND;
     }
 
-    NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier) : XQType(quantifier), m_nodetest(nodetest) { }
+    NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier);
 
     TYPE_FRIENDS
 };
@@ -329,19 +363,24 @@ class UntypedXQType : public XQType {
     TYPE_FRIENDS
 };
 
+inline TypeSystem::xqtref_t TypeSystem::create_type(QNameItem_t qname, TypeSystem::quantifier_t quantifier) const
+{
+  if (m_atomic_qnametype_map.find(qname) != m_atomic_qnametype_map.end()) {
+    return create_atomic_type(qname, quantifier);
+  }
+  return TypeSystem::xqtref_t(0);
+}
+
 inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(TypeSystem::atomic_type_code_t type_code, TypeSystem::quantifier_t quantifier) const
 {
   return *m_atomic_typecode_map[type_code][quantifier];
 }
 
-inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(rchandle<QNameItem> qname, TypeSystem::quantifier_t quantifier) const
+inline TypeSystem::xqtref_t TypeSystem::create_atomic_type(QNameItem_t qname, TypeSystem::quantifier_t quantifier) const
 {
-  return TypeSystem::xqtref_t(0);
-}
-
-inline TypeSystem::xqtref_t TypeSystem::create_node_type(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier) const
-{
-  return new NodeXQType(nodetest, quantifier);
+  qnametype_map_t::const_iterator i = m_atomic_qnametype_map.find(qname);
+  assert(i != m_atomic_qnametype_map.end());
+  return create_atomic_type(i->second, quantifier);
 }
 
 inline TypeSystem::xqtref_t TypeSystem::create_any_type() const

@@ -10,7 +10,6 @@
 #include "signature.h"
 
 #include "context/common.h"
-#include "types/sequence_type.h"
 #include "util/fx/fxhashmap.h"
 
 using namespace std;
@@ -18,33 +17,34 @@ namespace xqp {
 
 fxhashmap<signature const*> signature::sigmap;
 
+
 signature::signature(
-	const Item* _qname_p,
-	sequence_type_t return_type)
+	QNameItem_t name,
+	TypeSystem::xqtref_t return_type)
 :
-	qname_p(_qname_p)
+	qname_p(name)
 {
 	argv.push_back(return_type);
 }
 
 signature::signature(
-	const Item* _qname_p,
-	sequence_type_t arg1,
-	sequence_type_t return_type)
+  QNameItem_t name,
+	TypeSystem::xqtref_t arg1,
+	TypeSystem::xqtref_t return_type)
 :
-	qname_p(_qname_p)
+	qname_p(name)
 {
 	argv.push_back(return_type);
 	argv.push_back(arg1);
 }
 
 signature::signature(
-	const Item* _qname_p,
-	sequence_type_t arg1,
-	sequence_type_t arg2,
-	sequence_type_t return_type)
+  QNameItem_t name,
+	TypeSystem::xqtref_t arg1,
+	TypeSystem::xqtref_t arg2,
+	TypeSystem::xqtref_t return_type)
 :
-	qname_p(_qname_p)
+	qname_p(name)
 {
 	argv.push_back(return_type);
 	argv.push_back(arg1);
@@ -52,13 +52,13 @@ signature::signature(
 }
 
 signature::signature(
-	const Item* _qname_p,
-	sequence_type_t arg1,
-	sequence_type_t arg2,
-	sequence_type_t arg3,
-	sequence_type_t return_type)
+  QNameItem_t name,
+	TypeSystem::xqtref_t arg1,
+	TypeSystem::xqtref_t arg2,
+	TypeSystem::xqtref_t arg3,
+	TypeSystem::xqtref_t return_type)
 :
-	qname_p(_qname_p)
+	qname_p(name)
 {
 	argv.push_back(return_type);
 	argv.push_back(arg1);
@@ -67,14 +67,14 @@ signature::signature(
 }
 
 signature::signature(
-	const Item* _qname_p,
-	sequence_type_t arg1,
-	sequence_type_t arg2,
-	sequence_type_t arg3,
-	sequence_type_t arg4,
-	sequence_type_t return_type)
+  QNameItem_t name,
+	TypeSystem::xqtref_t arg1,
+	TypeSystem::xqtref_t arg2,
+	TypeSystem::xqtref_t arg3,
+	TypeSystem::xqtref_t arg4,
+	TypeSystem::xqtref_t return_type)
 :
-	qname_p(_qname_p)
+	qname_p(name)
 {
 	argv.push_back(return_type);
 	argv.push_back(arg1);
@@ -84,10 +84,10 @@ signature::signature(
 }
 
 signature::signature(
-	const Item* _qname_p,
-	const vector<sequence_type_t>& _argv)
+  QNameItem_t name,
+	const vector<TypeSystem::xqtref_t>& _argv)
 :
-	qname_p(_qname_p),
+	qname_p(name),
 	argv(_argv)
 {
 }
@@ -97,7 +97,7 @@ signature::~signature()
 }
 
 void signature::set_return_type(
-	sequence_type_t t)
+	TypeSystem::xqtref_t t)
 {
 	if (argv.size()>0) argv[0] = t; else argv.push_back(t);
 }

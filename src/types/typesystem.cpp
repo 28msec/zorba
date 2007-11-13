@@ -1,7 +1,10 @@
 
+#include <assert.h>
 #include "zorba_api.h"
 #include "store/naive/atomic_items.h"
-#include "util/test_types.h"
+#include "node_test.h"
+#include "store/api/item_factory.h"
+#include "store/api/store.h"
 #include "typesystem.h"
 
 using namespace xqp;
@@ -73,9 +76,9 @@ TypeSystem::TypeSystem()
 #define XS_URI "http://www.w3.org/2001/XMLSchema"
 #define XS_PREFIX "xs"
 
-#define XSQNDECL(var, local)                               \
-        rchandle<QNameItem> var =                          \
-            ZorbaFactory::getInstance().getItemFactory().  \
+#define XSQNDECL(var, local)                         \
+        QNameItem_t var =                    \
+            Store::getInstance().getItemFactory().   \
             createQName(XS_URI, XS_PREFIX, local)
 
   XSQNDECL(XS_ANY_ATOMIC_QNAME, "anyAtomicType");
@@ -128,7 +131,12 @@ TypeSystem::TypeSystem()
   basename##_TYPE_ONE = new AtomicXQType(XS_##basename, QUANT_ONE); \
   basename##_TYPE_QUESTION = new AtomicXQType(XS_##basename, QUANT_QUESTION); \
   basename##_TYPE_STAR = new AtomicXQType(XS_##basename, QUANT_STAR); \
-  basename##_TYPE_PLUS = new AtomicXQType(XS_##basename, QUANT_PLUS);
+  basename##_TYPE_PLUS = new AtomicXQType(XS_##basename, QUANT_PLUS); \
+  m_atomic_qnametype_map[XS_##basename##_QNAME] = XS_##basename; \
+  m_atomic_typecode_map[XS_##basename][QUANT_ONE] = &basename##_TYPE_ONE; \
+  m_atomic_typecode_map[XS_##basename][QUANT_QUESTION] = &basename##_TYPE_QUESTION; \
+  m_atomic_typecode_map[XS_##basename][QUANT_STAR] = &basename##_TYPE_STAR; \
+  m_atomic_typecode_map[XS_##basename][QUANT_PLUS] = &basename##_TYPE_PLUS;
 
   ATOMIC_TYPE_DEFN(ANY_ATOMIC)
   ATOMIC_TYPE_DEFN(STRING)
@@ -176,6 +184,10 @@ TypeSystem::TypeSystem()
   ATOMIC_TYPE_DEFN(QNAME)
   ATOMIC_TYPE_DEFN(NOTATION)
 #undef ATOMIC_TYPE_DEFN
+}
+
+TypeSystem::~TypeSystem()
+{
 }
 
 TypeSystem::quantifier_t TypeSystem::quantifier(const XQType &type) const
@@ -324,6 +336,19 @@ bool TypeSystem::is_simple(const XQType& type) const
   return type.type_kind() == XQType::ATOMIC_TYPE_KIND;
 }
 
+bool TypeSystem::is_numeric(const XQType& type) const
+{
+  return is_subtype(*DOUBLE_TYPE_ONE, type)
+    || is_subtype(*FLOAT_TYPE_ONE, type)
+    || is_subtype(*DECIMAL_TYPE_ONE, type);
+}
+
+TypeSystem::atomic_type_code_t TypeSystem::get_atomic_type_code(const XQType& type) const
+{
+  assert(type.type_kind() == XQType::ATOMIC_TYPE_KIND);
+  return (static_cast<const AtomicXQType&>(type)).m_type_code;
+}
+
 TypeSystem::xqtref_t TypeSystem::union_type(const XQType& type1, const XQType& type2) const
 {
   return TypeSystem::xqtref_t(0);
@@ -339,9 +364,40 @@ TypeSystem::xqtref_t TypeSystem::prime_type(const XQType& type) const
   return TypeSystem::xqtref_t(0);
 }
 
+TypeSystem::xqtref_t TypeSystem::arithmetic_type(const XQType& type1, const XQType& type2) const
+{
+  if (is_subtype(*UNTYPED_ATOMIC_TYPE_ONE, type1)
+    || is_subtype(*UNTYPED_ATOMIC_TYPE_ONE, type2)
+    || is_subtype(*DOUBLE_TYPE_ONE, type1)
+    || is_subtype(*DOUBLE_TYPE_ONE, type2)) {
+    return DOUBLE_TYPE_ONE;
+  }
+  if (is_subtype(*FLOAT_TYPE_ONE, type1)
+    || is_subtype(*FLOAT_TYPE_ONE, type2)) {
+    return FLOAT_TYPE_ONE;
+  }
+  if ((is_subtype(*DECIMAL_TYPE_ONE, type1)
+    && !is_subtype(*INTEGER_TYPE_ONE, type1))
+    || (is_subtype(*DECIMAL_TYPE_ONE, type2))
+    && !is_subtype(*INTEGER_TYPE_ONE, type2)) {
+    return DECIMAL_TYPE_ONE;
+  }
+
+  return INTEGER_TYPE_ONE;
+}
+
 rchandle<NodeNameTest> TypeSystem::get_nametest(const XQType& type) const
 {
   return rchandle<NodeNameTest>(0);
+}
+
+NodeXQType::NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier) : XQType(quantifier), m_nodetest(nodetest)
+{
+}
+
+TypeSystem::xqtref_t TypeSystem::create_node_type(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier) const
+{
+  return new NodeXQType(nodetest, quantifier);
 }
 
 /* vim:set ts=2 sw=2: */

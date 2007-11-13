@@ -465,33 +465,34 @@ bool plan_visitor::begin_visit(const match_expr& v)
   QNameItem_t qname;
   QNameItem_t tname;
 
+  ItemFactory& iFactory = Store::getInstance().getItemFactory();
+
   if (v.getTestKind() == match_name_test)
   {
     // Note: the attribute axis iterator does not do any filtering based on
     // the node kind, so it is ok to set the principal node kind to elementNode
     // in all cases.
-    axisItep->setNodeKind(elementNode);
+    axisItep->setNodeKind(StoreConsts::elementNode);
 
     match_wild_t wildKind = v.getWildKind();
 
     if (wildKind == match_no_wild)
     {
-      qname = zorba::getItemFactory()->
-              createQName("", v.getQName()->prefix(), v.getQName()->local());
+      qname = iFactory.createQName("",
+                                    v.getQName()->prefix().c_str(),
+                                    v.getQName()->local().c_str());
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
     else if (wildKind == match_prefix_wild)
     {
-      qname = zorba::getItemFactory()->
-              createQName("", "wildcard", v.getWildName());
+      qname = iFactory.createQName("", "wildcard", v.getWildName().c_str());
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
     else if (wildKind == match_name_wild)
     {
-      qname = zorba::getItemFactory()->
-              createQName("", v.getWildName(), "wildcard");
+      qname = iFactory.createQName("", v.getWildName().c_str(), "wildcard");
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
@@ -506,14 +507,16 @@ bool plan_visitor::begin_visit(const match_expr& v)
 
     if (v.getQName() != NULL)
     {
-      qname = zorba::getItemFactory()->
-              createQName("", v.getQName()->prefix(), v.getQName()->local());
+      qname = iFactory.createQName("",
+                                   v.getQName()->prefix().c_str(),
+                                   v.getQName()->local().c_str());
     }
 
     if (v.getTypeName() != NULL)
     {
-      tname = zorba::getItemFactory()->
-              createQName("", v.getTypeName()->prefix(), v.getTypeName()->local());
+      tname = iFactory.createQName("",
+                                   v.getTypeName()->prefix().c_str(),
+                                   v.getTypeName()->local().c_str());
     }
 
     matchIte = new KindTestIterator(v.get_loc(), axisIte, qname, tname,
@@ -560,8 +563,11 @@ bool plan_visitor::begin_visit(const elem_expr& v)
 void plan_visitor::end_visit(const elem_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
+
 	PlanIter_t contentIter = NULL;
 	PlanIter_t attrIter = NULL;
+
+  ItemFactory& iFactory = Store::getInstance().getItemFactory();
 
 	if (v.get_attrs_expr() != NULL)
 		attrIter = pop_itstack();
@@ -573,8 +579,9 @@ void plan_visitor::end_visit(const elem_expr& v)
 	}
 
 	rchandle<qname_expr> qname = v.get_qname();
-  QNameItem_t itemQName = zorba::getItemFactory()->
-                          createQName("", qname->prefix(), qname->local());
+  QNameItem_t itemQName = iFactory.createQName("",
+                                               qname->prefix().c_str(),
+                                               qname->local().c_str());
 
 	PlanIter_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
 
@@ -606,10 +613,13 @@ void plan_visitor::end_visit(const attr_expr& v)
 {
   cout << TRACE << endl;
 
+  ItemFactory& iFactory = Store::getInstance().getItemFactory();
+
 	// TODO dynamic qname
 	rchandle<qname_expr> qname = v.get_qname();
-	QNameItem_t itemQName = zorba::getItemFactory()->
-                         createQName("", qname->prefix(), qname->local());
+	QNameItem_t itemQName = iFactory.createQName("",
+                                               qname->prefix().c_str(),
+                                               qname->local().c_str());
 
 	PlanIter_t valueIter = NULL;
 	if (v.get_val_expr() != NULL)

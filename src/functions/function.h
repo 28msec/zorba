@@ -34,14 +34,14 @@ public:
 
 public:
 	// XQuery signature (name+arity)
-	const Item* get_fname() const { return sig.get_name(); }
+	const QNameItem_t& get_fname() const { return sig.get_name(); }
 	void set_signature(signature& _sig) { sig = _sig; }
 
 	// codegen: functor specification
 	virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const = 0;
 
 	// polymorphic type inference
-	virtual sequence_type_t type_check(signature&) const = 0;
+	virtual TypeSystem::xqtref_t type_check(signature&) const = 0;
 
 	// runtime arg validation: XXX move this out
 	virtual bool validate_args(std::vector<PlanIter_t>& argv) const = 0;

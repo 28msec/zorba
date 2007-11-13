@@ -25,6 +25,11 @@ class Zorba_StaticQueryContext : public StaticQueryContext
 
 class PlanState;
 
+template <class Object> class rchandle;
+
+typedef rchandle<class PlanIterator> PlanIter_t;
+
+
 class Zorba_XQueryResult : public XQueryResult
 {
 public:

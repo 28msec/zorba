@@ -10,6 +10,7 @@
 #include "context/static_context.h"
 #include "api/external/xquerybinary.h"
 #include "errors/Error_impl.h"
+#include "runtime/base/iterator.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -29,7 +30,6 @@
 using namespace std;
 namespace xqp {
 
-SequenceTypeManager		zorba::theSequenceTypeManager;///a global var
 Store*				zorba::theStore;
 
 
@@ -107,11 +107,6 @@ yy::location& zorba::GetCurrentLocation()//from top iterator
 		return (yy::location&)(current_iterator.top()->loc);
 }
 
-
-SequenceTypeManager* zorba::getSequenceTypeManager()
-{
-	return &theSequenceTypeManager;
-}
 
 static_context* zorba::get_static_context()///of the current xquery
 {

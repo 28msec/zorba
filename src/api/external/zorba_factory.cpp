@@ -10,6 +10,7 @@
 ///temporary stuff
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/simple_store.h"
+#include "system/globalenv.h"
 
 namespace xqp{
 
@@ -27,10 +28,6 @@ ZorbaFactory&	ZorbaFactory::getInstance()
 	return *g_ZorbaFactory;
 }
 
-ItemFactory& ZorbaFactory::getItemFactory()
-{
-  return Store::getInstance().getItemFactory();
-}
 
 void ZorbaFactory::shutdownZorbaEngine()
 {

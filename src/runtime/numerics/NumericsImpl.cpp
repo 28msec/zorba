@@ -10,6 +10,7 @@
 #include <iostream>
 #include <cmath>
 
+#include "system/globalenv.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "util/tracer.h"
 #include "types/casting.h"
@@ -266,9 +267,9 @@ namespace xqp
 		Item_t n0;
 		Item_t n1;
 		Item_t res;
-		TypeCode type0;
-		TypeCode type1;
-		TypeCode resultType;
+		TypeSystem::xqtref_t type0;
+		TypeSystem::xqtref_t type1;
+		TypeSystem::xqtref_t resultType;
 
 		PlanIterator::PlanIteratorState* state;
 		STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
@@ -280,24 +281,24 @@ namespace xqp
 			{
 				n0 = n0->getAtomizationValue();
 				n1 = n1->getAtomizationValue();
-				type0 = n0->getType();
-				type1 = n1->getType();
-				resultType = sequence_type::getNumericalOpResultType ( type0, type1 );
+				type0 = GENV_TYPESYSTEM.create_type(n0->getType(), TypeSystem::QUANT_ONE);
+				type1 = GENV_TYPESYSTEM.create_type(n1->getType(), TypeSystem::QUANT_ONE);
+				resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );
 				this->genericCast->setTarget(resultType);
 				n0 = this->genericCast->cast(n0);
 				n1 = this->genericCast->cast(n1);
-				switch(resultType)
+				switch(GENV_TYPESYSTEM.get_atomic_type_code(*resultType))
 				{
-				case xs_double:
+				case TypeSystem::XS_DOUBLE:
 					res = Operations::opDouble(&this->loc, n0, n1);
 					break;
-				case xs_float:
+				case TypeSystem::XS_FLOAT:
 					res = Operations::opFloat(&this->loc,n0, n1);
 					break;
-				case xs_decimal:
+				case TypeSystem::XS_DECIMAL:
 					res = Operations::opDecimal(&this->loc,n0, n1);
 					break;
-				case xs_integer:
+				case TypeSystem::XS_INTEGER:
 					res = Operations::opInteger(&this->loc,n0, n1);
 					break;
 				default:
@@ -509,33 +510,34 @@ namespace xqp
 		Item_t item;
 		Item_t res;
 		int32_t mul;
-		TypeCode type;
+        TypeSystem::xqtref_t type;
 		
 		STACK_INIT();
 		item = this->consumeNext ( this->arg0, planState );
 		if ( item != NULL )
 		{
 			item = item->getAtomizationValue();
-			if (sequence_type::derives_from(item->getType(), xs_untypedAtomicValue))
+            type = GENV_TYPESYSTEM.create_type(item->getType(), TypeSystem::QUANT_ONE);
+            if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item = this->genericCast->cast(item);
+                type = GENV_TYPESYSTEM.create_type(item->getType(), TypeSystem::QUANT_ONE);
 			}
 			
-			type = item->getType();
 			if (this->plus)
 				mul = 1;
 			else
 				mul = -1;
 			
 			// TODO Optimizations (e.g. if item has already the correct type and value, it does not have to be created newly)
-			if (sequence_type::derives_from(type, xs_double))
+            if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type))
 				res = zorba::getItemFactory()->createDouble (mul * item->getDoubleValue() );
-			else if (sequence_type::derives_from(type, xs_float))
+            else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type))
 				res = zorba::getItemFactory()->createFloat(mul * item->getFloatValue() );
-			else if (sequence_type::derives_from(type, xs_decimal))
+            else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type))
 				res = zorba::getItemFactory()->createDecimal(mul * item->getDecimalValue() );
-			else if (sequence_type::derives_from(type, xs_integer))
+            else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.INTEGER_TYPE_ONE, *type))
 				res = zorba::getItemFactory()->createInteger(mul * item->getIntegerValue() );
 			else
 			{
@@ -611,48 +613,48 @@ namespace xqp
 	{
 		Item_t item;
 		Item_t res;
-		TypeCode type;
+		TypeSystem::xqtref_t type;
 		
 		STACK_INIT();
 		item = this->consumeNext ( this->arg0, planState );
 		if ( item != NULL )
 		{
 			item = item->getAtomizationValue();
-			if (sequence_type::derives_from(item->getType(), xs_untypedAtomicValue))
+            type = GENV_TYPESYSTEM.create_type(item->getType(), TypeSystem::QUANT_ONE);
+			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item = this->genericCast->cast(item);
+                type = GENV_TYPESYSTEM.create_type(item->getType(), TypeSystem::QUANT_ONE);
 			}
 			
-			type = item->getType();
-			
-			if (sequence_type::derives_from(type, xs_double))
+			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type))
 				if (item->getDoubleValue() >= 0 )
-					if (type == xs_double)
+					if (GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
 						res = item;
 					else
 						res = zorba::getItemFactory()->createDouble (item->getDoubleValue() );
 				else
 					res = zorba::getItemFactory()->createDouble (-item->getDoubleValue() );
-			else if (sequence_type::derives_from(type, xs_float))
+			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type))
 				if (item->getFloatValue() >= 0 )
-					if (type == xs_float)
+					if (GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
 						res = item;
 					else
 						res = zorba::getItemFactory()->createFloat (item->getFloatValue() );
 				else
 					res = zorba::getItemFactory()->createFloat (-item->getFloatValue() );
-			else if (sequence_type::derives_from(type, xs_decimal))
+			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type))
 				if (item->getDecimalValue() >= 0 )
-					if (type == xs_decimal)
+					if (GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 						res = item;
 					else
 						res = zorba::getItemFactory()->createDecimal (item->getDecimalValue() );
 				else
 					res = zorba::getItemFactory()->createDecimal (-item->getDecimalValue() );
-			else if (sequence_type::derives_from(type, xs_integer))
+			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.INTEGER_TYPE_ONE, *type))
 				if (item->getIntegerValue() >= 0 )
-					if (type == xs_integer)
+					if (GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
 						res = item;
 					else
 						res = zorba::getItemFactory()->createInteger (item->getIntegerValue() );

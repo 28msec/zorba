@@ -10,7 +10,6 @@ SET(UTIL_SRCS
     tokenbuf.cpp
     zorba.cpp
     rwlock.cpp
-    test_types.cpp
     math_helper.cpp)
 
 IF (MSVC)

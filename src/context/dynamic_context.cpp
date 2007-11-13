@@ -22,6 +22,7 @@
  *
  */
 
+#include "system/globalenv.h"
 #include "context/dynamic_context.h"
 #include <assert.h>
 
@@ -45,15 +46,15 @@ void dynamic_context::init()
 |_______________________________________________________________________*/
 
 
-sequence_type_t dynamic_context::context_item_type() const
+TypeSystem::xqtref_t dynamic_context::context_item_type() const
 {
-	return xs_anyType; //stub
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 //daniel DECL_ENUM_PARAM (dynamic_context, ordering_mode)
 
 void dynamic_context::set_context_item_type(
-	sequence_type_t v)
+	TypeSystem::xqtref_t v)
 {
 }
 

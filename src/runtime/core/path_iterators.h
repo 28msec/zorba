@@ -31,10 +31,11 @@
 #include "compiler/expression/expr_consts.h"
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
+#include "store/api/store_consts.h"
 #include <stack>
 
-namespace xqp {
-
+namespace xqp 
+{
 
 /*******************************************************************************
 
@@ -113,14 +114,14 @@ public:
 class AxisIteratorHelper
 {
 protected:
-  TypeCode theNodeKind;
+  StoreConsts::NodeKind_t theNodeKind;
 
 public:
-  AxisIteratorHelper() : theNodeKind(anyNode) { }
+  AxisIteratorHelper() : theNodeKind(StoreConsts::anyNode) { }
 
   virtual ~AxisIteratorHelper() {}
 
-  void setNodeKind(TypeCode k) { theNodeKind = k; }
+  void setNodeKind(StoreConsts::NodeKind_t k) { theNodeKind = k; }
 };
 
 

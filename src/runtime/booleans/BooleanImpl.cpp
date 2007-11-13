@@ -3,6 +3,7 @@
  *  Authors: Tim Kraska, David Graf
  */
 
+#include "system/globalenv.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "types/casting.h"
 #include "util/zorba.h"
@@ -37,7 +38,7 @@ namespace xqp
 	FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t& iter, bool negate )
 	{
 		Item_t item;
-		TypeCode type;
+		TypeSystem::xqtref_t type;
 		Item_t result;
 
 		// TODO produceNext must be replaced to allow batching
@@ -55,16 +56,16 @@ namespace xqp
 		}
 		else
 		{
-			type = item->getType();
+			type = GENV_TYPESYSTEM.create_type(item->getType(), TypeSystem::QUANT_ONE);
 			if (
 					// TODO produceNext must be replaced to allow batching
 			    ( iter->produceNext(planState) == NULL )
 			    &&
-			    ( type == xs_boolean
-			      || sequence_type::derives_from ( type, xs_string )
-			      || sequence_type::derives_from ( type, xs_anyURI )
-			      || sequence_type::derives_from ( type, xs_untypedAtomicValue )
-			      || sequence_type::isNumeric ( type )
+			    ( GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
+			      || GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.STRING_TYPE_ONE, *type )
+			      || GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, *type )
+			      || GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type )
+			      || GENV_TYPESYSTEM.is_numeric ( *type )
 			    )
 			)
 			{
@@ -175,9 +176,6 @@ namespace xqp
 		Item_t item1;
 		Iterator_t lIter0;
 		Iterator_t lIter1;
-		TypeCode type0;
-		TypeCode type1;
-		TypeCode resultType;
 		TempSeq_t temp0;
 		TempSeq_t temp1;
 		int32_t i0;
@@ -319,43 +317,44 @@ namespace xqp
 	bool
 	CompareIterator::generalComparison(Item_t item0, Item_t item1)
 	{
-		
-		if (sequence_type::derives_from(item0->getType(), xs_untypedAtomicValue))
+        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
+        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
+        if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type0))
 		{
-			if (sequence_type::isNumeric(item1->getType()))
+			if (GENV_TYPESYSTEM.is_numeric(*type1))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
-			else if (sequence_type::derives_from(item1->getType(), xs_untypedAtomicValue)
-								|| sequence_type::derives_from(item1->getType(), xs_string))
+			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type1)
+                || GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type1))
 			{
-				this->genericCast->setTarget(xs_string);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
 			else
 			{
-				this->genericCast->setTarget(item1->getType());
+				this->genericCast->setTarget(type1);
 				item0 = this->genericCast->cast(item0);
 			}
 		}
 		
-		if (sequence_type::derives_from(item1->getType(), xs_untypedAtomicValue))
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type1))
 		{
-			if (sequence_type::isNumeric(item0->getType()))
+			if (GENV_TYPESYSTEM.is_numeric(*type0))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
-			else if (sequence_type::derives_from(item0->getType(), xs_untypedAtomicValue)
-								|| sequence_type::derives_from(item0->getType(), xs_string))
+			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type0)
+                    || GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type0))
 			{
-				this->genericCast->setTarget(xs_string);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
 			else
 			{
-				this->genericCast->setTarget(item0->getType());
+				this->genericCast->setTarget(type0);
 				item1 = this->genericCast->cast(item1);
 			}
 		}
@@ -366,72 +365,74 @@ namespace xqp
 	bool
 	CompareIterator::valueComparison(Item_t item0, Item_t item1)
 	{
+        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
+        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
 		// all untyped Atomics to String
-		if (sequence_type::derives_from(item0->getType(), xs_untypedAtomicValue))
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type0))
 		{
-			this->genericCast->setTarget(xs_string);
+			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item0 = this->genericCast->cast(item0);
 		}
-		if  (sequence_type::derives_from(item1->getType(), xs_untypedAtomicValue))
+		if  (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type1))
 		{
-			this->genericCast->setTarget(xs_string);
+			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item1 = this->genericCast->cast(item1);
 		}
 		
 		// TYPE PROMOTION
 		// numeric promotion
-		if (sequence_type::derives_from(item0->getType(), xs_float)) {
-			if (sequence_type::derives_from(item1->getType(), xs_decimal))
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type0)) {
+			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type1))
 			{
-				this->genericCast->setTarget(xs_float);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
 		}
-		else if (sequence_type::derives_from(item0->getType(), xs_double))
+		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type0))
 		{
-			if (sequence_type::derives_from(item1->getType(), xs_decimal))
+			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type1))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
-			else if (sequence_type::derives_from(item0->getType(), xs_float))
+			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type1))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
 		}
 		
-		if (sequence_type::derives_from(item1->getType(), xs_float)) {
-			if (sequence_type::derives_from(item0->getType(), xs_decimal))
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type1)) {
+			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type0))
 			{
-				this->genericCast->setTarget(xs_float);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
 		}
-		else if (sequence_type::derives_from(item1->getType(), xs_double))
+		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type1))
 		{
-			if (sequence_type::derives_from(item0->getType(), xs_decimal))
+			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type0))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
-			else if (sequence_type::derives_from(item0->getType(), xs_float))
+			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type0))
 			{
-				this->genericCast->setTarget(xs_double);
+				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
 		}
 		// uri promotion
-		if (sequence_type::derives_from(item0->getType(), xs_string)
-				&& sequence_type::derives_from(item1->getType(), xs_anyURI)) 
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type0)
+				&& GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, *type1))
 		{
-			this->genericCast->setTarget(xs_string);
+			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item1 = this->genericCast->cast(item1);
 		}
-		if (sequence_type::derives_from(item1->getType(), xs_string)
-				&& sequence_type::derives_from(item0->getType(), xs_anyURI)) 
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type1)
+				&& GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, *type0)) 
 		{
-			this->genericCast->setTarget(xs_string);
+			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item0 = this->genericCast->cast(item0);
 		}
 
@@ -509,10 +510,11 @@ namespace xqp
 		else if (compareRes == -1 || compareRes == 1)
 			return 1;
 			
-		TypeCode type0 = item0->getType();
-		TypeCode type1 = item1->getType();
+        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
+        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
 		bool equal;
-		if (sequence_type::derives_from(type0, xs_boolean) && sequence_type::derives_from(type1, xs_boolean))
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE, *type0)
+            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE, *type1))
 				equal = item0->equals(item1);
 		// TODO the rest
 		else
@@ -527,31 +529,35 @@ namespace xqp
 	int32_t 
 	CompareIterator::compare(const Item_t& item0, const Item_t& item1)
 	{
-		TypeCode type0 = item0->getType();
-		TypeCode type1 = item1->getType();
+        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
+        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
 		int32_t ret = -2;
-		if (sequence_type::derives_from(type0, xs_float) && sequence_type::derives_from(type1, xs_float))
+		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type0)
+            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type1))
 			if ( item0->getFloatValue() < item1->getFloatValue())
 				ret = -1;
 			else if ( item0->getFloatValue() == item1->getFloatValue())
 				ret = 0;
 			else
 				ret = 1;
-		else if (sequence_type::derives_from(type0, xs_double) && sequence_type::derives_from(type1, xs_double))
+		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type0)
+            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type1))
 			if ( item0->getDoubleValue() < item1->getDoubleValue())
 				ret = -1;
 			else if ( item0->getDoubleValue() == item1->getDoubleValue())
 				ret = 0;
 			else
 				ret = 1;
-		else if (sequence_type::derives_from(type0, xs_decimal) && sequence_type::derives_from(type1, xs_decimal))
+		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type0)
+            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type1))
 			if ( item0->getDecimalValue() < item1->getDecimalValue())
 				ret = -1;
 			else if ( item0->getDecimalValue() == item1->getDecimalValue())
 				ret = 0;
 			else
 				ret = 1;
-		else if (sequence_type::derives_from(type0, xs_string) && sequence_type::derives_from(type1, xs_string))
+		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type0)
+            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type1))
 			if ( item0->getStringValue() < item1->getStringValue())
 				ret = -1;
 			else if ( item0->getStringValue() == item1->getStringValue())

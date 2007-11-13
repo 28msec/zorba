@@ -34,11 +34,18 @@ public:
   virtual Item_t createUntypedAtomic(const xqp_string& value);
 
   virtual QNameItem_t createQName(
-        const xqp_string& ns,
-        const xqp_string& pre,
-        const xqp_string& local);
+        const xqpStringStore& ns,
+        const xqpStringStore& pre,
+        const xqpStringStore& local);
 
-  virtual AnyUriItem_t createAnyURI(const xqp_string& value);
+  virtual QNameItem_t createQName(
+        const char* ns,
+        const char* pre,
+        const char* ln);
+
+  virtual AnyUriItem_t createAnyURI(const xqpStringStore& value);
+
+  virtual AnyUriItem_t createAnyURI(const char* value);
   
   virtual Item_t createBase64Binary(xqp_base64Binary value);
 
@@ -66,11 +73,11 @@ public:
 
   virtual Item_t createDateTime ( const xqp_string& value );
 
-  virtual Item_t createDateTime ( const Item_t&, const Item_t& );
+  virtual Item_t createDateTime(const Item_t&, const Item_t&);
 
-  virtual Item_t createDouble ( double value );
+  virtual Item_t createDouble(double value);
 
-  virtual Item_t createDuration ( const xqp_string& value );
+  virtual Item_t createDuration(const xqp_string& value);
 
   virtual Item_t createDuration(short years, short months, short days, short hours, short minutes, short seconds);
 
@@ -142,11 +149,11 @@ public:
 
   virtual Item_t createUnsignedByte ( xqp_unsignedByte value );
 
-  virtual Item_t createUnsignedInt ( xqp_uint value );
+  virtual Item_t createUnsignedInt(xqp_uint value);
 
-  virtual Item_t createUnsignedLong ( xqp_ulong value );
+  virtual Item_t createUnsignedLong(xqp_ulong value);
 
-  virtual Item_t createUnsignedShort ( xqp_ushort value );
+  virtual Item_t createUnsignedShort(xqp_unsignedShort value);
 
   virtual Item_t createDocumentNode (
         xqp_string baseURI,
@@ -156,7 +163,7 @@ public:
 
   virtual Item_t createElementNode (
         const QNameItem_t& name,
-        TypeCode type,
+        const QNameItem_t& type,
         TempSeq_t& children,
         TempSeq_t& attributes,
         TempSeq_t& nsUris,
@@ -167,7 +174,7 @@ public:
 
   virtual Item_t createAttributeNode (
         const QNameItem_t& name,
-        TypeCode type,
+        const QNameItem_t& type,
         const Item_t& lexicalValue,
         const Item_t& typedValue,
         bool createId = false);

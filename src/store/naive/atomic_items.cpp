@@ -7,13 +7,144 @@
 *
 */
 
-
+#include "util/hashfun.h"
+#include "util/Assert.h"
+#include "errors/Error.h"
 #include "store/naive/atomic_items.h"
-#include "util/zorba.h"
+#include "store/api/store.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
+#include "store/naive/qname_pool.h"
+#include "store/naive/simple_store.h"
 
 namespace xqp
 {
+
+/*******************************************************************************
+  class AnyUriItem
+********************************************************************************/
+
+AnyUriItemImpl::AnyUriItemImpl(const xqpStringStore& value) 
+  :
+  theValue(const_cast<xqpStringStore*>(&value))
+{
+}
+  
+AnyUriItemImpl::~AnyUriItemImpl()
+{
+}
+  
+xqp_string AnyUriItemImpl::getStringValue() const
+{
+  return theValue.get_ptr();
+}
+
+QNameItem_t AnyUriItemImpl::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "anyURI");
+}
+
+Item_t AnyUriItemImpl::getAtomizationValue() const
+{
+  return Store::getInstance().getItemFactory().
+         createAnyURI(*theValue).get_ptr();
+}
+
+uint32_t AnyUriItemImpl::hash() const
+{
+  return theValue->hash();
+}
+
+
+bool AnyUriItemImpl::equals(Item_t item) const
+{
+  return item->getStringValue() == xqp_string(theValue);
+}
+
+
+Item_t AnyUriItemImpl::getEBV() const
+{
+  bool b = ! (*theValue == "");
+  return Store::getInstance().getItemFactory().createBoolean(b);
+}
+
+
+xqp_string AnyUriItemImpl::getStringProperty() const
+{
+  return theValue.get_ptr();
+} 
+
+
+xqp_string AnyUriItemImpl::show() const
+{
+  return "xs:anyUri(" + theValue + ")";
+}
+
+
+/*******************************************************************************
+  class QNameItem
+********************************************************************************/
+
+void QNameItemImpl::free()
+{
+  reinterpret_cast<SimpleStore*>(&Store::getInstance())->getQNamePool().remove(this);
+}
+
+
+QNameItem_t QNameItemImpl::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "QName");
+}
+
+
+Item_t QNameItemImpl::getAtomizationValue( ) const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(*theNamespace, *thePrefix, *theLocal).get_ptr();
+}
+
+
+uint32_t QNameItemImpl::hash() const
+{
+  return hashfun::h32(*thePrefix,
+                      hashfun::h32(*theLocal,
+                                   hashfun::h32(*theNamespace)));
+}
+
+
+bool QNameItemImpl::equals(Item_t item) const
+{
+  return (this == item.get_ptr() ||
+          (theNamespace->byteEqual(item->getNamespace().getStore()) &&
+           theLocal->byteEqual(item->getLocalName().getStore())));
+}
+
+
+Item_t QNameItemImpl::getEBV( ) const
+{
+  ZorbaErrorAlerts::error_alert (
+        error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
+		    error_messages::RUNTIME_ERROR,
+		    NULL,
+		    false,
+		    "Effective Boolean Value is not defined for QName!");
+  return NULL;
+}
+
+
+xqp_string QNameItemImpl::getStringProperty( ) const
+{
+  return *thePrefix != "" ? *thePrefix + ":" + *theLocal : *theLocal;
+}
+
+
+xqp_string QNameItemImpl::show() const
+{
+  return "xs:qname(" + *theNamespace + "," + *thePrefix + "," + *theLocal + ")";
+}
+
 
 /*******************************************************************************
   class UntypedAtomicItem
@@ -31,14 +162,16 @@ xqp_string UntypedAtomicItemNaive::getStringValue() const
   return this->strValue_;
 }
 
-TypeCode UntypedAtomicItemNaive::getType() const
+QNameItem_t UntypedAtomicItemNaive::getType() const
 {
-  return xs_untypedAtomicValue;
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "untypedAtomic");
 }
 
 Item_t UntypedAtomicItemNaive::getAtomizationValue() const
 {
-  return zorba::getItemFactory()->createUntypedAtomic ( this->strValue_ );
+  return Store::getInstance().getItemFactory().
+         createUntypedAtomic ( this->strValue_ );
 }
 
 uint32_t UntypedAtomicItemNaive::hash() const
@@ -54,7 +187,8 @@ bool UntypedAtomicItemNaive::equals ( Item_t item ) const
 Item_t UntypedAtomicItemNaive::getEBV() const
 {
   bool b = ! ( this->strValue_ == "" );
-  return zorba::getItemFactory()->createBoolean ( b );
+  return Store::getInstance().getItemFactory().
+         createBoolean ( b );
 }
 
 xqp_string UntypedAtomicItemNaive::getStringProperty() const
@@ -80,14 +214,16 @@ xqp_string StringItemNaive::getStringValue() const
   return this->strValue_;
 }
 
-TypeCode StringItemNaive::getType() const
+QNameItem_t StringItemNaive::getType() const
 {
-  return xs_string;
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "string");
 }
 
 Item_t StringItemNaive::getAtomizationValue() const
 {
-  return zorba::getItemFactory()->createString ( this->strValue_ );
+  return Store::getInstance().getItemFactory().
+         createString(this->strValue_);
 }
 
 uint32_t StringItemNaive::hash() const
@@ -103,7 +239,8 @@ bool StringItemNaive::equals ( Item_t item ) const
 Item_t StringItemNaive::getEBV() const
 {
   bool b = ! ( this->strValue_ == "" );
-  return zorba::getItemFactory()->createBoolean ( b );
+  return Store::getInstance().getItemFactory().
+         createBoolean ( b );
 }
 
 xqp_string StringItemNaive::getStringProperty() const
@@ -114,59 +251,6 @@ xqp_string StringItemNaive::getStringProperty() const
 xqp_string StringItemNaive::show() const
 {
   return "xs:string(" + this->strValue_ + ")";
-}
-
-
-/*******************************************************************************
-  class AnyUriItem
-********************************************************************************/
-AnyUriItemImpl::AnyUriItemImpl(const xqp_string& value) : theValue(value)
-{
-}
-  
-AnyUriItemImpl::~AnyUriItemImpl()
-{
-}
-  
-xqp_string AnyUriItemImpl::getStringValue() const
-{
-  return theValue;
-}
-
-TypeCode AnyUriItemImpl::getType() const
-{
-	return xs_anyURI;
-}
-
-Item_t AnyUriItemImpl::getAtomizationValue() const
-{
-  return zorba::getItemFactory()->createAnyURI(theValue).get_ptr();
-}
-
-uint32_t AnyUriItemImpl::hash() const
-{
-  return theValue.hash();
-}
-
-bool AnyUriItemImpl::equals ( Item_t item ) const
-{
-  return item->getStringValue() == theValue;
-}
-  
-Item_t AnyUriItemImpl::getEBV() const
-{
-  bool b = ! (theValue == "");
-  return zorba::getItemFactory()->createBoolean(b);
-}
-
-xqp_string AnyUriItemImpl::getStringProperty() const
-{
-  return theValue;
-} 
-
-xqp_string AnyUriItemImpl::show() const
-{
-  return "xs:anyUri(" + theValue + ")";
 }
 
 
@@ -182,91 +266,95 @@ long double DecimalItemNaive::getDecimalValue() const
   return this->value_;
 }
 
-  TypeCode DecimalItemNaive::getType() const
-	{
-		return xs_decimal;
-	}
+QNameItem_t DecimalItemNaive::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "decimal");
+}
 
-  Item_t DecimalItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createDecimal ( this->value_ );
-	}
+Item_t DecimalItemNaive::getAtomizationValue() const
+{
+  return Store::getInstance().getItemFactory().
+         createDecimal ( this->value_ );
+}
 
-  uint32_t DecimalItemNaive::hash() const
-	{
-    Assert(0);
-    return 0;
-	}
+uint32_t DecimalItemNaive::hash() const
+{
+  Assert(0);
+  return 0;
+}
 
-  bool DecimalItemNaive::equals ( Item_t item ) const
-	{
-		return item->getDecimalValue() == this->value_;
-	}
+bool DecimalItemNaive::equals ( Item_t item ) const
+{
+  return item->getDecimalValue() == this->value_;
+}
 
-  Item_t DecimalItemNaive::getEBV() const
-	{
-		bool b = ( this->value_ != 0 );
-		return zorba::getItemFactory()->createBoolean ( b );
-	}
+Item_t DecimalItemNaive::getEBV() const
+{
+  bool b = ( this->value_ != 0 );
+  return Store::getInstance().getItemFactory().createBoolean ( b );
+}
 
-  xqp_string DecimalItemNaive::getStringProperty() const
-	{
-		std::ostringstream tmp;
-		tmp << this->value_;
-		return xqp_string ( tmp.str() );
-	}
+xqp_string DecimalItemNaive::getStringProperty() const
+{
+  std::ostringstream tmp;
+  tmp << this->value_;
+  return xqp_string ( tmp.str() );
+}
 
-  xqp_string DecimalItemNaive::show() const
-	{
-		return "xs:decimal(" + this->getStringProperty() + ")";
-	}
-	/* end class DecimalItem */
+xqp_string DecimalItemNaive::show() const
+{
+  return "xs:decimal(" + this->getStringProperty() + ")";
+}
+/* end class DecimalItem */
 
-	/* start class IntItem */
-	IntItemNaive::IntItemNaive ( int value ) :value_ ( value ) {}
-	IntItemNaive::~IntItemNaive() {}
+/* start class IntItem */
+IntItemNaive::IntItemNaive ( int value ) :value_ ( value ) {}
 
-  int32_t IntItemNaive::getIntValue() const
-	{
-		return this->value_;
-	}
+IntItemNaive::~IntItemNaive() {}
 
-  long long IntItemNaive::getIntegerValue() const
-	{
-		return static_cast<long long> ( this->value_ );
-	}
+int32_t IntItemNaive::getIntValue() const
+{
+  return this->value_;
+}
 
-  long double IntItemNaive::getDecimalValue() const
-	{
-		return static_cast<long double> ( this->value_ );
-	}
+long long IntItemNaive::getIntegerValue() const
+{
+  return static_cast<long long> ( this->value_ );
+}
 
-  TypeCode IntItemNaive::getType() const
-	{
-		return xs_int;
-	}
+long double IntItemNaive::getDecimalValue() const
+{
+  return static_cast<long double> ( this->value_ );
+}
 
-  Item_t IntItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createInt ( this->value_ );
-	}
+QNameItem_t IntItemNaive::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "int");
+}
 
-  uint32_t IntItemNaive::hash() const
-	{
-    Assert(0);
-    return 0;
-	}
+Item_t IntItemNaive::getAtomizationValue() const
+{
+  return Store::getInstance().getItemFactory().createInt(this->value_ );
+}
 
-  bool IntItemNaive::equals ( Item_t item ) const
-	{
-		return item->getIntValue() == this->value_;
-	}
+uint32_t IntItemNaive::hash() const
+{
+  Assert(0);
+  return 0;
+}
 
-  Item_t IntItemNaive::getEBV() const
-	{
-		bool b = ( this->value_ != 0 );
-		return zorba::getItemFactory()->createBoolean ( b );
-	}
+bool IntItemNaive::equals ( Item_t item ) const
+{
+  return item->getIntValue() == this->value_;
+}
+  
+Item_t IntItemNaive::getEBV() const
+{
+  bool b = ( this->value_ != 0 );
+  return Store::getInstance().getItemFactory().createBoolean ( b );
+}
 
   xqp_string IntItemNaive::getStringProperty() const
 	{
@@ -290,37 +378,38 @@ long double DecimalItemNaive::getDecimalValue() const
 		return this->value_;
 	}
 
-  long double IntegerItemNaive::getDecimalValue() const
-	{
-		return static_cast<long double> ( this->value_ );
-	}
+long double IntegerItemNaive::getDecimalValue() const
+{
+  return static_cast<long double> ( this->value_ );
+}
 
-  TypeCode IntegerItemNaive::getType() const
-	{
-		return xs_integer;
-	}
+QNameItem_t IntegerItemNaive::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "integer");
+}
 
-  Item_t IntegerItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createInteger ( this->value_ );
-	}
+Item_t IntegerItemNaive::getAtomizationValue() const
+{
+  return Store::getInstance().getItemFactory().createInteger(this->value_ );
+}
 
-  uint32_t IntegerItemNaive::hash() const
-	{
-    Assert(0);
-    return 0;
-	}
+uint32_t IntegerItemNaive::hash() const
+{
+  Assert(0);
+  return 0;
+}
 
-  bool IntegerItemNaive::equals ( Item_t item ) const
-	{
-		return item->getIntegerValue() == this->value_;
-	}
+bool IntegerItemNaive::equals ( Item_t item ) const
+{
+  return item->getIntegerValue() == this->value_;
+}
 
-  Item_t IntegerItemNaive::getEBV() const
-	{
-		bool b = ( this->value_ != 0 );
-		return zorba::getItemFactory()->createBoolean ( b );
-	}
+Item_t IntegerItemNaive::getEBV() const
+{
+  bool b = ( this->value_ != 0 );
+  return Store::getInstance().getItemFactory().createBoolean ( b );
+}
 
   xqp_string IntegerItemNaive::getStringProperty() const
 	{
@@ -344,32 +433,33 @@ long double DecimalItemNaive::getDecimalValue() const
 		return this->value;
 	}
 
-  TypeCode DoubleItemNaive::getType() const
-	{
-		return xs_double;
-	}
+QNameItem_t DoubleItemNaive::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "double");
+}
 
-  Item_t DoubleItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createDouble ( this->value );
-	}
+Item_t DoubleItemNaive::getAtomizationValue() const
+{
+  return Store::getInstance().getItemFactory().createDouble(this->value );
+}
 
-  uint32_t DoubleItemNaive::hash() const
-	{
-    Assert(0);
-    return 0;
-	}
+uint32_t DoubleItemNaive::hash() const
+{
+  Assert(0);
+  return 0;
+}
 
-  bool DoubleItemNaive::equals ( Item_t item ) const
-	{
-		return item->getDoubleValue() == this->value;
-	}
+bool DoubleItemNaive::equals ( Item_t item ) const
+{
+  return item->getDoubleValue() == this->value;
+}
 
-  Item_t DoubleItemNaive::getEBV() const
-	{
-		bool b = ( this->value != 0 );
-		return zorba::getItemFactory()->createBoolean ( b );
-	}
+Item_t DoubleItemNaive::getEBV() const
+{
+  bool b = ( this->value != 0 );
+  return Store::getInstance().getItemFactory().createBoolean(b);
+}
 
   xqp_string DoubleItemNaive::getStringProperty() const
 	{
@@ -393,21 +483,22 @@ long double DecimalItemNaive::getDecimalValue() const
 		return this->value;
 	}
 
-  TypeCode FloatItemNaive::getType() const
-	{
-		return xs_double;
-	}
+QNameItem_t FloatItemNaive::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "float");
+}
 
-  Item_t FloatItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createFloat ( this->value );
-	}
+Item_t FloatItemNaive::getAtomizationValue() const
+{
+  return Store::getInstance().getItemFactory().createFloat(this->value);
+}
 
-  uint32_t FloatItemNaive::hash() const
-	{
-    Assert(0);
-    return 0;
-	}
+uint32_t FloatItemNaive::hash() const
+{
+  Assert(0);
+  return 0;
+}
 
   bool FloatItemNaive::equals ( Item_t item ) const
 	{
@@ -417,7 +508,7 @@ long double DecimalItemNaive::getDecimalValue() const
   Item_t FloatItemNaive::getEBV() const
 	{
 		bool b = ( this->value != 0 );
-		return zorba::getItemFactory()->createBoolean ( b );
+		return Store::getInstance().getItemFactory().createBoolean(b);
 	}
 
   xqp_string FloatItemNaive::getStringProperty() const
@@ -443,44 +534,45 @@ long double DecimalItemNaive::getDecimalValue() const
 		return this->value_;
 	}
 
-  TypeCode BooleanItemNaive::getType() const
-	{
-		return xs_boolean;
-	}
+QNameItem_t BooleanItemNaive::getType() const
+{
+  return Store::getInstance().getItemFactory().
+         createQName(StoreConsts::XS_URI, "xs", "boolean");
+}
 
-  Item_t BooleanItemNaive::getAtomizationValue() const
-	{
-		return zorba::getItemFactory()->createBoolean ( this->value_ );
-	}
+Item_t BooleanItemNaive::getAtomizationValue() const
+{
+  return Store::getInstance().getItemFactory().createBoolean(this->value_);
+}
 
-  uint32_t BooleanItemNaive::hash() const
-	{
-    Assert(0);
-    return 0;
-	}
+uint32_t BooleanItemNaive::hash() const
+{
+  Assert(0);
+  return 0;
+}
 
-  bool BooleanItemNaive::equals ( Item_t item ) const
-	{
-		return item->getBooleanValue() == this->value_;
-	}
+bool BooleanItemNaive::equals ( Item_t item ) const
+{
+  return item->getBooleanValue() == this->value_;
+}
 
-  Item_t BooleanItemNaive::getEBV() const
-	{
-		return this->getAtomizationValue();
-	}
+Item_t BooleanItemNaive::getEBV() const
+{
+  return this->getAtomizationValue();
+}
 
-  xqp_string BooleanItemNaive::getStringProperty() const
-	{
-		if ( this->value_ )
-			return "true";
-		else
-			return "false";
-	}
+xqp_string BooleanItemNaive::getStringProperty() const
+{
+  if ( this->value_ )
+    return "true";
+  else
+    return "false";
+}
 
-  xqp_string BooleanItemNaive::show() const
-	{
-		return "xs:boolean(" + this->getStringProperty() + ")";
-	}
-	/* end class BooleanItem */
+xqp_string BooleanItemNaive::show() const
+{
+  return "xs:boolean(" + this->getStringProperty() + ")";
+}
+/* end class BooleanItem */
 
 }/* namespace xqp */

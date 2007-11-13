@@ -192,7 +192,7 @@ ostream& var_expr::put( ostream& os) const
 		os << " name=";
 		get_varname()->put(os);
 	}
-	os << ", type=" << sequence_type::describe(type);
+	os << ", type="; // TODO(VRB) << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
 }
 
@@ -403,7 +403,8 @@ ostream& typeswitch_expr::put( ostream& os) const
 		clauseref_t cc_h = *it;
 		os << INDENT << "case: ";
 		if (cc_h->var_h!=NULL) cc_h->var_h->put(os) << " as ";
-		os << sequence_type::describe(cc_h->type) << " return ";
+		// TODO(VRB) os << sequence_type::describe(cc_h->type);
+        os << " return ";
 		//d Assert<null_pointer>(cc_h->case_expr_h!=NULL);
 		Assert(cc_h->case_expr_h!=NULL);
 		cc_h->case_expr_h->put(os) << endl;
@@ -574,7 +575,7 @@ void ft_contains_expr::accept(
 instanceof_expr::instanceof_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	sequence_type_t _type)
+	TypeSystem::xqtref_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
@@ -593,7 +594,7 @@ ostream& instanceof_expr::put( ostream& os) const
 	Assert(expr_h!=NULL);
 	expr_h->put(os) << endl;
 	os << "instance of\n";
-	os << sequence_type::describe(type);
+	// TODO(VRB) os << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
 }
 
@@ -609,7 +610,7 @@ void instanceof_expr::accept(
 treat_expr::treat_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	sequence_type_t _type)
+	TypeSystem::xqtref_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
@@ -628,7 +629,7 @@ ostream& treat_expr::put( ostream& os) const
 	Assert(expr_h!=NULL);
 	expr_h->put(os) << endl;
 	os << "treat as\n";
-	os << sequence_type::describe(type);
+	// TODO(VRB) os << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
 }
 
@@ -644,7 +645,7 @@ void treat_expr::accept(
 castable_expr::castable_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	sequence_type_t _type)
+	TypeSystem::xqtref_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
@@ -663,7 +664,7 @@ ostream& castable_expr::put( ostream& os) const
 	Assert(expr_h!=NULL);
 	expr_h->put(os) << endl;
 	os << "castable as\n";
-	os << sequence_type::describe(get_type());
+	// TODO(VRB) os << sequence_type::describe(get_type());
 	if (is_optional()) os << "?";
 	return os << OUTDENT << "]\n";
 }
@@ -680,7 +681,7 @@ void castable_expr::accept(
 cast_expr::cast_expr(
 	yy::location const& loc,
 	rchandle<expr> _expr_h,
-	sequence_type_t _type)
+	TypeSystem::xqtref_t _type)
 :
 	expr(loc),
 	expr_h(_expr_h),
@@ -699,7 +700,7 @@ ostream& cast_expr::put( ostream& os) const
 	Assert(expr_h!=NULL);
 	expr_h->put(os) << endl;
 	os << "cast as\n";
-	os << sequence_type::describe(type);
+	// TODO(VRB) os << sequence_type::describe(type);
 	if (is_optional()) os << "?";
 	return os << OUTDENT << "]\n";
 }
@@ -1061,30 +1062,30 @@ void match_expr::accept(expr_visitor& v) const
 }
 
 
-TypeCode match_expr::getNodeKind() const
+StoreConsts::NodeKind_t match_expr::getNodeKind() const
 {
   switch (theTestKind)
   {
   case match_name_test:
-    return elementNode;
+    return StoreConsts::elementNode;
   case match_doc_test:
-    return elementNode;
+    return StoreConsts::elementNode;
   case match_elem_test:
-    return elementNode;
+    return StoreConsts::elementNode;
   case match_attr_test:
-    return attributeNode;
+    return StoreConsts::attributeNode;
   case match_xs_elem_test:
-    return elementNode;
+    return StoreConsts::elementNode;
   case match_xs_attr_test:
-    return attributeNode;
+    return StoreConsts::attributeNode;
   case match_pi_test:
-    return processingInstructionNode;
+    return StoreConsts::piNode;
   case match_text_test:
-    return textNode;
+    return StoreConsts::textNode;
   case match_comment_test:
-    return commentNode;
+    return StoreConsts::commentNode;
   case match_anykind_test:
-    return anyNode;
+    return StoreConsts::anyNode;
   default:
   {
     ZORBA_ERROR_ALERT(
@@ -1095,7 +1096,7 @@ TypeCode match_expr::getNodeKind() const
          "Unknown node test kind");
   }
   }
-  return anyNode;
+  return StoreConsts::anyNode;
 }
 
 

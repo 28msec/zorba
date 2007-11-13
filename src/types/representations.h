@@ -54,7 +54,7 @@ namespace xqp
 	typedef unsigned char							xqp_unsignedByte;
 	typedef uint32_t									xqp_uint;
 	typedef unsigned long							xqp_ulong;
-	typedef unsigned short						xqp_ushort;
+	typedef unsigned short						xqp_unsignedShort;
 	typedef long long									xqp_nonPositiveInteger;
 	typedef unsigned long long				xqp_positiveInteger;
 	typedef long long									xqp_negativeInteger;

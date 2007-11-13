@@ -9,7 +9,6 @@
 //#include "errors/errors.h"
 #include "store/api/item.h"
 //#include "store/api/store.h"
-#include "types/typecodes.h"
 #include "util/rchandle.h"
 #include "error_api.h"
 
@@ -177,8 +176,6 @@ public:
 	static ZorbaFactory& getInstance();
 
 	static void shutdownZorbaEngine();
-
-  static ItemFactory& getItemFactory();
 
 	void InitThread(
         error_messages *em = NULL,

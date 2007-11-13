@@ -25,7 +25,6 @@
 
 #include "context/static_context.h"
 #include "util/zorba.h"
-#include "types/sequence_type.h"
 #include "util/file.h"
 #include "util/tracer.h"
 
@@ -75,10 +74,10 @@ bool op_concatenate::validate_args(
 	return true;
 }
 
-sequence_type_t op_concatenate::type_check(
+TypeSystem::xqtref_t op_concatenate::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -141,10 +140,10 @@ bool fn_index_of::validate_args(
 	return false;
 }
 
-sequence_type_t fn_index_of::type_check(
+TypeSystem::xqtref_t fn_index_of::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -166,10 +165,10 @@ bool fn_empty::validate_args(
 	return true;
 }
 
-sequence_type_t fn_empty::type_check(
+TypeSystem::xqtref_t fn_empty::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -191,10 +190,10 @@ bool fn_exists::validate_args(
 	return true;
 }
 
-sequence_type_t fn_exists::type_check(
+TypeSystem::xqtref_t fn_exists::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -218,10 +217,10 @@ bool fn_distinct_values::validate_args(
 	return true;
 }
 
-sequence_type_t fn_distinct_values::type_check(
+TypeSystem::xqtref_t fn_distinct_values::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -251,10 +250,10 @@ bool fn_reverse::validate_args(
 	return true;
 }
 
-sequence_type_t fn_reverse::type_check(
+TypeSystem::xqtref_t fn_reverse::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -276,10 +275,10 @@ bool fn_subsequence::validate_args(
 	return true;
 }
 
-sequence_type_t fn_subsequence::type_check(
+TypeSystem::xqtref_t fn_subsequence::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -368,10 +367,10 @@ bool fn_doc_func::validate_args(
 	return true;
 }
 
-sequence_type_t fn_doc_func::type_check(
+TypeSystem::xqtref_t fn_doc_func::type_check(
 	signature& sig) const
 {
-	return xs_anyType;
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 

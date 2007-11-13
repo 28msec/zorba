@@ -34,6 +34,10 @@ using namespace std;
 
 namespace xqp {
 
+  class xqpStringStore;
+  typedef rchandle<xqpStringStore> xqpStringStore_t;
+
+
   class xqpStringStore : public rcobject, public string
   {
   public:
@@ -65,27 +69,32 @@ namespace xqp {
 
     //constructor/destructor
     /**Construct an empty xqpString
-    */
+     */
     xqpString();
 
     /**Construct a xqpString as a copy of another xqpString
-    * @param src A source UTF-8 encoded string
-    */
+     * @param src A source UTF-8 encoded string
+     */
     xqpString(const xqpString &other) : theStrStore(other.theStrStore) {}
 
     /**Construct a xqpString as a wrapper of an existing xqpStringStore
-    * @param src A source UTF-8 encoded string
-    */
+     * @param src A source UTF-8 encoded string
+     */
     xqpString(xqpStringStore* other) : theStrStore(other) {}
 
-    /**Construct a xqpString given a std::string
-    * @param src A source std::string containin ASCII characters
+   /**Construct a xqpString as a wrapper of an existing xqpStringStore
+    * @param src A source UTF-8 encoded string
     */
+    xqpString(const xqpStringStore_t& other) : theStrStore(other.get_ptr()) {}
+
+    /**Construct a xqpString given a std::string
+     * @param src A source std::string containin ASCII characters
+     */
     xqpString(const std::string& src);
 
     /**Construct a xqpString as a copy of a C string.
-    * @param src %Source C string that is encoded as UTF-8
-    */
+     * @param src %Source C string that is encoded as UTF-8
+     */
     xqpString(const char* src);
 
     ~xqpString();

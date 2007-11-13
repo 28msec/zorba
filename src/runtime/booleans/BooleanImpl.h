@@ -7,7 +7,7 @@
 #define XQP_BOOLEAN_IMPL_H
 
 #include "context/common.h"
-#include "types/sequence_type.h"
+#include "types/typesystem.h"
 #include "runtime/base/iterator.h"
 
 namespace xqp

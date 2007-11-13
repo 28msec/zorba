@@ -1,19 +1,13 @@
 
-#include "util/zorba.h"
+#include "util/hashfun.h"
 #include "store/naive/qname_pool.h"
+#include "store/naive/atomic_items.h"
 #include "store/naive/simple_store.h"
 
 namespace xqp
 {
 
 const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  QNamePool                                                                  //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -428,96 +422,6 @@ void QNamePool::resizeHashTab()
 
     entry->theQNameSlot = qn;
   }
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  QNameItem                                                                  //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-QNameItemImpl::QNameItemImpl(
-    const xqpStringStore_t& ns,
-    const xqpStringStore_t& pre,
-    const xqpStringStore_t& ln)
-  :
-  theNamespace(ns),
-  thePrefix(pre),
-  theLocal(ln),
-  theNextFree(0),
-  thePrevFree(0)
-{
-}
-
-
-QNameItemImpl::QNameItemImpl(
-    const char* ns,
-    const char* pre,
-    const char* local)
-  :
-  theNamespace(new xqpStringStore(ns)),
-  thePrefix(new xqpStringStore(pre)),
-  theLocal(new xqpStringStore(local)),
-  theNextFree(0),
-  thePrevFree(0)
-{
-}
-
-
-void QNameItemImpl::free()
-{
-  reinterpret_cast<SimpleStore*>(&Store::getInstance())->getQNamePool().remove(this);
-}
-
-
-Item_t QNameItemImpl::getAtomizationValue( ) const
-{
-  return zorba::getItemFactory()->createQName(getNamespace(),
-                                              getPrefix(),
-                                              getLocalName()).get_ptr();
-}
-
-
-uint32_t QNameItemImpl::hash() const
-{
-  return hashfun::h32(*thePrefix,
-                      hashfun::h32(*theLocal,
-                                   hashfun::h32(*theNamespace)));
-}
-
-
-bool QNameItemImpl::equals(Item_t item) const
-{
-  return (this == item.get_ptr() ||
-          (theNamespace->byteEqual(item->getNamespace().getStore()) &&
-           theLocal->byteEqual(item->getLocalName().getStore())));
-}
-
-
-Item_t QNameItemImpl::getEBV( ) const
-{
-  ZorbaErrorAlerts::error_alert (
-        error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
-		    error_messages::RUNTIME_ERROR,
-		    NULL,
-		    false,
-		    "Effective Boolean Value is not defined for QName!");
-  return NULL;
-}
-
-
-xqp_string QNameItemImpl::getStringProperty( ) const
-{
-  return *thePrefix != "" ? *thePrefix + ":" + *theLocal : *theLocal;
-}
-
-
-xqp_string QNameItemImpl::show() const
-{
-  return "xs:qname(" + *theNamespace + "," + *thePrefix + "," + *theLocal + ")";
 }
 
 }

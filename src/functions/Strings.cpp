@@ -10,7 +10,7 @@
  */
 
 #include <iostream>
-
+#include "system/globalenv.h"
 #include "functions/Strings.h"
 #include "runtime/strings/StringsImpl.h"
 
@@ -38,11 +38,11 @@ fn_codepoints_to_string::operator()(
   return new CodepointsToStringIterator(loc, argv[0]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_codepoints_to_string::type_check(
   signature& sig) const
 {
-  return xs_integer;
+  return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
 }
 
 bool
@@ -74,11 +74,11 @@ fn_string_to_codepoints::operator()(
   return new StringToCodepointsIterator(loc, argv[0]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_string_to_codepoints::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -110,11 +110,11 @@ fn_string_compare::operator()(
   return new CompareStrIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_string_compare::type_check(
   signature& sig) const
 {
-  return xs_integer;
+  return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
 }
 
 bool
@@ -146,11 +146,11 @@ fn_codepoint_equal::operator()(
   return new CodepointEqualIterator(loc, argv[0], argv[1]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_codepoint_equal::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -190,11 +190,11 @@ fn_concat::validate_args(
   return true;
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_concat::type_check(
   signature& sig) const
 {
-  return xs_anyType;
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 /*end class fn_concat*/
 
@@ -219,11 +219,11 @@ fn_string_join::operator()(
   return new StringJoinIterator(loc, argv[0], argv[1]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_string_join::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -255,11 +255,11 @@ fn_substring::operator()(
   return new SubstringIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_substring::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -291,11 +291,11 @@ fn_string_length::operator()(
   return new StringLengthIterator(loc, argv[0]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_string_length::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -327,11 +327,11 @@ fn_normalize_space::operator()(
   return new NormalizeSpaceIterator(loc, argv[0]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_normalize_space::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -363,11 +363,11 @@ fn_normalize_unicode::operator()(
   return new NormalizeUnicodeIterator(loc, argv[0], argv[1]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_normalize_unicode::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -400,11 +400,11 @@ fn_upper_case::operator()(
   return new UpperCaseIterator(loc, argv[0]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_upper_case::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -437,11 +437,11 @@ fn_lower_case::operator()(
   return new LowerCaseIterator(loc, argv[0]);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_lower_case::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -474,11 +474,11 @@ fn_translate::operator()(
   return new TranslateIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_translate::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -511,11 +511,11 @@ fn_contains::operator()(
   return new ContainsIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_contains::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -548,11 +548,11 @@ fn_starts_with::operator()(
   return new StartsWithIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_starts_with::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -585,11 +585,11 @@ fn_ends_with::operator()(
   return new EndsWithIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_ends_with::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -622,11 +622,11 @@ fn_substring_before::operator()(
   return new SubstringBeforeIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_substring_before::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool
@@ -659,11 +659,11 @@ fn_substring_after::operator()(
   return new SubstringAfterIterator(loc, argv);
 }
 
-sequence_type_t
+TypeSystem::xqtref_t
 fn_substring_after::type_check(
   signature& sig) const
 {
-  return xs_string;
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
 }
 
 bool

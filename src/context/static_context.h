@@ -29,9 +29,9 @@
 #include "context.h"
 #include "context/context_impl.h"
 #include "errors/Error.h"
-#include "../types/sequence_type.h"
 #include "../store/api/item.h"
 #include "../store/api/store.h"
+#include "types/typesystem.h"
 
 #include "zorba_api.h"
 
@@ -144,11 +144,11 @@ public:
   std::string baseuri() const;
 	void set_baseuri(std::string);
 	
-	sequence_type_t get_function_type(const Item*) 
+    TypeSystem::xqtref_t get_function_type(const Item*) 
 		const THROW_XQP_EXCEPTION;
-	sequence_type_t get_document_type(const std::string&) 
+    TypeSystem::xqtref_t get_document_type(const std::string&) 
 	  const THROW_XQP_EXCEPTION;
-	sequence_type_t get_collection_type(const std::string&) 
+    TypeSystem::xqtref_t get_collection_type(const std::string&) 
 	  const THROW_XQP_EXCEPTION;
 	
 	ordering_mode_t ordering_mode() const;
