@@ -4,7 +4,10 @@
 #include <string>
 #include <libxml/xmlmemory.h>
 
+#include "store/api/store_consts.h"
+#include "store/naive/simple_store.h"
 #include "store/naive/simple_loader.h"
+#include "store/naive/simple_temp_seq.h"
 #include "store/naive/node_items.h"
 
 namespace xqp
@@ -34,21 +37,20 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
 
 ********************************************************************************/
-Node_t XmlLoader::loadXml(std::iostream& stream)
+NodeItem_t XmlLoader::loadXml(const std::string& xmlString)
 {
-  std::ostringstream docStr;
-  docStr << stream;
+  std::cout << xmlString << std::endl;
 
   int result = xmlSAXUserParseMemory(&theSaxHandler,
                                      this,
-                                     docStr.str().c_str(),
-                                     int(docStr.str().size()));
+                                     xmlString.c_str(),
+                                     int(xmlString.size()));
 
-  Node_t resultNode = theRootNode;
+  NodeItem_t resultNode = theRootNode;
   theRootNode = NULL;
   //thePath.clear();
 
-  if ( result != 0 )
+  if (result != 0)
   {
     printf("Failed to parse document.\n" );
     return NULL;
@@ -77,46 +79,92 @@ Node_t XmlLoader::loadXml(std::iostream& stream)
 ********************************************************************************/
 void XmlLoader::startElementNs(
     void * ctx, 
-    const xmlChar * localname, 
+    const xmlChar * localName, 
     const xmlChar * prefix, 
-    const xmlChar * URI, 
-    int nb_namespaces, 
+    const xmlChar * uri,
+    int numNamespaces, 
     const xmlChar ** namespaces, 
-    int nb_attributes, 
-    int nb_defaulted, 
+    int numAttributes, 
+    int numDefaulted, 
     const xmlChar ** attributes)
 {
-  XmlLoader &fsm = *( static_cast<XmlLoader *>( ctx ) );
-  printf( "startElementNs: name = '%s' prefix = '%s' uri = (%p)'%s'\n", localname, prefix, URI, URI );
+  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
-  for ( int indexNamespace = 0; indexNamespace < nb_namespaces; ++indexNamespace )
+  QNameItem_t qname;
+  QNameItem_t tname;
+  NodeItem_t elemNode;
+  std::vector<Item_t> attrNodes;
+  NamespaceBindings nsBindings;
+
+  printf("\nstartElementNs: name = '%s' prefix = '%s' uri = (%p)'%s'\n",
+         localName, prefix, uri, uri);
+
+  qname = factory.createQName(reinterpret_cast<const char*>(uri),
+                              reinterpret_cast<const char*>(prefix),
+                              reinterpret_cast<const char*>(localName));
+
+  tname = factory.createQName(StoreConsts::XS_URI, "xs", "anyType");
+
+  for (long i = 0; i < numNamespaces; ++i)
   {
-    const xmlChar *prefix = namespaces[indexNamespace*2];
-    const xmlChar *nsURI = namespaces[indexNamespace*2+1];
-    printf( "  namespace: name='%s' uri=(%p)'%s'\n", prefix, nsURI, nsURI );
+    const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
+    const char* uri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
+
+    xqpStringStore_t pooledUri;
+    store.getUriPool().insert(uri, pooledUri);
+
+    nsBindings.push_back(std::pair<xqp_string, xqp_string>(prefix, pooledUri));
+
+    printf("  namespace: name='%s' uri=(%p)'%s'\n", prefix, uri, uri);
   }
 
-  unsigned int index = 0;
-  for ( int indexAttribute = 0; 
-        indexAttribute < nb_attributes; 
-        ++indexAttribute, index += 5 )
+  ulong index = 0;
+  for (long i = 0; i < numAttributes; ++i, index += 5)
   {
-    const xmlChar *localname = attributes[index];
-    const xmlChar *prefix = attributes[index+1];
-    const xmlChar *nsURI = attributes[index+2];
-    const xmlChar *valueBegin = attributes[index+3];
-    const xmlChar *valueEnd = attributes[index+4];
+    const char* localName = reinterpret_cast<const char*>(attributes[index]);
+    const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
+    const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
+    const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
+    const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
-    std::string value( (const char *)valueBegin, (const char *)valueEnd );
+    QNameItem_t qname = factory.createQName(uri, prefix, localName);
+    QNameItem_t tname = factory.createQName(StoreConsts::XS_URI, "xs", "untypedAtomic");
+
+    xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
+    Item_t lexicalValue = factory.createString(*value);
+    Item_t typedValue = factory.createUntypedAtomic(*value);
+
+    NodeItem_t attrNode = factory.createAttributeNode(qname,
+                                                      tname,
+                                                      lexicalValue,
+                                                      typedValue);
+
+    attrNodes.push_back(attrNode.get_ptr());
 
     printf("  %sattribute: localname='%s', prefix='%s', uri=(%p)'%s', value='%s'\n",
-            indexAttribute >= (nb_attributes - nb_defaulted) ? "defaulted " : "",
-            localname,
+            i >= (numAttributes - numDefaulted) ? "defaulted " : "",
+            localName,
             prefix,
-            nsURI,
-            nsURI,
-            value.c_str() );
+            uri, uri,
+            value->c_str());
   }
+
+  TempSeq_t attrSeq(new SimpleTempSeq(attrNodes));
+
+  elemNode = factory.createElementNode(qname, tname, attrSeq, nsBindings);
+
+  for (long i = 0; i < numAttributes; ++i)
+  {
+    reinterpret_cast<NodeNaive*>(attrNodes[i].get_ptr())->setParent(elemNode);
+  }
+
+  if (loader.thePath.empty())
+    loader.theRootNode = elemNode;
+
+  loader.thePath.push(elemNode);
+  loader.thePath.push(NULL);
 }
 
   
@@ -133,10 +181,30 @@ void  XmlLoader::endElementNs(
     void * ctx, 
     const xmlChar * localname, 
     const xmlChar * prefix, 
-    const xmlChar * URI )
+    const xmlChar * URI)
 {
-  XmlLoader &fsm = *( static_cast<XmlLoader *>( ctx ) );
-  printf( "endElementNs: name = '%s' prefix = '%s' uri = '%s'\n", localname, prefix, URI );
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+
+  printf("\nendElementNs: name = '%s' prefix = '%s' uri = '%s'\n",
+          localname, prefix, URI );
+
+  std::vector<Item_t> childNodes;
+
+  NodeItem_t childNode = loader.thePath.top();
+
+  while (childNode != NULL)
+  {
+    childNodes.push_back(childNode.get_ptr());
+    loader.thePath.pop();
+    childNode = loader.thePath.top();
+  }
+  loader.thePath.pop();
+
+  TempSeq_t childSeq(new SimpleTempSeq(childNodes));
+
+  NodeNaive* elemNode = reinterpret_cast<NodeNaive*>(loader.thePath.top().get_ptr());
+
+  elemNode->setChildren(childSeq);
 }
 
 

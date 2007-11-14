@@ -29,7 +29,7 @@ private:
 public:
   SimpleTempSeq() { }
 
-//   SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
+  SimpleTempSeq(const std::vector<Item_t>& items) : theItems(items) {}
 
   SimpleTempSeq(Iterator_t iter, bool lazy = true);
 

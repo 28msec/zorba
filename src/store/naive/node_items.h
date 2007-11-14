@@ -11,6 +11,7 @@
 #include <vector>
 #include <string>
 
+#include "util/Assert.h"
 #include "store/api/item.h"
 
 namespace xqp
@@ -31,16 +32,18 @@ typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 
 /*******************************************************************************
-
+virtual void setChildren(const TempSeq_t& seq)
 ********************************************************************************/
 class NodeNaive : public NodeItem
 {
 public:
   NodeNaive() {}
 
-  NodeNaive(const Item_t& aParent) : NodeItem(aParent) {}
+  NodeNaive(const NodeItem_t& aParent) : NodeItem(aParent) {}
 
-  void setParent(Item* parent) { theParent = parent; }
+  void setParent(const NodeItem_t& parent) { theParent = parent.get_ptr(); }
+
+  virtual void setChildren(const TempSeq_t& seq) { Assert(0); }
 
   virtual NsBindingsContext_t getNsBindingsContext() const { return NULL; }
 };
@@ -71,6 +74,7 @@ class DocumentNodeNaive : public NodeNaive
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   virtual xqp_string getBaseURI() const;
   virtual Iterator_t getChildren() const;
+  virtual void setChildren(const TempSeq_t& seq);
   virtual xqp_string getDocumentURI() const;
   virtual Iterator_t getTypedValue() const;
 
@@ -94,16 +98,11 @@ class ElementNodeNaive : public NodeNaive
   NsBindingsContext_t  theNsBindings;
 
  public:
-  ElementNodeNaive (
-        const Item_t& parent,
+  ElementNodeNaive(
         const QNameItem_t& name,
         const QNameItem_t& type,
-        TempSeq_t& seqChildren,
         TempSeq_t& seqAttributes,
-        TempSeq_t& seqNsUris,
-        const NamespaceBindings& nsBindings,
-        bool copy,
-        bool newTypes);
+        const NamespaceBindings& nsBindings);
 
   ElementNodeNaive(
 			  const QNameItem_t& name,
@@ -123,6 +122,7 @@ class ElementNodeNaive : public NodeNaive
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   virtual Iterator_t getAttributes() const;
   virtual Iterator_t getChildren() const;
+  virtual void setChildren(const TempSeq_t& seq);
   virtual NamespaceBindings getNamespaceBindings() const;
   virtual bool getNilled() const;
   virtual QNameItem_t getNodeName() const;
@@ -165,7 +165,7 @@ class AttributeNodeNaive : public NodeNaive
         bool isIdrefs);
 			
   AttributeNodeNaive(
-			  const Item_t& parent,
+			  const NodeItem_t& parent,
         const QNameItem_t& name,
         const QNameItem_t& type,
         const Item_t& lexicalValue,
@@ -199,8 +199,17 @@ class PiNodeNaive : public NodeNaive
   xqp_string baseUri;
 
  public:
-  PiNodeNaive ( const Item_t& parent, xqp_string& target, xqp_string& content, xqp_string& baseUri );
-  PiNodeNaive ( xqp_string& target, xqp_string& content, xqp_string& baseUri );
+  PiNodeNaive(
+        const NodeItem_t& parent,
+        xqp_string& target,
+        xqp_string& content,
+        xqp_string& baseUri);
+
+  PiNodeNaive(
+        xqp_string& target,
+        xqp_string& content,
+        xqp_string& baseUri);
+
   virtual ~PiNodeNaive();
 
   virtual Item_t getAtomizationValue() const;
@@ -223,7 +232,7 @@ class CommentNodeNaive : public NodeNaive
   xqp_string content;
 
  public:
-  CommentNodeNaive(const Item_t& parent, xqp_string& content);
+  CommentNodeNaive(const NodeItem_t& parent, xqp_string& content);
   CommentNodeNaive(const xqp_string& content);
   virtual ~CommentNodeNaive();
 
@@ -246,7 +255,7 @@ class TextNodeNaive : public NodeNaive
   xqp_string content;
 
  public:
-  TextNodeNaive(const Item_t& parent, xqp_string& content);
+  TextNodeNaive(const NodeItem_t& parent, xqp_string& content);
   TextNodeNaive(const xqp_string& content);
   virtual ~TextNodeNaive();
   
@@ -297,23 +306,16 @@ class NsBindingsContext : public rcobject
   NsBindingsContext_t  theParentContext;
 
 public:
-  NsBindingsContext(
-        const NamespaceBindings& bindings,
-        const NsBindingsContext_t& parent)
+  NsBindingsContext(const NamespaceBindings& bindings)
     :
-    theBindings(bindings),
-    theParentContext(parent)
+    theBindings(bindings)
   {
   }
 
-  const NamespaceBindings& getBindings() const  { return theBindings; }
+  const NamespaceBindings& getBindings() const        { return theBindings; }
 
-  const NsBindingsContext_t& getParentContext() const { return theParentContext; } 
-
-  void setParentContext(const NsBindingsContext_t& parent)
-  {
-    theParentContext = parent; 
-  }
+  void setParentContext(const NsBindingsContext_t& p) { theParentContext = p; }
+  NsBindingsContext_t getParentContext() const        { return theParentContext; } 
 };
 
 } /* namespace xqp */

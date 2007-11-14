@@ -49,7 +49,7 @@ namespace xqp
 
 Iterator_t AtomicItem::getTypedValue() const
 {
-  PlanIter_t planIter = new SingletonIterator ( zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue() );
+  PlanIter_t planIter = new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
   return new PlanIterWrapper ( planIter );
 }
 /* end class AtomicItem */
@@ -58,7 +58,7 @@ Iterator_t AtomicItem::getTypedValue() const
 /*******************************************************************************
 
 ********************************************************************************/
-NodeItem::NodeItem(const Item_t& aParent) : theParent(&*aParent)
+NodeItem::NodeItem(const NodeItem_t& aParent) : theParent(&*aParent)
 {
 }
 

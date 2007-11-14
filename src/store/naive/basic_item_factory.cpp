@@ -33,12 +33,6 @@ BasicItemFactory::~BasicItemFactory()
 }
 
 
-Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
-{
-  return new UntypedAtomicItemNaive(value);
-}
-
-
 QNameItem_t BasicItemFactory::createQName(
     const xqpStringStore& ns,
     const xqpStringStore& pre,
@@ -53,6 +47,11 @@ QNameItem_t BasicItemFactory::createQName(
     const char* pre,
     const char* ln)
 {
+  if (ns == NULL) ns = "";
+  if (pre == NULL) pre = "";
+
+  Assert(ln != NULL && *ln != '\0');
+
   return theQNamePool->insert(ns, pre, ln);
 }
 
@@ -72,22 +71,34 @@ AnyUriItem_t BasicItemFactory::createAnyURI(const char* value)
 }
 
 
+Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore& value)
+{
+  return new UntypedAtomicItemNaive(value);
+}
+
+
+Item_t BasicItemFactory::createString(const xqpStringStore& value)
+{
+  return new StringItemNaive(value);
+}
+
+
 Item_t BasicItemFactory::createBase64Binary(xqp_base64Binary value)
 {
   return Item_t ( NULL );
 }
 
-Item_t BasicItemFactory::createBoolean ( bool value )
+Item_t BasicItemFactory::createBoolean(bool value)
 {
-  return new BooleanItemNaive ( value );
+  return new BooleanItemNaive(value);
 }
 
-Item_t BasicItemFactory::createDecimal ( long double value )
+Item_t BasicItemFactory::createDecimal(long double value)
 {
-  return new DecimalItemNaive ( value );
+  return new DecimalItemNaive(value);
 }
 
-Item_t BasicItemFactory::createInteger ( long long value )
+Item_t BasicItemFactory::createInteger(long long value)
 {
   return new IntegerItemNaive ( value );
 }
@@ -203,10 +214,6 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Ite
 
 	Item_t BasicItemFactory::createPositiveInteger ( xqp_positiveInteger value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createString ( const xqp_string& value )
-	{
-    return new StringItemNaive ( value );
-	}
 
 	Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 
@@ -238,7 +245,18 @@ Item_t BasicItemFactory::createDocumentNode(
 }
 
 
-Item_t BasicItemFactory::createElementNode(
+NodeItem_t BasicItemFactory::createElementNode(
+    const QNameItem_t& name,
+    const QNameItem_t& type,
+    TempSeq_t& attributes,
+    const NamespaceBindings& nsBindings,
+    bool createId)
+{ 
+  return new ElementNodeNaive(name, type, attributes, nsBindings);
+}
+
+
+NodeItem_t BasicItemFactory::createElementNode(
     const QNameItem_t& name,
     const QNameItem_t& type,
     TempSeq_t& children,
@@ -249,32 +267,30 @@ Item_t BasicItemFactory::createElementNode(
     bool newTypes,
     bool createId)
 { 
-  Item_t item = new ElementNodeNaive(name,
-                                     type,
-                                     children,
-                                     attributes,
-                                     nsUris,
-                                     nsBindings,
-                                     copy,
-                                     newTypes); 
-  return item;
+  return new ElementNodeNaive(name,
+                              type,
+                              children,
+                              attributes,
+                              nsUris,
+                              nsBindings,
+                              copy,
+                              newTypes); 
 }
 
 
-Item_t BasicItemFactory::createAttributeNode(
+NodeItem_t BasicItemFactory::createAttributeNode(
     const QNameItem_t& name,
     const QNameItem_t& type,
     const Item_t& lexicalValue,
     const Item_t& typedValue,
     bool createId ) 
 { 
-  Item_t item = new AttributeNodeNaive(name,
-                                       type,
-                                       lexicalValue,
-                                       typedValue,
-                                       false,
-                                       false);
-  return item;
+  return new AttributeNodeNaive(name,
+                                type,
+                                lexicalValue,
+                                typedValue,
+                                false,
+                                false);
 }
 
 

@@ -16,16 +16,16 @@ template <class Object> class rchandle;
 class Item;
 class NodeItem;
 typedef rchandle<Item> Item_t;
-typedef rchandle<class NodeItem> Node_t;
+typedef rchandle<class NodeItem> NodeItem_t;
 
 
 class XmlLoader
 {
 protected:
-  xmlSAXHandler       theSaxHandler;
-
-  Node_t              theRootNode;
-  std::stack<Node_t>  thePath;
+  xmlSAXHandler           theSaxHandler;
+ 
+  NodeItem_t              theRootNode;
+  std::stack<NodeItem_t>  thePath;
 
 public:
   static void startElementNs(
@@ -54,7 +54,9 @@ public:
 
   ~XmlLoader();
 
-  Node_t loadXml(std::iostream& stream);
+  NodeItem_t getRootNode() const { return theRootNode; }
+  
+  NodeItem_t loadXml(const std::string& xmlString);
 };
 
 } /* namespace xqp */

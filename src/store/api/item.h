@@ -29,10 +29,11 @@ template <class Object> class rchandle;
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class QNameItem> QNameItem_t;
 typedef rchandle<class AnyUriItem> AnyUriItem_t;
+typedef rchandle<class NodeItem> NodeItem_t;
 
 typedef rchandle<class Iterator> Iterator_t;
 
-typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
+typedef std::vector<std::pair<xqp_string, xqp_string> > NamespaceBindings;
 
 typedef StoreConsts::NodeKind_t NodeKind_t;
 
@@ -566,10 +567,10 @@ class NodeItem : public Item
 {
 protected:
   // Pointer to avoid cyclic smart pointers
-  Item* theParent;
+  NodeItem* theParent;
 
 public:
-  explicit NodeItem(const Item_t& aParent);
+  explicit NodeItem(const NodeItem_t& aParent);
   NodeItem();
   virtual ~NodeItem();
 

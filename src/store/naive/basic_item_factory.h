@@ -31,8 +31,6 @@ public:
 
   virtual ~BasicItemFactory();
 
-  virtual Item_t createUntypedAtomic(const xqp_string& value);
-
   virtual QNameItem_t createQName(
         const xqpStringStore& ns,
         const xqpStringStore& pre,
@@ -46,7 +44,11 @@ public:
   virtual AnyUriItem_t createAnyURI(const xqpStringStore& value);
 
   virtual AnyUriItem_t createAnyURI(const char* value);
-  
+
+  virtual Item_t createUntypedAtomic(const xqpStringStore& value);
+
+  virtual Item_t createString(const xqpStringStore& value);
+
   virtual Item_t createBase64Binary(xqp_base64Binary value);
 
   virtual Item_t createBoolean(bool value);
@@ -129,25 +131,23 @@ public:
 
   virtual Item_t createNegativeInteger ( xqp_negativeInteger value );
 
-  virtual Item_t createNonNegativeInteger ( xqp_nonNegativeInteger value );
+  virtual Item_t createNonNegativeInteger(xqp_nonNegativeInteger value );
 
-  virtual Item_t createNonPositiveInteger ( xqp_nonPositiveInteger value );
+  virtual Item_t createNonPositiveInteger(xqp_nonPositiveInteger value );
 
-  virtual Item_t createNormalizedString ( const xqp_string& value );
+  virtual Item_t createNormalizedString(const xqp_string& value );
 
-  virtual Item_t createPositiveInteger ( xqp_positiveInteger value );
+  virtual Item_t createPositiveInteger( xqp_positiveInteger value );
 
-  virtual Item_t createString ( const xqp_string& value );
+  virtual Item_t createTime(const xqp_string& value );
 
-  virtual Item_t createTime ( const xqp_string& value );
+  virtual Item_t createTime(short hour, short minute, short second );
 
-  virtual Item_t createTime ( short hour, short minute, short second );
+  virtual Item_t createTime(short hour, short minute, short second, short timeZone);
 
-  virtual Item_t createTime ( short hour, short minute, short second, short timeZone );
+  virtual Item_t createToken(const xqp_string& value);
 
-  virtual Item_t createToken ( const xqp_string& value );
-
-  virtual Item_t createUnsignedByte ( xqp_unsignedByte value );
+  virtual Item_t createUnsignedByte(xqp_unsignedByte value);
 
   virtual Item_t createUnsignedInt(xqp_uint value);
 
@@ -155,13 +155,20 @@ public:
 
   virtual Item_t createUnsignedShort(xqp_unsignedShort value);
 
-  virtual Item_t createDocumentNode (
+  virtual Item_t createDocumentNode(
         xqp_string baseURI,
         xqp_string docURI,
         Iterator_t& children,
         bool createId = false);
 
-  virtual Item_t createElementNode (
+  virtual NodeItem_t createElementNode(
+        const QNameItem_t& name,
+        const QNameItem_t& type,
+        TempSeq_t& attributes,
+        const NamespaceBindings& nsBindings,
+        bool createId = false);
+
+  virtual NodeItem_t createElementNode(
         const QNameItem_t& name,
         const QNameItem_t& type,
         TempSeq_t& children,
@@ -172,7 +179,7 @@ public:
         bool newTypes,
         bool createId = false);
 
-  virtual Item_t createAttributeNode (
+  virtual NodeItem_t createAttributeNode (
         const QNameItem_t& name,
         const QNameItem_t& type,
         const Item_t& lexicalValue,

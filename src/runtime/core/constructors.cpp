@@ -73,7 +73,7 @@ ElementIterator::nextImpl(PlanState& planState)
                seqNamespaces,
                theNsBindings,
 		           false,
-		           false);
+		           false).get_ptr();
 
   STACK_PUSH2(item, state);
 		
@@ -301,7 +301,7 @@ AttributeIterator::nextImpl(PlanState& planState)
     }
 
     itemLexical = zorba::getItemFactory()->
-                  createUntypedAtomic ( lexicalString );
+                  createUntypedAtomic(lexicalString.getStore());
     if ( concatenation )
 		{
       itemTyped = itemLexical;
@@ -321,8 +321,7 @@ AttributeIterator::nextImpl(PlanState& planState)
 		           theQName,
 		           GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
 		           itemLexical,
-		           itemTyped
-		       );
+		           itemTyped).get_ptr();
 
   STACK_PUSH2(item, state);
   STACK_END2();

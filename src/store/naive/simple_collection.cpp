@@ -86,7 +86,11 @@ void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
   XmlLoader& loader = reinterpret_cast<SimpleStore*>(&Store::getInstance())->
                       getXmlLoader();
 
-  Node_t root = loader.loadXml(stream);
+  std::string xmlString;
+
+  stream >> xmlString;
+
+  Node_t root = loader.loadXml(xmlString);
 
   if (position < 0)
   {

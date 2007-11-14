@@ -25,6 +25,7 @@ template <class Object> class rchandle;
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class QNameItem> QNameItem_t;
 typedef rchandle<class AnyUriItem> AnyUriItem_t;
+typedef rchandle<class NodeItem> NodeItem_t;
 
 typedef rchandle<class Iterator> Iterator_t;
 typedef rchandle<class TempSeq> TempSeq_t;
@@ -41,7 +42,7 @@ public:
   /**
    * @param value string value of the untyped atomic
    */
-  virtual Item_t createUntypedAtomic(const xqp_string& value) = 0;
+  virtual Item_t createUntypedAtomic(const xqpStringStore& value) = 0;
 			
   /**
    * @param namespace namespace of the qname
@@ -65,7 +66,14 @@ public:
   virtual AnyUriItem_t createAnyURI(const xqpStringStore& value) = 0;
 
   virtual AnyUriItem_t createAnyURI(const char* value) = 0;
-  
+
+
+  /**
+   * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
+   * @param value string representation of the value
+   */
+  virtual Item_t createString(const xqpStringStore& value) = 0;
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
    * @param value)?
@@ -358,12 +366,6 @@ public:
   virtual Item_t createPositiveInteger ( xqp_positiveInteger value ) = 0;
 
   /**
-   * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
-   * @param value string representation of the value
-   */
-  virtual Item_t createString ( const xqp_string& value ) = 0;
-
-  /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
    * @param value string representation of the value
    */
@@ -438,7 +440,7 @@ public:
    * @param newTypes Have the children to be checked agains the type of the parent?
    * @param createId Does the created item need an ID (default == false)?
    */
-  virtual Item_t createElementNode (
+  virtual NodeItem_t createElementNode (
 			    const QNameItem_t& name,
 			    const QNameItem_t& type,
 			    TempSeq_t& seqChildren,
@@ -459,7 +461,7 @@ public:
    *
    * Implementations might only store the typed value.
    */
-  virtual Item_t createAttributeNode (
+  virtual NodeItem_t createAttributeNode (
 			    const QNameItem_t& name,
 			    const QNameItem_t& type,
 			    const Item_t& lexicalValue,

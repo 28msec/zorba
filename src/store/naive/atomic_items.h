@@ -82,18 +82,18 @@ public:
 
 
 /*******************************************************************************
-  class AnyUriItem
+  class UntypedAtomicItem
 ********************************************************************************/
 class UntypedAtomicItemNaive : public UntypedAtomicItem
 {
 private:
-  xqp_string strValue_;
+  xqpStringStore_t theValue;
 
 public:
-  UntypedAtomicItemNaive(xqp_string value);
+  UntypedAtomicItemNaive(const xqpStringStore& value);
   virtual ~UntypedAtomicItemNaive();
-  virtual xqp_string getStringValue() const;
 
+  virtual xqp_string getStringValue() const;
   virtual QNameItem_t getType( ) const;
   virtual Item_t getAtomizationValue( ) const;
   virtual uint32_t hash() const;
@@ -104,23 +104,26 @@ public:
 };
 
 
-  class StringItemNaive : public StringItem
-	{
-  protected:
-    xqp_string strValue_;
-  public:
-    StringItemNaive(const xqp_string& value);
-    virtual ~StringItemNaive();
-
-    virtual xqp_string getStringValue() const;
-    virtual QNameItem_t getType( ) const;
-    virtual Item_t getAtomizationValue( ) const;
-    virtual uint32_t hash() const;
-    virtual bool equals ( Item_t ) const;
-    virtual Item_t getEBV( ) const;
-    virtual xqp_string getStringProperty( ) const;
-    virtual xqp_string show() const;
-	}; /* class StringItem */
+/*******************************************************************************
+  class StringItem
+********************************************************************************/
+class StringItemNaive : public StringItem
+{
+protected:
+  xqpStringStore_t theValue;
+public:
+  StringItemNaive(const xqpStringStore& value);
+  virtual ~StringItemNaive();
+  
+  virtual xqp_string getStringValue() const;
+  virtual QNameItem_t getType( ) const;
+  virtual Item_t getAtomizationValue( ) const;
+  virtual uint32_t hash() const;
+  virtual bool equals ( Item_t ) const;
+  virtual Item_t getEBV( ) const;
+  virtual xqp_string getStringProperty( ) const;
+  virtual xqp_string show() const;
+};
 
 
 

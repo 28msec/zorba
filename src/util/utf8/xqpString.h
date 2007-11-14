@@ -34,30 +34,31 @@ using namespace std;
 
 namespace xqp {
 
-  class xqpStringStore;
-  typedef rchandle<xqpStringStore> xqpStringStore_t;
+class xqpStringStore;
+typedef rchandle<xqpStringStore> xqpStringStore_t;
 
 
-  class xqpStringStore : public rcobject, public string
-  {
-  public:
-    xqpStringStore(const xqpStringStore &other) : rcobject(other), string(other) {}
-    xqpStringStore (const std::string& other) : string(other) {}
+class xqpStringStore : public rcobject, public string
+{
+public:
+  xqpStringStore(const xqpStringStore &other) : rcobject(other), string(other) {}
+  xqpStringStore(const std::string& other) : string(other) {}
+  xqpStringStore(const char* start, const char* end) : string(start, end) {}
 
-    std::string::size_type bytes() const { return size(); }
+  std::string::size_type bytes() const { return size(); }
 
-    /**
-     * djb2 Hash function
-     */
-    uint32_t hash() const;
+  /**
+   * djb2 Hash function
+   */
+  uint32_t hash() const;
 
-    static uint32_t hash(const char* str);
+  static uint32_t hash(const char* str);
 
-    bool byteEqual(const xqpStringStore& src) const;
-    bool byteEqual(const char* src, uint32_t srcLen) const;
+  bool byteEqual(const xqpStringStore& src) const;
+  bool byteEqual(const char* src, uint32_t srcLen) const;
 
-    bool hashEqual(const xqpStringStore& src) const;
-  };
+  bool hashEqual(const xqpStringStore& src) const;
+};
 
   class xqpString
   {
