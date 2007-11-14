@@ -119,7 +119,7 @@ public:
   virtual QNameItem_t getType( ) const;
   virtual Item_t getAtomizationValue( ) const;
   virtual uint32_t hash() const;
-  virtual bool equals ( Item_t ) const;
+  virtual bool equals(Item_t) const;
   virtual Item_t getEBV( ) const;
   virtual xqp_string getStringProperty( ) const;
   virtual xqp_string show() const;

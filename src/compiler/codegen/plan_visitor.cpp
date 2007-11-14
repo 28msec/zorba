@@ -772,7 +772,7 @@ void plan_visitor::end_visit(const literal_expr& v)
   case literal_expr::lit_string: {
     PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
-											zorba::getItemFactory()->createString(v.get_sval()));
+											zorba::getItemFactory()->createString(v.get_sval().getStore()));
     itstack.push(it);
     break;
   }

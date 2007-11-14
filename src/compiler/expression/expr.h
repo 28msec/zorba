@@ -1086,7 +1086,7 @@ public:
 public:
 	enum literal_type_t get_type() const { return type; }
 	//uint32_t get_sref() const { return sref; }
-	std::string get_sval() const { return sval; }
+	xqpString get_sval() const { return sval; }
 	int get_ival() const { return ival; }
 	decimal get_decval() const { return decval; }
 	double get_dval() const { return dval; }
