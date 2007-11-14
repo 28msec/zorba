@@ -22,6 +22,24 @@ template <class Object> class rchandle;
 
 typedef rchandle<class PlanIterator> PlanIter_t;
 
+class fo_expr;
+
+class function_typechecker {
+    public:
+        function_typechecker() {}
+        virtual ~function_typechecker() {}
+
+        virtual TypeSystem::xqtref_t return_type(const fo_expr *fo) = 0;
+        virtual TypeSystem::xqtref_t type_check(const fo_expr *fo) = 0;
+};
+
+class function_codegenerator {
+    public:
+        function_codegenerator() {}
+        virtual ~function_codegenerator() {}
+        virtual PlanIter_t codegen(const fo_expr *fo) = 0;
+};
+
 class function : public rcobject
 {
 protected:
