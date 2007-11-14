@@ -1653,10 +1653,7 @@ public:
 	OrderByClause(
 		const yy::location&,
 		rchandle<OrderSpecList>,
-		bool stable_b);
-	OrderByClause(
-		const yy::location&,
-		rchandle<OrderSpecList>);
+		bool stable_b = false);
 	~OrderByClause();
 
 public:
@@ -1689,6 +1686,7 @@ public:
 public:
 	void push_back(rchandle<OrderSpec> spec_h) { spec_hv.push_back(spec_h); }
 	rchandle<OrderSpec> operator[](int i) const { return spec_hv[i]; }
+  size_t size () { return spec_hv.size (); }
 
 public:
 	std::ostream& put(std::ostream&) const;

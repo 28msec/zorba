@@ -624,7 +624,29 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
 
   flwor_expr *flwor = new flwor_expr (v.get_location ());
   flwor->set_retval (pop_nodestack ());
-
+  OrderByClause *orderby = &*v.get_orderby ();
+  if (orderby) {
+    flwor->set_order_stable (orderby->get_stable_bit ());
+    OrderSpecList *order_list = &*orderby->get_spec_list ();
+    int n = order_list->size ();
+    for (i = 0; i < n; i++) {
+      OrderSpec *spec = &*((*order_list) [i]);
+      OrderModifier *mod = &*spec->get_modifier ();
+      dir_spec_t dir_spec = dir_descending;
+      if (mod && mod->get_dir_spec () != NULL)
+        dir_spec = mod->get_dir_spec ()->get_dir_spec ();
+      static_context::order_empty_mode_t empty_spec = sctx_p->order_empty_mode ();
+      if (mod && mod->get_empty_spec () != NULL)
+        empty_spec = mod->get_empty_spec ()->get_empty_order_spec ();
+      string col = sctx_p->default_collation ();
+      if (mod && mod->get_collation_spec () != NULL)
+        col = mod->get_collation_spec ()->get_uri ();
+      rchandle<order_modifier> emod (new order_modifier (dir_spec, empty_spec, col));
+      flwor->add (flwor_expr::orderspec_t (pop_nodestack (), emod));
+    }
+  }
+  if (v.get_where () != NULL)
+    flwor->set_where (pop_nodestack ());
   ForLetClauseList *clauses = v.get_forlet_list ().get_ptr ();
   vector <forlet_clause *> eclauses;
 
@@ -805,7 +827,6 @@ void normalize_visitor::end_visit(const OrderByClause& v, void *visit_state)
 void *normalize_visitor::begin_visit(const OrderSpecList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
 	return no_state;
 }
 

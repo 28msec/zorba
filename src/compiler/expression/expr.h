@@ -257,13 +257,8 @@ public:
 	std::string collation;
 
 public:
-	order_modifier()
-	: dir(dir_descending),
-		empty_mode(static_context::empty_least),
-		collation("")
-	{
-	}
-
+  order_modifier (dir_spec_t _dir, static_context::order_empty_mode_t _empty_mode, std::string _collation)
+    : dir (_dir), empty_mode (_empty_mode), collation (_collation) {}
 	~order_modifier() {}
 
 };
@@ -346,6 +341,7 @@ public:	// types
 protected:	// state
 	std::vector<forletref_t> clause_v;
 	std::vector<orderspec_t> orderspec_v;
+  bool order_stable;  // per clause, not per spec!
 	expr_t where_h;
 	expr_t retval_h;
 
@@ -380,6 +376,13 @@ public:	// accessors
 		{ return orderspec_v.begin(); }
 	std::vector<orderspec_t>::const_iterator orderspec_end() const
 		{ return orderspec_v.end(); }
+	std::vector<orderspec_t>::const_reverse_iterator orderspec_rbegin() const
+		{ return orderspec_v.rbegin(); }
+	std::vector<orderspec_t>::const_reverse_iterator orderspec_rend() const
+		{ return orderspec_v.rend(); }
+
+  bool get_order_stable () const { return order_stable; }
+  void set_order_stable (bool x) { order_stable = x; }
 
 	expr_t get_where() const { return where_h; }
 	void set_where(expr_t e_h) { where_h = e_h; }

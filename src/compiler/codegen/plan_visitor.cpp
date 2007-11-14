@@ -119,13 +119,16 @@ void plan_visitor::end_visit(const var_expr& v)
   }
 }
 
-
 bool plan_visitor::begin_visit(const order_modifier& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
+void plan_visitor::end_visit(const order_modifier& v)
+{
+  cout << TRACE << endl;
+}
 
 bool plan_visitor::begin_visit(const flwor_expr& v)
 {
@@ -148,6 +151,20 @@ void plan_visitor::end_visit(const flwor_expr& v)
 {
   cout << TRACE << endl;
   PlanIter_t ret = pop_itstack ();
+
+  PlanIter_t where = NULL;
+  if (v.get_where () != NULL)
+    where = pop_itstack ();
+
+  vector<FLWORIterator::OrderSpec> orderSpecs;
+  for (vector<flwor_expr::orderspec_t>::const_iterator i = v.orderspec_begin ();
+       i != v.orderspec_end ();
+       i++) {
+    flwor_expr::orderspec_t spec = *i;
+    orderSpecs.push_back (FLWORIterator::OrderSpec (pop_itstack (), spec.second->empty_mode, spec.second->dir == dir_descending));
+  }
+  FLWORIterator::OrderByClause *orderby = new FLWORIterator::OrderByClause (orderSpecs, v.get_order_stable ());
+
   vector<FLWORIterator::ForLetClause> clauses;
   stack<PlanIter_t> inputs;
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
@@ -168,9 +185,8 @@ void plan_visitor::end_visit(const flwor_expr& v)
       clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input, true));
     }
   }
-  PlanIter_t where = NULL;
   FLWORIterator *iter =
-    new FLWORIterator (v.get_loc (), clauses, where, (FLWORIterator::OrderByClause *) NULL, ret, false);
+    new FLWORIterator (v.get_loc (), clauses, where, orderby, ret, false);
   itstack.push (iter);
 }
 
@@ -702,11 +718,6 @@ cout << TRACE << endl;
 /*..........................................
  :  end visit                              :
  :.........................................*/
-void plan_visitor::end_visit(const order_modifier& v)
-{
-  cout << TRACE << endl;
-}
-
 
 void plan_visitor::end_visit(const ft_select_expr& v)
 {

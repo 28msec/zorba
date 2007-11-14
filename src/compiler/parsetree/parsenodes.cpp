@@ -1264,10 +1264,10 @@ void FLWORExpr::accept(parsenode_visitor& v) const
 	BEGIN_VISITOR ();
 	forlet_list_h->accept(v);
 	if (where_h != NULL) {
-		where_h->accept(v);
+    where_h->accept(v);
 	}
 	if (orderby_h != NULL) {
-		orderby_h->accept(v);
+	  orderby_h->accept(v);
 	}
 	return_val_h->accept(v);
 	END_VISITOR ();
@@ -1675,15 +1675,6 @@ OrderByClause::OrderByClause(
 }
 
 
-OrderByClause::OrderByClause(
-	const yy::location& _loc,
-	rchandle<OrderSpecList> _spec_list_h)
-:
-	parsenode(_loc),
-	spec_list_h(_spec_list_h)
-{
-}
-
 OrderByClause::~OrderByClause()
 {
 }
@@ -1736,7 +1727,6 @@ void OrderSpecList::accept(parsenode_visitor& v) const
 	vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
 	for (; it!=spec_hv.rend(); ++it) {
 		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
 		Assert(e_p!=NULL);
 		e_p->accept(v);
 	}
@@ -1775,8 +1765,8 @@ ostream& OrderSpec::put(ostream& s) const
 void OrderSpec::accept(parsenode_visitor& v) const 
 { 
 	BEGIN_VISITOR ();
-	spec_h->accept(v);
-	modifier_h->accept(v);
+	ACCEPT (spec_h);
+	ACCEPT (modifier_h);
 	END_VISITOR ();
 }
 

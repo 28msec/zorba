@@ -253,7 +253,7 @@ ostream & forlet_clause::put( ostream& os) const
 flwor_expr::flwor_expr(
 	yy::location const& loc)
 :
-	expr(loc)
+	expr(loc), order_stable (false)
 {
 }
 
@@ -317,7 +317,12 @@ void flwor_expr::accept(expr_visitor& v) const
 		(*it)->expr_h->accept(v);
 	}
 	
-	// TODO WHERE & ORDER BY
+  if (where_h != NULL)
+    where_h->accept (v);
+  for (vector<orderspec_t>::const_reverse_iterator i = orderspec_rbegin ();
+       i != orderspec_rend ();
+       i++)
+    (*i).first->accept (v);
 	
 	this->retval_h->accept(v);
 	
