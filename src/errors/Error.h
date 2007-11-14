@@ -70,6 +70,7 @@ public:
 #ifdef _DEBUG
 extern const char*		g_error_in_file;
 extern int						g_error_at_line;
+extern bool						g_abort_when_fatal_error;
 
 #define ZORBA_ERROR_ALERT(...) do { \
 			g_error_in_file = __FILE__; g_error_at_line = __LINE__; \

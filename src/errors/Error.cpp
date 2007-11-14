@@ -20,6 +20,7 @@ namespace xqp {
 #ifdef _DEBUG
 const char*		g_error_in_file = NULL;
 int						g_error_at_line = 0;
+bool					g_abort_when_fatal_error = false;
 #endif
 //end debug
 
@@ -80,7 +81,11 @@ void ZorbaErrorAlerts::error_alert(
 	if(!continue_execution)
 	{
 	//	cout << "Fatal Error:" << strloc << " : " << err_decoded << std::endl;
-//abort ();
+#ifdef _DEBUG
+		if(g_abort_when_fatal_error)
+			abort ();
+		else
+#endif
 		throw xqp_exception("",//strloc.str(), 
 												err_decoded);
 	}
