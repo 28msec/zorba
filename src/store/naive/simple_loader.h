@@ -56,7 +56,10 @@ public:
 
   NodeItem_t getRootNode() const { return theRootNode; }
   
-  NodeItem_t loadXml(const std::string& xmlString);
+  NodeItem_t loadXml(std::iostream& xmlStream);
+
+protected:
+  long readPacket(std::iostream& stream, char* buf, long size);
 };
 
 } /* namespace xqp */

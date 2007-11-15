@@ -15,14 +15,14 @@ namespace xqp
 template <class Object> class rchandle;
 
 class NodeItem;
-typedef rchandle<class NodeItem> Node_t;
+typedef rchandle<class NodeItem> NodeItem_t;
 
 
 class SimpleCollection : public Collection
 {
 protected:
-  AnyUriItem_t         theUri;
-  std::vector<Node_t>  theNodes;
+  AnyUriItem_t             theUri;
+  std::vector<NodeItem_t>  theNodes;
 
 public:
   SimpleCollection(const AnyUriItem_t& uri);

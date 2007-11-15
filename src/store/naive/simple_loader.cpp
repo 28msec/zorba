@@ -37,24 +37,85 @@ XmlLoader::~XmlLoader()
 /*******************************************************************************
 
 ********************************************************************************/
-NodeItem_t XmlLoader::loadXml(const std::string& xmlString)
+long XmlLoader::readPacket(std::iostream& stream, char* buf, long size)
 {
-  std::cout << xmlString << std::endl;
-
-  int result = xmlSAXUserParseMemory(&theSaxHandler,
-                                     this,
-                                     xmlString.c_str(),
-                                     int(xmlString.size()));
-
-  NodeItem_t resultNode = theRootNode;
-  theRootNode = NULL;
-  //thePath.clear();
-
-  if (result != 0)
+  try
   {
-    printf("Failed to parse document.\n" );
+    stream.read(buf, size);
+
+    if (stream.bad())
+    {
+      ZORBA_ERROR_ALERT(error_messages::XQP0016_LOADER_IO_ERROR,
+                        error_messages::SYSTEM_ERROR,
+                        NULL,
+                        true,
+                        "");
+    }
+
+    return stream.gcount();
+  }
+  catch (iostream::failure e)
+  {
+    ZORBA_ERROR_ALERT(error_messages::XQP0016_LOADER_IO_ERROR,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      true,
+                      e.what());
+  }
+  return -1;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+NodeItem_t XmlLoader::loadXml(std::iostream& stream)
+{
+  xmlParserCtxtPtr ctxt;
+  char buf[4096];
+  long numChars;
+
+  numChars = readPacket(stream, buf, 4096);
+  if (numChars < 0)
+  {
     return NULL;
   }
+
+  ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, buf, numChars, NULL);
+  if (ctxt == NULL)
+  {
+    return NULL;
+  }
+
+  while ((numChars = readPacket(stream, buf, 4096)) > 0)
+  {
+    xmlParseChunk(ctxt, buf, numChars, 0);
+  }
+
+  xmlParseChunk(ctxt, buf, 0, 1);
+
+  bool ok = ctxt->wellFormed;
+
+  // Cleanup
+  xmlFreeParserCtxt(ctxt);
+
+  while(!thePath.empty())
+    thePath.pop();
+
+  NodeItem_t resultNode = theRootNode;
+
+  theRootNode = NULL;
+
+  if (!ok)
+  {
+    ZORBA_ERROR_ALERT(error_messages::XQP0017_LOADER_NOT_WELL_FORMED_XML,
+                      error_messages::USER_ERROR,
+                      NULL,
+                      true);
+    return NULL;
+  }
+
+  std::cout << std::endl << resultNode->show() << std::endl;
 
   return resultNode;
 }

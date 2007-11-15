@@ -177,13 +177,18 @@ string errors_english::err_decode(enum errcode e)
   case XQP0005_SYSTEM_ASSERT_FAILED:
     return "Assertion `/s' failed in /s";
   TRIVIAL_ERR (XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED);
-  case API0005_COLLECTION_URI_IN_USE:
-    return "A collection with URI `/s' cannot be created because the URI is already in use";
+  case XQP0016_LOADER_IO_ERROR:
+    return "XQP0016_LOADER_IO_ERROR";
+  case XQP0017_LOADER_NOT_WELL_FORMED_XML:
+    return "XQP0016_LOADER_NOT_WELL_FORMED_XML";
+  case API0005_COLLECTION_ALREADY_EXISTS:
+    return "A collection with URI `/s' exists already";
   case API0006_COLLECTION_NOT_FOUND:
-    return "A collection with URI `/s' does not exist in the store";
+    return "A collection with URI `/s' does not exist";
+  case API0007_COLLECTION_ITEM_MUST_BE_A_NODE:
+    return "Cannot insert a non-node item to a collection";
 	default: return "<Unknown errcode> /s /s";
 	}
-
 } 
 
 std::string errors_english::errtype_decode(enum error_type errtype)

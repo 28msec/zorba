@@ -117,7 +117,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
 {
   if (theCollections.find(uri))
   {
-    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_URI_IN_USE,
+    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_ALREADY_EXISTS,
                           error_messages::USER_ERROR,
                           NULL,
                           true,
@@ -145,7 +145,7 @@ Collection_t SimpleStore::createCollection(Item_t uri)
 {
   if (theCollections.find(uri->getStringValue()))
   {
-    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_URI_IN_USE,
+    ZORBA_ERROR_ALERT_OSS(error_messages::API0005_COLLECTION_ALREADY_EXISTS,
                           error_messages::USER_ERROR,
                           NULL,
                           true,

@@ -53,14 +53,21 @@ int main(int argc, const char * argv[])
 
 	// xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
+  if (argc < 2)
+  {
+    std::cerr << "usage: test_store <input file name>" << std::endl;
+  }
+
+  const char* fileName = argv[1];
+
   //
   // Store initialization
   //
   xqp::SimpleStore* store = static_cast<xqp::SimpleStore*>(&xqp::Store::getInstance());
 
-  timer.end();
+  timer.suspend();
   std::cout << "construction time : " << timer.getTime() << std::endl;
-  //timer.resume();
+  timer.resume();
 
   //
   // Zorba initialization
@@ -72,7 +79,7 @@ int main(int argc, const char * argv[])
 	Zorba_AlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
   //
-  // Collections
+  // Create collections
   //
   xqp::Collection_t coll1 = store->createCollection("http://MyCollection1");
 
@@ -82,31 +89,24 @@ int main(int argc, const char * argv[])
 
   DisplayErrorListForCurrentThread();
 
-  xqp::QNamePool& pool = store->getQNamePool();
-
-  rchandle<xqp::QNameItemImpl> qn = NULL;
-
-  qn = pool.insert("ns1", "pre1", "loc1");
-
-  qn = NULL;
-
   //
-  // Load an xml file
+  // Load an xml doc from a file to a collection
   //
-  std::string fileName("test1.xml");
-  std::string xmlString;
 
-  readXmlFile(fileName.c_str(), xmlString);
+  std::ifstream xmlFile(fileName);
+  if(!xmlFile)
+  {
+    std::cerr << "Error while opening: " << fileName << std::endl;
+    abort();
+  }
 
-  XmlLoader& loader = store->getXmlLoader();
- 
-  NodeItem_t root = loader.loadXml(xmlString);
+  std::iostream xmlStream(xmlFile.rdbuf());
 
-  std::cout << std::endl << root->show() << std::endl;
+  coll1->addToCollection(xmlStream, -1);
 
-  root = NULL;
-  coll1 = NULL;
-  coll2 = NULL;
+  xmlFile.close();
+
+  DisplayErrorListForCurrentThread();
 
   return 0;
 }

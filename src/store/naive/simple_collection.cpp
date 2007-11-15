@@ -3,6 +3,7 @@
  *  Author: David Graf (david.graf@28msec.com)
  *
  */
+#include "errors/Error.h"
 #include "util/rchandle.h"
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_loader.h"
@@ -58,6 +59,18 @@ Iterator_t SimpleCollection::getIterator(bool idsNeeded)
 ********************************************************************************/
 void SimpleCollection::addToCollection(Item_t item, int32_t position)
 {
+  if (!item->isNode())
+  {
+    ZORBA_ERROR_ALERT(error_messages::API0007_COLLECTION_ITEM_MUST_BE_A_NODE,
+                      error_messages::USER_ERROR,
+                      NULL,
+                      true);
+  }
+
+  if (position >= static_cast<long>(theNodes.size()))
+    theNodes.resize(position);
+
+  theNodes[position] = static_cast<NodeItem*>(item.get_ptr());
 }
 
 
@@ -86,11 +99,7 @@ void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
   XmlLoader& loader = reinterpret_cast<SimpleStore*>(&Store::getInstance())->
                       getXmlLoader();
 
-  std::string xmlString;
-
-  stream >> xmlString;
-
-  Node_t root = loader.loadXml(xmlString);
+  NodeItem_t root = loader.loadXml(stream);
 
   if (position < 0)
   {
@@ -98,7 +107,7 @@ void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
   }
   else
   {
-    if (uint32_t(position) >= theNodes.size())
+    if (position >= static_cast<long>(theNodes.size()))
       theNodes.resize(position);
 
     theNodes[position] = root;
@@ -113,7 +122,8 @@ void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
 ********************************************************************************/
 void SimpleCollection::deleteFromCollection(int32_t position)
 {
-
+  if (position < static_cast<long>(theNodes.size()))
+    theNodes[position] = NULL;
 }
 
 } /* namespace xqp */
