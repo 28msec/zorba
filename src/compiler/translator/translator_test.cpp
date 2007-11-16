@@ -1,13 +1,13 @@
 /* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
- *  $Id: normalize_visitor_test.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: translator_test.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *  Author: John Cowan, Paul Pedersen
  *
  */
 
-#include "compiler/translator/normalize_visitor.h"
+#include "compiler/translator/translator.h"
 #include "compiler/parser/xquery_driver.h"
 #include <iostream>
 
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 				cout << endl;
 				n_p->put(cout) << endl;
 	
-				normalize_visitor nvs(zorp);
+				translator nvs(zorp);
 				MainModule* mm_p;
 				QueryBody* qb_p;
 				Expr* ex_p;

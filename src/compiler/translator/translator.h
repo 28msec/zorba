@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
- *  $Id: normalize_visitor.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: translator.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -28,7 +28,7 @@ namespace xqp {
 
 class zorba;
 
-class normalize_visitor : public parsenode_visitor
+class translator : public parsenode_visitor
 {
 public:
 	typedef rchandle<expr> expr_t;
@@ -44,8 +44,8 @@ protected:
 	std::stack<expr_t> pstack;	// predicates stack
 
 public:
-	normalize_visitor();
-	~normalize_visitor() {}
+	translator();
+	~translator() {}
 
 public:
 	expr_t pop_nodestack()

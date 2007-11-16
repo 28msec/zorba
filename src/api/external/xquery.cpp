@@ -4,7 +4,7 @@
 #include "xquerybinary.h"
 
 #include "compiler/codegen/plan_visitor.h"
-#include "compiler/translator/normalize_visitor.h"
+#include "compiler/translator/translator.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "compiler/parser/xquery_driver.h"
@@ -105,7 +105,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	n_p->put(cout) << endl;
 
 	///normalize the expression tree
-	normalize_visitor nvs;
+	translator nvs;
 	MainModule* mm_p;
 	QueryBody* qb_p;
 	Expr* ex_p;

@@ -22,6 +22,15 @@
 #include <iostream>
 #include <fstream>
 
+#undef DO_NORMALIZATION
+//#define DO_NORMALIZATION
+
+#ifdef DO_NORMALIZATION
+
+#include "compiler/normalizer/normalizer.h"
+
+#endif
+
 using namespace std;
 using namespace xqp;
 
@@ -154,6 +163,14 @@ int _tmain(int argc, _TCHAR* argv[])
 					return -1;
 				}
 				e_h->put(cout) << endl;
+
+#ifdef DO_NORMALIZATION
+                normalizer n;
+                e_h->accept(n);
+
+                cout << "Normalized Expression Tree:\n";
+                e_h->put(cout) << endl;
+#endif
 
 				cout << "Codegen:\n";
 				plan_visitor pvs;

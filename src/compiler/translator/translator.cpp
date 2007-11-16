@@ -1,6 +1,6 @@
 /* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
- *  $Id: normalize_visitor.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ *  $Id: translator.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
  *	Copyright 2006-2007 FLWOR Foundation.
  *
@@ -8,7 +8,7 @@
  *
  */
 
-#include "compiler/translator/normalize_visitor.h"
+#include "compiler/translator/translator.h"
 
 #include "functions/library.h"
 #include "compiler/parsetree/parsenodes.h"
@@ -31,7 +31,7 @@ static void *no_state = (void *) new int;
 #define LOOKUP_FN2( pfx, local ) static_cast<function *> (sctx_p->lookup_fn (pfx, local))
 #define LOOKUP_OP( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local))
 
-normalize_visitor::normalize_visitor()
+translator::translator()
 {
 	zorp = zorba::getZorbaForCurrentThread();
   sctx_p = zorp->get_static_context();
@@ -39,131 +39,131 @@ normalize_visitor::normalize_visitor()
 
 
 
-void *normalize_visitor::begin_visit(const parsenode& v)
+void *translator::begin_visit(const parsenode& v)
 {
   cout<< std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const parsenode& v, void *visit_state)
+void translator::end_visit(const parsenode& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const exprnode& v)
+void *translator::begin_visit(const exprnode& v)
 {
   cout<< std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const exprnode& v, void *visit_state)
+void translator::end_visit(const exprnode& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ArgList& v)
+void *translator::begin_visit(const ArgList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ArgList& v, void *visit_state)
+void translator::end_visit(const ArgList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": ArgList" << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const AtomicType& v)
+void *translator::begin_visit(const AtomicType& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const AtomicType& v, void *visit_state)
+void translator::end_visit(const AtomicType& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const BaseURIDecl& v)
+void *translator::begin_visit(const BaseURIDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	sctx_p->set_baseuri(v.get_base_uri());
 	return NULL;
 }
 
-void normalize_visitor::end_visit(const BaseURIDecl& v, void *visit_state)
+void translator::end_visit(const BaseURIDecl& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const BoundarySpaceDecl& v)
+void *translator::begin_visit(const BoundarySpaceDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	sctx_p->set_boundary_space_mode(v.get_boundary_space_mode());
 	return NULL;
 }
 
-void normalize_visitor::end_visit(const BoundarySpaceDecl& v, void *visit_state)
+void translator::end_visit(const BoundarySpaceDecl& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const CaseClause& v)
+void *translator::begin_visit(const CaseClause& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CaseClause& v, void *visit_state)
+void translator::end_visit(const CaseClause& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const CaseClauseList& v)
+void *translator::begin_visit(const CaseClauseList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CaseClauseList& v, void *visit_state)
+void translator::end_visit(const CaseClauseList& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ConstructionDecl& v)
+void *translator::begin_visit(const ConstructionDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	sctx_p->set_construction_mode(v.get_mode());
 	return NULL;
 }
 
-void normalize_visitor::end_visit(const ConstructionDecl& v, void *visit_state)
+void translator::end_visit(const ConstructionDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const CopyNamespacesDecl& v)
+void *translator::begin_visit(const CopyNamespacesDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CopyNamespacesDecl& v, void *visit_state)
+void translator::end_visit(const CopyNamespacesDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(DefaultCollationDecl const& v)
+void *translator::begin_visit(DefaultCollationDecl const& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	string uri = v.get_collation();
@@ -171,13 +171,13 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 	return NULL;
 }
 
-void normalize_visitor::end_visit(const DefaultCollationDecl& v, void *visit_state)
+void translator::end_visit(const DefaultCollationDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(DefaultNamespaceDecl const& v)
+void *translator::begin_visit(DefaultNamespaceDecl const& v)
 {
 // TODO adapt to new store
 // cout << std::string(++depth, ' ') << TRACE << endl;
@@ -203,13 +203,13 @@ void *normalize_visitor::begin_visit(DefaultNamespaceDecl const& v)
   return NULL;
 }
 
-void normalize_visitor::end_visit(const DefaultNamespaceDecl& v, void *visit_state)
+void translator::end_visit(const DefaultNamespaceDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const EmptyOrderDecl& v)
+void *translator::begin_visit(const EmptyOrderDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -217,7 +217,7 @@ void *normalize_visitor::begin_visit(const EmptyOrderDecl& v)
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const EmptyOrderDecl& v, void *visit_state)
+void translator::end_visit(const EmptyOrderDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
@@ -229,13 +229,13 @@ void normalize_visitor::end_visit(const EmptyOrderDecl& v, void *visit_state)
    Used in direct element/attribute constructors and in function definition.
 
 ********************************************************************************/
-void *normalize_visitor::begin_visit(const EnclosedExpr& v)
+void *translator::begin_visit(const EnclosedExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const EnclosedExpr& v, void *visit_state)
+void translator::end_visit(const EnclosedExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -251,13 +251,13 @@ void normalize_visitor::end_visit(const EnclosedExpr& v, void *visit_state)
 
 ********************************************************************************/
 
-void *normalize_visitor::begin_visit(const DirCommentConstructor& v)
+void *translator::begin_visit(const DirCommentConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   return no_state;
 }
 
-void normalize_visitor::end_visit(const DirCommentConstructor& v, void *visit_state)
+void translator::end_visit(const DirCommentConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
     
@@ -268,25 +268,25 @@ void normalize_visitor::end_visit(const DirCommentConstructor& v, void *visit_st
   nodestack.push(&*comment_h);
 }
 
-void *normalize_visitor::begin_visit(const DirPIConstructor& v)
+void *translator::begin_visit(const DirPIConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DirPIConstructor& v, void *visit_state)
+void translator::end_visit(const DirPIConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const DirElemConstructor& v)
+void *translator::begin_visit(const DirElemConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DirElemConstructor& v, void *visit_state)
+void translator::end_visit(const DirElemConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -310,7 +310,7 @@ void normalize_visitor::end_visit(const DirElemConstructor& v, void *visit_state
 }
 
 
-void *normalize_visitor::begin_visit(const DirElemContentList& v)
+void *translator::begin_visit(const DirElemContentList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -318,7 +318,7 @@ void *normalize_visitor::begin_visit(const DirElemContentList& v)
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DirElemContentList& v, void *visit_state)
+void translator::end_visit(const DirElemContentList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 
@@ -337,13 +337,13 @@ void normalize_visitor::end_visit(const DirElemContentList& v, void *visit_state
 }
 
 
-void *normalize_visitor::begin_visit(const DirElemContent& v)
+void *translator::begin_visit(const DirElemContent& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DirElemContent& v, void *visit_state)
+void translator::end_visit(const DirElemContent& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -368,19 +368,19 @@ void normalize_visitor::end_visit(const DirElemContent& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const CDataSection& v)
+void *translator::begin_visit(const CDataSection& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CDataSection& v, void *visit_state)
+void translator::end_visit(const CDataSection& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const DirAttributeList& v)
+void *translator::begin_visit(const DirAttributeList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -388,7 +388,7 @@ void *normalize_visitor::begin_visit(const DirAttributeList& v)
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DirAttributeList& v, void *visit_state)
+void translator::end_visit(const DirAttributeList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 
@@ -404,7 +404,7 @@ void normalize_visitor::end_visit(const DirAttributeList& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const DirAttr& v)
+void *translator::begin_visit(const DirAttr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	// boundary is needed because the value of an attribute might be empty
@@ -412,7 +412,7 @@ void *normalize_visitor::begin_visit(const DirAttr& v)
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DirAttr& v, void *visit_state)
+void translator::end_visit(const DirAttr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -434,19 +434,19 @@ void normalize_visitor::end_visit(const DirAttr& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const DirAttributeValue& v)
+void *translator::begin_visit(const DirAttributeValue& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DirAttributeValue& v, void *visit_state)
+void translator::end_visit(const DirAttributeValue& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const QuoteAttrContentList& v)
+void *translator::begin_visit(const QuoteAttrContentList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -454,7 +454,7 @@ void *normalize_visitor::begin_visit(const QuoteAttrContentList& v)
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const QuoteAttrContentList& v, void *visit_state)
+void translator::end_visit(const QuoteAttrContentList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -475,13 +475,13 @@ void normalize_visitor::end_visit(const QuoteAttrContentList& v, void *visit_sta
 }
 
 
-void *normalize_visitor::begin_visit(const QuoteAttrValueContent& v)
+void *translator::begin_visit(const QuoteAttrValueContent& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const QuoteAttrValueContent& v, void *visit_state)
+void translator::end_visit(const QuoteAttrValueContent& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
  
@@ -496,37 +496,37 @@ void normalize_visitor::end_visit(const QuoteAttrValueContent& v, void *visit_st
 }
 
 
-void *normalize_visitor::begin_visit(const AposAttrContentList& v)
+void *translator::begin_visit(const AposAttrContentList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const AposAttrContentList& v, void *visit_state)
+void translator::end_visit(const AposAttrContentList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const AposAttrValueContent& v)
+void *translator::begin_visit(const AposAttrValueContent& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const AposAttrValueContent& v, void *visit_state)
+void translator::end_visit(const AposAttrValueContent& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const CommonContent& v)
+void *translator::begin_visit(const CommonContent& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CommonContent& v, void *visit_state)
+void translator::end_visit(const CommonContent& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
@@ -538,68 +538,68 @@ void normalize_visitor::end_visit(const CommonContent& v, void *visit_state)
 
 ********************************************************************************/
 
-void *normalize_visitor::begin_visit(const CompDocConstructor& v)
+void *translator::begin_visit(const CompDocConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CompDocConstructor& v, void *visit_state)
+void translator::end_visit(const CompDocConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const CompElemConstructor& v)
+void *translator::begin_visit(const CompElemConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CompElemConstructor& v, void *visit_state)
+void translator::end_visit(const CompElemConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const CompAttrConstructor& v)
+void *translator::begin_visit(const CompAttrConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CompAttrConstructor& v, void *visit_state)
+void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const CompCommentConstructor& v)
+void *translator::begin_visit(const CompCommentConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CompCommentConstructor& v, void *visit_state)
+void translator::end_visit(const CompCommentConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const CompPIConstructor& v)
+void *translator::begin_visit(const CompPIConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CompPIConstructor& v, void *visit_state)
+void translator::end_visit(const CompPIConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const CompTextConstructor& v)
+void *translator::begin_visit(const CompTextConstructor& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CompTextConstructor& v, void *visit_state)
+void translator::end_visit(const CompTextConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
@@ -610,13 +610,13 @@ void normalize_visitor::end_visit(const CompTextConstructor& v, void *visit_stat
   FLWOR Expression
 
 ********************************************************************************/
-void *normalize_visitor::begin_visit(const FLWORExpr& v)
+void *translator::begin_visit(const FLWORExpr& v)
 {
 	cout << std::string(++depth, ' ') << TRACE << endl;
   return no_state;
 }
 
-void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
+void translator::end_visit(const FLWORExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -696,41 +696,41 @@ void normalize_visitor::end_visit(const FLWORExpr& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const ForLetClauseList& v)
+void *translator::begin_visit(const ForLetClauseList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ForLetClauseList& v, void *visit_state)
+void translator::end_visit(const ForLetClauseList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const LetClause& v)
+void *translator::begin_visit(const LetClause& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const LetClause& v, void *visit_state)
+void translator::end_visit(const LetClause& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const VarGetsDeclList& v)
+void *translator::begin_visit(const VarGetsDeclList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VarGetsDeclList& v, void *visit_state)
+void translator::end_visit(const VarGetsDeclList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const VarGetsDecl& v)
+void *translator::begin_visit(const VarGetsDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   push_scope ();
@@ -743,35 +743,35 @@ void *normalize_visitor::begin_visit(const VarGetsDecl& v)
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VarGetsDecl& v, void *visit_state)
+void translator::end_visit(const VarGetsDecl& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ForClause& v)
+void *translator::begin_visit(const ForClause& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ForClause& v, void *visit_state)
+void translator::end_visit(const ForClause& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const VarInDeclList& v)
+void *translator::begin_visit(const VarInDeclList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VarInDeclList& v, void *visit_state)
+void translator::end_visit(const VarInDeclList& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const VarInDecl& v)
+void *translator::begin_visit(const VarInDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   push_scope ();
@@ -784,108 +784,108 @@ void *normalize_visitor::begin_visit(const VarInDecl& v)
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VarInDecl& v, void *visit_state)
+void translator::end_visit(const VarInDecl& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const PositionalVar& v)
+void *translator::begin_visit(const PositionalVar& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const PositionalVar& v, void *visit_state)
+void translator::end_visit(const PositionalVar& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const WhereClause& v)
+void *translator::begin_visit(const WhereClause& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const WhereClause& v, void *visit_state)
+void translator::end_visit(const WhereClause& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const OrderByClause& v)
+void *translator::begin_visit(const OrderByClause& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderByClause& v, void *visit_state)
+void translator::end_visit(const OrderByClause& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const OrderSpecList& v)
+void *translator::begin_visit(const OrderSpecList& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderSpecList& v, void *visit_state)
+void translator::end_visit(const OrderSpecList& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const OrderSpec& v)
+void *translator::begin_visit(const OrderSpec& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderSpec& v, void *visit_state)
+void translator::end_visit(const OrderSpec& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const OrderModifier& v)
+void *translator::begin_visit(const OrderModifier& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderModifier& v, void *visit_state)
+void translator::end_visit(const OrderModifier& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const OrderCollationSpec& v)
+void *translator::begin_visit(const OrderCollationSpec& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderCollationSpec& v, void *visit_state)
+void translator::end_visit(const OrderCollationSpec& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const OrderDirSpec& v)
+void *translator::begin_visit(const OrderDirSpec& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderDirSpec& v, void *visit_state)
+void translator::end_visit(const OrderDirSpec& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const OrderEmptySpec& v)
+void *translator::begin_visit(const OrderEmptySpec& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderEmptySpec& v, void *visit_state)
+void translator::end_visit(const OrderEmptySpec& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
@@ -895,163 +895,163 @@ void normalize_visitor::end_visit(const OrderEmptySpec& v, void *visit_state)
 
 ********************************************************************************/
 
-void *normalize_visitor::begin_visit(const VarDecl& v)
+void *translator::begin_visit(const VarDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VarDecl& v, void *visit_state)
+void translator::end_visit(const VarDecl& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const FunctionDecl& v)
+void *translator::begin_visit(const FunctionDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FunctionDecl& v, void *visit_state)
+void translator::end_visit(const FunctionDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const GeneralComp& v)
+void *translator::begin_visit(const GeneralComp& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const GeneralComp& v, void *visit_state)
+void translator::end_visit(const GeneralComp& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ItemType& v)
+void *translator::begin_visit(const ItemType& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   return no_state;
 }
 
-void normalize_visitor::end_visit(const ItemType& v, void *visit_state)
+void translator::end_visit(const ItemType& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const LibraryModule& v)
+void *translator::begin_visit(const LibraryModule& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const LibraryModule& v, void *visit_state)
+void translator::end_visit(const LibraryModule& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const MainModule & v)
+void *translator::begin_visit(const MainModule & v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const MainModule & v, void *visit_state)
+void translator::end_visit(const MainModule & v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const Module& v)
+void *translator::begin_visit(const Module& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const Module& v, void *visit_state)
+void translator::end_visit(const Module& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ModuleDecl& v)
+void *translator::begin_visit(const ModuleDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ModuleDecl& v, void *visit_state)
+void translator::end_visit(const ModuleDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ModuleImport& v)
+void *translator::begin_visit(const ModuleImport& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ModuleImport& v, void *visit_state)
+void translator::end_visit(const ModuleImport& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const NamespaceDecl& v)
+void *translator::begin_visit(const NamespaceDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   sctx_p->bind_ns (v.get_prefix (), v.get_uri ());
 	return NULL;
 }
 
-void normalize_visitor::end_visit(const NamespaceDecl& v, void *visit_state)
+void translator::end_visit(const NamespaceDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const NodeComp& v)
+void *translator::begin_visit(const NodeComp& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const NodeComp& v, void *visit_state)
+void translator::end_visit(const NodeComp& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const OccurrenceIndicator& v)
+void *translator::begin_visit(const OccurrenceIndicator& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OccurrenceIndicator& v, void *visit_state)
+void translator::end_visit(const OccurrenceIndicator& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const OptionDecl& v)
+void *translator::begin_visit(const OptionDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OptionDecl& v, void *visit_state)
+void translator::end_visit(const OptionDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const OrderingModeDecl& v)
+void *translator::begin_visit(const OrderingModeDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 //daniel	zorp->get_dynamic_context()->set_ordering_mode(v.get_mode());
@@ -1060,69 +1060,69 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 }
 
 
-void normalize_visitor::end_visit(const OrderingModeDecl& v, void *visit_state)
+void translator::end_visit(const OrderingModeDecl& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const Param& v)
+void *translator::begin_visit(const Param& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const Param& v, void *visit_state)
+void translator::end_visit(const Param& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ParamList& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const ParamList& v, void *visit_state)
-{
- cout << std::string(depth--, ' ') <<TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const Pragma& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const Pragma& v, void *visit_state)
-{
- cout << std::string(depth--, ' ') <<TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const PragmaList& v)
+void *translator::begin_visit(const ParamList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const PragmaList& v, void *visit_state)
+void translator::end_visit(const ParamList& v, void *visit_state)
+{
+ cout << std::string(depth--, ' ') <<TRACE << endl;
+}
+
+
+void *translator::begin_visit(const Pragma& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const Pragma& v, void *visit_state)
+{
+ cout << std::string(depth--, ' ') <<TRACE << endl;
+}
+
+void *translator::begin_visit(const PragmaList& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	nodestack.push(NULL);
+	return no_state;
+}
+
+void translator::end_visit(const PragmaList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const PredicateList& v)
+void *translator::begin_visit(const PredicateList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const PredicateList& v, void *visit_state)
+void translator::end_visit(const PredicateList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << ": PredicateList" << endl;
 	clear_pstack();
@@ -1133,194 +1133,194 @@ cout << std::string(depth--, ' ') << TRACE << ": PredicateList" << endl;
 	}
 }
 
-void *normalize_visitor::begin_visit(const Prolog& v)
+void *translator::begin_visit(const Prolog& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const Prolog& v, void *visit_state)
+void translator::end_visit(const Prolog& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const QVarInDecl& v)
+void *translator::begin_visit(const QVarInDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const QVarInDecl& v, void *visit_state)
+void translator::end_visit(const QVarInDecl& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const QVarInDeclList& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const QVarInDeclList& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const SIND_DeclList& v)
+void *translator::begin_visit(const QVarInDeclList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const SIND_DeclList& v, void *visit_state)
+void translator::end_visit(const QVarInDeclList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const SchemaImport& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const SchemaImport& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const SchemaPrefix& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const SchemaPrefix& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const SequenceType& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const SequenceType& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const SignList& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const SignList& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const SingleType& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const SingleType& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const TypeDeclaration& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const TypeDeclaration& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const TypeName& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const TypeName& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const URILiteralList& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const URILiteralList& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const ValueComp& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const ValueComp& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const VersionDecl& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const VersionDecl& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const VFO_DeclList& v)
+void *translator::begin_visit(const SIND_DeclList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VFO_DeclList& v, void *visit_state)
+void translator::end_visit(const SIND_DeclList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const AdditiveExpr& v)
+void *translator::begin_visit(const SchemaImport& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const AdditiveExpr& v, void *visit_state)
+void translator::end_visit(const SchemaImport& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const SchemaPrefix& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const SchemaPrefix& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const SequenceType& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const SequenceType& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const SignList& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const SignList& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const SingleType& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const SingleType& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const TypeDeclaration& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const TypeDeclaration& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const TypeName& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const TypeName& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const URILiteralList& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	nodestack.push(NULL);
+	return no_state;
+}
+
+void translator::end_visit(const URILiteralList& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const ValueComp& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const ValueComp& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const VersionDecl& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const VersionDecl& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const VFO_DeclList& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	nodestack.push(NULL);
+	return no_state;
+}
+
+void translator::end_visit(const VFO_DeclList& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+
+void *translator::begin_visit(const AdditiveExpr& v)
+{
+  cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const AdditiveExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": AdditiveExpr\n";
 	rchandle<expr> e1_h = pop_nodestack();
@@ -1340,13 +1340,13 @@ void normalize_visitor::end_visit(const AdditiveExpr& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const AndExpr& v)
+void *translator::begin_visit(const AndExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const AndExpr& v, void *visit_state)
+void translator::end_visit(const AndExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<expr> e1_h = pop_nodestack();
@@ -1359,38 +1359,38 @@ void normalize_visitor::end_visit(const AndExpr& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const CastExpr& v)
+void *translator::begin_visit(const CastExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CastExpr& v, void *visit_state)
+void translator::end_visit(const CastExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
 
-void *normalize_visitor::begin_visit(const CastableExpr& v)
+void *translator::begin_visit(const CastableExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const CastableExpr& v, void *visit_state)
+void translator::end_visit(const CastableExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ComparisonExpr& v)
+void *translator::begin_visit(const ComparisonExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ComparisonExpr& v, void *visit_state)
+void translator::end_visit(const ComparisonExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": ComparisonExpr\n";
 
@@ -1461,13 +1461,13 @@ void normalize_visitor::end_visit(const ComparisonExpr& v, void *visit_state)
 
 
 
-void *normalize_visitor::begin_visit(const ContextItemExpr& v)
+void *translator::begin_visit(const ContextItemExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ContextItemExpr& v, void *visit_state)
+void translator::end_visit(const ContextItemExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << ": ContextItemExpr" << endl;
 	rchandle<var_expr> v_h = new var_expr(v.get_location());
@@ -1476,13 +1476,13 @@ cout << std::string(depth--, ' ') << TRACE << ": ContextItemExpr" << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const Expr& v)
+void *translator::begin_visit(const Expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const Expr& v, void *visit_state)
+void translator::end_visit(const Expr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
   
@@ -1500,42 +1500,42 @@ void normalize_visitor::end_visit(const Expr& v, void *visit_state)
 	}
 }
 
-// void *normalize_visitor::begin_visit(const ExprSingle& v)
+// void *translator::begin_visit(const ExprSingle& v)
 // {
 // cout << std::string(++depth, ' ') << TRACE << endl;
 //  return no_state;
 // }
 
-void *normalize_visitor::begin_visit(const ExtensionExpr& v)
+void *translator::begin_visit(const ExtensionExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ExtensionExpr& v, void *visit_state)
+void translator::end_visit(const ExtensionExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FilterExpr& v)
+void *translator::begin_visit(const FilterExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FilterExpr& v, void *visit_state)
+void translator::end_visit(const FilterExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FunctionCall& v)
+void *translator::begin_visit(const FunctionCall& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FunctionCall& v, void *visit_state)
+void translator::end_visit(const FunctionCall& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 	std::vector<expr_t> arguments;
@@ -1562,14 +1562,14 @@ void normalize_visitor::end_visit(const FunctionCall& v, void *visit_state)
 	nodestack.push(&*fo_h);
 }
 
-void *normalize_visitor::begin_visit(const IfExpr& v)
+void *translator::begin_visit(const IfExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	// nothing to do here
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const IfExpr& v, void *visit_state)
+void translator::end_visit(const IfExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t e_h = pop_nodestack ();
@@ -1580,25 +1580,25 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const InstanceofExpr& v)
+void *translator::begin_visit(const InstanceofExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const InstanceofExpr& v, void *visit_state)
+void translator::end_visit(const InstanceofExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const IntersectExceptExpr& v)
+void *translator::begin_visit(const IntersectExceptExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const IntersectExceptExpr& v, void *visit_state)
+void translator::end_visit(const IntersectExceptExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": IntersectExceptExpr\n";
 
@@ -1619,13 +1619,13 @@ void normalize_visitor::end_visit(const IntersectExceptExpr& v, void *visit_stat
 	nodestack.push(fo_h);
 }
 
-void *normalize_visitor::begin_visit(const MultiplicativeExpr& v)
+void *translator::begin_visit(const MultiplicativeExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const MultiplicativeExpr& v, void *visit_state)
+void translator::end_visit(const MultiplicativeExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<expr> e1_h = pop_nodestack ();
@@ -1650,13 +1650,13 @@ void normalize_visitor::end_visit(const MultiplicativeExpr& v, void *visit_state
   nodestack.push (fo_h);
 }
 
-void *normalize_visitor::begin_visit(const NumericLiteral& v)
+void *translator::begin_visit(const NumericLiteral& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const NumericLiteral& v, void *visit_state)
+void translator::end_visit(const NumericLiteral& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 	switch (v.get_type()) {
@@ -1675,13 +1675,13 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 	}
 }
 
-void *normalize_visitor::begin_visit(const OrExpr& v)
+void *translator::begin_visit(const OrExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrExpr& v, void *visit_state)
+void translator::end_visit(const OrExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<expr> e1_h = pop_nodestack();
@@ -1693,26 +1693,26 @@ void normalize_visitor::end_visit(const OrExpr& v, void *visit_state)
   nodestack.push (fo_h);
 }
 
-void *normalize_visitor::begin_visit(const OrderedExpr& v)
+void *translator::begin_visit(const OrderedExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const OrderedExpr& v, void *visit_state)
+void translator::end_visit(const OrderedExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ParenthesizedExpr& v)
+void *translator::begin_visit(const ParenthesizedExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ParenthesizedExpr& v, void *visit_state)
+void translator::end_visit(const ParenthesizedExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t expr = pop_nodestack();
@@ -1731,7 +1731,7 @@ cout << std::string(depth--, ' ') << TRACE << endl;
   NodeTest (NameTest | KindTest)
 
 ********************************************************************************/
-void *normalize_visitor::begin_visit(const NameTest& v)
+void *translator::begin_visit(const NameTest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
@@ -1739,7 +1739,7 @@ void *normalize_visitor::begin_visit(const NameTest& v)
 
 
 
-void normalize_visitor::end_visit(const NameTest& v, void *visit_state)
+void translator::end_visit(const NameTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": "; v.put(cout);
 
@@ -1787,20 +1787,20 @@ void normalize_visitor::end_visit(const NameTest& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const Wildcard& v)
+void *translator::begin_visit(const Wildcard& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const Wildcard& v, void *visit_state)
+void translator::end_visit(const Wildcard& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const AnyKindTest& v)
+void *translator::begin_visit(const AnyKindTest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
@@ -1808,7 +1808,7 @@ void *normalize_visitor::begin_visit(const AnyKindTest& v)
 }
 
 
-void normalize_visitor::end_visit(const AnyKindTest& v, void *visit_state)
+void translator::end_visit(const AnyKindTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ')<<TRACE<<": AnyKindTest()\n";
 	rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
@@ -1824,7 +1824,7 @@ void normalize_visitor::end_visit(const AnyKindTest& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const DocumentTest& v)
+void *translator::begin_visit(const DocumentTest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -1857,20 +1857,20 @@ void *normalize_visitor::begin_visit(const DocumentTest& v)
 }
 
 
-void normalize_visitor::end_visit(const DocumentTest& v, void *visit_state)
+void translator::end_visit(const DocumentTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ElementTest& v)
+void *translator::begin_visit(const ElementTest& v)
 {
 	cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const ElementTest& v, void *visit_state)
+void translator::end_visit(const ElementTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ')<<TRACE<<": ElementTest(";
   v.getElementName()->put(cout)<<")\n";
@@ -1905,14 +1905,14 @@ void normalize_visitor::end_visit(const ElementTest& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const AttributeTest& v)
+void *translator::begin_visit(const AttributeTest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const AttributeTest& v, void *visit_state)
+void translator::end_visit(const AttributeTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ')<<TRACE<<": AttributeTest("; v.get_attr()->put(cout)<<")\n";
 
@@ -1951,7 +1951,7 @@ void normalize_visitor::end_visit(const AttributeTest& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const TextTest& v)
+void *translator::begin_visit(const TextTest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
@@ -1959,7 +1959,7 @@ void *normalize_visitor::begin_visit(const TextTest& v)
 }
 
 
-void normalize_visitor::end_visit(const TextTest& v, void *visit_state)
+void translator::end_visit(const TextTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ')<<TRACE<<": TextTest()\n";
 
@@ -1976,7 +1976,7 @@ void normalize_visitor::end_visit(const TextTest& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const CommentTest& v)
+void *translator::begin_visit(const CommentTest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	// no action needed here
@@ -1984,7 +1984,7 @@ void *normalize_visitor::begin_visit(const CommentTest& v)
 }
 
 
-void normalize_visitor::end_visit(const CommentTest& v, void *visit_state)
+void translator::end_visit(const CommentTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ')<<TRACE<<": CommentTest()\n";
 
@@ -2001,7 +2001,7 @@ void normalize_visitor::end_visit(const CommentTest& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const PITest& v)
+void *translator::begin_visit(const PITest& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -2015,13 +2015,13 @@ void *normalize_visitor::begin_visit(const PITest& v)
 }
 
 
-void normalize_visitor::end_visit(const PITest& v, void *visit_state)
+void translator::end_visit(const PITest& v, void *visit_state)
 {
  cout << std::string(depth--, ' ') <<TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const SchemaAttributeTest& v)
+void *translator::begin_visit(const SchemaAttributeTest& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
@@ -2036,13 +2036,13 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 }
 
 
-void normalize_visitor::end_visit(const SchemaAttributeTest& v, void *visit_state)
+void translator::end_visit(const SchemaAttributeTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const SchemaElementTest& v)
+void *translator::begin_visit(const SchemaElementTest& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
@@ -2057,7 +2057,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 }
 
 
-void normalize_visitor::end_visit(const SchemaElementTest& v, void *visit_state)
+void translator::end_visit(const SchemaElementTest& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
@@ -2083,14 +2083,14 @@ void normalize_visitor::end_visit(const SchemaElementTest& v, void *visit_state)
   The PathExpr node will be there only if the path expr starts with / or //
 
 ********************************************************************************/
-void *normalize_visitor::begin_visit(const PathExpr& v)
+void *translator::begin_visit(const PathExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const PathExpr& v, void *visit_state)
+void translator::end_visit(const PathExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -2133,14 +2133,14 @@ void normalize_visitor::end_visit(const PathExpr& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const RelativePathExpr& v)
+void *translator::begin_visit(const RelativePathExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const RelativePathExpr& v, void *visit_state)
+void translator::end_visit(const RelativePathExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -2169,7 +2169,7 @@ void normalize_visitor::end_visit(const RelativePathExpr& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const AxisStep& v)
+void *translator::begin_visit(const AxisStep& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -2179,7 +2179,7 @@ void *normalize_visitor::begin_visit(const AxisStep& v)
 }
 
 
-void normalize_visitor::end_visit(const AxisStep& v, void *visit_state)
+void translator::end_visit(const AxisStep& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": AxisStep\n";
 
@@ -2199,27 +2199,27 @@ void normalize_visitor::end_visit(const AxisStep& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const ForwardStep& v)
+void *translator::begin_visit(const ForwardStep& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const ForwardStep& v, void *visit_state)
+void translator::end_visit(const ForwardStep& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": ForwardStep\n";
 }
 
 
-void *normalize_visitor::begin_visit(const AbbrevForwardStep& v)
+void *translator::begin_visit(const AbbrevForwardStep& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const AbbrevForwardStep& v, void *visit_state)
+void translator::end_visit(const AbbrevForwardStep& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": AbbrevForwardStep\n";
 
@@ -2241,14 +2241,14 @@ void normalize_visitor::end_visit(const AbbrevForwardStep& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const ForwardAxis& v)
+void *translator::begin_visit(const ForwardAxis& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const ForwardAxis& v, void *visit_state)
+void translator::end_visit(const ForwardAxis& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": ForwardAxis" << endl;
 
@@ -2300,27 +2300,27 @@ void normalize_visitor::end_visit(const ForwardAxis& v, void *visit_state)
 }
 
 
-void *normalize_visitor::begin_visit(const ReverseStep& v)
+void *translator::begin_visit(const ReverseStep& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const ReverseStep& v, void *visit_state)
+void translator::end_visit(const ReverseStep& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": ReverseStep" << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const ReverseAxis& v)
+void *translator::begin_visit(const ReverseAxis& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const ReverseAxis& v, void *visit_state)
+void translator::end_visit(const ReverseAxis& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << ": ReverseAxis" << endl;
 
@@ -2365,14 +2365,14 @@ void normalize_visitor::end_visit(const ReverseAxis& v, void *visit_state)
 /*******************************************************************************
 
 ********************************************************************************/
-void *normalize_visitor::begin_visit(const QuantifiedExpr& v)
+void *translator::begin_visit(const QuantifiedExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 
-void normalize_visitor::end_visit(const QuantifiedExpr& v, void *visit_state)
+void translator::end_visit(const QuantifiedExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
@@ -2381,13 +2381,13 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 /*******************************************************************************
 
 ********************************************************************************/
-void *normalize_visitor::begin_visit(const QueryBody& v)
+void *translator::begin_visit(const QueryBody& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const QueryBody& v, void *visit_state)
+void translator::end_visit(const QueryBody& v, void *visit_state)
 {
 cout  << std::string(depth--, ' ') << TRACE << endl;
 }
@@ -2396,48 +2396,48 @@ cout  << std::string(depth--, ' ') << TRACE << endl;
 /*******************************************************************************
 
 ********************************************************************************/
-void *normalize_visitor::begin_visit(const RangeExpr& v)
+void *translator::begin_visit(const RangeExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const RangeExpr& v, void *visit_state)
+void translator::end_visit(const RangeExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const StringLiteral& v)
+void *translator::begin_visit(const StringLiteral& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const StringLiteral& v, void *visit_state)
+void translator::end_visit(const StringLiteral& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 	nodestack.push(new literal_expr(v.get_location(),v.get_strval()));
 }
 
-void *normalize_visitor::begin_visit(const TreatExpr& v)
+void *translator::begin_visit(const TreatExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const TreatExpr& v, void *visit_state)
+void translator::end_visit(const TreatExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const TypeswitchExpr& v)
+void *translator::begin_visit(const TypeswitchExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const TypeswitchExpr& v, void *visit_state)
+void translator::end_visit(const TypeswitchExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 	case_clause * cc_p;
@@ -2468,13 +2468,13 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const UnaryExpr& v)
+void *translator::begin_visit(const UnaryExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const UnaryExpr& v, void *visit_state)
+void translator::end_visit(const UnaryExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -2488,13 +2488,13 @@ void normalize_visitor::end_visit(const UnaryExpr& v, void *visit_state)
 	nodestack.push(fo_p);
 }
 
-void *normalize_visitor::begin_visit(const UnionExpr& v)
+void *translator::begin_visit(const UnionExpr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const UnionExpr& v, void *visit_state)
+void translator::end_visit(const UnionExpr& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -2507,35 +2507,35 @@ void normalize_visitor::end_visit(const UnionExpr& v, void *visit_state)
 	nodestack.push(fo_h);
 }
 
-void *normalize_visitor::begin_visit(const UnorderedExpr& v)
+void *translator::begin_visit(const UnorderedExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const UnorderedExpr& v, void *visit_state)
+void translator::end_visit(const UnorderedExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const ValidateExpr& v)
+void *translator::begin_visit(const ValidateExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ValidateExpr& v, void *visit_state)
+void translator::end_visit(const ValidateExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const VarRef& v)
+void *translator::begin_visit(const VarRef& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VarRef& v, void *visit_state)
+void translator::end_visit(const VarRef& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 	var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
@@ -2547,513 +2547,513 @@ void normalize_visitor::end_visit(const VarRef& v, void *visit_state)
 
 
 /* update-related */
-void *normalize_visitor::begin_visit(const DeleteExpr& v)
+void *translator::begin_visit(const DeleteExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const DeleteExpr& v, void *visit_state)
+void translator::end_visit(const DeleteExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const InsertExpr& v)
+void *translator::begin_visit(const InsertExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const InsertExpr& v, void *visit_state)
+void translator::end_visit(const InsertExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const RenameExpr& v)
+void *translator::begin_visit(const RenameExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const RenameExpr& v, void *visit_state)
+void translator::end_visit(const RenameExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const ReplaceExpr& v)
+void *translator::begin_visit(const ReplaceExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const ReplaceExpr& v, void *visit_state)
+void translator::end_visit(const ReplaceExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const RevalidationDecl& v)
+void *translator::begin_visit(const RevalidationDecl& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const RevalidationDecl& v, void *visit_state)
+void translator::end_visit(const RevalidationDecl& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
-void *normalize_visitor::begin_visit(const TransformExpr& v)
+void *translator::begin_visit(const TransformExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const TransformExpr& v, void *visit_state)
+void translator::end_visit(const TransformExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const VarNameList& v)
+void *translator::begin_visit(const VarNameList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const VarNameList& v, void *visit_state)
+void translator::end_visit(const VarNameList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
 /* full-text-related */
-void *normalize_visitor::begin_visit(const FTAnd& v)
+void *translator::begin_visit(const FTAnd& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTAnd& v, void *visit_state)
+void translator::end_visit(const FTAnd& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTAnyallOption& v)
+void *translator::begin_visit(const FTAnyallOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTAnyallOption& v, void *visit_state)
+void translator::end_visit(const FTAnyallOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTBigUnit& v)
+void *translator::begin_visit(const FTBigUnit& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTBigUnit& v, void *visit_state)
+void translator::end_visit(const FTBigUnit& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTCaseOption& v)
+void *translator::begin_visit(const FTCaseOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTCaseOption& v, void *visit_state)
+void translator::end_visit(const FTCaseOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTContainsExpr& v)
+void *translator::begin_visit(const FTContainsExpr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTContainsExpr& v, void *visit_state)
+void translator::end_visit(const FTContainsExpr& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTContent& v)
+void *translator::begin_visit(const FTContent& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTContent& v, void *visit_state)
+void translator::end_visit(const FTContent& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTDiacriticsOption& v)
+void *translator::begin_visit(const FTDiacriticsOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTDiacriticsOption& v, void *visit_state)
+void translator::end_visit(const FTDiacriticsOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTDistance& v)
+void *translator::begin_visit(const FTDistance& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTDistance& v, void *visit_state)
+void translator::end_visit(const FTDistance& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTIgnoreOption& v)
+void *translator::begin_visit(const FTIgnoreOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTIgnoreOption& v, void *visit_state)
+void translator::end_visit(const FTIgnoreOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTInclExclStringLiteral& v)
+void *translator::begin_visit(const FTInclExclStringLiteral& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTInclExclStringLiteral& v, void *visit_state)
+void translator::end_visit(const FTInclExclStringLiteral& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTInclExclStringLiteralList& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	nodestack.push(NULL);
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTInclExclStringLiteralList& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTLanguageOption& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTLanguageOption& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTMatchOption& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTMatchOption& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-
-void *normalize_visitor::begin_visit(const FTMatchOptionProximityList& v)
+void *translator::begin_visit(const FTInclExclStringLiteralList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTMatchOptionProximityList& v, void *visit_state)
+void translator::end_visit(const FTInclExclStringLiteralList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTMildnot& v)
+void *translator::begin_visit(const FTLanguageOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTMildnot& v, void *visit_state)
+void translator::end_visit(const FTLanguageOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTOptionDecl& v)
+void *translator::begin_visit(const FTMatchOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTOptionDecl& v, void *visit_state)
+void translator::end_visit(const FTMatchOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTOr& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
 
-void normalize_visitor::end_visit(const FTOr& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTOrderedIndicator& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTOrderedIndicator& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTProximity& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTProximity& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTRange& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTRange& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTRefOrList& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTRefOrList& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTScope& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTScope& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTScoreVar& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTScoreVar& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTSelection& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTSelection& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTStemOption& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTStemOption& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTStopwordOption& v)
-{
-cout << std::string(++depth, ' ') << TRACE << endl;
-	return no_state;
-}
-
-void normalize_visitor::end_visit(const FTStopwordOption& v, void *visit_state)
-{
-cout << std::string(depth--, ' ') << TRACE << endl;
-}
-
-void *normalize_visitor::begin_visit(const FTStringLiteralList& v)
+void *translator::begin_visit(const FTMatchOptionProximityList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTStringLiteralList& v, void *visit_state)
+void translator::end_visit(const FTMatchOptionProximityList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTThesaurusID& v)
+void *translator::begin_visit(const FTMildnot& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTThesaurusID& v, void *visit_state)
+void translator::end_visit(const FTMildnot& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTThesaurusList& v)
+void *translator::begin_visit(const FTOptionDecl& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTOptionDecl& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTOr& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTOr& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTOrderedIndicator& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTOrderedIndicator& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTProximity& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTProximity& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTRange& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTRange& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTRefOrList& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTRefOrList& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTScope& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTScope& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTScoreVar& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTScoreVar& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTSelection& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTSelection& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTStemOption& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTStemOption& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTStopwordOption& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTStopwordOption& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTStringLiteralList& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	nodestack.push(NULL);
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTThesaurusList& v, void *visit_state)
+void translator::end_visit(const FTStringLiteralList& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTThesaurusOption& v)
+void *translator::begin_visit(const FTThesaurusID& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTThesaurusOption& v, void *visit_state)
+void translator::end_visit(const FTThesaurusID& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTTimes& v)
+void *translator::begin_visit(const FTThesaurusList& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	nodestack.push(NULL);
+	return no_state;
+}
+
+void translator::end_visit(const FTThesaurusList& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTThesaurusOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTTimes& v, void *visit_state)
+void translator::end_visit(const FTThesaurusOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTUnaryNot& v)
+void *translator::begin_visit(const FTTimes& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTUnaryNot& v, void *visit_state)
+void translator::end_visit(const FTTimes& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTUnit& v)
+void *translator::begin_visit(const FTUnaryNot& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTUnit& v, void *visit_state)
+void translator::end_visit(const FTUnaryNot& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTWildcardOption& v)
+void *translator::begin_visit(const FTUnit& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTWildcardOption& v, void *visit_state)
+void translator::end_visit(const FTUnit& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTWindow& v)
+void *translator::begin_visit(const FTWildcardOption& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTWindow& v, void *visit_state)
+void translator::end_visit(const FTWildcardOption& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTWords& v)
+void *translator::begin_visit(const FTWindow& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTWords& v, void *visit_state)
+void translator::end_visit(const FTWindow& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTWordsSelection& v)
+void *translator::begin_visit(const FTWords& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTWordsSelection& v, void *visit_state)
+void translator::end_visit(const FTWords& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-void *normalize_visitor::begin_visit(const FTWordsValue& v)
+void *translator::begin_visit(const FTWordsSelection& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
-void normalize_visitor::end_visit(const FTWordsValue& v, void *visit_state)
+void translator::end_visit(const FTWordsSelection& v, void *visit_state)
+{
+cout << std::string(depth--, ' ') << TRACE << endl;
+}
+
+void *translator::begin_visit(const FTWordsValue& v)
+{
+cout << std::string(++depth, ' ') << TRACE << endl;
+	return no_state;
+}
+
+void translator::end_visit(const FTWordsValue& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
 
 
-// void normalize_visitor::end_visit(const ExprSingle& v, void *visit_state)
+// void translator::end_visit(const ExprSingle& v, void *visit_state)
 // {
 // cout << std::string(depth--, ' ') << TRACE << endl;
 // }
