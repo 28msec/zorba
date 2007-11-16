@@ -1,8 +1,7 @@
 SET(UTIL_SRCS
-    URI.cpp 
-    utf8/xqpString.cpp
-    fx/fxcharheap.cpp
+    URI.cpp
     fx/mmfile.cpp
+    fx/fxcharheap.cpp
     logging/logger.cc
     logging/loggerconfig.cc
     logging/loggermanager.cc
@@ -11,6 +10,8 @@ SET(UTIL_SRCS
     zorba.cpp
     rwlock.cpp
     math_helper.cpp)
+
+ADD_SRC_SUBFOLDER(UTIL_SRCS utf8 UTF8_SRCS)
 
 IF (MSVC)
 	LIST(APPEND UTIL_SRCS win32/win_pthread.cpp)

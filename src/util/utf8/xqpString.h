@@ -98,7 +98,7 @@ public:
      */
     xqpString(const char* src);
 
-    ~xqpString();
+    ~xqpString(){};
 
     xqpStringStore& getStore() const { return *(theStrStore.get_ptr()); }
 
@@ -269,6 +269,9 @@ public:
       return *theStrStore;
     }
 
+    //uppercase/lowercase
+    xqpString uppercase();
+    xqpString lowercase();
 private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)

@@ -12,6 +12,7 @@
  */
 
 #include "util/utf8/xqpString.h"
+#include "util/utf8/Unicode_util.h"
 #include "util/utf8/utf8.h"
 #include "util/zorba.h"
 
@@ -19,8 +20,7 @@ using namespace std;
 
 namespace xqp
 {
-  uint32_t xqpStringStore::hash() const
-  {
+  uint32_t xqpStringStore::hash() const{
     uint32_t hash = 5381;
     int c;
     const char *str = c_str();
@@ -31,8 +31,7 @@ namespace xqp
     return hash;
   }
 
-  uint32_t xqpStringStore::hash(const char* str)
-  {
+  uint32_t xqpStringStore::hash(const char* str){
     uint32_t hash = 5381;
     int c;
     while ((c = *str++))
@@ -42,8 +41,7 @@ namespace xqp
     return hash;
   }
 
-  bool xqpStringStore::byteEqual(const xqpStringStore& src) const
-  {
+  bool xqpStringStore::byteEqual(const xqpStringStore& src) const{
     if (this == &src)
       return true;
 
@@ -55,16 +53,14 @@ namespace xqp
     return false;
   }
 
-  bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
-  {
+  bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const{
     if( bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
       return true;
 
     return false;
   }
 
-  bool xqpStringStore::hashEqual(const xqpStringStore& src) const
-  {
+  bool xqpStringStore::hashEqual(const xqpStringStore& src) const{
     if(hash() == src.hash() && byteEqual(src))
       return true;
 
@@ -72,8 +68,7 @@ namespace xqp
   }
 
 
-  xqpString::xqpString()
-  {
+  xqpString::xqpString(){
     theStrStore = new xqpStringStore("");
   }
 
@@ -84,9 +79,6 @@ namespace xqp
   xqpString::xqpString(const char* src){
     theStrStore = new xqpStringStore(src);
   }
-
-  xqpString::~xqpString()
-  {}
 
   xqpString& xqpString::operator=(const std::string& src){
     theStrStore = new xqpStringStore(src);
@@ -167,7 +159,7 @@ namespace xqp
     result = coll->compare(getUnicodeString(*theStrStore), getUnicodeString(src));
 
     return result;
-}
+  }
 
   int xqpString::compare(const xqpString& src, const char * loc) const{
     UErrorCode status = U_ZERO_ERROR;
@@ -195,7 +187,7 @@ namespace xqp
     delete coll;
 
     return result;
-}
+  }
 
   int xqpString::compare(const char* src) const{
     //TODO optimize the code here
@@ -419,6 +411,49 @@ namespace xqp
 
   const char* xqpString::c_str() const{
     return theStrStore->c_str();
+  }
+  
+  //uppercase/lowercase
+  xqpString xqpString::uppercase() {
+    uint32_t i =0;
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp;
+    char seq[4];
+
+    xqpStringStore* newStr = new xqpStringStore("");
+
+    for(i; i<len; ++i){
+      cp = toUpper(UTF8Decode(c));
+      seq[0] = seq[1] = seq[2] = seq[3] = 0;
+      UTF8Encode(cp, seq);
+      *newStr += seq;
+    }
+    *newStr += "\0";
+
+    theStrStore = new xqpStringStore(*newStr);
+    return *this;
+  }
+
+  xqpString xqpString::lowercase() {
+    uint32_t i =0;
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp;
+    char seq[4];
+
+    xqpStringStore* newStr = new xqpStringStore("");
+
+    for(i; i<len; ++i){
+      cp = toLower(UTF8Decode(c));
+      seq[0] = seq[1] = seq[2] = seq[3] = 0;
+      UTF8Encode(cp, seq);
+      *newStr += seq;
+    }
+    *newStr += "\0";
+
+    theStrStore = new xqpStringStore(*newStr);
+    return *this;
   }
 
 

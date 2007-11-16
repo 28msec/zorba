@@ -1,5 +1,3 @@
 SET(UTF8_SRCS
-    xqpString.cpp)
-
-ADD_LIBRARY(utf8 ${UTF8_SRCS})
-TARGET_LINK_LIBRARIES(utf8 ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
+    xqpString.cpp
+    Unicode_util.cpp)
