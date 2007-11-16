@@ -109,6 +109,12 @@ void plan_visitor::end_visit(const var_expr& v)
     Assert (fvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
+  } else if (v.kind == var_expr::pos_var) {
+    var_iterator *v_p = new var_iterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
+    vector<var_iter_t> *map;
+    Assert (pvar_iter_map.get ((uint64_t) &v, map));
+    map->push_back (v_p);
+    itstack.push(v_p);
   } else if (v.kind == var_expr::let_var) {
     RefIterator *v_p = new RefIterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
     vector<ref_iter_t> *map;
@@ -138,9 +144,12 @@ bool plan_visitor::begin_visit(const flwor_expr& v)
        ++it) {
     rchandle<var_expr> vh = (*it)->var_h;
     uint64_t k = (uint64_t) &*vh;
-    if (vh->kind == var_expr::for_var)
+    if (vh->kind == var_expr::for_var) {
       fvar_iter_map.put (k, new vector<var_iter_t>());
-    else if (vh->kind == var_expr::let_var)
+      var_expr *pos_vp = &*(*it)->get_pos_var ();
+      if (pos_vp != NULL)
+        pvar_iter_map.put ((uint64_t) pos_vp, new vector<var_iter_t>());
+    } else if (vh->kind == var_expr::let_var)
       lvar_iter_map.put (k, new vector<ref_iter_t>());
   }
 	return true;
@@ -176,9 +185,15 @@ void plan_visitor::end_visit(const flwor_expr& v)
        ++it) {
     PlanIter_t input = inputs.top (); inputs.pop ();
     if ((*it)->type == forlet_clause::for_clause) {
-      vector<var_iter_t> *var_iters;
+      vector<var_iter_t> *var_iters, *pvar_iters;
       Assert (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
-      clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input));
+      var_expr *pos_vp = &* (*it)->get_pos_var ();
+      if (pos_vp == NULL)
+        clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input));
+      else {
+        Assert (pvar_iter_map.get ((uint64_t) pos_vp, pvar_iters));
+        clauses.push_back (FLWORIterator::ForLetClause (*var_iters, *pvar_iters, input));
+      }
     } else if ((*it)->type == forlet_clause::let_clause) {
       vector<ref_iter_t> *var_iters;
       Assert (lvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));

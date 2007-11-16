@@ -234,8 +234,7 @@ ostream & forlet_clause::put( ostream& os) const
 	case let_clause: os << "LET\n"; break;
 	default: os << "??\n";
 	}
-	//d Assert<null_pointer>(var_h!=NULL);
-	Assert(var_h!=NULL);
+	Assert(var_h != NULL);
 	var_h->put(os);
 	if (pos_var_h!=NULL) {
 		os << INDENT << " AT "; pos_var_h->put(os); UNDENT;
@@ -243,8 +242,7 @@ ostream & forlet_clause::put( ostream& os) const
 	if (score_var_h!=NULL) {
 		os << INDENT << " SCORE "; score_var_h->put(os); UNDENT;
 	}
-	//d Assert<null_pointer>(expr_h!=NULL);
-	Assert(expr_h!=NULL);
+	Assert(expr_h != NULL);
 	expr_h->put(os);
 	return os << OUTDENT << "]\n";
 }
@@ -267,8 +265,7 @@ ostream& flwor_expr::put( ostream& os) const
 	vector<forletref_t>::const_iterator it = clause_begin();
 	for (; it!=clause_end(); ++it) {
 		forletref_t fl_h = *it;
-		//d Assert<null_pointer>(fl_h!=NULL);
-		Assert(fl_h!=NULL);
+		Assert(fl_h != NULL);
 		fl_h->put(os);
 	}
 	if (where_h!=NULL) where_h->put(os);
@@ -277,11 +274,9 @@ ostream& flwor_expr::put( ostream& os) const
 	for (; ord_it!=orderspec_end(); ++ord_it) {
 		orderspec_t spec = *ord_it;
 		expr_t e_h = spec.first;
-		//d Assert<null_pointer>(e_h!=NULL);
-		Assert(e_h!=NULL);
+		Assert(e_h != NULL);
 		orderref_t ord_h = spec.second;
-		//d Assert<null_pointer>(ord_h!=NULL);
-		Assert(ord_h!=NULL);
+		Assert(ord_h != NULL);
 
 		os << INDENT << "ORDERBY\n";
 		os << e_h->put(os) << endl;

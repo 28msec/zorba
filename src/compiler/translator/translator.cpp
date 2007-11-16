@@ -653,22 +653,29 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
   for (i = clauses->size () - 1; i >= 0; i--) {
     ForOrLetClause *clause = (*clauses) [i].get_ptr ();
     vector<rchandle <var_expr> > vars;
+    vector<rchandle <var_expr> > pos_vars;
     vector<rchandle <expr> > exprs;
     int size = clause->get_decl_count ();
 
     if (clause->for_or_let () == ForOrLetClause::for_clause) {
       ForClause *forclause = static_cast<ForClause *> (clause);
+      VarInDeclList *decl_list = &*forclause->get_vardecl_list ();
 
       for (j = 0; j < size; j++) {
+        rchandle<var_expr> ve;
         exprs.push_back(pop_nodestack ());
-        rchandle<var_expr> ve = pop_nodestack ().cast<var_expr> ();
+        if ((*decl_list) [j]->get_posvar () == NULL)
+          pos_vars.push_back (NULL);
+        else
+          pos_vars.push_back (pop_nodestack ().cast<var_expr> ());
+        ve = pop_nodestack ().cast<var_expr> ();
         ve->set_kind (var_expr::for_var);
         vars.push_back (ve);
         pop_scope ();
       }
 
       for (j = 0; j < size; j++) {
-        forlet_clause *flc = new forlet_clause (forlet_clause::for_clause, vars [j], NULL, NULL, exprs [j]);
+        forlet_clause *flc = new forlet_clause (forlet_clause::for_clause, vars [j], pos_vars [j], NULL, exprs [j]);
         eclauses.push_back (flc);
       }
     } else {
@@ -792,6 +799,13 @@ void translator::end_visit(const VarInDecl& v, void *visit_state)
 void *translator::begin_visit(const PositionalVar& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
+  var_expr *evar = new var_expr (v.get_location ());
+  evar->set_kind (var_expr::pos_var);
+  string varname = v.get_varname ();
+  // TODO: qname
+  evar->set_varname (new qname_expr (v.get_location (), "", varname));
+  sctx_p->bind_var (varname, evar);
+  nodestack.push (evar);
 	return no_state;
 }
 
