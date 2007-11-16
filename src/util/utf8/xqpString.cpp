@@ -24,8 +24,7 @@ namespace xqp
     uint32_t hash = 5381;
     int c;
     const char *str = c_str();
-    while ((c = *str++))
-    {
+    while ((c = *str++)){
       hash = ((hash << 5) + hash) + c; // hash*33 + c
     }
     return hash;
@@ -34,8 +33,7 @@ namespace xqp
   uint32_t xqpStringStore::hash(const char* str){
     uint32_t hash = 5381;
     int c;
-    while ((c = *str++))
-    {
+    while ((c = *str++)){
       hash = ((hash << 5) + hash) + c; // hash*33 + c
     }
     return hash;
@@ -47,20 +45,23 @@ namespace xqp
 
     uint32_t len = bytes();
 
-    if( len == src.bytes() && memcmp(c_str(), src.c_str(), len) == 0)
+    if(len == src.bytes() && memcmp(c_str(), src.c_str(), len) == 0)
        return true;
 
     return false;
   }
 
   bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const{
-    if( bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
+    if(bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
       return true;
 
     return false;
   }
 
   bool xqpStringStore::hashEqual(const xqpStringStore& src) const{
+    if (this == &src)
+      return true;
+    
     if(hash() == src.hash() && byteEqual(src))
       return true;
 
