@@ -557,10 +557,21 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
 Item_t
 UpperCaseIterator::nextImpl(PlanState& planState)
 {
-  xqp_string str("UpperCase: Not yet implemented.");
+  Item_t item;
+  xqp_string emptyStr("");
+  
   PlanIterator::PlanIteratorState* state;
   STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH2(zorba::getItemFactory()->createString(str.getStore()),state);
+
+  item = consumeNext (theChild, planState);
+  if ( item != NULL )  {
+    STACK_PUSH2(zorba::getItemFactory()->createString(
+        item->getStringValue().uppercase().getStore()),
+                            state);
+  }
+  else{
+    STACK_PUSH2(zorba::getItemFactory()->createString(emptyStr.getStore()), state);
+  }
   STACK_END2();
 }
 /* end class UpperCaseIterator */
@@ -585,10 +596,21 @@ UpperCaseIterator::nextImpl(PlanState& planState)
 /* begin class LowerCaseIterator */
 Item_t
 LowerCaseIterator::nextImpl(PlanState& planState) {
-  xqp_string str("LowerCase: Not yet implemented.");
+  Item_t item;
+  xqp_string emptyStr("");
+  
   PlanIterator::PlanIteratorState* state;
   STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH2(zorba::getItemFactory()->createString(str.getStore()),state);
+
+  item = consumeNext (theChild, planState);
+  if ( item != NULL )  {
+    STACK_PUSH2(zorba::getItemFactory()->createString(
+        item->getStringValue().lowercase().getStore()),
+    state);
+  }
+  else{
+    STACK_PUSH2(zorba::getItemFactory()->createString(emptyStr.getStore()), state);
+  }
   STACK_END2();
 }
 /* end class LowerCaseIterator */
