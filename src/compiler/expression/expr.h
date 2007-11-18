@@ -24,6 +24,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "system/globalenv.h"
 #include "compiler/parsetree/parsenodes.h"
@@ -45,10 +46,14 @@ class expr_visitor;
 |	base class for the expression tree node hierarchy
 |_______________________________________________________________________*/
 
+class var_expr;
+
 class expr : public rcobject
 {
 public:
 	typedef rchandle<expr> expr_t;
+  typedef std::map<var_expr *, expr_t> substitution_t;
+  typedef substitution_t::iterator subst_iter_t;
 
 protected:
 	yy::location loc;
@@ -63,6 +68,17 @@ public:
 public:
 	virtual void accept(expr_visitor&) const = 0;
 	virtual std::ostream& put(std::ostream&) const;
+
+  expr_t clone()
+  {
+      substitution_t s;
+      return clone(s);
+  }
+
+  virtual expr_t clone(substitution_t& substitution)
+  {
+      throw std::exception();
+  }
 
 
 /* (some proposed optimizer interface methods:)
@@ -239,6 +255,8 @@ public:
 public:
 	void accept(expr_visitor&) const;
   std::ostream& put(std::ostream&) const;
+
+  virtual expr_t clone(substitution_t& substitution);
 };
 
 
@@ -322,6 +340,7 @@ public:	// accessors
 public:
 	std::ostream& put(ostream&) const;
 	
+  rchandle<forlet_clause> clone(expr::substitution_t& substitution);
 };
 
 
@@ -339,8 +358,10 @@ public:	// types
 	typedef std::pair<expr_t,orderref_t> orderspec_t;
 
 protected:	// state
-	std::vector<forletref_t> clause_v;
-	std::vector<orderspec_t> orderspec_v;
+  typedef std::vector<forletref_t> clause_list_t;
+	clause_list_t clause_v;
+  typedef std::vector<orderspec_t> orderspec_list_t;
+	orderspec_list_t orderspec_v;
   bool order_stable;  // per clause, not per spec!
 	expr_t where_h;
 	expr_t retval_h;
@@ -394,6 +415,7 @@ public:
 	void accept(expr_visitor&) const;
 	std::ostream& put(std::ostream&) const;
 
+  virtual expr_t clone(substitution_t& substitution);
 };
 
 
@@ -1395,3 +1417,4 @@ public:
  * mode: c++
  * End:
  */
+/* vim:set ts=2 sw=2: */

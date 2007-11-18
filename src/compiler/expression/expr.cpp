@@ -202,7 +202,14 @@ void var_expr::accept(expr_visitor& v) const
 	v.end_visit(*this);
 }
 
-
+expr::expr_t var_expr::clone(expr::substitution_t& substitution)
+{
+  expr::subst_iter_t i = substitution.find(this);
+  if (i == substitution.end()) {
+    return this;
+  }
+  return i->second->clone(substitution);
+}
 
 // [33] [http://www.w3.org/TR/xquery/#prod-xquery-FLWORExpr]
 
@@ -245,6 +252,30 @@ ostream & forlet_clause::put( ostream& os) const
 	Assert(expr_h != NULL);
 	expr_h->put(os);
 	return os << OUTDENT << "]\n";
+}
+
+rchandle<forlet_clause> forlet_clause::clone(expr::substitution_t& substitution)
+{
+  expr_t expr_copy_h = expr_h->clone(substitution);
+
+  varref_t var_copy_h(new var_expr(*var_h));
+  substitution[var_h.get_ptr()] = var_copy_h.get_ptr();
+
+  varref_t pos_var_copy_h;
+  var_expr *pos_var_ptr = pos_var_h.get_ptr();
+  if (pos_var_ptr) {
+    pos_var_copy_h = new var_expr(*pos_var_ptr);
+    substitution[pos_var_ptr] = pos_var_copy_h.get_ptr();
+  }
+
+  varref_t score_var_copy_h;
+  var_expr *score_var_ptr = score_var_h.get_ptr();
+  if (score_var_ptr) {
+    score_var_copy_h = new var_expr(*score_var_ptr);
+    substitution[score_var_ptr] = score_var_copy_h.get_ptr();
+  }
+
+  return new forlet_clause(type, var_copy_h, pos_var_copy_h, score_var_copy_h, expr_copy_h);
 }
 
 
@@ -324,7 +355,30 @@ void flwor_expr::accept(expr_visitor& v) const
 	v.end_visit(*this);	
 }
 
+expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
+{
+  expr_t flwor_copy = new flwor_expr(get_loc());
+  flwor_expr *flwor_copy_ptr = static_cast<flwor_expr *>(flwor_copy.get_ptr());
 
+  for(clause_list_t::iterator i = clause_v.begin(); i != clause_v.end(); ++i) {
+    flwor_copy_ptr->add((*i)->clone(substitution));
+  }
+
+  for(orderspec_list_t::iterator i = orderspec_v.begin(); i != orderspec_v.end(); ++i) {
+    expr_t e_copy = i->first->clone(substitution);
+    flwor_copy_ptr->add(orderspec_t(e_copy, i->second));
+  }
+
+  flwor_copy_ptr->set_order_stable(order_stable);
+
+  if (where_h.get_ptr()) {
+    flwor_copy_ptr->set_where(where_h->clone(substitution));
+  }
+
+  flwor_copy_ptr->set_retval(retval_h->clone(substitution));
+
+  return flwor_copy;
+}
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 
@@ -1542,4 +1596,5 @@ void pi_expr::accept(
 
 
 } /* namespace xqp */
+/* vim:set ts=2 sw=2: */
 
