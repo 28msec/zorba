@@ -30,39 +30,39 @@ static uint32_t depth = 0;
 /*..........................................
  :  begin visit                            :
  :.........................................*/
-bool plan_visitor::begin_visit(const expr& v)
+bool plan_visitor::begin_visit(expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const expr& v)
+void plan_visitor::end_visit(expr& v)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-bool plan_visitor::begin_visit(const empty_expr& v)
+bool plan_visitor::begin_visit(empty_expr& v)
 {
 	cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
-void plan_visitor::end_visit(const empty_expr& v)
+void plan_visitor::end_visit(empty_expr& v)
 {
 	cout << std::string(depth--, ' ') << TRACE << endl;
 	PlanIter_t iter = new EmptyIterator(v.get_loc());
 	itstack.push(iter);
 }
 
-bool plan_visitor::begin_visit(const enclosed_expr& v)
+bool plan_visitor::begin_visit(enclosed_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const enclosed_expr& v)
+void plan_visitor::end_visit(enclosed_expr& v)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 	PlanIter_t content = pop_itstack();
@@ -71,7 +71,7 @@ void plan_visitor::end_visit(const enclosed_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const expr_list& v)
+bool plan_visitor::begin_visit(expr_list& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	itstack.push(NULL);
@@ -79,7 +79,7 @@ bool plan_visitor::begin_visit(const expr_list& v)
 }
 
 
-void plan_visitor::end_visit(const expr_list& v)
+void plan_visitor::end_visit(expr_list& v)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 	vector<PlanIter_t> argv;
@@ -93,14 +93,14 @@ void plan_visitor::end_visit(const expr_list& v)
 }
 
 
-bool plan_visitor::begin_visit(const var_expr& v)
+bool plan_visitor::begin_visit(var_expr& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const var_expr& v)
+void plan_visitor::end_visit(var_expr& v)
 {
   if (v.kind == var_expr::for_var) {
     var_iterator *v_p = new var_iterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
@@ -125,18 +125,18 @@ void plan_visitor::end_visit(const var_expr& v)
   }
 }
 
-bool plan_visitor::begin_visit(const order_modifier& v)
+bool plan_visitor::begin_visit(order_modifier& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
-void plan_visitor::end_visit(const order_modifier& v)
+void plan_visitor::end_visit(order_modifier& v)
 {
   cout << TRACE << endl;
 }
 
-bool plan_visitor::begin_visit(const flwor_expr& v)
+bool plan_visitor::begin_visit(flwor_expr& v)
 {
   cout << TRACE << endl;
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
@@ -156,7 +156,7 @@ bool plan_visitor::begin_visit(const flwor_expr& v)
 }
 
 
-void plan_visitor::end_visit(const flwor_expr& v)
+void plan_visitor::end_visit(flwor_expr& v)
 {
   cout << TRACE << endl;
   PlanIter_t ret = pop_itstack ();
@@ -206,53 +206,53 @@ void plan_visitor::end_visit(const flwor_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const quantified_expr& v)
+bool plan_visitor::begin_visit(quantified_expr& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const quantified_expr& v)
+void plan_visitor::end_visit(quantified_expr& v)
 {
   cout << TRACE << endl;
 }
 
 
-bool plan_visitor::begin_visit(const case_clause& v)
-{
-  cout << TRACE << endl;
-	return true;
-}
-
-
-void plan_visitor::end_visit(const case_clause& v)
-{
-  cout << TRACE << endl;
-}
-
-
-bool plan_visitor::begin_visit(const typeswitch_expr& v)
+bool plan_visitor::begin_visit(case_clause& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const typeswitch_expr& v)
+void plan_visitor::end_visit(case_clause& v)
 {
   cout << TRACE << endl;
 }
 
 
-bool plan_visitor::begin_visit(const if_expr& v)
+bool plan_visitor::begin_visit(typeswitch_expr& v)
+{
+  cout << TRACE << endl;
+	return true;
+}
+
+
+void plan_visitor::end_visit(typeswitch_expr& v)
+{
+  cout << TRACE << endl;
+}
+
+
+bool plan_visitor::begin_visit(if_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const if_expr& v)
+void plan_visitor::end_visit(if_expr& v)
 {
   cout << TRACE << endl;
 	PlanIter_t iterElse = pop_itstack();
@@ -263,7 +263,7 @@ void plan_visitor::end_visit(const if_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const fo_expr& v)
+bool plan_visitor::begin_visit(fo_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	itstack.push(NULL);
@@ -271,7 +271,7 @@ bool plan_visitor::begin_visit(const fo_expr& v)
 }
 
 
-void plan_visitor::end_visit(const fo_expr& v)
+void plan_visitor::end_visit(fo_expr& v)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
@@ -294,55 +294,55 @@ void plan_visitor::end_visit(const fo_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const ft_select_expr& v)
+bool plan_visitor::begin_visit(ft_select_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const ft_contains_expr& v)
+bool plan_visitor::begin_visit(ft_contains_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const instanceof_expr& v)
+bool plan_visitor::begin_visit(instanceof_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const treat_expr& v)
+bool plan_visitor::begin_visit(treat_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const castable_expr& v)
+bool plan_visitor::begin_visit(castable_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const cast_expr& v)
+bool plan_visitor::begin_visit(cast_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const unary_expr& v)
+bool plan_visitor::begin_visit(unary_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const validate_expr& v)
+bool plan_visitor::begin_visit(validate_expr& v)
 {
 cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const extension_expr& v)
+bool plan_visitor::begin_visit(extension_expr& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -353,20 +353,20 @@ cout << TRACE << endl;
 
 
 ********************************************************************************/
-bool plan_visitor::begin_visit(const relpath_expr& v)
+bool plan_visitor::begin_visit(relpath_expr& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const relpath_expr& v)
+void plan_visitor::end_visit(relpath_expr& v)
 {
   cout << TRACE << endl;
 }
 
 
-bool plan_visitor::begin_visit(const axis_step_expr& v)
+bool plan_visitor::begin_visit(axis_step_expr& v)
 {
   cout << TRACE << endl;
 
@@ -474,7 +474,7 @@ bool plan_visitor::begin_visit(const axis_step_expr& v)
 }
 
 
-void plan_visitor::end_visit(const axis_step_expr& v)
+void plan_visitor::end_visit(axis_step_expr& v)
 {
   cout << TRACE << endl;
 }
@@ -484,7 +484,7 @@ void plan_visitor::end_visit(const axis_step_expr& v)
 
 
 ********************************************************************************/
-bool plan_visitor::begin_visit(const match_expr& v)
+bool plan_visitor::begin_visit(match_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 
@@ -561,7 +561,7 @@ bool plan_visitor::begin_visit(const match_expr& v)
 }
 
 
-void plan_visitor::end_visit(const match_expr& v)
+void plan_visitor::end_visit(match_expr& v)
 {
   cout << TRACE << endl;
 }
@@ -571,27 +571,27 @@ void plan_visitor::end_visit(const match_expr& v)
 
 
 ********************************************************************************/
-bool plan_visitor::begin_visit(const doc_expr& v)
+bool plan_visitor::begin_visit(doc_expr& v)
 {
   cout << TRACE  << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const doc_expr& v)
+void plan_visitor::end_visit(doc_expr& v)
 {
   cout << TRACE << endl;
 }
 
 
-bool plan_visitor::begin_visit(const elem_expr& v)
+bool plan_visitor::begin_visit(elem_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const elem_expr& v)
+void plan_visitor::end_visit(elem_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
 
@@ -620,27 +620,27 @@ void plan_visitor::end_visit(const elem_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const compElem_expr& v)
+bool plan_visitor::begin_visit(compElem_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const compElem_expr& v)
+void plan_visitor::end_visit(compElem_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
 }
 
 
-bool plan_visitor::begin_visit(const attr_expr& v)
+bool plan_visitor::begin_visit(attr_expr& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const attr_expr& v)
+void plan_visitor::end_visit(attr_expr& v)
 {
   cout << TRACE << endl;
 
@@ -662,14 +662,14 @@ void plan_visitor::end_visit(const attr_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const text_expr& v)
+bool plan_visitor::begin_visit(text_expr& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const text_expr& v)
+void plan_visitor::end_visit(text_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
 	Item_t item = zorba::getItemFactory()->createTextNode(v.get_text());
@@ -678,14 +678,14 @@ void plan_visitor::end_visit(const text_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const comment_expr& v)
+bool plan_visitor::begin_visit(comment_expr& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const comment_expr& v)
+void plan_visitor::end_visit(comment_expr& v)
 {  
   cout << TRACE << endl;
   PlanIter_t contentIter = NULL;
@@ -702,14 +702,14 @@ void plan_visitor::end_visit(const comment_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(const pi_expr& v)
+bool plan_visitor::begin_visit(pi_expr& v)
 {
   cout << TRACE << endl;
 	return true;
 }
 
 
-void plan_visitor::end_visit(const pi_expr& v)
+void plan_visitor::end_visit(pi_expr& v)
 {
   cout << TRACE << endl;
 }
@@ -717,13 +717,13 @@ void plan_visitor::end_visit(const pi_expr& v)
 
 
 
-bool plan_visitor::begin_visit(const literal_expr& v)
+bool plan_visitor::begin_visit(literal_expr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(const order_expr& v)
+bool plan_visitor::begin_visit(order_expr& v)
 {
 cout << TRACE << endl;
 	return true;
@@ -734,53 +734,53 @@ cout << TRACE << endl;
  :  end visit                              :
  :.........................................*/
 
-void plan_visitor::end_visit(const ft_select_expr& v)
+void plan_visitor::end_visit(ft_select_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const ft_contains_expr& v)
+void plan_visitor::end_visit(ft_contains_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const instanceof_expr& v)
+void plan_visitor::end_visit(instanceof_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const treat_expr& v)
+void plan_visitor::end_visit(treat_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const castable_expr& v)
+void plan_visitor::end_visit(castable_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const cast_expr& v)
+void plan_visitor::end_visit(cast_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const unary_expr& v)
+void plan_visitor::end_visit(unary_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const validate_expr& v)
+void plan_visitor::end_visit(validate_expr& v)
 {
   cout << TRACE << endl;
 }
 
-void plan_visitor::end_visit(const extension_expr& v)
+void plan_visitor::end_visit(extension_expr& v)
 {
   cout << TRACE << endl;
 }
 
 
-void plan_visitor::end_visit(const literal_expr& v)
+void plan_visitor::end_visit(literal_expr& v)
 {
 	cout << std::string(depth--, ' ') << TRACE << endl;
   switch (v.get_type()) {
@@ -821,7 +821,7 @@ void plan_visitor::end_visit(const literal_expr& v)
   }}
 }
 
-void plan_visitor::end_visit(const order_expr& v)
+void plan_visitor::end_visit(order_expr& v)
 {
 cout << TRACE << endl;
 }

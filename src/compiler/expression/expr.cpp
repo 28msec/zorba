@@ -50,7 +50,7 @@ empty_expr::put( ostream& os) const
 	return os << INDENT << "enclosed_expr[]\n";
 }
 void 
-empty_expr::accept(expr_visitor& v) const
+empty_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	v.end_visit(*this);
@@ -79,7 +79,7 @@ ostream& enclosed_expr::put( ostream& os) const
 }
 
 void enclosed_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	content->accept(v);
@@ -116,7 +116,7 @@ ostream& expr_list::put( ostream& os) const
 }
 
 void expr_list::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
 	list_iterator<expr_t> it = begin();
@@ -196,7 +196,7 @@ ostream& var_expr::put( ostream& os) const
 	return os << OUTDENT << "]\n";
 }
 
-void var_expr::accept(expr_visitor& v) const
+void var_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	v.end_visit(*this);
@@ -334,7 +334,7 @@ ostream& flwor_expr::put( ostream& os) const
 
 }
 
-void flwor_expr::accept(expr_visitor& v) const
+void flwor_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	
@@ -426,7 +426,7 @@ ostream& quantified_expr::put( ostream& os) const
 }
 
 void quantified_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -468,7 +468,7 @@ ostream& typeswitch_expr::put( ostream& os) const
 }
 
 void typeswitch_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -516,7 +516,7 @@ ostream& if_expr::put( ostream& os) const
 }
 
 void if_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	this->cond_expr_h->accept(v);
@@ -571,7 +571,7 @@ ostream& fo_expr::put( ostream& os) const
 }
 
 void fo_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	vector<expr_t>::const_iterator it = begin();
@@ -617,7 +617,7 @@ ostream& ft_contains_expr::put( ostream& os) const
 }
 
 void ft_contains_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -653,7 +653,7 @@ ostream& instanceof_expr::put( ostream& os) const
 }
 
 void instanceof_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -688,7 +688,7 @@ ostream& treat_expr::put( ostream& os) const
 }
 
 void treat_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -724,7 +724,7 @@ ostream& castable_expr::put( ostream& os) const
 }
 
 void castable_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -760,7 +760,7 @@ ostream& cast_expr::put( ostream& os) const
 }
 
 void cast_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -794,7 +794,7 @@ ostream& unary_expr::put( ostream& os) const
 }
 
 void unary_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -832,7 +832,7 @@ ostream& validate_expr::put( ostream& os) const
 }
 
 void validate_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -892,7 +892,7 @@ ostream& extension_expr::put( ostream& os) const
 }
 
 void extension_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -930,7 +930,7 @@ ostream& relpath_expr::put( ostream& os) const
 }
 
 
-void relpath_expr::accept(expr_visitor& v) const
+void relpath_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 
@@ -1002,7 +1002,7 @@ ostream& axis_step_expr::put(ostream& os) const
 }
 
 
-void axis_step_expr::accept(expr_visitor& v) const
+void axis_step_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 
@@ -1109,7 +1109,7 @@ ostream& match_expr::put(ostream& os) const
 }
 
 
-void match_expr::accept(expr_visitor& v) const
+void match_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	v.end_visit(*this);
@@ -1228,7 +1228,7 @@ ostream& literal_expr::put( ostream& os) const
 }
 
 void literal_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	v.end_visit(*this);
@@ -1268,7 +1268,7 @@ ostream& order_expr::put( ostream& os) const
 }
 
 void order_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -1290,7 +1290,7 @@ elem_expr::elem_expr(
 {}
 elem_expr::~elem_expr(){}
 
-void elem_expr::accept(expr_visitor& v) const
+void elem_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	if (this->attrs_expr_h != NULL)
@@ -1336,7 +1336,7 @@ ostream& doc_expr::put( ostream& os) const
 }
 
 void doc_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 
@@ -1398,7 +1398,7 @@ ostream& compElem_expr::put( ostream& os) const
 }
 
 void compElem_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	if (this->content_expr_h != NULL)
@@ -1459,7 +1459,7 @@ ostream& attr_expr::put( ostream& os) const
 }
 
 void attr_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	if (this->qname_expr_h != NULL)
@@ -1497,7 +1497,7 @@ ostream& text_expr::put( ostream& os) const
 }
 
 void text_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
 	v.end_visit(*this);
@@ -1530,7 +1530,7 @@ ostream& comment_expr::put( ostream& os) const
 }
 
 void comment_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;  
   if (this->comment_expr_h != NULL)
@@ -1589,7 +1589,7 @@ ostream& pi_expr::put( ostream& os) const
 }
 
 void pi_expr::accept(
-	expr_visitor& v) const
+	expr_visitor& v)
 {
 }
 

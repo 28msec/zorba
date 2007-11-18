@@ -66,7 +66,7 @@ public:
 	yy::location get_loc() const { return loc; }
 
 public:
-	virtual void accept(expr_visitor&) const = 0;
+	virtual void accept(expr_visitor&) = 0;
 	virtual std::ostream& put(std::ostream&) const;
 
   expr_t clone()
@@ -105,7 +105,7 @@ class empty_expr : public expr
 		empty_expr(yy::location const&);
 		~empty_expr();
 		
-		void accept(expr_visitor&) const;
+		void accept(expr_visitor&);
 		std::ostream& put(std::ostream&) const;
 };
 
@@ -132,7 +132,7 @@ public:
 		return content;
 	}
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 }; /* class enclosed_expr */
 
@@ -164,7 +164,7 @@ public:
 		{ return elist.end(); }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -253,7 +253,7 @@ public:
 	static std::string decode_var_kind(enum var_kind);
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
   std::ostream& put(std::ostream&) const;
 
   virtual expr_t clone(substitution_t& substitution);
@@ -412,7 +412,7 @@ public:	// accessors
 	void set_retval(expr_t e_h) { retval_h = e_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
   virtual expr_t clone(substitution_t& substitution);
@@ -463,7 +463,7 @@ public:
 	void set_sat_expr(expr_t e_h) { sat_expr_h = e_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -544,7 +544,7 @@ public:
 		{ return case_clause_hv[i]; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -585,7 +585,7 @@ public:
 	void set_else_expr(expr_t e_h) { else_expr_h = e_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -625,7 +625,7 @@ public:
 	void set_func(function const* _func) { func = _func; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -662,7 +662,7 @@ public:
 	expr_t get_ignore() const { return ft_ignore_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -698,7 +698,7 @@ public:
 	TypeSystem::xqtref_t get_type() const { return type; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -728,7 +728,7 @@ public:
 	TypeSystem::xqtref_t get_type() const { return type; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -758,7 +758,7 @@ public:
 	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeSystem::QUANT_QUESTION; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -788,7 +788,7 @@ public:
 	bool is_optional() const { return GENV_TYPESYSTEM.quantifier(*type) == TypeSystem::QUANT_QUESTION; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -817,7 +817,7 @@ public:
 	expr_t get_expr() const { return expr_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -846,7 +846,7 @@ public:
 	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -906,7 +906,7 @@ public:
 	expr_t get_expr() const { return expr_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 };
 
@@ -949,7 +949,7 @@ public:
 
 	expr_t& operator[](int n)           { return theSteps[n]; }
 
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 };
 
@@ -996,7 +996,7 @@ public:
 	std::vector<expr_t>::const_iterator begin() const { return thePreds.begin(); }
 	std::vector<expr_t>::const_iterator end() const   { return thePreds.end(); }
 
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 };
 
@@ -1047,7 +1047,7 @@ public:
 	void setTypeName(rchandle<qname_expr> v) { theTypeName = v; }
   void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
   StoreConsts::NodeKind_t getNodeKind() const;
@@ -1116,7 +1116,7 @@ public:
 
 public:
 	static std::string decode_type(enum literal_type_t t);
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -1154,7 +1154,7 @@ public:
 	expr_t get_expr() const { return expr_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -1190,7 +1190,7 @@ public:
 	expr_t get_content_expr() const { return content_expr_h; }
 	expr_t get_attrs_expr() const { return attrs_expr_h; }
 	
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 };
 
@@ -1215,7 +1215,7 @@ public:
 	expr_t get_docuri() const { return docuri_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -1268,7 +1268,7 @@ public:
 		{ return nsb_v.end(); }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -1312,7 +1312,7 @@ public:
 	expr_t get_val_expr() const { return val_expr_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -1338,7 +1338,7 @@ public:
 	std::string get_text() const { return this->text; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -1364,7 +1364,7 @@ public:
 	expr_t get_comment_expr() const { return comment_expr_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
@@ -1402,7 +1402,7 @@ public:
 	expr_t get_content_expr() const { return content_expr_h; }
 
 public:
-	void accept(expr_visitor&) const;
+	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
 
 };
