@@ -3,6 +3,11 @@
 
 using namespace xqp;
 
+const rchandle<NodeTest> NodeTest::ANY_NODE_TEST(new NodeTest(StoreConsts::anyNode));
+const rchandle<NodeTest> NodeTest::PI_TEST(new NodeTest(StoreConsts::piNode));
+const rchandle<NodeTest> NodeTest::TEXT_TEST(new NodeTest(StoreConsts::textNode));
+const rchandle<NodeTest> NodeTest::COMMENT_TEST(new NodeTest(StoreConsts::commentNode));
+
 NodeNameTest::NodeNameTest(rchandle<xqpStringStore> uri, rchandle<xqpStringStore> local)
     : m_uri(uri),
     m_local(local)
@@ -55,12 +60,12 @@ NodeTest::NodeTest(StoreConsts::NodeKind_t kind, rchandle<NodeNameTest> name_tes
 {
 }
 
-StoreConsts::NodeKind_t NodeTest::get_kind()
+StoreConsts::NodeKind_t NodeTest::get_kind() const
 {
   return m_kind;
 }
 
-rchandle<NodeNameTest> NodeTest::get_nametest()
+rchandle<NodeNameTest> NodeTest::get_nametest() const
 {
   return m_name_test;
 }

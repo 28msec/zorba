@@ -184,6 +184,32 @@ TypeSystem::TypeSystem()
   ATOMIC_TYPE_DEFN(QNAME)
   ATOMIC_TYPE_DEFN(NOTATION)
 #undef ATOMIC_TYPE_DEFN
+
+  ANY_TYPE = new AnyXQType();
+
+  ANY_SIMPLE_TYPE = new AnySimpleXQType();
+
+  UNTYPED_TYPE = new UntypedXQType();
+
+  EMPTY_TYPE = new EmptyXQType();
+
+  NONE_TYPE = new NoneXQType();
+
+  ITEM_TYPE_ONE = new ItemXQType(QUANT_ONE);
+  ITEM_TYPE_QUESTION = new ItemXQType(QUANT_QUESTION);
+  ITEM_TYPE_STAR = new ItemXQType(QUANT_STAR);
+  ITEM_TYPE_PLUS = new ItemXQType(QUANT_PLUS);
+
+#define NODE_TYPE_DEFN(basename) \
+  basename##_TYPE_ONE = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_ONE); \
+  basename##_TYPE_QUESTION = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_QUESTION); \
+  basename##_TYPE_STAR = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_STAR); \
+  basename##_TYPE_PLUS = new NodeXQType(NodeTest::basename##_TEST, EMPTY_TYPE, QUANT_PLUS);
+  NODE_TYPE_DEFN(PI)
+  NODE_TYPE_DEFN(TEXT)
+  NODE_TYPE_DEFN(COMMENT)
+  NODE_TYPE_DEFN(ANY_NODE)
+#undef NODE_TYPE_DEFN
 }
 
 TypeSystem::~TypeSystem()
@@ -224,6 +250,9 @@ bool TypeSystem::is_equal(const XQType& type1, const XQType& type2) const
 
 bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) const
 {
+  if (is_equal(subtype, *NONE_TYPE)) {
+    return true;
+  }
   if (!QUANT_SUBTYPE_MATRIX[subtype.m_quantifier][supertype.m_quantifier]) {
     return false;
   }
@@ -236,11 +265,7 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
           const AtomicXQType& a2 = static_cast<const AtomicXQType&>(supertype);
           return ATOMIC_SUBTYPE_MATRIX[a1.m_type_code][a2.m_type_code];
         }
-        case XQType::NODE_TYPE_KIND:
-        case XQType::ANY_TYPE_KIND:
-        case XQType::ITEM_KIND:
-        case XQType::ANY_SIMPLE_TYPE_KIND:
-        case XQType::UNTYPED_KIND:
+        default:
           return false;
       }
       break;
@@ -253,11 +278,7 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
           const NodeXQType& n2 = static_cast<const NodeXQType&>(supertype);
           return n1.m_nodetest->is_sub_nodetest_of(*n2.m_nodetest);
         }
-        case XQType::ATOMIC_TYPE_KIND:
-        case XQType::ANY_TYPE_KIND:
-        case XQType::ITEM_KIND:
-        case XQType::ANY_SIMPLE_TYPE_KIND:
-        case XQType::UNTYPED_KIND:
+        default:
           return false;
       }
       break;
@@ -271,7 +292,7 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
         case XQType::UNTYPED_KIND:
           return true;
 
-        case XQType::ITEM_KIND:
+        default:
           return false;
       }
       break;
@@ -283,9 +304,7 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
         case XQType::ITEM_KIND:
           return true;
 
-        case XQType::ANY_TYPE_KIND:
-        case XQType::ANY_SIMPLE_TYPE_KIND:
-        case XQType::UNTYPED_KIND:
+        default:
           return false;
       }
       break;
@@ -296,10 +315,7 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
         case XQType::ANY_SIMPLE_TYPE_KIND:
           return true;
 
-        case XQType::NODE_TYPE_KIND:
-        case XQType::ANY_TYPE_KIND:
-        case XQType::ITEM_KIND:
-        case XQType::UNTYPED_KIND:
+        default:
           return false;
       }
       break;
@@ -309,14 +325,23 @@ bool TypeSystem::is_subtype(const XQType& subtype, const XQType& supertype) cons
         case XQType::UNTYPED_KIND:
           return true;
 
-        case XQType::ATOMIC_TYPE_KIND:
-        case XQType::NODE_TYPE_KIND:
-        case XQType::ANY_TYPE_KIND:
-        case XQType::ITEM_KIND:
-        case XQType::ANY_SIMPLE_TYPE_KIND:
+        default:
           return false;
       }
       break;
+
+    case XQType::EMPTY_KIND:
+      switch(subtype.type_kind()) {
+        case XQType::EMPTY_KIND:
+          return true;
+
+        default:
+          return false;
+      }
+      break;
+
+    case XQType::NONE_KIND:
+      return false;
   }
   return false;
 }
@@ -388,16 +413,102 @@ TypeSystem::xqtref_t TypeSystem::arithmetic_type(const XQType& type1, const XQTy
 
 rchandle<NodeNameTest> TypeSystem::get_nametest(const XQType& type) const
 {
+  if (type.type_kind() == XQType::NODE_TYPE_KIND) {
+    const NodeXQType& n = static_cast<const NodeXQType&>(type);
+    const NodeTest *nt = n.m_nodetest.get_ptr();
+    if (nt) {
+      return rchandle<NodeNameTest>(nt->get_nametest());
+    }
+  }
   return rchandle<NodeNameTest>(0);
 }
 
-NodeXQType::NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier) : XQType(quantifier), m_nodetest(nodetest)
+NodeXQType::NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::xqtref_t content_type, TypeSystem::quantifier_t quantifier) : XQType(quantifier), m_nodetest(nodetest), m_content_type(content_type)
 {
 }
 
-TypeSystem::xqtref_t TypeSystem::create_node_type(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier) const
+TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
 {
-  return new NodeXQType(nodetest, quantifier);
+  TypeSystem::quantifier_t q;
+  switch(ident.get_quantifier()) {
+    case TypeIdentifier::QUANT_ONE:
+      q = TypeSystem::QUANT_ONE;
+      break;
+
+    case TypeIdentifier::QUANT_QUESTION:
+      q = TypeSystem::QUANT_QUESTION;
+      break;
+
+    case TypeIdentifier::QUANT_PLUS:
+      q = TypeSystem::QUANT_PLUS;
+      break;
+
+    case TypeIdentifier::QUANT_STAR:
+      q = TypeSystem::QUANT_STAR;
+      break;
+  }
+
+  switch(ident.get_kind()) {
+    case TypeIdentifier::NAMED_TYPE:
+      {
+      const NamedTypeIdentifier& ni = static_cast<const NamedTypeIdentifier&>(ident);
+      return create_type(ni.get_name(), q);
+      }
+
+    case TypeIdentifier::ELEMENT_TYPE:
+      {
+      const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
+      rchandle<NodeNameTest> ennt(new NodeNameTest(eai.get_uri(), eai.get_local()));
+      rchandle<NodeTest> ent(new NodeTest(StoreConsts::elementNode, ennt));
+      TypeIdentifier *ci = eai.get_content_type().get_ptr();
+      xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
+      return create_node_type(ent, content_type, q);
+      }
+
+    case TypeIdentifier::ATTRIBUTE_TYPE:
+      {
+      const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
+      rchandle<NodeNameTest> annt(new NodeNameTest(eai.get_uri(), eai.get_local()));
+      rchandle<NodeTest> ant(new NodeTest(StoreConsts::attributeNode, annt));
+      TypeIdentifier *ci = eai.get_content_type().get_ptr();
+      xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
+      return create_node_type(ant, content_type, q);
+      }
+
+    case TypeIdentifier::DOCUMENT_TYPE:
+      {
+      const DocumentTypeIdentifier& di = static_cast<const DocumentTypeIdentifier&>(ident);
+      TypeIdentifier *ci = di.get_content_type().get_ptr();
+      xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
+      rchandle<NodeTest> nt(new NodeTest(StoreConsts::documentNode));
+      return create_node_type(nt, content_type, q);
+      }
+
+    case TypeIdentifier::PI_TYPE:
+      return create_node_type(NodeTest::PI_TEST, NONE_TYPE, q);
+
+    case TypeIdentifier::TEXT_TYPE:
+      return create_node_type(NodeTest::TEXT_TEST, NONE_TYPE, q);
+
+    case TypeIdentifier::COMMENT_TYPE:
+      return create_node_type(NodeTest::COMMENT_TEST, NONE_TYPE, q);
+
+    case TypeIdentifier::ANY_NODE_TYPE:
+      return create_node_type(NodeTest::ANY_NODE_TEST, NONE_TYPE, q);
+
+    case TypeIdentifier::ITEM_TYPE:
+      return create_item_type(q);
+
+    case TypeIdentifier::EMPTY_TYPE:
+      return create_empty_type();
+  }
+
+  return TypeSystem::xqtref_t(0);
+}
+
+TypeSystem::xqtref_t TypeSystem::create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeSystem::quantifier_t quantifier) const
+{
+  return new NodeXQType(nodetest, content_type, quantifier);
 }
 
 /* vim:set ts=2 sw=2: */

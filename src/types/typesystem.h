@@ -5,6 +5,7 @@
 #include <assert.h>
 #include "store/api/item.h"
 #include "util/rchandle.h"
+#include "types/typeident.h"
 
 namespace xqp {
 
@@ -161,11 +162,13 @@ class TypeSystem {
     /* Factory Methods */
     xqtref_t create_type(QNameItem_t qname, quantifier_t quantifier) const;
 
+    xqtref_t create_type(const TypeIdentifier& ident) const;
+
     xqtref_t create_atomic_type(atomic_type_code_t type_code, quantifier_t quantifier) const;
 
     xqtref_t create_atomic_type(QNameItem_t qname, quantifier_t quantifier) const;
 
-    xqtref_t create_node_type(rchandle<NodeTest> nodetest, quantifier_t quantifier) const;
+    xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, quantifier_t quantifier) const;
 
     xqtref_t create_any_type() const;
 
@@ -174,6 +177,10 @@ class TypeSystem {
     xqtref_t create_any_simple_type() const;
 
     xqtref_t create_untyped_type() const;
+
+    xqtref_t create_empty_type() const;
+
+    xqtref_t create_none_type() const;
 
     QNameItem_t XS_ANY_TYPE_QNAME;
 
@@ -237,10 +244,23 @@ class TypeSystem {
 
     TypeSystem::xqtref_t UNTYPED_TYPE;
 
-    TypeSystem::xqtref_t ITEM_TYPE_ONE;
-    TypeSystem::xqtref_t ITEM_TYPE_QUESTION;
-    TypeSystem::xqtref_t ITEM_TYPE_STAR;
-    TypeSystem::xqtref_t ITEM_TYPE_PLUS;
+    TypeSystem::xqtref_t EMPTY_TYPE;
+
+    TypeSystem::xqtref_t NONE_TYPE;
+
+#define ALL_QUANT_TYPE_DECL(basename) \
+    TypeSystem::xqtref_t basename##_TYPE_ONE; \
+    TypeSystem::xqtref_t basename##_TYPE_QUESTION; \
+    TypeSystem::xqtref_t basename##_TYPE_STAR; \
+    TypeSystem::xqtref_t basename##_TYPE_PLUS;
+
+    ALL_QUANT_TYPE_DECL(ITEM)
+    ALL_QUANT_TYPE_DECL(ANY_NODE)
+    ALL_QUANT_TYPE_DECL(PI)
+    ALL_QUANT_TYPE_DECL(TEXT)
+    ALL_QUANT_TYPE_DECL(COMMENT)
+#undef ALL_QUANT_TYPE_DECL
+
 
   private:
 
@@ -274,6 +294,8 @@ class XQType : virtual public rcobject {
       ITEM_KIND,
       ANY_SIMPLE_TYPE_KIND,
       UNTYPED_KIND,
+      EMPTY_KIND,
+      NONE_KIND,
     } type_kind_t;
 
     XQType(TypeSystem::quantifier_t quantifier)
@@ -303,6 +325,7 @@ class AtomicXQType : public XQType {
 class NodeXQType : public XQType {
   private:
     rchandle<NodeTest> m_nodetest;
+    TypeSystem::xqtref_t m_content_type;
 
   protected:
     virtual type_kind_t type_kind() const
@@ -310,7 +333,7 @@ class NodeXQType : public XQType {
       return NODE_TYPE_KIND;
     }
 
-    NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::quantifier_t quantifier);
+    NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::xqtref_t content_type, TypeSystem::quantifier_t quantifier);
 
     TYPE_FRIENDS
 };
@@ -359,6 +382,30 @@ class UntypedXQType : public XQType {
     }
 
     UntypedXQType() : XQType(TypeSystem::QUANT_STAR) { }
+
+    TYPE_FRIENDS
+};
+
+class EmptyXQType : public XQType {
+  protected:
+    virtual type_kind_t type_kind() const
+    {
+      return EMPTY_KIND;
+    }
+
+    EmptyXQType() : XQType(TypeSystem::QUANT_ZERO) { }
+
+    TYPE_FRIENDS
+};
+
+class NoneXQType : public XQType {
+  protected:
+    virtual type_kind_t type_kind() const
+    {
+      return NONE_KIND;
+    }
+
+    NoneXQType() : XQType(TypeSystem::QUANT_ZERO) { }
 
     TYPE_FRIENDS
 };
@@ -412,6 +459,16 @@ inline TypeSystem::xqtref_t TypeSystem::create_any_simple_type() const
 inline TypeSystem::xqtref_t TypeSystem::create_untyped_type() const
 {
   return UNTYPED_TYPE;
+}
+
+inline TypeSystem::xqtref_t TypeSystem::create_empty_type() const
+{
+  return EMPTY_TYPE;
+}
+
+inline TypeSystem::xqtref_t TypeSystem::create_none_type() const
+{
+  return NONE_TYPE;
 }
 
 }

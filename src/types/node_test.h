@@ -37,19 +37,25 @@ class NodeNameTest : virtual public rcobject
 
 class NodeTest : virtual public rcobject
 {
- public:
-  NodeTest(StoreConsts::NodeKind_t kind);
-  NodeTest(StoreConsts::NodeKind_t kind, rchandle<NodeNameTest> name_test);
+  public:
+    static const rchandle<NodeTest> ANY_NODE_TEST;
+    static const rchandle<NodeTest> PI_TEST;
+    static const rchandle<NodeTest> TEXT_TEST;
+    static const rchandle<NodeTest> COMMENT_TEST;
+    static const rchandle<NodeTest> ITEM_TEST;
 
-  StoreConsts::NodeKind_t get_kind();
-  rchandle<NodeNameTest> get_nametest();
+    NodeTest(StoreConsts::NodeKind_t kind);
+    NodeTest(StoreConsts::NodeKind_t kind, rchandle<NodeNameTest> name_test);
 
-  bool is_sub_nodetest_of(const NodeTest& other) const;
-  bool operator ==(const NodeTest& other) const;
+    StoreConsts::NodeKind_t get_kind() const;
+    rchandle<NodeNameTest> get_nametest() const;
 
- private:
-  StoreConsts::NodeKind_t  m_kind;
-  rchandle<NodeNameTest>   m_name_test;
+    bool is_sub_nodetest_of(const NodeTest& other) const;
+    bool operator ==(const NodeTest& other) const;
+
+  private:
+    StoreConsts::NodeKind_t  m_kind;
+    rchandle<NodeNameTest>   m_name_test;
 };
 
 }
