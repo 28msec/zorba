@@ -24,19 +24,131 @@
 
 #include "api/serialization/serializer.h"
 #include "util/zorba.h"
+#include "util/Assert.h"
 #include "store/naive/basic_item_factory.h"
 #include "zorba_api.h"
-
 #include "string.h"
 
 namespace xqp {
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// Default transcoder (transparent)
+
+serializer::transcoder::transcoder(ostream& output_stream)
+  : os(output_stream)
+{
+}
+
+serializer::transcoder& serializer::transcoder::operator<<(const xqpString& s)
+{
+  os << s;
+  return *this;
+}
+ 
+serializer::transcoder& serializer::transcoder::operator<<(const char ch)
+{
+  os << ch;
+  return *this;
+}
+
+void serializer::transcoder::verbatim(const char ch)
+{
+  os << ch;
+}
   
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+// UTF-8 to UTF-16 transcoder
+
+serializer::utf8_to_utf16_transcoder::utf8_to_utf16_transcoder(ostream& output_stream)
+  : transcoder(output_stream)
+{
+  UErrorCode status = U_ZERO_ERROR;
+  conv = ucnv_open("utf-8", &status);
+  Assert(U_SUCCESS(status));
+  chars_in_buffer = 0;
+  chars_expected = 1;
+}
+
+serializer::utf8_to_utf16_transcoder::~utf8_to_utf16_transcoder()
+{
+  ucnv_close(conv);
+}
+
+serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::operator<<(const xqpString& s)
+{
+  UChar temp;
+  UErrorCode status = U_ZERO_ERROR;
+  int target_size = ucnv_toUChars(conv, &temp, 1, s.c_str(), s.bytes(), &status);
+
+  status = U_ZERO_ERROR;
+  UChar* target = new UChar[target_size+1];
+  char* target2 = (char*)target;
+  target_size = ucnv_toUChars(conv, target, target_size, s.c_str(), s.bytes(), &status);
+
+  if (U_FAILURE(status))
+  {
+    ZORBA_ERROR_ALERT(
+                      error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                      error_messages::SYSTEM_ERROR,
+                      NULL
+                     );
+  }
+  
+  
+  for (unsigned int i=0; i<target_size*sizeof(UChar); i++)
+    os << target2[i];
+
+  return *this;
+}
+ 
+serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::operator<<(const char ch)
+{
+  int done = 0;
+  buffer[chars_in_buffer++] = ch;
+
+  if (chars_expected == 1)
+  {
+    if (serializer::get_utf8_length(ch) > 1)
+      chars_expected = serializer::get_utf8_length(ch);
+    else
+      done = 1;
+
+  }
+  else if (chars_expected == chars_in_buffer)
+    done = 1;
+
+  if (done)
+  {
+    UErrorCode status = U_ZERO_ERROR;
+    UChar target[20];
+    char* target2 = (char*)target;
+    
+    int target_size = ucnv_toUChars(conv, target, 20, buffer, chars_in_buffer, &status);
+    
+    if (U_FAILURE(status))
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                        error_messages::SYSTEM_ERROR,
+                        NULL
+                       );
+    }
+  
+    for (unsigned int i=0; i<target_size*sizeof(UChar); i++)
+      os << target2[i];
+
+    chars_in_buffer = 0;
+    chars_expected = 1;
+  }
+  
+  return *this;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default emitter
 
-serializer::emitter::emitter(serializer& the_serializer, ostream& output_stream)
-  : ser(the_serializer), os(output_stream), previous_item(INVALID_ITEM)
+serializer::emitter::emitter(serializer& the_serializer, transcoder& the_transcoder)
+  : ser(the_serializer), tr(the_transcoder), previous_item(INVALID_ITEM)
 {  
 }
 
@@ -44,10 +156,16 @@ void serializer::emitter::emit_declaration()
 {
   if (ser.byte_order_mark == PARAMETER_VALUE_YES )
   {
-    // TODO: output BOM depending on given encoding
-    xqpString temp;
-    temp = ( uint32_t ) 0xFEFF;
-    os << temp;
+    if (ser.encoding == PARAMETER_VALUE_UTF_8 )
+    {
+      tr << (char)0xEF << (char)0xBB << (char)0xBF;
+    }
+    else if (ser.encoding == PARAMETER_VALUE_UTF_16)
+    {
+      // Little-endian
+      tr.verbatim(0xFF);
+      tr.verbatim(0xFE);
+    }
   }
 }
 
@@ -64,7 +182,7 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
 	
 	for (unsigned int i=0; i<str.bytes(); i++, chars++ )
 	{       
-    // TODO: this is for UTF-8 !
+    // the input string is UTF-8
     if ((unsigned char)*chars < 0x80)
       skip = 0;      
     else if ((*chars >> 5) == 0x6)
@@ -77,7 +195,7 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
     if (skip)
     {
       skip--;
-      os << *chars;
+      tr << *chars;
       continue;
     }
     
@@ -88,17 +206,17 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
         The HTML output method MUST NOT escape "<" characters occurring in attribute values.
       */
       if (ser.method == PARAMETER_VALUE_HTML && emit_attribute_value)
-        os << *chars;
+        tr << *chars;
       else
-        os << "&lt;";             
+        tr << "&lt;";             
 			break;
       
 		case '>':
-			os << "&gt;";
+			tr << "&gt;";
 			break;
 			
 		case '"':
-			os << "&quot;";
+			tr << "&quot;";
 			break;
 			
 		case '&':
@@ -111,9 +229,9 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
         if (str.bytes()-i >= 1
             &&
             (*(chars+1) == '{'))
-          os << *chars;
+          tr << *chars;
         else
-          os << "&amp;";
+          tr << "&amp;";
       }
       else
       {      
@@ -141,15 +259,15 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
 			 }
 			
 			 if (is_quote)
-			   os << *chars;
+			   tr << *chars;
 			 else
-				  os << "&amp;";
+				  tr << "&amp;";
       }
       
       break;      
 			
 		default:
-			os << *chars;
+			tr << *chars;
 			break;
 		}
 	}	
@@ -158,25 +276,28 @@ void serializer::emitter::emit_expanded_string(xqp_string str, bool emit_attribu
 void serializer::emitter::emit_indentation(int depth)
 {
 	for (int i=0; i<depth; i++)
-		os << "  ";
+		tr << "  ";
 }
 
 int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform_escaping = true)
 {
-	Iterator_t it;
-	Item_t child;	
-	int closed_parent_tag = 0;
+  Iterator_t it;
+  Item_t child;	
+  int closed_parent_tag = 0;
 
-	// emit namespace declarations
-	it = item->getChildren();
-	child = it->next();
-	while (child != NULL )
-	{
-		//if (child->getNodeKind() == Item::namespaceNode )		
-		//	emit_node(child, depth);
+  // emit namespace declarations
+  it = item->getChildren();
+  child = it->next();
+  while (child != NULL )
+  {
+    if (child->getNodeKind() == StoreConsts::attributeNode)
+      emit_node(child, depth);
+			
+    //if (child->getNodeKind() == Item::namespaceNode )
+    //	emit_node(child, depth);
 		
-		child = it->next();
-	}
+    child = it->next();
+  }
 	
 	/* TODO: uncomment when this will be implemented in the Item store 
 	it = item->getNamespaceNodes();
@@ -185,7 +306,7 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
 	{
 		if (child->getNodeKind() == namespaceNode )
 		{
-			emit_node(child, os, depth);
+			emit_node(child, tr, depth);
 			children_count++;			
 		}		
 		
@@ -207,18 +328,19 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
 	child = it->next();
 	while (child!= NULL)
 	{
-    if (closed_parent_tag == 0)
-		{
-      os << ">";
-      closed_parent_tag = 1;
+    if (child->getNodeKind() != StoreConsts::attributeNode)
+    {
+      if (closed_parent_tag == 0)
+		  {
+        tr << ">";
+        closed_parent_tag = 1;
+      }
+      emit_node(child, depth, item);
     }
-
-    emit_node(child, depth, item);			
-
     child = it->next();
-	}
+  }
 
-	return closed_parent_tag;
+  return closed_parent_tag;
 }
 
 void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_parent /* = NULL */)
@@ -231,39 +353,39 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 	{
     if (ser.indent)
 			emit_indentation(depth);
-		os << "<" << item->getNodeName()->getStringProperty();
+		tr << "<" << item->getNodeName()->getStringProperty();
 
 		int closed_parent_tag = emit_node_children(item, depth);
 
 		if (closed_parent_tag)		
-			os << "</" << item->getNodeName()->getStringProperty() << ">";
+			tr << "</" << item->getNodeName()->getStringProperty() << ">";
 		else
-			os << "/>";
+			tr << "/>";
 
     if (ser.indent)
-			os << ser.END_OF_LINE;
+			tr << ser.END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
 	else if (item->getNodeKind() == StoreConsts::attributeNode )
 	{
-		os << " " << item->getNodeName()->getStringProperty() << "=\"";
+		tr << " " << item->getNodeName()->getStringProperty() << "=\"";
 		emit_expanded_string(item->getStringValue(), true);
-		os << "\"";
+		tr << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
   /*
 	else if (item->getNodeKind() == namespaceNode)
 	{
-		os << " " << item->getNodeName()->getStringProperty() << "=\"";
+		tr << " " << item->getNodeName()->getStringProperty() << "=\"";
 		emit_expanded_string(item->getStringValue());
-		os << "\"";
+		tr << "\"";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
   */
 	else if (item->getNodeKind() == StoreConsts::textNode)
 	{		
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-      os << " ";    
+      tr << " ";    
 		emit_expanded_string(item->getStringProperty());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
 	}
@@ -271,11 +393,9 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 	{
     if (ser.indent)
       emit_indentation(depth);
-    
-    os << "<--" << item->getStringProperty() << "-->";
-    
+    tr << "<!--" << item->getStringProperty() << "-->";
     if (ser.indent)
-      os << ser.END_OF_LINE;		
+      tr << ser.END_OF_LINE;		
     previous_item = PREVIOUS_ITEM_WAS_NODE;
 	}
   /*
@@ -286,7 +406,7 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 	*/
 	else 
 	{
-		os << "node of type: " << item->getNodeKind();		
+		tr << "node of type: " << item->getNodeKind();		
 	}
 }
 
@@ -295,7 +415,7 @@ void serializer::emitter::emit_item(Item_t item)
   if (item->isAtomic())
   {
     if (previous_item == PREVIOUS_ITEM_WAS_TEXT )
-      os << " ";
+      tr << " ";
     emit_expanded_string(item->getStringProperty());
     previous_item = PREVIOUS_ITEM_WAS_TEXT;
   }
@@ -317,8 +437,8 @@ void serializer::emitter::emit_item(Item_t item)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // XML emitter
-serializer::xml_emitter::xml_emitter(serializer& the_serializer, ostream& output_stream)
-  : emitter(the_serializer, output_stream)
+serializer::xml_emitter::xml_emitter(serializer& the_serializer, transcoder& the_transcoder)
+  : emitter(the_serializer, the_transcoder)
 {   
 }
 
@@ -328,30 +448,36 @@ void serializer::xml_emitter::emit_declaration()
 
   if (ser.omit_xml_declaration == PARAMETER_VALUE_NO )
   {
-    os << "<?xml version=\"" << ser.version << "\" encoding=\"" << ser.encoding << "\"";
+    tr << "<?xml version=\"" << ser.version << "\" encoding=\"";
+    if (ser.encoding == PARAMETER_VALUE_UTF_8)
+      tr << "UTF-8";
+    else if (ser.encoding == PARAMETER_VALUE_UTF_16)
+      tr << "UTF-16";
+    tr << "\"";
+      
     if ( ser.standalone != PARAMETER_VALUE_OMIT )
     {
-      os << "standalone=\"";
+      tr << "standalone=\"";
 
       if ( ser.standalone == PARAMETER_VALUE_YES )
-        os << "yes";
+        tr << "yes";
       else
-        os << "no";
+        tr << "no";
 
-      os << "\"";
+      tr << "\"";
     }
-    os << "?>";
+    tr << "?>";
 
     if ( ser.indent )
-      os << END_OF_LINE;
+      tr << END_OF_LINE;
   }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 // HTML emitter
 
-serializer::html_emitter::html_emitter(serializer& the_serializer, ostream& output_stream)
-  : emitter(the_serializer, output_stream)
+serializer::html_emitter::html_emitter(serializer& the_serializer, transcoder& the_transcoder)
+  : emitter(the_serializer, the_transcoder)
 {   
 }
 
@@ -359,14 +485,14 @@ void serializer::html_emitter::emit_declaration()
 {
   emitter::emit_declaration();
      
-  os << "<html>";
+  tr << "<html>";
   if (ser.indent)
-    os << END_OF_LINE;
+    tr << END_OF_LINE;
 }
 
 void serializer::html_emitter::emit_declaration_end()
 {
-  os << "</html>";  
+  tr << "</html>";  
 }
 
 // returns true if there is a META element, as a child of a HEAD element,
@@ -460,7 +586,7 @@ void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_
     
     if (ser.indent)
       emit_indentation(depth);
-    os << "<" << item->getNodeName()->getStringProperty();
+    tr << "<" << item->getNodeName()->getStringProperty();
     
     /*
       If there is a head element, and the include-content-type parameter has the value yes, the 
@@ -474,21 +600,28 @@ void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_
          ||
          item->getNodeName()->getStringProperty() == "head"))
     {
-      os << "/>";
+      tr << "/>";
       if (ser.indent)
-        os << ser.END_OF_LINE;
+        tr << ser.END_OF_LINE;
       if (ser.indent)
         emit_indentation(depth+1);
-      os << "<meta http-equiv=\"content-type\" content=\"" << ser.media_type << "; charset=" << ser.encoding << "\">";
+
+      tr << "<meta http-equiv=\"content-type\" content=\"" << ser.media_type << "; charset=";
+      if (ser.encoding == PARAMETER_VALUE_UTF_8)
+        tr << "UTF-8";
+      else if (ser.encoding == PARAMETER_VALUE_UTF_16)
+        tr << "UTF-16";
+      tr << "\">";
+      
       if (ser.indent)
-        os << ser.END_OF_LINE;
+        tr << ser.END_OF_LINE;
       closed_parent_tag = 1;
     }
 
     closed_parent_tag |= emit_node_children(item, depth);
         
     if (closed_parent_tag)   
-      os << "</" << item->getNodeName()->getStringProperty() << ">";
+      tr << "</" << item->getNodeName()->getStringProperty() << ">";
     else
     {
       /* 
@@ -498,13 +631,13 @@ void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_
         MUST be output as <br>.
       */
       if (is_html_empty_element(item) && ser.version == "4.0")
-        os << ">";      
+        tr << ">";      
       else
-        os << "/>";
+        tr << "/>";
     }
     
     if (ser.indent)
-      os << serializer::END_OF_LINE;
+      tr << serializer::END_OF_LINE;
     previous_item = PREVIOUS_ITEM_WAS_NODE;
   }
   else if (item->getNodeKind() == StoreConsts::textNode)
@@ -518,8 +651,8 @@ void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_
         item->getNodeName()->getStringProperty() == "style")
     {
       if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-        os << " ";    
-      os << item->getStringProperty();  // no character expansion
+        tr << " ";    
+      tr << item->getStringProperty();  // no character expansion
       previous_item = PREVIOUS_ITEM_WAS_TEXT;
     }
     else
@@ -545,16 +678,32 @@ void serializer::reset()
   method = PARAMETER_VALUE_XML;
   include_content_type = PARAMETER_VALUE_NO;
   media_type = "";  
-  encoding = "UTF-8";  
+  encoding = PARAMETER_VALUE_UTF_8;
 }
 
 serializer::serializer()
-{  
-  reset();  
+{
+  reset();
 }
 
 serializer::~serializer()
 {
+}
+
+int serializer::get_utf8_length(char ch)
+{
+  unsigned char lead = (unsigned char)ch;
+  
+  if (lead < 0x80)
+    return 1;
+  else if ((lead >> 5) == 0x6)
+    return 2;
+  else if ((lead >> 4) == 0xe)
+    return 3;
+  else if ((lead >> 3) == 0x1e)
+    return 4;
+  else
+    return 0;
 }
 
 void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
@@ -646,6 +795,20 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
                         NULL);
     }
   }
+  else if (parameter_name == "encoding")
+  {
+    if (value == "UTF-8")
+      encoding = PARAMETER_VALUE_UTF_8;
+    else if (value == "UTF-16")
+      encoding = PARAMETER_VALUE_UTF_16;
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
   else if (parameter_name == "media-type")
   {
     media_type = value;    
@@ -668,18 +831,33 @@ void serializer::validate_parameters(void)
 void serializer::serialize(XQueryResult *result, ostream& os)
 {
   emitter* e;
-	validate_parameters();  
-    
-  if (method == PARAMETER_VALUE_XML)
-    e = new xml_emitter(*this, os);
-  else if (method == PARAMETER_VALUE_HTML)
-    e = new html_emitter(*this, os);
+	validate_parameters();
+  transcoder* tr;
+  
+  if (encoding == PARAMETER_VALUE_UTF_8)
+    tr = new transcoder(os); // the strings are UTF_8, so we use the ``transparent'' transcoder
+  else if (encoding == PARAMETER_VALUE_UTF_16)
+    tr = new utf8_to_utf16_transcoder(os);
   else
   {
     ZORBA_ERROR_ALERT(
                       error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
                       error_messages::SYSTEM_ERROR,
                       NULL);
+    return;
+  }
+    
+  if (method == PARAMETER_VALUE_XML)
+    e = new xml_emitter(*this, *tr);
+  else if (method == PARAMETER_VALUE_HTML)
+    e = new html_emitter(*this, *tr);
+  else
+  {
+    ZORBA_ERROR_ALERT(
+                      error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                      error_messages::SYSTEM_ERROR,
+                      NULL);
+    return;
   }
   
   e->emit_declaration();
@@ -693,6 +871,7 @@ void serializer::serialize(XQueryResult *result, ostream& os)
   
   e->emit_declaration_end();
   delete e;
+  delete tr;
 }
 
 } // namespace xqp

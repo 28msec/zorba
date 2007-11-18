@@ -184,7 +184,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	//	serializer* ser = new serializer();
 	//	ser->serialize(result, *resultFile);
 		result->serializeXML(*resultFile);
-		*resultFile << endl;
+		
+		// endl should not be sent when serializing!
+		// *resultFile << endl;
 	}
 	else
 	{
@@ -221,6 +223,8 @@ int _tmain(int argc, _TCHAR* argv[])
   //}
   //else
     timer.print(cout);
+	
+	resultFile->close();
 
 	delete resultFile;
 

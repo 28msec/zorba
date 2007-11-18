@@ -104,20 +104,20 @@ void plan_visitor::end_visit(var_expr& v)
 {
   if (v.kind == var_expr::for_var) {
     var_iterator *v_p = new var_iterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
-    vector<var_iter_t> *map;
+    vector<var_iter_t> *map = NULL;
     
     Assert (fvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   } else if (v.kind == var_expr::pos_var) {
     var_iterator *v_p = new var_iterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
-    vector<var_iter_t> *map;
+    vector<var_iter_t> *map = NULL;
     Assert (pvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   } else if (v.kind == var_expr::let_var) {
     RefIterator *v_p = new RefIterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
-    vector<ref_iter_t> *map;
+    vector<ref_iter_t> *map = NULL;
     
     Assert (lvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
@@ -185,7 +185,7 @@ void plan_visitor::end_visit(flwor_expr& v)
        ++it) {
     PlanIter_t input = inputs.top (); inputs.pop ();
     if ((*it)->type == forlet_clause::for_clause) {
-      vector<var_iter_t> *var_iters, *pvar_iters;
+      vector<var_iter_t> *var_iters = NULL, *pvar_iters = NULL;
       Assert (fvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
       var_expr *pos_vp = &* (*it)->get_pos_var ();
       if (pos_vp == NULL)
@@ -195,7 +195,7 @@ void plan_visitor::end_visit(flwor_expr& v)
         clauses.push_back (FLWORIterator::ForLetClause (*var_iters, *pvar_iters, input));
       }
     } else if ((*it)->type == forlet_clause::let_clause) {
-      vector<ref_iter_t> *var_iters;
+      vector<ref_iter_t> *var_iters = NULL;
       Assert (lvar_iter_map.get ((uint64_t) & *(*it)->var_h, var_iters));
       clauses.push_back (FLWORIterator::ForLetClause (*var_iters, input, true));
     }

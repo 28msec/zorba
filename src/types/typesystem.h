@@ -173,7 +173,7 @@ class TypeSystem {
 
     xqtref_t create_atomic_type(atomic_type_code_t type_code, quantifier_t quantifier) const;
 
-    xqtref_t create_atomic_type(QNameItem_t qname, quantifier_t quantifier) const;
+    inline xqtref_t create_atomic_type(QNameItem_t qname, quantifier_t quantifier) const;
 
     xqtref_t create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, quantifier_t quantifier) const;
 
