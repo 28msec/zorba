@@ -60,12 +60,11 @@ const bool TypeSystem::ATOMIC_SUBTYPE_MATRIX[45][45] = {
   {T, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, T}, /* NOTATION */
 };
 
-const bool TypeSystem::QUANT_SUBTYPE_MATRIX[5][5] = {
-  {T, F, T, T, F}, /* QUANT_ZERO */
-  {F, T, T, T, T}, /* QUANT_ONE */
-  {F, F, T, T, F}, /* QUANT_QUESTION */
-  {F, F, F, T, F}, /* QUANT_STAR */
-  {F, F, F, T, T}, /* QUANT_PLUS */
+const bool TypeSystem::QUANT_SUBTYPE_MATRIX[4][4] = {
+  {T, T, T, T}, /* QUANT_ONE */
+  {F, T, T, F}, /* QUANT_QUESTION */
+  {F, F, T, F}, /* QUANT_STAR */
+  {F, F, T, T}, /* QUANT_PLUS */
 };
 
 #undef T
@@ -77,7 +76,7 @@ TypeSystem::TypeSystem()
 #define XS_PREFIX "xs"
 
 #define XSQNDECL(var, local)                         \
-        QNameItem_t var =                    \
+        var =                    \
             Store::getInstance().getItemFactory().   \
             createQName(XS_URI, XS_PREFIX, local)
 
@@ -126,12 +125,16 @@ TypeSystem::TypeSystem()
   XSQNDECL(XS_ANY_URI_QNAME, "anyURI");
   XSQNDECL(XS_QNAME_QNAME, "QName");
   XSQNDECL(XS_NOTATION_QNAME, "notation");
+  XSQNDECL(XS_ANY_TYPE_QNAME, "anyType");
+  XSQNDECL(XS_ANY_SIMPLE_TYPE_QNAME, "anySimpleType");
+  XSQNDECL(XS_UNTYPED_QNAME, "untyped");
 
 #define ATOMIC_TYPE_DEFN(basename) \
   basename##_TYPE_ONE = new AtomicXQType(XS_##basename, QUANT_ONE); \
   basename##_TYPE_QUESTION = new AtomicXQType(XS_##basename, QUANT_QUESTION); \
   basename##_TYPE_STAR = new AtomicXQType(XS_##basename, QUANT_STAR); \
   basename##_TYPE_PLUS = new AtomicXQType(XS_##basename, QUANT_PLUS); \
+  m_atomic_typecode_qname_map[XS_##basename] = &XS_##basename##_QNAME; \
   m_atomic_qnametype_map[XS_##basename##_QNAME] = XS_##basename; \
   m_atomic_typecode_map[XS_##basename][QUANT_ONE] = &basename##_TYPE_ONE; \
   m_atomic_typecode_map[XS_##basename][QUANT_QUESTION] = &basename##_TYPE_QUESTION; \
@@ -451,37 +454,37 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
   switch(ident.get_kind()) {
     case TypeIdentifier::NAMED_TYPE:
       {
-      const NamedTypeIdentifier& ni = static_cast<const NamedTypeIdentifier&>(ident);
-      return create_type(ni.get_name(), q);
+        const NamedTypeIdentifier& ni = static_cast<const NamedTypeIdentifier&>(ident);
+        return create_type(ni.get_name(), q);
       }
 
     case TypeIdentifier::ELEMENT_TYPE:
       {
-      const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
-      rchandle<NodeNameTest> ennt(new NodeNameTest(eai.get_uri(), eai.get_local()));
-      rchandle<NodeTest> ent(new NodeTest(StoreConsts::elementNode, ennt));
-      TypeIdentifier *ci = eai.get_content_type().get_ptr();
-      xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
-      return create_node_type(ent, content_type, q);
+        const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
+        rchandle<NodeNameTest> ennt(new NodeNameTest(eai.get_uri(), eai.get_local()));
+        rchandle<NodeTest> ent(new NodeTest(StoreConsts::elementNode, ennt));
+        TypeIdentifier *ci = eai.get_content_type().get_ptr();
+        xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
+        return create_node_type(ent, content_type, q);
       }
 
     case TypeIdentifier::ATTRIBUTE_TYPE:
       {
-      const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
-      rchandle<NodeNameTest> annt(new NodeNameTest(eai.get_uri(), eai.get_local()));
-      rchandle<NodeTest> ant(new NodeTest(StoreConsts::attributeNode, annt));
-      TypeIdentifier *ci = eai.get_content_type().get_ptr();
-      xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
-      return create_node_type(ant, content_type, q);
+        const ElementOrAttributeTypeIdentifier& eai = static_cast<const ElementOrAttributeTypeIdentifier&>(ident);
+        rchandle<NodeNameTest> annt(new NodeNameTest(eai.get_uri(), eai.get_local()));
+        rchandle<NodeTest> ant(new NodeTest(StoreConsts::attributeNode, annt));
+        TypeIdentifier *ci = eai.get_content_type().get_ptr();
+        xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
+        return create_node_type(ant, content_type, q);
       }
 
     case TypeIdentifier::DOCUMENT_TYPE:
       {
-      const DocumentTypeIdentifier& di = static_cast<const DocumentTypeIdentifier&>(ident);
-      TypeIdentifier *ci = di.get_content_type().get_ptr();
-      xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
-      rchandle<NodeTest> nt(new NodeTest(StoreConsts::documentNode));
-      return create_node_type(nt, content_type, q);
+        const DocumentTypeIdentifier& di = static_cast<const DocumentTypeIdentifier&>(ident);
+        TypeIdentifier *ci = di.get_content_type().get_ptr();
+        xqtref_t content_type = ci ? create_type(*ci) : xqtref_t(0);
+        rchandle<NodeTest> nt(new NodeTest(StoreConsts::documentNode));
+        return create_node_type(nt, content_type, q);
       }
 
     case TypeIdentifier::PI_TYPE:
@@ -504,6 +507,90 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
   }
 
   return TypeSystem::xqtref_t(0);
+}
+
+static inline TypeIdentifier::quantifier_t get_typeident_quant(TypeSystem::quantifier_t quant)
+{
+  switch(quant) {
+    case TypeSystem::QUANT_ONE:
+      return TypeIdentifier::QUANT_ONE;
+
+    case TypeSystem::QUANT_QUESTION:
+      return TypeIdentifier::QUANT_QUESTION;
+
+    case TypeSystem::QUANT_STAR:
+      return TypeIdentifier::QUANT_STAR;
+
+    case TypeSystem::QUANT_PLUS:
+      return TypeIdentifier::QUANT_PLUS;
+
+    default:
+      break;
+  }
+
+  return TypeIdentifier::QUANT_ONE;
+}
+
+type_ident_ref_t TypeSystem::get_type_identifier(const XQType& type) const
+{
+  TypeIdentifier::quantifier_t q = get_typeident_quant(quantifier(type));
+  switch(type.type_kind()) {
+    case XQType::ATOMIC_TYPE_KIND:
+      {
+        const AtomicXQType& at = static_cast<const AtomicXQType&>(type);
+        return type_ident_ref_t(new NamedTypeIdentifier(q, *m_atomic_typecode_qname_map[at.m_type_code]));
+      }
+    case XQType::NODE_TYPE_KIND:
+      {
+        const NodeXQType& nt = static_cast<const NodeXQType&>(type);
+        const type_ident_ref_t& content_type = get_type_identifier(*nt.m_content_type);
+        const NodeTest *test = nt.m_nodetest.get_ptr();
+        const NodeNameTest *nametest = test->get_nametest().get_ptr();
+        switch(test->get_kind()) {
+          case StoreConsts::anyNode:
+            return type_ident_ref_t(new AnyNodeTypeIdentifier(q));
+
+          case StoreConsts::textNode:
+            return type_ident_ref_t(new TextTypeIdentifier(q));
+
+          case StoreConsts::piNode:
+            return type_ident_ref_t(new PITypeIdentifier(q));
+
+          case StoreConsts::commentNode:
+            return type_ident_ref_t(new CommentTypeIdentifier(q));
+
+          case StoreConsts::documentNode:
+            return type_ident_ref_t(new DocumentTypeIdentifier(q, content_type));
+
+          case StoreConsts::elementNode:
+            return type_ident_ref_t(new ElementTypeIdentifier(q, nametest->get_uri(), nametest->get_local(), content_type));
+
+          case StoreConsts::attributeNode:
+            return type_ident_ref_t(new AttributeTypeIdentifier(q, nametest->get_uri(), nametest->get_local(), content_type));
+          default:
+            // cannot happen
+            return type_ident_ref_t(0);
+        }
+      }
+    case XQType::ANY_TYPE_KIND:
+      return type_ident_ref_t(new NamedTypeIdentifier(q, XS_ANY_TYPE_QNAME));
+
+    case XQType::ITEM_KIND:
+      return type_ident_ref_t(new ItemTypeIdentifier(q));
+
+    case XQType::ANY_SIMPLE_TYPE_KIND:
+      return type_ident_ref_t(new NamedTypeIdentifier(q, XS_ANY_SIMPLE_TYPE_QNAME));
+
+    case XQType::UNTYPED_KIND:
+      return type_ident_ref_t(new NamedTypeIdentifier(q, XS_UNTYPED_QNAME));
+
+    case XQType::EMPTY_KIND:
+      return type_ident_ref_t(new EmptyTypeIdentifier());
+
+    default:
+      break;
+  }
+  return type_ident_ref_t(0);
 }
 
 TypeSystem::xqtref_t TypeSystem::create_node_type(rchandle<NodeTest> nodetest, xqtref_t content_type, TypeSystem::quantifier_t quantifier) const

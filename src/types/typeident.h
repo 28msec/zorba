@@ -51,6 +51,11 @@ class NamedTypeIdentifier : public TypeIdentifier {
     NamedTypeIdentifier(quantifier_t quantifier, QNameItem_t name)
       : TypeIdentifier(quantifier), m_name(name) { }
 
+    virtual kind_t get_kind() const
+    {
+      return NAMED_TYPE;
+    }
+
     const QNameItem_t get_name() const
     {
       return m_name;
@@ -193,8 +198,8 @@ class ItemTypeIdentifier : public TypeIdentifier {
 
 class EmptyTypeIdentifier : public TypeIdentifier {
   public:
-    EmptyTypeIdentifier(quantifier_t quantifier)
-      : TypeIdentifier(quantifier) { }
+    EmptyTypeIdentifier()
+      : TypeIdentifier(QUANT_ONE) { }
 
     virtual kind_t get_kind() const
     {

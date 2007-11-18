@@ -23,7 +23,7 @@ typedef rchandle<class QNameItem> QNameItem_t;
 class TypeSystem {
   public:
     typedef enum {
-      QUANT_ZERO = 0, QUANT_ONE, QUANT_QUESTION, QUANT_STAR, QUANT_PLUS,
+      QUANT_ONE = 0, QUANT_QUESTION, QUANT_STAR, QUANT_PLUS,
       QUANTIFIER_LIST_SIZE
     } quantifier_t;
 
@@ -159,6 +159,13 @@ class TypeSystem {
      */
     rchandle<NodeNameTest> get_nametest(const XQType& type) const;
 
+    /*
+     * Returns a type identifier that represents the given type.
+     * The invariant that is guaranteed is:
+     *    is_subtype(_t_, create_type(*get_type_identifier(_t_))) == true
+     */
+    type_ident_ref_t get_type_identifier(const XQType& type) const;
+
     /* Factory Methods */
     xqtref_t create_type(QNameItem_t qname, quantifier_t quantifier) const;
 
@@ -183,6 +190,10 @@ class TypeSystem {
     xqtref_t create_none_type() const;
 
     QNameItem_t XS_ANY_TYPE_QNAME;
+
+    QNameItem_t XS_ANY_SIMPLE_TYPE_QNAME;
+
+    QNameItem_t XS_UNTYPED_QNAME;
 
 #define ATOMIC_DECL(basename) \
     QNameItem_t XS_##basename##_QNAME; \
@@ -265,6 +276,7 @@ class TypeSystem {
   private:
 
     TypeSystem::xqtref_t *m_atomic_typecode_map[ATOMIC_TYPE_CODE_LIST_SIZE][QUANTIFIER_LIST_SIZE];
+    QNameItem_t *m_atomic_typecode_qname_map[ATOMIC_TYPE_CODE_LIST_SIZE];
     typedef std::map<QNameItem_t, atomic_type_code_t> qnametype_map_t;
     qnametype_map_t m_atomic_qnametype_map;
 
@@ -393,7 +405,7 @@ class EmptyXQType : public XQType {
       return EMPTY_KIND;
     }
 
-    EmptyXQType() : XQType(TypeSystem::QUANT_ZERO) { }
+    EmptyXQType() : XQType(TypeSystem::QUANT_ONE) { }
 
     TYPE_FRIENDS
 };
@@ -405,7 +417,7 @@ class NoneXQType : public XQType {
       return NONE_KIND;
     }
 
-    NoneXQType() : XQType(TypeSystem::QUANT_ZERO) { }
+    NoneXQType() : XQType(TypeSystem::QUANT_ONE) { }
 
     TYPE_FRIENDS
 };
