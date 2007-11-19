@@ -271,8 +271,7 @@ bool plan_visitor::begin_visit(fo_expr& v)
 }
 
 
-void plan_visitor::end_visit(fo_expr& v)
-{
+void plan_visitor::end_visit(fo_expr& v) {
   cout << std::string(depth--, ' ') << TRACE << endl;
 
 	const function* func_p = v.get_func();
@@ -290,7 +289,16 @@ void plan_visitor::end_visit(fo_expr& v)
  		argv.insert(begin, 1, it_h );
 	}
 
-	itstack.push(func(v.get_loc(), argv));
+  const yy::location& loc = v.get_loc ();
+  if (func.validate_args (argv)) {
+    PlanIter_t iter = func(loc, argv);
+    assert (iter != NULL);
+    itstack.push (iter);
+  } else {
+    ZorbaErrorAlerts::error_alert (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+                                   error_messages::STATIC_ERROR,
+                                   &loc);
+  }
 }
 
 
