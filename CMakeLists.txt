@@ -20,37 +20,47 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
+##############################################################################################################
+# Used libraries
+
 INCLUDE(cmake_modules/FindICU.cmake)
-
-# some compiler flags that should always be used in order to force a good programming style
-IF (MSVC)
-ELSE (MSVC)
-	ADD_DEFINITIONS(-Wall -Wno-uninitialized -W -Wno-unused -Wpointer-arith -Woverloaded-virtual -DZORBA_USE_PTHREAD_LIBRARY -D_DEBUG)
-ENDIF (MSVC)
-
-
-INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
+FIND_PACKAGE(LibXml2)
 
 
 ##############################################################################################################
 # do platform checks
+
 IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
 ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 
-
-SET(requiredlibs)
-
-FIND_PACKAGE(LibXml2)
 IF(LIBXML2_FOUND)
     INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
     SET(requiredlibs ${requiredlibs} ${LIBXML2_LIBRARIES})
     SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
 ELSE(LIBXML2_FOUND)
+	SET(requiredlibs)
     MESSAGE(FATAL_ERROR "The libxml2  library is required in order to build Zorba.")
 ENDIF(LIBXML2_FOUND)
+
+
+##############################################################################################################
+# Compiler setup
+
+MESSAGE(STATUS "Build type -- " ${CMAKE_BUILD_TYPE})
+
+IF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+ENDIF(${CMAKE_BUILD_TYPE} STREQUAL "Release")
+
+INCLUDE_DIRECTORIES(BEFORE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/include)
+INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
+
+# some compiler flags that should always be used in order to force a good programming style
+IF (MSVC)
+ELSE (MSVC)
+	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual -DZORBA_USE_PTHREAD_LIBRARY -D_DEBUG)
+ENDIF (MSVC)
 
 
 # for the moment, we include everything

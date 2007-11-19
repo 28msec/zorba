@@ -58,7 +58,7 @@ public:
    * @param result The item to be serialized.
    * @param os The stream to serialize to.
    */
-  void serialize(Item_t item, ostream& os);
+  void serialize(Item* item, ostream& os);
 
   /**
    * Set the serializer's parameters. The list of handled parameters
@@ -180,7 +180,7 @@ protected:
      *  The root function that performs the serialization
      *  of a normalized sequence.
      */
-    virtual void emit_node(Item_t item, int depth, Item_t element_parent = NULL);
+    virtual void emit_node(Item* item, int depth, Item* element_parent = NULL);
     
     /**
      *  Serializes the given string, performing character expansion
@@ -194,14 +194,14 @@ protected:
      * 
      *  @return  returns 1 if the functions has closed parent's tag with ">"
      */ 
-    virtual int emit_node_children(Item_t item, int depth, bool perform_escaping);
+    virtual int emit_node_children(Item* item, int depth, bool perform_escaping);
         
     /**
      * Serializes the given item, depending on its type, and its children.
      *
      * @param item the item to serialize
      */
-    virtual void emit_item(Item_t item);
+    virtual void emit_item(Item* item);
 
     /**
      * Outputs indentation whitespace, depending of depth. 
@@ -236,7 +236,7 @@ protected:
     html_emitter(serializer& the_serializer, transcoder& the_transcoder);
     virtual void emit_declaration();
     virtual void emit_declaration_end();   
-    virtual void emit_node(Item_t item, int depth, Item_t element_parent = NULL); 
+    virtual void emit_node(Item* item, int depth, Item* element_parent = NULL);
   };  
 };
 

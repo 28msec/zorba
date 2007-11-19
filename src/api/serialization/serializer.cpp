@@ -279,7 +279,7 @@ void serializer::emitter::emit_indentation(int depth)
 		tr << "  ";
 }
 
-int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform_escaping = true)
+int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_escaping = true)
 {
   Iterator_t it;
   Item_t child;	
@@ -291,7 +291,7 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
   while (child != NULL )
   {
     if (child->getNodeKind() == StoreConsts::attributeNode)
-      emit_node(child, depth);
+      emit_node(&*child, depth);
 			
     //if (child->getNodeKind() == Item::namespaceNode )
     //	emit_node(child, depth);
@@ -319,7 +319,7 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
 	child = it->next();
 	while (child!= NULL)
 	{		
-    emit_node(child, depth);		
+    emit_node(&*child, depth);
     child = it->next();
 	}
 	
@@ -335,7 +335,7 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
         tr << ">";
         closed_parent_tag = 1;
       }
-      emit_node(child, depth, item);
+      emit_node(&*child, depth, item);
     }
     child = it->next();
   }
@@ -343,7 +343,7 @@ int serializer::emitter::emit_node_children(Item_t item, int depth, bool perform
   return closed_parent_tag;
 }
 
-void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_parent /* = NULL */)
+void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent /* = NULL */)
 {
 	if( item->getNodeKind() == StoreConsts::documentNode )
 	{		
@@ -410,7 +410,7 @@ void serializer::emitter::emit_node(Item_t item, int depth, Item_t element_paren
 	}
 }
 
-void serializer::emitter::emit_item(Item_t item)
+void serializer::emitter::emit_item(Item* item)
 {
   if (item->isAtomic())
   {
@@ -563,7 +563,7 @@ int is_html_empty_element(Item_t item)
     return 0;
 }
 
-void serializer::html_emitter::emit_node(Item_t item, int depth, Item_t element_parent)
+void serializer::html_emitter::emit_node(Item* item, int depth, Item* element_parent)
 {
   if (item->getNodeKind() == StoreConsts::elementNode)
   {
@@ -874,7 +874,7 @@ void serializer::serialize(XQueryResult *result, ostream& os)
   Item_t item = result->next();
   while (item != NULL )
   {
-    e->emit_item(item);
+    e->emit_item(&*item);
     item = result->next();
   }
   
@@ -882,7 +882,7 @@ void serializer::serialize(XQueryResult *result, ostream& os)
 }
 
 
-void serializer::serialize(Item_t item, ostream& os)
+void serializer::serialize(Item* item, ostream& os)
 {
   validate_parameters();
   setup(os);
