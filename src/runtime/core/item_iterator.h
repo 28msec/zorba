@@ -124,6 +124,7 @@ public:		// variable binding
 	void bind(Item_t _i_h) { i_h = _i_h; }
 };
 
+
 /**
  * If a variable can hold more than one item, use this ref-holder
  * 
@@ -148,81 +149,6 @@ public:		// variable binding
 	virtual int32_t getStateSize() { return 0; }  // TODO
 	virtual int32_t getStateSizeOfSubtree() { return 0; }  // TODO
 	virtual void setOffset(PlanState& planState, int32_t& offset) {}  // TODO
-};
-
-
-
-/*_____________________________________________________________
-|
-|	let_var bindings
-|______________________________________________________________*/
-
-// class RefIterator : public PlanIterator
-// {
-// private:
-// 	PlanIter_t it;
-// 
-// public:
-// 	RefIterator(PlanIter_t _it,yy::location loc) : 
-// 										PlanIterator(loc),
-// 										it(_it) {}
-// 
-// public:
-// 	void _open() { it->open();  }
-// 	Item_t _next() { return it->next(); }
-// 	void _close() { it->close(); }
-// 	std::ostream&  _show(std::ostream& os) const {return os;}
-// 	bool done() const { return it->done(); }
-// 	void bind(PlanIter_t _it) { it = _it;}
-// 
-// };
-
-
-
-/*******************************************************************************
-
-	for $x in  _input_  return  _expr_
-
-********************************************************************************/
-class MapIterator : public Batcher<MapIterator>
-{
-private:
-// 	enum state {
-// 		outer,
-// 		inner
-// 	};
-
-	PlanIter_t theInput;
-	PlanIter_t theExpr;
-	std::vector<var_iter_t> theVarRefs; // all references of $x inside theExpr
-// 	enum state theState;
-
-public:
-	MapIterator(
-		yy::location loc,
-		PlanIter_t input,
-		PlanIter_t expr,
-		std::vector<var_iter_t> varv)
-	:
-		Batcher<MapIterator>(loc),
-		theInput(input),
-		theExpr(expr),
-		theVarRefs(varv)
-	{}
-
-	~MapIterator() {}
-
-public:
-	Item_t nextImpl(PlanState& planState);
-	void resetImpl(PlanState& planState);
-	void releaseResourcesImpl(PlanState& planState);
-
-	
-	virtual int32_t getStateSize();
-	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(PlanState& planState, int32_t& offset);
-	
-	std::ostream&  _show(std::ostream& os) const;
 };
 
 

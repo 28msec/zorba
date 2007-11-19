@@ -58,7 +58,7 @@ Iterator_t AtomicItem::getTypedValue() const
 /*******************************************************************************
 
 ********************************************************************************/
-NodeItem::NodeItem(const NodeItem_t& aParent) : theParent(&*aParent)
+NodeItem::NodeItem(const Item_t& aParent) : theParent(&*aParent)
 {
 }
 
@@ -96,7 +96,7 @@ uint32_t NodeItem::hash() const
   return 0;
 }
 
-bool NodeItem::equals ( Item_t item ) const
+bool NodeItem::equals(Item_t item) const
 {
   ZorbaErrorAlerts::error_alert (
         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,

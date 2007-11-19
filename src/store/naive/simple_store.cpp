@@ -124,7 +124,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
                           uri, "");
   }
 
-  AnyUriItem_t uriItem = theItemFactory->createAnyURI(uri.getStore());
+  AnyUriItem_t uriItem = theItemFactory->createAnyURI(uri);
 
   Collection_t collection(new SimpleCollection(uriItem));
 

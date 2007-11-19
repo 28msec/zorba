@@ -72,8 +72,10 @@ bool StringPool::insert(const char* str, xqpStringStore_t& outStr)
   while (entry != NULL)
   {
     if (entry->theString->byteEqual(str, strlen(str)))
+    {
+      outStr = entry->theString;
       return true;
-
+    }
     lastentry = entry;
     entry =  entry->theNext;
   }

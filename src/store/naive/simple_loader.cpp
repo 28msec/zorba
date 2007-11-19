@@ -22,8 +22,11 @@ XmlLoader::XmlLoader()
   // See http://xmlsoft.org/html/libxml-tree.html#xmlSAXHandler
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
+  theSaxHandler.startDocument = &XmlLoader::startDocumentSAXFunc;
+  theSaxHandler.endDocument = &XmlLoader::endDocumentSAXFunc;
   theSaxHandler.startElementNs = &XmlLoader::startElementNs;
   theSaxHandler.endElementNs = &XmlLoader::endElementNs;
+  theSaxHandler.characters = &XmlLoader::charactersSAXFunc;
   theSaxHandler.warning = &XmlLoader::warning;
   theSaxHandler.error = &XmlLoader::error;
 }
@@ -69,7 +72,7 @@ long XmlLoader::readPacket(std::iostream& stream, char* buf, long size)
 /*******************************************************************************
 
 ********************************************************************************/
-NodeItem_t XmlLoader::loadXml(std::iostream& stream)
+Item_t XmlLoader::loadXml(std::iostream& stream)
 {
   xmlParserCtxtPtr ctxt;
   char buf[4096];
@@ -102,7 +105,7 @@ NodeItem_t XmlLoader::loadXml(std::iostream& stream)
   while(!thePath.empty())
     thePath.pop();
 
-  NodeItem_t resultNode = theRootNode;
+  Item_t resultNode = theRootNode;
 
   theRootNode = NULL;
 
@@ -111,13 +114,75 @@ NodeItem_t XmlLoader::loadXml(std::iostream& stream)
     ZORBA_ERROR_ALERT(error_messages::XQP0017_LOADER_NOT_WELL_FORMED_XML,
                       error_messages::USER_ERROR,
                       NULL,
-                      true);
+                      true,
+                      theErrors.c_str());
+    theErrors.clear();
     return NULL;
   }
 
   std::cout << std::endl << resultNode->show() << std::endl;
 
   return resultNode;
+}
+
+
+/*******************************************************************************
+  SAX2 callback when the start of document has been detected by the parser.
+
+  ctx: the user data (XML parser context)
+********************************************************************************/
+void XmlLoader::startDocumentSAXFunc(void * ctx)
+{
+  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+
+  xqpStringStore_t baseUri(new xqpStringStore(""));
+  xqpStringStore_t docUri(new xqpStringStore("boo"));
+
+  Item_t docNode = factory.createDocumentNode(baseUri, docUri);
+
+  loader.theRootNode = docNode;
+  loader.thePath.push(docNode);
+  loader.thePath.push(NULL);
+}
+
+
+/*******************************************************************************
+  SAX2 callback when the end of document has been detected by the parser.
+
+  ctx: the user data (XML parser context)
+********************************************************************************/
+void XmlLoader::endDocumentSAXFunc(void * ctx)
+{
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+
+  printf("\nendDocument\n");
+
+  std::vector<Item_t> childNodes;
+  std::vector<Item_t> revChildNodes;
+
+  Item_t childNode = loader.thePath.top();
+
+  while (childNode != NULL)
+  {
+    revChildNodes.push_back(childNode);
+    loader.thePath.pop();
+    childNode = loader.thePath.top();
+  }
+  loader.thePath.pop();
+
+  childNodes.resize(revChildNodes.size());
+  std::vector<Item_t>::const_reverse_iterator it;
+  ulong i = 0;
+  for (it = revChildNodes.rbegin(); it != revChildNodes.rend(); it++, i++)
+    childNodes[i] = *it;
+
+  TempSeq_t childSeq(new SimpleTempSeq(childNodes));
+
+  NodeNaive* docNode = reinterpret_cast<NodeNaive*>(loader.thePath.top().get_ptr());
+
+  docNode->setChildren(childSeq);
 }
 
 
@@ -155,7 +220,7 @@ void XmlLoader::startElementNs(
 
   QNameItem_t qname;
   QNameItem_t tname;
-  NodeItem_t elemNode;
+  Item_t elemNode;
   std::vector<Item_t> attrNodes;
   NamespaceBindings nsBindings;
 
@@ -193,23 +258,19 @@ void XmlLoader::startElementNs(
     QNameItem_t qname = factory.createQName(uri, prefix, localName);
     QNameItem_t tname = factory.createQName(StoreConsts::XS_URI, "xs", "untypedAtomic");
 
-    xqpStringStore* value = new xqpStringStore(valueBegin, valueEnd);
-    Item_t lexicalValue = factory.createString(*value);
-    Item_t typedValue = factory.createUntypedAtomic(*value);
+    xqpStringStore_t value(new xqpStringStore(valueBegin, valueEnd));
+    Item_t lexicalValue = factory.createString(value);
+    Item_t typedValue = factory.createUntypedAtomic(value);
 
-    NodeItem_t attrNode = factory.createAttributeNode(qname,
-                                                      tname,
-                                                      lexicalValue,
-                                                      typedValue);
+    Item_t attrNode = factory.createAttributeNode(qname, tname,
+                                                  lexicalValue,
+                                                  typedValue);
 
-    attrNodes.push_back(attrNode.get_ptr());
+    attrNodes.push_back(attrNode);
 
     printf("  %sattribute: localname='%s', prefix='%s', uri=(%p)'%s', value='%s'\n",
             i >= (numAttributes - numDefaulted) ? "defaulted " : "",
-            localName,
-            prefix,
-            uri, uri,
-            value->c_str());
+            localName, prefix, uri, uri, value->c_str());
   }
 
   TempSeq_t attrSeq(new SimpleTempSeq(attrNodes));
@@ -250,22 +311,53 @@ void  XmlLoader::endElementNs(
           localname, prefix, URI );
 
   std::vector<Item_t> childNodes;
+  std::vector<Item_t> revChildNodes;
 
-  NodeItem_t childNode = loader.thePath.top();
+  Item_t childNode = loader.thePath.top();
 
   while (childNode != NULL)
   {
-    childNodes.push_back(childNode.get_ptr());
+    revChildNodes.push_back(childNode);
     loader.thePath.pop();
     childNode = loader.thePath.top();
   }
   loader.thePath.pop();
+
+  childNodes.resize(revChildNodes.size());
+  std::vector<Item_t>::const_reverse_iterator it;
+  ulong i = 0;
+  for (it = revChildNodes.rbegin(); it != revChildNodes.rend(); it++, i++)
+    childNodes[i] = *it;
 
   TempSeq_t childSeq(new SimpleTempSeq(childNodes));
 
   NodeNaive* elemNode = reinterpret_cast<NodeNaive*>(loader.thePath.top().get_ptr());
 
   elemNode->setChildren(childSeq);
+}
+
+
+/*******************************************************************************
+  SAX2 callback when xml text has been detected by the parser.
+
+  ctx: the user data (XML parser context)
+  ch:  a xmlChar string
+  len: the number of xmlChar
+********************************************************************************/
+void XmlLoader::charactersSAXFunc(void * ctx, const xmlChar * ch, int len)
+{
+  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+
+  xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
+
+  Item_t textNode = factory.createTextNode(content);
+
+  if (loader.thePath.empty())
+    loader.theRootNode = textNode;
+
+  loader.thePath.push(textNode);
 }
 
 
@@ -278,11 +370,15 @@ void  XmlLoader::endElementNs(
 ********************************************************************************/
 void  XmlLoader::error(void * ctx, const char * msg, ... )
 {
-  XmlLoader &fsm = *( static_cast<XmlLoader *>( ctx ) );
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+  char buf[1024];
   va_list args;
   va_start(args, msg);
-  vprintf( msg, args );
+  vsprintf(buf, msg, args);
   va_end(args);
+  loader.theErrors += "+ ";
+  loader.theErrors += buf;
+  loader.theErrors += "\n";
 }
 
 
@@ -295,10 +391,10 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
 ********************************************************************************/
 void  XmlLoader::warning(void * ctx, const char * msg, ... )
 {
-  XmlLoader &fsm = *( static_cast<XmlLoader *>( ctx ) );
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
   va_list args;
   va_start(args, msg);
-  vprintf( msg, args );
+  vprintf(msg, args);
   va_end(args);
 }
 

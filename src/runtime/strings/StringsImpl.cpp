@@ -47,7 +47,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState){
       resStr += (uint32_t)item->getIntegerValue();
     }
     else{
-      resItem = zorba::getItemFactory()->createString(resStr.getStore());
+      resItem = zorba::getItemFactory()->createString(resStr);
       STACK_PUSH2( resItem, state );
       break;
     }
@@ -300,7 +300,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
   }
 
   if(theChildren.size()>0){
-    resItem = zorba::getItemFactory()->createString(resStr.getStore());
+    resItem = zorba::getItemFactory()->createString(resStr);
     STACK_PUSH2( resItem, state );
   }
 
@@ -347,7 +347,7 @@ StringJoinIterator::nextImpl(PlanState& planState) {
         resStr += item->getStringValue();
       }
       else{
-        resItem = zorba::getItemFactory()->createString(resStr.getStore());
+        resItem = zorba::getItemFactory()->createString(resStr);
         STACK_PUSH2( resItem, state );
         break;
       }
@@ -362,7 +362,7 @@ StringJoinIterator::nextImpl(PlanState& planState) {
         resStr += separator;
       }
       else{
-        resItem = zorba::getItemFactory()->createString(resStr.getStore());
+        resItem = zorba::getItemFactory()->createString(resStr);
         STACK_PUSH2( resItem, state );
         break;
       }
@@ -413,7 +413,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
     item0 = consumeNext ( theChildren[0], planState );
     if ( item0 != NULL ){
       if(item0->getStringValue().length() == 0){
-        STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr.getStore()), state );
+        STACK_PUSH2( zorba::getItemFactory()->createString(resStr), state );
       }
       else{
         item1 = consumeNext( theChildren[1], planState );
@@ -428,7 +428,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
                                                                          (int32_t)round(item2->getDecimalValue()));
             }
           }
-          STACK_PUSH2( zorba::getZorbaForCurrentThread()->getItemFactory()->createString(resStr.getStore()), state );
+          STACK_PUSH2( zorba::getItemFactory()->createString(resStr), state );
         }
       }
     }
@@ -496,7 +496,7 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState)
   xqp_string str("NormalizeSpace: Not yet implemented.");
   PlanIterator::PlanIteratorState* state;
   STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH2(zorba::getItemFactory()->createString(str.getStore()),state);
+  STACK_PUSH2(zorba::getItemFactory()->createString(str),state);
   STACK_END2();
 }
 /* end class NormalizeSpaceIterator */
@@ -531,7 +531,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   xqp_string str("NormalizeUnicode: Not yet implemented.");
   PlanIterator::PlanIteratorState* state;
   STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH2(zorba::getItemFactory()->createString(str.getStore()),state);
+  STACK_PUSH2(zorba::getItemFactory()->createString(str),state);
   STACK_END2();
 }
 /* end class NormalizeUnicodeIterator */
@@ -565,12 +565,11 @@ UpperCaseIterator::nextImpl(PlanState& planState)
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )  {
-    STACK_PUSH2(zorba::getItemFactory()->createString(
-        item->getStringValue().uppercase().getStore()),
-                            state);
+    STACK_PUSH2(zorba::getItemFactory()->createString(item->getStringValue().uppercase()),
+                state);
   }
   else{
-    STACK_PUSH2(zorba::getItemFactory()->createString(emptyStr.getStore()), state);
+    STACK_PUSH2(zorba::getItemFactory()->createString(emptyStr), state);
   }
   STACK_END2();
 }
@@ -605,11 +604,11 @@ LowerCaseIterator::nextImpl(PlanState& planState) {
   item = consumeNext (theChild, planState);
   if ( item != NULL )  {
     STACK_PUSH2(zorba::getItemFactory()->createString(
-        item->getStringValue().lowercase().getStore()),
+        item->getStringValue().lowercase()),
     state);
   }
   else{
-    STACK_PUSH2(zorba::getItemFactory()->createString(emptyStr.getStore()), state);
+    STACK_PUSH2(zorba::getItemFactory()->createString(emptyStr), state);
   }
   STACK_END2();
 }
@@ -647,7 +646,7 @@ TranslateIterator::nextImpl(PlanState& planState) {
   xqp_string str("Translate: Not yet implemented.");
   PlanIterator::PlanIteratorState* state;
   STACK_INIT2(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH2(zorba::getItemFactory()->createString(str.getStore()),state);
+  STACK_PUSH2(zorba::getItemFactory()->createString(str),state);
   STACK_END2();
 }
 /* end class TranslateIterator */
@@ -891,7 +890,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
       item1 = consumeNext( theChildren[1], planState );
       if( item1 != NULL ){
         if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0){
-          STACK_PUSH2( zorba::getItemFactory()->createString(resStr.getStore()), state );
+          STACK_PUSH2( zorba::getItemFactory()->createString(resStr), state );
         }
         else{
           if( theChildren.size() == 2 ){
@@ -907,7 +906,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
           if(index != -1){
             resStr = item0->getStringValue().substr(0,index);
           }
-          STACK_PUSH2( zorba::getItemFactory()->createString(resStr.getStore()), state );
+          STACK_PUSH2( zorba::getItemFactory()->createString(resStr), state );
         }
       }
     }
@@ -959,7 +958,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
       item1 = consumeNext( theChildren[1], planState );
       if( item1 != NULL ){
         if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0){
-          STACK_PUSH2( zorba::getItemFactory()->createString(resStr.getStore()), state );
+          STACK_PUSH2( zorba::getItemFactory()->createString(resStr), state );
         }
         else{
           if( theChildren.size() == 2 ){
@@ -970,15 +969,15 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
             if ( itemColl != NULL ){
               //TODO solve track issue no.26
               startPos = item0->getStringValue().lastIndexOf(item1->getStringValue(),
-                                                                                itemColl->getStringValue().c_str());
+                                                             itemColl->getStringValue().c_str());
             }
           }
           if(startPos != -1){
             startPos += item1->getStringValue().length();
             resStr = item0->getStringValue().substr( startPos,
-                                                                      item0->getStringValue().length() - startPos);
+                                                     item0->getStringValue().length() - startPos);
           }
-          STACK_PUSH2( zorba::getItemFactory()->createString(resStr.getStore()), state );
+          STACK_PUSH2( zorba::getItemFactory()->createString(resStr), state );
         }
       }
     }

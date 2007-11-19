@@ -680,8 +680,9 @@ bool plan_visitor::begin_visit(text_expr& v)
 void plan_visitor::end_visit(text_expr& v)
 {
   cout << std::string(--depth, ' ') << TRACE << endl;
-	Item_t item = zorba::getItemFactory()->createTextNode(v.get_text());
-	PlanIter_t text = new SingletonIterator(v.get_loc(), item);
+  xqpStringStore_t content = new xqpStringStore(v.get_text());
+	Item_t textNode = zorba::getItemFactory()->createTextNode(content);
+	PlanIter_t text = new SingletonIterator(v.get_loc(), textNode);
 	itstack.push(text);
 }
 
@@ -795,7 +796,7 @@ void plan_visitor::end_visit(literal_expr& v)
   case literal_expr::lit_string: {
     PlanIter_t it = new SingletonIterator(
 											v.get_loc(),
-											zorba::getItemFactory()->createString(v.get_sval().getStore()));
+											zorba::getItemFactory()->createString(v.get_sval()));
     itstack.push(it);
     break;
   }

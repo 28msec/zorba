@@ -567,10 +567,10 @@ class NodeItem : public Item
 {
 protected:
   // Pointer to avoid cyclic smart pointers
-  NodeItem* theParent;
+  Item* theParent;
 
 public:
-  explicit NodeItem(const NodeItem_t& aParent);
+  explicit NodeItem(const Item_t& aParent);
   NodeItem();
   virtual ~NodeItem();
 
@@ -578,54 +578,14 @@ public:
   virtual bool isAtomic() const;
   virtual Item_t getEBV() const;
   virtual uint32_t hash() const;
-  virtual bool equals ( Item_t ) const;
+  virtual bool equals(Item_t) const;
 
-  // Must be overwritten from every node implementation when zorba is schema-aware
   virtual QNameItem_t getType() const;
   virtual Item_t getParent() const;
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;
-}; /* class Node */
+};
 
-
-#if 0
-  class DocumentNode : public NodeItem {};
-
-  class ElementNode : public NodeItem
-  {
-  public:
-    ElementNode(){}
-    ElementNode(const Item_t& aParent) : NodeItem(aParent) {}
-  };
-
-  class AttributeNode : public NodeItem
-  {
-  public:
-    AttributeNode(){}
-    AttributeNode(const Item_t& aParent) : NodeItem(aParent) {}
-  };
-
-  class PiNode : public NodeItem
-  {
-  public:
-    PiNode(){}
-    PiNode(const Item_t& aParent) : NodeItem(aParent) {}
-  };
-
-  class CommentNode : public NodeItem
-  {
-  public:
-    CommentNode(){}
-    CommentNode(const Item_t& aParent) : NodeItem(aParent) {}
-  };
-
-  class TextNode : public NodeItem
-  {
-  public:
-    TextNode(){}
-    TextNode(const Item_t& aParent) : NodeItem(aParent) {}
-  };
-#endif
 
 } /* namespace xqp */
 #endif /* XQP_VALUES_H */

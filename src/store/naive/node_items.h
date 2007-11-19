@@ -39,9 +39,9 @@ class NodeNaive : public NodeItem
 public:
   NodeNaive() {}
 
-  NodeNaive(const NodeItem_t& aParent) : NodeItem(aParent) {}
+  NodeNaive(const Item_t& aParent) : NodeItem(aParent) {}
 
-  void setParent(const NodeItem_t& parent) { theParent = parent.get_ptr(); }
+  virtual void setParent(const Item_t& p) { theParent = p.get_ptr(); }
 
   virtual void setChildren(const TempSeq_t& seq) { Assert(0); }
 
@@ -55,16 +55,20 @@ public:
 class DocumentNodeNaive : public NodeNaive
 {
  private:
-  xqp_string theBaseURI;
-  xqp_string theDocURI;
+  xqpStringStore_t theBaseURI;
+  xqpStringStore_t theDocURI;
 
-  TempSeq_t theChildren;
+  TempSeq_t        theChildren;
 
  public:
   DocumentNodeNaive(
-        const xqp_string& baseURI,
-        const xqp_string& documentURI,
-        TempSeq_t& children);
+        const xqpStringStore_t& baseURI,
+        const xqpStringStore_t& documentURI);
+
+  DocumentNodeNaive(
+        const xqpStringStore_t& baseURI,
+        const xqpStringStore_t& documentURI,
+        const TempSeq_t& children);
 
   virtual ~DocumentNodeNaive();
 
@@ -77,6 +81,7 @@ class DocumentNodeNaive : public NodeNaive
   virtual void setChildren(const TempSeq_t& seq);
   virtual xqp_string getDocumentURI() const;
   virtual Iterator_t getTypedValue() const;
+  virtual xqp_string show() const;
 
   // Used when zorba supports DTD
   // xqp_string getUnparsedEntityPublicId() const;
@@ -115,6 +120,8 @@ class ElementNodeNaive : public NodeNaive
         bool newTypes);
 			
   virtual ~ElementNodeNaive();
+
+  void setParent(const Item_t& p);
 
   virtual Item_t getAtomizationValue() const;
   virtual xqp_string getStringProperty() const;
@@ -165,7 +172,7 @@ class AttributeNodeNaive : public NodeNaive
         bool isIdrefs);
 			
   AttributeNodeNaive(
-			  const NodeItem_t& parent,
+			  const Item_t& parent,
         const QNameItem_t& name,
         const QNameItem_t& type,
         const Item_t& lexicalValue,
@@ -191,6 +198,30 @@ class AttributeNodeNaive : public NodeNaive
 /*******************************************************************************
 
 ********************************************************************************/
+class TextNodeNaive : public NodeNaive
+{
+ private:
+  xqpStringStore_t theContent;
+
+ public:
+  TextNodeNaive(const xqpStringStore_t& content);
+  virtual ~TextNodeNaive();
+  
+  virtual QNameItem_t getType() const;
+  virtual Item_t getAtomizationValue() const;
+  virtual xqp_string getStringProperty() const;
+
+  virtual StoreConsts::NodeKind_t getNodeKind() const;
+  virtual Iterator_t getTypedValue() const;
+  virtual xqp_string getStringValue() const;
+			
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class PiNodeNaive : public NodeNaive
 {
  private:
@@ -198,13 +229,7 @@ class PiNodeNaive : public NodeNaive
   xqp_string content;
   xqp_string baseUri;
 
- public:
-  PiNodeNaive(
-        const NodeItem_t& parent,
-        xqp_string& target,
-        xqp_string& content,
-        xqp_string& baseUri);
-
+public:
   PiNodeNaive(
         xqp_string& target,
         xqp_string& content,
@@ -228,11 +253,10 @@ class PiNodeNaive : public NodeNaive
 ********************************************************************************/
 class CommentNodeNaive : public NodeNaive
 {
- private:
+private:
   xqp_string content;
 
- public:
-  CommentNodeNaive(const NodeItem_t& parent, xqp_string& content);
+public:
   CommentNodeNaive(const xqp_string& content);
   virtual ~CommentNodeNaive();
 
@@ -242,31 +266,6 @@ class CommentNodeNaive : public NodeNaive
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   virtual Iterator_t getTypedValue() const;
   virtual xqp_string getStringValue() const;
-  virtual xqp_string show() const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class TextNodeNaive : public NodeNaive
-{
- private:
-  xqp_string content;
-
- public:
-  TextNodeNaive(const NodeItem_t& parent, xqp_string& content);
-  TextNodeNaive(const xqp_string& content);
-  virtual ~TextNodeNaive();
-  
-  virtual QNameItem_t getType() const;
-  virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const;
-
-  virtual StoreConsts::NodeKind_t getNodeKind() const;
-  virtual Iterator_t getTypedValue() const;
-  virtual xqp_string getStringValue() const;
-			
   virtual xqp_string show() const;
 };
 
@@ -306,6 +305,8 @@ class NsBindingsContext : public rcobject
   NsBindingsContext_t  theParentContext;
 
 public:
+  NsBindingsContext() {}
+
   NsBindingsContext(const NamespaceBindings& bindings)
     :
     theBindings(bindings)

@@ -6,7 +6,7 @@
 
 namespace xqp
 {
-  class QNameItemImpl;
+class QNameItemImpl;
 
 typedef rchandle<class xqpStringStore> xqpStringStore_t;
 
@@ -54,14 +54,14 @@ public:
 
 protected:
   QNameItemImpl         * theCache;
-  xqp_ulong               theCacheSize;
-  xqp_ulong               theFirstFree;
-  xqp_ulong               theNumFree;
+  ulong                   theCacheSize;
+  ulong                   theFirstFree;
+  ulong                   theNumFree;
 
-  xqp_ulong               theNumQNames;
+  ulong                   theNumQNames;
 
   std::vector<HashEntry>  theHashTab;
-  xqp_ulong               theHashTabSize;
+  ulong                   theHashTabSize;
   float                   theLoadFactor;
 
 public:
@@ -75,9 +75,9 @@ public:
         const char* ln);
 
   QNameItemImpl* insert(
-        const xqpStringStore& ns,
-        const xqpStringStore& pre,
-        const xqpStringStore& ln);
+        const xqpStringStore_t& ns,
+        const xqpStringStore_t& pre,
+        const xqpStringStore_t& ln);
 
   void remove(QNameItemImpl* qn);
 
@@ -85,12 +85,11 @@ protected:
   QNameItemImpl* cacheInsert(HashEntry* entry);
 
   HashEntry* hashInsert(
-        const char* ns,
+        const xqpStringStore_t& ns,
         const char* pre,
         const char* ln,
-        xqp_ulong   nslen,
-        xqp_ulong   prelen,
-        xqp_ulong   lnlen,
+        ulong       prelen,
+        ulong       lnlen,
         bool&       found);
 
   void hashRemove(

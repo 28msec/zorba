@@ -99,7 +99,7 @@ void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
   XmlLoader& loader = reinterpret_cast<SimpleStore*>(&Store::getInstance())->
                       getXmlLoader();
 
-  NodeItem_t root = loader.loadXml(stream);
+  Item_t root = loader.loadXml(stream);
 
   if (position < 0)
   {

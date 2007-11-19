@@ -195,7 +195,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
 		{
       if (state->theString != "")
 			{
-        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString), state);
+        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
         state->theString = "";
       }
       break;
@@ -209,7 +209,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
 		{
       if (state->theString != "")
 			{
-        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString), state);
+        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
         state->theString = "";
       }
       STACK_PUSH2(state->theContextItem, state);
@@ -300,8 +300,7 @@ AttributeIterator::nextImpl(PlanState& planState)
       itemCur = consumeNext ( theChild, planState );
     }
 
-    itemLexical = zorba::getItemFactory()->
-                  createUntypedAtomic(lexicalString.getStore());
+    itemLexical = zorba::getItemFactory()->createUntypedAtomic(lexicalString);
     if ( concatenation )
 		{
       itemTyped = itemLexical;
@@ -365,7 +364,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 
   item = zorba::getItemFactory()->createCommentNode(
 		           content,
-		           false);
+		           false).get_ptr();
 
   STACK_PUSH2(item, state);
 		

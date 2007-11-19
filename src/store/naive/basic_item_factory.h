@@ -32,22 +32,24 @@ public:
   virtual ~BasicItemFactory();
 
   virtual QNameItem_t createQName(
-        const xqpStringStore& ns,
-        const xqpStringStore& pre,
-        const xqpStringStore& local);
+        const xqpStringStore_t& ns,
+        const xqpStringStore_t& pre,
+        const xqpStringStore_t& local);
 
   virtual QNameItem_t createQName(
         const char* ns,
         const char* pre,
         const char* ln);
 
-  virtual AnyUriItem_t createAnyURI(const xqpStringStore& value);
-
+  virtual AnyUriItem_t createAnyURI(const xqpStringStore_t& value);
+  virtual AnyUriItem_t createAnyURI(const xqp_string& value);
   virtual AnyUriItem_t createAnyURI(const char* value);
 
-  virtual Item_t createUntypedAtomic(const xqpStringStore& value);
+  virtual Item_t createUntypedAtomic(const xqpStringStore_t& value);
+  virtual Item_t createUntypedAtomic(const xqp_string& value);
 
-  virtual Item_t createString(const xqpStringStore& value);
+  virtual Item_t createString(const xqpStringStore_t& value);
+  virtual Item_t createString(const xqp_string& value);
 
   virtual Item_t createBase64Binary(xqp_base64Binary value);
 
@@ -156,19 +158,24 @@ public:
   virtual Item_t createUnsignedShort(xqp_unsignedShort value);
 
   virtual Item_t createDocumentNode(
-        xqp_string baseURI,
-        xqp_string docURI,
-        Iterator_t& children,
+        const xqpStringStore_t& baseURI,
+        const xqpStringStore_t& docURI,
         bool createId = false);
 
-  virtual NodeItem_t createElementNode(
+  virtual Item_t createDocumentNode(
+        const xqpStringStore_t& baseURI,
+        const xqpStringStore_t& docURI,
+        const TempSeq_t& children,
+        bool createId = false);
+
+  virtual Item_t createElementNode(
         const QNameItem_t& name,
         const QNameItem_t& type,
         TempSeq_t& attributes,
         const NamespaceBindings& nsBindings,
         bool createId = false);
 
-  virtual NodeItem_t createElementNode(
+  virtual Item_t createElementNode(
         const QNameItem_t& name,
         const QNameItem_t& type,
         TempSeq_t& children,
@@ -179,7 +186,7 @@ public:
         bool newTypes,
         bool createId = false);
 
-  virtual NodeItem_t createAttributeNode (
+  virtual Item_t createAttributeNode (
         const QNameItem_t& name,
         const QNameItem_t& type,
         const Item_t& lexicalValue,
@@ -187,13 +194,12 @@ public:
         bool createId = false);
 
   virtual Item_t createTextNode (
-        const xqp_string& value,
+        const xqpStringStore_t& value,
         bool createId = false);
 
-  virtual Item_t createNamespaceNode (
-        const xqp_string& prefix,
-        const xqp_string& name,
-        bool createId = false);
+  virtual Item_t createTextNode(
+			    const xqp_string& value,
+			    bool createId = false);
 
   virtual Item_t createCommentNode (
         const xqp_string& comment,

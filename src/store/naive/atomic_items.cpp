@@ -40,7 +40,7 @@ QNameItem_t QNameItemImpl::getType() const
 Item_t QNameItemImpl::getAtomizationValue( ) const
 {
   return Store::getInstance().getItemFactory().
-         createQName(*theNamespace, *thePrefix, *theLocal).get_ptr();
+         createQName(theNamespace, thePrefix, theLocal).get_ptr();
 }
 
 
@@ -88,9 +88,9 @@ xqp_string QNameItemImpl::show() const
   class AnyUriItem
 ********************************************************************************/
 
-AnyUriItemImpl::AnyUriItemImpl(const xqpStringStore& value) 
+AnyUriItemImpl::AnyUriItemImpl(const xqpStringStore_t& value) 
   :
-  theValue(const_cast<xqpStringStore*>(&value))
+  theValue(value)
 {
 }
   
@@ -111,8 +111,7 @@ QNameItem_t AnyUriItemImpl::getType() const
 
 Item_t AnyUriItemImpl::getAtomizationValue() const
 {
-  return Store::getInstance().getItemFactory().
-         createAnyURI(*theValue).get_ptr();
+  return Store::getInstance().getItemFactory().createAnyURI(theValue).get_ptr();
 }
 
 uint32_t AnyUriItemImpl::hash() const
@@ -149,9 +148,9 @@ xqp_string AnyUriItemImpl::show() const
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
-UntypedAtomicItemNaive::UntypedAtomicItemNaive(const xqpStringStore& value)
+UntypedAtomicItemNaive::UntypedAtomicItemNaive(const xqpStringStore_t& value)
   :
-  theValue(const_cast<xqpStringStore*>(&value))
+  theValue(value)
 {
 }
 
@@ -173,7 +172,7 @@ QNameItem_t UntypedAtomicItemNaive::getType() const
 Item_t UntypedAtomicItemNaive::getAtomizationValue() const
 {
   return Store::getInstance().getItemFactory().
-         createUntypedAtomic(*theValue).get_ptr();
+         createUntypedAtomic(theValue).get_ptr();
 }
 
 uint32_t UntypedAtomicItemNaive::hash() const
@@ -181,7 +180,7 @@ uint32_t UntypedAtomicItemNaive::hash() const
   return theValue->hash();
 }
 
-bool UntypedAtomicItemNaive::equals ( Item_t item ) const
+bool UntypedAtomicItemNaive::equals(Item_t item) const
 {
   return item->getStringValue() == xqp_string(theValue);
 }
@@ -206,9 +205,9 @@ xqp_string UntypedAtomicItemNaive::show() const
 /*******************************************************************************
   class StingItem
 ********************************************************************************/
-StringItemNaive::StringItemNaive(const xqpStringStore& value)
+StringItemNaive::StringItemNaive(const xqpStringStore_t& value)
   :
-  theValue(const_cast<xqpStringStore*>(&value))
+  theValue(value)
 {
 }
 
@@ -229,7 +228,7 @@ QNameItem_t StringItemNaive::getType() const
 
 Item_t StringItemNaive::getAtomizationValue() const
 {
-  return Store::getInstance().getItemFactory().createString(*theValue);
+  return Store::getInstance().getItemFactory().createString(theValue);
 }
 
 uint32_t StringItemNaive::hash() const

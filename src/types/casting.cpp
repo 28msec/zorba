@@ -106,7 +106,7 @@ Item_t GenericCast::cast(Item_t item) {
 			}
 			break;
 		case TypeSystem::XS_STRING:
-			result = itemFactory->createString(item->getStringProperty().getStore());
+			result = itemFactory->createString(item->getStringProperty());
 			break;
 		default:
 			ZorbaErrorAlerts::error_alert (

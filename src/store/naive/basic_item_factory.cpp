@@ -34,13 +34,12 @@ BasicItemFactory::~BasicItemFactory()
 
 
 QNameItem_t BasicItemFactory::createQName(
-    const xqpStringStore& ns,
-    const xqpStringStore& pre,
-    const xqpStringStore& local)
+    const xqpStringStore_t& ns,
+    const xqpStringStore_t& pre,
+    const xqpStringStore_t& local)
 {
   return theQNamePool->insert(ns, pre, local);
 }
-
 
 QNameItem_t BasicItemFactory::createQName(
     const char* ns,
@@ -56,30 +55,45 @@ QNameItem_t BasicItemFactory::createQName(
 }
 
 
-AnyUriItem_t BasicItemFactory::createAnyURI(const xqpStringStore& value)
+AnyUriItem_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
 {
-  theUriPool->insert(value);
+  theUriPool->insert(*value);
   return new AnyUriItemImpl(value);
 }
 
+AnyUriItem_t BasicItemFactory::createAnyURI(const xqp_string& value)
+{
+  theUriPool->insert(value.getStore());
+  return new AnyUriItemImpl(xqpStringStore_t(&value.getStore()));
+}
 
 AnyUriItem_t BasicItemFactory::createAnyURI(const char* value)
 {
   xqpStringStore_t str;
   theUriPool->insert(value, str);
-  return new AnyUriItemImpl(*str);
+  return new AnyUriItemImpl(str);
 }
 
 
-Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore& value)
+Item_t BasicItemFactory::createUntypedAtomic(const xqpStringStore_t& value)
 {
   return new UntypedAtomicItemNaive(value);
 }
 
+Item_t BasicItemFactory::createUntypedAtomic(const xqp_string& value)
+{
+  return new UntypedAtomicItemNaive(xqpStringStore_t(&value.getStore()));
+}
 
-Item_t BasicItemFactory::createString(const xqpStringStore& value)
+
+Item_t BasicItemFactory::createString(const xqpStringStore_t& value)
 {
   return new StringItemNaive(value);
+}
+
+Item_t BasicItemFactory::createString(const xqp_string& value)
+{
+  return new StringItemNaive(xqpStringStore_t(&value.getStore()));
 }
 
 
@@ -214,20 +228,22 @@ Item_t BasicItemFactory::createDateTime ( const xqp_string& value ) { return Ite
 
 	Item_t BasicItemFactory::createPositiveInteger ( xqp_positiveInteger value ) { return Item_t ( NULL ); }
 
+Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createTime ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createTime ( short hour, short minute, short second, short timeZone ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createTime ( short hour, short minute, short second, short timeZone ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createToken ( const xqp_string& value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createToken ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createUnsignedByte ( xqp_unsignedByte value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createUnsignedByte ( xqp_unsignedByte value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createUnsignedInt ( xqp_uint value ) { return Item_t ( NULL ); }
 
-	Item_t BasicItemFactory::createUnsignedInt ( xqp_uint value ) { return Item_t ( NULL ); }
-
-	Item_t BasicItemFactory::createUnsignedLong ( xqp_ulong value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createUnsignedLong(xqp_ulong value)
+{
+  return Item_t ( NULL );
+}
 
 Item_t BasicItemFactory::createUnsignedShort(xqp_unsignedShort value)
 {
@@ -236,16 +252,25 @@ Item_t BasicItemFactory::createUnsignedShort(xqp_unsignedShort value)
 
 
 Item_t BasicItemFactory::createDocumentNode(
-    xqp_string baseURI,
-    xqp_string docURI,
-    Iterator_t& children,
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri,
     bool createId)
 {
-  return Item_t ( NULL );
+  return new DocumentNodeNaive(baseUri, docUri);
 }
 
 
-NodeItem_t BasicItemFactory::createElementNode(
+Item_t BasicItemFactory::createDocumentNode(
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri,
+    const TempSeq_t& children,
+    bool createId)
+{
+  return new DocumentNodeNaive(baseUri, docUri, children);
+}
+
+
+Item_t BasicItemFactory::createElementNode(
     const QNameItem_t& name,
     const QNameItem_t& type,
     TempSeq_t& attributes,
@@ -256,7 +281,7 @@ NodeItem_t BasicItemFactory::createElementNode(
 }
 
 
-NodeItem_t BasicItemFactory::createElementNode(
+Item_t BasicItemFactory::createElementNode(
     const QNameItem_t& name,
     const QNameItem_t& type,
     TempSeq_t& children,
@@ -278,12 +303,12 @@ NodeItem_t BasicItemFactory::createElementNode(
 }
 
 
-NodeItem_t BasicItemFactory::createAttributeNode(
+Item_t BasicItemFactory::createAttributeNode(
     const QNameItem_t& name,
     const QNameItem_t& type,
     const Item_t& lexicalValue,
     const Item_t& typedValue,
-    bool createId ) 
+    bool createId)
 { 
   return new AttributeNodeNaive(name,
                                 type,
@@ -295,37 +320,34 @@ NodeItem_t BasicItemFactory::createAttributeNode(
 
 
 Item_t BasicItemFactory::createTextNode(
-    const xqp_string& value,
+    const xqpStringStore_t& value,
     bool createId ) 
 {
-  Item_t item = new TextNodeNaive(value);
-  return item;
+  return new TextNodeNaive(value);
 }
 
 
-Item_t BasicItemFactory::createNamespaceNode (
-    const xqp_string& prefix,
-    const xqp_string& name,
-    bool createId )
+Item_t BasicItemFactory::createTextNode(
+    const xqp_string& value,
+    bool createId)
 {
-  return Item_t ( NULL );
+  return new TextNodeNaive(xqpStringStore_t(&value.getStore()));
 }
 
 
-Item_t BasicItemFactory::createCommentNode (
+Item_t BasicItemFactory::createCommentNode(
     const xqp_string& comment,
     bool createId	)
 {
-  Item_t item = new CommentNodeNaive(comment);
-  return item;
+  return new CommentNodeNaive(comment);
 }
 
 
-Item_t BasicItemFactory::createPiNode (
+Item_t BasicItemFactory::createPiNode(
     const Item_t& name,
     const xqp_string& content,
     const xqp_string& baseUri,
-    bool createId	)
+    bool createId)
 {
   return Item_t ( NULL );
 }

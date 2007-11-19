@@ -41,9 +41,11 @@ typedef rchandle<xqpStringStore> xqpStringStore_t;
 class xqpStringStore : public rcobject, public string
 {
 public:
+  xqpStringStore() { }
   xqpStringStore(const xqpStringStore &other) : rcobject(other), string(other) {}
   xqpStringStore(const std::string& other) : string(other) {}
   xqpStringStore(const char* start, const char* end) : string(start, end) {}
+  xqpStringStore(const char* start, long len) : string(start, len) {}
 
   std::string::size_type bytes() const { return size(); }
 
@@ -77,11 +79,6 @@ public:
      * @param src A source UTF-8 encoded string
      */
     xqpString(const xqpString &other) : theStrStore(other.theStrStore) {}
-
-    /**Construct a xqpString as a wrapper of an existing xqpStringStore
-     * @param src A source UTF-8 encoded string
-     */
-    xqpString(xqpStringStore* other) : theStrStore(other) {}
 
    /**Construct a xqpString as a wrapper of an existing xqpStringStore
     * @param src A source UTF-8 encoded string

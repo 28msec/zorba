@@ -80,15 +80,19 @@ QNameItemImpl* QNamePool::insert(
   QNameItemImpl* qn;
   bool found;
 
-  HashEntry* entry = hashInsert(ns, pre, ln,
-                                strlen(ns), strlen(pre), strlen(ln),
+  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+
+  xqpStringStore_t pooledNs;
+  store.getUriPool().insert(ns, pooledNs);
+
+  HashEntry* entry = hashInsert(pooledNs, pre, ln, strlen(pre), strlen(ln),
                                 found);
 
   qn = cacheInsert(entry);
 
   if (!found)
   {
-    qn->theNamespace = new xqpStringStore(ns);
+    qn->theNamespace = pooledNs;
     qn->thePrefix = new xqpStringStore(pre);
     qn->theLocal = new xqpStringStore(ln);
   }
@@ -96,28 +100,28 @@ QNameItemImpl* QNamePool::insert(
   return qn;
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
 QNameItemImpl* QNamePool::insert(
-    const xqpStringStore& ns,
-    const xqpStringStore& pre,
-    const xqpStringStore& ln)
+    const xqpStringStore_t& ns,
+    const xqpStringStore_t& pre,
+    const xqpStringStore_t& ln)
 {
   QNameItemImpl* qn;
   bool found;
 
-  HashEntry* entry = hashInsert(ns.c_str(), pre.c_str(), ln.c_str(),
-                                ns.bytes(), pre.bytes(), ln.bytes(),
-                                found);
+  HashEntry* entry = hashInsert(ns, pre->c_str(), ln->c_str(),
+                                pre->bytes(), ln->bytes(), found);
 
   qn = cacheInsert(entry);
 
   if (!found)
   {
-    qn->theNamespace = const_cast<xqpStringStore*>(&ns);
-    qn->thePrefix = const_cast<xqpStringStore*>(&pre);
-    qn->theLocal = const_cast<xqpStringStore*>(&ln);
+    qn->theNamespace = ns;
+    qn->thePrefix = pre;
+    qn->theLocal = ln;
   }
 
   return qn;
@@ -191,10 +195,9 @@ QNameItemImpl* QNamePool::cacheInsert(HashEntry* entry)
   entry. If not, allocate a new hash entry for it, and return it to the caller.
 ********************************************************************************/
 QNamePool::HashEntry* QNamePool::hashInsert(
-    const char* ns,
+    const xqpStringStore_t& ns,
     const char* pre,
     const char* ln,
-    xqp_ulong   nslen,
     xqp_ulong   prelen,
     xqp_ulong   lnlen,
     bool&       found)
@@ -206,7 +209,7 @@ QNamePool::HashEntry* QNamePool::hashInsert(
   found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  xqp_ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns)));
+  xqp_ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns->c_str())));
   entry = &theHashTab[hval % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new qname.
@@ -222,7 +225,7 @@ QNamePool::HashEntry* QNamePool::hashInsert(
     QNameItemImpl* qnslot = entry->theQNameSlot;
 
     if (qnslot->theLocal->byteEqual(ln, lnlen) &&
-        qnslot->theNamespace->byteEqual(ns, nslen) &&
+        qnslot->theNamespace->byteEqual(*ns) &&
         qnslot->thePrefix->byteEqual(pre, prelen))
     {
       found = true;
@@ -241,7 +244,7 @@ QNamePool::HashEntry* QNamePool::hashInsert(
   {
     resizeHashTab();
 
-    hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns))) % theHashTabSize;
+    hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns->c_str()))) % theHashTabSize;
     entry = &theHashTab[ hval % theHashTabSize];
 
     if (entry->theQNameSlot == NULL)

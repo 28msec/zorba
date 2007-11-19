@@ -40,19 +40,14 @@ public:
 public:
 			
   /**
-   * @param value string value of the untyped atomic
-   */
-  virtual Item_t createUntypedAtomic(const xqpStringStore& value) = 0;
-			
-  /**
    * @param namespace namespace of the qname
    * @param prefix prefix of the qname
    * @param localName local name of the qname
    */
   virtual QNameItem_t createQName(
-        const xqpStringStore& namespace_p,
-        const xqpStringStore& prefix,
-        const xqpStringStore& localName) = 0;
+        const xqpStringStore_t& namespace_p,
+        const xqpStringStore_t& prefix,
+        const xqpStringStore_t& localName) = 0;
 
   virtual QNameItem_t createQName(
         const char* ns,
@@ -63,16 +58,22 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    */
-  virtual AnyUriItem_t createAnyURI(const xqpStringStore& value) = 0;
-
+  virtual AnyUriItem_t createAnyURI(const xqpStringStore_t& value) = 0;
+  virtual AnyUriItem_t createAnyURI(const xqp_string& value) = 0;
   virtual AnyUriItem_t createAnyURI(const char* value) = 0;
 
+  /**
+   * @param value string value of the untyped atomic
+   */
+  virtual Item_t createUntypedAtomic(const xqpStringStore_t& value) = 0;
+  virtual Item_t createUntypedAtomic(const xqp_string& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#string]
    * @param value string representation of the value
    */
-  virtual Item_t createString(const xqpStringStore& value) = 0;
+  virtual Item_t createString(const xqpStringStore_t& value) = 0;
+  virtual Item_t createString(const xqp_string& value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#base64Binary]
@@ -396,7 +397,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedByte]
    * @param value
    */
-  virtual Item_t createUnsignedByte ( xqp_unsignedByte value ) = 0;
+  virtual Item_t createUnsignedByte(xqp_unsignedByte value) = 0;
 
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#unsignedInt]
@@ -424,9 +425,15 @@ public:
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createDocumentNode (
-			    xqp_string baseURI,
-			    xqp_string docURI,
-			    Iterator_t& children,
+			    const xqpStringStore_t& baseURI,
+			    const xqpStringStore_t& docURI,
+			    const TempSeq_t& children,
+			    bool createId = false
+			) = 0;
+
+  virtual Item_t createDocumentNode (
+			    const xqpStringStore_t& baseURI,
+			    const xqpStringStore_t& docURI,
 			    bool createId = false
 			) = 0;
 
@@ -440,7 +447,7 @@ public:
    * @param newTypes Have the children to be checked agains the type of the parent?
    * @param createId Does the created item need an ID (default == false)?
    */
-  virtual NodeItem_t createElementNode (
+  virtual Item_t createElementNode (
 			    const QNameItem_t& name,
 			    const QNameItem_t& type,
 			    TempSeq_t& seqChildren,
@@ -461,7 +468,7 @@ public:
    *
    * Implementations might only store the typed value.
    */
-  virtual NodeItem_t createAttributeNode (
+  virtual Item_t createAttributeNode (
 			    const QNameItem_t& name,
 			    const QNameItem_t& type,
 			    const Item_t& lexicalValue,
@@ -473,19 +480,13 @@ public:
    * @param value text
    * @param createId Does the created item need an ID (default == false)?
    */
-  virtual Item_t createTextNode (
-			    const xqp_string& value,
+  virtual Item_t createTextNode(
+			    const xqpStringStore_t& value,
 			    bool createId = false
 			) = 0;
 
-  /**
-   * @param prefix prefix of the namespace
-   * @param name uri of the namespace
-   * @param createId Does the created item need an ID (default == false)?
-   */
-  virtual Item_t createNamespaceNode (
-			    const xqp_string& prefix,
-			    const xqp_string& name,
+  virtual Item_t createTextNode(
+			    const xqp_string& value,
 			    bool createId = false
 			) = 0;
 
@@ -493,7 +494,7 @@ public:
    * @param comment
    * @param createId Does the created item need an ID (default == false)?
    */
-  virtual Item_t createCommentNode (
+  virtual Item_t createCommentNode(
 			    const xqp_string& comment,
 			    bool createId = false
 			) = 0;
@@ -504,7 +505,7 @@ public:
    * @param baseUri The base URI for the processing instruction.
    * @param createId Does the created item need an ID (default == false)?
    */
-  virtual Item_t createPiNode (
+  virtual Item_t createPiNode(
 			    const Item_t& name,
 			    const xqp_string& content,
 			    const xqp_string& baseUri,

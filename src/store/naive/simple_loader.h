@@ -22,12 +22,18 @@ typedef rchandle<class NodeItem> NodeItem_t;
 class XmlLoader
 {
 protected:
-  xmlSAXHandler           theSaxHandler;
+  xmlSAXHandler       theSaxHandler;
  
-  NodeItem_t              theRootNode;
-  std::stack<NodeItem_t>  thePath;
+  Item_t              theRootNode;
+  std::stack<Item_t>  thePath;
+
+  xqpStringStore      theErrors;
 
 public:
+  static void	startDocumentSAXFunc(void * ctx);
+
+  static void endDocumentSAXFunc(void * ctx);
+
   static void startElementNs(
         void * ctx, 
         const xmlChar * localname, 
@@ -45,6 +51,25 @@ public:
         const xmlChar * prefix, 
         const xmlChar * URI);
 
+  static void charactersSAXFunc(
+        void * ctx,
+        const xmlChar * ch,
+        int len);
+
+  static void	cdataBlockSAXFunc(
+        void * ctx, 
+        const xmlChar * value, 
+        int len);
+
+  static void commentSAXFunc(
+        void * ctx, 
+        const xmlChar * value);
+
+  static void	processingInstructionSAXFunc(
+        void * ctx, 
+        const xmlChar * target, 
+        const xmlChar * data);
+
   static void error(void * ctx, const char * msg, ... );
 
   static void warning(void * ctx, const char * msg, ... );
@@ -54,9 +79,9 @@ public:
 
   ~XmlLoader();
 
-  NodeItem_t getRootNode() const { return theRootNode; }
+  Item_t getRootNode() const { return theRootNode; }
   
-  NodeItem_t loadXml(std::iostream& xmlStream);
+  Item_t loadXml(std::iostream& xmlStream);
 
 protected:
   long readPacket(std::iostream& stream, char* buf, long size);

@@ -67,7 +67,7 @@ protected:
   xqpStringStore_t theValue;
 
 public:
-  AnyUriItemImpl(const xqpStringStore& value);
+  AnyUriItemImpl(const xqpStringStore_t& value);
   virtual ~AnyUriItemImpl();
 
   virtual xqp_string getStringValue() const;
@@ -90,7 +90,7 @@ private:
   xqpStringStore_t theValue;
 
 public:
-  UntypedAtomicItemNaive(const xqpStringStore& value);
+  UntypedAtomicItemNaive(const xqpStringStore_t& value);
   virtual ~UntypedAtomicItemNaive();
 
   virtual xqp_string getStringValue() const;
@@ -112,7 +112,7 @@ class StringItemNaive : public StringItem
 protected:
   xqpStringStore_t theValue;
 public:
-  StringItemNaive(const xqpStringStore& value);
+  StringItemNaive(const xqpStringStore_t& value);
   virtual ~StringItemNaive();
   
   virtual xqp_string getStringValue() const;
