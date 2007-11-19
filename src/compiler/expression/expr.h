@@ -58,6 +58,7 @@ public:
 protected:
 	yy::location loc;
 
+
 public:
 	expr(yy::location const&);
   virtual ~expr() {}

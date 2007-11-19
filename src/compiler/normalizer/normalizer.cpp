@@ -1,8 +1,42 @@
 #include "compiler/normalizer/normalizer.h"
+#include "functions/function.h"
+#include "functions/signature.h"
+#include "types/typesystem.h"
+#include "system/globalenv.h"
 
 using namespace xqp;
 
-#define LOOKUP_FN( pfx, local ) static_cast<function *> (sctx_p->lookup_fn (pfx, local))
+#define LOOKUP_FN( pfx, local ) static_cast<function *> (sctx->lookup_fn (pfx, local))
+
+static inline expr::expr_t wrap_in_bev(static_context *sctx, expr::expr_t e)
+{
+  expr::expr_t fh(new fo_expr(e->get_loc()));
+  fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
+  fp->add(e);
+  fp->set_func(LOOKUP_FN("fn", "boolean"));
+  return fh;
+}
+
+static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_t e)
+{
+  expr::expr_t fh(new fo_expr(e->get_loc()));
+  fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
+  fp->add(e);
+  fp->set_func(LOOKUP_FN("fn", "data"));
+  return fh;
+}
+
+static inline expr::expr_t wrap_in_typematch(expr::expr_t e, TypeSystem::xqtref_t type)
+{
+  // TODO : Need to add typematch_expr
+  return e;
+}
+
+static inline expr::expr_t wrap_in_type_conversion(expr::expr_t e, TypeSystem::xqtref_t type)
+{
+  // TODO : Need to add convert_simple_operand
+  return e;
+}
 
 bool normalizer::begin_visit(expr& node)
 {
@@ -38,12 +72,7 @@ bool normalizer::begin_visit(flwor_expr& node)
 {
   expr::expr_t where_h = node.get_where();
   if (where_h.get_ptr()) {
-    expr::expr_t fh(new fo_expr(where_h->get_loc()));
-    fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
-
-    fp->add(where_h);
-    // TODO - set function
-    node.set_where(fh);
+    node.set_where(wrap_in_bev(m_sctx, where_h));
   }
   return true;
 }
@@ -65,11 +94,35 @@ bool normalizer::begin_visit(typeswitch_expr& node)
 
 bool normalizer::begin_visit(if_expr& node)
 {
+  node.set_cond_expr(wrap_in_bev(m_sctx, node.get_cond_expr()));
   return true;
 }
 
 bool normalizer::begin_visit(fo_expr& node)
 {
+  const function *func = node.get_func();
+  std::cout << "In fo_expr: " << func->get_fname()->getStringProperty() << endl;
+  const signature& sign = func->get_signature();
+
+  int n = sign.arg_count();
+  for(int i = 0; i < n; ++i) {
+    expr::expr_t arg = node[i];
+    const TypeSystem::xqtref_t& arg_type = sign[i];
+    std::cout << "Arg: " << i << " type: " << arg_type.get_ptr() << endl;
+    TypeSystem::xqtref_t arg_prime_type = GENV_TYPESYSTEM.prime_type(*arg_type);
+    std::cout << "Arg: " << i << " prime type: " << arg_prime_type.get_ptr() << endl;
+    if (GENV_TYPESYSTEM.is_subtype(*arg_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) {
+      arg = wrap_in_atomization(m_sctx, arg);
+      arg = wrap_in_type_conversion(arg, arg_type);
+    }
+
+    if (GENV_TYPESYSTEM.quantifier(*arg_type) != TypeSystem::QUANT_STAR) {
+      arg = wrap_in_typematch(arg, arg_type);
+    }
+
+    node[i] = arg;
+  }
+
   return true;
 }
 

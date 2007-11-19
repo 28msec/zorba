@@ -5,6 +5,7 @@
 
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/translator/translator.h"
+#include "compiler/normalizer/normalizer.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_dot_visitor.h"
 #include "compiler/parser/xquery_driver.h"
@@ -18,6 +19,9 @@
 
 #include <iostream>
 #include <fstream>
+
+#define ENABLE_NORMALIZER
+#undef ENABLE_NORMALIZER
 
 using namespace std;
 namespace xqp {
@@ -164,6 +168,15 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 		return false;
 	}
 	e_h->put(cout) << endl;
+
+#ifdef ENABLE_NORMALIZER
+    normalizer n(thread_specific_zorba->get_static_context());
+
+    e_h->accept(n);
+	cout << "Normalized Expression tree:\n";
+
+    e_h->put(cout) << endl;
+#endif
 
 	///now do code generation (generate iterator tree)
 

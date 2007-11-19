@@ -8,7 +8,7 @@ namespace xqp {
 
 class normalizer : public expr_visitor {
   public:
-    normalizer() { }
+    normalizer(static_context *ctx) : m_sctx(ctx) { }
     ~normalizer() { }
 
     bool begin_visit(expr&);
@@ -78,6 +78,9 @@ class normalizer : public expr_visitor {
     void end_visit(text_expr&);
     void end_visit(comment_expr&);
     void end_visit(pi_expr&);
+
+  private:
+    static_context *m_sctx;
 };
 
 } /* namespace xqp */

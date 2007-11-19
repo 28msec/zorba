@@ -389,6 +389,22 @@ TypeSystem::xqtref_t TypeSystem::intersect_type(const XQType& type1, const XQTyp
 
 TypeSystem::xqtref_t TypeSystem::prime_type(const XQType& type) const
 {
+  if (is_equal(type, *EMPTY_TYPE)) {
+    return NONE_TYPE;
+  } else if (type.type_kind() == XQType::ATOMIC_TYPE_KIND) {
+    const AtomicXQType& atype = static_cast<const AtomicXQType&>(type);
+    return create_atomic_type(atype.m_type_code, QUANT_ONE);
+  } else if (is_equal(type, *NONE_TYPE)) {
+    return NONE_TYPE;
+  } else if (type.type_kind() == XQType::ITEM_KIND) {
+    return ITEM_TYPE_ONE;
+  } else if (is_equal(type, *ANY_TYPE)) {
+    return ITEM_TYPE_ONE;
+  } else if (is_equal(type, *ANY_SIMPLE_TYPE)) {
+    return ANY_ATOMIC_TYPE_ONE;
+  } else if (is_equal(type, *UNTYPED_TYPE)) {
+    return ITEM_TYPE_ONE;
+  }
   return TypeSystem::xqtref_t(0);
 }
 

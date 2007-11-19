@@ -54,6 +54,7 @@ public:
 	// XQuery signature (name+arity)
 	const QNameItem_t& get_fname() const { return sig.get_name(); }
 	void set_signature(signature& _sig) { sig = _sig; }
+    const signature& get_signature() const { return sig; }
 
 	// codegen: functor specification
 	virtual PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>& argv) const = 0;
