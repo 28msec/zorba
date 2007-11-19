@@ -3575,6 +3575,7 @@ public:
 public:
 	void push_back(rchandle<exprnode> arg_h) { arg_hv.push_back(arg_h); }
 	rchandle<exprnode> operator[](int i) const { return arg_hv[i]; }
+  int size () { return arg_hv.size (); }
 
 public:
 	std::ostream& put(std::ostream&) const;

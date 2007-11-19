@@ -28,8 +28,10 @@ static uint32_t depth = 0;
 
 static void *no_state = (void *) new int;
 
-#define LOOKUP_FN2( pfx, local ) static_cast<function *> (sctx_p->lookup_fn (pfx, local))
-#define LOOKUP_OP( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local))
+#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx_p->lookup_fn (pfx, local, arity))
+#define LOOKUP_OP1( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 1))
+#define LOOKUP_OP2( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 2))
+#define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 
 translator::translator()
 {
@@ -1342,10 +1344,10 @@ void translator::end_visit(const AdditiveExpr& v, void *visit_state)
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	switch (v.get_add_op()) {
 	case op_plus:
-		fo_h->set_func(LOOKUP_OP ("add"));
+		fo_h->set_func(LOOKUP_OP2 ("add"));
 		break;
 	case op_minus:
-		fo_h->set_func(LOOKUP_OP ("subtract"));
+		fo_h->set_func(LOOKUP_OP2 ("subtract"));
 		break;
 	}
 	fo_h->add(e2_h);
@@ -1366,7 +1368,7 @@ void translator::end_visit(const AndExpr& v, void *visit_state)
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
 	fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_OP ("and"));
+	fo_h->set_func(LOOKUP_OP2 ("and"));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -1413,55 +1415,55 @@ void translator::end_visit(const ComparisonExpr& v, void *visit_state)
 	if (v.get_gencomp()!=NULL) {
 		switch (v.get_gencomp()->get_type()) {
 		case op_eq:
-			fo_p->set_func(LOOKUP_OP ("equal"));
+			fo_p->set_func(LOOKUP_OP2 ("equal"));
 			break;
 		case op_ne:
-			fo_p->set_func(LOOKUP_OP ("not-equal"));
+			fo_p->set_func(LOOKUP_OP2 ("not-equal"));
 			break;
 		case op_lt:
-			fo_p->set_func(LOOKUP_OP ("less"));
+			fo_p->set_func(LOOKUP_OP2 ("less"));
 			break;
 		case op_le:
-			fo_p->set_func(LOOKUP_OP ("less-equal"));
+			fo_p->set_func(LOOKUP_OP2 ("less-equal"));
 			break;
 		case op_gt:
-			fo_p->set_func(LOOKUP_OP ("greater"));
+			fo_p->set_func(LOOKUP_OP2 ("greater"));
 			break;
 		case op_ge:
-			fo_p->set_func(LOOKUP_OP ("greater-equal"));
+			fo_p->set_func(LOOKUP_OP2 ("greater-equal"));
 			break;
 		}
 	} else if (v.get_valcomp () != NULL) {
 		switch (v.get_valcomp()->get_type()) {
 		case op_val_eq:
-			fo_p->set_func(LOOKUP_OP ("value-equal"));
+			fo_p->set_func(LOOKUP_OP2 ("value-equal"));
 			break;
 		case op_val_ne:
-			fo_p->set_func(LOOKUP_OP ("value-not-equal"));
+			fo_p->set_func(LOOKUP_OP2 ("value-not-equal"));
 			break;
 		case op_val_lt:
-			fo_p->set_func(LOOKUP_OP ("value-less"));
+			fo_p->set_func(LOOKUP_OP2 ("value-less"));
 			break;
 		case op_val_le:
-			fo_p->set_func(LOOKUP_OP ("value-less-equal"));
+			fo_p->set_func(LOOKUP_OP2 ("value-less-equal"));
 			break;
 		case op_val_gt:
-			fo_p->set_func(LOOKUP_OP ("value-greater"));
+			fo_p->set_func(LOOKUP_OP2 ("value-greater"));
 			break;
 		case op_val_ge:
-			fo_p->set_func(LOOKUP_OP ("value-greater-equal"));
+			fo_p->set_func(LOOKUP_OP2 ("value-greater-equal"));
 			break;
 		}
 	} else if (v.get_nodecomp()!=NULL) {
 		switch (v.get_nodecomp()->get_type()) {
 		case op_is:
-			fo_p->set_func(LOOKUP_OP ("is"));
+			fo_p->set_func(LOOKUP_OP2 ("is"));
 			break;
 		case op_precedes:
-			fo_p->set_func(LOOKUP_OP ("precedes"));
+			fo_p->set_func(LOOKUP_OP2 ("precedes"));
 			break;
 		case op_follows:
-			fo_p->set_func(LOOKUP_OP ("follows"));
+			fo_p->set_func(LOOKUP_OP2 ("follows"));
 			break;
 		}
 	}
@@ -1565,7 +1567,7 @@ void translator::end_visit(const FunctionCall& v, void *visit_state)
 	string fname = qn_h->get_localname();
 
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
-  fo_h->set_func(LOOKUP_FN2(prefix, fname));
+  fo_h->set_func(LOOKUP_FN(prefix, fname, v.get_arg_list ()->size ()));
 	
 	// TODO this should be a const iterator
 	std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
@@ -1622,10 +1624,10 @@ void translator::end_visit(const IntersectExceptExpr& v, void *visit_state)
 
 	switch (v.get_intex_op()) {
 	case op_intersect:
-		fo_h->set_func(LOOKUP_OP ("intersect"));
+		fo_h->set_func(LOOKUP_OP2 ("intersect"));
 		break;
 	case op_except:
-		fo_h->set_func(LOOKUP_OP ("except"));
+		fo_h->set_func(LOOKUP_OP2 ("except"));
 		break;
 	}
 	fo_h->add(e2_h);
@@ -1647,16 +1649,16 @@ void translator::end_visit(const MultiplicativeExpr& v, void *visit_state)
 	fo_expr *fo_h = new fo_expr(v.get_location());
 	switch (v.get_mult_op()) {
 	case op_mul:
-		fo_h->set_func(LOOKUP_OP ("multiply"));
+		fo_h->set_func(LOOKUP_OP2 ("multiply"));
 		break;
 	case op_div:
-		fo_h->set_func(LOOKUP_OP ("divide"));
+		fo_h->set_func(LOOKUP_OP2 ("divide"));
 		break;
 	case op_idiv:
-		fo_h->set_func(LOOKUP_OP ("integer-divide"));
+		fo_h->set_func(LOOKUP_OP2 ("integer-divide"));
 		break;
 	case op_mod:
-		fo_h->set_func(LOOKUP_OP ("mod"));
+		fo_h->set_func(LOOKUP_OP2 ("mod"));
 		break;
 	}
 	fo_h->add(e2_h);
@@ -1701,7 +1703,7 @@ void translator::end_visit(const OrExpr& v, void *visit_state)
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
   fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_OP ("or"));
+	fo_h->set_func(LOOKUP_OP2 ("or"));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -2117,7 +2119,7 @@ void translator::end_visit(const PathExpr& v, void *visit_state)
   ase->setTest(me);
  
   rchandle<fo_expr> fo = new fo_expr(v.get_location());
-  fo->set_func(LOOKUP_FN2("fn", "root"));
+  fo->set_func(LOOKUP_FN("fn", "root", 1));
   fo->add(&*ase);
 
   if (v.get_type() == path_leading_lone_slash)
@@ -2496,9 +2498,9 @@ void translator::end_visit(const UnaryExpr& v, void *visit_state)
 	fo_expr *fo_p = new fo_expr(v.get_location());
 	fo_p->add(e1_h);
 	if (v.get_signlist()->get_sign())
-		fo_p->set_func(LOOKUP_OP ("unary-plus"));
+		fo_p->set_func(LOOKUP_OP1 ("unary-plus"));
 	else
-		fo_p->set_func(LOOKUP_OP ("unary-minus"));
+		fo_p->set_func(LOOKUP_OP1 ("unary-minus"));
 	nodestack.push(fo_p);
 }
 
@@ -2515,7 +2517,7 @@ void translator::end_visit(const UnionExpr& v, void *visit_state)
 	rchandle<expr> e1_h = pop_nodestack ();
 	rchandle<expr> e2_h = pop_nodestack ();
 	fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_OP ("union"));
+	fo_h->set_func(LOOKUP_OP2 ("union"));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
 	nodestack.push(fo_h);

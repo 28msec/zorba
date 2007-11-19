@@ -6,14 +6,14 @@
 
 using namespace xqp;
 
-#define LOOKUP_FN( pfx, local ) static_cast<function *> (sctx->lookup_fn (pfx, local))
+#define LOOKUP_FN( pfx, local, arity ) static_cast<function *> (sctx->lookup_fn (pfx, local, arity))
 
 static inline expr::expr_t wrap_in_bev(static_context *sctx, expr::expr_t e)
 {
   expr::expr_t fh(new fo_expr(e->get_loc()));
   fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
   fp->add(e);
-  fp->set_func(LOOKUP_FN("fn", "boolean"));
+  fp->set_func(LOOKUP_FN("fn", "boolean", 1));
   return fh;
 }
 
@@ -22,7 +22,7 @@ static inline expr::expr_t wrap_in_atomization(static_context *sctx, expr::expr_
   expr::expr_t fh(new fo_expr(e->get_loc()));
   fo_expr *fp = static_cast<fo_expr *>(fh.get_ptr());
   fp->add(e);
-  fp->set_func(LOOKUP_FN("fn", "data"));
+  fp->set_func(LOOKUP_FN("fn", "data", 1));
   return fh;
 }
 

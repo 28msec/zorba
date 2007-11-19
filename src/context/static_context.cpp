@@ -91,8 +91,8 @@ namespace xqp {
     bind_str ("ns:" + prefix, ns);
   }
 
-  function *static_context::lookup_builtin_fn (string local) {
-    return root_static_context ()->lookup_func ("fn:" + make_expanded_qname (XQUERY_FN_NS, local));
+  function *static_context::lookup_builtin_fn (string local, int arity) {
+    return root_static_context ()->lookup_func (fn_internal_key_pfx (arity) + make_expanded_qname (XQUERY_FN_NS, local));
   }
   string static_context::expand_qname (string default_ns, string prefix, string local) const {
     return make_expanded_qname
@@ -103,6 +103,11 @@ namespace xqp {
     return (n == string::npos) ?
       expand_qname (default_ns, "", qname) :
       expand_qname (default_ns, qname.substr (0, n), qname.substr (n+1));
+  }
+  string static_context::fn_internal_key_pfx (int arity) {
+    ostringstream o;
+    o << "fn:" << arity << "/";
+    return o.str ();
   }
 
 TypeSystem::xqtref_t static_context::get_function_type(

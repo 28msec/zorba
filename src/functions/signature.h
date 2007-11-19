@@ -37,7 +37,6 @@ class signature : public rcobject
 public:
 	QNameItem_t qname_p;
 	std::vector<TypeSystem::xqtref_t> argv;
-	static fxhashmap<signature const*> sigmap;	// map: fname -> signture
 
 public:
 	signature() {}

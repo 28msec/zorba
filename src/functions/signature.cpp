@@ -15,8 +15,6 @@
 using namespace std;
 namespace xqp {
 
-fxhashmap<signature const*> signature::sigmap;
-
 
 signature::signature(
 	QNameItem_t name,

@@ -46,7 +46,8 @@ static string get_qname(const function &f)
   public:                                                               \
     type##_init_class () {                                              \
       static_context::root_static_context ()->                          \
-        bind_fn (get_qname (type##_obj), & type##_obj);                 \
+        bind_fn (get_qname (type##_obj), & type##_obj,                  \
+                 type##_obj.get_signature ().arg_count ());             \
     }                                                                   \
   } type##_init_obj
 

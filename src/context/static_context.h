@@ -73,6 +73,7 @@ protected:
   }
   std::string expand_qname (std::string default_ns, std::string prefix, std::string local) const;
   std::string expand_qname (std::string default_ns, std::string qname) const;
+  static std::string fn_internal_key_pfx (int arity);
   
 public:
 	static void init();
@@ -107,15 +108,15 @@ public:
     bind_expr ("var:" + expand_qname ("", varname), expr);
   }
 
-  function *lookup_fn (std::string prefix, std::string local) const {
-    return lookup_func ("fn:" + expand_qname (default_function_namespace (), prefix, local));
+  function *lookup_fn (std::string prefix, std::string local, int arity) const {
+    return lookup_func (fn_internal_key_pfx (arity) + expand_qname (default_function_namespace (), prefix, local));
   }
-  static function *lookup_builtin_fn (std::string local);
-  void bind_fn (std::string prefix, std::string local, function *f) {
-    bind_func ("fn:" + expand_qname (default_function_namespace (), prefix, local), f);
+  static function *lookup_builtin_fn (std::string local, int arity);
+  void bind_fn (std::string prefix, std::string local, function *f, int arity) {
+    bind_func (fn_internal_key_pfx (arity) + expand_qname (default_function_namespace (), prefix, local), f);
   }
-  void bind_fn (std::string fname, function *f) {
-    bind_func ("fn:" + expand_qname (default_function_namespace (), fname), f);
+  void bind_fn (std::string fname, function *f, int arity) {
+    bind_func (fn_internal_key_pfx (arity) + expand_qname (default_function_namespace (), fname), f);
   }
 
   #if 0
