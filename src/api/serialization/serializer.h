@@ -50,7 +50,15 @@ public:
    * @param result The query result to be serialized.
    * @param os The stream to serialize to.
    */
-	void serialize(XQueryResult *result, ostream& os);
+  void serialize(XQueryResult *result, ostream& os);
+  
+  /**
+   * Serializes the given item to the output stream.
+   *
+   * @param result The item to be serialized.
+   * @param os The stream to serialize to.
+   */
+  void serialize(Item_t item, ostream& os);
 
   /**
    * Set the serializer's parameters. The list of handled parameters
@@ -59,50 +67,57 @@ public:
    * @param parameter_name The name of the parameter to be set.
    * @param value The value of the parameter.
    */
-	void set_parameter(xqp_string parameter_name, xqp_string value);
+  void set_parameter(xqp_string parameter_name, xqp_string value);
 
 
 protected:
-	// Serialization parameters
-	short int byte_order_mark;         // "yes" or "no", implemented
-	short int cdata_section_elements;  // TODO: list of expanded QNames
-	xqp_string doctype_public;         // TODO:
-	xqp_string doctype_system;         // TODO:
-	int encoding;                      // UTF-8 and UTF-16 supported, add others?
-	short int escape_uri_attributes;   // TODO: yes/no requires unicode normalization
-	short int include_content_type;    // yes/no, implemented
-	xqp_string media_type;             // string, implemented
-	short int method;                  // an expanded QName: "xml", "html" are handled
-	xqp_string normalization_form;     // TODO:   requires unicode normalization
-	short int omit_xml_declaration;    // "yes" or "no", implemented
-	short int standalone;              // implemented, TODO: add some validity checks
-	short int undeclare_prefixes;      // TODO: yes/no, not clear
-	void* use_character_maps;          // TODO: list of pairs
-	xqp_string version;                // "1.0"
-	short int indent;                  // "yes" or "no", implemented
+  // Serialization parameters
+  short int byte_order_mark;         // "yes" or "no", implemented
+  short int cdata_section_elements;  // TODO: list of expanded QNames
+  xqp_string doctype_public;         // TODO:
+  xqp_string doctype_system;         // TODO:
+  int encoding;                      // UTF-8 and UTF-16 supported, add others?
+  short int escape_uri_attributes;   // TODO: yes/no requires unicode normalization
+  short int include_content_type;    // yes/no, implemented
+  xqp_string media_type;             // string, implemented
+  short int method;                  // an expanded QName: "xml", "html" are handled
+  xqp_string normalization_form;     // TODO:   requires unicode normalization
+  short int omit_xml_declaration;    // "yes" or "no", implemented
+  short int standalone;              // implemented, TODO: add some validity checks
+  short int undeclare_prefixes;      // TODO: yes/no, not clear
+  void* use_character_maps;          // TODO: list of pairs
+  xqp_string version;                // "1.0"
+  short int indent;                  // "yes" or "no", implemented
 	
-protected: 	
-	static const xqp_string	END_OF_LINE;
+protected:
+  void reset();
+  void validate_parameters();
+  static int get_utf8_length(char ch);
+  void setup(ostream& os);
+  
+protected:
+  class emitter;
+  class transcoder;
+  
+  rchandle<emitter> e;
+  rchandle<transcoder> tr;
+  static const xqp_string	END_OF_LINE;
 
   typedef enum {
-		PARAMETER_VALUE_NO,
+    PARAMETER_VALUE_NO,
     PARAMETER_VALUE_YES,
-		PARAMETER_VALUE_OMIT,
+    PARAMETER_VALUE_OMIT,
 		
     PARAMETER_VALUE_XML,
-		PARAMETER_VALUE_HTML,
+	PARAMETER_VALUE_HTML,
   
     PARAMETER_VALUE_UTF_8,
     PARAMETER_VALUE_UTF_16
         
-	} PARAMETER_VALUE_TYPE;
+  } PARAMETER_VALUE_TYPE;
 
-	void reset();		
-	void validate_parameters();
-  static int get_utf8_length(char ch);
   
-    
-  class transcoder
+  class transcoder : public rcobject
   {
   public:
     transcoder(ostream& output_stream);
@@ -136,11 +151,10 @@ protected:
       char buffer[10];
       int chars_in_buffer;
       int chars_expected;
-      
   };
   
   
-  class emitter
+  class emitter : public rcobject
   {
   public:
     /**

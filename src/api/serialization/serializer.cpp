@@ -813,6 +813,13 @@ void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
   {
     media_type = value;    
   }
+  else
+  {
+    ZORBA_ERROR_ALERT(
+                      error_messages::SEPM0016_Invalid_parameter_value,
+                      error_messages::SYSTEM_ERROR,
+                      NULL);
+  }
 }
 
 void serializer::validate_parameters(void)
@@ -828,12 +835,8 @@ void serializer::validate_parameters(void)
   }
 }
 
-void serializer::serialize(XQueryResult *result, ostream& os)
+void serializer::setup(ostream& os)
 {
-  emitter* e;
-	validate_parameters();
-  transcoder* tr;
-  
   if (encoding == PARAMETER_VALUE_UTF_8)
     tr = new transcoder(os); // the strings are UTF_8, so we use the ``transparent'' transcoder
   else if (encoding == PARAMETER_VALUE_UTF_16)
@@ -859,19 +862,34 @@ void serializer::serialize(XQueryResult *result, ostream& os)
                       NULL);
     return;
   }
+}
+
+void serializer::serialize(XQueryResult *result, ostream& os)
+{
+  validate_parameters();
+  setup(os);
   
   e->emit_declaration();
 
-	Item_t item = result->next();
-	while (item != NULL )
-	{
+  Item_t item = result->next();
+  while (item != NULL )
+  {
     e->emit_item(item);
-		item = result->next();
-	}
+    item = result->next();
+  }
   
   e->emit_declaration_end();
-  delete e;
-  delete tr;
+}
+
+
+void serializer::serialize(Item_t item, ostream& os)
+{
+  validate_parameters();
+  setup(os);
+  
+  e->emit_declaration();
+  e->emit_item(item);
+  e->emit_declaration_end();
 }
 
 } // namespace xqp
