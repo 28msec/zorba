@@ -69,6 +69,10 @@ int _tmain(int argc, _TCHAR* argv[])
 #define TEST_ARGV_FLAG( str ) (*argv == std::string (str))
 #endif
 
+  #ifdef _DEBUG
+  g_abort_when_fatal_error = true;
+  #endif
+
 		for (++argv; argv[0]; ++argv) 
 		{
 			const char *fname;
@@ -82,6 +86,8 @@ int _tmain(int argc, _TCHAR* argv[])
 			} else if (TEST_ARGV_FLAG ("-o")) {
 				useResultFile = true;
         resultFileName = *++argv;
+      } else if (TEST_ARGV_FLAG ("--abort")) {
+        g_abort_when_fatal_error = true;
       } else if (TEST_ARGV_FLAG ("-e")) {
         inline_query = true;
 			} else {
