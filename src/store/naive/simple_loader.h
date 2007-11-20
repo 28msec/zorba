@@ -30,11 +30,11 @@ protected:
   xqpStringStore      theErrors;
 
 public:
-  static void	startDocumentSAXFunc(void * ctx);
+  static void	startDocument(void * ctx);
 
-  static void endDocumentSAXFunc(void * ctx);
+  static void endDocument(void * ctx);
 
-  static void startElementNs(
+  static void startElement(
         void * ctx, 
         const xmlChar * localname, 
         const xmlChar * prefix, 
@@ -45,27 +45,27 @@ public:
         int nb_defaulted, 
         const xmlChar ** attributes);
   
-  static void endElementNs(
+  static void endElement(
         void * ctx, 
         const xmlChar * localname, 
         const xmlChar * prefix, 
         const xmlChar * URI);
 
-  static void charactersSAXFunc(
+  static void characters(
         void * ctx,
         const xmlChar * ch,
         int len);
 
-  static void	cdataBlockSAXFunc(
+  static void	cdataBlock(
         void * ctx, 
         const xmlChar * value, 
         int len);
 
-  static void commentSAXFunc(
+  static void comment(
         void * ctx, 
         const xmlChar * value);
 
-  static void	processingInstructionSAXFunc(
+  static void	processingInstruction(
         void * ctx, 
         const xmlChar * target, 
         const xmlChar * data);

@@ -202,13 +202,21 @@ public:
 			    bool createId = false);
 
   virtual Item_t createCommentNode (
+        const xqpStringStore_t& comment,
+        bool createId = false);
+
+  virtual Item_t createCommentNode (
         const xqp_string& comment,
         bool createId = false);
 
   virtual Item_t createPiNode (
-        const Item_t& name,
-        const xqp_string& content,
-        const xqp_string& baseUri,
+        const xqpStringStore_t& target,
+        const xqpStringStore_t& data,
+        bool createId = false);
+
+  virtual Item_t createPiNode (
+        const xqp_string& target,
+        const xqp_string& data,
         bool createId = false);
 }; /* class BasicItemFactory */
 

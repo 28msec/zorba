@@ -24,7 +24,9 @@ typedef rchandle<TempSeq> TempSeq_t;
 const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6;
 const xqp_ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
-xqp_ulong SimpleStore::theUriCounter = 0;
+const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
+
+unsigned long SimpleStore::theUriCounter = 0;
 
 
 /*******************************************************************************
@@ -32,6 +34,7 @@ xqp_ulong SimpleStore::theUriCounter = 0;
 ********************************************************************************/
 SimpleStore::SimpleStore()
   :
+  theIsInitialized(false),
   theUriPool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theUriPool, theQNamePool)),
@@ -39,6 +42,23 @@ SimpleStore::SimpleStore()
                  DEFAULT_HASH_LOAD_FACTOR),
   theXmlLoader(NULL)
 {
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::init()
+{
+  if (!theIsInitialized)
+  {
+    theIsInitialized = true;
+
+    theUriPool->insert("", theEmptyUri);
+    theUriPool->insert(XS_URI, theXmlSchemaUri);
+    theAnyType = theItemFactory->createQName(XS_URI, "xs", "anyType");
+    theUntypedAtomicType = theItemFactory->createQName(XS_URI, "xs", "untypedAtomic");
+  }
 }
 
 
@@ -57,12 +77,18 @@ SimpleStore::~SimpleStore()
 
   if (theQNamePool != NULL)
   {
+    theAnyType = NULL;
+    theUntypedAtomicType = NULL;
+
     delete theQNamePool;
     theQNamePool = NULL;
   }
 
   if (theUriPool != NULL)
   {
+    theEmptyUri = NULL;
+    theXmlSchemaUri = NULL;
+
     delete theUriPool;
     theUriPool = NULL;
   }

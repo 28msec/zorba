@@ -9,6 +9,8 @@ Store& Store::getInstance()
 {
   static SimpleStore theGlobalStore;
 
+  theGlobalStore.init();
+
   return theGlobalStore;
 }
 

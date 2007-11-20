@@ -8,8 +8,6 @@ class StoreConsts
 {
  public:
 
-  static const char* XS_URI;
-
   typedef enum
   {
     anyNode,

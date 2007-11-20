@@ -6,6 +6,7 @@
 
 #include "runtime/core/item_iterator.h"
 #include "store/naive/node_items.h"
+#include "store/naive/simple_store.h"
 #include "store/api/temp_seq.h"
 #include "util/zorba.h"
 
@@ -47,35 +48,27 @@ DocumentNodeNaive::~DocumentNodeNaive()
 }
 
 
-Item_t DocumentNodeNaive::getAtomizationValue() const
-{
-  return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
-}
-
-
-xqp_string DocumentNodeNaive::getStringProperty() const
-{
-  ostringstream oss;
-  Iterator_t it = getChildren();
-  Item_t item = it->next();
-  while ( item != NULL )
-  {
-    oss << item->getStringProperty();
-    item = it->next();
-  }
-  return oss.str();
-}
-
-
 StoreConsts::NodeKind_t DocumentNodeNaive::getNodeKind() const
 {
   return StoreConsts::documentNode;
 }
 
 
+QNameItem_t DocumentNodeNaive::getType() const
+{
+  return static_cast<SimpleStore*>(&Store::getInstance())->theAnyType;
+}
+
+
 xqp_string DocumentNodeNaive::getBaseURI() const
 {
   return theBaseURI;
+}
+
+
+xqp_string DocumentNodeNaive::getDocumentURI() const
+{
+  return theDocURI;
 }
 
 
@@ -99,12 +92,6 @@ void DocumentNodeNaive::setChildren(const TempSeq_t& seq)
 }
 
 
-xqp_string DocumentNodeNaive::getDocumentURI() const
-{
-  return theDocURI;
-}
-
-
 Iterator_t DocumentNodeNaive::getTypedValue() const
 {
   PlanIter_t ret;
@@ -118,6 +105,26 @@ Iterator_t DocumentNodeNaive::getTypedValue() const
     ret = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   }
   return new PlanIterWrapper(ret);
+}
+
+
+Item_t DocumentNodeNaive::getAtomizationValue() const
+{
+  return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+}
+
+
+xqp_string DocumentNodeNaive::getStringProperty() const
+{
+  ostringstream oss;
+  Iterator_t it = getChildren();
+  Item_t item = it->next();
+  while (item != NULL)
+  {
+    oss << item->getStringProperty();
+    item = it->next();
+  }
+  return oss.str();
 }
 
 
@@ -192,45 +199,21 @@ ElementNodeNaive::~ElementNodeNaive()
 }
 
 
-void ElementNodeNaive::setParent(const Item_t& p)
-{
-  theParent = p.get_ptr();
-
-  if (theNsBindings == NULL)
-    theNsBindings = new NsBindingsContext();
-
-  if (p->getNodeKind() == StoreConsts::elementNode)
-  {
-    ElementNodeNaive* parentNode = reinterpret_cast<ElementNodeNaive*>(p.get_ptr());
-
-    theNsBindings->setParentContext(parentNode->getNsBindingsContext());
-  }
-}
-
-
-Item_t ElementNodeNaive::getAtomizationValue() const
-{
-  return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
-}
-
-
-xqp_string ElementNodeNaive::getStringProperty() const
-{
-  ostringstream oss;
-  Iterator_t it = getChildren();
-  Item_t item = it->next();
-  while ( item != NULL )
-  {
-    oss << item->getStringProperty();
-    item = it->next();
-  }
-  return oss.str();
-}
-
-
 StoreConsts::NodeKind_t ElementNodeNaive::getNodeKind() const
 {
   return StoreConsts::elementNode;
+}
+
+
+QNameItem_t ElementNodeNaive::getType() const
+{
+  return theType;
+}
+
+
+QNameItem_t ElementNodeNaive::getNodeName() const
+{
+  return theName;
 }
 
 
@@ -265,6 +248,58 @@ Iterator_t ElementNodeNaive::getChildren() const
 void ElementNodeNaive::setChildren(const TempSeq_t& seq)
 {
   theChildren = seq;
+}
+
+
+void ElementNodeNaive::setParent(const Item_t& p)
+{
+  theParent = p.get_ptr();
+
+  if (theNsBindings == NULL)
+    theNsBindings = new NsBindingsContext();
+
+  if (p->getNodeKind() == StoreConsts::elementNode)
+  {
+    ElementNodeNaive* parentNode = reinterpret_cast<ElementNodeNaive*>(p.get_ptr());
+
+    theNsBindings->setParentContext(parentNode->getNsBindingsContext());
+  }
+}
+
+
+Iterator_t ElementNodeNaive::getTypedValue() const
+{
+  PlanIter_t ret;
+  if (theChildren->empty())
+  {
+    ret = new EmptyIterator(GET_CURRENT_LOCATION());
+  }
+  else
+  {
+    Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+    ret = new SingletonIterator(GET_CURRENT_LOCATION(), item);
+  }
+  return new PlanIterWrapper(ret);
+}
+
+
+Item_t ElementNodeNaive::getAtomizationValue() const
+{
+  return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+}
+
+
+xqp_string ElementNodeNaive::getStringProperty() const
+{
+  ostringstream oss;
+  Iterator_t it = getChildren();
+  Item_t item = it->next();
+  while ( item != NULL )
+  {
+    oss << item->getStringProperty();
+    item = it->next();
+  }
+  return oss.str();
 }
 
 
@@ -315,28 +350,6 @@ bool ElementNodeNaive::getNilled() const
     item = iter->next();
   }
   return true;
-}
-
-
-QNameItem_t ElementNodeNaive::getNodeName() const
-{
-  return theName;
-}
-
-
-Iterator_t ElementNodeNaive::getTypedValue() const
-{
-  PlanIter_t ret;
-  if ( theChildren->empty() )
-  {
-    ret = new EmptyIterator(GET_CURRENT_LOCATION());
-  }
-  else
-  {
-    Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
-    ret = new SingletonIterator(GET_CURRENT_LOCATION(), item);
-  }
-  return new PlanIterWrapper(ret);
 }
 
 
@@ -419,6 +432,31 @@ AttributeNodeNaive::~AttributeNodeNaive()
 }
 
 
+StoreConsts::NodeKind_t AttributeNodeNaive::getNodeKind() const
+{
+  return StoreConsts::attributeNode;
+}
+
+
+QNameItem_t AttributeNodeNaive::getType() const
+{
+  return theType;
+}
+
+
+QNameItem_t AttributeNodeNaive::getNodeName() const
+{
+  return theName;
+}
+
+
+Iterator_t AttributeNodeNaive::getTypedValue() const
+{
+  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), theTypedValue);
+  return new PlanIterWrapper(planIter);
+}
+
+
 Item_t AttributeNodeNaive::getAtomizationValue() const
 {
   return theLexicalValue;
@@ -427,12 +465,6 @@ Item_t AttributeNodeNaive::getAtomizationValue() const
 xqp_string AttributeNodeNaive::getStringProperty() const
 {
   return theLexicalValue->getStringProperty();
-}
-
-
-StoreConsts::NodeKind_t AttributeNodeNaive::getNodeKind() const
-{
-  return StoreConsts::attributeNode;
 }
 
 
@@ -451,19 +483,6 @@ bool AttributeNodeNaive::isId() const
 bool AttributeNodeNaive::isIdrefs() const
 {
   return theIsIdrefs;
-}
-
-
-QNameItem_t AttributeNodeNaive::getNodeName() const
-{
-  return theName;
-}
-
-
-Iterator_t AttributeNodeNaive::getTypedValue() const
-{
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), theTypedValue);
-  return new PlanIterWrapper(planIter);
 }
 
 
@@ -489,10 +508,25 @@ TextNodeNaive::~TextNodeNaive()
 }
 
 
+StoreConsts::NodeKind_t TextNodeNaive::getNodeKind() const
+{
+  return StoreConsts::textNode;
+}
+
+
 QNameItem_t TextNodeNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "untypedAtomic");
+  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
+}
+
+
+Iterator_t TextNodeNaive::getTypedValue() const
+{
+  const Item_t& item = Store::getInstance().getItemFactory().
+                              createUntypedAtomic(theContent);
+
+  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
+  return new PlanIterWrapper(planIter);
 }
 
 
@@ -505,22 +539,6 @@ Item_t TextNodeNaive::getAtomizationValue() const
 xqp_string TextNodeNaive::getStringProperty() const
 {
   return theContent;
-}
-
-
-StoreConsts::NodeKind_t TextNodeNaive::getNodeKind() const
-{
-  return StoreConsts::textNode;
-}
-
-
-Iterator_t TextNodeNaive::getTypedValue() const
-{
-  const Item_t& item = Store::getInstance().getItemFactory().
-                              createUntypedAtomic(theContent);
-
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
-  return new PlanIterWrapper(planIter);
 }
 
 
@@ -541,11 +559,12 @@ xqp_string TextNodeNaive::show() const
 ********************************************************************************/
  
 PiNodeNaive::PiNodeNaive(
-    xqp_string& target_arg,
-    xqp_string& uri_arg,
-    xqp_string& baseUri_arg)
+    const xqpStringStore_t& target,
+    const xqpStringStore_t& data)
   :
-  target ( target_arg ), content ( uri_arg ), baseUri ( baseUri_arg ) { }
+  theTarget(target), theData(data)
+{
+}
 
 
 PiNodeNaive::~PiNodeNaive()
@@ -553,52 +572,61 @@ PiNodeNaive::~PiNodeNaive()
 }
 
 
-Item_t PiNodeNaive::getAtomizationValue() const
-{
-  return zorba::getItemFactory()->createUntypedAtomic(content);
-}
-
-xqp_string PiNodeNaive::getStringProperty() const
-{
-  return this->content;
-}
-
-
-xqp_string PiNodeNaive::getBaseURI() const
-{
-  return this->baseUri;
-}
-
 StoreConsts::NodeKind_t PiNodeNaive::getNodeKind() const
 {
   return StoreConsts::piNode;
 }
 
 
-Iterator_t PiNodeNaive::getTypedValue() const
+QNameItem_t PiNodeNaive::getType() const
 {
-  const Item_t& item = zorba::getItemFactory()->createString(this->content);
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item );
-  return new PlanIterWrapper ( planIter );
+  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
 
 
-xqp_string PiNodeNaive::getTarget() const
+Iterator_t PiNodeNaive::getTypedValue() const
 {
-  return this->target;
+  const Item_t& item = zorba::getItemFactory()->createString(theData);
+  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
+  return new PlanIterWrapper(planIter);
+}
+
+
+Item_t PiNodeNaive::getAtomizationValue() const
+{
+  return zorba::getItemFactory()->createUntypedAtomic(theData);
+}
+
+xqp_string PiNodeNaive::getStringProperty() const
+{
+  return theData;
 }
 
 
 xqp_string PiNodeNaive::getStringValue() const
 {
-  return this->content;
+  return theData;
+}
+
+
+xqp_string PiNodeNaive::getTarget() const
+{
+  return theTarget;
+}
+
+
+xqp_string PiNodeNaive::show() const
+{
+  return "<?" + *theTarget + " " + *theData + "?>";
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-CommentNodeNaive::CommentNodeNaive(const xqp_string& content_arg) : content(content_arg)
+CommentNodeNaive::CommentNodeNaive(const xqpStringStore_t& content)
+  :
+  theContent(content)
 {
 }
 
@@ -607,36 +635,46 @@ CommentNodeNaive::~CommentNodeNaive()
 }
 
 
-Item_t CommentNodeNaive::getAtomizationValue() const
-{
-  return zorba::getItemFactory()->createUntypedAtomic(this->content.getStore());
-}
-
-xqp_string CommentNodeNaive::getStringProperty() const
-{
-  return this->content;
-}
-
 StoreConsts::NodeKind_t CommentNodeNaive::getNodeKind() const
 {
   return StoreConsts::commentNode;
 }
 
+
+QNameItem_t CommentNodeNaive::getType() const
+{
+  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
+}
+
+
 Iterator_t CommentNodeNaive::getTypedValue() const
 {
-  const Item_t& item = zorba::getItemFactory()->createString(this->content);
-  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item );
+  const Item_t& item = zorba::getItemFactory()->createString(theContent);
+  PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   return new PlanIterWrapper(planIter);
 }
 
+
+Item_t CommentNodeNaive::getAtomizationValue() const
+{
+  return zorba::getItemFactory()->createUntypedAtomic(theContent);
+}
+
+xqp_string CommentNodeNaive::getStringProperty() const
+{
+  return theContent;
+}
+
+
 xqp_string CommentNodeNaive::getStringValue() const
 {
-  return this->content;
+  return theContent;
 }
+
 
 xqp_string CommentNodeNaive::show() const
 {
-  return "<!--" + this->content + "-->";
+  return "<!--" + *theContent + "-->";
 }
 
 

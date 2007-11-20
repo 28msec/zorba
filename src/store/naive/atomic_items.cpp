@@ -33,7 +33,7 @@ void QNameItemImpl::free()
 QNameItem_t QNameItemImpl::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "QName");
+         createQName(SimpleStore::XS_URI, "xs", "QName");
 }
 
 
@@ -106,7 +106,7 @@ xqp_string AnyUriItemImpl::getStringValue() const
 QNameItem_t AnyUriItemImpl::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "anyURI");
+         createQName(SimpleStore::XS_URI, "xs", "anyURI");
 }
 
 Item_t AnyUriItemImpl::getAtomizationValue() const
@@ -165,8 +165,7 @@ xqp_string UntypedAtomicItemNaive::getStringValue() const
 
 QNameItem_t UntypedAtomicItemNaive::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "untypedAtomic");
+  return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
 
 Item_t UntypedAtomicItemNaive::getAtomizationValue() const
@@ -223,7 +222,7 @@ xqp_string StringItemNaive::getStringValue() const
 QNameItem_t StringItemNaive::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "string");
+         createQName(SimpleStore::XS_URI, "xs", "string");
 }
 
 Item_t StringItemNaive::getAtomizationValue() const
@@ -273,7 +272,7 @@ long double DecimalItemNaive::getDecimalValue() const
 QNameItem_t DecimalItemNaive::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "decimal");
+         createQName(SimpleStore::XS_URI, "xs", "decimal");
 }
 
 Item_t DecimalItemNaive::getAtomizationValue() const
@@ -335,7 +334,7 @@ long double IntItemNaive::getDecimalValue() const
 QNameItem_t IntItemNaive::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "int");
+         createQName(SimpleStore::XS_URI, "xs", "int");
 }
 
 Item_t IntItemNaive::getAtomizationValue() const
@@ -390,7 +389,7 @@ long double IntegerItemNaive::getDecimalValue() const
 QNameItem_t IntegerItemNaive::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "integer");
+         createQName(SimpleStore::XS_URI, "xs", "integer");
 }
 
 Item_t IntegerItemNaive::getAtomizationValue() const
@@ -440,7 +439,7 @@ Item_t IntegerItemNaive::getEBV() const
 QNameItem_t DoubleItemNaive::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "double");
+         createQName(SimpleStore::XS_URI, "xs", "double");
 }
 
 Item_t DoubleItemNaive::getAtomizationValue() const
@@ -490,7 +489,7 @@ Item_t DoubleItemNaive::getEBV() const
 QNameItem_t FloatItemNaive::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "float");
+         createQName(SimpleStore::XS_URI, "xs", "float");
 }
 
 Item_t FloatItemNaive::getAtomizationValue() const
@@ -528,20 +527,20 @@ uint32_t FloatItemNaive::hash() const
 	}
 	/* end class FloatItem */
 
-	/* start class BooleanItem */
-  BooleanItemNaive::BooleanItemNaive ( bool value ) :value_ ( value ) {}
+/* start class BooleanItem */
+BooleanItemNaive::BooleanItemNaive ( bool value ) :value_ ( value ) {}
 
-  BooleanItemNaive::~BooleanItemNaive() {}
+BooleanItemNaive::~BooleanItemNaive() {}
 
-  bool BooleanItemNaive::getBooleanValue() const
-	{
-		return this->value_;
-	}
+bool BooleanItemNaive::getBooleanValue() const
+{
+  return this->value_;
+}
 
 QNameItem_t BooleanItemNaive::getType() const
 {
   return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "boolean");
+         createQName(SimpleStore::XS_URI, "xs", "boolean");
 }
 
 Item_t BooleanItemNaive::getAtomizationValue() const

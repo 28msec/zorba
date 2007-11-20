@@ -336,20 +336,35 @@ Item_t BasicItemFactory::createTextNode(
 
 
 Item_t BasicItemFactory::createCommentNode(
-    const xqp_string& comment,
+    const xqpStringStore_t& comment,
     bool createId	)
 {
   return new CommentNodeNaive(comment);
 }
 
+Item_t BasicItemFactory::createCommentNode(
+    const xqp_string& comment,
+    bool createId	)
+{
+  return new CommentNodeNaive(xqpStringStore_t(&comment.getStore()));
+}
+
 
 Item_t BasicItemFactory::createPiNode(
-    const Item_t& name,
-    const xqp_string& content,
-    const xqp_string& baseUri,
+    const xqpStringStore_t& target,
+    const xqpStringStore_t& data,
     bool createId)
 {
-  return Item_t ( NULL );
+  return new PiNodeNaive(target, data);
+}
+
+Item_t BasicItemFactory::createPiNode(
+    const xqp_string& target,
+    const xqp_string& data,
+    bool createId)
+{
+  return new PiNodeNaive(xqpStringStore_t(&target.getStore()),
+                         xqpStringStore_t(&data.getStore()));;
 }
 
 } /* namespace xqp */

@@ -495,20 +495,29 @@ public:
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createCommentNode(
+			    const xqpStringStore_t& comment,
+			    bool createId = false
+			) = 0;
+
+  virtual Item_t createCommentNode(
 			    const xqp_string& comment,
 			    bool createId = false
 			) = 0;
 
   /**
-   * @param name The QName for the processing instruction.
-   * @param content The content of the processing instruction.
-   * @param baseUri The base URI for the processing instruction.
+   * @param target The QName for the processing instruction.
+   * @param data The content of the processing instruction.
    * @param createId Does the created item need an ID (default == false)?
    */
   virtual Item_t createPiNode(
-			    const Item_t& name,
-			    const xqp_string& content,
-			    const xqp_string& baseUri,
+			    const xqpStringStore_t& target,
+			    const xqpStringStore_t& data,
+			    bool createId = false
+			) = 0;
+
+  virtual Item_t createPiNode(
+			    const xqp_string& target,
+			    const xqp_string& data,
 			    bool createId = false
 			) = 0;
 	};/* class ItemFactory */

@@ -41,13 +41,23 @@ class SimpleStore : public Store
  
   typedef StringPool  UriPool;
 
-protected:
+public:
   static const float DEFAULT_HASH_LOAD_FACTOR;
   static const xqp_ulong DEFAULT_COLLECTION_MAP_SIZE;
 
-  static xqp_ulong theUriCounter;
+  static const char* XS_URI;
+
+  static unsigned long theUriCounter;
+
+public:
+  xqpStringStore_t    theEmptyUri;
+  xqpStringStore_t    theXmlSchemaUri;
+  QNameItem_t         theAnyType;
+  QNameItem_t         theUntypedAtomicType;
 
 protected:
+  bool                theIsInitialized;
+
   UriPool           * theUriPool;
   QNamePool         * theQNamePool;
 
@@ -61,6 +71,8 @@ private:
   SimpleStore();
 
   virtual ~SimpleStore();
+
+  void init();
 
 public:
   ItemFactory& getItemFactory() const { return *theItemFactory; }
@@ -83,12 +95,26 @@ public:
   virtual TempSeq_t createTempSeq(Iterator_t iterator, bool lazy = true);
 
   virtual Item_t getReference(Item_t);
-  virtual Item_t getFixedReference(Item_t, Requester requester, Timetravel timetravel);
+
+  virtual Item_t getFixedReference(
+        Item_t,
+        Requester requester,
+        Timetravel timetravel);
+
   virtual Item_t getNodeByReference(Item_t);
-  virtual Item_t getNodeByReference(Item_t, Requester requester, Timetravel timetravel);
+
+  virtual Item_t getNodeByReference(
+        Item_t,
+        Requester requester,
+        Timetravel timetravel);
 
   virtual int32_t compare(Item_t item1, Item_t item2);
-  virtual Iterator_t sort(Iterator_t iterator, bool ascendent, bool duplicateElemination);
+
+  virtual Iterator_t sort(
+        Iterator_t iterator,
+        bool ascendent,
+        bool duplicateElemination);
+
   virtual Iterator_t distinctNodeStable(Iterator_t);
 
   virtual void apply(PUL_t pendingUpdateList);

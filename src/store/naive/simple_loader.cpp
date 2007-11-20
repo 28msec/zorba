@@ -13,6 +13,16 @@
 namespace xqp
 {
 
+#ifndef NDEBUG
+#define LOADER_TRACE(msg)                                                     \
+{                                                                             \
+  std::cout << __FUNCTION__ << ": " << std::endl << "  " << msg << std::endl; \
+}
+#else
+#define LOADER_TRACE(msg)
+#endif
+
+
 XmlLoader::XmlLoader()
 {
   // This initializes the library and check potential ABI mismatches between
@@ -22,11 +32,14 @@ XmlLoader::XmlLoader()
   // See http://xmlsoft.org/html/libxml-tree.html#xmlSAXHandler
   memset(&theSaxHandler, 0, sizeof(theSaxHandler) );
   theSaxHandler.initialized = XML_SAX2_MAGIC;
-  theSaxHandler.startDocument = &XmlLoader::startDocumentSAXFunc;
-  theSaxHandler.endDocument = &XmlLoader::endDocumentSAXFunc;
-  theSaxHandler.startElementNs = &XmlLoader::startElementNs;
-  theSaxHandler.endElementNs = &XmlLoader::endElementNs;
-  theSaxHandler.characters = &XmlLoader::charactersSAXFunc;
+  theSaxHandler.startDocument = &XmlLoader::startDocument;
+  theSaxHandler.endDocument = &XmlLoader::endDocument;
+  theSaxHandler.startElementNs = &XmlLoader::startElement;
+  theSaxHandler.endElementNs = &XmlLoader::endElement;
+  theSaxHandler.characters = &XmlLoader::characters;
+  theSaxHandler.cdataBlock = &XmlLoader::cdataBlock;
+  theSaxHandler.comment = &XmlLoader::comment;
+  theSaxHandler.processingInstruction = &XmlLoader::processingInstruction;
   theSaxHandler.warning = &XmlLoader::warning;
   theSaxHandler.error = &XmlLoader::error;
 }
@@ -131,11 +144,13 @@ Item_t XmlLoader::loadXml(std::iostream& stream)
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::startDocumentSAXFunc(void * ctx)
+void XmlLoader::startDocument(void * ctx)
 {
   SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
   BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
+
+  LOADER_TRACE("");
 
   xqpStringStore_t baseUri(new xqpStringStore(""));
   xqpStringStore_t docUri(new xqpStringStore("boo"));
@@ -153,11 +168,11 @@ void XmlLoader::startDocumentSAXFunc(void * ctx)
 
   ctx: the user data (XML parser context)
 ********************************************************************************/
-void XmlLoader::endDocumentSAXFunc(void * ctx)
+void XmlLoader::endDocument(void * ctx)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
-  printf("\nendDocument\n");
+  LOADER_TRACE("");
 
   std::vector<Item_t> childNodes;
   std::vector<Item_t> revChildNodes;
@@ -203,7 +218,7 @@ void XmlLoader::endDocumentSAXFunc(void * ctx)
  attributes:     pointer to the array of (localname/prefix/URI/value/end)
                  attribute values.
 ********************************************************************************/
-void XmlLoader::startElementNs(
+void XmlLoader::startElement(
     void * ctx, 
     const xmlChar * localName, 
     const xmlChar * prefix, 
@@ -224,14 +239,15 @@ void XmlLoader::startElementNs(
   std::vector<Item_t> attrNodes;
   NamespaceBindings nsBindings;
 
-  printf("\nstartElementNs: name = '%s' prefix = '%s' uri = (%p)'%s'\n",
-         localName, prefix, uri, uri);
+  LOADER_TRACE("Element name ["
+               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
+               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
   qname = factory.createQName(reinterpret_cast<const char*>(uri),
                               reinterpret_cast<const char*>(prefix),
                               reinterpret_cast<const char*>(localName));
 
-  tname = factory.createQName(StoreConsts::XS_URI, "xs", "anyType");
+  tname = store.theAnyType;
 
   for (long i = 0; i < numNamespaces; ++i)
   {
@@ -243,7 +259,8 @@ void XmlLoader::startElementNs(
 
     nsBindings.push_back(std::pair<xqp_string, xqp_string>(prefix, pooledUri));
 
-    printf("  namespace: name='%s' uri=(%p)'%s'\n", prefix, uri, uri);
+    LOADER_TRACE("namespace decl: [" << (prefix != NULL ? prefix : "")
+                 << ":" << uri << "]");
   }
 
   xqp_ulong index = 0;
@@ -256,7 +273,7 @@ void XmlLoader::startElementNs(
     const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
     QNameItem_t qname = factory.createQName(uri, prefix, localName);
-    QNameItem_t tname = factory.createQName(StoreConsts::XS_URI, "xs", "untypedAtomic");
+    QNameItem_t tname = store.theUntypedAtomicType;
 
     xqpStringStore_t value(new xqpStringStore(valueBegin, valueEnd));
     Item_t lexicalValue = factory.createString(value);
@@ -268,9 +285,9 @@ void XmlLoader::startElementNs(
 
     attrNodes.push_back(attrNode);
 
-    printf("  %sattribute: localname='%s', prefix='%s', uri=(%p)'%s', value='%s'\n",
-            i >= (numAttributes - numDefaulted) ? "defaulted " : "",
-            localName, prefix, uri, uri, value->c_str());
+    LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
+                 << ":" << localName << " (" << (uri != NULL ? uri : "NULL")
+                 << "]" << std::endl << "  Attribute value: " << value);
   }
 
   TempSeq_t attrSeq(new SimpleTempSeq(attrNodes));
@@ -299,16 +316,17 @@ void XmlLoader::startElementNs(
   prefix:    the element namespace prefix if available
   URI:       the element namespace name if available
 ********************************************************************************/
-void  XmlLoader::endElementNs(
+void  XmlLoader::endElement(
     void * ctx, 
-    const xmlChar * localname, 
+    const xmlChar * localName, 
     const xmlChar * prefix, 
-    const xmlChar * URI)
+    const xmlChar * uri)
 {
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
-  printf("\nendElementNs: name = '%s' prefix = '%s' uri = '%s'\n",
-          localname, prefix, URI );
+  LOADER_TRACE("Element name ["
+               << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
+               << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
   std::vector<Item_t> childNodes;
   std::vector<Item_t> revChildNodes;
@@ -344,7 +362,7 @@ void  XmlLoader::endElementNs(
   ch:  a xmlChar string
   len: the number of xmlChar
 ********************************************************************************/
-void XmlLoader::charactersSAXFunc(void * ctx, const xmlChar * ch, int len)
+void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 {
   SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
   BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
@@ -358,6 +376,86 @@ void XmlLoader::charactersSAXFunc(void * ctx, const xmlChar * ch, int len)
     loader.theRootNode = textNode;
 
   loader.thePath.push(textNode);
+}
+
+
+/*******************************************************************************
+  SAX2 callback when a CDATA block has been detected by the parser.
+
+  ctx: the user data (XML parser context)
+  ch:  a xmlChar string
+  len: the number of xmlChar
+********************************************************************************/
+void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
+{
+  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+
+  xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
+
+  Item_t textNode = factory.createTextNode(content);
+
+  if (loader.thePath.empty())
+    loader.theRootNode = textNode;
+
+  loader.thePath.push(textNode);
+}
+
+
+/*******************************************************************************
+  SAX2 callback when a comment has been detected by the parser.
+
+  ctx: the user data (XML parser context)
+  content:  the comment content
+********************************************************************************/
+void XmlLoader::comment(
+    void * ctx,
+    const xmlChar * content)
+{
+  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+
+  LOADER_TRACE(content);
+
+  xqpStringStore_t contentp(new xqpStringStore(reinterpret_cast<const char*>(content)));
+
+  Item_t commentNode = factory.createCommentNode(contentp);
+
+  if (loader.thePath.empty())
+    loader.theRootNode = commentNode;
+
+  loader.thePath.push(commentNode);
+}
+
+
+/*******************************************************************************
+  SAX2 callback when a processing instruction has been detected by the parser.
+
+  ctx: the user data (XML parser context)
+
+********************************************************************************/
+void XmlLoader::processingInstruction(
+    void * ctx, 
+    const xmlChar * target, 
+    const xmlChar * data)
+{
+  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
+
+  LOADER_TRACE("target : " << target << " data: " << data);
+
+  xqpStringStore_t datap(new xqpStringStore(reinterpret_cast<const char*>(data)));
+  xqpStringStore_t targetp(new xqpStringStore(reinterpret_cast<const char*>(target)));
+
+  Item_t piNode = factory.createPiNode(targetp, datap);
+
+  if (loader.thePath.empty())
+    loader.theRootNode = piNode;
+
+  loader.thePath.push(piNode);
 }
 
 

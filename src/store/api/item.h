@@ -582,7 +582,6 @@ public:
   virtual uint32_t hash() const;
   virtual bool equals(Item_t) const;
 
-  virtual QNameItem_t getType() const;
   virtual Item_t getParent() const;
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;

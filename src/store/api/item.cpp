@@ -97,14 +97,16 @@ bool NodeItem::isAtomic() const
 
 Item_t NodeItem::getEBV() const
 {
-  return zorba::getItemFactory()->createBoolean ( true );
+  return zorba::getItemFactory()->createBoolean(true);
 }
+
 
 uint32_t NodeItem::hash() const
 {
   Assert(0);
   return 0;
 }
+
 
 bool NodeItem::equals(Item_t item) const
 {
@@ -119,22 +121,17 @@ bool NodeItem::equals(Item_t item) const
 }
 
 
-QNameItem_t NodeItem::getType() const
-{
-  return Store::getInstance().getItemFactory().
-         createQName(StoreConsts::XS_URI, "xs", "anyType");
-}
-
-
 Item_t NodeItem::getParent() const
 {
   return theParent;
 }
 
+
 xqp_string NodeItem::getBaseURI() const
 {
   return theParent ? theParent->getBaseURI() : "";
 }
+
 
 xqp_string NodeItem::getDocumentURI() const
 {
