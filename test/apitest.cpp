@@ -29,8 +29,8 @@ extern int						xqp::g_error_at_line;
 //													 void *param);
 //define one callback function for receiving the xquery alerts
 int apitest_alert_callback(Zorba_AlertMessage *alert_mess, 
-													 XQuery_t	current_xquery,
-													 XQueryResult_t	current_xqueryresult,
+													 XQuery*	current_xquery,
+													 XQueryResult*	current_xqueryresult,
 													 void *param)
 {
 	if((alert_mess->alert_type != Zorba_AlertMessage::USER_ERROR_ALERT) &&

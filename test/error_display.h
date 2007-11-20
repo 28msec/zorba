@@ -2,13 +2,13 @@
 #ifndef ERROR_DISPLAY_H
 #define ERROR_DISPLAY_H
 
-class xqp::Zorba_AlertMessage;
-class xqp::Zorba_ErrorMessage;
-class xqp::Zorba_WarningMessage;
-class xqp::Zorba_NotifyMessage;
-class xqp::Zorba_AskUserMessage;
-class xqp::Zorba_FnErrorMessage;
-class xqp::Zorba_FnTraceMessage;
+struct xqp::Zorba_AlertMessage;
+struct xqp::Zorba_ErrorMessage;
+struct xqp::Zorba_WarningMessage;
+struct xqp::Zorba_NotifyMessage;
+struct xqp::Zorba_AskUserMessage;
+struct xqp::Zorba_FnErrorMessage;
+struct xqp::Zorba_FnTraceMessage;
 
 extern void DisplayErrorListForCurrentThread();
 
