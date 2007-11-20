@@ -33,8 +33,6 @@ fn_codepoints_to_string::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new CodepointsToStringIterator(loc, argv[0]);
 }
 
@@ -69,8 +67,6 @@ fn_string_to_codepoints::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new StringToCodepointsIterator(loc, argv[0]);
 }
 
@@ -105,8 +101,6 @@ fn_string_compare::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new CompareStrIterator(loc, argv);
 }
 
@@ -141,8 +135,6 @@ fn_codepoint_equal::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new CodepointEqualIterator(loc, argv[0], argv[1]);
 }
 
@@ -177,7 +169,6 @@ fn_concat::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv)) return NULL;
     return new ConcatStrIterator(loc,argv);
 }
 
@@ -214,8 +205,6 @@ fn_string_join::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new StringJoinIterator(loc, argv[0], argv[1]);
 }
 
@@ -237,7 +226,7 @@ fn_string_join::validate_args(
 /*
  * 7.4.3 fn:substring
  * --------------------*/
-/*begin class fn_codepoints_to_string*/
+/*begin class fn_substring*/
 fn_substring::fn_substring(
   const signature& sig)
 :
@@ -250,8 +239,6 @@ fn_substring::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new SubstringIterator(loc, argv);
 }
 
@@ -268,7 +255,7 @@ fn_substring::validate_args(
 {
   return (argv.size()==2 || argv.size()==3);
 }
-/*end class fn_codepoints_to_string*/
+/*end class fn_substring*/
 
 /*
  * 7.4.4 fn:string-length
@@ -286,8 +273,6 @@ fn_string_length::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new StringLengthIterator(loc, argv[0]);
 }
 
@@ -322,8 +307,6 @@ fn_normalize_space::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new NormalizeSpaceIterator(loc, argv[0]);
 }
 
@@ -358,8 +341,6 @@ fn_normalize_unicode::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new NormalizeUnicodeIterator(loc, argv[0], argv[1]);
 }
 
@@ -395,8 +376,6 @@ fn_upper_case::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new UpperCaseIterator(loc, argv[0]);
 }
 
@@ -432,8 +411,6 @@ fn_lower_case::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new LowerCaseIterator(loc, argv[0]);
 }
 
@@ -469,8 +446,6 @@ fn_translate::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
   return new TranslateIterator(loc, argv);
 }
 
@@ -505,9 +480,6 @@ fn_contains::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
-
   return new ContainsIterator(loc, argv);
 }
 
@@ -542,9 +514,6 @@ fn_starts_with::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
-
   return new StartsWithIterator(loc, argv);
 }
 
@@ -579,9 +548,6 @@ fn_ends_with::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
-
   return new EndsWithIterator(loc, argv);
 }
 
@@ -616,9 +582,6 @@ fn_substring_before::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
-
   return new SubstringBeforeIterator(loc, argv);
 }
 
@@ -653,9 +616,6 @@ fn_substring_after::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  if (!validate_args(argv))
-    return NULL;
-
   return new SubstringAfterIterator(loc, argv);
 }
 
