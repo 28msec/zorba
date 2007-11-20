@@ -17,6 +17,7 @@
 #include <unicode/coll.h>
 //#include <unicode/ustring.h>
 
+#include "types/typeident.h"
 
 //using namespace std;
 
@@ -49,6 +50,8 @@ public:
 	virtual void setAlertsParam(void *alert_callback_param) = 0;
 	virtual ostream& serializeXML( ostream& os ) = 0;
 	virtual bool isError() = 0;
+
+	virtual void	AbortQueryExecution() = 0;
 };
 
 typedef rchandle<XQueryResult>		XQueryResult_t;
@@ -58,24 +61,93 @@ typedef rchandle<XQueryResult>		XQueryResult_t;
 class StaticQueryContext
 {
 public:
-/*
-	virtual void		SetXPath1_0CompatibMode( bool mode ) = 0;///true for XPath1.0 only, false for XPath2.0
-	virtual void		AddNamespace( std::string prefix, std::string URI ) = 0;
-	virtual void		SetDefaultElementAndTypeNamespace( std::string URI ) = 0;
-	virtual void		SetDefaultFunctionNamespace( std::string URI ) = 0;
-	virtual void		SetContextItemStaticType( enum TypeCode		type ) = 0;
-	virtual void		AddCollation( std::string URI, std::string available_collation ) = 0;//if URI is empty then it sets the default collation
-	virtual void		SetCustomCollation( user_collation *fn_collation) = 0;
-	virtual void		SetConstructionMode( enum construction_mode ) = 0;
-	virtual void		SetOrderingMode( enum ordering_mode ) = 0;
-	virtual void		SetDefaultOrderForEmptySequences( enum ordering_mode ) = 0;
-	virtual void		SetBoundarySpacePolicy( enum boundary_space_policy ) = 0;
-	virtual void		SetCopyNamespacesMode( bool preserve, bool inherit ) = 0;
-	virtual void		SetBaseURI( std::string baseURI ) = 0;
+	typedef enum { cons_preserve, cons_strip } construction_mode_t;
+	typedef enum { empty_greatest, empty_least } order_empty_mode_t;
+	typedef enum { preserve_space, strip_space } boundary_space_mode_t;
+	typedef enum { inherit_ns, no_inherit_ns } inherit_mode_t;
+	typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
+
+	typedef enum { ordered, unordered } ordering_mode_t;
+
+public:
+	virtual void		SetXPath1_0CompatibMode( bool mode ) = 0;///true for XPath1.0 only, false for XPath2.0 (default false)
+	virtual bool		GetXPath1_0CompatibMode( ) = 0;///true for XPath1.0 only, false for XPath2.0
+
+	virtual void		AddNamespace( xqpString prefix, xqpString URI ) = 0;//override the previous set prefix
+	virtual xqpString		GetNamespaceURIByPrefix( xqpString prefix ) = 0;
+//	virtual xqpString		GetNamespacePrefixByURI( xqpString URI ) = 0;
+	virtual xqpString		DeleteNamespace( xqpString prefix ) = 0;
+	virtual unsigned int	GetNamespaceCount() = 0;
+	virtual bool		GetNamespaceByIndex( int i, xqpString *prefix, xqpString *URI ) = 0;
+	virtual void		DeleteAllNamespaces() = 0;
+
+	virtual void		SetDefaultElementAndTypeNamespace( xqpString URI ) = 0;///default is none
+	virtual xqpString		GetDefaultElementAndTypeNamespace( ) = 0;
+
+	virtual void		SetDefaultFunctionNamespace( xqpString URI ) = 0;///default is none
+	virtual xqpString		GetDefaultFunctionNamespace( ) = 0;
+
+	//here some functions for schema ... not impl yet
+
+	virtual void		AddExternalVariableType( QNameItem_t	var_name, TypeIdentifier* var_type) = 0;
+	virtual TypeIdentifier*	GetExternalVariableType( QNameItem_t	var_name ) = 0;
+	virtual void		DeleteExternalVariableType( QNameItem_t var_name ) = 0;
+	virtual	unsigned int			GetExternalVariableCount() = 0;
+	virtual	bool		GetExternalVariableByIndex( unsigned int i, QNameItem_t *var_name, TypeIdentifier* *var_type ) = 0;
+	virtual void		DeleteAllVariables() = 0;
+
+	virtual void		SetContextItemStaticType( TypeIdentifier*		type ) = 0;
+	virtual TypeIdentifier*		GetContextItemStaticType( ) = 0;
+
+	///here some api for external functions
+	// virtual void AddExternalFunction( QNameItem_t func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
+	// virtual void	DeleteAllExternalFunctions();
+
+	virtual void		AddCollation( xqpString URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength ) = 0;//if URI is empty then it sets the default collation
+	virtual bool		IsCollationPresent( xqpString URI) = 0;//if URI is empty then it sets the default collation
+	virtual void		DeleteCollation( xqpString URI) = 0;//if URI is empty then it sets the default collation
+	virtual int			GetCollationCount() = 0;
+	virtual bool		GetCollationInfoByIndex( int i, xqpString *URI, std::string *coll_string, ::Collator::ECollationStrength *coll_strength ) = 0;
+	virtual void		DeleteAllCustomCollations() = 0;
+
+	virtual void		SetDefaultCollation( std::string  coll_string, ::Collator::ECollationStrength coll_strength ) = 0;
+
+	virtual void		SetConstructionMode( construction_mode_t ) = 0;
+	virtual construction_mode_t		GetConstructionMode( ) = 0;
+
+	virtual void		SetOrderingMode( ordering_mode_t ) = 0;
+	virtual ordering_mode_t		GetOrderingMode( ) = 0;
+
+	virtual void		SetDefaultOrderForEmptySequences( order_empty_mode_t ) = 0;
+	virtual order_empty_mode_t		GetDefaultOrderForEmptySequences( ) = 0;
+
+	virtual void		SetBoundarySpacePolicy( boundary_space_mode_t ) = 0;
+	virtual boundary_space_mode_t		GetBoundarySpacePolicy( ) = 0;
+
+	virtual void		SetCopyNamespacesMode( preserve_mode_t preserve, inherit_mode_t inherit ) = 0;
+	virtual void		GetCopyNamespacesMode( preserve_mode_t *preserve, inherit_mode_t *inherit ) = 0;
+
+	virtual void		SetBaseURI( xqpString baseURI ) = 0;
+	virtual xqpString		GetBaseURI( ) = 0;
+
 	//statically known documents (types)
-	virtual void		AddDocumentType( std::string URI, TypeCode doc_type ) = 0;
-	virtual void		AddCollectionType( std::string URI, TypeCode		collection_type ) = 0;///if URI is empty then it refers to default collection type
-*/
+	virtual void		AddDocumentType( xqpString URI, TypeIdentifier* doc_type ) = 0;
+	virtual TypeIdentifier*		GetDocumentType( xqpString URI) = 0;
+	virtual void		DeleteDocumentType( xqpString URI) = 0;
+	virtual int			GetDocumentTypeCount() = 0;
+	virtual void		GetDocumentByIndex( int i, xqpString *URI, TypeIdentifier **doc_type ) = 0;
+	virtual void		DeleteAllDocumentTypes() = 0;
+
+	virtual void		AddCollectionType( xqpString URI, TypeIdentifier*		collection_type ) = 0;///if URI is empty then it refers to default collection type
+	virtual TypeIdentifier*		GetCollectionType( xqpString URI ) = 0;///if URI is empty then it refers to default collection type
+	virtual void		DeleteCollectionType( xqpString URI ) = 0;///if URI is empty then it refers to default collection type
+	virtual int			GetCollectionTypeCount() = 0;
+	virtual void		GetCollectionTypeByIndex( int i, xqpString *URI, TypeIdentifier **collection_type ) = 0;
+	virtual void		DeleteAllCollectionTypes() = 0;
+
+	virtual void		SetDefaultCollectionType( TypeIdentifier *default_collection_type ) = 0;///default node()*
+	virtual TypeIdentifier*	GetDefaultCollectionType( ) = 0;
+
 };
 
 

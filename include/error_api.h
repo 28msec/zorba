@@ -114,8 +114,8 @@ typedef rchandle<XQueryResult>		XQueryResult_t;
 
 ///user might choose to receive the alerts through callback functions
 typedef int alert_callback(Zorba_AlertMessage *alert_mess, 
-													 XQuery_t	current_xquery,
-													 XQueryResult_t	current_xqueryresult,
+													 XQuery*	current_xquery,
+													 XQueryResult*	current_xqueryresult,
 													 void *param);
 
 class Zorba_AlertsManager : public std::list<Zorba_AlertMessage*>
