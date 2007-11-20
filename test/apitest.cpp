@@ -222,11 +222,12 @@ int _tmain(int argc, _TCHAR* argv[])
   //  timer.print(*resultFile);
   //}
   //else
-    timer.print(cout);
+  timer.print(cout);
 	
-	resultFile->close();
-
-	delete resultFile;
+  if (resultFile != NULL) {
+    resultFile->close();
+    delete resultFile;
+  }
 
 	return 0;
 
