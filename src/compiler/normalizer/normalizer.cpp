@@ -43,11 +43,6 @@ bool normalizer::begin_visit(expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(empty_expr& node)
-{
-  return true;
-}
-
 bool normalizer::begin_visit(enclosed_expr& node)
 {
   return true;
@@ -156,11 +151,6 @@ bool normalizer::begin_visit(cast_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(unary_expr& node)
-{
-  return true;
-}
-
 bool normalizer::begin_visit(validate_expr& node)
 {
   return true;
@@ -235,10 +225,6 @@ void normalizer::end_visit(expr& node)
 {
 }
 
-void normalizer::end_visit(empty_expr& node)
-{
-}
-
 void normalizer::end_visit(enclosed_expr& node)
 {
 }
@@ -300,10 +286,6 @@ void normalizer::end_visit(castable_expr& node)
 }
 
 void normalizer::end_visit(cast_expr& node)
-{
-}
-
-void normalizer::end_visit(unary_expr& node)
 {
 }
 

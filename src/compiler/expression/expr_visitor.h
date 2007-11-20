@@ -22,7 +22,6 @@ namespace xqp
 
 class context;
 class expr;
-class empty_expr;
 class enclosed_expr;
 class expr_list;
 class var_expr;
@@ -39,7 +38,6 @@ class instanceof_expr;
 class treat_expr;
 class castable_expr;
 class cast_expr;
-class unary_expr;
 class validate_expr;
 class extension_expr;
 class relpath_expr;
@@ -69,7 +67,6 @@ public:
  	:  begin visit                            :
  	:.........................................*/
 	virtual bool begin_visit(expr&) = 0;
-	virtual bool begin_visit(empty_expr&) = 0;
 	virtual bool begin_visit(enclosed_expr&) = 0;
 	virtual bool begin_visit(expr_list&) = 0;
 	virtual bool begin_visit(var_expr&) = 0;
@@ -106,7 +103,6 @@ public:
  	:  end visit                              :
  	:.........................................*/
 	virtual void end_visit(expr&) = 0;
-	virtual void end_visit(empty_expr&) = 0;
 	virtual void end_visit(enclosed_expr&) = 0;
 	virtual void end_visit(expr_list&) = 0;
 	virtual void end_visit(var_expr&) = 0;

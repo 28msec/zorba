@@ -1730,13 +1730,13 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 void translator::end_visit(const ParenthesizedExpr& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t expr = pop_nodestack();
 	if (expr != NULL) {
 		pop_nodestack();
 		nodestack.push(expr);
 	} else {
-		expr = new empty_expr(v.get_location());
+		expr = new expr_list(v.get_location());
 		nodestack.push(expr);
 	}
 }

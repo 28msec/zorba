@@ -100,16 +100,6 @@ public:
 
 };
 
-class empty_expr : public expr
-{
-	public:
-		empty_expr(yy::location const&);
-		~empty_expr();
-		
-		void accept(expr_visitor&);
-		std::ostream& put(std::ostream&) const;
-};
-
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //

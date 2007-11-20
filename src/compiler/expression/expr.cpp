@@ -42,20 +42,6 @@ ostream& expr::put( ostream& os) const
 	return os;
 }
 
-empty_expr::empty_expr(yy::location const& loc) : expr(loc) {}
-empty_expr::~empty_expr() {}
-ostream& 
-empty_expr::put( ostream& os) const
-{
-	return os << INDENT << "enclosed_expr[]\n";
-}
-void 
-empty_expr::accept(expr_visitor& v)
-{
-	if (!v.begin_visit(*this)) return;
-	v.end_visit(*this);
-}
-
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
 //  XQuery 1.0 productions                                             //
