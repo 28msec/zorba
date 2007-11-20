@@ -1280,8 +1280,7 @@ doc_expr::~doc_expr()
 ostream& doc_expr::put( ostream& os) const
 {
 	os << INDENT << "doc_expr[\n";
-	//d Assert<null_pointer>(docuri_h!=NULL);
-	Assert(docuri_h!=NULL);
+	Assert(docuri_h != NULL);
 	docuri_h->put(os);
 	return os << OUTDENT << "]\n";
 }

@@ -549,6 +549,7 @@ void *translator::begin_visit(const CompDocConstructor& v)
 void translator::end_visit(const CompDocConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
+  nodestack.push (new doc_expr (v.get_location (), pop_nodestack ()));
 }
 
 void *translator::begin_visit(const CompElemConstructor& v)
