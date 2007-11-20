@@ -765,41 +765,6 @@ void cast_expr::accept(
 }
 
 
-
-// [58] [http://www.w3.org/TR/xquery/#prod-xquery-UnaryExpr]
-
-unary_expr::unary_expr(
-	yy::location const& loc,
-	bool _neg_b,
-	rchandle<expr> _expr_h)
-:
-	expr(loc),
-	neg_b(_neg_b),
-	expr_h(_expr_h)
-{
-}
-
-unary_expr::~unary_expr()
-{
-}
-
-ostream& unary_expr::put( ostream& os) const
-{
-	os << "unary_expr[";
-	os << (neg_b ? "MINUS\n" : "\n");
-	//d Assert<null_pointer>(expr_h!=NULL);
-	Assert(expr_h!=NULL);
-	expr_h->put(os) << endl;
-	return os << "]\n";
-}
-
-void unary_expr::accept(
-	expr_visitor& v)
-{
-}
-
-
-
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 
 validate_expr::validate_expr(

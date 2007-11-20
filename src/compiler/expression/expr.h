@@ -795,36 +795,6 @@ public:
 };
 
 
-
-// [58] [http://www.w3.org/TR/xquery/#prod-xquery-UnaryExpr]
-class unary_expr : public expr
-/*______________________________________________________________________
-|	::= ("+"|"-")* ( ValidateExpr | PathExpr | ExtensionExpr )
-|_______________________________________________________________________*/
-{
-protected:
-	bool neg_b;
-	expr_t expr_h;
-
-public:
-	unary_expr(
-		yy::location const&,
-		bool neg_b,
-		expr_t);
-	~unary_expr();
-
-public:
-	bool is_negative() const { return neg_b; }
-	expr_t get_expr() const { return expr_h; }
-
-public:
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-
-};
-
-
-
 // [63] [http://www.w3.org/TR/xquery/#prod-xquery-ValidateExpr]
 class validate_expr : public expr
 /*______________________________________________________________________

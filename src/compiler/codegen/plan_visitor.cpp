@@ -338,12 +338,6 @@ cout << TRACE << endl;
 	return true;
 }
 
-bool plan_visitor::begin_visit(unary_expr& v)
-{
-cout << TRACE << endl;
-	return true;
-}
-
 bool plan_visitor::begin_visit(validate_expr& v)
 {
 cout << TRACE << endl;
@@ -769,11 +763,6 @@ void plan_visitor::end_visit(castable_expr& v)
 }
 
 void plan_visitor::end_visit(cast_expr& v)
-{
-  cout << TRACE << endl;
-}
-
-void plan_visitor::end_visit(unary_expr& v)
 {
   cout << TRACE << endl;
 }
