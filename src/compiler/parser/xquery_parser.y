@@ -44,7 +44,8 @@
 #include <string.h>
 #include <string>
 
-#include "context/static_context.h"
+//#include "context/static_context.h"
+#include "zorba_api.h"
 #include "context/dynamic_context.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"
@@ -1017,13 +1018,13 @@ BoundarySpaceDecl :
 		{
 			if (debug) cout << "BoundarySpaceDecl [preserve]\n";
 			$$ = new BoundarySpaceDecl(@$,
-								static_context::preserve_space);
+								StaticQueryContext::preserve_space);
 		}
 	|	DECLARE_BOUNDARY_SPACE  STRIP
 		{
 			if (debug) cout << "BoundarySpaceDecl [strip]\n";
 			$$ = new BoundarySpaceDecl(@$,
-								static_context::strip_space);
+								StaticQueryContext::strip_space);
 		}
 	;
 
@@ -1081,13 +1082,13 @@ OrderingModeDecl :
 		{
 			if (debug) cout << "OrderingDecl [ordered]\n";
 			$$ = new OrderingModeDecl(@$,
-								static_context::ordered);
+								StaticQueryContext::ordered);
 		}
 	| DECLARE_ORDERING  UNORDERED
 		{
 			if (debug) cout << "OrderingDecl [unordered]\n";
 			$$ = new OrderingModeDecl(@$,
-								static_context::unordered);
+								StaticQueryContext::unordered);
 		}
 	;
 
@@ -1100,13 +1101,13 @@ EmptyOrderDecl :
 		{
 			if (debug) cout << "EmptyOrderDecl [empty greatest]\n";
 			$$ = new EmptyOrderDecl(@$,
-								static_context::empty_greatest);
+								StaticQueryContext::empty_greatest);
 		}
 	|	DECLARE_DEFAULT_ORDER  EMPTY_LEAST
 		{
 			if (debug) cout << "EmptyOrderDecl [empty least]\n";
 			$$ = new EmptyOrderDecl(@$,
-								static_context::empty_least);
+								StaticQueryContext::empty_least);
 		}
 	;
 
@@ -1118,29 +1119,29 @@ CopyNamespacesDecl :
 		{
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			$$ = new CopyNamespacesDecl(@$,
-								static_context::preserve_ns,
-								static_context::inherit_ns);
+								StaticQueryContext::preserve_ns,
+								StaticQueryContext::inherit_ns);
 		}
 	| DECLARE_COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
 		{
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			$$ = new CopyNamespacesDecl(@$,
-								static_context::preserve_ns,
-								static_context::no_inherit_ns);
+								StaticQueryContext::preserve_ns,
+								StaticQueryContext::no_inherit_ns);
 		}
 	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
 		{
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			$$ = new CopyNamespacesDecl(@$,
-								static_context::no_preserve_ns,
-								static_context::inherit_ns);
+								StaticQueryContext::no_preserve_ns,
+								StaticQueryContext::inherit_ns);
 		}
 	| DECLARE_COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
 		{
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			$$ = new CopyNamespacesDecl(@$,
-								static_context::no_preserve_ns,
-								static_context::no_inherit_ns);
+								StaticQueryContext::no_preserve_ns,
+								StaticQueryContext::no_inherit_ns);
 		}
 	;
 
@@ -1335,13 +1336,13 @@ ConstructionDecl :
 		{
 			if (debug) cout << "ConstructionDecl [preserve]\n";
 			$$ = new ConstructionDecl(@$,
-								static_context::cons_preserve);
+								StaticQueryContext::cons_preserve);
 		}
 	|	DECLARE_CONSTRUCTION  STRIP
 		{
 			if (debug) cout << "ConstructionDecl [strip]\n";
 			$$ = new ConstructionDecl(@$,
-								static_context::cons_strip);
+								StaticQueryContext::cons_strip);
 		}
 	;
 
@@ -2107,13 +2108,13 @@ OrderEmptySpec:
 		{
 			if (debug) cout << "OrderEmptySpec [greatest]\n";
 			$$ = new OrderEmptySpec(@$,
-								static_context::empty_greatest);
+								StaticQueryContext::empty_greatest);
 		}
 	|	EMPTY_LEAST
 		{
 			if (debug) cout << "OrderEmptySpec [least]\n";
 			$$ = new OrderEmptySpec(@$,
-								static_context::empty_least);
+								StaticQueryContext::empty_least);
 		}
 	;
 

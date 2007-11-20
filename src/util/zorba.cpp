@@ -11,6 +11,7 @@
 #include "api/external/xquerybinary.h"
 #include "errors/Error_impl.h"
 #include "runtime/base/iterator.h"
+#include "api/serialization/serializer.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -41,6 +42,9 @@ zorba::zorba()
 	current_xqueryresult = NULL;
 
 	m_error_manager = new ZorbaErrorAlertsImpl;
+	m_item_serializer = NULL;
+	m_doc_serializer = NULL;
+
 }
 
 
@@ -50,6 +54,8 @@ zorba::~zorba()
 		delete coll;
 
 	delete m_error_manager;
+	delete m_item_serializer;
+	delete m_doc_serializer;
 }
 
 
@@ -125,6 +131,26 @@ ZorbaErrorAlertsImpl* zorba::getErrorManager()
 //	return &*theFunctionLibrary;
 //}
 
+serializer	*zorba::getItemSerializer()
+{
+	if(!m_item_serializer)
+	{
+		m_item_serializer = new serializer;
+		m_item_serializer->set_parameter("omit-xml-declaration", "yes");
+	}
+
+	return m_item_serializer;
+}
+
+serializer	*zorba::getDocSerializer()
+{
+	if(!m_doc_serializer)
+	{
+		m_doc_serializer = new serializer;
+	}
+
+	return m_doc_serializer;
+}
 
 
 ///define the Thread Specific Storage object zorba

@@ -48,7 +48,7 @@ protected:
   float                   theLoadFactor;
 
 public:
-  StringHashMap(ulong size, float loadFactor);
+  StringHashMap(xqp_ulong size, float loadFactor);
 
   ~StringHashMap() { }
 
@@ -69,7 +69,7 @@ protected:
 
 ********************************************************************************/
 template <class V>
-  StringHashMap<V>::StringHashMap(ulong size, float loadFactor) 
+  StringHashMap<V>::StringHashMap(xqp_ulong size, float loadFactor) 
   :
   theNumEntries(0),
   theHashTabSize(size),

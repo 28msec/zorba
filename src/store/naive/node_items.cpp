@@ -281,12 +281,12 @@ NamespaceBindings ElementNodeNaive::getNamespaceBindings() const
     while (parentContext != NULL)
     {
       const NamespaceBindings& parentBindings = parentContext->getBindings();
-      ulong parentSize = parentBindings.size();
-      ulong currSize = bindings.size();
+      unsigned long parentSize = parentBindings.size();
+      unsigned long currSize = bindings.size();
 
-      for (ulong i = 0; i < parentSize; i++)
+      for (unsigned long i = 0; i < parentSize; i++)
       {
-        for (ulong j = 0; j < currSize; j++)
+        for (unsigned long j = 0; j < currSize; j++)
         {
           if (bindings[j].first != parentBindings[i].first)
             bindings.push_back(parentBindings[i]);

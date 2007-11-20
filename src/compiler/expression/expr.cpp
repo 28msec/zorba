@@ -306,8 +306,8 @@ ostream& flwor_expr::put( ostream& os) const
 		default: os << "?? ";
 		}
 		switch (ord_h->empty_mode) {
-		case static_context::empty_greatest: os << "EMPTY GREATEST "; break;
-		case static_context::empty_least: os << "EMPTY LEAST "; break;
+		case StaticQueryContext::empty_greatest: os << "EMPTY GREATEST "; break;
+		case StaticQueryContext::empty_least: os << "EMPTY LEAST "; break;
 		default: os << "?? ";
 		}
 		os << ord_h->collation << endl;

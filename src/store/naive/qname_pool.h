@@ -54,15 +54,15 @@ public:
 
 protected:
   QNameItemImpl         * theCache;
-  ulong                   theCacheSize;
-  ulong                   theFirstFree;
-  ulong                   theNumFree;
+  unsigned long         theCacheSize;
+	unsigned long         theFirstFree;
+  unsigned long         theNumFree;
 
-  ulong                   theNumQNames;
+  unsigned long         theNumQNames;
 
   std::vector<HashEntry>  theHashTab;
-  ulong                   theHashTabSize;
-  float                   theLoadFactor;
+  unsigned long         theHashTabSize;
+  float                 theLoadFactor;
 
 public:
   QNamePool(xqp_ulong size);
@@ -88,8 +88,8 @@ protected:
         const xqpStringStore_t& ns,
         const char* pre,
         const char* ln,
-        ulong       prelen,
-        ulong       lnlen,
+        unsigned long       prelen,
+        unsigned long       lnlen,
         bool&       found);
 
   void hashRemove(

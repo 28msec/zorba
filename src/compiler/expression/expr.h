@@ -262,11 +262,11 @@ class order_modifier : public rcobject
 {
 public:
 	dir_spec_t dir;
-	static_context::order_empty_mode_t empty_mode;
+	StaticQueryContext::order_empty_mode_t empty_mode;
 	std::string collation;
 
 public:
-  order_modifier (dir_spec_t _dir, static_context::order_empty_mode_t _empty_mode, std::string _collation)
+  order_modifier (dir_spec_t _dir, StaticQueryContext::order_empty_mode_t _empty_mode, std::string _collation)
     : dir (_dir), empty_mode (_empty_mode), collation (_collation) {}
 	~order_modifier() {}
 

@@ -55,7 +55,7 @@ namespace xqp {
 
   static_context *static_context::root_static_context () {
     static static_context *p = new static_context (default_ns_initializers);
-    p->set_order_empty_mode (empty_least);
+		p->set_order_empty_mode (StaticQueryContext::empty_least);
     p->set_default_collation ("");
     return p;
   }

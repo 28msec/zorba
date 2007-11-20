@@ -12,6 +12,7 @@
 #define UNICODE_UTIL_H
 
 #include <iostream>
+#include <stdint.h>
 
 using namespace std;
 

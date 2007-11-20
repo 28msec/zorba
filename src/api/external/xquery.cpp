@@ -364,14 +364,26 @@ Item_t Zorba_XQueryResult::next()
 
 ostream& Zorba_XQueryResult::serializeXML( ostream& os )
 {
-	serializer ser;
-	ser.serialize(this, os);
+	serializer *ser;
+	ser = zorba::getZorbaForCurrentThread()->getDocSerializer();
+
+	ser->serialize(this, os);
 	return os;
 }
 
 bool Zorba_XQueryResult::isError()
 {
 	return is_error;
+}
+
+void	Zorba_XQueryResult::AbortQueryExecution()
+{
+	ZORBA_ERROR_ALERT(error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+										error_messages::SYSTEM_ERROR,
+										NULL,
+										true,///continue execution
+										"AbortQueryExecution"
+										);
 }
 
 }///end namespace xqp

@@ -406,7 +406,7 @@ void NamespaceDecl::accept(parsenode_visitor& v) const
 // ----------------------
 BoundarySpaceDecl::BoundarySpaceDecl(
 	const yy::location& _loc,
-	static_context::boundary_space_mode_t _mode)
+	StaticQueryContext::boundary_space_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -421,8 +421,8 @@ ostream& BoundarySpaceDecl::put(ostream& s) const
 {
 	s << INDENT << "BoundarySpaceDecl[";
 	switch (mode) {
-	case static_context::preserve_space: s << "preserve"; break;
-	case static_context::strip_space:	s << "strip"; break;
+	case StaticQueryContext::preserve_space: s << "preserve"; break;
+	case StaticQueryContext::strip_space:	s << "strip"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -549,7 +549,7 @@ void FTOptionDecl::accept(parsenode_visitor& v) const
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
 	const yy::location& _loc,
-	static_context::ordering_mode_t _mode)
+	StaticQueryContext::ordering_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -564,8 +564,8 @@ ostream& OrderingModeDecl::put(ostream& s) const
 {
 	s << INDENT << "OrderingModeDecl[";
 	switch (mode) {
-	case static_context::ordered: s << "ordered"; break;
-	case static_context::unordered: s << "unordered"; break;
+	case StaticQueryContext::ordered: s << "ordered"; break;
+	case StaticQueryContext::unordered: s << "unordered"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -585,7 +585,7 @@ void OrderingModeDecl::accept(parsenode_visitor& v) const
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
 	const yy::location& _loc,
-	static_context::order_empty_mode_t _mode)
+	StaticQueryContext::order_empty_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -600,8 +600,8 @@ ostream& EmptyOrderDecl::put(ostream& s) const
 {
 	s << INDENT << "EmptyOrderDecl[";
 	switch (mode) {
-	case static_context::empty_greatest: s << "greatest"; break;
-	case static_context::empty_least: s << "least"; break;
+	case StaticQueryContext::empty_greatest: s << "greatest"; break;
+	case StaticQueryContext::empty_least: s << "least"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";
@@ -621,8 +621,8 @@ void EmptyOrderDecl::accept(parsenode_visitor& v) const
 // -----------------------
 CopyNamespacesDecl::CopyNamespacesDecl(
 	const yy::location& _loc,
-	static_context::preserve_mode_t _preserve_mode,
-	static_context::inherit_mode_t  _inherit_mode)
+	StaticQueryContext::preserve_mode_t _preserve_mode,
+	StaticQueryContext::inherit_mode_t  _inherit_mode)
 :
 	parsenode(_loc),
 	preserve_mode(_preserve_mode),
@@ -638,13 +638,13 @@ ostream& CopyNamespacesDecl::put(ostream& s) const
 {
 	s << INDENT << "CopyNamespacesDecl[";
 	switch (preserve_mode) {
-	case static_context::preserve_ns: s << "preserve"; break;
-	case static_context::no_preserve_ns: s << "no preserve"; break;
+	case StaticQueryContext::preserve_ns: s << "preserve"; break;
+	case StaticQueryContext::no_preserve_ns: s << "no preserve"; break;
 	}
 	s << ", ";
 	switch (inherit_mode) {
-	case static_context::inherit_ns: s << "inherit"; break;
-	case static_context::no_inherit_ns: s << "no inherit"; break;
+	case StaticQueryContext::inherit_ns: s << "inherit"; break;
+	case StaticQueryContext::no_inherit_ns: s << "no inherit"; break;
 	}
 	return s << OUTDENT << "]\n";
 }
@@ -944,7 +944,7 @@ void VarDecl::accept(parsenode_visitor& v) const
 // ---------------------
 ConstructionDecl::ConstructionDecl(
 	const yy::location& _loc,
-	static_context::construction_mode_t _mode)
+	StaticQueryContext::construction_mode_t _mode)
 :
 	parsenode(_loc),
 	mode(_mode)
@@ -959,8 +959,8 @@ ostream& ConstructionDecl::put(ostream& os) const
 {
 	os << INDENT << "ConstructionDecl[";
 	switch (mode) {
-	case static_context::cons_preserve: os << "preserve"; break;
-	case static_context::cons_strip: os << "strip"; break;
+	case StaticQueryContext::cons_preserve: os << "preserve"; break;
+	case StaticQueryContext::cons_strip: os << "strip"; break;
 	default: os << "???";
 	}
 	return os << OUTDENT << "]\n";
@@ -1853,7 +1853,7 @@ void OrderDirSpec::accept(parsenode_visitor& v) const
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
 	const yy::location& _loc,
-	static_context::order_empty_mode_t _empty_order_spec)
+	StaticQueryContext::order_empty_mode_t _empty_order_spec)
 :
 	parsenode(_loc),
 	empty_order_spec(_empty_order_spec)
@@ -1868,8 +1868,8 @@ ostream& OrderEmptySpec::put(ostream& s) const
 {
 	s << INDENT << "OrderEmptySpec[";
 	switch (empty_order_spec) {
-	case static_context::empty_greatest: s << "empty_greatest"; break;
-	case static_context::empty_least: s << "empty_least"; break;
+	case StaticQueryContext::empty_greatest: s << "empty_greatest"; break;
+	case StaticQueryContext::empty_least: s << "empty_least"; break;
 	default: s << "???";
 	}
 	return s << OUTDENT << "]\n";

@@ -22,9 +22,9 @@ namespace xqp
 typedef rchandle<TempSeq> TempSeq_t;
 
 const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6;
-const ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
+const xqp_ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
-ulong SimpleStore::theUriCounter = 0;
+xqp_ulong SimpleStore::theUriCounter = 0;
 
 
 /*******************************************************************************

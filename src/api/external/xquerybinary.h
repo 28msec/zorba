@@ -40,6 +40,8 @@ public:
 	virtual ostream& serializeXML( ostream& os );
 	virtual bool isError();
 
+	virtual void	AbortQueryExecution();
+
 public:
 	PlanIter_t		it_result;
 	///state objects for the iterator tree

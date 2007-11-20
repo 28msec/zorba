@@ -13,6 +13,7 @@
 #include "errors/Error.h"
 #include "util/hashfun.h"
 #include "runtime/core/item_iterator.h"
+#include "api/serialization/serializer.h"
 
 namespace xqp
 {
@@ -33,6 +34,15 @@ namespace xqp
     return  std::string ( typeid ( *this ).name() ) + ": 'show' not implemented!";
   }
   /* end class Item */
+
+	void Item::serializeXML( ostream& os )
+	{
+		serializer *ser;
+		ser = zorba::getZorbaForCurrentThread()->getItemSerializer();
+
+		ser->serialize(this, os);
+	}
+
 
   /* begin class AtomicItem */
   AtomicItem::~AtomicItem() {}

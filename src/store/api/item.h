@@ -528,6 +528,8 @@ public:
   /** Method to print to content of the Item
    */
   virtual xqp_string show() const;
+
+	virtual void serializeXML( ostream& os );
 };   /* Item */
 
   

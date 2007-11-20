@@ -66,7 +66,8 @@ namespace yy
 #include <string.h>
 #include <string>
 
-#include "context/static_context.h"
+//#include "context/static_context.h"
+#include "zorba_api.h"
 #include "context/dynamic_context.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parser/parse_constants.h"

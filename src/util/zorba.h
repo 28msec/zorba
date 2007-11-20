@@ -12,6 +12,10 @@
 //#include "errors/Error_impl.h"
 //#include "types/representations.h
 
+#ifdef WIN32
+#include "util/win32/compatib_defs.h"
+#endif
+
 #include <unicode/utypes.h>
 #include <unicode/coll.h>
 #include <unicode/ustring.h>
@@ -39,6 +43,7 @@ class Store;
 class static_context;
 class ZorbaErrorAlertsImpl;
 class Zorba_XQueryResult;
+class serializer;
 
 //class Collator;
 
@@ -64,6 +69,9 @@ public:///things specific for each thread
 protected:
 	ZorbaErrorAlertsImpl*		  m_error_manager;
 
+	serializer *m_item_serializer;///specific for serializing items
+	serializer *m_doc_serializer;///specific for serializing complete xml
+
 
 	///functions for accessing global zorba objects for each thread
 protected:
@@ -82,6 +90,9 @@ public:
 
 	static_context* get_static_context();///of the current xquery
 //	library*				get_library();
+
+	serializer	*getItemSerializer();
+	serializer	*getDocSerializer();
 
 protected:
 

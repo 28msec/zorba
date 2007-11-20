@@ -174,8 +174,8 @@ void XmlLoader::endDocumentSAXFunc(void * ctx)
 
   childNodes.resize(revChildNodes.size());
   std::vector<Item_t>::const_reverse_iterator it;
-  ulong i = 0;
-  for (it = revChildNodes.rbegin(); it != revChildNodes.rend(); it++, i++)
+  unsigned long i = 0;
+  for (it = revChildNodes.rbegin(); it != (std::vector<Item_t>::const_reverse_iterator)revChildNodes.rend(); it++, i++)
     childNodes[i] = *it;
 
   TempSeq_t childSeq(new SimpleTempSeq(childNodes));
@@ -246,7 +246,7 @@ void XmlLoader::startElementNs(
     printf("  namespace: name='%s' uri=(%p)'%s'\n", prefix, uri, uri);
   }
 
-  ulong index = 0;
+  xqp_ulong index = 0;
   for (long i = 0; i < numAttributes; ++i, index += 5)
   {
     const char* localName = reinterpret_cast<const char*>(attributes[index]);
@@ -325,8 +325,8 @@ void  XmlLoader::endElementNs(
 
   childNodes.resize(revChildNodes.size());
   std::vector<Item_t>::const_reverse_iterator it;
-  ulong i = 0;
-  for (it = revChildNodes.rbegin(); it != revChildNodes.rend(); it++, i++)
+  unsigned long i = 0;
+  for (it = revChildNodes.rbegin(); it != (std::vector<Item_t>::const_reverse_iterator)revChildNodes.rend(); it++, i++)
     childNodes[i] = *it;
 
   TempSeq_t childSeq(new SimpleTempSeq(childNodes));

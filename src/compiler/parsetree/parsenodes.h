@@ -589,17 +589,17 @@ class BoundarySpaceDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::boundary_space_mode_t mode;
+	StaticQueryContext::boundary_space_mode_t mode;
 
 public:
 	BoundarySpaceDecl(
 		const yy::location&,
-		static_context::boundary_space_mode_t);
+		StaticQueryContext::boundary_space_mode_t);
 
 	~BoundarySpaceDecl();
 
 public:
-	static_context::boundary_space_mode_t
+	StaticQueryContext::boundary_space_mode_t
 		get_boundary_space_mode() const { return mode; }
 
 public:
@@ -710,17 +710,17 @@ class OrderingModeDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::ordering_mode_t mode;
+	StaticQueryContext::ordering_mode_t mode;
 		
 public:
 	OrderingModeDecl(
 		const yy::location&,
-		static_context::ordering_mode_t);
+		StaticQueryContext::ordering_mode_t);
 
 	~OrderingModeDecl();
 	
 public:
-	static_context::ordering_mode_t get_mode() const { return mode; }
+	StaticQueryContext::ordering_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -739,17 +739,17 @@ class EmptyOrderDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::order_empty_mode_t mode;
+	StaticQueryContext::order_empty_mode_t mode;
 
 public:
 	EmptyOrderDecl(
 		const yy::location&,
-		static_context::order_empty_mode_t);
+		StaticQueryContext::order_empty_mode_t);
 
 	~EmptyOrderDecl();
 	
 public:
-	static_context::order_empty_mode_t get_mode() const { return mode; }
+	StaticQueryContext::order_empty_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -768,20 +768,20 @@ class CopyNamespacesDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::preserve_mode_t preserve_mode;
-	static_context::inherit_mode_t inherit_mode;
+	StaticQueryContext::preserve_mode_t preserve_mode;
+	StaticQueryContext::inherit_mode_t inherit_mode;
 
 public:
 	CopyNamespacesDecl(
 		const yy::location&,
-		static_context::preserve_mode_t preserve_mode,
-		static_context::inherit_mode_t  inherit_mode);
+		StaticQueryContext::preserve_mode_t preserve_mode,
+		StaticQueryContext::inherit_mode_t  inherit_mode);
 
 	~CopyNamespacesDecl();
 
 public: 
-	static_context::preserve_mode_t get_preserve_mode() const;
-	static_context::inherit_mode_t  get_inherit_mode() const;
+	StaticQueryContext::preserve_mode_t get_preserve_mode() const;
+	StaticQueryContext::inherit_mode_t  get_inherit_mode() const;
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1043,17 +1043,17 @@ class ConstructionDecl : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::construction_mode_t mode;
+	StaticQueryContext::construction_mode_t mode;
 
 public:
 	ConstructionDecl(
 		const yy::location&,
-		static_context::construction_mode_t);
+		StaticQueryContext::construction_mode_t);
 
 	~ConstructionDecl();
 
 public:
-	static_context::construction_mode_t get_mode() const { return mode; }
+	StaticQueryContext::construction_mode_t get_mode() const { return mode; }
 
 public:
 	std::ostream& put(std::ostream&) const;
@@ -1804,16 +1804,16 @@ class OrderEmptySpec : public parsenode
 |_______________________________________________________________________*/
 {
 protected:
-	static_context::order_empty_mode_t empty_order_spec;
+	StaticQueryContext::order_empty_mode_t empty_order_spec;
 
 public:
 	OrderEmptySpec(
 		const yy::location&,
-		static_context::order_empty_mode_t empty_order_spec);
+		StaticQueryContext::order_empty_mode_t empty_order_spec);
 	~OrderEmptySpec();
 
 public:
-	static_context::order_empty_mode_t get_empty_order_spec() const
+	StaticQueryContext::order_empty_mode_t get_empty_order_spec() const
 		{ return empty_order_spec; }
 
 public:

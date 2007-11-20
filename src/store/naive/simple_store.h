@@ -43,9 +43,9 @@ class SimpleStore : public Store
 
 protected:
   static const float DEFAULT_HASH_LOAD_FACTOR;
-  static const ulong DEFAULT_COLLECTION_MAP_SIZE;
+  static const xqp_ulong DEFAULT_COLLECTION_MAP_SIZE;
 
-  static ulong theUriCounter;
+  static xqp_ulong theUriCounter;
 
 protected:
   UriPool           * theUriPool;

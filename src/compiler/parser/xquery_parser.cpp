@@ -711,7 +711,7 @@ namespace yy
     {
 			if (debug) cout << "BoundarySpaceDecl [preserve]\n";
 			(yyval.node) = new BoundarySpaceDecl((yyloc),
-								static_context::preserve_space);
+								StaticQueryContext::preserve_space);
 		;}
     break;
 
@@ -720,7 +720,7 @@ namespace yy
     {
 			if (debug) cout << "BoundarySpaceDecl [strip]\n";
 			(yyval.node) = new BoundarySpaceDecl((yyloc),
-								static_context::strip_space);
+								StaticQueryContext::strip_space);
 		;}
     break;
 
@@ -768,7 +768,7 @@ namespace yy
     {
 			if (debug) cout << "OrderingDecl [ordered]\n";
 			(yyval.node) = new OrderingModeDecl((yyloc),
-								static_context::ordered);
+								StaticQueryContext::ordered);
 		;}
     break;
 
@@ -777,7 +777,7 @@ namespace yy
     {
 			if (debug) cout << "OrderingDecl [unordered]\n";
 			(yyval.node) = new OrderingModeDecl((yyloc),
-								static_context::unordered);
+								StaticQueryContext::unordered);
 		;}
     break;
 
@@ -786,7 +786,7 @@ namespace yy
     {
 			if (debug) cout << "EmptyOrderDecl [empty greatest]\n";
 			(yyval.node) = new EmptyOrderDecl((yyloc),
-								static_context::empty_greatest);
+								StaticQueryContext::empty_greatest);
 		;}
     break;
 
@@ -795,7 +795,7 @@ namespace yy
     {
 			if (debug) cout << "EmptyOrderDecl [empty least]\n";
 			(yyval.node) = new EmptyOrderDecl((yyloc),
-								static_context::empty_least);
+								StaticQueryContext::empty_least);
 		;}
     break;
 
@@ -804,8 +804,8 @@ namespace yy
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
-								static_context::preserve_ns,
-								static_context::inherit_ns);
+								StaticQueryContext::preserve_ns,
+								StaticQueryContext::inherit_ns);
 		;}
     break;
 
@@ -814,8 +814,8 @@ namespace yy
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
-								static_context::preserve_ns,
-								static_context::no_inherit_ns);
+								StaticQueryContext::preserve_ns,
+								StaticQueryContext::no_inherit_ns);
 		;}
     break;
 
@@ -824,8 +824,8 @@ namespace yy
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
-								static_context::no_preserve_ns,
-								static_context::inherit_ns);
+								StaticQueryContext::no_preserve_ns,
+								StaticQueryContext::inherit_ns);
 		;}
     break;
 
@@ -834,8 +834,8 @@ namespace yy
     {
 			if (debug) cout << "CopyNamespacesDecl [ ]\n";
 			(yyval.node) = new CopyNamespacesDecl((yyloc),
-								static_context::no_preserve_ns,
-								static_context::no_inherit_ns);
+								StaticQueryContext::no_preserve_ns,
+								StaticQueryContext::no_inherit_ns);
 		;}
     break;
 
@@ -1030,7 +1030,7 @@ namespace yy
     {
 			if (debug) cout << "ConstructionDecl [preserve]\n";
 			(yyval.node) = new ConstructionDecl((yyloc),
-								static_context::cons_preserve);
+								StaticQueryContext::cons_preserve);
 		;}
     break;
 
@@ -1039,7 +1039,7 @@ namespace yy
     {
 			if (debug) cout << "ConstructionDecl [strip]\n";
 			(yyval.node) = new ConstructionDecl((yyloc),
-								static_context::cons_strip);
+								StaticQueryContext::cons_strip);
 		;}
     break;
 
@@ -1886,7 +1886,7 @@ namespace yy
     {
 			if (debug) cout << "OrderEmptySpec [greatest]\n";
 			(yyval.node) = new OrderEmptySpec((yyloc),
-								static_context::empty_greatest);
+								StaticQueryContext::empty_greatest);
 		;}
     break;
 
@@ -1895,7 +1895,7 @@ namespace yy
     {
 			if (debug) cout << "OrderEmptySpec [least]\n";
 			(yyval.node) = new OrderEmptySpec((yyloc),
-								static_context::empty_least);
+								StaticQueryContext::empty_least);
 		;}
     break;
 

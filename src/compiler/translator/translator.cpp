@@ -637,7 +637,7 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
       dir_spec_t dir_spec = dir_descending;
       if (mod && mod->get_dir_spec () != NULL)
         dir_spec = mod->get_dir_spec ()->get_dir_spec ();
-      static_context::order_empty_mode_t empty_spec = sctx_p->order_empty_mode ();
+      StaticQueryContext::order_empty_mode_t empty_spec = sctx_p->order_empty_mode ();
       if (mod && mod->get_empty_spec () != NULL)
         empty_spec = mod->get_empty_spec ()->get_empty_order_spec ();
       string col = sctx_p->default_collation ();
