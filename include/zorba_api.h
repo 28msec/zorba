@@ -70,6 +70,8 @@ public:
 	typedef enum { ordered, unordered } ordering_mode_t;
 
 public:
+  virtual ~StaticQueryContext() { }
+
 	virtual void		SetXPath1_0CompatibMode( bool mode ) = 0;///true for XPath1.0 only, false for XPath2.0 (default false)
 	virtual bool		GetXPath1_0CompatibMode( ) = 0;///true for XPath1.0 only, false for XPath2.0
 
