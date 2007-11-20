@@ -582,6 +582,7 @@ void *translator::begin_visit(const CompCommentConstructor& v)
 void translator::end_visit(const CompCommentConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
+  nodestack.push (new comment_expr (v.get_location (), pop_nodestack ()));
 }
 
 void *translator::begin_visit(const CompPIConstructor& v)
@@ -593,6 +594,15 @@ void *translator::begin_visit(const CompPIConstructor& v)
 void translator::end_visit(const CompPIConstructor& v, void *visit_state)
 {
   cout << std::string(depth--, ' ') << TRACE << endl;
+  pi_expr *e;
+  if (v.get_target_expr () != NULL) {
+    expr_t target = pop_nodestack ();
+    expr_t content = pop_nodestack ();
+    e = new pi_expr (v.get_location (), target, content);
+  } else {
+    e = new pi_expr (v.get_location (), v.get_target (), pop_nodestack ());
+  }
+  nodestack.push (e);
 }
 
 void *translator::begin_visit(const CompTextConstructor& v)
@@ -1702,22 +1712,24 @@ void translator::end_visit(const OrExpr& v, void *visit_state)
   cout << std::string(depth--, ' ') << TRACE << endl;
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
-  fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_OP2 ("or"));
-	fo_h->add(e2_h);
-	fo_h->add(e1_h);
-  nodestack.push (fo_h);
+  fo_expr *fo_p = new fo_expr(v.get_location());
+	fo_p->set_func(LOOKUP_OP2 ("or"));
+	fo_p->add(e2_h);
+	fo_p->add(e1_h);
+  nodestack.push (fo_p);
 }
 
 void *translator::begin_visit(const OrderedExpr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void translator::end_visit(const OrderedExpr& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
+  nodestack.push (new order_expr (v.get_location (), order_expr::ordered, 
+                                  pop_nodestack ()));
 }
 
 
@@ -2525,13 +2537,15 @@ void translator::end_visit(const UnionExpr& v, void *visit_state)
 
 void *translator::begin_visit(const UnorderedExpr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	return no_state;
 }
 
 void translator::end_visit(const UnorderedExpr& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << endl;
+  cout << std::string(depth--, ' ') << TRACE << endl;
+  nodestack.push (new order_expr (v.get_location (), order_expr::unordered, 
+                                  pop_nodestack ()));
 }
 
 void *translator::begin_visit(const ValidateExpr& v)

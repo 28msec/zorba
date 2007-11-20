@@ -4970,6 +4970,7 @@ void CompPIConstructor::accept(parsenode_visitor& v) const
 { 
 	BEGIN_VISITOR ();
 	content_expr_h->accept(v);
+  ACCEPT (target_expr_h);
 	END_VISITOR ();
 }
 
