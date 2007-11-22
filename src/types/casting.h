@@ -38,23 +38,20 @@ namespace xqp
 	class GenericCast
 	{
 		private:
-            TypeSystem::xqtref_t targetType;
-		public:
 			GenericCast();
+    
+    public:
 			~GenericCast() {}
 			
-			/**
-			 * Sets the target types of the following casts
-			 * @param targetType 
-			 */
-			void setTarget ( TypeSystem::xqtref_t& targetType );
+      static GenericCast* instance();
 			
 			/**
 			 * Executes the casting of the passed item
 			 * @param item 
+       * @param targetType target type
 			 * @return resutling item
 			 */
-			Item_t cast ( Item_t item );
+      Item_t cast ( Item_t item, TypeSystem::xqtref_t& targetType );
 	}; /* class GenericCast */
 
 } /* namespace xqp */
