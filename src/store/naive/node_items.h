@@ -17,14 +17,14 @@
 namespace xqp
 {
 
-class NodeNaive;
+class NodeImpl;
 class NsBindingsContext;
 
 template <class Object> class rchandle;
 
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class NodeItem> NodeItem_t;
-typedef rchandle<class NodeNaive> NodeNaive_t;
+typedef rchandle<class NodeImpl> NodeImpl_t;
 
 typedef rchandle<class TempSeq> TempSeq_t;
 
@@ -32,14 +32,29 @@ typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 
 /*******************************************************************************
+
+********************************************************************************/
+class DeweyId
+{
+ public:
+  std::vector<long> theComponents;
+
+  xqp_string show() const;
+};
+
+
+/*******************************************************************************
 virtual void setChildren(const TempSeq_t& seq)
 ********************************************************************************/
-class NodeNaive : public NodeItem
+class NodeImpl : public NodeItem
 {
-public:
-  NodeNaive() {}
+protected:
+  DeweyId   theId;
 
-  NodeNaive(const Item_t& aParent) : NodeItem(aParent) {}
+public:
+  NodeImpl() {}
+
+  NodeImpl(const Item_t& aParent) : NodeItem(aParent) {}
 
   virtual void setParent(const Item_t& p) { theParent = p.get_ptr(); }
 
@@ -52,7 +67,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class DocumentNodeNaive : public NodeNaive
+class DocumentNodeImpl : public NodeImpl
 {
  private:
   xqpStringStore_t theBaseURI;
@@ -61,16 +76,16 @@ class DocumentNodeNaive : public NodeNaive
   TempSeq_t        theChildren;
 
  public:
-  DocumentNodeNaive(
+  DocumentNodeImpl(
         const xqpStringStore_t& baseURI,
         const xqpStringStore_t& documentURI);
 
-  DocumentNodeNaive(
+  DocumentNodeImpl(
         const xqpStringStore_t& baseURI,
         const xqpStringStore_t& documentURI,
         const TempSeq_t& children);
 
-  virtual ~DocumentNodeNaive();
+  virtual ~DocumentNodeImpl();
 
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   QNameItem_t getType() const;
@@ -96,7 +111,7 @@ class DocumentNodeNaive : public NodeNaive
 /*******************************************************************************
 
 ********************************************************************************/
-class ElementNodeNaive : public NodeNaive
+class ElementNodeImpl : public NodeImpl
 {
  private:
   QNameItem_t          theName;
@@ -107,13 +122,13 @@ class ElementNodeNaive : public NodeNaive
   NsBindingsContext_t  theNsBindings;
 
  public:
-  ElementNodeNaive(
+  ElementNodeImpl(
         const QNameItem_t& name,
         const QNameItem_t& type,
         TempSeq_t& seqAttributes,
         const NamespaceBindings& nsBindings);
 
-  ElementNodeNaive(
+  ElementNodeImpl(
 			  const QNameItem_t& name,
         const QNameItem_t& type,
         TempSeq_t& seqChildren,
@@ -123,7 +138,7 @@ class ElementNodeNaive : public NodeNaive
         bool copy,
         bool newTypes);
 			
-  virtual ~ElementNodeNaive();
+  virtual ~ElementNodeImpl();
 
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   QNameItem_t getType() const;
@@ -133,7 +148,6 @@ class ElementNodeNaive : public NodeNaive
   virtual Iterator_t getAttributes() const;
   virtual Iterator_t getChildren() const;
   virtual void setChildren(const TempSeq_t& seq);
-  void setParent(const Item_t& p);
 
   virtual Iterator_t getTypedValue() const;
   virtual Item_t getAtomizationValue() const;
@@ -143,15 +157,9 @@ class ElementNodeNaive : public NodeNaive
 
   virtual NamespaceBindings getNamespaceBindings() const;
 
-  NsBindingsContext_t getNsBindingsContext() const
-  {
-    return theNsBindings;
-  }
+  NsBindingsContext_t getNsBindingsContext() const { return theNsBindings; }
 
-  void setNsBindingsContext(const NsBindingsContext_t& ctx)
-  {
-    theNsBindings = ctx;
-  }
+  void setNsBindingsContext(const NsBindingsContext_t& parentCtx);
 
   virtual xqp_string show() const;
 };
@@ -160,7 +168,7 @@ class ElementNodeNaive : public NodeNaive
 /*******************************************************************************
 
 ********************************************************************************/
-class AttributeNodeNaive : public NodeNaive
+class AttributeNodeImpl : public NodeImpl
 {
  private:
   QNameItem_t  theName;
@@ -172,7 +180,7 @@ class AttributeNodeNaive : public NodeNaive
   bool         theIsIdrefs;
   
  public:
-  AttributeNodeNaive (
+  AttributeNodeImpl (
 			  const QNameItem_t& name,
         const QNameItem_t& type,
         const Item_t& lexicalValue,
@@ -180,7 +188,7 @@ class AttributeNodeNaive : public NodeNaive
         bool isId,
         bool isIdrefs);
 			
-  AttributeNodeNaive(
+  AttributeNodeImpl(
 			  const Item_t& parent,
         const QNameItem_t& name,
         const QNameItem_t& type,
@@ -189,7 +197,7 @@ class AttributeNodeNaive : public NodeNaive
         bool isId,
         bool isIdrefs);
 			
-  virtual ~AttributeNodeNaive();
+  virtual ~AttributeNodeImpl();
 
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   QNameItem_t getType() const;
@@ -211,14 +219,14 @@ class AttributeNodeNaive : public NodeNaive
 /*******************************************************************************
 
 ********************************************************************************/
-class TextNodeNaive : public NodeNaive
+class TextNodeImpl : public NodeImpl
 {
  private:
   xqpStringStore_t theContent;
 
  public:
-  TextNodeNaive(const xqpStringStore_t& content);
-  virtual ~TextNodeNaive();
+  TextNodeImpl(const xqpStringStore_t& content);
+  virtual ~TextNodeImpl();
   
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   virtual QNameItem_t getType() const;
@@ -235,16 +243,16 @@ class TextNodeNaive : public NodeNaive
 /*******************************************************************************
 
 ********************************************************************************/
-class PiNodeNaive : public NodeNaive
+class PiNodeImpl : public NodeImpl
 {
  private:
   xqpStringStore_t theTarget;
   xqpStringStore_t theData;
 
 public:
-  PiNodeNaive(const xqpStringStore_t& target, const xqpStringStore_t& data);
+  PiNodeImpl(const xqpStringStore_t& target, const xqpStringStore_t& data);
 
-  virtual ~PiNodeNaive();
+  virtual ~PiNodeImpl();
 
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   virtual QNameItem_t getType() const;
@@ -263,14 +271,14 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class CommentNodeNaive : public NodeNaive
+class CommentNodeImpl : public NodeImpl
 {
 private:
   xqpStringStore_t theContent;
 
 public:
-  CommentNodeNaive(const xqpStringStore_t& content);
-  virtual ~CommentNodeNaive();
+  CommentNodeImpl(const xqpStringStore_t& content);
+  virtual ~CommentNodeImpl();
 
   virtual StoreConsts::NodeKind_t getNodeKind() const;
   virtual QNameItem_t getType() const;
@@ -294,10 +302,10 @@ class ChildrenIterator : public Iterator
 {
 protected:
   Iterator_t  theInput;
-  NodeNaive_t theParentNode;
+  NodeImpl_t  theParentNode;
 
 public:
-  ChildrenIterator(const Iterator_t& input, NodeNaive* parent)
+  ChildrenIterator(const Iterator_t& input, NodeImpl* parent)
     :
     theInput(input),
     theParentNode(parent)

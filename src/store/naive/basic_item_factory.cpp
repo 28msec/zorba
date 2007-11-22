@@ -55,19 +55,19 @@ QNameItem_t BasicItemFactory::createQName(
 }
 
 
-AnyUriItem_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
+Item_t BasicItemFactory::createAnyURI(const xqpStringStore_t& value)
 {
   theUriPool->insert(*value);
   return new AnyUriItemImpl(value);
 }
 
-AnyUriItem_t BasicItemFactory::createAnyURI(const xqp_string& value)
+Item_t BasicItemFactory::createAnyURI(const xqp_string& value)
 {
   theUriPool->insert(value.getStore());
   return new AnyUriItemImpl(xqpStringStore_t(&value.getStore()));
 }
 
-AnyUriItem_t BasicItemFactory::createAnyURI(const char* value)
+Item_t BasicItemFactory::createAnyURI(const char* value)
 {
   xqpStringStore_t str;
   theUriPool->insert(value, str);
@@ -256,7 +256,7 @@ Item_t BasicItemFactory::createDocumentNode(
     const xqpStringStore_t& docUri,
     bool createId)
 {
-  return new DocumentNodeNaive(baseUri, docUri);
+  return new DocumentNodeImpl(baseUri, docUri);
 }
 
 
@@ -266,7 +266,7 @@ Item_t BasicItemFactory::createDocumentNode(
     const TempSeq_t& children,
     bool createId)
 {
-  return new DocumentNodeNaive(baseUri, docUri, children);
+  return new DocumentNodeImpl(baseUri, docUri, children);
 }
 
 
@@ -277,7 +277,7 @@ Item_t BasicItemFactory::createElementNode(
     const NamespaceBindings& nsBindings,
     bool createId)
 { 
-  return new ElementNodeNaive(name, type, attributes, nsBindings);
+  return new ElementNodeImpl(name, type, attributes, nsBindings);
 }
 
 
@@ -292,14 +292,14 @@ Item_t BasicItemFactory::createElementNode(
     bool newTypes,
     bool createId)
 { 
-  return new ElementNodeNaive(name,
-                              type,
-                              children,
-                              attributes,
-                              nsUris,
-                              nsBindings,
-                              copy,
-                              newTypes); 
+  return new ElementNodeImpl(name,
+                             type,
+                             children,
+                             attributes,
+                             nsUris,
+                             nsBindings,
+                             copy,
+                             newTypes); 
 }
 
 
@@ -310,12 +310,12 @@ Item_t BasicItemFactory::createAttributeNode(
     const Item_t& typedValue,
     bool createId)
 { 
-  return new AttributeNodeNaive(name,
-                                type,
-                                lexicalValue,
-                                typedValue,
-                                false,
-                                false);
+  return new AttributeNodeImpl(name,
+                               type,
+                               lexicalValue,
+                               typedValue,
+                               false,
+                               false);
 }
 
 
@@ -323,7 +323,7 @@ Item_t BasicItemFactory::createTextNode(
     const xqpStringStore_t& value,
     bool createId ) 
 {
-  return new TextNodeNaive(value);
+  return new TextNodeImpl(value);
 }
 
 
@@ -331,7 +331,7 @@ Item_t BasicItemFactory::createTextNode(
     const xqp_string& value,
     bool createId)
 {
-  return new TextNodeNaive(xqpStringStore_t(&value.getStore()));
+  return new TextNodeImpl(xqpStringStore_t(&value.getStore()));
 }
 
 
@@ -339,14 +339,14 @@ Item_t BasicItemFactory::createCommentNode(
     const xqpStringStore_t& comment,
     bool createId	)
 {
-  return new CommentNodeNaive(comment);
+  return new CommentNodeImpl(comment);
 }
 
 Item_t BasicItemFactory::createCommentNode(
     const xqp_string& comment,
     bool createId	)
 {
-  return new CommentNodeNaive(xqpStringStore_t(&comment.getStore()));
+  return new CommentNodeImpl(xqpStringStore_t(&comment.getStore()));
 }
 
 
@@ -355,7 +355,7 @@ Item_t BasicItemFactory::createPiNode(
     const xqpStringStore_t& data,
     bool createId)
 {
-  return new PiNodeNaive(target, data);
+  return new PiNodeImpl(target, data);
 }
 
 Item_t BasicItemFactory::createPiNode(
@@ -363,8 +363,8 @@ Item_t BasicItemFactory::createPiNode(
     const xqp_string& data,
     bool createId)
 {
-  return new PiNodeNaive(xqpStringStore_t(&target.getStore()),
-                         xqpStringStore_t(&data.getStore()));;
+  return new PiNodeImpl(xqpStringStore_t(&target.getStore()),
+                        xqpStringStore_t(&data.getStore()));;
 }
 
 } /* namespace xqp */

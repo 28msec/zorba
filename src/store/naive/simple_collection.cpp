@@ -18,7 +18,7 @@ typedef rchandle<Iterator> Iterator_t;
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleCollection::SimpleCollection(const AnyUriItem_t& uri)
+SimpleCollection::SimpleCollection(const Item_t& uri)
   :
   theUri(uri)
 {
@@ -57,7 +57,7 @@ Iterator_t SimpleCollection::getIterator(bool idsNeeded)
   IN position: Where to insert the item. Default -1, which means it is attached
                to the end. 
 ********************************************************************************/
-void SimpleCollection::addToCollection(Item_t item, int32_t position)
+void SimpleCollection::addToCollection(Item_t item, long position)
 {
   if (!item->isNode())
   {
@@ -81,7 +81,7 @@ void SimpleCollection::addToCollection(Item_t item, int32_t position)
   IN position: Where to insert the item. Default -1, which means it is
                attached to the end.
 ********************************************************************************/
-void SimpleCollection::addToCollection(Iterator_t& items, int32_t position)
+void SimpleCollection::addToCollection(Iterator_t& items, long position)
 {
 }
 
@@ -94,7 +94,7 @@ void SimpleCollection::addToCollection(Iterator_t& items, int32_t position)
 	IN position: Where to insert the item. Default -1, which means it is
                attached to the end.
 ********************************************************************************/
-void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
+void SimpleCollection::addToCollection(std::iostream& stream, long position)
 {
   XmlLoader& loader = reinterpret_cast<SimpleStore*>(&Store::getInstance())->
                       getXmlLoader();
@@ -120,7 +120,7 @@ void SimpleCollection::addToCollection(std::iostream& stream, int32_t position)
 
   IN position: of the items which will be deleted
 ********************************************************************************/
-void SimpleCollection::deleteFromCollection(int32_t position)
+void SimpleCollection::deleteFromCollection(long position)
 {
   if (position < static_cast<long>(theNodes.size()))
     theNodes[position] = NULL;

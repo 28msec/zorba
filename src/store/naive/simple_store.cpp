@@ -123,7 +123,7 @@ void SimpleStore::setGarbageCollectionStrategy(const xqp_string& strategy)
 
   @return URI
 ********************************************************************************/
-Item_t SimpleStore::createURI()
+Item_t SimpleStore::createUri()
 {
   std::ostringstream uristream;
   uristream << "zorba://internalURI" << SimpleStore::theUriCounter++;
@@ -150,7 +150,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
                           uri, "");
   }
 
-  AnyUriItem_t uriItem = theItemFactory->createAnyURI(uri);
+  Item_t uriItem = theItemFactory->createAnyURI(uri);
 
   Collection_t collection(new SimpleCollection(uriItem));
 
@@ -178,9 +178,7 @@ Collection_t SimpleStore::createCollection(Item_t uri)
                           uri->getStringValue(), "");
   }
 
-  AnyUriItem_t uriItem = dynamic_cast<AnyUriItem*>(uri.get_ptr());
-
-  Collection_t collection(new SimpleCollection(uriItem));
+  Collection_t collection(new SimpleCollection(uri));
 
   theCollections.insert(uri->getStringValue(), collection);
 
@@ -195,7 +193,7 @@ Collection_t SimpleStore::createCollection(Item_t uri)
 ********************************************************************************/
 Collection_t SimpleStore::createCollection()
 {
-  Item_t uri = createURI();
+  Item_t uri = createUri();
 
   return createCollection(uri);
 }
@@ -366,7 +364,10 @@ int32_t SimpleStore::compare(Item_t item1, Item_t item2)
   @param duplicate duplicate elemination should be applied
   @return iterator which produces the sorted items
 ********************************************************************************/
-Iterator_t SimpleStore::sort(Iterator_t iterator, bool ascendent, bool duplicateElemination)
+Iterator_t SimpleStore::sort(
+    Iterator_t iterator,
+    bool ascendent,
+    bool duplicateElemination)
 {
   return rchandle<Iterator> ( NULL );
 }

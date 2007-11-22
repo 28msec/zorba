@@ -58,9 +58,9 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
    */
-  virtual AnyUriItem_t createAnyURI(const xqpStringStore_t& value) = 0;
-  virtual AnyUriItem_t createAnyURI(const xqp_string& value) = 0;
-  virtual AnyUriItem_t createAnyURI(const char* value) = 0;
+  virtual Item_t createAnyURI(const xqpStringStore_t& value) = 0;
+  virtual Item_t createAnyURI(const xqp_string& value) = 0;
+  virtual Item_t createAnyURI(const char* value) = 0;
 
   /**
    * @param value string value of the untyped atomic

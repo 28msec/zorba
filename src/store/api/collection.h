@@ -44,33 +44,33 @@ namespace xqp
 			* @param item to insert
 			* @param position Where to insert the item. Default -1, which means it is attached to the end. 
 			*/
-		virtual void addToCollection(Item_t item, int32_t position = -1) = 0;
+		virtual void addToCollection(Item_t item, long position = -1) = 0;
 
 		/** Inserts data into the collection
 			*
 		  * @param iterator which produces the items to insert
 		  * @param position Where to insert the item. Default -1, which means it is attached to the end.
 		  */
-		virtual void addToCollection(Iterator_t& items, int32_t position = -1) = 0;
+		virtual void addToCollection(Iterator_t& items, long position = -1) = 0;
 
 		/** Inserts data into the collection
 		  * TODO loading from SAX & DOM
 		  * @param stream which streams the data to insert (e.g. from a file)
 		  * @param position Where to insert the item. Default -1, which means it is attached to the end.
 		  */
-		virtual void addToCollection(std::iostream& stream, int32_t position = -1) = 0;
+		virtual void addToCollection(std::iostream& stream, long position = -1) = 0;
 		
 		/** Deletes an item of the collection.
      *
      * @param position of the items which will be deleted
      */
-		virtual void deleteFromCollection(int32_t position) = 0;
+		virtual void deleteFromCollection(long position) = 0;
 		
 		/**
      * Returns the URI of the collection
      * @return URI
      */
-		virtual AnyUriItem_t getURI() = 0;
+		virtual Item_t getUri() = 0;
 	}; /* class Collection */
 } /* namespace xqp */
 #endif /* XQP_COLLECTION_H */

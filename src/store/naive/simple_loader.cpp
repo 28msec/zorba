@@ -115,8 +115,8 @@ Item_t XmlLoader::loadXml(std::iostream& stream)
   // Cleanup
   xmlFreeParserCtxt(ctxt);
 
-  while(!thePath.empty())
-    thePath.pop();
+  while(!theNodeStack.empty())
+    theNodeStack.pop();
 
   Item_t resultNode = theRootNode;
 
@@ -146,8 +146,8 @@ Item_t XmlLoader::loadXml(std::iostream& stream)
 ********************************************************************************/
 void XmlLoader::startDocument(void * ctx)
 {
-  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
-  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  SimpleStore& store = GET_STORE();
+  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
   LOADER_TRACE("");
@@ -158,8 +158,8 @@ void XmlLoader::startDocument(void * ctx)
   Item_t docNode = factory.createDocumentNode(baseUri, docUri);
 
   loader.theRootNode = docNode;
-  loader.thePath.push(docNode);
-  loader.thePath.push(NULL);
+  loader.theNodeStack.push(docNode);
+  loader.theNodeStack.push(NULL);
 }
 
 
@@ -177,15 +177,15 @@ void XmlLoader::endDocument(void * ctx)
   std::vector<Item_t> childNodes;
   std::vector<Item_t> revChildNodes;
 
-  Item_t childNode = loader.thePath.top();
+  Item_t childNode = loader.theNodeStack.top();
 
   while (childNode != NULL)
   {
     revChildNodes.push_back(childNode);
-    loader.thePath.pop();
-    childNode = loader.thePath.top();
+    loader.theNodeStack.pop();
+    childNode = loader.theNodeStack.top();
   }
-  loader.thePath.pop();
+  loader.theNodeStack.pop();
 
   childNodes.resize(revChildNodes.size());
   std::vector<Item_t>::const_reverse_iterator it;
@@ -195,7 +195,7 @@ void XmlLoader::endDocument(void * ctx)
 
   TempSeq_t childSeq(new SimpleTempSeq(childNodes));
 
-  NodeNaive* docNode = reinterpret_cast<NodeNaive*>(loader.thePath.top().get_ptr());
+  NodeImpl* docNode = reinterpret_cast<NodeImpl*>(loader.theNodeStack.top().get_ptr());
 
   docNode->setChildren(childSeq);
 }
@@ -229,8 +229,8 @@ void XmlLoader::startElement(
     int numDefaulted, 
     const xmlChar ** attributes)
 {
-  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
-  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  SimpleStore& store = GET_STORE();
+  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
   QNameItem_t qname;
@@ -243,12 +243,14 @@ void XmlLoader::startElement(
                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
+  // Name and type
   qname = factory.createQName(reinterpret_cast<const char*>(uri),
                               reinterpret_cast<const char*>(prefix),
                               reinterpret_cast<const char*>(localName));
 
   tname = store.theAnyType;
 
+  // Namespace bindings
   for (long i = 0; i < numNamespaces; ++i)
   {
     const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
@@ -263,7 +265,8 @@ void XmlLoader::startElement(
                  << ":" << uri << "]");
   }
 
-  xqp_ulong index = 0;
+  // Attributes
+  unsigned long index = 0;
   for (long i = 0; i < numAttributes; ++i, index += 5)
   {
     const char* localName = reinterpret_cast<const char*>(attributes[index]);
@@ -287,23 +290,32 @@ void XmlLoader::startElement(
 
     LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
                  << ":" << localName << " (" << (uri != NULL ? uri : "NULL")
-                 << "]" << std::endl << "  Attribute value: " << value);
+                 << ")]" << std::endl << "  Attribute value: " << value);
   }
 
+  // Create the element node
   TempSeq_t attrSeq(new SimpleTempSeq(attrNodes));
 
   elemNode = factory.createElementNode(qname, tname, attrSeq, nsBindings);
 
+  // Make the element node be the parent of its attributes
   for (long i = 0; i < numAttributes; ++i)
   {
-    reinterpret_cast<NodeNaive*>(attrNodes[i].get_ptr())->setParent(elemNode);
+    reinterpret_cast<NodeImpl*>(attrNodes[i].get_ptr())->setParent(elemNode);
   }
 
-  if (loader.thePath.empty())
+  if (!nsBindings.empty())
+  {
+    loader.theBindingsStack.push(reinterpret_cast<ElementNodeImpl*>
+                                 (elemNode.get_ptr())->getNsBindingsContext());
+  }
+
+  // Push element node to the node stack
+  if (loader.theNodeStack.empty())
     loader.theRootNode = elemNode;
 
-  loader.thePath.push(elemNode);
-  loader.thePath.push(NULL);
+  loader.theNodeStack.push(elemNode);
+  loader.theNodeStack.push(NULL);
 }
 
   
@@ -331,25 +343,46 @@ void  XmlLoader::endElement(
   std::vector<Item_t> childNodes;
   std::vector<Item_t> revChildNodes;
 
-  Item_t childNode = loader.thePath.top();
-
+  // Collect the children of this element node from the node stack
+  Item_t childNode = loader.theNodeStack.top();
   while (childNode != NULL)
   {
     revChildNodes.push_back(childNode);
-    loader.thePath.pop();
-    childNode = loader.thePath.top();
+    loader.theNodeStack.pop();
+    childNode = loader.theNodeStack.top();
   }
-  loader.thePath.pop();
+  loader.theNodeStack.pop();
 
+  // The element node is now at the top of the stack
+  ElementNodeImpl* elemNode = dynamic_cast<ElementNodeImpl*>
+                              (loader.theNodeStack.top().get_ptr());
+
+  // For each child, make this element node its parent and fix its namespace
+  // bindings context. Note: the children were popped from the stack in reverse
+  // order, so we copy them into another vector in the correct order.
   childNodes.resize(revChildNodes.size());
   std::vector<Item_t>::const_reverse_iterator it;
   unsigned long i = 0;
-  for (it = revChildNodes.rbegin(); it != (std::vector<Item_t>::const_reverse_iterator)revChildNodes.rend(); it++, i++)
+  for (it = revChildNodes.rbegin();
+       it != (std::vector<Item_t>::const_reverse_iterator)revChildNodes.rend();
+       it++, i++)
+  {
     childNodes[i] = *it;
+    reinterpret_cast<NodeImpl*>(childNodes[i].get_ptr())->setParent(elemNode);
+
+    if (childNodes[i]->getNodeKind() == StoreConsts::elementNode)
+    {
+      reinterpret_cast<ElementNodeImpl*>(childNodes[i].get_ptr())->
+      setNsBindingsContext(loader.theBindingsStack.top());
+    }
+  }
+
+  if (elemNode->getNsBindingsContext() != NULL)
+  {
+    loader.theBindingsStack.pop();
+  }
 
   TempSeq_t childSeq(new SimpleTempSeq(childNodes));
-
-  NodeNaive* elemNode = reinterpret_cast<NodeNaive*>(loader.thePath.top().get_ptr());
 
   elemNode->setChildren(childSeq);
 }
@@ -364,18 +397,18 @@ void  XmlLoader::endElement(
 ********************************************************************************/
 void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 {
-  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
-  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  SimpleStore& store = GET_STORE();
+  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
 
   Item_t textNode = factory.createTextNode(content);
 
-  if (loader.thePath.empty())
+  if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;
 
-  loader.thePath.push(textNode);
+  loader.theNodeStack.push(textNode);
 }
 
 
@@ -388,18 +421,18 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 ********************************************************************************/
 void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 {
-  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
-  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  SimpleStore& store = GET_STORE();
+  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
 
   Item_t textNode = factory.createTextNode(content);
 
-  if (loader.thePath.empty())
+  if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;
 
-  loader.thePath.push(textNode);
+  loader.theNodeStack.push(textNode);
 }
 
 
@@ -413,8 +446,8 @@ void XmlLoader::comment(
     void * ctx,
     const xmlChar * content)
 {
-  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
-  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  SimpleStore& store = GET_STORE();
+  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   LOADER_TRACE(content);
@@ -423,10 +456,10 @@ void XmlLoader::comment(
 
   Item_t commentNode = factory.createCommentNode(contentp);
 
-  if (loader.thePath.empty())
+  if (loader.theNodeStack.empty())
     loader.theRootNode = commentNode;
 
-  loader.thePath.push(commentNode);
+  loader.theNodeStack.push(commentNode);
 }
 
 
@@ -441,8 +474,8 @@ void XmlLoader::processingInstruction(
     const xmlChar * target, 
     const xmlChar * data)
 {
-  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
-  BasicItemFactory& factory = *(static_cast<BasicItemFactory*>(&store.getItemFactory()));
+  SimpleStore& store = GET_STORE();
+  BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>( ctx ));
 
   LOADER_TRACE("target : " << target << " data: " << data);
@@ -452,10 +485,10 @@ void XmlLoader::processingInstruction(
 
   Item_t piNode = factory.createPiNode(targetp, datap);
 
-  if (loader.thePath.empty())
+  if (loader.theNodeStack.empty())
     loader.theRootNode = piNode;
 
-  loader.thePath.push(piNode);
+  loader.theNodeStack.push(piNode);
 }
 
 
@@ -497,5 +530,3 @@ void  XmlLoader::warning(void * ctx, const char * msg, ... )
 }
 
 }
-
-

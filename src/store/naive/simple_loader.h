@@ -15,19 +15,27 @@ template <class Object> class rchandle;
 
 class Item;
 class NodeItem;
+class NsBindingsContext;
+
 typedef rchandle<Item> Item_t;
 typedef rchandle<class NodeItem> NodeItem_t;
 
+typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class XmlLoader
 {
 protected:
-  xmlSAXHandler       theSaxHandler;
+  xmlSAXHandler                   theSaxHandler;
  
-  Item_t              theRootNode;
-  std::stack<Item_t>  thePath;
+  Item_t                          theRootNode;
+  std::stack<Item_t>              theNodeStack;
+  std::stack<NsBindingsContext_t> theBindingsStack;
 
-  xqpStringStore      theErrors;
+  xqpStringStore                  theErrors;
 
 public:
   static void	startDocument(void * ctx);

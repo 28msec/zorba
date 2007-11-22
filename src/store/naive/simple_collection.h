@@ -16,22 +16,22 @@ namespace xqp
 class SimpleCollection : public Collection
 {
 protected:
-  AnyUriItem_t         theUri;
+  Item_t               theUri;
   std::vector<Item_t>  theNodes;
 
 public:
-  SimpleCollection(const AnyUriItem_t& uri);
+  SimpleCollection(const Item_t& uri);
   virtual ~SimpleCollection();
 
   virtual Iterator_t getIterator(bool idsNeeded);
 
-  virtual void addToCollection(Item_t item, int32_t position = -1);
-  virtual void addToCollection(Iterator_t& items, int32_t position = -1);
-  virtual void addToCollection(std::iostream& stream, int32_t position = -1);
+  virtual void addToCollection(Item_t item, long position = -1);
+  virtual void addToCollection(Iterator_t& items, long position = -1);
+  virtual void addToCollection(std::iostream& stream, long position = -1);
 
-  virtual void deleteFromCollection(int32_t position);
+  virtual void deleteFromCollection(long position);
 
-  AnyUriItem_t getURI() { return theUri; }
+  Item_t getUri() { return theUri; }
 };
 
 } /* namespace xqp */

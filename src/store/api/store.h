@@ -156,7 +156,7 @@ public:
    *
    * @return URI
    */
-  virtual Item_t createURI() = 0;
+  virtual Item_t createUri() = 0;
 	
   /** Creates a collection in the store.
    * 

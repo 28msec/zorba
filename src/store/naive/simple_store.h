@@ -15,6 +15,12 @@
 namespace xqp
 {
 
+#define GET_STORE() \
+        (*(static_cast<SimpleStore*>(&Store::getInstance())))
+
+#define GET_FACTORY(store) \
+        (*(static_cast<BasicItemFactory*>(&(store).getItemFactory())))
+
 class QNamePool;
 class StringPool;
 class XmlLoader;
@@ -84,7 +90,7 @@ public:
 
   virtual void setGarbageCollectionStrategy(const xqp_string& strategy);
 
-  virtual Item_t createURI();
+  virtual Item_t createUri();
   virtual Collection_t createCollection(const xqp_string& uri);
   virtual Collection_t createCollection(Item_t uri);
   virtual Collection_t createCollection();

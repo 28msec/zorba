@@ -18,10 +18,29 @@ namespace xqp
 
 
 /*******************************************************************************
+  class DeweyId
+********************************************************************************/
+xqp_string DeweyId::show() const
+{
+  std::stringstream str;
+  unsigned long len = theComponents.size();
+
+  for (unsigned long i = 0; i < len; i++)
+  {
+    str << theComponents[i];
+    if (i < len-1)
+      str << ".";
+  }
+
+  return str.str().c_str();
+}
+
+
+/*******************************************************************************
   class DocumentNode
 ********************************************************************************/
 
-DocumentNodeNaive::DocumentNodeNaive(
+DocumentNodeImpl::DocumentNodeImpl(
     const xqpStringStore_t& baseURI,
     const xqpStringStore_t& docURI)
   :
@@ -31,7 +50,7 @@ DocumentNodeNaive::DocumentNodeNaive(
 }
 
 
-DocumentNodeNaive::DocumentNodeNaive(
+DocumentNodeImpl::DocumentNodeImpl(
     const xqpStringStore_t& baseURI,
     const xqpStringStore_t& docURI,
     const TempSeq_t& children)
@@ -43,36 +62,36 @@ DocumentNodeNaive::DocumentNodeNaive(
 }
  
 
-DocumentNodeNaive::~DocumentNodeNaive()
+DocumentNodeImpl::~DocumentNodeImpl()
 {
 }
 
 
-StoreConsts::NodeKind_t DocumentNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t DocumentNodeImpl::getNodeKind() const
 {
   return StoreConsts::documentNode;
 }
 
 
-QNameItem_t DocumentNodeNaive::getType() const
+QNameItem_t DocumentNodeImpl::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theAnyType;
 }
 
 
-xqp_string DocumentNodeNaive::getBaseURI() const
+xqp_string DocumentNodeImpl::getBaseURI() const
 {
   return theBaseURI;
 }
 
 
-xqp_string DocumentNodeNaive::getDocumentURI() const
+xqp_string DocumentNodeImpl::getDocumentURI() const
 {
   return theDocURI;
 }
 
 
-Iterator_t DocumentNodeNaive::getChildren() const
+Iterator_t DocumentNodeImpl::getChildren() const
 {
   if (theChildren == NULL)
   {
@@ -81,18 +100,18 @@ Iterator_t DocumentNodeNaive::getChildren() const
   }
   else
   {
-    return (new ChildrenIterator(theChildren->getIterator(),(NodeNaive*)this));
+    return (new ChildrenIterator(theChildren->getIterator(),(NodeImpl*)this));
   }
 }
 
 
-void DocumentNodeNaive::setChildren(const TempSeq_t& seq)
+void DocumentNodeImpl::setChildren(const TempSeq_t& seq)
 {
   theChildren = seq;
 }
 
 
-Iterator_t DocumentNodeNaive::getTypedValue() const
+Iterator_t DocumentNodeImpl::getTypedValue() const
 {
   PlanIter_t ret;
   if (theChildren->empty())
@@ -108,13 +127,13 @@ Iterator_t DocumentNodeNaive::getTypedValue() const
 }
 
 
-Item_t DocumentNodeNaive::getAtomizationValue() const
+Item_t DocumentNodeImpl::getAtomizationValue() const
 {
   return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
 }
 
 
-xqp_string DocumentNodeNaive::getStringProperty() const
+xqp_string DocumentNodeImpl::getStringProperty() const
 {
   ostringstream oss;
   Iterator_t it = getChildren();
@@ -128,7 +147,7 @@ xqp_string DocumentNodeNaive::getStringProperty() const
 }
 
 
-xqp_string DocumentNodeNaive::show() const
+xqp_string DocumentNodeImpl::show() const
 {
   std::stringstream strStream;
 
@@ -155,13 +174,13 @@ xqp_string DocumentNodeNaive::show() const
   class ElementNode
 ********************************************************************************/
 
-ElementNodeNaive::ElementNodeNaive(
+ElementNodeImpl::ElementNodeImpl(
     const QNameItem_t& name,
     const QNameItem_t& type,
     TempSeq_t& seqAttributes,
     const NamespaceBindings& nsBindings)
   :
-  NodeNaive(NULL),
+  NodeImpl(NULL),
   theName(name),
   theType(type),
   theAttributes(seqAttributes)
@@ -171,7 +190,7 @@ ElementNodeNaive::ElementNodeNaive(
 }
 
 
-ElementNodeNaive::ElementNodeNaive(
+ElementNodeImpl::ElementNodeImpl(
     const QNameItem_t& name,
     const QNameItem_t& type,
     TempSeq_t& seqChildren,
@@ -194,30 +213,30 @@ ElementNodeNaive::ElementNodeNaive(
 }
 
 
-ElementNodeNaive::~ElementNodeNaive()
+ElementNodeImpl::~ElementNodeImpl()
 {
 }
 
 
-StoreConsts::NodeKind_t ElementNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t ElementNodeImpl::getNodeKind() const
 {
   return StoreConsts::elementNode;
 }
 
 
-QNameItem_t ElementNodeNaive::getType() const
+QNameItem_t ElementNodeImpl::getType() const
 {
   return theType;
 }
 
 
-QNameItem_t ElementNodeNaive::getNodeName() const
+QNameItem_t ElementNodeImpl::getNodeName() const
 {
   return theName;
 }
 
 
-Iterator_t ElementNodeNaive::getAttributes() const
+Iterator_t ElementNodeImpl::getAttributes() const
 {
   if ( theAttributes == NULL )
   {
@@ -231,7 +250,7 @@ Iterator_t ElementNodeNaive::getAttributes() const
 }
 
 
-Iterator_t ElementNodeNaive::getChildren() const
+Iterator_t ElementNodeImpl::getChildren() const
 {
   if (theChildren == NULL)
   {
@@ -240,34 +259,18 @@ Iterator_t ElementNodeNaive::getChildren() const
   }
   else
   {
-    return (new ChildrenIterator(theChildren->getIterator(), (NodeNaive*)this));
+    return (new ChildrenIterator(theChildren->getIterator(), (NodeImpl*)this));
   }
 }
 
 
-void ElementNodeNaive::setChildren(const TempSeq_t& seq)
+void ElementNodeImpl::setChildren(const TempSeq_t& seq)
 {
   theChildren = seq;
 }
 
 
-void ElementNodeNaive::setParent(const Item_t& p)
-{
-  theParent = p.get_ptr();
-
-  if (theNsBindings == NULL)
-    theNsBindings = new NsBindingsContext();
-
-  if (p->getNodeKind() == StoreConsts::elementNode)
-  {
-    ElementNodeNaive* parentNode = reinterpret_cast<ElementNodeNaive*>(p.get_ptr());
-
-    theNsBindings->setParentContext(parentNode->getNsBindingsContext());
-  }
-}
-
-
-Iterator_t ElementNodeNaive::getTypedValue() const
+Iterator_t ElementNodeImpl::getTypedValue() const
 {
   PlanIter_t ret;
   if (theChildren->empty())
@@ -283,13 +286,13 @@ Iterator_t ElementNodeNaive::getTypedValue() const
 }
 
 
-Item_t ElementNodeNaive::getAtomizationValue() const
+Item_t ElementNodeImpl::getAtomizationValue() const
 {
   return zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
 }
 
 
-xqp_string ElementNodeNaive::getStringProperty() const
+xqp_string ElementNodeImpl::getStringProperty() const
 {
   ostringstream oss;
   Iterator_t it = getChildren();
@@ -303,7 +306,16 @@ xqp_string ElementNodeNaive::getStringProperty() const
 }
 
 
-NamespaceBindings ElementNodeNaive::getNamespaceBindings() const
+void ElementNodeImpl::setNsBindingsContext(const NsBindingsContext_t& parentCtx)
+{
+  if (theNsBindings == NULL)
+    theNsBindings = parentCtx;
+  else
+    theNsBindings->setParentContext(parentCtx);
+}
+
+
+NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
 {
   NamespaceBindings bindings;
 
@@ -321,14 +333,18 @@ NamespaceBindings ElementNodeNaive::getNamespaceBindings() const
 
       for (unsigned long i = 0; i < parentSize; i++)
       {
-        for (unsigned long j = 0; j < currSize; j++)
+        unsigned long j;
+        for (j = 0; j < currSize; j++)
         {
-          if (bindings[j].first != parentBindings[i].first)
-            bindings.push_back(parentBindings[i]);
+          if (bindings[j].first == parentBindings[i].first)
+            break;
         }
+
+        if (j == currSize)
+          bindings.push_back(parentBindings[i]);
       }
 
-      parentContext = theNsBindings->getParentContext().get_ptr();
+      parentContext = parentContext->getParentContext().get_ptr();
     }
   }
 
@@ -336,7 +352,7 @@ NamespaceBindings ElementNodeNaive::getNamespaceBindings() const
 }
 
 
-bool ElementNodeNaive::getNilled() const
+bool ElementNodeImpl::getNilled() const
 {
   Iterator_t iter = theChildren->getIterator();
   Item_t item = iter->next();
@@ -353,35 +369,46 @@ bool ElementNodeNaive::getNilled() const
 }
 
 
-xqp_string ElementNodeNaive::show() const
+xqp_string ElementNodeImpl::show() const
 {
-  xqp_string str;
+  std::stringstream str;
 
-  str =  "<" + theName->getStringProperty();
+  str <<  "<" << theName->getStringProperty();
 
-  if ( theAttributes != NULL )
+  NamespaceBindings nsBindings = getNamespaceBindings();
+
+  for (unsigned long i = 0; i < nsBindings.size(); i++)
+  {
+    str << " xmlns:" <<  nsBindings[i].first << "=\""
+        << nsBindings[i].second << "\"";
+  }
+
+  if (theAttributes != NULL)
   {
     Iterator_t iter = theAttributes->getIterator();
     Item_t item = iter->next();
     while (item != NULL)
     {
-      str += " " + item->show();
+      str << " " << item->show();
       item = iter->next();
     }
   }
-  str += ">";
+
+  str << ">";
+
   if (theChildren != NULL)
   {
     Iterator_t iter = theChildren->getIterator();
     Item_t item = iter->next();
     while (item != NULL)
     {
-      str += item->show();
+      str << item->show();
       item = iter->next();
     }
   }
-  str += "</" + theName->getStringProperty() + ">";
-  return str;
+
+  str << "</" << theName->getStringProperty() << ">";
+  return str.str().c_str();
 }
 
 
@@ -389,7 +416,7 @@ xqp_string ElementNodeNaive::show() const
   class AttributeNode
 ********************************************************************************/
 
-AttributeNodeNaive::AttributeNodeNaive(
+AttributeNodeImpl::AttributeNodeImpl(
     const QNameItem_t& name,
     const QNameItem_t& type,
     const Item_t& lexicalValue,
@@ -407,7 +434,7 @@ AttributeNodeNaive::AttributeNodeNaive(
 }
 
 
-AttributeNodeNaive::AttributeNodeNaive(
+AttributeNodeImpl::AttributeNodeImpl(
     const Item_t& parent,
     const QNameItem_t& name,
     const QNameItem_t& type,
@@ -416,7 +443,7 @@ AttributeNodeNaive::AttributeNodeNaive(
     bool isId,
     bool isIdrefs)
   :
-  NodeNaive(parent),
+  NodeImpl(parent),
   theName(name),
   theType(type),
   theLexicalValue(lexicalValue),
@@ -427,66 +454,66 @@ AttributeNodeNaive::AttributeNodeNaive(
 }
 
 
-AttributeNodeNaive::~AttributeNodeNaive()
+AttributeNodeImpl::~AttributeNodeImpl()
 {
 }
 
 
-StoreConsts::NodeKind_t AttributeNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t AttributeNodeImpl::getNodeKind() const
 {
   return StoreConsts::attributeNode;
 }
 
 
-QNameItem_t AttributeNodeNaive::getType() const
+QNameItem_t AttributeNodeImpl::getType() const
 {
   return theType;
 }
 
 
-QNameItem_t AttributeNodeNaive::getNodeName() const
+QNameItem_t AttributeNodeImpl::getNodeName() const
 {
   return theName;
 }
 
 
-Iterator_t AttributeNodeNaive::getTypedValue() const
+Iterator_t AttributeNodeImpl::getTypedValue() const
 {
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), theTypedValue);
   return new PlanIterWrapper(planIter);
 }
 
 
-Item_t AttributeNodeNaive::getAtomizationValue() const
+Item_t AttributeNodeImpl::getAtomizationValue() const
 {
   return theLexicalValue;
 }
 
-xqp_string AttributeNodeNaive::getStringProperty() const
+xqp_string AttributeNodeImpl::getStringProperty() const
 {
   return theLexicalValue->getStringProperty();
 }
 
 
-xqp_string AttributeNodeNaive::getStringValue() const
+xqp_string AttributeNodeImpl::getStringValue() const
 {
   return theLexicalValue->getStringValue();
 }
 
 
-bool AttributeNodeNaive::isId() const
+bool AttributeNodeImpl::isId() const
 {
   return theIsId;
 }
 
 
-bool AttributeNodeNaive::isIdrefs() const
+bool AttributeNodeImpl::isIdrefs() const
 {
   return theIsIdrefs;
 }
 
 
-xqp_string AttributeNodeNaive::show() const
+xqp_string AttributeNodeImpl::show() const
 {
   return theName->getStringProperty() + "=\"" + (theLexicalValue != NULL ? theLexicalValue->show() : "") + "\"";
 }
@@ -496,31 +523,31 @@ xqp_string AttributeNodeNaive::show() const
 
 ********************************************************************************/
 
-TextNodeNaive::TextNodeNaive(const xqpStringStore_t& content) 
+TextNodeImpl::TextNodeImpl(const xqpStringStore_t& content) 
   :
   theContent(content)
 {
 }
 
 
-TextNodeNaive::~TextNodeNaive()
+TextNodeImpl::~TextNodeImpl()
 {
 }
 
 
-StoreConsts::NodeKind_t TextNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t TextNodeImpl::getNodeKind() const
 {
   return StoreConsts::textNode;
 }
 
 
-QNameItem_t TextNodeNaive::getType() const
+QNameItem_t TextNodeImpl::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
 
 
-Iterator_t TextNodeNaive::getTypedValue() const
+Iterator_t TextNodeImpl::getTypedValue() const
 {
   const Item_t& item = Store::getInstance().getItemFactory().
                               createUntypedAtomic(theContent);
@@ -530,25 +557,25 @@ Iterator_t TextNodeNaive::getTypedValue() const
 }
 
 
-Item_t TextNodeNaive::getAtomizationValue() const
+Item_t TextNodeImpl::getAtomizationValue() const
 {
   return Store::getInstance().getItemFactory().createUntypedAtomic(theContent);
 }
 
 
-xqp_string TextNodeNaive::getStringProperty() const
+xqp_string TextNodeImpl::getStringProperty() const
 {
   return theContent;
 }
 
 
-xqp_string TextNodeNaive::getStringValue() const
+xqp_string TextNodeImpl::getStringValue() const
 {
   return theContent;
 }
 
   
-xqp_string TextNodeNaive::show() const
+xqp_string TextNodeImpl::show() const
 {
   return theContent;
 }
@@ -558,7 +585,7 @@ xqp_string TextNodeNaive::show() const
 
 ********************************************************************************/
  
-PiNodeNaive::PiNodeNaive(
+PiNodeImpl::PiNodeImpl(
     const xqpStringStore_t& target,
     const xqpStringStore_t& data)
   :
@@ -567,24 +594,24 @@ PiNodeNaive::PiNodeNaive(
 }
 
 
-PiNodeNaive::~PiNodeNaive()
+PiNodeImpl::~PiNodeImpl()
 {
 }
 
 
-StoreConsts::NodeKind_t PiNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t PiNodeImpl::getNodeKind() const
 {
   return StoreConsts::piNode;
 }
 
 
-QNameItem_t PiNodeNaive::getType() const
+QNameItem_t PiNodeImpl::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
 
 
-Iterator_t PiNodeNaive::getTypedValue() const
+Iterator_t PiNodeImpl::getTypedValue() const
 {
   const Item_t& item = zorba::getItemFactory()->createString(theData);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
@@ -592,30 +619,30 @@ Iterator_t PiNodeNaive::getTypedValue() const
 }
 
 
-Item_t PiNodeNaive::getAtomizationValue() const
+Item_t PiNodeImpl::getAtomizationValue() const
 {
   return zorba::getItemFactory()->createUntypedAtomic(theData);
 }
 
-xqp_string PiNodeNaive::getStringProperty() const
+xqp_string PiNodeImpl::getStringProperty() const
 {
   return theData;
 }
 
 
-xqp_string PiNodeNaive::getStringValue() const
+xqp_string PiNodeImpl::getStringValue() const
 {
   return theData;
 }
 
 
-xqp_string PiNodeNaive::getTarget() const
+xqp_string PiNodeImpl::getTarget() const
 {
   return theTarget;
 }
 
 
-xqp_string PiNodeNaive::show() const
+xqp_string PiNodeImpl::show() const
 {
   return "<?" + *theTarget + " " + *theData + "?>";
 }
@@ -624,30 +651,30 @@ xqp_string PiNodeNaive::show() const
 /*******************************************************************************
 
 ********************************************************************************/
-CommentNodeNaive::CommentNodeNaive(const xqpStringStore_t& content)
+CommentNodeImpl::CommentNodeImpl(const xqpStringStore_t& content)
   :
   theContent(content)
 {
 }
 
-CommentNodeNaive::~CommentNodeNaive()
+CommentNodeImpl::~CommentNodeImpl()
 {
 }
 
 
-StoreConsts::NodeKind_t CommentNodeNaive::getNodeKind() const
+StoreConsts::NodeKind_t CommentNodeImpl::getNodeKind() const
 {
   return StoreConsts::commentNode;
 }
 
 
-QNameItem_t CommentNodeNaive::getType() const
+QNameItem_t CommentNodeImpl::getType() const
 {
   return static_cast<SimpleStore*>(&Store::getInstance())->theUntypedAtomicType;
 }
 
 
-Iterator_t CommentNodeNaive::getTypedValue() const
+Iterator_t CommentNodeImpl::getTypedValue() const
 {
   const Item_t& item = zorba::getItemFactory()->createString(theContent);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
@@ -655,24 +682,24 @@ Iterator_t CommentNodeNaive::getTypedValue() const
 }
 
 
-Item_t CommentNodeNaive::getAtomizationValue() const
+Item_t CommentNodeImpl::getAtomizationValue() const
 {
   return zorba::getItemFactory()->createUntypedAtomic(theContent);
 }
 
-xqp_string CommentNodeNaive::getStringProperty() const
+xqp_string CommentNodeImpl::getStringProperty() const
 {
   return theContent;
 }
 
 
-xqp_string CommentNodeNaive::getStringValue() const
+xqp_string CommentNodeImpl::getStringValue() const
 {
   return theContent;
 }
 
 
-xqp_string CommentNodeNaive::show() const
+xqp_string CommentNodeImpl::show() const
 {
   return "<!--" + *theContent + "-->";
 }
@@ -694,26 +721,16 @@ Item_t ChildrenIterator::next()
 
   if (item->getParent() == NULL)
   {
-    static_cast<NodeNaive*>(item.get_ptr())->setParent(theParentNode.get_ptr());
+    static_cast<NodeImpl*>(item.get_ptr())->setParent(theParentNode.get_ptr());
 
     if (item->getNodeKind() == StoreConsts::elementNode &&
         theParentNode->getNodeKind() != StoreConsts::documentNode)
     {
       Assert(theParentNode->getNodeKind() == StoreConsts::elementNode);
 
-      ElementNodeNaive* child = static_cast<ElementNodeNaive*>(item.get_ptr());
+      ElementNodeImpl* child = static_cast<ElementNodeImpl*>(item.get_ptr());
 
-      NsBindingsContext_t nsCtx = child->getNsBindingsContext();
-
-      if (nsCtx == NULL)
-      {
-        child->setNsBindingsContext(theParentNode->getNsBindingsContext());
-      }
-      else
-      {
-        nsCtx->setParentContext(theParentNode->getNsBindingsContext());
-      }
-
+      child->setNsBindingsContext(theParentNode->getNsBindingsContext());
     }
   }
   else

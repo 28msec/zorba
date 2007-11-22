@@ -41,9 +41,9 @@ public:
         const char* pre,
         const char* ln);
 
-  virtual AnyUriItem_t createAnyURI(const xqpStringStore_t& value);
-  virtual AnyUriItem_t createAnyURI(const xqp_string& value);
-  virtual AnyUriItem_t createAnyURI(const char* value);
+  virtual Item_t createAnyURI(const xqpStringStore_t& value);
+  virtual Item_t createAnyURI(const xqp_string& value);
+  virtual Item_t createAnyURI(const char* value);
 
   virtual Item_t createUntypedAtomic(const xqpStringStore_t& value);
   virtual Item_t createUntypedAtomic(const xqp_string& value);

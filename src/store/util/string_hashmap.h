@@ -9,11 +9,14 @@ namespace xqp
 
   theNumEntries  : The total number of (string, value) pairs stored in the pool.
 
-  theHashTab     : The hash table. Each hash bucket consists of a list of hash
-                   entries, and each hash entry contains a (xqpStringStore_t, V)
-                   pair.
+  theHashTab     : The hash table. Implemented as a vector of hash entries,
+                   where each hash entry contains a (xqpStringStore_t, V) pair.
+                   Each entry between 0 and theHashTabSize - 1 is the head of
+                   a hash bucket (i.e., a list of hash entries whose values
+                   have the same hash value). 
   theHashTabSize : The number of hash buckets in theHashTab. 
-  theLoadFactor  :
+  theLoadFactor  : The max fraction of non-empty hash buckets after which
+                   the hash table is doubled in size.
 ********************************************************************************/
 template <class V>
 class StringHashMap
@@ -38,17 +41,17 @@ protected:
   };
 
 public:
-  static const xqp_ulong DEFAULT_MAP_SIZE = 128;
+  static const unsigned long DEFAULT_MAP_SIZE = 128;
 
 protected:
-  xqp_ulong               theNumEntries;
+  unsigned long           theNumEntries;
 
   std::vector<HashEntry>  theHashTab;
-  xqp_ulong               theHashTabSize;
+  unsigned long           theHashTabSize;
   float                   theLoadFactor;
 
 public:
-  StringHashMap(xqp_ulong size, float loadFactor);
+  StringHashMap(unsigned long size, float loadFactor);
 
   ~StringHashMap() { }
 
@@ -69,7 +72,7 @@ protected:
 
 ********************************************************************************/
 template <class V>
-  StringHashMap<V>::StringHashMap(xqp_ulong size, float loadFactor) 
+StringHashMap<V>::StringHashMap(unsigned long size, float loadFactor) 
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -293,7 +296,7 @@ void StringHashMap<V>::expand()
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  xqp_ulong oldsize = oldTab.size();
+  unsigned long oldsize = oldTab.size();
 
   theHashTabSize <<= 1;
 
@@ -306,7 +309,7 @@ void StringHashMap<V>::expand()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (xqp_ulong i = 0; i < oldsize; i++)
+  for (unsigned long i = 0; i < oldsize; i++)
   {
     entry = &theHashTab[oldTab[i].theString->hash() % theHashTabSize];
 
@@ -347,9 +350,9 @@ void StringHashMap<V>::clear()
 {
   HashEntry* entry;
 
-  xqp_ulong n = theHashTab.size();
+  unsigned long n = theHashTab.size();
 
-  for (xqp_ulong i = 0; i < n; i++)
+  for (unsigned long i = 0; i < n; i++)
   {
     entry = &theHashTab[i];
 
