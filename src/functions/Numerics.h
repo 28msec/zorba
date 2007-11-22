@@ -31,7 +31,6 @@ class zorba;
 class op_numeric_add : public function
 {
 public:
-	op_numeric_add() {}
 	op_numeric_add(const signature&);
 	~op_numeric_add() {}
 

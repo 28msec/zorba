@@ -15,6 +15,14 @@
 using namespace std;
 namespace xqp {
 
+  signature::signature (QNameItem_t name, TypeSystem::xqtref_t return_type,
+                        bool variadic, TypeSystem::xqtref_t arg1)
+    : signature_base (variadic),
+      qname_p(name)
+  {
+    argv.push_back(return_type);
+    argv.push_back(arg1);
+  }
 
 signature::signature(
 	QNameItem_t name,
@@ -92,12 +100,6 @@ signature::signature(
 
 signature::~signature()
 {
-}
-
-void signature::set_return_type(
-	TypeSystem::xqtref_t t)
-{
-	if (argv.size()>0) argv[0] = t; else argv.push_back(t);
 }
 
 

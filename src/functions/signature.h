@@ -32,14 +32,24 @@ class Item;
 	                ...       =  ...  
 
 ********************************************************************************/
-class signature : public rcobject
+  class signature_base: public rcobject {
+  protected:
+    bool variadic;
+  public:
+    signature_base () : variadic (false) {}
+    signature_base (bool _variadic) : variadic (_variadic) {}
+    bool is_variadic () const { return variadic; }
+  };
+
+class signature : public signature_base
 {
 public:
 	QNameItem_t qname_p;
 	std::vector<TypeSystem::xqtref_t> argv;
 
 public:
-	signature() {}
+  signature (QNameItem_t name, TypeSystem::xqtref_t return_type,
+             bool variadic, TypeSystem::xqtref_t arg1);
 	signature(QNameItem_t name,
 						TypeSystem::xqtref_t return_type);
 	signature(QNameItem_t name,
@@ -66,16 +76,15 @@ public:
 
 public:
 	const QNameItem_t& get_name() const            { return qname_p; }
-	void set_name(const QNameItem_t& name)         { qname_p = name; }
-	void add_arg(TypeSystem::xqtref_t t)                { argv.push_back(t); }
-	uint32_t arg_count() const                     { return argv.size() - 1; }
+	uint32_t arg_count() const {
+    return is_variadic () ? 1000 : argv.size() - 1;
+  }
 
-    TypeSystem::xqtref_t const& operator[](int i) const { return argv[i]; }
-    TypeSystem::xqtref_t & operator[](int i)            { return argv[i]; }
-    TypeSystem::xqtref_t const& return_type() const     { return argv[0]; }
-    TypeSystem::xqtref_t & return_type()                { return argv[0]; }
+  TypeSystem::xqtref_t const& operator[](int i) const { return argv[i]; }
+  TypeSystem::xqtref_t & operator[](int i)            { return argv[i]; }
+  TypeSystem::xqtref_t const& return_type() const     { return argv[0]; }
+  TypeSystem::xqtref_t & return_type()                { return argv[0]; }
 
-	void set_return_type(TypeSystem::xqtref_t t);
 };
 
 } /* namespace xqp */

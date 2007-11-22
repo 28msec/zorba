@@ -46,7 +46,6 @@ protected:
 	signature sig;
 	
 public:
-	function() {}
 	function(const signature& _sig) : sig(_sig) {}
 	virtual ~function() {}
 
