@@ -165,7 +165,7 @@ namespace xqp
     int32_t i1;
     bool found;
     bool empty;
-    int32_t compareResult;
+    int8_t compareResult;
   
     PlanIterator::PlanIteratorState* state;
     STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
@@ -325,9 +325,8 @@ namespace xqp
     
     return CompareIterator::valueComparison(item0, item1, aCompType);
   } /* end CompareIterator::generalComparison (...) */
-
-  bool
-  CompareIterator::valueComparison(Item_t item0, Item_t item1, CompareType aCompType)
+  
+  bool CompareIterator::valueComparison(Item_t item0, Item_t item1, CompareType aCompType)
   {
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
@@ -391,7 +390,7 @@ namespace xqp
     }
 
     // computation of result
-    int32_t compValue = -2;
+    int8_t compValue = -2;
     switch(aCompType)
     {
       case VALUE_EQUAL:
@@ -454,11 +453,11 @@ namespace xqp
     return false;
   } /* end CompareIterator::valueComparison (...) */
   
-  int32_t
+  int8_t
   CompareIterator::equal(const Item_t& item0, const Item_t& item1)
   {
     // tries first normal compare
-    int32_t compareRes = CompareIterator::compare(item0, item1);
+    int8_t compareRes = CompareIterator::compare(item0, item1);
     if (compareRes == 0)
       return 0;
     else if (compareRes == -1 || compareRes == 1)
@@ -480,12 +479,12 @@ namespace xqp
       return 1;
   }
   
-  int32_t 
+  int8_t 
   CompareIterator::compare(const Item_t& item0, const Item_t& item1)
   {
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
-    int32_t ret = -2;
+    int8_t ret = -2;
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
       if ( item0->getFloatValue() < item1->getFloatValue())

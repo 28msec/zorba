@@ -100,7 +100,7 @@ namespace xqp
 			 *				 	1, if item0 &gt; item1
 			 *				 -2, if it is not possible to compare the values the two passed items
 			 */
-			static int32_t compare(const Item_t& item0, const Item_t& item1);
+			static int8_t compare(const Item_t& item0, const Item_t& item1);
 			
 			/**
 			 * Checks if the two passed items contains the same value
@@ -110,8 +110,9 @@ namespace xqp
 			 *				  1, if item0 != item1
 			 *				 -2, if it is not possible to compare the values of the passed items
 			 */
-			static int32_t equal(const Item_t& item0, const Item_t& item1);
+			static int8_t equal(const Item_t& item0, const Item_t& item1);
 		private:
+      
 			/**
 			 * Value comparison of the passed two items with the operator 
 			 * which is defined in the CompareIterator object.
@@ -122,7 +123,7 @@ namespace xqp
 			 * @return 
 			 */
 			static bool valueComparison(Item_t item0, Item_t item1, CompareType aCompType);
-			
+      
 			/**
 			 * General comparison of the passed two items with the operator 
 			 * which is defined in the CompareIterator object.
