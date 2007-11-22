@@ -45,7 +45,7 @@ ElementIterator::nextImpl(PlanState& planState)
 	Iterator_t nwrapper;
 
   PlanIteratorState* state;
-  STACK_INIT2(PlanIteratorState, state, planState);
+  STACK_INIT(PlanIteratorState, state, planState);
 		
   if (theChildrenIter != NULL)
   {
@@ -75,9 +75,9 @@ ElementIterator::nextImpl(PlanState& planState)
 		           false,
 		           false).get_ptr();
 
-  STACK_PUSH2(item, state);
+  STACK_PUSH(item, state);
 		
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -186,7 +186,7 @@ Item_t
 ElementContentIterator::nextImpl(PlanState& planState)
 {
   ElementContentState* state;
-  STACK_INIT2(ElementContentState, state, planState);
+  STACK_INIT(ElementContentState, state, planState);
 
   while (true)
 	{
@@ -195,7 +195,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
 		{
       if (state->theString != "")
 			{
-        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
+        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
         state->theString = "";
       }
       break;
@@ -209,13 +209,13 @@ ElementContentIterator::nextImpl(PlanState& planState)
 		{
       if (state->theString != "")
 			{
-        STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
+        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
         state->theString = "";
       }
-      STACK_PUSH2(state->theContextItem, state);
+      STACK_PUSH(state->theContextItem, state);
     }
   }
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -285,7 +285,7 @@ AttributeIterator::nextImpl(PlanState& planState)
   bool concatenation = false;
 
   PlanIteratorState* state;
-  STACK_INIT2(PlanIteratorState, state, planState);
+  STACK_INIT(PlanIteratorState, state, planState);
 
   if ((itemFirst = consumeNext(theChild, planState)) != NULL)
 	{
@@ -322,8 +322,8 @@ AttributeIterator::nextImpl(PlanState& planState)
 		           itemLexical,
 		           itemTyped).get_ptr();
 
-  STACK_PUSH2(item, state);
-  STACK_END2();
+  STACK_PUSH(item, state);
+  STACK_END();
 }
 
 /*******************************************************************************
@@ -348,7 +348,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 	Iterator_t ewrapper;
 
   PlanIteratorState* state;
-  STACK_INIT2(PlanIteratorState, state, planState);
+  STACK_INIT(PlanIteratorState, state, planState);
 		
   if (theExpressionIter != NULL)
   {
@@ -366,9 +366,9 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 		           content,
 		           false).get_ptr();
 
-  STACK_PUSH2(item, state);
+  STACK_PUSH(item, state);
 		
-  STACK_END2();
+  STACK_END();
 }
 
 

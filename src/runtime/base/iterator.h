@@ -2,19 +2,19 @@
  *
  * @copyright
  * ========================================================================
- *	Copyright 2007 FLWOR Foundation
+ *  Copyright 2007 FLWOR Foundation
  *
- *	Licensed under the Apache License, Version 2.0 (the "License");
- *	you may not use this file except in compliance with the License.
- *	You may obtain a copy of the License at
- *	
- *		http://www.apache.org/licenses/LICENSE-2.0
- *	
- *	Unless required by applicable law or agreed to in writing, software
- *	distributed under the License is distributed on an "AS IS" BASIS,
- *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *	See the License for the specific language governing permissions and
- *	limitations under the License.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  * ========================================================================
  *
  * @author Tim Kraska (tim.kraska@inf.ethz.ch), David Graf (dagraf@inf.ethz.ch)
@@ -41,32 +41,27 @@
 //0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
 #define BATCHING_TYPE 0
 
-#define IT_INDENT			std::string(++iteratorTreeDepth, ' ')
-#define IT_DEPTH			std::string(iteratorTreeDepth, ' ')
-#define IT_OUTDENT		    std::string(iteratorTreeDepth--, ' ')
-
-// TODO These Macros have to be deleted
-// #define STACK_INIT() switch (this->current_line) { case 0:
-// #define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
-// #define STACK_END() } return NULL;
+#define IT_INDENT     std::string(++iteratorTreeDepth, ' ')
+#define IT_DEPTH      std::string(iteratorTreeDepth, ' ')
+#define IT_OUTDENT        std::string(iteratorTreeDepth--, ' ')
 
 /** Macros to automate Duff's Device and separation of code and execution 
-	* STACK_INIT:	- initializes Duff's Device and gets the state of the
-	*								current iterator from the state block
-	* STACK_PUSH: - returns the passed item and saves the current position
-	*								of the next functions
-	* STACK_END:	- ends the execution of the next function
-	* GET_STATE:	- specific function to load the state of the current iterator
-	*								from the state block
-	*/
-#define STACK_INIT2(stateType, stateObject, planState) \
-	GET_STATE(stateType, stateObject, planState); \
-	switch (stateObject->getDuffsLine()) { case 0: \
-	stateObject->init()
-#define STACK_PUSH2(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
-#define STACK_END2() } return NULL
+  * STACK_INIT: - initializes Duff's Device and gets the state of the
+  *               current iterator from the state block
+  * STACK_PUSH: - returns the passed item and saves the current position
+  *               of the next functions
+  * STACK_END:  - ends the execution of the next function
+  * GET_STATE:  - specific function to load the state of the current iterator
+  *               from the state block
+  */
+#define STACK_INIT(stateType, stateObject, planState) \
+  GET_STATE(stateType, stateObject, planState); \
+  switch (stateObject->getDuffsLine()) { case 0: \
+  stateObject->init()
+#define STACK_PUSH(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
+#define STACK_END() } return NULL
 #define GET_STATE(stateType, stateObject, planState) \
-	stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
+  stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
 
 namespace xqp {
 
@@ -91,164 +86,164 @@ extern int32_t iteratorTreeDepth;
 class PlanState
 {
 public:
-	int8_t* block;
+  int8_t* block;
 
-	int32_t		blockSize;
+  int32_t   blockSize;
 
-	// TODO what's that for?
-	//daniel: it provides quick access to thread specific storage; one important thing there is the error manager
-	zorba *zorp;
-	Zorba_XQueryBinary		*xqbinary;
+  // TODO what's that for?
+  //daniel: it provides quick access to thread specific storage; one important thing there is the error manager
+  zorba *zorp;
+  Zorba_XQueryBinary    *xqbinary;
 
-	PlanState(int32_t blockSize);
-	~PlanState();
+  PlanState(int32_t blockSize);
+  ~PlanState();
 
 };
 
 
 /**
   * Base class of all plan iterators.
-	*/
+  */
 class PlanIterator : public rcobject
 {
 protected:
-	/** offset of the state of the current iterator */
-	int32_t stateOffset;
-	
-	// TODO must be deleted. Is saved in state object.
-	int32_t current_line;
-	
+  /** offset of the state of the current iterator */
+  int32_t stateOffset;
+  
+  // TODO must be deleted. Is saved in state object.
+  int32_t current_line;
+  
 public:
-	yy::location loc;
-	
-#if BATCHING_TYPE == 1	
-	int32_t cItem;
-	Item_t batch [BATCHSIZE];
+  yy::location loc;
+  
+#if BATCHING_TYPE == 1  
+  int32_t cItem;
+  Item_t batch [BATCHSIZE];
 #endif
 
 public:
-	PlanIterator(yy::location _loc);
-	PlanIterator(const PlanIterator& it);
-	virtual ~PlanIterator();
+  PlanIterator(yy::location _loc);
+  PlanIterator(const PlanIterator& it);
+  virtual ~PlanIterator();
 
 public:
 
-	/** 
+  /** 
    * Produces an output item of the iterator. Implicitly, the first call 
-	 * of 'producNext' initializes the iterator and allocates resources 
-	 * (main memory, file descriptors, etc.). 
-	 *
-	 * @param stateBLock
-	 *
-	 * TODO must be pure virtual
-	 */
-	virtual Item_t produceNext(PlanState& planState);
+   * of 'producNext' initializes the iterator and allocates resources 
+   * (main memory, file descriptors, etc.). 
+   *
+   * @param stateBLock
+   *
+   * TODO must be pure virtual
+   */
+  virtual Item_t produceNext(PlanState& planState);
 
-	/** 
-	 * Restarts the iterator so that the next 'produceNext' call will start 
-	 * again from the beginning (should not release any resources).  
-	 *
-	 * @param stateBLock
-	 *
-	 * TODO must be pure virtual
-	 */
-	virtual void reset(PlanState& planState);
+  /** 
+   * Restarts the iterator so that the next 'produceNext' call will start 
+   * again from the beginning (should not release any resources).  
+   *
+   * @param stateBLock
+   *
+   * TODO must be pure virtual
+   */
+  virtual void reset(PlanState& planState);
 
-	/** 
-	 * Releases all resources of the iterator  
-	 *
-	 * @param stateBLock
-	 * 
-	 * TODO must be pure virtual
-	 */
-	virtual void releaseResources(PlanState& planState);
+  /** 
+   * Releases all resources of the iterator  
+   *
+   * @param stateBLock
+   * 
+   * TODO must be pure virtual
+   */
+  virtual void releaseResources(PlanState& planState);
 
-	/** Returns the size of the state which must be saved for the current iterator
-		* on the state block
-		*
-		* TODO must be pure virtual
-		*/
-	virtual int32_t getStateSize();
-	
-	/** Returns the size of the state for the current iterator 
-		* and all its sub-iterators.
-		*
-		* TODO must be pure virtual
-		*/
-	virtual int32_t getStateSizeOfSubtree();
-	
-	/** Sets the offset where the state of the iterator will be saved
-		* on the state stack.
+  /** Returns the size of the state which must be saved for the current iterator
+    * on the state block
     *
-		* TODO must be pure virtual
-		*/
-	virtual void setOffset(PlanState& planState, int32_t& offset);
+    * TODO must be pure virtual
+    */
+  virtual int32_t getStateSize();
+  
+  /** Returns the size of the state for the current iterator 
+    * and all its sub-iterators.
+    *
+    * TODO must be pure virtual
+    */
+  virtual int32_t getStateSizeOfSubtree();
+  
+  /** Sets the offset where the state of the iterator will be saved
+    * on the state stack.
+    *
+    * TODO must be pure virtual
+    */
+  virtual void setOffset(PlanState& planState, int32_t& offset);
 
-	std::ostream& show(std::ostream&);
-
-protected:
-	/** Root object of all iterator states */
-	class PlanIteratorState
-  {
-	private:
-		int32_t duffsLine;
-	public:
-		/** Initializes State Object for the current iterator.
-			* All sub-states have it invoke the init resources of their parent 
-			* to guarantee correct initialization.
-			*/
-		void init();
-
-		/** Resets State Object for the current iterator.
-			* All sub-states have it invoke the release reset of their parent 
-			* to guarantee correct reset handling.
-			*/
-		void reset();
-
-		/* Release resources is not needed in PlanIterator but might be need
-		 * from Iterators. If so, they must be implemented there and invoked from
-		 * releaseResourcesImpl from the corresponding iterator. If a state is a
-		 * sub-class of a state which contains releaseResources, it has to 
-		 * implement releaseResources too and has to invoke releaseResources
-		 * from the parent.
-		 */
-		
-		void setDuffsLine(int32_t);
-		int32_t getDuffsLine();
-	};
+  std::ostream& show(std::ostream&);
 
 protected:
-
-#if BATCHING_TYPE == 1	
-	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  /** Root object of all iterator states */
+  class PlanIteratorState
   {
-		if (subIter->cItem == BATCHSIZE) {
-			subIter->produceNext(planState);
-			subIter->cItem = 0;
-		}
-		return subIter->batch[subIter->cItem++];
-	}
+  private:
+    int32_t duffsLine;
+  public:
+    /** Initializes State Object for the current iterator.
+      * All sub-states have it invoke the init resources of their parent 
+      * to guarantee correct initialization.
+      */
+    void init();
+
+    /** Resets State Object for the current iterator.
+      * All sub-states have it invoke the release reset of their parent 
+      * to guarantee correct reset handling.
+      */
+    void reset();
+
+    /* Release resources is not needed in PlanIterator but might be need
+     * from Iterators. If so, they must be implemented there and invoked from
+     * releaseResourcesImpl from the corresponding iterator. If a state is a
+     * sub-class of a state which contains releaseResources, it has to 
+     * implement releaseResources too and has to invoke releaseResources
+     * from the parent.
+     */
+    
+    void setDuffsLine(int32_t);
+    int32_t getDuffsLine();
+  };
+
+protected:
+
+#if BATCHING_TYPE == 1  
+  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  {
+    if (subIter->cItem == BATCHSIZE) {
+      subIter->produceNext(planState);
+      subIter->cItem = 0;
+    }
+    return subIter->batch[subIter->cItem++];
+  }
 #else
-	inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
   {
-		return subIter->produceNext(planState);
-	}
+    return subIter->produceNext(planState);
+  }
 #endif
 
   inline void resetChild(PlanIter_t& subIterator, PlanState& planState)
   {
-		subIterator->reset(planState);
-	}
+    subIterator->reset(planState);
+  }
 
-	inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState)
+  inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState)
   {
-		subIterator->releaseResources(planState);
-	}
+    subIterator->releaseResources(planState);
+  }
 
-	virtual std::ostream& _show(std::ostream& os) const
+  virtual std::ostream& _show(std::ostream& os) const
   {
-		return os;
-	}
+    return os;
+  }
 };
 
 
@@ -259,54 +254,54 @@ template <class IterType>
 class Batcher: public PlanIterator
 {
 public:
-	Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
-	Batcher(yy::location _loc) : PlanIterator(_loc) {}
-	~Batcher() {}
+  Batcher(const Batcher<IterType>& b)  : PlanIterator(b) {}
+  Batcher(yy::location _loc) : PlanIterator(_loc) {}
+  ~Batcher() {}
 
 public:
-#if BATCHING_TYPE == 1	
-	void produceNext(PlanState& planState) 
+#if BATCHING_TYPE == 1  
+  void produceNext(PlanState& planState) 
   {
-		planState.zorp->current_iterator.push(this);
+    planState.zorp->current_iterator.push(this);
 
-		int32_t i = 0;
-		batch[0] = static_cast<IterType*>(this)->nextImpl();
-		while (i < BATCHSIZE && batch[i] != NULL) {
-			i++;
-			batch[i] = static_cast<IterType*>(this)->nextImpl();
-		}
+    int32_t i = 0;
+    batch[0] = static_cast<IterType*>(this)->nextImpl();
+    while (i < BATCHSIZE && batch[i] != NULL) {
+      i++;
+      batch[i] = static_cast<IterType*>(this)->nextImpl();
+    }
 
-		planState.zorp->current_iterator.pop();
-	}
+    planState.zorp->current_iterator.pop();
+  }
 #else
-	Item_t produceNext(PlanState& planState)
+  Item_t produceNext(PlanState& planState)
   {
-		///daniel: save the current iterator executed
-		Item_t	it;
-		planState.zorp->current_iterator.push(this);
+    ///daniel: save the current iterator executed
+    Item_t  it;
+    planState.zorp->current_iterator.push(this);
 
-		it = static_cast<IterType*>(this)->nextImpl(planState);
-	
-		planState.zorp->current_iterator.pop();
-		return it;
-	}
+    it = static_cast<IterType*>(this)->nextImpl(planState);
+  
+    planState.zorp->current_iterator.pop();
+    return it;
+  }
 #endif
 
-	void reset(PlanState& planState)
+  void reset(PlanState& planState)
   {
-		this->current_line = 0;
-		static_cast<IterType*>(this)->resetImpl(planState);
-	}
+    this->current_line = 0;
+    static_cast<IterType*>(this)->resetImpl(planState);
+  }
 
-	void releaseResources(PlanState& planState)
+  void releaseResources(PlanState& planState)
   {
-		static_cast<IterType*>(this)->releaseResourcesImpl(planState);
-	}
+    static_cast<IterType*>(this)->releaseResourcesImpl(planState);
+  }
 
 public:
-	inline Item_t nextImpl(PlanState& planState);
-	inline void resetImpl(PlanState& planState);
-	inline void releaseResourcesImpl(PlanState& planState);
+  inline Item_t nextImpl(PlanState& planState);
+  inline void resetImpl(PlanState& planState);
+  inline void releaseResourcesImpl(PlanState& planState);
 };
 
 
@@ -321,49 +316,49 @@ public:
 class PlanIterWrapper : public Iterator
 {
 private:
-	bool theAlienBlock;
-	PlanIter_t theIterator;
-	PlanState* theStateBlock;
-	
+  bool theAlienBlock;
+  PlanIter_t theIterator;
+  PlanState* theStateBlock;
+  
 public:
-	/** 
-	 * Constructor for IteratorWrapper which is used to generate the results
-	 * of a root operator.
-	 * 
-	 * @param iter root of evaluated iterator tree
-	 */
-	PlanIterWrapper(PlanIter_t& iter);
-	
-	/**
-	 * Constructor for IteratorWrapper which is used to generate the results
-	 * of an iterator which is not root => the state block handling, garbage
-	 * collection, etc. is already made by another IteratorWrapper.
-	 * 
-	 * @param iter 
-	 * @param planState 
-	 */
-	PlanIterWrapper(PlanIter_t& iter, PlanState& planState);
-	
-	/**
-	 * Deconstructor.
-	 */
-	~PlanIterWrapper();
-	
-	/**
+  /** 
+   * Constructor for IteratorWrapper which is used to generate the results
+   * of a root operator.
+   * 
+   * @param iter root of evaluated iterator tree
+   */
+  PlanIterWrapper(PlanIter_t& iter);
+  
+  /**
+   * Constructor for IteratorWrapper which is used to generate the results
+   * of an iterator which is not root => the state block handling, garbage
+   * collection, etc. is already made by another IteratorWrapper.
+   * 
+   * @param iter 
+   * @param planState 
+   */
+  PlanIterWrapper(PlanIter_t& iter, PlanState& planState);
+  
+  /**
+   * Deconstructor.
+   */
+  ~PlanIterWrapper();
+  
+  /**
    * Returns the next item of the PlanIter
    * @return item
    */
-	Item_t next();
-	
-	/**
-	 * Resets the contining PlanIter
-	 */
-	void reset();
-	
-	//TODO addReleaseResources!
+  Item_t next();
+  
+  /**
+   * Resets the contining PlanIter
+   */
+  void reset();
+  
+  //TODO addReleaseResources!
 };
 
 } /* namespace xqp */
 
-#endif	/* XQP_ITERATOR_H */
+#endif  /* XQP_ITERATOR_H */
 

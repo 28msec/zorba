@@ -379,7 +379,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
   Item_t attr;
 
   AttributeAxisState* state;
-  STACK_INIT2(AttributeAxisState, state, planState);
+  STACK_INIT(AttributeAxisState, state, planState);
 
   while (true)
   {
@@ -407,12 +407,12 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
 
     while (attr != NULL)
     {
-      STACK_PUSH2(attr, state);
+      STACK_PUSH(attr, state);
       attr = state->theAttributes->next();
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -509,7 +509,7 @@ void ParentAxisIterator::releaseResourcesImpl(PlanState& planState)
 Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
 {
   AncestorAxisState* state;
-  STACK_INIT2(AncestorAxisState, state, planState);
+  STACK_INIT(AncestorAxisState, state, planState);
 
   while (true)
   {
@@ -534,14 +534,14 @@ Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
       if (theNodeKind == StoreConsts::anyNode ||
           state->theCurrentAnc->getNodeKind() == theNodeKind)
       {
-        STACK_PUSH2(state->theCurrentAnc, state);
+        STACK_PUSH(state->theCurrentAnc, state);
       }
 
       state->theCurrentAnc = state->theCurrentAnc->getParent();
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -577,7 +577,7 @@ std::ostream& AncestorAxisIterator::_show(std::ostream& os)	const
 Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
 {
   AncestorSelfAxisState* state;
-  STACK_INIT2(AncestorSelfAxisState, state, planState);
+  STACK_INIT(AncestorSelfAxisState, state, planState);
 
   while (true)
   {
@@ -602,14 +602,14 @@ Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
       if (theNodeKind == StoreConsts::anyNode ||
           state->theCurrentAnc->getNodeKind() == theNodeKind)
       {
-        STACK_PUSH2(state->theCurrentAnc, state);
+        STACK_PUSH(state->theCurrentAnc, state);
       }
 
       state->theCurrentAnc = state->theCurrentAnc->getParent();
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -648,7 +648,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
   Item_t sibling;
 
   RSiblingAxisState* state;
-  STACK_INIT2(RSiblingAxisState, state, planState);
+  STACK_INIT(RSiblingAxisState, state, planState);
 
   while (true)
   {
@@ -686,14 +686,14 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
       if (theNodeKind == StoreConsts::anyNode ||
           sibling->getNodeKind() == theNodeKind)
       {
-        STACK_PUSH2(sibling, state);
+        STACK_PUSH(sibling, state);
       }
 
       sibling = state->theChildren->next();
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -738,7 +738,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
   Item_t sibling;
 
   LSiblingAxisState* state;
-  STACK_INIT2(LSiblingAxisState, state, planState);
+  STACK_INIT(LSiblingAxisState, state, planState);
 
   while (true)
   {
@@ -777,14 +777,14 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
 #ifdef DEBUG
         theLSibling = sibling;
 #endif
-        STACK_PUSH2(sibling, state);
+        STACK_PUSH(sibling, state);
       }
 
       sibling = state->theChildren->next();
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -828,7 +828,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
   Item_t child;
 
   ChildAxisState* state;
-  STACK_INIT2(ChildAxisState, state, planState);
+  STACK_INIT(ChildAxisState, state, planState);
 
   while (true)
   {
@@ -869,14 +869,14 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
       if (theNodeKind == StoreConsts::anyNode ||
           child->getNodeKind() == theNodeKind)
       {
-        STACK_PUSH2(child, state);
+        STACK_PUSH(child, state);
       }
 
       child = state->theChildren->next();
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -921,7 +921,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
   Iterator_t children;
 
   DescendantAxisState* state;
-  STACK_INIT2(DescendantAxisState, state, planState);
+  STACK_INIT(DescendantAxisState, state, planState);
 
   while (true)
   {
@@ -968,7 +968,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
         //MYTRACE("iter = " << this << " desc = [" << &*desc << " "
         //        << desc->getNodeName()->show() << "]");
 
-        STACK_PUSH2(desc, state);
+        STACK_PUSH(desc, state);
       }
 
       // The next descendant is the next child of the node N that is currently
@@ -988,7 +988,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -1048,7 +1048,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
   Item_t desc;
 
   DescendantSelfAxisState* state;
-  STACK_INIT2(DescendantSelfAxisState, state, planState);
+  STACK_INIT(DescendantSelfAxisState, state, planState);
 
   while (true)
   {
@@ -1085,7 +1085,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
       if (theNodeKind == StoreConsts::anyNode ||
           desc->getNodeKind() == theNodeKind)
       {
-        STACK_PUSH2(desc, state);
+        STACK_PUSH(desc, state);
       }
 
       // The next descendant is the next child of the node N that is currently
@@ -1105,7 +1105,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -1167,7 +1167,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
   Iterator_t children;
 
   PrecedingAxisState* state;
-  STACK_INIT2(PrecedingAxisState, state, planState);
+  STACK_INIT(PrecedingAxisState, state, planState);
 
   while (true)
   {
@@ -1221,7 +1221,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
         if (theNodeKind == StoreConsts::anyNode ||
             desc->getNodeKind() == theNodeKind)
         {
-          STACK_PUSH2(desc, state);
+          STACK_PUSH(desc, state);
         }
 
         desc = state->theCurrentPath.top().second->next();
@@ -1240,7 +1240,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 
@@ -1304,7 +1304,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
   Iterator_t children;
 
   FollowingAxisState* state;
-  STACK_INIT2(FollowingAxisState, state, planState);
+  STACK_INIT(FollowingAxisState, state, planState);
 
   while (true)
   {
@@ -1364,7 +1364,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
         if (theNodeKind == StoreConsts::anyNode ||
             following->getNodeKind() == theNodeKind)
         {
-          STACK_PUSH2(following, state);
+          STACK_PUSH(following, state);
         }
 
         following = state->theCurrentPath.top().second->next();
@@ -1382,7 +1382,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
     }
   }
 
-  STACK_END2();
+  STACK_END();
 }
 
 

@@ -40,9 +40,9 @@ namespace xqp
   Item_t SingletonIterator::nextImpl ( PlanState& planState )
   {
     PlanIteratorState* state;
-    STACK_INIT2 ( PlanIteratorState, state, planState );
-    STACK_PUSH2 ( i_h, state );
-    STACK_END2();
+    STACK_INIT ( PlanIteratorState, state, planState );
+    STACK_PUSH ( i_h, state );
+    STACK_END();
   }
 
   void SingletonIterator::resetImpl ( PlanState& planState )
@@ -89,7 +89,7 @@ namespace xqp
   Item_t EnclosedIterator::nextImpl ( PlanState& planState )
   {
     EnclosedState* state;
-    STACK_INIT2 ( EnclosedState, state, planState );
+    STACK_INIT ( EnclosedState, state, planState );
 
     while ( true )
     {
@@ -98,7 +98,7 @@ namespace xqp
       {
         if ( state->theString != "" )
         {
-          STACK_PUSH2 ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
+          STACK_PUSH ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
                         state );
           state->theString = "";
         }
@@ -108,11 +108,11 @@ namespace xqp
       {
         if ( state->theString != "" )
         {
-          STACK_PUSH2 ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
+          STACK_PUSH ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
                         state );
           state->theString = "";
         }
-        STACK_PUSH2 ( state->theContextItem, state );
+        STACK_PUSH ( state->theContextItem, state );
       }
       else if ( state->theString == "" )
       {
@@ -124,7 +124,7 @@ namespace xqp
                             + state->theContextItem->getStringProperty();
       }
     }
-    STACK_END2();
+    STACK_END();
   }
 
   void EnclosedIterator::resetImpl ( PlanState& planState )
@@ -176,7 +176,7 @@ namespace xqp
     Item_t condResult;
 
     IfThenElseIteratorState* state;
-    STACK_INIT2 ( IfThenElseIteratorState, state, planState );
+    STACK_INIT ( IfThenElseIteratorState, state, planState );
 
     if ( theIsBooleanIter )
       condResult = this->consumeNext ( theCondIter, planState );
@@ -191,7 +191,7 @@ namespace xqp
 
     while ( true )
     {
-      STACK_PUSH2 (
+      STACK_PUSH (
         this->consumeNext ( 
           (state->theThenUsed ? theThenIter : theElseIter), planState 
         ), 
@@ -199,7 +199,7 @@ namespace xqp
       );
     }
 
-    STACK_END2();
+    STACK_END();
   }
 
   void IfThenElseIterator::resetImpl ( PlanState& planState )
@@ -224,7 +224,10 @@ namespace xqp
     return sizeof(IfThenElseIteratorState);
   }
   int32_t IfThenElseIterator::getStateSizeOfSubtree() {
-    return getStateSize();
+    return getStateSize() 
+        + theCondIter->getStateSizeOfSubtree()
+        + theThenIter->getStateSizeOfSubtree()
+        + theElseIter->getStateSizeOfSubtree();
   }
   void IfThenElseIterator::setOffset ( PlanState& planState, int32_t& offset ) {
     this->stateOffset = offset;
@@ -309,7 +312,7 @@ namespace xqp
     PlanIteratorState* state;
     vector<string>::iterator iter;
     Item_t curItem;
-    STACK_INIT2 ( PlanIteratorState, state, planState );
+    STACK_INIT ( PlanIteratorState, state, planState );
     varBindingState = new int[forLetClauses.size() ];
     for ( xqp_uint i = 0; i < forLetClauses.size(); i++ )
     {
@@ -331,7 +334,7 @@ namespace xqp
           //FINISHED
           if ( curVar == -1 )
           {
-            STACK_PUSH2 ( NULL, state );
+            STACK_PUSH ( NULL, state );
             break;
             goto stop;
           }
@@ -350,7 +353,7 @@ namespace xqp
           }
           else
           {
-            STACK_PUSH2 ( curItem, state );
+            STACK_PUSH ( curItem, state );
           }
         }
       }
@@ -360,8 +363,8 @@ namespace xqp
       }
     }
   stop:
-    STACK_PUSH2 ( NULL, state );
-    STACK_END2();
+    STACK_PUSH ( NULL, state );
+    STACK_END();
   }
 
   bool FLWORIterator::evaluateWhereClause ( PlanState& planState )

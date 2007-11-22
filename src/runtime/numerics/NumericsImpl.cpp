@@ -276,7 +276,7 @@ namespace xqp
     TypeSystem::xqtref_t resultType;
 
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT2 ( PlanIterator::PlanIteratorState, state, planState );
+    STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
     n0 = this->consumeNext ( this->theChild0, planState );
     if ( n0 != NULL )
     {
@@ -316,10 +316,10 @@ namespace xqp
               false,
               "Arithmetic operation has a sequences greater than one as an operator!"
           );
-        STACK_PUSH2 ( res, state );
+        STACK_PUSH ( res, state );
       }
     }
-    STACK_END2();
+    STACK_END();
   }
 
   /* instantiate ArithmeticIterator for all types */
@@ -512,7 +512,7 @@ namespace xqp
     TypeSystem::xqtref_t type;
 
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT2 ( PlanIterator::PlanIteratorState, state, planState );
+    STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
     item = this->consumeNext ( theChild, planState );
     if ( item != NULL )
     {
@@ -557,9 +557,9 @@ namespace xqp
             false,
             "Arithmetic operation has a sequences greater than one as an operator!"
         );
-      STACK_PUSH2 ( res, state );
+      STACK_PUSH ( res, state );
     }
-    STACK_END2();
+    STACK_END();
   }
 
 
@@ -595,7 +595,7 @@ namespace xqp
 
     
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT2 ( PlanIterator::PlanIteratorState, state, planState );
+    STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
     item = this->consumeNext ( theChild, planState );
     if ( item != NULL )
     {
@@ -658,9 +658,9 @@ namespace xqp
             false,
             "Abs operation has a sequences greater than one as an operator!"
         );
-      STACK_PUSH2 ( res, state );
+      STACK_PUSH ( res, state );
     }
-    STACK_END2();
+    STACK_END();
   }
 
 
@@ -678,15 +678,15 @@ namespace xqp
     ZorNumGenState* state;
     GET_STATE ( ZorNumGenState, state, planState );
 
-    STACK_INIT2 ( ZorNumGenState, state, planState );
+    STACK_INIT ( ZorNumGenState, state, planState );
     while ( state->getCurNumber() < 100 )
     {
-      STACK_PUSH2 (
+      STACK_PUSH (
           zorba::getItemFactory()->createInteger ( state->getCurNumber() ),
           state );
       state->setCurNumber ( state->getCurNumber() + 1 );
     }
-    STACK_END2();
+    STACK_END();
   }
 
   void

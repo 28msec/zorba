@@ -2,7 +2,7 @@
  *
  *  $Id: collection.h,v 1.1 2007/08/27 07:07:59 $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *  Author: David Graf
  *
  */
@@ -18,25 +18,25 @@ FnDataIterator::nextImpl(PlanState& planState)
   PlanIter_t iter;
   
   FnDataIteratorState* lState;
-  STACK_INIT2(FnDataIteratorState, lState, planState);
+  STACK_INIT(FnDataIteratorState, lState, planState);
   
   while (true) {
     item = this->consumeNext( theChild, planState );
     if (item == NULL)
       break;
     lState->theTypedValue = item->getTypedValue();
-			
+      
     while (true) {
       item = lState->theTypedValue->next();
       if (item == NULL)
         break;
-      STACK_PUSH2( item, lState );
+      STACK_PUSH( item, lState );
     }
   }
   lState->theTypedValue = 0;
-  STACK_END2();
+  STACK_END();
 }
-	
+  
 void
 FnDataIterator::resetImpl(PlanState& aPlanState)
 {
@@ -45,7 +45,7 @@ FnDataIterator::resetImpl(PlanState& aPlanState)
   lState->reset();
   this->resetChild( theChild, aPlanState );
 }
-	
+  
 void
 FnDataIterator::releaseResourcesImpl(PlanState& planState)
 {
@@ -75,7 +75,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   Item_t parentNode;
 
   PlanIteratorState* lState;
-  STACK_INIT2(PlanIteratorState, lState, planState);
+  STACK_INIT(PlanIteratorState, lState, planState);
 
   contextNode = consumeNext(theChild, planState);
 
@@ -100,8 +100,8 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
     parentNode = parentNode->getParent();
   }
 
-  STACK_PUSH2(contextNode, lState);
-  STACK_END2();
+  STACK_PUSH(contextNode, lState);
+  STACK_END();
 }
 
 

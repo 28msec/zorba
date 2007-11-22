@@ -63,17 +63,17 @@ ConcatIterator::nextImpl(PlanState& planState) {
 	Item_t item;
 	
 	ConcatIteratorState* state;
-	STACK_INIT2(ConcatIteratorState, state, planState);
+	STACK_INIT(ConcatIteratorState, state, planState);
 	
 	for (; state->getCurIter() < int32_t(this->argv.size()); state->incCurIter()) {;
 		item = this->consumeNext(this->argv[state->getCurIter()], planState);
 		while (item != NULL) {
-			STACK_PUSH2 (item, state);
+			STACK_PUSH (item, state);
 			item = this->consumeNext(this->argv[state->getCurIter()], planState);
 		}
 	}
 	
-	STACK_END2();
+	STACK_END();
 }
 
 void 
