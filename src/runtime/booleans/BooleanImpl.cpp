@@ -21,16 +21,16 @@ namespace xqp
 	|
 	|	Computes the effective boolean value of the sequence $arg.
 	|_______________________________________________________________________*/
-	FnBooleanIterator::FnBooleanIterator ( const yy::location& loc, PlanIter_t& arg0, bool negate_arg )
+	FnBooleanIterator::FnBooleanIterator ( const yy::location& loc, PlanIter_t& aIter, bool aNegate )
 	:
-		Batcher<FnBooleanIterator> ( loc ), arg0_ ( arg0 ), negate ( negate_arg ) {}
+		UnaryBaseIterator<FnBooleanIterator> ( loc, aIter ), theNegate ( aNegate ) {}
 		
 	FnBooleanIterator::~FnBooleanIterator() {}
 			
 	std::ostream&
 	FnBooleanIterator::_show ( std::ostream& os ) const
 	{
-		this->arg0_->show ( os );
+		theChild->show ( os );
 		return os;
 	}
 
@@ -56,15 +56,20 @@ namespace xqp
 		}
 		else
 		{
-			type = GENV_TYPESYSTEM.create_type(item->getType(), TypeSystem::QUANT_ONE);
+      rchandle<QNameItem> lType = item->getType();
+      std::string str = lType->getLocalName();
+      str = lType->getPrefix();
+      str = lType->getNamespace();
+			type = GENV_TYPESYSTEM.create_type(lType, TypeSystem::QUANT_ONE);
+      bool res = GENV_TYPESYSTEM.is_numeric ( *type );
 			if (
 					// TODO produceNext must be replaced to allow batching
 			    ( iter->produceNext(planState) == NULL )
 			    &&
 			    ( GENV_TYPESYSTEM.is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
-			      || GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.STRING_TYPE_ONE, *type )
-			      || GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, *type )
-			      || GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type )
+             || GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE )
+             || GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE )
+             || GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE )
 			      || GENV_TYPESYSTEM.is_numeric ( *type )
 			    )
 			)
@@ -94,21 +99,13 @@ namespace xqp
 	Item_t
 	FnBooleanIterator::nextImpl(PlanState& planState)
 	{	
-		STACK_INIT();
-		STACK_PUSH ( FnBooleanIterator::effectiveBooleanValue ( this->loc, planState, this->arg0_, this->negate ) );
-		STACK_END();
-	}
-
-	void
-	FnBooleanIterator::resetImpl(PlanState& planState)
-	{
-		this->resetChild ( this->arg0_, planState );
-	}
-
-	void
-	FnBooleanIterator::releaseResourcesImpl(PlanState& planState)
-	{
-		this->releaseChildResources ( this->arg0_, planState);
+    PlanIterator::PlanIteratorState* aState;
+		STACK_INIT2(PlanIterator::PlanIteratorState, aState, planState);
+		STACK_PUSH2 ( 
+      FnBooleanIterator::effectiveBooleanValue ( this->loc, planState, theChild, theNegate ),
+      aState
+    );
+		STACK_END2();
 	}
 	/* end class FnBooleanIterator */
 	
@@ -157,11 +154,12 @@ namespace xqp
 	/* begin class ComparisonIterator */
 	CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, CompareType argCompType )
 	:
-		Batcher<CompareIterator> ( loc ), compareType(argCompType) 
+		BinaryBaseIterator<CompareIterator> ( loc, arg0, arg1 ), 
+    compareType(argCompType) 
 	{
 		this->genericCast = new GenericCast();
-		this->iter0 = new FnDataIterator ( loc, arg0 );
-		this->iter1 = new FnDataIterator ( loc, arg1 );
+		theChild0 = new FnDataIterator ( loc, arg0 );
+		theChild1 = new FnDataIterator ( loc, arg1 );
 	}
 	
 	CompareIterator::~CompareIterator()
@@ -169,91 +167,77 @@ namespace xqp
 		delete this->genericCast;
 	}
 	
-	Item_t
-	CompareIterator::nextImpl(PlanState& planState)
-	{
-		Item_t item0;
-		Item_t item1;
-		Iterator_t lIter0;
-		Iterator_t lIter1;
-		TempSeq_t temp0;
-		TempSeq_t temp1;
-		int32_t i0;
-		int32_t i1;
-		bool found;
-		bool empty;
-		int32_t compareResult;
-
-		STACK_INIT();
-
-		if (this->isGeneralComparison())
-		{
-			// TODO Optimizations for >, >=, < and <=
-			lIter0 = new PlanIterWrapper(this->iter0, planState);
-			lIter1 = new PlanIterWrapper(this->iter1, planState);
-			temp0 = zorba::getStore()->createTempSeq(lIter0);
-			temp1 = zorba::getStore()->createTempSeq(lIter1);
-			i0 = 1;
-			found = false;
-			while (!found && temp0->containsItem(i0))
-			{
-				i1 = 1;
-				while (!found && temp1->containsItem(i1))
-				{
-					if (CompareIterator::generalComparison(temp0->getItem( i0 ), temp1->getItem( i1 )))
-						found = true;
-					i1++;
-				}
-				i0++;
-			}
-
-			STACK_PUSH( zorba::getItemFactory()->createBoolean( found ) );
-		} /* if general comparison */
-		else if (this->isValueComparison())
-		{
-			if (( (item0 = this->consumeNext(this->iter0, planState)) != NULL ) 
-						&& ((item1 = this->consumeNext(this->iter1, planState))!=NULL))
-			{
-				STACK_PUSH( zorba::getItemFactory()->createBoolean( CompareIterator::valueComparison(item0, item1) ) );
-				if (this->consumeNext(this->iter0, planState) != NULL || this->consumeNext(this->iter1, planState) != NULL)
-				{
-					ZorbaErrorAlerts::error_alert (
-						error_messages::FOCH0004_Collation_does_not_support_collation_units,
-						error_messages::RUNTIME_ERROR,
-						&loc,
-						false,
-						"Value comparions must not be made with sequences with length greater 1!"
-					);
-				}
-			}
-		} /* if value comparison */
-		else if (this->isNodeComparison())
-		{
-			ZorbaErrorAlerts::error_alert (
-				error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
-				error_messages::RUNTIME_ERROR,
-				&loc,
-				false,
-				"Node comparison is not yet implemented!"
-			);
-		} /* if node comparison */
-		
-		STACK_END();
-	}
-
-	void
-	CompareIterator::resetImpl(PlanState& planState)
-	{
-		this->resetChild ( this->iter0, planState );
-		this->resetChild ( this->iter1, planState );
-	}
-
-	void
-	CompareIterator::releaseResourcesImpl(PlanState& planState)
-	{
-		this->releaseChildResources ( this->iter0, planState );
-		this->releaseChildResources ( this->iter1, planState );
-	}
+  Item_t
+  CompareIterator::nextImpl ( PlanState& planState )
+  {
+    Item_t item0;
+    Item_t item1;
+    Iterator_t lIter0;
+    Iterator_t lIter1;
+    TempSeq_t temp0;
+    TempSeq_t temp1;
+    int32_t i0;
+    int32_t i1;
+    bool found;
+    bool empty;
+    int32_t compareResult;
+  
+    STACK_INIT();
+  
+    if ( this->isGeneralComparison() )
+    {
+      // TODO Optimizations for >, >=, < and <=
+      lIter0 = new PlanIterWrapper ( theChild0, planState );
+      lIter1 = new PlanIterWrapper ( theChild1, planState );
+      temp0 = zorba::getStore()->createTempSeq ( lIter0 );
+      temp1 = zorba::getStore()->createTempSeq ( lIter1 );
+      i0 = 1;
+      found = false;
+      while ( !found && temp0->containsItem ( i0 ) )
+      {
+        i1 = 1;
+        while ( !found && temp1->containsItem ( i1 ) )
+        {
+          if ( CompareIterator::generalComparison ( temp0->getItem ( i0 ), temp1->getItem ( i1 ) ) )
+            found = true;
+          i1++;
+        }
+        i0++;
+      }
+  
+      STACK_PUSH ( zorba::getItemFactory()->createBoolean ( found ) );
+    } /* if general comparison */
+    else if ( this->isValueComparison() )
+    {
+      if ( ( ( item0 = this->consumeNext ( theChild0, planState ) ) != NULL )
+              && ( ( item1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
+      {
+        STACK_PUSH ( zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( item0, item1 ) ) );
+        if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
+        {
+          ZorbaErrorAlerts::error_alert (
+              error_messages::FOCH0004_Collation_does_not_support_collation_units,
+              error_messages::RUNTIME_ERROR,
+              &loc,
+              false,
+              "Value comparions must not be made with sequences with length greater 1!"
+          );
+        }
+      }
+    } /* if value comparison */
+    else if ( this->isNodeComparison() )
+    {
+      ZorbaErrorAlerts::error_alert (
+          error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+          error_messages::RUNTIME_ERROR,
+          &loc,
+          false,
+          "Node comparison is not yet implemented!"
+      );
+    } /* if node comparison */
+  
+    STACK_END();
+  }
 	
 	bool 
 	CompareIterator::isValueComparison()
@@ -319,15 +303,15 @@ namespace xqp
 	{
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
-        if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type0))
+        if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
 		{
 			if (GENV_TYPESYSTEM.is_numeric(*type1))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
-			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type1)
-                || GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type1))
+      else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+               || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
@@ -339,15 +323,15 @@ namespace xqp
 			}
 		}
 		
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type1))
+    if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
 		{
 			if (GENV_TYPESYSTEM.is_numeric(*type0))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
-			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type0)
-                    || GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type0))
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+               || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
@@ -368,12 +352,12 @@ namespace xqp
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
 		// all untyped Atomics to String
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type0))
+        if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
 		{
 			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item0 = this->genericCast->cast(item0);
 		}
-		if  (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *type1))
+    if  (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
 		{
 			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item1 = this->genericCast->cast(item1);
@@ -381,56 +365,56 @@ namespace xqp
 		
 		// TYPE PROMOTION
 		// numeric promotion
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type0)) {
-			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type1))
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+      if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
 		}
-		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type0))
+    else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
 		{
-			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type1))
+      if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
-			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type1))
+      else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item1 = this->genericCast->cast(item1);
 			}
 		}
 		
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type1)) {
-			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type0))
+    if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
+      if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
 		}
-		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type1))
+    else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
 		{
-			if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type0))
+      if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
-			else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type0))
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
 			{
 				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 				item0 = this->genericCast->cast(item0);
 			}
 		}
 		// uri promotion
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type0)
-				&& GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, *type1))
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
 		{
 			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item1 = this->genericCast->cast(item1);
 		}
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type1)
-				&& GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE, *type0)) 
+    if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
 		{
 			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			item0 = this->genericCast->cast(item0);
@@ -513,8 +497,8 @@ namespace xqp
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
 		bool equal;
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE, *type0)
-            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE, *type1))
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
 				equal = item0->equals(item1);
 		// TODO the rest
 		else
@@ -532,32 +516,32 @@ namespace xqp
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
 		int32_t ret = -2;
-		if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type0)
-            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *type1))
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
 			if ( item0->getFloatValue() < item1->getFloatValue())
 				ret = -1;
 			else if ( item0->getFloatValue() == item1->getFloatValue())
 				ret = 0;
 			else
 				ret = 1;
-		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type0)
-            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *type1))
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
+               && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
 			if ( item0->getDoubleValue() < item1->getDoubleValue())
 				ret = -1;
 			else if ( item0->getDoubleValue() == item1->getDoubleValue())
 				ret = 0;
 			else
 				ret = 1;
-		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type0)
-            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *type1))
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
+               && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			if ( item0->getDecimalValue() < item1->getDecimalValue())
 				ret = -1;
 			else if ( item0->getDecimalValue() == item1->getDecimalValue())
 				ret = 0;
 			else
 				ret = 1;
-		else if (GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type0)
-            && GENV_TYPESYSTEM.is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *type1))
+      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
+               && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
 			if ( item0->getStringValue() < item1->getStringValue())
 				ret = -1;
 			else if ( item0->getStringValue() == item1->getStringValue())

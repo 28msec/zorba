@@ -13,46 +13,50 @@
 #include "context/common.h"
 #include "functions/function.h"
 #include "runtime/base/iterator.h"
+#include "runtime/base/unarybase.h"
 
 namespace xqp {
 
-class FnDataIterator : public Batcher<FnDataIterator>
+  class FnDataIterator : public Batcher<FnDataIterator>
 {
 private:
-  PlanIter_t argument;
+  PlanIter_t theChild;
 		
   // used to save the current typed value in the nextImpl method
-  Iterator_t curTypedValue;
+//   Iterator_t curTypedValue;
 	
 public:
-  FnDataIterator ( const yy::location& loc, PlanIter_t& arg0 )
+  FnDataIterator ( const yy::location& loc, PlanIter_t& aChild )
 		:
-		Batcher<FnDataIterator> ( loc ), argument(arg0) {}
-    ~FnDataIterator() {}
+		Batcher<FnDataIterator> ( loc ), theChild(aChild) {}
+    virtual ~FnDataIterator() {}
 		
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
+  
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
+  virtual void setOffset(PlanState& aPlanState, int32_t& aOffset);
+  
+  protected:
+    class FnDataIteratorState : public PlanIteratorState {
+      public:
+        Iterator_t theTypedValue;
+    };
 }; /* class FnDateIterator */
 
 
 
-class FnRootIterator : public Batcher<FnRootIterator>
+class FnRootIterator : public UnaryBaseIterator<FnRootIterator>
 {
-private:
-  PlanIter_t theInput;
-		
 public:
-  FnRootIterator(const yy::location& loc, PlanIter_t& input)
+  FnRootIterator(const yy::location& loc, PlanIter_t& theIter)
 		:
-		Batcher<FnRootIterator>(loc), theInput(input) {}
-    ~FnRootIterator() {}
+		UnaryBaseIterator<FnRootIterator>(loc, theIter) {}
+    virtual ~FnRootIterator() {}
 		
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  std::ostream& _show(std::ostream& os)	const;
 };
 
 

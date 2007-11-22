@@ -16,45 +16,64 @@ FnDataIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
   PlanIter_t iter;
-		
-  STACK_INIT();
+  
+  FnDataIteratorState* lState;
+  STACK_INIT2(FnDataIteratorState, lState, planState);
+  
   while (true) {
-    item = this->consumeNext( this->argument, planState );
+    item = this->consumeNext( theChild, planState );
     if (item == NULL)
       break;
-    this->curTypedValue = item->getTypedValue();
+    lState->theTypedValue = item->getTypedValue();
 			
     while (true) {
-      item = this->curTypedValue->next();
+      item = lState->theTypedValue->next();
       if (item == NULL)
         break;
-      STACK_PUSH( item );
+      STACK_PUSH2( item, lState );
     }
   }
-  STACK_END();
+  STACK_END2();
 }
 	
 void
-FnDataIterator::resetImpl(PlanState& planState)
+FnDataIterator::resetImpl(PlanState& aPlanState)
 {
-  this->resetChild( this->argument, planState );
+  FnDataIteratorState* lState;
+  GET_STATE(FnDataIteratorState, lState, aPlanState);
+  lState->reset();
+  this->resetChild( theChild, aPlanState );
 }
 	
 void
 FnDataIterator::releaseResourcesImpl(PlanState& planState)
 {
-  this->releaseChildResources( this->argument, planState );
+  this->releaseChildResources( theChild, planState );
 }
 
+int32_t FnDataIterator::getStateSize() {
+  return sizeof(FnDataIteratorState);
+}
+
+int32_t FnDataIterator::getStateSizeOfSubtree() {
+  return getStateSize() + theChild->getStateSizeOfSubtree();
+}
+
+void FnDataIterator::setOffset(PlanState& aPlanState, int32_t& aOffset) {
+  this->stateOffset = aOffset;
+  aOffset += getStateSize();
+  theChild->setOffset(aPlanState, aOffset);
+}
 
 Item_t FnRootIterator::nextImpl(PlanState& planState)
 {
   Item_t contextNode;
   Item_t parentNode;
 
-  STACK_INIT();
+  PlanIteratorState* lState;
+  STACK_INIT2(PlanIteratorState, lState, planState);
 
-  contextNode = consumeNext(theInput, planState);
+  contextNode = consumeNext(theChild, planState);
 
   if (contextNode == NULL)
     return NULL;
@@ -77,27 +96,8 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
     parentNode = parentNode->getParent();
   }
 
-  STACK_PUSH(contextNode);
-  STACK_END();
-}
-
-
-void FnRootIterator::resetImpl(PlanState& planState)
-{
-  resetChild(theInput, planState);
-}
-
-	
-void FnRootIterator::releaseResourcesImpl(PlanState& planState)
-{
-  releaseChildResources(theInput, planState);
-}
-
-
-std::ostream& FnRootIterator::_show(std::ostream& os)	const
-{
-  theInput->show(os);
-  return os;
+  STACK_PUSH2(contextNode, lState);
+  STACK_END2();
 }
 
 

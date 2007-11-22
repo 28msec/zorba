@@ -8,7 +8,8 @@
 
 #include "context/common.h"
 #include "types/typesystem.h"
-#include "runtime/base/iterator.h"
+#include "runtime/base/binarybase.h"
+#include "runtime/base/unarybase.h"
 
 namespace xqp
 {
@@ -23,15 +24,14 @@ namespace xqp
 	|
 	|	Computes the effective boolean value of the sequence $arg.
 	|_______________________________________________________________________*/
-	class FnBooleanIterator : public Batcher<FnBooleanIterator>
+	class FnBooleanIterator : public UnaryBaseIterator<FnBooleanIterator>
 	{
 		private:
-			PlanIter_t arg0_;
-			bool negate;
+			bool theNegate;
 
 		public:
-			FnBooleanIterator ( const yy::location& loc, PlanIter_t& arg0, bool negate_arg = false );
-			~FnBooleanIterator();
+			FnBooleanIterator ( const yy::location& loc, PlanIter_t& aIter, bool aNegate = false );
+			virtual ~FnBooleanIterator();
 
 			/**
 			 * Static function which computes the effective boolean value of a passed iterator.
@@ -45,8 +45,6 @@ namespace xqp
 			static Item_t effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t&, bool negate = false);
 
 			Item_t nextImpl(PlanState& planState);
-			void resetImpl(PlanState& planState);
-			void releaseResourcesImpl(PlanState& planState);
 
 			std::ostream&  _show ( std::ostream& ) const;
 	};
@@ -73,7 +71,7 @@ namespace xqp
 			void releaseResourcesImpl(PlanState& planState);
 	}; /* class LogicIterator */
 	
-	class CompareIterator : public Batcher<CompareIterator>
+  class CompareIterator : public BinaryBaseIterator<CompareIterator>
 	{
 		public:
 			enum CompareType{
@@ -86,9 +84,6 @@ namespace xqp
 			};
 			
 		private:
-			PlanIter_t iter0;
-			PlanIter_t iter1;
-			
 			GenericCast* genericCast;
 			CompareType compareType;
 
@@ -97,8 +92,6 @@ namespace xqp
 			~CompareIterator();
 
 			Item_t nextImpl(PlanState& planState);
-			void resetImpl(PlanState& planState);
-			void releaseResourcesImpl(PlanState& planState);
 			
 			bool isValueComparison();
 			bool isGeneralComparison();
