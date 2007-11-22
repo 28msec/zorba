@@ -366,9 +366,9 @@ bool TypeSystem::is_simple(const XQType& type) const
 
 bool TypeSystem::is_numeric(const XQType& type) const
 {
-  return is_subtype(*DOUBLE_TYPE_ONE, type)
-    || is_subtype(*FLOAT_TYPE_ONE, type)
-    || is_subtype(*DECIMAL_TYPE_ONE, type);
+  return is_subtype(type, *DOUBLE_TYPE_ONE)
+    || is_subtype(type, *FLOAT_TYPE_ONE)
+    || is_subtype(type, *DECIMAL_TYPE_ONE);
 }
 
 TypeSystem::atomic_type_code_t TypeSystem::get_atomic_type_code(const XQType& type) const
