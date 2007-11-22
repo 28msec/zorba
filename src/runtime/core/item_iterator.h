@@ -328,6 +328,7 @@ public:
 private:
 	void resetInput(int varNb, PlanState& planState);
 	bool bindVariable(int varNb, PlanState& planState);
+	bool evaluateWhereClause(PlanState& planState);
 };
 
 }	/* namespace xqp */

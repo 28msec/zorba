@@ -258,20 +258,39 @@ Item_t FLWORIterator::nextImpl(PlanState& planState) {
 				}
 			}
 		}
-		while(true){
-			curItem = this->consumeNext(returnClause, planState);
-			if(curItem == NULL){
-				curVar = bindingsNb - 1;
-				this->resetChild(returnClause, planState);
-				break;
-			}else{
-				STACK_PUSH2(curItem, state);
-			}
-		}
+    curVar = bindingsNb - 1;
+    if(evaluateWhereClause(planState)){
+		  while(true){
+			  curItem = this->consumeNext(returnClause, planState);
+			  if(curItem == NULL){
+				  this->resetChild(returnClause, planState);
+				  break;
+			  }else{
+				  STACK_PUSH2(curItem, state);
+			  }
+		  }
+    }
 	}
 stop:
 	STACK_PUSH2(NULL, state);
 	STACK_END2();
+}
+
+bool FLWORIterator::evaluateWhereClause(PlanState& planState){
+	if(whereClause == NULL){
+		return true;
+	}
+	if(whereClauseReturnsBooleanPlus){
+		Item_t boolValue = this->consumeNext(whereClause, planState);
+		if(boolValue == NULL){
+			return false;			
+		}
+    bool value = boolValue->getBooleanValue();
+    return value;
+	}
+  Item_t item = FnBooleanIterator::effectiveBooleanValue(loc, planState, whereClause);
+  this->resetChild(whereClause, planState);
+  return item->getBooleanValue();
 }
 
 void FLWORIterator::resetInput(int varNb, PlanState& planState){
@@ -382,7 +401,10 @@ std::ostream& FLWORIterator::_show(std::ostream& os) const {
 	for (iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++) {
 		iter->show(os);
 	}
-
+  if(whereClause != NULL){
+    whereClause->show(os);
+  }
+  returnClause->show(os);
 	return os;
 }
 
