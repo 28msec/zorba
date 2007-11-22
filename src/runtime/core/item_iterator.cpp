@@ -258,17 +258,19 @@ Item_t FLWORIterator::nextImpl(PlanState& planState) {
 				}
 			}
 		}
-    curVar = bindingsNb - 1;
     if(evaluateWhereClause(planState)){
 		  while(true){
 			  curItem = this->consumeNext(returnClause, planState);
 			  if(curItem == NULL){
+				  curVar = bindingsNb - 1;
 				  this->resetChild(returnClause, planState);
 				  break;
 			  }else{
 				  STACK_PUSH2(curItem, state);
 			  }
 		  }
+    }else{
+      curVar = bindingsNb - 1;
     }
 	}
 stop:
