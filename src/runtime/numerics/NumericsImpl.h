@@ -23,6 +23,7 @@
 #include "context/common.h"
 #include "runtime/base/iterator.h"
 #include "runtime/base/binarybase.h"
+#include "runtime/base/unarybase.h"
 
 namespace xqp
 {
@@ -102,8 +103,6 @@ namespace xqp
 	template < typename Operations >
 	class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations> >
 	{
-		private:
-			GenericCast* genericCast;
 		public:
 			ArithmeticIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
 			~ArithmeticIterator();
@@ -148,22 +147,17 @@ namespace xqp
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
-	class OpNumericUnaryIterator : public Batcher<OpNumericUnaryIterator>
+	class OpNumericUnaryIterator : public UnaryBaseIterator<OpNumericUnaryIterator>
 	{
 		private:
-			PlanIter_t arg0;
-			GenericCast* genericCast;
-			bool plus;
+			bool thePlus;
 
 		public:
-			OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& iter, bool plus_arg);
-			~OpNumericUnaryIterator();
+			OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& aChild, bool aPlus);
+			virtual ~OpNumericUnaryIterator();
 
 		public:	// iterator interface
 			Item_t nextImpl(PlanState& planState);
-			void resetImpl(PlanState& planState);
-			void releaseResourcesImpl(PlanState& planState);
-			std::ostream&  _show ( std::ostream& ) const;
 	};
 
 
@@ -187,21 +181,14 @@ namespace xqp
 	|_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-	class FnAbsIterator : public Batcher<FnAbsIterator>
+	class FnAbsIterator : public UnaryBaseIterator<FnAbsIterator>
 	{
-		private:
-			PlanIter_t arg0;
-			GenericCast* genericCast;
-
-		public:
-			FnAbsIterator ( const yy::location& loc, PlanIter_t& iter );
-			~FnAbsIterator();
+  	public:
+			FnAbsIterator ( const yy::location& loc, PlanIter_t& theChild );
+			virtual ~FnAbsIterator();
 
 		public:
 			Item_t nextImpl(PlanState& planState);
-			void resetImpl(PlanState& planState);
-			void releaseResourcesImpl(PlanState& planState);
-			std::ostream&  _show ( std::ostream& ) const;
 	};
 
 // 6.4.2 fn:ceiling

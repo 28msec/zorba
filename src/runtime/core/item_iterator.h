@@ -184,13 +184,10 @@ public:
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {
 private:
-  PlanIter_t iterCond;
-  PlanIter_t iterThen;
-  PlanIter_t iterElse;
-  bool condIsBooleanIter;
-		
-  // helping member so save the active iterator (then or else)
-  PlanIter_t iterActive;
+  PlanIter_t theCondIter;
+  PlanIter_t theThenIter;
+  PlanIter_t theElseIter;
+  bool theIsBooleanIter;
 		
 public:
   /**
@@ -206,14 +203,26 @@ public:
    */
   IfThenElseIterator(
         const yy::location& loc,
-        PlanIter_t& iterCond_arg,
-        PlanIter_t& iterThen_arg,
-        PlanIter_t& iterElse_arg,
-        bool condIsBooleanIter_arg = false);
+        PlanIter_t& aCondIter,
+        PlanIter_t& aThenIter,
+        PlanIter_t& aElseIter,
+        bool aIsBooleanIter = false);
 		
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
+  
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
+  virtual void setOffset ( PlanState& planState, int32_t& offset );
+      
+  virtual std::ostream& _show ( std::ostream& os ) const;
+  
+  protected:
+    class IfThenElseIteratorState : public PlanIteratorState {
+      public:
+        bool theThenUsed;
+    };
 }; /* class IfThenElseIterator */
 
 

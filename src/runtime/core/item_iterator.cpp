@@ -16,399 +16,512 @@
 #include "runtime/booleans/BooleanImpl.h"
 
 using namespace std;
-namespace xqp {
+namespace xqp
+{
 
-/* begin class EmptyIterator */
-void EmptyIterator::setOffset(PlanState& planState, int32_t& offset) {
-	this->stateOffset = offset;
-	offset += this->getStateSize();
-}
-/* end class EmptyIterator */
-
-/* begin class SingletonIterator */
-SingletonIterator::SingletonIterator(yy::location loc, Item_t _i_p) :
-	Batcher<SingletonIterator>(loc), i_h(_i_p) {
-}
-
-SingletonIterator::~SingletonIterator() {
-}
-
-Item_t SingletonIterator::nextImpl(PlanState& planState) {
-	PlanIteratorState* state;
-	STACK_INIT2(PlanIteratorState, state, planState);
-	STACK_PUSH2(i_h, state);
-	STACK_END2();
-}
-
-void SingletonIterator::resetImpl(PlanState& planState) {
-	PlanIterator::PlanIteratorState* state;
-	GET_STATE(PlanIteratorState, state, planState);
-	state->reset();
-}
-
-void SingletonIterator::releaseResourcesImpl(PlanState& planState) {
-}
-
-std::ostream& SingletonIterator::_show(std::ostream& os) const {
-	return os;
-}
-
-int32_t SingletonIterator::getStateSize() {
-	return sizeof(PlanIterator::PlanIteratorState);
-}
-
-int32_t SingletonIterator::getStateSizeOfSubtree() {
-	return this->getStateSize();
-}
-
-void SingletonIterator::setOffset(PlanState& planState, int32_t& offset) {
-	this->stateOffset = offset;
-	offset += this->getStateSize();
-}
-/* end class SingletonIterator */
-
-
-/* begin class EnclosedIterator */
-EnclosedIterator::EnclosedIterator(const yy::location& loc,
-		PlanIter_t& childIter) :
-	UnaryBaseIterator<EnclosedIterator>(loc, childIter) {
-}
-
-Item_t EnclosedIterator::nextImpl(PlanState& planState) {
-	EnclosedState* state;
-	STACK_INIT2(EnclosedState, state, planState);
-
-	while ( true) {
-		state->theContextItem = consumeNext(theChild, planState);
-		if (state->theContextItem == NULL) {
-			if (state->theString != "") {
-				STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(),
-                    state);
-				state->theString = "";
-			}
-			break;
-		} else if (state->theContextItem->isNode() ) {
-			if (state->theString != "") {
-				STACK_PUSH2(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(),
-                    state);
-				state->theString = "";
-			}
-			STACK_PUSH2(state->theContextItem, state);
-		} else if (state->theString == "") {
-			state->theString = state->theContextItem->getStringProperty();
-		} else {
-			state->theString += " "
-					+ state->theContextItem->getStringProperty();
-		}
-	}
-	STACK_END2();
-}
-
-void EnclosedIterator::resetImpl(PlanState& planState) {
-	UnaryBaseIterator<EnclosedIterator>::resetImpl(planState);
-
-	EnclosedState* state;
-	GET_STATE(EnclosedState, state, planState);
-	state->theString = "";
-}
-
-void EnclosedIterator::releaseResourcesImpl(PlanState& planState) {
-	UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl(planState);
-
-	EnclosedState* state;
-	GET_STATE(EnclosedState, state, planState);
-	state->theContextItem = NULL;
-	state->theString.clear();
-}
-
-void EnclosedIterator::setOffset(PlanState& planState, int32_t& offset) {
-	UnaryBaseIterator<EnclosedIterator>::setOffset(planState, offset);
-
-	EnclosedState* state = new ( planState.block + stateOffset ) EnclosedState;
-}
-
-void EnclosedIterator::EnclosedState::init() {
-	PlanIterator::PlanIteratorState::init();
-	theString = "";
-}
-
-/* end class EnclosedIterator */
-
-/* start class IfThenElseIterator */
-IfThenElseIterator::IfThenElseIterator(const yy::location& loc,
-		PlanIter_t& iterCond_arg, PlanIter_t& iterThen_arg,
-		PlanIter_t& iterElse_arg, bool condIsBooleanIter_arg) :
-	Batcher<IfThenElseIterator>(loc), iterCond(iterCond_arg),
-			iterThen(iterThen_arg), iterElse(iterElse_arg),
-			condIsBooleanIter(condIsBooleanIter_arg) {
-}
-
-Item_t IfThenElseIterator::nextImpl(PlanState& planState) {
-	Item_t condResult;
-
-	STACK_INIT();
-
-	if (this->condIsBooleanIter)
-		condResult = this->consumeNext(this->iterCond, planState);
-	else
-		condResult = FnBooleanIterator::effectiveBooleanValue(this->loc,
-				planState, this->iterCond);
-
-	if (condResult->getBooleanValue() )
-		this->iterActive = this->iterThen;
-	else
-		this->iterActive = this->iterElse;
-
-	while ( true) {
-		STACK_PUSH(this->consumeNext(this->iterActive, planState) );
-	}
-
-	STACK_END();
-}
-
-void IfThenElseIterator::resetImpl(PlanState& planState) {
-	this->resetChild(this->iterCond, planState);
-	this->resetChild(this->iterThen, planState);
-	this->resetChild(this->iterElse, planState);
-}
-
-void IfThenElseIterator::releaseResourcesImpl(PlanState& planState) {
-	this->releaseChildResources(this->iterCond, planState);
-	this->releaseChildResources(this->iterThen, planState);
-	this->releaseChildResources(this->iterElse, planState);
-}
-
-FLWORIterator::ForLetClause::ForLetClause(std::vector<var_iter_t> aForVars,
-		PlanIter_t& aInput) :
-	type(FOR), forVars(aForVars), input(aInput) {
-}
-FLWORIterator::ForLetClause::ForLetClause(std::vector<var_iter_t> aForVars,
-		std::vector<var_iter_t> aPosVars, PlanIter_t& aInput) :
-	type(FOR), forVars(aForVars), posVars(aPosVars), input(aInput) {
-}
-
-FLWORIterator::ForLetClause::ForLetClause(std::vector<ref_iter_t> aLetVars,
-		PlanIter_t& aInput, bool aNeedsMaterialization) :
-	type(LET), letVars(aLetVars), input(aInput),
-			needsMaterialization(aNeedsMaterialization) {
-}
-
-std::ostream& FLWORIterator::ForLetClause::show(std::ostream& os) const {
-	switch (type) {
-	case FOR:
-		os << IT_DEPTH << "<for_clause varRefNB=\""<< forVars.size() << "\" posRefNb=\"" << posVars.size() << "\"" << std::endl;
-		input->show(os);
-		os << IT_DEPTH << "</for_clause>" << std::endl;
-		break;
-	case LET:
-		os << IT_DEPTH << "<let_clause refNb=\"" << letVars.size() << "\">" << std::endl;
-		input->show(os);
-		os << IT_DEPTH << "</let_clause>" << std::endl;
-		break;
-	default:
-		assert( false);
-
-	}
-	return os;
-}
-
-FLWORIterator::OrderSpec::OrderSpec(PlanIter_t orderByIter, bool empty_least,
-		bool descending) {
-}
-
-FLWORIterator::OrderByClause::OrderByClause(
-		std::vector<FLWORIterator::OrderSpec> orderSpecs, bool stable) {
-}
-
-FLWORIterator::FLWORIterator(const yy::location& loc,
-		std::vector<FLWORIterator::ForLetClause> &aForLetClauses,
-		PlanIter_t& aWhereClause, FLWORIterator::OrderByClause* aOrderByClause,
-		PlanIter_t& aReturnClause, bool aWhereClauseReturnsBooleanPlus) :
-	Batcher<FLWORIterator>(loc), forLetClauses(aForLetClauses),
-			whereClause(aWhereClause), orderByClause(aOrderByClause),
-			returnClause(aReturnClause),
-			whereClauseReturnsBooleanPlus(aWhereClauseReturnsBooleanPlus),
-			bindingsNb(aForLetClauses.size()) {
-	store = zorba::getStore();
-}
-
-Item_t FLWORIterator::nextImpl(PlanState& planState) {
-	int curVar = 0;
-	PlanIteratorState* state;
-	vector<string>::iterator iter;
-	Item_t curItem;	
-	STACK_INIT2(PlanIteratorState, state, planState);
-	varBindingState = new int[forLetClauses.size()];
-	for (xqp_uint i = 0; i < forLetClauses.size(); i++) {
-		varBindingState[i] = 0;
-	}
-	while (true) {
-		
-		while (curVar != bindingsNb) {
-			if(bindVariable(curVar, planState)){
-				curVar++;
-			}else{
-				resetInput(curVar, planState);
-				curVar--;
-				//FINISHED
-				if(curVar == -1){
-					STACK_PUSH2(NULL, state);
-					break;
-					goto stop;
-				}
-			}
-		}
-    if(evaluateWhereClause(planState)){
-		  while(true){
-			  curItem = this->consumeNext(returnClause, planState);
-			  if(curItem == NULL){
-				  curVar = bindingsNb - 1;
-				  this->resetChild(returnClause, planState);
-				  break;
-			  }else{
-				  STACK_PUSH2(curItem, state);
-			  }
-		  }
-    }else{
-      curVar = bindingsNb - 1;
-    }
-	}
-stop:
-	STACK_PUSH2(NULL, state);
-	STACK_END2();
-}
-
-bool FLWORIterator::evaluateWhereClause(PlanState& planState){
-	if(whereClause == NULL){
-		return true;
-	}
-	if(whereClauseReturnsBooleanPlus){
-		Item_t boolValue = this->consumeNext(whereClause, planState);
-		if(boolValue == NULL){
-			return false;			
-		}
-    bool value = boolValue->getBooleanValue();
-    return value;
-	}
-  Item_t item = FnBooleanIterator::effectiveBooleanValue(loc, planState, whereClause);
-  this->resetChild(whereClause, planState);
-  return item->getBooleanValue();
-}
-
-void FLWORIterator::resetInput(int varNb, PlanState& planState){
-	FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
-	this->resetChild(lForLetClause.input, planState);
-	varBindingState[varNb] = 0;
-}
-
-
-bool FLWORIterator::bindVariable(int varNb, PlanState& planState) {
-	FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
-	switch (lForLetClause.type) {
-	case ForLetClause::FOR :
-		{
-			Item_t lItem = this->consumeNext(lForLetClause.input, planState);
-			if (lItem == NULL) {
-				return false;
-			}
-			++varBindingState[varNb];
-			for (std::vector<var_iter_t>::iterator forIter = lForLetClause.forVars.begin(); forIter
-					!= lForLetClause.forVars.end(); forIter++) {
-				var_iter_t variable = (*forIter);
-				variable->bind(lItem);
-			}
-			if(!lForLetClause.posVars.empty()){
-				Item_t posItem = zorba::getItemFactory()->createInteger (varBindingState[varNb]);
-				for (std::vector<var_iter_t>::iterator posIter = lForLetClause.posVars.begin(); posIter != lForLetClause.posVars.end(); posIter++) {
-					var_iter_t variable = (*posIter);
-					variable->bind(posItem);
-				}
-			}
-			//TODO Pos Bindings
-			return true;
-		}
-	case ForLetClause::LET :
-		{
-			//return false if the Var-Variable was already bound
-			if (varBindingState[varNb] == 1) {
-				return false;
-			}
-			Iterator_t iterWrapper = new PlanIterWrapper(lForLetClause.input, planState);
-			if(lForLetClause.needsMaterialization){
-				TempSeq_t tmpSeq = store->createTempSeq(iterWrapper);
-				for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
-						!= lForLetClause.letVars.end(); letIter++) {
-					(*letIter)->bind(tmpSeq->getIterator());
-				}			
-			}else{
-				for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
-						!= lForLetClause.letVars.end(); letIter++) {
-					(*letIter)->bind(iterWrapper);
-				}
-			}
-			++varBindingState[varNb];
-			return true;
-		}
-	default:
-		assert(false);
-	}
-	return false;
-}
-
-void FLWORIterator::resetImpl(PlanState& planState) {
-}
-
-void FLWORIterator::releaseResourcesImpl(PlanState& planState) {
-}
-
-int32_t FLWORIterator::getStateSize() {
-	return sizeof(PlanIterator::PlanIteratorState);
-}
-
-int32_t FLWORIterator::getStateSizeOfSubtree() {
-	  int32_t size = 0;
-	  std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
-	  for (iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++) {
-		  size += iter->input->getStateSizeOfSubtree();
-	  }
-	  
-	  size += returnClause->getStateSizeOfSubtree();
-	  
-	  if (whereClause != NULL)
-		  size += whereClause->getStateSizeOfSubtree();
-
-	  //TODO Add for orderby
-	  
-	  return this->getStateSize() + size;
-}
-
-void FLWORIterator::setOffset(PlanState& planState, int32_t& offset) {
-	  this->stateOffset = offset;
-	  offset += this->getStateSize();
-    
-    std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
-    for (iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++) {
-      iter->input->setOffset(planState, offset);
-    }
-
-	  returnClause->setOffset(planState, offset);
-	 	  
-	  if (whereClause != NULL)
-		  whereClause->setOffset(planState, offset);
-	 
-}
-
-std::ostream& FLWORIterator::_show(std::ostream& os) const {
-	std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
-	for (iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++) {
-		iter->show(os);
-	}
-  if(whereClause != NULL){
-    whereClause->show(os);
+  /* begin class EmptyIterator */
+  void EmptyIterator::setOffset ( PlanState& planState, int32_t& offset )
+  {
+    this->stateOffset = offset;
+    offset += this->getStateSize();
   }
-  returnClause->show(os);
-	return os;
-}
+  /* end class EmptyIterator */
+
+  /* begin class SingletonIterator */
+  SingletonIterator::SingletonIterator ( yy::location loc, Item_t _i_p ) :
+      Batcher<SingletonIterator> ( loc ), i_h ( _i_p )
+  {
+  }
+
+  SingletonIterator::~SingletonIterator()
+  {
+  }
+
+  Item_t SingletonIterator::nextImpl ( PlanState& planState )
+  {
+    PlanIteratorState* state;
+    STACK_INIT2 ( PlanIteratorState, state, planState );
+    STACK_PUSH2 ( i_h, state );
+    STACK_END2();
+  }
+
+  void SingletonIterator::resetImpl ( PlanState& planState )
+  {
+    PlanIterator::PlanIteratorState* state;
+    GET_STATE ( PlanIteratorState, state, planState );
+    state->reset();
+  }
+
+  void SingletonIterator::releaseResourcesImpl ( PlanState& planState )
+  {
+  }
+
+  std::ostream& SingletonIterator::_show ( std::ostream& os ) const
+  {
+    return os;
+  }
+
+  int32_t SingletonIterator::getStateSize()
+  {
+    return sizeof ( PlanIterator::PlanIteratorState );
+  }
+
+  int32_t SingletonIterator::getStateSizeOfSubtree()
+  {
+    return this->getStateSize();
+  }
+
+  void SingletonIterator::setOffset ( PlanState& planState, int32_t& offset )
+  {
+    this->stateOffset = offset;
+    offset += this->getStateSize();
+  }
+  /* end class SingletonIterator */
+
+
+  /* begin class EnclosedIterator */
+  EnclosedIterator::EnclosedIterator ( const yy::location& loc,
+                                       PlanIter_t& childIter ) :
+      UnaryBaseIterator<EnclosedIterator> ( loc, childIter )
+  {
+  }
+
+  Item_t EnclosedIterator::nextImpl ( PlanState& planState )
+  {
+    EnclosedState* state;
+    STACK_INIT2 ( EnclosedState, state, planState );
+
+    while ( true )
+    {
+      state->theContextItem = consumeNext ( theChild, planState );
+      if ( state->theContextItem == NULL )
+      {
+        if ( state->theString != "" )
+        {
+          STACK_PUSH2 ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
+                        state );
+          state->theString = "";
+        }
+        break;
+      }
+      else if ( state->theContextItem->isNode() )
+      {
+        if ( state->theString != "" )
+        {
+          STACK_PUSH2 ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
+                        state );
+          state->theString = "";
+        }
+        STACK_PUSH2 ( state->theContextItem, state );
+      }
+      else if ( state->theString == "" )
+      {
+        state->theString = state->theContextItem->getStringProperty();
+      }
+      else
+      {
+        state->theString += " "
+                            + state->theContextItem->getStringProperty();
+      }
+    }
+    STACK_END2();
+  }
+
+  void EnclosedIterator::resetImpl ( PlanState& planState )
+  {
+    UnaryBaseIterator<EnclosedIterator>::resetImpl ( planState );
+
+    EnclosedState* state;
+    GET_STATE ( EnclosedState, state, planState );
+    state->theString = "";
+  }
+
+  void EnclosedIterator::releaseResourcesImpl ( PlanState& planState )
+  {
+    UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl ( planState );
+
+    EnclosedState* state;
+    GET_STATE ( EnclosedState, state, planState );
+    state->theContextItem = NULL;
+    state->theString.clear();
+  }
+
+  void EnclosedIterator::setOffset ( PlanState& planState, int32_t& offset )
+  {
+    UnaryBaseIterator<EnclosedIterator>::setOffset ( planState, offset );
+
+    EnclosedState* state = new ( planState.block + stateOffset ) EnclosedState;
+  }
+
+  void EnclosedIterator::EnclosedState::init()
+  {
+    PlanIterator::PlanIteratorState::init();
+    theString = "";
+  }
+
+  /* end class EnclosedIterator */
+
+  /* start class IfThenElseIterator */
+  IfThenElseIterator::IfThenElseIterator ( const yy::location& loc,
+          PlanIter_t& aCondIter, PlanIter_t& aThenIter,
+          PlanIter_t& aElseIter, bool aIsBooleanIter ) :
+      Batcher<IfThenElseIterator> ( loc ), theCondIter ( aCondIter ),
+      theThenIter ( aThenIter ), theElseIter ( aElseIter ),
+      theIsBooleanIter ( aIsBooleanIter )
+  {
+  }
+
+  Item_t IfThenElseIterator::nextImpl ( PlanState& planState )
+  {
+    Item_t condResult;
+
+    IfThenElseIteratorState* state;
+    STACK_INIT2 ( IfThenElseIteratorState, state, planState );
+
+    if ( theIsBooleanIter )
+      condResult = this->consumeNext ( theCondIter, planState );
+    else
+      condResult = FnBooleanIterator::effectiveBooleanValue ( this->loc,
+                   planState, theCondIter );
+
+    if ( condResult->getBooleanValue() )
+      state->theThenUsed = true;
+    else
+      state->theThenUsed = false;
+
+    while ( true )
+    {
+      STACK_PUSH2 (
+        this->consumeNext ( 
+          (state->theThenUsed ? theThenIter : theElseIter), planState 
+        ), 
+        state 
+      );
+    }
+
+    STACK_END2();
+  }
+
+  void IfThenElseIterator::resetImpl ( PlanState& planState )
+  {
+    IfThenElseIteratorState* state;
+    GET_STATE ( IfThenElseIteratorState, state, planState );
+    state->reset();
+    
+    this->resetChild ( theCondIter, planState );
+    this->resetChild ( theThenIter, planState );
+    this->resetChild ( theElseIter, planState );
+  }
+
+  void IfThenElseIterator::releaseResourcesImpl ( PlanState& planState )
+  {
+    this->releaseChildResources ( theCondIter, planState );
+    this->releaseChildResources ( theThenIter, planState );
+    this->releaseChildResources ( theElseIter, planState );
+  }
+  
+  int32_t IfThenElseIterator::getStateSize() {
+    return sizeof(IfThenElseIteratorState);
+  }
+  int32_t IfThenElseIterator::getStateSizeOfSubtree() {
+    return getStateSize();
+  }
+  void IfThenElseIterator::setOffset ( PlanState& planState, int32_t& offset ) {
+    this->stateOffset = offset;
+    offset += getStateSize();
+    theCondIter->setOffset(planState, offset);
+    theThenIter->setOffset(planState, offset);
+    theElseIter->setOffset(planState, offset);
+  }
+      
+  std::ostream& IfThenElseIterator::_show ( std::ostream& os ) const {
+    theCondIter->show ( os );
+    theThenIter->show ( os );
+    theElseIter->show ( os );
+    return os;
+  }
+
+  FLWORIterator::ForLetClause::ForLetClause ( std::vector<var_iter_t> aForVars,
+          PlanIter_t& aInput ) :
+      type ( FOR ), forVars ( aForVars ), input ( aInput )
+  {
+  }
+  FLWORIterator::ForLetClause::ForLetClause ( std::vector<var_iter_t> aForVars,
+          std::vector<var_iter_t> aPosVars, PlanIter_t& aInput ) :
+      type ( FOR ), forVars ( aForVars ), posVars ( aPosVars ), input ( aInput )
+  {
+  }
+
+  FLWORIterator::ForLetClause::ForLetClause ( std::vector<ref_iter_t> aLetVars,
+          PlanIter_t& aInput, bool aNeedsMaterialization ) :
+      type ( LET ), letVars ( aLetVars ), input ( aInput ),
+      needsMaterialization ( aNeedsMaterialization )
+  {
+  }
+
+  std::ostream& FLWORIterator::ForLetClause::show ( std::ostream& os ) const
+  {
+    switch ( type )
+    {
+      case FOR:
+        os << IT_DEPTH << "<for_clause varRefNB=\""<< forVars.size() << "\" posRefNb=\"" << posVars.size() << "\"" << std::endl;
+        input->show ( os );
+        os << IT_DEPTH << "</for_clause>" << std::endl;
+        break;
+      case LET:
+        os << IT_DEPTH << "<let_clause refNb=\"" << letVars.size() << "\">" << std::endl;
+        input->show ( os );
+        os << IT_DEPTH << "</let_clause>" << std::endl;
+        break;
+      default:
+        assert ( false );
+
+    }
+    return os;
+  }
+
+  FLWORIterator::OrderSpec::OrderSpec ( PlanIter_t orderByIter, bool empty_least,
+                                        bool descending )
+  {
+  }
+
+  FLWORIterator::OrderByClause::OrderByClause (
+      std::vector<FLWORIterator::OrderSpec> orderSpecs, bool stable )
+  {
+  }
+
+  FLWORIterator::FLWORIterator ( const yy::location& loc,
+                                 std::vector<FLWORIterator::ForLetClause> &aForLetClauses,
+                                 PlanIter_t& aWhereClause, FLWORIterator::OrderByClause* aOrderByClause,
+                                 PlanIter_t& aReturnClause, bool aWhereClauseReturnsBooleanPlus ) :
+      Batcher<FLWORIterator> ( loc ), forLetClauses ( aForLetClauses ),
+      whereClause ( aWhereClause ), orderByClause ( aOrderByClause ),
+      returnClause ( aReturnClause ),
+      whereClauseReturnsBooleanPlus ( aWhereClauseReturnsBooleanPlus ),
+      bindingsNb ( aForLetClauses.size() )
+  {
+    store = zorba::getStore();
+  }
+
+  Item_t FLWORIterator::nextImpl ( PlanState& planState )
+  {
+    int curVar = 0;
+    PlanIteratorState* state;
+    vector<string>::iterator iter;
+    Item_t curItem;
+    STACK_INIT2 ( PlanIteratorState, state, planState );
+    varBindingState = new int[forLetClauses.size() ];
+    for ( xqp_uint i = 0; i < forLetClauses.size(); i++ )
+    {
+      varBindingState[i] = 0;
+    }
+    while ( true )
+    {
+
+      while ( curVar != bindingsNb )
+      {
+        if ( bindVariable ( curVar, planState ) )
+        {
+          curVar++;
+        }
+        else
+        {
+          resetInput ( curVar, planState );
+          curVar--;
+          //FINISHED
+          if ( curVar == -1 )
+          {
+            STACK_PUSH2 ( NULL, state );
+            break;
+            goto stop;
+          }
+        }
+      }
+      if ( evaluateWhereClause ( planState ) )
+      {
+        while ( true )
+        {
+          curItem = this->consumeNext ( returnClause, planState );
+          if ( curItem == NULL )
+          {
+            curVar = bindingsNb - 1;
+            this->resetChild ( returnClause, planState );
+            break;
+          }
+          else
+          {
+            STACK_PUSH2 ( curItem, state );
+          }
+        }
+      }
+      else
+      {
+        curVar = bindingsNb - 1;
+      }
+    }
+  stop:
+    STACK_PUSH2 ( NULL, state );
+    STACK_END2();
+  }
+
+  bool FLWORIterator::evaluateWhereClause ( PlanState& planState )
+  {
+    if ( whereClause == NULL )
+    {
+      return true;
+    }
+    if ( whereClauseReturnsBooleanPlus )
+    {
+      Item_t boolValue = this->consumeNext ( whereClause, planState );
+      if ( boolValue == NULL )
+      {
+        return false;
+      }
+      bool value = boolValue->getBooleanValue();
+      return value;
+    }
+    Item_t item = FnBooleanIterator::effectiveBooleanValue ( loc, planState, whereClause );
+    this->resetChild ( whereClause, planState );
+    return item->getBooleanValue();
+  }
+
+  void FLWORIterator::resetInput ( int varNb, PlanState& planState )
+  {
+    FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
+    this->resetChild ( lForLetClause.input, planState );
+    varBindingState[varNb] = 0;
+  }
+
+
+  bool FLWORIterator::bindVariable ( int varNb, PlanState& planState )
+  {
+    FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
+    switch ( lForLetClause.type )
+    {
+      case ForLetClause::FOR :
+      {
+        Item_t lItem = this->consumeNext ( lForLetClause.input, planState );
+        if ( lItem == NULL )
+        {
+          return false;
+        }
+        ++varBindingState[varNb];
+        for ( std::vector<var_iter_t>::iterator forIter = lForLetClause.forVars.begin(); forIter
+                != lForLetClause.forVars.end(); forIter++ )
+        {
+          var_iter_t variable = ( *forIter );
+          variable->bind ( lItem );
+        }
+        if ( !lForLetClause.posVars.empty() )
+        {
+          Item_t posItem = zorba::getItemFactory()->createInteger ( varBindingState[varNb] );
+          for ( std::vector<var_iter_t>::iterator posIter = lForLetClause.posVars.begin(); posIter != lForLetClause.posVars.end(); posIter++ )
+          {
+            var_iter_t variable = ( *posIter );
+            variable->bind ( posItem );
+          }
+        }
+        //TODO Pos Bindings
+        return true;
+      }
+      case ForLetClause::LET :
+      {
+        //return false if the Var-Variable was already bound
+        if ( varBindingState[varNb] == 1 )
+        {
+          return false;
+        }
+        Iterator_t iterWrapper = new PlanIterWrapper ( lForLetClause.input, planState );
+        if ( lForLetClause.needsMaterialization )
+        {
+          TempSeq_t tmpSeq = store->createTempSeq ( iterWrapper );
+          for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
+                  != lForLetClause.letVars.end(); letIter++ )
+          {
+            ( *letIter )->bind ( tmpSeq->getIterator() );
+          }
+        }
+        else
+        {
+          for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
+                  != lForLetClause.letVars.end(); letIter++ )
+          {
+            ( *letIter )->bind ( iterWrapper );
+          }
+        }
+        ++varBindingState[varNb];
+        return true;
+      }
+      default:
+        assert ( false );
+    }
+    return false;
+  }
+
+  void FLWORIterator::resetImpl ( PlanState& planState )
+  {
+  }
+
+  void FLWORIterator::releaseResourcesImpl ( PlanState& planState )
+  {
+  }
+
+  int32_t FLWORIterator::getStateSize()
+  {
+    return sizeof ( PlanIterator::PlanIteratorState );
+  }
+
+  int32_t FLWORIterator::getStateSizeOfSubtree()
+  {
+    int32_t size = 0;
+    std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
+    for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
+    {
+      size += iter->input->getStateSizeOfSubtree();
+    }
+
+    size += returnClause->getStateSizeOfSubtree();
+
+    if ( whereClause != NULL )
+      size += whereClause->getStateSizeOfSubtree();
+
+    //TODO Add for orderby
+
+    return this->getStateSize() + size;
+  }
+
+  void FLWORIterator::setOffset ( PlanState& planState, int32_t& offset )
+  {
+    this->stateOffset = offset;
+    offset += this->getStateSize();
+
+    std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
+    for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
+    {
+      iter->input->setOffset ( planState, offset );
+    }
+
+    returnClause->setOffset ( planState, offset );
+
+    if ( whereClause != NULL )
+      whereClause->setOffset ( planState, offset );
+
+  }
+
+  std::ostream& FLWORIterator::_show ( std::ostream& os ) const
+  {
+    std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
+    for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
+    {
+      iter->show ( os );
+    }
+    if ( whereClause != NULL )
+    {
+      whereClause->show ( os );
+    }
+    returnClause->show ( os );
+    return os;
+  }
 
 } /* namespace xqp */
 

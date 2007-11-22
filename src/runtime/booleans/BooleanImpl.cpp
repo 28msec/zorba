@@ -110,9 +110,10 @@ namespace xqp
 	/* end class FnBooleanIterator */
 	
 	/* begin class LogicIterator */
-	LogicIterator::LogicIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, LogicType lt)
+	LogicIterator::LogicIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, LogicType aLogicType)
 	:
-		Batcher<LogicIterator> ( loc), iterLeft(arg0), iterRight(arg1), logicType(lt) {}
+		BinaryBaseIterator<LogicIterator> ( loc, theChild0, theChild1), theLogicType(aLogicType) {}
+  
 	LogicIterator::~LogicIterator(){}
 			
 	Item_t 
@@ -120,52 +121,36 @@ namespace xqp
 	{
 		bool bRes;
 		
-		STACK_INIT();
-		switch(this->logicType)
+    PlanIterator::PlanIteratorState* state;
+    STACK_INIT2 ( PlanIterator::PlanIteratorState, state, planState );
+		switch(theLogicType)
 		{
 		case AND:
-			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterLeft)->getBooleanValue() 
-							&& FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterRight)->getBooleanValue();
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)->getBooleanValue() 
+							&& FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1)->getBooleanValue();
 			break;
 		case OR:
-			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterLeft)->getBooleanValue() 
-							|| FnBooleanIterator::effectiveBooleanValue(this->loc, planState, this->iterRight)->getBooleanValue();;
+			bRes = FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild0)->getBooleanValue() 
+							|| FnBooleanIterator::effectiveBooleanValue(this->loc, planState, theChild1)->getBooleanValue();;
 			break;
 		}
-		STACK_PUSH(zorba::getItemFactory()->createBoolean(bRes));
-		STACK_END();
-	}
-	
-	void 
-	LogicIterator::resetImpl(PlanState& planState)
-	{
-		this->resetChild( this->iterLeft, planState );
-		this->resetChild( this->iterRight, planState );
-	}
-	
-	void 
-	LogicIterator::releaseResourcesImpl(PlanState& planState)
-	{
-		this->releaseChildResources( this->iterLeft, planState );
-		this->releaseChildResources( this->iterRight, planState );
+		STACK_PUSH2(zorba::getItemFactory()->createBoolean(bRes), state);
+		STACK_END2();
 	}
 	/* end class LogicIterator */
 
 	/* begin class ComparisonIterator */
-	CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, CompareType argCompType )
+	CompareIterator::CompareIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, CompareType aCompType )
 	:
-		BinaryBaseIterator<CompareIterator> ( loc, arg0, arg1 ), 
-    compareType(argCompType) 
+		BinaryBaseIterator<CompareIterator> ( loc, aChild0, aChild1 ), 
+    theCompType(aCompType) 
 	{
-		this->genericCast = new GenericCast();
-		theChild0 = new FnDataIterator ( loc, arg0 );
-		theChild1 = new FnDataIterator ( loc, arg1 );
+		theChild0 = new FnDataIterator ( loc, aChild0 );
+		theChild1 = new FnDataIterator ( loc, aChild1 );
 	}
 	
 	CompareIterator::~CompareIterator()
-	{
-		delete this->genericCast;
-	}
+	{ }
 	
   Item_t
   CompareIterator::nextImpl ( PlanState& planState )
@@ -182,7 +167,8 @@ namespace xqp
     bool empty;
     int32_t compareResult;
   
-    STACK_INIT();
+    PlanIterator::PlanIteratorState* state;
+    STACK_INIT2 ( PlanIterator::PlanIteratorState, state, planState );
   
     if ( this->isGeneralComparison() )
     {
@@ -198,21 +184,21 @@ namespace xqp
         i1 = 1;
         while ( !found && temp1->containsItem ( i1 ) )
         {
-          if ( CompareIterator::generalComparison ( temp0->getItem ( i0 ), temp1->getItem ( i1 ) ) )
+          if ( CompareIterator::generalComparison ( temp0->getItem ( i0 ), temp1->getItem ( i1 ), theCompType ) )
             found = true;
           i1++;
         }
         i0++;
       }
   
-      STACK_PUSH ( zorba::getItemFactory()->createBoolean ( found ) );
+      STACK_PUSH2 ( zorba::getItemFactory()->createBoolean ( found ), state );
     } /* if general comparison */
     else if ( this->isValueComparison() )
     {
       if ( ( ( item0 = this->consumeNext ( theChild0, planState ) ) != NULL )
               && ( ( item1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
       {
-        STACK_PUSH ( zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( item0, item1 ) ) );
+        STACK_PUSH2 ( zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( item0, item1, theCompType ) ), state );
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
           ZorbaErrorAlerts::error_alert (
@@ -236,14 +222,14 @@ namespace xqp
       );
     } /* if node comparison */
   
-    STACK_END();
+    STACK_END2();
   }
 	
 	bool 
 	CompareIterator::isValueComparison()
 	{
 		bool retVal = false;
-		switch(this->compareType)
+		switch(theCompType)
 		{
 		case VALUE_EQUAL:
 		case VALUE_NOT_EQUAL:
@@ -264,7 +250,7 @@ namespace xqp
 	CompareIterator::isGeneralComparison()
 	{
 		bool retVal = false;
-		switch(this->compareType)
+		switch(theCompType)
 		{
 		case GENERAL_EQUAL:
 		case GENERAL_NOT_EQUAL:
@@ -285,7 +271,7 @@ namespace xqp
 	CompareIterator::isNodeComparison()
 	{
 		bool retVal = false;
-		switch(this->compareType)
+		switch(theCompType)
 		{
 		case NODE_EQUAL:
 		case NODE_NOT_EQUAL:
@@ -299,7 +285,7 @@ namespace xqp
 	}
 	
 	bool
-	CompareIterator::generalComparison(Item_t item0, Item_t item1)
+  CompareIterator::generalComparison(Item_t item0, Item_t item1, CompareType aCompType)
 	{
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
@@ -307,19 +293,16 @@ namespace xqp
 		{
 			if (GENV_TYPESYSTEM.is_numeric(*type1))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-				item0 = this->genericCast->cast(item0);
+        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 			}
       else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
-				item0 = this->genericCast->cast(item0);
+        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			}
 			else
 			{
-				this->genericCast->setTarget(type1);
-				item0 = this->genericCast->cast(item0);
+        item0 = GenericCast::instance()->cast(item0, type1);
 			}
 		}
 		
@@ -327,40 +310,35 @@ namespace xqp
 		{
 			if (GENV_TYPESYSTEM.is_numeric(*type0))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-				item1 = this->genericCast->cast(item1);
+        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 			}
       else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
-				item1 = this->genericCast->cast(item1);
+        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
 			}
 			else
 			{
-				this->genericCast->setTarget(type0);
-				item1 = this->genericCast->cast(item1);
+        item1 = GenericCast::instance()->cast(item1, type0);
 			}
 		}
 		
-		return CompareIterator::valueComparison(item0, item1);
+		return CompareIterator::valueComparison(item0, item1, aCompType);
 	} /* end CompareIterator::generalComparison (...) */
 
 	bool
-	CompareIterator::valueComparison(Item_t item0, Item_t item1)
+  CompareIterator::valueComparison(Item_t item0, Item_t item1, CompareType aCompType)
 	{
         TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
         TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
 		// all untyped Atomics to String
         if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
 		{
-			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
-			item0 = this->genericCast->cast(item0);
+      item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
 		}
     if  (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
 		{
-			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
-			item1 = this->genericCast->cast(item1);
+      item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
 		}
 		
 		// TYPE PROMOTION
@@ -368,61 +346,53 @@ namespace xqp
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
-				item1 = this->genericCast->cast(item1);
+        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
 			}
 		}
     else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
 		{
       if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-				item1 = this->genericCast->cast(item1);
+        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 			}
       else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-				item1 = this->genericCast->cast(item1);
+        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 			}
 		}
 		
     if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
-				item0 = this->genericCast->cast(item0);
+        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
 			}
 		}
     else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
 		{
       if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-				item0 = this->genericCast->cast(item0);
+        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 			}
       else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
 			{
-				this->genericCast->setTarget(GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
-				item0 = this->genericCast->cast(item0);
+        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
 			}
 		}
 		// uri promotion
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
 		{
-			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
-			item1 = this->genericCast->cast(item1);
+      item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
 		}
     if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
 		{
-			this->genericCast->setTarget(GENV_TYPESYSTEM.STRING_TYPE_ONE);
-			item0 = this->genericCast->cast(item0);
+      item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
 		}
 
 		// computation of result
 		int32_t compValue = -2;
-		switch(this->compareType)
+		switch(aCompType)
 		{
 			case VALUE_EQUAL:
 			case GENERAL_EQUAL:
@@ -444,7 +414,7 @@ namespace xqp
 		}
 		
 		if (compValue > -2)
-			switch(this->compareType)
+			switch(aCompType)
 			{
 				case VALUE_EQUAL:
 				case GENERAL_EQUAL:
@@ -477,7 +447,7 @@ namespace xqp
 		ZorbaErrorAlerts::error_alert (
 			error_messages::FOCH0004_Collation_does_not_support_collation_units,
 			error_messages::RUNTIME_ERROR,
-			&loc,
+			0,
 			false,
 			"Compare of declared collation operator and operators is not possible!"
 		);
@@ -485,7 +455,7 @@ namespace xqp
 	} /* end CompareIterator::valueComparison (...) */
 	
 	int32_t
-	CompareIterator::equal(const Item_t& item0, const Item_t& item1)
+  CompareIterator::equal(const Item_t& item0, const Item_t& item1)
 	{
 		// tries first normal compare
 		int32_t compareRes = CompareIterator::compare(item0, item1);

@@ -46,9 +46,9 @@
 #define IT_OUTDENT		    std::string(iteratorTreeDepth--, ' ')
 
 // TODO These Macros have to be deleted
-#define STACK_INIT() switch (this->current_line) { case 0:
-#define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
-#define STACK_END() } return NULL;
+// #define STACK_INIT() switch (this->current_line) { case 0:
+// #define STACK_PUSH(x) do { this->current_line = __LINE__; return x; case __LINE__:; } while (0)
+// #define STACK_END() } return NULL;
 
 /** Macros to automate Duff's Device and separation of code and execution 
 	* STACK_INIT:	- initializes Duff's Device and gets the state of the

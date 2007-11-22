@@ -33,6 +33,7 @@ FnDataIterator::nextImpl(PlanState& planState)
       STACK_PUSH2( item, lState );
     }
   }
+  lState->theTypedValue = 0;
   STACK_END2();
 }
 	
@@ -48,6 +49,9 @@ FnDataIterator::resetImpl(PlanState& aPlanState)
 void
 FnDataIterator::releaseResourcesImpl(PlanState& planState)
 {
+  FnDataIteratorState* lState;
+  GET_STATE(FnDataIteratorState, lState, planState);
+  lState->theTypedValue = 0;
   this->releaseChildResources( theChild, planState );
 }
 

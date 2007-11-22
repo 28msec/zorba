@@ -49,7 +49,7 @@ namespace xqp
 			std::ostream&  _show ( std::ostream& ) const;
 	};
 	
-	class LogicIterator : public Batcher<LogicIterator>
+	class LogicIterator : public BinaryBaseIterator<LogicIterator>
 	{
 	public:
 		enum LogicType {
@@ -57,18 +57,13 @@ namespace xqp
 		};
 		
 		private:
-			PlanIter_t iterLeft;
-			PlanIter_t iterRight;
-			
-			LogicType logicType;
+			LogicType theLogicType;
 			
 		public:
-			LogicIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, LogicType lt);
-			~LogicIterator();
+			LogicIterator ( const yy::location& loc, PlanIter_t aChild0, PlanIter_t aChild1, LogicType aLogicType);
+			virtual ~LogicIterator();
 			
 			Item_t nextImpl(PlanState& planState);
-			void resetImpl(PlanState& planState);
-			void releaseResourcesImpl(PlanState& planState);
 	}; /* class LogicIterator */
 	
   class CompareIterator : public BinaryBaseIterator<CompareIterator>
@@ -84,12 +79,11 @@ namespace xqp
 			};
 			
 		private:
-			GenericCast* genericCast;
-			CompareType compareType;
+			CompareType theCompType;
 
 		public:
-			CompareIterator ( const yy::location& loc, PlanIter_t arg0, PlanIter_t arg1, CompareType argCompType );
-			~CompareIterator();
+			CompareIterator ( const yy::location& loc, PlanIter_t theChild0, PlanIter_t theChild1, CompareType aCompType );
+			virtual ~CompareIterator();
 
 			Item_t nextImpl(PlanState& planState);
 			
@@ -104,7 +98,7 @@ namespace xqp
 			 * @return -1, if item0 &lt; item1
 			 *				  0, if item0 == item1
 			 *				 	1, if item0 &gt; item1
-			 *				 -2, if it is not possible to compare the two passed items
+			 *				 -2, if it is not possible to compare the values the two passed items
 			 */
 			static int32_t compare(const Item_t& item0, const Item_t& item1);
 			
@@ -124,9 +118,10 @@ namespace xqp
 			 *
 			 * @param item0 
 			 * @param item1 
+       * @param aCompType
 			 * @return 
 			 */
-			bool valueComparison(Item_t item0, Item_t item1);
+			static bool valueComparison(Item_t item0, Item_t item1, CompareType aCompType);
 			
 			/**
 			 * General comparison of the passed two items with the operator 
@@ -134,9 +129,10 @@ namespace xqp
 			 *
 			 * @param item0 
 			 * @param item1 
+       * @param aCompType
 			 * @return 
 			 */
-			bool generalComparison(Item_t item0, Item_t item_1);
+			static bool generalComparison(Item_t item0, Item_t item_1, CompareType aCompType);
 	}; /* class CompareIterator */
 
 }
