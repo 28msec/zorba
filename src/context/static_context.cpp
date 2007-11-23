@@ -32,7 +32,7 @@
 #include "system/globalenv.h"
 #include "context/static_context.h"
 #include "context/common.h"
-#include "store/api/item.h"
+#include "util/zorba.h"
 
 // MS Visual Studio does not fully support throw(), and issues a warning
 #ifndef _MSC_VER
@@ -52,6 +52,8 @@ namespace xqp {
     "local", "http://www.w3.org/2005/xquery-local-functions",
     NULL, NULL
   };
+
+#define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
   static_context *static_context::root_static_context () {
     static static_context *p = new static_context (default_ns_initializers);
@@ -82,6 +84,43 @@ namespace xqp {
   DECL_STR_PARAM (static_context, default_elem_type_ns)
 
 	DECL_ENUM_PARAM (static_context, ordering_mode)
+
+  pair<string, string> parse_qname (string qname) {
+    string::size_type n = qname.find(':');
+    return (n == string::npos)
+      ? pair<string, string> ("", qname)
+      : pair<string, string> (qname.substr (0, n), qname.substr (n+1));
+  }
+
+  static string qname_internal_key2 (string ns, std::string local) {
+    return local + ":" + ns;
+  }
+  QNameItem_t static_context::lookup_qname (string default_ns, string prefix, string local) const {
+    xqpStringStore *ssns = new xqpStringStore (prefix.empty () ? default_ns : lookup_ns (prefix)),
+      *sspfx = new xqpStringStore (prefix), *sslocal = new xqpStringStore (local);
+    return ITEM_FACTORY.createQName (ssns, sspfx, sslocal);
+  }
+  QNameItem_t static_context::lookup_qname (string default_ns, string qname) const {
+    pair<string, string> rqname = parse_qname (qname);
+    return lookup_qname (default_ns, rqname.first, rqname.second);
+  }
+  string static_context::qname_internal_key (QNameItem_t qname) const {
+    return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
+  }
+  string static_context::qname_internal_key (string default_ns, string prefix, string local) const {
+    return qname_internal_key2
+      (prefix.empty () ? default_ns : lookup_ns (prefix), local);
+  }
+  string static_context::qname_internal_key (string default_ns, string qname) const {
+    pair<string, string> rqname = parse_qname (qname);
+    return qname_internal_key (default_ns, rqname.first, rqname.second);
+  }
+  string static_context::fn_internal_key (int arity) {
+    ostringstream o;
+    o << "fn:" << arity << "/";
+    return o.str ();
+  }
+
   string static_context::lookup_ns (string prefix) const {
     string ns;
     Assert (context_value ("ns:" + prefix, ns));
@@ -92,22 +131,7 @@ namespace xqp {
   }
 
   function *static_context::lookup_builtin_fn (string local, int arity) {
-    return root_static_context ()->lookup_func (fn_internal_key_pfx (arity) + make_expanded_qname (XQUERY_FN_NS, local));
-  }
-  string static_context::expand_qname (string default_ns, string prefix, string local) const {
-    return make_expanded_qname
-      (prefix.empty () ? default_ns : lookup_ns (prefix), local);
-  }
-  string static_context::expand_qname (string default_ns, string qname) const {
-    string::size_type n = qname.find(':');
-    return (n == string::npos) ?
-      expand_qname (default_ns, "", qname) :
-      expand_qname (default_ns, qname.substr (0, n), qname.substr (n+1));
-  }
-  string static_context::fn_internal_key_pfx (int arity) {
-    ostringstream o;
-    o << "fn:" << arity << "/";
-    return o.str ();
+    return root_static_context ()->lookup_func (fn_internal_key (arity) + qname_internal_key2 (XQUERY_FN_NS, local));
   }
 
 TypeSystem::xqtref_t static_context::get_function_type(

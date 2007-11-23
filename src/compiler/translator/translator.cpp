@@ -33,6 +33,13 @@ static void *no_state = (void *) new int;
 #define LOOKUP_OP2( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 2))
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 
+var_expr *translator::bind_var (yy::location loc, string varname) {
+  QNameItem_t qname = sctx_p->lookup_qname ("", varname);
+  var_expr *e = new var_expr (loc, qname);
+  sctx_p->bind_var (qname, e);
+  return e;
+}
+
 translator::translator()
 {
 	zorp = zorba::getZorbaForCurrentThread();
@@ -301,11 +308,9 @@ void translator::end_visit(const DirElemConstructor& v, void *visit_state)
 	if (v.get_dir_content_list() != NULL)
 		content = pop_nodestack();
 
-	rchandle<qname_expr> name = new qname_expr(v.get_location(),
-                                             v.get_elem_name()->get_prefix(),
-                                             v.get_elem_name()->get_localname());
+  QNameItem_t item = sctx_p->lookup_elem_qname (v.get_elem_name()->get_prefix(), v.get_elem_name()->get_localname());
 	rchandle<elem_expr> elem_t = new elem_expr(v.get_location(),
-                                             name,
+                                             item,
                                              attributes,
                                              content);
 	nodestack.push(&*elem_t);
@@ -425,12 +430,9 @@ void translator::end_visit(const DirAttr& v, void *visit_state)
  		nodestack.pop();
  	}
  
-	rchandle<qname_expr> name = new qname_expr(v.get_location(),
-                                             v.get_atname()->get_prefix(),
-                                             v.get_atname()->get_localname());
-
+  QNameItem_t item = sctx_p->lookup_elem_qname (v.get_atname()->get_prefix(), v.get_atname()->get_localname());
  	rchandle<attr_expr> attr_expr_t = new attr_expr(v.get_location(),
-                                                  name,
+                                                  item,
                                                   attrValue);
  	nodestack.push(&*attr_expr_t);
 }
@@ -679,8 +681,11 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
         exprs.push_back(pop_nodestack ());
         if ((*decl_list) [j]->get_posvar () == NULL)
           pos_vars.push_back (NULL);
-        else
-          pos_vars.push_back (pop_nodestack ().cast<var_expr> ());
+        else {
+          rchandle<var_expr> pve = pop_nodestack ().cast<var_expr> ();
+          pve->set_kind (var_expr::pos_var);
+          pos_vars.push_back (pve);
+        }
         ve = pop_nodestack ().cast<var_expr> ();
         ve->set_kind (var_expr::for_var);
         vars.push_back (ve);
@@ -754,12 +759,7 @@ void *translator::begin_visit(const VarGetsDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   push_scope ();
-  var_expr *evar = new var_expr (v.get_location ());
-  string varname = v.get_varname ();
-  // TODO: qname
-  evar->set_varname (new qname_expr (v.get_location (), "", varname));
-  sctx_p->bind_var (varname, evar);
-  nodestack.push (evar);
+  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
 	return no_state;
 }
 
@@ -795,12 +795,7 @@ void *translator::begin_visit(const VarInDecl& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
   push_scope ();
-  var_expr *evar = new var_expr (v.get_location ());
-  string varname = v.get_varname ();
-  // TODO: qname
-  evar->set_varname (new qname_expr (v.get_location (), "", varname));
-  sctx_p->bind_var (varname, evar);
-  nodestack.push (evar);
+  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
 	return no_state;
 }
 
@@ -812,13 +807,7 @@ void translator::end_visit(const VarInDecl& v, void *visit_state)
 void *translator::begin_visit(const PositionalVar& v)
 {
   cout << std::string(++depth, ' ') << TRACE << endl;
-  var_expr *evar = new var_expr (v.get_location ());
-  evar->set_kind (var_expr::pos_var);
-  string varname = v.get_varname ();
-  // TODO: qname
-  evar->set_varname (new qname_expr (v.get_location (), "", varname));
-  sctx_p->bind_var (varname, evar);
-  nodestack.push (evar);
+  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
 	return no_state;
 }
 
@@ -1496,8 +1485,8 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 void translator::end_visit(const ContextItemExpr& v, void *visit_state)
 {
-cout << std::string(depth--, ' ') << TRACE << ": ContextItemExpr" << endl;
-	rchandle<var_expr> v_h = new var_expr(v.get_location());
+  cout << std::string(depth--, ' ') << TRACE << ": ContextItemExpr" << endl;
+	rchandle<var_expr> v_h = new var_expr(v.get_location(), NULL);
 	v_h->set_kind(var_expr::context_var);
 	nodestack.push(&*v_h);
 }
@@ -1787,7 +1776,7 @@ void translator::end_visit(const NameTest& v, void *visit_state)
   if (v.getQName() != NULL)
   {
     string qname = v.getQName()->get_qname();
-    rchandle<qname_expr> qn_h = new qname_expr(v.get_location(), qname);
+    QNameItem_t qn_h = sctx_p->lookup_elem_qname (qname);
     matchExpr->setQName(qn_h);
   }
   else
@@ -1866,14 +1855,12 @@ void *translator::begin_visit(const DocumentTest& v)
 		rchandle<QName> elem_h = e_h->getElementName();
 		if (elem_h != NULL)
     {
-			m_h->setQName(new qname_expr(v.get_location(),
-                                   elem_h->get_prefix(), elem_h->get_localname()));
+			m_h->setQName (sctx_p->lookup_elem_qname (elem_h->get_prefix(), elem_h->get_localname()));
 		}
 		rchandle<TypeName> type_h = e_h->getTypeName();
 		if (type_h != NULL)
     {
-			m_h->setTypeName(new qname_expr(v.get_location(),
-                                      type_h->get_name()->get_qname()));
+			m_h->setTypeName (sctx_p->lookup_qname ("", type_h->get_name()->get_qname()));
 		}
 		bool optional_b =  e_h->isNilledAllowed();
 		if (optional_b)
@@ -1919,11 +1906,11 @@ void translator::end_visit(const ElementTest& v, void *visit_state)
 
 	rchandle<QName> ename = v.getElementName();
 	if (ename != NULL)
-		me->setQName(new qname_expr(v.get_location(), ename->get_qname()));
+		me->setQName(sctx_p->lookup_elem_qname (ename->get_qname()));
 
 	rchandle<TypeName> tname = v.getTypeName();
 	if (tname != NULL)
-		me->setTypeName(new qname_expr(v.get_location(), tname->get_name()->get_qname()));
+		me->setTypeName(sctx_p->lookup_elem_qname (tname->get_name()->get_qname()));
 
 	bool nilled =  v.isNilledAllowed();
 	if (nilled)
@@ -1961,12 +1948,12 @@ void translator::end_visit(const AttributeTest& v, void *visit_state)
 	rchandle<QName> elem_h = v.get_attr();
 	if (elem_h != NULL)
   {
-		m_h->setQName(new qname_expr(v.get_location(), elem_h->get_qname()));
+		m_h->setQName(sctx_p->lookup_elem_qname (elem_h->get_qname()));
 	}
 	rchandle<TypeName> type_h = v.get_type();
 	if (type_h!=NULL)
   {
-		m_h->setTypeName(new qname_expr(v.get_location(), type_h->get_name()->get_qname()));
+		m_h->setTypeName(sctx_p->lookup_qname ("", type_h->get_name()->get_qname()));
 	}
 	if (v.is_wild())
   {
@@ -2038,7 +2025,7 @@ void *translator::begin_visit(const PITest& v)
 	m_h->setTestKind(match_pi_test);
 
 	string target = v.get_target();
-	m_h->setQName(new qname_expr(v.get_location(), target));
+	m_h->setQName(sctx_p->lookup_elem_qname (target));
 	nodestack.push(&*m_h);
 	return no_state;
 }
@@ -2058,7 +2045,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 
 	rchandle<QName> attr_h = v.get_attr();
 	if (attr_h!=NULL) {
-		m_h->setQName(new qname_expr(v.get_location(), attr_h->get_qname()));
+		m_h->setQName(sctx_p->lookup_elem_qname (attr_h->get_qname()));
 	}
 	nodestack.push(&*m_h);
 	return no_state;
@@ -2073,13 +2060,13 @@ void translator::end_visit(const SchemaAttributeTest& v, void *visit_state)
 
 void *translator::begin_visit(const SchemaElementTest& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+  cout << std::string(++depth, ' ') << TRACE << endl;
 	rchandle<match_expr> m_h = new match_expr(v.get_location());
 	m_h->setTestKind(match_xs_elem_test);
 
 	rchandle<QName> elem_h = v.get_elem();
 	if (elem_h!=NULL) {
-		m_h->setQName(new qname_expr(v.get_location(), elem_h->get_qname()));
+		m_h->setQName (sctx_p->lookup_qname ("", elem_h->get_qname()));
 	}
 	nodestack.push(&*m_h);
 	return no_state;
@@ -2473,9 +2460,7 @@ cout << std::string(depth--, ' ') << TRACE << endl;
 	expr_t e_h;
 	rchandle<typeswitch_expr> tse_h = new typeswitch_expr(v.get_location());
 
-	rchandle<var_expr> ve_h = new var_expr(v.get_location());
-	rchandle<qname_expr> qname = new qname_expr(v.get_default_varname());
-	ve_h->set_varname(qname);
+	rchandle<var_expr> ve_h = bind_var (v.get_location(), v.get_default_varname());
 	tse_h->set_default_varname(ve_h);
 
 	//d Assert<null_pointer>((e_h = pop_nodestack())!=NULL);

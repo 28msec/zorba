@@ -64,7 +64,6 @@ PlanIter_t op_concatenate::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	if (!validate_args(argv)) return NULL;
 	return new ConcatIterator(loc,argv);
 }
 
@@ -117,8 +116,6 @@ PlanIter_t fn_index_of::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	if (!validate_args(argv)) return NULL;
-
 	string collation;
 	if (argv.size()==3) {
 		//xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[2],xs_string);
@@ -354,9 +351,8 @@ PlanIter_t fn_doc_func::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	if (!validate_args(argv)) return NULL;
 	// TODO correct implementation of doc iterator
-// 	return new doc_iterator(loc, argv[0]);
+  // return new doc_iterator(loc, argv[0]);
 	return NULL;
 }
   

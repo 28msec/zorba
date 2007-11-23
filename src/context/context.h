@@ -34,7 +34,7 @@
 namespace xqp {
 
   class zorba;
-  class expr;
+  class expr; class var_expr;
   class function;
 
 /*______________________________________________________________________

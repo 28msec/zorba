@@ -89,20 +89,20 @@ bool plan_visitor::begin_visit(var_expr& v)
 void plan_visitor::end_visit(var_expr& v)
 {
   if (v.kind == var_expr::for_var) {
-    var_iterator *v_p = new var_iterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
+    var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
     vector<var_iter_t> *map = NULL;
     
     Assert (fvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   } else if (v.kind == var_expr::pos_var) {
-    var_iterator *v_p = new var_iterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
+    var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
     vector<var_iter_t> *map = NULL;
     Assert (pvar_iter_map.get ((uint64_t) &v, map));
     map->push_back (v_p);
     itstack.push(v_p);
   } else if (v.kind == var_expr::let_var) {
-    RefIterator *v_p = new RefIterator(v.get_varname ()->name (),v.get_loc(), (void *) &v);
+    RefIterator *v_p = new RefIterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
     vector<ref_iter_t> *map = NULL;
     
     Assert (lvar_iter_map.get ((uint64_t) &v, map));
@@ -498,8 +498,8 @@ bool plan_visitor::begin_visit(match_expr& v)
     if (wildKind == match_no_wild)
     {
       qname = iFactory.createQName("",
-                                    v.getQName()->prefix().c_str(),
-                                    v.getQName()->local().c_str());
+                                   v.getQName()->getPrefix ().c_str(),
+                                   v.getQName()->getLocalName ().c_str());
 
       matchIte = new NameTestIterator(v.get_loc(), axisIte, qname, wildKind);
     }
@@ -527,15 +527,15 @@ bool plan_visitor::begin_visit(match_expr& v)
     if (v.getQName() != NULL)
     {
       qname = iFactory.createQName("",
-                                   v.getQName()->prefix().c_str(),
-                                   v.getQName()->local().c_str());
+                                   v.getQName()->getPrefix ().c_str(),
+                                   v.getQName()->getLocalName ().c_str());
     }
 
     if (v.getTypeName() != NULL)
     {
       tname = iFactory.createQName("",
-                                   v.getTypeName()->prefix().c_str(),
-                                   v.getTypeName()->local().c_str());
+                                   v.getTypeName()->getPrefix ().c_str(),
+                                   v.getTypeName()->getLocalName ().c_str());
     }
 
     matchIte = new KindTestIterator(v.get_loc(), axisIte, qname, tname,
@@ -597,10 +597,7 @@ void plan_visitor::end_visit(elem_expr& v)
 		contentIter = new ElementContentIterator(v.get_loc(), contentIter);
 	}
 
-	rchandle<qname_expr> qname = v.get_qname();
-  QNameItem_t itemQName = iFactory.createQName("",
-                                               qname->prefix().c_str(),
-                                               qname->local().c_str());
+  QNameItem_t itemQName = v.get_qname();
 
 	PlanIter_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
 
@@ -635,10 +632,7 @@ void plan_visitor::end_visit(attr_expr& v)
   ItemFactory& iFactory = Store::getInstance().getItemFactory();
 
 	// TODO dynamic qname
-	rchandle<qname_expr> qname = v.get_qname();
-	QNameItem_t itemQName = iFactory.createQName("",
-                                               qname->prefix().c_str(),
-                                               qname->local().c_str());
+	QNameItem_t itemQName = v.get_qname();
 
 	PlanIter_t valueIter = NULL;
 	if (v.get_val_expr() != NULL)

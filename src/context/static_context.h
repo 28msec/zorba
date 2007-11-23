@@ -53,28 +53,16 @@ class namespace_node;
 |	[http://www.w3.org/TR/xquery/#id-xq-context-components]
 |_______________________________________________________________________*/
 
+// External API interface is in class public StaticQueryContext
 class static_context : public context
-												//public StaticQueryContext ///implement also the API interface
 {
-public:	// types
-/*daniel: moved into zorba api
-	typedef enum { cons_preserve, cons_strip } construction_mode_t;
-	typedef enum { empty_greatest, empty_least } order_empty_mode_t;
-	typedef enum { preserve_space, strip_space } boundary_space_mode_t;
-	typedef enum { inherit_ns, no_inherit_ns } inherit_mode_t;
-	typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
-
-	typedef enum { ordered, unordered } ordering_mode_t;
-*/
 protected:
   static const char *default_ns_initializers [];
   static_context (const char **);
-  static std::string make_expanded_qname (std::string ns, std::string local) {
-    return local + ":" + ns;
-  }
-  std::string expand_qname (std::string default_ns, std::string prefix, std::string local) const;
-  std::string expand_qname (std::string default_ns, std::string qname) const;
-  static std::string fn_internal_key_pfx (int arity);
+  std::string qname_internal_key (QNameItem_t qname) const;
+  std::string qname_internal_key (std::string default_ns, std::string prefix, std::string local) const;
+  std::string qname_internal_key (std::string default_ns, std::string qname) const;
+  static std::string fn_internal_key (int arity);
   
 public:
 	static void init();
@@ -96,28 +84,40 @@ public:
   std::string lookup_ns (std::string prefix) const;
   void bind_ns (std::string prefix, std::string ns);
 
+  QNameItem_t lookup_qname (string default_ns, string name) const;
+  QNameItem_t lookup_qname (string default_ns, string pfx, string local) const;
+  QNameItem_t lookup_elem_qname (string name) const {
+    return lookup_qname (default_elem_type_ns (), name);
+  }
+  QNameItem_t lookup_elem_qname (string pfx, string local) const {
+    return lookup_qname (default_elem_type_ns (), pfx, local);
+  }
+
   expr *lookup_var (std::string prefix, std::string local) const {
-    return lookup_expr ("var:" + expand_qname ("", prefix, local));
+    return lookup_expr ("var:" + qname_internal_key ("", prefix, local));
   }
   expr *lookup_var (std::string varname) const {
-    return lookup_expr ("var:" + expand_qname ("", varname));
+    return lookup_expr ("var:" + qname_internal_key ("", varname));
+  }
+  void bind_var (QNameItem_t qname, expr *expr) {
+    bind_expr ("var:" + qname_internal_key (qname), expr);
   }
   void bind_var (std::string prefix, std::string local, expr *expr) {
-    bind_expr ("var:" + expand_qname ("", prefix, local), expr);
+    bind_expr ("var:" + qname_internal_key ("", prefix, local), expr);
   }
   void bind_var (std::string varname, expr *expr) {
-    bind_expr ("var:" + expand_qname ("", varname), expr);
+    bind_expr ("var:" + qname_internal_key ("", varname), expr);
   }
 
   function *lookup_fn (std::string prefix, std::string local, int arity) const {
-    return lookup_func (fn_internal_key_pfx (arity) + expand_qname (default_function_namespace (), prefix, local));
+    return lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
   }
   static function *lookup_builtin_fn (std::string local, int arity);
   void bind_fn (std::string prefix, std::string local, function *f, int arity) {
-    bind_func (fn_internal_key_pfx (arity) + expand_qname (default_function_namespace (), prefix, local), f);
+    bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local), f);
   }
   void bind_fn (std::string fname, function *f, int arity) {
-    bind_func (fn_internal_key_pfx (arity) + expand_qname (default_function_namespace (), fname), f);
+    bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
   }
 
   #if 0

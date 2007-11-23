@@ -30,6 +30,7 @@ int printdepth0 = 0;
 #define INDENT	    std::string(++printdepth0, ' ')
 #define OUTDENT	    std::string(printdepth0--, ' ')
 #define UNDENT	    printdepth0--
+#define PUT_QNAME( qname, os ) (os << qname->getPrefix () << "[=" << qname->getNamespace () << "]:" << qname->getLocalName ())
 
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
@@ -117,44 +118,6 @@ void expr_list::accept(
 	v.end_visit(*this);
 }
 
-/* begin class qname_expr */
-qname_expr::qname_expr(yy::location const& loc, std::string const& qname)
-	:
-  m_loc(loc)
-{
-	std::pair<std::string, std::string> prefixLocal = qname_expr::generatePrefixLocal(qname);
-	this->m_prefix = prefixLocal.first;
-	this->m_local = prefixLocal.second;
-}
-
-qname_expr::qname_expr(std::string const& qname)
-{
-	std::pair<std::string, std::string> prefixLocal = qname_expr::generatePrefixLocal(qname);
-	this->m_prefix = prefixLocal.first;
-	this->m_local = prefixLocal.second;
-}
-
-
-std::pair<std::string, std::string> qname_expr::generatePrefixLocal(std::string const& qname)
-{
-	std::pair<std::string, std::string> val;
-
-	string::size_type n = qname.find(':');
-
-	if (n != string::npos)
-  {
-		val.second = qname.substr(n+1);
-		val.first = qname.substr(0, n);
-	}
-  else
-  {
-		val.second = qname;
-		val.first = "";
-	}
-	return val;
-}
-/* end class qname_expr */
-
 
 // [33a]
 
@@ -179,7 +142,7 @@ ostream& var_expr::put( ostream& os) const
 	os << INDENT << "var_expr[" << decode_var_kind(get_kind());
 	if (varname_h!=NULL) {
 		os << " name=";
-		get_varname()->put(os);
+		PUT_QNAME (get_varname(), os);
 	}
 	os << ", type="; // TODO(VRB) << sequence_type::describe(type);
 	return os << OUTDENT << "]\n";
@@ -403,7 +366,7 @@ ostream& quantified_expr::put( ostream& os) const
 		//d Assert<null_pointer>(var_h->varname_h!=NULL);
 		Assert(var_h->varname_h!=NULL);
 		os << INDENT;
-		var_h->varname_h->put(os) << " in ";
+		PUT_QNAME (var_h->varname_h, os) << " in ";
 		UNDENT;
 	}
 
@@ -835,7 +798,7 @@ ostream& extension_expr::put( ostream& os) const
 	Assert(pragma_h!=NULL);
 	//d Assert<null_pointer>(pragma_h->name_h!=NULL);
 	Assert(pragma_h->name_h!=NULL);
-	os << "?"; pragma_h->name_h->put(os);
+	os << "?"; PUT_QNAME (pragma_h->name_h, os);
 	os << " " << pragma_h->content << endl;
 	UNDENT;
 
@@ -1038,7 +1001,7 @@ ostream& match_expr::put(ostream& os) const
   {
   	case match_no_wild:
       if (theQName != NULL)
-        theQName->put(os);
+        PUT_QNAME (theQName, os);
       break;
   	case match_all_wild:
       os << "*";
@@ -1055,7 +1018,7 @@ ostream& match_expr::put(ostream& os) const
 
 	if (theTypeName != NULL)
   {
-		theTypeName->put(os) << endl;
+		PUT_QNAME (theTypeName, os) << endl;
 	}
 
 	os << ")";
@@ -1227,7 +1190,7 @@ void order_expr::accept(
 // [96] [http://www.w3.org/TR/xquery/#doc-exquery-DirElemConstructor]
 elem_expr::elem_expr(
 	yy::location const& loc,
-	rchandle<qname_expr> _qname_h,
+	QNameItem_t _qname_h,
 	expr_t _attrs_expr_h,
 	expr_t _content_expr_h)
 :
@@ -1251,7 +1214,7 @@ void elem_expr::accept(expr_visitor& v)
 std::ostream& elem_expr::put(std::ostream& os) const
 {
 	os << INDENT << "elem_expr[";
-	qname_h->put(os);
+	PUT_QNAME (qname_h, os);
 	if (attrs_expr_h != NULL)
 		attrs_expr_h->put(os);
 	if (content_expr_h != NULL)
@@ -1293,7 +1256,7 @@ void doc_expr::accept(
 
 compElem_expr::compElem_expr(
 	yy::location const& loc,
-	rchandle<qname_expr> _qname_h,
+	QNameItem_t _qname_h,
 	rchandle<expr> _content_expr_h)
 :
 	expr(loc),
@@ -1325,7 +1288,7 @@ ostream& compElem_expr::put( ostream& os) const
 	//d Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	Assert(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os) << ">\n";
+		PUT_QNAME (qname_h, os) << ">\n";
 	}
 	else {
 		qname_expr_h->put(os) << ">\n";
@@ -1359,7 +1322,7 @@ void compElem_expr::accept(
 
 attr_expr::attr_expr(
 	yy::location const& loc,
-	rchandle<qname_expr> _qname_h,
+	QNameItem_t _qname_h,
 	rchandle<expr> _val_expr_h)
 :
 	expr(loc),
@@ -1391,10 +1354,10 @@ ostream& attr_expr::put( ostream& os) const
 	//d Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
 	Assert(qname_h!=NULL || qname_expr_h!=NULL);
 	if (qname_h!=NULL) {
-		qname_h->put(os);
+		PUT_QNAME (qname_h, os);
 	}
 	else {
-		qname_expr_h->put(os);
+		qname_expr_h->put (os);
 	}
 	
 	if (val_expr_h != NULL)

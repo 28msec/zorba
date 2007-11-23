@@ -36,11 +36,10 @@ public:
 protected:
 	zorba* zorp;
   static_context *sctx_p;
-//daniel	dynamic_context* dctx_p;
-// 	rchandle<data_manager> dmgr_h;
+  var_expr *bind_var (yy::location loc, string varname);
 
 	std::stack<expr_t> nodestack;
-// 	std::stack<expr_t> argstack;
+  // std::stack<expr_t> argstack;
 	std::stack<expr_t> pstack;	// predicates stack
 
 public:

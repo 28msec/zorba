@@ -161,48 +161,6 @@ public:
 };
 
 
-/*******************************************************************************
-
-********************************************************************************/
-class qname_expr : public rcobject
-{
-protected:
-  yy::location m_loc;
-  std::string  m_prefix;
-  std::string  m_local;
-
-public:
-  qname_expr(
-        yy::location const& loc,
-        std::string const& prefix,
-        std::string const& local)
-    :
-    m_loc(loc), m_prefix(prefix), m_local(local) {}
-	
-  qname_expr(std::string const& local, std::string const& prefix) 
-		: 
-	  m_prefix(prefix), m_local(local) {}
-
-  /*
-   * The "name" param is either a single NCName or NCName:NCName. If it is a
-   * single NCName, then m_prefix is set to "", and m_local is set to "name". 
-   */
-  qname_expr(yy::location const& loc, std::string const& name);
-	
-  qname_expr(std::string const& name);
-	
-  ~qname_expr() {}
-	
-	static std::pair<std::string, std::string> generatePrefixLocal(std::string const& qname);
-
-public:
-	std::string name() const { return m_prefix == "" ? m_local : m_prefix + ":" + m_local ; }
-	std::string prefix() const { return m_prefix; }
-	std::string local() const { return m_local; }
-	std::ostream& put(std::ostream& os) const { return os << this->name(); }
-};
-
-
 /******************************************************************************
 
   var_expr represents a variable reference within any kind of expression.
@@ -222,17 +180,16 @@ public:
 		context_var
 	};
 
-  rchandle<qname_expr> varname_h;
-	var_kind kind;
-    TypeSystem::xqtref_t type;
+  QNameItem_t varname_h;
+  var_kind kind;
+  TypeSystem::xqtref_t type;
 
 public:
-  var_expr(yy::location const& loc) : expr (loc), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
+  var_expr(yy::location const& loc, QNameItem_t name) : expr (loc), varname_h (name), type (GENV_TYPESYSTEM.UNTYPED_TYPE) {}  // TODO
   ~var_expr() {}
 
 public:
-  rchandle<qname_expr> get_varname() const { return varname_h; }
-  void set_varname(rchandle<qname_expr> q_h) { varname_h = q_h; }
+  QNameItem_t get_varname() const { return varname_h; }
 
 	var_kind get_kind() const { return kind; }
 	void set_kind(var_kind k) { kind = k; }
@@ -818,10 +775,10 @@ public:
 
 struct pragma : public rcobject
 {
-	rchandle<qname_expr> name_h;
+	QNameItem_t name_h;
 	std::string content;
 
-	pragma(rchandle<qname_expr> _name_h, std::string const& _content)
+	pragma(QNameItem_t _name_h, std::string const& _content)
 	: name_h(_name_h), content(_content) {}
 	~pragma() {}
 };
@@ -983,8 +940,8 @@ protected:
 	match_wild_t  theWildKind;
   xqp_string    theWildName;
 
-	rchandle<qname_expr> theQName;
-	rchandle<qname_expr> theTypeName;
+	QNameItem_t theQName;
+	QNameItem_t theTypeName;
   bool                 theNilledAllowed;
 
 public:
@@ -1001,11 +958,11 @@ public:
 	void setWildKind(enum match_wild_t v)    { theWildKind = v; }
 	void setWildName(const xqp_string& v)    { theWildName = v; } 
 
-	rchandle<qname_expr> getQName() const    { return theQName; }
-	rchandle<qname_expr> getTypeName() const { return theTypeName; }
+	QNameItem_t getQName() const    { return theQName; }
+	QNameItem_t getTypeName() const { return theTypeName; }
   bool getNilledAllowed() const            { return theNilledAllowed; }
-	void setQName(rchandle<qname_expr> v)    { theQName = v; }
-	void setTypeName(rchandle<qname_expr> v) { theTypeName = v; }
+	void setQName(QNameItem_t v)    { theQName = v; }
+	void setTypeName(QNameItem_t v) { theTypeName = v; }
   void setNilledAllowed(bool v)            { theNilledAllowed = v; }
 
 	void accept(expr_visitor&);
@@ -1109,19 +1066,19 @@ class elem_expr : public expr
 {
 	// TODO namespace bindings
 protected:
-	rchandle<qname_expr> qname_h;
+	QNameItem_t qname_h;
 	expr_t attrs_expr_h;
 	expr_t content_expr_h;
 	
 public:
 	elem_expr(
 		yy::location const&,
-		rchandle<qname_expr>,
+		QNameItem_t,
 		expr_t,
 		expr_t);
 	~elem_expr();
 	
-	rchandle<qname_expr> get_qname() const { return qname_h; }
+	QNameItem_t get_qname() const { return qname_h; }
 	expr_t get_content_expr() const { return content_expr_h; }
 	expr_t get_attrs_expr() const { return attrs_expr_h; }
 	
@@ -1170,7 +1127,7 @@ public:
 	typedef std::pair<std::string,std::string> nsbinding;
 
 protected:
-	rchandle<qname_expr> qname_h;
+	QNameItem_t qname_h;
 	expr_t qname_expr_h;
 	expr_t content_expr_h;
 	std::vector<nsbinding> nsb_v;
@@ -1178,7 +1135,7 @@ protected:
 public:
 	compElem_expr(
 		yy::location const&,
-		rchandle<qname_expr>,
+		QNameItem_t,
 		expr_t);
 	compElem_expr(
 		yy::location const&,
@@ -1187,7 +1144,7 @@ public:
 	~compElem_expr();
 
 public:
-	rchandle<qname_expr> get_qname() const { return qname_h; }
+	QNameItem_t get_qname() const { return qname_h; }
 	expr_t get_qname_expr() const { return qname_expr_h; }
 	expr_t get_content_expr() const { return content_expr_h; }
 
@@ -1224,14 +1181,14 @@ public:
 class attr_expr : public expr
 {
 protected:
-	rchandle<qname_expr> qname_h;
+	QNameItem_t qname_h;
 	expr_t qname_expr_h;
 	expr_t val_expr_h;
 
 public:
 	attr_expr(
 		yy::location const& loc,
-		rchandle<qname_expr> qn,
+		QNameItem_t qn,
 		expr_t val_expr);
 
 	attr_expr(
@@ -1242,7 +1199,7 @@ public:
 	~attr_expr();
 
 public:
-	rchandle<qname_expr> get_qname() const { return qname_h; }
+	QNameItem_t get_qname() const { return qname_h; }
 	expr_t get_qname_expr() const { return qname_expr_h; }
 	expr_t get_val_expr() const { return val_expr_h; }
 
