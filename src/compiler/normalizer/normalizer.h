@@ -33,7 +33,7 @@ class normalizer : public expr_visitor {
     bool begin_visit(relpath_expr&);
     bool begin_visit(axis_step_expr&);
     bool begin_visit(match_expr&);
-    bool begin_visit(literal_expr&);
+    bool begin_visit(const_expr&);
     bool begin_visit(order_expr&);
     bool begin_visit(elem_expr&);
     bool begin_visit(doc_expr&);
@@ -65,7 +65,7 @@ class normalizer : public expr_visitor {
     void end_visit(relpath_expr&);
     void end_visit(axis_step_expr&);
     void end_visit(match_expr&);
-    void end_visit(literal_expr&);
+    void end_visit(const_expr&);
     void end_visit(order_expr&);
     void end_visit(elem_expr&);
     void end_visit(doc_expr&);

@@ -16,6 +16,7 @@
 #include "util/tracer.h"
 #include "errors/Error.h"
 #include "compiler/expression/expr_visitor.h"
+#include "util/zorba.h"
 
 #include <iostream>
 #include <string>
@@ -29,6 +30,8 @@ int printdepth0 = 0;
 #define INDENT	    std::string(++printdepth0, ' ')
 #define OUTDENT	    std::string(printdepth0--, ' ')
 #define UNDENT	    printdepth0--
+
+#define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
 expr::expr(
 	yy::location const& _loc)
@@ -1111,74 +1114,68 @@ StoreConsts::NodeKind_t match_expr::getNodeKind() const
 
 // [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
 
-literal_expr::literal_expr(
-	yy::location const& loc,
-	const string& _sval)
+const_expr::const_expr(yy::location const& loc,
+                           xqpString v)
+  :
+	expr(loc),
+	val (ITEM_FACTORY.createString (v))
+{
+}
+
+const_expr::const_expr(yy::location const& loc,
+                           xqp_integer v)
 :
 	expr(loc),
-	type(lit_string),
-	sval(_sval)
+	val (ITEM_FACTORY.createInteger (v))
 {
 }
 
-literal_expr::literal_expr(
+const_expr::const_expr(
 	yy::location const& loc,
-	int i)
+	xqp_decimal v)
 :
 	expr(loc),
-	type(lit_integer),
-	ival(i)
+	val (ITEM_FACTORY.createDecimal (v))
 {
 }
 
-literal_expr::literal_expr(
+const_expr::const_expr(
 	yy::location const& loc,
-	decimal d)
+	xqp_double v)
 :
 	expr(loc),
-	type(lit_decimal),
-	decval(d)
+	val (ITEM_FACTORY.createDouble (v))
 {
 }
 
-literal_expr::literal_expr(
+const_expr::const_expr(
 	yy::location const& loc,
-	double d)
+	xqp_boolean v)
 :
 	expr(loc),
-	type(lit_double),
-	dval(d)
+	val (ITEM_FACTORY.createBoolean (v))
 {
 }
 
-literal_expr::~literal_expr()
+const_expr::~const_expr()
 {
 }
 
-string literal_expr::decode_type(enum literal_type_t t) 
+ostream& const_expr::put( ostream& os) const
 {
-	switch (t) {
-	case lit_string: return "STRING"; break;
-	case lit_integer: return "INTEGER"; break;
-	case lit_decimal: return "DECIMAL"; break;
-	case lit_double: return "DOUBLE"; break;
-	default: return "???";
-	}
-}
-
-ostream& literal_expr::put( ostream& os) const
-{
-	switch (type) {
+	switch (1) {
+#if 0  // TODO
 	case lit_string: os << INDENT << "string[" << sval; break;
 	case lit_integer: os << INDENT << "integer[" << ival; break;
 	case lit_decimal: os << INDENT << "decimal[" << decval; break;
 	case lit_double: os << INDENT << "double[" << dval; break;
+#endif
 	default: os << INDENT << "???[]";
 	}
 	return os << OUTDENT << "]\n";
 }
 
-void literal_expr::accept(
+void const_expr::accept(
 	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;

@@ -1688,15 +1688,15 @@ void translator::end_visit(const NumericLiteral& v, void *visit_state)
 cout << std::string(depth--, ' ') << TRACE << endl;
 	switch (v.get_type()) {
 	case num_integer: {
-		nodestack.push(new literal_expr(v.get_location(), v.get_int()));
+		nodestack.push(new const_expr(v.get_location(), (xqp_integer) v.get_int()));
 		break;
 	}
 	case num_decimal: {
-		nodestack.push(new literal_expr(v.get_location(), v.get_decimal()));
+		nodestack.push(new const_expr(v.get_location(), (xqp_decimal) v.get_decimal()));
 		break;
 	}
 	case num_double: {
-		nodestack.push(new literal_expr(v.get_location(), v.get_double()));
+		nodestack.push(new const_expr(v.get_location(), (xqp_double) v.get_double()));
 		break;
 	}
 	}
@@ -2446,7 +2446,7 @@ cout << std::string(++depth, ' ') << TRACE << endl;
 void translator::end_visit(const StringLiteral& v, void *visit_state)
 {
 cout << std::string(depth--, ' ') << TRACE << endl;
-	nodestack.push(new literal_expr(v.get_location(),v.get_strval()));
+	nodestack.push(new const_expr(v.get_location(),v.get_strval()));
 }
 
 void *translator::begin_visit(const TreatExpr& v)
@@ -3082,12 +3082,6 @@ void translator::end_visit(const FTWordsValue& v, void *visit_state)
 cout << std::string(depth--, ' ') << TRACE << endl;
 }
 
-
-
-// void translator::end_visit(const ExprSingle& v, void *visit_state)
-// {
-// cout << std::string(depth--, ' ') << TRACE << endl;
-// }
 
 } /* namespace xqp */
 

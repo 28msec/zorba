@@ -58,26 +58,26 @@ int main(int argc, char* argv[])
 	/*...........................................
 		: literal expresions                      :
 		:.........................................*/
-		cout << "\n>>>literal_expr\n";
-		rchandle<literal_expr> lit1_h = new literal_expr(loc, i1, true);
-		rchandle<literal_expr> lit2_h = new literal_expr(loc, i2, true);
-		rchandle<literal_expr> lit3_h = new literal_expr(loc, i3, true);
-		rchandle<literal_expr> lit4_h = new literal_expr(loc, 123);
-		rchandle<literal_expr> lit5_h = new literal_expr(loc, 123456);
-		rchandle<literal_expr> lit6_h = new literal_expr(loc, 123.456);
+		cout << "\n>>>const_expr\n";
+		rchandle<const_expr> lit1_h = new const_expr(loc, i1, true);
+		rchandle<const_expr> lit2_h = new const_expr(loc, i2, true);
+		rchandle<const_expr> lit3_h = new const_expr(loc, i3, true);
+		rchandle<const_expr> lit4_h = new const_expr(loc, 123);
+		rchandle<const_expr> lit5_h = new const_expr(loc, 123456);
+		rchandle<const_expr> lit6_h = new const_expr(loc, 123.456);
 	
-		cout << "lit1 [" << literal_expr::decode_type(lit1_h->get_type()) << "] = ";
+		cout << "lit1 [" << const_expr::decode_type(lit1_h->get_type()) << "] = ";
 		lit1_h->put(cout,ctx) << " : " << symtab.get(lit1_h->get_sref()) << endl;
-		cout << "lit2 [" << literal_expr::decode_type(lit2_h->get_type()) << "] = ";
+		cout << "lit2 [" << const_expr::decode_type(lit2_h->get_type()) << "] = ";
 		lit2_h->put(cout,ctx) << " : " << symtab.get(lit2_h->get_sref()) << endl;
-		cout << "lit3 [" << literal_expr::decode_type(lit3_h->get_type()) << "] = ";
+		cout << "lit3 [" << const_expr::decode_type(lit3_h->get_type()) << "] = ";
 		lit3_h->put(cout,ctx) << " : " << symtab.get(lit3_h->get_sref()) << endl;
 	
-		cout << "lit4 [" << literal_expr::decode_type(lit4_h->get_type()) << "] = ";
+		cout << "lit4 [" << const_expr::decode_type(lit4_h->get_type()) << "] = ";
 		lit4_h->put(cout,ctx) << endl;
-		cout << "lit5 [" << literal_expr::decode_type(lit5_h->get_type()) << "] = ";
+		cout << "lit5 [" << const_expr::decode_type(lit5_h->get_type()) << "] = ";
 		lit5_h->put(cout,ctx) << endl;
-		cout << "lit6 [" << literal_expr::decode_type(lit6_h->get_type()) << "] = ";
+		cout << "lit6 [" << const_expr::decode_type(lit6_h->get_type()) << "] = ";
 		lit6_h->put(cout,ctx) << endl;
 	
 	

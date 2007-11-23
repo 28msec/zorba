@@ -706,7 +706,7 @@ void plan_visitor::end_visit(pi_expr& v)
 
 
 
-bool plan_visitor::begin_visit(literal_expr& v)
+bool plan_visitor::begin_visit(const_expr& v)
 {
 cout << std::string(++depth, ' ') << TRACE << endl;
 	return true;
@@ -764,45 +764,11 @@ void plan_visitor::end_visit(extension_expr& v)
 }
 
 
-void plan_visitor::end_visit(literal_expr& v)
+void plan_visitor::end_visit(const_expr& v)
 {
 	cout << std::string(depth--, ' ') << TRACE << endl;
-  switch (v.get_type()) {
-  case literal_expr::lit_string: {
-    PlanIter_t it = new SingletonIterator(
-											v.get_loc(),
-											zorba::getItemFactory()->createString(v.get_sval()));
-    itstack.push(it);
-    break;
-  }
-  case literal_expr::lit_integer: {
-    PlanIter_t it = new SingletonIterator(
-											v.get_loc(),
-											zorba::getItemFactory()->createInteger(v.get_ival()));
-    itstack.push(it);
-    break;
-  }
-  case literal_expr::lit_decimal: {
-    PlanIter_t it = new SingletonIterator(
-											v.get_loc(),
-											zorba::getItemFactory()->createDecimal(v.get_decval()));
-    itstack.push(it);
-    break;
-  }
-  case literal_expr::lit_double: {
-    PlanIter_t it = new SingletonIterator(
-											v.get_loc(),
-											zorba::getItemFactory()->createDouble(v.get_dval()));
-    itstack.push(it);
-    break;
-  }
-  case literal_expr::lit_bool: {
-    PlanIter_t it = new SingletonIterator(
-											v.get_loc(),
-											zorba::getItemFactory()->createBoolean(v.get_bval()));
-    itstack.push(it);
-    break;
-  }}
+  PlanIter_t it = new SingletonIterator (v.get_loc (), v.get_val ());
+  itstack.push (it);
 }
 
 void plan_visitor::end_visit(order_expr& v)

@@ -176,7 +176,7 @@ bool normalizer::begin_visit(match_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(literal_expr& node)
+bool normalizer::begin_visit(const_expr& node)
 {
   return true;
 }
@@ -309,7 +309,7 @@ void normalizer::end_visit(match_expr& node)
 {
 }
 
-void normalizer::end_visit(literal_expr& node)
+void normalizer::end_visit(const_expr& node)
 {
 }
 

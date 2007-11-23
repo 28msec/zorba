@@ -1032,54 +1032,28 @@ public:
 
 
 // [85] [http://www.w3.org/TR/xquery/#prod-xquery-PrimaryExpr]
-class literal_expr : public expr
+class const_expr : public expr
 /*______________________________________________________________________
 |	::= NumericLiteral | StringLiteral
 |_______________________________________________________________________*/
 {
-public:
-	enum literal_type_t {
-		lit_string,
-		lit_integer,
-		lit_decimal,
-		lit_double,
-		lit_bool
-	};
-
 protected:
-	enum literal_type_t type;
-	std::string sval;
-	union {
-		//uint32_t sref;
-		int ival;
-		decimal decval;
-		double dval;
-		bool bval;
-	};
+  Item_t val;
 
 public:
-	//literal_expr(yy::location const&, uint32_t sref, bool);
-	literal_expr(yy::location const&, const std::string& sval);
-	literal_expr(yy::location const&, int);
-	literal_expr(yy::location const&, decimal);
-	literal_expr(yy::location const&, double);
-	literal_expr(yy::location const&, bool);
-	~literal_expr();
+  const_expr(yy::location const&, xqpString sval);
+  const_expr(yy::location const&, xqp_integer);
+  const_expr(yy::location const&, xqp_decimal);
+  const_expr(yy::location const&, xqp_double);
+  const_expr(yy::location const&, xqp_boolean);
+  ~const_expr();
 
 public:
-	enum literal_type_t get_type() const { return type; }
-	//uint32_t get_sref() const { return sref; }
-	xqpString get_sval() const { return sval; }
-	int get_ival() const { return ival; }
-	decimal get_decval() const { return decval; }
-	double get_dval() const { return dval; }
-	bool get_bval() const { return bval; }
+  Item_t get_val () const { return val; }
 
 public:
-	static std::string decode_type(enum literal_type_t t);
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-
+  void accept(expr_visitor&);
+  std::ostream& put(std::ostream&) const;
 };
 
 

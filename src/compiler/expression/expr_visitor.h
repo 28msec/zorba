@@ -44,7 +44,7 @@ class relpath_expr;
 class axis_step_expr;
 class match_expr;
 class primary_expr;
-class literal_expr;
+class const_expr;
 class order_expr;
 class funcall_expr;
 class elem_expr;
@@ -88,7 +88,7 @@ public:
 	virtual bool begin_visit(relpath_expr&) = 0;
 	virtual bool begin_visit(axis_step_expr&) = 0;
 	virtual bool begin_visit(match_expr&) = 0;
-	virtual bool begin_visit(literal_expr&) = 0;
+	virtual bool begin_visit(const_expr&) = 0;
 	virtual bool begin_visit(order_expr&) = 0;
 	virtual bool begin_visit(elem_expr&) = 0;
 	virtual bool begin_visit(doc_expr&) = 0;
@@ -124,7 +124,7 @@ public:
 	virtual void end_visit(relpath_expr&) = 0;
 	virtual void end_visit(axis_step_expr&) = 0;
   virtual void end_visit(match_expr&) = 0;
-	virtual void end_visit(literal_expr&) = 0;
+	virtual void end_visit(const_expr&) = 0;
 	virtual void end_visit(order_expr&) = 0;
 	virtual void end_visit(elem_expr&) = 0;
 	virtual void end_visit(doc_expr&) = 0;
