@@ -91,8 +91,16 @@ namespace xqp
 			bool isGeneralComparison();
 			bool isNodeComparison();
 			
+    private:
+      static std::pair<Item_t, Item_t> valueCasting(Item_t aItem0, Item_t aItem1);
+      static std::pair<Item_t, Item_t> generalCasting(Item_t aItem0, Item_t aItem1);
+      static std::pair<Item_t, Item_t> typePromotion(Item_t aItem0, Item_t aItem1);
+      static bool boolResult(int8_t aCompValue, CompareType aCompType);
+      
+    public:
 			/**
-			 * Compares two items
+			 * Compares two items (without castings and promotions which are used in general 
+       * and value comparison).
 			 * @param item0 
 			 * @param item1 
 			 * @return -1, if item0 &lt; item1
@@ -100,18 +108,50 @@ namespace xqp
 			 *				 	1, if item0 &gt; item1
 			 *				 -2, if it is not possible to compare the values the two passed items
 			 */
-			static int8_t compare(const Item_t& item0, const Item_t& item1);
+      static int8_t compare(const Item_t& aItem0, const Item_t& aItem1);
+      
+      /**
+       * Value Comparison on the passed items
+       * @param aItem0 
+       * @param aItem1 
+       * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (value comparison not possible)
+       */
+      static int8_t valueCompare(const Item_t& aItem0, const Item_t& aItem1);
+      
+      /**
+       * General Comparison on the passed items
+       * @param aItem0 
+       * @param aItem1 
+       * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (general comparison not possible)
+       */
+      static int8_t generalCompare(const Item_t& aItem0, const Item_t& aItem1);
 			
 			/**
-			 * Checks if the two passed items contains the same value
+       * Checks if the two passed items contains the same value (without castings and promotions which are used in general 
+       * and value comparison).
 			 * @param item0 
 			 * @param item1 
 			 * @return 	0, if item0 == item1
 			 *				  1, if item0 != item1
 			 *				 -2, if it is not possible to compare the values of the passed items
 			 */
-			static int8_t equal(const Item_t& item0, const Item_t& item1);
-		private:
+      static int8_t equal(const Item_t& aItem0, const Item_t& aItem1);
+      
+      /**
+       * Value Equal on the passed items
+       * @param aItem0 
+       * @param aItem1 
+       * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
+       */
+      static int8_t valueEqual(const Item_t& aItem0, const Item_t& aItem1);
+      
+      /**
+       * General Equal on the passed items
+       * @param aItem0 
+       * @param aItem1 
+       * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
+       */
+      static int8_t generalEqual(const Item_t& aItem0, const Item_t& aItem1);
       
 			/**
 			 * Value comparison of the passed two items with the operator 
@@ -122,7 +162,8 @@ namespace xqp
        * @param aCompType
 			 * @return 
 			 */
-			static bool valueComparison(Item_t item0, Item_t item1, CompareType aCompType);
+			static bool valueComparison(const Item_t& aItem0, const Item_t& aItem1, CompareType aCompType);
+      
       
 			/**
 			 * General comparison of the passed two items with the operator 
@@ -133,7 +174,7 @@ namespace xqp
        * @param aCompType
 			 * @return 
 			 */
-			static bool generalComparison(Item_t item0, Item_t item_1, CompareType aCompType);
+			static bool generalComparison(const Item_t& aItem0, const Item_t& aItem_1, CompareType aCompType);
 	}; /* class CompareIterator */
 
 }

@@ -155,8 +155,8 @@ namespace xqp
   Item_t
   CompareIterator::nextImpl ( PlanState& planState )
   {
-    Item_t item0;
-    Item_t item1;
+    Item_t aItem0;
+    Item_t aItem1;
     Iterator_t lIter0;
     Iterator_t lIter1;
     TempSeq_t temp0;
@@ -195,10 +195,10 @@ namespace xqp
     } /* if general comparison */
     else if ( this->isValueComparison() )
     {
-      if ( ( ( item0 = this->consumeNext ( theChild0, planState ) ) != NULL )
-              && ( ( item1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
+      if ( ( ( aItem0 = this->consumeNext ( theChild0, planState ) ) != NULL )
+              && ( ( aItem1 = this->consumeNext ( theChild1, planState ) ) !=NULL ) )
       {
-        STACK_PUSH ( zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( item0, item1, theCompType ) ), state );
+        STACK_PUSH ( zorba::getItemFactory()->createBoolean ( CompareIterator::valueComparison ( aItem0, aItem1, theCompType ) ), state );
         if ( this->consumeNext ( theChild0, planState ) != NULL || this->consumeNext ( theChild1, planState ) != NULL )
         {
           ZorbaErrorAlerts::error_alert (
@@ -284,25 +284,39 @@ namespace xqp
     return retVal;
   }
   
-  bool
-  CompareIterator::generalComparison(Item_t item0, Item_t item1, CompareType aCompType)
-  {
-        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
-        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
-        if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  std::pair<Item_t, Item_t> CompareIterator::valueCasting(Item_t aItem0, Item_t aItem1) {
+    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    // all untyped Atomics to String
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    {
+      aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+    }
+    if  (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    {
+      aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+    }
+    
+    return std::pair<Item_t,Item_t>(aItem0, aItem1);
+  }
+  
+  std::pair<Item_t, Item_t> CompareIterator::generalCasting(Item_t aItem0, Item_t aItem1) {
+    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
+    if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     {
       if (GENV_TYPESYSTEM.is_numeric(*type1))
       {
-        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
       }
       else
       {
-        item0 = GenericCast::instance()->cast(item0, type1);
+        aItem0 = GenericCast::instance()->cast(aItem0, type1);
       }
     }
     
@@ -310,86 +324,122 @@ namespace xqp
     {
       if (GENV_TYPESYSTEM.is_numeric(*type0))
       {
-        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
                || GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
       {
-        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
       }
       else
       {
-        item1 = GenericCast::instance()->cast(item1, type0);
+        aItem1 = GenericCast::instance()->cast(aItem1, type0);
       }
     }
-    
-    return CompareIterator::valueComparison(item0, item1, aCompType);
-  } /* end CompareIterator::generalComparison (...) */
+    return std::pair<Item_t,Item_t>(aItem0, aItem1);
+  }
   
-  bool CompareIterator::valueComparison(Item_t item0, Item_t item1, CompareType aCompType)
-  {
-        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
-        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
-    // all untyped Atomics to String
-        if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
+{
+  if ( aCompValue > -2 )
+    switch ( aCompType )
     {
-      item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      case VALUE_EQUAL:
+      case GENERAL_EQUAL:
+        return aCompValue == 0;
+        break;
+      case VALUE_NOT_EQUAL:
+      case GENERAL_NOT_EQUAL:
+        return aCompValue != 0;
+        break;
+      case VALUE_GREATER:
+      case GENERAL_GREATER:
+        return aCompValue > 0;
+        break;
+      case VALUE_GREATER_EQUAL:
+      case GENERAL_GREATER_EQUAL:
+        return aCompValue >= 0;
+        break;
+      case VALUE_LESS:
+      case GENERAL_LESS:
+        return aCompValue < 0;
+        break;
+      case VALUE_LESS_EQUAL:
+      case GENERAL_LESS_EQUAL:
+        return aCompValue <= 0;
+        break;
+      default:
+        break;
     }
-    if  (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-    {
-      item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
-    }
+
+  ZorbaErrorAlerts::error_alert (
+      error_messages::FOCH0004_Collation_does_not_support_collation_units,
+      error_messages::RUNTIME_ERROR,
+      0,
+      false,
+      "Compare of declared collation operator and operators is not possible!"
+  );
+  return false;
+}
+  
+  std::pair<Item_t, Item_t> CompareIterator::typePromotion(Item_t aItem0, Item_t aItem1) {
+    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
     
-    // TYPE PROMOTION
     // numeric promotion
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
       {
-        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
+        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
       }
     }
     else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
     {
       if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
       {
-        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
       {
-        item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
     }
     
     if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
       {
-        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
+        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.FLOAT_TYPE_ONE);
       }
     }
     else if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
     {
       if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
       {
-        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
       else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
       {
-        item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
+        aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE);
       }
     }
     // uri promotion
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE))
     {
-      item1 = GenericCast::instance()->cast(item1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      aItem1 = GenericCast::instance()->cast(aItem1, GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
     if (GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
     {
-      item0 = GenericCast::instance()->cast(item0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
+      aItem0 = GenericCast::instance()->cast(aItem0, GENV_TYPESYSTEM.STRING_TYPE_ONE);
     }
-
-    // computation of result
+    
+    return std::pair<Item_t,Item_t>(aItem0, aItem1);
+  }
+  
+  bool
+  CompareIterator::generalComparison(const Item_t& aItem0, const Item_t& aItem1, CompareType aCompType)
+  {
     int8_t compValue = -2;
     switch(aCompType)
     {
@@ -397,7 +447,7 @@ namespace xqp
       case GENERAL_EQUAL:
       case VALUE_NOT_EQUAL:
       case GENERAL_NOT_EQUAL:
-        compValue = CompareIterator::equal(item0, item1);
+        compValue = CompareIterator::generalEqual(aItem0, aItem1);
         break;
       case VALUE_GREATER:
       case GENERAL_GREATER:
@@ -407,68 +457,56 @@ namespace xqp
       case GENERAL_LESS:
       case VALUE_LESS_EQUAL:
       case GENERAL_LESS_EQUAL:
-        compValue = CompareIterator::compare(item0, item1);
+        compValue = CompareIterator::generalCompare(aItem0, aItem1);
       default:
         break;
     }
     
-    if (compValue > -2)
-      switch(aCompType)
-      {
-        case VALUE_EQUAL:
-        case GENERAL_EQUAL:
-          return compValue == 0;
-          break;
-        case VALUE_NOT_EQUAL:
-        case GENERAL_NOT_EQUAL:
-          return compValue != 0;
-          break;
-        case VALUE_GREATER:
-        case GENERAL_GREATER:
-          return compValue > 0;
-          break;
-        case VALUE_GREATER_EQUAL:
-        case GENERAL_GREATER_EQUAL:
-          return compValue >= 0;
-          break;
-        case VALUE_LESS:
-        case GENERAL_LESS:
-          return compValue < 0;
-          break;
-        case VALUE_LESS_EQUAL:
-        case GENERAL_LESS_EQUAL:
-          return compValue <= 0;
-          break;
-        default:
-          break;
-      }
-      
-    ZorbaErrorAlerts::error_alert (
-      error_messages::FOCH0004_Collation_does_not_support_collation_units,
-      error_messages::RUNTIME_ERROR,
-      0,
-      false,
-      "Compare of declared collation operator and operators is not possible!"
-    );
-    return false;
-  } /* end CompareIterator::valueComparison (...) */
+    return boolResult(compValue, aCompType);
+  } /* end CompareIterator::generalComparison (...) */
+  
+  bool CompareIterator::valueComparison(const Item_t& aItem0, const Item_t& aItem1, CompareType aCompType)
+  {
+    int8_t compValue = -2;
+    switch(aCompType)
+    {
+      case VALUE_EQUAL:
+      case GENERAL_EQUAL:
+      case VALUE_NOT_EQUAL:
+      case GENERAL_NOT_EQUAL:
+        compValue = CompareIterator::valueEqual(aItem0, aItem1);
+        break;
+      case VALUE_GREATER:
+      case GENERAL_GREATER:
+      case VALUE_GREATER_EQUAL:
+      case GENERAL_GREATER_EQUAL:
+      case VALUE_LESS:
+      case GENERAL_LESS:
+      case VALUE_LESS_EQUAL:
+      case GENERAL_LESS_EQUAL:
+        compValue = CompareIterator::valueCompare(aItem0, aItem1);
+      default:
+        break;
+    }
+    
+    return boolResult(compValue, aCompType);
+  }
   
   int8_t
-  CompareIterator::equal(const Item_t& item0, const Item_t& item1)
+  CompareIterator::equal(const Item_t& aItem0, const Item_t& aItem1)
   {
     // tries first normal compare
-    int8_t compareRes = CompareIterator::compare(item0, item1);
+    int8_t compareRes = CompareIterator::compare(aItem0, aItem1);
     if (compareRes == 0)
       return 0;
     else if (compareRes == -1 || compareRes == 1)
       return 1;
-      
-        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
-        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
     bool equal;
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
-        equal = item0->equals(item1);
+        equal = aItem0->equals(aItem1);
     // TODO the rest
     else
       return -2;
@@ -479,47 +517,75 @@ namespace xqp
       return 1;
   }
   
+  int8_t CompareIterator::valueEqual(const Item_t& aItem0, const Item_t& aItem1) {
+    std::pair<Item_t, Item_t> lPair;
+    lPair = valueCasting(aItem0, aItem1);
+    lPair = typePromotion(lPair.first, lPair.second);
+    return equal(lPair.first, lPair.second);
+  }
+  
+  int8_t CompareIterator::generalEqual(const Item_t& aItem0, const Item_t& aItem1) {
+    std::pair<Item_t, Item_t> lPair;
+    lPair = generalCasting(aItem0, aItem1);
+    lPair = typePromotion(lPair.first, lPair.second);
+    return equal(lPair.first, lPair.second);
+  }
+  
   int8_t 
-  CompareIterator::compare(const Item_t& item0, const Item_t& item1)
+  CompareIterator::compare(const Item_t& aItem0, const Item_t& aItem1)
   {
-        TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(item0->getType(), TypeSystem::QUANT_ONE);
-        TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(item1->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
+    TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
     int8_t ret = -2;
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
-      if ( item0->getFloatValue() < item1->getFloatValue())
+      if ( aItem0->getFloatValue() < aItem1->getFloatValue())
         ret = -1;
-      else if ( item0->getFloatValue() == item1->getFloatValue())
+      else if ( aItem0->getFloatValue() == aItem1->getFloatValue())
         ret = 0;
       else
         ret = 1;
       else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
                && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
-      if ( item0->getDoubleValue() < item1->getDoubleValue())
+      if ( aItem0->getDoubleValue() < aItem1->getDoubleValue())
         ret = -1;
-      else if ( item0->getDoubleValue() == item1->getDoubleValue())
+      else if ( aItem0->getDoubleValue() == aItem1->getDoubleValue())
         ret = 0;
       else
         ret = 1;
       else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
                && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
-      if ( item0->getDecimalValue() < item1->getDecimalValue())
+      if ( aItem0->getDecimalValue() < aItem1->getDecimalValue())
         ret = -1;
-      else if ( item0->getDecimalValue() == item1->getDecimalValue())
+      else if ( aItem0->getDecimalValue() == aItem1->getDecimalValue())
         ret = 0;
       else
         ret = 1;
       else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
                && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
-      if ( item0->getStringValue() < item1->getStringValue())
+      if ( aItem0->getStringValue() < aItem1->getStringValue())
         ret = -1;
-      else if ( item0->getStringValue() == item1->getStringValue())
+      else if ( aItem0->getStringValue() == aItem1->getStringValue())
         ret = 0;
       else
         ret = 1;
     // TODO comparisons for all types
 
     return ret;
+  }
+  
+  int8_t CompareIterator::valueCompare(const Item_t& aItem0, const Item_t& aItem1) {
+    std::pair<Item_t, Item_t> lPair;
+    lPair = valueCasting(aItem0, aItem1);
+    lPair = typePromotion(lPair.first, lPair.second);
+    return compare(lPair.first, lPair.second);
+  }
+  
+  int8_t CompareIterator::generalCompare(const Item_t& aItem0, const Item_t& aItem1) {
+    std::pair<Item_t, Item_t> lPair;
+    lPair = generalCasting(aItem0, aItem1);
+    lPair = typePromotion(lPair.first, lPair.second);
+    return compare(lPair.first, lPair.second);
   }
   /* end class ComparisonIterator */
 
