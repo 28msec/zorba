@@ -85,52 +85,52 @@ namespace xqp {
 
 	DECL_ENUM_PARAM (static_context, ordering_mode)
 
-  pair<string, string> parse_qname (string qname) {
-    string::size_type n = qname.find(':');
+  pair<xqpString, xqpString> parse_qname (xqpString qname) {
+    int n = static_cast<std::string> (qname).find (':');
     return (n == string::npos)
-      ? pair<string, string> ("", qname)
-      : pair<string, string> (qname.substr (0, n), qname.substr (n+1));
+      ? pair<xqpString, xqpString> ("", qname)
+      : pair<xqpString, xqpString> (qname.substr (0, n), qname.substr (n+1));
   }
 
-  static string qname_internal_key2 (string ns, std::string local) {
+  static xqpString qname_internal_key2 (xqpString ns, xqpString local) {
     return local + ":" + ns;
   }
-  QNameItem_t static_context::lookup_qname (string default_ns, string prefix, string local) const {
+  QNameItem_t static_context::lookup_qname (xqpString default_ns, xqpString prefix, xqpString local) const {
     xqpStringStore *ssns = new xqpStringStore (prefix.empty () ? default_ns : lookup_ns (prefix)),
       *sspfx = new xqpStringStore (prefix), *sslocal = new xqpStringStore (local);
     return ITEM_FACTORY.createQName (ssns, sspfx, sslocal);
   }
-  QNameItem_t static_context::lookup_qname (string default_ns, string qname) const {
-    pair<string, string> rqname = parse_qname (qname);
+  QNameItem_t static_context::lookup_qname (xqpString default_ns, xqpString qname) const {
+    pair<xqpString, xqpString> rqname = parse_qname (qname);
     return lookup_qname (default_ns, rqname.first, rqname.second);
   }
-  string static_context::qname_internal_key (QNameItem_t qname) const {
+  xqpString static_context::qname_internal_key (QNameItem_t qname) const {
     return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
   }
-  string static_context::qname_internal_key (string default_ns, string prefix, string local) const {
+  xqpString static_context::qname_internal_key (xqpString default_ns, xqpString prefix, xqpString local) const {
     return qname_internal_key2
       (prefix.empty () ? default_ns : lookup_ns (prefix), local);
   }
-  string static_context::qname_internal_key (string default_ns, string qname) const {
-    pair<string, string> rqname = parse_qname (qname);
+  xqpString static_context::qname_internal_key (xqpString default_ns, xqpString qname) const {
+    pair<xqpString, xqpString> rqname = parse_qname (qname);
     return qname_internal_key (default_ns, rqname.first, rqname.second);
   }
-  string static_context::fn_internal_key (int arity) {
+  xqpString static_context::fn_internal_key (int arity) {
     ostringstream o;
     o << "fn:" << arity << "/";
     return o.str ();
   }
 
-  string static_context::lookup_ns (string prefix) const {
-    string ns;
+  xqpString static_context::lookup_ns (xqpString prefix) const {
+    xqpString ns;
     Assert (context_value ("ns:" + prefix, ns));
     return ns;
   }
-  void static_context::bind_ns (string prefix, string ns) {
+  void static_context::bind_ns (xqpString prefix, xqpString ns) {
     bind_str ("ns:" + prefix, ns);
   }
 
-  function *static_context::lookup_builtin_fn (string local, int arity) {
+  function *static_context::lookup_builtin_fn (xqpString local, int arity) {
     return root_static_context ()->lookup_func (fn_internal_key (arity) + qname_internal_key2 (XQUERY_FN_NS, local));
   }
 
@@ -143,7 +143,7 @@ THROW_XQP_EXCEPTION
 }
 
 TypeSystem::xqtref_t static_context::get_document_type(
-	const string& doctype) const
+	const xqpString& doctype) const
 THROW_XQP_EXCEPTION
 {
 	// TODO
@@ -151,7 +151,7 @@ THROW_XQP_EXCEPTION
 }
 
 TypeSystem::xqtref_t static_context::get_collection_type(
-	const string& colltype) const
+	const xqpString& colltype) const
 THROW_XQP_EXCEPTION
 {
 	// TODO

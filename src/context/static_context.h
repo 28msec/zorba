@@ -59,10 +59,10 @@ class static_context : public context
 protected:
   static const char *default_ns_initializers [];
   static_context (const char **);
-  std::string qname_internal_key (QNameItem_t qname) const;
-  std::string qname_internal_key (std::string default_ns, std::string prefix, std::string local) const;
-  std::string qname_internal_key (std::string default_ns, std::string qname) const;
-  static std::string fn_internal_key (int arity);
+  xqpString qname_internal_key (QNameItem_t qname) const;
+  xqpString qname_internal_key (xqpString default_ns, xqpString prefix, xqpString local) const;
+  xqpString qname_internal_key (xqpString default_ns, xqpString qname) const;
+  static xqpString fn_internal_key (int arity);
   
 public:
 	static void init();
@@ -76,47 +76,47 @@ public:
   static static_context *root_static_context ();
 
 public:
-  std::string default_function_namespace() const;
-	void set_default_function_namespace(std::string);
-  std::string default_elem_type_ns () const;
-  void set_default_elem_type_ns (std::string);
+  xqpString default_function_namespace() const;
+	void set_default_function_namespace(xqpString);
+  xqpString default_elem_type_ns () const;
+  void set_default_elem_type_ns (xqpString);
 
-  std::string lookup_ns (std::string prefix) const;
-  void bind_ns (std::string prefix, std::string ns);
+  xqpString lookup_ns (xqpString prefix) const;
+  void bind_ns (xqpString prefix, xqpString ns);
 
-  QNameItem_t lookup_qname (string default_ns, string name) const;
-  QNameItem_t lookup_qname (string default_ns, string pfx, string local) const;
-  QNameItem_t lookup_elem_qname (string name) const {
+  QNameItem_t lookup_qname (xqpString default_ns, xqpString name) const;
+  QNameItem_t lookup_qname (xqpString default_ns, xqpString pfx, xqpString local) const;
+  QNameItem_t lookup_elem_qname (xqpString name) const {
     return lookup_qname (default_elem_type_ns (), name);
   }
-  QNameItem_t lookup_elem_qname (string pfx, string local) const {
+  QNameItem_t lookup_elem_qname (xqpString pfx, xqpString local) const {
     return lookup_qname (default_elem_type_ns (), pfx, local);
   }
 
-  expr *lookup_var (std::string prefix, std::string local) const {
+  expr *lookup_var (xqpString prefix, xqpString local) const {
     return lookup_expr ("var:" + qname_internal_key ("", prefix, local));
   }
-  expr *lookup_var (std::string varname) const {
+  expr *lookup_var (xqpString varname) const {
     return lookup_expr ("var:" + qname_internal_key ("", varname));
   }
   void bind_var (QNameItem_t qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
-  void bind_var (std::string prefix, std::string local, expr *expr) {
+  void bind_var (xqpString prefix, xqpString local, expr *expr) {
     bind_expr ("var:" + qname_internal_key ("", prefix, local), expr);
   }
-  void bind_var (std::string varname, expr *expr) {
+  void bind_var (xqpString varname, expr *expr) {
     bind_expr ("var:" + qname_internal_key ("", varname), expr);
   }
 
-  function *lookup_fn (std::string prefix, std::string local, int arity) const {
+  function *lookup_fn (xqpString prefix, xqpString local, int arity) const {
     return lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
   }
-  static function *lookup_builtin_fn (std::string local, int arity);
-  void bind_fn (std::string prefix, std::string local, function *f, int arity) {
+  static function *lookup_builtin_fn (xqpString local, int arity);
+  void bind_fn (xqpString prefix, xqpString local, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local), f);
   }
-  void bind_fn (std::string fname, function *f, int arity) {
+  void bind_fn (xqpString fname, function *f, int arity) {
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
   }
 
@@ -140,17 +140,17 @@ public:
 	void set_inherit_mode(StaticQueryContext::inherit_mode_t v);
 	void set_preserve_mode(StaticQueryContext::preserve_mode_t v);
 
-  std::string default_collation() const;
-	void set_default_collation(std::string);
+  xqpString default_collation() const;
+	void set_default_collation(xqpString);
 
-  std::string baseuri() const;
-	void set_baseuri(std::string);
+  xqpString baseuri() const;
+	void set_baseuri(xqpString);
 	
     TypeSystem::xqtref_t get_function_type(const Item*) 
 		const THROW_XQP_EXCEPTION;
-    TypeSystem::xqtref_t get_document_type(const std::string&) 
+    TypeSystem::xqtref_t get_document_type(const xqpString&) 
 	  const THROW_XQP_EXCEPTION;
-    TypeSystem::xqtref_t get_collection_type(const std::string&) 
+    TypeSystem::xqtref_t get_collection_type(const xqpString&) 
 	  const THROW_XQP_EXCEPTION;
 	
 	StaticQueryContext::ordering_mode_t ordering_mode() const;

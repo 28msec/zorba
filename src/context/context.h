@@ -29,6 +29,7 @@
 #include "context/common.h"
 #include "util/fx/fxhashmap.h"
 #include "util/rchandle.h"
+#include "util/utf8/xqpString.h"
 #include "errors/Error.h"
 
 namespace xqp {
@@ -52,19 +53,19 @@ protected:
     int intValue;
     bool boolValue;
   } ctx_value_t;
-  typedef std::string (* str_param_t) ();
+  typedef xqpString (* str_param_t) ();
   
 protected:
 	context *parent;
 	fxhashmap<ctx_value_t> keymap;
-	fxhashmap<string> str_keymap;
+	fxhashmap<xqpString> str_keymap;
 
-  bool lookup_once (string key, string &val) const
+  bool lookup_once (xqpString key, xqpString &val) const
   { return str_keymap.get (key, val); }
-  bool lookup_once (string key, ctx_value_t &val) const
+  bool lookup_once (xqpString key, ctx_value_t &val) const
   { return keymap.get (key, val); }
 
-	template<class V> bool context_value(string key, V &val) const
+	template<class V> bool context_value(xqpString key, V &val) const
 	{
 		if (lookup_once (key, val))
       return true;
@@ -72,26 +73,26 @@ protected:
       return parent == NULL ? false : parent->context_value (key, val);
 	}
 
-  expr *lookup_expr (string key) const {
+  expr *lookup_expr (xqpString key) const {
     ctx_value_t val;
     return context_value (key, val) ? val.exprValue : NULL;
   }
-  function *lookup_func (string key) const {
+  function *lookup_func (xqpString key) const {
     ctx_value_t val;
     Assert (context_value (key, val));
     return val.functionValue;
   }
 
-  void bind_expr (string key, expr *e) {
+  void bind_expr (xqpString key, expr *e) {
     ctx_value_t v = { e };
     keymap.put (key, v);
   }
-  void bind_func (string key, function *f) {
+  void bind_func (xqpString key, function *f) {
     ctx_value_t v;
     v.functionValue = f;
     keymap.put (key, v);
   }
-  void bind_str  (string key, string v) {
+  void bind_str  (xqpString key, xqpString v) {
     str_keymap.put (key, v);
   }
 
