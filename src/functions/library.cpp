@@ -125,6 +125,12 @@ DECL(fn_doc_func,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","doc"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+  DECL(op_concatenate,
+       (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":concatenate"),
+        GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+        true, GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 // end Sequences
 
 // Generic Comparison;

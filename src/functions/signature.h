@@ -23,6 +23,7 @@ namespace xqp {
 class context;
 class Item;
 
+#define VARIADIC_SIG_SIZE 100
 
 /*******************************************************************************
   
@@ -77,7 +78,7 @@ public:
 public:
 	const QNameItem_t& get_name() const            { return qname_p; }
 	uint32_t arg_count() const {
-    return is_variadic () ? 1000 : argv.size() - 1;
+    return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 
   TypeSystem::xqtref_t const& operator[](int i) const { return argv[i]; }

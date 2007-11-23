@@ -37,6 +37,7 @@ protected:
 	zorba* zorp;
   static_context *sctx_p;
   var_expr *bind_var (yy::location loc, string varname);
+  fo_expr *create_seq (yy::location loc);
 
 	std::stack<expr_t> nodestack;
   // std::stack<expr_t> argstack;

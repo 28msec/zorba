@@ -130,36 +130,6 @@ public:
 
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
 
-// XXX replace with fo_expr(CONCAT)
-class expr_list : public expr
-/*______________________________________________________________________
-|	::= ExprSingle  ( ","  ExprSingle )*
-|_______________________________________________________________________*/
-{
-protected:
-	list<expr_t> elist;
-
-public:
-	expr_list(yy::location const&);
-	~expr_list();
-
-public:
-	void add(expr_t e_h)
-		{ elist.push_back(e_h); }
-	uint32_t size() const
-		{ return elist.size(); }
-
-	list_iterator<expr_t> begin() const
-		{ return elist.begin(); }
-	list_iterator<expr_t> end() const
-		{ return elist.end(); }
-
-public:
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-
-};
-
 
 /******************************************************************************
 

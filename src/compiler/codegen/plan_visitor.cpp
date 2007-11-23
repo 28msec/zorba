@@ -57,28 +57,6 @@ void plan_visitor::end_visit(enclosed_expr& v)
 }
 
 
-bool plan_visitor::begin_visit(expr_list& v)
-{
-  cout << std::string(++depth, ' ') << TRACE << endl;
-	itstack.push(NULL);
-	return true;
-}
-
-
-void plan_visitor::end_visit(expr_list& v)
-{
-  cout << std::string(depth--, ' ') << TRACE << endl;
-	vector<PlanIter_t> argv;
-	while (true) {
-		PlanIter_t it = pop_itstack();
-		if (it==NULL) break;
-		argv.insert(argv.begin(),it);
-	}
-	ConcatIterator *cit_h = new ConcatIterator(v.get_loc(), argv);
-	itstack.push(cit_h);
-}
-
-
 bool plan_visitor::begin_visit(var_expr& v)
 {
   cout << TRACE << endl;

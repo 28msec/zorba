@@ -76,49 +76,6 @@ void enclosed_expr::accept(
 	v.end_visit(*this);
 }
 
-// [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
-
-expr_list::expr_list(
-	yy::location const& loc)
-:
-	expr(loc)
-{
-}
-
-expr_list::~expr_list()
-{
-}
-
-ostream& expr_list::put( ostream& os) const
-{
-	os << INDENT << "expr_list[\n";
-	list_iterator<expr_t> it = begin();
-	for (; it!=end(); ++it) {
-		rchandle<expr> e_h = *it;
-		if (e_h==NULL) {
-			cout << TRACE << ": e_h==NULL\n";
-			continue;
-		}
-		//cout << TRACE << ": typeid(*e_h) = " << typeid(*e_h).name() << endl;
-		e_h->put(os);
-	}
-	return os << OUTDENT << "]\n";
-}
-
-void expr_list::accept(
-	expr_visitor& v)
-{
-  if (!v.begin_visit(*this)) return;
-	list_iterator<expr_t> it = begin();
-	for (; it!=end(); ++it) {
-		rchandle<expr> e_h = *it;
-		if (e_h==NULL) { cout << TRACE << ": e_h==NULL\n"; continue; }
-		e_h->accept(v);
-	}
-	v.end_visit(*this);
-}
-
-
 // [33a]
 
 string var_expr::decode_var_kind(

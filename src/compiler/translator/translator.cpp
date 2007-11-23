@@ -15,7 +15,7 @@
 #include "util/tracer.h"
 #include "store/api/item.h"
 #include "util/zorba.h"
-
+#include "functions/signature.h"
 
 #include <iostream>
 #include <string>
@@ -32,6 +32,7 @@ static void *no_state = (void *) new int;
 #define LOOKUP_OP1( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 1))
 #define LOOKUP_OP2( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 2))
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
+#define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
 #define TRACE_VISIT() cout << std::string(++depth, ' ') << TRACE << endl;
 #define TRACE_VISIT_OUT() cout << std::string(depth--, ' ') << TRACE << endl
@@ -42,6 +43,12 @@ var_expr *translator::bind_var (yy::location loc, string varname) {
   sctx_p->bind_var (qname, e);
   return e;
 }
+
+  fo_expr *translator::create_seq (yy::location loc) {
+    fo_expr *e = new fo_expr (loc);
+    e->set_func (LOOKUP_OPN ("concatenate"));
+    return e;
+  }
 
 translator::translator()
 {
@@ -332,7 +339,7 @@ void translator::end_visit(const DirElemContentList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
+	fo_expr *expr_list_t = create_seq (v.get_location ());
 	while (true) 
   {
 		expr_t e_h = pop_nodestack();
@@ -402,7 +409,7 @@ void translator::end_visit(const DirAttributeList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
- 	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
+ 	fo_expr *expr_list_t = create_seq (v.get_location ());
  	while(true)
   {
  		expr_t e_h = pop_nodestack();
@@ -465,7 +472,7 @@ void translator::end_visit(const QuoteAttrContentList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
- 	rchandle<expr_list> expr_list_t = new expr_list(v.get_location());
+ 	fo_expr *expr_list_t = create_seq (v.get_location ());
   expr_t e_h;
  	while(true)
   {
@@ -1505,16 +1512,12 @@ void translator::end_visit(const Expr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
-	rchandle<expr_list> elist_h = new expr_list(v.get_location());
-  for (int i = 0; i < v.numberOfChildren (); i++) {
-		expr_t e_h = pop_nodestack();
-		elist_h->add(e_h);
-	}
-	if (elist_h->size()==1) {
-		list_iterator<expr_t> it = elist_h->begin();
-		nodestack.push(&**it);
-	}
-	else {
+  if (v.numberOfChildren () > 1) {
+    fo_expr *elist_h = create_seq (v.get_location());
+    for (int i = 0; i < v.numberOfChildren (); i++) {
+      expr_t e_h = pop_nodestack();
+      elist_h->add(e_h);
+    }
 		nodestack.push(&*elist_h);
 	}
 }
@@ -1741,8 +1744,7 @@ void translator::end_visit(const ParenthesizedExpr& v, void *visit_state)
 		pop_nodestack();
 		nodestack.push(expr);
 	} else {
-		expr = new expr_list(v.get_location());
-		nodestack.push(expr);
+		nodestack.push(create_seq (v.get_location ()));
 	}
 }
 
