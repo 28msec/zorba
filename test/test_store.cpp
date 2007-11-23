@@ -83,7 +83,7 @@ int main(int argc, const char * argv[])
   //
   xqp::Collection_t coll1 = store->createCollection("http://MyCollection1");
 
-  std::cout << coll1->getURI()->show() << std::endl;
+  std::cout << coll1->getUri()->show() << std::endl;
 
   xqp::Collection_t coll2 = store->createCollection("http://MyCollection1");
 
