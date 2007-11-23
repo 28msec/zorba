@@ -389,7 +389,7 @@ namespace xqp
 
     xqpString ret(&target[0]);
 
-    delete target;
+    delete [] target;
     return ret;
 
   }
