@@ -18,25 +18,6 @@ namespace xqp
 
 
 /*******************************************************************************
-  class DeweyId
-********************************************************************************/
-xqp_string DeweyId::show() const
-{
-  std::stringstream str;
-  unsigned long len = theComponents.size();
-
-  for (unsigned long i = 0; i < len; i++)
-  {
-    str << theComponents[i];
-    if (i < len-1)
-      str << ".";
-  }
-
-  return str.str().c_str();
-}
-
-
-/*******************************************************************************
   class DocumentNode
 ********************************************************************************/
 
@@ -374,6 +355,8 @@ xqp_string ElementNodeImpl::show() const
   std::stringstream str;
 
   str <<  "<" << theName->getStringProperty();
+
+  str << " nid = \"" << theId.show() << "\"";
 
   NamespaceBindings nsBindings = getNamespaceBindings();
 

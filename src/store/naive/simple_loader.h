@@ -7,6 +7,7 @@
 #include <libxml/xmlstring.h>
 
 #include "store/api/item.h"
+#include "store/naive/node_id.h"
 
 namespace xqp
 {
@@ -34,6 +35,8 @@ protected:
   Item_t                          theRootNode;
   std::stack<Item_t>              theNodeStack;
   std::stack<NsBindingsContext_t> theBindingsStack;
+
+  OrdPathId                       theNodeId;
 
   xqpStringStore                  theErrors;
 
@@ -92,6 +95,7 @@ public:
   Item_t loadXml(std::iostream& xmlStream);
 
 protected:
+  void reset();
   long readPacket(std::iostream& stream, char* buf, long size);
 };
 

@@ -249,3 +249,85 @@ function run_bucket()
   return 0
 }
 
+
+#
+# $1 bucketName   : See load_bucket() function
+# $2 docName    : The doc name. 
+#
+function load_doc_in_bucket()
+{
+  local error=0
+
+  local bucketName="$1"
+  local docName="$2"
+
+  local docDir="${sourceDocsDir}/${bucketName}"
+  local docFile="${docDir}/${docName}.xml"
+
+  local resultDir="${docsDir}/${bucketName}"
+  local resultFile="${resultDir}/${docName}.res"
+  local diffFile="${resultDir}/${docName}.diff"
+
+  if [ ! -e "${docFile}" ]; then
+    echo "ERROR 1 load_doc_in_bucket: doc file ${docFile} does not exist"
+    return 17
+  fi
+
+  #
+  # Create results directory, if it doesn't exist already.
+  # If it exists, then clean it up.
+  #
+  mkdir -p "${resultDir}"
+  if [ $? != 0 ]; then echo "ERROR 2 load_doc_in_bucket: mkdir -p failed"; exit 19; fi
+  rm -f "${resultDir}"/${docName}.*
+
+  #
+  # Load the doc
+  #
+  load_doc "${docFile}"
+  error=$?
+  if [ ${error} != 0 ]; then
+    echo "ERROR 3 load_doc_in_bucket: load_doc failed with error code ${error}"
+    return ${error}
+  fi
+
+  #
+  # test_store creates the result file in the same dir as the doc file.
+  # So, we must move the result file to the result dir.
+  #
+  # If no result file was generated, then we create an empty one.
+  #
+  if [ -e "${docDir}/${docName}.xml.res" ]; then
+    mv "${docDir}/${docName}.xml.res" "${resultFile}"
+    if [ $? != 0 ]; then echo "ERROR 12 load_doc_in_bucket: mv failed"; exit 19; fi
+  else
+    touch "${resultFile}"
+    if [ $? != 0 ]; then echo "ERROR 13 load_doc_in_bucket: touch failed"; exit 19; fi
+  fi
+
+  #
+  # Do the diffs
+  #
+  if [ -e "${expResultFile}" ]; then
+    diff "${resultFile}" "${expResultFile}" > "${diffFile}"
+  else
+    echo "unknown expected results for ${docName}"
+    cp "${docFile}" "${diffFile}"
+    if [ $? != 0 ]; then echo "ERROR 21 load_doc_in_bucket: cp failed"; exit 19; fi
+  fi
+
+  if [ -s "${diffFile}" ]; then
+    echo
+    echo "FAILURE : -bucket ${bucketName} -doc ${docName}"
+    echo
+    let failedQueries=failedQueries+1 
+  else
+    echo
+    echo "SUCCESS : -bucket ${bucketName} -doc ${docName}"
+    echo
+  fi
+
+  let totalQueries=totalQueries+1
+
+  return 0
+}

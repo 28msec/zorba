@@ -13,6 +13,8 @@
 
 #include "util/Assert.h"
 #include "store/api/item.h"
+#include "store/naive/node_id.h"
+
 
 namespace xqp
 {
@@ -32,29 +34,19 @@ typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 
 /*******************************************************************************
-
-********************************************************************************/
-class DeweyId
-{
- public:
-  std::vector<long> theComponents;
-
-  xqp_string show() const;
-};
-
-
-/*******************************************************************************
 virtual void setChildren(const TempSeq_t& seq)
 ********************************************************************************/
 class NodeImpl : public NodeItem
 {
 protected:
-  DeweyId   theId;
+  OrdPathId   theId;
 
 public:
   NodeImpl() {}
 
   NodeImpl(const Item_t& aParent) : NodeItem(aParent) {}
+
+  void setId(const OrdPathId& id) { theId = id; }
 
   virtual void setParent(const Item_t& p) { theParent = p.get_ptr(); }
 

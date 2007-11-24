@@ -106,6 +106,8 @@ int main(int argc, const char * argv[])
 
   xmlFile.close();
 
+  store->deleteCollection(coll1->getUri());
+
   DisplayErrorListForCurrentThread();
 
   return 0;

@@ -28,6 +28,8 @@ const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
 
 unsigned long SimpleStore::theUriCounter = 0;
 
+unsigned long SimpleStore::theTreeCounter = 1;
+
 
 /*******************************************************************************
 
@@ -35,11 +37,10 @@ unsigned long SimpleStore::theUriCounter = 0;
 SimpleStore::SimpleStore()
   :
   theIsInitialized(false),
-  theUriPool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
+  theNamespacePool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
-  theItemFactory(new BasicItemFactory(theUriPool, theQNamePool)),
-  theCollections(DEFAULT_COLLECTION_MAP_SIZE,
-                 DEFAULT_HASH_LOAD_FACTOR),
+  theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
+  theCollections(DEFAULT_COLLECTION_MAP_SIZE,DEFAULT_HASH_LOAD_FACTOR),
   theXmlLoader(NULL)
 {
 }
@@ -54,8 +55,8 @@ void SimpleStore::init()
   {
     theIsInitialized = true;
 
-    theUriPool->insert("", theEmptyUri);
-    theUriPool->insert(XS_URI, theXmlSchemaUri);
+    theNamespacePool->insert("", theEmptyNs);
+    theNamespacePool->insert(XS_URI, theXmlSchemaNs);
     theAnyType = theItemFactory->createQName(XS_URI, "xs", "anyType");
     theUntypedAtomicType = theItemFactory->createQName(XS_URI, "xs", "untypedAtomic");
   }
@@ -84,13 +85,13 @@ SimpleStore::~SimpleStore()
     theQNamePool = NULL;
   }
 
-  if (theUriPool != NULL)
+  if (theNamespacePool != NULL)
   {
-    theEmptyUri = NULL;
-    theXmlSchemaUri = NULL;
+    theEmptyNs = NULL;
+    theXmlSchemaNs = NULL;
 
-    delete theUriPool;
-    theUriPool = NULL;
+    delete theNamespacePool;
+    theNamespacePool = NULL;
   }
 }
 
@@ -126,7 +127,7 @@ void SimpleStore::setGarbageCollectionStrategy(const xqp_string& strategy)
 Item_t SimpleStore::createUri()
 {
   std::ostringstream uristream;
-  uristream << "zorba://internalURI" << SimpleStore::theUriCounter++;
+  uristream << "zorba://internalURI-" << SimpleStore::theUriCounter++;
 
   return theItemFactory->createAnyURI(uristream.str().c_str()).get_ptr();
 }
@@ -148,6 +149,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
                           NULL,
                           true,
                           uri, "");
+    return NULL;
   }
 
   Item_t uriItem = theItemFactory->createAnyURI(uri);
@@ -176,6 +178,7 @@ Collection_t SimpleStore::createCollection(Item_t uri)
                           NULL,
                           true,
                           uri->getStringValue(), "");
+    return NULL;
   }
 
   Collection_t collection(new SimpleCollection(uri));

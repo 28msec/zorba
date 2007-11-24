@@ -15,12 +15,6 @@
 namespace xqp
 {
 
-#define GET_STORE() \
-        (*(static_cast<SimpleStore*>(&Store::getInstance())))
-
-#define GET_FACTORY(store) \
-        (*(static_cast<BasicItemFactory*>(&(store).getItemFactory())))
-
 class QNamePool;
 class StringPool;
 class XmlLoader;
@@ -41,37 +35,42 @@ typedef rchandle<class PUL> PUL_t;
 typedef StringHashMap<Collection_t> Collections;
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class SimpleStore : public Store
 {
   friend class Store;
  
-  typedef StringPool  UriPool;
+  typedef StringPool  NamespacePool;
 
 public:
-  static const float DEFAULT_HASH_LOAD_FACTOR;
-  static const xqp_ulong DEFAULT_COLLECTION_MAP_SIZE;
-
   static const char* XS_URI;
 
+protected:
+  static const float DEFAULT_HASH_LOAD_FACTOR;
+  static const unsigned long DEFAULT_COLLECTION_MAP_SIZE;
+
   static unsigned long theUriCounter;
+  static unsigned long theTreeCounter;
 
 public:
-  xqpStringStore_t    theEmptyUri;
-  xqpStringStore_t    theXmlSchemaUri;
-  QNameItem_t         theAnyType;
-  QNameItem_t         theUntypedAtomicType;
+  xqpStringStore_t     theEmptyNs;
+  xqpStringStore_t     theXmlSchemaNs;
+  QNameItem_t          theAnyType;
+  QNameItem_t          theUntypedAtomicType;
 
 protected:
-  bool                theIsInitialized;
+  bool                 theIsInitialized;
 
-  UriPool           * theUriPool;
-  QNamePool         * theQNamePool;
+  NamespacePool      * theNamespacePool;
+  QNamePool          * theQNamePool;
 
-  BasicItemFactory  * theItemFactory;
+  BasicItemFactory   * theItemFactory;
 
-  Collections         theCollections;
-
-  XmlLoader         * theXmlLoader;
+  Collections          theCollections;
+ 
+  XmlLoader          * theXmlLoader;
 
 private:
   SimpleStore();
@@ -81,12 +80,14 @@ private:
   void init();
 
 public:
-  ItemFactory& getItemFactory() const { return *theItemFactory; }
+  ItemFactory& getItemFactory() const     { return *theItemFactory; }
 
-  UriPool& getUriPool() const         { return *theUriPool; }
-  QNamePool& getQNamePool() const     { return *theQNamePool; }
+  NamespacePool& getNamespacePool() const { return *theNamespacePool; }
+  QNamePool& getQNamePool() const         { return *theQNamePool; }
 
   XmlLoader& getXmlLoader();
+
+  unsigned long getTreeId()               { return theTreeCounter++; }
 
   virtual void setGarbageCollectionStrategy(const xqp_string& strategy);
 

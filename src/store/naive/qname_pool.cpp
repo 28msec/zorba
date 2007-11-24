@@ -83,7 +83,7 @@ QNameItemImpl* QNamePool::insert(
   SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
 
   xqpStringStore_t pooledNs;
-  store.getUriPool().insert(ns, pooledNs);
+  store.getNamespacePool().insert(ns, pooledNs);
 
   HashEntry* entry = hashInsert(pooledNs, pre, ln, strlen(pre), strlen(ln),
                                 found);

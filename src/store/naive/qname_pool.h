@@ -49,7 +49,7 @@ protected:
   };
 
 public:
-  static const xqp_ulong MAX_CACHE_SIZE = 65536;
+  static const unsigned long MAX_CACHE_SIZE = 65536;
   static const float DEFAULT_LOAD_FACTOR;// = 0.6;//daniel: to compile on windows
 
 protected:
