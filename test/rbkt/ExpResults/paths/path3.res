@@ -1,2 +1,2 @@
-<b id = "">1 2</b>
-<b id = "">foo</b>
+<b nid = "">1 2</b>
+<b nid = "">foo</b>
