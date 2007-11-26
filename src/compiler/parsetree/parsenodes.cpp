@@ -1805,9 +1805,9 @@ ostream& OrderModifier::put(ostream& s) const
 void OrderModifier::accept(parsenode_visitor& v) const 
 { 
 	BEGIN_VISITOR ();
-	dir_spec_h->accept(v);
-	empty_spec_h->accept(v);
-	collation_spec_h->accept(v);
+	ACCEPT (dir_spec_h);
+	ACCEPT (empty_spec_h);
+	ACCEPT (collation_spec_h);
 	END_VISITOR ();
 }
 
