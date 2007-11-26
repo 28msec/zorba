@@ -18,11 +18,6 @@
 
 using namespace xqp;
 
-#ifdef _DEBUG
-extern const char*		xqp::g_error_in_file;
-extern int						xqp::g_error_at_line;
-#endif
-
 //typedef int alert_callback(Zorba_AlertMessage *alert_mess, 
 //													 XQuery_t	current_xquery,
 //													 XQueryResult_t	current_xqueryresult,
@@ -41,6 +36,8 @@ int apitest_alert_callback(Zorba_AlertMessage *alert_mess,
 	cerr << "(param " << std::hex << param << " )" << endl;
 
 	DisplayOneAlert(alert_mess);
+
+	cerr.flush();
 
 	return -1;
 }
