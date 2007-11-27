@@ -1,16 +1,1 @@
-#ADD_SUBDIRECTORY(zorba)
-
-INCLUDE (CheckIncludeFiles)
-CHECK_INCLUDE_FILES ("sys/param.h;sys/mount.h"      HAVE_SYS_MOUNT_H)
-CHECK_INCLUDE_FILES ("unicode/utypes.h"             HAVE_UTYPES_H)
-CHECK_INCLUDE_FILES ("unicode/coll.h                HAVE_COLL_H)
-CHECK_INCLUDE_FILES ("unicode/ustring.h             HAVE_USTRING_H)
-CHECK_INCLUDE_FILES ("pthread.h"                    HAVE_PTHREAD_H)
-CHECK_INCLUDE_FILES ("inttypes.h"                   HAVE_INTTYPES_H)
-CHECK_INCLUDE_FILES ("stdint.h"                     HAVE_STDINT_H)
-CHECK_INCLUDE_FILES ("stdlib.h"                     HAVE_STDLIB_H)
-CHECK_INCLUDE_FILES ("limits.h"                     HAVE_LIMITS_H)
-CHECK_INCLUDE_FILES ("sys/types.h"                  HAVE_SYS_TYPES_H)
-CHECK_INCLUDE_FILES ("iconv.h"                      HAVE_ICONV_H)
-
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+ADD_SUBDIRECTORY(zorba)
