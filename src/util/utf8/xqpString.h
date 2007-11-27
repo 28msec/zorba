@@ -7,7 +7,7 @@
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
  * @author Nicolae Brinza (nicolae.brinza@ipdevel.ro)
  * @author Dan Muresan (dan.muresan@ipdevel.ro)
- * @file utf8/xqpString.h
+ * @file util/utf8/xqpString.h
  *
  */
 
@@ -31,22 +31,20 @@
 
 #include "util/rchandle.h"
 
-using namespace std;
-
 namespace xqp {
 
 class xqpStringStore;
 typedef rchandle<xqpStringStore> xqpStringStore_t;
 
 
-class xqpStringStore : public rcobject, public string
+class xqpStringStore : public rcobject, public std::string
 {
 public:
   xqpStringStore() { }
-  xqpStringStore(const xqpStringStore &other) : rcobject(other), string(other) {}
-  xqpStringStore(const std::string& other) : string(other) {}
-  xqpStringStore(const char* start, const char* end) : string(start, end) {}
-  xqpStringStore(const char* start, long len) : string(start, len) {}
+  xqpStringStore(const xqpStringStore &other) : rcobject(other), std::string(other) {}
+  xqpStringStore(const std::string& other) : std::string(other) {}
+  xqpStringStore(const char* start, const char* end) : std::string(start, end) {}
+  xqpStringStore(const char* start, long len) : std::string(start, len) {}
 
   std::string::size_type bytes() const { return size(); }
 

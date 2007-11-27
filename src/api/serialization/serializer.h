@@ -50,7 +50,7 @@ public:
    * @param result The query result to be serialized.
    * @param os The stream to serialize to.
    */
-  void serialize(XQueryResult *result, ostream& os);
+  void serialize(XQueryResult *result, std::ostream& os);
   
   /**
    * Serializes the given item to the output stream.
@@ -58,7 +58,7 @@ public:
    * @param result The item to be serialized.
    * @param os The stream to serialize to.
    */
-  void serialize(Item* item, ostream& os);
+  void serialize(Item* item, std::ostream& os);
 
   /**
    * Set the serializer's parameters. The list of handled parameters
@@ -93,7 +93,7 @@ protected:
   void reset();
   void validate_parameters();
   static int get_utf8_length(char ch);
-  void setup(ostream& os);
+  void setup(std::ostream& os);
   
 protected:
   class emitter;
@@ -120,7 +120,7 @@ protected:
   class transcoder : public rcobject
   {
   public:
-    transcoder(ostream& output_stream);
+    transcoder(std::ostream& output_stream);
     virtual ~transcoder() { } ;
 
     /**
@@ -134,13 +134,13 @@ protected:
     virtual transcoder& operator<<(const char ch);
     
   protected:
-    ostream& os;      
+    std::ostream& os;
   };
   
   class utf8_to_utf16_transcoder : public transcoder
   {
     public:
-      utf8_to_utf16_transcoder(ostream& output_stream);
+      utf8_to_utf16_transcoder(std::ostream& output_stream);
       virtual ~utf8_to_utf16_transcoder();
       
       virtual utf8_to_utf16_transcoder& operator<<(const xqpString& s);

@@ -529,7 +529,7 @@ public:
    */
   virtual xqp_string show() const;
 
-	virtual void serializeXML( ostream& os );
+  virtual void serializeXML( std::ostream& os );
 };   /* Item */
 
   

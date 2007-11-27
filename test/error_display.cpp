@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <time.h>
 
+using namespace std;
 using namespace xqp;
 
 void DisplayErrorListForCurrentThread()

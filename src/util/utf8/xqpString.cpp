@@ -7,7 +7,7 @@
  * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
  * @author Nicolae Brinza (nicolae.brinza@ipdevel.ro)
  * @author Dan Muresan (dan.muresan@ipdevel.ro)
- * @file utf8/xqpString.cpp
+ * @file util/utf8/xqpString.cpp
  *
  */
 

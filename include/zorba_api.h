@@ -48,7 +48,7 @@ public:
 	virtual ~XQueryResult() {};
 	virtual Item_t		next() = 0;
 	virtual void setAlertsParam(void *alert_callback_param) = 0;
-	virtual ostream& serializeXML( ostream& os ) = 0;
+  virtual std::ostream& serializeXML( std::ostream& os ) = 0;
 	virtual bool isError() = 0;
 
 	virtual void	AbortQueryExecution() = 0;
@@ -206,7 +206,7 @@ public:
    // QueryPtr clone();
 
 		//daniel: isn't the Query more suitable to serialize itself?
-		virtual bool   serializeQuery(ostream &os) = 0;
+    virtual bool   serializeQuery(std::ostream &os) = 0;
 
 public:
     // getters/setters for Static- and DynamicQueryContext
