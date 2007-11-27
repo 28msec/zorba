@@ -22,9 +22,18 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 ##############################################################################################################
 # Used libraries
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 INCLUDE(cmake_modules/FindICU.cmake)
 FIND_PACKAGE(LibXml2)
+
+INCLUDE(cmake_modules/FindIconv.cmake)
+FIND_PACKAGE(Iconv)
+IF (Iconv_FOUND)
+    INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
+    SET(requiredlibs ${requiredlibs} ${ICONV_LIBRARY})
+ENDIF (Iconv_FOUND)
+
 
 
 ##############################################################################################################

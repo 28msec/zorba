@@ -1,2 +1,11 @@
-#cmakedefine HAVE_MALLOC_H 1
-#cmakedefine HAVE_SYS_MOUNT_H
+#cmakedefine HAVE_SYS_MOUNT_H       1
+#cmakedefine HAVE_UTYPES_H          1
+#cmakedefine HAVE_COLL_H            1
+#cmakedefine HAVE_USTRING_H         1
+#cmakedefine HAVE_PTHREAD_H         1
+#cmakedefine HAVE_INTTYPES_H        1
+#cmakedefine HAVE_STDINT_H          1
+#cmakedefine HAVE_STDLIB_H          1
+#cmakedefine HAVE_LIMITS_H          1
+#cmakedefine HAVE_SYS_TYPES_H       1
+#cmakedefine HAVE_ICONV_H           1
