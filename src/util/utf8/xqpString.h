@@ -27,6 +27,7 @@
 #include <unicode/ustring.h>
 #include <unicode/stsearch.h>
 #include <unicode/ucnv.h>
+#include <unicode/normlzr.h>
 
 #include "util/rchandle.h"
 
@@ -269,6 +270,15 @@ public:
     //uppercase/lowercase
     xqpString uppercase();
     xqpString lowercase();
+
+    //normalization
+    xqpString normalize(xqpString normMode);
+
+    //escape all characters except:
+    //Upper and lowercase letters A-Z
+    //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
+    xqpString encodeForUri();
+    
 private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
@@ -285,6 +295,10 @@ private:
     /**Sets the capacity of the string to at least size
     */
     void reserve(size_type size=0);
+
+    /**Returns true is cp reprezents "Unreserved Characters" as defined by rfc3986
+    */
+    bool unreservedCP(uint32_t cp);
 
   };
 

@@ -458,6 +458,97 @@ namespace xqp
   }
 
 
+  //normalize
+  xqpString xqpString::normalize(xqpString normMode){
+    UnicodeString result;
+    UErrorCode status = U_ZERO_ERROR;
+
+    char d ='@';
+    if(isalpha(d))
+    {
+      cout<<"You entered an alphabetical character."<<std::endl;
+    }
+    char dd ='0';
+    if(isdigit(dd))
+    {
+      cout<<"You entered an digit."<<std::endl;
+    } 
+
+    
+
+    if(normMode == "NFC"){
+      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFC , 0, result, status);
+    }
+    else if(normMode == "NFKC"){
+      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFKC , 0, result, status);
+    }
+    else if(normMode == "NFD"){
+      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFD , 0, result, status);
+    }
+    else if(normMode == "NFKD"){
+      Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFKD , 0, result, status);
+    }
+    else{
+      ZORBA_ERROR_ALERT(
+          error_messages::FOCH0003_Unsupported_normalization_form,
+          error_messages::SYSTEM_ERROR,
+          NULL
+          );
+    }
+
+    if(U_FAILURE(status)) {
+      ZORBA_ERROR_ALERT(
+          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::SYSTEM_ERROR,
+          NULL
+          );
+    }
+    
+    return getXqpString( result ); 
+}
+
+bool xqpString::unreservedCP(uint32_t cp){
+  bool ret = false;
+  if( (47 < cp && cp < 58) || //0-9
+       (64 < cp && cp < 91) || //A-Z
+       (96 < cp && cp < 123) || //a-z
+      cp == 45 || //-
+      cp == 46 || //.
+      cp == 95 || //_
+      cp == 126 //~
+    ){
+      ret = true;
+    }
+    return ret;
+}
+
+  xqpString xqpString::encodeForUri(){
+    uint32_t i =0;
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp;
+    char seq[9];
+
+    std::string tmp = "";
+    
+    for(i; i<len; ++i){
+      cp = UTF8Decode(c);
+      seq[0] = seq[1] = seq[2] = seq[3] = seq[4] = seq[5] = seq[6] = seq[7] = seq[8] = 0;
+      
+      if(unreservedCP(cp)){
+        UTF8Encode(cp, seq);
+      }
+      else{//codepoint has to be escaped
+        sprintf(seq, "%%%X", cp);
+      }
+      tmp += seq;
+    }
+    tmp += "\0";
+
+    theStrStore = new xqpStringStore(tmp);
+    return *this;
+  }
+  
   // Private methods
   UnicodeString xqpString::getUnicodeString(const xqpString& source) const{
     UnicodeString ret;
