@@ -58,6 +58,15 @@ For compiling with KDevelop:
 4. Type "cmake -G KDevelop3 <name of source directory>"
 5. Open the file zorba.kdevelop with KDevelop and compile
 
+The default build type is Debug, i.e. building zorba with debug symbols and without any optimization (e.g. -O0 for g++).
+If you want to build zorba for a release (i.e. without debug symbols but optimized)
+you can pass the argument "-D CMAKE_BUILD_TYPE:STRING=Release" to the cmake call (see above).
+Alternatively, you can change this variable in the CMakeCache.txt file in your build directory 
+(which is already configured using CMake).
+Other build types are None, RelWithDebInfo (can be used for profiling with valgrind), and MinSizeRel.
+Further information about these build types and their effects on the build can be found under 
+http://www.cmake.org/Wiki/CMake_Useful_Variables.
+
 
 ---- Begin: Note for Mac OS Users ----
 The easiest way to install CMake is to use
