@@ -1,5 +1,4 @@
 
-
 ////using the C++ API
 
 #include "zorba_api.h"
@@ -18,11 +17,6 @@
 
 using namespace xqp;
 
-//typedef int alert_callback(Zorba_AlertMessage *alert_mess, 
-//													 XQuery_t	current_xquery,
-//													 XQueryResult_t	current_xqueryresult,
-//													 void *param);
-//define one callback function for receiving the xquery alerts
 int apitest_alert_callback(Zorba_AlertMessage *alert_mess, 
 													 XQuery*	current_xquery,
 													 XQueryResult*	current_xqueryresult,
@@ -33,7 +27,7 @@ int apitest_alert_callback(Zorba_AlertMessage *alert_mess,
 	{
 		cerr << g_error_in_file << " : " << g_error_at_line << endl;
 	}
-	cerr << "(param " << std::hex << param << " )" << endl;
+	cerr << "(param " << hex << param << " )" << endl;
 
 	DisplayOneAlert(alert_mess);
 
@@ -55,15 +49,15 @@ int _tmain(int argc, _TCHAR* argv[])
 
   bool useResultFile = false, inline_query = false;
   bool useSerializer = false;
-  std::string resultFileName;
-  std::ofstream* resultFile = NULL;
-	std::string		query_text = "1+1";///the default query if no file or query is specified
+  string resultFileName;
+  ofstream* resultFile = NULL;
+	string		query_text = "1+2";  // the default query if no file or query is specified
 
 ///pick up all the runtime options
 #ifdef UNICODE
 #define TEST_ARGV_FLAG( str ) (_tcscmp(*argv, _T(str)) == 0)
 #else
-#define TEST_ARGV_FLAG( str ) (*argv == std::string (str))
+#define TEST_ARGV_FLAG( str ) (*argv == string (str))
 #endif
 
   #ifdef _DEBUG
@@ -91,9 +85,6 @@ int _tmain(int argc, _TCHAR* argv[])
         fname = *argv;
 #ifndef UNICODE
         if (inline_query) {
-        //  fname = "zorba_query.tmp";
-        //  ofstream qf (fname);
-        //  qf << *argv;
  					query_text = *argv;
        }
 #endif
@@ -111,7 +102,7 @@ int _tmain(int argc, _TCHAR* argv[])
 				if(!inline_query)
 				{          
 					// read the file
-					std::ifstream	qfile(fname);
+					ifstream	qfile(fname);
           
 					if(!qfile.is_open())
 					{
@@ -156,10 +147,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	//create a compiled query
 	query = zorba_factory.createQuery(query_text.c_str());
 
-//	if(!query->compile())
-//	{
-//		goto DisplayErrorsAndExit;
-//	}
 	if(!query.get_ptr())
 	{
 		goto DisplayErrorsAndExit;
@@ -177,19 +164,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	if (useResultFile)
 	{
 		resultFile = new ofstream(resultFileName.c_str());
-		//*resultFile << "Iterator run:" << std::endl << std::endl;
+		//*resultFile << "Iterator run:" << endl << endl;
 	}
 
 
  	if (useSerializer)
 	{
-		// *resultFile << i_p->show() << endl;
-	//	serializer* ser = new serializer();
-	//	ser->serialize(result, *resultFile);
 		result->serializeXML(*resultFile);
-		
 		// endl should not be sent when serializing!
-		// *resultFile << endl;
 	}
 	else
 	{
@@ -219,12 +201,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	timer.end();
 
-  //if (resultFile != NULL)
-  //{
-  //  *resultFile << std::endl;
-  //  timer.print(*resultFile);
-  //}
-  //else
   timer.print(cout);
 	
   if (resultFile != NULL) {
