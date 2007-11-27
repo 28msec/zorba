@@ -11,7 +11,7 @@ if [ ! ${zorbaRepos} ]; then
 fi
 
 
-if [ ! ${zorbaExce} ]; then
+if [ ! ${zorbaExec} ]; then
 
   if [ ! ${ZORBA} ]; then
     echo "ERROR: ZORBA variable is not set"
@@ -28,6 +28,5 @@ echo
 cat rbkt_summary.txt
 echo
 
-rm -f rbkt_summary.txt > /dev/null
-rm -f query.xml > /dev/null
-rm -f query.dot > /dev/null
+rm -f rbkt_summary.txt
+rm -f query.xml query.dot
