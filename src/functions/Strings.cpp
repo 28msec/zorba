@@ -458,11 +458,114 @@ fn_translate::type_check(
 
 bool
 fn_translate::validate_args(
-  vector<PlanIter_t>& argv) const
+vector<PlanIter_t>& argv) const
 {
-    return (argv.size()==3);
+  return (argv.size()==3);
 }
 /*end class fn_translate*/
+
+/*
+ * 7.4.10 fn:encode-for-uri
+ * --------------------*/
+/*begin class fn_encode_for_uri*/
+fn_encode_for_uri::fn_encode_for_uri(
+const signature& sig)
+:
+function(sig)
+{
+}
+
+PlanIter_t
+fn_encode_for_uri::operator()(
+const yy::location& loc,
+vector<PlanIter_t>& argv) const
+{
+  return new EncodeForUriIterator(loc, argv[0]);
+}
+
+TypeSystem::xqtref_t
+fn_encode_for_uri::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+}
+
+bool
+fn_encode_for_uri::validate_args(
+    vector<PlanIter_t>& argv) const
+{
+  return true;
+}
+/*end class fn_encode_for_uri*/
+
+/*
+ * 7.4.11 fn:iri-to-uri
+ * --------------------*/
+/*begin class fn_iri_to_uri*/
+fn_iri_to_uri::fn_iri_to_uri(
+const signature& sig)
+:
+function(sig)
+{
+}
+
+PlanIter_t
+fn_iri_to_uri::operator()(
+const yy::location& loc,
+vector<PlanIter_t>& argv) const
+{
+  return new IriToUriIterator(loc, argv[0]);
+}
+
+TypeSystem::xqtref_t
+fn_iri_to_uri::type_check(
+signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+}
+
+bool
+fn_iri_to_uri::validate_args(
+    vector<PlanIter_t>& argv) const
+{
+  return true;
+}
+/*end class fn_iri_to_uri*/
+
+/*
+ * 7.4.12 fn:escape-html-uri
+ * --------------------*/
+/*begin class fn_escape_html_uri*/
+fn_escape_html_uri::fn_escape_html_uri(
+const signature& sig)
+:
+  function(sig)
+  {
+  }
+
+PlanIter_t
+fn_escape_html_uri::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new EscapeHtmlUriIterator(loc, argv[0]);
+}
+
+TypeSystem::xqtref_t
+fn_escape_html_uri::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+}
+
+bool
+fn_escape_html_uri::validate_args(
+    vector<PlanIter_t>& argv) const
+{
+  return true;
+}
+/*end class fn_escape_html_uri*/
+
 
 /*
  * 7.5.1 fn:contains

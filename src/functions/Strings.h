@@ -227,6 +227,52 @@ public:
   bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+/*
+ * 7.4.10 fn:encode-for-uri
+ *-----------------------*/
+class fn_encode_for_uri: public function
+{
+public:
+  fn_encode_for_uri(const signature&);
+  ~fn_encode_for_uri() {}
+
+public:
+  PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+  TypeSystem::xqtref_t type_check(signature&) const;
+  bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.4.11 fn:iri-to-uri
+ *-----------------------*/
+class fn_iri_to_uri : public function
+{
+public:
+  fn_iri_to_uri(const signature&);
+  ~fn_iri_to_uri() {}
+
+public:
+  PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+  TypeSystem::xqtref_t type_check(signature&) const;
+  bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+/*
+ * 7.4.12 fn:escape-html-uri
+ *-----------------------*/
+class fn_escape_html_uri: public function
+{
+public:
+  fn_escape_html_uri(const signature&);
+  ~fn_escape_html_uri() {}
+
+public:
+  PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+  TypeSystem::xqtref_t type_check(signature&) const;
+  bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+
 /*______________________________________________________________________
  *
  * 7.5 Functions Based on Substring Matching

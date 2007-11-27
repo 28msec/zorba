@@ -56,19 +56,19 @@ public:
 class StringToCodepointsIterator : public UnaryBaseIterator<StringToCodepointsIterator>
 {
 public:
-    StringToCodepointsIterator ( const yy::location& loc, PlanIter_t& arg )
-    :
-    UnaryBaseIterator<StringToCodepointsIterator>( loc, arg ){}
+  StringToCodepointsIterator ( const yy::location& loc, PlanIter_t& arg )
+  :
+  UnaryBaseIterator<StringToCodepointsIterator>( loc, arg ){}
 
   ~StringToCodepointsIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
-    void resetImpl(PlanState& planState);
-    void releaseResourcesImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
 
-    virtual int32_t getStateSize();
-    virtual int32_t getStateSizeOfSubtree();
-    virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
+  virtual void setOffset(PlanState& planState, int32_t& offset);
 
 protected:
   class StringToCodepointsState : public PlanIteratorState
@@ -100,13 +100,13 @@ protected:
 /* begin class CompareStrIterator */
 class CompareStrIterator: public NaryBaseIterator<CompareStrIterator> {
 public:
-    CompareStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  CompareStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<CompareStrIterator>( loc, args ){}
+  NaryBaseIterator<CompareStrIterator>( loc, args ){}
 
-    ~CompareStrIterator() {};
+  ~CompareStrIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /* end class CompareStrIterator */
 
@@ -122,7 +122,7 @@ public:
 
   ~CodepointEqualIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class CodepointEqualIterator */
 
@@ -137,13 +137,13 @@ public:
 /*begin class ConcatStrIterator */
 class ConcatStrIterator: public NaryBaseIterator<ConcatStrIterator> {
 public:
-    ConcatStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  ConcatStrIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<ConcatStrIterator>( loc, args ){}
+  NaryBaseIterator<ConcatStrIterator>( loc, args ){}
 
-    ~ConcatStrIterator() {};
+  ~ConcatStrIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class ConcatStrIterator */
 
@@ -160,7 +160,7 @@ public:
 
   ~StringJoinIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class StringJoinIterator*/
 
@@ -176,7 +176,7 @@ public:
 
   ~SubstringIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class SubstringIterator*/
 
@@ -192,7 +192,7 @@ public:
 
   ~StringLengthIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class StringLengthIterator*/
 
@@ -208,7 +208,7 @@ public:
 
   ~NormalizeSpaceIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class NormalizeSpaceIterator*/
 
@@ -224,7 +224,7 @@ public:
 
   ~NormalizeUnicodeIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class NormalizeUnicodeIterator*/
 
@@ -240,7 +240,7 @@ public:
 
   ~UpperCaseIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class UpperCaseIterator*/
 
@@ -256,7 +256,7 @@ public:
 
   ~LowerCaseIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class LowerCaseIterator*/
 
@@ -266,15 +266,63 @@ public:
 /*begin class TranslateIterator*/
 class TranslateIterator: public NaryBaseIterator<TranslateIterator> {
 public:
-    TranslateIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  TranslateIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<TranslateIterator>( loc, args ){}
+  NaryBaseIterator<TranslateIterator>( loc, args ){}
 
-    ~TranslateIterator() {};
+  ~TranslateIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class TranslateIterator*/
+
+ /*
+ * 7.4.10 fn:encode-for-uri
+ * -------------------- */
+/*begin class EncodeForUriIterator*/
+class EncodeForUriIterator : public UnaryBaseIterator<EncodeForUriIterator>{
+public:
+  EncodeForUriIterator(const yy::location loc,  PlanIter_t& arg0)
+  :
+  UnaryBaseIterator<EncodeForUriIterator>(loc, arg0){}
+
+  ~EncodeForUriIterator() {};
+public:
+  Item_t nextImpl(PlanState& planState);
+};
+/*end class EncodeForUriIterator*/
+
+ /*
+ * 7.4.11 fn:iri-to-uri
+ * -------------------- */
+/*begin class IriToUriIterator*/
+class IriToUriIterator : public UnaryBaseIterator<IriToUriIterator>{
+public:
+  IriToUriIterator(const yy::location loc,  PlanIter_t& arg0)
+  :
+  UnaryBaseIterator<IriToUriIterator>(loc, arg0){}
+
+  ~IriToUriIterator() {};
+public:
+  Item_t nextImpl(PlanState& planState);
+};
+/*end class IriToUriIterator*/
+
+ /*
+ * 7.4.12 fn:escape-html-uri
+ * -------------------- */
+/*begin class EscapeHtmlUriIterator*/
+class EscapeHtmlUriIterator : public UnaryBaseIterator<EscapeHtmlUriIterator>{
+public:
+  EscapeHtmlUriIterator(const yy::location loc,  PlanIter_t& arg0)
+  :
+  UnaryBaseIterator<EscapeHtmlUriIterator>(loc, arg0){}
+
+  ~EscapeHtmlUriIterator() {};
+public:
+  Item_t nextImpl(PlanState& planState);
+};
+/*end class EscapeHtmlUriIterator*/
 
 /*______________________________________________________________________
  *
@@ -287,13 +335,13 @@ public:
 /*begin class ContainsIterator*/
 class ContainsIterator: public NaryBaseIterator<ContainsIterator> {
 public:
-    ContainsIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  ContainsIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<ContainsIterator>( loc, args ){}
+  NaryBaseIterator<ContainsIterator>( loc, args ){}
 
-    ~ContainsIterator() {};
+  ~ContainsIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class ContainsIterator*/
 
@@ -303,13 +351,13 @@ public:
 /*begin class StartsWithIterator*/
 class StartsWithIterator: public NaryBaseIterator<StartsWithIterator> {
 public:
-    StartsWithIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  StartsWithIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<StartsWithIterator>( loc, args ){}
+  NaryBaseIterator<StartsWithIterator>( loc, args ){}
 
-    ~StartsWithIterator() {};
+  ~StartsWithIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class StartsWithIterator*/
 
@@ -319,13 +367,13 @@ public:
 /*begin class EndsWithIterator*/
 class EndsWithIterator: public NaryBaseIterator<EndsWithIterator> {
 public:
-    EndsWithIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  EndsWithIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<EndsWithIterator>( loc, args ){}
+  NaryBaseIterator<EndsWithIterator>( loc, args ){}
 
-    ~EndsWithIterator() {};
+  ~EndsWithIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class EndsWithIterator*/
 
@@ -335,13 +383,13 @@ public:
 /*begin class SubstringBeforeIterator*/
 class SubstringBeforeIterator: public NaryBaseIterator<SubstringBeforeIterator> {
 public:
-    SubstringBeforeIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  SubstringBeforeIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<SubstringBeforeIterator>( loc, args ){}
+  NaryBaseIterator<SubstringBeforeIterator>( loc, args ){}
 
-    ~SubstringBeforeIterator() {};
+  ~SubstringBeforeIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class SubstringBeforeIterator*/
 
@@ -351,13 +399,13 @@ public:
 /*begin class SubstringAfterIterator*/
 class SubstringAfterIterator: public NaryBaseIterator<SubstringAfterIterator> {
 public:
-    SubstringAfterIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
+  SubstringAfterIterator ( const yy::location& loc, std::vector<PlanIter_t>& args )
   :
-    NaryBaseIterator<SubstringAfterIterator>( loc, args ){}
+  NaryBaseIterator<SubstringAfterIterator>( loc, args ){}
 
-    ~SubstringAfterIterator() {};
+  ~SubstringAfterIterator() {};
 public:
-    Item_t nextImpl(PlanState& planState);
+  Item_t nextImpl(PlanState& planState);
 };
 /*end class SubstringAfterIterator*/
 }/*namespace xqp*/

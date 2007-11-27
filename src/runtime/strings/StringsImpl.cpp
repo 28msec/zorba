@@ -404,7 +404,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
   Item_t item0;
   Item_t item1;
   Item_t item2;
-  xqpString resStr;
+  xqp_string resStr;
 
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -528,10 +528,27 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState)
 Item_t
 NormalizeUnicodeIterator::nextImpl(PlanState& planState)
 {
-  xqp_string str("NormalizeUnicode: Not yet implemented.");
+  Item_t item0;
+  Item_t item1;
+  xqp_string tempStr = "NFC";
+  xqp_string res;
+  
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH(zorba::getItemFactory()->createString(str),state);
+
+  item0 = consumeNext (theChild0, planState );
+  if(item0 == NULL){
+    STACK_PUSH(zorba::getItemFactory()->createString(""), state);
+  }
+  else{//item0 != NULL
+    item1 = consumeNext(theChild1, planState );
+    if(item1 != NULL){
+      tempStr = item1->getStringValue().uppercase();
+    }
+    res = item0->getStringValue().normalize(tempStr);
+  }
+
+  STACK_PUSH( zorba::getItemFactory()->createString(res), state );
   STACK_END();
 }
 /* end class NormalizeUnicodeIterator */
@@ -650,6 +667,74 @@ TranslateIterator::nextImpl(PlanState& planState) {
   STACK_END();
 }
 /* end class TranslateIterator */
+
+ /**
+ *______________________________________________________________________
+ *
+ *  7.4.10 fn:encode-for-uri
+ *
+ *_______________________________________________________________________*/
+/* begin class EncodeForUriIterator */
+Item_t
+EncodeForUriIterator::nextImpl(PlanState& planState) {
+//   Item_t item;
+//   xqp_string emptyStr("");
+//   
+//   PlanIterator::PlanIteratorState* state;
+//   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+// 
+//   item = consumeNext (theChild, planState);
+//   if ( item != NULL )  {
+//     STACK_PUSH(zorba::getItemFactory()->createString(
+//         item->getStringValue().encodeForUri()),
+//     state);
+//   }
+//   else{
+//     STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+//   }
+//   STACK_END();
+  Item_t item;
+  xqp_string emptyStr("NOT IMPLEMENTED YET");
+  PlanIterator::PlanIteratorState* state;
+  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+  STACK_END();
+}
+/* end class EncodeForUriIterator */
+  /**
+ *______________________________________________________________________
+ *
+ *  7.4.11 fn:iri-to-uri
+ *
+ *_______________________________________________________________________*/
+/* begin class IriToUriIterator */
+Item_t
+IriToUriIterator::nextImpl(PlanState& planState) {
+  Item_t item;
+  xqp_string emptyStr("NOT IMPLEMENTED YET");
+  PlanIterator::PlanIteratorState* state;
+  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+  STACK_END();
+}
+/* end class IriToUriIterator */
+  /**
+ *______________________________________________________________________
+ *
+ *  7.4.12 fn:escape-html-uri
+ *
+ *_______________________________________________________________________*/
+/* begin class EscapeHtmlUriIterator */
+Item_t
+EscapeHtmlUriIterator::nextImpl(PlanState& planState) {
+  Item_t item;
+  xqp_string emptyStr("NOT IMPLEMENTED YET");
+  PlanIterator::PlanIteratorState* state;
+  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+  STACK_END();
+}
+/* end class EscapeHtmlUriIterator */
 
   /**
   *______________________________________________________________________

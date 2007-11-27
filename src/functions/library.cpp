@@ -272,6 +272,21 @@ DECL(fn_translate,
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
+DECL(fn_encode_for_uri,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","encode-for-uri"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(fn_iri_to_uri,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","iri-to-uri"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
+DECL(fn_escape_html_uri,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","escape-html-uri"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+      
 DECL(fn_string_compare,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","compare"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
