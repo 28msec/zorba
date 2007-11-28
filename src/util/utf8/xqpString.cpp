@@ -463,19 +463,6 @@ namespace xqp
     UnicodeString result;
     UErrorCode status = U_ZERO_ERROR;
 
-    char d ='@';
-    if(isalpha(d))
-    {
-      cout<<"You entered an alphabetical character."<<std::endl;
-    }
-    char dd ='0';
-    if(isdigit(dd))
-    {
-      cout<<"You entered an digit."<<std::endl;
-    } 
-
-    
-
     if(normMode == "NFC"){
       Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFC , 0, result, status);
     }
@@ -527,15 +514,16 @@ bool xqpString::unreservedCP(uint32_t cp){
     uint32_t len = length();
     const char* c = c_str();
     uint32_t cp;
-    char seq[3];
-    const char* prev = c;
+    char seq[4];
+    const char* prev = c_str();
     distance_type length;
 
     std::string tmp = "";
     
     for(i; i<len; ++i){
+      prev = c;
       cp = UTF8Decode(c);
-      seq[0]=seq[1]=seq[2]=0;
+      seq[0]=seq[1]=seq[2]=seq[3]=0;
       if(unreservedCP(cp)){
         UTF8Encode(cp, seq);
         tmp += seq;
@@ -543,7 +531,7 @@ bool xqpString::unreservedCP(uint32_t cp){
       else{//codepoint has to be escaped
         length = sequence_length(prev);
         if(length != 1){
-          for(int j=1; j<length;++j){
+          for(int j=0; j<length;++j){
             cp = mask8(*prev);
             sprintf(seq, "%%%X", cp);
             tmp += seq;
@@ -551,7 +539,6 @@ bool xqpString::unreservedCP(uint32_t cp){
           }
         }
       }
-      prev = c;
     }
     tmp += "\0";
 

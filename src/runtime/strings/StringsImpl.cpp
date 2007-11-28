@@ -677,27 +677,21 @@ TranslateIterator::nextImpl(PlanState& planState) {
 /* begin class EncodeForUriIterator */
 Item_t
 EncodeForUriIterator::nextImpl(PlanState& planState) {
-//   Item_t item;
-//   xqp_string emptyStr("");
-// 
-//   PlanIterator::PlanIteratorState* state;
-//   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-// 
-//   item = consumeNext (theChild, planState);
-//   if ( item != NULL )  {
-//     STACK_PUSH(zorba::getItemFactory()->createString(
-//         item->getStringValue().encodeForUri()),
-//     state);
-//   }
-//   else{
-//     STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
-//   }
-//   STACK_END();
   Item_t item;
-  xqp_string emptyStr("NOT IMPLEMENTED YET");
+  xqp_string emptyStr("");
+
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+
+  item = consumeNext (theChild, planState);
+  if ( item != NULL )  {
+    STACK_PUSH(zorba::getItemFactory()->createString(
+        item->getStringValue().encodeForUri()),
+    state);
+  }
+  else{
+    STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+  }
   STACK_END();
 }
 /* end class EncodeForUriIterator */
