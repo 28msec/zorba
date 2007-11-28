@@ -1,25 +1,31 @@
-*** Requirements
+***** Requirements
+
+To run the testing framework locally, you need
 
 * zorba build requirements
 * Saxon 8 (requires in turn Sun's Java)
 
 
-*** Running
+***** Running
 
 cd zorbatest
 # only first time
 ./setup_framework
+# every time
 ./integrate
 
+Optional arguments: --no-clean (don't rebuild from scratch), --rev 
+(specify a certain revision)
 
-*** Directory hierarchy
+
+***** Directory hierarchy
 
 testing-+--tests-+--acceptance
         |        +--regression
         +--results
 
 
-*** Writing tests
+***** Writing tests
 
 To create a new test (say foobar), you start in zorbatest/testing, and 
 create two new directories with two new files:
@@ -29,17 +35,18 @@ file (i.e. chmod a+x foobar/run). You can place additional files here if
 you want to. The framework will clone the foobar/ directory every time, 
 and run the test from that cloned directory. Any files left behind by 
 the test will be copied to the output directory (which is linked to from 
-the corresponding report).
+the corresponding report in case there is a failure).
 
 * in test_results/acceptance, create foobar/result.txt. This file must 
 contain in the first line the string SUCCESS or FAILURE (depending on 
 whether you expect foobar/run to exit successfully or return an error 
-code), then the expected (textual) output of foobar/run.
+code, e.g. by using "exit 1" in a shell script), then the expected 
+(textual) output of foobar/run.
 
-Have a look at acceptance/valgring for an example.
+Have a look at acceptance/valgrind for an example.
 
 
-*** Custom project files
+***** Custom project files
 
 These scripts should be modified if framework is reused in another 
 project:
