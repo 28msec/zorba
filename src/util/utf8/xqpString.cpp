@@ -105,7 +105,7 @@ namespace xqp
   }
 
   //xqpString::operator+=()
-  xqpString& xqpString::operator+=(const xqpString& src){
+  xqpString& xqpString::operator+=(xqpString src){
     xqpStringStore* temp = new xqpStringStore(*theStrStore);
     *temp += src;
     theStrStore = temp;
@@ -141,14 +141,14 @@ namespace xqp
     return is;
   }
 
-  std::ostream& operator<<(std::ostream& os, const xqpString& utf8_src){
+  std::ostream& operator<<(std::ostream& os, xqpString utf8_src){
     //TODO is there a need to perform charset conversion to/from the current locale ?!?!
     os << *utf8_src.theStrStore;
     return os;
   }
 
   //xqpString::compare
-  int xqpString::compare(const xqpString& src) const{
+  int xqpString::compare(xqpString src) const{
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation
@@ -162,7 +162,7 @@ namespace xqp
     return result;
   }
 
-  int xqpString::compare(const xqpString& src, const char * loc) const{
+  int xqpString::compare(xqpString src, const char * loc) const{
     UErrorCode status = U_ZERO_ERROR;
 
     //create the collator object
@@ -234,7 +234,7 @@ namespace xqp
   }
 
   //xqpString::Substring matching/ string search
-  int32_t xqpString::indexOf(const xqpString& pattern){
+  int32_t xqpString::indexOf(xqpString pattern){
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
@@ -268,7 +268,7 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::indexOf(const xqpString& pattern, const char * loc){
+  int32_t xqpString::indexOf(xqpString pattern, const char * loc){
     UErrorCode status = U_ZERO_ERROR;
 
     //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
@@ -299,7 +299,7 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::lastIndexOf(const xqpString& pattern){
+  int32_t xqpString::lastIndexOf(xqpString pattern){
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
@@ -335,7 +335,7 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::lastIndexOf(const xqpString& pattern, const char * loc){
+  int32_t xqpString::lastIndexOf(xqpString pattern, const char * loc){
     UErrorCode status = U_ZERO_ERROR;
 
     //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
@@ -368,12 +368,12 @@ namespace xqp
     return -1;
   }
 
-  bool xqpString::endsWith(const xqpString& pattern){
+  bool xqpString::endsWith(xqpString pattern){
     //TODO check if this condition is enough
     return( lastIndexOf(pattern) + pattern.length() == length() );
   }
 
-  bool xqpString::endsWith(const xqpString& pattern, const char * loc){
+  bool xqpString::endsWith(xqpString pattern, const char * loc){
     //TODO check if this condition is enough
     return( lastIndexOf(pattern, loc) + pattern.length() == length() );
   }
@@ -527,21 +527,31 @@ bool xqpString::unreservedCP(uint32_t cp){
     uint32_t len = length();
     const char* c = c_str();
     uint32_t cp;
-    char seq[9];
+    char seq[3];
+    const char* prev = c;
+    distance_type length;
 
     std::string tmp = "";
     
     for(i; i<len; ++i){
       cp = UTF8Decode(c);
-      seq[0] = seq[1] = seq[2] = seq[3] = seq[4] = seq[5] = seq[6] = seq[7] = seq[8] = 0;
-      
+      seq[0]=seq[1]=seq[2]=0;
       if(unreservedCP(cp)){
         UTF8Encode(cp, seq);
+        tmp += seq;
       }
       else{//codepoint has to be escaped
-        sprintf(seq, "%%%X", cp);
+        length = sequence_length(prev);
+        if(length != 1){
+          for(int j=1; j<length;++j){
+            cp = mask8(*prev);
+            sprintf(seq, "%%%X", cp);
+            tmp += seq;
+            prev++;
+          }
+        }
       }
-      tmp += seq;
+      prev = c;
     }
     tmp += "\0";
 
@@ -550,7 +560,7 @@ bool xqpString::unreservedCP(uint32_t cp){
   }
   
   // Private methods
-  UnicodeString xqpString::getUnicodeString(const xqpString& source) const{
+  UnicodeString xqpString::getUnicodeString(xqpString source) const{
     UnicodeString ret;
     UErrorCode status = U_ZERO_ERROR;
     int32_t len = source.bytes();
@@ -612,7 +622,7 @@ bool xqpString::unreservedCP(uint32_t cp){
     return ret;
 }
 
-  wchar_t * xqpString::getWCS(const xqpString& source) const{
+  wchar_t * xqpString::getWCS(xqpString source) const{
     int32_t destCapacity =  source.length()*2 + 1;
     wchar_t* destWCS;
     destWCS = new wchar_t[destCapacity];

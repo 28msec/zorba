@@ -679,7 +679,7 @@ Item_t
 EncodeForUriIterator::nextImpl(PlanState& planState) {
 //   Item_t item;
 //   xqp_string emptyStr("");
-//   
+// 
 //   PlanIterator::PlanIteratorState* state;
 //   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 // 

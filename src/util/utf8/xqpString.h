@@ -77,7 +77,7 @@ public:
     /**Construct a xqpString as a copy of another xqpString
      * @param src A source UTF-8 encoded string
      */
-    xqpString(const xqpString &other) : theStrStore(other.theStrStore) {}
+    xqpString(const xqpString& other) : theStrStore(other.theStrStore) {}
 
    /**Construct a xqpString as a wrapper of an existing xqpStringStore
     * @param src A source UTF-8 encoded string
@@ -99,7 +99,7 @@ public:
     xqpStringStore& getStore() const { return *(theStrStore.get_ptr()); }
 
     //xqpString::operator=()
-    xqpString&operator=(const xqpString& src)
+    xqpString&operator=(xqpString src)
     {
       theStrStore = src.theStrStore;
       return *this;
@@ -112,7 +112,7 @@ public:
     xqpString& operator=(char c);
 
     //xqpString::operator+=()
-    xqpString& operator+=(const xqpString& src);
+    xqpString& operator+=(xqpString src);
     xqpString& operator+=(const char* src);
     /** @param cp Codepoint
     */
@@ -120,7 +120,7 @@ public:
     xqpString& operator+=(char c);
 
     //xqpString::operator==()
-    inline bool operator==(const xqpString& src) const{
+    inline bool operator==(xqpString src) const{
       return (compare(src) == 0);
     }
 
@@ -129,7 +129,7 @@ public:
     }
 
     //xqpString::operator!=()
-    inline bool operator!=(const xqpString& src) const{
+    inline bool operator!=(xqpString src) const{
       return (compare(src) != 0);
     }
 
@@ -138,31 +138,31 @@ public:
     }
 
     // xqpString::operator<()
-    inline bool operator<(const xqpString& src) const {
+    inline bool operator<(xqpString src) const {
       return compare(src) == -1;
     }
 
     // xqpString::operator>()
-    inline bool operator>(const xqpString& src) const {
+    inline bool operator>(xqpString src) const {
       return compare(src) == 1;
     }
 
     //xqpString::Compare
-    int compare(const xqpString& src) const;
+    int compare(xqpString src) const;
 
     /** Compare 2 strings based on a specific collation for a locale.
     *  @param loc locale as lowercase two-letter or three-letter ISO-639 code. In ICU4C one can also send something like "de_ch".
     * http://www.loc.gov/standards/iso639-2/ has a list of language codes (de stands for German language)
     * http://www.iso.org/iso/en/prods-services/iso3166ma/index.html a list of countries (ch stands for Switzerland)
     */
-    int compare(const xqpString& src, const char * loc) const;
+    int compare(xqpString src, const char * loc) const;
     int compare(const char* src) const;
 
     /**
      * Returns true if the strings are equal based on a byte-by-byte comparison.
      * It assumes that both strings are already normalized.
      */
-    bool byteEqual(const xqpString& src) const
+    bool byteEqual(xqpString src) const
     {
       if (theStrStore.get_ptr() == src.theStrStore.get_ptr())
         return true;
@@ -179,7 +179,7 @@ public:
      * Returns true if the hash of the strings are equal and if the strings
      * are byteEqual. It assumes that both strings are already normalized.
      */
-    bool hashEqual(const xqpString& src) const
+    bool hashEqual(xqpString src) const
     {
       if (theStrStore.get_ptr() == src.theStrStore.get_ptr())
         return true;
@@ -218,38 +218,38 @@ public:
     *  @param pattern The text to search for.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t indexOf(const xqpString& pattern);
+    int32_t indexOf(xqpString pattern);
 
     /**Locate in this the first occurrence in the range [0, length) of the characters in pattern using the a collation created using the provided locale.
     *  @param pattern The text to search for.
     *  @param loc The locale ID for which to open a collator.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t indexOf(const xqpString& pattern, const char * loc);
+    int32_t indexOf(xqpString pattern, const char * loc);
 
     /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
     *  @param pattern The text to search for.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t lastIndexOf(const xqpString& pattern);
+    int32_t lastIndexOf(xqpString pattern);
 
     /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
     *  @param pattern The text to search for.
     *  @param loc The locale ID for which to open a collator.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t lastIndexOf(const xqpString& pattern, const char * loc);
+    int32_t lastIndexOf(xqpString pattern, const char * loc);
 
     /**Determine if this ends with the characters in pattern in the range [0, length).
     *  @param pattern The text to search for.
     */
-    bool endsWith(const xqpString& pattern);
+    bool endsWith(xqpString pattern);
 
     /**Determine if this ends with the characters in pattern in the range [0, length).
     *  @param pattern The text to search for.
     *  @param loc The locale ID for which to open a collator.
     */
-    bool endsWith(const xqpString& pattern, const char * loc);
+    bool endsWith(xqpString pattern, const char * loc);
 
     /**Returns a substring of the current string, starting at index, and length characters long.
     */
@@ -281,14 +281,14 @@ private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
     */
-    UnicodeString getUnicodeString(const xqpString& source) const;
+    UnicodeString getUnicodeString(xqpString source) const;
     /**  Return a xqpString (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
     */
     xqpString getXqpString(UnicodeString source);
 
     /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
     */
-    wchar_t * getWCS(const xqpString& source) const;
+    wchar_t * getWCS(xqpString source) const;
 
     /**Sets the capacity of the string to at least size
     */
@@ -301,23 +301,23 @@ private:
   };
 
   // xqpString::stream I/O operators
-  std::istream& operator>>(std::istream& is, xqp::xqpString& utf8_src);
-  std::ostream& operator<<(std::ostream& os, const xqp::xqpString& utf8_src);
+  std::istream& operator>>(std::istream& is, xqp::xqpString utf8_src);
+  std::ostream& operator<<(std::ostream& os, xqp::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
-  inline xqpString operator+(const xqpString& lsrc, const xqpString& rsrc){
+  inline xqpString operator+(xqpString lsrc, xqpString rsrc){
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
   }
 
-  inline xqpString operator+(const xqpString& lsrc, const char* rsrc){
+  inline xqpString operator+(xqpString& lsrc, const char* rsrc){
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
   }
 
-  inline xqpString operator+(const char* lsrc, const xqpString& rsrc){
+  inline xqpString operator+(const char* lsrc, xqpString rsrc){
     xqpString tmp (lsrc);
     tmp += rsrc;
     return tmp;
