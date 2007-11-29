@@ -1,8 +1,6 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*- *
- *  $Id: item_iterator.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
+/* 
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: John Cowan,Paul Pedersen
+ *  Author: Tim Kraska, David Graf
  *
  */
 
@@ -26,11 +24,7 @@ class Item;
 class node;
 class zorba;
 
-class var_iterator;
-typedef rchandle<var_iterator> var_iter_t;
 
-class RefIterator;
-typedef rchandle<RefIterator> ref_iter_t;
 
 
 /*
@@ -226,119 +220,7 @@ public:
 }; /* class IfThenElseIterator */
 
 
-class FLWORIterator : public Batcher<FLWORIterator>
-{
-	
-public:
-	class ForLetClause{ //Combines FOR and LET to avoid dynamic casts
-    friend class FLWORIterator;
-	  
-	  protected:
-      enum ForLetType {FOR, LET};   
-		   ForLetType type;
-		   std::vector<var_iter_t> forVars;
-		   std::vector<var_iter_t> posVars;
-		   std::vector<ref_iter_t> letVars;
-		   PlanIter_t input;
-		   bool needsMaterialization; 
-		   
-	  public:
-		  /**
-	   * Creates a new ForClause
-	   * 
-	   */
-	  ForLetClause(std::vector<var_iter_t> forVars, PlanIter_t& input);
-	  ForLetClause(std::vector<var_iter_t> forVars, std::vector<var_iter_t> posVars, PlanIter_t& input);
-   
-  public:
-    
-    std::ostream& show(  std::ostream& os) const;
-	  
-	  /**
-	   * Creates a new LetClause
-	   * needsMaterialization indicates if it is necassary to materialize the LET-Binding:
-	   * E.g. "let $x := (1,2,3) return ($x, $x)" needs materialization. 
-	   * but "let $x := (1,2,3) return if(test()) then $x else $x" doesn't
-	  */
-	  ForLetClause(std::vector<ref_iter_t> letVars, PlanIter_t& input,bool needsMaterialization);
-	}; 
 
-	  /**
-	   * See http://www.w3.org/TR/xquery/#id-orderby-return
-	   * Collation are skipped so far! We do that later...
-	   */
-	  class OrderSpec {
-	  private:
-	     PlanIter_t orderByIter;
-	     bool empty_least;
-	     bool descending;
-	  public:
-		  OrderSpec(PlanIter_t orderByIter, bool empty_least, bool descending);
-	  };
-	  
-	  /**
-	   * See http://www.w3.org/TR/xquery/#id-orderby-return
-	   */
-	  class OrderByClause{
-	  private:
-	     vector<OrderSpec> orderSpecs;
-	     bool stable;
-	  public:
-		  OrderByClause(std::vector<OrderSpec> orderSpecs, bool stable);
-	  };
-	
-private:
-  std::vector<FLWORIterator::ForLetClause> forLetClauses; //
-  PlanIter_t whereClause; //can be null
-  FLWORIterator::OrderByClause* orderByClause;  //can be null
-  PlanIter_t returnClause;
-  bool whereClauseReturnsBooleanPlus;    
-  const int bindingsNb;
-  //State
-  int* varBindingState;
-  Store* store;
-  
-protected:
-    class ElementContentState : public PlanIteratorState
-    {
-      public:
-        xqp_string theString;
-        Item_t     theContextItem;
-
-        void init();
-    };   
-  
-public:
-	/**
-	   * Constructor
-	   * @param loc location
-	   * @param forLetClauses For and Lets: Attention the order matters!
-	   * @param whereClause The where-clause iterator. Can be null
-	   * @param orderByClause The order by expressions. Can be null
-	   * @param returnClause The return expressions
-	   * @param whereClauseReturnsBooleanPlus Optional flag. 
-	   * 	If true => The iterator has to return xs:boolean+
-	   */ 
-  FLWORIterator(const yy::location& loc, 
-  		  std::vector<FLWORIterator::ForLetClause> &forLetClauses,
-  		  PlanIter_t& whereClause,
-  		  FLWORIterator::OrderByClause* orderByClause,  
-  		  PlanIter_t& returnClause, 
-  		  bool whereClauseReturnsBooleanPlus = false);
-
-  Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-  virtual int32_t getStateSize();
-  virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(PlanState& planState, int32_t& offset);
-  std::ostream& _show ( std::ostream& os ) const;
-  
-private:
-	void resetInput(int varNb, PlanState& planState);
-	bool bindVariable(int varNb, PlanState& planState);
-	bool evaluateWhereClause(PlanState& planState);
-};
 
 }	/* namespace xqp */
 #endif	/* XQP_ITEM_ITERATOR_H */
