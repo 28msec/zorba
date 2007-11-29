@@ -111,7 +111,7 @@ namespace xqp
 
     // Classifies everything which can be defined over the command line
     po::options_description lCmdlineOptions;
-    lCmdlineOptions.add ( lGenericOptions ).add ( lConfigOptions ).add ( lGenericOptions );
+    lCmdlineOptions.add ( lGenericOptions ).add ( lConfigOptions );
 
     // Classifies everthing which can be defined over the configuration file
     po::options_description lConfigFileOptions;
