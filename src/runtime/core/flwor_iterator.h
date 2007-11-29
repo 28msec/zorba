@@ -178,7 +178,7 @@ namespace xqp
       bool bindVariable ( int varNb, PlanState& planState );
       bool evalWhereClause( PlanState& planState );
       void matResultAndOrder (PlanState& planState);
-
+      
   };
 
 } /* namespace xqp */

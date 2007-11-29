@@ -76,8 +76,10 @@ namespace xqp
       bindingsNb ( aForLetClauses.size() ),
       orderMap(0)
   {
-    if(orderByClause != 0){
+    if(orderByClause != 0 && orderByClause->orderSpecs.size() > 0){
       orderMap = new std::multimap<std::vector<Item_t>, TempSeq_t, OrderKeyCmp>( &(orderByClause->orderSpecs) );
+    }else{
+      orderByClause = 0;
     }
     store = zorba::getStore();
   }
@@ -125,19 +127,23 @@ namespace xqp
       }
       if ( evalWhereClause ( planState ) )
       {
-        while ( true )
-        {
-          curItem = this->consumeNext ( returnClause, planState );
-          if ( curItem == NULL )
+        if(orderByClause == 0){
+          while ( true )
           {
-            curVar = bindingsNb - 1;
-            this->resetChild ( returnClause, planState );
-            break;
+            curItem = this->consumeNext ( returnClause, planState );
+            if ( curItem == NULL )
+            {
+              curVar = bindingsNb - 1;
+              this->resetChild ( returnClause, planState );
+              break;
+            }
+            else
+            {
+              STACK_PUSH ( curItem, state );
+            }
           }
-          else
-          {
-            STACK_PUSH ( curItem, state );
-          }
+        }else{
+          //matResultAndOrder
         }
       }
       else
@@ -177,6 +183,7 @@ namespace xqp
     }
     Iterator_t iterWrapper = new PlanIterWrapper ( returnClause, planState );
     TempSeq_t result = store->createTempSeq ( iterWrapper, false );
+    orderMap->insert(std::pair<std::vector<Item_t> , TempSeq_t>(orderKey, result));
   }
 
   bool FLWORIterator::evalWhereClause ( PlanState& planState )
