@@ -356,7 +356,7 @@ xqp_string ElementNodeImpl::show() const
 
   str <<  "<" << theName->getStringProperty();
 
-  str << " nid = \"" << theId.show() << "\"";
+//   str << " nid = \"" << theId.show() << "\"";
 
   NamespaceBindings nsBindings = getNamespaceBindings();
 
@@ -370,9 +370,12 @@ xqp_string ElementNodeImpl::show() const
   {
     Iterator_t iter = theAttributes->getIterator();
     Item_t item = iter->next();
+    bool lFirst = true;
     while (item != NULL)
     {
-      str << " " << item->show();
+      if (!lFirst)
+        str << " ";
+      str << item->show();
       item = iter->next();
     }
   }
