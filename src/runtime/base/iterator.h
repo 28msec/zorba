@@ -189,13 +189,13 @@ protected:
     int32_t duffsLine;
   public:
     /** Initializes State Object for the current iterator.
-      * All sub-states have it invoke the init resources of their parent 
+      * All sub-states have it invoke the init method of their parent 
       * to guarantee correct initialization.
       */
     void init();
 
     /** Resets State Object for the current iterator.
-      * All sub-states have it invoke the release reset of their parent 
+      * All sub-states have it invoke the reset method of their parent 
       * to guarantee correct reset handling.
       */
     void reset();
