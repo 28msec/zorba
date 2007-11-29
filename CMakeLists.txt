@@ -2,6 +2,7 @@
 # Project name
 #
 PROJECT(zorba)
+ENABLE_TESTING()
 
 # Uncomment the next line to output make commands
 # SET(CMAKE_VERBOSE_MAKEFILE ON)
@@ -52,6 +53,14 @@ ELSE(LIBXML2_FOUND)
     MESSAGE(FATAL_ERROR "The libxml2  library is required in order to build Zorba.")
 ENDIF(LIBXML2_FOUND)
 
+FIND_PACKAGE(Boost)
+IF(Boost_FOUND)
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
+    LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
+    SET(requiredlibs ${requiredlibs} boost_program_options) 
+ELSE(Boost_FOUND)
+    MESSAGE(FATAL_ERROR "The boost library (program_options) is required in order to build Zorba.")
+ENDIF(Boost_FOUND)
 
 ##############################################################################################################
 # Compiler setup

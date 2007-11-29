@@ -141,7 +141,7 @@ xqp_string AnyUriItemImpl::getStringProperty() const
 
 xqp_string AnyUriItemImpl::show() const
 {
-  return "xs:anyUri(" + *theValue + ")";
+  return *theValue;
 }
 
 
@@ -197,7 +197,7 @@ xqp_string UntypedAtomicItemNaive::getStringProperty() const
 
 xqp_string UntypedAtomicItemNaive::show() const
 {
-  return "xs:untypedAtomic(" + *theValue + ")";
+  return *theValue;
 }
 
 
@@ -253,7 +253,7 @@ xqp_string StringItemNaive::getStringProperty() const
 
 xqp_string StringItemNaive::show() const
 {
-  return "xs:string(" + *theValue + ")";
+  return *theValue;
 }
 
 
@@ -307,7 +307,7 @@ xqp_string DecimalItemNaive::getStringProperty() const
 
 xqp_string DecimalItemNaive::show() const
 {
-  return "xs:decimal(" + this->getStringProperty() + ")";
+  return this->getStringProperty();
 }
 /* end class DecimalItem */
 
@@ -368,7 +368,7 @@ Item_t IntItemNaive::getEBV() const
 
   xqp_string IntItemNaive::show() const
 	{
-		return "xs:int(" + this->getStringProperty() + ")";
+		return this->getStringProperty();
 	}
 	/* end class IntItem */
 
@@ -423,7 +423,7 @@ Item_t IntegerItemNaive::getEBV() const
 
   xqp_string IntegerItemNaive::show() const
 	{
-		return "xs:integer(" + this->getStringProperty() + ")";
+		return this->getStringProperty();
 	}
 	/* end class IntegerItem */
 	
@@ -473,7 +473,7 @@ Item_t DoubleItemNaive::getEBV() const
 
   xqp_string DoubleItemNaive::show() const
 	{
-		return "xs:double(" + this->getStringProperty() + ")";
+		return this->getStringProperty();
 	}
 	/* end class DoubleItem */
 	
@@ -523,7 +523,7 @@ uint32_t FloatItemNaive::hash() const
 
   xqp_string FloatItemNaive::show() const
 	{
-		return "xs:float(" + this->getStringProperty() + ")";
+		return this->getStringProperty();
 	}
 	/* end class FloatItem */
 
@@ -574,7 +574,7 @@ xqp_string BooleanItemNaive::getStringProperty() const
 
 xqp_string BooleanItemNaive::show() const
 {
-  return "xs:boolean(" + this->getStringProperty() + ")";
+  return this->getStringProperty();
 }
 /* end class BooleanItem */
 

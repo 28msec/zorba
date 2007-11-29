@@ -10,6 +10,7 @@
 #include "util/logging/loggermanager.hh"
 #include "timer.h"
 #include "error_display.h"
+#include "zorba/util/properties.h"
 
 #include <fstream>
 #include <iostream>
@@ -45,11 +46,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	Timer timer;
 	timer.start();
 
+  if (!Properties::load(argc,argv))
+    return 1;
+  
+  Properties* lProp = Properties::instance();
+  
 	xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
-  bool useResultFile = false, inline_query = false;
-  bool useSerializer = false;
-  string resultFileName;
   ofstream* resultFile = NULL;
 	string		query_text = "1+2";  // the default query if no file or query is specified
 
@@ -60,71 +63,56 @@ int _tmain(int argc, _TCHAR* argv[])
 #define TEST_ARGV_FLAG( str ) (*argv == string (str))
 #endif
 
-  #ifdef _DEBUG
+#ifdef _DEBUG
   g_abort_when_fatal_error = true;
-  #endif
+#else
+  g_abort_when_fatal_error = lProperties->abortWhenFatalError();
+#endif
 
-		for (++argv; argv[0]; ++argv) 
-		{
-			const char *fname;
-			
-			if (TEST_ARGV_FLAG ("-p")) {
-				g_trace_parsing = true;
-			} else if (TEST_ARGV_FLAG ("-s")) {
-				g_trace_scanning = true;
-			} else if (TEST_ARGV_FLAG ("-r")) {
-				useSerializer = true;			
-			} else if (TEST_ARGV_FLAG ("-o")) {
-				useResultFile = true;
-        resultFileName = *++argv;
-      } else if (TEST_ARGV_FLAG ("--abort")) {
-        g_abort_when_fatal_error = true;
-      } else if (TEST_ARGV_FLAG ("-e")) {
-        inline_query = true;
-			} else {
-        fname = *argv;
+  g_trace_parsing = lProp->traceParsing();
+  g_trace_scanning = lProp->traceScanning();
+  const char* fname = lProp->getQuery().c_str();
 #ifndef UNICODE
-        if (inline_query) {
- 					query_text = *argv;
-       }
+  if (lProp->inlineQuery())
+    query_text = fname; 
 #endif
+
 #ifdef UNICODE
-        if(! inline_query)
-				{
-					char	testfile[1024];
-					WideCharToMultiByte(CP_ACP, 0, // or CP_UTF8
-															*argv, -1, 
-															testfile, sizeof(testfile)/sizeof(char),
-															NULL, NULL);
-					fname = testfile;
-				}
+  if(! lProp->inlineQuery())
+  {
+    char	testfile[1024];
+    WideCharToMultiByte(CP_ACP, 0, // or CP_UTF8
+                        *argv, -1, 
+                        testfile, sizeof(testfile)/sizeof(char),
+                        NULL, NULL);
+    fname = testfile;
+  }
 #endif
-				if(!inline_query)
-				{          
-					// read the file
-					ifstream	qfile(fname);
-          
-					if(!qfile.is_open())
-					{
-						// couldn't open file, display error and exit
-						cerr << "Error opening xquery file <" << fname << ">" << endl;
-						return -1;
-					}
-          string temp;
-          query_text = "";
-          
-          // warning: this method of reading a file might trim the 
-          // whitespace at the end of lines
-					while (getline(qfile, temp))
-          {
-            if (query_text != "")
-              query_text += "\n";
-            
-            query_text += temp;
-          }          
-				}
-			}
-		}
+  if(! lProp->inlineQuery())
+  {          
+    // read the file
+    ifstream	qfile(fname);
+    
+    if(!qfile.is_open())
+    {
+      query_text = fname;
+    } else {
+    string temp;
+      query_text = "";
+      
+      // warning: this method of reading a file might trim the 
+      // whitespace at the end of lines
+      while (getline(qfile, temp))
+      {
+        if (query_text != "")
+          query_text += "\n";
+        
+        query_text += temp;
+      }      
+    }    
+  }
+
+
 
 	///now start the zorba engine
 
@@ -161,14 +149,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	result->setAlertsParam(result.get_ptr());///to be passed to alerts callback when error occurs
 
-	if (useResultFile)
+	if (lProp->useResultFile())
 	{
-		resultFile = new ofstream(resultFileName.c_str());
+		resultFile = new ofstream(lProp->getResultFile().c_str());
 		//*resultFile << "Iterator run:" << endl << endl;
 	}
 
 
- 	if (useSerializer)
+  if (lProp->useResultFile())
 	{
 		result->serializeXML(*resultFile);
 		// endl should not be sent when serializing!

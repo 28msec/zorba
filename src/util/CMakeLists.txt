@@ -9,7 +9,8 @@ SET(UTIL_SRCS
     tokenbuf.cpp
     zorba.cpp
     rwlock.cpp
-    math_helper.cpp)
+    math_helper.cpp
+    properties.cpp)
 
 ADD_SRC_SUBFOLDER(UTIL_SRCS utf8 UTF8_SRCS)
 

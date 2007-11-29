@@ -285,6 +285,7 @@ namespace xqp
       {
         n0 = n0->getAtomizationValue();
         n1 = n1->getAtomizationValue();
+        
         type0 = GENV_TYPESYSTEM.create_type ( n0->getType(), TypeSystem::QUANT_ONE );
         type1 = GENV_TYPESYSTEM.create_type ( n1->getType(), TypeSystem::QUANT_ONE );
         resultType = GENV_TYPESYSTEM.arithmetic_type ( *type0, *type1 );

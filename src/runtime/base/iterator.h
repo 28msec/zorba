@@ -351,7 +351,7 @@ public:
   Item_t next();
   
   /**
-   * Resets the contining PlanIter
+   * Resets the containing PlanIter
    */
   void reset();
   
