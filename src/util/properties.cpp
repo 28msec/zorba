@@ -18,9 +18,7 @@ namespace xqp
   
   Properties::Properties() 
   : theQuery("1+1"),
-    theResultFile(""),
-    theQueryURI(""),
-    theResultURI("")
+    theResultFile("")
   {
   }
   
@@ -99,8 +97,6 @@ namespace xqp
       ("result-file,o", po::value<std::string>(&theResultFile), "result file")
       ("abort", "abort when fatal error happens")
       ("inline-query,e", "inline query")
-      ("query-uri,q", po::value<std::string>(&theQueryURI), "URI of the query file")
-      ("query-result,r", po::value<std::string>(&theResultURI), "URI of the existing result file")
     ;
 
     // Declaration of Hidden Options (hidden => not shown when --help is invoked)

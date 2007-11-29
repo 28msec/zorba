@@ -18,8 +18,6 @@ namespace xqp {
       bool theUseResultFile;
       bool theAbortWhenFatalError;
       bool theInlineQuery;
-      std::string theQueryURI;
-      std::string theResultURI;
       
       /**
        * Constructor.
@@ -89,8 +87,6 @@ namespace xqp {
       bool useResultFile() { return theUseResultFile; }
       bool abortWhenFatalError() { return theAbortWhenFatalError; }
       bool inlineQuery() { return theInlineQuery; }
-      const std::string& getQueryURI() { return theQueryURI; }
-      const std::string& getResultURI() { return theResultURI; }
       
   }; /* class Properties */
 } /* namespace xqp */
