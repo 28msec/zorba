@@ -16,6 +16,7 @@
 #include "runtime/core/path_iterators.h"
 #include "util/tracer.h"
 #include "functions/function.h"
+#include "runtime/core/flwor_iterator.h"
 
 #include <iostream>
 #include <vector>
