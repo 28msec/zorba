@@ -78,7 +78,7 @@ void XmlLoader::reset()
 /*******************************************************************************
 
 ********************************************************************************/
-long XmlLoader::readPacket(std::iostream& stream, char* buf, long size)
+long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 {
   try
   {
@@ -111,7 +111,7 @@ long XmlLoader::readPacket(std::iostream& stream, char* buf, long size)
 /*******************************************************************************
 
 ********************************************************************************/
-Item_t XmlLoader::loadXml(std::iostream& stream)
+Item_t XmlLoader::loadXml(std::istream& stream)
 {
   xmlParserCtxtPtr ctxt;
   char buf[4096];

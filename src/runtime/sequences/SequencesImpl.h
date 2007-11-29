@@ -25,7 +25,8 @@
 
 #include "context/common.h"
 #include "runtime/base/iterator.h"
-
+#include "store/naive/simple_store.h"
+#include "runtime/base/unarybase.h"
 #include "util/logging/logging.hh"
 
 namespace xqp
@@ -156,6 +157,38 @@ protected:
 
 //15.5.4 fn:doc
 
+class DocIterator : public UnaryBaseIterator<DocIterator>
+{
+// 	DECLARE_LOGGER;
+protected:
+  
+public:
+	DocIterator(yy::location loc, PlanIter_t& arg);
+	virtual ~DocIterator();
+
+	Item_t nextImpl(PlanState& planState);
+	std::ostream&  _show(std::ostream&) const;
+
+  virtual int32_t getStateSize();
+
+protected:
+	class DocIteratorState : public PlanIteratorState {
+	public:
+    DocIteratorState();
+    
+    int got_doc;              // if got_doc == 0 - no document,
+                              //            == 1 - Item_t doc is used
+                              //            == 2 - Collection_t collection is used
+    Iterator_t childrenIter;
+    Item_t doc;
+    Collection_t collection;
+    xqp_string uri;
+    
+	public:
+		void init();
+		void reset();
+	};
+};
 
 
 //15.5.5 fn:doc-available

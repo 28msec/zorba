@@ -351,9 +351,7 @@ PlanIter_t fn_doc_func::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	// TODO correct implementation of doc iterator
-  // return new doc_iterator(loc, argv[0]);
-	return NULL;
+  return new DocIterator(loc, argv[0]);
 }
   
 bool fn_doc_func::validate_args(

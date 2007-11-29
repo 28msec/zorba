@@ -881,7 +881,6 @@ void serializer::serialize(XQueryResult *result, ostream& os)
   e->emit_declaration_end();
 }
 
-
 void serializer::serialize(Item* item, ostream& os)
 {
   validate_parameters();

@@ -92,11 +92,11 @@ public:
 
   Item_t getRootNode() const { return theRootNode; }
   
-  Item_t loadXml(std::iostream& xmlStream);
+  Item_t loadXml(std::istream& xmlStream);
 
 protected:
   void reset();
-  long readPacket(std::iostream& stream, char* buf, long size);
+  long readPacket(std::istream& stream, char* buf, long size);
 };
 
 } /* namespace xqp */

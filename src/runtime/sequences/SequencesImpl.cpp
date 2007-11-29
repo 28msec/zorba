@@ -9,9 +9,13 @@
  */
 
 #include <string>
+#include <fstream>
 #include <vector>
 
 #include "runtime/sequences/SequencesImpl.h"
+#include "store/naive/simple_loader.h"
+#include "store/api/collection.h"
+#include "store/naive/store_defs.h"
 #include "errors/Error.h"
 
 using namespace std;
@@ -19,7 +23,7 @@ namespace xqp {
 
 
 Item* op_concatenate_fname_p;
-Item* fn_doc_fname_p;
+//Item* fn_doc_fname_p;
   
 
 /*______________________________________________________________________
@@ -241,8 +245,92 @@ ConcatIterator::ConcatIteratorState::getCurIter() {
 |	If $uri is the empty sequence, the result is an empty sequence.
 |_______________________________________________________________________*/
 
+DocIterator::DocIterator (
+    yy::location loc, PlanIter_t& arg)
+    :
+    UnaryBaseIterator<DocIterator> ( loc, arg )
+{
+}
 
+DocIterator::~DocIterator() {}
 
+std::ostream&
+DocIterator::_show ( std::ostream& os )
+const
+{
+  return os;
+}
+
+Item_t
+DocIterator::nextImpl ( PlanState& planState )
+{
+  Item_t item, xml;
+
+  DocIteratorState* state;
+  STACK_INIT ( DocIteratorState, state, planState );
+
+  item = consumeNext(theChild, planState);
+
+  if (!state->got_doc || item->getStringValue() != state->uri)
+  {
+    state->uri = item->getStringValue();
+    SimpleStore& store = GET_STORE();
+    state->collection = store.getCollection(item);
+    
+    if (state->collection != NULL)
+    {
+      state->childrenIter = state->collection->getIterator(true);
+      state->got_doc = 2;
+    }
+    else
+    {
+      // load file
+      ifstream ifs(((string)state->uri).c_str());
+      XmlLoader& loader = store.getXmlLoader();
+      state->doc = loader.loadXml(ifs);
+      state->childrenIter = state->doc->getChildren();
+      state->got_doc = 1;
+    }
+  }
+
+  do
+  {
+    item = state->childrenIter->next();
+    if (item != NULL)
+      STACK_PUSH(item, state);
+  }
+  while (item != NULL);
+  
+  STACK_END();
+}
+
+int32_t
+DocIterator::getStateSize() {
+  return sizeof(DocIteratorState);
+}
+
+DocIterator::DocIteratorState::DocIteratorState()
+  :
+  got_doc(0)
+{
+}
+
+void
+DocIterator::DocIteratorState::init()
+{
+  PlanIterator::PlanIteratorState::init();
+  if (got_doc == 1)
+    childrenIter = doc->getChildren();
+  else if (got_doc == 2)
+    childrenIter = collection->getIterator(true);
+}
+
+void
+DocIterator::DocIteratorState::reset()
+{
+  PlanIterator::PlanIteratorState::reset();
+  got_doc = 0;
+}
 
 //15.5.5 fn:doc-available
 
@@ -250,4 +338,4 @@ ConcatIterator::ConcatIteratorState::getCurIter() {
 
 
 } /* namespace xqp */
- 
+
