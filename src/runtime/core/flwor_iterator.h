@@ -30,8 +30,10 @@ namespace xqp
 
   class FLWORIterator : public Batcher<FLWORIterator>
   {
-
     public:
+      class OrderKeyCmp;
+      
+      
       class ForLetClause  //Combines FOR and LET to avoid dynamic casts
       {
           friend class FLWORIterator;
@@ -72,6 +74,7 @@ namespace xqp
        */
       class OrderSpec
       {
+        friend class FLWORIterator::OrderKeyCmp;
         friend class FLWORIterator;
         friend class OrderKeyCmp;
         protected:
