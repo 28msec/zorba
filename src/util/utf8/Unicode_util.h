@@ -13,6 +13,10 @@
 
 #include <iostream>
 
+#ifdef WIN32
+#include "util/win32/compatib_defs.h"
+#endif
+
 namespace xqp {
 
 #define TABLE_SIZE(arr)   (sizeof (arr) / sizeof ((arr)[0]))
