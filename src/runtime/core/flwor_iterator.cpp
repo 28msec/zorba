@@ -54,15 +54,37 @@ namespace xqp
     }
     return os;
   }
+  
 
-  FLWORIterator::OrderSpec::OrderSpec ( PlanIter_t orderByIter, bool empty_least,
-                                        bool descending )
+  FLWORIterator::OrderSpec::OrderSpec ( PlanIter_t aOrderByIter, bool aEmpty_least,
+                                        bool aDescending ) : orderByIter(aOrderByIter), 
+                                        empty_least(aEmpty_least), descending(aDescending)
   {
   }
 
   FLWORIterator::OrderByClause::OrderByClause (
-      std::vector<FLWORIterator::OrderSpec> orderSpecs, bool stable )
+      std::vector<FLWORIterator::OrderSpec> aOrderSpecs, bool aStable ) : orderSpecs(aOrderSpecs),
+      stable(aStable)
   {
+  }
+  
+  std::ostream& FLWORIterator::OrderSpec::show ( std::ostream& os ) const {
+    os << IT_DEPTH << "<order_spec empty_least=\"" << empty_least << "\" descending=\"" << descending << "\" >"<< std::endl;
+    orderByIter->show(os);
+    os << IT_DEPTH <<"</order_spec>" << std::endl;
+    return os;
+  }
+
+  
+  std::ostream& FLWORIterator::OrderByClause::show ( std::ostream& os ) const {
+    os << IT_DEPTH << "<order_by_clause stable=\"" << stable << "\" >" << std::endl;
+    std::vector<OrderSpec>::const_iterator iter;
+    for ( iter = orderSpecs.begin() ; iter != orderSpecs.end(); iter++ )
+    {
+      iter->show ( os );
+    }
+    os << IT_DEPTH << "</order_by_clause>" << std::endl;
+    return os;
   }
 
   FLWORIterator::FLWORIterator ( const yy::location& loc,
@@ -76,8 +98,9 @@ namespace xqp
       bindingsNb ( aForLetClauses.size() ),
       orderMap(0)
   {
+    std::cout << "*********************Size" << orderByClause->orderSpecs.size()  << std::endl;
     if(orderByClause != 0 && orderByClause->orderSpecs.size() > 0){
-      orderMap = new std::multimap<std::vector<Item_t>, TempSeq_t, OrderKeyCmp>( &(orderByClause->orderSpecs) );
+      orderMap = new order_map_t( &(orderByClause->orderSpecs) );
     }else{
       orderByClause = 0;
     }
@@ -90,6 +113,8 @@ namespace xqp
       delete orderMap;
     }
   }
+  
+  
 
   Item_t FLWORIterator::nextImpl ( PlanState& planState )
   {
@@ -119,14 +144,24 @@ namespace xqp
           //FINISHED
           if ( curVar == -1 )
           {
+            if(orderByClause != 0){
+              curOrderPos = orderMap->begin();             
+              while(curOrderPos != orderMap->end()){
+                curOrderResultSeq = curOrderPos->second;
+                curItem = curOrderResultSeq->next();
+                while(curItem != 0){
+                  STACK_PUSH(curItem, state);
+                  curItem = curOrderResultSeq->next();
+                }
+                curOrderPos++;
+              }
+            }
             STACK_PUSH ( NULL, state );
-            break;
             goto stop;
           }
         }
       }
-      if ( evalWhereClause ( planState ) )
-      {
+      if ( evalWhereClause ( planState ) ) {
         if(orderByClause == 0){
           while ( true )
           {
@@ -143,11 +178,10 @@ namespace xqp
             }
           }
         }else{
-          //matResultAndOrder
+          matResultAndOrder(planState);
+          curVar = bindingsNb - 1;
         }
-      }
-      else
-      {
+      } else {
         curVar = bindingsNb - 1;
       }
     }
@@ -162,7 +196,7 @@ namespace xqp
     vector<OrderSpec> lOrderSpecs = orderByClause->orderSpecs;
     //FIXME hould be a const iterator after the change of Plan_Iter
     std::vector<OrderSpec>::iterator lSpecIter = lOrderSpecs.begin();
-    std::vector<Item_t> orderKey(lOrderSpecs.size());
+    std::vector<Item_t> orderKey;
     while(lSpecIter != lOrderSpecs.end()){
       Item_t lItem = consumeNext(lSpecIter->orderByIter, planState);
       orderKey.push_back(lItem);
@@ -183,7 +217,8 @@ namespace xqp
     }
     Iterator_t iterWrapper = new PlanIterWrapper ( returnClause, planState );
     TempSeq_t result = store->createTempSeq ( iterWrapper, false );
-    orderMap->insert(std::pair<std::vector<Item_t> , TempSeq_t>(orderKey, result));
+    orderMap->insert(std::pair<std::vector<Item_t> , Iterator_t>(orderKey, result->getIterator()));
+    this->resetChild ( returnClause, planState );
   }
 
   bool FLWORIterator::evalWhereClause ( PlanState& planState )
@@ -307,7 +342,14 @@ namespace xqp
     if ( whereClause != NULL )
       size += whereClause->getStateSizeOfSubtree();
 
-    //TODO Add for orderby
+    if(orderByClause != NULL){
+      std::vector<OrderSpec>::const_iterator iter;
+      for ( iter = orderByClause->orderSpecs.begin() ; iter != orderByClause->orderSpecs.end(); iter++ )
+      {
+        size += iter->orderByIter->getStateSizeOfSubtree();
+      }
+    }
+
 
     return this->getStateSize() + size;
   }
@@ -327,6 +369,14 @@ namespace xqp
 
     if ( whereClause != NULL )
       whereClause->setOffset ( planState, offset );
+      
+    if(orderByClause != NULL){
+      std::vector<OrderSpec>::const_iterator iter;
+      for ( iter = orderByClause->orderSpecs.begin() ; iter != orderByClause->orderSpecs.end(); iter++ )
+      {
+        iter->orderByIter->setOffset ( planState, offset );
+      }
+    }
 
   }
 
@@ -339,7 +389,13 @@ namespace xqp
     }
     if ( whereClause != NULL )
     {
+      os << "<where_clause>" << std::endl;
       whereClause->show ( os );
+      os << "</where_clause>" << std::endl;
+    }
+    if ( orderByClause != NULL )
+    {
+      orderByClause->show ( os );
     }
     returnClause->show ( os );
     return os;
@@ -363,6 +419,7 @@ namespace xqp
         return descAsc(-1, desc);
       }
     }else{
+
       return descAsc(CompareIterator::valueCompare(s1 , s2), desc);
     }
   }
@@ -386,13 +443,14 @@ namespace xqp
 
   bool
   FLWORIterator::OrderKeyCmp::operator() ( const std::vector<Item_t>& s1, const std::vector<Item_t>& s2 ) const  { 
+    std:cerr << "s1: " << s1.size() << "s2:" << s2.size() << "order" << mOrderSpecs->size() << std::endl;
     assert(s1.size() == s2.size());
+    assert(s1.size() == mOrderSpecs->size());
     std::vector<Item_t>::const_iterator s1iter = s1.begin();
     std::vector<Item_t>::const_iterator s2iter = s2.begin();
     std::vector<OrderSpec>::const_iterator orderSpecIter = mOrderSpecs->begin();
     while(s1iter != s1.end()){
-      OrderSpec spec = *orderSpecIter;
-      int8_t cmp = compare(*s1iter, *s2iter, spec.descending, spec.empty_least);
+      int8_t cmp = compare(*s1iter, *s2iter, orderSpecIter->descending, orderSpecIter->empty_least);
       if(cmp == 1){
         return false;
       }else if(cmp == -1){
@@ -400,6 +458,7 @@ namespace xqp
       }
       ++s1iter;
       ++s2iter;
+      ++orderSpecIter;
     }
     return false;    
   }

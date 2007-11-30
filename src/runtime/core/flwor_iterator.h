@@ -27,6 +27,9 @@ namespace xqp
 
   class RefIterator;
   typedef rchandle<RefIterator> ref_iter_t;
+  
+
+ 
 
   class FLWORIterator : public Batcher<FLWORIterator>
   {
@@ -81,6 +84,7 @@ namespace xqp
           bool empty_least;
           bool descending;
         public:
+          std::ostream& show ( std::ostream& os ) const;
           OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
       };
 
@@ -90,10 +94,11 @@ namespace xqp
       class OrderByClause
       {
         friend class FLWORIterator;
-        protected:
+        public:
           vector<OrderSpec> orderSpecs;
           bool stable;
         public:
+          std::ostream& show ( std::ostream& os ) const;
           OrderByClause ( std::vector<OrderSpec> orderSpecs, bool stable );
       };
 
@@ -123,6 +128,8 @@ namespace xqp
           vector<OrderSpec>* mOrderSpecs;         
          
       };
+      
+      typedef std::multimap<std::vector<Item_t>, Iterator_t, OrderKeyCmp> order_map_t;
 
     private:
       std::vector<FLWORIterator::ForLetClause> forLetClauses; //
@@ -135,7 +142,9 @@ namespace xqp
       int* varBindingState;
       Store* store;
 
-      std::multimap<std::vector<Item_t>, TempSeq_t, OrderKeyCmp>* orderMap;
+      order_map_t* orderMap;
+      order_map_t::const_iterator curOrderPos;
+      Iterator_t curOrderResultSeq;
 
     protected:
     class ElementContentState : public PlanIteratorState
