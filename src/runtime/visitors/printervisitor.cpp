@@ -284,27 +284,27 @@ namespace xqp {
   }
        
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<AddOperations>& a ) {
-    thePrinter.startIter("ArithmeticIterator<AddOperations>");
+    thePrinter.startIter("ArithmeticIterator_AddOperations");
     printLoc(a.loc);
   }
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<SubtractOperations>& a ) {
-    thePrinter.startIter("ArithmeticIterator<SubtractOperations>");
+    thePrinter.startIter("ArithmeticIterator_SubtractOperations");
     printLoc(a.loc);
   }
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<MultiplyOperations>& a ) {
-    thePrinter.startIter("ArithmeticIterator<MultiplyOperations>");
+    thePrinter.startIter("ArithmeticIterator_MultiplyOperations");
     printLoc(a.loc);
   }
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<DivideOperations>& a ) {
-    thePrinter.startIter("ArithmeticIterator<DivideOperations>");
+    thePrinter.startIter("ArithmeticIterator_DivideOperations");
     printLoc(a.loc);
   }
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<IntegerDivideOperations>& a ) {
-    thePrinter.startIter("ArithmeticIterator<IntegerDivideOperations>");
+    thePrinter.startIter("ArithmeticIterator_IntegerDivideOperations");
     printLoc(a.loc);
   }
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<ModOperations>& a ) {
-    thePrinter.startIter("ArithmeticIterator<ModOperations>");
+    thePrinter.startIter("ArithmeticIterator_ModOperations");
     printLoc(a.loc);
   }
   void PrinterVisitor::endVisit ( const ArithmeticIterator<AddOperations>& a ) {
