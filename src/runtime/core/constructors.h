@@ -148,5 +148,27 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
+class TextIterator : public Batcher<TextIterator>
+{
+  PlanIter_t        theExpressionIter;
+
+public:
+  TextIterator(
+        const yy::location& loc,         
+        PlanIter_t& expression) : 
+          Batcher<TextIterator>(loc),
+          theExpressionIter(expression){}
+  
+  Item_t nextImpl(PlanState& planState){assert(false);}
+  void resetImpl(PlanState& planState){assert(false);}
+  void releaseResourcesImpl(PlanState& planState){assert(false);}
+
+  std::ostream& _show(std::ostream& os) const {assert(false);}
+
+  virtual int32_t getStateSize(){assert(false);}
+  virtual int32_t getStateSizeOfSubtree(){assert(false);}
+  virtual void setOffset(PlanState& planState, int32_t& offset){assert(false);}
+};
+
 } /* namespace xqp */
 #endif  /* XQP_CONSTRUCTORS_H */
