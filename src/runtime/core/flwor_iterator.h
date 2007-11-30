@@ -74,7 +74,6 @@ namespace xqp
        */
       class OrderSpec
       {
-        friend class FLWORIterator::OrderKeyCmp;
         friend class FLWORIterator;
         friend class OrderKeyCmp;
         protected:
