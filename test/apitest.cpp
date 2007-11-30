@@ -151,15 +151,22 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	if (lProp->useResultFile())
 	{
-		resultFile = new ofstream(lProp->getResultFile().c_str());
+    resultFile = new ofstream(lProp->getResultFile().c_str());
 		//*resultFile << "Iterator run:" << endl << endl;
 	}
 
 
-  if (lProp->useResultFile())
-	{
-		result->serializeXML(*resultFile);
-		// endl should not be sent when serializing!
+  if (lProp->useSerializer())
+  {
+    if (lProp->useResultFile())
+	  {
+      result->serializeXML(*resultFile);
+      // endl should not be sent when serializing!
+    }
+    else
+    {
+      result->serializeXML(std::cout);
+    }
 	}
 	else
 	{
