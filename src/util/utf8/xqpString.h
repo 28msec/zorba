@@ -272,10 +272,18 @@ public:
     //normalization
     xqpString normalize(xqpString normMode);
 
-    //escape all characters except:
+    //escape all characters except for those :
     //Upper and lowercase letters A-Z
     //digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
     xqpString encodeForUri();
+
+    //This function converts an xs:string containing an IRI into a URI according to the
+    //rules spelled out in Section 3.1 of http://www.ietf.org/rfc/rfc3987.txt
+    xqpString iriToUri();
+
+    //This function escapes all characters except printable characters of the US-ASCII
+    //coded character set, specifically the octets ranging from 32 to 126 (decimal)
+    xqpString escapeHtmlUri();
     
 private:
 
@@ -294,10 +302,22 @@ private:
     */
     void reserve(size_type size=0);
 
-    /**Returns true is cp reprezents "Unreserved Characters" as defined by rfc3986
+    /**Returns true is cp reprezents "unreserved" as defined by rfc3986
     */
-    bool unreservedCP(uint32_t cp);
+    bool is_unreservedCP(uint32_t cp);
 
+    /**Returns true is cp reprezents "ucschar" as defined by rfc3987
+    */
+    bool is_ucscharCP(uint32_t cp);
+
+    /**Returns true is cp reprezents "iprivate" as defined by rfc3987
+    */
+    bool is_iprivateCP(uint32_t cp);
+
+    /**Returns true if cp is a printable characters of the US-ASCII coded
+    *character set meaning octets ranging from 32 to 126 (decimal).
+    */
+    bool is_printableASCII(uint32_t cp);
   };
 
   // xqpString::stream I/O operators

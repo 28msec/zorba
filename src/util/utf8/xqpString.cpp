@@ -20,26 +20,31 @@ using namespace std;
 
 namespace xqp
 {
-  uint32_t xqpStringStore::hash() const{
+  uint32_t xqpStringStore::hash() const
+  {
     uint32_t hash = 5381;
     int c;
     const char *str = c_str();
-    while ((c = *str++)){
+    while ((c = *str++))
+    {
       hash = ((hash << 5) + hash) + c; // hash*33 + c
     }
     return hash;
   }
 
-  uint32_t xqpStringStore::hash(const char* str){
+  uint32_t xqpStringStore::hash(const char* str)
+  {
     uint32_t hash = 5381;
     int c;
-    while ((c = *str++)){
+    while ((c = *str++))
+    {
       hash = ((hash << 5) + hash) + c; // hash*33 + c
     }
     return hash;
   }
 
-  bool xqpStringStore::byteEqual(const xqpStringStore& src) const{
+  bool xqpStringStore::byteEqual(const xqpStringStore& src) const
+  {
     if (this == &src)
       return true;
 
@@ -51,14 +56,16 @@ namespace xqp
     return false;
   }
 
-  bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const{
+  bool xqpStringStore::byteEqual(const char* src, uint32_t srclen) const
+  {
     if(bytes() == srclen && memcmp(c_str(), src, srclen) == 0)
       return true;
 
     return false;
   }
 
-  bool xqpStringStore::hashEqual(const xqpStringStore& src) const{
+  bool xqpStringStore::hashEqual(const xqpStringStore& src) const
+  {
     if (this == &src)
       return true;
     
@@ -69,29 +76,35 @@ namespace xqp
   }
 
 
-  xqpString::xqpString(){
+  xqpString::xqpString()
+  {
     theStrStore = new xqpStringStore("");
   }
 
-  xqpString::xqpString(const std::string& src){
+  xqpString::xqpString(const std::string& src)
+  {
     theStrStore = new xqpStringStore(src);
   }
 
-  xqpString::xqpString(const char* src){
+  xqpString::xqpString(const char* src)
+  {
     theStrStore = new xqpStringStore(src);
   }
 
-  xqpString& xqpString::operator=(const std::string& src){
-    theStrStore = new xqpStringStore(src);
-    return *this;
-  }
-
-  xqpString& xqpString::operator=(const char* src){
+  xqpString& xqpString::operator=(const std::string& src)
+  {
     theStrStore = new xqpStringStore(src);
     return *this;
   }
 
-  xqpString& xqpString::operator=(uint32_t cp){
+  xqpString& xqpString::operator=(const char* src)
+  {
+    theStrStore = new xqpStringStore(src);
+    return *this;
+  }
+
+  xqpString& xqpString::operator=(uint32_t cp)
+  {
     theStrStore->reserve(4);
     char seq[4] = {0,0,0,0};
     UTF8Encode(cp, seq);
@@ -99,27 +112,31 @@ namespace xqp
     return *this;
   }
 
-  xqpString& xqpString::operator=(char c){
+  xqpString& xqpString::operator=(char c)
+  {
     theStrStore = new xqpStringStore(&c);
     return *this;
   }
 
   //xqpString::operator+=()
-  xqpString& xqpString::operator+=(xqpString src){
+  xqpString& xqpString::operator+=(xqpString src)
+  {
     xqpStringStore* temp = new xqpStringStore(*theStrStore);
     *temp += src;
     theStrStore = temp;
     return *this;
   }
 
-  xqpString& xqpString::operator+=(const char* src){
+  xqpString& xqpString::operator+=(const char* src)
+  {
     xqpStringStore* temp = new xqpStringStore(*theStrStore);
     *temp += src;
     theStrStore = temp;
     return *this;
   }
 
-  xqpString& xqpString::operator+=(uint32_t cp){
+  xqpString& xqpString::operator+=(uint32_t cp)
+  {
     theStrStore->reserve(4);
     char seq[4] = {0,0,0,0};
     UTF8Encode(cp, seq);
@@ -127,13 +144,15 @@ namespace xqp
     return *this;
   }
 
-  xqpString& xqpString::operator+=(char c){
+  xqpString& xqpString::operator+=(char c)
+  {
     theStrStore = new xqpStringStore(*theStrStore+c);
     return *this;
   }
 
   //xqpString::stream I/O operators
-  std::istream& operator>>(std::istream& is, xqpString& utf8_src){
+  std::istream& operator>>(std::istream& is, xqpString& utf8_src)
+  {
     std::string buffer;
     is >> buffer;
     //TODO is there a need to perform charset conversion to/from the current locale ?!?!
@@ -141,14 +160,16 @@ namespace xqp
     return is;
   }
 
-  std::ostream& operator<<(std::ostream& os, xqpString utf8_src){
+  std::ostream& operator<<(std::ostream& os, xqpString utf8_src)
+  {
     //TODO is there a need to perform charset conversion to/from the current locale ?!?!
     os << *utf8_src.theStrStore;
     return os;
   }
 
   //xqpString::compare
-  int xqpString::compare(xqpString src) const{
+  int xqpString::compare(xqpString src) const
+  {
     UErrorCode status = U_ZERO_ERROR;
 
     //get the collator for the default collation
@@ -162,13 +183,15 @@ namespace xqp
     return result;
   }
 
-  int xqpString::compare(xqpString src, const char * loc) const{
+  int xqpString::compare(xqpString src, const char * loc) const
+  {
     UErrorCode status = U_ZERO_ERROR;
 
     //create the collator object
     ::Collator *coll = ::Collator::createInstance(Locale(loc), status);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -190,51 +213,60 @@ namespace xqp
     return result;
   }
 
-  int xqpString::compare(const char* src) const{
+  int xqpString::compare(const char* src) const
+  {
     //TODO optimize the code here
     xqpString tmp(src);
     return compare(tmp);
   }
 
   //xqpString::Length
-  xqpString::size_type xqpString::size() const{
+  xqpString::size_type xqpString::size() const
+  {
     const char* c = theStrStore->c_str();
     return UTF8Distance(c, c + theStrStore->size());
   }
 
-  xqpString::size_type xqpString::length() const{
+  xqpString::size_type xqpString::length() const
+  {
     const char* c = theStrStore->c_str();
     return UTF8Distance(c, c + theStrStore->size());
   }
 
-  bool xqpString::empty() const{
+  bool xqpString::empty() const
+  {
     return theStrStore->empty();
   }
 
-  void xqpString::reserve(xqpString::size_type size){
+  void xqpString::reserve(xqpString::size_type size)
+  {
     theStrStore->reserve(size);
   }
 
   //xqpString::Clear
-  void xqpString::clear(){
+  void xqpString::clear()
+  {
     theStrStore->erase();
   }
 
   //xpqString::Codepoint
-  std::vector<uint32_t> xqpString::getCodepoints(){
+  std::vector<uint32_t> xqpString::getCodepoints()
+  {
     std::vector<uint32_t> tt;
     uint16_t vLength;
 
     vLength = length() + 1;
     const char* c = theStrStore->c_str();
-    while( --vLength > 0 ){
+    while( --vLength > 0 )
+    {
       tt.push_back(UTF8Decode(c));
     }
     return tt;
   }
 
   //xqpString::Substring matching/ string search
-  int32_t xqpString::indexOf(xqpString pattern){
+  int32_t xqpString::indexOf(xqpString pattern)
+  {
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
@@ -243,7 +275,8 @@ namespace xqp
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -254,10 +287,12 @@ namespace xqp
 
     for(int16_t pos = search.first(status);
     U_SUCCESS(status) && pos != USEARCH_DONE;
-    pos = search.next(status)) {
+    pos = search.next(status))
+    {
       return pos;
     }
-    if (U_FAILURE(status)) {
+    if (U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -268,13 +303,15 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::indexOf(xqpString pattern, const char * loc){
+  int32_t xqpString::indexOf(xqpString pattern, const char * loc)
+  {
     UErrorCode status = U_ZERO_ERROR;
 
     //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), Locale(loc), NULL, status);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -285,10 +322,12 @@ namespace xqp
 
     for(int16_t pos = search.first(status);
     U_SUCCESS(status) && pos != USEARCH_DONE;
-    pos = search.next(status)) {
+    pos = search.next(status))
+    {
       return pos;
     }
-    if (U_FAILURE(status)) {
+    if (U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -299,7 +338,8 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::lastIndexOf(xqpString pattern){
+  int32_t xqpString::lastIndexOf(xqpString pattern)
+  {
     //create the collator object
     UErrorCode status = U_ZERO_ERROR;
 
@@ -308,7 +348,8 @@ namespace xqp
 
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator *)coll, NULL, status);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -318,7 +359,8 @@ namespace xqp
     }
 
     int32_t pos = search.last(status);
-    if (U_FAILURE(status)) {
+    if (U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -327,7 +369,8 @@ namespace xqp
       return -1;
     }
 
-    if(U_SUCCESS(status) && pos != USEARCH_DONE){
+    if(U_SUCCESS(status) && pos != USEARCH_DONE)
+    {
       //TODO check if this condition is enough
       return pos;
     }
@@ -335,13 +378,15 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::lastIndexOf(xqpString pattern, const char * loc){
+  int32_t xqpString::lastIndexOf(xqpString pattern, const char * loc)
+  {
     UErrorCode status = U_ZERO_ERROR;
 
     //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
     StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), Locale(loc), NULL, status);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -351,7 +396,8 @@ namespace xqp
     }
 
     int32_t pos = search.last(status);
-    if (U_FAILURE(status)) {
+    if (U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -360,7 +406,8 @@ namespace xqp
       return -1;
     }
 
-    if(U_SUCCESS(status) && pos != USEARCH_DONE){
+    if(U_SUCCESS(status) && pos != USEARCH_DONE)
+    {
       //TODO check if this condition is enough
       return pos;
     }
@@ -368,17 +415,20 @@ namespace xqp
     return -1;
   }
 
-  bool xqpString::endsWith(xqpString pattern){
+  bool xqpString::endsWith(xqpString pattern)
+  {
     //TODO check if this condition is enough
     return( lastIndexOf(pattern) + pattern.length() == length() );
   }
 
-  bool xqpString::endsWith(xqpString pattern, const char * loc){
+  bool xqpString::endsWith(xqpString pattern, const char * loc)
+  {
     //TODO check if this condition is enough
     return( lastIndexOf(pattern, loc) + pattern.length() == length() );
   }
 
-  xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length){
+  xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length)
+  {
     char* target;
     int32_t size =  length*4 + 1;
     target = new char[size]; //will hold UTF-8 encoded characters
@@ -394,11 +444,14 @@ namespace xqp
 
   }
 
-  xqpString xqpString::substr(distance_type index){
-    if(index >= (int32_t)length()){
+  xqpString xqpString::substr(distance_type index)
+  {
+    if(index >= (int32_t)length())
+    {
       index = length();
     }
-    else if(index < 0){
+    else if(index < 0)
+    {
       xqpString ret(*theStrStore);
       return ret;
     }
@@ -410,12 +463,14 @@ namespace xqp
     return ret;
   }
 
-  const char* xqpString::c_str() const{
+  const char* xqpString::c_str() const
+  {
     return theStrStore->c_str();
   }
   
   //uppercase/lowercase
-  xqpString xqpString::uppercase() {
+  xqpString xqpString::uppercase()
+  {
     uint32_t i =0;
     uint32_t len = length();
     const char* c = c_str();
@@ -424,9 +479,10 @@ namespace xqp
 
     xqpStringStore* newStr = new xqpStringStore("");
 
-    for(i; i<len; ++i){
+    for(i; i<len; ++i)
+    {
       cp = toUpper(UTF8Decode(c));
-      seq[0] = seq[1] = seq[2] = seq[3] = 0;
+      memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
       *newStr += seq;
     }
@@ -436,7 +492,8 @@ namespace xqp
     return *this;
   }
 
-  xqpString xqpString::lowercase() {
+  xqpString xqpString::lowercase()
+  {
     uint32_t i =0;
     uint32_t len = length();
     const char* c = c_str();
@@ -445,9 +502,10 @@ namespace xqp
 
     xqpStringStore* newStr = new xqpStringStore("");
 
-    for(i; i<len; ++i){
+    for(i; i<len; ++i)
+    {
       cp = toLower(UTF8Decode(c));
-      seq[0] = seq[1] = seq[2] = seq[3] = 0;
+      memset(seq, 0, sizeof(seq));
       UTF8Encode(cp, seq);
       *newStr += seq;
     }
@@ -459,23 +517,29 @@ namespace xqp
 
 
   //normalize
-  xqpString xqpString::normalize(xqpString normMode){
+  xqpString xqpString::normalize(xqpString normMode)
+  {
     UnicodeString result;
     UErrorCode status = U_ZERO_ERROR;
 
-    if(normMode == "NFC"){
+    if(normMode == "NFC")
+    {
       Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFC , 0, result, status);
     }
-    else if(normMode == "NFKC"){
+    else if(normMode == "NFKC")
+    {
       Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFKC , 0, result, status);
     }
-    else if(normMode == "NFD"){
+    else if(normMode == "NFD")
+    {
       Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFD , 0, result, status);
     }
-    else if(normMode == "NFKD"){
+    else if(normMode == "NFKD")
+    {
       Normalizer::normalize(getUnicodeString(*theStrStore), UNORM_NFKD , 0, result, status);
     }
-    else{
+    else
+    {
       ZORBA_ERROR_ALERT(
           error_messages::FOCH0003_Unsupported_normalization_form,
           error_messages::SYSTEM_ERROR,
@@ -483,7 +547,8 @@ namespace xqp
           );
     }
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
           error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
@@ -492,24 +557,75 @@ namespace xqp
     }
     
     return getXqpString( result ); 
-}
+  }
 
-bool xqpString::unreservedCP(uint32_t cp){
-  bool ret = false;
-  if( (47 < cp && cp < 58) || //0-9
-       (64 < cp && cp < 91) || //A-Z
-       (96 < cp && cp < 123) || //a-z
-      cp == 45 || //-
-      cp == 46 || //.
-      cp == 95 || //_
-      cp == 126 //~
-    ){
+  bool xqpString::is_unreservedCP(uint32_t cp)
+  {
+    bool ret = false;
+    if((0x30 <= cp && cp <= 0x39)|| //0-9
+       (0x41 <= cp && cp <= 0x5A)|| //A-Z
+       (0x61 <= cp && cp <= 0x7A)|| //a-z
+       cp == 0x2D || //-
+       cp == 0x2E || //.
+       cp == 0x5F || //_
+       cp == 0x7E)   //~
+      {  
+        ret = true;
+      }
+      return ret;
+  }
+
+  bool xqpString::is_ucscharCP(uint32_t cp)
+  {
+    bool ret = false;
+    if((0xA0 <= cp && cp <=0xD7FF) ||
+      (0xF900 <= cp && cp <=0xFDCF) ||
+      (0xFDF0 <= cp && cp <=0xFFEF) ||
+      (0x10000 <= cp && cp <=0x1FFFD) ||
+      (0x20000 <= cp && cp <=0x2FFFD) ||
+      (0x30000 <= cp && cp <=0x3FFFD) ||
+      (0x40000 <= cp && cp <=0x4FFFD) ||
+      (0x50000 <= cp && cp <=0x5FFFD) ||
+      (0x60000 <= cp && cp <=0x6FFFD) ||
+      (0x70000 <= cp && cp <=0x7FFFD) ||
+      (0x80000 <= cp && cp <=0x8FFFD) ||
+      (0x90000 <= cp && cp <=0x9FFFD) ||
+      (0xA0000 <= cp && cp <=0xAFFFD) ||
+      (0xB0000 <= cp && cp <=0xBFFFD) ||
+      (0xC0000 <= cp && cp <=0xCFFFD) ||
+      (0xD0000 <= cp && cp <=0xDFFFD) ||
+      (0xE0000 <= cp && cp <=0xEFFFD))
+    {
       ret = true;
     }
     return ret;
-}
+  }
 
-  xqpString xqpString::encodeForUri(){
+  bool xqpString::is_iprivateCP( uint32_t cp )
+  {
+    bool ret = false;
+    if((0xE000 <= cp && cp <=0xF8FF) ||
+        (0xF0000 <= cp && cp <=0xFFFFD) ||
+        (0x100000 <= cp && cp <= 0x10FFFD)
+      )
+    {
+      ret = true;
+    }
+    return ret;
+  }
+
+  bool xqpString::is_printableASCII(uint32_t cp)
+  {
+    bool ret = false;
+    if(0x20 <= cp && cp <=0x7E)//32 to 126 (decimal)
+    {
+      ret = true;
+    }
+    return ret;
+  }
+  
+  xqpString xqpString::encodeForUri()
+  {
     uint32_t i =0;
     uint32_t len = length();
     const char* c = c_str();
@@ -520,18 +636,106 @@ bool xqpString::unreservedCP(uint32_t cp){
 
     std::string tmp = "";
     
-    for(i; i<len; ++i){
+    for(i; i<len; ++i)
+    {
       prev = c;
       cp = UTF8Decode(c);
-      seq[0]=seq[1]=seq[2]=seq[3]=0;
-      if(unreservedCP(cp)){
+      memset(seq, 0, sizeof(seq));
+      if(is_unreservedCP(cp))
+      {
         UTF8Encode(cp, seq);
         tmp += seq;
       }
       else{//codepoint has to be escaped
         length = sequence_length(prev);
-        if(length != 1){
-          for(int j=0; j<length;++j){
+        if(length != 1)
+        {
+          for(int j=0; j<length;++j)
+          {
+            cp = mask8(*prev);
+            sprintf(seq, "%%%X", cp);
+            tmp += seq;
+            prev++;
+          }
+        }
+      }
+    }
+    tmp += "\0";
+
+    theStrStore = new xqpStringStore(tmp);
+    return *this;
+  }
+
+  xqpString xqpString::iriToUri()
+  {
+    uint32_t i =0;
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp;
+    char seq[4];
+    const char* prev = c_str();
+    distance_type length;
+
+    std::string tmp = "";
+    
+    for(i; i<len; ++i)
+    {
+      prev = c;
+      cp = UTF8Decode(c);
+      memset(seq, 0, sizeof(seq));
+      if(!is_ucscharCP(cp) && !is_iprivateCP(cp))
+      {
+        UTF8Encode(cp, seq);
+        tmp += seq;
+      }
+      else{//codepoint has to be escaped
+        length = sequence_length(prev);
+        if(length != 1)
+        {
+          for(int j=0; j<length;++j)
+          {
+            cp = mask8(*prev);
+            sprintf(seq, "%%%X", cp);
+            tmp += seq;
+            prev++;
+          }
+        }
+      }
+    }
+    tmp += "\0";
+
+    theStrStore = new xqpStringStore(tmp);
+    return *this;
+  }
+
+  xqpString xqpString::escapeHtmlUri()
+  {
+    uint32_t i =0;
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp;
+    char seq[4];
+    const char* prev = c_str();
+    distance_type length;
+
+    std::string tmp = "";
+    
+    for(i; i<len; ++i)
+    {
+      prev = c;
+      cp = UTF8Decode(c);
+      memset(seq, 0, sizeof(seq));
+      if(is_printableASCII(cp))
+      {
+        UTF8Encode(cp, seq);
+        tmp += seq;
+      }
+      else{//codepoint has to be escaped
+        length = sequence_length(prev);
+        if(length != 1)
+        {
+          for(int j=0; j<length;++j)
+          {
             cp = mask8(*prev);
             sprintf(seq, "%%%X", cp);
             tmp += seq;
@@ -547,7 +751,8 @@ bool xqpString::unreservedCP(uint32_t cp){
   }
   
   // Private methods
-  UnicodeString xqpString::getUnicodeString(xqpString source) const{
+  UnicodeString xqpString::getUnicodeString(xqpString source) const
+  {
     UnicodeString ret;
     UErrorCode status = U_ZERO_ERROR;
     int32_t len = source.bytes();
@@ -557,7 +762,8 @@ bool xqpString::unreservedCP(uint32_t cp){
 
     ret.releaseBuffer(U_SUCCESS(status) ? len : 0);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,
@@ -568,7 +774,8 @@ bool xqpString::unreservedCP(uint32_t cp){
     return ret;
   }
 
-  xqpString xqpString::getXqpString(UnicodeString source){
+  xqpString xqpString::getXqpString(UnicodeString source)
+  {
     char* target;
     int32_t targetLen = source.getCapacity()*4 + 1;
     target = new char[targetLen];
@@ -577,7 +784,8 @@ bool xqpString::unreservedCP(uint32_t cp){
     //open a convertor to UTF-8
     UConverter *conv = ucnv_open("utf-8", &status);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,
@@ -593,7 +801,8 @@ bool xqpString::unreservedCP(uint32_t cp){
     //close the converter
     ucnv_close(conv);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,
@@ -609,7 +818,8 @@ bool xqpString::unreservedCP(uint32_t cp){
     return ret;
 }
 
-  wchar_t * xqpString::getWCS(xqpString source) const{
+  wchar_t * xqpString::getWCS(xqpString source) const
+  {
     int32_t destCapacity =  source.length()*2 + 1;
     wchar_t* destWCS;
     destWCS = new wchar_t[destCapacity];
@@ -622,7 +832,8 @@ bool xqpString::unreservedCP(uint32_t cp){
 
     wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
 
-    if(U_FAILURE(status)) {
+    if(U_FAILURE(status))
+    {
       ZORBA_ERROR_ALERT(
             error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,

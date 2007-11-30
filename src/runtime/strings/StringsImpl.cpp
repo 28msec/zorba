@@ -705,10 +705,20 @@ EncodeForUriIterator::nextImpl(PlanState& planState) {
 Item_t
 IriToUriIterator::nextImpl(PlanState& planState) {
   Item_t item;
-  xqp_string emptyStr("NOT IMPLEMENTED YET");
+  xqp_string emptyStr("");
+
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+
+  item = consumeNext (theChild, planState);
+  if ( item != NULL )  {
+    STACK_PUSH(zorba::getItemFactory()->createString(
+        item->getStringValue().iriToUri()),
+    state);
+  }
+  else{
+    STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+  }
   STACK_END();
 }
 /* end class IriToUriIterator */
@@ -722,10 +732,20 @@ IriToUriIterator::nextImpl(PlanState& planState) {
 Item_t
 EscapeHtmlUriIterator::nextImpl(PlanState& planState) {
   Item_t item;
-  xqp_string emptyStr("NOT IMPLEMENTED YET");
+  xqp_string emptyStr("");
+
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+
+  item = consumeNext (theChild, planState);
+  if ( item != NULL )  {
+    STACK_PUSH(zorba::getItemFactory()->createString(
+        item->getStringValue().escapeHtmlUri()),
+    state);
+  }
+  else{
+    STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
+  }
   STACK_END();
 }
 /* end class EscapeHtmlUriIterator */
