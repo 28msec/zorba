@@ -126,10 +126,6 @@ void plan_visitor::end_visit(flwor_expr& v)
   cout << TRACE << endl;
   PlanIter_t ret = pop_itstack ();
 
-  PlanIter_t where = NULL;
-  if (v.get_where () != NULL)
-    where = pop_itstack ();
-
   vector<FLWORIterator::OrderSpec> orderSpecs;
   for (vector<flwor_expr::orderspec_t>::const_iterator i = v.orderspec_begin ();
        i != v.orderspec_end ();
@@ -138,6 +134,10 @@ void plan_visitor::end_visit(flwor_expr& v)
     orderSpecs.push_back (FLWORIterator::OrderSpec (pop_itstack (), spec.second->empty_mode, spec.second->dir == dir_descending));
   }
   FLWORIterator::OrderByClause *orderby = new FLWORIterator::OrderByClause (orderSpecs, v.get_order_stable ());
+
+  PlanIter_t where = NULL;
+  if (v.get_where () != NULL)
+    where = pop_itstack ();
 
   vector<FLWORIterator::ForLetClause> clauses;
   stack<PlanIter_t> inputs;
