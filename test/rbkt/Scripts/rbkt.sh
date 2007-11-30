@@ -120,8 +120,8 @@ if [ "${bucketName}" != "" ]; then
   fi
 
 else
-  #bucketList=`find "${queriesSDir}" -mindepth 1 -type d -printf "%f\n"`
-  bucketList="paths"
+  # bugfix by Matthias (collect the buckets automatically)
+  bucketList=`find "${queriesDir}" -type d -maxdepth 1 ! -name '.svn' ! -name '.' ! -name 'Queries' -exec basename {} \;`
 
   for bucketName in ${bucketList}
   do
