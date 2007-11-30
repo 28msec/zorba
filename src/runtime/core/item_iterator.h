@@ -1,5 +1,5 @@
 /* 
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *  Author: Tim Kraska, David Graf
  *
  */
@@ -28,23 +28,23 @@ class zorba;
 
 
 /*
-public:		// "treat as" operators
-	string_iterator& treat_as_string();
-	node
-	document
-	element
-	attribute
-	namespace
-	pi
-	comment
-	text
-	string
-	numeric	
-	boolean
-	time
-	binary
-	qname
-	sequence
+public:   // "treat as" operators
+  string_iterator& treat_as_string();
+  node
+  document
+  element
+  attribute
+  namespace
+  pi
+  comment
+  text
+  string
+  numeric 
+  boolean
+  time
+  binary
+  qname
+  sequence
 
 */
 
@@ -53,69 +53,75 @@ typedef rchandle<SingletonIterator> singleton_t;
 
 
 /** Class represents an empty sequence.
-	*/
+  */
 class EmptyIterator : public Batcher<EmptyIterator>
 {
 public:
-	EmptyIterator(yy::location loc) : Batcher<EmptyIterator>(loc) {}
-	EmptyIterator(const EmptyIterator& it) : Batcher<EmptyIterator>(it) {}
-	~EmptyIterator() {}
-	
-	Item_t nextImpl(PlanState& planState) { return NULL; }
-	void resetImpl(PlanState& planState)  { }
-	void releaseResourcesImpl(PlanState& planState){ }
+  EmptyIterator(yy::location loc) : Batcher<EmptyIterator>(loc) {}
+  EmptyIterator(const EmptyIterator& it) : Batcher<EmptyIterator>(it) {}
+  ~EmptyIterator() {}
+  
+  Item_t nextImpl(PlanState& planState) { return NULL; }
+  void resetImpl(PlanState& planState)  { }
+  void releaseResourcesImpl(PlanState& planState){ }
 
-	virtual int32_t getStateSize() { return 0; }
-	virtual int32_t getStateSizeOfSubtree() { 
-		return 0; 
+  virtual int32_t getStateSize() { return 0; }
+  virtual int32_t getStateSizeOfSubtree() { 
+    return 0; 
 }
-	virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 }; /* class EmptyIterator */
 
 
 /*_____________________________________________________________
 |
-|	literals and for_var bindings
+| literals and for_var bindings
 |______________________________________________________________*/
 class SingletonIterator : public Batcher<SingletonIterator>
 {
 protected:
-	Item_t i_h;
+  Item_t theValue;
 
 public:
-	SingletonIterator(yy::location loc, Item_t _i_p);
-	~SingletonIterator();
-	
+  SingletonIterator(yy::location loc, Item_t _i_p);
+  ~SingletonIterator();
+  
 public:
-	Item_t nextImpl(PlanState& planState);
-	void resetImpl(PlanState& planState);
-	void releaseResourcesImpl(PlanState& planState);
-	
-	std::ostream&  _show(std::ostream& os)	const;
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+  
+  const Item_t& getValue() const { return theValue; }
 
-	virtual int32_t getStateSize();
-	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
+  virtual void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
 class var_iterator : public SingletonIterator
 {
 protected:
-	string s_h;
+  string s_h;
   const void *origin;  ///< origin expr, used as a kind of ID
-	
+  
 public:
-	var_iterator(string s_p, yy::location loc, const void *origin_) : 
-							SingletonIterator(loc,NULL), 
-							s_h(s_p), origin (origin_)
+  var_iterator(string s_p, yy::location loc, const void *origin_) : 
+              SingletonIterator(loc,NULL), 
+              s_h(s_p), origin (origin_)
   {}
-	~var_iterator(){
-		
-	}
-	
-public:		// variable binding
-	void bind(Item_t _i_h) { i_h = _i_h; }
+  ~var_iterator(){
+    
+  }
+  
+  virtual void accept(PlanIterVisitor&) const;
+  
+public:   // variable binding
+  void bind(Item_t aValue) { theValue = aValue; }
 };
 
 
@@ -126,30 +132,32 @@ public:		// variable binding
 class RefIterator : public Batcher<RefIterator>
 {
 private:
-	Iterator_t it;
-	const void *origin;  ///< like origin in var_iterator
-	
+  Iterator_t it;
+  const void *origin;  ///< like origin in var_iterator
+  
 public:
-	RefIterator(string s_p, yy::location loc, const void *origin_)
+  RefIterator(string s_p, yy::location loc, const void *origin_)
     : Batcher<RefIterator> (loc), origin (origin_)
   {}
-	~RefIterator() {}  // TODO
-	
-public:		// variable binding
-	void bind(Iterator_t _it) { it = _it;}
-	Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
-	void resetImpl(PlanState& planState) { it->reset(); }  // TODO
-	void releaseResourcesImpl(PlanState& planState) {  }  // TODO
-	virtual int32_t getStateSize() { return 0; }  // TODO
-	virtual int32_t getStateSizeOfSubtree() { return 0; }  // TODO
-	virtual void setOffset(PlanState& planState, int32_t& offset) {}  // TODO
+  ~RefIterator() {}  // TODO
+  
+public:   // variable binding
+  void bind(Iterator_t _it) { it = _it;}
+  Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
+  void resetImpl(PlanState& planState) { it->reset(); }  // TODO
+  void releaseResourcesImpl(PlanState& planState) {  }  // TODO
+  virtual int32_t getStateSize() { return 0; }  // TODO
+  virtual int32_t getStateSizeOfSubtree() { return 0; }  // TODO
+  virtual void setOffset(PlanState& planState, int32_t& offset) {}  // TODO
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
 /**
- 	* Used to make the casting and concatenation of 
- 	* atomic values in the sequences of an enclosed expression.
- 	*/
+  * Used to make the casting and concatenation of 
+  * atomic values in the sequences of an enclosed expression.
+  */
 class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator>
 {
 protected:
@@ -172,9 +180,11 @@ public:
   int32_t getStateSize() { return sizeof(EnclosedState); }
 
   void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 }; /* class EnclosedIterator */
 
-	
+  
 class IfThenElseIterator : public Batcher<IfThenElseIterator>
 {
 private:
@@ -182,7 +192,7 @@ private:
   PlanIter_t theThenIter;
   PlanIter_t theElseIter;
   bool theIsBooleanIter;
-		
+    
 public:
   /**
    * Constructor
@@ -191,9 +201,9 @@ public:
    * @param iterThen_arg represents then expression
    * @param iterElse_arg represents else expression
    * @param condIsBooleanIter Optional flag. If true => condition is already an iterator 
-   * 															which return true or false => the conditional value
-   *															does not have to be evaluated with the effective
-   *															boolean value function
+   *                              which return true or false => the conditional value
+   *                              does not have to be evaluated with the effective
+   *                              boolean value function
    */
   IfThenElseIterator(
         const yy::location& loc,
@@ -201,7 +211,7 @@ public:
         PlanIter_t& aThenIter,
         PlanIter_t& aElseIter,
         bool aIsBooleanIter = false);
-		
+    
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
@@ -210,7 +220,7 @@ public:
   virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset ( PlanState& planState, int32_t& offset );
       
-  virtual std::ostream& _show ( std::ostream& os ) const;
+  virtual void accept(PlanIterVisitor&) const;
   
   protected:
     class IfThenElseIteratorState : public PlanIteratorState {
@@ -220,8 +230,6 @@ public:
 }; /* class IfThenElseIterator */
 
 
-
-
-}	/* namespace xqp */
-#endif	/* XQP_ITEM_ITERATOR_H */
+} /* namespace xqp */
+#endif  /* XQP_ITEM_ITERATOR_H */
 

@@ -11,6 +11,7 @@
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 namespace xqp
 {
@@ -34,25 +35,26 @@ namespace xqp
   {
   }
 
-  std::ostream& FLWORIterator::ForLetClause::show ( std::ostream& os ) const
+  void FLWORIterator::ForLetClause::accept ( PlanIterVisitor& v ) const
   {
+    // TODO correct for visitor
     switch ( type )
     {
       case FOR:
-        os << IT_DEPTH << "<for_clause varRefNB=\""<< forVars.size() << "\" posRefNb=\"" << posVars.size() << "\"" << std::endl;
-        input->show ( os );
-        os << IT_DEPTH << "</for_clause>" << std::endl;
+//         os << IT_DEPTH << "<for_clause varRefNB=\""<< forVars.size() << "\" posRefNb=\"" << posVars.size() << "\"" << std::endl;
+        input->accept(v);
+//         os << IT_DEPTH << "</for_clause>" << std::endl;
         break;
       case LET:
-        os << IT_DEPTH << "<let_clause refNb=\"" << letVars.size() << "\">" << std::endl;
-        input->show ( os );
-        os << IT_DEPTH << "</let_clause>" << std::endl;
+//         os << IT_DEPTH << "<let_clause refNb=\"" << letVars.size() << "\">" << std::endl;
+        input->accept(v);
+//         os << IT_DEPTH << "</let_clause>" << std::endl;
         break;
       default:
         assert ( false );
 
     }
-    return os;
+//     return os;
   }
   
 
@@ -68,23 +70,23 @@ namespace xqp
   {
   }
   
-  std::ostream& FLWORIterator::OrderSpec::show ( std::ostream& os ) const {
-    os << IT_DEPTH << "<order_spec empty_least=\"" << empty_least << "\" descending=\"" << descending << "\" >"<< std::endl;
-    orderByIter->show(os);
-    os << IT_DEPTH <<"</order_spec>" << std::endl;
-    return os;
+  void FLWORIterator::OrderSpec::accept ( PlanIterVisitor& v ) const {
+    // TODO
+//     os << IT_DEPTH << "<order_spec empty_least=\"" << empty_least << "\" descending=\"" << descending << "\" >"<< std::endl;
+    orderByIter->accept(v);
+//     os << IT_DEPTH <<"</order_spec>" << std::endl;
   }
 
   
-  std::ostream& FLWORIterator::OrderByClause::show ( std::ostream& os ) const {
-    os << IT_DEPTH << "<order_by_clause stable=\"" << stable << "\" >" << std::endl;
+  void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const {
+    // TODO
+//     os << IT_DEPTH << "<order_by_clause stable=\"" << stable << "\" >" << std::endl;
     std::vector<OrderSpec>::const_iterator iter;
     for ( iter = orderSpecs.begin() ; iter != orderSpecs.end(); iter++ )
     {
-      iter->show ( os );
+      iter->accept ( v );
     }
-    os << IT_DEPTH << "</order_by_clause>" << std::endl;
-    return os;
+//     os << IT_DEPTH << "</order_by_clause>" << std::endl;
   }
 
   FLWORIterator::FLWORIterator ( const yy::location& loc,
@@ -380,25 +382,26 @@ namespace xqp
 
   }
 
-  std::ostream& FLWORIterator::_show ( std::ostream& os ) const
+  void FLWORIterator::accept ( PlanIterVisitor& v ) const
   {
+    // TODO
+    v.beginVisit(*this);
     std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
     for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
     {
-      iter->show ( os );
+      iter->accept(v);
     }
     if ( whereClause != NULL )
     {
-      os << "<where_clause>" << std::endl;
-      whereClause->show ( os );
-      os << "</where_clause>" << std::endl;
+//       os << "<where_clause>" << std::endl;
+      whereClause->accept ( v );
+//       os << "</where_clause>" << std::endl;
     }
     if ( orderByClause != NULL )
     {
-      orderByClause->show ( os );
+      orderByClause->accept ( v );
     }
-    returnClause->show ( os );
-    return os;
+    returnClause->accept ( v );
   }
 
   int8_t 

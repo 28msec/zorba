@@ -32,8 +32,6 @@ namespace xqp
 			virtual int32_t getStateSize();
 			virtual int32_t getStateSizeOfSubtree();
 			virtual void setOffset ( PlanState& planState, int32_t& offset );
-      
-      virtual std::ostream& _show ( std::ostream& os ) const;
 	}; /* class BinaryBaseIterator */
 
 	/* begin class BinaryBaseIterator */
@@ -110,15 +108,6 @@ namespace xqp
 		theChild0->setOffset ( planState, offset );
 		theChild1->setOffset ( planState, offset );
 	}
-  
-  template <class IterType>
-  std::ostream&
-  BinaryBaseIterator<IterType>::_show ( std::ostream& os ) const
-  {
-    theChild0->show ( os );
-    theChild1->show ( os );
-    return os;
-  }
   /* end class BinaryBaseIterator */
 } /* namespace xqp */
 

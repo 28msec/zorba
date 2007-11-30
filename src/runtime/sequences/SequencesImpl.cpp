@@ -17,6 +17,7 @@
 #include "store/api/collection.h"
 #include "store/naive/store_defs.h"
 #include "errors/Error.h"
+#include "runtime/visitors/planitervisitor.h"
 
 using namespace std;
 namespace xqp {
@@ -41,26 +42,15 @@ Item* op_concatenate_fname_p;
 
 ConcatIterator::ConcatIterator(
 	yy::location loc,
-	const vector<PlanIter_t>& _argv)
+	const vector<PlanIter_t>& aChildren)
 :
 	Batcher<ConcatIterator>(loc),
-	argv(_argv)
+	theChildren(aChildren)
 {
 // 	LOG_DEBUG("Hallo");
 }
 
 ConcatIterator::~ConcatIterator(){}
-
-std::ostream& 
-ConcatIterator::_show(std::ostream& os)
-const
-{
-	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
-		(*iter)->show(os);
-	}
-	return os;
-}
 
 Item_t 
 ConcatIterator::nextImpl(PlanState& planState) {
@@ -69,11 +59,11 @@ ConcatIterator::nextImpl(PlanState& planState) {
 	ConcatIteratorState* state;
 	STACK_INIT(ConcatIteratorState, state, planState);
 	
-	for (; state->getCurIter() < int32_t(this->argv.size()); state->incCurIter()) {;
-		item = this->consumeNext(this->argv[state->getCurIter()], planState);
+  for (; state->getCurIter() < int32_t(theChildren.size()); state->incCurIter()) {;
+		item = this->consumeNext(theChildren[state->getCurIter()], planState);
 		while (item != NULL) {
 			STACK_PUSH (item, state);
-			item = this->consumeNext(this->argv[state->getCurIter()], planState);
+			item = this->consumeNext(theChildren[state->getCurIter()], planState);
 		}
 	}
 	
@@ -86,16 +76,16 @@ ConcatIterator::resetImpl(PlanState& planState) {
 	GET_STATE(ConcatIteratorState, state, planState);
 	state->reset();
 	
-	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
+	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
+	for(; iter != theChildren.end(); ++iter) {
 		this->resetChild(*iter, planState);
 	}
 }
 
 void 
 ConcatIterator::releaseResourcesImpl(PlanState& planState) {
-	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
+	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
+	for(; iter != theChildren.end(); ++iter) {
 		this->releaseChildResources(*iter, planState);
 	}
 }
@@ -109,8 +99,8 @@ int32_t
 ConcatIterator::getStateSizeOfSubtree() {
 	int32_t size = 0;
 	
-	std::vector<PlanIter_t>::const_iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
+	std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
+	for(; iter != theChildren.end(); ++iter) {
 		size += (*iter)->getStateSizeOfSubtree();
 	}
 	
@@ -122,8 +112,8 @@ ConcatIterator::setOffset(PlanState& planState, int32_t& offset) {
 	this->stateOffset = offset;
 	offset += this->getStateSize();
 	
-	std::vector<PlanIter_t>::iterator iter = this->argv.begin();
-	for(; iter != this->argv.end(); ++iter) {
+	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
+	for(; iter != theChildren.end(); ++iter) {
 		(*iter)->setOffset(planState, offset);
 	}
 }
@@ -253,13 +243,6 @@ DocIterator::DocIterator (
 }
 
 DocIterator::~DocIterator() {}
-
-std::ostream&
-DocIterator::_show ( std::ostream& os )
-const
-{
-  return os;
-}
 
 Item_t
 DocIterator::nextImpl ( PlanState& planState )

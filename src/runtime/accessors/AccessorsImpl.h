@@ -2,7 +2,7 @@
  *
  *  $Id: collection.h,v 1.1 2007/08/27 07:07:59 $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *  Author: David Graf
  *
  */
@@ -21,16 +21,16 @@ namespace xqp {
 {
 private:
   PlanIter_t theChild;
-		
+    
   // used to save the current typed value in the nextImpl method
 //   Iterator_t curTypedValue;
-	
+  
 public:
   FnDataIterator ( const yy::location& loc, PlanIter_t& aChild )
-		:
-		Batcher<FnDataIterator> ( loc ), theChild(aChild) {}
+    :
+    Batcher<FnDataIterator> ( loc ), theChild(aChild) {}
     virtual ~FnDataIterator() {}
-		
+    
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
@@ -38,6 +38,8 @@ public:
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(PlanState& aPlanState, int32_t& aOffset);
+  
+  virtual void accept(PlanIterVisitor&) const;
   
   protected:
     class FnDataIteratorState : public PlanIteratorState {
@@ -52,11 +54,13 @@ class FnRootIterator : public UnaryBaseIterator<FnRootIterator>
 {
 public:
   FnRootIterator(const yy::location& loc, PlanIter_t& theIter)
-		:
-		UnaryBaseIterator<FnRootIterator>(loc, theIter) {}
+    :
+    UnaryBaseIterator<FnRootIterator>(loc, theIter) {}
     virtual ~FnRootIterator() {}
-		
+    
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 

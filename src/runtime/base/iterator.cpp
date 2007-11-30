@@ -122,15 +122,6 @@ PlanIterator::setOffset(PlanState& planState, int32_t& offset) {
 					);
 }
 
-
-std::ostream& PlanIterator::show(std::ostream& os)
-{
-	os << IT_INDENT << "<" << this << " type=\"" << typeid(*this).name() << "\">" << std::endl;
-	_show(os);
-	os << IT_OUTDENT<< "</"<< this << ">"<< std::endl;
-	return os;
-}
-
 void
 PlanIterator::PlanIteratorState::init() {
 	this->duffsLine = 0;

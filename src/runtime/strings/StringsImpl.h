@@ -45,6 +45,8 @@ public:
     ~CodepointsToStringIterator(){};
 public:
     Item_t nextImpl(PlanState& planState);
+    
+    virtual void accept(PlanIterVisitor&) const;
 };
 /* end class CodepointsToStringIterator */
 
@@ -69,6 +71,8 @@ public:
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 
 protected:
   class StringToCodepointsState : public PlanIteratorState
@@ -107,6 +111,8 @@ public:
   ~CompareStrIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /* end class CompareStrIterator */
 
@@ -123,6 +129,8 @@ public:
   ~CodepointEqualIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class CodepointEqualIterator */
 
@@ -144,6 +152,8 @@ public:
   ~ConcatStrIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class ConcatStrIterator */
 
@@ -161,6 +171,8 @@ public:
   ~StringJoinIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class StringJoinIterator*/
 
@@ -177,6 +189,8 @@ public:
   ~SubstringIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class SubstringIterator*/
 
@@ -193,6 +207,8 @@ public:
   ~StringLengthIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class StringLengthIterator*/
 
@@ -209,6 +225,8 @@ public:
   ~NormalizeSpaceIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class NormalizeSpaceIterator*/
 
@@ -225,6 +243,8 @@ public:
   ~NormalizeUnicodeIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class NormalizeUnicodeIterator*/
 
@@ -241,6 +261,8 @@ public:
   ~UpperCaseIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class UpperCaseIterator*/
 
@@ -257,6 +279,8 @@ public:
   ~LowerCaseIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class LowerCaseIterator*/
 
@@ -273,6 +297,8 @@ public:
   ~TranslateIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class TranslateIterator*/
 
@@ -289,6 +315,8 @@ public:
   ~EncodeForUriIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class EncodeForUriIterator*/
 
@@ -305,6 +333,8 @@ public:
   ~IriToUriIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class IriToUriIterator*/
 
@@ -321,6 +351,8 @@ public:
   ~EscapeHtmlUriIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class EscapeHtmlUriIterator*/
 
@@ -342,6 +374,8 @@ public:
   ~ContainsIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class ContainsIterator*/
 
@@ -358,6 +392,8 @@ public:
   ~StartsWithIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class StartsWithIterator*/
 
@@ -374,6 +410,8 @@ public:
   ~EndsWithIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class EndsWithIterator*/
 
@@ -390,6 +428,8 @@ public:
   ~SubstringBeforeIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class SubstringBeforeIterator*/
 
@@ -406,6 +446,8 @@ public:
   ~SubstringAfterIterator() {};
 public:
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 /*end class SubstringAfterIterator*/
 }/*namespace xqp*/

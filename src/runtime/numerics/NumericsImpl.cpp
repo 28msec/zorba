@@ -16,6 +16,7 @@
 #include "types/casting.h"
 #include "errors/Error.h"
 #include "util/zorba.h"
+#include "runtime/visitors/planitervisitor.h"
 
 using namespace std;
 namespace xqp
@@ -321,6 +322,18 @@ namespace xqp
       }
     }
     STACK_END();
+  }
+  
+  /**
+   * Information: It is not possible to move this function to
+   * runtime/visitors/accept.cpp!
+   */
+  template< class Operations>
+  void ArithmeticIterator<Operations>::accept(PlanIterVisitor& v) const { 
+    v.beginVisit(*this); 
+    this->theChild0->accept(v); 
+    this->theChild1->accept(v); 
+    v.endVisit(*this); 
   }
 
   /* instantiate ArithmeticIterator for all types */

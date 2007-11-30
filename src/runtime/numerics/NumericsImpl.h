@@ -28,92 +28,94 @@
 namespace xqp
 {
 
-	class zorba;
-	class GenericCast;
+  class zorba;
+  class GenericCast;
 
-	/** Operations for Add
-		*/
-	class AddOperations
-	{
-		public:
-			static Item_t opDouble (const yy::location* , Item_t, Item_t );
-			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-	};
-	
-	/** Operations for Subtract
-		*/
-	class SubtractOperations
-	{
-		public:
-			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-	};
-	
-	/** Operations for Multiply
-		*/
-	class MultiplyOperations
-	{
-		public:
-			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-	};
-	
-	/** Operations for Division
-		*/
-	class DivideOperations
-	{
-		public:
-			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-	};
-	
-	/** Operations for Integer Division
-		*/
-	class IntegerDivideOperations
-	{
-		public:
-			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-	};
-	
-	/** Operations for Mod
-		*/
-	class ModOperations
-	{
-		public:
-			static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
-			static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
-			static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
-			static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
-	};
+  /** Operations for Add
+    */
+  class AddOperations
+  {
+    public:
+      static Item_t opDouble (const yy::location* , Item_t, Item_t );
+      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
+  };
+  
+  /** Operations for Subtract
+    */
+  class SubtractOperations
+  {
+    public:
+      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
+  };
+  
+  /** Operations for Multiply
+    */
+  class MultiplyOperations
+  {
+    public:
+      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
+  };
+  
+  /** Operations for Division
+    */
+  class DivideOperations
+  {
+    public:
+      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
+  };
+  
+  /** Operations for Integer Division
+    */
+  class IntegerDivideOperations
+  {
+    public:
+      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
+  };
+  
+  /** Operations for Mod
+    */
+  class ModOperations
+  {
+    public:
+      static Item_t opDouble (const yy::location* ,  Item_t, Item_t );
+      static Item_t opFloat (const yy::location* ,  Item_t, Item_t );
+      static Item_t opDecimal (const yy::location* ,  Item_t, Item_t );
+      static Item_t opInteger (const yy::location* ,  Item_t, Item_t );
+  };
 
-	/**
-		* Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
-		*/
-	template < typename Operations >
-	class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations> >
-	{
-		public:
-			ArithmeticIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
-			~ArithmeticIterator();
+  /**
+    * Generic Iterator for Arithmetic Operations. Specific operation (add, mod, etc.) is passed over the template parameter.
+    */
+  template < typename Operations >
+  class ArithmeticIterator : public BinaryBaseIterator<ArithmeticIterator<Operations> >
+  {
+    public:
+      ArithmeticIterator ( const yy::location&, PlanIter_t&, PlanIter_t& );
+      ~ArithmeticIterator();
 
-			Item_t nextImpl(PlanState&);
-	}; /* class ArithmeticIterator */
+      Item_t nextImpl(PlanState&);
+      
+      virtual void accept(PlanIterVisitor&) const;
+  }; /* class ArithmeticIterator */
 
-	/*______________________________________________________________________
-	|
-	| 6.2 Operators on Numeric Values
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 6.2 Operators on Numeric Values
+  |_______________________________________________________________________*/
 
 // 6.2.1 op:numeric-add
 // --------------------
@@ -147,25 +149,27 @@ namespace xqp
 
 // 6.2.8 op:numeric-unary-minus
 // ----------------------------
-	class OpNumericUnaryIterator : public UnaryBaseIterator<OpNumericUnaryIterator>
-	{
-		private:
-			bool thePlus;
+  class OpNumericUnaryIterator : public UnaryBaseIterator<OpNumericUnaryIterator>
+  {
+    private:
+      bool thePlus;
 
-		public:
-			OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& aChild, bool aPlus);
-			virtual ~OpNumericUnaryIterator();
+    public:
+      OpNumericUnaryIterator ( const yy::location& loc, PlanIter_t& aChild, bool aPlus);
+      virtual ~OpNumericUnaryIterator();
 
-		public:	// iterator interface
-			Item_t nextImpl(PlanState& planState);
-	};
+    public: // iterator interface
+      Item_t nextImpl(PlanState& planState);
+      
+      virtual void accept(PlanIterVisitor&) const;
+  };
 
 
 
-	/*______________________________________________________________________
-	|
-	| 6.3 Comparison Operators on Numeric Values
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 6.3 Comparison Operators on Numeric Values
+  |_______________________________________________________________________*/
 
 // 6.3.1 op:numeric-equal
 // -------------------------
@@ -175,57 +179,61 @@ namespace xqp
 // 6.3.3 op:numeric-greater-than
 
 
-	/*______________________________________________________________________
-	|
-	| 6.4 Functions on Numeric Values
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 6.4 Functions on Numeric Values
+  |_______________________________________________________________________*/
 
 // 6.4.1 fn:abs
-	class FnAbsIterator : public UnaryBaseIterator<FnAbsIterator>
-	{
-  	public:
-			FnAbsIterator ( const yy::location& loc, PlanIter_t& theChild );
-			virtual ~FnAbsIterator();
+  class FnAbsIterator : public UnaryBaseIterator<FnAbsIterator>
+  {
+    public:
+      FnAbsIterator ( const yy::location& loc, PlanIter_t& theChild );
+      virtual ~FnAbsIterator();
 
-		public:
-			Item_t nextImpl(PlanState& planState);
-	};
+    public:
+      Item_t nextImpl(PlanState& planState);
+      
+      virtual void accept(PlanIterVisitor&) const;
+  };
 
 // 6.4.2 fn:ceiling
 // 6.4.3 fn:floor
 // 6.4.4 fn:round
 // 6.4.5 fn:round-half-to-even
 
-	
-	/**
-	 * Helper Iterator to produce a defined amount of integer items
-	 */
-	class ZorNumGen : public Batcher<ZorNumGen>
-	{
-	public:
-		ZorNumGen ( const yy::location& loc);
-		~ZorNumGen();
-		Item_t nextImpl(PlanState& planState);
-		void resetImpl(PlanState& planState);
-		void releaseResourcesImpl(PlanState& planState);
-		
-		virtual int32_t getStateSize();
-		virtual int32_t getStateSizeOfSubtree();
-		virtual void setOffset(PlanState& planState, int32_t& offset);
-		
-	protected:
-		class ZorNumGenState : public PlanIteratorState
-		{
-		private:
-			int32_t curNumber;
-		public:
-			void init();
-			void reset();
-			
-			int32_t getCurNumber();
-			void setCurNumber(int32_t);
-		};
-	};
+  
+  /**
+   * Helper Iterator to produce a defined amount of integer items
+   */
+  class ZorNumGen : public Batcher<ZorNumGen>
+  {
+  public:
+    ZorNumGen ( const yy::location& loc);
+    ~ZorNumGen();
+    Item_t nextImpl(PlanState& planState);
+    void resetImpl(PlanState& planState);
+    void releaseResourcesImpl(PlanState& planState);
+    
+    virtual int32_t getStateSize();
+    virtual int32_t getStateSizeOfSubtree();
+    virtual void setOffset(PlanState& planState, int32_t& offset);
+    
+    virtual void accept(PlanIterVisitor&) const;
+    
+  protected:
+    class ZorNumGenState : public PlanIteratorState
+    {
+    private:
+      int32_t curNumber;
+    public:
+      void init();
+      void reset();
+      
+      int32_t getCurNumber();
+      void setCurNumber(int32_t);
+    };
+  };
 
-}	/* namespace xqp */
-#endif	/* XQP_NUMERICS_H */
+} /* namespace xqp */
+#endif  /* XQP_NUMERICS_H */

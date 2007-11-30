@@ -2,19 +2,19 @@
  *
  * @copyright
  * ========================================================================
- *	Copyright 2007 FLWOR Foundation
+ *  Copyright 2007 FLWOR Foundation
  *
- *	Licensed under the Apache License, Version 2.0 (the "License");
- *	you may not use this file except in compliance with the License.
- *	You may obtain a copy of the License at
- *	
- *		http://www.apache.org/licenses/LICENSE-2.0
- *	
- *	Unless required by applicable law or agreed to in writing, software
- *	distributed under the License is distributed on an "AS IS" BASIS,
- *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *	See the License for the specific language governing permissions and
- *	limitations under the License.
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  * ========================================================================
  *
  * @author Markos Zaharioudakis
@@ -51,7 +51,7 @@ private:
 
 public:
   KindTestIterator(
-				const yy::location& loc,
+        const yy::location& loc,
         PlanIter_t input,
         QNameItem_t qname,
         QNameItem_t tname,
@@ -69,11 +69,17 @@ public:
   }
 
   ~KindTestIterator() {}
+  
+  const QNameItem_t& getQName() const { return theQName; }
+  const QNameItem_t& getTypeName() const { return theTypeName; }
+  const match_test_t& getTestKind() const { return theTestKind; }
+  const match_test_t& getDocTestKind() const { return theDocTestKind; }
+  bool nilledAllowed() const { return theNilledAllowed; }
 
 public:
   Item_t nextImpl(PlanState& planState);
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -88,7 +94,7 @@ private:
 
 public:
   NameTestIterator(
-				const yy::location& loc,
+        const yy::location& loc,
         PlanIter_t input,
         QNameItem_t qname,
         match_wild_t kind)
@@ -100,11 +106,13 @@ public:
   }
 
   ~NameTestIterator() {}
+  
+  const QNameItem_t& getQName() const { return theQName; }
 
 public:
   Item_t nextImpl(PlanState& planState);
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -140,7 +148,7 @@ protected:
   };
 
 public:
-	AxisIterator(const yy::location& loc, PlanIter_t input)
+  AxisIterator(const yy::location& loc, PlanIter_t input)
     :
     UnaryBaseIterator<AxisIter>(loc, input)
   {
@@ -165,7 +173,7 @@ protected:
   };
 
 public:
-	SelfAxisIterator(const yy::location& loc, PlanIter_t input)
+  SelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<SelfAxisIterator>(loc, input)
   {
@@ -178,7 +186,7 @@ public:
   // Manually instantiated here, as MSVC does not do it
   void releaseResourcesImpl(PlanState& planState); 
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -195,7 +203,7 @@ protected:
   };
 
 public:
-	AttributeAxisIterator(const yy::location& loc, PlanIter_t input)
+  AttributeAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<AttributeAxisIterator>(loc, input)
   {
@@ -209,7 +217,7 @@ public:
 
   int32_t getStateSize() { return sizeof(AttributeAxisState); }
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -224,7 +232,7 @@ protected:
   };
 
 public:
-	ParentAxisIterator(const yy::location& loc, PlanIter_t input)
+  ParentAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<ParentAxisIterator>(loc, input)
   {
@@ -237,7 +245,7 @@ public:
   // Manually instantiated here, as MSVC does not do it
   void releaseResourcesImpl(PlanState& planState); 
   
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -254,7 +262,7 @@ protected:
   };
 
 public:
-	AncestorAxisIterator(const yy::location& loc, PlanIter_t input)
+  AncestorAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<AncestorAxisIterator>(loc, input)
   {
@@ -267,7 +275,7 @@ public:
 
   int32_t getStateSize() { return sizeof(AncestorAxisState); }
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -284,7 +292,7 @@ protected:
   };
 
 public:
-	AncestorSelfAxisIterator(const yy::location& loc, PlanIter_t input)
+  AncestorSelfAxisIterator(const yy::location& loc, PlanIter_t input)
     :
     AxisIterator<AncestorSelfAxisIterator>(loc, input)
   {
@@ -297,7 +305,7 @@ public:
 
   int32_t getStateSize() { return sizeof(AncestorSelfAxisState); }
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -328,7 +336,7 @@ public:
 
   int32_t getStateSize() { return sizeof(RSiblingAxisState); }
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -359,7 +367,7 @@ public:
 
   int32_t getStateSize() { return sizeof(LSiblingAxisState); }
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -390,7 +398,7 @@ public:
 
   int32_t getStateSize() { return sizeof(ChildAxisState); }
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -421,9 +429,9 @@ public:
 
   int32_t getStateSize() { return sizeof(DescendantAxisState); }
 
-	void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, int32_t& offset);
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -454,9 +462,9 @@ public:
 
   int32_t getStateSize() { return sizeof(DescendantSelfAxisState); }
 
-	void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, int32_t& offset);
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -488,9 +496,9 @@ public:
 
   int32_t getStateSize() { return sizeof(PrecedingAxisState); }
 
-	void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, int32_t& offset);
 
-  std::ostream& _show(std::ostream& os) const;
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -521,9 +529,9 @@ public:
 
   int32_t getStateSize() { return sizeof(FollowingAxisState); }
 
-	void setOffset(PlanState& planState, int32_t& offset);
-
-  std::ostream& _show(std::ostream& os) const;
+  void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 

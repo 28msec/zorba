@@ -10,6 +10,7 @@
 #include "errors/Error.h"
 #include "runtime/accessors//AccessorsImpl.h"
 #include "store/api/temp_seq.h"
+#include "runtime/visitors/planitervisitor.h"
 
 namespace xqp
 {
@@ -26,13 +27,6 @@ namespace xqp
     UnaryBaseIterator<FnBooleanIterator> ( loc, aIter ), theNegate ( aNegate ) {}
     
   FnBooleanIterator::~FnBooleanIterator() {}
-      
-  std::ostream&
-  FnBooleanIterator::_show ( std::ostream& os ) const
-  {
-    theChild->show ( os );
-    return os;
-  }
 
   Item_t
   FnBooleanIterator::effectiveBooleanValue ( const yy::location& loc, PlanState& planState, PlanIter_t& iter, bool negate )

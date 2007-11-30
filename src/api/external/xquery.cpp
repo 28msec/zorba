@@ -12,6 +12,8 @@
 #include "util/zorba.h"
 //#include "store/naive/basic_item_factory.h"
 //#include "store/naive/simple_store.h"
+#include "runtime/visitors/printervisitor.h"
+#include "runtime/visitors/iterprinter.h"
 
 #include "api/serialization/serializer.h"
 
@@ -187,7 +189,11 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	cout << endl;
 
 	cout << "Iterator tree:" << std::endl;
-	top_iterator->show(cout);
+  
+  XMLIterPrinter vp(std::cout);
+  PrinterVisitor pv(vp);
+  top_iterator->accept(pv);
+// 	top_iterator->show(cout);
 	
 	//cout << "iterator type = " << typeid(*it_h).name() << endl;
 	cout << "\nIterator run:\n";

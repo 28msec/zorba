@@ -60,7 +60,7 @@ namespace xqp
 
         public:
 
-          std::ostream& show ( std::ostream& os ) const;
+          void accept ( PlanIterVisitor& ) const;
 
           /**
            * Creates a new LetClause
@@ -84,7 +84,7 @@ namespace xqp
           bool empty_least;
           bool descending;
         public:
-          std::ostream& show ( std::ostream& os ) const;
+          void accept ( PlanIterVisitor& ) const;
           OrderSpec ( PlanIter_t orderByIter, bool empty_least, bool descending );
       };
 
@@ -98,7 +98,7 @@ namespace xqp
           vector<OrderSpec> orderSpecs;
           bool stable;
         public:
-          std::ostream& show ( std::ostream& os ) const;
+          void accept ( PlanIterVisitor& ) const;
           OrderByClause ( std::vector<OrderSpec> orderSpecs, bool stable );
       };
 
@@ -182,7 +182,7 @@ namespace xqp
       virtual int32_t getStateSize();
       virtual int32_t getStateSizeOfSubtree();
       virtual void setOffset ( PlanState& planState, int32_t& offset );
-      std::ostream& _show ( std::ostream& os ) const;
+      void accept ( PlanIterVisitor& ) const;
 
     private:
       void resetInput ( int varNb, PlanState& planState );

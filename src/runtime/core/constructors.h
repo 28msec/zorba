@@ -43,7 +43,7 @@ private:
   PlanIter_t        theChildrenIter;
   PlanIter_t        theAttributesIter;
   PlanIter_t        theNamespacesIter;
-	std::vector<std::pair<xqpString, xqpString> > theNsBindings;
+  std::vector<std::pair<xqpString, xqpString> > theNsBindings;
 
 public:
   ElementIterator(
@@ -51,18 +51,20 @@ public:
         const QNameItem_t& qname,
         PlanIter_t& children,
         PlanIter_t& attributes);
-	
+  
+  const QNameItem_t& getQName() const { return theQName; }
+  
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-	std::ostream& _show(std::ostream& os) const;
-
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
-	
+  
 
 /*******************************************************************************
   Used to make e.g. the concatenation of adjacent text nodes in the content 
@@ -92,8 +94,10 @@ public:
   int32_t getStateSize() { return sizeof(ElementContentState); }
 
   void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
-	
+  
 
 /*******************************************************************************
 
@@ -102,14 +106,16 @@ class AttributeIterator : public UnaryBaseIterator<AttributeIterator>
 {
 private:
   QNameItem_t theQName;
-		
+    
 public:
   AttributeIterator(
         const yy::location& loc,
         const QNameItem_t& qname,
         PlanIter_t& value);
-		
+    
   Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 
@@ -130,17 +136,17 @@ public:
   CommentIterator(
         const yy::location& loc,         
         PlanIter_t& expression);
-	
+  
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  std::ostream& _show(std::ostream& os) const;
-
   virtual int32_t getStateSize();
   virtual int32_t getStateSizeOfSubtree();
   virtual void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
 };
 
-}	/* namespace xqp */
-#endif	/* XQP_CONSTRUCTORS_H */
+} /* namespace xqp */
+#endif  /* XQP_CONSTRUCTORS_H */

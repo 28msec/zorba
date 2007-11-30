@@ -29,6 +29,7 @@
 #include "runtime/core/path_iterators.h"
 #include "util/zorba.h"
 #include "store/api/item.h"
+#include "runtime/visitors/planitervisitor.h"
 
 #define MYTRACE(msg) \
 {\
@@ -220,27 +221,6 @@ doctest2:
 }
 
 
-std::ostream& KindTestIterator::_show(std::ostream& os)	const
-{
-  os << IT_DEPTH << " " << "test kind: " << theTestKind << std::endl;
-
-  if (theQName != NULL)
-    os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
-  else
-    os << IT_DEPTH << " " << "qname: *" << endl;
-
-  if (theTypeName != NULL)
-    os << IT_DEPTH << " " << "typename: " << theTypeName->show() << std::endl;
-  else
-    os << IT_DEPTH << " " << "typename: *" << endl;
-
-  os << IT_DEPTH << " " << "nill allowed: " << theNilledAllowed << std::endl;
-
-  theChild->show(os);
-  return os;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -295,18 +275,6 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
 }
 
 
-std::ostream& NameTestIterator::_show(std::ostream& os)	const
-{
-  if (theQName != NULL)
-    os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
-  else
-    os << IT_DEPTH << " " << "qname: *" << endl;
-
-  theChild->show(os);
-  return os;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -349,21 +317,6 @@ Item_t SelfAxisIterator::nextImpl(PlanState& planState)
          state->theContextNode->getNodeKind() != theNodeKind);
 
   return state->theContextNode;
-}
-
-
-std::ostream& SelfAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  SelfAxisState* state;
-  GET_STATE(SelfAxisState, state, planState);
-
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
 }
 
 void SelfAxisIterator::releaseResourcesImpl(PlanState& planState)
@@ -436,20 +389,6 @@ void AttributeAxisIterator::releaseResourcesImpl(PlanState& planState)
 }
 
 
-std::ostream& AttributeAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-
-  // theAttributes->show(os);
-  theChild->show(os);
-  return os;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -483,18 +422,6 @@ Item_t ParentAxisIterator::nextImpl(PlanState& planState)
          parent->getNodeKind() != theNodeKind);
 
   return parent;
-}
-
-
-std::ostream& ParentAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
 }
 
 void ParentAxisIterator::releaseResourcesImpl(PlanState& planState)
@@ -555,22 +482,6 @@ void AncestorAxisIterator::releaseResourcesImpl(PlanState& planState)
 }
 
 
-std::ostream& AncestorAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-
-  os << IT_DEPTH << " " << "ancestor node: " << std::endl;
-  if (theCurrentAnc != NULL)
-    os << IT_DEPTH << " " << theCurrentAnc->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -620,22 +531,6 @@ void AncestorSelfAxisIterator::releaseResourcesImpl(PlanState& planState)
   AncestorSelfAxisState* state;
   GET_STATE(AncestorSelfAxisState, state, planState); 
   state->theCurrentAnc = NULL;
-}
-
-
-std::ostream& AncestorSelfAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-
-  os << IT_DEPTH << " " << "ancestor node: " << std::endl;
-  if (theCurrentAnc != NULL)
-    os << IT_DEPTH << " " << theCurrentAnc->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
 }
 
 
@@ -714,18 +609,6 @@ void RSiblingAxisIterator::releaseResourcesImpl(PlanState& planState)
   RSiblingAxisState* state;
   GET_STATE(RSiblingAxisState, state, planState); 
   state->theChildren = NULL; 
-}
-
-
-std::ostream& RSiblingAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
 }
 
 
@@ -808,18 +691,6 @@ void LSiblingAxisIterator::releaseResourcesImpl(PlanState& planState)
 }
 
 
-std::ostream& LSiblingAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -897,18 +768,6 @@ void ChildAxisIterator::releaseResourcesImpl(PlanState& planState)
   ChildAxisState* state;
   GET_STATE(ChildAxisState, state, planState); 
   state->theChildren = NULL;
-}
-
-
-std::ostream& ChildAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
 }
 
 
@@ -1028,18 +887,6 @@ void DescendantAxisIterator::setOffset(PlanState& planState, int32_t& offset)
 }
 
 
-std::ostream& DescendantAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -1142,18 +989,6 @@ void DescendantSelfAxisIterator::setOffset(PlanState& planState, int32_t& offset
   AxisIterator<DescendantSelfAxisIterator>::setOffset(planState, offset);
 
   DescendantSelfAxisState* state = new (planState.block + stateOffset) DescendantSelfAxisState;
-}
-
-
-std::ostream& DescendantSelfAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
 }
 
 
@@ -1279,18 +1114,6 @@ void PrecedingAxisIterator::setOffset(PlanState& planState, int32_t& offset)
   AxisIterator<PrecedingAxisIterator>::setOffset(planState, offset);
 
   PrecedingAxisState* state = new (planState.block + stateOffset) PrecedingAxisState;
-}
-
-
-std::ostream& PrecedingAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
 }
 
 
@@ -1426,18 +1249,5 @@ void FollowingAxisIterator::setOffset(PlanState& planState, int32_t& offset)
 
   FollowingAxisState* state = new (planState.block + stateOffset) FollowingAxisState;
 }
-
-
-std::ostream& FollowingAxisIterator::_show(std::ostream& os)	const
-{
-  /*
-  os << IT_DEPTH << " " << "context node: " << std::endl;
-  if (state->theContextNode != NULL)
-    os << IT_DEPTH << " " << state->theContextNode->show() << std::endl;
-  */
-  theChild->show(os);
-  return os;
-}
-
 
 };

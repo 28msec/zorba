@@ -9,7 +9,11 @@ SET(RUNTIME_SRCS
     booleans/BooleanImpl.cpp
     dateTime/DurationsDatesTimes.cpp
     base/iterator.cpp
-    sequences/SequencesImpl.cpp)
+    sequences/SequencesImpl.cpp
+    visitors/accept.cpp
+    visitors/printervisitor.cpp
+    visitors/iterprinter.cpp
+)
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS accessors)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS core)
@@ -19,3 +23,4 @@ HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS booleans)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS dateTime)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS base)
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS sequences)
+HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS visitors)

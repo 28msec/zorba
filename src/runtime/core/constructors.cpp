@@ -8,6 +8,7 @@
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
 #include "runtime/core/constructors.h"
+#include "runtime/visitors/planitervisitor.h"
 
 using namespace std;
 namespace xqp
@@ -110,21 +111,6 @@ ElementIterator::releaseResourcesImpl(PlanState& planState)
 
   if (theNamespacesIter != NULL)
     releaseChildResources(theNamespacesIter, planState);
-}
-
-
-std::ostream&
-ElementIterator::_show(std::ostream& os) const
-{
-  os << IT_DEPTH << " " << "qname: " << theQName->show() << std::endl;
-
-  if (theAttributesIter != NULL)
-    theAttributesIter->show(os);
-
-  if (theChildrenIter != NULL)
-    theChildrenIter->show(os);
-
-  return os;
 }
 
 
@@ -389,16 +375,6 @@ CommentIterator::releaseResourcesImpl(PlanState& planState)
 {
   if (theExpressionIter != NULL)
     releaseChildResources(theExpressionIter, planState);
-}
-
-
-std::ostream&
-CommentIterator::_show(std::ostream& os) const
-{  
-  if (theExpressionIter != NULL)
-    theExpressionIter->show(os);
- 
-  return os;
 }
 
 

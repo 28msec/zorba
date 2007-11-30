@@ -32,12 +32,12 @@
 namespace xqp
 {
 
-	class zorba;
+  class zorba;
 
-	/*______________________________________________________________________
-	|
-	| 15.1 General Functions and Operators on Sequences
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 15.1 General Functions and Operators on Sequences
+  |_______________________________________________________________________*/
 
 
 //15.1.1 fn:boolean
@@ -46,39 +46,39 @@ namespace xqp
 //15.1.2 op:concatenate
 class ConcatIterator : public Batcher<ConcatIterator>
 {
-// 	DECLARE_LOGGER;
+//  DECLARE_LOGGER;
 protected:
-	std::vector<PlanIter_t> argv;
+  std::vector<PlanIter_t> theChildren;
 
 public:
-	ConcatIterator(
-	yy::location loc,
-	const vector<PlanIter_t>& _argv);
-	
-	~ConcatIterator();
+  ConcatIterator(
+  yy::location loc,
+  const vector<PlanIter_t>& aChildren);
+  
+  ~ConcatIterator();
 
-	Item_t nextImpl(PlanState& planState);
-	void resetImpl(PlanState& planState);
-	void releaseResourcesImpl(PlanState& planState);
-	
-	std::ostream&  _show(std::ostream&) const;
-	
-	virtual int32_t getStateSize();
-	virtual int32_t getStateSizeOfSubtree();
-	virtual void setOffset(PlanState& planState, int32_t& offset);
-	
+  Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+  
+  virtual int32_t getStateSize();
+  virtual int32_t getStateSizeOfSubtree();
+  virtual void setOffset(PlanState& planState, int32_t& offset);
+  
+  virtual void accept(PlanIterVisitor&) const;
+  
 protected:
-	class ConcatIteratorState : public PlanIteratorState {
-	private:	
-		int32_t curIter;
-	
-	public:
-		void init();
-		void reset();
-		
-		void incCurIter();
-		int32_t getCurIter();
-	};
+  class ConcatIteratorState : public PlanIteratorState {
+  private:  
+    int32_t curIter;
+  
+  public:
+    void init();
+    void reset();
+    
+    void incCurIter();
+    int32_t getCurIter();
+  };
 };
 
 
@@ -101,10 +101,10 @@ protected:
 //15.1.11 fn:unordered
 
 
-	/*______________________________________________________________________
-	|
-	| 15.2 Functions That Test the Cardinality of Sequences
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 15.2 Functions That Test the Cardinality of Sequences
+  |_______________________________________________________________________*/
 
 //15.2.1 fn:zero-or-one
 
@@ -113,10 +113,10 @@ protected:
 //15.2.3 fn:exactly-one
 
 
-	/*______________________________________________________________________
-	|
-	| 15.3 Equals, Union, Intersection and Except
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 15.3 Equals, Union, Intersection and Except
+  |_______________________________________________________________________*/
 
 //15.3.1 fn:deep-equal
 
@@ -127,10 +127,10 @@ protected:
 //15.3.4 op:except
 
 
-	/*______________________________________________________________________
-	|
-	| 15.4 Aggregate Functions
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 15.4 Aggregate Functions
+  |_______________________________________________________________________*/
 
 //15.4.1 fn:count
 
@@ -143,10 +143,10 @@ protected:
 //15.4.5 fn:sum
 
 
-	/*______________________________________________________________________
-	|
-	| 15.5 Functions and Operators that Generate Sequences
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | 15.5 Functions and Operators that Generate Sequences
+  |_______________________________________________________________________*/
 
 //15.5.1 op:to
 
@@ -159,21 +159,21 @@ protected:
 
 class DocIterator : public UnaryBaseIterator<DocIterator>
 {
-// 	DECLARE_LOGGER;
+//  DECLARE_LOGGER;
 protected:
   
 public:
-	DocIterator(yy::location loc, PlanIter_t& arg);
-	virtual ~DocIterator();
+  DocIterator(yy::location loc, PlanIter_t& arg);
+  virtual ~DocIterator();
 
-	Item_t nextImpl(PlanState& planState);
-	std::ostream&  _show(std::ostream&) const;
-
+  Item_t nextImpl(PlanState& planState);
   virtual int32_t getStateSize();
+  
+  virtual void accept(PlanIterVisitor&) const;
 
 protected:
-	class DocIteratorState : public PlanIteratorState {
-	public:
+  class DocIteratorState : public PlanIteratorState {
+  public:
     DocIteratorState();
     
     int got_doc;              // if got_doc == 0 - no document,
@@ -184,10 +184,10 @@ protected:
     Collection_t collection;
     xqp_string uri;
     
-	public:
-		void init();
-		void reset();
-	};
+  public:
+    void init();
+    void reset();
+  };
 };
 
 
@@ -196,10 +196,10 @@ protected:
 //15.5.6 fn:collection
 
 
-	/*______________________________________________________________________
-	|
-	| Extensions
-	|_______________________________________________________________________*/
+  /*______________________________________________________________________
+  |
+  | Extensions
+  |_______________________________________________________________________*/
 
 
 } /* namespace xqp */

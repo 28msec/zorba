@@ -71,6 +71,7 @@ typedef rchandle<Item> Item_t;
 class PlanIterator;
 class node;
 class zorba;
+class PlanIterVisitor;
 
 typedef rchandle<PlanIterator> PlanIter_t;
 
@@ -128,6 +129,13 @@ public:
 
 public:
 
+  /**
+   * 
+   * 
+   * @param PlanIterVisitor
+   */
+  virtual void accept(PlanIterVisitor&) const = 0;
+  
   /** 
    * Produces an output item of the iterator. Implicitly, the first call 
    * of 'producNext' initializes the iterator and allocates resources 
@@ -179,8 +187,6 @@ public:
     */
   virtual void setOffset(PlanState& planState, int32_t& offset);
 
-  std::ostream& show(std::ostream&);
-
 protected:
   /** Root object of all iterator states */
   class PlanIteratorState
@@ -215,7 +221,7 @@ protected:
 protected:
 
 #if BATCHING_TYPE == 1  
-  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  inline Item_t consumeNext(const PlanIter_t& subIter, PlanState& planState)
   {
     if (subIter->cItem == BATCHSIZE) {
       subIter->produceNext(planState);
@@ -224,25 +230,20 @@ protected:
     return subIter->batch[subIter->cItem++];
   }
 #else
-  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
+  inline Item_t consumeNext(const PlanIter_t& subIter, PlanState& planState)
   {
     return subIter->produceNext(planState);
   }
 #endif
 
-  inline void resetChild(PlanIter_t& subIterator, PlanState& planState)
+  inline void resetChild(const PlanIter_t& subIterator, PlanState& planState)
   {
     subIterator->reset(planState);
   }
 
-  inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState)
+  inline void releaseChildResources(const PlanIter_t& subIterator, PlanState& planState)
   {
     subIterator->releaseResources(planState);
-  }
-
-  virtual std::ostream& _show(std::ostream& os) const
-  {
-    return os;
   }
 };
 

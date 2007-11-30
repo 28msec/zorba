@@ -12,6 +12,7 @@
 #include "store/api/temp_seq.h"
 #include "compiler/expression/expr.h"
 #include "runtime/booleans/BooleanImpl.h"
+#include "runtime/visitors/planitervisitor.h"
 
 using namespace std;
 namespace xqp
@@ -26,8 +27,8 @@ namespace xqp
   /* end class EmptyIterator */
 
   /* begin class SingletonIterator */
-  SingletonIterator::SingletonIterator ( yy::location loc, Item_t _i_p ) :
-      Batcher<SingletonIterator> ( loc ), i_h ( _i_p )
+  SingletonIterator::SingletonIterator ( yy::location loc, Item_t aValue) :
+      Batcher<SingletonIterator> ( loc ), theValue ( aValue )
   {
   }
 
@@ -39,7 +40,7 @@ namespace xqp
   {
     PlanIteratorState* state;
     STACK_INIT ( PlanIteratorState, state, planState );
-    STACK_PUSH ( i_h, state );
+    STACK_PUSH ( theValue, state );
     STACK_END();
   }
 
@@ -52,11 +53,6 @@ namespace xqp
 
   void SingletonIterator::releaseResourcesImpl ( PlanState& planState )
   {
-  }
-
-  std::ostream& SingletonIterator::_show ( std::ostream& os ) const
-  {
-    return os;
   }
 
   int32_t SingletonIterator::getStateSize()
@@ -75,7 +71,6 @@ namespace xqp
     offset += this->getStateSize();
   }
   /* end class SingletonIterator */
-
 
   /* begin class EnclosedIterator */
   EnclosedIterator::EnclosedIterator ( const yy::location& loc,
@@ -234,15 +229,5 @@ namespace xqp
     theThenIter->setOffset(planState, offset);
     theElseIter->setOffset(planState, offset);
   }
-      
-  std::ostream& IfThenElseIterator::_show ( std::ostream& os ) const {
-    theCondIter->show ( os );
-    theThenIter->show ( os );
-    theElseIter->show ( os );
-    return os;
-  }
-
-
-
 } /* namespace xqp */
 
