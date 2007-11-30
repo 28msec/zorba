@@ -191,9 +191,6 @@ function run_query_in_bucket
     echo
     echo "SUCCESS : -bucket ${bucketName} -query ${queryName}"
     echo
-    echo >> rbkt_summary.txt
-    echo "SUCCESS : -bucket ${bucketName} -query ${queryName}" >> rbkt_summary.txt
-    echo >> rbkt_summary.txt
   fi
 
   let totalQueries=totalQueries+1
