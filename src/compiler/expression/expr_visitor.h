@@ -93,9 +93,7 @@ public:
 	virtual bool begin_visit(compElem_expr&) = 0;
 	virtual bool begin_visit(attr_expr&) = 0;
 	virtual bool begin_visit(text_expr&) = 0;
-	virtual bool begin_visit(comment_expr&) = 0;
 	virtual bool begin_visit(pi_expr&) = 0;
-
 
  /*..........................................
  	:  end visit                              :
@@ -128,7 +126,6 @@ public:
 	virtual void end_visit(compElem_expr&) = 0;
 	virtual void end_visit(attr_expr&) = 0;
 	virtual void end_visit(text_expr&) = 0;
-	virtual void end_visit(comment_expr&) = 0;
 	virtual void end_visit(pi_expr&) = 0;
 
 };

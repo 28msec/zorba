@@ -37,7 +37,6 @@ protected:
 	std::stack<PlanIter_t> itstack;
 	// FIXME wrong for expressions like 'func1(a,b,func2(c,d),e)'
 	std::stack<PlanIter_t> argstack;
-	std::stack<var_iter_t> timstack;
   fxhash64map<std::vector<var_iter_t> *> fvar_iter_map;
   fxhash64map<std::vector<var_iter_t> *> pvar_iter_map;
   fxhash64map<std::vector<ref_iter_t> *> lvar_iter_map;

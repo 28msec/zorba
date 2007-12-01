@@ -100,6 +100,11 @@ public:
 
 };
 
+  class constructor_expr : public expr {
+  public:
+    constructor_expr(yy::location const& loc) : expr (loc) {}
+    virtual ~constructor_expr() {}
+  };
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -1032,7 +1037,7 @@ public:
 
 
 // [96] [http://www.w3.org/TR/xquery/#doc-xquery-DirElemConstructor]
-class elem_expr : public expr
+class elem_expr : public constructor_expr
 {
 	// TODO namespace bindings
 protected:
@@ -1059,7 +1064,7 @@ public:
 
 
 // [110] [http://www.w3.org/TR/xquery/#prod-xquery-CompDocConstructor]
-class doc_expr : public expr
+class doc_expr : public constructor_expr
 /*______________________________________________________________________
 |	::= DOCUMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
@@ -1085,7 +1090,7 @@ public:
 
 
 // [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
-class compElem_expr : public expr
+class compElem_expr : public constructor_expr
 /*______________________________________________________________________
 |	::= ELEMENT_QNAME_LBRACE  RBRACE
 |			|	ELEMENT_QNAME_LBRACE  ContentExpr  RBRACE
@@ -1148,7 +1153,7 @@ public:
                          ATTRIBUTE  LBRACE  Expr  RBRACE  LBRACE  Expr  RBRACE
 
 ********************************************************************************/
-class attr_expr : public expr
+class attr_expr : public constructor_expr
 {
 protected:
 	QNameItem_t qname_h;
@@ -1182,22 +1187,29 @@ public:
 
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompTextConstructor]
-class text_expr : public expr
+class text_expr : public constructor_expr
 /*______________________________________________________________________
 |	::= TEXT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
 {
+public:
+  typedef enum { text_constructor, comment_constructor, pi_constructor }
+    text_constructor_type;
+
 protected:
-	std::string text;
+  text_constructor_type type;
+	expr_t text;
 
 public:
 	text_expr(
 		yy::location const&,
-		std::string);
+    text_constructor_type,
+		expr_t);
 	~text_expr();
 
 public:
-	std::string get_text() const { return this->text; }
+	expr_t get_text () const { return text; }
+  text_constructor_type get_type () const { return type; }
 
 public:
 	void accept(expr_visitor&);
@@ -1208,67 +1220,43 @@ public:
 
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
-class comment_expr : public expr
 /*______________________________________________________________________
 |	::= COMMENT_LBRACE  Expr  RBRACE
 |_______________________________________________________________________*/
-{
-protected:
-	expr_t comment_expr_h;
-
-public:
-	comment_expr(
-		yy::location const&,
-		expr_t);
-	~comment_expr();
-
-public:
-	expr_t get_comment_expr() const { return comment_expr_h; }
-
-public:
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-
-};
-
 
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
-class pi_expr : public expr
-/*______________________________________________________________________
-|	::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
-|			|	PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RBRACE
-|			|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  RBRACE
-|			|	PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBRACE  Expr  RBRACE
-|_______________________________________________________________________*/
+class pi_expr : public text_expr
+ /*______________________________________________________________________
+ |      ::= PROCESSING_INSTRUCTION  NCNAME  LBRACE  RBRACE
+ |                      |       PROCESSING_INSTRUCTION  NCNAME  LBRACE  Expr  RB
+ |                      |       PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBR
+ |                      |       PROCESSING_INSTRUCTION  LBRACE  Expr  RBRACE LBR
+ |_______________________________________________________________________*/
 {
 protected:
-	std::string target;
-	expr_t target_expr_h;
-	expr_t content_expr_h;
-
+  std::string target;
+  expr_t target_expr_h;
+  
 public:
-	pi_expr(
-		yy::location const&,
-		std::string target,
-		expr_t);
-	pi_expr(
-		yy::location const&,
-		expr_t,
-		expr_t);
-	~pi_expr();
-
+  pi_expr(
+          yy::location const&,
+          std::string target,
+          expr_t);
+  pi_expr(
+          yy::location const&,
+          expr_t,
+          expr_t);
+  ~pi_expr();
+  
 public:
-	std::string get_target() const { return target; }
-	expr_t get_target_expr() const { return target_expr_h; }
-	expr_t get_content_expr() const { return content_expr_h; }
-
+  std::string get_target() const { return target; }
+  expr_t get_target_expr() const { return target_expr_h; }
+  
 public:
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-
+  void accept(expr_visitor&);
+  std::ostream& put(std::ostream&) const;
 };
-
 
 
 }	/* namespace xqp */

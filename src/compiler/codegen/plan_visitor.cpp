@@ -28,6 +28,8 @@ namespace xqp
 
 static uint32_t depth = 0;
 
+#define ITEM_FACTORY (Store::getInstance().getItemFactory())
+
 /*..........................................
  :  begin visit                            :
  :.........................................*/
@@ -573,7 +575,8 @@ void plan_visitor::end_visit(elem_expr& v)
 	if (v.get_content_expr() != NULL)
 	{
 		contentIter = pop_itstack();
-		contentIter = new ElementContentIterator(v.get_loc(), contentIter);
+    PlanIter_t enclosedIter = (new EnclosedIterator (v.get_loc (), contentIter));
+    contentIter = new ElementContentIterator(v.get_loc(), enclosedIter);
 	}
 
   QNameItem_t itemQName = v.get_qname();
@@ -632,35 +635,23 @@ bool plan_visitor::begin_visit(text_expr& v)
 
 void plan_visitor::end_visit(text_expr& v)
 {
+  PlanIter_t content = pop_itstack ();
   cout << std::string(--depth, ' ') << TRACE << endl;
-  xqpStringStore_t content = new xqpStringStore(v.get_text());
-	Item_t textNode = zorba::getItemFactory()->createTextNode(content);
-	PlanIter_t text = new SingletonIterator(v.get_loc(), textNode);
-	itstack.push(text);
-}
-
-
-bool plan_visitor::begin_visit(comment_expr& v)
-{
-  cout << TRACE << endl;
-	return true;
-}
-
-
-void plan_visitor::end_visit(comment_expr& v)
-{  
-  cout << TRACE << endl;
-  PlanIter_t contentIter = NULL;
-  
-  if (v.get_comment_expr() != NULL )
-  {
-    
-    contentIter = pop_itstack();
-    // TODO: handle comment expressions    
+  switch (v.get_type ()) {
+  case text_expr::text_constructor:
+    // assume this comes from a direct text constructor for now
+    // we can't afford to break direct text construction
+    {
+      xqpString text = v.get_text ().cast<const_expr> ()->get_val ()->getStringValue ();
+      itstack.push (new SingletonIterator (v.get_loc (), ITEM_FACTORY.createTextNode (text)));
+    }
+    break;
+  case text_expr::comment_constructor:
+    itstack.push (new CommentIterator (v.get_loc(), content));
+    break;
+  default:
+    break;
   }
-  
-  PlanIter_t iter = new CommentIterator(v.get_loc(), contentIter);
-  itstack.push(iter);  
 }
 
 

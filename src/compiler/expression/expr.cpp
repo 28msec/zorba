@@ -34,6 +34,8 @@ int printdepth0 = 0;
 
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
+#define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
+
 expr::expr(
 	yy::location const& _loc)
 :
@@ -1151,7 +1153,7 @@ elem_expr::elem_expr(
 	expr_t _attrs_expr_h,
 	expr_t _content_expr_h)
 :
-	expr(loc),
+	constructor_expr(loc),
 	qname_h(_qname_h),
 	attrs_expr_h(_attrs_expr_h),
 	content_expr_h(_content_expr_h)
@@ -1185,7 +1187,7 @@ doc_expr::doc_expr(
 	yy::location const& loc,
 	rchandle<expr> _docuri_h)
 :
-	expr(loc),
+	constructor_expr(loc),
 	docuri_h(_docuri_h)
 {
 }
@@ -1216,7 +1218,7 @@ compElem_expr::compElem_expr(
 	QNameItem_t _qname_h,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc),
+	constructor_expr(loc),
 	qname_h(_qname_h),
 	qname_expr_h(NULL),
 	content_expr_h(_content_expr_h)
@@ -1228,7 +1230,7 @@ compElem_expr::compElem_expr(
 	rchandle<expr> _qname_expr_h,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc),
+	constructor_expr(loc),
 	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	content_expr_h(_content_expr_h)
@@ -1282,7 +1284,7 @@ attr_expr::attr_expr(
 	QNameItem_t _qname_h,
 	rchandle<expr> _val_expr_h)
 :
-	expr(loc),
+	constructor_expr(loc),
 	qname_h(_qname_h),
 	qname_expr_h(NULL),
 	val_expr_h(_val_expr_h)
@@ -1294,7 +1296,7 @@ attr_expr::attr_expr(
 	rchandle<expr> _qname_expr_h,
 	rchandle<expr> _val_expr_h)
 :
-	expr(loc),
+	constructor_expr(loc),
 	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	val_expr_h(_val_expr_h)
@@ -1342,9 +1344,11 @@ void attr_expr::accept(
 
 text_expr::text_expr(
 	yy::location const& loc,
-	std::string text_arg)
+  text_constructor_type type_arg,
+	expr_t text_arg)
 :
-	expr(loc),
+	constructor_expr(loc),
+  type (type_arg),
 	text(text_arg)
 {
 }
@@ -1356,10 +1360,7 @@ text_expr::~text_expr()
 ostream& text_expr::put( ostream& os) const
 {
 	os << INDENT << "text_expr[";
-	//d Assert<null_pointer>(text_expr_h!=NULL);
-// 	Assert(text_expr_h!=NULL);
-// 	text_expr_h->put(os);
-	os << INDENT << "text=" << this->text << "\n";
+	os << INDENT << "text="; text->put (os); os << "\n";
 	return os << OUTDENT << "]\n";
 }
 
@@ -1367,44 +1368,13 @@ void text_expr::accept(
 	expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
+  ACCEPT (text);
 	v.end_visit(*this);
 }
 
 
 
 // [115] [http://www.w3.org/TR/xquery/#prod-xquery-CompCommentConstructor]
-
-comment_expr::comment_expr(
-	yy::location const& loc,
-	rchandle<expr> _comment_expr_h)
-:
-	expr(loc),
-	comment_expr_h(_comment_expr_h)
-{
-}
-
-comment_expr::~comment_expr()
-{
-}
-
-ostream& comment_expr::put( ostream& os) const
-{
-	os << INDENT << "comment_expr[";
-	//d Assert<null_pointer>(comment_expr_h!=NULL);
-	Assert(comment_expr_h!=NULL);
-	comment_expr_h->put(os);
-	return os << OUTDENT << "]\n";
-}
-
-void comment_expr::accept(
-	expr_visitor& v)
-{
-  if (!v.begin_visit(*this)) return;  
-  if (this->comment_expr_h != NULL)
-    this->comment_expr_h->accept(v);  
-  v.end_visit(*this);
-}
-
 
 
 // [114] [http://www.w3.org/TR/xquery/#prod-xquery-CompPIConstructor]
@@ -1414,10 +1384,9 @@ pi_expr::pi_expr(
 	std::string _target,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc),
+	text_expr(loc, text_expr::pi_constructor, _content_expr_h),
 	target(_target),
-	target_expr_h(NULL),
-	content_expr_h(_content_expr_h)
+	target_expr_h(NULL)
 {
 }
 
@@ -1426,10 +1395,9 @@ pi_expr::pi_expr(
 	rchandle<expr> _target_expr_h,
 	rchandle<expr> _content_expr_h)
 :
-	expr(loc),
+	text_expr(loc, text_expr::pi_constructor, _content_expr_h),
 	target(""),
-	target_expr_h(_target_expr_h),
-	content_expr_h(_content_expr_h)
+	target_expr_h(_target_expr_h)
 {
 }
 
@@ -1440,7 +1408,6 @@ pi_expr::~pi_expr()
 ostream& pi_expr::put( ostream& os) const
 {
 	os << INDENT << "pi_expr[target=";
-	//d Assert<bad_arg>(target.length()>0 || target_expr_h!=NULL);
 	Assert(target.length()>0 || target_expr_h!=NULL);
 	if (target.length()>0) {
 		os << target;
@@ -1448,10 +1415,9 @@ ostream& pi_expr::put( ostream& os) const
 	else {
 		target_expr_h->put(os);
 	}
-	//d Assert<null_pointer>(content_expr_h!=NULL);
-	Assert(content_expr_h!=NULL);
-	os << ", context=";
-	content_expr_h->put(os);
+	Assert(get_text () !=NULL);
+	os << ", content=";
+	get_text ()->put(os);
 	return os << OUTDENT << "]\n";
 }
 

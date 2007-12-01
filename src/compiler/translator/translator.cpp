@@ -261,6 +261,7 @@ void translator::end_visit(const EnclosedExpr& v, void *visit_state)
 	expr_t expr_h = pop_nodestack();
 	expr_t enclosedExpr = new enclosed_expr(v.get_location(), expr_h);
 	nodestack.push(&*enclosedExpr);
+  // enclosed_expr gone -- leave expression on the stack
 }
 
 
@@ -282,9 +283,9 @@ void translator::end_visit(const DirCommentConstructor& v, void *visit_state)
     
   xqpString content = v.get_comment();
   
-  rchandle<expr> expr_h = new text_expr(v.get_location(), content);    
-  rchandle<comment_expr> comment_h = new comment_expr(v.get_location(), expr_h);
-  nodestack.push(&*comment_h);
+  nodestack.push (new text_expr(v.get_location(),
+                                text_expr::comment_constructor,
+                                new const_expr (v.get_location (), content)));
 }
 
 void *translator::begin_visit(const DirPIConstructor& v)
@@ -319,13 +320,9 @@ void translator::end_visit(const DirElemConstructor& v, void *visit_state)
 		content = pop_nodestack();
 
   QNameItem_t item = sctx_p->lookup_elem_qname (v.get_elem_name()->get_prefix(), v.get_elem_name()->get_localname());
-	rchandle<elem_expr> elem_t = new elem_expr(v.get_location(),
-                                             item,
-                                             attributes,
-                                             content);
-	nodestack.push(&*elem_t);
+	elem_expr *elem_t = new elem_expr(v.get_location(), item, attributes, content);
+	nodestack.push(elem_t);
 }
-
 
 void *translator::begin_visit(const DirElemContentList& v)
 {
@@ -370,17 +367,16 @@ void translator::end_visit(const DirElemContent& v, void *visit_state)
 	}
   else if (v.get_cdata() != NULL)
   {
-		
 	}
   else if (v.get_common_content() != NULL)
   {
-	
 	}
   else
   {
 		xqpString content = v.get_elem_content();
-		rchandle<text_expr> text_t = new text_expr(v.get_location(), content);
-		nodestack.push(&*text_t);
+    nodestack.push (new text_expr(v.get_location(),
+                                  text_expr::text_constructor,
+                                  new const_expr (v.get_location (), content)));
 	}
 }
 
@@ -498,13 +494,14 @@ void *translator::begin_visit(const QuoteAttrValueContent& v)
 void translator::end_visit(const QuoteAttrValueContent& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
- 
+  
 	if (v.get_common_content() == NULL)
   {
 		xqpString content = v.get_quot_atcontent();
-		rchandle<text_expr> text_t = new text_expr(v.get_location(), content);
-		nodestack.push(&*text_t);
-	}
+    nodestack.push (new text_expr(v.get_location(),
+                                  text_expr::text_constructor,
+                                  new const_expr (v.get_location (), content)));
+  }
 	// nothing to be done because when common content != NULL, 
 	// the corresponding expr is already on the stack
 }
@@ -595,7 +592,7 @@ void *translator::begin_visit(const CompCommentConstructor& v)
 void translator::end_visit(const CompCommentConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new comment_expr (v.get_location (), pop_nodestack ()));
+  nodestack.push (new text_expr (v.get_location (), text_expr::comment_constructor, pop_nodestack ()));
 }
 
 void *translator::begin_visit(const CompPIConstructor& v)
@@ -627,6 +624,7 @@ void *translator::begin_visit(const CompTextConstructor& v)
 void translator::end_visit(const CompTextConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  nodestack.push (new text_expr (v.get_location (), text_expr::text_constructor, pop_nodestack ()));
 }
 
 
