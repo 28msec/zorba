@@ -115,23 +115,6 @@ public:
 
 
 // [29] [http://www.w3.org/TR/xquery/#prod-xquery-EnclosedExpr]
-class enclosed_expr : public expr
-{
-protected:
-	expr_t content;
-public:
-	enclosed_expr(yy::location const&, expr_t const& content);
-	~enclosed_expr();
-	
-	expr_t get_content()
-	{
-		return content;
-	}
-public:
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-}; /* class enclosed_expr */
-
 
 // [31] [http://www.w3.org/TR/xquery/#prod-xquery-Expr]
 

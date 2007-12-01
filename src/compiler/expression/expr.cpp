@@ -56,28 +56,6 @@ ostream& expr::put( ostream& os) const
 /////////////////////////////////////////////////////////////////////////
 
 // [29]
-enclosed_expr::enclosed_expr(yy::location const& loc, expr_t const& content_arg)
-:
-	expr(loc), content(content_arg)
-{}
-enclosed_expr::~enclosed_expr(){}
-
-ostream& enclosed_expr::put( ostream& os) const
-{
-	os << INDENT << "enclosed_expr[\n";
-	content->put(os);
-
-	return os << OUTDENT << "]\n";
-}
-
-void enclosed_expr::accept(
-	expr_visitor& v)
-{
-	if (!v.begin_visit(*this)) return;
-	content->accept(v);
-	v.end_visit(*this);
-}
-
 // [33a]
 
 string var_expr::decode_var_kind(

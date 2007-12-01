@@ -43,11 +43,6 @@ bool normalizer::begin_visit(expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(enclosed_expr& node)
-{
-  return true;
-}
-
 bool normalizer::begin_visit(var_expr& node)
 {
   return true;
@@ -217,10 +212,6 @@ bool normalizer::begin_visit(pi_expr& node)
 }
 
 void normalizer::end_visit(expr& node)
-{
-}
-
-void normalizer::end_visit(enclosed_expr& node)
 {
 }
 

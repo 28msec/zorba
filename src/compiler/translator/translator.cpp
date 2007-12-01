@@ -258,9 +258,6 @@ void translator::end_visit(const EnclosedExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-	expr_t expr_h = pop_nodestack();
-	expr_t enclosedExpr = new enclosed_expr(v.get_location(), expr_h);
-	nodestack.push(&*enclosedExpr);
   // enclosed_expr gone -- leave expression on the stack
 }
 
