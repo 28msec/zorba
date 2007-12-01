@@ -201,11 +201,6 @@ bool normalizer::begin_visit(text_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(comment_expr& node)
-{
-  return true;
-}
-
 bool normalizer::begin_visit(pi_expr& node)
 {
   return true;
@@ -316,10 +311,6 @@ void normalizer::end_visit(attr_expr& node)
 }
 
 void normalizer::end_visit(text_expr& node)
-{
-}
-
-void normalizer::end_visit(comment_expr& node)
 {
 }
 

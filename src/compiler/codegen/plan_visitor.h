@@ -86,7 +86,6 @@ public:
 	bool begin_visit(compElem_expr&);
 	bool begin_visit(attr_expr&);
 	bool begin_visit(text_expr&);
-	bool begin_visit(comment_expr&);
 	bool begin_visit(pi_expr&);
 
 
@@ -120,7 +119,6 @@ public:
 	void end_visit(compElem_expr&);
 	void end_visit(attr_expr&);
 	void end_visit(text_expr&);
-	void end_visit(comment_expr&);
 	void end_visit(pi_expr&);
 
 };

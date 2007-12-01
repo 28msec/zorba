@@ -50,7 +50,6 @@ class doc_expr;
 class compElem_expr;
 class attr_expr;
 class text_expr;
-class comment_expr;
 class pi_expr;
 
 
