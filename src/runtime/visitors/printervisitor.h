@@ -5,6 +5,7 @@
 #include "runtime/visitors/iterprinter.h"
 
 namespace xqp {
+  class PlanIterator;
   /**
    * Visitor implementation to print a tree.
    */
@@ -16,7 +17,7 @@ namespace xqp {
       PrinterVisitor(IterPrinter& aPrinter) : thePrinter(aPrinter) {}
       
     private:
-      void printLoc(const yy::location& loc);
+      void printCommons(const PlanIterator* aIter);
       
     public:
       virtual ~PrinterVisitor() {}
