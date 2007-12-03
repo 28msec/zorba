@@ -136,6 +136,9 @@ namespace xqp {
        
       virtual void beginVisit ( const ConcatIterator& ) ;
       virtual void endVisit ( const ConcatIterator& ) ;
+
+      virtual void beginVisit ( const ExistsIterator& ) ;
+      virtual void endVisit ( const ExistsIterator& ) ;
        
       virtual void beginVisit ( const DocIterator& ) ;
       virtual void endVisit ( const DocIterator& ) ;

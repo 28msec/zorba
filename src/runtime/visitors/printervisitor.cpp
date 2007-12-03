@@ -366,6 +366,15 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const ConcatIterator& a ) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit ( const ExistsIterator& a ) {
+    thePrinter.startIter("ExistsIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const ExistsIterator& a ) {
+    thePrinter.endIter();
+  }
+
        
   void PrinterVisitor::beginVisit ( const DocIterator& a ) {
     thePrinter.startIter("DocIterator");

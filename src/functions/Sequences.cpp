@@ -172,25 +172,25 @@ TypeSystem::xqtref_t fn_empty::type_check(
 //15.1.5 fn:exists
 //----------------
 fn_exists::fn_exists(const signature& sig)
-: function(sig) { }
+  : function(sig) { }
 
 PlanIter_t fn_exists::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return NULL;
+  return new ExistsIterator(loc,argv[0]);
 }
 
 bool fn_exists::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	return true;
+  return (argv.size() == 1); // unary function
 }
 
 TypeSystem::xqtref_t fn_exists::type_check(
 	signature& sig) const
 {
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+	return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 }
 
 

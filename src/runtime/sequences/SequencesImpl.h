@@ -80,6 +80,30 @@ protected:
 //15.1.4 fn:empty
 
 //15.1.5 fn:exists
+/*
+ * Summary: If the value of $arg is not the empty sequence, the function returns true; 
+            otherwise, the function returns false.
+ */
+class ExistsIterator : public UnaryBaseIterator<ExistsIterator>
+{
+
+public:
+	ExistsIterator(yy::location loc,
+	               PlanIter_t& arg);
+	
+	~ExistsIterator();
+
+	Item_t nextImpl(PlanState& planState);
+	
+	virtual void accept(PlanIterVisitor&) const;
+	
+protected:
+	class ExistsIteratorState : public PlanIteratorState {
+	public:
+		void init();
+		void reset();
+	};
+};
 
 //15.1.6 fn:distinct-values
 

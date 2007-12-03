@@ -128,6 +128,47 @@ ConcatIterator::ConcatIteratorState::incCurIter() {
 //15.1.4 fn:empty
 
 //15.1.5 fn:exists
+/*
+ * If the value of $arg is not the empty sequence, the function returns true; 
+ * otherwise, the function returns false.
+ */
+ExistsIterator::ExistsIterator(yy::location loc,
+	                             PlanIter_t& arg)
+	: UnaryBaseIterator<ExistsIterator> ( loc, arg )
+{ }
+
+ExistsIterator::~ExistsIterator(){}
+
+Item_t 
+ExistsIterator::nextImpl(PlanState& planState) {
+	Item_t item;
+	
+	ExistsIteratorState* state;
+	STACK_INIT(ExistsIteratorState, state, planState);
+	
+	item = consumeNext(theChild, planState);
+	if (item != NULL) 
+	{
+		STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
+	}
+	else
+	{
+    STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);	  
+	}
+
+	STACK_END();
+}
+
+void
+ExistsIterator::ExistsIteratorState::init() {
+	PlanIterator::PlanIteratorState::init();
+}
+
+void
+ExistsIterator::ExistsIteratorState::reset() {
+	PlanIterator::PlanIteratorState::reset();
+}
+
 
 //15.1.6 fn:distinct-values
 

@@ -52,6 +52,7 @@ namespace xqp
   class OpNumericUnaryIterator;
   class FnAbsIterator;
   class ConcatIterator;
+  class ExistsIterator;
   class DocIterator;
   class CodepointsToStringIterator;
   class StringToCodepointsIterator;
@@ -198,6 +199,9 @@ namespace xqp
        
       virtual void beginVisit ( const ConcatIterator& ) = 0;
       virtual void endVisit ( const ConcatIterator& ) = 0;
+
+      virtual void beginVisit ( const ExistsIterator& ) = 0;
+      virtual void endVisit ( const ExistsIterator& ) = 0;
        
       virtual void beginVisit ( const DocIterator& ) = 0;
       virtual void endVisit ( const DocIterator& ) = 0;
