@@ -52,7 +52,6 @@ IF(LIBXML2_FOUND)
     SET(requiredlibs ${requiredlibs} ${LIBXML2_LIBRARIES})
     SET(CXXFLAGS ${CXXFLAGS} ${LIBXML2_DEFINITONS})
 ELSE(LIBXML2_FOUND)
-	SET(requiredlibs)
     MESSAGE(FATAL_ERROR "The libxml2  library is required in order to build Zorba.")
 ENDIF(LIBXML2_FOUND)
 
