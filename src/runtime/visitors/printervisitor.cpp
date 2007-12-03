@@ -7,7 +7,7 @@
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/flwor_iterator.h"
-#include "runtime/core/nodeid_iterators.h"
+//#include "runtime/core/nodeid_iterators.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/strings/StringsImpl.h"
@@ -155,7 +155,7 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FLWORIterator& a ) {
     thePrinter.endIter();
   }
-
+#if 0
   void PrinterVisitor::beginVisit ( const NodeDistinctIterator& a ) {
     thePrinter.startIter("NodeDistinctIterator");
     printCommons(&a);
@@ -164,7 +164,7 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const NodeDistinctIterator& a ) {
     thePrinter.endIter();
   }
-
+#endif
   void PrinterVisitor::beginVisit ( const KindTestIterator& a ) {
     thePrinter.startIter("KindTestIterator");
     {

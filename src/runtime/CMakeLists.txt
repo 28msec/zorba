@@ -4,7 +4,6 @@ SET(RUNTIME_SRCS
     core/flwor_iterator.cpp
     core/constructors.cpp
     core/path_iterators.cpp
-    core/nodeid_iterators.cpp
     numerics/NumericsImpl.cpp
     strings/StringsImpl.cpp
     booleans/BooleanImpl.cpp

@@ -61,7 +61,7 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  virtual uint32_t getStateSize() { return sizeof(NodeDistinctState); }
+  virtual uint32_t getStateSize() const { return sizeof(NodeDistinctState); }
 
   virtual void setOffset(PlanState& planState, uint32_t& offset);
 
