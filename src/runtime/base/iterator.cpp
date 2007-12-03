@@ -33,7 +33,7 @@ int32_t iteratorTreeDepth = -1;
 
 
 /* begin PlanState */
-PlanState::PlanState(int32_t blockSize)
+PlanState::PlanState(uint32_t blockSize)
 {
 	this->block = new int8_t[blockSize];
 	memset(this->block, 0, blockSize);
@@ -52,74 +52,16 @@ PlanState::~PlanState()
 /* begin class PlanIterator */
 PlanIterator::PlanIterator(yy::location _loc) :
 	loc(_loc){
-	this->current_line = 0;
 	//zorp = zorba::getZorbaForCurrentThread();
 }
 
 PlanIterator::PlanIterator(const PlanIterator& it) :
 	rcobject(it),
 	loc(it.loc) {
-	this->current_line = 0;
 	//zorp = zorba::getZorbaForCurrentThread();
 }
 
 PlanIterator::~PlanIterator() {
-}
-
-Item_t PlanIterator::produceNext(PlanState& planState) {
-	ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-	return NULL;///unreachable
-}
-
-void 
-PlanIterator::reset(PlanState& planState) {
-	ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
-}
-
-void 
-PlanIterator::releaseResources(PlanState& planState) {
-	ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
-}
-
-int32_t
-PlanIterator::getStateSize() {
-	ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
-	return 0;
-}
-
-int32_t
-PlanIterator::getStateSizeOfSubtree() {
-	ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
-	return 0;
-}
-
-void
-PlanIterator::setOffset(PlanState& planState, int32_t& offset) {
-	ZORBA_ERROR_ALERT(
-						error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-						error_messages::SYSTEM_ERROR,
-						NULL
-					);
 }
 
 void
@@ -138,7 +80,7 @@ PlanIterator::PlanIteratorState::setDuffsLine(int32_t value) {
 }
 
 int32_t
-PlanIterator::PlanIteratorState::getDuffsLine() {
+PlanIterator::PlanIteratorState::getDuffsLine() const {
 	return this->duffsLine;
 }
 /* end class PlanIterator */
@@ -150,9 +92,9 @@ PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter)
   theAlienBlock(false),
   theIterator(aIter)
 {
-	int32_t lStackSize = theIterator->getStateSizeOfSubtree();
+	uint32_t lStackSize = theIterator->getStateSizeOfSubtree();
 	theStateBlock = new PlanState(lStackSize);
-	int32_t lOffset = 0;
+	uint32_t lOffset = 0;
 	theIterator->setOffset(*theStateBlock, lOffset);
 }
 

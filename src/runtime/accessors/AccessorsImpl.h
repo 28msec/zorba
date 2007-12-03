@@ -35,9 +35,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
   
-  virtual int32_t getStateSize();
-  virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(PlanState& aPlanState, int32_t& aOffset);
+  virtual uint32_t getStateSize() const { return sizeof(FnDataIteratorState); }
+  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual void setOffset(PlanState& aPlanState, uint32_t& aOffset);
   
   virtual void accept(PlanIterVisitor&) const;
   

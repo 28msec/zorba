@@ -325,12 +325,7 @@ namespace xqp
   {
   }
 
-  int32_t FLWORIterator::getStateSize()
-  {
-    return sizeof ( PlanIterator::PlanIteratorState );
-  }
-
-  int32_t FLWORIterator::getStateSizeOfSubtree()
+  uint32_t FLWORIterator::getStateSizeOfSubtree() const
   {
     int32_t size = 0;
     std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
@@ -356,7 +351,7 @@ namespace xqp
     return this->getStateSize() + size;
   }
 
-  void FLWORIterator::setOffset ( PlanState& planState, int32_t& offset )
+  void FLWORIterator::setOffset ( PlanState& planState, uint32_t& offset )
   {
     this->stateOffset = offset;
     offset += this->getStateSize();

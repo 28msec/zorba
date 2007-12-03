@@ -29,9 +29,9 @@ namespace xqp
 			void resetImpl ( PlanState& planState );
 			void releaseResourcesImpl ( PlanState& planState );
 
-			virtual int32_t getStateSize();
-			virtual int32_t getStateSizeOfSubtree();
-			virtual void setOffset ( PlanState& planState, int32_t& offset );
+      virtual uint32_t getStateSize() const { return sizeof ( PlanIterator::PlanIteratorState ); }
+			virtual uint32_t getStateSizeOfSubtree() const;
+			virtual void setOffset ( PlanState& planState, uint32_t& offset );
 	}; /* class BinaryBaseIterator */
 
 	/* begin class BinaryBaseIterator */
@@ -73,18 +73,9 @@ namespace xqp
 		this->releaseChildResources ( theChild1, planState );
 	}
 
-
 	template <class IterType>
-	int32_t
-	BinaryBaseIterator<IterType>::getStateSize()
-	{
-		return sizeof ( PlanIterator::PlanIteratorState );
-	}
-
-
-	template <class IterType>
-	int32_t
-	BinaryBaseIterator<IterType>::getStateSizeOfSubtree()
+	uint32_t
+	BinaryBaseIterator<IterType>::getStateSizeOfSubtree() const
 	{
 		int32_t i;
     theChild0->getStateSizeOfSubtree();
@@ -100,7 +91,7 @@ namespace xqp
 	void
 	BinaryBaseIterator<IterType>::setOffset (
 	    PlanState& planState,
-	    int32_t& offset )
+	    uint32_t& offset )
 	{
 		this->stateOffset = offset;
 		offset += this->getStateSize();

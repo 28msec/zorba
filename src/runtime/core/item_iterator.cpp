@@ -19,7 +19,7 @@ namespace xqp
 {
 
   /* begin class EmptyIterator */
-  void EmptyIterator::setOffset ( PlanState& planState, int32_t& offset )
+  void EmptyIterator::setOffset ( PlanState& planState, uint32_t& offset )
   {
     this->stateOffset = offset;
     offset += this->getStateSize();
@@ -28,7 +28,7 @@ namespace xqp
 
   /* begin class SingletonIterator */
   SingletonIterator::SingletonIterator ( yy::location loc, Item_t aValue) :
-      Batcher<SingletonIterator> ( loc ), theValue ( aValue )
+      NoaryBaseIterator<SingletonIterator> ( loc ), theValue ( aValue )
   {
   }
 
@@ -42,33 +42,6 @@ namespace xqp
     STACK_INIT ( PlanIteratorState, state, planState );
     STACK_PUSH ( theValue, state );
     STACK_END();
-  }
-
-  void SingletonIterator::resetImpl ( PlanState& planState )
-  {
-    PlanIterator::PlanIteratorState* state;
-    GET_STATE ( PlanIteratorState, state, planState );
-    state->reset();
-  }
-
-  void SingletonIterator::releaseResourcesImpl ( PlanState& planState )
-  {
-  }
-
-  int32_t SingletonIterator::getStateSize()
-  {
-    return sizeof ( PlanIterator::PlanIteratorState );
-  }
-
-  int32_t SingletonIterator::getStateSizeOfSubtree()
-  {
-    return this->getStateSize();
-  }
-
-  void SingletonIterator::setOffset ( PlanState& planState, int32_t& offset )
-  {
-    this->stateOffset = offset;
-    offset += this->getStateSize();
   }
   /* end class SingletonIterator */
 
@@ -139,7 +112,7 @@ namespace xqp
     state->theString.clear();
   }
 
-  void EnclosedIterator::setOffset ( PlanState& planState, int32_t& offset )
+  void EnclosedIterator::setOffset ( PlanState& planState, uint32_t& offset )
   {
     UnaryBaseIterator<EnclosedIterator>::setOffset ( planState, offset );
 
@@ -213,16 +186,13 @@ namespace xqp
     this->releaseChildResources ( theElseIter, planState );
   }
   
-  int32_t IfThenElseIterator::getStateSize() {
-    return sizeof(IfThenElseIteratorState);
-  }
-  int32_t IfThenElseIterator::getStateSizeOfSubtree() {
+  uint32_t IfThenElseIterator::getStateSizeOfSubtree() const {
     return getStateSize() 
         + theCondIter->getStateSizeOfSubtree()
         + theThenIter->getStateSizeOfSubtree()
         + theElseIter->getStateSizeOfSubtree();
   }
-  void IfThenElseIterator::setOffset ( PlanState& planState, int32_t& offset ) {
+  void IfThenElseIterator::setOffset ( PlanState& planState, uint32_t& offset ) {
     this->stateOffset = offset;
     offset += getStateSize();
     theCondIter->setOffset(planState, offset);

@@ -13,6 +13,7 @@
 #include "compiler/parser/location.hh"
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
+#include "runtime/base/noarybase.h"
 
 #include <assert.h>
 #include <iostream>
@@ -65,11 +66,11 @@ public:
   void resetImpl(PlanState& planState)  { }
   void releaseResourcesImpl(PlanState& planState){ }
 
-  virtual int32_t getStateSize() { return 0; }
-  virtual int32_t getStateSizeOfSubtree() { 
+  virtual uint32_t getStateSize() const { return 0; }
+  virtual uint32_t getStateSizeOfSubtree() const { 
     return 0; 
 }
-  virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 }; /* class EmptyIterator */
@@ -79,7 +80,7 @@ public:
 |
 | literals and for_var bindings
 |______________________________________________________________*/
-class SingletonIterator : public Batcher<SingletonIterator>
+class SingletonIterator : public NoaryBaseIterator<SingletonIterator>
 {
 protected:
   Item_t theValue;
@@ -90,14 +91,8 @@ public:
   
 public:
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
   
   const Item_t& getValue() const { return theValue; }
-
-  virtual int32_t getStateSize();
-  virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(PlanState& planState, int32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -146,9 +141,9 @@ public:   // variable binding
   Item_t nextImpl(PlanState& planState) { return it->next(); }  // TODO
   void resetImpl(PlanState& planState) { it->reset(); }  // TODO
   void releaseResourcesImpl(PlanState& planState) {  }  // TODO
-  virtual int32_t getStateSize() { return 0; }  // TODO
-  virtual int32_t getStateSizeOfSubtree() { return 0; }  // TODO
-  virtual void setOffset(PlanState& planState, int32_t& offset) {}  // TODO
+  virtual uint32_t getStateSize() const { return 0; }  // TODO
+  virtual uint32_t getStateSizeOfSubtree() const { return 0; }  // TODO
+  virtual void setOffset(PlanState& planState, uint32_t& offset) {}  // TODO
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -177,9 +172,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(EnclosedState); }
+  uint32_t getStateSize() const { return sizeof(EnclosedState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 }; /* class EnclosedIterator */
@@ -216,9 +211,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
   
-  virtual int32_t getStateSize();
-  virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset ( PlanState& planState, int32_t& offset );
+  virtual uint32_t getStateSize() const { return sizeof(IfThenElseIteratorState); }
+  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual void setOffset ( PlanState& planState, uint32_t& offset );
       
   virtual void accept(PlanIterVisitor&) const;
   

@@ -21,10 +21,6 @@
 
 using namespace std;
 namespace xqp {
-
-
-Item* op_concatenate_fname_p;
-//Item* fn_doc_fname_p;
   
 
 /*______________________________________________________________________
@@ -38,17 +34,13 @@ Item* op_concatenate_fname_p;
 
 //15.1.2 op:concatenate 
 //---------------------
-// DEFINE_LOGGER(ConcatIterator);
 
 ConcatIterator::ConcatIterator(
 	yy::location loc,
-	const vector<PlanIter_t>& aChildren)
+	vector<PlanIter_t>& aChildren)
 :
-	Batcher<ConcatIterator>(loc),
-	theChildren(aChildren)
-{
-// 	LOG_DEBUG("Hallo");
-}
+	NaryBaseIterator<ConcatIterator>(loc, aChildren)
+{}
 
 ConcatIterator::~ConcatIterator(){}
 
@@ -59,7 +51,7 @@ ConcatIterator::nextImpl(PlanState& planState) {
 	ConcatIteratorState* state;
 	STACK_INIT(ConcatIteratorState, state, planState);
 	
-  for (; state->getCurIter() < int32_t(theChildren.size()); state->incCurIter()) {;
+  for (; state->getCurIter() < theChildren.size(); state->incCurIter()) {;
 		item = this->consumeNext(theChildren[state->getCurIter()], planState);
 		while (item != NULL) {
 			STACK_PUSH (item, state);
@@ -90,13 +82,8 @@ ConcatIterator::releaseResourcesImpl(PlanState& planState) {
 	}
 }
 
-int32_t
-ConcatIterator::getStateSize() {
-	return sizeof(ConcatIteratorState);
-}
-
-int32_t
-ConcatIterator::getStateSizeOfSubtree() {
+uint32_t
+ConcatIterator::getStateSizeOfSubtree() const {
 	int32_t size = 0;
 	
 	std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
@@ -108,7 +95,7 @@ ConcatIterator::getStateSizeOfSubtree() {
 }
 
 void
-ConcatIterator::setOffset(PlanState& planState, int32_t& offset) {
+ConcatIterator::setOffset(PlanState& planState, uint32_t& offset) {
 	this->stateOffset = offset;
 	offset += this->getStateSize();
 	
@@ -121,23 +108,18 @@ ConcatIterator::setOffset(PlanState& planState, int32_t& offset) {
 void
 ConcatIterator::ConcatIteratorState::init() {
 	PlanIterator::PlanIteratorState::init();
-	this->curIter = 0;
+	theCurIter = 0;
 }
 
 void
 ConcatIterator::ConcatIteratorState::reset() {
 	PlanIterator::PlanIteratorState::reset();
-	this->curIter = 0;
+	theCurIter = 0;
 }
 
 void
 ConcatIterator::ConcatIteratorState::incCurIter() {
-	this->curIter++;
-}
-
-int32_t
-ConcatIterator::ConcatIteratorState::getCurIter() {
-	return this->curIter;
+	theCurIter++;
 }
 
 
@@ -287,8 +269,8 @@ DocIterator::nextImpl ( PlanState& planState )
   STACK_END();
 }
 
-int32_t
-DocIterator::getStateSize() {
+uint32_t
+DocIterator::getStateSize() const {
   return sizeof(DocIteratorState);
 }
 

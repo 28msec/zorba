@@ -89,14 +89,14 @@ class PlanState
 public:
   int8_t* block;
 
-  int32_t   blockSize;
+  uint32_t   blockSize;
 
   // TODO what's that for?
   //daniel: it provides quick access to thread specific storage; one important thing there is the error manager
   zorba *zorp;
   Zorba_XQueryBinary    *xqbinary;
 
-  PlanState(int32_t blockSize);
+  PlanState(uint32_t blockSize);
   ~PlanState();
 
 };
@@ -109,10 +109,7 @@ class PlanIterator : public rcobject
 {
 protected:
   /** offset of the state of the current iterator */
-  int32_t stateOffset;
-  
-  // TODO must be deleted. Is saved in state object.
-  int32_t current_line;
+  uint32_t stateOffset;
   
 public:
   yy::location loc;
@@ -130,7 +127,7 @@ public:
 public:
 
   /**
-   * 
+   * Accept method for the PlanIterator-Tree-Visitor
    * 
    * @param PlanIterVisitor
    */
@@ -142,50 +139,38 @@ public:
    * (main memory, file descriptors, etc.). 
    *
    * @param stateBLock
-   *
-   * TODO must be pure virtual
    */
-  virtual Item_t produceNext(PlanState& planState);
+  virtual Item_t produceNext(PlanState& planState) = 0;
 
   /** 
    * Restarts the iterator so that the next 'produceNext' call will start 
    * again from the beginning (should not release any resources).  
    *
    * @param stateBLock
-   *
-   * TODO must be pure virtual
    */
-  virtual void reset(PlanState& planState);
+  virtual void reset(PlanState& planState) = 0;
 
   /** 
    * Releases all resources of the iterator  
    *
    * @param stateBLock
-   * 
-   * TODO must be pure virtual
    */
-  virtual void releaseResources(PlanState& planState);
+  virtual void releaseResources(PlanState& planState) = 0;
 
   /** Returns the size of the state which must be saved for the current iterator
     * on the state block
-    *
-    * TODO must be pure virtual
     */
-  virtual int32_t getStateSize();
+  virtual uint32_t getStateSize() const = 0;
   
   /** Returns the size of the state for the current iterator 
     * and all its sub-iterators.
-    *
-    * TODO must be pure virtual
     */
-  virtual int32_t getStateSizeOfSubtree();
+  virtual uint32_t getStateSizeOfSubtree() const = 0;
   
   /** Sets the offset where the state of the iterator will be saved
     * on the state stack.
-    *
-    * TODO must be pure virtual
     */
-  virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual void setOffset(PlanState& planState, uint32_t& offset) = 0;
 
 protected:
   /** Root object of all iterator states */
@@ -215,7 +200,7 @@ protected:
      */
     
     void setDuffsLine(int32_t);
-    int32_t getDuffsLine();
+    int32_t getDuffsLine() const;
   };
 
 protected:
@@ -230,18 +215,18 @@ protected:
     return subIter->batch[subIter->cItem++];
   }
 #else
-  inline Item_t consumeNext(const PlanIter_t& subIter, PlanState& planState)
+  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState) const
   {
     return subIter->produceNext(planState);
   }
 #endif
 
-  inline void resetChild(const PlanIter_t& subIterator, PlanState& planState)
+  inline void resetChild(PlanIter_t& subIterator, PlanState& planState) const
   {
     subIterator->reset(planState);
   }
 
-  inline void releaseChildResources(const PlanIter_t& subIterator, PlanState& planState)
+  inline void releaseChildResources(PlanIter_t& subIterator, PlanState& planState) const
   {
     subIterator->releaseResources(planState);
   }
@@ -290,7 +275,6 @@ public:
 
   void reset(PlanState& planState)
   {
-    this->current_line = 0;
     static_cast<IterType*>(this)->resetImpl(planState);
   }
 

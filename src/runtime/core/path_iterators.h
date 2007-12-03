@@ -158,7 +158,7 @@ public:
 
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(AxisState); }
+  uint32_t getStateSize() const { return sizeof(AxisState); }
 };
 
 
@@ -215,7 +215,7 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(AttributeAxisState); }
+  uint32_t getStateSize() const { return sizeof(AttributeAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -273,7 +273,7 @@ public:
   Item_t nextImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(AncestorAxisState); }
+  uint32_t getStateSize() const { return sizeof(AncestorAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -303,7 +303,7 @@ public:
   Item_t nextImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(AncestorSelfAxisState); }
+  uint32_t getStateSize() const { return sizeof(AncestorSelfAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -334,7 +334,7 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(RSiblingAxisState); }
+  uint32_t getStateSize() const { return sizeof(RSiblingAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -365,7 +365,7 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(LSiblingAxisState); }
+  uint32_t getStateSize() const { return sizeof(LSiblingAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -396,7 +396,7 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(ChildAxisState); }
+  uint32_t getStateSize() const { return sizeof(ChildAxisState); }
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -427,9 +427,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(DescendantAxisState); }
+  uint32_t getStateSize() const { return sizeof(DescendantAxisState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -460,9 +460,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(DescendantSelfAxisState); }
+  uint32_t getStateSize() const { return sizeof(DescendantSelfAxisState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -494,9 +494,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(PrecedingAxisState); }
+  uint32_t getStateSize() const { return sizeof(PrecedingAxisState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -527,9 +527,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(FollowingAxisState); }
+  uint32_t getStateSize() const { return sizeof(FollowingAxisState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };

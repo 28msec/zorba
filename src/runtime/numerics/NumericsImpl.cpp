@@ -716,20 +716,20 @@ namespace xqp
   {
   }
 
-  int32_t
-  ZorNumGen::getStateSize()
+  uint32_t
+  ZorNumGen::getStateSize() const
   {
     return sizeof ( ZorNumGenState );
   }
 
-  int32_t
-  ZorNumGen::getStateSizeOfSubtree()
+  uint32_t
+  ZorNumGen::getStateSizeOfSubtree() const
   {
     return getStateSize();
   }
 
   void
-  ZorNumGen::setOffset ( PlanState& planState, int32_t& offset )
+  ZorNumGen::setOffset ( PlanState& planState, uint32_t& offset )
   {
     this->stateOffset = offset;
     offset += getStateSize();

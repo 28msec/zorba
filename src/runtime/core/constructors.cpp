@@ -41,13 +41,13 @@ ElementIterator::nextImpl(PlanState& planState)
   TempSeq_t seqChildren;
   TempSeq_t seqAttributes;
   TempSeq_t seqNamespaces;
-	Iterator_t cwrapper;
-	Iterator_t awrapper;
-	Iterator_t nwrapper;
+  Iterator_t cwrapper;
+  Iterator_t awrapper;
+  Iterator_t nwrapper;
 
   PlanIteratorState* state;
   STACK_INIT(PlanIteratorState, state, planState);
-		
+    
   if (theChildrenIter != NULL)
   {
     cwrapper = new PlanIterWrapper(theChildrenIter, planState);
@@ -67,17 +67,17 @@ ElementIterator::nextImpl(PlanState& planState)
   }
 
   item = zorba::getItemFactory()->createElementNode(
-		           theQName,
-		           GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
-		           seqChildren,
-		           seqAttributes,
+               theQName,
+               GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
+               seqChildren,
+               seqAttributes,
                seqNamespaces,
                theNsBindings,
-		           false,
-		           false).get_ptr();
+               false,
+               false).get_ptr();
 
   STACK_PUSH(item, state);
-		
+    
   STACK_END();
 }
 
@@ -113,16 +113,9 @@ ElementIterator::releaseResourcesImpl(PlanState& planState)
     releaseChildResources(theNamespacesIter, planState);
 }
 
-
-int32_t
-ElementIterator::getStateSize()
-{
-  return sizeof(PlanIterator::PlanIteratorState);
-}
-
-	
-int32_t
-ElementIterator::getStateSizeOfSubtree()
+  
+uint32_t
+ElementIterator::getStateSizeOfSubtree() const
 {
   int32_t size = 0;
 
@@ -138,9 +131,9 @@ ElementIterator::getStateSizeOfSubtree()
   return this->getStateSize() + size;
 }
 
-	
+  
 void
-ElementIterator::setOffset(PlanState& planState, int32_t& offset)
+ElementIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();
@@ -162,12 +155,12 @@ ElementIterator::setOffset(PlanState& planState, int32_t& offset)
 ElementContentIterator::ElementContentIterator(
     const yy::location& loc,
     PlanIter_t& childIter)
-	:
+  :
   UnaryBaseIterator<ElementContentIterator>(loc, childIter)
 {
 }
 
-		
+    
 Item_t 
 ElementContentIterator::nextImpl(PlanState& planState)
 {
@@ -175,12 +168,12 @@ ElementContentIterator::nextImpl(PlanState& planState)
   STACK_INIT(ElementContentState, state, planState);
 
   while (true)
-	{
+  {
     state->theContextItem = this->consumeNext(theChild, planState );
     if (state->theContextItem == NULL)
-		{
+    {
       if (state->theString != "")
-			{
+      {
         STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
         state->theString = "";
       }
@@ -188,13 +181,13 @@ ElementContentIterator::nextImpl(PlanState& planState)
     }
     else if (state->theContextItem->isNode() &&
              state->theContextItem->getNodeKind() == StoreConsts::textNode) 
-		{
+    {
       state->theString += state->theContextItem->getStringProperty();
     }
     else 
-		{
+    {
       if (state->theString != "")
-			{
+      {
         STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
         state->theString = "";
       }
@@ -215,7 +208,7 @@ ElementContentIterator::resetImpl(PlanState& planState)
   state->theString = "";
 }
 
-	
+  
 void 
 ElementContentIterator::releaseResourcesImpl(PlanState& planState)
 {
@@ -230,7 +223,7 @@ ElementContentIterator::releaseResourcesImpl(PlanState& planState)
 
 void ElementContentIterator::setOffset(
     PlanState& planState,
-    int32_t& offset)
+    uint32_t& offset)
 {
   UnaryBaseIterator<ElementContentIterator>::setOffset(planState, offset);
 
@@ -274,13 +267,13 @@ AttributeIterator::nextImpl(PlanState& planState)
   STACK_INIT(PlanIteratorState, state, planState);
 
   if ((itemFirst = consumeNext(theChild, planState)) != NULL)
-	{
+  {
     lexicalString = itemFirst->getStringProperty();
 
     // handle concatenation
     itemCur = consumeNext ( theChild, planState );
     while ( itemCur != NULL )
-		{
+    {
       concatenation = true;
       lexicalString += itemCur->getStringProperty();
       itemCur = consumeNext ( theChild, planState );
@@ -288,25 +281,25 @@ AttributeIterator::nextImpl(PlanState& planState)
 
     itemLexical = zorba::getItemFactory()->createUntypedAtomic(lexicalString);
     if ( concatenation )
-		{
+    {
       itemTyped = itemLexical;
     }
     else
-		{
+    {
       itemTyped = itemFirst;
     }
   }
   else
-	{
+  {
     itemLexical = NULL;
     itemTyped = NULL;
   }
 
   item = zorba::getItemFactory()->createAttributeNode (
-		           theQName,
-		           GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
-		           itemLexical,
-		           itemTyped).get_ptr();
+               theQName,
+               GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
+               itemLexical,
+               itemTyped).get_ptr();
 
   STACK_PUSH(item, state);
   STACK_END();
@@ -331,11 +324,11 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 
   Store* store = zorba::getStore();
   TempSeq_t seqExpression;  
-	Iterator_t ewrapper;
+  Iterator_t ewrapper;
 
   PlanIteratorState* state;
   STACK_INIT(PlanIteratorState, state, planState);
-		
+    
   if (theExpressionIter != NULL)
   {
     /*
@@ -349,11 +342,11 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
   }
 
   item = zorba::getItemFactory()->createCommentNode(
-		           content,
-		           false).get_ptr();
+               content,
+               false).get_ptr();
 
   STACK_PUSH(item, state);
-		
+    
   STACK_END();
 }
 
@@ -377,16 +370,9 @@ CommentIterator::releaseResourcesImpl(PlanState& planState)
     releaseChildResources(theExpressionIter, planState);
 }
 
-
-int32_t
-CommentIterator::getStateSize()
-{
-  return sizeof(PlanIterator::PlanIteratorState);
-}
-
-	
-int32_t
-CommentIterator::getStateSizeOfSubtree()
+  
+uint32_t
+CommentIterator::getStateSizeOfSubtree() const
 {
   int32_t size = 0;
   
@@ -396,9 +382,9 @@ CommentIterator::getStateSizeOfSubtree()
   return this->getStateSize() + size;
 }
 
-	
+  
 void
-CommentIterator::setOffset(PlanState& planState, int32_t& offset)
+CommentIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   this->stateOffset = offset;
   offset += this->getStateSize();

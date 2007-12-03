@@ -58,9 +58,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  virtual int32_t getStateSize();
-  virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
+  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -91,9 +91,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(ElementContentState); }
+  uint32_t getStateSize() const { return sizeof(ElementContentState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -141,9 +141,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  virtual int32_t getStateSize();
-  virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
+  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -165,9 +165,9 @@ public:
 
   std::ostream& _show(std::ostream& os) const {assert(false);}
 
-  virtual int32_t getStateSize(){assert(false);}
-  virtual int32_t getStateSizeOfSubtree(){assert(false);}
-  virtual void setOffset(PlanState& planState, int32_t& offset){assert(false);}
+  virtual uint32_t getStateSize() const {assert(false);}
+  virtual uint32_t getStateSizeOfSubtree() const {assert(false);}
+  virtual void setOffset(PlanState& planState, uint32_t& offset){assert(false);}
 };
 
 } /* namespace xqp */

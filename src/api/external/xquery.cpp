@@ -257,7 +257,7 @@ XQueryResult_t Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 	///compute the offsets for each iterator into the state block
 	lStateSize = top_iterator->getStateSizeOfSubtree();//daniel: is this needed at every execution?
 	PlanState* stateBlock = new PlanState(lStateSize);
-	int32_t lOffset = 0;
+	uint32_t lOffset = 0;
 	top_iterator->setOffset(*stateBlock, lOffset);
 
 	Zorba_XQueryResult* zorba_result = new Zorba_XQueryResult();

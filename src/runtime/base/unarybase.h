@@ -11,91 +11,83 @@
 
 namespace xqp
 {
-	/**
-	 * Superclass for all iterators which have one child iterator
-	 * and no additional state variables.
-	 */
-	template <class IterType>
-	class UnaryBaseIterator : public Batcher<IterType>
-	{
-		protected:
-			PlanIter_t theChild;
+  /**
+   * Superclass for all iterators which have one child iterator
+   * and no additional state variables.
+   */
+  template <class IterType>
+  class UnaryBaseIterator : public Batcher<IterType>
+  {
+    protected:
+      PlanIter_t theChild;
 
-		public:
-			UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg );
-			virtual ~UnaryBaseIterator();
+    public:
+      UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg );
+      virtual ~UnaryBaseIterator();
 
-			void resetImpl ( PlanState& planState );
-			void releaseResourcesImpl ( PlanState& planState );
+      void resetImpl ( PlanState& planState );
+      void releaseResourcesImpl ( PlanState& planState );
 
-			virtual int32_t getStateSize();
-			virtual int32_t getStateSizeOfSubtree();
-			virtual void setOffset ( PlanState& planState, int32_t& offset );
-	}; /* class UnaryBaseIterator */
+      virtual uint32_t getStateSize() const { return sizeof ( PlanIterator::PlanIteratorState ); }
+      virtual uint32_t getStateSizeOfSubtree() const;
+      virtual void setOffset ( PlanState& planState, uint32_t& offset );
+  }; /* class UnaryBaseIterator */
 
-	/* begin class UnaryBaseIterator */
-	template <class IterType>
-	UnaryBaseIterator<IterType>::UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg )
-			:
-			Batcher<IterType> ( loc ), theChild ( arg )
-	{
-	}
-
-
-	template <class IterType>
-	UnaryBaseIterator<IterType>::~UnaryBaseIterator()
-	{
-	}
+  /* begin class UnaryBaseIterator */
+  template <class IterType>
+  UnaryBaseIterator<IterType>::UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg )
+      :
+      Batcher<IterType> ( loc ), theChild ( arg )
+  {
+  }
 
 
-	template <class IterType>
-	void
-	UnaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
-	{
-		this->resetChild ( theChild, planState );
-
-		PlanIterator::PlanIteratorState* state;
-		GET_STATE ( PlanIterator::PlanIteratorState, state, planState );
-		state->reset();
-	}
+  template <class IterType>
+  UnaryBaseIterator<IterType>::~UnaryBaseIterator()
+  {
+  }
 
 
-	template <class IterType>
-	void
-	UnaryBaseIterator<IterType>::releaseResourcesImpl ( PlanState& planState )
-	{
-		this->releaseChildResources ( theChild, planState );
-	}
+  template <class IterType>
+  void
+  UnaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
+  {
+    this->resetChild ( theChild, planState );
+
+    PlanIterator::PlanIteratorState* state;
+    GET_STATE ( PlanIterator::PlanIteratorState, state, planState );
+    state->reset();
+  }
 
 
-	template <class IterType>
-	int32_t
-	UnaryBaseIterator<IterType>::getStateSize()
-	{
-		return sizeof ( PlanIterator::PlanIteratorState );
-	}
+  template <class IterType>
+  void
+  UnaryBaseIterator<IterType>::releaseResourcesImpl ( PlanState& planState )
+  {
+    this->releaseChildResources ( theChild, planState );
+  }
 
 
-	template <class IterType>
-	int32_t
-	UnaryBaseIterator<IterType>::getStateSizeOfSubtree()
-	{
-		return theChild->getStateSizeOfSubtree() + getStateSize();
-	}
+  template <class IterType>
+  uint32_t
+  UnaryBaseIterator<IterType>::getStateSizeOfSubtree() const
+  {
+    return theChild->getStateSizeOfSubtree() + getStateSize();
+  }
 
 
-	template <class IterType>
-	void
-	UnaryBaseIterator<IterType>::setOffset (
-	    PlanState& planState,
-	    int32_t& offset )
-	{
-		this->stateOffset = offset;
-		offset += getStateSize();
+  template <class IterType>
+  void
+  UnaryBaseIterator<IterType>::setOffset (
+      PlanState& planState,
+      uint32_t& offset )
+  {
+    this->stateOffset = offset;
+    offset += getStateSize();
 
-		theChild->setOffset ( planState, offset );
-	}
-	/* end class UnaryBaseIterator */
+    theChild->setOffset ( planState, offset );
+  }
+  /* end class UnaryBaseIterator */
 }; /* namespace xqp*/
 
 #endif /* XQP_UNARYBASE_H */

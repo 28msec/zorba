@@ -27,12 +27,10 @@
 #include "runtime/base/iterator.h"
 #include "store/naive/simple_store.h"
 #include "runtime/base/unarybase.h"
-#include "util/logging/logging.hh"
+#include "runtime/base/narybase.h"
 
 namespace xqp
 {
-
-  class zorba;
 
   /*______________________________________________________________________
   |
@@ -44,40 +42,35 @@ namespace xqp
 
 
 //15.1.2 op:concatenate
-class ConcatIterator : public Batcher<ConcatIterator>
+class ConcatIterator : public NaryBaseIterator<ConcatIterator>
 {
-//  DECLARE_LOGGER;
-protected:
-  std::vector<PlanIter_t> theChildren;
-
 public:
   ConcatIterator(
-  yy::location loc,
-  const vector<PlanIter_t>& aChildren);
+  yy::location loc, vector<PlanIter_t>& aChildren);
   
-  ~ConcatIterator();
+  virtual ~ConcatIterator();
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
   
-  virtual int32_t getStateSize();
-  virtual int32_t getStateSizeOfSubtree();
-  virtual void setOffset(PlanState& planState, int32_t& offset);
+  virtual uint32_t getStateSize() const { return sizeof(ConcatIteratorState); }
+  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
   
 protected:
   class ConcatIteratorState : public PlanIteratorState {
   private:  
-    int32_t curIter;
+    uint32_t theCurIter;
   
   public:
     void init();
     void reset();
     
     void incCurIter();
-    int32_t getCurIter();
+    uint32_t getCurIter() { return theCurIter; }
   };
 };
 
@@ -167,7 +160,7 @@ public:
   virtual ~DocIterator();
 
   Item_t nextImpl(PlanState& planState);
-  virtual int32_t getStateSize();
+  virtual uint32_t getStateSize() const;
   
   virtual void accept(PlanIterVisitor&) const;
 

@@ -55,15 +55,11 @@ FnDataIterator::releaseResourcesImpl(PlanState& planState)
   this->releaseChildResources( theChild, planState );
 }
 
-int32_t FnDataIterator::getStateSize() {
-  return sizeof(FnDataIteratorState);
-}
-
-int32_t FnDataIterator::getStateSizeOfSubtree() {
+uint32_t FnDataIterator::getStateSizeOfSubtree() const {
   return getStateSize() + theChild->getStateSizeOfSubtree();
 }
 
-void FnDataIterator::setOffset(PlanState& aPlanState, int32_t& aOffset) {
+void FnDataIterator::setOffset(PlanState& aPlanState, uint32_t& aOffset) {
   this->stateOffset = aOffset;
   aOffset += getStateSize();
   theChild->setOffset(aPlanState, aOffset);

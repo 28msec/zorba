@@ -103,18 +103,13 @@ void
 StringToCodepointsIterator::releaseResourcesImpl(PlanState& planState) {
 }
 
-int32_t
-StringToCodepointsIterator::getStateSize() {
-  return sizeof(StringToCodepointsState);
-}
-
-int32_t
-StringToCodepointsIterator::getStateSizeOfSubtree() {
+uint32_t
+StringToCodepointsIterator::getStateSizeOfSubtree() const {
   return this->getStateSize() + theChild->getStateSizeOfSubtree();
 }
 
 void
-StringToCodepointsIterator::setOffset(PlanState& planState, int32_t& offset) {
+StringToCodepointsIterator::setOffset(PlanState& planState, uint32_t& offset) {
   this->stateOffset = offset;
   offset += getStateSize();
   theChild->setOffset(planState, offset);
