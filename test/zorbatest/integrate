@@ -27,7 +27,7 @@ done
 #
 
 latest_snapshot () {
-  (cd $ROOT/snapshots; ls -rd *-*-*-*:*:* 2>/dev/null | head -1)
+  (cd $ROOT/snapshots; ls -rd *-*-*-*_*_* 2>/dev/null | head -1)
 }
 
 mkdir -p snapshots
