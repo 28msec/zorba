@@ -26,6 +26,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 INCLUDE(cmake_modules/FindICU.cmake)
+
 FIND_PACKAGE(LibXml2)
 
 INCLUDE(cmake_modules/FindIconv.cmake)
@@ -42,6 +43,8 @@ ENDIF (Iconv_FOUND)
 
 IF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 	MESSAGE(FATAL_ERROR "The ICU library is required in order to build Zorba.")
+ELSE (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
+    SET(requiredlibs ${requiredlibs} ${ICU_LIBRARIES} ${ICU_I18N_LIBRARIES} ${ICU_DATA_LIBRARIES})
 ENDIF (NOT ICU_FOUND OR NOT ICU_I18N_FOUND OR NOT ICU_DATA_FOUND)
 
 IF(LIBXML2_FOUND)
@@ -57,10 +60,14 @@ FIND_PACKAGE(Boost)
 IF(Boost_FOUND)
     INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
     LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-
 IF (NOT WIN32)
 	SET(requiredlibs ${requiredlibs} boost_program_options)
-ENDIF (NOT WIN32)    
+ELSE (NOT WIN32)
+IF (CYGWIN)
+   SET(BOOST_LIB_SUFFIX -gcc-mt)
+ENDIF (CYGWIN)
+
+ENDIF (NOT WIN32)
 ELSE(Boost_FOUND)
     MESSAGE(FATAL_ERROR "The boost library (program_options) is required in order to build Zorba.")
 ENDIF(Boost_FOUND)
