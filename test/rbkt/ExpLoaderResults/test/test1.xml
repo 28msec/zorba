@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document baseUri = "" docUri = "boo"/>
+<test:Plan nid="50 1.1" xmlns:test="http://test.org/schema">
+  <test:Case nid="54 1.1.1" xmlns:test="http://test.org/schema" name="test1" emptyAttribute="" test:ns_id="auio">
+  </test:Case>
+  <test:text nid="5a 1.1.3" xmlns:test="http://test.org/schema">my name <b nid="5a80 1.1.3.1" xmlns:test="http://test.org/schema">is</b> foo</test:text>
+</test:Plan>
