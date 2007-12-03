@@ -1,6 +1,11 @@
 #!/bin/bash
-echo Saxon location:
+echo 'Enter saxon location (Cygwin users: use cygwin paths)'
 read sax
 echo '#!/bin/sh' >xquery
-echo 'exec java -cp '`find $sax -name *.jar | tr '\n' :`.' net.sf.saxon.Query $*' >>xquery
+if which cygpath &>/dev/null; then
+  JARS=`find $sax/ -name '*.jar'`; echo jars $JARS
+  echo 'exec java -cp '"'"`for f in $JARS; do cygpath -w $f; done | tr '\n' ';'`."'"' net.sf.saxon.Query $*' >>xquery
+else
+  echo 'exec java -cp '`find $sax/ -name *.jar | tr '\n' :`.' net.sf.saxon.Query $*' >>xquery
+fi
 chmod u+x xquery
