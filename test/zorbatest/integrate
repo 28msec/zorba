@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export ROOT=`pwd`          # Always zorbatest
-export NOW=`date +%F-%T`
+export NOW=`date +%F-%T | tr ':' '_'`
 
 
 #
