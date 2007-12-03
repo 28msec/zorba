@@ -57,6 +57,7 @@ void ZorbaErrorAlerts::error_alert(
 	err_decoded += ": ";
 	err_decoded += errtype_decoded;
 	err_manager->err_messages->ApplyParams(&err_decoded, &param1, &param2);
+  cerr << err_decoded << errtype_decoded << "\n";
 
 //	strloc << *ploc;
 
@@ -353,10 +354,11 @@ void ZorbaErrorAlertsImpl::RegisterAlertCallback(
 {
 	thread_registered_callback = user_alert_callback;
 	thread_registered_param = param;
-	
+
+  #if 0	
 	ZORBA_NOTIFY_EVENT_OSS(error_messages::NOTIF_EXECUTION_STEP,
 		"RegisterAlertCallback with param " << std::hex << param, "");
-
+  #endif
 }
 
 error_messages&	ZorbaErrorAlertsImpl::getErrMessages()
