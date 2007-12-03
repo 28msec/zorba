@@ -64,9 +64,8 @@ IF (NOT WIN32)
 	SET(requiredlibs ${requiredlibs} boost_program_options)
 ELSE (NOT WIN32)
 IF (CYGWIN)
-   SET(BOOST_LIB_SUFFIX -gcc-mt)
+   SET(requiredlibs ${requiredlibs} boost_program_options-gcc-mt) # temporary bugfix for cygwin
 ENDIF (CYGWIN)
-
 ENDIF (NOT WIN32)
 ELSE(Boost_FOUND)
     MESSAGE(FATAL_ERROR "The boost library (program_options) is required in order to build Zorba.")
