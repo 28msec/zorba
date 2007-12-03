@@ -61,9 +61,9 @@ public:
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(NodeDistinctState); }
+  virtual uint32_t getStateSize() { return sizeof(NodeDistinctState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };

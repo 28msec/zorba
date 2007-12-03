@@ -46,7 +46,7 @@ void NodeDistinctIterator::releaseResourcesImpl(PlanState& planState)
 }
 
 
-void NodeDistinctIterator::setOffset(PlanState& planState, int32_t& offset)
+void NodeDistinctIterator::setOffset(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<NodeDistinctIterator>::setOffset(planState, offset);
 
