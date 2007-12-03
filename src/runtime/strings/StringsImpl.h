@@ -66,11 +66,8 @@ public:
 public:
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
 
   virtual uint32_t getStateSize() const {return sizeof(StringToCodepointsState); }
-  virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 

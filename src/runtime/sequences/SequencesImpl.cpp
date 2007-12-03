@@ -1,11 +1,7 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
+/**
+ * Copyright FLWOR Foundation
  *
- *  $Id: Sequences.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
- *
- *	Copyright 2006-2007 FLWOR Foundation.
- *
- *  Author: John Cowan, Paul Pedersen
- *
+ * Author: David Graf (david.graf@28msec.com)
  */
 
 #include <string>
@@ -71,37 +67,6 @@ ConcatIterator::resetImpl(PlanState& planState) {
 	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
 	for(; iter != theChildren.end(); ++iter) {
 		this->resetChild(*iter, planState);
-	}
-}
-
-void 
-ConcatIterator::releaseResourcesImpl(PlanState& planState) {
-	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-	for(; iter != theChildren.end(); ++iter) {
-		this->releaseChildResources(*iter, planState);
-	}
-}
-
-uint32_t
-ConcatIterator::getStateSizeOfSubtree() const {
-	int32_t size = 0;
-	
-	std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
-	for(; iter != theChildren.end(); ++iter) {
-		size += (*iter)->getStateSizeOfSubtree();
-	}
-	
-	return this->getStateSize() + size;
-}
-
-void
-ConcatIterator::setOffset(PlanState& planState, uint32_t& offset) {
-	this->stateOffset = offset;
-	offset += this->getStateSize();
-	
-	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-	for(; iter != theChildren.end(); ++iter) {
-		(*iter)->setOffset(planState, offset);
 	}
 }
 

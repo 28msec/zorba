@@ -17,10 +17,8 @@
 
 namespace xqp {
 
-  class FnDataIterator : public Batcher<FnDataIterator>
+class FnDataIterator : public UnaryBaseIterator<FnDataIterator>
 {
-private:
-  PlanIter_t theChild;
     
   // used to save the current typed value in the nextImpl method
 //   Iterator_t curTypedValue;
@@ -28,7 +26,7 @@ private:
 public:
   FnDataIterator ( const yy::location& loc, PlanIter_t& aChild )
     :
-    Batcher<FnDataIterator> ( loc ), theChild(aChild) {}
+    UnaryBaseIterator<FnDataIterator> ( loc, aChild ) {}
     virtual ~FnDataIterator() {}
     
   Item_t nextImpl(PlanState& planState);
@@ -36,8 +34,6 @@ public:
   void releaseResourcesImpl(PlanState& planState);
   
   virtual uint32_t getStateSize() const { return sizeof(FnDataIteratorState); }
-  virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset(PlanState& aPlanState, uint32_t& aOffset);
   
   virtual void accept(PlanIterVisitor&) const;
   

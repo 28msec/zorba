@@ -52,11 +52,11 @@ namespace xqp
   void
   UnaryBaseIterator<IterType>::resetImpl ( PlanState& planState )
   {
-    this->resetChild ( theChild, planState );
-
     PlanIterator::PlanIteratorState* state;
     GET_STATE ( PlanIterator::PlanIteratorState, state, planState );
     state->reset();
+    
+    this->resetChild ( theChild, planState );
   }
 
 
