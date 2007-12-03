@@ -266,9 +266,9 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
       value -= 24;
       eval = ((uint32_t)value) << 24;
       while (!(eval & 0x8FFFFFFF))
-        eval << 1;
+        eval <<= 1;
 
-      eval >> 5;
+      eval >>= 5;
       eval |= 0xF0000000;
     }
     else if (value < 4376)
@@ -278,9 +278,9 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
       value -= 280;
       eval = ((uint32_t)value) << 20;
       while (!(eval & 0x8FFFFFFF))
-        eval << 1;
+        eval <<= 1;
 
-      eval >> 6;
+      eval >>= 6;
       eval |= 0xF8000000;
     }
     else if (value < 69912)
@@ -290,9 +290,9 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
       value -= 4376;
       eval = ((uint32_t)value) << 16;
       while (!(eval & 0x8FFFFFFF))
-        eval << 1;
+        eval <<= 1;
 
-      eval >> 7;
+      eval >>= 7;
       eval |= 0xFC000000;
     }
     else if (value < 1118488)
@@ -302,9 +302,9 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
       value -= 69912;
       eval = ((uint32_t)value) << 12;
       while (!(eval & 0x8FFFFFFF))
-        eval << 1;
+        eval <<= 1;
 
-      eval >> 8;
+      eval >>= 8;
       eval |= 0xFE000000;
     }
     else
@@ -2345,7 +2345,7 @@ void OrdPath::extractValue(
 
   unsigned long numBytes = numBits / 8;
 
-  for (ulong i = 0; i < numBytes; i++)
+  for (unsigned long i = 0; i < numBytes; i++)
   {
     result << 8;
     result |= theBuffer[byteIndex];
