@@ -14,6 +14,8 @@
 #include "store/naive/simple_collection.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/simple_loader.h"
+#include "store/naive/store_defs.h"
+#include "store/naive/node_items.h"
 #include "store/naive/basic_item_factory.h"
 
 namespace xqp
@@ -22,6 +24,7 @@ namespace xqp
 typedef rchandle<TempSeq> TempSeq_t;
 
 const float SimpleStore::DEFAULT_HASH_LOAD_FACTOR = 0.6;
+
 const xqp_ulong SimpleStore::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
 const char* SimpleStore::XS_URI = "http://www.w3.org/2001/XMLSchema";
@@ -40,7 +43,7 @@ SimpleStore::SimpleStore()
   theNamespacePool(new StringPool(StringPool::DEFAULT_POOL_SIZE)),
   theQNamePool(new QNamePool(QNamePool::MAX_CACHE_SIZE)),
   theItemFactory(new BasicItemFactory(theNamespacePool, theQNamePool)),
-  theCollections(DEFAULT_COLLECTION_MAP_SIZE,DEFAULT_HASH_LOAD_FACTOR),
+  theCollections(DEFAULT_COLLECTION_MAP_SIZE, DEFAULT_HASH_LOAD_FACTOR),
   theXmlLoader(NULL)
 {
 }
@@ -120,9 +123,7 @@ void SimpleStore::setGarbageCollectionStrategy(const xqp_string& strategy)
 
 
 /*******************************************************************************
-  Creates a new unique URI which can be used as an ID for a collection.
-
-  @return URI
+  Create an internal URI and return an rchandle to it. 
 ********************************************************************************/
 Item_t SimpleStore::createUri()
 {
@@ -134,11 +135,11 @@ Item_t SimpleStore::createUri()
 
 
 /*******************************************************************************
-  Creates a collection in the store.
+  Create a collection with a given URI and return an rchandle to the new
+  collection object. If a collection with the given URI exists already, return
+  NULL and register an error.
 
-  @param URI The URI (given as a string) of the collection to create.
-  @return handle object of the newly created collection
-  @throws UriInUseException If the passed uri already exists in the store.
+  Note: The collection URI is given as an xqp_string.
 ********************************************************************************/
 Collection_t SimpleStore::createCollection(const xqp_string& uri)
 {
@@ -163,11 +164,11 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
 
 
 /*******************************************************************************
-  Creates a collection in the store.
+  Create a collection with a given URI and return an rchandle to the new
+  collection object. If a collection with the given URI exists already, return
+  NULL and register an error.
 
-  @param URI The URI (given as an Item_t) of the collection to create.
-  @return handle object of the newly created collection
-  @throws UriInUseException If the passed uri already exists in the store.
+  Note: The collection URI is given as an xqp_string.
 ********************************************************************************/
 Collection_t SimpleStore::createCollection(Item_t uri)
 {
@@ -230,55 +231,55 @@ void SimpleStore::deleteCollection(Item_t uri)
 
 
 /*******************************************************************************
-  Creates a new TempSeq. The instance can be used, e.g. for variable bindings
-
-  @param iterator The source for the XMDInstance
-  @param lazy			Hint for the store. If possible a XMDInstance should be
-                  evaluated lazily. For XQueryP it might be necassary to set
-                  this to false.
+  Compare two nodes, based on their node id. Return -1 if node1 < node2, 0, if
+  node1 == node2, or 1 if node1 > node2.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq(Iterator_t iterator, bool lazy)
+int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
 {
-  TempSeq_t tempSeq = new SimpleTempSeq(iterator, lazy);
-  return tempSeq;
+  if (!node1->isNode() || !node2->isNode())
+  {
+    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      false);
+  }
+
+  if (node1 == node2)
+    return 0;
+  else if (BASE_NODE(node1)->getId() < BASE_NODE(node2)->getId())
+    return -1;
+  else
+    return 1;
 }
 
 
 /*******************************************************************************
-  Creates an empty TempSeq.
+  Sorts the items of the passed iterator
+
+  @param iterator to sort
+  @param ascendent true for ascendent and false for descendant
+  @param duplicate duplicate elemination should be applied
+  @return iterator which produces the sorted items
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq()
+Iterator_t SimpleStore::sort(
+    Iterator_t iterator,
+    bool ascendent,
+    bool duplicateElemination)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq();
-  return tempSeq;
+  return rchandle<Iterator> ( NULL );
 }
 
 
 /*******************************************************************************
-  Applies a pending update list on this store
+  Eliminates the duplicates in collection of items which is produced by the
+  passed iterator
 
-  @param pendingUpdateList
+  @param iterator
 ********************************************************************************/
-void SimpleStore::apply(PUL_t pendingUpdateList)
+Iterator_t SimpleStore::distinctNodeStable(Iterator_t)
 {
-
+  return rchandle<Iterator> ( NULL );
 }
-
-
-/*******************************************************************************
-  Applies the pending update list on the specified branch. Potentially, 
-  creates a new branch if no branch for that requester exists yet.
-
-  @param pendingUpdateList
-  @param requester
-  @throws NotSupportedException Throws an exception if the store does not
-          support branching
-********************************************************************************/
-void SimpleStore::apply(PUL_t pendingUpdateList, Requester requester)
-{
-
-}
-
 
 /*******************************************************************************
   Computes the URI of the passed item.
@@ -345,48 +346,54 @@ Item_t SimpleStore::getNodeByReference(
 
 
 /*******************************************************************************
-  Compares two items, based on their id.
+  Applies a pending update list on this store
 
-  @param item1
-  @param item2
-  @return  -1, if item1.id &lt; item2.id
-            0, if item1.id == item2.id
-           +1, if item1.id &gt; item2.id
+  @param pendingUpdateList
 ********************************************************************************/
-int32_t SimpleStore::compare(Item_t item1, Item_t item2)
+void SimpleStore::apply(PUL_t pendingUpdateList)
 {
-  return 2;
+
 }
 
 
 /*******************************************************************************
-  Sorts the items of the passed iterator
+  Applies the pending update list on the specified branch. Potentially, 
+  creates a new branch if no branch for that requester exists yet.
 
-  @param iterator to sort
-  @param ascendent true for ascendent and false for descendant
-  @param duplicate duplicate elemination should be applied
-  @return iterator which produces the sorted items
+  @param pendingUpdateList
+  @param requester
+  @throws NotSupportedException Throws an exception if the store does not
+          support branching
 ********************************************************************************/
-Iterator_t SimpleStore::sort(
-    Iterator_t iterator,
-    bool ascendent,
-    bool duplicateElemination)
+void SimpleStore::apply(PUL_t pendingUpdateList, Requester requester)
 {
-  return rchandle<Iterator> ( NULL );
+
 }
 
 
 /*******************************************************************************
-  Eliminates the duplicates in collection of items which is produced by the
-  passed iterator
+  Creates a new TempSeq. The instance can be used, e.g. for variable bindings
 
-  @param iterator
+  @param iterator The source for the XMDInstance
+  @param lazy			Hint for the store. If possible a XMDInstance should be
+                  evaluated lazily. For XQueryP it might be necassary to set
+                  this to false.
 ********************************************************************************/
-Iterator_t SimpleStore::distinctNodeStable(Iterator_t)
+TempSeq_t SimpleStore::createTempSeq(Iterator_t iterator, bool lazy)
 {
-  return rchandle<Iterator> ( NULL );
+  TempSeq_t tempSeq = new SimpleTempSeq(iterator, lazy);
+  return tempSeq;
 }
 
-/* end class SimpleStore */
+
+/*******************************************************************************
+  Creates an empty TempSeq.
+********************************************************************************/
+TempSeq_t SimpleStore::createTempSeq()
+{
+  TempSeq_t tempSeq = new SimpleTempSeq();
+  return tempSeq;
+}
+
 
 } /* namespace xqp */

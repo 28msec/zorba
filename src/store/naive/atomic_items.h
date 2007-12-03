@@ -61,7 +61,7 @@ private:
 /*******************************************************************************
   class AnyUriItem
 ********************************************************************************/
-class AnyUriItemImpl : public AnyUriItem
+class AnyUriItemImpl : public AtomicItem
 {
 protected:
   xqpStringStore_t theValue;
@@ -84,7 +84,7 @@ public:
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
-class UntypedAtomicItemNaive : public UntypedAtomicItem
+class UntypedAtomicItemNaive : public AtomicItem
 {
 private:
   xqpStringStore_t theValue;
@@ -107,7 +107,7 @@ public:
 /*******************************************************************************
   class StringItem
 ********************************************************************************/
-class StringItemNaive : public StringItem
+class StringItemNaive : public AtomicItem
 {
 protected:
   xqpStringStore_t theValue;
@@ -127,7 +127,7 @@ public:
 
 
 
-  class DecimalItemNaive : public DecimalItem
+  class DecimalItemNaive : public AtomicItem
 	{
   private:
     long double value_;
@@ -147,7 +147,8 @@ public:
     virtual xqp_string show() const;
 	}; /* class DecimalItem */
 
-  class IntItemNaive : public IntItem
+
+  class IntItemNaive : public AtomicItem
 	{
   protected:
     int value_;
@@ -169,7 +170,7 @@ public:
     virtual xqp_string show() const;
 	}; /* class IntItem */
 
-	class IntegerItemNaive : public IntegerItem
+	class IntegerItemNaive : public AtomicItem
 	{
   protected:
     long long value_;
@@ -189,7 +190,7 @@ public:
     virtual xqp_string show() const;
 	}; /* class IntegerItem */
 
-  class DoubleItemNaive : public DoubleItem
+  class DoubleItemNaive : public AtomicItem
 	{
 	protected:
 		double value;
@@ -208,7 +209,7 @@ public:
 		virtual xqp_string show() const;
 	}; /* class DoubleItem */
 	
-	class FloatItemNaive : public FloatItem
+	class FloatItemNaive : public AtomicItem
 	{
 		float value;
 	public:
@@ -226,7 +227,7 @@ public:
 		virtual xqp_string show() const;
 	}; /* class FloatItem */
 	
-	class BooleanItemNaive : public BooleanItem
+	class BooleanItemNaive : public AtomicItem
 	{
   private:
     bool value_;

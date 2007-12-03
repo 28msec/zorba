@@ -15,10 +15,16 @@ namespace xqp
 {
 
 #ifndef NDEBUG
+
+#ifdef LOCAL_DEBUG
 #define LOADER_TRACE(msg)                                                     \
 {                                                                             \
   std::cout << __FUNCTION__ << ": " << std::endl << "  " << msg << std::endl; \
 }
+#else
+#define LOADER_TRACE(msg)
+#endif
+
 #else
 #define LOADER_TRACE(msg)
 #endif
@@ -68,7 +74,6 @@ void XmlLoader::reset()
   while(!theBindingsStack.empty())
     theBindingsStack.pop();
 
-  theNodeId.clear();
   theErrors.clear();
 
   theRootNode = NULL;
@@ -113,11 +118,11 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
 ********************************************************************************/
 Item_t XmlLoader::loadXml(std::istream& stream)
 {
-  xmlParserCtxtPtr ctxt;
+  xmlParserCtxtPtr ctxt = NULL;
   char buf[4096];
   long numChars;
 
-  theNodeId.init();
+  theNodeId.init(GET_STORE().getTreeId());
 
   numChars = readPacket(stream, buf, 4096);
   if (numChars < 0)
@@ -162,8 +167,6 @@ Item_t XmlLoader::loadXml(std::istream& stream)
     return NULL;
   }
 
-  std::cout << std::endl << resultNode->show() << std::endl;
-
   reset();
   return resultNode;
 }
@@ -188,7 +191,7 @@ void XmlLoader::startDocument(void * ctx)
   Item_t docNode = factory.createDocumentNode(baseUri, docUri);
 
   DOC_NODE(docNode)->setId(loader.theNodeId);
-  loader.theNodeId.push_child();
+  loader.theNodeId.pushChild();
 
   loader.theRootNode = docNode;
   loader.theNodeStack.push(docNode);
@@ -331,7 +334,7 @@ void XmlLoader::startElement(
   Item_t elemNode = factory.createElementNode(qname, tname, attrSeq, nsBindings);
 
   ELEM_NODE(elemNode)->setId(loader.theNodeId);
-  loader.theNodeId.push_child();
+  loader.theNodeId.pushChild();
 
   LOADER_TRACE("Element name ["
                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << lname
@@ -428,7 +431,7 @@ void  XmlLoader::endElement(
   elemNode->setChildren(childSeq);
 
   // Adjust the dewey id
-  loader.theNodeId.pop_child();
+  loader.theNodeId.popChild();
 }
 
 

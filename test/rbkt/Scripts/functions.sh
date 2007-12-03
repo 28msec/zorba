@@ -57,20 +57,32 @@ function buildDirEnv
      return 10
   fi
 
-  if [ ! -d ${queriesDir} ]; then
-     echo "ERROR 12 buildDirEnv: queries directory ${queriesDir} does not exist"
-     return 12
-  fi
-  if [ ! -d ${expResultsDir} ]; then
-     echo "ERROR 13 buildDirEnv: expected results directory ${expResultsDir} does not exist"
-     return 13
-  fi
   if [ ! -d $scriptsDir ]; then
      echo "ERROR 14 buildDirEnv: test scripts directory $scriptsDir does not exist"
      return 14
   fi
 
-  mkdir -p ${resultsDir}
+  if [ ! -d ${queriesDir} ]; then
+     echo "ERROR 12 buildDirEnv: queries directory ${queriesDir} does not exist"
+     return 12
+  fi
+  if [ ! -d ${expQueryResultsDir} ]; then
+     echo "ERROR 13 buildDirEnv: expected results directory ${expQueryResultsDir} does not exist"
+     return 13
+  fi
+
+  mkdir -p ${queryResultsDir}
+
+  if [ ! -d ${docsDir} ]; then
+     echo "ERROR 12 buildDirEnv: source docs directory ${docsDir} does not exist"
+     return 12
+  fi
+  if [ ! -d ${expLoaderResultsDir} ]; then
+     echo "ERROR 13 buildDirEnv: expected docs directory ${expLoaderResultsDir} does not exist"
+     return 13
+  fi
+
+  mkdir -p ${loaderResultsDir}
 
   return 0
 }
@@ -92,7 +104,7 @@ function run_query
 
   local queryFile="$1"
 
-  local EXE=${zorbaExec}
+  local EXE=${zorbaExecDir}/apitest
 
   if [ ! -e "${EXE}" ]; then
     echo "ERROR 1 run_query: binary executable ${EXE} not found"
@@ -121,15 +133,15 @@ function run_query_in_bucket
   local bucketName="$1"
   local queryName="$2"
 
-  local queryDir="${queriesDir}/${bucketName}"
-  local queryFile="${queryDir}/${queryName}.xq"
+  local inputDir="${queriesDir}/${bucketName}"
+  local queryFile="${inputDir}/${queryName}.xq"
 
-  local expResultDir="${expResultsDir}/${bucketName}"
-  local expResultFile="${expResultDir}/${queryName}.res"
+  local expResultsDir="${expQueryResultsDir}/${bucketName}"
+  local expResultFile="${expResultsDir}/${queryName}.res"
 
-  local resultDir="${resultsDir}/${bucketName}"
-  local resultFile="${resultDir}/${queryName}.res"
-  local diffFile="${resultDir}/${queryName}.diff"
+  local resultsDir="${queryResultsDir}/${bucketName}"
+  local resultFile="${resultsDir}/${queryName}.res"
+  local diffFile="${resultsDir}/${queryName}.diff"
 
   if [ ! -e "${queryFile}" ]; then
     echo "ERROR 1 run_query_in_bucket: query file ${queryFile} does not exist"
@@ -140,7 +152,7 @@ function run_query_in_bucket
   # Create results directory, if it doesn't exist already.
   # If it exists, then clean it up.
   #
-  mkdir -p "${resultDir}"
+  mkdir -p "${resultsDir}"
   if [ $? != 0 ]; then echo "ERROR 2 run_query_in_bucket: mkdir -p failed"; exit 19; fi
   rm -f "${resultDir}"/${queryName}.*
 
@@ -160,8 +172,8 @@ function run_query_in_bucket
   #
   # If no result file was generated, then we create an empty one.
   #
-  if [ -e "${queryDir}/${queryName}.xq.res" ]; then
-    mv "${queryDir}/${queryName}.xq.res" "${resultFile}"
+  if [ -e "${inputDir}/${queryName}.xq.res" ]; then
+    mv "${inputDir}/${queryName}.xq.res" "${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 12 run_query_in_bucket: mv failed"; exit 19; fi
   else
     touch "${resultFile}"
@@ -236,7 +248,7 @@ function run_bucket()
       run_query_in_bucket "${bucketName}" "${queryName}"
       error=$?
       if [ ${error} != 0 ]; then
-        echo "ERROR 3 run_bucket: run_query failed with error code ${error}"
+        echo "ERROR 3 run_bucket: run_bucket failed with error code ${error}"
         return ${error}
       fi
     done
@@ -247,9 +259,43 @@ function run_bucket()
 }
 
 
+################################################################################
+#                                                                              #
+#                                 Loading Docs                                 #
+#                                                                              #
+################################################################################
+
+
+#
+# $1 - docFile  : Full pathname of the file that contains the document text
+#
+function load_doc
+{
+  local error=0
+
+  local docFile="$1"
+
+  local EXE=${zorbaExecDir}/test_store
+
+  if [ ! -e "${EXE}" ]; then
+    echo "ERROR 1 load_doc: binary executable ${EXE} not found"
+    exit 17
+  fi
+
+  ${EXE} "${docFile}"
+  error=$?
+  if [ ${error} != 0 ]; then
+    echo "ERROR 2 load_doc: ${EXE} $1 failed with error code ${error}"
+    # To allow more docs to be loaded by the caller, do not propagate error
+  fi
+
+  return 0
+}
+
+
 #
 # $1 bucketName   : See load_bucket() function
-# $2 docName    : The doc name. 
+# $2 docName      : The doc name. 
 #
 function load_doc_in_bucket()
 {
@@ -258,12 +304,15 @@ function load_doc_in_bucket()
   local bucketName="$1"
   local docName="$2"
 
-  local docDir="${sourceDocsDir}/${bucketName}"
-  local docFile="${docDir}/${docName}.xml"
+  local inputDir="${docsDir}/${bucketName}"
+  local docFile="${inputDir}/${docName}.xml"
 
-  local resultDir="${docsDir}/${bucketName}"
-  local resultFile="${resultDir}/${docName}.res"
-  local diffFile="${resultDir}/${docName}.diff"
+  local expResultsDir="${expLoaderResultsDir}/${bucketName}"
+  local expResultFile="${expResultsDir}/${docName}.xml"
+
+  local resultsDir="${loaderResultsDir}/${bucketName}"
+  local resultFile="${resultsDir}/${docName}.xml"
+  local diffFile="${resultsDir}/${docName}.diff"
 
   if [ ! -e "${docFile}" ]; then
     echo "ERROR 1 load_doc_in_bucket: doc file ${docFile} does not exist"
@@ -274,9 +323,9 @@ function load_doc_in_bucket()
   # Create results directory, if it doesn't exist already.
   # If it exists, then clean it up.
   #
-  mkdir -p "${resultDir}"
+  mkdir -p "${resultsDir}"
   if [ $? != 0 ]; then echo "ERROR 2 load_doc_in_bucket: mkdir -p failed"; exit 19; fi
-  rm -f "${resultDir}"/${docName}.*
+  rm -f "${resultsDir}"/${docName}.*
 
   #
   # Load the doc
@@ -294,8 +343,8 @@ function load_doc_in_bucket()
   #
   # If no result file was generated, then we create an empty one.
   #
-  if [ -e "${docDir}/${docName}.xml.res" ]; then
-    mv "${docDir}/${docName}.xml.res" "${resultFile}"
+  if [ -e "${inputDir}/${docName}.xml.res" ]; then
+    mv "${inputDir}/${docName}.xml.res" "${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 12 load_doc_in_bucket: mv failed"; exit 19; fi
   else
     touch "${resultFile}"
@@ -317,14 +366,55 @@ function load_doc_in_bucket()
     echo
     echo "FAILURE : -bucket ${bucketName} -doc ${docName}"
     echo
-    let failedQueries=failedQueries+1 
+    let failedDocs=failedDocs+1 
   else
     echo
     echo "SUCCESS : -bucket ${bucketName} -doc ${docName}"
     echo
   fi
 
-  let totalQueries=totalQueries+1
+  let totalDocs=totalDocs+1
+
+  return 0
+}
+
+
+#
+# params:
+#
+# $1 bucketName
+#
+function load_bucket() 
+{
+  local error=0
+  local docList=""
+  local d=""
+  local docName=""
+  local bucketName="$1"
+
+  if [ ! -e "${docsDir}/${bucketName}" ]; then
+    echo "ERROR 1 load_bucket: bucket ${docsDir}/${bucketName} does not exist"
+    return 17
+  fi
+
+  cd "${docsDir}/${bucketName}"
+  docList=`ls *.xml`
+  cd -
+
+  for d in $docList
+  do
+    echo ${d} | sed -e s/".xml"/""/g  > tmp_docFile
+    for docName in `cat tmp_docFile`
+    do 
+      load_doc_in_bucket "${bucketName}" "${docName}"
+      error=$?
+      if [ ${error} != 0 ]; then
+        echo "ERROR 3 load_bucket: load_bucket failed with error code ${error}"
+        return ${error}
+      fi
+    done
+    rm -f tmp_docFile
+  done  
 
   return 0
 }

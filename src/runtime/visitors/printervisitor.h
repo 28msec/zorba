@@ -69,7 +69,10 @@ namespace xqp {
        
       virtual void beginVisit ( const FLWORIterator& ) ;
       virtual void endVisit ( const FLWORIterator& ) ;
-       
+      
+      virtual void beginVisit ( const NodeDistinctIterator& a );
+      virtual void endVisit ( const NodeDistinctIterator& a );
+
       virtual void beginVisit ( const KindTestIterator& ) ;
       virtual void endVisit ( const KindTestIterator& ) ;
        

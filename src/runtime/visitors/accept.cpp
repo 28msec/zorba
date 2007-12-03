@@ -8,6 +8,7 @@
 #include "runtime/core/constructors.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/core/nodeid_iterators.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
@@ -57,6 +58,9 @@ namespace xqp {
   NOARY_ACCEPT(var_iterator);
   
   // unary iterators
+  UNARY_ACCEPT(NodeDistinctIterator);
+  UNARY_ACCEPT(KindTestIterator);
+  UNARY_ACCEPT(NameTestIterator);
   UNARY_ACCEPT(SelfAxisIterator);
   UNARY_ACCEPT(AttributeAxisIterator);
   UNARY_ACCEPT(ParentAxisIterator);
@@ -80,8 +84,6 @@ namespace xqp {
   UNARY_ACCEPT(EncodeForUriIterator);
   UNARY_ACCEPT(IriToUriIterator);
   UNARY_ACCEPT(EscapeHtmlUriIterator);
-  UNARY_ACCEPT(KindTestIterator);
-  UNARY_ACCEPT(NameTestIterator);
   UNARY_ACCEPT(ElementContentIterator);
   UNARY_ACCEPT(FnDataIterator);
   UNARY_ACCEPT(FnAbsIterator);

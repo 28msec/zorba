@@ -86,7 +86,7 @@ namespace xqp {
 	DECL_ENUM_PARAM (static_context, ordering_mode)
 
   pair<xqpString, xqpString> parse_qname (xqpString qname) {
-    int n = static_cast<std::string> (qname).find (':');
+    unsigned int n = static_cast<std::string> (qname).find (':');
     return (n == string::npos)
       ? pair<xqpString, xqpString> ("", qname)
       : pair<xqpString, xqpString> (qname.substr (0, n), qname.substr (n+1));

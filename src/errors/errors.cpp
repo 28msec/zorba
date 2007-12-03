@@ -181,6 +181,8 @@ string errors_english::err_decode(enum errcode e)
     return "XQP0016_LOADER_IO_ERROR";
   case XQP0017_LOADER_NOT_WELL_FORMED_XML:
     return "XQP0016_LOADER_NOT_WELL_FORMED_XML \n/s";
+  case XQP0018_NODEID_OUT_OF_RANGE:
+    return "A nodeid component is too large to be encoded";
   case API0005_COLLECTION_ALREADY_EXISTS:
     return "A collection with URI `/s' exists already";
   case API0006_COLLECTION_NOT_FOUND:

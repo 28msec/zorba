@@ -45,37 +45,47 @@ namespace xqp
 class xqp_exception : public std::runtime_error 
 { 
 public:
+  long        theErrorCode;
   std::string loc;
   std::string msg;
 
 public: 
-  xqp_exception();
+  xqp_exception(long ecode);
   xqp_exception(
+    long ecode,
 		const xqp_exception&);
   xqp_exception(
+    long ecode,
 		const std::string& loc);
   xqp_exception(
+    long ecode,
 		const std::string& loc,
 		const std::string& msg);
 	xqp_exception(
+    long ecode,
 		const char* err_code,
 		const std::string& loc,
 		const std::string msg);
 	xqp_exception(
+    long ecode,
 		const char* err_code,
 		const char* op_name,
 		const std::string msg);
 	xqp_exception(
+    long ecode,
 		const char* err_code,
 		const char* op_name,
 		const std::string& loc,
 		const std::string msg);
+
   ~xqp_exception() throw();
 
 public:
+  long get_code() const { return theErrorCode; }
 	std::string get_loc() const { return loc; }
 	std::string get_msg() const { return msg; }
 };
+
 
 /*daniel
 class bad_arg : public xqp_exception

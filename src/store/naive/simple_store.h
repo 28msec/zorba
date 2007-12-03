@@ -92,6 +92,7 @@ public:
   virtual void setGarbageCollectionStrategy(const xqp_string& strategy);
 
   virtual Item_t createUri();
+
   virtual Collection_t createCollection(const xqp_string& uri);
   virtual Collection_t createCollection(Item_t uri);
   virtual Collection_t createCollection();
@@ -115,7 +116,7 @@ public:
         Requester requester,
         Timetravel timetravel);
 
-  virtual int32_t compare(Item_t item1, Item_t item2);
+  virtual int32_t compare(Item_t item1, Item_t item2) const;
 
   virtual Iterator_t sort(
         Iterator_t iterator,

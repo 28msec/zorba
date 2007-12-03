@@ -18,6 +18,41 @@ namespace xqp
 
 
 /*******************************************************************************
+  class NodeImpl
+********************************************************************************/
+
+xqp_string NodeImpl::getBaseURI() const
+{
+  return theParent ? theParent->getBaseURI() : "";
+}
+
+
+xqp_string NodeImpl::getDocumentURI() const
+{
+  return theParent ? theParent->getDocumentURI() : "";
+}
+
+
+bool NodeImpl::equals(Item_t item) const
+{
+  ZorbaErrorAlerts::error_alert (
+        error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+        error_messages::SYSTEM_ERROR,
+        NULL,
+        true,
+        "Equal function for node items not implemented!"
+    );
+  return false;
+}
+
+
+Item_t NodeImpl::getEBV() const
+{
+  return zorba::getItemFactory()->createBoolean(true);
+}
+
+
+/*******************************************************************************
   class DocumentNode
 ********************************************************************************/
 
@@ -356,7 +391,7 @@ xqp_string ElementNodeImpl::show() const
 
   str <<  "<" << theName->getStringProperty();
 
-  str << " nid = \"" << theId.show() << "\"";
+  str << " nid=\"" << theId.show() << "\"";
 
   NamespaceBindings nsBindings = getNamespaceBindings();
 

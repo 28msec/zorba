@@ -7,7 +7,7 @@
 #include <libxml/xmlstring.h>
 
 #include "store/api/item.h"
-#include "store/naive/node_id.h"
+#include "store/naive/ordpath.h"
 
 namespace xqp
 {
@@ -36,7 +36,7 @@ protected:
   std::stack<Item_t>              theNodeStack;
   std::stack<NsBindingsContext_t> theBindingsStack;
 
-  OrdPathId                       theNodeId;
+  OrdPathStack                    theNodeId;
 
   xqpStringStore                  theErrors;
 

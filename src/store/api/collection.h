@@ -1,14 +1,13 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
- *
- *  $Id: collection.h,v 1.1 2007/08/27 07:07:59 $
- *
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*- */
+
+/*
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf, Donald Kossmann, Tim Kraska
  *
+ *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos Zaharioudakis
  */
 
-#ifndef XQP_COLLECTION_H
-#define XQP_COLLECTION_H
+#ifndef STORE_COLLECTION
+#define STORE_COLLECTION
 
 #include <iostream>
 
@@ -16,61 +15,66 @@
 
 namespace xqp 
 {
-	template <class Object> class rchandle;
+template <class Object> class rchandle;
 	
-	typedef rchandle<class Item> Item_t;
-	typedef rchandle<class Iterator> Iterator_t;
+typedef rchandle<class Item> Item_t;
+typedef rchandle<class Iterator> Iterator_t;
+typedef rchandle<class Collection> Collection_t;
 
+class Collection : public rcobject
+{
+public:
+  virtual ~Collection() {}
 
-	class Collection : public rcobject
-	{
-	public:
-		virtual ~Collection(){}
-		
-		/**
-		 * Reads the whole Collection from beginning to end; it is allowed to have several 
-		 * concurrent iterators on the same Collection.
-		 * 
-		 * @param idsNeeded whether the returned items contain ids, e.g. for sorting
-		 * @return Iterator which iterates over the complete Collection
-		 * 
-		 * Ids == false is likely to be faster. 'idsNeeded' should only be set to true if clients wants to 
-		 * sort or compare the items or sub-items generated from the returned iterator.
-		 */
-		virtual Iterator_t getIterator(bool idsNeeded) = 0;
-		
-		/** Inserts data into the collection
-		  *
-			* @param item to insert
-			* @param position Where to insert the item. Default -1, which means it is attached to the end. 
-			*/
-		virtual void addToCollection(Item_t item, long position = -1) = 0;
+  /**
+   * Returns the URI of the collection
+   * @return URI
+   */
+  virtual Item_t getUri() = 0;
 
-		/** Inserts data into the collection
-			*
-		  * @param iterator which produces the items to insert
-		  * @param position Where to insert the item. Default -1, which means it is attached to the end.
-		  */
-		virtual void addToCollection(Iterator_t& items, long position = -1) = 0;
+  /**
+   * Reads the whole Collection from beginning to end; it is allowed to have
+   * several concurrent iterators on the same Collection.
+   * 
+   * @param idsNeeded whether the returned items contain ids, e.g. for sorting
+   * @return Iterator which iterates over the complete Collection
+   * 
+   * Ids == false is likely to be faster. 'idsNeeded' should only be set to
+   * true if clients wants to sort or compare the items or sub-items generated
+   * from the returned iterator.
+   */
+  virtual Iterator_t getIterator(bool idsNeeded) = 0;
 
-		/** Inserts data into the collection
-		  * TODO loading from SAX & DOM
-		  * @param stream which streams the data to insert (e.g. from a file)
-		  * @param position Where to insert the item. Default -1, which means it is attached to the end.
-		  */
-		virtual void addToCollection(std::iostream& stream, long position = -1) = 0;
+  /**
+   * Inserts into the collection an xml document or fragment given as text via
+   * an input stream.
+   *
+   * @param stream The stream providing the data to insert (e.g. from a file).
+   * @return The root node of the xml document or fragment.
+   */
+  virtual Item_t addToCollection(std::iostream& stream) = 0;
+
+  /**
+   * Inserts a node to the collection.
+   *
+   * @param node The node to insert
+   */
+  virtual void addToCollection(const Item_t& node) = 0;
+
+  /**
+   * Inserts to the collection the set of nodes returned by the given iterator.
+   *
+   * @param nodeIter The iterator which produces the nodes to insert
+   */
+  virtual void addToCollection(Iterator_t& nodeIter) = 0;
 		
-		/** Deletes an item of the collection.
-     *
-     * @param position of the items which will be deleted
-     */
-		virtual void deleteFromCollection(long position) = 0;
-		
-		/**
-     * Returns the URI of the collection
-     * @return URI
-     */
-		virtual Item_t getUri() = 0;
-	}; /* class Collection */
+  /**
+   * Removes a node from the collection.
+   *
+   * @param node to be removed
+   */
+  virtual void removeFromCollection(const Item_t& node) = 0;
+};
+
 } /* namespace xqp */
-#endif /* XQP_COLLECTION_H */
+#endif

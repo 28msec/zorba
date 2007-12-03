@@ -11,14 +11,14 @@ if [ ! ${zorbaRepos} ]; then
 fi
 
 
-if [ ! ${zorbaExec} ]; then
+if [ ! ${zorbaExecDir} ]; then
 
-  if [ ! ${ZORBA} ]; then
-    echo "ERROR: ZORBA variable is not set"
+  if [ ! ${ZORBA_EXEC_DIR} ]; then
+    echo "ERROR: ZORBA_EXEC_DIR variable is not set"
     exit 1
   fi
 
-  export zorbaExec=$ZORBA
+  export zorbaExecDir=$ZORBA_EXEC_DIR
 fi
 
 

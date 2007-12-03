@@ -9,7 +9,7 @@ SET(STORE_SRCS
     naive/qname_pool.cpp
     naive/simple_store.cpp
     naive/simple_loader.cpp
-    naive/node_id.cpp
+    naive/ordpath.cpp
     util/string_pool.cpp)
 
 

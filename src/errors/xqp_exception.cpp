@@ -21,50 +21,69 @@ namespace xqp
 
 // xqp_exception implementations
 // -------------------------
-xqp_exception::xqp_exception()
-: runtime_error(string())
-{}
+xqp_exception::xqp_exception(
+    long ecode)
+  :
+  runtime_error(string()),
+  theErrorCode(ecode)
+{
+}
 
-xqp_exception::xqp_exception(const xqp_exception& e)
-: runtime_error(e),
+xqp_exception::xqp_exception(
+    long ecode,
+    const xqp_exception& e)
+  :
+  runtime_error(e),
+  theErrorCode(ecode),
 	loc(e.loc),
   msg(e.msg)
-{}
+{
+}
 
 xqp_exception::xqp_exception(
-	const string& _loc)
-:
+    long ecode,
+	  const string& _loc)
+  :
 	runtime_error("APPLICATION_EXCEPTION"),
+  theErrorCode(ecode),
 	loc(_loc)
-{}
+{
+}
 
 xqp_exception::xqp_exception(
-	const string& _loc,
-	const string& _msg)
+    long ecode,
+    const string& _loc,
+    const string& _msg)
 :
 	runtime_error("APPLICATION_EXCEPTION"),
+  theErrorCode(ecode),
 	loc(_loc),
 	msg(_msg)
-{}
+{
+}
 
 
 xqp_exception::xqp_exception(
-	const char*   _err,
-	const string& _loc,
-	const string  _msg)
-:
+    long ecode,
+    const char*   _err,
+    const string& _loc,
+    const string  _msg)
+  :
 	runtime_error(_err),
+  theErrorCode(ecode),
 	loc(_loc),
 	msg(_msg)
 {
 }
 
 xqp_exception::xqp_exception(
-	const char*   _err,
-	const char*   _op,
-	const string  _msg)
+    long ecode,
+    const char*   _err,
+    const char*   _op,
+    const string  _msg)
 :
 	runtime_error(_err),
+  theErrorCode(ecode),
 	loc(_op),
 	msg(_msg)
 {
@@ -72,12 +91,14 @@ xqp_exception::xqp_exception(
 
 
 xqp_exception::xqp_exception(
-	const char*   _err,
-	const char*   _op,
-	const string& _loc,
-	const string  _msg)
-:
+    long ecode,
+    const char*   _err,
+    const char*   _op,
+    const string& _loc,
+    const string  _msg)
+  :
 	runtime_error(_err),
+  theErrorCode(ecode),
 	loc(_op+':'+_loc),
 	msg(_msg)
 {

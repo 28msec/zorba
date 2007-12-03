@@ -16,8 +16,8 @@ fi
 # The environment variable zorbaExe must be defined. It must be set to the
 # full pathname of the query_exec executable
 #
-if [ ! ${zorbaExec} ]; then
-   echo "ERROR 1 rbkt.sh: zorbaExec environment variable is not set"
+if [ ! ${zorbaExecDir} ]; then
+   echo "ERROR 1 rbkt.sh: zorbaExecDir environment variable is not set"
    exit 1
 fi
 
@@ -29,13 +29,19 @@ fi
 testRootDir=${zorbaRepos}/test/rbkt
 
 # The following dirs MUST exist under the testRootDir.
-queriesDir=${testRootDir}/Queries
-expResultsDir=${testRootDir}/ExpResults
 scriptsDir=${testRootDir}/Scripts
+queriesDir=${testRootDir}/Queries
+expQueryResultsDir=${testRootDir}/ExpQueryResults
+docsDir=${testRootDir}/Documents
+expLoaderResultsDir=${testRootDir}/ExpLoaderResults
 
 # This is the dir where all query results are stored. This dir is created
 # by the buildDirEnv function, if it does not exist already.
-resultsDir=${testRootDir}/Results
+queryResultsDir=${testRootDir}/QueryResults
+
+# This is the dir where all loader results are stored. This dir is created
+# by the buildDirEnv function, if it does not exist already.
+loaderResultsDir=${testRootDir}/LoaderResults
 
 
 #
@@ -55,7 +61,6 @@ trap '' 12
 #
 bucketName=""
 queryName=""
-numruns=1
 
 state=0
 while [ $1 ]
@@ -63,7 +68,6 @@ do
    case $1 in
    -b)        state=1;;
    -q)        state=2;;
-   -numruns)  state=6;;
    -h)        usage ; exit;;
     *) case $state in
        1) bucketName="$1"; state=0 ;;
@@ -103,7 +107,7 @@ rm -f rbkt_summary.txt
 if [ "${bucketName}" != "" ]; then
 
   if [ "${queryName}" != "" ]; then
-    run_query_in_bucket "${bucketName}" "${queryName}" ${numruns}
+    run_query_in_bucket "${bucketName}" "${queryName}"
     error=$?
     if [ ${error} -ne 0 ]; then
       echo "ERROR 70 rbkt.sh: run_query_in_bucket function failed with error code ${error}"

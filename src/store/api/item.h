@@ -546,48 +546,6 @@ public:
 
 class QNameItem : public AtomicItem {};
 
-class UntypedAtomicItem : public AtomicItem {};
-
-class StringItem : public UntypedAtomicItem {};
-
-class AnyUriItem : public UntypedAtomicItem {};
-
-class DecimalItem : public AtomicItem {};
-
-class IntItem : public AtomicItem {};
-
-class IntegerItem : public AtomicItem {};
-
-class DoubleItem : public AtomicItem {};
-
-class FloatItem : public AtomicItem {};
-
-class BooleanItem : public AtomicItem {};
-
-
-class NodeItem : public Item
-{
-protected:
-  // Pointer to avoid cyclic smart pointers
-  Item* theParent;
-
-public:
-  explicit NodeItem(const Item_t& aParent);
-  NodeItem();
-  virtual ~NodeItem();
-
-  virtual bool isNode() const;
-  virtual bool isAtomic() const;
-  virtual Item_t getEBV() const;
-  virtual uint32_t hash() const;
-  virtual bool equals(Item_t) const;
-
-  virtual Item_t getParent() const;
-  virtual xqp_string getBaseURI() const;
-  virtual xqp_string getDocumentURI() const;
-};
-
-
 } /* namespace xqp */
 #endif /* XQP_VALUES_H */
 

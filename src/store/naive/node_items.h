@@ -13,7 +13,7 @@
 
 #include "util/Assert.h"
 #include "store/api/item.h"
-#include "store/naive/node_id.h"
+#include "store/naive/ordpath.h"
 
 
 namespace xqp
@@ -34,25 +34,42 @@ typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 
 
 /*******************************************************************************
-virtual void setChildren(const TempSeq_t& seq)
+
 ********************************************************************************/
-class NodeImpl : public NodeItem
+class NodeImpl : public Item
 {
 protected:
-  OrdPathId   theId;
+  Item     * theParent;   // Pointer to avoid cyclic smart pointers
+
+  OrdPath    theId;
 
 public:
-  NodeImpl() {}
+  NodeImpl() : theParent(NULL) {}
 
-  NodeImpl(const Item_t& aParent) : NodeItem(aParent) {}
+  explicit NodeImpl(const Item_t& parent) : theParent(parent.get_ptr()) {}
 
-  void setId(const OrdPathId& id) { theId = id; }
+  ~NodeImpl() { }
 
+  virtual bool isNode() const             { return true; }
+  virtual bool isAtomic() const           { return false; }
+
+  const OrdPath& getId() const            { return theId; }
+  void setId(const OrdPathStack& id)      { theId = id; }
+
+  virtual bool equals(Item_t) const;
+  virtual uint32_t hash() const           { return 0; }
+
+  virtual Item_t getParent() const        { return theParent; }
   virtual void setParent(const Item_t& p) { theParent = p.get_ptr(); }
 
   virtual void setChildren(const TempSeq_t& seq) { Assert(0); }
 
   virtual NsBindingsContext_t getNsBindingsContext() const { return NULL; }
+
+  virtual xqp_string getBaseURI() const;
+  virtual xqp_string getDocumentURI() const;
+
+  virtual Item_t getEBV() const;
 };
 
 

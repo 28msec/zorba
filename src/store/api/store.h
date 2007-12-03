@@ -133,7 +133,7 @@ public:
    *						 0, if item1.id == item2.id
    *						+1, if item1.id &gt; item2.id
    */
-  virtual int32_t compare(Item_t item1, Item_t item2) = 0;
+  virtual int32_t compare(Item_t item1, Item_t item2) const = 0;
 		
   /** Sorts the items of the passed iterator
    * @param iterator to sort

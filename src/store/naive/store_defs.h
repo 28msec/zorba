@@ -1,4 +1,7 @@
 
+#ifndef DEFAULT_STORE_DEFS
+#define DEFAULT_STORE_DEFS
+ 
 #define GET_STORE() \
         (*(static_cast<SimpleStore*>(&Store::getInstance())))
 
@@ -13,3 +16,5 @@
 #define ELEM_NODE(item) (static_cast<ElementNodeImpl*>((item).get_ptr()))
 
 #define ATTR_NODE(item) (static_cast<AttributeNodeImpl*>((item).get_ptr()))
+
+#endif

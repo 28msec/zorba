@@ -1,11 +1,10 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
-*
-*  $Id: item.h,v 1.1 2006/10/09 07:07:59 $
-*
-*    Copyright 2006-2007 FLWOR Foundation.
-*  Author: David Graf (david.graf@28msec.com), Donald Kossmann, Tim Kraska
-*
-*/
+/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*- */
+
+/*
+ *  Copyright 2006-2007 FLWOR Foundation.
+ *
+ *  Authors: David Graf, Donald Kossmann, Tim Kraska, Markos zaharioudakis
+ */
 
 #include "util/hashfun.h"
 #include "util/Assert.h"
@@ -16,6 +15,7 @@
 #include "store/api/item_factory.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/simple_store.h"
+#include "store/naive/store_defs.h"
 
 namespace xqp
 {
@@ -111,7 +111,7 @@ QNameItem_t AnyUriItemImpl::getType() const
 
 Item_t AnyUriItemImpl::getAtomizationValue() const
 {
-  return Store::getInstance().getItemFactory().createAnyURI(theValue).get_ptr();
+  return GET_STORE().getItemFactory().createAnyURI(theValue);
 }
 
 uint32_t AnyUriItemImpl::hash() const

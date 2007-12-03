@@ -48,8 +48,10 @@ void readXmlFile(const char* fileName, std::string& xmlString)
 
 int main(int argc, const char * argv[])
 {
+#ifndef WIN32
 	Timer timer;
 	timer.start();
+#endif
 
 	// xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
@@ -58,16 +60,18 @@ int main(int argc, const char * argv[])
     std::cerr << "usage: test_store <input file name>" << std::endl;
   }
 
-  const char* fileName = argv[1];
+  std::string fileName(argv[1]);
 
   //
   // Store initialization
   //
   xqp::SimpleStore* store = static_cast<xqp::SimpleStore*>(&xqp::Store::getInstance());
 
+#ifndef WIN32
   timer.suspend();
   std::cout << "construction time : " << timer.getTime() << std::endl;
   timer.resume();
+#endif
 
   //
   // Zorba initialization
@@ -93,7 +97,7 @@ int main(int argc, const char * argv[])
   // Load an xml doc from a file to a collection
   //
 
-  std::ifstream xmlFile(fileName);
+  std::ifstream xmlFile(fileName.c_str());
   if(!xmlFile)
   {
     std::cerr << "Error while opening: " << fileName << std::endl;
@@ -102,11 +106,21 @@ int main(int argc, const char * argv[])
 
   std::iostream xmlStream(xmlFile.rdbuf());
 
-  coll1->addToCollection(xmlStream, -1);
+  Item_t doc = coll1->addToCollection(xmlStream);
 
   xmlFile.close();
 
   store->deleteCollection(coll1->getUri());
+
+  fileName += ".res";
+  std::ofstream outXmlFile(fileName.c_str());
+  if(!outXmlFile)
+  {
+    std::cerr << "Error while opening: " << fileName << std::endl;
+    abort();
+  }
+
+  outXmlFile << doc->show() << std::endl;
 
   DisplayErrorListForCurrentThread();
 

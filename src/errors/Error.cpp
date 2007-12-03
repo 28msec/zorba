@@ -86,8 +86,9 @@ void ZorbaErrorAlerts::error_alert(
 			abort ();
 		else
 #endif
-		throw xqp_exception("",//strloc.str(), 
-												err_decoded);
+      throw xqp_exception(e,
+                          "",//strloc.str(), 
+                          err_decoded);
 	}
 	else
 	{
@@ -95,63 +96,6 @@ void ZorbaErrorAlerts::error_alert(
 	}
 }
 
-/*
-void ZorbaErrorAlerts::error_alert_withoutlocation( 
-    //	const char *file,
-    //	const int line,
-    const error_messages::errcode e,
-    error_messages::error_type errtype,
-    bool continue_execution,
-    const std::string param1,
-    const std::string param2)
-{
-	std::string err_decoded;
-	std::string errtype_decoded;
-	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
-
-	err_decoded = err_manager->err_messages->err_decode(e);
-	errtype_decoded = err_manager->err_messages->errtype_decode(errtype);
-
-	err_decoded += ": ";
-	err_decoded += errtype_decoded;
-	err_manager->err_messages->ApplyParams(&err_decoded, &param1, &param2);
-
-  //	cout << file << "[" << line << "]:" << endl;
-
-	///construct the error message for the user
-	Zorba_AlertMessage	errmess;
-
-	errmess.alert_type = Zorba_AlertMessage::ERROR_ALERT;
-	errmess.error_code = e;
-	errmess.error_type = errtype;
-	errmess.is_fatal = !continue_execution;
-//	if(ploc)
-//	{
-//		errmess.loc.filename = ploc->begin.filename;
-//		errmess.loc.line = ploc->begin.line;
-//		errmess.loc.column = ploc->begin.column;
-//	}
-	errmess.alert_description = err_decoded;
-	time(&errmess.time_of_alert);
-
-	err_manager->sendAlertToUser(z, &errmess);
-
-
-	if(!continue_execution)
-	{
-		cout << "Fatal Error:" << "[somewhere]" << " : " << err_decoded << std::endl;
-abort ();
-		throw xqp_exception("[somewhere]", err_decoded);
-	}
-	else
-	{
-		//... send error to user app
-
-		cout << "Error:" << "[somewhere]" << " : " << err_decoded << std::endl;
-	}
-}
-*/
 
 void ZorbaErrorAlerts::warning_alert( 
     // const char *file,
@@ -204,44 +148,6 @@ void ZorbaErrorAlerts::warning_alert(
 //	cout << "Warning:" << strloc << " : " << warning_decoded << std::endl;
 
 }
-
-/*
-void ZorbaErrorAlerts::warning_alert_withoutlocation( 
-    // const char *file,
-    // const int line,
-    const error_messages::warning_code warn,
-    const string param1,
-    const string param2)
-{
-	std::string warning_decoded;
-	zorba	*z = zorba::getZorbaForCurrentThread();
-	ZorbaErrorAlertsImpl		*err_manager = z->getErrorManager();
-
-	warning_decoded = err_manager->err_messages->warning_decode(warn);
-	err_manager->err_messages->ApplyParams(&warning_decoded, &param1, &param2);
-
-  //	cout << file << "[" << line << "]:" << endl;
-
-	///construct the warning message for the user
-	Zorba_AlertMessage	warnmess;
-
-	warnmess.alert_type = Zorba_AlertMessage::WARNING_ALERT;
-	warnmess.warning_code = warn;
-//	if(ploc)
-//	{
-//		warnmess.loc.filename = ploc->begin.filename;
-//		warnmess.loc.line = ploc->begin.line;
-//		warnmess.loc.column = ploc->begin.column;
-//	}
-	warnmess.alert_description = warning_decoded;
-	time(&warnmess.time_of_alert);
-
-	err_manager->sendAlertToUser(z, &warnmess);
-
-	//... send error to user app
-	cout << "Warning:" << "[somewhere]" << " : " << warning_decoded << std::endl;
-}
-*/
 
 
 void ZorbaErrorAlerts::notify_event( 
@@ -428,6 +334,7 @@ Zorba_ErrorLocation::Zorba_ErrorLocation()
 	column = 0;
 }
 
+
 Zorba_AlertMessage::~Zorba_AlertMessage() {}
 Zorba_ErrorMessage::~Zorba_ErrorMessage() {}
 Zorba_WarningMessage::~Zorba_WarningMessage() {}
@@ -440,8 +347,9 @@ Zorba_FnTraceMessage::~Zorba_FnTraceMessage() {}
 /*
 	Register the callback for the thread specific error manager
 */
-void ZorbaErrorAlertsImpl::RegisterAlertCallback(alert_callback	*user_alert_callback,
-														void *param)
+void ZorbaErrorAlertsImpl::RegisterAlertCallback(
+    alert_callback* user_alert_callback,
+    void* param)
 {
 	thread_registered_callback = user_alert_callback;
 	thread_registered_param = param;

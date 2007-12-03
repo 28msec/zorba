@@ -21,6 +21,7 @@ namespace xqp
   class EnclosedIterator;
   class IfThenElseIterator;
   class FLWORIterator;
+  class NodeDistinctIterator;
   class KindTestIterator;
   class NameTestIterator;
   template <class Object> class AxisIterator;
@@ -130,7 +131,10 @@ namespace xqp
        
       virtual void beginVisit ( const FLWORIterator& ) = 0;
       virtual void endVisit ( const FLWORIterator& ) = 0;
-       
+ 
+      virtual void beginVisit ( const NodeDistinctIterator& a ) = 0;
+      virtual void endVisit ( const NodeDistinctIterator& a ) = 0;
+
       virtual void beginVisit ( const KindTestIterator& ) = 0;
       virtual void endVisit ( const KindTestIterator& ) = 0;
        
