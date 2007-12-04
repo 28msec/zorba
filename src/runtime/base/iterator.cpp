@@ -122,17 +122,21 @@ PlanIterWrapper::~PlanIterWrapper()
 Item_t
 PlanIterWrapper::next()
 {
+  if (!theClosed)
 #if BATCHING_TYPE == 1
-  return theIterator->consumeNext(theIterator, *theStateBlock);
+    return theIterator->consumeNext(theIterator, *theStateBlock);
 #else
-	return theIterator->produceNext(*theStateBlock);
+	  return theIterator->produceNext(*theStateBlock);
 #endif
+  else 
+    return NULL;
 }
 
 void
 PlanIterWrapper::reset()
 {
-	theIterator->reset(*theStateBlock);
+  if (!theClosed)
+  	theIterator->reset(*theStateBlock);
 }
 
 void

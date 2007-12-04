@@ -302,9 +302,9 @@ class PlanIterWrapper : public Iterator
 {
 private:
   bool theAlienBlock;
-  bool theClosed;
   PlanIter_t theIterator;
   PlanState* theStateBlock;
+  bool theClosed;
   
 public:
   /** 
