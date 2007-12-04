@@ -206,7 +206,7 @@ protected:
 protected:
 
 #if BATCHING_TYPE == 1  
-  inline Item_t consumeNext(const PlanIter_t& subIter, PlanState& planState)
+  inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
   {
     if (subIter->cItem == BATCHSIZE) {
       subIter->produceNext(planState);
@@ -302,6 +302,7 @@ class PlanIterWrapper : public Iterator
 {
 private:
   bool theAlienBlock;
+  bool theClosed;
   PlanIter_t theIterator;
   PlanState* theStateBlock;
   
@@ -327,7 +328,7 @@ public:
   /**
    * Deconstructor.
    */
-  ~PlanIterWrapper();
+  virtual ~PlanIterWrapper();
   
   /**
    * Returns the next item of the PlanIter
@@ -340,7 +341,10 @@ public:
    */
   void reset();
   
-  //TODO addReleaseResources!
+  /**
+   * Closes the containing PlanIterator
+   */
+  void close();
 };
 
 } /* namespace xqp */

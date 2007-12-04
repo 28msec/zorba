@@ -93,6 +93,7 @@ namespace xqp {
   UNARY_ACCEPT(FnEmptyIterator);
   UNARY_ACCEPT(DocIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
+  UNARY_ACCEPT(TextIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);

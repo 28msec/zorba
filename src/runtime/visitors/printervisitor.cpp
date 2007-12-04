@@ -574,4 +574,12 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const ZorNumGen& ) {
     thePrinter.endIter();
   }
+  
+  void PrinterVisitor::beginVisit ( const TextIterator& a )  {
+    thePrinter.startIter("TextIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const TextIterator& ) {
+    thePrinter.endIter();
+  }
 } /* namespace xqp */

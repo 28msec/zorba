@@ -19,14 +19,6 @@ namespace xqp
 	PlanIter_t
 	GenericOpComparison::operator() ( const yy::location& loc, vector<PlanIter_t>& argv ) const
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
 		return this->createIterator(loc, argv);
 	}
 
@@ -159,14 +151,6 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::AND );
 	}
 
@@ -192,14 +176,6 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
 		return new LogicIterator ( loc, argv[0], argv[1], LogicIterator::OR );
 	}
 
@@ -225,14 +201,6 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
 		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(true) );
 	}
 
@@ -258,14 +226,6 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
 		return new SingletonIterator ( loc, zorba::getItemFactory()->createBoolean(false) );
 	}
 
@@ -291,14 +251,6 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
 		return new FnBooleanIterator(loc, argv[0], true );
 	}
 
@@ -324,14 +276,6 @@ namespace xqp
 	    const yy::location& loc,
 	    vector<PlanIter_t>& argv ) const
 	{
-		if ( !validate_args ( argv ) )
-		{
-			ZorbaErrorAlerts::error_alert (
-			    error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-			    error_messages::STATIC_ERROR,
-			    &loc
-			);
-		}
 		return new FnBooleanIterator ( loc, argv[0] );
 	}
 

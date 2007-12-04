@@ -323,6 +323,7 @@ public:
 
   Item_t next();
   void reset();
+  void close();
 };
 
 

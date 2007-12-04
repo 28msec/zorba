@@ -214,6 +214,9 @@ namespace xqp {
       
       virtual void beginVisit ( const ZorNumGen& ) ;
       virtual void endVisit ( const ZorNumGen& ) ;
+      
+      virtual void beginVisit ( const TextIterator& ) ;
+      virtual void endVisit ( const TextIterator& ) ;
   };
 } /* namespace xqp */
 

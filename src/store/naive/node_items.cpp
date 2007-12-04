@@ -765,5 +765,7 @@ void ChildrenIterator::reset()
   theInput->reset();
 }
 
+void ChildrenIterator::close() {}
+
 
 } /* namespace xqp */

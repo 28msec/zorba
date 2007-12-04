@@ -46,8 +46,10 @@ class Iterator : public rcobject
 {
 public:
   virtual ~Iterator() {}
+
   virtual Item_t next() = 0;
   virtual void reset() = 0;
+  virtual void close() = 0;
 };
 	
 	

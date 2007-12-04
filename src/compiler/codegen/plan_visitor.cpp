@@ -625,12 +625,13 @@ void plan_visitor::end_visit(text_expr& v)
   cout << std::string(--depth, ' ') << TRACE << endl;
   switch (v.get_type ()) {
   case text_expr::text_constructor:
-    // assume this comes from a direct text constructor for now
-    // we can't afford to break direct text construction
-    {
-      xqpString text = v.get_text ().cast<const_expr> ()->get_val ()->getStringValue ();
-      itstack.push (new SingletonIterator (v.get_loc (), ITEM_FACTORY.createTextNode (text)));
-    }
+//     // assume this comes from a direct text constructor for now
+//     // we can't afford to break direct text construction
+//     {
+//       xqpString text = v.get_text ().cast<const_expr> ()->get_val ()->getStringValue ();
+//       itstack.push (new SingletonIterator (v.get_loc (), ITEM_FACTORY.createTextNode (text)));
+//     }
+    itstack.push ( new TextIterator(v.get_loc(), content));
     break;
   case text_expr::comment_constructor:
     itstack.push (new CommentIterator (v.get_loc(), content));

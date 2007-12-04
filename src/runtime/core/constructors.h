@@ -148,26 +148,24 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
-class TextIterator : public Batcher<TextIterator>
+
+/*******************************************************************************
+
+  TextIterator constructs a comment element.
+
+  theChild : The iterator that produces the text. It
+             could be a simple text iterator, or a full expression.
+
+********************************************************************************/
+
+class TextIterator : public UnaryBaseIterator<TextIterator>
 {
-  PlanIter_t        theExpressionIter;
 
 public:
-  TextIterator(
-        const yy::location& loc,         
-        PlanIter_t& expression) : 
-          Batcher<TextIterator>(loc),
-          theExpressionIter(expression){}
+  TextIterator( const yy::location& loc, PlanIter_t& aChild);
   
-  Item_t nextImpl(PlanState& planState){assert(false);}
-  void resetImpl(PlanState& planState){assert(false);}
-  void releaseResourcesImpl(PlanState& planState){assert(false);}
-
-  std::ostream& _show(std::ostream& os) const {assert(false);}
-
-  virtual uint32_t getStateSize() const {assert(false);}
-  virtual uint32_t getStateSizeOfSubtree() const {assert(false);}
-  virtual void setOffset(PlanState& planState, uint32_t& offset){assert(false);}
+  Item_t nextImpl(PlanState& planState);
+  virtual void accept(PlanIterVisitor&) const;
 };
 
 } /* namespace xqp */

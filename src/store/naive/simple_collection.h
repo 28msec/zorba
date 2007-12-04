@@ -36,8 +36,8 @@ public:
     virtual ~CollectionIter() { }
 
     Item_t next();
-
     void reset();
+    void close();
   };
 
 

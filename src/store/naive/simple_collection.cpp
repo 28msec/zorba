@@ -153,5 +153,7 @@ void SimpleCollection::CollectionIter::reset()
   theIterator = theCollection->theNodes.begin();
 }
 
+void SimpleCollection::CollectionIter::close() { 
+}
 
 } /* namespace xqp */

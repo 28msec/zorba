@@ -250,4 +250,6 @@ void SimpleTempSeq::SimpleTempSeqIter::reset()
   }
 }
 
+void SimpleTempSeq::SimpleTempSeqIter::close() {}
+
 } /* namespace xqp */

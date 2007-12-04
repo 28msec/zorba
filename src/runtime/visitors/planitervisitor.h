@@ -77,6 +77,7 @@ namespace xqp
   class SubstringBeforeIterator;
   class SubstringAfterIterator;
   class ZorNumGen;
+  class TextIterator;
 
   /**
    * Visitor to visit a PlanIterator tree.
@@ -278,6 +279,9 @@ namespace xqp
       
       virtual void beginVisit ( const ZorNumGen& ) = 0;
       virtual void endVisit ( const ZorNumGen& ) = 0;
+      
+      virtual void beginVisit ( const TextIterator& ) = 0;
+      virtual void endVisit ( const TextIterator& ) = 0;
 
   }; /* class PlanIterVisitor */
 } /* namespace xqp */

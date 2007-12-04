@@ -393,4 +393,41 @@ CommentIterator::setOffset(PlanState& planState, uint32_t& offset)
     theExpressionIter->setOffset(planState, offset);
 }
 
+/* begin class TextIterator */
+
+TextIterator::TextIterator(const yy::location& loc, PlanIter_t& aChild) 
+  : UnaryBaseIterator<TextIterator>(loc, aChild)
+{}
+
+Item_t TextIterator::nextImpl(PlanState& planState) {
+  Item_t lItem;
+  xqp_string content = "";
+  bool lFirst;
+
+  Store* store = zorba::getStore();
+
+  PlanIteratorState* state;
+  STACK_INIT(PlanIteratorState, state, planState);
+      
+  lFirst = true;
+  while (true) {
+    lItem = consumeNext(theChild, planState);
+    if (lItem == 0)
+      break;
+    
+    if (!lFirst)
+      content += " ";
+    content += lItem->getStringProperty();
+    lFirst = false;
+  }
+
+  lItem = zorba::getItemFactory()->createTextNode(content);
+
+  STACK_PUSH(lItem, state);
+    
+  STACK_END();
+}
+
+/* end class TextIterator */
+
 }

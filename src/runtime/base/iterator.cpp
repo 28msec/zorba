@@ -90,7 +90,8 @@ PlanIterator::PlanIteratorState::getDuffsLine() const {
 PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter)
   :
   theAlienBlock(false),
-  theIterator(aIter)
+  theIterator(aIter),
+  theClosed(false)
 {
 	uint32_t lStackSize = theIterator->getStateSizeOfSubtree();
 	theStateBlock = new PlanState(lStackSize);
@@ -103,14 +104,15 @@ PlanIterWrapper::PlanIterWrapper(PlanIter_t& aIter, PlanState& aStateBlock)
   :
   theAlienBlock(true),
   theIterator(aIter),
-  theStateBlock(&aStateBlock)
+  theStateBlock(&aStateBlock),
+  theClosed(false)
 {
 }
 
 
 PlanIterWrapper::~PlanIterWrapper()
 {
-	if (!theAlienBlock) {
+	if (!theClosed && !theAlienBlock) {
 		theIterator->releaseResources(*theStateBlock);
 		delete theStateBlock;
 	}
@@ -127,11 +129,19 @@ PlanIterWrapper::next()
 #endif
 }
 
-
 void
 PlanIterWrapper::reset()
 {
 	theIterator->reset(*theStateBlock);
+}
+
+void
+PlanIterWrapper::close() {
+  if (!theClosed && ! theAlienBlock) {
+   theIterator->releaseResources(*theStateBlock); 
+   delete theStateBlock;
+   theClosed = true;
+  }
 }
 /* end class IteratorWrapper */
 
