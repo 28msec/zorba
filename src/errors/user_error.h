@@ -6,7 +6,7 @@
 
 namespace xqp{
 
-void fn_user_error (Zorba_QName* err_qname,///optional
+void fn_user_error (QNameItem* err_qname,///optional
 									const std::string description,//optional
 									const std::vector<class Item*> *items);//optional
 

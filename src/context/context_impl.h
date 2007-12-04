@@ -12,13 +12,13 @@
   }
 
 #define DECL_STR_PARAM( class, name )                  \
-  xqpString class::name () const {                        \
-    xqpString val;                                        \
+  xqp_string class::name () const {                        \
+    xqp_string val;                                        \
     bool found = context_value ("int:" #name, val);    \
     assert (found);                                    \
     return val;                                        \
   }                                                    \
-  void class::set_##name (xqpString val) {                \
+  void class::set_##name (xqp_string val) {                \
     str_keymap.put ("int:" #name, val);                \
   }
 

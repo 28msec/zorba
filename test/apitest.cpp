@@ -46,8 +46,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	Timer timer;
 	timer.start();
 
+	cout << "reading program options ..."<<endl;
+
   if (!Properties::load(argc,argv))
-    return 1;
+	{
+	//	cerr << "Cannot find property file" << endl;
+		return 1;
+	}
+	cout << "all program options processed..."<<endl;
   
   Properties* lProp = Properties::instance();
   
@@ -63,11 +69,11 @@ int _tmain(int argc, _TCHAR* argv[])
 #define TEST_ARGV_FLAG( str ) (*argv == string (str))
 #endif
 
-#ifdef _DEBUG
-  g_abort_when_fatal_error = true;
-#else
-  g_abort_when_fatal_error = lProperties->abortWhenFatalError();
-#endif
+//#ifdef _DEBUG
+//  g_abort_when_fatal_error = true;
+//#else
+  g_abort_when_fatal_error = lProp->abortWhenFatalError();
+//#endif
 
   g_trace_parsing = lProp->traceParsing();
   g_trace_scanning = lProp->traceScanning();
@@ -128,12 +134,27 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	errmanager.RegisterAlertCallback(apitest_alert_callback, (void*)101);
 
+	///testing the static context!
+	StaticQueryContext_t		sctx1;
+
+	sctx1 = zorba_factory.createStaticContext();
+	sctx1->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
+	sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "de");
+	sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "fr");
+	sctx1->SetOrderingMode(StaticQueryContext::unordered);
+	StaticQueryContext::xpath1_0compatib_mode_t		default_compatib_mode;
+	default_compatib_mode = sctx1->GetXPath1_0CompatibMode();
+	sctx1->AddNamespace("ulu1", "http://www.flworfound.org/apitest/test_ns1");
+	sctx1->AddNamespace("ulu2", "http://www.flworfound.org/apitest/test_ns2");
+	xqp_string		ns1_uri = sctx1->GetNamespaceURIByPrefix("ulu2");
+
+
 	XQuery_t		query;
 	XQueryResult_t		result = NULL;
 	Item_t		it;
 
 	//create a compiled query
-	query = zorba_factory.createQuery(query_text.c_str());
+	query = zorba_factory.createQuery(query_text.c_str(), sctx1);
 
 	if(!query.get_ptr())
 	{

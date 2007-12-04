@@ -44,6 +44,7 @@ class static_context;
 class ZorbaErrorAlertsImpl;
 class Zorba_XQueryResult;
 class serializer;
+class CollationManager;
 
 //class Collator;
 
@@ -52,12 +53,14 @@ class zorba
 {
 	friend class ZorbaFactory;
 public:
-	static Store*				theStore;
+	static Store				*theStore;
+	static ItemFactory	*theItemFactory;
+	
 
 protected:
-	std::string           coll_string;
-	::Collator::ECollationStrength coll_strength;
-	::Collator           *coll;///object used in unicode string processing (using ICU)
+//	std::string           coll_string;
+//	::Collator::ECollationStrength coll_strength;
+//	::Collator           *coll;///object used in unicode string processing (using ICU)
 
 	yy::location	        null_loc;
  
@@ -65,6 +68,12 @@ public:///things specific for each thread
 	Zorba_XQueryBinary                *current_xquery;//current xquery executed for this thread
 	Zorba_XQueryResult								*current_xqueryresult;
 	std::stack<const PlanIterator*>	current_iterator;
+	CollationManager									*coll_manager;
+
+	std::string  default_coll_string;
+	::Collator::ECollationStrength default_coll_strength;
+	bool					is_user_set_coll;
+	::Collator		*default_coll;
 
 protected:
 	ZorbaErrorAlertsImpl*		  m_error_manager;
@@ -78,15 +87,18 @@ protected:
 	zorba();
 	~zorba();
 
+public:
+  static inline ItemFactory* getItemFactory() { return theItemFactory; }
+  static inline Store* getStore() { return theStore; }
 
 public:
 	ZorbaErrorAlertsImpl* getErrorManager();
-	::Collator* getCollator();
+	::Collator* getCollator(xqp_string collURI = "");
 	yy::location& GetCurrentLocation();//from top iterator
 	
-  static ItemFactory* getItemFactory() { return &theStore->getItemFactory(); }
-
-  static Store* getStore() { return theStore; }
+	void		setDefaultCollation(std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY);
+	void		setDefaultCollation(::Collator *default_coll);
+	void		getDefaultCollation(std::string  *coll_string, ::Collator::ECollationStrength *coll_strength, ::Collator **default_coll);
 
 	static_context* get_static_context();///of the current xquery
 //	library*				get_library();
@@ -110,14 +122,14 @@ protected:
 #endif
 
 protected:
-	static void initializeZorbaEngine_internal(Store& store);
+	static void initializeZorbaEngine_internal();//Store& store);
 //	static void initializeThread_internal(zorba *new_zorba, 
 //																			error_messages *em,
 //																			char *collator_name,///="root"
 //																			::Collator::ECollationStrength collator_strength);//=Collator::PRIMARY
 	static void uninitializeZorbaEngine_internal();
 public:
-	static void		initializeZorbaEngine(Store& store);
+	static void		initializeZorbaEngine();//Store& store);
 	static void		uninitializeZorbaEngine();
 
 	static zorba* getZorbaForCurrentThread();

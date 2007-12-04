@@ -60,7 +60,7 @@ namespace yy
 
 
     /// Initialization.
-    inline void initialize (std::string* fn)
+    inline void initialize (xqp::xqp_string fn)
     {
       begin.initialize (fn);
       end = begin;
@@ -129,9 +129,9 @@ namespace yy
   {
     position last = loc.end - 1;
     ostr << loc.begin;
-    if (last.filename
-	&& (!loc.begin.filename
-	    || *loc.begin.filename != *last.filename))
+    if (!last.filename.empty()
+	&& (loc.begin.filename.empty()
+	    || loc.begin.filename != last.filename))
       ostr << '-' << last;
     else if (loc.begin.line != last.line)
       ostr << '-' << last.line  << '.' << last.column;

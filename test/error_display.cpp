@@ -71,8 +71,8 @@ void DisplayError(const Zorba_ErrorMessage *err)
 
 	if(err->loc.line)
 	{
-		if(err->loc.filename)
-			cerr << *err->loc.filename;
+		if(!err->loc.filename.empty())
+			cerr << err->loc.filename;
 		cerr << "[line: " << err->loc.line << "][col: " << err->loc.column << "]";
 	}	
 
@@ -85,8 +85,8 @@ void DisplayWarning(const Zorba_WarningMessage *warn)
 	cerr << "Warning:";
 	if(warn->loc.line)
 	{
-		if(warn->loc.filename)
-			cerr << *warn->loc.filename;
+		if(!warn->loc.filename.empty())
+			cerr << warn->loc.filename;
 		cerr << "[line: " << warn->loc.line << "][col: " << warn->loc.column << "]";
 	}	
 

@@ -9,6 +9,7 @@
 #include "runtime/base/unarybase.h"
 #include "store/api/store_consts.h"
 
+#ifndef WIN32
 #include <ext/hash_set>
 namespace std {
 using __gnu_cxx::hash;
@@ -17,6 +18,12 @@ using __gnu_cxx::hash_set;
 using __gnu_cxx::hash_multiset;
 }
 
+#else //WIN32
+#include <hash_set>
+namespace std {
+	using stdext::hash_set;
+}
+#endif //WIN32
 
 namespace xqp 
 {

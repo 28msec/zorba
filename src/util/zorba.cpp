@@ -12,6 +12,7 @@
 #include "errors/Error_impl.h"
 #include "runtime/base/iterator.h"
 #include "api/serialization/serializer.h"
+#include "context/collation_manager.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -31,42 +32,53 @@
 using namespace std;
 namespace xqp {
 
-Store*				zorba::theStore;
-
+Store*				zorba::theStore = NULL;
+ItemFactory	*	zorba::theItemFactory = NULL;
 
 
 zorba::zorba()
 {
-	coll = NULL;
+//	coll = NULL;
 	current_xquery = NULL;
 	current_xqueryresult = NULL;
 
 	m_error_manager = new ZorbaErrorAlertsImpl;
 	m_item_serializer = NULL;
 	m_doc_serializer = NULL;
+	coll_manager = new CollationManager;
 
+	default_coll_string = "root";
+	default_coll_strength = ::Collator::PRIMARY;
+	is_user_set_coll = true;//do not try to free
+	default_coll = NULL;
 }
 
 
 zorba::~zorba()
 {
-	if(coll)
-		delete coll;
+//	if(coll)
+//		delete coll;
 
 	delete m_error_manager;
 	delete m_item_serializer;
 	delete m_doc_serializer;
+	if(!is_user_set_coll)
+		coll_manager->removeReference(default_coll_string, default_coll_strength);
+	delete coll_manager;
+
 }
 
 
 ///some common functions for TLS
 
-void zorba::initializeZorbaEngine_internal(Store& store)
+void zorba::initializeZorbaEngine_internal()//Store& store)
 {
 	static_context::init();
 	dynamic_context::init();
 
-	zorba::theStore = &store;
+	///optimize access to store
+	zorba::theStore = &Store::getInstance();
+	zorba::theItemFactory = &theStore->getItemFactory();
 }
 
 
@@ -75,34 +87,79 @@ void zorba::uninitializeZorbaEngine_internal()
 	theStore = NULL;
 }
 
-
-::Collator	*zorba::getCollator()
+void zorba::setDefaultCollation(std::string coll_string, ::Collator::ECollationStrength coll_strength)
 {
-	if(!coll)
-	{///this is the first use
-		//create the collator object
-		UErrorCode status = U_ZERO_ERROR;
+	if(!is_user_set_coll)
+		coll_manager->removeReference(default_coll_string, default_coll_strength);
+	default_coll_string = coll_string;
+	default_coll_strength = coll_strength;
+	is_user_set_coll = false;
+	this->default_coll = NULL;
+}
 
-		//NOTE For default: By passing "root" as a locale parameter the root locale is used.
-		//Root locale implements the UCA rules
-		//(see DUCET from http://www.unicode.org/Public/UCA/5.0.0/allkeys.txt)
-		coll = ::Collator::createInstance(Locale(coll_string.c_str()), status);
+void		zorba::setDefaultCollation(::Collator *default_coll)
+{
+	if(!is_user_set_coll)
+		coll_manager->removeReference(default_coll_string, default_coll_strength);
+	is_user_set_coll = true;
+	this->default_coll = default_coll;
+}
 
-		if(U_FAILURE(status)) 
+void		zorba::getDefaultCollation(std::string  *coll_string, ::Collator::ECollationStrength *coll_strength, ::Collator **default_coll)
+{
+	*coll_string = default_coll_string;
+	*coll_strength = default_coll_strength;
+	*default_coll = this->default_coll;
+}
+
+::Collator	*zorba::getCollator(xqp_string collURI)
+{
+	if(!current_xquery)
+	{//get the zorba default collation, or a hardcoded one
+		if(!collURI.empty())
 		{
-			ZORBA_ERROR_ALERT(
-					error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-					error_messages::SYSTEM_ERROR,
-					NULL
-				);
-			return NULL;
+			const CollationManager::COLLATION_DESCR		*coll_descr;
+			coll_descr = CollationManager::getHardcodedCollator(collURI);
+			if(!coll_descr)
+			{
+				ZORBA_ERROR_ALERT(
+						error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
+				return NULL;
+			}
+			return coll_manager->getCollation(coll_descr->coll_string, coll_descr->coll_strength);
 		}
-
-		//by default set level 1 comparison for the collator
-		coll->setStrength(coll_strength);
+		else
+		{
+			if(default_coll)
+				return default_coll;
+			default_coll = coll_manager->getCollation(default_coll_string, default_coll_strength);
+			if(!default_coll)
+			{
+				ZORBA_ERROR_ALERT(
+						error_messages::XQST0076_STATIC_UNRECOGNIZED_COLLATION,
+						error_messages::SYSTEM_ERROR,
+						NULL
+					);
+				return NULL;
+			}
+			return default_coll;
+		}
 	}
+	
+	//redirect to static context wrapper from current_xquery
+	if(collURI.empty())///get default collator
+	{
+		if(current_xquery->default_collator)
+			return current_xquery->default_collator;
+		current_xquery->default_collator = get_static_context()->getDefaultCollation();
+		return current_xquery->default_collator;
+	}
+	else
+		return get_static_context()->get_collation(collURI);
 
-	return coll;
 }
 
 yy::location& zorba::GetCurrentLocation()//from top iterator
@@ -118,7 +175,7 @@ static_context* zorba::get_static_context()///of the current xquery
 {
 	if(!current_xquery)
 		return NULL;
-	return &current_xquery->internal_static_context;
+	return current_xquery->internal_sctx;
 }
 
 ZorbaErrorAlertsImpl* zorba::getErrorManager()
@@ -162,11 +219,11 @@ DWORD		zorba::tls_key = 0;
 
 
 void		
-zorba::initializeZorbaEngine(Store& store)
+zorba::initializeZorbaEngine()//Store& store)
 {
 	zorba::tls_key = TlsAlloc();
 
-	initializeZorbaEngine_internal(store);
+	initializeZorbaEngine_internal();//store);
 
 }
 
@@ -221,9 +278,9 @@ zorba		g_zorba;
 
 
 void		
-zorba::initializeZorbaEngine(Store& store)
+zorba::initializeZorbaEngine()//Store& store)
 {
-	initializeZorbaEngine_internal(store);
+	initializeZorbaEngine_internal();//store);
 }
 
 void		
@@ -267,10 +324,10 @@ zorba::zorba_tls_destructor( void *tls_data)
 }
 
 void		
-zorba::initializeZorbaEngine(Store& store)
+zorba::initializeZorbaEngine()//Store& store)
 {
 	pthread_key_create( &zorba::tls_key, zorba_tls_destructor);
-	initializeZorbaEngine_internal(store);
+	initializeZorbaEngine_internal();//store);
 }
 
 void		
@@ -316,9 +373,9 @@ zorba::destroyZorbaForCurrentThread()//when ending the thread
 thread_specific_ptr<zorba>			zorba::tls_key;
 
 void		
-zorba::initializeZorbaEngine(Store& store)
+zorba::initializeZorbaEngine()//Store& store)
 {
-	initializeZorbaEngine_internal(store);
+	initializeZorbaEngine_internal();//store);
 }
 
 void		
@@ -361,10 +418,10 @@ std::map<uint64_t, zorba*>		zorba::global_zorbas;
 pthread_mutex_t								zorba::global_zorbas_mutex;// = PTHREAD_MUTEX_INITIALIZER;
 
 void		
-zorba::initializeZorbaEngine(Store& store)
+zorba::initializeZorbaEngine()//Store& store)
 {
 	pthread_mutex_init(&global_zorbas_mutex, NULL);
-	initializeZorbaEngine_internal(store);
+	initializeZorbaEngine_internal();//store);
 }
 
 void		

@@ -86,7 +86,7 @@ static bool debug = true;
 %locations
 %initial-action
 {
-  @$.begin.filename = @$.end.filename = &driver.file;
+  @$.begin.filename = @$.end.filename = driver.filename;
 };
 
 

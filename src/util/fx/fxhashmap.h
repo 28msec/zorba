@@ -102,8 +102,8 @@ public:
   void displayEntries() const;
   void getentryKey(const entry&, char* buf, unsigned maxlen) const;
   void getentryKey(off_t entry_offset, char* buf, unsigned maxlen) const;
-  typename fxvector<entry>::const_iterator begin() { return vp->begin(); }
-  typename fxvector<entry>::const_iterator end() { return vp->end(); }
+  typename fxvector<entry>::const_iterator begin() { return vp->cbegin(); }
+  typename fxvector<entry>::const_iterator end() { return vp->cend(); }
 
 public:
   // find: true on match, (index = hash index)

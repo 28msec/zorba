@@ -92,7 +92,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 # some compiler flags that should always be used in order to force a good programming style
 IF (MSVC)
 ELSE (MSVC)
-	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual -DZORBA_USE_PTHREAD_LIBRARY -D_DEBUG)
+	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual -DZORBA_USE_PTHREAD_LIBRARY)
 ENDIF (MSVC)
 
 

@@ -117,7 +117,7 @@ public:		// iterator interface
 	 *  first element in the vector.  Iteration is done in ordinary
 	 *  element order.
 	 */
-	const_iterator begin() const
+	const_iterator cbegin() const
 	{
 		return const_iterator(start);
 	}
@@ -137,7 +137,7 @@ public:		// iterator interface
 	 *  the last element in the vector.  Iteration is done in
 	 *  ordinary element order.
 	 */
-	const_iterator end() const
+	const_iterator cend() const
 	{
 		return const_iterator(finish);
 	}
@@ -188,7 +188,7 @@ public:		// vector interface
 	 */
 	size_type size() const
 	{
-		return size_type(end() - begin());
+		return size_type(cend() - cbegin());
 	}
 
 	/**
@@ -205,7 +205,7 @@ public:		// vector interface
 	 */
 	size_type capacity() const
 	{
-		return size_type(const_iterator(end_of_storage) - begin()); 
+		return size_type(const_iterator(end_of_storage) - cbegin()); 
 	}
 
 	/**

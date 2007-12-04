@@ -265,6 +265,13 @@ public:
 };
 
 
+#ifndef NDEBUG
+extern const char*		g_error_in_file;
+extern int						g_error_at_line;
+extern bool						g_abort_when_fatal_error;
+#endif
+
+
 } /* namespace xqp */
 #endif /* XQP_ERRORS_H */
 

@@ -67,10 +67,7 @@ public:
 
 
 ////define some macros to catch the __FILE__ and __LINE__ where the error is fired
-#ifdef _DEBUG
-extern const char*		g_error_in_file;
-extern int						g_error_at_line;
-extern bool						g_abort_when_fatal_error;
+#ifndef NDEBUG
 
 #define ZORBA_ERROR_ALERT(...) do { \
 			g_error_in_file = __FILE__; g_error_at_line = __LINE__; \
@@ -111,7 +108,7 @@ extern bool						g_abort_when_fatal_error;
 			ZorbaErrorAlerts::notify_event(notif_event, os1.str(), os2.str()); \
 }
 
-#else ///ifdef _DEBUG
+#else ///#ifndef NDEBUG
 
 #define		ZORBA_ERROR_ALERT(...)				\
 				ZorbaErrorAlerts::error_alert(__VA_ARGS__)
@@ -144,7 +141,7 @@ extern bool						g_abort_when_fatal_error;
 }
 
 
-#endif ///ifdef _DEBUG
+#endif //#ifndef NDEBUG
 
 
 }

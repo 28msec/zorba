@@ -35,7 +35,9 @@ Zorba_XQueryBinary::Zorba_XQueryBinary( const char* query_text ) :
 	is_compiled = false;
 	top_iterator = NULL;
 	lStateSize = 0;
+	internal_sctx = NULL;
 
+	default_collator = NULL;
 	//addReference();
 //	xquery_registered_callback = NULL;
 //	xquery_registered_param = NULL;
@@ -47,9 +49,12 @@ Zorba_XQueryBinary::Zorba_XQueryBinary( const char* query_text ) :
 
 Zorba_XQueryBinary::~Zorba_XQueryBinary()
 {
+	delete internal_sctx;
 }
 
-bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
+bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, 
+																xqp_string	xquery_source_uri,
+																 bool routing_mode)
 {
 	zorba	*thread_specific_zorba;
 
@@ -69,6 +74,18 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 		return false;
 	}
 
+	if(sctx)
+	{
+		internal_static_context = sctx;
+		//now build the static context
+		StaticContextWrapper		*context_wrapper = static_cast<StaticContextWrapper*>(sctx);
+		internal_sctx = context_wrapper->FillInStaticContext();//return a static_context*
+	}
+	else
+	{
+		internal_sctx = new static_context;
+	}
+	internal_sctx->set_entity_file_uri(xquery_source_uri);
 
 	///reset the error list from error manager
 //	m_error_manager.clear();///delete all alerts from list
@@ -88,6 +105,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	
 	///NOW COMPILE
 	xquery_driver driver(cout);///for debug, send log text on cout
+	driver.filename = xquery_source_uri;
 
 	///build up the expression tree
 	driver.parse_string(m_query_text);
@@ -229,7 +247,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, bool routing_mode)
 	return true;
 }
 
-XQueryResult_t Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
+XQueryResult_t Zorba_XQueryBinary::execute( DynamicQueryContext_t dctx)
 {
 	///init thread
 	//check if thread is inited, if not do automatic init
@@ -296,9 +314,9 @@ XQueryResult_t Zorba_XQueryBinary::execute( DynamicQueryContext* dctx)
 //{
 //}
 
-StaticQueryContext* Zorba_XQueryBinary::getInternalStaticContext()
+StaticQueryContext_t Zorba_XQueryBinary::getInternalStaticContext()
 {
-	return NULL;//&internal_static_context;
+	return internal_static_context;
 }
 
 

@@ -3051,7 +3051,7 @@ void xquery_driver::parse_string( const char *query_string)
   yylex_destroy(scanner);
 }
 
-void xquery_driver::parse(string const& fname)
+void xquery_driver::parse(xqp_string const fname)
 {    
   yyscan_t scanner;
   yylex_init(&scanner);
@@ -3059,9 +3059,10 @@ void xquery_driver::parse(string const& fname)
   struct yyguts_t * yyg = (struct yyguts_t*)scanner;
   
   yy_flex_debug = g_trace_scanning;
+  filename = fname;
   
-  if (!(yyin = fopen(fname.c_str (), "r"))) {
-    error (std::string("cannot open ") + file);
+  if (!(yyin = fopen(((std::string)fname).c_str (), "r"))) {
+    error (std::string("cannot open ") + (std::string)fname);
   }
   
   yy::xquery_parser parser(*this, scanner);

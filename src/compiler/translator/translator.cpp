@@ -186,7 +186,7 @@ void *translator::begin_visit(DefaultCollationDecl const& v)
 {
 TRACE_VISIT ();
 	string uri = v.get_collation();
-	sctx_p->set_default_collation(uri);
+	sctx_p->set_default_collation_uri(uri);
 	return NULL;
 }
 
@@ -658,7 +658,7 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
       StaticQueryContext::order_empty_mode_t empty_spec = sctx_p->order_empty_mode ();
       if (mod && mod->get_empty_spec () != NULL)
         empty_spec = mod->get_empty_spec ()->get_empty_order_spec ();
-      string col = sctx_p->default_collation ();
+      string col = sctx_p->default_collation_uri ();
       if (mod && mod->get_collation_spec () != NULL)
         col = mod->get_collation_spec ()->get_uri ();
       rchandle<order_modifier> emod (new order_modifier (dir_spec, empty_spec, col));

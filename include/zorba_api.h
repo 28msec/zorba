@@ -55,64 +55,94 @@ public:
 };
 
 typedef rchandle<XQueryResult>		XQueryResult_t;
+/*
+class CollationInfo : public rcobject
+{
+	std::string  coll_string;
+	::Collator::ECollationStrength coll_strength;
 
+	::Collator *coll;
+public:
+	CollationInfo();
+	CollationInfo( ::Collator *coll );
+	CollationInfo( std::string  coll_string, ::Collator::ECollationStrength coll_strength);
+	~CollationInfo();
+
+	::Collator	*getCollator();
+	std::string	getLocaleString();
+	::Collator::ECollationStrength getCollatorStrength();
+};
+
+typedef rchandle<CollationInfo>		CollationInfo_t;
+*/
+typedef struct 
+{
+	xqp_string		URI;
+	std::string		coll_string;
+	::Collator::ECollationStrength	coll_strength;
+	::Collator		*coll;
+
+}CollationInfo;
 /// the Static Context
 /// this class represents only the part that is the interface to the user
-class StaticQueryContext
+class StaticQueryContext : public rcobject
 {
 public:
-	typedef enum { cons_preserve, cons_strip } construction_mode_t;
+	typedef enum { xpath2_0, xpath1_0_only }		xpath1_0compatib_mode_t;
+	typedef enum { cons_preserve, cons_strip }	construction_mode_t;
+	typedef enum { ordered, unordered }					ordering_mode_t;
 	typedef enum { empty_greatest, empty_least } order_empty_mode_t;
 	typedef enum { preserve_space, strip_space } boundary_space_mode_t;
-	typedef enum { inherit_ns, no_inherit_ns } inherit_mode_t;
+	typedef enum { inherit_ns, no_inherit_ns }	inherit_mode_t;
 	typedef enum { preserve_ns, no_preserve_ns } preserve_mode_t;
 
-	typedef enum { ordered, unordered } ordering_mode_t;
 
 public:
   virtual ~StaticQueryContext() { }
 
-	virtual void		SetXPath1_0CompatibMode( bool mode ) = 0;///true for XPath1.0 only, false for XPath2.0 (default false)
-	virtual bool		GetXPath1_0CompatibMode( ) = 0;///true for XPath1.0 only, false for XPath2.0
+	virtual void		SetXPath1_0CompatibMode( xpath1_0compatib_mode_t mode ) = 0;///true for XPath1.0 only, false for XPath2.0 (default false)
+	virtual xpath1_0compatib_mode_t		GetXPath1_0CompatibMode( ) = 0;///true for XPath1.0 only, false for XPath2.0
 
-	virtual void		AddNamespace( xqpString prefix, xqpString URI ) = 0;//override the previous set prefix
-	virtual xqpString		GetNamespaceURIByPrefix( xqpString prefix ) = 0;
-//	virtual xqpString		GetNamespacePrefixByURI( xqpString URI ) = 0;
-	virtual xqpString		DeleteNamespace( xqpString prefix ) = 0;
+	virtual void		AddNamespace( xqp_string prefix, xqp_string URI ) = 0;//override the previous set prefix
+	virtual xqp_string		GetNamespaceURIByPrefix( xqp_string prefix ) = 0;
+//	virtual xqp_string		GetNamespacePrefixByURI( xqp_string URI ) = 0;
+	virtual void		DeleteNamespace( xqp_string prefix ) = 0;
 	virtual unsigned int	GetNamespaceCount() = 0;
-	virtual bool		GetNamespaceByIndex( int i, xqpString *prefix, xqpString *URI ) = 0;
+	virtual bool		GetNamespaceByIndex( unsigned int i, xqp_string *prefix, xqp_string *URI ) = 0;
 	virtual void		DeleteAllNamespaces() = 0;
 
-	virtual void		SetDefaultElementAndTypeNamespace( xqpString URI ) = 0;///default is none
-	virtual xqpString		GetDefaultElementAndTypeNamespace( ) = 0;
+	virtual void		SetDefaultElementAndTypeNamespace( xqp_string URI ) = 0;///default is none
+	virtual xqp_string		GetDefaultElementAndTypeNamespace( ) = 0;
 
-	virtual void		SetDefaultFunctionNamespace( xqpString URI ) = 0;///default is none
-	virtual xqpString		GetDefaultFunctionNamespace( ) = 0;
+	virtual void		SetDefaultFunctionNamespace( xqp_string URI ) = 0;///default is none
+	virtual xqp_string		GetDefaultFunctionNamespace( ) = 0;
 
 	//here some functions for schema ... not impl yet
 
-	virtual void		AddExternalVariableType( QNameItem_t	var_name, TypeIdentifier* var_type) = 0;
-	virtual TypeIdentifier*	GetExternalVariableType( QNameItem_t	var_name ) = 0;
+	virtual void		AddExternalVariableType( QNameItem_t	var_name, type_ident_ref_t var_type) = 0;
+	virtual type_ident_ref_t	GetExternalVariableType( QNameItem_t	var_name ) = 0;
 	virtual void		DeleteExternalVariableType( QNameItem_t var_name ) = 0;
 	virtual	unsigned int			GetExternalVariableCount() = 0;
-	virtual	bool		GetExternalVariableByIndex( unsigned int i, QNameItem_t *var_name, TypeIdentifier* *var_type ) = 0;
+	virtual	bool		GetExternalVariableByIndex( unsigned int i, QNameItem_t *var_name, type_ident_ref_t *var_type ) = 0;
 	virtual void		DeleteAllVariables() = 0;
 
-	virtual void		SetContextItemStaticType( TypeIdentifier*		type ) = 0;
-	virtual TypeIdentifier*		GetContextItemStaticType( ) = 0;
+	virtual void		SetContextItemStaticType( type_ident_ref_t		type ) = 0;
+	virtual type_ident_ref_t		GetContextItemStaticType( ) = 0;
 
 	///here some api for external functions
 	// virtual void AddExternalFunction( QNameItem_t func_name, extern_func *cpp_func, TypeIdentifier *type_of_result, ...);//and the types of parameters
 	// virtual void	DeleteAllExternalFunctions();
 
-	virtual void		AddCollation( xqpString URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength ) = 0;//if URI is empty then it sets the default collation
-	virtual bool		IsCollationPresent( xqpString URI) = 0;//if URI is empty then it sets the default collation
-	virtual void		DeleteCollation( xqpString URI) = 0;//if URI is empty then it sets the default collation
-	virtual int			GetCollationCount() = 0;
-	virtual bool		GetCollationInfoByIndex( int i, xqpString *URI, std::string *coll_string, ::Collator::ECollationStrength *coll_strength ) = 0;
-	virtual void		DeleteAllCustomCollations() = 0;
+	virtual void		AddCollation( xqp_string URI, std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY) = 0;
+	virtual void		AddCollation( xqp_string URI, ::Collator *user_coll ) = 0;
+	virtual CollationInfo*		GetCollation( xqp_string URI ) = 0;
+	virtual void		DeleteCollation( xqp_string URI) = 0;
+	virtual unsigned int			GetCollationCount() = 0;
+	virtual CollationInfo*		GetCollationInfoByIndex( unsigned int i ) = 0;//std::string *coll_string, ::Collator::ECollationStrength *coll_strength ) = 0;
+	virtual void		DeleteAllCollations() = 0;
 
-	virtual void		SetDefaultCollation( std::string  coll_string, ::Collator::ECollationStrength coll_strength ) = 0;
+	virtual void		SetDefaultCollation( xqp_string URI ) = 0;//std::string  coll_string, ::Collator::ECollationStrength coll_strength ) = 0;
+	virtual xqp_string	GetDefaultCollation() = 0;
 
 	virtual void		SetConstructionMode( construction_mode_t ) = 0;
 	virtual construction_mode_t		GetConstructionMode( ) = 0;
@@ -129,28 +159,30 @@ public:
 	virtual void		SetCopyNamespacesMode( preserve_mode_t preserve, inherit_mode_t inherit ) = 0;
 	virtual void		GetCopyNamespacesMode( preserve_mode_t *preserve, inherit_mode_t *inherit ) = 0;
 
-	virtual void		SetBaseURI( xqpString baseURI ) = 0;
-	virtual xqpString		GetBaseURI( ) = 0;
+	virtual void		SetBaseURI( xqp_string baseURI ) = 0;
+	virtual xqp_string		GetBaseURI( ) = 0;
 
 	//statically known documents (types)
-	virtual void		AddDocumentType( xqpString URI, TypeIdentifier* doc_type ) = 0;
-	virtual TypeIdentifier*		GetDocumentType( xqpString URI) = 0;
-	virtual void		DeleteDocumentType( xqpString URI) = 0;
-	virtual int			GetDocumentTypeCount() = 0;
-	virtual void		GetDocumentByIndex( int i, xqpString *URI, TypeIdentifier **doc_type ) = 0;
+	virtual void		AddDocumentType( xqp_string URI, type_ident_ref_t doc_type ) = 0;
+	virtual type_ident_ref_t		GetDocumentType( xqp_string URI) = 0;
+	virtual void		DeleteDocumentType( xqp_string URI) = 0;
+	virtual unsigned int			GetDocumentTypeCount() = 0;
+	virtual bool		GetDocumentByIndex( unsigned int i, xqp_string *URI, type_ident_ref_t *doc_type ) = 0;
 	virtual void		DeleteAllDocumentTypes() = 0;
 
-	virtual void		AddCollectionType( xqpString URI, TypeIdentifier*		collection_type ) = 0;///if URI is empty then it refers to default collection type
-	virtual TypeIdentifier*		GetCollectionType( xqpString URI ) = 0;///if URI is empty then it refers to default collection type
-	virtual void		DeleteCollectionType( xqpString URI ) = 0;///if URI is empty then it refers to default collection type
-	virtual int			GetCollectionTypeCount() = 0;
-	virtual void		GetCollectionTypeByIndex( int i, xqpString *URI, TypeIdentifier **collection_type ) = 0;
+	virtual void		AddCollectionType( xqp_string URI, type_ident_ref_t		collection_type ) = 0;///if URI is empty then it refers to default collection type
+	virtual type_ident_ref_t		GetCollectionType( xqp_string URI ) = 0;///if URI is empty then it refers to default collection type
+	virtual void		DeleteCollectionType( xqp_string URI ) = 0;///if URI is empty then it refers to default collection type
+	virtual unsigned int			GetCollectionTypeCount() = 0;
+	virtual bool		GetCollectionTypeByIndex( unsigned int i, xqp_string *URI, type_ident_ref_t *collection_type ) = 0;
 	virtual void		DeleteAllCollectionTypes() = 0;
 
-	virtual void		SetDefaultCollectionType( TypeIdentifier *default_collection_type ) = 0;///default node()*
-	virtual TypeIdentifier*	GetDefaultCollectionType( ) = 0;
+	virtual void		SetDefaultCollectionType( type_ident_ref_t default_collection_type ) = 0;///default node()*
+	virtual type_ident_ref_t	GetDefaultCollectionType( ) = 0;
 
 };
+
+typedef rchandle<StaticQueryContext>	StaticQueryContext_t;
 
 
 class DynamicQueryContext : public rcobject
@@ -158,11 +190,12 @@ class DynamicQueryContext : public rcobject
 	int			current_date_time;
 	int			implicit_timezone;
 
+	virtual ~DynamicQueryContext();
 
 	///following is the input data; this is not duplicable between executions
-	virtual bool SetVariable( Zorba_QName *varname, XQueryResult *item_iter ) = 0;
-	virtual bool SetVariable( Zorba_QName *varname, Item_t &item ) = 0;
-	virtual bool DeleteVariable( Zorba_QName *varname ) = 0;
+	virtual bool SetVariable( QNameItem_t *varname, XQueryResult_t item_iter ) = 0;
+	virtual bool SetVariable( QNameItem_t *varname, Item_t &item ) = 0;
+	virtual bool DeleteVariable( QNameItem_t *varname ) = 0;
 
 
 	///register documents available through fn:doc() in xquery
@@ -174,6 +207,7 @@ class DynamicQueryContext : public rcobject
 																			xqp_string store_collectionURI) = 0;
 };
 
+typedef rchandle<DynamicQueryContext>	DynamicQueryContext_t;
 
 
 
@@ -198,7 +232,7 @@ public:
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
 		//alert_callback_param is the param to be passed to the error callback function when executing next()
-    virtual XQueryResult_t execute( DynamicQueryContext* = 0) = 0;
+    virtual XQueryResult_t execute( DynamicQueryContext_t = 0) = 0;
 
     //virtual bool isCompiled() = 0;
 
@@ -214,7 +248,7 @@ public:
 
     // Matthias: don't call it internal
     // there is no need to distinguish interal and external
-		virtual StaticQueryContext* getInternalStaticContext() = 0;
+		virtual StaticQueryContext_t getInternalStaticContext() = 0;
  //   DynamicQueryContextPtr getInternalDynamicContext();
 
 		//daniel: get the variables out of the dynamic context class
@@ -252,18 +286,26 @@ public:
 	static void shutdownZorbaEngine();
 
 	void InitThread(
-        error_messages *em = NULL,
-        const char *collator_name = "root",
-        ::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY);
+        error_messages* em = NULL);
+        //const char *collator_name = "root",
+        //::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY);
 
 	void UninitThread();
 
   XQuery_t createQuery(
         const char* aQueryString,
-        StaticQueryContext* = 0, 
+        StaticQueryContext_t = 0, 
+				xqp_string	xquery_source_uri = "",
         bool routing_mode = false);
 
 	Zorba_AlertsManager& getAlertsManagerForCurrentThread();
+
+	void		setDefaultCollation(std::string  coll_string, ::Collator::ECollationStrength coll_strength = ::Collator::PRIMARY);
+	void		setDefaultCollation(::Collator *default_coll);
+	void		getDefaultCollation(std::string  *coll_string, ::Collator::ECollationStrength *coll_strength, ::Collator **default_coll);
+
+	StaticQueryContext_t createStaticContext();
+
 };
 
 

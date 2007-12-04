@@ -17,7 +17,7 @@ using namespace std;
 namespace xqp {
 
 //debug
-#ifdef _DEBUG
+#ifndef NDEBUG
 const char*		g_error_in_file = NULL;
 int						g_error_at_line = 0;
 bool					g_abort_when_fatal_error = false;
@@ -82,7 +82,7 @@ void ZorbaErrorAlerts::error_alert(
 	if(!continue_execution)
 	{
 	//	cout << "Fatal Error:" << strloc << " : " << err_decoded << std::endl;
-#ifdef _DEBUG
+#ifndef NDEBUG
 		if(g_abort_when_fatal_error)
 			abort ();
 		else
@@ -258,7 +258,7 @@ YY denotes the error category, using the following encoding:
 nnnn is a unique numeric code.
 
 */
-void fn_user_error (Zorba_QName* err_qname,///optional
+void fn_user_error (QNameItem* err_qname,///optional
 									const std::string description,//optional
 									const std::vector<class Item*> *items)//optional
 {
@@ -329,7 +329,7 @@ void fn_user_trace (const std::vector<class Item*> *items,
 ///from error_api.h
 Zorba_ErrorLocation::Zorba_ErrorLocation()
 {
-	filename = NULL;
+	filename = "";
 //	module_name = "";
 	line = 0;
 	column = 0;

@@ -5,7 +5,7 @@
 #define ZORBA_XQUERY_BINARY_FOR_EXTERNAL_API_24_SEP_2007
 
 #include "zorba_api.h"
-#include "context/static_context.h"
+#include "api/external/static_context_wrapper.h"
 
 ///Implement the objects for the Zorba external C++ API
 ////////////////////////////////////////////////////////////////////////////
@@ -74,11 +74,14 @@ private:
 
 //	zorba			*thread_specific_zorba;
 
-	static_context		internal_static_context;
+	StaticQueryContext_t		internal_static_context;//set by user
+	static_context		*internal_sctx;///generated at compilation
+
 public:
 //	yy::location		current_loc;
 
 	int32_t			lStateSize;
+	::Collator	*default_collator;
 
 	///for error processing: register a callback function
 //public:
@@ -93,14 +96,13 @@ public:
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    bool compile(StaticQueryContext* = 0, bool routing_mode = false);
+    bool compile(StaticQueryContext* = 0, xqp_string	xquery_source_uri = "", bool routing_mode = false);
 
     // execute the query 
 		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-		//alert_callback_param is the param to be passed to the error callback function when executing next()
-    virtual XQueryResult_t execute( DynamicQueryContext* = 0);
+    virtual XQueryResult_t execute( DynamicQueryContext_t = 0);
 
     //virtual bool isCompiled();
 
@@ -116,7 +118,7 @@ public:
 
     // Matthias: don't call it internal
     // there is no need to distinguish internal and external
-		virtual StaticQueryContext* getInternalStaticContext();
+		virtual StaticQueryContext_t getInternalStaticContext();
 //    DynamicQueryContextPtr getInternalDynamicContext();
 
 		//daniel: get the variables out of the dynamic context class

@@ -11,6 +11,7 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/simple_store.h"
 #include "system/globalenv.h"
+#include "api/external/static_context_wrapper.h"
 
 namespace xqp{
 
@@ -23,7 +24,7 @@ ZorbaFactory&	ZorbaFactory::getInstance()
 	if(!g_ZorbaFactory)
 	{
 		g_ZorbaFactory = new ZorbaFactory;
-		zorba::initializeZorbaEngine(Store::getInstance());
+		zorba::initializeZorbaEngine();//Store::getInstance());
 	}
 	return *g_ZorbaFactory;
 }
@@ -58,9 +59,9 @@ ZorbaFactory::~ZorbaFactory()
 */
 
 void ZorbaFactory::InitThread(
-    error_messages *em,//=NULL
-    const char *collator_name,// = "root",
-    ::Collator::ECollationStrength collator_strength)// = Collator::PRIMARY)
+    error_messages* em)//=NULL
+//    const char *collator_name,// = "root",
+//    ::Collator::ECollationStrength collator_strength)// = Collator::PRIMARY)
 {
 	zorba* zorp = zorba::allocateZorbaForCurrentThread();
 
@@ -72,8 +73,8 @@ void ZorbaFactory::InitThread(
 	else
 		zorp->m_error_manager->err_messages = em;
 
-	zorp->coll_string = collator_name;
-	zorp->coll_strength = collator_strength;
+//	zorp->coll_string = collator_name;
+//	zorp->coll_strength = collator_strength;
 }
 
 
@@ -84,12 +85,13 @@ void ZorbaFactory::UninitThread()
 
 
 XQuery_t ZorbaFactory::createQuery(const char* aQueryString,
-																	 StaticQueryContext* sctx, 
+																	 StaticQueryContext_t sctx, 
+																	 xqp_string	xquery_source_uri,
 																	 bool routing_mode)
 {
 	Zorba_XQueryBinary	*xq = new Zorba_XQueryBinary( aQueryString );
 
-	if(!xq->compile(sctx, routing_mode))
+	if(!xq->compile(sctx.get_ptr(), xquery_source_uri, routing_mode))
 	{
 		delete xq;
 		return NULL;
@@ -111,5 +113,24 @@ Zorba_AlertsManager&		ZorbaFactory::getAlertsManagerForCurrentThread()
 	return *z->getErrorManager();
 }
 
+void		ZorbaFactory::setDefaultCollation(std::string  coll_string, ::Collator::ECollationStrength coll_strength)
+{
+	zorba::getZorbaForCurrentThread()->setDefaultCollation(coll_string, coll_strength);
+}
+
+void		ZorbaFactory::setDefaultCollation(::Collator *default_coll)
+{
+	zorba::getZorbaForCurrentThread()->setDefaultCollation(default_coll);
+}
+
+void		ZorbaFactory::getDefaultCollation(std::string  *coll_string, ::Collator::ECollationStrength *coll_strength, ::Collator **default_coll)
+{
+	zorba::getZorbaForCurrentThread()->getDefaultCollation(coll_string, coll_strength, default_coll);
+}
+
+StaticQueryContext_t ZorbaFactory::createStaticContext()
+{
+	return new StaticContextWrapper;
+}
 
 }//end namespace xqp

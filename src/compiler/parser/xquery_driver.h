@@ -25,6 +25,7 @@
 
 #include "compiler/parser/symbol_table.h"
 #include "compiler/parser/xquery_parser.hpp"
+#include "types/representations.h"
 
 using namespace yy;
 
@@ -58,7 +59,7 @@ class xquery_driver
 public:	// state
 //  bool trace_scanning;
 //  bool trace_parsing;
-  std::string file;
+  xqp_string filename;
 	xqp::symbol_table symtab;
 	std::ostream& os;
 	parsenode* expr_p;
@@ -76,7 +77,7 @@ public: // manipulators
 //  bool get_trace_parsing() const { return trace_parsing; }
 	int get_debug() const { return debug; }
 	void set_debug(int d) { debug = d; }
-  std::string get_file() const { return file; }
+  xqp_string get_file() const { return filename; }
   std::ostream& get_os() { return os; }
 	void set_expr(parsenode* e_p) { expr_p = e_p; }
 	parsenode* get_expr() const { return expr_p; }
@@ -95,7 +96,7 @@ public:
 	/**
 	**	Parse the contents of a file
 	*/
-  void parse(const std::string& fname);
+  void parse(const xqp_string fname);
 
 	/**
 	**	Parse directly the content of a string

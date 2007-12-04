@@ -7,7 +7,7 @@ cmake $SRC
 make
 
 if which cygpath &>/dev/null; then
-  mv $SRC/*.dll $ROOT/
+  mv $ROOT/build/src/*.dll $ROOT/build/test/
 fi
 
 test -f $ZORBA || exit 1

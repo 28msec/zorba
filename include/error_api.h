@@ -8,9 +8,9 @@
 
 namespace xqp{
 
-class Zorba_QName : public Item
-{
-};
+//class Zorba_QName : public Item
+//{
+//};
 
 class Zorba_Items : public std::vector<Item*>
 {
@@ -23,9 +23,9 @@ public:
 
 public:
 
-	std::string		module_name;///empty if is main module
+	xqp_string		module_name;///empty if is main module
 
-	std::string		*filename;
+	xqp_string		filename;
 	unsigned int line;
 	unsigned int column;
 
@@ -94,7 +94,7 @@ struct Zorba_FnErrorMessage: public Zorba_AlertMessage
 {
 	virtual ~Zorba_FnErrorMessage();
 	
-	Zorba_QName		*err_qname;
+	QNameItem_t		err_qname;
 	std::string		err_qname_decoded;
 	Zorba_Items items_error;
 };
