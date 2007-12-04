@@ -1,8 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
 . $ROOT/load_test_env
 
 rm -f $ZORBA
 cmake $SRC
 make
+
+if which cygpath &>/dev/null; then
+  mv $SRC/*.dll $ROOT/
+fi
+
 test -f $ZORBA || exit 1
