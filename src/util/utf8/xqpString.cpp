@@ -441,7 +441,6 @@ namespace xqp
 
     delete [] target;
     return ret;
-
   }
 
   xqpString xqpString::substr(distance_type index)
@@ -624,6 +623,11 @@ namespace xqp
     return ret;
   }
 
+  bool xqpString::is_space(uint32_t cp)
+  {
+    return  (cp == 0x20) ? true: false;
+  }
+
   std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString)
   {
     uint16_t mapLen = mapString.theStrStore->length()+1;
@@ -737,9 +741,7 @@ namespace xqp
     theStrStore = new xqpStringStore(tmp);
     return *this;
   }
-
-  
-      
+ 
   xqpString xqpString::escapeHtmlUri()
   {
     uint32_t i =0;
@@ -814,6 +816,36 @@ namespace xqp
         UTF8Encode(cp, seq);
         tmp += seq;
       }
+    }
+    tmp += "\0";
+
+    theStrStore = new xqpStringStore(tmp);
+    return *this;
+  }
+
+  xqpString xqpString::normalizeSpace()
+  {
+    //create the new xqpStringStore
+    std::string tmp = "";
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp, cpPrev, i;
+    char seq[4];
+
+    cpPrev = 0x20;
+    while(len > 0)
+    {
+      cp = UTF8Decode(c);
+      if( !is_space( cp) ||
+            (is_space(cp) && !is_space(cpPrev) && len!=1)
+        )
+      {
+        memset(seq, 0, sizeof(seq));
+        UTF8Encode(cp, seq);
+        tmp += seq;
+      }
+      cpPrev = cp;
+      --len;
     }
     tmp += "\0";
 

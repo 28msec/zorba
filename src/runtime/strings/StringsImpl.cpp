@@ -474,10 +474,21 @@ StringLengthIterator::nextImpl(PlanState& planState) {
 Item_t
 NormalizeSpaceIterator::nextImpl(PlanState& planState)
 {
-  xqp_string str("NormalizeSpace: Not yet implemented.");
+  Item_t item;
+
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH(zorba::getItemFactory()->createString(str),state);
+
+  item = consumeNext (theChild, planState);
+  if ( item != NULL )  {
+    STACK_PUSH(zorba::getItemFactory()->createString(
+        item->getStringValue().normalizeSpace()),
+    state);
+  }
+  else{
+    STACK_PUSH(zorba::getItemFactory()->createString(""),
+    state);
+  }
   STACK_END();
 }
 /* end class NormalizeSpaceIterator */
