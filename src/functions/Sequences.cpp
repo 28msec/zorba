@@ -126,8 +126,7 @@ PlanIter_t fn_index_of::operator()(
 		//qname_value* qn_p = (qname_value*)(sctx_p->get_default_collation());
 		collation = "default_collation"; //qn_p->string_value();
 	}
-	//return new index_of_iterator(loc, argv[0],argv[1],collation);
-	return NULL;
+  return new FnIndexOfIterator(loc, argv[0], argv[1], collation);
 }
 
 bool fn_index_of::validate_args(

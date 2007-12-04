@@ -92,7 +92,8 @@ FnConcatIterator::FnConcatIteratorState::incCurIter() {
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
 FnIndexOfIterator::FnIndexOfIterator(yy::location loc,
                                     PlanIter_t& arg1,
-                                    PlanIter_t& arg2)
+                                    PlanIter_t& arg2,
+                                    std::string collation)
  : BinaryBaseIterator<FnIndexOfIterator> ( loc, arg1, arg2 )
 { }
 
@@ -100,47 +101,77 @@ FnIndexOfIterator::~FnIndexOfIterator(){}
 
 Item_t 
 FnIndexOfIterator::nextImpl(PlanState& planState) {
- Item_t item;
+  Item_t lSequence;
+  Item_t lSearch;
 
   FnIndexOfIteratorState* state;
   STACK_INIT(FnIndexOfIteratorState, state, planState);
+  
+  state->theSearchItem = consumeNext(theChild1, planState);
+  if ( state->theSearchItem == NULL ) 
+  {
+    ZORBA_ERROR_ALERT(
+         error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
+         error_messages::RUNTIME_ERROR,
+         NULL, false,
+         "An empty sequence is not allowed as search item of fn:index-of");    
+  }
 
-  // item = consumeNext(theChild, planState);
-  // if (item == NULL) 
-  // {
-  //  STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
-  // }
-  // else
-  // {
-  //     STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);    
-  // }
+  while ( (lSequence = consumeNext(theChild0, planState)) != NULL )
+  {
+    ++state->theCurrentPos; // index-of starts with one
+    
+    if (lSequence->equals(state->theSearchItem))
+      STACK_PUSH(zorba::getItemFactory()->createInteger(state->theCurrentPos), state);
+  }
 
- STACK_END();
+  STACK_END();
 }
 
 
 uint32_t
-FnIndexOfIterator::getStateSizeOfSubtree() const {
- return theChild0->getStateSizeOfSubtree()
-        + theChild1->getStateSizeOfSubtree()
-        + getStateSize();
+FnIndexOfIterator::getStateSizeOfSubtree() const 
+{
+ return theChild0->getStateSizeOfSubtree() 
+        + theChild1->getStateSizeOfSubtree() + getStateSize();
 }
 
+void 
+FnIndexOfIterator::releaseResourcesImpl(PlanState& planState)
+{
+  BinaryBaseIterator<FnIndexOfIterator>::releaseResourcesImpl(planState);
+  
+  FnIndexOfIteratorState* state;
+  GET_STATE(FnIndexOfIteratorState, state, planState);
+  
+  // do we need a releaseResouces function in the state or is it always the same as reset?
+  state->reset(); 
+}
+
+void 
+FnIndexOfIterator::resetImpl(PlanState& planState)
+{
+  BinaryBaseIterator<FnIndexOfIterator>::resetImpl(planState);
+
+  FnIndexOfIteratorState* state;
+  GET_STATE(FnIndexOfIteratorState, state, planState);
+  state->reset();
+}
+
+
 void
-FnIndexOfIterator::FnIndexOfIteratorState::init() {
+FnIndexOfIterator::FnIndexOfIteratorState::init() 
+{
  PlanIterator::PlanIteratorState::init();
- theCurPos = 0;
+ theCurrentPos = 0;
+ theSearchItem = NULL;
 }
 
 void
 FnIndexOfIterator::FnIndexOfIteratorState::reset() {
  PlanIterator::PlanIteratorState::reset();
- theCurPos = 0;
-}
-
-void
-FnIndexOfIterator::FnIndexOfIteratorState::incCurPos() {
- ++theCurPos;
+ theCurrentPos = 0;
+ theSearchItem = NULL;
 }
 
 

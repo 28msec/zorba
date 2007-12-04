@@ -69,16 +69,24 @@ class FnIndexOfIterator : public BinaryBaseIterator<FnIndexOfIterator>
 {
 
 public:
- FnIndexOfIterator(yy::location loc,
-                    PlanIter_t& arg1, PlanIter_t& arg2);
+  FnIndexOfIterator(yy::location loc,
+                    PlanIter_t& arg1, PlanIter_t& arg2, 
+                    std::string collation);
  
- ~FnIndexOfIterator();
+  ~FnIndexOfIterator();
 
- Item_t 
- nextImpl(PlanState& planState);
+  Item_t 
+  nextImpl(PlanState& planState);
  
- virtual void 
- accept(PlanIterVisitor&) const;
+  void 
+  resetImpl(PlanState& planState);
+  
+  void 
+  releaseResourcesImpl(PlanState& planState);
+ 
+ 
+  virtual void 
+  accept(PlanIterVisitor&) const;
 
   virtual uint32_t 
   getStateSize() const { return sizeof ( FnIndexOfIteratorState ); }
@@ -88,15 +96,13 @@ public:
 
 protected:
   class FnIndexOfIteratorState : public PlanIteratorState {
-  private:  
-    uint32_t theCurPos;
+  public:  
+    uint32_t theCurrentPos; // the current position in the sequence
+    Item_t   theSearchItem; // the item to search for
   
-  public:
     void init();
     void reset();
     
-    void incCurPos();
-    uint32_t getCurPos() { return theCurPos; }
   };
   
 };
