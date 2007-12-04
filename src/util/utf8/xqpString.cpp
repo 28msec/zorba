@@ -623,6 +623,36 @@ namespace xqp
     }
     return ret;
   }
+
+  std::map<uint32_t,uint32_t> xqpString::createMapArray(xqpString mapString, xqpString transString)
+  {
+    uint16_t mapLen = mapString.theStrStore->length()+1;
+    uint16_t transLen = transString.theStrStore->length()+1;
+    const char* mapPtr = mapString.theStrStore->c_str();
+    const char* transPtr = transString.theStrStore->c_str();
+    uint32_t tmp0, tmp1;
+    
+    std::map<uint32_t,uint32_t> mapArray;
+    std::map<uint32_t,uint32_t>::iterator it;
+    
+    if(mapLen >0)
+    {
+      while((--mapLen > 0) && (--transLen > 0))
+      {
+        tmp0 = UTF8Decode(mapPtr);
+        tmp1 = UTF8Decode(transPtr);
+        mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, tmp1));
+      }
+      
+      while(mapLen > 0)
+      {
+        tmp0 = UTF8Decode(mapPtr);
+        mapArray.insert(std::pair<uint32_t,uint32_t>(tmp0, ULONG_MAX));
+        --mapLen;
+      }
+    }
+    return mapArray;
+  }
   
   xqpString xqpString::encodeForUri()
   {
@@ -708,6 +738,8 @@ namespace xqp
     return *this;
   }
 
+  
+      
   xqpString xqpString::escapeHtmlUri()
   {
     uint32_t i =0;
@@ -742,6 +774,45 @@ namespace xqp
             prev++;
           }
         }
+      }
+    }
+    tmp += "\0";
+
+    theStrStore = new xqpStringStore(tmp);
+    return *this;
+  }
+
+  xqpString xqpString::translate(xqpString mapString, xqpString transString)
+  {
+    std::map<uint32_t,uint32_t> myMap;
+    std::map<uint32_t,uint32_t>::iterator it;
+    uint32_t first, second;
+
+    //create the map
+    myMap = createMapArray(mapString, transString);
+
+    //create the new xqpStringStore
+    std::string tmp = "";
+    uint32_t len = length();
+    const char* c = c_str();
+    uint32_t cp, i;
+    char seq[4];
+
+    for(i=0; i<len; ++i)
+    {
+      cp = UTF8Decode(c);
+
+      it= myMap.find(cp);
+      if( it != myMap.end() )
+      {
+        cp = (*it).second;
+      }
+
+      if(cp != ULONG_MAX)
+      {
+        memset(seq, 0, sizeof(seq));
+        UTF8Encode(cp, seq);
+        tmp += seq;
       }
     }
     tmp += "\0";

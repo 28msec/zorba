@@ -21,6 +21,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
+#include <map>
 
 #include <unicode/utypes.h>
 #include <unicode/coll.h>
@@ -284,7 +285,13 @@ public:
     //This function escapes all characters except printable characters of the US-ASCII
     //coded character set, specifically the octets ranging from 32 to 126 (decimal)
     xqpString escapeHtmlUri();
-    
+
+    //Returns an xqpString modified so that every character in that occurs at some position N
+    //in the value of $mapString has been replaced by the character that occurs at position N
+    //in the value of $transString.
+    //Every character from 'this' that does not occur in the mapString is left unchanged
+    xqpString translate(xqpString mapString, xqpString transString);
+
 private:
 
     /**  Return an UnicodeString (UTF-16 encoded) given a xqpString (UTF-8 encoded)
@@ -318,6 +325,14 @@ private:
     *character set meaning octets ranging from 32 to 126 (decimal).
     */
     bool is_printableASCII(uint32_t cp);
+
+    /**Create a map with:
+    *-the codepoints of the chars from 'mapString' as first dimension
+    *-the codepoints of the chars from 'transString' as second dimension or ULONG_MAX
+    *if length(mapString) \< length(transString)
+    *Only the first occurence of a character from mapString is inserted into the mapArray
+     */
+    std::map<uint32_t,uint32_t> createMapArray(xqpString mapString, xqpString transString);
   };
 
   // xqpString::stream I/O operators

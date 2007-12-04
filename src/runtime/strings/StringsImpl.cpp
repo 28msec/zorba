@@ -641,10 +641,31 @@ LowerCaseIterator::nextImpl(PlanState& planState) {
 /* begin class TranslateIterator */
 Item_t
 TranslateIterator::nextImpl(PlanState& planState) {
-  xqp_string str("Translate: Not yet implemented.");
+  Item_t itemArg, item0, item1;
+  Item_t res;
+  res = zorba::getItemFactory()->createString("");
+
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-  STACK_PUSH(zorba::getItemFactory()->createString(str),state);
+
+  itemArg = consumeNext ( theChildren[0], planState );
+  if ( itemArg != NULL )
+  {
+    item0 = consumeNext ( theChildren[1], planState );
+    if ( item0 != NULL )
+    {
+      item1 = consumeNext ( theChildren[2], planState );
+      if ( item1 != NULL )
+      {
+        item0 = item0->getAtomizationValue();
+        item1 = item1->getAtomizationValue();
+
+        res = zorba::getItemFactory()->createString(
+            itemArg->getStringValue().translate(item0->getStringValue(), item1->getStringValue()));
+      }
+    }
+    STACK_PUSH( res, state );
+  }
   STACK_END();
 }
 /* end class TranslateIterator */
