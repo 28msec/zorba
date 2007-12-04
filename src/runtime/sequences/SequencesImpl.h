@@ -14,6 +14,7 @@
 #include "runtime/base/iterator.h"
 #include "store/naive/simple_store.h"
 #include "runtime/base/unarybase.h"
+#include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
 
 namespace xqp
@@ -29,23 +30,23 @@ namespace xqp
 
 
 //15.1.2 op:concatenate
-class ConcatIterator : public NaryBaseIterator<ConcatIterator>
+class FnConcatIterator : public NaryBaseIterator<FnConcatIterator>
 {
 public:
-  ConcatIterator(
+  FnConcatIterator(
   yy::location loc, vector<PlanIter_t>& aChildren);
   
-  virtual ~ConcatIterator();
+  virtual ~FnConcatIterator();
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   
-  virtual uint32_t getStateSize() const { return sizeof(ConcatIteratorState); }
+  virtual uint32_t getStateSize() const { return sizeof(FnConcatIteratorState); }
   
   virtual void accept(PlanIterVisitor&) const;
   
 protected:
-  class ConcatIteratorState : public PlanIteratorState {
+  class FnConcatIteratorState : public PlanIteratorState {
   private:  
     uint32_t theCurIter;
   
@@ -60,33 +61,87 @@ protected:
 
 
 //15.1.3 fn:index-of
-
-//15.1.4 fn:empty
-
-//15.1.5 fn:exists
 /*
- * Summary: If the value of $arg is not the empty sequence, the function returns true; 
-            otherwise, the function returns false.
+ * If the value of $arg is the empty sequence, the function returns true; 
+ * otherwise, the function returns false.
  */
-class ExistsIterator : public UnaryBaseIterator<ExistsIterator>
+class FnIndexOfIterator : public BinaryBaseIterator<FnIndexOfIterator>
 {
 
 public:
-	ExistsIterator(yy::location loc,
+ FnIndexOfIterator(yy::location loc,
+                    PlanIter_t& arg1, PlanIter_t& arg2);
+ 
+ ~FnIndexOfIterator();
+
+ Item_t 
+ nextImpl(PlanState& planState);
+ 
+ virtual void 
+ accept(PlanIterVisitor&) const;
+
+  virtual uint32_t 
+  getStateSize() const { return sizeof ( FnIndexOfIteratorState ); }
+
+  virtual uint32_t
+  getStateSizeOfSubtree() const;
+
+protected:
+  class FnIndexOfIteratorState : public PlanIteratorState {
+  private:  
+    uint32_t theCurPos;
+  
+  public:
+    void init();
+    void reset();
+    
+    void incCurPos();
+    uint32_t getCurPos() { return theCurPos; }
+  };
+  
+};
+
+//15.1.4 fn:empty
+/*
+ * If the value of $arg is the empty sequence, the function returns true; 
+ * otherwise, the function returns false.
+ */
+class FnEmptyIterator : public UnaryBaseIterator<FnEmptyIterator>
+{
+
+public:
+	FnEmptyIterator(yy::location loc,
 	               PlanIter_t& arg);
 	
-	~ExistsIterator();
+	~FnEmptyIterator();
 
-	Item_t nextImpl(PlanState& planState);
+	Item_t 
+	nextImpl(PlanState& planState);
 	
-	virtual void accept(PlanIterVisitor&) const;
+	virtual void 
+	accept(PlanIterVisitor&) const;
+};
+
+
+//15.1.5 fn:exists
+/*
+ * If the value of $arg is not the empty sequence, the function returns true; 
+ * otherwise, the function returns false.
+ */
+class FnExistsIterator : public UnaryBaseIterator<FnExistsIterator>
+{
+
+public:
+	FnExistsIterator(yy::location loc,
+	               PlanIter_t& arg);
 	
-protected:
-	class ExistsIteratorState : public PlanIteratorState {
-	public:
-		void init();
-		void reset();
-	};
+	~FnExistsIterator();
+
+	Item_t 
+	nextImpl(PlanState& planState);
+	
+	virtual void 
+	accept(PlanIterVisitor&) const;
 };
 
 //15.1.6 fn:distinct-values

@@ -64,7 +64,7 @@ PlanIter_t op_concatenate::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return new ConcatIterator(loc,argv);
+	return new FnConcatIterator(loc, argv);
 }
 
 bool op_concatenate::validate_args(
@@ -153,13 +153,13 @@ PlanIter_t fn_empty::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return NULL;
+  return new FnEmptyIterator(loc, argv[0]);
 }
 
 bool fn_empty::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	return true;
+  return ( argv.size() ==1 );
 }
 
 TypeSystem::xqtref_t fn_empty::type_check(
@@ -178,7 +178,7 @@ PlanIter_t fn_exists::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new ExistsIterator(loc,argv[0]);
+  return new FnExistsIterator(loc,argv[0]);
 }
 
 bool fn_exists::validate_args(

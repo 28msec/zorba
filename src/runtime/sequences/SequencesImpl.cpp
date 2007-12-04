@@ -31,21 +31,21 @@ namespace xqp {
 //15.1.2 op:concatenate 
 //---------------------
 
-ConcatIterator::ConcatIterator(
+FnConcatIterator::FnConcatIterator(
 	yy::location loc,
 	vector<PlanIter_t>& aChildren)
 :
-	NaryBaseIterator<ConcatIterator>(loc, aChildren)
+	NaryBaseIterator<FnConcatIterator>(loc, aChildren)
 {}
 
-ConcatIterator::~ConcatIterator(){}
+FnConcatIterator::~FnConcatIterator(){}
 
 Item_t 
-ConcatIterator::nextImpl(PlanState& planState) {
+FnConcatIterator::nextImpl(PlanState& planState) {
 	Item_t item;
 	
-	ConcatIteratorState* state;
-	STACK_INIT(ConcatIteratorState, state, planState);
+	FnConcatIteratorState* state;
+	STACK_INIT(FnConcatIteratorState, state, planState);
 	
   for (; state->getCurIter() < theChildren.size(); state->incCurIter()) {;
 		item = this->consumeNext(theChildren[state->getCurIter()], planState);
@@ -59,9 +59,9 @@ ConcatIterator::nextImpl(PlanState& planState) {
 }
 
 void 
-ConcatIterator::resetImpl(PlanState& planState) {
-	ConcatIteratorState* state;
-	GET_STATE(ConcatIteratorState, state, planState);
+FnConcatIterator::resetImpl(PlanState& planState) {
+	FnConcatIteratorState* state;
+	GET_STATE(FnConcatIteratorState, state, planState);
 	state->reset();
 	
 	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
@@ -71,45 +71,129 @@ ConcatIterator::resetImpl(PlanState& planState) {
 }
 
 void
-ConcatIterator::ConcatIteratorState::init() {
+FnConcatIterator::FnConcatIteratorState::init() {
 	PlanIterator::PlanIteratorState::init();
 	theCurIter = 0;
 }
 
 void
-ConcatIterator::ConcatIteratorState::reset() {
+FnConcatIterator::FnConcatIteratorState::reset() {
 	PlanIterator::PlanIteratorState::reset();
 	theCurIter = 0;
 }
 
 void
-ConcatIterator::ConcatIteratorState::incCurIter() {
+FnConcatIterator::FnConcatIteratorState::incCurIter() {
 	theCurIter++;
 }
 
 
 //15.1.3 fn:index-of
+// FIXME this iterator has three arguments (i.e. the collaction as #3)
+FnIndexOfIterator::FnIndexOfIterator(yy::location loc,
+                                    PlanIter_t& arg1,
+                                    PlanIter_t& arg2)
+ : BinaryBaseIterator<FnIndexOfIterator> ( loc, arg1, arg2 )
+{ }
+
+FnIndexOfIterator::~FnIndexOfIterator(){}
+
+Item_t 
+FnIndexOfIterator::nextImpl(PlanState& planState) {
+ Item_t item;
+
+  FnIndexOfIteratorState* state;
+  STACK_INIT(FnIndexOfIteratorState, state, planState);
+
+  // item = consumeNext(theChild, planState);
+  // if (item == NULL) 
+  // {
+  //  STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
+  // }
+  // else
+  // {
+  //     STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);    
+  // }
+
+ STACK_END();
+}
+
+
+uint32_t
+FnIndexOfIterator::getStateSizeOfSubtree() const {
+ return theChild0->getStateSizeOfSubtree()
+        + theChild1->getStateSizeOfSubtree()
+        + getStateSize();
+}
+
+void
+FnIndexOfIterator::FnIndexOfIteratorState::init() {
+ PlanIterator::PlanIteratorState::init();
+ theCurPos = 0;
+}
+
+void
+FnIndexOfIterator::FnIndexOfIteratorState::reset() {
+ PlanIterator::PlanIteratorState::reset();
+ theCurPos = 0;
+}
+
+void
+FnIndexOfIterator::FnIndexOfIteratorState::incCurPos() {
+ ++theCurPos;
+}
+
 
 //15.1.4 fn:empty
+/*
+ * If the value of $arg is the empty sequence, the function returns true; 
+ * otherwise, the function returns false.
+ */
+FnEmptyIterator::FnEmptyIterator(yy::location loc,
+	                             PlanIter_t& arg)
+	: UnaryBaseIterator<FnEmptyIterator> ( loc, arg )
+{ }
+
+FnEmptyIterator::~FnEmptyIterator(){}
+
+Item_t 
+FnEmptyIterator::nextImpl(PlanState& planState) {
+	Item_t item;
+
+  PlanIterator::PlanIteratorState* state;
+  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+
+	item = consumeNext(theChild, planState);
+	if (item == NULL) 
+	{
+		STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
+	}
+	else
+	{
+    STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);	  
+	}
+
+	STACK_END();
+}
 
 //15.1.5 fn:exists
 /*
  * If the value of $arg is not the empty sequence, the function returns true; 
  * otherwise, the function returns false.
  */
-ExistsIterator::ExistsIterator(yy::location loc,
-	                             PlanIter_t& arg)
-	: UnaryBaseIterator<ExistsIterator> ( loc, arg )
+FnExistsIterator::FnExistsIterator(yy::location loc,
+	                                 PlanIter_t& arg)
+	: UnaryBaseIterator<FnExistsIterator> ( loc, arg )
 { }
 
-ExistsIterator::~ExistsIterator(){}
+FnExistsIterator::~FnExistsIterator(){}
 
 Item_t 
-ExistsIterator::nextImpl(PlanState& planState) {
+FnExistsIterator::nextImpl(PlanState& planState) {
 	Item_t item;
 	
-	ExistsIteratorState* state;
-	STACK_INIT(ExistsIteratorState, state, planState);
+  PlanIterator::PlanIteratorState* state;
+  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 	
 	item = consumeNext(theChild, planState);
 	if (item != NULL) 
@@ -122,16 +206,6 @@ ExistsIterator::nextImpl(PlanState& planState) {
 	}
 
 	STACK_END();
-}
-
-void
-ExistsIterator::ExistsIteratorState::init() {
-	PlanIterator::PlanIteratorState::init();
-}
-
-void
-ExistsIterator::ExistsIteratorState::reset() {
-	PlanIterator::PlanIteratorState::reset();
 }
 
 

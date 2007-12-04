@@ -359,22 +359,37 @@ namespace xqp {
     thePrinter.endIter();
   }
        
-  void PrinterVisitor::beginVisit ( const ConcatIterator& a ) {
-    thePrinter.startIter("ConcatIterator");
+  void PrinterVisitor::beginVisit ( const FnConcatIterator& a ) {
+    thePrinter.startIter("FnConcatIterator");
     printCommons( &a );
   }
-  void PrinterVisitor::endVisit ( const ConcatIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnConcatIterator& a ) {
     thePrinter.endIter();
   }
 
-  void PrinterVisitor::beginVisit ( const ExistsIterator& a ) {
-    thePrinter.startIter("ExistsIterator");
+  void PrinterVisitor::beginVisit ( const FnEmptyIterator& a ) {
+    thePrinter.startIter("FnEmptyIterator");
     printCommons( &a );
   }
-  void PrinterVisitor::endVisit ( const ExistsIterator& a ) {
+  void PrinterVisitor::endVisit ( const FnEmptyIterator& a ) {
     thePrinter.endIter();
   }
 
+  void PrinterVisitor::beginVisit ( const FnExistsIterator& a ) {
+    thePrinter.startIter("FnExistsIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnExistsIterator& a ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const FnIndexOfIterator& a ) {
+    thePrinter.startIter("FnIndexOfIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnIndexOfIterator& a ) {
+    thePrinter.endIter();
+  }
        
   void PrinterVisitor::beginVisit ( const DocIterator& a ) {
     thePrinter.startIter("DocIterator");

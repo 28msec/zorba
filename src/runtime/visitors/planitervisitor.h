@@ -15,7 +15,6 @@ namespace xqp
   class RefIterator;
   class SingletonIterator;
   class EmptyIterator;
-  class SingletonIterator;
   class var_iterator;
   class RefIterator;
   class EnclosedIterator;
@@ -51,8 +50,10 @@ namespace xqp
   template <class ModOperations> class ArithmeticIterator;
   class OpNumericUnaryIterator;
   class FnAbsIterator;
-  class ConcatIterator;
-  class ExistsIterator;
+  class FnConcatIterator;
+  class FnEmptyIterator;
+  class FnExistsIterator;
+  class FnIndexOfIterator;
   class DocIterator;
   class CodepointsToStringIterator;
   class StringToCodepointsIterator;
@@ -117,7 +118,7 @@ namespace xqp
        
       virtual void beginVisit ( const SingletonIterator& ) = 0;
       virtual void endVisit ( const SingletonIterator& ) = 0;
-       
+
       virtual void beginVisit ( const EmptyIterator& ) = 0;
       virtual void endVisit ( const EmptyIterator& ) = 0;
        
@@ -197,11 +198,17 @@ namespace xqp
       virtual void beginVisit ( const FnAbsIterator& ) = 0;
       virtual void endVisit ( const FnAbsIterator& ) = 0;
        
-      virtual void beginVisit ( const ConcatIterator& ) = 0;
-      virtual void endVisit ( const ConcatIterator& ) = 0;
+      virtual void beginVisit ( const FnConcatIterator& ) = 0;
+      virtual void endVisit ( const FnConcatIterator& ) = 0;
 
-      virtual void beginVisit ( const ExistsIterator& ) = 0;
-      virtual void endVisit ( const ExistsIterator& ) = 0;
+      virtual void beginVisit ( const FnEmptyIterator& ) = 0;
+      virtual void endVisit ( const FnEmptyIterator& ) = 0;
+
+      virtual void beginVisit ( const FnExistsIterator& ) = 0;
+      virtual void endVisit ( const FnExistsIterator& ) = 0;
+
+      virtual void beginVisit ( const FnIndexOfIterator& ) = 0;
+      virtual void endVisit ( const FnIndexOfIterator& ) = 0;
        
       virtual void beginVisit ( const DocIterator& ) = 0;
       virtual void endVisit ( const DocIterator& ) = 0;
