@@ -191,7 +191,7 @@ string errors_english::err_decode(enum errcode e)
     return "Cannot insert a non-node item to a collection";
 
   case FODC0002_Error_retrieving_resource:
-    return "Error retrieving resource";
+    return "FODC0002_Error_retrieving_resource: Error retrieving resource";
     
 	default: return "<Unknown errcode> /s /s";
 	}

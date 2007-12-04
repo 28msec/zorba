@@ -331,17 +331,17 @@ DocIterator::nextImpl ( PlanState& planState )
     {
       // load file
       ifstream ifs;
-      ifs.open(((string)state->uri).c_str());
+      ifs.open(((string)state->uri).c_str(), ios::in);
       if (ifs.is_open() == false)
       {
         // File does not exist
         ZORBA_ERROR_ALERT(error_messages::FODC0002_Error_retrieving_resource,
-                          error_messages::USER_ERROR,
+                          error_messages::RUNTIME_ERROR,
                           NULL,
-                          true,
+                          false,
                           "The file does not exist");
       }
-      
+
       XmlLoader& loader = store.getXmlLoader();
       state->doc = loader.loadXml(ifs);
       state->childrenIter = state->doc->getChildren();
