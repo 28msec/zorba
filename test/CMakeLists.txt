@@ -1,3 +1,5 @@
+ADD_SUBDIRECTORY(rbkt)
+
 SET(API_TEST_SRCS
     timer.cpp
     error_display.cpp 
@@ -16,8 +18,3 @@ SET(TEST_STORE_SRCS
 ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
 
 TARGET_LINK_LIBRARIES(test_store zorba)
-
-
-IF (NOT MSVC)
-	TARGET_LINK_LIBRARIES(apitest pthread) 
-ENDIF (NOT MSVC)
