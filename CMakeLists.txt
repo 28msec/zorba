@@ -55,9 +55,6 @@ ELSE(LIBXML2_FOUND)
     MESSAGE(FATAL_ERROR "The libxml2  library is required in order to build Zorba.")
 ENDIF(LIBXML2_FOUND)
 
-IF (CYGWIN)
-    SET(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} ${Boost_INCLUDE_DIR})
-ENDIF (CYGWIN)
 
 FIND_PACKAGE(Boost)
 IF(Boost_FOUND)
@@ -74,6 +71,11 @@ IF(Boost_FOUND)
 ELSE(Boost_FOUND)
     MESSAGE(FATAL_ERROR "The boost library is required in order to build Zorba.")
 ENDIF(Boost_FOUND)
+
+IF (NOT MSVC)
+    SET(requiredlibs ${requiredlibs} pthread)
+ENDIF (NOT MSVC)
+
 
 ##############################################################################################################
 # Compiler setup
@@ -102,3 +104,4 @@ INCLUDE_DIRECTORIES(${ICU_INCLUDE_DIRS})
 ADD_SUBDIRECTORY(include)
 ADD_SUBDIRECTORY(src)
 ADD_SUBDIRECTORY(test)
+#ADD_SUBDIRECTORY(bin)
