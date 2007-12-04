@@ -189,6 +189,10 @@ string errors_english::err_decode(enum errcode e)
     return "A collection with URI `/s' does not exist";
   case API0007_COLLECTION_ITEM_MUST_BE_A_NODE:
     return "Cannot insert a non-node item to a collection";
+
+  case FODC0002_Error_retrieving_resource:
+    return "Error retrieving resource";
+    
 	default: return "<Unknown errcode> /s /s";
 	}
 } 

@@ -110,6 +110,9 @@ function run_query
     echo "ERROR 1 run_query: binary executable ${EXE} not found"
     exit 17
   fi
+  
+  pwd push
+  cd ${queryFile%/*}
 
   ${EXE} -o "${queryFile}.res" "${queryFile}"
   error=$?
@@ -117,6 +120,8 @@ function run_query
     echo "ERROR 2 run_query: ${EXE} $1 failed with error code ${error}"
     # To allow more queries to be run by the caller, do not propagate error
   fi
+  
+  pwd pop
 
   return 0
 }

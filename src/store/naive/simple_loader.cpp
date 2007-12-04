@@ -213,6 +213,9 @@ void XmlLoader::endDocument(void * ctx)
   std::vector<Item_t> childNodes;
   std::vector<Item_t> revChildNodes;
 
+  if (loader.theNodeStack.size() == 0 )
+    return;
+  
   Item_t childNode = loader.theNodeStack.top();
 
   while (childNode != NULL)
@@ -554,7 +557,8 @@ void  XmlLoader::error(void * ctx, const char * msg, ... )
   va_start(args, msg);
   vsprintf(buf, msg, args);
   va_end(args);
-  loader.theErrors += "+ ";
+  if (loader.theErrors.size() > 0)
+    loader.theErrors += "+ ";
   loader.theErrors += buf;
 }
 
