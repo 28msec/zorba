@@ -145,7 +145,10 @@ namespace xqp {
 
       virtual void beginVisit ( const FnIndexOfIterator& ) ;
       virtual void endVisit ( const FnIndexOfIterator& ) ;
-       
+
+      virtual void beginVisit ( const FnDistinctValuesIterator& ) ;
+      virtual void endVisit   ( const FnDistinctValuesIterator& ) ;
+              
       virtual void beginVisit ( const DocIterator& ) ;
       virtual void endVisit ( const DocIterator& ) ;
        

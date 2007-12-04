@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/booleans/BooleanImpl.h"
 #include "store/naive/simple_loader.h"
 #include "store/api/collection.h"
 #include "store/naive/store_defs.h"
@@ -121,7 +122,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
   {
     ++state->theCurrentPos; // index-of starts with one
     
-    if (lSequence->equals(state->theSearchItem))
+    if (lSequence->equals(state->theSearchItem)) // FIXME collation support
       STACK_PUSH(zorba::getItemFactory()->createInteger(state->theCurrentPos), state);
   }
 
@@ -146,6 +147,15 @@ FnIndexOfIterator::releaseResourcesImpl(PlanState& planState)
   
   // do we need a releaseResouces function in the state or is it always the same as reset?
   state->reset(); 
+}
+
+void 
+FnIndexOfIterator::setOffset(PlanState& planState, uint32_t& offset)
+{
+  BinaryBaseIterator<FnIndexOfIterator>::setOffset(planState, offset);
+
+  FnIndexOfIteratorState* state = 
+    new (planState.block + stateOffset) FnIndexOfIteratorState;
 }
 
 void 
@@ -241,6 +251,100 @@ FnExistsIterator::nextImpl(PlanState& planState) {
 
 
 //15.1.6 fn:distinct-values
+/**
+ * Returns the sequence that results from removing from arg all but one of a set of
+ * values that are eq to one other. 
+ * The order in which the sequence of values is returned is ·implementation dependent·.
+ * Here, we return the first item that is not a duplicate and throw away the remaining ones
+ */
+FnDistinctValuesIterator::FnDistinctValuesIterator(yy::location loc,
+                                                   PlanIter_t& arg,
+                                                   std::string collation)
+ : UnaryBaseIterator<FnDistinctValuesIterator> ( loc, arg )
+{ }
+
+FnDistinctValuesIterator::~FnDistinctValuesIterator(){}
+
+Item_t 
+FnDistinctValuesIterator::nextImpl(PlanState& planState) {
+  Item_t lItem;
+  FnDistinctValuesIteratorState::AlreadySeenConstIter_t lConstIter;
+  
+  FnDistinctValuesIteratorState* state;
+  STACK_INIT(FnDistinctValuesIteratorState, state, planState);
+      
+  while ( (lItem = consumeNext(theChild, planState)) != NULL )
+  {
+    // check if the item is alrady in the map
+    lConstIter = state->theAlreadySeenMap.find(lItem);
+
+    // if the item was not in the map
+    if ( lConstIter == state->theAlreadySeenMap.end() ) 
+    {
+      state->theAlreadySeenMap[lItem] = 1;
+      STACK_PUSH(lItem, state);
+    }
+  }
+    
+  STACK_END();
+}
+
+uint32_t
+FnDistinctValuesIterator::getStateSizeOfSubtree() const 
+{
+  return theChild->getStateSizeOfSubtree() + getStateSize();
+}
+
+void 
+FnDistinctValuesIterator::releaseResourcesImpl(PlanState& planState)
+{
+  UnaryBaseIterator<FnDistinctValuesIterator>::releaseResourcesImpl(planState);
+  
+  FnDistinctValuesIteratorState* state;
+  GET_STATE(FnDistinctValuesIteratorState, state, planState);
+  
+  // do we need a releaseResouces function in the state or is it always the same as reset?
+  state->reset(); 
+}
+
+void 
+FnDistinctValuesIterator::resetImpl(PlanState& planState)
+{
+  UnaryBaseIterator<FnDistinctValuesIterator>::resetImpl(planState);
+
+  FnDistinctValuesIteratorState* state;
+  GET_STATE(FnDistinctValuesIteratorState, state, planState);
+  state->reset();
+}
+
+void 
+FnDistinctValuesIterator::setOffset(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<FnDistinctValuesIterator>::setOffset(planState, offset);
+
+  FnDistinctValuesIteratorState* state = 
+    new (planState.block + stateOffset) FnDistinctValuesIteratorState;
+}
+
+bool 
+FnDistinctValuesIterator::ItemCmp::operator() ( 
+  const Item_t& i1, const Item_t& i2) const
+{
+  return CompareIterator::compare(i1, i2)<0?true:false;
+}
+
+void
+FnDistinctValuesIterator::FnDistinctValuesIteratorState::init() 
+{
+ PlanIterator::PlanIteratorState::init();
+}
+
+void
+FnDistinctValuesIterator::FnDistinctValuesIteratorState::reset() {
+ PlanIterator::PlanIteratorState::reset();
+ theAlreadySeenMap.clear();
+}
+
 
 //15.1.7 fn:insert-before
 

@@ -141,11 +141,18 @@ DECL(fn_empty,
     GENV_TYPESYSTEM.ITEM_TYPE_ONE,
     GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
+ // FIXME how to add the third optional string param
 DECL(fn_index_of,
-      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","index-of"),
-      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.ITEM_TYPE_ONE,
-      GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","index-of"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+    GENV_TYPESYSTEM.ITEM_TYPE_ONE,
+    GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
+
+// FIXME how to add the second optional string param
+DECL(fn_distinct_values,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-values"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 // end Sequences
 

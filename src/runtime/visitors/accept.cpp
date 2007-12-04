@@ -91,6 +91,7 @@ namespace xqp {
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnExistsIterator);
   UNARY_ACCEPT(FnEmptyIterator);
+  UNARY_ACCEPT(FnDistinctValuesIterator);
   UNARY_ACCEPT(DocIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
   UNARY_ACCEPT(TextIterator);

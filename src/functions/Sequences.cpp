@@ -204,13 +204,26 @@ PlanIter_t fn_distinct_values::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-	return NULL;
+  // FIXME add collation support
+  string collation;
+	if ( argv.size() == 2 ) 
+	{
+		//xs_stringValue* v_p = (xs_stringValue*)value_factory::cast_as(argv[2],xs_string);
+		collation = "default_collation"; //v_p->string_value();
+	}
+	else 
+	{
+		//static_context* sctx_p = zorba::getZorbaForCurrentThread()->get_static_context();
+		//qname_value* qn_p = (qname_value*)(sctx_p->get_default_collation());
+		collation = "default_collation"; //qn_p->string_value();
+	}
+  return new FnDistinctValuesIterator(loc, argv[0], collation);
 }
 
 bool fn_distinct_values::validate_args(
 	vector<PlanIter_t>& argv) const
 {
-	return true;
+  return (argv.size() == 1 || argv.size() == 2);
 }
 
 TypeSystem::xqtref_t fn_distinct_values::type_check(

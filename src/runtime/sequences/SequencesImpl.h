@@ -93,6 +93,9 @@ public:
 
   virtual uint32_t
   getStateSizeOfSubtree() const;
+  
+  void 
+  setOffset(PlanState& planState, uint32_t& offset);  
 
 protected:
   class FnIndexOfIteratorState : public PlanIteratorState {
@@ -151,6 +154,58 @@ public:
 };
 
 //15.1.6 fn:distinct-values
+class FnDistinctValuesIterator : public UnaryBaseIterator<FnDistinctValuesIterator>
+{
+
+public:
+  FnDistinctValuesIterator(yy::location loc,
+                           PlanIter_t& arg1,
+                           std::string collation);
+ 
+  ~FnDistinctValuesIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+ 
+  void 
+  resetImpl(PlanState& planState);
+  
+  void 
+  releaseResourcesImpl(PlanState& planState);
+ 
+ 
+  virtual void 
+  accept(PlanIterVisitor&) const;
+
+  virtual uint32_t 
+  getStateSize() const { return sizeof ( FnDistinctValuesIteratorState ); }
+
+  virtual uint32_t
+  getStateSizeOfSubtree() const;
+
+  void 
+  setOffset(PlanState& planState, uint32_t& offset);
+
+protected:
+  struct ItemCmp 
+  {
+      bool operator() ( const Item_t&, const Item_t& ) const;
+  };
+  
+  class FnDistinctValuesIteratorState : public PlanIteratorState {
+  public:  
+    typedef std::map<Item_t, uint8_t, ItemCmp> AlreadySeenMap_t;
+    typedef AlreadySeenMap_t::const_iterator   AlreadySeenConstIter_t;
+
+    AlreadySeenMap_t theAlreadySeenMap;  
+  
+    void init();
+    void reset();
+  };
+  
+};
+
+
 
 //15.1.7 fn:insert-before
 
