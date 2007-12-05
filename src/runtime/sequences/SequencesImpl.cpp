@@ -384,6 +384,14 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
     ++state->theCurrentPos;
     STACK_PUSH (state->theTargetItem, state);
   }
+  
+  if (state->theCurrentPos < state->thePosition) // append to the end
+  {
+    while ( (lInsertItem = consumeNext(theChildren[2], planState)) != NULL)
+    {
+      STACK_PUSH (lInsertItem, state);
+    }    
+  }
  
   STACK_END();
 }
