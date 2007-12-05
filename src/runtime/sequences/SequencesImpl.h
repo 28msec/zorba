@@ -234,6 +234,7 @@ protected:
   public:  
     xqp_integer theCurrentPos; // the current position in the sequence
     xqp_integer thePosition;
+    Item_t      theTargetItem;
   
     void init();
     void reset();

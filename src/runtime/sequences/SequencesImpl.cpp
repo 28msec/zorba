@@ -354,7 +354,6 @@ FnInsertBeforeIterator::~FnInsertBeforeIterator(){}
 
 Item_t 
 FnInsertBeforeIterator::nextImpl(PlanState& planState) {
- Item_t lTargetItem;
  Item_t lInsertItem;
  Item_t lPositionItem;
  
@@ -372,7 +371,7 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
    state->thePosition = 1;
    
   
- while ( (lTargetItem = consumeNext(theChildren[0], planState)) != NULL ) 
+ while ( (state->theTargetItem = consumeNext(theChildren[0], planState)) != NULL ) 
  {
     if ( state->theCurrentPos == state->thePosition-1 ) // position found => insert sequence
     {
@@ -382,10 +381,10 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
       }
     }
     ++state->theCurrentPos;
-    STACK_PUSH (lTargetItem, state);
+    STACK_PUSH (state->theTargetItem, state);
   }
  
- STACK_END();
+  STACK_END();
 }
 
 void 
@@ -415,6 +414,7 @@ FnInsertBeforeIterator::FnInsertBeforeIteratorState::init() {
  PlanIterator::PlanIteratorState::init();
  theCurrentPos = 0;
  thePosition = 0;
+ theTargetItem = NULL;
 }
 
 void
@@ -422,6 +422,7 @@ FnInsertBeforeIterator::FnInsertBeforeIteratorState::reset() {
  PlanIterator::PlanIteratorState::reset();
  theCurrentPos = 0;
  thePosition = 0; 
+ theTargetItem = NULL;
 }
 
 
