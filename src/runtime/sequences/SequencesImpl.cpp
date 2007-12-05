@@ -96,6 +96,7 @@ FnIndexOfIterator::~FnIndexOfIterator(){}
 Item_t 
 FnIndexOfIterator::nextImpl(PlanState& planState) {
   Item_t lSequenceItem;
+  int8_t lCmpRes;
 
   FnIndexOfIteratorState* state;
   STACK_INIT(FnIndexOfIteratorState, state, planState);
@@ -119,7 +120,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
     // Values of type xs:untypedAtomic are compared as if they were of type xs:string. 
     // Values that cannot be compared, i.e. the eq operator is not defined for their types, are considered to be distinct. 
     // If an item compares equal, then the position of that item in the sequence $seqParam is included in the result.
-    int8_t lCmpRes = CompareIterator::valueCompare(lSequenceItem, state->theSearchItem);
+    lCmpRes = CompareIterator::valueCompare(lSequenceItem, state->theSearchItem);
     if ( lCmpRes == 0 ) // FIXME collation support
       STACK_PUSH(zorba::getItemFactory()->createInteger(state->theCurrentPos), state);
   }
