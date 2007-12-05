@@ -1,0 +1,141 @@
+
+FAILURE : -bucket sequences -query seq0
+
+
+FAILURE : -bucket sequences -query seq1
+
+
+FAILURE : -bucket sequences -query seq10
+
+
+FAILURE : -bucket sequences -query seq11
+
+
+FAILURE : -bucket sequences -query seq12
+
+
+FAILURE : -bucket sequences -query seq2
+
+
+FAILURE : -bucket sequences -query seq3
+
+
+FAILURE : -bucket sequences -query seq4
+
+
+FAILURE : -bucket sequences -query seq5
+
+
+FAILURE : -bucket sequences -query seq6
+
+
+FAILURE : -bucket sequences -query seq7
+
+
+FAILURE : -bucket sequences -query seq8
+
+
+FAILURE : -bucket sequences -query seq9
+
+
+rbkt.sh : total number of queries   = 23
+rbkt.sh : number of failed queries  = 13
+
+FAILURE : -bucket sequences -query seq0
+
+
+FAILURE : -bucket sequences -query seq1
+
+
+FAILURE : -bucket sequences -query seq10
+
+
+FAILURE : -bucket sequences -query seq11
+
+
+FAILURE : -bucket sequences -query seq12
+
+
+FAILURE : -bucket sequences -query seq13
+
+
+FAILURE : -bucket sequences -query seq2
+
+
+FAILURE : -bucket sequences -query seq3
+
+
+FAILURE : -bucket sequences -query seq4
+
+
+FAILURE : -bucket sequences -query seq5
+
+
+FAILURE : -bucket sequences -query seq6
+
+
+FAILURE : -bucket sequences -query seq7
+
+
+FAILURE : -bucket sequences -query seq8
+
+
+FAILURE : -bucket sequences -query seq9
+
+
+rbkt.sh : total number of queries   = 26
+rbkt.sh : number of failed queries  = 15
+
+FAILURE : -bucket sequences -query seq0
+
+
+FAILURE : -bucket sequences -query seq1
+
+
+FAILURE : -bucket sequences -query seq10
+
+
+FAILURE : -bucket sequences -query seq11
+
+
+FAILURE : -bucket sequences -query seq12
+
+
+FAILURE : -bucket sequences -query seq13
+
+
+FAILURE : -bucket sequences -query seq14
+
+
+FAILURE : -bucket sequences -query seq15
+
+
+FAILURE : -bucket sequences -query seq16
+
+
+FAILURE : -bucket sequences -query seq2
+
+
+FAILURE : -bucket sequences -query seq3
+
+
+FAILURE : -bucket sequences -query seq4
+
+
+FAILURE : -bucket sequences -query seq5
+
+
+FAILURE : -bucket sequences -query seq6
+
+
+FAILURE : -bucket sequences -query seq7
+
+
+FAILURE : -bucket sequences -query seq8
+
+
+FAILURE : -bucket sequences -query seq9
+
+
+rbkt.sh : total number of queries   = 29
+rbkt.sh : number of failed queries  = 18
