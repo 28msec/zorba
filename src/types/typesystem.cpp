@@ -410,20 +410,22 @@ TypeSystem::xqtref_t TypeSystem::prime_type(const XQType& type) const
 
 TypeSystem::xqtref_t TypeSystem::arithmetic_type(const XQType& type1, const XQType& type2) const
 {
-  if (is_subtype(*UNTYPED_ATOMIC_TYPE_ONE, type1)
-    || is_subtype(*UNTYPED_ATOMIC_TYPE_ONE, type2)
-    || is_subtype(*DOUBLE_TYPE_ONE, type1)
-    || is_subtype(*DOUBLE_TYPE_ONE, type2)) {
+  if (is_subtype(type1, *UNTYPED_ATOMIC_TYPE_ONE)
+      || is_subtype(type2, *UNTYPED_ATOMIC_TYPE_ONE)
+      || is_subtype(type1, *DOUBLE_TYPE_ONE)
+      || is_subtype(type2, *DOUBLE_TYPE_ONE)) {
     return DOUBLE_TYPE_ONE;
   }
-  if (is_subtype(*FLOAT_TYPE_ONE, type1)
-    || is_subtype(*FLOAT_TYPE_ONE, type2)) {
+  if (is_subtype(type1, *FLOAT_TYPE_ONE)
+      || is_subtype(type2, *FLOAT_TYPE_ONE)) {
     return FLOAT_TYPE_ONE;
   }
-  if ((is_subtype(*DECIMAL_TYPE_ONE, type1)
-    && !is_subtype(*INTEGER_TYPE_ONE, type1))
-    || (is_subtype(*DECIMAL_TYPE_ONE, type2))
-    && !is_subtype(*INTEGER_TYPE_ONE, type2)) {
+  bool b = is_subtype(type1, *DECIMAL_TYPE_ONE);
+  b = is_subtype(type1, *INTEGER_TYPE_ONE);
+  if ((is_subtype(type1, *DECIMAL_TYPE_ONE)
+       && !is_subtype(type1, *INTEGER_TYPE_ONE))
+       || (is_subtype(type2, *DECIMAL_TYPE_ONE))
+       && !is_subtype(type2, *INTEGER_TYPE_ONE)) {
     return DECIMAL_TYPE_ONE;
   }
 
