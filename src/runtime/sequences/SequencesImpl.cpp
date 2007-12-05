@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <sstream>
 
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
@@ -15,6 +16,7 @@
 #include "store/naive/store_defs.h"
 #include "errors/Error.h"
 #include "runtime/visitors/planitervisitor.h"
+#include "util/web/web.h"
 
 using namespace std;
 namespace xqp {
@@ -462,7 +464,29 @@ DocIterator::nextImpl ( PlanState& planState )
       state->childrenIter = state->collection->getIterator(true);
       state->got_doc = 2;
     }
-    else
+    else if(state->uri.lowercase().indexOf("http://") == 0)
+    {
+      // retrieve web file
+      xqp_string result;
+      int result_code = http_get(state->uri.c_str(), result);
+
+      if (result_code != 0)
+      {
+         // File does not exist
+        ZORBA_ERROR_ALERT(error_messages::FODC0002_Error_retrieving_resource,
+                          error_messages::RUNTIME_ERROR,
+                          NULL,
+                          false,
+                          "Could not retrieve resource");
+      }
+
+      istringstream iss(result.getStore().c_str());
+      XmlLoader& loader = store.getXmlLoader();
+      state->doc = loader.loadXml(iss);
+      state->childrenIter = state->doc->getChildren();
+      state->got_doc = 1;
+    }
+    else 
     {
       // load file
       ifstream ifs;

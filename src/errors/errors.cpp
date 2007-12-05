@@ -177,6 +177,8 @@ string errors_english::err_decode(enum errcode e)
   case XQP0005_SYSTEM_ASSERT_FAILED:
     return "Assertion `/s' failed in /s";
   TRIVIAL_ERR (XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED);
+  case XQP0004_SYSTEM_NOT_SUPPORTED:
+    return "XQP0004_SYSTEM_NOT_SUPPORTED";    
   case XQP0016_LOADER_IO_ERROR:
     return "XQP0016_LOADER_IO_ERROR";
   case XQP0017_LOADER_NOT_WELL_FORMED_XML:

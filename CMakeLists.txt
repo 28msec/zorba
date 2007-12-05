@@ -22,12 +22,29 @@ IF(NOT CMAKE_BUILD_TYPE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 ##############################################################################################################
+# Variables
+SET(requiredlibs)
+SET(DEFINITIONS)
+
+
+##############################################################################################################
 # Used libraries
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_modules)
 
 INCLUDE(cmake_modules/FindICU.cmake)
 
 FIND_PACKAGE(LibXml2)
+
+IF(WITH_CURL)
+  FIND_PACKAGE(CURL)
+  IF(CURL_FOUND)
+    MESSAGE(STATUS "Found cURL library -- " ${CURL_LIBRARIES})
+    SET(requiredlibs ${requiredlibs} ${CURL_LIBRARIES})  
+	SET(DEFINITIONS ${DEFINITIONS} "-D WITH_CURL ")
+  ELSE(CURL_FOUND)
+    MESSAGE(FATAL_ERROR "The cURL library was requested, but it could not be found.")
+  ENDIF(CURL_FOUND)
+ENDIF(WITH_CURL)
 
 INCLUDE(cmake_modules/FindIconv.cmake)
 FIND_PACKAGE(Iconv)
@@ -91,8 +108,9 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 # some compiler flags that should always be used in order to force a good programming style
 IF (MSVC)
+	ADD_DEFINITIONS(${DEFINITIONS})
 ELSE (MSVC)
-	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual -DZORBA_USE_PTHREAD_LIBRARY)
+	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual -DZORBA_USE_PTHREAD_LIBRARY ${DEFINITIONS})
 ENDIF (MSVC)
 
 
