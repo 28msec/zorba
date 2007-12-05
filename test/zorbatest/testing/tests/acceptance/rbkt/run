@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#
+# Note: the standard output of this script goes to a temp file, which is then
+# appended to the file:
+#
+# /zorbatest/snapshots/latest/test_results/acceptance/rbkt/result.txt
+#
+
 if [ ! ${zorbaRepos} ]; then
 
   if [ ! ${SRC} ]; then
@@ -21,8 +28,13 @@ if [ ! ${zorbaExecDir} ]; then
   export zorbaExecDir=$ZORBA_EXEC_DIR
 fi
 
+# pwd = /zorbatest/snapshots/latest/tests/acceptance/rbkt/
 
-$zorbaRepos/test/rbkt/Scripts/rbkt.sh > /dev/null
+$zorbaRepos/test/rbkt/Scripts/rbkt.sh -b paths > /dev/null
+
+
+# pwd = /zorbatest/snapshots/latest/tests/acceptance/rbkt/
+
 
 echo
 cat rbkt_summary.txt

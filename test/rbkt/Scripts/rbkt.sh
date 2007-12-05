@@ -26,7 +26,7 @@ fi
 # the scripts, the test queries and their expected results. It is also under
 # this directory where all output from the tests is stored.
 #
-testRootDir=${zorbaRepos}/test/rbkt
+testRootDir="${zorbaRepos}/test/rbkt"
 
 # The following dirs MUST exist under the testRootDir.
 scriptsDir=${testRootDir}/Scripts
@@ -61,6 +61,7 @@ trap '' 12
 #
 bucketName=""
 queryName=""
+displayFormat="xml"
 
 state=0
 while [ $1 ]
@@ -68,11 +69,12 @@ do
    case $1 in
    -b)        state=1;;
    -q)        state=2;;
+   -d)        state=3;;
    -h)        usage ; exit;;
     *) case $state in
        1) bucketName="$1"; state=0 ;;
        2) queryName="$1"; state=0 ;;
-       6) numruns=${1}; state=0;;
+       3) displayFormat="$1"; state=0 ;;
        *) echo "ERROR 6 rbkt.sh: Wrong parameter $1"; usage; exit 6;;
        esac ;;
     esac
@@ -83,6 +85,9 @@ if [ $state -ne 0 ]; then
   echo "ERROR 7 rbkt.sh: Wrong arg list"; usage; exit 7;
 fi
 
+if [ ${displayFormat} != "xml" -a ${displayFormat} != "show" ]; then
+  echo "ERROR 8 rbkt.sh: Wrong display format; must be xml or show"; exit 8;
+fi
 
 #
 # Building env directories and runtime env
@@ -107,7 +112,7 @@ rm -f rbkt_summary.txt
 if [ "${bucketName}" != "" ]; then
 
   if [ "${queryName}" != "" ]; then
-    run_query_in_bucket "${bucketName}" "${queryName}"
+    run_query_in_bucket "${bucketName}" "${queryName}" ${displayFormat}
     error=$?
     if [ ${error} -ne 0 ]; then
       echo "ERROR 70 rbkt.sh: run_query_in_bucket function failed with error code ${error}"
@@ -115,7 +120,7 @@ if [ "${bucketName}" != "" ]; then
     fi
   else
     echo; echo "Running bucket ${bucketName}"
-    run_bucket "${bucketName}" 
+    run_bucket "${bucketName}" ${displayFormat}
     error=$?
     if [ ${error} -ne 0 ]; then
       echo "ERROR 71 rbkt.sh: run_bucket function failed with error code ${error}"
@@ -130,7 +135,7 @@ else
   for bucketName in ${bucketList}
   do
     echo; echo "Running bucket ${bucketName}"
-    run_bucket "${bucketName}"
+    run_bucket "${bucketName}" ${displayFormat}
     error=$?
     if [ ${error} -ne 0 ]; then
       echo "ERROR 72 rbkt.sh: run_bucket function failed with error code ${error}"
@@ -149,6 +154,8 @@ echo "rbkt.sh : number of failed queries  = $failedQueries" >> rbkt_summary.txt
 
 rm -f query.dot
 rm -f query.xml
+
+#mv rbkt_summary.txt ${PWD}/
 
 if [ ${failedQueries} -gt 0 ]; then
   exit 1

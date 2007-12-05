@@ -10,25 +10,24 @@
 
 function usage ()
 {
-  echo "rbkt.sh [-b bucketName [-q queryName]] [-h]"
+  echo "rbkt.sh [-b bucketName [-q queryName]] [-d displayFormat] [-h]"
   echo
   echo "Run a single query, or all the queries inside a directory (bucket), or all"
   echo "the queries that can be found anywhere inside the Queries dir."
   echo 
-  echo "-b bucketName: bucketName is a relative pathname used to construct full"
-  echo " pathnames for the directories that contain a group of queries, their"
-  echo " expected results, and their actual results. For example, if bucketName"
-  echo " is foo, rbkt will run queries in "
-  echo "specify 3 directories:"
-  echo "     (a) a directory where files containing query strings are located;"
-  echo "            in this case the pathname is relative to the Queries directory"
-  echo "            in the test environment"
-  echo "        (b) the directory where the query-results files will be written;"
-  echo "            in this case the pathname is relative to Output/dump"
-  echo "            If not specified, all of the directories under Queries will be "
-  echo "            visited, and the queries in them run."
-  echo "-q : The query to run. The query string is in file <queryName>.xq inside"
-  echo "         the bucketName directory."
+  echo "Options : "
+  echo
+  echo "-b: Specifies the query bucket to run. <bucketName> is used to construct"
+  echo "    the full pathnames for the directories that contain a group of queries,"
+  echo "    their expected results, and their actual results. For example, if"
+  echo "    bucketName is foo, rbkt will run queries in .../test/rbkt/Queries/foo"
+  echo
+  echo "-q: The query to run. The query string is in file <queryName>.xq inside"
+  echo "    the .../test/rbkt/Queries/<bucketName> directory."
+  echo
+  echo "-d: Specifies the display format for the query results. Currently, this"
+  echo "    may be one of xml or show. The default is xml"
+  echo
   echo "-h : help"
 }
 
@@ -95,14 +94,18 @@ function buildDirEnv
 ################################################################################
 
 
-#params: 
 #
-# $1 - queryFile  : Full pathname of the file that contains the query string
+# params: 
+#
+# $1 queryFile
+# $2 displayFormat
+#
 function run_query
 {
   local error=0
 
   local queryFile="$1"
+  local displayFormat=$2
 
   local EXE=${zorbaExecDir}/apitest
 
@@ -111,40 +114,59 @@ function run_query
     exit 17
   fi
   
-  pwd push
+  #pwd push
   cd ${queryFile%/*}
 
-  ${EXE} -o "${queryFile}.res" "${queryFile}"
+  if [ $displayFormat == "xml" ]; then
+    ${EXE} -r -o "${queryFile}.res" "${queryFile}"
+  else
+    ${EXE} -o "${queryFile}.res" "${queryFile}"
+  fi
   error=$?
   if [ ${error} != 0 ]; then
     echo "ERROR 2 run_query: ${EXE} $1 failed with error code ${error}"
     # To allow more queries to be run by the caller, do not propagate error
   fi
   
-  pwd pop
+  #pwd pop
+  cd -
 
   return 0
 }
 
 
-#params
 #
-# $1 bucketName         : See run_bucket() function
-# $2 queryName          : The query name.
+# params
+#
+# $1 bucketName 
+# $2 queryName  
+# $3 displayFormat
+#
 function run_query_in_bucket
 {
   local error=0
 
   local bucketName="$1"
   local queryName="$2"
+  local displayFormat=$3
 
   local inputDir="${queriesDir}/${bucketName}"
   local queryFile="${inputDir}/${queryName}.xq"
 
-  local expResultsDir="${expQueryResultsDir}/${bucketName}"
+  local expResultsDir=""
+  if [ $displayFormat == "xml" ]; then
+    expResultsDir="${expQueryResultsDir}/${bucketName}_xml"
+  else
+    expResultsDir="${expQueryResultsDir}/${bucketName}_show"
+  fi
   local expResultFile="${expResultsDir}/${queryName}.res"
 
-  local resultsDir="${queryResultsDir}/${bucketName}"
+  local resultsDir=""
+  if [ $displayFormat == "xml" ]; then
+      resultsDir="${queryResultsDir}/${bucketName}_xml"
+  else
+      resultsDir="${queryResultsDir}/${bucketName}_show"
+  fi
   local resultFile="${resultsDir}/${queryName}.res"
   local diffFile="${resultsDir}/${queryName}.diff"
 
@@ -164,7 +186,7 @@ function run_query_in_bucket
   #
   # Run the query
   #
-  run_query "${queryFile}"
+  run_query "${queryFile}" ${displayFormat}
   error=$?
   if [ ${error} != 0 ]; then
     echo "ERROR 3 run_query_in_bucket: run_query failed with error code ${error}"
@@ -219,13 +241,8 @@ function run_query_in_bucket
 #
 # params:
 #
-# $1 bucketName : This is a relative pathname that specifies 2 directories:
-#                 (a) a directory that contains query files; in this case the
-#                     pathname is relative to the Queries directory in the test
-#                     environment.
-#                 (b) a directory where the query-results file will be written;
-#                     in this case the pathname is relative to the Results
-#                     directory in the test environment.
+# $1 bucketName
+# $2 displayFormat
 #
 function run_bucket() 
 {
@@ -234,6 +251,7 @@ function run_bucket()
   local q=""
   local queryName=""
   local bucketName="$1"
+  local displayFormat=$2
 
   if [ ! -e "${queriesDir}/${bucketName}" ]; then
     echo "ERROR 1 run_bucket: bucket ${queriesDir}/${bucketName} does not exist"
@@ -250,7 +268,7 @@ function run_bucket()
     echo ${q} | sed -e s/".xq"/""/g  > tmp_queryFile
     for queryName in `cat tmp_queryFile`
     do 
-      run_query_in_bucket "${bucketName}" "${queryName}"
+      run_query_in_bucket "${bucketName}" "${queryName}" ${displayFormat}
       error=$?
       if [ ${error} != 0 ]; then
         echo "ERROR 3 run_bucket: run_bucket failed with error code ${error}"
