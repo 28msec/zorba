@@ -27,9 +27,6 @@ namespace xqp {
 | 15.1 General Functions and Operators on Sequences
 |_______________________________________________________________________*/
 
-//15.1.1 fn:boolean
-
-
 
 //15.1.2 op:concatenate 
 //---------------------
@@ -50,11 +47,11 @@ FnConcatIterator::nextImpl(PlanState& planState) {
 	FnConcatIteratorState* state;
 	STACK_INIT(FnConcatIteratorState, state, planState);
 	
-  for (; state->getCurIter() < theChildren.size(); state->incCurIter()) {;
-		item = this->consumeNext(theChildren[state->getCurIter()], planState);
+  for (; state->theCurIter < theChildren.size(); ++state->theCurIter) {;
+		item = this->consumeNext(theChildren[state->theCurIter], planState);
 		while (item != NULL) {
 			STACK_PUSH (item, state);
-			item = this->consumeNext(theChildren[state->getCurIter()], planState);
+			item = this->consumeNext(theChildren[state->theCurIter], planState);
 		}
 	}
 	
@@ -85,12 +82,6 @@ FnConcatIterator::FnConcatIteratorState::reset() {
 	theCurIter = 0;
 }
 
-void
-FnConcatIterator::FnConcatIteratorState::incCurIter() {
-	theCurIter++;
-}
-
-
 //15.1.3 fn:index-of
 // FIXME this iterator has three arguments (i.e. the collaction as #3)
 FnIndexOfIterator::FnIndexOfIterator(yy::location loc,
@@ -104,8 +95,7 @@ FnIndexOfIterator::~FnIndexOfIterator(){}
 
 Item_t 
 FnIndexOfIterator::nextImpl(PlanState& planState) {
-  Item_t lSequence;
-  Item_t lSearch;
+  Item_t lSequenceItem;
 
   FnIndexOfIteratorState* state;
   STACK_INIT(FnIndexOfIteratorState, state, planState);
@@ -120,11 +110,17 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
          "An empty sequence is not allowed as search item of fn:index-of");    
   }
 
-  while ( (lSequence = consumeNext(theChild0, planState)) != NULL )
+  while ( (lSequenceItem = consumeNext(theChild0, planState)) != NULL )
   {
-    ++state->theCurrentPos; // index-of starts with one
+    // inc the position in the sequence; do it at the beginning of the loop because index-of starts with one
+    ++state->theCurrentPos; 
     
-    if (lSequence->equals(state->theSearchItem)) // FIXME collation support
+    // The items in the sequence theChild0 are compared with theSearchItem under the rules for the eq operator. 
+    // Values of type xs:untypedAtomic are compared as if they were of type xs:string. 
+    // Values that cannot be compared, i.e. the eq operator is not defined for their types, are considered to be distinct. 
+    // If an item compares equal, then the position of that item in the sequence $seqParam is included in the result.
+    int8_t lCmpRes = CompareIterator::valueCompare(lSequenceItem, state->theSearchItem);
+    if ( lCmpRes == 0 ) // FIXME collation support
       STACK_PUSH(zorba::getItemFactory()->createInteger(state->theCurrentPos), state);
   }
 
@@ -349,6 +345,85 @@ FnDistinctValuesIterator::FnDistinctValuesIteratorState::reset() {
 
 
 //15.1.7 fn:insert-before
+FnInsertBeforeIterator::FnInsertBeforeIterator(yy::location loc,
+                                              vector<PlanIter_t>& aChildren)
+  : NaryBaseIterator<FnInsertBeforeIterator>(loc, aChildren)
+{}
+
+FnInsertBeforeIterator::~FnInsertBeforeIterator(){}
+
+Item_t 
+FnInsertBeforeIterator::nextImpl(PlanState& planState) {
+ Item_t lTargetItem;
+ Item_t lInsertItem;
+ Item_t lPositionItem;
+ 
+ FnInsertBeforeIteratorState* state;
+ STACK_INIT(FnInsertBeforeIteratorState, state, planState);
+ 
+ lPositionItem = consumeNext(theChildren[1], planState);
+ if ( lPositionItem == NULL )
+ {
+   // raise error
+ }
+
+ state->thePosition = lPositionItem->getIntegerValue();
+ if (state->thePosition < 1)
+   state->thePosition = 1;
+   
+  
+ while ( (lTargetItem = consumeNext(theChildren[0], planState)) != NULL ) 
+ {
+    if ( state->theCurrentPos == state->thePosition-1 ) // position found => insert sequence
+    {
+      while ( (lInsertItem = consumeNext(theChildren[2], planState)) != NULL)
+      {
+        STACK_PUSH (lInsertItem, state);
+      }
+    }
+    ++state->theCurrentPos;
+    STACK_PUSH (lTargetItem, state);
+  }
+ 
+ STACK_END();
+}
+
+void 
+FnInsertBeforeIterator::resetImpl(PlanState& planState) {
+ NaryBaseIterator<FnInsertBeforeIterator>::resetImpl(planState);
+
+ FnInsertBeforeIteratorState* state;
+ GET_STATE(FnInsertBeforeIteratorState, state, planState);
+ state->reset();
+}
+
+void 
+FnInsertBeforeIterator::releaseResourcesImpl(PlanState& planState)
+{
+  NaryBaseIterator<FnInsertBeforeIterator>::releaseResourcesImpl(planState);
+  
+  FnInsertBeforeIteratorState* state;
+  GET_STATE(FnInsertBeforeIteratorState, state, planState);
+  
+  // do we need a releaseResouces function in the state or is it always the same as reset?
+  state->reset(); 
+}
+
+
+void
+FnInsertBeforeIterator::FnInsertBeforeIteratorState::init() {
+ PlanIterator::PlanIteratorState::init();
+ theCurrentPos = 0;
+ thePosition = 0;
+}
+
+void
+FnInsertBeforeIterator::FnInsertBeforeIteratorState::reset() {
+ PlanIterator::PlanIteratorState::reset();
+ theCurrentPos = 0;
+ thePosition = 0; 
+}
+
 
 //15.1.8 fn:remove
 

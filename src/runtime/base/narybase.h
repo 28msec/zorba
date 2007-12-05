@@ -82,7 +82,7 @@ namespace xqp
 	uint32_t
 	NaryBaseIterator<IterType>::getStateSizeOfSubtree() const
 	{
-		int32_t size = 0;
+		uint32_t size = 0;
 
 		std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
 		for ( ; iter != theChildren.end(); ++iter )

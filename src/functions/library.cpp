@@ -154,6 +154,13 @@ DECL(fn_distinct_values,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR, 
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
+DECL(fn_insert_before,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","insert-before"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+    GENV_TYPESYSTEM.INTEGER_TYPE_ONE,    
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 // end Sequences
 
 // Generic Comparison;

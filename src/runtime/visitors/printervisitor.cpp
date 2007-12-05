@@ -399,6 +399,14 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnDistinctValuesIterator& a ) {
     thePrinter.endIter();
   }
+
+  void PrinterVisitor::beginVisit ( const FnInsertBeforeIterator& a ) {
+    thePrinter.startIter("FnInsertBeforeIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnInsertBeforeIterator& a ) {
+    thePrinter.endIter();
+  }
        
   void PrinterVisitor::beginVisit ( const DocIterator& a ) {
     thePrinter.startIter("DocIterator");

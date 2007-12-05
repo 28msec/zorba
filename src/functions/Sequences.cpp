@@ -235,7 +235,27 @@ TypeSystem::xqtref_t fn_distinct_values::type_check(
 
 //15.1.7 fn:insert-before
 //-----------------------
+fn_insert_before::fn_insert_before(const signature& sig)
+  : function(sig) { }
 
+PlanIter_t fn_insert_before::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnInsertBeforeIterator(loc, argv);
+}
+
+bool fn_insert_before::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 3); 
+}
+
+TypeSystem::xqtref_t fn_insert_before::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_ONE; // what to do here?
+}
 
 //15.1.8 fn:remove
 //----------------

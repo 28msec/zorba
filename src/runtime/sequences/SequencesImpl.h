@@ -25,9 +25,8 @@ namespace xqp
   | 15.1 General Functions and Operators on Sequences
   |_______________________________________________________________________*/
 
-
 //15.1.1 fn:boolean
-
+// see BooleanImpl.h
 
 //15.1.2 op:concatenate
 class FnConcatIterator : public NaryBaseIterator<FnConcatIterator>
@@ -47,15 +46,12 @@ public:
   
 protected:
   class FnConcatIteratorState : public PlanIteratorState {
-  private:  
+  public:
     uint32_t theCurIter;
   
-  public:
     void init();
     void reset();
     
-    void incCurIter();
-    uint32_t getCurIter() { return theCurIter; }
   };
 };
 
@@ -208,6 +204,44 @@ protected:
 
 
 //15.1.7 fn:insert-before
+// Returns a new sequence constructed from the value of the first parameter with the value of third parameter inserted 
+// at the position specified by the value of the second parameter. 
+class FnInsertBeforeIterator : public NaryBaseIterator<FnInsertBeforeIterator>
+{
+
+public:
+  FnInsertBeforeIterator(yy::location loc, vector<PlanIter_t>& aChildren);
+ 
+  ~FnInsertBeforeIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+ 
+  void 
+  resetImpl(PlanState& planState);
+  
+  void 
+  releaseResourcesImpl(PlanState& planState);
+ 
+  virtual void 
+  accept(PlanIterVisitor&) const;
+
+  virtual uint32_t 
+  getStateSize() const { return sizeof ( FnInsertBeforeIteratorState ); }
+ 
+protected:
+  class FnInsertBeforeIteratorState : public PlanIteratorState {
+  public:  
+    xqp_integer theCurrentPos; // the current position in the sequence
+    xqp_integer thePosition;
+  
+    void init();
+    void reset();
+    
+  };
+  
+};
+// 
 
 //15.1.8 fn:remove
 
