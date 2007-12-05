@@ -1,0 +1,4 @@
+document
+{
+  <el>content</el>
+}
