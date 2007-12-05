@@ -14,6 +14,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "util/hashfun.h"
+
 namespace xqp {
 
 /*******************************************************************************
@@ -64,7 +66,8 @@ template<class T>
 class rchandle
 {
 private:
-  T *p;        // dumb pointer this object emulates
+  T  * p;      // dumb pointer this object emulates
+
   void init(); // common initialization
 
 public:	// ctor, dtor
@@ -86,6 +89,7 @@ public:	// operator overloading
 	bool operator==(T const* pp) const;
 	bool operator!=(T const* pp) const;
   int  operator<(const rchandle& h) const;
+  unsigned long hash() const;
 
 public:
 	std::string debug() const;
@@ -126,6 +130,13 @@ inline bool rchandle<T>::operator!=(T const* pp) const { return p!=pp; }
 
 template<class T>
 int rchandle<T>::operator<(const rchandle& h) const { return p < h.p; }
+
+template<class T>
+unsigned long rchandle<T>::hash() const
+{
+  return hashfun::h32((void*)(&p), sizeof(void*), FNV_32_INIT);
+}
+
 
 template<class T>
 inline void rchandle<T>::init()

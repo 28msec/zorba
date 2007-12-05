@@ -9,20 +9,10 @@ namespace xqp
 ********************************************************************************/
 Item_t NodeDistinctIterator::nextImpl(PlanState& planState)
 {
-  Item_t contextNode;
-
   NodeDistinctState* state;
   GET_STATE(NodeDistinctState, state, planState);
 
-  while (true)
-  {
-    contextNode = consumeNext(theChild, planState);
-    if (contextNode == NULL)
-      return NULL;
-
-    if (state->theHashSet.insert(contextNode).second)
-      return contextNode;
-  }
+  return state->theStoreIterator->next();
 }
 
 
@@ -32,7 +22,7 @@ void NodeDistinctIterator::resetImpl(PlanState& planState)
 
   NodeDistinctState* state;
   GET_STATE(NodeDistinctState, state, planState);
-  state->theHashSet.clear();
+  state->theStoreIterator->reset();
 }
 
 
@@ -42,7 +32,7 @@ void NodeDistinctIterator::releaseResourcesImpl(PlanState& planState)
 
   NodeDistinctState* state;
   GET_STATE(NodeDistinctState, state, planState);
-  state->theHashSet.clear();
+  state->theStoreIterator = NULL;
 }
 
 
@@ -51,6 +41,10 @@ void NodeDistinctIterator::setOffset(PlanState& planState, uint32_t& offset)
   UnaryBaseIterator<NodeDistinctIterator>::setOffset(planState, offset);
 
   NodeDistinctState* state = new (planState.block + stateOffset) NodeDistinctState;
+
+  Iterator_t input = new PlanIterWrapper(theChild, planState);
+
+  state->theStoreIterator = Store::getInstance().distinctNodeStable(input);
 }
 
 

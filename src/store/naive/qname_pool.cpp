@@ -3,6 +3,7 @@
 #include "store/naive/qname_pool.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_store.h"
+#include "store/naive/store_defs.h"
 
 namespace xqp
 {
@@ -13,7 +14,7 @@ const float QNamePool::DEFAULT_LOAD_FACTOR = 0.6;
 /*******************************************************************************
 
 ********************************************************************************/
-QNamePool::QNamePool(xqp_ulong size) 
+QNamePool::QNamePool(unsigned long size) 
   :
   theCache(new QNameItemImpl[size]),
   theCacheSize(size),
@@ -27,7 +28,7 @@ QNamePool::QNamePool(xqp_ulong size)
   QNameItemImpl* qn = &theCache[1];
   QNameItemImpl* last = qn + size - 1;
 
-  for (xqp_ulong i = 1; qn < last; qn++, i++)
+  for (unsigned long i = 1; qn < last; qn++, i++)
   {
     qn->theNextFree = i + 1;
     qn->thePrevFree = i - 1;
@@ -51,8 +52,8 @@ QNamePool::QNamePool(xqp_ulong size)
 ********************************************************************************/
 QNamePool::~QNamePool() 
 {
-  xqp_ulong n = theHashTab.size();
-  for (xqp_ulong i = 0; i < n; i++)
+  unsigned long n = theHashTab.size();
+  for (unsigned long i = 0; i < n; i++)
   {
     if (theHashTab[i].theQNameSlot != NULL &&
         theHashTab[i].theQNameSlot->isOverflow())
@@ -80,7 +81,7 @@ QNameItemImpl* QNamePool::insert(
   QNameItemImpl* qn;
   bool found;
 
-  SimpleStore& store = *(static_cast<SimpleStore*>(&Store::getInstance()));
+  SimpleStore& store = GET_STORE();
 
   xqpStringStore_t pooledNs;
   store.getNamespacePool().insert(ns, pooledNs);
@@ -196,20 +197,20 @@ QNameItemImpl* QNamePool::cacheInsert(HashEntry* entry)
 ********************************************************************************/
 QNamePool::HashEntry* QNamePool::hashInsert(
     const xqpStringStore_t& ns,
-    const char* pre,
-    const char* ln,
-    xqp_ulong   prelen,
-    xqp_ulong   lnlen,
-    bool&       found)
+    const char*             pre,
+    const char*             ln,
+    unsigned long           prelen,
+    unsigned long           lnlen,
+    bool&                   found)
 {
-  xqp_ulong len;
+  unsigned long len;
   HashEntry* entry;
   HashEntry* lastentry;
 
   found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  xqp_ulong hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns->c_str())));
+  unsigned long hval = hashfun::h32(pre, hashfun::h32(ln, hashfun::h32(ns->c_str())));
   entry = &theHashTab[hval % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new qname.
@@ -316,7 +317,7 @@ void QNamePool::hashRemove(
   HashEntry* preventry = NULL;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given qname
-  xqp_ulong hval = hashfun::h32(pre->c_str(),
+  unsigned long hval = hashfun::h32(pre->c_str(),
                                 hashfun::h32(ln->c_str(),
                                              hashfun::h32(ns->c_str())));
   entry = &theHashTab[hval % theHashTabSize];
@@ -377,7 +378,7 @@ void QNamePool::resizeHashTab()
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  xqp_ulong oldsize = oldTab.size();
+  unsigned long oldsize = oldTab.size();
 
   theHashTabSize <<= 1;
 
@@ -390,11 +391,11 @@ void QNamePool::resizeHashTab()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (xqp_ulong i = 0; i < oldsize; i++)
+  for (unsigned long i = 0; i < oldsize; i++)
   {
     QNameItemImpl* qn = oldTab[i].theQNameSlot;
 
-    xqp_ulong h = hashfun::h32(qn->thePrefix->c_str(),
+    unsigned long h = hashfun::h32(qn->thePrefix->c_str(),
                              hashfun::h32(qn->theLocal->c_str(),
                                           hashfun::h32(qn->theNamespace->c_str())));
     entry = &theHashTab[h % theHashTabSize];

@@ -6,14 +6,14 @@
 namespace xqp
 {
 
-const xqp_ulong StringPool::DEFAULT_POOL_SIZE = 1024;
+const unsigned long StringPool::DEFAULT_POOL_SIZE = 1024;
 const float StringPool::DEFAULT_LOAD_FACTOR = 0.6;
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-StringPool::StringPool(xqp_ulong size) 
+StringPool::StringPool(unsigned long size) 
   :
   theNumEntries(0),
   theHashTabSize(size),
@@ -36,8 +36,8 @@ StringPool::StringPool(xqp_ulong size)
 StringPool::~StringPool() 
 {
 #ifndef NDEBUG
-  xqp_ulong n = theHashTab.size();
-  for (xqp_ulong i = 0; i < n; i++)
+  unsigned long n = theHashTab.size();
+  for (unsigned long i = 0; i < n; i++)
   {
     if (theHashTab[i].theString != NULL &&
         theHashTab[i].theString->getRefCount() != 1)
@@ -50,107 +50,72 @@ StringPool::~StringPool()
 /*******************************************************************************
   Check if the given string is already in the pool and if not, make a copy of it
   and place the copy in the pool. Return true if the string was already in the
-  pool, and false otherwise.
+  pool, and false otherwise. Also return an rchandle to the string copy.
 ********************************************************************************/
 bool StringPool::insert(const char* str, xqpStringStore_t& outStr)
 {
-  HashEntry* entry;
-  HashEntry* lastentry;
+  bool found;
 
-  // Get ptr to the 1st entry of the hash bucket corresponding to the given str.
-  entry = &theHashTab[xqpStringStore::hash(str) % theHashTabSize];
+  HashEntry* entry = hashInsert(str, strlen(str), xqpStringStore::hash(str), found);
 
-  // If the hash bucket is empty, its 1st entry is used to store the new string.
-  if (entry->theString == NULL)
-  {
-    theNumEntries++;
+  if (!found)
     entry->theString = outStr = new xqpStringStore(str);
-    return false;
-  }
-
-  // Search the hash bucket looking for the given string.
-  while (entry != NULL)
-  {
-    if (entry->theString->byteEqual(str, strlen(str)))
-    {
-      outStr = entry->theString;
-      return true;
-    }
-    lastentry = entry;
-    entry =  entry->theNext;
-  }
-
-  // The string was not found.
-  theNumEntries++;
-
-  // Double the size of hash table if it is more than 60% full. 
-  if (theNumEntries > theHashTabSize * theLoadFactor)
-  {
-    expandHashTab();
-
-    entry = &theHashTab[xqpStringStore::hash(str) % theHashTabSize];
-
-    if (entry->theString == NULL)
-    {
-      entry->theString = outStr = new xqpStringStore(str);
-      return false;
-    }
-
-    while (entry != NULL)
-    {
-      lastentry = entry;
-      entry =  entry->theNext;
-    }
-  }
-
-  // Get an entry from the free list in the overflow section of the hash teble
-  // If no free entry exists, a new entry is appended into the hash table. 
-  if (theHashTab[theHashTabSize].theNext == 0)
-  {
-    theHashTab.push_back(HashEntry());
-    entry = &theHashTab[theHashTab.size() - 1];
-    lastentry->theNext = entry;
-  }
   else
-  {
-    entry = theHashTab[theHashTabSize].theNext;
-    theHashTab[theHashTabSize].theNext = entry->theNext;
-    lastentry->theNext = entry;
-    entry->theNext = NULL;
-  }
+    outStr = entry->theString;
 
-  entry->theString = outStr = new xqpStringStore(str);
-  return false;
+  return found;
 }
 
 
 /*******************************************************************************
-  Check if the given string is already in the pool and if not, make a copy of it
-  and place the copy in the pool. Return true if the string was already in the
-  pool, and false otherwise.
+  Check if the given string is already in the pool and if not, insert it in the
+  pool. Return true if the string was already in the pool, and false otherwise.
 ********************************************************************************/
 bool StringPool::insert(const xqpStringStore& str)
 {
-  HashEntry* entry;
-  HashEntry* lastentry;
+  bool found;
+
+  HashEntry* entry = hashInsert(str.c_str(), str.bytes(), str.hash(), found);
+
+  if (!found)
+    entry->theString = const_cast<xqpStringStore*>(&str);
+
+  return found;
+}
+
+
+/*******************************************************************************
+  Check if the given string is already in the pool, and if so, return its hash
+  entry. If not, allocate a new hash entry for it, and return it to the caller.
+********************************************************************************/
+StringPool::HashEntry* StringPool::hashInsert(
+    const char* str,
+    unsigned long strlen,
+    unsigned long strhash,
+    bool& found)
+{
+  HashEntry* lastentry = NULL;
+
+  found = false;
 
   // Get ptr to the 1st entry of the hash bucket corresponding to the given str.
-  entry = &theHashTab[str.hash() % theHashTabSize];
+  HashEntry* entry = &theHashTab[strhash % theHashTabSize];
 
   // If the hash bucket is empty, its 1st entry is used to store the new string.
   if (entry->theString == NULL)
   {
     theNumEntries++;
-    entry->theString = const_cast<xqpStringStore*>(&str);
-    return false;
+    return entry;
   }
 
   // Search the hash bucket looking for the given string.
   while (entry != NULL)
   {
-    if (entry->theString->byteEqual(str))
-      return true;
-
+    if (entry->theString->byteEqual(str, strlen))
+    {
+      found = true;
+      return entry;
+    }
     lastentry = entry;
     entry =  entry->theNext;
   }
@@ -158,22 +123,32 @@ bool StringPool::insert(const xqpStringStore& str)
   // The string was not found.
   theNumEntries++;
 
-  // Do garbag collection if the hash table if it is more than 60% full.
-  if (theNumEntries > theHashTabSize * theLoadFactor)
-    garbageCollect();
-
-  // Double the size of hash table if it is more than 60% full.
+  // Do garbage collection if the hash table is more than 60% full.
   if (theNumEntries > theHashTabSize * theLoadFactor)
   {
-    expandHashTab();
+    garbageCollect();
 
-    entry = &theHashTab[str.hash() % theHashTabSize];
+    if (lastentry->theString == NULL)
+    {
+      entry = &theHashTab[strhash % theHashTabSize];
+
+      while (entry != NULL)
+      {
+        lastentry = entry;
+        entry =  entry->theNext;
+      }
+    }
+  }
+
+  // Double the size of the hash table if it is more than 60% full. 
+  if (theNumEntries > theHashTabSize * theLoadFactor)
+  {
+    resizeHashTab(theHashTabSize * 2);
+
+    entry = &theHashTab[strhash % theHashTabSize];
 
     if (entry->theString == NULL)
-    {
-      entry->theString = const_cast<xqpStringStore*>(&str);
-      return false;
-    }
+      return entry;
 
     while (entry != NULL)
     {
@@ -198,8 +173,7 @@ bool StringPool::insert(const xqpStringStore& str)
     entry->theNext = NULL;
   }
 
-  entry->theString = const_cast<xqpStringStore*>(&str);
-  return false;
+  return entry;
 }
 
 
@@ -208,9 +182,7 @@ bool StringPool::insert(const xqpStringStore& str)
 ********************************************************************************/
 bool StringPool::find(const xqp_string& str)
 {
-  HashEntry* entry;
-
-  entry = &theHashTab[str.hash() % theHashTabSize];
+  HashEntry* entry = &theHashTab[str.hash() % theHashTabSize];
 
   if (entry->theString == NULL)
     return false;
@@ -230,16 +202,16 @@ bool StringPool::find(const xqp_string& str)
 /*******************************************************************************
 
 ********************************************************************************/
-void StringPool::expandHashTab()
+void StringPool::resizeHashTab(unsigned long newSize)
 {
   HashEntry* entry;
   HashEntry* lastentry;
 
   // Make a copy of theHashTab, and then resize it to double theHashTabSize
   std::vector<HashEntry> oldTab = theHashTab;
-  xqp_ulong oldsize = oldTab.size();
+  unsigned long oldsize = oldTab.size();
 
-  theHashTabSize <<= 1;
+  theHashTabSize = newSize;
 
   theHashTab.clear();
   theHashTab.resize(theHashTabSize + 32);
@@ -250,7 +222,7 @@ void StringPool::expandHashTab()
     entry->theNext = entry + 1;
  
   // Now rehash every entry
-  for (xqp_ulong i = 0; i < oldsize; i++)
+  for (unsigned long i = 0; i < oldsize; i++)
   {
     xqpStringStore_t str = oldTab[i].theString;
 
@@ -286,7 +258,8 @@ void StringPool::expandHashTab()
 
 
 /*******************************************************************************
-
+  Look for strings that are not used by anybody outside the pool. Delete each
+  such string and place its entry in the free list.
 ********************************************************************************/
 void StringPool::garbageCollect()
 {
@@ -294,9 +267,9 @@ void StringPool::garbageCollect()
 
   HashEntry* freeList = NULL;
 
-  xqp_ulong size = theHashTabSize;
+  unsigned long size = theHashTabSize;
 
-  for (xqp_ulong i = 0; i < size; i++)
+  for (unsigned long i = 0; i < size; i++)
   {
     entry = &theHashTab[i];
 

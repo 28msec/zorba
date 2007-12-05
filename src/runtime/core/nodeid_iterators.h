@@ -7,23 +7,6 @@
 #include "compiler/expression/expr_consts.h"
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
-#include "store/api/store_consts.h"
-
-#ifndef WIN32
-#include <ext/hash_set>
-namespace std {
-using __gnu_cxx::hash;
-using __gnu_cxx::hashtable;
-using __gnu_cxx::hash_set;
-using __gnu_cxx::hash_multiset;
-}
-
-#else //WIN32
-#include <hash_set>
-namespace std {
-	using stdext::hash_set;
-}
-#endif //WIN32
 
 namespace xqp 
 {
@@ -33,25 +16,12 @@ namespace xqp
 ********************************************************************************/
 class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator>
 {
- protected:
-  class NodeDistinctHash
-  {
-  public:
-    size_t operator()(const Item_t& node) const
-    {
-      std::hash<unsigned long> hashfun;
-      return hashfun((unsigned long)(node.get_ptr()));
-    }
-  };
-
-  typedef std::hash_set<Item_t, NodeDistinctHash>  NodeDistinctHashSet;
-
+protected:
   class NodeDistinctState : public PlanIterator::PlanIteratorState
   {
   public:
-    NodeDistinctHashSet  theHashSet;
+    Iterator_t  theStoreIterator;
   };
-
 
 public:
   NodeDistinctIterator(
@@ -69,7 +39,9 @@ public:
   void releaseResourcesImpl(PlanState& planState);
 
   virtual uint32_t getStateSize() const { return sizeof(NodeDistinctState); }
+
   virtual void setOffset(PlanState& planState, uint32_t& offset);
+
   virtual void accept(PlanIterVisitor&) const;
 };
 

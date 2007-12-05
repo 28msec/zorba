@@ -1,12 +1,13 @@
 /*
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf (david.graf@28msec.com)
+ *  Authors: David Graf (david.graf@28msec.com), Markos Zaharioudakis
  *
- *  Info: This file contains the class declarations of all nodes defined in [http://www.w3.org/TR/xpath-datamodel/#Nodes].
+ *  Info: This file contains the class declarations of all nodes defined in
+ * [http://www.w3.org/TR/xpath-datamodel/#Nodes].
  */
 
-#ifndef XQP_NODE_ITEMS_H
-#define XQP_NODE_ITEMS_H
+#ifndef XQP_DEFAULT_STORE_NODES
+#define XQP_DEFAULT_STORE_NODES
 
 #include <vector>
 #include <string>
@@ -14,7 +15,7 @@
 #include "util/Assert.h"
 #include "store/api/item.h"
 #include "store/naive/ordpath.h"
-
+#include "store/util/handle_set.h"
 
 namespace xqp
 {
@@ -25,7 +26,6 @@ class NsBindingsContext;
 template <class Object> class rchandle;
 
 typedef rchandle<class Item> Item_t;
-typedef rchandle<class NodeItem> NodeItem_t;
 typedef rchandle<class NodeImpl> NodeImpl_t;
 
 typedef rchandle<class TempSeq> TempSeq_t;
@@ -302,10 +302,8 @@ public:
 
 
 /*******************************************************************************
-
   This iterator is used during the getChildren() or getAttributes() methods
   to set the parent pointer to each child or attribute node of "this" node.
-
 ********************************************************************************/
 class ChildrenIterator : public Iterator
 {
@@ -320,6 +318,33 @@ public:
     theParentNode(parent)
   {
   }
+
+  Item_t next();
+  void reset();
+  void close();
+};
+
+
+/*******************************************************************************
+  This iterator is used to eliminated duplicate nodes in the multiset of nodes
+  produced by another iterator.
+
+  theInput     : This is actually a PlanIterWrapper object that wraps the actual
+                 runtime iterator that produces the node multiset.
+  theHandleSet : A hash-based set used to do the duplicate elimination. The
+                 elimination is done based on the values of the pointers that
+                 point to the input nodes.
+********************************************************************************/
+class StoreNodeDistinctIterator : public Iterator
+{
+protected:
+  Iterator_t       theInput;
+  HandleSet<Item>  theNodeSet;
+
+public:
+  StoreNodeDistinctIterator(const Iterator_t& input) : theInput(input) { }
+
+  ~StoreNodeDistinctIterator() { }
 
   Item_t next();
   void reset();

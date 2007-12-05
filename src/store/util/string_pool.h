@@ -36,18 +36,18 @@ protected:
   };
 
 public:
-  static const xqp_ulong DEFAULT_POOL_SIZE;
+  static const unsigned long DEFAULT_POOL_SIZE;
   static const float DEFAULT_LOAD_FACTOR;
 
 protected:
-  xqp_ulong               theNumEntries;
+  unsigned long           theNumEntries;
 
   std::vector<HashEntry>  theHashTab;
-  xqp_ulong               theHashTabSize;
+  unsigned long           theHashTabSize;
   float                   theLoadFactor;
 
 public:
-  StringPool(xqp_ulong size = DEFAULT_POOL_SIZE);
+  StringPool(unsigned long size = DEFAULT_POOL_SIZE);
 
   ~StringPool();
 
@@ -57,7 +57,13 @@ public:
   bool find(const xqp_string& str);
 
 protected:
-  void expandHashTab();
+  HashEntry* hashInsert(
+        const char* str,
+        unsigned long strlen,
+        unsigned long strhash,
+        bool& found);
+
+  void resizeHashTab(unsigned long newSize);
   void garbageCollect();
 };
 

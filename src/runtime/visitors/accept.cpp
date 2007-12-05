@@ -1,6 +1,6 @@
 /**
  * For simplicity, this file contains the accept implementation of all PlanIterators.
- * The majority of accept's can be implemented with a makro.
+ * The majority of accept's can be implemented with a macro.
  **/
 
 #include "runtime/visitors/planitervisitor.h"
@@ -8,7 +8,7 @@
 #include "runtime/core/constructors.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/path_iterators.h"
-//#include "runtime/core/nodeid_iterators.h"
+#include "runtime/core/nodeid_iterators.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
@@ -58,7 +58,7 @@ namespace xqp {
   NOARY_ACCEPT(var_iterator);
   
   // unary iterators
-  //UNARY_ACCEPT(NodeDistinctIterator);
+  UNARY_ACCEPT(NodeDistinctIterator);
   UNARY_ACCEPT(KindTestIterator);
   UNARY_ACCEPT(NameTestIterator);
   UNARY_ACCEPT(SelfAxisIterator);

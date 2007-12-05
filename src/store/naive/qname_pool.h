@@ -54,15 +54,15 @@ public:
 
 protected:
   QNameItemImpl         * theCache;
-  unsigned long         theCacheSize;
-	unsigned long         theFirstFree;
-  unsigned long         theNumFree;
+  unsigned long           theCacheSize;
+	unsigned long           theFirstFree;
+  unsigned long           theNumFree;
 
-  unsigned long         theNumQNames;
+  unsigned long           theNumQNames;
 
   std::vector<HashEntry>  theHashTab;
-  unsigned long         theHashTabSize;
-  float                 theLoadFactor;
+  unsigned long           theHashTabSize;
+  float                   theLoadFactor;
 
 public:
   QNamePool(xqp_ulong size);

@@ -1,11 +1,11 @@
 /*
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf (david.graf@28msec.com)
+ *  Authors: David Graf (david.graf@28msec.com), Markos Zaharioudakis
  *
  */
 
-#ifndef XQP_SIMPLE_STORE_H
-#define XQP_SIMPLE_STORE_H
+#ifndef XQP_DEFAULT_STORE_H
+#define XQP_DEFAULT_STORE_H
 
 #include "store/api/store.h"
 #include "store/util/string_pool.h"

@@ -1,6 +1,6 @@
 /*
  *	Copyright 2006-2007 FLWOR Foundation.
- *  Author: David Graf (david.graf@28msec.com)
+ *  Author: David Graf (david.graf@28msec.com), Markos Zaharioudakis
  *
  */
 
@@ -168,7 +168,7 @@ Collection_t SimpleStore::createCollection(const xqp_string& uri)
   collection object. If a collection with the given URI exists already, return
   NULL and register an error.
 
-  Note: The collection URI is given as an xqp_string.
+  Note: The collection URI is given as an Item.
 ********************************************************************************/
 Collection_t SimpleStore::createCollection(Item_t uri)
 {
@@ -191,9 +191,8 @@ Collection_t SimpleStore::createCollection(Item_t uri)
 
 
 /*******************************************************************************
-  Creates a collection in the store (without given URI).
-
-  @return handle object of the newly created collection
+  Create a collection in the store. The collection will be assigned an internal
+  URI by the store.
 ********************************************************************************/
 Collection_t SimpleStore::createCollection()
 {
@@ -204,12 +203,8 @@ Collection_t SimpleStore::createCollection()
 
 
 /*******************************************************************************
-  Returns an XDM instance which is saved in the store (corresponds to the
-  opening of a connection to a database)
-
-  @param URI of the colleciton
-  @return handle object of the collection. Returns NULL if the collection does
-          not exist
+  Return an rchandle to the Collection object corresponding to the given URI,
+  or NULL if there is no collection with that URI.
 ********************************************************************************/
 Collection_t SimpleStore::getCollection(Item_t uri)
 {
@@ -220,9 +215,8 @@ Collection_t SimpleStore::getCollection(Item_t uri)
 
 
 /*******************************************************************************
-  Deletes a collection.
-
-  @param URI to identify the collection to delete.
+  Deletes the collection with the given URI. If there is no collection with
+  that URI, this method is a NOOP.
 ********************************************************************************/
 void SimpleStore::deleteCollection(Item_t uri)
 {
@@ -271,23 +265,19 @@ Iterator_t SimpleStore::sort(
 
 
 /*******************************************************************************
-  Eliminates the duplicates in collection of items which is produced by the
-  passed iterator
-
-  @param iterator
+  Create an iterator that eliminates the duplicate nodes in the set of items
+  which is produced by the passed iterator
 ********************************************************************************/
-Iterator_t SimpleStore::distinctNodeStable(Iterator_t)
+Iterator_t SimpleStore::distinctNodeStable(Iterator_t input)
 {
-  return rchandle<Iterator> ( NULL );
+  return new StoreNodeDistinctIterator(input);
 }
 
-/*******************************************************************************
-  Computes the URI of the passed item.
 
-  @param item XDM item
-  @return Returns an item of type xs:uri 
+/*******************************************************************************
+  Computes the URI for the given node.
 ********************************************************************************/
-Item_t SimpleStore::getReference(Item_t)
+Item_t SimpleStore::getReference(Item_t node)
 {
   return rchandle<Item>(NULL);
 }

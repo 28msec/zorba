@@ -765,7 +765,48 @@ void ChildrenIterator::reset()
   theInput->reset();
 }
 
-void ChildrenIterator::close() {}
+
+void ChildrenIterator::close()
+{
+  theInput->close();
+}
+
+
+/*******************************************************************************
+  Class NodeDistinctIterator
+********************************************************************************/
+Item_t StoreNodeDistinctIterator::next()
+{
+  while (true)
+  {
+    Item_t contextNode = theInput->next();
+    if (contextNode == NULL)
+      return NULL;
+
+    Assert(contextNode->isNode());
+
+    if (!theNodeSet.insert(contextNode))
+      return contextNode;
+  }
+}
+
+
+void StoreNodeDistinctIterator::reset()
+{
+  // Do not reset the input. This is done by the runtime NodeDistinctIterator,
+  // which wraps this store iterator.
+
+  theNodeSet.clear();
+}
+
+
+void StoreNodeDistinctIterator::close()
+{
+  // Do not close the input. This is done by the runtime NodeDistinctIterator,
+  // which wraps this store iterator.
+
+  theNodeSet.clear();
+}
 
 
 } /* namespace xqp */
