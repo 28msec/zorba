@@ -86,8 +86,8 @@ static bool debug = true;
 
 
 
-/* Line 303 of lalr1.cc.  */
-#line 90 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc.  */
+#line 91 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -138,7 +138,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 111 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 112 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -147,8 +147,8 @@ namespace yy
 	double dval;
 	long double decval;
 }
-/* Line 303 of lalr1.cc.  */
-#line 151 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc.  */
+#line 152 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;

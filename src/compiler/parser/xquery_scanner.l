@@ -62,6 +62,7 @@
 	not of token_type.
 */
 #define yyterminate() return token::END
+
 %}
 
 
@@ -423,7 +424,7 @@ typedef yy::xquery_parser::token token;
 
 	/* order dependence: this must follow the rules: xxx{S}"(" */
 {QName}{S}"(" {
-	yylval->sval = driver.symtab.put_qname(yytext, yyleng-1);
+  yylval->sval = driver.symtab.put_qname(yytext, yyleng-1, false, true);
 	return token::QNAME_LPAR;
 }
 

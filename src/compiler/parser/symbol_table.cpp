@@ -14,6 +14,56 @@
 using namespace std;
 namespace xqp {
 
+/**
+ * Whitespace characters used in the functions below
+ */
+static const char* whitespace = " \t\r\n\f";
+
+/**
+ * The function will trim the whitespace from the end of the string,
+ * returning the new length.
+ *
+ */
+void trim_end(char const* s, uint32_t& len)
+{
+  int done = 0;
+
+  while (!done && len>0)
+  {
+    done = 1;
+    for (unsigned int i=0; i<strlen(whitespace); i++)
+      if (s[len-1] == whitespace[i])
+      {
+        len--;
+        done = 0;
+        break;
+      }
+  }
+}
+
+/**
+ * The function will trim the whitespace from the begging of the string,
+ * returning a pointer to the new starting character.
+ *
+ */
+void trim_start(const char** s, uint32_t& len)
+{
+  int done = 0;
+
+  while (!done && len>0)
+  {
+    done = 1;
+    for (unsigned int i=0; i<strlen(whitespace); i++)
+      if (**s == whitespace[i])
+      {
+        *s++;
+        len--;
+        done = 0;
+        break;
+      }
+  }
+}
+
 symbol_table::symbol_table(uint32_t initial_heapsize)
 :
 	heap(initial_heapsize)
@@ -39,8 +89,14 @@ off_t symbol_table::put_ncname(char const* text, uint32_t length)
 	return heap.put(text, 0, length);
 }
 
-off_t symbol_table::put_qname(char const* text, uint32_t length)
+off_t symbol_table::put_qname(char const* text, uint32_t length, bool do_trim_start, bool do_trim_end)
 {
+  if (do_trim_start)
+    trim_start(&text, length);
+  
+  if (do_trim_end)
+    trim_end(text, length);
+  
 	return heap.put(text, 0, length);
 }
 
