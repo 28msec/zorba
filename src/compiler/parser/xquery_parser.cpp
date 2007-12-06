@@ -276,7 +276,7 @@ namespace yy
     /* User initialization code.  */
     #line 87 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 {
-  yylloc.begin.filename = yylloc.end.filename = driver.filename;
+  yylloc.begin.filename = yylloc.end.filename = &driver.filename.getStore();
 }
   /* Line 555 of yacc.c.  */
 #line 283 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.cpp"

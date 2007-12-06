@@ -41,8 +41,7 @@
 # define BISON_POSITION_HH
 
 # include <iostream>
-//# include <string>
-#include "types/representations.h"
+# include <string>
 
 namespace yy
 {
@@ -53,13 +52,13 @@ namespace yy
 
     /// Construct a position.
     position ()
-      : /*filename (0),*/ line (1), column (0)
+      : filename (0), line (1), column (0)
     {
     }
 
 
     /// Initialization.
-		inline void initialize (xqp::xqp_string fn)
+    inline void initialize (std::string* fn)
     {
       filename = fn;
       line = 1;
@@ -90,7 +89,7 @@ namespace yy
 
   public:
     /// File name to which this position refers.
-    xqp::xqp_string filename;
+    std::string* filename;
     /// Current line number.
     unsigned int line;
     /// Current column number.
@@ -134,8 +133,8 @@ namespace yy
   inline std::ostream&
   operator<< (std::ostream& ostr, const position& pos)
   {
-    if (!pos.filename.empty())
-			ostr << pos.filename << ':';
+    if (pos.filename)
+      ostr << *pos.filename << ':';
     return ostr << pos.line << '.' << pos.column;
   }
 
