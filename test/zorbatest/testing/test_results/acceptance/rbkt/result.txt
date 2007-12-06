@@ -1,6 +1,5 @@
 SUCCESS
 
 
-rbkt.sh : total number of queries   = 10
 rbkt.sh : number of failed queries  = 0
 
