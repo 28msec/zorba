@@ -112,7 +112,7 @@ Iterator_t DocumentNodeImpl::getChildren() const
   if (theChildren == NULL)
   {
     PlanIter_t planIter = new EmptyIterator(GET_CURRENT_LOCATION());
-    return new PlanIterWrapper(planIter);
+    return new PlanWrapper(planIter);
   }
   else
   {
@@ -139,7 +139,7 @@ Iterator_t DocumentNodeImpl::getTypedValue() const
     Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
     ret = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   }
-  return new PlanIterWrapper(ret);
+  return new PlanWrapper(ret);
 }
 
 
@@ -257,7 +257,7 @@ Iterator_t ElementNodeImpl::getAttributes() const
   if ( theAttributes == NULL )
   {
     PlanIter_t planIter = new EmptyIterator(GET_CURRENT_LOCATION());
-    return new PlanIterWrapper(planIter);
+    return new PlanWrapper(planIter);
   }
   else
   {
@@ -271,7 +271,7 @@ Iterator_t ElementNodeImpl::getChildren() const
   if (theChildren == NULL)
   {
     PlanIter_t planIter = new EmptyIterator(GET_CURRENT_LOCATION());
-    return new PlanIterWrapper(planIter);
+    return new PlanWrapper(planIter);
   }
   else
   {
@@ -298,7 +298,7 @@ Iterator_t ElementNodeImpl::getTypedValue() const
     Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
     ret = new SingletonIterator(GET_CURRENT_LOCATION(), item);
   }
-  return new PlanIterWrapper(ret);
+  return new PlanWrapper(ret);
 }
 
 
@@ -498,7 +498,7 @@ QNameItem_t AttributeNodeImpl::getNodeName() const
 Iterator_t AttributeNodeImpl::getTypedValue() const
 {
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), theTypedValue);
-  return new PlanIterWrapper(planIter);
+  return new PlanWrapper(planIter);
 }
 
 
@@ -571,7 +571,7 @@ Iterator_t TextNodeImpl::getTypedValue() const
                               createUntypedAtomic(theContent);
 
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
-  return new PlanIterWrapper(planIter);
+  return new PlanWrapper(planIter);
 }
 
 
@@ -633,7 +633,7 @@ Iterator_t PiNodeImpl::getTypedValue() const
 {
   const Item_t& item = zorba::getItemFactory()->createString(theData);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
-  return new PlanIterWrapper(planIter);
+  return new PlanWrapper(planIter);
 }
 
 
@@ -696,7 +696,7 @@ Iterator_t CommentNodeImpl::getTypedValue() const
 {
   const Item_t& item = zorba::getItemFactory()->createString(theContent);
   PlanIter_t planIter = new SingletonIterator(GET_CURRENT_LOCATION(), item);
-  return new PlanIterWrapper(planIter);
+  return new PlanWrapper(planIter);
 }
 
 
@@ -806,6 +806,44 @@ void StoreNodeDistinctIterator::close()
   // which wraps this store iterator.
 
   theNodeSet.clear();
+}
+
+
+/*******************************************************************************
+  Class NodeSortIterator
+********************************************************************************/
+Item_t StoreNodeSortIterator::next()
+{
+  while (true)
+  {
+    Item_t contextNode = theInput->next();
+    if (contextNode == NULL)
+      return NULL;
+
+    Assert(contextNode->isNode());
+
+    theNodes.push_back(contextNode);
+  }
+
+  return NULL;
+}
+
+
+void StoreNodeSortIterator::reset()
+{
+  // Do not reset the input. This is done by the runtime NodeSortIterator,
+  // which wraps this store iterator.
+
+  theNodes.clear();
+}
+
+
+void StoreNodeSortIterator::close()
+{
+  // Do not close the input. This is done by the runtime NodeSortIterator,
+  // which wraps this store iterator.
+
+  theNodes.clear();
 }
 
 

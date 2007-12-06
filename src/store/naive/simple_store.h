@@ -99,6 +99,15 @@ public:
   virtual Collection_t getCollection(Item_t uri);
   virtual void deleteCollection(Item_t uri);
 
+  virtual int32_t compare(Item_t item1, Item_t item2) const;
+
+  virtual Iterator_t sortNodes(
+        Iterator_t iterator,
+        bool ascendent,
+        bool duplicateElemination);
+
+  virtual Iterator_t distinctNodes(Iterator_t);
+
   virtual TempSeq_t createTempSeq();
   virtual TempSeq_t createTempSeq(Iterator_t iterator, bool lazy = true);
 
@@ -115,15 +124,6 @@ public:
         Item_t,
         Requester requester,
         Timetravel timetravel);
-
-  virtual int32_t compare(Item_t item1, Item_t item2) const;
-
-  virtual Iterator_t sort(
-        Iterator_t iterator,
-        bool ascendent,
-        bool duplicateElemination);
-
-  virtual Iterator_t distinctNodeStable(Iterator_t);
 
   virtual void apply(PUL_t pendingUpdateList);
   virtual void apply(PUL_t pendingUpdateList, Requester requester);

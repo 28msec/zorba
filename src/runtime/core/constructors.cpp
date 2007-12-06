@@ -50,19 +50,19 @@ ElementIterator::nextImpl(PlanState& planState)
     
   if (theChildrenIter != NULL)
   {
-    cwrapper = new PlanIterWrapper(theChildrenIter, planState);
+    cwrapper = new PlanIteratorWrapper(theChildrenIter, planState);
     seqChildren = store->createTempSeq(cwrapper);
   }
 
   if (theAttributesIter != NULL)
   {
-    awrapper = new PlanIterWrapper(theAttributesIter, planState);
+    awrapper = new PlanIteratorWrapper(theAttributesIter, planState);
     seqAttributes = store->createTempSeq(awrapper);
   }
 
   if (theNamespacesIter != NULL)
   {
-    nwrapper = new PlanIterWrapper(theNamespacesIter, planState); 
+    nwrapper = new PlanIteratorWrapper(theNamespacesIter, planState); 
     seqNamespaces = store->createTempSeq(nwrapper);
   }
 

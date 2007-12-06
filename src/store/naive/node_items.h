@@ -353,6 +353,33 @@ public:
 
 
 /*******************************************************************************
+  This iterator is used to sort by document order the nodes produced by another
+  iterator.
+
+  theInput  : This is actually a PlanIterWrapper object that wraps the actual
+              runtime iterator that produces the input nodes.
+  theNodes  : A vector that stores rchandles to the nodes.
+                 elimination is done based on the values of the pointers that
+                 point to the input nodes.
+********************************************************************************/
+class StoreNodeSortIterator : public Iterator
+{
+protected:
+  Iterator_t           theInput;
+  std::vector<Item_t>  theNodes;
+
+public:
+  StoreNodeSortIterator(const Iterator_t& input) : theInput(input) { }
+
+  ~StoreNodeSortIterator() { }
+
+  Item_t next();
+  void reset();
+  void close();
+};
+
+
+/*******************************************************************************
 
 ********************************************************************************/
 class NsBindingsContext : public rcobject

@@ -11,7 +11,6 @@
 
 #include "errors/errors.h"
 #include "errors/Error.h"
-#include "util/hashfun.h"
 #include "runtime/core/item_iterator.h"
 #include "api/serialization/serializer.h"
 
@@ -60,7 +59,7 @@ namespace xqp
 Iterator_t AtomicItem::getTypedValue() const
 {
   PlanIter_t planIter = new SingletonIterator(zorba::getZorbaForCurrentThread()->GetCurrentLocation(), this->getAtomizationValue());
-  return new PlanIterWrapper ( planIter );
+  return new PlanWrapper ( planIter );
 }
 /* end class AtomicItem */
 

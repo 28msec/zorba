@@ -107,6 +107,8 @@ public:
   */
 class PlanIterator : public rcobject
 {
+  friend class PlanIterWrapper;
+
 protected:
   /** offset of the state of the current iterator */
   uint32_t stateOffset;
@@ -244,7 +246,7 @@ public:
   Batcher(yy::location _loc) : PlanIterator(_loc) {}
   ~Batcher() {}
 
-public:
+protected:
 #if BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
@@ -291,58 +293,94 @@ public:
 
 
 /**
- * Wrapper to hide functionality like separation of code and execution, 
- * garabage collection, etc. during evaluation of an iterator tree.
+ * Wrapper used to drive the evaluation of an iterator (sub)tree.
  * 
- * This Wrapper can also be used to collect the items of an iterator is
- * belongs already to another IteratorWrapper, resp. which belongs already
- * to a state block.
+ * The wrapper wraps the root iterator of the (sub)tree. It is responsible
+ * for allocating and deallocating the plan state that is shared by all
+ * iterators in the (sub)tree. In general, it hides internal functionality
+ * like separation of code and execution, or garabage collection, and it
+ * provides a simple interface that the application can use.
  */
-class PlanIterWrapper : public Iterator
+class PlanWrapper : public Iterator
 {
 private:
-  bool theAlienBlock;
-  PlanIter_t theIterator;
-  PlanState* theStateBlock;
-  bool theClosed;
+  PlanIter_t   theIterator;
+  PlanState  * theStateBlock;
+  bool         theClosed;
   
 public:
   /** 
-   * Constructor for IteratorWrapper which is used to generate the results
-   * of a root operator.
+   * Constructor.
    * 
    * @param iter root of evaluated iterator tree
    */
-  PlanIterWrapper(PlanIter_t& iter);
+  PlanWrapper(PlanIter_t& iter);
   
   /**
-   * Constructor for IteratorWrapper which is used to generate the results
-   * of an iterator which is not root => the state block handling, garbage
-   * collection, etc. is already made by another IteratorWrapper.
-   * 
-   * @param iter 
-   * @param planState 
+   * Destructor.
    */
-  PlanIterWrapper(PlanIter_t& iter, PlanState& planState);
+  virtual ~PlanWrapper();
   
   /**
-   * Deconstructor.
-   */
-  virtual ~PlanIterWrapper();
-  
-  /**
-   * Returns the next item of the PlanIter
+   * Returns the next item of the wrapped plan
    * @return item
    */
   Item_t next();
   
   /**
-   * Resets the containing PlanIter
+   * Resets the wrapped plan
    */
   void reset();
   
   /**
-   * Closes the containing PlanIterator
+   * Closes the wrapped plan
+   */
+  void close();
+};
+
+
+/**
+ * This is a "helper" wrapper that is used when we need to pass a plan iterator
+ * to the store. The wrapper wraps the plan iterator in order to provide a
+ * simpler interface that the store can use.
+ *
+ * The wrapper does not allocate a new state block, but it points to the same 
+ * block that contains the state of the wrapped plan iterator.
+ */
+class PlanIteratorWrapper : public Iterator
+{
+private:
+  PlanIter_t   theIterator;
+  PlanState  * theStateBlock;
+  bool         theClosed;
+  
+public:
+  /**
+   * Constructor.
+   * 
+   * @param iter 
+   * @param planState 
+   */
+  PlanIteratorWrapper(PlanIter_t& iter, PlanState& planState);
+  
+  /**
+   * Destructor.
+   */
+  virtual ~PlanIteratorWrapper();
+  
+  /**
+   * Returns the next item of the wrapped plan iterator
+   * @return item
+   */
+  Item_t next();
+  
+  /**
+   * Resets the wrapped plan iterator
+   */
+  void reset();
+  
+  /**
+   * Closes the wrapped plan iterator
    */
   void close();
 };

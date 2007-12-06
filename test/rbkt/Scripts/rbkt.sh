@@ -149,13 +149,10 @@ echo "rbkt.sh : total number of queries   = $totalQueries"
 echo "rbkt.sh : number of failed queries  = $failedQueries"
 
 echo >> rbkt_summary.txt
-echo "rbkt.sh : total number of queries   = $totalQueries" >> rbkt_summary.txt
 echo "rbkt.sh : number of failed queries  = $failedQueries" >> rbkt_summary.txt
 
 rm -f query.dot
 rm -f query.xml
-
-#mv rbkt_summary.txt ${PWD}/
 
 if [ ${failedQueries} -gt 0 ]; then
   exit 1

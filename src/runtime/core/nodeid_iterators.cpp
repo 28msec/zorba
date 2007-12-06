@@ -42,9 +42,53 @@ void NodeDistinctIterator::setOffset(PlanState& planState, uint32_t& offset)
 
   NodeDistinctState* state = new (planState.block + stateOffset) NodeDistinctState;
 
-  Iterator_t input = new PlanIterWrapper(theChild, planState);
+  Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
-  state->theStoreIterator = Store::getInstance().distinctNodeStable(input);
+  state->theStoreIterator = Store::getInstance().distinctNodes(input);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+Item_t NodeSortIterator::nextImpl(PlanState& planState)
+{
+  NodeSortState* state;
+  GET_STATE(NodeSortState, state, planState);
+
+  return state->theStoreIterator->next();
+}
+
+
+void NodeSortIterator::resetImpl(PlanState& planState)
+{
+  UnaryBaseIterator<NodeSortIterator>::reset(planState);
+
+  NodeSortState* state;
+  GET_STATE(NodeSortState, state, planState);
+  state->theStoreIterator->reset();
+}
+
+
+void NodeSortIterator::releaseResourcesImpl(PlanState& planState)
+{
+  UnaryBaseIterator<NodeSortIterator>::releaseResourcesImpl(planState);
+
+  NodeSortState* state;
+  GET_STATE(NodeSortState, state, planState);
+  state->theStoreIterator = NULL;
+}
+
+
+void NodeSortIterator::setOffset(PlanState& planState, uint32_t& offset)
+{
+  UnaryBaseIterator<NodeSortIterator>::setOffset(planState, offset);
+
+  NodeSortState* state = new (planState.block + stateOffset) NodeSortState;
+
+  Iterator_t input = new PlanIteratorWrapper(theChild, planState);
+
+  state->theStoreIterator = Store::getInstance().sortNodes(input, true, true);
 }
 
 

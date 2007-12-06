@@ -255,7 +255,7 @@ int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
   @param duplicate duplicate elemination should be applied
   @return iterator which produces the sorted items
 ********************************************************************************/
-Iterator_t SimpleStore::sort(
+Iterator_t SimpleStore::sortNodes(
     Iterator_t iterator,
     bool ascendent,
     bool duplicateElemination)
@@ -268,7 +268,7 @@ Iterator_t SimpleStore::sort(
   Create an iterator that eliminates the duplicate nodes in the set of items
   which is produced by the passed iterator
 ********************************************************************************/
-Iterator_t SimpleStore::distinctNodeStable(Iterator_t input)
+Iterator_t SimpleStore::distinctNodes(Iterator_t input)
 {
   return new StoreNodeDistinctIterator(input);
 }

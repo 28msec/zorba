@@ -217,7 +217,7 @@ namespace xqp
       resetChild(lSpecIter->orderByIter, planState);
       ++lSpecIter;
     }
-    Iterator_t iterWrapper = new PlanIterWrapper ( returnClause, planState );
+    Iterator_t iterWrapper = new PlanIteratorWrapper ( returnClause, planState );
     TempSeq_t result = store->createTempSeq ( iterWrapper, false );
     orderMap->insert(std::pair<std::vector<Item_t> , Iterator_t>(orderKey, result->getIterator()));
     this->resetChild ( returnClause, planState );
@@ -290,7 +290,7 @@ namespace xqp
         {
           return false;
         }
-        Iterator_t iterWrapper = new PlanIterWrapper ( lForLetClause.input, planState );
+        Iterator_t iterWrapper = new PlanIteratorWrapper ( lForLetClause.input, planState );
         if ( lForLetClause.needsMaterialization )
         {
           TempSeq_t tmpSeq = store->createTempSeq ( iterWrapper, true );

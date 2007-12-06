@@ -45,15 +45,20 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
-#if 0
+
 /*******************************************************************************
 
 ********************************************************************************/
 class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator>
 {
- protected:
+protected:
+  class NodeSortState : public PlanIterator::PlanIteratorState
+  {
+  public:
+    Iterator_t  theStoreIterator;
+  };
 
- public:
+public:
   NodeSortIterator(
         const yy::location& loc,
         PlanIter_t input)
@@ -68,13 +73,12 @@ class NodeSortIterator : public UnaryBaseIterator<NodeSortIterator>
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
 
-  int32_t getStateSize() { return sizeof(NodeSortState); }
+  virtual uint32_t getStateSize() const { return sizeof(NodeSortState); }
 
-  void setOffset(PlanState& planState, int32_t& offset);
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
 
   virtual void accept(PlanIterVisitor&) const;
 };
-#endif
 
 }
 

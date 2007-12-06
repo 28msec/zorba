@@ -14,9 +14,10 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/core/nodeid_iterators.h"
+#include "runtime/core/flwor_iterator.h"
 #include "util/tracer.h"
 #include "functions/function.h"
-#include "runtime/core/flwor_iterator.h"
 
 #include <iostream>
 #include <vector>
@@ -306,7 +307,6 @@ cout << TRACE << endl;
 
 /*******************************************************************************
 
-
 ********************************************************************************/
 bool plan_visitor::begin_visit(relpath_expr& v)
 {
@@ -318,9 +318,18 @@ bool plan_visitor::begin_visit(relpath_expr& v)
 void plan_visitor::end_visit(relpath_expr& v)
 {
   cout << TRACE << endl;
+
+  PlanIter_t input = pop_itstack();
+
+  PlanIter_t distinct = new NodeDistinctIterator(v.get_loc(), input);
+
+  itstack.push(distinct);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool plan_visitor::begin_visit(axis_step_expr& v)
 {
   cout << TRACE << endl;
@@ -436,7 +445,6 @@ void plan_visitor::end_visit(axis_step_expr& v)
 
 
 /*******************************************************************************
-
 
 ********************************************************************************/
 bool plan_visitor::begin_visit(match_expr& v)

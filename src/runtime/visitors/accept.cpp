@@ -59,6 +59,7 @@ namespace xqp {
   
   // unary iterators
   UNARY_ACCEPT(NodeDistinctIterator);
+  UNARY_ACCEPT(NodeSortIterator);
   UNARY_ACCEPT(KindTestIterator);
   UNARY_ACCEPT(NameTestIterator);
   UNARY_ACCEPT(SelfAxisIterator);

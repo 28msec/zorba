@@ -141,12 +141,15 @@ public:
    * @param duplicate duplicate elemination should be applied
    * @return iterator which produces the sorted items
    */
-  virtual Iterator_t sort(Iterator_t iterator, bool ascendent, bool duplicateElemination) = 0;
+  virtual Iterator_t sortNodes(
+        Iterator_t iterator,
+        bool ascendent,
+        bool duplicateElemination) = 0;
 		
   /** Eliminates the duplicates in collection of items which is produced by the passed iterator
    * @param iterator
    */
-  virtual Iterator_t distinctNodeStable(Iterator_t) = 0;
+  virtual Iterator_t distinctNodes(Iterator_t) = 0;
 	
 		
   /* ------------------------ Collection Management ---------------------------*/

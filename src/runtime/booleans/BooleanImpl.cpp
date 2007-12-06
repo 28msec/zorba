@@ -167,8 +167,8 @@ namespace xqp
     if ( this->isGeneralComparison() )
     {
       // TODO Optimizations for >, >=, < and <=
-      lIter0 = new PlanIterWrapper ( theChild0, planState );
-      lIter1 = new PlanIterWrapper ( theChild1, planState );
+      lIter0 = new PlanIteratorWrapper ( theChild0, planState );
+      lIter1 = new PlanIteratorWrapper ( theChild1, planState );
       temp0 = zorba::getStore()->createTempSeq ( lIter0 );
       temp1 = zorba::getStore()->createTempSeq ( lIter1 );
       i0 = 1;

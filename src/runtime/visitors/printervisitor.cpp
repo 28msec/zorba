@@ -165,6 +165,15 @@ namespace xqp {
     thePrinter.endIter();
   }
 
+  void PrinterVisitor::beginVisit ( const NodeSortIterator& a ) {
+    thePrinter.startIter("NodeSortIterator");
+    printCommons(&a);
+  }
+
+  void PrinterVisitor::endVisit ( const NodeSortIterator& a ) {
+    thePrinter.endIter();
+  }
+
   void PrinterVisitor::beginVisit ( const KindTestIterator& a ) {
     thePrinter.startIter("KindTestIterator");
     {
