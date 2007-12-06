@@ -839,11 +839,66 @@ namespace xqp
 
   Item_t FnRoundIterator::nextImpl(PlanState& planState)
   {
+    Item_t item;
     Item_t res;
+    TypeSystem::xqtref_t type;
+    
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = zorba::getItemFactory()->createInteger(-3);
-    STACK_PUSH( res, state );
+    STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    item = this->consumeNext ( theChild, planState );
+
+    if ( item != NULL )
+    {
+      //get the value and the type of the item
+      item = item->getAtomizationValue();
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+
+      //Parameters of type xs:untypedAtomic are always promoted to xs:double
+      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      {
+        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      }
+
+      //item type is subtype of DOUBLE
+      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+        res = zorba::getItemFactory()->createDouble(round(item->getDoubleValue()));
+        
+      //item type is subtype of FLOAT
+      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+        res = zorba::getItemFactory()->createFloat(round(item->getFloatValue()));
+
+      //item type is subtype of DECIMAL
+      else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+        res = zorba::getItemFactory()->createDecimal(round(item->getDecimalValue()));
+
+      //item type is subtype of INTEGER 
+      else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+        res = item;
+
+      else
+      {
+        ZorbaErrorAlerts::error_alert (
+            error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::STATIC_ERROR,
+        NULL,
+        false,
+        "Wrong operator type for a round operation!"
+                                      );
+      }
+
+      if ( this->consumeNext ( theChild, planState ) != NULL )
+      {
+        ZorbaErrorAlerts::error_alert (
+            error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::STATIC_ERROR,
+        NULL,
+        false,
+        "Round operation has a sequences greater than one as an operator!"
+                                      );
+      }
+      STACK_PUSH ( res, state );
+    }
     STACK_END();
   }
   
