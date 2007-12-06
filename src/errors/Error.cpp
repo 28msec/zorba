@@ -70,7 +70,8 @@ void ZorbaErrorAlerts::error_alert(
 	errmess->is_fatal = !continue_execution;
 	if(ploc)
 	{
-		errmess->loc.filename = ploc->begin.filename;
+		if(ploc->begin.filename)
+			errmess->loc.filename = *ploc->begin.filename;
 		errmess->loc.line = ploc->begin.line;
 		errmess->loc.column = ploc->begin.column;
 	}
@@ -132,7 +133,8 @@ void ZorbaErrorAlerts::warning_alert(
 	warnmess->warning_code = warn;
 	if(ploc)
 	{
-		warnmess->loc.filename = ploc->begin.filename;
+		if(ploc->begin.filename)
+			warnmess->loc.filename = *ploc->begin.filename;
 		warnmess->loc.line = ploc->begin.line;
 		warnmess->loc.column = ploc->begin.column;
 	}
