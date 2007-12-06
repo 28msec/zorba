@@ -358,7 +358,51 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnAbsIterator& a ) {
     thePrinter.endIter();
   }
-       
+
+  void PrinterVisitor::beginVisit( const FnCeilingIterator& a)
+  {
+    thePrinter.startIter("FnCeilingIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit( const FnCeilingIterator& a)
+  {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit( const FnFloorIterator& a)
+  {
+    thePrinter.startIter("FnFloorIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit( const FnFloorIterator& a )
+  {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit( const FnRoundIterator& a)
+  {
+    thePrinter.startIter("FnRoundIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit( const FnRoundIterator& a )
+  {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit( const FnRoundHalfToEvenIterator& a)
+  {
+    thePrinter.startIter("FnRoundHalfToEvenIterator");
+    printCommons( &a );
+  }
+
+  void PrinterVisitor::endVisit( const FnRoundHalfToEvenIterator& a )
+  {
+    thePrinter.endIter();
+  }
+  
   void PrinterVisitor::beginVisit ( const FnConcatIterator& a ) {
     thePrinter.startIter("FnConcatIterator");
     printCommons( &a );

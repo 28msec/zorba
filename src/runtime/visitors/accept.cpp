@@ -87,6 +87,9 @@ namespace xqp {
   UNARY_ACCEPT(ElementContentIterator);
   UNARY_ACCEPT(FnDataIterator);
   UNARY_ACCEPT(FnAbsIterator);
+  UNARY_ACCEPT(FnCeilingIterator);
+  UNARY_ACCEPT(FnFloorIterator);
+  UNARY_ACCEPT(FnRoundIterator);
   UNARY_ACCEPT(FnRootIterator);
   UNARY_ACCEPT(EnclosedIterator);
   UNARY_ACCEPT(FnExistsIterator);
@@ -103,6 +106,7 @@ namespace xqp {
   BINARY_ACCEPT(LogicIterator);
   BINARY_ACCEPT(CompareIterator);
   BINARY_ACCEPT(FnIndexOfIterator);
+  BINARY_ACCEPT(FnRoundHalfToEvenIterator);
   
   // nary iterators
   NARY_ACCEPT(CompareStrIterator);

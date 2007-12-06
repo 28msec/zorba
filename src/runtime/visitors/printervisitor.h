@@ -133,7 +133,19 @@ namespace xqp {
        
       virtual void beginVisit ( const FnAbsIterator& ) ;
       virtual void endVisit ( const FnAbsIterator& ) ;
-       
+
+      virtual void beginVisit( const FnCeilingIterator& );
+      virtual void endVisit( const FnCeilingIterator& );
+
+      virtual void beginVisit( const FnFloorIterator& );
+      virtual void endVisit( const FnFloorIterator& );
+
+      virtual void beginVisit( const FnRoundIterator& );
+      virtual void endVisit( const FnRoundIterator& );
+
+      virtual void beginVisit( const FnRoundHalfToEvenIterator& );
+      virtual void endVisit( const FnRoundHalfToEvenIterator& );
+
       virtual void beginVisit ( const FnConcatIterator& ) ;
       virtual void endVisit ( const FnConcatIterator& ) ;
 

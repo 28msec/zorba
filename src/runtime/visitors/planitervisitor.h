@@ -50,6 +50,10 @@ namespace xqp
   template <class ModOperations> class ArithmeticIterator;
   class OpNumericUnaryIterator;
   class FnAbsIterator;
+  class FnCeilingIterator;
+  class FnFloorIterator;
+  class FnRoundIterator;
+  class FnRoundHalfToEvenIterator;
   class FnConcatIterator;
   class FnEmptyIterator;
   class FnExistsIterator;
@@ -200,7 +204,19 @@ namespace xqp
        
       virtual void beginVisit ( const FnAbsIterator& ) = 0;
       virtual void endVisit ( const FnAbsIterator& ) = 0;
-       
+
+      virtual void beginVisit( const FnCeilingIterator& ) = 0;
+      virtual void endVisit( const FnCeilingIterator& ) = 0;
+
+      virtual void beginVisit( const FnFloorIterator& ) = 0;
+      virtual void endVisit( const FnFloorIterator& ) = 0;
+
+      virtual void beginVisit( const FnRoundIterator& ) = 0;
+      virtual void endVisit( const FnRoundIterator& ) = 0;
+
+      virtual void beginVisit( const FnRoundHalfToEvenIterator& ) = 0;
+      virtual void endVisit( const FnRoundHalfToEvenIterator& ) = 0;
+      
       virtual void beginVisit ( const FnConcatIterator& ) = 0;
       virtual void endVisit ( const FnConcatIterator& ) = 0;
 

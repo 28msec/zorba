@@ -185,9 +185,52 @@ public:
 };
 
 // 6.4.2 fn:ceiling
+class fn_ceiling : public function
+{
+  public:
+    fn_ceiling(const signature&);
+    ~fn_ceiling(){}
+
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
 // 6.4.3 fn:floor
+class fn_floor : public function
+{
+  public:
+    fn_floor(const signature&);
+    ~fn_floor(){}
+
+    PlanIter_t operator ( )( const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check( signature&) const;
+    bool validate_args( std::vector<PlanIter_t>&) const;
+};
+
 // 6.4.4 fn:round
+class fn_round : public function
+{
+  public:
+    fn_round(const signature&);
+    ~fn_round(){}
+     
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check( signature& ) const;
+    bool validate_args( std::vector<PlanIter_t>&) const;
+};
+
 // 6.4.5 fn:round-half-to-even
+class fn_round_half_to_even : public function
+{
+  public:
+    fn_round_half_to_even(const signature&);
+    ~fn_round_half_to_even(){}
+     
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check( signature& ) const;
+    bool validate_args( std::vector<PlanIter_t>&) const;
+};
 
 // Zorba specific functions:
 /**

@@ -118,6 +118,27 @@ DECL(fn_abs,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "abs"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+
+DECL(fn_ceiling,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "ceiling"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+
+DECL(fn_floor,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "floor"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+
+DECL(fn_round,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "round"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
+
+DECL(fn_round_half_to_even,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS, "fn", "round-half-to-even"),
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE,
+      GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 // end Numerics
 
 // Sequences

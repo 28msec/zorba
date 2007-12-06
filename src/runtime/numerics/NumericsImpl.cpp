@@ -679,10 +679,84 @@ namespace xqp
 
 
 // 6.4.2 fn:ceiling
-// 6.4.3 fn:floor
-// 6.4.4 fn:round
-// 6.4.5 fn:round-half-to-even
+  FnCeilingIterator::FnCeilingIterator(const yy::location& loc, PlanIter_t& theChild)
+  :
+  UnaryBaseIterator<FnCeilingIterator>(loc, theChild)
+  {}
 
+  FnCeilingIterator::~FnCeilingIterator()
+  {}
+
+  Item_t FnCeilingIterator::nextImpl(PlanState& planState)
+  {
+    Item_t res;
+    PlanIterator::PlanIteratorState* state;
+    STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    res = zorba::getItemFactory()->createInteger(-1);
+    STACK_PUSH( res, state );
+    STACK_END();
+  }
+  
+// 6.4.3 fn:floor
+  FnFloorIterator::FnFloorIterator(const yy::location& loc, PlanIter_t& theChild)
+  :
+  UnaryBaseIterator<FnFloorIterator>(loc, theChild)
+  {}
+
+  FnFloorIterator::~ FnFloorIterator()
+  {}
+
+  Item_t FnFloorIterator::nextImpl(PlanState& planState)
+  {
+    Item_t res;
+    PlanIterator::PlanIteratorState* state;
+    STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    res = zorba::getItemFactory()->createInteger(-2);
+    STACK_PUSH( res, state );
+    STACK_END();
+  }
+  
+// 6.4.4 fn:round
+  FnRoundIterator::FnRoundIterator(const yy::location& loc, PlanIter_t& theChild)
+  :
+  UnaryBaseIterator<FnRoundIterator>(loc, theChild)
+  {}
+
+  FnRoundIterator::~FnRoundIterator()
+  {}
+
+  Item_t FnRoundIterator::nextImpl(PlanState& planState)
+  {
+    Item_t res;
+    PlanIterator::PlanIteratorState* state;
+    STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    res = zorba::getItemFactory()->createInteger(-3);
+    STACK_PUSH( res, state );
+    STACK_END();
+  }
+  
+// 6.4.5 fn:round-half-to-even
+  FnRoundHalfToEvenIterator::
+  FnRoundHalfToEvenIterator(const yy::location& loc,
+                                            PlanIter_t& iter0,
+                                            PlanIter_t& iter1)
+  :
+  BinaryBaseIterator<FnRoundHalfToEvenIterator>( loc, iter0, iter1 )
+  {}
+
+  FnRoundHalfToEvenIterator::~ FnRoundHalfToEvenIterator()
+  {}
+
+  Item_t FnRoundHalfToEvenIterator::nextImpl(PlanState& planState)
+  {
+    Item_t res;
+    PlanIterator::PlanIteratorState* state;
+    STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    res = zorba::getItemFactory()->createInteger(-4);
+    STACK_PUSH( res, state );
+    STACK_END();
+  }
+  
   ZorNumGen::ZorNumGen ( const yy::location& loc ) : Batcher<ZorNumGen> ( loc ) {}
   ZorNumGen::~ZorNumGen() {}
 

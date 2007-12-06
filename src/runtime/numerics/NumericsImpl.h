@@ -198,9 +198,48 @@ namespace xqp
   };
 
 // 6.4.2 fn:ceiling
+  class FnCeilingIterator : public UnaryBaseIterator<FnCeilingIterator>
+  {
+    public:
+      FnCeilingIterator(const yy::location& loc, PlanIter_t& theChild);
+      virtual ~FnCeilingIterator();
+
+      Item_t nextImpl(PlanState& planState);
+      virtual void accept(PlanIterVisitor&) const;
+  };
+
 // 6.4.3 fn:floor
+  class FnFloorIterator : public UnaryBaseIterator<FnFloorIterator>
+  {
+    public:
+      FnFloorIterator(const yy::location& loc, PlanIter_t& theChild);
+      virtual ~FnFloorIterator();
+
+      Item_t nextImpl(PlanState& planState);
+      virtual void accept(PlanIterVisitor&) const;
+  };
+  
 // 6.4.4 fn:round
+  class FnRoundIterator : public UnaryBaseIterator<FnRoundIterator>
+  {
+    public:
+      FnRoundIterator(const yy::location& loc, PlanIter_t& theChild);
+      virtual ~FnRoundIterator();
+
+      Item_t nextImpl(PlanState& planState);
+      virtual void accept(PlanIterVisitor&) const;
+  };
+  
 // 6.4.5 fn:round-half-to-even
+  class FnRoundHalfToEvenIterator : public BinaryBaseIterator<FnRoundHalfToEvenIterator>
+  {
+    public:
+      FnRoundHalfToEvenIterator(const yy::location&, PlanIter_t&, PlanIter_t&);
+      virtual ~FnRoundHalfToEvenIterator();
+
+      Item_t nextImpl(PlanState&);
+      virtual void accept(PlanIterVisitor&) const;
+  };
 
   
   /**

@@ -468,10 +468,89 @@ bool fn_abs::validate_args(vector<PlanIter_t>& argv) const
 }
 
 // 6.4.2 fn:ceiling
-// 6.4.3 fn:floor
-// 6.4.4 fn:round
-// 6.4.5 fn:round-half-to-even
+fn_ceiling::fn_ceiling(const signature& sig)
+:
+function(sig)
+{}
 
+PlanIter_t fn_ceiling::operator ( )(const yy::location& loc, vector<PlanIter_t>& argv) const
+{
+  return new FnCeilingIterator(loc, argv[0]);
+}
+
+TypeSystem::xqtref_t fn_ceiling::type_check(signature& sig) const
+{
+  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
+}
+
+bool fn_ceiling::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+// 6.4.3 fn:floor
+fn_floor::fn_floor(const signature& sig)
+:
+function(sig)
+{}
+
+PlanIter_t fn_floor::operator ( )(const yy::location& loc, vector<PlanIter_t>& argv) const
+{
+  return new FnFloorIterator(loc, argv[0]);
+}
+
+TypeSystem::xqtref_t fn_floor::type_check(signature& sig) const
+{
+  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
+}
+
+bool fn_floor::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+} 
+
+// 6.4.4 fn:round
+fn_round::fn_round(const signature& sig)
+:
+function(sig)
+{}
+
+PlanIter_t fn_round::operator ( )( const yy::location& loc, vector<PlanIter_t>& argv) const
+{
+  return new FnRoundIterator(loc, argv[0]);
+}
+
+TypeSystem::xqtref_t fn_round::type_check(signature& sig) const
+{
+  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
+}
+
+bool fn_round::validate_args( vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+// 6.4.5 fn:round-half-to-even
+fn_round_half_to_even::fn_round_half_to_even(const signature& sig)
+:
+function(sig)
+{}
+
+PlanIter_t
+fn_round_half_to_even::operator ( )( const yy::location& loc, vector<PlanIter_t>& argv) const
+{
+  return new FnRoundHalfToEvenIterator(loc, argv[0], argv[1]);
+}
+
+TypeSystem::xqtref_t fn_round_half_to_even::type_check(signature& sig) const
+{
+  return GENV_TYPESYSTEM.DECIMAL_TYPE_ONE;
+}
+
+bool fn_round_half_to_even::validate_args( vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2 );
+}
 
 zor_numgen::zor_numgen(const signature& sig)
 :
