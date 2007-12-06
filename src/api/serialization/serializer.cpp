@@ -354,6 +354,7 @@ void serializer::emitter::emit_node(Item* item, int depth, Item* element_parent 
     if (ser.indent)
 			emit_indentation(depth);
 		tr << "<" << item->getNodeName()->getStringProperty();
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
 
 		int closed_parent_tag = emit_node_children(item, depth);
 
@@ -468,8 +469,7 @@ void serializer::xml_emitter::emit_declaration()
     }
     tr << "?>";
 
-    if ( ser.indent )
-      tr << END_OF_LINE;
+    tr << END_OF_LINE; // Always output a newline
   }
 }
 
