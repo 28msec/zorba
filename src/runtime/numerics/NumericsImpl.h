@@ -24,6 +24,7 @@
 #include "runtime/base/iterator.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/unarybase.h"
+#include <math.h>
 
 namespace xqp
 {
