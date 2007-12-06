@@ -1568,7 +1568,8 @@ void translator::end_visit(const FunctionCall& v, void *visit_state)
 	string fname = qn_h->get_localname();
 
 	rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
-  fo_h->set_func(LOOKUP_FN(prefix, fname, v.get_arg_list ()->size ()));
+  int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
+  fo_h->set_func (LOOKUP_FN (prefix, fname, sz));
 	
 	// TODO this should be a const iterator
 	std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
