@@ -42,8 +42,8 @@ protected:
   };
 
 public:
-  static const unsigned long DEFAULT_SET_SIZE = 1024;
-  static const float DEFAULT_LOAD_FACTOR = 0.6;
+  static const unsigned long DEFAULT_SET_SIZE;
+  static const float DEFAULT_LOAD_FACTOR;
 
 protected:
   unsigned long           theNumEntries;
@@ -70,6 +70,12 @@ protected:
   void resizeHashTab(unsigned long newSize);
 };
 
+template <class T>
+const unsigned long HandleSet<T>::DEFAULT_SET_SIZE = 1024;
+
+
+template <class T>
+const float HandleSet<T>::DEFAULT_LOAD_FACTOR = 0.6;
 
 /*******************************************************************************
   Constructor: Allocates the hash table. Its initial size is the given size,
@@ -318,7 +324,8 @@ void HandleSet<T>::resizeHashTab(unsigned long newSize)
   }
 }
 
-
 }
+
+// template class xqp::HandleSet<xqp::Item>;
 
 #endif
