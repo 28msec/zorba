@@ -709,7 +709,21 @@ int serializer::get_utf8_length(char ch)
 void serializer::set_parameter(xqp_string parameter_name, xqp_string value)
 {
   // TODO: add handled parameters translation
-  if (parameter_name == "standalone")
+  if (parameter_name == "indent")
+  {
+    if (value == "yes")
+      indent = PARAMETER_VALUE_YES;
+    else if (value == "no")
+      indent = PARAMETER_VALUE_NO;
+    else
+    {
+      ZORBA_ERROR_ALERT(
+                        error_messages::SEPM0016_Invalid_parameter_value,
+                        error_messages::SYSTEM_ERROR,
+                        NULL);
+    }
+  }
+  else if (parameter_name == "standalone")
   {
     if (value == "yes")
       standalone = PARAMETER_VALUE_YES;
