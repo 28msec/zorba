@@ -117,6 +117,7 @@ namespace xqp
        * Value Comparison on the passed items
        * @param aItem0 
        * @param aItem1 
+       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
        * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (value comparison not possible)
        */
       static int8_t valueCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
@@ -125,6 +126,7 @@ namespace xqp
        * General Comparison on the passed items
        * @param aItem0 
        * @param aItem1 
+       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
        * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (general comparison not possible)
        */
       static int8_t generalCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
@@ -145,6 +147,7 @@ namespace xqp
        * Value Equal on the passed items
        * @param aItem0 
        * @param aItem1 
+       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
        * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
        */
       static int8_t valueEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
@@ -153,6 +156,7 @@ namespace xqp
        * General Equal on the passed items
        * @param aItem0 
        * @param aItem1 
+       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
        * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
        */
       static int8_t generalEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);

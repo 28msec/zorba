@@ -557,7 +557,7 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
         ret = 1;
     } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
         && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
-      if (aCollation == NULL)
+      if (aCollation == 0)
         ret = aItem0->getStringValue().compare(aItem1->getStringValue());
       else
         ret = aItem0->getStringValue().compare(aItem1->getStringValue(), *aCollation);
