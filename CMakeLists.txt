@@ -4,6 +4,7 @@
 PROJECT(zorba)
 ENABLE_TESTING()
 
+
 # Uncomment the next line to output make commands
 # SET(CMAKE_VERBOSE_MAKEFILE ON)
 
@@ -110,8 +111,11 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 IF (MSVC)
 	ADD_DEFINITIONS(${DEFINITIONS})
 ELSE (MSVC)
-	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual -DZORBA_USE_PTHREAD_LIBRARY ${DEFINITIONS})
+	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual  ${DEFINITIONS})
 ENDIF (MSVC)
+
+
+INCLUDE(CMakeConfiguration.txt)
 
 
 # for the moment, we include everything
