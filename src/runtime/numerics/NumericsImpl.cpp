@@ -13,6 +13,7 @@
 #include "system/globalenv.h"
 #include "runtime/numerics/NumericsImpl.h"
 #include "util/tracer.h"
+#include "util/math_helper.h"
 #include "types/casting.h"
 #include "errors/Error.h"
 #include "util/zorba.h"
@@ -714,15 +715,15 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-          res = zorba::getItemFactory()->createDouble(std::ceil(item->getDoubleValue()));
+          res = zorba::getItemFactory()->createDouble(ceil(item->getDoubleValue()));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat(std::ceil(item->getFloatValue()));
+        res = zorba::getItemFactory()->createFloat(ceil(item->getFloatValue()));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = zorba::getItemFactory()->createDecimal(std::ceil(item->getDecimalValue()));
+        res = zorba::getItemFactory()->createDecimal(ceil(item->getDecimalValue()));
 
       //item type is subtype of INTEGER 
       else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
@@ -788,15 +789,15 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createDouble(std::floor(item->getDoubleValue()));
+        res = zorba::getItemFactory()->createDouble(floor(item->getDoubleValue()));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat(std::floor(item->getFloatValue()));
+        res = zorba::getItemFactory()->createFloat(floor(item->getFloatValue()));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = zorba::getItemFactory()->createDecimal(std::floor(item->getDecimalValue()));
+        res = zorba::getItemFactory()->createDecimal(floor(item->getDecimalValue()));
 
       //item type is subtype of INTEGER 
       else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
@@ -862,15 +863,15 @@ namespace xqp
 
       //item type is subtype of DOUBLE
       if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createDouble(round(item->getDoubleValue()));
+        res = zorba::getItemFactory()->createDouble(xqp::round(item->getDoubleValue()));
         
       //item type is subtype of FLOAT
       else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
-        res = zorba::getItemFactory()->createFloat(round(item->getFloatValue()));
+        res = zorba::getItemFactory()->createFloat(xqp::round(item->getFloatValue()));
 
       //item type is subtype of DECIMAL
       else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
-        res = zorba::getItemFactory()->createDecimal(round(item->getDecimalValue()));
+        res = zorba::getItemFactory()->createDecimal(xqp::round(item->getDecimalValue()));
 
       //item type is subtype of INTEGER 
       else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
@@ -916,11 +917,75 @@ namespace xqp
 
   Item_t FnRoundHalfToEvenIterator::nextImpl(PlanState& planState)
   {
+    Item_t item;
+    Item_t itemPrec;
     Item_t res;
+    TypeSystem::xqtref_t type;
+    int32_t precision = 0;
+    
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-    res = zorba::getItemFactory()->createInteger(-4);
-    STACK_PUSH( res, state );
+    STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    
+    item = this->consumeNext ( theChild0, planState );
+    if ( item != NULL )
+    {
+      itemPrec = this->consumeNext ( theChild1, planState );
+      if ( itemPrec != NULL )
+      {
+        itemPrec = itemPrec->getAtomizationValue();
+        precision = itemPrec->getIntegerValue();
+      }
+      
+      //get the value and the type of the item
+      item = item->getAtomizationValue();
+      type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+
+      //Parameters of type xs:untypedAtomic are always promoted to xs:double
+      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE ) )
+      {
+        item = GenericCast::instance()->cast ( item, GENV_TYPESYSTEM.DOUBLE_TYPE_ONE );
+        type = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
+      }
+
+      //item type is subtype of DOUBLE
+      if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE ) )
+        res = zorba::getItemFactory()->createDouble(xqp::roundHalfToEven(item->getDoubleValue(), precision));
+        
+      //item type is subtype of FLOAT
+      else if ( GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
+        res = zorba::getItemFactory()->createFloat(xqp::roundHalfToEven(item->getFloatValue(), precision));
+
+      //item type is subtype of DECIMAL
+      else if (GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ))
+        res = zorba::getItemFactory()->createDecimal(xqp::roundHalfToEven(item->getDecimalValue(), precision));
+
+      //item type is subtype of INTEGER 
+      else if(GENV_TYPESYSTEM.is_subtype ( *type, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE ))
+        res = item;
+
+      else
+      {
+        ZorbaErrorAlerts::error_alert (
+            error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::STATIC_ERROR,
+        NULL,
+        false,
+        "Wrong operator type for a round-half-to-even operation!"
+                                      );
+      }
+
+      if ( this->consumeNext ( theChild0, planState ) != NULL )
+      {
+        ZorbaErrorAlerts::error_alert (
+            error_messages::XPTY0004_STATIC_TYPE_ERROR,
+        error_messages::STATIC_ERROR,
+        NULL,
+        false,
+        "Round-half-to-even operation has a sequences greater than one as an operator!"
+                                      );
+      }
+      STACK_PUSH ( res, state );
+    }
     STACK_END();
   }
   

@@ -1,9 +1,13 @@
-/* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
+/**
+ * @copyright
+ * ========================================================================
+ *  Copyright FLWOR Foundation
+ * ========================================================================
  *
- *  $Id: Numerics.h,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
+ * @author David Graff (david.graf@28msec.com)
+ * @author Sorin Nasoi (sorin.nasoi@ipdevel.ro)
+ * @file functions/numerics.h
  *
- *	Copyright 2006-2007 FLWOR Foundation.
- *  Authors: John Cowan, Paul Pedersen
  */
 
 #ifndef XQP_NUMERICS_H
