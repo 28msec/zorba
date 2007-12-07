@@ -487,10 +487,10 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
   }
   
   int8_t
-  CompareIterator::equal(const Item_t& aItem0, const Item_t& aItem1)
+  CompareIterator::equal(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation)
   {
     // tries first normal compare
-    int8_t compareRes = CompareIterator::compare(aItem0, aItem1);
+    int8_t compareRes = CompareIterator::compare(aItem0, aItem1, aCollation);
     if (compareRes == 0)
       return 0;
     else if (compareRes == -1 || compareRes == 1)
@@ -511,75 +511,74 @@ bool CompareIterator::boolResult ( int8_t aCompValue, CompareType aCompType )
       return 1;
   }
   
-  int8_t CompareIterator::valueEqual(const Item_t& aItem0, const Item_t& aItem1) {
+  int8_t CompareIterator::valueEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
     std::pair<Item_t, Item_t> lPair;
     lPair = valueCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
-    return equal(lPair.first, lPair.second);
+    return equal(lPair.first, lPair.second, aCollation);
   }
   
-  int8_t CompareIterator::generalEqual(const Item_t& aItem0, const Item_t& aItem1) {
+  int8_t CompareIterator::generalEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
     std::pair<Item_t, Item_t> lPair;
     lPair = generalCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
-    return equal(lPair.first, lPair.second);
+    return equal(lPair.first, lPair.second, aCollation);
   }
   
   int8_t 
-  CompareIterator::compare(const Item_t& aItem0, const Item_t& aItem1)
+  CompareIterator::compare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation)
   {
     TypeSystem::xqtref_t type0 = GENV_TYPESYSTEM.create_type(aItem0->getType(), TypeSystem::QUANT_ONE);
     TypeSystem::xqtref_t type1 = GENV_TYPESYSTEM.create_type(aItem1->getType(), TypeSystem::QUANT_ONE);
     int8_t ret = -2;
     if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)
-        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE))
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE)) {
       if ( aItem0->getFloatValue() < aItem1->getFloatValue())
         ret = -1;
       else if ( aItem0->getFloatValue() == aItem1->getFloatValue())
         ret = 0;
       else
         ret = 1;
-      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
-               && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+    } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE)) {
       if ( aItem0->getDoubleValue() < aItem1->getDoubleValue())
         ret = -1;
       else if ( aItem0->getDoubleValue() == aItem1->getDoubleValue())
         ret = 0;
       else
         ret = 1;
-      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
-               && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE))
+    } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)
+    && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE)) {
       if ( aItem0->getDecimalValue() < aItem1->getDecimalValue())
         ret = -1;
       else if ( aItem0->getDecimalValue() == aItem1->getDecimalValue())
         ret = 0;
       else
         ret = 1;
-      else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
-               && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
-      if ( aItem0->getStringValue() < aItem1->getStringValue())
-        ret = -1;
-      else if ( aItem0->getStringValue() == aItem1->getStringValue())
-        ret = 0;
+    } else if (GENV_TYPESYSTEM.is_subtype(*type0, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
+        && GENV_TYPESYSTEM.is_subtype(*type1, *GENV_TYPESYSTEM.STRING_TYPE_ONE)) {
+      if (aCollation == NULL)
+        ret = aItem0->getStringValue().compare(aItem1->getStringValue());
       else
-        ret = 1;
+        ret = aItem0->getStringValue().compare(aItem1->getStringValue(), *aCollation);
+    }
     // TODO comparisons for all types
 
     return ret;
   }
   
-  int8_t CompareIterator::valueCompare(const Item_t& aItem0, const Item_t& aItem1) {
+  int8_t CompareIterator::valueCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
     std::pair<Item_t, Item_t> lPair;
     lPair = valueCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
-    return compare(lPair.first, lPair.second);
+    return compare(lPair.first, lPair.second, aCollation);
   }
   
-  int8_t CompareIterator::generalCompare(const Item_t& aItem0, const Item_t& aItem1) {
+  int8_t CompareIterator::generalCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation) {
     std::pair<Item_t, Item_t> lPair;
     lPair = generalCasting(aItem0, aItem1);
     lPair = typePromotion(lPair.first, lPair.second);
-    return compare(lPair.first, lPair.second);
+    return compare(lPair.first, lPair.second, aCollation);
   }
   /* end class ComparisonIterator */
 

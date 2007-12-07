@@ -105,12 +105,13 @@ namespace xqp
        * and value comparison).
        * @param item0 
        * @param item1 
+       * @param aCollation optional collation parameter (passed as pointer to make it possible to be set to 0)
        * @return -1, if item0 &lt; item1
        *          0, if item0 == item1
        *          1, if item0 &gt; item1
        *         -2, if it is not possible to compare the values the two passed items
        */
-      static int8_t compare(const Item_t& aItem0, const Item_t& aItem1);
+      static int8_t compare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Value Comparison on the passed items
@@ -118,7 +119,7 @@ namespace xqp
        * @param aItem1 
        * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (value comparison not possible)
        */
-      static int8_t valueCompare(const Item_t& aItem0, const Item_t& aItem1);
+      static int8_t valueCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * General Comparison on the passed items
@@ -126,18 +127,19 @@ namespace xqp
        * @param aItem1 
        * @return -1 (smaller), 0 (equal), 1 (bigger), -2 (general comparison not possible)
        */
-      static int8_t generalCompare(const Item_t& aItem0, const Item_t& aItem1);
+      static int8_t generalCompare(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Checks if the two passed items contains the same value (without castings and promotions which are used in general 
        * and value comparison).
        * @param item0 
        * @param item1 
+       * @param aCollation options collatino parameter (passed as pointer to make it possible to be set to 0)
        * @return  0, if item0 == item1
        *          1, if item0 != item1
        *         -2, if it is not possible to compare the values of the passed items
        */
-      static int8_t equal(const Item_t& aItem0, const Item_t& aItem1);
+      static int8_t equal(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Value Equal on the passed items
@@ -145,7 +147,7 @@ namespace xqp
        * @param aItem1 
        * @return 0 (equal), 1 (not equal), -2 (value equal not possible)
        */
-      static int8_t valueEqual(const Item_t& aItem0, const Item_t& aItem1);
+      static int8_t valueEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * General Equal on the passed items
@@ -153,7 +155,7 @@ namespace xqp
        * @param aItem1 
        * @return 0 (equal), 1 (not equal), -2 (general equal not possible)
        */
-      static int8_t generalEqual(const Item_t& aItem0, const Item_t& aItem1);
+      static int8_t generalEqual(const Item_t& aItem0, const Item_t& aItem1, xqpString* aCollation = 0);
       
       /**
        * Value comparison of the passed two items with the operator 
