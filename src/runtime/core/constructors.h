@@ -38,12 +38,14 @@ class zorba;
 ********************************************************************************/
 class ElementIterator : public Batcher<ElementIterator>
 {
+  typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
+
 private:
   QNameItem_t       theQName;
   PlanIter_t        theChildrenIter;
   PlanIter_t        theAttributesIter;
   PlanIter_t        theNamespacesIter;
-  std::vector<std::pair<xqpString, xqpString> > theNsBindings;
+  NamespaceBindings theNsBindings;
 
 public:
   ElementIterator(

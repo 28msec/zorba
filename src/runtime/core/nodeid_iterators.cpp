@@ -88,7 +88,9 @@ void NodeSortIterator::setOffset(PlanState& planState, uint32_t& offset)
 
   Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
-  state->theStoreIterator = Store::getInstance().sortNodes(input, true, true);
+  state->theStoreIterator = Store::getInstance().sortNodes(input,
+                                                           theAscendant,
+                                                           theDistinct);
 }
 
 

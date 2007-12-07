@@ -365,11 +365,34 @@ public:
 class StoreNodeSortIterator : public Iterator
 {
 protected:
-  Iterator_t           theInput;
-  std::vector<Item_t>  theNodes;
+  class ComparisonFunction
+  {
+  public:
+    bool operator()(const NodeImpl_t& n1, const NodeImpl_t& n2) const
+    {
+      return n1->getId() < n2->getId();
+    }
+  };
+
+protected:
+  Iterator_t               theInput;
+  bool                     theAscendant;
+  bool                     theDistinct;
+
+  std::vector<NodeImpl_t>  theNodes;
+  long                     theCurrentNode;
 
 public:
-  StoreNodeSortIterator(const Iterator_t& input) : theInput(input) { }
+  StoreNodeSortIterator(const Iterator_t& input,
+                        bool ascendant,
+                        bool distinct)
+    :
+    theInput(input),
+    theAscendant(ascendant),
+    theDistinct(distinct),
+    theCurrentNode(-1)
+  {
+  }
 
   ~StoreNodeSortIterator() { }
 

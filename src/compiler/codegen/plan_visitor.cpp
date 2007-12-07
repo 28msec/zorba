@@ -321,7 +321,8 @@ void plan_visitor::end_visit(relpath_expr& v)
 
   PlanIter_t input = pop_itstack();
 
-  PlanIter_t distinct = new NodeDistinctIterator(v.get_loc(), input);
+  PlanIter_t distinct = new NodeSortIterator(v.get_loc(), input, true, true);
+  //PlanIter_t distinct = new NodeDistinctIterator(v.get_loc(), input);
 
   itstack.push(distinct);
 }

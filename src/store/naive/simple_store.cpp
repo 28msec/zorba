@@ -256,11 +256,11 @@ int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
   @return iterator which produces the sorted items
 ********************************************************************************/
 Iterator_t SimpleStore::sortNodes(
-    Iterator_t iterator,
+    Iterator_t input,
     bool ascendent,
     bool duplicateElemination)
 {
-  return rchandle<Iterator> ( NULL );
+  return  new StoreNodeSortIterator(input, ascendent, duplicateElemination);
 }
 
 

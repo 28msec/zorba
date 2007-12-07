@@ -74,7 +74,7 @@ ElementIterator::nextImpl(PlanState& planState)
                seqNamespaces,
                theNsBindings,
                false,
-               false).get_ptr();
+               false);
 
   STACK_PUSH(item, state);
     

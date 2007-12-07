@@ -7,6 +7,7 @@
 #include "runtime/core/item_iterator.h"
 #include "store/naive/node_items.h"
 #include "store/naive/simple_store.h"
+#include "store/naive/store_defs.h"
 #include "store/api/temp_seq.h"
 #include "util/zorba.h"
 
@@ -814,18 +815,49 @@ void StoreNodeDistinctIterator::close()
 ********************************************************************************/
 Item_t StoreNodeSortIterator::next()
 {
-  while (true)
+  if (theCurrentNode < 0)
   {
-    Item_t contextNode = theInput->next();
-    if (contextNode == NULL)
-      return NULL;
+    theCurrentNode = 0;
 
-    Assert(contextNode->isNode());
+    while (true)
+    {
+      Item_t contextNode = theInput->next();
+      if (contextNode == NULL)
+        break;
 
-    theNodes.push_back(contextNode);
+      Assert(contextNode->isNode());
+
+      theNodes.push_back(BASE_NODE(contextNode));
+    }
+
+    ComparisonFunction cmp;
+
+    std::sort(theNodes.begin(), theNodes.end(), cmp);
   }
 
-  return NULL;
+  if (theCurrentNode < (long)theNodes.size())
+  {
+    if (theDistinct)
+    {
+      NodeImpl_t result = theNodes[theCurrentNode++];
+
+      while (theCurrentNode < (long)theNodes.size() &&
+             theNodes[theCurrentNode] == result)
+      {
+        theCurrentNode++;
+      }
+
+      return result.get_ptr();
+    }
+    else
+    {
+      return theNodes[theCurrentNode++].get_ptr();
+    }
+  }
+  else
+  {
+    return NULL;
+  }
 }
 
 
@@ -835,6 +867,7 @@ void StoreNodeSortIterator::reset()
   // which wraps this store iterator.
 
   theNodes.clear();
+  theCurrentNode = -1;
 }
 
 
@@ -844,6 +877,7 @@ void StoreNodeSortIterator::close()
   // which wraps this store iterator.
 
   theNodes.clear();
+  theCurrentNode = -1;
 }
 
 

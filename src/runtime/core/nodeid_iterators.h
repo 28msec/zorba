@@ -58,12 +58,20 @@ protected:
     Iterator_t  theStoreIterator;
   };
 
+protected:
+  bool  theAscendant;
+  bool  theDistinct;
+
 public:
   NodeSortIterator(
         const yy::location& loc,
-        PlanIter_t input)
+        PlanIter_t input,
+        bool ascendant,
+        bool distinct)
     :
-    UnaryBaseIterator<NodeSortIterator>(loc, input)
+    UnaryBaseIterator<NodeSortIterator>(loc, input),
+    theAscendant(ascendant),
+    theDistinct(distinct)
   {
   }
 
