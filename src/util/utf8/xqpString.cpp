@@ -183,32 +183,17 @@ namespace xqp
     return result;
   }
 
-  int xqpString::compare(xqpString src, const char * loc) const
+  int xqpString::compare(xqpString src, xqpString collationUri) const
   {
     UErrorCode status = U_ZERO_ERROR;
 
-    //create the collator object
-    ::Collator *coll = ::Collator::createInstance(Locale(loc), status);
-
-    if(U_FAILURE(status))
-    {
-      ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
-          error_messages::SYSTEM_ERROR,
-          NULL
-        );
-    }
-
-    //set level 1 comparison for the collator
-    coll->setStrength(::Collator::PRIMARY);
+    //get the collator object fromthe Static context
+      ::Collator *coll = zorba::getZorbaForCurrentThread()->getCollator(collationUri);
 
     ::Collator::EComparisonResult result = ::Collator::EQUAL;
 
     //compare the 2 strings
     result = coll->compare(getUnicodeString(*theStrStore), getUnicodeString(src));
-
-    //close the collator
-    delete coll;
 
     return result;
   }

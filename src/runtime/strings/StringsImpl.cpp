@@ -180,7 +180,7 @@ CompareStrIterator::nextImpl(PlanState& planState) {
         if ( n2 != NULL )  {
           //TODO solve track issue no.26
           res = zorba::getItemFactory()->createInteger(
-                  n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue().c_str()));
+                  n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue()));
         }
       }
       else{
