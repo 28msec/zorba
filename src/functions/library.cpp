@@ -410,12 +410,12 @@ DECL(fn_not,
 DECL(op_and,
      (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":and"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+      true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 
 DECL(op_or,
      (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":or"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+      true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 // end Logic
 
 // begin zorba functions

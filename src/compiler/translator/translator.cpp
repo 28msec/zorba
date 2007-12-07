@@ -1373,7 +1373,7 @@ void translator::end_visit(const AndExpr& v, void *visit_state)
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
 	fo_expr *fo_h = new fo_expr(v.get_location());
-	fo_h->set_func(LOOKUP_OP2 ("and"));
+	fo_h->set_func(LOOKUP_OPN ("and"));
 	fo_h->add(e2_h);
 	fo_h->add(e1_h);
   nodestack.push (fo_h);
@@ -1705,7 +1705,7 @@ void translator::end_visit(const OrExpr& v, void *visit_state)
 	rchandle<expr> e1_h = pop_nodestack();
 	rchandle<expr> e2_h = pop_nodestack();
   fo_expr *fo_p = new fo_expr(v.get_location());
-	fo_p->set_func(LOOKUP_OP2 ("or"));
+	fo_p->set_func(LOOKUP_OPN ("or"));
 	fo_p->add(e2_h);
 	fo_p->add(e1_h);
   nodestack.push (fo_p);
