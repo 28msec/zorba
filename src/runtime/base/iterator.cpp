@@ -116,7 +116,7 @@ PlanWrapper::next()
 {
   if (!theClosed)
   {
-#if BATCHING_TYPE == 1
+#if ZORBA_BATCHING_TYPE == 1
     return theIterator->consumeNext(theIterator, *theStateBlock);
 #else
     return theIterator->produceNext(*theStateBlock);
@@ -169,7 +169,7 @@ PlanIteratorWrapper::next()
 {
   if (!theClosed)
   {
-#if BATCHING_TYPE == 1
+#if ZORBA_BATCHING_TYPE == 1
     return theIterator->consumeNext(theIterator, *theStateBlock);
 #else
     return theIterator->produceNext(*theStateBlock);

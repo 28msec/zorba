@@ -24,6 +24,8 @@
 #ifndef XQP_ITERATOR_H
 #define XQP_ITERATOR_H
 
+#include "zorba/common.h"
+
 #include "util/rchandle.h"
 #include "util/tracer.h"
 #include "compiler/parser/location.hh"
@@ -33,13 +35,10 @@
 
 #include "util/zorba.h"
 
-#include <assert.h>
-#include <iostream>
-
 // Info: Forcing inlining a function in g++: Item_t next() __attribute__((always_inline)) {...}
 
 //0 = NO_BATCHING, 1 = SIMPLE_BATCHING, 2 = SUPER_BATCHING
-#define BATCHING_TYPE 0
+//#define BATCHING_TYPE 0
 
 #define IT_INDENT     std::string(++iteratorTreeDepth, ' ')
 #define IT_DEPTH      std::string(iteratorTreeDepth, ' ')
@@ -116,9 +115,9 @@ protected:
 public:
   yy::location loc;
   
-#if BATCHING_TYPE == 1  
+#if ZORBA_BATCHING_TYPE == 1  
   int32_t cItem;
-  Item_t batch [BATCHSIZE];
+  Item_t batch [ZORBA_BATCHING_BATCHSIZE];
 #endif
 
 public:
@@ -207,10 +206,10 @@ protected:
 
 protected:
 
-#if BATCHING_TYPE == 1  
+#if ZORBA_BATCHING_TYPE == 1  
   inline Item_t consumeNext(PlanIter_t& subIter, PlanState& planState)
   {
-    if (subIter->cItem == BATCHSIZE) {
+    if (subIter->cItem == ZORBA_BATCHING_BATCHSIZE) {
       subIter->produceNext(planState);
       subIter->cItem = 0;
     }
@@ -247,14 +246,14 @@ public:
   ~Batcher() {}
 
 protected:
-#if BATCHING_TYPE == 1  
+#if ZORBA_BATCHING_TYPE == 1  
   void produceNext(PlanState& planState) 
   {
     planState.zorp->current_iterator.push(this);
 
     int32_t i = 0;
     batch[0] = static_cast<IterType*>(this)->nextImpl();
-    while (i < BATCHSIZE && batch[i] != NULL) {
+    while (i < ZORBA_BATCHING_BATCHSIZE && batch[i] != NULL) {
       i++;
       batch[i] = static_cast<IterType*>(this)->nextImpl();
     }
