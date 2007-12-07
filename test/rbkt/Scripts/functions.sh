@@ -200,7 +200,7 @@ function run_query_in_bucket
   # If no result file was generated, then we create an empty one.
   #
   if [ -e "${inputDir}/${queryName}.xq.res" ]; then
-    mv "${inputDir}/${queryName}.xq.res" "${resultFile}"
+    cat "${inputDir}/${queryName}.xq.res" | ${scriptsDir}/tidy_xmlfrag >"${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 12 run_query_in_bucket: mv failed"; exit 19; fi
   else
     touch "${resultFile}"
@@ -211,7 +211,7 @@ function run_query_in_bucket
   # Do the diffs
   #
   if [ -e "${expResultFile}" ]; then
-    diff -I 'Duration.*' "${resultFile}" "${expResultFile}" > "${diffFile}"
+    cat "${expResultFile}" | ${scriptsDir}/tidy_xmlfrag | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
   else
     echo "unknown expected results for ${queryName}"
     cp "${queryFile}" "${diffFile}"

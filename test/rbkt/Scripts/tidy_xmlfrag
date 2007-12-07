@@ -1,0 +1,2 @@
+#!/bin/bash
+perl -pe 's#<([^> ]+)([^>]*?)/ *>#<$1 $2></$1>#g;s/^<\?xml[^>]*\?>//g' | (echo '<root>'; cat; echo '</root>') | tidy -q -xml -indent
