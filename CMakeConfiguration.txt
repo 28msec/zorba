@@ -27,9 +27,6 @@ IF (ZORBA_BATCHING_TYPE GREATER 0)
     MESSAGE( STATUS "ZORBA_BATCHING_BATCHSIZE: " ${ZORBA_BATCHING_BATCHSIZE} )
 ENDIF (ZORBA_BATCHING_TYPE GREATER 0)
 
-SET (ZORBA_TEST OFF CACHE BOOL "test")
-MESSAGE( STATUS "ZORBA_TEST: " ${ZORBA_TEST} )
-
 # below we print some variables you might be interested in, when compiling
 
 # if you are building in-source, this is the same as CMAKE_SOURCE_DIR, otherwise 
