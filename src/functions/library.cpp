@@ -18,6 +18,7 @@
 #include "functions/Sequences.h"
 #include "functions/Strings.h"
 #include "functions/Boolean.h"
+#include "functions/Constructor.h"
 
 #include "context/common.h"
 #include "context/static_context.h"
@@ -417,6 +418,13 @@ DECL(op_or,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       true, GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
 // end Logic
+
+// begin constructors
+DECL(op_enclosed_expr,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":enclosed-expr"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE));
+// end constructors
 
 // begin zorba functions
 DECL(zor_numgen,

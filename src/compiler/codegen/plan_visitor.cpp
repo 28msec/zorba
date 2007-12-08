@@ -566,13 +566,16 @@ void plan_visitor::end_visit(elem_expr& v)
 
 	if (v.get_attrs_expr() != NULL)
 		attrIter = pop_itstack();
+  else
+    attrIter = new EmptyIterator(v.get_loc());
 
 	if (v.get_content_expr() != NULL)
 	{
 		contentIter = pop_itstack();
-    PlanIter_t enclosedIter = (new EnclosedIterator (v.get_loc (), contentIter));
-    contentIter = new ElementContentIterator(v.get_loc(), enclosedIter);
-	}
+    contentIter = new ElementContentIterator(v.get_loc(), contentIter);
+	} else {
+    contentIter = new EmptyIterator(v.get_loc());
+  }
 
   QNameItem_t itemQName = v.get_qname();
 
@@ -612,11 +615,15 @@ void plan_visitor::end_visit(attr_expr& v)
 	QNameItem_t itemQName = v.get_qname();
 
 	PlanIter_t valueIter = NULL;
-	if (v.get_val_expr() != NULL)
+	if (v.get_val_expr() != NULL) {
 		valueIter = pop_itstack();
+    valueIter = new EnclosedIterator(v.get_loc(), valueIter);
+  } else {
+    valueIter = new EmptyIterator(v.get_loc());
+  }
 
 	PlanIter_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
-
+  
 	itstack.push(&*attrIter);
 }
 

@@ -8,6 +8,9 @@
 #define XQP_BINARYBASE_H
 
 #include "runtime/base/iterator.h"
+#ifndef DEBUG
+# include <cassert>
+#endif
 
 namespace xqp
 {
@@ -38,11 +41,15 @@ namespace xqp
 	template <class IterType>
 	BinaryBaseIterator<IterType>::BinaryBaseIterator (
 	    const yy::location& loc,
-	    PlanIter_t& arg0,
-	    PlanIter_t& arg1 )
+	    PlanIter_t& aChild0,
+	    PlanIter_t& aChild1 )
 			:
-			Batcher<IterType> ( loc ), theChild0 ( arg0 ), theChild1 ( arg1 )
+			Batcher<IterType> ( loc ), theChild0 ( aChild0 ), theChild1 ( aChild1 )
 	{
+#ifndef NDEBUG
+    assert(aChild0 != 0);
+    assert(aChild1 != 0);
+#endif
 	}
 
 

@@ -26,8 +26,21 @@ ElementIterator::ElementIterator (
   :
   Batcher<ElementIterator>(loc),
   theQName(qname),
+  theQNameIter(0),
   theChildrenIter(children),
   theAttributesIter(attributes)
+{
+}
+
+ElementIterator::ElementIterator(
+    const yy::location& loc,
+    PlanIter_t aQNameIter,
+    PlanIter_t aChildren)
+  :
+    Batcher<ElementIterator>(loc),
+    theQNameIter(aQNameIter),
+    theChildrenIter(aChildren),
+    theAttributesIter(0)
 {
 }
 
@@ -85,13 +98,16 @@ ElementIterator::nextImpl(PlanState& planState)
 void
 ElementIterator::resetImpl(PlanState& planState)
 {
-  if ( theChildrenIter != NULL )
+  if (theQNameIter != 0)
+    resetChild(theQNameIter, planState);
+  
+  if ( theChildrenIter != 0 )
     resetChild(theChildrenIter, planState);
 
-  if (theAttributesIter != NULL)
+  if (theAttributesIter != 0)
     resetChild(theAttributesIter, planState);
 
-  if (theNamespacesIter != NULL)
+  if (theNamespacesIter != 0)
     resetChild(theNamespacesIter, planState);
 
   PlanIterator::PlanIteratorState* state;
@@ -103,13 +119,16 @@ ElementIterator::resetImpl(PlanState& planState)
 void
 ElementIterator::releaseResourcesImpl(PlanState& planState)
 {
-  if (theChildrenIter != NULL)
+  if (theQNameIter != 0)
+    resetChild(theQNameIter, planState);
+  
+  if (theChildrenIter != 0)
     releaseChildResources(theChildrenIter, planState);
 
-  if (theAttributesIter != NULL)
+  if (theAttributesIter != 0)
     releaseChildResources(theAttributesIter, planState);
 
-  if (theNamespacesIter != NULL)
+  if (theNamespacesIter != 0)
     releaseChildResources(theNamespacesIter, planState);
 }
 
@@ -119,13 +138,16 @@ ElementIterator::getStateSizeOfSubtree() const
 {
   int32_t size = 0;
 
-  if (theChildrenIter != NULL)
+  if (theQNameIter != 0)
+    size += theQNameIter->getStateSizeOfSubtree();
+  
+  if (theChildrenIter != 0)
     size += theChildrenIter->getStateSizeOfSubtree();
 
-  if (theAttributesIter != NULL)
+  if (theAttributesIter != 0)
     size += theAttributesIter->getStateSizeOfSubtree();
 
-  if (theNamespacesIter != NULL)
+  if (theNamespacesIter != 0)
     size += theNamespacesIter->getStateSizeOfSubtree();
 
   return this->getStateSize() + size;
@@ -138,13 +160,16 @@ ElementIterator::setOffset(PlanState& planState, uint32_t& offset)
   this->stateOffset = offset;
   offset += this->getStateSize();
 
-  if (theChildrenIter != NULL)
+  if (theQNameIter != 0)
+    theQNameIter->setOffset(planState, offset);
+  
+  if (theChildrenIter != 0)
     theChildrenIter->setOffset(planState, offset);
 
-  if (theAttributesIter != NULL)
+  if (theAttributesIter != 0)
     theAttributesIter->setOffset(planState, offset);
 
-  if (theNamespacesIter != NULL)
+  if (theNamespacesIter != 0)
     theNamespacesIter->setOffset(planState, offset);
 }
 
@@ -310,10 +335,9 @@ AttributeIterator::nextImpl(PlanState& planState)
 ********************************************************************************/
 CommentIterator::CommentIterator (
     const yy::location& loc,
-    PlanIter_t& expression)
+    PlanIter_t& aComment)
   :
-  Batcher<CommentIterator>(loc),
-  theExpressionIter(expression)
+  UnaryBaseIterator<CommentIterator>(loc, aComment)
 {
 }
 
@@ -329,68 +353,22 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   STACK_INIT(PlanIteratorState, state, planState);
     
-  if (theExpressionIter != NULL)
-  {
     /*
     ewrapper = new PlanIterWrapper(theExpressionIter, planState);
     seqExpression = store->createTempSeq(ewrapper);
     */
     // TODO: put a while() to handle expressions        
-    child = consumeNext( theExpressionIter, planState);    
+    child = consumeNext( theChild, planState);    
     if (child != NULL)
       content = child->getStringValue(); // TODO: maybe getStringProperty()?
-  }
 
   item = zorba::getItemFactory()->createCommentNode(
                content,
-               false).get_ptr();
+               false);
 
   STACK_PUSH(item, state);
     
   STACK_END();
-}
-
-
-void
-CommentIterator::resetImpl(PlanState& planState)
-{
-  if ( theExpressionIter != NULL )
-    resetChild(theExpressionIter, planState);
-
-  PlanIterator::PlanIteratorState* state;
-  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
-  state->reset();
-}
-
-
-void
-CommentIterator::releaseResourcesImpl(PlanState& planState)
-{
-  if (theExpressionIter != NULL)
-    releaseChildResources(theExpressionIter, planState);
-}
-
-  
-uint32_t
-CommentIterator::getStateSizeOfSubtree() const
-{
-  int32_t size = 0;
-  
-  if (theExpressionIter != NULL)
-    size += theExpressionIter->getStateSizeOfSubtree();
-
-  return this->getStateSize() + size;
-}
-
-  
-void
-CommentIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  this->stateOffset = offset;
-  offset += this->getStateSize();
-
-  if (theExpressionIter != NULL)
-    theExpressionIter->setOffset(planState, offset);
 }
 
 /* begin class TextIterator */

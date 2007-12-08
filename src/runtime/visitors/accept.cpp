@@ -99,6 +99,7 @@ namespace xqp {
   UNARY_ACCEPT(DocIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
   UNARY_ACCEPT(TextIterator);
+  UNARY_ACCEPT(CommentIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
@@ -133,14 +134,6 @@ namespace xqp {
     if (theChildrenIter != NULL)
       theChildrenIter->accept(v);
     
-    v.endVisit(*this);
-  }
-  
-  void CommentIterator::accept(PlanIterVisitor& v) const
-  {  
-    v.beginVisit(*this);
-    if (theExpressionIter != NULL)
-      theExpressionIter->accept(v);
     v.endVisit(*this);
   }
   

@@ -19,6 +19,7 @@
 
 #include <iostream>
 #include <string>
+#include <cassert>
 
 using namespace std;
 
@@ -257,8 +258,12 @@ void *translator::begin_visit(const EnclosedExpr& v)
 void translator::end_visit(const EnclosedExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-
-  // enclosed_expr gone -- leave expression on the stack
+  
+  expr_t lContent = pop_nodestack();
+  fo_expr *fo_h = new fo_expr(v.get_location());
+  fo_h->set_func(LOOKUP_OP1 ("enclosed-expr"));
+  fo_h->add(lContent);
+  nodestack.push(fo_h);
 }
 
 
@@ -567,6 +572,21 @@ void *translator::begin_visit(const CompElemConstructor& v)
 void translator::end_visit(const CompElemConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  
+  expr_t content = NULL;
+
+  if (v.get_content_expr() != NULL)
+    content = pop_nodestack();
+
+  if (v.get_qname_expr() != NULL)
+    assert(false);
+  
+  if (v.get_qname() == NULL)
+    assert(false);
+  
+  QNameItem_t item = sctx_p->lookup_elem_qname (v.get_qname()->get_prefix(), v.get_qname()->get_localname());
+  elem_expr *elem_t = new elem_expr(v.get_location(), item, NULL, content);
+  nodestack.push(elem_t);
 }
 
 void *translator::begin_visit(const CompAttrConstructor& v)

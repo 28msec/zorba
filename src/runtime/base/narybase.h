@@ -8,6 +8,9 @@
 #define XQP_NARYBASE_H
 
 #include "runtime/base/iterator.h"
+#ifndef NDEBUG
+# include <cassert>
+#endif
 
 namespace xqp
 {
@@ -37,10 +40,20 @@ namespace xqp
 	template <class IterType>
 	NaryBaseIterator<IterType>::NaryBaseIterator (
 	    const yy::location& loc,
-	    std::vector<PlanIter_t>& args )
+	    std::vector<PlanIter_t>& aChildren )
 			:
-			Batcher<IterType> ( loc ), theChildren ( args )
+			Batcher<IterType> ( loc ), theChildren ( aChildren )
 	{
+#ifndef NDEBUG
+    std::vector<PlanIter_t>::const_iterator lEnd = aChildren.end();
+    for(
+        std::vector<PlanIter_t>::const_iterator lIter = aChildren.begin();
+        lIter != lEnd;
+        ++lIter)
+    {
+      assert(*lIter != 0);
+    }
+#endif
 	}
 
 
@@ -58,10 +71,13 @@ namespace xqp
 		GET_STATE ( PlanIterator::PlanIteratorState, state, planState );
 		state->reset();
 
-		std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-		for ( ; iter != theChildren.end(); ++iter )
+		std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+		for ( 
+         std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+         lIter!= theChildren.end(); 
+         ++lIter )
 		{
-			this->resetChild ( *iter, planState );
+			this->resetChild ( *lIter, planState );
 		}
 	}
 
@@ -70,10 +86,13 @@ namespace xqp
 	void
 	NaryBaseIterator<IterType>::releaseResourcesImpl ( PlanState& planState )
 	{
-		std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-		for ( ; iter != theChildren.end(); ++iter )
-		{
-			this->releaseChildResources ( *iter, planState );
+    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+    for ( 
+         std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+          lIter!= theChildren.end(); 
+          ++lIter )
+    {
+			this->releaseChildResources ( *lIter, planState );
 		}
 	}
 
@@ -84,10 +103,13 @@ namespace xqp
 	{
 		uint32_t size = 0;
 
-		std::vector<PlanIter_t>::const_iterator iter = theChildren.begin();
-		for ( ; iter != theChildren.end(); ++iter )
-		{
-			size += ( *iter )->getStateSizeOfSubtree();
+    std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+    for ( 
+         std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin(); 
+          lIter!= theChildren.end(); 
+          ++lIter )
+    {
+			size += ( *lIter )->getStateSizeOfSubtree();
 		}
 
 		return this->getStateSize() + size;
@@ -103,10 +125,13 @@ namespace xqp
 		this->stateOffset = offset;
 		offset += this->getStateSize();
 
-		std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-		for ( ; iter != theChildren.end(); ++iter )
-		{
-			( *iter )->setOffset ( planState, offset );
+    std::vector<PlanIter_t>::iterator lEnd = theChildren.end();
+    for ( 
+         std::vector<PlanIter_t>::iterator lIter = theChildren.begin(); 
+          lIter!= theChildren.end(); 
+          ++lIter )
+    {
+			( *lIter )->setOffset ( planState, offset );
 		}
 	}
 	/* end class NaryBaseIterator */

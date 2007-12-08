@@ -8,6 +8,9 @@
 #define XQP_UNARYBASE_H
 
 #include "runtime/base/iterator.h"
+#ifndef NDEBUG
+# include <cassert>
+#endif
 
 namespace xqp
 {
@@ -35,10 +38,13 @@ namespace xqp
 
   /* begin class UnaryBaseIterator */
   template <class IterType>
-  UnaryBaseIterator<IterType>::UnaryBaseIterator ( const yy::location& loc, PlanIter_t& arg )
+  UnaryBaseIterator<IterType>::UnaryBaseIterator ( const yy::location& loc, PlanIter_t& aChild )
       :
-      Batcher<IterType> ( loc ), theChild ( arg )
+      Batcher<IterType> ( loc ), theChild ( aChild )
   {
+#ifndef NDEBUG
+    assert(aChild != 0);
+#endif
   }
 
 

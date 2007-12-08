@@ -42,6 +42,7 @@ class ElementIterator : public Batcher<ElementIterator>
 
 private:
   QNameItem_t       theQName;
+  PlanIter_t        theQNameIter;
   PlanIter_t        theChildrenIter;
   PlanIter_t        theAttributesIter;
   PlanIter_t        theNamespacesIter;
@@ -50,9 +51,14 @@ private:
 public:
   ElementIterator(
         const yy::location& loc, 
-        const QNameItem_t& qname,
-        PlanIter_t& children,
-        PlanIter_t& attributes);
+        const QNameItem_t& aQName,
+        PlanIter_t& aChildren,
+        PlanIter_t& aAttrs);
+  
+  ElementIterator(
+        const yy::location& loc,
+        PlanIter_t aQNameIter,
+        PlanIter_t aChildren);
   
   const QNameItem_t& getQName() const { return theQName; }
   
@@ -130,22 +136,14 @@ public:
 
 ********************************************************************************/
 
-class CommentIterator : public Batcher<CommentIterator>
-{
-  PlanIter_t        theExpressionIter;
+class CommentIterator : public UnaryBaseIterator<CommentIterator> {
 
 public:
   CommentIterator(
-        const yy::location& loc,         
-        PlanIter_t& expression);
+        const yy::location& loc, 
+        PlanIter_t& aComment);
   
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
-  virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };
