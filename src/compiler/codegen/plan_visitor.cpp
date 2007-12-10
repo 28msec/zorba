@@ -23,6 +23,19 @@
 #include <vector>
 
 
+#ifndef NDEBUG
+
+#undef LOCAL_DEBUG
+#ifdef LOCAL_DEBUG
+#define CODEGEN_TRACE(msg) std::cout << msg << TRACE << std::endl;
+#else
+#define CODEGEN_TRACE(msg)
+#endif
+
+#else
+#define CODEGEN_TRACE(msg)
+#endif
+
 using namespace std;
 namespace xqp 
 {
@@ -36,26 +49,28 @@ static uint32_t depth = 0;
  :.........................................*/
 bool plan_visitor::begin_visit(expr& v)
 {
-  cout << std::string(++depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(++depth, ' '));
 	return true;
 }
 
 
 void plan_visitor::end_visit(expr& v)
 {
-  cout << std::string(depth--, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(depth--, ' '));
 }
 
 
 bool plan_visitor::begin_visit(var_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(var_expr& v)
 {
+  CODEGEN_TRACE("");
+
   if (v.kind == var_expr::for_var) {
     var_iterator *v_p = new var_iterator(v.get_varname ()->getLocalName (),v.get_loc(), (void *) &v);
     vector<var_iter_t> *map = NULL;
@@ -81,18 +96,18 @@ void plan_visitor::end_visit(var_expr& v)
 
 bool plan_visitor::begin_visit(order_modifier& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 void plan_visitor::end_visit(order_modifier& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 bool plan_visitor::begin_visit(flwor_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
   for (vector<rchandle<forlet_clause> >::const_iterator it = v.clause_begin ();
        it != v.clause_end();
        ++it) {
@@ -112,7 +127,7 @@ bool plan_visitor::begin_visit(flwor_expr& v)
 
 void plan_visitor::end_visit(flwor_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
   PlanIter_t ret = pop_itstack ();
 
   vector<FLWORIterator::OrderSpec> orderSpecs;
@@ -162,53 +177,53 @@ void plan_visitor::end_visit(flwor_expr& v)
 
 bool plan_visitor::begin_visit(quantified_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(quantified_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
 bool plan_visitor::begin_visit(case_clause& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(case_clause& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
 bool plan_visitor::begin_visit(typeswitch_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(typeswitch_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
 bool plan_visitor::begin_visit(if_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(if_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	PlanIter_t iterElse = pop_itstack();
 	PlanIter_t iterThen = pop_itstack();
 	PlanIter_t iterCond = pop_itstack();
@@ -219,14 +234,14 @@ void plan_visitor::end_visit(if_expr& v)
 
 bool plan_visitor::begin_visit(fo_expr& v)
 {
-  cout << std::string(++depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(++depth, ' '));
 	itstack.push(NULL);
 	return true;
 }
 
 
 void plan_visitor::end_visit(fo_expr& v) {
-  cout << std::string(depth--, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(depth--, ' '));
 
 	const function* func_p = v.get_func();
 	assert(func_p != NULL);
@@ -258,49 +273,49 @@ void plan_visitor::end_visit(fo_expr& v) {
 
 bool plan_visitor::begin_visit(ft_select_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(ft_contains_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(instanceof_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(treat_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(castable_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(cast_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(validate_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(extension_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
@@ -310,14 +325,14 @@ cout << TRACE << endl;
 ********************************************************************************/
 bool plan_visitor::begin_visit(relpath_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(relpath_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 
   PlanIter_t input = pop_itstack();
 
@@ -333,7 +348,7 @@ void plan_visitor::end_visit(relpath_expr& v)
 ********************************************************************************/
 bool plan_visitor::begin_visit(axis_step_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 
   bool result = true;
 
@@ -441,7 +456,7 @@ bool plan_visitor::begin_visit(axis_step_expr& v)
 
 void plan_visitor::end_visit(axis_step_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
@@ -450,7 +465,7 @@ void plan_visitor::end_visit(axis_step_expr& v)
 ********************************************************************************/
 bool plan_visitor::begin_visit(match_expr& v)
 {
-  cout << std::string(++depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(++depth, ' '));
 
   PlanIter_t axisIte = pop_itstack();
   AxisIteratorHelper* axisItep = dynamic_cast<AxisIteratorHelper*>(&*axisIte);
@@ -527,7 +542,7 @@ bool plan_visitor::begin_visit(match_expr& v)
 
 void plan_visitor::end_visit(match_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
@@ -537,27 +552,27 @@ void plan_visitor::end_visit(match_expr& v)
 ********************************************************************************/
 bool plan_visitor::begin_visit(doc_expr& v)
 {
-  cout << TRACE  << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(doc_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
 bool plan_visitor::begin_visit(elem_expr& v)
 {
-  cout << std::string(++depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(++depth, ' '));
 	return true;
 }
 
 
 void plan_visitor::end_visit(elem_expr& v)
 {
-  cout << std::string(--depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(--depth, ' '));
 
 	PlanIter_t contentIter = NULL;
 	PlanIter_t attrIter = NULL;
@@ -579,7 +594,11 @@ void plan_visitor::end_visit(elem_expr& v)
 
   QNameItem_t itemQName = v.get_qname();
 
-	PlanIter_t iter = new ElementIterator(v.get_loc(), itemQName, contentIter, attrIter);
+	PlanIter_t iter = new ElementIterator(v.get_loc(),
+                                        itemQName,
+                                        contentIter,
+                                        attrIter,
+                                        true);
 
 	itstack.push(iter);
 }
@@ -587,27 +606,27 @@ void plan_visitor::end_visit(elem_expr& v)
 
 bool plan_visitor::begin_visit(compElem_expr& v)
 {
-  cout << std::string(++depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(++depth, ' '));
 	return true;
 }
 
 
 void plan_visitor::end_visit(compElem_expr& v)
 {
-  cout << std::string(--depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(--depth, ' '));
 }
 
 
 bool plan_visitor::begin_visit(attr_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(attr_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 
   ItemFactory& iFactory = Store::getInstance().getItemFactory();
 
@@ -630,7 +649,7 @@ void plan_visitor::end_visit(attr_expr& v)
 
 bool plan_visitor::begin_visit(text_expr& v)
 {
-  cout << std::string(++depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(++depth, ' '));
 	return true;
 }
 
@@ -638,7 +657,7 @@ bool plan_visitor::begin_visit(text_expr& v)
 void plan_visitor::end_visit(text_expr& v)
 {
   PlanIter_t content = pop_itstack ();
-  cout << std::string(--depth, ' ') << TRACE << endl;
+  CODEGEN_TRACE(std::string(--depth, ' '));
   switch (v.get_type ()) {
   case text_expr::text_constructor:
 //     // assume this comes from a direct text constructor for now
@@ -660,14 +679,14 @@ void plan_visitor::end_visit(text_expr& v)
 
 bool plan_visitor::begin_visit(pi_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 	return true;
 }
 
 
 void plan_visitor::end_visit(pi_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
@@ -675,13 +694,13 @@ void plan_visitor::end_visit(pi_expr& v)
 
 bool plan_visitor::begin_visit(const_expr& v)
 {
-cout << std::string(++depth, ' ') << TRACE << endl;
+CODEGEN_TRACE(std::string(++depth, ' '));
 	return true;
 }
 
 bool plan_visitor::begin_visit(order_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 	return true;
 }
 
@@ -692,55 +711,55 @@ cout << TRACE << endl;
 
 void plan_visitor::end_visit(ft_select_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(ft_contains_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(instanceof_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(treat_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(castable_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(cast_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(validate_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(extension_expr& v)
 {
-  cout << TRACE << endl;
+  CODEGEN_TRACE("");
 }
 
 
 void plan_visitor::end_visit(const_expr& v)
 {
-	cout << std::string(depth--, ' ') << TRACE << endl;
+	CODEGEN_TRACE(std::string(depth--, ' '));
   PlanIter_t it = new SingletonIterator (v.get_loc (), v.get_val ());
   itstack.push (it);
 }
 
 void plan_visitor::end_visit(order_expr& v)
 {
-cout << TRACE << endl;
+CODEGEN_TRACE("");
 }
 
 

@@ -256,7 +256,7 @@ Item_t BasicItemFactory::createDocumentNode(
     const xqpStringStore_t& docUri,
     bool createId)
 {
-  return new DocumentNodeImpl(baseUri, docUri);
+  return new DocumentNodeImpl(baseUri, docUri, createId);
 }
 
 
@@ -266,7 +266,7 @@ Item_t BasicItemFactory::createDocumentNode(
     const TempSeq_t& children,
     bool createId)
 {
-  return new DocumentNodeImpl(baseUri, docUri, children);
+  return new DocumentNodeImpl(baseUri, docUri, children, createId);
 }
 
 
@@ -277,7 +277,7 @@ Item_t BasicItemFactory::createElementNode(
     const NamespaceBindings& nsBindings,
     bool createId)
 { 
-  return new ElementNodeImpl(name, type, attributes, nsBindings);
+  return new ElementNodeImpl(name, type, attributes, nsBindings, createId);
 }
 
 
@@ -299,7 +299,8 @@ Item_t BasicItemFactory::createElementNode(
                              nsUris,
                              nsBindings,
                              copy,
-                             newTypes); 
+                             newTypes,
+                             createId); 
 }
 
 
@@ -315,7 +316,8 @@ Item_t BasicItemFactory::createAttributeNode(
                                lexicalValue,
                                typedValue,
                                false,
-                               false);
+                               false,
+                               createId);
 }
 
 
@@ -323,7 +325,7 @@ Item_t BasicItemFactory::createTextNode(
     const xqpStringStore_t& value,
     bool createId ) 
 {
-  return new TextNodeImpl(value);
+  return new TextNodeImpl(value, createId);
 }
 
 
@@ -331,22 +333,22 @@ Item_t BasicItemFactory::createTextNode(
     const xqp_string& value,
     bool createId)
 {
-  return new TextNodeImpl(xqpStringStore_t(&value.getStore()));
+  return new TextNodeImpl(xqpStringStore_t(&value.getStore()), createId);
 }
 
 
 Item_t BasicItemFactory::createCommentNode(
     const xqpStringStore_t& comment,
-    bool createId	)
+    bool createId)
 {
-  return new CommentNodeImpl(comment);
+  return new CommentNodeImpl(comment, createId);
 }
 
 Item_t BasicItemFactory::createCommentNode(
     const xqp_string& comment,
-    bool createId	)
+    bool createId)
 {
-  return new CommentNodeImpl(xqpStringStore_t(&comment.getStore()));
+  return new CommentNodeImpl(xqpStringStore_t(&comment.getStore()), createId);
 }
 
 
@@ -355,7 +357,7 @@ Item_t BasicItemFactory::createPiNode(
     const xqpStringStore_t& data,
     bool createId)
 {
-  return new PiNodeImpl(target, data);
+  return new PiNodeImpl(target, data, createId);
 }
 
 Item_t BasicItemFactory::createPiNode(
@@ -364,7 +366,8 @@ Item_t BasicItemFactory::createPiNode(
     bool createId)
 {
   return new PiNodeImpl(xqpStringStore_t(&target.getStore()),
-                        xqpStringStore_t(&data.getStore()));;
+                        xqpStringStore_t(&data.getStore()),
+                        createId);
 }
 
 } /* namespace xqp */

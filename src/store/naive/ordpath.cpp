@@ -10,15 +10,31 @@ namespace xqp
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  class OrdPathStack                                                         //
+//  class OrdPath                                                              //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
+  Masks used during decompression
+********************************************************************************/
+const unsigned char OrdPath::theByteMasks[8][2] = 
+{
+  { 0xff, 0x00 },  // 0
+  { 0x7f, 0x80 },  // 1
+  { 0x3f, 0xc0 },  // 2
+  { 0x1f, 0xe0 },  // 3
+  { 0x0f, 0xf0 },  // 4
+  { 0x07, 0xf8 },  // 5
+  { 0x03, 0xfc },  // 6
+  { 0x01, 0xfe }   // 7
+};
+
+
+/*******************************************************************************
   Masks ussed during compression
 ********************************************************************************/
-const uint32_t OrdPathStack::theValueMasks[9] = 
+const uint32_t OrdPath::theValueMasks[9] = 
 {
   0x00000000,
   0x80000000,  // 1 -> 1000-0000
@@ -34,9 +50,9 @@ const uint32_t OrdPathStack::theValueMasks[9] =
 
 /*******************************************************************************
   This array gives the total number of bits needed for the encoding of 
-  id components with values between 0 and DEFAULT_FAN_OUT - 1.
+  components with values between 0 and DEFAULT_FAN_OUT - 1.
 ********************************************************************************/
-const unsigned char OrdPathStack::thePosV2LMap[DEFAULT_FAN_OUT] = 
+const unsigned char OrdPath::thePosV2LMap[DEFAULT_FAN_OUT] = 
 {
   /* 0 */        4,
   /* 1 */        2,               
@@ -51,7 +67,7 @@ const unsigned char OrdPathStack::thePosV2LMap[DEFAULT_FAN_OUT] =
   This array gives the total number of bits needed for the encoding of 
   id components with values between -(DEFAULT_FAN_OUT - 1) and 0.
 ********************************************************************************/
-const unsigned char OrdPathStack::theNegV2LMap[DEFAULT_FAN_OUT] = 
+const unsigned char OrdPath::theNegV2LMap[DEFAULT_FAN_OUT] = 
 {
   /*   -1,   0 */    4, 4,
   /*   -5,  -2 */    6, 6, 6, 6,               
@@ -64,7 +80,7 @@ const unsigned char OrdPathStack::theNegV2LMap[DEFAULT_FAN_OUT] =
   This array maps each component value between 0 and DEFAULT_FAN_OUT - 1 to its
   encoded version.
 ********************************************************************************/
-const uint16_t OrdPathStack::thePosV2EVMap[DEFAULT_FAN_OUT] = 
+const uint16_t OrdPath::thePosV2EVMap[DEFAULT_FAN_OUT] = 
 {
   0x3000,  // 0   = 001,1           -> 0011-0000-0000-0000
 
@@ -109,281 +125,19 @@ const uint16_t OrdPathStack::thePosV2EVMap[DEFAULT_FAN_OUT] =
 /*******************************************************************************
 
 ********************************************************************************/
-OrdPathStack::OrdPathStack()
-  :
-  theTreeId(0),
-  theNumComps(0),
-  theByteIdx(0),
-  theBitsAvailable(0)
+OrdPath& OrdPath::operator=(const OrdPath& other)
 {
-  memset(theBuffer, 0, MAX_BYTE_LEN);
+  theTreeId = other.getTreeId();
+
+  if (theBuffer != NULL)
+    delete [] theBuffer;
+
+  unsigned long len = other.getByteLength();
+  theBuffer = new unsigned char[len];
+  memcpy(theBuffer, other.theBuffer, len);
+  theBuffer[0] = (unsigned char)len;
+  return *this;
 }
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void OrdPathStack::init(unsigned long treeid)
-{
-  theTreeId = treeid;
-
-  theDeweyId[0] = 1;
-  theNumComps = 1;
-
-  theCompLens[0] = 2;
-
-  theBuffer[1] = 0x40;
-  theByteIdx = 1;
-  theBitsAvailable = 6;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-unsigned long OrdPathStack::getByteLength() const
-{
-  return (theBitsAvailable == 8 ? theByteIdx : theByteIdx + 1);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void OrdPathStack::pushChild()
-{
-  theDeweyId[theNumComps] = 1;
-  theCompLens[theNumComps] = 2;
-  theNumComps++;
-
-  if (theBitsAvailable > 2)
-  {
-    theBuffer[theByteIdx] |= (0x40 >> (8 - theBitsAvailable));
-    theBitsAvailable -= 2;
-  }
-  else if (theBitsAvailable == 2)
-  {
-    theBuffer[theByteIdx] |= (0x40 >> 6);
-    theBitsAvailable = 8;
-    theByteIdx++;
-  }
-  else // bitsAvailable == 1
-  {
-    if (theByteIdx == MAX_BYTE_LEN - 1)
-    {
-      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
-                        error_messages::USER_ERROR,
-                        NULL,
-                        false);
-    }
- 
-    theBitsAvailable = 7;
-    theByteIdx++;
-    theBuffer[theByteIdx] |= 0x80;
-  }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void OrdPathStack::popChild()
-{
-  // Pop the last uncompressed component.
-  theNumComps--;
-  if (theNumComps == 0)
-    return;
-
-  // Increment the last uncompressed component by 2.
-  theDeweyId[theNumComps - 1] += 2;
-
-  // Pop the last 2 compressed components
-  unsigned long numBits = theCompLens[theNumComps] + theCompLens[theNumComps-1];
-  unsigned long numBytes = (numBits + theBitsAvailable - 1 ) / 8;
-  theByteIdx -= numBytes;
-  memset(&theBuffer[theByteIdx+1], 0, numBytes);
-  theBitsAvailable = (numBits + theBitsAvailable) % 8;
-  if (theBitsAvailable == 0)
-    theBitsAvailable = 8;
-
-  theBuffer[theByteIdx] &= 0xff << theBitsAvailable;
-
-  compressComp(theNumComps - 1, theDeweyId[theNumComps - 1]);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void OrdPathStack::compressComp(unsigned long comp, long value)
-{
-  uint32_t eval;
-  long bitsNeeded;
-
-  if (value < 0)
-  {
-    value = -value;
-
-    if (value < DEFAULT_FAN_OUT)
-    {
-      bitsNeeded += theNegV2LMap[value];
-    }
-    else if (value < 278)
-    {
-      bitsNeeded += 14;
-    }
-    else if (value < 4374)
-    {
-      bitsNeeded += 19;
-    }
-    else if (value < 69910)
-    {
-      bitsNeeded += 24;
-    }
-    else if (value < 1118486)
-    {
-      bitsNeeded += 29;
-    }
-    else
-    {
-      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
-                        error_messages::SYSTEM_ERROR,
-                        NULL,
-                        false);
-    }
-  }
-  else if (value < DEFAULT_FAN_OUT)
-  {
-    theCompLens[comp] = bitsNeeded = thePosV2LMap[value];
-    eval = thePosV2EVMap[value] << 16;
-  }
-  else
-  {
-    if (value < 280)
-    {
-      theCompLens[comp] = bitsNeeded = 13;
-
-      value -= 24;
-      eval = ((uint32_t)value) << 24;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
-      eval >>= 5;
-      eval |= 0xF0000000;
-    }
-    else if (value < 4376)
-    {
-      theCompLens[comp] = bitsNeeded = 18;
-
-      value -= 280;
-      eval = ((uint32_t)value) << 20;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
-      eval >>= 6;
-      eval |= 0xF8000000;
-    }
-    else if (value < 69912)
-    {
-      theCompLens[comp] = bitsNeeded = 23;
-
-      value -= 4376;
-      eval = ((uint32_t)value) << 16;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
-      eval >>= 7;
-      eval |= 0xFC000000;
-    }
-    else if (value < 1118488)
-    {
-      theCompLens[comp] = bitsNeeded = 28;
-
-      value -= 69912;
-      eval = ((uint32_t)value) << 12;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
-      eval >>= 8;
-      eval |= 0xFE000000;
-    }
-    else
-    {
-      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
-                        error_messages::SYSTEM_ERROR,
-                        NULL,
-                        false);
-    }
-  }
-
-  do
-  {
-    long bitsUsed = (bitsNeeded < theBitsAvailable ?
-                     bitsNeeded : theBitsAvailable);
-
-    unsigned char byte = (unsigned char) ((eval & theValueMasks[bitsUsed]) >>
-                                          (32 - theBitsAvailable));
-
-    theBuffer[theByteIdx] |= byte;
-    eval = eval << bitsUsed;
-    bitsNeeded -= bitsUsed;
-    theBitsAvailable -= bitsUsed;
-    long zerone = (theBitsAvailable + 7) / 8;
-    theBitsAvailable = theBitsAvailable * zerone + 8 * (1 - zerone);
-    theByteIdx += (1 - zerone);
-  }
-  while (bitsNeeded > 0);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-xqp_string OrdPathStack::show() const
-{
-  std::stringstream str;
-
-  for (unsigned long i = 0; i < theNumComps; i++)
-  {
-    str << theDeweyId[i];
-    if (i < theNumComps-1)
-      str << ".";
-  }
-#if 1
-  str << " ";
-
-  unsigned long len = getByteLength();
-
-  for (unsigned long i = 1; i < len; i++)
-  {
-    str << std::hex << (unsigned short)theBuffer[i];
-  }
-#endif
-  return str.str().c_str();
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  class OrdPath                                                              //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-  Masks used during decompression
-********************************************************************************/
-const unsigned char OrdPath::theByteMasks[8][2] = 
-{
-  { 0xff, 0x00 },  // 0
-  { 0x7f, 0x80 },  // 1
-  { 0x3f, 0xc0 },  // 2
-  { 0x1f, 0xe0 },  // 3
-  { 0x0f, 0xf0 },  // 4
-  { 0x07, 0xf8 },  // 5
-  { 0x03, 0xfc },  // 6
-  { 0x01, 0xfe }   // 7
-};
 
 
 /*******************************************************************************
@@ -438,17 +192,19 @@ int OrdPath::operator<(const OrdPath& other) const
   unsigned long len1 = getByteLength();
   unsigned long len2 = other.getByteLength();
 
-  unsigned char* p1 = theBuffer;
-  unsigned char* p2 = other.theBuffer;
+  unsigned char* p1 = &theBuffer[1];
+  unsigned char* p2 = &other.theBuffer[1];
 
   if (len1 < len2)
   {
-    unsigned char* end = p1 + len1;
+    unsigned char* end = p1 + (len1-1);
 
     while (p1 != end)
     {
       if (*p1 < *p2)
         return 1;
+      else if (*p1 > *p2)
+        return 0;
 
       p1++;
       p2++;
@@ -456,12 +212,14 @@ int OrdPath::operator<(const OrdPath& other) const
   }
   else
   {
-    unsigned char* end = p2 + len2;
+    unsigned char* end = p2 + (len2-1);
 
     while (p2 != end)
     {
       if (*p1 < *p2)
         return 1;
+      else if (*p1 > *p2)
+        return 0;
 
       p1++;
       p2++;
@@ -469,6 +227,213 @@ int OrdPath::operator<(const OrdPath& other) const
   }
 
   return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+int OrdPath::operator>(const OrdPath& other) const
+{
+  unsigned long len1 = getByteLength();
+  unsigned long len2 = other.getByteLength();
+
+  unsigned char* p1 = &theBuffer[1];
+  unsigned char* p2 = &other.theBuffer[1];
+
+  if (len1 < len2)
+  {
+    unsigned char* end = p1 + (len1-1);
+
+    while (p1 != end)
+    {
+      if (*p1 > *p2)
+        return 1;
+      else if (*p1 < *p2)
+        return 0;
+
+      p1++;
+      p2++;
+    }
+  }
+  else
+  {
+    unsigned char* end = p2 + (len2-1);
+
+    while (p2 != end)
+    {
+      if (*p1 > *p2)
+        return 1;
+      else if (*p1 < *p2)
+        return 0;
+
+      p1++;
+      p2++;
+    }
+  }
+
+  return 0;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPath::appendComp(long value)
+{
+  uint32_t eval;
+  unsigned long bitsNeeded;
+
+  if (theBuffer == NULL)
+  {
+    theBuffer = new unsigned char[2];
+    theBuffer[0] = 2;
+    theBuffer[1] = 0;
+  }
+
+  unsigned long byteIndex = getByteLength() - 1;
+  unsigned long bitsAvailable = 0;
+
+  unsigned char lastByte = theBuffer[byteIndex];
+  while (bitsAvailable < 8 && (lastByte & 0x01) == 0)
+  {
+    lastByte >>= 1;
+    bitsAvailable++;
+  }
+
+  if (value < 0)
+  {
+    value = -value;
+
+    if (value < OrdPath::DEFAULT_FAN_OUT)
+    {
+      bitsNeeded += OrdPath::theNegV2LMap[value];
+    }
+    else if (value < 278)
+    {
+      bitsNeeded += 14;
+    }
+    else if (value < 4374)
+    {
+      bitsNeeded += 19;
+    }
+    else if (value < 69910)
+    {
+      bitsNeeded += 24;
+    }
+    else if (value < 1118486)
+    {
+      bitsNeeded += 29;
+    }
+    else
+    {
+      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+                        error_messages::SYSTEM_ERROR,
+                        NULL,
+                        false);
+    }
+  }
+  else if (value < OrdPath::DEFAULT_FAN_OUT)
+  {
+    bitsNeeded = OrdPath::thePosV2LMap[value];
+    eval = OrdPath::thePosV2EVMap[value] << 16;
+  }
+  else
+  {
+    if (value < 280)
+    {
+      bitsNeeded = 13;
+
+      value -= 24;
+      eval = ((uint32_t)value) << 24;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 5;
+      eval |= 0xF0000000;
+    }
+    else if (value < 4376)
+    {
+      bitsNeeded = 18;
+
+      value -= 280;
+      eval = ((uint32_t)value) << 20;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 6;
+      eval |= 0xF8000000;
+    }
+    else if (value < 69912)
+    {
+      bitsNeeded = 23;
+
+      value -= 4376;
+      eval = ((uint32_t)value) << 16;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 7;
+      eval |= 0xFC000000;
+    }
+    else if (value < 1118488)
+    {
+      bitsNeeded = 28;
+
+      value -= 69912;
+      eval = ((uint32_t)value) << 12;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 8;
+      eval |= 0xFE000000;
+    }
+    else
+    {
+      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+                        error_messages::SYSTEM_ERROR,
+                        NULL,
+                        false);
+    }
+  }
+
+  unsigned long bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
+  if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
+  {
+    ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      false);
+  }
+
+  if (bytesNeeded > byteIndex + 1)
+  {
+    unsigned char* newBuffer = new unsigned char[bytesNeeded];
+    memset(newBuffer, 0, bytesNeeded);
+    memcpy(newBuffer, theBuffer, byteIndex+1);
+    delete [] theBuffer;
+    theBuffer = newBuffer;
+    theBuffer[0] = bytesNeeded;
+  }
+
+  do
+  {
+    unsigned long bitsUsed = (bitsNeeded < bitsAvailable ?
+                              bitsNeeded : bitsAvailable);
+
+    unsigned char byte = (unsigned char)
+                         ((eval & OrdPath::theValueMasks[bitsUsed]) >>
+                          (32 - bitsAvailable));
+
+    theBuffer[byteIndex] |= byte;
+    eval = eval << bitsUsed;
+    bitsNeeded -= bitsUsed;
+    bitsAvailable -= bitsUsed;
+    unsigned long zerone = (bitsAvailable + 7) / 8;
+    bitsAvailable = bitsAvailable * zerone + 8 * (1 - zerone);
+    byteIndex += (1 - zerone);
+  }
+  while (bitsNeeded > 0);
 }
 
 
@@ -2332,9 +2297,11 @@ void OrdPath::extractValue(
   if (numBits < 8 - bitIndex)
   {
     unsigned char byte = theBuffer[byteIndex];
-    byte << bitIndex;
-    byte >> (8 - numBits);
+    byte <<= bitIndex;
+    byte >>= (8 - numBits);
+    bitIndex += numBits;
     result = byte;
+    result += baseValue;
     return;
   }
 
@@ -2347,7 +2314,7 @@ void OrdPath::extractValue(
 
   for (unsigned long i = 0; i < numBytes; i++)
   {
-    result << 8;
+    result <<= 8;
     result |= theBuffer[byteIndex];
     byteIndex++;
   }
@@ -2361,8 +2328,9 @@ void OrdPath::extractValue(
     byte = theBuffer[byteIndex]  & theByteMasks[numBits][1];
     byte >>= (8 - numBits);
     result |= byte;
-    result += baseValue;
   }
+
+  result += baseValue;
 }
 
 
@@ -2387,18 +2355,328 @@ xqp_string OrdPath::show() const
 
   str << " ";
 
-  len = 256;
-  unsigned long deweyid[256];
+  len = MAX_BYTE_LEN;
+  unsigned long deweyid[MAX_BYTE_LEN];
 
   decompress(deweyid, len);
 
   for (unsigned long i = 0; i < len; i++)
   {
-    str << deweyid[i];
+    str << std::dec << deweyid[i];
     if (i < len-1)
       str << ".";
   }
 
   return str.str().c_str();
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class OrdPathStack                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+
+********************************************************************************/
+OrdPathStack::OrdPathStack()
+  :
+  theTreeId(0),
+  theNumComps(0),
+  theByteIndex(0),
+  theBitsAvailable(0)
+{
+  memset(theBuffer, 0, OrdPath::MAX_BYTE_LEN);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPathStack::init(unsigned long treeid)
+{
+  theTreeId = treeid;
+
+  theDeweyId[0] = 1;
+  theNumComps = 1;
+
+  theCompLens[0] = 2;
+
+  theBuffer[1] = 0x40;
+  theByteIndex = 1;
+  theBitsAvailable = 6;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+unsigned long OrdPathStack::getByteLength() const
+{
+  return (theBitsAvailable == 8 ? theByteIndex : theByteIndex + 1);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPathStack::pushChild()
+{
+  if (theByteIndex == OrdPath::MAX_BYTE_LEN ||
+      (theByteIndex == OrdPath::MAX_BYTE_LEN - 1 && theBitsAvailable < 2))
+  {
+    ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      false);
+  }
+
+  theDeweyId[theNumComps] = 1;
+  theCompLens[theNumComps] = 2;
+  theNumComps++;
+
+  if (theBitsAvailable > 2)
+  {
+    theBuffer[theByteIndex] |= (0x40 >> (8 - theBitsAvailable));
+    theBitsAvailable -= 2;
+  }
+  else if (theBitsAvailable == 2)
+  {
+    theBuffer[theByteIndex] |= (0x40 >> 6);
+    theBitsAvailable = 8;
+    theByteIndex++;
+  }
+  else // bitsAvailable == 1
+  {
+    theBitsAvailable = 7;
+    theByteIndex++;
+    theBuffer[theByteIndex] |= 0x80;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPathStack::popChild()
+{
+  // Pop the last uncompressed component.
+  theNumComps--;
+  if (theNumComps == 0)
+    return;
+
+  // Increment the last uncompressed component by 2.
+  theDeweyId[theNumComps - 1] += 2;
+
+  // Pop the last 2 compressed components
+  unsigned long numBits = theCompLens[theNumComps] + theCompLens[theNumComps-1];
+  unsigned long numBytes = (numBits + theBitsAvailable - 1 ) / 8;
+  theByteIndex -= numBytes;
+  theBitsAvailable = (numBits + theBitsAvailable) % 8;
+  if (theBitsAvailable == 0)
+    theBitsAvailable = 8;
+
+  theBuffer[theByteIndex] &= 0xff << theBitsAvailable;
+
+  if (numBytes > 0)
+    memset(&theBuffer[theByteIndex+1], 0, numBytes);
+
+  // Increment the last compressed component by 2.
+  compressComp(theNumComps - 1, theDeweyId[theNumComps - 1]);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPathStack::nextChild()
+{
+  Assert(theNumComps > 0);
+
+  // Increment the last uncompressed component by 2.
+  theDeweyId[theNumComps - 1] += 2;
+
+  // Pop the last compressed component
+  unsigned long numBits = theCompLens[theNumComps-1];
+  unsigned long numBytes = (numBits + theBitsAvailable - 1 ) / 8;
+  theByteIndex -= numBytes;
+  theBitsAvailable = (numBits + theBitsAvailable) % 8;
+  if (theBitsAvailable == 0)
+    theBitsAvailable = 8;
+
+  theBuffer[theByteIndex] &= 0xff << theBitsAvailable;
+
+  if (numBytes > 0)
+    memset(&theBuffer[theByteIndex+1], 0, numBytes);
+
+  // Increment the last compressed component by 2.
+  compressComp(theNumComps - 1, theDeweyId[theNumComps - 1]);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPathStack::compressComp(unsigned long comp, long value)
+{
+  uint32_t eval;
+  unsigned long bitsNeeded;
+
+  if (value < 0)
+  {
+    value = -value;
+
+    if (value < OrdPath::DEFAULT_FAN_OUT)
+    {
+      bitsNeeded += OrdPath::theNegV2LMap[value];
+    }
+    else if (value < 278)
+    {
+      bitsNeeded += 14;
+    }
+    else if (value < 4374)
+    {
+      bitsNeeded += 19;
+    }
+    else if (value < 69910)
+    {
+      bitsNeeded += 24;
+    }
+    else if (value < 1118486)
+    {
+      bitsNeeded += 29;
+    }
+    else
+    {
+      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+                        error_messages::SYSTEM_ERROR,
+                        NULL,
+                        false);
+    }
+  }
+  else if (value < OrdPath::DEFAULT_FAN_OUT)
+  {
+    theCompLens[comp] = bitsNeeded = OrdPath::thePosV2LMap[value];
+    eval = OrdPath::thePosV2EVMap[value] << 16;
+  }
+  else
+  {
+    if (value < 280)
+    {
+      theCompLens[comp] = bitsNeeded = 13;
+
+      value -= 24;
+      eval = ((uint32_t)value) << 24;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 5;
+      eval |= 0xF0000000;
+    }
+    else if (value < 4376)
+    {
+      theCompLens[comp] = bitsNeeded = 18;
+
+      value -= 280;
+      eval = ((uint32_t)value) << 20;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 6;
+      eval |= 0xF8000000;
+    }
+    else if (value < 69912)
+    {
+      theCompLens[comp] = bitsNeeded = 23;
+
+      value -= 4376;
+      eval = ((uint32_t)value) << 16;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 7;
+      eval |= 0xFC000000;
+    }
+    else if (value < 1118488)
+    {
+      theCompLens[comp] = bitsNeeded = 28;
+
+      value -= 69912;
+      eval = ((uint32_t)value) << 12;
+      while (!(eval & 0x8FFFFFFF))
+        eval <<= 1;
+
+      eval >>= 8;
+      eval |= 0xFE000000;
+    }
+    else
+    {
+      ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+                        error_messages::SYSTEM_ERROR,
+                        NULL,
+                        false);
+    }
+  }
+
+  unsigned long bytesNeeded = theByteIndex +
+                              (bitsNeeded + 15 - theBitsAvailable) / 8;
+
+  if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
+  {
+    ZORBA_ERROR_ALERT(error_messages::XQP0018_NODEID_OUT_OF_RANGE,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      false);
+  }
+
+  do
+  {
+    unsigned long bitsUsed = (bitsNeeded < theBitsAvailable ?
+                              bitsNeeded : theBitsAvailable);
+
+    unsigned char byte = (unsigned char)
+                         ((eval & OrdPath::theValueMasks[bitsUsed]) >>
+                          (32 - theBitsAvailable));
+
+    theBuffer[theByteIndex] |= byte;
+    eval = eval << bitsUsed;
+    bitsNeeded -= bitsUsed;
+    theBitsAvailable -= bitsUsed;
+    long zerone = (theBitsAvailable + 7) / 8;
+    theBitsAvailable = theBitsAvailable * zerone + 8 * (1 - zerone);
+    theByteIndex += (1 - zerone);
+  }
+  while (bitsNeeded > 0);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqp_string OrdPathStack::show() const
+{
+  std::stringstream str;
+
+  for (unsigned long i = 0; i < theNumComps; i++)
+  {
+    str << theDeweyId[i];
+    if (i < theNumComps-1)
+      str << ".";
+  }
+#if 1
+  str << " ";
+
+  unsigned long len = getByteLength();
+
+  for (unsigned long i = 1; i < len; i++)
+  {
+    str << std::hex << (unsigned short)theBuffer[i];
+  }
+#endif
+  return str.str().c_str();
+}
+
+
 }

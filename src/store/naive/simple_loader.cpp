@@ -95,7 +95,7 @@ long XmlLoader::readPacket(std::istream& stream, char* buf, long size)
                         error_messages::SYSTEM_ERROR,
                         NULL,
                         true,
-                        "");
+                        "Input stream in bad state");
       return -1;
     }
 
@@ -347,7 +347,10 @@ void XmlLoader::startElement(
   // Make the element node be the parent of its attributes
   for (long i = 0; i < numAttributes; ++i)
   {
-    ATTR_NODE(attrNodes[i])->setParent(elemNode);
+    NodeImpl* attrNode = BASE_NODE(attrNodes[i]);
+    attrNode->setParent(elemNode);
+    attrNode->setId(loader.theNodeId);
+    loader.theNodeId.nextChild();
   }
 
   if (!nsBindings.empty())
@@ -455,6 +458,9 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   Item_t textNode = factory.createTextNode(content);
 
+  BASE_NODE(textNode)->setId(loader.theNodeId);
+  loader.theNodeId.nextChild();
+
   if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;
 
@@ -478,6 +484,9 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
   xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
 
   Item_t textNode = factory.createTextNode(content);
+
+  BASE_NODE(textNode)->setId(loader.theNodeId);
+  loader.theNodeId.nextChild();
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = textNode;
@@ -505,6 +514,9 @@ void XmlLoader::comment(
   xqpStringStore_t contentp(new xqpStringStore(reinterpret_cast<const char*>(content)));
 
   Item_t commentNode = factory.createCommentNode(contentp);
+
+  BASE_NODE(commentNode)->setId(loader.theNodeId);
+  loader.theNodeId.nextChild();
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = commentNode;
@@ -534,6 +546,9 @@ void XmlLoader::processingInstruction(
   xqpStringStore_t targetp(new xqpStringStore(reinterpret_cast<const char*>(target)));
 
   Item_t piNode = factory.createPiNode(targetp, datap);
+
+  BASE_NODE(piNode)->setId(loader.theNodeId);
+  loader.theNodeId.nextChild();
 
   if (loader.theNodeStack.empty())
     loader.theRootNode = piNode;

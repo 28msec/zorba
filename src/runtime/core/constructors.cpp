@@ -22,25 +22,29 @@ ElementIterator::ElementIterator (
     const yy::location& loc,
     const QNameItem_t& qname,
     PlanIter_t& children,
-    PlanIter_t& attributes)
+    PlanIter_t& attributes,
+    bool assignId)
   :
   Batcher<ElementIterator>(loc),
   theQName(qname),
   theQNameIter(0),
   theChildrenIter(children),
-  theAttributesIter(attributes)
+  theAttributesIter(attributes),
+  theAssignId(assignId)
 {
 }
 
 ElementIterator::ElementIterator(
     const yy::location& loc,
     PlanIter_t aQNameIter,
-    PlanIter_t aChildren)
+    PlanIter_t aChildren,
+    bool assignId)
   :
     Batcher<ElementIterator>(loc),
     theQNameIter(aQNameIter),
     theChildrenIter(aChildren),
-    theAttributesIter(0)
+    theAttributesIter(0),
+    theAssignId(assignId)
 {
 }
 
@@ -87,7 +91,8 @@ ElementIterator::nextImpl(PlanState& planState)
                seqNamespaces,
                theNsBindings,
                false,
-               false);
+               false,
+               theAssignId);
 
   STACK_PUSH(item, state);
     
@@ -324,11 +329,12 @@ AttributeIterator::nextImpl(PlanState& planState)
                theQName,
                GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
                itemLexical,
-               itemTyped).get_ptr();
+               itemTyped);
 
   STACK_PUSH(item, state);
   STACK_END();
 }
+
 
 /*******************************************************************************
 
@@ -374,10 +380,14 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 /* begin class TextIterator */
 
 TextIterator::TextIterator(const yy::location& loc, PlanIter_t& aChild) 
-  : UnaryBaseIterator<TextIterator>(loc, aChild)
-{}
+  :
+  UnaryBaseIterator<TextIterator>(loc, aChild)
+{
+}
 
-Item_t TextIterator::nextImpl(PlanState& planState) {
+
+Item_t TextIterator::nextImpl(PlanState& planState) 
+{
   Item_t lItem;
   xqp_string content = "";
   bool lFirst;
@@ -388,7 +398,8 @@ Item_t TextIterator::nextImpl(PlanState& planState) {
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
   lFirst = true;
-  while (true) {
+  while (true)
+  {
     lItem = consumeNext(theChild, planState);
     if (lItem == 0)
       break;

@@ -22,6 +22,18 @@ namespace xqp
   class NodeImpl
 ********************************************************************************/
 
+NodeImpl::NodeImpl(bool assignId)
+  :
+  theParent(NULL)
+{
+  if (assignId)
+  {
+    theId.setTreeId(GET_STORE().getTreeId());
+    theId.appendComp(1);
+  }
+}
+
+
 xqp_string NodeImpl::getBaseURI() const
 {
   return theParent ? theParent->getBaseURI() : "";
@@ -36,13 +48,12 @@ xqp_string NodeImpl::getDocumentURI() const
 
 bool NodeImpl::equals(Item_t item) const
 {
-  ZorbaErrorAlerts::error_alert (
+  ZorbaErrorAlerts::error_alert(
         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
         error_messages::SYSTEM_ERROR,
         NULL,
         true,
-        "Equal function for node items not implemented!"
-    );
+        "Equal function for node items not implemented!");
   return false;
 }
 
@@ -59,8 +70,10 @@ Item_t NodeImpl::getEBV() const
 
 DocumentNodeImpl::DocumentNodeImpl(
     const xqpStringStore_t& baseURI,
-    const xqpStringStore_t& docURI)
+    const xqpStringStore_t& docURI,
+    bool assignId)
   :
+  NodeImpl(assignId),
   theBaseURI(baseURI),
   theDocURI(docURI)
 {
@@ -70,8 +83,10 @@ DocumentNodeImpl::DocumentNodeImpl(
 DocumentNodeImpl::DocumentNodeImpl(
     const xqpStringStore_t& baseURI,
     const xqpStringStore_t& docURI,
-    const TempSeq_t& children)
+    const TempSeq_t& children,
+    bool assignId)
   :
+  NodeImpl(assignId),
   theBaseURI(baseURI),
   theDocURI(docURI),
   theChildren(children)
@@ -195,9 +210,10 @@ ElementNodeImpl::ElementNodeImpl(
     const QNameItem_t& name,
     const QNameItem_t& type,
     TempSeq_t& seqAttributes,
-    const NamespaceBindings& nsBindings)
+    const NamespaceBindings& nsBindings,
+    bool assignId)
   :
-  NodeImpl(NULL),
+  NodeImpl(assignId),
   theName(name),
   theType(type),
   theAttributes(seqAttributes)
@@ -215,8 +231,10 @@ ElementNodeImpl::ElementNodeImpl(
     TempSeq_t& seqNsUris,
     const NamespaceBindings& nsBindings,
     bool copy,
-    bool newTypes)
+    bool newTypes,
+    bool assignId)
   :
+  NodeImpl(assignId),
   theName(name),
   theType(type),
   theChildren(seqChildren),
@@ -417,7 +435,7 @@ xqp_string ElementNodeImpl::show() const
 
   if (theChildren != NULL)
   {
-    Iterator_t iter = theChildren->getIterator();
+    Iterator_t iter = getChildren();
     Item_t item = iter->next();
     while (item != NULL)
     {
@@ -441,28 +459,10 @@ AttributeNodeImpl::AttributeNodeImpl(
     const Item_t& lexicalValue,
     const Item_t& typedValue,
     bool isId,
-    bool isIdrefs)
+    bool isIdrefs,
+    bool assignId)
   :
-  theName(name),
-  theType(type),
-  theLexicalValue(lexicalValue),
-  theTypedValue(typedValue),
-  theIsId(isId),
-  theIsIdrefs(isIdrefs)
-{
-}
-
-
-AttributeNodeImpl::AttributeNodeImpl(
-    const Item_t& parent,
-    const QNameItem_t& name,
-    const QNameItem_t& type,
-    const Item_t& lexicalValue,
-    const Item_t& typedValue,
-    bool isId,
-    bool isIdrefs)
-  :
-  NodeImpl(parent),
+  NodeImpl(assignId),
   theName(name),
   theType(type),
   theLexicalValue(lexicalValue),
@@ -542,8 +542,9 @@ xqp_string AttributeNodeImpl::show() const
 
 ********************************************************************************/
 
-TextNodeImpl::TextNodeImpl(const xqpStringStore_t& content) 
+  TextNodeImpl::TextNodeImpl(const xqpStringStore_t& content, bool assignId) 
   :
+  NodeImpl(assignId),
   theContent(content)
 {
 }
@@ -606,9 +607,12 @@ xqp_string TextNodeImpl::show() const
  
 PiNodeImpl::PiNodeImpl(
     const xqpStringStore_t& target,
-    const xqpStringStore_t& data)
+    const xqpStringStore_t& data,
+    bool assignId)
   :
-  theTarget(target), theData(data)
+  NodeImpl(assignId),
+  theTarget(target),
+  theData(data)
 {
 }
 
@@ -670,8 +674,11 @@ xqp_string PiNodeImpl::show() const
 /*******************************************************************************
 
 ********************************************************************************/
-CommentNodeImpl::CommentNodeImpl(const xqpStringStore_t& content)
+CommentNodeImpl::CommentNodeImpl(
+    const xqpStringStore_t& content,
+    bool assignId)
   :
+  NodeImpl(assignId),
   theContent(content)
 {
 }
@@ -738,24 +745,35 @@ Item_t ChildrenIterator::next()
 
   Assert(item->getNodeKind() != StoreConsts::documentNode);
 
-  if (item->getParent() == NULL)
-  {
-    static_cast<NodeImpl*>(item.get_ptr())->setParent(theParentNode.get_ptr());
+  NodeImpl_t node = BASE_NODE(item);
 
-    if (item->getNodeKind() == StoreConsts::elementNode &&
+  if (node->getParent() == NULL)
+  {
+    node->setParent(theParentNode.get_ptr());
+
+    if (node->getNodeKind() == StoreConsts::elementNode &&
         theParentNode->getNodeKind() != StoreConsts::documentNode)
     {
       Assert(theParentNode->getNodeKind() == StoreConsts::elementNode);
 
-      ElementNodeImpl* child = static_cast<ElementNodeImpl*>(item.get_ptr());
+      ElementNodeImpl* child = ELEM_NODE(item);
 
       child->setNsBindingsContext(theParentNode->getNsBindingsContext());
     }
   }
   else
   {
-    Assert(item->getParent().get_ptr() == theParentNode.get_ptr());
+    Assert(node->getParent().get_ptr() == theParentNode.get_ptr());
   }
+
+  if (theParentNode->getId().isValid() &&
+      node->getTreeId() != theParentNode->getTreeId())
+  {
+    node->setId(theParentNode->getId());
+    node->appendIdComponent(theNumChildren * 2 + 1);
+  }
+
+  theNumChildren++;
 
   return item;
 }
@@ -764,12 +782,14 @@ Item_t ChildrenIterator::next()
 void ChildrenIterator::reset()
 {
   theInput->reset();
+  theNumChildren = 0;
 }
 
 
 void ChildrenIterator::close()
 {
   theInput->close();
+  theNumChildren = 0;
 }
 
 

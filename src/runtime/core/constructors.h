@@ -47,18 +47,21 @@ private:
   PlanIter_t        theAttributesIter;
   PlanIter_t        theNamespacesIter;
   NamespaceBindings theNsBindings;
+  bool              theAssignId;
 
 public:
   ElementIterator(
         const yy::location& loc, 
         const QNameItem_t& aQName,
         PlanIter_t& aChildren,
-        PlanIter_t& aAttrs);
+        PlanIter_t& aAttrs,
+        bool assignId);
   
   ElementIterator(
         const yy::location& loc,
         PlanIter_t aQNameIter,
-        PlanIter_t aChildren);
+        PlanIter_t aChildren,
+        bool assignId);
   
   const QNameItem_t& getQName() const { return theQName; }
   

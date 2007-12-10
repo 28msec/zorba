@@ -44,17 +44,18 @@ protected:
   OrdPath    theId;
 
 public:
-  NodeImpl() : theParent(NULL) {}
-
-  explicit NodeImpl(const Item_t& parent) : theParent(parent.get_ptr()) {}
+  NodeImpl(bool assignId);
 
   ~NodeImpl() { }
 
   virtual bool isNode() const             { return true; }
   virtual bool isAtomic() const           { return false; }
 
+  unsigned long getTreeId() const         { return theId.getTreeId(); }
   const OrdPath& getId() const            { return theId; }
   void setId(const OrdPathStack& id)      { theId = id; }
+  void setId(const OrdPath& id)           { theId = id; }
+  void appendIdComponent(long value)      { theId.appendComp(value); } 
 
   virtual bool equals(Item_t) const;
   virtual uint32_t hash() const           { return 0; }
@@ -87,12 +88,14 @@ class DocumentNodeImpl : public NodeImpl
  public:
   DocumentNodeImpl(
         const xqpStringStore_t& baseURI,
-        const xqpStringStore_t& documentURI);
+        const xqpStringStore_t& documentURI,
+        bool assignId);
 
   DocumentNodeImpl(
         const xqpStringStore_t& baseURI,
         const xqpStringStore_t& documentURI,
-        const TempSeq_t& children);
+        const TempSeq_t& children,
+        bool assignId);
 
   virtual ~DocumentNodeImpl();
 
@@ -135,7 +138,8 @@ class ElementNodeImpl : public NodeImpl
         const QNameItem_t& name,
         const QNameItem_t& type,
         TempSeq_t& seqAttributes,
-        const NamespaceBindings& nsBindings);
+        const NamespaceBindings& nsBindings,
+        bool assignId);
 
   ElementNodeImpl(
 			  const QNameItem_t& name,
@@ -145,7 +149,8 @@ class ElementNodeImpl : public NodeImpl
         TempSeq_t& seqNsUris,
         const NamespaceBindings& nsBindings,
         bool copy,
-        bool newTypes);
+        bool newTypes,
+        bool assignId);
 			
   virtual ~ElementNodeImpl();
 
@@ -195,16 +200,8 @@ class AttributeNodeImpl : public NodeImpl
         const Item_t& lexicalValue,
         const Item_t& typedValue,
         bool isId,
-        bool isIdrefs);
-			
-  AttributeNodeImpl(
-			  const Item_t& parent,
-        const QNameItem_t& name,
-        const QNameItem_t& type,
-        const Item_t& lexicalValue,
-        const Item_t& typedValue,
-        bool isId,
-        bool isIdrefs);
+        bool isIdrefs,
+        bool assignId);
 			
   virtual ~AttributeNodeImpl();
 
@@ -234,7 +231,8 @@ class TextNodeImpl : public NodeImpl
   xqpStringStore_t theContent;
 
  public:
-  TextNodeImpl(const xqpStringStore_t& content);
+  TextNodeImpl(const xqpStringStore_t& content, bool assignId);
+
   virtual ~TextNodeImpl();
   
   virtual StoreConsts::NodeKind_t getNodeKind() const;
@@ -259,7 +257,10 @@ class PiNodeImpl : public NodeImpl
   xqpStringStore_t theData;
 
 public:
-  PiNodeImpl(const xqpStringStore_t& target, const xqpStringStore_t& data);
+  PiNodeImpl(
+        const xqpStringStore_t& target,
+        const xqpStringStore_t& data,
+        bool assignId);
 
   virtual ~PiNodeImpl();
 
@@ -286,7 +287,8 @@ private:
   xqpStringStore_t theContent;
 
 public:
-  CommentNodeImpl(const xqpStringStore_t& content);
+  CommentNodeImpl(const xqpStringStore_t& content, bool assignId);
+
   virtual ~CommentNodeImpl();
 
   virtual StoreConsts::NodeKind_t getNodeKind() const;
@@ -308,14 +310,17 @@ public:
 class ChildrenIterator : public Iterator
 {
 protected:
-  Iterator_t  theInput;
-  NodeImpl_t  theParentNode;
+  Iterator_t    theInput;
+  NodeImpl_t    theParentNode;
+  unsigned long theNumChildren;
+
 
 public:
   ChildrenIterator(const Iterator_t& input, NodeImpl* parent)
     :
     theInput(input),
-    theParentNode(parent)
+    theParentNode(parent),
+    theNumChildren(0)
   {
   }
 
@@ -367,10 +372,17 @@ class StoreNodeSortIterator : public Iterator
 protected:
   class ComparisonFunction
   {
+  protected:
+    bool theAscending;
+
   public:
+    ComparisonFunction(bool asc = true) : theAscending(asc) { }
+
     bool operator()(const NodeImpl_t& n1, const NodeImpl_t& n2) const
     {
-      return n1->getId() < n2->getId();
+      return (theAscending ?
+              n1->getId() < n2->getId() : 
+              n1->getId() > n2->getId());
     }
   };
 
