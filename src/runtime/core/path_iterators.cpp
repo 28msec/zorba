@@ -332,7 +332,7 @@ Item_t AttributeAxisIterator::nextImpl(PlanState& planState)
   Item_t attr;
 
   AttributeAxisState* state;
-  STACK_INIT(AttributeAxisState, state, planState);
+  DEFAULT_STACK_INIT(AttributeAxisState, state, planState);
 
   while (true)
   {
@@ -436,7 +436,7 @@ void ParentAxisIterator::releaseResourcesImpl(PlanState& planState)
 Item_t AncestorAxisIterator::nextImpl(PlanState& planState)
 {
   AncestorAxisState* state;
-  STACK_INIT(AncestorAxisState, state, planState);
+  DEFAULT_STACK_INIT(AncestorAxisState, state, planState);
 
   while (true)
   {
@@ -488,7 +488,7 @@ void AncestorAxisIterator::releaseResourcesImpl(PlanState& planState)
 Item_t AncestorSelfAxisIterator::nextImpl(PlanState& planState)
 {
   AncestorSelfAxisState* state;
-  STACK_INIT(AncestorSelfAxisState, state, planState);
+  DEFAULT_STACK_INIT(AncestorSelfAxisState, state, planState);
 
   while (true)
   {
@@ -543,7 +543,7 @@ Item_t RSiblingAxisIterator::nextImpl(PlanState& planState)
   Item_t sibling;
 
   RSiblingAxisState* state;
-  STACK_INIT(RSiblingAxisState, state, planState);
+  DEFAULT_STACK_INIT(RSiblingAxisState, state, planState);
 
   while (true)
   {
@@ -621,7 +621,7 @@ Item_t LSiblingAxisIterator::nextImpl(PlanState& planState)
   Item_t sibling;
 
   LSiblingAxisState* state;
-  STACK_INIT(LSiblingAxisState, state, planState);
+  DEFAULT_STACK_INIT(LSiblingAxisState, state, planState);
 
   while (true)
   {
@@ -699,7 +699,7 @@ Item_t ChildAxisIterator::nextImpl(PlanState& planState)
   Item_t child;
 
   ChildAxisState* state;
-  STACK_INIT(ChildAxisState, state, planState);
+  DEFAULT_STACK_INIT(ChildAxisState, state, planState);
 
   while (true)
   {
@@ -780,7 +780,7 @@ Item_t DescendantAxisIterator::nextImpl(PlanState& planState)
   Iterator_t children;
 
   DescendantAxisState* state;
-  STACK_INIT(DescendantAxisState, state, planState);
+  DEFAULT_STACK_INIT(DescendantAxisState, state, planState);
 
   while (true)
   {
@@ -895,7 +895,7 @@ Item_t DescendantSelfAxisIterator::nextImpl(PlanState& planState)
   Item_t desc;
 
   DescendantSelfAxisState* state;
-  STACK_INIT(DescendantSelfAxisState, state, planState);
+  DEFAULT_STACK_INIT(DescendantSelfAxisState, state, planState);
 
   while (true)
   {
@@ -1002,7 +1002,7 @@ Item_t PrecedingAxisIterator::nextImpl(PlanState& planState)
   Iterator_t children;
 
   PrecedingAxisState* state;
-  STACK_INIT(PrecedingAxisState, state, planState);
+  DEFAULT_STACK_INIT(PrecedingAxisState, state, planState);
 
   while (true)
   {
@@ -1127,7 +1127,7 @@ Item_t FollowingAxisIterator::nextImpl(PlanState& planState)
   Iterator_t children;
 
   FollowingAxisState* state;
-  STACK_INIT(FollowingAxisState, state, planState);
+  DEFAULT_STACK_INIT(FollowingAxisState, state, planState);
 
   while (true)
   {

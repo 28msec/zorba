@@ -59,7 +59,7 @@ ElementIterator::nextImpl(PlanState& planState)
   Iterator_t nwrapper;
 
   PlanIteratorState* state;
-  STACK_INIT(PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
   if (theChildrenIter != NULL)
   {
@@ -190,7 +190,7 @@ Item_t
 ElementContentIterator::nextImpl(PlanState& planState)
 {
   ElementContentState* state;
-  STACK_INIT(ElementContentState, state, planState);
+  DEFAULT_STACK_INIT(ElementContentState, state, planState);
 
   while (true)
   {
@@ -289,7 +289,7 @@ AttributeIterator::nextImpl(PlanState& planState)
   bool concatenation = false;
 
   PlanIteratorState* state;
-  STACK_INIT(PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if ((itemFirst = consumeNext(theChild, planState)) != NULL)
   {
@@ -351,7 +351,7 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
   Iterator_t ewrapper;
 
   PlanIteratorState* state;
-  STACK_INIT(PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
     
     /*
     ewrapper = new PlanIterWrapper(theExpressionIter, planState);
@@ -385,7 +385,7 @@ Item_t TextIterator::nextImpl(PlanState& planState) {
   Store* store = zorba::getStore();
 
   PlanIteratorState* state;
-  STACK_INIT(PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
   lFirst = true;
   while (true) {

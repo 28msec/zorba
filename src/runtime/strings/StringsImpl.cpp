@@ -38,7 +38,7 @@ CodepointsToStringIterator::nextImpl(PlanState& planState){
   xqp_string resStr;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   while(true){
     item = consumeNext ( theChild, planState );
@@ -76,7 +76,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
   xqp_string inputStr;
 
   StringToCodepointsState* state;
-  STACK_INIT(StringToCodepointsState, state, planState);
+  DEFAULT_STACK_INIT(StringToCodepointsState, state, planState);
 
   item = consumeNext ( theChild, planState );
   if ( item != NULL ){
@@ -168,7 +168,7 @@ CompareStrIterator::nextImpl(PlanState& planState) {
   Item_t res;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   n0 = consumeNext ( theChildren[0], planState );
   if ( n0 != NULL )  {
@@ -222,7 +222,7 @@ CodepointEqualIterator::nextImpl(PlanState& planState){
     Item_t res;
 
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
     item0 = consumeNext ( theChild0, planState );
     if ( item0 != NULL )  {
@@ -273,7 +273,7 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
 
   int argsNo = theChildren.size();
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   for(; iter !=  theChildren.end(); iter ++ )
   {
@@ -317,7 +317,7 @@ StringJoinIterator::nextImpl(PlanState& planState) {
   xqp_string separator;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext(theChild1, planState);
   separator = item->getStringValue();
@@ -396,7 +396,7 @@ SubstringIterator::nextImpl(PlanState& planState) {
   xqp_string resStr;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
@@ -458,7 +458,7 @@ StringLengthIterator::nextImpl(PlanState& planState) {
   Item_t item;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )
@@ -497,7 +497,7 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState)
   Item_t item;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )
@@ -549,7 +549,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   xqp_string res;
   
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item0 = consumeNext (theChild0, planState );
   if(item0 == NULL)
@@ -598,7 +598,7 @@ UpperCaseIterator::nextImpl(PlanState& planState)
   xqp_string emptyStr("");
   
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )
@@ -639,7 +639,7 @@ LowerCaseIterator::nextImpl(PlanState& planState) {
   xqp_string emptyStr("");
   
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )
@@ -691,7 +691,7 @@ TranslateIterator::nextImpl(PlanState& planState) {
   res = zorba::getItemFactory()->createString("");
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   itemArg = consumeNext ( theChildren[0], planState );
   if ( itemArg != NULL )
@@ -728,7 +728,7 @@ EncodeForUriIterator::nextImpl(PlanState& planState) {
   xqp_string emptyStr("");
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )
@@ -758,7 +758,7 @@ IriToUriIterator::nextImpl(PlanState& planState) {
   xqp_string emptyStr("");
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )
@@ -788,7 +788,7 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) {
   xqp_string emptyStr("");
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
   if ( item != NULL )
@@ -838,7 +838,7 @@ ContainsIterator::nextImpl(PlanState& planState) {
   bool resBool;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
@@ -913,7 +913,7 @@ StartsWithIterator::nextImpl(PlanState& planState) {
   bool resBool;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
@@ -990,7 +990,7 @@ EndsWithIterator::nextImpl(PlanState& planState) {
   bool resBool;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
@@ -1069,7 +1069,7 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
   int32_t index;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {
@@ -1148,7 +1148,7 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
   int32_t startPos;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   if(theChildren.size() == 2 || theChildren.size()==3)
   {

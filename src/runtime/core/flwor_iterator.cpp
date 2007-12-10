@@ -124,7 +124,7 @@ namespace xqp
     PlanIteratorState* state;
     vector<string>::iterator iter;
     Item_t curItem;
-    STACK_INIT ( PlanIteratorState, state, planState );
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     varBindingState = new int[forLetClauses.size() ];
     for ( xqp_uint i = 0; i < forLetClauses.size(); i++ )
     {

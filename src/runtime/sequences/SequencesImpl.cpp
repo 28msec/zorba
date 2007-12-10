@@ -32,54 +32,54 @@ namespace xqp {
 //---------------------
 
 FnConcatIterator::FnConcatIterator(
-	yy::location loc,
-	vector<PlanIter_t>& aChildren)
+  yy::location loc,
+  vector<PlanIter_t>& aChildren)
 :
-	NaryBaseIterator<FnConcatIterator>(loc, aChildren)
+  NaryBaseIterator<FnConcatIterator>(loc, aChildren)
 {}
 
 FnConcatIterator::~FnConcatIterator(){}
 
 Item_t 
 FnConcatIterator::nextImpl(PlanState& planState) {
-	Item_t item;
-	
-	FnConcatIteratorState* state;
-	STACK_INIT(FnConcatIteratorState, state, planState);
-	
+  Item_t item;
+  
+  FnConcatIteratorState* state;
+  DEFAULT_STACK_INIT(FnConcatIteratorState, state, planState);
+  
   for (; state->theCurIter < theChildren.size(); ++state->theCurIter) {;
-		item = this->consumeNext(theChildren[state->theCurIter], planState);
-		while (item != NULL) {
-			STACK_PUSH (item, state);
-			item = this->consumeNext(theChildren[state->theCurIter], planState);
-		}
-	}
-	
-	STACK_END();
+    item = this->consumeNext(theChildren[state->theCurIter], planState);
+    while (item != NULL) {
+      STACK_PUSH (item, state);
+      item = this->consumeNext(theChildren[state->theCurIter], planState);
+    }
+  }
+  
+  STACK_END();
 }
 
 void 
 FnConcatIterator::resetImpl(PlanState& planState) {
-	FnConcatIteratorState* state;
-	GET_STATE(FnConcatIteratorState, state, planState);
-	state->reset();
-	
-	std::vector<PlanIter_t>::iterator iter = theChildren.begin();
-	for(; iter != theChildren.end(); ++iter) {
-		this->resetChild(*iter, planState);
-	}
+  FnConcatIteratorState* state;
+  GET_STATE(FnConcatIteratorState, state, planState);
+  state->reset();
+  
+  std::vector<PlanIter_t>::iterator iter = theChildren.begin();
+  for(; iter != theChildren.end(); ++iter) {
+    this->resetChild(*iter, planState);
+  }
 }
 
 void
 FnConcatIterator::FnConcatIteratorState::init() {
-	PlanIterator::PlanIteratorState::init();
-	theCurIter = 0;
+  PlanIterator::PlanIteratorState::init();
+  theCurIter = 0;
 }
 
 void
 FnConcatIterator::FnConcatIteratorState::reset() {
-	PlanIterator::PlanIteratorState::reset();
-	theCurIter = 0;
+  PlanIterator::PlanIteratorState::reset();
+  theCurIter = 0;
 }
 
 //15.1.3 fn:index-of
@@ -99,7 +99,7 @@ FnIndexOfIterator::nextImpl(PlanState& planState) {
   int8_t lCmpRes;
 
   FnIndexOfIteratorState* state;
-  STACK_INIT(FnIndexOfIteratorState, state, planState);
+  DEFAULT_STACK_INIT(FnIndexOfIteratorState, state, planState);
   
   state->theSearchItem = consumeNext(theChild1, planState);
   if ( state->theSearchItem == NULL ) 
@@ -190,30 +190,30 @@ FnIndexOfIterator::FnIndexOfIteratorState::reset() {
  * otherwise, the function returns false.
  */
 FnEmptyIterator::FnEmptyIterator(yy::location loc,
-	                             PlanIter_t& arg)
-	: UnaryBaseIterator<FnEmptyIterator> ( loc, arg )
+                               PlanIter_t& arg)
+  : UnaryBaseIterator<FnEmptyIterator> ( loc, arg )
 { }
 
 FnEmptyIterator::~FnEmptyIterator(){}
 
 Item_t 
 FnEmptyIterator::nextImpl(PlanState& planState) {
-	Item_t item;
+  Item_t item;
 
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-	item = consumeNext(theChild, planState);
-	if (item == NULL) 
-	{
-		STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
-	}
-	else
-	{
-    STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);	  
-	}
+  item = consumeNext(theChild, planState);
+  if (item == NULL) 
+  {
+    STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
+  }
+  else
+  {
+    STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);   
+  }
 
-	STACK_END();
+  STACK_END();
 }
 
 //15.1.5 fn:exists
@@ -222,30 +222,30 @@ FnEmptyIterator::nextImpl(PlanState& planState) {
  * otherwise, the function returns false.
  */
 FnExistsIterator::FnExistsIterator(yy::location loc,
-	                                 PlanIter_t& arg)
-	: UnaryBaseIterator<FnExistsIterator> ( loc, arg )
+                                   PlanIter_t& arg)
+  : UnaryBaseIterator<FnExistsIterator> ( loc, arg )
 { }
 
 FnExistsIterator::~FnExistsIterator(){}
 
 Item_t 
 FnExistsIterator::nextImpl(PlanState& planState) {
-	Item_t item;
-	
+  Item_t item;
+  
   PlanIterator::PlanIteratorState* state;
-  STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
-	
-	item = consumeNext(theChild, planState);
-	if (item != NULL) 
-	{
-		STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
-	}
-	else
-	{
-    STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);	  
-	}
+  DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
+  
+  item = consumeNext(theChild, planState);
+  if (item != NULL) 
+  {
+    STACK_PUSH (zorba::getItemFactory()->createBoolean ( true ), state);
+  }
+  else
+  {
+    STACK_PUSH (zorba::getItemFactory()->createBoolean ( false ), state);   
+  }
 
-	STACK_END();
+  STACK_END();
 }
 
 
@@ -270,7 +270,7 @@ FnDistinctValuesIterator::nextImpl(PlanState& planState) {
   FnDistinctValuesIteratorState::AlreadySeenConstIter_t lConstIter;
   
   FnDistinctValuesIteratorState* state;
-  STACK_INIT(FnDistinctValuesIteratorState, state, planState);
+  DEFAULT_STACK_INIT(FnDistinctValuesIteratorState, state, planState);
       
   while ( (lItem = consumeNext(theChild, planState)) != NULL )
   {
@@ -359,7 +359,7 @@ FnInsertBeforeIterator::nextImpl(PlanState& planState) {
  Item_t lPositionItem;
  
  FnInsertBeforeIteratorState* state;
- STACK_INIT(FnInsertBeforeIteratorState, state, planState);
+ DEFAULT_STACK_INIT(FnInsertBeforeIteratorState, state, planState);
  
  lPositionItem = consumeNext(theChildren[1], planState);
  if ( lPositionItem == NULL )
@@ -500,23 +500,23 @@ FnInsertBeforeIterator::FnInsertBeforeIteratorState::reset() {
 
 
 /*______________________________________________________________________
-|	15.5.4 fn:doc
+| 15.5.4 fn:doc
 |
-|		fn:doc($uri as xs:string?) as document-node()?
-|	
-|	Summary: Retrieves a document using an xs:anyURI, which may include a 
-|	fragment identifier, supplied as an xs:string. If $uri is not a valid 
-|	xs:anyURI, an error is raised [err:FODC0005]. If it is a relative URI 
-|	Reference, it is resolved relative to the value of the base URI 
-|	property from the static context. The resulting absolute URI Reference 
-|	is promoted to an xs:string. If the Available documents discussed in 
-|	Section 2.1.2 Dynamic ContextXP provides a mapping from this string to 
-|	a document node, the function returns that document node. If the 
-|	Available documents maps the string to an empty sequence, then the 
-|	function returns an empty sequence. If the Available documents 
-|	provides no mapping for the string, an error is raised [err:FODC0005]. 
-|	
-|	If $uri is the empty sequence, the result is an empty sequence.
+|   fn:doc($uri as xs:string?) as document-node()?
+| 
+| Summary: Retrieves a document using an xs:anyURI, which may include a 
+| fragment identifier, supplied as an xs:string. If $uri is not a valid 
+| xs:anyURI, an error is raised [err:FODC0005]. If it is a relative URI 
+| Reference, it is resolved relative to the value of the base URI 
+| property from the static context. The resulting absolute URI Reference 
+| is promoted to an xs:string. If the Available documents discussed in 
+| Section 2.1.2 Dynamic ContextXP provides a mapping from this string to 
+| a document node, the function returns that document node. If the 
+| Available documents maps the string to an empty sequence, then the 
+| function returns an empty sequence. If the Available documents 
+| provides no mapping for the string, an error is raised [err:FODC0005]. 
+| 
+| If $uri is the empty sequence, the result is an empty sequence.
 |_______________________________________________________________________*/
 
 DocIterator::DocIterator (
@@ -534,7 +534,7 @@ DocIterator::nextImpl ( PlanState& planState )
   Item_t item, xml;
 
   DocIteratorState* state;
-  STACK_INIT ( DocIteratorState, state, planState );
+  DEFAULT_STACK_INIT ( DocIteratorState, state, planState );
 
   item = consumeNext(theChild, planState);
 

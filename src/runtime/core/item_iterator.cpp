@@ -39,7 +39,7 @@ namespace xqp
   Item_t SingletonIterator::nextImpl ( PlanState& planState )
   {
     PlanIteratorState* state;
-    STACK_INIT ( PlanIteratorState, state, planState );
+    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
     STACK_PUSH ( theValue, state );
     STACK_END();
   }
@@ -55,7 +55,7 @@ namespace xqp
   Item_t EnclosedIterator::nextImpl ( PlanState& planState )
   {
     EnclosedState* state;
-    STACK_INIT ( EnclosedState, state, planState );
+    DEFAULT_STACK_INIT ( EnclosedState, state, planState );
 
     while ( true )
     {
@@ -142,7 +142,7 @@ namespace xqp
     Item_t condResult;
 
     IfThenElseIteratorState* state;
-    STACK_INIT ( IfThenElseIteratorState, state, planState );
+    DEFAULT_STACK_INIT ( IfThenElseIteratorState, state, planState );
 
     if ( theIsBooleanIter )
       condResult = this->consumeNext ( theCondIter, planState );

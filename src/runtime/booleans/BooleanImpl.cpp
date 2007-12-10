@@ -94,7 +94,7 @@ namespace xqp
   FnBooleanIterator::nextImpl(PlanState& planState)
   { 
     PlanIterator::PlanIteratorState* aState;
-    STACK_INIT(PlanIterator::PlanIteratorState, aState, planState);
+    DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, aState, planState);
     STACK_PUSH ( 
       FnBooleanIterator::effectiveBooleanValue ( this->loc, planState, theChild, theNegate ),
       aState
@@ -116,7 +116,7 @@ namespace xqp
     bool bRes;
     
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
     switch(theLogicType)
     {
     case AND:
@@ -162,7 +162,7 @@ namespace xqp
     int8_t compareResult;
   
     PlanIterator::PlanIteratorState* state;
-    STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
+    DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );
   
     if ( this->isGeneralComparison() )
     {

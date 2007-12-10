@@ -45,22 +45,27 @@
 #define IT_OUTDENT        std::string(iteratorTreeDepth--, ' ')
 
 /** Macros to automate Duff's Device and separation of code and execution 
-  * STACK_INIT: - initializes Duff's Device and gets the state of the
-  *               current iterator from the state block
-  * STACK_PUSH: - returns the passed item and saves the current position
-  *               of the next functions
-  * STACK_END:  - ends the execution of the next function
-  * GET_STATE:  - specific function to load the state of the current iterator
-  *               from the state block
+  * DEFUALT_STACK_INIT: - initializes Duff's Device and gets the state of the
+  *                       current iterator from the state block
+  * MANUAL_STACK_INIT:  - If you want to do Resource allocation, you have to use this STACK_INIT, 
+                          to have the full control.
+  * STACK_PUSH:         - returns the passed item and saves the current position
+  *                       of the next functions
+  * STACK_END:          - ends the execution of the next function
+  * GET_STATE:          - specific function to load the state of the current iterator
+  *                       from the state block
   */
-#define STACK_INIT(stateType, stateObject, planState) \
+#define DEFAULT_STACK_INIT(stateType, stateObject, planState ) \
   GET_STATE(stateType, stateObject, planState); \
   switch (stateObject->getDuffsLine()) { case 0: \
   stateObject->init()
+#define MANUAL_STACK_INIT() switch (stateObject->getDuffsLine()) { case 0: 
 #define STACK_PUSH(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL
 #define GET_STATE(stateType, stateObject, planState) \
   stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
+
+
 
 namespace xqp {
 

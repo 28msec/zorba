@@ -18,7 +18,7 @@ FnDataIterator::nextImpl(PlanState& planState)
   PlanIter_t iter;
   
   FnDataIteratorState* lState;
-  STACK_INIT(FnDataIteratorState, lState, planState);
+  DEFAULT_STACK_INIT(FnDataIteratorState, lState, planState);
   
   while (true) {
     item = this->consumeNext( theChild, planState );
@@ -61,7 +61,7 @@ Item_t FnRootIterator::nextImpl(PlanState& planState)
   Item_t parentNode;
 
   PlanIteratorState* lState;
-  STACK_INIT(PlanIteratorState, lState, planState);
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
 
   contextNode = consumeNext(theChild, planState);
 
