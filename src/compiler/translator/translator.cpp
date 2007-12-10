@@ -1189,6 +1189,8 @@ TRACE_VISIT_OUT ();
 void *translator::begin_visit(const QVarInDecl& v)
 {
 TRACE_VISIT ();
+  push_scope ();
+  nodestack.push (bind_var (v.get_location (), v.get_name ()));
 	return no_state;
 }
 
@@ -1201,7 +1203,6 @@ TRACE_VISIT_OUT ();
 void *translator::begin_visit(const QVarInDeclList& v)
 {
 TRACE_VISIT ();
-	nodestack.push(NULL);
 	return no_state;
 }
 
@@ -2411,7 +2412,29 @@ void *translator::begin_visit(const QuantifiedExpr& v)
 
 void translator::end_visit(const QuantifiedExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
+  rchandle<flwor_expr> flwor(new flwor_expr(v.get_location()));
+  flwor->set_retval(new const_expr(v.get_location(), true));
+  rchandle<expr> sat = pop_nodestack();
+  if (v.get_qmode() == quant_every) {
+    rchandle<fo_expr> uw = new fo_expr(v.get_expr()->get_location());
+    uw->add(sat);
+    uw->set_func(LOOKUP_FN("fn", "not", 1));
+    sat = uw.get_ptr();
+  }
+  flwor->set_where(sat);
+  int i;
+  for(i = 0; i < v.get_decl_list()->size(); ++i) {
+    rchandle<expr> fe = pop_nodestack();
+    rchandle<var_expr> ve = pop_nodestack().cast<var_expr>();
+    ve->set_kind(var_expr::for_var);
+    flwor->add(new forlet_clause(forlet_clause::for_clause, ve, NULL, NULL, fe));
+    pop_scope();
+  }
+  rchandle<fo_expr> quant = new fo_expr(v.get_location());
+  quant->add(rchandle<expr> (flwor.get_ptr()));
+  quant->set_func(v.get_qmode() == quant_every ? LOOKUP_FN("fn", "empty", 1) : LOOKUP_FN("fn", "exists", 1));
+  nodestack.push (quant.get_ptr());
 }
 
 
@@ -3090,4 +3113,4 @@ TRACE_VISIT_OUT ();
 
 
 } /* namespace xqp */
-
+/* vim:set ts=2 sw=2: */

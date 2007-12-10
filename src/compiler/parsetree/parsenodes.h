@@ -1903,6 +1903,7 @@ public:
 public:
 	void push_back(rchandle<QVarInDecl> decl_h) { qvar_decl_hv.push_back(decl_h); }
 	rchandle<QVarInDecl> operator[](int i) const { return qvar_decl_hv[i]; }
+	int size() { return qvar_decl_hv.size();}
 
 public:
 	std::ostream& put(std::ostream&) const;
