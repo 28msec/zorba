@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document baseUri = "" docUri = "boo"/>
 <plan nid="50 1.1">
-  <test:Case nid="54 1.1.1" xmlns:test="http://test.org/schema" name="test1" emptyAttribute="" test:ns_id="auio">
+  <test:Case nid="5a 1.1.3" xmlns:test="http://test.org/schema" name="test1" emptyAttribute="" test:ns_id="auio">
   </test:Case><!-- this is a comment -->
-  <test:text nid="5a 1.1.3" xmlns:test="http://test.org/schema2">my name <b nid="5a80 1.1.3.1" xmlns:test="http://test.org/schema2">is</b> foo></test:text>
-  <text nid="5c80 1.1.5">this is some more text</text>
-  <pre:foo nid="5d80 1.1.7" xmlns:pre="http://test.org/pre1">
-     <pre:boo1 nid="5da0 1.1.7.1" xmlns:pre="http://test.org/pre1"></pre:boo1>
-     <pre:boo2 nid="5dd0 1.1.7.3" xmlns:pre="http://test.org/pre1"></pre:boo2>
-     <pre:boo3 nid="5de4 1.1.7.5" xmlns:pre="http://test.org/pre1"> <goo1 nid="5de5 1.1.7.5.1" xmlns:pre="http://test.org/pre1"></goo1> <goo2 nid="5de680 1.1.7.5.3" xmlns:gg="http://test.org/schema3" xmlns:pre="http://test.org/pre1"></goo2> </pre:boo3>
-     <pre:boo4 nid="5dec 1.1.7.7" xmlns:pre="http://test.org/pre1">
-       <pre:goo3 nid="5ded 1.1.7.7.1" xmlns:pre="http://test.org/pre2"></pre:goo3>
+  <test:text nid="5e10 1.1.9" xmlns:test="http://test.org/schema2">my name <b nid="5e1a 1.1.9.3" xmlns:test="http://test.org/schema2">is</b> foo></test:text>
+  <text nid="5e50 1.1.13">this is some more text</text>
+  <pre:foo nid="5e90 1.1.17" xmlns:pre="http://test.org/pre1">
+     <pre:boo1 nid="5e9a 1.1.17.3" xmlns:pre="http://test.org/pre1"></pre:boo1>
+     <pre:boo2 nid="5e9d80 1.1.17.7" xmlns:pre="http://test.org/pre1"></pre:boo2>
+     <pre:boo3 nid="5e9e30 1.1.17.11" xmlns:pre="http://test.org/pre1"> <goo1 nid="5e9e3a 1.1.17.11.3" xmlns:pre="http://test.org/pre1"></goo1> <goo2 nid="5e9e3d80 1.1.17.11.7" xmlns:gg="http://test.org/schema3" xmlns:pre="http://test.org/pre1"></goo2> </pre:boo3>
+     <pre:boo4 nid="5e9e70 1.1.17.15" xmlns:pre="http://test.org/pre1">
+       <pre:goo3 nid="5e9e7a 1.1.17.15.3" xmlns:pre="http://test.org/pre2"></pre:goo3>
      </pre:boo4>
   </pre:foo>
 </plan>

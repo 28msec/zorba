@@ -194,7 +194,7 @@ function run_query_in_bucket
   fi
 
   #
-  # query_exec creates the result file in the same dir as the query file.
+  # apitest creates the result file in the same dir as the query file.
   # So, we must move the result file to the result dir.
   #
   # If no result file was generated, then we create an empty one.
@@ -202,6 +202,7 @@ function run_query_in_bucket
   if [ -e "${inputDir}/${queryName}.xq.res" ]; then
     cat "${inputDir}/${queryName}.xq.res" | ${scriptsDir}/tidy_xmlfrag >"${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 12 run_query_in_bucket: mv failed"; exit 19; fi
+    rm "${inputDir}/${queryName}.xq.res"
   else
     touch "${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 13 run_query_in_bucket: touch failed"; exit 19; fi
@@ -212,6 +213,7 @@ function run_query_in_bucket
   #
   if [ -e "${expResultFile}" ]; then
     cat "${expResultFile}" | ${scriptsDir}/tidy_xmlfrag | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
+    #cat "${expResultFile}" | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
   else
     echo "unknown expected results for ${queryName}"
     cp "${queryFile}" "${diffFile}"

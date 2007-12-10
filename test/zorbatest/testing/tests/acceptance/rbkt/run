@@ -30,7 +30,7 @@ fi
 
 # pwd = /zorbatest/snapshots/latest/tests/acceptance/rbkt/
 
-$zorbaRepos/test/rbkt/Scripts/rbkt.sh -b paths > /dev/null
+$zorbaExecDir/rbkt/Scripts/rbkt.sh -b paths > /dev/null
 
 
 # pwd = /zorbatest/snapshots/latest/tests/acceptance/rbkt/

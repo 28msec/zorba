@@ -1,2 +1,6 @@
-export ZORBA_EXEC_DIR=$ROOT/build/test/
+
+export ZORBA_BUILD_DIR=$ROOT/build/
+
+export ZORBA_EXEC_DIR=$ZORBA_BUILD_DIR/test/
+
 export ZORBA=$ZORBA_EXEC_DIR/apitest

@@ -65,7 +65,9 @@ trap '' 12
 #
 # Argument parsing
 #
+bucketList=""
 bucketName=""
+numBuckets=0
 queryName=""
 displayFormat="xml"
 
@@ -73,21 +75,42 @@ state=0
 while [ $1 ]
 do
    case $1 in
-   -b)        state=1;;
-   -q)        state=2;;
-   -d)        state=3;;
-   -h)        usage ; exit;;
+   -b) state=1;;
+
+   -q) if [ $state -eq 0 -o $state -eq 1 -a $numBuckets -eq 1 ]; then
+         state=2;
+       else
+         echo "ERROR 5 rbkt.sh: Wrong option -q"; usage; exit 5;
+       fi ;;
+
+   -d) state=3;;
+
+   -h) usage ; exit;;
+
     *) case $state in
-       1) bucketName="$1"; state=0 ;;
+
+       1) if [ $numBuckets -eq 0 ]; then
+            bucketList="$1"
+          else
+            bucketList="${bucketList} $1";
+          fi 
+          let numBuckets=$numBuckets+1 ;;
+
        2) queryName="$1"; state=0 ;;
+
        3) displayFormat="$1"; state=0 ;;
+
        *) echo "ERROR 6 rbkt.sh: Wrong parameter $1"; usage; exit 6;;
        esac ;;
     esac
     shift
 done
 
-if [ $state -ne 0 ]; then
+if [ $numBuckets -eq 1 ]; then
+  bucketName=$bucketList
+fi
+
+if [ $state -ne 0 -a $state -ne 1 ]; then
   echo "ERROR 7 rbkt.sh: Wrong arg list"; usage; exit 7;
 fi
 
@@ -135,8 +158,12 @@ if [ "${bucketName}" != "" ]; then
   fi
 
 else
-  # bugfix by Matthias (collect the buckets automatically)
-  bucketList=`find "${queriesDir}" -type d -maxdepth 1 ! -name '.svn' ! -name '.' ! -name 'Queries' -exec basename {} \;`
+  if [ -z "${bucketList}" ]; then
+    # bugfix by Matthias (collect the buckets automatically)
+    bucketList=`find "${queriesDir}" -type d -maxdepth 1 ! -name '.svn' ! -name '.' ! -name 'Queries' -exec basename {} \;`
+  fi
+
+  echo "bucketList = $bucketList"
 
   for bucketName in ${bucketList}
   do
