@@ -102,10 +102,10 @@ function buildDirEnv
 #
 function run_query
 {
-  local error=0
-
   local queryFile="$1"
   local displayFormat=$2
+
+  local error=0
 
   local EXE=${zorbaExecDir}/apitest
 
@@ -144,31 +144,28 @@ function run_query
 #
 function run_query_in_bucket
 {
-  local error=0
-
   local bucketName="$1"
   local queryName="$2"
   local displayFormat=$3
 
+  local error=0
+
   local inputDir="${queriesDir}/${bucketName}"
   local queryFile="${inputDir}/${queryName}.xq"
+  local 
 
-  local expResultsDir=""
+  local expResultsDir="${expQueryResultsDir}/${bucketName}"
+  local fmtExt=""
   if [ $displayFormat == "xml" ]; then
-    expResultsDir="${expQueryResultsDir}/${bucketName}_xml"
+    fmtExt="xml"
   else
-    expResultsDir="${expQueryResultsDir}/${bucketName}_show"
+    fmtExt="show"
   fi
-  local expResultFile="${expResultsDir}/${queryName}.res"
+  local expResultFile="${expResultsDir}/${queryName}.${fmtExt}.res"
 
-  local resultsDir=""
-  if [ $displayFormat == "xml" ]; then
-      resultsDir="${queryResultsDir}/${bucketName}_xml"
-  else
-      resultsDir="${queryResultsDir}/${bucketName}_show"
-  fi
-  local resultFile="${resultsDir}/${queryName}.res"
-  local diffFile="${resultsDir}/${queryName}.diff"
+  local resultsDir="${queryResultsDir}/${bucketName}"
+  local resultFile="${resultsDir}/${queryName}.${fmtExt}.res"
+  local diffFile="${resultsDir}/${queryName}.${fmtExt}.diff"
 
   if [ ! -e "${queryFile}" ]; then
     echo "ERROR 1 run_query_in_bucket: query file ${queryFile} does not exist"
@@ -204,6 +201,7 @@ function run_query_in_bucket
     if [ $? != 0 ]; then echo "ERROR 12 run_query_in_bucket: mv failed"; exit 19; fi
     rm "${inputDir}/${queryName}.xq.res"
   else
+    mkdir -p `dirname ${resultFile}`
     touch "${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 13 run_query_in_bucket: touch failed"; exit 19; fi
   fi
@@ -248,35 +246,32 @@ function run_query_in_bucket
 #
 function run_bucket() 
 {
+  local bucketName="$1"
+  local displayFormat=$2
   local error=0
   local queryList=""
   local q=""
   local queryName=""
-  local bucketName="$1"
-  local displayFormat=$2
 
   if [ ! -e "${queriesDir}/${bucketName}" ]; then
     echo "ERROR 1 run_bucket: bucket ${queriesDir}/${bucketName} does not exist"
     return 17
   fi
 
-  cd "${queriesDir}/${bucketName}"
-  #queryList=`find . -maxdepth 1 -name "*.query" -printf "%f\n"`
-  queryList=`ls *.xq`
-  cd -
+  queryList=`cd "${queriesDir}/${bucketName}"; find . -name '*.xq' | cut -f2- -d /`
 
   for q in $queryList
   do
-    echo ${q} | sed -e s/".xq"/""/g  > tmp_queryFile
-    for queryName in `cat tmp_queryFile`
-    do 
+#    echo ${q} | sed -e s/".xq"/""/g  > tmp_queryFile
+#    for queryName in `cat tmp_queryFile`
+      queryName=`echo $q | sed -e 's/.xq$//g'`
       run_query_in_bucket "${bucketName}" "${queryName}" ${displayFormat}
       error=$?
       if [ ${error} != 0 ]; then
         echo "ERROR 3 run_bucket: run_bucket failed with error code ${error}"
         return ${error}
       fi
-    done
+#    done
     rm -f tmp_queryFile
   done  
 
