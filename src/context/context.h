@@ -90,10 +90,10 @@ protected:
     ctx_value_t val;
     return context_value (key, val) ? val.exprValue : NULL;
   }
+  // unlike other lookups, failure does not raise an assertion
   function *lookup_func (xqp_string key) const {
     ctx_value_t val;
-    Assert (context_value (key, val));
-    return val.functionValue;
+    return (context_value (key, val)) ? val.functionValue : NULL;
   }
   void bind_expr (xqp_string key, expr *e) {
     ctx_value_t v = { e };

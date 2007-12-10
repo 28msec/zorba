@@ -28,6 +28,7 @@
 #include "common.h"
 #include "context.h"
 #include "context/context_impl.h"
+#include "functions/signature.h"
 #include "errors/Error.h"
 #include "../store/api/item.h"
 #include "../store/api/store.h"
@@ -113,9 +114,14 @@ public:
   void bind_var (xqp_string varname, expr *expr) {
     bind_expr ("var:" + qname_internal_key ("", varname), expr);
   }
-
   function *lookup_fn (xqp_string prefix, xqp_string local, int arity) const {
-    return lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
+    function *f = lookup_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), prefix, local));
+    if (f != NULL) return f;
+    else {
+      f = lookup_func (fn_internal_key (VARIADIC_SIG_SIZE) + qname_internal_key (default_function_namespace (), prefix, local));
+      assert (f != NULL);
+      return f;
+    }
   }
   static function *lookup_builtin_fn (xqp_string local, int arity);
   void bind_fn (xqp_string prefix, xqp_string local, function *f, int arity) {
