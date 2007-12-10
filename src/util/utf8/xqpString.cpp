@@ -288,12 +288,15 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::indexOf(xqpString pattern, const char * loc)
+  int32_t xqpString::indexOf(xqpString pattern, xqpString collationUri)
   {
     UErrorCode status = U_ZERO_ERROR;
 
-    //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), Locale(loc), NULL, status);
+    //get the collator object fromthe Static context
+    ::Collator *coll = zorba::getZorbaForCurrentThread()->getCollator(collationUri);
+
+    //user retains the ownership of this collator, it does not get destroyed during this instance's destruction
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator*)coll, NULL, status);
 
     if(U_FAILURE(status))
     {
@@ -363,12 +366,15 @@ namespace xqp
     return -1;
   }
 
-  int32_t xqpString::lastIndexOf(xqpString pattern, const char * loc)
+  int32_t xqpString::lastIndexOf(xqpString pattern, xqpString collationUri)
   {
     UErrorCode status = U_ZERO_ERROR;
 
-    //A collator will be created in the process, which will be owned by this instance and will be deleted during destruction
-    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), Locale(loc), NULL, status);
+    //get the collator object fromthe Static context
+    ::Collator *coll = zorba::getZorbaForCurrentThread()->getCollator(collationUri);
+
+    //user retains the ownership of this collator, it does not get destroyed during this instance's destruction.
+    StringSearch search(getUnicodeString(pattern), getUnicodeString(*theStrStore), (RuleBasedCollator*)coll, NULL, status);
 
     if(U_FAILURE(status))
     {
@@ -406,10 +412,10 @@ namespace xqp
     return( lastIndexOf(pattern) + pattern.length() == length() );
   }
 
-  bool xqpString::endsWith(xqpString pattern, const char * loc)
+  bool xqpString::endsWith(xqpString pattern, xqpString collationUri)
   {
     //TODO check if this condition is enough
-    return( lastIndexOf(pattern, loc) + pattern.length() == length() );
+    return( lastIndexOf(pattern, collationUri) + pattern.length() == length() );
   }
 
   xqpString xqpString::substr(xqpString::size_type index, xqpString::size_type length)

@@ -80,6 +80,7 @@ StringToCodepointsIterator::nextImpl(PlanState& planState){
 
   item = consumeNext ( theChild, planState );
   if ( item != NULL ){
+    item = item->getAtomizationValue();
     inputStr = item->getStringValue();
     state->setVector(inputStr.getCodepoints());
 
@@ -178,7 +179,7 @@ CompareStrIterator::nextImpl(PlanState& planState) {
       if(theChildren.size() == 3)  {
         n2 = consumeNext ( theChildren[2], planState );
         if ( n2 != NULL )  {
-          //TODO solve track issue no.26
+          n2 = n2->getAtomizationValue();
           res = zorba::getItemFactory()->createInteger(
                   n0->getStringValue().compare(n1->getStringValue(), n2->getStringValue()));
         }
@@ -274,10 +275,11 @@ ConcatStrIterator::nextImpl(PlanState& planState) {
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  for(; iter !=  theChildren.end(); iter ++ ){
+  for(; iter !=  theChildren.end(); iter ++ )
+  {
     item = consumeNext (*iter, planState );
-      item = item->getAtomizationValue();
-      resStr += item->getStringValue();
+    item = item->getAtomizationValue();
+    resStr += item->getStringValue();
   }
 
   if(theChildren.size()>0){
@@ -320,10 +322,13 @@ StringJoinIterator::nextImpl(PlanState& planState) {
   item = consumeNext(theChild1, planState);
   separator = item->getStringValue();
 
-  if(separator == ""){
-    while(true){
+  if(separator == "")
+  {
+    while(true)
+    {
       item = consumeNext ( theChild0, planState );
-      if ( item != NULL ){
+      if ( item != NULL )
+      {
         item = item->getAtomizationValue();
         resStr += item->getStringValue();
       }
@@ -335,18 +340,21 @@ StringJoinIterator::nextImpl(PlanState& planState) {
     }
   }
   else{
-      while(true){
-      item = consumeNext ( theChild0, planState );
-      if ( item != NULL ){
-        item = item->getAtomizationValue();
-        resStr += item->getStringValue();
-        resStr += separator;
-      }
-      else{
-        resItem = zorba::getItemFactory()->createString(resStr);
-        STACK_PUSH( resItem, state );
-        break;
-      }
+      while(true)
+      {
+        item = consumeNext ( theChild0, planState );
+        if ( item != NULL )
+        {
+          item = item->getAtomizationValue();
+          resStr += item->getStringValue();
+          resStr += separator;
+        }
+        else
+        {
+          resItem = zorba::getItemFactory()->createString(resStr);
+          STACK_PUSH( resItem, state );
+          break;
+        }
     }
   }
   STACK_END();
@@ -390,21 +398,30 @@ SubstringIterator::nextImpl(PlanState& planState) {
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3){
+  if(theChildren.size() == 2 || theChildren.size()==3)
+  {
     item0 = consumeNext ( theChildren[0], planState );
-    if ( item0 != NULL ){
-      if(item0->getStringValue().length() == 0){
+    if ( item0 != NULL )
+    {
+      item0 = item0->getAtomizationValue();
+      if(item0->getStringValue().length() == 0)
+      {
         STACK_PUSH( zorba::getItemFactory()->createString(resStr), state );
       }
       else{
         item1 = consumeNext( theChildren[1], planState );
-        if( item1 != NULL ){//note: The first character of a string is located at position 1, not position 0.
-          if( theChildren.size() == 2 ){
+        if( item1 != NULL )
+        {//note: The first character of a string is located at position 1, not position 0.
+          item1 = item1->getAtomizationValue();
+          if( theChildren.size() == 2 )
+          {
             resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1);
           }
           else{ //theChildren.size() ==3
             item2 = consumeNext ( theChildren[2], planState );
-            if ( item2 != NULL ){
+            if ( item2 != NULL )
+            {
+              item2 = item2->getAtomizationValue();
               resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1,
                                                                          (int32_t)round(item2->getDecimalValue()));
             }
@@ -444,12 +461,15 @@ StringLengthIterator::nextImpl(PlanState& planState) {
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
-  if ( item != NULL )  {
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createInteger(
                             item->getStringValue().length()),
                             state);
   }
-  else{
+  else
+  {
     STACK_PUSH(zorba::getItemFactory()->createInteger(
                             0),
                             state);
@@ -480,12 +500,15 @@ NormalizeSpaceIterator::nextImpl(PlanState& planState)
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
-  if ( item != NULL )  {
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createString(
         item->getStringValue().normalizeSpace()),
     state);
   }
-  else{
+  else
+  {
     STACK_PUSH(zorba::getItemFactory()->createString(""),
     state);
   }
@@ -529,12 +552,17 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item0 = consumeNext (theChild0, planState );
-  if(item0 == NULL){
+  if(item0 == NULL)
+  {
+    item0 = item0->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createString(""), state);
   }
-  else{//item0 != NULL
+  else
+  {//item0 != NULL
     item1 = consumeNext(theChild1, planState );
-    if(item1 != NULL){
+    if(item1 != NULL)
+    {
+      item1 = item1->getAtomizationValue();
       tempStr = item1->getStringValue().uppercase();
     }
     res = item0->getStringValue().normalize(tempStr);
@@ -573,11 +601,14 @@ UpperCaseIterator::nextImpl(PlanState& planState)
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
-  if ( item != NULL )  {
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createString(item->getStringValue().uppercase()),
                 state);
   }
-  else{
+  else
+  {
     STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
   }
   STACK_END();
@@ -611,12 +642,15 @@ LowerCaseIterator::nextImpl(PlanState& planState) {
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
-  if ( item != NULL )  {
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createString(
         item->getStringValue().lowercase()),
     state);
   }
-  else{
+  else
+  {
     STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
   }
   STACK_END();
@@ -697,12 +731,15 @@ EncodeForUriIterator::nextImpl(PlanState& planState) {
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
-  if ( item != NULL )  {
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createString(
         item->getStringValue().encodeForUri()),
     state);
   }
-  else{
+  else
+  {
     STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
   }
   STACK_END();
@@ -724,12 +761,15 @@ IriToUriIterator::nextImpl(PlanState& planState) {
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
-  if ( item != NULL )  {
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createString(
         item->getStringValue().iriToUri()),
     state);
   }
-  else{
+  else
+  {
     STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
   }
   STACK_END();
@@ -751,12 +791,15 @@ EscapeHtmlUriIterator::nextImpl(PlanState& planState) {
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
   item = consumeNext (theChild, planState);
-  if ( item != NULL )  {
+  if ( item != NULL )
+  {
+    item = item->getAtomizationValue();
     STACK_PUSH(zorba::getItemFactory()->createString(
         item->getStringValue().escapeHtmlUri()),
     state);
   }
-  else{
+  else
+  {
     STACK_PUSH(zorba::getItemFactory()->createString(emptyStr), state);
   }
   STACK_END();
@@ -797,26 +840,36 @@ ContainsIterator::nextImpl(PlanState& planState) {
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3){
+  if(theChildren.size() == 2 || theChildren.size()==3)
+  {
     item0 = consumeNext ( theChildren[0], planState );
-    if ( item0 != NULL ){
+    if ( item0 != NULL )
+    {
+      item0 = item0->getAtomizationValue();
       item1 = consumeNext( theChildren[1], planState );
-      if( item1 != NULL ){
-        if( item0->getStringValue().length() == 0 ){
+      if( item1 != NULL )
+      {
+        item1 = item1->getAtomizationValue();
+        if( item0->getStringValue().length() == 0 )
+        {
           STACK_PUSH( zorba::getItemFactory()->createBoolean(false), state );
         }
-        else if( item1->getStringValue().length() == 0 ){
+        else if( item1->getStringValue().length() == 0 )
+        {
           STACK_PUSH( zorba::getItemFactory()->createBoolean(true), state );
         }
         else{
-          if( theChildren.size() == 2 ){
+          if( theChildren.size() == 2 )
+          {
             resBool = (item0->getStringValue().indexOf(item1->getStringValue()) != -1);
           }
-          else{ //theChildren.size() ==3
+          else
+          { //theChildren.size() ==3
             itemColl = consumeNext ( theChildren[2], planState );
-            if ( itemColl != NULL ){
-              //TODO solve track issue no.26
-              resBool = (item0->getStringValue().indexOf(item1->getStringValue(), itemColl->getStringValue().c_str()) != -1);
+            if ( itemColl != NULL )
+            {
+              itemColl = itemColl->getAtomizationValue();
+              resBool = (item0->getStringValue().indexOf(item1->getStringValue(), itemColl->getStringValue()) != -1);
             }
           }
           STACK_PUSH( zorba::getItemFactory()->createBoolean(resBool), state );
@@ -862,26 +915,37 @@ StartsWithIterator::nextImpl(PlanState& planState) {
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3){
+  if(theChildren.size() == 2 || theChildren.size()==3)
+  {
     item0 = consumeNext ( theChildren[0], planState );
-    if ( item0 != NULL ){
+    if ( item0 != NULL )
+    {
+      item0 = item0->getAtomizationValue();
       item1 = consumeNext( theChildren[1], planState );
-      if( item1 != NULL ){
-        if( item0->getStringValue().length() == 0 ){
+      if( item1 != NULL )
+      {
+        item1 = item1->getAtomizationValue();
+        if( item0->getStringValue().length() == 0 )
+        {
           STACK_PUSH( zorba::getItemFactory()->createBoolean(false), state );
         }
-        else if( item1->getStringValue().length() == 0 ){
+        else if( item1->getStringValue().length() == 0 )
+        {
           STACK_PUSH( zorba::getItemFactory()->createBoolean(true), state );
         }
-        else{
-          if( theChildren.size() == 2 ){
+        else
+        {
+          if( theChildren.size() == 2 )
+          {
             resBool = (item0->getStringValue().indexOf(item1->getStringValue()) == 0);
           }
-          else{ //theChildren.size() ==3
+          else
+          { //theChildren.size() ==3
             itemColl = consumeNext ( theChildren[2], planState );
-            if ( itemColl != NULL ){
-              //TODO solve track issue no.26
-              resBool = (item0->getStringValue().indexOf(item1->getStringValue(), itemColl->getStringValue().c_str()) == 0);
+            if ( itemColl != NULL )
+            {
+              itemColl = itemColl->getAtomizationValue();
+              resBool = (item0->getStringValue().indexOf(item1->getStringValue(), itemColl->getStringValue()) == 0);
             }
           }
           STACK_PUSH( zorba::getItemFactory()->createBoolean(resBool), state );
@@ -928,26 +992,37 @@ EndsWithIterator::nextImpl(PlanState& planState) {
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3){
+  if(theChildren.size() == 2 || theChildren.size()==3)
+  {
     item0 = consumeNext ( theChildren[0], planState );
-    if ( item0 != NULL ){
+    if ( item0 != NULL )
+    {
+      item0 = item0->getAtomizationValue();
       item1 = consumeNext( theChildren[1], planState );
-      if( item1 != NULL ){
-        if( item0->getStringValue().length() == 0 ){
+      if( item1 != NULL )
+      {
+        item0 = item0->getAtomizationValue();
+        if( item0->getStringValue().length() == 0 )
+        {
           STACK_PUSH( zorba::getItemFactory()->createBoolean(false), state );
         }
-        else if( item1->getStringValue().length() == 0 ){
+        else if( item1->getStringValue().length() == 0 )
+        {
           STACK_PUSH( zorba::getItemFactory()->createBoolean(true), state );
         }
-        else{
-          if( theChildren.size() == 2 ){
+        else
+        {
+          if( theChildren.size() == 2 )
+          {
             resBool = item0->getStringValue().endsWith(item1->getStringValue());
           }
-          else{ //theChildren.size() ==3
+          else
+          { //theChildren.size() ==3
             itemColl = consumeNext ( theChildren[2], planState );
-            if ( itemColl != NULL ){
-              //TODO solve track issue no.26
-              resBool = item0->getStringValue().endsWith(item1->getStringValue(), itemColl->getStringValue().c_str());
+            if ( itemColl != NULL )
+            {
+              itemColl = itemColl->getAtomizationValue();
+              resBool = item0->getStringValue().endsWith(item1->getStringValue(), itemColl->getStringValue());
             }
           }
           STACK_PUSH( zorba::getItemFactory()->createBoolean(resBool), state );
@@ -996,26 +1071,37 @@ SubstringBeforeIterator::nextImpl(PlanState& planState) {
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3){
+  if(theChildren.size() == 2 || theChildren.size()==3)
+  {
     item0 = consumeNext ( theChildren[0], planState );
-    if ( item0 != NULL ){
+    if ( item0 != NULL )
+    {
+      item0 = item0->getAtomizationValue();
       item1 = consumeNext( theChildren[1], planState );
-      if( item1 != NULL ){
-        if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0){
+      if( item1 != NULL )
+      {
+        item1 = item1->getAtomizationValue();
+        if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0)
+        {
           STACK_PUSH( zorba::getItemFactory()->createString(resStr), state );
         }
-        else{
-          if( theChildren.size() == 2 ){
+        else
+        {
+          if( theChildren.size() == 2 )
+          {
             index = item0->getStringValue().indexOf(item1->getStringValue());
           }
-          else{ //theChildren.size() ==3
+          else
+          { //theChildren.size() ==3
             itemColl = consumeNext ( theChildren[2], planState );
-            if ( itemColl != NULL ){
-              //TODO solve track issue no.26
-              index = item0->getStringValue().indexOf(item1->getStringValue(), itemColl->getStringValue().c_str());
+            if ( itemColl != NULL )
+            {
+              itemColl = itemColl->getAtomizationValue();
+              index = item0->getStringValue().indexOf(item1->getStringValue(), itemColl->getStringValue());
             }
           }
-          if(index != -1){
+          if(index != -1)
+          {
             resStr = item0->getStringValue().substr(0,index);
           }
           STACK_PUSH( zorba::getItemFactory()->createString(resStr), state );
@@ -1064,27 +1150,38 @@ SubstringAfterIterator::nextImpl(PlanState& planState) {
   PlanIterator::PlanIteratorState* state;
   STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  if(theChildren.size() == 2 || theChildren.size()==3){
+  if(theChildren.size() == 2 || theChildren.size()==3)
+  {
     item0 = consumeNext ( theChildren[0], planState );
-    if ( item0 != NULL ){
+    if ( item0 != NULL )
+    {
+      item0 = item0->getAtomizationValue();
       item1 = consumeNext( theChildren[1], planState );
-      if( item1 != NULL ){
-        if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0){
+      if( item1 != NULL )
+      {
+        item1 = item1->getAtomizationValue();
+        if( item0->getStringValue().length() == 0  || item1->getStringValue().length() == 0)
+        {
           STACK_PUSH( zorba::getItemFactory()->createString(resStr), state );
         }
-        else{
-          if( theChildren.size() == 2 ){
+        else
+        {
+          if( theChildren.size() == 2 )
+          {
             startPos = item0->getStringValue().lastIndexOf(item1->getStringValue());
           }
-          else{ //theChildren.size() ==3
+          else
+          { //theChildren.size() ==3
             itemColl = consumeNext ( theChildren[2], planState );
-            if ( itemColl != NULL ){
-              //TODO solve track issue no.26
+            if ( itemColl != NULL )
+            {
+              itemColl = itemColl->getAtomizationValue();
               startPos = item0->getStringValue().lastIndexOf(item1->getStringValue(),
-                                                             itemColl->getStringValue().c_str());
+                                                             itemColl->getStringValue());
             }
           }
-          if(startPos != -1){
+          if(startPos != -1)
+          {
             startPos += item1->getStringValue().length();
             resStr = item0->getStringValue().substr( startPos,
                                                      item0->getStringValue().length() - startPos);

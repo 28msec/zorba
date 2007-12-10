@@ -221,10 +221,10 @@ public:
 
     /**Locate in this the first occurrence in the range [0, length) of the characters in pattern using the a collation created using the provided locale.
     *  @param pattern The text to search for.
-    *  @param loc The locale ID for which to open a collator.
+    *  @param collationUri collation URI.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t indexOf(xqpString pattern, const char * loc);
+    int32_t indexOf(xqpString pattern, xqpString collationUri);
 
     /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
     *  @param pattern The text to search for.
@@ -234,10 +234,10 @@ public:
 
     /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
     *  @param pattern The text to search for.
-    *  @param loc The locale ID for which to open a collator.
+    *  @param collationUri collation URI.
     *  @return The offset into this of the start of pattern, or -1 if not found.
     */
-    int32_t lastIndexOf(xqpString pattern, const char * loc);
+    int32_t lastIndexOf(xqpString pattern, xqpString collationUri);
 
     /**Determine if this ends with the characters in pattern in the range [0, length).
     *  @param pattern The text to search for.
@@ -246,9 +246,9 @@ public:
 
     /**Determine if this ends with the characters in pattern in the range [0, length).
     *  @param pattern The text to search for.
-    *  @param loc The locale ID for which to open a collator.
+    *  @param collationUri collation URI.
     */
-    bool endsWith(xqpString pattern, const char * loc);
+    bool endsWith(xqpString pattern, xqpString collationUri);
 
     /**Returns a substring of the current string, starting at index, and length characters long.
     */
