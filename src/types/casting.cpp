@@ -68,11 +68,11 @@ namespace xqp
     {
       case TypeSystem::XS_DOUBLE:
         double doubleVal;
-        if ( GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.FLOAT_TYPE_ONE, *itemType ) )
+        if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE ) )
         {
           doubleVal = static_cast<double> ( item->getFloatValue() );
         }
-        else if ( GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *itemType ) )
+        else if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
         {
           doubleVal = static_cast<double> ( item->getDecimalValue() );
         }
@@ -95,7 +95,7 @@ namespace xqp
         result = itemFactory->createDouble ( doubleVal );
         break;
       case TypeSystem::XS_FLOAT:
-        if ( GENV_TYPESYSTEM.is_subtype ( *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE, *itemType ) )
+        if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
         {
           result = itemFactory->createFloat ( static_cast<float> ( item->getDecimalValue() ) );
         }
