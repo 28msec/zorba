@@ -1,0 +1,31 @@
+#!/bin/bash
+
+if test $# != 2; then
+    echo Arguments: ZorbaRepo XQTS.zip; exit 1
+fi
+SRC=$1
+ZIP=$2
+
+d0=`pwd`
+
+d="/tmp/rwts.$$"
+mkdir "$d"
+cd "$d"
+
+echo Unzipping test suite...
+unzip $ZIP &>/dev/null
+
+echo Moving queries to Zorba repo...
+mv Queries/XQuery $SRC/test/rbkt/Queries/w3c_testsuite
+
+cd ExpectedTestResults
+echo Cleaning up results...
+find . -name '*.log' -exec rm {} \;
+find . -type f -print0 | xargs -0 rename 's/(.*)\.([a-zA-Z]+)/$1.xml.res/g'
+
+echo Moving query results to Zorba repo...
+mkdir $SRC/test/rbkt/ExpQueryResults/w3c_testsuite/
+mv * $SRC/test/rbkt/ExpQueryResults/w3c_testsuite/
+
+echo Done
+cd $d0; rm -rf "$d"
