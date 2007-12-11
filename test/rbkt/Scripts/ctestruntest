@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# $1 is the build directory
+# $2 is test result file  in the build directory  
+
+
+# $3 is the file to test
+# $4 is the source directory of rbkt
+# $5 is the reference result
+
+
+$1/test/apitest -r -o "$2" "$3" # execute the query
+cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy" # tidy the generated result and store it in the build dir
+if [ -f "$4/$5" ]
+then
+  cat "$4/$5" | "$4/Scripts/tidy_xmlfrag" > "$1/test/rbkt/$5.tidy"
+  diff "$2.tidy" "$1/test/rbkt/$5.tidy" > "$1/test/rbkt/$5.diff"
+else
+  echo "reference result does not exist " "$4/$5"
+  exit 1
+fi

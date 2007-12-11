@@ -24,18 +24,26 @@ FOREACH(TESTFILE ${TESTFILES})
       FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/${BUCKETNAME})
   ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/${BUCKETNAME})
 
+  IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/ExpQueryResults/${BUCKETNAME})
+      FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ExpQueryResults/${BUCKETNAME})
+  ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/ExpQueryResults/${BUCKETNAME})
+
+
   STRING(LENGTH ${TESTFILE} TESTFILELENGTH)
   MATH(EXPR TESTLENGTH '${TESTFILELENGTH}-3' )
   STRING(SUBSTRING ${TESTFILE} 0 ${TESTLENGTH} TESTNAME)
 
-  SET(TESTFILE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/${TESTFILE})
-  SET(TESTRESULT ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/${TESTNAME})
-
   # now, add two texts, one for xml output and one for text output
   # the tests are called queryfilename_xml or queryfilename_text, respectively.
   # the result is stored in queryfilename_xml.res or queryfilename_text.res, respectively
-  ADD_TEST(${TESTNAME}_xml ${CMAKE_BINARY_DIR}/test/apitest -r -o ${TESTRESULT}.xml.res ${TESTFILE})
-  ADD_TEST(${TESTNAME}_text ${CMAKE_BINARY_DIR}/test/apitest -o ${TESTRESULT}.show.res ${TESTFILE})
+  ADD_TEST(${TESTNAME}_xml 
+                ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/ctestruntest 
+                ${CMAKE_BINARY_DIR}
+                ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/${TESTNAME}.xml.res 
+                ${CMAKE_CURRENT_SOURCE_DIR}/Queries/${TESTFILE} 
+                ${CMAKE_CURRENT_SOURCE_DIR}
+                ExpQueryResults/${TESTNAME}.xml.res)
+                
 #  ADD_TEST(${TESTNAME}_xml_diff diff ${TESTRESULT}_xml.res 
 #                                     ${CMAKE_CURRENT_SOURCE_DIR}/ExpQueryResults/${BUCKETDIR}_xml/${TESTNAME}.res)
 #  ADD_TEST(${TESTNAME}_text_diff diff ${TESTRESULT}_text.res 
