@@ -13,6 +13,10 @@ wget -c -O $ZIP http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip
 
 d0=`pwd`
 
+cd `dirname $SRC`
+SRC=`pwd`/`basename $SRC`
+echo Repository is at $SRC
+
 d="/tmp/rwts.$$"
 mkdir "$d"
 cd "$d"
