@@ -1,7 +1,9 @@
 #!/bin/bash
 
-if test $# != 1; then
-    echo Arguments: ZorbaRepo; exit 1
+if test $# != 1 -o ! -d $1/test/zorbatest; then
+ echo 'Arguments: zorba_repository'
+ echo 'where zorba_repository is the top-level SVN working copy'
+ exit 1
 fi
 
 SRC=$1
