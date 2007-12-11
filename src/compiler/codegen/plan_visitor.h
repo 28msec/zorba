@@ -49,7 +49,7 @@ public:
 public:
 	PlanIter_t pop_itstack()
 	{
-		if (itstack.empty()) return NULL;
+		assert (! itstack.empty());
 		PlanIter_t it = itstack.top();
 		itstack.pop();
 		return it;
