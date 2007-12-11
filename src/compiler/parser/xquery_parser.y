@@ -60,7 +60,7 @@ namespace xqp {
 	class exprnode;
 }
 
-static bool debug = true;
+static bool debug = false;
 
 %}
 
