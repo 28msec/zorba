@@ -42,7 +42,7 @@ class error_messages;
 class Store;
 class static_context;
 class ZorbaErrorAlertsImpl;
-class Zorba_XQueryResult;
+class Zorba_XQueryExecution;
 class serializer;
 class CollationManager;
 
@@ -55,6 +55,7 @@ class zorba
 public:
 	static Store				*theStore;
 	static ItemFactory	*theItemFactory;
+	static yy::location	        null_loc;
 	
 
 protected:
@@ -62,11 +63,10 @@ protected:
 //	::Collator::ECollationStrength coll_strength;
 //	::Collator           *coll;///object used in unicode string processing (using ICU)
 
-	yy::location	        null_loc;
  
 public:///things specific for each thread
 	Zorba_XQueryBinary                *current_xquery;//current xquery executed for this thread
-	Zorba_XQueryResult								*current_xqueryresult;
+	Zorba_XQueryExecution								*current_xqueryresult;
 	std::stack<const PlanIterator*>	current_iterator;
 	CollationManager									*coll_manager;
 

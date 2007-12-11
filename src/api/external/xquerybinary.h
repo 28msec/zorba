@@ -29,18 +29,36 @@ template <class Object> class rchandle;
 
 typedef rchandle<class PlanIterator> PlanIter_t;
 
+class dynamic_context;
 
-class Zorba_XQueryResult : public XQueryResult
+class Zorba_XQueryExecution : public XQueryExecution
 {
+	bool		theClosed;
 public:
-	Zorba_XQueryResult();
-	virtual ~Zorba_XQueryResult();
-	virtual Item_t		next();
+	Zorba_XQueryExecution();
+	virtual ~Zorba_XQueryExecution();
+  virtual Item_t next();
+  virtual void reset();
+  virtual void close();
 	virtual void setAlertsParam(void *alert_callback_param);
-	virtual ostream& serializeXML( ostream& os );
+	virtual ostream& serialize( ostream& os );
+  virtual std::ostream& serializeXML( std::ostream& os );
+  virtual std::ostream& serializeHTML( std::ostream& os );
+  virtual std::ostream& serializeTEXT( std::ostream& os );
 	virtual bool isError();
 
 	virtual void	AbortQueryExecution();
+
+	///extension from dynamic context (specific only for this execution)
+	virtual bool AddVariable( xqp_string varname, XQueryExecution_t item_iter );
+
+	///register documents available through fn:doc() in xquery
+	virtual bool AddAvailableDocument(xqp_string docURI,
+																		Item_t docitem);
+	///register collections available through fn:collection() in xquery
+	///default collection has empty URI ""
+	virtual bool AddAvailableCollection(xqp_string collectionURI,
+																			Collection_t collection);
 
 public:
 	PlanIter_t		it_result;
@@ -51,6 +69,8 @@ public:
 
 	void			*alert_callback_param;
 	bool			is_error;
+
+	dynamic_context		*internal_dyn_context;
 };
 
 
@@ -60,11 +80,12 @@ class Zorba_XQueryBinary : public XQuery
 		friend class XQueryPtr;
 		friend class zorba;
 public:
-    Zorba_XQueryBinary(const char* );
+    Zorba_XQueryBinary(xqp_string	xquery_source_uri, const char* query_text);
     virtual ~Zorba_XQueryBinary();
 
 
 private:
+	xqp_string	m_xquery_source_uri;
 	const char* m_query_text;
 	bool		is_compiled;
 
@@ -75,18 +96,13 @@ private:
 //	zorba			*thread_specific_zorba;
 
 	StaticQueryContext_t		internal_static_context;//set by user
-	static_context		*internal_sctx;///generated at compilation
 
 public:
 //	yy::location		current_loc;
 
 	int32_t			lStateSize;
 	::Collator	*default_collator;
-
-	///for error processing: register a callback function
-//public:
-//	alert_callback	*xquery_registered_callback;
-//	void						*xquery_registered_param;
+	static_context		*internal_sctx;///generated at compilation
 
 public:
 
@@ -96,48 +112,25 @@ public:
 		// Matthias: how to return errors? daniel: using the error manager
     // routing_mode: should documents in a collection be filtered or queried completely
     //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    bool compile(StaticQueryContext* = 0, xqp_string	xquery_source_uri = "", bool routing_mode = false);
+    bool compile(StaticQueryContext* = 0, bool routing_mode = false);
 
     // execute the query 
 		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-    virtual XQueryResult_t execute( DynamicQueryContext_t = 0);
-
-    //virtual bool isCompiled();
-
-    // clone the query (can be compiled or not compiled)
-		//daniel: not cloning, but duplicating the state block
-    //Query* clone();
+    virtual XQueryExecution_t createExecution( DynamicQueryContext_t = 0);
 
 		virtual bool   serializeQuery(ostream &os);
 
 public:
     // getters/setters for Static- and DynamicQueryContext
-    // a default static and dynamiccontext is always availabe
+    // a default static and dynamiccontext is always available
 
     // Matthias: don't call it internal
     // there is no need to distinguish internal and external
 		virtual StaticQueryContext_t getInternalStaticContext();
 //    DynamicQueryContextPtr getInternalDynamicContext();
-
-		//daniel: get the variables out of the dynamic context class
-		// Matthias: get the dynamiccontext from the query and set the variables there
-		//           adhere to the XQuery processing model and don't deviate from it
-		//daniel: one dynamic context object can be used in many Queries; a variable is specific to only one Query
-		//				that is because an ItemIterator keeps an internal state and can be used in a single thread
-//		bool		SetVariable( Zorba_QName varname, ItemIterator &item_iter );
-//		bool		SetVariable( Zorba_QName varname, Item_t &item );
-//		bool		DeleteVariable( Zorba_QName varname );
-
-public:
-	///error manager holds the list of errors for this Query
-	///you can set a callback function into the error manager
-	///when executing the Query returns false, you can get the list of errors from the error manager
-//	Zorba_AlertsManager*		getAlertsManager();
-	//virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
-	//																		void *param);
-};    
+};
 
 }//end namespace xqp
 

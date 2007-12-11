@@ -146,7 +146,7 @@ namespace xqp {
       : pair<xqp_string, xqp_string> (qname.substr (0, n), qname.substr (n+1));
   }
 
-  static xqp_string qname_internal_key2 (xqp_string ns, xqp_string local) {
+  xqp_string qname_internal_key2 (xqp_string ns, xqp_string local) {
     return local + ":" + ns;
   }
   QNameItem_t static_context::lookup_qname (xqp_string default_ns, xqp_string prefix, xqp_string local) const {
@@ -177,7 +177,13 @@ namespace xqp {
 
   xqp_string static_context::lookup_ns (xqp_string prefix) const {
     xqp_string ns;
-    Assert (context_value ("ns:" + prefix, ns));
+    if(!context_value ("ns:" + prefix, ns))
+		{
+			ZORBA_ERROR_ALERT(
+					error_messages::XQST0048_STATIC_MISSING_TARGET_NAMESPACE,
+					error_messages::STATIC_ERROR
+				);
+		}
     return ns;
   }
   void static_context::bind_ns (xqp_string prefix, xqp_string ns) {

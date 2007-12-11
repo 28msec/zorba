@@ -34,6 +34,7 @@ namespace xqp {
 
 Store*				zorba::theStore = NULL;
 ItemFactory	*	zorba::theItemFactory = NULL;
+yy::location	zorba::null_loc;
 
 
 zorba::zorba()

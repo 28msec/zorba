@@ -68,7 +68,6 @@ protected:
 
 	xqp_string		make_absolute_uri(xqp_string uri, xqp_string base_uri);
 	void					compute_current_absolute_baseuri();
-
 public:
 	static void init();
   static_context()
@@ -202,6 +201,8 @@ public:
 	xqp_string		resolve_relative_uri( xqp_string uri );
 
 };
+
+pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
 
 
 }	/* namespace xqp */

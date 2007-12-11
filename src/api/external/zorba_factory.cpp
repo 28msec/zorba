@@ -7,11 +7,12 @@
 #include "util/zorba.h"
 #include "errors/Error_impl.h"
 
-///temporary stuff
-#include "store/naive/basic_item_factory.h"
-#include "store/naive/simple_store.h"
+//#include "store/naive/basic_item_factory.h"
+//#include "store/naive/simple_store.h"
 #include "system/globalenv.h"
 #include "api/external/static_context_wrapper.h"
+#include "api/external/dynamic_context_wrapper.h"
+#include "api/serialization/serializer.h"
 
 namespace xqp{
 
@@ -89,9 +90,9 @@ XQuery_t ZorbaFactory::createQuery(const char* aQueryString,
 																	 xqp_string	xquery_source_uri,
 																	 bool routing_mode)
 {
-	Zorba_XQueryBinary	*xq = new Zorba_XQueryBinary( aQueryString );
+	Zorba_XQueryBinary	*xq = new Zorba_XQueryBinary( xquery_source_uri, aQueryString );
 
-	if(!xq->compile(sctx.get_ptr(), xquery_source_uri, routing_mode))
+	if(!xq->compile(sctx.get_ptr(), routing_mode))
 	{
 		delete xq;
 		return NULL;
@@ -128,9 +129,23 @@ void		ZorbaFactory::getDefaultCollation(std::string  *coll_string, ::Collator::E
 	zorba::getZorbaForCurrentThread()->getDefaultCollation(coll_string, coll_strength, default_coll);
 }
 
+void	ZorbaFactory::setItemSerializerParameter(xqp_string parameter_name, xqp_string value)
+{
+	zorba::getZorbaForCurrentThread()->getItemSerializer()->set_parameter(parameter_name, value);
+}
+
+void	ZorbaFactory::setDocSerializerParameter(xqp_string parameter_name, xqp_string value)
+{
+	zorba::getZorbaForCurrentThread()->getDocSerializer()->set_parameter(parameter_name, value);
+}
+
 StaticQueryContext_t ZorbaFactory::createStaticContext()
 {
 	return new StaticContextWrapper;
 }
 
+DynamicQueryContext_t ZorbaFactory::createDynamicContext()
+{
+	return new DynamicContextWrapper;
+}
 }//end namespace xqp

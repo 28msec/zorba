@@ -878,7 +878,7 @@ void serializer::setup(ostream& os)
   }
 }
 
-void serializer::serialize(XQueryResult *result, ostream& os)
+void serializer::serialize(XQueryExecution *result, ostream& os)
 {
   validate_parameters();
   setup(os);

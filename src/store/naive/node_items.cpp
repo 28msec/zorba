@@ -10,6 +10,7 @@
 #include "store/naive/store_defs.h"
 #include "store/api/temp_seq.h"
 #include "util/zorba.h"
+#include <algorithm>
 
 namespace xqp
 {

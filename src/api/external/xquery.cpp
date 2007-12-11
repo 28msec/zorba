@@ -16,6 +16,7 @@
 #include "runtime/visitors/iterprinter.h"
 
 #include "api/serialization/serializer.h"
+#include "api/external/dynamic_context_wrapper.h"
 
 //#include "../../test/timer.h"
 
@@ -29,7 +30,9 @@ using namespace std;
 namespace xqp {
 
 
-Zorba_XQueryBinary::Zorba_XQueryBinary( const char* query_text ) :
+Zorba_XQueryBinary::Zorba_XQueryBinary( xqp_string	xquery_source_uri,
+																			 const char* query_text ) :
+	m_xquery_source_uri(xquery_source_uri),
 	m_query_text (query_text)
 {
 	is_compiled = false;
@@ -53,7 +56,6 @@ Zorba_XQueryBinary::~Zorba_XQueryBinary()
 }
 
 bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx, 
-																xqp_string	xquery_source_uri,
 																 bool routing_mode)
 {
 	zorba	*thread_specific_zorba;
@@ -85,7 +87,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	{
 		internal_sctx = new static_context;
 	}
-	internal_sctx->set_entity_file_uri(xquery_source_uri);
+	internal_sctx->set_entity_file_uri(m_xquery_source_uri);
 
 	///reset the error list from error manager
 //	m_error_manager.clear();///delete all alerts from list
@@ -105,7 +107,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	
 	///NOW COMPILE
 	xquery_driver driver(cout);///for debug, send log text on cout
-	driver.filename = xquery_source_uri;
+	driver.filename = m_xquery_source_uri;
 
 	///build up the expression tree
 	driver.parse_string(m_query_text);
@@ -247,7 +249,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	return true;
 }
 
-XQueryResult_t Zorba_XQueryBinary::execute( DynamicQueryContext_t dctx)
+XQueryExecution_t Zorba_XQueryBinary::createExecution( DynamicQueryContext_t dctx)
 {
 	///init thread
 	//check if thread is inited, if not do automatic init
@@ -278,12 +280,18 @@ XQueryResult_t Zorba_XQueryBinary::execute( DynamicQueryContext_t dctx)
 	uint32_t lOffset = 0;
 	top_iterator->setOffset(*stateBlock, lOffset);
 
-	Zorba_XQueryResult* zorba_result = new Zorba_XQueryResult();
+	///and construct the state block of state objects...
+	Zorba_XQueryExecution* zorba_result = new Zorba_XQueryExecution();
 	zorba_result->it_result = top_iterator;
 	zorba_result->state_block = stateBlock;
 	zorba_result->state_block->zorp = thread_specific_zorba;
 	zorba_result->state_block->xqbinary = this;
-	///and construct the state block of state objects...
+//	zorba_result->state_block->xqexecution = zorba_result;
+	if(dctx.get_ptr())
+	{
+		DynamicContextWrapper	*dctx_wrapper = static_cast<DynamicContextWrapper*>(dctx.get_ptr());
+		zorba_result->internal_dyn_context = dctx_wrapper->create_dynamic_context(internal_sctx);
+	}
 
 	thread_specific_zorba->current_xquery = NULL;
 //	RegisterCurrentXQueryForCurrentThread( NULL );
@@ -322,6 +330,12 @@ StaticQueryContext_t Zorba_XQueryBinary::getInternalStaticContext()
 
 bool   Zorba_XQueryBinary::serializeQuery(ostream &os)
 {
+	ZORBA_ERROR_ALERT(error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
+										error_messages::SYSTEM_ERROR,
+										NULL,
+										true,///continue execution
+										"Zorba_XQueryBinary::serializeQuery"
+										);
 	return false;
 }
 
@@ -337,17 +351,20 @@ void Zorba_XQueryBinary::RegisterAlertCallback(alert_callback	*user_alert_callba
 }
 */
 
-Zorba_XQueryResult::Zorba_XQueryResult()
+Zorba_XQueryExecution::Zorba_XQueryExecution()
 {
+	theClosed = false;
 	is_error = false;
+	internal_dyn_context = NULL;
 }
 
-Zorba_XQueryResult::~Zorba_XQueryResult()
+Zorba_XQueryExecution::~Zorba_XQueryExecution()
 {
   delete state_block;
+	delete internal_dyn_context;
 }
 
-void Zorba_XQueryResult::setAlertsParam(void *alert_callback_param)
+void Zorba_XQueryExecution::setAlertsParam(void *alert_callback_param)
 {
 	this->alert_callback_param = alert_callback_param;
 }
@@ -355,8 +372,13 @@ void Zorba_XQueryResult::setAlertsParam(void *alert_callback_param)
 /*
 	next() should be called in the same thread where the xquery was called execute()
 */
-Item_t Zorba_XQueryResult::next()
+Item_t Zorba_XQueryExecution::next()
 {
+  if (theClosed)
+	{
+		return NULL;
+	}
+
 	state_block->zorp->current_xquery = state_block->xqbinary;
 	state_block->zorp->current_xqueryresult = this;
 
@@ -386,7 +408,25 @@ Item_t Zorba_XQueryResult::next()
 	return NULL;
 }
 
-ostream& Zorba_XQueryResult::serializeXML( ostream& os )
+void
+Zorba_XQueryExecution::reset()
+{
+  if (!theClosed)
+    it_result->reset(*state_block);
+}
+
+void
+Zorba_XQueryExecution::close()
+{
+  if (!theClosed)
+  {
+    it_result->releaseResources(*state_block); 
+    //delete theStateBlock;
+    theClosed = true;
+  }
+}
+
+ostream& Zorba_XQueryExecution::serialize( ostream& os )
 {
 	serializer *ser;
 	ser = zorba::getZorbaForCurrentThread()->getDocSerializer();
@@ -395,12 +435,45 @@ ostream& Zorba_XQueryResult::serializeXML( ostream& os )
 	return os;
 }
 
-bool Zorba_XQueryResult::isError()
+std::ostream& Zorba_XQueryExecution::serializeXML( std::ostream& os )
+{
+	serializer *ser = new serializer;
+	
+	ser->serialize(this, os);
+	delete ser;
+	return os;
+}
+
+std::ostream& Zorba_XQueryExecution::serializeHTML( std::ostream& os )
+{
+	serializer *ser = new serializer;
+	ser->set_parameter("method", "html");
+	ser->serialize(this, os);
+	delete ser;
+	return os;
+}
+
+std::ostream& Zorba_XQueryExecution::serializeTEXT( std::ostream& os )
+{
+	Item_t		it;
+
+	while(1)
+	{
+		it = next();
+		if(!it.get_ptr())
+			break;
+		os << it->show() <<	endl;
+	}
+	return os;
+}
+
+
+bool Zorba_XQueryExecution::isError()
 {
 	return is_error;
 }
 
-void	Zorba_XQueryResult::AbortQueryExecution()
+void	Zorba_XQueryExecution::AbortQueryExecution()
 {
 	ZORBA_ERROR_ALERT(error_messages::XQP0015_SYSTEM_NOT_YET_IMPLEMENTED,
 										error_messages::SYSTEM_ERROR,
@@ -409,5 +482,39 @@ void	Zorba_XQueryResult::AbortQueryExecution()
 										"AbortQueryExecution"
 										);
 }
+
+/*extension from dynamic context (specific only for this execution)
+bind external variable with the result from another xquery
+*/
+bool Zorba_XQueryExecution::AddVariable( xqp_string varname, 
+																				XQueryExecution_t item_iter )
+{
+	///add to dynamic context
+	if(!internal_dyn_context)
+		internal_dyn_context = new dynamic_context;
+	xqp_string		expanded_name;
+	expanded_name = internal_dyn_context->expand_varname(state_block->xqbinary->internal_sctx, varname);
+	internal_dyn_context->add_variable(expanded_name, item_iter.get_ptr());
+
+	return true;
+}
+
+///register documents available through fn:doc() in xquery
+bool Zorba_XQueryExecution::AddAvailableDocument(xqp_string docURI,
+																								Item_t docitem)
+{
+	///add to dynamic context
+	return false;
+}
+
+///register collections available through fn:collection() in xquery
+///default collection has empty URI ""
+bool Zorba_XQueryExecution::AddAvailableCollection(xqp_string collectionURI,
+																									Collection_t collection)
+{
+	///add to dynamic context
+	return false;
+}
+
 
 }///end namespace xqp

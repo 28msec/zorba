@@ -20,7 +20,7 @@ using namespace xqp;
 
 int apitest_alert_callback(Zorba_AlertMessage *alert_mess, 
 													 XQuery*	current_xquery,
-													 XQueryResult*	current_xqueryresult,
+													 XQueryExecution*	current_xqueryresult,
 													 void *param)
 {
 	if((alert_mess->alert_type != Zorba_AlertMessage::USER_ERROR_ALERT) &&
@@ -150,7 +150,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 	XQuery_t		query;
-	XQueryResult_t		result = NULL;
+	XQueryExecution_t		result = NULL;
 	Item_t		it;
 
 	//create a compiled query
@@ -162,7 +162,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 
-	result = query->execute();
+	result = query->createExecution();
 	if(!result.get_ptr())
 	{
 		goto DisplayErrorsAndExit;
@@ -181,12 +181,12 @@ int _tmain(int argc, _TCHAR* argv[])
   {
     if (lProp->useResultFile())
 	  {
-      result->serializeXML(*resultFile);
+      result->serialize(*resultFile);
       // endl should not be sent when serializing!
     }
     else
     {
-      result->serializeXML(std::cout);
+      result->serialize(std::cout);
     }
 	}
 	else

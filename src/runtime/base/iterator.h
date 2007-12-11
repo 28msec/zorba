@@ -80,6 +80,7 @@ class PlanIterVisitor;
 typedef rchandle<PlanIterator> PlanIter_t;
 
 class Zorba_XQueryBinary;
+class Zorba_XQueryExecution;
 
 extern int32_t iteratorTreeDepth;
 
@@ -98,7 +99,8 @@ public:
   // TODO what's that for?
   //daniel: it provides quick access to thread specific storage; one important thing there is the error manager
   zorba *zorp;
-  Zorba_XQueryBinary    *xqbinary;
+  Zorba_XQueryBinary    *xqbinary;//contains the static_context
+//	Zorba_XQueryExecution	*xqexecution;//contains the dynamic context
 
   PlanState(uint32_t blockSize);
   ~PlanState();

@@ -35,23 +35,42 @@
 
 namespace xqp {
 
-class itemstore;
+//class itemstore;
+class static_context;
 
-class dynamic_context : public context
+class dynamic_context// : public context
 {
-	/*daniel: this belongs to static context
-public:
-	typedef enum { ordered, unordered } ordering_mode_t;
-	*/
-
 protected:
-	//daniel: these serve as constant global keys
+	typedef union
+	{
+		Iterator		*var_iterator;
+	}dctx_value_t;
+protected:
 	static bool static_init;
 
+	dynamic_context	*parent;
+	fxhashmap<dctx_value_t> keymap;
+	time_t	execution_date_time;
+	int			implicit_timezone;
+
+//	static_context	*sctx;
+
+	xqp_string		default_collection_uri;//default URI for fn:collection()
+
+protected:
+  xqp_string qname_internal_key (QNameItem_t qname) const;
+  xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
+  xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
+
+  Iterator* lookup_var_iter (xqp_string key ) const;
+
+  void bind_var_iter (xqp_string key, Iterator *it);
 public:
 	static void init();
-	dynamic_context() {}
-	~dynamic_context() {}
+	dynamic_context(dynamic_context *parent=NULL);
+	~dynamic_context();
+
+  xqp_string expand_varname(static_context	*sctx, xqp_string qname) const;
 
 public:
 	// XQuery 1.0 dynamic context 
@@ -74,13 +93,20 @@ public:
 	void add_namespace(Item&);
   #endif
 
-	/*daniel: this belongs to static context
-	ordering_mode_t ordering_mode() const;
-	void set_ordering_mode(ordering_mode_t v);
-	*/
 
 //daniel: get the function directly from library object
 //	const function* get_function(qnamekey_t key) { return lib->get(key); }
+
+	void		set_execution_date_time(time_t t);
+	time_t	get_execution_date_time();
+	void		set_implicit_timezone(int tzone);
+	int			get_implicit_timezone();
+
+	void				add_variable(xqp_string varname, Iterator_t var_iterator);
+	Iterator_t	get_variable(xqp_string varname);
+
+	xqp_string get_default_collection();
+	void set_default_collection(xqp_string default_collection_uri);
 
 };
 

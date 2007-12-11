@@ -109,13 +109,13 @@ struct Zorba_FnTraceMessage: public Zorba_AlertMessage
 
 class XQuery;
 typedef rchandle<XQuery>		XQuery_t;
-class XQueryResult;
-typedef rchandle<XQueryResult>		XQueryResult_t;
+class XQueryExecution;
+typedef rchandle<XQueryExecution>		XQueryExecution_t;
 
 ///user might choose to receive the alerts through callback functions
 typedef int alert_callback(Zorba_AlertMessage *alert_mess, 
 													 XQuery*	current_xquery,
-													 XQueryResult*	current_xqueryresult,
+													 XQueryExecution*	current_xqueryresult,
 													 void *param);
 
 class Zorba_AlertsManager : public std::list<Zorba_AlertMessage*>

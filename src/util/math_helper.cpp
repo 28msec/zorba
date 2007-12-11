@@ -36,7 +36,7 @@ namespace xqp {
     double retval, nr, tmpVal, tmpFraction;
     double  fraction;
     
-    nr = arg * pow(10, -precision);
+    nr = arg * pow((float)10, -precision);
     fraction = modf(nr, &retval);
 
     if(fabs(fraction) == 0.5)
@@ -47,9 +47,9 @@ namespace xqp {
     }
     else
     {
-      nr = arg * pow(10, precision);
+      nr = arg * pow((float)10, precision);
       nr = round(nr);
-      retval = nr * pow(10, -precision);
+      retval = nr * pow((float)10, -precision);
     }
     return retval;
   }

@@ -6,55 +6,55 @@
 #define ZORBA_XQUERY_CPP_API_HEADER
 
 
-//#include "errors/errors.h"
 #include "store/api/item.h"
-//#include "store/api/store.h"
+#include "store/api/collection.h"
 #include "util/rchandle.h"
 #include "error_api.h"
 
 ///from ICU
-//#include <unicode/utypes.h>
 #include <unicode/coll.h>
-//#include <unicode/ustring.h>
 
 #include "types/typeident.h"
 
-//using namespace std;
-
-//?namespace xqp	///xqp is too general name for a namespace
-//?{
+#include <time.h>
 
 namespace xqp {
 
-///////////////////////////////Engine initialization ////////////////
 
-
-////////////////////////////////Error handling interface //////////////////
 typedef rchandle<Item> Item_t;
 
-class Store;
 
-
-
-
-
-///the user can define its function for comparing strings 
-///return -1, 0, 1 for less, equal, bigger
-typedef int user_collation(uint32_t codepoint1, uint32_t codepoint2);
-
-class XQueryResult : public rcobject
+class XQueryExecution : public Iterator
 {
 public:
-	virtual ~XQueryResult() {};
-	virtual Item_t		next() = 0;
+	virtual ~XQueryExecution() {};
+//	virtual Item_t		next() = 0;
+  virtual Item_t next() = 0;
+  virtual void reset() = 0;
+  virtual void close() = 0;
 	virtual void setAlertsParam(void *alert_callback_param) = 0;
+  virtual std::ostream& serialize( std::ostream& os ) = 0;
   virtual std::ostream& serializeXML( std::ostream& os ) = 0;
+  virtual std::ostream& serializeHTML( std::ostream& os ) = 0;
+  virtual std::ostream& serializeTEXT( std::ostream& os ) = 0;
 	virtual bool isError() = 0;
 
 	virtual void	AbortQueryExecution() = 0;
+
+	///extension from dynamic context (specific only for this execution)
+	virtual bool AddVariable( xqp_string varname, XQueryExecution_t item_iter ) = 0;
+
+	///register documents available through fn:doc() in xquery
+	virtual bool AddAvailableDocument(xqp_string docURI,
+																		Item_t docitem) = 0;
+	///register collections available through fn:collection() in xquery
+	///default collection has empty URI ""
+	virtual bool AddAvailableCollection(xqp_string collectionURI,
+																			Collection_t) = 0;
+
 };
 
-typedef rchandle<XQueryResult>		XQueryResult_t;
+typedef rchandle<XQueryExecution>		XQueryExecution_t;
 /*
 class CollationInfo : public rcobject
 {
@@ -187,24 +187,84 @@ typedef rchandle<StaticQueryContext>	StaticQueryContext_t;
 
 class DynamicQueryContext : public rcobject
 {
-	int			current_date_time;
+public:
+	typedef enum
+	{
+		//XS_DECIMAL,//derived from XS_ANY_ATOMIC_TYPE
+		XS_INTEGER,//derived from XS_DECIMAL
+		XS_NON_POSITIVE_INTEGER,//derived from XS_INTEGER
+		XS_NEGATIVE_INTEGER,//derived from XS_NON_POSITIVE_INTEGER
+		XS_LONG,//derived from XS_INTEGER
+		XS_INT,//derived from XS_LONG
+		XS_SHORT,//derived from XS_INT
+		XS_BYTE,//derived from XS_SHORT
+		XS_NON_NEGATIVE_INTEGER,//derived from XS_INTEGER
+		XS_UNSIGNED_LONG,//derived from XS_NON_NEGATIVE_INTEGER
+		XS_UNSIGNED_INT,//derived from XS_UNSIGNED_LONG
+		XS_UNSIGNED_SHORT,//derived from XS_UNSIGNED_INT
+		XS_UNSIGNED_BYTE,//derived from XS_UNSIGNED_SHORT
+		XS_POSITIVE_INTEGER//derived from XS_NON_NEGATIVE_INTEGER
+	}VAR_INT_TYPE;
+	typedef enum
+	{
+		XS_STRING,//derived from XS_ANY_ATOMIC_TYPE
+		XS_NORMALIZED_STRING,//derived from XS_STRING
+		XS_TOKEN,//derived from XS_NORMALIZED_STRING
+		XS_LANGUAGE,//derived from XS_TOKEN
+		XS_NMTOKEN,//derived from XS_TOKEN
+		XS_NAME,//derived from XS_TOKEN
+		XS_NCNAME,//derived from XS_NAME
+		XS_ID,//derived from XS_NCNAME
+		XS_IDREF,//derived from XS_NCNAME
+		XS_ENTITY,//derived from XS_NCNAME
+		XS_NOTATION,
+		XS_ANYURI,
+		XS_UNTYPED_ATOMIC
+	}VAR_STR_TYPE;
+	typedef enum
+	{
+		XS_DECIMAL,
+		XS_FLOAT,
+		XS_DOUBLE
+	}VAR_DOUBLE_TYPE;
+	typedef enum
+	{
+		XS_DATETIME,
+		XS_DATE,
+		XS_TIME,
+		XS_GYEAR_MONTH,
+		XS_GYEAR,
+		XS_GMONTH_DAY,
+		XS_GDAY,
+		XS_GMONTH,
+	}VAR_DATETIME_TYPE;
+public:
+	time_t	current_date_time;
 	int			implicit_timezone;
 
-	virtual ~DynamicQueryContext();
+	virtual ~DynamicQueryContext( ) {};
 
 	///following is the input data; this is not duplicable between executions
-	virtual bool SetVariable( QNameItem_t *varname, XQueryResult_t item_iter ) = 0;
-	virtual bool SetVariable( QNameItem_t *varname, Item_t &item ) = 0;
-	virtual bool DeleteVariable( QNameItem_t *varname ) = 0;
+//	virtual bool SetVariable( QNameItem_t varname, XQueryExecution_t item_iter ) = 0;
+	virtual bool SetVariable( xqp_string varname, long long int_value, VAR_INT_TYPE type = XS_INTEGER) = 0;
+	virtual bool SetVariable( xqp_string varname, xqp_string str_value, VAR_STR_TYPE type = XS_STRING) = 0;
+	virtual bool SetVariable( xqp_string varname, long double double_value, VAR_DOUBLE_TYPE type = XS_DOUBLE) = 0;
+	virtual bool SetVariable( xqp_string varname, bool bool_value) = 0;
+	virtual bool SetVariable( xqp_string varname, struct tm datetime_value, VAR_DATETIME_TYPE type = XS_DATETIME) = 0;
+
+	virtual bool DeleteVariable( xqp_string varname ) = 0;
+	virtual void DeleteAllVariables( ) = 0;
 
 
 	///register documents available through fn:doc() in xquery
-	virtual bool RegisterAvailableDocument(xqp_string docURI,
-																			xqp_string store_docURI) = 0;
+//	virtual bool RegisterAvailableDocument(xqp_string docURI,
+//																			xqp_string store_docURI) = 0;
 	///register collections available through fn:collection() in xquery
 	///default collection has empty URI ""
-	virtual bool RegisterAvailableCollection(xqp_string collectionURI,
-																			xqp_string store_collectionURI) = 0;
+//	virtual bool RegisterAvailableCollection(xqp_string collectionURI,
+//																			xqp_string store_collectionURI) = 0;
+
+	virtual void SetDefaultCollection( xqp_string collectionURI ) = 0;
 };
 
 typedef rchandle<DynamicQueryContext>	DynamicQueryContext_t;
@@ -219,25 +279,11 @@ public:
 
 public:
 
-
-    // StaticQueryContext is optional
-		//daniel: return true for success
-		// Matthias: how to return errors? daniel: using the error manager
-    // routing_mode: should documents in a collection be filtered or queried completely
-    //         if filtered, the result will be a sequences of URI, one for each qualifying documents
-    //virtual bool compile(StaticQueryContext* = 0, bool routing_mode = false) = 0;
-
     // execute the query 
 		//daniel: return NULL for error
 		// Matthias: again, how tu return errors? daniel: using the error manager
     // the DynamicQueryContext does not need to be passed, a default one can always be used
-		//alert_callback_param is the param to be passed to the error callback function when executing next()
-    virtual XQueryResult_t execute( DynamicQueryContext_t = 0) = 0;
-
-    //virtual bool isCompiled() = 0;
-
-    // clone the query (can be compiled or not compiled)
-   // QueryPtr clone();
+    virtual XQueryExecution_t createExecution( DynamicQueryContext_t = 0) = 0;
 
 		//daniel: isn't the Query more suitable to serialize itself?
     virtual bool   serializeQuery(std::ostream &os) = 0;
@@ -251,20 +297,7 @@ public:
 		virtual StaticQueryContext_t getInternalStaticContext() = 0;
  //   DynamicQueryContextPtr getInternalDynamicContext();
 
-		//daniel: get the variables out of the dynamic context class
-		// Matthias: get the dynamiccontext from the query and set the variables there
-		//           adhere to the XQuery processing model and don't deviate from it
-		//daniel: one dynamic context object can be used in many Queries; a variable is specific to only one Query
-		//				that is because an ItemIterator keeps an internal state and can be used in a single thread
-//		bool		SetVariable( Zorba_QName varname, ItemIterator &item_iter );
-//		bool		SetVariable( Zorba_QName varname, Item_t &item );
-//		bool		DeleteVariable( Zorba_QName varname );
-
 public:
-	///error manager holds the list of errors for this Query
-	///you can set a callback function into the error manager
-	///when executing the Query returns false, you can get the list of errors from the error manager
-//	Zorba_AlertsManager*		getAlertsManager();
 
 	//register a callback specific to this xquery object
 	//	virtual void RegisterAlertCallback(alert_callback	*user_alert_callback,
@@ -272,8 +305,6 @@ public:
 };    
 
 typedef rchandle<XQuery>	XQuery_t;
-
-//class ZorbaFactory;
 
 class ZorbaFactory
 {
@@ -287,8 +318,6 @@ public:
 
 	void InitThread(
         error_messages* em = NULL);
-        //const char *collator_name = "root",
-        //::Collator::ECollationStrength collator_strength = ::Collator::PRIMARY);
 
 	void UninitThread();
 
@@ -304,7 +333,12 @@ public:
 	void		setDefaultCollation(::Collator *default_coll);
 	void		getDefaultCollation(std::string  *coll_string, ::Collator::ECollationStrength *coll_strength, ::Collator **default_coll);
 
+	void		setItemSerializerParameter(xqp_string parameter_name, xqp_string value);
+	void		setDocSerializerParameter(xqp_string parameter_name, xqp_string value);
+
+
 	StaticQueryContext_t createStaticContext();
+	DynamicQueryContext_t createDynamicContext();
 
 };
 
