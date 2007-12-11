@@ -18,6 +18,9 @@ cd "$d"
 echo Unzipping test suite...
 unzip $ZIP &>/dev/null
 
+echo Cleaning up previous data...
+rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite
+
 echo Moving queries to Zorba repo...
 mv Queries/XQuery $SRC/test/rbkt/Queries/w3c_testsuite
 
