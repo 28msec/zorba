@@ -1212,6 +1212,9 @@ ostream& doc_expr::put( ostream& os) const
 void doc_expr::accept(
 	expr_visitor& v)
 {
+  if (!v.begin_visit(*this)) return;
+  docuri_h->accept(v);
+  v.end_visit(*this);
 }
 
 
