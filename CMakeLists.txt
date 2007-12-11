@@ -3,7 +3,7 @@
 #
 PROJECT(zorba)
 ENABLE_TESTING()
-
+INCLUDE(CTest)
 
 # Uncomment the next line to output make commands
 # SET(CMAKE_VERBOSE_MAKEFILE ON)
