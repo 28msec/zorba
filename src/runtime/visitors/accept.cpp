@@ -104,13 +104,13 @@ namespace xqp {
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
   BINARY_ACCEPT(StringJoinIterator);
-  BINARY_ACCEPT(NormalizeUnicodeIterator);
   BINARY_ACCEPT(LogicIterator);
   BINARY_ACCEPT(CompareIterator);
   BINARY_ACCEPT(FnIndexOfIterator);
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
   
   // nary iterators
+  NARY_ACCEPT(NormalizeUnicodeIterator);
   NARY_ACCEPT(CompareStrIterator);
   NARY_ACCEPT(ConcatStrIterator);
   NARY_ACCEPT(SubstringIterator);

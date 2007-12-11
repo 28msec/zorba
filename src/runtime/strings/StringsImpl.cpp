@@ -551,7 +551,7 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
 
-  item0 = consumeNext (theChild0, planState );
+  item0 = consumeNext (theChildren[0], planState );
   if(item0 == NULL)
   {
     item0 = item0->getAtomizationValue();
@@ -559,11 +559,14 @@ NormalizeUnicodeIterator::nextImpl(PlanState& planState)
   }
   else
   {//item0 != NULL
-    item1 = consumeNext(theChild1, planState );
-    if(item1 != NULL)
+    if(theChildren.size() == 2)
     {
-      item1 = item1->getAtomizationValue();
-      tempStr = item1->getStringValue().uppercase();
+      item1 = consumeNext(theChildren[1], planState );
+      if(item1 != NULL)
+      {
+        item1 = item1->getAtomizationValue();
+        tempStr = item1->getStringValue().uppercase();
+      }
     }
     res = item0->getStringValue().normalize(tempStr);
   }

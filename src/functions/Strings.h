@@ -60,11 +60,11 @@ public:
 /*
  * 7.3.2 fn:compare
  *-----------------------*/
-class fn_string_compare: public function
+class fn_string_compare_2: public function
 {
   public:
-    fn_string_compare(const signature&);
-    ~fn_string_compare() {}
+    fn_string_compare_2(const signature&);
+    ~fn_string_compare_2() {}
 
   public:
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -72,6 +72,17 @@ class fn_string_compare: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_string_compare_3: public function
+{
+  public:
+    fn_string_compare_3(const signature&);
+    ~fn_string_compare_3() {}
+
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 /*
  * 7.3.3 fn:codepoint-equal
  *-----------------------*/
@@ -125,11 +136,11 @@ class fn_string_join: public function
 /*
  * 7.4.3 fn:substring
  *-----------------------*/
-class fn_substring: public function
+class fn_substring_2: public function
 {
   public:
-    fn_substring(const signature&);
-    ~fn_substring() {}
+    fn_substring_2(const signature&);
+    ~fn_substring_2() {}
 
   public:
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -137,6 +148,17 @@ class fn_substring: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_substring_3: public function
+{
+  public:
+    fn_substring_3(const signature&);
+    ~fn_substring_3() {}
+
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 /*
  * 7.4.4 fn:string-length
  * --------------------*/
@@ -157,31 +179,42 @@ class fn_string_length: public function
  *-----------------------*/
 class fn_normalize_space: public function
 {
-public:
-  fn_normalize_space(const signature&);
-  ~fn_normalize_space() {}
-
-public:
-  PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-  TypeSystem::xqtref_t type_check(signature&) const;
-  bool validate_args(std::vector<PlanIter_t>&) const;
+  public:
+    fn_normalize_space(const signature&);
+    ~fn_normalize_space() {}
+  
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
 /*
  * 7.4.6 fn:normalize-unicode
  *-----------------------*/
-class fn_normalize_unicode: public function
+class fn_normalize_unicode_1: public function
 {
-public:
-  fn_normalize_unicode(const signature&);
-  ~fn_normalize_unicode() {}
-
-public:
-  PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
-  TypeSystem::xqtref_t type_check(signature&) const;
-  bool validate_args(std::vector<PlanIter_t>&) const;
+  public:
+    fn_normalize_unicode_1(const signature&);
+    ~fn_normalize_unicode_1() {}
+  
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_normalize_unicode_2: public function
+{
+  public:
+    fn_normalize_unicode_2(const signature&);
+    ~fn_normalize_unicode_2() {}
+  
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 /*
  * 7.4.7 fn:upper-case
  *-----------------------*/
@@ -280,11 +313,11 @@ public:
 /*
  * 7.5.1 fn:contains
  *-----------------------*/
-class fn_contains: public function
+class fn_contains_2: public function
 {
   public:
-    fn_contains(const signature&);
-    ~fn_contains() {}
+    fn_contains_2(const signature&);
+    ~fn_contains_2() {}
 
   public:
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -292,14 +325,25 @@ class fn_contains: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_contains_3: public function
+{
+  public:
+    fn_contains_3(const signature&);
+    ~fn_contains_3() {}
+
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 /*
  * 7.5.2 fn:starts-with
  *-----------------------*/
-class fn_starts_with: public function
+class fn_starts_with_2: public function
 {
   public:
-    fn_starts_with(const signature&);
-    ~fn_starts_with() {}
+    fn_starts_with_2(const signature&);
+    ~fn_starts_with_2() {}
 
   public:
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -307,14 +351,25 @@ class fn_starts_with: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_starts_with_3: public function
+{
+  public:
+    fn_starts_with_3(const signature&);
+    ~fn_starts_with_3() {}
+
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 /*
  * 7.5.3 fn:ends-with
  *-----------------------*/
-class fn_ends_with: public function
+class fn_ends_with_2: public function
 {
   public:
-    fn_ends_with(const signature&);
-    ~fn_ends_with() {}
+    fn_ends_with_2(const signature&);
+    ~fn_ends_with_2() {}
 
   public:
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -322,14 +377,25 @@ class fn_ends_with: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_ends_with_3: public function
+{
+  public:
+    fn_ends_with_3(const signature&);
+    ~fn_ends_with_3() {}
+
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 /*
  * 7.5.4 fn:substring-before
  *-----------------------*/
-class fn_substring_before: public function
+class fn_substring_before_2: public function
 {
   public:
-    fn_substring_before(const signature&);
-    ~fn_substring_before() {}
+    fn_substring_before_2(const signature&);
+    ~fn_substring_before_2() {}
 
   public:
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -337,14 +403,25 @@ class fn_substring_before: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_substring_before_3: public function
+{
+  public:
+    fn_substring_before_3(const signature&);
+    ~fn_substring_before_3() {}
+
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 /*
  * 7.5.5 fn:substring-after
  *-----------------------*/
-class fn_substring_after: public function
+class fn_substring_after_2: public function
 {
   public:
-    fn_substring_after(const signature&);
-    ~fn_substring_after() {}
+    fn_substring_after_2(const signature&);
+    ~fn_substring_after_2() {}
 
   public:
     PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
@@ -352,5 +429,16 @@ class fn_substring_after: public function
     bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+class fn_substring_after_3: public function
+{
+  public:
+    fn_substring_after_3(const signature&);
+    ~fn_substring_after_3() {}
+
+  public:
+    PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+    TypeSystem::xqtref_t type_check(signature&) const;
+    bool validate_args(std::vector<PlanIter_t>&) const;
+};
 } /* namespace xqp */
 #endif /* XQP_STRINGS_H */

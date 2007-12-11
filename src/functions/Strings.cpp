@@ -40,7 +40,7 @@ TypeSystem::xqtref_t
 fn_codepoints_to_string::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+  return GENV_TYPESYSTEM.INTEGER_TYPE_STAR;
 }
 
 bool
@@ -89,7 +89,7 @@ fn_string_to_codepoints::validate_args(
  * 7.3.2 fn:compare
  * --------------------*/
 /*begin class fn_string_compare*/
-fn_string_compare::fn_string_compare(
+fn_string_compare_2::fn_string_compare_2(
   const signature& sig)
 :
   function(sig)
@@ -97,7 +97,7 @@ fn_string_compare::fn_string_compare(
 }
 
 PlanIter_t
-fn_string_compare::operator()(
+fn_string_compare_2::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
@@ -105,17 +105,46 @@ fn_string_compare::operator()(
 }
 
 TypeSystem::xqtref_t
-fn_string_compare::type_check(
+fn_string_compare_2::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.INTEGER_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_string_compare::validate_args(
+fn_string_compare_2::validate_args(
   vector<PlanIter_t>& argv) const
 {
-  return ((argv.size() == 2) || (argv.size() == 3));
+  return (argv.size() == 2);
+}
+
+fn_string_compare_3::fn_string_compare_3(
+    const signature& sig)
+  :
+    function(sig)
+{
+}
+
+PlanIter_t
+fn_string_compare_3::operator()(
+    const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new CompareStrIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_string_compare_3::type_check(
+    signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_string_compare_3::validate_args(
+    vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 3);
 }
 /*end class fn_string_compare*/
 
@@ -142,7 +171,7 @@ TypeSystem::xqtref_t
 fn_codepoint_equal::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -176,8 +205,6 @@ bool
 fn_concat::validate_args(
   vector<PlanIter_t>& argv) const
 {
-  //TODO check if the types ogf the iterators are xs:anyAtomicType something like
-  //if((_argv[0]->getType() & NODE_MASK) == NOT_NODE)
   return true;
 }
 
@@ -212,14 +239,14 @@ TypeSystem::xqtref_t
 fn_string_join::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_STAR;
 }
 
 bool
 fn_string_join::validate_args(
   vector<PlanIter_t>& argv) const
 {
-  return (argv.size() == 1 || argv.size() == 2);
+  return (/*argv.size() == 1 || */argv.size() == 2);
 }
 /*end class fn_string_join*/
 
@@ -227,7 +254,7 @@ fn_string_join::validate_args(
  * 7.4.3 fn:substring
  * --------------------*/
 /*begin class fn_substring*/
-fn_substring::fn_substring(
+fn_substring_2::fn_substring_2(
   const signature& sig)
 :
   function(sig)
@@ -235,7 +262,7 @@ fn_substring::fn_substring(
 }
 
 PlanIter_t
-fn_substring::operator()(
+fn_substring_2::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
@@ -243,17 +270,46 @@ fn_substring::operator()(
 }
 
 TypeSystem::xqtref_t
-fn_substring::type_check(
+fn_substring_2::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_substring::validate_args(
+fn_substring_2::validate_args(
   vector<PlanIter_t>& argv) const
 {
-  return (argv.size()==2 || argv.size()==3);
+  return (argv.size()==2);
+}
+
+fn_substring_3::fn_substring_3(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_substring_3::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new SubstringIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_substring_3::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_substring_3::validate_args(
+  vector<PlanIter_t>& argv) const
+{
+  return (argv.size()==3);
 }
 /*end class fn_substring*/
 
@@ -280,7 +336,7 @@ TypeSystem::xqtref_t
 fn_string_length::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -314,7 +370,7 @@ TypeSystem::xqtref_t
 fn_normalize_space::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -329,7 +385,7 @@ fn_normalize_space::validate_args(
  * 7.4.6 fn:normalize-unicode
  * --------------------*/
 /*begin class fn_normalize_unicode*/
-fn_normalize_unicode::fn_normalize_unicode(
+fn_normalize_unicode_1::fn_normalize_unicode_1(
   const signature& sig)
 :
   function(sig)
@@ -337,25 +393,54 @@ fn_normalize_unicode::fn_normalize_unicode(
 }
 
 PlanIter_t
-fn_normalize_unicode::operator()(
+fn_normalize_unicode_1::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
-  return new NormalizeUnicodeIterator(loc, argv[0], argv[1]);
+  return new NormalizeUnicodeIterator(loc, argv);
 }
 
 TypeSystem::xqtref_t
-fn_normalize_unicode::type_check(
+fn_normalize_unicode_1::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_normalize_unicode::validate_args(
+fn_normalize_unicode_1::validate_args(
   vector<PlanIter_t>& argv) const
 {
-  return ((argv.size()==1) || (argv.size()==2));
+  return (argv.size()==1);
+}
+
+fn_normalize_unicode_2::fn_normalize_unicode_2(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_normalize_unicode_2::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new NormalizeUnicodeIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_normalize_unicode_2::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_normalize_unicode_2::validate_args(
+  vector<PlanIter_t>& argv) const
+{
+  return (argv.size()==2);
 }
 /*end class fn_normalize_unicode*/
 
@@ -383,7 +468,7 @@ TypeSystem::xqtref_t
 fn_upper_case::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -418,7 +503,7 @@ TypeSystem::xqtref_t
 fn_lower_case::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -453,7 +538,7 @@ TypeSystem::xqtref_t
 fn_translate::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -487,7 +572,7 @@ TypeSystem::xqtref_t
 fn_encode_for_uri::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -521,7 +606,7 @@ TypeSystem::xqtref_t
 fn_iri_to_uri::type_check(
 signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -555,7 +640,7 @@ TypeSystem::xqtref_t
 fn_escape_html_uri::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
@@ -571,7 +656,7 @@ fn_escape_html_uri::validate_args(
  * 7.5.1 fn:contains
  * --------------------*/
 /*begin class fn_contains*/
-fn_contains::fn_contains(
+fn_contains_2::fn_contains_2(
   const signature& sig)
 :
   function(sig)
@@ -579,7 +664,7 @@ fn_contains::fn_contains(
 }
 
 PlanIter_t
-fn_contains::operator()(
+fn_contains_2::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
@@ -587,17 +672,46 @@ fn_contains::operator()(
 }
 
 TypeSystem::xqtref_t
-fn_contains::type_check(
+fn_contains_2::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_contains::validate_args(
+fn_contains_2::validate_args(
   vector<PlanIter_t>& argv) const
 {
-    return (argv.size() == 2 || argv.size() == 3);
+    return (argv.size() == 2);
+}
+
+fn_contains_3::fn_contains_3(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_contains_3::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new ContainsIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_contains_3::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_contains_3::validate_args(
+  vector<PlanIter_t>& argv) const
+{
+    return (argv.size() == 3);
 }
 /*end class fn_contains*/
 
@@ -605,7 +719,7 @@ fn_contains::validate_args(
  * 7.5.2 fn:starts-with
  * --------------------*/
 /*begin class fn_starts_with*/
-fn_starts_with::fn_starts_with(
+fn_starts_with_2::fn_starts_with_2(
   const signature& sig)
 :
   function(sig)
@@ -613,7 +727,7 @@ fn_starts_with::fn_starts_with(
 }
 
 PlanIter_t
-fn_starts_with::operator()(
+fn_starts_with_2::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
@@ -621,17 +735,46 @@ fn_starts_with::operator()(
 }
 
 TypeSystem::xqtref_t
-fn_starts_with::type_check(
+fn_starts_with_2::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_starts_with::validate_args(
+fn_starts_with_2::validate_args(
   vector<PlanIter_t>& argv) const
 {
-    return (argv.size() == 2 || argv.size() == 3);
+    return (argv.size() == 2);
+}
+
+fn_starts_with_3::fn_starts_with_3(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_starts_with_3::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new StartsWithIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_starts_with_3::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_starts_with_3::validate_args(
+  vector<PlanIter_t>& argv) const
+{
+    return (argv.size() == 3);
 }
 /*end class fn_starts_with*/
 
@@ -639,7 +782,7 @@ fn_starts_with::validate_args(
  * 7.5.3 fn:ends-with
  * --------------------*/
 /*begin class fn_ends_with*/
-fn_ends_with::fn_ends_with(
+fn_ends_with_2::fn_ends_with_2(
   const signature& sig)
 :
   function(sig)
@@ -647,7 +790,7 @@ fn_ends_with::fn_ends_with(
 }
 
 PlanIter_t
-fn_ends_with::operator()(
+fn_ends_with_2::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
@@ -655,17 +798,46 @@ fn_ends_with::operator()(
 }
 
 TypeSystem::xqtref_t
-fn_ends_with::type_check(
+fn_ends_with_2::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_ends_with::validate_args(
+fn_ends_with_2::validate_args(
   vector<PlanIter_t>& argv) const
 {
-    return (argv.size() == 2 || argv.size() == 3);
+    return (argv.size() == 2);
+}
+
+fn_ends_with_3::fn_ends_with_3(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_ends_with_3::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new EndsWithIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_ends_with_3::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_ends_with_3::validate_args(
+  vector<PlanIter_t>& argv) const
+{
+    return (argv.size() == 3);
 }
 /*end class fn_ends_with*/
 
@@ -673,7 +845,7 @@ fn_ends_with::validate_args(
  * 7.5.4 fn:substring-before
  * --------------------*/
 /*begin class fn_substring_before*/
-fn_substring_before::fn_substring_before(
+fn_substring_before_2::fn_substring_before_2(
   const signature& sig)
 :
   function(sig)
@@ -681,7 +853,7 @@ fn_substring_before::fn_substring_before(
 }
 
 PlanIter_t
-fn_substring_before::operator()(
+fn_substring_before_2::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
@@ -689,25 +861,20 @@ fn_substring_before::operator()(
 }
 
 TypeSystem::xqtref_t
-fn_substring_before::type_check(
+fn_substring_before_2::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_substring_before::validate_args(
+fn_substring_before_2::validate_args(
   vector<PlanIter_t>& argv) const
 {
-  return (argv.size() == 2 || argv.size() == 3);
+  return (argv.size() == 2);
 }
-/*end class fn_substring_before*/
 
-/*
- * 7.5.5 fn:substring-after
- * --------------------*/
-/*begin class fn_substring_after*/
-fn_substring_after::fn_substring_after(
+fn_substring_before_3::fn_substring_before_3(
   const signature& sig)
 :
   function(sig)
@@ -715,7 +882,41 @@ fn_substring_after::fn_substring_after(
 }
 
 PlanIter_t
-fn_substring_after::operator()(
+fn_substring_before_3::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new SubstringBeforeIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_substring_before_3::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_substring_before_3::validate_args(
+  vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 3);
+}
+/*end class fn_substring_before*/
+
+/*
+ * 7.5.5 fn:substring-after
+ * --------------------*/
+/*begin class fn_substring_after*/
+fn_substring_after_2::fn_substring_after_2(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_substring_after_2::operator()(
   const yy::location& loc,
   vector<PlanIter_t>& argv) const
 {
@@ -723,17 +924,46 @@ fn_substring_after::operator()(
 }
 
 TypeSystem::xqtref_t
-fn_substring_after::type_check(
+fn_substring_after_2::type_check(
   signature& sig) const
 {
-  return GENV_TYPESYSTEM.STRING_TYPE_ONE;
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
 }
 
 bool
-fn_substring_after::validate_args(
+fn_substring_after_2::validate_args(
   vector<PlanIter_t>& argv) const
 {
-  return (argv.size() == 2 || argv.size() == 3);
+  return (argv.size() == 2);
+}
+
+fn_substring_after_3::fn_substring_after_3(
+  const signature& sig)
+:
+  function(sig)
+{
+}
+
+PlanIter_t
+fn_substring_after_3::operator()(
+  const yy::location& loc,
+  vector<PlanIter_t>& argv) const
+{
+  return new SubstringAfterIterator(loc, argv);
+}
+
+TypeSystem::xqtref_t
+fn_substring_after_3::type_check(
+  signature& sig) const
+{
+  return GENV_TYPESYSTEM.STRING_TYPE_QUESTION;
+}
+
+bool
+fn_substring_after_3::validate_args(
+  vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 3);
 }
 /*end class fn_substring_after*/
 }/*namespace xqp*/

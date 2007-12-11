@@ -231,11 +231,11 @@ public:
  * 7.4.6 fn:normalize-unicode
  * --------------------*/
 /*begin class NormalizeUnicodeIterator*/
-class NormalizeUnicodeIterator : public BinaryBaseIterator<NormalizeUnicodeIterator>{
+class NormalizeUnicodeIterator : public NaryBaseIterator<NormalizeUnicodeIterator>{
 public:
-  NormalizeUnicodeIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  NormalizeUnicodeIterator( const yy::location loc,  std::vector<PlanIter_t>& args )
   :
-  BinaryBaseIterator<NormalizeUnicodeIterator>(loc, arg0, arg1){}
+  NaryBaseIterator<NormalizeUnicodeIterator>(loc, args){}
 
   ~NormalizeUnicodeIterator() {};
 public:
