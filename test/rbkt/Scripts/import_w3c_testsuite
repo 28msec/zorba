@@ -1,10 +1,13 @@
 #!/bin/bash
 
-if test $# != 2; then
-    echo Arguments: ZorbaRepo XQTS.zip; exit 1
+if test $# != 1; then
+    echo Arguments: ZorbaRepo; exit 1
 fi
+
 SRC=$1
-ZIP=$2
+ZIP=/tmp/XQTS_1_0_2.zip
+echo Downloading test suite to zip $ZIP ...
+wget -c -O $ZIP http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip
 
 d0=`pwd`
 
