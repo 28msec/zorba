@@ -79,7 +79,7 @@ string errors_english::err_decode(enum errcode e)
 	case XQST0033_STATIC_DUPLICATE_NAMESPACE_PREFIX:
 		return "XQST0033 Module contains multiple bindings for the same namespace prefix";
 	case XQST0034_STATIC_DUPLICATE_FUNCTIONS:
-		return "XQST0034 Duplicate function: \s";
+		return "XQST0034 Duplicate function: /s";
 	case XQST0035_STATIC_DUPLICATE_SCHEMAS:
 		return "XQST0035 Two imported schema components both define the same name in the same symbol space and in the same scope";
 	case XQST0036_STATIC_MISSSING_IMPORTED_SCHEMA_TYPES:
