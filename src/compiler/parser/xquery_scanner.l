@@ -278,14 +278,14 @@ typedef yy::xquery_parser::token token;
 }
 
 "attribute"{SP}{QName}{S}"{" {
-	yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-10);
+	yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-11, true, true);
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::ATTRIBUTE_QNAME_LBRACE;
 }
 
 "element"{SP}{QName}{S}"{" {
-	yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-8);
+	yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-9, true, true);
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::ELEMENT_QNAME_LBRACE;
