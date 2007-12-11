@@ -1317,6 +1317,19 @@ void *ParseNodePrintXMLVisitor::begin_visit(const WhereClause &n)
 }
 
 
+void *ParseNodePrintXMLVisitor::begin_visit(const QName &n)
+{
+  INDENT;
+    
+  os << "<QName position='" << n.get_location() << "'";
+
+  os << ">";
+    
+  INDENT_INC;
+  NL;
+  return no_state;
+}
+
 
 void *ParseNodePrintXMLVisitor::begin_visit(const Wildcard &n)
 {
@@ -3686,6 +3699,16 @@ void ParseNodePrintXMLVisitor::end_visit(const Wildcard &n, void *visit_state)
     NL;
 }
 
+
+
+void ParseNodePrintXMLVisitor::end_visit(const QName &n, void *visit_state)
+{
+  INDENT_DEC;
+    
+  INDENT;
+  os << "</QName>";
+  NL;
+}
 
 
 

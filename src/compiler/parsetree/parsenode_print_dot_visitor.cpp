@@ -1076,6 +1076,18 @@ void *ParseNodePrintDOTVisitor::begin_visit(const Wildcard &n)
 
 
 
+void *ParseNodePrintDOTVisitor::begin_visit(const QName &n)
+{
+  os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+      << "label=\"QName\\n[" 
+      << n.get_location() << "]" << "\"]" << std::endl;
+
+  NL;
+  return no_state;
+}
+
+
+
 
 void *ParseNodePrintDOTVisitor::begin_visit(const exprnode &n)
 {
@@ -2756,6 +2768,9 @@ void ParseNodePrintDOTVisitor::end_visit(const Wildcard &n, void *visit_state)
 }
 
 
+void ParseNodePrintDOTVisitor::end_visit(const QName &n, void *visit_state)
+{
+}
 
 
 void ParseNodePrintDOTVisitor::end_visit(const exprnode &n, void *visit_state)

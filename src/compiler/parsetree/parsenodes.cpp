@@ -4808,7 +4808,10 @@ ostream& CompElemConstructor::put(ostream& s) const
 void CompElemConstructor::accept(parsenode_visitor& v) const 
 { 
 	BEGIN_VISITOR ();
-	//qname_h->accept(v);
+  if (qname_h != 0)
+    qname_h->accept(v);
+  if (qname_expr_h != 0)
+    qname_expr_h->accept(v);
 	content_expr_h->accept(v);
 	END_VISITOR ();
 }
@@ -4852,7 +4855,10 @@ ostream& CompAttrConstructor::put(ostream& s) const
 void CompAttrConstructor::accept(parsenode_visitor& v) const 
 { 
 	BEGIN_VISITOR ();
-	//qname_h->accept(v);
+  if (qname_h != 0)
+	  qname_h->accept(v);
+  if (qname_expr_h != 0)
+    qname_expr_h->accept(v);
 	val_expr_h->accept(v);
 	END_VISITOR ();
 }

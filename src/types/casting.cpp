@@ -47,7 +47,7 @@ namespace xqp
   {
     Item_t result;
     TypeSystem::xqtref_t itemType = GENV_TYPESYSTEM.create_type ( item->getType(), TypeSystem::QUANT_ONE );
-    ItemFactory* itemFactory = zorba::getItemFactory();
+    ItemFactory* lItemFactory = zorba::getItemFactory();
 
     if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *aTargetType ) )
     {
@@ -92,12 +92,12 @@ namespace xqp
             );
           }
         }
-        result = itemFactory->createDouble ( doubleVal );
+        result = lItemFactory->createDouble ( doubleVal );
         break;
       case TypeSystem::XS_FLOAT:
         if ( GENV_TYPESYSTEM.is_subtype ( *itemType, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE ) )
         {
-          result = itemFactory->createFloat ( static_cast<float> ( item->getDecimalValue() ) );
+          result = lItemFactory->createFloat ( static_cast<float> ( item->getDecimalValue() ) );
         }
         else
         {
@@ -111,7 +111,7 @@ namespace xqp
         }
         break;
       case TypeSystem::XS_STRING:
-        result = itemFactory->createString ( item->getStringProperty() );
+        result = lItemFactory->createString ( item->getStringProperty() );
         break;
       default:
         ZorbaErrorAlerts::error_alert (

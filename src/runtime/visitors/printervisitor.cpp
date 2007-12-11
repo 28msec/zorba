@@ -68,7 +68,6 @@ namespace xqp {
        
   void PrinterVisitor::beginVisit ( const ElementIterator& a) {
     thePrinter.startIter("ElementIterator");
-    thePrinter.addAttribute("qname",a.getQName()->show());
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const ElementIterator& a ) {

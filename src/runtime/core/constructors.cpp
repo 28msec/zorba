@@ -20,31 +20,26 @@ namespace xqp
 ********************************************************************************/
 ElementIterator::ElementIterator (
     const yy::location& loc,
-    const QNameItem_t& qname,
-    PlanIter_t& children,
-    PlanIter_t& attributes,
-    bool assignId)
-  :
-  Batcher<ElementIterator>(loc),
-  theQName(qname),
-  theQNameIter(0),
-  theChildrenIter(children),
-  theAttributesIter(attributes),
-  theAssignId(assignId)
+    PlanIter_t& aQNameIter,
+    PlanIter_t& aAttrs,
+    PlanIter_t& aChildren )
+    :
+    Batcher<ElementIterator> ( loc ),
+    theQNameIter ( aQNameIter ),
+    theAttributesIter ( aAttrs ),
+    theChildrenIter ( aChildren )
 {
 }
 
-ElementIterator::ElementIterator(
+ElementIterator::ElementIterator (
     const yy::location& loc,
-    PlanIter_t aQNameIter,
-    PlanIter_t aChildren,
-    bool assignId)
-  :
-    Batcher<ElementIterator>(loc),
-    theQNameIter(aQNameIter),
-    theChildrenIter(aChildren),
-    theAttributesIter(0),
-    theAssignId(assignId)
+    PlanIter_t& aQNameIter,
+    PlanIter_t& aChildren )
+    :
+    Batcher<ElementIterator> ( loc ),
+    theQNameIter ( aQNameIter ),
+    theAttributesIter ( 0 ),
+    theChildrenIter ( aChildren )
 {
 }
 
@@ -61,9 +56,17 @@ ElementIterator::nextImpl(PlanState& planState)
   Iterator_t cwrapper;
   Iterator_t awrapper;
   Iterator_t nwrapper;
-
+  Item_t lItem;
+  QNameItem_t lQName;
+  
+  
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  
+  lItem = consumeNext(theQNameIter, planState);
+  // TODO typecheck and possible parsing 
+  // (dynamic context must be possible to provide the prefix namespace mapping)
+  lQName = (QNameItem*)&*lItem;
     
   if (theChildrenIter != NULL)
   {
@@ -84,15 +87,14 @@ ElementIterator::nextImpl(PlanState& planState)
   }
 
   item = zorba::getItemFactory()->createElementNode(
-               theQName,
+               lQName,
                GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
                seqChildren,
                seqAttributes,
                seqNamespaces,
                theNsBindings,
                false,
-               false,
-               theAssignId);
+               false);
 
   STACK_PUSH(item, state);
     
@@ -196,11 +198,28 @@ ElementContentIterator::nextImpl(PlanState& planState)
 {
   ElementContentState* state;
   DEFAULT_STACK_INIT(ElementContentState, state, planState);
-
+  
   while (true)
   {
     state->theContextItem = this->consumeNext(theChild, planState );
-    if (state->theContextItem == NULL)
+    
+    // Check to find out if the content contains an attribute child which is located after a non attribute child
+    if (state->theContextItem != 0 
+        && state->theContextItem->isNode() 
+        && (state->theContextItem->getNodeKind() == StoreConsts::attributeNode)) {
+      if (state->theNoAttrAllowed) {
+        ZorbaErrorAlerts::error_alert (
+          error_messages::XQTY0024_TYPE_ATTRIBUTE_NODE_OUT_OF_ORDER,
+          error_messages::RUNTIME_ERROR,
+          false,
+          "Content sequence of element contains an attribute node following a node that is not an attribute node!"
+        );
+      }
+    } else {
+      state->theNoAttrAllowed = true;
+    }
+    
+    if (state->theContextItem == 0)
     {
       if (state->theString != "")
       {
@@ -250,21 +269,12 @@ ElementContentIterator::releaseResourcesImpl(PlanState& planState)
   state->theString.clear();
 }
 
-
-void ElementContentIterator::setOffset(
-    PlanState& planState,
-    uint32_t& offset)
-{
-  UnaryBaseIterator<ElementContentIterator>::setOffset(planState, offset);
-
-  ElementContentState* state = new (planState.block + stateOffset) ElementContentState;
-}
-
-
 void ElementContentIterator::ElementContentState::init()
 {
   PlanIterator::PlanIteratorState::init();
+  theContextItem = 0;
   theString = "";
+  theNoAttrAllowed = false;
 }
 
 
@@ -273,11 +283,12 @@ void ElementContentIterator::ElementContentState::init()
 ********************************************************************************/
 AttributeIterator::AttributeIterator(
     const yy::location& loc,
-    const QNameItem_t& qname,
-    PlanIter_t& value)
+    PlanIter_t& aQNameIter,
+    PlanIter_t& aValueIter)
   :
-  UnaryBaseIterator<AttributeIterator>( loc, value ),
-  theQName(qname)
+    Batcher<AttributeIterator>( loc ),
+    theQNameIter(aQNameIter),
+    theChild(aValueIter)
 {
 }
 
@@ -290,11 +301,17 @@ AttributeIterator::nextImpl(PlanState& planState)
   Item_t itemFirst;
   Item_t itemLexical;
   Item_t itemTyped;
+  QNameItem_t lQName;
   xqp_string lexicalString;
   bool concatenation = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  
+  itemCur = consumeNext(theQNameIter, planState);
+  // TODO typecheck and possible parsing 
+  // (dynamic context must be possible to provide the prefix namespace mapping)
+  lQName = (QNameItem*)&*itemCur;
 
   if ((itemFirst = consumeNext(theChild, planState)) != NULL)
   {
@@ -326,15 +343,64 @@ AttributeIterator::nextImpl(PlanState& planState)
   }
 
   item = zorba::getItemFactory()->createAttributeNode (
-               theQName,
+               lQName,
                GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
                itemLexical,
-               itemTyped);
+               itemTyped).get_ptr();
 
   STACK_PUSH(item, state);
   STACK_END();
 }
 
+void AttributeIterator::resetImpl(PlanState& planState)
+{
+  if (theQNameIter != 0)
+    resetChild(theQNameIter, planState);
+  
+  if ( theChild != 0 )
+    resetChild(theChild, planState);
+
+  PlanIterator::PlanIteratorState* state;
+  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
+  state->reset();
+}
+
+
+void AttributeIterator::releaseResourcesImpl(PlanState& planState)
+{
+  if (theQNameIter != 0)
+    resetChild(theQNameIter, planState);
+  
+  if (theChild != 0)
+    releaseChildResources(theChild, planState);
+}
+
+  
+uint32_t AttributeIterator::getStateSizeOfSubtree() const
+{
+  int32_t size = 0;
+
+  if (theQNameIter != 0)
+    size += theQNameIter->getStateSizeOfSubtree();
+  
+  if (theChild != 0)
+    size += theChild->getStateSizeOfSubtree();
+
+  return this->getStateSize() + size;
+}
+
+  
+void AttributeIterator::setOffset(PlanState& planState, uint32_t& offset)
+{
+  this->stateOffset = offset;
+  offset += this->getStateSize();
+
+  if (theQNameIter != 0)
+    theQNameIter->setOffset(planState, offset);
+  
+  if (theChild != 0)
+    theChild->setOffset(planState, offset);
+}
 
 /*******************************************************************************
 
@@ -380,14 +446,10 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
 /* begin class TextIterator */
 
 TextIterator::TextIterator(const yy::location& loc, PlanIter_t& aChild) 
-  :
-  UnaryBaseIterator<TextIterator>(loc, aChild)
-{
-}
+  : UnaryBaseIterator<TextIterator>(loc, aChild)
+{}
 
-
-Item_t TextIterator::nextImpl(PlanState& planState) 
-{
+Item_t TextIterator::nextImpl(PlanState& planState) {
   Item_t lItem;
   xqp_string content = "";
   bool lFirst;
@@ -398,8 +460,7 @@ Item_t TextIterator::nextImpl(PlanState& planState)
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
   lFirst = true;
-  while (true)
-  {
+  while (true) {
     lItem = consumeNext(theChild, planState);
     if (lItem == 0)
       break;

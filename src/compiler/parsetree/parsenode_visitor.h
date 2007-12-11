@@ -48,7 +48,7 @@ class SignList; class SingleType; class TextTest; class TypeDeclaration;
 class TypeName; class URILiteralList; class ValueComp; class VarDecl;
 class VarGetsDecl; class VarGetsDeclList; class VarInDecl; class VarInDeclList;
 class VersionDecl; class VFO_DeclList; class WhereClause;
-class Wildcard; 
+class Wildcard; class QName;
 
 
 class exprnode;
@@ -188,6 +188,7 @@ public:
 	virtual void *begin_visit(VFO_DeclList const&) = 0;
 	virtual void *begin_visit(WhereClause const&) = 0;
 	virtual void *begin_visit(Wildcard const&) = 0;
+  virtual void *begin_visit(QName const&) = 0;
 
 /* expressions */
 	virtual void *begin_visit(AdditiveExpr const&) = 0;
@@ -379,6 +380,7 @@ public:
 	virtual void end_visit(VFO_DeclList const&, void *visit_state) = 0;
 	virtual void end_visit(WhereClause const&, void *visit_state) = 0;
 	virtual void end_visit(Wildcard const&, void *visit_state) = 0;
+  virtual void end_visit(QName const&, void *visit_state) = 0;
 
 /* expressions */
 	virtual void end_visit(AdditiveExpr const&, void *visit_state) = 0;

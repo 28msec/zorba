@@ -1057,6 +1057,17 @@ const_expr::const_expr(
 {
 }
 
+const_expr::const_expr(
+  yy::location const& aLoc, 
+  const char* aNamespace,
+  const char* aPrefix, 
+  const char* aLocal)
+:
+  expr(aLoc),
+  val ((Item*)&*ITEM_FACTORY.createQName(aNamespace, aPrefix, aLocal))
+{
+}
+
 const_expr::~const_expr()
 {
 }
@@ -1125,37 +1136,53 @@ void order_expr::accept(
 // [93] [http://www.w3.org/TR/xquery/#prod-xquery-FunctionCall]
 
 // [96] [http://www.w3.org/TR/xquery/#doc-exquery-DirElemConstructor]
-elem_expr::elem_expr(
-	yy::location const& loc,
-	QNameItem_t _qname_h,
-	expr_t _attrs_expr_h,
-	expr_t _content_expr_h)
-:
-	constructor_expr(loc),
-	qname_h(_qname_h),
-	attrs_expr_h(_attrs_expr_h),
-	content_expr_h(_content_expr_h)
+elem_expr::elem_expr (
+    yy::location const& aLoc,
+    expr_t aQNameExpr,
+    expr_t aAttrs,
+    expr_t aContent )
+    :
+    constructor_expr ( aLoc ),
+    theQNameExpr ( aQNameExpr ),
+    theAttrs ( aAttrs ),
+    theContent ( aContent )
 {}
+
+elem_expr::elem_expr (
+    yy::location const& aLoc,
+    expr_t aQNameExpr,
+    expr_t aContent )
+    :
+    constructor_expr ( aLoc ),
+    theQNameExpr ( aQNameExpr ),
+    theAttrs ( 0 ),
+    theContent ( aContent ) {}
+  
 elem_expr::~elem_expr(){}
 
 void elem_expr::accept(expr_visitor& v)
 {
 	if (!v.begin_visit(*this)) return;
-	if (this->attrs_expr_h != NULL)
-		this->attrs_expr_h->accept(v);
-	if (this->content_expr_h != NULL)
-		this->content_expr_h->accept(v);
+  if (theQNameExpr != NULL)
+    theQNameExpr->accept(v);
+	if (theAttrs != NULL)
+		theAttrs->accept(v);
+	if (theContent != NULL)
+		theContent->accept(v);
 	v.end_visit(*this);
 }
 
 std::ostream& elem_expr::put(std::ostream& os) const
 {
 	os << INDENT << "elem_expr[";
-	PUT_QNAME (qname_h, os);
-	if (attrs_expr_h != NULL)
-		attrs_expr_h->put(os);
-	if (content_expr_h != NULL)
-		content_expr_h->put(os);
+//   if (theQName != 0)
+//   	PUT_QNAME (theQName, os);
+  if (theQNameExpr != NULL)
+    theQNameExpr->put(os);
+	if (theAttrs != NULL)
+		theAttrs->put(os);
+	if (theContent != NULL)
+		theContent->put(os);
 	return os << OUTDENT << "]\n";
 }
 
@@ -1191,91 +1218,16 @@ void doc_expr::accept(
 
 // [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
 
-compElem_expr::compElem_expr(
-	yy::location const& loc,
-	QNameItem_t _qname_h,
-	rchandle<expr> _content_expr_h)
-:
-	constructor_expr(loc),
-	qname_h(_qname_h),
-	qname_expr_h(NULL),
-	content_expr_h(_content_expr_h)
-{
-}
-
-compElem_expr::compElem_expr(
-	yy::location const& loc,
-	rchandle<expr> _qname_expr_h,
-	rchandle<expr> _content_expr_h)
-:
-	constructor_expr(loc),
-	qname_h(NULL),
-	qname_expr_h(_qname_expr_h),
-	content_expr_h(_content_expr_h)
-{
-}
-
-compElem_expr::~compElem_expr()
-{
-}
-
-ostream& compElem_expr::put( ostream& os) const
-{
-	os << INDENT << "compElem_expr[<";
-	//d Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
-	Assert(qname_h!=NULL || qname_expr_h!=NULL);
-	if (qname_h!=NULL) {
-		PUT_QNAME (qname_h, os) << ">\n";
-	}
-	else {
-		qname_expr_h->put(os) << ">\n";
-	}
-	vector<nsbinding>::const_iterator it = ns_begin();
-	vector<nsbinding>::const_iterator en = ns_end();
-	for (; it!=en; ++it) {
-		nsbinding nsb = *it;
-		string ncname = nsb.first;
-		string nsuri = nsb.second;
-		os << INDENT << "xmlns:" << ncname << "=\"" << nsuri << "\"\n"; UNDENT;
-	}
-	//d Assert<null_pointer>(content_expr_h!=NULL);
-	if (content_expr_h != NULL )
-		content_expr_h->put(os);
-	return os << OUTDENT << "]\n";
-}
-
-void compElem_expr::accept(
-	expr_visitor& v)
-{
-	if (!v.begin_visit(*this)) return;
-	if (this->content_expr_h != NULL)
-		this->content_expr_h->accept(v);
-	v.end_visit(*this);
-}
-
 
 
 // [113] [http://www.w3.org/TR/xquery/#prod-xquery-CompAttrConstructor]
 
 attr_expr::attr_expr(
 	yy::location const& loc,
-	QNameItem_t _qname_h,
-	rchandle<expr> _val_expr_h)
-:
-	constructor_expr(loc),
-	qname_h(_qname_h),
-	qname_expr_h(NULL),
-	val_expr_h(_val_expr_h)
-{
-}
-
-attr_expr::attr_expr(
-	yy::location const& loc,
 	rchandle<expr> _qname_expr_h,
 	rchandle<expr> _val_expr_h)
 :
 	constructor_expr(loc),
-	qname_h(NULL),
 	qname_expr_h(_qname_expr_h),
 	val_expr_h(_val_expr_h)
 {
@@ -1288,14 +1240,7 @@ attr_expr::~attr_expr()
 ostream& attr_expr::put( ostream& os) const
 {
 	os << INDENT << "attr_expr[@";
-	//d Assert<bad_arg>(qname_h!=NULL || qname_expr_h!=NULL);
-	Assert(qname_h!=NULL || qname_expr_h!=NULL);
-	if (qname_h!=NULL) {
-		PUT_QNAME (qname_h, os);
-	}
-	else {
-		qname_expr_h->put (os);
-	}
+  qname_expr_h->put (os);
 	
 	if (val_expr_h != NULL)
 	{

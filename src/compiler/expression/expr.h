@@ -518,13 +518,13 @@ public:
 	~fo_expr();
 
 public:
-	void add(expr_t e_h) { argv.push_back(e_h); }
+  void add(expr_t e_h) { argv.push_back(e_h); }
 	uint32_t size() const { return argv.size(); }
 	expr_t& operator[](int i) { return argv[i]; }
 	const expr_t& operator[](int i) const { return argv[i]; }
 	std::vector<expr_t>::const_iterator begin() const { return argv.begin(); }
 	std::vector<expr_t>::const_iterator end() const { return argv.end(); }
-	std::vector<expr_t>& get_argv() { return argv; }
+// 	std::vector<expr_t>& get_argv() { return argv; }
 
 public:
 	const function* get_func() const { return func; }
@@ -961,6 +961,7 @@ public:
   const_expr(yy::location const&, xqp_decimal);
   const_expr(yy::location const&, xqp_double);
   const_expr(yy::location const&, xqp_boolean);
+  const_expr(yy::location const&, const char* aNamespace, const char* aPrefix, const char* aLocal);
   ~const_expr();
 
 public:
@@ -1024,21 +1025,34 @@ class elem_expr : public constructor_expr
 {
 	// TODO namespace bindings
 protected:
-	QNameItem_t qname_h;
-	expr_t attrs_expr_h;
-	expr_t content_expr_h;
+// 	QNameItem_t theQName;
+  expr_t theQNameExpr;
+	expr_t theAttrs;
+	expr_t theContent;
 	
 public:
 	elem_expr(
 		yy::location const&,
-		QNameItem_t,
-		expr_t,
-		expr_t);
+		expr_t aQNameExpr,
+		expr_t aAttrs,
+		expr_t aContent);
+  
+//   elem_expr(
+//     yy::location const&,
+//     QNameItem_t,
+//     expr_t);
+  
+  elem_expr(
+    yy::location const&,
+    expr_t aQNameExpr,
+    expr_t aContent);
+  
 	~elem_expr();
 	
-	QNameItem_t get_qname() const { return qname_h; }
-	expr_t get_content_expr() const { return content_expr_h; }
-	expr_t get_attrs_expr() const { return attrs_expr_h; }
+// 	QNameItem_t getQName() const { return theQName; }
+  expr_t getQNameExpr() const { return theQNameExpr; }
+	expr_t getContent() const { return theContent; }
+	expr_t getAttrs() const { return theAttrs; }
 	
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
@@ -1072,56 +1086,7 @@ public:
 
 
 
-// [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
-class compElem_expr : public constructor_expr
-/*______________________________________________________________________
-|	::= ELEMENT_QNAME_LBRACE  RBRACE
-|			|	ELEMENT_QNAME_LBRACE  ContentExpr  RBRACE
-|			|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  RBRACE
-|			|	ELEMENT_LBRACE  Expr  RBRACE  LBRACE  ContentExpr  RBRACE
-|_______________________________________________________________________*/
-{
-public:
-	typedef std::pair<std::string,std::string> nsbinding;
-
-protected:
-	QNameItem_t qname_h;
-	expr_t qname_expr_h;
-	expr_t content_expr_h;
-	std::vector<nsbinding> nsb_v;
-
-public:
-	compElem_expr(
-		yy::location const&,
-		QNameItem_t,
-		expr_t);
-	compElem_expr(
-		yy::location const&,
-		expr_t,
-		expr_t);
-	~compElem_expr();
-
-public:
-	QNameItem_t get_qname() const { return qname_h; }
-	expr_t get_qname_expr() const { return qname_expr_h; }
-	expr_t get_content_expr() const { return content_expr_h; }
-
-public:
-	void add(nsbinding const& nsb)
-		{ nsb_v.push_back(nsb); }
-	uint32_t nsbinding_count() const
-		{ return nsb_v.size(); }
-
-	std::vector<nsbinding>::const_iterator ns_begin() const
-		{ return nsb_v.begin(); }
-	std::vector<nsbinding>::const_iterator ns_end() const
-		{ return nsb_v.end(); }
-
-public:
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-
-};
+// // [111] [http://www.w3.org/TR/xquery/#prod-xquery-CompElemConstructor]
 
 
 /******************************************************************************
@@ -1139,15 +1104,15 @@ public:
 class attr_expr : public constructor_expr
 {
 protected:
-	QNameItem_t qname_h;
+// 	QNameItem_t qname_h;
 	expr_t qname_expr_h;
 	expr_t val_expr_h;
 
 public:
-	attr_expr(
-		yy::location const& loc,
-		QNameItem_t qn,
-		expr_t val_expr);
+// 	attr_expr(
+// 		yy::location const& loc,
+// 		QNameItem_t qn,
+// 		expr_t val_expr);
 
 	attr_expr(
 		yy::location const& loc,
@@ -1157,7 +1122,7 @@ public:
 	~attr_expr();
 
 public:
-	QNameItem_t get_qname() const { return qname_h; }
+// 	QNameItem_t get_qname() const { return qname_h; }
 	expr_t get_qname_expr() const { return qname_expr_h; }
 	expr_t get_val_expr() const { return val_expr_h; }
 

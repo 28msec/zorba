@@ -41,29 +41,24 @@ class ElementIterator : public Batcher<ElementIterator>
   typedef std::vector<std::pair<xqpString, xqpString> > NamespaceBindings;
 
 private:
-  QNameItem_t       theQName;
   PlanIter_t        theQNameIter;
-  PlanIter_t        theChildrenIter;
   PlanIter_t        theAttributesIter;
+  PlanIter_t        theChildrenIter;
   PlanIter_t        theNamespacesIter;
   NamespaceBindings theNsBindings;
-  bool              theAssignId;
 
 public:
-  ElementIterator(
-        const yy::location& loc, 
-        const QNameItem_t& aQName,
-        PlanIter_t& aChildren,
-        PlanIter_t& aAttrs,
-        bool assignId);
+  ElementIterator (
+      const yy::location& loc,
+      PlanIter_t& aQNameIter,
+      PlanIter_t& aAttrs,
+      PlanIter_t& aChildren );
   
-  ElementIterator(
-        const yy::location& loc,
-        PlanIter_t aQNameIter,
-        PlanIter_t aChildren,
-        bool assignId);
-  
-  const QNameItem_t& getQName() const { return theQName; }
+  ElementIterator (
+      const yy::location& loc,
+      PlanIter_t& aQNameIter,
+      PlanIter_t& aChildren );
+
   
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
@@ -91,6 +86,7 @@ protected:
   public:
     xqp_string theString;
     Item_t     theContextItem;
+    bool       theNoAttrAllowed;
 
     void init();
   };
@@ -103,8 +99,6 @@ public:
   void releaseResourcesImpl(PlanState& planState);
 
   uint32_t getStateSize() const { return sizeof(ElementContentState); }
-
-  void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };
@@ -113,18 +107,25 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AttributeIterator : public UnaryBaseIterator<AttributeIterator>
+class AttributeIterator : public Batcher<AttributeIterator>
 {
 private:
-  QNameItem_t theQName;
+  PlanIter_t theQNameIter;
+  PlanIter_t theChild;
     
 public:
   AttributeIterator(
         const yy::location& loc,
-        const QNameItem_t& qname,
-        PlanIter_t& value);
+        PlanIter_t& aQNameIter,
+        PlanIter_t& aValueIter);
     
   Item_t nextImpl(PlanState& planState);
+  void resetImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+
+  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
+  virtual uint32_t getStateSizeOfSubtree() const;
+  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };

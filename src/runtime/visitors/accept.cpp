@@ -128,11 +128,17 @@ namespace xqp {
   {
     v.beginVisit(*this);
 
-    if (theAttributesIter != NULL)
+    if (theQNameIter != 0)
+      theQNameIter->accept(v);
+    
+    if (theAttributesIter != 0)
       theAttributesIter->accept(v);
 
-    if (theChildrenIter != NULL)
+    if (theChildrenIter != 0)
       theChildrenIter->accept(v);
+    
+    if (theNamespacesIter != 0)
+      theNamespacesIter->accept(v);
     
     v.endVisit(*this);
   }

@@ -167,6 +167,7 @@ public:
 	void *begin_visit(VFO_DeclList const&);
 	void *begin_visit(WhereClause const&);
 	void *begin_visit(Wildcard const&);
+  void *begin_visit(QName const&);
 
 	void *begin_visit(exprnode const&);
 	void *begin_visit(AdditiveExpr const&);
@@ -356,6 +357,7 @@ public:
 	void end_visit (VFO_DeclList const&, void *);
 	void end_visit (WhereClause const&, void *);
 	void end_visit (Wildcard const&, void *);
+  void end_visit (QName const&, void *);
 
 	void end_visit (exprnode const&, void *);
 	void end_visit (AdditiveExpr const&, void *);

@@ -25,9 +25,10 @@ class FnDataIterator : public UnaryBaseIterator<FnDataIterator>
   
 public:
   FnDataIterator ( const yy::location& loc, PlanIter_t& aChild )
-    :
+  :
     UnaryBaseIterator<FnDataIterator> ( loc, aChild ) {}
-    virtual ~FnDataIterator() {}
+  
+  virtual ~FnDataIterator() {}
     
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);

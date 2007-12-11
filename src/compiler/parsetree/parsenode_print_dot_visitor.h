@@ -122,6 +122,7 @@ public:
 	void *begin_visit(const VFO_DeclList &);
 	void *begin_visit(const WhereClause &);
 	void *begin_visit(const Wildcard &);
+  void *begin_visit(const QName &);
 
 	void *begin_visit(const exprnode &);
 	void *begin_visit(const AdditiveExpr &);
@@ -311,6 +312,7 @@ public:
 	void end_visit(const VFO_DeclList &, void *visit_state);
 	void end_visit(const WhereClause &, void *visit_state);
 	void end_visit(const Wildcard &, void *visit_state);
+  void end_visit(const QName &, void *visit_state);
 
 	void end_visit(const exprnode &, void *visit_state);
 	void end_visit(const AdditiveExpr &, void *visit_state);

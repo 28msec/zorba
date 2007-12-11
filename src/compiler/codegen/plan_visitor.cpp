@@ -570,37 +570,38 @@ bool plan_visitor::begin_visit(elem_expr& v)
 }
 
 
-void plan_visitor::end_visit(elem_expr& v)
+void plan_visitor::end_visit ( elem_expr& v )
 {
   CODEGEN_TRACE(std::string(--depth, ' '));
 
-	PlanIter_t contentIter = NULL;
-	PlanIter_t attrIter = NULL;
+  PlanIter_t lQNameIter = 0;
+  PlanIter_t lContentIter = 0;
+  PlanIter_t lAttrsIter = 0;
 
   ItemFactory& iFactory = Store::getInstance().getItemFactory();
 
-	if (v.get_attrs_expr() != NULL)
-		attrIter = pop_itstack();
-  else
-    attrIter = new EmptyIterator(v.get_loc());
-
-	if (v.get_content_expr() != NULL)
-	{
-		contentIter = pop_itstack();
-    contentIter = new ElementContentIterator(v.get_loc(), contentIter);
-	} else {
-    contentIter = new EmptyIterator(v.get_loc());
+  if ( v.getContent() != 0 )
+  {
+    lContentIter = pop_itstack();
+    lContentIter = new ElementContentIterator ( v.get_loc(), lContentIter );
   }
 
-  QNameItem_t itemQName = v.get_qname();
+  if ( v.getAttrs() != 0 )
+    lAttrsIter = pop_itstack();
 
-	PlanIter_t iter = new ElementIterator(v.get_loc(),
-                                        itemQName,
-                                        contentIter,
-                                        attrIter,
-                                        true);
+  PlanIter_t lIter;
 
-	itstack.push(iter);
+//   if ( v.getQNameExpr() != 0 )
+//   {
+    lQNameIter = pop_itstack();
+    lIter = new ElementIterator ( v.get_loc(), lQNameIter, lAttrsIter, lContentIter );
+//   }
+//   else
+//   {
+//     lIter = new ElementIterator ( v.get_loc(), v.getQName(), lAttrsIter, lContentIter );
+//   }
+
+  itstack.push ( lIter );
 }
 
 
@@ -628,22 +629,30 @@ void plan_visitor::end_visit(attr_expr& v)
 {
   CODEGEN_TRACE("");
 
+  PlanIter_t lQNameIter = 0;
+  PlanIter_t lVarIter = 0;
+  
   ItemFactory& iFactory = Store::getInstance().getItemFactory();
 
 	// TODO dynamic qname
-	QNameItem_t itemQName = v.get_qname();
+// 	QNameItem_t itemQName = v.get_qname();
 
-	PlanIter_t valueIter = NULL;
-	if (v.get_val_expr() != NULL) {
-		valueIter = pop_itstack();
-    valueIter = new EnclosedIterator(v.get_loc(), valueIter);
+	if (v.get_val_expr() != 0) {
+		lVarIter = pop_itstack();
+    lVarIter = new EnclosedIterator(v.get_loc(), lVarIter);
   } else {
-    valueIter = new EmptyIterator(v.get_loc());
+    lVarIter = new EmptyIterator(v.get_loc());
   }
-
-	PlanIter_t attrIter = new AttributeIterator(v.get_loc(), itemQName, valueIter);
   
-	itstack.push(&*attrIter);
+  PlanIter_t lAttrIter = 0;
+//   if (v.get_qname_expr() != 0) {
+    lQNameIter = pop_itstack();
+    lAttrIter = new AttributeIterator(v.get_loc(), lQNameIter, lVarIter);
+//   } else {
+//     lAttrIter = new AttributeIterator(v.get_loc(), v.get_qname(), lVarIter);
+//   }
+  
+  itstack.push(lAttrIter);
 }
 
 

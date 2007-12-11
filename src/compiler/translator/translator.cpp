@@ -315,14 +315,19 @@ void translator::end_visit(const DirElemConstructor& v, void *visit_state)
   expr_t attributes = NULL;
   expr_t content = NULL;
 
+  if (v.get_dir_content_list() != NULL)
+    content = pop_nodestack();
+  
   if (v.get_attr_list() != NULL)
     attributes = pop_nodestack();
 
-  if (v.get_dir_content_list() != NULL)
-    content = pop_nodestack();
-
-  QNameItem_t item = sctx_p->lookup_elem_qname (v.get_elem_name()->get_prefix(), v.get_elem_name()->get_localname());
-  elem_expr *elem_t = new elem_expr(v.get_location(), item, attributes, content);
+  expr_t lQNameExpr =  new const_expr (
+                                        v.get_location (), 
+                                        v.get_elem_name()->get_uri().c_str(), 
+                                        v.get_elem_name()->get_prefix().c_str(), 
+                                        v.get_elem_name()->get_localname().c_str()
+                                      );
+  elem_expr *elem_t = new elem_expr(v.get_location(), lQNameExpr, attributes, content);
   nodestack.push(elem_t);
 }
 
@@ -378,7 +383,7 @@ void translator::end_visit(const DirElemContent& v, void *visit_state)
     xqpString content = v.get_elem_content();
     nodestack.push (new text_expr(v.get_location(),
                                   text_expr::text_constructor,
-                                  new const_expr (v.get_location (), content)));
+                                      new const_expr (v.get_location (), content)));
   }
 }
 
@@ -438,9 +443,15 @@ void translator::end_visit(const DirAttr& v, void *visit_state)
     nodestack.pop();
   }
  
-  QNameItem_t item = sctx_p->lookup_elem_qname (v.get_atname()->get_prefix(), v.get_atname()->get_localname());
+  expr_t lQNameExpr = new const_expr(
+                                  v.get_location(),
+                                  v.get_atname()->get_uri().c_str(),
+                                  v.get_atname()->get_prefix().c_str(),
+                                  v.get_atname()->get_localname().c_str()
+                                );
+  
   rchandle<attr_expr> attr_expr_t = new attr_expr(v.get_location(),
-                                                  item,
+                                                  lQNameExpr,
                                                   attrValue);
   nodestack.push(&*attr_expr_t);
 }
@@ -573,20 +584,21 @@ void translator::end_visit(const CompElemConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   
-  expr_t content = NULL;
+  expr_t lContent = 0;
+  expr_t lElem = 0;
 
-  if (v.get_content_expr() != NULL)
-    content = pop_nodestack();
+  if (v.get_content_expr() != 0) {
+    lContent = pop_nodestack();
+    fo_expr *lEnclosed = new fo_expr(v.get_location());
+    lEnclosed->set_func(LOOKUP_OP1 ("enclosed-expr"));
+    lEnclosed->add(lContent);
+    lContent = lEnclosed;
+  }
+  
+  expr_t lQNameExpr = pop_nodestack();
+  lElem = new elem_expr(v.get_location(), lQNameExpr, lContent);
 
-  if (v.get_qname_expr() != NULL)
-    assert(false);
-  
-  if (v.get_qname() == NULL)
-    assert(false);
-  
-  QNameItem_t item = sctx_p->lookup_elem_qname (v.get_qname()->get_prefix(), v.get_qname()->get_localname());
-  elem_expr *elem_t = new elem_expr(v.get_location(), item, NULL, content);
-  nodestack.push(elem_t);
+  nodestack.push(lElem);
 }
 
 void *translator::begin_visit(const CompAttrConstructor& v)
@@ -598,6 +610,22 @@ void *translator::begin_visit(const CompAttrConstructor& v)
 void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  
+  expr_t lValueExpr = 0;
+  expr_t lAttr = 0;
+  
+  if (v.get_val_expr() != 0) {
+    lValueExpr = pop_nodestack();
+    fo_expr *lEnclosed = new fo_expr(v.get_location());
+    lEnclosed->set_func(LOOKUP_OP1("enclosed-expr"));
+    lEnclosed->add(lValueExpr);
+    lValueExpr = lEnclosed;
+  }
+  
+  expr_t lQNameExpr = pop_nodestack();
+  lAttr = new attr_expr(v.get_location(), lQNameExpr, lValueExpr);
+  
+  nodestack.push(lAttr);
 }
 
 void *translator::begin_visit(const CompCommentConstructor& v)
@@ -1836,6 +1864,22 @@ void *translator::begin_visit(const Wildcard& v)
 
 void translator::end_visit(const Wildcard& v, void *visit_state)
 {
+  TRACE_VISIT_OUT ();
+}
+
+
+void *translator::begin_visit(const QName& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+
+void translator::end_visit(const QName& v, void *visit_state)
+{
+  nodestack.push(
+    new const_expr(v.get_location(), v.get_uri().c_str(), v.get_prefix().c_str(), v.get_localname().c_str())
+  );
   TRACE_VISIT_OUT ();
 }
 
