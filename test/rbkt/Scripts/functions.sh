@@ -259,7 +259,7 @@ function run_bucket()
   fi
 
   queryList=`mktemp`
-  cd "${queriesDir}/${bucketName}"; find . -name '*.xq' | cut -f2- -d / > $queryList
+  (cd "${queriesDir}/${bucketName}"; find . -name '*.xq' | cut -f2- -d/ ) > $queryList
   
   # Uses fd 3 for reading queries.
   # Nasty, but remember there can be many queries, and redirection
