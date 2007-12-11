@@ -591,15 +591,8 @@ void plan_visitor::end_visit ( elem_expr& v )
 
   PlanIter_t lIter;
 
-//   if ( v.getQNameExpr() != 0 )
-//   {
-    lQNameIter = pop_itstack();
-    lIter = new ElementIterator ( v.get_loc(), lQNameIter, lAttrsIter, lContentIter );
-//   }
-//   else
-//   {
-//     lIter = new ElementIterator ( v.get_loc(), v.getQName(), lAttrsIter, lContentIter );
-//   }
+  lQNameIter = pop_itstack();
+  lIter = new ElementIterator ( v.get_loc(), lQNameIter, lAttrsIter, lContentIter, true );
 
   itstack.push ( lIter );
 }

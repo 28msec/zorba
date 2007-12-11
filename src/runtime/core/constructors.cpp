@@ -22,24 +22,28 @@ ElementIterator::ElementIterator (
     const yy::location& loc,
     PlanIter_t& aQNameIter,
     PlanIter_t& aAttrs,
-    PlanIter_t& aChildren )
+    PlanIter_t& aChildren,
+    bool assignId)
     :
     Batcher<ElementIterator> ( loc ),
     theQNameIter ( aQNameIter ),
     theAttributesIter ( aAttrs ),
-    theChildrenIter ( aChildren )
+    theChildrenIter ( aChildren ),
+    theAssignId(assignId)
 {
 }
 
 ElementIterator::ElementIterator (
     const yy::location& loc,
     PlanIter_t& aQNameIter,
-    PlanIter_t& aChildren )
+    PlanIter_t& aChildren,
+    bool assignId)
     :
     Batcher<ElementIterator> ( loc ),
     theQNameIter ( aQNameIter ),
     theAttributesIter ( 0 ),
-    theChildrenIter ( aChildren )
+    theChildrenIter ( aChildren ),
+    theAssignId(assignId)
 {
 }
 
@@ -94,7 +98,8 @@ ElementIterator::nextImpl(PlanState& planState)
                seqNamespaces,
                theNsBindings,
                false,
-               false);
+               false,
+               theAssignId);
 
   STACK_PUSH(item, state);
     

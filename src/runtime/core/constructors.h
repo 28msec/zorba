@@ -46,18 +46,21 @@ private:
   PlanIter_t        theChildrenIter;
   PlanIter_t        theNamespacesIter;
   NamespaceBindings theNsBindings;
+  bool              theAssignId;
 
 public:
   ElementIterator (
       const yy::location& loc,
       PlanIter_t& aQNameIter,
       PlanIter_t& aAttrs,
-      PlanIter_t& aChildren );
+      PlanIter_t& aChildren,
+      bool assignId);
   
   ElementIterator (
       const yy::location& loc,
       PlanIter_t& aQNameIter,
-      PlanIter_t& aChildren );
+      PlanIter_t& aChildren,
+      bool assignId);
 
   
   Item_t nextImpl(PlanState& planState);
