@@ -81,10 +81,10 @@ public:
     return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
   }
 
-  TypeSystem::xqtref_t const& operator[](int i) const { return argv[i]; }
-  TypeSystem::xqtref_t & operator[](int i)            { return argv[i]; }
-  TypeSystem::xqtref_t const& return_type() const     { return argv[0]; }
-  TypeSystem::xqtref_t & return_type()                { return argv[0]; }
+  TypeSystem::xqtref_t const& operator[](int i) const { return argv [variadic ? 0 : i]; }
+  TypeSystem::xqtref_t & operator[](int i)            { return argv [variadic ? 0 : i]; }
+  TypeSystem::xqtref_t const& return_type() const     { return argv [0]; }
+  TypeSystem::xqtref_t & return_type()                { return argv [0]; }
 
 };
 
