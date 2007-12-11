@@ -138,10 +138,7 @@ namespace xqp
   :
     BinaryBaseIterator<CompareIterator> ( loc, aChild0, aChild1 ), 
     theCompType(aCompType) 
-  {
-    theChild0 = new FnDataIterator ( loc, aChild0 );
-    theChild1 = new FnDataIterator ( loc, aChild1 );
-  }
+  { }
   
   CompareIterator::~CompareIterator()
   { }
