@@ -196,12 +196,12 @@ function run_query_in_bucket
   #
   # If no result file was generated, then we create an empty one.
   #
+  mkdir -p `dirname ${resultFile}`
   if [ -e "${inputDir}/${queryName}.xq.res" ]; then
     cat "${inputDir}/${queryName}.xq.res" | ${scriptsDir}/tidy_xmlfrag >"${resultFile}"
-    if [ $? != 0 ]; then echo "ERROR 12 run_query_in_bucket: mv failed"; exit 19; fi
+    if [ ! -f "${resultFile}" ]; then echo "ERROR 12 run_query_in_bucket: could not create output file"; exit 19; fi
     rm "${inputDir}/${queryName}.xq.res"
   else
-    mkdir -p `dirname ${resultFile}`
     touch "${resultFile}"
     if [ $? != 0 ]; then echo "ERROR 13 run_query_in_bucket: touch failed"; exit 19; fi
   fi
@@ -258,22 +258,23 @@ function run_bucket()
     return 17
   fi
 
-  queryList=`cd "${queriesDir}/${bucketName}"; find . -name '*.xq' | cut -f2- -d /`
+  queryList=`mktemp`
+  cd "${queriesDir}/${bucketName}"; find . -name '*.xq' | cut -f2- -d / > $queryList
+  
+  # Uses fd 3 for reading queries.
+  # Nasty, but remember there can be many queries, and redirection
+  # applies for the entire while loop.
+  while read -u3 q; do
+    queryName=`echo $q | sed -e 's/.xq$//g'`
+    run_query_in_bucket "${bucketName}" "${queryName}" ${displayFormat}
+    error=$?
+    if [ ${error} != 0 ]; then
+      echo "ERROR 3 run_bucket: run_bucket failed with error code ${error}"
+      return ${error}
+    fi
+  done 3< $queryList
 
-  for q in $queryList
-  do
-#    echo ${q} | sed -e s/".xq"/""/g  > tmp_queryFile
-#    for queryName in `cat tmp_queryFile`
-      queryName=`echo $q | sed -e 's/.xq$//g'`
-      run_query_in_bucket "${bucketName}" "${queryName}" ${displayFormat}
-      error=$?
-      if [ ${error} != 0 ]; then
-        echo "ERROR 3 run_bucket: run_bucket failed with error code ${error}"
-        return ${error}
-      fi
-#    done
-    rm -f tmp_queryFile
-  done  
+  rm -f $queryList
 
   return 0
 }
