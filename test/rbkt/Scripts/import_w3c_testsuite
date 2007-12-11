@@ -24,7 +24,7 @@ mv Queries/XQuery $SRC/test/rbkt/Queries/w3c_testsuite
 cd ExpectedTestResults
 echo Cleaning up results...
 find . -name '*.log' -exec rm {} \;
-find . -type f -print0 | xargs -0 rename 's/(.*)\.([a-zA-Z]+)/$1.xml.res/g'
+find . -type f -print0 | xargs -0 perl -e 'foreach (@ARGV) { my $was = $_; s/(.*)\.([a-zA-Z]+)/$1.xml.res/g; rename $was, $_; }'
 
 echo Moving query results to Zorba repo...
 mkdir $SRC/test/rbkt/ExpQueryResults/w3c_testsuite/
