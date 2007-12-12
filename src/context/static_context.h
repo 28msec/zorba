@@ -30,8 +30,8 @@
 #include "context/context_impl.h"
 #include "functions/signature.h"
 #include "errors/Error.h"
-#include "../store/api/item.h"
-#include "../store/api/store.h"
+#include "store/api/item.h"
+#include "store/api/store.h"
 #include "types/typesystem.h"
 
 #include "zorba_api.h"
