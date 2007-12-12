@@ -50,6 +50,11 @@ public:
         const xqpStringStore_t& localName) = 0;
 
   virtual QNameItem_t createQName(
+        const xqp_string& namespace_p,
+        const xqp_string& prefix,
+        const xqp_string& localName) = 0;
+
+  virtual QNameItem_t createQName(
         const char* ns,
         const char* pre,
         const char* ln) = 0;

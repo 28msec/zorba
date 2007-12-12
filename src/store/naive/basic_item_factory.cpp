@@ -43,6 +43,19 @@ QNameItem_t BasicItemFactory::createQName(
 }
 
 QNameItem_t BasicItemFactory::createQName(
+    const xqp_string& ns,
+    const xqp_string& pre,
+    const xqp_string& local)
+{
+  xqpStringStore_t ns_t(&ns.getStore());
+  xqpStringStore_t pre_t(&pre.getStore());
+  xqpStringStore_t local_t(&local.getStore());
+
+  return theQNamePool->insert(ns_t, pre_t, local_t);
+}
+
+
+QNameItem_t BasicItemFactory::createQName(
     const char* ns,
     const char* pre,
     const char* ln)

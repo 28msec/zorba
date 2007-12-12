@@ -37,6 +37,11 @@ public:
         const xqpStringStore_t& local);
 
   virtual QNameItem_t createQName(
+        const xqp_string& ns,
+        const xqp_string& pre,
+        const xqp_string& local);
+
+  virtual QNameItem_t createQName(
         const char* ns,
         const char* pre,
         const char* ln);
