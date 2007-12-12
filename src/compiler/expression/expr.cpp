@@ -1146,7 +1146,8 @@ elem_expr::elem_expr (
     theQNameExpr ( aQNameExpr ),
     theAttrs ( aAttrs ),
     theContent ( aContent )
-{}
+{
+}
 
 elem_expr::elem_expr (
     yy::location const& aLoc,
@@ -1156,9 +1157,15 @@ elem_expr::elem_expr (
     constructor_expr ( aLoc ),
     theQNameExpr ( aQNameExpr ),
     theAttrs ( 0 ),
-    theContent ( aContent ) {}
+    theContent ( aContent )
+{
+}
   
-elem_expr::~elem_expr(){}
+
+elem_expr::~elem_expr()
+{
+}
+
 
 void elem_expr::accept(expr_visitor& v)
 {
@@ -1171,6 +1178,7 @@ void elem_expr::accept(expr_visitor& v)
 		theContent->accept(v);
 	v.end_visit(*this);
 }
+
 
 std::ostream& elem_expr::put(std::ostream& os) const
 {

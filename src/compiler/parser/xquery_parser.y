@@ -60,7 +60,18 @@ namespace xqp {
 	class exprnode;
 }
 
+
+#ifndef NDEBUG
+
+#ifdef PARSER_DEBUG
+static bool debug = true;
+#else
 static bool debug = false;
+#endif
+
+#else
+static bool debug = false;
+#endif
 
 %}
 

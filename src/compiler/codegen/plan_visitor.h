@@ -36,7 +36,7 @@ public:
 protected:
 	std::stack<PlanIter_t> itstack;
 
-	std::stack<PlanIter_t> theConstructorsStack;
+	std::stack<expr*>      theConstructorsStack;
 
   fxhash64map<std::vector<var_iter_t> *> fvar_iter_map;
   fxhash64map<std::vector<var_iter_t> *> pvar_iter_map;

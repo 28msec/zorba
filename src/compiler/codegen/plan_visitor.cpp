@@ -25,8 +25,7 @@
 
 #ifndef NDEBUG
 
-#undef LOCAL_DEBUG
-#ifdef LOCAL_DEBUG
+#ifdef CODEGEN_DEBUG
 #define CODEGEN_TRACE(msg) std::cout << msg << TRACE << std::endl;
 #else
 #define CODEGEN_TRACE(msg)
@@ -235,12 +234,26 @@ void plan_visitor::end_visit(if_expr& v)
 bool plan_visitor::begin_visit(fo_expr& v)
 {
   CODEGEN_TRACE(std::string(++depth, ' '));
+
 	itstack.push(NULL);
+
+  // If the function is an enclosed expression and we are in the context of
+  // a node constructor, push a NULL in the constructors stack to "hide" the
+  // current constructor context (so that a new constructor context can be
+  // started if a node constructor exists inside the enclosed expr).
+  //xqp_string fname = v.get_func()->get_fname()->getLocalName();
+  if (!theConstructorsStack.empty() &&
+      v.get_func()->get_fname()->getLocalName() == ":enclosed-expr")
+  {
+    theConstructorsStack.push(NULL);
+  }
+
 	return true;
 }
 
 
-void plan_visitor::end_visit(fo_expr& v) {
+void plan_visitor::end_visit(fo_expr& v) 
+{
   CODEGEN_TRACE(std::string(depth--, ' '));
 
 	const function* func_p = v.get_func();
@@ -259,11 +272,22 @@ void plan_visitor::end_visit(fo_expr& v) {
 	}
 
   const yy::location& loc = v.get_loc ();
-  if (func.validate_args (argv)) {
+
+  if (func.validate_args (argv)) 
+  {
     PlanIter_t iter = func(loc, argv);
     assert (iter != NULL);
     itstack.push (iter);
-  } else {
+
+    if (!theConstructorsStack.empty() &&
+        dynamic_cast<EnclosedIterator*>(iter.get_ptr()) != NULL)
+    {
+      Assert(theConstructorsStack.top() == NULL);
+      theConstructorsStack.pop();
+    }
+  }
+  else
+  {
     ZorbaErrorAlerts::error_alert (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
                                    error_messages::STATIC_ERROR,
                                    &loc);
@@ -273,13 +297,13 @@ void plan_visitor::end_visit(fo_expr& v) {
 
 bool plan_visitor::begin_visit(ft_select_expr& v)
 {
-CODEGEN_TRACE("");
+  CODEGEN_TRACE("");
 	return true;
 }
 
 bool plan_visitor::begin_visit(ft_contains_expr& v)
 {
-CODEGEN_TRACE("");
+  CODEGEN_TRACE("");
 	return true;
 }
 
@@ -548,8 +572,10 @@ void plan_visitor::end_visit(match_expr& v)
 
 /*******************************************************************************
 
+  Node Constructors
 
 ********************************************************************************/
+
 bool plan_visitor::begin_visit(doc_expr& v)
 {
   CODEGEN_TRACE("");
@@ -566,6 +592,11 @@ void plan_visitor::end_visit(doc_expr& v)
 bool plan_visitor::begin_visit(elem_expr& v)
 {
   CODEGEN_TRACE(std::string(++depth, ' '));
+
+  // Start a new construction context, if we are not in such a context already.
+  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
+    theConstructorsStack.push(&v);
+
 	return true;
 }
 
@@ -589,12 +620,22 @@ void plan_visitor::end_visit ( elem_expr& v )
   if ( v.getAttrs() != 0 )
     lAttrsIter = pop_itstack();
 
-  PlanIter_t lIter;
-
   lQNameIter = pop_itstack();
-  lIter = new ElementIterator ( v.get_loc(), lQNameIter, lAttrsIter, lContentIter, true );
 
-  itstack.push ( lIter );
+  bool assignId = false;
+  Assert(!theConstructorsStack.empty());
+  if (theConstructorsStack.top() == &v)
+  {
+    theConstructorsStack.pop();
+    assignId = true;
+  }
+
+	PlanIter_t iter = new ElementIterator(v.get_loc(),
+                                        lQNameIter,
+                                        lAttrsIter,
+                                        lContentIter,
+                                        assignId);
+  itstack.push ( iter );
 }
 
 
@@ -614,6 +655,11 @@ void plan_visitor::end_visit(compElem_expr& v)
 bool plan_visitor::begin_visit(attr_expr& v)
 {
   CODEGEN_TRACE("");
+
+  // Start a new construction context, if we are not in such a context already.
+  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
+    theConstructorsStack.push(&v);
+
 	return true;
 }
 
@@ -627,23 +673,30 @@ void plan_visitor::end_visit(attr_expr& v)
   
   ItemFactory& iFactory = Store::getInstance().getItemFactory();
 
-	// TODO dynamic qname
-// 	QNameItem_t itemQName = v.get_qname();
-
-	if (v.get_val_expr() != 0) {
+	if (v.get_val_expr() != 0)
+  {
 		lVarIter = pop_itstack();
     lVarIter = new EnclosedIterator(v.get_loc(), lVarIter);
-  } else {
+  }
+  else
+  {
     lVarIter = new EmptyIterator(v.get_loc());
   }
   
-  PlanIter_t lAttrIter = 0;
-//   if (v.get_qname_expr() != 0) {
-    lQNameIter = pop_itstack();
-    lAttrIter = new AttributeIterator(v.get_loc(), lQNameIter, lVarIter);
-//   } else {
-//     lAttrIter = new AttributeIterator(v.get_loc(), v.get_qname(), lVarIter);
-//   }
+  lQNameIter = pop_itstack();
+
+  bool assignId = false;
+  Assert(!theConstructorsStack.empty());
+  if (theConstructorsStack.top() == &v)
+  {
+    theConstructorsStack.pop();
+    assignId = true;
+  }
+
+  PlanIter_t lAttrIter = new AttributeIterator(v.get_loc(),
+                                               lQNameIter,
+                                               lVarIter,
+                                               assignId);
   
   itstack.push(lAttrIter);
 }
@@ -652,14 +705,29 @@ void plan_visitor::end_visit(attr_expr& v)
 bool plan_visitor::begin_visit(text_expr& v)
 {
   CODEGEN_TRACE(std::string(++depth, ' '));
+
+  // Start a new construction context, if we are not in such a context already.
+  if (theConstructorsStack.empty() || theConstructorsStack.top() == NULL)
+    theConstructorsStack.push(&v);
+
 	return true;
 }
 
 
 void plan_visitor::end_visit(text_expr& v)
 {
-  PlanIter_t content = pop_itstack ();
   CODEGEN_TRACE(std::string(--depth, ' '));
+
+  PlanIter_t content = pop_itstack ();
+
+  bool assignId = false;
+  Assert(!theConstructorsStack.empty());
+  if (theConstructorsStack.top() == &v)
+  {
+    theConstructorsStack.pop();
+    assignId = true;
+  }
+
   switch (v.get_type ()) {
   case text_expr::text_constructor:
 //     // assume this comes from a direct text constructor for now
@@ -668,11 +736,13 @@ void plan_visitor::end_visit(text_expr& v)
 //       xqpString text = v.get_text ().cast<const_expr> ()->get_val ()->getStringValue ();
 //       itstack.push (new SingletonIterator (v.get_loc (), ITEM_FACTORY.createTextNode (text)));
 //     }
-    itstack.push ( new TextIterator(v.get_loc(), content));
+    itstack.push (new TextIterator(v.get_loc(), content, assignId));
     break;
+
   case text_expr::comment_constructor:
-    itstack.push (new CommentIterator (v.get_loc(), content));
+    itstack.push (new CommentIterator (v.get_loc(), content, assignId));
     break;
+
   default:
     break;
   }
@@ -692,7 +762,10 @@ void plan_visitor::end_visit(pi_expr& v)
 }
 
 
+/*******************************************************************************
 
+
+********************************************************************************/
 
 bool plan_visitor::begin_visit(const_expr& v)
 {
