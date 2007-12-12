@@ -2,15 +2,19 @@
 
 # $1 is the build directory
 # $2 is test result file  in the build directory  
-
-
 # $3 is the file to test
 # $4 is the source directory of rbkt
 # $5 is the reference result
 
 
+if [ -f $2 ] # always delete the result file upfront
+then
+  rm -f $2
+fi
+
 $1/test/apitest -q -r -o "$2" "$3" # execute the query
-if [ -f $2 ]
+RETURNVALUE=$?
+if [ $RETURNVALUE -eq 0 -a -f $2 ] # if there was an error or no result file
 then
   echo
   echo "Result"
@@ -34,5 +38,5 @@ then
   fi
 else
   echo "error executing test"
-  exit 2
+  exit $RETURNVALUE
 fi
