@@ -117,7 +117,7 @@ public:
 			std::ostringstream os1, os2; \
 			os1 << msg1; \
 			os2 << msg2; \
-			ZorbaErrorAlerts::error_alert(e, errtype, ploc, ce, os1.c_str(), os2.c_str()); \
+			ZorbaErrorAlerts::error_alert(e, errtype, ploc, ce, os1.str().c_str(), os2.str().c_str()); \
 }
 
 #define		ZORBA_WARNING_ALERT(...)		\
@@ -127,7 +127,7 @@ public:
 			std::ostringstream os1, os2; \
 			os1 << msg1; \
 			os2 << msg2; \
-			ZorbaErrorAlerts::warning_alert(w, ploc, os1.c_str(), os2.c_str()); \
+			ZorbaErrorAlerts::warning_alert(w, ploc, os1.str().c_str(), os2.str().c_str()); \
 }
 
 #define		ZORBA_NOTIFY_EVENT(...)		\
@@ -137,7 +137,7 @@ public:
 			std::ostringstream os1, os2; \
 			os1 << msg1; \
 			os2 << msg2; \
-			ZorbaErrorAlerts::notify_event(notif_event, os1.c_str(), os2.c_str()); \
+			ZorbaErrorAlerts::notify_event(notif_event, os1.str().c_str(), os2.str().c_str()); \
 }
 
 
