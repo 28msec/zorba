@@ -100,7 +100,6 @@ namespace xqp
       bindingsNb ( aForLetClauses.size() ),
       orderMap(0)
   {
-    std::cout << "*********************Size" << orderByClause->orderSpecs.size()  << std::endl;
     if(orderByClause != 0 && orderByClause->orderSpecs.size() > 0){
       orderMap = new order_map_t( &(orderByClause->orderSpecs) );
     }else{

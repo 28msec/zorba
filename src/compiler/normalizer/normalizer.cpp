@@ -91,16 +91,13 @@ bool normalizer::begin_visit(if_expr& node)
 bool normalizer::begin_visit(fo_expr& node)
 {
   const function *func = node.get_func();
-  std::cout << "In fo_expr: " << func->get_fname()->getStringProperty() << endl;
   const signature& sign = func->get_signature();
 
-  int n = sign.arg_count();
+  int n = node.size();
   for(int i = 0; i < n; ++i) {
     expr::expr_t arg = node[i];
     const TypeSystem::xqtref_t& arg_type = sign[i];
-    std::cout << "Arg: " << i << " type: " << arg_type.get_ptr() << endl;
     TypeSystem::xqtref_t arg_prime_type = GENV_TYPESYSTEM.prime_type(*arg_type);
-    std::cout << "Arg: " << i << " prime type: " << arg_prime_type.get_ptr() << endl;
     if (GENV_TYPESYSTEM.is_subtype(*arg_prime_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE)) {
       arg = wrap_in_atomization(m_sctx, arg);
       arg = wrap_in_type_conversion(arg, arg_type);

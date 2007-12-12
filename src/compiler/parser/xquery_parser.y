@@ -1667,7 +1667,6 @@ FLWORExpr :
 	|	ForLetClauseList  WhereClause  RETURN  ExprSingle
 		{
 			if (debug) cout << "FLWORExpr [where.return]\n";
-			cout << "ExprSingle typeid = " << typeid(*$4).name() << endl;
 			$$ = new FLWORExpr(@$,
 								dynamic_cast<ForLetClauseList*>($1),
 								dynamic_cast<WhereClause*>($2),
