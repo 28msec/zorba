@@ -9,6 +9,7 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/path_iterators.h"
 #include "runtime/core/nodeid_iterators.h"
+#include "runtime/core/sequencetypes.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/strings/StringsImpl.h"
 #include "runtime/numerics/NumericsImpl.h"
@@ -76,6 +77,7 @@ namespace xqp {
   UNARY_ACCEPT(FollowingAxisIterator);
   UNARY_ACCEPT(FnBooleanIterator);
   UNARY_ACCEPT(AttributeIterator);
+  UNARY_ACCEPT(InstanceOfIterator);
   UNARY_ACCEPT(CodepointsToStringIterator);
   UNARY_ACCEPT(StringToCodepointsIterator);
   UNARY_ACCEPT(StringLengthIterator);

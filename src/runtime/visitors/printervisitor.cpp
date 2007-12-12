@@ -4,6 +4,7 @@
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
+#include "runtime/core/sequencetypes.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/flwor_iterator.h"
@@ -307,7 +308,15 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FollowingAxisIterator& a ) {
     thePrinter.endIter();
   }
-       
+
+  void PrinterVisitor::beginVisit ( const InstanceOfIterator& a ) {
+    thePrinter.startIter("InstanceOfIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const InstanceOfIterator& a ) {
+    thePrinter.endIter();
+  }
+
   void PrinterVisitor::beginVisit ( const ArithmeticIterator<AddOperations>& a ) {
     thePrinter.startIter("ArithmeticIterator_AddOperations");
     printCommons( &a );

@@ -5,6 +5,7 @@ SET(RUNTIME_SRCS
     core/constructors.cpp
     core/path_iterators.cpp
     core/nodeid_iterators.cpp
+    core/sequencetypes.cpp
     numerics/NumericsImpl.cpp
     strings/StringsImpl.cpp
     booleans/BooleanImpl.cpp

@@ -118,6 +118,9 @@ namespace xqp {
       virtual void beginVisit ( const FollowingAxisIterator& ) ;
       virtual void endVisit ( const FollowingAxisIterator& ) ;
        
+      virtual void beginVisit ( const InstanceOfIterator& ) ;
+      virtual void endVisit ( const InstanceOfIterator& ) ;       
+       
       virtual void beginVisit ( const ArithmeticIterator<AddOperations>& ) ;
       virtual void beginVisit ( const ArithmeticIterator<SubtractOperations>& ) ;
       virtual void beginVisit ( const ArithmeticIterator<MultiplyOperations>& ) ;
