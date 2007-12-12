@@ -10,12 +10,19 @@
 
 
 $1/test/apitest -r -o "$2" "$3" # execute the query
-cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy" # tidy the generated result and store it in the build dir
-if [ -f "$4/$5" ]
+if [ -f $2 ]
 then
-  cat "$4/$5" | "$4/Scripts/tidy_xmlfrag" > "$1/test/rbkt/$5.tidy"
-  diff "$2.tidy" "$1/test/rbkt/$5.tidy" > "$1/test/rbkt/$5.diff"
+  cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy" # tidy the generated result and store it in the build dir
+  if [ -f "$4/$5" ]
+  then
+    cat "$4/$5" | "$4/Scripts/tidy_xmlfrag" > "$1/test/rbkt/$5.tidy"
+    diff "$2.tidy" "$1/test/rbkt/$5.tidy" > "$1/test/rbkt/$5.diff"
+    exit $?
+  else
+    echo "reference result does not exist " "$4/$5"
+    exit 1
+  fi
 else
-  echo "reference result does not exist " "$4/$5"
-  exit 1
+  echo "error executing test"
+  exit 2
 fi
