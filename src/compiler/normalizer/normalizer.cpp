@@ -59,6 +59,11 @@ bool normalizer::begin_visit(flwor_expr& node)
   if (where_h.get_ptr()) {
     node.set_where(wrap_in_bev(m_sctx, where_h));
   }
+  uint32_t on = node.orderspec_count();
+  for(uint32_t i = 0; i < on; ++i) {
+    flwor_expr::orderspec_t& os = node.orderspec_at(i);
+    os.first = wrap_in_atomization(m_sctx, os.first);
+  }
   return true;
 }
 

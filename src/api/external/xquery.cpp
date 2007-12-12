@@ -25,9 +25,6 @@
 #include <iostream>
 #include <fstream>
 
-#define ENABLE_NORMALIZER
-#undef ENABLE_NORMALIZER
-
 using namespace std;
 namespace xqp {
 
@@ -183,14 +180,12 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	}
   
 
-#ifdef ENABLE_NORMALIZER
     normalizer n(thread_specific_zorba->get_static_context());
 
     e_h->accept(n);
 
     if (Properties::instance()->printNormalizedExpressions())
       e_h->put(cout) << endl;
-#endif
 
 	///now do code generation (generate iterator tree)
 
