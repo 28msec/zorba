@@ -294,6 +294,33 @@ public:
 | Extensions
 |_______________________________________________________________________*/
 
+// internal distinct-nodes function
+class fn_distinct_nodes : public function
+{
+public:
+	fn_distinct_nodes(const signature&);
+	~fn_distinct_nodes() {}
+
+public:
+	TypeSystem::xqtref_t type_check(signature&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+// internal sort-nodes function
+class fn_sort_nodes : public function
+{
+public:
+	fn_sort_nodes(const signature&);
+	~fn_sort_nodes() {}
+
+public:
+	TypeSystem::xqtref_t type_check(signature&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+
 PlanIter_t xqp_load(
 	const std::string& path,
 	const std::string& baseuri,
