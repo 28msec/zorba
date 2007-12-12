@@ -170,6 +170,12 @@ DECL(fn_index_of,
     GENV_TYPESYSTEM.ITEM_TYPE_ONE,
     GENV_TYPESYSTEM.INTEGER_TYPE_STAR));
 
+DECL(fn_remove,
+    (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","remove"),
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+    GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+    GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
 // FIXME how to add the second optional string param
 DECL(fn_distinct_values,
     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-values"),

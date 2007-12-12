@@ -131,6 +131,17 @@ public:
 
 //15.1.8 fn:remove
 //----------------
+class fn_remove : public function
+{
+public:
+	fn_remove(const signature&);
+	~fn_remove() {}
+
+public:
+	PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+	TypeSystem::xqtref_t type_check(signature&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 
 //15.1.9 fn:reverse

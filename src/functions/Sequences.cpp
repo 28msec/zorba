@@ -259,6 +259,27 @@ TypeSystem::xqtref_t fn_insert_before::type_check(
 
 //15.1.8 fn:remove
 //----------------
+fn_remove::fn_remove(const signature& sig)
+  : function(sig) { }
+
+PlanIter_t fn_remove::operator()(
+	const yy::location& loc, 
+	vector<PlanIter_t>& argv) const
+{
+  return new FnRemoveIterator(loc, argv[0], argv[1]);
+}
+
+bool fn_remove::validate_args(
+	vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 2); 
+}
+
+TypeSystem::xqtref_t fn_remove::type_check(
+	signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
 
 
 //15.1.9 fn:reverse

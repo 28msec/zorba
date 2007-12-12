@@ -107,6 +107,7 @@ namespace xqp {
   BINARY_ACCEPT(LogicIterator);
   BINARY_ACCEPT(CompareIterator);
   BINARY_ACCEPT(FnIndexOfIterator);
+  BINARY_ACCEPT(FnRemoveIterator);
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
   
   // nary iterators

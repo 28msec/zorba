@@ -245,6 +245,43 @@ protected:
 // 
 
 //15.1.8 fn:remove
+// Returns a new sequence constructed from the value of aTarget with the item at the position specified by the 
+// value of aPosition removed.
+class FnRemoveIterator : public BinaryBaseIterator<FnRemoveIterator>
+{
+
+public:
+  FnRemoveIterator(yy::location loc, PlanIter_t& aTarget, PlanIter_t& aPosition);
+ 
+  ~FnRemoveIterator();
+
+  Item_t 
+  nextImpl(PlanState& planState);
+ 
+  void 
+  resetImpl(PlanState& planState);
+  
+  void 
+  releaseResourcesImpl(PlanState& planState);
+ 
+  virtual void 
+  accept(PlanIterVisitor&) const;
+
+  virtual uint32_t 
+  getStateSize() const { return sizeof ( FnRemoveIteratorState ); }
+ 
+protected:
+  class FnRemoveIteratorState : public PlanIteratorState {
+  public:  
+    xqp_integer theCurrentPos; // the current position in the sequence
+    xqp_integer thePosition; // the position to delete
+  
+    void init();
+    void reset();
+  };
+  
+};
+
 
 //15.1.9 fn:reverse
 

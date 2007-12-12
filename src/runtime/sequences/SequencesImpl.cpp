@@ -436,6 +436,87 @@ FnInsertBeforeIterator::FnInsertBeforeIteratorState::reset() {
 
 
 //15.1.8 fn:remove
+// FIXME this iterator has three arguments (i.e. the collaction as #3)
+FnRemoveIterator::FnRemoveIterator(yy::location loc,
+                                    PlanIter_t& arg1,
+                                    PlanIter_t& arg2)
+ : BinaryBaseIterator<FnRemoveIterator> ( loc, arg1, arg2 )
+{ }
+
+FnRemoveIterator::~FnRemoveIterator(){}
+
+Item_t 
+FnRemoveIterator::nextImpl(PlanState& planState) {
+  Item_t lSequenceItem;
+  Item_t lPositionItem;
+
+  FnRemoveIteratorState* state;
+  DEFAULT_STACK_INIT(FnRemoveIteratorState, state, planState);
+  
+  lPositionItem = consumeNext(theChild1, planState);
+  if ( lPositionItem == NULL ) 
+  {
+    ZORBA_ERROR_ALERT(
+         error_messages::FORG0006_INVALID_ARGUMENT_TYPE,
+         error_messages::RUNTIME_ERROR,
+         NULL, false,
+         "An empty sequence is not allowed as second argument to of fn:remove");    
+  }
+
+  state->thePosition = lPositionItem->getIntegerValue();
+
+  while ( (lSequenceItem = consumeNext(theChild0, planState)) != NULL )
+  {
+    // inc the position in the sequence; do it at the beginning of the loop because fn:remove starts with one
+    ++state->theCurrentPos; 
+  
+    if (state->theCurrentPos == state->thePosition)
+      continue;
+  
+    STACK_PUSH (lSequenceItem, state);
+  }
+
+  STACK_END();
+}
+
+
+void 
+FnRemoveIterator::releaseResourcesImpl(PlanState& planState)
+{
+  BinaryBaseIterator<FnRemoveIterator>::releaseResourcesImpl(planState);
+  
+  FnRemoveIteratorState* state;
+  GET_STATE(FnRemoveIteratorState, state, planState);
+
+  state->reset(); 
+}
+
+void 
+FnRemoveIterator::resetImpl(PlanState& planState)
+{
+  BinaryBaseIterator<FnRemoveIterator>::resetImpl(planState);
+
+  FnRemoveIteratorState* state;
+  GET_STATE(FnRemoveIteratorState, state, planState);
+  state->reset();
+}
+
+
+void
+FnRemoveIterator::FnRemoveIteratorState::init() 
+{
+ PlanIterator::PlanIteratorState::init();
+ theCurrentPos = 0;
+ thePosition   = 0;
+}
+
+void
+FnRemoveIterator::FnRemoveIteratorState::reset() {
+ PlanIterator::PlanIteratorState::reset();
+ theCurrentPos = 0;
+ thePosition   = 0;
+}
+
 
 //15.1.9 fn:reverse
 

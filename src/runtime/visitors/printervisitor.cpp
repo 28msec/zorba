@@ -442,7 +442,14 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const FnIndexOfIterator& a ) {
     thePrinter.endIter();
   }
-  
+
+  void PrinterVisitor::beginVisit ( const FnRemoveIterator& a ) {
+    thePrinter.startIter("FnIndexOfIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FnRemoveIterator& a ) {
+    thePrinter.endIter();
+  }
 
   void PrinterVisitor::beginVisit ( const FnDistinctValuesIterator& a ) {
     thePrinter.startIter("FnDistinctValuesIterator");
