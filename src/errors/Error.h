@@ -13,7 +13,7 @@
 
 #include <string>
 
-#include "errors.h"
+#include "errors/errors.h"
 #include "xqp_exception.h"
 #include "compiler/parser/location.hh"
 

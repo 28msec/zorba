@@ -14,9 +14,7 @@
 #ifndef XQP_STRING
 #define XQP_STRING
 
-#ifdef WIN32
-#include "util/win32/compatib_defs.h"
-#endif
+#include "zorba/common.h"
 
 #include <iostream>
 #include <stdlib.h>

@@ -7,8 +7,7 @@
 #include <cassert>
 
 #ifdef WIN32
-#include <windows.h>
-#include "util/win32/compatib_defs.h"
+#include "util/win32/stdint.h"
 #endif
 
 #endif

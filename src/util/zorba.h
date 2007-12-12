@@ -51,7 +51,7 @@ class CollationManager;
 ///Thread Local Storage: this object is global specific to each thread
 class zorba
 {
-	friend class ZorbaFactory;
+	friend class ZorbaEngine;
 public:
 	static Store				*theStore;
 	static ItemFactory	*theItemFactory;

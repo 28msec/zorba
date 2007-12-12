@@ -17,21 +17,21 @@
 namespace xqp{
 
 
-ZorbaFactory	*g_ZorbaFactory = NULL;
+ZorbaEngine	*g_ZorbaFactory = NULL;
 
 
-ZorbaFactory&	ZorbaFactory::getInstance()
+ZorbaEngine&	ZorbaEngine::getInstance()
 {
 	if(!g_ZorbaFactory)
 	{
-		g_ZorbaFactory = new ZorbaFactory;
+		g_ZorbaFactory = new ZorbaEngine;
 		zorba::initializeZorbaEngine();//Store::getInstance());
 	}
 	return *g_ZorbaFactory;
 }
 
 
-void ZorbaFactory::shutdownZorbaEngine()
+void ZorbaEngine::shutdownZorbaEngine()
 {
 	zorba::uninitializeZorbaEngine();
 
@@ -39,19 +39,19 @@ void ZorbaFactory::shutdownZorbaEngine()
 	g_ZorbaFactory = NULL;
 }
 
-ZorbaFactory::ZorbaFactory()
+ZorbaEngine::ZorbaEngine()
 {
 }
 
 /*
-ZorbaFactory::ZorbaFactory(ItemFactory *item_factory,
+ZorbaEngine::ZorbaEngine(ItemFactory *item_factory,
 													Store *theStore)
 {
 	zorba::initializeZorbaEngine(item_factory, theStore);
 }
 
 
-ZorbaFactory::~ZorbaFactory()
+ZorbaEngine::~ZorbaEngine()
 {
 	zorba::uninitializeZorbaEngine();
 
@@ -59,7 +59,7 @@ ZorbaFactory::~ZorbaFactory()
 }
 */
 
-void ZorbaFactory::InitThread(
+void ZorbaEngine::InitThread(
     error_messages* em)//=NULL
 //    const char *collator_name,// = "root",
 //    ::Collator::ECollationStrength collator_strength)// = Collator::PRIMARY)
@@ -76,16 +76,17 @@ void ZorbaFactory::InitThread(
 
 //	zorp->coll_string = collator_name;
 //	zorp->coll_strength = collator_strength;
+
 }
 
 
-void ZorbaFactory::UninitThread()
+void ZorbaEngine::UninitThread()
 {
 	zorba::destroyZorbaForCurrentThread();
 }
 
 
-XQuery_t ZorbaFactory::createQuery(const char* aQueryString,
+XQuery_t ZorbaEngine::createQuery(const char* aQueryString,
 																	 StaticQueryContext_t sctx, 
 																	 xqp_string	xquery_source_uri,
 																	 bool routing_mode)
@@ -101,50 +102,50 @@ XQuery_t ZorbaFactory::createQuery(const char* aQueryString,
 	return xq;
 }
 /*
-void		ZorbaFactory::destroyQuery( XQuery *query )
+void		ZorbaEngine::destroyQuery( XQuery *query )
 {
 	query->removeReference();
 }
 */
 
-Zorba_AlertsManager&		ZorbaFactory::getAlertsManagerForCurrentThread()
+Zorba_AlertsManager&		ZorbaEngine::getAlertsManagerForCurrentThread()
 {
 	zorba	*z = zorba::getZorbaForCurrentThread();
 
 	return *z->getErrorManager();
 }
 
-void		ZorbaFactory::setDefaultCollation(std::string  coll_string, ::Collator::ECollationStrength coll_strength)
+void		ZorbaEngine::setDefaultCollation(std::string  coll_string, ::Collator::ECollationStrength coll_strength)
 {
 	zorba::getZorbaForCurrentThread()->setDefaultCollation(coll_string, coll_strength);
 }
 
-void		ZorbaFactory::setDefaultCollation(::Collator *default_coll)
+void		ZorbaEngine::setDefaultCollation(::Collator *default_coll)
 {
 	zorba::getZorbaForCurrentThread()->setDefaultCollation(default_coll);
 }
 
-void		ZorbaFactory::getDefaultCollation(std::string  *coll_string, ::Collator::ECollationStrength *coll_strength, ::Collator **default_coll)
+void		ZorbaEngine::getDefaultCollation(std::string  *coll_string, ::Collator::ECollationStrength *coll_strength, ::Collator **default_coll)
 {
 	zorba::getZorbaForCurrentThread()->getDefaultCollation(coll_string, coll_strength, default_coll);
 }
 
-void	ZorbaFactory::setItemSerializerParameter(xqp_string parameter_name, xqp_string value)
+void	ZorbaEngine::setItemSerializerParameter(xqp_string parameter_name, xqp_string value)
 {
 	zorba::getZorbaForCurrentThread()->getItemSerializer()->set_parameter(parameter_name, value);
 }
 
-void	ZorbaFactory::setDocSerializerParameter(xqp_string parameter_name, xqp_string value)
+void	ZorbaEngine::setDocSerializerParameter(xqp_string parameter_name, xqp_string value)
 {
 	zorba::getZorbaForCurrentThread()->getDocSerializer()->set_parameter(parameter_name, value);
 }
 
-StaticQueryContext_t ZorbaFactory::createStaticContext()
+StaticQueryContext_t ZorbaEngine::createStaticContext()
 {
 	return new StaticContextWrapper;
 }
 
-DynamicQueryContext_t ZorbaFactory::createDynamicContext()
+DynamicQueryContext_t ZorbaEngine::createDynamicContext()
 {
 	return new DynamicContextWrapper;
 }

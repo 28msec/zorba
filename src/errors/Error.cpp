@@ -8,7 +8,7 @@
 #include <iomanip>
 #include <stdlib.h>
 #include "util/zorba.h"
-#include "../store/api/item.h"
+#include "store/api/item.h"
 #include "runtime/base/iterator.h"
 #include <time.h>
 #include "api/external/xquerybinary.h"

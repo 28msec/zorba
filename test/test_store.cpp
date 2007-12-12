@@ -76,7 +76,7 @@ int main(int argc, const char * argv[])
   //
   // Zorba initialization
   // 
-  ZorbaFactory& zorba_factory = ZorbaFactory::getInstance();
+  ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
 	zorba_factory.InitThread();
 

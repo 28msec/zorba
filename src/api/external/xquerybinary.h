@@ -76,7 +76,7 @@ public:
 
 class Zorba_XQueryBinary : public XQuery
 {
-    friend class ZorbaFactory;
+    friend class ZorbaEngine;
 		friend class XQueryPtr;
 		friend class zorba;
 public:

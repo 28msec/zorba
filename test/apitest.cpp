@@ -123,7 +123,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	///now start the zorba engine
 
-	ZorbaFactory& zorba_factory = ZorbaFactory::getInstance();
+	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
 	///thread specific
 
@@ -157,14 +157,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	//create a compiled query
 	query = zorba_factory.createQuery(query_text.c_str(), sctx1);
 
-	if(!query.get_ptr())
+	if(query.isNull())
 	{
 		goto DisplayErrorsAndExit;
 	}
 
 
 	result = query->createExecution();
-	if(!result.get_ptr())
+	if(result.isNull())
 	{
 		goto DisplayErrorsAndExit;
 	}
@@ -214,7 +214,7 @@ int _tmain(int argc, _TCHAR* argv[])
 //	zorba_factory.destroyQuery(query);
 
 	zorba_factory.UninitThread();
-	ZorbaFactory::shutdownZorbaEngine();
+	ZorbaEngine::shutdownZorbaEngine();
 
 	timer.end();
 
@@ -234,7 +234,7 @@ DisplayErrorsAndExit:
 	DisplayErrorListForCurrentThread();
 
 	zorba_factory.UninitThread();
-	ZorbaFactory::shutdownZorbaEngine();
+	ZorbaEngine::shutdownZorbaEngine();
 
 	timer.end();
   if (lProp->printTime())

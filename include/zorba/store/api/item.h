@@ -59,7 +59,7 @@ public:
  *         union of node types and atomic types
  *	[http://www.w3.org/TR/xquery-semantics/doc-fs-Item]
  */
-class Item : public rcobject
+class Item : virtual public rcobject
 {
 private:
   /**

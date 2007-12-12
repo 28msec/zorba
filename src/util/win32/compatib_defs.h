@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "stdint.h"
+#include "util/win32/stdint.h"
 
 // typedef unsigned long uint32_t;
 // typedef __int64		int64_t;

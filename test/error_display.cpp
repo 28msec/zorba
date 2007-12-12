@@ -13,7 +13,7 @@ using namespace xqp;
 
 void DisplayErrorListForCurrentThread()
 {
-	ZorbaFactory& zorba_factory = ZorbaFactory::getInstance();
+	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
 
 	Zorba_AlertsManager& errmanager = zorba_factory.getAlertsManagerForCurrentThread();
 
