@@ -52,17 +52,11 @@ Item_t
 ElementIterator::nextImpl(PlanState& planState)
 {
   Item_t item;
-
-  Store* store = zorba::getStore();
-  TempSeq_t seqChildren;
-  TempSeq_t seqAttributes;
-  TempSeq_t seqNamespaces;
-  Iterator_t cwrapper;
-  Iterator_t awrapper;
-  Iterator_t nwrapper;
+  Iterator_t cwrapper = 0;
+  Iterator_t awrapper = 0;
+  Iterator_t nwrapper = 0;
   Item_t lItem;
   QNameItem_t lQName;
-  
   
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -71,31 +65,21 @@ ElementIterator::nextImpl(PlanState& planState)
   // TODO typecheck and possible parsing 
   // (dynamic context must be possible to provide the prefix namespace mapping)
   lQName = (QNameItem*)&*lItem;
-    
-  if (theChildrenIter != NULL)
-  {
+
+  if (theChildrenIter != 0)
     cwrapper = new PlanIteratorWrapper(theChildrenIter, planState);
-    seqChildren = store->createTempSeq(cwrapper);
-  }
 
-  if (theAttributesIter != NULL)
-  {
+  if (theAttributesIter != 0)
     awrapper = new PlanIteratorWrapper(theAttributesIter, planState);
-    seqAttributes = store->createTempSeq(awrapper);
-  }
 
-  if (theNamespacesIter != NULL)
-  {
-    nwrapper = new PlanIteratorWrapper(theNamespacesIter, planState); 
-    seqNamespaces = store->createTempSeq(nwrapper);
-  }
+  //nwrapper = new PlanIteratorWrapper(theNamespacesIter, planState); 
 
   item = zorba::getItemFactory()->createElementNode(
                lQName,
                GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
-               seqChildren,
-               seqAttributes,
-               seqNamespaces,
+               cwrapper,
+               awrapper,
+               nwrapper,
                theNsBindings,
                false,
                false,
@@ -208,11 +192,14 @@ ElementContentIterator::nextImpl(PlanState& planState)
   {
     state->theContextItem = this->consumeNext(theChild, planState );
     
-    // Check to find out if the content contains an attribute child which is located after a non attribute child
+    // Check to find out if the content contains an attribute child which is
+    // located after a non attribute child
     if (state->theContextItem != 0 
         && state->theContextItem->isNode() 
-        && (state->theContextItem->getNodeKind() == StoreConsts::attributeNode)) {
-      if (state->theNoAttrAllowed) {
+        && (state->theContextItem->getNodeKind() == StoreConsts::attributeNode)) 
+    {
+      if (state->theNoAttrAllowed)
+      {
         ZorbaErrorAlerts::error_alert (
           error_messages::XQTY0024_TYPE_ATTRIBUTE_NODE_OUT_OF_ORDER,
           error_messages::RUNTIME_ERROR,
@@ -220,7 +207,9 @@ ElementContentIterator::nextImpl(PlanState& planState)
           "Content sequence of element contains an attribute node following a node that is not an attribute node!"
         );
       }
-    } else {
+    }
+    else
+    {
       state->theNoAttrAllowed = true;
     }
     
@@ -228,7 +217,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
     {
       if (state->theString != "")
       {
-        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
+        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false), state);
         state->theString = "";
       }
       break;
@@ -242,7 +231,7 @@ ElementContentIterator::nextImpl(PlanState& planState)
     {
       if (state->theString != "")
       {
-        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString).get_ptr(), state);
+        STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false), state);
         state->theString = "";
       }
       STACK_PUSH(state->theContextItem, state);
@@ -271,7 +260,7 @@ ElementContentIterator::releaseResourcesImpl(PlanState& planState)
   ElementContentState* state;
   GET_STATE(ElementContentState, state, planState);
   state->theContextItem = NULL;
-  state->theString.clear();
+  state->theString.~xqpString();
 }
 
 void ElementContentIterator::ElementContentState::init()
@@ -289,11 +278,13 @@ void ElementContentIterator::ElementContentState::init()
 AttributeIterator::AttributeIterator(
     const yy::location& loc,
     PlanIter_t& aQNameIter,
-    PlanIter_t& aValueIter)
+    PlanIter_t& aValueIter,
+    bool assignId)
   :
     Batcher<AttributeIterator>( loc ),
     theQNameIter(aQNameIter),
-    theChild(aValueIter)
+    theChild(aValueIter),
+    theAssignId(assignId)
 {
 }
 
@@ -351,7 +342,8 @@ AttributeIterator::nextImpl(PlanState& planState)
                lQName,
                GENV_TYPESYSTEM.XS_ANY_TYPE_QNAME,
                itemLexical,
-               itemTyped).get_ptr();
+               itemTyped,
+               theAssignId);
 
   STACK_PUSH(item, state);
   STACK_END();
@@ -412,9 +404,11 @@ void AttributeIterator::setOffset(PlanState& planState, uint32_t& offset)
 ********************************************************************************/
 CommentIterator::CommentIterator (
     const yy::location& loc,
-    PlanIter_t& aComment)
+    PlanIter_t& aComment,
+    bool assignId)
   :
-  UnaryBaseIterator<CommentIterator>(loc, aComment)
+  UnaryBaseIterator<CommentIterator>(loc, aComment),
+  theAssignId(assignId)
 {
 }
 
@@ -435,26 +429,36 @@ Item_t CommentIterator::nextImpl(PlanState& planState)
     seqExpression = store->createTempSeq(ewrapper);
     */
     // TODO: put a while() to handle expressions        
-    child = consumeNext( theChild, planState);    
-    if (child != NULL)
-      content = child->getStringValue(); // TODO: maybe getStringProperty()?
-
+  child = consumeNext(theChild, planState);    
+  if (child != NULL)
+    content = child->getStringValue(); // TODO: maybe getStringProperty()?
+  
   item = zorba::getItemFactory()->createCommentNode(
                content,
-               false);
+               theAssignId);
 
   STACK_PUSH(item, state);
     
   STACK_END();
 }
 
-/* begin class TextIterator */
 
-TextIterator::TextIterator(const yy::location& loc, PlanIter_t& aChild) 
-  : UnaryBaseIterator<TextIterator>(loc, aChild)
-{}
+/*******************************************************************************
 
-Item_t TextIterator::nextImpl(PlanState& planState) {
+********************************************************************************/
+TextIterator::TextIterator(
+    const yy::location& loc,
+    PlanIter_t& aChild,
+    bool assignId) 
+  :
+  UnaryBaseIterator<TextIterator>(loc, aChild),
+  theAssignId(assignId)
+{
+}
+
+
+Item_t TextIterator::nextImpl(PlanState& planState)
+{
   Item_t lItem;
   xqp_string content = "";
   bool lFirst;
@@ -465,7 +469,8 @@ Item_t TextIterator::nextImpl(PlanState& planState) {
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
       
   lFirst = true;
-  while (true) {
+  while (true)
+  {
     lItem = consumeNext(theChild, planState);
     if (lItem == 0)
       break;
@@ -476,7 +481,7 @@ Item_t TextIterator::nextImpl(PlanState& planState) {
     lFirst = false;
   }
 
-  lItem = zorba::getItemFactory()->createTextNode(content);
+  lItem = zorba::getItemFactory()->createTextNode(content, theAssignId);
 
   STACK_PUSH(lItem, state);
     

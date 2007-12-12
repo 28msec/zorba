@@ -64,8 +64,8 @@ namespace xqp
       {
         if ( state->theString != "" )
         {
-          STACK_PUSH ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
-                        state );
+          STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false),
+                     state);
           state->theString = "";
         }
         break;
@@ -74,8 +74,8 @@ namespace xqp
       {
         if ( state->theString != "" )
         {
-          STACK_PUSH ( zorba::getItemFactory()->createTextNode ( state->theString ).get_ptr(),
-                        state );
+          STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false),
+                     state );
           state->theString = "";
         }
         STACK_PUSH ( state->theContextItem, state );
@@ -86,8 +86,7 @@ namespace xqp
       }
       else
       {
-        state->theString += " "
-                            + state->theContextItem->getStringProperty();
+        state->theString += " " + state->theContextItem->getStringProperty();
       }
     }
     STACK_END();

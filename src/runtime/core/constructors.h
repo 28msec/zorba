@@ -62,7 +62,6 @@ public:
       PlanIter_t& aChildren,
       bool assignId);
 
-  
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
   void releaseResourcesImpl(PlanState& planState);
@@ -115,12 +114,14 @@ class AttributeIterator : public Batcher<AttributeIterator>
 private:
   PlanIter_t theQNameIter;
   PlanIter_t theChild;
-    
+  bool       theAssignId;
+
 public:
   AttributeIterator(
         const yy::location& loc,
         PlanIter_t& aQNameIter,
-        PlanIter_t& aValueIter);
+        PlanIter_t& aValueIter,
+        bool assignId);
     
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
@@ -143,12 +144,16 @@ public:
 
 ********************************************************************************/
 
-class CommentIterator : public UnaryBaseIterator<CommentIterator> {
+class CommentIterator : public UnaryBaseIterator<CommentIterator>
+{
+protected:
+  bool       theAssignId;
 
 public:
   CommentIterator(
         const yy::location& loc, 
-        PlanIter_t& aComment);
+        PlanIter_t& aComment,
+        bool assignId);
   
   Item_t nextImpl(PlanState& planState);
   
@@ -167,9 +172,11 @@ public:
 
 class TextIterator : public UnaryBaseIterator<TextIterator>
 {
+protected:
+  bool       theAssignId;
 
 public:
-  TextIterator( const yy::location& loc, PlanIter_t& aChild);
+  TextIterator( const yy::location& loc, PlanIter_t& aChild, bool assignId);
   
   Item_t nextImpl(PlanState& planState);
   virtual void accept(PlanIterVisitor&) const;
