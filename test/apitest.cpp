@@ -237,9 +237,9 @@ DisplayErrorsAndExit:
 	ZorbaFactory::shutdownZorbaEngine();
 
 	timer.end();
-
-	timer.print(cout);
+  if (lProp->printTime())
+	  timer.print(cout);
 	
-	return -1;
+	return 1;
 }
 
