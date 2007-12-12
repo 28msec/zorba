@@ -83,7 +83,9 @@ public:
 public:	// operator overloading
   rchandle& operator=(rchandle const& rhs);
   T* operator->() const; 
-  T& operator*() const;  
+  T& operator*() const;
+  operator T* () { return get_ptr (); }
+  operator const T * () { return get_ptr (); }
 	bool operator==(rchandle const& h) const;
 	bool operator!=(rchandle const& h) const;
 	bool operator==(T const* pp) const;

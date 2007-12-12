@@ -208,9 +208,9 @@ Collection_t SimpleStore::createCollection()
 ********************************************************************************/
 Collection_t SimpleStore::getCollection(Item_t uri)
 {
-  Collection_t collection;
+  Collection_t collection;  // initialized to NULL
   bool found = theCollections.get(uri->getStringValue(), collection);
-  return (found ? collection : NULL);
+  return collection;
 }
 
 
