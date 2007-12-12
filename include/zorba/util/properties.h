@@ -18,6 +18,7 @@ namespace xqp {
       bool theUseResultFile;
       bool theAbortWhenFatalError;
       bool theInlineQuery;
+      bool thePrintQuery;
       
       /**
        * Constructor.
@@ -87,6 +88,7 @@ namespace xqp {
       bool useResultFile() { return theUseResultFile; }
       bool abortWhenFatalError() { return theAbortWhenFatalError; }
       bool inlineQuery() { return theInlineQuery; }
+      bool printQuery()  { return thePrintQuery; }
       
   }; /* class Properties */
 } /* namespace xqp */

@@ -117,6 +117,11 @@ int _tmain(int argc, _TCHAR* argv[])
       }      
     }    
   }
+  
+  if (lProp->printQuery())
+  {
+    std::cout << query_text << std::endl;
+  }
 
 
 

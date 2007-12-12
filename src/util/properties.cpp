@@ -19,7 +19,8 @@ namespace xqp
   
   Properties::Properties() 
   : theQuery("1+1"),
-    theResultFile("")
+    theResultFile(""),
+    thePrintQuery(false)
   {
   }
   
@@ -98,6 +99,7 @@ namespace xqp
       ("result-file,o", po::value<std::string>(&theResultFile), "result file")
       ("abort", "abort when fatal error happens")
       ("inline-query,e", "inline query")
+      ("print-query,q", "print the query query")
     ;
 
     // Declaration of Hidden Options (hidden => not shown when --help is invoked)
@@ -179,6 +181,7 @@ namespace xqp
     theUseResultFile = lVarMap.count("result-file");
     theAbortWhenFatalError = lVarMap.count("abort");
     theInlineQuery = lVarMap.count("inline-query");
+    thePrintQuery = lVarMap.count("print-query");
     
     Properties::theLoaded = true;
     
