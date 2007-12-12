@@ -48,26 +48,20 @@ YY_DECL;
 
 namespace xqp {
 
-extern  bool g_trace_scanning;
-extern  bool g_trace_parsing;
-
 /**
 ** Conducting the whole scanning and parsing of xquery.
 */
 class xquery_driver
 {
 public:	// state
-//  bool trace_scanning;
-//  bool trace_parsing;
   xqp_string filename;
 	xqp::symbol_table symtab;
-	std::ostream& os;
 	parsenode* expr_p;
 	bool rename_bit;
 	bool ftcontains_bit;
 
 public:	
-  xquery_driver(std::ostream&, uint32_t initial_heapsize = 1024);
+  xquery_driver(uint32_t initial_heapsize = 1024);
   virtual ~xquery_driver();
   
 public: // manipulators
@@ -78,7 +72,6 @@ public: // manipulators
 	int get_debug() const { return debug; }
 	void set_debug(int d) { debug = d; }
   xqp_string get_file() const { return filename; }
-  std::ostream& get_os() { return os; }
 	void set_expr(parsenode* e_p) { expr_p = e_p; }
 	parsenode* get_expr() const { return expr_p; }
 

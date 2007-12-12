@@ -46,6 +46,7 @@
 #include "compiler/parser/symbol_table.h"
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
+#include "zorba/util/properties.h"
 
 /*
 	Work around an incompatibility in flex (at least versions
@@ -3045,7 +3046,8 @@ void xquery_driver::parse_string( const char *query_string)
 	YY_BUFFER_STATE str_buffer = yy_scan_string(query_string, scanner);
 	
   yy::xquery_parser parser(*this, scanner);
-	parser.set_debug_level(g_trace_parsing);
+  
+	parser.set_debug_level(Properties::instance()->traceParsing());
 	parser.parse();
 
 	yy_delete_buffer(str_buffer, scanner); /* free up memory */
@@ -3059,7 +3061,7 @@ void xquery_driver::parse(xqp_string const fname)
   
   struct yyguts_t * yyg = (struct yyguts_t*)scanner;
   
-  yy_flex_debug = g_trace_scanning;
+  yy_flex_debug = Properties::instance()->traceScanning();
   filename = fname;
   
   if (!(yyin = fopen(((std::string)fname).c_str (), "r"))) {
@@ -3067,7 +3069,7 @@ void xquery_driver::parse(xqp_string const fname)
   }
   
   yy::xquery_parser parser(*this, scanner);
-  parser.set_debug_level(g_trace_parsing);
+  parser.set_debug_level(Properties::instance()->traceParsing());
   parser.parse();
   
   fclose(yyin);  
@@ -3113,7 +3115,6 @@ std::string start_state(yyscan_t* yyscanner)
 	default: return "Something's drastically wrong here, unrecognized start state!\n";
 	}  
 }
-
 /*
 #define YY_USER_ACTION \
 	{ \

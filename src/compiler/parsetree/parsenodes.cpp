@@ -4100,8 +4100,6 @@ DirElemConstructor::DirElemConstructor(
 	dir_content_list_h(_dir_content_list_h)
 {
 	// assert: open_name == close_name
-	if (dir_content_list_h!=NULL) dir_content_list_h->put(cout);
-	else cout << "content list empty!\n";
 }
 
 DirElemConstructor::~DirElemConstructor()

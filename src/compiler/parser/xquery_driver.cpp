@@ -23,19 +23,11 @@
 using namespace std;
 namespace xqp {
 
-//debug
-bool g_trace_scanning = false;
-bool g_trace_parsing = false;
-//end debug
 
 xquery_driver::xquery_driver(
-  ostream& _os,
   uint32_t initial_heapsize)
-:
-//	trace_scanning(false),
-//	trace_parsing(false),
+  :
 	symtab(initial_heapsize),
-  os(_os),
 	rename_bit(false),
 	ftcontains_bit(false)
 {
@@ -49,7 +41,7 @@ void xquery_driver::error(
 	yy::location const& l,
 	string const& m)
 {
-	cerr << l << ": " << m << endl;
+  cerr << l << ": " << m << endl;
 }
      
 void xquery_driver::error(

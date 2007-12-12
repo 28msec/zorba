@@ -19,7 +19,12 @@ namespace xqp {
       bool theAbortWhenFatalError;
       bool theInlineQuery;
       bool thePrintQuery;
-      
+      bool thePrintTime;
+      bool thePrintAST;
+      bool thePrintNormalizedExpressions;
+      bool thePrintIteratorTree;
+      bool theTraceTranslator;
+            
       /**
        * Constructor.
        * The default values of the properties are set here! Boost Program Options
@@ -89,6 +94,11 @@ namespace xqp {
       bool abortWhenFatalError() { return theAbortWhenFatalError; }
       bool inlineQuery() { return theInlineQuery; }
       bool printQuery()  { return thePrintQuery; }
+      bool printTime()  { return thePrintTime; }
+      bool printAST()   { return thePrintAST; }
+      bool printNormalizedExpressions() { return thePrintNormalizedExpressions; }
+      bool printIteratorTree() { return thePrintIteratorTree; }
+      bool traceTranslator() { return theTraceTranslator; }
       
   }; /* class Properties */
 } /* namespace xqp */

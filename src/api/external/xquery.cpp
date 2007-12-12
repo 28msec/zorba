@@ -18,6 +18,8 @@
 #include "api/serialization/serializer.h"
 #include "api/external/dynamic_context_wrapper.h"
 
+#include "zorba/util/properties.h"
+
 //#include "../../test/timer.h"
 
 #include <iostream>
@@ -106,29 +108,22 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	}
 	
 	///NOW COMPILE
-	xquery_driver driver(cout);///for debug, send log text on cout
+	xquery_driver driver;
 	driver.filename = m_xquery_source_uri;
 
 	///build up the expression tree
 	driver.parse_string(m_query_text);
 
 	parsenode* n_p = driver.get_expr();
-	cout << endl;
-	
-	{
-              std::ofstream lXMLOutFile("query.xml");
-              ParseNodePrintXMLVisitor lPrintXMLVisitor(lXMLOutFile);
-              lPrintXMLVisitor.print(n_p);
-          }    
 
-          {
-              std::ofstream lDOTOutFile("query.dot");				
-              ParseNodePrintDOTVisitor lPrintDOTVisitor(lDOTOutFile);
-              lPrintDOTVisitor.print(n_p);
-	}
+  if (Properties::instance()->printAST())
+	{
+    ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
+    lPrintXMLVisitor.print(n_p);
+  }    
 	
-	cout << "Syntax tree:\n";
-	n_p->put(cout) << endl;
+  // cout << "Syntax tree:\n";
+  // n_p->put(cout) << endl;
 
 	///normalize the expression tree
 	translator nvs;
@@ -138,7 +133,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
 	if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
 	{
-		cout << "Parse error: expecting MainModule\n";
+		cerr << "Parse error: expecting MainModule\n";
 		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 																	error_messages::SYSTEM_ERROR,
 																	NULL,
@@ -150,7 +145,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	}
 	if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
 	{
-		cout << "Parse error: expecting MainModule->QueryBody\n";
+		cerr << "Parse error: expecting MainModule->QueryBody\n";
 		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 																	error_messages::SYSTEM_ERROR,
 																	NULL,
@@ -162,7 +157,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 	}
 	if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
 	{
-		cout << "Parse error: expecting MainModule->QueryBody->Expr\n";
+		cerr << "Parse error: expecting MainModule->QueryBody->Expr\n";
 		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
 																	error_messages::SYSTEM_ERROR,
 																	NULL,
@@ -173,14 +168,11 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 		return false;
 	}
 
-	cout << "Expression tree:\n";
+  // cout << "Expression tree:\n";
 	mm_p->accept(nvs);
 	rchandle<expr> e_h = nvs.pop_nodestack();
 
-	cout << endl;
-
 	if (e_h==NULL) {
-		cout << "e_h==NULL\n";
 		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED,
 																	error_messages::STATIC_ERROR,
 																	NULL,
@@ -189,34 +181,30 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
-	e_h->put(cout) << endl;
+  
 
 #ifdef ENABLE_NORMALIZER
     normalizer n(thread_specific_zorba->get_static_context());
 
     e_h->accept(n);
-	cout << "Normalized Expression tree:\n";
 
-    e_h->put(cout) << endl;
+    if (Properties::instance()->printNormalizedExpressions())
+      e_h->put(cout) << endl;
 #endif
 
 	///now do code generation (generate iterator tree)
 
-	cout << "Codegen:\n";
 	plan_visitor pvs;
 	e_h->accept(pvs);
 	top_iterator = pvs.pop_itstack();
-	cout << endl;
 
-	cout << "Iterator tree:" << std::endl;
-  
-  XMLIterPrinter vp(std::cout);
-  PrinterVisitor pv(vp);
-  top_iterator->accept(pv);
-// 	top_iterator->show(cout);
+  if (Properties::instance()->printIteratorTree())
+  {
+    XMLIterPrinter vp(std::cout);
+    PrinterVisitor pv(vp);
+    top_iterator->accept(pv);
+  }
 	
-	//cout << "iterator type = " << typeid(*it_h).name() << endl;
-	cout << "\nIterator run:\n";
 	if (top_iterator==NULL) {
 		cout << "it_h==NULL\n";
 		ZORBA_ERROR_ALERT(error_messages::API0002_COMPILE_FAILED,

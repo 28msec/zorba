@@ -19,8 +19,17 @@ namespace xqp
   
   Properties::Properties() 
   : theQuery("1+1"),
+    theTraceParsing(false),
+    theTraceScanning(false),
+    theUseSerializer(false),
     theResultFile(""),
-    thePrintQuery(false)
+    theUseResultFile(false),
+    thePrintQuery(false),
+    thePrintTime(false),
+    thePrintAST(false),
+    thePrintNormalizedExpressions(false),
+    thePrintIteratorTree(false),
+    theTraceTranslator(false)
   {
   }
   
@@ -100,7 +109,13 @@ namespace xqp
       ("abort", "abort when fatal error happens")
       ("inline-query,e", "inline query")
       ("print-query,q", "print the query query")
+      ("print-time,t", "print the execution time")
+      ("print-ast,a", "print the parse tree")
+      ("print-normalized-expr,n", "print the normalized expression tree")
+      ("print-iterator-tree,i", "print the iterator tree")
+      ("trace-translator,l", "trace the translator")
     ;
+  
 
     // Declaration of Hidden Options (hidden => not shown when --help is invoked)
     po::options_description lHiddenOptions ( "Hidden Options" );
@@ -182,6 +197,11 @@ namespace xqp
     theAbortWhenFatalError = lVarMap.count("abort");
     theInlineQuery = lVarMap.count("inline-query");
     thePrintQuery = lVarMap.count("print-query");
+    thePrintTime = lVarMap.count("print-time");
+    thePrintAST = lVarMap.count("print-ast");
+    thePrintNormalizedExpressions = lVarMap.count("print-normalized-expr");
+    thePrintIteratorTree = lVarMap.count("print-iterator-tree");
+    theTraceTranslator = lVarMap.count("trace-translator");
     
     Properties::theLoaded = true;
     

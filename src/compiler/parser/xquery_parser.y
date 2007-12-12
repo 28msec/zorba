@@ -94,8 +94,10 @@ static bool debug = false;
 **	The two following directives to enable parser tracing and verbose 
 **	error messages. 
 */
+/*
 %debug
 %error-verbose
+*/
 
 /*
 %{

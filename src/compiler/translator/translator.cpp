@@ -16,6 +16,7 @@
 #include "store/api/item.h"
 #include "util/zorba.h"
 #include "functions/signature.h"
+#include "zorba/util/properties.h"
 
 #include <iostream>
 #include <string>
@@ -35,8 +36,8 @@ static void *no_state = (void *) new int;
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
-#define TRACE_VISIT() cout << std::string(++depth, ' ') << TRACE << endl;
-#define TRACE_VISIT_OUT() cout << std::string(depth--, ' ') << TRACE << endl
+#define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
+#define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
 
 var_expr *translator::bind_var (yy::location loc, string varname) {
   QNameItem_t qname = sctx_p->lookup_qname ("", varname);
@@ -1955,16 +1956,10 @@ void *translator::begin_visit(const ElementTest& v)
 void translator::end_visit(const ElementTest& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  v.getElementName()->put(cout)<<")\n";
 
   // find axis step expression on top of stack
   rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase == NULL)
-  {
-    cout << std::string(depth, ' ') << TRACE
-         << ": expecting axis_step_expr on top of stack" << endl;
-    cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
-  }
+  assert(ase != NULL); // expecting axis_step_expr on top of stack
 
   // construct the element match
   rchandle<match_expr> me = new match_expr(v.get_location());

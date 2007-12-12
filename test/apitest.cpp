@@ -46,14 +46,12 @@ int _tmain(int argc, _TCHAR* argv[])
 	Timer timer;
 	timer.start();
 
-	cout << "reading program options ..."<<endl;
 
   if (!Properties::load(argc,argv))
 	{
 	//	cerr << "Cannot find property file" << endl;
 		return 1;
 	}
-	cout << "all program options processed..."<<endl;
   
   Properties* lProp = Properties::instance();
   
@@ -75,8 +73,6 @@ int _tmain(int argc, _TCHAR* argv[])
   g_abort_when_fatal_error = lProp->abortWhenFatalError();
 //#endif
 
-  g_trace_parsing = lProp->traceParsing();
-  g_trace_scanning = lProp->traceScanning();
   const char* fname = lProp->getQuery().c_str();
 #ifndef UNICODE
   if (lProp->inlineQuery())
@@ -222,7 +218,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	timer.end();
 
-  timer.print(cout);
+  if (lProp->printTime())
+    timer.print(cout);
 	
   if (resultFile != NULL) {
     resultFile->close();
