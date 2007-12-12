@@ -27,11 +27,11 @@ using namespace std;
 namespace xqp {
 
 int printdepth = 0;
-ostringstream	__oss;
+ostringstream __oss;
 
-#define INDENT	    std::string(++printdepth, ' ')
-#define OUTDENT	    std::string(printdepth--, ' ')
-#define UNDENT	    printdepth--
+#define INDENT      std::string(++printdepth, ' ')
+#define OUTDENT     std::string(printdepth--, ' ')
+#define UNDENT      printdepth--
 
 #define BEGIN_VISITOR() void *visitor_state; if (NULL == (visitor_state = v.begin_visit (*this))) return
 #define END_VISITOR() v.end_visit (*this, visitor_state)
@@ -40,14 +40,14 @@ ostringstream	__oss;
 /*
 ostream& parsenode::put(ostream& s) const
 {
-	s << INDENT << "parsenode[]\n"; UNDENT;
-	return s;
+  s << INDENT << "parsenode[]\n"; UNDENT;
+  return s;
 }
 
 ostream& exprnode::put(ostream& s) const
 {
-	s << INDENT << "exprnode[]\n"; UNDENT;
-	return s;
+  s << INDENT << "exprnode[]\n"; UNDENT;
+  return s;
 }
 */
 
@@ -56,9 +56,9 @@ ostream& exprnode::put(ostream& s) const
 // [1] Module
 // ----------
 Module::Module(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -68,15 +68,15 @@ Module::~Module()
 
 ostream& Module::put(ostream& os) const
 {
-	return os;
+  return os;
 }
 
 //-Module::
 
 void Module::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -84,13 +84,13 @@ void Module::accept(parsenode_visitor& v) const
 // [2] VersionDecl
 // ---------------
 VersionDecl::VersionDecl(
-	const yy::location& _loc,
-	std::string const& _version,
-	std::string const& _encoding)
+  const yy::location& _loc,
+  std::string const& _version,
+  std::string const& _encoding)
 :
-	parsenode(_loc),
-	version(_version),
-	encoding(_encoding)
+  parsenode(_loc),
+  version(_version),
+  encoding(_encoding)
 {
 }
 
@@ -100,15 +100,15 @@ VersionDecl::~VersionDecl()
 
 ostream& VersionDecl::put(ostream& os) const
 {
-	return os;
+  return os;
 }
 
 //-VersionDecl::
 
 void VersionDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -118,23 +118,23 @@ void VersionDecl::accept(parsenode_visitor& v) const
 // [3] MainModule
 // --------------
 MainModule::MainModule(
-	const yy::location& _loc,
-	rchandle<Prolog> _prolog_h,
-	rchandle<QueryBody> _query_body_h)
+  const yy::location& _loc,
+  rchandle<Prolog> _prolog_h,
+  rchandle<QueryBody> _query_body_h)
 :
-	parsenode(_loc),
-	prolog_h(_prolog_h),
-	query_body_h(_query_body_h)
+  parsenode(_loc),
+  prolog_h(_prolog_h),
+  query_body_h(_query_body_h)
 {
 }
 
 MainModule::MainModule(
-	const yy::location& _loc,
-	rchandle<QueryBody> _query_body_h)
+  const yy::location& _loc,
+  rchandle<QueryBody> _query_body_h)
 :
-	parsenode(_loc),
-	prolog_h(NULL),
-	query_body_h(_query_body_h)
+  parsenode(_loc),
+  prolog_h(NULL),
+  query_body_h(_query_body_h)
 {
 }
 
@@ -144,21 +144,21 @@ MainModule::~MainModule()
 
 ostream& MainModule::put(ostream& s) const
 {
-	s << INDENT << "MainModule[" << endl;
-	if (prolog_h!=NULL) prolog_h->put(s);
-	query_body_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "MainModule[" << endl;
+  if (prolog_h!=NULL) prolog_h->put(s);
+  query_body_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-MainModule::
 
 void MainModule::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (prolog_h != NULL)
-	    prolog_h->accept(v);
-	query_body_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (prolog_h != NULL)
+      prolog_h->accept(v);
+  ACCEPT (query_body_h);
+  END_VISITOR ();
 }
 
 
@@ -168,13 +168,13 @@ void MainModule::accept(parsenode_visitor& v) const
 // [4] LibraryModule
 // -----------------
 LibraryModule::LibraryModule(
-	const yy::location& _loc,
-	rchandle<ModuleDecl> _decl_h, 
-	rchandle<Prolog> _prolog_h)
+  const yy::location& _loc,
+  rchandle<ModuleDecl> _decl_h, 
+  rchandle<Prolog> _prolog_h)
 :
-	parsenode(_loc),
-	decl_h(_decl_h),
-	prolog_h(_prolog_h)
+  parsenode(_loc),
+  decl_h(_decl_h),
+  prolog_h(_prolog_h)
 {
 }
 
@@ -185,20 +185,20 @@ LibraryModule::~LibraryModule()
 
 ostream& LibraryModule::put(ostream& s) const
 {
-	s << INDENT << "LibraryModule[" << endl;
-	if (decl_h!=NULL) decl_h->put(s);
-	prolog_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "LibraryModule[" << endl;
+  if (decl_h!=NULL) decl_h->put(s);
+  prolog_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-LibraryModule::
 
 void LibraryModule::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	decl_h->accept(v);
-	prolog_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (decl_h);
+  ACCEPT (prolog_h);
+  END_VISITOR ();
 }
 
 
@@ -208,13 +208,13 @@ void LibraryModule::accept(parsenode_visitor& v) const
 // [5] ModuleDecl
 // --------------
 ModuleDecl::ModuleDecl(
-	const yy::location& _loc,
-	std::string const& _prefix,
-	std::string const& _target_namespace)
+  const yy::location& _loc,
+  std::string const& _prefix,
+  std::string const& _target_namespace)
 :
-	parsenode(_loc),
-	prefix(_prefix),
-	target_namespace(_target_namespace)
+  parsenode(_loc),
+  prefix(_prefix),
+  target_namespace(_target_namespace)
 {
 }
 
@@ -224,17 +224,17 @@ ModuleDecl::~ModuleDecl()
 
 ostream& ModuleDecl::put(ostream& s) const
 {
-	s << INDENT << "ModuleDecl[";
-	s << prefix << " = " << target_namespace;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ModuleDecl[";
+  s << prefix << " = " << target_namespace;
+  return s << OUTDENT << "]\n";
 }
 
 //-ModuleDecl::
 
 void ModuleDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -244,13 +244,13 @@ void ModuleDecl::accept(parsenode_visitor& v) const
 // [6] Prolog
 // ----------
 Prolog::Prolog(
-	const yy::location& _loc,
-	rchandle<SIND_DeclList> _sind_list_h,
-	rchandle<VFO_DeclList> _vfo_list_h)
+  const yy::location& _loc,
+  rchandle<SIND_DeclList> _sind_list_h,
+  rchandle<VFO_DeclList> _vfo_list_h)
 :
-	parsenode(_loc),
-	sind_list_h(_sind_list_h),
-	vfo_list_h(_vfo_list_h)
+  parsenode(_loc),
+  sind_list_h(_sind_list_h),
+  vfo_list_h(_vfo_list_h)
 {
 }
 
@@ -260,20 +260,20 @@ Prolog::~Prolog()
 
 ostream& Prolog::put(ostream& s) const
 {
-	s << INDENT << "Prolog[" << endl;
-	if (sind_list_h!=NULL) sind_list_h->put(s);
-	if (vfo_list_h!=NULL) vfo_list_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Prolog[" << endl;
+  if (sind_list_h!=NULL) sind_list_h->put(s);
+  if (vfo_list_h!=NULL) vfo_list_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-Prolog::
 
 void Prolog::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ACCEPT (sind_list_h);
-	ACCEPT (vfo_list_h);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (sind_list_h);
+  ACCEPT (vfo_list_h);
+  END_VISITOR ();
 }
 
 
@@ -281,9 +281,9 @@ void Prolog::accept(parsenode_visitor& v) const
 // [6a] SIND_DeclList
 // ------------------
 SIND_DeclList::SIND_DeclList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -293,25 +293,24 @@ SIND_DeclList::~SIND_DeclList()
 
 ostream& SIND_DeclList::put(ostream& s) const
 {
-	s << INDENT << "SIND_DeclList[" << endl;
-	vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
-	for (; it!=sind_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "SIND_DeclList[" << endl;
+  vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
+  for (; it!=sind_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-SIND_DeclList::
 
 void SIND_DeclList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
-	for (; it!=sind_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<parsenode> >::const_reverse_iterator it = sind_hv.rbegin();
+  for (; it!=sind_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -319,9 +318,9 @@ void SIND_DeclList::accept(parsenode_visitor& v) const
 // [6b] VFO_DeclList
 // -----------------
 VFO_DeclList::VFO_DeclList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -331,25 +330,25 @@ VFO_DeclList::~VFO_DeclList()
 
 ostream& VFO_DeclList::put(ostream& s) const
 {
-	s << INDENT << "VFO_DeclList[" << endl;
-	vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
-	for (; it!=vfo_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VFO_DeclList[" << endl;
+  vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
+  for (; it!=vfo_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-VFO_DeclList::
 
 void VFO_DeclList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<parsenode> >::const_reverse_iterator it = vfo_hv.rbegin();
-	for (; it!=vfo_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<parsenode> >::const_reverse_iterator it = vfo_hv.rbegin();
+  for (; it!=vfo_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -371,13 +370,13 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
 // [10] NamespaceDecl
 // ------------------
 NamespaceDecl::NamespaceDecl(
-	const yy::location& _loc,
-	std::string const& _prefix,
-	std::string const& _uri)
+  const yy::location& _loc,
+  std::string const& _prefix,
+  std::string const& _uri)
 :
-	parsenode(_loc),
-	prefix(_prefix),
-	uri(_uri)
+  parsenode(_loc),
+  prefix(_prefix),
+  uri(_uri)
 {
 }
 
@@ -387,17 +386,17 @@ NamespaceDecl::~NamespaceDecl()
 
 ostream& NamespaceDecl::put(ostream& s) const
 {
-	s << INDENT << "NamespaceDecl[";
-	s << prefix << " = " << uri;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "NamespaceDecl[";
+  s << prefix << " = " << uri;
+  return s << OUTDENT << "]\n";
 }
 
 //-NamespaceDecl::
 
 void NamespaceDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -405,11 +404,11 @@ void NamespaceDecl::accept(parsenode_visitor& v) const
 // [11] BoundarySpaceDecl
 // ----------------------
 BoundarySpaceDecl::BoundarySpaceDecl(
-	const yy::location& _loc,
-	StaticQueryContext::boundary_space_mode_t _mode)
+  const yy::location& _loc,
+  StaticQueryContext::boundary_space_mode_t _mode)
 :
-	parsenode(_loc),
-	mode(_mode)
+  parsenode(_loc),
+  mode(_mode)
 {
 }
 
@@ -419,21 +418,21 @@ BoundarySpaceDecl::~BoundarySpaceDecl()
 
 ostream& BoundarySpaceDecl::put(ostream& s) const
 {
-	s << INDENT << "BoundarySpaceDecl[";
-	switch (mode) {
-	case StaticQueryContext::preserve_space: s << "preserve"; break;
-	case StaticQueryContext::strip_space:	s << "strip"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "BoundarySpaceDecl[";
+  switch (mode) {
+  case StaticQueryContext::preserve_space: s << "preserve"; break;
+  case StaticQueryContext::strip_space: s << "strip"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-BoundarySpaceDecl::
 
 void BoundarySpaceDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -441,13 +440,13 @@ void BoundarySpaceDecl::accept(parsenode_visitor& v) const
 // [12] DefaultNamespaceDecl
 // -------------------------
 DefaultNamespaceDecl::DefaultNamespaceDecl(
-	const yy::location& _loc,
-	enum default_namespace_mode_t _mode,
-	std::string const& _default_namespace)
+  const yy::location& _loc,
+  enum default_namespace_mode_t _mode,
+  std::string const& _default_namespace)
 :
-	parsenode(_loc),
-	mode(_mode),
-	default_namespace(_default_namespace)
+  parsenode(_loc),
+  mode(_mode),
+  default_namespace(_default_namespace)
 {
 }
 
@@ -457,21 +456,21 @@ DefaultNamespaceDecl::~DefaultNamespaceDecl()
 
 ostream& DefaultNamespaceDecl::put(ostream& s) const
 {
-	s << INDENT << "DefaultNamespaceDecl[";
-	switch (mode) {
-	case ns_element_default: s << "element: "; break;
-	case ns_function_default: s << "function: "; break;
-	default: s << "???";
-	}
-	return s << default_namespace << "]\n";
+  s << INDENT << "DefaultNamespaceDecl[";
+  switch (mode) {
+  case ns_element_default: s << "element: "; break;
+  case ns_function_default: s << "function: "; break;
+  default: s << "???";
+  }
+  return s << default_namespace << "]\n";
 }
 
 //-DefaultNamespaceDecl::
 
 void DefaultNamespaceDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -479,13 +478,13 @@ void DefaultNamespaceDecl::accept(parsenode_visitor& v) const
 // [13] OptionDecl
 // ---------------
 OptionDecl::OptionDecl(
-	const yy::location& _loc,
-	rchandle<QName> _qname_h,
-	std::string const& _val)
+  const yy::location& _loc,
+  rchandle<QName> _qname_h,
+  std::string const& _val)
 :
-	parsenode(_loc),
-	qname_h(_qname_h),
-	val(_val)
+  parsenode(_loc),
+  qname_h(_qname_h),
+  val(_val)
 {
 }
 
@@ -495,19 +494,19 @@ OptionDecl::~OptionDecl()
 
 ostream& OptionDecl::put(ostream& s) const
 {
-	s << INDENT << "OptionDecl[";
-	if (qname_h!=NULL) qname_h->put(s);
-	s << " " << val << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OptionDecl[";
+  if (qname_h!=NULL) qname_h->put(s);
+  s << " " << val << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-OptionDecl::
 
 void OptionDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//qname_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //qname_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -519,7 +518,7 @@ FTOptionDecl::FTOptionDecl(
   rchandle<parsenode> _match_option_h)
 :
   parsenode(_loc),
- 	match_option_h(_match_option_h)
+  match_option_h(_match_option_h)
 {
 }
 
@@ -529,18 +528,18 @@ FTOptionDecl::~FTOptionDecl()
 
 ostream& FTOptionDecl::put(ostream& s) const
 {
-	s << INDENT << "FTOptionDecl[";
-	if (match_option_h!=NULL) match_option_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTOptionDecl[";
+  if (match_option_h!=NULL) match_option_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FTOptionDecl::
 
 void FTOptionDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	match_option_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (match_option_h);
+  END_VISITOR ();
 }
 
 
@@ -548,11 +547,11 @@ void FTOptionDecl::accept(parsenode_visitor& v) const
 // [14] OrderingModeDecl
 // ---------------------
 OrderingModeDecl::OrderingModeDecl(
-	const yy::location& _loc,
-	StaticQueryContext::ordering_mode_t _mode)
+  const yy::location& _loc,
+  StaticQueryContext::ordering_mode_t _mode)
 :
-	parsenode(_loc),
-	mode(_mode)
+  parsenode(_loc),
+  mode(_mode)
 {
 }
 
@@ -562,21 +561,21 @@ OrderingModeDecl::~OrderingModeDecl()
 
 ostream& OrderingModeDecl::put(ostream& s) const
 {
-	s << INDENT << "OrderingModeDecl[";
-	switch (mode) {
-	case StaticQueryContext::ordered: s << "ordered"; break;
-	case StaticQueryContext::unordered: s << "unordered"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderingModeDecl[";
+  switch (mode) {
+  case StaticQueryContext::ordered: s << "ordered"; break;
+  case StaticQueryContext::unordered: s << "unordered"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderingModeDecl::
 
 void OrderingModeDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -584,11 +583,11 @@ void OrderingModeDecl::accept(parsenode_visitor& v) const
 // [15] EmptyOrderDecl
 // -------------------
 EmptyOrderDecl::EmptyOrderDecl(
-	const yy::location& _loc,
-	StaticQueryContext::order_empty_mode_t _mode)
+  const yy::location& _loc,
+  StaticQueryContext::order_empty_mode_t _mode)
 :
-	parsenode(_loc),
-	mode(_mode)
+  parsenode(_loc),
+  mode(_mode)
 {
 }
 
@@ -598,21 +597,21 @@ EmptyOrderDecl::~EmptyOrderDecl()
 
 ostream& EmptyOrderDecl::put(ostream& s) const
 {
-	s << INDENT << "EmptyOrderDecl[";
-	switch (mode) {
-	case StaticQueryContext::empty_greatest: s << "greatest"; break;
-	case StaticQueryContext::empty_least: s << "least"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "EmptyOrderDecl[";
+  switch (mode) {
+  case StaticQueryContext::empty_greatest: s << "greatest"; break;
+  case StaticQueryContext::empty_least: s << "least"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-EmptyOrderDecl::
 
 void EmptyOrderDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -620,13 +619,13 @@ void EmptyOrderDecl::accept(parsenode_visitor& v) const
 // [16] CopyNamespacesDecl
 // -----------------------
 CopyNamespacesDecl::CopyNamespacesDecl(
-	const yy::location& _loc,
-	StaticQueryContext::preserve_mode_t _preserve_mode,
-	StaticQueryContext::inherit_mode_t  _inherit_mode)
+  const yy::location& _loc,
+  StaticQueryContext::preserve_mode_t _preserve_mode,
+  StaticQueryContext::inherit_mode_t  _inherit_mode)
 :
-	parsenode(_loc),
-	preserve_mode(_preserve_mode),
-	inherit_mode(_inherit_mode)
+  parsenode(_loc),
+  preserve_mode(_preserve_mode),
+  inherit_mode(_inherit_mode)
 {
 }
 
@@ -636,25 +635,25 @@ CopyNamespacesDecl::~CopyNamespacesDecl()
 
 ostream& CopyNamespacesDecl::put(ostream& s) const
 {
-	s << INDENT << "CopyNamespacesDecl[";
-	switch (preserve_mode) {
-	case StaticQueryContext::preserve_ns: s << "preserve"; break;
-	case StaticQueryContext::no_preserve_ns: s << "no preserve"; break;
-	}
-	s << ", ";
-	switch (inherit_mode) {
-	case StaticQueryContext::inherit_ns: s << "inherit"; break;
-	case StaticQueryContext::no_inherit_ns: s << "no inherit"; break;
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CopyNamespacesDecl[";
+  switch (preserve_mode) {
+  case StaticQueryContext::preserve_ns: s << "preserve"; break;
+  case StaticQueryContext::no_preserve_ns: s << "no preserve"; break;
+  }
+  s << ", ";
+  switch (inherit_mode) {
+  case StaticQueryContext::inherit_ns: s << "inherit"; break;
+  case StaticQueryContext::no_inherit_ns: s << "no inherit"; break;
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-CopyNamespacesDecl::
 
 void CopyNamespacesDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -670,11 +669,11 @@ void CopyNamespacesDecl::accept(parsenode_visitor& v) const
 // [19] DefaultCollationDecl
 // -------------------------
 DefaultCollationDecl::DefaultCollationDecl(
-	const yy::location& _loc,
-	std::string const&  _collation)
+  const yy::location& _loc,
+  std::string const&  _collation)
 :
-	parsenode(_loc),
-	collation(_collation)
+  parsenode(_loc),
+  collation(_collation)
 {
 }
 
@@ -684,17 +683,17 @@ DefaultCollationDecl::~DefaultCollationDecl()
 
 ostream& DefaultCollationDecl::put(ostream& s) const
 {
-	s << INDENT << "DefaultCollationDecl[";
-	s << "collation=" << collation << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DefaultCollationDecl[";
+  s << "collation=" << collation << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-DefaultCollationDecl::
 
 void DefaultCollationDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -702,11 +701,11 @@ void DefaultCollationDecl::accept(parsenode_visitor& v) const
 // [20] BaseURIDecl
 // ----------------
 BaseURIDecl::BaseURIDecl(
-	const yy::location& _loc,
-	std::string const& _base_uri)
+  const yy::location& _loc,
+  std::string const& _base_uri)
 :
-	parsenode(_loc),
-	base_uri(_base_uri)
+  parsenode(_loc),
+  base_uri(_base_uri)
 {
 }
 
@@ -716,17 +715,17 @@ BaseURIDecl::~BaseURIDecl()
 
 ostream& BaseURIDecl::put(ostream& s) const
 {
-	s << INDENT << "BaseURIDecl[";
-	s << base_uri;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "BaseURIDecl[";
+  s << base_uri;
+  return s << OUTDENT << "]\n";
 }
 
 //-BaseURIDecl::
 
 void BaseURIDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -734,15 +733,15 @@ void BaseURIDecl::accept(parsenode_visitor& v) const
 // [21] SchemaImport
 // -----------------
 SchemaImport::SchemaImport(
-	const yy::location& _loc,
-	rchandle<SchemaPrefix> _prefix_h,
-	std::string const& _uri,
-	rchandle<URILiteralList> _at_list_h)
+  const yy::location& _loc,
+  rchandle<SchemaPrefix> _prefix_h,
+  std::string const& _uri,
+  rchandle<URILiteralList> _at_list_h)
 :
-	parsenode(_loc),
-	prefix_h(_prefix_h),
-	uri(_uri),
-	at_list_h(_at_list_h)
+  parsenode(_loc),
+  prefix_h(_prefix_h),
+  uri(_uri),
+  at_list_h(_at_list_h)
 {
 }
 
@@ -752,21 +751,21 @@ SchemaImport::~SchemaImport()
 
 ostream& SchemaImport::put(ostream& s) const
 {
-	s << INDENT << "SchemaImport[";
-	if (prefix_h!=NULL) prefix_h->put(s);
-	s << "uri=" << uri << endl;
-	if (at_list_h!=NULL) at_list_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "SchemaImport[";
+  if (prefix_h!=NULL) prefix_h->put(s);
+  s << "uri=" << uri << endl;
+  if (at_list_h!=NULL) at_list_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-SchemaImport::
 
 void SchemaImport::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	prefix_h->accept(v);
-	at_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (prefix_h);
+  ACCEPT (at_list_h);
+  END_VISITOR ();
 }
 
 
@@ -774,9 +773,9 @@ void SchemaImport::accept(parsenode_visitor& v) const
 // [21a] URLLiteralList
 // --------------------
 URILiteralList::URILiteralList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -786,23 +785,23 @@ URILiteralList::~URILiteralList()
 
 ostream& URILiteralList::put(ostream& s) const
 {
-	s << INDENT << "URILiteralList[" << endl;
-	++printdepth;
-	vector<string>::const_iterator it = uri_v.begin();
-	for (; it!=uri_v.end(); ++it) { s << *it << endl; }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "URILiteralList[" << endl;
+  ++printdepth;
+  vector<string>::const_iterator it = uri_v.begin();
+  for (; it!=uri_v.end(); ++it) { s << *it << endl; }
+  return s << OUTDENT << "]\n";
 }
 
 //-URILiteralList::
 
 void URILiteralList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<string>::const_reverse_iterator it = uri_v.rbegin();
-	for (; it!=uri_v.rend(); ++it) {
-		// ..do something useful
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<string>::const_reverse_iterator it = uri_v.rbegin();
+  for (; it!=uri_v.rend(); ++it) {
+    // ..do something useful
+  }
+  END_VISITOR ();
 }
 
 
@@ -810,22 +809,22 @@ void URILiteralList::accept(parsenode_visitor& v) const
 // [22] SchemaPrefix
 // -----------------
 SchemaPrefix::SchemaPrefix(
-	const yy::location& _loc,
-	bool _default_b)
+  const yy::location& _loc,
+  bool _default_b)
 :
-	parsenode(_loc),
-	prefix(""),
-	default_b(_default_b)
+  parsenode(_loc),
+  prefix(""),
+  default_b(_default_b)
 {
 }
 
 SchemaPrefix::SchemaPrefix(
-	const yy::location& _loc,
-	std::string const& _prefix) 
+  const yy::location& _loc,
+  std::string const& _prefix) 
 :
-	parsenode(_loc),
-	prefix(_prefix),
-	default_b(false)
+  parsenode(_loc),
+  prefix(_prefix),
+  default_b(false)
 {
 }
 
@@ -835,18 +834,18 @@ SchemaPrefix::~SchemaPrefix()
 
 ostream& SchemaPrefix::put(ostream& s) const
 {
-	s << INDENT << "SchemaPrefix[";
-	s << "prefix=" << prefix << endl;
-	s << "default_b=" << default_b << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "SchemaPrefix[";
+  s << "prefix=" << prefix << endl;
+  s << "default_b=" << default_b << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-SchemaPrefix::
 
 void SchemaPrefix::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -854,25 +853,25 @@ void SchemaPrefix::accept(parsenode_visitor& v) const
 // [23] ModuleImport
 // -----------------
 ModuleImport::ModuleImport(
-	const yy::location& _loc,
-	std::string const& uri,
-	rchandle<URILiteralList> _uri_list_h)
+  const yy::location& _loc,
+  std::string const& uri,
+  rchandle<URILiteralList> _uri_list_h)
 :
-	parsenode(_loc),
-	uri_list_h(_uri_list_h)
+  parsenode(_loc),
+  uri_list_h(_uri_list_h)
 {
 }
 
 ModuleImport::ModuleImport(
-	const yy::location& _loc,
-	std::string const& _prefix,
-	std::string const& _uri,
-	rchandle<URILiteralList> _uri_list_h)
+  const yy::location& _loc,
+  std::string const& _prefix,
+  std::string const& _uri,
+  rchandle<URILiteralList> _uri_list_h)
 :
-	parsenode(_loc),
-	prefix(_prefix),
-	uri(_uri),
-	uri_list_h(_uri_list_h)
+  parsenode(_loc),
+  prefix(_prefix),
+  uri(_uri),
+  uri_list_h(_uri_list_h)
 {
 }
 
@@ -882,20 +881,20 @@ ModuleImport::~ModuleImport()
 
 ostream& ModuleImport::put(ostream& s) const
 {
-	s << INDENT << "ModuleImport[";
-	s << "prefix=" << prefix << endl;
-	s << "uri=" << uri << endl;
-	if (uri_list_h!=NULL) uri_list_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ModuleImport[";
+  s << "prefix=" << prefix << endl;
+  s << "uri=" << uri << endl;
+  if (uri_list_h!=NULL) uri_list_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-ModuleImport::
 
 void ModuleImport::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	uri_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (uri_list_h);
+  END_VISITOR ();
 }
 
 
@@ -903,15 +902,15 @@ void ModuleImport::accept(parsenode_visitor& v) const
 // [24] VarDecl
 // ------------
 VarDecl::VarDecl(
-	const yy::location& _loc,
-	std::string _varname,
-	rchandle<TypeDeclaration> _typedecl_h,
-	rchandle<exprnode> _initexpr_h)
+  const yy::location& _loc,
+  std::string _varname,
+  rchandle<TypeDeclaration> _typedecl_h,
+  rchandle<exprnode> _initexpr_h)
 :
-	parsenode(_loc),
-	varname(_varname),
-	typedecl_h(_typedecl_h),
-	initexpr_h(_initexpr_h)
+  parsenode(_loc),
+  varname(_varname),
+  typedecl_h(_typedecl_h),
+  initexpr_h(_initexpr_h)
 {
 }
 
@@ -921,21 +920,21 @@ VarDecl::~VarDecl()
 
 ostream& VarDecl::put(ostream& s) const
 {
-	s << INDENT << "VarDecl[";
-	s << "varname=" << varname << endl;
-	if (typedecl_h!=NULL) typedecl_h->put(s);
-	if (initexpr_h!=NULL) initexpr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VarDecl[";
+  s << "varname=" << varname << endl;
+  if (typedecl_h!=NULL) typedecl_h->put(s);
+  if (initexpr_h!=NULL) initexpr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-VarDecl::
 
 void VarDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	typedecl_h->accept(v);
-	initexpr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (typedecl_h);
+  ACCEPT (initexpr_h);
+  END_VISITOR ();
 }
 
 
@@ -943,11 +942,11 @@ void VarDecl::accept(parsenode_visitor& v) const
 // [25] ConstructionDecl
 // ---------------------
 ConstructionDecl::ConstructionDecl(
-	const yy::location& _loc,
-	StaticQueryContext::construction_mode_t _mode)
+  const yy::location& _loc,
+  StaticQueryContext::construction_mode_t _mode)
 :
-	parsenode(_loc),
-	mode(_mode)
+  parsenode(_loc),
+  mode(_mode)
 {
 }
 
@@ -957,21 +956,21 @@ ConstructionDecl::~ConstructionDecl()
 
 ostream& ConstructionDecl::put(ostream& os) const
 {
-	os << INDENT << "ConstructionDecl[";
-	switch (mode) {
-	case StaticQueryContext::cons_preserve: os << "preserve"; break;
-	case StaticQueryContext::cons_strip: os << "strip"; break;
-	default: os << "???";
-	}
-	return os << OUTDENT << "]\n";
+  os << INDENT << "ConstructionDecl[";
+  switch (mode) {
+  case StaticQueryContext::cons_preserve: os << "preserve"; break;
+  case StaticQueryContext::cons_strip: os << "strip"; break;
+  default: os << "???";
+  }
+  return os << OUTDENT << "]\n";
 }
 
 //-ConstructionDecl::
 
 void ConstructionDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -979,19 +978,19 @@ void ConstructionDecl::accept(parsenode_visitor& v) const
 // [26] FunctionDecl
 // -----------------
 FunctionDecl::FunctionDecl(
-	const yy::location& _loc,
-	rchandle<QName> _name_h,
-	rchandle<ParamList> _paramlist_h,
-	rchandle<SequenceType> _return_type_h,
-	rchandle<EnclosedExpr> _body_h,
-	enum function_type_t _type)
+  const yy::location& _loc,
+  rchandle<QName> _name_h,
+  rchandle<ParamList> _paramlist_h,
+  rchandle<SequenceType> _return_type_h,
+  rchandle<EnclosedExpr> _body_h,
+  enum function_type_t _type)
 :
-	parsenode(_loc),
-	type(_type),
-	name_h(_name_h),
-	paramlist_h(_paramlist_h),
-	body_h(_body_h),
-	return_type_h(_return_type_h)
+  parsenode(_loc),
+  type(_type),
+  name_h(_name_h),
+  paramlist_h(_paramlist_h),
+  body_h(_body_h),
+  return_type_h(_return_type_h)
 {
 }
 
@@ -1001,31 +1000,31 @@ FunctionDecl::~FunctionDecl()
 
 ostream& FunctionDecl::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
-	if (name_h!=NULL) name_h->put(s);
-	if (paramlist_h!=NULL) paramlist_h->put(s);
-	if (return_type_h!=NULL) return_type_h->put(s);
-	if (body_h!=NULL) body_h->put(s);
-	switch (type) {
-	case fn_extern: s << "fn_extern"; break;
-	case fn_read: s << "fn_read"; break;
-	case fn_update: s << "fn_update"; break;
-	case fn_extern_update: s << "fn_extern_update"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Xxxx[";
+  if (name_h!=NULL) name_h->put(s);
+  if (paramlist_h!=NULL) paramlist_h->put(s);
+  if (return_type_h!=NULL) return_type_h->put(s);
+  if (body_h!=NULL) body_h->put(s);
+  switch (type) {
+  case fn_extern: s << "fn_extern"; break;
+  case fn_read: s << "fn_read"; break;
+  case fn_update: s << "fn_update"; break;
+  case fn_extern_update: s << "fn_extern_update"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-FunctionDecl::
 
 void FunctionDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//name_h->accept(v);
-	paramlist_h->accept(v);
-	return_type_h->accept(v);
-	body_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //name_h->accept(v);
+  ACCEPT (paramlist_h);
+  ACCEPT (return_type_h);
+  ACCEPT (body_h);
+  END_VISITOR ();
 }
 
 
@@ -1033,9 +1032,9 @@ void FunctionDecl::accept(parsenode_visitor& v) const
 // [27] ParamList
 // --------------
 ParamList::ParamList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -1045,26 +1044,26 @@ ParamList::~ParamList()
 
 ostream& ParamList::put(ostream& s) const
 {
-	s << INDENT << "ParamList[" << endl;
-	++printdepth;
-	vector<rchandle<Param> >::const_iterator it = param_hv.begin();
-	for (; it!=param_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ParamList[" << endl;
+  ++printdepth;
+  vector<rchandle<Param> >::const_iterator it = param_hv.begin();
+  for (; it!=param_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-ParamList::
 
 void ParamList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<Param> >::const_reverse_iterator it = param_hv.rbegin();
-	for (; it!=param_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<Param> >::const_reverse_iterator it = param_hv.rbegin();
+  for (; it!=param_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -1072,13 +1071,13 @@ void ParamList::accept(parsenode_visitor& v) const
 // [28] Param
 // ----------
 Param::Param(
-	const yy::location& _loc,
-	std::string _name,
-	rchandle<TypeDeclaration> _typedecl_h)
+  const yy::location& _loc,
+  std::string _name,
+  rchandle<TypeDeclaration> _typedecl_h)
 :
-	parsenode(_loc),
-	name(_name),
-	typedecl_h(_typedecl_h)
+  parsenode(_loc),
+  name(_name),
+  typedecl_h(_typedecl_h)
 {
 }
 
@@ -1088,19 +1087,19 @@ Param::~Param()
 
 ostream& Param::put(ostream& s) const
 {
-	s << INDENT << "Param[";
-	s << "name=" << name << endl;
-	if (typedecl_h!=NULL) typedecl_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Param[";
+  s << "name=" << name << endl;
+  if (typedecl_h!=NULL) typedecl_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-Param::
 
 void Param::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	typedecl_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (typedecl_h);
+  END_VISITOR ();
 }
 
 
@@ -1108,11 +1107,11 @@ void Param::accept(parsenode_visitor& v) const
 // [29] EnclosedExpr
 // -----------------
 EnclosedExpr::EnclosedExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  expr_h(_expr_h)
 {
 }
 
@@ -1122,18 +1121,18 @@ EnclosedExpr::~EnclosedExpr()
 
 ostream& EnclosedExpr::put(ostream& s) const
 {
-	s << INDENT << "EnclosedExpr[\n";
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "EnclosedExpr[\n";
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-EnclosedExpr::
 
 void EnclosedExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -1141,11 +1140,11 @@ void EnclosedExpr::accept(parsenode_visitor& v) const
 // [30] QueryBody
 // --------------
 QueryBody::QueryBody(
-	const yy::location& _loc,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  expr_h(_expr_h)
 {
 }
 
@@ -1155,18 +1154,18 @@ QueryBody::~QueryBody()
 
 ostream& QueryBody::put(ostream& s) const
 {
-	s << INDENT << "QueryBody[\n";
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "QueryBody[\n";
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-QueryBody::
 
 void QueryBody::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -1174,9 +1173,9 @@ void QueryBody::accept(parsenode_visitor& v) const
 // [31] Expr
 // ---------
 Expr::Expr(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	exprnode(_loc)
+  exprnode(_loc)
 {
 }
 
@@ -1186,25 +1185,25 @@ Expr::~Expr()
 
 ostream& Expr::put(ostream& s) const
 {
-	s << INDENT << "Expr[\n";
-	vector<rchandle<exprnode> >::const_iterator it = expr_hv.begin();
-	for (; it!=expr_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Expr[\n";
+  vector<rchandle<exprnode> >::const_iterator it = expr_hv.begin();
+  for (; it!=expr_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-Expr::
 
 void Expr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
-	for (; it!=expr_hv.rend(); ++it) {
-		exprnode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
+  for (; it!=expr_hv.rend(); ++it) {
+    exprnode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 int Expr::numberOfChildren() const
@@ -1220,17 +1219,17 @@ int Expr::numberOfChildren() const
 // [33] FLWORExpr
 // --------------
 FLWORExpr::FLWORExpr(
-	const yy::location& _loc,
-	rchandle<ForLetClauseList> _forlet_list_h,
-	rchandle<WhereClause> _where_h,
-	rchandle<OrderByClause> _orderby_h,
-	rchandle<exprnode> _return_val_h)
+  const yy::location& _loc,
+  rchandle<ForLetClauseList> _forlet_list_h,
+  rchandle<WhereClause> _where_h,
+  rchandle<OrderByClause> _orderby_h,
+  rchandle<exprnode> _return_val_h)
 :
-	exprnode(_loc),
-	forlet_list_h(_forlet_list_h),
-	where_h(_where_h),
-	orderby_h(_orderby_h),
-	return_val_h(_return_val_h)
+  exprnode(_loc),
+  forlet_list_h(_forlet_list_h),
+  where_h(_where_h),
+  orderby_h(_orderby_h),
+  return_val_h(_return_val_h)
 {
 }
 
@@ -1240,37 +1239,37 @@ FLWORExpr::~FLWORExpr()
 
 ostream& FLWORExpr::put(ostream& s) const
 {
-	s << INDENT << "FLWORExpr[\n";
-	if (forlet_list_h!=NULL) forlet_list_h->put(s);
-	if (where_h!=NULL) {
-		s << INDENT << "WHERE\n"; UNDENT;
-		where_h->put(s);
-	}
-	if (orderby_h!=NULL) {
-		s << INDENT << "ORDERBY\n"; UNDENT;
-		orderby_h->put(s);
-	}
-	if (return_val_h!=NULL) {
-		s << INDENT << "RETURN\n"; UNDENT;
-		return_val_h->put(s);
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FLWORExpr[\n";
+  if (forlet_list_h!=NULL) forlet_list_h->put(s);
+  if (where_h!=NULL) {
+    s << INDENT << "WHERE\n"; UNDENT;
+    where_h->put(s);
+  }
+  if (orderby_h!=NULL) {
+    s << INDENT << "ORDERBY\n"; UNDENT;
+    orderby_h->put(s);
+  }
+  if (return_val_h!=NULL) {
+    s << INDENT << "RETURN\n"; UNDENT;
+    return_val_h->put(s);
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-FLWORExpr::
 
 void FLWORExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	forlet_list_h->accept(v);
-	if (where_h != NULL) {
+  BEGIN_VISITOR ();
+  ACCEPT (forlet_list_h);
+  if (where_h != NULL) {
     where_h->accept(v);
-	}
-	if (orderby_h != NULL) {
-	  orderby_h->accept(v);
-	}
-	return_val_h->accept(v);
-	END_VISITOR ();
+  }
+  if (orderby_h != NULL) {
+    orderby_h->accept(v);
+  }
+  ACCEPT (return_val_h);
+  END_VISITOR ();
 }
 
 
@@ -1278,9 +1277,9 @@ void FLWORExpr::accept(parsenode_visitor& v) const
 // [33a] ForLetClauseList
 // ----------------------
 ForLetClauseList::ForLetClauseList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -1290,25 +1289,25 @@ ForLetClauseList::~ForLetClauseList()
 
 ostream& ForLetClauseList::put(ostream& s) const
 {
-	s << INDENT << "ForLetClauseList[\n";
-	vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
-	for (; it!=forlet_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ForLetClauseList[\n";
+  vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
+  for (; it!=forlet_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-ForLetClauseList::
 
 void ForLetClauseList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
-	for (; it!=forlet_hv.end(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
+  for (; it!=forlet_hv.end(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -1321,11 +1320,11 @@ void ForLetClauseList::accept(parsenode_visitor& v) const
 // [34] ForClause
 // --------------
 ForClause::ForClause(
-	const yy::location& _loc,
-	rchandle<VarInDeclList> _vardecl_list_h)
+  const yy::location& _loc,
+  rchandle<VarInDeclList> _vardecl_list_h)
 :
-	ForOrLetClause(_loc),
-	vardecl_list_h(_vardecl_list_h)
+  ForOrLetClause(_loc),
+  vardecl_list_h(_vardecl_list_h)
 {
 }
 
@@ -1335,18 +1334,18 @@ ForClause::~ForClause()
 
 ostream& ForClause::put(ostream& s) const
 {
-	s << INDENT << "ForClause[\n";
-	if (vardecl_list_h!=NULL) vardecl_list_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ForClause[\n";
+  if (vardecl_list_h!=NULL) vardecl_list_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-ForClause::
 
 void ForClause::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vardecl_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (vardecl_list_h);
+  END_VISITOR ();
 }
 
 int ForClause::get_decl_count () const { return vardecl_list_h->size (); }
@@ -1355,9 +1354,9 @@ int ForClause::get_decl_count () const { return vardecl_list_h->size (); }
 // [34a] VarInDeclList
 // -------------------
 VarInDeclList::VarInDeclList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -1367,25 +1366,25 @@ VarInDeclList::~VarInDeclList()
 
 ostream& VarInDeclList::put(ostream& s) const
 {
-	s << INDENT << "VarInDeclList[\n";
-	vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
-	for (; it!=vardecl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VarInDeclList[\n";
+  vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
+  for (; it!=vardecl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-VarInDeclList::
 
 void VarInDeclList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
-	for (; it!=vardecl_hv.end(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
+  for (; it!=vardecl_hv.end(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -1393,19 +1392,19 @@ void VarInDeclList::accept(parsenode_visitor& v) const
 // [34b] VarInDecl
 // ---------------
 VarInDecl::VarInDecl(
-	const yy::location& _loc,
-	std::string _varname,
-	rchandle<TypeDeclaration> _typedecl_h,
-	rchandle<PositionalVar> _posvar_h,
-	rchandle<FTScoreVar> _ftscorevar_h,
-	rchandle<exprnode> _valexpr_h)
+  const yy::location& _loc,
+  std::string _varname,
+  rchandle<TypeDeclaration> _typedecl_h,
+  rchandle<PositionalVar> _posvar_h,
+  rchandle<FTScoreVar> _ftscorevar_h,
+  rchandle<exprnode> _valexpr_h)
 :
-	parsenode(_loc),
-	varname(_varname),
-	typedecl_h(_typedecl_h),
-	posvar_h(_posvar_h),
-	ftscorevar_h(_ftscorevar_h),
-	valexpr_h(_valexpr_h)
+  parsenode(_loc),
+  varname(_varname),
+  typedecl_h(_typedecl_h),
+  posvar_h(_posvar_h),
+  ftscorevar_h(_ftscorevar_h),
+  valexpr_h(_valexpr_h)
 {
 }
 
@@ -1415,33 +1414,33 @@ VarInDecl::~VarInDecl()
 
 ostream& VarInDecl::put(ostream& s) const
 {
-	s << INDENT << "VarInDecl[";
-	s << "varname=" << varname << endl;
-	if (typedecl_h!=NULL) typedecl_h->put(s);
-	if (posvar_h!=NULL) posvar_h->put(s);
-	if (ftscorevar_h!=NULL) ftscorevar_h->put(s);
-	if (valexpr_h!=NULL) valexpr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VarInDecl[";
+  s << "varname=" << varname << endl;
+  if (typedecl_h!=NULL) typedecl_h->put(s);
+  if (posvar_h!=NULL) posvar_h->put(s);
+  if (ftscorevar_h!=NULL) ftscorevar_h->put(s);
+  if (valexpr_h!=NULL) valexpr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-VarInDecl::
 
 void VarInDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (typedecl_h != NULL) {
-		typedecl_h->accept(v);
-	}
-	if (posvar_h != NULL) {
-		posvar_h->accept(v);
-	}
-	if (ftscorevar_h != NULL) {
-		ftscorevar_h->accept(v);
-	}
-	if (valexpr_h != NULL) {
-		valexpr_h->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (typedecl_h != NULL) {
+    typedecl_h->accept(v);
+  }
+  if (posvar_h != NULL) {
+    posvar_h->accept(v);
+  }
+  if (ftscorevar_h != NULL) {
+    ftscorevar_h->accept(v);
+  }
+  if (valexpr_h != NULL) {
+    valexpr_h->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -1449,11 +1448,11 @@ void VarInDecl::accept(parsenode_visitor& v) const
 // [35] PositionalVar
 // ------------------
 PositionalVar::PositionalVar(
-	const yy::location& _loc,
-	std::string const& _varname)
+  const yy::location& _loc,
+  std::string const& _varname)
 :
-	parsenode(_loc),
-	varname(_varname)
+  parsenode(_loc),
+  varname(_varname)
 {
 }
 
@@ -1463,17 +1462,17 @@ PositionalVar::~PositionalVar()
 
 ostream& PositionalVar::put(ostream& s) const
 {
-	s << INDENT << "PositionalVar[";
-	s << "varname=" << varname << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "PositionalVar[";
+  s << "varname=" << varname << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-PositionalVar::
 
 void PositionalVar::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -1481,11 +1480,11 @@ void PositionalVar::accept(parsenode_visitor& v) const
 // [36] LetClause
 // --------------
 LetClause::LetClause(
-	const yy::location& _loc,
-	rchandle<VarGetsDeclList> _vardecl_list_h)
+  const yy::location& _loc,
+  rchandle<VarGetsDeclList> _vardecl_list_h)
 :
-	ForOrLetClause(_loc),
-	vardecl_list_h(_vardecl_list_h)
+  ForOrLetClause(_loc),
+  vardecl_list_h(_vardecl_list_h)
 {
 }
 
@@ -1495,18 +1494,18 @@ LetClause::~LetClause()
 
 ostream& LetClause::put(ostream& s) const
 {
-	s << INDENT << "LetClause[\n";
-	if (vardecl_list_h!=NULL) vardecl_list_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "LetClause[\n";
+  if (vardecl_list_h!=NULL) vardecl_list_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-LetClause::
 
 void LetClause::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vardecl_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (vardecl_list_h);
+  END_VISITOR ();
 }
 
 int LetClause::get_decl_count () const { return vardecl_list_h->size (); }
@@ -1515,9 +1514,9 @@ int LetClause::get_decl_count () const { return vardecl_list_h->size (); }
 // [36a] VarGetsDeclList
 // ---------------------
 VarGetsDeclList::VarGetsDeclList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -1527,25 +1526,25 @@ VarGetsDeclList::~VarGetsDeclList()
 
 ostream& VarGetsDeclList::put(ostream& s) const
 {
-	s << INDENT << "VarGetsDeclList[\n";
-	vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
-	for (; it!=vardecl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VarGetsDeclList[\n";
+  vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
+  for (; it!=vardecl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-VarGetsDeclList::
 
 void VarGetsDeclList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
-	for (; it!=vardecl_hv.end(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
+  for (; it!=vardecl_hv.end(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -1553,17 +1552,17 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
 // [36b] VarGetsDecl
 // ------------------
 VarGetsDecl::VarGetsDecl(
-	const yy::location& _loc,
-	std::string _varname,
-	rchandle<TypeDeclaration> _typedecl_h,
-	rchandle<FTScoreVar> _ftscorevar_h,
-	rchandle<exprnode> _valexpr_h)
+  const yy::location& _loc,
+  std::string _varname,
+  rchandle<TypeDeclaration> _typedecl_h,
+  rchandle<FTScoreVar> _ftscorevar_h,
+  rchandle<exprnode> _valexpr_h)
 :
-	parsenode(_loc),
-	varname(_varname),
-	typedecl_h(_typedecl_h),
-	ftscorevar_h(_ftscorevar_h),
-	valexpr_h(_valexpr_h)
+  parsenode(_loc),
+  varname(_varname),
+  typedecl_h(_typedecl_h),
+  ftscorevar_h(_ftscorevar_h),
+  valexpr_h(_valexpr_h)
 {
 }
 
@@ -1573,25 +1572,25 @@ VarGetsDecl::~VarGetsDecl()
 
 ostream& VarGetsDecl::put(ostream& s) const
 {
-	s << INDENT << "VarGetsDecl[";
-	s << "varname=" << varname << endl;
-	if (typedecl_h!=NULL) typedecl_h->put(s);
-	if (ftscorevar_h!=NULL) ftscorevar_h->put(s);
-	if (valexpr_h!=NULL) valexpr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VarGetsDecl[";
+  s << "varname=" << varname << endl;
+  if (typedecl_h!=NULL) typedecl_h->put(s);
+  if (ftscorevar_h!=NULL) ftscorevar_h->put(s);
+  if (valexpr_h!=NULL) valexpr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-VarGetsDecl::
 
 void VarGetsDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (typedecl_h != 0)
+  BEGIN_VISITOR ();
+  if (typedecl_h != 0)
           typedecl_h->accept(v);
         if (ftscorevar_h != 0)
           ftscorevar_h->accept(v);
-	valexpr_h->accept(v);
-	END_VISITOR ();
+  ACCEPT (valexpr_h);
+  END_VISITOR ();
 }
 
 
@@ -1599,11 +1598,11 @@ void VarGetsDecl::accept(parsenode_visitor& v) const
 // [36c] FTScoreVar
 // ----------------
 FTScoreVar::FTScoreVar(
-	const yy::location& _loc,
-	std::string _varname)
+  const yy::location& _loc,
+  std::string _varname)
 :
-	parsenode(_loc),
-	varname(_varname)
+  parsenode(_loc),
+  varname(_varname)
 {
 }
 
@@ -1613,17 +1612,17 @@ FTScoreVar::~FTScoreVar()
 
 ostream& FTScoreVar::put(ostream& s) const
 {
-	s << INDENT << "FTScoreVar[";
-	s << "varname=" << varname << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTScoreVar[";
+  s << "varname=" << varname << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-FTScoreVar::
 
 void FTScoreVar::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -1631,11 +1630,11 @@ void FTScoreVar::accept(parsenode_visitor& v) const
 // [37] WhereClause
 // ----------------
 WhereClause::WhereClause(
-	const yy::location& _loc,
-	rchandle<exprnode> _predicate_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _predicate_h)
 :
-	parsenode(_loc),
-	predicate_h(_predicate_h)
+  parsenode(_loc),
+  predicate_h(_predicate_h)
 {
 }
 
@@ -1645,18 +1644,18 @@ WhereClause::~WhereClause()
 
 ostream& WhereClause::put(ostream& s) const
 {
-	s << INDENT << "WhereClause[\n";
-	if (predicate_h!=NULL) predicate_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "WhereClause[\n";
+  if (predicate_h!=NULL) predicate_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-WhereClause::
 
 void WhereClause::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	predicate_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (predicate_h);
+  END_VISITOR ();
 }
 
 
@@ -1664,13 +1663,13 @@ void WhereClause::accept(parsenode_visitor& v) const
 // [38] OrderByClause
 // ------------------
 OrderByClause::OrderByClause(
-	const yy::location& _loc,
-	rchandle<OrderSpecList> _spec_list_h,
-	bool _stable_b)
+  const yy::location& _loc,
+  rchandle<OrderSpecList> _spec_list_h,
+  bool _stable_b)
 :
-	parsenode(_loc),
-	spec_list_h(_spec_list_h),
-	stable_b(_stable_b)
+  parsenode(_loc),
+  spec_list_h(_spec_list_h),
+  stable_b(_stable_b)
 {
 }
 
@@ -1681,19 +1680,19 @@ OrderByClause::~OrderByClause()
 
 ostream& OrderByClause::put(ostream& s) const
 {
-	s << INDENT << "OrderByClause[\n";
-	if (spec_list_h!=NULL) spec_list_h->put(s);
-	s << "stable_b=" << stable_b << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderByClause[\n";
+  if (spec_list_h!=NULL) spec_list_h->put(s);
+  s << "stable_b=" << stable_b << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderByClause::
 
 void OrderByClause::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	spec_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (spec_list_h);
+  END_VISITOR ();
 }
 
 
@@ -1701,9 +1700,9 @@ void OrderByClause::accept(parsenode_visitor& v) const
 // [39] OrderSpecList
 // ------------------
 OrderSpecList::OrderSpecList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -1713,24 +1712,24 @@ OrderSpecList::~OrderSpecList()
 
 ostream& OrderSpecList::put(ostream& s) const
 {
-	s << INDENT << "OrderSpecList[\n";
-	vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
-	for (; it!=spec_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderSpecList[\n";
+  vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
+  for (; it!=spec_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderSpecList::
 
 void OrderSpecList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
-	for (; it!=spec_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<OrderSpec> >::const_reverse_iterator it = spec_hv.rbegin();
+  for (; it!=spec_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -1738,13 +1737,13 @@ void OrderSpecList::accept(parsenode_visitor& v) const
 // [40] OrderSpec
 // --------------
 OrderSpec::OrderSpec(
-	const yy::location& _loc,
-	rchandle<exprnode> _spec_h,
-	rchandle<OrderModifier> _modifier_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _spec_h,
+  rchandle<OrderModifier> _modifier_h)
 :
-	parsenode(_loc),
-	spec_h(_spec_h),
-	modifier_h(_modifier_h)
+  parsenode(_loc),
+  spec_h(_spec_h),
+  modifier_h(_modifier_h)
 {
 }
 
@@ -1754,20 +1753,20 @@ OrderSpec::~OrderSpec()
 
 ostream& OrderSpec::put(ostream& s) const
 {
-	s << INDENT << "OrderSpec[\n";
-	if (spec_h!=NULL) spec_h->put(s);
-	if (modifier_h!=NULL) modifier_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderSpec[\n";
+  if (spec_h!=NULL) spec_h->put(s);
+  if (modifier_h!=NULL) modifier_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderSpec::
 
 void OrderSpec::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ACCEPT (spec_h);
-	ACCEPT (modifier_h);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (spec_h);
+  ACCEPT (modifier_h);
+  END_VISITOR ();
 }
 
 
@@ -1775,15 +1774,15 @@ void OrderSpec::accept(parsenode_visitor& v) const
 // [41] OrderModifier
 // ------------------
 OrderModifier::OrderModifier(
-	const yy::location& _loc,
-	rchandle<OrderDirSpec> _dir_spec_h,
-	rchandle<OrderEmptySpec> _empty_spec_h,
-	rchandle<OrderCollationSpec> _collation_spec_h)
+  const yy::location& _loc,
+  rchandle<OrderDirSpec> _dir_spec_h,
+  rchandle<OrderEmptySpec> _empty_spec_h,
+  rchandle<OrderCollationSpec> _collation_spec_h)
 :
-	parsenode(_loc),
-	dir_spec_h(_dir_spec_h),
-	empty_spec_h(_empty_spec_h),
-	collation_spec_h(_collation_spec_h)
+  parsenode(_loc),
+  dir_spec_h(_dir_spec_h),
+  empty_spec_h(_empty_spec_h),
+  collation_spec_h(_collation_spec_h)
 {
 }
 
@@ -1793,22 +1792,22 @@ OrderModifier::~OrderModifier()
 
 ostream& OrderModifier::put(ostream& s) const
 {
-	s << INDENT << "OrderModifier[";
-	if (dir_spec_h!=NULL) dir_spec_h->put(s);
-	if (empty_spec_h!=NULL) empty_spec_h->put(s);
-	if (collation_spec_h!=NULL) collation_spec_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderModifier[";
+  if (dir_spec_h!=NULL) dir_spec_h->put(s);
+  if (empty_spec_h!=NULL) empty_spec_h->put(s);
+  if (collation_spec_h!=NULL) collation_spec_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderModifier::
 
 void OrderModifier::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ACCEPT (dir_spec_h);
-	ACCEPT (empty_spec_h);
-	ACCEPT (collation_spec_h);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (dir_spec_h);
+  ACCEPT (empty_spec_h);
+  ACCEPT (collation_spec_h);
+  END_VISITOR ();
 }
 
 
@@ -1816,35 +1815,35 @@ void OrderModifier::accept(parsenode_visitor& v) const
 // [41a] OrderDirSpec
 // ------------------
 OrderDirSpec::OrderDirSpec(
-	const yy::location& _loc,
-	enum dir_spec_t _dir_spec)
+  const yy::location& _loc,
+  enum dir_spec_t _dir_spec)
 :
-	parsenode(_loc),
-	dir_spec(_dir_spec)
+  parsenode(_loc),
+  dir_spec(_dir_spec)
 {
 }
 
 OrderDirSpec::~OrderDirSpec()
 {
 }
-	
+  
 ostream& OrderDirSpec::put(ostream& s) const
 {
-	s << INDENT << "OrderDirSpec[";
-	switch (dir_spec) {
-	case dir_ascending: s << "ascending"; break;
-	case dir_descending: s << "descending"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderDirSpec[";
+  switch (dir_spec) {
+  case dir_ascending: s << "ascending"; break;
+  case dir_descending: s << "descending"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderDirSpec::
 
 void OrderDirSpec::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -1852,11 +1851,11 @@ void OrderDirSpec::accept(parsenode_visitor& v) const
 // [41b] OrderEmptySpec
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
-	const yy::location& _loc,
-	StaticQueryContext::order_empty_mode_t _empty_order_spec)
+  const yy::location& _loc,
+  StaticQueryContext::order_empty_mode_t _empty_order_spec)
 :
-	parsenode(_loc),
-	empty_order_spec(_empty_order_spec)
+  parsenode(_loc),
+  empty_order_spec(_empty_order_spec)
 {
 }
 
@@ -1866,21 +1865,21 @@ OrderEmptySpec::~OrderEmptySpec()
 
 ostream& OrderEmptySpec::put(ostream& s) const
 {
-	s << INDENT << "OrderEmptySpec[";
-	switch (empty_order_spec) {
-	case StaticQueryContext::empty_greatest: s << "empty_greatest"; break;
-	case StaticQueryContext::empty_least: s << "empty_least"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderEmptySpec[";
+  switch (empty_order_spec) {
+  case StaticQueryContext::empty_greatest: s << "empty_greatest"; break;
+  case StaticQueryContext::empty_least: s << "empty_least"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderEmptySpec::
 
 void OrderEmptySpec::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -1888,11 +1887,11 @@ void OrderEmptySpec::accept(parsenode_visitor& v) const
 // [41c] OrderCollationSpec
 // ------------------------
 OrderCollationSpec::OrderCollationSpec(
-	const yy::location& _loc,
-	std::string const& _uri)
+  const yy::location& _loc,
+  std::string const& _uri)
 :
-	parsenode(_loc),
-	uri(_uri)
+  parsenode(_loc),
+  uri(_uri)
 {
 }
 
@@ -1902,33 +1901,33 @@ OrderCollationSpec::~OrderCollationSpec()
 
 ostream& OrderCollationSpec::put(ostream& s) const
 {
-	s << INDENT << "OrderCollationSpec[";
-	s << "uri=" << uri << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderCollationSpec[";
+  s << "uri=" << uri << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderCollationSpec::
 
 void OrderCollationSpec::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
 
-// [42] QuantifiedExpr 	   
+// [42] QuantifiedExpr     
 // -------------------
 QuantifiedExpr::QuantifiedExpr(
-	const yy::location& _loc,
-	quantification_mode_t _qmode,
-	rchandle<QVarInDeclList> _decl_list_h,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  quantification_mode_t _qmode,
+  rchandle<QVarInDeclList> _decl_list_h,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	qmode(_qmode),
-	decl_list_h(_decl_list_h),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  qmode(_qmode),
+  decl_list_h(_decl_list_h),
+  expr_h(_expr_h)
 {
 }
 
@@ -1938,25 +1937,25 @@ QuantifiedExpr::~QuantifiedExpr()
 
 ostream& QuantifiedExpr::put(ostream& s) const
 {
-	s << INDENT << "QuantifiedExpr[";
-	switch(qmode) {
-	case quant_some: s << "some\n"; break;
-	case quant_every: s << "every\n"; break;
-	default: s << "???\n";
-	}
-	if (decl_list_h!=NULL) decl_list_h->put(s);
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "QuantifiedExpr[";
+  switch(qmode) {
+  case quant_some: s << "some\n"; break;
+  case quant_every: s << "every\n"; break;
+  default: s << "???\n";
+  }
+  if (decl_list_h!=NULL) decl_list_h->put(s);
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-QuantifiedExpr::
 
 void QuantifiedExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	decl_list_h->accept(v);
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (decl_list_h);
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -1964,9 +1963,9 @@ void QuantifiedExpr::accept(parsenode_visitor& v) const
 // [42a] QVarInDeclList
 // --------------------
 QVarInDeclList::QVarInDeclList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -1976,25 +1975,25 @@ QVarInDeclList::~QVarInDeclList()
 
 ostream& QVarInDeclList::put(ostream& s) const
 {
-	s << INDENT << "QVarInDeclList[\n";
-	vector<rchandle<QVarInDecl> >::const_iterator it = qvar_decl_hv.begin();
-	for (; it!=qvar_decl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "QVarInDeclList[\n";
+  vector<rchandle<QVarInDecl> >::const_iterator it = qvar_decl_hv.begin();
+  for (; it!=qvar_decl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-QVarInDeclList::
 
 void QVarInDeclList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<QVarInDecl> >::const_reverse_iterator it = qvar_decl_hv.rbegin();
-	for (; it!=qvar_decl_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<QVarInDecl> >::const_reverse_iterator it = qvar_decl_hv.rbegin();
+  for (; it!=qvar_decl_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -2002,27 +2001,27 @@ void QVarInDeclList::accept(parsenode_visitor& v) const
 // [42b] QVarInDecl
 // ----------------
 QVarInDecl::QVarInDecl(
-	const yy::location& _loc,
-	std::string _name,
-	rchandle<exprnode> _val_h)
+  const yy::location& _loc,
+  std::string _name,
+  rchandle<exprnode> _val_h)
 :
-	parsenode(_loc),
-	name(_name),
-	typedecl_h(NULL),
-	val_h(_val_h)
+  parsenode(_loc),
+  name(_name),
+  typedecl_h(NULL),
+  val_h(_val_h)
 {
 }
 
 QVarInDecl::QVarInDecl(
-	const yy::location& _loc,
-	std::string _name,
-	rchandle<TypeDeclaration> _typedecl_h,
-	rchandle<exprnode> _val_h)
+  const yy::location& _loc,
+  std::string _name,
+  rchandle<TypeDeclaration> _typedecl_h,
+  rchandle<exprnode> _val_h)
 :
-	parsenode(_loc),
-	name(_name),
-	typedecl_h(_typedecl_h),
-	val_h(_val_h)
+  parsenode(_loc),
+  name(_name),
+  typedecl_h(_typedecl_h),
+  val_h(_val_h)
 {
 }
 
@@ -2032,20 +2031,20 @@ QVarInDecl::~QVarInDecl()
 
 ostream& QVarInDecl::put(ostream& s) const
 {
-	s << INDENT << "QVarInDecl[";
-	s << "name=" << name << endl;
-	if (typedecl_h!=NULL) typedecl_h->put(s);
-	if (val_h!=NULL) val_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "QVarInDecl[";
+  s << "name=" << name << endl;
+  if (typedecl_h!=NULL) typedecl_h->put(s);
+  if (val_h!=NULL) val_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-QVarInDecl::
 
 void QVarInDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	val_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (val_h);
+  END_VISITOR ();
 }
 
 
@@ -2053,31 +2052,31 @@ void QVarInDecl::accept(parsenode_visitor& v) const
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr::TypeswitchExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _switch_expr_h,
-	rchandle<CaseClauseList> _clause_list_h,
-	rchandle<exprnode> _default_clause_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _switch_expr_h,
+  rchandle<CaseClauseList> _clause_list_h,
+  rchandle<exprnode> _default_clause_h)
 :
-	exprnode(_loc),
-	switch_expr_h(_switch_expr_h),
-	clause_list_h(_clause_list_h),
-	default_clause_h(_default_clause_h)
+  exprnode(_loc),
+  switch_expr_h(_switch_expr_h),
+  clause_list_h(_clause_list_h),
+  default_clause_h(_default_clause_h)
 {
 }
 
 
 TypeswitchExpr::TypeswitchExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _switch_expr_h,
-	rchandle<CaseClauseList> _clause_list_h,
-	std::string _default_varname,
-	rchandle<exprnode> _default_clause_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _switch_expr_h,
+  rchandle<CaseClauseList> _clause_list_h,
+  std::string _default_varname,
+  rchandle<exprnode> _default_clause_h)
 :
-	exprnode(_loc),
-	switch_expr_h(_switch_expr_h),
-	clause_list_h(_clause_list_h),
-	default_varname(_default_varname),
-	default_clause_h(_default_clause_h)
+  exprnode(_loc),
+  switch_expr_h(_switch_expr_h),
+  clause_list_h(_clause_list_h),
+  default_varname(_default_varname),
+  default_clause_h(_default_clause_h)
 {
 }
 
@@ -2087,48 +2086,48 @@ TypeswitchExpr::~TypeswitchExpr()
 
 ostream& TypeswitchExpr::put(ostream& os) const
 {
-	os << INDENT << "TypeswitchExpr[\n";
-	if (switch_expr_h!=NULL) switch_expr_h->put(os);
-	if (clause_list_h!=NULL) clause_list_h->put(os);
-	if (default_clause_h!=NULL) {
-  	os << INDENT << "DEFAULT\n";
-  	if (default_varname.length()>0) {
-  	  os << INDENT << "VARNAME=" << default_varname;
-			os << OUTDENT << endl;
+  os << INDENT << "TypeswitchExpr[\n";
+  if (switch_expr_h!=NULL) switch_expr_h->put(os);
+  if (clause_list_h!=NULL) clause_list_h->put(os);
+  if (default_clause_h!=NULL) {
+    os << INDENT << "DEFAULT\n";
+    if (default_varname.length()>0) {
+      os << INDENT << "VARNAME=" << default_varname;
+      os << OUTDENT << endl;
     }
-  	default_clause_h->put(os);
-  	UNDENT;
-	}
-	return os << OUTDENT << "]\n";
+    default_clause_h->put(os);
+    UNDENT;
+  }
+  return os << OUTDENT << "]\n";
 }
 
 //-TypeswitchExpr::
 
 void TypeswitchExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	switch_expr_h->accept(v);
-	clause_list_h->accept(v);
-	default_clause_h->accept(v);
+  BEGIN_VISITOR ();
+  ACCEPT (switch_expr_h);
+  ACCEPT (clause_list_h);
+  ACCEPT (default_clause_h);
 
-	//d Assert<null_pointer>(switch_expr_h!=NULL);
-	Assert(switch_expr_h!=NULL);
-	switch_expr_h->accept(v);
+  //d Assert<null_pointer>(switch_expr_h!=NULL);
+  Assert(switch_expr_h!=NULL);
+  ACCEPT (switch_expr_h);
 
-	//d Assert<null_pointer>(default_clause_h!=NULL);
-	Assert(default_clause_h!=NULL);
-	default_clause_h->accept(v);
+  //d Assert<null_pointer>(default_clause_h!=NULL);
+  Assert(default_clause_h!=NULL);
+  ACCEPT (default_clause_h);
 
-	//d Assert<null_pointer>(clause_list_h!=NULL);
-	Assert(clause_list_h!=NULL);
-	vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_list_h->rbegin();
-	for (; it!=clause_list_h->rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  //d Assert<null_pointer>(clause_list_h!=NULL);
+  Assert(clause_list_h!=NULL);
+  vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_list_h->rbegin();
+  for (; it!=clause_list_h->rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -2136,9 +2135,9 @@ void TypeswitchExpr::accept(parsenode_visitor& v) const
 // [43a] CaseClauseList
 // --------------------
 CaseClauseList::CaseClauseList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -2148,33 +2147,33 @@ CaseClauseList::~CaseClauseList()
 
 ostream& CaseClauseList::put(ostream& os) const
 {
-	os << INDENT << "CaseClauseList[("<<size()<<")\n";
-	vector<rchandle<CaseClause> >::const_iterator it = clause_hv.begin();
-	for (; it!=clause_hv.end(); ++it) { 
-  	if (*it!=NULL) {
-    	(*it)->put(os);
-  	}
-  	else { 
-    	os << INDENT << "CASE CLAUSE == NULL!\n"; 
-    	UNDENT; 
+  os << INDENT << "CaseClauseList[("<<size()<<")\n";
+  vector<rchandle<CaseClause> >::const_iterator it = clause_hv.begin();
+  for (; it!=clause_hv.end(); ++it) { 
+    if (*it!=NULL) {
+      (*it)->put(os);
+    }
+    else { 
+      os << INDENT << "CASE CLAUSE == NULL!\n"; 
+      UNDENT; 
     }
   }
-	return os << OUTDENT << "]\n";
+  return os << OUTDENT << "]\n";
 }
 
 //-CaseClauseList::
 
 void CaseClauseList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
-	for (; it!=clause_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
+  for (; it!=clause_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -2182,27 +2181,27 @@ void CaseClauseList::accept(parsenode_visitor& v) const
 // [44] CaseClause
 // ---------------
 CaseClause::CaseClause(
-	const yy::location& _loc,
-	std::string _varname,
-	rchandle<SequenceType> _type_h,
-	rchandle<exprnode> _val_h)
+  const yy::location& _loc,
+  std::string _varname,
+  rchandle<SequenceType> _type_h,
+  rchandle<exprnode> _val_h)
 :
-	parsenode(_loc),
-	varname(_varname),
-	type_h(_type_h),
-	val_h(_val_h)
+  parsenode(_loc),
+  varname(_varname),
+  type_h(_type_h),
+  val_h(_val_h)
 {
 }
 
 CaseClause::CaseClause(
-	const yy::location& _loc,
-	rchandle<SequenceType> _type_h,
-	rchandle<exprnode> _val_h)
+  const yy::location& _loc,
+  rchandle<SequenceType> _type_h,
+  rchandle<exprnode> _val_h)
 :
-	parsenode(_loc),
-	varname(""),
-	type_h(_type_h),
-	val_h(_val_h)
+  parsenode(_loc),
+  varname(""),
+  type_h(_type_h),
+  val_h(_val_h)
 {
 }
 
@@ -2212,27 +2211,27 @@ CaseClause::~CaseClause()
 
 ostream& CaseClause::put(ostream& os) const
 {
-	os << INDENT << "CaseClause[\n";
-	if (varname.length()>0) os << "VARNAME=" << varname;
-	if (type_h!=NULL) { 
-  	os << INDENT << "AS\n"; 
-  	type_h->put(os); UNDENT;
+  os << INDENT << "CaseClause[\n";
+  if (varname.length()>0) os << "VARNAME=" << varname;
+  if (type_h!=NULL) { 
+    os << INDENT << "AS\n"; 
+    type_h->put(os); UNDENT;
   }
-	if (val_h!=NULL) {
-  	os << INDENT << "RETURN\n"; 
-  	val_h->put(os); UNDENT;
+  if (val_h!=NULL) {
+    os << INDENT << "RETURN\n"; 
+    val_h->put(os); UNDENT;
   }
-	return os << OUTDENT << "]\n";
+  return os << OUTDENT << "]\n";
 }
 
 //-CaseClause::
 
 void CaseClause::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	type_h->accept(v);
-	val_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (type_h);
+  ACCEPT (val_h);
+  END_VISITOR ();
 }
 
 
@@ -2240,15 +2239,15 @@ void CaseClause::accept(parsenode_visitor& v) const
 // [45] IfExpr
 // -----------
 IfExpr::IfExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _cond_expr_h,
-	rchandle<exprnode> _then_expr_h,
-	rchandle<exprnode> _else_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _cond_expr_h,
+  rchandle<exprnode> _then_expr_h,
+  rchandle<exprnode> _else_expr_h)
 :
-	exprnode(_loc),
-	cond_expr_h(_cond_expr_h),
-	then_expr_h(_then_expr_h),
-	else_expr_h(_else_expr_h)
+  exprnode(_loc),
+  cond_expr_h(_cond_expr_h),
+  then_expr_h(_then_expr_h),
+  else_expr_h(_else_expr_h)
 {
 }
 
@@ -2258,22 +2257,22 @@ IfExpr::~IfExpr()
 
 ostream& IfExpr::put(ostream& s) const
 {
-	s << INDENT << "IfExpr[\n";
-	if (cond_expr_h!=NULL) cond_expr_h->put(s);
-	if (then_expr_h!=NULL) then_expr_h->put(s);
-	if (else_expr_h!=NULL) else_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "IfExpr[\n";
+  if (cond_expr_h!=NULL) cond_expr_h->put(s);
+  if (then_expr_h!=NULL) then_expr_h->put(s);
+  if (else_expr_h!=NULL) else_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-IfExpr::
 
 void IfExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	cond_expr_h->accept(v);
-	then_expr_h->accept(v);
-	else_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (cond_expr_h);
+  ACCEPT (then_expr_h);
+  ACCEPT (else_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2281,13 +2280,13 @@ void IfExpr::accept(parsenode_visitor& v) const
 // [46] OrExpr
 // -----------
 OrExpr::OrExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _or_expr_h,
-	rchandle<exprnode> _and_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _or_expr_h,
+  rchandle<exprnode> _and_expr_h)
 :
-	exprnode(_loc),
-	or_expr_h(_or_expr_h),
-	and_expr_h(_and_expr_h)
+  exprnode(_loc),
+  or_expr_h(_or_expr_h),
+  and_expr_h(_and_expr_h)
 {
 }
 
@@ -2297,20 +2296,20 @@ OrExpr::~OrExpr()
 
 ostream& OrExpr::put(ostream& s) const
 {
-	s << INDENT << "OrExpr[\n";
-	if (or_expr_h!=NULL) or_expr_h->put(s);
-	if (and_expr_h!=NULL) and_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrExpr[\n";
+  if (or_expr_h!=NULL) or_expr_h->put(s);
+  if (and_expr_h!=NULL) and_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-OrExpr::
 
 void OrExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	or_expr_h->accept(v);
-	and_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (or_expr_h);
+  ACCEPT (and_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2318,13 +2317,13 @@ void OrExpr::accept(parsenode_visitor& v) const
 // [47] AndExpr
 // ------------
 AndExpr::AndExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _and_expr_h,
-	rchandle<exprnode> _comp_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _and_expr_h,
+  rchandle<exprnode> _comp_expr_h)
 :
-	exprnode(_loc),
-	and_expr_h(_and_expr_h),
-	comp_expr_h(_comp_expr_h)
+  exprnode(_loc),
+  and_expr_h(_and_expr_h),
+  comp_expr_h(_comp_expr_h)
 {
 }
 
@@ -2334,20 +2333,20 @@ AndExpr::~AndExpr()
 
 ostream& AndExpr::put(ostream& s) const
 {
-	s << INDENT << "AndExpr[\n";
-	if (and_expr_h!=NULL) and_expr_h->put(s);
-	if (comp_expr_h!=NULL) comp_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "AndExpr[\n";
+  if (and_expr_h!=NULL) and_expr_h->put(s);
+  if (comp_expr_h!=NULL) comp_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-AndExpr::
 
 void AndExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	and_expr_h->accept(v);
-	comp_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (and_expr_h);
+  ACCEPT (comp_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2355,47 +2354,47 @@ void AndExpr::accept(parsenode_visitor& v) const
 // [48] ComparisonExpr
 // -------------------
 ComparisonExpr::ComparisonExpr(
-	const yy::location& _loc,
-	rchandle<ValueComp> _valcomp_h,
-	rchandle<exprnode> _left_h,
-	rchandle<exprnode> _right_h)
+  const yy::location& _loc,
+  rchandle<ValueComp> _valcomp_h,
+  rchandle<exprnode> _left_h,
+  rchandle<exprnode> _right_h)
 :
-	exprnode(_loc),
-	left_h(_left_h),
-	right_h(_right_h),
-	valcomp_h(_valcomp_h),
-	gencomp_h(NULL),
-	nodecomp_h(NULL)
+  exprnode(_loc),
+  left_h(_left_h),
+  right_h(_right_h),
+  valcomp_h(_valcomp_h),
+  gencomp_h(NULL),
+  nodecomp_h(NULL)
 {
 }
 
 ComparisonExpr::ComparisonExpr(
-	const yy::location& _loc,
-	rchandle<GeneralComp> _gencomp_h,
-	rchandle<exprnode> _left_h,
-	rchandle<exprnode> _right_h)
+  const yy::location& _loc,
+  rchandle<GeneralComp> _gencomp_h,
+  rchandle<exprnode> _left_h,
+  rchandle<exprnode> _right_h)
 :
-	exprnode(_loc),
-	left_h(_left_h),
-	right_h(_right_h),
-	valcomp_h(NULL),
-	gencomp_h(_gencomp_h),
-	nodecomp_h(NULL)
+  exprnode(_loc),
+  left_h(_left_h),
+  right_h(_right_h),
+  valcomp_h(NULL),
+  gencomp_h(_gencomp_h),
+  nodecomp_h(NULL)
 {
 }
 
 ComparisonExpr::ComparisonExpr(
-	const yy::location& _loc,
-	rchandle<NodeComp> _nodecomp_h,
-	rchandle<exprnode> _left_h,
-	rchandle<exprnode> _right_h)
+  const yy::location& _loc,
+  rchandle<NodeComp> _nodecomp_h,
+  rchandle<exprnode> _left_h,
+  rchandle<exprnode> _right_h)
 :
-	exprnode(_loc),
-	left_h(_left_h),
-	right_h(_right_h),
-	valcomp_h(NULL),
-	gencomp_h(NULL),
-	nodecomp_h(_nodecomp_h)
+  exprnode(_loc),
+  left_h(_left_h),
+  right_h(_right_h),
+  valcomp_h(NULL),
+  gencomp_h(NULL),
+  nodecomp_h(_nodecomp_h)
 {
 }
 
@@ -2405,23 +2404,23 @@ ComparisonExpr::~ComparisonExpr()
 
 ostream& ComparisonExpr::put(ostream& s) const
 {
-	s << INDENT << "ComparisonExpr[\n";
-	if (left_h!=NULL) left_h->put(s);
-	if (valcomp_h!=NULL) valcomp_h->put(s);
-	if (gencomp_h!=NULL) gencomp_h->put(s);
-	if (nodecomp_h!=NULL) nodecomp_h->put(s);
-	if (right_h!=NULL) right_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ComparisonExpr[\n";
+  if (left_h!=NULL) left_h->put(s);
+  if (valcomp_h!=NULL) valcomp_h->put(s);
+  if (gencomp_h!=NULL) gencomp_h->put(s);
+  if (nodecomp_h!=NULL) nodecomp_h->put(s);
+  if (right_h!=NULL) right_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-ComparisonExpr::
 
 void ComparisonExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	left_h->accept(v);
-	right_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (left_h);
+  ACCEPT (right_h);
+  END_VISITOR ();
 }
 
 
@@ -2429,15 +2428,15 @@ void ComparisonExpr::accept(parsenode_visitor& v) const
 // [48a] FTContainsExpr
 // --------------------
 FTContainsExpr::FTContainsExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _range_expr_h,
-	rchandle<FTSelection> _ftselect_h,
-	rchandle<FTIgnoreOption> _ftignore_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _range_expr_h,
+  rchandle<FTSelection> _ftselect_h,
+  rchandle<FTIgnoreOption> _ftignore_h)
 :
-	exprnode(_loc),
-	range_expr_h(_range_expr_h),
-	ftselect_h(_ftselect_h),
-	ftignore_h(_ftignore_h)
+  exprnode(_loc),
+  range_expr_h(_range_expr_h),
+  ftselect_h(_ftselect_h),
+  ftignore_h(_ftignore_h)
 {
 }
 
@@ -2447,22 +2446,22 @@ FTContainsExpr::~FTContainsExpr()
 
 ostream& FTContainsExpr::put(ostream& s) const
 {
-	s << INDENT << "FTContainsExpr[\n";
-	if (range_expr_h!=NULL) range_expr_h->put(s);
-	if (ftselect_h!=NULL) ftselect_h->put(s);
-	if (ftignore_h!=NULL) ftignore_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTContainsExpr[\n";
+  if (range_expr_h!=NULL) range_expr_h->put(s);
+  if (ftselect_h!=NULL) ftselect_h->put(s);
+  if (ftignore_h!=NULL) ftignore_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FTContainsExpr::
 
 void FTContainsExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	range_expr_h->accept(v);
-	ftselect_h->accept(v);
-	ftignore_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (range_expr_h);
+  ACCEPT (ftselect_h);
+  ACCEPT (ftignore_h);
+  END_VISITOR ();
 }
 
 
@@ -2470,13 +2469,13 @@ void FTContainsExpr::accept(parsenode_visitor& v) const
 // [49] RangeExpr
 // --------------
 RangeExpr::RangeExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _from_expr_h,
-	rchandle<exprnode> _to_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _from_expr_h,
+  rchandle<exprnode> _to_expr_h)
 :
-	exprnode(_loc),
-	from_expr_h(_from_expr_h),
-	to_expr_h(_to_expr_h)
+  exprnode(_loc),
+  from_expr_h(_from_expr_h),
+  to_expr_h(_to_expr_h)
 {
 }
 
@@ -2486,21 +2485,21 @@ RangeExpr::~RangeExpr()
 
 ostream& RangeExpr::put(ostream& s) const
 {
-	s << INDENT << "RangeExpr[\n";
-	if (from_expr_h!=NULL) from_expr_h->put(s);
-	s << " TO ";
-	if (to_expr_h!=NULL) to_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "RangeExpr[\n";
+  if (from_expr_h!=NULL) from_expr_h->put(s);
+  s << " TO ";
+  if (to_expr_h!=NULL) to_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-RangeExpr::
 
 void RangeExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	from_expr_h->accept(v);
-	to_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (from_expr_h);
+  ACCEPT (to_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2508,15 +2507,15 @@ void RangeExpr::accept(parsenode_visitor& v) const
 // [50] AdditiveExpr
 // -----------------
 AdditiveExpr::AdditiveExpr(
-	const yy::location& _loc,
-	enum add_op_t _add_op,
-	rchandle<exprnode> _add_expr_h,
-	rchandle<exprnode> _mult_expr_h)
+  const yy::location& _loc,
+  enum add_op_t _add_op,
+  rchandle<exprnode> _add_expr_h,
+  rchandle<exprnode> _mult_expr_h)
 :
-	exprnode(_loc),
-	add_op(_add_op),
-	add_expr_h(_add_expr_h),
-	mult_expr_h(_mult_expr_h)
+  exprnode(_loc),
+  add_op(_add_op),
+  add_expr_h(_add_expr_h),
+  mult_expr_h(_mult_expr_h)
 {
 }
 
@@ -2526,27 +2525,27 @@ AdditiveExpr::~AdditiveExpr()
 
 ostream& AdditiveExpr::put(ostream& os) const
 {
-	os << INDENT << "AdditiveExpr[\n";
-	if (add_expr_h!=NULL) {
-		add_expr_h->put(os);
-		switch(add_op) {
-		case op_plus: os << INDENT << " plus\n"; break;
-		case op_minus: os << INDENT << " minus\n"; break;
-		default: os << INDENT << "???";
-		}
-	}
-	if (mult_expr_h!=NULL) mult_expr_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "AdditiveExpr[\n";
+  if (add_expr_h!=NULL) {
+    add_expr_h->put(os);
+    switch(add_op) {
+    case op_plus: os << INDENT << " plus\n"; break;
+    case op_minus: os << INDENT << " minus\n"; break;
+    default: os << INDENT << "???";
+    }
+  }
+  if (mult_expr_h!=NULL) mult_expr_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 //-AdditiveExpr::
 
 void AdditiveExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	add_expr_h->accept(v);
-	mult_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (add_expr_h);
+  ACCEPT (mult_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2554,15 +2553,15 @@ void AdditiveExpr::accept(parsenode_visitor& v) const
 // [51] MultiplicativeExpr
 // -----------------------
 MultiplicativeExpr::MultiplicativeExpr(
-	const yy::location& _loc,
-	enum mult_op_t _mult_op,
-	rchandle<exprnode> _mult_expr_h,
-	rchandle<exprnode> _union_expr_h)
+  const yy::location& _loc,
+  enum mult_op_t _mult_op,
+  rchandle<exprnode> _mult_expr_h,
+  rchandle<exprnode> _union_expr_h)
 :
-	exprnode(_loc),
-	mult_op(_mult_op),
-	mult_expr_h(_mult_expr_h),
-	union_expr_h(_union_expr_h)
+  exprnode(_loc),
+  mult_op(_mult_op),
+  mult_expr_h(_mult_expr_h),
+  union_expr_h(_union_expr_h)
 {
 }
 
@@ -2572,27 +2571,27 @@ MultiplicativeExpr::~MultiplicativeExpr()
 
 ostream& MultiplicativeExpr::put(ostream& s) const
 {
-	s << INDENT << "MultiplicativeExpr[\n";
-	if (mult_expr_h!=NULL) mult_expr_h->put(s);
-	switch(mult_op) {
-	case op_mul: s << " mul\n"; break;
-	case op_div: s << " div\n"; break;
-	case op_idiv: s << " idiv\n"; break;
-	case op_mod: s << " mod\n"; break;
-	default: s << "???";
-	}
-	if (union_expr_h!=NULL) union_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "MultiplicativeExpr[\n";
+  if (mult_expr_h!=NULL) mult_expr_h->put(s);
+  switch(mult_op) {
+  case op_mul: s << " mul\n"; break;
+  case op_div: s << " div\n"; break;
+  case op_idiv: s << " idiv\n"; break;
+  case op_mod: s << " mod\n"; break;
+  default: s << "???";
+  }
+  if (union_expr_h!=NULL) union_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-MultiplicativeExpr::
 
 void MultiplicativeExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	mult_expr_h->accept(v);
-	union_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (mult_expr_h);
+  ACCEPT (union_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2600,13 +2599,13 @@ void MultiplicativeExpr::accept(parsenode_visitor& v) const
 // [52] UnionExpr
 // --------------
 UnionExpr::UnionExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _union_expr_h,
-	rchandle<exprnode> _intex_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _union_expr_h,
+  rchandle<exprnode> _intex_expr_h)
 :
-	exprnode(_loc),
-	union_expr_h(_union_expr_h),
-	intex_expr_h(_intex_expr_h)
+  exprnode(_loc),
+  union_expr_h(_union_expr_h),
+  intex_expr_h(_intex_expr_h)
 {
 }
 
@@ -2616,20 +2615,20 @@ UnionExpr::~UnionExpr()
 
 ostream& UnionExpr::put(ostream& s) const
 {
-	s << INDENT << "UnionExpr[\n";
-	if (union_expr_h!=NULL) union_expr_h->put(s);
-	if (intex_expr_h!=NULL) intex_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "UnionExpr[\n";
+  if (union_expr_h!=NULL) union_expr_h->put(s);
+  if (intex_expr_h!=NULL) intex_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-UnionExpr::
 
 void UnionExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	union_expr_h->accept(v);
-	intex_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (union_expr_h);
+  ACCEPT (intex_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2637,15 +2636,15 @@ void UnionExpr::accept(parsenode_visitor& v) const
 // [53] IntersectExceptExpr
 // ------------------------
 IntersectExceptExpr::IntersectExceptExpr(
-	const yy::location& _loc,
-	enum intex_op_t _intex_op,
-	rchandle<exprnode> _intex_expr_h,
-	rchandle<exprnode> _instof_expr_h)
+  const yy::location& _loc,
+  enum intex_op_t _intex_op,
+  rchandle<exprnode> _intex_expr_h,
+  rchandle<exprnode> _instof_expr_h)
 :
-	exprnode(_loc),
-	intex_op(_intex_op),
-	intex_expr_h(_intex_expr_h),
-	instof_expr_h(_instof_expr_h)
+  exprnode(_loc),
+  intex_op(_intex_op),
+  intex_expr_h(_intex_expr_h),
+  instof_expr_h(_instof_expr_h)
 {
 }
 
@@ -2655,25 +2654,25 @@ IntersectExceptExpr::~IntersectExceptExpr()
 
 ostream& IntersectExceptExpr::put(ostream& s) const
 {
-	s << INDENT << "IntersectExceptExpr[\n";
-	if (intex_expr_h!=NULL) intex_expr_h->put(s);
-	switch(intex_op) {
-	case op_intersect: s << "intersect"; break;
-	case op_except: s << "except"; break;
-	default: s << "???";
-	}
-	if (instof_expr_h!=NULL) instof_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "IntersectExceptExpr[\n";
+  if (intex_expr_h!=NULL) intex_expr_h->put(s);
+  switch(intex_op) {
+  case op_intersect: s << "intersect"; break;
+  case op_except: s << "except"; break;
+  default: s << "???";
+  }
+  if (instof_expr_h!=NULL) instof_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-IntersectExceptExpr::
 
 void IntersectExceptExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	intex_expr_h->accept(v);
-	instof_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (intex_expr_h);
+  ACCEPT (instof_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2681,13 +2680,13 @@ void IntersectExceptExpr::accept(parsenode_visitor& v) const
 // [54] InstanceofExpr
 // -------------------
 InstanceofExpr::InstanceofExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _treat_expr_h,
-	rchandle<SequenceType> _seqtype_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _treat_expr_h,
+  rchandle<SequenceType> _seqtype_h)
 :
-	exprnode(_loc),
-	treat_expr_h(_treat_expr_h),
-	seqtype_h(_seqtype_h)
+  exprnode(_loc),
+  treat_expr_h(_treat_expr_h),
+  seqtype_h(_seqtype_h)
 {
 }
 
@@ -2697,20 +2696,20 @@ InstanceofExpr::~InstanceofExpr()
 
 ostream& InstanceofExpr::put(ostream& s) const
 {
-	s << INDENT << "InstanceofExpr[\n";
-	if (treat_expr_h!=NULL) treat_expr_h->put(s);
-	if (seqtype_h!=NULL) seqtype_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "InstanceofExpr[\n";
+  if (treat_expr_h!=NULL) treat_expr_h->put(s);
+  if (seqtype_h!=NULL) seqtype_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-InstanceofExpr::
 
 void InstanceofExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	treat_expr_h->accept(v);
-	seqtype_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (treat_expr_h);
+  ACCEPT (seqtype_h);
+  END_VISITOR ();
 }
 
 
@@ -2718,13 +2717,13 @@ void InstanceofExpr::accept(parsenode_visitor& v) const
 // [55] TreatExpr
 // --------------
 TreatExpr::TreatExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _castable_expr_h,
-	rchandle<SequenceType> _seqtype_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _castable_expr_h,
+  rchandle<SequenceType> _seqtype_h)
 :
-	exprnode(_loc),
-	castable_expr_h(_castable_expr_h),
-	seqtype_h(_seqtype_h)
+  exprnode(_loc),
+  castable_expr_h(_castable_expr_h),
+  seqtype_h(_seqtype_h)
 {
 }
 
@@ -2734,20 +2733,20 @@ TreatExpr::~TreatExpr()
 
 ostream& TreatExpr::put(ostream& s) const
 {
-	s << INDENT << "TreatExpr[\n";
-	if (castable_expr_h!=NULL) castable_expr_h->put(s);
-	if (seqtype_h!=NULL) seqtype_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "TreatExpr[\n";
+  if (castable_expr_h!=NULL) castable_expr_h->put(s);
+  if (seqtype_h!=NULL) seqtype_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-TreatExpr::
 
 void TreatExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	castable_expr_h->accept(v);
-	seqtype_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (castable_expr_h);
+  ACCEPT (seqtype_h);
+  END_VISITOR ();
 }
 
 
@@ -2755,13 +2754,13 @@ void TreatExpr::accept(parsenode_visitor& v) const
 // [56] CastableExpr
 // -----------------
 CastableExpr::CastableExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _cast_expr_h,
-	rchandle<SingleType> _singletype_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _cast_expr_h,
+  rchandle<SingleType> _singletype_h)
 :
-	exprnode(_loc),
-	cast_expr_h(_cast_expr_h),
-	singletype_h(_singletype_h)
+  exprnode(_loc),
+  cast_expr_h(_cast_expr_h),
+  singletype_h(_singletype_h)
 {
 }
 
@@ -2771,34 +2770,34 @@ CastableExpr::~CastableExpr()
 
 ostream& CastableExpr::put(ostream& s) const
 {
-	s << INDENT << "CastableExpr[\n";
-	if (cast_expr_h!=NULL) cast_expr_h->put(s);
-	if (singletype_h!=NULL) singletype_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CastableExpr[\n";
+  if (cast_expr_h!=NULL) cast_expr_h->put(s);
+  if (singletype_h!=NULL) singletype_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CastableExpr::
 
 void CastableExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	cast_expr_h->accept(v);
-	singletype_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (cast_expr_h);
+  ACCEPT (singletype_h);
+  END_VISITOR ();
 }
 
 
 
-// [57] CastExpr 	   
+// [57] CastExpr     
 // -------------
 CastExpr::CastExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _unary_expr_h,
-	rchandle<SingleType> _singletype_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _unary_expr_h,
+  rchandle<SingleType> _singletype_h)
 :
-	exprnode(_loc),
-	unary_expr_h(_unary_expr_h),
-	singletype_h(_singletype_h)
+  exprnode(_loc),
+  unary_expr_h(_unary_expr_h),
+  singletype_h(_singletype_h)
 {
 }
 
@@ -2808,20 +2807,20 @@ CastExpr::~CastExpr()
 
 ostream& CastExpr::put(ostream& s) const
 {
-	s << INDENT << "CastExpr[\n";
-	if (unary_expr_h!=NULL) unary_expr_h->put(s);
-	if (singletype_h!=NULL) singletype_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CastExpr[\n";
+  if (unary_expr_h!=NULL) unary_expr_h->put(s);
+  if (singletype_h!=NULL) singletype_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CastExpr::
 
 void CastExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	unary_expr_h->accept(v);
-	singletype_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (unary_expr_h);
+  ACCEPT (singletype_h);
+  END_VISITOR ();
 }
 
 
@@ -2829,13 +2828,13 @@ void CastExpr::accept(parsenode_visitor& v) const
 // [58] UnaryExpr
 // --------------
 UnaryExpr::UnaryExpr(
-	const yy::location& _loc,
-	rchandle<SignList> _signlist_h,
-	rchandle<exprnode> _value_expr_h)
+  const yy::location& _loc,
+  rchandle<SignList> _signlist_h,
+  rchandle<exprnode> _value_expr_h)
 :
-	exprnode(_loc),
-	value_expr_h(_value_expr_h),
-	signlist_h(_signlist_h)
+  exprnode(_loc),
+  value_expr_h(_value_expr_h),
+  signlist_h(_signlist_h)
 {
 }
 
@@ -2845,20 +2844,20 @@ UnaryExpr::~UnaryExpr()
 
 ostream& UnaryExpr::put(ostream& s) const
 {
-	s << INDENT << "UnaryExpr[\n";
-	if (signlist_h!=NULL) signlist_h->put(s);
-	if (value_expr_h!=NULL) value_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "UnaryExpr[\n";
+  if (signlist_h!=NULL) signlist_h->put(s);
+  if (value_expr_h!=NULL) value_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-UnaryExpr::
 
 void UnaryExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	signlist_h->accept(v);
-	value_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (signlist_h);
+  ACCEPT (value_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -2866,11 +2865,11 @@ void UnaryExpr::accept(parsenode_visitor& v) const
 // [58a] SignList
 // --------------
 SignList::SignList(
-	const yy::location& _loc,
-	bool _sign)
+  const yy::location& _loc,
+  bool _sign)
 :
-	parsenode(_loc),
-	sign(_sign)
+  parsenode(_loc),
+  sign(_sign)
 {
 }
 
@@ -2880,17 +2879,17 @@ SignList::~SignList()
 
 ostream& SignList::put(ostream& s) const
 {
-	s << INDENT << "Sign[";
-	s << (sign ? "+" : "-");
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Sign[";
+  s << (sign ? "+" : "-");
+  return s << OUTDENT << "]\n";
 }
 
 //-SignList::
 
 void SignList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -2902,11 +2901,11 @@ void SignList::accept(parsenode_visitor& v) const
 // [60] GeneralComp
 // ----------------
 GeneralComp::GeneralComp(
-	const yy::location& _loc,
-	enum gencomp_t _type)
+  const yy::location& _loc,
+  enum gencomp_t _type)
 :
-	parsenode(_loc),
-	type(_type)
+  parsenode(_loc),
+  type(_type)
 {
 }
 
@@ -2916,27 +2915,27 @@ GeneralComp::~GeneralComp()
 
 ostream& GeneralComp::put(ostream& s) const
 {
-	s << INDENT << "GeneralComp[";
-	switch(type) {
-	case op_eq: s << "eq"; break;
-	case op_ne: s << "ne"; break;
-	case op_lt: s << "lt"; break;
-	case op_le: s << "le"; break;
-	case op_gt: s << "gt"; break;
-	case op_ge: s << "ge"; break;
-	default: s << "???";
-	}
-	s << "]\n";
-	UNDENT;
-	return s;
+  s << INDENT << "GeneralComp[";
+  switch(type) {
+  case op_eq: s << "eq"; break;
+  case op_ne: s << "ne"; break;
+  case op_lt: s << "lt"; break;
+  case op_le: s << "le"; break;
+  case op_gt: s << "gt"; break;
+  case op_ge: s << "ge"; break;
+  default: s << "???";
+  }
+  s << "]\n";
+  UNDENT;
+  return s;
 }
 
 //-GeneralComp::
 
 void GeneralComp::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -2944,11 +2943,11 @@ void GeneralComp::accept(parsenode_visitor& v) const
 // [61] ValueComp
 // --------------
 ValueComp::ValueComp(
-	const yy::location& _loc,
-	enum valcomp_t _type)
+  const yy::location& _loc,
+  enum valcomp_t _type)
 :
-	parsenode(_loc),
-	type(_type)
+  parsenode(_loc),
+  type(_type)
 {
 }
 
@@ -2958,27 +2957,27 @@ ValueComp::~ValueComp()
 
 ostream& ValueComp::put(ostream& s) const
 {
-	s << INDENT << "ValueComp[";
-	switch(type) {
-	case op_val_eq: s << "val_eq"; break;
-	case op_val_ne: s << "val_ne"; break;
-	case op_val_lt: s << "val_lt"; break;
-	case op_val_le: s << "val_le"; break;
-	case op_val_gt: s << "val_gt"; break;
-	case op_val_ge: s << "val_ge"; break;
-	default: s << "???";
-	}
-	s << "]\n";
-	UNDENT;
-	return s;
+  s << INDENT << "ValueComp[";
+  switch(type) {
+  case op_val_eq: s << "val_eq"; break;
+  case op_val_ne: s << "val_ne"; break;
+  case op_val_lt: s << "val_lt"; break;
+  case op_val_le: s << "val_le"; break;
+  case op_val_gt: s << "val_gt"; break;
+  case op_val_ge: s << "val_ge"; break;
+  default: s << "???";
+  }
+  s << "]\n";
+  UNDENT;
+  return s;
 }
 
 //-ValueComp::
 
 void ValueComp::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -2986,11 +2985,11 @@ void ValueComp::accept(parsenode_visitor& v) const
 // [62] NodeComp
 // -------------
 NodeComp::NodeComp(
-	const yy::location& _loc,
-	enum nodecomp_t _type)
+  const yy::location& _loc,
+  enum nodecomp_t _type)
 :
-	parsenode(_loc),
-	type(_type)
+  parsenode(_loc),
+  type(_type)
 {
 }
 
@@ -3000,24 +2999,24 @@ NodeComp::~NodeComp()
 
 ostream& NodeComp::put(ostream& s) const
 {
-	s << INDENT << "NodeComp[";
-	switch(type) {
-	case op_is: s << "is"; break;
-	case op_precedes: s << "precedes"; break;
-	case op_follows: s << "follows"; break;
-	default: s << "???";
-	}
-	s << "]\n";
-	UNDENT;
-	return s;
+  s << INDENT << "NodeComp[";
+  switch(type) {
+  case op_is: s << "is"; break;
+  case op_precedes: s << "precedes"; break;
+  case op_follows: s << "follows"; break;
+  default: s << "???";
+  }
+  s << "]\n";
+  UNDENT;
+  return s;
 }
 
 //-NodeComp::
 
 void NodeComp::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -3025,13 +3024,13 @@ void NodeComp::accept(parsenode_visitor& v) const
 // [63] ValidateExpr
 // -----------------
 ValidateExpr::ValidateExpr(
-	const yy::location& _loc,
-	string const& _valmode,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  string const& _valmode,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	valmode(_valmode=="lax" ? val_lax : val_strict),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  valmode(_valmode=="lax" ? val_lax : val_strict),
+  expr_h(_expr_h)
 {
 }
 
@@ -3041,23 +3040,23 @@ ValidateExpr::~ValidateExpr()
 
 ostream& ValidateExpr::put(ostream& s) const
 {
-	s << INDENT << "ValidateExpr[";
-	switch(valmode) {
-	case val_strict: s << "strict\n"; break;
-	case val_lax: s << "lax\n"; break;
-	default: s << "???\n";
-	}
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ValidateExpr[";
+  switch(valmode) {
+  case val_strict: s << "strict\n"; break;
+  case val_lax: s << "lax\n"; break;
+  default: s << "???\n";
+  }
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-ValidateExpr::
 
 void ValidateExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -3065,13 +3064,13 @@ void ValidateExpr::accept(parsenode_visitor& v) const
 // [65] ExtensionExpr
 // ------------------
 ExtensionExpr::ExtensionExpr(
-	const yy::location& _loc,
-	rchandle<PragmaList> _pragma_list_h,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  rchandle<PragmaList> _pragma_list_h,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	pragma_list_h(_pragma_list_h),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  pragma_list_h(_pragma_list_h),
+  expr_h(_expr_h)
 {
 }
 
@@ -3081,20 +3080,20 @@ ExtensionExpr::~ExtensionExpr()
 
 ostream& ExtensionExpr::put(ostream& s) const
 {
-	s << INDENT << "ExtensionExpr[\n";
-	if (pragma_list_h!=NULL) pragma_list_h->put(s);
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ExtensionExpr[\n";
+  if (pragma_list_h!=NULL) pragma_list_h->put(s);
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-ExtensionExpr::
 
 void ExtensionExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	pragma_list_h->accept(v);
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (pragma_list_h);
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -3102,9 +3101,9 @@ void ExtensionExpr::accept(parsenode_visitor& v) const
 // [65a] PragmaList
 // ----------------
 PragmaList::PragmaList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -3114,25 +3113,25 @@ PragmaList::~PragmaList()
 
 ostream& PragmaList::put(ostream& s) const
 {
-	s << INDENT << "PragmaList[\n";
-	vector<rchandle<Pragma> >::const_iterator it = pragma_hv.begin();
-	for (; it!=pragma_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "PragmaList[\n";
+  vector<rchandle<Pragma> >::const_iterator it = pragma_hv.begin();
+  for (; it!=pragma_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-PragmaList::
 
 void PragmaList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
-	for (; it!=pragma_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
+  for (; it!=pragma_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -3140,13 +3139,13 @@ void PragmaList::accept(parsenode_visitor& v) const
 // [66] Pragma
 // -----------
 Pragma::Pragma(
-	const yy::location& _loc,
-	rchandle<QName> _name_h,
-	std::string _pragma_lit)
+  const yy::location& _loc,
+  rchandle<QName> _name_h,
+  std::string _pragma_lit)
 :
-	parsenode(_loc),
-	name_h(_name_h),
-	pragma_lit(_pragma_lit)
+  parsenode(_loc),
+  name_h(_name_h),
+  pragma_lit(_pragma_lit)
 {
 }
 
@@ -3156,19 +3155,19 @@ Pragma::~Pragma()
 
 ostream& Pragma::put(ostream& s) const
 {
-	s << INDENT << "Pragma[";
-	if (name_h!=NULL) name_h->put(s);
-	s << "pragma_lit=" << pragma_lit << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Pragma[";
+  if (name_h!=NULL) name_h->put(s);
+  s << "pragma_lit=" << pragma_lit << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-Pragma::
 
 void Pragma::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//name->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //name->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -3181,19 +3180,19 @@ void Pragma::accept(parsenode_visitor& v) const
 
 /*******************************************************************************
 
-  [68] PathExpr	::= LEADING_LONE_SLASH |
+  [68] PathExpr ::= LEADING_LONE_SLASH |
                     SLASH  RelativePathExpr |
                     SLASH_SLASH  RelativePathExpr |
                     RelativePathExpr
 ********************************************************************************/
 PathExpr::PathExpr(
-	const yy::location& _loc,
-	enum pathtype_t _type,
-	rchandle<exprnode> _relpath_expr_h)
+  const yy::location& _loc,
+  enum pathtype_t _type,
+  rchandle<exprnode> _relpath_expr_h)
   :
-	exprnode(_loc),
-	type(_type),
-	relpath_expr_h(_relpath_expr_h)
+  exprnode(_loc),
+  type(_type),
+  relpath_expr_h(_relpath_expr_h)
 {
 }
 
@@ -3205,44 +3204,44 @@ PathExpr::~PathExpr()
 
 ostream& PathExpr::put(ostream& s) const
 {
-	s << INDENT << "PathExpr[";
-	switch(type) {
-	case path_leading_lone_slash: s << "leading_lone_slash\n"; break;
-	case path_leading_slash: s << "leading_slash\n"; break;
-	case path_leading_slashslash: s << "leading_slashslash\n"; break;
-	case path_relative: s << "relative\n"; break;
-	default: s << "???\n";
-	}
-	if (relpath_expr_h!=NULL) relpath_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "PathExpr[";
+  switch(type) {
+  case path_leading_lone_slash: s << "leading_lone_slash\n"; break;
+  case path_leading_slash: s << "leading_slash\n"; break;
+  case path_leading_slashslash: s << "leading_slashslash\n"; break;
+  case path_relative: s << "relative\n"; break;
+  default: s << "???\n";
+  }
+  if (relpath_expr_h!=NULL) relpath_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 
 void PathExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	relpath_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (relpath_expr_h);
+  END_VISITOR ();
 }
 
 
 /*******************************************************************************
 
-	[69] RelativePathExpr ::= StepExpr |
+  [69] RelativePathExpr ::= StepExpr |
                             StepExpr  SLASH  RelativePathExpr |
                             StepExpr  SLASH_SLASH  RelativePathExpr 
 
 ********************************************************************************/
 RelativePathExpr::RelativePathExpr(
-	const yy::location& _loc,
-	enum steptype_t _step_type,
-	rchandle<exprnode> _step_expr_h,
-	rchandle<exprnode> _relpath_expr_h)
+  const yy::location& _loc,
+  enum steptype_t _step_type,
+  rchandle<exprnode> _step_expr_h,
+  rchandle<exprnode> _relpath_expr_h)
   :
-	exprnode(_loc),
-	step_type(_step_type),
-	step_expr_h(_step_expr_h),
-	relpath_expr_h(_relpath_expr_h)
+  exprnode(_loc),
+  step_type(_step_type),
+  step_expr_h(_step_expr_h),
+  relpath_expr_h(_relpath_expr_h)
 {
 }
 
@@ -3254,28 +3253,28 @@ RelativePathExpr::~RelativePathExpr()
 
 ostream& RelativePathExpr::put(ostream& s) const
 {
-	s << INDENT << "RelativePathExpr[\n";
-	if (step_expr_h!=NULL) {
-		step_expr_h->put(s);
-	}
-	if (relpath_expr_h!=NULL) {
-		switch(step_type) {
-		case st_slash: s << INDENT << "SLASH\n"; UNDENT; break;
-		case st_slashslash: s << INDENT << "SLASHSLASH\n"; UNDENT;  break;
-		default: s << "\n";
-		}
-		relpath_expr_h->put(s);
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "RelativePathExpr[\n";
+  if (step_expr_h!=NULL) {
+    step_expr_h->put(s);
+  }
+  if (relpath_expr_h!=NULL) {
+    switch(step_type) {
+    case st_slash: s << INDENT << "SLASH\n"; UNDENT; break;
+    case st_slashslash: s << INDENT << "SLASHSLASH\n"; UNDENT;  break;
+    default: s << "\n";
+    }
+    relpath_expr_h->put(s);
+  }
+  return s << OUTDENT << "]\n";
 }
 
 
 void RelativePathExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	step_expr_h->accept(v);
-	relpath_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (step_expr_h);
+  ACCEPT (relpath_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -3292,27 +3291,27 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
 
 ********************************************************************************/
 AxisStep::AxisStep(
-	  const yy::location& _loc,
+    const yy::location& _loc,
     rchandle<ForwardStep> _forward_step_h,
     rchandle<PredicateList> _predicate_list_h)
   :
-	exprnode(_loc),
-	forward_step_h(_forward_step_h),
-	reverse_step_h(NULL),
-	predicate_list_h(_predicate_list_h)
+  exprnode(_loc),
+  forward_step_h(_forward_step_h),
+  reverse_step_h(NULL),
+  predicate_list_h(_predicate_list_h)
 {
 }
 
 
 AxisStep::AxisStep(
-	  const yy::location& _loc,
-	  rchandle<ReverseStep> _reverse_step_h,
-	  rchandle<PredicateList> _predicate_list_h)
+    const yy::location& _loc,
+    rchandle<ReverseStep> _reverse_step_h,
+    rchandle<PredicateList> _predicate_list_h)
   :
-	exprnode(_loc),
-	forward_step_h(NULL),
-	reverse_step_h(_reverse_step_h),
-	predicate_list_h(_predicate_list_h)
+  exprnode(_loc),
+  forward_step_h(NULL),
+  reverse_step_h(_reverse_step_h),
+  predicate_list_h(_predicate_list_h)
 {
 }
 
@@ -3324,27 +3323,27 @@ AxisStep::~AxisStep()
 
 ostream& AxisStep::put(ostream& os) const
 {
-	os << INDENT << "AxisStep[\n";
-	if (forward_step_h!=NULL) forward_step_h->put(os);
-	if (reverse_step_h!=NULL) reverse_step_h->put(os);
-	if (predicate_list_h!=NULL) predicate_list_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "AxisStep[\n";
+  if (forward_step_h!=NULL) forward_step_h->put(os);
+  if (reverse_step_h!=NULL) reverse_step_h->put(os);
+  if (predicate_list_h!=NULL) predicate_list_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 
 void AxisStep::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (forward_step_h!=NULL) forward_step_h->accept(v);
-	if (reverse_step_h!=NULL) reverse_step_h->accept(v);
-	if (predicate_list_h!=NULL) predicate_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (forward_step_h!=NULL) forward_step_h->accept(v);
+  if (reverse_step_h!=NULL) reverse_step_h->accept(v);
+  if (predicate_list_h!=NULL) predicate_list_h->accept(v);
+  END_VISITOR ();
 }
 
 
 /*******************************************************************************
 
-   [72] ForwardStep	::= ForwardAxis  NodeTest | AbbrevForwardStep
+   [72] ForwardStep ::= ForwardAxis  NodeTest | AbbrevForwardStep
 
 ********************************************************************************/
 ForwardStep::ForwardStep(
@@ -3352,10 +3351,10 @@ ForwardStep::ForwardStep(
     rchandle<ForwardAxis> _forward_axis_h,
     rchandle<parsenode> _node_test_h)
   :
-	parsenode(_loc),
-	forward_axis_h(_forward_axis_h),
-	node_test_h(_node_test_h),
-	abbrev_step_h(NULL)
+  parsenode(_loc),
+  forward_axis_h(_forward_axis_h),
+  node_test_h(_node_test_h),
+  abbrev_step_h(NULL)
 {
 }
 
@@ -3364,10 +3363,10 @@ ForwardStep::ForwardStep(
     const yy::location& _loc,
     rchandle<AbbrevForwardStep> _abbrev_step_h)
   :
-	parsenode(_loc),
-	forward_axis_h(NULL),
-	node_test_h(NULL),
-	abbrev_step_h(_abbrev_step_h)
+  parsenode(_loc),
+  forward_axis_h(NULL),
+  node_test_h(NULL),
+  abbrev_step_h(_abbrev_step_h)
 {
 }
 
@@ -3379,36 +3378,36 @@ ForwardStep::~ForwardStep()
 
 ostream& ForwardStep::put(ostream& os) const
 {
-	os << INDENT << "ForwardStep[\n";
-	if (forward_axis_h!=NULL) forward_axis_h->put(os);
-	if (node_test_h!=NULL) node_test_h->put(os);
-	if (abbrev_step_h!=NULL) abbrev_step_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "ForwardStep[\n";
+  if (forward_axis_h!=NULL) forward_axis_h->put(os);
+  if (node_test_h!=NULL) node_test_h->put(os);
+  if (abbrev_step_h!=NULL) abbrev_step_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 
 void ForwardStep::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (forward_axis_h!=NULL) forward_axis_h->accept(v);
-	if (node_test_h!=NULL) node_test_h->accept(v);
-	if (abbrev_step_h!=NULL) abbrev_step_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (forward_axis_h!=NULL) forward_axis_h->accept(v);
+  if (node_test_h!=NULL) node_test_h->accept(v);
+  if (abbrev_step_h!=NULL) abbrev_step_h->accept(v);
+  END_VISITOR ();
 }
 
 
 
 /*******************************************************************************
 
-  [73] ForwardAxis ::= CHILD_AXIS	| ....
+  [73] ForwardAxis ::= CHILD_AXIS | ....
 
 ********************************************************************************/
 ForwardAxis::ForwardAxis(
     const yy::location& _loc,
     enum forward_axis_t _axis)
   :
-	parsenode(_loc),
-	axis(_axis)
+  parsenode(_loc),
+  axis(_axis)
 {
 }
 
@@ -3420,31 +3419,31 @@ ForwardAxis::~ForwardAxis()
 
 ostream& ForwardAxis::put(ostream& os) const
 {
-	os << INDENT << "ForwardAxis[";
-	switch(axis) {
-	case axis_child:							os << "CHILD"; break;
-	case axis_descendant:					os << "DESCENDANT"; break;
-	case axis_attribute:					os << "ATTRIBUTE"; break;
-	case axis_self:								os << "SELF"; break;
-	case axis_descendant_or_self:	os << "DESCENDANT_OR_SELF"; break;
-	case axis_following_sibling:	os << "FOLLOWING_SIBLING"; break;
-	case axis_following:					os << "FOLLOWING"; break;
-	default: os << "???";
-	}
-	return os << OUTDENT << "]\n";
+  os << INDENT << "ForwardAxis[";
+  switch(axis) {
+  case axis_child:              os << "CHILD"; break;
+  case axis_descendant:         os << "DESCENDANT"; break;
+  case axis_attribute:          os << "ATTRIBUTE"; break;
+  case axis_self:               os << "SELF"; break;
+  case axis_descendant_or_self: os << "DESCENDANT_OR_SELF"; break;
+  case axis_following_sibling:  os << "FOLLOWING_SIBLING"; break;
+  case axis_following:          os << "FOLLOWING"; break;
+  default: os << "???";
+  }
+  return os << OUTDENT << "]\n";
 }
 
 
 void ForwardAxis::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
 /*******************************************************************************
 
-  [74] AbbrevForwardStep ::= NodeTest |	AT_SIGN  NodeTest
+  [74] AbbrevForwardStep ::= NodeTest | AT_SIGN  NodeTest
 
 ********************************************************************************/
 AbbrevForwardStep::AbbrevForwardStep(
@@ -3452,9 +3451,9 @@ AbbrevForwardStep::AbbrevForwardStep(
     rchandle<parsenode> _node_test_h,
     bool _attr_b)
   :
-	parsenode(_loc),
-	node_test_h(_node_test_h),
-	attr_b(_attr_b)
+  parsenode(_loc),
+  node_test_h(_node_test_h),
+  attr_b(_attr_b)
 {
 }
 
@@ -3463,9 +3462,9 @@ AbbrevForwardStep::AbbrevForwardStep(
     const yy::location& _loc,
     rchandle<parsenode> _node_test_h)
   :
-	parsenode(_loc),
-	node_test_h(_node_test_h),
-	attr_b(false)
+  parsenode(_loc),
+  node_test_h(_node_test_h),
+  attr_b(false)
 {
 }
 
@@ -3477,24 +3476,24 @@ AbbrevForwardStep::~AbbrevForwardStep()
 
 ostream& AbbrevForwardStep::put(ostream& os) const
 {
-	os << INDENT << "AbbrevForwardStep[";
-	os << (attr_b ? "@\n" : "\n");
-	if (node_test_h!=NULL) node_test_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "AbbrevForwardStep[";
+  os << (attr_b ? "@\n" : "\n");
+  if (node_test_h!=NULL) node_test_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 
 void AbbrevForwardStep::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (node_test_h!=NULL) node_test_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (node_test_h!=NULL) node_test_h->accept(v);
+  END_VISITOR ();
 }
 
 
 /*******************************************************************************
 
-  [75] ReverseStep ::= ReverseAxis  NodeTest |	DOT_DOT
+  [75] ReverseStep ::= ReverseAxis  NodeTest |  DOT_DOT
 
 ********************************************************************************/
 ReverseStep::ReverseStep(
@@ -3502,9 +3501,9 @@ ReverseStep::ReverseStep(
     rchandle<ReverseAxis> _axis_h,
     rchandle<parsenode> _node_test_h)
   :
-	parsenode(_loc),
-	axis_h(_axis_h),
-	node_test_h(_node_test_h)
+  parsenode(_loc),
+  axis_h(_axis_h),
+  node_test_h(_node_test_h)
 {
 }
 
@@ -3513,9 +3512,9 @@ ReverseStep::ReverseStep(
     const yy::location& _loc,
     rchandle<ReverseAxis> _axis_h)
   :
-	parsenode(_loc),
-	axis_h(_axis_h),
-	node_test_h(NULL)
+  parsenode(_loc),
+  axis_h(_axis_h),
+  node_test_h(NULL)
 {
 }
 
@@ -3527,19 +3526,19 @@ ReverseStep::~ReverseStep()
 
 ostream& ReverseStep::put(ostream& os) const
 {
-	os << INDENT << "ReverseStep[\n";
-	if (axis_h!=NULL) axis_h->put(os);
-	if (node_test_h!=NULL) node_test_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "ReverseStep[\n";
+  if (axis_h!=NULL) axis_h->put(os);
+  if (node_test_h!=NULL) node_test_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 
 void ReverseStep::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (axis_h!=NULL) axis_h->accept(v);
-	if (node_test_h!=NULL) node_test_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (axis_h!=NULL) axis_h->accept(v);
+  if (node_test_h!=NULL) node_test_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -3552,8 +3551,8 @@ ReverseAxis::ReverseAxis(
     const yy::location& _loc,
     enum reverse_axis_t _axis)
   :
-	parsenode(_loc),
-	axis(_axis)
+  parsenode(_loc),
+  axis(_axis)
 {
 }
 
@@ -3565,23 +3564,23 @@ ReverseAxis::~ReverseAxis()
 
 ostream& ReverseAxis::put(ostream& s) const
 {
-	s << INDENT << "ReverseAxis[";
-	switch(axis) {
-	case axis_parent:							s << "PARENT"; break;
-	case axis_ancestor:						s << "ANCESTOR"; break;
-	case axis_preceding_sibling:	s << "PRECEDING_SIBLING"; break;
-	case axis_preceding:					s << "PRECEDING"; break;
-	case axis_ancestor_or_self:		s << "ANCESTOR_OR_SELF"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ReverseAxis[";
+  switch(axis) {
+  case axis_parent:             s << "PARENT"; break;
+  case axis_ancestor:           s << "ANCESTOR"; break;
+  case axis_preceding_sibling:  s << "PRECEDING_SIBLING"; break;
+  case axis_preceding:          s << "PRECEDING"; break;
+  case axis_ancestor_or_self:   s << "ANCESTOR_OR_SELF"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 
 void ReverseAxis::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -3594,7 +3593,7 @@ void ReverseAxis::accept(parsenode_visitor& v) const
 
 /*******************************************************************************
 
-  [78] NodeTest	::= KindTest | NameTest
+  [78] NodeTest ::= KindTest | NameTest
 
 ********************************************************************************/
 
@@ -3629,18 +3628,18 @@ NameTest::~NameTest()
 
 ostream& NameTest::put(ostream& os) const
 {
-	os << INDENT << "NameTest[";
-	if (theQName != NULL) theQName->put(os);
-	if (theWildcard != NULL) theWildcard->put(os);
-	os << "]\n"; UNDENT;
-	return os;
+  os << INDENT << "NameTest[";
+  if (theQName != NULL) theQName->put(os);
+  if (theWildcard != NULL) theWildcard->put(os);
+  os << "]\n"; UNDENT;
+  return os;
 }
 
 
 void NameTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -3650,14 +3649,14 @@ void NameTest::accept(parsenode_visitor& v) const
 
 ********************************************************************************/
 Wildcard::Wildcard(
-	const yy::location& loc,
+  const yy::location& loc,
   const xqp_string& prefix,
   const xqp_string& lname,
-	enum wildcard_t kind)
+  enum wildcard_t kind)
   :
-	parsenode(loc),
-	theKind(kind),
-	thePrefix(prefix),
+  parsenode(loc),
+  theKind(kind),
+  thePrefix(prefix),
   theLocalName(lname)
 {
 }
@@ -3670,22 +3669,22 @@ Wildcard::~Wildcard()
 
 ostream& Wildcard::put(ostream& os) const
 {
-	os << "Wildcard[ ";
-	switch(theKind)
+  os << "Wildcard[ ";
+  switch(theKind)
   {
-	case wild_all:		os << "* ]"; break;
-	case wild_prefix:	os << "*:" << theLocalName << " ]"; break;
-	case wild_elem:		os << thePrefix << ":* ]"; break;
-	default: os << "???";
-	}
-	UNDENT; return os;
+  case wild_all:    os << "* ]"; break;
+  case wild_prefix: os << "*:" << theLocalName << " ]"; break;
+  case wild_elem:   os << thePrefix << ":* ]"; break;
+  default: os << "???";
+  }
+  UNDENT; return os;
 }
 
 
 void Wildcard::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -3693,13 +3692,13 @@ void Wildcard::accept(parsenode_visitor& v) const
 // [81] FilterExpr
 // ---------------
 FilterExpr::FilterExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _primary_h,
-	rchandle<PredicateList> _pred_list_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _primary_h,
+  rchandle<PredicateList> _pred_list_h)
 :
-	exprnode(_loc),
-	primary_h(_primary_h),
-	pred_list_h(_pred_list_h)
+  exprnode(_loc),
+  primary_h(_primary_h),
+  pred_list_h(_pred_list_h)
 {
 }
 
@@ -3709,20 +3708,20 @@ FilterExpr::~FilterExpr()
 
 ostream& FilterExpr::put(ostream& s) const
 {
-	s << INDENT << "FilterExpr[\n";
-	if (primary_h!=NULL) primary_h->put(s);
-	if (pred_list_h!=NULL) pred_list_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FilterExpr[\n";
+  if (primary_h!=NULL) primary_h->put(s);
+  if (pred_list_h!=NULL) pred_list_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FilterExpr::
 
 void FilterExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	primary_h->accept(v);
-	pred_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (primary_h);
+  ACCEPT (pred_list_h);
+  END_VISITOR ();
 }
 
 
@@ -3730,9 +3729,9 @@ void FilterExpr::accept(parsenode_visitor& v) const
 // [82] PredicateList
 // ------------------
 PredicateList::PredicateList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -3742,25 +3741,25 @@ PredicateList::~PredicateList()
 
 ostream& PredicateList::put(ostream& s) const
 {
-	s << INDENT << "PredicateList[\n";
-	vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
-	for (; it!=pred_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "PredicateList[\n";
+  vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
+  for (; it!=pred_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-PredicateList::
 
 void PredicateList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
-	for (; it!=pred_hv.rend(); ++it) {
-		exprnode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<exprnode> >::const_reverse_iterator it = pred_hv.rbegin();
+  for (; it!=pred_hv.rend(); ++it) {
+    exprnode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -3779,32 +3778,32 @@ void PredicateList::accept(parsenode_visitor& v) const
 // [86] NumericLiteral
 // -------------------
 NumericLiteral::NumericLiteral(
-	const yy::location& _loc,
-	int _ival)
+  const yy::location& _loc,
+  int _ival)
 :
-	exprnode(_loc),
-	type(num_integer),
-	ival(_ival)
+  exprnode(_loc),
+  type(num_integer),
+  ival(_ival)
 {
 }
 
 NumericLiteral::NumericLiteral(
-	const yy::location& _loc,
-	double _dval)
+  const yy::location& _loc,
+  double _dval)
 :
-	exprnode(_loc),
-	type(num_double),
-	dval(_dval)
+  exprnode(_loc),
+  type(num_double),
+  dval(_dval)
 {
 }
 
 NumericLiteral::NumericLiteral(
-	const yy::location& _loc,
-	decimal _decval)
+  const yy::location& _loc,
+  decimal _decval)
 :
-	exprnode(_loc),
-	type(num_decimal),
-	decval(_decval)
+  exprnode(_loc),
+  type(num_decimal),
+  decval(_decval)
 {
 }
 
@@ -3814,23 +3813,23 @@ NumericLiteral::~NumericLiteral()
 
 ostream& NumericLiteral::put(ostream& s) const
 {
-	s << INDENT << "NumericLiteral[";
-	switch(type) {
-	case num_integer: s << "num_integer=" << ival; break;
-	case num_decimal: s << "num_decimal=" << decval; break;
-	case num_double: s << "num_double=" << dval; break;
-	default: s << "???";
-	}
-	s << "]\n"; UNDENT; 
-	return s;
+  s << INDENT << "NumericLiteral[";
+  switch(type) {
+  case num_integer: s << "num_integer=" << ival; break;
+  case num_decimal: s << "num_decimal=" << decval; break;
+  case num_double: s << "num_double=" << dval; break;
+  default: s << "???";
+  }
+  s << "]\n"; UNDENT; 
+  return s;
 }
 
 //-NumericLiteral::
 
 void NumericLiteral::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -3838,11 +3837,11 @@ void NumericLiteral::accept(parsenode_visitor& v) const
 // [87] VarRef
 // -----------
 VarRef::VarRef(
-	const yy::location& _loc,
-	std::string _varname)
+  const yy::location& _loc,
+  std::string _varname)
 :
-	exprnode(_loc),
-	varname(_varname)
+  exprnode(_loc),
+  varname(_varname)
 {
 }
 
@@ -3852,16 +3851,16 @@ VarRef::~VarRef()
 
 ostream& VarRef::put(ostream& s) const
 {
-	s << INDENT<<"VarRef[varname="<<varname<<"]\n"; UNDENT;
-	return s;
+  s << INDENT<<"VarRef[varname="<<varname<<"]\n"; UNDENT;
+  return s;
 }
 
 //-VarRef::
 
 void VarRef::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -3872,11 +3871,11 @@ void VarRef::accept(parsenode_visitor& v) const
 // [89] ParenthesizedExpr
 // ----------------------
 ParenthesizedExpr::ParenthesizedExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  expr_h(_expr_h)
 {
 }
 
@@ -3886,19 +3885,19 @@ ParenthesizedExpr::~ParenthesizedExpr()
 
 ostream& ParenthesizedExpr::put(ostream& s) const
 {
-	s << INDENT << "ParenthesizedExpr[\n";
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ParenthesizedExpr[\n";
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-ParenthesizedExpr::
 
 void ParenthesizedExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (expr_h != NULL)
-		expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (expr_h != NULL)
+    expr_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -3906,9 +3905,9 @@ void ParenthesizedExpr::accept(parsenode_visitor& v) const
 // [90] ContextItemExpr
 // --------------------
 ContextItemExpr::ContextItemExpr(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	exprnode(_loc)
+  exprnode(_loc)
 {
 }
 
@@ -3918,16 +3917,16 @@ ContextItemExpr::~ContextItemExpr()
 
 ostream& ContextItemExpr::put(ostream& s) const
 {
-	s << INDENT << "ContextItemExpr[]\n"; UNDENT;
-	return s;
+  s << INDENT << "ContextItemExpr[]\n"; UNDENT;
+  return s;
 }
 
 //-ContextItemExpr::
 
 void ContextItemExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -3936,11 +3935,11 @@ void ContextItemExpr::accept(parsenode_visitor& v) const
 // ----------------
 
 OrderedExpr::OrderedExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  expr_h(_expr_h)
 {
 }
 
@@ -3950,18 +3949,18 @@ OrderedExpr::~OrderedExpr()
 
 ostream& OrderedExpr::put(ostream& s) const
 {
-	s << INDENT << "OrderedExpr[";
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OrderedExpr[";
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-OrderedExpr::
 
 void OrderedExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -3969,11 +3968,11 @@ void OrderedExpr::accept(parsenode_visitor& v) const
 // [92] UnorderedExpr
 // ------------------
 UnorderedExpr::UnorderedExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  expr_h(_expr_h)
 {
 }
 
@@ -3983,18 +3982,18 @@ UnorderedExpr::~UnorderedExpr()
 
 ostream& UnorderedExpr::put(ostream& s) const
 {
-	s << INDENT << "UnorderedExpr[";
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "UnorderedExpr[";
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-UnorderedExpr::
 
 void UnorderedExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -4003,13 +4002,13 @@ void UnorderedExpr::accept(parsenode_visitor& v) const
 // -----------------
 
 FunctionCall::FunctionCall(
-	const yy::location& _loc,
-	rchandle<QName> _fname_h,
-	rchandle<ArgList> _arg_list_h)
+  const yy::location& _loc,
+  rchandle<QName> _fname_h,
+  rchandle<ArgList> _arg_list_h)
 :
-	exprnode(_loc),
-	fname_h(_fname_h),
-	arg_list_h(_arg_list_h)
+  exprnode(_loc),
+  fname_h(_fname_h),
+  arg_list_h(_arg_list_h)
 {
 }
 
@@ -4019,21 +4018,21 @@ FunctionCall::~FunctionCall()
 
 ostream& FunctionCall::put(ostream& os) const
 {
-	os << INDENT << "FunctionCall[";
-	if (fname_h!=NULL) { os << endl; fname_h->put(os); }
-	if (arg_list_h!=NULL) { os << endl; arg_list_h->put(os); }
-	return os << OUTDENT << "]\n";
+  os << INDENT << "FunctionCall[";
+  if (fname_h!=NULL) { os << endl; fname_h->put(os); }
+  if (arg_list_h!=NULL) { os << endl; arg_list_h->put(os); }
+  return os << OUTDENT << "]\n";
 }
 
 //-FunctionCall::
 
 void FunctionCall::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//fname_h->accept(v);
-	if (arg_list_h != NULL)
-		arg_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //fname_h->accept(v);
+  if (arg_list_h != NULL)
+    arg_list_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -4041,9 +4040,9 @@ void FunctionCall::accept(parsenode_visitor& v) const
 // [93a] ArgList
 // -------------
 ArgList::ArgList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -4053,25 +4052,25 @@ ArgList::~ArgList()
 
 ostream& ArgList::put(ostream& s) const
 {
-	s << INDENT << "ArgList[" << endl;
-	vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
-	for (; it!=arg_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ArgList[" << endl;
+  vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
+  for (; it!=arg_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-ArgList::
 
 void ArgList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
-	for (; it!=arg_hv.end(); ++it) {
-		exprnode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
+  for (; it!=arg_hv.end(); ++it) {
+    exprnode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -4088,16 +4087,16 @@ void ArgList::accept(parsenode_visitor& v) const
 // -----------------------
 
 DirElemConstructor::DirElemConstructor(
-	const yy::location& _loc,
-	rchandle<QName> _open_name_h,
-	rchandle<QName> _close_name_h,
-	rchandle<DirAttributeList> _attr_list_h,
-	rchandle<DirElemContentList> _dir_content_list_h)
+  const yy::location& _loc,
+  rchandle<QName> _open_name_h,
+  rchandle<QName> _close_name_h,
+  rchandle<DirAttributeList> _attr_list_h,
+  rchandle<DirElemContentList> _dir_content_list_h)
 :
-	exprnode(_loc),
-	elem_name_h(_open_name_h),
-	attr_list_h(_attr_list_h),
-	dir_content_list_h(_dir_content_list_h)
+  exprnode(_loc),
+  elem_name_h(_open_name_h),
+  attr_list_h(_attr_list_h),
+  dir_content_list_h(_dir_content_list_h)
 {
 	// assert: open_name == close_name
 }
@@ -4108,28 +4107,28 @@ DirElemConstructor::~DirElemConstructor()
 
 ostream& DirElemConstructor::put(ostream& s) const
 {
-	s << INDENT << "DirElemConstructor[";
-	if (elem_name_h!=NULL) elem_name_h->put(s);
-	s << endl;
-	if (attr_list_h!=NULL) attr_list_h->put(s);
-	if (dir_content_list_h!=NULL) dir_content_list_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirElemConstructor[";
+  if (elem_name_h!=NULL) elem_name_h->put(s);
+  s << endl;
+  if (attr_list_h!=NULL) attr_list_h->put(s);
+  if (dir_content_list_h!=NULL) dir_content_list_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-DirElemConstructor::
 
 void DirElemConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//open_name_h->accept(v);
-	//close_name_h->accept(v);
+  BEGIN_VISITOR ();
+  //open_name_h->accept(v);
+  //close_name_h->accept(v);
 
-	if( attr_list_h != NULL )
-    	attr_list_h->accept(v);
+  if( attr_list_h != NULL )
+      attr_list_h->accept(v);
 
-	if (dir_content_list_h != NULL)
-		dir_content_list_h->accept(v);
-	END_VISITOR ();
+  if (dir_content_list_h != NULL)
+    dir_content_list_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -4137,9 +4136,9 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
 // [96a] DirElemContentList
 // ------------------------
 DirElemContentList::DirElemContentList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -4149,25 +4148,25 @@ DirElemContentList::~DirElemContentList()
 
 ostream& DirElemContentList::put(ostream& s) const
 {
-	s << INDENT << "DirElemContentList[" << endl;
-	vector<rchandle<exprnode> >::const_iterator it = dir_content_hv.begin();
-	for (; it!=dir_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirElemContentList[" << endl;
+  vector<rchandle<exprnode> >::const_iterator it = dir_content_hv.begin();
+  for (; it!=dir_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-DirElemContentList::
 
 void DirElemContentList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<exprnode> >::const_reverse_iterator it = dir_content_hv.rbegin();
-	for (; it!=dir_content_hv.rend(); ++it) {
-		exprnode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<exprnode> >::const_reverse_iterator it = dir_content_hv.rbegin();
+  for (; it!=dir_content_hv.rend(); ++it) {
+    exprnode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -4175,9 +4174,9 @@ void DirElemContentList::accept(parsenode_visitor& v) const
 // [97] DirAttributeList
 // ---------------------
 DirAttributeList::DirAttributeList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -4187,40 +4186,40 @@ DirAttributeList::~DirAttributeList()
 
 ostream& DirAttributeList::put(ostream& s) const
 {
-	s << INDENT << "DirAttributeList[\n";
-	vector<rchandle<DirAttr> >::const_iterator it = dir_attr_hv.begin();
-	for (; it!=dir_attr_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirAttributeList[\n";
+  vector<rchandle<DirAttr> >::const_iterator it = dir_attr_hv.begin();
+  for (; it!=dir_attr_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-DirAttributeList::
 
 void DirAttributeList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<DirAttr> >::const_reverse_iterator it = dir_attr_hv.rbegin();
-	for (; it!=dir_attr_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<DirAttr> >::const_reverse_iterator it = dir_attr_hv.rbegin();
+  for (; it!=dir_attr_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
 
 // [97a] DirAttr
 // -------------
-	
+  
 DirAttr::DirAttr(
-	const yy::location& _loc,
-	rchandle<QName> _atname_h,
-	rchandle<DirAttributeValue> _dir_atval_h)
+  const yy::location& _loc,
+  rchandle<QName> _atname_h,
+  rchandle<DirAttributeValue> _dir_atval_h)
 :
-	parsenode(_loc),
-	atname_h(_atname_h),
-	dir_atval_h(_dir_atval_h)
+  parsenode(_loc),
+  atname_h(_atname_h),
+  dir_atval_h(_dir_atval_h)
 {
 }
 
@@ -4230,21 +4229,21 @@ DirAttr::~DirAttr()
 
 ostream& DirAttr::put(ostream& s) const
 {
-	s << INDENT << "DirAttr[";
-	if (atname_h!=NULL) atname_h->put(s);
-	s << endl;
-	if (dir_atval_h!=NULL) dir_atval_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirAttr[";
+  if (atname_h!=NULL) atname_h->put(s);
+  s << endl;
+  if (dir_atval_h!=NULL) dir_atval_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-DirAttr::
 
 void DirAttr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//atname_h->accept(v);
-	dir_atval_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //atname_h->accept(v);
+  ACCEPT (dir_atval_h);
+  END_VISITOR ();
 }
 
 
@@ -4252,22 +4251,22 @@ void DirAttr::accept(parsenode_visitor& v) const
 // [98] DirAttributeValue
 // ----------------------
 DirAttributeValue::DirAttributeValue(
-	const yy::location& _loc,
-	rchandle<QuoteAttrContentList> _quot_attr_content_h)
+  const yy::location& _loc,
+  rchandle<QuoteAttrContentList> _quot_attr_content_h)
 :
-	parsenode(_loc),
-	quot_attr_content_h(_quot_attr_content_h),
-	apos_attr_content_h(NULL)
+  parsenode(_loc),
+  quot_attr_content_h(_quot_attr_content_h),
+  apos_attr_content_h(NULL)
 {
 }
 
 DirAttributeValue::DirAttributeValue(
-	const yy::location& _loc,
-	rchandle<AposAttrContentList> _apos_attr_content_h)
+  const yy::location& _loc,
+  rchandle<AposAttrContentList> _apos_attr_content_h)
 :
-	parsenode(_loc),
-	quot_attr_content_h(NULL),
-	apos_attr_content_h(_apos_attr_content_h)
+  parsenode(_loc),
+  quot_attr_content_h(NULL),
+  apos_attr_content_h(_apos_attr_content_h)
 {
 }
 
@@ -4277,22 +4276,22 @@ DirAttributeValue::~DirAttributeValue()
 
 ostream& DirAttributeValue::put(ostream& s) const
 {
-	s << INDENT << "DirAttributeValue\n";
-	if (quot_attr_content_h!=NULL) quot_attr_content_h->put(s);
-	if (apos_attr_content_h!=NULL) apos_attr_content_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirAttributeValue\n";
+  if (quot_attr_content_h!=NULL) quot_attr_content_h->put(s);
+  if (apos_attr_content_h!=NULL) apos_attr_content_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-DirAttributeValue::
 
 void DirAttributeValue::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (this->quot_attr_content_h != NULL)
-		this->quot_attr_content_h->accept(v);
-	if (this->apos_attr_content_h != NULL)
-		this-> apos_attr_content_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (this->quot_attr_content_h != NULL)
+    this->quot_attr_content_h->accept(v);
+  if (this->apos_attr_content_h != NULL)
+    this-> apos_attr_content_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -4301,9 +4300,9 @@ void DirAttributeValue::accept(parsenode_visitor& v) const
 // [98a] QuoteAttrContentList
 // --------------------------
 QuoteAttrContentList::QuoteAttrContentList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -4313,27 +4312,27 @@ QuoteAttrContentList::~QuoteAttrContentList()
 
 ostream& QuoteAttrContentList::put(ostream& s) const
 {
-	s << INDENT << "QuoteAttrContentList[" << endl;
-	vector<rchandle<QuoteAttrValueContent> >::const_iterator it =
-		quot_atval_content_hv.begin();
-	for (; it!=quot_atval_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "QuoteAttrContentList[" << endl;
+  vector<rchandle<QuoteAttrValueContent> >::const_iterator it =
+    quot_atval_content_hv.begin();
+  for (; it!=quot_atval_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-QuoteAttrContentList::
 
 void QuoteAttrContentList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
-		quot_atval_content_hv.rbegin();
-	for (; it!=quot_atval_content_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
+    quot_atval_content_hv.rbegin();
+  for (; it!=quot_atval_content_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -4341,9 +4340,9 @@ void QuoteAttrContentList::accept(parsenode_visitor& v) const
 // [98b] AposAttrContentList
 // -------------------------
 AposAttrContentList::AposAttrContentList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -4353,27 +4352,27 @@ AposAttrContentList::~AposAttrContentList()
 
 ostream& AposAttrContentList::put(ostream& s) const
 {
-	s << INDENT << "AposAttrContentList[" << endl;
-	vector<rchandle<AposAttrValueContent> >::const_iterator it =
-		apos_atval_content_hv.begin();
-	for (; it!=apos_atval_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "AposAttrContentList[" << endl;
+  vector<rchandle<AposAttrValueContent> >::const_iterator it =
+    apos_atval_content_hv.begin();
+  for (; it!=apos_atval_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-AposAttrContentList::
 
 void AposAttrContentList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
-		apos_atval_content_hv.rbegin();
-	for (; it!=apos_atval_content_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
+    apos_atval_content_hv.rbegin();
+  for (; it!=apos_atval_content_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -4381,22 +4380,22 @@ void AposAttrContentList::accept(parsenode_visitor& v) const
 // [99] QuotAttrValueContent
 // -------------------------
 QuoteAttrValueContent::QuoteAttrValueContent(
-	const yy::location& _loc,
-	std::string _quot_atcontent)
+  const yy::location& _loc,
+  std::string _quot_atcontent)
 :
-	parsenode(_loc),
-	quot_atcontent(_quot_atcontent),
-	common_content_h(NULL)
+  parsenode(_loc),
+  quot_atcontent(_quot_atcontent),
+  common_content_h(NULL)
 {
 }
 
 QuoteAttrValueContent::QuoteAttrValueContent(
-	const yy::location& _loc,
-	rchandle<CommonContent> _common_content_h)
+  const yy::location& _loc,
+  rchandle<CommonContent> _common_content_h)
 :
-	parsenode(_loc),
-	quot_atcontent(""),
-	common_content_h(_common_content_h)
+  parsenode(_loc),
+  quot_atcontent(""),
+  common_content_h(_common_content_h)
 {
 }
 
@@ -4406,20 +4405,20 @@ QuoteAttrValueContent::~QuoteAttrValueContent()
 
 ostream& QuoteAttrValueContent::put(ostream& s) const
 {
-	s << INDENT << "QuoteAttrValueContent[";
-	s << "quot_atcontent=" << quot_atcontent << endl;
-	if (common_content_h!=NULL) common_content_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "QuoteAttrValueContent[";
+  s << "quot_atcontent=" << quot_atcontent << endl;
+  if (common_content_h!=NULL) common_content_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-QuoteAttrValueContent::
 
 void QuoteAttrValueContent::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (this->common_content_h != NULL)
-		this->common_content_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (this->common_content_h != NULL)
+    this->common_content_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -4427,22 +4426,22 @@ void QuoteAttrValueContent::accept(parsenode_visitor& v) const
 // [100] AposAttrValueContent
 // --------------------------
 AposAttrValueContent::AposAttrValueContent(
-	const yy::location& _loc,
-	std::string _apos_atcontent)
+  const yy::location& _loc,
+  std::string _apos_atcontent)
 :
-	parsenode(_loc),
-	apos_atcontent(_apos_atcontent),
-	common_content_h(NULL)
+  parsenode(_loc),
+  apos_atcontent(_apos_atcontent),
+  common_content_h(NULL)
 {
 }
 
 AposAttrValueContent::AposAttrValueContent(
-	const yy::location& _loc,
-	rchandle<CommonContent> _common_content_h)
+  const yy::location& _loc,
+  rchandle<CommonContent> _common_content_h)
 :
-	parsenode(_loc),
-	apos_atcontent(""),
-	common_content_h(_common_content_h)
+  parsenode(_loc),
+  apos_atcontent(""),
+  common_content_h(_common_content_h)
 {
 }
 
@@ -4452,18 +4451,18 @@ AposAttrValueContent::~AposAttrValueContent()
 
 ostream& AposAttrValueContent::put(ostream& s) const
 {
-	s << INDENT << "AposAttrValueContent[";
-	s << "apos_atcontent=" << apos_atcontent << endl;
-	if (common_content_h!=NULL) common_content_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "AposAttrValueContent[";
+  s << "apos_atcontent=" << apos_atcontent << endl;
+  if (common_content_h!=NULL) common_content_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-AposAttrValueContent::
 
 void AposAttrValueContent::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -4471,38 +4470,38 @@ void AposAttrValueContent::accept(parsenode_visitor& v) const
 // [101] DirElemContent
 // --------------------
 DirElemContent::DirElemContent(
-	const yy::location& _loc,
-	rchandle<exprnode> _direct_cons_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _direct_cons_h)
 :
-	exprnode(_loc),
-	direct_cons_h(_direct_cons_h)
+  exprnode(_loc),
+  direct_cons_h(_direct_cons_h)
 {
 }
 
 DirElemContent::DirElemContent(
-	const yy::location& _loc,
-	std::string _elem_content)
+  const yy::location& _loc,
+  std::string _elem_content)
 :
-	exprnode(_loc),
-	elem_content(_elem_content)
+  exprnode(_loc),
+  elem_content(_elem_content)
 {
 }
 
 DirElemContent::DirElemContent(
-	const yy::location& _loc,
-	rchandle<CDataSection> _cdata_h)
+  const yy::location& _loc,
+  rchandle<CDataSection> _cdata_h)
 :
-	exprnode(_loc),
-	cdata_h(_cdata_h)
+  exprnode(_loc),
+  cdata_h(_cdata_h)
 {
 }
 
 DirElemContent::DirElemContent(
-	const yy::location& _loc,
-	rchandle<CommonContent> _common_content_h)
+  const yy::location& _loc,
+  rchandle<CommonContent> _common_content_h)
 :
-	exprnode(_loc),
-	common_content_h(_common_content_h)
+  exprnode(_loc),
+  common_content_h(_common_content_h)
 {
 }
 
@@ -4512,29 +4511,29 @@ DirElemContent::~DirElemContent()
 
 ostream& DirElemContent::put(ostream& s) const
 {
-	s << INDENT << "DirElemContent[";
-	if (direct_cons_h!=NULL) direct_cons_h->put(s);
-	s << "elem_content=" << elem_content << endl;
-	if (cdata_h!=NULL) cdata_h->put(s);
-	if (common_content_h!=NULL) common_content_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirElemContent[";
+  if (direct_cons_h!=NULL) direct_cons_h->put(s);
+  s << "elem_content=" << elem_content << endl;
+  if (cdata_h!=NULL) cdata_h->put(s);
+  if (common_content_h!=NULL) common_content_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-DirElemContent::
 
 void DirElemContent::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
+  BEGIN_VISITOR ();
 
-	if (direct_cons_h != NULL)
-		direct_cons_h->accept(v);
+  if (direct_cons_h != NULL)
+    direct_cons_h->accept(v);
 
-	if (cdata_h != NULL)
-		cdata_h->accept(v);
-		
-	if (common_content_h != NULL)
-		common_content_h->accept(v);
-	END_VISITOR ();
+  if (cdata_h != NULL)
+    cdata_h->accept(v);
+    
+  if (common_content_h != NULL)
+    common_content_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -4542,36 +4541,36 @@ void DirElemContent::accept(parsenode_visitor& v) const
 // [102] CommonContent
 // -------------------
 CommonContent::CommonContent(
-	const yy::location& _loc,
-	enum common_content_t _type,
-	std::string _ref)
+  const yy::location& _loc,
+  enum common_content_t _type,
+  std::string _ref)
 :
-	exprnode(_loc),
-	type(_type),
-	ref(_ref),
-	expr_h(NULL)
+  exprnode(_loc),
+  type(_type),
+  ref(_ref),
+  expr_h(NULL)
 {
 }
 
 CommonContent::CommonContent(
-	const yy::location& _loc,
-	rchandle<EnclosedExpr> _expr_h)
+  const yy::location& _loc,
+  rchandle<EnclosedExpr> _expr_h)
 :
-	exprnode(_loc),
-	type(cont_expr),
-	ref(""),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  type(cont_expr),
+  ref(""),
+  expr_h(_expr_h)
 {
 }
 
 CommonContent::CommonContent(
-	const yy::location& _loc,
-	enum common_content_t _type)
+  const yy::location& _loc,
+  enum common_content_t _type)
 :
-	exprnode(_loc),
-	type(cont_expr),
-	ref(""),
-	expr_h(NULL)
+  exprnode(_loc),
+  type(cont_expr),
+  ref(""),
+  expr_h(NULL)
 {
 }
 
@@ -4581,30 +4580,30 @@ CommonContent::~CommonContent()
 
 ostream& CommonContent::put(ostream& s) const
 {
-	s << INDENT << "CommonContent[";
-	switch(type) {
-	case cont_entity: s << "entity"; break;
-	case cont_charref: s << "charref"; break;
-	case cont_escape_lbrace: s << "escape_lbrace"; break;
-	case cont_escape_rbrace: s << "escape_rbrace"; break;
-	case cont_expr: s << "expr\n"; break;
-	default: s << "???";
-	}
-	if (type!=cont_expr)
-		s << ", ref=" << ref << endl;
-	else
-		if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CommonContent[";
+  switch(type) {
+  case cont_entity: s << "entity"; break;
+  case cont_charref: s << "charref"; break;
+  case cont_escape_lbrace: s << "escape_lbrace"; break;
+  case cont_escape_rbrace: s << "escape_rbrace"; break;
+  case cont_expr: s << "expr\n"; break;
+  default: s << "???";
+  }
+  if (type!=cont_expr)
+    s << ", ref=" << ref << endl;
+  else
+    if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CommonContent::
 
 void CommonContent::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	if (this->expr_h != NULL)
-		this->expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  if (this->expr_h != NULL)
+    this->expr_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -4612,11 +4611,11 @@ void CommonContent::accept(parsenode_visitor& v) const
 // [103] DirCommentConstructor
 // ---------------------------
 DirCommentConstructor::DirCommentConstructor(
-	const yy::location& _loc,
-	std::string const& _comment)
+  const yy::location& _loc,
+  std::string const& _comment)
 :
-	exprnode(_loc),
-	comment(_comment)
+  exprnode(_loc),
+  comment(_comment)
 {  
 }
 
@@ -4626,17 +4625,17 @@ DirCommentConstructor::~DirCommentConstructor()
 
 ostream& DirCommentConstructor::put(ostream& s) const
 {
-	s << INDENT << "DirCommentConstructor[";
-	s << "comment=" << comment;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirCommentConstructor[";
+  s << "comment=" << comment;
+  return s << OUTDENT << "]\n";
 }
 
 //-DirCommentConstructor::
 
 void DirCommentConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -4650,23 +4649,23 @@ void DirCommentConstructor::accept(parsenode_visitor& v) const
 // [105] DirPIConstructor
 // ----------------------
 DirPIConstructor::DirPIConstructor(
-	const yy::location& _loc,
-	std::string const& _pi_target)
+  const yy::location& _loc,
+  std::string const& _pi_target)
 :
-	exprnode(_loc),
-	pi_target(_pi_target),
-	pi_content("")
+  exprnode(_loc),
+  pi_target(_pi_target),
+  pi_content("")
 {
 }
 
 DirPIConstructor::DirPIConstructor(
-	const yy::location& _loc,
-	std::string const& _pi_target,
-	std::string const& _pi_content)
+  const yy::location& _loc,
+  std::string const& _pi_target,
+  std::string const& _pi_content)
 :
-	exprnode(_loc),
-	pi_target(_pi_target),
-	pi_content(_pi_content)
+  exprnode(_loc),
+  pi_target(_pi_target),
+  pi_content(_pi_content)
 {
 }
 
@@ -4676,18 +4675,18 @@ DirPIConstructor::~DirPIConstructor()
 
 ostream& DirPIConstructor::put(ostream& s) const
 {
-	s << INDENT << "DirPIConstructor[";
-	s << "pi_target=" << pi_target << endl;
-	s << "pi_content=" << pi_content << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DirPIConstructor[";
+  s << "pi_target=" << pi_target << endl;
+  s << "pi_content=" << pi_content << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-DirPIConstructor::
 
 void DirPIConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -4701,11 +4700,11 @@ void DirPIConstructor::accept(parsenode_visitor& v) const
 // [107] CDataSection
 // ------------------
 CDataSection::CDataSection(
-	const yy::location& _loc,
-	std::string _cdata_content)
+  const yy::location& _loc,
+  std::string _cdata_content)
 :
-	exprnode(_loc),
-	cdata_content(_cdata_content)
+  exprnode(_loc),
+  cdata_content(_cdata_content)
 {
 }
 
@@ -4715,17 +4714,17 @@ CDataSection::~CDataSection()
 
 ostream& CDataSection::put(ostream& s) const
 {
-	s << INDENT << "CDataSection[";
-	s << "cdata_content=" << cdata_content << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CDataSection[";
+  s << "cdata_content=" << cdata_content << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-CDataSection::
 
 void CDataSection::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -4744,11 +4743,11 @@ void CDataSection::accept(parsenode_visitor& v) const
 // [110] CompDocConstructor
 // ------------------------
 CompDocConstructor::CompDocConstructor(
-	const yy::location& _loc,
-	rchandle<exprnode> _expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _expr_h)
 :
-	exprnode(_loc),
-	expr_h(_expr_h)
+  exprnode(_loc),
+  expr_h(_expr_h)
 {
 }
 
@@ -4758,18 +4757,18 @@ CompDocConstructor::~CompDocConstructor()
 
 ostream& CompDocConstructor::put(ostream& s) const
 {
-	s << INDENT << "CompDocConstructor[";
-	if (expr_h!=NULL) expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CompDocConstructor[";
+  if (expr_h!=NULL) expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CompDocConstructor::
 
 void CompDocConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -4777,14 +4776,14 @@ void CompDocConstructor::accept(parsenode_visitor& v) const
 // [111] CompElemConstructor
 // -------------------------
 CompElemConstructor::CompElemConstructor(
-	const yy::location& _loc,
-	rchandle<exprnode> _qname_expr_h,
-	rchandle<exprnode> _content_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _qname_expr_h,
+  rchandle<exprnode> _content_expr_h)
 :
-	exprnode(_loc),
-	qname_h(NULL),
-	qname_expr_h(_qname_expr_h),
-	content_expr_h(_content_expr_h)
+  exprnode(_loc),
+  qname_h(NULL),
+  qname_expr_h(_qname_expr_h),
+  content_expr_h(_content_expr_h)
 {
 }
 
@@ -4794,24 +4793,21 @@ CompElemConstructor::~CompElemConstructor()
 
 ostream& CompElemConstructor::put(ostream& s) const
 {
-	s << INDENT << "CompElemConstructor[";
-	if (qname_h!=NULL) qname_h->put(s);
-	if (qname_expr_h!=NULL) qname_expr_h->put(s);
-	if (content_expr_h!=NULL) content_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CompElemConstructor[";
+  if (qname_h!=NULL) qname_h->put(s);
+  if (qname_expr_h!=NULL) qname_expr_h->put(s);
+  if (content_expr_h!=NULL) content_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CompElemConstructor::
 
 void CompElemConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-  if (qname_h != 0)
-    qname_h->accept(v);
-  if (qname_expr_h != 0)
-    qname_expr_h->accept(v);
-	content_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (qname_h);
+  ACCEPT (content_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -4824,14 +4820,14 @@ void CompElemConstructor::accept(parsenode_visitor& v) const
 // [113] CompAttrConstructor
 // -------------------------
 CompAttrConstructor::CompAttrConstructor(
-	const yy::location& _loc,
-	rchandle<exprnode> _qname_expr_h,
-	rchandle<exprnode> _val_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _qname_expr_h,
+  rchandle<exprnode> _val_expr_h)
 :
-	exprnode(_loc),
-	qname_h(NULL),
-	qname_expr_h(_qname_expr_h),
-	val_expr_h(_val_expr_h)
+  exprnode(_loc),
+  qname_h(NULL),
+  qname_expr_h(_qname_expr_h),
+  val_expr_h(_val_expr_h)
 {
 }
 
@@ -4841,24 +4837,21 @@ CompAttrConstructor::~CompAttrConstructor()
 
 ostream& CompAttrConstructor::put(ostream& s) const
 {
-	s << INDENT << "CompAttrConstructor[";
-	if (qname_h!=NULL) qname_h->put(s);
-	if (qname_expr_h!=NULL) qname_expr_h->put(s);
-	if (val_expr_h!=NULL) val_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CompAttrConstructor[";
+  if (qname_h!=NULL) qname_h->put(s);
+  if (qname_expr_h!=NULL) qname_expr_h->put(s);
+  if (val_expr_h!=NULL) val_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CompAttrConstructor::
 
 void CompAttrConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-  if (qname_h != 0)
-	  qname_h->accept(v);
-  if (qname_expr_h != 0)
-    qname_expr_h->accept(v);
-	val_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (qname_h);
+  ACCEPT (val_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -4866,11 +4859,11 @@ void CompAttrConstructor::accept(parsenode_visitor& v) const
 // [114] CompTextConstructor
 // -------------------------
 CompTextConstructor::CompTextConstructor(
-	const yy::location& _loc,
-	rchandle<exprnode> _text_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _text_expr_h)
 :
-	exprnode(_loc),
-	text_expr_h(_text_expr_h)
+  exprnode(_loc),
+  text_expr_h(_text_expr_h)
 {
 }
 
@@ -4880,18 +4873,18 @@ CompTextConstructor::~CompTextConstructor()
 
 ostream& CompTextConstructor::put(ostream& s) const
 {
-	s << INDENT << "CompTextConstructor[";
-	if (text_expr_h!=NULL) text_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CompTextConstructor[";
+  if (text_expr_h!=NULL) text_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CompTextConstructor::
 
 void CompTextConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	text_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (text_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -4899,11 +4892,11 @@ void CompTextConstructor::accept(parsenode_visitor& v) const
 // [115] CompCommentConstructor
 // ----------------------------
 CompCommentConstructor::CompCommentConstructor(
-	const yy::location& _loc,
-	rchandle<exprnode> _comment_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _comment_expr_h)
 :
-	exprnode(_loc),
-	comment_expr_h(_comment_expr_h)
+  exprnode(_loc),
+  comment_expr_h(_comment_expr_h)
 {
 }
 
@@ -4913,18 +4906,18 @@ CompCommentConstructor::~CompCommentConstructor()
 
 ostream& CompCommentConstructor::put(ostream& s) const
 {
-	s << INDENT << "CompCommentConstructor[";
-	if (comment_expr_h!=NULL) comment_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CompCommentConstructor[";
+  if (comment_expr_h!=NULL) comment_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CompCommentConstructor::
 
 void CompCommentConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	comment_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (comment_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -4932,26 +4925,26 @@ void CompCommentConstructor::accept(parsenode_visitor& v) const
 // [116] CompPIConstructor
 // -----------------------
 CompPIConstructor::CompPIConstructor(
-	const yy::location& _loc,
-	std::string _target,
-	rchandle<exprnode> _content_expr_h)
+  const yy::location& _loc,
+  std::string _target,
+  rchandle<exprnode> _content_expr_h)
 :
-	exprnode(_loc),
-	target(_target),
-	target_expr_h(NULL),
-	content_expr_h(_content_expr_h)
+  exprnode(_loc),
+  target(_target),
+  target_expr_h(NULL),
+  content_expr_h(_content_expr_h)
 {
 }
 
 CompPIConstructor::CompPIConstructor(
-	const yy::location& _loc,
-	rchandle<exprnode> _target_expr_h,
-	rchandle<exprnode> _content_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _target_expr_h,
+  rchandle<exprnode> _content_expr_h)
 :
-	exprnode(_loc),
-	target(""),
-	target_expr_h(_target_expr_h),
-	content_expr_h(_content_expr_h)
+  exprnode(_loc),
+  target(""),
+  target_expr_h(_target_expr_h),
+  content_expr_h(_content_expr_h)
 {
 }
 
@@ -4961,21 +4954,21 @@ CompPIConstructor::~CompPIConstructor()
 
 ostream& CompPIConstructor::put(ostream& s) const
 {
-	s << INDENT << "CompPIConstructor[";
-	s << "target=" << target << endl;
-	if (target_expr_h!=NULL) target_expr_h->put(s);
-	if (content_expr_h!=NULL) content_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "CompPIConstructor[";
+  s << "target=" << target << endl;
+  if (target_expr_h!=NULL) target_expr_h->put(s);
+  if (content_expr_h!=NULL) content_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-CompPIConstructor::
 
 void CompPIConstructor::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	content_expr_h->accept(v);
+  BEGIN_VISITOR ();
+  ACCEPT (content_expr_h);
   ACCEPT (target_expr_h);
-	END_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -4983,13 +4976,13 @@ void CompPIConstructor::accept(parsenode_visitor& v) const
 // [117] SingleType
 // ----------------
 SingleType::SingleType(
-	const yy::location& _loc,
-	rchandle<AtomicType> _atomic_type_h,
-	bool _hook_b)
+  const yy::location& _loc,
+  rchandle<AtomicType> _atomic_type_h,
+  bool _hook_b)
 :
-	parsenode(_loc),
-	atomic_type_h(_atomic_type_h),
-	hook_b(_hook_b)
+  parsenode(_loc),
+  atomic_type_h(_atomic_type_h),
+  hook_b(_hook_b)
 {
 }
 
@@ -4999,19 +4992,19 @@ SingleType::~SingleType()
 
 ostream& SingleType::put(ostream& s) const
 {
-	s << INDENT << "SingleType[";
-	if (atomic_type_h!=NULL) atomic_type_h->put(s);
-	s << "hook_b=" << hook_b << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "SingleType[";
+  if (atomic_type_h!=NULL) atomic_type_h->put(s);
+  s << "hook_b=" << hook_b << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-SingleType::
 
 void SingleType::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	atomic_type_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (atomic_type_h);
+  END_VISITOR ();
 }
 
 
@@ -5019,11 +5012,11 @@ void SingleType::accept(parsenode_visitor& v) const
 // [116] TypeDeclaration
 // ---------------------
 TypeDeclaration::TypeDeclaration(
-	const yy::location& _loc,
-	rchandle<SequenceType> _seqtype_h)
+  const yy::location& _loc,
+  rchandle<SequenceType> _seqtype_h)
 :
-	parsenode(_loc),
-	seqtype_h(_seqtype_h)
+  parsenode(_loc),
+  seqtype_h(_seqtype_h)
 {
 }
 
@@ -5033,18 +5026,18 @@ TypeDeclaration::~TypeDeclaration()
 
 ostream& TypeDeclaration::put(ostream& os) const
 {
-	os << INDENT << "TypeDeclaration[";
-	if (seqtype_h!=NULL) seqtype_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "TypeDeclaration[";
+  if (seqtype_h!=NULL) seqtype_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 //-TypeDeclaration::
 
 void TypeDeclaration::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	seqtype_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (seqtype_h);
+  END_VISITOR ();
 }
 
 
@@ -5052,13 +5045,13 @@ void TypeDeclaration::accept(parsenode_visitor& v) const
 // [119] SequenceType
 // ------------------
 SequenceType::SequenceType(
-	const yy::location& _loc,
-	rchandle<ItemType> _itemtype_h,
-	rchandle<OccurrenceIndicator> _occur_h)
+  const yy::location& _loc,
+  rchandle<ItemType> _itemtype_h,
+  rchandle<OccurrenceIndicator> _occur_h)
 :
-	parsenode(_loc),
-	itemtype_h(_itemtype_h),
-	occur_h(_occur_h)
+  parsenode(_loc),
+  itemtype_h(_itemtype_h),
+  occur_h(_occur_h)
 {
 }
 
@@ -5068,20 +5061,20 @@ SequenceType::~SequenceType()
 
 ostream& SequenceType::put(ostream& os) const
 {
-	os << INDENT << "SequenceType[";
-	if (itemtype_h!=NULL) itemtype_h->put(os);
-	if (occur_h!=NULL) occur_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "SequenceType[";
+  if (itemtype_h!=NULL) itemtype_h->put(os);
+  if (occur_h!=NULL) occur_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 //-SequenceType::
 
 void SequenceType::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	itemtype_h->accept(v);
-	occur_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (itemtype_h);
+  ACCEPT (occur_h);
+  END_VISITOR ();
 }
 
 
@@ -5089,11 +5082,11 @@ void SequenceType::accept(parsenode_visitor& v) const
 // [120] OccurrenceIndicator
 // -------------------------
 OccurrenceIndicator::OccurrenceIndicator(
-	const yy::location& _loc,
-	enum occurrence_t _type)
+  const yy::location& _loc,
+  enum occurrence_t _type)
 :
-	parsenode(_loc),
-	type(_type)
+  parsenode(_loc),
+  type(_type)
 {
 }
 
@@ -5103,22 +5096,22 @@ OccurrenceIndicator::~OccurrenceIndicator()
 
 ostream& OccurrenceIndicator::put(ostream& s) const
 {
-	s << INDENT << "OccurrenceIndicator[";
-	switch(type) {
-	case occurs_optionally: s << "(?)"; break;
-	case occurs_zero_or_more: s << "(*)"; break;
-	case occurs_one_or_more: s << "(+)"; break;
-	default: s << "???";
-	}
-	return s << OUTDENT << "]\n";
+  s << INDENT << "OccurrenceIndicator[";
+  switch(type) {
+  case occurs_optionally: s << "(?)"; break;
+  case occurs_zero_or_more: s << "(*)"; break;
+  case occurs_one_or_more: s << "(+)"; break;
+  default: s << "???";
+  }
+  return s << OUTDENT << "]\n";
 }
 
 //-OccurrenceIndicator::
 
 void OccurrenceIndicator::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5126,19 +5119,19 @@ void OccurrenceIndicator::accept(parsenode_visitor& v) const
 // [121] ItemType
 // --------------
 ItemType::ItemType(
-	const yy::location& _loc,
-	bool _item_test_b)
+  const yy::location& _loc,
+  bool _item_test_b)
 :
-	parsenode(_loc),
-	item_test_b(_item_test_b)
+  parsenode(_loc),
+  item_test_b(_item_test_b)
 {
 }
 
 ItemType::ItemType(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc),
-	item_test_b(false)
+  parsenode(_loc),
+  item_test_b(false)
 {
 }
 
@@ -5148,17 +5141,17 @@ ItemType::~ItemType()
 
 ostream& ItemType::put(ostream& s) const
 {
-	s << INDENT << "ItemType[";
-	s << "item_test_b=" << item_test_b << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ItemType[";
+  s << "item_test_b=" << item_test_b << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-ItemType::
 
 void ItemType::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5166,11 +5159,11 @@ void ItemType::accept(parsenode_visitor& v) const
 // [122] AtomicType
 // ----------------
 AtomicType::AtomicType(
-	const yy::location& _loc,
-	rchandle<QName> _qname_h)
+  const yy::location& _loc,
+  rchandle<QName> _qname_h)
 :
-	parsenode(_loc),
-	qname_h(_qname_h)
+  parsenode(_loc),
+  qname_h(_qname_h)
 {
 }
 
@@ -5180,18 +5173,18 @@ AtomicType::~AtomicType()
 
 ostream& AtomicType::put(ostream& s) const
 {
-	s << INDENT << "AtomicType[";
-	if (qname_h!=NULL) qname_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "AtomicType[";
+  if (qname_h!=NULL) qname_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-AtomicType::
 
 void AtomicType::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//qname_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //qname_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -5204,9 +5197,9 @@ void AtomicType::accept(parsenode_visitor& v) const
 // [124] AnyKindTest
 // -----------------
 AnyKindTest::AnyKindTest(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -5216,16 +5209,16 @@ AnyKindTest::~AnyKindTest()
 
 ostream& AnyKindTest::put(ostream& s) const
 {
-	s << INDENT << "AnyKindTest[]\n"; UNDENT;
-	return s;
+  s << INDENT << "AnyKindTest[]\n"; UNDENT;
+  return s;
 }
 
 //-AnyKindTest::
 
 void AnyKindTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5233,31 +5226,31 @@ void AnyKindTest::accept(parsenode_visitor& v) const
 // [125] DocumentTest
 // ------------------
 DocumentTest::DocumentTest(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc),
-	elem_test_h(NULL),
-	schema_elem_test_h(NULL)
+  parsenode(_loc),
+  elem_test_h(NULL),
+  schema_elem_test_h(NULL)
 {
 }
 
 DocumentTest::DocumentTest(
-	const yy::location& _loc,
-	rchandle<ElementTest> _elem_test_h)
+  const yy::location& _loc,
+  rchandle<ElementTest> _elem_test_h)
 :
-	parsenode(_loc),
-	elem_test_h(_elem_test_h),
-	schema_elem_test_h(NULL)
+  parsenode(_loc),
+  elem_test_h(_elem_test_h),
+  schema_elem_test_h(NULL)
 {
 }
 
 DocumentTest::DocumentTest(
-	const yy::location& _loc,
-	rchandle<SchemaElementTest> _schema_elem_test_h)
+  const yy::location& _loc,
+  rchandle<SchemaElementTest> _schema_elem_test_h)
 :
-	parsenode(_loc),
-	elem_test_h(NULL),
-	schema_elem_test_h(_schema_elem_test_h)
+  parsenode(_loc),
+  elem_test_h(NULL),
+  schema_elem_test_h(_schema_elem_test_h)
 {
 }
 
@@ -5267,18 +5260,18 @@ DocumentTest::~DocumentTest()
 
 ostream& DocumentTest::put(ostream& s) const
 {
-	s << INDENT << "DocumentTest[";
-	if (elem_test_h!=NULL) elem_test_h->put(s);
-	if (schema_elem_test_h!=NULL) schema_elem_test_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DocumentTest[";
+  if (elem_test_h!=NULL) elem_test_h->put(s);
+  if (schema_elem_test_h!=NULL) schema_elem_test_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-DocumentTest::
 
 void DocumentTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5286,9 +5279,9 @@ void DocumentTest::accept(parsenode_visitor& v) const
 // [126] TextTest
 // --------------
 TextTest::TextTest(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -5298,16 +5291,16 @@ TextTest::~TextTest()
 
 ostream& TextTest::put(ostream& s) const
 {
-	s << INDENT << "TextTest[]\n"; UNDENT;
-	return s;
+  s << INDENT << "TextTest[]\n"; UNDENT;
+  return s;
 }
 
 //-TextTest::
 
 void TextTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5315,9 +5308,9 @@ void TextTest::accept(parsenode_visitor& v) const
 // [127] CommentTest
 // -----------------
 CommentTest::CommentTest(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -5327,16 +5320,16 @@ CommentTest::~CommentTest()
 
 ostream& CommentTest::put(ostream& s) const
 {
-	s << INDENT << "CommentTest[]\n"; UNDENT;
-	return s;
+  s << INDENT << "CommentTest[]\n"; UNDENT;
+  return s;
 }
 
 //-CommentTest::
 
 void CommentTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
  
@@ -5344,13 +5337,13 @@ void CommentTest::accept(parsenode_visitor& v) const
 // [128] PITest
 // ------------
 PITest::PITest(
-	const yy::location& _loc,
-	std::string _target,
-	std::string _content)
+  const yy::location& _loc,
+  std::string _target,
+  std::string _content)
 :
-	parsenode(_loc),
-	target(_target),
-	content(_content)
+  parsenode(_loc),
+  target(_target),
+  content(_content)
 {
 }
 
@@ -5360,18 +5353,18 @@ PITest::~PITest()
 
 ostream& PITest::put(ostream& s) const
 {
-	s << INDENT << "PITest[";
-	s << "target=" << target << endl;
-	s << ", content=" << content << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "PITest[";
+  s << "target=" << target << endl;
+  s << ", content=" << content << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-PITest::
 
 void PITest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5379,13 +5372,13 @@ void PITest::accept(parsenode_visitor& v) const
 // [129] AttributeTest
 // -------------------
 AttributeTest::AttributeTest(
-	const yy::location& _loc,
-	rchandle<QName> _attr_h,
-	rchandle<TypeName> _type_h)
+  const yy::location& _loc,
+  rchandle<QName> _attr_h,
+  rchandle<TypeName> _type_h)
 :
-	parsenode(_loc),
-	attr_h(_attr_h),
-	type_h(_type_h)
+  parsenode(_loc),
+  attr_h(_attr_h),
+  type_h(_type_h)
 {
 }
 
@@ -5395,21 +5388,21 @@ AttributeTest::~AttributeTest()
 
 ostream& AttributeTest::put(ostream& os) const
 {
-	os << INDENT << "AttributeTest[";
-	if (attr_h!=NULL) attr_h->put(os); else os << '*';
-	if (type_h!=NULL) {
-		os << ", ";
-		type_h->put(os);
-	}
-	return os << OUTDENT << "]\n";
+  os << INDENT << "AttributeTest[";
+  if (attr_h!=NULL) attr_h->put(os); else os << '*';
+  if (type_h!=NULL) {
+    os << ", ";
+    type_h->put(os);
+  }
+  return os << OUTDENT << "]\n";
 }
 
 //-AttributeTest::
 
 void AttributeTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5420,11 +5413,11 @@ void AttributeTest::accept(parsenode_visitor& v) const
 // [131] SchemaAttributeTest
 // -------------------------
 SchemaAttributeTest::SchemaAttributeTest(
-	const yy::location& _loc,
-	rchandle<QName> _attr_h)
+  const yy::location& _loc,
+  rchandle<QName> _attr_h)
 :
-	parsenode(_loc),
-	attr_h(_attr_h)
+  parsenode(_loc),
+  attr_h(_attr_h)
 {
 }
 
@@ -5434,18 +5427,18 @@ SchemaAttributeTest::~SchemaAttributeTest()
 
 ostream& SchemaAttributeTest::put(ostream& os) const
 {
-	os << INDENT << "SchemaAttributeTest[";
-	if (attr_h!=NULL) attr_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "SchemaAttributeTest[";
+  if (attr_h!=NULL) attr_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 //-SchemaAttributeTest::
 
 void SchemaAttributeTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//if (attr_h!=NULL) attr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //if (attr_h!=NULL) attr_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -5458,15 +5451,15 @@ void SchemaAttributeTest::accept(parsenode_visitor& v) const
 
 ********************************************************************************/
 ElementTest::ElementTest(
-		const yy::location& loc,
-		rchandle<QName> ename,
-		rchandle<TypeName> tname,
+    const yy::location& loc,
+    rchandle<QName> ename,
+    rchandle<TypeName> tname,
     bool na)
   :
-	parsenode(loc),
-	theElementName(ename),
-	theTypeName(tname),
-	theNilledAllowed(na)
+  parsenode(loc),
+  theElementName(ename),
+  theTypeName(tname),
+  theNilledAllowed(na)
 {
 }
 
@@ -5476,30 +5469,30 @@ ElementTest::~ElementTest()
 
 ostream& ElementTest::put(ostream& os) const
 {
-	os << INDENT << "ElementTest[\n";
+  os << INDENT << "ElementTest[\n";
 
-	if (theElementName != NULL)
+  if (theElementName != NULL)
     theElementName->put(os);
   else
     os << '*';
 
-	if (theTypeName != NULL)
+  if (theTypeName != NULL)
   {
-		os << ", ";
-		theTypeName->put(os);
-	}
+    os << ", ";
+    theTypeName->put(os);
+  }
 
-	if (theNilledAllowed)
+  if (theNilledAllowed)
     os << "?";
 
-	return os << OUTDENT << "]\n";
+  return os << OUTDENT << "]\n";
 }
 
 
 void ElementTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5507,11 +5500,11 @@ void ElementTest::accept(parsenode_visitor& v) const
 // [135] SchemaElementTest
 // -----------------------
 SchemaElementTest::SchemaElementTest(
-	const yy::location& _loc,
-	rchandle<QName> _elem_h)
+  const yy::location& _loc,
+  rchandle<QName> _elem_h)
 :
-	parsenode(_loc),
-	elem_h(_elem_h)
+  parsenode(_loc),
+  elem_h(_elem_h)
 {
 }
 
@@ -5521,18 +5514,18 @@ SchemaElementTest::~SchemaElementTest()
 
 ostream& SchemaElementTest::put(ostream& os) const
 {
-	os << INDENT << "SchemaElementTest[";
-	if (elem_h!=NULL) elem_h->put(os);
-	return os << OUTDENT << "]\n";
+  os << INDENT << "SchemaElementTest[";
+  if (elem_h!=NULL) elem_h->put(os);
+  return os << OUTDENT << "]\n";
 }
 
 //-SchemaElementTest::
 
 void SchemaElementTest::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//if (elem_h!=NULL) elem_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //if (elem_h!=NULL) elem_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -5551,23 +5544,23 @@ void SchemaElementTest::accept(parsenode_visitor& v) const
 // [139] TypeName
 // --------------
 TypeName::TypeName(
-	const yy::location& _loc,
-	rchandle<QName> _qname_h)
+  const yy::location& _loc,
+  rchandle<QName> _qname_h)
 :
-	parsenode(_loc),
-	qname_h(_qname_h),
-	optional_b(false)
+  parsenode(_loc),
+  qname_h(_qname_h),
+  optional_b(false)
 {
 }
 
 TypeName::TypeName(
-	const yy::location& _loc,
-	rchandle<QName> _qname_h,
-	bool _b)
+  const yy::location& _loc,
+  rchandle<QName> _qname_h,
+  bool _b)
 :
-	parsenode(_loc),
-	qname_h(_qname_h),
-	optional_b(_b)
+  parsenode(_loc),
+  qname_h(_qname_h),
+  optional_b(_b)
 {
 }
 
@@ -5577,19 +5570,19 @@ TypeName::~TypeName()
 
 ostream& TypeName::put(ostream& os) const
 {
-	os << INDENT << "TypeName[";
-	if (qname_h!=NULL) qname_h->put(os);
-	if (optional_b) os << "?";
-	return os << OUTDENT << "]\n";
+  os << INDENT << "TypeName[";
+  if (qname_h!=NULL) qname_h->put(os);
+  if (optional_b) os << "?";
+  return os << OUTDENT << "]\n";
 }
 
 //-TypeName::
 
 void TypeName::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//if (qname_h!=NULL) qname_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //if (qname_h!=NULL) qname_h->accept(v);
+  END_VISITOR ();
 }
 
 
@@ -5606,11 +5599,11 @@ void TypeName::accept(parsenode_visitor& v) const
 // [144] StringLiteral
 // -------------------
 StringLiteral::StringLiteral(
-	const yy::location& _loc,
-	string const& _strval)
+  const yy::location& _loc,
+  string const& _strval)
 :
-	exprnode(_loc),
-	strval(_strval)
+  exprnode(_loc),
+  strval(_strval)
 {
 }
 
@@ -5620,17 +5613,17 @@ StringLiteral::~StringLiteral()
 
 ostream& StringLiteral::put(ostream& s) const
 {
-	s << INDENT << "StringLiteral[";
-	s << "strval=\"" << strval << "\"\n";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "StringLiteral[";
+  s << "strval=\"" << strval << "\"\n";
+  return s << OUTDENT << "]\n";
 }
 
 //-StringLiteral::
 
 void StringLiteral::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5659,23 +5652,23 @@ void StringLiteral::accept(parsenode_visitor& v) const
 // [154] QName
 // -----------
 QName::QName(
-	const yy::location& _loc,
-	const string& _qname)
+  const yy::location& _loc,
+  const string& _qname)
 :
-	exprnode(_loc),
-	qname(_qname),
-	theURI("")
+  exprnode(_loc),
+  qname(_qname),
+  theURI("")
 {
 }
 
 QName::QName(
-	const yy::location& _loc,
-	const string& _qname,
-	const string& _uri)
+  const yy::location& _loc,
+  const string& _qname,
+  const string& _uri)
 :
-	exprnode(_loc),
-	qname(_qname),
-	theURI(_uri)
+  exprnode(_loc),
+  qname(_qname),
+  theURI(_uri)
 {
 }
 
@@ -5685,27 +5678,27 @@ QName::~QName()
 
 string QName::get_localname() const
 {
-	string::size_type n = qname.find(':');
-	return (n != string::npos ? qname.substr(n+1) : qname);
+  string::size_type n = qname.find(':');
+  return (n != string::npos ? qname.substr(n+1) : qname);
 }
 
 string QName::get_prefix() const
 {
-	string::size_type n = qname.find(':');
-	return (n != string::npos ? qname.substr(0,n) : "");
+  string::size_type n = qname.find(':');
+  return (n != string::npos ? qname.substr(0,n) : "");
 }
 
 ostream& QName::put(ostream& s) const
 {
-	return s << "QName[ " << qname << " ]";
+  return s << "QName[ " << qname << " ]";
 }
 
 //-QName::
 
 void QName::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5719,14 +5712,14 @@ void QName::accept(parsenode_visitor& v) const
 **
 */
 
-// [241]	RevalidationDecl
+// [241]  RevalidationDecl
 // -----------------------
 RevalidationDecl::RevalidationDecl(
-	const yy::location& _loc,
-	rchandle<QName> _qname_h)
+  const yy::location& _loc,
+  rchandle<QName> _qname_h)
 :
-	parsenode(_loc),
-	qname_h(_qname_h)
+  parsenode(_loc),
+  qname_h(_qname_h)
 {
 }
 
@@ -5736,32 +5729,32 @@ RevalidationDecl::~RevalidationDecl()
 
 ostream& RevalidationDecl::put(ostream& s) const
 {
-	s << INDENT << "RevalidationDecl[";
-	if (qname_h!=NULL) qname_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "RevalidationDecl[";
+  if (qname_h!=NULL) qname_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-RevalidationDecl::
 
 void RevalidationDecl::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	//qname_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  //qname_h->accept(v);
+  END_VISITOR ();
 }
 
 
 
-// [242]	InsertExpr
+// [242]  InsertExpr
 // ----------------
 InsertExpr::InsertExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _source_expr_h,
-	rchandle<exprnode> _target_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _source_expr_h,
+  rchandle<exprnode> _target_expr_h)
 :
-	exprnode(_loc),
-	source_expr_h(_source_expr_h),
-	target_expr_h(_target_expr_h)
+  exprnode(_loc),
+  source_expr_h(_source_expr_h),
+  target_expr_h(_target_expr_h)
 {
 }
 
@@ -5771,18 +5764,18 @@ InsertExpr::~InsertExpr()
 
 ostream& InsertExpr::put(ostream& s) const
 {
-	s << INDENT << "InsertExpr[";
-	if (source_expr_h!=NULL) source_expr_h->put(s);
-	if (target_expr_h!=NULL) target_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "InsertExpr[";
+  if (source_expr_h!=NULL) source_expr_h->put(s);
+  if (target_expr_h!=NULL) target_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-InsertExpr::
 
 void InsertExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -5790,11 +5783,11 @@ void InsertExpr::accept(parsenode_visitor& v) const
 // [243] DeleteExpr
 // ----------------
 DeleteExpr::DeleteExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _target_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _target_expr_h)
 :
-	exprnode(_loc),
-	target_expr_h(_target_expr_h)
+  exprnode(_loc),
+  target_expr_h(_target_expr_h)
 {
 }
 
@@ -5804,18 +5797,18 @@ DeleteExpr::~DeleteExpr()
 
 ostream& DeleteExpr::put(ostream& s) const
 {
-	s << INDENT << "DeleteExpr[";
-	if (target_expr_h!=NULL) target_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "DeleteExpr[";
+  if (target_expr_h!=NULL) target_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-DeleteExpr::
 
 void DeleteExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	target_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (target_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -5823,13 +5816,13 @@ void DeleteExpr::accept(parsenode_visitor& v) const
 // [244] ReplaceExpr
 // -----------------
 ReplaceExpr::ReplaceExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _source_expr_h,
-	rchandle<exprnode> _target_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _source_expr_h,
+  rchandle<exprnode> _target_expr_h)
 :
-	exprnode(_loc),
-	source_expr_h(_source_expr_h),
-	target_expr_h(_target_expr_h)
+  exprnode(_loc),
+  source_expr_h(_source_expr_h),
+  target_expr_h(_target_expr_h)
 {
 }
 
@@ -5839,20 +5832,20 @@ ReplaceExpr::~ReplaceExpr()
 
 ostream& ReplaceExpr::put(ostream& s) const
 {
-	s << INDENT << "ReplaceExpr[";
-	if (source_expr_h!=NULL) source_expr_h->put(s);
-	if (target_expr_h!=NULL) target_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "ReplaceExpr[";
+  if (source_expr_h!=NULL) source_expr_h->put(s);
+  if (target_expr_h!=NULL) target_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-ReplaceExpr::
 
 void ReplaceExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	source_expr_h->accept(v);
-	target_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (source_expr_h);
+  ACCEPT (target_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -5860,13 +5853,13 @@ void ReplaceExpr::accept(parsenode_visitor& v) const
 // [245] RenameExpr
 // ----------------
 RenameExpr::RenameExpr(
-	const yy::location& _loc,
-	rchandle<exprnode> _source_expr_h,
-	rchandle<exprnode> _target_expr_h)
+  const yy::location& _loc,
+  rchandle<exprnode> _source_expr_h,
+  rchandle<exprnode> _target_expr_h)
 :
-	exprnode(_loc),
-	source_expr_h(_source_expr_h),
-	target_expr_h(_target_expr_h)
+  exprnode(_loc),
+  source_expr_h(_source_expr_h),
+  target_expr_h(_target_expr_h)
 {
 }
 
@@ -5876,20 +5869,20 @@ RenameExpr::~RenameExpr()
 
 ostream& RenameExpr::put(ostream& s) const
 {
-	s << INDENT << "RenameExpr[";
-	if (source_expr_h!=NULL) source_expr_h->put(s);
-	if (target_expr_h!=NULL) target_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "RenameExpr[";
+  if (source_expr_h!=NULL) source_expr_h->put(s);
+  if (target_expr_h!=NULL) target_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-RenameExpr::
 
 void RenameExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	source_expr_h->accept(v);
-	target_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (source_expr_h);
+  ACCEPT (target_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -5911,15 +5904,15 @@ void RenameExpr::accept(parsenode_visitor& v) const
 // [249] TransformExpr
 // -------------------
 TransformExpr::TransformExpr(
-	const yy::location& _loc,
-	rchandle<VarNameList> _varname_list_h,
-	rchandle<exprnode> _source_expr_h,
-	rchandle<exprnode> _target_expr_h)
+  const yy::location& _loc,
+  rchandle<VarNameList> _varname_list_h,
+  rchandle<exprnode> _source_expr_h,
+  rchandle<exprnode> _target_expr_h)
 :
-	exprnode(_loc),
-	varname_list_h(_varname_list_h),
-	source_expr_h(_source_expr_h),
-	target_expr_h(_target_expr_h)
+  exprnode(_loc),
+  varname_list_h(_varname_list_h),
+  source_expr_h(_source_expr_h),
+  target_expr_h(_target_expr_h)
 {
 }
 
@@ -5929,22 +5922,22 @@ TransformExpr::~TransformExpr()
 
 ostream& TransformExpr::put(ostream& s) const
 {
-	s << INDENT << "TransformExpr[";
-	if (varname_list_h!=NULL) varname_list_h->put(s);
-	if (source_expr_h!=NULL) source_expr_h->put(s);
-	if (target_expr_h!=NULL) target_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "TransformExpr[";
+  if (varname_list_h!=NULL) varname_list_h->put(s);
+  if (source_expr_h!=NULL) source_expr_h->put(s);
+  if (target_expr_h!=NULL) target_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-TransformExpr::
 
 void TransformExpr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	varname_list_h->accept(v);
-	source_expr_h->accept(v);
-	target_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (varname_list_h);
+  ACCEPT (source_expr_h);
+  ACCEPT (target_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -5952,9 +5945,9 @@ void TransformExpr::accept(parsenode_visitor& v) const
 // [249a] VarNameList
 // ------------------
 VarNameList::VarNameList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -5964,25 +5957,25 @@ VarNameList::~VarNameList()
 
 ostream& VarNameList::put(ostream& s) const
 {
-	s << INDENT << "VarNameList[" << endl;
-	vector<rchandle<VarBinding> >::const_iterator it = varbinding_hv.begin();
-	for (; it!=varbinding_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VarNameList[" << endl;
+  vector<rchandle<VarBinding> >::const_iterator it = varbinding_hv.begin();
+  for (; it!=varbinding_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-VarNameList::
 
 void VarNameList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
-	for (; it!=varbinding_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<VarBinding> >::const_reverse_iterator it = varbinding_hv.rbegin();
+  for (; it!=varbinding_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -5990,13 +5983,13 @@ void VarNameList::accept(parsenode_visitor& v) const
 // [249b] VarBinding
 // -----------------
 VarBinding::VarBinding(
-	const yy::location& _loc,
-	std::string _varname,
-	rchandle<exprnode> _val_h)
+  const yy::location& _loc,
+  std::string _varname,
+  rchandle<exprnode> _val_h)
 :
-	parsenode(_loc),
-	varname(_varname),
-	val_h(_val_h)
+  parsenode(_loc),
+  varname(_varname),
+  val_h(_val_h)
 {
 }
 
@@ -6006,19 +5999,19 @@ VarBinding::~VarBinding()
 
 ostream& VarBinding::put(ostream& s) const
 {
-	s << INDENT << "VarBinding[";
-	s << "varname=" << varname << endl;
-	if (val_h!=NULL) val_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "VarBinding[";
+  s << "varname=" << varname << endl;
+  if (val_h!=NULL) val_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-VarBinding::
 
 void VarBinding::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	val_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (val_h);
+  END_VISITOR ();
 }
 
 
@@ -6029,22 +6022,22 @@ void VarBinding::accept(parsenode_visitor& v) const
 /*
  *
  *  Full-text productions
- *	[http://www.w3.org/TR/xquery-full-text/]
+ *  [http://www.w3.org/TR/xquery-full-text/]
  *
  */
 
 // [344] FTSelection
 // -----------------
 FTSelection::FTSelection(
-	const yy::location& _loc,
-	rchandle<FTOr> _ftor_h,
-	rchandle<FTMatchOptionProximityList> _option_list_h,
-	rchandle<RangeExpr> _weight_expr_h)
+  const yy::location& _loc,
+  rchandle<FTOr> _ftor_h,
+  rchandle<FTMatchOptionProximityList> _option_list_h,
+  rchandle<RangeExpr> _weight_expr_h)
 :
-	parsenode(_loc),
-	ftor_h(_ftor_h),
-	option_list_h(_option_list_h),
-	weight_expr_h(_weight_expr_h)
+  parsenode(_loc),
+  ftor_h(_ftor_h),
+  option_list_h(_option_list_h),
+  weight_expr_h(_weight_expr_h)
 {
 }
 
@@ -6054,22 +6047,22 @@ FTSelection::~FTSelection()
 
 ostream& FTSelection::put(ostream& s) const
 {
-	s << INDENT << "FTSelection[";
-	if (ftor_h!=NULL) ftor_h->put(s);
-	if (option_list_h!=NULL) option_list_h->put(s);
-	if (weight_expr_h!=NULL) weight_expr_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTSelection[";
+  if (ftor_h!=NULL) ftor_h->put(s);
+  if (option_list_h!=NULL) option_list_h->put(s);
+  if (weight_expr_h!=NULL) weight_expr_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FTSelection::
 
 void FTSelection::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ftor_h->accept(v);
-	option_list_h->accept(v);
-	weight_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (ftor_h);
+  ACCEPT (option_list_h);
+  ACCEPT (weight_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -6077,9 +6070,9 @@ void FTSelection::accept(parsenode_visitor& v) const
 // [344a] FTMatchOptionProximityList
 // ---------------------------------
 FTMatchOptionProximityList::FTMatchOptionProximityList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -6089,27 +6082,27 @@ FTMatchOptionProximityList::~FTMatchOptionProximityList()
 
 ostream& FTMatchOptionProximityList::put(ostream& s) const
 {
-	s << INDENT << "FTMatchOptionProximityList[" << endl;
-	vector<rchandle<FTMatchOptionProximity> >::const_iterator it =
-		opt_prox_hv.begin();
-	for (; it!=opt_prox_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTMatchOptionProximityList[" << endl;
+  vector<rchandle<FTMatchOptionProximity> >::const_iterator it =
+    opt_prox_hv.begin();
+  for (; it!=opt_prox_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-FTMatchOptionProximityList::
 
 void FTMatchOptionProximityList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<FTMatchOptionProximity> >::const_reverse_iterator it =
-		opt_prox_hv.rbegin();
-	for (; it!=opt_prox_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<FTMatchOptionProximity> >::const_reverse_iterator it =
+    opt_prox_hv.rbegin();
+  for (; it!=opt_prox_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -6117,31 +6110,31 @@ void FTMatchOptionProximityList::accept(parsenode_visitor& v) const
 // [344b] FTMatchOptionProximity
 // -----------------------------
 FTMatchOptionProximity::FTMatchOptionProximity(
-	rchandle<FTMatchOption> _opt_h,
-	const yy::location& _loc)
+  rchandle<FTMatchOption> _opt_h,
+  const yy::location& _loc)
 :
-	parsenode(_loc),
-	opt_h(_opt_h),
-	prox_h(NULL)
+  parsenode(_loc),
+  opt_h(_opt_h),
+  prox_h(NULL)
 {
 }
 
 FTMatchOptionProximity::FTMatchOptionProximity(
-	rchandle<FTProximity> _prox_h,
-	const yy::location& _loc)
+  rchandle<FTProximity> _prox_h,
+  const yy::location& _loc)
 :
-	parsenode(_loc),
-	opt_h(NULL),
-	prox_h(_prox_h)
+  parsenode(_loc),
+  opt_h(NULL),
+  prox_h(_prox_h)
 {
 }
 
 FTMatchOptionProximity::FTMatchOptionProximity(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc),
-	opt_h(NULL),
-	prox_h(NULL)
+  parsenode(_loc),
+  opt_h(NULL),
+  prox_h(NULL)
 {
 }
 
@@ -6151,19 +6144,19 @@ FTMatchOptionProximity::~FTMatchOptionProximity()
 
 ostream& FTMatchOptionProximity::put(ostream& s) const
 {
-	s << INDENT << "FTMatchOptionProximityList[";
-	if (opt_h!=NULL) opt_h->put(s);
-	if (prox_h!=NULL) prox_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTMatchOptionProximityList[";
+  if (opt_h!=NULL) opt_h->put(s);
+  if (prox_h!=NULL) prox_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FTMatchOptionProximity::
 
 void FTMatchOptionProximity::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	opt_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (opt_h);
+  END_VISITOR ();
 }
 
 
@@ -6171,13 +6164,13 @@ void FTMatchOptionProximity::accept(parsenode_visitor& v) const
 // [345] FTOr
 // ----------
 FTOr::FTOr(
-	const yy::location& _loc,
-	rchandle<FTOr> _ftor_h,
-	rchandle<FTAnd> _ftand_h)
+  const yy::location& _loc,
+  rchandle<FTOr> _ftor_h,
+  rchandle<FTAnd> _ftand_h)
 :
-	parsenode(_loc),
-	ftor_h(_ftor_h),
-	ftand_h(_ftand_h)
+  parsenode(_loc),
+  ftor_h(_ftor_h),
+  ftand_h(_ftand_h)
 {
 }
 
@@ -6187,20 +6180,20 @@ FTOr::~FTOr()
 
 ostream& FTOr::put(ostream& s) const
 {
-	s << INDENT << "FTOr[";
-	if (ftor_h!=NULL) ftor_h->put(s);
-	if (ftand_h!=NULL) ftand_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTOr[";
+  if (ftor_h!=NULL) ftor_h->put(s);
+  if (ftand_h!=NULL) ftand_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FTOr::
 
 void FTOr::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ftor_h->accept(v);
-	ftand_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (ftor_h);
+  ACCEPT (ftand_h);
+  END_VISITOR ();
 }
 
 
@@ -6208,13 +6201,13 @@ void FTOr::accept(parsenode_visitor& v) const
 // [346] FTAnd
 // -----------
 FTAnd::FTAnd(
-	const yy::location& _loc,
-	rchandle<FTAnd> _ftand_h,
-	rchandle<FTMildnot> _ftmild_not_h)
+  const yy::location& _loc,
+  rchandle<FTAnd> _ftand_h,
+  rchandle<FTMildnot> _ftmild_not_h)
 :
-	parsenode(_loc),
-	ftand_h(_ftand_h),
-	ftmild_not_h(_ftmild_not_h)
+  parsenode(_loc),
+  ftand_h(_ftand_h),
+  ftmild_not_h(_ftmild_not_h)
 {
 }
 
@@ -6224,20 +6217,20 @@ FTAnd::~FTAnd()
 
 ostream& FTAnd::put(ostream& s) const
 {
-	s << INDENT << "FTAnd[";
-	if (ftand_h!=NULL) ftand_h->put(s);
-	if (ftmild_not_h!=NULL) ftmild_not_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTAnd[";
+  if (ftand_h!=NULL) ftand_h->put(s);
+  if (ftmild_not_h!=NULL) ftmild_not_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FTAnd::
 
 void FTAnd::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ftand_h->accept(v);
-	ftmild_not_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (ftand_h);
+  ACCEPT (ftmild_not_h);
+  END_VISITOR ();
 }
 
 
@@ -6245,13 +6238,13 @@ void FTAnd::accept(parsenode_visitor& v) const
 // [347] FTMildnot
 // ---------------
 FTMildnot::FTMildnot(
-	const yy::location& _loc,
-	rchandle<FTMildnot> _ftmild_not_h,
-	rchandle<FTUnaryNot> _ftunary_not_h)
+  const yy::location& _loc,
+  rchandle<FTMildnot> _ftmild_not_h,
+  rchandle<FTUnaryNot> _ftunary_not_h)
 :
-	parsenode(_loc),
-	ftmild_not_h(_ftmild_not_h),
-	ftunary_not_h(_ftunary_not_h)
+  parsenode(_loc),
+  ftmild_not_h(_ftmild_not_h),
+  ftunary_not_h(_ftunary_not_h)
 {
 }
 
@@ -6261,20 +6254,20 @@ FTMildnot::~FTMildnot()
 
 ostream& FTMildnot::put(ostream& s) const
 {
-	s << INDENT << "FTMildnot[";
-	if (ftmild_not_h!=NULL) ftmild_not_h->put(s);
-	if (ftunary_not_h!=NULL) ftunary_not_h->put(s);
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTMildnot[";
+  if (ftmild_not_h!=NULL) ftmild_not_h->put(s);
+  if (ftunary_not_h!=NULL) ftunary_not_h->put(s);
+  return s << OUTDENT << "]\n";
 }
 
 //-FTMildnot::
 
 void FTMildnot::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ftmild_not_h->accept(v);
-	ftunary_not_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (ftmild_not_h);
+  ACCEPT (ftunary_not_h);
+  END_VISITOR ();
 }
 
 
@@ -6282,13 +6275,13 @@ void FTMildnot::accept(parsenode_visitor& v) const
 // [348] FTUnaryNot
 // ----------------
 FTUnaryNot::FTUnaryNot(
-	const yy::location& _loc,
-	rchandle<FTWordsSelection> _words_selection_h,
-	bool _not_b)
+  const yy::location& _loc,
+  rchandle<FTWordsSelection> _words_selection_h,
+  bool _not_b)
 :
-	parsenode(_loc),
-	words_selection_h(_words_selection_h),
-	not_b(_not_b)
+  parsenode(_loc),
+  words_selection_h(_words_selection_h),
+  not_b(_not_b)
 {
 }
 
@@ -6298,19 +6291,19 @@ FTUnaryNot::~FTUnaryNot()
 
 ostream& FTUnaryNot::put(ostream& s) const
 {
-	s << INDENT << "FTUnaryNot[";
-	if (words_selection_h!=NULL) words_selection_h->put(s);
-	s << "not_b=" << not_b << endl;
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTUnaryNot[";
+  if (words_selection_h!=NULL) words_selection_h->put(s);
+  s << "not_b=" << not_b << endl;
+  return s << OUTDENT << "]\n";
 }
 
 //-FTUnaryNot::
 
 void FTUnaryNot::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	words_selection_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (words_selection_h);
+  END_VISITOR ();
 }
 
 
@@ -6318,15 +6311,15 @@ void FTUnaryNot::accept(parsenode_visitor& v) const
 // [349] FTWordsSelection
 // ----------------------
 FTWordsSelection::FTWordsSelection(
-	const yy::location& _loc,
-	rchandle<FTWords> _words_h,
-	rchandle<FTTimes> _times_h,
-	rchandle<FTSelection> _selection_h)
+  const yy::location& _loc,
+  rchandle<FTWords> _words_h,
+  rchandle<FTTimes> _times_h,
+  rchandle<FTSelection> _selection_h)
 :
-	parsenode(_loc),
-	words_h(_words_h),
-	times_h(_times_h),
-	selection_h(_selection_h)
+  parsenode(_loc),
+  words_h(_words_h),
+  times_h(_times_h),
+  selection_h(_selection_h)
 {
 }
 
@@ -6336,19 +6329,19 @@ FTWordsSelection::~FTWordsSelection()
 
 ostream& FTWordsSelection::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Xxxx[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTWordsSelection::
 
 void FTWordsSelection::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	words_h->accept(v);
-	times_h->accept(v);
-	selection_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (words_h);
+  ACCEPT (times_h);
+  ACCEPT (selection_h);
+  END_VISITOR ();
 }
 
 
@@ -6356,13 +6349,13 @@ void FTWordsSelection::accept(parsenode_visitor& v) const
 // [350] FTWords
 // -------------
 FTWords::FTWords(
-	const yy::location& _loc,
-	rchandle<FTWordsValue> _words_val_h,
-	rchandle<FTAnyallOption> _any_all_option_h)
+  const yy::location& _loc,
+  rchandle<FTWordsValue> _words_val_h,
+  rchandle<FTAnyallOption> _any_all_option_h)
 :
-	parsenode(_loc),
-	words_val_h(_words_val_h),
-	any_all_option_h(_any_all_option_h)
+  parsenode(_loc),
+  words_val_h(_words_val_h),
+  any_all_option_h(_any_all_option_h)
 {
 }
 
@@ -6372,18 +6365,18 @@ FTWords::~FTWords()
 
 ostream& FTWords::put(ostream& s) const
 {
-	s << INDENT << "Xxxx[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "Xxxx[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTWords::
 
 void FTWords::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	words_val_h->accept(v);
-	any_all_option_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (words_val_h);
+  ACCEPT (any_all_option_h);
+  END_VISITOR ();
 }
 
 
@@ -6391,13 +6384,13 @@ void FTWords::accept(parsenode_visitor& v) const
 // [351] FTWordsValue
 // ------------------
 FTWordsValue::FTWordsValue(
-	const yy::location& _loc,
-	rchandle<StringLiteral> _lit_h,
-	rchandle<Expr> _expr_h)
+  const yy::location& _loc,
+  rchandle<StringLiteral> _lit_h,
+  rchandle<Expr> _expr_h)
 :
-	parsenode(_loc),
-	lit_h(_lit_h),
-	expr_h(_expr_h)
+  parsenode(_loc),
+  lit_h(_lit_h),
+  expr_h(_expr_h)
 {
 }
 
@@ -6407,18 +6400,18 @@ FTWordsValue::~FTWordsValue()
 
 ostream& FTWordsValue::put(ostream& s) const
 {
-	s << INDENT << "FTWordsValue[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTWordsValue[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTWordsValue::
 
 void FTWordsValue::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	lit_h->accept(v);
-	expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (lit_h);
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -6426,9 +6419,9 @@ void FTWordsValue::accept(parsenode_visitor& v) const
 // [352] FTProximity
 // -----------------
 FTProximity::FTProximity(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -6438,16 +6431,16 @@ FTProximity::~FTProximity()
 
 ostream& FTProximity::put(ostream& s) const
 {
-	s << INDENT << "FTProximity[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTProximity[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTProximity::
 
 void FTProximity::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -6455,9 +6448,9 @@ void FTProximity::accept(parsenode_visitor& v) const
 // [353] FTOrderedIndicator
 // ------------------------
 FTOrderedIndicator::FTOrderedIndicator(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	FTProximity(_loc)
+  FTProximity(_loc)
 {
 }
 
@@ -6467,26 +6460,26 @@ FTOrderedIndicator::~FTOrderedIndicator()
 
 ostream& FTOrderedIndicator::put(ostream& s) const
 {
-	s << INDENT << "FTOrderedIndicator[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTOrderedIndicator[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTOrderedIndicator::
 
 void FTOrderedIndicator::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
 
-// [354] FTMatchOption 	
+// [354] FTMatchOption  
 // -------------------
 FTMatchOption::FTMatchOption(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -6496,16 +6489,16 @@ FTMatchOption::~FTMatchOption()
 
 ostream& FTMatchOption::put(ostream& s) const
 {
-	s << INDENT << "FTMatchOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTMatchOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTMatchOption::
 
 void FTMatchOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -6513,11 +6506,11 @@ void FTMatchOption::accept(parsenode_visitor& v) const
 // [355] FTCaseOption
 // ------------------
 FTCaseOption::FTCaseOption(
-	const yy::location& _loc,
-	ft_case_mode_t _mode)
+  const yy::location& _loc,
+  ft_case_mode_t _mode)
 :
-	FTMatchOption(_loc),
-	mode(_mode)
+  FTMatchOption(_loc),
+  mode(_mode)
 {
 }
 
@@ -6527,16 +6520,16 @@ FTCaseOption::~FTCaseOption()
 
 ostream& FTCaseOption::put(ostream& s) const
 {
-	s << INDENT << "FTCaseOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTCaseOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTCaseOption::
 
 void FTCaseOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -6544,11 +6537,11 @@ void FTCaseOption::accept(parsenode_visitor& v) const
 // [356] FTDiacriticsOption
 // ------------------------
 FTDiacriticsOption::FTDiacriticsOption(
-	const yy::location& _loc,
-	ft_diacritics_mode_t _mode)
+  const yy::location& _loc,
+  ft_diacritics_mode_t _mode)
 :
-	FTMatchOption(_loc),
-	mode(_mode)
+  FTMatchOption(_loc),
+  mode(_mode)
 {
 }
 
@@ -6558,16 +6551,16 @@ FTDiacriticsOption::~FTDiacriticsOption()
 
 ostream& FTDiacriticsOption::put(ostream& s) const
 {
-	s << INDENT << "FTDiacriticsOptino[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTDiacriticsOptino[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTDiacriticsOption::
 
 void FTDiacriticsOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -6575,11 +6568,11 @@ void FTDiacriticsOption::accept(parsenode_visitor& v) const
 // [357] FTStemOption
 // ------------------
 FTStemOption::FTStemOption(
-	const yy::location& _loc,
-	ft_stem_mode_t _mode)
+  const yy::location& _loc,
+  ft_stem_mode_t _mode)
 :
-	FTMatchOption(_loc),
-	mode(_mode)
+  FTMatchOption(_loc),
+  mode(_mode)
 {
 }
 
@@ -6589,16 +6582,16 @@ FTStemOption::~FTStemOption()
 
 ostream& FTStemOption::put(ostream& s) const
 {
-	s << INDENT << "FTStemOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTStemOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTStemOption::
 
 void FTStemOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -6606,17 +6599,17 @@ void FTStemOption::accept(parsenode_visitor& v) const
 // [358] FTThesaurusOption
 // -----------------------
 FTThesaurusOption::FTThesaurusOption(
-	const yy::location& _loc,
-	rchandle<FTThesaurusID> _thesaurusid_h,
-	rchandle<FTThesaurusList> _thesaurus_list_h,
-	bool _default_b,
-	bool _without_b)
+  const yy::location& _loc,
+  rchandle<FTThesaurusID> _thesaurusid_h,
+  rchandle<FTThesaurusList> _thesaurus_list_h,
+  bool _default_b,
+  bool _without_b)
 :
-	FTMatchOption(_loc),
-	thesaurusid_h(_thesaurusid_h),
-	thesaurus_list_h(_thesaurus_list_h),
-	default_b(_default_b),
-	without_b(_without_b)
+  FTMatchOption(_loc),
+  thesaurusid_h(_thesaurusid_h),
+  thesaurus_list_h(_thesaurus_list_h),
+  default_b(_default_b),
+  without_b(_without_b)
 {
 }
 
@@ -6627,18 +6620,18 @@ FTThesaurusOption::~FTThesaurusOption()
 
 ostream& FTThesaurusOption::put(ostream& s) const
 {
-	s << INDENT << "FTThesaurusOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTThesaurusOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTThesaurusOption::
 
 void FTThesaurusOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	thesaurusid_h->accept(v);
-	thesaurus_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (thesaurusid_h);
+  ACCEPT (thesaurus_list_h);
+  END_VISITOR ();
 }
 
 
@@ -6646,9 +6639,9 @@ void FTThesaurusOption::accept(parsenode_visitor& v) const
 // [358a] FTThesaurusList
 // ----------------------
 FTThesaurusList::FTThesaurusList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -6658,26 +6651,26 @@ FTThesaurusList::~FTThesaurusList()
 
 ostream& FTThesaurusList::put(ostream& s) const
 {
-	s << INDENT << "FTThesaurusIDList[" << endl;
-	++printdepth;
-	vector<rchandle<FTThesaurusID> >::const_iterator it = thesaurus_hv.begin();
-	for (; it!=thesaurus_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTThesaurusIDList[" << endl;
+  ++printdepth;
+  vector<rchandle<FTThesaurusID> >::const_iterator it = thesaurus_hv.begin();
+  for (; it!=thesaurus_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-FTThesaurusList::
 
 void FTThesaurusList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<FTThesaurusID> >::const_reverse_iterator it = thesaurus_hv.rbegin();
-	for (; it!=thesaurus_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<FTThesaurusID> >::const_reverse_iterator it = thesaurus_hv.rbegin();
+  for (; it!=thesaurus_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -6685,15 +6678,15 @@ void FTThesaurusList::accept(parsenode_visitor& v) const
 // [359] FTThesaurusID
 // -------------------
 FTThesaurusID::FTThesaurusID(
-	const yy::location& _loc,
-	std::string _thesaurus_name,
-	std::string _relationship_name,
-	rchandle<FTRange> _levels_h)
+  const yy::location& _loc,
+  std::string _thesaurus_name,
+  std::string _relationship_name,
+  rchandle<FTRange> _levels_h)
 :
-	parsenode(_loc),
-	thesaurus_name(_thesaurus_name),
-	relationship_name(_relationship_name),
-	levels_h(_levels_h)
+  parsenode(_loc),
+  thesaurus_name(_thesaurus_name),
+  relationship_name(_relationship_name),
+  levels_h(_levels_h)
 {
 }
 
@@ -6703,17 +6696,17 @@ FTThesaurusID::~FTThesaurusID()
 
 ostream& FTThesaurusID::put(ostream& s) const
 {
-	s << INDENT << "FTThesaurusID[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTThesaurusID[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTThesaurusID::
 
 void FTThesaurusID::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	levels_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (levels_h);
+  END_VISITOR ();
 }
 
 
@@ -6721,15 +6714,15 @@ void FTThesaurusID::accept(parsenode_visitor& v) const
 // [360] FTStopwordOption
 // ----------------------
 FTStopwordOption::FTStopwordOption(
-	const yy::location& _loc,
-	rchandle<FTRefOrList> _refor_list_h,
-	rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
-	stop_words_mode_t _mode)
+  const yy::location& _loc,
+  rchandle<FTRefOrList> _refor_list_h,
+  rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
+  stop_words_mode_t _mode)
 :
-	FTMatchOption(_loc),
-	refor_list_h(_refor_list_h),
-	incl_excl_list_h(_incl_excl_list_h),
-	mode(_mode)
+  FTMatchOption(_loc),
+  refor_list_h(_refor_list_h),
+  incl_excl_list_h(_incl_excl_list_h),
+  mode(_mode)
 {
 }
 
@@ -6739,18 +6732,18 @@ FTStopwordOption::~FTStopwordOption()
 
 ostream& FTStopwordOption::put(ostream& s) const
 {
-	s << INDENT << "FTStopwordOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTStopwordOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTStopwordOption::
 
 void FTStopwordOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	refor_list_h->accept(v);
-	incl_excl_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (refor_list_h);
+  ACCEPT (incl_excl_list_h);
+  END_VISITOR ();
 }
 
 
@@ -6758,9 +6751,9 @@ void FTStopwordOption::accept(parsenode_visitor& v) const
 // [360a] FTInclExclStringLiteralList
 // ----------------------------------
 FTInclExclStringLiteralList::FTInclExclStringLiteralList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -6770,28 +6763,28 @@ FTInclExclStringLiteralList::~FTInclExclStringLiteralList()
 
 ostream& FTInclExclStringLiteralList::put(ostream& s) const
 {
-	s << INDENT << "FTInclExclStringLiteralList[" << endl;
-	++printdepth;
-	vector<rchandle<FTInclExclStringLiteral> >::const_iterator it =
-		incl_excl_lit_hv.begin();
-	for (; it!=incl_excl_lit_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTInclExclStringLiteralList[" << endl;
+  ++printdepth;
+  vector<rchandle<FTInclExclStringLiteral> >::const_iterator it =
+    incl_excl_lit_hv.begin();
+  for (; it!=incl_excl_lit_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+  return s << OUTDENT << "]\n";
 }
 
 //-FTInclExclStringLiteralList::
 
 void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<rchandle<FTInclExclStringLiteral> >::const_reverse_iterator it =
-		incl_excl_lit_hv.rbegin();
-	for (; it!=incl_excl_lit_hv.rend(); ++it) {
-		parsenode* e_p = &**it;
-		//d Assert<null_pointer>(e_p!=NULL);
-		Assert(e_p!=NULL);
-		e_p->accept(v);
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<rchandle<FTInclExclStringLiteral> >::const_reverse_iterator it =
+    incl_excl_lit_hv.rbegin();
+  for (; it!=incl_excl_lit_hv.rend(); ++it) {
+    parsenode* e_p = &**it;
+    //d Assert<null_pointer>(e_p!=NULL);
+    Assert(e_p!=NULL);
+    e_p->accept(v);
+  }
+  END_VISITOR ();
 }
 
 
@@ -6799,13 +6792,13 @@ void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const
 // [361] FTRefOrList
 // -----------------
 FTRefOrList::FTRefOrList(
-	const yy::location& _loc,
-	std::string _at_str,
-	rchandle<FTStringLiteralList> _stringlit_list_h)
+  const yy::location& _loc,
+  std::string _at_str,
+  rchandle<FTStringLiteralList> _stringlit_list_h)
 :
-	parsenode(_loc),
-	at_str(_at_str),
-	stringlit_list_h(_stringlit_list_h)
+  parsenode(_loc),
+  at_str(_at_str),
+  stringlit_list_h(_stringlit_list_h)
 {
 }
 
@@ -6815,17 +6808,17 @@ FTRefOrList::~FTRefOrList()
 
 ostream& FTRefOrList::put(ostream& s) const
 {
-	s << INDENT << "FTRefOrList[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTRefOrList[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTRefOrList::
 
 void FTRefOrList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	stringlit_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (stringlit_list_h);
+  END_VISITOR ();
 }
 
 
@@ -6833,9 +6826,9 @@ void FTRefOrList::accept(parsenode_visitor& v) const
 // [361a] FTStringLiteralList
 // --------------------------
 FTStringLiteralList::FTStringLiteralList(
-	const yy::location& _loc)
+  const yy::location& _loc)
 :
-	parsenode(_loc)
+  parsenode(_loc)
 {
 }
 
@@ -6845,23 +6838,23 @@ FTStringLiteralList::~FTStringLiteralList()
 
 ostream& FTStringLiteralList::put(ostream& s) const
 {
-	s << INDENT << "FTStringLiteralList[" << endl;
-	++printdepth;
-	vector<string>::const_iterator it = strlit_v.begin();
-	for (; it!=strlit_v.end(); ++it) { s << (*it); }
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTStringLiteralList[" << endl;
+  ++printdepth;
+  vector<string>::const_iterator it = strlit_v.begin();
+  for (; it!=strlit_v.end(); ++it) { s << (*it); }
+  return s << OUTDENT << "]\n";
 }
 
 //-FTStringLiteralList::
 
 void FTStringLiteralList::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	vector<string>::const_reverse_iterator it = strlit_v.rbegin();
-	for (; it!=strlit_v.rend(); ++it) {
-		// ..do something useful..
-	}
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  vector<string>::const_reverse_iterator it = strlit_v.rbegin();
+  for (; it!=strlit_v.rend(); ++it) {
+    // ..do something useful..
+  }
+  END_VISITOR ();
 }
 
 
@@ -6869,13 +6862,13 @@ void FTStringLiteralList::accept(parsenode_visitor& v) const
 // [362] FTInclExclStringLiteral
 // -----------------------------
 FTInclExclStringLiteral::FTInclExclStringLiteral(
-	const yy::location& _loc,
-	rchandle<FTRefOrList> _ref_or_list_h,
-	intex_op_t _mode)
+  const yy::location& _loc,
+  rchandle<FTRefOrList> _ref_or_list_h,
+  intex_op_t _mode)
 :
-	parsenode(_loc),
-	ref_or_list_h(_ref_or_list_h),
-	mode(_mode)
+  parsenode(_loc),
+  ref_or_list_h(_ref_or_list_h),
+  mode(_mode)
 {
 }
 
@@ -6885,17 +6878,17 @@ FTInclExclStringLiteral::~FTInclExclStringLiteral()
 
 ostream& FTInclExclStringLiteral::put(ostream& s) const
 {
-	s << INDENT << "FTInclExclStringLiteral[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTInclExclStringLiteral[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTInclExclStringLiteral::
 
 void FTInclExclStringLiteral::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	ref_or_list_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (ref_or_list_h);
+  END_VISITOR ();
 }
 
 
@@ -6903,11 +6896,11 @@ void FTInclExclStringLiteral::accept(parsenode_visitor& v) const
 // [363] FTLanguageOption
 // ----------------------
 FTLanguageOption::FTLanguageOption(
-	const yy::location& _loc,
-	std::string _lang)
+  const yy::location& _loc,
+  std::string _lang)
 :
-	FTMatchOption(_loc),
-	lang(_lang)
+  FTMatchOption(_loc),
+  lang(_lang)
 {
 }
 
@@ -6917,16 +6910,16 @@ FTLanguageOption::~FTLanguageOption()
 
 ostream& FTLanguageOption::put(ostream& s) const
 {
-	s << INDENT << "FTLanguageOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTLanguageOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTLanguageOption::
 
 void FTLanguageOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -6934,11 +6927,11 @@ void FTLanguageOption::accept(parsenode_visitor& v) const
 // [364] FTWildcardOption
 // ----------------------
 FTWildcardOption::FTWildcardOption(
-	const yy::location& _loc,
-	bool _with_b)
+  const yy::location& _loc,
+  bool _with_b)
 :
-	FTMatchOption(_loc),
-	with_b(_with_b)
+  FTMatchOption(_loc),
+  with_b(_with_b)
 {
 }
 
@@ -6948,28 +6941,28 @@ FTWildcardOption::~FTWildcardOption()
 
 ostream& FTWildcardOption::put(ostream& s) const
 {
-	s << INDENT << "FTWildcardOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTWildcardOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTWildcardOption::
 
 void FTWildcardOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
 
-// [365]	FTContent
+// [365]  FTContent
 // ---------------
 FTContent::FTContent(
-	const yy::location& _loc,
-	ft_content_mode_t _mode)
+  const yy::location& _loc,
+  ft_content_mode_t _mode)
 :
-	FTProximity(_loc),
-	mode(_mode)
+  FTProximity(_loc),
+  mode(_mode)
 {
 }
 
@@ -6979,28 +6972,28 @@ FTContent::~FTContent()
 
 ostream& FTContent::put(ostream& s) const
 {
-	s << INDENT << "FTContent[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTContent[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTContent::
 
 void FTContent::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
 
-// [366]	FTAnyallOption
+// [366]  FTAnyallOption
 // --------------------
 FTAnyallOption::FTAnyallOption(
-	const yy::location& _loc,
-	ft_anyall_option_t _option)
+  const yy::location& _loc,
+  ft_anyall_option_t _option)
 :
-	parsenode(_loc),
-	option(_option)
+  parsenode(_loc),
+  option(_option)
 {
 }
 
@@ -7010,16 +7003,16 @@ FTAnyallOption::~FTAnyallOption()
 
 ostream& FTAnyallOption::put(ostream& s) const
 {
-	s << INDENT << "FTAnyallOption[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTAnyallOption[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTAnyallOption::
 
 void FTAnyallOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -7027,13 +7020,13 @@ void FTAnyallOption::accept(parsenode_visitor& v) const
 // [367] FTRange
 // -------------
 FTRange::FTRange(
-	const yy::location& _loc,
-	rchandle<UnionExpr> _src_expr_h,
-	rchandle<UnionExpr> _dst_expr_h)
+  const yy::location& _loc,
+  rchandle<UnionExpr> _src_expr_h,
+  rchandle<UnionExpr> _dst_expr_h)
 :
-	parsenode(_loc),
-	src_expr_h(_src_expr_h),
-	dst_expr_h(_dst_expr_h)
+  parsenode(_loc),
+  src_expr_h(_src_expr_h),
+  dst_expr_h(_dst_expr_h)
 {
 }
 
@@ -7043,18 +7036,18 @@ FTRange::~FTRange()
 
 ostream& FTRange::put(ostream& s) const
 {
-	s << INDENT << "FTRange[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTRange[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTRange::
 
 void FTRange::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	src_expr_h->accept(v);
-	dst_expr_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (src_expr_h);
+  ACCEPT (dst_expr_h);
+  END_VISITOR ();
 }
 
 
@@ -7062,13 +7055,13 @@ void FTRange::accept(parsenode_visitor& v) const
 // [368] FTDistance
 // ----------------
 FTDistance::FTDistance(
-	const yy::location& _loc,
-	rchandle<FTRange> _dist_h,
-	rchandle<FTUnit> _unit_h)
+  const yy::location& _loc,
+  rchandle<FTRange> _dist_h,
+  rchandle<FTUnit> _unit_h)
 :
-	FTProximity(_loc),
-	dist_h(_dist_h),
-	unit_h(_unit_h)
+  FTProximity(_loc),
+  dist_h(_dist_h),
+  unit_h(_unit_h)
 {
 }
 
@@ -7078,18 +7071,18 @@ FTDistance::~FTDistance()
 
 ostream& FTDistance::put(ostream& s) const
 {
-	s << INDENT << "FTDistance[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTDistance[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTDistance::
 
 void FTDistance::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	dist_h->accept(v);
-	unit_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (dist_h);
+  ACCEPT (unit_h);
+  END_VISITOR ();
 }
 
 
@@ -7097,13 +7090,13 @@ void FTDistance::accept(parsenode_visitor& v) const
 // [369] FTWindow
 // --------------
 FTWindow::FTWindow(
-	const yy::location& _loc,
-	rchandle<UnionExpr> _window_h,
-	rchandle<FTUnit> _unit_h)
+  const yy::location& _loc,
+  rchandle<UnionExpr> _window_h,
+  rchandle<FTUnit> _unit_h)
 :
-	FTProximity(_loc),
-	window_h(_window_h),
-	unit_h(_unit_h)
+  FTProximity(_loc),
+  window_h(_window_h),
+  unit_h(_unit_h)
 {
 }
 
@@ -7113,18 +7106,18 @@ FTWindow::~FTWindow()
 
 ostream& FTWindow::put(ostream& s) const
 {
-	s << INDENT << "FTWindow[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTWindow[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTWindow::
 
 void FTWindow::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	window_h->accept(v);
-	unit_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (window_h);
+  ACCEPT (unit_h);
+  END_VISITOR ();
 }
 
 
@@ -7132,11 +7125,11 @@ void FTWindow::accept(parsenode_visitor& v) const
 // [370] FTTimes
 // -------------
 FTTimes::FTTimes(
-	const yy::location& _loc,
-	rchandle<FTRange> _range_h)
+  const yy::location& _loc,
+  rchandle<FTRange> _range_h)
 :
-	parsenode(_loc),
-	range_h(_range_h)
+  parsenode(_loc),
+  range_h(_range_h)
 {
 }
 
@@ -7146,17 +7139,17 @@ FTTimes::~FTTimes()
 
 ostream& FTTimes::put(ostream& s) const
 {
-	s << INDENT << "FTTimes[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTTimes[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTTimes::
 
 void FTTimes::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	range_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (range_h);
+  END_VISITOR ();
 }
 
 
@@ -7164,11 +7157,11 @@ void FTTimes::accept(parsenode_visitor& v) const
 // [371] FTScope
 // -------------
 FTScope::FTScope(
-	const yy::location& _loc,
-	ft_scope_t _scope)
+  const yy::location& _loc,
+  ft_scope_t _scope)
 :
-	FTProximity(_loc),
-	scope(_scope)
+  FTProximity(_loc),
+  scope(_scope)
 {
 }
 
@@ -7178,16 +7171,16 @@ FTScope::~FTScope()
 
 ostream& FTScope::put(ostream& s) const
 {
-	s << INDENT << "FTScope[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTScope[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTScope::
 
 void FTScope::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -7195,11 +7188,11 @@ void FTScope::accept(parsenode_visitor& v) const
 // [372] FTUnit
 // ------------
 FTUnit::FTUnit(
-	const yy::location& _loc,
-	ft_unit_t _unit)
+  const yy::location& _loc,
+  ft_unit_t _unit)
 :
-	parsenode(_loc),
-	unit(_unit)
+  parsenode(_loc),
+  unit(_unit)
 {
 }
 
@@ -7209,16 +7202,16 @@ FTUnit::~FTUnit()
 
 ostream& FTUnit::put(ostream& s) const
 {
-	s << INDENT << "FTUnit[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTUnit[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTUnit::
 
 void FTUnit::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -7226,11 +7219,11 @@ void FTUnit::accept(parsenode_visitor& v) const
 // [373] FTBigUnit
 // ---------------
 FTBigUnit::FTBigUnit(
-	const yy::location& _loc,
-	enum ft_big_unit_t _unit)
+  const yy::location& _loc,
+  enum ft_big_unit_t _unit)
 :
-	parsenode(_loc),
-	unit(_unit)
+  parsenode(_loc),
+  unit(_unit)
 {
 }
 
@@ -7240,16 +7233,16 @@ FTBigUnit::~FTBigUnit()
 
 ostream& FTBigUnit::put(ostream& s) const
 {
-	s << INDENT << "FTBigUnit[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTBigUnit[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTBigUnit::
 
 void FTBigUnit::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  END_VISITOR ();
 }
 
 
@@ -7257,11 +7250,11 @@ void FTBigUnit::accept(parsenode_visitor& v) const
 // [374] FTIgnoreOption
 // --------------------
 FTIgnoreOption::FTIgnoreOption(
-	const yy::location& _loc,
-	rchandle<UnionExpr> _union_h)
+  const yy::location& _loc,
+  rchandle<UnionExpr> _union_h)
 :
-	parsenode(_loc),
-	union_h(_union_h)
+  parsenode(_loc),
+  union_h(_union_h)
 {
 }
 
@@ -7271,21 +7264,21 @@ FTIgnoreOption::~FTIgnoreOption()
 
 ostream& FTIgnoreOption::put(ostream& s) const
 {
-	s << INDENT << "FTBigUnit[";
-	return s << OUTDENT << "]\n";
+  s << INDENT << "FTBigUnit[";
+  return s << OUTDENT << "]\n";
 }
 
 //-FTIgnoreOption::
 
 void FTIgnoreOption::accept(parsenode_visitor& v) const 
 { 
-	BEGIN_VISITOR ();
-	union_h->accept(v);
-	END_VISITOR ();
+  BEGIN_VISITOR ();
+  ACCEPT (union_h);
+  END_VISITOR ();
 }
 
 
 
-}	/* namespace xqp */
+} /* namespace xqp */
 
 
