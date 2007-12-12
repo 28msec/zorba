@@ -9,7 +9,7 @@
 # $5 is the reference result
 
 
-$1/test/apitest -r -o "$2" "$3" # execute the query
+$1/test/apitest -q -r -o "$2" "$3" # execute the query
 if [ -f $2 ]
 then
   cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy" # tidy the generated result and store it in the build dir
