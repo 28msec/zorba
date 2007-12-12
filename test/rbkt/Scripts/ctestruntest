@@ -12,9 +12,25 @@ then
   rm -f $2
 fi
 
-$1/test/apitest -q -r -o "$2" "$3" # execute the query
+if [ -f error.txt ] # always delete the result file upfront
+then
+  rm -f error.txt
+fi
+
+
+$1/test/apitest -q -r -o "$2" "$3" 2> error.txt # execute the query
 RETURNVALUE=$?
-if [ $RETURNVALUE -eq 0 -a -f $2 ] # if there was an error or no result file
+if [ $RETURNVALUE -ne 0 ]
+then
+  if [ -s "error.txt" ] # contains an error message
+  then
+    mv "error.txt" "$2" # then make this error message to be the result
+  else
+    exit $RETURNVALUE # no error message but an error code => exit
+  fi  
+fi  
+
+if [ -f $2 ] # if there was an error or no result file
 then
   echo
   echo "Result"
@@ -37,6 +53,6 @@ then
     exit 1
   fi
 else
-  echo "error executing test"
-  exit $RETURNVALUE
+  echo "result file does not exist " "$2"
+  exit 2
 fi
