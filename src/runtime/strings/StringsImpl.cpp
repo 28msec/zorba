@@ -394,6 +394,8 @@ SubstringIterator::nextImpl(PlanState& planState) {
   Item_t item1;
   Item_t item2;
   xqp_string resStr;
+  int32_t tmpStart;
+  int32_t tmpLen;
 
   PlanIterator::PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIterator::PlanIteratorState, state, planState);
@@ -413,17 +415,28 @@ SubstringIterator::nextImpl(PlanState& planState) {
         if( item1 != NULL )
         {//note: The first character of a string is located at position 1, not position 0.
           item1 = item1->getAtomizationValue();
+          tmpStart = (int32_t)round(item1->getDecimalValue());
           if( theChildren.size() == 2 )
           {
-            resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1);
+            resStr = item0->getStringValue().substr(tmpStart-1);
           }
           else{ //theChildren.size() ==3
             item2 = consumeNext ( theChildren[2], planState );
             if ( item2 != NULL )
             {
               item2 = item2->getAtomizationValue();
-              resStr = item0->getStringValue().substr((int32_t)round(item1->getDecimalValue())-1,
-                                                                         (int32_t)round(item2->getDecimalValue()));
+              tmpLen = (int32_t)round(item2->getDecimalValue());
+              if(tmpLen >= 0)
+              {
+                if(tmpStart <=0)
+                  resStr = item0->getStringValue().substr(
+                      tmpStart-1,
+                      tmpStart-1+ tmpLen);
+                else
+                  resStr = item0->getStringValue().substr(
+                      tmpStart-1,
+                      tmpLen);
+              }
             }
           }
           STACK_PUSH( zorba::getItemFactory()->createString(resStr), state );
