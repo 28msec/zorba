@@ -36,8 +36,10 @@ static void *no_state = (void *) new int;
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
+
 #define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
 #define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
+
 
 var_expr *translator::bind_var (yy::location loc, string varname) {
   QNameItem_t qname = sctx_p->lookup_qname ("", varname);
