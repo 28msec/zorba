@@ -12,6 +12,7 @@
 #include "store/naive/basic_item_factory.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/node_items.h"
+#include "store/naive/simple_temp_seq.h"
 #include "store/naive/qname_pool.h"
 #include "store/util/string_pool.h"
 
@@ -234,11 +235,20 @@ Item_t BasicItemFactory::createTime ( short hour, short minute, short second ) {
 
 Item_t BasicItemFactory::createTime ( short hour, short minute, short second, short timeZone ) { return Item_t ( NULL ); }
 
-Item_t BasicItemFactory::createToken ( const xqp_string& value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createToken ( const xqp_string& value )
+{
+  return Item_t ( NULL );
+}
 
-Item_t BasicItemFactory::createUnsignedByte ( xqp_unsignedByte value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createUnsignedByte ( xqp_unsignedByte value )
+{
+  return Item_t ( NULL );
+}
 
-Item_t BasicItemFactory::createUnsignedInt ( xqp_uint value ) { return Item_t ( NULL ); }
+Item_t BasicItemFactory::createUnsignedInt ( xqp_uint value )
+{
+  return Item_t ( NULL );
+}
 
 Item_t BasicItemFactory::createUnsignedLong(xqp_ulong value)
 {
@@ -251,52 +261,58 @@ Item_t BasicItemFactory::createUnsignedShort(xqp_unsignedShort value)
 }
 
 
+/*******************************************************************************
+  This method is used by the xml SAX loader. It is not exposed to the store api.
+********************************************************************************/
 Item_t BasicItemFactory::createDocumentNode(
     const xqpStringStore_t& baseUri,
-    const xqpStringStore_t& docUri,
-    bool createId)
+    const xqpStringStore_t& docUri)
 {
-  return new DocumentNodeImpl(baseUri, docUri, createId);
+  return new DocumentNodeImpl(baseUri, docUri);
 }
 
 
 Item_t BasicItemFactory::createDocumentNode(
     const xqpStringStore_t& baseUri,
     const xqpStringStore_t& docUri,
-    const TempSeq_t& children,
-    bool createId)
+    const Iterator_t&       children,
+    bool                    createId)
 {
   return new DocumentNodeImpl(baseUri, docUri, children, createId);
 }
 
 
+/*******************************************************************************
+  This method is used by the xml SAX loader. It is not exposed to the store api.
+********************************************************************************/
 Item_t BasicItemFactory::createElementNode(
-    const QNameItem_t& name,
-    const QNameItem_t& type,
-    TempSeq_t& attributes,
-    const NamespaceBindings& nsBindings,
-    bool createId)
+    const QNameItem_t&       name,
+    const QNameItem_t&       type,
+    const NamespaceBindings& nsBindings)
 { 
-  return new ElementNodeImpl(name, type, attributes, nsBindings, createId);
+  return new ElementNodeImpl(name, type, nsBindings);
 }
 
 
+/*******************************************************************************
+  This method is used by the zorba runtime (during node construction).
+********************************************************************************/
 Item_t BasicItemFactory::createElementNode(
-    const QNameItem_t& name,
-    const QNameItem_t& type,
-    TempSeq_t& children,
-    TempSeq_t& attributes,
-    TempSeq_t& nsUris,
+    const QNameItem_t&       name,
+    const QNameItem_t&       type,
+    Iterator_t&              childrenIte,
+    Iterator_t&              attributesIte,
+    Iterator_t&              namespacesIte,
     const NamespaceBindings& nsBindings, 
-    bool copy,
-    bool newTypes,
-    bool createId)
+    bool                     copy,
+    bool                     newTypes,
+    bool                     createId)
 { 
   return new ElementNodeImpl(name,
                              type,
-                             children,
-                             attributes,
-                             nsUris,
+                             childrenIte,
+                             attributesIte,
+                             namespacesIte,
                              nsBindings,
                              copy,
                              newTypes,
@@ -304,12 +320,15 @@ Item_t BasicItemFactory::createElementNode(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 Item_t BasicItemFactory::createAttributeNode(
     const QNameItem_t& name,
     const QNameItem_t& type,
-    const Item_t& lexicalValue,
-    const Item_t& typedValue,
-    bool createId)
+    const Item_t&      lexicalValue,
+    const Item_t&      typedValue,
+    bool               createId)
 { 
   return new AttributeNodeImpl(name,
                                type,

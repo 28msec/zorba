@@ -427,14 +427,8 @@ public:
   virtual Item_t createDocumentNode (
 			    const xqpStringStore_t& baseURI,
 			    const xqpStringStore_t& docURI,
-			    const TempSeq_t& children,
-			    bool createId = false
-			) = 0;
-
-  virtual Item_t createDocumentNode (
-			    const xqpStringStore_t& baseURI,
-			    const xqpStringStore_t& docURI,
-			    bool createId = false
+			    const Iterator_t& children,
+			    bool createId
 			) = 0;
 
   /**
@@ -450,13 +444,13 @@ public:
   virtual Item_t createElementNode (
 			    const QNameItem_t& name,
 			    const QNameItem_t& type,
-			    TempSeq_t& seqChildren,
-			    TempSeq_t& seqAttributes,
-			    TempSeq_t& seqUris,
+			    Iterator_t& childrenIte,
+			    Iterator_t& attributesIte,
+			    Iterator_t& namespacesIte,
           const NamespaceBindings& nsBindings,
 			    bool copy,
 			    bool newTypes,
-			    bool createId = false
+			    bool createId
 			) = 0;
 
   /**
@@ -473,7 +467,7 @@ public:
 			    const QNameItem_t& type,
 			    const Item_t& lexicalValue,
 			    const Item_t& typedValue,
-			    bool createId = false
+			    bool createId
 			) = 0;
 
   /**
@@ -482,12 +476,12 @@ public:
    */
   virtual Item_t createTextNode(
 			    const xqpStringStore_t& value,
-			    bool createId = false
+			    bool createId
 			) = 0;
 
   virtual Item_t createTextNode(
 			    const xqp_string& value,
-			    bool createId = false
+			    bool createId
 			) = 0;
 
   /**
@@ -496,12 +490,12 @@ public:
    */
   virtual Item_t createCommentNode(
 			    const xqpStringStore_t& comment,
-			    bool createId = false
+			    bool createId
 			) = 0;
 
   virtual Item_t createCommentNode(
 			    const xqp_string& comment,
-			    bool createId = false
+			    bool createId
 			) = 0;
 
   /**
@@ -512,13 +506,13 @@ public:
   virtual Item_t createPiNode(
 			    const xqpStringStore_t& target,
 			    const xqpStringStore_t& data,
-			    bool createId = false
+			    bool createId
 			) = 0;
 
   virtual Item_t createPiNode(
 			    const xqp_string& target,
 			    const xqp_string& data,
-			    bool createId = false
+			    bool createId
 			) = 0;
 	};/* class ItemFactory */
 

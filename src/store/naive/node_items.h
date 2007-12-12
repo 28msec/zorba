@@ -21,12 +21,14 @@ namespace xqp
 {
 
 class NodeImpl;
+class ElementNodeImpl;
 class NsBindingsContext;
 
 template <class Object> class rchandle;
 
 typedef rchandle<class Item> Item_t;
 typedef rchandle<class NodeImpl> NodeImpl_t;
+typedef rchandle<class ElementNodeImpl> ElementNodeImpl_t;
 
 typedef rchandle<class TempSeq> TempSeq_t;
 
@@ -36,41 +38,73 @@ typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 /*******************************************************************************
 
 ********************************************************************************/
+class NodeVector
+{
+protected:
+  std::vector<Item_t> theNodes;
+
+public:
+  NodeVector() { }
+  NodeVector(unsigned long size) : theNodes(size) { }
+
+  ~NodeVector() { }
+
+  unsigned long size() const { return theNodes.size(); }
+  bool empty() const { return theNodes.empty(); }
+
+  void push_back(const Item_t& item) { theNodes.push_back(item); }
+
+  void resize(unsigned long size) { theNodes.resize(size); }
+
+  const Item_t& operator[](unsigned long i) const { return theNodes[i]; } 
+  Item_t& operator[](unsigned long i)             { return theNodes[i]; } 
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 class NodeImpl : public Item
 {
 protected:
-  Item     * theParent;   // Pointer to avoid cyclic smart pointers
-
   OrdPath    theId;
+  Item     * theParent;   // Pointer to avoid cyclic smart pointers
 
 public:
   NodeImpl(bool assignId);
 
   ~NodeImpl() { }
 
-  virtual bool isNode() const             { return true; }
-  virtual bool isAtomic() const           { return false; }
+  //
+  // Item methods
+  //
 
-  unsigned long getTreeId() const         { return theId.getTreeId(); }
-  const OrdPath& getId() const            { return theId; }
-  void setId(const OrdPathStack& id)      { theId = id; }
-  void setId(const OrdPath& id)           { theId = id; }
-  void appendIdComponent(long value)      { theId.appendComp(value); } 
+  bool isNode() const                  { return true; }
+  bool isAtomic() const                { return false; }
+
+  Item_t getParent() const             { return theParent; }
 
   virtual bool equals(Item_t) const;
-  virtual uint32_t hash() const           { return 0; }
-
-  virtual Item_t getParent() const        { return theParent; }
-  virtual void setParent(const Item_t& p) { theParent = p.get_ptr(); }
-
-  virtual void setChildren(const TempSeq_t& seq) { Assert(0); }
-
-  virtual NsBindingsContext_t getNsBindingsContext() const { return NULL; }
+  virtual uint32_t hash() const        { return 0; }
 
   virtual xqp_string getBaseURI() const;
   virtual xqp_string getDocumentURI() const;
 
   virtual Item_t getEBV() const;
+
+  //
+  // SimpleStore Methods
+  // 
+
+  unsigned long getTreeId() const      { return theId.getTreeId(); }
+  const OrdPath& getId() const         { return theId; }
+  void setId(const OrdPathStack& id)   { theId = id; }
+  void setId(const OrdPath& id)        { theId = id; }
+  void appendIdComponent(long value)   { theId.appendComp(value); } 
+
+  void setParent(const Item_t& p)      { theParent = p.get_ptr(); }
+
+  virtual NsBindingsContext_t getNsBindingsContext() const { return NULL; }
 };
 
 
@@ -80,102 +114,122 @@ public:
 class DocumentNodeImpl : public NodeImpl
 {
  private:
-  xqpStringStore_t theBaseURI;
-  xqpStringStore_t theDocURI;
+  xqpStringStore_t   theBaseURI;
+  xqpStringStore_t   theDocURI;
 
-  TempSeq_t        theChildren;
+  NodeVector         theChildren;
 
  public:
   DocumentNodeImpl(
         const xqpStringStore_t& baseURI,
-        const xqpStringStore_t& documentURI,
-        bool assignId);
+        const xqpStringStore_t& documentURI);
 
   DocumentNodeImpl(
         const xqpStringStore_t& baseURI,
         const xqpStringStore_t& documentURI,
-        const TempSeq_t& children,
-        bool assignId);
+        const Iterator_t&       children,
+        bool                    assignId);
 
-  virtual ~DocumentNodeImpl();
+  ~DocumentNodeImpl();
 
-  virtual StoreConsts::NodeKind_t getNodeKind() const;
-  QNameItem_t getType() const;
+  //
+  // Item methods
+  //
 
-  virtual xqp_string getBaseURI() const;
-  virtual xqp_string getDocumentURI() const;
+  StoreConsts::NodeKind_t getNodeKind() const { return StoreConsts::documentNode; }
 
-  virtual Iterator_t getChildren() const;
-  virtual void setChildren(const TempSeq_t& seq);
+  QNameItem_t getType() const; 
 
-  virtual Iterator_t getTypedValue() const;
-  virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const;
+  xqp_string getBaseURI() const     { return theBaseURI; }
+  xqp_string getDocumentURI() const { return theDocURI; }
 
-  virtual xqp_string show() const;
+  Iterator_t getChildren() const;
 
-  // Used when zorba supports DTD
-  // xqp_string getUnparsedEntityPublicId() const;
-  // xqp_string getunparsedEntitySystemId() const;
+  Iterator_t getTypedValue() const;
+  Item_t getAtomizationValue() const;
+  xqp_string getStringProperty() const;
+
+  xqp_string show() const;
+
+  //
+  // SimpleStore Methods
+  // 
+
+  NodeVector& children()            { return theChildren; }
 };
 
 
 /*******************************************************************************
+  For xquery node constructors, the current implementation performs eager
+  evaluation of the attributes and children of each element node. 
 
+  One way to implement lazy evaluation is the following: "theChildren" data
+  member becomes a union type between a NodeVector and an Iterator_t. Initially,
+  the active member of this union is the iterator. Every time the iterator is
+  used, it computes a number of child nodes and stores them in some local vector.
+  If the iterator ever computes all the children, then the iterator is released
+  and its local vector is copied to "theChildren", making the NodeVector be the
+  active member of the union from now on.
 ********************************************************************************/
 class ElementNodeImpl : public NodeImpl
 {
  private:
-  QNameItem_t          theName;
-  QNameItem_t          theType;
-  TempSeq_t            theChildren;
-  TempSeq_t            theAttributes;
-  TempSeq_t            theNsUris;
-  NsBindingsContext_t  theNsBindings;
+  QNameItem_t            theName;
+  QNameItem_t            theType;
+  NodeVector             theChildren;
+  NodeVector           * theAttributes;
+  NsBindingsContext_t    theNsBindings;
 
- public:
+public:
   ElementNodeImpl(
-        const QNameItem_t& name,
-        const QNameItem_t& type,
-        TempSeq_t& seqAttributes,
+			  const QNameItem_t&       name,
+        const QNameItem_t&       type,
+        Iterator_t&              childrenIte,
+        Iterator_t&              attributesIte,
+        Iterator_t&              namespacesIte,
         const NamespaceBindings& nsBindings,
-        bool assignId);
-
-  ElementNodeImpl(
-			  const QNameItem_t& name,
-        const QNameItem_t& type,
-        TempSeq_t& seqChildren,
-        TempSeq_t& seqAttributes,
-        TempSeq_t& seqNsUris,
-        const NamespaceBindings& nsBindings,
-        bool copy,
-        bool newTypes,
-        bool assignId);
+        bool                     copy,
+        bool                     newTypes,
+        bool                     assignId);
 			
-  virtual ~ElementNodeImpl();
+  ElementNodeImpl(
+        const QNameItem_t&       name,
+        const QNameItem_t&       type,
+        const NamespaceBindings& nsBindings);
 
-  virtual StoreConsts::NodeKind_t getNodeKind() const;
-  QNameItem_t getType() const;
+  ~ElementNodeImpl();
 
-  virtual QNameItem_t getNodeName() const;
+  //
+  // Item methods
+  //
 
-  virtual Iterator_t getAttributes() const;
-  virtual Iterator_t getChildren() const;
-  virtual void setChildren(const TempSeq_t& seq);
+  StoreConsts::NodeKind_t getNodeKind() const  { return StoreConsts::elementNode; }
+  QNameItem_t getType() const                  { return theType; }
+  QNameItem_t getNodeName() const              { return theName; }
 
-  virtual Iterator_t getTypedValue() const;
-  virtual Item_t getAtomizationValue() const;
-  virtual xqp_string getStringProperty() const;
+  Iterator_t getAttributes() const;
+  Iterator_t getChildren() const;
+  NamespaceBindings getNamespaceBindings() const;
 
-  virtual bool getNilled() const;
+  Iterator_t getTypedValue() const;
+  Item_t getAtomizationValue() const;
+  xqp_string getStringProperty() const;
+  bool getNilled() const;
 
-  virtual NamespaceBindings getNamespaceBindings() const;
+  xqp_string show() const;
+
+  //
+  // SimpleStore Methods
+  // 
+
+  unsigned long numAttributes() const;
+
+  NodeVector& children()    { return theChildren; }
+  NodeVector*& attributes() { return theAttributes; }
 
   NsBindingsContext_t getNsBindingsContext() const { return theNsBindings; }
 
   void setNsBindingsContext(const NsBindingsContext_t& parentCtx);
-
-  virtual xqp_string show() const;
 };
 
 
@@ -304,25 +358,41 @@ public:
 
 
 /*******************************************************************************
-  This iterator is used during the getChildren() or getAttributes() methods
-  to set the parent pointer to each child or attribute node of "this" node.
+  This iterator is used during the getChildren() method to set the parent
+  pointer and the nodeid in each child node of "this" node.
 ********************************************************************************/
 class ChildrenIterator : public Iterator
 {
 protected:
-  Iterator_t    theInput;
-  NodeImpl_t    theParentNode;
-  unsigned long theNumChildren;
+  NodeImpl_t          theParentNode;
+  unsigned long       theStartingId;
+  unsigned long       theCurrentPos;
 
+  const NodeVector*   theChildNodes;
 
 public:
-  ChildrenIterator(const Iterator_t& input, NodeImpl* parent)
-    :
-    theInput(input),
-    theParentNode(parent),
-    theNumChildren(0)
-  {
-  }
+  ChildrenIterator(NodeImpl* parent, unsigned long startid);
+
+  Item_t next();
+  void reset();
+  void close();
+};
+
+
+/*******************************************************************************
+  This iterator is used during the getAttributes() method to set the parent
+  pointer and the nodeid in each attribute node of "this" node.
+********************************************************************************/
+class AttributesIterator : public Iterator
+{
+protected:
+  ElementNodeImpl_t   theParentNode;
+  unsigned long       theCurrentPos;
+
+  const NodeVector*   theChildNodes;
+
+public:
+  AttributesIterator(ElementNodeImpl* parent);
 
   Item_t next();
   void reset();
@@ -438,6 +508,6 @@ public:
   NsBindingsContext_t getParentContext() const        { return theParentContext; } 
 };
 
-} /* namespace xqp */
+}
 
-#endif /* XQP_NODE_ITEMS_H */
+#endif

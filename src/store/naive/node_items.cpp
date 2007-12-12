@@ -65,33 +65,47 @@ Item_t NodeImpl::getEBV() const
 }
 
 
-/*******************************************************************************
-  class DocumentNode
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class DocumentNode                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
+
+/*******************************************************************************
+  Constructor used by the xml SAX loader.
+********************************************************************************/
 DocumentNodeImpl::DocumentNodeImpl(
     const xqpStringStore_t& baseURI,
-    const xqpStringStore_t& docURI,
-    bool assignId)
+    const xqpStringStore_t& docURI)
   :
-  NodeImpl(assignId),
+  NodeImpl(false),
   theBaseURI(baseURI),
   theDocURI(docURI)
 {
 }
 
 
+/*******************************************************************************
+  Constructor used by the zorba runtime (during node construction).
+********************************************************************************/
 DocumentNodeImpl::DocumentNodeImpl(
     const xqpStringStore_t& baseURI,
     const xqpStringStore_t& docURI,
-    const TempSeq_t& children,
-    bool assignId)
+    const Iterator_t&       childrenIte,
+    bool                    assignId)
   :
   NodeImpl(assignId),
   theBaseURI(baseURI),
-  theDocURI(docURI),
-  theChildren(children)
+  theDocURI(docURI)
 {
+  Item_t item = childrenIte->next();
+  while (item != NULL)
+  {
+    Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
+    theChildren.push_back(item);
+    item = childrenIte->next();
+  }
 }
  
 
@@ -100,62 +114,22 @@ DocumentNodeImpl::~DocumentNodeImpl()
 }
 
 
-StoreConsts::NodeKind_t DocumentNodeImpl::getNodeKind() const
-{
-  return StoreConsts::documentNode;
-}
-
-
 QNameItem_t DocumentNodeImpl::getType() const
 {
-  return static_cast<SimpleStore*>(&Store::getInstance())->theAnyType;
-}
-
-
-xqp_string DocumentNodeImpl::getBaseURI() const
-{
-  return theBaseURI;
-}
-
-
-xqp_string DocumentNodeImpl::getDocumentURI() const
-{
-  return theDocURI;
+  return GET_STORE().theAnyType;
 }
 
 
 Iterator_t DocumentNodeImpl::getChildren() const
 {
-  if (theChildren == NULL)
-  {
-    PlanIter_t planIter = new EmptyIterator(GET_CURRENT_LOCATION());
-    return new PlanWrapper(planIter);
-  }
-  else
-  {
-    return (new ChildrenIterator(theChildren->getIterator(),(NodeImpl*)this));
-  }
-}
-
-
-void DocumentNodeImpl::setChildren(const TempSeq_t& seq)
-{
-  theChildren = seq;
+  return (new ChildrenIterator((NodeImpl*)this, 0));
 }
 
 
 Iterator_t DocumentNodeImpl::getTypedValue() const
 {
-  PlanIter_t ret;
-  if (theChildren->empty())
-  {
-    ret = new EmptyIterator(GET_CURRENT_LOCATION());
-  }
-  else
-  {
-    Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
-    ret = new SingletonIterator(GET_CURRENT_LOCATION(), item);
-  }
+  Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
   return new PlanWrapper(ret);
 }
 
@@ -188,48 +162,52 @@ xqp_string DocumentNodeImpl::show() const
             << "<document baseUri = \"" << *theBaseURI << "\" docUri = \""
             << *theDocURI << "\"/>" << std::endl;
 
-  if (theChildren != NULL)
+  Iterator_t iter = getChildren();
+  Item_t item = iter->next();
+  while (item != NULL)
   {
-    Iterator_t iter = theChildren->getIterator();
-    Item_t item = iter->next();
-    while (item != NULL)
-    {
-      strStream << item->show();
-      item = iter->next();
-    }
+    strStream << item->show();
+    item = iter->next();
   }
 
   return strStream.str().c_str();
 }
 
 
-/*******************************************************************************
-  class ElementNode
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class ElementNode                                                          //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
+
+/*******************************************************************************
+  Constructor used by the xml SAX loader.
+********************************************************************************/
 ElementNodeImpl::ElementNodeImpl(
-    const QNameItem_t& name,
-    const QNameItem_t& type,
-    TempSeq_t& seqAttributes,
-    const NamespaceBindings& nsBindings,
-    bool assignId)
+    const QNameItem_t&       name,
+    const QNameItem_t&       type,
+    const NamespaceBindings& nsBindings)
   :
-  NodeImpl(assignId),
+  NodeImpl(false),
   theName(name),
   theType(type),
-  theAttributes(seqAttributes)
+  theAttributes(NULL)
 {
   if (!nsBindings.empty())
     theNsBindings = new NsBindingsContext(nsBindings);
 }
 
 
+/*******************************************************************************
+  Constructor used by the zorba runtime (during node construction).
+********************************************************************************/
 ElementNodeImpl::ElementNodeImpl(
     const QNameItem_t& name,
     const QNameItem_t& type,
-    TempSeq_t& seqChildren,
-    TempSeq_t& seqAttributes,
-    TempSeq_t& seqNsUris,
+    Iterator_t&        childrenIte,
+    Iterator_t&        attributesIte,
+    Iterator_t&        namespacesIte,
     const NamespaceBindings& nsBindings,
     bool copy,
     bool newTypes,
@@ -238,10 +216,39 @@ ElementNodeImpl::ElementNodeImpl(
   NodeImpl(assignId),
   theName(name),
   theType(type),
-  theChildren(seqChildren),
-  theAttributes(seqAttributes),
-  theNsUris(seqNsUris)
+  theAttributes(NULL)
 {
+  Assert(namespacesIte == NULL);
+
+  Item_t item;
+
+  if (childrenIte != 0)
+  {
+    item = childrenIte->next();
+    while (item != NULL)
+    {
+      Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
+      theChildren.push_back(item);
+      item = childrenIte->next();
+    }
+  }
+
+  if (attributesIte != 0)
+  {
+    item = attributesIte->next();
+    if (item != NULL)
+    {
+      theAttributes = new NodeVector();
+
+      while (item != NULL)
+      {
+        Assert(item->isNode() && item->getNodeKind() == StoreConsts::attributeNode);
+        theAttributes->push_back(item);
+        item = attributesIte->next();
+      }
+    }
+  }
+
   if (!nsBindings.empty())
   {
     theNsBindings = new NsBindingsContext(nsBindings);
@@ -249,75 +256,58 @@ ElementNodeImpl::ElementNodeImpl(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 ElementNodeImpl::~ElementNodeImpl()
 {
+  Assert(getRefCount() == 0);
+
+  if (theAttributes != NULL)
+  {
+    delete theAttributes;
+    theAttributes = NULL;
+  }
 }
 
 
-StoreConsts::NodeKind_t ElementNodeImpl::getNodeKind() const
+/*******************************************************************************
+
+********************************************************************************/
+unsigned long ElementNodeImpl::numAttributes() const
 {
-  return StoreConsts::elementNode;
+  if (theAttributes == NULL)
+    return 0;
+
+  return theAttributes->size();
 }
 
 
-QNameItem_t ElementNodeImpl::getType() const
-{
-  return theType;
-}
+/*******************************************************************************
 
-
-QNameItem_t ElementNodeImpl::getNodeName() const
-{
-  return theName;
-}
-
-
+********************************************************************************/
 Iterator_t ElementNodeImpl::getAttributes() const
 {
-  if ( theAttributes == NULL )
-  {
-    PlanIter_t planIter = new EmptyIterator(GET_CURRENT_LOCATION());
-    return new PlanWrapper(planIter);
-  }
-  else
-  {
-    return theAttributes->getIterator();
-  }
+  return (new AttributesIterator((ElementNodeImpl*)this));
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 Iterator_t ElementNodeImpl::getChildren() const
 {
-  if (theChildren == NULL)
-  {
-    PlanIter_t planIter = new EmptyIterator(GET_CURRENT_LOCATION());
-    return new PlanWrapper(planIter);
-  }
-  else
-  {
-    return (new ChildrenIterator(theChildren->getIterator(), (NodeImpl*)this));
-  }
+  return (new ChildrenIterator((NodeImpl*)this, numAttributes() * 2));
 }
 
 
-void ElementNodeImpl::setChildren(const TempSeq_t& seq)
-{
-  theChildren = seq;
-}
+/*******************************************************************************
 
-
+********************************************************************************/
 Iterator_t ElementNodeImpl::getTypedValue() const
 {
-  PlanIter_t ret;
-  if (theChildren->empty())
-  {
-    ret = new EmptyIterator(GET_CURRENT_LOCATION());
-  }
-  else
-  {
-    Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
-    ret = new SingletonIterator(GET_CURRENT_LOCATION(), item);
-  }
+  Item_t item = zorba::getItemFactory()->createUntypedAtomic(getStringProperty());
+  PlanIter_t ret(new SingletonIterator(GET_CURRENT_LOCATION(), item));
   return new PlanWrapper(ret);
 }
 
@@ -390,7 +380,7 @@ NamespaceBindings ElementNodeImpl::getNamespaceBindings() const
 
 bool ElementNodeImpl::getNilled() const
 {
-  Iterator_t iter = theChildren->getIterator();
+  Iterator_t iter = getChildren();
   Item_t item = iter->next();
   while (item != NULL)
   {
@@ -423,7 +413,7 @@ xqp_string ElementNodeImpl::show() const
 
   if (theAttributes != NULL)
   {
-    Iterator_t iter = theAttributes->getIterator();
+    Iterator_t iter = getAttributes();
     Item_t item = iter->next();
     while (item != NULL)
     {
@@ -434,15 +424,12 @@ xqp_string ElementNodeImpl::show() const
 
   str << ">";
 
-  if (theChildren != NULL)
+  Iterator_t iter = getChildren();
+  Item_t item = iter->next();
+  while (item != NULL)
   {
-    Iterator_t iter = getChildren();
-    Item_t item = iter->next();
-    while (item != NULL)
-    {
-      str << item->show();
-      item = iter->next();
-    }
+    str << item->show();
+    item = iter->next();
   }
 
   str << "</" << theName->getStringProperty() << ">";
@@ -732,49 +719,60 @@ xqp_string CommentNodeImpl::show() const
 }
 
 
-/*******************************************************************************
-  Class ChildrenIterator
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class ChildrenIterator                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+ChildrenIterator::ChildrenIterator(
+    NodeImpl*     parent,
+    unsigned long startId)
+  :
+  theParentNode(parent),
+  theStartingId(startId),
+  theCurrentPos(0)
+{
+  if (theParentNode->getNodeKind() == StoreConsts::documentNode)
+    theChildNodes = &reinterpret_cast<DocumentNodeImpl*>(parent)->children();
+  else
+    theChildNodes = &reinterpret_cast<ElementNodeImpl*>(parent)->children();
+}
+
+
 Item_t ChildrenIterator::next()
 {
-  Item_t item = theInput->next();
-  if (item == NULL)
+  if (theCurrentPos >= theChildNodes->size())
     return NULL;
 
-  if (!item->isNode())
-    return item;
+  Item_t item = (*theChildNodes)[theCurrentPos];
+  NodeImpl_t childNode = BASE_NODE(item);
 
-  Assert(item->getNodeKind() != StoreConsts::documentNode);
-
-  NodeImpl_t node = BASE_NODE(item);
-
-  if (node->getParent() == NULL)
+  if (childNode->getParent() == NULL)
   {
-    node->setParent(theParentNode.get_ptr());
+    childNode->setParent(theParentNode.get_ptr());
 
-    if (node->getNodeKind() == StoreConsts::elementNode &&
+    if (childNode->getNodeKind() == StoreConsts::elementNode &&
         theParentNode->getNodeKind() != StoreConsts::documentNode)
     {
       Assert(theParentNode->getNodeKind() == StoreConsts::elementNode);
 
-      ElementNodeImpl* child = ELEM_NODE(item);
-
-      child->setNsBindingsContext(theParentNode->getNsBindingsContext());
+      ELEM_NODE(item)->setNsBindingsContext(theParentNode->getNsBindingsContext());
     }
   }
   else
   {
-    Assert(node->getParent().get_ptr() == theParentNode.get_ptr());
+    Assert(childNode->getParent().get_ptr() == theParentNode.get_ptr());
   }
 
   if (theParentNode->getId().isValid() &&
-      node->getTreeId() != theParentNode->getTreeId())
+      childNode->getTreeId() != theParentNode->getTreeId())
   {
-    node->setId(theParentNode->getId());
-    node->appendIdComponent(theNumChildren * 2 + 1);
+    childNode->setId(theParentNode->getId());
+    childNode->appendIdComponent(theStartingId + theCurrentPos * 2 + 1);
   }
 
-  theNumChildren++;
+  theCurrentPos++;
 
   return item;
 }
@@ -782,15 +780,70 @@ Item_t ChildrenIterator::next()
 
 void ChildrenIterator::reset()
 {
-  theInput->reset();
-  theNumChildren = 0;
+  theCurrentPos = 0;
 }
 
 
 void ChildrenIterator::close()
 {
-  theInput->close();
-  theNumChildren = 0;
+  theCurrentPos = 0;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class AttributesIterator                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+AttributesIterator::AttributesIterator(ElementNodeImpl* parent)
+  :
+  theParentNode(parent),
+  theCurrentPos(0),
+  theChildNodes(parent->attributes())
+{
+}
+
+
+Item_t AttributesIterator::next()
+{
+  if (theChildNodes == NULL || theCurrentPos >= theChildNodes->size())
+    return NULL;
+
+  Item_t item = (*theChildNodes)[theCurrentPos];
+  NodeImpl_t childNode = BASE_NODE(item);
+
+  if (childNode->getParent() == NULL)
+  {
+    childNode->setParent(theParentNode.get_ptr());
+  }
+  else
+  {
+    Assert(childNode->getParent().get_ptr() == theParentNode.get_ptr());
+  }
+
+  if (theParentNode->getId().isValid() &&
+      childNode->getTreeId() != theParentNode->getTreeId())
+  {
+    childNode->setId(theParentNode->getId());
+    childNode->appendIdComponent(theCurrentPos * 2 + 1);
+  }
+
+  theCurrentPos++;
+
+  return item;
+}
+
+
+void AttributesIterator::reset()
+{
+  theCurrentPos = 0;
+}
+
+
+void AttributesIterator::close()
+{
+  theCurrentPos = 0;
 }
 
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <libxml/xmlmemory.h>
 
+#include "errors/Error.h"
 #include "store/api/store_consts.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/simple_loader.h"
@@ -206,16 +207,15 @@ void XmlLoader::startDocument(void * ctx)
 ********************************************************************************/
 void XmlLoader::endDocument(void * ctx)
 {
-  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
-
   LOADER_TRACE("");
 
-  std::vector<Item_t> childNodes;
-  std::vector<Item_t> revChildNodes;
+  XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
   if (loader.theNodeStack.size() == 0 )
     return;
   
+  std::vector<Item_t> revChildNodes;
+
   Item_t childNode = loader.theNodeStack.top();
 
   while (childNode != NULL)
@@ -226,19 +226,19 @@ void XmlLoader::endDocument(void * ctx)
   }
   loader.theNodeStack.pop();
 
-  childNodes.resize(revChildNodes.size());
+  DocumentNodeImpl* docNode = DOC_NODE(loader.theNodeStack.top());
+
+  NodeVector& children = docNode->children();
+  children.resize(revChildNodes.size());
+
   std::vector<Item_t>::const_reverse_iterator it;
   unsigned long i = 0;
   for (it = revChildNodes.rbegin();
        it != (std::vector<Item_t>::const_reverse_iterator)revChildNodes.rend();
        it++, i++)
   {
-    childNodes[i] = *it;
+    children[i] = *it;
   }
-
-  TempSeq_t childSeq(new SimpleTempSeq(childNodes));
-
-  DOC_NODE(loader.theNodeStack.top())->setChildren(childSeq);
 }
 
 
@@ -264,9 +264,9 @@ void XmlLoader::startElement(
     const xmlChar * lname, 
     const xmlChar * prefix, 
     const xmlChar * uri,
-    int numNamespaces, 
-    const xmlChar ** namespaces, 
-    int numAttributes, 
+    int numNamespaces,
+    const xmlChar ** namespaces,
+    int numAttrs, 
     int numDefaulted, 
     const xmlChar ** attributes)
 {
@@ -274,7 +274,8 @@ void XmlLoader::startElement(
   BasicItemFactory& factory = GET_FACTORY(store);
   XmlLoader& loader = *(static_cast<XmlLoader *>(ctx));
 
-  std::vector<Item_t> attrNodes;
+  unsigned long numAttributes = (unsigned long)numAttrs;
+  unsigned long numBindings = (unsigned long)numNamespaces;
   NamespaceBindings nsBindings;
 
   LOADER_TRACE("Element name ["
@@ -289,7 +290,7 @@ void XmlLoader::startElement(
   QNameItem_t tname = store.theAnyType;
 
   // Namespace bindings
-  for (long i = 0; i < numNamespaces; ++i)
+  for (unsigned long i = 0; i < numBindings; ++i)
   {
     const char* prefix = reinterpret_cast<const char*>(namespaces[i * 2]);
     const char* nsuri = reinterpret_cast<const char*>(namespaces[i * 2 + 1]);
@@ -304,38 +305,45 @@ void XmlLoader::startElement(
   }
 
   // Attributes
-  unsigned long index = 0;
-  for (long i = 0; i < numAttributes; ++i, index += 5)
+  NodeVector* attrNodes = NULL;
+
+  if (numAttributes > 0)
   {
-    const char* lname = reinterpret_cast<const char*>(attributes[index]);
-    const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
-    const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
-    const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
-    const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
+    attrNodes = new NodeVector(numAttributes);
 
-    QNameItem_t qname = factory.createQName(uri, prefix, lname);
-    QNameItem_t tname = store.theUntypedAtomicType;
+    unsigned long index = 0;
+    for (unsigned long i = 0; i < numAttributes; ++i, index += 5)
+    {
+      const char* lname = reinterpret_cast<const char*>(attributes[index]);
+      const char* prefix = reinterpret_cast<const char*>(attributes[index+1]);
+      const char* uri = reinterpret_cast<const char*>(attributes[index+2]);
+      const char* valueBegin = reinterpret_cast<const char*>(attributes[index+3]);
+      const char* valueEnd = reinterpret_cast<const char*>(attributes[index+4]);
 
-    xqpStringStore_t value(new xqpStringStore(valueBegin, valueEnd));
-    Item_t lexicalValue = factory.createString(value);
-    Item_t typedValue = factory.createUntypedAtomic(value);
+      QNameItem_t qname = factory.createQName(uri, prefix, lname);
+      QNameItem_t tname = store.theUntypedAtomicType;
 
-    Item_t attrNode = factory.createAttributeNode(qname, tname,
-                                                  lexicalValue,
-                                                  typedValue);
+      xqpStringStore_t value(new xqpStringStore(valueBegin, valueEnd));
+      Item_t lexicalValue = factory.createString(value);
+      Item_t typedValue = factory.createUntypedAtomic(value);
 
-    attrNodes.push_back(attrNode);
+      Item_t attrNode = factory.createAttributeNode(qname, tname,
+                                                    lexicalValue,
+                                                    typedValue,
+                                                    false);
 
-    LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
-                 << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
-                 << ")]" << std::endl << "  Attribute value: " << value);
+      (*attrNodes)[i] = attrNode;
+
+      LOADER_TRACE("Attribute name [" << (prefix != NULL ? prefix : "")
+                   << ":" << lname << " (" << (uri != NULL ? uri : "NULL")
+                   << ")]" << std::endl << "  Attribute value: " << value);
+    }
   }
 
-  // Create the element node
-  TempSeq_t attrSeq(new SimpleTempSeq(attrNodes));
+  // Create the element node and assign it an id.
+  Item_t elemNode = factory.createElementNode(qname, tname, nsBindings);
 
-  Item_t elemNode = factory.createElementNode(qname, tname, attrSeq, nsBindings);
-
+  ELEM_NODE(elemNode)->attributes() = attrNodes;
   ELEM_NODE(elemNode)->setId(loader.theNodeId);
   loader.theNodeId.pushChild();
 
@@ -345,9 +353,9 @@ void XmlLoader::startElement(
                << " Element Node = " << elemNode.get_ptr());
 
   // Make the element node be the parent of its attributes
-  for (long i = 0; i < numAttributes; ++i)
+  for (unsigned long i = 0; i < numAttributes; ++i)
   {
-    NodeImpl* attrNode = BASE_NODE(attrNodes[i]);
+    NodeImpl* attrNode = BASE_NODE((*attrNodes)[i]);
     attrNode->setParent(elemNode);
     attrNode->setId(loader.theNodeId);
     loader.theNodeId.nextChild();
@@ -388,10 +396,8 @@ void  XmlLoader::endElement(
                << (prefix != NULL ? prefix : (xmlChar*)"") << ":" << localName
                << " (" << (uri != NULL ? uri : (xmlChar*)"NULL") << ")]");
 
-  std::vector<Item_t> childNodes;
-  std::vector<Item_t> revChildNodes;
-
   // Collect the children of this element node from the node stack
+  std::vector<Item_t> revChildNodes;
   Item_t childNode = loader.theNodeStack.top();
   while (childNode != NULL)
   {
@@ -402,20 +408,20 @@ void  XmlLoader::endElement(
   loader.theNodeStack.pop();
 
   // The element node is now at the top of the stack
-  ElementNodeImpl* elemNode = dynamic_cast<ElementNodeImpl*>
-                              (loader.theNodeStack.top().get_ptr());
+  ElementNodeImpl* elemNode = ELEM_NODE(loader.theNodeStack.top());
 
   // For each child, make this element node its parent and fix its namespace
   // bindings context. Note: the children were popped from the stack in reverse
-  // order, so we copy them into another vector in the correct order.
-  childNodes.resize(revChildNodes.size());
+  // order, so we copy them into the element node in the correct order.
+  NodeVector& children = elemNode->children();
+  children.resize(revChildNodes.size());
   std::vector<Item_t>::const_reverse_iterator it;
   unsigned long i = 0;
   for (it = revChildNodes.rbegin();
        it != (std::vector<Item_t>::const_reverse_iterator)revChildNodes.rend();
        it++, i++)
   {
-    childNodes[i] = *it;
+    children[i] = *it;
     BASE_NODE(*it)->setParent(elemNode);
 
     if ((*it)->getNodeKind() == StoreConsts::elementNode)
@@ -431,10 +437,6 @@ void  XmlLoader::endElement(
   {
     loader.theBindingsStack.pop();
   }
-
-  TempSeq_t childSeq(new SimpleTempSeq(childNodes));
-
-  elemNode->setChildren(childSeq);
 
   // Adjust the dewey id
   loader.theNodeId.popChild();
@@ -456,7 +458,7 @@ void XmlLoader::characters(void * ctx, const xmlChar * ch, int len)
 
   xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
 
-  Item_t textNode = factory.createTextNode(content);
+  Item_t textNode = factory.createTextNode(content, false);
 
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
@@ -483,7 +485,7 @@ void XmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
   xqpStringStore_t content(new xqpStringStore(reinterpret_cast<const char*>(ch), len));
 
-  Item_t textNode = factory.createTextNode(content);
+  Item_t textNode = factory.createTextNode(content, false);
 
   BASE_NODE(textNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
@@ -513,7 +515,7 @@ void XmlLoader::comment(
 
   xqpStringStore_t contentp(new xqpStringStore(reinterpret_cast<const char*>(content)));
 
-  Item_t commentNode = factory.createCommentNode(contentp);
+  Item_t commentNode = factory.createCommentNode(contentp, false);
 
   BASE_NODE(commentNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();
@@ -545,7 +547,7 @@ void XmlLoader::processingInstruction(
   xqpStringStore_t datap(new xqpStringStore(reinterpret_cast<const char*>(data)));
   xqpStringStore_t targetp(new xqpStringStore(reinterpret_cast<const char*>(target)));
 
-  Item_t piNode = factory.createPiNode(targetp, datap);
+  Item_t piNode = factory.createPiNode(targetp, datap, false);
 
   BASE_NODE(piNode)->setId(loader.theNodeId);
   loader.theNodeId.nextChild();

@@ -157,67 +157,65 @@ public:
 
   virtual Item_t createUnsignedShort(xqp_unsignedShort value);
 
-  virtual Item_t createDocumentNode(
-        const xqpStringStore_t& baseURI,
-        const xqpStringStore_t& docURI,
-        bool createId = false);
 
   virtual Item_t createDocumentNode(
-        const xqpStringStore_t& baseURI,
-        const xqpStringStore_t& docURI,
-        const TempSeq_t& children,
-        bool createId = false);
+        const xqpStringStore_t&  baseURI,
+        const xqpStringStore_t&  docURI);
+
+  virtual Item_t createDocumentNode(
+        const xqpStringStore_t&  baseURI,
+        const xqpStringStore_t&  docURI,
+        const Iterator_t&        children,
+        bool                     createId);
 
   virtual Item_t createElementNode(
-        const QNameItem_t& name,
-        const QNameItem_t& type,
-        TempSeq_t& attributes,
-        const NamespaceBindings& nsBindings,
-        bool createId = false);
+        const QNameItem_t&       name,
+        const QNameItem_t&       type,
+        const NamespaceBindings& nsBindings);
 
   virtual Item_t createElementNode(
-        const QNameItem_t& name,
-        const QNameItem_t& type,
-        TempSeq_t& children,
-        TempSeq_t& attributes,
-        TempSeq_t& nsUris,
+        const QNameItem_t&       name,
+        const QNameItem_t&       type,
+        Iterator_t&              childrenIte,
+        Iterator_t&              attributesIte,
+        Iterator_t&              namespacesIte,
         const NamespaceBindings& nsBindings,
         bool copy,
         bool newTypes,
-        bool createId = false);
+        bool createId);
 
-  virtual Item_t createAttributeNode (
-        const QNameItem_t& name,
-        const QNameItem_t& type,
-        const Item_t& lexicalValue,
-        const Item_t& typedValue,
-        bool createId = false);
-
-  virtual Item_t createTextNode (
-        const xqpStringStore_t& value,
-        bool createId = false);
+  virtual Item_t createAttributeNode(
+        const QNameItem_t&       name,
+        const QNameItem_t&       type,
+        const Item_t&            lexicalValue,
+        const Item_t&            typedValue,
+        bool                     createId);
 
   virtual Item_t createTextNode(
-			    const xqp_string& value,
-			    bool createId = false);
+        const xqpStringStore_t&  value,
+        bool                     createId);
+
+  virtual Item_t createTextNode(
+			    const xqp_string&      value,
+			    bool                   createId);
+
+  virtual Item_t createCommentNode(
+        const xqpStringStore_t&  comment,
+        bool                     createId);
 
   virtual Item_t createCommentNode (
-        const xqpStringStore_t& comment,
-        bool createId = false);
-
-  virtual Item_t createCommentNode (
-        const xqp_string& comment,
-        bool createId = false);
+        const xqp_string&        comment,
+        bool                     createId);
 
   virtual Item_t createPiNode (
-        const xqpStringStore_t& target,
-        const xqpStringStore_t& data,
-        bool createId = false);
+        const xqpStringStore_t&  target,
+        const xqpStringStore_t&  data,
+        bool                     createId);
 
   virtual Item_t createPiNode (
-        const xqp_string& target,
-        const xqp_string& data,
-        bool createId = false);
+        const xqp_string&        target,
+        const xqp_string&        data,
+        bool                     createId);
 }; /* class BasicItemFactory */
 
 }/* namespace xqp */
