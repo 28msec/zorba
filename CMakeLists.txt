@@ -111,7 +111,13 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_BINARY_DIR}/include)
 IF (MSVC)
 	ADD_DEFINITIONS(${DEFINITIONS})
 ELSE (MSVC)
-	ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual  ${DEFINITIONS})
+    GET_FILENAME_COMPONENT(CXX_EXE ${CMAKE_CXX_COMPILER} NAME)
+    IF ("icpc" STREQUAL ${CXX_EXE}) # intel cxx compiler
+            MESSAGE(STATUS "it seems we are using the intel cxx compiler")
+            ADD_DEFINITIONS(-D_DEBUG -DORBA_USE_PTHREAD_LIBRARY -wd981 -Wall)
+    ELSE ("icpc" STREQUAL ${CXX_EXE}) # g++ compiler
+            ADD_DEFINITIONS(-Wall -Wno-unused -Wpointer-arith -Woverloaded-virtual ${DEFINITIONS})
+    ENDIF ("icpc" STREQUAL ${CXX_EXE})
 ENDIF (MSVC)
 
 
