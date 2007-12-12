@@ -11,9 +11,12 @@
 function usage ()
 {
   echo "rbkt.sh [-b bucketName [-q queryName]] [-d displayFormat] [-h]"
+  echo "or"
+  echo "rbkt.sh [-b bucketName1 ... bucketNameN] [-d displayFormat] [-h]"
   echo
   echo "Run a single query, or all the queries inside a directory (bucket), or all"
-  echo "the queries that can be found anywhere inside the Queries dir."
+  echo "the queries in a list of buckets, or all the queries that can be found"
+  echo "anywhere inside the Queries dir."
   echo 
   echo "Options : "
   echo
@@ -114,7 +117,6 @@ function run_query
     exit 17
   fi
   
-  #pwd push
   cd ${queryFile%/*}
 
   if [ $displayFormat == "xml" ]; then
@@ -128,7 +130,6 @@ function run_query
     # To allow more queries to be run by the caller, do not propagate error
   fi
   
-  #pwd pop
   cd -
 
   return 0

@@ -34,8 +34,6 @@ testRootDir="${zorbaRepos}/test/rbkt"
 # The following dirs MUST exist under the testRootDir.
 scriptsDir=${testRootDir}/Scripts
 
-echo "script $scriptsDir"
-
 queriesDir=${testRootDir}/Queries
 expQueryResultsDir=${testRootDir}/ExpQueryResults
 docsDir=${testRootDir}/Documents
