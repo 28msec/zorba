@@ -19,24 +19,24 @@
 using namespace xqp;
 
 int apitest_alert_callback(Zorba_AlertMessage *alert_mess, 
-													 XQuery*	current_xquery,
-													 XQueryExecution*	current_xqueryresult,
-													 void *param)
+                           XQuery*  current_xquery,
+                           XQueryExecution* current_xqueryresult,
+                           void *param)
 {
 #ifndef NDEBUG
-	if((alert_mess->alert_type != Zorba_AlertMessage::USER_ERROR_ALERT) &&
-		(alert_mess->alert_type != Zorba_AlertMessage::USER_TRACE_ALERT))
-	{
-		cerr << g_error_in_file << " : " << g_error_at_line << endl;
-	}
+  if((alert_mess->alert_type != Zorba_AlertMessage::USER_ERROR_ALERT) &&
+    (alert_mess->alert_type != Zorba_AlertMessage::USER_TRACE_ALERT))
+  {
+    cerr << g_error_in_file << " : " << g_error_at_line << endl;
+  }
 #endif
-	cerr << "(param " << hex << param << " )" << endl;
+  cerr << "(param " << hex << param << " )" << endl;
 
-	DisplayOneAlert(alert_mess);
+  DisplayOneAlert(alert_mess);
 
-	cerr.flush();
+  cerr.flush();
 
-	return -1;
+  return -1;
 }
 
 #ifndef _WIN32_WCE
@@ -45,24 +45,21 @@ int main(int argc, char* argv[])
 int _tmain(int argc, _TCHAR* argv[])
 #endif
 {
-	Timer timer;
-	timer.start();
+  Timer timer;
+  timer.start();
 
 
   if (!Properties::load(argc,argv))
-	{
-	//	cerr << "Cannot find property file" << endl;
-		return 1;
-	}
+    return 1;
   
   Properties* lProp = Properties::instance();
   
-	xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
+  xqp::LoggerManager::logmanager()->setLoggerConfig("#1#logging.log");
 
   ofstream* resultFile = NULL;
-	string		query_text = "1+2";  // the default query if no file or query is specified
+  string    query_text = "1+2";  // the default query if no file or query is specified
 
-///pick up all the runtime options
+// pick up all the runtime options
 #ifdef UNICODE
 #define TEST_ARGV_FLAG( str ) (_tcscmp(*argv, _T(str)) == 0)
 #else
@@ -82,7 +79,7 @@ int _tmain(int argc, _TCHAR* argv[])
 #ifdef UNICODE
   if(! lProp->inlineQuery())
   {
-    char	testfile[1024];
+    char  testfile[1024];
     WideCharToMultiByte(CP_ACP, 0, // or CP_UTF8
                         *argv, -1, 
                         testfile, sizeof(testfile)/sizeof(char),
@@ -93,7 +90,7 @@ int _tmain(int argc, _TCHAR* argv[])
   if(! lProp->inlineQuery())
   {          
     // read the file
-    ifstream	qfile(fname);
+    ifstream  qfile(fname);
     
     if(!qfile.is_open())
     {
@@ -115,73 +112,63 @@ int _tmain(int argc, _TCHAR* argv[])
   }
   
   if (lProp->printQuery())
-  {
     std::cout << query_text << std::endl;
+
+
+  /// now start the zorba engine
+
+  ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
+
+  /// thread specific
+
+  zorba_factory.InitThread();
+
+  /// register the alerts callback
+  Zorba_AlertsManager&    errmanager = zorba_factory.getAlertsManagerForCurrentThread();
+
+  errmanager.RegisterAlertCallback(apitest_alert_callback, (void*)101);
+
+  StaticQueryContext_t    sctx1;
+
+  sctx1 = zorba_factory.createStaticContext();
+  sctx1->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
+  sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "de");
+  sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "fr");
+  sctx1->SetOrderingMode(StaticQueryContext::unordered);
+  StaticQueryContext::xpath1_0compatib_mode_t   default_compatib_mode;
+  default_compatib_mode = sctx1->GetXPath1_0CompatibMode();
+
+  XQuery_t    query;
+  XQueryExecution_t   result = NULL;
+  Item_t    it;
+
+  // create a compiled query
+  query = zorba_factory.createQuery(query_text.c_str(), sctx1);
+
+  if(query.isNull())
+  {
+    goto DisplayErrorsAndExit;
   }
 
 
+  result = query->createExecution();
+  if(result.isNull())
+  {
+    goto DisplayErrorsAndExit;
+  }
 
-	///now start the zorba engine
+  result->setAlertsParam(result.get_ptr());///to be passed to alerts callback when error occurs
 
-	ZorbaEngine& zorba_factory = ZorbaEngine::getInstance();
-
-	///thread specific
-
-	zorba_factory.InitThread();
-
-
-	///register the alerts callback
-	Zorba_AlertsManager&		errmanager = zorba_factory.getAlertsManagerForCurrentThread();
-
-	errmanager.RegisterAlertCallback(apitest_alert_callback, (void*)101);
-
-	///testing the static context!
-	StaticQueryContext_t		sctx1;
-
-	sctx1 = zorba_factory.createStaticContext();
-	sctx1->AddCollation("http://www.flworfound.org/apitest/coll1", "en");
-	sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "de");
-	sctx1->AddCollation("http://www.flworfound.org/apitest/coll2", "fr");
-	sctx1->SetOrderingMode(StaticQueryContext::unordered);
-	StaticQueryContext::xpath1_0compatib_mode_t		default_compatib_mode;
-	default_compatib_mode = sctx1->GetXPath1_0CompatibMode();
-	sctx1->AddNamespace("ulu1", "http://www.flworfound.org/apitest/test_ns1");
-	sctx1->AddNamespace("ulu2", "http://www.flworfound.org/apitest/test_ns2");
-	xqp_string		ns1_uri = sctx1->GetNamespaceURIByPrefix("ulu2");
-
-
-	XQuery_t		query;
-	XQueryExecution_t		result = NULL;
-	Item_t		it;
-
-	//create a compiled query
-	query = zorba_factory.createQuery(query_text.c_str(), sctx1);
-
-	if(query.isNull())
-	{
-		goto DisplayErrorsAndExit;
-	}
-
-
-	result = query->createExecution();
-	if(result.isNull())
-	{
-		goto DisplayErrorsAndExit;
-	}
-
-	result->setAlertsParam(result.get_ptr());///to be passed to alerts callback when error occurs
-
-	if (lProp->useResultFile())
-	{
+  if (lProp->useResultFile())
+  {
     resultFile = new ofstream(lProp->getResultFile().c_str());
-		//*resultFile << "Iterator run:" << endl << endl;
-	}
+  }
 
 
   if (lProp->useSerializer())
   {
     if (lProp->useResultFile())
-	  {
+    {
       result->serialize(*resultFile);
       // endl should not be sent when serializing!
     }
@@ -189,57 +176,57 @@ int _tmain(int argc, _TCHAR* argv[])
     {
       result->serialize(std::cout);
     }
-	}
-	else
-	{
-		while( true )
-		{
-			it = result->next();
-			if(it == NULL)
-				break;
+  }
+  else
+  {
+    while( true )
+    {
+      it = result->next();
+      if(it == NULL)
+        break;
 
       if (resultFile != NULL)
-				*resultFile << it->show() <<	endl;
-			else
-				cout << it->show() << endl;
-		}
-	}
-	if(result->isError())
-	{
-		goto DisplayErrorsAndExit;
-	}
+        *resultFile << it->show() <<  endl;
+      else
+        cout << it->show() << endl;
+    }
+  }
+  if(result->isError())
+  {
+    goto DisplayErrorsAndExit;
+  }
 
-	//delete result;
-	//delete query;
-//	zorba_factory.destroyQuery(query);
+  // delete result;
+  // delete query;
+  // zorba_factory.destroyQuery(query);
 
-	zorba_factory.UninitThread();
-	ZorbaEngine::shutdownZorbaEngine();
+  zorba_factory.UninitThread();
+  ZorbaEngine::shutdownZorbaEngine();
 
-	timer.end();
+  timer.end();
 
   if (lProp->printTime())
     timer.print(cout);
-	
+  
   if (resultFile != NULL) {
     resultFile->close();
     delete resultFile;
   }
 
-	return 0;
+  return 0;
 
 DisplayErrorsAndExit:
-	cerr << endl << "Display all error list now:" << endl;
+  cerr << endl << "Error list:" << endl;
 
-	DisplayErrorListForCurrentThread();
+  DisplayErrorListForCurrentThread();
 
-	zorba_factory.UninitThread();
-	ZorbaEngine::shutdownZorbaEngine();
+  zorba_factory.UninitThread();
+  ZorbaEngine::shutdownZorbaEngine();
 
-	timer.end();
+  timer.end();
   if (lProp->printTime())
-	  timer.print(cout);
-	
-	return 1; // FIXME this should return 0 if we catch an error
+    timer.print(cout);
+  
+  return 1; // FIXME this should return 0 if we catch an error
 }
 
