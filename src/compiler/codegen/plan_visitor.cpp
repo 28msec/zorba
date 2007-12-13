@@ -11,6 +11,7 @@
   
 #include "compiler/expression/expr.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/core/sequencetypes.h"
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/constructors.h"
 #include "runtime/core/path_iterators.h"
@@ -306,13 +307,20 @@ bool plan_visitor::begin_visit(ft_contains_expr& v)
 
 bool plan_visitor::begin_visit(instanceof_expr& v)
 {
-CODEGEN_TRACE("");
+  CODEGEN_TRACE("");
   return true;
+}
+
+void plan_visitor::end_visit(instanceof_expr& v)
+{
+  CODEGEN_TRACE("");
+  PlanIter_t p = pop_itstack ();
+  itstack.push (new InstanceOfIterator (v.get_loc (), p, v.get_type ()));
 }
 
 bool plan_visitor::begin_visit(treat_expr& v)
 {
-CODEGEN_TRACE("");
+  CODEGEN_TRACE("");
   return true;
 }
 
@@ -324,8 +332,13 @@ CODEGEN_TRACE("");
 
 bool plan_visitor::begin_visit(cast_expr& v)
 {
-CODEGEN_TRACE("");
+  CODEGEN_TRACE("");
   return true;
+}
+
+void plan_visitor::end_visit(cast_expr& v)
+{
+  CODEGEN_TRACE("");
 }
 
 bool plan_visitor::begin_visit(validate_expr& v)
@@ -788,22 +801,12 @@ void plan_visitor::end_visit(ft_contains_expr& v)
   CODEGEN_TRACE("");
 }
 
-void plan_visitor::end_visit(instanceof_expr& v)
-{
-  CODEGEN_TRACE("");
-}
-
 void plan_visitor::end_visit(treat_expr& v)
 {
   CODEGEN_TRACE("");
 }
 
 void plan_visitor::end_visit(castable_expr& v)
-{
-  CODEGEN_TRACE("");
-}
-
-void plan_visitor::end_visit(cast_expr& v)
 {
   CODEGEN_TRACE("");
 }

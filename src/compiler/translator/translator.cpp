@@ -115,6 +115,10 @@ void *translator::begin_visit(const AtomicType& v)
 void translator::end_visit(const AtomicType& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  rchandle<QName> qname = v.get_qname ();
+  tstack.push (GENV_TYPESYSTEM.create_type (sctx_p->lookup_qname ("", qname->get_prefix (), qname->get_localname ()),
+                                            TypeSystem::QUANT_ONE));
+
 }
 
 
@@ -1130,7 +1134,24 @@ void translator::end_visit(const NodeComp& v, void *visit_state)
 
 void *translator::begin_visit(const OccurrenceIndicator& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
+  TypeSystem::quantifier_t q;
+  switch (v.get_type ()) {
+  case occurs_exactly_one:
+    q = TypeSystem::QUANT_ONE; break;
+  case occurs_one_or_more:
+    q = TypeSystem::QUANT_PLUS; break;
+  case occurs_optionally:
+    q = TypeSystem::QUANT_QUESTION; break;
+  case occurs_zero_or_more:
+    q = TypeSystem::QUANT_STAR; break;
+  case occurs_never:
+    Assert (false);
+  }
+
+  if (q != TypeSystem::QUANT_ONE)
+    tstack.push (GENV_TYPESYSTEM.create_type (*pop_tstack (), q));
+    
   return no_state;
 }
 
@@ -1340,6 +1361,9 @@ void *translator::begin_visit(const SingleType& v)
 void translator::end_visit(const SingleType& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  if (v.get_hook_bit ())
+    tstack.push (GENV_TYPESYSTEM.create_type (*pop_tstack (), TypeSystem::QUANT_QUESTION));
+  // else leave type as it is on tstack
 }
 
 
@@ -1463,16 +1487,14 @@ void translator::end_visit(const AndExpr& v, void *visit_state)
 
 void *translator::begin_visit(const CastExpr& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void translator::end_visit(const CastExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
 }
-
-
 
 void *translator::begin_visit(const CastableExpr& v)
 {
@@ -1648,7 +1670,7 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
   string fname = qn_h->get_localname();
   TypeSystem::xqtref_t type =
     GENV_TYPESYSTEM.create_type (sctx_p->lookup_fn_qname (prefix, fname),
-                                 TypeSystem::QUANT_ONE);
+                                 TypeSystem::QUANT_QUESTION);
   if (type != NULL) {
     assert (arguments.size () == 1);
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
@@ -1687,19 +1709,21 @@ TRACE_VISIT_OUT ();
 
 void *translator::begin_visit(const InstanceofExpr& v)
 {
-TRACE_VISIT ();
+  TRACE_VISIT ();
   return no_state;
 }
 
 void translator::end_visit(const InstanceofExpr& v, void *visit_state)
 {
-TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT ();
+  nodestack.push (new instanceof_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
 }
 
 
 void *translator::begin_visit(const IntersectExceptExpr& v)
 {
   TRACE_VISIT ();
+  nodestack.push (new instanceof_expr (v.get_location (), pop_nodestack (), pop_tstack ()));
   return no_state;
 }
 
