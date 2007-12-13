@@ -487,3 +487,8 @@ inline TypeSystem::xqtref_t TypeSystem::create_none_type() const
 
 #endif /* XQP_TYPESYSTEM_H */
 /* vim:set ts=2 sw=2: */
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
