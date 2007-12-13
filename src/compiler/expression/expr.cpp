@@ -544,7 +544,9 @@ ostream& instanceof_expr::put( ostream& os) const
 void instanceof_expr::accept(
   expr_visitor& v)
 {
+  if (!v.begin_visit(*this)) return;
   expr_h->accept(v);
+  v.end_visit(*this);  
 }
 
 
