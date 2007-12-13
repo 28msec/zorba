@@ -75,9 +75,6 @@ namespace xqp {
        
       virtual void beginVisit ( const IfThenElseIterator& ) ;
       virtual void endVisit ( const IfThenElseIterator& ) ;
-       
-      virtual void beginVisit ( const FLWORIterator& ) ;
-      virtual void endVisit ( const FLWORIterator& ) ;
       
       virtual void beginVisit ( const NodeDistinctIterator& a );
       virtual void endVisit ( const NodeDistinctIterator& a );
@@ -253,6 +250,29 @@ namespace xqp {
       
       virtual void beginVisit ( const TextIterator& ) ;
       virtual void endVisit ( const TextIterator& ) ;
+      
+      virtual void beginVisit ( const FLWORIterator& ) ;
+      virtual void endVisit ( const FLWORIterator& ) ;
+      
+      virtual void beginVisitFlworWhereClause(const  PlanIterator&);
+      virtual void endVisitFlworWhereClause(const PlanIterator&);
+      
+      virtual void beginVisitFlworVariables();
+      virtual void endVisitFlworVariables();
+      
+      virtual void beginVisitFlworLetVariable(const PlanIterator&);
+      virtual void endVisitFlworLetVariable(const PlanIterator&);
+      
+      virtual void beginVisitFlworForVariable(const PlanIterator&);
+      virtual void endVisitFlworForVariable(const PlanIterator&);
+      
+      virtual void beginVisitFlworOrderBy(const PlanIterator&);
+      virtual void endVisitFlworOrderBy(const PlanIterator&);
+      
+      virtual void beginVisitFlworReturn(const PlanIterator&);
+      virtual void endVisitFlworReturn(const PlanIterator&);
+      
+      
   };
 } /* namespace xqp */
 

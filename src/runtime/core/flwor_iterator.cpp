@@ -16,6 +16,9 @@
 namespace xqp
 {
 
+  ///////////////////////////////////////////////////////////////
+  //  ForLetClause
+  ///////////////////////////////////////////////////////////////
   FLWORIterator::ForLetClause::ForLetClause ( std::vector<var_iter_t> aForVars,
           PlanIter_t& aInput ) :
       type ( FOR ), forVars ( aForVars ), input ( aInput )
@@ -41,54 +44,191 @@ namespace xqp
     switch ( type )
     {
       case FOR:
-//         os << IT_DEPTH << "<for_clause varRefNB=\""<< forVars.size() << "\" posRefNb=\"" << posVars.size() << "\"" << std::endl;
-        input->accept(v);
-//         os << IT_DEPTH << "</for_clause>" << std::endl;
+        v.beginVisitFlworForVariable(*input);
+        v.endVisitFlworForVariable(*input);
         break;
       case LET:
-//         os << IT_DEPTH << "<let_clause refNb=\"" << letVars.size() << "\">" << std::endl;
-        input->accept(v);
-//         os << IT_DEPTH << "</let_clause>" << std::endl;
+        v.beginVisitFlworLetVariable(*input);
+        v.endVisitFlworLetVariable(*input);
         break;
       default:
         assert ( false );
-
     }
-//     return os;
   }
-  
+  ///////////////////////////////////////////////////////////////
+  //  ForLetClause
+  ///////////////////////////////////////////////////////////////
 
+
+  ///////////////////////////////////////////////////////////////
+  //  OrderSpec
+  ///////////////////////////////////////////////////////////////
   FLWORIterator::OrderSpec::OrderSpec ( PlanIter_t aOrderByIter, bool aEmpty_least,
-                                        bool aDescending ) : orderByIter(aOrderByIter), 
-                                        empty_least(aEmpty_least), descending(aDescending)
+                                        bool aDescending ) : orderByIter ( aOrderByIter ),
+      empty_least ( aEmpty_least ), descending ( aDescending )
   {
   }
 
+  void FLWORIterator::OrderSpec::accept ( PlanIterVisitor& v ) const
+  {
+    v.beginVisitFlworOrderBy(*orderByIter);
+    v.endVisitFlworOrderBy(*orderByIter);
+  }
+  ///////////////////////////////////////////////////////////////
+  //  OrderSpec
+  ///////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////////
+  //  OrderByClause
+  ///////////////////////////////////////////////////////////////
   FLWORIterator::OrderByClause::OrderByClause (
-      std::vector<FLWORIterator::OrderSpec> aOrderSpecs, bool aStable ) : orderSpecs(aOrderSpecs),
-      stable(aStable)
+      std::vector<FLWORIterator::OrderSpec> aOrderSpecs, bool aStable ) : orderSpecs ( aOrderSpecs ),
+      stable ( aStable )
   {
   }
-  
-  void FLWORIterator::OrderSpec::accept ( PlanIterVisitor& v ) const {
-    // TODO
-//     os << IT_DEPTH << "<order_spec empty_least=\"" << empty_least << "\" descending=\"" << descending << "\" >"<< std::endl;
-    orderByIter->accept(v);
-//     os << IT_DEPTH <<"</order_spec>" << std::endl;
-  }
 
-  
-  void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const {
+  void FLWORIterator::OrderByClause::accept ( PlanIterVisitor& v ) const
+  {
     // TODO
-//     os << IT_DEPTH << "<order_by_clause stable=\"" << stable << "\" >" << std::endl;
     std::vector<OrderSpec>::const_iterator iter;
     for ( iter = orderSpecs.begin() ; iter != orderSpecs.end(); iter++ )
     {
       iter->accept ( v );
     }
-//     os << IT_DEPTH << "</order_by_clause>" << std::endl;
+  }
+  ///////////////////////////////////////////////////////////////
+  //  OrderByClause
+  ///////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////////
+  //  FlworState
+  ///////////////////////////////////////////////////////////////
+  void FLWORIterator::FlworState::reset()
+  {
+    size_t size = varBindingState.size();
+    varBindingState.clear();
+    varBindingState.insert ( varBindingState.begin(), size, 0 );
+    curOrderResultSeq = 0;
+    if ( orderMap != 0 )
+    {
+      orderMap->clear();
+    }
   }
 
+  void FLWORIterator::FlworState::init ( size_t nb_variables )
+  {
+    PlanIterator::PlanIteratorState::init();
+    varBindingState = std::vector<uint32_t> ( nb_variables, 0 );
+  }
+
+  void FLWORIterator::FlworState::init ( size_t nb_variables, vector<OrderSpec>* orderSpecs )
+  {
+    init ( nb_variables );
+    orderMap = new order_map_t ( orderSpecs );
+  }
+
+  void FLWORIterator::FlworState::releaseResources()
+  {
+    reset();
+  }
+  ///////////////////////////////////////////////////////////////
+  //  FlworState
+  ///////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////////
+  //  OrderKeyCmp
+  ///////////////////////////////////////////////////////////////
+  int8_t
+  FLWORIterator::OrderKeyCmp::compare ( const Item_t& s1, const Item_t& s2, bool desc, bool emptyLeast ) const
+  {
+    if ( s1 == 0 )
+    {
+      if ( s2 == 0 )
+      {
+        return descAsc ( 0, desc );
+      }
+      if ( emptyLeast )
+      {
+        return descAsc ( -1, desc );
+      }
+      else
+      {
+        return descAsc ( 1, desc );
+      }
+    }
+    else if ( s2 == 0 )
+    {
+      if ( emptyLeast )
+      {
+        return descAsc ( 1, desc );
+      }
+      else
+      {
+        return descAsc ( -1, desc );
+      }
+    }
+    else
+    {
+      return descAsc ( CompareIterator::valueCompare ( s1 , s2 ), desc );
+    }
+  }
+
+  int8_t
+  FLWORIterator::OrderKeyCmp::descAsc ( int8_t result, bool desc ) const
+  {
+    if ( desc )
+    {
+      switch ( result )
+      {
+        case -1:
+          return 1;
+        case 1:
+          return -1;
+        case 0:
+          return 0;
+      }
+    }
+    else
+    {
+      return result;
+    }
+    assert ( false );
+    return 0; //should never happen, just for the compiler
+  }
+
+  bool
+  FLWORIterator::OrderKeyCmp::operator() ( const std::vector<Item_t>& s1, const std::vector<Item_t>& s2 ) const
+  {
+    assert ( s1.size() == s2.size() );
+    assert ( s1.size() == mOrderSpecs->size() );
+    std::vector<Item_t>::const_iterator s1iter = s1.begin();
+    std::vector<Item_t>::const_iterator s2iter = s2.begin();
+    std::vector<OrderSpec>::const_iterator orderSpecIter = mOrderSpecs->begin();
+    while ( s1iter != s1.end() )
+    {
+      int8_t cmp = compare ( *s1iter, *s2iter, orderSpecIter->descending, orderSpecIter->empty_least );
+      if ( cmp == 1 )
+      {
+        return false;
+      }
+      else if ( cmp == -1 )
+      {
+        return true;
+      }
+      ++s1iter;
+      ++s2iter;
+      ++orderSpecIter;
+    }
+    return false;
+  }
+  ///////////////////////////////////////////////////////////////
+  //  OrderKeyCmp
+  ///////////////////////////////////////////////////////////////
+
+
+  ///////////////////////////////////////////////////////////////
+  //  FLWORIterator
+  ///////////////////////////////////////////////////////////////
   FLWORIterator::FLWORIterator ( const yy::location& loc,
                                  std::vector<FLWORIterator::ForLetClause> &aForLetClauses,
                                  PlanIter_t& aWhereClause, FLWORIterator::OrderByClause* aOrderByClause,
@@ -97,73 +237,100 @@ namespace xqp
       whereClause ( aWhereClause ), orderByClause ( aOrderByClause ),
       returnClause ( aReturnClause ),
       whereClauseReturnsBooleanPlus ( aWhereClauseReturnsBooleanPlus ),
-      bindingsNb ( aForLetClauses.size() ),
-      orderMap(0)
+      bindingsNb ( aForLetClauses.size() )
   {
-    if(orderByClause != 0 && orderByClause->orderSpecs.size() > 0){
-      orderMap = new order_map_t( &(orderByClause->orderSpecs) );
-    }else{
+    if ( orderByClause == 0 || orderByClause->orderSpecs.size() == 0 )
+    {
       orderByClause = 0;
+      doOrderBy = false;
     }
-    store = zorba::getStore();
-  }
-  
-  FLWORIterator::~FLWORIterator(){
-    delete orderByClause;
-    if(orderMap != 0){
-      delete orderMap;
+    else
+    {
+      doOrderBy = true;
     }
   }
-  
-  
+
+  FLWORIterator::~FLWORIterator()
+  {
+    if ( doOrderBy )
+    {
+      delete orderByClause;
+    }
+  }
+
+
 
   Item_t FLWORIterator::nextImpl ( PlanState& planState )
   {
+    //Needed variables
     int curVar = 0;
-    PlanIteratorState* state;
-    vector<string>::iterator iter;
+    FlworState* flworState;
     Item_t curItem;
-    DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-    varBindingState = new int[forLetClauses.size() ];
-    for ( xqp_uint i = 0; i < forLetClauses.size(); i++ )
+
+    GET_STATE ( FlworState, flworState, planState );
+    MANUAL_STACK_INIT ( flworState );
+    //we allocate resources
+    if ( doOrderBy )
     {
-      varBindingState[i] = 0;
+      flworState->init ( bindingsNb, &orderByClause->orderSpecs );
     }
+    else
+    {
+      flworState->init ( bindingsNb );
+    }
+    FINISHED_ALLOCATING_RESOURCES();
     while ( true )
     {
-
+      //Here we do the variable bindings from the outer most to the inner most
       while ( curVar != bindingsNb )
       {
-        if ( bindVariable ( curVar, planState ) )
+        //try to bind the variable
+        if ( bindVariable ( curVar, flworState, planState ) )
         {
+          //if the binding of the variable is successfull, we procede with the next binding level
           curVar++;
         }
         else
         {
-          resetInput ( curVar, planState );
+          //if the binding is not successfull, we go a level back and try the previous level
+          flworState->varBindingState[curVar] = 0;
+          resetInput ( curVar, flworState, planState );
           curVar--;
-          //FINISHED
+
+
+          //If we finished the last binding (curVar == -1) and we had to Order we need to return
+          //the results, otherwise we just need to indicate that we finished by returning NULL
           if ( curVar == -1 )
           {
-            if(orderByClause != 0){
-              curOrderPos = orderMap->begin();             
-              while(curOrderPos != orderMap->end()){
-                curOrderResultSeq = curOrderPos->second;
-                curItem = curOrderResultSeq->next();
-                while(curItem != 0){
-                  STACK_PUSH(curItem, state);
-                  curItem = curOrderResultSeq->next();
+            if ( doOrderBy )
+            {
+              flworState->curOrderPos = flworState->orderMap->begin();
+              while ( flworState->curOrderPos != flworState->orderMap->end() )
+              {
+                flworState->curOrderResultSeq = flworState->curOrderPos->second;
+                curItem = flworState->curOrderResultSeq->next();
+                while ( curItem != 0 )
+                {
+                  STACK_PUSH ( curItem, flworState );
+                  curItem = flworState->curOrderResultSeq->next();
                 }
-                curOrderPos++;
+                ++ ( flworState->curOrderPos );
               }
             }
-            STACK_PUSH ( NULL, state );
+            STACK_PUSH ( NULL, flworState );
             goto stop;
           }
         }
       }
-      if ( evalWhereClause ( planState ) ) {
-        if(orderByClause == 0){
+
+      //After binding all variables, we check first the where clause
+      //curVar = bindingsNb - 1 indicates that we have to do the next binding level
+      if ( evalWhereClause ( planState ) )
+      {
+        //In the case we not need to do ordering, we now returning the items produced
+        //by the ReturnClause
+        if ( !doOrderBy )
+        {
           while ( true )
           {
             curItem = this->consumeNext ( returnClause, planState );
@@ -175,50 +342,59 @@ namespace xqp
             }
             else
             {
-              STACK_PUSH ( curItem, state );
+              STACK_PUSH ( curItem, flworState );
             }
           }
-        }else{
-          matResultAndOrder(planState);
+          //In the case we have to order we are materializing the result
+        }
+        else
+        {
+          matResultAndOrder ( flworState, planState );
           curVar = bindingsNb - 1;
         }
-      } else {
+      }
+      else
+      {
         curVar = bindingsNb - 1;
       }
     }
   stop:
-    STACK_PUSH ( NULL, state );
+    STACK_PUSH ( NULL, flworState );
     STACK_END();
   }
 
 
-  void FLWORIterator::matResultAndOrder (PlanState& planState){
-    assert(orderByClause != 0);
+  void FLWORIterator::matResultAndOrder ( FlworState* flworState, PlanState& planState )
+  {
+    assert ( doOrderBy );
     vector<OrderSpec> lOrderSpecs = orderByClause->orderSpecs;
     //FIXME hould be a const iterator after the change of Plan_Iter
     std::vector<OrderSpec>::iterator lSpecIter = lOrderSpecs.begin();
     std::vector<Item_t> orderKey;
-    while(lSpecIter != lOrderSpecs.end()){
-      Item_t lItem = consumeNext(lSpecIter->orderByIter, planState);
-      orderKey.push_back(lItem);
+    while ( lSpecIter != lOrderSpecs.end() )
+    {
+      Item_t lItem = consumeNext ( lSpecIter->orderByIter, planState );
+      orderKey.push_back ( lItem );
       //Test for singleton
-      if(lItem != 0){
-        lItem = consumeNext(lSpecIter->orderByIter, planState);
-        if(lItem != 0){
-           ZORBA_ERROR_ALERT(
+      if ( lItem != 0 )
+      {
+        lItem = consumeNext ( lSpecIter->orderByIter, planState );
+        if ( lItem != 0 )
+        {
+          ZORBA_ERROR_ALERT (
               error_messages::XPTY0004_STATIC_TYPE_ERROR,
               error_messages::STATIC_ERROR,
               NULL,
               false,
-              "Expected a singleton");
+              "Expected a singleton" );
         }
       }
-      resetChild(lSpecIter->orderByIter, planState);
+      resetChild ( lSpecIter->orderByIter, planState );
       ++lSpecIter;
     }
     Iterator_t iterWrapper = new PlanIteratorWrapper ( returnClause, planState );
-    TempSeq_t result = store->createTempSeq ( iterWrapper, false );
-    orderMap->insert(std::pair<std::vector<Item_t> , Iterator_t>(orderKey, result->getIterator()));
+    TempSeq_t result = zorba::getStore()->createTempSeq ( iterWrapper, false );
+    flworState->orderMap->insert ( std::pair<std::vector<Item_t> , Iterator_t> ( orderKey, result->getIterator() ) );
     this->resetChild ( returnClause, planState );
   }
 
@@ -243,19 +419,20 @@ namespace xqp
     return item->getBooleanValue();
   }
 
-  void FLWORIterator::resetInput ( int varNb, PlanState& planState )
+  void FLWORIterator::resetInput ( const int& varNb, FlworState* flworState, PlanState& planState )
   {
     FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
     this->resetChild ( lForLetClause.input, planState );
-    varBindingState[varNb] = 0;
+    flworState->varBindingState[varNb] = 0;
   }
 
 
-  bool FLWORIterator::bindVariable ( int varNb, PlanState& planState )
+  bool FLWORIterator::bindVariable ( int varNb, FlworState* flworState, PlanState& planState )
   {
     FLWORIterator::ForLetClause lForLetClause = forLetClauses[varNb];
     switch ( lForLetClause.type )
     {
+        //In the case of a FOR we try to get the next item of the input and bind it to all variables
       case ForLetClause::FOR :
       {
         Item_t lItem = this->consumeNext ( lForLetClause.input, planState );
@@ -263,7 +440,8 @@ namespace xqp
         {
           return false;
         }
-        ++varBindingState[varNb];
+        //We increase the position counter
+        ++ ( flworState->varBindingState[varNb] );
         for ( std::vector<var_iter_t>::iterator forIter = lForLetClause.forVars.begin(); forIter
                 != lForLetClause.forVars.end(); forIter++ )
         {
@@ -272,7 +450,7 @@ namespace xqp
         }
         if ( !lForLetClause.posVars.empty() )
         {
-          Item_t posItem = zorba::getItemFactory()->createInteger ( varBindingState[varNb] );
+          Item_t posItem = zorba::getItemFactory()->createInteger ( flworState->varBindingState[varNb] );
           for ( std::vector<var_iter_t>::iterator posIter = lForLetClause.posVars.begin(); posIter != lForLetClause.posVars.end(); posIter++ )
           {
             var_iter_t variable = ( *posIter );
@@ -284,15 +462,17 @@ namespace xqp
       }
       case ForLetClause::LET :
       {
+        
         //return false if the Var-Variable was already bound
-        if ( varBindingState[varNb] == 1 )
+        if ( flworState->varBindingState[varNb] == 1 )
         {
           return false;
         }
         Iterator_t iterWrapper = new PlanIteratorWrapper ( lForLetClause.input, planState );
+        //Depending on the query, we might need to materialize the LET-Binding
         if ( lForLetClause.needsMaterialization )
         {
-          TempSeq_t tmpSeq = store->createTempSeq ( iterWrapper, true );
+          TempSeq_t tmpSeq = zorba::getStore()->createTempSeq ( iterWrapper, true );
           for ( std::vector<ref_iter_t>::iterator letIter = lForLetClause.letVars.begin(); letIter
                   != lForLetClause.letVars.end(); letIter++ )
           {
@@ -307,10 +487,11 @@ namespace xqp
             ( *letIter )->bind ( iterWrapper );
           }
         }
-        ++varBindingState[varNb];
+        ++ ( flworState->varBindingState[varNb] );
         return true;
       }
       default:
+        //That should never happen
         assert ( false );
     }
     return false;
@@ -318,15 +499,21 @@ namespace xqp
 
   void FLWORIterator::resetImpl ( PlanState& planState )
   {
+    FlworState* flworState;
+    GET_STATE ( FlworState, flworState, planState );
+    flworState->reset();
   }
 
   void FLWORIterator::releaseResourcesImpl ( PlanState& planState )
   {
+    FlworState* flworState;
+    GET_STATE ( FlworState, flworState, planState );
+    flworState->releaseResources();
   }
 
   uint32_t FLWORIterator::getStateSizeOfSubtree() const
   {
-    int32_t size = 0;
+    int32_t size = this->getStateSize();
     std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
     for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
     {
@@ -338,7 +525,8 @@ namespace xqp
     if ( whereClause != NULL )
       size += whereClause->getStateSizeOfSubtree();
 
-    if(orderByClause != NULL){
+    if ( doOrderBy )
+    {
       std::vector<OrderSpec>::const_iterator iter;
       for ( iter = orderByClause->orderSpecs.begin() ; iter != orderByClause->orderSpecs.end(); iter++ )
       {
@@ -347,7 +535,7 @@ namespace xqp
     }
 
 
-    return this->getStateSize() + size;
+    return size;
   }
 
   void FLWORIterator::setOffset ( PlanState& planState, uint32_t& offset )
@@ -365,8 +553,9 @@ namespace xqp
 
     if ( whereClause != NULL )
       whereClause->setOffset ( planState, offset );
-      
-    if(orderByClause != NULL){
+
+    if ( doOrderBy )
+    {
       std::vector<OrderSpec>::const_iterator iter;
       for ( iter = orderByClause->orderSpecs.begin() ; iter != orderByClause->orderSpecs.end(); iter++ )
       {
@@ -379,84 +568,29 @@ namespace xqp
   void FLWORIterator::accept ( PlanIterVisitor& v ) const
   {
     // TODO
-    v.beginVisit(*this);
+    v.beginVisit ( *this );
     std::vector<FLWORIterator::ForLetClause>::const_iterator iter;
     for ( iter = forLetClauses.begin() ; iter != forLetClauses.end(); iter++ )
     {
-      iter->accept(v);
+      iter->accept ( v );
     }
     if ( whereClause != NULL )
     {
-//       os << "<where_clause>" << std::endl;
-      whereClause->accept ( v );
-//       os << "</where_clause>" << std::endl;
+      v.beginVisitFlworWhereClause(*whereClause);
+      v.endVisitFlworWhereClause(*whereClause);
     }
-    if ( orderByClause != NULL )
+    if ( doOrderBy )
     {
       orderByClause->accept ( v );
     }
-    returnClause->accept ( v );
+    v.beginVisitFlworReturn(*returnClause);
+    v.endVisitFlworReturn(*returnClause);
+    //returnClause->accept ( v );
+    v.endVisit(*this);
   }
+  ///////////////////////////////////////////////////////////////
+  //  FLWORIterator
+  ///////////////////////////////////////////////////////////////
 
-  int8_t 
-  FLWORIterator::OrderKeyCmp::compare(const Item_t& s1, const Item_t& s2, bool desc, bool emptyLeast) const{
-    if(s1 == 0){
-      if(s2 == 0){
-        return descAsc(0, desc);
-      }
-      if(emptyLeast){
-        return descAsc(-1, desc);
-      }else{
-        return descAsc(1, desc);
-      }
-    }else if(s2 == 0){
-      if(emptyLeast){
-        return descAsc(1, desc);
-      }else{
-        return descAsc(-1, desc);
-      }
-    }else{
 
-      return descAsc(CompareIterator::valueCompare(s1 , s2), desc);
-    }
-  }
-  
-  int8_t 
-  FLWORIterator::OrderKeyCmp::descAsc(int8_t result, bool desc) const {
-    if(desc){
-      switch(result){
-      case -1:
-        return 1;
-      case 1:
-        return -1;
-      case 0:
-        return 0;
-      }
-    }else{
-      return result;
-    }
-    assert(false);
-  }
-
-  bool
-  FLWORIterator::OrderKeyCmp::operator() ( const std::vector<Item_t>& s1, const std::vector<Item_t>& s2 ) const  { 
-    std:cerr << "s1: " << s1.size() << "s2:" << s2.size() << "order" << mOrderSpecs->size() << std::endl;
-    assert(s1.size() == s2.size());
-    assert(s1.size() == mOrderSpecs->size());
-    std::vector<Item_t>::const_iterator s1iter = s1.begin();
-    std::vector<Item_t>::const_iterator s2iter = s2.begin();
-    std::vector<OrderSpec>::const_iterator orderSpecIter = mOrderSpecs->begin();
-    while(s1iter != s1.end()){
-      int8_t cmp = compare(*s1iter, *s2iter, orderSpecIter->descending, orderSpecIter->empty_least);
-      if(cmp == 1){
-        return false;
-      }else if(cmp == -1){
-        return true;
-      }
-      ++s1iter;
-      ++s2iter;
-      ++orderSpecIter;
-    }
-    return false;    
-  }
 }

@@ -172,13 +172,7 @@ namespace xqp {
     thePrinter.endIter();
   }
        
-  void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
-    thePrinter.startIter("FLWORIterator");
-    printCommons( &a );
-  }
-  void PrinterVisitor::endVisit ( const FLWORIterator& a ) {
-    thePrinter.endIter();
-  }
+
 
   void PrinterVisitor::beginVisit ( const NodeDistinctIterator& a ) {
     thePrinter.startIter("NodeDistinctIterator");
@@ -691,4 +685,70 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const TextIterator& ) {
     thePrinter.endIter();
   }
+  
+  void PrinterVisitor::beginVisit ( const FLWORIterator& a ) {
+    thePrinter.startIter("FLWORIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const FLWORIterator& a ) {
+    thePrinter.endIter();
+  }
+  
+  void PrinterVisitor::beginVisitFlworWhereClause(const  PlanIterator& a){
+    thePrinter.startIter("WhereClause");
+    a.accept(*this);
+  }
+  
+  void PrinterVisitor::endVisitFlworWhereClause(const PlanIterator& a){
+    thePrinter.endIter();
+  }
+      
+  void PrinterVisitor::beginVisitFlworVariables(){
+    thePrinter.startIter("FlworVariables");
+  }
+  
+  void PrinterVisitor::endVisitFlworVariables(){
+    thePrinter.endIter();
+  }
+  
+      
+  void PrinterVisitor::beginVisitFlworLetVariable(const PlanIterator& a){
+    thePrinter.startIter("LetVariables");
+    a.accept(*this);
+  }
+  
+  void PrinterVisitor::endVisitFlworLetVariable(const PlanIterator& a){
+    thePrinter.endIter();
+    a.accept(*this);
+  }
+          
+    
+  void PrinterVisitor::beginVisitFlworForVariable(const PlanIterator& a){
+    thePrinter.startIter("ForVariables");
+    a.accept(*this);
+  }
+  
+  void PrinterVisitor::endVisitFlworForVariable(const PlanIterator& a){
+    thePrinter.endIter();
+  }
+      
+      
+  void PrinterVisitor::beginVisitFlworOrderBy(const PlanIterator& a){
+    thePrinter.startIter("OrderByClause");
+    a.accept(*this);
+  }    
+  
+  void PrinterVisitor::endVisitFlworOrderBy(const PlanIterator& a){
+    thePrinter.endIter();
+  }
+      
+  void PrinterVisitor::beginVisitFlworReturn(const PlanIterator& a){
+    thePrinter.startIter("ReturnClause");
+    a.accept(*this);
+  }
+  
+  void PrinterVisitor::endVisitFlworReturn(const PlanIterator& a){
+    thePrinter.endIter();
+  }
+  
 } /* namespace xqp */

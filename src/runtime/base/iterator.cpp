@@ -68,12 +68,17 @@ PlanIterator::~PlanIterator() {
 
 void
 PlanIterator::PlanIteratorState::init() {
-  this->duffsLine = 0;
+  this->duffsLine = DUFFS_RELEASE_RESOURCES;
 }
 
 void
 PlanIterator::PlanIteratorState::reset() {
-  this->duffsLine = 0;
+  this->duffsLine = DUFFS_RESET;
+}
+
+void
+PlanIterator::PlanIteratorState::releaseResources() {
+  this->duffsLine = DUFFS_RELEASE_RESOURCES;
 }
 
 void

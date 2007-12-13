@@ -57,15 +57,18 @@
   */
 #define DEFAULT_STACK_INIT(stateType, stateObject, planState ) \
   GET_STATE(stateType, stateObject, planState); \
-  switch (stateObject->getDuffsLine()) { case 0: \
-  stateObject->init()
-#define MANUAL_STACK_INIT() switch (stateObject->getDuffsLine()) { case 0: 
+  switch (stateObject->getDuffsLine()) { case DUFFS_RELEASE_RESOURCES: \
+  stateObject->init(); \
+  case DUFFS_RESET:
+#define MANUAL_STACK_INIT(stateObject) switch (stateObject->getDuffsLine()) { case DUFFS_RELEASE_RESOURCES: 
 #define STACK_PUSH(x, stateObject) do { stateObject->setDuffsLine(__LINE__); return x; case __LINE__:; } while (0)
 #define STACK_END() } return NULL
 #define GET_STATE(stateType, stateObject, planState) \
   stateObject = reinterpret_cast<stateType*>(planState.block + this->stateOffset)
+#define FINISHED_ALLOCATING_RESOURCES() case DUFFS_RESET:
 
-
+static const int32_t DUFFS_RELEASE_RESOURCES = 0; //Should always be 0 because of the way, the memory is allocated
+static const int32_t DUFFS_RESET =-1;
 
 namespace xqp {
 
@@ -198,14 +201,8 @@ protected:
       * to guarantee correct reset handling.
       */
     void reset();
-
-    /* Release resources is not needed in PlanIterator but might be need
-     * from Iterators. If so, they must be implemented there and invoked from
-     * releaseResourcesImpl from the corresponding iterator. If a state is a
-     * sub-class of a state which contains releaseResources, it has to 
-     * implement releaseResources too and has to invoke releaseResources
-     * from the parent.
-     */
+    
+    void releaseResources();
     
     void setDuffsLine(int32_t);
     int32_t getDuffsLine() const;
