@@ -120,9 +120,9 @@ function run_query
   cd ${queryFile%/*}
 
   if [ $displayFormat == "xml" ]; then
-    ${EXE} -r -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
+    ${EXE} -r -o "${queryFile}.res" "${queryFile}" >/dev/null 2> "${queryFile}.res.err"
   else
-    ${EXE} -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
+    ${EXE} -o "${queryFile}.res" "${queryFile}" >/dev/null 2> "${queryFile}.res.err"
   fi
   error=$?
   if [ ${error} != 0 ]; then
@@ -130,7 +130,7 @@ function run_query
     # To allow more queries to be run by the caller, do not propagate error
   fi
   
-  cd -
+  cd - >/dev/null
 
   return 0
 }
@@ -153,7 +153,6 @@ function run_query_in_bucket
 
   local inputDir="${queriesDir}/${bucketName}"
   local queryFile="${inputDir}/${queryName}.xq"
-  local 
 
   local expResultsDir="${expQueryResultsDir}/${bucketName}"
   local fmtExt=""
@@ -218,22 +217,20 @@ function run_query_in_bucket
     cat "${expResultFile}" | ${scriptsDir}/tidy_xmlfrag | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
     #cat "${expResultFile}" | diff -I '^Duration.*:' "${resultFile}" - > "${diffFile}"
   else
-    echo "unknown expected results for ${queryName}"
+    echo "Missing expected results for ${queryName}"
     cp "${queryFile}" "${diffFile}"
     if [ $? != 0 ]; then echo "ERROR 21 run_query_in_bucket: cp failed"; exit 19; fi
   fi
 
   if [ -s "${diffFile}" ]; then
-    echo
-    echo "FAILURE : -bucket ${bucketName} -query ${queryName}"
+    echo "FAILURE: ${bucketName} / ${queryName}"
     echo
     echo >> rbkt_summary.txt
     echo "FAILURE : -bucket ${bucketName} -query ${queryName}" >> rbkt_summary.txt
     echo >> rbkt_summary.txt
     let failedQueries=failedQueries+1 
   else
-    echo
-    echo "SUCCESS : -bucket ${bucketName} -query ${queryName}"
+    echo "SUCCESS: ${bucketName} / ${queryName}"
     echo
   fi
 
@@ -383,7 +380,7 @@ function load_doc_in_bucket()
   if [ -e "${expResultFile}" ]; then
     diff "${resultFile}" "${expResultFile}" > "${diffFile}"
   else
-    echo "unknown expected results for ${docName}"
+    echo "Missing expected results for ${docName}"
     cp "${docFile}" "${diffFile}"
     if [ $? != 0 ]; then echo "ERROR 21 load_doc_in_bucket: cp failed"; exit 19; fi
   fi
@@ -425,7 +422,7 @@ function load_bucket()
 
   cd "${docsDir}/${bucketName}"
   docList=`ls *.xml`
-  cd -
+  cd - >/dev/null
 
   for d in $docList
   do
