@@ -199,8 +199,8 @@ function run_query_in_bucket
   #
   if [ -s "${inputDir}/${queryName}.xq.res.err" ]; then
       cat "${inputDir}/${queryName}.xq.res.err" | head -1 | cut -f1 -d':' > "${inputDir}/${queryName}.xq.res"
-      rm "${inputDir}/${queryName}.xq.res.err"
   fi
+  rm "${inputDir}/${queryName}.xq.res.err"
   mkdir -p `dirname ${resultFile}`
   if [ -e "${inputDir}/${queryName}.xq.res" ]; then
     cat "${inputDir}/${queryName}.xq.res" | ${scriptsDir}/tidy_xmlfrag >"${resultFile}"
