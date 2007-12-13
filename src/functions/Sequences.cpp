@@ -536,7 +536,7 @@ PlanIter_t op_sort_distinct_nodes_descending::operator()
 	 vector<PlanIter_t>& argv) const
 {
   // sorting in document order and doing dup elim
-  return new NodeSortIterator(loc, argv[0], true, true);
+  return new NodeSortIterator(loc, argv[0], false, true);
 }
   
 bool op_sort_distinct_nodes_descending::validate_args(vector<PlanIter_t>& argv) const
