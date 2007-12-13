@@ -207,9 +207,6 @@ namespace xqp {
 		t->addReference();///will be decremented in static context destructor
 	}
 
-	void	static_context::bind_type(QNameItem *qname, TypeSystem::xqtref_t t) {
-  }
-
 	void static_context::add_variable_type(
 		const QNameItem *var_name, 
 		TypeSystem::xqtref_t var_type)
