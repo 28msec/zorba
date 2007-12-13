@@ -11,7 +11,8 @@ namespace xqp
 InstanceOfIterator::InstanceOfIterator(yy::location loc,
                                        PlanIter_t& aTreatExpr,
                                        TypeSystem::xqtref_t aSequenceType)
-   : UnaryBaseIterator<InstanceOfIterator> ( loc, aTreatExpr )
+  : UnaryBaseIterator<InstanceOfIterator> ( loc, aTreatExpr ),
+    theSequenceType (aSequenceType)
 { }
 
 InstanceOfIterator::~InstanceOfIterator() 
