@@ -54,7 +54,7 @@ const uint32_t OrdPath::theValueMasks[9] =
 ********************************************************************************/
 const unsigned char OrdPath::thePosV2LMap[DEFAULT_FAN_OUT] = 
 {
-  /* 0 */        4,
+  /* 0 */        3,
   /* 1 */        2,               
   /* 2 - 3 */    3, 3,
   /* 4 - 7 */    5, 5, 5, 5,
@@ -69,10 +69,10 @@ const unsigned char OrdPath::thePosV2LMap[DEFAULT_FAN_OUT] =
 ********************************************************************************/
 const unsigned char OrdPath::theNegV2LMap[DEFAULT_FAN_OUT] = 
 {
-  /*   -1,   0 */    4, 4,
-  /*   -5,  -2 */    6, 6, 6, 6,               
-  /*  -21,  -6 */    9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 
-  /* -277, -22 */    14, 14, 14, 14, 14, 14, 14, 14, 14, 14 
+  /*   0      */    3, 
+  /*  -1,   -4 */   6, 6, 6, 6,
+  /*  -5,  -20 */   9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 
+  /* -21, -276 */   14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14 
 };
 
 
@@ -82,7 +82,7 @@ const unsigned char OrdPath::theNegV2LMap[DEFAULT_FAN_OUT] =
 ********************************************************************************/
 const uint16_t OrdPath::thePosV2EVMap[DEFAULT_FAN_OUT] = 
 {
-  0x3000,  // 0   = 001,1           -> 0011-0000-0000-0000
+  0x2000,  // 0   = 001             -> 0010-0000-0000-0000
 
   0x4000,  // 1   = 01              -> 0100-0000-0000-0000
 
@@ -120,6 +120,66 @@ const uint16_t OrdPath::thePosV2EVMap[DEFAULT_FAN_OUT] =
   0xF030,  // 30  = 11110,00000110  -> 1111-0000-0011-0000
   0xF038   // 31  = 11110,00000111  -> 1111-0000-0011-1000
 };
+
+
+/*******************************************************************************
+  This array maps each component value between 0 and DEFAULT_FAN_OUT - 1 to its
+  encoded version.
+********************************************************************************/
+const uint16_t OrdPath::theNegV2EVMap[DEFAULT_FAN_OUT] = 
+{
+  0x2000,  //  0   = 001               -> 0010-0000-0000-0000
+
+  0x1C00,  // -1   = 0001,11           -> 0001-1100-0000-0000
+  0x1800,  // -2   = 0001,10           -> 0001-1000-0000-0000
+  0x1400,  // -3   = 0001,01           -> 0001-0100-0000-0000
+  0x1000,  // -4   = 0001,00           -> 0001-0000-0000-0000
+
+  0x0F80,  // -5   = 00001,1111        -> 0000-1111-1000-0000 
+  0x0F00,  // -6   = 00001,1110        -> 0000-1111-0000-0000
+  0x0E80,  // -7   = 00001,1101        -> 0000-1110-1000-0000
+  0x0E00,  // -8   = 00001,1100        -> 0000-1110-0000-0000
+  0x0D80,  // -9   = 00001,1011        -> 0000-1101-1000-0000
+  0x0D00,  // -10  = 00001,1010        -> 0000-1101-0000-0000
+  0x0C80,  // -11  = 00001,1001        -> 0000-1100-1000-0000
+  0x0C00,  // -12  = 00001,1000        -> 0000-1100-0000-0000
+  0x0B80,  // -13  = 00001,0111        -> 0000-1011-1000-0000
+  0x0B00,  // -14  = 00001,0110        -> 0000-1011-0000-0000
+  0x0A80,  // -15  = 00001,0101        -> 0000-1010-1000-0000
+  0x0A00,  // -16  = 00001,0100        -> 0000-1010-0000-0000
+  0x0980,  // -17  = 00001,0011        -> 0000-1001-1000-0000
+  0x0900,  // -18  = 00001,0010        -> 0000-1001-0000-0000
+  0x0880,  // -19  = 00001,0001        -> 0000-1000-1000-0000
+  0x0800,  // -20  = 00001,0000        -> 0000-1000-0000-0000
+
+  0x07FC,  // -21  = 000001,11111111   -> 0000-0111-1111-1100
+  0x07F8,  // -22  = 000001,11111110   -> 0000-0111-1111-1000
+  0x07F4,  // -23  = 000001,11111101   -> 0000-0111-1111-0100
+  0x07F0,  // -24  = 000001,11111100   -> 0000-0111-1111-0000
+  0x07EC,  // -25  = 000001,11111011   -> 0000-0111-1110-1100
+  0x07E8,  // -26  = 000001,11111010   -> 0000-0111-1110-1000
+  0x07E4,  // -27  = 000001,11111001   -> 0000-0111-1110-0100
+  0x07E0,  // -28  = 000001,11111000   -> 0000-0111-1110-0000
+  0x07DC,  // -29  = 000001,11110111   -> 0000-0111-1101-1100
+  0x07D8,  // -30  = 000001,11110110   -> 0000-0111-1101-1000
+  0x07D4   // -31  = 000001,11110101   -> 0000-0111-1101-0100
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPath::init(unsigned long treeid)
+{
+  theTreeId = treeid;
+
+  if (theBuffer != NULL)
+    delete [] theBuffer;
+
+  theBuffer = new unsigned char[2];
+  theBuffer[0] = 2;
+  theBuffer[1] = 0x40;
+}
 
 
 /*******************************************************************************
@@ -307,23 +367,44 @@ void OrdPath::appendComp(long value)
 
     if (value < OrdPath::DEFAULT_FAN_OUT)
     {
-      bitsNeeded += OrdPath::theNegV2LMap[value];
+      bitsNeeded = OrdPath::theNegV2LMap[value];
+      eval = OrdPath::theNegV2EVMap[value] << 16;
     }
-    else if (value < 278)
+    else if (value < 277)
     {
-      bitsNeeded += 14;
+      bitsNeeded = 14;
+
+      value = 276 - value;
+      eval = ((uint32_t)value) << 24;
+      eval >>= 6;
+      eval |= 0x04000000;
     }
-    else if (value < 4374)
+    else if (value < 4373)
     {
-      bitsNeeded += 19;
+      bitsNeeded = 19;
+
+      value = 2372 - value;
+      eval = ((uint32_t)value) << 20;
+      eval >>= 7;
+      eval |= 0x02000000;
     }
-    else if (value < 69910)
+    else if (value < 69909)
     {
-      bitsNeeded += 24;
+      bitsNeeded = 24;
+
+      value = 69908 - value;
+      eval = ((uint32_t)value) << 16;
+      eval >>= 8;
+      eval |= 0x01000000;
     }
-    else if (value < 1118486)
+    else if (value < 1118485)
     {
-      bitsNeeded += 29;
+      bitsNeeded = 29;
+
+      value = 1118484 - value;
+      eval = ((uint32_t)value) << 12;
+      eval >>= 9;
+      eval |= 0x00080000;
     }
     else
     {
@@ -2531,22 +2612,43 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
     if (value < OrdPath::DEFAULT_FAN_OUT)
     {
       bitsNeeded += OrdPath::theNegV2LMap[value];
+      eval = OrdPath::theNegV2EVMap[value] << 16;
     }
-    else if (value < 278)
+    else if (value < 277)
     {
-      bitsNeeded += 14;
+      theCompLens[comp] = bitsNeeded = 14;
+
+      value = 276 - value;
+      eval = ((uint32_t)value) << 24;
+      eval >>= 6;
+      eval |= 0x04000000;
     }
-    else if (value < 4374)
+    else if (value < 4373)
     {
-      bitsNeeded += 19;
+      theCompLens[comp] = bitsNeeded = 19;
+
+      value = 2372 - value;
+      eval = ((uint32_t)value) << 20;
+      eval >>= 7;
+      eval |= 0x02000000;
     }
-    else if (value < 69910)
+    else if (value < 69909)
     {
-      bitsNeeded += 24;
+      theCompLens[comp] = bitsNeeded = 24;
+
+      value = 69908 - value;
+      eval = ((uint32_t)value) << 16;
+      eval >>= 8;
+      eval |= 0x01000000;
     }
-    else if (value < 1118486)
+    else if (value < 1118485)
     {
-      bitsNeeded += 29;
+      theCompLens[comp] = bitsNeeded = 29;
+
+      value = 1118484 - value;
+      eval = ((uint32_t)value) << 12;
+      eval >>= 9;
+      eval |= 0x00080000;
     }
     else
     {
@@ -2581,9 +2683,6 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
       value -= 280;
       eval = ((uint32_t)value) << 20;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 6;
       eval |= 0xF8000000;
     }
@@ -2593,9 +2692,6 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
       value -= 4376;
       eval = ((uint32_t)value) << 16;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 7;
       eval |= 0xFC000000;
     }
@@ -2605,9 +2701,6 @@ void OrdPathStack::compressComp(unsigned long comp, long value)
 
       value -= 69912;
       eval = ((uint32_t)value) << 12;
-      while (!(eval & 0x8FFFFFFF))
-        eval <<= 1;
-
       eval >>= 8;
       eval |= 0xFE000000;
     }

@@ -49,6 +49,13 @@ public:
 
   ~NodeVector() { }
 
+  NodeVector& operator=(NodeVector* v)
+  {
+    if (v != 0)
+      theNodes = v->theNodes;
+    return *this;
+  }
+
   unsigned long size() const { return theNodes.size(); }
   bool empty() const { return theNodes.empty(); }
 
@@ -66,6 +73,9 @@ public:
 ********************************************************************************/
 class NodeImpl : public Item
 {
+  friend class DocumentNodeImpl;
+  friend class ElementNodeImpl;
+
 protected:
   OrdPath    theId;
   Item     * theParent;   // Pointer to avoid cyclic smart pointers
@@ -73,7 +83,7 @@ protected:
 public:
   NodeImpl(bool assignId);
 
-  ~NodeImpl() { }
+  virtual ~NodeImpl() { }
 
   //
   // Item methods
@@ -83,7 +93,6 @@ public:
   bool isAtomic() const                { return false; }
 
   Item_t getParent() const             { return theParent; }
-  Item * getParentPtr() const          { return theParent; }
 
   virtual bool equals(Item_t) const;
   virtual uint32_t hash() const        { return 0; }
@@ -96,14 +105,15 @@ public:
   //
   // SimpleStore Methods
   // 
+  Item * getParentPtr() const          { return theParent; }
+  void setParent(const Item_t& p)      { theParent = p.get_ptr(); }
 
+  void initId();
   unsigned long getTreeId() const      { return theId.getTreeId(); }
   const OrdPath& getId() const         { return theId; }
   void setId(const OrdPathStack& id)   { theId = id; }
   void setId(const OrdPath& id)        { theId = id; }
   void appendIdComponent(long value)   { theId.appendComp(value); } 
-
-  void setParent(const Item_t& p)      { theParent = p.get_ptr(); }
 
   virtual NsBindingsContext_t getNsBindingsContext() const { return NULL; }
 };
@@ -178,7 +188,7 @@ class ElementNodeImpl : public NodeImpl
   QNameItem_t            theName;
   QNameItem_t            theType;
   NodeVector             theChildren;
-  NodeVector           * theAttributes;
+  NodeVector             theAttributes;
   NsBindingsContext_t    theNsBindings;
 
 public:
@@ -226,7 +236,7 @@ public:
   unsigned long numAttributes() const;
 
   NodeVector& children()    { return theChildren; }
-  NodeVector*& attributes() { return theAttributes; }
+  NodeVector& attributes()  { return theAttributes; }
 
   NsBindingsContext_t getNsBindingsContext() const { return theNsBindings; }
 
@@ -369,7 +379,7 @@ protected:
   unsigned long       theStartingId;
   unsigned long       theCurrentPos;
 
-  const NodeVector*   theChildNodes;
+  const NodeVector&   theChildNodes;
 
 public:
   ChildrenIterator(NodeImpl* parent, unsigned long startid);
@@ -390,7 +400,7 @@ protected:
   ElementNodeImpl_t   theParentNode;
   unsigned long       theCurrentPos;
 
-  const NodeVector*   theChildNodes;
+  const NodeVector&   theChildNodes;
 
 public:
   AttributesIterator(ElementNodeImpl* parent);

@@ -32,6 +32,7 @@ protected:
   static const unsigned char thePosV2LMap[DEFAULT_FAN_OUT];
   static const unsigned char theNegV2LMap[DEFAULT_FAN_OUT];
   static const uint16_t      thePosV2EVMap[DEFAULT_FAN_OUT];
+  static const uint16_t      theNegV2EVMap[DEFAULT_FAN_OUT];
 
 protected:
   unsigned long       theTreeId;
@@ -41,6 +42,8 @@ protected:
 public:
   OrdPath() : theTreeId(0), theBuffer(NULL) { }
 
+  void init(unsigned long treeid);
+
   OrdPath& operator=(const OrdPath& other);
   OrdPath& operator=(const OrdPathStack& ops);
 
@@ -48,7 +51,7 @@ public:
   {
     if (theBuffer != NULL)
     {
-      delete[] theBuffer;
+      delete [] theBuffer;
       theBuffer = NULL;
     }
   }

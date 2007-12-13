@@ -19,19 +19,19 @@ namespace xqp
         zorba::getZorbaForCurrentThread()->GetCurrentLocation()
 
 
-/*******************************************************************************
-  class NodeImpl
-********************************************************************************/
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class DocumentNode                                                         //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
 
 NodeImpl::NodeImpl(bool assignId)
   :
   theParent(NULL)
 {
   if (assignId)
-  {
-    theId.setTreeId(GET_STORE().getTreeId());
-    theId.appendComp(1);
-  }
+    theId.init(GET_STORE().getTreeId());
 }
 
 
@@ -62,6 +62,12 @@ bool NodeImpl::equals(Item_t item) const
 Item_t NodeImpl::getEBV() const
 {
   return zorba::getItemFactory()->createBoolean(true);
+}
+
+
+void NodeImpl::initId()
+{
+  theId.init(GET_STORE().getTreeId());
 }
 
 
@@ -109,8 +115,24 @@ DocumentNodeImpl::DocumentNodeImpl(
 }
  
 
+/*******************************************************************************
+
+********************************************************************************/
 DocumentNodeImpl::~DocumentNodeImpl()
 {
+  unsigned long numChildren = theChildren.size();
+  unsigned long i;
+  for (i = 0; i < numChildren; i++)
+  {
+    NodeImpl* child = BASE_NODE(theChildren[i]);
+
+    if (!child->getId().isValid())
+    {
+      child->initId();
+    }
+
+    child->theParent = NULL;
+  }
 }
 
 
@@ -193,8 +215,7 @@ ElementNodeImpl::ElementNodeImpl(
   :
   NodeImpl(false),
   theName(name),
-  theType(type),
-  theAttributes(NULL)
+  theType(type)
 {
   if (!nsBindings.empty())
     theNsBindings = new NsBindingsContext(nsBindings);
@@ -217,8 +238,7 @@ ElementNodeImpl::ElementNodeImpl(
   :
   NodeImpl(assignId),
   theName(name),
-  theType(type),
-  theAttributes(0)
+  theType(type)
 {
   Assert(namespacesIte == NULL);
 
@@ -227,16 +247,11 @@ ElementNodeImpl::ElementNodeImpl(
   if (attributesIte != 0)
   {
     item = attributesIte->next();
-    if (item != NULL)
+    while (item != 0)
     {
-      theAttributes = new NodeVector();
-
-      while (item != 0)
-      {
-        Assert(item->isNode() && item->getNodeKind() == StoreConsts::attributeNode);
-        theAttributes->push_back(item);
-        item = attributesIte->next();
-      }
+      Assert(item->isNode() && item->getNodeKind() == StoreConsts::attributeNode);
+      theAttributes.push_back(item);
+      item = attributesIte->next();
     }
   }
   
@@ -245,11 +260,13 @@ ElementNodeImpl::ElementNodeImpl(
     item = childrenIte->next();
     while (item != 0)
     {
-      if (item->isNode() && item->getNodeKind() == StoreConsts::attributeNode) {
-        if (theAttributes == 0)
-          theAttributes = new NodeVector();
-        theAttributes->push_back(item);
-      } else {
+      Assert(item->isNode());
+      if (item->getNodeKind() == StoreConsts::attributeNode)
+      {
+        theAttributes.push_back(item);
+      }
+      else
+      {
         theChildren.push_back(item);
       }
       item = childrenIte->next();
@@ -270,10 +287,33 @@ ElementNodeImpl::~ElementNodeImpl()
 {
   Assert(getRefCount() == 0);
 
-  if (theAttributes != NULL)
+  unsigned long i;
+  unsigned long numNodes = theChildren.size();
+
+  for (i = 0; i < numNodes; i++)
   {
-    delete theAttributes;
-    theAttributes = NULL;
+    NodeImpl* child = BASE_NODE(theChildren[i]);
+
+    if (!child->getId().isValid())
+    {
+      child->initId();
+    }
+
+    child->theParent = NULL;
+  }
+
+  numNodes = theAttributes.size();
+
+  for (i = 0; i < numNodes; i++)
+  {
+    NodeImpl* attr = BASE_NODE(theAttributes[i]);
+
+    if (!attr->getId().isValid())
+    {
+      attr->initId();
+    }
+
+    attr->theParent = NULL;
   }
 }
 
@@ -283,10 +323,7 @@ ElementNodeImpl::~ElementNodeImpl()
 ********************************************************************************/
 unsigned long ElementNodeImpl::numAttributes() const
 {
-  if (theAttributes == NULL)
-    return 0;
-
-  return theAttributes->size();
+  return theAttributes.size();
 }
 
 
@@ -418,21 +455,18 @@ xqp_string ElementNodeImpl::show() const
         << nsBindings[i].second << "\"";
   }
 
-  if (theAttributes != NULL)
+  Iterator_t iter = getAttributes();
+  Item_t item = iter->next();
+  while (item != NULL)
   {
-    Iterator_t iter = getAttributes();
-    Item_t item = iter->next();
-    while (item != NULL)
-    {
-      str << " " << item->show();
-      item = iter->next();
-    }
+    str << " " << item->show();
+    item = iter->next();
   }
 
   str << ">";
 
-  Iterator_t iter = getChildren();
-  Item_t item = iter->next();
+  iter = getChildren();
+  item = iter->next();
   while (item != NULL)
   {
     str << item->show();
@@ -738,21 +772,20 @@ ChildrenIterator::ChildrenIterator(
   :
   theParentNode(parent),
   theStartingId(startId),
-  theCurrentPos(0)
+  theCurrentPos(0),
+  theChildNodes(parent->getNodeKind() == StoreConsts::documentNode ?
+                reinterpret_cast<DocumentNodeImpl*>(parent)->children() :
+                reinterpret_cast<ElementNodeImpl*>(parent)->children())
 {
-  if (theParentNode->getNodeKind() == StoreConsts::documentNode)
-    theChildNodes = &reinterpret_cast<DocumentNodeImpl*>(parent)->children();
-  else
-    theChildNodes = &reinterpret_cast<ElementNodeImpl*>(parent)->children();
 }
 
 
 Item_t ChildrenIterator::next()
 {
-  if (theCurrentPos >= theChildNodes->size())
+  if (theCurrentPos >= theChildNodes.size())
     return NULL;
 
-  Item_t item = (*theChildNodes)[theCurrentPos];
+  Item_t item = theChildNodes[theCurrentPos];
   NodeImpl_t childNode = BASE_NODE(item);
 
   if (childNode->getParentPtr() == NULL)
@@ -814,10 +847,10 @@ AttributesIterator::AttributesIterator(ElementNodeImpl* parent)
 
 Item_t AttributesIterator::next()
 {
-  if (theChildNodes == NULL || theCurrentPos >= theChildNodes->size())
+  if (theCurrentPos >= theChildNodes.size())
     return NULL;
 
-  Item_t item = (*theChildNodes)[theCurrentPos];
+  Item_t item = theChildNodes[theCurrentPos];
   NodeImpl_t childNode = BASE_NODE(item);
 
   if (childNode->getParent() == NULL)
