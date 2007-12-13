@@ -63,6 +63,7 @@ var_expr *translator::bind_var (yy::location loc, string varname) {
 
 translator::translator()
 {
+  tempvar_counter = 0;
   zorp = zorba::getZorbaForCurrentThread();
   sctx_p = zorp->get_static_context();
 }
@@ -1003,6 +1004,7 @@ void *translator::begin_visit(const VarDecl& v)
 void translator::end_visit(const VarDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  bind_var(v.get_location(), v.get_varname());
 }
 
 
@@ -2174,7 +2176,35 @@ void translator::end_visit(const SchemaElementTest& v, void *visit_state)
   TRACE_VISIT_OUT ();
 }
 
+#define TEMP_VAR_URI "http://www.flworfound.org/zorba/temp-var"
+#define TEMP_VAR_PREFIX "ztv"
 
+rchandle<var_expr> translator::tempvar(yy::location loc)
+{
+  ostringstream o;
+  o << "v" << tempvar_counter++;
+  return new var_expr(loc, Store::getInstance().getItemFactory().createQName(TEMP_VAR_URI, TEMP_VAR_PREFIX, o.str().c_str()));
+}
+
+rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, bool add_posvar)
+{
+  rchandle<var_expr> fv = tempvar(expr->get_loc());
+  fv->set_kind(var_expr::for_var);
+  rchandle<var_expr> pv = NULL;
+  if (add_posvar) {
+    pv = tempvar(expr->get_loc());
+    pv->set_kind(var_expr::pos_var);
+  }
+  return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.get_ptr());
+}
+
+translator::expr_t translator::wrap_in_dos_and_dupelim(expr_t expr)
+{
+  rchandle<fo_expr> dos = new fo_expr(expr->get_loc());
+  dos->set_func(LOOKUP_OP1("sort-distinct-nodes-ascending"));
+  dos->add(expr);
+  return &*dos;
+}
 
 /*******************************************************************************
 
@@ -2198,52 +2228,56 @@ void translator::end_visit(const SchemaElementTest& v, void *visit_state)
 void *translator::begin_visit(const PathExpr& v)
 {
   TRACE_VISIT ();
+  rchandle<relpath_expr> rpe = NULL;
+  if (v.get_type() != path_leading_lone_slash) {
+    rpe = new relpath_expr(v.get_location());
+  }
+  expr_t result = &*rpe;
+
+  if (v.get_type() != path_relative) {
+    // Create fn:root(self::node()) expr
+    rchandle<match_expr> me = new match_expr(v.get_location());
+    me->setTestKind(match_anykind_test);
+
+    rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
+    ase->setAxis(axis_kind_self);
+    ase->setTest(me);
+
+    rchandle<fo_expr> fo = new fo_expr(v.get_location());
+    fo->set_func(LOOKUP_FN("fn", "root", 1));
+    fo->add(&*ase);
+    result = &*fo;
+    if (rpe != NULL) {
+      rpe->add_back(&*fo);
+      result = &*rpe;
+    }
+  }
+  if (v.get_type() == path_leading_slashslash)
+  {
+    rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
+    rchandle<match_expr> me = new match_expr(v.get_location());
+    me->setTestKind(match_anykind_test);
+    ase->setAxis(axis_kind_descendant_or_self);
+    ase->setTest(me);
+    rpe->add_back(&*ase);
+  }
+  nodestack.push(&*result);
   return no_state;
 }
-
 
 void translator::end_visit(const PathExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-
-  // Create fn:root(self::node()) expr
-  rchandle<match_expr> me = new match_expr(v.get_location());
-  me->setTestKind(match_anykind_test);
-
-  rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
-  ase->setAxis(axis_kind_self);
-  ase->setTest(me);
- 
-  rchandle<fo_expr> fo = new fo_expr(v.get_location());
-  fo->set_func(LOOKUP_FN("fn", "root", 1));
-  fo->add(&*ase);
-
-  if (v.get_type() == path_leading_lone_slash)
-  {
-      nodestack.push(&*fo);
+  expr_t arg2 = pop_nodestack();
+  rchandle<relpath_expr> rpe = dynamic_cast<relpath_expr *>(&*arg2);
+  if (rpe == NULL) {
+    expr_t arg1 = pop_nodestack();
+    rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    Assert(rpe != NULL);
+    rpe->add_back(arg2);
   }
-  else
-  {
-    rchandle<relpath_expr> rpe = dynamic_cast<relpath_expr*>(&*nodestack.top());
-    Assert(rpe != NULL);    
-
-    if (v.get_type() == path_leading_slash)
-    {
-      rpe->add_front(&*fo);
-    }
-    else if (v.get_type() == path_leading_slashslash)
-    {
-      ase = new axis_step_expr(v.get_location());
-      me = new match_expr(v.get_location());
-      me->setTestKind(match_anykind_test);
-      ase->setAxis(axis_kind_descendant_or_self);
-      ase->setTest(me);
-      rpe->add_front(&*ase);
-      rpe->add_front(&*fo);
-    }
-  }
+  nodestack.push(wrap_in_dos_and_dupelim(rpe.get_ptr()));
 }
-
 
 void *translator::begin_visit(const RelativePathExpr& v)
 {
@@ -2251,21 +2285,15 @@ void *translator::begin_visit(const RelativePathExpr& v)
   return no_state;
 }
 
-
-void translator::end_visit(const RelativePathExpr& v, void *visit_state)
+void translator::intermediate_visit(const RelativePathExpr& v, void *visit_state)
 {
-  TRACE_VISIT_OUT ();
+  expr_t arg2 = pop_nodestack();
+  expr_t arg1 = pop_nodestack();
+  
+  relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
+  Assert(rpe != NULL);
 
-  expr_t arg2 = pop_nodestack();    // step-(i+1) or rpe-(i+1)
-  expr_t arg1 = pop_nodestack();    // step-i
-
-  rchandle<relpath_expr> rpe = dynamic_cast<relpath_expr*>(&*arg2);
-  if (rpe == NULL)
-  {
-    rpe = new relpath_expr(v.get_location());
-    rpe->add_front(arg2);
-  }
-
+  rpe->add_back(arg2);
   if (v.get_step_type() == st_slashslash)
   {
     rchandle<axis_step_expr> ase = new axis_step_expr(v.get_location());
@@ -2273,17 +2301,35 @@ void translator::end_visit(const RelativePathExpr& v, void *visit_state)
     me->setTestKind(match_anykind_test);
     ase->setAxis(axis_kind_descendant_or_self);
     ase->setTest(me);
-    rpe->add_front(&*ase);
+    rpe->add_back(&*ase);
   }
+  nodestack.push(rpe);
+}
 
-  rpe->add_front(arg1);
-  nodestack.push(&*rpe);
+void translator::end_visit(const RelativePathExpr& v, void *visit_state)
+{
+  TRACE_VISIT_OUT ();
+
+  expr_t arg2 = pop_nodestack();
+  rchandle<relpath_expr> rpe = dynamic_cast<relpath_expr *>(&*arg2);
+  if (rpe == NULL) {
+    expr_t arg1 = pop_nodestack();
+    rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    Assert(rpe != NULL);
+    rpe->add_back(arg2);
+  }
+  nodestack.push(rpe.get_ptr());
 }
 
 
 void *translator::begin_visit(const AxisStep& v)
 {
   TRACE_VISIT ();
+
+  PredicateList *pl = v.get_predicate_list().get_ptr();
+  if (pl != NULL && pl->size() > 0) {
+    push_scope();
+  }
 
   rchandle<axis_step_expr> aexpr_h = new axis_step_expr(v.get_location());
   nodestack.push(&*aexpr_h);
@@ -2307,6 +2353,10 @@ void translator::end_visit(const AxisStep& v, void *visit_state)
     expr_t e = pstack.top();
     pstack.pop();
     ase->addPred(e);
+  }
+  PredicateList *pl = v.get_predicate_list().get_ptr();
+  if (pl != NULL && pl->size() > 0) {
+    pop_scope();
   }
 }
 

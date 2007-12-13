@@ -544,6 +544,7 @@ ostream& instanceof_expr::put( ostream& os) const
 void instanceof_expr::accept(
   expr_visitor& v)
 {
+  expr_h->accept(v);
 }
 
 
@@ -860,17 +861,12 @@ void axis_step_expr::accept(expr_visitor& v)
 {
   if (!v.begin_visit(*this)) return;
 
-  theNodeTest->accept(v);
-
-  if (numPreds() > 0)
-  {
-    ZORBA_ERROR_ALERT(
-       error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-       error_messages::SYSTEM_ERROR,
-       NULL,
-       false,
-       "Path expressions with predicates are not implemented");
+  vector<expr_t>::const_iterator it = thePreds.begin();
+  vector<expr_t>::const_iterator en = thePreds.end();
+  for(; it != en; ++it) {
+    (*it)->accept(v);
   }
+  theNodeTest->accept(v);
 
   v.end_visit(*this);
 }

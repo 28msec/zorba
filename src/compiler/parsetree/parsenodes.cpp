@@ -3273,6 +3273,7 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
 { 
   BEGIN_VISITOR ();
   ACCEPT (step_expr_h);
+  v.intermediate_visit(*this, visitor_state);
   ACCEPT (relpath_expr_h);
   END_VISITOR ();
 }

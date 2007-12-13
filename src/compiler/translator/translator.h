@@ -34,6 +34,7 @@ public:
 	typedef rchandle<expr> expr_t;
 
 protected:
+    int tempvar_counter;
 	zorba* zorp;
   static_context *sctx_p;
   var_expr *bind_var (yy::location loc, string varname);
@@ -42,6 +43,10 @@ protected:
 	std::stack<expr_t> nodestack;
   // std::stack<expr_t> argstack;
 	std::stack<expr_t> pstack;	// predicates stack
+
+    rchandle<var_expr> tempvar(yy::location loc);
+    rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar);
+    expr_t wrap_in_dos_and_dupelim(expr_t expr);
 
 public:
 	translator();
@@ -457,6 +462,7 @@ public:
 	void end_visit (FTWordsSelection const&, void *);
 	void end_visit (FTWordsValue const&, void *);
 	
+    void intermediate_visit(RelativePathExpr const&, void *);
 };
 
 

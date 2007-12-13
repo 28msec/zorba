@@ -479,7 +479,12 @@ public:
 	virtual void end_visit(FTWords const&, void *visit_state) = 0;
 	virtual void end_visit(FTWordsSelection const&, void *visit_state) = 0;
 	virtual void end_visit(FTWordsValue const&, void *visit_state) = 0;
-	
+
+    /* Methods that deviate from the visitor pattern that are
+     * needed in various situations.
+     */
+
+	virtual void intermediate_visit(RelativePathExpr const&, void *visit_state) { }
 };
 
 } /* namespace xqp */

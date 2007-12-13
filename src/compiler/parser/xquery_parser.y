@@ -2863,7 +2863,8 @@ PathExpr :
 	|	RelativePathExpr	 	/* gn: leading-lone-slashXQ */
 		{
 			if (debug) cout << "PathExpr [relative]\n";
-			$$ = $1;
+            RelativePathExpr *rpe = dynamic_cast<RelativePathExpr *>($1);
+            $$ = rpe == NULL ? $1 : new PathExpr(@$, path_relative, $1);
 		}
 	;
 

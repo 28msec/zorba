@@ -356,13 +356,6 @@ bool plan_visitor::begin_visit(relpath_expr& v)
 void plan_visitor::end_visit(relpath_expr& v)
 {
   CODEGEN_TRACE("");
-
-  PlanIter_t input = pop_itstack();
-
-  PlanIter_t distinct = new NodeSortIterator(v.get_loc(), input, true, true);
-  //PlanIter_t distinct = new NodeDistinctIterator(v.get_loc(), input);
-
-  itstack.push(distinct);
 }
 
 

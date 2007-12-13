@@ -3304,6 +3304,7 @@ public:
 public:
 	void push_back(rchandle<exprnode> pred_h) { pred_hv.push_back(pred_h); }
 	rchandle<exprnode> operator[](int i) { return pred_hv[i]; }
+    int size() { return pred_hv.size(); }
 
 public:
 	std::ostream& put(std::ostream&) const;
