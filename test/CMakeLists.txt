@@ -1,4 +1,5 @@
 ADD_SUBDIRECTORY(rbkt)
+ADD_SUBDIRECTORY(unit)
 
 SET(API_TEST_SRCS
     timer.cpp
