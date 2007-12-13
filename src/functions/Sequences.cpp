@@ -431,25 +431,25 @@ TypeSystem::xqtref_t fn_doc_func::type_check(
 // internal functions
 
 // distinct-nodes function
-fn_distinct_nodes::fn_distinct_nodes(const signature& sig)
+op_distinct_nodes::op_distinct_nodes(const signature& sig)
   :	function(sig)
 {
 }
 
-PlanIter_t fn_distinct_nodes::operator()
+PlanIter_t op_distinct_nodes::operator()
   (const yy::location& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   return new NodeDistinctIterator(loc, argv[0]);
 }
   
-bool fn_distinct_nodes::validate_args(
+bool op_distinct_nodes::validate_args(
 	vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_distinct_nodes::type_check(
+TypeSystem::xqtref_t op_distinct_nodes::type_check(
 	signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
@@ -457,23 +457,23 @@ TypeSystem::xqtref_t fn_distinct_nodes::type_check(
 
 
 // sort-nodes function
-fn_sort_nodes::fn_sort_nodes(const signature& sig)
+op_sort_nodes::op_sort_nodes(const signature& sig)
   :	function(sig)
 {}
 
-PlanIter_t fn_sort_nodes::operator()
+PlanIter_t op_sort_nodes::operator()
   (const yy::location& loc, 
 	 vector<PlanIter_t>& argv) const
 {
   return new NodeDistinctIterator(loc, argv[0]);
 }
   
-bool fn_sort_nodes::validate_args(vector<PlanIter_t>& argv) const
+bool op_sort_nodes::validate_args(vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t fn_sort_nodes::type_check(signature& sig) const
+TypeSystem::xqtref_t op_sort_nodes::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }

@@ -189,13 +189,13 @@ DECL(fn_insert_before,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR,
     GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(fn_distinct_nodes,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","distinct-nodes"),
+DECL(op_distinct_nodes,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":distinct-nodes"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
-DECL(fn_sort_nodes,
-  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn","sort-nodes"),
+DECL(op_sort_nodes,
+  (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn",":sort-nodes"),
   GENV_TYPESYSTEM.ITEM_TYPE_STAR,
   GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 

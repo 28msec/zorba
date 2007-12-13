@@ -295,11 +295,11 @@ public:
 |_______________________________________________________________________*/
 
 // internal distinct-nodes function
-class fn_distinct_nodes : public function
+class op_distinct_nodes : public function
 {
 public:
-	fn_distinct_nodes(const signature&);
-	~fn_distinct_nodes() {}
+	op_distinct_nodes(const signature&);
+	~op_distinct_nodes() {}
 
 public:
 	TypeSystem::xqtref_t type_check(signature&) const;
@@ -308,11 +308,11 @@ public:
 };
 
 // internal sort-nodes function
-class fn_sort_nodes : public function
+class op_sort_nodes : public function
 {
 public:
-	fn_sort_nodes(const signature&);
-	~fn_sort_nodes() {}
+	op_sort_nodes(const signature&);
+	~op_sort_nodes() {}
 
 public:
 	TypeSystem::xqtref_t type_check(signature&) const;
