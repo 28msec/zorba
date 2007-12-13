@@ -1624,8 +1624,7 @@ void *translator::begin_visit(const FunctionCall& v)
   return no_state;
 }
 
-void translator::end_visit(const FunctionCall& v, void *visit_state)
-{
+void translator::end_visit(const FunctionCall& v, void *visit_state) {
   TRACE_VISIT_OUT ();
   std::vector<expr_t> arguments;
   while (true) {
@@ -1638,18 +1637,25 @@ void translator::end_visit(const FunctionCall& v, void *visit_state)
   rchandle<QName> qn_h = v.get_fname();
   string prefix = qn_h->get_prefix();
   string fname = qn_h->get_localname();
-
-  rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
-  int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
-  fo_h->set_func (LOOKUP_FN (prefix, fname, sz));
-  
-  // TODO this should be a const iterator
-  std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
-  for(; iter != arguments.rend(); ++iter) {
-    fo_h->add(*iter);
+  TypeSystem::xqtref_t type =
+    GENV_TYPESYSTEM.create_type (sctx_p->lookup_fn_qname (prefix, fname),
+                                 TypeSystem::QUANT_ONE);
+  if (type != NULL) {
+    assert (arguments.size () == 1);
+    nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
+  } else {
+    rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
+    int sz = (v.get_arg_list () == NULL) ? 0 : v.get_arg_list ()->size ();
+    fo_h->set_func (LOOKUP_FN (prefix, fname, sz));
+    
+    // TODO this should be a const iterator
+    std::vector<expr_t>::reverse_iterator iter = arguments.rbegin();
+    for(; iter != arguments.rend(); ++iter) {
+      fo_h->add(*iter);
+    }
+    
+    nodestack.push(&*fo_h);
   }
-
-  nodestack.push(&*fo_h);
 }
 
 void *translator::begin_visit(const IfExpr& v)
