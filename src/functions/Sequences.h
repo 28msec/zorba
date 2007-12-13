@@ -307,12 +307,12 @@ public:
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
-// internal sort-nodes function
-class op_sort_nodes : public function
+// internal sort-nodes function sorting in document order
+class op_sort_nodes_ascending : public function
 {
 public:
-	op_sort_nodes(const signature&);
-	~op_sort_nodes() {}
+	op_sort_nodes_ascending(const signature&);
+	~op_sort_nodes_ascending() {}
 
 public:
 	TypeSystem::xqtref_t type_check(signature&) const;
@@ -320,6 +320,45 @@ public:
 	bool validate_args(std::vector<PlanIter_t>&) const;
 };
 
+// internal sort-nodes function sorting in reverse document order
+class op_sort_nodes_descending : public function
+{
+public:
+	op_sort_nodes_descending(const signature&);
+	~op_sort_nodes_descending() {}
+
+public:
+	TypeSystem::xqtref_t type_check(signature&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+
+// internal function for sort-nodes in document order and doing distinct-nodes in one run
+class op_sort_distinct_nodes_ascending : public function
+{
+public:
+	op_sort_distinct_nodes_ascending(const signature&);
+	~op_sort_distinct_nodes_ascending() {}
+
+public:
+	TypeSystem::xqtref_t type_check(signature&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
+
+// internal function for sort-nodes in reverse document order and doing distinct-nodes in one run
+class op_sort_distinct_nodes_descending : public function
+{
+public:
+	op_sort_distinct_nodes_descending(const signature&);
+	~op_sort_distinct_nodes_descending() {}
+
+public:
+	TypeSystem::xqtref_t type_check(signature&) const;
+	PlanIter_t operator()( const yy::location& loc, std::vector<PlanIter_t>&) const;
+	bool validate_args(std::vector<PlanIter_t>&) const;
+};
 
 PlanIter_t xqp_load(
 	const std::string& path,

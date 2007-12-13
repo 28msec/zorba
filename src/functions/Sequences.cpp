@@ -456,27 +456,99 @@ TypeSystem::xqtref_t op_distinct_nodes::type_check(
 }
 
 
-// sort-nodes function
-op_sort_nodes::op_sort_nodes(const signature& sig)
+// sort-nodes function which is sorting in document order
+op_sort_nodes_ascending::op_sort_nodes_ascending(const signature& sig)
   :	function(sig)
 {}
 
-PlanIter_t op_sort_nodes::operator()
+PlanIter_t op_sort_nodes_ascending::operator()
   (const yy::location& loc, 
 	 vector<PlanIter_t>& argv) const
 {
-  return new NodeDistinctIterator(loc, argv[0]);
+  // sorting in document order without dupelim
+  return new NodeSortIterator(loc, argv[0], true, false);
 }
   
-bool op_sort_nodes::validate_args(vector<PlanIter_t>& argv) const
+bool op_sort_nodes_ascending::validate_args(vector<PlanIter_t>& argv) const
 {
   return (argv.size() == 1);
 }
 
-TypeSystem::xqtref_t op_sort_nodes::type_check(signature& sig) const
+TypeSystem::xqtref_t op_sort_nodes_ascending::type_check(signature& sig) const
 {
 	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
+
+// sort-nodes function which is sorting in reverse document order
+op_sort_nodes_descending::op_sort_nodes_descending(const signature& sig)
+  :	function(sig)
+{}
+
+PlanIter_t op_sort_nodes_descending::operator()
+  (const yy::location& loc, 
+	 vector<PlanIter_t>& argv) const
+{
+  // sorting in reverse document order without dupelim
+  return new NodeSortIterator(loc, argv[0], false, false);
+}
+  
+bool op_sort_nodes_descending::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t op_sort_nodes_descending::type_check(signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+
+// function for sorting nodes in document order and doing distinct-nodes in one run
+op_sort_distinct_nodes_ascending::op_sort_distinct_nodes_ascending(const signature& sig)
+  :	function(sig)
+{}
+
+PlanIter_t op_sort_distinct_nodes_ascending::operator()
+  (const yy::location& loc, 
+	 vector<PlanIter_t>& argv) const
+{
+  // sorting in document order and doing dup elim
+  return new NodeSortIterator(loc, argv[0], true, true);
+}
+  
+bool op_sort_distinct_nodes_ascending::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t op_sort_distinct_nodes_ascending::type_check(signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
+// function for sorting nodes in document order and doing distinct-nodes in one run
+op_sort_distinct_nodes_descending::op_sort_distinct_nodes_descending(const signature& sig)
+  :	function(sig)
+{}
+
+PlanIter_t op_sort_distinct_nodes_descending::operator()
+  (const yy::location& loc, 
+	 vector<PlanIter_t>& argv) const
+{
+  // sorting in document order and doing dup elim
+  return new NodeSortIterator(loc, argv[0], true, true);
+}
+  
+bool op_sort_distinct_nodes_descending::validate_args(vector<PlanIter_t>& argv) const
+{
+  return (argv.size() == 1);
+}
+
+TypeSystem::xqtref_t op_sort_distinct_nodes_descending::type_check(signature& sig) const
+{
+	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+}
+
 
 } /* namespace xqp */
 
