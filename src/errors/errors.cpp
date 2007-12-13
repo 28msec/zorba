@@ -208,9 +208,9 @@ std::string errors_english::errtype_decode(enum error_type errtype)
 {
   switch(errtype)
   {
-  case STATIC_ERROR: return "Static: ";
-  case RUNTIME_ERROR: return "Runtime: ";
-  case SYSTEM_ERROR: return "System: ";
+  case STATIC_ERROR: return "Static";
+  case RUNTIME_ERROR: return "Runtime";
+  case SYSTEM_ERROR: return "System";
   case USER_ERROR: return "User";
   }
 
