@@ -61,7 +61,7 @@ protected:
   static const char *default_ns_initializers [];
 
 	static_context (const char **);
-  xqp_string qname_internal_key (QNameItem_t qname) const;
+  xqp_string qname_internal_key (const QNameItem *qname) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string prefix, xqp_string local) const;
   xqp_string qname_internal_key (xqp_string default_ns, xqp_string qname) const;
   static xqp_string fn_internal_key (int arity);
@@ -97,6 +97,9 @@ public:
   QNameItem_t lookup_elem_qname (xqp_string pfx, xqp_string local) const {
     return lookup_qname (default_elem_type_ns (), pfx, local);
   }
+  QNameItem_t lookup_fn_qname (xqp_string pfx, xqp_string local) const {
+    return lookup_qname (default_function_namespace (), pfx, local);
+  }
 
   expr *lookup_var (xqp_string prefix, xqp_string local) const {
     return lookup_expr ("var:" + qname_internal_key ("", prefix, local));
@@ -104,7 +107,7 @@ public:
   expr *lookup_var (xqp_string varname) const {
     return lookup_expr ("var:" + qname_internal_key ("", varname));
   }
-  void bind_var (QNameItem_t qname, expr *expr) {
+  void bind_var (const QNameItem *qname, expr *expr) {
     bind_expr ("var:" + qname_internal_key (qname), expr);
   }
   void bind_var (xqp_string prefix, xqp_string local, expr *expr) {
@@ -130,11 +133,11 @@ public:
     bind_func (fn_internal_key (arity) + qname_internal_key (default_function_namespace (), fname), f);
   }
 
-	void add_variable_type( QNameItem *var_name, TypeSystem::xqtref_t var_type);
-	TypeSystem::xqtref_t	get_variable_type( QNameItem *var_name );
+	void add_variable_type( const QNameItem *var_name, TypeSystem::xqtref_t var_type);
+	TypeSystem::xqtref_t  get_variable_type( QNameItem *var_name );
 
 	void bind_type( xqp_string key, TypeSystem::xqtref_t t);
-	TypeSystem::xqtref_t	lookup_type(xqp_string key);
+	TypeSystem::xqtref_t  lookup_type (xqp_string key);
 
 	COLLATION_OBJ	*lookup_collation(xqp_string coll_uri);
 	void		bind_collation(xqp_string coll_uri, COLLATION_OBJ*);
@@ -177,7 +180,7 @@ public:
 	void set_default_collection_type(TypeSystem::xqtref_t t);
 	TypeSystem::xqtref_t		default_collection_type();
 
-	void set_function_type(QNameItem_t qname, TypeSystem::xqtref_t t);
+	void set_function_type(const QNameItem *qname, TypeSystem::xqtref_t t);
   TypeSystem::xqtref_t get_function_type(const QNameItem_t);
 	
 	void set_document_type(xqp_string docURI, TypeSystem::xqtref_t t);
