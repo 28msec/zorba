@@ -227,6 +227,6 @@ DisplayErrorsAndExit:
   if (lProp->printTime())
     timer.print(cout);
   
-  return 1; // FIXME this should return 0 if we catch an error
+  return 0;
 }
 

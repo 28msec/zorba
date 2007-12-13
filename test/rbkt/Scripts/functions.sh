@@ -120,9 +120,9 @@ function run_query
   cd ${queryFile%/*}
 
   if [ $displayFormat == "xml" ]; then
-    ${EXE} -r -o "${queryFile}.res" "${queryFile}"
+    ${EXE} -r -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
   else
-    ${EXE} -o "${queryFile}.res" "${queryFile}"
+    ${EXE} -o "${queryFile}.res" "${queryFile}" 2> "${queryFile}.res.err"
   fi
   error=$?
   if [ ${error} != 0 ]; then
@@ -197,6 +197,10 @@ function run_query_in_bucket
   #
   # If no result file was generated, then we create an empty one.
   #
+  if [ -s "${inputDir}/${queryName}.xq.res.err" ]; then
+      cat "${inputDir}/${queryName}.xq.res.err" | head -1 | cut -f1 -d':' > "${inputDir}/${queryName}.xq.res"
+      rm "${inputDir}/${queryName}.xq.res.err"
+  fi
   mkdir -p `dirname ${resultFile}`
   if [ -e "${inputDir}/${queryName}.xq.res" ]; then
     cat "${inputDir}/${queryName}.xq.res" | ${scriptsDir}/tidy_xmlfrag >"${resultFile}"
