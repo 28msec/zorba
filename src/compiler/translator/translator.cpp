@@ -1711,7 +1711,8 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
     GENV_TYPESYSTEM.create_type (sctx_p->lookup_fn_qname (prefix, fname),
                                  TypeSystem::QUANT_QUESTION);
   if (type != NULL) {
-    assert (arguments.size () == 1);
+    ZORBA_ERROR_ALERT (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+                       error_messages::STATIC_ERROR, NULL);
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   } else {
     rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
@@ -2694,11 +2695,9 @@ void translator::end_visit(const TypeswitchExpr& v, void *visit_state)
   rchandle<var_expr> ve_h = bind_var (v.get_location(), v.get_default_varname());
   tse_h->set_default_varname(ve_h);
 
-  //d Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
   Assert((e_h = pop_nodestack())!=NULL);
   tse_h->set_switch_expr(e_h);
 
-  //d Assert<null_pointer>((e_h = pop_nodestack())!=NULL);
   Assert((e_h = pop_nodestack())!=NULL);
   tse_h->set_default_clause(e_h);
 
@@ -2787,8 +2786,8 @@ void translator::end_visit(const VarRef& v, void *visit_state)
   TRACE_VISIT_OUT ();
   var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (v.get_varname ()));
   if (e == NULL)
-    cout << "Variable " << v.get_varname () << " not found!\n";
-  Assert (e != NULL);
+    ZORBA_ERROR_ALERT (error_messages::XPST0008_STATIC_ILLEGAL_REFERENCE,
+                       error_messages::STATIC_ERROR, NULL);
   nodestack.push (rchandle<expr> (e));
 }
 
