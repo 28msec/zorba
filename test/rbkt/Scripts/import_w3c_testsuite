@@ -29,8 +29,10 @@ cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
 for $tc in //test-case
-return fn:concat ($tc/@name, " ",
+return fn:concat (
+$tc/@name, " ",
 $tc/@FilePath, " ",
+$tc/query/@name, " ",
 $tc/output-file[1]/text(), " ",
 $tc/expected-error[1]/text(), " 
 ")
@@ -40,9 +42,16 @@ echo Cleaning up previous data...
 rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite
 
 $SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | perl -e '
+use strict;
+my @qdelete=();
 while (<>) {
-if (m# ?([^ ]+) ([^ ]+) ([^ ]*) ([^ ]*)#) {
-my ($name, $path, $out, $err) = ($1, $2, $3, $4);
+if (m# ?([^ ]+) ([^ ]+) ([^ ]+) ([^ ]*) ([^ ]*)#) {
+my ($name, $path, $query, $out, $err) = ($1, $2, $3, $4, $5);
+if (! ($name eq $query)) {
+  my $inpath = "Queries/XQuery/$path";
+  `cp $inpath/$query.xq $inpath/$name.xq`;
+  push @qdelete, "$inpath/$query.xq";
+}
 my $fullout = "ExpectedTestResults/$path/$name.xml.res";
 if ($err) {
   open (RES, ">$fullout");
@@ -51,6 +60,9 @@ if ($err) {
   rename "ExpectedTestResults/$path/$out", $fullout;
 }
 }
+}
+foreach (@qdelete) {
+`rm -f $_`
 }
 '
 rm -f $q
