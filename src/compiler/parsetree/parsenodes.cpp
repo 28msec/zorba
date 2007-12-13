@@ -3880,7 +3880,7 @@ CommonContent::CommonContent(
   enum common_content_t _type)
 :
   exprnode(_loc),
-  type(cont_expr),
+  type(_type),
   ref(""),
   expr_h(NULL)
 {
