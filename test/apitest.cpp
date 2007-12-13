@@ -23,11 +23,13 @@ int apitest_alert_callback(Zorba_AlertMessage *alert_mess,
 													 XQueryExecution*	current_xqueryresult,
 													 void *param)
 {
+#ifndef NDEBUG
 	if((alert_mess->alert_type != Zorba_AlertMessage::USER_ERROR_ALERT) &&
 		(alert_mess->alert_type != Zorba_AlertMessage::USER_TRACE_ALERT))
 	{
 		cerr << g_error_in_file << " : " << g_error_at_line << endl;
 	}
+#endif
 	cerr << "(param " << hex << param << " )" << endl;
 
 	DisplayOneAlert(alert_mess);
@@ -67,11 +69,9 @@ int _tmain(int argc, _TCHAR* argv[])
 #define TEST_ARGV_FLAG( str ) (*argv == string (str))
 #endif
 
-//#ifdef _DEBUG
-//  g_abort_when_fatal_error = true;
-//#else
+#ifndef NDEBUG
   g_abort_when_fatal_error = lProp->abortWhenFatalError();
-//#endif
+#endif
 
   const char* fname = lProp->getQuery().c_str();
 #ifndef UNICODE
