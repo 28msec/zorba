@@ -24,20 +24,49 @@ cd "$d"
 echo Unzipping test suite...
 unzip $ZIP &>/dev/null
 
+q=`mktemp`
+cat >$q <<"EOF"
+declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
+declare option saxon:output "omit-xml-declaration=yes";
+for $tc in //test-case
+return fn:concat ($tc/@name, " ",
+$tc/@FilePath, " ",
+$tc/output-file[1]/text(), " ",
+$tc/expected-error[1]/text(), " 
+")
+EOF
+
 echo Cleaning up previous data...
 rm -rf $SRC/test/rbkt/Queries/w3c_testsuite $SRC/test/rbkt/ExpQueryResults/w3c_testsuite
+
+$SRC/test/zorbatest/xquery -s XQTSCatalog.xml $q | perl -e '
+while (<>) {
+if (m# ?([^ ]+) ([^ ]+) ([^ ]*) ([^ ]*)#) {
+my ($name, $path, $out, $err) = ($1, $2, $3, $4);
+my $fullout = "ExpectedTestResults/$path/$name.xml.res";
+if ($err) {
+  open (RES, ">$fullout");
+  print RES "$err\n";
+} else {
+  rename "ExpectedTestResults/$path/$out", $fullout;
+}
+}
+}
+'
+rm -f $q
 
 echo Moving queries to Zorba repo...
 mv Queries/XQuery $SRC/test/rbkt/Queries/w3c_testsuite
 
 cd ExpectedTestResults
 echo Cleaning up results...
-find . -name '*.log' -exec rm {} \;
-find . -type f -print0 | xargs -0 perl -e 'foreach (@ARGV) { my $was = $_; s/(.*)\.([a-zA-Z]+)/$1.xml.res/g; rename $was, $_; }'
+find . -type f -not -name '*.xml.res' -exec rm {} \;
 
 echo Moving query results to Zorba repo...
 mkdir $SRC/test/rbkt/ExpQueryResults/w3c_testsuite/
 mv * $SRC/test/rbkt/ExpQueryResults/w3c_testsuite/
 
-echo Done
+echo "Cleaning up work directory"
 cd $d0; rm -rf "$d"
+
+echo Done
