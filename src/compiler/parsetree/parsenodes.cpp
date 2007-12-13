@@ -4781,7 +4781,6 @@ CompElemConstructor::CompElemConstructor(
   rchandle<exprnode> _content_expr_h)
 :
   exprnode(_loc),
-  qname_h(NULL),
   qname_expr_h(_qname_expr_h),
   content_expr_h(_content_expr_h)
 {
@@ -4794,7 +4793,6 @@ CompElemConstructor::~CompElemConstructor()
 ostream& CompElemConstructor::put(ostream& s) const
 {
   s << INDENT << "CompElemConstructor[";
-  if (qname_h!=NULL) qname_h->put(s);
   if (qname_expr_h!=NULL) qname_expr_h->put(s);
   if (content_expr_h!=NULL) content_expr_h->put(s);
   return s << OUTDENT << "]\n";
@@ -4805,7 +4803,7 @@ ostream& CompElemConstructor::put(ostream& s) const
 void CompElemConstructor::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (qname_h);
+  ACCEPT (qname_expr_h);
   ACCEPT (content_expr_h);
   END_VISITOR ();
 }
@@ -4825,7 +4823,6 @@ CompAttrConstructor::CompAttrConstructor(
   rchandle<exprnode> _val_expr_h)
 :
   exprnode(_loc),
-  qname_h(NULL),
   qname_expr_h(_qname_expr_h),
   val_expr_h(_val_expr_h)
 {
@@ -4838,7 +4835,6 @@ CompAttrConstructor::~CompAttrConstructor()
 ostream& CompAttrConstructor::put(ostream& s) const
 {
   s << INDENT << "CompAttrConstructor[";
-  if (qname_h!=NULL) qname_h->put(s);
   if (qname_expr_h!=NULL) qname_expr_h->put(s);
   if (val_expr_h!=NULL) val_expr_h->put(s);
   return s << OUTDENT << "]\n";
@@ -4849,7 +4845,7 @@ ostream& CompAttrConstructor::put(ostream& s) const
 void CompAttrConstructor::accept(parsenode_visitor& v) const 
 { 
   BEGIN_VISITOR ();
-  ACCEPT (qname_h);
+  ACCEPT (qname_expr_h);
   ACCEPT (val_expr_h);
   END_VISITOR ();
 }

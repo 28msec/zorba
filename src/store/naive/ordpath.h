@@ -48,7 +48,7 @@ public:
   {
     if (theBuffer != NULL)
     {
-      delete theBuffer;
+      delete[] theBuffer;
       theBuffer = NULL;
     }
   }

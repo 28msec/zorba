@@ -180,6 +180,7 @@ bool normalizer::begin_visit(order_expr& node)
 
 bool normalizer::begin_visit(elem_expr& node)
 {
+  node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
   return true;
 }
 
@@ -195,6 +196,8 @@ bool normalizer::begin_visit(compElem_expr& node)
 
 bool normalizer::begin_visit(attr_expr& node)
 {
+  node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
+  node.setValueExpr(wrap_in_atomization(m_sctx, node.getValueExpr()));
   return true;
 }
 

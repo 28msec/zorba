@@ -2,13 +2,13 @@
  *
  *  $Id: plan_visitor.cpp,v 1.1 2006/10/09 07:07:59 Paul Pedersen Exp $
  *
- *	Copyright 2006-2007 FLWOR Foundation.
+ *  Copyright 2006-2007 FLWOR Foundation.
  *  Author: John Cowan, Paul Pedersen
  *
  */
 
 #include "plan_visitor.h"
- 	
+  
 #include "compiler/expression/expr.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/core/item_iterator.h"
@@ -49,7 +49,7 @@ static uint32_t depth = 0;
 bool plan_visitor::begin_visit(expr& v)
 {
   CODEGEN_TRACE(std::string(++depth, ' '));
-	return true;
+  return true;
 }
 
 
@@ -62,7 +62,7 @@ void plan_visitor::end_visit(expr& v)
 bool plan_visitor::begin_visit(var_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -96,7 +96,7 @@ void plan_visitor::end_visit(var_expr& v)
 bool plan_visitor::begin_visit(order_modifier& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 void plan_visitor::end_visit(order_modifier& v)
@@ -120,7 +120,7 @@ bool plan_visitor::begin_visit(flwor_expr& v)
     } else if (vh->kind == var_expr::let_var)
       lvar_iter_map.put (k, new vector<ref_iter_t>());
   }
-	return true;
+  return true;
 }
 
 
@@ -177,7 +177,7 @@ void plan_visitor::end_visit(flwor_expr& v)
 bool plan_visitor::begin_visit(quantified_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -190,7 +190,7 @@ void plan_visitor::end_visit(quantified_expr& v)
 bool plan_visitor::begin_visit(case_clause& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -203,7 +203,7 @@ void plan_visitor::end_visit(case_clause& v)
 bool plan_visitor::begin_visit(typeswitch_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -216,25 +216,24 @@ void plan_visitor::end_visit(typeswitch_expr& v)
 bool plan_visitor::begin_visit(if_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
 void plan_visitor::end_visit(if_expr& v)
 {
   CODEGEN_TRACE("");
-	PlanIter_t iterElse = pop_itstack();
-	PlanIter_t iterThen = pop_itstack();
-	PlanIter_t iterCond = pop_itstack();
-	PlanIter_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
-	itstack.push(&*iterIfThenElse);
+  PlanIter_t iterElse = pop_itstack();
+  PlanIter_t iterThen = pop_itstack();
+  PlanIter_t iterCond = pop_itstack();
+  PlanIter_t iterIfThenElse = new IfThenElseIterator(v.get_loc(), iterCond, iterThen, iterElse);
+  itstack.push(&*iterIfThenElse);
 }
 
 
 bool plan_visitor::begin_visit(fo_expr& v)
 {
   CODEGEN_TRACE(std::string(++depth, ' '));
-
 	itstack.push(NULL);
 
   // If the function is an enclosed expression and we are in the context of
@@ -256,20 +255,20 @@ void plan_visitor::end_visit(fo_expr& v)
 {
   CODEGEN_TRACE(std::string(depth--, ' '));
 
-	const function* func_p = v.get_func();
-	assert(func_p != NULL);
-	const function& func = *func_p;
+  const function* func_p = v.get_func();
+  assert(func_p != NULL);
+  const function& func = *func_p;
 
-	vector<PlanIter_t> argv;
-	while (true)
+  vector<PlanIter_t> argv;
+  while (true)
   {
-		PlanIter_t it_h = pop_itstack();
-		if (it_h == NULL)
+    PlanIter_t it_h = pop_itstack();
+    if (it_h == NULL)
       break;
 
-		vector<PlanIter_t>::iterator begin = argv.begin();
- 		argv.insert(begin, 1, it_h );
-	}
+    vector<PlanIter_t>::iterator begin = argv.begin();
+    argv.insert(begin, 1, it_h );
+  }
 
   const yy::location& loc = v.get_loc ();
 
@@ -298,49 +297,49 @@ void plan_visitor::end_visit(fo_expr& v)
 bool plan_visitor::begin_visit(ft_select_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(ft_contains_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(instanceof_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(treat_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(castable_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(cast_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(validate_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(extension_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -350,7 +349,7 @@ CODEGEN_TRACE("");
 bool plan_visitor::begin_visit(relpath_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -463,7 +462,7 @@ bool plan_visitor::begin_visit(axis_step_expr& v)
   default:
   {
     ZORBA_ERROR_ALERT(
-       error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+       error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
        error_messages::SYSTEM_ERROR,
        NULL,
        false,
@@ -560,7 +559,7 @@ bool plan_visitor::begin_visit(match_expr& v)
 
   itstack.push(matchIte);
 
-	return true;
+  return true;
 }
 
 
@@ -579,13 +578,18 @@ void plan_visitor::end_visit(match_expr& v)
 bool plan_visitor::begin_visit(doc_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
 void plan_visitor::end_visit(doc_expr& v)
 {
   CODEGEN_TRACE("");
+  
+  PlanIter_t lContent = pop_itstack();
+  PlanIter_t lContIter = new DocumentContentIterator(v.get_loc(), lContent);
+  PlanIter_t lDocIter = new DocumentIterator(v.get_loc(), lContIter);
+  itstack.push(lDocIter);
 }
 
 
@@ -642,7 +646,7 @@ void plan_visitor::end_visit ( elem_expr& v )
 bool plan_visitor::begin_visit(compElem_expr& v)
 {
   CODEGEN_TRACE(std::string(++depth, ' '));
-	return true;
+  return true;
 }
 
 
@@ -670,21 +674,21 @@ void plan_visitor::end_visit(attr_expr& v)
 
   PlanIter_t lQNameIter = 0;
   PlanIter_t lVarIter = 0;
+  PlanIter_t lContentIter = 0;
   
   ItemFactory& iFactory = Store::getInstance().getItemFactory();
 
-	if (v.get_val_expr() != 0)
-  {
-		lVarIter = pop_itstack();
-    lVarIter = new EnclosedIterator(v.get_loc(), lVarIter);
+  if (v.getValueExpr() != 0) {
+    lVarIter = pop_itstack();
   }
   else
   {
     lVarIter = new EmptyIterator(v.get_loc());
   }
   
+  PlanIter_t lAttrIter = 0;
   lQNameIter = pop_itstack();
-
+  
   bool assignId = false;
   Assert(!theConstructorsStack.empty());
   if (theConstructorsStack.top() == &v)
@@ -693,10 +697,9 @@ void plan_visitor::end_visit(attr_expr& v)
     assignId = true;
   }
 
-  PlanIter_t lAttrIter = new AttributeIterator(v.get_loc(),
-                                               lQNameIter,
-                                               lVarIter,
-                                               assignId);
+  
+  lContentIter = new EnclosedIterator(v.get_loc(), lVarIter, true);
+  lAttrIter = new AttributeIterator(v.get_loc(), lQNameIter, lContentIter, assignId);
   
   itstack.push(lAttrIter);
 }
@@ -752,7 +755,7 @@ void plan_visitor::end_visit(text_expr& v)
 bool plan_visitor::begin_visit(pi_expr& v)
 {
   CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -770,13 +773,13 @@ void plan_visitor::end_visit(pi_expr& v)
 bool plan_visitor::begin_visit(const_expr& v)
 {
 CODEGEN_TRACE(std::string(++depth, ' '));
-	return true;
+  return true;
 }
 
 bool plan_visitor::begin_visit(order_expr& v)
 {
 CODEGEN_TRACE("");
-	return true;
+  return true;
 }
 
 
@@ -827,7 +830,7 @@ void plan_visitor::end_visit(extension_expr& v)
 
 void plan_visitor::end_visit(const_expr& v)
 {
-	CODEGEN_TRACE(std::string(depth--, ' '));
+  CODEGEN_TRACE(std::string(depth--, ' '));
   PlanIter_t it = new SingletonIterator (v.get_loc (), v.get_val ());
   itstack.push (it);
 }

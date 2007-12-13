@@ -155,6 +155,9 @@ public:   // variable binding
   */
 class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator>
 {
+private:
+  bool theAttrContent;
+  
 protected:
   class EnclosedState : public PlanIteratorState
   {
@@ -166,7 +169,14 @@ protected:
   };
 
 public:
-  EnclosedIterator(const yy::location& loc, PlanIter_t& childIter);
+  /**
+   * Constructor of Enclosed Expr
+   * @param loc location
+   * @param childIter child
+   * @param aAttrContent bool which declares if the content must be produced for an attribute or
+   *                     for something else (attr => StringItems, else => TextNodes).
+   */
+  EnclosedIterator(const yy::location& loc, PlanIter_t& childIter, bool aAttrContent = false);
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);

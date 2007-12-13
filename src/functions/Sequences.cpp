@@ -406,7 +406,7 @@ PlanIter_t fn_doc_func::operator()(
 	const yy::location& loc, 
 	vector<PlanIter_t>& argv) const
 {
-  return new DocIterator(loc, argv[0]);
+  return new FnDocIterator(loc, argv[0]);
 }
   
 bool fn_doc_func::validate_args(

@@ -232,7 +232,7 @@ int32_t SimpleStore::compare(Item_t node1, Item_t node2) const
 {
   if (!node1->isNode() || !node2->isNode())
   {
-    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       error_messages::SYSTEM_ERROR,
                       NULL,
                       false);

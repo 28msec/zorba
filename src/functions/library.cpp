@@ -486,7 +486,12 @@ DECL(op_or,
 DECL(op_enclosed_expr,
      (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":enclosed-expr"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
-      GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE));
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+DECL(op_docfilter_expr,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", ":doc-filter"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 // end constructors
 
 // begin zorba functions

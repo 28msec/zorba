@@ -83,6 +83,7 @@ public:
   bool isAtomic() const                { return false; }
 
   Item_t getParent() const             { return theParent; }
+  Item * getParentPtr() const          { return theParent; }
 
   virtual bool equals(Item_t) const;
   virtual uint32_t hash() const        { return 0; }

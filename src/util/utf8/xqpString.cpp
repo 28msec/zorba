@@ -263,7 +263,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -279,7 +279,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -301,7 +301,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -317,7 +317,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -339,7 +339,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -350,7 +350,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -379,7 +379,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -390,7 +390,7 @@ namespace xqp
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
         );
@@ -540,7 +540,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-          error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+          error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
           error_messages::SYSTEM_ERROR,
           NULL
           );
@@ -859,7 +859,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,
             NULL
           );
@@ -881,7 +881,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,
             NULL
           );
@@ -898,7 +898,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,
             NULL
           );
@@ -929,7 +929,7 @@ namespace xqp
     if(U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-            error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+            error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
             error_messages::SYSTEM_ERROR,
             NULL
           );

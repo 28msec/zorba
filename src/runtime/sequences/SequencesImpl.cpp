@@ -600,22 +600,22 @@ FnRemoveIterator::FnRemoveIteratorState::reset() {
 | If $uri is the empty sequence, the result is an empty sequence.
 |_______________________________________________________________________*/
 
-DocIterator::DocIterator (
+FnDocIterator::FnDocIterator (
     yy::location loc, PlanIter_t& arg)
     :
-    UnaryBaseIterator<DocIterator> ( loc, arg )
+    UnaryBaseIterator<FnDocIterator> ( loc, arg )
 {
 }
 
-DocIterator::~DocIterator() {}
+FnDocIterator::~FnDocIterator() {}
 
 Item_t
-DocIterator::nextImpl ( PlanState& planState )
+FnDocIterator::nextImpl ( PlanState& planState )
 {
   Item_t item, xml;
 
-  DocIteratorState* state;
-  DEFAULT_STACK_INIT ( DocIteratorState, state, planState );
+  FnDocIteratorState* state;
+  DEFAULT_STACK_INIT ( FnDocIteratorState, state, planState );
 
   item = consumeNext(theChild, planState);
 
@@ -686,18 +686,18 @@ DocIterator::nextImpl ( PlanState& planState )
 }
 
 uint32_t
-DocIterator::getStateSize() const {
-  return sizeof(DocIteratorState);
+FnDocIterator::getStateSize() const {
+  return sizeof(FnDocIteratorState);
 }
 
-DocIterator::DocIteratorState::DocIteratorState()
+FnDocIterator::FnDocIteratorState::FnDocIteratorState()
   :
   got_doc(0)
 {
 }
 
 void
-DocIterator::DocIteratorState::init()
+FnDocIterator::FnDocIteratorState::init()
 {
   PlanIterator::PlanIteratorState::init();
   if (got_doc == 1)
@@ -707,7 +707,7 @@ DocIterator::DocIteratorState::init()
 }
 
 void
-DocIterator::DocIteratorState::reset()
+FnDocIterator::FnDocIteratorState::reset()
 {
   PlanIterator::PlanIteratorState::reset();
   got_doc = 0;

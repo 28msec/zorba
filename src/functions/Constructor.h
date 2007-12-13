@@ -19,6 +19,17 @@ namespace xqp {
       TypeSystem::xqtref_t type_check(signature&) const;
       bool validate_args(std::vector<PlanIter_t>&) const;
   }; /* class op_enclosed_expr */
+  
+  class op_docfilter_expr : public function {
+    public:
+      op_docfilter_expr(const signature&);
+      ~op_docfilter_expr() {}
+
+    public:
+      PlanIter_t operator()(const yy::location& loc, std::vector<PlanIter_t>&) const;
+      TypeSystem::xqtref_t type_check(signature&) const;
+      bool validate_args(std::vector<PlanIter_t>&) const;
+  }; /* class op_docfilter_expr */
 } /* namespace xqp */
 
 #endif

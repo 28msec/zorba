@@ -63,7 +63,7 @@ namespace xqp
   class FnRemoveIterator;
   class FnDistinctValuesIterator;
   class FnInsertBeforeIterator;  
-  class DocIterator;
+  class FnDocIterator;
   class CodepointsToStringIterator;
   class StringToCodepointsIterator;
   class CompareStrIterator;
@@ -87,6 +87,9 @@ namespace xqp
   class SubstringAfterIterator;
   class ZorNumGen;
   class TextIterator;
+  class DocumentIterator;
+  class DocumentContentIterator;
+  class DocFilterIterator;
 
   /**
    * Visitor to visit a PlanIterator tree.
@@ -119,6 +122,12 @@ namespace xqp
        
       virtual void beginVisit ( const AttributeIterator & ) = 0;
       virtual void endVisit ( const AttributeIterator& ) = 0;
+      
+      virtual void beginVisit ( const DocumentIterator& ) = 0;
+      virtual void endVisit ( const DocumentIterator& ) = 0;
+      
+      virtual void beginVisit ( const DocumentContentIterator& ) = 0;
+      virtual void endVisit ( const DocumentContentIterator& ) = 0;
        
       virtual void beginVisit ( const CommentIterator& ) = 0;
       virtual void endVisit ( const CommentIterator& ) = 0;
@@ -137,6 +146,9 @@ namespace xqp
        
       virtual void beginVisit ( const EnclosedIterator& ) = 0;
       virtual void endVisit ( const EnclosedIterator& ) = 0;
+      
+      virtual void beginVisit ( const DocFilterIterator& ) = 0;
+      virtual void endVisit ( const DocFilterIterator& ) = 0;
        
       virtual void beginVisit ( const IfThenElseIterator& ) = 0;
       virtual void endVisit ( const IfThenElseIterator& ) = 0;
@@ -247,8 +259,8 @@ namespace xqp
       virtual void beginVisit ( const FnInsertBeforeIterator& ) = 0;
       virtual void endVisit ( const FnInsertBeforeIterator& ) = 0;       
        
-      virtual void beginVisit ( const DocIterator& ) = 0;
-      virtual void endVisit ( const DocIterator& ) = 0;
+      virtual void beginVisit ( const FnDocIterator& ) = 0;
+      virtual void endVisit ( const FnDocIterator& ) = 0;
        
       virtual void beginVisit ( const CodepointsToStringIterator& ) = 0;
       virtual void endVisit ( const CodepointsToStringIterator& ) = 0;

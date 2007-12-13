@@ -318,8 +318,13 @@ void translator::end_visit(const DirElemConstructor& v, void *visit_state)
   expr_t attributes = NULL;
   expr_t content = NULL;
 
-  if (v.get_dir_content_list() != NULL)
+  if (v.get_dir_content_list() != NULL) {
     content = pop_nodestack();
+    fo_expr *lDocFilter = new fo_expr(v.get_location());
+    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
+    lDocFilter->add(content);
+    content = lDocFilter;
+  }
   
   if (v.get_attr_list() != NULL)
     attributes = pop_nodestack();
@@ -442,6 +447,10 @@ void translator::end_visit(const DirAttr& v, void *visit_state)
   expr_t attrValue = pop_nodestack();
   if (attrValue != NULL)
   {
+    fo_expr *lDocFilter = new fo_expr(v.get_location());
+    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
+    lDocFilter->add(attrValue);
+    attrValue = lDocFilter;
     // delete boundary
     nodestack.pop();
   }
@@ -558,13 +567,6 @@ void translator::end_visit(const CommonContent& v, void *visit_state)
   TRACE_VISIT_OUT ();
 }
 
-
-/*******************************************************************************
-
-  Computed Node Construction
-
-********************************************************************************/
-
 void *translator::begin_visit(const CompDocConstructor& v)
 {
   TRACE_VISIT ();
@@ -574,7 +576,18 @@ void *translator::begin_visit(const CompDocConstructor& v)
 void translator::end_visit(const CompDocConstructor& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  nodestack.push (new doc_expr (v.get_location (), pop_nodestack ()));
+  
+  expr_t lContent = pop_nodestack();
+  
+  fo_expr *lDocFilter = new fo_expr(v.get_location());
+  lDocFilter->set_func(LOOKUP_OP1("doc-filter"));
+  lDocFilter->add(lContent);
+  
+  fo_expr *lEnclosed = new fo_expr(v.get_location());
+  lEnclosed->set_func(LOOKUP_OP1("enclosed-expr"));
+  lEnclosed->add(lDocFilter);
+  
+  nodestack.push (new doc_expr (v.get_location (), lEnclosed ));
 }
 
 void *translator::begin_visit(const CompElemConstructor& v)
@@ -592,9 +605,14 @@ void translator::end_visit(const CompElemConstructor& v, void *visit_state)
 
   if (v.get_content_expr() != 0) {
     lContent = pop_nodestack();
+    
+    fo_expr *lDocFilter = new fo_expr(v.get_location());
+    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
+    lDocFilter->add(lContent);
+    
     fo_expr *lEnclosed = new fo_expr(v.get_location());
     lEnclosed->set_func(LOOKUP_OP1 ("enclosed-expr"));
-    lEnclosed->add(lContent);
+    lEnclosed->add(lDocFilter);
     lContent = lEnclosed;
   }
   
@@ -619,10 +637,12 @@ void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
   
   if (v.get_val_expr() != 0) {
     lValueExpr = pop_nodestack();
-    fo_expr *lEnclosed = new fo_expr(v.get_location());
-    lEnclosed->set_func(LOOKUP_OP1("enclosed-expr"));
-    lEnclosed->add(lValueExpr);
-    lValueExpr = lEnclosed;
+    
+    fo_expr *lDocFilter = new fo_expr(v.get_location());
+    lDocFilter->set_func(LOOKUP_OP1 ("doc-filter"));
+    lDocFilter->add(lValueExpr);
+    
+    lValueExpr = lDocFilter;
   }
   
   expr_t lQNameExpr = pop_nodestack();

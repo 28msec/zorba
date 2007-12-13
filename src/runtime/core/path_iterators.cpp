@@ -208,7 +208,7 @@ doctest2:
     }
     default:
       ZORBA_ERROR_ALERT(
-         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+         error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
          error_messages::SYSTEM_ERROR,
          NULL,
          false,
@@ -263,7 +263,7 @@ Item_t NameTestIterator::nextImpl(PlanState& planState)
     }
     default:
       ZORBA_ERROR_ALERT(
-         error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+         error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
          error_messages::SYSTEM_ERROR,
          NULL,
          false,

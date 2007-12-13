@@ -90,6 +90,22 @@ namespace xqp {
   void PrinterVisitor::endVisit ( const AttributeIterator& a ) {
     thePrinter.endIter();
   }
+  
+  void PrinterVisitor::beginVisit ( const DocumentIterator& a ) {
+    thePrinter.startIter("DocumentIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const DocumentIterator& a ) {
+    thePrinter.endIter();
+  }
+  
+  void PrinterVisitor::beginVisit ( const DocumentContentIterator& a ) {
+    thePrinter.startIter("DocumentContentIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const DocumentContentIterator& a ) {
+    thePrinter.endIter();
+  }
        
   void PrinterVisitor::beginVisit ( const CommentIterator& a ) {
     thePrinter.startIter("CommentIterator");
@@ -137,6 +153,14 @@ namespace xqp {
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const EnclosedIterator& a ) {
+    thePrinter.endIter();
+  }
+  
+  void PrinterVisitor::beginVisit ( const DocFilterIterator& a ) {
+    thePrinter.startIter("DocFilterIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const DocFilterIterator& a ) {
     thePrinter.endIter();
   }
        
@@ -476,11 +500,11 @@ namespace xqp {
     thePrinter.endIter();
   }
        
-  void PrinterVisitor::beginVisit ( const DocIterator& a ) {
-    thePrinter.startIter("DocIterator");
+  void PrinterVisitor::beginVisit ( const FnDocIterator& a ) {
+    thePrinter.startIter("FnDocIterator");
     printCommons( &a );
   }
-  void PrinterVisitor::endVisit ( const DocIterator& ) {
+  void PrinterVisitor::endVisit ( const FnDocIterator& ) {
     thePrinter.endIter();
   }
        

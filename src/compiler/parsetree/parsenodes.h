@@ -4158,7 +4158,6 @@ class CompElemConstructor : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> qname_h;
 	rchandle<exprnode> qname_expr_h;
 	rchandle<exprnode> content_expr_h;
 
@@ -4171,7 +4170,6 @@ public:
 	~CompElemConstructor();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
 	rchandle<exprnode> get_qname_expr() const { return qname_expr_h; }
 	rchandle<exprnode> get_content_expr() const { return content_expr_h; }
 
@@ -4226,7 +4224,6 @@ class CompAttrConstructor : public exprnode
 |_______________________________________________________________________*/
 {
 protected:
-	rchandle<QName> qname_h;
 	rchandle<exprnode> qname_expr_h;
 	rchandle<exprnode> val_expr_h;
 
@@ -4239,7 +4236,6 @@ public:
 	~CompAttrConstructor();
 
 public:
-	rchandle<QName> get_qname() const { return qname_h; }
 	rchandle<exprnode> get_qname_expr() const { return qname_expr_h; }
 	rchandle<exprnode> get_val_expr() const { return val_expr_h; }
 

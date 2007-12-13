@@ -47,13 +47,14 @@ namespace xqp
 
   /* begin class EnclosedIterator */
   EnclosedIterator::EnclosedIterator ( const yy::location& loc,
-                                       PlanIter_t& childIter ) :
-      UnaryBaseIterator<EnclosedIterator> ( loc, childIter )
+                                       PlanIter_t& childIter, bool aAttrContent ) :
+      UnaryBaseIterator<EnclosedIterator> ( loc, childIter ), theAttrContent(aAttrContent)
   {
   }
 
   Item_t EnclosedIterator::nextImpl ( PlanState& planState )
   {
+    Item_t lItem;
     EnclosedState* state;
     DEFAULT_STACK_INIT ( EnclosedState, state, planState );
 
@@ -64,8 +65,12 @@ namespace xqp
       {
         if ( state->theString != "" )
         {
-          STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false),
-                     state);
+          if (theAttrContent) {
+            lItem = zorba::getItemFactory()->createString(  state->theString ).get_ptr();
+          } else {
+            lItem = zorba::getItemFactory()->createTextNode ( state->theString, false ).get_ptr();
+          }
+          STACK_PUSH ( lItem, state ) ;
           state->theString = "";
         }
         break;
@@ -74,8 +79,12 @@ namespace xqp
       {
         if ( state->theString != "" )
         {
-          STACK_PUSH(zorba::getItemFactory()->createTextNode(state->theString, false),
-                     state );
+          if (theAttrContent) {
+            lItem = zorba::getItemFactory()->createString ( state->theString ).get_ptr();
+          } else {
+            lItem = zorba::getItemFactory()->createTextNode ( state->theString, false ).get_ptr();
+          }
+          STACK_PUSH ( lItem, state);
           state->theString = "";
         }
         STACK_PUSH ( state->theContextItem, state );

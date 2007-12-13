@@ -88,7 +88,7 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
   if (U_FAILURE(status))
   {
     ZORBA_ERROR_ALERT(
-                      error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                      error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       error_messages::SYSTEM_ERROR,
                       NULL
                      );
@@ -128,7 +128,7 @@ serializer::utf8_to_utf16_transcoder& serializer::utf8_to_utf16_transcoder::oper
     if (U_FAILURE(status))
     {
       ZORBA_ERROR_ALERT(
-                        error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                        error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                         error_messages::SYSTEM_ERROR,
                         NULL
                        );
@@ -285,43 +285,48 @@ int serializer::emitter::emit_node_children(Item* item, int depth, bool perform_
   Item_t child;	
   int closed_parent_tag = 0;
 
-  // emit namespace declarations
-  it = item->getChildren();
-  child = it->next();
-  while (child != NULL )
-  {
-    if (child->getNodeKind() == StoreConsts::attributeNode)
+  if (item->getNodeKind() == StoreConsts::elementNode) {
+  
+    // emit namespace declarations
+    it = item->getChildren();
+    child = it->next();
+    while (child != NULL )
+    {
+      if (child->getNodeKind() == StoreConsts::attributeNode)
+        emit_node(&*child, depth);
+        
+      //if (child->getNodeKind() == Item::namespaceNode )
+      //	emit_node(child, depth);
+      
+      child = it->next();
+    }
+    
+    /* TODO: uncomment when this will be implemented in the Item store 
+    it = item->getNamespaceNodes();
+    child = it->next();
+    while (child != NULL )
+    {
+      if (child->getNodeKind() == namespaceNode )
+      {
+        emit_node(child, tr, depth);
+        children_count++;			
+      }		
+      
+      child = it->next();
+    }
+    */
+      
+    // emit attributes 
+    it = item->getAttributes();
+    child = it->next();
+    while (child!= NULL)
+    {		
       emit_node(&*child, depth);
-			
-    //if (child->getNodeKind() == Item::namespaceNode )
-    //	emit_node(child, depth);
-		
-    child = it->next();
+      child = it->next();
+    }
+  } else if (item->getNodeKind() == StoreConsts::documentNode) {
+    closed_parent_tag = 1;
   }
-	
-	/* TODO: uncomment when this will be implemented in the Item store 
-	it = item->getNamespaceNodes();
-	child = it->next();
-	while (child != NULL )
-	{
-		if (child->getNodeKind() == namespaceNode )
-		{
-			emit_node(child, tr, depth);
-			children_count++;			
-		}		
-		
-		child = it->next();
-	}
-  */
-		
-	// emit attributes 
-	it = item->getAttributes();
-	child = it->next();
-	while (child!= NULL)
-	{		
-    emit_node(&*child, depth);
-    child = it->next();
-	}
 	
 	// output all the other nodes
 	it = item->getChildren();
@@ -858,7 +863,7 @@ void serializer::setup(ostream& os)
   else
   {
     ZORBA_ERROR_ALERT(
-                      error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                      error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       error_messages::SYSTEM_ERROR,
                       NULL);
     return;
@@ -871,7 +876,7 @@ void serializer::setup(ostream& os)
   else
   {
     ZORBA_ERROR_ALERT(
-                      error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+                      error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       error_messages::SYSTEM_ERROR,
                       NULL);
     return;

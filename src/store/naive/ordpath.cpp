@@ -2270,7 +2270,7 @@ void OrdPath::decodeByte(
   }
   case 255:   // 1111 1111   11111111,...           (28/8,20)
   {
-    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+    ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
                       error_messages::SYSTEM_ERROR,
                       NULL,
                       false);

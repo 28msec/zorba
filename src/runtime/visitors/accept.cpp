@@ -76,7 +76,6 @@ namespace xqp {
   UNARY_ACCEPT(PrecedingAxisIterator);
   UNARY_ACCEPT(FollowingAxisIterator);
   UNARY_ACCEPT(FnBooleanIterator);
-  UNARY_ACCEPT(AttributeIterator);
   UNARY_ACCEPT(InstanceOfIterator);
   UNARY_ACCEPT(CodepointsToStringIterator);
   UNARY_ACCEPT(StringToCodepointsIterator);
@@ -98,10 +97,13 @@ namespace xqp {
   UNARY_ACCEPT(FnExistsIterator);
   UNARY_ACCEPT(FnEmptyIterator);
   UNARY_ACCEPT(FnDistinctValuesIterator);
-  UNARY_ACCEPT(DocIterator);
+  UNARY_ACCEPT(FnDocIterator);
   UNARY_ACCEPT(OpNumericUnaryIterator);
   UNARY_ACCEPT(TextIterator);
   UNARY_ACCEPT(CommentIterator);
+  UNARY_ACCEPT(DocumentIterator);
+  UNARY_ACCEPT(DocumentContentIterator);
+  UNARY_ACCEPT(DocFilterIterator);
   
   // binary iterators
   BINARY_ACCEPT(CodepointEqualIterator);
@@ -143,6 +145,13 @@ namespace xqp {
     if (theNamespacesIter != 0)
       theNamespacesIter->accept(v);
     
+    v.endVisit(*this);
+  }
+  
+  void AttributeIterator::accept(PlanIterVisitor& v) const {
+    v.beginVisit(*this);
+    theQNameIter->accept(v);
+    theChild->accept(v);
     v.endVisit(*this);
   }
   

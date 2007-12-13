@@ -50,7 +50,7 @@ xqp_string NodeImpl::getDocumentURI() const
 bool NodeImpl::equals(Item_t item) const
 {
   ZorbaErrorAlerts::error_alert(
-        error_messages::XQP0014_SYSTEM_SHOUD_NEVER_BE_REACHED,
+        error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
         error_messages::SYSTEM_ERROR,
         NULL,
         true,
@@ -160,7 +160,7 @@ xqp_string DocumentNodeImpl::show() const
 
   strStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl
             << "<document baseUri = \"" << *theBaseURI << "\" docUri = \""
-            << *theDocURI << "\"/>" << std::endl;
+            << *theDocURI << "\">" << std::endl;
 
   Iterator_t iter = getChildren();
   Item_t item = iter->next();
@@ -169,6 +169,8 @@ xqp_string DocumentNodeImpl::show() const
     strStream << item->show();
     item = iter->next();
   }
+  
+  strStream << std::endl << "</document>";
 
   return strStream.str().c_str();
 }
@@ -227,7 +229,8 @@ ElementNodeImpl::ElementNodeImpl(
     item = childrenIte->next();
     while (item != NULL)
     {
-      Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
+      // TODO is this true? Attributes might be children (computed constructors!)
+//       Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
       theChildren.push_back(item);
       item = childrenIte->next();
     }
@@ -748,7 +751,7 @@ Item_t ChildrenIterator::next()
   Item_t item = (*theChildNodes)[theCurrentPos];
   NodeImpl_t childNode = BASE_NODE(item);
 
-  if (childNode->getParent() == NULL)
+  if (childNode->getParentPtr() == NULL)
   {
     childNode->setParent(theParentNode.get_ptr());
 

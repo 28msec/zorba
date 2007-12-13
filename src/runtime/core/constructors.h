@@ -24,7 +24,7 @@ class zorba;
 
   ElementIterator computes a direct element constructor.
 
-  theQName          : The qname of the node (ns, pre, local)
+  theQNameIter      : Iter that produces the name (qname) of the element
   theChildrenIter   : The iterator that produces the child nodes of the new node.
                       This will ALWAYS be an ElementContentIterator, usually
                       followed by a ConcatIterator.
@@ -107,7 +107,10 @@ public:
   
 
 /*******************************************************************************
-
+  AttributeIterator constructs an attribute element
+  
+  theQNameIter:     Iter that produces the name (qname) of the element
+  theChild:         Iter that produces the value of the attribute element
 ********************************************************************************/
 class AttributeIterator : public Batcher<AttributeIterator>
 {
@@ -134,6 +137,55 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 };
 
+
+/*********************************************************************************
+
+  DocumentIterator constructs a document element
+  
+  theChild:      Iter that produces the content of the document element
+
+*********************************************************************************/
+class DocumentIterator : public UnaryBaseIterator<DocumentIterator>
+{
+public:
+  DocumentIterator( const yy::location& loc, PlanIter_t& aChild);
+  
+  Item_t nextImpl(PlanState& planState);
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+
+class DocumentContentIterator : public UnaryBaseIterator<DocumentContentIterator> 
+{
+public:
+  DocumentContentIterator( const yy::location& loc, PlanIter_t& aContent);
+  
+  Item_t nextImpl(PlanState& planState);
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+
+/**
+ * Filters out all DocumentNodes and returns their children instead of them.
+ * */
+class DocFilterIterator : public UnaryBaseIterator<DocFilterIterator>
+{
+protected:
+  class DocFilterIteratorState : public PlanIteratorState
+  {
+    public:
+      Iterator_t theChildren;
+      Item_t     theCurItem;
+      
+      void init();
+  };
+public:
+  DocFilterIterator( const yy::location& loc, PlanIter_t& aChild);
+  Item_t nextImpl(PlanState& planState);
+  void releaseResourcesImpl(PlanState& planState);
+  uint32_t getStateSize() const { return sizeof(DocFilterIteratorState); }
+  virtual void accept(PlanIterVisitor&) const;
+};
 
 /*******************************************************************************
 

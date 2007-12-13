@@ -346,14 +346,14 @@ protected:
 
 //15.5.4 fn:doc
 
-class DocIterator : public UnaryBaseIterator<DocIterator>
+class FnDocIterator : public UnaryBaseIterator<FnDocIterator>
 {
 //  DECLARE_LOGGER;
 protected:
   
 public:
-  DocIterator(yy::location loc, PlanIter_t& arg);
-  virtual ~DocIterator();
+  FnDocIterator(yy::location loc, PlanIter_t& arg);
+  virtual ~FnDocIterator();
 
   Item_t nextImpl(PlanState& planState);
   virtual uint32_t getStateSize() const;
@@ -361,9 +361,9 @@ public:
   virtual void accept(PlanIterVisitor&) const;
 
 protected:
-  class DocIteratorState : public PlanIteratorState {
+  class FnDocIteratorState : public PlanIteratorState {
   public:
-    DocIteratorState();
+    FnDocIteratorState();
     
     int got_doc;              // if got_doc == 0 - no document,
                               //            == 1 - Item_t doc is used

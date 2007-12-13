@@ -45,6 +45,12 @@ namespace xqp {
        
       virtual void beginVisit ( const AttributeIterator & ) ;
       virtual void endVisit ( const AttributeIterator& ) ;
+      
+      virtual void beginVisit ( const DocumentIterator& ) ;
+      virtual void endVisit ( const DocumentIterator& ) ;
+      
+      virtual void beginVisit ( const DocumentContentIterator& ) ;
+      virtual void endVisit ( const DocumentContentIterator& ) ;
        
       virtual void beginVisit ( const CommentIterator& ) ;
       virtual void endVisit ( const CommentIterator& ) ;
@@ -63,6 +69,9 @@ namespace xqp {
        
       virtual void beginVisit ( const EnclosedIterator& ) ;
       virtual void endVisit ( const EnclosedIterator& ) ;
+      
+      virtual void beginVisit ( const DocFilterIterator& ) ;
+      virtual void endVisit ( const DocFilterIterator& ) ;
        
       virtual void beginVisit ( const IfThenElseIterator& ) ;
       virtual void endVisit ( const IfThenElseIterator& ) ;
@@ -173,8 +182,8 @@ namespace xqp {
       virtual void beginVisit ( const FnInsertBeforeIterator& ) ;
       virtual void endVisit   ( const FnInsertBeforeIterator& ) ;
               
-      virtual void beginVisit ( const DocIterator& ) ;
-      virtual void endVisit ( const DocIterator& ) ;
+      virtual void beginVisit ( const FnDocIterator& ) ;
+      virtual void endVisit ( const FnDocIterator& ) ;
        
       virtual void beginVisit ( const CodepointsToStringIterator& ) ;
       virtual void endVisit ( const CodepointsToStringIterator& ) ;

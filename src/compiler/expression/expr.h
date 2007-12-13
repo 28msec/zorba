@@ -1037,11 +1037,6 @@ public:
 		expr_t aAttrs,
 		expr_t aContent);
   
-//   elem_expr(
-//     yy::location const&,
-//     QNameItem_t,
-//     expr_t);
-  
   elem_expr(
     yy::location const&,
     expr_t aQNameExpr,
@@ -1049,8 +1044,8 @@ public:
   
 	~elem_expr();
 	
-// 	QNameItem_t getQName() const { return theQName; }
   expr_t getQNameExpr() const { return theQNameExpr; }
+  void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
 	expr_t getContent() const { return theContent; }
 	expr_t getAttrs() const { return theAttrs; }
 	
@@ -1067,16 +1062,16 @@ class doc_expr : public constructor_expr
 |_______________________________________________________________________*/
 {
 protected:
-	expr_t docuri_h;
+	expr_t theContent;
 
 public:
 	doc_expr(
 		yy::location const&,
-		expr_t);
+		expr_t aContent);
 	~doc_expr();
 
 public:
-	expr_t get_docuri() const { return docuri_h; }
+	expr_t getContent() const { return theContent; }
 
 public:
 	void accept(expr_visitor&);
@@ -1104,28 +1099,22 @@ public:
 class attr_expr : public constructor_expr
 {
 protected:
-// 	QNameItem_t qname_h;
-	expr_t qname_expr_h;
-	expr_t val_expr_h;
+	expr_t theQNameExpr;
+	expr_t theValueExpr;
 
 public:
-// 	attr_expr(
-// 		yy::location const& loc,
-// 		QNameItem_t qn,
-// 		expr_t val_expr);
-
 	attr_expr(
 		yy::location const& loc,
-		expr_t qn_expr,
-		expr_t val_expr);
+		expr_t aQNameExpr,
+		expr_t aValueExpr);
 
 	~attr_expr();
 
 public:
-// 	QNameItem_t get_qname() const { return qname_h; }
-	expr_t get_qname_expr() const { return qname_expr_h; }
-	expr_t get_val_expr() const { return val_expr_h; }
-
+	expr_t getQNameExpr() const { return theQNameExpr; }
+  void setQNameExpr(expr_t aQNameExpr) { theQNameExpr = aQNameExpr; }
+	expr_t getValueExpr() const { return theValueExpr; }
+  void setValueExpr(expr_t aValueExpr) { theValueExpr = aValueExpr; }
 public:
 	void accept(expr_visitor&);
 	std::ostream& put(std::ostream&) const;
