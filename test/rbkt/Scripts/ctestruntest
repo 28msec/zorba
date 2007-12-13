@@ -17,6 +17,7 @@ then
   rm -f "$2.err"
 fi
 
+echo "executing command: $1/test/apitest -q -r -o $2 $3"
 
 $1/test/apitest -q -r -o "$2" "$3" 2> "$2.err" # execute the query
 RETURNVALUE=$?
