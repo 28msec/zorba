@@ -62,8 +62,8 @@ ElementIterator::nextImpl(PlanState& planState)
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
   lItem = consumeNext(theQNameIter, planState);
-  // TODO typecheck and possible parsing 
-  // (dynamic context must be possible to provide the prefix namespace mapping)
+  // parsing of QNameItem does not have to be checked because 
+  // the compiler wraps an xs:qname cast around the expression
   lQName = (QNameItem*)&*lItem;
 
   if (theChildrenIter != 0)
@@ -71,8 +71,6 @@ ElementIterator::nextImpl(PlanState& planState)
 
   if (theAttributesIter != 0)
     awrapper = new PlanIteratorWrapper(theAttributesIter, planState);
-
-  //nwrapper = new PlanIteratorWrapper(theNamespacesIter, planState); 
 
   item = zorba::getItemFactory()->createElementNode(
                lQName,
@@ -281,9 +279,7 @@ AttributeIterator::AttributeIterator(
     PlanIter_t& aValueIter,
     bool assignId)
   :
-    Batcher<AttributeIterator>( loc ),
-    theQNameIter(aQNameIter),
-    theChild(aValueIter),
+    BinaryBaseIterator<AttributeIterator>( loc, aQNameIter, aValueIter ),
     theAssignId(assignId)
 {
 }
@@ -304,22 +300,22 @@ AttributeIterator::nextImpl(PlanState& planState)
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
-  itemCur = consumeNext(theQNameIter, planState);
-  // TODO typecheck and possible parsing 
-  // (dynamic context must be possible to provide the prefix namespace mapping)
+  itemCur = consumeNext(theChild0, planState);
+  // parsing of QNameItem does not have to be checked because 
+  // the compiler wraps an xs:qname cast around the expression
   lQName = (QNameItem*)&*itemCur;
 
-  if ((itemFirst = consumeNext(theChild, planState)) != NULL)
+  if ((itemFirst = consumeNext(theChild1, planState)) != 0)
   {
     lexicalString = itemFirst->getStringProperty();
 
     // handle concatenation
-    itemCur = consumeNext ( theChild, planState );
+    itemCur = consumeNext ( theChild1, planState );
     while ( itemCur != NULL )
     {
       concatenation = true;
       lexicalString += itemCur->getStringProperty();
-      itemCur = consumeNext ( theChild, planState );
+      itemCur = consumeNext ( theChild1, planState );
     }
 
     itemLexical = zorba::getItemFactory()->createUntypedAtomic(lexicalString);
@@ -334,8 +330,8 @@ AttributeIterator::nextImpl(PlanState& planState)
   }
   else
   {
-    itemLexical = NULL;
-    itemTyped = NULL;
+    itemLexical = 0;
+    itemTyped = 0;
   }
 
   item = zorba::getItemFactory()->createAttributeNode (
@@ -347,56 +343,6 @@ AttributeIterator::nextImpl(PlanState& planState)
 
   STACK_PUSH(item, state);
   STACK_END();
-}
-
-void AttributeIterator::resetImpl(PlanState& planState)
-{
-  if (theQNameIter != 0)
-    resetChild(theQNameIter, planState);
-  
-  if ( theChild != 0 )
-    resetChild(theChild, planState);
-
-  PlanIterator::PlanIteratorState* state;
-  GET_STATE(PlanIterator::PlanIteratorState, state, planState);
-  state->reset();
-}
-
-
-void AttributeIterator::releaseResourcesImpl(PlanState& planState)
-{
-  if (theQNameIter != 0)
-    resetChild(theQNameIter, planState);
-  
-  if (theChild != 0)
-    releaseChildResources(theChild, planState);
-}
-
-  
-uint32_t AttributeIterator::getStateSizeOfSubtree() const
-{
-  int32_t size = 0;
-
-  if (theQNameIter != 0)
-    size += theQNameIter->getStateSizeOfSubtree();
-  
-  if (theChild != 0)
-    size += theChild->getStateSizeOfSubtree();
-
-  return this->getStateSize() + size;
-}
-
-  
-void AttributeIterator::setOffset(PlanState& planState, uint32_t& offset)
-{
-  this->stateOffset = offset;
-  offset += this->getStateSize();
-
-  if (theQNameIter != 0)
-    theQNameIter->setOffset(planState, offset);
-  
-  if (theChild != 0)
-    theChild->setOffset(planState, offset);
 }
 
 /*******************************************************************************

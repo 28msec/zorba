@@ -113,7 +113,7 @@ namespace xqp
   Item_t 
   LogicIterator::nextImpl(PlanState& planState)
   {
-    bool bRes;
+    bool bRes = false;
     
     PlanIterator::PlanIteratorState* state;
     DEFAULT_STACK_INIT ( PlanIterator::PlanIteratorState, state, planState );

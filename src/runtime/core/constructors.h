@@ -8,6 +8,7 @@
 #include "compiler/parser/location.hh"
 #include "runtime/base/iterator.h"
 #include "runtime/base/unarybase.h"
+#include "runtime/base/binarybase.h"
 
 #include <assert.h>
 #include <iostream>
@@ -112,11 +113,9 @@ public:
   theQNameIter:     Iter that produces the name (qname) of the element
   theChild:         Iter that produces the value of the attribute element
 ********************************************************************************/
-class AttributeIterator : public Batcher<AttributeIterator>
+class AttributeIterator : public BinaryBaseIterator<AttributeIterator>
 {
 private:
-  PlanIter_t theQNameIter;
-  PlanIter_t theChild;
   bool       theAssignId;
 
 public:
@@ -127,12 +126,6 @@ public:
         bool assignId);
     
   Item_t nextImpl(PlanState& planState);
-  void resetImpl(PlanState& planState);
-  void releaseResourcesImpl(PlanState& planState);
-
-  virtual uint32_t getStateSize() const { return sizeof(PlanIterator::PlanIteratorState); }
-  virtual uint32_t getStateSizeOfSubtree() const;
-  virtual void setOffset(PlanState& planState, uint32_t& offset);
   
   virtual void accept(PlanIterVisitor&) const;
 };

@@ -113,6 +113,7 @@ namespace xqp {
   BINARY_ACCEPT(FnIndexOfIterator);
   BINARY_ACCEPT(FnRemoveIterator);
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
+  BINARY_ACCEPT(AttributeIterator);
   
   // nary iterators
   NARY_ACCEPT(NormalizeUnicodeIterator);
@@ -145,13 +146,6 @@ namespace xqp {
     if (theNamespacesIter != 0)
       theNamespacesIter->accept(v);
     
-    v.endVisit(*this);
-  }
-  
-  void AttributeIterator::accept(PlanIterVisitor& v) const {
-    v.beginVisit(*this);
-    theQNameIter->accept(v);
-    theChild->accept(v);
     v.endVisit(*this);
   }
   

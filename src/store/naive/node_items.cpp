@@ -218,23 +218,11 @@ ElementNodeImpl::ElementNodeImpl(
   NodeImpl(assignId),
   theName(name),
   theType(type),
-  theAttributes(NULL)
+  theAttributes(0)
 {
   Assert(namespacesIte == NULL);
 
   Item_t item;
-
-  if (childrenIte != 0)
-  {
-    item = childrenIte->next();
-    while (item != NULL)
-    {
-      // TODO is this true? Attributes might be children (computed constructors!)
-//       Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
-      theChildren.push_back(item);
-      item = childrenIte->next();
-    }
-  }
 
   if (attributesIte != 0)
   {
@@ -243,12 +231,28 @@ ElementNodeImpl::ElementNodeImpl(
     {
       theAttributes = new NodeVector();
 
-      while (item != NULL)
+      while (item != 0)
       {
         Assert(item->isNode() && item->getNodeKind() == StoreConsts::attributeNode);
         theAttributes->push_back(item);
         item = attributesIte->next();
       }
+    }
+  }
+  
+  if (childrenIte != 0)
+  {
+    item = childrenIte->next();
+    while (item != 0)
+    {
+      if (item->isNode() && item->getNodeKind() == StoreConsts::attributeNode) {
+        if (theAttributes == 0)
+          theAttributes = new NodeVector();
+        theAttributes->push_back(item);
+      } else {
+        theChildren.push_back(item);
+      }
+      item = childrenIte->next();
     }
   }
 

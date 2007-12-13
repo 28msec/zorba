@@ -19,16 +19,18 @@
 #include "util/tracer.h"
 #include "functions/function.h"
 
-#ifndef NDEBUG
-# include "zorba/util/properties.h"
-#endif
-
 #include <iostream>
 #include <vector>
 
 
 #ifndef NDEBUG
-#define CODEGEN_TRACE(msg) if (Properties::instance()->traceCodegen()) std::cout << msg << TRACE << std::endl;
+
+#ifdef CODEGEN_DEBUG
+#define CODEGEN_TRACE(msg) std::cout << msg << TRACE << std::endl;
+#else
+#define CODEGEN_TRACE(msg)
+#endif
+
 #else
 #define CODEGEN_TRACE(msg)
 #endif
