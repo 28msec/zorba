@@ -23,7 +23,10 @@ namespace xqp {
       bool thePrintAST;
       bool thePrintNormalizedExpressions;
       bool thePrintIteratorTree;
+#ifndef NDEBUG
       bool theTraceTranslator;
+      bool theTraceCodegen;
+#endif
             
       /**
        * Constructor.
@@ -98,7 +101,10 @@ namespace xqp {
       bool printAST()   { return thePrintAST; }
       bool printNormalizedExpressions() { return thePrintNormalizedExpressions; }
       bool printIteratorTree() { return thePrintIteratorTree; }
+#ifndef NDEBUG
+      bool traceCodegen() { return theTraceCodegen; }
       bool traceTranslator() { return theTraceTranslator; }
+#endif
       
   }; /* class Properties */
 } /* namespace xqp */

@@ -16,7 +16,10 @@
 #include "store/api/item.h"
 #include "util/zorba.h"
 #include "functions/signature.h"
-#include "zorba/util/properties.h"
+
+#ifndef NDEBUG
+# include "zorba/util/properties.h"
+#endif
 
 #include <iostream>
 #include <string>
@@ -36,9 +39,13 @@ static void *no_state = (void *) new int;
 #define LOOKUP_OP3( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, 3))
 #define LOOKUP_OPN( local ) static_cast<function *> (sctx_p->lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
 
-
-#define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
-#define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
+#ifndef NDEBUG
+# define TRACE_VISIT() if (Properties::instance()->traceTranslator()) cerr << std::string(++depth, ' ') << TRACE << endl;
+# define TRACE_VISIT_OUT() if (Properties::instance()->traceTranslator()) cerr << std::string(depth--, ' ') << TRACE << endl
+#else
+# define TRACE_VISIT()
+# define TRACE_VISIT_OUT()
+#endif
 
 
 var_expr *translator::bind_var (yy::location loc, string varname) {

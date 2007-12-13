@@ -28,8 +28,11 @@ namespace xqp
     thePrintTime(false),
     thePrintAST(false),
     thePrintNormalizedExpressions(false),
-    thePrintIteratorTree(false),
-    theTraceTranslator(false)
+    thePrintIteratorTree(false)
+#ifndef NDEBUG
+    ,theTraceTranslator(false),
+    theTraceCodegen(false)
+#endif
   {
   }
   
@@ -113,7 +116,10 @@ namespace xqp
       ("print-ast,a", "print the parse tree")
       ("print-normalized-expr,n", "print the normalized expression tree")
       ("print-iterator-tree,i", "print the iterator tree")
+#ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
+      ("trace-codegen,c", "trace the codegenerator")
+#endif
     ;
   
 
@@ -201,7 +207,10 @@ namespace xqp
     thePrintAST = lVarMap.count("print-ast");
     thePrintNormalizedExpressions = lVarMap.count("print-normalized-expr");
     thePrintIteratorTree = lVarMap.count("print-iterator-tree");
+#ifndef NDEBUG
     theTraceTranslator = lVarMap.count("trace-translator");
+    theTraceCodegen = lVarMap.count("trace-codegen");
+#endif
     
     Properties::theLoaded = true;
     
