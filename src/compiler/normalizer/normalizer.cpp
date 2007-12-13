@@ -194,12 +194,30 @@ bool normalizer::begin_visit(compElem_expr& node)
   return true;
 }
 
+// FIXME => static inline function (see also translator)
+#define LOOKUP_OP1( local ) static_cast<function *> (m_sctx->lookup_builtin_fn (":" local, 1))
+
 bool normalizer::begin_visit(attr_expr& node)
 {
   node.setQNameExpr(wrap_in_atomization(m_sctx, node.getQNameExpr()));
+  
+  rchandle<expr> lExpr = node.getValueExpr();
+  fo_expr* lFoExpr = 0;
+  if ((lFoExpr = dynamic_cast<fo_expr*>(&*lExpr)))
+  {
+    function* lTestFunc = LOOKUP_OP1("enclosed-expr");
+    if (lFoExpr->get_func() == lTestFunc)
+    {
+      (*lFoExpr)[0] = wrap_in_atomization(m_sctx, (*lFoExpr)[0].get_ptr());
+      return true;
+    }
+  }
   node.setValueExpr(wrap_in_atomization(m_sctx, node.getValueExpr()));
+
   return true;
 }
+
+#undef LOOKUP_OP1
 
 bool normalizer::begin_visit(text_expr& node)
 {
