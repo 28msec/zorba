@@ -571,11 +571,45 @@ void translator::end_visit(const AposAttrValueContent& v, void *visit_state)
 void *translator::begin_visit(const CommonContent& v)
 {
   TRACE_VISIT ();
+  
   return no_state;
 }
 
 void translator::end_visit(const CommonContent& v, void *visit_state)
 {
+  switch (v.get_type())
+   {
+     case cont_entity:
+     {
+       break;
+     }
+     case cont_charref:
+     {
+       break;
+     }
+   	case cont_escape_lbrace:
+   	{
+   	  // we always create a text node here because if we are in an attribute, we atomice
+   	  // the text node into its string value
+      Item_t lItem = Store::getInstance().getItemFactory().createTextNode("{", false);
+      const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
+      nodestack.push ( lConstExpr );
+      break;
+   	}
+   	case cont_escape_rbrace:
+ 	  {
+   	  // we always create a text node here because if we are in an attribute, we atomice
+   	  // the text node into its string value
+      Item_t lItem = Store::getInstance().getItemFactory().createTextNode("}", false);
+      const_expr *lConstExpr = new const_expr(v.get_location(), lItem);
+      nodestack.push ( lConstExpr );
+      break;
+ 	  }
+   	case cont_expr:
+   	{
+       break;
+   	}
+  }
   TRACE_VISIT_OUT ();
 }
 
@@ -658,9 +692,14 @@ void translator::end_visit(const CompAttrConstructor& v, void *visit_state)
   }
   
   expr_t lQNameExpr = pop_nodestack();
-  lAttr = new attr_expr(v.get_location(), lQNameExpr, lValueExpr);
   
-  nodestack.push(lAttr);
+  rchandle<fo_expr> lEnclosed = new fo_expr(v.get_location());
+  lEnclosed->set_func(LOOKUP_OP1("enclosed-expr"));
+  lEnclosed->add(lValueExpr);
+    
+  lAttr = new attr_expr(v.get_location(), lQNameExpr, &*lEnclosed);
+  
+  nodestack.push(&*lAttr);
 }
 
 void *translator::begin_visit(const CompCommentConstructor& v)

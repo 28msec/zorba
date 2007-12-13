@@ -1056,6 +1056,15 @@ const_expr::const_expr(
 }
 
 const_expr::const_expr(
+  yy::location const& loc,
+  Item_t v)
+:
+  expr(loc),
+  val(v)
+{
+}
+
+const_expr::const_expr(
   yy::location const& aLoc, 
   const char* aNamespace,
   const char* aPrefix, 

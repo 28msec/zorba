@@ -701,9 +701,7 @@ void plan_visitor::end_visit(attr_expr& v)
     assignId = true;
   }
 
-  
-  lContentIter = new EnclosedIterator(v.get_loc(), lVarIter, true);
-  lAttrIter = new AttributeIterator(v.get_loc(), lQNameIter, lContentIter, assignId);
+  lAttrIter = new AttributeIterator(v.get_loc(), lQNameIter, lVarIter, assignId);
   
   itstack.push(lAttrIter);
 }

@@ -1460,6 +1460,42 @@ void *ParseNodePrintXMLVisitor::begin_visit(const CommonContent &n)
 
     os << ">";
     
+    NL;
+    INDENT_INC;
+    INDENT;
+    os << "<Type>";
+    switch (n.get_type())
+    {
+      case cont_entity:
+      {
+        os << "entity";
+        break;
+      }
+      case cont_charref:
+      {
+        os << "charref";
+        break;
+      }
+    	case cont_escape_lbrace:
+    	{
+        os << "escaped lbrace";
+        break;
+    	}
+    	case cont_escape_rbrace:
+  	  {
+        os << "escaped rbrace";
+        break;
+  	  }
+    	case cont_expr:
+    	{
+        os << "expr";
+        break;
+    	}
+    }
+    os << "</Type>";
+    INDENT_DEC;
+    INDENT;
+    
     INDENT_INC;
     NL;
     return no_state;

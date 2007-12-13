@@ -961,6 +961,7 @@ public:
   const_expr(yy::location const&, xqp_decimal);
   const_expr(yy::location const&, xqp_double);
   const_expr(yy::location const&, xqp_boolean);
+  const_expr(yy::location const&, Item_t);  
   const_expr(yy::location const&, const char* aNamespace, const char* aPrefix, const char* aLocal);
   ~const_expr();
 
