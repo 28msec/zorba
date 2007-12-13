@@ -24,7 +24,7 @@ cd "$d"
 echo Unzipping test suite...
 unzip $ZIP &>/dev/null
 
-q=`mktemp`
+q=`mktemp /tmp/rwts.XXXXXX`
 cat >$q <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
 declare option saxon:output "omit-xml-declaration=yes";
