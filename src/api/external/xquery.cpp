@@ -115,6 +115,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
   if (Properties::instance()->printAST())
 	{
+    cout << "Parse tree:\n";
     ParseNodePrintXMLVisitor lPrintXMLVisitor(std::cout);
     lPrintXMLVisitor.print(n_p);
   }    
@@ -165,7 +166,8 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 		return false;
 	}
 
-  // cout << "Expression tree:\n";
+  if (Properties::instance ()->printNormalizedExpressions ())
+    cout << "Expression tree:\n";
 	mm_p->accept(nvs);
 	rchandle<expr> e_h = nvs.pop_nodestack();
 
@@ -195,6 +197,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
   if (Properties::instance()->printIteratorTree())
   {
+    cout << "Iterator tree:\n";
     XMLIterPrinter vp(std::cout);
     PrinterVisitor pv(vp);
     top_iterator->accept(pv);
