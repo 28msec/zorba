@@ -6,6 +6,7 @@
 #include "store/api/item_factory.h"
 #include "store/api/store.h"
 #include "typesystem.h"
+#include <assert.h>
 
 using namespace xqp;
 
@@ -450,7 +451,7 @@ NodeXQType::NodeXQType(rchandle<NodeTest> nodetest, TypeSystem::xqtref_t content
 
 TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
 {
-  TypeSystem::quantifier_t q;
+  TypeSystem::quantifier_t q = TypeSystem::QUANT_ONE;
   switch(ident.get_quantifier()) {
     case TypeIdentifier::QUANT_ONE:
       q = TypeSystem::QUANT_ONE;
@@ -525,6 +526,12 @@ TypeSystem::xqtref_t TypeSystem::create_type(const TypeIdentifier& ident) const
   }
 
   return TypeSystem::xqtref_t(0);
+}
+
+TypeSystem::xqtref_t TypeSystem::create_type(const XQType& type, quantifier_t quantifier) const
+{
+  assert(false);
+  return 0;
 }
 
 static inline TypeIdentifier::quantifier_t get_typeident_quant(TypeSystem::quantifier_t quant)
