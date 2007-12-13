@@ -47,8 +47,8 @@ public:
 
 public:
 	yy::location get_location() const { return loc; }
-	virtual std::ostream& put(std::ostream&) const = 0;
-	virtual void accept(parsenode_visitor&) const = 0;
+  
+  virtual void accept(parsenode_visitor&) const = 0;
 
 };
 
@@ -77,7 +77,7 @@ public:
   virtual ~exprnode() {}
 
 public:
-	virtual std::ostream& put(std::ostream&) const = 0;
+  
 	virtual void accept(parsenode_visitor&) const = 0;
 
 };
@@ -288,7 +288,7 @@ public:
 	~Module();
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -322,7 +322,7 @@ public:
 	std::string get_encoding() const { return encoding; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -357,7 +357,7 @@ public:
 	rchandle<QueryBody> get_query_body() const { return query_body_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -388,7 +388,7 @@ public:
 	rchandle<Prolog> get_prolog() const { return prolog_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -419,7 +419,7 @@ public:
 	std::string get_target_namespace() const { return target_namespace; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -450,7 +450,7 @@ public:
 	rchandle<VFO_DeclList> get_vfo_list() const { return vfo_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -476,7 +476,7 @@ public:
 	rchandle<parsenode> operator[](int k) const { return sind_hv[k]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -502,7 +502,7 @@ public:
 	rchandle<parsenode> operator[](int k) const { return vfo_hv[k]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -574,7 +574,7 @@ public:
 	std::string get_uri() const { return uri; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -603,7 +603,7 @@ public:
 		get_boundary_space_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -635,7 +635,7 @@ public:
 	std::string get_default_namespace() const { return default_namespace; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -666,7 +666,7 @@ public:
 	std::string get_val() const { return val; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -695,7 +695,7 @@ public:
 	rchandle<parsenode> get_match_option() const { return match_option_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -723,7 +723,7 @@ public:
 	StaticQueryContext::ordering_mode_t get_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -752,7 +752,7 @@ public:
 	StaticQueryContext::order_empty_mode_t get_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -784,7 +784,7 @@ public:
 	StaticQueryContext::inherit_mode_t  get_inherit_mode() const;
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -821,7 +821,7 @@ public:
 	std::string get_collation() const { return collation; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -849,7 +849,7 @@ public:
 	std::string get_base_uri() const { return base_uri; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -886,7 +886,7 @@ public:
 	rchandle<URILiteralList> get_at_list() const { return at_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -915,7 +915,7 @@ public:
 	std::string operator[](int i) const { return uri_v[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -950,7 +950,7 @@ public:
 	bool get_default_bit() const { return default_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -990,7 +990,7 @@ public:
 	rchandle<URILiteralList> get_uri_list() const { return uri_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1027,7 +1027,7 @@ public:
 	bool is_extern() const { return initexpr_h==NULL; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1056,7 +1056,7 @@ public:
 	StaticQueryContext::construction_mode_t get_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1105,7 +1105,7 @@ public:
 	function_type_t get_type() const { return type; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1132,7 +1132,7 @@ public:
 	rchandle<Param> operator[](int i) const { return param_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1164,7 +1164,7 @@ public:
 	rchandle<TypeDeclaration> get_typedecl() const { return typedecl_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1192,7 +1192,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 	
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1222,7 +1222,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 	
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1250,7 +1250,7 @@ public:
     int  numberOfChildren() const;
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1300,7 +1300,7 @@ public:
 	rchandle<exprnode> get_return_val() const { return return_val_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1328,7 +1328,7 @@ public:
   int size () const { return forlet_hv.size (); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1369,7 +1369,7 @@ public:
 	rchandle<VarInDeclList> get_vardecl_list() const { return vardecl_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+  // // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 public:
@@ -1400,7 +1400,7 @@ public:
 	int size() { return vardecl_hv.size();}
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1448,7 +1448,7 @@ public:
 	rchandle<exprnode> get_valexpr() const { return valexpr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1476,7 +1476,7 @@ public:
 	std::string get_varname() const { return varname; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1504,7 +1504,7 @@ public:
 	rchandle<VarGetsDeclList> get_vardecl_list() const { return vardecl_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 public:
@@ -1534,7 +1534,7 @@ public:
 	rchandle<VarGetsDecl> operator[](int i) const { return vardecl_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 public:
@@ -1576,7 +1576,7 @@ public:
 	rchandle<exprnode> get_valexpr() const { return valexpr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1603,7 +1603,7 @@ public:
 	std::string get_varname() const { return varname; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1630,7 +1630,7 @@ public:
 	rchandle<exprnode> get_predicate() const { return predicate_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1661,7 +1661,7 @@ public:
 	bool get_stable_bit() const { return stable_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1689,7 +1689,7 @@ public:
   size_t size () { return spec_hv.size (); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1720,7 +1720,7 @@ public:
 	rchandle<OrderModifier> get_modifier() const { return modifier_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1762,7 +1762,7 @@ public:
 		{ return collation_spec_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1789,7 +1789,7 @@ public:
 	dir_spec_t get_dir_spec() const { return dir_spec; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1817,7 +1817,7 @@ public:
 		{ return empty_order_spec; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1844,7 +1844,7 @@ public:
 	std::string get_uri() const { return uri; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1878,7 +1878,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1906,7 +1906,7 @@ public:
 	int size() { return qvar_decl_hv.size();}
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1946,7 +1946,7 @@ public:
 	rchandle<exprnode> get_val() const { return val_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -1991,7 +1991,7 @@ public:
 	rchandle<exprnode> get_default_clause() const { return default_clause_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2030,7 +2030,7 @@ public:
 		{ return clause_hv.size(); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2070,7 +2070,7 @@ public:
 	rchandle<exprnode> get_val() const { return val_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2103,7 +2103,7 @@ public:
 	rchandle<exprnode> get_else_expr() const { return else_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2135,7 +2135,7 @@ public:
 	rchandle<exprnode> get_and_expr() const { return and_expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2167,7 +2167,7 @@ public:
 	rchandle<exprnode> get_comp_expr() const { return comp_expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2221,7 +2221,7 @@ public:
 	rchandle<NodeComp> get_nodecomp() const { return nodecomp_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2257,7 +2257,7 @@ public:
 	rchandle<FTIgnoreOption> get_ftignore() const { return ftignore_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2290,7 +2290,7 @@ public:
 	rchandle<exprnode> get_to_expr() const { return to_expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2327,7 +2327,7 @@ public:
 	rchandle<exprnode> get_mult_expr() const { return mult_expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2366,7 +2366,7 @@ public:
 	mult_op_t get_mult_op() const { return mult_op; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2400,7 +2400,7 @@ public:
 	rchandle<exprnode> intex_expr() const { return intex_expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2437,7 +2437,7 @@ public:
 	rchandle<exprnode> get_instof_expr() const { return instof_expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2470,7 +2470,7 @@ public:
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2503,7 +2503,7 @@ public:
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2536,7 +2536,7 @@ public:
 	rchandle<SingleType> singletype() const { return singletype_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2569,7 +2569,7 @@ public:
 	rchandle<SingleType> get_singletype() const { return singletype_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2602,7 +2602,7 @@ public:
 	rchandle<SignList> get_signlist() const { return signlist_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2635,7 +2635,7 @@ public:
 	void negate() { sign = !sign; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2674,7 +2674,7 @@ public:
 	enum gencomp_t get_type() const { return type; }
 	
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2705,7 +2705,7 @@ public:
 	enum valcomp_t get_type() const { return type; }
 	
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2736,7 +2736,7 @@ public:
 	enum nodecomp_t get_type() const { return type; }
 	
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2769,7 +2769,7 @@ public:
 	enum validation_mode_t get_valmode() const { return valmode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2802,7 +2802,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2829,7 +2829,7 @@ public:
 	rchandle<Pragma> operator[](int i) const { return pragma_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2861,7 +2861,7 @@ public:
 	std::string get_pragma_lit() const { return pragma_lit; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2922,7 +2922,7 @@ public:
 	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -2959,7 +2959,7 @@ public:
 	rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3003,7 +3003,7 @@ public:
 	rchandle<PredicateList> get_predicate_list() const { return predicate_list_h; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3039,7 +3039,7 @@ public:
 	rchandle<AbbrevForwardStep> get_abbrev_step() const { return abbrev_step_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3071,7 +3071,7 @@ public:
 	enum forward_axis_t get_axis() const { return axis; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3104,7 +3104,7 @@ public:
 	bool get_attr_bit() const { return attr_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3137,7 +3137,7 @@ public:
 	rchandle<parsenode> get_node_test() const { return node_test_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3167,7 +3167,7 @@ public:
 	enum reverse_axis_t get_axis() const { return axis; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3211,7 +3211,7 @@ public:
   rchandle<Wildcard> getWildcard() const { return theWildcard; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3247,7 +3247,7 @@ public:
 	const xqp_string& getLocalName() const { return theLocalName; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3278,7 +3278,7 @@ public:
 	rchandle<PredicateList> get_pred_list() const { return pred_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3307,7 +3307,7 @@ public:
     int size() { return pred_hv.size(); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3381,7 +3381,7 @@ public:
 	double get_double() const { return dval; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3410,7 +3410,7 @@ public:
 	std::string get_varname() const { return varname; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3440,7 +3440,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };	
@@ -3460,7 +3460,7 @@ public:
 	~ContextItemExpr();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };	
@@ -3489,7 +3489,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3518,7 +3518,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3552,7 +3552,7 @@ public:
 	rchandle<ArgList> get_arg_list() const { return arg_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3580,7 +3580,7 @@ public:
   int size () { return arg_hv.size (); }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3627,7 +3627,7 @@ public:
 	rchandle<DirElemContentList> get_dir_content_list() const { return dir_content_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3655,7 +3655,7 @@ public:
 		{ return dir_content_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3707,7 +3707,7 @@ public:
 		{ return common_content_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -3750,7 +3750,7 @@ public:
 	rchandle<EnclosedExpr> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3777,7 +3777,7 @@ public:
 	std::string get_cdata_content() const { return cdata_content; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3816,7 +3816,7 @@ public:
 		{ return dir_attr_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3850,7 +3850,7 @@ public:
 	rchandle<DirAttributeValue> get_dir_atval() const { return dir_atval_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3886,7 +3886,7 @@ public:
 		{ return apos_attr_content_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3916,7 +3916,7 @@ public:
 		{ return quot_atval_content_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3946,7 +3946,7 @@ public:
 		{ return apos_atval_content_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -3979,7 +3979,7 @@ public:
 	rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4011,7 +4011,7 @@ public:
 	rchandle<CommonContent> get_common_content() const { return common_content_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4043,7 +4043,7 @@ public:
   std::string get_comment() const { return comment; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4088,7 +4088,7 @@ public:
 	std::string get_pi_content() const { return pi_content; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4140,7 +4140,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4175,7 +4175,7 @@ public:
 	rchandle<exprnode> get_content_expr() const { return content_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4205,7 +4205,7 @@ public:
 	rchandle<exprnode> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4241,7 +4241,7 @@ public:
 	rchandle<exprnode> get_val_expr() const { return val_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4270,7 +4270,7 @@ public:
 	rchandle<exprnode> get_text_expr() const { return text_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4299,7 +4299,7 @@ public:
 	rchandle<exprnode> get_comment_expr() const { return comment_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4341,7 +4341,7 @@ public:
 	rchandle<exprnode> get_content_expr() const { return content_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4372,7 +4372,7 @@ public:
 	bool get_hook_bit() const { return hook_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4400,7 +4400,7 @@ public:
 	rchandle<SequenceType> get_seqtype() const { return seqtype_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4431,7 +4431,7 @@ public:
 	bool get_void_bit() const { return itemtype_h==NULL; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4457,7 +4457,7 @@ public:
 	enum occurrence_t get_type() const { return type; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4485,7 +4485,7 @@ public:
 	bool get_item_test_bit() const { return item_test_b; }
 
 public:
-	virtual std::ostream& put(std::ostream&) const;
+	virtual // std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4511,7 +4511,7 @@ public:
 	rchandle<QName> get_qname() const { return qname_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4543,7 +4543,7 @@ public:
 	~AnyKindTest();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4581,7 +4581,7 @@ public:
 		{ return schema_elem_test_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4598,7 +4598,7 @@ public:
 	~TextTest();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4616,7 +4616,7 @@ public:
 	~CommentTest();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4649,7 +4649,7 @@ public:
 	std::string get_content() const { return content; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4683,7 +4683,7 @@ public:
 	bool is_wild() const { return attr_h==NULL; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4712,7 +4712,7 @@ public:
 	rchandle<QName> get_attr() const { return attr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4749,7 +4749,7 @@ public:
 	bool isNilledAllowed() const           { return theNilledAllowed; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4776,7 +4776,7 @@ public:
 	rchandle<QName> get_elem() const { return elem_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4824,7 +4824,7 @@ public:
 	bool get_optional_bit() const { return optional_b; }
 	
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4862,7 +4862,7 @@ public:
 	std::string get_strval() const { return strval; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -4921,7 +4921,7 @@ public:
 	std::string get_prefix() const;
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 };
 
@@ -4964,7 +4964,7 @@ public:
 	rchandle<QName> get_qname() const { return qname_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5000,7 +5000,7 @@ public:
 	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5029,7 +5029,7 @@ public:
 	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5062,7 +5062,7 @@ public:
 	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5094,7 +5094,7 @@ public:
 	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5144,7 +5144,7 @@ public:
 	rchandle<exprnode> get_target_expr() const { return target_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5173,7 +5173,7 @@ public:
 		{ return varbinding_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5205,7 +5205,7 @@ public:
 	rchandle<exprnode> get_val() const { return val_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5260,7 +5260,7 @@ public:
 		{ return weight_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5290,7 +5290,7 @@ public:
 		{ return opt_prox_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5324,7 +5324,7 @@ public:
 	~FTMatchOptionProximity();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5357,7 +5357,7 @@ public:
 	rchandle<FTAnd> get_ftand() const { return ftand_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5390,7 +5390,7 @@ public:
 	rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5423,7 +5423,7 @@ public:
 	rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5458,7 +5458,7 @@ public:
 		{ return not_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5495,7 +5495,7 @@ public:
 	rchandle<FTSelection> get_selection() const { return selection_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5530,7 +5530,7 @@ public:
 		{ return any_all_option_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5563,7 +5563,7 @@ public:
 	rchandle<Expr> get_expr() const { return expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5587,7 +5587,7 @@ public:
 	~FTProximity();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5607,7 +5607,7 @@ public:
 	~FTOrderedIndicator();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5633,7 +5633,7 @@ public:
 	~FTMatchOption();
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5665,7 +5665,7 @@ public:
 	enum ft_case_mode_t get_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5697,7 +5697,7 @@ public:
 	enum ft_diacritics_mode_t get_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5733,7 +5733,7 @@ public:
 	enum ft_stem_mode_t get_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5779,7 +5779,7 @@ public:
 	bool get_without_bit() const { return without_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5811,7 +5811,7 @@ public:
 		{ return thesaurus_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5849,7 +5849,7 @@ public:
 	rchandle<FTRange> get_levels() const { return levels_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5891,7 +5891,7 @@ public:
 		{ return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5921,7 +5921,7 @@ public:
 		{ return incl_excl_lit_hv[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 
 public:
 	void accept(parsenode_visitor&) const;
@@ -5957,7 +5957,7 @@ public:
 		{ return stringlit_list_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -5985,7 +5985,7 @@ public:
 	std::string operator[](int i) const { return strlit_v[i]; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6020,7 +6020,7 @@ public:
 		{ return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6049,7 +6049,7 @@ public:
 	std::string get_lang() const { return lang; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6079,7 +6079,7 @@ public:
 	bool get_with_bit() const { return with_b; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6110,7 +6110,7 @@ public:
 	enum ft_content_mode_t get_mode() const { return mode; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6143,7 +6143,7 @@ public:
 	enum ft_anyall_option_t get_option() const { return option; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6186,7 +6186,7 @@ public:
 	rchandle<UnionExpr> get_dst_expr() const { return dst_expr_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6218,7 +6218,7 @@ public:
 	rchandle<FTUnit> get_unit() const { return unit_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6250,7 +6250,7 @@ public:
 	rchandle<FTUnit> get_unit() const { return unit_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6279,7 +6279,7 @@ public:
 	rchandle<FTRange> get_range() const { return range_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6309,7 +6309,7 @@ public:
 	enum ft_scope_t get_scope() const { return scope; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6338,7 +6338,7 @@ public:
 	enum ft_unit_t get_unit() const { return unit; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6367,7 +6367,7 @@ public:
 	enum ft_big_unit_t get_unit() const { return unit; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };
@@ -6396,7 +6396,7 @@ public:
 	rchandle<UnionExpr> get_union() const { return union_h; }
 
 public:
-	std::ostream& put(std::ostream&) const;
+	// std::ostream& put(std::ostream&) const;
 	void accept(parsenode_visitor&) const;
 
 };

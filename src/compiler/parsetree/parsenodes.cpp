@@ -38,17 +38,9 @@ ostringstream __oss;
 #define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
 
 /*
-ostream& parsenode::put(ostream& s) const
-{
-  s << INDENT << "parsenode[]\n"; UNDENT;
-  return s;
-}
 
-ostream& exprnode::put(ostream& s) const
-{
-  s << INDENT << "exprnode[]\n"; UNDENT;
-  return s;
-}
+
+
 */
 
 
@@ -66,10 +58,10 @@ Module::~Module()
 {
 }
 
-ostream& Module::put(ostream& os) const
-{
-  return os;
-}
+// ostream& Module::put(ostream& os) const
+// {
+//   return os;
+// }
 
 //-Module::
 
@@ -98,10 +90,10 @@ VersionDecl::~VersionDecl()
 {
 }
 
-ostream& VersionDecl::put(ostream& os) const
-{
-  return os;
-}
+// ostream& VersionDecl::put(ostream& os) const
+// {
+//   return os;
+// }
 
 //-VersionDecl::
 
@@ -142,13 +134,13 @@ MainModule::~MainModule()
 {
 }
 
-ostream& MainModule::put(ostream& s) const
-{
-  s << INDENT << "MainModule[" << endl;
-  if (prolog_h!=NULL) prolog_h->put(s);
-  query_body_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+// ostream& MainModule::put(ostream& s) const
+// {
+//   s << INDENT << "MainModule[" << endl;
+//   if (prolog_h!=NULL) prolog_h->put(s);
+//   query_body_h->put(s);
+//   return s << OUTDENT << "]\n";
+// }
 
 //-MainModule::
 
@@ -183,13 +175,13 @@ LibraryModule::~LibraryModule()
 {
 }
 
-ostream& LibraryModule::put(ostream& s) const
-{
-  s << INDENT << "LibraryModule[" << endl;
-  if (decl_h!=NULL) decl_h->put(s);
-  prolog_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+// ostream& LibraryModule::put(ostream& s) const
+// {
+//   s << INDENT << "LibraryModule[" << endl;
+//   if (decl_h!=NULL) decl_h->put(s);
+//   prolog_h->put(s);
+//   return s << OUTDENT << "]\n";
+// }
 
 //-LibraryModule::
 
@@ -222,12 +214,7 @@ ModuleDecl::~ModuleDecl()
 {
 }
 
-ostream& ModuleDecl::put(ostream& s) const
-{
-  s << INDENT << "ModuleDecl[";
-  s << prefix << " = " << target_namespace;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ModuleDecl::
 
@@ -258,13 +245,13 @@ Prolog::~Prolog()
 {
 }
 
-ostream& Prolog::put(ostream& s) const
-{
-  s << INDENT << "Prolog[" << endl;
-  if (sind_list_h!=NULL) sind_list_h->put(s);
-  if (vfo_list_h!=NULL) vfo_list_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+// ostream& Prolog::put(ostream& s) const
+// {
+//   s << INDENT << "Prolog[" << endl;
+//   if (sind_list_h!=NULL) sind_list_h->put(s);
+//   if (vfo_list_h!=NULL) vfo_list_h->put(s);
+//   return s << OUTDENT << "]\n";
+// }
 
 //-Prolog::
 
@@ -291,13 +278,13 @@ SIND_DeclList::~SIND_DeclList()
 {
 }
 
-ostream& SIND_DeclList::put(ostream& s) const
-{
-  s << INDENT << "SIND_DeclList[" << endl;
-  vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
-  for (; it!=sind_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+// ostream& SIND_DeclList::put(ostream& s) const
+// {
+//   s << INDENT << "SIND_DeclList[" << endl;
+//   vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
+//   for (; it!=sind_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+//   return s << OUTDENT << "]\n";
+// }
 
 //-SIND_DeclList::
 
@@ -328,13 +315,13 @@ VFO_DeclList::~VFO_DeclList()
 {
 }
 
-ostream& VFO_DeclList::put(ostream& s) const
-{
-  s << INDENT << "VFO_DeclList[" << endl;
-  vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
-  for (; it!=vfo_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+// ostream& VFO_DeclList::put(ostream& s) const
+// {
+//   s << INDENT << "VFO_DeclList[" << endl;
+//   vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
+//   for (; it!=vfo_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
+//   return s << OUTDENT << "]\n";
+// }
 
 //-VFO_DeclList::
 
@@ -384,12 +371,12 @@ NamespaceDecl::~NamespaceDecl()
 {
 }
 
-ostream& NamespaceDecl::put(ostream& s) const
-{
-  s << INDENT << "NamespaceDecl[";
-  s << prefix << " = " << uri;
-  return s << OUTDENT << "]\n";
-}
+// ostream& NamespaceDecl::put(ostream& s) const
+// {
+//   s << INDENT << "NamespaceDecl[";
+//   s << prefix << " = " << uri;
+//   return s << OUTDENT << "]\n";
+// }
 
 //-NamespaceDecl::
 
@@ -416,16 +403,16 @@ BoundarySpaceDecl::~BoundarySpaceDecl()
 {
 }
 
-ostream& BoundarySpaceDecl::put(ostream& s) const
-{
-  s << INDENT << "BoundarySpaceDecl[";
-  switch (mode) {
-  case StaticQueryContext::preserve_space: s << "preserve"; break;
-  case StaticQueryContext::strip_space: s << "strip"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+// ostream& BoundarySpaceDecl::put(ostream& s) const
+// {
+//   s << INDENT << "BoundarySpaceDecl[";
+//   switch (mode) {
+//   case StaticQueryContext::preserve_space: s << "preserve"; break;
+//   case StaticQueryContext::strip_space: s << "strip"; break;
+//   default: s << "???";
+//   }
+//   return s << OUTDENT << "]\n";
+// }
 
 //-BoundarySpaceDecl::
 
@@ -454,16 +441,16 @@ DefaultNamespaceDecl::~DefaultNamespaceDecl()
 {
 }
 
-ostream& DefaultNamespaceDecl::put(ostream& s) const
-{
-  s << INDENT << "DefaultNamespaceDecl[";
-  switch (mode) {
-  case ns_element_default: s << "element: "; break;
-  case ns_function_default: s << "function: "; break;
-  default: s << "???";
-  }
-  return s << default_namespace << "]\n";
-}
+// ostream& DefaultNamespaceDecl::put(ostream& s) const
+// {
+//   s << INDENT << "DefaultNamespaceDecl[";
+//   switch (mode) {
+//   case ns_element_default: s << "element: "; break;
+//   case ns_function_default: s << "function: "; break;
+//   default: s << "???";
+//   }
+//   return s << default_namespace << "]\n";
+// }
 
 //-DefaultNamespaceDecl::
 
@@ -492,13 +479,13 @@ OptionDecl::~OptionDecl()
 {
 }
 
-ostream& OptionDecl::put(ostream& s) const
-{
-  s << INDENT << "OptionDecl[";
-  if (qname_h!=NULL) qname_h->put(s);
-  s << " " << val << endl;
-  return s << OUTDENT << "]\n";
-}
+// ostream& OptionDecl::put(ostream& s) const
+// {
+//   s << INDENT << "OptionDecl[";
+//   if (qname_h!=NULL) qname_h->put(s);
+//   s << " " << val << endl;
+//   return s << OUTDENT << "]\n";
+// }
 
 //-OptionDecl::
 
@@ -526,12 +513,12 @@ FTOptionDecl::~FTOptionDecl()
 {
 }
 
-ostream& FTOptionDecl::put(ostream& s) const
-{
-  s << INDENT << "FTOptionDecl[";
-  if (match_option_h!=NULL) match_option_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+// ostream& FTOptionDecl::put(ostream& s) const
+// {
+//   s << INDENT << "FTOptionDecl[";
+//   if (match_option_h!=NULL) match_option_h->put(s);
+//   return s << OUTDENT << "]\n";
+// }
 
 //-FTOptionDecl::
 
@@ -559,16 +546,16 @@ OrderingModeDecl::~OrderingModeDecl()
 {
 }
 
-ostream& OrderingModeDecl::put(ostream& s) const
-{
-  s << INDENT << "OrderingModeDecl[";
-  switch (mode) {
-  case StaticQueryContext::ordered: s << "ordered"; break;
-  case StaticQueryContext::unordered: s << "unordered"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+// ostream& OrderingModeDecl::put(ostream& s) const
+// {
+//   s << INDENT << "OrderingModeDecl[";
+//   switch (mode) {
+//   case StaticQueryContext::ordered: s << "ordered"; break;
+//   case StaticQueryContext::unordered: s << "unordered"; break;
+//   default: s << "???";
+//   }
+//   return s << OUTDENT << "]\n";
+// }
 
 //-OrderingModeDecl::
 
@@ -595,16 +582,16 @@ EmptyOrderDecl::~EmptyOrderDecl()
 {
 }
 
-ostream& EmptyOrderDecl::put(ostream& s) const
-{
-  s << INDENT << "EmptyOrderDecl[";
-  switch (mode) {
-  case StaticQueryContext::empty_greatest: s << "greatest"; break;
-  case StaticQueryContext::empty_least: s << "least"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+// ostream& EmptyOrderDecl::put(ostream& s) const
+// {
+//   s << INDENT << "EmptyOrderDecl[";
+//   switch (mode) {
+//   case StaticQueryContext::empty_greatest: s << "greatest"; break;
+//   case StaticQueryContext::empty_least: s << "least"; break;
+//   default: s << "???";
+//   }
+//   return s << OUTDENT << "]\n";
+// }
 
 //-EmptyOrderDecl::
 
@@ -633,20 +620,20 @@ CopyNamespacesDecl::~CopyNamespacesDecl()
 {
 }
 
-ostream& CopyNamespacesDecl::put(ostream& s) const
-{
-  s << INDENT << "CopyNamespacesDecl[";
-  switch (preserve_mode) {
-  case StaticQueryContext::preserve_ns: s << "preserve"; break;
-  case StaticQueryContext::no_preserve_ns: s << "no preserve"; break;
-  }
-  s << ", ";
-  switch (inherit_mode) {
-  case StaticQueryContext::inherit_ns: s << "inherit"; break;
-  case StaticQueryContext::no_inherit_ns: s << "no inherit"; break;
-  }
-  return s << OUTDENT << "]\n";
-}
+// ostream& CopyNamespacesDecl::put(ostream& s) const
+// {
+//   s << INDENT << "CopyNamespacesDecl[";
+//   switch (preserve_mode) {
+//   case StaticQueryContext::preserve_ns: s << "preserve"; break;
+//   case StaticQueryContext::no_preserve_ns: s << "no preserve"; break;
+//   }
+//   s << ", ";
+//   switch (inherit_mode) {
+//   case StaticQueryContext::inherit_ns: s << "inherit"; break;
+//   case StaticQueryContext::no_inherit_ns: s << "no inherit"; break;
+//   }
+//   return s << OUTDENT << "]\n";
+// }
 
 //-CopyNamespacesDecl::
 
@@ -681,12 +668,12 @@ DefaultCollationDecl::~DefaultCollationDecl()
 {
 }
 
-ostream& DefaultCollationDecl::put(ostream& s) const
-{
-  s << INDENT << "DefaultCollationDecl[";
-  s << "collation=" << collation << endl;
-  return s << OUTDENT << "]\n";
-}
+// ostream& DefaultCollationDecl::put(ostream& s) const
+// {
+//   s << INDENT << "DefaultCollationDecl[";
+//   s << "collation=" << collation << endl;
+//   return s << OUTDENT << "]\n";
+// }
 
 //-DefaultCollationDecl::
 
@@ -713,12 +700,12 @@ BaseURIDecl::~BaseURIDecl()
 {
 }
 
-ostream& BaseURIDecl::put(ostream& s) const
-{
-  s << INDENT << "BaseURIDecl[";
-  s << base_uri;
-  return s << OUTDENT << "]\n";
-}
+// ostream& BaseURIDecl::put(ostream& s) const
+// {
+//   s << INDENT << "BaseURIDecl[";
+//   s << base_uri;
+//   return s << OUTDENT << "]\n";
+// }
 
 //-BaseURIDecl::
 
@@ -749,14 +736,14 @@ SchemaImport::~SchemaImport()
 {
 }
 
-ostream& SchemaImport::put(ostream& s) const
-{
-  s << INDENT << "SchemaImport[";
-  if (prefix_h!=NULL) prefix_h->put(s);
-  s << "uri=" << uri << endl;
-  if (at_list_h!=NULL) at_list_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+// ostream& SchemaImport::put(ostream& s) const
+// {
+//   s << INDENT << "SchemaImport[";
+//   if (prefix_h!=NULL) prefix_h->put(s);
+//   s << "uri=" << uri << endl;
+//   if (at_list_h!=NULL) at_list_h->put(s);
+//   return s << OUTDENT << "]\n";
+// }
 
 //-SchemaImport::
 
@@ -783,14 +770,14 @@ URILiteralList::~URILiteralList()
 {
 }
 
-ostream& URILiteralList::put(ostream& s) const
-{
-  s << INDENT << "URILiteralList[" << endl;
-  ++printdepth;
-  vector<string>::const_iterator it = uri_v.begin();
-  for (; it!=uri_v.end(); ++it) { s << *it << endl; }
-  return s << OUTDENT << "]\n";
-}
+// ostream& URILiteralList::put(ostream& s) const
+// {
+//   s << INDENT << "URILiteralList[" << endl;
+//   ++printdepth;
+//   vector<string>::const_iterator it = uri_v.begin();
+//   for (; it!=uri_v.end(); ++it) { s << *it << endl; }
+//   return s << OUTDENT << "]\n";
+// }
 
 //-URILiteralList::
 
@@ -832,13 +819,7 @@ SchemaPrefix::~SchemaPrefix()
 {
 }
 
-ostream& SchemaPrefix::put(ostream& s) const
-{
-  s << INDENT << "SchemaPrefix[";
-  s << "prefix=" << prefix << endl;
-  s << "default_b=" << default_b << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-SchemaPrefix::
 
@@ -879,14 +860,7 @@ ModuleImport::~ModuleImport()
 {
 }
 
-ostream& ModuleImport::put(ostream& s) const
-{
-  s << INDENT << "ModuleImport[";
-  s << "prefix=" << prefix << endl;
-  s << "uri=" << uri << endl;
-  if (uri_list_h!=NULL) uri_list_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ModuleImport::
 
@@ -918,14 +892,7 @@ VarDecl::~VarDecl()
 {
 }
 
-ostream& VarDecl::put(ostream& s) const
-{
-  s << INDENT << "VarDecl[";
-  s << "varname=" << varname << endl;
-  if (typedecl_h!=NULL) typedecl_h->put(s);
-  if (initexpr_h!=NULL) initexpr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-VarDecl::
 
@@ -954,16 +921,7 @@ ConstructionDecl::~ConstructionDecl()
 {
 }
 
-ostream& ConstructionDecl::put(ostream& os) const
-{
-  os << INDENT << "ConstructionDecl[";
-  switch (mode) {
-  case StaticQueryContext::cons_preserve: os << "preserve"; break;
-  case StaticQueryContext::cons_strip: os << "strip"; break;
-  default: os << "???";
-  }
-  return os << OUTDENT << "]\n";
-}
+
 
 //-ConstructionDecl::
 
@@ -998,22 +956,7 @@ FunctionDecl::~FunctionDecl()
 {
 }
 
-ostream& FunctionDecl::put(ostream& s) const
-{
-  s << INDENT << "Xxxx[";
-  if (name_h!=NULL) name_h->put(s);
-  if (paramlist_h!=NULL) paramlist_h->put(s);
-  if (return_type_h!=NULL) return_type_h->put(s);
-  if (body_h!=NULL) body_h->put(s);
-  switch (type) {
-  case fn_extern: s << "fn_extern"; break;
-  case fn_read: s << "fn_read"; break;
-  case fn_update: s << "fn_update"; break;
-  case fn_extern_update: s << "fn_extern_update"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FunctionDecl::
 
@@ -1042,14 +985,7 @@ ParamList::~ParamList()
 {
 }
 
-ostream& ParamList::put(ostream& s) const
-{
-  s << INDENT << "ParamList[" << endl;
-  ++printdepth;
-  vector<rchandle<Param> >::const_iterator it = param_hv.begin();
-  for (; it!=param_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ParamList::
 
@@ -1085,13 +1021,7 @@ Param::~Param()
 {
 }
 
-ostream& Param::put(ostream& s) const
-{
-  s << INDENT << "Param[";
-  s << "name=" << name << endl;
-  if (typedecl_h!=NULL) typedecl_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-Param::
 
@@ -1119,12 +1049,7 @@ EnclosedExpr::~EnclosedExpr()
 {
 }
 
-ostream& EnclosedExpr::put(ostream& s) const
-{
-  s << INDENT << "EnclosedExpr[\n";
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-EnclosedExpr::
 
@@ -1152,12 +1077,7 @@ QueryBody::~QueryBody()
 {
 }
 
-ostream& QueryBody::put(ostream& s) const
-{
-  s << INDENT << "QueryBody[\n";
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-QueryBody::
 
@@ -1183,13 +1103,7 @@ Expr::~Expr()
 {
 }
 
-ostream& Expr::put(ostream& s) const
-{
-  s << INDENT << "Expr[\n";
-  vector<rchandle<exprnode> >::const_iterator it = expr_hv.begin();
-  for (; it!=expr_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-Expr::
 
@@ -1237,24 +1151,7 @@ FLWORExpr::~FLWORExpr()
 {
 }
 
-ostream& FLWORExpr::put(ostream& s) const
-{
-  s << INDENT << "FLWORExpr[\n";
-  if (forlet_list_h!=NULL) forlet_list_h->put(s);
-  if (where_h!=NULL) {
-    s << INDENT << "WHERE\n"; UNDENT;
-    where_h->put(s);
-  }
-  if (orderby_h!=NULL) {
-    s << INDENT << "ORDERBY\n"; UNDENT;
-    orderby_h->put(s);
-  }
-  if (return_val_h!=NULL) {
-    s << INDENT << "RETURN\n"; UNDENT;
-    return_val_h->put(s);
-  }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FLWORExpr::
 
@@ -1287,13 +1184,7 @@ ForLetClauseList::~ForLetClauseList()
 {
 }
 
-ostream& ForLetClauseList::put(ostream& s) const
-{
-  s << INDENT << "ForLetClauseList[\n";
-  vector<rchandle<ForOrLetClause> >::const_iterator it = forlet_hv.begin();
-  for (; it!=forlet_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ForLetClauseList::
 
@@ -1332,12 +1223,7 @@ ForClause::~ForClause()
 {
 }
 
-ostream& ForClause::put(ostream& s) const
-{
-  s << INDENT << "ForClause[\n";
-  if (vardecl_list_h!=NULL) vardecl_list_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ForClause::
 
@@ -1364,13 +1250,7 @@ VarInDeclList::~VarInDeclList()
 {
 }
 
-ostream& VarInDeclList::put(ostream& s) const
-{
-  s << INDENT << "VarInDeclList[\n";
-  vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
-  for (; it!=vardecl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-VarInDeclList::
 
@@ -1412,16 +1292,7 @@ VarInDecl::~VarInDecl()
 {
 }
 
-ostream& VarInDecl::put(ostream& s) const
-{
-  s << INDENT << "VarInDecl[";
-  s << "varname=" << varname << endl;
-  if (typedecl_h!=NULL) typedecl_h->put(s);
-  if (posvar_h!=NULL) posvar_h->put(s);
-  if (ftscorevar_h!=NULL) ftscorevar_h->put(s);
-  if (valexpr_h!=NULL) valexpr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-VarInDecl::
 
@@ -1460,12 +1331,7 @@ PositionalVar::~PositionalVar()
 {
 }
 
-ostream& PositionalVar::put(ostream& s) const
-{
-  s << INDENT << "PositionalVar[";
-  s << "varname=" << varname << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-PositionalVar::
 
@@ -1492,12 +1358,7 @@ LetClause::~LetClause()
 {
 }
 
-ostream& LetClause::put(ostream& s) const
-{
-  s << INDENT << "LetClause[\n";
-  if (vardecl_list_h!=NULL) vardecl_list_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-LetClause::
 
@@ -1524,13 +1385,7 @@ VarGetsDeclList::~VarGetsDeclList()
 {
 }
 
-ostream& VarGetsDeclList::put(ostream& s) const
-{
-  s << INDENT << "VarGetsDeclList[\n";
-  vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
-  for (; it!=vardecl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-VarGetsDeclList::
 
@@ -1570,15 +1425,7 @@ VarGetsDecl::~VarGetsDecl()
 {
 }
 
-ostream& VarGetsDecl::put(ostream& s) const
-{
-  s << INDENT << "VarGetsDecl[";
-  s << "varname=" << varname << endl;
-  if (typedecl_h!=NULL) typedecl_h->put(s);
-  if (ftscorevar_h!=NULL) ftscorevar_h->put(s);
-  if (valexpr_h!=NULL) valexpr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-VarGetsDecl::
 
@@ -1610,12 +1457,7 @@ FTScoreVar::~FTScoreVar()
 {
 }
 
-ostream& FTScoreVar::put(ostream& s) const
-{
-  s << INDENT << "FTScoreVar[";
-  s << "varname=" << varname << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTScoreVar::
 
@@ -1642,12 +1484,7 @@ WhereClause::~WhereClause()
 {
 }
 
-ostream& WhereClause::put(ostream& s) const
-{
-  s << INDENT << "WhereClause[\n";
-  if (predicate_h!=NULL) predicate_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-WhereClause::
 
@@ -1678,13 +1515,7 @@ OrderByClause::~OrderByClause()
 {
 }
 
-ostream& OrderByClause::put(ostream& s) const
-{
-  s << INDENT << "OrderByClause[\n";
-  if (spec_list_h!=NULL) spec_list_h->put(s);
-  s << "stable_b=" << stable_b << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderByClause::
 
@@ -1710,13 +1541,7 @@ OrderSpecList::~OrderSpecList()
 {
 }
 
-ostream& OrderSpecList::put(ostream& s) const
-{
-  s << INDENT << "OrderSpecList[\n";
-  vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
-  for (; it!=spec_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderSpecList::
 
@@ -1751,13 +1576,7 @@ OrderSpec::~OrderSpec()
 {
 }
 
-ostream& OrderSpec::put(ostream& s) const
-{
-  s << INDENT << "OrderSpec[\n";
-  if (spec_h!=NULL) spec_h->put(s);
-  if (modifier_h!=NULL) modifier_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderSpec::
 
@@ -1790,14 +1609,7 @@ OrderModifier::~OrderModifier()
 {
 }
 
-ostream& OrderModifier::put(ostream& s) const
-{
-  s << INDENT << "OrderModifier[";
-  if (dir_spec_h!=NULL) dir_spec_h->put(s);
-  if (empty_spec_h!=NULL) empty_spec_h->put(s);
-  if (collation_spec_h!=NULL) collation_spec_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderModifier::
 
@@ -1827,16 +1639,7 @@ OrderDirSpec::~OrderDirSpec()
 {
 }
   
-ostream& OrderDirSpec::put(ostream& s) const
-{
-  s << INDENT << "OrderDirSpec[";
-  switch (dir_spec) {
-  case dir_ascending: s << "ascending"; break;
-  case dir_descending: s << "descending"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderDirSpec::
 
@@ -1863,16 +1666,7 @@ OrderEmptySpec::~OrderEmptySpec()
 {
 }
 
-ostream& OrderEmptySpec::put(ostream& s) const
-{
-  s << INDENT << "OrderEmptySpec[";
-  switch (empty_order_spec) {
-  case StaticQueryContext::empty_greatest: s << "empty_greatest"; break;
-  case StaticQueryContext::empty_least: s << "empty_least"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderEmptySpec::
 
@@ -1899,12 +1693,7 @@ OrderCollationSpec::~OrderCollationSpec()
 {
 }
 
-ostream& OrderCollationSpec::put(ostream& s) const
-{
-  s << INDENT << "OrderCollationSpec[";
-  s << "uri=" << uri << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderCollationSpec::
 
@@ -1935,18 +1724,7 @@ QuantifiedExpr::~QuantifiedExpr()
 {
 }
 
-ostream& QuantifiedExpr::put(ostream& s) const
-{
-  s << INDENT << "QuantifiedExpr[";
-  switch(qmode) {
-  case quant_some: s << "some\n"; break;
-  case quant_every: s << "every\n"; break;
-  default: s << "???\n";
-  }
-  if (decl_list_h!=NULL) decl_list_h->put(s);
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-QuantifiedExpr::
 
@@ -1973,13 +1751,7 @@ QVarInDeclList::~QVarInDeclList()
 {
 }
 
-ostream& QVarInDeclList::put(ostream& s) const
-{
-  s << INDENT << "QVarInDeclList[\n";
-  vector<rchandle<QVarInDecl> >::const_iterator it = qvar_decl_hv.begin();
-  for (; it!=qvar_decl_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-QVarInDeclList::
 
@@ -2029,14 +1801,7 @@ QVarInDecl::~QVarInDecl()
 {
 }
 
-ostream& QVarInDecl::put(ostream& s) const
-{
-  s << INDENT << "QVarInDecl[";
-  s << "name=" << name << endl;
-  if (typedecl_h!=NULL) typedecl_h->put(s);
-  if (val_h!=NULL) val_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-QVarInDecl::
 
@@ -2084,22 +1849,7 @@ TypeswitchExpr::~TypeswitchExpr()
 {
 }
 
-ostream& TypeswitchExpr::put(ostream& os) const
-{
-  os << INDENT << "TypeswitchExpr[\n";
-  if (switch_expr_h!=NULL) switch_expr_h->put(os);
-  if (clause_list_h!=NULL) clause_list_h->put(os);
-  if (default_clause_h!=NULL) {
-    os << INDENT << "DEFAULT\n";
-    if (default_varname.length()>0) {
-      os << INDENT << "VARNAME=" << default_varname;
-      os << OUTDENT << endl;
-    }
-    default_clause_h->put(os);
-    UNDENT;
-  }
-  return os << OUTDENT << "]\n";
-}
+
 
 //-TypeswitchExpr::
 
@@ -2145,21 +1895,7 @@ CaseClauseList::~CaseClauseList()
 {
 }
 
-ostream& CaseClauseList::put(ostream& os) const
-{
-  os << INDENT << "CaseClauseList[("<<size()<<")\n";
-  vector<rchandle<CaseClause> >::const_iterator it = clause_hv.begin();
-  for (; it!=clause_hv.end(); ++it) { 
-    if (*it!=NULL) {
-      (*it)->put(os);
-    }
-    else { 
-      os << INDENT << "CASE CLAUSE == NULL!\n"; 
-      UNDENT; 
-    }
-  }
-  return os << OUTDENT << "]\n";
-}
+
 
 //-CaseClauseList::
 
@@ -2209,20 +1945,7 @@ CaseClause::~CaseClause()
 {
 }
 
-ostream& CaseClause::put(ostream& os) const
-{
-  os << INDENT << "CaseClause[\n";
-  if (varname.length()>0) os << "VARNAME=" << varname;
-  if (type_h!=NULL) { 
-    os << INDENT << "AS\n"; 
-    type_h->put(os); UNDENT;
-  }
-  if (val_h!=NULL) {
-    os << INDENT << "RETURN\n"; 
-    val_h->put(os); UNDENT;
-  }
-  return os << OUTDENT << "]\n";
-}
+
 
 //-CaseClause::
 
@@ -2255,14 +1978,7 @@ IfExpr::~IfExpr()
 {
 }
 
-ostream& IfExpr::put(ostream& s) const
-{
-  s << INDENT << "IfExpr[\n";
-  if (cond_expr_h!=NULL) cond_expr_h->put(s);
-  if (then_expr_h!=NULL) then_expr_h->put(s);
-  if (else_expr_h!=NULL) else_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-IfExpr::
 
@@ -2294,13 +2010,7 @@ OrExpr::~OrExpr()
 {
 }
 
-ostream& OrExpr::put(ostream& s) const
-{
-  s << INDENT << "OrExpr[\n";
-  if (or_expr_h!=NULL) or_expr_h->put(s);
-  if (and_expr_h!=NULL) and_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrExpr::
 
@@ -2331,13 +2041,7 @@ AndExpr::~AndExpr()
 {
 }
 
-ostream& AndExpr::put(ostream& s) const
-{
-  s << INDENT << "AndExpr[\n";
-  if (and_expr_h!=NULL) and_expr_h->put(s);
-  if (comp_expr_h!=NULL) comp_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-AndExpr::
 
@@ -2402,16 +2106,7 @@ ComparisonExpr::~ComparisonExpr()
 {
 }
 
-ostream& ComparisonExpr::put(ostream& s) const
-{
-  s << INDENT << "ComparisonExpr[\n";
-  if (left_h!=NULL) left_h->put(s);
-  if (valcomp_h!=NULL) valcomp_h->put(s);
-  if (gencomp_h!=NULL) gencomp_h->put(s);
-  if (nodecomp_h!=NULL) nodecomp_h->put(s);
-  if (right_h!=NULL) right_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ComparisonExpr::
 
@@ -2444,14 +2139,7 @@ FTContainsExpr::~FTContainsExpr()
 {
 }
 
-ostream& FTContainsExpr::put(ostream& s) const
-{
-  s << INDENT << "FTContainsExpr[\n";
-  if (range_expr_h!=NULL) range_expr_h->put(s);
-  if (ftselect_h!=NULL) ftselect_h->put(s);
-  if (ftignore_h!=NULL) ftignore_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTContainsExpr::
 
@@ -2483,14 +2171,7 @@ RangeExpr::~RangeExpr()
 {
 }
 
-ostream& RangeExpr::put(ostream& s) const
-{
-  s << INDENT << "RangeExpr[\n";
-  if (from_expr_h!=NULL) from_expr_h->put(s);
-  s << " TO ";
-  if (to_expr_h!=NULL) to_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-RangeExpr::
 
@@ -2523,20 +2204,7 @@ AdditiveExpr::~AdditiveExpr()
 {
 }
 
-ostream& AdditiveExpr::put(ostream& os) const
-{
-  os << INDENT << "AdditiveExpr[\n";
-  if (add_expr_h!=NULL) {
-    add_expr_h->put(os);
-    switch(add_op) {
-    case op_plus: os << INDENT << " plus\n"; break;
-    case op_minus: os << INDENT << " minus\n"; break;
-    default: os << INDENT << "???";
-    }
-  }
-  if (mult_expr_h!=NULL) mult_expr_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 //-AdditiveExpr::
 
@@ -2569,20 +2237,7 @@ MultiplicativeExpr::~MultiplicativeExpr()
 {
 }
 
-ostream& MultiplicativeExpr::put(ostream& s) const
-{
-  s << INDENT << "MultiplicativeExpr[\n";
-  if (mult_expr_h!=NULL) mult_expr_h->put(s);
-  switch(mult_op) {
-  case op_mul: s << " mul\n"; break;
-  case op_div: s << " div\n"; break;
-  case op_idiv: s << " idiv\n"; break;
-  case op_mod: s << " mod\n"; break;
-  default: s << "???";
-  }
-  if (union_expr_h!=NULL) union_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-MultiplicativeExpr::
 
@@ -2613,13 +2268,7 @@ UnionExpr::~UnionExpr()
 {
 }
 
-ostream& UnionExpr::put(ostream& s) const
-{
-  s << INDENT << "UnionExpr[\n";
-  if (union_expr_h!=NULL) union_expr_h->put(s);
-  if (intex_expr_h!=NULL) intex_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-UnionExpr::
 
@@ -2652,18 +2301,7 @@ IntersectExceptExpr::~IntersectExceptExpr()
 {
 }
 
-ostream& IntersectExceptExpr::put(ostream& s) const
-{
-  s << INDENT << "IntersectExceptExpr[\n";
-  if (intex_expr_h!=NULL) intex_expr_h->put(s);
-  switch(intex_op) {
-  case op_intersect: s << "intersect"; break;
-  case op_except: s << "except"; break;
-  default: s << "???";
-  }
-  if (instof_expr_h!=NULL) instof_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-IntersectExceptExpr::
 
@@ -2694,13 +2332,7 @@ InstanceofExpr::~InstanceofExpr()
 {
 }
 
-ostream& InstanceofExpr::put(ostream& s) const
-{
-  s << INDENT << "InstanceofExpr[\n";
-  if (treat_expr_h!=NULL) treat_expr_h->put(s);
-  if (seqtype_h!=NULL) seqtype_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-InstanceofExpr::
 
@@ -2731,13 +2363,7 @@ TreatExpr::~TreatExpr()
 {
 }
 
-ostream& TreatExpr::put(ostream& s) const
-{
-  s << INDENT << "TreatExpr[\n";
-  if (castable_expr_h!=NULL) castable_expr_h->put(s);
-  if (seqtype_h!=NULL) seqtype_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-TreatExpr::
 
@@ -2768,13 +2394,7 @@ CastableExpr::~CastableExpr()
 {
 }
 
-ostream& CastableExpr::put(ostream& s) const
-{
-  s << INDENT << "CastableExpr[\n";
-  if (cast_expr_h!=NULL) cast_expr_h->put(s);
-  if (singletype_h!=NULL) singletype_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CastableExpr::
 
@@ -2805,13 +2425,7 @@ CastExpr::~CastExpr()
 {
 }
 
-ostream& CastExpr::put(ostream& s) const
-{
-  s << INDENT << "CastExpr[\n";
-  if (unary_expr_h!=NULL) unary_expr_h->put(s);
-  if (singletype_h!=NULL) singletype_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CastExpr::
 
@@ -2842,13 +2456,7 @@ UnaryExpr::~UnaryExpr()
 {
 }
 
-ostream& UnaryExpr::put(ostream& s) const
-{
-  s << INDENT << "UnaryExpr[\n";
-  if (signlist_h!=NULL) signlist_h->put(s);
-  if (value_expr_h!=NULL) value_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-UnaryExpr::
 
@@ -2877,12 +2485,7 @@ SignList::~SignList()
 {
 }
 
-ostream& SignList::put(ostream& s) const
-{
-  s << INDENT << "Sign[";
-  s << (sign ? "+" : "-");
-  return s << OUTDENT << "]\n";
-}
+
 
 //-SignList::
 
@@ -2913,22 +2516,7 @@ GeneralComp::~GeneralComp()
 {
 }
 
-ostream& GeneralComp::put(ostream& s) const
-{
-  s << INDENT << "GeneralComp[";
-  switch(type) {
-  case op_eq: s << "eq"; break;
-  case op_ne: s << "ne"; break;
-  case op_lt: s << "lt"; break;
-  case op_le: s << "le"; break;
-  case op_gt: s << "gt"; break;
-  case op_ge: s << "ge"; break;
-  default: s << "???";
-  }
-  s << "]\n";
-  UNDENT;
-  return s;
-}
+
 
 //-GeneralComp::
 
@@ -2955,22 +2543,7 @@ ValueComp::~ValueComp()
 {
 }
 
-ostream& ValueComp::put(ostream& s) const
-{
-  s << INDENT << "ValueComp[";
-  switch(type) {
-  case op_val_eq: s << "val_eq"; break;
-  case op_val_ne: s << "val_ne"; break;
-  case op_val_lt: s << "val_lt"; break;
-  case op_val_le: s << "val_le"; break;
-  case op_val_gt: s << "val_gt"; break;
-  case op_val_ge: s << "val_ge"; break;
-  default: s << "???";
-  }
-  s << "]\n";
-  UNDENT;
-  return s;
-}
+
 
 //-ValueComp::
 
@@ -2997,19 +2570,7 @@ NodeComp::~NodeComp()
 {
 }
 
-ostream& NodeComp::put(ostream& s) const
-{
-  s << INDENT << "NodeComp[";
-  switch(type) {
-  case op_is: s << "is"; break;
-  case op_precedes: s << "precedes"; break;
-  case op_follows: s << "follows"; break;
-  default: s << "???";
-  }
-  s << "]\n";
-  UNDENT;
-  return s;
-}
+
 
 //-NodeComp::
 
@@ -3038,17 +2599,7 @@ ValidateExpr::~ValidateExpr()
 {
 }
 
-ostream& ValidateExpr::put(ostream& s) const
-{
-  s << INDENT << "ValidateExpr[";
-  switch(valmode) {
-  case val_strict: s << "strict\n"; break;
-  case val_lax: s << "lax\n"; break;
-  default: s << "???\n";
-  }
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ValidateExpr::
 
@@ -3078,13 +2629,7 @@ ExtensionExpr::~ExtensionExpr()
 {
 }
 
-ostream& ExtensionExpr::put(ostream& s) const
-{
-  s << INDENT << "ExtensionExpr[\n";
-  if (pragma_list_h!=NULL) pragma_list_h->put(s);
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ExtensionExpr::
 
@@ -3111,13 +2656,7 @@ PragmaList::~PragmaList()
 {
 }
 
-ostream& PragmaList::put(ostream& s) const
-{
-  s << INDENT << "PragmaList[\n";
-  vector<rchandle<Pragma> >::const_iterator it = pragma_hv.begin();
-  for (; it!=pragma_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-PragmaList::
 
@@ -3153,13 +2692,7 @@ Pragma::~Pragma()
 {
 }
 
-ostream& Pragma::put(ostream& s) const
-{
-  s << INDENT << "Pragma[";
-  if (name_h!=NULL) name_h->put(s);
-  s << "pragma_lit=" << pragma_lit << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-Pragma::
 
@@ -3202,19 +2735,7 @@ PathExpr::~PathExpr()
 }
 
 
-ostream& PathExpr::put(ostream& s) const
-{
-  s << INDENT << "PathExpr[";
-  switch(type) {
-  case path_leading_lone_slash: s << "leading_lone_slash\n"; break;
-  case path_leading_slash: s << "leading_slash\n"; break;
-  case path_leading_slashslash: s << "leading_slashslash\n"; break;
-  case path_relative: s << "relative\n"; break;
-  default: s << "???\n";
-  }
-  if (relpath_expr_h!=NULL) relpath_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 
 void PathExpr::accept(parsenode_visitor& v) const 
@@ -3251,22 +2772,7 @@ RelativePathExpr::~RelativePathExpr()
 }
 
 
-ostream& RelativePathExpr::put(ostream& s) const
-{
-  s << INDENT << "RelativePathExpr[\n";
-  if (step_expr_h!=NULL) {
-    step_expr_h->put(s);
-  }
-  if (relpath_expr_h!=NULL) {
-    switch(step_type) {
-    case st_slash: s << INDENT << "SLASH\n"; UNDENT; break;
-    case st_slashslash: s << INDENT << "SLASHSLASH\n"; UNDENT;  break;
-    default: s << "\n";
-    }
-    relpath_expr_h->put(s);
-  }
-  return s << OUTDENT << "]\n";
-}
+
 
 
 void RelativePathExpr::accept(parsenode_visitor& v) const 
@@ -3322,14 +2828,7 @@ AxisStep::~AxisStep()
 }
 
 
-ostream& AxisStep::put(ostream& os) const
-{
-  os << INDENT << "AxisStep[\n";
-  if (forward_step_h!=NULL) forward_step_h->put(os);
-  if (reverse_step_h!=NULL) reverse_step_h->put(os);
-  if (predicate_list_h!=NULL) predicate_list_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 
 void AxisStep::accept(parsenode_visitor& v) const 
@@ -3377,14 +2876,7 @@ ForwardStep::~ForwardStep()
 }
 
 
-ostream& ForwardStep::put(ostream& os) const
-{
-  os << INDENT << "ForwardStep[\n";
-  if (forward_axis_h!=NULL) forward_axis_h->put(os);
-  if (node_test_h!=NULL) node_test_h->put(os);
-  if (abbrev_step_h!=NULL) abbrev_step_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 
 void ForwardStep::accept(parsenode_visitor& v) const 
@@ -3418,21 +2910,7 @@ ForwardAxis::~ForwardAxis()
 }
 
 
-ostream& ForwardAxis::put(ostream& os) const
-{
-  os << INDENT << "ForwardAxis[";
-  switch(axis) {
-  case axis_child:              os << "CHILD"; break;
-  case axis_descendant:         os << "DESCENDANT"; break;
-  case axis_attribute:          os << "ATTRIBUTE"; break;
-  case axis_self:               os << "SELF"; break;
-  case axis_descendant_or_self: os << "DESCENDANT_OR_SELF"; break;
-  case axis_following_sibling:  os << "FOLLOWING_SIBLING"; break;
-  case axis_following:          os << "FOLLOWING"; break;
-  default: os << "???";
-  }
-  return os << OUTDENT << "]\n";
-}
+
 
 
 void ForwardAxis::accept(parsenode_visitor& v) const 
@@ -3475,13 +2953,7 @@ AbbrevForwardStep::~AbbrevForwardStep()
 }
 
 
-ostream& AbbrevForwardStep::put(ostream& os) const
-{
-  os << INDENT << "AbbrevForwardStep[";
-  os << (attr_b ? "@\n" : "\n");
-  if (node_test_h!=NULL) node_test_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 
 void AbbrevForwardStep::accept(parsenode_visitor& v) const 
@@ -3525,13 +2997,7 @@ ReverseStep::~ReverseStep()
 }
 
 
-ostream& ReverseStep::put(ostream& os) const
-{
-  os << INDENT << "ReverseStep[\n";
-  if (axis_h!=NULL) axis_h->put(os);
-  if (node_test_h!=NULL) node_test_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 
 void ReverseStep::accept(parsenode_visitor& v) const 
@@ -3563,19 +3029,7 @@ ReverseAxis::~ReverseAxis()
 }
 
 
-ostream& ReverseAxis::put(ostream& s) const
-{
-  s << INDENT << "ReverseAxis[";
-  switch(axis) {
-  case axis_parent:             s << "PARENT"; break;
-  case axis_ancestor:           s << "ANCESTOR"; break;
-  case axis_preceding_sibling:  s << "PRECEDING_SIBLING"; break;
-  case axis_preceding:          s << "PRECEDING"; break;
-  case axis_ancestor_or_self:   s << "ANCESTOR_OR_SELF"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+
 
 
 void ReverseAxis::accept(parsenode_visitor& v) const 
@@ -3627,14 +3081,7 @@ NameTest::~NameTest()
 }
 
 
-ostream& NameTest::put(ostream& os) const
-{
-  os << INDENT << "NameTest[";
-  if (theQName != NULL) theQName->put(os);
-  if (theWildcard != NULL) theWildcard->put(os);
-  os << "]\n"; UNDENT;
-  return os;
-}
+
 
 
 void NameTest::accept(parsenode_visitor& v) const 
@@ -3668,18 +3115,7 @@ Wildcard::~Wildcard()
 }
 
 
-ostream& Wildcard::put(ostream& os) const
-{
-  os << "Wildcard[ ";
-  switch(theKind)
-  {
-  case wild_all:    os << "* ]"; break;
-  case wild_prefix: os << "*:" << theLocalName << " ]"; break;
-  case wild_elem:   os << thePrefix << ":* ]"; break;
-  default: os << "???";
-  }
-  UNDENT; return os;
-}
+
 
 
 void Wildcard::accept(parsenode_visitor& v) const 
@@ -3707,13 +3143,7 @@ FilterExpr::~FilterExpr()
 {
 }
 
-ostream& FilterExpr::put(ostream& s) const
-{
-  s << INDENT << "FilterExpr[\n";
-  if (primary_h!=NULL) primary_h->put(s);
-  if (pred_list_h!=NULL) pred_list_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FilterExpr::
 
@@ -3740,13 +3170,7 @@ PredicateList::~PredicateList()
 {
 }
 
-ostream& PredicateList::put(ostream& s) const
-{
-  s << INDENT << "PredicateList[\n";
-  vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
-  for (; it!=pred_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-PredicateList::
 
@@ -3812,18 +3236,7 @@ NumericLiteral::~NumericLiteral()
 {
 }
 
-ostream& NumericLiteral::put(ostream& s) const
-{
-  s << INDENT << "NumericLiteral[";
-  switch(type) {
-  case num_integer: s << "num_integer=" << ival; break;
-  case num_decimal: s << "num_decimal=" << decval; break;
-  case num_double: s << "num_double=" << dval; break;
-  default: s << "???";
-  }
-  s << "]\n"; UNDENT; 
-  return s;
-}
+
 
 //-NumericLiteral::
 
@@ -3850,11 +3263,7 @@ VarRef::~VarRef()
 {
 }
 
-ostream& VarRef::put(ostream& s) const
-{
-  s << INDENT<<"VarRef[varname="<<varname<<"]\n"; UNDENT;
-  return s;
-}
+
 
 //-VarRef::
 
@@ -3884,12 +3293,7 @@ ParenthesizedExpr::~ParenthesizedExpr()
 {
 }
 
-ostream& ParenthesizedExpr::put(ostream& s) const
-{
-  s << INDENT << "ParenthesizedExpr[\n";
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ParenthesizedExpr::
 
@@ -3916,11 +3320,7 @@ ContextItemExpr::~ContextItemExpr()
 {
 }
 
-ostream& ContextItemExpr::put(ostream& s) const
-{
-  s << INDENT << "ContextItemExpr[]\n"; UNDENT;
-  return s;
-}
+
 
 //-ContextItemExpr::
 
@@ -3948,12 +3348,7 @@ OrderedExpr::~OrderedExpr()
 {
 }
 
-ostream& OrderedExpr::put(ostream& s) const
-{
-  s << INDENT << "OrderedExpr[";
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OrderedExpr::
 
@@ -3981,12 +3376,7 @@ UnorderedExpr::~UnorderedExpr()
 {
 }
 
-ostream& UnorderedExpr::put(ostream& s) const
-{
-  s << INDENT << "UnorderedExpr[";
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-UnorderedExpr::
 
@@ -4017,13 +3407,7 @@ FunctionCall::~FunctionCall()
 {
 }
 
-ostream& FunctionCall::put(ostream& os) const
-{
-  os << INDENT << "FunctionCall[";
-  if (fname_h!=NULL) { os << endl; fname_h->put(os); }
-  if (arg_list_h!=NULL) { os << endl; arg_list_h->put(os); }
-  return os << OUTDENT << "]\n";
-}
+
 
 //-FunctionCall::
 
@@ -4051,13 +3435,7 @@ ArgList::~ArgList()
 {
 }
 
-ostream& ArgList::put(ostream& s) const
-{
-  s << INDENT << "ArgList[" << endl;
-  vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
-  for (; it!=arg_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ArgList::
 
@@ -4106,15 +3484,7 @@ DirElemConstructor::~DirElemConstructor()
 {
 }
 
-ostream& DirElemConstructor::put(ostream& s) const
-{
-  s << INDENT << "DirElemConstructor[";
-  if (elem_name_h!=NULL) elem_name_h->put(s);
-  s << endl;
-  if (attr_list_h!=NULL) attr_list_h->put(s);
-  if (dir_content_list_h!=NULL) dir_content_list_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirElemConstructor::
 
@@ -4147,13 +3517,7 @@ DirElemContentList::~DirElemContentList()
 {
 }
 
-ostream& DirElemContentList::put(ostream& s) const
-{
-  s << INDENT << "DirElemContentList[" << endl;
-  vector<rchandle<exprnode> >::const_iterator it = dir_content_hv.begin();
-  for (; it!=dir_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirElemContentList::
 
@@ -4185,13 +3549,7 @@ DirAttributeList::~DirAttributeList()
 {
 }
 
-ostream& DirAttributeList::put(ostream& s) const
-{
-  s << INDENT << "DirAttributeList[\n";
-  vector<rchandle<DirAttr> >::const_iterator it = dir_attr_hv.begin();
-  for (; it!=dir_attr_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirAttributeList::
 
@@ -4228,14 +3586,7 @@ DirAttr::~DirAttr()
 {
 }
 
-ostream& DirAttr::put(ostream& s) const
-{
-  s << INDENT << "DirAttr[";
-  if (atname_h!=NULL) atname_h->put(s);
-  s << endl;
-  if (dir_atval_h!=NULL) dir_atval_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirAttr::
 
@@ -4275,13 +3626,7 @@ DirAttributeValue::~DirAttributeValue()
 {
 }
 
-ostream& DirAttributeValue::put(ostream& s) const
-{
-  s << INDENT << "DirAttributeValue\n";
-  if (quot_attr_content_h!=NULL) quot_attr_content_h->put(s);
-  if (apos_attr_content_h!=NULL) apos_attr_content_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirAttributeValue::
 
@@ -4311,14 +3656,7 @@ QuoteAttrContentList::~QuoteAttrContentList()
 {
 }
 
-ostream& QuoteAttrContentList::put(ostream& s) const
-{
-  s << INDENT << "QuoteAttrContentList[" << endl;
-  vector<rchandle<QuoteAttrValueContent> >::const_iterator it =
-    quot_atval_content_hv.begin();
-  for (; it!=quot_atval_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-QuoteAttrContentList::
 
@@ -4351,14 +3689,7 @@ AposAttrContentList::~AposAttrContentList()
 {
 }
 
-ostream& AposAttrContentList::put(ostream& s) const
-{
-  s << INDENT << "AposAttrContentList[" << endl;
-  vector<rchandle<AposAttrValueContent> >::const_iterator it =
-    apos_atval_content_hv.begin();
-  for (; it!=apos_atval_content_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-AposAttrContentList::
 
@@ -4404,13 +3735,7 @@ QuoteAttrValueContent::~QuoteAttrValueContent()
 {
 }
 
-ostream& QuoteAttrValueContent::put(ostream& s) const
-{
-  s << INDENT << "QuoteAttrValueContent[";
-  s << "quot_atcontent=" << quot_atcontent << endl;
-  if (common_content_h!=NULL) common_content_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-QuoteAttrValueContent::
 
@@ -4450,13 +3775,7 @@ AposAttrValueContent::~AposAttrValueContent()
 {
 }
 
-ostream& AposAttrValueContent::put(ostream& s) const
-{
-  s << INDENT << "AposAttrValueContent[";
-  s << "apos_atcontent=" << apos_atcontent << endl;
-  if (common_content_h!=NULL) common_content_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-AposAttrValueContent::
 
@@ -4510,15 +3829,7 @@ DirElemContent::~DirElemContent()
 {
 }
 
-ostream& DirElemContent::put(ostream& s) const
-{
-  s << INDENT << "DirElemContent[";
-  if (direct_cons_h!=NULL) direct_cons_h->put(s);
-  s << "elem_content=" << elem_content << endl;
-  if (cdata_h!=NULL) cdata_h->put(s);
-  if (common_content_h!=NULL) common_content_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirElemContent::
 
@@ -4579,23 +3890,7 @@ CommonContent::~CommonContent()
 {
 }
 
-ostream& CommonContent::put(ostream& s) const
-{
-  s << INDENT << "CommonContent[";
-  switch(type) {
-  case cont_entity: s << "entity"; break;
-  case cont_charref: s << "charref"; break;
-  case cont_escape_lbrace: s << "escape_lbrace"; break;
-  case cont_escape_rbrace: s << "escape_rbrace"; break;
-  case cont_expr: s << "expr\n"; break;
-  default: s << "???";
-  }
-  if (type!=cont_expr)
-    s << ", ref=" << ref << endl;
-  else
-    if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CommonContent::
 
@@ -4624,12 +3919,7 @@ DirCommentConstructor::~DirCommentConstructor()
 {
 }
 
-ostream& DirCommentConstructor::put(ostream& s) const
-{
-  s << INDENT << "DirCommentConstructor[";
-  s << "comment=" << comment;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirCommentConstructor::
 
@@ -4674,13 +3964,7 @@ DirPIConstructor::~DirPIConstructor()
 {
 }
 
-ostream& DirPIConstructor::put(ostream& s) const
-{
-  s << INDENT << "DirPIConstructor[";
-  s << "pi_target=" << pi_target << endl;
-  s << "pi_content=" << pi_content << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DirPIConstructor::
 
@@ -4713,12 +3997,7 @@ CDataSection::~CDataSection()
 {
 }
 
-ostream& CDataSection::put(ostream& s) const
-{
-  s << INDENT << "CDataSection[";
-  s << "cdata_content=" << cdata_content << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CDataSection::
 
@@ -4756,12 +4035,7 @@ CompDocConstructor::~CompDocConstructor()
 {
 }
 
-ostream& CompDocConstructor::put(ostream& s) const
-{
-  s << INDENT << "CompDocConstructor[";
-  if (expr_h!=NULL) expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CompDocConstructor::
 
@@ -4791,13 +4065,7 @@ CompElemConstructor::~CompElemConstructor()
 {
 }
 
-ostream& CompElemConstructor::put(ostream& s) const
-{
-  s << INDENT << "CompElemConstructor[";
-  if (qname_expr_h!=NULL) qname_expr_h->put(s);
-  if (content_expr_h!=NULL) content_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CompElemConstructor::
 
@@ -4833,13 +4101,7 @@ CompAttrConstructor::~CompAttrConstructor()
 {
 }
 
-ostream& CompAttrConstructor::put(ostream& s) const
-{
-  s << INDENT << "CompAttrConstructor[";
-  if (qname_expr_h!=NULL) qname_expr_h->put(s);
-  if (val_expr_h!=NULL) val_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CompAttrConstructor::
 
@@ -4868,12 +4130,7 @@ CompTextConstructor::~CompTextConstructor()
 {
 }
 
-ostream& CompTextConstructor::put(ostream& s) const
-{
-  s << INDENT << "CompTextConstructor[";
-  if (text_expr_h!=NULL) text_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CompTextConstructor::
 
@@ -4901,12 +4158,7 @@ CompCommentConstructor::~CompCommentConstructor()
 {
 }
 
-ostream& CompCommentConstructor::put(ostream& s) const
-{
-  s << INDENT << "CompCommentConstructor[";
-  if (comment_expr_h!=NULL) comment_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CompCommentConstructor::
 
@@ -4949,14 +4201,7 @@ CompPIConstructor::~CompPIConstructor()
 {
 }
 
-ostream& CompPIConstructor::put(ostream& s) const
-{
-  s << INDENT << "CompPIConstructor[";
-  s << "target=" << target << endl;
-  if (target_expr_h!=NULL) target_expr_h->put(s);
-  if (content_expr_h!=NULL) content_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-CompPIConstructor::
 
@@ -4987,13 +4232,7 @@ SingleType::~SingleType()
 {
 }
 
-ostream& SingleType::put(ostream& s) const
-{
-  s << INDENT << "SingleType[";
-  if (atomic_type_h!=NULL) atomic_type_h->put(s);
-  s << "hook_b=" << hook_b << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-SingleType::
 
@@ -5021,12 +4260,7 @@ TypeDeclaration::~TypeDeclaration()
 {
 }
 
-ostream& TypeDeclaration::put(ostream& os) const
-{
-  os << INDENT << "TypeDeclaration[";
-  if (seqtype_h!=NULL) seqtype_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 //-TypeDeclaration::
 
@@ -5056,13 +4290,7 @@ SequenceType::~SequenceType()
 {
 }
 
-ostream& SequenceType::put(ostream& os) const
-{
-  os << INDENT << "SequenceType[";
-  if (itemtype_h!=NULL) itemtype_h->put(os);
-  if (occur_h!=NULL) occur_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 //-SequenceType::
 
@@ -5091,17 +4319,7 @@ OccurrenceIndicator::~OccurrenceIndicator()
 {
 }
 
-ostream& OccurrenceIndicator::put(ostream& s) const
-{
-  s << INDENT << "OccurrenceIndicator[";
-  switch(type) {
-  case occurs_optionally: s << "(?)"; break;
-  case occurs_zero_or_more: s << "(*)"; break;
-  case occurs_one_or_more: s << "(+)"; break;
-  default: s << "???";
-  }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-OccurrenceIndicator::
 
@@ -5136,12 +4354,7 @@ ItemType::~ItemType()
 {
 }
 
-ostream& ItemType::put(ostream& s) const
-{
-  s << INDENT << "ItemType[";
-  s << "item_test_b=" << item_test_b << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ItemType::
 
@@ -5168,12 +4381,7 @@ AtomicType::~AtomicType()
 {
 }
 
-ostream& AtomicType::put(ostream& s) const
-{
-  s << INDENT << "AtomicType[";
-  if (qname_h!=NULL) qname_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-AtomicType::
 
@@ -5204,11 +4412,7 @@ AnyKindTest::~AnyKindTest()
 {
 }
 
-ostream& AnyKindTest::put(ostream& s) const
-{
-  s << INDENT << "AnyKindTest[]\n"; UNDENT;
-  return s;
-}
+
 
 //-AnyKindTest::
 
@@ -5255,13 +4459,7 @@ DocumentTest::~DocumentTest()
 {
 }
 
-ostream& DocumentTest::put(ostream& s) const
-{
-  s << INDENT << "DocumentTest[";
-  if (elem_test_h!=NULL) elem_test_h->put(s);
-  if (schema_elem_test_h!=NULL) schema_elem_test_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DocumentTest::
 
@@ -5286,11 +4484,7 @@ TextTest::~TextTest()
 {
 }
 
-ostream& TextTest::put(ostream& s) const
-{
-  s << INDENT << "TextTest[]\n"; UNDENT;
-  return s;
-}
+
 
 //-TextTest::
 
@@ -5315,11 +4509,7 @@ CommentTest::~CommentTest()
 {
 }
 
-ostream& CommentTest::put(ostream& s) const
-{
-  s << INDENT << "CommentTest[]\n"; UNDENT;
-  return s;
-}
+
 
 //-CommentTest::
 
@@ -5348,13 +4538,7 @@ PITest::~PITest()
 {
 }
 
-ostream& PITest::put(ostream& s) const
-{
-  s << INDENT << "PITest[";
-  s << "target=" << target << endl;
-  s << ", content=" << content << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-PITest::
 
@@ -5383,16 +4567,7 @@ AttributeTest::~AttributeTest()
 {
 }
 
-ostream& AttributeTest::put(ostream& os) const
-{
-  os << INDENT << "AttributeTest[";
-  if (attr_h!=NULL) attr_h->put(os); else os << '*';
-  if (type_h!=NULL) {
-    os << ", ";
-    type_h->put(os);
-  }
-  return os << OUTDENT << "]\n";
-}
+
 
 //-AttributeTest::
 
@@ -5422,12 +4597,7 @@ SchemaAttributeTest::~SchemaAttributeTest()
 {
 }
 
-ostream& SchemaAttributeTest::put(ostream& os) const
-{
-  os << INDENT << "SchemaAttributeTest[";
-  if (attr_h!=NULL) attr_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 //-SchemaAttributeTest::
 
@@ -5464,27 +4634,6 @@ ElementTest::~ElementTest()
 {
 }
 
-ostream& ElementTest::put(ostream& os) const
-{
-  os << INDENT << "ElementTest[\n";
-
-  if (theElementName != NULL)
-    theElementName->put(os);
-  else
-    os << '*';
-
-  if (theTypeName != NULL)
-  {
-    os << ", ";
-    theTypeName->put(os);
-  }
-
-  if (theNilledAllowed)
-    os << "?";
-
-  return os << OUTDENT << "]\n";
-}
-
 
 void ElementTest::accept(parsenode_visitor& v) const 
 { 
@@ -5509,12 +4658,7 @@ SchemaElementTest::~SchemaElementTest()
 {
 }
 
-ostream& SchemaElementTest::put(ostream& os) const
-{
-  os << INDENT << "SchemaElementTest[";
-  if (elem_h!=NULL) elem_h->put(os);
-  return os << OUTDENT << "]\n";
-}
+
 
 //-SchemaElementTest::
 
@@ -5565,13 +4709,7 @@ TypeName::~TypeName()
 {
 }
 
-ostream& TypeName::put(ostream& os) const
-{
-  os << INDENT << "TypeName[";
-  if (qname_h!=NULL) qname_h->put(os);
-  if (optional_b) os << "?";
-  return os << OUTDENT << "]\n";
-}
+
 
 //-TypeName::
 
@@ -5608,12 +4746,7 @@ StringLiteral::~StringLiteral()
 {
 }
 
-ostream& StringLiteral::put(ostream& s) const
-{
-  s << INDENT << "StringLiteral[";
-  s << "strval=\"" << strval << "\"\n";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-StringLiteral::
 
@@ -5685,10 +4818,7 @@ string QName::get_prefix() const
   return (n != string::npos ? qname.substr(0,n) : "");
 }
 
-ostream& QName::put(ostream& s) const
-{
-  return s << "QName[ " << qname << " ]";
-}
+
 
 //-QName::
 
@@ -5724,12 +4854,7 @@ RevalidationDecl::~RevalidationDecl()
 {
 }
 
-ostream& RevalidationDecl::put(ostream& s) const
-{
-  s << INDENT << "RevalidationDecl[";
-  if (qname_h!=NULL) qname_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-RevalidationDecl::
 
@@ -5759,13 +4884,7 @@ InsertExpr::~InsertExpr()
 {
 }
 
-ostream& InsertExpr::put(ostream& s) const
-{
-  s << INDENT << "InsertExpr[";
-  if (source_expr_h!=NULL) source_expr_h->put(s);
-  if (target_expr_h!=NULL) target_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-InsertExpr::
 
@@ -5792,12 +4911,7 @@ DeleteExpr::~DeleteExpr()
 {
 }
 
-ostream& DeleteExpr::put(ostream& s) const
-{
-  s << INDENT << "DeleteExpr[";
-  if (target_expr_h!=NULL) target_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-DeleteExpr::
 
@@ -5827,13 +4941,7 @@ ReplaceExpr::~ReplaceExpr()
 {
 }
 
-ostream& ReplaceExpr::put(ostream& s) const
-{
-  s << INDENT << "ReplaceExpr[";
-  if (source_expr_h!=NULL) source_expr_h->put(s);
-  if (target_expr_h!=NULL) target_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-ReplaceExpr::
 
@@ -5864,13 +4972,7 @@ RenameExpr::~RenameExpr()
 {
 }
 
-ostream& RenameExpr::put(ostream& s) const
-{
-  s << INDENT << "RenameExpr[";
-  if (source_expr_h!=NULL) source_expr_h->put(s);
-  if (target_expr_h!=NULL) target_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-RenameExpr::
 
@@ -5917,14 +5019,7 @@ TransformExpr::~TransformExpr()
 {
 }
 
-ostream& TransformExpr::put(ostream& s) const
-{
-  s << INDENT << "TransformExpr[";
-  if (varname_list_h!=NULL) varname_list_h->put(s);
-  if (source_expr_h!=NULL) source_expr_h->put(s);
-  if (target_expr_h!=NULL) target_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-TransformExpr::
 
@@ -5952,13 +5047,7 @@ VarNameList::~VarNameList()
 {
 }
 
-ostream& VarNameList::put(ostream& s) const
-{
-  s << INDENT << "VarNameList[" << endl;
-  vector<rchandle<VarBinding> >::const_iterator it = varbinding_hv.begin();
-  for (; it!=varbinding_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-VarNameList::
 
@@ -5994,13 +5083,7 @@ VarBinding::~VarBinding()
 {
 }
 
-ostream& VarBinding::put(ostream& s) const
-{
-  s << INDENT << "VarBinding[";
-  s << "varname=" << varname << endl;
-  if (val_h!=NULL) val_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-VarBinding::
 
@@ -6042,14 +5125,7 @@ FTSelection::~FTSelection()
 {
 }
 
-ostream& FTSelection::put(ostream& s) const
-{
-  s << INDENT << "FTSelection[";
-  if (ftor_h!=NULL) ftor_h->put(s);
-  if (option_list_h!=NULL) option_list_h->put(s);
-  if (weight_expr_h!=NULL) weight_expr_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTSelection::
 
@@ -6077,14 +5153,7 @@ FTMatchOptionProximityList::~FTMatchOptionProximityList()
 {
 }
 
-ostream& FTMatchOptionProximityList::put(ostream& s) const
-{
-  s << INDENT << "FTMatchOptionProximityList[" << endl;
-  vector<rchandle<FTMatchOptionProximity> >::const_iterator it =
-    opt_prox_hv.begin();
-  for (; it!=opt_prox_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTMatchOptionProximityList::
 
@@ -6139,13 +5208,7 @@ FTMatchOptionProximity::~FTMatchOptionProximity()
 {
 }
 
-ostream& FTMatchOptionProximity::put(ostream& s) const
-{
-  s << INDENT << "FTMatchOptionProximityList[";
-  if (opt_h!=NULL) opt_h->put(s);
-  if (prox_h!=NULL) prox_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTMatchOptionProximity::
 
@@ -6175,13 +5238,7 @@ FTOr::~FTOr()
 {
 }
 
-ostream& FTOr::put(ostream& s) const
-{
-  s << INDENT << "FTOr[";
-  if (ftor_h!=NULL) ftor_h->put(s);
-  if (ftand_h!=NULL) ftand_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTOr::
 
@@ -6212,13 +5269,7 @@ FTAnd::~FTAnd()
 {
 }
 
-ostream& FTAnd::put(ostream& s) const
-{
-  s << INDENT << "FTAnd[";
-  if (ftand_h!=NULL) ftand_h->put(s);
-  if (ftmild_not_h!=NULL) ftmild_not_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTAnd::
 
@@ -6249,13 +5300,7 @@ FTMildnot::~FTMildnot()
 {
 }
 
-ostream& FTMildnot::put(ostream& s) const
-{
-  s << INDENT << "FTMildnot[";
-  if (ftmild_not_h!=NULL) ftmild_not_h->put(s);
-  if (ftunary_not_h!=NULL) ftunary_not_h->put(s);
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTMildnot::
 
@@ -6286,13 +5331,7 @@ FTUnaryNot::~FTUnaryNot()
 {
 }
 
-ostream& FTUnaryNot::put(ostream& s) const
-{
-  s << INDENT << "FTUnaryNot[";
-  if (words_selection_h!=NULL) words_selection_h->put(s);
-  s << "not_b=" << not_b << endl;
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTUnaryNot::
 
@@ -6324,11 +5363,7 @@ FTWordsSelection::~FTWordsSelection()
 {
 }
 
-ostream& FTWordsSelection::put(ostream& s) const
-{
-  s << INDENT << "Xxxx[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTWordsSelection::
 
@@ -6360,11 +5395,7 @@ FTWords::~FTWords()
 {
 }
 
-ostream& FTWords::put(ostream& s) const
-{
-  s << INDENT << "Xxxx[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTWords::
 
@@ -6395,11 +5426,7 @@ FTWordsValue::~FTWordsValue()
 {
 }
 
-ostream& FTWordsValue::put(ostream& s) const
-{
-  s << INDENT << "FTWordsValue[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTWordsValue::
 
@@ -6426,11 +5453,7 @@ FTProximity::~FTProximity()
 {
 }
 
-ostream& FTProximity::put(ostream& s) const
-{
-  s << INDENT << "FTProximity[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTProximity::
 
@@ -6455,11 +5478,7 @@ FTOrderedIndicator::~FTOrderedIndicator()
 {
 }
 
-ostream& FTOrderedIndicator::put(ostream& s) const
-{
-  s << INDENT << "FTOrderedIndicator[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTOrderedIndicator::
 
@@ -6484,11 +5503,7 @@ FTMatchOption::~FTMatchOption()
 {
 }
 
-ostream& FTMatchOption::put(ostream& s) const
-{
-  s << INDENT << "FTMatchOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTMatchOption::
 
@@ -6515,11 +5530,7 @@ FTCaseOption::~FTCaseOption()
 {
 }
 
-ostream& FTCaseOption::put(ostream& s) const
-{
-  s << INDENT << "FTCaseOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTCaseOption::
 
@@ -6546,11 +5557,7 @@ FTDiacriticsOption::~FTDiacriticsOption()
 {
 }
 
-ostream& FTDiacriticsOption::put(ostream& s) const
-{
-  s << INDENT << "FTDiacriticsOptino[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTDiacriticsOption::
 
@@ -6577,11 +5584,7 @@ FTStemOption::~FTStemOption()
 {
 }
 
-ostream& FTStemOption::put(ostream& s) const
-{
-  s << INDENT << "FTStemOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTStemOption::
 
@@ -6615,11 +5618,7 @@ FTThesaurusOption::~FTThesaurusOption()
 {
 }
 
-ostream& FTThesaurusOption::put(ostream& s) const
-{
-  s << INDENT << "FTThesaurusOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTThesaurusOption::
 
@@ -6646,14 +5645,7 @@ FTThesaurusList::~FTThesaurusList()
 {
 }
 
-ostream& FTThesaurusList::put(ostream& s) const
-{
-  s << INDENT << "FTThesaurusIDList[" << endl;
-  ++printdepth;
-  vector<rchandle<FTThesaurusID> >::const_iterator it = thesaurus_hv.begin();
-  for (; it!=thesaurus_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTThesaurusList::
 
@@ -6691,11 +5683,7 @@ FTThesaurusID::~FTThesaurusID()
 {
 }
 
-ostream& FTThesaurusID::put(ostream& s) const
-{
-  s << INDENT << "FTThesaurusID[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTThesaurusID::
 
@@ -6727,11 +5715,7 @@ FTStopwordOption::~FTStopwordOption()
 {
 }
 
-ostream& FTStopwordOption::put(ostream& s) const
-{
-  s << INDENT << "FTStopwordOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTStopwordOption::
 
@@ -6758,15 +5742,7 @@ FTInclExclStringLiteralList::~FTInclExclStringLiteralList()
 {
 }
 
-ostream& FTInclExclStringLiteralList::put(ostream& s) const
-{
-  s << INDENT << "FTInclExclStringLiteralList[" << endl;
-  ++printdepth;
-  vector<rchandle<FTInclExclStringLiteral> >::const_iterator it =
-    incl_excl_lit_hv.begin();
-  for (; it!=incl_excl_lit_hv.end(); ++it) { if (*it!=NULL) (*it)->put(s); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTInclExclStringLiteralList::
 
@@ -6803,11 +5779,7 @@ FTRefOrList::~FTRefOrList()
 {
 }
 
-ostream& FTRefOrList::put(ostream& s) const
-{
-  s << INDENT << "FTRefOrList[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTRefOrList::
 
@@ -6833,14 +5805,7 @@ FTStringLiteralList::~FTStringLiteralList()
 {
 }
 
-ostream& FTStringLiteralList::put(ostream& s) const
-{
-  s << INDENT << "FTStringLiteralList[" << endl;
-  ++printdepth;
-  vector<string>::const_iterator it = strlit_v.begin();
-  for (; it!=strlit_v.end(); ++it) { s << (*it); }
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTStringLiteralList::
 
@@ -6873,11 +5838,7 @@ FTInclExclStringLiteral::~FTInclExclStringLiteral()
 {
 }
 
-ostream& FTInclExclStringLiteral::put(ostream& s) const
-{
-  s << INDENT << "FTInclExclStringLiteral[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTInclExclStringLiteral::
 
@@ -6905,11 +5866,7 @@ FTLanguageOption::~FTLanguageOption()
 {
 }
 
-ostream& FTLanguageOption::put(ostream& s) const
-{
-  s << INDENT << "FTLanguageOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTLanguageOption::
 
@@ -6936,11 +5893,7 @@ FTWildcardOption::~FTWildcardOption()
 {
 }
 
-ostream& FTWildcardOption::put(ostream& s) const
-{
-  s << INDENT << "FTWildcardOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTWildcardOption::
 
@@ -6967,11 +5920,7 @@ FTContent::~FTContent()
 {
 }
 
-ostream& FTContent::put(ostream& s) const
-{
-  s << INDENT << "FTContent[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTContent::
 
@@ -6998,11 +5947,7 @@ FTAnyallOption::~FTAnyallOption()
 {
 }
 
-ostream& FTAnyallOption::put(ostream& s) const
-{
-  s << INDENT << "FTAnyallOption[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTAnyallOption::
 
@@ -7031,11 +5976,7 @@ FTRange::~FTRange()
 {
 }
 
-ostream& FTRange::put(ostream& s) const
-{
-  s << INDENT << "FTRange[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTRange::
 
@@ -7066,11 +6007,7 @@ FTDistance::~FTDistance()
 {
 }
 
-ostream& FTDistance::put(ostream& s) const
-{
-  s << INDENT << "FTDistance[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTDistance::
 
@@ -7101,11 +6038,7 @@ FTWindow::~FTWindow()
 {
 }
 
-ostream& FTWindow::put(ostream& s) const
-{
-  s << INDENT << "FTWindow[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTWindow::
 
@@ -7134,11 +6067,7 @@ FTTimes::~FTTimes()
 {
 }
 
-ostream& FTTimes::put(ostream& s) const
-{
-  s << INDENT << "FTTimes[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTTimes::
 
@@ -7166,11 +6095,7 @@ FTScope::~FTScope()
 {
 }
 
-ostream& FTScope::put(ostream& s) const
-{
-  s << INDENT << "FTScope[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTScope::
 
@@ -7197,11 +6122,7 @@ FTUnit::~FTUnit()
 {
 }
 
-ostream& FTUnit::put(ostream& s) const
-{
-  s << INDENT << "FTUnit[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTUnit::
 
@@ -7228,11 +6149,7 @@ FTBigUnit::~FTBigUnit()
 {
 }
 
-ostream& FTBigUnit::put(ostream& s) const
-{
-  s << INDENT << "FTBigUnit[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTBigUnit::
 
@@ -7259,11 +6176,7 @@ FTIgnoreOption::~FTIgnoreOption()
 {
 }
 
-ostream& FTIgnoreOption::put(ostream& s) const
-{
-  s << INDENT << "FTBigUnit[";
-  return s << OUTDENT << "]\n";
-}
+
 
 //-FTIgnoreOption::
 
