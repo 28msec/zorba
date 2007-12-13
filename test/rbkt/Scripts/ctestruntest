@@ -20,7 +20,7 @@ fi
 
 $1/test/apitest -q -r -o "$2" "$3" 2> "$2.err" # execute the query
 RETURNVALUE=$?
-if [ RETURNVALUE -ne 0 ]
+if [ $RETURNVALUE -ne 0 ]
 then
   echo "ERROR: $1/test/apitest -q -r -o $2 $3 failed with error code ${RETURNVALUE}"
   exit ${RETURNVALUE}
