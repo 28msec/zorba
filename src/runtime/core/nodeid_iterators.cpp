@@ -18,7 +18,7 @@ Item_t NodeDistinctIterator::nextImpl(PlanState& planState)
 
 void NodeDistinctIterator::resetImpl(PlanState& planState)
 {
-  UnaryBaseIterator<NodeDistinctIterator>::reset(planState);
+  UnaryBaseIterator<NodeDistinctIterator>::resetImpl(planState);
 
   NodeDistinctState* state;
   GET_STATE(NodeDistinctState, state, planState);
@@ -62,7 +62,7 @@ Item_t NodeSortIterator::nextImpl(PlanState& planState)
 
 void NodeSortIterator::resetImpl(PlanState& planState)
 {
-  UnaryBaseIterator<NodeSortIterator>::reset(planState);
+  UnaryBaseIterator<NodeSortIterator>::resetImpl(planState);
 
   NodeSortState* state;
   GET_STATE(NodeSortState, state, planState);

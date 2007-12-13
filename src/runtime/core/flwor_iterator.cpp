@@ -105,6 +105,7 @@ namespace xqp
   ///////////////////////////////////////////////////////////////
   void FLWORIterator::FlworState::reset()
   {
+    PlanIteratorState::reset();
     size_t size = varBindingState.size();
     varBindingState.clear();
     varBindingState.insert ( varBindingState.begin(), size, 0 );
