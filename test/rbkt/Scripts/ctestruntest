@@ -7,52 +7,56 @@
 # $5 is the reference result
 
 
-if [ -f $2 ] # always delete the result file upfront
+if [ -f "$2" ] # always delete the result file upfront
 then
-  rm -f $2
+  rm -f "$2"
 fi
 
-if [ -f error.txt ] # always delete the result file upfront
+if [ -f "$2.err" ] # always delete the result file upfront
 then
-  rm -f error.txt
+  rm -f "$2.err"
 fi
 
 
-$1/test/apitest -q -r -o "$2" "$3" 2> error.txt # execute the query
+$1/test/apitest -q -r -o "$2" "$3" 2> "$2.err" # execute the query
 RETURNVALUE=$?
-if [ $RETURNVALUE -ne 0 ]
+if [ RETURNVALUE -ne 0 ]
 then
-  if [ -s "error.txt" ] # contains an error message
+  echo "ERROR: $1/test/apitest -q -r -o $2 $3 failed with error code ${RETURNVALUE}"
+  exit ${RETURNVALUE}
+else
+  if [ -s "$2.err" ] # contains an error message
   then
-    mv "error.txt" "$2" # then make this error message to be the result
-  else
-    exit $RETURNVALUE # no error message but an error code => exit
-  fi  
-fi  
-
-if [ -f $2 ] # if there was an error or no result file
-then
+    cat "$2.err" | head -1 | cut -f1 -d':' > "$2"
+  fi
+  # print the result
   echo
   echo "Result"
   cat "$2"
   echo
+  
+  # tidy the result
   cat "$2" | "$4/Scripts/tidy_xmlfrag" > "$2.tidy" # tidy the generated result and store it in the build dir
-  if [ -f "$4/$5" ]
+  
+  
+  if [ -f "$4/$5" ] # ref result exists
   then
+    # tidy the ref result
     cat "$4/$5" | "$4/Scripts/tidy_xmlfrag" > "$1/test/rbkt/$5.tidy"
+    
+    # diff the result
     diff "$2.tidy" "$1/test/rbkt/$5.tidy" > "$1/test/rbkt/$5.diff"
     RETURNVALUE=$?
-    if [ -s "$1/test/rbkt/$5.diff" ]
+    
+    if [ $RETURNVALUE -ne 0 ]
     then
       echo "Diff against expected result"
       cat "$1/test/rbkt/$5.diff"
+      exit $RETURNVALUE
     fi
-    exit $RETURNVALUE
+    exit 0
   else
     echo "reference result does not exist " "$4/$5"
     exit 1
   fi
-else
-  echo "result file does not exist " "$2"
-  exit 2
 fi
