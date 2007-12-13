@@ -48,7 +48,7 @@ namespace yy
 }
 
 /* First part of user declarations.  */
-#line 30 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 30 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_parser.y"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
@@ -82,18 +82,29 @@ namespace xqp {
 	class exprnode;
 }
 
+
+#ifndef NDEBUG
+
+#ifdef PARSER_DEBUG
+static bool debug = true;
+#else
 static bool debug = false;
+#endif
+
+#else
+static bool debug = false;
+#endif
 
 
 
-/* Line 35 of lalr1.cc.  */
-#line 91 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 102 "/Users/mbrantner/misc/code/ctest/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+# define YYDEBUG 0
 #endif
 
 /* Enabling verbose error messages.  */
@@ -101,7 +112,7 @@ static bool debug = false;
 # undef YYERROR_VERBOSE
 # define YYERROR_VERBOSE 1
 #else
-# define YYERROR_VERBOSE 1
+# define YYERROR_VERBOSE 0
 #endif
 
 /* Enabling the token table.  */
@@ -138,7 +149,7 @@ namespace yy
     /// Symbol semantic values.
 #ifndef YYSTYPE
     union semantic_type
-#line 112 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 125 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_parser.y"
 {
   xqp::parsenode * node;
   xqp::exprnode * expr;
@@ -147,8 +158,8 @@ namespace yy
 	double dval;
 	long double decval;
 }
-/* Line 35 of lalr1.cc.  */
-#line 152 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+/* Line 303 of lalr1.cc.  */
+#line 163 "/Users/mbrantner/misc/code/ctest/xquery/build/src/compiler/parser/xquery_parser.hpp"
 	;
 #else
     typedef YYSTYPE semantic_type;
@@ -465,7 +476,7 @@ namespace yy
     /// Generate an error message.
     /// \param state   the state where the error occurred.
     /// \param tok     the look-ahead token.
-    virtual std::string yysyntax_error_ (int yystate, int tok);
+    virtual std::string yysyntax_error_ (int yystate);
 
 #if YYDEBUG
     /// \brief Report a symbol value on the debug stream.
