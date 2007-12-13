@@ -4277,7 +4277,7 @@ void TypeDeclaration::accept(parsenode_visitor& v) const
 // ------------------
 SequenceType::SequenceType(
   const yy::location& _loc,
-  rchandle<ItemType> _itemtype_h,
+  rchandle<parsenode> _itemtype_h,
   rchandle<OccurrenceIndicator> _occur_h)
 :
   parsenode(_loc),

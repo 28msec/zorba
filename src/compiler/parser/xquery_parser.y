@@ -4069,14 +4069,14 @@ SequenceType :
 		{
 			if (debug) cout << "ItemType [type]\n";
 			$$ = new SequenceType(@$,
-								dynamic_cast<ItemType*>($1),
+								$1,
 								NULL);
 		}
 	|	ItemType  OccurrenceIndicator
 		{
 			if (debug) cout << "ItemType [type.occurs]\n";
 			$$ = new SequenceType(@$,
-								dynamic_cast<ItemType*>($1),
+								$1,
 								dynamic_cast<OccurrenceIndicator*>($2));
 		}
 	|	VOID_TEST

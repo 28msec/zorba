@@ -4414,19 +4414,19 @@ public:
 class SequenceType : public parsenode
 {
 protected:
-	rchandle<ItemType> itemtype_h;
+	rchandle<parsenode> itemtype_h;
 	rchandle<OccurrenceIndicator> occur_h;
 
 public:
 	SequenceType(
 		const yy::location&,
-		rchandle<ItemType>,
+		rchandle<parsenode>,
 		rchandle<OccurrenceIndicator>);
 
 	~SequenceType();
 
 public:
-	rchandle<ItemType> get_itemtype() const { return itemtype_h; }
+	rchandle<parsenode> get_itemtype() const { return itemtype_h; }
 	rchandle<OccurrenceIndicator> get_occur() const { return occur_h; }
 	bool get_void_bit() const { return itemtype_h==NULL; }
 
