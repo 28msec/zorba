@@ -304,7 +304,7 @@ inline bool fxhashmap<V>::find(
     entry& e = (*vp)[x];              // (id,val)
     char buf [MAX_KEYLEN+1];
     hp->get (e.key, buf, 0, MAX_KEYLEN);  // string(id)
-    if (strcasecmp (buf, key.c_str ())==0) {
+    if (strcmp (buf, key.c_str ())==0) {
       result = true;
       break;
     }
@@ -338,7 +338,7 @@ inline bool fxhashmap<V>::find(
     entry& e = (*vp)[x];              // (id,val) 
     char buf[MAX_KEYLEN+1];
     hp->get(e.key,buf,0,MAX_KEYLEN);  // string(id)
-    if (strcasecmp(buf, key)==0) {
+    if (strcmp(buf, key)==0) {
       result = true;
       break;
     }
@@ -364,7 +364,7 @@ inline bool fxhashmap<V>::find_heap(const string& key, off_t& heap_offset) const
     char buf[MAX_KEYLEN+1];
     offset = e.key;
     hp->get(offset,buf,0,MAX_KEYLEN);    // string(id)
-    if (strcasecmp (buf, key.c_str ())==0) { result = true; break; }
+    if (strcmp (buf, key.c_str ())==0) { result = true; break; }
     h0 = (h0 + 1) % dir->size();  // collision
   }
   heap_offset = offset;

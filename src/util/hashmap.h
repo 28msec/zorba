@@ -368,7 +368,7 @@ inline bool hashmap<V>::find(const string& key, uint32_t& index) const
 		int x = tab[h0];
 		if (x==-1) break;
 		const entry& e = v[x];
-		if (strcasecmp(e.key.c_str(), key.c_str ())==0) {
+		if (strcmp(e.key.c_str(), key.c_str ())==0) {
       result = true; 
       break;
     }
@@ -390,7 +390,7 @@ inline bool hashmap<V>::find( const char* key, uint32_t& index) const
 		int x = tab[h0];
 		if (x==-1) break;
 		const entry& e = v[x];
-		if (strcasecmp(e.key.c_str(),key)==0) { result = true; break; }
+		if (strcmp(e.key.c_str(),key)==0) { result = true; break; }
 		h0 = (h0 + 1) % tsz;
 	}
 	index = h0;
