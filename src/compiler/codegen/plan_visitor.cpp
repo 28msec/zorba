@@ -183,6 +183,7 @@ void plan_visitor::end_visit(flwor_expr& v)
 bool plan_visitor::begin_visit(case_clause& v)
 {
   CODEGEN_TRACE_IN("");
+  // TODO: Not implemented
   return true;
 }
 
@@ -196,6 +197,7 @@ void plan_visitor::end_visit(case_clause& v)
 bool plan_visitor::begin_visit(typeswitch_expr& v)
 {
   CODEGEN_TRACE_IN("");
+  Assert (false);
   return true;
 }
 
@@ -249,7 +251,7 @@ void plan_visitor::end_visit(fo_expr& v)
   CODEGEN_TRACE_OUT("");
 
   const function* func_p = v.get_func();
-  assert(func_p != NULL);
+  Assert(func_p != NULL);
   const function& func = *func_p;
 
   vector<PlanIter_t> argv;
@@ -327,6 +329,7 @@ bool plan_visitor::begin_visit(castable_expr& v)
 bool plan_visitor::begin_visit(cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
+  Assert (false);
   return true;
 }
 
@@ -354,6 +357,7 @@ bool plan_visitor::begin_visit(extension_expr& v)
 bool plan_visitor::begin_visit(relpath_expr& v)
 {
   CODEGEN_TRACE_IN("");
+  // Done in axis itself
   return true;
 }
 
@@ -641,19 +645,6 @@ void plan_visitor::end_visit ( elem_expr& v )
 }
 
 
-bool plan_visitor::begin_visit(compElem_expr& v)
-{
-  CODEGEN_TRACE_IN ("");
-  return true;
-}
-
-
-void plan_visitor::end_visit(compElem_expr& v)
-{
-  CODEGEN_TRACE_OUT ("");
-}
-
-
 bool plan_visitor::begin_visit(attr_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -751,6 +742,7 @@ void plan_visitor::end_visit(text_expr& v)
 bool plan_visitor::begin_visit(pi_expr& v)
 {
   CODEGEN_TRACE_IN("");
+  Assert (false);
   return true;
 }
 
