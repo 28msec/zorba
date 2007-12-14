@@ -326,54 +326,6 @@ public:
 
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
-class quantified_expr : public expr
-/*______________________________________________________________________
-|	::= (<"some" "$">|<"every" "$">) QVarInDeclList "satisfies" ExprSingle
-|_______________________________________________________________________*/
-{
-public:
-	typedef rchandle<var_expr> varref_t;
-
-protected:
-	enum quantification_mode_t qmode;
-	std::vector<varref_t> var_v;
-	expr_t sat_expr_h;
-
-public:
-	quantified_expr(
-		yy::location const&,
-		enum quantification_mode_t);
-	~quantified_expr();
-
-public:
-	void add(varref_t const& var_h)
-		{ var_v.push_back(var_h); } 
-	uint32_t var_count() const
-		{ return var_v.size(); }
-
-	varref_t & operator[](int i)
-		{ return var_v[i]; }
-	varref_t const& operator[](int i) const
-		{ return var_v[i]; }
-
-	std::vector<varref_t>::const_iterator begin() const
-		{ return var_v.begin(); }
-	std::vector<varref_t>::const_iterator end() const
-		{ return var_v.end(); }
-
-public:
-	enum quantification_mode_t get_qmode() const { return qmode; }
-	void set_qmode(enum quantification_mode_t _qmode) { qmode = _qmode; }
-
-	expr_t get_sat_expr() const { return sat_expr_h; }
-	void set_sat_expr(expr_t e_h) { sat_expr_h = e_h; }
-
-public:
-	void accept(expr_visitor&);
-	std::ostream& put(std::ostream&) const;
-
-};
-
 
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 

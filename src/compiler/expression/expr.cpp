@@ -282,60 +282,6 @@ expr::expr_t flwor_expr::clone(expr::substitution_t& substitution)
 
 // [42] [http://www.w3.org/TR/xquery/#prod-xquery-QuantifiedExpr]
 
-quantified_expr::quantified_expr(
-  yy::location const& loc,
-  enum quantification_mode_t _qmode)
-:
-  expr(loc),
-  qmode(_qmode)
-{
-}
-
-quantified_expr::~quantified_expr()
-{
-}
-
-ostream& quantified_expr::put( ostream& os) const
-{
-  os << INDENT << "quantified_expr[";
-  switch (qmode) {
-  case quant_some: os << "SOME\n"; break;
-  case quant_every: os << "EVERY\n"; break;
-  default: os << "??\n";
-  }
-
-  vector<varref_t>::const_iterator it = var_v.begin();
-  vector<varref_t>::const_iterator en = var_v.end();
-
-  for (; it!=en; ++it) {
-    varref_t var_h = *it;
-    //d Assert<null_pointer>(var_h!=NULL);
-    Assert(var_h!=NULL);
-    //d Assert<null_pointer>(var_h->varname_h!=NULL);
-    Assert(var_h->varname_h!=NULL);
-    os << INDENT;
-    PUT_QNAME (var_h->varname_h, os) << " in ";
-    UNDENT;
-  }
-
-  os << " SATISFIES\n";
-  //d Assert<null_pointer>(sat_expr_h!=NULL);
-  Assert(sat_expr_h!=NULL);
-  sat_expr_h->put(os);
-  return os << OUTDENT << "\n]\n";
-}
-
-void quantified_expr::accept(
-  expr_visitor& v)
-{
-  BEGIN_VISITOR ();
-  visitor_functor f (v);
-  for_each (var_v.begin (), var_v.end (), f);
-  END_VISITOR ();
-}
-
-
-
 // [43] [http://www.w3.org/TR/xquery/#prod-xquery-TypeswitchExpr]
 
 typeswitch_expr::typeswitch_expr(

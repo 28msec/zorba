@@ -25,7 +25,6 @@ class expr;
 class var_expr;
 class order_modifier;
 class flwor_expr;
-class quantified_expr;
 class case_clause;
 class typeswitch_expr;
 class if_expr;
@@ -67,7 +66,6 @@ public:
 	virtual bool begin_visit(var_expr&) = 0;
 	virtual bool begin_visit(order_modifier&) = 0;
 	virtual bool begin_visit(flwor_expr&) = 0;
-	virtual bool begin_visit(quantified_expr&) = 0;
 	virtual bool begin_visit(case_clause&) = 0;
 	virtual bool begin_visit(typeswitch_expr&) = 0;
 	virtual bool begin_visit(if_expr&) = 0;
@@ -99,7 +97,6 @@ public:
 	virtual void end_visit(var_expr&) = 0;
 	virtual void end_visit(order_modifier&) = 0;
 	virtual void end_visit(flwor_expr&) = 0;
-	virtual void end_visit(quantified_expr&) = 0;
 	virtual void end_visit(case_clause&) = 0;
 	virtual void end_visit(typeswitch_expr&) = 0;
 	virtual void end_visit(if_expr&) = 0;

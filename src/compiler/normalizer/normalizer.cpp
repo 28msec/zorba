@@ -67,11 +67,6 @@ bool normalizer::begin_visit(flwor_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(quantified_expr& node)
-{
-  return true;
-}
-
 bool normalizer::begin_visit(case_clause& node)
 {
   return true;
@@ -242,10 +237,6 @@ void normalizer::end_visit(order_modifier& node)
 }
 
 void normalizer::end_visit(flwor_expr& node)
-{
-}
-
-void normalizer::end_visit(quantified_expr& node)
 {
 }
 

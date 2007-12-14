@@ -101,6 +101,7 @@ void plan_visitor::end_visit(var_expr& v)
 bool plan_visitor::begin_visit(order_modifier& v)
 {
   CODEGEN_TRACE_IN("");
+  // not implemented, but this is a performance, not a conformance issue
   return true;
 }
 
@@ -176,19 +177,6 @@ void plan_visitor::end_visit(flwor_expr& v)
   FLWORIterator *iter =
     new FLWORIterator (v.get_loc (), clauses, where, orderby, ret, false);
   itstack.push (iter);
-}
-
-
-bool plan_visitor::begin_visit(quantified_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-  return true;
-}
-
-
-void plan_visitor::end_visit(quantified_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
 }
 
 
