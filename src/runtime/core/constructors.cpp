@@ -295,7 +295,6 @@ AttributeIterator::nextImpl(PlanState& planState)
   Item_t itemTyped;
   QNameItem_t lQName;
   xqp_string lexicalString;
-  bool concatenation = false;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -313,20 +312,12 @@ AttributeIterator::nextImpl(PlanState& planState)
     itemCur = consumeNext ( theChild1, planState );
     while ( itemCur != NULL )
     {
-      concatenation = true;
       lexicalString += itemCur->getStringProperty();
       itemCur = consumeNext ( theChild1, planState );
     }
 
     itemLexical = zorba::getItemFactory()->createUntypedAtomic(lexicalString);
-    if ( concatenation )
-    {
-      itemTyped = itemLexical;
-    }
-    else
-    {
-      itemTyped = itemFirst;
-    }
+    itemTyped = itemLexical;
   }
   else
   {

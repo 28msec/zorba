@@ -30,6 +30,7 @@ FnDataIterator::nextImpl(PlanState& planState)
       item = lState->theTypedValue->next();
       if (item == NULL)
         break;
+      Assert(!item->isNode());
       STACK_PUSH( item, lState );
     }
   }
