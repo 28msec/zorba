@@ -15,6 +15,7 @@
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/accessors/AccessorsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
+#include "runtime/dateTime/DurationsDatesTimes.h"
 
 #define NOARY_ACCEPT(type) \
   void type::accept(PlanIterVisitor& v) const { \
@@ -113,6 +114,7 @@ namespace xqp {
   BINARY_ACCEPT(FnIndexOfIterator);
   BINARY_ACCEPT(FnRemoveIterator);
   BINARY_ACCEPT(FnRoundHalfToEvenIterator);
+  BINARY_ACCEPT(OpDurationEqualIterator);
   BINARY_ACCEPT(AttributeIterator);
   
   // nary iterators

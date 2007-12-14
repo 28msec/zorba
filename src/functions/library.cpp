@@ -19,6 +19,7 @@
 #include "functions/Strings.h"
 #include "functions/Boolean.h"
 #include "functions/Constructor.h"
+#include "functions/DateTime.h"
 
 #include "context/common.h"
 #include "context/static_context.h"
@@ -509,6 +510,16 @@ DECL(op_docfilter_expr,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 // end constructors
+
+// begin date time
+DECL(op_duration_equal,
+     (ITEM_FACTORY.createQName(XQUERY_OP_NS,"fn", "duration-equal"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+
+
+// end date time
 
 // begin zorba functions
 DECL(zor_numgen,

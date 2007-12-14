@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2006-2007 FLWOR Foundation.
+ *  Authors: Nicolae Brinza
+ */
+
+#ifndef XQP_DURATIONSDATESTIMES_H
+#define XQP_DURATIONSDATESTIMES_H
+
+#include "runtime/base/binarybase.h"
+#include "runtime/base/iterator.h"
+
+namespace xqp
+{
+
+/*
 10.1 Duration, Date and Time Types
 10.1.1 Limits and Precision
 10.2 Date/time datatype values
@@ -10,7 +25,24 @@
 10.4.2 op:yearMonthDuration-greater-than
 10.4.3 op:dayTimeDuration-less-than
 10.4.4 op:dayTimeDuration-greater-than
-10.4.5 op:duration-equal
+*/
+
+// 10.4.5 op:duration-equal
+class OpDurationEqualIterator : public BinaryBaseIterator<OpDurationEqualIterator>{
+public:
+  OpDurationEqualIterator( const yy::location loc,  PlanIter_t& arg0,  PlanIter_t& arg1 )
+  :
+  BinaryBaseIterator<OpDurationEqualIterator>(loc, arg0, arg1){}
+
+  virtual ~OpDurationEqualIterator() {};
+  
+public:
+  Item_t nextImpl(PlanState& planState);
+  
+  virtual void accept(PlanIterVisitor&) const;
+};
+
+/*
 10.4.6 op:dateTime-equal
 10.4.7 op:dateTime-less-than
 10.4.8 op:dateTime-greater-than
@@ -76,3 +108,8 @@
 10.8.11 op:subtract-dayTimeDuration-from-date
 10.8.12 op:add-dayTimeDuration-to-time
 10.8.13 op:subtract-dayTimeDuration-from-time
+*/
+
+} // namespace xqp
+
+#endif

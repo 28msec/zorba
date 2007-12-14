@@ -12,6 +12,7 @@
 #include "runtime/numerics/NumericsImpl.h"
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/strings/StringsImpl.h"
+#include "runtime/dateTime/DurationsDatesTimes.h"
 
 namespace xqp {
   void PrinterVisitor::printCommons(const PlanIterator* aIter) {
@@ -683,6 +684,14 @@ namespace xqp {
     printCommons( &a );
   }
   void PrinterVisitor::endVisit ( const TextIterator& ) {
+    thePrinter.endIter();
+  }
+
+  void PrinterVisitor::beginVisit ( const OpDurationEqualIterator& a )  {
+    thePrinter.startIter("OpDurationEqualIterator");
+    printCommons( &a );
+  }
+  void PrinterVisitor::endVisit ( const OpDurationEqualIterator& ) {
     thePrinter.endIter();
   }
   

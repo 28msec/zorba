@@ -8,6 +8,7 @@
 #define XQP_REPRESENTATIONS_H
 
 #include "util/utf8/xqpString.h"
+//#include "util/datetime/duration.h"
 
 namespace xqp
 {
@@ -49,7 +50,7 @@ namespace xqp
 	typedef struct tm									xqp_gMonthDay;
 	typedef struct tm									xqp_gDay;
 	typedef struct tm									xqp_gMonth;
-	typedef long											xqp_duration;
+	typedef long                      xqp_duration;
 	typedef long double								xqp_nonNegativeInteger;
 	typedef unsigned char							xqp_unsignedByte;
 	typedef uint32_t									xqp_uint;

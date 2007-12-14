@@ -25,7 +25,7 @@ bool					g_abort_when_fatal_error = false;
 #endif
 //end debug
 
-  static char *canonical_err_names [error_messages::MAX_ZORBA_ERROR_CODE + 1];
+  static const char *canonical_err_names [error_messages::MAX_ZORBA_ERROR_CODE + 1];
   static struct canonical_err_names_initializer {
     canonical_err_names_initializer () {
 #define DEF_ERR_CODE( code, name ) canonical_err_names [ error_messages::code ] = #name

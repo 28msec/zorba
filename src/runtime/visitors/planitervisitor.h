@@ -92,6 +92,8 @@ namespace xqp
   class DocumentContentIterator;
   class DocFilterIterator;
 
+  class OpDurationEqualIterator;
+
   /**
    * Visitor to visit a PlanIterator tree.
    */
@@ -349,6 +351,9 @@ namespace xqp
       
       virtual void beginVisitFlworReturn(const PlanIterator&) = 0;
       virtual void endVisitFlworReturn(const PlanIterator&) = 0;
+
+      virtual void beginVisit ( const OpDurationEqualIterator&) = 0;
+      virtual void endVisit ( const OpDurationEqualIterator&) = 0;
 
   }; /* class PlanIterVisitor */
 } /* namespace xqp */

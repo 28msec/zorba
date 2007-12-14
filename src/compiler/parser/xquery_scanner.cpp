@@ -2858,7 +2858,7 @@ static yyconst flex_int16_t yy_rule_linenum[481] =
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-#line 1 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 /* -*- mode: c++; indent-tabs-mode: nil; tab-width: 2 -*-
  *
  *  $Id: xquery.l,v 1.4 2006/11/14 05:24:43 Paul Pedersen Exp $
@@ -2880,7 +2880,7 @@ static yyconst flex_int16_t yy_rule_linenum[481] =
 | 	[http://www.ximep-2006.org/papers/Paper-Chamberlin-Carey.pdf]       
 |                                                                      
 |_______________________________________________________________________*/
-#line 26 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 26 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 
 #ifdef _WIN32
 #pragma warning(disable: 4786)
@@ -3325,7 +3325,7 @@ YY_DECL
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 /* %% [7.0] user's declarations go here */
-#line 227 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 227 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 
 
  yylloc->step ();
@@ -3455,13 +3455,13 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 232 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 232 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { yylloc->step(); }
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 233 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 233 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { yylloc->lines(yyleng); yylloc->step (); }
 	YY_BREAK
 
@@ -3479,7 +3479,7 @@ typedef yy::xquery_parser::token token;
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 252 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 252 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3489,7 +3489,7 @@ YY_RULE_SETUP
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 258 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 258 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext+9, yyleng-9);
 	BEGIN MODE_OPERATOR;
@@ -3500,7 +3500,7 @@ YY_RULE_SETUP
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 265 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 265 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::TYPESWITCH_LPAR;
 }
@@ -3508,7 +3508,7 @@ YY_RULE_SETUP
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 269 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 269 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3518,7 +3518,7 @@ YY_RULE_SETUP
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 275 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 275 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3528,7 +3528,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 281 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 281 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext+10, yyleng-11, true, true);
 	BEGIN MODE_OPERATOR;
@@ -3539,7 +3539,7 @@ YY_RULE_SETUP
 case 9:
 /* rule 9 can match eol */
 YY_RULE_SETUP
-#line 288 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 288 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext+8, yyleng-9, true, true);
 	BEGIN MODE_OPERATOR;
@@ -3550,7 +3550,7 @@ YY_RULE_SETUP
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 295 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 295 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3560,7 +3560,7 @@ YY_RULE_SETUP
 case 11:
 /* rule 11 can match eol */
 YY_RULE_SETUP
-#line 301 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 301 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3570,7 +3570,7 @@ YY_RULE_SETUP
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 307 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 307 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3580,7 +3580,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 313 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 313 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3590,7 +3590,7 @@ YY_RULE_SETUP
 case 14:
 /* rule 14 can match eol */
 YY_RULE_SETUP
-#line 319 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 319 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3600,7 +3600,7 @@ YY_RULE_SETUP
 case 15:
 /* rule 15 can match eol */
 YY_RULE_SETUP
-#line 325 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 325 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DECLARE_FUNCTION;
 }
@@ -3608,14 +3608,14 @@ YY_RULE_SETUP
 case 16:
 /* rule 16 can match eol */
 YY_RULE_SETUP
-#line 329 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 329 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DECLARE_UPDATING_FUNCTION;
 }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 333 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 333 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3625,7 +3625,7 @@ YY_RULE_SETUP
 case 18:
 /* rule 18 can match eol */
 YY_RULE_SETUP
-#line 339 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 339 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3635,7 +3635,7 @@ YY_RULE_SETUP
 case 19:
 /* rule 19 can match eol */
 YY_RULE_SETUP
-#line 345 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 345 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -3644,21 +3644,21 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 351 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 351 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SEMI;
 }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 354 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 354 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::COMMA;
 }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 357 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 357 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LPAR;
 }
@@ -3666,7 +3666,7 @@ YY_RULE_SETUP
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 360 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 360 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::IF_LPAR;
 }
@@ -3676,7 +3676,7 @@ YY_RULE_SETUP
 case 24:
 /* rule 24 can match eol */
 YY_RULE_SETUP
-#line 367 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 367 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3686,7 +3686,7 @@ YY_RULE_SETUP
 case 25:
 /* rule 25 can match eol */
 YY_RULE_SETUP
-#line 373 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 373 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3696,7 +3696,7 @@ YY_RULE_SETUP
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 379 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 379 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3706,7 +3706,7 @@ YY_RULE_SETUP
 case 27:
 /* rule 27 can match eol */
 YY_RULE_SETUP
-#line 385 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 385 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3716,7 +3716,7 @@ YY_RULE_SETUP
 case 28:
 /* rule 28 can match eol */
 YY_RULE_SETUP
-#line 391 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 391 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3726,7 +3726,7 @@ YY_RULE_SETUP
 case 29:
 /* rule 29 can match eol */
 YY_RULE_SETUP
-#line 397 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 397 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3736,7 +3736,7 @@ YY_RULE_SETUP
 case 30:
 /* rule 30 can match eol */
 YY_RULE_SETUP
-#line 403 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 403 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3746,7 +3746,7 @@ YY_RULE_SETUP
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 409 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 409 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -3758,7 +3758,7 @@ YY_RULE_SETUP
 case 32:
 /* rule 32 can match eol */
 YY_RULE_SETUP
-#line 418 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 418 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI, yyscanner);
@@ -3769,7 +3769,7 @@ YY_RULE_SETUP
 case 33:
 /* rule 33 can match eol */
 YY_RULE_SETUP
-#line 427 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 427 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->sval = driver.symtab.put_qname(yytext, yyleng-1, false, true);
 	return token::QNAME_LPAR;
@@ -3777,126 +3777,126 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 433 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 433 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::MINUS;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 436 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 436 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PLUS;
 }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 439 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 439 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SLASH;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 442 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 442 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LEADING_LONE_SLASH;
 }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 445 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 445 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SLASH_SLASH;
 }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 448 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 448 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ANCESTOR_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 451 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 451 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ANCESTOR_AXIS;
 }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 454 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 454 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ATTRIBUTE_AXIS;
 }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 457 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 457 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::CHILD_AXIS;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 460 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 460 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DESCENDANT_OR_SELF_AXIS;
 }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 463 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 463 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DESCENDANT_AXIS;
 }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 466 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 466 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FOLLOWING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 469 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 469 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FOLLOWING_AXIS;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 472 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 472 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PARENT_AXIS;
 }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 475 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 475 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PRECEDING_SIBLING_AXIS;
 }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 478 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 478 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PRECEDING_AXIS;
 }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 481 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 481 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SELF_AXIS;
 }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 484 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 484 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT_SIGN;
 }
@@ -3905,7 +3905,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 52:
 YY_RULE_SETUP
-#line 491 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 491 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->ival = driver.symtab.intval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -3914,7 +3914,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 497 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 497 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->decval = driver.symtab.decimalval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -3923,7 +3923,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 503 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 503 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->dval = driver.symtab.doubleval(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -3932,15 +3932,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 509 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 509 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
-	return token::NAN;
+	return token::_NAN;
 }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 514 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 514 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_ncname(yytext, yyleng-2);
 	BEGIN MODE_OPERATOR;
@@ -3949,7 +3949,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 520 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 520 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -3958,7 +3958,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 526 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 526 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::RPAR;
@@ -3966,7 +3966,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 531 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 531 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_ncname(yytext+2, yyleng-2);
 	BEGIN MODE_OPERATOR;
@@ -3975,7 +3975,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 537 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 537 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::STAR;
@@ -3984,7 +3984,7 @@ YY_RULE_SETUP
 case 61:
 /* rule 61 can match eol */
 YY_RULE_SETUP
-#line 542 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 542 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -3994,7 +3994,7 @@ YY_RULE_SETUP
 case 62:
 /* rule 62 can match eol */
 YY_RULE_SETUP
-#line 548 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 548 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::DECLARE_CONSTRUCTION;
@@ -4003,7 +4003,7 @@ YY_RULE_SETUP
 case 63:
 /* rule 63 can match eol */
 YY_RULE_SETUP
-#line 553 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 553 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::DECLARE_DEFAULT_ORDER;
@@ -4011,7 +4011,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 558 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 558 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::DOT_DOT;
@@ -4019,7 +4019,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 563 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 563 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::DOT;
@@ -4030,7 +4030,7 @@ YY_RULE_SETUP
 case 66:
 /* rule 66 can match eol */
 YY_RULE_SETUP
-#line 571 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 571 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_DEFAULT_COLLATION;
@@ -4039,7 +4039,7 @@ YY_RULE_SETUP
 case 67:
 /* rule 67 can match eol */
 YY_RULE_SETUP
-#line 576 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 576 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_NAMESPACE;
@@ -4048,7 +4048,7 @@ YY_RULE_SETUP
 case 68:
 /* rule 68 can match eol */
 YY_RULE_SETUP
-#line 581 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 581 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::MODULE_NAMESPACE;
@@ -4057,7 +4057,7 @@ YY_RULE_SETUP
 case 69:
 /* rule 69 can match eol */
 YY_RULE_SETUP
-#line 586 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 586 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::DECLARE_BASE_URI;
@@ -4068,7 +4068,7 @@ YY_RULE_SETUP
 case 70:
 /* rule 70 can match eol */
 YY_RULE_SETUP
-#line 594 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 594 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_DEFAULT_ELEMENT;
@@ -4077,7 +4077,7 @@ YY_RULE_SETUP
 case 71:
 /* rule 71 can match eol */
 YY_RULE_SETUP
-#line 599 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 599 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_DEFAULT_FUNCTION;
@@ -4086,7 +4086,7 @@ YY_RULE_SETUP
 case 72:
 /* rule 72 can match eol */
 YY_RULE_SETUP
-#line 604 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 604 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::IMPORT_SCHEMA;
@@ -4095,7 +4095,7 @@ YY_RULE_SETUP
 case 73:
 /* rule 73 can match eol */
 YY_RULE_SETUP
-#line 609 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 609 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::IMPORT_MODULE;
@@ -4104,7 +4104,7 @@ YY_RULE_SETUP
 case 74:
 /* rule 74 can match eol */
 YY_RULE_SETUP
-#line 614 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 614 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEKEYWORD;
 	return token::DECLARE_COPY_NAMESPACES;
@@ -4114,7 +4114,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 75:
 YY_RULE_SETUP
-#line 622 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 622 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::DOLLAR;
@@ -4123,7 +4123,7 @@ YY_RULE_SETUP
 case 76:
 /* rule 76 can match eol */
 YY_RULE_SETUP
-#line 627 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 627 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::FOR_DOLLAR;
@@ -4132,7 +4132,7 @@ YY_RULE_SETUP
 case 77:
 /* rule 77 can match eol */
 YY_RULE_SETUP
-#line 632 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 632 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::LET_DOLLAR;
@@ -4141,7 +4141,7 @@ YY_RULE_SETUP
 case 78:
 /* rule 78 can match eol */
 YY_RULE_SETUP
-#line 637 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 637 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::SOME_DOLLAR;
@@ -4150,7 +4150,7 @@ YY_RULE_SETUP
 case 79:
 /* rule 79 can match eol */
 YY_RULE_SETUP
-#line 642 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 642 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::EVERY_DOLLAR;
@@ -4159,7 +4159,7 @@ YY_RULE_SETUP
 case 80:
 /* rule 80 can match eol */
 YY_RULE_SETUP
-#line 647 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 647 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::DECLARE_VARIABLE_DOLLAR;
@@ -4169,7 +4169,7 @@ YY_RULE_SETUP
 case 81:
 /* rule 81 can match eol */
 YY_RULE_SETUP
-#line 653 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 653 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::TRANSFORM_COPY_DOLLAR;
@@ -4180,7 +4180,7 @@ YY_RULE_SETUP
 case 82:
 /* rule 82 can match eol */
 YY_RULE_SETUP
-#line 661 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 661 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_ITEMTYPE;
 	return token::RPAR_AS;
@@ -4190,7 +4190,7 @@ YY_RULE_SETUP
 /* ------------------------- */
 case 83:
 YY_RULE_SETUP
-#line 669 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 669 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_XML_COMMENT, yyscanner);
@@ -4201,7 +4201,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 84:
 YY_RULE_SETUP
-#line 678 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 678 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {	
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_PROCESSING_INSTRUCTION, yyscanner);
@@ -4212,7 +4212,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 85:
 YY_RULE_SETUP
-#line 687 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 687 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_CDATA_SECTION, yyscanner);
@@ -4223,7 +4223,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 86:
 YY_RULE_SETUP
-#line 696 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 696 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { 	
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ MODE_START_TAG, yyscanner);
@@ -4235,7 +4235,7 @@ YY_RULE_SETUP
 case 87:
 /* rule 87 can match eol */
 YY_RULE_SETUP
-#line 705 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 705 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_XMLSPACE_DECL;
 	return token::DECLARE_BOUNDARY_SPACE;
@@ -4245,7 +4245,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 88:
 YY_RULE_SETUP
-#line 713 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 713 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -4255,7 +4255,7 @@ YY_RULE_SETUP
 case 89:
 /* rule 89 can match eol */
 YY_RULE_SETUP
-#line 720 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 720 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_DECLAREORDERING;
 	return token::DECLARE_ORDERING;
@@ -4266,7 +4266,7 @@ YY_RULE_SETUP
 case 90:
 /* rule 90 can match eol */
 YY_RULE_SETUP
-#line 728 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 728 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_XQUERY_VERSION;
 	return token::XQUERY_VERSION;
@@ -4276,7 +4276,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 91:
 YY_RULE_SETUP
-#line 736 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 736 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { 	
 	BEGIN MODE_PRAGMA;
 	return token::PRAGMA_BEGIN;
@@ -4287,7 +4287,7 @@ YY_RULE_SETUP
 case 92:
 /* rule 92 can match eol */
 YY_RULE_SETUP
-#line 744 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 744 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPTION;
 	return token::DECLARE_OPTION;
@@ -4298,7 +4298,7 @@ YY_RULE_SETUP
 case 93:
 /* rule 93 can match eol */
 YY_RULE_SETUP
-#line 752 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 752 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3);
 	BEGIN MODE_NAMESPACEDECL;
@@ -4309,7 +4309,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 94:
 YY_RULE_SETUP
-#line 761 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 761 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { 	
 	yy_pop_state(yyscanner);
 	return token::RBRACE;
@@ -4322,7 +4322,7 @@ YY_RULE_SETUP
 case 95:
 /* rule 95 can match eol */
 YY_RULE_SETUP
-#line 772 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 772 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DECLARE_REVALIDATION_MODE;
 }
@@ -4330,7 +4330,7 @@ YY_RULE_SETUP
 case 96:
 /* rule 96 can match eol */
 YY_RULE_SETUP
-#line 775 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 775 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DO_INSERT;
 }
@@ -4338,7 +4338,7 @@ YY_RULE_SETUP
 case 97:
 /* rule 97 can match eol */
 YY_RULE_SETUP
-#line 778 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 778 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DO_DELETE;
 }
@@ -4346,7 +4346,7 @@ YY_RULE_SETUP
 case 98:
 /* rule 98 can match eol */
 YY_RULE_SETUP
-#line 781 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 781 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DO_REPLACE;
 }
@@ -4354,7 +4354,7 @@ YY_RULE_SETUP
 case 99:
 /* rule 99 can match eol */
 YY_RULE_SETUP
-#line 784 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 784 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	driver.set_rename(true);
 	return token::DO_RENAME;
@@ -4362,7 +4362,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 788 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 788 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::INTO;
 }
@@ -4370,7 +4370,7 @@ YY_RULE_SETUP
 case 101:
 /* rule 101 can match eol */
 YY_RULE_SETUP
-#line 791 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 791 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FIRST_INTO;
 }
@@ -4378,21 +4378,21 @@ YY_RULE_SETUP
 case 102:
 /* rule 102 can match eol */
 YY_RULE_SETUP
-#line 794 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 794 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LAST_INTO;
 }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 797 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 797 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AFTER;
 }
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 800 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 800 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::BEFORE;
 }
@@ -4400,28 +4400,28 @@ YY_RULE_SETUP
 case 105:
 /* rule 105 can match eol */
 YY_RULE_SETUP
-#line 803 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 803 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::VALUE_OF;
 }
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 806 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 806 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH;
 }
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 809 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 809 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AS;
 }
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 812 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 812 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::MODIFY;
 }
@@ -4432,35 +4432,35 @@ YY_RULE_SETUP
 	 |______________________________________________________________________*/
 case 109:
 YY_RULE_SETUP
-#line 822 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 822 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FTAND;
 }
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 825 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 825 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FTNOT;
 }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 828 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 828 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FTOR;
 }
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 831 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 831 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FTNOT_IN;
 }
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 834 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 834 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ALL;
 }
@@ -4468,14 +4468,14 @@ YY_RULE_SETUP
 case 114:
 /* rule 114 can match eol */
 YY_RULE_SETUP
-#line 837 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 837 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ALL_WORDS;
 }
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 840 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 840 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ANY;
 }
@@ -4483,7 +4483,7 @@ YY_RULE_SETUP
 case 116:
 /* rule 116 can match eol */
 YY_RULE_SETUP
-#line 843 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 843 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ANY_WORD;
 }
@@ -4491,7 +4491,7 @@ YY_RULE_SETUP
 case 117:
 /* rule 117 can match eol */
 YY_RULE_SETUP
-#line 846 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 846 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT_END;
 }
@@ -4499,7 +4499,7 @@ YY_RULE_SETUP
 case 118:
 /* rule 118 can match eol */
 YY_RULE_SETUP
-#line 849 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 849 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT_LEAST;
 }
@@ -4507,7 +4507,7 @@ YY_RULE_SETUP
 case 119:
 /* rule 119 can match eol */
 YY_RULE_SETUP
-#line 852 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 852 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT_MOST;
 }
@@ -4515,7 +4515,7 @@ YY_RULE_SETUP
 case 120:
 /* rule 120 can match eol */
 YY_RULE_SETUP
-#line 855 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 855 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT_START;
 }
@@ -4523,7 +4523,7 @@ YY_RULE_SETUP
 case 121:
 /* rule 121 can match eol */
 YY_RULE_SETUP
-#line 858 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 858 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::CASE_INSENSITIVE;
 }
@@ -4531,7 +4531,7 @@ YY_RULE_SETUP
 case 122:
 /* rule 122 can match eol */
 YY_RULE_SETUP
-#line 861 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 861 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::CASE_SENSITIVE;
 }
@@ -4539,7 +4539,7 @@ YY_RULE_SETUP
 case 123:
 /* rule 123 can match eol */
 YY_RULE_SETUP
-#line 864 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 864 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DECLARE_FTOPTION;
 }
@@ -4547,7 +4547,7 @@ YY_RULE_SETUP
 case 124:
 /* rule 124 can match eol */
 YY_RULE_SETUP
-#line 867 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 867 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DIACRITICS_INSENSITIVE;
 }
@@ -4555,21 +4555,21 @@ YY_RULE_SETUP
 case 125:
 /* rule 125 can match eol */
 YY_RULE_SETUP
-#line 870 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 870 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DIACRITICS_SENSITIVE;
 }
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 873 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 873 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DIFFERENT;
 }
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 876 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 876 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DISTANCE;
 }
@@ -4577,126 +4577,126 @@ YY_RULE_SETUP
 case 128:
 /* rule 128 can match eol */
 YY_RULE_SETUP
-#line 879 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 879 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ENTIRE_CONTENT;
 }
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 882 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 882 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::EXACTLY;
 }
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 885 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 885 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::FROM;
 }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 888 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 888 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LANGUAGE;
 }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 891 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 891 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LEVELS;
 }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 894 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 894 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LOWERCASE;
 }
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 897 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 897 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::OCCURS;
 }
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 900 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 900 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PARAGRAPH;
 }
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 903 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 903 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PHRASE;
 }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 906 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 906 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::RELATIONSHIP;
 }
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 909 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 909 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SAME;
 }
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 912 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 912 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SCORE;
 }
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 915 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 915 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SENTENCE;
 }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 918 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 918 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SENTENCES;
 }
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 921 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 921 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::TIMES;
 }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 924 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 924 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::UPPERCASE;
 }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 927 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 927 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WEIGHT;
 }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 930 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 930 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WINDOW;
 }
@@ -4704,7 +4704,7 @@ YY_RULE_SETUP
 case 146:
 /* rule 146 can match eol */
 YY_RULE_SETUP
-#line 933 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 933 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_CONTENT;
 }
@@ -4712,7 +4712,7 @@ YY_RULE_SETUP
 case 147:
 /* rule 147 can match eol */
 YY_RULE_SETUP
-#line 936 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 936 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_DIACRITICS;
 }
@@ -4720,7 +4720,7 @@ YY_RULE_SETUP
 case 148:
 /* rule 148 can match eol */
 YY_RULE_SETUP
-#line 939 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 939 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_STEMMING;
 }
@@ -4728,7 +4728,7 @@ YY_RULE_SETUP
 case 149:
 /* rule 149 can match eol */
 YY_RULE_SETUP
-#line 942 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 942 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_STOP_WORDS;
 }
@@ -4736,7 +4736,7 @@ YY_RULE_SETUP
 case 150:
 /* rule 150 can match eol */
 YY_RULE_SETUP
-#line 945 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 945 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_THESAURUS;
 }
@@ -4744,7 +4744,7 @@ YY_RULE_SETUP
 case 151:
 /* rule 151 can match eol */
 YY_RULE_SETUP
-#line 948 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 948 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_WILDCARDS;
 }
@@ -4752,7 +4752,7 @@ YY_RULE_SETUP
 case 152:
 /* rule 152 can match eol */
 YY_RULE_SETUP
-#line 951 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 951 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -4760,7 +4760,7 @@ YY_RULE_SETUP
 case 153:
 /* rule 153 can match eol */
 YY_RULE_SETUP
-#line 954 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 954 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_DIACRITICS;
 }
@@ -4768,7 +4768,7 @@ YY_RULE_SETUP
 case 154:
 /* rule 154 can match eol */
 YY_RULE_SETUP
-#line 957 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 957 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_STEMMING;
 }
@@ -4776,7 +4776,7 @@ YY_RULE_SETUP
 case 155:
 /* rule 155 can match eol */
 YY_RULE_SETUP
-#line 960 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 960 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_STOP_WORDS;
 }
@@ -4784,7 +4784,7 @@ YY_RULE_SETUP
 case 156:
 /* rule 156 can match eol */
 YY_RULE_SETUP
-#line 963 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 963 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_THESAURUS;
 }
@@ -4792,14 +4792,14 @@ YY_RULE_SETUP
 case 157:
 /* rule 157 can match eol */
 YY_RULE_SETUP
-#line 966 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 966 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_WILDCARDS;
 }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 969 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 969 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WORDS;
 }
@@ -4807,7 +4807,7 @@ YY_RULE_SETUP
 /* catch all */
 case 159:
 YY_RULE_SETUP
-#line 975 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 975 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -4824,7 +4824,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 160:
 YY_RULE_SETUP
-#line 994 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 994 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::ORDERED;
@@ -4832,7 +4832,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 999 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 999 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::UNORDERED;
@@ -4850,7 +4850,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 162:
 YY_RULE_SETUP
-#line 1020 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1020 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
@@ -4858,7 +4858,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 1024 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1024 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SEMI;
@@ -4866,7 +4866,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 1028 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1028 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::THEN;
@@ -4874,7 +4874,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 1032 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1032 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::ELSE;
@@ -4882,7 +4882,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 1036 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1036 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EXTERNAL;
@@ -4890,7 +4890,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 1040 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1040 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::AND;
@@ -4898,7 +4898,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 1044 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1044 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	if (!driver.ftcontains()) {
 		BEGIN INITIAL;
@@ -4909,7 +4909,7 @@ YY_RULE_SETUP
 /* full-text rule */
 case 169:
 YY_RULE_SETUP
-#line 1053 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1053 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SCORE;
@@ -4917,7 +4917,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 1059 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1059 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GETS;
@@ -4925,7 +4925,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 1063 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1063 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::COMMA;
@@ -4933,7 +4933,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 1067 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1067 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::DIV;
@@ -4941,7 +4941,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 1071 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1071 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EQUALS;
@@ -4949,7 +4949,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 1075 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1075 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EXCEPT;
@@ -4957,7 +4957,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 1079 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1079 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_EQ;
@@ -4965,7 +4965,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 1083 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1083 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_GE;
@@ -4973,7 +4973,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 1087 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1087 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_GT;
@@ -4981,7 +4981,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 1091 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1091 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_LE;
@@ -4989,7 +4989,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 1095 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1095 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_LT;
@@ -4997,7 +4997,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 1099 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1099 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_NE;
@@ -5005,7 +5005,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 1103 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1103 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GE;
@@ -5013,7 +5013,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 1107 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1107 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FOLLOWS;
@@ -5021,7 +5021,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 1111 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1111 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GT;
@@ -5029,7 +5029,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 1115 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1115 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::IDIV;
@@ -5037,7 +5037,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 1119 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1119 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::INTERSECT;
@@ -5046,7 +5046,7 @@ YY_RULE_SETUP
 /* Update rules */
 case 186:
 YY_RULE_SETUP
-#line 1127 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1127 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::INTO;
@@ -5054,7 +5054,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 1131 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1131 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::WITH;
@@ -5063,7 +5063,7 @@ YY_RULE_SETUP
 case 188:
 /* rule 188 can match eol */
 YY_RULE_SETUP
-#line 1135 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1135 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::DO_INSERT;
@@ -5072,7 +5072,7 @@ YY_RULE_SETUP
 case 189:
 /* rule 189 can match eol */
 YY_RULE_SETUP
-#line 1139 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1139 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::DO_DELETE;
@@ -5081,7 +5081,7 @@ YY_RULE_SETUP
 case 190:
 /* rule 190 can match eol */
 YY_RULE_SETUP
-#line 1143 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1143 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::DO_REPLACE;
@@ -5090,7 +5090,7 @@ YY_RULE_SETUP
 case 191:
 /* rule 191 can match eol */
 YY_RULE_SETUP
-#line 1147 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1147 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	driver.set_rename(true);
@@ -5099,7 +5099,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 1152 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1152 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::INTO;
@@ -5108,7 +5108,7 @@ YY_RULE_SETUP
 case 193:
 /* rule 193 can match eol */
 YY_RULE_SETUP
-#line 1156 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1156 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FIRST_INTO;
@@ -5117,7 +5117,7 @@ YY_RULE_SETUP
 case 194:
 /* rule 194 can match eol */
 YY_RULE_SETUP
-#line 1160 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1160 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LAST_INTO;
@@ -5125,7 +5125,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 1164 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1164 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::AFTER;
@@ -5133,7 +5133,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 1168 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1168 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::BEFORE;
@@ -5142,7 +5142,7 @@ YY_RULE_SETUP
 case 197:
 /* rule 197 can match eol */
 YY_RULE_SETUP
-#line 1172 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1172 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VALUE_OF;
@@ -5150,7 +5150,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 1176 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1176 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::MODIFY;
@@ -5158,7 +5158,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 1180 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1180 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::_IN_;
@@ -5166,7 +5166,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 1184 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1184 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::IS;
@@ -5174,7 +5174,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 1188 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1188 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LBRACK;
@@ -5182,7 +5182,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 1192 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1192 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LE;
@@ -5190,7 +5190,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 1196 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1196 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::PRECEDES;
@@ -5198,7 +5198,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 1200 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1200 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LT;
@@ -5206,7 +5206,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 1204 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1204 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::MINUS;
@@ -5214,7 +5214,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 1208 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1208 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::MOD;
@@ -5222,7 +5222,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 1212 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1212 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::STAR;
@@ -5230,7 +5230,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 1216 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1216 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::NE;
@@ -5239,7 +5239,7 @@ YY_RULE_SETUP
 case 209:
 /* rule 209 can match eol */
 YY_RULE_SETUP
-#line 1220 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1220 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::ORDER_BY;
@@ -5248,7 +5248,7 @@ YY_RULE_SETUP
 case 210:
 /* rule 210 can match eol */
 YY_RULE_SETUP
-#line 1224 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1224 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::STABLE_ORDER_BY;
@@ -5256,7 +5256,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 1228 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1228 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::OR;
@@ -5264,7 +5264,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 1232 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1232 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::PLUS;
@@ -5272,7 +5272,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 1236 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1236 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::RETURN;
@@ -5280,7 +5280,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 1240 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1240 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SATISFIES;
@@ -5288,7 +5288,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 1244 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1244 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SLASH;
@@ -5296,7 +5296,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 1248 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1248 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LEADING_LONE_SLASH;
@@ -5304,7 +5304,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 1252 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1252 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SLASH_SLASH;
@@ -5312,7 +5312,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 1256 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1256 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::TO;
@@ -5320,7 +5320,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 1260 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1260 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::UNION;
@@ -5328,7 +5328,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 1264 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1264 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VBAR;
@@ -5336,7 +5336,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 1268 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1268 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::WHERE;
@@ -5344,7 +5344,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 1272 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1272 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::PRESERVE;
@@ -5352,7 +5352,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 1276 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1276 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::STRIP;
@@ -5363,7 +5363,7 @@ YY_RULE_SETUP
 case 224:
 /* rule 224 can match eol */
 YY_RULE_SETUP
-#line 1286 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1286 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_SINGLETYPE;
 	return token::CASTABLE_AS;
@@ -5372,7 +5372,7 @@ YY_RULE_SETUP
 case 225:
 /* rule 225 can match eol */
 YY_RULE_SETUP
-#line 1290 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1290 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_SINGLETYPE;
 	return token::CAST_AS;
@@ -5383,7 +5383,7 @@ YY_RULE_SETUP
 case 226:
 /* rule 226 can match eol */
 YY_RULE_SETUP
-#line 1298 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1298 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_ITEMTYPE;
 	return token::INSTANCE_OF;
@@ -5392,7 +5392,7 @@ YY_RULE_SETUP
 case 227:
 /* rule 227 can match eol */
 YY_RULE_SETUP
-#line 1302 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1302 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_ITEMTYPE;
 	return token::TREAT_AS;
@@ -5400,7 +5400,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 1306 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1306 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_ITEMTYPE;
 	return token::CASE;
@@ -5408,7 +5408,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-#line 1310 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1310 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	if (driver.rename()) {
 		driver.set_rename(false);
@@ -5426,7 +5426,7 @@ YY_RULE_SETUP
 case 230:
 /* rule 230 can match eol */
 YY_RULE_SETUP
-#line 1323 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1323 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_ITEMTYPE;
 	return token::RPAR_AS;
@@ -5436,7 +5436,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 231:
 YY_RULE_SETUP
-#line 1331 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1331 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::DOLLAR;
@@ -5445,7 +5445,7 @@ YY_RULE_SETUP
 case 232:
 /* rule 232 can match eol */
 YY_RULE_SETUP
-#line 1335 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1335 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::FOR_DOLLAR;
@@ -5454,7 +5454,7 @@ YY_RULE_SETUP
 case 233:
 /* rule 233 can match eol */
 YY_RULE_SETUP
-#line 1339 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1339 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::LET_DOLLAR;
@@ -5463,7 +5463,7 @@ YY_RULE_SETUP
 case 234:
 /* rule 234 can match eol */
 YY_RULE_SETUP
-#line 1343 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1343 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::LET_SCORE_DOLLAR;
@@ -5473,7 +5473,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 235:
 YY_RULE_SETUP
-#line 1351 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1351 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -5482,7 +5482,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 236:
 YY_RULE_SETUP
-#line 1358 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1358 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_URITOOPERATOR;
 	return token::COLLATION;
@@ -5492,7 +5492,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 237:
 YY_RULE_SETUP
-#line 1366 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1366 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::RBRACE;
@@ -5502,14 +5502,14 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 238:
 YY_RULE_SETUP
-#line 1374 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1374 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::RPAR;
 }
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 1377 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1377 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::HOOK;
 }
@@ -5517,7 +5517,7 @@ YY_RULE_SETUP
 case 240:
 /* rule 240 can match eol */
 YY_RULE_SETUP
-#line 1380 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1380 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::EMPTY_GREATEST;
 }
@@ -5525,35 +5525,35 @@ YY_RULE_SETUP
 case 241:
 /* rule 241 can match eol */
 YY_RULE_SETUP
-#line 1383 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1383 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::EMPTY_LEAST;
 }
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-#line 1386 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1386 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ASCENDING;
 }
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 1389 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1389 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DESCENDING;
 }
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 1392 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1392 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DEFAULT;
 }
 	YY_BREAK
 case 245:
 YY_RULE_SETUP
-#line 1395 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1395 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::RBRACK;
 }
@@ -5561,7 +5561,7 @@ YY_RULE_SETUP
 case 246:
 /* rule 246 can match eol */
 YY_RULE_SETUP
-#line 1398 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1398 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	return token::STRING_LITERAL;
@@ -5575,7 +5575,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 247:
 YY_RULE_SETUP
-#line 1412 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1412 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	driver.set_ftcontains(true);
@@ -5584,7 +5584,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-#line 1417 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1417 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FTAND;
@@ -5592,7 +5592,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 1421 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1421 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FTNOT;
@@ -5600,7 +5600,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 1425 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1425 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FTOR;
@@ -5608,7 +5608,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 1429 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1429 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FTNOT_IN;
@@ -5617,7 +5617,7 @@ YY_RULE_SETUP
 case 252:
 /* rule 252 can match eol */
 YY_RULE_SETUP
-#line 1433 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1433 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
 	return token::AT_LEAST;
@@ -5626,7 +5626,7 @@ YY_RULE_SETUP
 case 253:
 /* rule 253 can match eol */
 YY_RULE_SETUP
-#line 1437 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1437 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
 	return token::AT_MOST;
@@ -5634,7 +5634,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 254:
 YY_RULE_SETUP
-#line 1441 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1441 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
 	return token::DISTANCE;
@@ -5642,7 +5642,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 255:
 YY_RULE_SETUP
-#line 1445 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1445 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
 	return token::EXACTLY;
@@ -5650,7 +5650,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 256:
 YY_RULE_SETUP
-#line 1449 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1449 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
 	return token::FROM;
@@ -5658,7 +5658,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 257:
 YY_RULE_SETUP
-#line 1453 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1453 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
 	return token::OCCURS;
@@ -5666,7 +5666,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 258:
 YY_RULE_SETUP
-#line 1457 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1457 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN INITIAL;
 	return token::WINDOW;
@@ -5676,7 +5676,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 259:
 YY_RULE_SETUP
-#line 1465 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1465 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ALL;
 }
@@ -5684,14 +5684,14 @@ YY_RULE_SETUP
 case 260:
 /* rule 260 can match eol */
 YY_RULE_SETUP
-#line 1468 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1468 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ALL_WORDS;
 }
 	YY_BREAK
 case 261:
 YY_RULE_SETUP
-#line 1471 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1471 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ANY;
 }
@@ -5699,7 +5699,7 @@ YY_RULE_SETUP
 case 262:
 /* rule 262 can match eol */
 YY_RULE_SETUP
-#line 1474 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1474 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ANY_WORD;
 }
@@ -5707,7 +5707,7 @@ YY_RULE_SETUP
 case 263:
 /* rule 263 can match eol */
 YY_RULE_SETUP
-#line 1477 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1477 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT_END;
 }
@@ -5715,7 +5715,7 @@ YY_RULE_SETUP
 case 264:
 /* rule 264 can match eol */
 YY_RULE_SETUP
-#line 1480 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1480 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT_START;
 }
@@ -5723,7 +5723,7 @@ YY_RULE_SETUP
 case 265:
 /* rule 265 can match eol */
 YY_RULE_SETUP
-#line 1483 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1483 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::CASE_INSENSITIVE;
 }
@@ -5731,7 +5731,7 @@ YY_RULE_SETUP
 case 266:
 /* rule 266 can match eol */
 YY_RULE_SETUP
-#line 1486 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1486 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::CASE_SENSITIVE;
 }
@@ -5739,7 +5739,7 @@ YY_RULE_SETUP
 case 267:
 /* rule 267 can match eol */
 YY_RULE_SETUP
-#line 1489 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1489 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DECLARE_FTOPTION;
 }
@@ -5747,7 +5747,7 @@ YY_RULE_SETUP
 case 268:
 /* rule 268 can match eol */
 YY_RULE_SETUP
-#line 1492 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1492 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DIACRITICS_INSENSITIVE;
 }
@@ -5755,14 +5755,14 @@ YY_RULE_SETUP
 case 269:
 /* rule 269 can match eol */
 YY_RULE_SETUP
-#line 1495 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1495 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DIACRITICS_SENSITIVE;
 }
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
-#line 1498 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1498 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DIFFERENT;
 }
@@ -5770,98 +5770,98 @@ YY_RULE_SETUP
 case 271:
 /* rule 271 can match eol */
 YY_RULE_SETUP
-#line 1501 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1501 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ENTIRE_CONTENT;
 }
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 1504 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1504 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LANGUAGE;
 }
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
-#line 1507 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1507 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LEVELS;
 }
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
-#line 1510 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1510 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::LOWERCASE;
 }
 	YY_BREAK
 case 275:
 YY_RULE_SETUP
-#line 1513 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1513 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PARAGRAPH;
 }
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 1516 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1516 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PHRASE;
 }
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 1519 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1519 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::RELATIONSHIP;
 }
 	YY_BREAK
 case 278:
 YY_RULE_SETUP
-#line 1522 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1522 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SAME;
 }
 	YY_BREAK
 case 279:
 YY_RULE_SETUP
-#line 1525 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1525 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SCORE;
 }
 	YY_BREAK
 case 280:
 YY_RULE_SETUP
-#line 1528 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1528 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SENTENCE;
 }
 	YY_BREAK
 case 281:
 YY_RULE_SETUP
-#line 1531 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1531 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::SENTENCES;
 }
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 1534 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1534 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::TIMES;
 }
 	YY_BREAK
 case 283:
 YY_RULE_SETUP
-#line 1537 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1537 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::UPPERCASE;
 }
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 1540 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1540 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WEIGHT;
 }
@@ -5869,7 +5869,7 @@ YY_RULE_SETUP
 case 285:
 /* rule 285 can match eol */
 YY_RULE_SETUP
-#line 1543 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1543 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_CONTENT;
 }
@@ -5877,7 +5877,7 @@ YY_RULE_SETUP
 case 286:
 /* rule 286 can match eol */
 YY_RULE_SETUP
-#line 1546 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1546 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_DIACRITICS;
 }
@@ -5885,7 +5885,7 @@ YY_RULE_SETUP
 case 287:
 /* rule 287 can match eol */
 YY_RULE_SETUP
-#line 1549 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1549 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_STEMMING;
 }
@@ -5893,7 +5893,7 @@ YY_RULE_SETUP
 case 288:
 /* rule 288 can match eol */
 YY_RULE_SETUP
-#line 1552 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1552 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_STOP_WORDS;
 }
@@ -5901,7 +5901,7 @@ YY_RULE_SETUP
 case 289:
 /* rule 289 can match eol */
 YY_RULE_SETUP
-#line 1555 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1555 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_THESAURUS;
 }
@@ -5909,7 +5909,7 @@ YY_RULE_SETUP
 case 290:
 /* rule 290 can match eol */
 YY_RULE_SETUP
-#line 1558 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1558 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITHOUT_WILDCARDS;
 }
@@ -5917,7 +5917,7 @@ YY_RULE_SETUP
 case 291:
 /* rule 291 can match eol */
 YY_RULE_SETUP
-#line 1561 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1561 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_DEFAULT_STOP_WORDS;
 }
@@ -5925,7 +5925,7 @@ YY_RULE_SETUP
 case 292:
 /* rule 292 can match eol */
 YY_RULE_SETUP
-#line 1564 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1564 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_DIACRITICS;
 }
@@ -5933,7 +5933,7 @@ YY_RULE_SETUP
 case 293:
 /* rule 293 can match eol */
 YY_RULE_SETUP
-#line 1567 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1567 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_STEMMING;
 }
@@ -5941,7 +5941,7 @@ YY_RULE_SETUP
 case 294:
 /* rule 294 can match eol */
 YY_RULE_SETUP
-#line 1570 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1570 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_STOP_WORDS;
 }
@@ -5949,7 +5949,7 @@ YY_RULE_SETUP
 case 295:
 /* rule 295 can match eol */
 YY_RULE_SETUP
-#line 1573 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1573 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_THESAURUS;
 }
@@ -5957,21 +5957,21 @@ YY_RULE_SETUP
 case 296:
 /* rule 296 can match eol */
 YY_RULE_SETUP
-#line 1576 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1576 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WITH_WILDCARDS;
 }
 	YY_BREAK
 case 297:
 YY_RULE_SETUP
-#line 1579 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1579 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::WORDS;
 }
 	YY_BREAK
 case 298:
 YY_RULE_SETUP
-#line 1585 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1585 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /*	maintain state */
 }
@@ -5988,7 +5988,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 299:
 YY_RULE_SETUP
-#line 1606 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1606 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SEMI;
@@ -5999,7 +5999,7 @@ YY_RULE_SETUP
 case 300:
 /* rule 300 can match eol */
 YY_RULE_SETUP
-#line 1613 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1613 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	return token::STRING_LITERAL;
@@ -6007,7 +6007,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 301:
 YY_RULE_SETUP
-#line 1618 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1618 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ENCODING;
 }
@@ -6025,14 +6025,14 @@ YY_RULE_SETUP
 
 case 302:
 YY_RULE_SETUP
-#line 1639 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1639 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
-#line 1643 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1643 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SEMI;
@@ -6043,7 +6043,7 @@ YY_RULE_SETUP
 case 304:
 /* rule 304 can match eol */
 YY_RULE_SETUP
-#line 1650 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1650 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
 	return token::URI_LITERAL;
@@ -6051,28 +6051,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 1655 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1655 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::COMMA;
 }
 	YY_BREAK
 case 306:
 YY_RULE_SETUP
-#line 1659 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1659 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AT;
 }
 	YY_BREAK
 case 307:
 YY_RULE_SETUP
-#line 1663 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1663 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::EQUALS;
 }
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-#line 1667 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1667 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
 	return token::NCNAME;
@@ -6080,7 +6080,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 309:
 YY_RULE_SETUP
-#line 1672 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1672 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -6096,7 +6096,7 @@ YY_RULE_SETUP
 case 310:
 /* rule 310 can match eol */
 YY_RULE_SETUP
-#line 1689 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1689 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -6117,7 +6117,7 @@ YY_RULE_SETUP
 case 311:
 /* rule 311 can match eol */
 YY_RULE_SETUP
-#line 1711 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1711 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_uri(yytext, yyleng);
 	BEGIN MODE_NAMESPACEDECL;
@@ -6126,7 +6126,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 312:
 YY_RULE_SETUP
-#line 1717 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1717 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_NAMESPACEDECL;
 	return token::NAMESPACE;
@@ -6136,7 +6136,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 313:
 YY_RULE_SETUP
-#line 1724 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1724 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::INHERIT;
@@ -6144,7 +6144,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 1729 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1729 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::NO_INHERIT;
@@ -6154,7 +6154,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 315:
 YY_RULE_SETUP
-#line 1736 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1736 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -6164,35 +6164,35 @@ YY_RULE_SETUP
 case 316:
 /* rule 316 can match eol */
 YY_RULE_SETUP
-#line 1743 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1743 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DEFAULT_ELEMENT;
 }
 	YY_BREAK
 case 317:
 YY_RULE_SETUP
-#line 1747 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1747 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::PRESERVE;
 }
 	YY_BREAK
 case 318:
 YY_RULE_SETUP
-#line 1751 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1751 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::NO_PRESERVE;
 }
 	YY_BREAK
 case 319:
 YY_RULE_SETUP
-#line 1755 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1755 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::COMMA;
 }
 	YY_BREAK
 case 320:
 YY_RULE_SETUP
-#line 1759 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1759 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -6211,7 +6211,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 321:
 YY_RULE_SETUP
-#line 1781 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1781 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::PRESERVE;
@@ -6219,7 +6219,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 322:
 YY_RULE_SETUP
-#line 1786 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1786 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::STRIP;
@@ -6229,14 +6229,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 323:
 YY_RULE_SETUP
-#line 1793 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1793 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 324:
 YY_RULE_SETUP
-#line 1797 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1797 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -6254,7 +6254,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 325:
 YY_RULE_SETUP
-#line 1818 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1818 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -6265,14 +6265,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 326:
 YY_RULE_SETUP
-#line 1826 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1826 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 327:
 YY_RULE_SETUP
-#line 1830 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1830 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -6290,7 +6290,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 328:
 YY_RULE_SETUP
-#line 1851 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1851 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_VARNAME;
 	return token::DOLLAR;
@@ -6301,7 +6301,7 @@ YY_RULE_SETUP
 case 329:
 /* rule 329 can match eol */
 YY_RULE_SETUP
-#line 1858 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1858 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::VOID_TEST;
@@ -6309,7 +6309,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 330:
 YY_RULE_SETUP
-#line 1863 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1863 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	/* BEGIN MODE_OPERATOR; */
@@ -6321,7 +6321,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 331:
 YY_RULE_SETUP
-#line 1872 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1872 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -6331,7 +6331,7 @@ YY_RULE_SETUP
 case 332:
 /* rule 332 can match eol */
 YY_RULE_SETUP
-#line 1878 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1878 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6341,7 +6341,7 @@ YY_RULE_SETUP
 case 333:
 /* rule 333 can match eol */
 YY_RULE_SETUP
-#line 1884 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1884 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6351,7 +6351,7 @@ YY_RULE_SETUP
 case 334:
 /* rule 334 can match eol */
 YY_RULE_SETUP
-#line 1890 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1890 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6361,7 +6361,7 @@ YY_RULE_SETUP
 case 335:
 /* rule 335 can match eol */
 YY_RULE_SETUP
-#line 1896 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1896 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6371,7 +6371,7 @@ YY_RULE_SETUP
 case 336:
 /* rule 336 can match eol */
 YY_RULE_SETUP
-#line 1902 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1902 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6381,7 +6381,7 @@ YY_RULE_SETUP
 case 337:
 /* rule 337 can match eol */
 YY_RULE_SETUP
-#line 1908 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1908 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6391,7 +6391,7 @@ YY_RULE_SETUP
 case 338:
 /* rule 338 can match eol */
 YY_RULE_SETUP
-#line 1914 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1914 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6401,7 +6401,7 @@ YY_RULE_SETUP
 case 339:
 /* rule 339 can match eol */
 YY_RULE_SETUP
-#line 1920 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1920 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6413,7 +6413,7 @@ YY_RULE_SETUP
 case 340:
 /* rule 340 can match eol */
 YY_RULE_SETUP
-#line 1928 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1928 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OCCURRENCE_INDICATOR; 
 	yy_push_state( /*and goto*/ MODE_KINDTESTFORPI, yyscanner);
@@ -6424,7 +6424,7 @@ YY_RULE_SETUP
 /* -------------------------------- */
 case 341:
 YY_RULE_SETUP
-#line 1936 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1936 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	return token::QNAME;
@@ -6433,7 +6433,7 @@ YY_RULE_SETUP
 case 342:
 /* rule 342 can match eol */
 YY_RULE_SETUP
-#line 1941 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1941 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {	
 	BEGIN MODE_OCCURRENCE_INDICATOR;
 	return token::ITEM_TEST;
@@ -6443,7 +6443,7 @@ YY_RULE_SETUP
 /* -------------------- */
 case 343:
 YY_RULE_SETUP
-#line 1948 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1948 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_PRAGMA;
 	return token::PRAGMA_BEGIN;
@@ -6453,7 +6453,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 344:
 YY_RULE_SETUP
-#line 1955 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1955 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SEMI;
@@ -6461,7 +6461,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 345:
 YY_RULE_SETUP
-#line 1960 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1960 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::THEN;
@@ -6469,7 +6469,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 346:
 YY_RULE_SETUP
-#line 1965 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1965 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::ELSE;
@@ -6480,7 +6480,7 @@ YY_RULE_SETUP
 case 347:
 /* rule 347 can match eol */
 YY_RULE_SETUP
-#line 1972 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1972 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_uri(yytext+3, yyleng-3);
 	BEGIN MODE_NAMESPACEDECL;
@@ -6491,7 +6491,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 348:
 YY_RULE_SETUP
-#line 1980 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1980 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EXTERNAL;
@@ -6499,7 +6499,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 349:
 YY_RULE_SETUP
-#line 1985 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1985 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::AND;
@@ -6507,7 +6507,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 350:
 YY_RULE_SETUP
-#line 1990 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1990 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::AT;
@@ -6515,7 +6515,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 351:
 YY_RULE_SETUP
-#line 1995 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1995 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GETS;
@@ -6523,7 +6523,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 352:
 YY_RULE_SETUP
-#line 2000 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2000 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::COMMA;
@@ -6531,7 +6531,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 353:
 YY_RULE_SETUP
-#line 2005 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2005 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::DIV;
@@ -6539,7 +6539,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 354:
 YY_RULE_SETUP
-#line 2010 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2010 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EQUALS;
@@ -6547,7 +6547,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 355:
 YY_RULE_SETUP
-#line 2015 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2015 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::EXCEPT;
@@ -6555,7 +6555,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 356:
 YY_RULE_SETUP
-#line 2020 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2020 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_EQ;
@@ -6563,7 +6563,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 357:
 YY_RULE_SETUP
-#line 2025 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2025 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_GE;
@@ -6571,7 +6571,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 358:
 YY_RULE_SETUP
-#line 2030 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2030 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_GT;
@@ -6579,7 +6579,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 359:
 YY_RULE_SETUP
-#line 2035 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2035 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_LE;
@@ -6587,7 +6587,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 360:
 YY_RULE_SETUP
-#line 2040 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2040 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_LT;
@@ -6595,7 +6595,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 361:
 YY_RULE_SETUP
-#line 2045 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2045 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VAL_NE;
@@ -6603,7 +6603,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 362:
 YY_RULE_SETUP
-#line 2050 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2050 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GE;
@@ -6611,7 +6611,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 363:
 YY_RULE_SETUP
-#line 2055 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2055 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::FOLLOWS;
@@ -6619,7 +6619,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 364:
 YY_RULE_SETUP
-#line 2060 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2060 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::GT;
@@ -6627,7 +6627,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 365:
 YY_RULE_SETUP
-#line 2065 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2065 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::IDIV;
@@ -6635,7 +6635,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 366:
 YY_RULE_SETUP
-#line 2070 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2070 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::INTERSECT;
@@ -6643,7 +6643,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 367:
 YY_RULE_SETUP
-#line 2075 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2075 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::_IN_;
@@ -6651,7 +6651,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 368:
 YY_RULE_SETUP
-#line 2080 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2080 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::IS;
@@ -6659,7 +6659,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 369:
 YY_RULE_SETUP
-#line 2085 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2085 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LBRACK;
@@ -6667,7 +6667,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 370:
 YY_RULE_SETUP
-#line 2090 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2090 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LPAR;
@@ -6675,7 +6675,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 371:
 YY_RULE_SETUP
-#line 2095 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2095 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LE;
@@ -6683,7 +6683,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 372:
 YY_RULE_SETUP
-#line 2100 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2100 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::PRECEDES;
@@ -6691,7 +6691,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 373:
 YY_RULE_SETUP
-#line 2105 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2105 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::LT;
@@ -6699,7 +6699,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 374:
 YY_RULE_SETUP
-#line 2110 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2110 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::MINUS;
@@ -6707,7 +6707,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 375:
 YY_RULE_SETUP
-#line 2115 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2115 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::MOD;
@@ -6715,7 +6715,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 376:
 YY_RULE_SETUP
-#line 2120 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2120 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::NE;
@@ -6724,7 +6724,7 @@ YY_RULE_SETUP
 case 377:
 /* rule 377 can match eol */
 YY_RULE_SETUP
-#line 2125 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2125 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::ORDER_BY;
@@ -6733,7 +6733,7 @@ YY_RULE_SETUP
 case 378:
 /* rule 378 can match eol */
 YY_RULE_SETUP
-#line 2130 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2130 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::STABLE_ORDER_BY;
@@ -6741,7 +6741,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 379:
 YY_RULE_SETUP
-#line 2135 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2135 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::OR;
@@ -6749,7 +6749,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 380:
 YY_RULE_SETUP
-#line 2140 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2140 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::RETURN;
@@ -6757,7 +6757,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 381:
 YY_RULE_SETUP
-#line 2145 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2145 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::SATISFIES;
@@ -6765,7 +6765,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 382:
 YY_RULE_SETUP
-#line 2150 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2150 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::TO;
@@ -6773,7 +6773,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 383:
 YY_RULE_SETUP
-#line 2155 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2155 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::UNION;
@@ -6781,7 +6781,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 384:
 YY_RULE_SETUP
-#line 2160 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2160 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::VBAR;
@@ -6789,7 +6789,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 385:
 YY_RULE_SETUP
-#line 2165 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2165 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN INITIAL;
 	return token::WHERE;
@@ -6800,7 +6800,7 @@ YY_RULE_SETUP
 case 386:
 /* rule 386 can match eol */
 YY_RULE_SETUP
-#line 2172 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2172 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_SINGLETYPE;
 	return token::CASTABLE_AS;
@@ -6809,7 +6809,7 @@ YY_RULE_SETUP
 case 387:
 /* rule 387 can match eol */
 YY_RULE_SETUP
-#line 2177 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2177 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_SINGLETYPE;
 	return token::CAST_AS;
@@ -6820,7 +6820,7 @@ YY_RULE_SETUP
 case 388:
 /* rule 388 can match eol */
 YY_RULE_SETUP
-#line 2184 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2184 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::INSTANCE_OF;
 }
@@ -6828,21 +6828,21 @@ YY_RULE_SETUP
 case 389:
 /* rule 389 can match eol */
 YY_RULE_SETUP
-#line 2188 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2188 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::TREAT_AS;
 }
 	YY_BREAK
 case 390:
 YY_RULE_SETUP
-#line 2192 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2192 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::CASE;
 }
 	YY_BREAK
 case 391:
 YY_RULE_SETUP
-#line 2196 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2196 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::AS;
 }
@@ -6850,14 +6850,14 @@ YY_RULE_SETUP
 case 392:
 /* rule 392 can match eol */
 YY_RULE_SETUP
-#line 2200 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2200 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::RPAR_AS;
 }
 	YY_BREAK
 case 393:
 YY_RULE_SETUP
-#line 2204 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2204 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -6874,7 +6874,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 394:
 YY_RULE_SETUP
-#line 2224 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2224 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -6885,7 +6885,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 395:
 YY_RULE_SETUP
-#line 2232 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2232 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_CLOSE_KINDTEST;
 	return token::STAR;
@@ -6893,7 +6893,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 396:
 YY_RULE_SETUP
-#line 2237 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2237 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_CLOSE_KINDTEST;
@@ -6904,7 +6904,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 397:
 YY_RULE_SETUP
-#line 2245 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2245 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -6913,7 +6913,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 398:
 YY_RULE_SETUP
-#line 2251 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2251 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::RPAR;
@@ -6924,7 +6924,7 @@ YY_RULE_SETUP
 case 399:
 /* rule 399 can match eol */
 YY_RULE_SETUP
-#line 2258 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2258 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_KINDTEST;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6934,7 +6934,7 @@ YY_RULE_SETUP
 case 400:
 /* rule 400 can match eol */
 YY_RULE_SETUP
-#line 2264 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2264 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_KINDTEST;
 	yy_push_state( /*and goto*/ MODE_KINDTEST, yyscanner);
@@ -6945,7 +6945,7 @@ YY_RULE_SETUP
 /* --------- */
 case 401:
 YY_RULE_SETUP
-#line 2272 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2272 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -6963,7 +6963,7 @@ YY_RULE_SETUP
 /* --------------------------------- */
 case 402:
 YY_RULE_SETUP
-#line 2292 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2292 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::RPAR;
@@ -6973,7 +6973,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 403:
 YY_RULE_SETUP
-#line 2300 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2300 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -6982,7 +6982,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 404:
 YY_RULE_SETUP
-#line 2306 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2306 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_ncname(yytext, yyleng);
 	return token::NCNAME;
@@ -6991,7 +6991,7 @@ YY_RULE_SETUP
 case 405:
 /* rule 405 can match eol */
 YY_RULE_SETUP
-#line 2311 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2311 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_stringlit(yytext, yyleng);
 	return token::STRING_LITERAL;
@@ -6999,7 +6999,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 406:
 YY_RULE_SETUP
-#line 2316 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2316 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7016,7 +7016,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 407:
 YY_RULE_SETUP
-#line 2336 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2336 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::RPAR;
@@ -7026,7 +7026,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 408:
 YY_RULE_SETUP
-#line 2343 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2343 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_KINDTEST;
 	return token::COMMA;
@@ -7036,7 +7036,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 409:
 YY_RULE_SETUP
-#line 2350 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2350 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -7047,7 +7047,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 410:
 YY_RULE_SETUP
-#line 2358 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2358 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -7056,14 +7056,14 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 411:
 YY_RULE_SETUP
-#line 2364 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2364 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::HOOK;
 }
 	YY_BREAK
 case 412:
 YY_RULE_SETUP
-#line 2368 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2368 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7088,7 +7088,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 413:
 YY_RULE_SETUP
-#line 2396 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2396 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::OCCURS_HOOK;
@@ -7096,7 +7096,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 414:
 YY_RULE_SETUP
-#line 2401 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2401 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::OCCURS_STAR;
@@ -7104,7 +7104,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 415:
 YY_RULE_SETUP
-#line 2406 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2406 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::OCCURS_PLUS;
@@ -7114,7 +7114,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 416:
 YY_RULE_SETUP
-#line 2413 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2413 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -7123,7 +7123,7 @@ YY_RULE_SETUP
 /* --------------------------------------- */
 case 417:
 YY_RULE_SETUP
-#line 2419 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2419 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yyless(1);
 	BEGIN MODE_OPERATOR;
@@ -7143,7 +7143,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 418:
 YY_RULE_SETUP
-#line 2442 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2442 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN INITIAL;
@@ -7152,7 +7152,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 419:
 YY_RULE_SETUP
-#line 2448 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2448 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7171,7 +7171,7 @@ YY_RULE_SETUP
 /* ---------------------------- */
 case 420:
 YY_RULE_SETUP
-#line 2470 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2470 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	BEGIN MODE_PRAGMACONTENTS;
@@ -7180,7 +7180,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 421:
 YY_RULE_SETUP
-#line 2476 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2476 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7198,7 +7198,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 422:
 YY_RULE_SETUP
-#line 2497 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2497 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_OPERATOR;
 	return token::PRAGMA_END;
@@ -7209,7 +7209,7 @@ YY_RULE_SETUP
 case 423:
 /* rule 423 can match eol */
 YY_RULE_SETUP
-#line 2504 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2504 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	/* continue lexing */
 }
@@ -7217,7 +7217,7 @@ YY_RULE_SETUP
 case 424:
 /* rule 424 can match eol */
 YY_RULE_SETUP
-#line 2508 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2508 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::PRAGMA_LITERAL;
@@ -7225,7 +7225,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 425:
 YY_RULE_SETUP
-#line 2513 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2513 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7244,7 +7244,7 @@ YY_RULE_SETUP
 /* ---------------------- */
 case 426:
 YY_RULE_SETUP
-#line 2535 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2535 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_varname(yytext, yyleng);
 	BEGIN MODE_OPERATOR;
@@ -7255,14 +7255,14 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 427:
 YY_RULE_SETUP
-#line 2543 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2543 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
 	YY_BREAK
 case 428:
 YY_RULE_SETUP
-#line 2547 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2547 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7283,7 +7283,7 @@ YY_RULE_SETUP
 /* ----------------------------- */
 case 429:
 YY_RULE_SETUP
-#line 2571 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2571 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_ELEMENT_CONTENT;
 	return token::TAG_END;
@@ -7293,7 +7293,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 430:
 YY_RULE_SETUP
-#line 2578 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2578 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT;
 	return token::QUOTE;
@@ -7303,7 +7303,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 431:
 YY_RULE_SETUP
-#line 2585 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2585 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
 	return token::APOS;
@@ -7313,7 +7313,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 432:
 YY_RULE_SETUP
-#line 2592 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2592 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_START_TAG;
 	return token::EQUALS;
@@ -7323,7 +7323,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 433:
 YY_RULE_SETUP
-#line 2599 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2599 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::EMPTY_TAG_END;
@@ -7334,14 +7334,14 @@ YY_RULE_SETUP
 case 434:
 /* rule 434 can match eol */
 YY_RULE_SETUP
-#line 2606 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2606 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	/* continue lexing */
 }
 	YY_BREAK
 case 435:
 YY_RULE_SETUP
-#line 2610 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2610 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_qname(yytext, yyleng);
 	return token::QNAME;
@@ -7349,7 +7349,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 436:
 YY_RULE_SETUP
-#line 2615 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2615 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7373,7 +7373,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 437:
 YY_RULE_SETUP
-#line 2642 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2642 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_END_TAG;
 	return token::START_TAG_END;
@@ -7383,7 +7383,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 438:
 YY_RULE_SETUP
-#line 2649 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2649 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
@@ -7393,7 +7393,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 439:
 YY_RULE_SETUP
-#line 2656 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2656 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_XML_COMMENT, yyscanner);
 	return token::XML_COMMENT_BEGIN;
@@ -7403,7 +7403,7 @@ YY_RULE_SETUP
 /* ------------------------------------ */
 case 440:
 YY_RULE_SETUP
-#line 2663 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2663 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_PROCESSING_INSTRUCTION, yyscanner);
 	return token::PI_BEGIN;
@@ -7413,7 +7413,7 @@ YY_RULE_SETUP
 /* --------------------------- */
 case 441:
 YY_RULE_SETUP
-#line 2670 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2670 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_CDATA_SECTION, yyscanner);
 	return token::CDATA_BEGIN;
@@ -7423,7 +7423,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 442:
 YY_RULE_SETUP
-#line 2677 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2677 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_START_TAG, yyscanner);
 	return token::START_TAG;
@@ -7434,7 +7434,7 @@ YY_RULE_SETUP
 case 443:
 /* rule 443 can match eol */
 YY_RULE_SETUP
-#line 2684 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2684 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::ELEMENT_CONTENT;
@@ -7442,7 +7442,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 444:
 YY_RULE_SETUP
-#line 2689 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2689 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_entityref(yytext, yyleng);
 	return token::ENTITY_REF;
@@ -7450,7 +7450,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 445:
 YY_RULE_SETUP
-#line 2694 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2694 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_charref(yytext, yyleng);
 	return token::CHAR_REF_LITERAL;
@@ -7458,14 +7458,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 446:
 YY_RULE_SETUP
-#line 2699 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2699 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 447:
 YY_RULE_SETUP
-#line 2703 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2703 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_RBRACE;
 }
@@ -7474,7 +7474,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 448:
 YY_RULE_SETUP
-#line 2709 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2709 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7492,7 +7492,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 449:
 YY_RULE_SETUP
-#line 2730 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2730 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::TAG_END;
@@ -7503,14 +7503,14 @@ YY_RULE_SETUP
 case 450:
 /* rule 450 can match eol */
 YY_RULE_SETUP
-#line 2737 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2737 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	/* continue lexing */
 }
 	YY_BREAK
 case 451:
 YY_RULE_SETUP
-#line 2741 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2741 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::QNAME;
@@ -7520,7 +7520,7 @@ YY_RULE_SETUP
 /* -------------- */
 case 452:
 YY_RULE_SETUP
-#line 2748 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2748 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   return token::UNRECOGNIZED;
 }
@@ -7538,7 +7538,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 453:
 YY_RULE_SETUP
-#line 2769 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2769 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::XML_COMMENT_END;
@@ -7549,7 +7549,7 @@ YY_RULE_SETUP
 case 454:
 /* rule 454 can match eol */
 YY_RULE_SETUP
-#line 2776 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2776 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::XML_COMMENT_LITERAL;
@@ -7569,7 +7569,7 @@ YY_RULE_SETUP
 /* ------------------ */
 case 455:
 YY_RULE_SETUP
-#line 2799 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2799 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 }
@@ -7578,7 +7578,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 456:
 YY_RULE_SETUP
-#line 2805 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2805 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ MODE_EXPR_COMMENT, yyscanner);
 }
@@ -7586,7 +7586,7 @@ YY_RULE_SETUP
 case 457:
 /* rule 457 can match eol */
 YY_RULE_SETUP
-#line 2809 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2809 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	/* do nothing */
 }
@@ -7605,7 +7605,7 @@ YY_RULE_SETUP
 case 458:
 /* rule 458 can match eol */
 YY_RULE_SETUP
-#line 2830 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2830 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; 
 	/* continue lexing */
@@ -7615,7 +7615,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 459:
 YY_RULE_SETUP
-#line 2837 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2837 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::PI_END;
@@ -7626,7 +7626,7 @@ YY_RULE_SETUP
 case 460:
 /* rule 460 can match eol */
 YY_RULE_SETUP
-#line 2844 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2844 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	BEGIN MODE_PROCESSING_INSTRUCTION;
@@ -7646,7 +7646,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 461:
 YY_RULE_SETUP
-#line 2867 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2867 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::PI_BEGIN;
@@ -7657,7 +7657,7 @@ YY_RULE_SETUP
 case 462:
 /* rule 462 can match eol */
 YY_RULE_SETUP
-#line 2874 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2874 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::CHAR_LITERAL;
@@ -7676,7 +7676,7 @@ YY_RULE_SETUP
 /* -------------------------- */
 case 463:
 YY_RULE_SETUP
-#line 2896 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2896 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_pop_state(yyscanner);
 	return token::CDATA_END;
@@ -7687,7 +7687,7 @@ YY_RULE_SETUP
 case 464:
 /* rule 464 can match eol */
 YY_RULE_SETUP
-#line 2903 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2903 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::CHAR_LITERAL;
@@ -7712,7 +7712,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 465:
 YY_RULE_SETUP
-#line 2931 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2931 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_START_TAG;
 	return token::QUOTE;
@@ -7722,7 +7722,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 466:
 YY_RULE_SETUP
-#line 2938 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2938 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
 	return token::LBRACE;
@@ -7732,7 +7732,7 @@ YY_RULE_SETUP
 /* -------------------------------- */
 case 467:
 YY_RULE_SETUP
-#line 2945 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2945 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ESCAPE_QUOTE;
 }
@@ -7740,7 +7740,7 @@ YY_RULE_SETUP
 case 468:
 /* rule 468 can match eol */
 YY_RULE_SETUP
-#line 2949 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2949 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::QUOTE_ATTR_CONTENT;
@@ -7748,14 +7748,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 469:
 YY_RULE_SETUP
-#line 2954 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2954 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ENTITY_REF;
 }
 	YY_BREAK
 case 470:
 YY_RULE_SETUP
-#line 2958 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2958 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_charref(yytext, yyleng);
 	return token::CHAR_REF_LITERAL;
@@ -7763,14 +7763,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 471:
 YY_RULE_SETUP
-#line 2963 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2963 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 472:
 YY_RULE_SETUP
-#line 2967 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2967 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_RBRACE;
 }
@@ -7789,7 +7789,7 @@ YY_RULE_SETUP
 /* ----------------------- */
 case 473:
 YY_RULE_SETUP
-#line 2989 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2989 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_START_TAG;
 	return token::APOS;
@@ -7799,7 +7799,7 @@ YY_RULE_SETUP
 /* --------------------- */
 case 474:
 YY_RULE_SETUP
-#line 2996 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 2996 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	BEGIN MODE_APOS_ATTRIBUTE_CONTENT;
 	yy_push_state( /*and goto*/ INITIAL, yyscanner);
@@ -7810,7 +7810,7 @@ YY_RULE_SETUP
 /* ------------------------------- */
 case 475:
 YY_RULE_SETUP
-#line 3004 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3004 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ESCAPE_APOS;
 }
@@ -7818,7 +7818,7 @@ YY_RULE_SETUP
 case 476:
 /* rule 476 can match eol */
 YY_RULE_SETUP
-#line 3008 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3008 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put(yytext, yyleng);
 	return token::APOS_ATTR_CONTENT;
@@ -7826,14 +7826,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 477:
 YY_RULE_SETUP
-#line 3013 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3013 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::ENTITY_REF;
 }
 	YY_BREAK
 case 478:
 YY_RULE_SETUP
-#line 3017 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3017 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	yylval->sval = driver.symtab.put_charref(yytext, yyleng);
 	return token::CHAR_REF_LITERAL;
@@ -7841,14 +7841,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 479:
 YY_RULE_SETUP
-#line 3022 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3022 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_LBRACE;
 }
 	YY_BREAK
 case 480:
 YY_RULE_SETUP
-#line 3026 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3026 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
 	return token::DOUBLE_RBRACE;
 }
@@ -7856,7 +7856,7 @@ YY_RULE_SETUP
 /* <MODE_APOS_ATTRIBUTE_CONTENT> */
 case 481:
 YY_RULE_SETUP
-#line 3032 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3032 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
 #line 7863 "xquery_scanner.yy.cpp"
@@ -8342,7 +8342,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 				case EOB_ACT_END_OF_FILE:
 					{
 					if ( yywrap(yyscanner ) )
-						return 0;
+						return EOF;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
 						YY_NEW_FILE;
@@ -8514,9 +8514,19 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 
 /* %if-c-only */
 
-#ifndef __cplusplus
+#ifndef _UNISTD_H /* assume unistd.h has isatty() for us */
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifdef __THROW /* this is a gnuism */
+extern int isatty (int ) __THROW;
+#else
 extern int isatty (int );
-#endif /* __cplusplus */
+#endif
+#ifdef __cplusplus
+}
+#endif
+#endif
     
 /* %endif */
 
@@ -9197,7 +9207,7 @@ void yyfree (void * ptr , yyscan_t yyscanner)
 
 /* %ok-for-header */
 
-#line 3032 "/Users/mbrantner/misc/code/ctest/xquery/src/compiler/parser/xquery_scanner.l"
+#line 3032 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 
 
 

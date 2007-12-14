@@ -508,7 +508,7 @@ typedef yy::xquery_parser::token token;
 
 "NaN" {
 	BEGIN MODE_OPERATOR;
-	return token::NAN;
+	return token::_NAN;
 }
 
 {NCName}":*" {

@@ -277,7 +277,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token MOD												"'mod'"
 %token MODULE_NAMESPACE						"'<module namespace>'"
 %token NAMESPACE									"'namespace'"
-%token NAN												"'nan'"
+%token _NAN												"'nan'"
 %token NE													"'!='"
 %token NODECOMP										"'nodecomp'"
 %token NODE_LPAR									"'<node (>'"
