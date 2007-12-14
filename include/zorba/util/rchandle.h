@@ -87,6 +87,7 @@ public:	// operator overloading
   T& operator*() const;  
   operator T* () { return get_ptr (); }
   operator const T * () { return get_ptr (); }
+  template <class otherT> operator rchandle<otherT> () { return cast<otherT> (); }
 	bool operator==(rchandle const& h) const;
 	bool operator!=(rchandle const& h) const;
 	bool operator==(T const* pp) const;
