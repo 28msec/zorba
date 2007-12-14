@@ -37,15 +37,15 @@ int printdepth0 = 0;
 #define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
 #define BEGIN_VISITOR() do { if (!v.begin_visit(*this)) return; } while (0)
 #define END_VISITOR() v.end_visit(*this);
+#define DECLARE_VISITOR_FUNCTOR( name, type, body)                      \
+  class name : public unary_function<rchandle<expr>, void> {            \
+    expr_visitor &v;                                                    \
+  public:                                                               \
+  name (expr_visitor &v_) : v (v_) {}                                   \
+  void operator () (type e) body                                        \
+  }
 
-  struct expr_visitor_function : public unary_function<rchandle<expr>, void> {
-    expr_visitor &v;
-    expr_visitor_function (expr_visitor &v_) : v (v_) {}
-    void operator () (rchandle<expr> e) {
-      if (e != NULL)
-        e->accept (v);
-    }
-  };
+  DECLARE_VISITOR_FUNCTOR (visitor_functor, expr::expr_t, { ACCEPT (e); });
 
 expr::expr(
   yy::location const& _loc)
@@ -329,8 +329,8 @@ void quantified_expr::accept(
   expr_visitor& v)
 {
   BEGIN_VISITOR ();
-  expr_visitor_function a (v);
-  for_each (var_v.begin (), var_v.end (), a);
+  visitor_functor f (v);
+  for_each (var_v.begin (), var_v.end (), f);
   END_VISITOR ();
 }
 
@@ -371,11 +371,17 @@ ostream& typeswitch_expr::put( ostream& os) const
   return os << OUTDENT << "]\n";
 }
 
-void typeswitch_expr::accept(
-  expr_visitor& v)
-{
-}
+DECLARE_VISITOR_FUNCTOR (caseclause_visitor_functor, typeswitch_expr::clauseref_t, { ACCEPT (e->var_h); ACCEPT (e->case_expr_h); });
 
+void typeswitch_expr::accept(expr_visitor& v) {
+  BEGIN_VISITOR ();
+  ACCEPT (switch_expr_h);
+  caseclause_visitor_functor f (v);
+  for_each (case_clause_hv.begin (), case_clause_hv.end (), f);
+  ACCEPT (default_var_h);
+  ACCEPT (default_clause_h);
+  END_VISITOR ();
+}
 
 
 // [45] [http://www.w3.org/TR/xquery/#prod-xquery-IfExpr]
@@ -477,7 +483,7 @@ void fo_expr::accept(
   expr_visitor& v)
 {
   BEGIN_VISITOR ();
-  expr_visitor_function a (v);
+  visitor_functor a (v);
   for_each (begin (), end (), a);
   END_VISITOR ();
 }
@@ -520,6 +526,11 @@ ostream& ft_contains_expr::put( ostream& os) const
 void ft_contains_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
+  ACCEPT (range_h);
+  ACCEPT (ft_select_h);
+  ACCEPT (ft_ignore_h);
+  END_VISITOR ();
 }
 
 
@@ -594,6 +605,9 @@ ostream& treat_expr::put( ostream& os) const
 void treat_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -630,6 +644,9 @@ ostream& castable_expr::put( ostream& os) const
 void castable_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -706,6 +723,9 @@ ostream& validate_expr::put( ostream& os) const
 void validate_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -766,6 +786,9 @@ ostream& extension_expr::put( ostream& os) const
 void extension_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -1151,6 +1174,9 @@ ostream& order_expr::put( ostream& os) const
 void order_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
@@ -1380,6 +1406,7 @@ ostream& pi_expr::put( ostream& os) const
 void pi_expr::accept(
   expr_visitor& v)
 {
+  ACCEPT (target_expr_h);
 }
 
 
