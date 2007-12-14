@@ -1711,8 +1711,9 @@ void translator::end_visit(const FunctionCall& v, void *visit_state) {
     GENV_TYPESYSTEM.create_type (sctx_p->lookup_fn_qname (prefix, fname),
                                  TypeSystem::QUANT_QUESTION);
   if (type != NULL) {
-    ZORBA_ERROR_ALERT (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
-                       error_messages::STATIC_ERROR, NULL);
+    if (arguments.size () != 1)
+      ZORBA_ERROR_ALERT (error_messages::XPST0017_STATIC_FUNCTION_NOT_FOUND,
+                         error_messages::STATIC_ERROR, NULL);
     nodestack.push (new cast_expr (v.get_location (), arguments [0], type));
   } else {
     rchandle<fo_expr> fo_h = new fo_expr(v.get_location());
