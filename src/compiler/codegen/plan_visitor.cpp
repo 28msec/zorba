@@ -32,9 +32,9 @@
 #define CODEGEN_TRACE(msg)                      \
   if (Properties::instance()->traceCodegen())   \
     std::cout << (msg) << TRACE << std::endl;
-#define CODEGEN_IN_TRACE( msg )  \
+#define CODEGEN_TRACE_IN( msg )  \
   CODEGEN_TRACE (std::string (++depth, ' ') + msg)
-#define CODEGEN_OUT_TRACE( msg ) \
+#define CODEGEN_TRACE_OUT( msg ) \
   CODEGEN_TRACE (std::string (depth--, ' ') + msg)
 #else
 #define CODEGEN_TRACE(msg)
