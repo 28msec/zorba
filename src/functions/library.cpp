@@ -20,6 +20,7 @@
 #include "functions/Boolean.h"
 #include "functions/Constructor.h"
 #include "functions/DateTime.h"
+#include "functions/FnContext.h"
 
 #include "context/common.h"
 #include "context/static_context.h"
@@ -526,5 +527,12 @@ DECL(zor_numgen,
      (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "zorba:numgen"),
       GENV_TYPESYSTEM.DECIMAL_TYPE_ONE));
 // end zorba functions
+
+// begin context functions
+DECL(ctx_variable,
+     (ITEM_FACTORY.createQName(XQUERY_FN_NS,"fn", "ctxvariable"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+// end context functions
 
 } /* namespace xqp */

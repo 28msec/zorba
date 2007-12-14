@@ -26,7 +26,7 @@
 #define XQP_STATIC_CONTEXT_H
 
 #include "common.h"
-#include "context.h"
+#include "context/context.h"
 #include "context/context_impl.h"
 #include "functions/signature.h"
 #include "errors/Error.h"
