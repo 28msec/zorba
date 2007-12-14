@@ -184,11 +184,6 @@ bool normalizer::begin_visit(doc_expr& node)
   return true;
 }
 
-bool normalizer::begin_visit(compElem_expr& node)
-{
-  return true;
-}
-
 // FIXME => static inline function (see also translator)
 #define LOOKUP_OP1( local ) static_cast<function *> (m_sctx->lookup_builtin_fn (":" local, 1))
 
@@ -313,10 +308,6 @@ void normalizer::end_visit(elem_expr& node)
 }
 
 void normalizer::end_visit(doc_expr& node)
-{
-}
-
-void normalizer::end_visit(compElem_expr& node)
 {
 }
 

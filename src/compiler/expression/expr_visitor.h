@@ -46,7 +46,6 @@ class order_expr;
 class funcall_expr;
 class elem_expr;
 class doc_expr;
-class compElem_expr;
 class attr_expr;
 class text_expr;
 class pi_expr;
@@ -85,7 +84,6 @@ public:
 	virtual bool begin_visit(order_expr&) = 0;
 	virtual bool begin_visit(elem_expr&) = 0;
 	virtual bool begin_visit(doc_expr&) = 0;
-	virtual bool begin_visit(compElem_expr&) = 0;
 	virtual bool begin_visit(attr_expr&) = 0;
 	virtual bool begin_visit(text_expr&) = 0;
 	virtual bool begin_visit(pi_expr&) = 0;
@@ -116,7 +114,6 @@ public:
 	virtual void end_visit(order_expr&) = 0;
 	virtual void end_visit(elem_expr&) = 0;
 	virtual void end_visit(doc_expr&) = 0;
-	virtual void end_visit(compElem_expr&) = 0;
 	virtual void end_visit(attr_expr&) = 0;
 	virtual void end_visit(text_expr&) = 0;
 	virtual void end_visit(pi_expr&) = 0;
