@@ -210,7 +210,7 @@ ostream& flwor_expr::put( ostream& os) const
     Assert(ord_h != NULL);
 
     os << INDENT << "ORDERBY\n";
-    os << e_h->put(os) << endl;
+    e_h->put(os) << endl;
     UNDENT;
 
     os << INDENT;
@@ -1119,16 +1119,7 @@ const_expr::~const_expr()
 
 ostream& const_expr::put( ostream& os) const
 {
-  switch (1) {
-#if 0  // TODO
-  case lit_string: os << INDENT << "string[" << sval; break;
-  case lit_integer: os << INDENT << "integer[" << ival; break;
-  case lit_decimal: os << INDENT << "decimal[" << decval; break;
-  case lit_double: os << INDENT << "double[" << dval; break;
-#endif
-  default: os << INDENT << "???[]";
-  }
-  return os << OUTDENT << "]\n";
+  return os << INDENT << "const_expr[ " << val->getStringProperty() << OUTDENT << "]\n";
 }
 
 void const_expr::accept(
