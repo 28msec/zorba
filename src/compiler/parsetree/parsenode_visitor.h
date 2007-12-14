@@ -485,6 +485,9 @@ public:
      */
 
 	virtual void intermediate_visit(RelativePathExpr const&, void *visit_state) { }
+    virtual void post_step_visit(AxisStep const&, void *visit_state) { }
+    virtual void pre_predicate_visit(PredicateList const&, void *visit_state) { }
+    virtual void post_predicate_visit(PredicateList const&, void *visit_state) { }
 };
 
 } /* namespace xqp */

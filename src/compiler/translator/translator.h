@@ -41,11 +41,12 @@ protected:
   fo_expr *create_seq (yy::location loc);
 
   std::stack<expr_t> nodestack;
-  std::stack<expr_t> pstack;	   // predicates stack
   std::stack<TypeSystem::xqtref_t> tstack;  // types stack
 
   rchandle<var_expr> tempvar(yy::location loc);
   rchandle<forlet_clause> wrap_in_forclause(expr_t expr, bool add_posvar);
+  rchandle<forlet_clause> wrap_in_forclause(expr_t expr, rchandle<var_expr> fvh, rchandle<var_expr> pvh);
+  rchandle<forlet_clause> wrap_in_letclause(expr_t expr);
   expr_t wrap_in_dos_and_dupelim(expr_t expr);
 
 public:
@@ -65,10 +66,6 @@ public:
     TypeSystem::xqtref_t e_h = tstack.top();
 		tstack.pop();
 		return e_h;
-	}
-	void clear_pstack()
-	{
-		while (!pstack.empty()) pstack.pop();
 	}
 
 public:
@@ -465,6 +462,9 @@ public:
 	void end_visit (FTWordsValue const&, void *);
 	
     void intermediate_visit(RelativePathExpr const&, void *);
+    void post_step_visit(AxisStep const&, void *);
+    void pre_predicate_visit(PredicateList const&, void *);
+    void post_predicate_visit(PredicateList const&, void *);
 };
 
 

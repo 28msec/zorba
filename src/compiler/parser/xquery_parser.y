@@ -2875,7 +2875,8 @@ RelativePathExpr :
 		StepExpr  %prec STEP_REDUCE
 		{
 			if (debug) cout << "RelativePathExpr [step]\n";
-			$$ = $1;						
+            AxisStep *as = dynamic_cast<AxisStep *>($1);
+            $$ = as != NULL ? new RelativePathExpr(@$, st_slash, new ContextItemExpr(@$), $1) : $1;
 		}
 	|	StepExpr  SLASH  RelativePathExpr 
 		{

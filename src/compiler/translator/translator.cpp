@@ -47,6 +47,8 @@ static void *no_state = (void *) new int;
 # define TRACE_VISIT_OUT()
 #endif
 
+#define DOT_VAR "$$dot"
+#define DOT_POS_VAR "$$pos"
 
 var_expr *translator::bind_var (yy::location loc, string varname) {
   QNameItem_t qname = sctx_p->lookup_qname ("", varname);
@@ -66,6 +68,9 @@ translator::translator()
   tempvar_counter = 0;
   zorp = zorba::getZorbaForCurrentThread();
   sctx_p = zorp->get_static_context();
+  yy::location loc;
+  var_expr *ctx_var = bind_var(loc, DOT_VAR);
+  ctx_var->set_kind(var_expr::context_var);
 }
 
 
@@ -1279,19 +1284,12 @@ TRACE_VISIT_OUT ();
 void *translator::begin_visit(const PredicateList& v)
 {
 TRACE_VISIT ();
-  nodestack.push(NULL);
   return no_state;
 }
 
 void translator::end_visit(const PredicateList& v, void *visit_state)
 {
 TRACE_VISIT_OUT ();
-  clear_pstack();
-  while (true) {
-    expr_t e_h = pop_nodestack();
-    if (e_h==NULL) break;
-    pstack.push(e_h);
-  }
 }
 
 void *translator::begin_visit(const Prolog& v)
@@ -1633,9 +1631,8 @@ TRACE_VISIT ();
 void translator::end_visit(const ContextItemExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-  rchandle<var_expr> v_h = new var_expr(v.get_location(), NULL);
-  v_h->set_kind(var_expr::context_var);
-  nodestack.push(&*v_h);
+  var_expr *e = static_cast<var_expr *> (sctx_p->lookup_var (DOT_VAR));
+  nodestack.push(e);
 }
 
 
@@ -2263,6 +2260,22 @@ rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, bool add_posv
   return new forlet_clause(forlet_clause::for_clause, fv, pv, NULL, expr.get_ptr());
 }
 
+rchandle<forlet_clause> translator::wrap_in_forclause(expr_t expr, rchandle<var_expr> fvh, rchandle<var_expr> pvh)
+{
+  fvh->set_kind(var_expr::for_var);
+  if (pvh != NULL) {
+    pvh->set_kind(var_expr::pos_var);
+  }
+  return new forlet_clause(forlet_clause::for_clause, fvh, pvh, NULL, expr.get_ptr());
+}
+
+rchandle<forlet_clause> translator::wrap_in_letclause(expr_t expr)
+{
+  rchandle<var_expr> lv = tempvar(expr->get_loc());
+  lv->set_kind(var_expr::let_var);
+  return new forlet_clause(forlet_clause::let_clause, lv, NULL, NULL, expr.get_ptr());
+}
+
 translator::expr_t translator::wrap_in_dos_and_dupelim(expr_t expr)
 {
   rchandle<fo_expr> dos = new fo_expr(expr->get_loc());
@@ -2296,11 +2309,16 @@ void *translator::begin_visit(const PathExpr& v)
   rchandle<relpath_expr> rpe = NULL;
   if (v.get_type() != path_leading_lone_slash) {
     rpe = new relpath_expr(v.get_location());
+    nodestack.push(NULL);
   }
   expr_t result = &*rpe;
 
   if (v.get_type() != path_relative) {
     // Create fn:root(self::node()) expr
+    rchandle<relpath_expr> ctx_rpe = new relpath_expr(v.get_location());
+    var_expr *ctx_var = static_cast<var_expr *> (sctx_p->lookup_var (DOT_VAR));
+    Assert(ctx_var != NULL);
+    ctx_rpe->add_back(ctx_var);
     rchandle<match_expr> me = new match_expr(v.get_location());
     me->setTestKind(match_anykind_test);
 
@@ -2308,9 +2326,11 @@ void *translator::begin_visit(const PathExpr& v)
     ase->setAxis(axis_kind_self);
     ase->setTest(me);
 
+    ctx_rpe->add_back(&*ase);
+
     rchandle<fo_expr> fo = new fo_expr(v.get_location());
     fo->set_func(LOOKUP_FN("fn", "root", 1));
-    fo->add(&*ase);
+    fo->add(&*ctx_rpe);
     result = &*fo;
     if (rpe != NULL) {
       rpe->add_back(&*fo);
@@ -2333,15 +2353,21 @@ void *translator::begin_visit(const PathExpr& v)
 void translator::end_visit(const PathExpr& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+
   expr_t arg2 = pop_nodestack();
-  rchandle<relpath_expr> rpe = dynamic_cast<relpath_expr *>(&*arg2);
-  if (rpe == NULL) {
-    expr_t arg1 = pop_nodestack();
-    rpe = dynamic_cast<relpath_expr *>(&*arg1);
+  expr_t arg1 = pop_nodestack();
+
+  relpath_expr *rpe = NULL;
+  if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2)) {
+    nodestack.push(wrap_in_dos_and_dupelim(arg2));
+  } else {
+    relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
     Assert(rpe != NULL);
     rpe->add_back(arg2);
+    expr_t nulle = pop_nodestack();
+    Assert(nulle == NULL);
+    nodestack.push(wrap_in_dos_and_dupelim(rpe));
   }
-  nodestack.push(wrap_in_dos_and_dupelim(rpe.get_ptr()));
 }
 
 void *translator::begin_visit(const RelativePathExpr& v)
@@ -2376,14 +2402,18 @@ void translator::end_visit(const RelativePathExpr& v, void *visit_state)
   TRACE_VISIT_OUT ();
 
   expr_t arg2 = pop_nodestack();
-  rchandle<relpath_expr> rpe = dynamic_cast<relpath_expr *>(&*arg2);
-  if (rpe == NULL) {
-    expr_t arg1 = pop_nodestack();
-    rpe = dynamic_cast<relpath_expr *>(&*arg1);
+  expr_t arg1 = pop_nodestack();
+
+  relpath_expr *rpe = NULL;
+  if (arg1 == NULL || dynamic_cast<relpath_expr *>(&*arg2)) {
+    nodestack.push(arg1);
+    nodestack.push(arg2);
+  } else {
+    relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
     Assert(rpe != NULL);
     rpe->add_back(arg2);
+    nodestack.push(rpe);
   }
-  nodestack.push(rpe.get_ptr());
 }
 
 
@@ -2391,40 +2421,84 @@ void *translator::begin_visit(const AxisStep& v)
 {
   TRACE_VISIT ();
 
-  PredicateList *pl = v.get_predicate_list().get_ptr();
-  if (pl != NULL && pl->size() > 0) {
-    push_scope();
-  }
-
   rchandle<axis_step_expr> aexpr_h = new axis_step_expr(v.get_location());
   nodestack.push(&*aexpr_h);
   return no_state;
 }
 
+void translator::post_step_visit(const AxisStep& v, void *visit_state)
+{
+  PredicateList *pl = v.get_predicate_list().get_ptr();
+  if (pl != NULL && pl->size() > 0) {
+    expr_t arg2 = pop_nodestack();
+    expr_t arg1 = pop_nodestack();
+
+    relpath_expr *rpe = dynamic_cast<relpath_expr *>(&*arg1);
+    Assert(rpe != NULL);
+
+    rpe->add_back(arg2);
+
+    expr_t dose = wrap_in_dos_and_dupelim(rpe);
+    nodestack.push(dose);
+  }
+}
 
 void translator::end_visit(const AxisStep& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
-
-  rchandle<axis_step_expr> ase = dynamic_cast<axis_step_expr*>(&*nodestack.top());
-  if (ase == NULL)
-  {
-     TRACE_VISIT_OUT ();
-     TRACE_VISIT_OUT ();
-  }
-
-  while (!pstack.empty())
-  {
-    expr_t e = pstack.top();
-    pstack.pop();
-    ase->addPred(e);
-  }
-  PredicateList *pl = v.get_predicate_list().get_ptr();
-  if (pl != NULL && pl->size() > 0) {
-    pop_scope();
-  }
 }
 
+void translator::pre_predicate_visit(const PredicateList& v, void *visit_state)
+{
+  push_scope();
+  expr_t seq = pop_nodestack();
+  rchandle<forlet_clause> lc = wrap_in_letclause(seq);
+  var_expr *dot_var = bind_var(v.get_location(), DOT_VAR);
+  var_expr *pos_var = bind_var(v.get_location(), DOT_POS_VAR);
+  rchandle<forlet_clause> fc = wrap_in_forclause(lc->get_var().get_ptr(), dot_var, pos_var);
+  rchandle<flwor_expr> flwor = new flwor_expr(v.get_location());
+  flwor->add(lc);
+  flwor->add(fc);
+  nodestack.push(&*flwor);
+}
+
+static inline bool is_numeric_literal(expr *e)
+{
+  const_expr *ce = dynamic_cast<const_expr *>(e);
+  if (ce == NULL) {
+    return false;
+  }
+  Item_t it = ce->get_val();
+  TypeSystem::xqtref_t itype = GENV_TYPESYSTEM.create_type(it->getType(), TypeSystem::QUANT_ONE);
+  return GENV_TYPESYSTEM.is_subtype(*itype, *GENV_TYPESYSTEM.DECIMAL_TYPE_ONE);
+}
+
+void translator::post_predicate_visit(const PredicateList& v, void *visit_state)
+{
+  expr_t pred = pop_nodestack();
+  expr_t f = pop_nodestack();
+
+  flwor_expr *flwor = dynamic_cast<flwor_expr *>(&*f);
+  Assert(flwor != NULL);
+  
+  rchandle<if_expr> ite = new if_expr(pred->get_loc());
+  if (is_numeric_literal(&*pred)) {
+    rchandle<fo_expr> eq = new fo_expr(pred->get_loc());
+    eq->set_func(LOOKUP_OP2("value-equal"));
+    eq->add(sctx_p->lookup_var(DOT_POS_VAR));
+    eq->add(pred);
+    ite->set_cond_expr(&*eq);
+  } else {
+    ite->set_cond_expr(pred);
+  }
+
+  ite->set_then_expr(sctx_p->lookup_var(DOT_VAR));
+  rchandle<fo_expr> empty = new fo_expr(pred->get_loc());
+  ite->set_else_expr(create_seq(pred->get_loc()));
+  
+  flwor->set_retval(&*ite);
+  nodestack.push(flwor);
+}
 
 void *translator::begin_visit(const ForwardStep& v)
 {
