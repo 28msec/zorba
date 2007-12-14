@@ -53,7 +53,7 @@ FOREACH(TESTFILE ${TESTFILES})
   # now, add two texts, one for xml output and one for text output
   # the tests are called queryfilename_xml or queryfilename_text, respectively.
   # the result is stored in queryfilename_xml.res or queryfilename_text.res, respectively
-  ADD_TEST(${TESTNAME}_xml 
+  ADD_TEST(${TESTNAME} 
                 ${CMAKE_CURRENT_SOURCE_DIR}/Scripts/ctestruntest 
                 ${CMAKE_BINARY_DIR}
                 ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/${TESTNAME}.xml.res 
