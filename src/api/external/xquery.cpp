@@ -120,10 +120,7 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
     lPrintXMLVisitor.print(n_p);
   }    
 	
-  // cout << "Syntax tree:\n";
-  // n_p->put(cout) << endl;
-
-  ///normalize the expression tree
+  // normalize the expression tree
   translator nvs;
   MainModule* mm_p;
   QueryBody* qb_p;
@@ -131,36 +128,33 @@ bool Zorba_XQueryBinary::compile(StaticQueryContext* sctx,
 
 	if ((mm_p = dynamic_cast<MainModule*>(n_p))==NULL) 
 	{
+		ZORBA_ERROR_ALERT(error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      /* continue_execution = */ true);
 		cerr << "Parse error: expecting MainModule\n";
-		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-																	error_messages::SYSTEM_ERROR,
-																	NULL,
-																	true///continue execution
-																	);
 		//UnregisterCurrentXQueryForCurrentThread( this );
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
 	if ((qb_p = dynamic_cast<QueryBody*>(&*mm_p->get_query_body()))==NULL) 
 	{
+		ZORBA_ERROR_ALERT(error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      /* continue_execution = */ true);
 		cerr << "Parse error: expecting MainModule->QueryBody\n";
-		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-																	error_messages::SYSTEM_ERROR,
-																	NULL,
-																	true///continue execution
-																	);
 		//UnregisterCurrentXQueryForCurrentThread( this );
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
 	}
 	if ((ex_p = dynamic_cast<Expr*>(&*qb_p->get_expr()))==NULL) 
 	{
+		ZORBA_ERROR_ALERT(error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
+                      error_messages::SYSTEM_ERROR,
+                      NULL,
+                      /* continue_execution = */ true);
 		cerr << "Parse error: expecting MainModule->QueryBody->Expr\n";
-		ZORBA_ERROR_ALERT(error_messages::XQP0014_SYSTEM_SHOULD_NEVER_BE_REACHED,
-																	error_messages::SYSTEM_ERROR,
-																	NULL,
-																	true///continue execution
-																	);
 		//UnregisterCurrentXQueryForCurrentThread( this );
 		thread_specific_zorba->current_xquery = NULL;
 		return false;
