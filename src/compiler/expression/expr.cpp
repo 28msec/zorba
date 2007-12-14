@@ -35,6 +35,17 @@ int printdepth0 = 0;
 #define ITEM_FACTORY (Store::getInstance().getItemFactory())
 
 #define ACCEPT( m ) do { if (m != NULL) m->accept (v); } while (0)
+#define BEGIN_VISITOR() do { if (!v.begin_visit(*this)) return; } while (0)
+#define END_VISITOR() v.end_visit(*this);
+
+  struct expr_visitor_function : public unary_function<rchandle<expr>, void> {
+    expr_visitor &v;
+    expr_visitor_function (expr_visitor &v_) : v (v_) {}
+    void operator () (rchandle<expr> e) {
+      if (e != NULL)
+        e->accept (v);
+    }
+  };
 
 expr::expr(
   yy::location const& _loc)
@@ -317,6 +328,10 @@ ostream& quantified_expr::put( ostream& os) const
 void quantified_expr::accept(
   expr_visitor& v)
 {
+  BEGIN_VISITOR ();
+  expr_visitor_function a (v);
+  for_each (var_v.begin (), var_v.end (), a);
+  END_VISITOR ();
 }
 
 
@@ -452,7 +467,6 @@ ostream& fo_expr::put( ostream& os) const
   for (; it != end(); ++it)
   {
     rchandle<expr> e_h = *it;
-    //d Assert<null_pointer>(e_h!=NULL);
     Assert(e_h!=NULL);
     e_h->put(os) << endl;
   }
@@ -462,12 +476,10 @@ ostream& fo_expr::put( ostream& os) const
 void fo_expr::accept(
   expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
-  vector<expr_t>::const_iterator it = begin();
-  for (; it!=end(); ++it) {
-    (*it)->accept(v);
-  }
-  v.end_visit(*this);
+  BEGIN_VISITOR ();
+  expr_visitor_function a (v);
+  for_each (begin (), end (), a);
+  END_VISITOR ();
 }
 
 
@@ -654,9 +666,9 @@ ostream& cast_expr::put( ostream& os) const
 void cast_expr::accept(
   expr_visitor& v)
 {
-  if (!v.begin_visit(*this)) return;
-  expr_h->accept(v);
-  v.end_visit(*this);  
+  BEGIN_VISITOR ();
+  ACCEPT (expr_h);
+  END_VISITOR ();
 }
 
 
