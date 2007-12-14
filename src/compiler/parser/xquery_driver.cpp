@@ -28,6 +28,7 @@ xquery_driver::xquery_driver(
   uint32_t initial_heapsize)
   :
 	symtab(initial_heapsize),
+  expr_p (NULL),
 	rename_bit(false),
 	ftcontains_bit(false)
 {
