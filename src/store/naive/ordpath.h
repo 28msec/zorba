@@ -69,7 +69,7 @@ public:
 
   void appendComp(long value);
 
-  void decompress(unsigned long* deweyid, unsigned long& deweylen) const;
+  void decompress(long* deweyid, unsigned long& deweylen) const;
 
   xqp_string show() const;
 
@@ -78,11 +78,11 @@ protected:
         unsigned long& byteIndex,
         unsigned long& bitIndex,
         unsigned long  numBits,
-        unsigned long  baseValue,
-        unsigned long& result) const;
+        long           baseValue,
+        long&          result) const;
 
   void decodeByte(
-        unsigned long* deweyid,
+        long*          deweyid,
         unsigned long& numComps,
         unsigned long& byteIndex,
         unsigned long& bitIndex,

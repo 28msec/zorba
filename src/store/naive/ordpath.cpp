@@ -521,7 +521,7 @@ void OrdPath::appendComp(long value)
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPath::decompress(unsigned long* deweyid, unsigned long& deweylen) const
+void OrdPath::decompress(long* deweyid, unsigned long& deweylen) const
 {
   unsigned long numComps = 0;
   unsigned long byteIndex = 1;
@@ -563,7 +563,7 @@ void OrdPath::decompress(unsigned long* deweyid, unsigned long& deweylen) const
 
 ********************************************************************************/
 void OrdPath::decodeByte(
-    unsigned long* deweyid,
+    long*          deweyid,
     unsigned long& numComps,
     unsigned long& byteIndex,
     unsigned long& bitIndex,
@@ -571,329 +571,505 @@ void OrdPath::decodeByte(
 {
   switch (byte)
   {
-  case 0:    // 0000 0000   00000000                (29/9,20)
+  case 0:    // 0000 0000   00000000 ...            (29/9,20)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 9);
+    extractValue(byteIndex, bitIndex, 20, -1118484, deweyid[numComps]);
+    numComps += 1;    
     break;
   }
   case 1:    // 0000 0001   00000001,...            (24/8,16)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 16, -69908, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 2:    // 0000 0010   0000001,0...            (19/7,12)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 12, -4372, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 3:    // 0000 0011   0000001,1...            (19/7,12)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 12, -4372, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 4:    // 0000 0100   000001,00...            (14/6,8)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 6);
+    extractValue(byteIndex, bitIndex, 8, -276, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 5:    // 0000 0101   000001,01..             (14/6,8)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 6);
+    extractValue(byteIndex, bitIndex, 8, -276, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 6:    // 0000 0110   000001,10...            (14/6,8)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 6);
+    extractValue(byteIndex, bitIndex, 8, -276, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 7:    // 0000 0111   000001,11...            (14/6,8)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 6);
+    extractValue(byteIndex, bitIndex, 8, -276, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 8:    // 0000 1000   00001,000...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 9:    // 0000 1001   00001,001...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 10:   // 0000 1010   00001,010...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
   case 11:   // 0000 1011   00001,011...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
-  case 12:   // 0000 1100   00001,100...          (9/5,4)
+  case 12:   // 0000 1100   00001,100...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
-  case 13:   // 0000 1101   00001,101...          (9/5,4)
+  case 13:   // 0000 1101   00001,101...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
-  case 14:   // 0000 1110   00001,110...          (9/5,4)
+  case 14:   // 0000 1110   00001,110...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
-  case 15:   // 0000 1111   00001,111...          (9/5,4)
+  case 15:   // 0000 1111   00001,111...            (9/5,4)
   {
-    Assert(0);
+    ADVANCE(byteIndex, bitIndex, 5);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps]);
+    numComps += 1;
     break;
   }
 
 
   case 16:   // 0001 0000   0001,00 + 00...       (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -4;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   case 17:   // 0001 0001   0001,00 + 01 +        (6/4,2 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = -4; 
+    deweyid[numComps+1] = 1;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 18:   // 0001 0010   0001,00 + 10, ...     (6/4,2 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = -4;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
+    numComps += 2;
     break;
   }
   case 19:   // 0001 0011   0001,00 + 11...       (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -4;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   case 20:   // 0001 0100   0001,01 + 00...       (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -3;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   case 21:   // 0001 0101   0001,01 + 01 +        (6/4,2 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = -3; 
+    deweyid[numComps+1] = 1;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 22:   // 0001 0110   0001,01 + 10, ...     (6/4,2 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = -3;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
+    numComps += 2;
     break;
   }
   case 23:   // 0001 0111   0001,01 + 11...       (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -3;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   case 24:   // 0001 1000   0001,10 + 00...       (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -2;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   case 25:   // 0001 1001   0001,10 + 01 +        (6/4,2 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = -2; 
+    deweyid[numComps+1] = 1;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 26:   // 0001 1010   0001,10 + 10, ...     (6/4,2 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = -2;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
+    numComps += 2;
     break;
   }
   case 27:   // 0001 1011   0001,10 + 11 ...      (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -2;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   case 28:   // 0001 1100   0001,11 + 00 ...        (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -1;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   case 29:   // 0001 1101   0001,11 + 01 +          (6/4,2 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = -1; 
+    deweyid[numComps+1] = 1;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 30:   // 0001 1110   0001,11 + 10, ...       (6/4,2 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = -1;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps+1]);
+    numComps += 2;
     break;
   }
   case 31:   // 0001 1111   0001,11 + 11 ...        (6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = -2;    
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 1;
     break;
   }
   
 
-  case 32:   // 0010 0000   001,0 + 0000 ...        (4/3,1)
+  case 32:   // 0010 0000   001 + 00000 ...         (3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;    
+    ADVANCE(byteIndex, bitIndex, 3);
+    numComps += 1;
     break;
   }
-  case 33:   // 0010 0001   001,0 + 0001, ...       (4/3,1 + 6/4,2)
+  case 33:   // 0010 0001   001 + 00001, ...        (3/3,0 + 9/5,4)
   {
-    Assert(0);
+    deweyid[numComps] = 0;    
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps+1]);
+    numComps += 2;
     break;
   }
-  case 34:   // 0010 0010   001,0 + 001,0 +         (4/3,1 + 4/3,1)
+  case 34:   // 0010 0010   001 + 0001,0...         (3/3,0 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 0;    
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 2, -4, deweyid[numComps+1]);
+    numComps += 2;
     break;
   }
-  case 35:   // 0010 0011   001,0 + 001,1 +         (4/3,1 + 4/3,1)
+  case 35:   // 0010 0011   001 + 0001,1...         (3/3,0 + 4/3,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 2, -4, deweyid[numComps+1]);
+    numComps += 2;
     break;
   }
-  case 36:   // 0010 0100   001,0 + 01 + 00 ...     (4/3,1 + 2/2,0)
+  case 36:   // 0010 0100   001+001 + 00...         (3/3,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 37:   // 0010 0101   001,0 + 01 + 01 +       (4/3,1 + 2/2,0 + 2/2,0)
+  case 37:   // 0010 0101   001 + 001 + 01...       (3/3,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 38:   // 0010 0110   001,0 + 01 + 10, ...    (4/3,1 + 2/2,0 + 3/2,1)
+  case 38:   // 0010 0110   001 + 001 + 10...       (3/3,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 39:   // 0010 0111   001,0 + 01 + 11 ...     (4/3,1 + 2/2,0)
+  case 39:   // 0010 0111   001 + 001 + 11 ...     (3/3,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 40:   // 0010 1000   001,0 + 10,0 + 0 ...    (4/3,1 + 3/2,1)
+  case 40:   // 0010 1000   001 + 01 + 000...       (3/3,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    ADVANCE(byteIndex, bitIndex, 5);
+    numComps += 2;
     break;
   }
-  case 41:   // 0010 1001   001,0 + 10,0 + 1 ...    (4/3,1 + 3/2,1)
+  case 41:   // 0010 1001   001 + 01 + 001 +        (3/3,0 + 2/2,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    deweyid[numComps+2] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 42:   // 0010 1010   001,0 + 10,1 + 0 ...    (4/3,1 + 3/2,1)
+  case 42:   // 0010 1010   001 + 01 + 01 + 0...    (3/3,0 + 2/2,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    deweyid[numComps+2] = 1;
+    ADVANCE(byteIndex, bitIndex, 7);
+    numComps += 3;
     break;
   }
-  case 43:   // 0010 1011   001,0 + 10,1 + 1 ...    (4/3,1 + 3/2,1)
+  case 43:   // 0010 1011   001 + 01 + 01 + 1 ...   (3/3,0 + 2/2,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    deweyid[numComps+2] = 1;
+    ADVANCE(byteIndex, bitIndex, 7);
+    numComps += 3;
     break;
   }
-  case 44:   // 0010 1100   001,0 + 110,0 ...       (4/3,1 + 5/3,2)
+  case 44:   // 0010 1100   001 + 01 + 10,0 +       (3/3,0 + 2/2,0, 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    deweyid[numComps+2] = 2;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 45:   // 0010 1101   001,0 + 110,1 ...       (4/3,1 + 5/3,2)
+  case 45:   // 0010 1101   001 + 01 + 10,1 +       (3/3,0 + 2/2,0, 3/3,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    deweyid[numComps+2] = 3;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 46:   // 0010 1110   001,0 + 1110, ...       (4/3,1 + 8/4,4)
+  case 46:   // 0010 1110   001 + 01 + 110, ...     (3/3,0 + 2/2,0 + 5/3,2)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 2, 4, deweyid[numComps + 2]);
+    numComps += 3;
     break;
   }
-  case 47:   // 0010 1111   001,0 + 1111 ...        (4/3,1)
+  case 47:   // 0010 1111   001 + 01 + 111 ...      (3/3,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 1;
+    ADVANCE(byteIndex, bitIndex, 5);
+    numComps += 2;
     break;
   }
 
-  case 48:   // 0011 0000   001,1 + 0000 ...        (4/3,1)
+  case 48:   // 0011 0000   001 + 10,0 + 00 ...     (3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 2;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 49:   // 0011 0001   001,1 + 0001, ...       (4/3,1 + 6/4,2)
+  case 49:   // 0011 0001   001 + 10,0 + 01 +       (3/3,0 + 3/2,1 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 2;
+    deweyid[numComps+2] = 1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 50:   // 0011 0010   001,1 + 001,0 +         (4/3,1 + 4/3,1)
+  case 50:   // 0011 0010   001 + 10,0 + 10, ...    (3/3,0 + 3/2,1 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 2;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps + 2]);
+    numComps += 3;
     break;
   }
-  case 51:   // 0011 0011   001,1 + 001,1 +         (4/3,1 + 4/3,1)
+  case 51:   // 0011 0011   001 + 10,0 + 11...      (3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 2;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 52:   // 0011 0100   001,1 + 01 + 00 ...     (4/3,1 + 2/2,0)
+  case 52:   // 0011 0100   001 + 10,1 + 00 ...     (3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 3;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 53:   // 0011 0101   001,1 + 01 + 01 +       (4/3,1 + 2/2,0 + 2/2,0)
+  case 53:   // 0011 0101   001 + 10,1 + 01 +       (3/3,0 + 3/2,1 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 3;
+    deweyid[numComps+2] = 1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 54:   // 0011 0110   001,1 + 01 + 10, ...    (4/3,1 + 2/2,0 + 3/2,1)
+  case 54:   // 0011 0110   001 + 10,1 + 10, ...    (3/3,0 + 3/2,1 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 3;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps + 2]);
+    numComps += 3;
     break;
   }
-  case 55:   // 0011 0111   001,1 + 01 + 11 ...     (4/3,1 + 2/2,0)
+  case 55:   // 0011 0111   001 + 10,1 + 11 ...     (3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 3;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 56:   // 0011 1000   001,1 + 10,0 + 0 ...    (4/3,1 + 3/2,1)
+  case 56:   // 0011 1000   001 + 110,00 +          (3/3,0 + 5/3,2)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 4;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
-  case 57:   // 0011 1001   001,1 + 10,0 + 1 ...    (4/3,1 + 3/2,1)
+  case 57:   // 0011 1001   001 + 110,01 +          (3/3,0 + 5/3,2)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 5;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
-  case 58:   // 0011 1010   001,1 + 10,1 + 0 ...    (4/3,1 + 3/2,1)
+  case 58:   // 0011 1010   001 + 110,10 +          (3/3,0 + 5/3,2)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 6;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
-  case 59:   // 0011 1011   001,1 + 10,1 + 1 ...    (4/3,1 + 3/2,1)
+  case 59:   // 0011 1011   001 + 110,11 +          (3/3,0 + 5/3,2)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    deweyid[numComps+1] = 7;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
-  case 60:   // 0011 1100   001,1 + 110,0 ...       (4/3,1 + 5/3,2)
+  case 60:   // 0011 1100   001 + 1110,0 ...        (3/3,0 + 8/4,4)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 4, 8, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
-  case 61:   // 0011 1101   001,1 + 110,1 ...       (4/3,1 + 5/3,2)
+  case 61:   // 0011 1101   001 + 1110,1 ...        (3/3,0 + 8/4,4)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 4, 8, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
-  case 62:   // 0011 1110   001,1 + 1110, ...       (4/3,1 + 8/4,4)
+  case 62:   // 0011 1110   001 + 11110, ...        (3/3,0 + 13/5,8)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 8, 24, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
-  case 63:   // 0011 1111   001,1 + 1111 ...        (4/3,1)
+  case 63:   // 0011 1111   001 + 11111 ...         (3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 0;
+    ADVANCE(byteIndex, bitIndex, 3);
+    numComps += 1;
     break;
   }
 
@@ -907,78 +1083,129 @@ void OrdPath::decodeByte(
   }
   case 65:   // 0100 0001   01 + 000001, ...        (2/2,0 + 14/6,8)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 8, -276, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
   case 66:   // 0100 0010   01 + 00001,0 ...        (2/2,0 + 9/5,4)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
   case 67:   // 0100 0011   01 + 00001,1 ...      (2/2,0 + 9/5,4)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
   case 68:   // 0100 0100   01 + 0001,00 +        (2/2,0 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = -4;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 69:   // 0100 0101   01 + 0001,01 +        (2/2,0 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = -3;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
-  case 70:   // 0100 0110   01 + 0001,10 +        (2/2,0 + 6/4,2)
+  case 70:   // 0100 0110   01 + 0001,10 +          (2/2,0 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = -2;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
-  case 71:   // 0100 0111   01 + 0001,11 +        (2/2,0 + 6/4,2)
+  case 71:   // 0100 0111   01 + 0001,11 +          (2/2,0 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = -1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   
-  case 72:   // 0100 1000   01 + 001,0 + 00 ...   (2/2,0 + 4/3,1)
+  case 72:   // 0100 1000   01 + 001 + 000 ...      (2/2,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 5);
+    numComps += 2;
     break;
   }
-  case 73:   // 0100 1001   01 + 001,0 + 01 +     (2/2,0 + 4/3,1 + 2/2,0)
+  case 73:   // 0100 1001   01 + 001 + 001 +        (2/2,0 + 3/3,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    deweyid[numComps+2] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 74:   // 0100 1010   01 + 001,0 + 10, ...  (2/2,0 + 4/3,1 + 3/2,1)
+  case 74:   // 0100 1010   01 + 001 + 01 + 0 ...   (2/2,0 + 3/3,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    deweyid[numComps+2] = 1;
+    ADVANCE(byteIndex, bitIndex, 7);
+    numComps += 3;
     break;
   }
-  case 75:   // 0100 1011   01 + 001,0 + 11 ...   (2/2,0 + 4/3,1)
+  case 75:   // 0100 1011   01 + 001 + 01 + 1 ...   (2/2,0 + 3/3,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    deweyid[numComps+2] = 1;
+    ADVANCE(byteIndex, bitIndex, 7);
+    numComps += 3;
     break;
   }
-  case 76:   // 0100 1100   01 + 001,1 + 00 ...   (2/2,0 + 4/3,1)
+  case 76:   // 0100 1100   01 + 001 + 10,0 +       (2/2,0 + 3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    deweyid[numComps+2] = 2;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 77:   // 0100 1101   01 + 001,1 + 01 +     (2/2,0 + 4/3,1 + 2/2,0)
+  case 77:   // 0100 1101   01 + 001 + 10,1 +       (2/2,0 + 3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    deweyid[numComps+2] = 3;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 78:   // 0100 1110   01 + 001,1 + 10, ...    (2/2,0 + 4/3,1 + 3/2,1)
+  case 78:   // 0100 1110   01 + 001 + 110, ...     (2/2,0 + 3/3,0 + 5/3,2)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 2, 4, deweyid[numComps + 2]);
+    numComps += 3;
     break;
   }
-  case 79:   // 0100 1111   01 + 001,1 + 11 ...     (2/2,0 + 4/3,1)
+  case 79:   // 0100 1111   01 + 001 + 111 ...      (2/2,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 5);
+    numComps += 2;
     break;
   }
 
@@ -992,29 +1219,29 @@ void OrdPath::decodeByte(
   }
   case 81:   // 0101 0000   01 + 01 + 0001, ...     (2/2,0 + 2/2,0 + 6/4,2)
   {
-    Assert(0);
-    break;
-  }
-  case 82:   // 0101 0010   01 + 01 + 001,0 +       (2/2,0 + 2/2,0 + 4/3,1)
-  {
-    Assert(0);
-
     deweyid[numComps] = 1;
-    deweyid[numComps + 1] = 1;
-    deweyid[numComps + 2] = -1;
+    deweyid[numComps+1] = 1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 2, -4, deweyid[numComps + 2]);
     numComps += 3;
-    byteIndex++;
     break;
   }
-  case 83:   // 0101 0011   01 + 01 + 001,1 +     (2/2,0 + 2/2,0 + 4/3,1)
+  case 82:   // 0101 0010   01 + 01 + 001 + 0...    (2/2,0 + 2/2,0 + 3/3,0)
   {
-    Assert(0);
-
     deweyid[numComps] = 1;
     deweyid[numComps + 1] = 1;
     deweyid[numComps + 2] = 0;
+    ADVANCE(byteIndex, bitIndex, 7);
     numComps += 3;
-    byteIndex++;
+    break;
+  }
+  case 83:   // 0101 0011   01 + 01 + 001 + 1...    (2/2,0 + 2/2,0 + 3/3,0)
+  {
+    deweyid[numComps] = 1;
+    deweyid[numComps + 1] = 1;
+    deweyid[numComps + 2] = 0;
+    ADVANCE(byteIndex, bitIndex, 7);
+    numComps += 3;
     break;
   }
   case 84:   // 0101 0100   01 + 01 + 01 + 00 ... (2/2,0 + 2/2,0 + 2/2,0)
@@ -1136,9 +1363,13 @@ void OrdPath::decodeByte(
     numComps += 2;
     break;
   }
-  case 97:   // 0110 0001   01 + 10,0 + 001, ...    (2/2,0 + 3/2,1 + 4/3,1)
+  case 97:   // 0110 0001   01 + 10,0 + 001 +     (2/2,0 + 3/2,1 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps + 1] = 2;
+    deweyid[numComps + 2] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
   case 98:   // 0110 0010   01 + 10,0 + 01 + 0 ...  (2/2,0 + 3/2,1 + 2/2,0)
@@ -1202,9 +1433,13 @@ void OrdPath::decodeByte(
     numComps += 2;
     break;
   }
-  case 105:   // 0110 1001   01 + 10,1 + 001 ...    (2/2,0 + 3/2,1 + 4/3,1)
+  case 105:   // 0110 1001   01 + 10,1 + 001 +      (2/2,0 + 3/2,1 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 1;
+    deweyid[numComps + 1] = 3;
+    deweyid[numComps + 2] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
   case 106:   // 0110 1010   01 + 10,1 + 01 + 0 ... (2/2,0 + 3/2,1 + 2/2,0)
@@ -1340,7 +1575,7 @@ void OrdPath::decodeByte(
   {
     deweyid[numComps] = 1;
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 4, 4, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 4, 8, deweyid[numComps + 1]);
     numComps += 2;
     break;
   }
@@ -1348,7 +1583,7 @@ void OrdPath::decodeByte(
   {
     deweyid[numComps] = 1;
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 4, 4, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 4, 8, deweyid[numComps + 1]);
     numComps += 2;
     break;
   }
@@ -1356,7 +1591,7 @@ void OrdPath::decodeByte(
   {
     deweyid[numComps] = 1;
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 4, 4, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 4, 8, deweyid[numComps + 1]);
     numComps += 2;
     break;
   }
@@ -1408,37 +1643,60 @@ void OrdPath::decodeByte(
   }
   case 129:   // 1000 0001   10,0 + 00001, ...      (3/2,1 + 9/5,4)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
   case 130:   // 1000 0010   10,0 + 0001,0 ...      (3/2,1 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 2, -4, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
   case 131:   // 1000 0011   10,0 + 0001,1 ...      (3/2,1 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 2, -4, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
-  case 132:   // 1000 0100   10,0 + 001,0 + 0 ...   (3/2,1 + 4/3,1)
+  case 132:   // 1000 0100   10,0 + 001 + 00 ...   (3/2,1 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
-  case 133:   // 1000 0101   10,0 + 001,0 + 1 ...   (3/2,1 + 4/3,1)
+  case 133:   // 1000 0101   10,0 + 001 + 01 ...   (3/2,1 + 3/3,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    deweyid[numComps + 1] = 0;
+    deweyid[numComps + 1] = 1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 134:   // 1000 0110   10,0 + 001,1 + 0 ...   (3/2,1 + 4/3,1)
+  case 134:   // 1000 0110   10,0 + 001 + 10, ...   (3/2,1 + 3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps + 2]);
+    numComps += 3;
     break;
   }
-  case 135:   // 1000 0111   10,0 + 001,1 + 1 ...   (3/2,1 + 4/3,1)
+  case 135:   // 1000 0111   10,0 + 001 + 11 ...    (3/2,1 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    deweyid[numComps+1] = 0;
+    ADVANCE(byteIndex, bitIndex, 6);
+    numComps += 2;
     break;
   }
 
@@ -1450,9 +1708,13 @@ void OrdPath::decodeByte(
     numComps += 2;
     break;
   }
-  case 137:   // 1000 1001   10,0 + 01 + 001, ...   (3/2,1 + 2/2,0 + 4/3,1)
+  case 137:   // 1000 1001   10,0 + 01 + 001 +      (3/2,1 + 2/2,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 2;
+    deweyid[numComps + 1] = 1;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
   case 138:   // 1000 1010   10,0 + 01 + 01 + 0 ... (3/2,1 + 2/2,0 + 2/2,0)
@@ -1473,7 +1735,7 @@ void OrdPath::decodeByte(
     numComps += 3;
     break;
   }
-  case 140:   // 1000 1100   10,0 + 01 + 10,0 ... (3/2,1 + 2/2,0 + 3/2,1)
+  case 140:   // 1000 1100   10,0 + 01 + 10,0 +     (3/2,1 + 2/2,0 + 3/2,1)
   {
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
@@ -1482,7 +1744,7 @@ void OrdPath::decodeByte(
     numComps += 3;
     break;
   }
-  case 141:   // 1000 1101   10,0 + 01 + 10,1 ... (3/2,1 + 2/2,0 + 3/2,1)
+  case 141:   // 1000 1101   10,0 + 01 + 10,1 +     (3/2,1 + 2/2,0 + 3/2,1)
   {
     deweyid[numComps] = 2;
     deweyid[numComps + 1] = 1;
@@ -1653,39 +1915,62 @@ void OrdPath::decodeByte(
     break;
   }
 
-  case 161:   // 1010 0001   10,1 + 00001, ...      (3/2,1 + )
+  case 161:   // 1010 0001   10,1 + 00001, ...      (3/2,1 + 9/5,4)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 4, -20, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
-  case 162:   // 1010 0010   10,1 + 0001,0 ...      (3/2,1 + )
+  case 162:   // 1010 0010   10,1 + 0001,0 ...      (3/2,1 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 2, -4, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
-  case 163:   // 1010 0011   10,1 + 0001,1 ...      (3/2,1 + )
+  case 163:   // 1010 0011   10,1 + 0001,1 ...      (3/2,1 + 6/4,2)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    ADVANCE(byteIndex, bitIndex, 7);
+    extractValue(byteIndex, bitIndex, 2, -4, deweyid[numComps + 1]);
+    numComps += 2;
     break;
   }
-  case 164:   // 1010 0100   10,1 + 001,00 ...      (3/2,1 + )
+  case 164:   // 1010 0100   10,1 + 001 + 00 ...    (3/2,1 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 5);
+    numComps += 2;
     break;
   }
-  case 165:   // 1010 0101   10,1 + 001,01 ...      (3/2,1 + )
+  case 165:   // 1010 0101   10,1 + 001 + 01 +      (3/2,1 + 3/3,0 + 2/2,0)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    deweyid[numComps + 1] = 0;
+    deweyid[numComps + 2] = 1;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
-  case 166:   // 1010 0110   10,1 + 001,10 ...      (3/2,1 + )
+  case 166:   // 1010 0110   10,1 + 001 + 10, ...   (3/2,1 + 3/3,0 + 3/2,1)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    extractValue(byteIndex, bitIndex, 1, 2, deweyid[numComps + 2]);
+    numComps += 3;
     break;
   }
-  case 167:   // 1010 0111   10,1 + 001,11 ...      (3/2,1 + )
+  case 167:   // 1010 0111   10,1 + 001 + 11 ...    (3/2,1 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 5);
+    numComps += 2;
     break;
   }
 
@@ -1697,9 +1982,13 @@ void OrdPath::decodeByte(
     numComps += 2;
     break;
   }
-  case 169:   // 1010 1001   10,1 + 01 + 001, ...   (3/2,1 + 2/2,0)
+  case 169:   // 1010 1001   10,1 + 01 + 001 +      (3/2,1 + 2/2,0 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 3;
+    deweyid[numComps + 1] = 1;
+    deweyid[numComps + 2] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 3;
     break;
   }
   case 170:   // 1010 1010   10,1 + 01 + 01 + 0 ... (3/2,1 + 2/2,0 + 2/2,0)
@@ -1759,7 +2048,7 @@ void OrdPath::decodeByte(
   {
     deweyid[numComps] = 3;
     deweyid[numComps + 1] = 2;
-    ADVANCE(byteIndex, bitIndex, 5);
+    ADVANCE(byteIndex, bitIndex, 6);
     numComps += 2;
     break;
   }
@@ -1899,9 +2188,12 @@ void OrdPath::decodeByte(
     numComps += 1;
     break;
   }
-  case 193:   // 1100 0001   110,00 + 001 ...       (5/3,2 + )
+  case 193:   // 1100 0001   110,00 + 001 +         (5/3,2 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 4;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 194:   // 1100 0010   110,00 + 01 + 0 ...    (5/3,2 + 2/2,0)
@@ -1960,9 +2252,12 @@ void OrdPath::decodeByte(
     numComps += 1;
     break;
   }
-  case 201:   // 1100 1001   110,01 + 001 ...       (5/3,2 + )
+  case 201:   // 1100 1001   110,01 + 001 +         (5/3,2 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 5;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 202:   // 1100 1010   110,01 + 01 + 0 ...    (5/3,2 + 2/2,0)
@@ -2020,9 +2315,12 @@ void OrdPath::decodeByte(
     numComps += 1;
     break;
   }
-  case 209:   // 1101 0001   110,10 + 001, ...      (5/3,2 + )
+  case 209:   // 1101 0001   110,10 + 001 +         (5/3,2 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 6;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 210:   // 1101 0010   110,10 + 01 + 0 ...    (5/3,2 + 2/2,0)
@@ -2080,9 +2378,12 @@ void OrdPath::decodeByte(
     numComps += 1;
     break;
   }
-  case 217:   // 1101 1001   110,11 + 001 ...       (5/3,2)
+  case 217:   // 1101 1001   110,11 + 001 +         (5/3,2 + 3/3,0)
   {
-    Assert(0);
+    deweyid[numComps] = 7;
+    deweyid[numComps + 1] = 0;
+    ADVANCE(byteIndex, bitIndex, 8);
+    numComps += 2;
     break;
   }
   case 218:   // 1101 1010   110,11 + 01 + 0 ...    (5/3,2 + 2/2,0)
@@ -2303,49 +2604,49 @@ void OrdPath::decodeByte(
   case 248:   // 1111 1000   111110,00...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 8, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
     numComps += 1;
     break;
   }
   case 249:   // 1111 1001   111110,01...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 8, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
     numComps += 1;
     break;
   }
   case 250:   // 1111 1010   111110,10...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 8, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
     numComps += 1;
     break;
   }
   case 251:   // 1111 1011   111110,11...           (18/6,12)
   {
     ADVANCE(byteIndex, bitIndex, 6);
-    extractValue(byteIndex, bitIndex, 8, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 12, 280, deweyid[numComps + 1]);
     numComps += 1;
     break;
   }
   case 252:   // 1111 1100   1111110,0...           (23/7,16)
   {
     ADVANCE(byteIndex, bitIndex, 7);
-    extractValue(byteIndex, bitIndex, 8, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 16, 4376, deweyid[numComps + 1]);
     numComps += 1;
     break;
   }
   case 253:   // 1111 1101   1111110,1...           (23/7,16)
   {
     ADVANCE(byteIndex, bitIndex, 7);
-    extractValue(byteIndex, bitIndex, 8, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 16, 4376, deweyid[numComps + 1]);
     numComps += 1;
     break;
   }
   case 254:   // 1111 1110   11111110,...           (28/8,20)
   {
     ADVANCE(byteIndex, bitIndex, 8);
-    extractValue(byteIndex, bitIndex, 8, 280, deweyid[numComps + 1]);
+    extractValue(byteIndex, bitIndex, 20, 69912, deweyid[numComps + 1]);
     numComps += 1;
     break;
   }
@@ -2372,8 +2673,8 @@ void OrdPath::extractValue(
     unsigned long& byteIndex,
     unsigned long& bitIndex,
     unsigned long  numBits,
-    unsigned long  baseValue,
-    unsigned long& result) const
+    long           baseValue,
+    long&          result) const
 {
   if (numBits < 8 - bitIndex)
   {
@@ -2437,7 +2738,7 @@ xqp_string OrdPath::show() const
   str << " ";
 
   len = MAX_BYTE_LEN;
-  unsigned long deweyid[MAX_BYTE_LEN];
+  long deweyid[MAX_BYTE_LEN];
 
   decompress(deweyid, len);
 
