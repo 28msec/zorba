@@ -57,11 +57,14 @@ var_expr *translator::bind_var (yy::location loc, string varname) {
   return e;
 }
 
-  fo_expr *translator::create_seq (yy::location loc) {
-    fo_expr *e = new fo_expr (loc);
-    e->set_func (LOOKUP_OPN ("concatenate"));
-    return e;
-  }
+
+fo_expr *translator::create_seq (yy::location loc)
+{
+  fo_expr *e = new fo_expr (loc);
+  e->set_func (LOOKUP_OPN ("concatenate"));
+  return e;
+}
+
 
 translator::translator()
 {
@@ -368,18 +371,23 @@ void translator::end_visit(const DirElemContentList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  fo_expr *expr_list_t = create_seq (v.get_location ());
+  fo_expr *expr_list = create_seq (v.get_location ());
   while (true) 
   {
     expr_t e_h = pop_nodestack();
     if (e_h == NULL)
       break;
-    expr_list_t->add(e_h);
+    expr_list->add(e_h);
   }
-  if (expr_list_t->size() == 1)
-    nodestack.push(*expr_list_t->begin());
+  if (expr_list->size() == 1)
+  {
+    nodestack.push(*expr_list->begin());
+    delete expr_list;
+  }
   else
-    nodestack.push(&*expr_list_t);
+  {
+    nodestack.push(expr_list);
+  }
 }
 
 
@@ -437,15 +445,23 @@ void translator::end_visit(const DirAttributeList& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
 
-  fo_expr *expr_list_t = create_seq (v.get_location ());
+  fo_expr *expr_list = create_seq (v.get_location ());
   while(true)
   {
     expr_t e_h = pop_nodestack();
     if (e_h == NULL)
       break;
-    expr_list_t->add(e_h);
+    expr_list->add(e_h);
   }
-  nodestack.push(&*expr_list_t);
+  if (expr_list->size() == 1)
+  {
+    nodestack.push(*expr_list->begin());
+    delete expr_list;
+  }
+  else
+  {
+    nodestack.push(expr_list);
+  }
 }
 
 
