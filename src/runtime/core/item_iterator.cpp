@@ -45,95 +45,114 @@ namespace xqp
   }
   /* end class SingletonIterator */
 
-  /* begin class EnclosedIterator */
-  EnclosedIterator::EnclosedIterator ( const yy::location& loc,
-                                       PlanIter_t& childIter, bool aAttrContent ) :
-      UnaryBaseIterator<EnclosedIterator> ( loc, childIter ), theAttrContent(aAttrContent)
-  {
-  }
 
-  Item_t EnclosedIterator::nextImpl ( PlanState& planState )
-  {
-    Item_t lItem;
-    EnclosedState* state;
-    DEFAULT_STACK_INIT ( EnclosedState, state, planState );
+/*******************************************************************************
 
-    while ( true )
+********************************************************************************/
+
+EnclosedIterator::EnclosedIterator (
+    const yy::location& loc,
+    PlanIter_t& childIter,
+    bool aAttrContent )
+  :
+  UnaryBaseIterator<EnclosedIterator> ( loc, childIter ),
+  theAttrContent(aAttrContent)
+{
+}
+
+
+Item_t EnclosedIterator::nextImpl ( PlanState& planState )
+{
+  Item_t lItem;
+  EnclosedState* state;
+  DEFAULT_STACK_INIT ( EnclosedState, state, planState );
+
+  while ( true )
+  {
+    state->theContextItem = consumeNext ( theChild, planState );
+    if ( state->theContextItem == NULL )
     {
-      state->theContextItem = consumeNext ( theChild, planState );
-      if ( state->theContextItem == NULL )
+      if ( state->theString != "" )
       {
-        if ( state->theString != "" )
+        if (theAttrContent)
         {
-          if (theAttrContent) {
-            lItem = zorba::getItemFactory()->createString(  state->theString ).get_ptr();
-          } else {
-            lItem = zorba::getItemFactory()->createTextNode ( state->theString, false ).get_ptr();
-          }
-          STACK_PUSH ( lItem, state ) ;
-          state->theString = "";
+          lItem = zorba::getItemFactory()->createString( state->theString );
         }
-        break;
-      }
-      else if ( state->theContextItem->isNode() )
-      {
-        if ( state->theString != "" )
+        else
         {
-          if (theAttrContent) {
-            lItem = zorba::getItemFactory()->createString ( state->theString ).get_ptr();
-          } else {
-            lItem = zorba::getItemFactory()->createTextNode ( state->theString, false ).get_ptr();
-          }
-          STACK_PUSH ( lItem, state);
-          state->theString = "";
+          lItem = zorba::getItemFactory()->createTextNode ( state->theString, false );
         }
-        STACK_PUSH ( state->theContextItem, state );
+        STACK_PUSH ( lItem, state ) ;
+        state->theString = "";
       }
-      else if ( state->theString == "" )
-      {
-        state->theString = state->theContextItem->getStringProperty();
-      }
-      else
-      {
-        state->theString += " " + state->theContextItem->getStringProperty();
-      }
+      break;
     }
-    STACK_END();
+    else if ( state->theContextItem->isNode() )
+    {
+      if ( state->theString != "" )
+      {
+        if (theAttrContent)
+        {
+          lItem = zorba::getItemFactory()->createString ( state->theString );
+        }
+        else
+        {
+          lItem = zorba::getItemFactory()->createTextNode ( state->theString, false );
+        }
+        STACK_PUSH ( lItem, state);
+        state->theString = "";
+      }
+      STACK_PUSH ( state->theContextItem, state );
+    }
+    else if ( state->theString == "" )
+    {
+      state->theString = state->theContextItem->getStringProperty();
+    }
+    else
+    {
+      state->theString += " " + state->theContextItem->getStringProperty();
+    }
   }
+  STACK_END();
+}
+  
 
-  void EnclosedIterator::resetImpl ( PlanState& planState )
-  {
-    UnaryBaseIterator<EnclosedIterator>::resetImpl ( planState );
+void EnclosedIterator::resetImpl ( PlanState& planState )
+{
+  UnaryBaseIterator<EnclosedIterator>::resetImpl ( planState );
 
-    EnclosedState* state;
-    GET_STATE ( EnclosedState, state, planState );
-    state->theString = "";
-  }
+  EnclosedState* state;
+  GET_STATE ( EnclosedState, state, planState );
+  state->theString = "";
+}
 
-  void EnclosedIterator::releaseResourcesImpl ( PlanState& planState )
-  {
-    UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl ( planState );
 
-    EnclosedState* state;
-    GET_STATE ( EnclosedState, state, planState );
-    state->theContextItem = NULL;
-    state->theString.clear();
-  }
+void EnclosedIterator::releaseResourcesImpl ( PlanState& planState )
+{
+  UnaryBaseIterator<EnclosedIterator>::releaseResourcesImpl ( planState );
 
-  void EnclosedIterator::setOffset ( PlanState& planState, uint32_t& offset )
-  {
-    UnaryBaseIterator<EnclosedIterator>::setOffset ( planState, offset );
+  EnclosedState* state;
+  GET_STATE ( EnclosedState, state, planState );
+  state->theContextItem = NULL;
+  state->theString.clear();
+}
 
-    EnclosedState* state = new ( planState.block + stateOffset ) EnclosedState;
-  }
 
-  void EnclosedIterator::EnclosedState::init()
-  {
-    PlanIterator::PlanIteratorState::init();
-    theString = "";
-  }
+void EnclosedIterator::setOffset ( PlanState& planState, uint32_t& offset )
+{
+  UnaryBaseIterator<EnclosedIterator>::setOffset ( planState, offset );
+  
+  EnclosedState* state = new ( planState.block + stateOffset ) EnclosedState;
+}
 
-  /* end class EnclosedIterator */
+
+void EnclosedIterator::EnclosedState::init()
+{
+  PlanIterator::PlanIteratorState::init();
+  theString = "";
+}
+
+/* end class EnclosedIterator */
 
   /* start class IfThenElseIterator */
   IfThenElseIterator::IfThenElseIterator ( const yy::location& loc,

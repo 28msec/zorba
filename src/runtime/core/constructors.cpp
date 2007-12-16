@@ -14,6 +14,131 @@ using namespace std;
 namespace xqp
 {
 
+/*******************************************************************************
+
+
+********************************************************************************/
+
+DocumentIterator::DocumentIterator( const yy::location& loc, PlanIter_t& aChild)
+  :
+  UnaryBaseIterator<DocumentIterator>(loc, aChild)
+{
+}
+
+
+Item_t DocumentIterator::nextImpl(PlanState& planState)
+{
+  Store* lStore = zorba::getStore();
+  Iterator_t lChildWrapper;
+  Item_t lItem;
+  xqp_string lBaseUri = "";
+  xqp_string lDocUri = "";
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  
+  lChildWrapper = new PlanIteratorWrapper(theChild, planState); 
+  
+  lItem = zorba::getItemFactory()->createDocumentNode (
+                                lBaseUri.theStrStore,
+                                lDocUri.theStrStore,
+                                lChildWrapper,
+                                true);
+
+  STACK_PUSH(lItem, state);
+  STACK_END();
+}
+
+
+DocumentContentIterator::DocumentContentIterator( const yy::location& loc, PlanIter_t& aChild)
+  : UnaryBaseIterator<DocumentContentIterator>(loc, aChild)
+{}
+
+Item_t DocumentContentIterator::nextImpl(PlanState& planState) {
+  Item_t lItem;
+  
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  while (true) {
+    lItem = consumeNext(theChild, planState);
+    if (lItem == 0)
+      break;
+    if (lItem->isNode()) {
+      if (lItem->getNodeKind() == StoreConsts::attributeNode) {
+        // throwing an error when child is an attribute node
+        ZorbaErrorAlerts::error_alert (
+          error_messages::XQTY0024_TYPE_ATTRIBUTE_NODE_OUT_OF_ORDER,
+          error_messages::RUNTIME_ERROR,
+          false,
+          "A Document Node must not contain attribute nodes!"
+        );
+      } 
+    }
+    STACK_PUSH(lItem, state);
+  }
+  STACK_END();
+}
+
+
+void DocFilterIterator::DocFilterIteratorState::init() 
+{
+  theChildren = 0;
+  theCurItem = 0;
+}
+
+DocFilterIterator::DocFilterIterator( const yy::location& loc, PlanIter_t& aChild)
+  :
+  UnaryBaseIterator<DocFilterIterator>(loc, aChild)
+{
+}
+
+
+Item_t DocFilterIterator::nextImpl(PlanState& planState)
+{
+  Item_t lItem;
+  
+  DocFilterIteratorState* state;
+  DEFAULT_STACK_INIT(DocFilterIteratorState, state, planState);
+ 
+  while (true) {
+    if (state->theChildren != 0) {
+      lItem = state->theChildren->next();
+      if (lItem == 0) {
+        state->theChildren->close();
+        state->theChildren = 0;
+        state->theCurItem = 0;
+      } else {
+        STACK_PUSH(lItem, state);
+      }
+    } else {
+      lItem = consumeNext(theChild, planState);
+      if (lItem == 0)
+        break;
+      if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::documentNode) {
+        state->theChildren = lItem->getChildren();
+        state->theCurItem = lItem;
+      } else {
+        STACK_PUSH(lItem, state);
+      }
+    }
+  }
+  STACK_END();
+}
+
+void DocFilterIterator::releaseResourcesImpl(PlanState& planState)
+{
+  UnaryBaseIterator<DocFilterIterator>::releaseResourcesImpl(planState);
+
+  DocFilterIteratorState* state;
+  GET_STATE(DocFilterIteratorState, state, planState);
+  if (state->theChildren != 0)
+  {
+    state->theChildren->close();
+    state->theChildren = 0;
+    state->theCurItem = 0;
+  }
+}
+
 
 /*******************************************************************************
 
@@ -114,7 +239,7 @@ void
 ElementIterator::releaseResourcesImpl(PlanState& planState)
 {
   if (theQNameIter != 0)
-    resetChild(theQNameIter, planState);
+    releaseChildResources(theQNameIter, planState);
   
   if (theChildrenIter != 0)
     releaseChildResources(theChildrenIter, planState);
@@ -335,118 +460,6 @@ AttributeIterator::nextImpl(PlanState& planState)
   STACK_PUSH(item, state);
   STACK_END();
 }
-
-/*******************************************************************************
-
-
-********************************************************************************/
-
-DocumentIterator::DocumentIterator( const yy::location& loc, PlanIter_t& aChild)
-  : UnaryBaseIterator<DocumentIterator>(loc, aChild)
-{}
-
-Item_t DocumentIterator::nextImpl(PlanState& planState) {
-  Store* lStore = zorba::getStore();
-  Iterator_t lChildWrapper;
-  Item_t lItem;
-  xqp_string lBaseUri = "";
-  xqp_string lDocUri = "";
-  
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  
-  lChildWrapper = new PlanIteratorWrapper(theChild, planState); 
-  
-  lItem = zorba::getItemFactory()->createDocumentNode (
-                                lBaseUri.theStrStore,
-                                lDocUri.theStrStore,
-                                lChildWrapper, true);
-
-  STACK_PUSH(lItem, state);
-  STACK_END();
-}
-
-
-DocumentContentIterator::DocumentContentIterator( const yy::location& loc, PlanIter_t& aChild)
-  : UnaryBaseIterator<DocumentContentIterator>(loc, aChild)
-{}
-
-Item_t DocumentContentIterator::nextImpl(PlanState& planState) {
-  Item_t lItem;
-  
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  while (true) {
-    lItem = consumeNext(theChild, planState);
-    if (lItem == 0)
-      break;
-    if (lItem->isNode()) {
-      if (lItem->getNodeKind() == StoreConsts::attributeNode) {
-        // throwing an error when child is an attribute node
-        ZorbaErrorAlerts::error_alert (
-          error_messages::XQTY0024_TYPE_ATTRIBUTE_NODE_OUT_OF_ORDER,
-          error_messages::RUNTIME_ERROR,
-          false,
-          "A Document Node must not contain attribute nodes!"
-        );
-      } 
-    }
-    STACK_PUSH(lItem, state);
-  }
-  STACK_END();
-}
-
-
-void DocFilterIterator::DocFilterIteratorState::init() {
-  theChildren = 0;
-  theCurItem = 0;
-}
-
-DocFilterIterator::DocFilterIterator( const yy::location& loc, PlanIter_t& aChild)
-  : UnaryBaseIterator<DocFilterIterator>(loc, aChild){}
-
-Item_t DocFilterIterator::nextImpl(PlanState& planState) {
-  Item_t lItem;
-  
-  DocFilterIteratorState* state;
-  DEFAULT_STACK_INIT(DocFilterIteratorState, state, planState);
- 
-  while (true) {
-    if (state->theChildren != 0) {
-      lItem = state->theChildren->next();
-      if (lItem == 0) {
-        state->theChildren->close();
-        state->theChildren = 0;
-        state->theCurItem = 0;
-      } else {
-        STACK_PUSH(lItem, state);
-      }
-    } else {
-      lItem = consumeNext(theChild, planState);
-      if (lItem == 0)
-        break;
-      if (lItem->isNode() && lItem->getNodeKind() == StoreConsts::documentNode) {
-        state->theChildren = lItem->getChildren();
-        state->theCurItem = lItem;
-      } else {
-        STACK_PUSH(lItem, state);
-      }
-    }
-  }
-  STACK_END();
-}
-
-void DocFilterIterator::releaseResourcesImpl(PlanState& planState) {
-  UnaryBaseIterator<DocFilterIterator>::releaseResourcesImpl(planState);
-  DocFilterIteratorState* state;
-  GET_STATE(DocFilterIteratorState, state, planState);
-  if (state->theChildren != 0) {
-    state->theChildren->close();
-    state->theChildren = 0;
-    state->theCurItem = 0;
-  }
-}
-
 
 /********************************************************************************
 

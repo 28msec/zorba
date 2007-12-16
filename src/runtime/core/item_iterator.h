@@ -176,7 +176,10 @@ public:
    * @param aAttrContent bool which declares if the content must be produced for an attribute or
    *                     for something else (attr => StringItems, else => TextNodes).
    */
-  EnclosedIterator(const yy::location& loc, PlanIter_t& childIter, bool aAttrContent = false);
+  EnclosedIterator(
+        const yy::location& loc,
+        PlanIter_t& childIter,
+        bool aAttrContent = false);
 
   Item_t nextImpl(PlanState& planState);
   void resetImpl(PlanState& planState);
