@@ -32,15 +32,14 @@ void QNameItemImpl::free()
 
 QNameItem_t QNameItemImpl::getType() const
 {
-  return Store::getInstance().getItemFactory().
-         createQName(SimpleStore::XS_URI, "xs", "QName");
+  return GET_STORE().theQNameType;
 }
 
 
 Item_t QNameItemImpl::getAtomizationValue( ) const
 {
   return Store::getInstance().getItemFactory().
-         createQName(theNamespace, thePrefix, theLocal).get_ptr();
+         createQName(theNamespace, thePrefix, theLocal);
 }
 
 

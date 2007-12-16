@@ -62,6 +62,7 @@ void SimpleStore::init()
     theNamespacePool->insert(XS_URI, theXmlSchemaNs);
     theAnyType = theItemFactory->createQName(XS_URI, "xs", "anyType");
     theUntypedAtomicType = theItemFactory->createQName(XS_URI, "xs", "untypedAtomic");
+    theQNameType = theItemFactory->createQName(XS_URI, "xs", "QName");
   }
 }
 
@@ -83,6 +84,7 @@ SimpleStore::~SimpleStore()
   {
     theAnyType = NULL;
     theUntypedAtomicType = NULL;
+    theQNameType = NULL;
 
     delete theQNamePool;
     theQNamePool = NULL;

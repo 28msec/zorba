@@ -21,7 +21,116 @@ namespace xqp
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  class DocumentNode                                                         //
+//  class NodeVector                                                           //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+NodeVector::NodeVector(unsigned long size)
+{
+  theNodes = new Item_t[size+1];
+  memset(theNodes, 0, (size+1)*sizeof(Item_t));
+  *(unsigned long*)(theNodes) = size;
+}
+
+
+NodeVector::~NodeVector()
+{
+  clear();
+}
+
+void NodeVector::clear()
+{
+  if (theNodes != 0)
+  {
+    *((void**)theNodes) = 0;
+    delete [] theNodes;
+    theNodes = 0;
+  }
+}
+
+
+void NodeVector::move(NodeVector* v)
+{
+  clear();
+
+  if (v != 0)
+  {
+    theNodes = v->theNodes;
+    v->theNodes = 0;
+  }
+}
+
+
+unsigned long NodeVector::size() const
+{
+  if (theNodes == 0)
+    return 0;
+
+  return *(unsigned long*)(theNodes);
+}
+
+
+void NodeVector::resize(unsigned long newSize)
+{
+  if (newSize == 0)
+  {
+    clear();
+    return;
+  }
+
+  if (theNodes != 0)
+  {
+    Item_t* nodes = new Item_t[newSize + 1];
+    memset(nodes, 0, (newSize + 1) * sizeof(Item_t));
+ 
+    unsigned long copySize = (newSize > size() ? size() : newSize) + 1;
+
+    for (unsigned long i = 1; i < copySize; i++)
+      nodes[i] = theNodes[i];
+
+    *(unsigned long*)(nodes) = newSize;
+   
+    clear();
+    theNodes = nodes;
+  }
+  else
+  {
+    theNodes = new Item_t[newSize + 1];
+    memset(theNodes, 0, (newSize + 1) * sizeof(Item_t));
+    *(unsigned long*)(theNodes) = newSize;
+  }
+}
+
+
+void NodeVector::truncate()
+{
+  if (theNodes == 0)
+    return;
+
+  unsigned long i;
+
+  for (i = size(); i > 0 && theNodes[i] == 0; i--) ;
+
+  resize(i);
+}
+
+
+void NodeVector::push_back(const Item_t& item, unsigned long index)
+{
+  Assert(index <= size());
+
+  if (index == size())
+    resize(size() + 100);
+
+  theNodes[index+1] = item;
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  class Node                                                                 //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -105,13 +214,27 @@ DocumentNodeImpl::DocumentNodeImpl(
   theBaseURI(baseURI),
   theDocURI(docURI)
 {
+  unsigned long numChildren = 0;
+  unsigned long capacity = 100;
+  theChildren.resize(capacity);
+
   Item_t item = childrenIte->next();
   while (item != NULL)
   {
     Assert(item->isNode() && item->getNodeKind() != StoreConsts::attributeNode);
-    theChildren.push_back(item);
+
+    theChildren[numChildren++] = item;
+    if (numChildren == capacity)
+    {
+      capacity *= 2;
+      theChildren.resize(capacity);
+    }
+
     item = childrenIte->next();
   }
+
+  if (numChildren < capacity)
+    theChildren.resize(numChildren);
 }
  
 
@@ -242,6 +365,7 @@ ElementNodeImpl::ElementNodeImpl(
 {
   Assert(namespacesIte == NULL);
 
+  unsigned long numAttrs = 0;
   Item_t item;
 
   if (attributesIte != 0)
@@ -250,28 +374,38 @@ ElementNodeImpl::ElementNodeImpl(
     while (item != 0)
     {
       Assert(item->isNode() && item->getNodeKind() == StoreConsts::attributeNode);
-      theAttributes.push_back(item);
+      theAttributes.push_back(item, numAttrs++);
       item = attributesIte->next();
     }
   }
   
   if (childrenIte != 0)
   {
+    unsigned long numChildren = 0;
+
     item = childrenIte->next();
     while (item != 0)
     {
       Assert(item->isNode());
+
       if (item->getNodeKind() == StoreConsts::attributeNode)
       {
-        theAttributes.push_back(item);
+        theAttributes.push_back(item, numAttrs++);
       }
       else
       {
-        theChildren.push_back(item);
+        theChildren.push_back(item, numChildren++);
       }
+
       item = childrenIte->next();
     }
+
+    if (numChildren > 0)
+      theChildren.truncate();
   }
+
+  if (numAttrs > 0)
+    theAttributes.truncate();
 
   if (!nsBindings.empty())
   {

@@ -343,7 +343,7 @@ void XmlLoader::startElement(
   // Create the element node and assign it an id.
   Item_t elemNode = factory.createElementNode(qname, tname, nsBindings);
 
-  ELEM_NODE(elemNode)->attributes() = attrNodes;
+  ELEM_NODE(elemNode)->attributes().move(attrNodes);
   ELEM_NODE(elemNode)->setId(loader.theNodeId);
   loader.theNodeId.pushChild();
 

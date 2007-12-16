@@ -59,6 +59,7 @@ public:
   xqpStringStore_t     theXmlSchemaNs;
   QNameItem_t          theAnyType;
   QNameItem_t          theUntypedAtomicType;
+  QNameItem_t          theQNameType;
 
 protected:
   bool                 theIsInitialized;

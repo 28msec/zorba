@@ -41,30 +41,31 @@ typedef rchandle<class NsBindingsContext> NsBindingsContext_t;
 class NodeVector
 {
 protected:
-  std::vector<Item_t> theNodes;
+  Item_t  * theNodes;
 
 public:
-  NodeVector() { }
-  NodeVector(unsigned long size) : theNodes(size) { }
+  NodeVector() : theNodes(NULL) { }
 
-  ~NodeVector() { }
+  NodeVector(unsigned long size);
 
-  NodeVector& operator=(NodeVector* v)
-  {
-    if (v != 0)
-      theNodes = v->theNodes;
-    return *this;
-  }
+  ~NodeVector();
 
-  unsigned long size() const { return theNodes.size(); }
-  bool empty() const { return theNodes.empty(); }
+  unsigned long size() const;
+  bool empty() const { return theNodes == 0; }
 
-  void push_back(const Item_t& item) { theNodes.push_back(item); }
+  void clear();
+  void resize(unsigned long size);
+  void truncate();
+  void move(NodeVector* v);
 
-  void resize(unsigned long size) { theNodes.resize(size); }
+  void push_back(const Item_t& item, unsigned long index);
 
-  const Item_t& operator[](unsigned long i) const { return theNodes[i]; } 
-  Item_t& operator[](unsigned long i)             { return theNodes[i]; } 
+  const Item_t& operator[](unsigned long i) const { return theNodes[i+1]; } 
+  Item_t& operator[](unsigned long i)             { return theNodes[i+1]; } 
+
+private:
+  NodeVector& operator=(const NodeVector& v);
+  NodeVector(const NodeVector& v);
 };
 
 
