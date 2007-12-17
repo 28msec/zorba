@@ -831,6 +831,9 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
 
       for (j = 0; j < size; j++) {
         rchandle<var_expr> ve;
+        ve = pop_nodestack ().cast<var_expr> ();
+        ve->set_kind (var_expr::for_var);
+        vars.push_back (ve);
         exprs.push_back(pop_nodestack ());
         if ((*decl_list) [j]->get_posvar () == NULL)
           pos_vars.push_back (NULL);
@@ -839,9 +842,6 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
           pve->set_kind (var_expr::pos_var);
           pos_vars.push_back (pve);
         }
-        ve = pop_nodestack ().cast<var_expr> ();
-        ve->set_kind (var_expr::for_var);
-        vars.push_back (ve);
         pop_scope ();
       }
 
@@ -947,26 +947,26 @@ void translator::end_visit(const VarInDeclList& v, void *visit_state)
 void *translator::begin_visit(const VarInDecl& v)
 {
   TRACE_VISIT ();
-  push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
   return no_state;
 }
 
 void translator::end_visit(const VarInDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  push_scope ();
+  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
 }
 
 void *translator::begin_visit(const PositionalVar& v)
 {
   TRACE_VISIT ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
   return no_state;
 }
 
 void translator::end_visit(const PositionalVar& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
 }
 
 
