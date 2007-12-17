@@ -19,6 +19,7 @@
 
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_parser.hpp"
+#include "errors/Error.h"
 
 using namespace std;
 namespace xqp {
@@ -42,13 +43,15 @@ void xquery_driver::error(
 	yy::location const& l,
 	string const& m)
 {
-  cerr << l << ": " << m << endl;
+  ZORBA_ERROR_ALERT (error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
+                     error_messages::STATIC_ERROR, NULL);
 }
      
 void xquery_driver::error(
 	string const& m)
 {
-	cerr << m << endl;
+  ZORBA_ERROR_ALERT (error_messages::XPST0003_STATIC_GRAMMAR_ERROR,
+                     error_messages::STATIC_ERROR, NULL);
 }
 
 }	/* namespace xqp */
