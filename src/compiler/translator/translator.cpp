@@ -124,9 +124,14 @@ void translator::end_visit(const AtomicType& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
   rchandle<QName> qname = v.get_qname ();
-  tstack.push (GENV_TYPESYSTEM.create_type (sctx_p->lookup_qname ("", qname->get_prefix (), qname->get_localname ()),
-                                            TypeSystem::QUANT_ONE));
-
+  TypeSystem::xqtref_t t =
+    GENV_TYPESYSTEM.create_type (sctx_p->lookup_qname ("", qname->get_prefix (), qname->get_localname ()),
+                                 TypeSystem::QUANT_ONE);
+  if (t == NULL)
+    ZORBA_ERROR_ALERT (error_messages::XPST0051_STATIC_MISSING_SCHEMA_TYPE,
+                       error_messages::STATIC_ERROR, NULL);
+  else
+    tstack.push (t);
 }
 
 
@@ -844,12 +849,12 @@ void translator::end_visit(const FLWORExpr& v, void *visit_state)
         forlet_clause *flc = new forlet_clause (forlet_clause::for_clause, vars [j], pos_vars [j], NULL, exprs [j]);
         eclauses.push_back (flc);
       }
-    } else {
+    } else {  // let clause
       LetClause *letclause = static_cast<LetClause *> (clause);
       
       for (j = 0; j < size; j++) {
-        exprs.push_back(pop_nodestack ());
         rchandle<var_expr> ve = pop_nodestack ().cast<var_expr> ();
+        exprs.push_back(pop_nodestack ());
         ve->set_kind (var_expr::let_var);
         vars.push_back (ve);
         pop_scope ();
@@ -906,14 +911,14 @@ void translator::end_visit(const VarGetsDeclList& v, void *visit_state)
 void *translator::begin_visit(const VarGetsDecl& v)
 {
   TRACE_VISIT ();
-  push_scope ();
-  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
   return no_state;
 }
 
 void translator::end_visit(const VarGetsDecl& v, void *visit_state)
 {
   TRACE_VISIT_OUT ();
+  push_scope ();
+  nodestack.push (bind_var (v.get_location (), v.get_varname ()));
 }
 
 
